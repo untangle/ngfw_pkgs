@@ -3,6 +3,8 @@
 # setting up the user account we use to run the daemons
 adduser --gecos "" --firstuid 10000 --disabled-password kiosk 2>/dev/null
 
+cp -f /home/kiosk/.xfce4/menu.xml /etc/xdg/xfce4/desktop/menu.xml
+
 exit 0
 
 

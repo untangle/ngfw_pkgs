@@ -34,7 +34,7 @@ build: configure
 	dh_installdirs -A -v
 	for i in `cat debian/kiosk-mv.dirs` ; do mkdir -p debian/tmp/$$i ; done
 	cp -r ./files/* ./debian/tmp/
-	cp ./debian/tmp/home/kiosk/.config/xfce4/desktop/menu.xml ./debian/tmp/etc/xdg/xfce4/desktop/
+	find ./debian/tmp -name ".svn" | xargs rm -rf 
 
 clean:
 	dh_testdir
