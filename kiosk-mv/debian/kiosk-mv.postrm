@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ "$1" = "purge" ] ; then
+    deluser kiosk
+fi
+
+exit 0

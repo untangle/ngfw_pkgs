@@ -42,3 +42,4 @@ hauri-mv		optional	admin
 sophos-mv		optional	admin
 postgresql-mv		optional	admin
 restore-mv		optional	admin
+kiosk-mv		optional	admin
