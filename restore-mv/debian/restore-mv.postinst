@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# start restore-mv
+if [ -x "/etc/init.d/restore-mv" ]; then
+    update-rc.d restore-mv defaults 99 > /dev/null
+fi

@@ -1,0 +1,39 @@
+Source: iptables
+Section: net
+Priority: important
+Maintainer: Laurence J. Lane <ljlane@debian.org>
+Build-Depends: debhelper (>>4.0), linuxdoc-tools, html2text, bzip2
+Standards-Version: 3.5.6.0
+
+Package: iptables-mv
+Architecture: any
+Priority: important
+Suggests: ipmasq
+Section: net
+Depends: ${shlibs:Depends}
+Conflicts: iptables, doc-base
+Description: IP packet filter administration tools for 2.4.xx kernels
+ netfilter and iptables are the framework inside the  Linux 2.4.xx kernel 
+ which enable packet filtering, network address translation (NAT) and 
+ other packet mangling.
+ .
+ netfilter is a set of hooks inside the linux 2.4.xx kernel's network 
+ stack which allows kernel modules to register callback functions called 
+ every time a network packet traverses one of those hooks.
+ .
+ iptables is a generic table structure for the definition of rulesets.
+ Each rule within an IP table consists out of a number of classifiers 
+ (matches) and one connected action (target).
+ .
+ netfilter, iptables and the connection tracking as well as the NAT 
+ subsystems together build the whole framework.
+
+Package: iptables-dev-mv
+Architecture: any
+Priority: optional
+Depends: iptables-mv
+Section: devel
+Conflicts: iptables-dev, doc-base
+Description: development files for iptable's libipq and libiptc
+ Header files, static libs and documentation for libipq (iptables 
+ user-space packet queuing library) and libiptc.

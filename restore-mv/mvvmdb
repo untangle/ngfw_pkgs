@@ -1,0 +1,293 @@
+#!/bin/sh
+
+LOCAL_DUMP=/usr/share/metavize/mvvm/dump
+
+mkdir -p $LOCAL_DUMP
+
+tmpfile=$(tempfile)
+backtitle="Metavize EdgeGuard"
+
+# dialog
+
+confirm_exit()
+{
+    dialog --backtitle "$backtitle" --title "Cancel" \
+        --yesno "Cancel Backup/Restore?" 6 52
+
+    case $? in
+        0) # yes
+            state=END_STATE
+            ;;
+        1) # no
+            state=MAIN_MENU
+            ;;
+    esac
+}
+
+# helper
+
+usb_mount()
+{
+    dialog --backtitle "$backtitle" --title "Insert USB Key" \
+        --yes-label "OK" --no-label "Cancel" \
+        --yesno "Please click OK after inserting USB key." 6 52
+    retval=$?
+
+    case $retval in
+        0) # OK
+            mount /dev/sda1 /mnt
+            ;;
+        1) # Cancel
+            return 1
+            ;;
+    esac
+
+    if mount | cut -f1 -d' ' | grep '/dev/sda1' >/dev/null 2>&1; then
+        return 0
+    else
+        dialog --backtitle "$backtitle" \
+            --title "USB Key Mount error" \
+            --msgbox "Please check that the USB key is inserted properly and properly formatted." 6 52
+        return -1
+    fi
+}
+
+# restore
+
+restore_db()
+{
+    infile=$1
+
+    dropdb -U postgres mvvm >/dev/null 2>&1
+    createdb -U metavize mvvm >/dev/null 2>&1
+
+    if zcat $infile | pg_restore -U postgres -d mvvm >/dev/null 2>&1; then
+        dialog --backtitle "$backtitle" --title "Restore Successful" \
+            --msgbox "Settings restored successfully." 6 52
+        return 0
+    else
+        dialog --backtitle "$backtitle" --title "Restore Unsuccessful" \
+            --msgbox "Error restoring settings." 6 52
+        return -1
+    fi
+}
+
+restore()
+{
+    indir=$1
+
+    toggle=on
+    for f in $(ls $indir/mvvmdb-*.tar.gz | sort -r); do
+        d=$(echo $f | sed 's|^.*/mvvmdb-\([0-9]\+\)\.tar\.gz$|\1|')
+        filelist="$filelist $d $(ls -hl $f | cut -d' ' -f6) $toggle"
+        toggle=off
+    done
+
+    dialog --backtitle "$backtitle" --title "Restore Settings" \
+        --radiolist "Select settings" 10 61 5 $filelist 2>$tmpfile
+    retval=$?
+
+    choice=$(cat $tmpfile)
+
+    case $retval in
+        0) # OK
+            dumpfile=$indir/mvvmdb-$choice.tar.gz
+            tarfile=$indir/files-$choice.tar.gz
+            restore_db $dumpfile && tar zxf $tarfile -C /
+            return $?
+            ;;
+        1) # Cancel
+            return -1
+            ;;
+    esac
+}
+
+restore_menu()
+{
+    dialog --backtitle "$backtitle" --title "Restore Method" \
+        --radiolist "restore method" 10 61 2 \
+        local "Local Hard Drive" on \
+        usb "USB Key" off 2>$tmpfile
+    retval=$?
+
+    choice=$(cat $tmpfile)
+    case $retval in
+        0) # OK
+            case $choice in
+                usb)
+                    state=RESTORE_USB_MOUNT
+                    ;;
+                local)
+                    state=RESTORE_LOCAL
+                    ;;
+            esac
+            ;;
+        1) # Cancel
+            state=MAIN_MENU
+            ;;
+    esac
+}
+
+# backup
+
+dump_db()
+{
+    outfile=$1
+    pg_dump -U postgres -Ft mvvm | gzip > $outfile 2>/dev/null
+}
+
+tar_files()
+{
+    tarfile=$1
+
+    tar zcf $tarfile --ignore-failed-read -C / \
+        etc/network/interfaces \
+        etc/resolv.conf \
+        usr/share/metavize/conf/networking.sh \
+        usr/share/metavize/conf/shield.cfg
+}
+
+backup()
+{
+    outdir=$1
+
+    datestamp=$(date '+%Y%m%d%H%M')
+    dumpfile=$outdir/mvvmdb-$datestamp.tar.gz
+    tarfile=$outdir/files-$datestamp.tar.gz
+
+    if dump_db $dumpfile && tar_files $tarfile ; then
+        dialog --backtitle "$backtitle" --title "Backup Successful" \
+            --msgbox "Settings backed up successfully." 6 52
+        return 0
+    else
+        dialog --backtitle "$backtitle" --title "Backup Unuccessful" \
+            --msgbox "Error backing up settings." 6 52
+        return -1
+    fi
+}
+
+backup_menu()
+{
+    dialog --backtitle "$backtitle" --title "Backup Method" \
+        --radiolist "backup method" 10 61 2 \
+        local "Local Hard Drive" on \
+        usb "USB Key" off 2>$tmpfile
+    retval=$?
+
+    choice=$(cat $tmpfile)
+    case $retval in
+        0) # OK
+            case $choice in
+                usb)
+                    state=BACKUP_USB_MOUNT
+                    ;;
+                local)
+                    state=BACKUP_LOCAL
+                    ;;
+            esac
+            ;;
+        1) # Cancel
+            state=MAIN_MENU
+            ;;
+    esac
+}
+
+main_menu()
+{
+    dialog --backtitle "$backtitle" --title "Backup and Restore" \
+        --radiolist "Choose operation:" 10 61 2 \
+        backup "Backup settings" on \
+        restore "Restore settings" off 2>$tmpfile
+    retval=$?
+
+    choice=$(cat $tmpfile)
+    case $retval in
+        0) # OK
+            case $choice in
+                backup)
+                    state=BACKUP_MENU
+                    ;;
+                restore)
+                    state=RESTORE_MENU
+                    ;;
+            esac
+            ;;
+        1) # Cancel
+            state=CONFIRM_EXIT
+            ;;
+    esac
+}
+
+state=MAIN_MENU
+
+while true; do
+    case $state in
+        MAIN_MENU)
+            main_menu
+            ;;
+        BACKUP_MENU)
+            backup_menu
+            ;;
+        BACKUP_USB_MOUNT)
+            if usb_mount; then
+                state=BACKUP_USB
+            else
+                state=BACKUP_MENU
+            fi
+            ;;
+        BACKUP_USB)
+            if backup /mnt; then
+                state=END_STATE
+            else
+                state=BACKUP_MENU
+            fi
+            umount /mnt
+            ;;
+        BACKUP_LOCAL)
+            if backup $LOCAL_DUMP; then
+                state=END_STATE
+            else
+                state=BACKUP_MENU
+            fi
+            ;;
+        RESTORE_MENU)
+            restore_menu
+            ;;
+        RESTORE_USB_MOUNT)
+            usb_mount
+            case $? in
+                0) # success
+                    state=RESTORE_USB
+                    ;;
+                1) # cancel
+                    state=RESTORE_MENU
+                    ;;
+            esac
+            ;;
+        RESTORE_USB)
+            if restore /mnt; then
+                state=END_STATE
+            else
+                state=RESTORE_MENU
+            fi
+            umount /mnt
+            ;;
+        RESTORE_LOCAL)
+            if restore $LOCAL_DUMP; then
+                state=END_STATE
+            else
+                state=RESTORE_MENU
+            fi
+            ;;
+        CONFIRM_EXIT)
+            confirm_exit
+            ;;
+        END_STATE)
+            exit
+            ;;
+        *)
+            echo "no such state: $state"
+            exit
+    esac
+done
+

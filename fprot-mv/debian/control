@@ -1,0 +1,13 @@
+Source: fprot-mv
+Section: admin
+Priority: optional
+Maintainer: Dirk Morris <dmorris@metavize.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.5.2
+
+Package: fprot-mv
+Architecture: any
+Depends: 
+Conflicts: f-prot
+Description: F-Prot Virus scanner
+ The F-Prot Linux Virus Scanner

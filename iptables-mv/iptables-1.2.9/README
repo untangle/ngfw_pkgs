@@ -1,0 +1,36 @@
+iptables has numerous upstream sources used to create the actual
+Debian package. All of those pristine sources are in the upstream
+subdirectory of this archive. The linux kernel sources have been
+pruned down to just the COPYRIGHT, MAINTAINER, and CREDITS files
+along with netfilter directories.
+
+To unpack and prepare everything, use this command:
+
+  debian/rules prep
+
+Select patch-o-matic patches are applied to the kernel source tree
+that is unpacked into debian/build; however, the kernel source trees
+used to build the iptables packages are absolutely NOT left in a
+state intended for any particular use beyond the iptables package
+build.
+
+Current local patches/* patches applied to source code:
+
+  000-link.with.gcc.patch  
+    
+    link with gcc instead of ldd, Bug#12271, addresses build failure 
+    on HP and other archs. Courtesy of Lamont Jones.
+     http://bugs.debian.org/122712
+
+  001-spell.weird.patch
+
+    spelling correction, s/wierd/weird/
+  
+  002-z_owner.patch 
+  
+    Goswin Brederlow's patch, runtime selection of 2.4.19- or 2.4.20+ 
+    version of the owner module
+
+  003-iptables-man-page.patch
+
+    sed 's/is the examined/is examined/' iptables.8.old > iptables.8

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+if [ "$1" = "purge" ] ; then
+    rm -f /etc/init.d/restore-mv
+    update-rc.d restore-mv remove > /dev/null
+fi

@@ -1,0 +1,13 @@
+How to create a private Debian repository:
+
+1. Run deb-add.sh to add the .deb files to /var/www/metavize
+	deb-add.sh ????.deb  [more .deb files]
+
+2. Once all .deb files are added, run deb-scan.sh to recreate the Packages.gz file
+	deb-scan.sh
+
+Repeat the steps when you want to update any .deb file. If you add adding a new package, add an entry in override.testing.metavize. The fields for the entry are: package name, package priority, and package section.
+
+To use the repository, add this line to your sources.list file:
+
+deb http://bebe/metavize     testing metavize

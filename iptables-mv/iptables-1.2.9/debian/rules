@@ -1,0 +1,74 @@
+#!/usr/bin/make -f
+
+EXTRA_VARS := BINDIR=/sbin \
+	LIBDIR=/lib \
+	MANDIR=/usr/share/man \
+	INCDIR=/usr/include \
+	KERNEL_DIR=/usr/src/kernel/dmorris/kpkg/2.6.8.1/linux-2.6.8.1-netcap
+
+#	NO_SHARED_LIBS=1
+#	KERNEL_DIR=$(CURDIR)/debian/build/linux-2.4.19
+
+BUILD_TARGETS := all iptables-save iptables-restore \
+	ip6tables-save ip6tables-restore
+
+BUILD_DIR=$(CURDIR)/debian/build
+SRC_DIR=$(BUILD_DIR)/iptables-1.2.9
+STAMP_DIR=$(BUILD_DIR)/stamp
+EXT_DIR=$(SRC_DIR)/extensions
+
+prep: $(STAMP_DIR)/prep-stamp
+$(STAMP_DIR)/prep-stamp:
+	$(MAKE) prep
+	touch $@
+
+build: $(STAMP_DIR)/build-stamp
+$(STAMP_DIR)/build-stamp: prep
+	dh_testdir
+	rm -f $(EXT_DIR)/libipt_owner.so $(EXT_DIR)/libipt_owner_sh.o
+	cd $(SRC_DIR); make $(BUILD_TARGETS) $(EXTRA_VARS)
+	cd $(SRC_DIR); ar rcs libiptables.a iptables.o
+	cd $(SRC_DIR); ar rcs libip6tables.a ip6tables.o
+	mv -v $(EXT_DIR)/libipt_owner.so $(BUILD_DIR)/libipt_owner.so+pre-2.4.20
+	rm -v $(EXT_DIR)/libipt_owner_sh.o
+	mv -v $(EXT_DIR)/libip6t_owner.so $(BUILD_DIR)/libip6t_owner.so+pre-2.4.20
+	rm -v $(EXT_DIR)/libip6t_owner_sh.o
+	cd $(SRC_DIR); make $(BUILD_TARGETS) $(EXTRA_VARS) KERNEL_DIR=$(CURDIR)/debian/build/linux-2.4.23
+	mv -v $(EXT_DIR)/libipt_owner.so $(BUILD_DIR)/libipt_owner.so+post-2.4.20
+	mv -v $(EXT_DIR)/libip6t_owner.so $(BUILD_DIR)/libip6t_owner.so+post-2.4.20
+	touch $@
+
+clean:
+	dh_testdir
+	rm -rf $(BUILD_DIR)
+	dh_clean
+
+install: build
+	dh_testdir
+	dh_testroot
+
+	cd $(SRC_DIR); $(MAKE) $(EXTRA_VARS) install DESTDIR=$(CURDIR)/debian/iptables-mv
+	install $(BUILD_DIR)/libipt* debian/iptables-mv/lib/iptables
+	rm -f debian/iptables-mv/lib/iptables/libipt_owner.so debian/iptables-mv/lib/ip6tables/libipt_owner.so
+	install -o0 -g0 -m0644 -D $(CURDIR)/debian/iptables-mv.lintian.override $(CURDIR)/debian/iptables-mv/usr/share/lintian/overrides/iptables
+
+binary-indep: build install
+
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_install
+	dh_installdocs 
+	dh_installexamples
+	dh_installchangelogs
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_shlibdeps -X.so
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: prep build clean binary-indep binary-arch binary install 

@@ -1,0 +1,15 @@
+clean:
+	fakeroot debian/rules clean
+
+pkg: 
+	fakeroot debian/rules binary
+
+version:
+	dch -i "auto build"
+
+release: version pkg
+	@if [ "`hostname`" = "bebe" ] ; then \
+		echo ${PACKAGENAME} `cat debian/changelog | head -n 1 | awk '{print $$2}'` "released." | mail -s release pkgs@metavize.com ; \
+		cd ../ ; sudo ./scripts/deb-add.sh ./${PACKAGENAME}*deb &> /dev/null ; sudo ./scripts/deb-scan.sh &> /dev/null ; \
+	else echo "Must be run on bebe"; \
+	fi
