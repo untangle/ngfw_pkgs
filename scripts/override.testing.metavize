@@ -29,6 +29,7 @@ webcacher-transform	optional	net
 sophos-transform	optional	net
 fprot-transform		optional	net
 hauri-transform		optional	net
+clam-transform		optional	net
 reporting-transform	optional	net
 email-transform		optional	net
 metavize-client		optional	net
