@@ -1,6 +1,6 @@
 #!/bin/sh
 
-LOCAL_DUMP=/usr/share/metavize/mvvm/dump
+LOCAL_DUMP=/usr/share/metavize/dump
 
 mkdir -p $LOCAL_DUMP
 
@@ -82,6 +82,10 @@ restore()
         filelist="$filelist $d $(ls -hl $f | cut -d' ' -f6) $toggle"
         toggle=off
     done
+
+    if [ toggle = "on" ]; then
+        return
+    fi
 
     dialog --backtitle "$backtitle" --title "Restore Settings" \
         --radiolist "Select settings" 10 61 5 $filelist 2>$tmpfile
@@ -196,8 +200,8 @@ main_menu()
 {
     dialog --backtitle "$backtitle" --title "Backup and Restore" \
         --radiolist "Choose operation:" 10 61 2 \
-        backup "Backup settings" on \
-        restore "Restore settings" off 2>$tmpfile
+        restore "Restore settings" on \
+        backup "Backup settings" off 2>$tmpfile
     retval=$?
 
     choice=$(cat $tmpfile)
