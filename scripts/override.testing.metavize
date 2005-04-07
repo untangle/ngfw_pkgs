@@ -43,3 +43,5 @@ sophos-mv		optional	admin
 postgresql-mv		optional	admin
 restore-mv		optional	admin
 kiosk-mv		optional	admin
+kernel-prod-mv		optional	admin
+kernel-dev-mv		optional	admin
