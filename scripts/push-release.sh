@@ -6,7 +6,7 @@ ssh release.metavize.com -lroot "rm /var/www.release/metavize/pool/metavize/t/te
 ssh release.metavize.com -lroot "rm /var/www.release/metavize/pool/metavize/c/clam-*"
 ssh release.metavize.com -lroot "rm /var/www.release/metavize/pool/metavize/f/fprot-*"
 ssh release.metavize.com -lroot "rm /var/www.release/metavize/pool/metavize/s/sophos-*"
-ssh release.metavize.com -lroot "rm /var/www.release/metavize/pool/metavize/v/virus-transform_*"
+ssh release.metavize.com -lroot "rm /var/www.release/metavize/pool/metavize/v/virus-transform_*" &>/dev/null
 ssh release.metavize.com -lroot "rm /var/www.release/metavize/pool/metavize/k/kernel-dev*"
 ssh release.metavize.com -lroot "sh ~/deb-scan-release.sh /var/www.release/metavize "
 
