@@ -1,5 +1,10 @@
 #!/bin/sh
 
+PG_HOME=/usr/lib/postgresql
+PG_INIT=/etc/init.d/postgresql
+DB_DIR=/var/lib/postgres/data
+MVVM_INIT=/etc/init.d/mvvm
+
 # Allow all local access
 sed -e "s/\#\(local.*all.*all.*trust\)/\1/" -i /etc/postgresql/pg_hba.conf
 sed -e "s/\#\(host.*all.*all.*127.0.0.1.*255.255.255.255.*trust\)/\1/" -i /etc/postgresql/pg_hba.conf
@@ -8,4 +13,48 @@ sed -e "s/.*virtual_host=.*/virtual_host='127.0.0.1'/" -i /etc/postgresql/postgr
 
 su postgres -c "createuser --createdb --no-adduser metavize" || true
 
-/etc/init.d/postgresql restart || true
+$PG_INIT restart || true
+
+ILOC=$($PG_HOME/bin/pg_controldata $DB_DIR | awk '/LC_COLLATE/ {print $2}')
+
+if [ "xC" = "x$ILOC" ]; then
+    echo "database cluster already uses C locale"
+    exit
+else
+    echo "converting database cluster from $ILOC to C locale"
+
+    if [ -x $MVVM_INIT ]; then $MVVM_INIT stop; fi
+
+    $PG_INIT start
+
+    dump=$(mktemp)
+    chown postgres $dump
+    su -c "pg_dumpall > $dump" postgres
+
+    $PG_INIT stop
+
+    rm -rf $DB_DIR
+
+    # Debian thinks the conf files should live elsewhere.
+    su -c "$PG_HOME/bin/initdb --locale=C -D $DB_DIR" postgres
+    for f in pg_hba.conf pg_ident.conf postgresql.conf; do
+        if [ ! -L $DB_DIR/$f ]; then
+            rm -f $DB_DIR/$f
+            ln -s /etc/postgresql/$f $DB_DIR/$f
+        fi
+    done
+
+    # set configuration file permissions
+    chown root.postgres /etc/postgresql/pg_hba.conf
+    chown root.postgres /etc/postgresql/pg_ident.conf
+    chmod 640 /etc/postgresql/pg_hba.conf
+    chmod 640 /etc/postgresql/pg_ident.conf
+
+    $PG_INIT start
+
+    su -c "psql -f $dump template1; vacuumdb -a -z" postgres
+
+    rm $dump
+
+    if [ -x $MVVM_INIT ]; then $MVVM_INIT start; fi
+fi
