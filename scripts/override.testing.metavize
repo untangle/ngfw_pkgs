@@ -11,8 +11,8 @@ metavize-gui		optional	net
 test-transform		optional	net
 protoanalyzer-transform	optional	net
 blocker-transform	optional	net
-http-transform		optional	net
 http-casing		optional	net
+ftp-casing		optional	net
 httpblocker-transform	optional	net
 loadbalancer-transform	optional	net
 monitor-transform	optional	net
