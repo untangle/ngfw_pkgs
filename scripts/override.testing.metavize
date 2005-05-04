@@ -17,11 +17,11 @@ httpblocker-transform	optional	net
 loadbalancer-transform	optional	net
 monitor-transform	optional	net
 nat-transform		optional	net
+firewall-transform	optional	net
 redirect-transform	optional	net
 sigma-transform		optional	net
 test-transform		optional	net
 xmailscanner-transform	optional	net
-nat-transform		optional	net
 mimex-transform		optional	net
 virus-transform		optional	net
 airgap-transform	optional	net
