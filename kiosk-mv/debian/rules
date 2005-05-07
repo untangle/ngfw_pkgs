@@ -68,7 +68,7 @@ binary-arch: build
 #	dh_fixperms   
 	dh_installdeb  
 #	dh_perl     
-	dh_gencontrol    
+	dh_gencontrol -u-v"`cat ../../VERSION`.`cat debian/changelog | head -n 1 | awk '{print $$2}' | tr -d '()' `"
 	dh_md5sums     
 
 binary-indep: build 
