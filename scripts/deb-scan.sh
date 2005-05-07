@@ -1,12 +1,19 @@
 #! /bin/sh
 
-DESTINATION=/var/www/metavize
+if [ -z $DEBDEST ] ; then
+    DIR=metavize
+else
+    DIR=$DEBDEST
+fi
+
+DESTINATION=/var/www/$DIR
+echo $DESTINATION
 DISTRIBUTION=testing
 COMPONENT=metavize
 OVERRIDE=override.${DISTRIBUTION}.${COMPONENT}
 ARCH=i386
 
-cp -a ${OVERRIDE} ${DESTINATION}/indices/
+cp -a `dirname $0`/${OVERRIDE} ${DESTINATION}/indices/
 
 #
 # Generate Packages.gz

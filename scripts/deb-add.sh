@@ -1,6 +1,13 @@
 #! /bin/sh
- 
-DESTINATION=/var/www/metavize
+
+if [ -z $DEBDEST ] ; then
+    DIR=metavize
+else
+    DIR=$DEBDEST
+fi
+
+DESTINATION=/var/www/$DIR
+echo $DESTINATION
 DISTRIBUTION=testing
 COMPONENT=metavize
 OVERRIDE=override.${DISTRIBUTION}.${COMPONENT}
