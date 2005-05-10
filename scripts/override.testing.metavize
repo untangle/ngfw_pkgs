@@ -1,40 +1,32 @@
-echod			optional	net
-echospam		optional	net
-xenon			optional	net
-xenon-dbg		optional	net
-libnetcap0		optional	devel
-libmvutil		optional	devel
-iptables-mv		optional	devel
-iptables-dev-mv		optional	devel
 mvvm			optional	net
-metavize-gui		optional	net
-test-transform		optional	net
-protoanalyzer-transform	optional	net
-blocker-transform	optional	net
+metavize-client		optional	net
+
+#
+# Metavize Casings
+#
 http-casing		optional	net
 ftp-casing		optional	net
+
+#
+# Metavize Transforms
+#
+test-transform		optional	net
 httpblocker-transform	optional	net
-loadbalancer-transform	optional	net
-monitor-transform	optional	net
 nat-transform		optional	net
 firewall-transform	optional	net
-redirect-transform	optional	net
-sigma-transform		optional	net
-test-transform		optional	net
-xmailscanner-transform	optional	net
-mimex-transform		optional	net
-virus-transform		optional	net
 airgap-transform	optional	net
-webcacher-transform	optional	net
 sophos-transform	optional	net
 fprot-transform		optional	net
 hauri-transform		optional	net
 clam-transform		optional	net
-reporting-transform	optional	net
 email-transform		optional	net
-metavize-client		optional	net
 protofilter-transform	optional	net
 spyware-transform	optional	net
+reporting-transform	optional	net
+
+#
+# Metavize util packages
+#
 catchall-mv		optional	net
 urlblacklist.com-mv	optional	net
 fprot-mv		optional	admin
@@ -45,3 +37,21 @@ restore-mv		optional	admin
 kiosk-mv		optional	admin
 kernel-prod-mv		optional	admin
 kernel-dev-mv		optional	admin
+pump-mv			optional	admin
+iptables-mv		optional	devel
+iptables-dev-mv		optional	devel
+echod			optional	net
+echospam		optional	net
+
+#
+# Non Metavize packages
+#
+dnsmasq			optional	admin
+libclamav1		optional	admin
+libcurl3		optional	admin
+libdigest-hmac-perl	optional	admin
+libdigest-sha1-perl	optional 	admin
+libgmp3			optional	admin
+libidn11		optional	admin
+libnet-dns-perl		optional	admin
+
