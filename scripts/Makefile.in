@@ -14,3 +14,4 @@ release: version pkg
 	fi
 
 #		echo ${PACKAGENAME} `cat debian/changelog | head -n 1 | awk '{print $$2}'` "released." | mail -s release pkgs@metavize.com ; \
+
