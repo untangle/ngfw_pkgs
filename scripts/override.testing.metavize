@@ -54,4 +54,9 @@ libdigest-sha1-perl	optional 	admin
 libgmp3			optional	admin
 libidn11		optional	admin
 libnet-dns-perl		optional	admin
-
+clamav			optional	admin
+clamav-base		optional	admin 
+clamav-daemon		optional	admin
+clamav-freshclam	optional	admin
+spamassassin		optional	admin
+spamc			optional	admin
