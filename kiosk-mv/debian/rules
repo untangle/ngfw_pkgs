@@ -46,7 +46,7 @@ clean:
 binary-arch: build
 	dh_testdir  
 	dh_testroot   
-	dh_movefiles -v  
+	dh_movefiles 
 #	dh_installdebconf   
 	dh_shlibdeps  
 	dh_installdocs   
