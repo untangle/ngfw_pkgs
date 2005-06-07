@@ -1,4 +1,4 @@
-PACKAGENAME=kiosk-mv
+PACKAGENAME=spamc-mv
 
 include ../scripts/Makefile.in
 

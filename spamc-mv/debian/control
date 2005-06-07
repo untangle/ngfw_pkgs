@@ -1,12 +1,12 @@
-Source: kiosk-mv
+Source: spamc-mv
 Section: admin
 Priority: optional
 Maintainer: Dirk Morris <dmorris@metavize.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.5.2
 
-Package: kiosk-mv
+Package: spamc-mv
 Architecture: any
 Depends: 
-Description: The Metavize EdgeGuard kiosk utils
- The Metavize EdgeGuard kiosk mode utilities
+Description: The Metavize EdgeGuard spamc utils
+ The Metavize EdgeGuard spamc mode utilities

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# setting up the user account we use to run the daemons
+adduser --gecos "" --firstuid 10000 --disabled-password spamc 2>/dev/null
+chown -R spamc:spamc /home/spamc 
+
+cp -f /home/spamc/.xfce4/menu.xml /etc/xdg/xfce4/desktop/menu.xml &> /dev/null
+
+exit 0
+
+
+
