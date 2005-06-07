@@ -7,6 +7,6 @@ Standards-Version: 3.5.2
 
 Package: spamc-mv
 Architecture: any
-Depends: 
+Depends: spamassassin, spamc, libnet-dns-perl
 Description: The Metavize EdgeGuard spamc utils
  The Metavize EdgeGuard spamc mode utilities
