@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xfdesktop-menu [
+    <!ENTITY menu2 SYSTEM "menu2.xml">
+    <!ENTITY debian SYSTEM "menudefs.hook">
+]>
+<xfdesktop-menu>
+    <title name="Desktop Menu" visible="yes" />
+    <app name="Metavize EdgeGuard Client" cmd="metavize-client" term="no"/>
+    <separator/>
+    <menu name="Local Controls">
+       <app name="Enable  Screensaver" cmd="/home/kiosk/utils/screensaver-on.sh"/>
+       <app name="Disable Screensaver" cmd="/home/kiosk/utils/screensaver-off.sh"/>
+    </menu>
+    <separator/>
+    <menu name="Advanced">
+      <app name="Restore Menu" cmd="/home/kiosk/utils/edgeguard-restore.sh"/>
+      <app name="Debugger Interface" cmd="xterm -T Password -e su root"/>
+    </menu>
+    <separator/>
+    <app name="Reboot"    cmd="/home/kiosk/utils/edgeguard-reboot.sh" term="no"/>
+    <app name="Power Off" cmd="/home/kiosk/utils/edgeguard-off.sh" term="no"/>
+</xfdesktop-menu>
