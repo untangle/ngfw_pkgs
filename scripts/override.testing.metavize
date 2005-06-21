@@ -1,62 +1,66 @@
-mvvm			optional	net
-metavize-client		optional	net
+mvvm			optional	m
+metavize-client		optional	m
 
 #
 # Metavize Casings
 #
-http-casing		optional	net
-ftp-casing		optional	net
+http-casing		optional	h
+ftp-casing		optional	f
+mail-casing		optional	m
 
 #
 # Metavize Transforms
 #
-test-transform		optional	net
-httpblocker-transform	optional	net
-nat-transform		optional	net
-firewall-transform	optional	net
-airgap-transform	optional	net
-sophos-transform	optional	net
-fprot-transform		optional	net
-hauri-transform		optional	net
-clam-transform		optional	net
-email-transform		optional	net
-protofilter-transform	optional	net
-spyware-transform	optional	net
-reporting-transform	optional	net
+test-transform		optional	t
+httpblocker-transform	optional	h
+nat-transform		optional	n
+firewall-transform	optional	f
+airgap-transform	optional	a
+sophos-transform	optional	s
+fprot-transform		optional	f
+hauri-transform		optional	h
+clam-transform		optional	c
+email-transform		optional	e
+protofilter-transform	optional	p
+spyware-transform	optional	s
+reporting-transform	optional	r
+spam-transform		optional	s
 
 #
 # Metavize util packages
 #
-catchall-mv		optional	net
-urlblacklist.com-mv	optional	net
-fprot-mv		optional	admin
-hauri-mv		optional	admin
-sophos-mv		optional	admin
-postgresql-mv		optional	admin
-restore-mv		optional	admin
-kiosk-mv		optional	admin
-kernel-prod-mv		optional	admin
-kernel-dev-mv		optional	admin
-pump-mv			optional	admin
-iptables-mv		optional	devel
-iptables-dev-mv		optional	devel
-echod			optional	net
-echospam		optional	net
+catchall-mv		optional	c
+urlblacklist.com-mv	optional	u
+fprot-mv		optional	f
+hauri-mv		optional	h
+sophos-mv		optional	s
+postgresql-mv		optional	p
+restore-mv		optional	r
+kiosk-mv		optional	k
+kernel-prod-mv		optional	k
+kernel-dev-mv		optional	k
+pump-mv			optional	p
+spamc-mv		optional	s
+iptables-mv		optional	i
+iptables-dev-mv		optional	i
+echod			optional	e
+echospam		optional	e
 
 #
 # Non Metavize packages
 #
-dnsmasq			optional	admin
-libclamav1		optional	admin
-libcurl3		optional	admin
-libdigest-hmac-perl	optional	admin
-libdigest-sha1-perl	optional 	admin
-libgmp3			optional	admin
-libidn11		optional	admin
-libnet-dns-perl		optional	admin
-clamav			optional	admin
-clamav-base		optional	admin 
-clamav-daemon		optional	admin
-clamav-freshclam	optional	admin
-spamassassin		optional	admin
-spamc			optional	admin
+dnsmasq			optional	d
+libclamav1		optional	libc
+libcurl3		optional	libc
+libdigest-hmac-perl	optional	libd
+libdigest-sha1-perl	optional 	libd
+libgmp3			optional	libg
+libidn11		optional	libi
+libnet-dns-perl		optional	libn
+clamav			optional	c
+clamav-base		optional	c 
+clamav-daemon		optional	c
+clamav-freshclam	optional	c
+spamassassin		optional	s
+spamc			optional	s
+libc6			optional	libc
