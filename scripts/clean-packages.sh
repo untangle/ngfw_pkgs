@@ -15,7 +15,7 @@ shift
 BACKUP_METHOD="$1"
 shift
 
-BACKUP_DIRECTORY=/var/www/metavize/backup
+BACKUP_DIRECTORY=/var/www/pkgbackup
 
 
 is_file_in_list()
