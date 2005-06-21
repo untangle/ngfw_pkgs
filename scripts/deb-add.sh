@@ -1,12 +1,12 @@
 #! /bin/sh
 
-if [ -z $DEBDEST ] ; then
-    DIR=metavize
-else
-    DIR=$DEBDEST
+if [ $# -lt 2 ] ; then
+        usage: "$0 <dir ex: /var/www/metavize>"
 fi
 
-DESTINATION=/var/www/$DIR
+DESTINATION=$1
+shift
+
 echo $DESTINATION
 DISTRIBUTION=testing
 COMPONENT=metavize

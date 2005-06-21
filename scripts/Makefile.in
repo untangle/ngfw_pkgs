@@ -9,9 +9,8 @@ version:
 
 release: version pkg
 	@if [ "`hostname`" = "bebe" ] ; then \
-		( export DEBDEST="`whoami`" ; cd ../ ; sudo ./scripts/deb-add.sh ./${PACKAGENAME}*deb &> /dev/null ; sudo ./scripts/deb-scan.sh &> /dev/null ) ; \
+		( cd ../ ; sudo ./scripts/deb-add.sh /var/www/`whoami`/ ./${PACKAGENAME}*deb &> /dev/null ; sudo ./scripts/deb-scan.sh /var/www/`whoami`/ &> /dev/null ) ; \
 	else echo "Must be run on bebe"; \
 	fi
-
-#		echo ${PACKAGENAME} `cat debian/changelog | head -n 1 | awk '{print $$2}'` "released." | mail -s release pkgs@metavize.com ; \
+#	echo ${PACKAGENAME} `cat debian/changelog | head -n 1 | awk '{print $$2}'` "released." | mail -s release pkgs@metavize.com ; \
 
