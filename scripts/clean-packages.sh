@@ -84,7 +84,7 @@ remove_all_but_recent_n_files()
     fi
 
     file_list="$(ls -lt --time-style long-iso ${filename}*deb | awk '{print $8}' | xargs echo | awk '{i=0; while(i++<'$max_files') print $i}')"
-    total_file_list="$(ls -lt --time-style long-iso ${filename}_*deb | awk '{print $8}' | xargs echo)"
+    total_file_list="$(ls -lt --time-style long-iso ${filename}*deb | awk '{print $8}' | xargs echo)"
 
     for f in $total_file_list; do
         is_file_in_list "$file_list" $f
