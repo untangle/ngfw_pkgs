@@ -15,7 +15,7 @@ shift
 BACKUP_METHOD="$1"
 shift
 
-BACKUP_DIRECTORY=/backup
+BACKUP_DIRECTORY=/pkgbackup
 
 
 is_file_in_list()
