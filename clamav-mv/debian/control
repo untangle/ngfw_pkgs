@@ -1,0 +1,12 @@
+Source: clamav-mv
+Section: admin
+Priority: optional
+Maintainer: Dirk Morris <dmorris@metavize.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.5.2
+
+Package: clamav-mv
+Architecture: any
+Depends: clamav, clamav-daemon, clamav-freshclam
+Description: The Metavize EdgeGuard clamav utils
+ The Metavize EdgeGuard clamav utilities
