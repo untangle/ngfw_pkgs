@@ -29,7 +29,7 @@ spam-transform		optional	s
 #
 # Metavize util packages
 #
-dev-env-mv		optional	d
+dev-mv			optional	d
 catchall-mv		optional	c
 urlblacklist.com-mv	optional	u
 fprot-mv		optional	f

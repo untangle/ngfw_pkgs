@@ -1,4 +1,4 @@
-PACKAGENAME=dev-env-mv
+PACKAGENAME=dev-mv
 
 include ../scripts/Makefile.in
 
