@@ -8,6 +8,6 @@ Standards-Version: 3.5.2
 Package: dev-mv
 Architecture: any
 Provides: catchall-mv
-Depends: libxml2, fakeroot, debhelper, make, subversion, iptables-mv, iptables-dev-mv
+Depends: libxml2, libxml2-dev, fakeroot, debhelper, make, subversion, iptables-mv, iptables-dev-mv
 Description: Metavize Dev-Env Package
  The Metavize Development Environment Package
