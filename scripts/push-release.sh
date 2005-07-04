@@ -10,6 +10,7 @@ sudo rsync -rlpvz -e ssh /var/www/metavize \
     --exclude 'virus-transform*' \
     --exclude 'spam-*' \
     --exclude 'kernel-dev*' \
+    --exclude 'dev-env-mv*' \
     root@release.metavize.com:/var/www.release/
 
 scp \
@@ -26,6 +27,7 @@ ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/f
 ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/s/sophos-*"
 ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/v/virus-transform*"
 ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/k/kernel-dev*"
+ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/d/dev-env-mv*"
 ssh release.metavize.com -lroot "sh ~/clean-packages.sh /var/www.release/metavize/pool/metavize 3 move"
 
 echo -e "\n\nBuilding Package List...\n\n"
