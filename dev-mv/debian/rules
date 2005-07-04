@@ -34,6 +34,7 @@ build: configure
 	mkdir -p ./debian/tmp/opt
 	cp -r /opt/jdk1.5.0_03 ./debian/tmp/opt/
 	ln -s /opt/jdk1.5.0_03 ./debian/tmp/opt/jdk
+	ln -s /opt/jdk1.5.0_03 ./debian/tmp/opt/java
 
 clean:
 	dh_testdir
