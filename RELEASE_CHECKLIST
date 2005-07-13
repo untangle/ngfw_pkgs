@@ -1,3 +1,5 @@
-clam updates
-spamassasin updates
-l7filter updates
+clam updates (pkgs/other)
+spamassasin updates (pkgs/other)
+l7filter updates (cat tran/alpine/protofilter/pattern-build/README)
+urlblacklist.com updates (cd pkgs/urlblacklist.com-mv; update-blacklist; make pkg)
+spyware updatse (cd alpine/tran/spyware/util ; make)
