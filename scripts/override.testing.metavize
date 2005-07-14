@@ -29,6 +29,7 @@ spam-transform		optional	s
 #
 # Metavize util packages
 #
+clamav-mv		optional	c
 dev-mv			optional	d
 catchall-mv		optional	c
 urlblacklist.com-mv	optional	u
