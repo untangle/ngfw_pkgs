@@ -24,7 +24,7 @@ email-transform		optional	e
 protofilter-transform	optional	p
 spyware-transform	optional	s
 reporting-transform	optional	r
-spam-transform		optional	s
+spamassassin-transform	optional	s
 
 #
 # Metavize util packages
@@ -51,6 +51,9 @@ echospam		optional	e
 #
 # Non Metavize packages
 #
+ntp			optional	n
+ntp-server		optional	n
+ntp-simple		optional	n
 dnsmasq			optional	d
 libclamav1		optional	libc
 libcurl3		optional	libc
