@@ -9,9 +9,10 @@ MVVM_INIT=/etc/init.d/mvvm
 sed -e "s/\#\(local.*all.*all.*trust\)/\1/" -i /etc/postgresql/pg_hba.conf
 sed -e "s/\#\(host.*all.*all.*127.0.0.1.*255.255.255.255.*trust\)/\1/" -i /etc/postgresql/pg_hba.conf
 sed -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" -i /etc/postgresql/postmaster.conf
-sed -e "s/.*virtual_host=.*/virtual_host='127.0.0.1'/" -i /etc/postgresql/postgresql.conf
+sed -e "s/.*virtual_host.*=.*/virtual_host='127.0.0.1'/" -i /etc/postgresql/postgresql.conf
+sed -e "s/.*search_path.*=.*/search_path = 'settings,events,\$user,public'/" -i /etc/postgresql/postgresql.conf
 
-su postgres -c "createuser --createdb --no-adduser metavize" || true
+su postgres -c "createuser --createdb --no-adduser metavize" &> /dev/null || true 
 
 $PG_INIT restart || true
 
