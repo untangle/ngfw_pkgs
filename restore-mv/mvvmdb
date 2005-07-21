@@ -61,7 +61,7 @@ restore_db()
     dropdb -U postgres mvvm >/dev/null 2>&1
     createdb -U metavize mvvm >/dev/null 2>&1
 
-    if zcat $infile | pg_restore -U postgres -d mvvm >/dev/null 2>&1; then
+    if zcat $infile | psql -U postgres mvvm >/dev/null 2>&1; then
         dialog --backtitle "$backtitle" --title "Restore Successful" \
             --msgbox "Settings restored successfully." 6 52
         return 0
@@ -95,7 +95,7 @@ restore()
 
     case $retval in
         0) # OK
-            dumpfile=$indir/mvvmdb-$choice.tar.gz
+            dumpfile=$indir/mvvmdb-$choice.gz
             tarfile=$indir/files-$choice.tar.gz
             restore_db $dumpfile && tar zxf $tarfile -C /
             return $?
