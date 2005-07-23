@@ -1,9 +1,24 @@
 #!/bin/sh
 
+if [ $# -gt 0 ] ; then
+    # this is for started from init.d
+    FLAG=1 # reboot after quit
+else 
+    # this is for started from X
+    FLAG=0 # start mvvm after quit
+fi
+
 echo " == Restore Edgeguard =="
 
 reboot() {
+    echo Reboot
     /sbin/shutdown -r now
+}
+
+quit() {
+    echo Quit
+    /etc/init.d/mvvm start
+    exit
 }
 
 trap reboot 6
@@ -25,7 +40,12 @@ while true ; do
     echo " 5) Recover broken upgrade procedure (method 3) "
     echo " 6) Enable remote debugging (for technical support)"
     echo " 7) Disable remote debugging (for technical support)"
-    echo " 8) Reboot "
+    if [ $FLAG -eq 1 ] ; then
+        echo " 8) Reboot "
+    else
+        echo " 8) Quit "
+    fi
+
     echo ""
 
     read -p " Please select an option: " CHOICE
@@ -65,7 +85,11 @@ while true ; do
             mv /etc/init.d/ssh.tmp /etc/init.d/ssh
             ;;
         8)
-            reboot
+            if [ $FLAG -eq 1 ] ; then
+                reboot
+            else
+                quit
+            fi
             ;;
 # We used to support uninstall here:
 #	999)
