@@ -73,11 +73,20 @@ restore_db()
     fi
 }
 
+restore_packages()
+{
+    instfile=$1
+
+    cat $instfile | cut -d' ' -f1 | grep -- '-transform$' \
+        | xargs apt-get install $INST_OPTS
+}
+
 restore()
 {
     indir=$1
 
     toggle=on
+    filelist=""
     for f in $(ls $indir/mvvmdb-*.gz | sort -r); do
         d=$(echo $f | sed 's|^.*/mvvmdb-\([0-9]\+\)\.gz$|\1|')
         filelist="$filelist $d $(ls -hl $f | cut -d' ' -f6) $toggle"
@@ -100,7 +109,7 @@ restore()
             tarfile=$indir/files-$choice.tar.gz
             instfile=$indir/installed-$choice
             restore_db $dumpfile && tar zxf $tarfile -C / \
-                && apt-get install $INST_OPTS $(cut -d' ' -f1 $instfile)
+                && restore_packages $instfile
             return $?
             ;;
         1) # Cancel
@@ -306,4 +315,3 @@ while true; do
             exit
     esac
 done
-
