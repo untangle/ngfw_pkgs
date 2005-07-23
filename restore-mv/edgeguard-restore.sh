@@ -34,8 +34,8 @@ while true ; do
     case "$CHOICE" in
         1)
             echo "Restoring Factory Defaults..."
-            if [ -x /usr/bin/purgeprefs ] ; then
-                /usr/bin/purgeprefs
+            if [ -x /usr/bin/purgedb ] ; then
+                /usr/bin/purgedb
             fi
             ;;
         2)
