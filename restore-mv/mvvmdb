@@ -137,7 +137,8 @@ restore_menu()
 dump_db()
 {
     outfile=$1
-    pg_dump -U postgres -Ft mvvm | gzip > $outfile 2>/dev/null
+    (pg_dump -U postgres -n settings mvvm; pg_dump -U postgres -n events -s mvvm) \
+        | gzip > $outfile 2>/dev/null
 }
 
 tar_files()
@@ -151,15 +152,23 @@ tar_files()
         usr/share/metavize/conf/shield.cfg
 }
 
+dump_installed()
+{
+    instlist=$1
+
+    mkg installed > $instlist
+}
+
 backup()
 {
     outdir=$1
 
     datestamp=$(date '+%Y%m%d%H%M')
-    dumpfile=$outdir/mvvmdb-$datestamp.tar.gz
+    dumpfile=$outdir/mvvmdb-$datestamp.gz
     tarfile=$outdir/files-$datestamp.tar.gz
+    instlist=$outdir/installed-$datestamp
 
-    if dump_db $dumpfile && tar_files $tarfile ; then
+    if dump_db $dumpfile && tar_files $tarfile && dump_installed $instlist; then
         dialog --backtitle "$backtitle" --title "Backup Successful" \
             --msgbox "Settings backed up successfully." 6 52
         return 0
