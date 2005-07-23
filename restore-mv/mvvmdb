@@ -1,5 +1,6 @@
 #!/bin/sh
 
+INST_OPTS=" -o DPkg::Options::=--force-confnew --yes --force-yes --fix-broken "
 LOCAL_DUMP=/usr/share/metavize/dump
 
 mkdir -p $LOCAL_DUMP
@@ -97,7 +98,9 @@ restore()
         0) # OK
             dumpfile=$indir/mvvmdb-$choice.gz
             tarfile=$indir/files-$choice.tar.gz
-            restore_db $dumpfile && tar zxf $tarfile -C /
+            instfile=$indir/installed-$choice
+            restore_db $dumpfile && tar zxf $tarfile -C / \
+                && apt-get install $INST_OPTS $(cut -d' ' -f1 $instfile)
             return $?
             ;;
         1) # Cancel
