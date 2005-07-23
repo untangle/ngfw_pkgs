@@ -40,8 +40,8 @@ while true ; do
             ;;
         2)
 	    echo "Restoring previous configuration..."
-            if [ -x /usr/bin/mvvmdb ] ; then
-                /usr/bin/mvvmdb
+            if [ -x /usr/bin/mvvmdb-restore ] ; then
+                /usr/bin/mvvmdb-restore
             fi
             ;;
         3)

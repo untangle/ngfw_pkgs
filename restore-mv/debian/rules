@@ -33,8 +33,8 @@ build: configure
 	mkdir -p ./debian/tmp
 	dh_installdirs -A -v
 	for i in `cat debian/restore-mv.dirs` ; do mkdir -p debian/tmp/$$i ; done
-	cp ./edgeguard-restore.sh ./debian/tmp/usr/bin/
-	cp ./mvvmdb ./debian/tmp/usr/bin/
+	cp ./edgeguard-restore ./debian/tmp/usr/bin/
+	cp ./mvvmdb-restore ./debian/tmp/usr/bin/
 
 clean:
 	dh_testdir
