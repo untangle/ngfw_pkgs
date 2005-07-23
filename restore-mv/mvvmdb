@@ -78,8 +78,8 @@ restore()
     indir=$1
 
     toggle=on
-    for f in $(ls $indir/mvvmdb-*.tar.gz | sort -r); do
-        d=$(echo $f | sed 's|^.*/mvvmdb-\([0-9]\+\)\.tar\.gz$|\1|')
+    for f in $(ls $indir/mvvmdb-*.gz | sort -r); do
+        d=$(echo $f | sed 's|^.*/mvvmdb-\([0-9]\+\)\.gz$|\1|')
         filelist="$filelist $d $(ls -hl $f | cut -d' ' -f6) $toggle"
         toggle=off
     done
