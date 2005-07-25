@@ -63,12 +63,8 @@ restore_db()
     createdb -U metavize mvvm >/dev/null 2>&1
 
     if zcat $infile | psql -U postgres mvvm >/dev/null 2>&1; then
-        dialog --backtitle "$backtitle" --title "Restore Successful" \
-            --msgbox "Settings restored successfully." 6 52
         return 0
     else
-        dialog --backtitle "$backtitle" --title "Restore Unsuccessful" \
-            --msgbox "Error restoring settings." 6 52
         return -1
     fi
 }
@@ -255,16 +251,28 @@ while true; do
             ;;
         BACKUP_USB)
             if backup /mnt; then
+		dialog --backtitle "$backtitle" --title "Backup Successful" \
+                    --msgbox "Settings backed up successfully." 6 52
+
                 state=END_STATE
             else
+                dialog --backtitle "$backtitle" --title "Backup Unsuccessful" \
+                    --msgbox "Error backing up settings." 6 52
+
                 state=BACKUP_MENU
             fi
             umount /mnt
             ;;
         BACKUP_LOCAL)
             if backup $LOCAL_DUMP; then
+                dialog --backtitle "$backtitle" --title "Backup Successful" \
+                    --msgbox "Settings backed upsuccessfully." 6 52
+
                 state=END_STATE
             else
+                dialog --backtitle "$backtitle" --title "Backup Unsuccessful" \
+                    --msgbox "Error backing upsettings." 6 52
+
                 state=BACKUP_MENU
             fi
             ;;
@@ -284,13 +292,13 @@ while true; do
             ;;
         RESTORE_USB)
             if restore /mnt; then
-                dialog --backtitle "$backtitle" --title "Backup Successful" \
-                    --msgbox "Settings backed up successfully." 6 52
+                dialog --backtitle "$backtitle" --title "Restore Successful" \
+                    --msgbox "Settings restored successfully." 6 52
 
                 state=END_STATE
             else
-                dialog --backtitle "$backtitle" --title "Backup Unsuccessful" \
-                    --msgbox "Error backing up settings." 6 52
+                dialog --backtitle "$backtitle" --title "Restore Unsuccessful" \
+                    --msgbox "Error restoring settings." 6 52
 
                 state=RESTORE_MENU
             fi
@@ -298,13 +306,13 @@ while true; do
             ;;
         RESTORE_LOCAL)
             if restore $LOCAL_DUMP; then
-                dialog --backtitle "$backtitle" --title "Backup Successful" \
-                    --msgbox "Settings backed up successfully." 6 52
+                dialog --backtitle "$backtitle" --title "Restore Successful" \
+                    --msgbox "Settings restored successfully." 6 52
 
                 state=END_STATE
             else
-                dialog --backtitle "$backtitle" --title "Backup Unsuccessful" \
-                    --msgbox "Error backing up settings." 6 52
+                dialog --backtitle "$backtitle" --title "Restore Unsuccessful" \
+                    --msgbox "Error restoring up settings." 6 52
 
                 state=RESTORE_MENU
             fi
