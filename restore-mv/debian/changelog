@@ -1,3 +1,9 @@
+restore-mv (0-20) stable; urgency=low
+
+  * auto build
+
+ -- Dirk Morris <dmorris@butters>  Mon, 25 Jul 2005 13:09:14 -0700
+
 restore-mv (0-19) stable; urgency=low
 
   * auto build
