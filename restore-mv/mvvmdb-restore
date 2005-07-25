@@ -110,6 +110,7 @@ restore()
             instfile=$indir/installed-$choice
             restore_db $dumpfile && tar zxf $tarfile -C / \
                 && restore_packages $instfile
+
             return $?
             ;;
         1) # Cancel
@@ -180,15 +181,7 @@ backup()
     tarfile=$outdir/files-$datestamp.tar.gz
     instlist=$outdir/installed-$datestamp
 
-    if dump_db $dumpfile && tar_files $tarfile && dump_installed $instlist; then
-        dialog --backtitle "$backtitle" --title "Backup Successful" \
-            --msgbox "Settings backed up successfully." 6 52
-        return 0
-    else
-        dialog --backtitle "$backtitle" --title "Backup Unuccessful" \
-            --msgbox "Error backing up settings." 6 52
-        return -1
-    fi
+    dump_db $dumpfile && tar_files $tarfile && dump_installed $instlist
 }
 
 backup_menu()
@@ -291,16 +284,28 @@ while true; do
             ;;
         RESTORE_USB)
             if restore /mnt; then
+                dialog --backtitle "$backtitle" --title "Backup Successful" \
+                    --msgbox "Settings backed up successfully." 6 52
+
                 state=END_STATE
             else
+                dialog --backtitle "$backtitle" --title "Backup Unsuccessful" \
+                    --msgbox "Error backing up settings." 6 52
+
                 state=RESTORE_MENU
             fi
             umount /mnt
             ;;
         RESTORE_LOCAL)
             if restore $LOCAL_DUMP; then
+                dialog --backtitle "$backtitle" --title "Backup Successful" \
+                    --msgbox "Settings backed up successfully." 6 52
+
                 state=END_STATE
             else
+                dialog --backtitle "$backtitle" --title "Backup Unsuccessful" \
+                    --msgbox "Error backing up settings." 6 52
+
                 state=RESTORE_MENU
             fi
             ;;
