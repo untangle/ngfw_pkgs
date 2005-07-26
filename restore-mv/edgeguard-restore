@@ -204,8 +204,27 @@ main_menu()
     esac
 }
 
-state=MAIN_MENU
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Stop the mvvm
+if [ -x /etc/init.d/mvvm ] ; then
+    /etc/init.d/mvvm stop
+fi
+
+state=MAIN_MENU
 while true; do
     case $state in
 # Main levels
