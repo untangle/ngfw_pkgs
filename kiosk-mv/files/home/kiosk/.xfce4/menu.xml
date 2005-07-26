@@ -13,8 +13,7 @@
     </menu>
     <separator/>
     <menu name="Advanced">
-      <app name="Restore Menu" cmd="/home/kiosk/utils/edgeguard-restore.sh"/>
-      <app name="Debugger Interface" cmd="xterm -T Password -e su root"/>
+      <app name="EdgeGuard Recovery" cmd="/home/kiosk/utils/edgeguard-restore.sh"/>
     </menu>
     <separator/>
     <app name="Reboot"    cmd="/home/kiosk/utils/edgeguard-reboot.sh" term="no"/>
