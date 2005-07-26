@@ -8,8 +8,6 @@ else
     FLAG=0 # start mvvm after quit
 fi
 
-echo " == Restore Edgeguard =="
-
 reboot() {
     echo Reboot
     /sbin/shutdown -r now
@@ -17,85 +15,231 @@ reboot() {
 
 quit() {
     echo Quit
-    /etc/init.d/mvvm start
+    if [ -x /etc/init.d/mvvm ] ; then
+        /etc/init.d/mvvm start
+    fi
     exit
 }
 
-trap reboot 6
-trap reboot 15
-trap reboot 2
-
-if [ -x /etc/init.d/mvvm ] ; then
-    /etc/init.d/mvvm stop
+if [ $FLAG -eq 1 ] ; then
+    trap reboot 6
+    trap reboot 15
+    trap reboot 2
+else
+    trap quit 6
+    trap quit 15
+    trap quit 2
 fi
 
-while true ; do
 
-    echo ""
-    echo " Options: "
-    echo " 1) Return to Factory Defaults "
-    echo " 2) Restore saved configuration "
-    echo " 3) Recover broken upgrade procedure (method 1) "
-    echo " 4) Recover broken upgrade procedure (method 2) "
-    echo " 5) Recover broken upgrade procedure (method 3) "
-    echo " 6) Enable remote debugging (for technical support)"
-    echo " 7) Disable remote debugging (for technical support)"
-    if [ $FLAG -eq 1 ] ; then
-        echo " 8) Reboot "
-    else
-        echo " 8) Quit "
-    fi
+INST_OPTS=" -o DPkg::Options::=--force-confnew --yes --force-yes --fix-broken "
+UPGD_OPTS=" -o DPkg::Options::=--force-confnew --yes --force-yes --fix-broken "
+tmpfile=$(tempfile)
+backtitle="Metavize EdgeGuard"
 
-    echo ""
+confirm_exit()
+{
+    dialog --backtitle "$backtitle" --title "Confirm" \
+        --yesno "Are you sure you wish to exit?" 6 52
 
-    read -p " Please select an option: " CHOICE
-    echo $CHOICE
+    case $? in
+        0) # yes
+            state=END_STATE
+            ;;
+        1) # no
+            state=MAIN_MENU
+            ;;
+    esac
+}
 
-    case "$CHOICE" in
-        1)
-            echo "Restoring Factory Defaults..."
-            if [ -x /usr/bin/purgedb ] ; then
-                /usr/bin/purgedb
-            fi
+success_splash()
+{
+    dialog --backtitle "$backtitle" --title "Complete" \
+        --msgbox "Settings Applied" 10 61 
+
+    state=MAIN_MENU
+}
+
+restore_menu()
+{
+    dialog --backtitle "$backtitle" --title "EdgeGuard Backup & Restore" \
+        --menu "Choose operation:" 10 61 2 \
+        "Backup / Restore" "" \
+        "Return to Factory Defaults" "" \
+        2>$tmpfile
+    retval=$?
+
+    choice=$(cat $tmpfile)
+    case $retval in
+        0) # OK
+            case $choice in
+                "Backup / Restore")
+                    if [ -x ./mvvmdb-restore ] ; then
+                        ./mvvmdb-restore
+                    fi
+                    state=MAIN_MENU
+                    ;;
+                "Return to Factory Defaults")
+                    if [ -x /usr/bin/purgedb ] ; then
+                        /usr/bin/purgedb
+                    fi
+                    state=SUCCESS_SPLASH
+                    ;;
+                *)
+                    echo "Invalid Option: $choice"
+                    cat $tmpfile
+                    exit
+            esac
             ;;
-        2)
-	    echo "Restoring previous configuration..."
-            if [ -x /usr/bin/mvvmdb-restore ] ; then
-                /usr/bin/mvvmdb-restore
-            fi
+        1) # Cancel
+            state=MAIN_MENU
             ;;
-        3)
-            echo "Attempting to Upgrade..."
-            apt-get -o DPkg::Options::=--force-confnew --yes --force-yes --fix-broken upgrade
+    esac
+}
+
+support_menu()
+{
+    dialog --backtitle "$backtitle" --title "EdgeGuard Support" \
+        --menu "Choose operation:" 10 61 2 \
+        "Enable Remote Support" "" \
+        "Disable Remote Support" "" \
+        2>$tmpfile
+    retval=$?
+
+    choice=$(cat $tmpfile)
+    case $retval in
+        0) # OK
+            case $choice in
+                "Enable Remote Support")
+                    /etc/init.d/ssh start &> /dev/null
+                    update-rc.d ssh defaults &> /dev/null
+                    state=SUCCESS_SPLASH
+                    ;;
+                "Disable Remote Support")
+                    /etc/init.d/ssh stop &> /dev/null
+                    mv /etc/init.d/ssh /etc/init.d/ssh.tmp &> /dev/null
+                    update-rc.d ssh remove &> /dev/null
+                    mv /etc/init.d/ssh.tmp /etc/init.d/ssh &> /dev/null
+                    state=SUCCESS_SPLASH
+                    ;;
+                *)
+                    echo "Invalid Option: $choice"
+                    cat $tmpfile
+                    exit
+            esac
             ;;
-        4)
-            echo "Attempting to Upgrade..."
-            dpkg --configure -a
+        1) # Cancel
+            state=MAIN_MENU
             ;;
-        6)
-            echo "Enabling remote debugging..."
-            /etc/init.d/ssh start
-            update-rc.d ssh defaults > /dev/null
+    esac
+}
+
+upgrade_menu()
+{
+    dialog --backtitle "$backtitle" --title "EdgeGuard Upgrade" \
+        --menu "Choose operation:" 10 61 3 \
+        "Upgrade EdgeGuard" "" \
+        "Resume Halted Upgrade" "" \
+        "Fix Halted Upgrade" "" \
+        2>$tmpfile
+    retval=$?
+
+    choice=$(cat $tmpfile)
+    case $retval in
+        0) # OK
+            case $choice in
+                "Upgrade EdgeGuard")
+                    apt-get upgrade $UPGD_OPTS
+                    state=SUCCESS_SPLASH
+                    ;;
+                "Resume Halted Upgrade")
+                    dpkg --configure -a
+                    state=SUCCESS_SPLASH
+                    ;;
+                "Fix Halted Upgrade")
+                    apt-get -f install $INST_OPTS
+                    state=SUCCESS_SPLASH
+                    ;;
+                *)
+                    echo "Invalid Option: $choice"
+                    cat $tmpfile
+                    exit
+            esac
             ;;
-        7)
-            echo "Disabling remote debugging..."
-            /etc/init.d/ssh stop
-            mv /etc/init.d/ssh /etc/init.d/ssh.tmp
-            update-rc.d ssh remove > /dev/null
-            mv /etc/init.d/ssh.tmp /etc/init.d/ssh
+        1) # Cancel
+            state=MAIN_MENU
             ;;
-        8)
+    esac
+}
+
+main_menu()
+{
+    dialog --backtitle "$backtitle" --title "EdgeGuard Recovery" \
+        --cancel-label "Exit" \
+        --menu "Choose operation:" 10 61 3 \
+        "Backup & Restore" "" \
+        "Upgrade EdgeGuard" "" \
+        "Remote Support" "" \
+        2>$tmpfile
+    retval=$?
+
+    choice=$(cat $tmpfile)
+    case $retval in
+        0) # OK
+            case $choice in
+                "Backup & Restore")
+                    state=RESTORE_MENU
+                    ;;
+                "Upgrade EdgeGuard")
+                    state=UPGRADE_MENU
+                    ;;
+                "Remote Support")
+                    state=SUPPORT_MENU
+                    ;;
+            esac
+            ;;
+        1) # Cancel
+            state=CONFIRM_EXIT
+            ;;
+    esac
+}
+
+state=MAIN_MENU
+
+while true; do
+    case $state in
+# Main levels
+        MAIN_MENU)
+            main_menu
+            ;;
+# Sub levels
+        RESTORE_MENU)
+            restore_menu
+            ;;
+        UPGRADE_MENU)
+            upgrade_menu
+            ;;
+        SUPPORT_MENU)
+            support_menu
+            ;;
+# Messages
+        SUCCESS_SPLASH)
+            success_splash
+            ;;
+# Exit levels
+        CONFIRM_EXIT)
+            confirm_exit
+            ;;
+        END_STATE)
             if [ $FLAG -eq 1 ] ; then
                 reboot
             else
                 quit
             fi
             ;;
-# We used to support uninstall here:
-#	999)
-#            echo "Uninstalling..."
-#            apt-get remove --purge mvvm 
+        *)
+            echo "no such state: $state"
+            exit
     esac
-
 done
 

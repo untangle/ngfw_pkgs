@@ -4,7 +4,7 @@ case "$1" in
     start)
         if [ ! -z "`cat /proc/cmdline | grep edgeguard-restore`" ] ; then
           echo "Starting Edgeguard Restore."
-          /usr/bin/edgeguard-restore
+          /usr/bin/edgeguard-restore reboot
         fi
         ;;
 
