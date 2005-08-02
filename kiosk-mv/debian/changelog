@@ -1,3 +1,9 @@
+kiosk-mv (0-21) stable; urgency=low
+
+  * auto build
+
+ -- Dirk Morris <dmorris@metavize.com>  Tue,  2 Aug 2005 12:22:25 -0700
+
 kiosk-mv (0-20) stable; urgency=low
 
   * auto build
