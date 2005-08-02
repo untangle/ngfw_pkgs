@@ -5,6 +5,7 @@ adduser --gecos "" --firstuid 10000 --disabled-password kiosk 2>/dev/null
 chown -R kiosk:kiosk /home/kiosk 
 
 cp -f /home/kiosk/.xfce4/menu.xml /etc/xdg/xfce4/desktop/menu.xml &> /dev/null
+cp -f /home/kiosk/.xfce4/menu.xml /etc/xdg/xfce4/desktop/system.menu.xml &> /dev/null
 
 exit 0
 
