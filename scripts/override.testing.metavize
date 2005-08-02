@@ -32,6 +32,7 @@ spamassassin-transform	optional	s
 clamav-mv		optional	c
 dev-mv			optional	d
 catchall-mv		optional	c
+jre-mv			optional	j
 urlblacklist.com-mv	optional	u
 fprot-mv		optional	f
 hauri-mv		optional	h
