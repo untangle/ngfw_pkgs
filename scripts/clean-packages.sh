@@ -73,7 +73,7 @@ remove_all_but_recent_n_files()
     cd $BASE_DIRECTORY/$directory
 
     file_count=0
-    total_files=`ls -lt --time-style long-iso ${filename}*deb 2> /dev/null | awk '{print $8}' | wc -l`
+    total_files=`ls -lt --time-style long-iso ${filename}_*deb 2> /dev/null | awk '{print $8}' | wc -l`
 
     if [ $total_files -lt $number_of_files ]; then
         echo "${filename} clean."
@@ -83,8 +83,8 @@ remove_all_but_recent_n_files()
         max_files=$number_of_files
     fi
 
-    file_list="$(ls -lt --time-style long-iso ${filename}*deb | awk '{print $8}' | xargs echo | awk '{i=0; while(i++<'$max_files') print $i}')"
-    total_file_list="$(ls -lt --time-style long-iso ${filename}*deb | awk '{print $8}' | xargs echo)"
+    file_list="$(ls -lt --time-style long-iso ${filename}_*deb | awk '{print $8}' | xargs echo | awk '{i=0; while(i++<'$max_files') print $i}')"
+    total_file_list="$(ls -lt --time-style long-iso ${filename}_*deb | awk '{print $8}' | xargs echo)"
 
     for f in $total_file_list; do
         is_file_in_list "$file_list" $f
