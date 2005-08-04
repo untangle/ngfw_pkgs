@@ -1,3 +1,9 @@
+pump-mv (0-10) stable; urgency=low
+
+  * auto build
+
+ -- Dirk Morris <dmorris@metavize.com>  Thu,  4 Aug 2005 10:34:07 -0700
+
 pump-mv (0-9) stable; urgency=low
 
   * auto build
