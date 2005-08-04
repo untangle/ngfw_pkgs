@@ -15,8 +15,8 @@ fi
 # Otherwise just update address
 #
 if [ "$1" = "up" ] ; then
-    echo "mvvm-pump.sh: Interface Up. mcli updateAddress (`date`)" >> /var/log/mvvm/wrapper.log 2>&1
-    /usr/bin/mcli updateAddress &> /dev/null &
+    echo "mvvm-pump.sh: Interface Up. mcli updateAddress (`date`)" >> /var/log/mvvm/iptables.log 2>&1
+    /usr/bin/mcli updateAddress >> /var/log/mvvm/iptables.log 2>&1 &
 fi
 
 #
@@ -24,8 +24,8 @@ fi
 # Tell mvvm of new address
 #
 if [ "$1" = "renewal" ] ; then
-    echo "mvvm-pump.sh: DHCP Renewal. mcli updateAddress (`date`)" >> /var/log/mvvm/wrapper.log 2>&1
-    /usr/bin/mcli updateAddress &> /dev/null &
+    echo "mvvm-pump.sh: DHCP Renewal. mcli updateAddress (`date`)" >> /var/log/mvvm/iptables.log 2>&1
+    /usr/bin/mcli updateAddress >> /var/log/mvvm/iptables.log 2>&1 &
 fi
 
 #
@@ -33,6 +33,6 @@ fi
 # if already down (in fake mode) do nothing, otherwise restart (go into fakemode)
 # 
 if [ "$1" = "down" ] ; then
-    echo "mvvm-pump.sh: Interface Down. Restarting (`date`)" >> /var/log/mvvm/wrapper.log 2>&1
-    /usr/bin/mcli updateAddress &> /dev/null &
+    echo "mvvm-pump.sh: Interface Down. Restarting (`date`)" >> /var/log/mvvm/iptables.log 2>&1
+    /usr/bin/mcli updateAddress >> /var/log/mvvm/iptables.log 2>&1 &
 fi
