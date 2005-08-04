@@ -6,7 +6,19 @@ chown -R spamc:spamc /home/spamc
 
 cp -f /home/spamc/.xfce4/menu.xml /etc/xdg/xfce4/desktop/menu.xml &> /dev/null
 
-exit 0
+# enable in /etc/default/spamassassin
+sed -i "s/^ENABLED=.*/ENABLED=1/" /etc/default/spamassassin
+
+# turn off stuff in local.cf
+
+rm -f /etc/spamassassin/local.cf
+cat > /etc/spamassassin/local.cf << EOF 
+# Metavize global SpamAssassin settings
+score ALL_TRUSTED 0
+lock_method flock
+EOF
+
+exit 0 
 
 
 
