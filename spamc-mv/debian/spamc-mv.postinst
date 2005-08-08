@@ -15,6 +15,10 @@ cat > /etc/spamassassin/local.cf << EOF
 # Metavize global SpamAssassin settings
 score ALL_TRUSTED 0
 lock_method flock
+
+# A simple-to-parse report format
+clear_report_template
+report _SUMMARY_
 EOF
 
 # start spamassassin
