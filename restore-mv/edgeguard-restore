@@ -64,7 +64,7 @@ restore_menu()
 {
     dialog --backtitle "$backtitle" --title "EdgeGuard Backup & Restore" \
         --menu "Choose operation:" 10 61 2 \
-        "Backup / Restore" "" \
+        "Backup or Restore a Configuration" "" \
         "Return to Factory Defaults" "" \
         2>$tmpfile
     retval=$?
@@ -74,8 +74,8 @@ restore_menu()
         0) # OK
             case $choice in
                 "Backup / Restore")
-                    if [ -x ./mvvmdb-restore ] ; then
-                        ./mvvmdb-restore
+                    if [ -x /usr/bin/mvvmdb-restore ] ; 
+                        /usr/bin/mvvmdb-restore
                     fi
                     state=MAIN_MENU
                     ;;
@@ -252,6 +252,7 @@ while true; do
         END_STATE)
             if [ $FLAG -eq 1 ] ; then
                 reboot
+                exit
             else
                 quit
             fi
