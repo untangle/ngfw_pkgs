@@ -22,7 +22,7 @@ report _SUMMARY_
 EOF
 
 # start spamassassin
-/etc/init.d/spamassassin start &> /dev/null &
+/etc/init.d/spamassassin restart &> /dev/null &
 
 exit 0 
 
