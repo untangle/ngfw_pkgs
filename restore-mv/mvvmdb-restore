@@ -107,6 +107,8 @@ restore()
             restore_db $dumpfile && tar zxf $tarfile -C / \
                 && restore_packages $instfile
 
+            /etc/init.d/networking restart
+
             return $?
             ;;
         1) # Cancel
@@ -251,7 +253,7 @@ while true; do
             ;;
         BACKUP_USB)
             if backup /mnt; then
-		dialog --backtitle "$backtitle" --title "Backup Successful" \
+        dialog --backtitle "$backtitle" --title "Backup Successful" \
                     --msgbox "Settings backed up successfully." 6 52
 
                 state=END_STATE
