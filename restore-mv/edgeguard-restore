@@ -73,8 +73,8 @@ restore_menu()
     case $retval in
         0) # OK
             case $choice in
-                "Backup / Restore")
-                    if [ -x /usr/bin/mvvmdb-restore ] ; 
+                "Backup or Restore a Configuration")
+                    if [ -x /usr/bin/mvvmdb-restore ] ; then
                         /usr/bin/mvvmdb-restore
                     fi
                     state=MAIN_MENU
