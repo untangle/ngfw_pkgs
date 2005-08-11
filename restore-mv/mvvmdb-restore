@@ -76,7 +76,7 @@ restore_packages()
 
     cat $instfile | cut -d' ' -f1 | grep -- '-transform$' \
         | xargs apt-get install $INST_OPTS
-    apt-get upgrade $UPGD_OPTS
+    apt-get dist-upgrade $UPGD_OPTS
     /etc/init.d/mvvm stop
 }
 

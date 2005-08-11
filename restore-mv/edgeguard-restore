@@ -149,7 +149,7 @@ upgrade_menu()
         0) # OK
             case $choice in
                 "Upgrade EdgeGuard")
-                    apt-get upgrade $UPGD_OPTS
+                    apt-get dist-upgrade $UPGD_OPTS
                     /etc/init.d/mvvm stop
                     state=SUCCESS_SPLASH
                     ;;
