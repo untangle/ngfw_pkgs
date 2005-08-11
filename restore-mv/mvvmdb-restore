@@ -1,6 +1,7 @@
 #!/bin/sh
 
 INST_OPTS=" -o DPkg::Options::=--force-confnew --yes --force-yes --fix-broken "
+UPGD_OPTS=" -o DPkg::Options::=--force-confnew --yes --force-yes --fix-broken "
 LOCAL_DUMP=/usr/share/metavize/dump
 
 mkdir -p $LOCAL_DUMP
@@ -75,6 +76,8 @@ restore_packages()
 
     cat $instfile | cut -d' ' -f1 | grep -- '-transform$' \
         | xargs apt-get install $INST_OPTS
+    apt-get upgrade $UPGD_OPTS
+    /etc/init.d/mvvm stop
 }
 
 restore()

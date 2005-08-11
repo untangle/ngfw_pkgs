@@ -3,7 +3,7 @@
 if [ $# -gt 0 ] ; then
     # this is for started from init.d
     FLAG=1 # reboot after quit
-else 
+else
     # this is for started from X
     FLAG=0 # start mvvm after quit
 fi
@@ -55,7 +55,7 @@ confirm_exit()
 success_splash()
 {
     dialog --backtitle "$backtitle" --title "Complete" \
-        --msgbox "Settings Applied" 10 61 
+        --msgbox "Settings Applied" 10 61
 
     state=MAIN_MENU
 }
@@ -150,6 +150,7 @@ upgrade_menu()
             case $choice in
                 "Upgrade EdgeGuard")
                     apt-get upgrade $UPGD_OPTS
+                    /etc/init.d/mvvm stop
                     state=SUCCESS_SPLASH
                     ;;
                 "Resume Halted Upgrade")
