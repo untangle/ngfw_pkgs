@@ -29,7 +29,7 @@ ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/s
 ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/v/virus-transform*"
 ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/k/kernel-dev*"
 ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/d/dev-mv*"
-ssh release.metavize.com -lroot "sh ~/clean-packages.sh /var/www.release/metavize/pool/metavize 3 move"
+#ssh release.metavize.com -lroot "sh ~/clean-packages.sh /var/www.release/metavize/pool/metavize 3 move"
 
 echo -e "\n\nBuilding Package List...\n\n"
 

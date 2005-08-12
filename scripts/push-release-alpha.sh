@@ -29,7 +29,7 @@ ssh release-alpha.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/poo
 ssh release-alpha.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/pool/metavize/v/virus-transform*"
 ssh release-alpha.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/pool/metavize/k/kernel-dev*"
 ssh release-alpha.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/pool/metavize/d/dev-mv*"
-ssh release-alpha.metavize.com -lroot "sh ~/clean-packages.sh /var/www.release-alpha/metavize/pool/metavize 3 delete"
+#ssh release-alpha.metavize.com -lroot "sh ~/clean-packages.sh /var/www.release-alpha/metavize/pool/metavize 3 delete"
 
 echo -e "\n\nBuilding Package List...\n\n"
 
