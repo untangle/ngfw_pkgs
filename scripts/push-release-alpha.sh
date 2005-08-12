@@ -3,6 +3,8 @@
 echo -e "\n\nSyncing...\n\n"
 
 sudo rsync -rlpvz -e ssh /var/www/metavize \
+    --exclude 'echospam*' \
+    --exclude 'echod*' \
     --exclude 'test-*' \
     --exclude 'fprot-*' \
     --exclude 'sophos-*' \
@@ -19,6 +21,8 @@ scp \
 
 echo -e "\n\nCleaning...\n\n"
 
+ssh release-alpha.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/pool/metavize/e/echod*"
+ssh release-alpha.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/pool/metavize/e/echospam*"
 ssh release-alpha.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/pool/metavize/t/test-*"
 ssh release-alpha.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/pool/metavize/f/fprot-*"
 ssh release-alpha.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/pool/metavize/s/sophos-*"
