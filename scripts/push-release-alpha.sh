@@ -3,12 +3,10 @@
 echo -e "\n\nSyncing...\n\n"
 
 sudo rsync -rlpvz -e ssh /var/www/metavize \
-    --exclude 'spam-*' \
     --exclude 'test-*' \
     --exclude 'fprot-*' \
     --exclude 'sophos-*' \
     --exclude 'virus-transform*' \
-    --exclude 'spam-*' \
     --exclude 'kernel-dev*' \
     --exclude 'dev-mv*' \
     root@release-alpha.metavize.com:/var/www.release-alpha/
@@ -21,7 +19,6 @@ scp \
 
 echo -e "\n\nCleaning...\n\n"
 
-ssh release-alpha.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/pool/metavize/s/spam-*"
 ssh release-alpha.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/pool/metavize/t/test-*"
 ssh release-alpha.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/pool/metavize/f/fprot-*"
 ssh release-alpha.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/pool/metavize/s/sophos-*"
