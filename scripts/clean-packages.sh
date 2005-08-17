@@ -2,13 +2,14 @@
 
 if [ $# -lt 3 ]; then
     echo "usage) $0 <basedir> <versioncount> <method>"
-    echo "basedir        Base Directory (ie /var/www/metavize/pool/metavize/)"
+    echo "basedir        Base Directory (ie /var/www/metavize/)"
     echo "versioncount   Number of version to keep (ie 3)"
     echo "method         {move|delete|nothing}"
     exit 1
 fi
 
-BASE_DIRECTORY=$1
+BASE_DIRECTORY=$1/pool/metavize/
+echo $BASE_DIRECTORY
 shift
 KEEPCOUNT=$1
 shift
