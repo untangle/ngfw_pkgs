@@ -25,6 +25,8 @@ protofilter-transform	optional	p
 spyware-transform	optional	s
 reporting-transform	optional	r
 spamassassin-transform	optional	s
+ids-transform		optional	i
+clamphish-transform	optional	c
 
 #
 # Metavize util packages
