@@ -1,16 +1,26 @@
 #!/bin/sh
 
+PG_ETC=/etc/postgresql
 PG_HOME=/usr/lib/postgresql
 PG_INIT=/etc/init.d/postgresql
 DB_DIR=/var/lib/postgres/data
 MVVM_INIT=/etc/init.d/mvvm
 
 # Allow all local access
-sed -e "s/\#\(local.*all.*all.*trust\)/\1/" -i /etc/postgresql/pg_hba.conf
-sed -e "s/\#\(host.*all.*all.*127.0.0.1.*255.255.255.255.*trust\)/\1/" -i /etc/postgresql/pg_hba.conf
-sed -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" -i /etc/postgresql/postmaster.conf
-sed -e "s/.*virtual_host.*=.*/virtual_host='127.0.0.1'/" -i /etc/postgresql/postgresql.conf
-sed -e "s/.*search_path.*=.*/search_path = 'public,settings,events'/" -i /etc/postgresql/postgresql.conf
+sed -e "s/\#\(local.*all.*all.*trust\)/\1/" -i $PG_ETC/pg_hba.conf
+sed -e "s/\#\(host.*all.*all.*127.0.0.1.*255.255.255.255.*trust\)/\1/" -i $PG_ETC/pg_hba.conf
+sed -e "s/.*virtual_host.*=.*/virtual_host='127.0.0.1'/" -i $PG_ETC/postgresql.conf
+
+# Tune memory usage & query optimizer
+sed -e "s/.*shared_buffers.*=.*/shared_buffers=3000/" -i $PG_ETC/postgresql.conf
+sed -e "s/.*sort_mem.*=.*/sort_mem=8192/" -i $PG_ETC/postgresql.conf
+sed -e "s/.*effective_cache_size.*=.*/effective_cache_size=20000/" -i $PG_ETC/postgresql.conf
+
+# Turn off automatic vacuuming (now done nightly just after rollup, before reporting)
+sed -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" -i $PG_ETC/postmaster.conf
+
+# Search both settings and events schemas by default
+sed -e "s/.*search_path.*=.*/search_path = 'public,settings,events'/" -i $PG_ETC/postgresql.conf
 
 su postgres -c "createuser --createdb --no-adduser metavize" &> /dev/null || true 
 
@@ -41,15 +51,15 @@ else
     for f in pg_hba.conf pg_ident.conf postgresql.conf; do
         if [ ! -L $DB_DIR/$f ]; then
             rm -f $DB_DIR/$f
-            ln -s /etc/postgresql/$f $DB_DIR/$f
+            ln -s $PG_ETC/$f $DB_DIR/$f
         fi
     done
 
     # set configuration file permissions
-    chown root.postgres /etc/postgresql/pg_hba.conf
-    chown root.postgres /etc/postgresql/pg_ident.conf
-    chmod 640 /etc/postgresql/pg_hba.conf
-    chmod 640 /etc/postgresql/pg_ident.conf
+    chown root.postgres $PG_ETC/pg_hba.conf
+    chown root.postgres $PG_ETC/pg_ident.conf
+    chmod 640 $PG_ETC/pg_hba.conf
+    chmod 640 $PG_ETC/pg_ident.conf
 
     $PG_INIT start
 
