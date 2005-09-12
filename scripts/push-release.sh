@@ -8,6 +8,7 @@ sudo rsync -rlpvz -e ssh /var/www/metavize \
     --exclude 'test-*' \
     --exclude 'fprot-*' \
     --exclude 'sophos-*' \
+    --exclude 'clamphish-*' \
     --exclude 'virus-transform*' \
     --exclude 'kernel-dev*' \
     --exclude 'dev-mv*' \
@@ -26,6 +27,7 @@ ssh release.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/pool/meta
 ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/t/test-*"
 ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/f/fprot-*"
 ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/s/sophos-*"
+ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/v/clamphish*"
 ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/v/virus-transform*"
 ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/k/kernel-dev*"
 ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/d/dev-mv*"
