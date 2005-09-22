@@ -21,6 +21,7 @@ airgap-transform	optional	a
 sophos-transform	optional	s
 fprot-transform		optional	f
 hauri-transform		optional	h
+kav-transform		optional	k
 clam-transform		optional	c
 email-transform		optional	e
 protofilter-transform	optional	p
