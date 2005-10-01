@@ -7,6 +7,6 @@ Standards-Version: 3.5.2
 
 Package: postgresql-mv
 Architecture: any
-Depends: postgresql
+Depends: postgresql-8.0, postgresql-client-8.0
 Description: Metavize Postgres wrapper package
  The Metavize Postgres config

@@ -26,46 +26,48 @@ su postgres -c "createuser --createdb --no-adduser metavize" &> /dev/null || tru
 
 $PG_INIT restart || true
 
-ILOC=$($PG_HOME/bin/pg_controldata $DB_DIR | awk '/LC_COLLATE/ {print $2}')
+# This no longer needed as everyone is already using the C locale.
+#
+# ILOC=$($PG_HOME/bin/pg_controldata $DB_DIR | awk '/LC_COLLATE/ {print $2}')
 
-if [ "xC" = "x$ILOC" ]; then
-    echo "database cluster already uses C locale"
-    exit
-else
-    echo "converting database cluster from $ILOC to C locale"
+# if [ "xC" = "x$ILOC" ]; then
+#     echo "database cluster already uses C locale"
+#     exit
+# else
+#     echo "converting database cluster from $ILOC to C locale"
 
-    if [ -x $MVVM_INIT ]; then $MVVM_INIT stop; fi
+#     if [ -x $MVVM_INIT ]; then $MVVM_INIT stop; fi
 
-    $PG_INIT start
+#     $PG_INIT start
 
-    dump=$(mktemp)
-    chown postgres $dump
-    su -c "pg_dumpall > $dump" postgres
+#     dump=$(mktemp)
+#     chown postgres $dump
+#     su -c "pg_dumpall > $dump" postgres
 
-    $PG_INIT stop
+#     $PG_INIT stop
 
-    rm -rf $DB_DIR
+#     rm -rf $DB_DIR
 
-    # Debian thinks the conf files should live elsewhere.
-    su -c "$PG_HOME/bin/initdb --locale=C -D $DB_DIR" postgres
-    for f in pg_hba.conf pg_ident.conf postgresql.conf; do
-        if [ ! -L $DB_DIR/$f ]; then
-            rm -f $DB_DIR/$f
-            ln -s $PG_ETC/$f $DB_DIR/$f
-        fi
-    done
+#     # Debian thinks the conf files should live elsewhere.
+#     su -c "$PG_HOME/bin/initdb --locale=C -D $DB_DIR" postgres
+#     for f in pg_hba.conf pg_ident.conf postgresql.conf; do
+#         if [ ! -L $DB_DIR/$f ]; then
+#             rm -f $DB_DIR/$f
+#             ln -s $PG_ETC/$f $DB_DIR/$f
+#         fi
+#     done
 
-    # set configuration file permissions
-    chown root.postgres $PG_ETC/pg_hba.conf
-    chown root.postgres $PG_ETC/pg_ident.conf
-    chmod 640 $PG_ETC/pg_hba.conf
-    chmod 640 $PG_ETC/pg_ident.conf
+#     # set configuration file permissions
+#     chown root.postgres $PG_ETC/pg_hba.conf
+#     chown root.postgres $PG_ETC/pg_ident.conf
+#     chmod 640 $PG_ETC/pg_hba.conf
+#     chmod 640 $PG_ETC/pg_ident.conf
 
-    $PG_INIT start
+#     $PG_INIT start
 
-    su -c "psql -f $dump template1; vacuumdb -a -z" postgres
+#     su -c "psql -f $dump template1; vacuumdb -a -z" postgres
 
-    rm $dump
+#     rm $dump
 
-    if [ -x $MVVM_INIT ]; then $MVVM_INIT start; fi
-fi
+#     if [ -x $MVVM_INIT ]; then $MVVM_INIT start; fi
+# fi
