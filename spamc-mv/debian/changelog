@@ -1,3 +1,9 @@
+spamc-mv (0-9) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@metavize.com>  Tue,  4 Oct 2005 14:42:35 -0700
+
 spamc-mv (0-8) stable; urgency=low
 
   * auto build
