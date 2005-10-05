@@ -1,5 +1,6 @@
 mvvm			optional	m
 metavize-client		optional	m
+libmvvm-thirdparty      optional        libm
 
 #
 # Metavize Casings
@@ -76,3 +77,20 @@ clamav-freshclam	optional	c
 spamassassin		optional	s
 spamc			optional	s
 libc6			optional	libc
+arj                     optional        a
+dcc-client              optional        d
+dcc-common              optional        d
+lha                     optional        l
+libcompress-zlib-perl   optional        libc
+libmail-spf-query-perl  optional        libm
+libmailtools-perl       optional        libm
+libnet-cidr-lite-perl   optional        libn
+libnet-daemon-perl      optional        libn
+libplrpc-perl           optional        libp
+libtimedate-perl        optional        libt
+python-gdbm             optional        p
+python2.3               optional        p
+python2.3-gdbm          optional        p
+pyzor                   optional        p
+unrar                   optional        u
+unzoo                   optional        u

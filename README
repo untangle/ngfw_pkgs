@@ -18,7 +18,7 @@ deb http://bebe/metavize     testing metavize
 Tools:
 push.sh   
 	sync to local repositories  
-	./push.sh /var/www/dmorris /var/www/metavize
+	./push.sh /var/www/dmorris/ /var/www/metavize/
 
 push-release.sh
 	pushes /var/www/metavize to release.metavize.com
