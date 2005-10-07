@@ -169,7 +169,7 @@ main_menu()
                         && [ -x /usr/bin/purgedb ]; then
                         /usr/bin/purgedb
                     fi
-                    state=MAIN_MENU
+                    state=SUCCESS_SPLASH
                     ;;
                 "Upgrade EdgeGuard")
                     state=UPGRADE_MENU
