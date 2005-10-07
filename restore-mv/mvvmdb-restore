@@ -26,6 +26,12 @@ confirm_exit()
     esac
 }
 
+confirm()
+{
+    dialog --backtitle "$backtitle" --title "Confirm" \
+        --yesno "$1" 6 52
+}
+
 # helper
 
 usb_mount()
@@ -63,10 +69,8 @@ restore_db()
     dropdb -U postgres mvvm >/dev/null 2>&1
     createdb -U metavize mvvm >/dev/null 2>&1
 
-    if zcat $infile | psql -U postgres mvvm >/dev/null 2>&1; then
-        return 0
-    else
-        return -1
+    if confirm "Restore settings?"; then
+        zcat $infile | psql -U postgres mvvm >/dev/null 2>&1
     fi
 }
 

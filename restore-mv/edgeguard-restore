@@ -52,49 +52,18 @@ confirm_exit()
     esac
 }
 
+confirm()
+{
+    dialog --backtitle "$backtitle" --title "Confirm" \
+        --yesno "$1" 6 52
+}
+
 success_splash()
 {
     dialog --backtitle "$backtitle" --title "Complete" \
         --msgbox "Settings Applied" 10 61
 
     state=MAIN_MENU
-}
-
-restore_menu()
-{
-    dialog --backtitle "$backtitle" --title "EdgeGuard Backup & Restore" \
-        --menu "Choose operation:" 10 61 2 \
-        "Backup or Restore a Configuration" "" \
-        "Return to Factory Defaults" "" \
-        2>$tmpfile
-    retval=$?
-
-    choice=$(cat $tmpfile)
-    case $retval in
-        0) # OK
-            case $choice in
-                "Backup or Restore a Configuration")
-                    if [ -x /usr/bin/mvvmdb-restore ] ; then
-                        /usr/bin/mvvmdb-restore
-                    fi
-                    state=MAIN_MENU
-                    ;;
-                "Return to Factory Defaults")
-                    if [ -x /usr/bin/purgedb ] ; then
-                        /usr/bin/purgedb
-                    fi
-                    state=SUCCESS_SPLASH
-                    ;;
-                *)
-                    echo "Invalid Option: $choice"
-                    cat $tmpfile
-                    exit
-            esac
-            ;;
-        1) # Cancel
-            state=MAIN_MENU
-            ;;
-    esac
 }
 
 support_menu()
@@ -179,6 +148,7 @@ main_menu()
         --cancel-label "Exit" \
         --menu "Choose operation:" 10 61 3 \
         "Backup & Restore" "" \
+        "Return to Factory Defaults" "" \
         "Upgrade EdgeGuard" "" \
         "Remote Support" "" \
         2>$tmpfile
@@ -189,7 +159,17 @@ main_menu()
         0) # OK
             case $choice in
                 "Backup & Restore")
-                    state=RESTORE_MENU
+                    if [ -x /usr/bin/mvvmdb-restore ] ; then
+                        /usr/bin/mvvmdb-restore
+                    fi
+                    state=MAIN_MENU
+                    ;;
+                "Return to Factory Defaults")
+                    if confirm "Return to factory defaults?" \
+                        && [ -x /usr/bin/purgedb ]; then
+                        /usr/bin/purgedb
+                    fi
+                    state=MAIN_MENU
                     ;;
                 "Upgrade EdgeGuard")
                     state=UPGRADE_MENU
@@ -205,21 +185,6 @@ main_menu()
     esac
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Stop the mvvm
 if [ -x /etc/init.d/mvvm ] ; then
     /etc/init.d/mvvm stop
@@ -233,9 +198,6 @@ while true; do
             main_menu
             ;;
 # Sub levels
-        RESTORE_MENU)
-            restore_menu
-            ;;
         UPGRADE_MENU)
             upgrade_menu
             ;;
