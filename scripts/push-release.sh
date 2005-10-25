@@ -22,12 +22,11 @@ scp \
 
 echo -e "\n\nCleaning...\n\n"
 
-ssh release.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/pool/metavize/e/echod*"
-ssh release.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/pool/metavize/e/echospam*"
+ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/e/echod*"
+ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/e/echospam*"
 ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/t/test-*"
 ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/f/fprot-*"
 ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/s/sophos-*"
-ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/v/clamphish-*"
 ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/v/virus-transform*"
 ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/k/kernel-dev*"
 ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/d/dev-mv*"
