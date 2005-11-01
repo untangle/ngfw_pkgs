@@ -2,16 +2,17 @@
 
 echo -e "\n\nSyncing...\n\n"
 
-sudo rsync -rlpvz -e ssh /var/www/metavize \
+sudo rsync -rlpvz -e ssh /var/www/dogfood \
     --exclude 'echospam*' \
     --exclude 'echod*' \
     --exclude 'test-*' \
     --exclude 'fprot-*' \
     --exclude 'sophos-*' \
-    --exclude 'clamphish-*' \
     --exclude 'virus-transform*' \
     --exclude 'kernel-dev*' \
     --exclude 'dev-mv*' \
+    --exclude 'ids-*' \
+    --exclude 'kav-*' \
     root@release.metavize.com:/var/www.release/
 
 scp \
@@ -30,7 +31,9 @@ ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/s
 ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/v/virus-transform*"
 ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/k/kernel-dev*"
 ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/d/dev-mv*"
-#ssh release.metavize.com -lroot "sh ~/clean-packages.sh /var/www.release/metavize/pool/metavize 3 move"
+ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/i/ids-*"
+ssh release.metavize.com -lroot "rm -f /var/www.release/metavize/pool/metavize/k/kav-*"
+#ssh release.metavize.com -lroot "sh ~/clean-packages.sh /var/www.release/metavize 3 move"
 
 echo -e "\n\nBuilding Package List...\n\n"
 
