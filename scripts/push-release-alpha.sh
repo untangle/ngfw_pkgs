@@ -2,7 +2,7 @@
 
 echo -e "\n\nSyncing...\n\n"
 
-sudo rsync -rlpvz -e ssh /var/www/metavize \
+sudo rsync -rlpvz -e ssh /var/www/dogfood \
     --exclude 'echospam*' \
     --exclude 'echod*' \
     --exclude 'test-*' \
@@ -11,6 +11,8 @@ sudo rsync -rlpvz -e ssh /var/www/metavize \
     --exclude 'virus-transform*' \
     --exclude 'kernel-dev*' \
     --exclude 'dev-mv*' \
+    --exclude 'ids-*' \
+    --exclude 'kav-*' \
     root@release-alpha.metavize.com:/var/www.release-alpha/
 
 scp \
@@ -29,7 +31,9 @@ ssh release-alpha.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/poo
 ssh release-alpha.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/pool/metavize/v/virus-transform*"
 ssh release-alpha.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/pool/metavize/k/kernel-dev*"
 ssh release-alpha.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/pool/metavize/d/dev-mv*"
-#ssh release-alpha.metavize.com -lroot "sh ~/clean-packages.sh /var/www.release-alpha/metavize/pool/metavize 3 delete"
+ssh release-alpha.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/pool/metavize/i/ids-*"
+ssh release-alpha.metavize.com -lroot "rm -f /var/www.release-alpha/metavize/pool/metavize/d/kav-*"
+#ssh release-alpha.metavize.com -lroot "sh ~/clean-packages.sh /var/www.release-alpha/metavize 3 delete"
 
 echo -e "\n\nBuilding Package List...\n\n"
 
