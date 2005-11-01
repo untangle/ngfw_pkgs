@@ -49,6 +49,7 @@ kiosk-mv		optional	k
 kernel-prod-mv		optional	k
 kernel-dev-mv		optional	k
 kernel-fake-mv		optional	k
+kav-mv			optional	k
 pump-mv			optional	p
 spamc-mv		optional	s
 iptables-mv		optional	i
