@@ -1,0 +1,11 @@
+Source: nsis-mv
+Section: admin
+Priority: optional
+Maintainer: Dirk Morris <dmorris@metavize.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.5.2
+
+Package: nsis-mv
+Architecture: any
+Depends: nsis
+Description: Packages to complete the NSIS installation generator utility.
