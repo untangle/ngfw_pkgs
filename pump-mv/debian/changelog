@@ -1,3 +1,9 @@
+pump-mv (0-12) stable; urgency=low
+
+  * auto build
+
+ -- M. Srikant <srikant@metavize.com>  Wed, 23 Nov 2005 14:06:19 -0800
+
 pump-mv (0-11) stable; urgency=low
 
   * auto build
