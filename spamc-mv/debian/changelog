@@ -1,3 +1,9 @@
+spamc-mv (0-10) stable; urgency=low
+
+  * auto build
+
+ -- M. Srikant <srikant@metavize.com>  Wed, 23 Nov 2005 14:08:11 -0800
+
 spamc-mv (0-9) stable; urgency=low
 
   * auto build
