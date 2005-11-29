@@ -4,7 +4,6 @@ PG_ETC=/etc/postgresql
 PG_HOME=/usr/lib/postgresql
 PG_INIT=/etc/init.d/postgresql
 DB_DIR=/var/lib/postgres/data
-MVVM_INIT=/etc/init.d/mvvm
 
 # Allow all local access
 sed -e "s/\#\(local.*all.*all.*trust\)/\1/" -i $PG_ETC/pg_hba.conf
@@ -22,52 +21,6 @@ sed -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" -i $PG_ETC/postmaster.conf
 # Search both settings and events schemas by default
 sed -e "s/.*search_path.*=.*/search_path = 'public,settings,events'/" -i $PG_ETC/postgresql.conf
 
-su postgres -c "createuser --createdb --no-adduser metavize" &> /dev/null || true 
+su postgres -c "createuser --createdb --no-adduser metavize" &> /dev/null || true
 
 $PG_INIT restart || true
-
-# This no longer needed as everyone is already using the C locale.
-#
-# ILOC=$($PG_HOME/bin/pg_controldata $DB_DIR | awk '/LC_COLLATE/ {print $2}')
-
-# if [ "xC" = "x$ILOC" ]; then
-#     echo "database cluster already uses C locale"
-#     exit
-# else
-#     echo "converting database cluster from $ILOC to C locale"
-
-#     if [ -x $MVVM_INIT ]; then $MVVM_INIT stop; fi
-
-#     $PG_INIT start
-
-#     dump=$(mktemp)
-#     chown postgres $dump
-#     su -c "pg_dumpall > $dump" postgres
-
-#     $PG_INIT stop
-
-#     rm -rf $DB_DIR
-
-#     # Debian thinks the conf files should live elsewhere.
-#     su -c "$PG_HOME/bin/initdb --locale=C -D $DB_DIR" postgres
-#     for f in pg_hba.conf pg_ident.conf postgresql.conf; do
-#         if [ ! -L $DB_DIR/$f ]; then
-#             rm -f $DB_DIR/$f
-#             ln -s $PG_ETC/$f $DB_DIR/$f
-#         fi
-#     done
-
-#     # set configuration file permissions
-#     chown root.postgres $PG_ETC/pg_hba.conf
-#     chown root.postgres $PG_ETC/pg_ident.conf
-#     chmod 640 $PG_ETC/pg_hba.conf
-#     chmod 640 $PG_ETC/pg_ident.conf
-
-#     $PG_INIT start
-
-#     su -c "psql -f $dump template1; vacuumdb -a -z" postgres
-
-#     rm $dump
-
-#     if [ -x $MVVM_INIT ]; then $MVVM_INIT start; fi
-# fi
