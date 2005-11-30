@@ -1,3 +1,9 @@
+dev-mv (0-16) stable; urgency=low
+
+  * auto build
+
+ -- M. Srikant <srikant@metavize.com>  Tue, 29 Nov 2005 18:53:25 -0800
+
 dev-mv (0-15) stable; urgency=low
 
   * auto build
