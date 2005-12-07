@@ -1,3 +1,5 @@
+RELEASE ?= `whoami`
+
 clean:
 	fakeroot debian/rules clean
 
@@ -9,7 +11,7 @@ version:
 
 release: version pkg
 	@if [ "`hostname`" = "bebe" ] ; then \
-		( cd ../ ; sudo ./scripts/deb-add.sh /var/www/`whoami`/ ./${PACKAGENAME}*deb &> /dev/null ; sudo ./scripts/deb-scan.sh /var/www/`whoami`/ &> /dev/null ) ; \
+		( cd ../ ; sudo ./scripts/deb-add.sh /var/www/${RELEASE}/ ./${PACKAGENAME}*deb &> /dev/null ; sudo ./scripts/deb-scan.sh /var/www/${RELEASE}/ &> /dev/null ) ; \
 	else echo "Must be run on bebe"; \
 	fi
 	svn commit -m"released" debian/changelog
