@@ -1,3 +1,21 @@
+restore-mv (0-33) stable; urgency=low
+
+  * auto build
+
+ -- Dirk Morris <dmorris@metavize.com>  Tue,  6 Dec 2005 18:44:19 -0800
+
+restore-mv (0-32) stable; urgency=low
+
+  * auto build
+
+ -- Dirk Morris <dmorris@metavize.com>  Tue,  6 Dec 2005 18:44:15 -0800
+
+restore-mv (0-31) stable; urgency=low
+
+  * auto build
+
+ -- Dirk Morris <dmorris@butters>  Tue,  6 Dec 2005 18:44:46 -0800
+
 restore-mv (0-30) stable; urgency=low
 
   * auto build
