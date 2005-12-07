@@ -90,18 +90,28 @@ restore()
 
     toggle=on
     filelist=""
-    for f in $(ls $indir/mvvmdb-*.gz | sort -r); do
+    for f in $(ls $indir/mvvmdb-*.gz | sort -r 2> /dev/null); do
         d=$(echo $f | sed 's|^.*/mvvmdb-\([0-9]\+\)\.gz$|\1|')
-        filelist="$filelist $d $(ls -hl $f | cut -d' ' -f6) $toggle"
+        filelist="$filelist $d $(ls -hl $f | cut -d' ' -f6 2>/dev/null) $toggle"
         toggle=off
     done
 
-    if [ toggle = "on" ]; then
-        return
+    if [ $toggle = "on" ]; then
+        dialog --backtitle "$backtitle" \
+            --title "Error" \
+            --msgbox "No backup images found" 6 52
+        return 100
+    fi
+
+    if [ -z $filelist ]; then
+        dialog --backtitle "$backtitle" \
+            --title "Error" \
+            --msgbox "No backup images found" 6 52
+        return 100
     fi
 
     dialog --backtitle "$backtitle" --title "Restore Settings" \
-        --radiolist "Select settings" 10 61 5 $filelist 2>$tmpfile
+        --menu "Select settings" 10 61 5 $filelist 2>$tmpfile
     retval=$?
 
     choice=$(cat $tmpfile)
@@ -127,20 +137,21 @@ restore()
 restore_menu()
 {
     dialog --backtitle "$backtitle" --title "Restore Method" \
-        --radiolist "restore method" 10 61 2 \
-        local "Local Hard Drive" on \
-        usb "USB Key" off 2>$tmpfile
+        --menu "restore method" 10 61 2 \
+        "Local Hard Drive" "" \
+        "USB Key" "" \
+        2>$tmpfile
     retval=$?
 
     choice=$(cat $tmpfile)
     case $retval in
         0) # OK
             case $choice in
-                usb)
-                    state=RESTORE_USB_MOUNT
-                    ;;
-                local)
+                "Local Hard Drive")
                     state=RESTORE_LOCAL
+                    ;;
+                "USB Key")
+                    state=RESTORE_USB_MOUNT
                     ;;
             esac
             ;;
@@ -192,19 +203,20 @@ backup()
 backup_menu()
 {
     dialog --backtitle "$backtitle" --title "Backup Method" \
-        --radiolist "backup method" 10 61 2 \
-        local "Local Hard Drive" on \
-        usb "USB Key" off 2>$tmpfile
+        --menu "backup method" 10 61 2 \
+        "Local Hard Drive" "" \
+        "USB Key" "" \
+        2>$tmpfile
     retval=$?
 
     choice=$(cat $tmpfile)
     case $retval in
         0) # OK
             case $choice in
-                usb)
+                "USB Key")
                     state=BACKUP_USB_MOUNT
                     ;;
-                local)
+                "Local Hard Drive")
                     state=BACKUP_LOCAL
                     ;;
             esac
@@ -218,20 +230,22 @@ backup_menu()
 main_menu()
 {
     dialog --backtitle "$backtitle" --title "Backup and Restore" \
-        --radiolist "Choose operation:" 10 61 2 \
-        restore "Restore settings" on \
-        backup "Backup settings" off 2>$tmpfile
+        --cancel-label "Exit" \
+        --menu "Choose operation:" 10 61 2 \
+        "Restore Settings" "" \
+        "Backup Settings" "" \
+        2>$tmpfile
     retval=$?
 
     choice=$(cat $tmpfile)
     case $retval in
         0) # OK
             case $choice in
-                backup)
-                    state=BACKUP_MENU
-                    ;;
-                restore)
+                "Restore Settings" )
                     state=RESTORE_MENU
+                    ;;
+                "Backup Settings")
+                    state=BACKUP_MENU
                     ;;
             esac
             ;;
@@ -300,11 +314,20 @@ while true; do
             esac
             ;;
         RESTORE_USB)
-            if restore /mnt; then
+            restore /mnt
+            RET=$?
+            
+            echo "---" $RET
+
+            if [ $RET -eq 0 ]; then
                 dialog --backtitle "$backtitle" --title "Restore Successful" \
                     --msgbox "Settings restored successfully." 6 52
 
                 state=END_STATE
+            fi
+            if [ $RET -eq 100 ] ; then
+                 # ignore
+                state=RESTORE_MENU
             else
                 dialog --backtitle "$backtitle" --title "Restore Unsuccessful" \
                     --msgbox "Error restoring settings." 6 52
@@ -314,11 +337,18 @@ while true; do
             umount /mnt
             ;;
         RESTORE_LOCAL)
-            if restore $LOCAL_DUMP; then
+            restore $LOCAL_DUMP
+            RET=$?
+
+            if [ $RET -eq 0 ]; then
                 dialog --backtitle "$backtitle" --title "Restore Successful" \
                     --msgbox "Settings restored successfully." 6 52
 
                 state=END_STATE
+            fi
+            if [ $RET -eq 100 ]; then
+                # ignore
+                state=RESTORE_MENU
             else
                 dialog --backtitle "$backtitle" --title "Restore Unsuccessful" \
                     --msgbox "Error restoring up settings." 6 52
