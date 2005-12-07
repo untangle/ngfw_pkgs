@@ -88,20 +88,12 @@ restore()
 {
     indir=$1
 
-    toggle=on
     filelist=""
     for f in $(ls $indir/mvvmdb-*.gz | sort -r 2> /dev/null); do
         d=$(echo $f | sed 's|^.*/mvvmdb-\([0-9]\+\)\.gz$|\1|')
-        filelist="$filelist $d $(ls -hl $f | cut -d' ' -f6 2>/dev/null) $toggle"
+        filelist="$filelist $d $(ls -hl $f | cut -d' ' -f6 2>/dev/null) "
         toggle=off
     done
-
-    if [ $toggle = "on" ]; then
-        dialog --backtitle "$backtitle" \
-            --title "Error" \
-            --msgbox "No backup images found" 6 52
-        return 100
-    fi
 
     if [ -z $filelist ]; then
         dialog --backtitle "$backtitle" \
@@ -289,12 +281,12 @@ while true; do
         BACKUP_LOCAL)
             if backup $LOCAL_DUMP; then
                 dialog --backtitle "$backtitle" --title "Backup Successful" \
-                    --msgbox "Settings backed upsuccessfully." 6 52
+                    --msgbox "Settings backed up successfully." 6 52
 
                 state=END_STATE
             else
                 dialog --backtitle "$backtitle" --title "Backup Unsuccessful" \
-                    --msgbox "Error backing upsettings." 6 52
+                    --msgbox "Error backing up settings." 6 52
 
                 state=BACKUP_MENU
             fi
@@ -324,14 +316,12 @@ while true; do
                     --msgbox "Settings restored successfully." 6 52
 
                 state=END_STATE
-            fi
-            if [ $RET -eq 100 ] ; then
-                 # ignore
-                state=RESTORE_MENU
             else
-                dialog --backtitle "$backtitle" --title "Restore Unsuccessful" \
-                    --msgbox "Error restoring settings." 6 52
-
+                # 100 means ignore error
+                if [ ! $RET -eq 100 ] ; then
+                    dialog --backtitle "$backtitle" --title "Restore Unsuccessful" \
+                        --msgbox "Error restoring settings." 6 52
+                fi
                 state=RESTORE_MENU
             fi
             umount /mnt
@@ -345,14 +335,12 @@ while true; do
                     --msgbox "Settings restored successfully." 6 52
 
                 state=END_STATE
-            fi
-            if [ $RET -eq 100 ]; then
-                # ignore
-                state=RESTORE_MENU
             else
-                dialog --backtitle "$backtitle" --title "Restore Unsuccessful" \
-                    --msgbox "Error restoring up settings." 6 52
-
+                # 100 means ignore error
+                if [ ! $RET -eq 100 ] ; then
+                    dialog --backtitle "$backtitle" --title "Restore Unsuccessful" \
+                        --msgbox "Error restoring settings." 6 52
+                fi
                 state=RESTORE_MENU
             fi
             ;;
