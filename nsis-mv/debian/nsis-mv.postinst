@@ -5,7 +5,9 @@ DIR="`pwd`"
 cd /usr/share/nsis-mv/
 for i in `find . -type f` ; do 
     if [ ! -f /usr/share/nsis/$i ] ; then
+        mkdir -p `dirname /usr/share/nsis/$i`
         cp -r $i /usr/share/nsis/$i
+
     fi
 done
 
