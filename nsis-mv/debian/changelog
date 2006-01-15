@@ -1,3 +1,9 @@
+nsis-mv (0-8) stable; urgency=low
+
+  * auto build
+
+ -- Dirk Morris <dmorris@metavize.com>  Sun, 15 Jan 2006 13:53:53 -0800
+
 nsis-mv (0-7) stable; urgency=low
 
   * auto build
