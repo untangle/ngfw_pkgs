@@ -1,0 +1,143 @@
+Source: storeitem-mv
+Section: admin
+Priority: optional
+Maintainer: Dirk Morris <dmorris@metavize.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.5.2
+
+Package: airgap-storeitem
+Architecture: any
+Depends: airgap-transform
+XB-Price: 0
+XB-Display-Name: Attack Shield
+XB-Store-URL: http://store.metavize.com/airgap
+Description: Attack Shield
+ Attack Shield Store Item
+
+Package: spyware-storeitem
+Architecture: any
+Depends: spyware-transform
+XB-Price: 0
+XB-Display-Name: Spyware Blocker
+XB-Store-URL: http://store.metavize.com/spyware
+Description: The Metavize Spyware Blocker Software Appliance
+ The Metavize Spyware Blocker Software Appliance Store Item
+
+Package: httpblocker-storeitem
+Architecture: any
+Depends: httpblocker-transform
+XB-Price: 0
+XB-Display-Name: Web Content Control
+XB-Store-URL: http://store.metavize.com/webcontrol
+Description: The Metavize Web Content Control Software Appliance
+ The Metavize Web Content Control Software Appliance Store Item
+
+Package: hauri-storeitem
+Architecture: any
+Depends: hauri-transform
+XB-Price: 399
+XB-Display-Name: Hauri AntiVirus Scanner
+XB-Store-URL: http://store.metavize.com/hauri_antivirus
+Description: The Hauri AntiVirus Scanner Software Appliance
+ The Hauri AntiVirus Scanner Software Appliance Store Item
+
+Package: kav-storeitem
+Architecture: any
+Depends: kav-transform
+XB-Price: 599
+XB-Display-Name: Kaspersky AntiVirus Scanner
+XB-Store-URL: http://store.metavize.com/kaspersky_antivirus
+Description: The Kaspersky AntiVirus Scanner Software Appliance
+ The Kaspersky AntiVirus Scanner Software Appliance Store Item
+
+Package: clam-storeitem
+Architecture: any
+Depends: clam-transform
+XB-Price: 0
+XB-Display-Name: Clam AntiVirus Scanner
+XB-Store-URL: http://store.metavize.com/clam_antivirus
+Description: The Clam AntiVirus Scanner Software Appliance
+ The Clam AntiVirus Scanner Software Appliance Store Item 
+
+Package: protofilter-storeitem
+Architecture: any
+Depends: protofilter-transform
+XB-Price: 0
+XB-Display-Name: Rogue Protocol Control
+XB-Store-URL: http://www.metavize.com/protocolcontrol
+Description: The Metavize Rogue Protocol Control
+ The Metavize Rogue Protocol Control Store Item
+
+Package: nat-storeitem
+Architecture: any
+Depends: nat-transform
+XB-Price: 0
+XB-Display-Name: Network Sharing
+XB-Store-URL: http://store.metavize.com/networksharing
+Description: The Metavize Network Sharing Software Appliance
+ The Metavize Network Sharing Software Appliance Store Item
+
+Package: firewall-storeitem
+Architecture: any
+Depends: firewall-transform
+XB-Price: 0
+XB-Display-Name: Firewall
+XB-Store-URL: http://store.metavize.com/firewall
+Description: The Metavize Firewall Software Appliance
+ The Metavize Firewall Software Appliance Store Item
+
+Package: spamassassin-storeitem
+Architecture: any
+Depends: spamassassin-transform
+XB-Price: 0
+XB-Display-Name: SpamGuard
+XB-Store-URL: http://store.metavize.com/spamguard
+Description: The Metavize SpamGuard Software Appliance
+ The Metavize SpamGuard Software Appliance Store Item
+
+Package: clamphish-storeitem
+Architecture: any
+Depends: clamphish-transform
+XB-Price: 0
+XB-Display-Name: PhishNet
+XB-Store-URL: http://store.metavize.com/phishnet
+Description: The Metavize PhishNet Software Appliance
+ The Metavize PhishNet Software Appliance Store Item
+
+Package: test-storeitem
+Architecture: any
+Depends: test-transform
+XB-Price: 0
+XB-Display-Name: Test
+XB-Store-URL: http://store.metavize.com/test
+Description: The Metavize Test Software Appliance
+ The Metavize Test Software Appliance Store Item
+
+Package: openvpn-storeitem
+Architecture: any
+Depends: openvpn-transform
+XB-Price: 0
+XB-Display-Name: OpenVPN
+XB-Store-URL: http://store.metavize.com/openvpn
+Description: The Metavize OpenVPN Software Appliance
+ The Metavize OpenVPN Software Appliance Store Item
+
+Package: ids-storeitem
+Architecture: any
+Depends: ids-transform
+XB-Price: 0
+XB-Display-Name: Intrusion Prevention
+XB-Store-URL: http://store.metavize.com/ips
+Description: The Metavize Intrusion Prevention Appliance
+ The Metavize Intrusion Prevention Appliance Store Item
+
+Package: reporting-storeitem
+Architecture: any
+Depends: reporting-transform
+XB-Price: 0
+XB-Display-Name: EdgeReport
+XB-Store-URL: http://store.metavize.com/edgereport
+Description: The Metavize Report Generator
+ The Metavize Report Generator Store Item
+
+
