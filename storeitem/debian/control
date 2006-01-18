@@ -9,6 +9,7 @@ Package: base-bundle-storeitem
 Architecture: any
 Depends: airgap-storeitem, spyware-storeitem, httpblocker-storeitem, hauri-storeitem, clam-storeitem, protofilter-storeitem, nat-storeitem, firewall-storeitem, spamassassin-storeitem, clamphish-storeitem, test-storeitem, openvpn-storeitem, ids-storeitem, reporting-storeitem
 XB-Price: 0
+XB-Store-Position: 10
 XB-Display-Name: Attack Shield
 XB-Store-URL: http://store.metavize.com/airgap
 Description: The Metavize Base Scription Bundle
@@ -98,7 +99,7 @@ Package: spamassassin-storeitem
 Architecture: any
 Depends: spamassassin-transform
 XB-Price: 0
-XB-Store-Position: 1
+XB-Store-Position: 10
 XB-Display-Name: SpamGuard
 XB-Store-URL: http://store.metavize.com/spamguard
 Description: The Metavize SpamGuard Software Appliance
@@ -108,7 +109,7 @@ Package: clamphish-storeitem
 Architecture: any
 Depends: clamphish-transform
 XB-Price: 0
-XB-Store-Position: 10
+XB-Store-Position: 15
 XB-Display-Name: PhishNet
 XB-Store-URL: http://store.metavize.com/phishnet
 Description: The Metavize PhishNet Software Appliance
