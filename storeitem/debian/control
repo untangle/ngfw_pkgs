@@ -18,6 +18,7 @@ Package: airgap-storeitem
 Architecture: any
 Depends: airgap-transform
 XB-Price: 0
+XB-Store-Position: 1010
 XB-Display-Name: Attack Shield
 XB-Store-URL: http://store.metavize.com/airgap
 Description: Attack Shield
@@ -27,6 +28,7 @@ Package: spyware-storeitem
 Architecture: any
 Depends: spyware-transform
 XB-Price: 0
+XB-Store-Position: 20
 XB-Display-Name: Spyware Blocker
 XB-Store-URL: http://store.metavize.com/spyware
 Description: The Metavize Spyware Blocker Software Appliance
@@ -36,6 +38,7 @@ Package: httpblocker-storeitem
 Architecture: any
 Depends: httpblocker-transform
 XB-Price: 0
+XB-Store-Position: 30
 XB-Display-Name: Web Content Control
 XB-Store-URL: http://store.metavize.com/webcontrol
 Description: The Metavize Web Content Control Software Appliance
@@ -45,6 +48,7 @@ Package: hauri-storeitem
 Architecture: any
 Depends: hauri-transform
 XB-Price: 399
+XB-Store-Position: 60
 XB-Display-Name: Hauri AntiVirus Scanner
 XB-Store-URL: http://store.metavize.com/hauri_antivirus
 Description: The Hauri AntiVirus Scanner Software Appliance
@@ -54,6 +58,7 @@ Package: clam-storeitem
 Architecture: any
 Depends: clam-transform
 XB-Price: 0
+XB-Store-Position: 70
 XB-Display-Name: Clam AntiVirus Scanner
 XB-Store-URL: http://store.metavize.com/clam_antivirus
 Description: The Clam AntiVirus Scanner Software Appliance
@@ -63,6 +68,7 @@ Package: protofilter-storeitem
 Architecture: any
 Depends: protofilter-transform
 XB-Price: 0
+XB-Store-Position: 80
 XB-Display-Name: Rogue Protocol Control
 XB-Store-URL: http://www.metavize.com/protocolcontrol
 Description: The Metavize Rogue Protocol Control
@@ -72,6 +78,7 @@ Package: nat-storeitem
 Architecture: any
 Depends: nat-transform
 XB-Price: 0
+XB-Store-Position: 1000
 XB-Display-Name: Network Sharing
 XB-Store-URL: http://store.metavize.com/networksharing
 Description: The Metavize Network Sharing Software Appliance
@@ -81,6 +88,7 @@ Package: firewall-storeitem
 Architecture: any
 Depends: firewall-transform
 XB-Price: 0
+XB-Store-Position: 90
 XB-Display-Name: Firewall
 XB-Store-URL: http://store.metavize.com/firewall
 Description: The Metavize Firewall Software Appliance
@@ -90,6 +98,7 @@ Package: spamassassin-storeitem
 Architecture: any
 Depends: spamassassin-transform
 XB-Price: 0
+XB-Store-Position: 1
 XB-Display-Name: SpamGuard
 XB-Store-URL: http://store.metavize.com/spamguard
 Description: The Metavize SpamGuard Software Appliance
@@ -99,6 +108,7 @@ Package: clamphish-storeitem
 Architecture: any
 Depends: clamphish-transform
 XB-Price: 0
+XB-Store-Position: 10
 XB-Display-Name: PhishNet
 XB-Store-URL: http://store.metavize.com/phishnet
 Description: The Metavize PhishNet Software Appliance
@@ -108,6 +118,7 @@ Package: test-storeitem
 Architecture: any
 Depends: test-transform
 XB-Price: 0
+XB-Store-Position: 2002
 XB-Display-Name: Test
 XB-Store-URL: http://store.metavize.com/test
 Description: The Metavize Test Software Appliance
@@ -117,6 +128,7 @@ Package: openvpn-storeitem
 Architecture: any
 Depends: openvpn-transform
 XB-Price: 0
+XB-Store-Position: 990
 XB-Display-Name: OpenVPN
 XB-Store-URL: http://store.metavize.com/openvpn
 Description: The Metavize OpenVPN Software Appliance
@@ -126,6 +138,7 @@ Package: ids-storeitem
 Architecture: any
 Depends: ids-transform
 XB-Price: 0
+XB-Store-Position: 75
 XB-Display-Name: Intrusion Prevention
 XB-Store-URL: http://store.metavize.com/ips
 Description: The Metavize Intrusion Prevention Appliance
@@ -135,6 +148,7 @@ Package: reporting-storeitem
 Architecture: any
 Depends: reporting-transform
 XB-Price: 0
+XB-Store-Position: 1020
 XB-Display-Name: EdgeReport
 XB-Store-URL: http://store.metavize.com/edgereport
 Description: The Metavize Report Generator
