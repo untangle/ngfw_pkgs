@@ -5,6 +5,15 @@ Maintainer: Dirk Morris <dmorris@metavize.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.5.2
 
+Package: base-bundle-storeitem
+Architecture: any
+Depends: airgap-storeitem, spyware-storeitem, httpblocker-storeitem, hauri-storeitem, clam-storeitem, protofilter-storeitem, nat-storeitem, firewall-storeitem, spamassassin-storeitem, clamphish-storeitem, test-storeitem, openvpn-storeitem, ids-storeitem, reporting-storeitem
+XB-Price: 0
+XB-Display-Name: Attack Shield
+XB-Store-URL: http://store.metavize.com/airgap
+Description: The Metavize Base Scription Bundle
+ The Metavize Base Scription Bundle Store Item
+
 Package: airgap-storeitem
 Architecture: any
 Depends: airgap-transform
@@ -40,15 +49,6 @@ XB-Display-Name: Hauri AntiVirus Scanner
 XB-Store-URL: http://store.metavize.com/hauri_antivirus
 Description: The Hauri AntiVirus Scanner Software Appliance
  The Hauri AntiVirus Scanner Software Appliance Store Item
-
-Package: kav-storeitem
-Architecture: any
-Depends: kav-transform
-XB-Price: 599
-XB-Display-Name: Kaspersky AntiVirus Scanner
-XB-Store-URL: http://store.metavize.com/kaspersky_antivirus
-Description: The Kaspersky AntiVirus Scanner Software Appliance
- The Kaspersky AntiVirus Scanner Software Appliance Store Item
 
 Package: clam-storeitem
 Architecture: any
