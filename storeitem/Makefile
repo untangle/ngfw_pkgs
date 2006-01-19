@@ -1,3 +1,5 @@
+RELEASE ?= `whoami`
+
 clean:
 	fakeroot debian/rules clean
 
