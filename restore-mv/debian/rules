@@ -35,6 +35,8 @@ build: configure
 	for i in `cat debian/restore-mv.dirs` ; do mkdir -p debian/tmp/$$i ; done
 	cp ./edgeguard-restore ./debian/tmp/usr/bin/
 	cp ./mvvmdb-restore ./debian/tmp/usr/bin/
+	cp ./backup-mv ./debian/tmp/usr/bin/
+	cp ./restore-mv ./debian/tmp/usr/bin/
 
 clean:
 	dh_testdir
