@@ -1,15 +1,11 @@
 #!/bin/sh
 
-INST_OPTS=" -o DPkg::Options::=--force-confnew --yes --force-yes --fix-broken "
-UPGD_OPTS=" -o DPkg::Options::=--force-confnew --yes --force-yes --fix-broken "
 LOCAL_DUMP=/usr/share/metavize/dump
-
 mkdir -p $LOCAL_DUMP
 
 tmpfile=$(tempfile)
 backtitle="Metavize EdgeGuard"
 
-# dialog
 
 confirm_exit()
 {
@@ -31,8 +27,6 @@ confirm()
     dialog --backtitle "$backtitle" --title "Confirm" \
         --yesno "$1" 6 52
 }
-
-# helper
 
 usb_mount()
 {
@@ -58,30 +52,6 @@ usb_mount()
             --msgbox "Please check that the USB key is inserted properly and properly formatted." 6 52
         return -1
     fi
-}
-
-# restore
-
-restore_db()
-{
-    infile=$1
-
-    dropdb -U postgres mvvm >/dev/null 2>&1
-    createdb -U metavize mvvm >/dev/null 2>&1
-
-    if confirm "Restore settings?"; then
-        zcat $infile | psql -U postgres mvvm >/dev/null 2>&1
-    fi
-}
-
-restore_packages()
-{
-    instfile=$1
-
-    cat $instfile | cut -d' ' -f1 | grep -- '-transform$' \
-        | xargs apt-get install $INST_OPTS
-    apt-get dist-upgrade $UPGD_OPTS
-    /etc/init.d/mvvm stop
 }
 
 restore()
@@ -113,10 +83,12 @@ restore()
             dumpfile=$indir/mvvmdb-$choice.gz
             tarfile=$indir/files-$choice.tar.gz
             instfile=$indir/installed-$choice
-            restore_db $dumpfile && tar zxf $tarfile -C / \
-                && restore_packages $instfile
+            
+            # restore choice
+            /usr/bin/restore-mv $dumpfile $tarfile $instfile
 
-            /etc/init.d/networking restart
+            # restore-mv might restart MVVM, stop it
+            /etc/init.d/mvvm stop
 
             return $?
             ;;
@@ -124,6 +96,19 @@ restore()
             return -1
             ;;
     esac
+}
+
+backup()
+{
+    outdir=$1
+
+    datestamp=$(date '+%Y%m%d%H%M')
+    dumpfile=$outdir/mvvmdb-$datestamp.gz
+    tarfile=$outdir/files-$datestamp.tar.gz
+    instlist=$outdir/installed-$datestamp
+
+    # backup new image in outdir
+    /usr/bin/backup-mv $dumpfile $tarfile $instfile
 }
 
 restore_menu()
@@ -151,45 +136,6 @@ restore_menu()
             state=MAIN_MENU
             ;;
     esac
-}
-
-# backup
-
-dump_db()
-{
-    outfile=$1
-    (pg_dump -U postgres -n settings mvvm; pg_dump -U postgres -n events -s mvvm) \
-        | gzip > $outfile 2>/dev/null
-}
-
-tar_files()
-{
-    tarfile=$1
-
-    tar zcf $tarfile --ignore-failed-read -C / \
-        etc/network/interfaces \
-        etc/resolv.conf \
-        usr/share/metavize/conf/networking.sh \
-        usr/share/metavize/conf/shield.cfg
-}
-
-dump_installed()
-{
-    instlist=$1
-
-    mkg installed > $instlist
-}
-
-backup()
-{
-    outdir=$1
-
-    datestamp=$(date '+%Y%m%d%H%M')
-    dumpfile=$outdir/mvvmdb-$datestamp.gz
-    tarfile=$outdir/files-$datestamp.tar.gz
-    instlist=$outdir/installed-$datestamp
-
-    dump_db $dumpfile && tar_files $tarfile && dump_installed $instlist
 }
 
 backup_menu()

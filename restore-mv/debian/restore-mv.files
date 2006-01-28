@@ -1,2 +1,4 @@
 /usr/bin/edgeguard-restore
 /usr/bin/mvvmdb-restore
+/usr/bin/restore-mv
+/usr/bin/backup-mv

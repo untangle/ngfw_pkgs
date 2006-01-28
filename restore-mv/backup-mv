@@ -1,0 +1,45 @@
+#!/bin/sh
+
+tar_files()
+{
+    tarfile=$1
+
+    tar zcf $tarfile --ignore-failed-read -C / \
+        etc/network/interfaces \
+        etc/resolv.conf \
+        usr/share/metavize/conf/networking.sh \
+        usr/share/metavize/conf/shield.cfg
+}
+
+dump_installed()
+{
+    instlist=$1
+
+    mkg installed > $instlist
+}
+
+dump_db()
+{
+    outfile=$1
+    (pg_dump -U postgres -n settings mvvm; pg_dump -U postgres -n events -s mvvm) \
+        | gzip > $outfile 2>/dev/null
+}
+
+backup()
+{
+    outdir=$1
+
+    datestamp=$(date '+%Y%m%d%H%M')
+    dumpfile=$outdir/mvvmdb-$datestamp.gz
+    tarfile=$outdir/files-$datestamp.tar.gz
+    instlist=$outdir/installed-$datestamp
+
+    dump_db $dumpfile && tar_files $tarfile && dump_installed $instlist
+}
+
+if [ $# -lt 1 ] ; then 
+    echo "Usage: $0 dumpdir"
+fi
+
+
+backup $1
