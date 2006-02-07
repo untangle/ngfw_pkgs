@@ -38,7 +38,7 @@ instfile=$3
 /etc/init.d/mvvm stop
 
 # restore the database and the /usr/share/metavize important stuff
-restore_db $dumpfile && tar zxf $tarfile -C 
+restore_db $dumpfile && tar zxf $tarfile -C /
 
 # try to download needed files, this may fail because the network settings may not be correct
 restore_packages $instfile

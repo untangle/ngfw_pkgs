@@ -9,7 +9,9 @@ tar_files()
         etc/resolv.conf \
         usr/share/metavize/conf/networking.sh \
         usr/share/metavize/conf/keystore \
-        usr/share/metavize/conf/shield.cfg
+        usr/share/metavize/conf/shield.cfg \
+        usr/share/metavize/conf/openvpn \
+        etc/openvpn
 }
 
 dump_installed()
