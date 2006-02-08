@@ -4,8 +4,6 @@
 adduser --gecos "" --firstuid 10000 --disabled-password spamc 2>/dev/null
 chown -R spamc:spamc /home/spamc 
 
-cp -f /home/spamc/.xfce4/menu.xml /etc/xdg/xfce4/desktop/menu.xml &> /dev/null
-
 # enable in /etc/default/spamassassin
 sed -i "s/^ENABLED=.*/ENABLED=1/" /etc/default/spamassassin
 
@@ -15,6 +13,8 @@ cat > /etc/spamassassin/local.cf << EOF
 # Metavize global SpamAssassin settings
 score ALL_TRUSTED 0
 lock_method flock
+auto_whitelist_factor 0.3
+pyzor_timeout 3
 
 # A simple-to-parse report format
 clear_report_template
