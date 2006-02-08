@@ -1,3 +1,15 @@
+storeitem-mv (0-20) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@metavize.com>  Tue,  7 Feb 2006 18:25:36 -0800
+
+storeitem-mv (0-19) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@metavize.com>  Tue,  7 Feb 2006 18:25:24 -0800
+
 storeitem-mv (0-18) stable; urgency=low
 
   * auto build
