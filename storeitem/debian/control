@@ -13,14 +13,14 @@ XB-View-Position: 10
 XB-Display-Name: Complete Bundle
 XB-Website: http://store.metavize.com/airgap
 Description: The Metavize Base Scription Bundle
- The Metavize Base Scription Bundle Store Item
+ The Metavize Base Scription Bundle Store
 
 Package: airgap-storeitem
 Architecture: any
 Depends: airgap-transform
 XB-Price: 0
 XB-View-Position: 1010
-XB-Display-Name: Attack Shield Item
+XB-Display-Name: Attack Shield
 XB-Website: http://store.metavize.com/airgap
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -124,14 +124,14 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  jP5/n47IHTnb+aVRzChGFcieTBYZDm8iFwJtMEo9mv5bf//NdiRq+Es9wwm3yLXAooahnnuZ
  QdxsLPxXDxw5/j7RBinaTy/EXwisAmjbSWR6+zAwlMNjj38ieCD2fwIMANZG+Ft4BQz8AAAA
 Description: Attack Shield
- Attack Shield Store Item
+ Attack Shield Store
 
 Package: spyware-storeitem
 Architecture: any
 Depends: spyware-transform
 XB-Price: 0
 XB-View-Position: 20
-XB-Display-Name: Spyware Blocker Item
+XB-Display-Name: Spyware Blocker
 XB-Website: http://store.metavize.com/spyware
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -218,7 +218,7 @@ Architecture: any
 Depends: httpblocker-transform
 XB-Price: 0
 XB-View-Position: 30
-XB-Display-Name: Web Content Control Item
+XB-Display-Name: Web Content Control
 XB-Website: http://store.metavize.com/webcontrol
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0RVh0
  U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d03e2c04c
@@ -316,7 +316,7 @@ Architecture: any
 Depends: hauri-transform
 XB-Price: 399
 XB-View-Position: 60
-XB-Display-Name: Hauri AntiVirus Scanner Item
+XB-Display-Name: Hauri AntiVirus Scanner
 XB-Website: http://store.metavize.com/hauri_antivirus
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
  AAAKTWlDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVN3WJP3Fj7f92UPVkLY8LGXbIEA
@@ -430,7 +430,7 @@ Architecture: any
 Depends: clam-transform
 XB-Price: 0
 XB-View-Position: 70
-XB-Display-Name: Clam AntiVirus Scanner Item
+XB-Display-Name: Clam AntiVirus Scanner
 XB-Website: http://store.metavize.com/clam_antivirus
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
  AAAABGdBTUEAANjr9RwUqgAAACBjSFJNAABtmAAAc44AAPJxAACDbAAAg7sAANTIAAAx7AAA
@@ -536,7 +536,7 @@ Architecture: any
 Depends: protofilter-transform
 XB-Price: 0
 XB-View-Position: 80
-XB-Display-Name: Rogue Protocol Control Item
+XB-Display-Name: Rogue Protocol Control
 XB-Website: http://www.metavize.com/protocolcontrol
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -657,7 +657,7 @@ Architecture: any
 Depends: nat-transform
 XB-Price: 0
 XB-View-Position: 1000
-XB-Display-Name: Network Sharing Item
+XB-Display-Name: Network Sharing
 XB-Website: http://store.metavize.com/networksharing
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -751,7 +751,7 @@ Architecture: any
 Depends: firewall-transform
 XB-Price: 0
 XB-View-Position: 90
-XB-Display-Name: Firewall Item
+XB-Display-Name: Firewall
 XB-Website: http://store.metavize.com/firewall
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -838,7 +838,7 @@ Architecture: any
 Depends: spamassassin-transform
 XB-Price: 0
 XB-View-Position: 10
-XB-Display-Name: SpamGuard Item
+XB-Display-Name: SpamGuard
 XB-Website: http://store.metavize.com/spamguard
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -953,7 +953,7 @@ Architecture: any
 Depends: clamphish-transform
 XB-Price: 0
 XB-View-Position: 15
-XB-Display-Name: PhishNet Item
+XB-Display-Name: PhishNet
 XB-Website: http://store.metavize.com/phishnet
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1127,7 +1127,7 @@ Architecture: any
 Depends: test-transform
 XB-Price: 0
 XB-View-Position: 2002
-XB-Display-Name: Test Item
+XB-Display-Name: Test
 XB-Website: http://store.metavize.com/test
 XB-Org-Icon:  iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1269,7 +1269,7 @@ Architecture: any
 Depends: openvpn-transform
 XB-Price: 0
 XB-View-Position: 990
-XB-Display-Name: OpenVPN Item
+XB-Display-Name: OpenVPN
 XB-Website: http://store.metavize.com/openvpn
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1373,7 +1373,7 @@ Architecture: any
 Depends: ids-transform
 XB-Price: 0
 XB-View-Position: 75
-XB-Display-Name: Intrusion Prevention Item
+XB-Display-Name: Intrusion Prevention
 XB-Website: http://store.metavize.com/ips
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1479,7 +1479,7 @@ Architecture: any
 Depends: reporting-transform
 XB-Price: 0
 XB-View-Position: 1020
-XB-Display-Name: EdgeReport Item
+XB-Display-Name: EdgeReport
 XB-Website: http://store.metavize.com/edgereport
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
