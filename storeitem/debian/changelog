@@ -1,3 +1,9 @@
+storeitem-mv (0-22) stable; urgency=low
+
+  * auto build
+
+ -- Dirk Morris <dmorris@metavize.com>  Tue,  7 Feb 2006 18:53:45 -0800
+
 storeitem-mv (0-21) stable; urgency=low
 
   * auto build
