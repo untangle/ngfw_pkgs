@@ -149,6 +149,7 @@ main_menu()
         --menu "Choose operation:" 10 61 3 \
         "Backup & Restore" "" \
         "Return to Factory Defaults" "" \
+        "Reset Administrative Accounts" "" \
         "Upgrade EdgeGuard" "" \
         "Remote Support" "" \
         2>$tmpfile
@@ -165,10 +166,19 @@ main_menu()
                     state=MAIN_MENU
                     ;;
                 "Return to Factory Defaults")
-                    if confirm "Return to factory defaults?" \
+                    if confirm "Return all settings to factory defaults?" \
                         && [ -x /usr/bin/purgedb ]; then
                         /usr/bin/purgedb
                         rm -f /usr/share/metavize/activation.key
+                    fi
+                    state=SUCCESS_SPLASH
+                    ;;
+                "Reset Administrative Accounts")
+                    if confirm "Reset administrative accounts to factory defaults (admin/passwd)?"; then
+                        psql -U metavize mvvm >/dev/null <<EOF
+DELETE FROM mvvm_user;
+DELETE FROM admin_settings;
+EOF
                     fi
                     state=SUCCESS_SPLASH
                     ;;
