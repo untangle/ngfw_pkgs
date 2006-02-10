@@ -7,6 +7,6 @@ Standards-Version: 3.5.2
 
 Package: kiosk-mv
 Architecture: any
-Depends: firefox-r-kiosk
+Depends: firefox-r-kiosk, masqmail
 Description: The Metavize EdgeGuard kiosk utils
  The Metavize EdgeGuard kiosk mode utilities
