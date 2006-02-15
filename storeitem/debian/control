@@ -7,7 +7,7 @@ Standards-Version: 3.5.2
 
 Package: base-bundle-storeitem
 Architecture: any
-Depends: airgap-storeitem, spyware-storeitem, httpblocker-storeitem, hauri-storeitem, clam-storeitem, protofilter-storeitem, nat-storeitem, firewall-storeitem, spamassassin-storeitem, clamphish-storeitem, test-storeitem, openvpn-storeitem, ids-storeitem, reporting-storeitem
+Depends: airgap-storeitem, spyware-storeitem, httpblocker-storeitem, clam-storeitem, protofilter-storeitem, nat-storeitem, firewall-storeitem, spamassassin-storeitem, clamphish-storeitem, openvpn-storeitem, ids-storeitem, reporting-storeitem
 XB-Price: 0
 XB-View-Position: 10
 XB-Display-Name: Complete Bundle
@@ -1077,9 +1077,9 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
 Description: The Metavize PhishNet Software Appliance
  The Metavize PhishNet Software Appliance Store Item
 
-Package: boxbackup-transform
+Package: boxbackup-storeitem
 Architecture: any
-Depends: mvvm, curl
+Depends: boxbackup-transform
 XB-Price: 99
 XB-View-Position: 990
 XB-Display-Name: 24-Hour Replacement
@@ -1120,7 +1120,7 @@ XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgA
  8nGFmxnhMCc3z5UMphpUaaheH7dcekhSiBaTtJjj9FTobQMk7NcvPuOWYZUqsX6h584NjCAU
  EbkSc5Cnbep3I3KVG9fVAkKJHCJ6XAomArd/GoB/CjAAcIcK11SEGzIAAAAASUVORK5CYII=
 Description: The 24-Hour Box Backup Service
- The 24-Hour Box Backup Service Transform
+ The 24-Hour Box Backup Service Store Item
 
 Package: test-storeitem
 Architecture: any
