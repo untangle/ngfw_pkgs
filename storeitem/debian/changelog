@@ -1,3 +1,9 @@
+storeitem-mv (0-25) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@pip.metavize.com>  Wed, 15 Feb 2006 14:10:59 -0800
+
 storeitem-mv (0-24) stable; urgency=low
 
   * auto build
