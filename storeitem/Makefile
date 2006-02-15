@@ -9,7 +9,7 @@ pkg:
 version:
 	dch -i "auto build"
 
-release: version pkg
+release: clean version pkg
 	@if [ "`hostname`" = "bebe" ] ; then \
 		( cd ../ ; sudo ./scripts/deb-add.sh /var/www/${RELEASE}/ ./*storeitem*deb &> /dev/null ; sudo ./scripts/deb-scan.sh /var/www/${RELEASE}/ &> /dev/null ) ; \
 	else echo "Must be run on bebe"; \
