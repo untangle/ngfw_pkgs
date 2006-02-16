@@ -1,3 +1,9 @@
+kiosk-mv (0-34) stable; urgency=low
+
+  * auto build
+
+ -- M. Srikant <srikant@metavize.com>  Wed, 15 Feb 2006 18:17:46 -0800
+
 kiosk-mv (0-33) stable; urgency=low
 
   * auto build
