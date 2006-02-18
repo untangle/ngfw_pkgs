@@ -50,5 +50,5 @@ restore_packages $instfile
 restore_packages $instfile
 
 # start the MVVM, depending on circumstances (menu driven restore) may need to be restopped 
-/etc/init.d/mvvm start
+/etc/init.d/mvvm start 2>&1 > /dev/null
 
