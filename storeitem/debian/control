@@ -12,6 +12,7 @@ XB-Price: 0
 XB-View-Position: 10
 XB-Display-Name: Complete Bundle
 XB-Website: http://store.metavize.com/airgap
+XB-Is-Bundle: true
 Description: The Metavize Base Scription Bundle
  The Metavize Base Scription Bundle Store
 
@@ -22,6 +23,7 @@ XB-Price: 0
 XB-View-Position: 1010
 XB-Display-Name: Attack Shield
 XB-Website: http://store.metavize.com/airgap
+XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
  03e2c04cxwjjxI4fCSQhxKA0oYUUCRKpqgh/gPoHsahUqVKroioghT7U/lkJBbWi/1R9pA/1
@@ -133,6 +135,7 @@ XB-Price: 0
 XB-View-Position: 20
 XB-Display-Name: Spyware Blocker
 XB-Website: http://store.metavize.com/spyware
+XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
  03e2c04cxwjjxI4fCSQhxKA0oYUUCRKpqgh/gPoHsahUqVKroioghT7U/lkJBbWi/1R9pA/1
@@ -220,6 +223,7 @@ XB-Price: 0
 XB-View-Position: 30
 XB-Display-Name: Web Content Control
 XB-Website: http://store.metavize.com/webcontrol
+XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0RVh0
  U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d03e2c04c
  xwjjxI4fCSQhxKA0oYUUCRKpqgh/gPoHsahUqVKroioghT7U/lkJBbWi/1R9pA/1JUGlVEALFdSh
@@ -318,6 +322,7 @@ XB-Price: 399
 XB-View-Position: 60
 XB-Display-Name: Hauri AntiVirus Scanner
 XB-Website: http://store.metavize.com/hauri_antivirus
+XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
  AAAKTWlDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVN3WJP3Fj7f92UPVkLY8LGXbIEA
  IiOsCMgQWaIQkgBhhBASQMWFiApWFBURnEhVxILVCkidiOKgKLhnQYqIWotVXDjuH9yntX16
@@ -432,6 +437,7 @@ XB-Price: 0
 XB-View-Position: 70
 XB-Display-Name: Clam AntiVirus Scanner
 XB-Website: http://store.metavize.com/clam_antivirus
+XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
  AAAABGdBTUEAANjr9RwUqgAAACBjSFJNAABtmAAAc44AAPJxAACDbAAAg7sAANTIAAAx7AAA
  GbyeiMU/AAAOWElEQVR42syZeWxd1Z3HP+fub19tPxs7dmycGCcBTEgCARJoIYGulKqb2qmQ
@@ -538,6 +544,7 @@ XB-Price: 0
 XB-View-Position: 80
 XB-Display-Name: Rogue Protocol Control
 XB-Website: http://www.metavize.com/protocolcontrol
+XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
  03e2c04cxwjjxI4fCSQhxKA0oYUUCRKpqgh/gPoHsahUqVKroioghT7U/lkJBbWi/1R9pA/1
@@ -659,6 +666,7 @@ XB-Price: 0
 XB-View-Position: 1000
 XB-Display-Name: Network Sharing
 XB-Website: http://store.metavize.com/networksharing
+XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
  03e2c04cxwjjxI4fCSQhxKA0oYUUCRKpqgh/gPoHsahUqVKroioghT7U/lkJBbWi/1R9pA/1
@@ -753,6 +761,7 @@ XB-Price: 0
 XB-View-Position: 90
 XB-Display-Name: Firewall
 XB-Website: http://store.metavize.com/firewall
+XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
  03e2c04cxwjjxI4fCSQhxKA0oYUUCRKpqgh/gPoHsahUqVKroioghT7U/lkJBbWi/1R9pA/1
@@ -840,6 +849,7 @@ XB-Price: 0
 XB-View-Position: 10
 XB-Display-Name: SpamGuard
 XB-Website: http://store.metavize.com/spamguard
+XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
  03e2c04cxwjjxI4fCSQhxKA0oYUUCRKpqgh/gPoHsahUqVKroioghT7U/lkJBbWi/1R9pA/1
@@ -955,6 +965,7 @@ XB-Price: 0
 XB-View-Position: 15
 XB-Display-Name: PhishNet
 XB-Website: http://store.metavize.com/phishnet
+XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
  03e2c04cxwjjxI4fCSQhxKA0oYUUCRKpqgh/gPoHsahUqVKroioghT7U/lkJBbWi/1R9pA/1
@@ -1084,6 +1095,7 @@ XB-Price: 99
 XB-View-Position: 990
 XB-Display-Name: 24-Hour Replacement
 XB-Website: http://www.metavize.com/boxbackup.html
+XB-Is-Service: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
  03e2c04cxwjjxI4fCSQhxKA0oYUUCRKpqgh/gPoHsahUqVKroioghT7U/lkJBbWi/1R9pA/1
@@ -1129,6 +1141,7 @@ XB-Price: 0
 XB-View-Position: 2002
 XB-Display-Name: Test
 XB-Website: http://store.metavize.com/test
+XB-Is-Core: true
 XB-Org-Icon:  iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
  03e2c04cxwjjxI4fCSQhxKA0oYUUCRKpqgh/gPoHsahUqVKroioghT7U/lkJBbWi/1R9pA/1
@@ -1271,6 +1284,7 @@ XB-Price: 0
 XB-View-Position: 990
 XB-Display-Name: OpenVPN
 XB-Website: http://store.metavize.com/openvpn
+XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
  03e2c04cxwjjxI4fCSQhxKA0oYUUCRKpqgh/gPoHsahUqVKroioghT7U/lkJBbWi/1R9pA/1
@@ -1375,6 +1389,7 @@ XB-Price: 0
 XB-View-Position: 75
 XB-Display-Name: Intrusion Prevention
 XB-Website: http://store.metavize.com/ips
+XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
  03e2c04cxwjjxI4fCSQhxKA0oYUUCRKpqgh/gPoHsahUqVKroioghT7U/lkJBbWi/1R9pA/1
@@ -1481,6 +1496,7 @@ XB-Price: 0
 XB-View-Position: 1020
 XB-Display-Name: EdgeReport
 XB-Website: http://store.metavize.com/edgereport
+XB-Is-Util: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
  03e2c04cxwjjxI4fCSQhxKA0oYUUCRKpqgh/gPoHsahUqVKroioghT7U/lkJBbWi/1R9pA/1
