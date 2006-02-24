@@ -102,6 +102,6 @@ cd $BASE_DIRECTORY
 rm -rf /tmp/pkgs$$
 find . -type f -name "*.deb" -printf "%f\n" | sed -e "s/_.*//g" | sort | uniq > /tmp/pkgs$$
 
-for package in `cat /tmp/pkgs`; do
+for package in `cat /tmp/pkgs$$`; do
     remove_all_but_recent_n_files $package $KEEPCOUNT
 done
