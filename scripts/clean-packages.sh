@@ -99,7 +99,8 @@ remove_all_but_recent_n_files()
 }
 
 cd $BASE_DIRECTORY
-find . -type f -name "*.deb" -printf "%f\n" | sed -e "s/_.*//g" | sort | uniq > /tmp/pkgs
+rm -rf /tmp/pkgs$$
+find . -type f -name "*.deb" -printf "%f\n" | sed -e "s/_.*//g" | sort | uniq > /tmp/pkgs$$
 
 for package in `cat /tmp/pkgs`; do
     remove_all_but_recent_n_files $package $KEEPCOUNT
