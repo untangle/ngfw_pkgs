@@ -5,7 +5,6 @@ dropdb -U postgres mvvm
 
 su postgres -c "createuser --createdb --no-adduser metavize"
 createdb -O metavize -U metavize mvvm
-createdb -O metavize -U metavize mvvm
 update-schema settings mvvm
 update-schema events mvvm
 update-schema settings nat-transform
