@@ -1,13 +1,14 @@
 Source: kiosk-mv
 Section: admin
-Priority: optional
+Priority: important
 Maintainer: Dirk Morris <dmorris@metavize.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.5.2
 
 Package: kiosk-mv
 Architecture: any
+Essential: yes
 Depends: firefox-r-kiosk, masqmail
-Conflicts: exim4-base, exim4-config, exim4, exim4-daemon-light
+Conflicts: exim4-config, exim4-base, exim4, exim4-daemon-light
 Description: The Metavize EdgeGuard kiosk utils
  The Metavize EdgeGuard kiosk mode utilities
