@@ -1,4 +1,6 @@
+/usr/bin/backup-mv
 /usr/bin/edgeguard-restore
+/usr/bin/factory-defaults
 /usr/bin/mvvmdb-restore
 /usr/bin/restore-mv
-/usr/bin/backup-mv
+/usr/share/metavize/conf/canonical.tar.gz

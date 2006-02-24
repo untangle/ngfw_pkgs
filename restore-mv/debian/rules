@@ -1,12 +1,12 @@
 #!/usr/bin/make -f
-# Sample debian/rules that uses debhelper. 
+# Sample debian/rules that uses debhelper.
 # GNU copyright 1997 by Joey Hess.
 #
 # This version is for a hypothetical package that builds an
 # architecture-dependant package, as well as an architecture-independent
 # package.
 
-# Uncomment this to turn on verbose mode. 
+# Uncomment this to turn on verbose mode.
 # export DH_VERBOSE=1
 
 # This is the debhelper compatibility version to use.
@@ -37,6 +37,9 @@ build: configure
 	cp ./mvvmdb-restore ./debian/tmp/usr/bin/
 	cp ./backup-mv ./debian/tmp/usr/bin/
 	cp ./restore-mv ./debian/tmp/usr/bin/
+	cp ./factory-defaults ./debian/tmp/usr/bin/
+	mkdir -p ./debian/tmp/usr/share/metavize/conf
+	cd canonical && tar zcf  ../debian/tmp/usr/share/metavize/conf/canonical.tar.gz --exclude '.svn' *
 
 clean:
 	dh_testdir
@@ -46,38 +49,38 @@ clean:
 	dh_clean
 
 binary-arch: build
-	dh_testdir  
-	dh_testroot   
-	dh_movefiles  
-#	dh_installdebconf   
-	dh_shlibdeps  
-	dh_installdocs   
-#	dh_installexamples   
-#	dh_installmenu   
-#	dh_installlogrotate   
-#	dh_installemacsen   
-#	dh_installpam   
-#	dh_installmime   
+	dh_testdir
+	dh_testroot
+	dh_movefiles
+#	dh_installdebconf
+	dh_shlibdeps
+	dh_installdocs
+#	dh_installexamples
+#	dh_installmenu
+#	dh_installlogrotate
+#	dh_installemacsen
+#	dh_installpam
+#	dh_installmime
 	dh_installinit
-#	dh_installcron   
-#	dh_installman   
-#	dh_installinfo   
-#	dh_undocumented   
-	dh_installchangelogs    
-#	dh_strip  
-#	dh_link   
-	dh_compress   
-#	dh_fixperms   
-	dh_installdeb  
-#	dh_perl     
+#	dh_installcron
+#	dh_installman
+#	dh_installinfo
+#	dh_undocumented
+	dh_installchangelogs
+#	dh_strip
+#	dh_link
+	dh_compress
+#	dh_fixperms
+	dh_installdeb
+#	dh_perl
 #	echo "`cat ../../VERSION`.`cat debian/changelog | head -n 1 | awk '{print $$2}' | tr -d '()' `"
 	dh_gencontrol -u-v"`cat ../../VERSION`.`cat debian/changelog | head -n 1 | awk '{print $$2}' | tr -d '()' `"
-	dh_md5sums     
+	dh_md5sums
 
-binary-indep: build 
+binary-indep: build
 # nothing to do
 
 binary: binary-indep binary-arch
-	dh_builddeb 
+	dh_builddeb
 
 .PHONY: build clean binary-indep binary install configure

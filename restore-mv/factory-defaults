@@ -1,0 +1,19 @@
+#!/bin/sh
+
+dropdb -U postgres mvvm
+
+su postgres -c "createuser --createdb --no-adduser metavize"
+createdb -O metavize -U metavize mvvm
+createdb -O metavize -U metavize mvvm
+update-schema settings mvvm
+update-schema events mvvm
+update-schema settings nat-transform
+update-schema events nat-transform
+psql -U metavize mvvm <<EOF
+INSERT INTO tid VALUES (1);
+INSERT INTO transform_persistent_state VALUES (nextval('hibernate_sequence'), 'nat-transform', 1, '\\\\001\\\\000', 'running');
+INSERT INTO tid VALUES (2);
+INSERT INTO transform_persistent_state VALUES (nextval('hibernate_sequence'), 'ftp-casing', 2, '\\\\002\\\\000', 'running');
+INSERT INTO tr_nat_settings VALUES (nextval('hibernate_sequence'), 1, 0, true, null, null, false, null, true, null, null, 0, true, null, false);
+EOF
+(cd / && tar zvxf /usr/share/metavize/conf/canonical.tar.gz)
