@@ -21,9 +21,7 @@ EOF
 rm -f /usr/share/metavize/activation.key
 rm -f /usr/share/metavize/conf/networking.sh
 rm -f /usr/share/metavize/conf/keystore
-rm -f /usr/share/metavize/conf/shield.cfg
 rm -rf /usr/share/metavize/conf/openvpn
-
 
 # restore canonical files
 (cd / && tar zvxf /usr/share/metavize/conf/canonical.tar.gz)
