@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# restore database
 dropdb -U postgres mvvm
 
 su postgres -c "createuser --createdb --no-adduser metavize"
@@ -16,4 +17,9 @@ INSERT INTO tid VALUES (2);
 INSERT INTO transform_persistent_state VALUES (nextval('hibernate_sequence'), 'ftp-casing', 2, '\\\\002\\\\000', 'running');
 INSERT INTO tr_nat_settings VALUES (nextval('hibernate_sequence'), 1, 0, true, null, null, false, null, true, null, null, 0, true, null, false);
 EOF
+
+# remove files
+rm -f /usr/share/metavize/activation.key
+
+# restore canonical files
 (cd / && tar zvxf /usr/share/metavize/conf/canonical.tar.gz)

@@ -166,10 +166,8 @@ main_menu()
                     state=MAIN_MENU
                     ;;
                 "Return to Factory Defaults")
-                    if confirm "Return all settings to factory defaults?" \
-                        && [ -x /usr/bin/purgedb ]; then
-                        /usr/bin/purgedb
-                        rm -f /usr/share/metavize/activation.key
+                    if confirm "Return all settings to factory defaults?"; then
+                        factory-defaults
                     fi
                     state=SUCCESS_SPLASH
                     ;;
