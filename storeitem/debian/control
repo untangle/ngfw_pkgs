@@ -1384,7 +1384,7 @@ Description: The Metavize OpenVPN Software Appliance
 
 Package: ids-storeitem
 Architecture: any
-Depends: ids-transform
+Depends: ids-transform, snort-rules-current
 XB-Price: 0
 XB-View-Position: 75
 XB-Display-Name: Intrusion Prevention
