@@ -66,6 +66,15 @@ success_splash()
     state=MAIN_MENU
 }
 
+factory_success_splash()
+{
+    FLAG=1
+    dialog --backtitle "$backtitle" --title "Complete" \
+        --msgbox "Factory settings restored.  EdgeGuard will now reboot." 10 61
+
+    state=END_STATE
+}
+
 support_menu()
 {
     dialog --backtitle "$backtitle" --title "EdgeGuard Support" \
@@ -168,8 +177,10 @@ main_menu()
                 "Return to Factory Defaults")
                     if confirm "Return all settings to factory defaults?"; then
                         factory-defaults
+                        state=FACTORY_SUCCESS_SPLASH
+                    else
+                        state=MAIN_MENU
                     fi
-                    state=SUCCESS_SPLASH
                     ;;
                 "Reset Administrative Accounts")
                     if confirm "Reset administrative accounts to factory defaults (admin/passwd)?"; then
@@ -177,8 +188,10 @@ main_menu()
 DELETE FROM mvvm_user;
 DELETE FROM admin_settings;
 EOF
+                        state=SUCCESS_SPLASH
+                    else
+                        state=MAIN_MENU
                     fi
-                    state=SUCCESS_SPLASH
                     ;;
                 "Upgrade EdgeGuard")
                     state=UPGRADE_MENU
@@ -214,6 +227,9 @@ while true; do
             support_menu
             ;;
 # Messages
+        FACTORY_SUCCESS_SPLASH)
+            factory_success_splash
+            ;;
         SUCCESS_SPLASH)
             success_splash
             ;;
