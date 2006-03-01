@@ -1095,7 +1095,7 @@ XB-Price: 99
 XB-View-Position: 990
 XB-Display-Name: 24-Hour Replacement
 XB-Website: http://www.metavize.com/boxbackup.html
-XB-Is-Service: true
+XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
  03e2c04cxwjjxI4fCSQhxKA0oYUUCRKpqgh/gPoHsahUqVKroioghT7U/lkJBbWi/1R9pA/1
@@ -1496,7 +1496,7 @@ XB-Price: 0
 XB-View-Position: 1020
 XB-Display-Name: EdgeReport
 XB-Website: http://store.metavize.com/edgereport
-XB-Is-Util: true
+XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
  03e2c04cxwjjxI4fCSQhxKA0oYUUCRKpqgh/gPoHsahUqVKroioghT7U/lkJBbWi/1R9pA/1
