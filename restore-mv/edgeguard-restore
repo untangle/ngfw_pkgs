@@ -55,7 +55,7 @@ confirm_exit()
 confirm()
 {
     dialog --backtitle "$backtitle" --title "Confirm" \
-        --yesno "$1" 6 52
+        --defaultno --yesno "$1" 6 52
 }
 
 success_splash()
