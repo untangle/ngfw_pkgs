@@ -1,3 +1,9 @@
+restore-mv (0-48) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@metavize.com>  Thu,  2 Mar 2006 13:36:11 -0800
+
 restore-mv (0-47) stable; urgency=low
 
   * auto build
