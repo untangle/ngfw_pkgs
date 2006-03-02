@@ -22,6 +22,7 @@ rm -f /usr/share/metavize/activation.key
 rm -f /usr/share/metavize/conf/networking.sh
 rm -f /usr/share/metavize/conf/keystore
 rm -rf /usr/share/metavize/conf/openvpn
+rm -rf /usr/share/metavize/quarantine
 
 # restore canonical files
 (cd / && tar zvxf /usr/share/metavize/conf/canonical.tar.gz)
