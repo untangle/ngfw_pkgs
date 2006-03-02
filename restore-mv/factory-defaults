@@ -12,14 +12,17 @@ update-schema events nat-transform
 psql -U metavize mvvm <<EOF
 INSERT INTO tid VALUES (1);
 INSERT INTO transform_persistent_state VALUES (nextval('hibernate_sequence'), 'nat-transform', 1, '\\\\001\\\\000', 'running');
+INSERT INTO transform_preferences VALUES (nextval('hibernate_sequence'), 1, 255, 175, 175, 255);
 INSERT INTO tid VALUES (2);
 INSERT INTO transform_persistent_state VALUES (nextval('hibernate_sequence'), 'ftp-casing', 2, '\\\\002\\\\000', 'running');
+INSERT INTO transform_preferences VALUES (nextval('hibernate_sequence'), 2, 255, 175, 175, 255);
 INSERT INTO tr_nat_settings VALUES (nextval('hibernate_sequence'), 1, 0, true, null, null, false, null, true, null, null, 0, true, null, false);
 EOF
 
 # remove files
 rm -f /usr/share/metavize/activation.key
 rm -f /usr/share/metavize/conf/networking.sh
+rm -f /usr/share/metavize/conf/timezone
 rm -f /usr/share/metavize/conf/keystore
 rm -rf /usr/share/metavize/conf/openvpn
 rm -rf /usr/share/metavize/quarantine
