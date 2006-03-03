@@ -12,6 +12,12 @@ restore_db()
 
     if confirm "Restore settings?"; then
         zcat $infile | psql -U postgres mvvm >/dev/null 2>&1
+
+        ## Set the unconfigured flag, so the box will reconfigure the network configuration a restart
+        echo "update mvvm_network_settings set setup_state=67 where setup_state=3" \
+            | psql -U postgres mvvm >/dev/null 2>&1
+        echo "update mvvm_network_settings set setup_state=68 where setup_state=4" \
+            | psql -U postgres mvvm >/dev/null 2>&1
     fi
 }
 
