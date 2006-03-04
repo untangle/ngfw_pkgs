@@ -125,8 +125,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  FOZQpQiJxRPB/uif9lTkHh8l3OVBhq6xsyXQZCqNVKoHdjK1teO8zkSuNnHn52axVkyy44wF
  jP5/n47IHTnb+aVRzChGFcieTBYZDm8iFwJtMEo9mv5bf//NdiRq+Es9wwm3yLXAooahnnuZ
  QdxsLPxXDxw5/j7RBinaTy/EXwisAmjbSWR6+zAwlMNjj38ieCD2fwIMANZG+Ft4BQz8AAAA
-Description: Attack Shield
- Attack Shield Store
+Description: The Metavize Attack Shield Software Appliance
+ The Metavize Attack Shield Software Appliance Store Item
 
 Package: spyware-storeitem
 Architecture: any
@@ -656,8 +656,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  9r+JrLqHcb1/5G+RYmXTPJWlGb3b6BYmf2bKnUk5+TGE7vzZn3kmWHTz5s1//icarfhpzE82
  2tifbwr1VLtn9G935xN+znHG/arjXPYPRVt53HzZvynJzzTaKFBpwLTxwIsWGlcGHRei85f/
  /qR+EPs/AQYALpz0b9lClG4AAAAASUVORK5CYII=
-Description: The Metavize Rogue Protocol Control
- The Metavize Rogue Protocol Control Store Item
+Description: The Metavize Rogue Protocol Control Software Appliance
+ The Metavize Rogue Protocol Control Software Appliance Store Item
 
 Package: nat-storeitem
 Architecture: any
@@ -1486,8 +1486,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  gsfHQOjn+g6B3IjyCiLKankOYogxYlRxroN4C9+u6Nol3m0Ivh3SMIYO77MjbVPK5v9f/vAv
  dt1hz+oW0X4R2L/+xQ72f/+aKQFxz7/f+fpfFP00yKQAP7JF/ft5GLHDLCq9/aj7R7+mbO3J
  3QCjv/Lrm/0vGAYPf3Cgs7LEXqJSDBdeyxQVZw9vy/8MAIKemQqNP8+BAAAAAElFTkSuQmCC
-Description: The Metavize Intrusion Prevention Appliance
- The Metavize Intrusion Prevention Appliance Store Item
+Description: The Metavize Intrusion Prevention Software Appliance
+ The Metavize Intrusion Prevention Software Appliance Store Item
 
 Package: reporting-storeitem
 Architecture: any
