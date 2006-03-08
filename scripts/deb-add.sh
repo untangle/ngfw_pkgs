@@ -48,13 +48,13 @@ do
     create_dir ${DESTINATION}/pool/${COMPONENT}/${file:0:4}
     if [ ! -f ${DESTINATION}/pool/${COMPONENT}/${file:0:4}/${file} ] ; then
         echo "Copying $1 to ${DESTINATION}/pool/${COMPONENT}/${file:0:4}/"
-        cp -af $1 ${DESTINATION}/pool/${COMPONENT}/${file:0:4}/
+        cp -dRf $1 ${DESTINATION}/pool/${COMPONENT}/${file:0:4}/
     fi
   else
     create_dir ${DESTINATION}/pool/${COMPONENT}/${file:0:1}
     if [ ! -f ${DESTINATION}/pool/${COMPONENT}/${file:0:1}/${file} ] ; then
         echo "Copying $1 to ${DESTINATION}/pool/${COMPONENT}/${file:0:1}/"
-        cp -af $1 ${DESTINATION}/pool/${COMPONENT}/${file:0:1}/
+        cp -dRf $1 ${DESTINATION}/pool/${COMPONENT}/${file:0:1}/
     fi
   fi
   file=
