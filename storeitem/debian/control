@@ -664,7 +664,7 @@ Architecture: any
 Depends: nat-transform
 XB-Price: 0
 XB-View-Position: 1000
-XB-Display-Name: Network Sharing
+XB-Display-Name: Router
 XB-Website: http://store.metavize.com/networksharing
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
@@ -751,8 +751,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  jV2HqI3cgHe4BtKqxdZ9QVriCq0JdRBkKKPzYVf2kmdOIz57AnivI8PHQYmKIjd+r4u0YpKU
  zYu28/m48eumeSM2sZU0C0mzhm1HVVVisRiaplFeXv71g9wrRRzHIZVKkUqlBkfjLq5wOcej
  +/fvv9Ix0wA4V/LlOA7/GQCfi3hGQX94NwAAAABJRU5ErkJggg==
-Description: The Metavize Network Sharing Software Appliance
- The Metavize Network Sharing Software Appliance Store Item
+Description: The Metavize Router Software Appliance
+ The Metavize Router Software Appliance Store Item
 
 Package: firewall-storeitem
 Architecture: any
