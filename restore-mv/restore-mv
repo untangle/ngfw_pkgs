@@ -10,7 +10,7 @@ restore_db()
     dropdb -U postgres mvvm >/dev/null 2>&1
     createdb -U metavize mvvm >/dev/null 2>&1
 
-    if confirm "Restore settings?"; then
+#    if confirm "Restore settings?"; then
         zcat $infile | psql -U postgres mvvm >/dev/null 2>&1
 
         ## Set the unconfigured flag, so the box will reconfigure the network configuration a restart
@@ -18,7 +18,7 @@ restore_db()
             | psql -U postgres mvvm >/dev/null 2>&1
         echo "update mvvm_network_settings set setup_state=68 where setup_state=4" \
             | psql -U postgres mvvm >/dev/null 2>&1
-    fi
+#    fi
 }
 
 restore_packages()
