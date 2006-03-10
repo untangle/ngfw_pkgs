@@ -8,7 +8,7 @@ restore_db()
     infile=$1
 
     dropdb -U postgres mvvm >/dev/null 2>&1
-    createdb -U metavize mvvm >/dev/null 2>&1
+    createdb -O metavize -U metavize mvvm >/dev/null 2>&1
 
 #    if confirm "Restore settings?"; then
         zcat $infile | psql -U postgres mvvm >/dev/null 2>&1
@@ -19,6 +19,12 @@ restore_db()
         echo "update mvvm_network_settings set setup_state=68 where setup_state=4" \
             | psql -U postgres mvvm >/dev/null 2>&1
 #    fi
+}
+
+clean_dirs()
+{
+    rm -rf /usr/share/metavize/conf/openvpn
+    rm -rf /etc/openvpn
 }
 
 restore_packages()
@@ -43,8 +49,14 @@ instfile=$3
 # stop the MVVM, depending on circumstances may already be stopped
 /etc/init.d/mvvm stop
 
-# restore the database and the /usr/share/metavize important stuff
-restore_db $dumpfile && tar zxf $tarfile -C /
+# restore the database
+restore_db $dumpfile
+
+# clean out stuff that restore would otherwise append to
+clean_dirs
+
+# restore the files, both system and the /usr/share/metavize important stuf
+tar zxf $tarfile -C /
 
 # try to download needed files, this may fail because the network settings may not be correct
 restore_packages $instfile
