@@ -31,10 +31,11 @@ restore_packages()
 {
     instfile=$1
 
-    cat $instfile | cut -d' ' -f1 | grep -- '-storeitem$' \
-        | xargs apt-get install $INST_OPTS
-    apt-get dist-upgrade $UPGD_OPTS
+    apt-get update >> /var/log/mvvm/apt.log 2>&1
+    apt-get dist-upgrade $UPGD_OPTS >> /var/log/mvvm/apt.log 2>&1
     /etc/init.d/mvvm stop
+    cat $instfile | cut -d' ' -f1 | grep -- '-storeitem$' \
+        | xargs apt-get install $INST_OPTS >> /var/log/mvvm/apt.log 2>&1
 }
 
 
@@ -68,5 +69,5 @@ restore_packages $instfile
 restore_packages $instfile
 
 # start the MVVM, depending on circumstances (menu driven restore) may need to be restopped 
-/etc/init.d/mvvm start 2>&1 > /dev/null
+/etc/init.d/mvvm start > /dev/null 2>&1 
 

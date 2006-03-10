@@ -27,6 +27,7 @@ rm -f /usr/share/metavize/conf/timezone
 rm -f /usr/share/metavize/conf/keystore
 rm -rf /usr/share/metavize/conf/openvpn
 rm -rf /usr/share/metavize/quarantine
+rm -rf /etc/openvpn
 
 # restore canonical files
 (cd / && tar zvxf /usr/share/metavize/conf/canonical.tar.gz)
