@@ -2,7 +2,7 @@
 
 echo -e "\n\nSyncing...\n\n"
 
-sudo rsync -rlpvz -e ssh /var/www/dogfood/ \
+sudo rsync -rlpvz -e ssh /var/www/stable/ \
     --exclude 'echospam*' \
     --exclude 'echod*' \
     --exclude 'test-*' \
@@ -12,6 +12,8 @@ sudo rsync -rlpvz -e ssh /var/www/dogfood/ \
     --exclude 'kernel-dev*' \
     --exclude 'dev-mv*' \
     --exclude 'kav-*' \
+    --exclude 'Packages' \
+    --exclude 'Packages.gz' \
     root@release-alpha.metavize.com:/var/www.release-alpha/metavize
 
 scp \
@@ -20,11 +22,11 @@ scp \
     ~/work/pkgs/scripts/clean-packages.sh \
     root@release-alpha.metavize.com:~/
 
-echo -e "\n\nCleaning...\n\n"
-
+# Cleaning is bad.  Very very bad.  Clean dogfood first, but leave release-alpha full of
+# packages.
+#echo -e "\n\nCleaning...\n\n"
 #ssh release-alpha.metavize.com -lroot "sh ~/clean-packages.sh /var/www.release-alpha/metavize 3 delete"
 
 echo -e "\n\nBuilding Package List...\n\n"
-
 ssh release-alpha.metavize.com -lroot "sh ~/deb-scan.sh /var/www.release-alpha/metavize "
 
