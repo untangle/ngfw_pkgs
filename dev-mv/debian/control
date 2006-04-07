@@ -8,6 +8,6 @@ Standards-Version: 3.5.2
 Package: dev-mv
 Architecture: any
 Provides: jre-mv
-Depends: libxml2, libxml2-dev, fakeroot, debhelper, make, subversion, subversion-tools, iptables-mv, iptables-dev-mv, gcc, libc6-dev, linux-kernel-headers, bridge-utils, postgresql-mv, pgaccess, tcpdump, netcat, libsysfs-dev, g++, devscripts, clamav-mv, spamc-mv, snmpd, snmp, snort-rules-current, openvpn, nsis, nsis-mv, sysutils, zip, global, nxml-mode, aspell, sg3-utils, libxml2-utils, dnsmasq, ddclient, bzip2
+Depends: sudo, pump-mv, libxml2, libxml2-dev, fakeroot, debhelper, make, subversion, subversion-tools, iptables-mv, iptables-dev-mv, gcc, libc6-dev, linux-kernel-headers, bridge-utils, postgresql-mv, pgaccess, tcpdump, netcat, libsysfs-dev, g++, devscripts, clamav-mv, spamc-mv, snmpd, snmp, snort-rules-current, openvpn, nsis, nsis-mv, sysutils, zip, global, nxml-mode, aspell, sg3-utils, libxml2-utils, dnsmasq, ddclient, bzip2, ntp-simple
 Description: Metavize Dev-Env Package
  The Metavize Development Environment Package
