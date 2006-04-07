@@ -10,7 +10,7 @@ Architecture: any
 Depends: airgap-storeitem, spyware-storeitem, httpblocker-storeitem, clam-storeitem, protofilter-storeitem, nat-storeitem, firewall-storeitem, spamassassin-storeitem, clamphish-storeitem, openvpn-storeitem, ids-storeitem, reporting-storeitem
 XB-Price: 0
 XB-View-Position: 10
-XB-Display-Name: Standard Bundle
+XB-Display-Name: Total Security Bundle
 XB-Website: http://store.metavize.com/airgap
 XB-Is-Bundle: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
@@ -99,8 +99,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  rxSO/Zvfx5cABVxJRNUGamNTPCYZ2UsOaDzs2xb3m1/9oti39M7k5xvX3bzjrqa4thdzLUE8
  +kHp7ctXX3nDwvP84y0Y74x+whGA5coYxupTGJ+ax2vfe9P+IPY/AQYAsGi4kBr8QykAAAAA
  SUVORK5CYII=
-Description: The Metavize Standard Subcription Bundle
- The Metavize Standard Subcription Bundle Store
+Description: The Metavize Total Security Bundle
+ The Metavize Total Security Bundle Store Item
 
 Package: airgap-storeitem
 Architecture: any
