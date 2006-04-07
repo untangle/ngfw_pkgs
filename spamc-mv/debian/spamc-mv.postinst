@@ -6,6 +6,7 @@ chown -R spamc:spamc /home/spamc
 
 # enable in /etc/default/spamassassin
 sed -i "s/^ENABLED=.*/ENABLED=1/" /etc/default/spamassassin
+sed -i 's/^OPTIONS=.*/OPTIONS="--create-prefs --round-robin --max-children 5 --helper-home-dir"/' /etc/default/spamassassin
 
 # turn off stuff in local.cf
 rm -f /etc/spamassassin/local.cf
