@@ -1,3 +1,9 @@
+slapd-mv (0-3) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@metavize.com>  Tue, 25 Apr 2006 18:44:06 -0700
+
 slapd-mv (0-2) stable; urgency=low
 
   * auto build
