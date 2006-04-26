@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Preload configuration questions
+debconf-set-selections<<EOF
+slapd domain string mydomain
+shared organization string mydomain
+slapd password1 password passwd
+slapd password2 password passwd
+EOF
+
+exit 0 
+
+
+
