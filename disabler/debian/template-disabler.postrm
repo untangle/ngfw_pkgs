@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# leave used flag 
+mkdir -p /usr/share/metavize/conf/trials &> /dev/null
+touch /usr/share/metavize/conf/trials/template-used
+
+# reenable usage
+mcli enable template-transform &> /dev/null
+
+
+

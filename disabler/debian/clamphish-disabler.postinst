@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ -f /usr/share/metavize/conf/trials/clamphish-used ] ; then
+
+    # trial already used - disable immediately
+    mcli disable clamphish-transform &> /dev/null &
+
+else
+
+    # change extraname to trial
+    mcli extraname clamphish-transform "trial" &> /dev/null &
+
+    # schedule disabling
+    echo "mcli disable clamphish-transform" | at "+30 days" &> /dev/null
+fi
+
+

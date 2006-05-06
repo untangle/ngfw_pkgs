@@ -1,0 +1,47 @@
+Source: disabler-mv
+Section: admin
+Priority: optional
+Maintainer: Dirk Morris <dmorris@metavize.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.5.2
+
+Package: standard-bundle-disabler
+Architecture: any
+Depends: spyware-disabler, httpblocker-disabler, protofilter-disabler, spamassassin-disabler, clamphish-disabler, ids-disabler
+Description: The Metavize Security Bundle Disabler
+ The Metavize Total Security Bundle Disabler
+
+Package: spyware-disabler
+Architecture: any
+Description: The Metavize Spyware Blocker Disabler
+ The Metavize Spyware Blocker Software Appliance Disabler
+
+Package: httpblocker-disabler
+Architecture: any
+Description: The Metavize Web Content Control Disabler
+ The Metavize Web Content Control Software Appliance Disabler
+
+Package: hauri-disabler
+Architecture: any
+Description: The Hauri AntiVirus Scanner Disabler
+ The Hauri AntiVirus Scanner Software Appliance Disabler
+
+Package: protofilter-disabler
+Architecture: any
+Description: The Metavize Rogue Protocol Control Disabler
+ The Metavize Rogue Protocol Control Software Appliance Disabler
+
+Package: spamassassin-disabler
+Architecture: any
+Description: The Metavize SpamGuard Disabler
+ The Metavize SpamGuard Software Appliance Disabler
+
+Package: clamphish-disabler
+Architecture: any
+Description: The Metavize PhishNet Disabler
+ The Metavize PhishNet Software Appliance Disabler
+
+Package: ids-disabler
+Architecture: any
+Description: The Metavize Intrusion Prevention Disabler
+ The Metavize Intrusion Prevention Software Appliance Disabler

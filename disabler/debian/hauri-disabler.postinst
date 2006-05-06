@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ -f /usr/share/metavize/conf/trials/hauri-used ] ; then
+
+    # trial already used - disable immediately
+    mcli disable hauri-transform &> /dev/null &
+
+else
+
+    # change extraname to trial
+    mcli extraname hauri-transform "trial" &> /dev/null &
+
+    # schedule disabling
+    echo "mcli disable hauri-transform" | at "+30 days" &> /dev/null
+fi
+
+
