@@ -1,7 +1,7 @@
 #!/bin/sh
 
 
-/usr/bin/wget --post-file /tmp/standard-post-unsub "https://boxtrack.metavize.com/register/unsub.php?box_id=`cat /usr/share/metavize/activation.key`&filename=standard-bundle-storeitem"  &> /dev/null &
+/usr/bin/wget "https://boxtrack.metavize.com/register/unsub.php?box_id=`cat /usr/share/metavize/activation.key`&filename=standard-bundle-storeitem"  &> /dev/null &
 
 
 

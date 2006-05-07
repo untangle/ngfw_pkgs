@@ -1,7 +1,7 @@
 #!/bin/sh
 
 
-/usr/bin/wget --post-file /tmp/spyware-post-unsub "https://boxtrack.metavize.com/register/unsub.php?box_id=`cat /usr/share/metavize/activation.key`&filename=spyware-storeitem"  &> /dev/null &
+/usr/bin/wget "https://boxtrack.metavize.com/register/unsub.php?box_id=`cat /usr/share/metavize/activation.key`&filename=spyware-storeitem"  &> /dev/null &
 
 
 
