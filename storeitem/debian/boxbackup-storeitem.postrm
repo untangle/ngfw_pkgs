@@ -1,8 +1,7 @@
 #!/bin/sh
 
 
-echo "box_id=`cat /usr/share/metavize/activation.key`&filename=boxbackup-storeitem" > /tmp/boxbackup-post-unsub
-wget --post-file /tmp/boxbackup-post-unsub https://boxtrack.metavize.com/register/unsub.php 
+/usr/bin/wget --post-file /tmp/boxbackup-post-unsub "https://boxtrack.metavize.com/register/unsub.php?box_id=`cat /usr/share/metavize/activation.key`&filename=boxbackup-storeitem"  &> /dev/null &
 
 
 
