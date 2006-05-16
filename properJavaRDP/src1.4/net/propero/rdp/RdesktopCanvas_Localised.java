@@ -56,10 +56,12 @@ public class RdesktopCanvas_Localised extends RdesktopCanvas {
 	}
 	
 	public void movePointer(int x, int y){
+            if (robot != null) {
 		Point p = this.getLocationOnScreen();
 		x = x + p.x;
 		y = y + p.y;
 		robot.mouseMove(x, y);
+            }
 	}
 
 	protected Cursor createCustomCursor(Image wincursor, Point p, String s, int cache_idx){
@@ -73,6 +75,8 @@ public class RdesktopCanvas_Localised extends RdesktopCanvas {
 			try {
 				robot = new Robot();
 			} catch(AWTException e) {
+			logger.warn("Pointer movement not allowed");
+			} catch(java.security.AccessControlException e) {
 			logger.warn("Pointer movement not allowed");
 			}
 		}

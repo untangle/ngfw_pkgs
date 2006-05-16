@@ -516,6 +516,7 @@ public class Rdp {
                     "Connection timed out when attempting to connect to "
                             + server);
         } catch (IOException e) {
+            logger.error("exception in connect", e); 
             throw new ConnectionException("Connection Failed");
         } catch (RdesktopException e) {
             throw new ConnectionException(e.getMessage());

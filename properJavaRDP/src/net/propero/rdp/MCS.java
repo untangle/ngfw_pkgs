@@ -54,7 +54,7 @@ public class MCS {
      */
     public MCS(VChannels channels) {
         this.channels = channels;
-    	IsoLayer = new ISO_Localised();
+    	IsoLayer = new ISO_Portaled();
     }
     
     /**

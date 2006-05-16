@@ -104,5 +104,8 @@ public class Options {
                                                 Rdp.RDP5_NO_FULLWINDOWDRAG | Rdp.RDP5_NO_MENUANIMATIONS |
                                                 Rdp.RDP5_NO_THEMING | Rdp.RDP5_NO_WALLPAPER;
     public static boolean save_graphics = false;
+
+    public static String target_header = null;
+    public static String cookie_header = null;
 	
 }

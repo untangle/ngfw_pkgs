@@ -12,7 +12,7 @@
 package net.propero.rdp;
 
 import java.io.*;
-import java.net.*;
+import java.net.InetAddress;
 
 import net.propero.rdp.crypto.CryptoException;
 
@@ -23,18 +23,17 @@ public abstract class ISO {
  
     private HexDump dump = null;
 
-    protected Socket rdpsock=null;
-    private DataInputStream in=null;
-    private DataOutputStream out=null;
+    protected DataInputStream in=null;
+    protected DataOutputStream out=null;
        
     /* this for the ISO Layer */
-    private static final int CONNECTION_REQUEST=0xE0;
-    private static final int CONNECTION_CONFIRM=0xD0;
-    private static final int DISCONNECT_REQUEST=0x80;
-    private static final int DATA_TRANSFER=0xF0;
-    private static final int ERROR=0x70;
-    private static final int PROTOCOL_VERSION=0x03;
-    private static final int EOT=0x80;
+    protected static final int CONNECTION_REQUEST=0xE0;
+    protected static final int CONNECTION_CONFIRM=0xD0;
+    protected static final int DISCONNECT_REQUEST=0x80;
+    protected static final int DATA_TRANSFER=0xF0;
+    protected static final int ERROR=0x70;
+    protected static final int PROTOCOL_VERSION=0x03;
+    protected static final int EOT=0x80;
  
     /**
      * Construct ISO object, initialises hex dump
@@ -66,9 +65,7 @@ public abstract class ISO {
      * @param port Port on which to connect socket
      * @throws IOException
      */
-	protected void doSocketConnect(InetAddress host, int port)throws IOException{
-		this.rdpsock = new Socket(host,port);
-	}
+    protected abstract void doSocketConnect(InetAddress host, int port) throws IOException;
 	
     /**
      * Connect to a server
@@ -79,32 +76,8 @@ public abstract class ISO {
      * @throws OrderException
      * @throws CryptoException
      */
-    public void connect(InetAddress host, int port) throws IOException, RdesktopException, OrderException, CryptoException {
-	int[] code = new int[1];
-	doSocketConnect(host,port);
-	rdpsock.setTcpNoDelay(Options.low_latency);
-	// this.in = new InputStreamReader(rdpsock.getInputStream());
-    this.in = new DataInputStream(new BufferedInputStream(rdpsock.getInputStream()));
-	this.out= new DataOutputStream(new BufferedOutputStream(rdpsock.getOutputStream()));
-	send_connection_request();
+    public abstract void connect(InetAddress host, int port) throws IOException, RdesktopException, OrderException, CryptoException;
 	
-	receiveMessage(code);
-	if (code[0] != CONNECTION_CONFIRM) {
-	    throw new RdesktopException("Expected CC got:" + Integer.toHexString(code[0]).toUpperCase());
-	}
-	
-	/*if(Options.use_ssl){
-		try {
-			rdpsock = this.negotiateSSL(rdpsock);
-			this.in = new DataInputStream(rdpsock.getInputStream());
-			this.out= new DataOutputStream(rdpsock.getOutputStream());
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RdesktopException("SSL negotiation failed: " + e.getMessage());
-		}
-	}*/
-	
-    }
     
     /**
      * Send a self contained iso-pdu
@@ -138,7 +111,7 @@ public abstract class ISO {
      * @throws IOException
      */
     public void send(RdpPacket_Localised buffer) throws RdesktopException, IOException {
-	if(rdpsock == null || out==null) return;
+	if(out==null) return;
 	if (buffer.getEnd() < 0) {
 	    throw new RdesktopException("No End Mark!");
 	} else {
@@ -225,7 +198,7 @@ public abstract class ISO {
      * @throws OrderException
      * @throws CryptoException
      */
- 	private RdpPacket_Localised receiveMessage(int[] type) throws IOException, RdesktopException, OrderException, CryptoException {
+ 	protected RdpPacket_Localised receiveMessage(int[] type) throws IOException, RdesktopException, OrderException, CryptoException {
  		logger.debug("ISO.receiveMessage");
  		RdpPacket_Localised s = null;
  		int length, version;
@@ -276,21 +249,18 @@ public abstract class ISO {
      * Disconnect from an RDP session, closing all sockets
      */
     public void disconnect() {
-	if (rdpsock == null) return;
+	if (out == null) return;
 	try { 
 	    sendMessage(DISCONNECT_REQUEST);
 	    if(in!=null) in.close();
 	    if(out!=null) out.close();
-	    if(rdpsock!=null) rdpsock.close();
 	} catch(IOException e) {
 	    in=null;
 	    out=null;
-	    rdpsock=null;
 	    return;
 	}
 	in=null;
 	out=null;
-	rdpsock=null;
     }
     
    

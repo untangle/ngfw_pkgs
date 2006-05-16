@@ -18,7 +18,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-public class ISO_Localised extends ISO {
+public class ISO_Localised extends ISO_Socketed {
 
 	/*
 	protected Socket negotiateSSL(Socket sock) throws Exception {

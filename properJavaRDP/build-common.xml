@@ -4,16 +4,12 @@
 
   <!-- CLASSPATH required for build. -->
   <path id="build.classpath">
-    <fileset dir="${java.log4j11.package}" includes="${jar.log4j.java11}"/>
-    <fileset dir="${java.getopt.package}" includes="${jar.gnugetopt}"/>
+    <fileset dir="." includes="${jar.log4j.java11}"/>
+    <fileset dir="." includes="${jar.gnugetopt}"/>
   </path>
   
   <target name="init-common">
     <mkdir dir="${build.dir}"/>
-    <mkdir dir="${build.dir}1.1"/>
-    <mkdir dir="${build.dir}1.2"/>
-    <mkdir dir="${build.dir}1.3"/>
-    <mkdir dir="${build.dir}1.4"/>
     <mkdir dir="${dist.dir}" />
      
     <mkdir dir="${build.dir}/keymaps"/>
@@ -37,13 +33,8 @@
     <javac srcdir="${src.dir}:${src.dir}${java.version}"
            destdir="${build.dir}"
            classpathref="build.classpath"
-           fork="true"
-           target="${java.version}">
+           fork="true">
     </javac>
-    <mkdir dir="${build.dir}${java.version}/net/propero/rdp"/>
-    <move todir="${build.dir}${java.version}/net/propero/rdp">
-      <fileset dir="${build.dir}/net/propero/rdp" includes="*_Localised.class"/>
-    </move>
   </target>
   
   <target name="build-common">
@@ -51,18 +42,6 @@
          Note this will be replaced by an antCall element when we can
          be assured everyone will have Ant 1.5.2
       -->
-    <ant antfile="${commonxml}" target="build-common-version">
-      <property name="java.version" value="1.1"/>
-    </ant>
-
-    <ant antfile="${commonxml}" target="build-common-version">
-      <property name="java.version" value="1.2"/>
-    </ant>
-
-    <ant antfile="${commonxml}" target="build-common-version">
-      <property name="java.version" value="1.3"/>
-    </ant>
-
     <ant antfile="${commonxml}" target="build-common-version">
       <property name="java.version" value="1.4"/>
     </ant>
@@ -78,18 +57,10 @@
       <fileset dir="${basedir}/keymaps"/>
     </copy>
     <jar jarfile="${dist.dir}/${jar.path}" basedir="${build.dir}/"/>
-    <jar jarfile="${dist.dir}/${jar.path.14}" basedir="${build.dir}1.4/"/>
-    <jar jarfile="${dist.dir}/${jar.path.13}" basedir="${build.dir}1.3/"/>
-    <jar jarfile="${dist.dir}/${jar.path.12}" basedir="${build.dir}1.2/"/>
-    <jar jarfile="${dist.dir}/${jar.path.11}" basedir="${build.dir}1.1/"/>
   </target>
   
   <target name="clean-common">
     <delete dir="${build.dir}" />  
-    <delete dir="${build.dir}1.4" />
-    <delete dir="${build.dir}1.3" />
-    <delete dir="${build.dir}1.2" />  
-    <delete dir="${build.dir}1.1" />              
     <delete dir="${dist.dir}" />
   </target>
 </project>

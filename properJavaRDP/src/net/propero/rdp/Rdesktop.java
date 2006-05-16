@@ -192,6 +192,8 @@ public class Rdesktop {
 		System.err.println("	-T TITLE					window title");
 		System.err.println("	-u USERNAME					user name");
 		System.err.println("	-o BPP						bits-per-pixel for display");
+		System.err.println("	-q target					target header value for proxy passthrough");
+		System.err.println("	-e cookie-text					cookie header value for proxy passthrough session identification");
         System.err.println("    -r path                     path to load licence from (requests and saves licence from server if not found)");
         System.err.println("    --save_licence              request and save licence from server");
         System.err.println("    --load_licence              load licence from file");
@@ -270,7 +272,9 @@ public class Rdesktop {
 		Getopt g = new Getopt("properJavaRDP", args,
 				"bc:d:f::g:k:l:m:n:p:s:t:T:u:o:r:", alo);
 
-		ClipChannel clipChannel = new ClipChannel();
+		ClipChannel clipChannel = null;
+                if (Options.map_clipboard)
+                    clipChannel = new ClipChannel();
 
 		while ((c = g.getopt()) != -1) {
 			switch (c) {
@@ -381,6 +385,12 @@ public class Rdesktop {
 							+ arg);
 					usage();
 				}
+				break;
+			case 'q':
+				Options.target_header = g.getOptarg();
+				break;
+			case 'e':
+				Options.cookie_header = g.getOptarg();
 				break;
 			case 'l':
 				arg = g.getOptarg();

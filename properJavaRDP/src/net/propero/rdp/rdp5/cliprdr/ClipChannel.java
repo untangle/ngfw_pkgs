@@ -38,7 +38,63 @@ import net.propero.rdp.rdp5.VChannels;
 
 public class ClipChannel extends VChannel implements ClipInterface, ClipboardOwner, FocusListener {
 
-	String[] types = {
+    private class SimpleClipboard {
+        
+        Clipboard sysBoard = null;
+        Object jnlpClipboardService = null;
+
+        SimpleClipboard() {
+            try {
+                sysBoard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            } catch (java.security.AccessControlException x) {
+                // Normal when insecure.
+                logger.info("No permission for system clipboard, trying jnlp");
+                try {
+                    Class sm = Class.forName("javax.jnlp.ServiceManager");
+                    jnlpClipboardService = sm.getMethod("lookup", String.class).
+                        invoke(null, "javax.jnlp.ClipboardService");
+                } catch (Exception y) {
+                    logger.info("Unable to get jnlp clipboard either", y);
+                }
+            }
+        }
+
+        public Transferable getContents(Object requestor) {
+            if (sysBoard != null) {
+                return sysBoard.getContents(requestor);
+            } else if (jnlpClipboardService != null) {
+                Class cs = jnlpClipboardService.getClass();
+                try {
+                    return (Transferable) cs.getMethod("getContents").invoke(jnlpClipboardService);
+                } catch (Exception x) {
+                    logger.error("Unable to get jnlp clipboard contents", x);
+                }
+            }
+            return new Transferable() {
+                    public Object getTransferData(DataFlavor flavor) { return null; }
+                    public DataFlavor[] getTransferDataFlavors() { return new DataFlavor[0]; }
+                    public boolean isDataFlavorSupported(DataFlavor flavor) { return false; }
+                };
+        }
+
+        public void setContents(Transferable contents, ClipboardOwner owner) {
+            if (sysBoard != null) {
+                sysBoard.setContents(contents, owner);
+            } else if (jnlpClipboardService != null) {
+                Class cs = jnlpClipboardService.getClass();
+                try {
+                    cs.getMethod("setContents", Transferable.class).
+                        invoke(jnlpClipboardService, contents);
+                } catch (Exception x) {
+                    logger.error("Unable to set jnlp clipboard contents", x);
+                }
+            } else {
+            }
+        }
+    }
+            
+	
+    String[] types = {
 			"unused",
 			"CF_TEXT",
 			"CF_BITMAP",
@@ -73,7 +129,7 @@ public class ClipChannel extends VChannel implements ClipInterface, ClipboardOwn
 	public static final int CLIPRDR_RESPONSE = 1;
 	public static final int CLIPRDR_ERROR = 2;
 
-	Clipboard clipboard;
+	SimpleClipboard clipboard;
 
 	// TypeHandler for data currently being awaited
 	TypeHandler currentHandler = null;
@@ -82,14 +138,14 @@ public class ClipChannel extends VChannel implements ClipInterface, ClipboardOwn
 	byte[] localClipData = null;
 	
 	public ClipChannel(){
-		this.clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		
-		// initialise all clipboard format handlers
-		allHandlers = new TypeHandlerList();
-		allHandlers.add(new UnicodeHandler());
-		allHandlers.add(new TextHandler());
-		allHandlers.add(new DIBHandler());
-		//allHandlers.add(new MetafilepictHandler());
+            this.clipboard = new SimpleClipboard();
+    	
+            // initialise all clipboard format handlers
+            allHandlers = new TypeHandlerList();
+            allHandlers.add(new UnicodeHandler());
+            allHandlers.add(new TextHandler());
+            allHandlers.add(new DIBHandler());
+            //allHandlers.add(new MetafilepictHandler());
 	}
 	
 	/* 
