@@ -1,3 +1,9 @@
+dev-mv (0-26) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@metavize.com>  Tue, 16 May 2006 19:14:54 -0700
+
 dev-mv (0-25) stable; urgency=low
 
   * auto build
