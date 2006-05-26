@@ -10,6 +10,7 @@ sudo rsync -rlpvz -e ssh /var/www/stable/ \
     --exclude 'sophos-*' \
     --exclude 'virus-transform*' \
     --exclude 'kernel-dev*' \
+    --exclude 'kernel-fake*' \
     --exclude 'dev-mv*' \
     --exclude 'kav-*' \
     --exclude 'Packages' \
