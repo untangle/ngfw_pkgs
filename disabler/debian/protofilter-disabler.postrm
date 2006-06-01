@@ -1,10 +1,11 @@
 #!/bin/sh
 
-# reenable usage
-mcli enable protofilter-transform &> /dev/null
-
 # leave used flag 
 mkdir -p /usr/share/metavize/conf/trials &> /dev/null
 touch /usr/share/metavize/conf/trials/protofilter-used
+
+# reenable usage
+mcli enable protofilter-transform &> /dev/null
+
 
 

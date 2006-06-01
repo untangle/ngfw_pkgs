@@ -45,3 +45,8 @@ Package: ids-disabler
 Architecture: any
 Description: The Metavize Intrusion Prevention Disabler
  The Metavize Intrusion Prevention Software Appliance Disabler
+
+Package: portal-disabler
+Architecture: any
+Description: The Metavize Web Portal Disabler
+ The Metavize Web Portal Disabler

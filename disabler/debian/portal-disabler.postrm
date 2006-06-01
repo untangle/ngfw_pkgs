@@ -2,10 +2,10 @@
 
 # leave used flag 
 mkdir -p /usr/share/metavize/conf/trials &> /dev/null
-touch /usr/share/metavize/conf/trials/hauri-used
+touch /usr/share/metavize/conf/trials/portal-used
 
 # reenable usage
-mcli enable hauri-transform &> /dev/null
+mcli enable portal-transform &> /dev/null
 
 
 

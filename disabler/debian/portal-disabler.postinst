@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ -f /usr/share/metavize/conf/trials/portal-used ] ; then
+
+    # trial already used - disable immediately
+    mcli disable portal-transform &> /dev/null &
+
+else
+
+    # change extraname to trial
+    mcli extraname portal-transform "trial" &> /dev/null &
+
+    # schedule disabling
+    echo "mcli disable portal-transform" | at "+30 days" &> /dev/null
+fi
+
+
