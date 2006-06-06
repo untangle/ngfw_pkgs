@@ -270,7 +270,7 @@ public class Rdesktop {
 		String progname = "properJavaRDP";
 
 		Getopt g = new Getopt("properJavaRDP", args,
-				"bc:d:f::g:k:l:m:n:p:s:t:T:u:o:r:", alo);
+				"bc:d:e:f::g:k:l:m:n:p:q:s:t:T:u:o:r:", alo);
 
 		ClipChannel clipChannel = null;
                 if (Options.map_clipboard)
