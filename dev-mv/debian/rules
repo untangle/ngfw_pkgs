@@ -33,9 +33,9 @@ build: configure
 	dh_installdirs -A -v
 	mkdir -p ./debian/tmp/opt
 # Need to use -dp to preserve times and symbolic links inside the jre
-	cp -dpr /opt/jdk1.5.0_06 ./debian/tmp/opt/
-	ln -s jdk1.5.0_06 ./debian/tmp/opt/jdk
-	ln -s jdk1.5.0_06 ./debian/tmp/opt/java
+	cp -dpr /opt/jdk1.5.0_07 ./debian/tmp/opt/
+	ln -s jdk1.5.0_07 ./debian/tmp/opt/jdk
+	ln -s jdk1.5.0_07 ./debian/tmp/opt/java
 
 clean:
 	dh_testdir
