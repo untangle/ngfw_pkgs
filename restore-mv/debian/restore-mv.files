@@ -4,3 +4,4 @@
 /usr/bin/mvvmdb-restore
 /usr/bin/restore-mv
 /usr/share/metavize/conf/canonical.tar.gz
+/usr/share/metavize/conf/initial.ldif

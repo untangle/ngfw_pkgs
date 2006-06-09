@@ -29,5 +29,14 @@ rm -rf /usr/share/metavize/conf/openvpn
 rm -rf /usr/share/metavize/quarantine
 rm -rf /etc/openvpn
 
+# restore initial LDAP db
+/etc/init.d/slapd stop
+rm -rf /var/lib/ldap
+mkdir /var/lib/ldap
+cp /usr/share/metavize/conf/ldap.DB_CONFIG /var/lib/ldap/DB_CONFIG
+slapadd -l /usr/share/metavize/conf/initial.ldif
+slapindex
+/etc/init.d/slapd start
+
 # restore canonical files
 (cd / && tar zvxf /usr/share/metavize/conf/canonical.tar.gz)

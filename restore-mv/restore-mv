@@ -25,6 +25,7 @@ clean_dirs()
 {
     rm -rf /usr/share/metavize/conf/openvpn
     rm -rf /etc/openvpn
+    rm -f  /usr/share/metavize/conf/dirbackup.ldif
 }
 
 restore_packages()
@@ -58,6 +59,17 @@ clean_dirs
 
 # restore the files, both system and the /usr/share/metavize important stuf
 tar zxf $tarfile -C /
+
+# restore the LDAP configuration
+if [ -f /usr/share/metavize/conf/dirbackup.ldif ]; then
+    /etc/init.d/slapd stop
+    rm -rf /var/lib/ldap
+    mkdir /var/lib/ldap
+    cp /usr/share/metavize/conf/ldap.DB_CONFIG /var/lib/ldap/DB_CONFIG
+    slapadd -l /usr/share/metavize/conf/dirbackup.ldif
+    slapindex
+    /etc/init.d/slapd start
+fi
 
 # try to download needed files, this may fail because the network settings may not be correct
 restore_packages $instfile

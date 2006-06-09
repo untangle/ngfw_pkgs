@@ -4,6 +4,8 @@ tar_files()
 {
     tarfile=$1
 
+    slapcat -l /usr/share/metavize/conf/dirbackup.ldif
+
     tar zcf $tarfile --ignore-failed-read -C / \
         etc/hostname \
         etc/network/interfaces \
@@ -15,7 +17,8 @@ tar_files()
         usr/share/metavize/conf/networking.sh \
         usr/share/metavize/conf/openvpn/misc \
         usr/share/metavize/conf/openvpn/pki \
-        usr/share/metavize/conf/timezone
+        usr/share/metavize/conf/timezone \
+        usr/share/metavize/conf/dirbackup.ldif
 }
 
 dump_installed()

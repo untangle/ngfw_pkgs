@@ -40,6 +40,8 @@ build: configure
 	cp ./factory-defaults ./debian/tmp/usr/bin/
 	mkdir -p ./debian/tmp/usr/share/metavize/conf
 	cd canonical && tar zcf  ../debian/tmp/usr/share/metavize/conf/canonical.tar.gz --exclude '.svn' *
+	cp ./initial.ldif ./debian/tmp/usr/share/metavize/conf
+	cp ./ldap.DB_CONFIG ./debian/tmp/usr/share/metavize/conf
 
 clean:
 	dh_testdir
