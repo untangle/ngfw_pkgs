@@ -13,7 +13,7 @@ sed -e "s/.*virtual_host.*=.*/virtual_host='127.0.0.1'/" -i $PG_ETC/postgresql.c
 # Tune memory usage & query optimizer
 sed -e "s/.*shared_buffers.*=.*/shared_buffers=3000/" -i $PG_ETC/postgresql.conf
 sed -e "s/.*sort_mem.*=.*/sort_mem=8192/" -i $PG_ETC/postgresql.conf
-sed -e "s/.*effective_cache_size.*=.*/effective_cache_size=20000/" -i $PG_ETC/postgresql.conf
+sed -e "s/.*effective_cache_size.*=.*/effective_cache_size=2000/" -i $PG_ETC/postgresql.conf
 
 # Turn off automatic vacuuming (now done nightly just after rollup, before reporting)
 sed -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" -i $PG_ETC/postmaster.conf
