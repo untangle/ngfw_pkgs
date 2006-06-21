@@ -40,3 +40,6 @@ slapindex
 
 # restore canonical files
 (cd / && tar zvxf /usr/share/metavize/conf/canonical.tar.gz)
+
+# restore factory root pw
+echo "root:YKN4WuGxhHpIw" | /usr/sbin/chpasswd -e
