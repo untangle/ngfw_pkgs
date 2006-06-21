@@ -1,3 +1,9 @@
+postgresql-mv (0-32) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@metavize.com>  Wed, 21 Jun 2006 16:47:12 -0700
+
 postgresql-mv (0-31) stable; urgency=low
 
   * auto build
