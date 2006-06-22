@@ -1,3 +1,9 @@
+disabler-mv (0-45) stable; urgency=low
+
+  * auto build
+
+ -- Dirk Morris <dmorris@metavize.com>  Thu, 22 Jun 2006 13:39:44 -0700
+
 disabler-mv (0-44) stable; urgency=low
 
   * auto build
