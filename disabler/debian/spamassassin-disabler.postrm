@@ -6,6 +6,6 @@ touch /usr/share/metavize/conf/trials/spamassassin-used
 
 # reenable usage
 mcli enable spamassassin-transform &> /dev/null
-
+exit 0
 
 

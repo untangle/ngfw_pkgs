@@ -6,6 +6,6 @@ touch /usr/share/metavize/conf/trials/clamphish-used
 
 # reenable usage
 mcli enable clamphish-transform &> /dev/null
-
+exit 0
 
 

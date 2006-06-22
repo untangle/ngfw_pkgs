@@ -6,6 +6,6 @@ touch /usr/share/metavize/conf/trials/portal-used
 
 # reenable usage
 mcli enable portal-transform &> /dev/null
-
+exit 0
 
 

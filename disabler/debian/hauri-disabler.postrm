@@ -6,6 +6,6 @@ touch /usr/share/metavize/conf/trials/hauri-used
 
 # reenable usage
 mcli enable hauri-transform &> /dev/null
-
+exit 0
 
 

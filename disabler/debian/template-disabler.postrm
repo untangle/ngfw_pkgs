@@ -6,6 +6,6 @@ touch /usr/share/metavize/conf/trials/template-used
 
 # reenable usage
 mcli enable template-transform &> /dev/null
-
+exit 0
 
 

@@ -6,6 +6,6 @@ touch /usr/share/metavize/conf/trials/protofilter-used
 
 # reenable usage
 mcli enable protofilter-transform &> /dev/null
-
+exit 0
 
 

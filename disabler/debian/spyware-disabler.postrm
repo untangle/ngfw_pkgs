@@ -6,6 +6,6 @@ touch /usr/share/metavize/conf/trials/spyware-used
 
 # reenable usage
 mcli enable spyware-transform &> /dev/null
-
+exit 0
 
 

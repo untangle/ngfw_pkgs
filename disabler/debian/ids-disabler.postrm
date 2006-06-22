@@ -6,6 +6,6 @@ touch /usr/share/metavize/conf/trials/ids-used
 
 # reenable usage
 mcli enable ids-transform &> /dev/null
-
+exit 0
 
 

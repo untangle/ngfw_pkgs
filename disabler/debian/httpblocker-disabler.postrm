@@ -6,6 +6,6 @@ touch /usr/share/metavize/conf/trials/httpblocker-used
 
 # reenable usage
 mcli enable httpblocker-transform &> /dev/null
-
+exit 0
 
 
