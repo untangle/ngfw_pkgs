@@ -3,12 +3,16 @@
 if [ -f /usr/share/metavize/conf/trials/ids.expired ] ; then
 
     # trial already used - disable immediately
-    mcli disable ids-transform &> /dev/null &
+    /usr/bin/mcli disable ids-transform &> /dev/null &
 
 else
 
     # change extraname to trial
-    mcli extraname ids-transform "trial" &> /dev/null &
+    /usr/bin/mcli extraname ids-transform "Trial" &> /dev/null &
+
+    for i in `seq 29` ; do 
+        echo "/usr/bin/mcli extraname ids-transform \"Trial ($((30-$i)) days remain)\"" | at +$i days &> /dev/null
+    done
 
     # schedule disabling - this gets double checked by the cron job
     echo "/usr/bin/mvdisable ids-transform &> /dev/null" | at "+30 days" &> /dev/null
