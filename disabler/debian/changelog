@@ -1,3 +1,9 @@
+disabler-mv (0-41) stable; urgency=low
+
+  * auto build
+
+ -- Dirk Morris <dmorris@butters.metaloft.com>  Wed, 21 Jun 2006 20:00:01 -0700
+
 disabler-mv (0-40) stable; urgency=low
 
   * auto build
