@@ -8,7 +8,7 @@ if [ -f /usr/share/metavize/conf/trials/clamphish.expired ] ; then
 else
 
     # change extraname to trial
-    /usr/bin/mcli extraname clamphish-transform "Trial" &> /dev/null &
+    /usr/bin/mcli extraname clamphish-transform "Trial (30 days remain)" &> /dev/null &
 
     for i in `seq 29` ; do 
         echo "/usr/bin/mcli extraname clamphish-transform \"Trial ($((30-$i)) days remain)\"" | at +$i days &> /dev/null
