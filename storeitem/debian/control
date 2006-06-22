@@ -1750,7 +1750,7 @@ Architecture: any
 Depends: portal-transform
 XB-Price: 99
 XB-View-Position: 1015
-XB-Display-Name: Web Portal
+XB-Display-Name: Secure Portal
 XB-Website: http://www.metavize.com/portal.html
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
@@ -2745,7 +2745,7 @@ Architecture: any
 Depends: portal-transform, portal-disabler
 XB-Price: 0
 XB-View-Position: 75
-XB-Display-Name: Web Portal 30-Day Trial
+XB-Display-Name: Secure Portal 30-Day Trial
 XB-Website: http://store.metavize.com/portal
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
