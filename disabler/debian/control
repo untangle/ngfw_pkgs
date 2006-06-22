@@ -48,5 +48,10 @@ Description: The Metavize Intrusion Prevention Disabler
 
 Package: portal-disabler
 Architecture: any
-Description: The Metavize Web Portal Disabler
- The Metavize Web Portal Disabler
+Description: The Metavize Secure Portal Disabler
+ The Metavize Secure Portal Disabler
+
+Package: boxbackup-disabler
+Architecture: any
+Description: The Metavize 24-Hour Replacement Disabler
+ The Metavize 24-Hour Replacement Disabler

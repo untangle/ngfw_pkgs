@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# leave used flag 
+mkdir -p /usr/share/metavize/conf/trials &> /dev/null
+touch /usr/share/metavize/conf/trials/boxbackup.expired
+
+# reenable usage
+mcli enable boxbackup-transform &> /dev/null
+# change extraname to nothing
+mcli extraname boxbackup-transform "" &> /dev/null &
+
+exit 0
+
+

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ -f /usr/share/metavize/conf/trials/httpblocker-used ] ; then
+if [ -f /usr/share/metavize/conf/trials/httpblocker.expired ] ; then
 
     # trial already used - disable immediately
     mcli disable httpblocker-transform &> /dev/null &
@@ -10,8 +10,9 @@ else
     # change extraname to trial
     mcli extraname httpblocker-transform "trial" &> /dev/null &
 
-    # schedule disabling
-    echo "mcli disable httpblocker-transform" | at "+30 days" &> /dev/null
+    # schedule disabling - this gets double checked by the cron job
+    echo "/usr/bin/mvdisable httpblocker-transform &> /dev/null" | at "+30 days" &> /dev/null
+    mkdir -p /usr/share/metavize/conf/trials &> /dev/null
 fi
 
 

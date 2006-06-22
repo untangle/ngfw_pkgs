@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ -f /usr/share/metavize/conf/trials/template-used ] ; then
+if [ -f /usr/share/metavize/conf/trials/template.expired ] ; then
 
     # trial already used - disable immediately
     mcli disable template-transform &> /dev/null &
@@ -10,8 +10,9 @@ else
     # change extraname to trial
     mcli extraname template-transform "trial" &> /dev/null &
 
-    # schedule disabling
-    echo "mcli disable template-transform" | at "+30 days" &> /dev/null
+    # schedule disabling - this gets double checked by the cron job
+    echo "/usr/bin/mvdisable template-transform &> /dev/null" | at "+30 days" &> /dev/null
+    mkdir -p /usr/share/metavize/conf/trials &> /dev/null
 fi
 
 

@@ -2,7 +2,8 @@
 
 # leave used flag 
 mkdir -p /usr/share/metavize/conf/trials &> /dev/null
-touch /usr/share/metavize/conf/trials/spyware-used
+touch /usr/share/metavize/conf/trials/spyware.expired
+
 # reenable usage
 mcli enable spyware-transform &> /dev/null
 # change extraname to nothing
