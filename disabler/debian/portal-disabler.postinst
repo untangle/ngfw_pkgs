@@ -5,6 +5,9 @@ if [ -f /usr/share/metavize/conf/trials/portal.expired ] ; then
     # trial already used - disable immediately
     /usr/bin/mcli disable portal-transform &> /dev/null &
 
+    # change extraname to trial expired
+    /usr/bin/mcli extraname portal-transform "Trial (Expired)" &> /dev/null &
+
 else
 
     # change extraname to trial

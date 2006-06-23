@@ -5,6 +5,9 @@ if [ -f /usr/share/metavize/conf/trials/spyware.expired ] ; then
     # trial already used - disable immediately
     /usr/bin/mcli disable spyware-transform &> /dev/null &
 
+    # change extraname to trial expired
+    /usr/bin/mcli extraname spyware-transform "Trial (Expired)" &> /dev/null &
+
 else
 
     # change extraname to trial
