@@ -5,7 +5,7 @@ NAT_CACHE_DEB="/var/lib/mvvm/nat-transform.deb"
 # restore database
 dropdb -U postgres mvvm
 
-su postgres -c "createuser --createdb --no-adduser metavize"
+su postgres -c "createuser --createdb --no-adduser metavize" 2>/dev/null
 createdb -O metavize -U metavize mvvm
 update-schema settings mvvm
 update-schema events mvvm
