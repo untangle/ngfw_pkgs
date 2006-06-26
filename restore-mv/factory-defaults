@@ -1,5 +1,7 @@
 #!/bin/sh
 
+NAT_CACHE_DEB="/var/lib/mvvm/nat-transform.deb"
+
 # restore database
 dropdb -U postgres mvvm
 
@@ -43,3 +45,8 @@ slapindex
 
 # restore factory root pw
 echo "root:YKN4WuGxhHpIw" | /usr/sbin/chpasswd -e
+
+## restore the NAT transform if necessary
+if [ -f ${NAT_CACHE_DEB} ]; then
+    dpkg -l nat-transform | grep '^ii' > /dev/null || dpkg -i ${NAT_CACHE_DEB}
+fi
