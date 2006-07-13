@@ -1,0 +1,8 @@
+#!/bin/sh
+
+
+/usr/bin/wget -O /dev/null "https://boxtrack.metavize.com/register/unsub.php?box_id=`cat /usr/share/metavize/activation.key`&filename=firewall-storeitem"  &> /dev/null &
+
+
+
+
