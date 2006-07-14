@@ -1,0 +1,10 @@
+#!/bin/sh
+
+
+/usr/bin/mvunsub standard-bundle-trial30-storeitem &> /dev/null &
+
+exit 0
+
+
+
+

@@ -1,7 +1,9 @@
 #!/bin/sh
 
 
-/usr/bin/wget -O /dev/null "https://boxtrack.metavize.com/register/unsub.php?box_id=`cat /usr/share/metavize/activation.key`&filename=test-storeitem"  &> /dev/null &
+/usr/bin/mvunsub test-storeitem &> /dev/null &
+
+exit 0
 
 
 
