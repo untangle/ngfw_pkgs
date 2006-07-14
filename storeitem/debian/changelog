@@ -1,3 +1,9 @@
+storeitem-mv (0-46) stable; urgency=low
+
+  * auto build
+
+ -- Dirk Morris <dmorris@butters.metaloft.com>  Thu, 13 Jul 2006 17:38:03 -0700
+
 storeitem-mv (0-45) stable; urgency=low
 
   * auto build
