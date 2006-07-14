@@ -10,6 +10,7 @@ Architecture: any
 Priority: important
 Suggests: ipmasq
 Section: net
+Provides: iptables
 Depends: ${shlibs:Depends}
 Conflicts: iptables, doc-base
 Description: IP packet filter administration tools for 2.4.xx kernels
