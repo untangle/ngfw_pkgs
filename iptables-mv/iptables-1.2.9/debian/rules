@@ -5,7 +5,7 @@ EXTRA_VARS := BINDIR=/sbin \
 	MANDIR=/usr/share/man \
 	INCDIR=/usr/include \
 	KERNEL_DIR=/usr/src/kernel/dmorris/kpkg/2.6.8.1/linux-2.6.8.1-netcap
-
+#	KERNEL_DIR=/space/kernel/kpkg/2.6.16-ck11/linux-2.6.16-ck11-prod/
 #	NO_SHARED_LIBS=1
 #	KERNEL_DIR=$(CURDIR)/debian/build/linux-2.4.19
 

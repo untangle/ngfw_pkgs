@@ -25,3 +25,4 @@ if [ -x /usr/sbin/update-alternatives ]; then
 fi
 
 #DEBHELPER#
+exit 0

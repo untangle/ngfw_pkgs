@@ -13,6 +13,7 @@ Section: net
 Provides: iptables
 Depends: ${shlibs:Depends}
 Conflicts: iptables, doc-base
+Provides: iptables
 Description: IP packet filter administration tools for 2.4.xx kernels
  netfilter and iptables are the framework inside the  Linux 2.4.xx kernel 
  which enable packet filtering, network address translation (NAT) and 
@@ -35,6 +36,7 @@ Priority: optional
 Depends: iptables-mv
 Section: devel
 Conflicts: iptables-dev, doc-base
+Provides: iptables-dev
 Description: development files for iptable's libipq and libiptc
  Header files, static libs and documentation for libipq (iptables 
  user-space packet queuing library) and libiptc.
