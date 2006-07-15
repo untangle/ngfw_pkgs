@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/usr/bin/Xdialog --backtitle "$backtitle" --title "Error" --msgbox "PDF files can not be viewed locally" 7 33
