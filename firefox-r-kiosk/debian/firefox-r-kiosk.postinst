@@ -1,0 +1,41 @@
+#!/bin/sh
+
+## Kill all instances of firefox
+killall firefox
+
+## Update all of the mimeType files with the correct value
+for t_file in find -name mimeTypes.rdf ~kiosk/.mozilla; do
+    cat > "${t_file}" <<EOF
+ <?xml version="1.0"?>
+<RDF:RDF xmlns:NC="http://home.netscape.com/NC-rdf#"
+         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Description RDF:about="urn:mimetype:handler:application/pdf"
+                   NC:alwaysAsk="false"
+                   NC:saveToDisk="false"
+                   NC:useSystemDefault="false"
+                   NC:handleInternal="false">
+    <NC:externalApplication RDF:resource="urn:mimetype:externalApplication:application/pdf"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mimetypes">
+    <NC:MIME-types RDF:resource="urn:mimetypes:root"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mimetype:application/pdf"
+                   NC:fileExtensions="pdf"
+                   NC:description="Portable Document Format"
+                   NC:prettyName="PDF"
+                   NC:alwaysAsk="false"
+                   NC:value="application/pdf"
+                   NC:editable="true">
+    <NC:externalApplication RDF:resource="urn:mimetype:externalApplication:application/pdf"/>
+    <NC:handlerProp RDF:resource="urn:mimetype:handler:application/pdf"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mimetype:externalApplication:application/pdf"
+                   NC:alwaysAsk="false"
+                   NC:path="/usr/bin/mvpdfmsg"
+                   NC:prettyName="Metavize PDF Viewer" />
+  <RDF:Seq RDF:about="urn:mimetypes:root">
+    <RDF:li RDF:resource="urn:mimetype:application/pdf"/>
+  </RDF:Seq>
+</RDF:RDF>
+EOF
+done
