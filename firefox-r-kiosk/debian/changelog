@@ -1,3 +1,9 @@
+firefox-r-kiosk (0-7) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@metavize.com>  Tue, 21 Feb 2006 16:12:10 -0800
+
 firefox-r-kiosk (0-6) stable; urgency=low
 
   * auto build
