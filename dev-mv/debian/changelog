@@ -1,3 +1,9 @@
+dev-mv (0-30) stable; urgency=low
+
+  * auto build
+
+ -- Dirk Morris <dmorris@metavize.com>  Mon, 17 Jul 2006 17:57:25 -0700
+
 dev-mv (0-29) stable; urgency=low
 
   * auto build
