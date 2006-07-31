@@ -1749,6 +1749,7 @@ Description: The 24-Hour Box Backup Service
 Package: portal-storeitem
 Architecture: any
 Depends: portal-transform
+Conflicts: portal-disabler
 XB-Price: 99
 XB-View-Position: 1015
 XB-Display-Name: Secure Portal
