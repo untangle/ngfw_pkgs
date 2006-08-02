@@ -1853,8 +1853,8 @@ XB-Desc-Icon:  iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YM
  EP2bb765i8G3u7vn5Upeez19wXH58uV+f4Bk5G8G4LrKxSWHEZXXCGnA/MBlcE4aa2ERkXMd
  mExNXuhQ/BtEgBH2fmScSohAwURrcxNoxyhJknjKMYj2QfR48tXf/Y78W45z586Rf9OBcv9D
  gAEA/vR7Rb8zHBYAAAAASUVORK5CYII=
-Description: The Portal Software Appliance
- The Portal Software Appliance Store Item
+Description: The Remote Access Portal Software Appliance
+ The Remote Access Portal Software Appliance Store Item
 
 Package: standard-bundle-trial30-storeitem
 Architecture: any
@@ -2834,8 +2834,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  gsfHQOjn+g6B3IjyCiLKankOYogxYlRxroN4C9+u6Nol3m0Ivh3SMIYO77MjbVPK5v9f/vAv
  dt1hz+oW0X4R2L/+xQ72f/+aKQFxz7/f+fpfFP00yKQAP7JF/ft5GLHDLCq9/aj7R7+mbO3J
  3QCjv/Lrm/0vGAYPf3Cgs7LEXqJSDBdeyxQVZw9vy/8MAIKemQqNP8+BAAAAAElFTkSuQmCC
-Description: The Portal Software Appliance 30-day Trial
- The Portal Software Appliance 30-day Trial Store Item
+Description: The Remote Access Portal Software Appliance 30-day Trial
+ The Remote Access Portal Software Appliance 30-day Trial Store Item
 
 Package: boxbackup-trial30-storeitem
 Architecture: any
