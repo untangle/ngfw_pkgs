@@ -48,8 +48,8 @@ Description: The Metavize Intrusion Prevention Disabler
 
 Package: portal-disabler
 Architecture: any
-Description: The Metavize Secure Portal Disabler
- The Metavize Secure Portal Disabler
+Description: The Metavize Remote Access Portal Disabler
+ The Metavize Remote Access Portal Disabler
 
 Package: boxbackup-disabler
 Architecture: any
