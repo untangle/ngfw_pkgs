@@ -1,20 +1,22 @@
 #!/bin/sh
 
-# leave used flag 
-mkdir -p /usr/share/metavize/conf/trials &> /dev/null
-touch /usr/share/metavize/conf/trials/protofilter.expired
+if [ $1 != "upgrade" ] ; then
+    # leave used flag 
+    mkdir -p /usr/share/metavize/conf/trials &> /dev/null
+    touch /usr/share/metavize/conf/trials/protofilter.expired
 
-# remove my at jobs
-for i in `atq | awk '{print $1}'` ; do 
-    if [ ! -z "`at -c $i | grep \"protofilter-transform\"`" ] ; then
-        atrm $i
-    fi
-done
+    # remove my at jobs
+    for i in `atq | awk '{print $1}'` ; do 
+        if [ ! -z "`at -c $i | grep \"protofilter-transform\"`" ] ; then
+            atrm $i
+        fi
+    done
 
-# reenable usage
-mcli enable protofilter-transform &> /dev/null
-# change extraname to nothing
-mcli extraname protofilter-transform "" &> /dev/null &
+    # reenable usage
+    mcli enable protofilter-transform &> /dev/null
+    # change extraname to nothing
+    mcli extraname protofilter-transform "" &> /dev/null &
+fi
 
 exit 0
 
