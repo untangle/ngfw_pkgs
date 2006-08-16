@@ -1,7 +1,8 @@
 #!/bin/sh
 
-
-/usr/bin/mvunsub firewall-storeitem &> /dev/null &
+if [ $1 != "upgrade" ] ; then
+    /usr/bin/mvunsub firewall-storeitem &> /dev/null &
+fi
 
 exit 0
 

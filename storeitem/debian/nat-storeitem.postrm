@@ -1,7 +1,8 @@
 #!/bin/sh
 
-
-/usr/bin/mvunsub nat-storeitem &> /dev/null &
+if [ $1 != "upgrade" ] ; then
+    /usr/bin/mvunsub nat-storeitem &> /dev/null &
+fi
 
 exit 0
 

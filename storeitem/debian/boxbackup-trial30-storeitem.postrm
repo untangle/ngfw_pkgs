@@ -1,7 +1,8 @@
 #!/bin/sh
 
-
-/usr/bin/mvunsub boxbackup-trial30-storeitem &> /dev/null &
+if [ $1 != "upgrade" ] ; then
+    /usr/bin/mvunsub boxbackup-trial30-storeitem &> /dev/null &
+fi
 
 exit 0
 

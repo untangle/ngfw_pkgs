@@ -1,7 +1,8 @@
 #!/bin/sh
 
-
-/usr/bin/mvunsub hauri-storeitem &> /dev/null &
+if [ $1 != "upgrade" ] ; then
+    /usr/bin/mvunsub hauri-storeitem &> /dev/null &
+fi
 
 exit 0
 
