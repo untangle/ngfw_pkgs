@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ "x$1" != "xupgrade" ] ; then
+if [ "x$1" == "xpurge" ] ; then
     /usr/bin/mvunsub reporting-storeitem &> /dev/null &
 fi
 
