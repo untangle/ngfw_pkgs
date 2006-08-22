@@ -7,7 +7,7 @@ killall firefox-bin >> /dev/null 2>&1
 for t_file in `find /home/kiosk/.mozilla -name mimeTypes.rdf` /etc/firefox/profile/mimeTypes.rdf  ; do
     if [ ! -f "${t_file}" ]; then continue; fi
     
-    cat > "${t_file}" <<EOF
+    cat > "${t_file}" <EOF
 <?xml version="1.0"?>
 <RDF:RDF xmlns:NC="http://home.netscape.com/NC-rdf#"
          xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
