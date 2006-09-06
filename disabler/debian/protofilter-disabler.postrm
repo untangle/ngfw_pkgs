@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ "x$1" != "xupgrade" ] ; then
+if [ "x$1" == "xpurge" ] ; then
     # leave used flag 
     mkdir -p /usr/share/metavize/conf/trials &> /dev/null
     touch /usr/share/metavize/conf/trials/protofilter.expired
