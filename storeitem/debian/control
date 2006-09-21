@@ -1,3 +1,4 @@
+
 Source: storeitem-mv
 Section: admin
 Priority: optional
@@ -1858,7 +1859,7 @@ Description: The Remote Access Portal Software Appliance
 
 Package: standard-bundle-trial30-storeitem
 Architecture: any
-Depends: airgap-storeitem, spyware-trial30-storeitem, httpblocker-trial30-storeitem, clam-storeitem, protofilter-trial30-storeitem, nat-storeitem, firewall-storeitem, spamassassin-trial30-storeitem, clamphish-trial30-storeitem, openvpn-storeitem, ids-trial30-storeitem, reporting-storeitem
+Depends: airgap-storeitem, spyware-trial30-storeitem, httpblocker-trial30-storeitem, clam-storeitem, protofilter-trial30-storeitem, nat-storeitem, firewall-storeitem, spamassassin-trial30-storeitem, clamphish-trial30-storeitem, openvpn-storeitem, ids-trial30-storeitem, reporting-storeitem, portal-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 10
 XB-Display-Name: Total Security Bundle 30-Day Trial
