@@ -1,7 +1,8 @@
 #! /bin/sh
 
 if [ $# -lt 2 ] ; then
-        usage: "$0 <dir ex: /var/www/metavize>"
+    echo "usage: $0 <dir ex: /var/www/metavize> <files>"
+    exit 1
 fi
 
 DESTINATION=$1
