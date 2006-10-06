@@ -9,6 +9,6 @@ Package: fakekdm-mv
 Architecture: any
 Depends: 
 Conflicts: 
-Supplies: kdm
-Description: F-Prot Virus scanner
- The F-Prot Linux Virus Scanner
+Provides: kdm
+Description: Fake KDM
+ An empty package that supplies KDM.
