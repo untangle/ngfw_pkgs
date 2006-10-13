@@ -1,3 +1,10 @@
+kiosk-mv (0-58) stable; urgency=low
+
+  * Create the kiosk user in preinst, otherwise files can't be put
+    in /home/kiosk.
+
+ -- Sebastien Delafond <seb@metavize.com>  Fri, 13 Oct 2006 11:47:17 -0700
+
 kiosk-mv (0-57) stable; urgency=low
 
   * auto build
