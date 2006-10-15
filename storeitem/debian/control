@@ -220,6 +220,7 @@ Package: spyware-storeitem
 Architecture: any
 Depends: spyware-transform
 Conflicts: spyware-disabler
+Provides: spyware-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 20
 XB-Display-Name: Spyware Blocker
@@ -309,6 +310,7 @@ Package: httpblocker-storeitem
 Architecture: any
 Depends: httpblocker-transform
 Conflicts: httpblocker-disabler
+Provides: httpblocker-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 30
 XB-Display-Name: Web Content Control
@@ -409,6 +411,7 @@ Package: hauri-storeitem
 Architecture: any
 Depends: hauri-transform
 Conflicts: hauri-disabler
+Provides: hauri-trial30-storeitem
 XB-Price: 399
 XB-View-Position: 60
 XB-Display-Name: Hauri AntiVirus Scanner
@@ -632,6 +635,7 @@ Package: protofilter-storeitem
 Architecture: any
 Depends: protofilter-transform
 Conflicts: protofilter-disabler
+Provides: protofilter-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 80
 XB-Display-Name: Rogue Protocol Control
@@ -938,6 +942,7 @@ Package: spamassassin-storeitem
 Architecture: any
 Depends: spamassassin-transform
 Conflicts: spamassassin-disabler
+Provides: spamassassin-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 15
 XB-Display-Name: SpamGuard
@@ -1055,6 +1060,7 @@ Package: clamphish-storeitem
 Architecture: any
 Depends: clamphish-transform
 Conflicts: clamphish-disabler
+Provides: clamphish-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 17
 XB-Display-Name: PhishNet
@@ -1434,6 +1440,7 @@ Package: ids-storeitem
 Architecture: any
 Depends: ids-transform, snort-rules-current
 Conflicts: ids-disabler
+Provides: ids-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 75
 XB-Display-Name: Intrusion Prevention
@@ -1629,6 +1636,7 @@ Package: boxbackup-storeitem
 Architecture: any
 Depends: boxbackup-transform
 Conflicts: boxbackup-disabler
+Provides: boxbackup-trial30-storeitem
 XB-Price: 99
 XB-View-Position: 1015
 XB-Display-Name: 24-Hour Replacement
@@ -1751,6 +1759,7 @@ Package: portal-storeitem
 Architecture: any
 Depends: portal-transform
 Conflicts: portal-disabler
+Provides: portal-trial30-storeitem
 XB-Price: 99
 XB-View-Position: 1015
 XB-Display-Name: Remote Access Portal
