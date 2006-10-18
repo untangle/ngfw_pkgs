@@ -1,8 +1,15 @@
+kiosk-mv (0-60) stable; urgency=low
+
+  * Disabled middle mouse button in ~kiosk/.xsession (Closes: #1629)
+
+ -- Sebastien Delafond <seb@metavize.com>  Wed, 18 Oct 2006 12:39:00 -0700
+
 kiosk-mv (0-59) stable; urgency=low
 
-  * auto build
+  * Added panel.xml file: will now use panel instead of "right-click to
+    launch GUI".
 
- -- root <root@bebe.metavize.com>  Wed, 18 Oct 2006 15:35:47 -0700
+ -- Sebastien Delafond <seb@metavize.com>  Mon, 16 Oct 2006 12:14:01 -0700
 
 kiosk-mv (0-58) stable; urgency=low
 
