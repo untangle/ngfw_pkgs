@@ -1,3 +1,9 @@
+kiosk-mv (0-59) stable; urgency=low
+
+  * auto build
+
+ -- root <root@bebe.metavize.com>  Wed, 18 Oct 2006 15:35:47 -0700
+
 kiosk-mv (0-58) stable; urgency=low
 
   * Create the kiosk user in preinst, otherwise files can't be put
