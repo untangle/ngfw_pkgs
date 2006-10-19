@@ -3,8 +3,8 @@
 xset s off
 xset -dpms
 
-# disable the middle button
-xmodmap -e 'pointer = 1 2'
+# disable the middle button through a 3rd party app
+xbindkeys &
 
 # the mighty xfce panel
 xfce4-panel &
