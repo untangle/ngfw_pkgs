@@ -1,6 +1,6 @@
 #!/bin/sh
 
-chown -R kiosk /home/kiosk
+chown -R kiosk:kiosk /home/kiosk
 
 exit 0
 
