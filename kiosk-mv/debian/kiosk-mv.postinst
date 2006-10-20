@@ -1,7 +1,6 @@
 #!/bin/sh
 
-cp -f /home/kiosk/.xfce4/menu.xml /etc/xdg/xfce4/desktop/menu.xml &> /dev/null
-cp -f /home/kiosk/.xfce4/menu.xml /etc/xdg/xfce4/desktop/system.menu.xml &> /dev/null
+chown -R kiosk /home/kiosk
 
 exit 0
 
