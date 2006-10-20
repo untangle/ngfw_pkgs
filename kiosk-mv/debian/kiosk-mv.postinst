@@ -2,8 +2,8 @@
 
 chown -R kiosk:kiosk /home/kiosk
 
-rm -fr files/etc/xdg/xfce4
-cp -r /home/kiosk/.config/xfce4 
+rm -fr /etc/xdg/xfce4
+cp -r /home/kiosk/.config/xfce4 /etc/xdg/
 
 exit 0
 
