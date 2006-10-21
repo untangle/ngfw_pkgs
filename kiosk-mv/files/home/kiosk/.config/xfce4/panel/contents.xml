@@ -119,11 +119,6 @@
 	  <Icon id="3"/>
 	</Item>
       </Popup>
-      <Control id="-2" popup="1">
-	<Command term="0" sn="0">xfce-setting-show</Command>
-        <Tooltip>Settings</Tooltip>
-        <Icon id="3"/>
-      </Control>
     </Group>
   </Groups>
 </Xfce>
