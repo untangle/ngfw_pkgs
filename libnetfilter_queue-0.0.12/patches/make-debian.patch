@@ -1,0 +1,93 @@
+Index: debian/control
+===================================================================
+--- debian/control	(r�vision 0)
++++ debian/control	(r�vision 0)
+@@ -0,0 +1,21 @@
++Source: libnetfilter-queue
++Section: libs
++Priority: optional
++Maintainer: Francois Toussenel <f.toussenel@inl.fr>
++Build-Depends: cdbs (>= 0.4), debhelper (>= 4.2), gcc (>= 3.4), libnfnetlink-dev (>= 0.0.16)
++Standards-Version: 3.6.2
++
++Package: libnetfilter-queue0
++Architecture: any
++Depends: ${shlibs:Depends}
++Description: Netfilter netfilter-queue library
++ This is the userspace library for netfilter_queue.
++
++Package: libnetfilter-queue-dev
++Architecture: any
++Section: libdevel
++Depends: libnetfilter-queue0 (= ${Source-Version}), libnfnetlink-dev (>= 0.0.16)
++Description: Netfilter netfilter-queue library
++ This is the userspace library for netfilter_queue.
++ .
++ This package provides the development files.
+Index: debian/compat
+===================================================================
+--- debian/compat	(r�vision 0)
++++ debian/compat	(r�vision 0)
+@@ -0,0 +1 @@
++4
+Index: debian/libnetfilter-queue-dev.install
+===================================================================
+--- debian/libnetfilter-queue-dev.install	(r�vision 0)
++++ debian/libnetfilter-queue-dev.install	(r�vision 0)
+@@ -0,0 +1,2 @@
++usr/lib/*.{so,a,la}
++usr/include
+Index: debian/changelog
+===================================================================
+--- debian/changelog	(r�vision 0)
++++ debian/changelog	(r�vision 0)
+@@ -0,0 +1,5 @@
++libnetfilter-queue (0.0.12-0) stable; urgency=low
++
++  * initial debian release
++
++ -- Francois Toussenel <f.toussenel@inl.fr>  Wed, 20 Sep 2006 14:11:17 +0200
+Index: debian/copyright
+===================================================================
+--- debian/copyright	(r�vision 0)
++++ debian/copyright	(r�vision 0)
+@@ -0,0 +1,9 @@
++This Debian package was created by Francois Toussenel <f.toussenel@inl.fr>.
++
++The upstream sources were downloaded from:
++ http://ftp.netfilter.org/pub/libnetfilter_queue/
++
++The GNU General Public License version 2 applies to the upstream
++sources.  On Debian systems, the complete text of the GNU General
++Public License version 2 can be found in the
++/usr/share/common-licenses/GPL-2 file.
+Index: debian/rules
+===================================================================
+--- debian/rules	(r�vision 0)
++++ debian/rules	(r�vision 0)
+@@ -0,0 +1,13 @@
++#!/usr/bin/make -f
++# -*- mode: makefile; coding: utf-8 -*-
++
++VERSION := $(shell dpkg-parsechangelog | egrep '^Version:' | cut -f2 -d' ')
++UPSTREAM_VERSION := $(shell dpkg-parsechangelog | egrep '^Version:' | cut -f2 -d' ' | cut -f1 -d-)
++DEB_TARBALL := libnetfilter-queue-$(UPSTREAM_VERSION).tar.bz2
++DEB_TAR_SRCDIR := libnetfilter-queue-$(UPSTREAM_VERSION)
++
++include /usr/share/cdbs/1/rules/debhelper.mk
++#include /usr/share/cdbs/1/rules/tarball.mk
++include /usr/share/cdbs/1/class/autotools.mk
++
++DEB_DH_INSTALL_SOURCEDIR := debian/tmp
+
+Modification de propri�t�s sur debian/rules
+___________________________________________________________________
+Nom : svn:executable
+   + *
+
+Index: debian/libnetfilter-queue0.install
+===================================================================
+--- debian/libnetfilter-queue0.install	(r�vision 0)
++++ debian/libnetfilter-queue0.install	(r�vision 0)
+@@ -0,0 +1 @@
++usr/lib/*.so.*

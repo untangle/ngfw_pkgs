@@ -1,0 +1,11 @@
+2006-01-22  Andreas Florath  <andreas@florath.net>
+
+	* acinclude.m4(NETFILTER_SET_PATH_TO_LIBNFNETLINK): created file,
+	added macro
+
+	* configure.in(NETFILTER_SET_PATH_TO_LIBNFNETLINK): use new macro
+
+	* src/Makefile.am(INCLUDES): added new variable to get include
+	path of libnfnetlink set.
+	
+
