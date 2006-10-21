@@ -1,3 +1,15 @@
+dev-mv (0-32) stable; urgency=low
+
+  * auto build
+
+ -- root <root@bebe.metavize.com>  Sat, 21 Oct 2006 10:41:36 -0700
+
+dev-mv (0-31) stable; urgency=low
+
+  * auto build
+
+ -- root <root@bebe.metavize.com>  Sat, 21 Oct 2006 10:39:50 -0700
+
 dev-mv (0-30) stable; urgency=low
 
   * auto build
