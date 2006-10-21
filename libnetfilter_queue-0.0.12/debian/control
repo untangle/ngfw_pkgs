@@ -1,0 +1,21 @@
+Source: libnetfilter-queue
+Section: libs
+Priority: optional
+Maintainer: Francois Toussenel <f.toussenel@inl.fr>
+Build-Depends: cdbs (>= 0.4), debhelper (>= 4.2), gcc (>= 3.4), libnfnetlink-dev (>= 0.0.16)
+Standards-Version: 3.6.2
+
+Package: libnetfilter-queue0
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Netfilter netfilter-queue library
+ This is the userspace library for netfilter_queue.
+
+Package: libnetfilter-queue-dev
+Architecture: any
+Section: libdevel
+Depends: libnetfilter-queue0 (= ${Source-Version}), libnfnetlink-dev (>= 0.0.16)
+Description: Netfilter netfilter-queue library
+ This is the userspace library for netfilter_queue.
+ .
+ This package provides the development files.
