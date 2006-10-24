@@ -1,8 +1,7 @@
-
 Source: storeitem-mv
 Section: admin
 Priority: optional
-Maintainer: Dirk Morris <dmorris@metavize.com>
+Maintainer: Dirk Morris <dmorris@untanglenetworks.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.5.2
 
@@ -12,8 +11,8 @@ Depends: airgap-storeitem, spyware-storeitem, httpblocker-storeitem, clam-storei
 Conflicts: standard-bundle-disabler, spyware-disabler, httpblocker-disabler, protofilter-disabler, spamassassin-disabler, clamphish-disabler, ids-disabler
 XB-Price: 0
 XB-View-Position: 10
-XB-Display-Name: Total Security Bundle
-XB-Website: http://store.metavize.com/airgap
+XB-Display-Name: Security Bundle
+XB-Website: http://store.untanglenetworks.com/securitybundle
 XB-Is-Bundle: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -101,16 +100,16 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  rxSO/Zvfx5cABVxJRNUGamNTPCYZ2UsOaDzs2xb3m1/9oti39M7k5xvX3bzjrqa4thdzLUE8
  +kHp7ctXX3nDwvP84y0Y74x+whGA5coYxupTGJ+ax2vfe9P+IPY/AQYAsGi4kBr8QykAAAAA
  SUVORK5CYII=
-Description: The Metavize Total Security Bundle
- The Metavize Total Security Bundle Store Item
+Description: Untangle Security Bundle
+The Untangle Networks Security Bundle Store Item.
 
 Package: airgap-storeitem
 Architecture: any
 Depends: airgap-transform
 XB-Price: 0
 XB-View-Position: 1010
-XB-Display-Name: Attack Shield
-XB-Website: http://store.metavize.com/airgap
+XB-Display-Name: Attack Blocker
+XB-Website: http://store.untanglenetworks.com/attackblocker
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -213,8 +212,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  FOZQpQiJxRPB/uif9lTkHh8l3OVBhq6xsyXQZCqNVKoHdjK1teO8zkSuNnHn52axVkyy44wF
  jP5/n47IHTnb+aVRzChGFcieTBYZDm8iFwJtMEo9mv5bf//NdiRq+Es9wwm3yLXAooahnnuZ
  QdxsLPxXDxw5/j7RBinaTy/EXwisAmjbSWR6+zAwlMNjj38ieCD2fwIMANZG+Ft4BQz8AAAA
-Description: The Metavize Attack Shield Software Appliance
- The Metavize Attack Shield Software Appliance Store Item
+Description: Untangle Attack Blocker
+The Untangle Networks Attack Blocker Store Item.
 
 Package: spyware-storeitem
 Architecture: any
@@ -224,7 +223,7 @@ Provides: spyware-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 20
 XB-Display-Name: Spyware Blocker
-XB-Website: http://store.metavize.com/spyware
+XB-Website: http://store.untanglenetworks.com/spywareblocker
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -303,8 +302,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  IgWqMjYrOOHvOAJkMSxsqyn4gHedmazBrqiqgfBwxU6jaj76SDWsX69qOa2q2FilgoNVcVaW+Y9k
  73LcRSZkLGKH/REnyfG0lONnPR/5uuRksvDJPrb/abw/B5zrN+guuOXxZRNDd9Zq1QnYEOXj71ey
  +PfGcHg3h7iLr16RWb+Q1R/2aQ8mqjheqF8wvO3WUPf+R4ABACEcfkAFMtTiAAAAAElFTkSuQmCC
-Description: The Metavize Spyware Blocker Software Appliance
- The Metavize Spyware Blocker Software Appliance Store Item
+Description: Untangle Spyware Blocker
+The Untangle Networks Spyware Blocker Store Item.
 
 Package: httpblocker-storeitem
 Architecture: any
@@ -314,7 +313,7 @@ Provides: httpblocker-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 30
 XB-Display-Name: Web Content Control
-XB-Website: http://store.metavize.com/webcontrol
+XB-Website: http://store.untanglenetworks.com/webcontrol
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0RVh0
  U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d03e2c04c
@@ -404,8 +403,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  hv5ibZAOJB+Ky44vFgGhHLnryrk0ZtNIVGdIWXk5HptioXw44eddESL+/vgzcoWKcn5hoPbA
  +1nH0ufnBbLGWduFUqXpn6ZVni9WNfB/TqKdLXQoddk5/ipGzKowLKETWaMN5ivbxR/E/ifA
  ACBNCbEqfhTsAAAAAElFTkSuQmCC
-Description: The Metavize Web Content Control Software Appliance
- The Metavize Web Content Control Software Appliance Store Item
+Description: Untangle Web Content Control
+The Untangle Networks Web Content Control Store Item.
 
 Package: hauri-storeitem
 Architecture: any
@@ -414,8 +413,8 @@ Conflicts: hauri-disabler
 Provides: hauri-trial30-storeitem
 XB-Price: 399
 XB-View-Position: 60
-XB-Display-Name: Hauri AntiVirus Scanner
-XB-Website: http://store.metavize.com/hauri_antivirus
+XB-Display-Name: Hauri Virus Blocker
+XB-Website: http://store.untanglenetworks.com/hauri
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
  AAAKTWlDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVN3WJP3Fj7f92UPVkLY8LGXbIEA
@@ -521,16 +520,16 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  bo4dB1m4/4mJCZqZmTkOure3Rw3Moe3tbdrf36epqamhgXK/DDo/P08LCws0NzfXelcoFJTJ
  t7a2iKH5xJlHJgYQTXoFZcjFxUUlDK3e8ZE4m35tbY0cx1GAw4BMUgKhGBh4DPkrH9WzEs1O
  4vuVlZXPTaVhwzLg7OwsLS0t0fLyMq2vryvO/wQYAP5qirM6mBOTAAAAAElFTkSuQmCC
-Description: The Hauri AntiVirus Scanner Software Appliance
- The Hauri AntiVirus Scanner Software Appliance Store Item
+Description: Untangle Hauri Virus Blocker
+The Untangle Networks Hauri Virus Blocker Store Item.
 
 Package: clam-storeitem
 Architecture: any
 Depends: clam-transform
 XB-Price: 0
 XB-View-Position: 70
-XB-Display-Name: Clam AntiVirus Scanner
-XB-Website: http://store.metavize.com/clam_antivirus
+XB-Display-Name: Clam Virus Blocker
+XB-Website: http://store.untanglenetworks.com/clam
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
  AAAABGdBTUEAANjr9RwUqgAAACBjSFJNAABtmAAAc44AAPJxAACDbAAAg7sAANTIAAAx7AAA
@@ -628,8 +627,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  bo4dB1m4/4mJCZqZmTkOure3Rw3Moe3tbdrf36epqamhgXK/DDo/P08LCws0NzfXelcoFJTJ
  t7a2iKH5xJlHJgYQTXoFZcjFxUUlDK3e8ZE4m35tbY0cx1GAw4BMUgKhGBh4DPkrH9WzEs1O
  4vuVlZXPTaVhwzLg7OwsLS0t0fLyMq2vryvO/wQYAP5qirM6mBOTAAAAAElFTkSuQmCC
-Description: The Clam AntiVirus Scanner Software Appliance
- The Clam AntiVirus Scanner Software Appliance Store Item 
+Description: Untangle Clam Virus Blocker
+The Untangle Networks Clam Virus Blocker Store Item.
 
 Package: protofilter-storeitem
 Architecture: any
@@ -638,8 +637,8 @@ Conflicts: protofilter-disabler
 Provides: protofilter-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 80
-XB-Display-Name: Rogue Protocol Control
-XB-Website: http://www.metavize.com/protocolcontrol
+XB-Display-Name: Protocol Control
+XB-Website: http://www.untanglenetworks.com/protocolcontrol
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -752,8 +751,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  9r+JrLqHcb1/5G+RYmXTPJWlGb3b6BYmf2bKnUk5+TGE7vzZn3kmWHTz5s1//icarfhpzE82
  2tifbwr1VLtn9G935xN+znHG/arjXPYPRVt53HzZvynJzzTaKFBpwLTxwIsWGlcGHRei85f/
  /qR+EPs/AQYALpz0b9lClG4AAAAASUVORK5CYII=
-Description: The Metavize Rogue Protocol Control Software Appliance
- The Metavize Rogue Protocol Control Software Appliance Store Item
+Description: Untangle Protocol Control
+The Untangle Networks Protocol Control Store Item.
 
 Package: nat-storeitem
 Architecture: any
@@ -761,7 +760,7 @@ Depends: nat-transform
 XB-Price: 0
 XB-View-Position: 1000
 XB-Display-Name: Router
-XB-Website: http://store.metavize.com/networksharing
+XB-Website: http://store.untanglenetworks.com/router
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -847,8 +846,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  jV2HqI3cgHe4BtKqxdZ9QVriCq0JdRBkKKPzYVf2kmdOIz57AnivI8PHQYmKIjd+r4u0YpKU
  zYu28/m48eumeSM2sZU0C0mzhm1HVVVisRiaplFeXv71g9wrRRzHIZVKkUqlBkfjLq5wOcej
  +/fvv9Ix0wA4V/LlOA7/GQCfi3hGQX94NwAAAABJRU5ErkJggg==
-Description: The Metavize Router Software Appliance
- The Metavize Router Software Appliance Store Item
+Description: Untangle Router
+The Untangle Networks Router Store Item.
 
 Package: firewall-storeitem
 Architecture: any
@@ -856,7 +855,7 @@ Depends: firewall-transform
 XB-Price: 0
 XB-View-Position: 90
 XB-Display-Name: Firewall
-XB-Website: http://store.metavize.com/firewall
+XB-Website: http://store.untanglenetworks.com/firewall
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -935,8 +934,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  m7e0hNP8YP8oT741ya5ry/na+jRz3Z2MjOZ5vs3n+dY803LhsPu+z/DwMEEQUFpaOr/IBTDN
  zc2FabY4d/MK1zzQlDRpVyz53X379hnAfCLf07SOhrSOXtye9ILVeHNzM//v50Axw74c1xjD
  fwYAMCLoUqhkh6IAAAAASUVORK5CYII=
-Description: The Metavize Firewall Software Appliance
- The Metavize Firewall Software Appliance Store Item
+Description: Untangle Firewall
+The Untangle Networks Firewall Store Item.
 
 Package: spamassassin-storeitem
 Architecture: any
@@ -945,8 +944,8 @@ Conflicts: spamassassin-disabler
 Provides: spamassassin-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 15
-XB-Display-Name: SpamGuard
-XB-Website: http://store.metavize.com/spamguard
+XB-Display-Name: Spam Blocker
+XB-Website: http://store.untanglenetworks.com/spamblocker
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1053,8 +1052,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  BKrSAH7zsCoUU01hotVpyZBWzBOosKrYaJBp4U5Si82nbJpKvekm4RPXjyQ/EqKRY1dQLbrv
  7ecbjiWKg52kQksZPHS58yyBNmiZiJP+/Re/svPTyfv0y81tv46IkqxIuSdiaPf5D4YGWh7D
  zpbjLtD367cmAc5kRUrTokJw339vj/xB7P8FGACNK2N4xeErDQAAAABJRU5ErkJggg==
-Description: The Metavize SpamGuard Software Appliance
- The Metavize SpamGuard Software Appliance Store Item
+Description: Untangle Spam Blocker
+The Untangle Networks Spam Blocker Store Item.
 
 Package: clamphish-storeitem
 Architecture: any
@@ -1063,8 +1062,8 @@ Conflicts: clamphish-disabler
 Provides: clamphish-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 17
-XB-Display-Name: PhishNet
-XB-Website: http://store.metavize.com/phishnet
+XB-Display-Name: Identity Theft Blocker
+XB-Website: http://store.untanglenetworks.com/idblocker
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1185,8 +1184,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  DeWOUVGQk46vEDn3QiJzP5Tv3KHYlomQGTTF/tsucwQoIgfY0ME3uUu7PogA9qxsZpUgB1QR
  k2CFwI0uw5UGmqYjhJgEO3kPJb3c0CFdxgf60NxeIoGxv9v3NzTIj0BpAdTEYcMHgTVS/M8A
  nY2oOxX/HXgAAAAASUVORK5CYII=
-Description: The Metavize PhishNet Software Appliance
- The Metavize PhishNet Software Appliance Store Item
+Description: Untangle Identity Theft Blocker
+The Untangle Networks Identity Theft Blocker Store Item.
 
 Package: test-storeitem
 Architecture: any
@@ -1194,7 +1193,7 @@ Depends: test-transform
 XB-Price: 0
 XB-View-Position: 2002
 XB-Display-Name: Test
-XB-Website: http://store.metavize.com/test
+XB-Website: http://store.untanglenetworks.com/test
 XB-Is-Core: true
 XB-Org-Icon:  iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1328,8 +1327,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  UhAZBl3DaQTw0iWdXVc7lkAjQGksA4QWaHlhZqV8gW2qC4GEAtPVhB44LkThhQ4wQBj6QjYj
  E9ORyFBgWpqgJbAcTRReOMoIhCGIDAGhxnAgkGBYAkMYpG2HrmyCrkSaf79yEVc/9Kj4/wMA
  IXmY0MNCBksAAAAASUVORK5CYII=
-Description: The Metavize Test Software Appliance
- The Metavize Test Software Appliance Store Item
+Description: Untangle Test
+The Untangle Networks Test Store Item.
 
 Package: openvpn-storeitem
 Architecture: any
@@ -1337,7 +1336,7 @@ Depends: openvpn-transform
 XB-Price: 0
 XB-View-Position: 1003
 XB-Display-Name: OpenVPN
-XB-Website: http://store.metavize.com/openvpn
+XB-Website: http://store.untanglenetworks.com/openvpn
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1433,8 +1432,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  Caeu66EVuwXf7u74v1Lzbo7Z7tgN5MRAzJVlGVmW14E6jhPuxoKX27a9pZALYBgGxWIR0zRJ
  p9MbC7m3s67neaFcbRjGLbJ4cIQI3Na9vwzq41aZ3W2cWq1GrVa7VRr/dUfwokDY+r8et1j0
  xIkT/LaPNzYtgL8l0/d9/mcAXb1X7pR/ZiwAAAAASUVORK5CYII=
-Description: The Metavize OpenVPN Software Appliance
- The Metavize OpenVPN Software Appliance Store Item
+Description: OpenVPN
+OpenVPN Store Item.
 
 Package: ids-storeitem
 Architecture: any
@@ -1444,7 +1443,7 @@ Provides: ids-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 75
 XB-Display-Name: Intrusion Prevention
-XB-Website: http://store.metavize.com/ips
+XB-Website: http://store.untanglenetworks.com/ips
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1542,16 +1541,16 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  gsfHQOjn+g6B3IjyCiLKankOYogxYlRxroN4C9+u6Nol3m0Ivh3SMIYO77MjbVPK5v9f/vAv
  dt1hz+oW0X4R2L/+xQ72f/+aKQFxz7/f+fpfFP00yKQAP7JF/ft5GLHDLCq9/aj7R7+mbO3J
  3QCjv/Lrm/0vGAYPf3Cgs7LEXqJSDBdeyxQVZw9vy/8MAIKemQqNP8+BAAAAAElFTkSuQmCC
-Description: The Metavize Intrusion Prevention Software Appliance
- The Metavize Intrusion Prevention Software Appliance Store Item
+Description: Untangle Intrusion Prevention
+The Untangle Networks Intrusion Prevention Store Item.
 
 Package: reporting-storeitem
 Architecture: any
 Depends: reporting-transform
 XB-Price: 0
 XB-View-Position: 1020
-XB-Display-Name: EdgeReport
-XB-Website: http://store.metavize.com/edgereport
+XB-Display-Name: Untangle Reports
+XB-Website: http://store.untanglenetworks.com/reports
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1629,8 +1628,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  WwQ0GApTDRXBYDC023HOZtKqibu2sozMdlB1LaRE+9F05hSRpEQlyMjQIQzRdKfG6kArlTJF
  Gwe/++1vGj/fcKBvrfF6FVHvq8rfvQzlN83+/j9Ov3D2DdYAKX9oYI1fKPoxJMDBwSCGhg9j
  9KkxvPWjn6ofxP4nwAB2T5Rklk6b3gAAAABJRU5ErkJggg==
-Description: The Metavize Report Generator
- The Metavize Report Generator Store Item
+Description: Untangle Reports
+Untangle Networks Reports Store Item.
 
 Package: boxbackup-storeitem
 Architecture: any
@@ -1640,7 +1639,7 @@ Provides: boxbackup-trial30-storeitem
 XB-Price: 99
 XB-View-Position: 1015
 XB-Display-Name: 24-Hour Replacement
-XB-Website: http://www.metavize.com/boxbackup.html
+XB-Website: http://www.untanglenetworks.com/boxbackup
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1752,8 +1751,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  UhSjFBXBSZSlEzlQ4Qb8b0QSAyroSUWMCjqU1BjiQBEI87Hw49XvxG34jfnnTR9v2GzFMFBT
  AWk1QmLfV3ukhaYK9I4Wfe83CCwb8LTUuhOUECxqyCoy+D/E/leAAQDhy3XsyDOL8wAAAABJ
  RU5ErkJggg==
-Description: The 24-Hour Box Backup Service
- The 24-Hour Box Backup Service Store Item
+Description: Untangle 24-Hour Replacement
+The Untangle Networks 24-Hour Replacement Store Item.
 
 Package: portal-storeitem
 Architecture: any
@@ -1763,7 +1762,7 @@ Provides: portal-trial30-storeitem
 XB-Price: 99
 XB-View-Position: 1015
 XB-Display-Name: Remote Access Portal
-XB-Website: http://www.metavize.com/portal.html
+XB-Website: http://www.untanglenetworks.com/portal
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1863,16 +1862,16 @@ XB-Desc-Icon:  iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YM
  EP2bb765i8G3u7vn5Upeez19wXH58uV+f4Bk5G8G4LrKxSWHEZXXCGnA/MBlcE4aa2ERkXMd
  mExNXuhQ/BtEgBH2fmScSohAwURrcxNoxyhJknjKMYj2QfR48tXf/Y78W45z586Rf9OBcv9D
  gAEA/vR7Rb8zHBYAAAAASUVORK5CYII=
-Description: The Remote Access Portal Software Appliance
- The Remote Access Portal Software Appliance Store Item
+Description: Untangle Remote Access Portal
+The Untangle Networks Remote Access Portal Store Item.
 
 Package: standard-bundle-trial30-storeitem
 Architecture: any
 Depends: airgap-storeitem, spyware-trial30-storeitem, httpblocker-trial30-storeitem, clam-storeitem, protofilter-trial30-storeitem, nat-storeitem, firewall-storeitem, spamassassin-trial30-storeitem, clamphish-trial30-storeitem, openvpn-storeitem, ids-trial30-storeitem, reporting-storeitem, portal-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 10
-XB-Display-Name: Total Security Bundle 30-Day Trial
-XB-Website: http://store.metavize.com/airgap
+XB-Display-Name: Security Bundle 30-Day Trial
+XB-Website: http://store.untanglenetworks.com/securitybundle
 XB-Is-Bundle: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1960,8 +1959,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  rxSO/Zvfx5cABVxJRNUGamNTPCYZ2UsOaDzs2xb3m1/9oti39M7k5xvX3bzjrqa4thdzLUE8
  +kHp7ctXX3nDwvP84y0Y74x+whGA5coYxupTGJ+ax2vfe9P+IPY/AQYAsGi4kBr8QykAAAAA
  SUVORK5CYII=
-Description: The Metavize Total Security Bundle
- The Metavize Total Security Bundle Store Item
+Description: Untangle Security Bundle 30-Day Trial
+The Untangle Networks Security Bundle 30-Day Trial Store Item.
 
 Package: spyware-trial30-storeitem
 Architecture: any
@@ -1969,7 +1968,7 @@ Depends: spyware-transform, spyware-disabler
 XB-Price: 0
 XB-View-Position: 20
 XB-Display-Name: Spyware Blocker 30-Day Trial
-XB-Website: http://store.metavize.com/spyware
+XB-Website: http://store.untanglenetworks.com/spywareblocker
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -2048,8 +2047,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  IgWqMjYrOOHvOAJkMSxsqyn4gHedmazBrqiqgfBwxU6jaj76SDWsX69qOa2q2FilgoNVcVaW+Y9k
  73LcRSZkLGKH/REnyfG0lONnPR/5uuRksvDJPrb/abw/B5zrN+guuOXxZRNDd9Zq1QnYEOXj71ey
  +PfGcHg3h7iLr16RWb+Q1R/2aQ8mqjheqF8wvO3WUPf+R4ABACEcfkAFMtTiAAAAAElFTkSuQmCC
-Description: The Metavize Spyware Blocker Software Appliance
- The Metavize Spyware Blocker Software Appliance Store Item
+Description: Untangle Spyware Blocker 30-Day Trial
+The Untangle Networks Spyware Blocker 30-Day Trial Store Item.
 
 Package: httpblocker-trial30-storeitem
 Architecture: any
@@ -2057,7 +2056,7 @@ Depends: httpblocker-transform, httpblocker-disabler
 XB-Price: 0
 XB-View-Position: 30
 XB-Display-Name: Web Content Control 30-Day Trial
-XB-Website: http://store.metavize.com/webcontrol
+XB-Website: http://store.untanglenetworks.com/webcontrol
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0RVh0
  U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d03e2c04c
@@ -2147,16 +2146,16 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  hv5ibZAOJB+Ky44vFgGhHLnryrk0ZtNIVGdIWXk5HptioXw44eddESL+/vgzcoWKcn5hoPbA
  +1nH0ufnBbLGWduFUqXpn6ZVni9WNfB/TqKdLXQoddk5/ipGzKowLKETWaMN5ivbxR/E/ifA
  ACBNCbEqfhTsAAAAAElFTkSuQmCC
-Description: The Metavize Web Content Control Software Appliance
- The Metavize Web Content Control Software Appliance Store Item
+Description: Untangle Web Content Control 30-Day Trial
+The Untangle Networks Web Content Control 30-Day Trial Store Item.
 
 Package: hauri-trial30-storeitem
 Architecture: any
 Depends: hauri-transform, hauri-disabler
 XB-Price: 399
 XB-View-Position: 60
-XB-Display-Name: Hauri AntiVirus Scanner 30-Day Trial
-XB-Website: http://store.metavize.com/hauri_antivirus
+XB-Display-Name: Hauri Virus Blocker 30-Day Trial
+XB-Website: http://store.untanglenetworks.com/hauri
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
  AAAKTWlDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVN3WJP3Fj7f92UPVkLY8LGXbIEA
@@ -2262,16 +2261,16 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  bo4dB1m4/4mJCZqZmTkOure3Rw3Moe3tbdrf36epqamhgXK/DDo/P08LCws0NzfXelcoFJTJ
  t7a2iKH5xJlHJgYQTXoFZcjFxUUlDK3e8ZE4m35tbY0cx1GAw4BMUgKhGBh4DPkrH9WzEs1O
  4vuVlZXPTaVhwzLg7OwsLS0t0fLyMq2vryvO/wQYAP5qirM6mBOTAAAAAElFTkSuQmCC
-Description: The Hauri AntiVirus Scanner Software Appliance
- The Hauri AntiVirus Scanner Software Appliance Store Item
+Description: Untangle Hauri Virus Blocker 30-Day Trial
+The Untangle Networks Hauri Virus Blocker 30-Day Trial Store Item.
 
 Package: protofilter-trial30-storeitem
 Architecture: any
 Depends: protofilter-transform, protofilter-disabler
 XB-Price: 0
 XB-View-Position: 80
-XB-Display-Name: Rogue Protocol Control 30-Day Trial
-XB-Website: http://www.metavize.com/protocolcontrol
+XB-Display-Name: Protocol Control 30-Day Trial
+XB-Website: http://www.untanglenetworks.com/protocolcontrol
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -2384,16 +2383,16 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  9r+JrLqHcb1/5G+RYmXTPJWlGb3b6BYmf2bKnUk5+TGE7vzZn3kmWHTz5s1//icarfhpzE82
  2tifbwr1VLtn9G935xN+znHG/arjXPYPRVt53HzZvynJzzTaKFBpwLTxwIsWGlcGHRei85f/
  /qR+EPs/AQYALpz0b9lClG4AAAAASUVORK5CYII=
-Description: The Metavize Rogue Protocol Control Software Appliance
- The Metavize Rogue Protocol Control Software Appliance Store Item
+Description: Untangle Protocol Control 30-Day Trial
+The Untangle Networks Protocol Control 30-Day Trial Store Item.
 
 Package: spamassassin-trial30-storeitem
 Architecture: any
 Depends: spamassassin-transform, spamassassin-disabler
 XB-Price: 0
 XB-View-Position: 15
-XB-Display-Name: SpamGuard 30-Day Trial
-XB-Website: http://store.metavize.com/spamguard
+XB-Display-Name: Spam Blocker 30-Day Trial
+XB-Website: http://store.untanglenetworks.com/spamblocker
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -2500,16 +2499,16 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  BKrSAH7zsCoUU01hotVpyZBWzBOosKrYaJBp4U5Si82nbJpKvekm4RPXjyQ/EqKRY1dQLbrv
  7ecbjiWKg52kQksZPHS58yyBNmiZiJP+/Re/svPTyfv0y81tv46IkqxIuSdiaPf5D4YGWh7D
  zpbjLtD367cmAc5kRUrTokJw339vj/xB7P8FGACNK2N4xeErDQAAAABJRU5ErkJggg==
-Description: The Metavize SpamGuard Software Appliance
- The Metavize SpamGuard Software Appliance Store Item
+Description: Untangle Spam Blocker 30-Day Trial
+The Untangle Networks Spam Blocker 30-Day Trial Store Item.
 
 Package: clamphish-trial30-storeitem
 Architecture: any
 Depends: clamphish-transform, clamphish-disabler
 XB-Price: 0
 XB-View-Position: 17
-XB-Display-Name: PhishNet 30-Day Trial
-XB-Website: http://store.metavize.com/phishnet
+XB-Display-Name: Identity Theft Blocker 30-Day Trial
+XB-Website: http://store.untanglenetworks.com/idblocker
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -2630,8 +2629,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  DeWOUVGQk46vEDn3QiJzP5Tv3KHYlomQGTTF/tsucwQoIgfY0ME3uUu7PogA9qxsZpUgB1QR
  k2CFwI0uw5UGmqYjhJgEO3kPJb3c0CFdxgf60NxeIoGxv9v3NzTIj0BpAdTEYcMHgTVS/M8A
  nY2oOxX/HXgAAAAASUVORK5CYII=
-Description: The Metavize PhishNet Software Appliance
- The Metavize PhishNet Software Appliance Store Item
+Description: Untangle Identity Theft Blocker 30-Day Trial
+The Untangle Networks Identity Theft Blocker 30-Day Trial Store Item.
 
 Package: ids-trial30-storeitem
 Architecture: any
@@ -2639,7 +2638,7 @@ Depends: ids-transform, ids-disabler, snort-rules-current
 XB-Price: 0
 XB-View-Position: 75
 XB-Display-Name: Intrusion Prevention 30-Day Trial
-XB-Website: http://store.metavize.com/ips
+XB-Website: http://store.untanglenetworks.com/ips
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -2737,8 +2736,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  gsfHQOjn+g6B3IjyCiLKankOYogxYlRxroN4C9+u6Nol3m0Ivh3SMIYO77MjbVPK5v9f/vAv
  dt1hz+oW0X4R2L/+xQ72f/+aKQFxz7/f+fpfFP00yKQAP7JF/ft5GLHDLCq9/aj7R7+mbO3J
  3QCjv/Lrm/0vGAYPf3Cgs7LEXqJSDBdeyxQVZw9vy/8MAIKemQqNP8+BAAAAAElFTkSuQmCC
-Description: The Metavize Intrusion Prevention Software Appliance
- The Metavize Intrusion Prevention Software Appliance Store Item
+Description: Untangle Intrusion Prevention 30-Day Trial
+The Untangle Networks Intrusion Prevention 30-Day Trial Store Item.
 
 Package: portal-trial30-storeitem
 Architecture: any
@@ -2746,7 +2745,7 @@ Depends: portal-transform, portal-disabler
 XB-Price: 0
 XB-View-Position: 75
 XB-Display-Name: Remote Access Portal 30-Day Trial
-XB-Website: http://store.metavize.com/portal
+XB-Website: http://store.untanglenetworks.com/portal
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -2844,8 +2843,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  gsfHQOjn+g6B3IjyCiLKankOYogxYlRxroN4C9+u6Nol3m0Ivh3SMIYO77MjbVPK5v9f/vAv
  dt1hz+oW0X4R2L/+xQ72f/+aKQFxz7/f+fpfFP00yKQAP7JF/ft5GLHDLCq9/aj7R7+mbO3J
  3QCjv/Lrm/0vGAYPf3Cgs7LEXqJSDBdeyxQVZw9vy/8MAIKemQqNP8+BAAAAAElFTkSuQmCC
-Description: The Remote Access Portal Software Appliance 30-day Trial
- The Remote Access Portal Software Appliance 30-day Trial Store Item
+Description: Untangle Remote Access Portal 30-Day Trial
+The Untangle Networks Remote Access Portal 30-Day Trial Store Item.
 
 Package: boxbackup-trial30-storeitem
 Architecture: any
@@ -2853,7 +2852,7 @@ Depends: boxbackup-transform, boxbackup-disabler
 XB-Price: 99
 XB-View-Position: 1015
 XB-Display-Name: 24-Hour Replacement 30-Day Trial
-XB-Website: http://www.metavize.com/boxbackup.html
+XB-Website: http://www.untanglenetworks.com/boxbackup
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -2965,5 +2964,5 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  UhSjFBXBSZSlEzlQ4Qb8b0QSAyroSUWMCjqU1BjiQBEI87Hw49XvxG34jfnnTR9v2GzFMFBT
  AWk1QmLfV3ukhaYK9I4Wfe83CCwb8LTUuhOUECxqyCoy+D/E/leAAQDhy3XsyDOL8wAAAABJ
  RU5ErkJggg==
-Description: The 24-Hour Box Backup Service
- The 24-Hour Box Backup Service Store Item
+Description: Untangle 24-Hour Replacement 30-Day Trial
+The Untangle Networks 24-Hour Replacement 30-Day Trial Store Item.
