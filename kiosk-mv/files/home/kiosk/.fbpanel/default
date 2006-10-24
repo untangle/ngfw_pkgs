@@ -41,7 +41,7 @@ Global {
     widthtype = request
 #    width = 50
     heighttype = percent
-    height = 10
+    height = 50
     roundcorners = false 
     # Identify panel window type as dock 
     # legal values are boolean
