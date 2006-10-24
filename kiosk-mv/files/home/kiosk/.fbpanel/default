@@ -45,7 +45,7 @@ Global {
     roundcorners = false 
     # Identify panel window type as dock 
     # legal values are boolean
-    SetDockTpe = true
+    SetDockType = true
 
     # Reserve panel's space so that it will not be covered by maximazied windows
     # legal values are boolean
@@ -59,8 +59,6 @@ Global {
     #    or
     # TintColor = white
     # Alpha = 127
-}
-
 }
 
 Plugin {
