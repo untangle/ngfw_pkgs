@@ -40,26 +40,26 @@ Global {
     margin = 0
     widthtype = request
 #    width = 50
-    heighttype = pixel
-    height = 26
+    heighttype = percent
+    height = 10
     roundcorners = false 
-#     # Identify panel window type as dock 
-#     # legal values are boolean
-#     SetDockTpe = true
+    # Identify panel window type as dock 
+    # legal values are boolean
+    SetDockTpe = true
 
-#     # Reserve panel's space so that it will not be covered by maximazied windows
-#     # legal values are boolean
-SetPartialStrut = false
+    # Reserve panel's space so that it will not be covered by maximazied windows
+    # legal values are boolean
+    SetPartialStrut = false
 
-#     # Transparency stuff: 
-#     # TintColor is a color to composite on root background given as #RRGGBB or as name
-#     # Alpha is transparency of the tint color.
-#     # Transparent = true
-#     # TintColor = #FFFFFF
-#         or
-#     # TintColor = white
-#     # Alpha = 127
-# }
+    # Transparency stuff: 
+    # TintColor is a color to composite on root background given as #RRGGBB or as name
+    # Alpha is transparency of the tint color.
+    # Transparent = true
+    # TintColor = #FFFFFF
+    #    or
+    # TintColor = white
+    # Alpha = 127
+}
 
 }
 
@@ -69,7 +69,7 @@ Plugin {
         button {
             image = /usr/share/fbpanel/images/Networking.png
             tooltip = Untangle Client
-            action = /usr/bin/metavize-client
+            action = /usr/bin/metavize-client &
         }
     }
 }
@@ -128,7 +128,7 @@ Plugin {
         button {
             image = /usr/share/fbpanel/images/Networking.png
             tooltip = Untangle Recovery
-            action = /home/kiosk/utils/edgeguard-restore.sh
+            action = /home/kiosk/utils/edgeguard-restore.sh &
         }
     }
 }
