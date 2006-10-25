@@ -101,7 +101,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  +kHp7ctXX3nDwvP84y0Y74x+whGA5coYxupTGJ+ax2vfe9P+IPY/AQYAsGi4kBr8QykAAAAA
  SUVORK5CYII=
 Description: Untangle Security Bundle
-The Untangle Networks Security Bundle Store Item.
+ The Untangle Networks Security Bundle Store Item.
 
 Package: airgap-storeitem
 Architecture: any
@@ -213,7 +213,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  jP5/n47IHTnb+aVRzChGFcieTBYZDm8iFwJtMEo9mv5bf//NdiRq+Es9wwm3yLXAooahnnuZ
  QdxsLPxXDxw5/j7RBinaTy/EXwisAmjbSWR6+zAwlMNjj38ieCD2fwIMANZG+Ft4BQz8AAAA
 Description: Untangle Attack Blocker
-The Untangle Networks Attack Blocker Store Item.
+ The Untangle Networks Attack Blocker Store Item.
 
 Package: spyware-storeitem
 Architecture: any
@@ -303,7 +303,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  73LcRSZkLGKH/REnyfG0lONnPR/5uuRksvDJPrb/abw/B5zrN+guuOXxZRNDd9Zq1QnYEOXj71ey
  +PfGcHg3h7iLr16RWb+Q1R/2aQ8mqjheqF8wvO3WUPf+R4ABACEcfkAFMtTiAAAAAElFTkSuQmCC
 Description: Untangle Spyware Blocker
-The Untangle Networks Spyware Blocker Store Item.
+ The Untangle Networks Spyware Blocker Store Item.
 
 Package: httpblocker-storeitem
 Architecture: any
@@ -404,7 +404,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  +1nH0ufnBbLGWduFUqXpn6ZVni9WNfB/TqKdLXQoddk5/ipGzKowLKETWaMN5ivbxR/E/ifA
  ACBNCbEqfhTsAAAAAElFTkSuQmCC
 Description: Untangle Web Content Control
-The Untangle Networks Web Content Control Store Item.
+ The Untangle Networks Web Content Control Store Item.
 
 Package: hauri-storeitem
 Architecture: any
@@ -521,7 +521,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  t7a2iKH5xJlHJgYQTXoFZcjFxUUlDK3e8ZE4m35tbY0cx1GAw4BMUgKhGBh4DPkrH9WzEs1O
  4vuVlZXPTaVhwzLg7OwsLS0t0fLyMq2vryvO/wQYAP5qirM6mBOTAAAAAElFTkSuQmCC
 Description: Untangle Hauri Virus Blocker
-The Untangle Networks Hauri Virus Blocker Store Item.
+ The Untangle Networks Hauri Virus Blocker Store Item.
 
 Package: clam-storeitem
 Architecture: any
@@ -628,7 +628,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  t7a2iKH5xJlHJgYQTXoFZcjFxUUlDK3e8ZE4m35tbY0cx1GAw4BMUgKhGBh4DPkrH9WzEs1O
  4vuVlZXPTaVhwzLg7OwsLS0t0fLyMq2vryvO/wQYAP5qirM6mBOTAAAAAElFTkSuQmCC
 Description: Untangle Clam Virus Blocker
-The Untangle Networks Clam Virus Blocker Store Item.
+ The Untangle Networks Clam Virus Blocker Store Item.
 
 Package: protofilter-storeitem
 Architecture: any
@@ -752,7 +752,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  2tifbwr1VLtn9G935xN+znHG/arjXPYPRVt53HzZvynJzzTaKFBpwLTxwIsWGlcGHRei85f/
  /qR+EPs/AQYALpz0b9lClG4AAAAASUVORK5CYII=
 Description: Untangle Protocol Control
-The Untangle Networks Protocol Control Store Item.
+ The Untangle Networks Protocol Control Store Item.
 
 Package: nat-storeitem
 Architecture: any
@@ -847,7 +847,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  zYu28/m48eumeSM2sZU0C0mzhm1HVVVisRiaplFeXv71g9wrRRzHIZVKkUqlBkfjLq5wOcej
  +/fvv9Ix0wA4V/LlOA7/GQCfi3hGQX94NwAAAABJRU5ErkJggg==
 Description: Untangle Router
-The Untangle Networks Router Store Item.
+ The Untangle Networks Router Store Item.
 
 Package: firewall-storeitem
 Architecture: any
@@ -935,7 +935,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  zc2FabY4d/MK1zzQlDRpVyz53X379hnAfCLf07SOhrSOXtye9ILVeHNzM//v50Axw74c1xjD
  fwYAMCLoUqhkh6IAAAAASUVORK5CYII=
 Description: Untangle Firewall
-The Untangle Networks Firewall Store Item.
+ The Untangle Networks Firewall Store Item.
 
 Package: spamassassin-storeitem
 Architecture: any
@@ -1053,7 +1053,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  7ecbjiWKg52kQksZPHS58yyBNmiZiJP+/Re/svPTyfv0y81tv46IkqxIuSdiaPf5D4YGWh7D
  zpbjLtD367cmAc5kRUrTokJw339vj/xB7P8FGACNK2N4xeErDQAAAABJRU5ErkJggg==
 Description: Untangle Spam Blocker
-The Untangle Networks Spam Blocker Store Item.
+ The Untangle Networks Spam Blocker Store Item.
 
 Package: clamphish-storeitem
 Architecture: any
@@ -1185,7 +1185,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  k2CFwI0uw5UGmqYjhJgEO3kPJb3c0CFdxgf60NxeIoGxv9v3NzTIj0BpAdTEYcMHgTVS/M8A
  nY2oOxX/HXgAAAAASUVORK5CYII=
 Description: Untangle Identity Theft Blocker
-The Untangle Networks Identity Theft Blocker Store Item.
+ The Untangle Networks Identity Theft Blocker Store Item.
 
 Package: test-storeitem
 Architecture: any
@@ -1328,7 +1328,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  E9ORyFBgWpqgJbAcTRReOMoIhCGIDAGhxnAgkGBYAkMYpG2HrmyCrkSaf79yEVc/9Kj4/wMA
  IXmY0MNCBksAAAAASUVORK5CYII=
 Description: Untangle Test
-The Untangle Networks Test Store Item.
+ The Untangle Networks Test Store Item.
 
 Package: openvpn-storeitem
 Architecture: any
@@ -1433,7 +1433,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  p9MbC7m3s67neaFcbRjGLbJ4cIQI3Na9vwzq41aZ3W2cWq1GrVa7VRr/dUfwokDY+r8et1j0
  xIkT/LaPNzYtgL8l0/d9/mcAXb1X7pR/ZiwAAAAASUVORK5CYII=
 Description: OpenVPN
-OpenVPN Store Item.
+ OpenVPN Store Item.
 
 Package: ids-storeitem
 Architecture: any
@@ -1542,7 +1542,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  dt1hz+oW0X4R2L/+xQ72f/+aKQFxz7/f+fpfFP00yKQAP7JF/ft5GLHDLCq9/aj7R7+mbO3J
  3QCjv/Lrm/0vGAYPf3Cgs7LEXqJSDBdeyxQVZw9vy/8MAIKemQqNP8+BAAAAAElFTkSuQmCC
 Description: Untangle Intrusion Prevention
-The Untangle Networks Intrusion Prevention Store Item.
+ The Untangle Networks Intrusion Prevention Store Item.
 
 Package: reporting-storeitem
 Architecture: any
@@ -1629,7 +1629,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  Gwe/++1vGj/fcKBvrfF6FVHvq8rfvQzlN83+/j9Ov3D2DdYAKX9oYI1fKPoxJMDBwSCGhg9j
  9KkxvPWjn6ofxP4nwAB2T5Rklk6b3gAAAABJRU5ErkJggg==
 Description: Untangle Reports
-Untangle Networks Reports Store Item.
+ Untangle Networks Reports Store Item.
 
 Package: boxbackup-storeitem
 Architecture: any
@@ -1752,7 +1752,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  AWk1QmLfV3ukhaYK9I4Wfe83CCwb8LTUuhOUECxqyCoy+D/E/leAAQDhy3XsyDOL8wAAAABJ
  RU5ErkJggg==
 Description: Untangle 24-Hour Replacement
-The Untangle Networks 24-Hour Replacement Store Item.
+ The Untangle Networks 24-Hour Replacement Store Item.
 
 Package: portal-storeitem
 Architecture: any
@@ -1863,7 +1863,7 @@ XB-Desc-Icon:  iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YM
  mExNXuhQ/BtEgBH2fmScSohAwURrcxNoxyhJknjKMYj2QfR48tXf/Y78W45z586Rf9OBcv9D
  gAEA/vR7Rb8zHBYAAAAASUVORK5CYII=
 Description: Untangle Remote Access Portal
-The Untangle Networks Remote Access Portal Store Item.
+ The Untangle Networks Remote Access Portal Store Item.
 
 Package: standard-bundle-trial30-storeitem
 Architecture: any
@@ -1960,7 +1960,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  +kHp7ctXX3nDwvP84y0Y74x+whGA5coYxupTGJ+ax2vfe9P+IPY/AQYAsGi4kBr8QykAAAAA
  SUVORK5CYII=
 Description: Untangle Security Bundle 30-Day Trial
-The Untangle Networks Security Bundle 30-Day Trial Store Item.
+ The Untangle Networks Security Bundle 30-Day Trial Store Item.
 
 Package: spyware-trial30-storeitem
 Architecture: any
@@ -2048,7 +2048,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  73LcRSZkLGKH/REnyfG0lONnPR/5uuRksvDJPrb/abw/B5zrN+guuOXxZRNDd9Zq1QnYEOXj71ey
  +PfGcHg3h7iLr16RWb+Q1R/2aQ8mqjheqF8wvO3WUPf+R4ABACEcfkAFMtTiAAAAAElFTkSuQmCC
 Description: Untangle Spyware Blocker 30-Day Trial
-The Untangle Networks Spyware Blocker 30-Day Trial Store Item.
+ The Untangle Networks Spyware Blocker 30-Day Trial Store Item.
 
 Package: httpblocker-trial30-storeitem
 Architecture: any
@@ -2147,7 +2147,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  +1nH0ufnBbLGWduFUqXpn6ZVni9WNfB/TqKdLXQoddk5/ipGzKowLKETWaMN5ivbxR/E/ifA
  ACBNCbEqfhTsAAAAAElFTkSuQmCC
 Description: Untangle Web Content Control 30-Day Trial
-The Untangle Networks Web Content Control 30-Day Trial Store Item.
+ The Untangle Networks Web Content Control 30-Day Trial Store Item.
 
 Package: hauri-trial30-storeitem
 Architecture: any
@@ -2262,7 +2262,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  t7a2iKH5xJlHJgYQTXoFZcjFxUUlDK3e8ZE4m35tbY0cx1GAw4BMUgKhGBh4DPkrH9WzEs1O
  4vuVlZXPTaVhwzLg7OwsLS0t0fLyMq2vryvO/wQYAP5qirM6mBOTAAAAAElFTkSuQmCC
 Description: Untangle Hauri Virus Blocker 30-Day Trial
-The Untangle Networks Hauri Virus Blocker 30-Day Trial Store Item.
+ The Untangle Networks Hauri Virus Blocker 30-Day Trial Store Item.
 
 Package: protofilter-trial30-storeitem
 Architecture: any
@@ -2384,7 +2384,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  2tifbwr1VLtn9G935xN+znHG/arjXPYPRVt53HzZvynJzzTaKFBpwLTxwIsWGlcGHRei85f/
  /qR+EPs/AQYALpz0b9lClG4AAAAASUVORK5CYII=
 Description: Untangle Protocol Control 30-Day Trial
-The Untangle Networks Protocol Control 30-Day Trial Store Item.
+ The Untangle Networks Protocol Control 30-Day Trial Store Item.
 
 Package: spamassassin-trial30-storeitem
 Architecture: any
@@ -2500,7 +2500,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  7ecbjiWKg52kQksZPHS58yyBNmiZiJP+/Re/svPTyfv0y81tv46IkqxIuSdiaPf5D4YGWh7D
  zpbjLtD367cmAc5kRUrTokJw339vj/xB7P8FGACNK2N4xeErDQAAAABJRU5ErkJggg==
 Description: Untangle Spam Blocker 30-Day Trial
-The Untangle Networks Spam Blocker 30-Day Trial Store Item.
+ The Untangle Networks Spam Blocker 30-Day Trial Store Item.
 
 Package: clamphish-trial30-storeitem
 Architecture: any
@@ -2630,7 +2630,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  k2CFwI0uw5UGmqYjhJgEO3kPJb3c0CFdxgf60NxeIoGxv9v3NzTIj0BpAdTEYcMHgTVS/M8A
  nY2oOxX/HXgAAAAASUVORK5CYII=
 Description: Untangle Identity Theft Blocker 30-Day Trial
-The Untangle Networks Identity Theft Blocker 30-Day Trial Store Item.
+ The Untangle Networks Identity Theft Blocker 30-Day Trial Store Item.
 
 Package: ids-trial30-storeitem
 Architecture: any
@@ -2737,7 +2737,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  dt1hz+oW0X4R2L/+xQ72f/+aKQFxz7/f+fpfFP00yKQAP7JF/ft5GLHDLCq9/aj7R7+mbO3J
  3QCjv/Lrm/0vGAYPf3Cgs7LEXqJSDBdeyxQVZw9vy/8MAIKemQqNP8+BAAAAAElFTkSuQmCC
 Description: Untangle Intrusion Prevention 30-Day Trial
-The Untangle Networks Intrusion Prevention 30-Day Trial Store Item.
+ The Untangle Networks Intrusion Prevention 30-Day Trial Store Item.
 
 Package: portal-trial30-storeitem
 Architecture: any
@@ -2844,7 +2844,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  dt1hz+oW0X4R2L/+xQ72f/+aKQFxz7/f+fpfFP00yKQAP7JF/ft5GLHDLCq9/aj7R7+mbO3J
  3QCjv/Lrm/0vGAYPf3Cgs7LEXqJSDBdeyxQVZw9vy/8MAIKemQqNP8+BAAAAAElFTkSuQmCC
 Description: Untangle Remote Access Portal 30-Day Trial
-The Untangle Networks Remote Access Portal 30-Day Trial Store Item.
+ The Untangle Networks Remote Access Portal 30-Day Trial Store Item.
 
 Package: boxbackup-trial30-storeitem
 Architecture: any
@@ -2965,4 +2965,4 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  AWk1QmLfV3ukhaYK9I4Wfe83CCwb8LTUuhOUECxqyCoy+D/E/leAAQDhy3XsyDOL8wAAAABJ
  RU5ErkJggg==
 Description: Untangle 24-Hour Replacement 30-Day Trial
-The Untangle Networks 24-Hour Replacement 30-Day Trial Store Item.
+ The Untangle Networks 24-Hour Replacement 30-Day Trial Store Item.
