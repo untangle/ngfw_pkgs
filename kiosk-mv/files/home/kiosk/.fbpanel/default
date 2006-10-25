@@ -67,7 +67,7 @@ Plugin {
         button {
             image = /usr/share/fbpanel/images/Networking.png
             tooltip = Untangle Client
-            action = /usr/bin/metavize-client &
+            action = /usr/bin/metavize-client
         }
     }
 }
@@ -126,7 +126,7 @@ Plugin {
         button {
             image = /usr/share/fbpanel/images/Networking.png
             tooltip = Untangle Recovery
-            action = /home/kiosk/utils/edgeguard-restore.sh &
+            action = /home/kiosk/utils/edgeguard-restore.sh
         }
     }
 }
