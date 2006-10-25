@@ -9,4 +9,4 @@ Package: firefox-r-kiosk
 Architecture: any
 Depends: firefox (>> 1.5)
 Description: R-Kiosk kiosk extension for Firefox
- R-Kiosk kiosk extension for Mozilla Firefox 1.5
+ R-Kiosk kiosk extension for Mozilla Firefox 1.5.

@@ -9,5 +9,5 @@ Package: pump-mv
 Architecture: any
 Depends: dhcp3-client
 Conflicts: pump
-Description: The Metavize EdgeGuard pump config
- The Metavize EdgeGuard pump custom config
+Description: The Untangle Networks pump config
+ The Untangle Networks pump custom config.

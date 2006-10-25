@@ -9,5 +9,5 @@ Package: dev-mv
 Architecture: any
 Provides: jre-mv
 Depends: sudo, pump-mv, libxml2, libxml2-dev, fakeroot, debhelper, make, module-assistant, libterm-size-perl, libterm-readkey-perl, subversion, subversion-tools, iptables (>= 1.2.11-10-mv1), iptables-dev (>= 1.2.11-10-mv1), libnfnetlink0, libnfnetlink-dev, libnetfilter-queue0, libnetfilter-queue-dev, gcc, libc6-dev, linux-kernel-headers, bridge-utils, postgresql-mv, pgaccess, tcpdump, netcat, libsysfs-dev, g++, devscripts, clamav-mv, spamc-mv, snmpd, snmp, snort-rules-current, openvpn, nsis, nsis-mv, sysutils, zip, global, nxml-mode, aspell, sg3-utils, libxml2-utils, dnsmasq, ddclient, bzip2, ntp-simple, slapd (>= 2.2.23-mv1), ldap-utils (>= 2.2.23-mv1), db4.2-util, ujac-to-pdf, ebtables
-Description: Metavize Dev-Env Package
- The Metavize Development Environment Package
+Description: Untangle Networks Dev-Env Package
+ The Untangle Networks Development Environment Package.

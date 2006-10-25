@@ -10,5 +10,5 @@ Architecture: any
 Essential: yes
 Depends: firefox-r-kiosk, masqmail
 Conflicts: exim4-config, exim4-base, exim4, exim4-daemon-light
-Description: The Metavize EdgeGuard kiosk utils
- The Metavize EdgeGuard kiosk mode utilities
+Description: The Untangle Networks kiosk utils
+ The Untangle Networks kiosk mode utilities.
