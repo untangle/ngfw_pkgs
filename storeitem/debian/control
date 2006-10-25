@@ -528,7 +528,7 @@ Architecture: any
 Depends: clam-transform
 XB-Price: 0
 XB-View-Position: 70
-XB-Display-Name: Clam Virus Blocker
+XB-Display-Name: Virus Blocker
 XB-Website: http://store.untanglenetworks.com/virusblocker
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
