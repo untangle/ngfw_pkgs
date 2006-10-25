@@ -1,7 +1,7 @@
 Source: restore-mv
 Section: admin
 Priority: optional
-Maintainer: Dirk Morris <dmorris@metavize.com>
+Maintainer: Dirk Morris <dmorris@untanglenetworks.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.5.2
 
