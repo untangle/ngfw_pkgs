@@ -45,7 +45,7 @@ Global {
     roundcorners = false 
     # Identify panel window type as dock 
     # legal values are boolean
-    SetDockType = true
+    SetDockType = false
 
     # Reserve panel's space so that it will not be covered by maximazied windows
     # legal values are boolean
