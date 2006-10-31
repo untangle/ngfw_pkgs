@@ -2,19 +2,19 @@ iptables (1.2.9-6) unstable; urgency=low
 
   * added supplies for iptables and iptables-dev
 
- -- Dirk Morris <dmorris@metavize.com>  Sat,  18 Sep 2004 18:21:29 -0500
+ -- Dirk Morris <dmorris@untangle.com>  Sat,  18 Sep 2004 18:21:29 -0500
 
 iptables (1.2.9-5) unstable; urgency=low
 
   * changed doc dir
 
- -- Dirk Morris <dmorris@metavize.com>  Sat,  18 Sep 2004 18:21:29 -0500
+ -- Dirk Morris <dmorris@untangle.com>  Sat,  18 Sep 2004 18:21:29 -0500
 
 iptables (1.2.9-4) unstable; urgency=low
 
   * Added bitmark match
 
- -- Jim Mar <jmar@metavize.com>  Sat,  18 Sep 2004 18:21:29 -0500
+ -- Jim Mar <jmar@untangle.com>  Sat,  18 Sep 2004 18:21:29 -0500
 
 iptables (1.2.9-3) unstable; urgency=low
 

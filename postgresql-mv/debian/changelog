@@ -2,115 +2,115 @@ postgresql-mv (0-32) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@metavize.com>  Wed, 21 Jun 2006 16:47:12 -0700
+ -- John Irwin <jdi@untangle.com>  Wed, 21 Jun 2006 16:47:12 -0700
 
 postgresql-mv (0-31) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@metavize.com>  Wed, 15 Feb 2006 11:26:01 -0800
+ -- John Irwin <jdi@untangle.com>  Wed, 15 Feb 2006 11:26:01 -0800
 
 postgresql-mv (0-30) stable; urgency=low
 
   * auto build
 
- -- M. Srikant <srikant@metavize.com>  Mon,  3 Oct 2005 14:59:54 -0700
+ -- M. Srikant <srikant@untangle.com>  Mon,  3 Oct 2005 14:59:54 -0700
 
 postgresql-mv (0-29) stable; urgency=low
 
   * auto build
 
- -- M. Srikant <srikant@metavize.com>  Mon,  3 Oct 2005 12:45:17 -0700
+ -- M. Srikant <srikant@untangle.com>  Mon,  3 Oct 2005 12:45:17 -0700
 
 postgresql-mv (0-28) stable; urgency=low
 
   * auto build
 
- -- M. Srikant <srikant@metavize.com>  Mon,  3 Oct 2005 12:45:04 -0700
+ -- M. Srikant <srikant@untangle.com>  Mon,  3 Oct 2005 12:45:04 -0700
 
 postgresql-mv (0-27) stable; urgency=low
 
   * auto build
 
- -- M. Srikant <srikant@metavize.com>  Fri, 30 Sep 2005 19:43:17 -0700
+ -- M. Srikant <srikant@untangle.com>  Fri, 30 Sep 2005 19:43:17 -0700
 
 postgresql-mv (0-26) stable; urgency=low
 
   * auto build
 
- -- M. Srikant <srikant@metavize.com>  Fri, 30 Sep 2005 19:30:03 -0700
+ -- M. Srikant <srikant@untangle.com>  Fri, 30 Sep 2005 19:30:03 -0700
 
 postgresql-mv (0-25) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@metavize.com>  Fri, 30 Sep 2005 18:41:13 -0700
+ -- John Irwin <jdi@untangle.com>  Fri, 30 Sep 2005 18:41:13 -0700
 
 postgresql-mv (0-24) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@metavize.com>  Fri, 30 Sep 2005 17:14:59 -0700
+ -- John Irwin <jdi@untangle.com>  Fri, 30 Sep 2005 17:14:59 -0700
 
 postgresql-mv (0-23) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@metavize.com>  Fri, 30 Sep 2005 17:09:52 -0700
+ -- John Irwin <jdi@untangle.com>  Fri, 30 Sep 2005 17:09:52 -0700
 
 postgresql-mv (0-22) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@metavize.com>  Fri, 30 Sep 2005 16:02:38 -0700
+ -- John Irwin <jdi@untangle.com>  Fri, 30 Sep 2005 16:02:38 -0700
 
 postgresql-mv (0-21) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@metavize.com>  Fri, 30 Sep 2005 16:01:43 -0700
+ -- John Irwin <jdi@untangle.com>  Fri, 30 Sep 2005 16:01:43 -0700
 
 postgresql-mv (0-20) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@metavize.com>  Fri, 30 Sep 2005 16:01:37 -0700
+ -- John Irwin <jdi@untangle.com>  Fri, 30 Sep 2005 16:01:37 -0700
 
 postgresql-mv (0-19) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@metavize.com>  Fri, 30 Sep 2005 15:53:29 -0700
+ -- John Irwin <jdi@untangle.com>  Fri, 30 Sep 2005 15:53:29 -0700
 
 postgresql-mv (0-18) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@metavize.com>  Fri, 30 Sep 2005 15:35:52 -0700
+ -- John Irwin <jdi@untangle.com>  Fri, 30 Sep 2005 15:35:52 -0700
 
 postgresql-mv (0-17) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@metavize.com>  Fri, 30 Sep 2005 15:35:36 -0700
+ -- John Irwin <jdi@untangle.com>  Fri, 30 Sep 2005 15:35:36 -0700
 
 postgresql-mv (0-16) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@metavize.com>  Fri, 30 Sep 2005 15:31:39 -0700
+ -- John Irwin <jdi@untangle.com>  Fri, 30 Sep 2005 15:31:39 -0700
 
 postgresql-mv (0-15) stable; urgency=low
 
   * auto build
 
- -- M. Srikant <srikant@metavize.com>  Fri,  9 Sep 2005 11:13:47 -0700
+ -- M. Srikant <srikant@untangle.com>  Fri,  9 Sep 2005 11:13:47 -0700
 
 postgresql-mv (0-14) stable; urgency=low
 
   * auto build
 
- -- Dirk Morris <dmorris@metavize.com>  Fri,  9 Sep 2005 11:08:05 -0700
+ -- Dirk Morris <dmorris@untangle.com>  Fri,  9 Sep 2005 11:08:05 -0700
 
 postgresql-mv (0-13) stable; urgency=low
 
@@ -122,25 +122,25 @@ postgresql-mv (0-12) stable; urgency=low
 
   * auto build
 
- -- Dirk Morris <dmorris@metavize.com>  Tue, 19 Jul 2005 13:12:42 -0700
+ -- Dirk Morris <dmorris@untangle.com>  Tue, 19 Jul 2005 13:12:42 -0700
 
 postgresql-mv (0-11) stable; urgency=low
 
   * auto build
 
- -- Dirk Morris <dmorris@metavize.com>  Mon, 18 Jul 2005 18:18:00 -0700
+ -- Dirk Morris <dmorris@untangle.com>  Mon, 18 Jul 2005 18:18:00 -0700
 
 postgresql-mv (0-10) stable; urgency=low
 
   * auto build
 
- -- Dirk Morris <dmorris@metavize.com>  Mon, 18 Jul 2005 18:16:30 -0700
+ -- Dirk Morris <dmorris@untangle.com>  Mon, 18 Jul 2005 18:16:30 -0700
 
 postgresql-mv (0-9) stable; urgency=low
 
   * auto build
 
- -- Dirk Morris <dmorris@metavize.com>  Tue, 10 May 2005 21:27:04 -0700
+ -- Dirk Morris <dmorris@untangle.com>  Tue, 10 May 2005 21:27:04 -0700
 
 postgresql-mv (0-8) stable; urgency=low
 

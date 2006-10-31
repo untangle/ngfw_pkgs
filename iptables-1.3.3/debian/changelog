@@ -2,7 +2,7 @@ iptables (1.3.3-2-mv2) unstable; urgency=low
 
   * Rebuilt for metavize
 
- -- Robert Scott <rbscott@metavize.com>  Thu, 05 Oct 2006 18:07:32 -0700
+ -- Robert Scott <rbscott@untangle.com>  Thu, 05 Oct 2006 18:07:32 -0700
 
 iptables (1.3.3-2ubuntu4) dapper; urgency=low
 
