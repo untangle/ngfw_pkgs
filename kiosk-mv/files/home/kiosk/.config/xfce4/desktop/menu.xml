@@ -5,7 +5,7 @@
 ]>
 <xfdesktop-menu>
     <title name="Desktop Menu" visible="yes" />
-    <app name="Metavize EdgeGuard Client" cmd="metavize-client" term="no"/>
+    <app name="Untangle Platform Client" cmd="untangle-client" term="no"/>
     <separator/>
     <menu name="Local Controls">
        <app name="Enable  Screensaver" cmd="/home/kiosk/utils/screensaver-on.sh"/>

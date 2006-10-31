@@ -2,7 +2,7 @@
 
 # setting up the user account we use to run the daemons
 adduser --gecos "" --firstuid 10000 --disabled-password spamc 2>/dev/null
-chown -R spamc:spamc /home/spamc 
+chown -R spamc:spamc /home/spamc
 
 # enable in /etc/default/spamassassin
 sed -i "s/^ENABLED=.*/ENABLED=1/" /etc/default/spamassassin
@@ -10,8 +10,8 @@ sed -i 's/^OPTIONS=.*/OPTIONS="--create-prefs --round-robin --max-children 5 --h
 
 # turn off stuff in local.cf
 rm -f /etc/spamassassin/local.cf
-cat > /etc/spamassassin/local.cf << EOF 
-# Metavize global SpamAssassin settings
+cat > /etc/spamassassin/local.cf << EOF
+# Untangle global Spam Blocker settings
 score ALL_TRUSTED 0
 lock_method flock
 auto_whitelist_factor 0.3
@@ -25,7 +25,7 @@ EOF
 # start spamassassin
 /etc/init.d/spamassassin restart &> /dev/null &
 
-exit 0 
+exit 0
 
 
 

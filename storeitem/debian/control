@@ -1,7 +1,7 @@
 Source: storeitem-mv
 Section: admin
 Priority: optional
-Maintainer: Dirk Morris <dmorris@untanglenetworks.com>
+Maintainer: Dirk Morris <dmorris@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.5.2
 
@@ -12,7 +12,7 @@ Conflicts: standard-bundle-disabler, spyware-disabler, httpblocker-disabler, pro
 XB-Price: 0
 XB-View-Position: 10
 XB-Display-Name: Security Bundle
-XB-Website: http://store.untanglenetworks.com/securitybundle
+XB-Website: http://store.untangle.com/securitybundle
 XB-Is-Bundle: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -109,7 +109,7 @@ Depends: airgap-transform
 XB-Price: 0
 XB-View-Position: 1010
 XB-Display-Name: Attack Blocker
-XB-Website: http://store.untanglenetworks.com/attackblocker
+XB-Website: http://store.untangle.com/attackblocker
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -223,7 +223,7 @@ Provides: spyware-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 20
 XB-Display-Name: Spyware Blocker
-XB-Website: http://store.untanglenetworks.com/spywareblocker
+XB-Website: http://store.untangle.com/spywareblocker
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -313,7 +313,7 @@ Provides: httpblocker-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 30
 XB-Display-Name: Web Content Control
-XB-Website: http://store.untanglenetworks.com/webcontrol
+XB-Website: http://store.untangle.com/webcontrol
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0RVh0
  U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d03e2c04c
@@ -414,7 +414,7 @@ Provides: hauri-trial30-storeitem
 XB-Price: 399
 XB-View-Position: 60
 XB-Display-Name: Hauri Virus Blocker
-XB-Website: http://store.untanglenetworks.com/hauri
+XB-Website: http://store.untangle.com/hauri
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
  AAAKTWlDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVN3WJP3Fj7f92UPVkLY8LGXbIEA
@@ -529,7 +529,7 @@ Depends: clam-transform
 XB-Price: 0
 XB-View-Position: 70
 XB-Display-Name: Virus Blocker
-XB-Website: http://store.untanglenetworks.com/virusblocker
+XB-Website: http://store.untangle.com/virusblocker
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
  AAAABGdBTUEAANjr9RwUqgAAACBjSFJNAABtmAAAc44AAPJxAACDbAAAg7sAANTIAAAx7AAA
@@ -638,7 +638,7 @@ Provides: protofilter-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 80
 XB-Display-Name: Protocol Control
-XB-Website: http://www.untanglenetworks.com/protocolcontrol
+XB-Website: http://www.untangle.com/protocolcontrol
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -760,7 +760,7 @@ Depends: nat-transform
 XB-Price: 0
 XB-View-Position: 1000
 XB-Display-Name: Router
-XB-Website: http://store.untanglenetworks.com/router
+XB-Website: http://store.untangle.com/router
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -855,7 +855,7 @@ Depends: firewall-transform
 XB-Price: 0
 XB-View-Position: 90
 XB-Display-Name: Firewall
-XB-Website: http://store.untanglenetworks.com/firewall
+XB-Website: http://store.untangle.com/firewall
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -945,7 +945,7 @@ Provides: spamassassin-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 15
 XB-Display-Name: Spam Blocker
-XB-Website: http://store.untanglenetworks.com/spamblocker
+XB-Website: http://store.untangle.com/spamblocker
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1063,7 +1063,7 @@ Provides: clamphish-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 17
 XB-Display-Name: Identity Theft Blocker
-XB-Website: http://store.untanglenetworks.com/idblocker
+XB-Website: http://store.untangle.com/idblocker
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1193,7 +1193,7 @@ Depends: test-transform
 XB-Price: 0
 XB-View-Position: 2002
 XB-Display-Name: Test
-XB-Website: http://store.untanglenetworks.com/test
+XB-Website: http://store.untangle.com/test
 XB-Is-Core: true
 XB-Org-Icon:  iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1336,7 +1336,7 @@ Depends: openvpn-transform
 XB-Price: 0
 XB-View-Position: 1003
 XB-Display-Name: OpenVPN
-XB-Website: http://store.untanglenetworks.com/openvpn
+XB-Website: http://store.untangle.com/openvpn
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1443,7 +1443,7 @@ Provides: ids-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 75
 XB-Display-Name: Intrusion Prevention
-XB-Website: http://store.untanglenetworks.com/ips
+XB-Website: http://store.untangle.com/ips
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1550,7 +1550,7 @@ Depends: reporting-transform
 XB-Price: 0
 XB-View-Position: 1020
 XB-Display-Name: Untangle Reports
-XB-Website: http://store.untanglenetworks.com/reports
+XB-Website: http://store.untangle.com/reports
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1639,7 +1639,7 @@ Provides: boxbackup-trial30-storeitem
 XB-Price: 99
 XB-View-Position: 1015
 XB-Display-Name: 24-Hour Replacement
-XB-Website: http://www.untanglenetworks.com/boxbackup
+XB-Website: http://www.untangle.com/boxbackup
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1762,7 +1762,7 @@ Provides: portal-trial30-storeitem
 XB-Price: 99
 XB-View-Position: 1015
 XB-Display-Name: Remote Access Portal
-XB-Website: http://www.untanglenetworks.com/portal
+XB-Website: http://www.untangle.com/portal
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1871,7 +1871,7 @@ Depends: airgap-storeitem, spyware-trial30-storeitem, httpblocker-trial30-storei
 XB-Price: 0
 XB-View-Position: 10
 XB-Display-Name: Security Bundle 30-Day Trial
-XB-Website: http://store.untanglenetworks.com/securitybundle
+XB-Website: http://store.untangle.com/securitybundle
 XB-Is-Bundle: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1968,7 +1968,7 @@ Depends: spyware-transform, spyware-disabler
 XB-Price: 0
 XB-View-Position: 20
 XB-Display-Name: Spyware Blocker 30-Day Trial
-XB-Website: http://store.untanglenetworks.com/spywareblocker
+XB-Website: http://store.untangle.com/spywareblocker
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -2056,7 +2056,7 @@ Depends: httpblocker-transform, httpblocker-disabler
 XB-Price: 0
 XB-View-Position: 30
 XB-Display-Name: Web Content Control 30-Day Trial
-XB-Website: http://store.untanglenetworks.com/webcontrol
+XB-Website: http://store.untangle.com/webcontrol
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0RVh0
  U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d03e2c04c
@@ -2155,7 +2155,7 @@ Depends: hauri-transform, hauri-disabler
 XB-Price: 399
 XB-View-Position: 60
 XB-Display-Name: Hauri Virus Blocker 30-Day Trial
-XB-Website: http://store.untanglenetworks.com/hauri
+XB-Website: http://store.untangle.com/hauri
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
  AAAKTWlDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVN3WJP3Fj7f92UPVkLY8LGXbIEA
@@ -2270,7 +2270,7 @@ Depends: protofilter-transform, protofilter-disabler
 XB-Price: 0
 XB-View-Position: 80
 XB-Display-Name: Protocol Control 30-Day Trial
-XB-Website: http://www.untanglenetworks.com/protocolcontrol
+XB-Website: http://www.untangle.com/protocolcontrol
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -2392,7 +2392,7 @@ Depends: spamassassin-transform, spamassassin-disabler
 XB-Price: 0
 XB-View-Position: 15
 XB-Display-Name: Spam Blocker 30-Day Trial
-XB-Website: http://store.untanglenetworks.com/spamblocker
+XB-Website: http://store.untangle.com/spamblocker
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -2508,7 +2508,7 @@ Depends: clamphish-transform, clamphish-disabler
 XB-Price: 0
 XB-View-Position: 17
 XB-Display-Name: Identity Theft Blocker 30-Day Trial
-XB-Website: http://store.untanglenetworks.com/idblocker
+XB-Website: http://store.untangle.com/idblocker
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -2638,7 +2638,7 @@ Depends: ids-transform, ids-disabler, snort-rules-current
 XB-Price: 0
 XB-View-Position: 75
 XB-Display-Name: Intrusion Prevention 30-Day Trial
-XB-Website: http://store.untanglenetworks.com/ips
+XB-Website: http://store.untangle.com/ips
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -2745,7 +2745,7 @@ Depends: portal-transform, portal-disabler
 XB-Price: 0
 XB-View-Position: 75
 XB-Display-Name: Remote Access Portal 30-Day Trial
-XB-Website: http://store.untanglenetworks.com/portal
+XB-Website: http://store.untangle.com/portal
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -2852,7 +2852,7 @@ Depends: boxbackup-transform, boxbackup-disabler
 XB-Price: 99
 XB-View-Position: 1015
 XB-Display-Name: 24-Hour Replacement 30-Day Trial
-XB-Website: http://www.untanglenetworks.com/boxbackup
+XB-Website: http://www.untangle.com/boxbackup
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d

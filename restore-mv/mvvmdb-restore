@@ -4,7 +4,7 @@ LOCAL_DUMP=/usr/share/metavize/dump
 mkdir -p $LOCAL_DUMP
 
 tmpfile=$(tempfile)
-backtitle="Metavize EdgeGuard"
+backtitle="Untangle Platform"
 
 
 confirm_exit()
@@ -83,7 +83,7 @@ restore()
             dumpfile=$indir/mvvmdb-$choice.gz
             tarfile=$indir/files-$choice.tar.gz
             instfile=$indir/installed-$choice
-            
+
             # restore choice
             /usr/bin/restore-mv $dumpfile $tarfile $instfile
 
@@ -254,7 +254,7 @@ while true; do
         RESTORE_USB)
             restore /mnt
             RET=$?
-            
+
             echo "---" $RET
 
             if [ $RET -eq 0 ]; then

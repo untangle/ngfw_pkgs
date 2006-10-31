@@ -19,11 +19,11 @@
 
 # expand - specifies if plugin can accomodate extra space or not [optional]
 # padding - extra paddin around plugin  [optional]
-# config {} - block of plugin's private configuration. 
+# config {} - block of plugin's private configuration.
 #             This part is plugin  dependant
 
 
-#  
+#
 # Plugin {
 #     type = wincmd
 #     config {
@@ -42,8 +42,8 @@ Global {
 #    width = 50
     heighttype = percent
     height = 50
-    roundcorners = false 
-    # Identify panel window type as dock 
+    roundcorners = false
+    # Identify panel window type as dock
     # legal values are boolean
     SetDockType = false
 
@@ -51,7 +51,7 @@ Global {
     # legal values are boolean
     SetPartialStrut = false
 
-    # Transparency stuff: 
+    # Transparency stuff:
     # TintColor is a color to composite on root background given as #RRGGBB or as name
     # Alpha is transparency of the tint color.
     # Transparent = true
@@ -67,7 +67,7 @@ Plugin {
         button {
             image = /usr/share/fbpanel/images/Networking.png
             tooltip = Untangle Client
-            action = /usr/bin/metavize-client
+            action = /usr/bin/untangle-client
         }
     }
 }
@@ -153,7 +153,7 @@ Plugin {
         ClockFmt = %T
         TooltipFmt = %A %x
         Action = /bin/true
-    }	
+    }
 }
 
 

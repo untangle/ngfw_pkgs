@@ -35,7 +35,7 @@ fi
 INST_OPTS=" -o DPkg::Options::=--force-confnew --yes --force-yes --fix-broken "
 UPGD_OPTS=" -o DPkg::Options::=--force-confnew --yes --force-yes --fix-broken "
 tmpfile=$(tempfile)
-backtitle="Metavize EdgeGuard"
+backtitle="Untangle Platform"
 
 confirm_exit()
 {

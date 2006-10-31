@@ -2,6 +2,6 @@
 <!DOCTYPE mcs-option SYSTEM "mcs-option.dtd">
 
 <mcs-option>
-	<option name="Xfwm/WorkspaceCount" type="int" value="1"/>
-	<option name="names" type="string" value="Metavize"/>
+    <option name="Xfwm/WorkspaceCount" type="int" value="1"/>
+    <option name="names" type="string" value="Untangle"/>
 </mcs-option>
