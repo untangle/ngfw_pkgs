@@ -15,13 +15,13 @@ sudo rsync -rlpvz -e ssh /var/www/stable/ \
     --exclude 'kav-*' \
     --exclude 'Packages' \
     --exclude 'Packages.gz' \
-    root@release.metavize.com:/var/www/beta
+    root@release.untangle.com:/var/www/beta
 
 scp \
-    ~/work/pkgs/scripts/override.testing.metavize \
+    ~/work/pkgs/scripts/override.testing.untangle \
     ~/work/pkgs/scripts/deb-scan.sh  \
     ~/work/pkgs/scripts/clean-packages.sh \
-    root@release.metavize.com:~/
+    root@release.untangle.com:~/
 
 # Cleaning is bad.  Very very bad.  Clean dogfood first, but leave release-alpha full of
 # packages.
@@ -29,5 +29,5 @@ scp \
 #ssh release.metavize.com -lroot "sh ~/clean-packages.sh /var/www.release/metavize 3 delete"
 
 echo -e "\n\nBuilding Package List...\n\n"
-ssh release.metavize.com -lroot "sh ~/deb-scan.sh /var/www/beta"
+ssh release.untangle.com -lroot "sh ~/deb-scan.sh /var/www/beta"
 

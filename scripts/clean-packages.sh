@@ -2,13 +2,13 @@
 
 if [ $# -lt 3 ]; then
     echo "usage) $0 <basedir> <versioncount> <method>"
-    echo "basedir        Base Directory (ie /var/www/metavize/)"
+    echo "basedir        Base Directory (ie /var/www/untangle/)"
     echo "versioncount   Number of version to keep (ie 3)"
     echo "method         {move|delete|nothing}"
     exit 1
 fi
 
-BASE_DIRECTORY=$1/pool/metavize/
+BASE_DIRECTORY=$1/pool/untangle/
 echo $BASE_DIRECTORY
 shift
 KEEPCOUNT=$1
@@ -26,8 +26,8 @@ is_file_in_list()
 
     for ff in $in_file_list; do
         if [ "$in_file" = "$ff" ]; then
-	    return 1
-	fi
+        return 1
+    fi
     done
 
     return 0
@@ -49,25 +49,25 @@ remove_file() {
 
     if [ $BACKUP_METHOD = "delete" ]; then
         echo "removing $1"
-        rm -f $1 
-    fi        
+        rm -f $1
+    fi
 }
 
 remove_all_but_recent_n_files()
 {
     # find the most recent file for the base package name
     if [ -z "$1" ]; then
-	# empty string
-	rval=""
-	return
+    # empty string
+    rval=""
+    return
     fi
 
     filename=$1
     number_of_files=$2
     if [ "`echo ${filename} | cut -b 1-3`" = "lib" ]; then
         directory="`echo ${filename} | cut -b 1-4`"
-    else 
-    	directory="`echo ${filename} | cut -b 1`"
+    else
+        directory="`echo ${filename} | cut -b 1`"
     fi
 
     current_dir="`pwd`"
@@ -89,9 +89,9 @@ remove_all_but_recent_n_files()
 
     for f in $total_file_list; do
         is_file_in_list "$file_list" $f
-	if [ $? -ne "1" ]; then
-	    remove_file $f
-	fi
+    if [ $? -ne "1" ]; then
+        remove_file $f
+    fi
     done
 
     echo "${filename} clean."

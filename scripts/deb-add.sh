@@ -1,7 +1,7 @@
 #! /bin/sh
 
 if [ $# -lt 2 ] ; then
-    echo "usage: $0 <dir ex: /var/www/metavize> <files>"
+    echo "usage: $0 <dir ex: /var/www/untangle> <files>"
     exit 1
 fi
 
@@ -10,7 +10,7 @@ shift
 
 echo $DESTINATION
 DISTRIBUTION=testing
-COMPONENT=metavize
+COMPONENT=untangle
 OVERRIDE=override.${DISTRIBUTION}.${COMPONENT}
 ARCH=i386
 
@@ -24,13 +24,13 @@ create_dir()
 }
 
 create_dir ${DESTINATION}/${COMPONENT}
- 
+
 create_dir ${DESTINATION}/dists/${DISTRIBUTION}
 
 create_dir ${DESTINATION}/dists/${DISTRIBUTION}/${COMPONENT}/binary-${ARCH}
- 
+
 create_dir ${DESTINATION}/indices
-                                                                                
+
 create_dir ${DESTINATION}/pool/${COMPONENT}
 
 #

@@ -3,7 +3,7 @@ RELEASE ?= `whoami`
 clean:
 	fakeroot debian/rules clean
 
-pkg: 
+pkg:
 	fakeroot debian/rules binary
 
 version:
@@ -15,6 +15,6 @@ release: clean version pkg
 	else echo "Must be run on bebe"; \
 	fi
 	svn commit -m"released" debian/changelog
-#	echo ${PACKAGENAME} `cat debian/changelog | head -n 1 | awk '{print $$2}'` "released." | mail -s release pkgs@metavize.com ; \
+#	echo ${PACKAGENAME} `cat debian/changelog | head -n 1 | awk '{print $$2}'` "released." | mail -s release pkgs@untangle.com ; \
 
 

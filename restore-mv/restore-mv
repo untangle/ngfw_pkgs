@@ -8,7 +8,7 @@ restore_db()
     infile=$1
 
     dropdb -U postgres mvvm >/dev/null 2>&1
-    createdb -O metavize -U metavize mvvm >/dev/null 2>&1
+    createdb -O untangle -U untangle mvvm >/dev/null 2>&1
 
 #    if confirm "Restore settings?"; then
         zcat $infile | psql -U postgres mvvm >/dev/null 2>&1
@@ -40,7 +40,7 @@ restore_packages()
 }
 
 
-if [ $# -lt 3 ] ; then 
+if [ $# -lt 3 ] ; then
     echo "Usage: $0 dumpfile tarfile instfile"
 fi
 
@@ -80,6 +80,6 @@ restore_packages $instfile
 # try again just in case these network settings are "better" than the previous
 restore_packages $instfile
 
-# start the MVVM, depending on circumstances (menu driven restore) may need to be restopped 
-/etc/init.d/mvvm start > /dev/null 2>&1 
+# start the MVVM, depending on circumstances (menu driven restore) may need to be restopped
+/etc/init.d/mvvm start > /dev/null 2>&1
 

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ $# -lt 2 ] ; then
-    echo "Usage: push.sh /var/www/dmorris/ /var/www/metavize/"
+    echo "Usage: push.sh /var/www/dmorris/ /var/www/untangle/"
     exit 2
 fi
 

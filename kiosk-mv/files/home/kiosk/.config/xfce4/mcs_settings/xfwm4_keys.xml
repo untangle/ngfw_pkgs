@@ -2,5 +2,5 @@
 <!DOCTYPE mcs-option SYSTEM "mcs-option.dtd">
 
 <mcs-option>
-	<option name="Xfwm/KeyThemeName" type="string" value="metavize"/>
+    <option name="Xfwm/KeyThemeName" type="string" value="untangle"/>
 </mcs-option>
