@@ -1,0 +1,99 @@
+dnl configure.in. 
+
+dnl init
+AC_INIT(src/_gocr.h)
+AM_INIT_AUTOMAKE(libgocr,0.7.2)
+AM_CONFIG_HEADER(include/config.h)
+
+dnl Check arguments
+AC_ARG_WITH(netpbm-headers, [ --with-netpbm-headers=[DIR]         NetPBM headers directory], netpbmh=$withval, netpbmh=no)
+if test "$netpbmh" != "no"; then
+	CPPFLAGS="$CPPFLAGS -I$netpbmh"
+else
+	CPPFLAGS="$CPPFLAGS -I/usr/include/netpbm -I/usr/local/netpbm/include"
+fi
+
+AC_ARG_WITH(netpbm-libraries, [ --with-netpbm-libraries=[DIR]         NetPBM libraries directory], netpbml=$withval, netpbml=no)
+if test "$netpbml" != "no"; then
+	CFLAGS="$CFLAGS -L$netpbml"
+else
+	CFLAGS="$CFLAGS -L$/usr/local/netpbm/lib"
+fi
+
+dnl Check compilers, processors, etc
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_INSTALL
+dnl AC_PROG_RANLIB
+AC_PROG_MAKE_SET
+AC_C_CONST
+
+dnl Install directories
+if test "x${datadir}" = 'x${prefix}/share'; then
+  if test "x${prefix}" = "xNONE"; then
+    PACKAGE_DATA_DIR="${ac_default_prefix}/share/${PACKAGE}"
+  else
+    PACKAGE_DATA_DIR="${prefix}/share/${PACKAGE}"
+  fi
+else
+  PACKAGE_DATA_DIR="${datadir}/${PACKAGE}"
+fi
+if test "x${modulesdir}" = 'x'; then
+  if test "x${prefix}" = "xNONE"; then
+    PACKAGE_MODULES_DIR="${ac_default_prefix}/lib/${PACKAGE}"
+  else
+    PACKAGE_MODULES_DIR="${prefix}/lib/${PACKAGE}"
+  fi
+else
+  PACKAGE_MODULES_DIR="${modulesdir}/${PACKAGE}"
+fi
+CFLAGS="$CFLAGS -DPACKAGE_MODULES_DIR=${PACKAGE_MODULES_DIR} -DPACKAGE_MODULES_DIR=${PACKAGE_MODULES_DIR}"
+AC_SUBST(PACKAGE)
+AC_SUBST(VERSION)
+
+dnl Check programs
+AC_CHECK_PROG(AR,ar,ar)
+AC_PATH_PROG(LATEX,latex,,$PATH:/usr/share/texmf/bin)
+AM_CONDITIONAL(LATEX,test "$LATEX")
+AC_CHECK_PROG(DVIPS,dvips,dvips)
+AM_CONDITIONAL(DVIPS,test "$DVIPS")
+AC_CHECK_PROG(LATEX2HTML,latex2html,latex2html)
+AM_CONDITIONAL(LATEX2HTML,test "$LATEX2HTML")
+AC_CHECK_PROG(DOXYGEN,doxygen,doxygen)
+AM_CONDITIONAL(DOXYGEN,test "$DOXYGEN")
+
+dnl libtool and libtldl
+AC_LIBLTDL_CONVENIENCE(./libltdl)
+AC_SUBST(LIBLTDL)
+AC_LIBTOOL_DLOPEN
+AM_PROG_LIBTOOL
+AC_SUBST(INCLTDL)
+AC_SUBST(LIBTOOL_DEPS)
+AC_CONFIG_SUBDIRS(libltdl)
+
+dnl Check for headers
+AC_CHECK_HEADERS(wchar.h unistd.h pam.h pnm.h)
+
+dnl Test for netpbm package
+dnl Quick hack to work:
+dnl PNM_LIBS="-lpnm -lppm -lpgm -lpbm"
+dnl AC_SUBST(PNM_LIBS)
+dnl Or the real test:
+AC_CHECK_LIB(pnm, pnm_readpaminit, [ PNM_LIBS="-lpnm -lppm -lpgm -lpbm" ])
+AC_CHECK_LIB(pnm, pnm_init, [ PNM_LIBS="-lpnm -lppm -lpgm -lpbm" ])
+
+if test "x$PNM_LIBS" = "x" ; then
+    AC_MSG_ERROR([Cannot find PNM library])
+fi 
+
+CFLAGS="$(CFLAGS) -I\$(top_srcdir)/libltdl -I\$(top_srcdir)/include -g -Wall"
+
+AC_SUBST(PNM_LIBS)
+
+AC_OUTPUT(
+Makefile 
+include/Makefile
+src/Makefile
+doc/Makefile
+tests/Makefile
+)

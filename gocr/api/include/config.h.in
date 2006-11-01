@@ -1,0 +1,25 @@
+/* include/config.h.in.  Generated automatically from configure.in by autoheader.  */
+
+/* Define if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
+
+/* Define if you have the <pam.h> header file. */
+#undef HAVE_PAM_H
+
+/* Define if you have the <pnm.h> header file. */
+#undef HAVE_PNM_H
+
+/* Define if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define if you have the <wchar.h> header file. */
+#undef HAVE_WCHAR_H
+
+/* Name of package */
+#undef PACKAGE
+
+/* Version number of package */
+#undef VERSION
+
+/* Define to empty if `const' does not conform to ANSI C. */
+#undef const

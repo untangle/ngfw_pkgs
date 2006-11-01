@@ -1,0 +1,154 @@
+#!/usr/bin/make -f
+
+CFLAGS = -Wall -g
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O2
+endif
+ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+	INSTALL_PROGRAM += -s
+endif
+
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# This is the debhelper compatability version to use.
+export DH_COMPAT=3
+
+# set any of this variable to TRUE to  install them, to FALSE to do not install
+INSTALLDATABASE=FALSE
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+
+	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
+	( cd $(CURDIR)/frontend/gnome ; \
+	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info ; ) 
+
+	touch configure-stamp
+
+
+build: build-stamp
+build-stamp: configure-stamp
+	
+	if [ $(INSTALLDATABASE) = TRUE ]; \
+	then \
+		$(MAKE) database; \
+	fi
+
+	$(MAKE)
+	$(MAKE) examples
+	$(MAKE) doc
+
+	( cd $(CURDIR)/frontend/gnome && ./configure )
+	$(MAKE) frontend
+	#$(MAKE) -C $(CURDIR)/frontend/gnome # I changed frontend/Makefile
+
+	touch build-stamp
+
+
+clean:
+	dh_testdir
+	rm -f build-stamp
+
+	-$(MAKE) proper
+	-$(MAKE) -C $(CURDIR)/frontend/gnome distclean
+	
+	# and some other debian/autoconf tmp file
+	-find $(CURDIR) -name "*~" -exec rm -v {} \;
+	-find $(CURDIR) -type f -name config.log -or \
+		-name config.cache -or \
+		-name config.status \
+		-exec rm -v {} \;
+	-find $(CURDIR) -type d \
+		-name CVS \
+		-exec rm -rfv {} \; 
+	-rm -vrf debian/tmp debian/files* core debian/substvars
+
+	dh_clean
+
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+
+	# Add here commands to install the package into debian/tmp.
+#	$(MAKE) install exec_prefix=$(CURDIR)/debian/tmp/usr prefix=$(CURDIR)/debian/tmp/usr INSTALL=/usr/bin/install
+	install -D $(CURDIR)/bin/gocr $(CURDIR)/debian/gocr/usr/bin/gocr
+	install -D $(CURDIR)/bin/gocr.tcl $(CURDIR)/debian/gocr-tk/usr/bin/gocr.tcl
+	install -D $(CURDIR)/frontend/gnome/src/gtk-ocr $(CURDIR)/debian/gocr-gtk/usr/bin/gtk-ocr
+
+#	install -D $(CURDIR)/doc/*ps $(CURDIR)/doc/*dvi $(CURDIR)/doc/*txt $(CURDIR)/debian/gocr-doc/usr/share/doc/gocr/doc
+
+
+# Build architecture-independent
+binary-indep: build install
+	dh_testdir 
+	dh_testroot
+
+	dh_installdocs -i
+	dh_installexamples -i
+
+	dh_installmenu -i
+	dh_installman -i
+
+	dh_installchangelogs -i
+
+	dh_compress -i -Xusr/share/doc/gocr/examples/font21.pcx
+	
+	dh_fixperms -i
+	# dh_fixperms doesn't fix subdir perms
+#	find debian/gocr/usr/share/doc/$(package) -type d -exec chmod 0755 {} \;
+
+	dh_makeshlibs -i
+	dh_installdeb -i
+
+	dh_shlibdeps -i
+	dh_gencontrol -i
+
+	dh_md5sums -i
+	dh_builddeb -i
+
+
+
+# Build architecture-dependent
+binary-arch: build install
+	dh_testdir 
+	dh_testroot
+
+	dh_installdebconf -a
+
+	dh_installdocs -a
+	dh_installexamples -a
+
+	dh_installmenu -a
+	dh_installman -a
+
+	dh_installchangelogs -a
+
+	dh_strip -a
+	dh_compress -a -Xusr/share/doc/gocr/examples/font21.pcx
+	
+	dh_fixperms -a
+	# dh_fixperms doesn't fix subdir perms
+#	find debian/gocr/usr/share/doc/$(package) -type d -exec chmod 0755 {} \;
+
+	dh_makeshlibs -a
+	dh_installdeb -a
+
+	dh_shlibdeps -a
+	dh_gencontrol -a
+
+	dh_md5sums -a
+	dh_builddeb -a
+
+
+binary: binary-indep binary-arch
+
+.PHONY: build clean binary binary-indep binary-arch binary install configure

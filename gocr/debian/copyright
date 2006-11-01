@@ -1,0 +1,17 @@
+This package was debianized by Cosimo Alfarano <alfarano@students.cs.unibo.it>
+on Sun, 25 Jun 2000 17:52:35 +0200.
+
+Current maintainer is Cosimo Alfarano.
+You can find this package at URL 
+http://altmark.nat.uni-magdeburg.de/~jschulen/ocr/index.html
+
+Authors:
+Joerg.Schulenburg@physik.uni-magdeburg.de, jschulen@gmx.de
+  
+Copyright (C) 2000  Joerg Schulenburg
+
+Copyright:
+Gocr is under GNU GPL, the GNU General Public License.
+
+A copy of the GNU General Public License, version 2, can be found in
+/usr/share/common-licenses/GPL

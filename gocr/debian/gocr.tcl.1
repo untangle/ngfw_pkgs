@@ -1,0 +1,46 @@
+.\" wing requests are required for all man pages.
+.TH gocr.tcl 1 "Sun Sep  3 14:59:19 CEST 2000" "" "Graphical frontend to gocr"
+.SH NAME
+gocr.tcl - Graphical frontend to gocr
+.SH SYNOPSIS
+.B gocr.tcl 
+.SH DESCRIPTION
+
+.B What is it?
+.TP
+OCR = optical character recognition
+.TP
+read pnm, pbm, pgm, ppm, some pcx and tga image files (or PNM from stdin)
+.TP
+if pnm-tools installed and running linux-like system you can also use  pnm.gz, pnm.bz2, png, jpg, tiff, gif, bmp (see pnm.cc for full list)
+.TP
+output of text
+
+.SH EXAMPLES
+There is some examples in /urs/share/doc/gocr.tcl
+
+Try to something like:
+.TP
+.B gocr -i file.pbm -o file.txt -e file.log -v X -m Y
+.TP
+where X and Y are the sum of values you want. i.e.:
+.B -v 15 
+.B -m 24
+
+.\" This next request is for sections 1, 6, 7 & 8 only
+.\"     (command return values (to shell) and
+.\"       fprintf/stderr type diagnostics)
+.\" .Sh DIAGNOSTICS
+.\" The next request is for sections 2 and 3 error
+.\" and signal handling only.
+.\" .Sh ERRORS
+.SH SEE ALSO
+gocr(1) gtk-ocr(1)
+.\" .Sh STANDARDS
+.\" .Sh HISTORY
+.SH AUTHORS
+Joerg.Schulenburg@physik.uni-magdeburg.de,
+jschulen@gmx.de
+.SH BUGS
+Send any bug to the Debian Bug Tracking System.
+

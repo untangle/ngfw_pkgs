@@ -1,0 +1,71 @@
+This file contains notes to developers of the GOCR API. It contains things that
+you MUST do, things that you MUST NOT do, what to take care, etc.
+
+Syntax
+------
+Function should follow this template:
+
+[_]gocr_[type][action]
+
+Internal functions should be prefixed with _.
+type is what data type the function handles, such as image.
+action is what the function does, such as load.
+With exception of the first word, every other should be Capitalized.
+
+Debugging information
+---------------------
+Use the _gocr_debug macro as frequently as possible. This helps debugging 
+severely; many things that would need a debugger and a couple of minutes to find
+out can be immediately spotted setting VERBOSE to 3. First, each level:
+
+0: outputs almost nothing. The only exceptions are VERY big errors (such as lack
+ of a library or a program.
+1: outputs error messages.
+2: outputs warning and error messages.
+3: output anything.
+
+These are the guidelines of where and when to put a _gocr_debug:
+
+* in the beginning of each function, as level 3, with outputting "func(args)".
+* every error should have a level 1 explanation.
+
+
+Hash tables
+-----------
+Although the current code supports (by #defines) a chained implementation, it's
+not interesting in GOCR, for the following reason: character attributes can be
+encoded as UNICODEs, if we use the least significant byte as the hash key. 
+(see character attributes, below)
+A chained implementation allows different data to share a key, which wouldn't
+work. Since the hash tables used in GOCR are not expected to be even near to
+filled, that's OK. (note: in future both kinds of tables may be implemented)
+
+
+Linked lists
+------------
+There are some restriction of our implementation of linked lists. Take a look
+at list.h to learn about them.
+
+
+GOCR image structure
+--------------------
+Instead of declaring each pixel as a unsigned char, I decided to implement it
+as a structure with bit fields. They probably are faster than accessing bits by
+bitwise operators, and the syntax is MUCH cleaner. Care must be taken, however,
+to avoid unnecessary waste of memory. The current structure uses only a byte
+(at least in a x86, gcc 2.95.2), so take care if you decide to add "just
+another bit", since you may be doubling the memory use. Also, take care of
+padding manually, keeping the structure size (in bits) a multiple of 8. The
+structure can be cast to a unsigned char (using pointers only: unsigned char *c
+= &pixel;), so we can print it safely (but NOT portably). Last, but far from
+least, the code assumes in some places (specially in print.c) that the
+gocrPixel structure size is the same as unsigned char, that is, 1 byte. If the
+structure grows (which should be avoided at any cost, since the memory
+requirements would become very high), the code must be reviewed. Also note that
+the data order is [y][x], which is common in computers.
+
+
+Character attributes
+--------------------
+Can be saved using the printf string formatter+new high value data code. 
+Partially implemented.
