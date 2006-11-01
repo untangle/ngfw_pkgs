@@ -26,7 +26,7 @@ scp \
 # Cleaning is bad.  Very very bad.  Clean dogfood first, but leave release-alpha full of
 # packages.
 #echo -e "\n\nCleaning...\n\n"
-#ssh release.metavize.com -lroot "sh ~/clean-packages.sh /var/www.release/metavize 3 delete"
+#ssh release.untangle.com -lroot "sh ~/clean-packages.sh /var/www.release/untangle 3 delete"
 
 echo -e "\n\nBuilding Package List...\n\n"
 ssh release.untangle.com -lroot "sh ~/deb-scan.sh /var/www/beta"
