@@ -1,0 +1,48 @@
+#!/usr/bin/make -f
+
+include /usr/share/dpatch/dpatch.make
+
+PACKAGE=$(shell dh_listpackages)
+
+DESTDIR=$(CURDIR)/debian/$(PACKAGE)
+
+clean: unpatch
+	dh_testdir
+	dh_testroot
+
+	rm -f build-stamp install-stamp
+	dh_clean
+
+build: build-stamp
+build-stamp: patch
+
+install: install-stamp
+install-stamp: build-stamp
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+
+	install -m755 FuzzyOcr.pm $(DESTDIR)/etc/mail/spamassassin
+	install -m644 FuzzyOcr.cf $(DESTDIR)/etc/mail/spamassassin
+	install -m644 FuzzyOcr.words.sample $(DESTDIR)/etc/mail/spamassassin/FuzzyOcr.words
+	touch install-stamp
+
+binary-indep: install
+	dh_testdir
+	dh_testroot
+	dh_installdocs
+	dh_installchangelogs
+	dh_fixperms
+	dh_compress
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+source diff:                                                                  
+	@echo >&2 'source and diff are obsolete - use dpkg-source -b'; false
+
+binary: binary-indep binary-arch
+.PHONY: clean binary-indep binary-arch binary install patch unpatch
+

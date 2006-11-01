@@ -1,0 +1,115 @@
+loadplugin FuzzyOcr FuzzyOcr.pm
+body FUZZY_OCR eval:fuzzyocr_check()
+describe FUZZY_OCR Mail contains an image with common spam text inside
+body FUZZY_OCR_WRONG_CTYPE eval:dummy_check()
+describe FUZZY_OCR_WRONG_CTYPE Mail contains an image with wrong content-type set
+body FUZZY_OCR_CORRUPT_IMG eval:dummy_check()
+describe FUZZY_OCR_CORRUPT_IMG Mail contains a corrupted image
+body FUZZY_OCR_KNOWN_HASH eval:dummy_check()
+describe FUZZY_OCR_KNOWN_HASH Mail contains an image with known hash
+
+priority FUZZY_OCR             900
+
+########### Plugin Configuration #############
+
+#### Logging options #####
+# Verbosity level (see manual) Attention: Don't set to 0, but to 0.0 for quiet operation. (Default value: 1)
+#focr_verbose 1
+#
+# Logfile (make sure it is writable by the plugin) (Default value: /etc/mail/spamassassin/FuzzyOcr.log)
+focr_logfile /etc/mail/spamassassin/FuzzyOcr.log
+##########################
+
+##### Wordlists #####
+# Here we defined the words to scan for (Default value: /etc/mail/spamassassin/FuzzyOcr.words)
+focr_global_wordlist /etc/mail/spamassassin/FuzzyOcr.words
+#
+# This is the path RELATIVE to the respektive home directory for the personalized list
+# This list is merged with the global word list on execution (Default value: .spamassassin/fuzzyocr.words)
+#focr_personal_wordlist .spamassassin/fuzzyocr.words
+#####################
+
+# Set this to 1 if you are running a version < 3.1.4.
+# This will disable a function used in conjunction with animated gifs that isn't available in earlier versions (Default value: 0.0)
+#focr_pre314 0.0
+
+# These parameters can be used to change other detection settings
+# If you leave these commented out, the defaults will be used.
+# Do not use " " around any parameters!
+#
+##### Location of helper applications (path + binary) (Default values: /usr/bin/<app>) #####
+#focr_bin_giffix /usr/bin/giffix
+#focr_bin_giftext /usr/bin/giftext
+#focr_bin_gifasm /usr/bin/gifasm
+#focr_bin_gifinter /usr/bin/gifinter
+#focr_bin_giftopnm /usr/bin/giftopnm
+#focr_bin_jpegtopnm /usr/bin/jpegtopnm
+#focr_bin_pngtopnm /usr/bin/pngtopnm
+#focr_bin_ppmhist /usr/bin/ppmhist
+#focr_bin_convert /usr/bin/convert
+#focr_bin_identify /usr/bin/identify
+#focr_bin_gocr /usr/bin/gocr
+############################################################################################
+
+##### Scansets, comma seperated (Default value: $gocr -i -, $gocr -l 180 -d 2 -i -) #####
+# Each scanset consists of one or more commands which make text out of pnm input.
+# Each scanset is run seperately on the PNM data, results are combined in scoring.
+#focr_scansets $gocr -i -, $gocr -l 180 -d 2 -i -
+#
+# To use only one scan with default values, uncomment the next line instead
+#focr_scansets $gocr -i -
+#
+# Some example for more advanced sets
+# Thisone uses the first the standard scan, then a scanset which first reduces the image to 3 colors and then scans it with custom settings
+# and then it scans again only with these custom settings
+# NOTE: This is for advanced users only, if you have questions how to use this, ask on the ML or on IRC
+#focr_scansets $gocr -i -, pnmnorm 2>$errfile | pnmquant 3 2>>$errfile | pnmnorm 2>>$errfile | $gocr -l 180 -d 2 -i -, $gocr -l 180 -d 2 -i -
+#########################################################################################
+
+##### Various Score/Scan settings #####
+# Timeout for the plugin, in seconds. (Maximum runtime of the plugin) (Default value: 10)
+#focr_timeout 10
+#
+# Default detection treshold (see manual) (Default value: 0.3) (Can be changed on a per word basis in the wordlist).
+#focr_threshold 0.3
+#
+# This is the score for a hit after focr_counts_required matches
+#focr_base_score 4
+#
+# This is the additional score for every additional match after focr_counts_required matches (Default value: 1)
+#focr_add_score 1
+#
+# This is the score to give for a wrong content-type (e.g. JPEG image but content type says GIF) (Default value: 1.5)
+#focr_wrongctype_score 1.5
+#
+# This is the score to give for a corrupted image (This currently affects only GIF images) (Default value: 2.5)
+#focr_corrupt_score 2.5
+#
+# This is the score to give for a corrupted unfixable image (This currently affects only GIF images) (Default value: 5)
+#focr_corrupt_unfixable_score 5
+#
+# This is used to disable the OCR engine if the message has already more points than this value (Default value: 10)
+#focr_autodisable_score 10
+#
+# Number of minimum matches before the rule scores (Default value: 2)
+#focr_counts_required 2
+#
+# Specifies, how many frames an animated gif must contain, so the second (less resource consuming) animated gif test is used. (Default value: 5)
+#focr_gif_max_frames 5
+
+#######################################
+
+##### Image Hash Database settings (Experimental, disabled by default) #####
+#
+# Set this to 1 to enable the Image Hash database feature (Default value: 0.0)
+#focr_enable_image_hashing 0.0
+#
+# The score is saved with the hash in the database, so no extra scoring for a db hit is required.
+#
+# If the image hash database feature is enabled, specify the file here to use as database (Default value: /etc/mail/spamassassin/FuzzyOcr.hashdb)
+#focr_digest_db /etc/mail/spamassassin/FuzzyOcr.hashdb
+#
+# Automatically add hashes of spam images recognized by OCR to the Image Hash database, to disable, set to 0.0 (Default value: 1)
+#focr_hashing_learn_scanned 1
+#
+######################################################################

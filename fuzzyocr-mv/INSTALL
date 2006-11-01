@@ -1,0 +1,119 @@
+Installation manual for FuzzyOcr 2.3:
+
+1. Dependencies you require for this plugin to work
+
+    Before starting, also make sure to read the OS/distribution specific notes at the end of this section. 
+
+    1.1 Spamassassin 3.x
+
+        This plugin requires Spamassassin 3.x. Using it on version 2.x is not supported and might fail.
+        At least one function in this plugin requires Spamassassin 3.1.4, if you do not have this version,
+        don't forget to set the "focr_pre314" option in the FuzzyOcr.cf file.
+
+    1.2 NetPBM tools
+
+        Install the NetPBM tools (http://netpbm.sourceforge.net/). If you don't install the binaries in /usr/bin,
+        please make sure to adjust the FuzzyOcr.cf to point to the correct binaries.
+
+    1.3 ImageMagick
+
+        At least one feature requires the convert binary from imagemagick (http://www.imagemagick.org/).
+        Again, make sure the configuration file points to the convert binary, if not placed in /usr/bin.
+
+    1.4 Giflib (also known as libungif)
+
+        Several tools from this package are required, see (http://sourceforge.net/projects/libungif).
+        Attention: the giftext binary from this package has a bug which can cause segfaults.
+        On the download page, a source patch is provided which fixes this.
+
+    1.5 Gocr
+        For OCR recognition, gocr (http://jocr.sourceforge.net/) must be installed.
+        Attention: the gocr binary has a bug which can cause segfaults with specific images.
+        On the download page, a source patch is provided which fixes this.
+
+    1.6 Perl modules:
+        These perl modules are required:
+            Digest::MD5
+            String::Approx
+
+    Notes for Fedora Core 5 (or higher) users: The package libungif-utils provides the necessary libungif binaries.
+    Notes for other Redhat/FC users: The packages libungif and libungif-progs should be installed.
+    Notes for Debian users: The package libungif-bin provides the necessary libungif binaries.
+    
+    Notes for Slackware users: I have no clue about this distro, but Andy Lyttle sent me a mail about it:
+    
+            "Slackware doesn't currently have a libungif-utils/progs/bin package, and the libungif package does not include the binaries such as giffix.  So, you have to hack it a bit.
+            
+            1. Download (or copy from CD) the /source/l/libungif directory, don't untar anything
+            2. Edit the libungif.SlackBuild and comment out this line:
+            # I don't believe we need all this slop.  Correct me if I'm wrong.
+                rm -rf $PKG/usr/bin
+            3. Run "sh libungif.SlackBuild"
+            4. Uninstall the libungif package, if it's already installed
+            5. Look in /tmp, and install the new libungif package there"
+    
+    Notes for Gentoo users: All dependencies except the perl modules can be installed via portage. But because of the bugs in giftext and gocr,
+                            you might need to write an ebuild which uses the two patches found on my download page. The perl modules can easily be
+                            installed with gcpan.
+
+
+2. Installing the plugin:
+
+    2.1. Installing the required files
+
+        Put the FuzzyOcr.cf and the FuzzyOcr.pm files into /etc/mail/spamassassin.
+        The FuzzyOcr.cf file already contains a line to load the plugin, if you want to put the .pm file in a different location,
+        change this line accordingly.
+        Create a wordlist file, a sample wordlist is shipped with this release, and put it also in /etc/mail/spamassassin.
+
+    2.2 Necessary configuration
+
+        Open the FuzzyOcr.cf. Make sure that you specify a writable file as a logfile, or a directory where the plugin can write to,
+        so it can create the logfile itself. Also make sure that you specify a correct file as global wordlist.
+        With these two adjustments, FuzzyOcr is already to work.
+ 
+ 3. Further adjustments
+
+    3.1. Enabling the image hash database
+
+        Set focr_enable_image_hashing to 1 in the config file, and make sure that focr_digest_db points to a writable file/directory.
+        You can also create this file yourself if you like. By default, all images recognized as spam, are added
+        to this database automatically. The score is saved as well and reused later again.
+
+    3.2 Tweaking Scansets
+
+        Everyone gets different image spam, and most times, one method to scan is not successful with all types of spam you get.
+        That's where the focr_scansets setting can help you. This setting takes a comma seperated list of scansets.
+        Each scanset starts with the name of a program, followed by either other programs connected with pipes, or nothing anymore.
+        The only important thing is that input for this "program chain" is a picture in the PNM format, and the output is ASCII text.
+
+        An example might clarify this:
+            focr_scanset gocr -i -
+
+        This will do a single scan with gocr default settings.
+
+            focr_scanset pnminvert | gocr -i -
+
+        This will use pnminvert on the image and then do the scan.
+
+            focr_scanset gocr -i -, gocr -l 180 -i -
+
+        This will do 2 scans, one with the default settings, and the second one with a modified -l value.
+
+        You are now free to select which scansets get you the most spam, but don't pick too many, as this will also use more resources.
+
+        Here are some hints: -pnminvert or pnmquant are useful with white text or text with many colors
+                             -If you get images which are littered with small dots/lines, try -d 2 as an argument to gocr
+                             -The -l setting often helps, try values like 180, 140, or 100
+
+        Two syntax remarks: -Instead of writing "gocr", write "$gocr" as this will be replaced with the correct path to your gocr binary.
+                            -If you invoke custom binaries (like pnminvert for example), you can redirect the stderr output by using:
+                                "pnminvert 2>>$errfile"
+                             If the scanset fails then, and debug logging is enabled, you will see this stderr output in the logfile :)
+
+        I know this seems confusing for some, but if this is unclear somehow, feel free to write an email to the list.
+
+
+And now, where it gets most thrilling...
+
+To be continued...
