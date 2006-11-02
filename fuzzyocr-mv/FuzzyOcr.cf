@@ -1,4 +1,4 @@
-loadplugin FuzzyOcr FuzzyOcr.pm
+loadplugin Mail::SpamAssassin::Plugin::FuzzyOcr
 body FUZZY_OCR eval:fuzzyocr_check()
 describe FUZZY_OCR Mail contains an image with common spam text inside
 body FUZZY_OCR_WRONG_CTYPE eval:dummy_check()
@@ -17,12 +17,12 @@ priority FUZZY_OCR             900
 #focr_verbose 1
 #
 # Logfile (make sure it is writable by the plugin) (Default value: /etc/mail/spamassassin/FuzzyOcr.log)
-focr_logfile /etc/mail/spamassassin/FuzzyOcr.log
+focr_logfile /var/log/FuzzyOcr.log
 ##########################
 
 ##### Wordlists #####
 # Here we defined the words to scan for (Default value: /etc/mail/spamassassin/FuzzyOcr.words)
-focr_global_wordlist /etc/mail/spamassassin/FuzzyOcr.words
+focr_global_wordlist /usr/share/fuzzyocr-mv/FuzzyOcr.words
 #
 # This is the path RELATIVE to the respektive home directory for the personalized list
 # This list is merged with the global word list on execution (Default value: .spamassassin/fuzzyocr.words)
@@ -102,12 +102,12 @@ focr_global_wordlist /etc/mail/spamassassin/FuzzyOcr.words
 ##### Image Hash Database settings (Experimental, disabled by default) #####
 #
 # Set this to 1 to enable the Image Hash database feature (Default value: 0.0)
-#focr_enable_image_hashing 0.0
+focr_enable_image_hashing 1
 #
 # The score is saved with the hash in the database, so no extra scoring for a db hit is required.
 #
 # If the image hash database feature is enabled, specify the file here to use as database (Default value: /etc/mail/spamassassin/FuzzyOcr.hashdb)
-#focr_digest_db /etc/mail/spamassassin/FuzzyOcr.hashdb
+focr_digest_db /var/lib/fuzzyocr/FuzzyOcr.hashdb
 #
 # Automatically add hashes of spam images recognized by OCR to the Image Hash database, to disable, set to 0.0 (Default value: 1)
 #focr_hashing_learn_scanned 1
