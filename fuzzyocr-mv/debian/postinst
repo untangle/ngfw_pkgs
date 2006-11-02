@@ -1,0 +1,9 @@
+#! /bin/sh
+
+saVersion=$(dpkg-query --showformat='${Version}\n' -W spamassassin)
+
+if dpkg --compare-versions $saVersion lt 3.1.4 ; then
+  perl -i -npe 's/.*focr_pre314.*/focr_pre314 1/' /etc/mail/spamassassin/FuzzyOcr.cf
+fi
+
+exit 0

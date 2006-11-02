@@ -1,0 +1,31 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 20_conf-file.dpatch by Sebastien Delafond <seb@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: No description.
+
+@DPATCH@
+diff -urNad fuzzyocr-mv~/FuzzyOcr.cf fuzzyocr-mv/FuzzyOcr.cf
+--- fuzzyocr-mv~/FuzzyOcr.cf	2006-11-01 14:19:38.000000000 -0800
++++ fuzzyocr-mv/FuzzyOcr.cf	2006-11-01 15:43:40.000000000 -0800
+@@ -1,4 +1,4 @@
+-loadplugin FuzzyOcr FuzzyOcr.pm
++loadplugin Mail::SpamAssassin::Plugin::FuzzyOcr
+ body FUZZY_OCR eval:fuzzyocr_check()
+ describe FUZZY_OCR Mail contains an image with common spam text inside
+ body FUZZY_OCR_WRONG_CTYPE eval:dummy_check()
+@@ -17,12 +17,12 @@
+ #focr_verbose 1
+ #
+ # Logfile (make sure it is writable by the plugin) (Default value: /etc/mail/spamassassin/FuzzyOcr.log)
+-focr_logfile /etc/mail/spamassassin/FuzzyOcr.log
++focr_logfile /var/log/FuzzyOcr.log
+ ##########################
+ 
+ ##### Wordlists #####
+ # Here we defined the words to scan for (Default value: /etc/mail/spamassassin/FuzzyOcr.words)
+-focr_global_wordlist /etc/mail/spamassassin/FuzzyOcr.words
++focr_global_wordlist /usr/share/fuzzyocr-mv/FuzzyOcr.words
+ #
+ # This is the path RELATIVE to the respektive home directory for the personalized list
+ # This list is merged with the global word list on execution (Default value: .spamassassin/fuzzyocr.words)

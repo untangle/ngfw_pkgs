@@ -23,9 +23,9 @@ install-stamp: build-stamp
 	dh_clean -k
 	dh_installdirs
 
-	install -m755 FuzzyOcr.pm $(DESTDIR)/etc/mail/spamassassin
+	install -m755 FuzzyOcr.pm $(DESTDIR)/usr/share/perl5/Mail/SpamAssassin/Plugin/
 	install -m644 FuzzyOcr.cf $(DESTDIR)/etc/mail/spamassassin
-	install -m644 FuzzyOcr.words.sample $(DESTDIR)/etc/mail/spamassassin/FuzzyOcr.words
+	install -m644 FuzzyOcr.words.sample $(DESTDIR)/usr/share/fuzzyocr-mv/FuzzyOcr.words
 	touch install-stamp
 
 binary-indep: install
