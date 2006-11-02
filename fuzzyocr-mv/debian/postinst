@@ -6,4 +6,7 @@ if dpkg --compare-versions $saVersion lt 3.1.4 ; then
   perl -i -npe 's/.*focr_pre314.*/focr_pre314 1/' /etc/mail/spamassassin/FuzzyOcr.cf
 fi
 
+# reload SA
+/etc/init.d/spamassassin reload
+
 exit 0
