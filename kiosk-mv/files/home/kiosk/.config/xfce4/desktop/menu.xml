@@ -13,7 +13,7 @@
     </menu>
     <separator/>
     <menu name="Advanced">
-      <app name="EdgeGuard Recovery" cmd="/home/kiosk/utils/edgeguard-restore.sh"/>
+      <app name="Untangle Platform Recovery" cmd="/home/kiosk/utils/edgeguard-restore.sh"/>
     </menu>
     <separator/>
     <app name="Reboot"    cmd="/home/kiosk/utils/edgeguard-reboot.sh" term="no"/>
