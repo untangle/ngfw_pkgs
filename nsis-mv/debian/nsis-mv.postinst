@@ -11,5 +11,8 @@ for i in `find . -type f` ; do
     fi
 done
 
+# Copy in the NSISKill DLL
+cp /usr/share/nsis-mv/Plugins/processkill.dll /usr/share/nsis/Plugins/
+
 cd ${DIR}
 unset DIR
