@@ -10,6 +10,11 @@ mkdir -p /var/log/mvvm &> /dev/null
 
 MCLI="/usr/bin/mcli"
 
+function updateResolvConf()
+{
+    sed -i -e '/127.0.0.1/d' -e '1inameserver 127.0.0.1' /etc/resolv.conf
+}
+
 if [ ! -f ${MCLI} ] ; then 
     echo "$0: ${MCLI} missing (`date`)" >> /var/log/mvvm/wrapper.log 2>&1
     exit 1
@@ -26,6 +31,7 @@ case "${reason}" in
         echo "$0: DHCP - ${reason}. (`date`)" >> /var/log/mvvm/iptables.log 2>&1
         ## These must be backgrounded due to the locking around network configuration.
         ${MCLI} updateAddress >> /var/log/mvvm/iptables.log 2>&1 &
+        updateResolvConf
         ;;
 
     ## Failed to update lease, set to bogus address and then call update address.
@@ -42,6 +48,7 @@ case "${reason}" in
 
         ## These must be backgrounded due to the locking around network configuration.
         ${MCLI} updateAddress >> /var/log/mvvm/iptables.log 2>&1 &
+        updateResolvConf
         ;;
 
     ## Unknown commands.
