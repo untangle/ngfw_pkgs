@@ -1,6 +1,6 @@
 mvvm            optional    m
 metavize-client     optional    m
-untangle-client     optional    m
+untangle-client     optional    u
 libmvvm-thirdparty      optional        libm
 
 #
