@@ -1,3 +1,9 @@
+storeitem-mv (0-55) stable; urgency=low
+
+  * auto build
+
+ -- Aaron Read <amread@bebe.metavize.com>  Fri,  3 Nov 2006 16:33:48 -0800
+
 storeitem-mv (0-54) stable; urgency=low
 
   * auto build
