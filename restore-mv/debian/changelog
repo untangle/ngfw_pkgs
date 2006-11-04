@@ -1,3 +1,9 @@
+restore-mv (0-57) stable; urgency=low
+
+  * auto build
+
+ -- Aaron Read <amread@bebe.metavize.com>  Fri,  3 Nov 2006 16:32:55 -0800
+
 restore-mv (0-56) stable; urgency=low
 
   * auto build
