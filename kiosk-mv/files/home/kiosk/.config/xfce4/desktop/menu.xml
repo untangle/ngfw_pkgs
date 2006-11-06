@@ -4,7 +4,7 @@
     <!ENTITY debian SYSTEM "menudefs.hook">
 ]>
 <xfdesktop-menu>
-    <title name="Desktop Menu" visible="yes" />
+    <title name="Desktop Menu" visible="no" />
     <app name="Untangle Platform Client" cmd="untangle-client" term="no"/>
     <separator/>
     <menu name="Local Controls">
