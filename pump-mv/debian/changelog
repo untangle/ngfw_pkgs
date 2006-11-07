@@ -1,3 +1,9 @@
+pump-mv (0-23) stable; urgency=low
+
+  * auto build
+
+ -- root <root@bebe.metavize.com>  Tue,  7 Nov 2006 12:22:32 -0800
+
 pump-mv (0-22) stable; urgency=low
 
   * auto build
