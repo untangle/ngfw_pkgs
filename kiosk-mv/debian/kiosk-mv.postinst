@@ -4,7 +4,7 @@ chown -R kiosk:kiosk /home/kiosk
 
 rm -fr /etc/xdg/xfce4
 cp -r /home/kiosk/.config/xfce4 /etc/xdg/
-cp /home/kiosk/xfwm4-defaults /usr/share/xfwm4/defaults
+cp /home/kiosk/xfwm4_defaults /usr/share/xfwm4/defaults
 
 exit 0
 
