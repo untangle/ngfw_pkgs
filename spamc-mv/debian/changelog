@@ -1,3 +1,9 @@
+spamc-mv (0-14) stable; urgency=low
+
+  * auto build
+
+ -- Aaron Read <amread@bebe.metavize.com>  Mon,  6 Nov 2006 16:31:28 -0800
+
 spamc-mv (0-13) stable; urgency=low
 
   * auto build
