@@ -4,18 +4,4 @@
     <!ENTITY debian SYSTEM "menudefs.hook">
 ]>
 <xfdesktop-menu>
-    <title name="Desktop Menu" visible="no" />
-    <app name="Untangle Platform Client" cmd="untangle-client" term="no"/>
-    <separator/>
-    <menu name="Local Controls">
-       <app name="Enable  Screensaver" cmd="/home/kiosk/utils/screensaver-on.sh"/>
-       <app name="Disable Screensaver" cmd="/home/kiosk/utils/screensaver-off.sh"/>
-    </menu>
-    <separator/>
-    <menu name="Advanced">
-      <app name="Untangle Platform Recovery" cmd="/home/kiosk/utils/edgeguard-restore.sh"/>
-    </menu>
-    <separator/>
-    <app name="Reboot"    cmd="/home/kiosk/utils/edgeguard-reboot.sh" term="no"/>
-    <app name="Power Off" cmd="/home/kiosk/utils/edgeguard-off.sh" term="no"/>
 </xfdesktop-menu>
