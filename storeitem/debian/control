@@ -412,9 +412,9 @@ Depends: hauri-transform
 Conflicts: hauri-disabler
 Provides: hauri-trial30-storeitem
 XB-Price: 399
-XB-View-Position: 60
-XB-Display-Name: Hauri Virus Blocker
-XB-Website: http://store.untangle.com/hauri
+XB-View-Position: -1
+XB-Display-Name: Dual Virus Blocker
+XB-Website: http://store.untangle.com/dualvirusblocker
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
  AAAKTWlDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVN3WJP3Fj7f92UPVkLY8LGXbIEA
@@ -520,8 +520,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  bo4dB1m4/4mJCZqZmTkOure3Rw3Moe3tbdrf36epqamhgXK/DDo/P08LCws0NzfXelcoFJTJ
  t7a2iKH5xJlHJgYQTXoFZcjFxUUlDK3e8ZE4m35tbY0cx1GAw4BMUgKhGBh4DPkrH9WzEs1O
  4vuVlZXPTaVhwzLg7OwsLS0t0fLyMq2vryvO/wQYAP5qirM6mBOTAAAAAElFTkSuQmCC
-Description: Untangle Hauri Virus Blocker
- The Untangle Networks Hauri Virus Blocker Store Item.
+Description: Untangle Dual Virus Blocker
+ The Untangle Networks Dual Virus Blocker Store Item.
 
 Package: clam-storeitem
 Architecture: any
@@ -1867,7 +1867,7 @@ Description: Untangle Remote Access Portal
 
 Package: standard-bundle-trial30-storeitem
 Architecture: any
-Depends: airgap-storeitem, spyware-trial30-storeitem, httpblocker-trial30-storeitem, clam-storeitem, protofilter-trial30-storeitem, nat-storeitem, firewall-storeitem, spamassassin-trial30-storeitem, clamphish-trial30-storeitem, openvpn-storeitem, ids-trial30-storeitem, reporting-storeitem, portal-trial30-storeitem
+Depends: airgap-storeitem, spyware-trial30-storeitem, httpblocker-trial30-storeitem, clam-storeitem, protofilter-trial30-storeitem, nat-storeitem, firewall-storeitem, spamassassin-trial30-storeitem, clamphish-trial30-storeitem, openvpn-storeitem, ids-storeitem, reporting-storeitem, portal-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 10
 XB-Display-Name: Security Bundle 30-Day Trial
@@ -2154,7 +2154,7 @@ Architecture: any
 Depends: hauri-transform, hauri-disabler
 XB-Price: 399
 XB-View-Position: 60
-XB-Display-Name: Hauri Virus Blocker 30-Day Trial
+XB-Display-Name: Dual Virus Blocker 30-Day Trial
 XB-Website: http://store.untangle.com/hauri
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
@@ -2261,8 +2261,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  bo4dB1m4/4mJCZqZmTkOure3Rw3Moe3tbdrf36epqamhgXK/DDo/P08LCws0NzfXelcoFJTJ
  t7a2iKH5xJlHJgYQTXoFZcjFxUUlDK3e8ZE4m35tbY0cx1GAw4BMUgKhGBh4DPkrH9WzEs1O
  4vuVlZXPTaVhwzLg7OwsLS0t0fLyMq2vryvO/wQYAP5qirM6mBOTAAAAAElFTkSuQmCC
-Description: Untangle Hauri Virus Blocker 30-Day Trial
- The Untangle Networks Hauri Virus Blocker 30-Day Trial Store Item.
+Description: Untangle Dual Virus Blocker 30-Day Trial
+ The Untangle Networks Dual Virus Blocker 30-Day Trial Store Item.
 
 Package: protofilter-trial30-storeitem
 Architecture: any
@@ -2631,113 +2631,6 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  nY2oOxX/HXgAAAAASUVORK5CYII=
 Description: Untangle Identity Theft Blocker 30-Day Trial
  The Untangle Networks Identity Theft Blocker 30-Day Trial Store Item.
-
-Package: ids-trial30-storeitem
-Architecture: any
-Depends: ids-transform, ids-disabler, snort-rules-current
-XB-Price: 0
-XB-View-Position: 75
-XB-Display-Name: Intrusion Prevention 30-Day Trial
-XB-Website: http://store.untangle.com/ips
-XB-Is-Security: true
-XB-Org-Icon: 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
-XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
- AAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAA
- F2+SX8VGAAAMVElEQVR42qyZzY9k51XGf+e87/2oj67q7rEzH/bE8dhE+TAmikeAEzaw9F/g
- /yKSlyyQWPAPsGDJil0kJIyQYBMQIBmiQDCjYMdOPB4ztmfGM9Pd1fVx732/WLy3blXb44Ai
- qnV1u27frnrqOec855ynJKX00muvvXbr8uXLHB0dMR6Psdbyvz5E+LUeKX3pn4wxlGVJWZYY
- Ywgh8MYbb5BSEpnP5+nNN9+kLEuKosAYg/y6IP4fHqo6HCklQgi8/PLL2LOzM5qm4Qc/+AFX
- r15lNp9jjdnStjsLCHKBSemvX7z3CxQOp0S6wGzKF4GEiGCtYTQaMZlOKYuCGCOvv/46ABbA
- e8+Hd+7gnGc2O8NYk0FsDwERBRG2P6gOKbC9V54IcQuoBxljfyVfSylCyp/fGMNkMubgYMp4
- PAYRnHM7oIhwdnpG1znmszm2sD1b2gPMZxFB1PS/9897lkX0Yu72wDKQHloPLKVIimF4Tn/N
- qDCZTjg6PGQymVCWBd77Hqj0TIjQbBpc57FluQOjBhWTAaqiooixqBgQzX/bsr0FO0Q3DqzF
- FCBFYvSkGIgpkmL/vAdujLJpW2KIdF1HPaoJIYAIdi8LEVEi4F0gEyloTEQDimRwWqBYklhE
- LagBNRdSYxtw2TIWA8RAip4khiieGB0xJmIUUkjElIgx4F2g7RxV5zHGDbWwp0MKmsFsGVNT
- oNqfbYkxJWpKjCnyNVMgalFjh1TYFdUu1DF4UvTE4IjBEUK3O/uOKArRo6Q+tQxJhJR2WW+H
- F1bdgVTbg7QYW2Js9YRjB3of7AWgMRB7JkPoCN4RQ0fwLcG3qG8Jagm+Bd8hklAthhRDZch7
- OwiNCCJmAGlMsQNV1Nhi1B81xtb9ucpgbZnBqrkAdADpuwGgdw3BN3jX4N1mKM4c4ID0BInq
- kPM59H2VbgtG1e5ADgDHFNWEohxjyzG2GOfr5Qhjyh5wsfemDAUSg8sMhg7fbfBug3drtF1l
- QHvFSHS92PfX2WN0/8k2hGrKAWRRTjLI6oCyPqAopxTVdA/0aEgFUfs5oJnNgcFujevWuHaJ
- MSWd2TLXF2AQjM2qklXG9HxuGZXMaC4ci7EV1tYDyLKeUdZzqtG8/32WwVZTinKE2YI1BWwl
- KkXClk23wXUbXLvEted0xZM+WCKpYCyZLNlFB9Vt6AVMD7IPZQ5tBlmNDqnGR9TjI6rREeVo
- TlXPKOqDDLYYY4ocfpXcfmPqw+5anMssds2CrpliixFqyp6xHmRKRAfGRMxQnDJInt0KylaO
- MsgaW44pyjFFdUA1OqQeH1NPLlFPjqnHx1SjQ8rRjLLKYH/VtOS6FV17Trc5oC1P9tgUUtx1
- Kk/EqEdt32j6Ni2iWKGvOMlJrHabnzVFNR1CXU+OGU0uMZo+zdPHh8yW71Ddvc14cY8iLPna
- jWcpxxUhtnRnjyjWDaa+xN1HSxYUdPNrxMMbfHr0Ig81t+itxsaYZUuSx2iHqqAqoH2Giu5V
- vekZ1T70Za70sprmUI8OqSeXuHH1kO//+I+ZP3iXSy88R31UYEKA+/+NjKckhXh6ijQtPiS+
- bQtS27J6cMZmsebR9Zv8/e/8ER98kttn6OUquIYUOowqxiZU83ExR0UQ2Qp9ibVVr5XjHauj
- OfXkmN9u/p3n7v+My7/7PaqbN/Globt9m83b/4m7cxsxubtpVESF0HYIyuTKFaZXDJN77/HS
- 4t/4ZPxdgmtw7QrvshpE36ApohoRkxAJw+Q2yJNoloVtJ8rSNBpYreo55WjO8elHVJMp4dqz
- 6LPPURBw9+6RJFKMakQVYgKXEKOIQlKF6YQUlep4zlF7n2o2x3WrrALtBFuMCEWNRo8Yn8Gq
- DPKk206y7Upiir7bVJhB7DOro9GMYn0fp5AKQBIx+CxDIvtjMULMI6sRkoL6iAmBJCWT0FD2
- UpclbtLrcZ2JMsWuEfTFpGjmdNsR9vv7rvqzno4qS7V+3Cd7ZktSxERBo6D0L6yCWCVq2g7w
- pJiIMaK2pDi7R2ktZTmhKLNcmaEl50FIjMkjpeQh3Q7rRf8JcmcqngjW4CmaDVYNxlgSOvR1
- iYGUCzVP7yJ5IgMkMuilCJTdCSMbaKtp3922s0MBlIiJqKThHy+GXrUfLJ4AtBhhyzEmdMhm
- gy1KkjF4McQQ6HxDTC0pdkQXKFJJ0oIQHDiH1wji0SSoCMatMbHbteB9NreM9oPJVjptVqet
- jpoebDGIf87VCoC6VPzmnPjUlKIo8wdMYBN0bUeaHVJ96yVWsSLGwLQwxNt3kTvvEWeKWktw
- DvENVSmwAVNUwyRmbEmKFhGLaEDSNkdlN48KfTcw/WCiRQ84Mwsg3Qrp1mgxIxlFBFSE1DmK
- Z56nuXadv/3RW7z37i8pupZXv/NNvvMHr+JqIX12j1QbjHjwLaZZAWOsrVFTDu+Xhj5vcsD7
- gUm3k8t2/hs61DZX94AaOlLoco82BlGIXYDygHj1q/zdn/+Qt37yU0YpcePKMVfEc/bXf0V1
- 7Rr2yjXwDoMQu5aqzBqx3RyMLYZhPVe89PK0rXrZbZEi0off7I18+QUAxmWCGIlih2E7eI/O
- 59z+h39kujnnhdmcb8wqXvrqVxg9fYSbzNm893OK52/kwSMlTIJC2r4jfm6lUZsrXg2CGQYT
- O1gH21W4H35Vd2Ofal4E5nqKxABWSZKQGEnSEVYbmtsfcjwxHLSB33jhazz9/ZvYg0O6ux/T
- fPwJWo2RukbWDTYFZpwB1zFaDO+RtVxzbsrO7LjYmfb3937B2h05VyZuQRSIRX5uQiJ5j6we
- 85Q1PIpKLY56NmP89W9QHD4FbYM7O8eMp2hRIGzAGqrlZ9lV6Af2YVBWRaLpa0b3OpPsFubt
- Fpnzo79x34danKAm52eeyAP4SMSw8o5zD+Yrx1TXrmIvP4t59gapHmMOZphxme9PYIsK26z2
- /LZdfQw4RC+uIhd8pD2wF6/3Q8xmiREGoJGAXy6QsqYT4fi561x94Tkm158hLM5I3Yazt28x
- ffFF3GZJ7DaogNGCUTj/gju4c152WrRFYb/c3GJnuWx3a/VIjJi6JAkkH9BlSwiey9/8FmYi
- mOUZ/sF9tLR0dz9i/eghB6/cZPHWv1ISsrtihLg+gfmeFdlP+V/2sJ+3tfLNaTd594eIYv0Z
- iZLSjEhiIETEgH/8KeZoxgfv/Iz/WIK7dYevV45XjueMvv2bnL3/c8yndzFHM0IXgUTdLi5Y
- P5mQdNHxG8jeC316EsgYiNETo8eYknp9hjGKN1CTIDh88JRdy/L2bdafrfjF2YbTIJxXiXUw
- VP/8Y169NEGnFY6EAdQWVKcfUWqg8YmUQjbNBnISSS7GWgf/kh5kiqS0A7jdywHG548ZFcoo
- RcoUsTFgU8QiVKOSa89c4rcOa67PDU+NxyzWC14YWeZjwcaOCsGoUhph7B5jFKLvCMEN78ee
- w7dzBNMeoyll+2/PhonBDw7H4XTNf915h8+S5akOJo8bTHPK6nRFc7Linz5d8MnJkjvJcJ6E
- D7vI9w4O+eV5w711R1HXHEg2xrz3PHTCVD/mxE8Jvt3zpzwqkUiEFAaX1aaUs2JwNUJHcC2+
- 2+TtsTmn2yx4+yd/xp/+yy2+e/P3eGl9GX3Psdl8zHrT8cG7J7z//kNsZQmSU6jG8tNfPCKa
- hCFgTcHz6WkSELygJjL+mz/hyit/iGvO+011Q+haojQk7ZDUDeloU8y+ZfANrmuwzZLWVKjJ
- fqiQiCkQujWiQuc2NKsl2AbvO7q2xSdwJmCjQhKcCCUu7+Mx9+wo0HRrxFhiiIgkateyePwh
- 67N7bJYPaFaP6JoFrj2nNC2FOnwIpBSx2UhNuG6N6Gm2gKLHuw1ds6Rdn7I+f0g8e0AMnvPl
- CQ8f3geJ+BBp2g2r5QK8pzVCSJCIOITkAZMVV31kvTpHtcCHgDUWTUr78S2a9QnN+jGuWeC6
- Nd41nPu8+LnOQRoYTfhu3Ve8x3drumZBuz5hs/yMopogywcE37FaLnj48B4xRWJMdK5lsVwQ
- gsfHQOjn+g6B3IjyCiLKankOYogxYlRxroN4C9+u6Nol3m0Ivh3SMIYO77MjbVPK5v9f/vAv
- dt1hz+oW0X4R2L/+xQ72f/+aKQFxz7/f+fpfFP00yKQAP7JF/ft5GLHDLCq9/aj7R7+mbO3J
- 3QCjv/Lrm/0vGAYPf3Cgs7LEXqJSDBdeyxQVZw9vy/8MAIKemQqNP8+BAAAAAElFTkSuQmCC
-Description: Untangle Intrusion Prevention 30-Day Trial
- The Untangle Networks Intrusion Prevention 30-Day Trial Store Item.
 
 Package: portal-trial30-storeitem
 Architecture: any
