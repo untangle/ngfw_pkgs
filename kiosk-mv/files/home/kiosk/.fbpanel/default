@@ -54,7 +54,7 @@ Plugin {
     type = launchbar
     config {
         button {
-            image = ~/.fbpanel/LaunchGUI.png
+            image = /usr/share/kiosk-mv/panel/LaunchGUI.png
             tooltip = Launch Untangle Client
             action = /usr/bin/untangle-client
         }
@@ -69,12 +69,12 @@ Plugin {
     type = launchbar
     config {
         button {
-            image = ~/.fbpanel/ScreensaverOn.png
+            image = /usr/share/kiosk-mv/panel/ScreensaverOn.png
             tooltip = Enable Screensaver
             action = /home/kiosk/utils/screensaver-on.sh
         }
         button {
-            image = ~/.fbpanel/ScreensaverOff.png
+            image = /usr/share/kiosk-mv/panel/ScreensaverOff.png
             tooltip = Disable Screensaver
             action = /home/kiosk/utils/screensaver-off.sh
         }
@@ -89,12 +89,12 @@ Plugin {
     type = launchbar
     config {
         button {
-            image = ~/.fbpanel/RestartBox.png
+            image = /usr/share/kiosk-mv/panel/RestartBox.png
             tooltip = Restart
             action = /home/kiosk/utils/edgeguard-reboot.sh
         }
         button {
-            image = ~/.fbpanel/ShutdownBox.png
+            image = /usr/share/kiosk-mv/panel/ShutdownBox.png
             tooltip = Shutdown
             action = /home/kiosk/utils/edgeguard-off.sh
         }
@@ -109,7 +109,7 @@ Plugin {
     type = launchbar
     config {
         button {
-            image = ~/.fbpanel/RecoveryUtilities.png
+            image = /usr/share/kiosk-mv/panel/RecoveryUtilities.png
             tooltip = Launch Untangle Recovery Tools
             action = /home/kiosk/utils/edgeguard-restore.sh
         }
