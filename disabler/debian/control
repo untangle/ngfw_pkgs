@@ -7,7 +7,7 @@ Standards-Version: 3.5.2
 
 Package: standard-bundle-disabler
 Architecture: any
-Depends: spyware-disabler, httpblocker-disabler, protofilter-disabler, spamassassin-disabler, clamphish-disabler, ids-disabler
+Depends: spyware-disabler, httpblocker-disabler, protofilter-disabler, spamassassin-disabler, clamphish-disabler
 Description: The Untangle Security Bundle Disabler
  The Untangle Total Security Bundle Disabler.
 
@@ -40,11 +40,6 @@ Package: clamphish-disabler
 Architecture: any
 Description: The Untangle PhishNet Disabler
  The Untangle PhishNet Software Appliance Disabler.
-
-Package: ids-disabler
-Architecture: any
-Description: The Untangle Intrusion Prevention Disabler
- The Untangle Intrusion Prevention Software Appliance Disabler.
 
 Package: portal-disabler
 Architecture: any
