@@ -12,7 +12,7 @@ for i in `find . -type f` ; do
 done
 
 # Copy in the NSISKill DLL
-cp /usr/share/nsis-mv/Plugins/processkill.dll /usr/share/nsis/Plugins/
+cp /usr/share/nsis-mv/Plugins/processwork.dll /usr/share/nsis/Plugins/
 
 cd ${DIR}
 unset DIR
