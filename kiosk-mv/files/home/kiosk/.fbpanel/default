@@ -2,26 +2,6 @@
 ## fbpanel configuration file         ##
 ########################################
 
-# 'Plugin' block specifies a plugin to load. It has same syntax for both
-# builtin and external plugins.
-
-# First parameter is 'type'. It's mandatory and must come first
-# Legal values are plugin names. Names of builtin plugins are:
-# separator   - visual separator
-# wincmd      - 'show desktop' button
-# taskbar     - lists all opened windows (tasks)
-# launchbar   - bar with launch button
-# image       - just shows an image
-# dclock      - digital clock
-# space       - just seize space
-# pager       - thumbnailed view of the desktop
-# tray        - tray for XEMBED icons (aka docklets)
-
-# expand - specifies if plugin can accomodate extra space or not [optional]
-# padding - extra paddin around plugin  [optional]
-# config {} - block of plugin's private configuration.
-#             This part is plugin  dependant
-
 Global {
 
     edge = bottom
@@ -29,8 +9,8 @@ Global {
     margin = 0
     widthtype = request
 #    width = 50
-    heighttype = request
-#    height = 50
+    heighttype = pixel
+    height = 100
     roundcorners = false
     # Identify panel window type as dock
     # legal values are boolean
