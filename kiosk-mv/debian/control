@@ -8,7 +8,7 @@ Standards-Version: 3.5.2
 Package: kiosk-mv
 Architecture: any
 Essential: yes
-Depends: firefox-r-kiosk, masqmail
+Depends: fbpanel, firefox-r-kiosk, masqmail
 Conflicts: exim4-config, exim4-base, exim4, exim4-daemon-light
 Description: The Untangle Networks kiosk utils
  The Untangle Networks kiosk mode utilities.
