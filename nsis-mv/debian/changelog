@@ -1,3 +1,9 @@
+nsis-mv (0-14) stable; urgency=low
+
+  * auto build
+
+ -- root <root@bebe.metavize.com>  Tue,  7 Nov 2006 16:27:49 -0800
+
 nsis-mv (0-13) stable; urgency=low
 
   * auto build
