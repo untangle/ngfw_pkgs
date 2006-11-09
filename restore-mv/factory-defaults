@@ -7,12 +7,12 @@ dropdb -U postgres mvvm
 
 su postgres -c "psql -U postgres -c 'ALTER USER metavize RENAME TO untangle' template1" &>/dev/null || true
 su postgres -c "createuser --createdb --no-adduser untangle" 2>/dev/null
-createdb -O untangle -U untangle mvvm
+createdb -O postgres -U postgres mvvm
 update-schema settings mvvm
 update-schema events mvvm
 update-schema settings nat-transform
 update-schema events nat-transform
-psql -U untangle mvvm <<EOF
+psql -U postgres mvvm <<EOF
 INSERT INTO tid VALUES (1);
 INSERT INTO transform_manager_state VALUES (nextval('hibernate_sequence'), 2);
 INSERT INTO transform_persistent_state VALUES (nextval('hibernate_sequence'), 'nat-transform', 1, '\\\\001\\\\000', 'running');

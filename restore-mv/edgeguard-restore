@@ -184,7 +184,7 @@ main_menu()
                     ;;
                 "Reset Administrative Accounts")
                     if confirm "Reset administrative accounts to factory defaults (admin/passwd)?"; then
-                        psql -U untangle mvvm >/dev/null <<EOF
+                        psql -U postgres mvvm >/dev/null <<EOF
 DELETE FROM mvvm_user;
 DELETE FROM admin_settings;
 EOF

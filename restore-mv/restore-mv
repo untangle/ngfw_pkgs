@@ -8,7 +8,7 @@ restore_db()
     infile=$1
 
     dropdb -U postgres mvvm >/dev/null 2>&1
-    createdb -O untangle -U untangle mvvm >/dev/null 2>&1
+    createdb -O postgres -U postgres mvvm >/dev/null 2>&1
 
 #    if confirm "Restore settings?"; then
         zcat $infile | psql -U postgres mvvm >/dev/null 2>&1
