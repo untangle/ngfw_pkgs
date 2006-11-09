@@ -21,7 +21,4 @@ sed -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" -i $PG_ETC/postmaster.conf
 # Search both settings and events schemas by default
 sed -e "s/.*search_path.*=.*/search_path = 'public,settings,events'/" -i $PG_ETC/postgresql.conf
 
-su postgres -c "psql -U postgres -c 'ALTER USER metavize RENAME TO untangle' template1" &>/dev/null || true
-su postgres -c "createuser --createdb --no-adduser untangle" &> /dev/null || true
-
 $PG_INIT restart || true

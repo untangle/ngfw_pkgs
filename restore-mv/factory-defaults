@@ -5,8 +5,6 @@ NAT_CACHE_DEB="/var/lib/mvvm/nat-transform.deb"
 # restore database
 dropdb -U postgres mvvm
 
-su postgres -c "psql -U postgres -c 'ALTER USER metavize RENAME TO untangle' template1" &>/dev/null || true
-su postgres -c "createuser --createdb --no-adduser untangle" 2>/dev/null
 createdb -O postgres -U postgres mvvm
 update-schema settings mvvm
 update-schema events mvvm
