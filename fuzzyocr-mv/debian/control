@@ -8,5 +8,5 @@ Standards-Version: 3.5.2
 Package: fuzzyocr-mv
 Architecture: any
 Depends: spamassassin, gocr (>= 0.41-2), libungif-bin (>= 4.1.4-4~bpo.1), libimage-exif-perl (>= 0.99.4-3), libimage-exiftool-perl (>= 4.1.4-4~bpo.1), libstring-approx-perl (>= 3.24-1), imagemagick (>= 6.2.4.5.dfsg1-0.10~bpo.1), netpbm (>= 10.0-8sarge3)
-Description: The Untangle Networks FuzzyOCR plugin for Spamassassin
- The Untangle Networks FuzzyOCR plugin for Spamassassin.
+Description: The Untangle FuzzyOCR plugin for Spamassassin
+ The Untangle FuzzyOCR plugin for Spamassassin.
