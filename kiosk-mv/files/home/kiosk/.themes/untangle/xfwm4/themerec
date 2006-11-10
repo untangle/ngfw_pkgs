@@ -1,6 +1,6 @@
 box_move=false
 box_resize=false
-button_layout=|C
+button_layout=T|C
 button_offset=0
 button_spacing=1
 click_to_focus=true
