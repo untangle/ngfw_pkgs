@@ -95,18 +95,3 @@ Plugin {
         }
     }
 }
-
-Plugin {
-  type = separator
-}
-
-Plugin {
-    type = dclock
-    config {
-        ClockFmt = %T
-        TooltipFmt = %A %x
-        Action = /bin/true
-    }
-}
-
-
