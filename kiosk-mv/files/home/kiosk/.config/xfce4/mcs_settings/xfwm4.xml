@@ -4,7 +4,7 @@
 <mcs-option>
 	<option name="Xfwm/BoxMove" type="int" value="0"/>
 	<option name="Xfwm/BoxResize" type="int" value="0"/>
-	<option name="Xfwm/ButtonLayout" type="string" value="OTS|HMC"/>
+	<option name="Xfwm/ButtonLayout" type="string" value="|C"/>
 	<option name="Xfwm/ClickToFocus" type="int" value="1"/>
 	<option name="Xfwm/DblClickAction" type="string" value="maximize"/>
 	<option name="Xfwm/FocusNewWindow" type="int" value="1"/>
