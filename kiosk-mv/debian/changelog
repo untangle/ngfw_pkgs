@@ -1,3 +1,9 @@
+kiosk-mv (0-86) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@bebe.metavize.com>  Tue, 14 Nov 2006 18:45:11 -0800
+
 kiosk-mv (0-85) stable; urgency=low
 
   * auto build
