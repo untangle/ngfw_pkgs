@@ -12,10 +12,11 @@ BOOTSPLASH_CFG_2=bootsplash-blank-1024x768.cfg
 
 pasteBootsplash() {
   /sbin/splash -s -u 0 /etc/bootsplash-mv/config/$1
+  /sbin/splash -s -u 4 /etc/bootsplash-mv/config/$1
+  /sbin/splash -s -u 6 /etc/bootsplash-mv/config/$1
 }
 
 pasteBootsplash $BOOTSPLASH_CFG_1
-chvt 7
 
 USER=knoppix
 
