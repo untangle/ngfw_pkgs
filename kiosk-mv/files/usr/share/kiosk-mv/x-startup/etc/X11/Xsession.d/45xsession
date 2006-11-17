@@ -1,0 +1,45 @@
+#!/bin/bash
+path="/sbin:/bin:/usr/sbin:/usr/bin:/usr/X11R6/bin:/usr/local/bin:."
+export PATH
+
+umask 022
+
+[ -z "$USER" ] && USER="$(id -nu)"
+export USER
+
+[ -n "$HOSTNAME" ] || HOSTNAME="$(hostname)"
+export HOSTNAME
+
+[ -z "$HOME" -o "$HOME" = "/" ] && HOME="/home/$USER"
+export HOME
+
+# copy the basic home directory items
+rsync -Ha --ignore-existing /etc/skel/{.bashrc,.local,tmp} $HOME/ 2>/dev/null
+
+# copy the XFCE Desktop stuff
+rsync -Ha --ignore-existing /usr/share/knoppix/profile/Desk* $HOME/ 2>/dev/null
+
+cp -a /etc/skel/.config $HOME/
+cp -a /etc/skel/.themes $HOME/
+
+# as xfce is an x-session-manager alternative, it will run
+
+# start the appropriate panels
+#exec xfwm4 --daemon >/dev/null 2>&1 &
+#echo "wmd" >> /tmp/dslog
+
+# run anythin in desktop
+#if test -d "$HOME/Desktop/Autostart"; then
+#    echo "in AS" >> /tmp/dslog
+#    for i in `ls -1 -L ${HOME}/Desktop/Autostart/ 2>/dev/null`; do
+#    	echo "$i" >> /tmp/dslog
+#	if test -x $HOME/Desktop/Autostart/$i; then 
+#	    $HOME/Desktop/Autostart/$i &
+#	fi
+#    done
+#fi
+#echo "as done" >> /tmp/dslog
+#
+#exec xfdesktop >/dev/null 2>&1 &
+#echo "desk" >> /tmp/dslog
+#

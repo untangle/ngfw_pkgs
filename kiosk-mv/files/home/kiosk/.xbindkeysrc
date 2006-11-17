@@ -1,2 +1,4 @@
-"cat /dev/null"
+"/bin/true"
   b:2
+"/bin/true"
+  b:3
