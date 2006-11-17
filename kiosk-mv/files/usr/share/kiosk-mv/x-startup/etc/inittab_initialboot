@@ -19,16 +19,16 @@ si::sysinit:/etc/init.d/rcS
 # Runlevels 2-5 are multi-user.
 # Runlevel 6 is reboot.
 
-l0:0:wait:/etc/init.d/rc 0
+l0:0:wait:/etc/init.d/knoppix-halt
 l1:1:wait:/etc/init.d/rc 1
 l2:2:wait:/etc/init.d/rc 2
 l3:3:wait:/etc/init.d/rc 3
 l4:4:wait:/etc/init.d/rc 4
 l5:5:wait:/etc/init.d/rc 5
-l6:6:wait:/etc/init.d/rc 6
+l6:6:wait:/etc/init.d/knoppix-reboot
 
 # What to do when CTRL-ALT-DEL is pressed.
-ca::ctrlaltdel:/sbin/shutdown -r now
+ca::ctrlaltdel:/etc/init 0
 
 # Action on special keypress (ALT-UpArrow).
 kb::kbrequest:/bin/echo "Keyboard Request -- edit /etc/inittab to let this work."
@@ -49,8 +49,6 @@ po::powerokwait:/etc/init.d/powerfail stop
 2:2345:respawn:/sbin/getty 38400 tty2
 3:2345:respawn:/sbin/getty 38400 tty3
 4:2345:respawn:/sbin/getty 38400 tty4
-5:2345:respawn:/sbin/getty 38400 tty5
-6:2345:respawn:/sbin/getty 38400 tty6
 
 # Example how to put a getty on a serial line (for a terminal)
 #
@@ -71,5 +69,5 @@ po::powerokwait:/etc/init.d/powerfail stop
 #I1:2345:respawn:/sbin/mgetty -D -m '"" ATZ OK AT&Eyourmsnhere OK AT&B512 OK' -s 38400 ttyI1
 #-- isdnutils end
 # Run X Window session from CDROM in runlevel 5
-w7:5:wait:/bin/sleep 2
-x7:5:wait:/etc/init.d/xsession start
+w5:5:wait:/bin/sleep 2
+x5:5:wait:/etc/init.d/xsession start
