@@ -408,7 +408,7 @@ Depends: hauri-transform
 Conflicts: hauri-disabler
 Provides: hauri-trial30-storeitem
 XB-Price: 399
-XB-View-Position: -1
+XB-View-Position: 60
 XB-Display-Name: Dual Virus Blocker
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
