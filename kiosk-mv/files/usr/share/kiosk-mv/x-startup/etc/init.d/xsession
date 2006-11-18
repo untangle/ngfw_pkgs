@@ -17,9 +17,8 @@ pasteBootsplash() {
 }
 
 pasteBootsplash $BOOTSPLASH_CFG_1
-chvt 7
 
-USER=knoppix
+USER=kiosk
 
 PATH="/bin:/sbin:/usr/bin:/usr/sbin:/usr/X11R6/bin:/usr/local/bin:."
 export PATH
