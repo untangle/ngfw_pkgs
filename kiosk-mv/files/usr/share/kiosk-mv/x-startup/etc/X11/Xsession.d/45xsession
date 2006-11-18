@@ -13,14 +13,12 @@ export HOSTNAME
 [ -z "$HOME" -o "$HOME" = "/" ] && HOME="/home/$USER"
 export HOME
 
-# copy the basic home directory items
-rsync -Ha --ignore-existing /etc/skel/{.bashrc,.local,tmp} $HOME/ 2>/dev/null
-
-# copy the XFCE Desktop stuff
-rsync -Ha --ignore-existing /usr/share/knoppix/profile/Desk* $HOME/ 2>/dev/null
-
-cp -a /etc/skel/.config $HOME/
-cp -a /etc/skel/.themes $HOME/
+for file in .bashrc .local tmp Desktop .config .themes ; do
+  fullPath=/etc/skel/$file
+  if [ -e $fullPath ] ; then
+    rsync -Ha --ignore-existing $fullPath $HOME/ 2> /dev/null
+  fi
+done
 
 # as xfce is an x-session-manager alternative, it will run
 
