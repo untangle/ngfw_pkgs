@@ -13,7 +13,9 @@ export HOSTNAME
 [ -z "$HOME" -o "$HOME" = "/" ] && HOME="/home/$USER"
 export HOME
 
-rsync -Ha --ignore-existing /home/kiosk/ $HOME/ 2> /dev/null
+rsync -Ha --ignore-existing /etc/skel/ $HOME/
+
+#rsync -Ha --ignore-existing /home/kiosk/ $HOME/ 2> /dev/null
 
 # as xfce is an x-session-manager alternative, it will run
 
