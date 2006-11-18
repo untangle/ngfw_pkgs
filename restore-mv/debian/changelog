@@ -1,3 +1,9 @@
+restore-mv (0-59) stable; urgency=low
+
+  * auto build
+
+ -- root <root@bebe.metavize.com>  Fri, 17 Nov 2006 18:02:23 -0800
+
 restore-mv (0-58) stable; urgency=low
 
   * auto build
