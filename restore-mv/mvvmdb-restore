@@ -6,6 +6,9 @@ mkdir -p $LOCAL_DUMP
 tmpfile=$(tempfile)
 backtitle="Untangle Platform"
 
+MOUNT_POINT=/mnt/usb-mv-mount
+
+mkdir -p ${MOUNT_POINT}
 
 confirm_exit()
 {
@@ -28,8 +31,24 @@ confirm()
         --yesno "$1" 6 52
 }
 
+function lookupUsbDevice()
+{
+    local t_sg
+    local t_dev
+
+    ## The sed command just joins every other line
+    t_sg=`sg_scan -i | sed -e '{N;s|\n| |g;}' | grep -v ATA | head -n 1 | sed 's|\(.*\):.*|\1|'`
+    if [ -z "${t_sg}" ]; then return ; fi
+
+    ## Append the one to always try dev 1
+    sg_map | grep ${t_sg} | awk '{ print $2 }'
+}
+
 usb_mount()
 {
+    local t_usb_dev
+    local t_success=false
+
     dialog --backtitle "$backtitle" --title "Insert USB Key" \
         --yes-label "OK" --no-label "Cancel" \
         --yesno "Please click OK after inserting USB key." 6 52
@@ -37,14 +56,17 @@ usb_mount()
 
     case $retval in
         0) # OK
-            mount /dev/sda1 /mnt
+            t_usb_dev=`lookupUsbDevice`
+            if [ -n "${t_usb_dev}" ]; then
+                mount ${t_usb_dev} ${MOUNT_POINT} && t_sucess=true
+            fi
             ;;
         1) # Cancel
             return 1
             ;;
     esac
 
-    if mount | cut -f1 -d' ' | grep '/dev/sda1' >/dev/null 2>&1; then
+    if [ "${t_success}x" = "truex" ]; then
         return 0
     else
         dialog --backtitle "$backtitle" \
@@ -211,7 +233,7 @@ while true; do
             fi
             ;;
         BACKUP_USB)
-            if backup /mnt; then
+            if backup ${MOUNT_POINT}; then
         dialog --backtitle "$backtitle" --title "Backup Successful" \
                     --msgbox "Settings backed up successfully." 6 52
 
@@ -222,7 +244,7 @@ while true; do
 
                 state=BACKUP_MENU
             fi
-            umount /mnt
+            umount ${MOUNT_POINT}
             ;;
         BACKUP_LOCAL)
             if backup $LOCAL_DUMP; then
@@ -252,7 +274,7 @@ while true; do
             esac
             ;;
         RESTORE_USB)
-            restore /mnt
+            restore ${MOUNT_POINT}
             RET=$?
 
             echo "---" $RET
@@ -270,7 +292,7 @@ while true; do
                 fi
                 state=RESTORE_MENU
             fi
-            umount /mnt
+            umount ${MOUNT_POINT}
             ;;
         RESTORE_LOCAL)
             restore $LOCAL_DUMP
