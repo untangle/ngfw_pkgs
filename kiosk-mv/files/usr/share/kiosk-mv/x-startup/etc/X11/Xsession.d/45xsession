@@ -14,8 +14,10 @@ export HOSTNAME
 export HOME
 
 rsync -Ha --exclude ".xsession" --ignore-existing /etc/skel/ $HOME/
-
-#rsync -Ha --ignore-existing /home/kiosk/ $HOME/ 2> /dev/null
+cat > $HOME/.xsession <<EOF
+/usr/sbin/mv/mv_setup.sh &
+x-session-manager EOF
+EOF
 
 # as xfce is an x-session-manager alternative, it will run
 
