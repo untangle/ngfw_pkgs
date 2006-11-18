@@ -13,12 +13,7 @@ export HOSTNAME
 [ -z "$HOME" -o "$HOME" = "/" ] && HOME="/home/$USER"
 export HOME
 
-for file in .bashrc .local tmp Desktop .config .themes ; do
-  fullPath=/etc/skel/$file
-  if [ -e $fullPath ] ; then
-    rsync -Ha --ignore-existing $fullPath $HOME/ 2> /dev/null
-  fi
-done
+rsync -Ha --ignore-existing /etc/skel/ $HOME/ 2> /dev/null
 
 # as xfce is an x-session-manager alternative, it will run
 

@@ -119,8 +119,8 @@ case "$1" in
 # Mostly failsafe probe fallbacks
 # Some cards prefer 16 bit, especially when low on mem or not SVGA,
 # so try this first.
-     if $X $NORESET -xf86config "$XCONFIG" $BPP 32 $DPI :0 2>/dev/null || \
-       $X $NORESET -xf86config "$XCONFIG" $BPP 24 $DPI :0 2>/dev/null || \
+#     if $X $NORESET -xf86config "$XCONFIG" $BPP 32 $DPI :0 2>/dev/null || \
+      if  $X $NORESET -xf86config "$XCONFIG" $BPP 24 $DPI :0 2>/dev/null || \
        $X $NORESET -xf86config "$XCONFIG" $BPP 16 $DPI :0 2>/dev/null || \
        $X $NORESET -xf86config "$XCONFIG" $BPP  8 $DPI :0 2>/dev/null; then break; fi
      echo -n "${BLUE}.${NORMAL}"
