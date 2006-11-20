@@ -1,3 +1,9 @@
+kiosk-mv (0-102) stable; urgency=low
+
+  * auto build
+
+ -- root <root@bebe.metavize.com>  Mon, 20 Nov 2006 10:58:18 -0800
+
 kiosk-mv (0-101) stable; urgency=low
 
   * auto build
