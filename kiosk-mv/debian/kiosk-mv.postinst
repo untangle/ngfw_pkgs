@@ -5,7 +5,7 @@ chown -R kiosk:kiosk /home/kiosk
 rm -fr /etc/xdg/xfce4
 cp -r /home/kiosk/.config/xfce4 /etc/xdg/
 
-rsync -Ha --ignore-existing /usr/share/kiosk-mv/x-startup/etc/ /etc/
+rsync -Ha /usr/share/kiosk-mv/x-startup/etc/ /etc/
 
 exit 0
 
