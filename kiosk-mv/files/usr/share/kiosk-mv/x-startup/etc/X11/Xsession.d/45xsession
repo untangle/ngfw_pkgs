@@ -16,6 +16,7 @@ export HOME
 if [ $USER = "knoppix" ] ; then
   rsync -Ha --exclude ".xsession" /etc/skel/ $HOME/
   cat > $HOME/.xsession <<EOF
+xbindkeys &
 /usr/sbin/mv/mv_setup.sh &
 x-session-manager
 EOF
