@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ -x /usr/bin/sa-update ]; then
+    /usr/bin/sa-update
+fi
+
+# sa-update exits with a status to tell us if an update happened.
+# don't pass this up to cron.
+exit 0
