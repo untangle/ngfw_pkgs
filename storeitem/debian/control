@@ -11,7 +11,7 @@ Depends: airgap-storeitem, spyware-storeitem, httpblocker-storeitem, clam-storei
 Conflicts: standard-bundle-disabler, spyware-disabler, httpblocker-disabler, protofilter-disabler, spamassassin-disabler, clamphish-disabler, ids-disabler
 XB-Price: 0
 XB-View-Position: 10
-XB-Display-Name: Security Bundle
+XB-Display-Name: Total Security Bundle
 XB-Is-Bundle: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -99,8 +99,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  rxSO/Zvfx5cABVxJRNUGamNTPCYZ2UsOaDzs2xb3m1/9oti39M7k5xvX3bzjrqa4thdzLUE8
  +kHp7ctXX3nDwvP84y0Y74x+whGA5coYxupTGJ+ax2vfe9P+IPY/AQYAsGi4kBr8QykAAAAA
  SUVORK5CYII=
-Description: Untangle Security Bundle
- The Untangle Security Bundle Store Item.
+Description: Untangle Total Security Bundle
+ The Untangle Total Security Bundle Store Item.
 
 Package: airgap-storeitem
 Architecture: any
@@ -1853,7 +1853,7 @@ Architecture: any
 Depends: airgap-storeitem, spyware-trial30-storeitem, httpblocker-trial30-storeitem, clam-storeitem, protofilter-trial30-storeitem, nat-storeitem, firewall-storeitem, spamassassin-trial30-storeitem, clamphish-trial30-storeitem, openvpn-storeitem, ids-storeitem, reporting-storeitem, portal-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 10
-XB-Display-Name: Security Bundle 30-Day Trial
+XB-Display-Name: Total Security Bundle 30-Day Trial
 XB-Is-Bundle: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1941,8 +1941,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  rxSO/Zvfx5cABVxJRNUGamNTPCYZ2UsOaDzs2xb3m1/9oti39M7k5xvX3bzjrqa4thdzLUE8
  +kHp7ctXX3nDwvP84y0Y74x+whGA5coYxupTGJ+ax2vfe9P+IPY/AQYAsGi4kBr8QykAAAAA
  SUVORK5CYII=
-Description: Untangle Security Bundle 30-Day Trial
- The Untangle Security Bundle 30-Day Trial Store Item.
+Description: Untangle Total Security Bundle 30-Day Trial
+ The Untangle Total Security Bundle 30-Day Trial Store Item.
 
 Package: spyware-trial30-storeitem
 Architecture: any
