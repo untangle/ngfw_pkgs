@@ -3,8 +3,16 @@
 # (C) Klaus Knopper Jun 2001
 
 # by Seb
-BOOTSPLASH_CFG_1=bootsplash-1024x768.cfg
-BOOTSPLASH_CFG_2=bootsplash-blank-1024x768.cfg
+REG_BOOTSPLASH_CFG=bootsplash-1024x768.cfg
+FIRSTBOOT_BOOTSPLASH_CFG=bootsplash-first-boot-1024x768.cfg
+BLANK_BOOTSPLASH_CFG=bootsplash-blank-1024x768.cfg
+
+if [ -f /usr/share/metavize/activation.key ] ; then
+  BOOTSPLASH_CFG_1=$REG_BOOTSPLASH_CFG
+else
+  BOOTSPLASH_CFG_1=$FIRSTBOOT_BOOTSPLASH_CFG
+fi
+#BOOTSPLASH_CFG_2=$BLANK_BOOTSPLASH_CFG
 
 pasteBootsplash() {
   /sbin/splash -s -u 0 /etc/bootsplash-mv/config/$1
@@ -203,7 +211,7 @@ sleep 1
       /bin/true
     fi
 
-    pasteBootsplash $BOOTSPLASH_CFG_1
+    pasteBootsplash $FIRSTBOOT_BOOTSPLASH_CFG
     chvt 1
 
     ;;
