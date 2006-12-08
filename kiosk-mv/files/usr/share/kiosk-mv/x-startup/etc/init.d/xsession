@@ -3,11 +3,7 @@
 # (C) Klaus Knopper Jun 2001
 
 # by Seb
-if [ -f /usr/share/metavize/activation.key ] ; then
-  BOOTSPLASH_CFG_1=bootsplash-1024x768.cfg
-else
-  BOOTSPLASH_CFG_1=bootsplash-first-boot-1024x768.cfg
-fi
+BOOTSPLASH_CFG_1=bootsplash-1024x768.cfg
 BOOTSPLASH_CFG_2=bootsplash-blank-1024x768.cfg
 
 pasteBootsplash() {
@@ -152,7 +148,7 @@ sleep 1
     chown $USER.$USER /etc/sysconfig/xsession-commands
 
     # now that X started, paste the background onto vt1. FIXME: is this needed ?
-    pasteBootsplash $BOOTSPLASH_CFG_2
+#    pasteBootsplash $BOOTSPLASH_CFG_2
 
     su -c "DISPLAY=:0 exec /etc/X11/xinit/xinitrc" - $USER >/dev/null 2>&1
     RC="$?"
@@ -207,7 +203,7 @@ sleep 1
       /bin/true
     fi
 
-    pasteBootsplash $BOOTSPLASH_CFG_2
+    pasteBootsplash $BOOTSPLASH_CFG_1
     chvt 1
 
     ;;
