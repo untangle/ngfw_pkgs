@@ -15,7 +15,7 @@ sudo rsync -rlpvz -e ssh /var/www/stable/ \
     --exclude 'kav-*' \
     --exclude 'Packages' \
     --exclude 'Packages.gz' \
-    root@release.untangle.com:/var/www/betap-cd 
+    root@release.untangle.com:/var/www/beta-cd 
 
 scp \
     ~/work/pkgs/scripts/override.testing.untangle \
