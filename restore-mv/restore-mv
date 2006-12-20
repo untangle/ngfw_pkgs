@@ -8,6 +8,8 @@ restore_db()
     infile=$1
 
     dropdb -U postgres mvvm >/dev/null 2>&1
+    createuser -U postgres metavize 2>/dev/null
+    createuser -U postgres untangle 2>/dev/null
     createdb -O postgres -U postgres mvvm >/dev/null 2>&1
 
 #    if confirm "Restore settings?"; then
