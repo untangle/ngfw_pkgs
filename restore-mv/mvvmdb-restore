@@ -41,7 +41,7 @@ function lookupUsbDevice()
     if [ -z "${t_sg}" ]; then return ; fi
 
     ## Append the one to always try dev 1
-    sg_map | grep ${t_sg} | awk '{ print $2 }'
+    sg_map | grep ${t_sg} | awk '{ print $2 "1" }'
 }
 
 usb_mount()
@@ -58,6 +58,7 @@ usb_mount()
         0) # OK
             t_usb_dev=`lookupUsbDevice`
             if [ -n "${t_usb_dev}" ]; then
+                umount ${MOUNT_POINT} || true
                 mount ${t_usb_dev} ${MOUNT_POINT} && t_sucess=true
             fi
             ;;
