@@ -7,7 +7,17 @@ cp -r /home/kiosk/.config/xfce4 /etc/xdg/
 
 rsync -Ha /usr/share/kiosk-mv/x-startup/etc/ /etc/
 
+# fix for bug #2352: if / is /dev/hda1, and that filesystem was
+# created before the first Untangle CD got released, then we are on an
+# edgeguard box, and we need to use the ati as a video driver instead
+# of fbdev, and then we reboot so the changes will take effect.
+if mount | grep -q '/dev/hda1 on /' ; then
+  if tune2fs -l /dev/hda1 | perl -w -ne 'my $cutoff=20061211 ; my %months = ("Jan","01","Feb","02","Mar","03","Apr","04","May","05","Jun","06","Jul","07","Aug","08","Sep","09","Oct","10","Nov","11","Dec","12") ; if (/^Filesystem created:/) { chomp ; $_ =~ s/^Filesystem created:\s+// ; my ($wd, $m, $d, $h, $y) = split /\s+/ ; my $date=int($y . $months{$m} . $d) ; if ($cutoff > $date) { exit 0 } else { exit 1 } }' ; then
+    perl -i -npe 's/fbdev/ati/' /etc/X11/XF86Config-4
+    if [ -x /etc/init.d/mvvm ]; then
+      mvvm-restart reboot
+    fi
+  fi
+fi
+
 exit 0
-
-
-
