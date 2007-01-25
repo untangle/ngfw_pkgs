@@ -1,0 +1,4 @@
+version=2
+http://linuxbrit.co.uk/downloads/ \
+	rbot-(.*)\.(?:tar\.gz|tgz) \
+        debian uupdate

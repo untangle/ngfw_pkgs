@@ -1,0 +1,33 @@
+rbot for Debian
+---------------
+
+
+Plugins requirements:
+  (these are all optional, if you don't have them, the
+  plugins just won't work)
+
+  - slashdot: librexml-ruby
+  - host: host
+  - spell: aspell
+  - cal: bsdmainutils
+  - fortune: fortune-mod | fortune 
+
+Plugins removed:
+  - figlet: figlet is a non-free program
+
+Plugins disabled:
+  - urban: rubyful_soup dependency unavailable
+  - tinyurl: shorturl dependency unavailable and silly dependency on rubygems
+
+
+How to run the bot:
+  Choose a directory to store your bot configuration (we are
+  calling it <confdir>). Copy the configuration files example
+  in '/usr/share/doc/rbot/rbotconf_example/' into <confdir>.
+  Modify 'conf.rbot' to your desires and run the bot using :
+    rbot <confdir> (<confdir> parameter can be omitted if
+      the directory name is './rbotconf').
+  
+
+ -- Marc Dequènes (Duck) <Duck@DuckCorp.org>  Sun, 19 Dec 2004 20:44:29 +0100
+

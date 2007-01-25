@@ -1,0 +1,22 @@
+Index: rbot-0.9.10/data/rbot/plugins/spell.rb
+===================================================================
+--- rbot-0.9.10.orig/data/rbot/plugins/spell.rb	2006-08-06 21:26:51.852505896 +0200
++++ rbot-0.9.10/data/rbot/plugins/spell.rb	2006-08-06 21:27:03.353757440 +0200
+@@ -7,7 +7,7 @@
+       m.reply "incorrect usage: " + help(m.plugin)
+       return
+     end
+-    p = IO.popen("ispell -a -S", "w+")
++    p = IO.popen("aspell -a -S", "w+")
+     if(p)
+       p.puts m.params
+       p.close_write
+@@ -32,7 +32,7 @@
+       }
+       p.close
+     else
+-      m.reply "couldn't exec ispell :("
++      m.reply "couldn't exec aspell :("
+       return
+     end
+   end

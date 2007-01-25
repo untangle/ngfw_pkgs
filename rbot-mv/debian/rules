@@ -1,0 +1,40 @@
+#!/usr/bin/make -f
+
+DEB_AUTO_UPDATE_DEBIAN_CONTROL := yes
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/rules/patchsys-quilt.mk
+
+PREFIX := debian/rbot-mv
+
+MANPAGES := debian/rbot.1
+
+# configure and build should not be relaunched in binary rule
+
+build/rbot-mv:: $(MANPAGES)
+	ruby setup.rb config --prefix=/usr --siteruby=/usr/lib/ruby
+	ruby setup.rb setup
+
+%.1: %.xml
+	xsltproc -nonet -o $@ /usr/share/sgml/docbook/stylesheet/xsl/nwalsh/manpages/docbook.xsl $<
+
+install/rbot-mv::
+	ruby setup.rb install --prefix=$(PREFIX)
+	# figlet is non-free, that's why this package would not recommend such a nasty program in any way
+	rm $(PREFIX)/usr/share/rbot/plugins/figlet.rb
+	rm $(PREFIX)/usr/share/rbot/contrib/plugins/figlet.rb
+	# disabled plugins
+	find $(PREFIX)/usr/share/rbot -name "*.rb" -a ! -name ssh.rb -exec mv "{}" "{}".disabled \;
+
+binary-install/rbot-mv::
+	dh_installman $(MANPAGES)
+
+binary-predeb/rbot-mv::
+	find $(PREFIX) -type d -name ".arch-ids" -depth -exec rm -rf {} \;
+
+clean:: 
+	ruby setup.rb clean
+	rm -f $(MANPAGES)
+	# buildsys fix
+	rm -f lib/rbot/pkgconfig.rb
+

@@ -1,0 +1,52 @@
+require "xmlrpc/server"
+
+class XmlRpcPlugin < Plugin
+
+  def port
+    @port = 8083
+  end
+
+  INTERFACE = XMLRPC::interface("rbot") {
+    meth 'string say(string)', 'Speak into the current channel', 'say'
+  }
+
+  def xmlrpc
+    @xmlrpc
+  end
+
+  def initialize
+    @xmlrpc = Thread.new {
+        @server = XMLRPC::Server.new(port)
+        @server.add_handler(XmlRpcPlugin::INTERFACE, self)
+        @server.serve
+        puts "here"
+      }
+
+    super()
+  end
+
+  def cleanup
+    puts "killing"
+    @server.shutdown
+    xmlrpc.kill
+    xmlrpc.join
+  end
+
+  def help(plugin, topic="")
+    "xmlrpc runs on port {#port}"
+  end
+
+  def say(msg)
+    m.reply msg
+    msg
+  end
+
+  def privmsg(m)
+    m.reply help(m.plugin)
+  end
+
+end
+
+plugin = XmlRpcPlugin.new
+plugin.register("xmlrpc")
+plugin.xmlrpc.run

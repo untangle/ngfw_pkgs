@@ -1,0 +1,24 @@
+rbot (0.9.9-1) unstable; urgency=low
+
+  * New configuration file:
+    'conf.rbot' has been replaced by 'conf.yaml', which is more manageable,
+    allowing on the fly configuration modifications using the "config"
+    command (see: help config). You need to run the bot interractively
+    the first time after upgrading, then a wizard will ask you questions
+    to fill the necessary minimal parameters into the initial 'conf.yaml'
+    file. Rbot may not guess the right directory (mostly if you use SU),
+    so you're advised to specify the config directory in the command line.
+
+  * Plugin directory has changed:
+    plugins used to be in '/usr/lib/ruby/1.8/rbot/plugins', and now live
+    in '/usr/share/rbot/plugins', so you need to move your custom
+    system-wide plugins manually.
+
+  * New plugins :
+    + autoop
+    + opme
+    + quakeauth: Q auth on Quakenet network
+    + roshambo: rock-paper-scissors game
+    + tube: London Tube transport information
+
+ -- Marc Dequènes (Duck) <Duck@DuckCorp.org>  Wed, 24 Aug 2005 23:58:04 +0200
