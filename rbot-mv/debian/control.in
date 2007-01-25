@@ -10,7 +10,7 @@ Package: rbot-mv
 Architecture: all
 Replaces: rbot
 Conflicts: rbot
-Depends: ruby (>= 1.8), ruby (<< 1.9), libdb4.3-ruby1.8 | libdb4.2-ruby1.8, libopenssl-ruby1.8
+Depends: ruby (>= 1.8), ruby (<< 1.9), libdb4.3-ruby1.8 | libdb4.2-ruby1.8, libopenssl-ruby1.8, libnet-ssh-ruby1.8
 Recommends: librexml-ruby (>= 1.8.1), host, aspell, bsdmainutils, fortune-mod | fortune
 Description: IRC bot written in ruby
  Rbot is very extensible thanks to a well designed plugin
