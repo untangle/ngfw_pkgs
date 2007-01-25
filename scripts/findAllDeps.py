@@ -34,7 +34,8 @@ def initializeChrootedAptFiles():
   # create sources.list file
   open(SOURCES, 'w').write('''deb http://linux.csua.berkeley.edu/debian stable main contrib non-free
 deb http://www.backports.org/debian sarge-backports main contrib non-free
-deb http://10.0.0.44/testing testing untangle\n''')
+deb http://10.0.0.44/testing testing untangle\n
+deb http://10.0.0.44/dev testing untangle\n''')
 
   # create preferences files
   open(PREFS, 'w').write('''Package: *
@@ -185,9 +186,12 @@ class VersionedPackage(Package):
     if not depPkg.comp:
       return True
     r = apt_pkg.VersionCompare(self.version, depPkg.version)
-    print "compared %s to %s -> %s" % (self.version, depPkg.version, r)
-    print "  %s" % apply( ops[depPkg.comp], (r,) )
-    return apply( ops[depPkg.comp], (r,) )
+    result = apply( ops[depPkg.comp], (r,) )
+    print "compared package %s: %s to %s -> %s" % (depPkg.name,
+                                                   self.version,
+                                                   depPkg.version,
+                                                   result)
+    return result
   
   def getURL(self):
     return self.url
