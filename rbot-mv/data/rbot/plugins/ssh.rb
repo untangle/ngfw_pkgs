@@ -31,8 +31,15 @@ class SSHPlugin < Plugin
     @key = key
     @port = nil
     @thread = nil
-    @needToStop = false
+#    @needToStop = false
     @isEstablished = false
+    @portAttempts = 0
+  end
+
+  def pickRandomPort
+#    @port = 1025 + rand(10000) # a random port to use for forwarding
+    @port = 1234
+    @portAttempts += 1
   end
 
   def enable(m, params)
@@ -45,11 +52,10 @@ class SSHPlugin < Plugin
 
     Net::SSH::Util::Prompter.passphrase = params[:passphrase]
 
-    # @port = 1025 + rand(10000) # a random port to use for forwarding
-    @port = 1234
-
     @thread = Thread.new do # start the forwarded channel in a thread
       begin
+        pickRandomPort
+
         Net::SSH.start(@host, @user,
   #                     :log => "/tmp/foo", # FIXME
   #                     :verbose => :info,
@@ -60,12 +66,10 @@ class SSHPlugin < Plugin
           # use the forwarded channel from any box on the Untangle
           # network
           @session.forward.remote_to(22, 'localhost', @port, '0.0.0.0')
+
+          # FIXME: move to a callback functions, like on_success or something
           @m.reply "Forwarding channel established on port #{@port}"
           @isEstablished = true
-
-          # doesn't seem to be needed
-          # # keep the session alive using one ping every 30 seconds
-          # @session.shell.open.ping "-i 30 localhost"
 
           # next line doesn't work as advertised in Net::SSH doc
           # @session.loop { !@needToStop }
@@ -84,10 +88,15 @@ class SSHPlugin < Plugin
           handleException e
         end
       rescue Net::SSH::Exception => e
-        if not e.message =~ /closed by remote host/
-          handleException e
-        else
+        if e.message =~ /closed by remote host/
           @m.reply "Forwarding channel closed on port #{@port}"
+        elsif e.message =~ /remote port #{@port} could not be forwarded to local host/
+          while @portAttempts < 10
+            retry
+          end
+          @m.reply "Could not find a free port to setup forwarding channel on, giving up"
+        else
+          handleException e
         end
       rescue Exception => e
         handleException e
