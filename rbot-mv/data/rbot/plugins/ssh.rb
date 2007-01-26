@@ -31,52 +31,72 @@ class SSHPlugin < Plugin
     @key = key
     @port = nil
     @thread = nil
-#    @needToStop = false
+    @needToStop = false
     @isEstablished = false
   end
 
   def enable(m, params)
+    @m = m # FIXME? so handleException has access to it
+
     if @isEstablished
       m.reply "The forwarding channel is already enabled on port #{@port}" 
       return
     end
 
-    if not params[:passphrase]
-      m.reply "You need a passphrase" 
-      return
-    else
-      Net::SSH::Util::Prompter.passphrase = params[:passphrase]
-    end
+    Net::SSH::Util::Prompter.passphrase = params[:passphrase]
 
     # @port = 1025 + rand(10000) # a random port to use for forwarding
     @port = 1234
 
     @thread = Thread.new do # start the forwarded channel in a thread
-      Net::SSH.start(@host, @user,
-                     :log => "/tmp/foo", # FIXME
-                     :verbose => :info,
-                     :auth_methods => [ "publickey" ],
-                     :keys => [ @key ] ) do |@session|
-        # do not bind only on lo, so support can use the forwarded
-        # channel from any box on the Untangle network
-        @session.forward.remote_to(22, 'localhost', @port, '0.0.0.0')
-        m.reply "Forwarding channel established on port #{@port}"
-        @isEstablished = true
-        # doesn't seem to be needed
-        # # keep the session alive using one ping every 30 seconds
-        # @session.shell.open.ping "-i 30 localhost"
-        
-        # next line doesn't work as advertised in Net::SSH doc
-        # @session.loop { !@needToStop }
-        begin
+      begin
+        Net::SSH.start(@host, @user,
+  #                     :log => "/tmp/foo", # FIXME
+  #                     :verbose => :info,
+                       :auth_methods => [ "publickey" ],
+                       :keys => [ @key ] ) do |@session|
+
+          # "0.0.0.0" is for not binding only on lo, so support can
+          # use the forwarded channel from any box on the Untangle
+          # network
+          @session.forward.remote_to(22, 'localhost', @port, '0.0.0.0')
+          @m.reply "Forwarding channel established on port #{@port}"
+          @isEstablished = true
+
+          # doesn't seem to be needed
+          # # keep the session alive using one ping every 30 seconds
+          # @session.shell.open.ping "-i 30 localhost"
+
+          # next line doesn't work as advertised in Net::SSH doc
+          # @session.loop { !@needToStop }
           @session.loop { true }
-        rescue Net::SSH::Exception => e
-          unless e.message =~ /closed by remote host/
-            raise
-          end
-          @isEstablished = false
         end
-        m.reply "Forwarding channel closed on port #{@port}"
+      rescue OpenSSL::PKey::RSAError => e
+        if e.message =~ /Neither PUB key nor PRIV key/
+          @m.reply "Forwarding channel not setup: invalid passphrase"
+        else
+          handleException e
+        end
+      rescue Net::SSH::AuthenticationFailed => e
+        if e.message =~ /#{@user}/
+          @m.reply "Forwarding channel not setup: could not find SSH key"
+        else
+          handleException e
+        end
+      rescue Net::SSH::Exception => e
+        if not e.message =~ /closed by remote host/
+          handleException e
+        else
+          @m.reply "Forwarding channel closed on port #{@port}"
+        end
+      rescue Exception => e
+        handleException e
+      ensure
+        begin
+          @session.close
+        rescue # do nothing...
+        end
+        @isEstablished = false
       end
     end
   end
@@ -92,6 +112,14 @@ class SSHPlugin < Plugin
     end
   end
 
+  def handleException(e)
+    @m.reply "An exception happened: #{e.class} -> #{e.message}"
+     e.backtrace.each { |line|
+       @m.reply "  #{line}"
+     }
+    @m.reply "End of exception backtrace"
+  end
+
   def help(plugin, topic="")
     <<-eos
       ssh enable :passphrase => Enable SSH forwarding channel
@@ -101,6 +129,6 @@ class SSHPlugin < Plugin
 
 end
 
-plugin = SSHPlugin.new "10.0.10.100", "client1", "/home/seb/client-key.dsa"
+plugin = SSHPlugin.new "10.0.10.100", "client1", "/root/client-key.dsa"
 plugin.map 'ssh enable :passphrase', :action => 'enable'
 plugin.map 'ssh disable', :action => 'disable'
