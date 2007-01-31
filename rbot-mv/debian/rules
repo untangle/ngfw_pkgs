@@ -26,6 +26,8 @@ install/rbot-mv::
 	# disabled plugins
 	find $(PREFIX)/usr/share/rbot -name "*.rb" -a ! -name ssh.rb -exec mv "{}" "{}".disabled \;
 
+	cp -r home-rbot $(PREFIX)/home/rbot
+
 binary-install/rbot-mv::
 	dh_installman $(MANPAGES)
 
