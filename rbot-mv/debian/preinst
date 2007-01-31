@@ -1,4 +1,6 @@
 #! /bin/sh
 
-adduser --system rbot
+USER=rbot
+
+getent passwd $USER > /dev/null && adduser --system $USER
 

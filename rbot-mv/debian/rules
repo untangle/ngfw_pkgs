@@ -31,6 +31,7 @@ install/rbot-mv::
 
 binary-install/rbot-mv::
 	dh_installman $(MANPAGES)
+	dh_installinit rbot
 
 binary-predeb/rbot-mv::
 	find $(PREFIX) -type d -name ".arch-ids" -depth -exec rm -rf {} \;

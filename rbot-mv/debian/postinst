@@ -2,5 +2,13 @@
 
 chown -R rbot /home/rbot
 
-sudo -u rbot rbot -d > /var/log/rbot.log
+if [ -x /etc/init.d/rbot ]; then
+  update-rc.d rbot defaults >/dev/null
+  if  -x /usr/sbin/invoke-rc.d ]; then
+    invoke-rc.d rbot restart
+  else
+    /etc/init.d/rbot restart
+  fi
+fi
 
+exit 0

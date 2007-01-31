@@ -1,0 +1,11 @@
+#! /bin/sh
+
+if [ -x /etc/init.d/rbot ]; then
+  if [ -x /usr/sbin/invoke-rc.d ]; then
+    invoke-rc.d rbot stop
+  else
+    /etc/init.d/rbot stop
+  fi
+fi                                                                                                                                            
+
+exit 0

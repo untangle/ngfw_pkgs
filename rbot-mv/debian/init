@@ -1,0 +1,29 @@
+#!/bin/sh
+
+DAEMON=/usr/bin/rbot
+PIDFILE=/var/run/rbot.pid
+USER=rbot
+
+[ -x $DAEMON ] || exit 0
+
+case "$1" in
+  start)
+    echo -n "Starting $DAEMON: "
+    start-stop-daemon --start --quiet --pidfile $PIDFILE \
+      --chuid $USER --background --make-pidfile \
+      --exec $DAEMON
+    echo "done"
+    ;;
+  stop)
+    echo -n "Stopping $DAEMON: "
+    start-stop-daemon --stop --oknodo --quiet --pidfile $PIDFILE \
+      --exec $DAEMON
+    echo "done"
+    ;;
+  restart)
+    $0 stop
+    $0 start
+    ;;
+esac
+
+exit 0
