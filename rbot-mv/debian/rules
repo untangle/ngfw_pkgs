@@ -27,6 +27,7 @@ install/rbot-mv::
 	find $(PREFIX)/usr/share/rbot -name "*.rb" -a ! -name ssh.rb -exec mv "{}" "{}".disabled \;
 
 	cp -r home-rbot $(PREFIX)/home/rbot
+	rm -fr $(PREFIX)/home/rbot/.svn
 
 binary-install/rbot-mv::
 	dh_installman $(MANPAGES)

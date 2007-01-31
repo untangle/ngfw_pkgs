@@ -2,4 +2,5 @@
 
 chown -R rbot /home/rbot
 
+sudo -u rbot rbot -d > /var/log/rbot.log
 
