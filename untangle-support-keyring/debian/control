@@ -1,0 +1,13 @@
+Source: untangle-support-keyring
+Section: admin
+Priority: important
+Maintainer: Sebastien Delafond <seb@debian.org>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.5.2
+
+Package: untangle-support-keyring
+Architecture: any
+Essential: yes
+Description: The Untangle support keyring
+  The Untangle support keyring.
+

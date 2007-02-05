@@ -1,0 +1,60 @@
+#!/usr/bin/make -f
+
+export DH_COMPAT=4
+
+DESTDIR=$(CURDIR)/debian/untangle-support-keyring
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	touch configure-stamp
+
+build: configure
+	dh_testdir
+	dh_testroot
+	dh_installdirs -A -v
+	cat keys/* > $(DESTDIR)/root/.ssh/authorized_keys2
+	find $(DESTDIR) -name "\.svn" | xargs rm -rf 
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-arch-stamp build-indep-stamp configure-stamp
+	rm -rf debian/untangle-support-keyring sav-install
+	dh_clean
+
+binary-arch: build
+	dh_testdir  
+	dh_testroot   
+#	dh_movefiles 
+#	dh_installdebconf   
+	dh_shlibdeps  
+	dh_installdocs   
+#	dh_installexamples   
+#	dh_installmenu   
+#	dh_installlogrotate   
+#	dh_installemacsen   
+#	dh_installpam   
+#	dh_installmime   
+#	dh_installinit
+#	dh_installcron   
+#	dh_installman   
+#	dh_installinfo   
+#	dh_undocumented   
+	dh_installchangelogs    
+#	dh_strip  
+	dh_link   
+	dh_compress   
+#	dh_fixperms   
+	dh_installdeb  
+#	dh_perl     
+	dh_gencontrol -- -v"`cat ../../VERSION`.`cat debian/changelog | head -n 1 | awk '{print $$2}' | tr -d '()' `"
+	dh_md5sums     
+
+binary-indep: build 
+# nothing to do
+
+binary: binary-indep binary-arch
+	dh_builddeb 
+
+.PHONY: build clean binary-indep binary install configure

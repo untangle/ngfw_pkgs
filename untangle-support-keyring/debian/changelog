@@ -1,0 +1,5 @@
+untangle-support-keyring (0-1) stable; urgency=low
+
+  * Initial release.
+
+ -- Sebastien Delafond <seb@debian.org>  Mon, 05 Feb 2007 15:02:56 -0800
