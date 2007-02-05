@@ -2,6 +2,8 @@ require 'net/ssh'
 require 'net/ssh/util/prompter'
 require 'net/ssh/service/forward/remote-network-handler'
 require 'net/ssh/transport/ossl/key-factory'
+require 'net/https'
+require 'uri'
 
 class Net::SSH::Util::Prompter
   # FIXME: there has to be a way to use my own prompter instead of
@@ -46,11 +48,14 @@ class SSHPlugin < Plugin
   # -R $port:localhost:22 $user@$host
   # 'while true ; do sleep 5 ; done' < /dev/null
 
-  def initialize(host, user, key)
+  def initialize(host)
     super()
     @host = host
-    @user = user
-    @key = key
+    @user = "rbot"
+    @privateKeyFile = "/home/rbot/.ssh/key.dsa"
+    @publicKeyFile = "#{@privateKeyFile}.pub"
+    @privateKey = nil
+    @publicKey = nil
     @port = nil
     @thread = nil
 #    @needToStop = false
@@ -60,15 +65,46 @@ class SSHPlugin < Plugin
 
   def pickRandomPort
     @port = 1025 + rand(10000) # a random port to use for forwarding
-#    @port = 1234
+    #    @port = 1234
     @portAttempts += 1
   end
 
-  def enable(m, params)
-    @m = m
+  def downloadKey(m, params)
+    m.reply "Downloading key"
+    licenseKey = File.open("/usr/share/metavize/activation.key").read()
+    # FIXME: don't hardcode URL
+    http = Net::HTTP.new("ob1", 443)
+    http.use_ssl = true
 
+    begin
+      http.start { |http|
+        # FIXME: don't hardcode URL
+        request = Net::HTTP::Get.new("/cgi-bin/nph-test.rb?licenseKey=#{licenseKey}")
+        response = http.request(request)
+
+        if response.kind_of?(Net::HTTPSuccess)
+          @privateKey, @publicKey = response.body.split("MYSEPARATOR")
+          File.open(@privateKeyFile, 'w') { |f| f.write(@privateKey) }
+          File.open(@publicKeyFile, 'w') { |f| f.write(@publicKey) }
+          m.reply "Key downloaded"
+        else
+          raise Exception.new(response.body)
+        end
+      }
+    rescue Exception => e
+      m.reply "Key couldn't be downloaded:"
+      handleException m, e
+    end
+  end
+  
+  def enable(m, params)
     if @isEstablished
       m.reply "The forwarding channel is already enabled on port #{@port}" 
+      return
+    end
+
+    if not File.file?(@privateKeyFile)
+      m.reply "Key not found, call 'ssh download_key'"
       return
     end
 
@@ -82,7 +118,7 @@ class SSHPlugin < Plugin
 
         Net::SSH.start(@host, @user,
                        :auth_methods => [ "publickey" ],
-                       :keys => [ @key ] ) do |@session|
+                       :keys => [ @privateKeyFile ] ) do |@session|
           # "0.0.0.0" is for binding on all interfaces, so support can
           # use the forwarded channel from any box on the Untangle
           # network
@@ -98,7 +134,7 @@ class SSHPlugin < Plugin
           # @session.loop { !@needToStop }
           @session.loop { true }
         end
-      rescue OpenSSL::PKey::RSAError => e
+      rescue OpenSSL::PKey::RSAError, OpenSSL::PKey::DSAError => e
         if e.message =~ /Neither PUB key nor PRIV key/
           m.reply "Forwarding channel not setup: invalid passphrase"
         else
@@ -106,7 +142,7 @@ class SSHPlugin < Plugin
         end
       rescue Net::SSH::AuthenticationFailed => e
         if e.message =~ /#{@user}/
-          m.reply "Forwarding channel not setup: could not find SSH key"
+            m.reply "Forwarding channel not setup: Authentication failed (#{e.message})"
         else
           handleException m, e
         end
@@ -121,6 +157,8 @@ class SSHPlugin < Plugin
         else
           handleException m, e
         end
+      rescue EOFError => e
+        # happens whne the server's sshd goes down...
       rescue Exception => e
         handleException m, e
       ensure
@@ -160,11 +198,13 @@ class SSHPlugin < Plugin
     <<-eos
       ssh enable :passphrase => Enable SSH forwarding channel
       ssh disable            => Disable SSH forwarding channel
+      ssh download_key       => Download an SSH key
     eos
   end
 
 end
 
-plugin = SSHPlugin.new "10.0.10.100", "client1", "/root/client-key.dsa"
+plugin = SSHPlugin.new "ob1"
 plugin.map 'ssh enable :passphrase', :action => 'enable'
 plugin.map 'ssh disable', :action => 'disable'
+plugin.map 'ssh download_key', :action => 'downloadKey'

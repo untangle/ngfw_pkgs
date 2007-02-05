@@ -11,7 +11,7 @@ case "$1" in
     echo -n "Starting $DAEMON: "
     start-stop-daemon --start --quiet --pidfile $PIDFILE \
       --chuid $USER --background --make-pidfile \
-      --exec $DAEMON
+      --exec $DAEMON -- -d
     echo "done"
     ;;
   stop)
@@ -23,6 +23,9 @@ case "$1" in
   restart)
     $0 stop
     $0 start
+    ;;
+  force-reload)
+    $0 restart
     ;;
 esac
 

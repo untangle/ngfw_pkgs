@@ -1,0 +1,7 @@
+#! /bin/sh
+
+#DEBHELPER#
+
+[ $1 == "purge" ] && userdel -f -r rbot
+
+exit 0

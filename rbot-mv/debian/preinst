@@ -2,5 +2,5 @@
 
 USER=rbot
 
-getent passwd $USER > /dev/null && adduser --system $USER
+getent passwd $USER > /dev/null || adduser --system $USER
 
