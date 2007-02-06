@@ -6,7 +6,6 @@ grep -q TCP $CLAMAV_CONF_FILE || cat >> $CLAMAV_CONF_FILE <<EOF
 TCPAddr 127.0.0.1
 TCPSocket 3310 
 EOF
-fi
 
 if [ ! -f /var/run/clamav/clamd.pid ] ; then
     /etc/init.d/clamav-daemon start
