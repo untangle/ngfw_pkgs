@@ -1,12 +1,20 @@
 #!/bin/sh
 
+CLAMAV_CONF_FILE=/etc/clamav/clamd.conf
+
+grep -q TCP $CLAMAV_CONF_FILE || cat >> $CLAMAV_CONF_FILE <<EOF 
+TCPAddr 127.0.0.1
+TCPSocket 3310 
+EOF
+fi
+
 if [ ! -f /var/run/clamav/clamd.pid ] ; then
     /etc/init.d/clamav-daemon start
+else # since this postinst script now modifies the conf file, we need
+     #to restart clamav-daemon if it was already running
+    /etc/init.d/clamav-daemon restart
 fi
 
 if [ ! -f /var/run/clamav/freshclam.pid ] ; then
     /etc/init.d/clamav-freshclam start
 fi
-
-
-
