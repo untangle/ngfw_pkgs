@@ -4,3 +4,5 @@ master: !ruby/struct:UserData
   password: untangle
   hostmasks: 
   - *!*@localhost
+  - *!*@*untangle.com
+  - *!*@*metaloft.com
