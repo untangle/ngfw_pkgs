@@ -18,6 +18,8 @@ case "$1" in
     echo -n "Stopping $DAEMON: "
     start-stop-daemon --stop --oknodo --quiet --pidfile $PIDFILE \
       --exec $DAEMON
+    sleep 1
+    ps aux | grep -E 'ruby.*rbot' | awk '{print $1}}' | xargs killall -9
     echo "done"
     ;;
   restart)
