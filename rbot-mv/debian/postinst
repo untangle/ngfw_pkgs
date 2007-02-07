@@ -8,7 +8,7 @@ RBOT_CONF_FILE=/home/rbot/.rbot/conf.yaml
 KEY=`cat /usr/share/metavize/activation.key`
 KEY=${KEY:-1234:5678:abcd:efgh}
 
-perl -npe 's/<>/'$KEY'/' $RBOT_CONF_FILE.template >| $RBOT_CONF_FILE
+perl -npe 's/+NAME+/'$KEY'/' $RBOT_CONF_FILE.template >| $RBOT_CONF_FILE
 
 #DEBHELPER#
 
