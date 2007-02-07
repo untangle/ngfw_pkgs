@@ -22,9 +22,13 @@ echo "Building package list for \"${DESTINATION}\""
 
 dpkg-scanpackages pool/${COMPONENT} indices/${OVERRIDE} > \
     dists/${DISTRIBUTION}/${COMPONENT}/binary-${ARCH}/Packages 2> /tmp/out
-if [ $? -ne 0 ] ; then exit ; fi
-echo "ln -s ./${COMPONENT} dists/${DISTRIBUTION}/metavize"
-if [ ! -l dists/${DISTRIBUTION}/metavize ] ; then ln -s ./${COMPONENT} dists/${DISTRIBUTION}/metavize ; fi
+
+[ $? -ne 0 ] && exit
+
+if [ ! -L dists/${DISTRIBUTION}/metavize ] ; then 
+  echo "ln -s ./${COMPONENT} dists/${DISTRIBUTION}/metavize"
+  ln -s ./${COMPONENT} dists/${DISTRIBUTION}/metavize
+fi
 
 grep -v "newer version" /tmp/out | grep -v "ignored" | grep -v "is repeat"
 
