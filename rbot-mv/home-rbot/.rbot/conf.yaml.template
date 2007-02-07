@@ -9,4 +9,4 @@ irc.join_channels:
 - "#untangle"
 server.sendq_burst: 100
 server.sendq_delay: 0.1
-server.byterate: 1000000
+server.byterate: 1000000/2
