@@ -1,5 +1,14 @@
 --- rbot.orig/lib/rbot/ircsocket.rb	2006-07-29 10:24:49.000000000 -0700
 +++ rbot/lib/rbot/ircsocket.rb	2007-01-22 12:52:23.000000000 -0800
+@@ -197,7 +197,7 @@
+     # port::   IRCd port
+     # host::   optional local host to bind to (ruby 1.7+ required)
+     # create a new IrcSocket
+-    def initialize(server, port, host, sendq_delay=2, sendq_burst=4, brt="400/2")
++    def initialize(server, port, host, sendq_delay=2, sendq_burst=4, brt="100000/2")
+       @timer = Timer::Timer.new
+       @timer.add(0.2) do
+         spool
 @@ -264,6 +264,15 @@
        else
          @sock=TCPSocket.new(@server, @port)
