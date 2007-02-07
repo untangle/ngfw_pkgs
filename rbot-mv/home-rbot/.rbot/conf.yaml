@@ -1,7 +1,0 @@
---- 
-core.address_prefix: 
-- "!"
-server.name: ob1
-auth.password: rbot
-irc.join_channels: 
-- "#untangle"
