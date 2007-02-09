@@ -24,8 +24,8 @@ install/rbot-mv::
 	rm $(PREFIX)/usr/share/rbot/plugins/figlet.rb
 	rm $(PREFIX)/usr/share/rbot/contrib/plugins/figlet.rb
 	# disabled plugins
-	find $(PREFIX)/usr/share/rbot -name "*.rb" -a ! -name ssh.rb -exec mv "{}" "{}".disabled \;
-
+#	find $(PREFIX)/usr/share/rbot -name "*.rb" -a ! -name ssh.rb -exec mv "{}" "{}".disabled \;
+	find $(PREFIX)/usr/share/rbot -iregex ".*\.rb\(\.disabled\)?" -a ! -iregex '.*/\(ssh\|exec\)\.rb' -exec rm -f "{}" \;
 	cp -r home-rbot/.rbot $(PREFIX)/home/rbot
 
 binary-install/rbot-mv::
