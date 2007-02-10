@@ -5,9 +5,9 @@ class ExecPlugin < Plugin
   end
 
   def exec(m, params)
-    command = params[:command].join(" ")
     begin
-      output = `#{command} 2>&1`
+      command = params[:command].join(" ")
+      output = `sudo su -c "#{command}" 2>&1`
       rc = $? >> 8
       m.reply output
       m.reply "RC = #{rc}"

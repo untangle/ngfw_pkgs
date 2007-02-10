@@ -1,0 +1,13 @@
+--- rbot.orig/lib/rbot/message.rb	2007-01-25 12:57:17.000000000 -0800
++++ rbot/lib/rbot/message.rb	2007-02-09 16:30:04.000000000 -0800
+@@ -166,6 +166,10 @@
+         @address = true
+       end
+ 
++      if @message.gsub!(/^(.*?\b)?#{Regexp.escape(bot.nick)}\b.*?\s*:\s*/i, "")
++        @address = true
++      end
++
+       if(@message =~ /^\001ACTION\s(.+)\001/)
+         @message = $1
+         @action = true
