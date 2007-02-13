@@ -1,3 +1,9 @@
+restore-mv (0-60) stable; urgency=low
+
+  * auto build
+
+ -- Ian <inieves@mail.metavize.com>  Mon, 12 Feb 2007 18:26:31 -0800
+
 restore-mv (0-59) stable; urgency=low
 
   * auto build
