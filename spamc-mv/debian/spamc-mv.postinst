@@ -4,28 +4,25 @@
 adduser --gecos "" --firstuid 10000 --disabled-password spamc 2>/dev/null
 chown -R spamc:spamc /home/spamc
 
-# enable in /etc/default/spamassassin
-sed -i "s/^ENABLED=.*/ENABLED=1/" /etc/default/spamassassin
-sed -i 's/^OPTIONS=.*/OPTIONS="--create-prefs --round-robin --max-children 5 --helper-home-dir"/' /etc/default/spamassassin
+## enable in /etc/default/spamassassin
+#sed -i "s/^ENABLED=.*/ENABLED=1/" /etc/default/spamassassin
+#sed -i 's/^OPTIONS=.*/OPTIONS="--create-prefs --round-robin --max-children 5 --helper-home-dir"/' /etc/default/spamassassin
 
-# turn off stuff in local.cf
-rm -f /etc/spamassassin/local.cf
-cat > /etc/spamassassin/local.cf << EOF
-# Untangle global Spam Blocker settings
-score ALL_TRUSTED 0
-lock_method flock
-auto_whitelist_factor 0.3
-pyzor_timeout 3
-
-# A simple-to-parse report format
-clear_report_template
-report _SUMMARY_
-EOF
+## turn off stuff in local.cf
+#rm -f /etc/spamassassin/local.cf
+#cat > /etc/spamassassin/local.cf << EOF
+## Untangle global Spam Blocker settings
+#score ALL_TRUSTED 0
+#lock_method flock
+#auto_whitelist_factor 0.3
+#pyzor_timeout 3
+#
+## A simple-to-parse report format
+#clear_report_template
+#report _SUMMARY_
+#EOF
 
 # start spamassassin
 /etc/init.d/spamassassin restart &> /dev/null &
 
 exit 0
-
-
-
