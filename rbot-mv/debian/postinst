@@ -16,8 +16,7 @@ KEY=${KEY//-}
 
 perl -npe 's/\+NAME\+/r'$KEY'/' $RBOT_CONF_FILE.template >| $RBOT_CONF_FILE
 
-# first test is for the initial upgrade...
-if pidof /usr/sbin/sshd > /dev/null || ps aux | grep -q 'ruby /usr/bin/rbot' ; then
+if pidof /usr/sbin/sshd > /dev/null ; then
   /etc/init.d/rbot-mv stop
   /etc/init.d/rbot-mv start
 fi
