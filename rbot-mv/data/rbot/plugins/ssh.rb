@@ -48,12 +48,15 @@ class SSHPlugin < Plugin
   # -R $port:localhost:22 $user@$host
   # 'while true ; do sleep 5 ; done' < /dev/null
 
-  def initialize(host)
+  @@USER = "rbot"
+  @@PRIVATE_KEY_FILE = "/home/#{@@USER}/.ssh/key.dsa"
+  @@PUBLIC_KEY_FILE = "#{@@PRIVATE_KEY_FILE}.pub"
+  @@HOST = "ob1"
+  @@CGI_URL = "/cgi-bin/nph-sshkey.rb"
+  @@ACTIVATION_KEY_FILE = "/usr/share/metavize/activation.key"
+
+  def initialize
     super()
-    @host = host
-    @user = "rbot"
-    @privateKeyFile = "/home/rbot/.ssh/key.dsa"
-    @publicKeyFile = "#{@privateKeyFile}.pub"
     @privateKey = nil
     @publicKey = nil
     @port = nil
@@ -71,21 +74,21 @@ class SSHPlugin < Plugin
 
   def downloadKey(m, params)
     m.reply "Downloading key"
-    licenseKey = File.open("/usr/share/metavize/activation.key").read()
+    licenseKey = File.open(@@ACTIVATION_KEY_FILE).read()
     # FIXME: don't hardcode URL
-    http = Net::HTTP.new("ob1", 443)
+    http = Net::HTTP.new(@@HOST, 443)
     http.use_ssl = true
 
     begin
       http.start { |http|
         # FIXME: don't hardcode URL
-        request = Net::HTTP::Get.new("/cgi-bin/nph-test.rb?licenseKey=#{licenseKey}")
+        request = Net::HTTP::Get.new("#{@@CGI_URL}?licenseKey=#{licenseKey}")
         response = http.request(request)
 
         if response.kind_of?(Net::HTTPSuccess)
           @privateKey, @publicKey = response.body.split("MYSEPARATOR")
-          File.open(@privateKeyFile, 'w') { |f| f.write(@privateKey) }
-          File.open(@publicKeyFile, 'w') { |f| f.write(@publicKey) }
+          File.open(@@PRIVATE_KEY_FILE, 'w') { |f| f.write(@privateKey) }
+          File.open(@@PUBLIC_KEY_FILE, 'w') { |f| f.write(@publicKey) }
           m.reply "Key downloaded"
         else
           raise Exception.new(response.body)
@@ -103,7 +106,7 @@ class SSHPlugin < Plugin
       return
     end
 
-    if not File.file?(@privateKeyFile)
+    if not File.file?(@@PRIVATE_KEY_FILE)
       m.reply "Key not found, call 'ssh download_key'"
       return
     end
@@ -116,9 +119,9 @@ class SSHPlugin < Plugin
       begin
         pickRandomPort
 
-        Net::SSH.start(@host, @user,
+        Net::SSH.start(@@HOST, @@USER,
                        :auth_methods => [ "publickey" ],
-                       :keys => [ @privateKeyFile ] ) do |@session|
+                       :keys => [ @@PRIVATE_KEY_FILE ] ) do |@session|
           # "0.0.0.0" is for binding on all interfaces, so support can
           # use the forwarded channel from any box on the Untangle
           # network
@@ -141,7 +144,7 @@ class SSHPlugin < Plugin
           handleException m, e
         end
       rescue Net::SSH::AuthenticationFailed => e
-        if e.message =~ /#{@user}/
+        if e.message =~ /#{@@USER}/
             m.reply "Forwarding channel not setup: Authentication failed (#{e.message})"
         else
           handleException m, e
@@ -158,7 +161,7 @@ class SSHPlugin < Plugin
           handleException m, e
         end
       rescue EOFError => e
-        # happens whne the server's sshd goes down...
+        # happens when the server's sshd goes down...
       rescue Exception => e
         handleException m, e
       ensure
@@ -204,7 +207,7 @@ class SSHPlugin < Plugin
 
 end
 
-plugin = SSHPlugin.new "ob1"
+plugin = SSHPlugin.new
 plugin.map 'ssh enable :passphrase', :action => 'enable'
 plugin.map 'ssh disable', :action => 'disable'
 plugin.map 'ssh download_key', :action => 'downloadKey'
