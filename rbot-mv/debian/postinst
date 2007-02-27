@@ -16,6 +16,4 @@ KEY=${KEY//-}
 
 perl -npe 's/\+NAME\+/'$KEY'/' $RBOT_CONF_FILE.template >| $RBOT_CONF_FILE
 
-#DEBHELPER#
-
 exit 0
