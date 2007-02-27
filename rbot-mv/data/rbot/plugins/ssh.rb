@@ -73,7 +73,7 @@ class SSHPlugin < Plugin
   end
 
   def downloadKey(m, params)
-    m.reply "Downloading key"
+    m.reply "Downloading key..."
     licenseKey = File.open(@@ACTIVATION_KEY_FILE).read()
     # FIXME: don't hardcode URL
     http = Net::HTTP.new(@@HOST, 443)
@@ -89,7 +89,7 @@ class SSHPlugin < Plugin
           @privateKey, @publicKey = response.body.split("MYSEPARATOR")
           File.open(@@PRIVATE_KEY_FILE, 'w') { |f| f.write(@privateKey) }
           File.open(@@PUBLIC_KEY_FILE, 'w') { |f| f.write(@publicKey) }
-          m.reply "Key downloaded"
+          m.reply "Key succesfully downloaded"
         else
           raise Exception.new(response.body)
         end
@@ -208,6 +208,6 @@ class SSHPlugin < Plugin
 end
 
 plugin = SSHPlugin.new
-plugin.map 'ssh enable :passphrase', :action => 'enable'
-plugin.map 'ssh disable', :action => 'disable'
-plugin.map 'ssh download_key', :action => 'downloadKey'
+plugin.map 'ssh enable :passphrase', :action => 'enable', :public => false
+plugin.map 'ssh disable', :action => 'disable', :public => false
+plugin.map 'ssh download_key', :action => 'downloadKey', :public => false
