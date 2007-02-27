@@ -1,3 +1,9 @@
+rbot-mv (0.9.10-58) unstable; urgency=low
+
+  * auto build
+
+ -- root <root@bebe.metavize.com>  Tue, 27 Feb 2007 12:27:17 -0800
+
 rbot-mv (0.9.10-57) unstable; urgency=low
 
   * auto build
