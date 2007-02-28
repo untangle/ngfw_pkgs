@@ -34,7 +34,7 @@ def initializeChrootedAptFiles():
   # create sources.list file
   open(SOURCES, 'w').write('''deb http://linux.csua.berkeley.edu/debian stable main contrib non-free
 deb http://www.backports.org/debian sarge-backports main contrib non-free
-deb http://10.0.0.44/testing testing untangle\n
+deb http://10.0.0.44/testing testing untangle
 deb http://10.0.0.44/dev testing untangle\n''')
 
   # create preferences files
@@ -179,6 +179,7 @@ class VersionedPackage(Package):
       return []
     if not self.foundAllDeps:
       self.allDeps = self._getAllDeps()
+      self.allDeps.add(self._package)
       self.foundAllDeps = True
     return self.allDeps
 
@@ -282,7 +283,9 @@ for p in pkg.getAllDeps():
                                                              p)
     print "Downloading new one, but you probably want to remove the older one (%s)" % us.getByName(p.name)
     toGet = True
-
+#  else:
+#    print "%s is in the store and satisfies the dependency" % us.get(versionedPackage)
+    
   if toGet:
     versionedPackage.download()
     us.add(versionedPackage)
