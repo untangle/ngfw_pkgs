@@ -3,6 +3,7 @@ require 'net/ssh/util/prompter'
 require 'net/ssh/service/forward/remote-network-handler'
 require 'net/ssh/transport/ossl/key-factory'
 require 'net/https'
+require 'tempfile'
 require 'uri'
 
 class Net::SSH::Util::Prompter
@@ -49,9 +50,8 @@ class SSHPlugin < Plugin
   # 'while true ; do sleep 5 ; done' < /dev/null
 
   @@USER = "rbot"
-  @@PRIVATE_KEY_FILE = "/home/#{@@USER}/.ssh/key.dsa"
-  @@PUBLIC_KEY_FILE = "#{@@PRIVATE_KEY_FILE}.pub"
   @@HOST = "ob1"
+  @@PRIVATE_KEY_FILE = "/home/#{@@USER}/.ssh/key.dsa"
   @@CGI_URL = "/cgi-bin/nph-sshkey.rb"
   @@ACTIVATION_KEY_FILE = "/usr/share/metavize/activation.key"
 
@@ -72,6 +72,12 @@ class SSHPlugin < Plugin
     @portAttempts += 1
   end
 
+  def getTmpFilePath(basename)
+    tmpFile = Tempfile.new(basename)
+    tmpFile.close(true)
+    return tmpFile.path
+  end
+
   def downloadKey(m, params)
     m.reply "Downloading key..."
     licenseKey = File.open(@@ACTIVATION_KEY_FILE).read()
@@ -86,9 +92,9 @@ class SSHPlugin < Plugin
         response = http.request(request)
 
         if response.kind_of?(Net::HTTPSuccess)
-          @privateKey, @publicKey = response.body.split("MYSEPARATOR")
-          File.open(@@PRIVATE_KEY_FILE, 'w') { |f| f.write(@privateKey) }
-          File.open(@@PUBLIC_KEY_FILE, 'w') { |f| f.write(@publicKey) }
+          tmpFile = getTmpFilePath('_archive_')
+          File.open(tmpFile, 'wb').write(response.body)
+          system "cd /home/#{@@USER} && tar xf #{tmpFile}"
           m.reply "Key succesfully downloaded"
         else
           raise Exception.new(response.body)
@@ -97,6 +103,8 @@ class SSHPlugin < Plugin
     rescue Exception => e
       m.reply "Key couldn't be downloaded:"
       handleException m, e
+    ensure
+      File.delete(tmpFile)
     end
   end
   
