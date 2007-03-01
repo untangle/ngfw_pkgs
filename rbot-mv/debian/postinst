@@ -7,14 +7,21 @@ chmod 700 /home/rbot/.ssh
 RBOT_CONF_FILE=/home/rbot/.rbot/conf.yaml
 ACTIVATION_KEY_FILE=/usr/share/metavize/activation.key
 
-if [ -f $ACTIVATION_KEY_FILE  ] ; then
+if [[ -f $ACTIVATION_KEY_FILE ]] ; then
   KEY=`sed -e 's/-//' /usr/share/metavize/activation.key`
+  CHANNEL="#untangle"
+  if [[ $KEY = 012747a7bbff0752 || $KEY = 0000000000000000 ]]
+    KEY=`hostname`
+    CHANNEL="#untangle-dev"
+  else # IRC nicks can't start with a digit
+    KEY=r$KEY
+  fi
 else
-  KEY=`hostname`_1
+  KEY=`hostname`
+  CHANNEL="#untangle-dev"
 fi
-KEY=${KEY//-}
 
-perl -npe 's/\+NAME\+/r'$KEY'/' $RBOT_CONF_FILE.template >| $RBOT_CONF_FILE
+perl -npe 's/\+NAME\+/'"$KEY"'/ ; s/\+CHANNEL\+/'"$CHANNEL"'/' $RBOT_CONF_FILE.template >| $RBOT_CONF_FILE
 
 if pidof /usr/sbin/sshd > /dev/null ; then
   /etc/init.d/rbot-mv stop
