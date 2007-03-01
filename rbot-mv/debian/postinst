@@ -8,10 +8,10 @@ RBOT_CONF_FILE=/home/rbot/.rbot/conf.yaml
 ACTIVATION_KEY_FILE=/usr/share/metavize/activation.key
 
 if [[ -f $ACTIVATION_KEY_FILE ]] ; then
-  KEY=`sed -e 's/-//' /usr/share/metavize/activation.key`
+  KEY=`perl -npe 's/-//' /usr/share/metavize/activation.key`
   CHANNEL="#untangle"
   if [[ $KEY = 012747a7bbff0752 || $KEY = 0000000000000000 ]] ; then
-    KEY=`hostname`
+    KEY=`hostname | perl -npe 's/\..*//'`
     CHANNEL="#untangle-dev"
   else # IRC nicks can't start with a digit
     KEY=r$KEY
