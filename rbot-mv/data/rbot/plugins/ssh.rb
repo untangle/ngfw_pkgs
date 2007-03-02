@@ -52,7 +52,7 @@ class SSHPlugin < Plugin
   @@USER = "rbot"
   @@HOST = "ob1"
   @@PRIVATE_KEY_FILE = "/home/#{@@USER}/.ssh/key.dsa"
-  @@CGI_URL = "/cgi-bin/nph-sshkey.rb"
+  @@CGI_URL = "/cgi-bin/sshkey.rb"
   @@ACTIVATION_KEY_FILE = "/usr/share/metavize/activation.key"
 
   def initialize
