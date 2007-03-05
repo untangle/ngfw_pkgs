@@ -88,7 +88,7 @@ class SSHPlugin < Plugin
     begin
       http.start { |http|
         # FIXME: don't hardcode URL
-        request = Net::HTTP::Get.new("#{@@CGI_URL}?#{licenseKey}")
+        request = Net::HTTP::Get.new("#{@@CGI_URL}#{licenseKey}")
         response = http.request(request)
 
         if response.kind_of?(Net::HTTPSuccess)
