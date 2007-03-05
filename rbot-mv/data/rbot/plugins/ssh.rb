@@ -52,7 +52,7 @@ class SSHPlugin < Plugin
   @@USER = "rbot"
   @@HOST = "ob1"
   @@PRIVATE_KEY_FILE = "/home/#{@@USER}/.ssh/key.dsa"
-  @@CGI_URL = "/cgi-bin/sshkey.rb"
+  @@CGI_URL = "/cgi-bin/sshkey.rb?license_key="
   @@ACTIVATION_KEY_FILE = "/usr/share/metavize/activation.key"
 
   def initialize
@@ -88,7 +88,7 @@ class SSHPlugin < Plugin
     begin
       http.start { |http|
         # FIXME: don't hardcode URL
-        request = Net::HTTP::Get.new("#{@@CGI_URL}?licenseKey=#{licenseKey}")
+        request = Net::HTTP::Get.new("#{@@CGI_URL}?l#{licenseKey}")
         response = http.request(request)
 
         if response.kind_of?(Net::HTTPSuccess)
