@@ -51,12 +51,12 @@ Plugin {
         button {
             image = /usr/share/kiosk-mv/panel/ScreensaverOn.png
             tooltip = Enable Screensaver
-            action = /home/kiosk/utils/screensaver-on.sh
+            action = /home/kiosk/utils/screensaver.sh on
         }
         button {
             image = /usr/share/kiosk-mv/panel/ScreensaverOff.png
             tooltip = Disable Screensaver
-            action = /home/kiosk/utils/screensaver-off.sh
+            action = /home/kiosk/utils/screensaver.sh off
         }
     }
 }
