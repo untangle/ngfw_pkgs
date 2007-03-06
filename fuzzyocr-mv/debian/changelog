@@ -1,3 +1,9 @@
+fuzzyocr-mv (2.3b-12) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@bebe.metavize.com>  Tue,  6 Mar 2007 11:34:59 -0800
+
 fuzzyocr-mv (2.3b-11) stable; urgency=low
 
   * auto build
