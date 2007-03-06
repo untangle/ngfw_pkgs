@@ -1,0 +1,19 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 30_perl-package.dpatch by Sebastien Delafond <seb@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: No description.
+
+@DPATCH@
+diff -urNad fuzzyocr-mv~/FuzzyOcr.pm fuzzyocr-mv/FuzzyOcr.pm
+--- fuzzyocr-mv~/FuzzyOcr.pm	2006-11-01 14:19:38.000000000 -0800
++++ fuzzyocr-mv/FuzzyOcr.pm	2006-11-01 16:48:39.000000000 -0800
+@@ -41,7 +41,7 @@
+ #
+ # written by Christian Holler decoder_at_own-hero_dot_net
+ 
+-package FuzzyOcr;
++package Mail::SpamAssassin::Plugin::FuzzyOcr;
+ 
+ use strict;
+ use warnings;

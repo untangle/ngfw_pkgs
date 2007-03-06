@@ -1,0 +1,20 @@
+#! /bin/sh
+
+FDIR=/usr/share/fuzzyocr-ut
+
+# copy in config files
+cp -p $FDIR/FuzzyOcr.cf /etc/mail/spamassassin
+cp -p $FDIR/FuzzyOcr.pm /usr/share/perl5/Mail/SpamAssassin/Plugin/
+
+saVersion=$(dpkg-query --showformat='${Version}\n' -W spamassassin)
+
+if dpkg --compare-versions $saVersion lt 3.1.4 ; then
+  perl -i -npe 's/.*focr_pre314.*/focr_pre314 1/' /etc/mail/spamassassin/FuzzyOcr.cf
+else
+  perl -i -npe 's/.*focr_pre314.*/#focr_pre314 1/' /etc/mail/spamassassin/FuzzyOcr.cf
+fi
+
+# reload SA
+/etc/init.d/spamassassin reload
+
+exit 0

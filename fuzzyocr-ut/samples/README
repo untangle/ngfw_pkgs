@@ -1,0 +1,61 @@
+These eml files are sample spam emails to test your installation of FuzzyOCR. Assuming you are using the default settings, the output you get should match the output listed here.
+
+Use spamassassin -t < samplefile.eml to test :)
+
+corrupted-gif.eml: Contains a corrupted gif image, additionally I changed the content-type to jpeg, so the output should show:
+
+ 1.5 FUZZY_OCR_WRONG_CTYPE  BODY: Mail contains an image with wrong
+                            content-type set
+                            Image has format "GIF" but content-type is
+                            "image/jpeg"
+ 5.0 FUZZY_OCR_CORRUPT_IMG  BODY: Mail contains a corrupted image
+                            Corrupt image: GIF-LIB error: Image is
+                            defective, decoding aborted.
+  10 FUZZY_OCR              BODY: Mail contains an image with common spam text inside
+                            Words found:
+                            "stock" in 2 lines
+                            "investor" in 1 lines
+                            "company" in 1 lines
+                            "price" in 2 lines
+                            "trade" in 1 lines
+                            "service" in 1 lines
+                            (8 word occurrences found)
+
+animated-gif.eml: Contains an animated gif with four frames. Both with default settings and with "focr_gif_max_frames 3" this should output:
+
+  10 FUZZY_OCR              BODY: Mail contains an image with common spam text inside
+                            Words found:
+                            "stock" in 2 lines
+                            "company" in 3 lines
+                            "trade" in 1 lines
+                            "penis" in 1 lines
+                            "growth" in 1 lines
+                            (8 word occurrences found)
+
+Note: Please verify that this is the output both with the setting mentioned and without, because with this setting, a different test is used.
+
+jpeg.eml: Contains a jpeg file. Output should show:
+
+ 6.0 FUZZY_OCR              BODY: Mail contains an image with common spam text inside
+                            Words found:
+                            "viagra" in 2 lines
+                            "cialis" in 1 lines
+                            "levitra" in 1 lines
+                            (4 word occurrences found)
+
+png.eml: Contains a png file. Output should show:
+
+  24 FUZZY_OCR              BODY: Mail contains an image with common spam text inside
+                            Words found:
+                            "stock" in 1 lines
+                            "investor" in 3 lines
+                            "company" in 2 lines
+                            "money" in 1 lines
+                            "buy" in 1 lines
+                            "price" in 6 lines
+                            "trade" in 2 lines
+                            "service" in 2 lines
+                            "software" in 2 lines
+                            "levitra" in 1 lines
+                            "legal" in 1 lines
+                            (22 word occurrences found)

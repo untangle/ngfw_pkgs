@@ -1,0 +1,87 @@
+This is the FuzzyOcr Frequently Asked Questions (FAQ). Please read it before sending any support requests :)
+
+
+Question 1:  I've installed FuzzyOcr plugin according to the INSTALL instructions,
+             but it doesn't seem to do anything, what can I do?
+
+Answer 1:    Try running FuzzyOcr on the samples provided within this tarball,
+             or download them seperately from the download page.
+             The archive contains a README file with instructions to test.
+
+
+Question 2:  I've installed FuzzyOcr plugin according to the INSTALL instructions,
+             and I want to see if it is all working correctly.
+
+Answer 2:    See Answer 1.
+ 
+ 
+Question 3:  I've ran SA on the samples, but FuzzyOcr isn't doing anything.
+
+Answer 3:    First of all, enable the debug mode, setting focr_verbose 2 in the config file.
+             Also make sure, that the logfile specified in the config file is writable.
+             Then run one of the samples, and then check the logfile for messages indicating
+             errors. See the remaining questions if you can't resolve an error message.
+
+Question 4:  My installation is working but I'm still getting image spam, what can I do?
+
+Answer 4:    There are several steps you can try, to get rid of remaining image spam:
+                - Save the image, if it is a gif file, analyze wether it is animated/interlaced or normal.
+                - On a normal picture, run gocr -i filename
+                  Check the output, if it looks garbage only (i.e. even with a bit of approximation, there is no word the plugin could match)
+                  then you need to try different settings, try experimenting with the -l setting, if the image is noisy, try the -d parameter,
+                  experiment with the values. If you get good results and are getting this kind of spam a lot, then add this setting
+                  to your scansets.
+                  Also make sure, that you have enough keywords for this kind of spam in your wordlist.
+                - If you fail to get a usable result with gocr alone, try involving pnm processors, like pnmnorm, pnmquant or pnminvert.
+                  There are no limits in what you can involve in a scanset to get text from a pnm file.
+                  You can even use a commercial software, although things like that were never tested.
+                  In case you find scansets which generally improve the recognition rate, please send them to the mailing list.
+                - If even that fails, you can still add the md5 sum to the md5 database manually, if you are getting this image often.
+
+Question 5:  I'm often getting false positives because mails contain screenshots, what can I do?
+
+Answer 5:    There are some things you can try:
+                - Decrease the focr_threshold value to 0.2 or 0.21, that makes the matching more exactly.
+                - Check if the false positives are caused only by specific words on your wordlist and remove these error prone words.
+
+Question 6:  I'm using Redhat or a Redhat based distribution and all my gocr results look bad.
+
+Answer 6:    On Redhat based systems, some RPMs/SRPMs are built incorrectly with the parameter "--with-netpbm=no.
+             This is wrong, you need to make sure that you have a gocr build compiled WITH netpbm support.
+
+Question 7:  My gocr segfaults on some pictures.
+
+Answer 7:    Please patch your gocr source with the patch available on my download page and rebuild it.
+
+Question 8:  My giftext segfaults on some pictures.
+
+Answer 8:    Please patch your giftext source with the patch available on my download page and rebuild it.
+
+Question 9:  I'm getting "Failed to open pipe to external programs with pipe command..."
+
+Answer 9:    This indicates a failure in opening the pipe itself, most likely this is caused by a missing binary.
+
+Question 10:  I am using MailScanner and I'm getting "Unexpected error in pipe to external programs...."
+              with the graphic tools pipes (like jpegtopnm failing).
+
+Answer 10:    MailScanner by default only passes the first 30kb of the mail to SpamAssassin.
+              Sometimes, this causes the image to be truncated in the middle if it is bigger.
+              The only way to fix this at the moment is disabling this option in MailScanner (see your documentation).
+
+Question 10:  I'm getting "Unexpected error in pipe to external programs...."
+
+Answer 11:    This indicates a failure in the pipe somewhere, most likely this is caused by a missing binary.
+             Also, if a program within the executed chain fails, this will cause such an error.
+             If you get this only rarely on some specific mails, then can be caused by extremely broken images.
+             To find out which binary fails, get the picture which causes the error, and run the chain of programs
+             manually over the picture. You can do this step by step and check for error messages then.
+             If you get pictures that cause such errors in the program chain, please send them to me.
+
+Question 12: I'm getting "Skipping scanset "xyz" because of errors, trying next...",
+             what does that mean?
+
+Answer 12:   This indicates that the scanset command "xyz" failed, either because a program
+             in the scanset was missing, or produced an error. This doesn't need to be your fault,
+             especially with the pnmquant scanset, this can happen with some images.
+             This is only critical if you get it for every scanset, that most likely indicates that
+             your gocr path is wrong or something else is wrong with the gocr binary (check Question 7). 
