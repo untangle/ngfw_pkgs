@@ -1,3 +1,9 @@
+fuzzyocr-ut (2.3b-2) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@bebe.metavize.com>  Tue,  6 Mar 2007 14:28:40 -0800
+
 fuzzyocr-ut (2.3b-1) stable; urgency=low
 
   * Initial release.
