@@ -1,0 +1,9 @@
+#! /bin/sh
+
+rm -f /etc/mail/spamassassin/FuzzyOcr.*
+rm -f /usr/share/perl5/Mail/SpamAssassin/Plugin/FuzzyOcr.pm
+
+# reload SA
+/etc/init.d/spamassassin reload
+
+exit 0
