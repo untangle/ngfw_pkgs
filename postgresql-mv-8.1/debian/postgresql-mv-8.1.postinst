@@ -1,0 +1,51 @@
+#!/bin/sh
+
+PG_ETC=/etc/postgresql/8.1/main
+PG_INIT=/etc/init.d/postgresql-8.1
+# PG_HOME=/usr/lib/postgresql
+# DB_DIR=/var/lib/postgres/data
+
+# The tuning depends on the memory available.  We have settings for >= 2Gig, >= 1Gig,
+# and < 1Gig.
+MEM=$(awk '/MemTotal/ { print $2 }' < /proc/meminfo)
+if [ $MEM -gt 2000000 ] ; then
+  SHARED_BUFFERS=10000
+  WORK_MEM=32768
+  MAINTENANCE_MEM=131072
+  EFFECTIVE_CACHE_SIZE=30000
+elif [ $MEM -gt 1000000 ] ; then
+  SHARED_BUFFERS=3000
+  WORK_MEM=16384
+  MAINTENANCE_MEM=65536
+  EFFECTIVE_CACHE_SIZE=9000
+else
+  SHARED_BUFFERS=2000
+  WORK_MEM=4096
+  MAINTENANCE_MEM=32768
+  EFFECTIVE_CACHE_SIZE=3000
+fi
+
+# Access
+sed -i -e 's/\(local.*all.*postgres.*\)\(ident.*sameuser\)/\1trust/' $PG_ETC/pg_hba.conf
+sed -i -e 's/\(local.*all.*all.*\)\(ident.*sameuser\)/\1trust/' $PG_ETC/pg_hba.conf
+sed -i -e 's/\(host.*all.*all.*127.0.0.1\/32.*\)\(md5\)/\1trust/' $PG_ETC/pg_hba.conf
+sed -i -e 's/\(host.*all.*all.*::1\/128.*\)\(md5\)/\1trust/' $PG_ETC/pg_hba.conf
+
+# Features
+sed -i -e "s/[# ]*autovacuum *=.*/autovacuum = off/" $PG_ETC/postgresql.conf
+sed -i -e "s/[# ]*stats_start_collector *=.*/stats_start_collector = on/" $PG_ETC/postgresql.conf
+sed -i -e "s/[# ]*stats_command_string *=.*/stats_command_string = on/" $PG_ETC/postgresql.conf
+sed -i -e "s/[# ]*stats_row_level *=.*/stats_row_level = on/" $PG_ETC/postgresql.conf
+sed -i -e "s/[# ]*constraint_exclusion *=.*/constraint_exclusion = on/" $PG_ETC/postgresql.conf
+sed -i -e "s/[# ]*add_missing_from *=.*/add_missing_from = on/" $PG_ETC/postgresql.conf
+
+# Sizes
+sed -i -e "s/[# ]*shared_buffers *=.*/shared_buffers = ${SHARED_BUFFERS}/" $PG_ETC/postgresql.conf
+sed -i -e "s/[# ]*work_mem *=.*/work_mem = ${WORK_MEM}/" $PG_ETC/postgresql.conf
+sed -i -e "s/[# ]*maintenance_work_mem *=.*/maintenance_work_mem = ${MAINTENANCE_MEM}/" $PG_ETC/postgresql.conf
+sed -i -e "s/[# ]*effective_cache_size *=.*/effective_cache_size = ${EFFECTIVE_CACHE_SIZE}/" $PG_ETC/postgresql.conf
+
+# Default Schema Path
+sed -i -e "s/[# ]*search_path *=.*/search_path = 'public,settings,events'/" $PG_ETC/postgresql.conf
+
+$PG_INIT restart || true

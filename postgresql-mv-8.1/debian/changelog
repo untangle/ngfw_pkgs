@@ -1,0 +1,12 @@
+postgresql-mv-8.1 (0-2) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@bebe.metavize.com>  Mon,  5 Mar 2007 19:09:38 -0800
+
+postgresql-mv-8.1 (0-1) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@untangle.com>  Tue,  8 Feb 2007 20:21:25 -0800
+
