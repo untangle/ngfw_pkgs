@@ -80,26 +80,24 @@ class SSHPlugin < Plugin
 
   def downloadKey(m, params)
     m.reply "Downloading key..."
-    licenseKey = File.open(@@ACTIVATION_KEY_FILE).read()
+    licenseKey = File.open(@@ACTIVATION_KEY_FILE).read.strip
     # FIXME: don't hardcode URL
-    http = Net::HTTP.new(@@HOST, 443)
-    http.use_ssl = true
+    myHttp = Net::HTTP.new(@@HOST, 443)
+    myHttp.use_ssl = true
 
     begin
-      http.start { |http|
-        # FIXME: don't hardcode URL
-        request = Net::HTTP::Get.new("#{@@CGI_URL}#{licenseKey}")
-        response = http.request(request)
-
-        if response.kind_of?(Net::HTTPSuccess)
-          tmpFile = getTmpFilePath('_archive_')
-          File.open(tmpFile, 'wb').write(response.body)
-          system "cd /home/#{@@USER} && tar xf #{tmpFile}"
-          m.reply "Key succesfully downloaded"
-        else
-          raise Exception.new(response.body)
-        end
+      response = myHttp.start { |http|
+        http.get("#{@@CGI_URL}#{licenseKey}")
       }
+
+      if response.kind_of?(Net::HTTPSuccess)
+        tmpFile = getTmpFilePath('_archive_')
+        File.open(tmpFile, 'wb').write(response.body)
+        system "cd /home/#{@@USER} && tar xf #{tmpFile}"
+        m.reply "Key succesfully downloaded"
+      else
+        raise Exception.new(response.body)
+      end
     rescue Exception => e
       m.reply "Key couldn't be downloaded:"
       handleException m, e
