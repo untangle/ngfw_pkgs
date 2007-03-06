@@ -104,7 +104,10 @@ class SSHPlugin < Plugin
       m.reply "Key couldn't be downloaded:"
       handleException m, e
     ensure
-      File.delete(tmpFile)
+      begin
+        File.delete(tmpFile)
+      rescue
+      end
     end
   end
   
