@@ -1,13 +1,26 @@
 #!/bin/sh
 
+# The tuning depends on the memory available.  We have settings for >= 2Gig, >= 1Gig,
+# and < 1Gig.
+MEM=$(awk '/MemTotal/ { print $2 }' < /proc/meminfo)
+if [ $MEM -gt 2000000 ] ; then
+    MAX_CHILDREN=8
+    MAX_SPARE=3
+elif [ $MEM -gt 1000000 ] ; then
+    MAX_CHILDREN=5
+    MAX_SPARE=2
+else
+    MAX_CHILDREN=3
+    MAX_SPARE=1
+fi
+
 # setting up the user account we use to run the daemons
 adduser --gecos "" --firstuid 10000 --disabled-password spamc 2>/dev/null
 chown -R spamc:spamc /home/spamc
 
-# XXX moved /etc/default/spamassassin updates to database settings schema
-## enable in /etc/default/spamassassin
-#sed -i "s/^ENABLED=.*/ENABLED=1/" /etc/default/spamassassin
-#sed -i 's/^OPTIONS=.*/OPTIONS="--create-prefs --round-robin --max-children 5 --helper-home-dir"/' /etc/default/spamassassin
+# enable in /etc/default/spamassassin
+sed -i "s/^ENABLED=.*/ENABLED=1/" /etc/default/spamassassin
+sed -i "s/^OPTIONS=.*/OPTIONS=\"--create-prefs --max-children $MAX_CHILDREN --max-spare $MAX_SPARE --helper-home-dir\"/" /etc/default/spamassassin
 
 # XXX moved /etc/spamassassin/local.cf overwrites to database settings schema
 ## turn off stuff in local.cf
@@ -23,6 +36,14 @@ chown -R spamc:spamc /home/spamc
 #clear_report_template
 #report _SUMMARY_
 #EOF
+
+saVersion=$(dpkg-query --showformat='${Version}\n' -W spamassassin)
+
+if dpkg --compare-versions $saVersion lt 3.1.4 ; then
+  perl -i -npe 's/.*focr_pre314.*/focr_pre314 1/' /etc/mail/spamassassin/FuzzyOcr.cf
+else
+  perl -i -npe 's/.*focr_pre314.*/#focr_pre314 1/' /etc/mail/spamassassin/FuzzyOcr.cf
+fi
 
 # start spamassassin
 /etc/init.d/spamassassin restart &> /dev/null &
