@@ -1,9 +1,37 @@
 #!/bin/sh
 
 PG_ETC=/etc/postgresql
-PG_HOME=/usr/lib/postgresql
 PG_INIT=/etc/init.d/postgresql
-DB_DIR=/var/lib/postgres/data
+#PG_HOME=/usr/lib/postgresql
+#DB_DIR=/var/lib/postgres/data
+
+# The tuning depends on the memory available.  We have settings for >= 2Gig, >= 1Gig,
+# and < 1Gig.
+MEM=$(awk '/MemTotal/ { print $2 }' < /proc/meminfo)
+if [ $MEM -gt 2000000 ] ; then
+  SHARED_BUFFERS=10000
+  SORT_MEM=32768
+  VACUUM_MEM=131072
+  EFFECTIVE_CACHE_SIZE=40000
+  # Also in this case we need to adjust the shmmax in the kernel
+  MAXLINE="kernel.shmmax=134217728"
+  if [ -z "`grep kernel.shmmax /etc/sysctl.conf`" ] ; then
+      echo $MAXLINE >> /etc/sysctl.conf
+  else
+    sed -i -e "s|^.*kernel.shmmax.*|${MAXLINE}|" /etc/sysctl.conf
+  fi
+  /sbin/sysctl -w $MAXLINE
+elif [ $MEM -gt 1000000 ] ; then
+  SHARED_BUFFERS=3000
+  SORT_MEM=16384
+  VACUUM_MEM=65536
+  EFFECTIVE_CACHE_SIZE=9000
+else
+  SHARED_BUFFERS=2000
+  SORT_MEM=4096
+  VACUUM_MEM=32768
+  EFFECTIVE_CACHE_SIZE=3000
+fi
 
 # Allow all local access
 sed -e "s/\#\(local.*all.*all.*trust\)/\1/" -i $PG_ETC/pg_hba.conf
@@ -11,9 +39,10 @@ sed -e "s/\#\(host.*all.*all.*127.0.0.1.*255.255.255.255.*trust\)/\1/" -i $PG_ET
 sed -e "s/.*virtual_host.*=.*/virtual_host='127.0.0.1'/" -i $PG_ETC/postgresql.conf
 
 # Tune memory usage & query optimizer
-sed -e "s/.*shared_buffers.*=.*/shared_buffers=3000/" -i $PG_ETC/postgresql.conf
-sed -e "s/.*sort_mem.*=.*/sort_mem=8192/" -i $PG_ETC/postgresql.conf
-sed -e "s/.*effective_cache_size.*=.*/effective_cache_size=2000/" -i $PG_ETC/postgresql.conf
+sed -i -e "s/[# ]*shared_buffers *=.*/shared_buffers = ${SHARED_BUFFERS}/" $PG_ETC/postgresql.conf
+sed -i -e "s/[# ]*sort_mem *=.*/sort_mem = ${SORT_MEM}/" $PG_ETC/postgresql.conf
+sed -i -e "s/[# ]*vacuum_mem *=.*/vacuum_mem = ${VACUUM_MEM}/" $PG_ETC/postgresql.conf
+sed -i -e "s/[# ]*effective_cache_size *=.*/effective_cache_size = ${EFFECTIVE_CACHE_SIZE}/" $PG_ETC/postgresql.conf
 
 # Turn off automatic vacuuming (now done nightly just after rollup, before reporting)
 sed -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" -i $PG_ETC/postmaster.conf
