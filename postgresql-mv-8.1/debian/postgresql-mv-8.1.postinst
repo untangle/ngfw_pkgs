@@ -12,7 +12,15 @@ if [ $MEM -gt 2000000 ] ; then
   SHARED_BUFFERS=10000
   WORK_MEM=32768
   MAINTENANCE_MEM=131072
-  EFFECTIVE_CACHE_SIZE=30000
+  EFFECTIVE_CACHE_SIZE=40000
+  # Also in this case we need to adjust the shmmax in the kernel
+  MAXLINE="kernel.shmmax=134217728"
+  if [ -z "`grep kernel.shmmax /etc/sysctl.conf`" ] ; then
+      echo $MAXLINE >> /etc/sysctl.conf
+  else
+    sed -i -e "s|^.*kernel.shmmax.*|${MAXLINE}|" /etc/sysctl.conf
+  fi
+  /sbin/sysctl -w $MAXLINE
 elif [ $MEM -gt 1000000 ] ; then
   SHARED_BUFFERS=3000
   WORK_MEM=16384
