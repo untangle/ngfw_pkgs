@@ -7,6 +7,7 @@ Standards-Version: 3.5.2
 
 Package: postgresql-mv
 Architecture: any
+Provides: postgresql-server-mv
 Depends: postgresql
 Description: Untangle Postgres wrapper package
- The Untangle Postgres config.
+ The Untangle Postgres config for Postgres 7.4
