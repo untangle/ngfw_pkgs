@@ -32,15 +32,26 @@ def initializeChrootedAptFiles():
   open(STATUS, 'w')
   
   # create sources.list file
-  open(SOURCES, 'w').write('''deb http://linux.csua.berkeley.edu/debian stable main contrib non-free
+  open(SOURCES, 'w').write('''
+deb http://linux.csua.berkeley.edu/debian stable main contrib non-free
+deb http://security.debian.org/ sarge/updates main contrib non-free
+#php5
+deb http://people.debian.org/~dexter php5 woody
+# backports
 deb http://www.backports.org/debian sarge-backports main contrib non-free
-deb http://10.0.0.44/testing testing untangle
-deb http://10.0.0.44/dev testing untangle\n''')
+# volatile
+deb http://debian.domainmail.org/debian-volatile sarge/volatile main contrib non-free
+#deb http://10.0.0.44/testing testing untangle
+#deb http://10.0.0.44/dev testing untangle\n''')
 
   # create preferences files
-  open(PREFS, 'w').write('''Package: *
+  open(PREFS, 'w').write('''
+Package: *
 Pin: origin 10.0.0.44
 Pin-Priority: 700
+Package: *
+Pin: origin debian.domainmail.org
+Pin-Priority: 680
 Package: *
 Pin: origin www.backports.org
 Pin-Priority: 650
@@ -53,7 +64,7 @@ def initializeChrootedApt():
   apt_pkg.InitConfig()
   apt_pkg.InitSystem()
   apt_pkg.Config.Set("Dir::Etc::sourcelist", SOURCES)
-  apt_pkg.Config.Set("Dir::Etc::preferences", PREFS)
+#  apt_pkg.Config.Set("Dir::Etc::preferences", PREFS)
   apt_pkg.Config.Set("Dir::Cache::archives", ARCHIVES)
   apt_pkg.Config.Set("Dir::State", STATE)
   apt_pkg.Config.Set("Dir::State::Lists",  LISTS)
@@ -61,9 +72,6 @@ def initializeChrootedApt():
 
 # this needs to be called before the classes are declared, since the static
 # variables in them are initialized right away
-#if not os.path.isdir(TMP_DIR):
-#  print "Initializing chrooted apt"
-#  initializeChrootedAptFiles()
 
 print "Initializing chrooted apt"
 initializeChrootedAptFiles()
@@ -82,9 +90,10 @@ class Package:
   depcache   = apt_pkg.GetDepCache(pkgCache)
 
   dependsKey = 'Depends'
-
-  basePackages = ( 'libc6', 'debconf', 'libx11-6', 'xfree86-common',
-                   'debianutils', 'zlib1g' )
+  basePackages = ()
+  
+#  basePackages = ( 'libc6', 'debconf', 'libx11-6', 'xfree86-common',
+#                   'debianutils', 'zlib1g' )
 
   def __init__(self, name, version = None, fileName = None):
     self.name     = name
@@ -108,7 +117,7 @@ class VersionedPackage(Package):
     Package.__init__(self, name, version, fileName)
 
     # FIXME
-    self.virtual               = False
+    self.isVirtual               = False
     self.foundDeps             = False
     self.foundAllDeps          = False
 
@@ -119,6 +128,8 @@ class VersionedPackage(Package):
         self._record           = self._package._records.Record
         self._section          = apt_pkg.ParseSection(self._record)
         self.version           = self._section['Version']
+        self.isRequired        = self._section['Priority'] == 'required'
+        self.isImportant       = self._section['Priority'] == 'important'
         self.fileName          = self._sanitizeName(self._section["Filename"])
         
         self._versionedPackage = Package.depcache.GetCandidateVer(\
@@ -129,7 +140,7 @@ class VersionedPackage(Package):
         self.url = indexFile.ArchiveURI(self.fileName)
       except KeyError: # FIXME
         print "ooops, couldn't find package %s" % self.name
-        self.virtual = True
+        self.isVirtual = True
 
   def _sanitizeName(self, name):
     return name.replace('%3a', ':')
@@ -144,7 +155,7 @@ class VersionedPackage(Package):
     if self.foundDeps:
       return self.deps
     
-    if self.virtual:
+    if self.isVirtual or self.isRequired or self.isImportant:
       return []
     deps = self._versionedPackage.DependsList
     if Package.dependsKey in deps:
@@ -175,11 +186,11 @@ class VersionedPackage(Package):
     return deps
 
   def getAllDeps(self):
-    if self.virtual:
+    if self.isVirtual:
       return []
     if not self.foundAllDeps:
       self.allDeps = self._getAllDeps()
-      self.allDeps.add(self._package)
+      self.allDeps.add(DepPackage(self.name))
       self.foundAllDeps = True
     return self.allDeps
 
@@ -268,26 +279,33 @@ class UntangleStore:
 us = UntangleStore(os.path.join(sys.path[0],
                                 '../other'))
 
-pkg = VersionedPackage(sys.argv[1])
+for arg in sys.argv[1:]:
+  pkg = VersionedPackage(arg)
 
-for p in pkg.getAllDeps():
-  versionedPackage = VersionedPackage(p.name)
-  toGet = False
+  for p in pkg.getAllDeps():
+    try:
+      versionedPackage = VersionedPackage(p.name)
+      toGet = False
 
-  if not us.has(versionedPackage):
-    print "Package %s is missing" % p.name
-    if not versionedPackage.virtual:
-      toGet = True    
-  elif us.has(versionedPackage) and not us.get(versionedPackage).satisfies(p):
-    print "Version of %s doesn't satisfy dependency (%s)" % (us.get(versionedPackage),
-                                                             p)
-    print "Downloading new one, but you probably want to remove the older one (%s)" % us.getByName(p.name)
-    toGet = True
-#  else:
-#    print "%s is in the store and satisfies the dependency" % us.get(versionedPackage)
-    
-  if toGet:
-    versionedPackage.download()
-    us.add(versionedPackage)
+      if versionedPackage.isVirtual or versionedPackage.isRequired or versionedPackage.isImportant:
+        continue
 
-#os.system('rm -fr ' + TMP_DIR)
+      if not us.has(versionedPackage):
+        print "Package %s is missing" % p.name
+        toGet = True    
+      elif us.has(versionedPackage) and not us.get(versionedPackage).satisfies(p):
+        print "Version of %s doesn't satisfy dependency (%s)" % (us.get(versionedPackage), p)
+        print "Downloading new one, but you probably want to remove the older one (%s)" % us.getByName(p.name)
+        toGet = True
+
+      if toGet:
+        versionedPackage.download()
+        us.add(versionedPackage)
+
+    except:
+      print p, type(p), p.name, dir(p)
+      sys.exit(1)
+  #  else:
+  #    print "%s is in the store and satisfies the dependency" % us.get(versionedPackage)
+
+os.system('rm -fr ' + TMP_DIR)
