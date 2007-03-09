@@ -1,3 +1,9 @@
+clamav-mv (0-10) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@bebe.metavize.com>  Fri,  9 Mar 2007 15:32:51 -0800
+
 clamav-mv (0-9) stable; urgency=low
 
   * auto build
