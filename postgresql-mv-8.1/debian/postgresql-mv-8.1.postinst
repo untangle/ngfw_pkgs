@@ -52,8 +52,12 @@ sed -i -e "s/[# ]*shared_buffers *=.*/shared_buffers = ${SHARED_BUFFERS}/" $PG_E
 sed -i -e "s/[# ]*work_mem *=.*/work_mem = ${WORK_MEM}/" $PG_ETC/postgresql.conf
 sed -i -e "s/[# ]*maintenance_work_mem *=.*/maintenance_work_mem = ${MAINTENANCE_MEM}/" $PG_ETC/postgresql.conf
 sed -i -e "s/[# ]*effective_cache_size *=.*/effective_cache_size = ${EFFECTIVE_CACHE_SIZE}/" $PG_ETC/postgresql.conf
+sed -i -e "s/[# ]*checkpoint_segments *=.*/checkpoint_segments = 12/" $PG_ETC/postgresql.conf
 
 # Default Schema Path
 sed -i -e "s/[# ]*search_path *=.*/search_path = 'public,settings,events'/" $PG_ETC/postgresql.conf
 
 $PG_INIT restart || true
+
+# Ensure plpgsql enabled
+createlang -U postgres plpgsql mvvm || true

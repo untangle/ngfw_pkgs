@@ -43,6 +43,7 @@ sed -i -e "s/[# ]*shared_buffers *=.*/shared_buffers = ${SHARED_BUFFERS}/" $PG_E
 sed -i -e "s/[# ]*sort_mem *=.*/sort_mem = ${SORT_MEM}/" $PG_ETC/postgresql.conf
 sed -i -e "s/[# ]*vacuum_mem *=.*/vacuum_mem = ${VACUUM_MEM}/" $PG_ETC/postgresql.conf
 sed -i -e "s/[# ]*effective_cache_size *=.*/effective_cache_size = ${EFFECTIVE_CACHE_SIZE}/" $PG_ETC/postgresql.conf
+sed -i -e "s/[# ]*checkpoint_segments *=.*/checkpoint_segments = 12/" $PG_ETC/postgresql.conf
 
 # Turn off automatic vacuuming (now done nightly just after rollup, before reporting)
 sed -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" -i $PG_ETC/postmaster.conf
@@ -51,3 +52,6 @@ sed -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" -i $PG_ETC/postmaster.conf
 sed -e "s/.*search_path.*=.*/search_path = 'public,settings,events'/" -i $PG_ETC/postgresql.conf
 
 $PG_INIT restart || true
+
+# Ensure plpgsql enabled
+createlang -U postgres plpgsql mvvm || true
