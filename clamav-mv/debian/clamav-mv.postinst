@@ -7,7 +7,7 @@ TCPAddr 127.0.0.1
 TCPSocket 3310 
 EOF
 
-sed -i -e "s/[# ]*LocalSocket.*/#LocalSocket /var/run/clamav/clamd.ctl|" $CLAMAV_CONF_FILE
+sed -i -e "s|[# ]*LocalSocket.*|#LocalSocket /var/run/clamav/clamd.ctl|" $CLAMAV_CONF_FILE
 
 if [ ! -f /var/run/clamav/clamd.pid ] ; then
     /etc/init.d/clamav-daemon start
