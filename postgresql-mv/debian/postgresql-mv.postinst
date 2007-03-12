@@ -52,6 +52,3 @@ sed -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" -i $PG_ETC/postmaster.conf
 sed -e "s/.*search_path.*=.*/search_path = 'public,settings,events'/" -i $PG_ETC/postgresql.conf
 
 $PG_INIT restart || true
-
-# Ensure plpgsql enabled
-createlang -U postgres plpgsql mvvm || true
