@@ -1,3 +1,9 @@
+fuzzyocr-ut (2.3b-6) stable; urgency=low
+
+  * auto build
+
+ -- root <root@bebe.metavize.com>  Tue, 13 Mar 2007 11:01:02 -0700
+
 fuzzyocr-ut (2.3b-5) stable; urgency=low
 
   * auto build
