@@ -1,3 +1,9 @@
+spamc-mv (0-26) stable; urgency=low
+
+  * auto build
+
+ -- root <root@bebe.metavize.com>  Tue, 13 Mar 2007 11:53:12 -0700
+
 spamc-mv (0-25) stable; urgency=low
 
   * auto build
