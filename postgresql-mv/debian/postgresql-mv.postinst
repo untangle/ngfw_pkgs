@@ -8,7 +8,7 @@ PG_INIT=/etc/init.d/postgresql
 # The tuning depends on the memory available.  We have settings for >= 2Gig, >= 1Gig,
 # and < 1Gig.
 MEM=$(awk '/MemTotal/ { print $2 }' < /proc/meminfo)
-if [ $MEM -gt 2000000 ] ; then
+if [ $MEM -gt 1900000 ] ; then
   SHARED_BUFFERS=10000
   SORT_MEM=32768
   VACUUM_MEM=131072
@@ -21,7 +21,7 @@ if [ $MEM -gt 2000000 ] ; then
     sed -i -e "s|^.*kernel.shmmax.*|${MAXLINE}|" /etc/sysctl.conf
   fi
   /sbin/sysctl -w $MAXLINE
-elif [ $MEM -gt 1000000 ] ; then
+elif [ $MEM -gt 900000 ] ; then
   SHARED_BUFFERS=3000
   SORT_MEM=16384
   VACUUM_MEM=65536
