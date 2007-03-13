@@ -2,6 +2,8 @@
 
 NAT_CACHE_DEB="/var/lib/mvvm/nat-transform.deb"
 
+. /etc/default/mvvm
+
 # restore database
 dropdb -U postgres mvvm
 
@@ -24,10 +26,11 @@ INSERT INTO tr_nat_settings VALUES (nextval('hibernate_sequence'), 1, 0, true, n
 EOF
 
 # remove files
-rm -f /usr/share/metavize/activation.key
 rm -f /usr/share/metavize/conf/networking.sh
 rm -f /usr/share/metavize/conf/timezone
 rm -f /usr/share/metavize/conf/keystore
+# need to preserve the key (bug #2510)
+mv -f $ACTIVATION_KEY_FILE $ACTIVATION_KEY_FILE_TMP
 rm -rf /usr/share/metavize/conf/openvpn
 rm -rf /usr/share/metavize/quarantine
 rm -rf /etc/openvpn
