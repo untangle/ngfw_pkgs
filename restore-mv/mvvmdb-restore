@@ -59,7 +59,7 @@ usb_mount()
             t_usb_dev=`lookupUsbDevice`
             if [ -n "${t_usb_dev}" ]; then
                 umount ${MOUNT_POINT} || true
-                mount ${t_usb_dev} ${MOUNT_POINT} && t_sucess=true
+                mount ${t_usb_dev} ${MOUNT_POINT} && t_success=true
             fi
             ;;
         1) # Cancel
@@ -123,15 +123,7 @@ restore()
 
 backup()
 {
-    outdir=$1
-
-    datestamp=$(date '+%Y%m%d%H%M')
-    dumpfile=$outdir/mvvmdb-$datestamp.gz
-    tarfile=$outdir/files-$datestamp.tar.gz
-    instlist=$outdir/installed-$datestamp
-
-    # backup new image in outdir
-    /usr/bin/backup-mv $dumpfile $tarfile $instfile
+    /usr/bin/backup-mv $1
 }
 
 restore_menu()
