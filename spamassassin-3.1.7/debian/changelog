@@ -1,3 +1,9 @@
+spamassassin (3.1.7-2~ut-3) unstable; urgency=low
+
+  * auto build
+
+ -- root <root@bebe.metavize.com>  Thu, 15 Mar 2007 16:02:33 -0700
+
 spamassassin (3.1.7-2~ut-2) unstable; urgency=low
 
   * auto build
