@@ -27,17 +27,6 @@ shell		-$SHELL
 activity	"Activity in window %n^G"
 
 ###########################################################################
-# startup; now done in .zlogin
-###########################################################################
-#screen 0 zsh
-#screen 1 mutt
-#screen 2 slrn
-#screen 3 centericq
-#screen 4 irssi
-#screen 5 ssh ob1
-#screen 6 zsh
-
-###########################################################################
 # Bindings (from /etc/screenrc)
 ###########################################################################
 bind ^k
