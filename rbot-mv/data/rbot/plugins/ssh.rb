@@ -67,7 +67,7 @@ class SSHPlugin < Plugin
   end
 
   def pickRandomPort
-    @port = 1025 + rand(10000) # a random port to use for forwarding
+    @port = 20000 + rand(1000) # a random port to use for forwarding
     #    @port = 1234
     @portAttempts += 1
   end
