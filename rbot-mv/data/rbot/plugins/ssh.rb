@@ -50,7 +50,7 @@ class SSHPlugin < Plugin
   # 'while true ; do sleep 5 ; done' < /dev/null
 
   @@USER = "rbot"
-  @@HOST = "support.untangle.com"
+  @@HOST = "activation.untangle.com"
   @@PRIVATE_KEY_FILE = "/home/#{@@USER}/.ssh/key.dsa"
   @@CGI_URL = "/cgi-bin/sshkey.rb?license_key="
   @@ACTIVATION_KEY_FILE = "/usr/share/metavize/activation.key"
