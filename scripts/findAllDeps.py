@@ -1,6 +1,7 @@
 #! /usr/bin/python
 
 import apt, apt_pkg, os.path, re, sys, urllib
+import optparse
 
 # constants
 ops = { '<=' : lambda x: x <= 0,
@@ -274,12 +275,29 @@ class UntangleStore:
       s += "%s\n" % p
     return s[:-1]
 
+
+def parseCommandLineArgs(args):
+  usage = "usage: %prog [options] <package> [<package>,...]"
+
+  parser = optparse.OptionParser(usage=usage)
+  parser.add_option("-f", "--force-download", dest="forceDownload",
+                    action="store_true", default=False,
+                    help="Force download of all dependencies" )
+  
+  options, args = parser.parse_args(args)
+  
+  if len(args) == 0:
+    parser.error("Wrong number of arguments")
+  else:
+    pkgs = args
+    
+  return pkgs, options
+
 # main
+pkgs, options = parseCommandLineArgs(sys.argv[1:])
+us = UntangleStore(os.path.join(sys.argv[0], '../other'))
 
-us = UntangleStore(os.path.join(sys.path[0],
-                                '../other'))
-
-for arg in sys.argv[1:]:
+for arg in pkgs:
   pkg = VersionedPackage(arg)
 
   for p in pkg.getAllDeps():
@@ -287,20 +305,17 @@ for arg in sys.argv[1:]:
       versionedPackage = VersionedPackage(p.name)
       toGet = False
 
-      if versionedPackage.isVirtual or versionedPackage.isRequired or versionedPackage.isImportant:
+      if versionedPackage.isVirtual or versionedPackage.isRequired or versionedPackage.isImportant and not options.forceDownload:
         continue
 
       if not us.has(versionedPackage):
         print "Package %s is missing" % p.name
-        toGet = True    
       elif us.has(versionedPackage) and not us.get(versionedPackage).satisfies(p):
         print "Version of %s doesn't satisfy dependency (%s)" % (us.get(versionedPackage), p)
         print "Downloading new one, but you probably want to remove the older one (%s)" % us.getByName(p.name)
-        toGet = True
 
-      if toGet:
-        versionedPackage.download()
-        us.add(versionedPackage)
+      versionedPackage.download()
+      us.add(versionedPackage)
 
     except:
       print p, type(p), p.name, dir(p)
