@@ -6,6 +6,8 @@ USER=rbot
 
 [ -x $DAEMON ] || exit 0
 
+unset SSH_AUTH_SOCK
+
 case "$1" in
   start)
     echo -n "Starting $DAEMON: "
