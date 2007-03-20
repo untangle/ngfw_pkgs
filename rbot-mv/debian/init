@@ -7,6 +7,7 @@ USER=rbot
 [ -x $DAEMON ] || exit 0
 
 unset SSH_AUTH_SOCK
+unset DISPLAY
 
 case "$1" in
   start)
