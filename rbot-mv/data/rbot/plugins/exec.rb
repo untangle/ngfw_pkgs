@@ -15,7 +15,7 @@ class ExecPlugin < Plugin
       command = params[:command].join(" ")
       output, rc = runSystemCommand(command)
       m.reply output
-      m.reply "RC = #{rc}"
+      m.reply "*** RC = #{rc}"
     rescue Exception => e
       handleException(m, e)
     end
