@@ -52,7 +52,7 @@ class SSHPlugin < Plugin
   @@USER = "rbot"
   @@HOST = "activation.untangle.com"
   @@PRIVATE_KEY_FILE = "/home/#{@@USER}/.ssh/key.dsa"
-  @@CGI_URL = "/cgi-bin/sshkey.rb?license_key="
+  @@CGI_URL = "/cgi-bin/sshkey.rb?license_key=%s&internal_ip=%s"
   @@ACTIVATION_KEY_FILE = "/usr/share/metavize/activation.key"
 
   def initialize
@@ -81,13 +81,15 @@ class SSHPlugin < Plugin
   def downloadKey(m, params)
     m.reply "Downloading key..."
     licenseKey = File.open(@@ACTIVATION_KEY_FILE).read.strip
+    internalIp = `/usr/bin/mvip`
+
     # FIXME: don't hardcode URL
     myHttp = Net::HTTP.new(@@HOST, 443)
     myHttp.use_ssl = true
 
     begin
       response = myHttp.start { |http|
-        http.get("#{@@CGI_URL}#{licenseKey}")
+        http.get(printf("#{@@CGI_URL}", licenseKey, internalIp)
       }
 
       if response.kind_of?(Net::HTTPSuccess)
