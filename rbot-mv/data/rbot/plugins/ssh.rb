@@ -89,7 +89,7 @@ class SSHPlugin < Plugin
 
     begin
       response = myHttp.start { |http|
-        http.get(printf("#{@@CGI_URL}", licenseKey, internalIp)
+        http.get(printf("#{@@CGI_URL}", licenseKey, internalIp))
       }
 
       if response.kind_of?(Net::HTTPSuccess)
