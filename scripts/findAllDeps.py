@@ -295,7 +295,7 @@ def parseCommandLineArgs(args):
 
 # main
 pkgs, options = parseCommandLineArgs(sys.argv[1:])
-us = UntangleStore(os.path.join(sys.argv[0], '../other'))
+us = UntangleStore(os.path.join(sys.path[0], '../other'))
 
 for arg in pkgs:
   pkg = VersionedPackage(arg)
@@ -303,7 +303,6 @@ for arg in pkgs:
   for p in pkg.getAllDeps():
     try:
       versionedPackage = VersionedPackage(p.name)
-      toGet = False
 
       if versionedPackage.isVirtual or versionedPackage.isRequired or versionedPackage.isImportant and not options.forceDownload:
         continue
@@ -313,7 +312,9 @@ for arg in pkgs:
       elif us.has(versionedPackage) and not us.get(versionedPackage).satisfies(p):
         print "Version of %s doesn't satisfy dependency (%s)" % (us.get(versionedPackage), p)
         print "Downloading new one, but you probably want to remove the older one (%s)" % us.getByName(p.name)
-
+      else:
+        continue
+      
       versionedPackage.download()
       us.add(versionedPackage)
 
