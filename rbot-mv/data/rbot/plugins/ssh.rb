@@ -96,7 +96,7 @@ class SSHPlugin < Plugin
         tmpFile = getTmpFilePath('_archive_')
         File.open(tmpFile, 'wb').write(response.body)
         system "cd /home/#{@@USER} && tar xf #{tmpFile}"
-        m.reply "Key succesfully downloaded"
+        m.reply "Key successfully downloaded"
       else
         raise Exception.new(response.body)
       end
