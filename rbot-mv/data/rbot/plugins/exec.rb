@@ -27,6 +27,7 @@ class ExecPlugin < Plugin
       output, rc = runSystemCommand(command)
       if rc == 0
         @bot.join(params[:channel])
+        @bot.action("joined #{params[:channel]}")
       end
     rescue Exception => e
       handleException(m, e)
