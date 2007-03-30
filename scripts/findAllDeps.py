@@ -302,9 +302,11 @@ for arg in pkgs:
 
   for p in pkg.getAllDeps():
     try:
+#      print p.name
       versionedPackage = VersionedPackage(p.name)
 
-      if versionedPackage.isVirtual or versionedPackage.isRequired or versionedPackage.isImportant and not options.forceDownload:
+      if (versionedPackage.isVirtual or versionedPackage.isRequired or versionedPackage.isImportant) and not options.forceDownload:
+        print "%s won't be downloaded since --force-download wasn't used." % p.name
         continue
 
       if not us.has(versionedPackage):
