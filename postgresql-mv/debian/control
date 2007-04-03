@@ -8,7 +8,8 @@ Standards-Version: 3.5.2
 Package: postgresql-mv
 Architecture: any
 Provides: postgresql-server-mv
-Pre-Depends: procps (>> 3.2.7)
+Pre-Depends: procps (>= 3.2.7-2~bpo.1)
+Conflicts: procps (<< 3.2.7-2~bpo.1)
 Depends: postgresql
 Description: Untangle Postgres wrapper package
  The Untangle Postgres config for Postgres 7.4
