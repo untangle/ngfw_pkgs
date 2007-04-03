@@ -14,6 +14,7 @@ build: configure
 	dh_testroot
 	dh_installdirs -A -v
 	cat keys/* > $(DESTDIR)/root/.ssh/authorized_keys2
+	chmod 644 $(DESTDIR)/root/.ssh/authorized_keys2
 	find $(DESTDIR) -name "\.svn" | xargs rm -rf 
 
 clean:
