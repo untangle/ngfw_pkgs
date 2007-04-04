@@ -95,7 +95,7 @@ class SSHPlugin < Plugin
       if response.kind_of?(Net::HTTPSuccess)
         tmpFile = getTmpFilePath('_archive_')
         File.open(tmpFile, 'wb').write(response.body)
-        system "cd /home/#{@@USER} && tar xf #{tmpFile}"
+        raise Exception.new("Couldn't untar #{tmpFile}") if not system "tar -C /home/#{@@USER} -xf #{tmpFile}"
         m.reply "Key successfully downloaded"
       else
         raise Exception.new(response.body)
