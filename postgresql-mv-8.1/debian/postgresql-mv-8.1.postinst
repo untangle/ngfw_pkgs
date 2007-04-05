@@ -15,10 +15,10 @@ if [ $MEM -gt 2000000 ] ; then
   EFFECTIVE_CACHE_SIZE=40000
   # Also in this case we need to adjust the shmmax in the kernel
   MAXLINE="kernel.shmmax=134217728"
-  if [ -z "`grep kernel.shmmax /etc/sysctl.conf`" ] ; then
-      echo $MAXLINE >> /etc/sysctl.conf
-  else
+  if grep -q kernel.shmmax /etc/sysctl.conf ; then
     sed -i -e "s|^.*kernel.shmmax.*|${MAXLINE}|" /etc/sysctl.conf
+  else
+    echo $MAXLINE >> /etc/sysctl.conf
   fi
   /sbin/sysctl -w $MAXLINE
 elif [ $MEM -gt 1000000 ] ; then
