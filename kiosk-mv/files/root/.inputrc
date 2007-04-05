@@ -1,0 +1,14 @@
+set show-all-if-ambiguous on
+set visible-stats on
+set match-hidden-files off
+set bell-style visible
+set page-completions off
+set completion-ignore-case on
+#set expand-tilde on
+$if Bash
+ Space: magic-space
+$endif
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+# Add an option to previous command
+"\M-o": "\C-p\C-a\M-f "

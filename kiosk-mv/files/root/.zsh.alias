@@ -1,0 +1,75 @@
+alias -g DN='> /dev/null'
+alias -g 2DN='2> /dev/null'
+alias -g ADN='&> /dev/null'
+
+alias F='find'
+alias G='grep -E'
+alias H='head'
+alias M='more'
+alias RG='rgrep'
+alias S='sort'
+alias T='tail'
+
+alias add='awk "{s=s+\$1} END {print s}"'
+alias al='xautolock -time 5 -resetsaver -corners ++++ -cornerdelay 5 -cornerredelay &'
+alias aptsh='apt-cache show'
+alias c='cd ..'
+alias cp='cp -i'
+alias d='dirs -v'
+alias decodebase64='python -c "import base64, sys ; print base64.decodestring(sys.argv[1])"'
+alias dict='dict.sh'
+alias diff='diff -u'
+alias digs='dig +short'
+alias dos2unix="perl -i -pe 's/\r$//'"
+#alias evolution='psg evolution | nth 2 | xargs kill -9 2> /dev/null ; evolution 2> /dev/null &'
+alias feh='feh -Z -F -p'
+alias jed='emacs -nw'
+alias la='ls -a'
+alias ll='ls -hl'
+alias ls='ls -F'
+alias m='mount'
+alias more=$PAGER
+#alias mutt='xpop /usr/bin/mutt "mutt@`hostname`"'
+alias mv='mv -i'
+alias psall='ps aux -w -w'
+alias qiv='qiv --scale_down'
+alias r='s apt-get remove --purge'
+alias rm='rm -i'
+alias rmdir='/bin/rm -fr'
+alias sc='screen -R -D -A -r main'
+#alias sim='sim > /dev/null 2>&1'
+alias up='s apt-get update'
+alias tee='tee -a'
+alias top='top -s 1' # for non-linux
+alias wget-mirror='wget -r -nv -nH --no-parent'
+alias x='exit'
+alias xterm="${XTERM}"
+alias xterm-screen="${XTERM/&} -g 150x54 -e screen -R main -D -A &"
+alias wai='who am i'
+alias what="whence -f"
+alias zman='run-help'
+alias zmore='zless'
+
+# logging
+alias apachelogparser='logparser /var/www/logs/access_log ~/bin/apachelogparser.pl'
+alias apachelog='xpop apachelogparser apachelog -geometry 140x15 -sh 100'
+alias syslog='xpop "logparser /var/log/syslog ~/bin/syslogparser.pl" syslog -geometry 140x6+0-0 -sh 100'
+
+case $OSTYPE in
+  linux*)
+    apts() { apt-cache search -- $@ | sort }
+    [[ -x /usr/bin/aptitude ]] && alias apt-get=aptitude
+    alias ls='ls --color=auto -F'
+    alias r='s apt-get remove --purge'
+    alias top='top -d 1' ;;
+  openbsd*)
+    pkgFile=~/openbsd-packages-`machine`-`uname -r`.txt
+    [ -f $pkgFile ] || ( curl -o $pkgFile ftp://ftp5.usa.openbsd.org/pub/OpenBSD/`uname -r`/packages/`machine`/index.txt && perl -i -npe 's/.*i386\/(.*?gz).*/$1/' $pkgFile )
+    apts() { grep -i $1 $pkgFile } # yeah, yeah, not an alias
+    alias r='s pkg_delete' ;;
+  solaris*)
+    alias awk='gawk'
+    alias grep='/usr/xpg4/bin/grep'
+    alias psall='ps -aef' ;;
+esac
+
