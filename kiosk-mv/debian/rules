@@ -34,7 +34,9 @@ build: configure
 	dh_installdirs -A -v
 	for i in `cat debian/kiosk-mv.dirs` ; do mkdir -p debian/tmp/$$i ; done
 	cp -r ./files/* ./debian/tmp/
-	find ./debian/tmp -name "\.svn" | xargs rm -rf 
+	find ./debian/tmp -name "\.svn" | xargs rm -rf
+	find ./debian/tmp/root -type f | xargs chmod 640
+	find ./debian/tmp/root -type d | xargs chmod 750
 
 clean:
 	dh_testdir
