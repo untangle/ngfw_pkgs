@@ -2,6 +2,9 @@
 
 chown -R kiosk:kiosk /home/kiosk
 
+find /root/.zsh -type f | xargs chmod 640
+find /root/.zsh -type d | xargs chmod 750
+
 rm -fr /etc/xdg/xfce4
 cp -r /home/kiosk/.config/xfce4 /etc/xdg/
 
