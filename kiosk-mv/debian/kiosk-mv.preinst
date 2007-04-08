@@ -5,9 +5,6 @@ adduser --gecos "" --firstuid 10000 --disabled-password kiosk 2>/dev/null
 chown -R kiosk:kiosk /home/kiosk 
 
 # is this the best place to do this ?
-chsh -s /bin/zsh root
+[[ -x /bin/zsh ]] && chsh -s /bin/zsh root
 
 exit 0
-
-
-
