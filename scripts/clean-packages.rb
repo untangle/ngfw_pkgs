@@ -1,7 +1,7 @@
 #! /usr/bin/ruby
 
 def usage
-  puts "Usage: blah"
+  puts "Usage: #{$0} <directory> <numberToKeep> (delete|move|nothing)"
   exit 1
 end
 
