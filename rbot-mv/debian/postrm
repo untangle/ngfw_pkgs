@@ -1,6 +1,6 @@
 #! /bin/sh
 
-#DEBHELPER#
+/etc/init.d/rbot-mv stop
 
 [ $1 == "purge" ] && userdel -f -r rbot
 

@@ -11,5 +11,4 @@ else
   echo $SUDO_LINE >> /etc/sudoers
 fi
 
-
-
+exit 0
