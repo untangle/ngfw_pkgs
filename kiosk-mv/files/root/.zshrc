@@ -103,28 +103,6 @@ for key in ${(k)extensions[@]} ; do
   extensions[$key]="$extensions[$key] ${(U)extensions[$key]}"
 done
 
-if is4 ; then # use something smart to associate colors and extensions
-  local -A colors
-  colors=()
-  colors[docs]="02;37"
-  colors[archives]="01;31"
-  colors[movies]="01;33"
-  colors[audio]="00;33"
-  colors[pics]="00;36"
-  colors[code]="01;35"
-
-  LS_COLORS='ex=01;35:no=00:fi=00;37:di=01;36:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=04;31'
-#  LS_COLORS='no=00:fi=00;37:di=01;02;36:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=04;31'
-  for key in ${(k)extensions[@]} ; do
-    color=${colors[$key]}
-    # join on '=${color}:.*', and prepend to LS_COLORS
-    LS_COLORS='*.'${(ej,=${color}:*.,)${=${extensions[$key]}}}=${color}:$LS_COLORS
-  done
-  export LS_COLORS
-else # hardcode everything...
-  export LS_COLORS='*.bmp=00;36:*.gif=00;36:*.jpg=00;36:*.pbm=00;36:*.png=00;36:*.ppm=00;36:*.tga=00;36:*.tif=00;36:*.xbm=00;36:*.xpm=00;36:*.BMP=00;36:*.GIF=00;36:*.JPG=00;36:*.PBM=00;36:*.PNG=00;36:*.PPM=00;36:*.TGA=00;36:*.TIF=00;36:*.XBM=00;36:*.XPM=00;36:*.doc=02;37:*.dvi=02;37:*.html=02;37:*.pdf=02;37:*.ps=02;37:*.rtf=02;37:*.tex=02;37:*.txt=02;37:*.xls=02;37:*.xml=02;37:*.DOC=02;37:*.DVI=02;37:*.HTML=02;37:*.PDF=02;37:*.PS=02;37:*.RTF=02;37:*.TEX=02;37:*.TXT=02;37:*.XLS=02;37:*.XML=02;37:*.c=01;35:*.c++=01;35:*.class=01;35:*.cpp=01;35:*.elz=01;35:*.jacl=01;35:*.java=01;35:*.jy=01;35:*.o=01;35:*.out=01;35:*.pl=01;35:*.pm=01;35:*.py=01;35:*.pyc=01;35:*.sh=01;35:*.so=01;35:*.sql=01;35:*.zsh=01;35:*.C=01;35:*.C++=01;35:*.CLASS=01;35:*.CPP=01;35:*.ELZ=01;35:*.JACL=01;35:*.JAVA=01;35:*.JY=01;35:*.O=01;35:*.OUT=01;35:*.PL=01;35:*.PM=01;35:*.PY=01;35:*.PYC=01;35:*.SH=01;35:*.SO=01;35:*.SQL=01;35:*.ZSH=01;35:*.mp3=00;33:*.ogg=00;33:*.wav=00;33:*.wma=00;33:*.MP3=00;33:*.OGG=00;33:*.WAV=00;33:*.WMA=00;33:*.asf=01;33:*.avi=01;33:*.divx=01;33:*.mov=01;33:*.mpeg=01;33:*.mpg=01;33:*.wmv=01;33:*.ASF=01;33:*.AVI=01;33:*.DIVX=01;33:*.MOV=01;33:*.MPEG=01;33:*.MPG=01;33:*.WMV=01;33:*.arj=01;31:*.bz2=01;31:*.deb=01;31:*.ear=01;31:*.gz=01;31:*.jar=01;31:*.lzh=01;31:*.rar=01;31:*.rpm=01;31:*.tar=01;31:*.taz=01;31:*.tgz=01;31:*.war=01;31:*.z=01;31:*.zip=01;31:*.ARJ=01;31:*.BZ2=01;31:*.DEB=01;31:*.EAR=01;31:*.GZ=01;31:*.JAR=01;31:*.LZH=01;31:*.RAR=01;31:*.RPM=01;31:*.TAR=01;31:*.TAZ=01;31:*.TGZ=01;31:*.WAR=01;31:*.Z=01;31:*.ZIP=01;31:no=00:fi=00;37:di=01;36:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=04;31'
-fi
-
 # history
 HISTSIZE=1000000
 SAVEHIST=1000000

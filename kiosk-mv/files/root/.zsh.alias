@@ -47,7 +47,7 @@ alias zmore='zless'
 case $OSTYPE in
   linux*)
     apts() { apt-cache search -- $@ | sort }
-    alias ls='ls --color=auto -F'
+    alias ls='ls -F'
     alias r='s apt-get remove --purge'
     alias top='top -d 1' ;;
   openbsd*)
