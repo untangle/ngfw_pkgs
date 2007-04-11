@@ -237,6 +237,3 @@ esac
 source ~/.zsh.prompt
 source ~/.zsh.alias
 source ~/.zsh.function
-
-local hostFile=~/.zsh_$HOST
-[[ -f $hostFile ]] && source $hostFile
