@@ -1,0 +1,5 @@
+#! /bin/sh
+
+/etc/init.d/rbot-mv stop
+
+exit 0
