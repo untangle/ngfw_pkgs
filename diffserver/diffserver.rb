@@ -7,12 +7,18 @@ end
 
 def get_update(name, bl_version)
   rcs_version = bl_version.sub(/:/, '.')
-  f = IO.popen("rcsdiff -r#{rcs_version} -r#{head_version(name)} #{name} 2>/dev/null", mode="r") do |io|
-    io.each_line do |l|
-      if /^> (.*)$/ =~ l then
-        puts "+#{$1}"
-      elsif /^< (.*)$/ =~ l then
-        puts "-#{$1}"
+  rcs_head = head_version(name)
+  if rcs_version != rcs_head then
+    puts "[#{name} #{rcs_head.sub(/\./, ':')} update]"
+
+    f = IO.popen("rcsdiff -r#{rcs_version} -r#{rcs_head} #{name} 2>/dev/null",
+                 mode="r") do |io|
+      io.each_line do |l|
+        if /^> (.*)$/ =~ l then
+          puts "+#{$1}"
+        elsif /^< (.*)$/ =~ l then
+          puts "-#{$1}"
+        end
       end
     end
   end
