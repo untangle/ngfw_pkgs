@@ -1,0 +1,38 @@
+#!/bin/sh
+
+DAEMON=/usr/bin/rbot
+PIDFILE=/var/run/rbot.pid
+USER=rbot
+
+[ -x $DAEMON ] || exit 0
+
+unset SSH_AUTH_SOCK
+unset DISPLAY
+
+case "$1" in
+  start)
+    echo -n "Starting $DAEMON: "
+    ps aux | grep -E ' ruby.*rbot' | awk '{print $2}' | xargs kill -9 2> /dev/null
+    start-stop-daemon --start --quiet --pidfile $PIDFILE \
+      --chuid $USER --background --make-pidfile \
+      --exec $DAEMON -- -d
+    echo "done"
+    ;;
+  stop)
+    echo -n "Stopping $DAEMON: "
+    start-stop-daemon --stop --oknodo --quiet --pidfile $PIDFILE \
+      --exec $DAEMON
+    sleep 1
+    ps aux | grep -E ' ruby.*rbot' | awk '{print $2}' | xargs kill -9 2> /dev/null
+    echo "done"
+    ;;
+  restart)
+    $0 stop
+    $0 start
+    ;;
+  force-reload)
+    $0 restart
+    ;;
+esac
+
+exit 0

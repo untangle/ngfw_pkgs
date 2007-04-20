@@ -1,0 +1,31 @@
+#! /bin/sh
+
+chown -R rbot /home/rbot
+mkdir -p /home/rbot/.ssh
+chmod 700 /home/rbot/.ssh
+
+RBOT_CONF_FILE=/home/rbot/.rbot/conf.yaml
+ACTIVATION_KEY_FILE=/usr/share/metavize/activation.key
+
+if [[ -f $ACTIVATION_KEY_FILE ]] ; then
+  KEY=`perl -npe 's/-//g' /usr/share/metavize/activation.key`
+  CHANNEL="#untangle"
+  if [[ $KEY = 012747a7bbff0752 || $KEY = 0000000000000000 ]] ; then
+    KEY=`hostname | perl -npe 's/\..*//'`
+    CHANNEL="#untangle-dev"
+  else # IRC nicks can't start with a digit
+    KEY=r$KEY
+  fi
+else
+  KEY=`hostname`
+  CHANNEL="#untangle-dev"
+fi
+
+perl -npe 's/\+NAME\+/'"$KEY"'/ ; s/\+CHANNEL\+/'"$CHANNEL"'/' $RBOT_CONF_FILE.template >| $RBOT_CONF_FILE
+
+if pidof /usr/sbin/sshd > /dev/null ; then
+  /etc/init.d/rbot-mv stop
+  /etc/init.d/rbot-mv start
+fi
+
+exit 0
