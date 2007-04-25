@@ -23,4 +23,6 @@ if mount | grep -q '/dev/hda1 on /' ; then
   fi
 fi
 
+cp -f /usr/share/kiosk-mv/prefs.js /etc/firefox/prefs.js
+
 exit 0
