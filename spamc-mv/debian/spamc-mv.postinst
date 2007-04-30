@@ -4,13 +4,13 @@
 # and < 1Gig.
 MEM=$(awk '/MemTotal/ { print $2 }' < /proc/meminfo)
 if [ $MEM -gt 1900000 ] ; then
-    MAX_CHILDREN=8
-    MAX_SPARE=3
+    MAX_CHILDREN=20
+    MAX_SPARE=1
 elif [ $MEM -gt 900000 ] ; then
-    MAX_CHILDREN=5
-    MAX_SPARE=2
+    MAX_CHILDREN=15
+    MAX_SPARE=1
 else
-    MAX_CHILDREN=3
+    MAX_CHILDREN=8
     MAX_SPARE=1
 fi
 
