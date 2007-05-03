@@ -1,9 +1,12 @@
 #! /bin/sh
 
+NSIS_FILES=`dpkg -L nsis`
 LIST=/usr/share/nsis-mv/copied-files
 
 while read f ; do
-  rm -f /usr/share/nsis/$f
+  # remove it only if it doesn't belong in nsis
+  nsisFile=/usr/share/nsis/$f
+  echo "$NSIS_FILES" | grep -q "$nsisFile" || rm -f "$nsisFile"
 done < $LIST
 
 rm -fr /usr/share/nsis-mv
