@@ -1,3 +1,9 @@
 #! /bin/sh
 
+LIST=/usr/share/nsis-mv/copied-files
+
+while read f ; do
+  rm -f /usr/share/nsis/$f
+done < $LIST
+
 rm -fr /usr/share/nsis-mv

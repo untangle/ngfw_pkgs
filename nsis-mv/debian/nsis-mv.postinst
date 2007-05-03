@@ -1,13 +1,14 @@
 #!/bin/sh
 
+LIST=/usr/share/nsis-mv/copied-files
 DIR="`pwd`"
 
 cd /usr/share/nsis-mv/
 for i in `find . -type f` ; do 
     if [ ! -f /usr/share/nsis/$i ] ; then
+        echo $i >> $LIST
         mkdir -p `dirname /usr/share/nsis/$i`
         cp -r $i /usr/share/nsis/$i
-
     fi
 done
 
