@@ -34,7 +34,7 @@ def initializeChrootedAptFiles():
   
   # create sources.list file
   open(SOURCES, 'w').write('''
-deb http://linux.csua.berkeley.edu/debian stable main contrib non-free
+deb http://linux.csua.berkeley.edu/debian sarge main contrib non-free
 deb http://security.debian.org/ sarge/updates main contrib non-free
 #php5
 deb http://people.debian.org/~dexter php5 woody
@@ -87,11 +87,14 @@ class Package:
   cache.update()
   cache.open(apt.progress.OpProgress())
 
-  pkgCache   = apt_pkg.GetCache()
-  depcache   = apt_pkg.GetDepCache(pkgCache)
+  pkgCache      = apt_pkg.GetCache()
+  depcache      = apt_pkg.GetDepCache(pkgCache)
 
-  dependsKey = 'Depends'
-  basePackages = ()
+  dependsKey    = 'Depends'
+  suggestsKey   = 'Suggests'
+  recommendsKey = 'Recommends'
+
+  basePackages  = ()
   
 #  basePackages = ( 'libc6', 'debconf', 'libx11-6', 'xfree86-common',
 #                   'debianutils', 'zlib1g' )
@@ -152,7 +155,7 @@ class VersionedPackage(Package):
   def getVersionedPackage(self):
     return self._versionedPackage
   
-  def getDependsList(self):
+  def getDependsList(self, extra = None):
     if self.foundDeps:
       return self.deps
     
@@ -163,7 +166,14 @@ class VersionedPackage(Package):
 #      self.deps = [ DepPackage(self.name) ]
       self.deps = []
 #      print [ p for p in deps[Package.dependsKey] ]
-      for p in [ p[0] for p in deps[Package.dependsKey] ]:
+      intermediate = deps[Package.dependsKey]
+      if extra:
+        if Package.recommendsKey in deps:
+          intermediate += deps[Package.recommendsKey]
+        if Package.suggestsKey in deps:
+          intermediate += deps[Package.suggestsKey]
+        
+      for p in [ p[0] for p in intermediate ]:
         name = p.TargetPkg.Name
         if not name in Package.basePackages:
           self.deps.append(DepPackage(name, p.TargetVer, p.CompType))
@@ -174,8 +184,8 @@ class VersionedPackage(Package):
     self.foundDeps = True
     return self.deps
 
-  def _getAllDeps(self, deps = set()):
-    for p in self.getDependsList():
+  def _getAllDeps(self, deps = set(), extra = None):
+    for p in self.getDependsList(extra):
       if not p in deps:
 #        print "%s is a dep of %s" % (p, self)
         deps.add(p)
@@ -190,7 +200,9 @@ class VersionedPackage(Package):
     if self.isVirtual:
       return []
     if not self.foundAllDeps:
-      self.allDeps = self._getAllDeps()
+      # set extra to True to get recommends/suggest
+      # FIXME: make this a CL option
+      self.allDeps = self._getAllDeps(extra = None)
       self.allDeps.add(DepPackage(self.name))
       self.foundAllDeps = True
     return self.allDeps
@@ -322,7 +334,7 @@ for arg in pkgs:
 
     except:
       print p, type(p), p.name, dir(p)
-      sys.exit(1)
+#      sys.exit(1)
   #  else:
   #    print "%s is in the store and satisfies the dependency" % us.get(versionedPackage)
 
