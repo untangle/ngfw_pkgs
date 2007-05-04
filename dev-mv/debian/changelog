@@ -1,3 +1,9 @@
+dev-mv (0-34) stable; urgency=low
+
+  * auto build
+
+ -- root <root@bebe.metavize.com>  Fri,  4 May 2007 10:42:42 -0700
+
 dev-mv (0-33) stable; urgency=low
 
   * auto build
