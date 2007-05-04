@@ -132,12 +132,6 @@ else
 fi
 
 export CVS_RSH=ssh
-local -a javas ; javas=(/usr/lib/jvm/java*sun*(DN) /usr/local/j2*(DN))
-if [[ ${#javas} -gt 0 ]] ; then
-  export JAVA_HOME=$javas[-1]
-  export JAVA=${JAVA_HOME}/bin/java
-  path=($path $JAVA_HOME/bin)
-fi
 
 export XTERM="aterm-xterm -tr -sh 80 -fg White -bg Black -fn -jmk-neep-medium-r-normal--15-140-75-75-c-80-iso8859-15 -g 80x54 +sb -sl 10000 &"
 #export XTERM="aterm-xterm -tr -sh 80 -fg White -bg Black -g 80x54 +sb -sl 10000 &"
