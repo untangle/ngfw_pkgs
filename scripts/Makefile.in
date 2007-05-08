@@ -1,18 +1,21 @@
-RELEASE ?= `whoami`
+DISTRIBUTION ?= `cat ../../version/resources/RELEASE_CODENAME`
+
+checkroot:
+	@if [ "$$UID" = "0" ]; then \
+	  echo "You can't be root to build packages"; \
+	  exit 1; \
+	fi
 
 clean:
 	fakeroot debian/rules clean
 
 pkg:
-	fakeroot debian/rules binary
+	# FIXME: sign packages when we move to apt 0.6
+	/usr/bin/debuild --no-tgz-check -us -uc
 
 version:
-	dch -i "auto build"
+	dch -i -D $(DISTRIBUTION) "auto build"
 
-release: clean version pkg
-	@if [ "`hostname`" = "bebe" ] ; then \
-		( cd ../ ; sudo ./scripts/deb-add.sh /var/www/${RELEASE}/ ./${PACKAGENAME}*deb &> /dev/null ; sudo ./scripts/deb-scan.sh /var/www/${RELEASE}/ &> /dev/null ) ; \
-	else echo "Must be run on bebe"; \
-	fi
+release: checkroot clean version pkg
 	svn commit -m"released" debian/changelog
-#	echo ${PACKAGENAME} `cat debian/changelog | head -n 1 | awk '{print $$2}'` "released." | mail -s release pkgs@untangle.com ; \
+	dput -c ../scripts/dput.cf mephisto ../`head -n 1 debian/changelog | perl -npe 's/ \((.*)\).*/*$$1/'`*.changes

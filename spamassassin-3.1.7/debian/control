@@ -31,21 +31,3 @@ Description: Perl-based spam filter using text analysis
  this, you must install the spamc package.
  .
  Homepage: http://www.spamassassin.org
-
-Package: spamc
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Suggests: spamassassin
-Conflicts: spamassassin (<< 2.30-2)
-Description: Client for SpamAssassin spam filtering daemon
- spamc is the client to communicate with spamd, the daemonized form of
- SpamAssassin (see the spamassassin package). It is written in C for
- maximum speed and minimum loading overhead.
- .
- spamc is quite useful for integrating spamassassin into an MTA or
- into a .procmailrc file because of its speed.
- .
- This package is useless unless you have spamassassin installed,
- either on this machine or another local machine (i.e. a mail server).
- .
- Homepage: http://www.spamassassin.org
