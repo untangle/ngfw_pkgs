@@ -1,3 +1,9 @@
+dev-mv (0-62) mustang; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@untangle.com>  Mon,  7 May 2007 20:10:51 -0700
+
 dev-mv (0-61) mustang; urgency=low
 
   * auto build
