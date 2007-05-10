@@ -1,3 +1,9 @@
+bootsplash-mv (0-10) mustang; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@untangle.com>  Wed,  9 May 2007 19:20:28 -0700
+
 bootsplash-mv (0-9) mustang; urgency=low
 
   * auto build
