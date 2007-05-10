@@ -55,7 +55,7 @@ class DebianUpload
         output = "#{@file} was built by root, not processing"
         puts output
         email(@emailRecipientsFailure,
-              "Upload of #{@name} failed",
+              "Upload of #{File.basename(@name)} failed",
               output)
         return
       end
@@ -73,7 +73,9 @@ class DebianUpload
         File.rename(file, "#{PROCESSED}/#{File.basename(file)}")
       }
 
-      email(@emailRecipientsSuccess, "Upload of #{@name} succeeded",
+      puts output
+
+      email(@emailRecipientsSuccess, "Upload of #{@file} succeeded",
             @files.inject("") { |result, e|
               result += e.gsub(/#{INCOMING}\//, "") + "\n"
             })
@@ -102,9 +104,10 @@ class ChangeFileUpload < DebianUpload
     filesSection = false
     File.open(file).each { |line|
       line.strip!
+      # FIXME: use a hash of /regex/ => :attribute
       case line
-      when /^Binary: / then
-        @name = line.sub(/^Binary: /, "")
+      when /^Source: / then
+        @name = line.sub(/^Source: /, "")
       when /^Distribution: / then
         @distribution = line.sub(/^Distribution: /, "")
       when /^Maintainer: / then
