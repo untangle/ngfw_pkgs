@@ -1,3 +1,9 @@
+pump-mv (0-24) mustang; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@untangle.com>  Wed,  9 May 2007 19:26:14 -0700
+
 pump-mv (0-23) stable; urgency=low
 
   * auto build
