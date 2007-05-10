@@ -29,8 +29,8 @@ end
 
 class DebianUpload
 
-  @@doEmailSuccess = false
-  @@doEmailFailure = false
+  @@doEmailSuccess = true
+  @@doEmailFailure = true
 
   attr_reader :files, :distribution, :uploader, :version
 

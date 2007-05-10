@@ -1,3 +1,15 @@
+rbot-mv (5.0.0~svn20070507r10115+seb20070510T1249-1) seb; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@untangle.com>  Thu, 10 May 2007 12:49:10 -0700
+
+rbot-mv (5.0.0~svn20070507r10109-1) mustang; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@untangle.com>  Thu, 10 May 2007 12:34:38 -0700
+
 rbot-mv (0.9.10-98) unstable; urgency=low
 
   * auto build

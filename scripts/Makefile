@@ -29,7 +29,7 @@ pkg: checkroot
 	/usr/bin/debuild -i -us -uc
 
 release: checkroot
-	dput -c ../scripts/dput.cf mephisto ../*`dpkg-parsechangelog | awk '/Version: / { print $$2 }'`*.changes
+	dput -c ../scripts/dput.cf mephisto ../`basename $$(pwd)`*`dpkg-parsechangelog | awk '/Version: / { print $$2 }'`*.changes
 	svn revert debian/changelog
 
 .PHONY: checkroot clean version pkg release
