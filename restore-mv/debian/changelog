@@ -1,3 +1,9 @@
+restore-mv (0-63) mustang; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@untangle.com>  Wed,  9 May 2007 19:26:22 -0700
+
 restore-mv (0-62) stable; urgency=low
 
   * auto build
