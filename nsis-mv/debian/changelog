@@ -1,3 +1,9 @@
+nsis-mv (0-15) mustang; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@untangle.com>  Wed,  9 May 2007 19:25:58 -0700
+
 nsis-mv (0-14) stable; urgency=low
 
   * auto build
