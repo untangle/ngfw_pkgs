@@ -6,15 +6,15 @@ distribution=${1}
 
 echo -n "Setting version, setting distribution to \"$distribution\"..."
 
-revision=`svn info . | awk '/Revision: / { print $2 }'`
-timestamp=`svn info | awk '/Last Changed Date: / { gsub(/-/, "", $4) ; print $4 }'`
-hasLocalChanges=`svn status | grep -v -E '^\?'`
-
 if [[ -f ../VERSION ]] ; then
   versionFile=../VERSION
 else
   versionFile=../../VERSION
 fi
+
+revision=`svn info . | awk '/Revision: / { print $2 }'`
+timestamp=`svn info | awk '/Last Changed Date: / { gsub(/-/, "", $4) ; print $4 }'`
+hasLocalChanges=`svn status | grep -v -E '^\?'`
 
 baseVersion=`cat $versionFile`~svn${timestamp}r${revision}
 

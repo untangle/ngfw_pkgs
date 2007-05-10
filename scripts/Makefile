@@ -15,12 +15,21 @@ version: checkroot
 	dpkg-parsechangelog | awk '/Version: / { print $$2 }' >| debian/version
 #	dch -i -D $(DISTRIBUTION) "auto build"
 
-pkg: checkroot version
+source: checkroot
+	tar cz --exclude="*stamp*" \
+		--exclude=".svn" \
+		--exclude="debian" \
+		--exclude="todo" \
+		--exclude="staging" \
+		--exclude="dist" \
+		-f ../mvvm_`perl -npe 's/-.*//' debian/version`.orig.tar.gz .
+
+pkg: checkroot
 	# FIXME: sign packages when we move to apt 0.6
 	/usr/bin/debuild --no-tgz-check -i -us -uc
 
-release: checkroot pkg
-	svn commit revert debian/changelog
+release: checkroot
 	dput -c ../scripts/dput.cf mephisto ../*`dpkg-parsechangelog | awk '/Version: / { print $$2 }'`*.changes
+	svn revert debian/changelog
 
 .PHONY: checkroot clean version pkg release
