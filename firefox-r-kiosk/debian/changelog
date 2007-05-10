@@ -1,3 +1,9 @@
+firefox-r-kiosk (0-8) mustang; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@untangle.com>  Wed,  9 May 2007 19:23:46 -0700
+
 firefox-r-kiosk (0-7) stable; urgency=low
 
   * auto build
