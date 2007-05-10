@@ -74,8 +74,8 @@ binary-arch: build
 #	dh_fixperms
 	dh_installdeb
 #	dh_perl
-#	echo "`cat `"
-	dh_gencontrol -u-v"`cat `"
+#	echo "`cat debian/version`"
+	dh_gencontrol -u-v"`cat debian/version`"
 	dh_md5sums
 
 binary-indep: build

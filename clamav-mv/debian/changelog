@@ -1,3 +1,9 @@
+clamav-mv (5.0.0~svn20070510r10109-1) mustang; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@untangle.com>  Thu, 10 May 2007 12:27:58 -0700
+
 clamav-mv (0-13) mustang; urgency=low
 
   * auto build
