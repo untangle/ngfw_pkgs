@@ -1,3 +1,9 @@
+untangle-support-keyring (0-4) mustang; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@untangle.com>  Wed,  9 May 2007 19:41:34 -0700
+
 untangle-support-keyring (0-3) stable; urgency=low
 
   * auto build
