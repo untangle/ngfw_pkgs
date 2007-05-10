@@ -28,7 +28,6 @@ configure-stamp:
 
 build: configure
 	dh_testdir
-	dh_testroot
 	mkdir -p ./debian/tmp
 	dh_installdirs -A -v
 	for i in `cat debian/fakekdm-mv.dirs` ; do mkdir -p debian/tmp/$$i ; done

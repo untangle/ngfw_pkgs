@@ -14,10 +14,10 @@ version: checkroot
 
 pkg: checkroot version
 	# FIXME: sign packages when we move to apt 0.6
-	/usr/bin/debuild -i --no-tgz-check -us -uc
+	/usr/bin/debuild --no-tgz-check -i -us -uc
 
 release: checkroot pkg
 	svn commit -m"released" debian/changelog
-	dput -c ../scripts/dput.cf mephisto ../`dpkg-parsechangelog | grep "Version: " | perl -npe 's/.*: //'`*.changes
+	dput -c ../scripts/dput.cf mephisto ../*`dpkg-parsechangelog | awk '/Version: / { print $$2 }'`*.changes
 
 .PHONY: checkroot clean version pkg release

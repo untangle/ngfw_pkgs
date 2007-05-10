@@ -26,7 +26,6 @@ configure-stamp:
 
 build: configure
 	dh_testdir
-	dh_testroot
 	rm -rf ./debian/tmp
 	mkdir -p ./debian/tmp
 	dh_installdirs -A -v
