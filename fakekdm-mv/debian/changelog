@@ -1,3 +1,9 @@
+fakekdm-mv (0.0.0-4) mustang; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@untangle.com>  Wed,  9 May 2007 19:23:41 -0700
+
 fakekdm-mv (0.0.0-3) stable; urgency=low
 
   * auto build
