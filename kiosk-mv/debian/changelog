@@ -1,3 +1,9 @@
+kiosk-mv (0-112) mustang; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@untangle.com>  Wed,  9 May 2007 19:25:47 -0700
+
 kiosk-mv (0-111) stable; urgency=low
 
   * auto build
