@@ -1,3 +1,9 @@
+postgresql-mv-8.1 (0-8) mustang; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@untangle.com>  Wed,  9 May 2007 19:26:04 -0700
+
 postgresql-mv-8.1 (0-7) stable; urgency=low
 
   * auto build
