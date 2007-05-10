@@ -1,3 +1,9 @@
+spamc-mv (0-35) mustang; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@untangle.com>  Wed,  9 May 2007 19:26:42 -0700
+
 spamc-mv (0-34) stable; urgency=low
 
   * auto build
