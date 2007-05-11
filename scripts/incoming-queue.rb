@@ -27,6 +27,12 @@ EOM
   }
 end
 
+class UploadFailure < Exception
+end
+
+class UploadFailureByPolicy < UploadFailure
+end
+
 class DebianUpload
 
   @@doEmailSuccess = true
@@ -53,25 +59,36 @@ class DebianUpload
     return s
   end
 
+  def listFiles
+    # list all files involved in the upload, one basename per line
+    return @files.inject("") { |result, e|
+      result += e.gsub(/#{INCOMING}\//, "") + "\n"
+    }
+  end
+
   def addToRepository
     begin
-      if @uploader =~ /root/
-        output = "#{@file} was built by root, not processing"
-        puts output
-        email(@emailRecipientsFailure,
-              "Upload of #{File.basename(@name)} failed",
-              output) if @@doEmailFailure
-        return
+      # first do a few policy checks
+      if @distribution == "testing" and not @uploader =~ /(seb|rbscott)/
+        output = "#{@name} was intended for testing, but you can't upload there."
+        raise UploadFailureByPolicy.new(output)
       end
 
+      if @uploader =~ /root/
+        output = "#{@name} was built by root, not processing"
+        raise UploadFailureByPolicy.new(output)
+      end
+
+      if @distribution == "daily-dogfood" and not @uploader =~ /buildbot/
+        output = "#{@name} was intended for daily-dogfood, but was not built by buildbot: not processing."
+        raise UploadFailureByPolicy.new(output)
+      end
+
+      # then try to actually add the package
       output = `#{@command} 2>&1`
       if $? != 0
-        output = "Something went wrong when adding #{@file}, leaving it in incoming/\n\n" + output
-        puts output
-        email(@emailRecipientsFailure + [@uploader, @maintainer],
-              "Upload of #{@name} failed",
-              output) if @@doEmailFailure
-        return
+        output = "Something went wrong when adding #{@name}, leaving it in incoming/\n\n" + output
+        raise UploadFailureByPolicy.new(output)
       end
       
       if @move
@@ -80,11 +97,15 @@ class DebianUpload
         }
       end
 
-      puts output
-      email(@emailRecipientsSuccess, "Upload of #{@name} succeeded",
-            @files.inject("") { |result, e|
-              result += e.gsub(/#{INCOMING}\//, "") + "\n"
-            }) if @@doEmailSuccess
+      email(@emailRecipientsSuccess,
+            "Upload of #{@name} succeeded",
+            listFiles) if @@doEmailSuccess
+
+    rescue UploadFailureByPolicy => e
+      puts e.message
+      email(@emailRecipientsFailure,
+            "Upload of #{@name} failed",
+            e.message) if @@doEmailFailure
     rescue Exception => e
       puts e.message + "\n" + e.backtrace.join("\n")
       email(@emailRecipientsFailure,
@@ -97,7 +118,7 @@ end
 class PackageUpload < DebianUpload
   def initialize(file, move)
     super(file, move)
-    @name = file.sub(/_.*/, "")
+    @name = File.basename(@file).gsub(/_.*/, "")
     @distribution = DEFAULT_DISTRIBUTION
     @command = "reprepro -V -b #{REP} --component upstream includedeb #{@distribution} #{@file}"
     @emailRecipientsSuccess = DEFAULT_MAIL_RECIPIENTS
@@ -134,9 +155,10 @@ class ChangeFileUpload < DebianUpload
         @files << line.sub(/.* /,"#{INCOMING}/")
       end
     }
-    @command = "reprepro -Vb #{REP} include #{@distribution} #{@file}"
+    @command = "reprepro -Vb #{REP} -C main include #{@distribution} #{@file}"
     @emailRecipientsSuccess = [ @uploader, @maintainer ].uniq
     @emailRecipientsFailure = @emailRecipientsSuccess + DEFAULT_MAIL_RECIPIENTS
+    @emailRecipientsFailure.uniq!
   end
 end
 
