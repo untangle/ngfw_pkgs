@@ -81,7 +81,7 @@ class DebianUpload
       end
 
       puts output
-      email(@emailRecipientsSuccess, "Upload of #{@file} succeeded",
+      email(@emailRecipientsSuccess, "Upload of #{@name} succeeded",
             @files.inject("") { |result, e|
               result += e.gsub(/#{INCOMING}\//, "") + "\n"
             }) if @@doEmailSuccess

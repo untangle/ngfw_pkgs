@@ -9,6 +9,7 @@ clean: checkroot
 	fakeroot debian/rules clean
 
 version: checkroot
+	svn revert debian/changelog
 	sh ../scripts/incVersion.sh $(USER)
 	# so we can use that later to find out what to upload if needs be
 	dpkg-parsechangelog | awk '/Version: / { print $$2 }' >| debian/version
@@ -29,6 +30,6 @@ pkg: checkroot
 	svn revert debian/changelog
 
 release: checkroot
-	dput -c ../scripts/dput.cf mephisto ../`basename $$(pwd)`*`dpkg-parsechangelog | awk '/Version: / { print $$2 }'`*.changes
+	dput -c ../scripts/dput.cf mephisto ../`basename $$(pwd)`_`cat debian/version`*.changes
 
 .PHONY: checkroot clean version source pkg release

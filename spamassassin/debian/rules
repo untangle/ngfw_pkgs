@@ -50,7 +50,7 @@ build: build-indep build-arch
 
 install: install-indep install-arch
 
-binary: binary-indep binary-arch
+binary: binary-indep
 
 clean: clean1 unpatch
 clean1:
