@@ -1,1 +1,1 @@
-../alpine/buildtools/incVersion.sh
+../../alpine/buildtools/incVersion.sh
