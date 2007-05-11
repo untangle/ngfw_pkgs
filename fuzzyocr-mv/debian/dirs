@@ -1,5 +1,0 @@
-etc/mail/spamassassin
-usr/share/perl5/Mail/SpamAssassin/Plugin
-usr/share/fuzzyocr-mv
-usr/share/doc/fuzzyocr-mv
-var/lib/fuzzyocr
