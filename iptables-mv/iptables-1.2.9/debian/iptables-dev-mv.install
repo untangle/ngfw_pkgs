@@ -1,9 +1,0 @@
-debian/build/iptables-1.2.9/include/*.h usr/include
-debian/build/iptables-1.2.9/include/lib* usr/include
-debian/build/iptables-1.2.9/libiptc/*.a usr/lib
-debian/build/iptables-1.2.9/libipq/*.a usr/lib
-debian/build/iptables-1.2.9/*.a usr/lib
-debian/build/iptables-1.2.9/libipq/*.3 usr/share/man/man3
-debian/build/doc/netfilter-extensions-HOWTO* usr/share/doc/iptables-dev/html
-debian/build/doc/netfilter-hacking-HOWTO* usr/share/doc/iptables-dev/html
-debian/build/lipip* usr/bin

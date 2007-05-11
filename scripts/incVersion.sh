@@ -18,6 +18,8 @@ hasLocalChanges=`svn status | grep -v -E '^\?'`
 
 baseVersion=`cat $versionFile`~svn${timestamp}r${revision}
 
+#FIXME: DO SOMETHING ABOUT UPSTREAM VERSION
+
 if [[ -z "$hasLocalChanges" ]] ; then
   upstreamVersion=$baseVersion
 else

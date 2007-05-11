@@ -1,8 +1,0 @@
-debian/*.8 usr/share/man/man8
-debian/build/iptables-1.2.9/*.8 usr/share/man/man8
-debian/build/iptables-1.2.9/*-save sbin
-debian/build/iptables-1.2.9/*-restore sbin
-debian/build/doc/NAT-HOWTO* usr/share/doc/iptables/html
-debian/build/doc/packet-filtering-HOWTO* usr/share/doc/iptables/html
-debian/build/iptables-*/extensions/*.so lib/iptables
-debian/build/*.so* lib/iptables
