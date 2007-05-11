@@ -21,6 +21,10 @@ class ExecPlugin < Plugin
     end
   end
 
+  def extendTrial(m, params)
+    exec(m, { :command => "./extend_trial.sh" })
+  end
+
   def joinOnTest(m, params)
     begin
       command = params[:command].join(" ")
@@ -55,3 +59,4 @@ end
 plugin = ExecPlugin.new
 plugin.map 'exec *command', :action => 'exec'
 plugin.map 'join_on_test :channel *command', :action => 'joinOnTest'
+plugin.map 'extend_trial', :action => 'extendTrial'
