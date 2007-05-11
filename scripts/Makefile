@@ -14,7 +14,6 @@ version: checkroot
 	sh ../scripts/incVersion.sh $(DISTRIBUTION)
 	# so we can use that later to find out what to upload if needs be
 	dpkg-parsechangelog | awk '/Version: / { print $$2 }' >| debian/version
-#	dch -i -D $(DISTRIBUTION) "auto build"
 
 source: checkroot
 	tar cz --exclude="*stamp*" \
@@ -27,10 +26,11 @@ source: checkroot
 
 pkg: checkroot
 	# FIXME: sign packages when we move to apt 0.6
+	# FIXME: don't clean before building !!!
 	/usr/bin/debuild -i -us -uc
+	svn revert debian/changelog
 
 release: checkroot
 	dput -c ../scripts/dput.cf mephisto ../`basename $$(pwd)`*`dpkg-parsechangelog | awk '/Version: / { print $$2 }'`*.changes
-	svn revert debian/changelog
 
-.PHONY: checkroot clean version pkg release
+.PHONY: checkroot clean version source pkg release
