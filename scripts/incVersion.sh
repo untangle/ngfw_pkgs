@@ -1,1 +1,0 @@
-../../alpine/buildtools/incVersion.sh
