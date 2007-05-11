@@ -7,6 +7,7 @@ checkroot:
 	fi
 
 clean: checkroot
+	svn revert debian/changelog
 	fakeroot debian/rules clean
 
 version: checkroot
