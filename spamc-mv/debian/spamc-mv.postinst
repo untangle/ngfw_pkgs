@@ -24,18 +24,18 @@ sed -i "s/^OPTIONS=.*/OPTIONS=\"--create-prefs --max-children $MAX_CHILDREN --ma
 
 # XXX moved /etc/spamassassin/local.cf overwrites to database settings schema
 ## turn off stuff in local.cf
-#rm -f /etc/spamassassin/local.cf
-#cat > /etc/spamassassin/local.cf << EOF
-## Untangle global Spam Blocker settings
-#score ALL_TRUSTED 0
-#lock_method flock
-#auto_whitelist_factor 0.3
-#pyzor_timeout 3
-#
-## A simple-to-parse report format
-#clear_report_template
-#report _SUMMARY_
-#EOF
+rm -f /etc/spamassassin/local.cf
+cat > /etc/spamassassin/local.cf << EOF
+# Untangle global Spam Blocker settings
+score ALL_TRUSTED 0
+lock_method flock
+auto_whitelist_factor 0.3
+pyzor_timeout 3
+
+# A simple-to-parse report format
+clear_report_template
+report _SUMMARY_
+EOF
 
 saVersion=$(dpkg-query --showformat='${Version}\n' -W spamassassin)
 
