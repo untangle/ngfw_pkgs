@@ -36,7 +36,7 @@ binary-indep: install
 	dh_installchangelogs
 	dh_fixperms
 	dh_installdeb
-	dh_gencontrol
+if [[ -f debian/version ]] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
 	dh_md5sums
 	dh_builddeb
 

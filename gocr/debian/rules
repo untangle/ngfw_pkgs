@@ -110,7 +110,7 @@ binary-indep: build install
 	dh_installdeb -i
 
 	dh_shlibdeps -i
-	dh_gencontrol -i
+if [[ -f debian/version ]] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
 
 	dh_md5sums -i
 	dh_builddeb -i
@@ -143,7 +143,7 @@ binary-arch: build install
 	dh_installdeb -a
 
 	dh_shlibdeps -a
-	dh_gencontrol -a
+if [[ -f debian/version ]] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
 
 	dh_md5sums -a
 	dh_builddeb -a
