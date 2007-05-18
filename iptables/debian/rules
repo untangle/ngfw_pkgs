@@ -77,7 +77,7 @@ binary-arch: build install
 	dh_fixperms
 	dh_shlibdeps -X.so
 	dh_installdeb
-if [[ -f debian/version ]] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
+	if [[ -f debian/version ]] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
 	dh_md5sums
 	dh_builddeb
 
