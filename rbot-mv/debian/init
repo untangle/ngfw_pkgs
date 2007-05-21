@@ -10,7 +10,7 @@ unset SSH_AUTH_SOCK
 unset DISPLAY
 
 killDaemon() {
-  ps aux | grep -E ' ruby.*rbot' | awk '{print $2}' | xargs kill -9 2> /dev/null
+  ps aux | grep -E ' ruby.*/usr/bin/rbot' | awk '{print $2}' | xargs kill -9 2> /dev/null
 }
 
 case "$1" in
