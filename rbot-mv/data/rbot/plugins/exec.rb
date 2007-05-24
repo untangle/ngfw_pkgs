@@ -49,8 +49,8 @@ class ExecPlugin < Plugin
 
   def help(plugin, topic="")
     <<-eos
-      ssh exec *command => Run command
-      ssh join_on_test #channel *command => if command succeeds, join #channel
+      exec *command => Run command
+      join_on_test #channel *command => if command succeeds, join #channel
     eos
   end
 
