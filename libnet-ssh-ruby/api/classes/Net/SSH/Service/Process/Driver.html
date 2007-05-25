@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: Net::SSH::Service::Process::Driver</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../../../../.././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "width=400,height=400,scrollbars=yes" )
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />Net::SSH::Service::Process::Driver</td>
+  <td align="right">
+    <table cellspacing=0 cellpadding=2>
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../../../../../files/lib/net/ssh/service/process/driver_rb.html">lib/net/ssh/service/process/driver.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+Object
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+Represents a process executing on the remote machine. It also provides a
+simple interface for interacting with such a remote process.
+</p>
+<p>
+It may be used in either of two ways. The first allows multiple processes
+to be invoked on the remote machine and run in parallel over the same
+session. Because of this, it is a bit complicated to set up:
+</p>
+<pre>
+  require 'net/ssh'
+
+  Net::SSH.start( 'host', 'user', 'passwd' ) do |session|
+    process = session.process.open( &quot;bc&quot; )
+    dialog = [ &quot;5+5&quot;, &quot;7*12&quot;, &quot;1+2*5/(7+3)&quot; ]
+
+    process.on_success do |p|
+      puts &quot;requesting computation of '#{dialog.first}'&quot;
+      p.puts dialog.shift
+    end
+
+    process.on_failure do |p, status|
+      puts &quot;process failed to start (#{status})&quot;
+    end
+
+    process.on_stdout do |p, data|
+      puts &quot;--&gt; #{data}&quot;
+      if dialog.empty?
+        p.close_input
+      else
+        puts &quot;requesting computation of '#{dialog.first}'&quot;
+        p.puts dialog.shift
+      end
+    end
+
+    process.on_stderr do |p, data|
+      puts &quot;[stderr]--&gt; #{data}&quot;
+    end
+
+    process.on_exit do |p, status|
+      puts &quot;process finished with exit status: #{status}&quot;
+    end
+
+    session.loop
+  end
+</pre>
+<p>
+Naturally, not all of the callbacks used above are required. If you omit
+any of them, they will simply not be called. However, you <b>should</b> do
+something when the process is successfully started (<tt>on_success</tt>),
+and you <b>should</b> do something when data is recieved over stdout
+(<tt>on_stdout</tt>). Lastly, you <b>must</b> execute <tt>session.loop</tt>
+in order to process the connection.
+</p>
+<p>
+The simpler way to use this service is only available when you are not
+handling multiple parallel processes&#8212;you can only use it when the
+process you are executing is the only task you are using the <a
+href="../../../SSH.html">SSH</a> connection for. It is reminiscent of the
+popen interface: you invoke a command and get three pseudo-IO objects
+back&#8212;one for the command&#8216;s &quot;stdin&quot; stream, one for
+it&#8216;s &quot;stdout&quot; stream, and one for it&#8216;s
+&quot;stderr&quot; stream. You may then write to the &quot;stdin&quot;
+stream, and read from the &quot;stdout&quot; and &quot;stderr&quot;
+streams.
+</p>
+<p>
+For example:
+</p>
+<pre>
+  require 'net/ssh'
+
+  Net::SSH.start( 'host', 'user', 'passwd' ) do |session|
+    input, output, error = session.process.popen3( &quot;bc&quot; )
+    input.puts &quot;5+5&quot;
+    puts &quot;5+5=#{output.read}&quot;
+    input.puts &quot;7*12&quot;
+    puts &quot;7*12=#{output.read}&quot;
+    input.puts &quot;1+2*5/(7+3)&quot;
+    puts &quot;1+2*5/(7+3)=#{output.read}&quot;
+    input.puts &quot;quit&quot;
+  end
+</pre>
+<p>
+One caveat with this format: the process cannot be explicitly terminated
+from the client side&#8212;the process must terminate on its own (for
+example, by recieving a &quot;quit&quot; command, as used above). If the
+command does not support any means of gracefully aborting it, then the only
+way to kill the command is to terminate the connection.
+</p>
+<p>
+A slightly cleaner approach uses blocks to denote the lifespan of the
+process. When the block terminates, the process is killed (if it is still
+running):
+</p>
+<pre>
+  require 'net/ssh'
+
+  Net::SSH.start( 'host', 'user', 'passwd' ) do |session|
+    session.process.popen3( &quot;cat&quot; ) do |input, output, error|
+      input.puts &quot;hello&quot;
+      puts &quot;echo: #{output.read}&quot;
+      input.puts &quot;world&quot;
+      puts &quot;echo: #{output.read}&quot;
+    end
+  end
+</pre>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000272">new</a></li>
+  <li><a href="#M000273">open</a></li>
+  <li><a href="#M000274">popen3</a></li>
+  </ul>
+
+
+
+
+
+
+<div class="sectiontitle">Public Class methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000272"></a><b>new</b>( connection, log, handlers )
+  </div>
+  <div class="description">
+  <p>
+Create a <a href="Driver.html#M000272">new</a> <a
+href="Driver.html">Driver</a> instance, using the given log and handlers
+hash.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000272_source')" id="l_M000272_source">show source</a> ]</p>
+  <div id="M000272_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/service/process/driver.rb, line 123</span>
+123:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">connection</span>, <span class="ruby-identifier">log</span>, <span class="ruby-identifier">handlers</span> )
+124:             <span class="ruby-ivar">@connection</span> = <span class="ruby-identifier">connection</span>
+125:             <span class="ruby-ivar">@log</span> = <span class="ruby-identifier">log</span>
+126:             <span class="ruby-ivar">@handlers</span> = <span class="ruby-identifier">handlers</span>
+127:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000273"></a><b>open</b>( command ) {|process| ...}
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000273_source')" id="l_M000273_source">show source</a> ]</p>
+  <div id="M000273_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/service/process/driver.rb, line 129</span>
+129:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">open</span>( <span class="ruby-identifier">command</span> )
+130:             <span class="ruby-ivar">@log</span>.<span class="ruby-identifier">debug</span> <span class="ruby-node">&quot;opening '#{command}'&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@log</span>.<span class="ruby-identifier">debug?</span>
+131:             <span class="ruby-identifier">process</span> = <span class="ruby-ivar">@handlers</span>[ <span class="ruby-identifier">:open</span> ].<span class="ruby-identifier">call</span>( <span class="ruby-identifier">command</span> )
+132: 
+133:             <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">block_given?</span>
+134:               <span class="ruby-keyword kw">yield</span> <span class="ruby-identifier">process</span>
+135:               <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">loop</span>
+136:               <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span>
+137:             <span class="ruby-keyword kw">end</span>
+138: 
+139:             <span class="ruby-identifier">process</span>
+140:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000274"></a><b>popen3</b>( command, &amp;block )
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000274_source')" id="l_M000274_source">show source</a> ]</p>
+  <div id="M000274_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/service/process/driver.rb, line 142</span>
+142:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">popen3</span>( <span class="ruby-identifier">command</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span> )
+143:             <span class="ruby-ivar">@log</span>.<span class="ruby-identifier">debug</span> <span class="ruby-node">&quot;popen3 '#{command}'&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@log</span>.<span class="ruby-identifier">debug?</span>
+144:             <span class="ruby-identifier">mgr</span> = <span class="ruby-ivar">@handlers</span>[ <span class="ruby-identifier">:popen3</span> ]
+145:             <span class="ruby-identifier">mgr</span>.<span class="ruby-identifier">popen3</span>( <span class="ruby-identifier">command</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span> )
+146:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

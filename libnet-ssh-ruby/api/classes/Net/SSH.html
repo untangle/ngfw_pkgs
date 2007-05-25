@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Module: Net::SSH</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "width=400,height=400,scrollbars=yes" )
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Module</span><br />Net::SSH</td>
+  <td align="right">
+    <table cellspacing=0 cellpadding=2>
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../../files/lib/net/ssh/connection/channel_rb.html">lib/net/ssh/connection/channel.rb</a>
+<a href="../../files/lib/net/ssh/connection/constants_rb.html">lib/net/ssh/connection/constants.rb</a>
+<a href="../../files/lib/net/ssh/connection/driver_rb.html">lib/net/ssh/connection/driver.rb</a>
+<a href="../../files/lib/net/ssh/connection/services_rb.html">lib/net/ssh/connection/services.rb</a>
+<a href="../../files/lib/net/ssh/connection/term_rb.html">lib/net/ssh/connection/term.rb</a>
+<a href="../../files/lib/net/ssh/errors_rb.html">lib/net/ssh/errors.rb</a>
+<a href="../../files/lib/net/ssh/host-key-verifier_rb.html">lib/net/ssh/host-key-verifier.rb</a>
+<a href="../../files/lib/net/ssh/lenient-host-key-verifier_rb.html">lib/net/ssh/lenient-host-key-verifier.rb</a>
+<a href="../../files/lib/net/ssh/null-host-key-verifier_rb.html">lib/net/ssh/null-host-key-verifier.rb</a>
+<a href="../../files/lib/net/ssh/proxy/errors_rb.html">lib/net/ssh/proxy/errors.rb</a>
+<a href="../../files/lib/net/ssh/proxy/http_rb.html">lib/net/ssh/proxy/http.rb</a>
+<a href="../../files/lib/net/ssh/proxy/socks4_rb.html">lib/net/ssh/proxy/socks4.rb</a>
+<a href="../../files/lib/net/ssh/proxy/socks5_rb.html">lib/net/ssh/proxy/socks5.rb</a>
+<a href="../../files/lib/net/ssh/service/agentforward/driver_rb.html">lib/net/ssh/service/agentforward/driver.rb</a>
+<a href="../../files/lib/net/ssh/service/agentforward/services_rb.html">lib/net/ssh/service/agentforward/services.rb</a>
+<a href="../../files/lib/net/ssh/service/forward/driver_rb.html">lib/net/ssh/service/forward/driver.rb</a>
+<a href="../../files/lib/net/ssh/service/forward/local-network-handler_rb.html">lib/net/ssh/service/forward/local-network-handler.rb</a>
+<a href="../../files/lib/net/ssh/service/forward/remote-network-handler_rb.html">lib/net/ssh/service/forward/remote-network-handler.rb</a>
+<a href="../../files/lib/net/ssh/service/forward/services_rb.html">lib/net/ssh/service/forward/services.rb</a>
+<a href="../../files/lib/net/ssh/service/process/driver_rb.html">lib/net/ssh/service/process/driver.rb</a>
+<a href="../../files/lib/net/ssh/service/process/open_rb.html">lib/net/ssh/service/process/open.rb</a>
+<a href="../../files/lib/net/ssh/service/process/popen3_rb.html">lib/net/ssh/service/process/popen3.rb</a>
+<a href="../../files/lib/net/ssh/service/process/services_rb.html">lib/net/ssh/service/process/services.rb</a>
+<a href="../../files/lib/net/ssh/service/services_rb.html">lib/net/ssh/service/services.rb</a>
+<a href="../../files/lib/net/ssh/service/shell/driver_rb.html">lib/net/ssh/service/shell/driver.rb</a>
+<a href="../../files/lib/net/ssh/service/shell/services_rb.html">lib/net/ssh/service/shell/services.rb</a>
+<a href="../../files/lib/net/ssh/service/shell/shell_rb.html">lib/net/ssh/service/shell/shell.rb</a>
+<a href="../../files/lib/net/ssh/service/shell/sync_rb.html">lib/net/ssh/service/shell/sync.rb</a>
+<a href="../../files/lib/net/ssh/session_rb.html">lib/net/ssh/session.rb</a>
+<a href="../../files/lib/net/ssh/transport/algorithm-negotiator_rb.html">lib/net/ssh/transport/algorithm-negotiator.rb</a>
+<a href="../../files/lib/net/ssh/transport/compress/compressor_rb.html">lib/net/ssh/transport/compress/compressor.rb</a>
+<a href="../../files/lib/net/ssh/transport/compress/decompressor_rb.html">lib/net/ssh/transport/compress/decompressor.rb</a>
+<a href="../../files/lib/net/ssh/transport/compress/none-compressor_rb.html">lib/net/ssh/transport/compress/none-compressor.rb</a>
+<a href="../../files/lib/net/ssh/transport/compress/none-decompressor_rb.html">lib/net/ssh/transport/compress/none-decompressor.rb</a>
+<a href="../../files/lib/net/ssh/transport/compress/services_rb.html">lib/net/ssh/transport/compress/services.rb</a>
+<a href="../../files/lib/net/ssh/transport/compress/zlib-compressor_rb.html">lib/net/ssh/transport/compress/zlib-compressor.rb</a>
+<a href="../../files/lib/net/ssh/transport/compress/zlib-decompressor_rb.html">lib/net/ssh/transport/compress/zlib-decompressor.rb</a>
+<a href="../../files/lib/net/ssh/transport/constants_rb.html">lib/net/ssh/transport/constants.rb</a>
+<a href="../../files/lib/net/ssh/transport/errors_rb.html">lib/net/ssh/transport/errors.rb</a>
+<a href="../../files/lib/net/ssh/transport/identity-cipher_rb.html">lib/net/ssh/transport/identity-cipher.rb</a>
+<a href="../../files/lib/net/ssh/transport/kex/dh-gex_rb.html">lib/net/ssh/transport/kex/dh-gex.rb</a>
+<a href="../../files/lib/net/ssh/transport/kex/dh_rb.html">lib/net/ssh/transport/kex/dh.rb</a>
+<a href="../../files/lib/net/ssh/transport/kex/services_rb.html">lib/net/ssh/transport/kex/services.rb</a>
+<a href="../../files/lib/net/ssh/transport/ossl/buffer-factory_rb.html">lib/net/ssh/transport/ossl/buffer-factory.rb</a>
+<a href="../../files/lib/net/ssh/transport/ossl/buffer_rb.html">lib/net/ssh/transport/ossl/buffer.rb</a>
+<a href="../../files/lib/net/ssh/transport/ossl/cipher-factory_rb.html">lib/net/ssh/transport/ossl/cipher-factory.rb</a>
+<a href="../../files/lib/net/ssh/transport/ossl/digest-factory_rb.html">lib/net/ssh/transport/ossl/digest-factory.rb</a>
+<a href="../../files/lib/net/ssh/transport/ossl/hmac/hmac_rb.html">lib/net/ssh/transport/ossl/hmac/hmac.rb</a>
+<a href="../../files/lib/net/ssh/transport/ossl/hmac/md5-96_rb.html">lib/net/ssh/transport/ossl/hmac/md5-96.rb</a>
+<a href="../../files/lib/net/ssh/transport/ossl/hmac/md5_rb.html">lib/net/ssh/transport/ossl/hmac/md5.rb</a>
+<a href="../../files/lib/net/ssh/transport/ossl/hmac/none_rb.html">lib/net/ssh/transport/ossl/hmac/none.rb</a>
+<a href="../../files/lib/net/ssh/transport/ossl/hmac/services_rb.html">lib/net/ssh/transport/ossl/hmac/services.rb</a>
+<a href="../../files/lib/net/ssh/transport/ossl/hmac/sha1-96_rb.html">lib/net/ssh/transport/ossl/hmac/sha1-96.rb</a>
+<a href="../../files/lib/net/ssh/transport/ossl/hmac/sha1_rb.html">lib/net/ssh/transport/ossl/hmac/sha1.rb</a>
+<a href="../../files/lib/net/ssh/transport/ossl/hmac-factory_rb.html">lib/net/ssh/transport/ossl/hmac-factory.rb</a>
+<a href="../../files/lib/net/ssh/transport/ossl/key-factory_rb.html">lib/net/ssh/transport/ossl/key-factory.rb</a>
+<a href="../../files/lib/net/ssh/transport/ossl/services_rb.html">lib/net/ssh/transport/ossl/services.rb</a>
+<a href="../../files/lib/net/ssh/transport/packet-stream_rb.html">lib/net/ssh/transport/packet-stream.rb</a>
+<a href="../../files/lib/net/ssh/transport/services_rb.html">lib/net/ssh/transport/services.rb</a>
+<a href="../../files/lib/net/ssh/transport/session_rb.html">lib/net/ssh/transport/session.rb</a>
+<a href="../../files/lib/net/ssh/transport/version-negotiator_rb.html">lib/net/ssh/transport/version-negotiator.rb</a>
+<a href="../../files/lib/net/ssh/userauth/agent_rb.html">lib/net/ssh/userauth/agent.rb</a>
+<a href="../../files/lib/net/ssh/userauth/constants_rb.html">lib/net/ssh/userauth/constants.rb</a>
+<a href="../../files/lib/net/ssh/userauth/driver_rb.html">lib/net/ssh/userauth/driver.rb</a>
+<a href="../../files/lib/net/ssh/userauth/methods/hostbased_rb.html">lib/net/ssh/userauth/methods/hostbased.rb</a>
+<a href="../../files/lib/net/ssh/userauth/methods/keyboard-interactive_rb.html">lib/net/ssh/userauth/methods/keyboard-interactive.rb</a>
+<a href="../../files/lib/net/ssh/userauth/methods/password_rb.html">lib/net/ssh/userauth/methods/password.rb</a>
+<a href="../../files/lib/net/ssh/userauth/methods/publickey_rb.html">lib/net/ssh/userauth/methods/publickey.rb</a>
+<a href="../../files/lib/net/ssh/userauth/methods/services_rb.html">lib/net/ssh/userauth/methods/services.rb</a>
+<a href="../../files/lib/net/ssh/userauth/pageant_rb.html">lib/net/ssh/userauth/pageant.rb</a>
+<a href="../../files/lib/net/ssh/userauth/services_rb.html">lib/net/ssh/userauth/services.rb</a>
+<a href="../../files/lib/net/ssh/userauth/userkeys_rb.html">lib/net/ssh/userauth/userkeys.rb</a>
+<a href="../../files/lib/net/ssh/util/buffer_rb.html">lib/net/ssh/util/buffer.rb</a>
+<a href="../../files/lib/net/ssh/util/prompter_rb.html">lib/net/ssh/util/prompter.rb</a>
+<a href="../../files/lib/net/ssh/version_rb.html">lib/net/ssh/version.rb</a>
+<a href="../../files/lib/net/ssh_rb.html">lib/net/ssh.rb</a>
+        </td>
+      </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000012">register_service</a></li>
+  <li><a href="#M000011">start</a></li>
+  </ul>
+
+
+
+  <div class="sectiontitle">Classes and Modules</div>
+  Module <a href="SSH/Connection.html" class="link">Net::SSH::Connection</a><br />
+Module <a href="SSH/Proxy.html" class="link">Net::SSH::Proxy</a><br />
+Module <a href="SSH/Service.html" class="link">Net::SSH::Service</a><br />
+Module <a href="SSH/Transport.html" class="link">Net::SSH::Transport</a><br />
+Module <a href="SSH/UserAuth.html" class="link">Net::SSH::UserAuth</a><br />
+Module <a href="SSH/Util.html" class="link">Net::SSH::Util</a><br />
+Module <a href="SSH/Version.html" class="link">Net::SSH::Version</a><br />
+Class <a href="SSH/AuthenticationFailed.html" class="link">Net::SSH::AuthenticationFailed</a><br />
+Class <a href="SSH/Exception.html" class="link">Net::SSH::Exception</a><br />
+Class <a href="SSH/HostKeyMismatch.html" class="link">Net::SSH::HostKeyMismatch</a><br />
+Class <a href="SSH/HostKeyVerifier.html" class="link">Net::SSH::HostKeyVerifier</a><br />
+Class <a href="SSH/LenientHostKeyVerifier.html" class="link">Net::SSH::LenientHostKeyVerifier</a><br />
+Class <a href="SSH/NullHostKeyVerifier.html" class="link">Net::SSH::NullHostKeyVerifier</a><br />
+Class <a href="SSH/Session.html" class="link">Net::SSH::Session</a><br />
+
+
+  <div class="sectiontitle">Constants</div>
+  <table border='0' cellpadding='5'>
+  <tr valign='top'>
+    <td class="attr-name">EXTERNAL_SERVICES</td>
+    <td>=</td>
+    <td class="attr-value">Hash.new</td>
+  </tr>
+  <tr valign='top'>
+    <td>&nbsp;</td>
+    <td colspan="2" class="attr-desc">
+A registry of external (i.e., third-party) services that should be made
+available to any <a href="SSH.html">SSH</a> session.
+
+</td>
+  </tr>
+  </table>
+
+
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000012"></a><b>register_service</b>( name, &amp;block )
+  </div>
+  <div class="description">
+  <p>
+Used by third-parties to register a service that should be made available
+to any <a href="SSH.html">SSH</a> session when the session is constructed.
+The block should take a two parameters&#8212;the dependency injection
+container that should contain the services, and the service-point for the
+service being registered.
+</p>
+<p>
+The <tt>name</tt> parameter should be a symbol.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000012_source')" id="l_M000012_source">show source</a> ]</p>
+  <div id="M000012_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh.rb, line 61</span>
+61:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">register_service</span>( <span class="ruby-identifier">name</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span> )
+62:       <span class="ruby-constant">EXTERNAL_SERVICES</span>[ <span class="ruby-identifier">name</span> ] = <span class="ruby-identifier">block</span>
+63:     <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000011"></a><b>start</b>( *args, &amp;block )
+  </div>
+  <div class="description">
+  <p>
+A convenience method for starting a new <a href="SSH.html">SSH</a> session.
+See <a href="SSH/Session.html">Net::SSH::Session</a>.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000011_source')" id="l_M000011_source">show source</a> ]</p>
+  <div id="M000011_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh.rb, line 46</span>
+46:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">start</span>( <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span> )
+47:       <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span><span class="ruby-operator">::</span><span class="ruby-constant">Session</span>.<span class="ruby-identifier">new</span>( <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span> )
+48:     <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

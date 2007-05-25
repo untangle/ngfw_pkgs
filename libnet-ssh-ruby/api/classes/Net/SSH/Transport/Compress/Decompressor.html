@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: Net::SSH::Transport::Compress::Decompressor</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../../../../.././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "width=400,height=400,scrollbars=yes" )
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />Net::SSH::Transport::Compress::Decompressor</td>
+  <td align="right">
+    <table cellspacing=0 cellpadding=2>
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../../../../../files/lib/net/ssh/transport/compress/decompressor_rb.html">lib/net/ssh/transport/compress/decompressor.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+Object
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+The ancestor class of all decompression implementations.
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000056">configure</a></li>
+  <li><a href="#M000057">decompress</a></li>
+  <li><a href="#M000055">new</a></li>
+  </ul>
+
+
+
+
+
+
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000056"></a><b>configure</b>( options )
+  </div>
+  <div class="description">
+  <p>
+Reconfigure the current instance with the given options (which should be a
+Hash-like). Subclasses may override this method to implement the desired
+functionality.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000056_source')" id="l_M000056_source">show source</a> ]</p>
+  <div id="M000056_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/transport/compress/decompressor.rb, line 37</span>
+37:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">configure</span>( <span class="ruby-identifier">options</span> )
+38:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000057"></a><b>decompress</b>( text )
+  </div>
+  <div class="description">
+  <p>
+Raises NotImplementedError. Subclasses must override this method to
+implement the desired decompression functionality.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000057_source')" id="l_M000057_source">show source</a> ]</p>
+  <div id="M000057_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/transport/compress/decompressor.rb, line 42</span>
+42:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">decompress</span>( <span class="ruby-identifier">text</span> )
+43:             <span class="ruby-identifier">raise</span> <span class="ruby-constant">NotImplementedError</span>,
+44:               <span class="ruby-value str">&quot;subclasses must implement the 'decompress' method&quot;</span>
+45:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000055"></a><b>new</b>( options={} )
+  </div>
+  <div class="description">
+  <p>
+Return a <a href="Decompressor.html#M000055">new</a> instance just like the
+current instance, but reconfigured with the given options.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000055_source')" id="l_M000055_source">show source</a> ]</p>
+  <div id="M000055_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/transport/compress/decompressor.rb, line 28</span>
+28:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">new</span>( <span class="ruby-identifier">options</span>={} )
+29:             <span class="ruby-identifier">obj</span> = <span class="ruby-identifier">dup</span>
+30:             <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">configure</span>( <span class="ruby-identifier">options</span> )
+31:             <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">obj</span>
+32:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

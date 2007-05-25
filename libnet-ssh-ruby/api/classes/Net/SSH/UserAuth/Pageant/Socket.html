@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: Net::SSH::UserAuth::Pageant::Socket</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../../../../.././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "width=400,height=400,scrollbars=yes" )
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />Net::SSH::UserAuth::Pageant::Socket</td>
+  <td align="right">
+    <table cellspacing=0 cellpadding=2>
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../../../../../files/lib/net/ssh/userauth/pageant_rb.html">lib/net/ssh/userauth/pageant.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+Object
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+This is the pseudo-socket implementation that mimics the interface of a
+socket, translating each request into a Windows messaging call to the
+pageant daemon. This allows pageant support to be implemented simply by
+replacing the socket factory used by the <a href="../Agent.html">Agent</a>
+class.
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000130">close</a></li>
+  <li><a href="#M000127">new</a></li>
+  <li><a href="#M000126">open</a></li>
+  <li><a href="#M000131">read</a></li>
+  <li><a href="#M000128">send</a></li>
+  <li><a href="#M000129">send_query</a></li>
+  </ul>
+
+
+
+
+
+
+<div class="sectiontitle">Public Class methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000127"></a><b>new</b>()
+  </div>
+  <div class="description">
+  <p>
+Create a <a href="Socket.html#M000127">new</a> instance that communicates
+with the running pageant instance. If no such instance is running, this
+will cause an error.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000127_source')" id="l_M000127_source">show source</a> ]</p>
+  <div id="M000127_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/userauth/pageant.rb, line 108</span>
+108:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>
+109:             <span class="ruby-ivar">@win</span> = <span class="ruby-constant">Win</span>.<span class="ruby-identifier">findWindow</span>( <span class="ruby-value str">&quot;Pageant&quot;</span>, <span class="ruby-value str">&quot;Pageant&quot;</span> )
+110: 
+111:             <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@win</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+112:               <span class="ruby-identifier">raise</span> <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span><span class="ruby-operator">::</span><span class="ruby-constant">Exception</span>,
+113:                 <span class="ruby-value str">&quot;pageant process not running&quot;</span>
+114:             <span class="ruby-keyword kw">end</span>
+115: 
+116:             <span class="ruby-ivar">@res</span> = <span class="ruby-keyword kw">nil</span>
+117:             <span class="ruby-ivar">@pos</span> = <span class="ruby-value">0</span>
+118:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000126"></a><b>open</b>( location=nil )
+  </div>
+  <div class="description">
+  <p>
+The factory method for creating a <a href="Socket.html#M000127">new</a> <a
+href="Socket.html">Socket</a> instance. The location parameter is ignored,
+and is only needed for compatibility with the general <a
+href="Socket.html">Socket</a> interface.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000126_source')" id="l_M000126_source">show source</a> ]</p>
+  <div id="M000126_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/userauth/pageant.rb, line 102</span>
+102:           <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">open</span>( <span class="ruby-identifier">location</span>=<span class="ruby-keyword kw">nil</span> )
+103:             <span class="ruby-identifier">new</span>
+104:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000130"></a><b>close</b>()
+  </div>
+  <div class="description">
+  <p>
+Conceptually <a href="Socket.html#M000130">close</a> the socket. This
+doesn&#8216;t really do anthing significant, but merely complies with the
+<a href="Socket.html">Socket</a> interface.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000130_source')" id="l_M000130_source">show source</a> ]</p>
+  <div id="M000130_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/userauth/pageant.rb, line 173</span>
+173:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">close</span>
+174:             <span class="ruby-ivar">@res</span> = <span class="ruby-keyword kw">nil</span>
+175:             <span class="ruby-ivar">@pos</span> = <span class="ruby-value">0</span>
+176:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000131"></a><b>read</b>(n = nil)
+  </div>
+  <div class="description">
+  <p>
+Reads <tt>n</tt> bytes from the cached result of the last query. If
+<tt>n</tt> is <tt>nil</tt>, returns all remaining data from the last query.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000131_source')" id="l_M000131_source">show source</a> ]</p>
+  <div id="M000131_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/userauth/pageant.rb, line 180</span>
+180:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">read</span>(<span class="ruby-identifier">n</span> = <span class="ruby-keyword kw">nil</span>)
+181:             <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@res</span>
+182:             <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">n</span>.<span class="ruby-identifier">nil?</span>
+183:               <span class="ruby-identifier">start</span>, <span class="ruby-ivar">@pos</span> = <span class="ruby-ivar">@pos</span>, <span class="ruby-ivar">@res</span>.<span class="ruby-identifier">size</span>
+184:               <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@res</span>[<span class="ruby-identifier">start</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>]
+185:             <span class="ruby-keyword kw">else</span>
+186:               <span class="ruby-identifier">start</span>, <span class="ruby-ivar">@pos</span> = <span class="ruby-ivar">@pos</span>, <span class="ruby-ivar">@pos</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">n</span>
+187:               <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@res</span>[<span class="ruby-identifier">start</span>, <span class="ruby-identifier">n</span>]
+188:             <span class="ruby-keyword kw">end</span>
+189:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000128"></a><b>send</b>( data, *args )
+  </div>
+  <div class="description">
+  <p>
+Forwards the data to <a href="Socket.html#M000129">send_query</a>, ignoring
+any arguments after the first. Returns 0.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000128_source')" id="l_M000128_source">show source</a> ]</p>
+  <div id="M000128_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/userauth/pageant.rb, line 122</span>
+122:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">send</span>( <span class="ruby-identifier">data</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span> )
+123:             <span class="ruby-ivar">@res</span> = <span class="ruby-identifier">send_query</span>( <span class="ruby-identifier">data</span> )
+124:             <span class="ruby-ivar">@pos</span> = <span class="ruby-value">0</span>
+125:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000129"></a><b>send_query</b>( query )
+  </div>
+  <div class="description">
+  <p>
+Packages the given query string and sends it to the pageant process via the
+Windows messaging subsystem. The result is cached, to be returned
+piece-wise when <a href="Socket.html#M000131">read</a> is called.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000129_source')" id="l_M000129_source">show source</a> ]</p>
+  <div id="M000129_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/userauth/pageant.rb, line 130</span>
+130:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">send_query</span>( <span class="ruby-identifier">query</span> )
+131:             <span class="ruby-identifier">res</span> = <span class="ruby-keyword kw">nil</span>
+132:             <span class="ruby-identifier">filemap</span> = <span class="ruby-value">0</span>
+133:             <span class="ruby-identifier">ptr</span> = <span class="ruby-keyword kw">nil</span>
+134:             <span class="ruby-identifier">id</span> = <span class="ruby-constant">DL</span><span class="ruby-operator">::</span><span class="ruby-constant">PtrData</span>.<span class="ruby-identifier">malloc</span>( <span class="ruby-constant">DL</span>.<span class="ruby-identifier">sizeof</span>(<span class="ruby-value str">&quot;L&quot;</span>) )
+135: 
+136:             <span class="ruby-identifier">mapname</span> = <span class="ruby-value str">&quot;PageantRequest%08x\000&quot;</span> <span class="ruby-operator">%</span> <span class="ruby-constant">Win</span>.<span class="ruby-identifier">getCurrentThreadId</span>()
+137:             <span class="ruby-identifier">filemap</span> = <span class="ruby-constant">Win</span>.<span class="ruby-identifier">createFileMapping</span>(<span class="ruby-constant">Win</span><span class="ruby-operator">::</span><span class="ruby-constant">INVALID_HANDLE_VALUE</span>, 
+138:                                             <span class="ruby-constant">Win</span><span class="ruby-operator">::</span><span class="ruby-constant">NULL</span>,
+139:                                             <span class="ruby-constant">Win</span><span class="ruby-operator">::</span><span class="ruby-constant">PAGE_READWRITE</span>, <span class="ruby-value">0</span>, 
+140:                                             <span class="ruby-constant">AGENT_MAX_MSGLEN</span>, <span class="ruby-identifier">mapname</span>)
+141:             <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">filemap</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+142:               <span class="ruby-identifier">raise</span> <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span><span class="ruby-operator">::</span><span class="ruby-constant">Exception</span>,
+143:                 <span class="ruby-value str">&quot;Creation of file mapping failed&quot;</span>
+144:             <span class="ruby-keyword kw">end</span>
+145: 
+146:             <span class="ruby-identifier">ptr</span> = <span class="ruby-constant">Win</span>.<span class="ruby-identifier">mapViewOfFile</span>( <span class="ruby-identifier">filemap</span>, <span class="ruby-constant">Win</span><span class="ruby-operator">::</span><span class="ruby-constant">FILE_MAP_WRITE</span>, <span class="ruby-value">0</span>, <span class="ruby-value">0</span>, 
+147:                                     <span class="ruby-constant">AGENT_MAX_MSGLEN</span> )
+148: 
+149:             <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">ptr</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">ptr</span>.<span class="ruby-identifier">null?</span>
+150:               <span class="ruby-identifier">raise</span> <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span><span class="ruby-operator">::</span><span class="ruby-constant">Exception</span>, <span class="ruby-value str">&quot;Mapping of file failed&quot;</span>
+151:             <span class="ruby-keyword kw">end</span>
+152: 
+153:             <span class="ruby-identifier">ptr</span>[<span class="ruby-value">0</span>] = <span class="ruby-identifier">query</span>
+154:             
+155:             <span class="ruby-identifier">cds</span> = [<span class="ruby-constant">AGENT_COPYDATA_ID</span>, <span class="ruby-identifier">mapname</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>, <span class="ruby-identifier">mapname</span>].
+156:               <span class="ruby-identifier">pack</span>(<span class="ruby-value str">&quot;LLp&quot;</span>).<span class="ruby-identifier">to_ptr</span>
+157:             <span class="ruby-identifier">succ</span> = <span class="ruby-constant">Win</span>.<span class="ruby-identifier">sendMessageTimeout</span>( <span class="ruby-ivar">@win</span>, <span class="ruby-constant">Win</span><span class="ruby-operator">::</span><span class="ruby-constant">WM_COPYDATA</span>, <span class="ruby-constant">Win</span><span class="ruby-operator">::</span><span class="ruby-constant">NULL</span>,
+158:               <span class="ruby-identifier">cds</span>, <span class="ruby-constant">Win</span><span class="ruby-operator">::</span><span class="ruby-constant">SMTO_NORMAL</span>, <span class="ruby-value">5000</span>, <span class="ruby-identifier">id</span> )
+159: 
+160:             <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">succ</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+161:               <span class="ruby-identifier">retlen</span> = <span class="ruby-value">4</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">ptr</span>.<span class="ruby-identifier">to_s</span>(<span class="ruby-value">4</span>).<span class="ruby-identifier">unpack</span>(<span class="ruby-value str">&quot;N&quot;</span>)[<span class="ruby-value">0</span>]
+162:               <span class="ruby-identifier">res</span> = <span class="ruby-identifier">ptr</span>.<span class="ruby-identifier">to_s</span>(<span class="ruby-identifier">retlen</span>)
+163:             <span class="ruby-keyword kw">end</span>        
+164: 
+165:             <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">res</span>
+166:           <span class="ruby-keyword kw">ensure</span>
+167:             <span class="ruby-constant">Win</span>.<span class="ruby-identifier">unmapViewOfFile</span>( <span class="ruby-identifier">ptr</span> ) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">ptr</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">ptr</span>.<span class="ruby-identifier">null?</span>
+168:             <span class="ruby-constant">Win</span>.<span class="ruby-identifier">closeHandle</span>( <span class="ruby-identifier">filemap</span> ) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">filemap</span> <span class="ruby-operator">!=</span> <span class="ruby-value">0</span>
+169:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

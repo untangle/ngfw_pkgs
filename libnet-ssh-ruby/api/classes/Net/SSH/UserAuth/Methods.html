@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Module: Net::SSH::UserAuth::Methods</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "width=400,height=400,scrollbars=yes" )
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Module</span><br />Net::SSH::UserAuth::Methods</td>
+  <td align="right">
+    <table cellspacing=0 cellpadding=2>
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../../../../files/lib/net/ssh/userauth/methods/hostbased_rb.html">lib/net/ssh/userauth/methods/hostbased.rb</a>
+<a href="../../../../files/lib/net/ssh/userauth/methods/keyboard-interactive_rb.html">lib/net/ssh/userauth/methods/keyboard-interactive.rb</a>
+<a href="../../../../files/lib/net/ssh/userauth/methods/password_rb.html">lib/net/ssh/userauth/methods/password.rb</a>
+<a href="../../../../files/lib/net/ssh/userauth/methods/publickey_rb.html">lib/net/ssh/userauth/methods/publickey.rb</a>
+<a href="../../../../files/lib/net/ssh/userauth/methods/services_rb.html">lib/net/ssh/userauth/methods/services.rb</a>
+        </td>
+      </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000132">register_services</a></li>
+  </ul>
+
+
+
+  <div class="sectiontitle">Classes and Modules</div>
+  Class <a href="Methods/HostBased.html" class="link">Net::SSH::UserAuth::Methods::HostBased</a><br />
+Class <a href="Methods/KeyboardInteractive.html" class="link">Net::SSH::UserAuth::Methods::KeyboardInteractive</a><br />
+Class <a href="Methods/Password.html" class="link">Net::SSH::UserAuth::Methods::Password</a><br />
+Class <a href="Methods/PublicKey.html" class="link">Net::SSH::UserAuth::Methods::PublicKey</a><br />
+
+
+
+
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000132"></a><b>register_services</b>( container )
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000132_source')" id="l_M000132_source">show source</a> ]</p>
+  <div id="M000132_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/userauth/methods/services.rb, line 22</span>
+22:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">register_services</span>( <span class="ruby-identifier">container</span> )
+23:           <span class="ruby-identifier">container</span>.<span class="ruby-identifier">namespace_define</span> <span class="ruby-identifier">:methods</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">b</span><span class="ruby-operator">|</span>
+24: 
+25:             <span class="ruby-identifier">b</span>.<span class="ruby-identifier">password</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span>,<span class="ruby-identifier">p</span><span class="ruby-operator">|</span>
+26:               <span class="ruby-identifier">require</span> <span class="ruby-value str">'net/ssh/userauth/methods/password'</span>
+27:               <span class="ruby-identifier">method</span> = <span class="ruby-constant">Password</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:transport</span>][<span class="ruby-identifier">:buffers</span>] )
+28:               <span class="ruby-identifier">method</span>.<span class="ruby-identifier">messenger</span> = <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:userauth</span>][<span class="ruby-identifier">:driver</span>]
+29:               <span class="ruby-identifier">method</span>
+30:             <span class="ruby-keyword kw">end</span>
+31: 
+32:             <span class="ruby-identifier">b</span>.<span class="ruby-identifier">keyboard_interactive</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span>,<span class="ruby-identifier">p</span><span class="ruby-operator">|</span>
+33:               <span class="ruby-identifier">require</span> <span class="ruby-value str">'net/ssh/userauth/methods/keyboard-interactive'</span>
+34:               <span class="ruby-identifier">method</span> = <span class="ruby-constant">KeyboardInteractive</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:transport</span>][<span class="ruby-identifier">:buffers</span>],
+35:                 <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:keyboard_interactive_callback</span>] )
+36:               <span class="ruby-identifier">method</span>.<span class="ruby-identifier">messenger</span> = <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:userauth</span>][<span class="ruby-identifier">:driver</span>]
+37:               <span class="ruby-identifier">method</span>
+38:             <span class="ruby-keyword kw">end</span>
+39: 
+40:             <span class="ruby-identifier">b</span>.<span class="ruby-identifier">keyboard_interactive_prompter</span> <span class="ruby-keyword kw">do</span>
+41:               <span class="ruby-identifier">require</span> <span class="ruby-value str">'net/ssh/util/prompter'</span>
+42:               <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span><span class="ruby-operator">::</span><span class="ruby-constant">Util</span><span class="ruby-operator">::</span><span class="ruby-constant">Prompter</span>.<span class="ruby-identifier">new</span>
+43:             <span class="ruby-keyword kw">end</span>
+44: 
+45:             <span class="ruby-identifier">b</span>.<span class="ruby-identifier">keyboard_interactive_callback</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span>,<span class="ruby-identifier">p</span><span class="ruby-operator">|</span>
+46:               <span class="ruby-identifier">proc</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">req</span><span class="ruby-operator">|</span>
+47:                 <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">req</span>.<span class="ruby-identifier">password</span>
+48:                   [ <span class="ruby-identifier">req</span>.<span class="ruby-identifier">password</span> ] <span class="ruby-operator">*</span> <span class="ruby-identifier">req</span>.<span class="ruby-identifier">prompts</span>.<span class="ruby-identifier">length</span>
+49:                 <span class="ruby-keyword kw">else</span>
+50:                   <span class="ruby-identifier">responses</span> = []
+51:                   <span class="ruby-identifier">puts</span> <span class="ruby-identifier">req</span>.<span class="ruby-identifier">name</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">req</span>.<span class="ruby-identifier">name</span>.<span class="ruby-identifier">empty?</span>
+52:                   <span class="ruby-identifier">puts</span> <span class="ruby-identifier">req</span>.<span class="ruby-identifier">instruction</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">req</span>.<span class="ruby-identifier">instruction</span>.<span class="ruby-identifier">empty?</span>
+53:                   <span class="ruby-identifier">req</span>.<span class="ruby-identifier">prompts</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">prompt</span><span class="ruby-operator">|</span>
+54:                     <span class="ruby-identifier">response</span> = <span class="ruby-identifier">prompt</span>.<span class="ruby-identifier">echo</span> <span class="ruby-value">?
+55: </span>                      <span class="ruby-identifier">gets</span>.<span class="ruby-identifier">chomp</span> <span class="ruby-operator">:</span>
+56:                       <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:keyboard_interactive_prompter</span>].
+57:                         <span class="ruby-identifier">password</span>( <span class="ruby-identifier">prompt</span>.<span class="ruby-identifier">prompt</span> )
+58:                     <span class="ruby-identifier">responses</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">response</span>
+59:                   <span class="ruby-keyword kw">end</span>
+60:                   <span class="ruby-identifier">responses</span>
+61:                 <span class="ruby-keyword kw">end</span>
+62:               <span class="ruby-keyword kw">end</span>
+63:             <span class="ruby-keyword kw">end</span>
+64: 
+65:             <span class="ruby-identifier">b</span>.<span class="ruby-identifier">publickey</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span>,<span class="ruby-identifier">p</span><span class="ruby-operator">|</span>
+66:               <span class="ruby-identifier">require</span> <span class="ruby-value str">'net/ssh/userauth/methods/publickey'</span>
+67:               <span class="ruby-identifier">method</span> = <span class="ruby-constant">PublicKey</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:transport</span>][<span class="ruby-identifier">:buffers</span>] )
+68:               <span class="ruby-identifier">method</span>.<span class="ruby-identifier">messenger</span> = <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:userauth</span>][<span class="ruby-identifier">:driver</span>]
+69:               <span class="ruby-identifier">method</span>.<span class="ruby-identifier">session_id</span> = <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:transport</span>][<span class="ruby-identifier">:session</span>].<span class="ruby-identifier">session_id</span>
+70:               <span class="ruby-identifier">method</span>
+71:             <span class="ruby-keyword kw">end</span>
+72: 
+73:             <span class="ruby-identifier">b</span>.<span class="ruby-identifier">hostbased</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span>,<span class="ruby-identifier">p</span><span class="ruby-operator">|</span>
+74:               <span class="ruby-identifier">require</span> <span class="ruby-value str">'net/ssh/userauth/methods/hostbased'</span>
+75:               <span class="ruby-identifier">method</span> = <span class="ruby-constant">HostBased</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:transport</span>][<span class="ruby-identifier">:buffers</span>] )
+76:               <span class="ruby-identifier">session</span> = <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:transport</span>][<span class="ruby-identifier">:session</span>]
+77:               <span class="ruby-identifier">method</span>.<span class="ruby-identifier">messenger</span> = <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:userauth</span>][<span class="ruby-identifier">:driver</span>]
+78:               <span class="ruby-identifier">method</span>.<span class="ruby-identifier">hostname</span> = <span class="ruby-identifier">session</span>.<span class="ruby-identifier">client_name</span>
+79:               <span class="ruby-identifier">method</span>.<span class="ruby-identifier">session_id</span> = <span class="ruby-identifier">session</span>.<span class="ruby-identifier">session_id</span>
+80:               <span class="ruby-identifier">method</span>
+81:             <span class="ruby-keyword kw">end</span>
+82:             
+83:           <span class="ruby-keyword kw">end</span>
+84:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

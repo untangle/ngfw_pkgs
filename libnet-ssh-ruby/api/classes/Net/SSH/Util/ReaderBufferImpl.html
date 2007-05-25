@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Module: Net::SSH::Util::ReaderBufferImpl</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "width=400,height=400,scrollbars=yes" )
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Module</span><br />Net::SSH::Util::ReaderBufferImpl</td>
+  <td align="right">
+    <table cellspacing=0 cellpadding=2>
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../../../../files/lib/net/ssh/util/buffer_rb.html">lib/net/ssh/util/buffer.rb</a>
+        </td>
+      </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+A convenience module for representing a string of encoded data. It provides
+an interface for easily reading and decoding the buffer.
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000105">append</a></li>
+  <li><a href="#M000116">clear!</a></li>
+  <li><a href="#M000115">eof?</a></li>
+  <li><a href="#M000107">read</a></li>
+  <li><a href="#M000113">read_bool</a></li>
+  <li><a href="#M000111">read_byte</a></li>
+  <li><a href="#M000108">read_int64</a></li>
+  <li><a href="#M000109">read_long</a></li>
+  <li><a href="#M000110">read_short</a></li>
+  <li><a href="#M000112">read_string</a></li>
+  <li><a href="#M000106">remainder_as_buffer</a></li>
+  <li><a href="#M000114">reset!</a></li>
+  </ul>
+
+
+
+
+
+  <div class="sectiontitle">Attributes</div>
+  <table border='0' cellpadding='5'>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[R]
+    </td>
+    <td class='attr-name'>position</td>
+    <td class='attr-desc'>
+the current position of the pointer in the buffer
+
+</td>
+  </tr>
+  </table>
+
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000105"></a><b>append</b>( text )
+  </div>
+  <div class="description">
+  <p>
+Appends the given text to the end of the buffer.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000105_source')" id="l_M000105_source">show source</a> ]</p>
+  <div id="M000105_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/util/buffer.rb, line 71</span>
+71:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">append</span>( <span class="ruby-identifier">text</span> )
+72:           <span class="ruby-ivar">@content</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">text</span>
+73:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000116"></a><b>clear!</b>()
+  </div>
+  <div class="description">
+  <p>
+Resets the buffer, making it empty.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000116_source')" id="l_M000116_source">show source</a> ]</p>
+  <div id="M000116_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/util/buffer.rb, line 142</span>
+142:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">clear!</span>
+143:           <span class="ruby-ivar">@content</span> = <span class="ruby-value str">&quot;&quot;</span>
+144:           <span class="ruby-ivar">@position</span> = <span class="ruby-value">0</span>
+145:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000115"></a><b>eof?</b>()
+  </div>
+  <div class="description">
+  <p>
+Returns true if the pointer is at the end of the buffer.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000115_source')" id="l_M000115_source">show source</a> ]</p>
+  <div id="M000115_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/util/buffer.rb, line 137</span>
+137:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">eof?</span>
+138:           <span class="ruby-ivar">@position</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-identifier">length</span>
+139:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000107"></a><b>read</b>( count = nil )
+  </div>
+  <div class="description">
+  <p>
+Reads <tt>count</tt> bytes from the buffer. If <tt>count</tt> is
+<tt>nil</tt>, this will return all remaining text in the buffer. This
+method will increment the pointer.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000107_source')" id="l_M000107_source">show source</a> ]</p>
+  <div id="M000107_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/util/buffer.rb, line 84</span>
+84:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">read</span>( <span class="ruby-identifier">count</span> = <span class="ruby-keyword kw">nil</span> )
+85:           <span class="ruby-identifier">count</span> = <span class="ruby-identifier">length</span> <span class="ruby-operator">-</span> <span class="ruby-ivar">@position</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">count</span>
+86:           <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@position</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">count</span> <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">length</span>
+87: 
+88:           <span class="ruby-ivar">@position</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">count</span>
+89:           <span class="ruby-ivar">@content</span>[ <span class="ruby-ivar">@position</span><span class="ruby-operator">-</span><span class="ruby-identifier">count</span>, <span class="ruby-identifier">count</span> ]
+90:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000113"></a><b>read_bool</b>()
+  </div>
+  <div class="description">
+  <p>
+Read a single byte and convert it into a boolean, using &#8216;C&#8217;
+rules (i.e., zero is false, non-zero is true).
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000113_source')" id="l_M000113_source">show source</a> ]</p>
+  <div id="M000113_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/util/buffer.rb, line 126</span>
+126:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">read_bool</span>
+127:           <span class="ruby-identifier">b</span> = <span class="ruby-identifier">read</span>( <span class="ruby-value">1</span> ) <span class="ruby-keyword kw">or</span> <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span>
+128:           <span class="ruby-identifier">b</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">!=</span> <span class="ruby-value">0</span>
+129:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000111"></a><b>read_byte</b>()
+  </div>
+  <div class="description">
+  <p>
+Read and return the next byte in the buffer.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000111_source')" id="l_M000111_source">show source</a> ]</p>
+  <div id="M000111_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/util/buffer.rb, line 112</span>
+112:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">read_byte</span>
+113:           <span class="ruby-identifier">b</span> = <span class="ruby-identifier">read</span>( <span class="ruby-value">1</span> ) <span class="ruby-keyword kw">or</span> <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span>
+114:           <span class="ruby-identifier">b</span>[<span class="ruby-value">0</span>]
+115:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000108"></a><b>read_int64</b>()
+  </div>
+  <div class="description">
+  <p>
+Return the next 8 bytes as a 64-bit integer (in network byte order).
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000108_source')" id="l_M000108_source">show source</a> ]</p>
+  <div id="M000108_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/util/buffer.rb, line 93</span>
+93:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">read_int64</span>
+94:           <span class="ruby-identifier">hi</span> = <span class="ruby-identifier">read_long</span>
+95:           <span class="ruby-identifier">lo</span> = <span class="ruby-identifier">read_long</span>
+96:           <span class="ruby-keyword kw">return</span> ( <span class="ruby-identifier">hi</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value">32</span> ) <span class="ruby-operator">+</span> <span class="ruby-identifier">lo</span>
+97:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000109"></a><b>read_long</b>()
+  </div>
+  <div class="description">
+  <p>
+Return the next four bytes as a long integer (in network byte order).
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000109_source')" id="l_M000109_source">show source</a> ]</p>
+  <div id="M000109_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/util/buffer.rb, line 100</span>
+100:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">read_long</span>
+101:           <span class="ruby-identifier">b</span> = <span class="ruby-identifier">read</span>( <span class="ruby-value">4</span> ) <span class="ruby-keyword kw">or</span> <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span>
+102:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">unpack</span>( <span class="ruby-value str">&quot;N&quot;</span> ).<span class="ruby-identifier">first</span>
+103:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000110"></a><b>read_short</b>()
+  </div>
+  <div class="description">
+  <p>
+Read the next two bytes as a short integer (in network byte order).
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000110_source')" id="l_M000110_source">show source</a> ]</p>
+  <div id="M000110_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/util/buffer.rb, line 106</span>
+106:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">read_short</span>
+107:           <span class="ruby-identifier">b</span> = <span class="ruby-identifier">read</span>( <span class="ruby-value">2</span> ) <span class="ruby-keyword kw">or</span> <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span>
+108:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">unpack</span>( <span class="ruby-value str">&quot;n&quot;</span> ).<span class="ruby-identifier">first</span>
+109:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000112"></a><b>read_string</b>()
+  </div>
+  <div class="description">
+  <p>
+Read and return an SSH2-encoded string. The string starts with a long
+integer that describes the number of bytes remaining in the string.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000112_source')" id="l_M000112_source">show source</a> ]</p>
+  <div id="M000112_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/util/buffer.rb, line 119</span>
+119:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">read_string</span>
+120:           <span class="ruby-identifier">length</span> = <span class="ruby-identifier">read_long</span> <span class="ruby-keyword kw">or</span> <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span>
+121:           <span class="ruby-identifier">read</span>( <span class="ruby-identifier">length</span> )
+122:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000106"></a><b>remainder_as_buffer</b>()
+  </div>
+  <div class="description">
+  <p>
+Returns all text from the current pointer to the end of the buffer as a new
+buffer as the same class as the receiver.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000106_source')" id="l_M000106_source">show source</a> ]</p>
+  <div id="M000106_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/util/buffer.rb, line 77</span>
+77:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">remainder_as_buffer</span>
+78:           <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">new</span>( <span class="ruby-ivar">@content</span>[ <span class="ruby-ivar">@position</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span> ] )
+79:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000114"></a><b>reset!</b>()
+  </div>
+  <div class="description">
+  <p>
+Resets the pointer to the start of the buffer.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000114_source')" id="l_M000114_source">show source</a> ]</p>
+  <div id="M000114_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/util/buffer.rb, line 132</span>
+132:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">reset!</span>
+133:           <span class="ruby-ivar">@position</span> = <span class="ruby-value">0</span>
+134:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

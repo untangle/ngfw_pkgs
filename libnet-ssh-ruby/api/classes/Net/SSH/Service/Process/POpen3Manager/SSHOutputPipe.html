@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: Net::SSH::Service::Process::POpen3Manager::SSHOutputPipe</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../../../../../.././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "width=400,height=400,scrollbars=yes" )
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />Net::SSH::Service::Process::POpen3Manager::SSHOutputPipe</td>
+  <td align="right">
+    <table cellspacing=0 cellpadding=2>
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../../../../../../files/lib/net/ssh/service/process/popen3_rb.html">lib/net/ssh/service/process/popen3.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+Object
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+An abstract class representing a writable stream on a channel. This is
+subclassed by <a href="SSHStdoutPipe.html">SSHStdoutPipe</a> and <a
+href="SSHStderrPipe.html">SSHStderrPipe</a>.
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000251">data_available?</a></li>
+  <li><a href="#M000250">new</a></li>
+  <li><a href="#M000252">read</a></li>
+  </ul>
+
+
+
+
+
+  <div class="sectiontitle">Attributes</div>
+  <table border='0' cellpadding='5'>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[R]
+    </td>
+    <td class='attr-name'>channel</td>
+    <td class='attr-desc'>
+The channel used by this pipe.
+
+</td>
+  </tr>
+  </table>
+
+<div class="sectiontitle">Public Class methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000250"></a><b>new</b>( channel )
+  </div>
+  <div class="description">
+  <p>
+Create a <a href="SSHOutputPipe.html#M000250">new</a> output pipe on the
+given channel.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000250_source')" id="l_M000250_source">show source</a> ]</p>
+  <div id="M000250_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/service/process/popen3.rb, line 106</span>
+106:             <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">channel</span> )
+107:               <span class="ruby-ivar">@channel</span> = <span class="ruby-identifier">channel</span>
+108:               <span class="ruby-ivar">@data</span> = <span class="ruby-value str">&quot;&quot;</span>
+109:             <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000251"></a><b>data_available?</b>()
+  </div>
+  <div class="description">
+  <p>
+Returns true if there are any bytes available on this pipe. This will do a
+non-blocking <a href="SSHOutputPipe.html#M000252">read</a> on the
+connection to determine if there
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000251_source')" id="l_M000251_source">show source</a> ]</p>
+  <div id="M000251_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/service/process/popen3.rb, line 114</span>
+114:             <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">data_available?</span>
+115:               <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@data</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+116:                 <span class="ruby-identifier">connection</span> = <span class="ruby-ivar">@channel</span>.<span class="ruby-identifier">connection</span>
+117:                 <span class="ruby-identifier">connection</span>.<span class="ruby-identifier">process</span> <span class="ruby-keyword kw">while</span> <span class="ruby-identifier">connection</span>.<span class="ruby-identifier">reader_ready?</span>
+118:               <span class="ruby-keyword kw">end</span>
+119:               <span class="ruby-ivar">@data</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+120:             <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000252"></a><b>read</b>()
+  </div>
+  <div class="description">
+  <p>
+Read all available bytes from the pipe. If there are no available bytes,
+then this will block until data becomes available.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000252_source')" id="l_M000252_source">show source</a> ]</p>
+  <div id="M000252_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/service/process/popen3.rb, line 124</span>
+124:             <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">read</span>
+125:               <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@data</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">1</span>
+126:                 <span class="ruby-ivar">@channel</span>.<span class="ruby-identifier">connection</span>.<span class="ruby-identifier">process</span> <span class="ruby-keyword kw">while</span> <span class="ruby-ivar">@data</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">1</span>
+127:               <span class="ruby-keyword kw">end</span>
+128: 
+129:               <span class="ruby-identifier">data</span>, <span class="ruby-ivar">@data</span> = <span class="ruby-ivar">@data</span>, <span class="ruby-value str">&quot;&quot;</span>
+130:               <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">data</span>
+131:             <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

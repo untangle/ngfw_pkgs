@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: Net::SSH::UserAuth::Methods::KeyboardInteractive</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../../../../.././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "width=400,height=400,scrollbars=yes" )
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />Net::SSH::UserAuth::Methods::KeyboardInteractive</td>
+  <td align="right">
+    <table cellspacing=0 cellpadding=2>
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../../../../../files/lib/net/ssh/userauth/methods/keyboard-interactive_rb.html">lib/net/ssh/userauth/methods/keyboard-interactive.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+Object
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+Implements the &quot;keyboard-interactive&quot; <a
+href="../../../SSH.html">SSH</a> authentication method.
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000141">authenticate</a></li>
+  <li><a href="#M000140">new</a></li>
+  </ul>
+
+<div class="sectiontitle">Included Modules</div>
+<ul>
+  <li><a href="../Constants.html">Net::SSH::UserAuth::Constants</a></li>
+</ul>
+
+
+
+  <div class="sectiontitle">Constants</div>
+  <table border='0' cellpadding='5'>
+  <tr valign='top'>
+    <td class="attr-name">InfoRequest</td>
+    <td>=</td>
+    <td class="attr-value">Struct.new( :name, :instruction, :password, :prompts )</td>
+  </tr>
+  <tr valign='top'>
+    <td>&nbsp;</td>
+    <td colspan="2" class="attr-desc">
+Represents an information request from the server
+
+</td>
+  </tr>
+  <tr valign='top'>
+    <td class="attr-name">Prompt</td>
+    <td>=</td>
+    <td class="attr-value">Struct.new( :prompt, :echo )</td>
+  </tr>
+  <tr valign='top'>
+    <td>&nbsp;</td>
+    <td colspan="2" class="attr-desc">
+Represents a single prompt in an InfoRequest.
+
+</td>
+  </tr>
+  <tr valign='top'>
+    <td class="attr-name">USERAUTH_INFO_REQUEST</td>
+    <td>=</td>
+    <td class="attr-value">60</td>
+  </tr>
+  <tr valign='top'>
+    <td class="attr-name">USERAUTH_INFO_RESPONSE</td>
+    <td>=</td>
+    <td class="attr-value">61</td>
+  </tr>
+  </table>
+
+  <div class="sectiontitle">Attributes</div>
+  <table border='0' cellpadding='5'>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[W]
+    </td>
+    <td class='attr-name'>messenger</td>
+    <td class='attr-desc'>
+The messenger to use when communicating.
+
+</td>
+  </tr>
+  </table>
+
+<div class="sectiontitle">Public Class methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000140"></a><b>new</b>( buffers, callback )
+  </div>
+  <div class="description">
+  <p>
+Create a <a href="KeyboardInteractive.html#M000140">new</a> <a
+href="Password.html">Password</a> authenticator. It will use the given
+buffers factory to create <a
+href="KeyboardInteractive.html#M000140">new</a> buffer instances. The
+<tt>callback</tt> should be a proc object to use to specialize the behavior
+of this authentication method.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000140_source')" id="l_M000140_source">show source</a> ]</p>
+  <div id="M000140_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/userauth/methods/keyboard-interactive.rb, line 45</span>
+45:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">buffers</span>, <span class="ruby-identifier">callback</span> )
+46:             <span class="ruby-ivar">@buffers</span> = <span class="ruby-identifier">buffers</span>
+47:             <span class="ruby-ivar">@callback</span> = <span class="ruby-identifier">callback</span>
+48:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000141"></a><b>authenticate</b>( next_service, username, data={} )
+  </div>
+  <div class="description">
+  <p>
+Attempt to <a href="KeyboardInteractive.html#M000141">authenticate</a> the
+given user for the given service. The data hash must specify a
+<tt>:password</tt> value, otherwise this will always return false.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000141_source')" id="l_M000141_source">show source</a> ]</p>
+  <div id="M000141_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/userauth/methods/keyboard-interactive.rb, line 53</span>
+53:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">authenticate</span>( <span class="ruby-identifier">next_service</span>, <span class="ruby-identifier">username</span>, <span class="ruby-identifier">data</span>={} )
+54:             <span class="ruby-identifier">password</span> = <span class="ruby-identifier">data</span>[<span class="ruby-identifier">:password</span>]
+55: 
+56:             <span class="ruby-identifier">msg</span> = <span class="ruby-ivar">@buffers</span>.<span class="ruby-identifier">writer</span>
+57:             <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">write_byte</span> <span class="ruby-constant">USERAUTH_REQUEST</span>
+58:             <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">write_string</span> <span class="ruby-identifier">username</span>
+59:             <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">write_string</span> <span class="ruby-identifier">next_service</span>
+60:             <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">write_string</span> <span class="ruby-value str">&quot;keyboard-interactive&quot;</span>
+61:             <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">write_string</span> <span class="ruby-value str">&quot;&quot;</span>
+62:             <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">write_string</span> <span class="ruby-value str">&quot;&quot;</span>
+63:             <span class="ruby-ivar">@messenger</span>.<span class="ruby-identifier">send_message</span> <span class="ruby-identifier">msg</span>
+64: 
+65:             <span class="ruby-identifier">loop</span> <span class="ruby-keyword kw">do</span>
+66:               <span class="ruby-identifier">message</span> = <span class="ruby-ivar">@messenger</span>.<span class="ruby-identifier">wait_for_message</span>
+67: 
+68:               <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">message</span>.<span class="ruby-identifier">message_type</span>
+69:                 <span class="ruby-keyword kw">when</span> <span class="ruby-constant">USERAUTH_SUCCESS</span>
+70:                   <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span>
+71:                 <span class="ruby-keyword kw">when</span> <span class="ruby-constant">USERAUTH_FAILURE</span>
+72:                   <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">false</span>
+73:                 <span class="ruby-keyword kw">when</span> <span class="ruby-constant">USERAUTH_INFO_REQUEST</span>
+74:                   <span class="ruby-identifier">name</span> = <span class="ruby-identifier">message</span>.<span class="ruby-identifier">buffer</span>.<span class="ruby-identifier">read_string</span>
+75:                   <span class="ruby-identifier">instruction</span> = <span class="ruby-identifier">message</span>.<span class="ruby-identifier">buffer</span>.<span class="ruby-identifier">read_string</span>
+76:                   <span class="ruby-identifier">req</span> = <span class="ruby-constant">InfoRequest</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">name</span>, <span class="ruby-identifier">instruction</span>, <span class="ruby-identifier">password</span>, [] )
+77:                   <span class="ruby-identifier">password</span> = <span class="ruby-keyword kw">nil</span> <span class="ruby-comment cmt"># only use the given password once</span>
+78: 
+79:                   <span class="ruby-identifier">lang_tag</span> = <span class="ruby-identifier">message</span>.<span class="ruby-identifier">buffer</span>.<span class="ruby-identifier">read_string</span>
+80:                   <span class="ruby-identifier">message</span>.<span class="ruby-identifier">buffer</span>.<span class="ruby-identifier">read_long</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword kw">do</span>
+81:                     <span class="ruby-identifier">prompt</span> = <span class="ruby-identifier">message</span>.<span class="ruby-identifier">buffer</span>.<span class="ruby-identifier">read_string</span>
+82:                     <span class="ruby-identifier">echo</span> = <span class="ruby-identifier">message</span>.<span class="ruby-identifier">buffer</span>.<span class="ruby-identifier">read_bool</span>
+83:                     <span class="ruby-identifier">req</span>.<span class="ruby-identifier">prompts</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-constant">Prompt</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">prompt</span>, <span class="ruby-identifier">echo</span> )
+84:                   <span class="ruby-keyword kw">end</span>
+85: 
+86:                   <span class="ruby-identifier">responses</span> = <span class="ruby-ivar">@callback</span>.<span class="ruby-identifier">call</span>( <span class="ruby-identifier">req</span> )
+87:                   <span class="ruby-identifier">msg</span> = <span class="ruby-ivar">@buffers</span>.<span class="ruby-identifier">writer</span>
+88:                   <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">write_byte</span> <span class="ruby-constant">USERAUTH_INFO_RESPONSE</span>
+89:                   <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">write_long</span> <span class="ruby-identifier">responses</span>.<span class="ruby-identifier">length</span>
+90:                   <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">write_string</span> <span class="ruby-operator">*</span><span class="ruby-identifier">responses</span>
+91:                   <span class="ruby-ivar">@messenger</span>.<span class="ruby-identifier">send_message</span> <span class="ruby-identifier">msg</span>
+92:                 <span class="ruby-keyword kw">else</span>
+93:                   <span class="ruby-identifier">raise</span> <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span><span class="ruby-operator">::</span><span class="ruby-constant">Exception</span>,
+94:                     <span class="ruby-value str">&quot;unexpected reply in keyboard interactive: &quot;</span> <span class="ruby-operator">+</span>
+95:                       <span class="ruby-identifier">message</span>.<span class="ruby-identifier">inspect</span>
+96:               <span class="ruby-keyword kw">end</span>
+97:             <span class="ruby-keyword kw">end</span>
+98:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

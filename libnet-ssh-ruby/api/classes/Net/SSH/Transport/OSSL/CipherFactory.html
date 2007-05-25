@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: Net::SSH::Transport::OSSL::CipherFactory</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../../../../.././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "width=400,height=400,scrollbars=yes" )
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />Net::SSH::Transport::OSSL::CipherFactory</td>
+  <td align="right">
+    <table cellspacing=0 cellpadding=2>
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../../../../../files/lib/net/ssh/transport/ossl/cipher-factory_rb.html">lib/net/ssh/transport/ossl/cipher-factory.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+Object
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+Implements a factory of <a href="../../../../OpenSSL.html">OpenSSL</a>
+cipher algorithms.
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000042">get</a></li>
+  <li><a href="#M000043">get_lengths</a></li>
+  <li><a href="#M000041">new</a></li>
+  </ul>
+
+
+
+
+
+  <div class="sectiontitle">Attributes</div>
+  <table border='0' cellpadding='5'>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[W]
+    </td>
+    <td class='attr-name'>identity_cipher</td>
+    <td class='attr-desc'>
+The accessor for setting the identity cipher implementation to use.
+
+</td>
+  </tr>
+  </table>
+
+<div class="sectiontitle">Public Class methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000041"></a><b>new</b>( cipher_map )
+  </div>
+  <div class="description">
+  <p>
+Create a <a href="CipherFactory.html#M000041">new</a> <a
+href="CipherFactory.html">CipherFactory</a> instance that uses the given
+Hash-like to convert SSH2 cipher algorithm names to <a
+href="../../../../OpenSSL.html">OpenSSL</a> cipher algorithm names.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000041_source')" id="l_M000041_source">show source</a> ]</p>
+  <div id="M000041_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/transport/ossl/cipher-factory.rb, line 35</span>
+35:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">cipher_map</span> )
+36:             <span class="ruby-ivar">@cipher_map</span> = <span class="ruby-identifier">cipher_map</span>
+37:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000042"></a><b>get</b>( name, iv=nil, key=nil, shared=nil, hash=nil, digester=nil, encrypt=false )
+  </div>
+  <div class="description">
+  <p>
+Retrieves a <a href="CipherFactory.html#M000041">new</a> instance of the
+named algorithm. The <a href="CipherFactory.html#M000041">new</a> instance
+will be initialized using an iv and key generated from the given iv, key,
+shared, hash and digester values. Additionally, the cipher will be put into
+encryption or decryption mode, based on the value of the <tt>encrypt</tt>
+parameter.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000042_source')" id="l_M000042_source">show source</a> ]</p>
+  <div id="M000042_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/transport/ossl/cipher-factory.rb, line 44</span>
+44:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get</span>( <span class="ruby-identifier">name</span>,
+45:                    <span class="ruby-identifier">iv</span>=<span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">key</span>=<span class="ruby-keyword kw">nil</span>,
+46:                    <span class="ruby-identifier">shared</span>=<span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">hash</span>=<span class="ruby-keyword kw">nil</span>,
+47:                    <span class="ruby-identifier">digester</span>=<span class="ruby-keyword kw">nil</span>,
+48:                    <span class="ruby-identifier">encrypt</span>=<span class="ruby-keyword kw">false</span> )
+49:           <span class="ruby-comment cmt"># begin</span>
+50:             <span class="ruby-identifier">ossl_name</span> = <span class="ruby-ivar">@cipher_map</span>.<span class="ruby-identifier">fetch</span>( <span class="ruby-identifier">name</span> ) <span class="ruby-keyword kw">do</span>
+51:               <span class="ruby-identifier">raise</span> <span class="ruby-constant">CipherNotFound</span>, <span class="ruby-identifier">name</span>
+52:             <span class="ruby-keyword kw">end</span>
+53: 
+54:             <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@identity_cipher</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">ossl_name</span> <span class="ruby-operator">==</span> <span class="ruby-value str">&quot;none&quot;</span>
+55: 
+56:             <span class="ruby-identifier">cipher</span> = <span class="ruby-constant">OpenSSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Cipher</span><span class="ruby-operator">::</span><span class="ruby-constant">Cipher</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">ossl_name</span> )
+57:             <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">send</span>( <span class="ruby-identifier">encrypt</span> <span class="ruby-value">? </span><span class="ruby-operator">:</span><span class="ruby-identifier">encrypt</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">:decrypt</span> )
+58: 
+59:             <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">padding</span> = <span class="ruby-value">0</span>
+60:             <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">iv</span> = <span class="ruby-identifier">make_key</span>( <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">iv_len</span>, <span class="ruby-identifier">iv</span>, <span class="ruby-identifier">shared</span>, <span class="ruby-identifier">hash</span>, <span class="ruby-identifier">digester</span> )
+61:             <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">key</span> = <span class="ruby-identifier">make_key</span>( <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">key_len</span>, <span class="ruby-identifier">key</span>, <span class="ruby-identifier">shared</span>, <span class="ruby-identifier">hash</span>, <span class="ruby-identifier">digester</span> )
+62: 
+63:             <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">cipher</span>
+64:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000043"></a><b>get_lengths</b>( name )
+  </div>
+  <div class="description">
+  <p>
+Returns a two-element array containing the [ key-length, block-size ] for
+the named cipher algorithm. If the cipher algorithm is unknown, or is
+&quot;none&quot;, 0 is returned for both elements of the tuple.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000043_source')" id="l_M000043_source">show source</a> ]</p>
+  <div id="M000043_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/transport/ossl/cipher-factory.rb, line 70</span>
+70:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get_lengths</span>( <span class="ruby-identifier">name</span> )
+71:             <span class="ruby-identifier">ossl_name</span> = <span class="ruby-ivar">@cipher_map</span>[ <span class="ruby-identifier">name</span> ]
+72:             <span class="ruby-keyword kw">return</span> [ <span class="ruby-value">0</span>, <span class="ruby-value">0</span> ] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">ossl_name</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">ossl_name</span> <span class="ruby-operator">==</span> <span class="ruby-value str">&quot;none&quot;</span>
+73: 
+74:             <span class="ruby-identifier">cipher</span> = <span class="ruby-constant">OpenSSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Cipher</span><span class="ruby-operator">::</span><span class="ruby-constant">Cipher</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">ossl_name</span> )
+75:             <span class="ruby-keyword kw">return</span> [ <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">key_len</span>, <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">block_size</span> ]
+76:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

@@ -132,6 +132,7 @@ class SSHPlugin < Plugin
 
         Net::SSH.start(@@HOST, @@USER,
                        :auth_methods => [ "publickey" ],
+                       :paranoid => false,
                        :keys => [ @@PRIVATE_KEY_FILE ] ) do |@session|
           # "0.0.0.0" is for binding on all interfaces, so support can
           # use the forwarded channel from any box on the Untangle

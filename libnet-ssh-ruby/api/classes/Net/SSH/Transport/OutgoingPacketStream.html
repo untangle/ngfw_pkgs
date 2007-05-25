@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: Net::SSH::Transport::OutgoingPacketStream</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "width=400,height=400,scrollbars=yes" )
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />Net::SSH::Transport::OutgoingPacketStream</td>
+  <td align="right">
+    <table cellspacing=0 cellpadding=2>
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../../../../files/lib/net/ssh/transport/packet-stream_rb.html">lib/net/ssh/transport/packet-stream.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+        <a href="PacketStream.html">
+PacketStream
+         </a>
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+Handles the compression and encryption of outgoing packets.
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000064">new</a></li>
+  <li><a href="#M000066">send</a></li>
+  <li><a href="#M000065">set_algorithms</a></li>
+  </ul>
+
+
+
+
+
+
+<div class="sectiontitle">Public Class methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000064"></a><b>new</b>( ciphers, hmacs, compressors )
+  </div>
+  <div class="description">
+  <p>
+Create a <a href="OutgoingPacketStream.html#M000064">new</a> <a
+href="OutgoingPacketStream.html">OutgoingPacketStream</a>.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000064_source')" id="l_M000064_source">show source</a> ]</p>
+  <div id="M000064_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/transport/packet-stream.rb, line 70</span>
+70:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">ciphers</span>, <span class="ruby-identifier">hmacs</span>, <span class="ruby-identifier">compressors</span> )
+71:           <span class="ruby-keyword kw">super</span>( <span class="ruby-identifier">ciphers</span>, <span class="ruby-identifier">hmacs</span> )
+72:           <span class="ruby-ivar">@compressor</span> = <span class="ruby-identifier">compressors</span>.<span class="ruby-identifier">fetch</span>( <span class="ruby-value str">&quot;none&quot;</span> )
+73:           <span class="ruby-ivar">@mutex</span> = <span class="ruby-constant">Mutex</span>.<span class="ruby-identifier">new</span>
+74:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000066"></a><b>send</b>( payload )
+  </div>
+  <div class="description">
+  <p>
+Send the given payload over the socket, after (possibly) compressing and
+encrypting it. The payload is converted to a string (using to_s) before
+being manipulated.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000066_source')" id="l_M000066_source">show source</a> ]</p>
+  <div id="M000066_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/transport/packet-stream.rb, line 85</span>
+ 85:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">send</span>( <span class="ruby-identifier">payload</span> )
+ 86:           <span class="ruby-ivar">@mutex</span>.<span class="ruby-identifier">synchronize</span> <span class="ruby-keyword kw">do</span>
+ 87:             <span class="ruby-comment cmt"># force the payload into a string</span>
+ 88:             <span class="ruby-identifier">payload</span> = <span class="ruby-ivar">@compressor</span>.<span class="ruby-identifier">compress</span>( <span class="ruby-identifier">payload</span>.<span class="ruby-identifier">to_s</span> )
+ 89: 
+ 90:             <span class="ruby-comment cmt"># the length of the packet, minus the padding</span>
+ 91:             <span class="ruby-identifier">actual_length</span> = <span class="ruby-value">4</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">payload</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>
+ 92: 
+ 93:             <span class="ruby-comment cmt"># compute the padding length</span>
+ 94:             <span class="ruby-identifier">padding_length</span> = <span class="ruby-ivar">@cipher</span>.<span class="ruby-identifier">block_size</span> <span class="ruby-operator">-</span>
+ 95:               ( <span class="ruby-identifier">actual_length</span> <span class="ruby-operator">%</span> <span class="ruby-ivar">@cipher</span>.<span class="ruby-identifier">block_size</span> )
+ 96:             <span class="ruby-identifier">padding_length</span> <span class="ruby-operator">+=</span> <span class="ruby-ivar">@cipher</span>.<span class="ruby-identifier">block_size</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">padding_length</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">4</span>
+ 97: 
+ 98:             <span class="ruby-comment cmt"># compute the packet length (sans the length field itself)</span>
+ 99:             <span class="ruby-identifier">packet_length</span> = <span class="ruby-identifier">payload</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">padding_length</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>
+100: 
+101:             <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">packet_length</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">16</span>
+102:               <span class="ruby-identifier">padding_length</span> <span class="ruby-operator">+=</span> <span class="ruby-ivar">@cipher</span>.<span class="ruby-identifier">block_size</span>
+103:               <span class="ruby-identifier">packet_length</span> = <span class="ruby-identifier">payload</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">padding_length</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>
+104:             <span class="ruby-keyword kw">end</span>
+105: 
+106:             <span class="ruby-identifier">padding</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">padding_length</span> ) { <span class="ruby-identifier">rand</span>(<span class="ruby-value">256</span>) }.<span class="ruby-identifier">pack</span>(<span class="ruby-value str">&quot;C*&quot;</span>)
+107: 
+108:             <span class="ruby-identifier">unencrypted_data</span> = [ <span class="ruby-identifier">packet_length</span>, <span class="ruby-identifier">padding_length</span>, <span class="ruby-identifier">payload</span>,
+109:               <span class="ruby-identifier">padding</span> ].<span class="ruby-identifier">pack</span>( <span class="ruby-value str">&quot;NCA*A*&quot;</span> )
+110:             <span class="ruby-identifier">mac</span> = <span class="ruby-identifier">compute_hmac</span>( <span class="ruby-identifier">unencrypted_data</span> )
+111: 
+112:             <span class="ruby-identifier">encrypted_data</span> = <span class="ruby-ivar">@cipher</span>.<span class="ruby-identifier">update</span>( <span class="ruby-identifier">unencrypted_data</span> ) <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-ivar">@cipher</span>.<span class="ruby-identifier">final</span>
+113:             <span class="ruby-identifier">message</span> = <span class="ruby-identifier">encrypted_data</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">mac</span>
+114:             <span class="ruby-ivar">@socket</span>.<span class="ruby-identifier">send</span> <span class="ruby-identifier">message</span>, <span class="ruby-value">0</span>
+115: 
+116:             <span class="ruby-identifier">increment_sequence_number</span>
+117:           <span class="ruby-keyword kw">end</span>
+118:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000065"></a><b>set_algorithms</b>( cipher, hmac, compressor )
+  </div>
+  <div class="description">
+  <p>
+Set the cipher, mac, and compressor to the given values.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000065_source')" id="l_M000065_source">show source</a> ]</p>
+  <div id="M000065_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/transport/packet-stream.rb, line 77</span>
+77:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">set_algorithms</span>( <span class="ruby-identifier">cipher</span>, <span class="ruby-identifier">hmac</span>, <span class="ruby-identifier">compressor</span> )
+78:           <span class="ruby-keyword kw">super</span>( <span class="ruby-identifier">cipher</span>, <span class="ruby-identifier">hmac</span> )
+79:           <span class="ruby-ivar">@compressor</span> = <span class="ruby-identifier">compressor</span>
+80:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

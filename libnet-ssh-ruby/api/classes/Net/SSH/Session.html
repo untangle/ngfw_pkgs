@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: Net::SSH::Session</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "width=400,height=400,scrollbars=yes" )
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />Net::SSH::Session</td>
+  <td align="right">
+    <table cellspacing=0 cellpadding=2>
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../../../files/lib/net/ssh/session_rb.html">lib/net/ssh/session.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+Object
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+Encapsulates a single session (connection) to a server via <a
+href="../SSH.html">SSH</a>.
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000315">close</a></li>
+  <li><a href="#M000318">loop</a></li>
+  <li><a href="#M000319">method_missing</a></li>
+  <li><a href="#M000314">new</a></li>
+  <li><a href="#M000316">open?</a></li>
+  <li><a href="#M000317">open_channel</a></li>
+  </ul>
+
+
+
+
+
+  <div class="sectiontitle">Attributes</div>
+  <table border='0' cellpadding='5'>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[R]
+    </td>
+    <td class='attr-name'>connection</td>
+    <td class='attr-desc'>
+The underlying connection
+
+</td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[R]
+    </td>
+    <td class='attr-name'>host</td>
+    <td class='attr-desc'>
+The name of the host that this session is connected to.
+
+</td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[R]
+    </td>
+    <td class='attr-name'>options</td>
+    <td class='attr-desc'>
+The hash of options that were used to establish this session.
+
+</td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[R]
+    </td>
+    <td class='attr-name'>registry</td>
+    <td class='attr-desc'>
+The dependency-injection registry used by this session.
+
+</td>
+  </tr>
+  </table>
+
+<div class="sectiontitle">Public Class methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000314"></a><b>new</b>( *args ) {|self| ...}
+  </div>
+  <div class="description">
+  <p>
+Create a <a href="Session.html#M000314">new</a> <a
+href="../SSH.html">SSH</a> session. This method polymorphically accepts a
+variable number of parameters, as follows:
+</p>
+<ul>
+<li>1 parameter: must be the hostname to connect to.
+
+</li>
+<li>2 parameters: must be the hostname, and either the port (as an integer) or
+the username to connect as.
+
+</li>
+<li>3 parameters: must be the hostname, and either the port (as an integer) and
+username, or the username and the password.
+
+</li>
+<li>4 parameters: must be the hostname, port, username, and password.
+
+</li>
+</ul>
+<p>
+Any scenario above that omits the username assumes that the USER
+environment variable is set to the user&#8216;s name. Any scenario above
+that omits the password assumes that the user will log in without a
+password (ie, using a public key). Any scenario above that omits the port
+number assumes a port number of 22 (the default for <a
+href="../SSH.html">SSH</a>).
+</p>
+<p>
+Any of the above scenarios may also accept a Hash as the last parameter,
+specifying a list of additional options to be used to initialize the
+session. (See Net::SSH::Session.add_options).
+</p>
+<p>
+Alternatively, named parameters may be used, in which case the first
+parameter is positional and is always the host to connect to, following
+which you may specify any of the following named parameters (as symbols):
+</p>
+<ul>
+<li>:port
+
+</li>
+<li>:username
+
+</li>
+<li>:password
+
+</li>
+</ul>
+<p>
+Any additional parameters are treated as options that configure how the
+connection behaves.
+</p>
+<p>
+Allowed options are:
+</p>
+<ul>
+<li>:keys (the list of filenames identifying the user&#8216;s keys)
+
+</li>
+<li>:host_keys (the list of filenames identifying the host&#8216;s keys)
+
+</li>
+<li>:auth_methods (a list of authentication methods to use)
+
+</li>
+<li>:crypto_backend (defaults to :ossl, and specifies the cryptography backend
+to use)
+
+</li>
+<li>:registry_options (a hash of options to use when creating the registry)
+
+</li>
+<li>:container (the registry to use. If not specified, a <a
+href="Session.html#M000314">new</a> registry will be created)
+
+</li>
+<li>:verbose (how verbose the logging output should be. Defaults to :warn).
+
+</li>
+<li>:log (the name of the file, or the IO object, to which messages will be
+logged. Defaults to STDERR.)
+
+</li>
+<li>:forward_agent (true or false, whether or not to forward requests for the
+authentication agent. Defaults to false.)
+
+</li>
+<li>:paranoid (either false, in which case server fingerprints are not
+verified, true, in which case they are verified and mismatches result in a
+warning and a prompt, or an object responding to :allow?, which will be
+invoked and should return true or false for whether or not to allow the
+connection. Defaults to true.)
+
+</li>
+</ul>
+<p>
+Also, any options recognized by <a
+href="Transport/Session.html">Net::SSH::Transport::Session</a> may be
+given, and will be passed through to initialize the transport session.
+</p>
+<p>
+If a block is given to this method, then it is called with the <a
+href="Session.html#M000314">new</a> session object. The session object is
+then closed when the block terminates. If a block is not given, then the
+session object is returned (and must be closed explicitly).
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000314_source')" id="l_M000314_source">show source</a> ]</p>
+  <div id="M000314_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/session.rb, line 100</span>
+100:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-operator">*</span><span class="ruby-identifier">args</span> )
+101:         <span class="ruby-ivar">@open</span> = <span class="ruby-keyword kw">false</span>
+102:         <span class="ruby-ivar">@agent_forwarded</span> = <span class="ruby-keyword kw">false</span>
+103: 
+104:         <span class="ruby-identifier">process_arguments</span>( <span class="ruby-operator">*</span><span class="ruby-identifier">args</span> )
+105: 
+106:         <span class="ruby-ivar">@registry</span>.<span class="ruby-identifier">define</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">b</span><span class="ruby-operator">|</span>
+107:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">crypto_backend</span> { <span class="ruby-ivar">@crypto_backend</span> }
+108:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">transport_host</span> { <span class="ruby-ivar">@host</span> }
+109:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">transport_options</span> { <span class="ruby-ivar">@options</span> }
+110: 
+111:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">userauth_keys</span> { <span class="ruby-ivar">@keys</span> }
+112:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">userauth_host_keys</span> { <span class="ruby-ivar">@host_keys</span> }
+113:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">userauth_method_order</span> { <span class="ruby-ivar">@auth_methods</span> }
+114: 
+115:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">host_key_verifier</span> { <span class="ruby-ivar">@host_key_verifier</span> }
+116: 
+117:           <span class="ruby-comment cmt"># Register myself with the registry, so that other services may</span>
+118:           <span class="ruby-comment cmt"># access me.</span>
+119:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">session</span>( <span class="ruby-identifier">:pipeline</span> =<span class="ruby-operator">&gt;</span> [] ) { <span class="ruby-keyword kw">self</span> }
+120: 
+121:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">prompter</span> <span class="ruby-keyword kw">do</span>
+122:             <span class="ruby-identifier">require</span> <span class="ruby-value str">'net/ssh/util/prompter'</span>
+123:             <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span><span class="ruby-operator">::</span><span class="ruby-constant">Util</span><span class="ruby-operator">::</span><span class="ruby-constant">Prompter</span>.<span class="ruby-identifier">new</span>
+124:           <span class="ruby-keyword kw">end</span>
+125: 
+126:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">require</span> <span class="ruby-value str">'net/ssh/transport/services'</span>, <span class="ruby-value str">&quot;Net::SSH::Transport&quot;</span>
+127:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">require</span> <span class="ruby-value str">'net/ssh/connection/services'</span>, <span class="ruby-value str">&quot;Net::SSH::Connection&quot;</span>
+128:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">require</span> <span class="ruby-value str">'net/ssh/userauth/services'</span>, <span class="ruby-value str">&quot;Net::SSH::UserAuth&quot;</span>
+129: 
+130:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">require</span> <span class="ruby-value str">'net/ssh/service/services'</span>, <span class="ruby-value str">&quot;Net::SSH::Service&quot;</span>
+131:         <span class="ruby-keyword kw">end</span>
+132: 
+133:         <span class="ruby-identifier">userauth</span> = <span class="ruby-ivar">@registry</span>[<span class="ruby-identifier">:userauth</span>][<span class="ruby-identifier">:driver</span>]
+134:         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">userauth</span>.<span class="ruby-identifier">authenticate</span>( <span class="ruby-value str">&quot;ssh-connection&quot;</span>, <span class="ruby-ivar">@username</span>, <span class="ruby-ivar">@password</span> )
+135:           <span class="ruby-ivar">@open</span> = <span class="ruby-keyword kw">true</span>
+136:           <span class="ruby-ivar">@connection</span> = <span class="ruby-ivar">@registry</span>[<span class="ruby-identifier">:connection</span>][<span class="ruby-identifier">:driver</span>]
+137:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">block_given?</span>
+138:             <span class="ruby-keyword kw">yield</span> <span class="ruby-keyword kw">self</span>
+139:             <span class="ruby-identifier">close</span>
+140:           <span class="ruby-keyword kw">end</span>
+141:         <span class="ruby-keyword kw">else</span>
+142:           <span class="ruby-ivar">@registry</span>[<span class="ruby-identifier">:transport</span>][<span class="ruby-identifier">:session</span>].<span class="ruby-identifier">close</span>
+143:           <span class="ruby-identifier">raise</span> <span class="ruby-constant">AuthenticationFailed</span>, <span class="ruby-ivar">@username</span>
+144:         <span class="ruby-keyword kw">end</span>
+145:       <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000315"></a><b>close</b>()
+  </div>
+  <div class="description">
+  <p>
+Closes the session, if it is open. If it is not open, this does nothing.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000315_source')" id="l_M000315_source">show source</a> ]</p>
+  <div id="M000315_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/session.rb, line 149</span>
+149:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">close</span>
+150:         <span class="ruby-ivar">@registry</span>[<span class="ruby-identifier">:transport</span>][<span class="ruby-identifier">:session</span>].<span class="ruby-identifier">close</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@open</span>
+151:         <span class="ruby-ivar">@open</span> = <span class="ruby-keyword kw">false</span>
+152:       <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000318"></a><b>loop</b>( &amp;block )
+  </div>
+  <div class="description">
+  <p>
+Enters the main communication <a href="Session.html#M000318">loop</a>. This
+processes events occuring over the channel. If a block is given, the <a
+href="Session.html#M000318">loop</a> will continue for as long as the block
+returns <tt>true</tt>. Otherwise, the <a
+href="Session.html#M000318">loop</a> continues until there are no more open
+channels. (See Net::SSH::Connection::Driver#loop).
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000318_source')" id="l_M000318_source">show source</a> ]</p>
+  <div id="M000318_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/session.rb, line 184</span>
+184:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">loop</span>( <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span> )
+185:         <span class="ruby-identifier">sanity_check</span>
+186:         <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">loop</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+187:       <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000319"></a><b>method_missing</b>( sym, *args, &amp;block )
+  </div>
+  <div class="description">
+  <p>
+Provides convenient access to services that have been registered with the
+session, such as &quot;process&quot; and &quot;forward&quot;.
+</p>
+<p>
+Usage:
+</p>
+<pre>
+  session.forward.local(...)
+</pre>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000319_source')" id="l_M000319_source">show source</a> ]</p>
+  <div id="M000319_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/session.rb, line 195</span>
+195:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">method_missing</span>( <span class="ruby-identifier">sym</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span> )
+196:         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">empty?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">block</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@registry</span>[<span class="ruby-identifier">:services</span>].<span class="ruby-identifier">has_key?</span>( <span class="ruby-identifier">sym</span> )
+197:           <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@registry</span>[<span class="ruby-identifier">:services</span>][ <span class="ruby-identifier">sym</span> ]
+198:         <span class="ruby-keyword kw">else</span>
+199:           <span class="ruby-keyword kw">super</span>
+200:         <span class="ruby-keyword kw">end</span>
+201:       <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000316"></a><b>open?</b>()
+  </div>
+  <div class="description">
+  <p>
+Returns <tt>true</tt> if the session is currently open.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000316_source')" id="l_M000316_source">show source</a> ]</p>
+  <div id="M000316_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/session.rb, line 155</span>
+155:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">open?</span>
+156:         <span class="ruby-ivar">@open</span>
+157:       <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000317"></a><b>open_channel</b>( type=&quot;session&quot;, data=nil, &amp;block )
+  </div>
+  <div class="description">
+  <p>
+Opens a <a href="Session.html#M000314">new</a> communication channel over
+the current connection. This returns immediately. The block will be invoked
+when then the channel has been opened. (See
+Net::SSH::Connection::Driver#open_channel).
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000317_source')" id="l_M000317_source">show source</a> ]</p>
+  <div id="M000317_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/session.rb, line 162</span>
+162:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">open_channel</span>( <span class="ruby-identifier">type</span>=<span class="ruby-value str">&quot;session&quot;</span>, <span class="ruby-identifier">data</span>=<span class="ruby-keyword kw">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span> )
+163:         <span class="ruby-identifier">sanity_check</span>
+164:         <span class="ruby-identifier">channel</span> = <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">open_channel</span>( <span class="ruby-identifier">type</span>, <span class="ruby-identifier">data</span> )
+165:         <span class="ruby-identifier">channel</span>.<span class="ruby-identifier">on_confirm_open</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+166: 
+167:         <span class="ruby-comment cmt"># If we have an agent, and agent-forwarding is enabled, set up</span>
+168:         <span class="ruby-comment cmt"># the forwarding. Do this once only, after the first channel</span>
+169:         <span class="ruby-comment cmt"># is opened.</span>
+170:         <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@forward_agent</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@registry</span>[<span class="ruby-identifier">:userauth</span>].<span class="ruby-identifier">agent</span>
+171:           <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@agent_forwarded</span>
+172:             <span class="ruby-identifier">agentforward</span>.<span class="ruby-identifier">request</span>
+173:             <span class="ruby-ivar">@agent_forwarded</span> = <span class="ruby-keyword kw">true</span>
+174:           <span class="ruby-keyword kw">end</span>
+175:         <span class="ruby-keyword kw">end</span>
+176: 
+177:         <span class="ruby-identifier">channel</span>
+178:       <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

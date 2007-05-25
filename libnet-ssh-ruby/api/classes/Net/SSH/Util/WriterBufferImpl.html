@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Module: Net::SSH::Util::WriterBufferImpl</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "width=400,height=400,scrollbars=yes" )
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Module</span><br />Net::SSH::Util::WriterBufferImpl</td>
+  <td align="right">
+    <table cellspacing=0 cellpadding=2>
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../../../../files/lib/net/ssh/util/buffer_rb.html">lib/net/ssh/util/buffer.rb</a>
+        </td>
+      </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+A convenience module for writing a string of encoded data. It provides an
+interface for easily writing and encoding data.
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000096">write</a></li>
+  <li><a href="#M000103">write_bignum</a></li>
+  <li><a href="#M000102">write_bool</a></li>
+  <li><a href="#M000100">write_byte</a></li>
+  <li><a href="#M000097">write_int64</a></li>
+  <li><a href="#M000104">write_key</a></li>
+  <li><a href="#M000098">write_long</a></li>
+  <li><a href="#M000099">write_short</a></li>
+  <li><a href="#M000101">write_string</a></li>
+  </ul>
+
+
+
+
+
+
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000096"></a><b>write</b>( *data )
+  </div>
+  <div class="description">
+  <p>
+Writes the given data literally into the string.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000096_source')" id="l_M000096_source">show source</a> ]</p>
+  <div id="M000096_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/util/buffer.rb, line 159</span>
+159:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">write</span>( <span class="ruby-operator">*</span><span class="ruby-identifier">data</span> )
+160:           <span class="ruby-ivar">@content</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">data</span>.<span class="ruby-identifier">join</span>
+161:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000103"></a><b>write_bignum</b>( *n )
+  </div>
+  <div class="description">
+  <p>
+Writes each argument to the buffer as a bignum (SSH2-style). No checking is
+done to ensure that the arguments are, in fact, bignums.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000103_source')" id="l_M000103_source">show source</a> ]</p>
+  <div id="M000103_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/util/buffer.rb, line 207</span>
+207:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">write_bignum</span>( <span class="ruby-operator">*</span><span class="ruby-identifier">n</span> )
+208:           <span class="ruby-ivar">@content</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">n</span>.<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">b</span><span class="ruby-operator">|</span> <span class="ruby-identifier">b</span>.<span class="ruby-identifier">to_ssh</span> }.<span class="ruby-identifier">join</span>
+209:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000102"></a><b>write_bool</b>( *b )
+  </div>
+  <div class="description">
+  <p>
+Writes each argument to the buffer as a (C-style) boolean, with 1 meaning
+true, and 0 meaning false.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000102_source')" id="l_M000102_source">show source</a> ]</p>
+  <div id="M000102_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/util/buffer.rb, line 201</span>
+201:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">write_bool</span>( <span class="ruby-operator">*</span><span class="ruby-identifier">b</span> )
+202:           <span class="ruby-ivar">@content</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">b</span>.<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">v</span><span class="ruby-operator">|</span> ( <span class="ruby-identifier">v</span> <span class="ruby-value">? </span><span class="ruby-value">1</span> <span class="ruby-operator">:</span> <span class="ruby-value">0</span> ).<span class="ruby-identifier">chr</span> }.<span class="ruby-identifier">join</span>
+203:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000100"></a><b>write_byte</b>( *n )
+  </div>
+  <div class="description">
+  <p>
+Writes each argument to the buffer as a byte.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000100_source')" id="l_M000100_source">show source</a> ]</p>
+  <div id="M000100_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/util/buffer.rb, line 186</span>
+186:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">write_byte</span>( <span class="ruby-operator">*</span><span class="ruby-identifier">n</span> )
+187:           <span class="ruby-ivar">@content</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">n</span>.<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> <span class="ruby-identifier">c</span>.<span class="ruby-identifier">chr</span> }.<span class="ruby-identifier">join</span>
+188:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000097"></a><b>write_int64</b>( *n )
+  </div>
+  <div class="description">
+  <p>
+Writes each argument to the buffer as a network-byte-order-encoded 64-bit
+integer (8 bytes).
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000097_source')" id="l_M000097_source">show source</a> ]</p>
+  <div id="M000097_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/util/buffer.rb, line 165</span>
+165:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">write_int64</span>( <span class="ruby-operator">*</span><span class="ruby-identifier">n</span> )
+166:           <span class="ruby-identifier">n</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+167:             <span class="ruby-identifier">hi</span> = ( <span class="ruby-identifier">i</span> <span class="ruby-operator">&gt;&gt;</span> <span class="ruby-value">32</span> ) <span class="ruby-operator">&amp;</span> <span class="ruby-value">0x</span><span class="ruby-constant">FFFFFFFF</span>
+168:             <span class="ruby-identifier">lo</span> = <span class="ruby-identifier">i</span> <span class="ruby-operator">&amp;</span> <span class="ruby-value">0x</span><span class="ruby-constant">FFFFFFFF</span>
+169:             <span class="ruby-ivar">@content</span> <span class="ruby-operator">&lt;&lt;</span> [ <span class="ruby-identifier">hi</span>, <span class="ruby-identifier">lo</span> ].<span class="ruby-identifier">pack</span>( <span class="ruby-value str">&quot;N2&quot;</span> )
+170:           <span class="ruby-keyword kw">end</span>
+171:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000104"></a><b>write_key</b>( *key )
+  </div>
+  <div class="description">
+  <p>
+Writes the given arguments to the buffer as SSH2-encoded keys.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000104_source')" id="l_M000104_source">show source</a> ]</p>
+  <div id="M000104_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/util/buffer.rb, line 212</span>
+212:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">write_key</span>( <span class="ruby-operator">*</span><span class="ruby-identifier">key</span> )
+213:           <span class="ruby-identifier">key</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span>
+214:             <span class="ruby-identifier">write_string</span>( <span class="ruby-identifier">k</span>.<span class="ruby-identifier">ssh_type</span> )
+215: 
+216:             <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">ssh_type</span>
+217:               <span class="ruby-keyword kw">when</span> <span class="ruby-value str">&quot;ssh-dss&quot;</span>
+218:                 <span class="ruby-identifier">write_bignum</span>( <span class="ruby-identifier">k</span>.<span class="ruby-identifier">p</span> )
+219:                 <span class="ruby-identifier">write_bignum</span>( <span class="ruby-identifier">k</span>.<span class="ruby-identifier">q</span> )
+220:                 <span class="ruby-identifier">write_bignum</span>( <span class="ruby-identifier">k</span>.<span class="ruby-identifier">g</span> )
+221:                 <span class="ruby-identifier">write_bignum</span>( <span class="ruby-identifier">k</span>.<span class="ruby-identifier">pub_key</span> )
+222: 
+223:               <span class="ruby-keyword kw">when</span> <span class="ruby-value str">&quot;ssh-rsa&quot;</span>
+224:                 <span class="ruby-identifier">write_bignum</span>( <span class="ruby-identifier">k</span>.<span class="ruby-identifier">e</span> )
+225:                 <span class="ruby-identifier">write_bignum</span>( <span class="ruby-identifier">k</span>.<span class="ruby-identifier">n</span> )
+226: 
+227:               <span class="ruby-keyword kw">else</span>
+228:                 <span class="ruby-identifier">raise</span> <span class="ruby-constant">NotImplementedError</span>,
+229:                   <span class="ruby-node">&quot;unsupported key type '#{k.ssh_type}'&quot;</span>
+230:             <span class="ruby-keyword kw">end</span>
+231:           <span class="ruby-keyword kw">end</span>
+232:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000098"></a><b>write_long</b>( *n )
+  </div>
+  <div class="description">
+  <p>
+Writes each argument to the buffer as a network-byte-order-encoded long
+(4-byte) integer.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000098_source')" id="l_M000098_source">show source</a> ]</p>
+  <div id="M000098_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/util/buffer.rb, line 175</span>
+175:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">write_long</span>( <span class="ruby-operator">*</span><span class="ruby-identifier">n</span> )
+176:           <span class="ruby-ivar">@content</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">n</span>.<span class="ruby-identifier">pack</span>( <span class="ruby-value str">&quot;N*&quot;</span> )
+177:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000099"></a><b>write_short</b>( *n )
+  </div>
+  <div class="description">
+  <p>
+Writes each argument to the buffer as a network-byte-order-encoded short
+(2-byte) integer.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000099_source')" id="l_M000099_source">show source</a> ]</p>
+  <div id="M000099_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/util/buffer.rb, line 181</span>
+181:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">write_short</span>( <span class="ruby-operator">*</span><span class="ruby-identifier">n</span> )
+182:           <span class="ruby-ivar">@content</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">n</span>.<span class="ruby-identifier">pack</span>( <span class="ruby-value str">&quot;n*&quot;</span> )
+183:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000101"></a><b>write_string</b>( *text )
+  </div>
+  <div class="description">
+  <p>
+Writes each argument to the buffer as an SSH2-encoded string. Each string
+is prefixed by its length, encoded as a 4-byte long integer.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000101_source')" id="l_M000101_source">show source</a> ]</p>
+  <div id="M000101_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/util/buffer.rb, line 192</span>
+192:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">write_string</span>( <span class="ruby-operator">*</span><span class="ruby-identifier">text</span> )
+193:           <span class="ruby-identifier">text</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">string</span><span class="ruby-operator">|</span>
+194:             <span class="ruby-identifier">write_long</span>( <span class="ruby-identifier">string</span>.<span class="ruby-identifier">length</span> )
+195:             <span class="ruby-identifier">write</span>( <span class="ruby-identifier">string</span> )
+196:           <span class="ruby-keyword kw">end</span>
+197:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

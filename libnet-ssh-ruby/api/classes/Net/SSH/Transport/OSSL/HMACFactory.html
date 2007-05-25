@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: Net::SSH::Transport::OSSL::HMACFactory</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../../../../.././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "width=400,height=400,scrollbars=yes" )
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />Net::SSH::Transport::OSSL::HMACFactory</td>
+  <td align="right">
+    <table cellspacing=0 cellpadding=2>
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../../../../../files/lib/net/ssh/transport/ossl/hmac-factory_rb.html">lib/net/ssh/transport/ossl/hmac-factory.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+Object
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+A factory class for returning <a href="HMACFactory.html#M000028">new</a> <a
+href="HMAC.html">HMAC</a> algorithm instances.
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000031">find_algorithm</a></li>
+  <li><a href="#M000029">get</a></li>
+  <li><a href="#M000030">get_key_length</a></li>
+  <li><a href="#M000028">new</a></li>
+  </ul>
+
+
+
+
+
+
+<div class="sectiontitle">Public Class methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000028"></a><b>new</b>( algorithms )
+  </div>
+  <div class="description">
+  <p>
+Create a <a href="HMACFactory.html#M000028">new</a> instance of the <a
+href="HMACFactory.html">HMACFactory</a> that uses the given Hash-like to
+map SSH2 <a href="HMAC.html">HMAC</a> algorithm names to instances of
+factories that can instantiate those algorithms.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000028_source')" id="l_M000028_source">show source</a> ]</p>
+  <div id="M000028_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/transport/ossl/hmac-factory.rb, line 32</span>
+32:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">algorithms</span> )
+33:             <span class="ruby-ivar">@algorithms</span> = <span class="ruby-identifier">algorithms</span>
+34:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000031"></a><b>find_algorithm</b>( name )
+  </div>
+  <div class="description">
+  <p>
+Searches all registered algorithm sets for the one with the given name.
+Returns <tt>nil</tt> if no such algorithm exists.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000031_source')" id="l_M000031_source">show source</a> ]</p>
+  <div id="M000031_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/transport/ossl/hmac-factory.rb, line 57</span>
+57:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">find_algorithm</span>( <span class="ruby-identifier">name</span> )
+58:             <span class="ruby-ivar">@algorithms</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">set</span><span class="ruby-operator">|</span>
+59:               <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">set</span>[<span class="ruby-identifier">name</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">set</span>.<span class="ruby-identifier">has_key?</span>( <span class="ruby-identifier">name</span> )
+60:             <span class="ruby-keyword kw">end</span>
+61: 
+62:             <span class="ruby-keyword kw">nil</span>
+63:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000029"></a><b>get</b>( name, key=&quot;&quot; )
+  </div>
+  <div class="description">
+  <p>
+Return a <a href="HMACFactory.html#M000028">new</a> instance of the <a
+href="HMAC.html">HMAC</a> algorithm for the given name. If no such
+algorithm exists, a <a
+href="../HMACAlgorithmNotFound.html">HMACAlgorithmNotFound</a> error will
+be raised.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000029_source')" id="l_M000029_source">show source</a> ]</p>
+  <div id="M000029_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/transport/ossl/hmac-factory.rb, line 39</span>
+39:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get</span>( <span class="ruby-identifier">name</span>, <span class="ruby-identifier">key</span>=<span class="ruby-value str">&quot;&quot;</span> )
+40:             <span class="ruby-identifier">algo</span> = <span class="ruby-identifier">find_algorithm</span>( <span class="ruby-identifier">name</span> ) <span class="ruby-keyword kw">or</span>
+41:               <span class="ruby-identifier">raise</span> <span class="ruby-constant">HMACAlgorithmNotFound</span>, <span class="ruby-identifier">name</span>
+42:               
+43:             <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">algo</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">key</span> )
+44:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000030"></a><b>get_key_length</b>( name )
+  </div>
+  <div class="description">
+  <p>
+Return the key length of the named <a href="HMAC.html">HMAC</a> algorithm.
+If no such algorithm exists, raise <a
+href="../HMACAlgorithmNotFound.html">HMACAlgorithmNotFound</a>.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000030_source')" id="l_M000030_source">show source</a> ]</p>
+  <div id="M000030_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/transport/ossl/hmac-factory.rb, line 48</span>
+48:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get_key_length</span>( <span class="ruby-identifier">name</span> )
+49:             <span class="ruby-identifier">algo</span> = <span class="ruby-identifier">find_algorithm</span>( <span class="ruby-identifier">name</span> ) <span class="ruby-keyword kw">or</span>
+50:               <span class="ruby-identifier">raise</span> <span class="ruby-constant">HMACAlgorithmNotFound</span>, <span class="ruby-identifier">name</span>
+51: 
+52:             <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">algo</span>.<span class="ruby-identifier">key_length</span>
+53:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

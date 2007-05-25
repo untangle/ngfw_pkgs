@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: Net::SSH::Transport::VersionNegotiator</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "width=400,height=400,scrollbars=yes" )
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />Net::SSH::Transport::VersionNegotiator</td>
+  <td align="right">
+    <table cellspacing=0 cellpadding=2>
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../../../../files/lib/net/ssh/transport/version-negotiator_rb.html">lib/net/ssh/transport/version-negotiator.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+Object
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+Manages the negotiation of the version strings between client and server.
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000063">negotiate</a></li>
+  <li><a href="#M000062">new</a></li>
+  </ul>
+
+
+
+
+  <div class="sectiontitle">Constants</div>
+  <table border='0' cellpadding='5'>
+  <tr valign='top'>
+    <td class="attr-name">VERSION_LINE</td>
+    <td>=</td>
+    <td class="attr-value">/^SSH-/</td>
+  </tr>
+  <tr valign='top'>
+    <td>&nbsp;</td>
+    <td colspan="2" class="attr-desc">
+For processing the version header. The version reported by the server must
+match this pattern.
+
+</td>
+  </tr>
+  <tr valign='top'>
+    <td class="attr-name">REQUIRED_VERSION_PATTERN</td>
+    <td>=</td>
+    <td class="attr-value">/^SSH-(1.99|2.0)-/</td>
+  </tr>
+  <tr valign='top'>
+    <td>&nbsp;</td>
+    <td colspan="2" class="attr-desc">
+Only versions matching this pattern are supported by <a
+href="../../SSH.html">Net::SSH</a>.
+
+</td>
+  </tr>
+  </table>
+
+  <div class="sectiontitle">Attributes</div>
+  <table border='0' cellpadding='5'>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[R]
+    </td>
+    <td class='attr-name'>header_lines</td>
+    <td class='attr-desc'>
+An array of lines returned by the server prior to reporting the version.
+
+</td>
+  </tr>
+  </table>
+
+<div class="sectiontitle">Public Class methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000062"></a><b>new</b>( logger )
+  </div>
+  <div class="description">
+  <p>
+Creates a <a href="VersionNegotiator.html#M000062">new</a> <a
+href="VersionNegotiator.html">VersionNegotiator</a> object that logs to the
+given logger instance.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000062_source')" id="l_M000062_source">show source</a> ]</p>
+  <div id="M000062_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/transport/version-negotiator.rb, line 40</span>
+40:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">logger</span> )
+41:           <span class="ruby-ivar">@logger</span> = <span class="ruby-identifier">logger</span>
+42:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000063"></a><b>negotiate</b>( socket, version )
+  </div>
+  <div class="description">
+  <p>
+Negotiate version information over the given socket. This will return the
+version reported by the server.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000063_source')" id="l_M000063_source">show source</a> ]</p>
+  <div id="M000063_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/transport/version-negotiator.rb, line 46</span>
+46:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">negotiate</span>( <span class="ruby-identifier">socket</span>, <span class="ruby-identifier">version</span> )
+47:           <span class="ruby-identifier">server_version</span> = <span class="ruby-value str">&quot;&quot;</span>
+48:           <span class="ruby-ivar">@header_lines</span> = []
+49: 
+50:           <span class="ruby-identifier">loop</span> <span class="ruby-keyword kw">do</span>
+51:             <span class="ruby-identifier">server_version</span> = <span class="ruby-identifier">socket</span>.<span class="ruby-identifier">readline</span>
+52:             <span class="ruby-keyword kw">break</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">server_version</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">||</span> <span class="ruby-constant">VERSION_LINE</span>.<span class="ruby-identifier">match</span>( <span class="ruby-identifier">server_version</span> )
+53:             <span class="ruby-ivar">@header_lines</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">server_version</span>
+54:           <span class="ruby-keyword kw">end</span>
+55: 
+56:           <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span><span class="ruby-constant">REQUIRED_VERSION_PATTERN</span>.<span class="ruby-identifier">match</span>( <span class="ruby-identifier">server_version</span> )
+57:             <span class="ruby-identifier">raise</span> <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span><span class="ruby-operator">::</span><span class="ruby-constant">Exception</span>,
+58:               <span class="ruby-node">&quot;incompatible ssh version #{server_version.inspect}&quot;</span>
+59:           <span class="ruby-keyword kw">end</span>
+60: 
+61:           <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug?</span>
+62:             <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span> <span class="ruby-node">&quot;remote server is #{server_version.chomp.inspect}&quot;</span>
+63:           <span class="ruby-keyword kw">end</span>
+64:           <span class="ruby-identifier">socket</span>.<span class="ruby-identifier">print</span> <span class="ruby-node">&quot;#{version}\r\n&quot;</span>
+65: 
+66:           <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">server_version</span>.<span class="ruby-identifier">chomp</span>
+67:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

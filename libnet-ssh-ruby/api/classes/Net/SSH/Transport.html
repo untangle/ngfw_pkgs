@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Module: Net::SSH::Transport</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "width=400,height=400,scrollbars=yes" )
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Module</span><br />Net::SSH::Transport</td>
+  <td align="right">
+    <table cellspacing=0 cellpadding=2>
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../../../files/lib/net/ssh/transport/algorithm-negotiator_rb.html">lib/net/ssh/transport/algorithm-negotiator.rb</a>
+<a href="../../../files/lib/net/ssh/transport/compress/compressor_rb.html">lib/net/ssh/transport/compress/compressor.rb</a>
+<a href="../../../files/lib/net/ssh/transport/compress/decompressor_rb.html">lib/net/ssh/transport/compress/decompressor.rb</a>
+<a href="../../../files/lib/net/ssh/transport/compress/none-compressor_rb.html">lib/net/ssh/transport/compress/none-compressor.rb</a>
+<a href="../../../files/lib/net/ssh/transport/compress/none-decompressor_rb.html">lib/net/ssh/transport/compress/none-decompressor.rb</a>
+<a href="../../../files/lib/net/ssh/transport/compress/services_rb.html">lib/net/ssh/transport/compress/services.rb</a>
+<a href="../../../files/lib/net/ssh/transport/compress/zlib-compressor_rb.html">lib/net/ssh/transport/compress/zlib-compressor.rb</a>
+<a href="../../../files/lib/net/ssh/transport/compress/zlib-decompressor_rb.html">lib/net/ssh/transport/compress/zlib-decompressor.rb</a>
+<a href="../../../files/lib/net/ssh/transport/constants_rb.html">lib/net/ssh/transport/constants.rb</a>
+<a href="../../../files/lib/net/ssh/transport/errors_rb.html">lib/net/ssh/transport/errors.rb</a>
+<a href="../../../files/lib/net/ssh/transport/identity-cipher_rb.html">lib/net/ssh/transport/identity-cipher.rb</a>
+<a href="../../../files/lib/net/ssh/transport/kex/dh-gex_rb.html">lib/net/ssh/transport/kex/dh-gex.rb</a>
+<a href="../../../files/lib/net/ssh/transport/kex/dh_rb.html">lib/net/ssh/transport/kex/dh.rb</a>
+<a href="../../../files/lib/net/ssh/transport/kex/services_rb.html">lib/net/ssh/transport/kex/services.rb</a>
+<a href="../../../files/lib/net/ssh/transport/ossl/buffer-factory_rb.html">lib/net/ssh/transport/ossl/buffer-factory.rb</a>
+<a href="../../../files/lib/net/ssh/transport/ossl/buffer_rb.html">lib/net/ssh/transport/ossl/buffer.rb</a>
+<a href="../../../files/lib/net/ssh/transport/ossl/cipher-factory_rb.html">lib/net/ssh/transport/ossl/cipher-factory.rb</a>
+<a href="../../../files/lib/net/ssh/transport/ossl/digest-factory_rb.html">lib/net/ssh/transport/ossl/digest-factory.rb</a>
+<a href="../../../files/lib/net/ssh/transport/ossl/hmac/hmac_rb.html">lib/net/ssh/transport/ossl/hmac/hmac.rb</a>
+<a href="../../../files/lib/net/ssh/transport/ossl/hmac/md5-96_rb.html">lib/net/ssh/transport/ossl/hmac/md5-96.rb</a>
+<a href="../../../files/lib/net/ssh/transport/ossl/hmac/md5_rb.html">lib/net/ssh/transport/ossl/hmac/md5.rb</a>
+<a href="../../../files/lib/net/ssh/transport/ossl/hmac/none_rb.html">lib/net/ssh/transport/ossl/hmac/none.rb</a>
+<a href="../../../files/lib/net/ssh/transport/ossl/hmac/services_rb.html">lib/net/ssh/transport/ossl/hmac/services.rb</a>
+<a href="../../../files/lib/net/ssh/transport/ossl/hmac/sha1-96_rb.html">lib/net/ssh/transport/ossl/hmac/sha1-96.rb</a>
+<a href="../../../files/lib/net/ssh/transport/ossl/hmac/sha1_rb.html">lib/net/ssh/transport/ossl/hmac/sha1.rb</a>
+<a href="../../../files/lib/net/ssh/transport/ossl/hmac-factory_rb.html">lib/net/ssh/transport/ossl/hmac-factory.rb</a>
+<a href="../../../files/lib/net/ssh/transport/ossl/key-factory_rb.html">lib/net/ssh/transport/ossl/key-factory.rb</a>
+<a href="../../../files/lib/net/ssh/transport/ossl/services_rb.html">lib/net/ssh/transport/ossl/services.rb</a>
+<a href="../../../files/lib/net/ssh/transport/packet-stream_rb.html">lib/net/ssh/transport/packet-stream.rb</a>
+<a href="../../../files/lib/net/ssh/transport/services_rb.html">lib/net/ssh/transport/services.rb</a>
+<a href="../../../files/lib/net/ssh/transport/session_rb.html">lib/net/ssh/transport/session.rb</a>
+<a href="../../../files/lib/net/ssh/transport/version-negotiator_rb.html">lib/net/ssh/transport/version-negotiator.rb</a>
+        </td>
+      </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000013">register_services</a></li>
+  </ul>
+
+
+
+  <div class="sectiontitle">Classes and Modules</div>
+  Module <a href="Transport/Compress.html" class="link">Net::SSH::Transport::Compress</a><br />
+Module <a href="Transport/Constants.html" class="link">Net::SSH::Transport::Constants</a><br />
+Module <a href="Transport/DisconnectReasons.html" class="link">Net::SSH::Transport::DisconnectReasons</a><br />
+Module <a href="Transport/Kex.html" class="link">Net::SSH::Transport::Kex</a><br />
+Module <a href="Transport/OSSL.html" class="link">Net::SSH::Transport::OSSL</a><br />
+Class <a href="Transport/AlgorithmNegotiator.html" class="link">Net::SSH::Transport::AlgorithmNegotiator</a><br />
+Class <a href="Transport/CipherNotFound.html" class="link">Net::SSH::Transport::CipherNotFound</a><br />
+Class <a href="Transport/DigestTypeNotFound.html" class="link">Net::SSH::Transport::DigestTypeNotFound</a><br />
+Class <a href="Transport/Disconnect.html" class="link">Net::SSH::Transport::Disconnect</a><br />
+Class <a href="Transport/Exception.html" class="link">Net::SSH::Transport::Exception</a><br />
+Class <a href="Transport/HMACAlgorithmNotFound.html" class="link">Net::SSH::Transport::HMACAlgorithmNotFound</a><br />
+Class <a href="Transport/IdentityCipher.html" class="link">Net::SSH::Transport::IdentityCipher</a><br />
+Class <a href="Transport/IncomingPacketStream.html" class="link">Net::SSH::Transport::IncomingPacketStream</a><br />
+Class <a href="Transport/KeyTypeNotFound.html" class="link">Net::SSH::Transport::KeyTypeNotFound</a><br />
+Class <a href="Transport/OutgoingPacketStream.html" class="link">Net::SSH::Transport::OutgoingPacketStream</a><br />
+Class <a href="Transport/PacketStream.html" class="link">Net::SSH::Transport::PacketStream</a><br />
+Class <a href="Transport/Session.html" class="link">Net::SSH::Transport::Session</a><br />
+Class <a href="Transport/VersionNegotiator.html" class="link">Net::SSH::Transport::VersionNegotiator</a><br />
+
+
+
+
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000013"></a><b>register_services</b>( container )
+  </div>
+  <div class="description">
+  <p>
+Register the services that together implement the <a
+href="../SSH.html">SSH</a> transport layer.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000013_source')" id="l_M000013_source">show source</a> ]</p>
+  <div id="M000013_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/transport/services.rb, line 22</span>
+ 22:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">register_services</span>( <span class="ruby-identifier">container</span> )
+ 23:         <span class="ruby-identifier">container</span>.<span class="ruby-identifier">namespace_define</span> <span class="ruby-identifier">:transport</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">b</span><span class="ruby-operator">|</span>
+ 24:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">kex_names</span> { <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span> }
+ 25:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">compression_algorithms</span> { <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span> }
+ 26:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">decompression_algorithms</span> { <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span> }
+ 27: 
+ 28:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">cipher_factories</span> { <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span> }
+ 29:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">hmac_factories</span> { <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span> }
+ 30:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">key_factories</span> { <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span> }
+ 31:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">buffer_factories</span> { <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span> }
+ 32:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">bn_factories</span> { <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span> }
+ 33:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">digest_factories</span> { <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span> }
+ 34: 
+ 35:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">ciphers</span>( <span class="ruby-identifier">:model</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">:prototype</span> ) { <span class="ruby-operator">|</span><span class="ruby-identifier">c</span>,<span class="ruby-operator">|</span>
+ 36:             <span class="ruby-identifier">c</span>.<span class="ruby-identifier">cipher_factories</span>.<span class="ruby-identifier">fetch</span>( <span class="ruby-identifier">c</span>.<span class="ruby-identifier">crypto_backend</span> ) }
+ 37: 
+ 38:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">hmacs</span>( <span class="ruby-identifier">:model</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">:prototype</span> ) { <span class="ruby-operator">|</span><span class="ruby-identifier">c</span>,<span class="ruby-operator">|</span>
+ 39:             <span class="ruby-identifier">c</span>.<span class="ruby-identifier">hmac_factories</span>.<span class="ruby-identifier">fetch</span>( <span class="ruby-identifier">c</span>.<span class="ruby-identifier">crypto_backend</span> ) }
+ 40: 
+ 41:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">keys</span>( <span class="ruby-identifier">:model</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">:prototype</span> ) { <span class="ruby-operator">|</span><span class="ruby-identifier">c</span>,<span class="ruby-operator">|</span>
+ 42:             <span class="ruby-identifier">c</span>.<span class="ruby-identifier">key_factories</span>.<span class="ruby-identifier">fetch</span>( <span class="ruby-identifier">c</span>.<span class="ruby-identifier">crypto_backend</span> ) }
+ 43: 
+ 44:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">buffers</span>( <span class="ruby-identifier">:model</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">:prototype</span> ) { <span class="ruby-operator">|</span><span class="ruby-identifier">c</span>,<span class="ruby-operator">|</span>
+ 45:             <span class="ruby-identifier">c</span>.<span class="ruby-identifier">buffer_factories</span>.<span class="ruby-identifier">fetch</span>( <span class="ruby-identifier">c</span>.<span class="ruby-identifier">crypto_backend</span> ) }
+ 46: 
+ 47:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">bns</span>( <span class="ruby-identifier">:model</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">:prototype</span> ) { <span class="ruby-operator">|</span><span class="ruby-identifier">c</span>,<span class="ruby-operator">|</span>
+ 48:             <span class="ruby-identifier">c</span>.<span class="ruby-identifier">bn_factories</span>.<span class="ruby-identifier">fetch</span>( <span class="ruby-identifier">c</span>.<span class="ruby-identifier">crypto_backend</span> ) }
+ 49: 
+ 50:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">digesters</span>( <span class="ruby-identifier">:model</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">:prototype</span> ) { <span class="ruby-operator">|</span><span class="ruby-identifier">c</span>,<span class="ruby-operator">|</span>
+ 51:             <span class="ruby-identifier">c</span>.<span class="ruby-identifier">digest_factories</span>.<span class="ruby-identifier">fetch</span>( <span class="ruby-identifier">c</span>.<span class="ruby-identifier">crypto_backend</span> ) }
+ 52: 
+ 53:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">identity_cipher</span> <span class="ruby-keyword kw">do</span>
+ 54:             <span class="ruby-identifier">require</span> <span class="ruby-value str">'net/ssh/transport/identity-cipher'</span>
+ 55:             <span class="ruby-constant">IdentityCipher</span>.<span class="ruby-identifier">new</span>
+ 56:           <span class="ruby-keyword kw">end</span>
+ 57: 
+ 58:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">outgoing_packet_stream</span> <span class="ruby-identifier">:model</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">:prototype_deferred</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span>,<span class="ruby-operator">|</span>
+ 59:             <span class="ruby-identifier">require</span> <span class="ruby-value str">'net/ssh/transport/packet-stream'</span>
+ 60:             <span class="ruby-constant">OutgoingPacketStream</span>.<span class="ruby-identifier">new</span>(
+ 61:               <span class="ruby-identifier">c</span>.<span class="ruby-identifier">ciphers</span>, <span class="ruby-identifier">c</span>.<span class="ruby-identifier">hmacs</span>, <span class="ruby-identifier">c</span>.<span class="ruby-identifier">compression_algorithms</span> )
+ 62:           <span class="ruby-keyword kw">end</span>
+ 63: 
+ 64:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">incoming_packet_stream</span> <span class="ruby-identifier">:model</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">:prototype_deferred</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span>,<span class="ruby-identifier">point</span><span class="ruby-operator">|</span>
+ 65:             <span class="ruby-identifier">require</span> <span class="ruby-value str">'net/ssh/transport/packet-stream'</span>
+ 66:             <span class="ruby-identifier">stream</span> = <span class="ruby-constant">IncomingPacketStream</span>.<span class="ruby-identifier">new</span>(
+ 67:               <span class="ruby-identifier">c</span>.<span class="ruby-identifier">ciphers</span>, <span class="ruby-identifier">c</span>.<span class="ruby-identifier">hmacs</span>, <span class="ruby-identifier">c</span>.<span class="ruby-identifier">decompression_algorithms</span> )
+ 68:             <span class="ruby-identifier">stream</span>.<span class="ruby-identifier">buffers</span> = <span class="ruby-identifier">c</span>.<span class="ruby-identifier">buffers</span>
+ 69:             <span class="ruby-identifier">stream</span>.<span class="ruby-identifier">log</span> = <span class="ruby-identifier">c</span>.<span class="ruby-identifier">log_for</span>( <span class="ruby-identifier">point</span> )
+ 70:             <span class="ruby-identifier">stream</span>
+ 71:           <span class="ruby-keyword kw">end</span>
+ 72: 
+ 73:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">algorithms</span> <span class="ruby-keyword kw">do</span>
+ 74:             <span class="ruby-constant">Hash</span>[
+ 75:               <span class="ruby-identifier">:host_key</span> =<span class="ruby-operator">&gt;</span> [ <span class="ruby-value str">&quot;ssh-dss&quot;</span>, <span class="ruby-value str">&quot;ssh-rsa&quot;</span> ],
+ 76:               <span class="ruby-identifier">:kex</span> =<span class="ruby-operator">&gt;</span> [ <span class="ruby-value str">&quot;diffie-hellman-group-exchange-sha1&quot;</span>,
+ 77:                         <span class="ruby-value str">&quot;diffie-hellman-group1-sha1&quot;</span> ],
+ 78:               <span class="ruby-identifier">:encryption</span> =<span class="ruby-operator">&gt;</span> [ <span class="ruby-value str">&quot;3des-cbc&quot;</span>,
+ 79:                                <span class="ruby-value str">&quot;aes128-cbc&quot;</span>, 
+ 80:                                <span class="ruby-value str">&quot;blowfish-cbc&quot;</span>,
+ 81:                                <span class="ruby-value str">&quot;aes256-cbc&quot;</span>,
+ 82:                                <span class="ruby-value str">&quot;aes192-cbc&quot;</span>,
+ 83:                                <span class="ruby-value str">&quot;idea-cbc&quot;</span>,
+ 84:                                <span class="ruby-value str">&quot;none&quot;</span> ],
+ 85:               <span class="ruby-identifier">:hmac</span> =<span class="ruby-operator">&gt;</span> [ <span class="ruby-value str">&quot;hmac-md5&quot;</span>,
+ 86:                          <span class="ruby-value str">&quot;hmac-sha1&quot;</span>,
+ 87:                          <span class="ruby-value str">&quot;hmac-md5-96&quot;</span>,
+ 88:                          <span class="ruby-value str">&quot;hmac-sha1-96&quot;</span>,
+ 89:                          <span class="ruby-value str">&quot;none&quot;</span> ],
+ 90:               <span class="ruby-identifier">:compression</span> =<span class="ruby-operator">&gt;</span> [ <span class="ruby-value str">&quot;none&quot;</span>, <span class="ruby-value str">&quot;zlib&quot;</span> ],
+ 91:               <span class="ruby-identifier">:languages</span> =<span class="ruby-operator">&gt;</span> []
+ 92:             ]
+ 93:           <span class="ruby-keyword kw">end</span>
+ 94: 
+ 95:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">default_ssh_port</span> { <span class="ruby-value">22</span> }
+ 96: 
+ 97:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">socket_factory</span> <span class="ruby-keyword kw">do</span>
+ 98:             <span class="ruby-identifier">require</span> <span class="ruby-value str">'socket'</span>
+ 99:             <span class="ruby-constant">TCPSocket</span>
+100:           <span class="ruby-keyword kw">end</span>
+101: 
+102:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">version_negotiator</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span>,<span class="ruby-identifier">point</span><span class="ruby-operator">|</span>
+103:             <span class="ruby-identifier">require</span> <span class="ruby-value str">'net/ssh/transport/version-negotiator'</span>
+104:             <span class="ruby-constant">VersionNegotiator</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">c</span>.<span class="ruby-identifier">log_for</span>( <span class="ruby-identifier">point</span> ) )
+105:           <span class="ruby-keyword kw">end</span>
+106: 
+107:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">algorithm_negotiator</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span>,<span class="ruby-identifier">point</span><span class="ruby-operator">|</span>
+108:             <span class="ruby-identifier">require</span> <span class="ruby-value str">'net/ssh/transport/algorithm-negotiator'</span>
+109:             <span class="ruby-constant">AlgorithmNegotiator</span>.<span class="ruby-identifier">new</span>(
+110:               <span class="ruby-identifier">c</span>.<span class="ruby-identifier">log_for</span>( <span class="ruby-identifier">point</span> ),
+111:               <span class="ruby-identifier">c</span>.<span class="ruby-identifier">algorithms</span>,
+112:               <span class="ruby-identifier">c</span>.<span class="ruby-identifier">buffers</span> )
+113:           <span class="ruby-keyword kw">end</span>
+114: 
+115:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">session</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span>,<span class="ruby-identifier">point</span><span class="ruby-operator">|</span>
+116:             <span class="ruby-identifier">require</span> <span class="ruby-value str">'net/ssh/transport/session'</span>
+117: 
+118:             <span class="ruby-identifier">args</span> = [ <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:transport_host</span>] ]
+119:             <span class="ruby-identifier">args</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:transport_options</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">c</span>.<span class="ruby-identifier">knows_key?</span>(<span class="ruby-identifier">:transport_options</span>)
+120: 
+121:             <span class="ruby-constant">Session</span>.<span class="ruby-identifier">new</span>( <span class="ruby-operator">*</span><span class="ruby-identifier">args</span> ) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">s</span><span class="ruby-operator">|</span>
+122:               <span class="ruby-identifier">s</span>.<span class="ruby-identifier">logger</span>               = <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:log_for</span>, <span class="ruby-identifier">point</span>]
+123:               <span class="ruby-identifier">s</span>.<span class="ruby-identifier">default_port</span>         = <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:default_ssh_port</span>]
+124:               <span class="ruby-identifier">s</span>.<span class="ruby-identifier">version_negotiator</span>   = <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:version_negotiator</span>]
+125:               <span class="ruby-identifier">s</span>.<span class="ruby-identifier">algorithm_negotiator</span> = <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:algorithm_negotiator</span>]
+126:               <span class="ruby-identifier">s</span>.<span class="ruby-identifier">socket_factory</span>       = <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:socket_factory</span>]
+127:               <span class="ruby-identifier">s</span>.<span class="ruby-identifier">packet_sender</span>        = <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:outgoing_packet_stream</span>]
+128:               <span class="ruby-identifier">s</span>.<span class="ruby-identifier">packet_receiver</span>      = <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:incoming_packet_stream</span>]
+129:               <span class="ruby-identifier">s</span>.<span class="ruby-identifier">ciphers</span>              = <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:ciphers</span>]
+130:               <span class="ruby-identifier">s</span>.<span class="ruby-identifier">hmacs</span>                = <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:hmacs</span>]
+131:               <span class="ruby-identifier">s</span>.<span class="ruby-identifier">kexs</span>                 = <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:kex_names</span>]
+132:               <span class="ruby-identifier">s</span>.<span class="ruby-identifier">compressors</span>          = <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:compression_algorithms</span>]
+133:               <span class="ruby-identifier">s</span>.<span class="ruby-identifier">decompressors</span>        = <span class="ruby-identifier">c</span>[<span class="ruby-identifier">:decompression_algorithms</span>]
+134:             <span class="ruby-keyword kw">end</span>
+135:           <span class="ruby-keyword kw">end</span>
+136: 
+137:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">require</span> <span class="ruby-value str">'net/ssh/transport/ossl/services'</span>, <span class="ruby-node">&quot;#{self}::OSSL&quot;</span>
+138:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">require</span> <span class="ruby-value str">'net/ssh/transport/compress/services'</span>, <span class="ruby-node">&quot;#{self}::Compress&quot;</span>
+139:           <span class="ruby-identifier">b</span>.<span class="ruby-identifier">require</span> <span class="ruby-value str">'net/ssh/transport/kex/services'</span>, <span class="ruby-node">&quot;#{self}::Kex&quot;</span>
+140:         <span class="ruby-keyword kw">end</span>
+141:       <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

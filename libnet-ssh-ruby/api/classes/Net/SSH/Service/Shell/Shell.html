@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: Net::SSH::Service::Shell::Shell</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../../../../.././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "width=400,height=400,scrollbars=yes" )
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />Net::SSH::Service::Shell::Shell</td>
+  <td align="right">
+    <table cellspacing=0 cellpadding=2>
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../../../../../files/lib/net/ssh/service/shell/shell_rb.html">lib/net/ssh/service/shell/shell.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+Object
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+A service class for interacting with a user&#8216;s shell on a remote
+machine. The shell may be interacted with either with or without a pty.
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000284">method_missing</a></li>
+  <li><a href="#M000276">new</a></li>
+  <li><a href="#M000277">open?</a></li>
+  <li><a href="#M000282">send_data</a></li>
+  <li><a href="#M000283">send_extended_data</a></li>
+  <li><a href="#M000280">stderr</a></li>
+  <li><a href="#M000281">stderr?</a></li>
+  <li><a href="#M000278">stdout</a></li>
+  <li><a href="#M000279">stdout?</a></li>
+  </ul>
+
+
+
+
+
+
+<div class="sectiontitle">Public Class methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000276"></a><b>new</b>( connection, log, pty_opts )
+  </div>
+  <div class="description">
+  <p>
+Create a <a href="Shell.html#M000276">new</a> shell over the given
+connection. The <tt>pty_opts</tt> parameter must be either a Hash of the
+allowed values for the Net::SSH::Connection::Channel#request_pty method, or
+a boolean value (indicating whether a pty should be allocated or not). This
+will block until the shell is open and ready to receive input.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000276_source')" id="l_M000276_source">show source</a> ]</p>
+  <div id="M000276_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/service/shell/shell.rb, line 34</span>
+34:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">connection</span>, <span class="ruby-identifier">log</span>, <span class="ruby-identifier">pty_opts</span> )
+35:             <span class="ruby-ivar">@connection</span> = <span class="ruby-identifier">connection</span>
+36:             <span class="ruby-ivar">@log</span> = <span class="ruby-identifier">log</span>
+37: 
+38:             <span class="ruby-ivar">@pty_opts</span> = <span class="ruby-identifier">pty_opts</span>
+39: 
+40:             <span class="ruby-ivar">@stdout</span> = <span class="ruby-value str">&quot;&quot;</span>
+41:             <span class="ruby-ivar">@stderr</span> = <span class="ruby-value str">&quot;&quot;</span>
+42: 
+43:             <span class="ruby-ivar">@state</span> = <span class="ruby-identifier">:opening</span>
+44:             <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">open_channel</span>( <span class="ruby-value str">&quot;session&quot;</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">method</span>( <span class="ruby-identifier">:on_confirm</span> ) )
+45: 
+46:             <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">loop</span> { <span class="ruby-ivar">@state</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">:open</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@state</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">:closed</span> }
+47:             <span class="ruby-identifier">raise</span> <span class="ruby-value str">&quot;could not open shell&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@state</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">:open</span>
+48:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000284"></a><b>method_missing</b>( sym, *args )
+  </div>
+  <div class="description">
+  <p>
+Reinterprets method invocations as requests to send data to the shell. The
+method name and the arguments are concatenated together with spaces and a
+newline appended. The resulting string is sent to the shell via <a
+href="Shell.html#M000282">send_data</a>.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000284_source')" id="l_M000284_source">show source</a> ]</p>
+  <div id="M000284_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/service/shell/shell.rb, line 110</span>
+110:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">method_missing</span>( <span class="ruby-identifier">sym</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span> )
+111:             <span class="ruby-identifier">cmd</span> = <span class="ruby-identifier">sym</span>.<span class="ruby-identifier">to_s</span>
+112:             <span class="ruby-identifier">cmd</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value str">&quot; &quot;</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">join</span>( <span class="ruby-value str">&quot; &quot;</span> ) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">empty?</span>
+113:             <span class="ruby-identifier">send_data</span> <span class="ruby-identifier">cmd</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;\n&quot;</span>
+114:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000277"></a><b>open?</b>()
+  </div>
+  <div class="description">
+  <p>
+Returns <tt>true</tt> if the shell is open.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000277_source')" id="l_M000277_source">show source</a> ]</p>
+  <div id="M000277_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/service/shell/shell.rb, line 51</span>
+51:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">open?</span>
+52:             <span class="ruby-ivar">@state</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:open</span>
+53:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000282"></a><b>send_data</b>( data )
+  </div>
+  <div class="description">
+  <p>
+Sends the given data to the shell on the shell&#8216;s stdin stream.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000282_source')" id="l_M000282_source">show source</a> ]</p>
+  <div id="M000282_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/service/shell/shell.rb, line 94</span>
+94:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">send_data</span>( <span class="ruby-identifier">data</span> )
+95:             <span class="ruby-identifier">raise</span> <span class="ruby-value str">&quot;channel not open&quot;</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@state</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:open</span>
+96:             <span class="ruby-ivar">@channel</span>.<span class="ruby-identifier">send_data</span> <span class="ruby-identifier">data</span>
+97:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000283"></a><b>send_extended_data</b>( type, data )
+  </div>
+  <div class="description">
+  <p>
+Sends the given data to the shell on the stream indicated by the
+<tt>type</tt> parameter.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000283_source')" id="l_M000283_source">show source</a> ]</p>
+  <div id="M000283_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/service/shell/shell.rb, line 101</span>
+101:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">send_extended_data</span>( <span class="ruby-identifier">type</span>, <span class="ruby-identifier">data</span> )
+102:             <span class="ruby-identifier">raise</span> <span class="ruby-value str">&quot;channel not open&quot;</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@state</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:open</span>
+103:             <span class="ruby-ivar">@channel</span>.<span class="ruby-identifier">send_extended_data</span> <span class="ruby-identifier">type</span>, <span class="ruby-identifier">data</span>
+104:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000280"></a><b>stderr</b>()
+  </div>
+  <div class="description">
+  <p>
+Return the <a href="Shell.html#M000280">stderr</a> output (if any) that the
+shell has generated since the last time this method was invoked.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000280_source')" id="l_M000280_source">show source</a> ]</p>
+  <div id="M000280_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/service/shell/shell.rb, line 76</span>
+76:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">stderr</span>
+77:             <span class="ruby-identifier">string</span>, <span class="ruby-ivar">@stderr</span> = <span class="ruby-ivar">@stderr</span>, <span class="ruby-value str">&quot;&quot;</span>
+78:             <span class="ruby-identifier">string</span>
+79:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000281"></a><b>stderr?</b>()
+  </div>
+  <div class="description">
+  <p>
+Returns <tt>true</tt> if there is any data from the shell on <a
+href="Shell.html#M000280">stderr</a>, consuming input on the connection in
+a non-blocking manner to make sure that any available data is considered.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000281_source')" id="l_M000281_source">show source</a> ]</p>
+  <div id="M000281_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/service/shell/shell.rb, line 84</span>
+84:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">stderr?</span>
+85:             <span class="ruby-identifier">exists</span> = <span class="ruby-ivar">@stderr</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+86:             <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">exists</span>
+87:               <span class="ruby-identifier">consume_connection</span>
+88:               <span class="ruby-identifier">exists</span> = <span class="ruby-ivar">@stderr</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+89:             <span class="ruby-keyword kw">end</span>
+90:             <span class="ruby-identifier">exists</span>
+91:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000278"></a><b>stdout</b>()
+  </div>
+  <div class="description">
+  <p>
+Return the <a href="Shell.html#M000278">stdout</a> output (if any) that the
+shell has generated since the last time this method was invoked.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000278_source')" id="l_M000278_source">show source</a> ]</p>
+  <div id="M000278_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/service/shell/shell.rb, line 57</span>
+57:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">stdout</span>
+58:             <span class="ruby-identifier">string</span>, <span class="ruby-ivar">@stdout</span> = <span class="ruby-ivar">@stdout</span>, <span class="ruby-value str">&quot;&quot;</span>
+59:             <span class="ruby-identifier">string</span>
+60:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000279"></a><b>stdout?</b>()
+  </div>
+  <div class="description">
+  <p>
+Returns <tt>true</tt> if there is any data from the shell on <a
+href="Shell.html#M000278">stdout</a>, consuming input on the connection in
+a non-blocking manner to make sure that any available data is considered.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000279_source')" id="l_M000279_source">show source</a> ]</p>
+  <div id="M000279_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/service/shell/shell.rb, line 65</span>
+65:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">stdout?</span>
+66:             <span class="ruby-identifier">exists</span> = <span class="ruby-ivar">@stdout</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+67:             <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">exists</span>
+68:               <span class="ruby-identifier">consume_connection</span>
+69:               <span class="ruby-identifier">exists</span> = <span class="ruby-ivar">@stdout</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+70:             <span class="ruby-keyword kw">end</span>
+71:             <span class="ruby-identifier">exists</span>
+72:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

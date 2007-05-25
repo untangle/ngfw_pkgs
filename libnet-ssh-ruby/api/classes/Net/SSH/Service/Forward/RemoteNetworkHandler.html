@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: Net::SSH::Service::Forward::RemoteNetworkHandler</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../../../../.././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "width=400,height=400,scrollbars=yes" )
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />Net::SSH::Service::Forward::RemoteNetworkHandler</td>
+  <td align="right">
+    <table cellspacing=0 cellpadding=2>
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../../../../../files/lib/net/ssh/service/forward/remote-network-handler_rb.html">lib/net/ssh/service/forward/remote-network-handler.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+Object
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+A helper class for managing ports forwarded from a remote host to the local
+host.
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000299">new</a></li>
+  <li><a href="#M000302">on_close</a></li>
+  <li><a href="#M000301">on_eof</a></li>
+  <li><a href="#M000300">on_open</a></li>
+  <li><a href="#M000303">on_receive</a></li>
+  </ul>
+
+
+
+
+
+
+<div class="sectiontitle">Public Class methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000299"></a><b>new</b>( log, block_size, local_port, local_host='127.0.0.1' )
+  </div>
+  <div class="description">
+  <p>
+Instantiate a <a href="RemoteNetworkHandler.html#M000299">new</a> <a
+href="RemoteNetworkHandler.html">RemoteNetworkHandler</a> instance that
+will forward data to the given local port and host address.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000299_source')" id="l_M000299_source">show source</a> ]</p>
+  <div id="M000299_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/service/forward/remote-network-handler.rb, line 30</span>
+30:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">log</span>, <span class="ruby-identifier">block_size</span>, <span class="ruby-identifier">local_port</span>, <span class="ruby-identifier">local_host</span>=<span class="ruby-value str">'127.0.0.1'</span> )
+31:             <span class="ruby-ivar">@log</span> = <span class="ruby-identifier">log</span>
+32:             <span class="ruby-ivar">@block_size</span> = <span class="ruby-identifier">block_size</span>
+33:             <span class="ruby-ivar">@local_port</span> = <span class="ruby-identifier">local_port</span>
+34:             <span class="ruby-ivar">@local_host</span> = <span class="ruby-identifier">local_host</span>
+35:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000302"></a><b>on_close</b>( channel )
+  </div>
+  <div class="description">
+  <p>
+Invoked when the channel is closed.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000302_source')" id="l_M000302_source">show source</a> ]</p>
+  <div id="M000302_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/service/forward/remote-network-handler.rb, line 69</span>
+69:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">on_close</span>( <span class="ruby-identifier">channel</span> )
+70:             <span class="ruby-ivar">@client</span>.<span class="ruby-identifier">shutdown</span>
+71:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000301"></a><b>on_eof</b>( channel )
+  </div>
+  <div class="description">
+  <p>
+Invoked when the channel indicates that the end is near.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000301_source')" id="l_M000301_source">show source</a> ]</p>
+  <div id="M000301_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/service/forward/remote-network-handler.rb, line 64</span>
+64:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">on_eof</span>( <span class="ruby-identifier">channel</span> )
+65:             <span class="ruby-identifier">channel</span>[<span class="ruby-identifier">:eof</span>] = <span class="ruby-keyword kw">true</span>
+66:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000300"></a><b>on_open</b>( channel, c_addr, c_port, o_addr, o_port )
+  </div>
+  <div class="description">
+  <p>
+Opens a <a href="RemoteNetworkHandler.html#M000299">new</a> socket to the
+local host and port given when the handler was created, and forwards data
+from the channel to that connection.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000300_source')" id="l_M000300_source">show source</a> ]</p>
+  <div id="M000300_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/service/forward/remote-network-handler.rb, line 40</span>
+40:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">on_open</span>( <span class="ruby-identifier">channel</span>, <span class="ruby-identifier">c_addr</span>, <span class="ruby-identifier">c_port</span>, <span class="ruby-identifier">o_addr</span>, <span class="ruby-identifier">o_port</span> )
+41:             <span class="ruby-ivar">@client</span> = <span class="ruby-constant">TCPSocket</span>.<span class="ruby-identifier">new</span>( <span class="ruby-ivar">@local_host</span>, <span class="ruby-ivar">@local_port</span> )
+42: 
+43:             <span class="ruby-constant">Thread</span>.<span class="ruby-identifier">new</span> <span class="ruby-keyword kw">do</span>
+44:               <span class="ruby-keyword kw">begin</span>
+45:                 <span class="ruby-identifier">loop</span> <span class="ruby-keyword kw">do</span>
+46:                   <span class="ruby-keyword kw">break</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">channel</span>[<span class="ruby-identifier">:eof</span>]
+47:                   <span class="ruby-identifier">data</span> = <span class="ruby-value str">&quot;&quot;</span>
+48:                   <span class="ruby-keyword kw">while</span> <span class="ruby-constant">IO</span>.<span class="ruby-identifier">select</span>([<span class="ruby-ivar">@client</span>],<span class="ruby-keyword kw">nil</span>,<span class="ruby-keyword kw">nil</span>,<span class="ruby-value">0</span><span class="ruby-value">.01</span>)
+49:                     <span class="ruby-identifier">data</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-ivar">@client</span>.<span class="ruby-identifier">recv</span>(<span class="ruby-ivar">@block_size</span>)
+50:                   <span class="ruby-keyword kw">end</span>
+51:                   <span class="ruby-identifier">channel</span>.<span class="ruby-identifier">send_data</span> <span class="ruby-identifier">data</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">data</span>.<span class="ruby-identifier">empty?</span>
+52:                 <span class="ruby-keyword kw">end</span>
+53:               <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">Exception</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+54:                 <span class="ruby-ivar">@log</span>.<span class="ruby-identifier">error</span> <span class="ruby-value str">&quot;error while forwarding remote port: &quot;</span> <span class="ruby-operator">+</span>
+55:                   <span class="ruby-node">&quot;#{e.class}: #{e.message}\n  &quot;</span> <span class="ruby-operator">+</span>
+56:                   <span class="ruby-identifier">e</span>.<span class="ruby-identifier">backtrace</span>.<span class="ruby-identifier">join</span>( <span class="ruby-value str">&quot;\n  &quot;</span> )
+57:               <span class="ruby-keyword kw">ensure</span>
+58:                 <span class="ruby-identifier">channel</span>.<span class="ruby-identifier">close</span>
+59:               <span class="ruby-keyword kw">end</span>
+60:             <span class="ruby-keyword kw">end</span>
+61:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000303"></a><b>on_receive</b>( channel, data )
+  </div>
+  <div class="description">
+  <p>
+Invoked when data is received over the channel.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000303_source')" id="l_M000303_source">show source</a> ]</p>
+  <div id="M000303_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/service/forward/remote-network-handler.rb, line 74</span>
+74:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">on_receive</span>( <span class="ruby-identifier">channel</span>, <span class="ruby-identifier">data</span> )
+75:             <span class="ruby-ivar">@client</span>.<span class="ruby-identifier">send</span> <span class="ruby-identifier">data</span>, <span class="ruby-value">0</span>
+76:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: Net::SSH::Transport::OSSL::KeyFactory</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../../../../.././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "width=400,height=400,scrollbars=yes" )
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />Net::SSH::Transport::OSSL::KeyFactory</td>
+  <td align="right">
+    <table cellspacing=0 cellpadding=2>
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../../../../../files/lib/net/ssh/transport/ossl/key-factory_rb.html">lib/net/ssh/transport/ossl/key-factory.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+Object
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+A factory class for returning <a href="KeyFactory.html#M000035">new</a> Key
+algorithm factories (actually classes).
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000036">get</a></li>
+  <li><a href="#M000037">load_private_key</a></li>
+  <li><a href="#M000038">load_public_key</a></li>
+  <li><a href="#M000035">new</a></li>
+  </ul>
+
+
+
+
+
+  <div class="sectiontitle">Attributes</div>
+  <table border='0' cellpadding='5'>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[W]
+    </td>
+    <td class='attr-name'>buffers</td>
+    <td class='attr-desc'>
+The setter for the buffer factory to use.
+
+</td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[W]
+    </td>
+    <td class='attr-name'>prompter</td>
+    <td class='attr-desc'>
+The setter for describing which prompter service to use when prompting the
+user for a key passphrase.
+
+</td>
+  </tr>
+  </table>
+
+<div class="sectiontitle">Public Class methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000035"></a><b>new</b>( algorithms )
+  </div>
+  <div class="description">
+  <p>
+Create a <a href="KeyFactory.html#M000035">new</a> instance of the <a
+href="KeyFactory.html">KeyFactory</a> that uses the given Hash-like to map
+SSH2 key algorithm names to names of factories (classes) that can
+instantiate those algorithms.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000035_source')" id="l_M000035_source">show source</a> ]</p>
+  <div id="M000035_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/transport/ossl/key-factory.rb, line 41</span>
+41:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">algorithms</span> )
+42:             <span class="ruby-ivar">@factories</span> = <span class="ruby-identifier">algorithms</span>
+43:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000036"></a><b>get</b>( name )
+  </div>
+  <div class="description">
+  <p>
+Return a <a href="KeyFactory.html#M000035">new</a> instance of the key
+factory for the given name. If no such algorithm exists, a <a
+href="../KeyTypeNotFound.html">KeyTypeNotFound</a> error will be raised.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000036_source')" id="l_M000036_source">show source</a> ]</p>
+  <div id="M000036_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/transport/ossl/key-factory.rb, line 47</span>
+47:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get</span>( <span class="ruby-identifier">name</span> )
+48:             <span class="ruby-identifier">klass_name</span> = <span class="ruby-ivar">@factories</span>.<span class="ruby-identifier">fetch</span>( <span class="ruby-identifier">name</span> ) <span class="ruby-keyword kw">do</span>
+49:               <span class="ruby-identifier">raise</span> <span class="ruby-constant">KeyTypeNotFound</span>, <span class="ruby-identifier">name</span>
+50:             <span class="ruby-keyword kw">end</span>
+51: 
+52:             <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">klass_name</span>.<span class="ruby-identifier">new</span>
+53:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000037"></a><b>load_private_key</b>( filename )
+  </div>
+  <div class="description">
+  <p>
+Loads a private key from a file. It will correctly determine whether the
+file describes an RSA or DSA key, and will load it appropriately. The <a
+href="KeyFactory.html#M000035">new</a> key is returned. If the key itself
+is encrypted (requiring a passphrase to use), the user will be prompted to
+enter their password.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000037_source')" id="l_M000037_source">show source</a> ]</p>
+  <div id="M000037_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/transport/ossl/key-factory.rb, line 60</span>
+60:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">load_private_key</span>( <span class="ruby-identifier">filename</span> )
+61:             <span class="ruby-identifier">file</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>( <span class="ruby-identifier">filename</span> )
+62: 
+63:             <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">match</span>( <span class="ruby-regexp re">/-----BEGIN DSA PRIVATE KEY-----/</span> )
+64:               <span class="ruby-identifier">key_type</span> = <span class="ruby-constant">OpenSSL</span><span class="ruby-operator">::</span><span class="ruby-constant">PKey</span><span class="ruby-operator">::</span><span class="ruby-constant">DSA</span>
+65:             <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">match</span>( <span class="ruby-regexp re">/-----BEGIN RSA PRIVATE KEY-----/</span> )
+66:               <span class="ruby-identifier">key_type</span> = <span class="ruby-constant">OpenSSL</span><span class="ruby-operator">::</span><span class="ruby-constant">PKey</span><span class="ruby-operator">::</span><span class="ruby-constant">RSA</span>
+67:             <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">match</span>( <span class="ruby-regexp re">/-----BEGIN (.*) PRIVATE KEY-----/</span> )
+68:               <span class="ruby-identifier">raise</span> <span class="ruby-constant">OpenSSL</span><span class="ruby-operator">::</span><span class="ruby-constant">PKey</span><span class="ruby-operator">::</span><span class="ruby-constant">PKeyError</span>, <span class="ruby-node">&quot;not a supported key type '#{$1}'&quot;</span>
+69:             <span class="ruby-keyword kw">else</span>
+70:               <span class="ruby-identifier">raise</span> <span class="ruby-constant">OpenSSL</span><span class="ruby-operator">::</span><span class="ruby-constant">PKey</span><span class="ruby-operator">::</span><span class="ruby-constant">PKeyError</span>, <span class="ruby-node">&quot;not a private key (#{filename})&quot;</span>
+71:             <span class="ruby-keyword kw">end</span>
+72: 
+73:             <span class="ruby-identifier">encrypted_key</span> = <span class="ruby-identifier">file</span>.<span class="ruby-identifier">match</span>( <span class="ruby-regexp re">/ENCRYPTED/</span> )
+74:             <span class="ruby-identifier">password</span> = <span class="ruby-identifier">encrypted_key</span> <span class="ruby-value">? </span><span class="ruby-value str">'nil'</span> <span class="ruby-operator">:</span> <span class="ruby-keyword kw">nil</span>
+75:             <span class="ruby-identifier">tries</span> = <span class="ruby-value">0</span>
+76: 
+77:             <span class="ruby-keyword kw">begin</span>
+78:               <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">key_type</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">file</span>, <span class="ruby-identifier">password</span> )
+79:             <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">OpenSSL</span><span class="ruby-operator">::</span><span class="ruby-constant">PKey</span><span class="ruby-operator">::</span><span class="ruby-constant">RSAError</span>, <span class="ruby-constant">OpenSSL</span><span class="ruby-operator">::</span><span class="ruby-constant">PKey</span><span class="ruby-operator">::</span><span class="ruby-constant">DSAError</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+80:               <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">encrypted_key</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@prompter</span>
+81:                 <span class="ruby-identifier">tries</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+82:                 <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">tries</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-value">3</span>
+83:                   <span class="ruby-identifier">password</span> = <span class="ruby-ivar">@prompter</span>.<span class="ruby-identifier">password</span>(
+84:                     <span class="ruby-node">&quot;Enter password for #{filename}: &quot;</span> )
+85:                   <span class="ruby-keyword kw">retry</span>
+86:                 <span class="ruby-keyword kw">else</span>
+87:                   <span class="ruby-identifier">raise</span>
+88:                 <span class="ruby-keyword kw">end</span>
+89:               <span class="ruby-keyword kw">else</span>
+90:                 <span class="ruby-identifier">raise</span>
+91:               <span class="ruby-keyword kw">end</span>
+92:             <span class="ruby-keyword kw">end</span>
+93:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000038"></a><b>load_public_key</b>( filename )
+  </div>
+  <div class="description">
+  <p>
+Loads a public key from a file. It will correctly determine whether the
+file describes an RSA or DSA key, and will load it appropriately. The <a
+href="KeyFactory.html#M000035">new</a> public key is returned.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000038_source')" id="l_M000038_source">show source</a> ]</p>
+  <div id="M000038_source" class="dyn-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/net/ssh/transport/ossl/key-factory.rb, line 98</span>
+ 98:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">load_public_key</span>( <span class="ruby-identifier">filename</span> )
+ 99:             <span class="ruby-identifier">data</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>( <span class="ruby-identifier">filename</span> ) { <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">read</span> }
+100:             <span class="ruby-identifier">type</span>, <span class="ruby-identifier">blob</span> = <span class="ruby-identifier">data</span>.<span class="ruby-identifier">split</span>( <span class="ruby-regexp re">/ /</span> )
+101: 
+102:             <span class="ruby-identifier">blob</span> = <span class="ruby-constant">Base64</span>.<span class="ruby-identifier">decode64</span>( <span class="ruby-identifier">blob</span> )
+103:             <span class="ruby-identifier">reader</span> = <span class="ruby-ivar">@buffers</span>.<span class="ruby-identifier">reader</span>( <span class="ruby-identifier">blob</span> )
+104:             <span class="ruby-identifier">key</span> = <span class="ruby-identifier">reader</span>.<span class="ruby-identifier">read_key</span> <span class="ruby-keyword kw">or</span>
+105:               <span class="ruby-identifier">raise</span> <span class="ruby-constant">OpenSSL</span><span class="ruby-operator">::</span><span class="ruby-constant">PKey</span><span class="ruby-operator">::</span><span class="ruby-constant">PKeyError</span>,
+106:                 <span class="ruby-node">&quot;not a public key #{filename.inspect}&quot;</span>
+107:             <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">key</span>
+108:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

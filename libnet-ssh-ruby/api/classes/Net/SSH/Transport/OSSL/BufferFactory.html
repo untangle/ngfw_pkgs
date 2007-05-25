@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: Net::SSH::Transport::OSSL::BufferFactory</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../../../../.././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "width=400,height=400,scrollbars=yes" )
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />Net::SSH::Transport::OSSL::BufferFactory</td>
+  <td align="right">
+    <table cellspacing=0 cellpadding=2>
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../../../../../files/lib/net/ssh/transport/ossl/buffer-factory_rb.html">lib/net/ssh/transport/ossl/buffer-factory.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+Object
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+A factory class for returning new <a
+href="BufferFactory.html#M000034">buffer</a> instances that have been
+decorated to also handle <a href="../../../../OpenSSL.html">OpenSSL</a>
+specific information.
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000034">buffer</a></li>
+  <li><a href="#M000032">reader</a></li>
+  <li><a href="#M000033">writer</a></li>
+  </ul>
+
+
+
+
+
+
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000034"></a><b>buffer</b>( text=&quot;&quot; )
+  </div>
+  <div class="description">
+  <p>
+Return a new general <a href="BufferFactory.html#M000034">buffer</a> that
+can also read bignums and keys.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000034_source')" id="l_M000034_source">show source</a> ]</p>
+  <div id="M000034_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/transport/ossl/buffer-factory.rb, line 42</span>
+42:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">buffer</span>( <span class="ruby-identifier">text</span>=<span class="ruby-value str">&quot;&quot;</span> )
+43:             <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span><span class="ruby-operator">::</span><span class="ruby-constant">Transport</span><span class="ruby-operator">::</span><span class="ruby-constant">OSSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Buffer</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">text</span> )
+44:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000032"></a><b>reader</b>( text )
+  </div>
+  <div class="description">
+  <p>
+Return a new <a href="BufferFactory.html#M000032">reader</a> <a
+href="BufferFactory.html#M000034">buffer</a> that can also read bignums and
+keys.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000032_source')" id="l_M000032_source">show source</a> ]</p>
+  <div id="M000032_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/transport/ossl/buffer-factory.rb, line 32</span>
+32:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">reader</span>( <span class="ruby-identifier">text</span> )
+33:             <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span><span class="ruby-operator">::</span><span class="ruby-constant">Transport</span><span class="ruby-operator">::</span><span class="ruby-constant">OSSL</span><span class="ruby-operator">::</span><span class="ruby-constant">ReaderBuffer</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">text</span> )
+34:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000033"></a><b>writer</b>( text=&quot;&quot; )
+  </div>
+  <div class="description">
+  <p>
+Return a new <a href="BufferFactory.html#M000033">writer</a> <a
+href="BufferFactory.html#M000034">buffer</a>, initialized with the
+parameter.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000033_source')" id="l_M000033_source">show source</a> ]</p>
+  <div id="M000033_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/transport/ossl/buffer-factory.rb, line 37</span>
+37:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">writer</span>( <span class="ruby-identifier">text</span>=<span class="ruby-value str">&quot;&quot;</span> )
+38:             <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span><span class="ruby-operator">::</span><span class="ruby-constant">Util</span><span class="ruby-operator">::</span><span class="ruby-constant">WriterBuffer</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">text</span> )
+39:           <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

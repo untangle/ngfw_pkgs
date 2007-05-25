@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>File: README</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "width=400,height=400,scrollbars=yes" )
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table border='0' cellpadding='0' cellspacing='0' width="100%" class='banner'>
+  <tr><td>
+    <table width="100%" border='0' cellpadding='0' cellspacing='0'><tr>
+      <td class="file-title" colspan="2"><span class="file-title-prefix">File</span><br />README</td>
+      <td align="right">
+        <table border='0' cellspacing="0" cellpadding="2">
+          <tr>
+            <td>Path:</td>
+            <td>README
+            </td>
+          </tr>
+          <tr>
+            <td>Modified:</td>
+            <td>Fri Apr 14 20:52:18 -0600 2006</td>
+          </tr>
+        </table>
+      </td></tr>
+    </table>
+  </td></tr>
+</table><br>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><h1><a href="../classes/Net/SSH.html">Net::SSH</a></h1>
+<p>
+<b><em>A pure Ruby module that emulates an SSH client.</em></b>
+</p>
+<p>
+<em>Author: Jamis Buck (jamis@37signals.com)</em>
+</p>
+<p>
+<a href="../classes/Net/SSH.html">Net::SSH</a> absolutely WILL NOT work
+with the version of Ruby&#8216;s <a
+href="../classes/OpenSSL.html">OpenSSL</a> module currently shipped with
+Ruby versions &lt; 1.8.2 final. If you insist on trying it with a pre-1.8.2
+final version, you must get a patched version of the <a
+href="../classes/OpenSSL.html">OpenSSL</a> module and install it (and
+remove the old module) before using <a
+href="../classes/Net/SSH.html">Net::SSH</a>.
+</p>
+<p>
+The current release of <a href="../classes/Net/SSH.html">Net::SSH</a>
+supports:
+</p>
+<ul>
+<li>the execution of processes on the remote host (interactively, or
+non-interactively)
+
+</li>
+<li>interacting with a user&#8216;s shell
+
+</li>
+<li>port forwarding, both from a local port to a remote port, and vice versa
+
+</li>
+<li>HTTP and SOCKS proxy support (and support for creation of additional proxy
+types)
+
+</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+</div>
+
+  </div>
+
+    </body>
+</html>

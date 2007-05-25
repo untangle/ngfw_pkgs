@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: Net::SSH::Proxy::SOCKS4</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "width=400,height=400,scrollbars=yes" )
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />Net::SSH::Proxy::SOCKS4</td>
+  <td align="right">
+    <table cellspacing=0 cellpadding=2>
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../../../../files/lib/net/ssh/proxy/socks4_rb.html">lib/net/ssh/proxy/socks4.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+Object
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+An implementation of a socket factory that returns a socket which will
+tunnel the connection through a <a href="SOCKS4.html">SOCKS4</a> proxy. It
+allows explicit specification of the user, but if it is not given it will
+look in the SOCKS_USER and CONNECT_USER environment variables as well.
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000090">new</a></li>
+  <li><a href="#M000091">open</a></li>
+  </ul>
+
+
+
+
+  <div class="sectiontitle">Constants</div>
+  <table border='0' cellpadding='5'>
+  <tr valign='top'>
+    <td class="attr-name">SOCKS_VERSION</td>
+    <td>=</td>
+    <td class="attr-value">4</td>
+  </tr>
+  <tr valign='top'>
+    <td class="attr-name">SOCKS_CMD_CONNECT</td>
+    <td>=</td>
+    <td class="attr-value">1</td>
+  </tr>
+  <tr valign='top'>
+    <td class="attr-name">SOCKS_GRANTED</td>
+    <td>=</td>
+    <td class="attr-value">90</td>
+  </tr>
+  <tr valign='top'>
+    <td class="attr-name">SOCKS_REJECTED</td>
+    <td>=</td>
+    <td class="attr-value">91</td>
+  </tr>
+  <tr valign='top'>
+    <td class="attr-name">SOCKS_IDENTD_REJECT</td>
+    <td>=</td>
+    <td class="attr-value">92</td>
+  </tr>
+  <tr valign='top'>
+    <td class="attr-name">SOCKS_IDENTD_BAD</td>
+    <td>=</td>
+    <td class="attr-value">93</td>
+  </tr>
+  </table>
+
+
+<div class="sectiontitle">Public Class methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000090"></a><b>new</b>( proxy_host, proxy_port=1080, options={} )
+  </div>
+  <div class="description">
+  <p>
+Create a <a href="SOCKS4.html#M000090">new</a> proxy connection to the
+given proxy host and port. Optionally, a @:user@ option may be given to
+identify the username with which to authenticate.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000090_source')" id="l_M000090_source">show source</a> ]</p>
+  <div id="M000090_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/proxy/socks4.rb, line 44</span>
+44:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">proxy_host</span>, <span class="ruby-identifier">proxy_port</span>=<span class="ruby-value">1080</span>, <span class="ruby-identifier">options</span>={} )
+45:           <span class="ruby-ivar">@proxy_host</span> = <span class="ruby-identifier">proxy_host</span>
+46:           <span class="ruby-ivar">@proxy_port</span> = <span class="ruby-identifier">proxy_port</span>
+47:           <span class="ruby-ivar">@options</span> = <span class="ruby-identifier">options</span>
+48:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000091"></a><b>open</b>( host, port )
+  </div>
+  <div class="description">
+  <p>
+Return a <a href="SOCKS4.html#M000090">new</a> socket connected to the
+given host and port via the proxy that was requested when the socket
+factory was instantiated.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000091_source')" id="l_M000091_source">show source</a> ]</p>
+  <div id="M000091_source" class="dyn-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/net/ssh/proxy/socks4.rb, line 52</span>
+52:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">open</span>( <span class="ruby-identifier">host</span>, <span class="ruby-identifier">port</span> )
+53:           <span class="ruby-identifier">sock</span> = <span class="ruby-constant">TCPSocket</span>.<span class="ruby-identifier">new</span>( <span class="ruby-ivar">@proxy_host</span>, <span class="ruby-ivar">@proxy_port</span> )
+54: 
+55:           <span class="ruby-identifier">ip_addr</span> = <span class="ruby-constant">IPAddr</span>.<span class="ruby-identifier">new</span>( <span class="ruby-constant">Resolv</span>.<span class="ruby-identifier">getaddress</span>( <span class="ruby-identifier">host</span> ) )
+56:           
+57:           <span class="ruby-identifier">packet</span> = [ <span class="ruby-constant">SOCKS_VERSION</span>, <span class="ruby-constant">SOCKS_CMD_CONNECT</span>,
+58:                      <span class="ruby-identifier">port</span>.<span class="ruby-identifier">to_i</span>, <span class="ruby-identifier">ip_addr</span>.<span class="ruby-identifier">to_i</span>,
+59:                      <span class="ruby-identifier">proxy_user</span>, <span class="ruby-value">0</span> ].<span class="ruby-identifier">pack</span>( <span class="ruby-value str">&quot;CCnNA*C&quot;</span> )
+60:           <span class="ruby-identifier">sock</span>.<span class="ruby-identifier">send</span> <span class="ruby-identifier">packet</span>, <span class="ruby-value">0</span>
+61: 
+62:           <span class="ruby-identifier">version</span>, <span class="ruby-identifier">status</span>, <span class="ruby-identifier">port</span>, <span class="ruby-identifier">ip</span> = <span class="ruby-identifier">sock</span>.<span class="ruby-identifier">recv</span>( <span class="ruby-value">8</span> ).<span class="ruby-identifier">unpack</span>( <span class="ruby-value str">&quot;CCnN&quot;</span> )
+63:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">status</span> <span class="ruby-operator">!=</span> <span class="ruby-constant">SOCKS_GRANTED</span>
+64:             <span class="ruby-identifier">sock</span>.<span class="ruby-identifier">close</span>
+65:             <span class="ruby-identifier">raise</span> <span class="ruby-constant">ConnectError</span>, <span class="ruby-node">&quot;error connecting to proxy (#{status})&quot;</span>
+66:           <span class="ruby-keyword kw">end</span>
+67: 
+68:           <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">sock</span>
+69:         <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>
