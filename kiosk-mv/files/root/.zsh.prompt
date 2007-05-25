@@ -4,10 +4,10 @@ REGULAR_RPROMPT="%{[$fg_bold[blue]%}%n%{$fg_no_bold[default]%} @ %U%m%u]"
 VT_RPROMPT="[%{$fg_bold[blue]%}%n%{$fg_no_bold[default]%} @ %U%m%u]"
 
 case $TERM in
-  rxvt|xterm*)
+  rxvt)
     RPROMPT=$REGULAR_RPROMPT 
     precmd() { print -Pn "\e]0;%n@%m\a" } ;;
-  sun*|vt*|screen*)
+  sun*|vt*|screen*|xterm*)
     RPROMPT=$VT_RPROMPT
     preexec() { print -Pn "\ek%n@%m $1\e\\" }
     precmd() { print -Pn "\ek%n@%m\e\\" } ;;
