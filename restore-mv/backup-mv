@@ -31,7 +31,9 @@ dump_installed()
 dump_db()
 {
     outfile=$1
-    (pg_dump -U postgres -n settings mvvm; pg_dump -U postgres -n events -s mvvm) \
+    (pg_dump -U postgres -n settings mvvm;
+        echo "SET SESSION AUTHORIZATION 'postgres';";
+        pg_dump -U postgres -n events -s mvvm) \
         | gzip > $outfile 2>/dev/null
 }
 
@@ -47,7 +49,7 @@ backup()
     dump_db $dumpfile && tar_files $tarfile && dump_installed $instlist
 }
 
-if [ $# -lt 1 ] ; then 
+if [ $# -lt 1 ] ; then
     echo "Usage: $0 dumpdir"
 fi
 
