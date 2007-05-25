@@ -14,7 +14,7 @@ update-schema settings mvvm
 update-schema events mvvm
 update-schema settings nat-transform
 update-schema events nat-transform
-psql -U postgres mvvm <<EOF
+psql -X -U postgres mvvm <<EOF
 INSERT INTO tid VALUES (1);
 INSERT INTO transform_manager_state VALUES (nextval('hibernate_sequence'), 2);
 INSERT INTO transform_persistent_state VALUES (nextval('hibernate_sequence'), 'nat-transform', 1, '\\\\001\\\\000', 'running');
