@@ -309,7 +309,7 @@ Conflicts: httpblocker-disabler
 Provides: httpblocker-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 30
-XB-Display-Name: Web Content Control
+XB-Display-Name: Web Filter
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0RVh0
  U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d03e2c04c
@@ -399,8 +399,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  hv5ibZAOJB+Ky44vFgGhHLnryrk0ZtNIVGdIWXk5HptioXw44eddESL+/vgzcoWKcn5hoPbA
  +1nH0ufnBbLGWduFUqXpn6ZVni9WNfB/TqKdLXQoddk5/ipGzKowLKETWaMN5ivbxR/E/ifA
  ACBNCbEqfhTsAAAAAElFTkSuQmCC
-Description: Untangle Web Content Control
- The Untangle Web Content Control Store Item.
+Description: Untangle Web Filter
+ The Untangle Web Filter Store Item.
 
 Package: hauri-storeitem
 Architecture: any
@@ -2036,7 +2036,7 @@ Architecture: any
 Depends: httpblocker-transform, httpblocker-disabler
 XB-Price: 0
 XB-View-Position: 30
-XB-Display-Name: Web Content Control 30-Day Trial
+XB-Display-Name: Web Filter 30-Day Trial
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0RVh0
  U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d03e2c04c
@@ -2126,8 +2126,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  hv5ibZAOJB+Ky44vFgGhHLnryrk0ZtNIVGdIWXk5HptioXw44eddESL+/vgzcoWKcn5hoPbA
  +1nH0ufnBbLGWduFUqXpn6ZVni9WNfB/TqKdLXQoddk5/ipGzKowLKETWaMN5ivbxR/E/ifA
  ACBNCbEqfhTsAAAAAElFTkSuQmCC
-Description: Untangle Web Content Control 30-Day Trial
- The Untangle Web Content Control 30-Day Trial Store Item.
+Description: Untangle Web Filter 30-Day Trial
+ The Untangle Web Filter 30-Day Trial Store Item.
 
 Package: hauri-trial30-storeitem
 Architecture: any

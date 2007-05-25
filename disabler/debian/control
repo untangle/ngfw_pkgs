@@ -18,8 +18,8 @@ Description: The Untangle Spyware Blocker Disabler
 
 Package: httpblocker-disabler
 Architecture: any
-Description: The Untangle Web Content Control Disabler
- The Untangle Web Content Control Software Appliance Disabler.
+Description: The Untangle Web Filter Disabler
+ The Untangle Web Filter Software Appliance Disabler.
 
 Package: hauri-disabler
 Architecture: any
