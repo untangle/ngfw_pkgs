@@ -1052,7 +1052,7 @@ Conflicts: clamphish-disabler
 Provides: clamphish-trial30-storeitem
 XB-Price: 0
 XB-View-Position: 17
-XB-Display-Name: Identity Theft Blocker
+XB-Display-Name: Phish Blocker
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1173,8 +1173,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  DeWOUVGQk46vEDn3QiJzP5Tv3KHYlomQGTTF/tsucwQoIgfY0ME3uUu7PogA9qxsZpUgB1QR
  k2CFwI0uw5UGmqYjhJgEO3kPJb3c0CFdxgf60NxeIoGxv9v3NzTIj0BpAdTEYcMHgTVS/M8A
  nY2oOxX/HXgAAAAASUVORK5CYII=
-Description: Untangle Identity Theft Blocker
- The Untangle Identity Theft Blocker Store Item.
+Description: Untangle Phish Blocker
+ The Untangle Phish Blocker Store Item.
 
 Package: test-storeitem
 Architecture: any
@@ -2484,7 +2484,7 @@ Architecture: any
 Depends: clamphish-transform, clamphish-disabler
 XB-Price: 0
 XB-View-Position: 17
-XB-Display-Name: Identity Theft Blocker 30-Day Trial
+XB-Display-Name: Phish Blocker 30-Day Trial
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -2605,8 +2605,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  DeWOUVGQk46vEDn3QiJzP5Tv3KHYlomQGTTF/tsucwQoIgfY0ME3uUu7PogA9qxsZpUgB1QR
  k2CFwI0uw5UGmqYjhJgEO3kPJb3c0CFdxgf60NxeIoGxv9v3NzTIj0BpAdTEYcMHgTVS/M8A
  nY2oOxX/HXgAAAAASUVORK5CYII=
-Description: Untangle Identity Theft Blocker 30-Day Trial
- The Untangle Identity Theft Blocker 30-Day Trial Store Item.
+Description: Untangle Phish Blocker 30-Day Trial
+ The Untangle Phish Blocker 30-Day Trial Store Item.
 
 Package: portal-trial30-storeitem
 Architecture: any
