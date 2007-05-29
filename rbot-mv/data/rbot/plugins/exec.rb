@@ -1,7 +1,42 @@
+require 'optparse'
+
+class SyntaxException < Exception
+end
+
 class ExecPlugin < Plugin
 
   def initialize
     super()
+  end
+
+  def handleOptions(args)
+    i = args.index("--")
+
+    if not i then
+      raise SyntaxException.new help(nil)
+      return
+    end
+
+    execOpts = args[0...i]
+    command = args[i+1..-1].join(" ")
+
+    options = {}
+
+    opts = OptionParser.new { |opts|
+      opts.on("-q", "--quiet",
+              "Don't output the return code") { |ext|
+                options[:quiet] = true
+      }
+      opts.on("-j", "--join-on-test <#channel>",
+              "Join the given channel if the command succeeds") { |channel|
+                options[:channel] = channel
+                options[:quiet] = true
+      }
+    }
+
+    opts.parse!(execOpts)
+
+    return options, command
   end
 
   def runSystemCommand(command)
@@ -12,51 +47,40 @@ class ExecPlugin < Plugin
 
   def exec(m, params)
     begin
-      command = params[:command].join(" ")
+      options, command = handleOptions(params[:args])
+
       output, rc = runSystemCommand(command)
       m.reply output
-      m.reply "*** RC = #{rc}"
-    rescue Exception => e
-      handleException(m, e)
-    end
-  end
-
-  def extendTrial(m, params)
-    exec(m, { :command => "./extend_trial.sh" })
-  end
-
-  def joinOnTest(m, params)
-    begin
-      command = params[:command].join(" ")
-      output, rc = runSystemCommand(command)
-      if rc == 0
-        @bot.join(params[:channel])
-        @bot.action("joined #{params[:channel]}")
+      m.reply "*** RC = #{rc}" if not options.include?(:quiet)
+      if options.include?(:channel) and rc == 0 then
+        @bot.join(options[:channel])
+        @bot.action(m.replyto, "joined #{options[:channel]}")
       end
+    rescue SyntaxException => e
+      handleException(m, e, false)
     rescue Exception => e
       handleException(m, e)
     end
   end
 
-
-  def handleException(m, e)
+  def handleException(m, e, printStackTrace = true)
     m.reply "An exception happened: #{e.class} -> #{e.message}"
-     e.backtrace.each { |line|
-       m.reply "  #{line}"
-     }
-    m.reply "End of exception backtrace"
+    if printStackTrace then
+      e.backtrace.each { |line|
+        m.reply "  #{line}"
+      }
+      m.reply "End of exception backtrace"
+    end
   end
 
   def help(plugin, topic="")
     <<-eos
-      exec *command => Run command
-      join_on_test #channel *command => if command succeeds, join #channel
+      exec [--quiet|-q] [-j|--join-on-test <#channel>] -- *command => Run command
     eos
   end
 
 end
 
 plugin = ExecPlugin.new
-plugin.map 'exec *command', :action => 'exec'
-plugin.map 'join_on_test :channel *command', :action => 'joinOnTest'
-plugin.map 'extend_trial', :action => 'extendTrial'
+plugin.map 'exec *args', :action => 'exec'
+
