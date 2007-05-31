@@ -48,5 +48,5 @@ Description: The Untangle Remote Access Portal Disabler
 
 Package: boxbackup-disabler
 Architecture: any
-Description: The Untangle 24-Hour Replacement Disabler
- The Untangle 24-Hour Replacement Disabler.
+Description: The Untangle Configuration Backup Disabler
+ The Untangle Configuration Backup Disabler.

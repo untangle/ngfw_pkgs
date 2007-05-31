@@ -1623,7 +1623,7 @@ Conflicts: boxbackup-disabler
 Provides: boxbackup-trial30-storeitem
 XB-Price: 99
 XB-View-Position: 1015
-XB-Display-Name: 24-Hour Replacement
+XB-Display-Name: Configuration Backup
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1735,8 +1735,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  UhSjFBXBSZSlEzlQ4Qb8b0QSAyroSUWMCjqU1BjiQBEI87Hw49XvxG34jfnnTR9v2GzFMFBT
  AWk1QmLfV3ukhaYK9I4Wfe83CCwb8LTUuhOUECxqyCoy+D/E/leAAQDhy3XsyDOL8wAAAABJ
  RU5ErkJggg==
-Description: Untangle 24-Hour Replacement
- The Untangle 24-Hour Replacement Store Item.
+Description: Untangle Configuration Backup
+ The Untangle Configuration Backup Store Item.
 
 Package: portal-storeitem
 Architecture: any
@@ -2719,7 +2719,7 @@ Architecture: any
 Depends: boxbackup-transform, boxbackup-disabler
 XB-Price: 99
 XB-View-Position: 1015
-XB-Display-Name: 24-Hour Replacement 30-Day Trial
+XB-Display-Name: Configuration Backup 30-Day Trial
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -2831,5 +2831,5 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  UhSjFBXBSZSlEzlQ4Qb8b0QSAyroSUWMCjqU1BjiQBEI87Hw49XvxG34jfnnTR9v2GzFMFBT
  AWk1QmLfV3ukhaYK9I4Wfe83CCwb8LTUuhOUECxqyCoy+D/E/leAAQDhy3XsyDOL8wAAAABJ
  RU5ErkJggg==
-Description: Untangle 24-Hour Replacement 30-Day Trial
- The Untangle 24-Hour Replacement 30-Day Trial Store Item.
+Description: Untangle Configuration Backup 30-Day Trial
+ The Untangle Configuration Backup 30-Day Trial Store Item.
