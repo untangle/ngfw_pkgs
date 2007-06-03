@@ -1,11 +1,11 @@
-Source: untangle-developement
+Source: untangle-development
 Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
-Package: untangle-developement
+Package: untangle-development
 Architecture: any
 Conflicts: dev-mv
 Provides: dev-mv
