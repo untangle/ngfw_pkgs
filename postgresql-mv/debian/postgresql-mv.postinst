@@ -1,12 +1,34 @@
 #!/bin/sh
 
-PG_ETC=/etc/postgresql
-PG_INIT=/etc/init.d/postgresql
-#PG_HOME=/usr/lib/postgresql
-#DB_DIR=/var/lib/postgres/data
+PG_CONF="`/usr/bin/find /etc/postgresql -name 'postgresql.conf' -type f`"
+PG_MAST="`/usr/bin/find /etc/postgresql -name 'postmaster.conf' -type f`"
+PG_HBA="`/usr/bin/find /etc/postgresql -name 'pg_hba.conf' -type f`"
+PG_INIT="`/usr/bin/find /etc/init.d/ -name 'postgres*' -type f -perm /u+x`"
+DATE="`date '+%Y%m%d%H%M%S'`"
+
+echo $PG_CONF
+
+if [ -z $PG_CONF ] ; then 
+    echo "ERROR: Can't locate postgresql.conf"
+    exit 0
+fi
+if [ -z $PG_HBA ] ; then 
+    echo "ERROR: Can't locate pg_hba.conf"
+    exit 0
+fi
+
+cp -f $PG_CONF $PG_CONF.$DATE
+cp -f $PG_MAST $PG_MAST.$DATE
+cp -f $PG_HBA  $PG_HBA.$DATE
 
 # The tuning depends on the memory available.  We have settings for >= 2Gig, >= 1Gig,
 # and < 1Gig.
+
+# XXX This should be pulled out into a config script called from here
+# so users can run this at a later date
+
+echo "Customizing postgres settings..."
+
 MEM=$(awk '/MemTotal/ { print $2 }' < /proc/meminfo)
 if [ $MEM -gt 1900000 ] ; then
   SHARED_BUFFERS=10000
@@ -34,21 +56,25 @@ else
 fi
 
 # Allow all local access
-sed -e "s/\#\(local.*all.*all.*trust\)/\1/" -i $PG_ETC/pg_hba.conf
-sed -e "s/\#\(host.*all.*all.*127.0.0.1.*255.255.255.255.*trust\)/\1/" -i $PG_ETC/pg_hba.conf
-sed -e "s/.*virtual_host.*=.*/virtual_host='127.0.0.1'/" -i $PG_ETC/postgresql.conf
+sed -i -e "s/\#\(local.*all.*all.*trust\)/\1/" $PG_HBA
+sed -i -e "s/\#\(host.*all.*all.*127.0.0.1.*255.255.255.255.*trust\)/\1/" $PG_HBA
+sed -i -e "s/.*virtual_host.*=.*/virtual_host='127.0.0.1'/" $PG_CONF
 
 # Tune memory usage & query optimizer
-sed -i -e "s/[# ]*shared_buffers *=.*/shared_buffers = ${SHARED_BUFFERS}/" $PG_ETC/postgresql.conf
-sed -i -e "s/[# ]*sort_mem *=.*/sort_mem = ${SORT_MEM}/" $PG_ETC/postgresql.conf
-sed -i -e "s/[# ]*vacuum_mem *=.*/vacuum_mem = ${VACUUM_MEM}/" $PG_ETC/postgresql.conf
-sed -i -e "s/[# ]*effective_cache_size *=.*/effective_cache_size = ${EFFECTIVE_CACHE_SIZE}/" $PG_ETC/postgresql.conf
-sed -i -e "s/[# ]*checkpoint_segments *=.*/checkpoint_segments = 12/" $PG_ETC/postgresql.conf
+sed -i -e "s/[# ]*shared_buffers *=.*/shared_buffers = ${SHARED_BUFFERS}/" $PG_CONF
+sed -i -e "s/[# ]*sort_mem *=.*/sort_mem = ${SORT_MEM}/" $PG_CONF
+sed -i -e "s/[# ]*vacuum_mem *=.*/vacuum_mem = ${VACUUM_MEM}/" $PG_CONF
+sed -i -e "s/[# ]*effective_cache_size *=.*/effective_cache_size = ${EFFECTIVE_CACHE_SIZE}/" $PG_CONF
+sed -i -e "s/[# ]*checkpoint_segments *=.*/checkpoint_segments = 12/" $PG_CONF
 
-# Turn off automatic vacuuming (now done nightly just after rollup, before reporting)
-sed -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" -i $PG_ETC/postmaster.conf
+if [ ! -z $PG_MAST ] ; then 
+    # Turn off automatic vacuuming (now done nightly just after rollup, before reporting)
+    sed -i -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" $PG_MAST
+else
+    echo "WARNING: postmaster.conf not found (failed to disable autovacuum)"
+fi
 
 # Search both settings and events schemas by default
-sed -e "s/.*search_path.*=.*/search_path = 'public,settings,events'/" -i $PG_ETC/postgresql.conf
+sed -i -e "s/.*search_path.*=.*/search_path = 'public,settings,events'/" $PG_CONF
 
 $PG_INIT restart || true
