@@ -7,7 +7,7 @@ class SpellPlugin < Plugin
       m.reply "incorrect usage: " + help(m.plugin)
       return
     end
-    p = IO.popen("aspell -a -S", "w+")
+    p = IO.popen("ispell -a -S", "w+")
     if(p)
       p.puts m.params
       p.close_write
@@ -32,7 +32,7 @@ class SpellPlugin < Plugin
       }
       p.close
     else
-      m.reply "couldn't exec aspell :("
+      m.reply "couldn't exec ispell :("
       return
     end
   end

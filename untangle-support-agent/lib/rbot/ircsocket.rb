@@ -197,7 +197,7 @@ module Irc
     # port::   IRCd port
     # host::   optional local host to bind to (ruby 1.7+ required)
     # create a new IrcSocket
-    def initialize(server, port, host, sendq_delay=2, sendq_burst=4, brt="100000/2")
+    def initialize(server, port, host, sendq_delay=2, sendq_burst=4, brt="400/2")
       @timer = Timer::Timer.new
       @timer.add(0.2) do
         spool
@@ -264,15 +264,6 @@ module Irc
       else
         @sock=TCPSocket.new(@server, @port)
       end
-
-      require 'openssl'
-      ssl_context = OpenSSL::SSL::SSLContext.new()
-      ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      @rawsock = @sock
-      @sock = OpenSSL::SSL::SSLSocket.new(@rawsock, ssl_context)
-      @sock.sync_close = true
-      @sock.connect
-
       @qthread = false
       @qmutex = Mutex.new
       @sendq = MessageQueue.new
@@ -439,14 +430,7 @@ module Irc
 
     # shutdown the connection to the server
     def shutdown(how=2)
-      return unless connected?
-      begin
-        @sock.close
-      rescue => err
-        error "error while shutting down: #{err.inspect}"
-        debug err.backtrace.join("\n")
-      end
-      @rawsock = nil
+      @sock.shutdown(how) unless @sock.nil?
       @sock = nil
       @burst = 0
     end
@@ -461,7 +445,7 @@ module Irc
         if @sock.nil?
           error "SEND attempted on closed socket"
         else
-          @sock.puts message
+          @sock.send(message + "\n",0)
           @last_send = Time.new
           @lines_sent += 1
           @burst += 1
