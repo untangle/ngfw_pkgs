@@ -38,7 +38,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-arch-stamp build-indep-stamp configure-stamp
-	rm -rf debian/tmp debian/bootsplash-mv sav-install
+	rm -rf debian/tmp debian/bootsplash-ut sav-install
 	dh_clean
 
 binary-arch: build

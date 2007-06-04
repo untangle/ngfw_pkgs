@@ -1,11 +1,11 @@
-Source: bootsplash-mv
+Source: bootsplash-ut
 Section: admin
 Priority: important
 Maintainer: Sebastien Delafond <seb@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
-Package: bootsplash-mv
+Package: bootsplash-ut
 Architecture: any
 Essential: yes
 Depends: ${shlibs:Depends}
