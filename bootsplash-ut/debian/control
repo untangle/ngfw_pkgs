@@ -1,11 +1,11 @@
-Source: bootsplash-ut
+Source: untangle-bootsplash
 Section: admin
 Priority: important
 Maintainer: Sebastien Delafond <seb@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
-Package: bootsplash-ut
+Package: untangle-bootsplash
 Architecture: any
 Essential: yes
 Depends: ${shlibs:Depends}
