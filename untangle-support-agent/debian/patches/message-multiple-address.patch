@@ -6,6 +6,6 @@
        # "/msg rbot rbot: hello", etc
 -      if @message.gsub!(/^\s*#{Regexp.escape(bot.nick)}\s*([:;,>]|\s)\s*/i, "")
 +      if @message.gsub!(/^.*?[\s,]*?#{Regexp.escape(bot.nick)}[^,]*?[:;>]\s*/i, "")
-	 @address = true
+         @address = true
        end
  
