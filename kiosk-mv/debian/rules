@@ -31,7 +31,7 @@ build: configure
 	rm -rf ./debian/tmp
 	mkdir -p ./debian/tmp
 	dh_installdirs -A -v
-	for i in `cat debian/kiosk-mv.dirs` ; do mkdir -p debian/tmp/$$i ; done
+	for i in `cat debian/kiosk-ut.dirs` ; do mkdir -p debian/tmp/$$i ; done
 	cp -r ./files/* ./debian/tmp/
 	find ./debian/tmp -name "\.svn" | xargs rm -rf
 	find ./debian/tmp/root -type f | xargs chmod 640
@@ -41,7 +41,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-arch-stamp build-indep-stamp configure-stamp
-	rm -rf debian/tmp debian/kiosk-mv sav-install
+	rm -rf debian/tmp debian/kiosk-ut sav-install
 	dh_clean
 
 binary-arch: build

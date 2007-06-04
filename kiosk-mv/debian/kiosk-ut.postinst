@@ -8,7 +8,7 @@ find /root/.zsh -type d | xargs chmod 750
 rm -fr /etc/xdg/xfce4
 cp -r /home/kiosk/.config/xfce4 /etc/xdg/
 
-rsync -Ha /usr/share/kiosk-mv/x-startup/etc/ /etc/
+rsync -Ha /usr/share/kiosk-ut/x-startup/etc/ /etc/
 
 # fix for bug #2352: if / is /dev/hda1, and that filesystem was
 # created before the first Untangle CD got released, then we are on an
@@ -23,6 +23,6 @@ if mount | grep -q '/dev/hda1 on /' ; then
   fi
 fi
 
-cp -f /usr/share/kiosk-mv/prefs.js /etc/firefox/profile/prefs.js
+cp -f /usr/share/kiosk-ut/prefs.js /etc/firefox/profile/prefs.js
 
 exit 0
