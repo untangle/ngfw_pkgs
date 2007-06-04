@@ -5,20 +5,20 @@
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/patchsys-quilt.mk
 
-PREFIX := debian/rbot-mv
+PREFIX := debian/untangle-support-agent
 
 MANPAGES := debian/rbot.1
 
 # configure and build should not be relaunched in binary rule
 
-build/rbot-mv:: $(MANPAGES)
+build/untangle-support-agent:: $(MANPAGES)
 	ruby setup.rb config --prefix=/usr --siteruby=/usr/lib/ruby
 	ruby setup.rb setup
 
 %.1: %.xml
 	xsltproc -nonet -o $@ /usr/share/sgml/docbook/stylesheet/xsl/nwalsh/manpages/docbook.xsl $<
 
-install/rbot-mv::
+install/untangle-support-agent::
 	ruby setup.rb install --prefix=$(PREFIX)
 	# figlet is non-free, that's why this package would not recommend such a nasty program in any way
 	rm $(PREFIX)/usr/share/rbot/plugins/figlet.rb
@@ -28,10 +28,10 @@ install/rbot-mv::
 	find $(PREFIX)/usr/share/rbot -iregex ".*\.rb\(\.disabled\)?" -a ! -iregex '.*/\(ssh\|exec\)\.rb' -exec rm -f "{}" \;
 	cp -r home-rbot/.rbot $(PREFIX)/home/rbot
 
-binary-install/rbot-mv::
+binary-install/untangle-support-agent::
 	dh_installman $(MANPAGES)
 
-binary-predeb/rbot-mv::
+binary-predeb/untangle-support-agent::
 	find $(PREFIX) -name ".arch-ids" -o -name ".svn" -depth -exec rm -rf "{}" \;
 
 clean:: 

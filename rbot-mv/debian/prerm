@@ -1,5 +1,5 @@
 #! /bin/sh
 
-/etc/init.d/rbot-mv stop
+/etc/init.d/untangle-support-agent stop
 
 exit 0

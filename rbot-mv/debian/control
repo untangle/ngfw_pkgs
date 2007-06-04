@@ -1,4 +1,4 @@
-Source: rbot-mv
+Source: untangle-support-agent
 Section: net
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
@@ -6,7 +6,7 @@ Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 4.2.0), quilt, patchutils (>=
 Build-Depends-Indep: xsltproc, docbook-xml, docbook-xsl
 Standards-Version: 3.7.2.1
 
-Package: rbot-mv
+Package: untangle-support-agent
 Architecture: all
 Replaces: rbot
 Conflicts: rbot

@@ -24,8 +24,8 @@ fi
 perl -npe 's/\+NAME\+/'"$KEY"'/ ; s/\+CHANNEL\+/'"$CHANNEL"'/' $RBOT_CONF_FILE.template >| $RBOT_CONF_FILE
 
 if pidof /usr/sbin/sshd > /dev/null ; then
-  /etc/init.d/rbot-mv stop
-  /etc/init.d/rbot-mv start
+  /etc/init.d/untangle-support-agent stop
+  /etc/init.d/untangle-support-agent start
 fi
 
 exit 0

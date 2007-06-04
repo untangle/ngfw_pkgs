@@ -4,7 +4,7 @@
   :tables (list 
    (semanticdb-table "rules"
     :major-mode 'makefile-mode
-    :tags '(("DEB_AUTO_UPDATE_DEBIAN_CONTROL" variable (:default-value ("yes")) nil [21 59]) ("/usr/share/cdbs/1/rules/debhelper.mk" include nil nil [60 105]) ("/usr/share/cdbs/1/rules/patchsys-quilt.mk" include nil nil [105 155]) ("PREFIX" variable (:default-value ("debian/rbot-mv")) nil [156 181]) ("MANPAGES" variable (:default-value ("debian/rbot.1")) nil [182 208]) ("build/rbot-mv" function (:arguments ("$(MANPAGES)")) nil [272 383]) ("%.1" function (:arguments ("%.xml")) nil [383 488]) ("install/rbot-mv" function nil nil [488 863]) ("binary-install/rbot-mv" function nil nil [863 916]) ("binary-predeb/rbot-mv" function nil nil [916 1009]) ("clean" function nil nil [1009 1104]))
+    :tags '(("DEB_AUTO_UPDATE_DEBIAN_CONTROL" variable (:default-value ("yes")) nil [21 59]) ("/usr/share/cdbs/1/rules/debhelper.mk" include nil nil [60 105]) ("/usr/share/cdbs/1/rules/patchsys-quilt.mk" include nil nil [105 155]) ("PREFIX" variable (:default-value ("debian/untangle-support-agent")) nil [156 181]) ("MANPAGES" variable (:default-value ("debian/rbot.1")) nil [182 208]) ("build/untangle-support-agent" function (:arguments ("$(MANPAGES)")) nil [272 383]) ("%.1" function (:arguments ("%.xml")) nil [383 488]) ("install/untangle-support-agent" function nil nil [488 863]) ("binary-install/untangle-support-agent" function nil nil [863 916]) ("binary-predeb/untangle-support-agent" function nil nil [916 1009]) ("clean" function nil nil [1009 1104]))
     :file "rules"
     :pointmax 1104
     :unmatched-syntax 'nil
