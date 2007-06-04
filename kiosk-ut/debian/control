@@ -1,11 +1,11 @@
-Source: kiosk-ut
+Source: untangle-kiosk
 Section: admin
 Priority: important
 Maintainer: Sebastien Delafond <seb@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
-Package: kiosk-ut
+Package: untangle-kiosk
 Architecture: any
 Essential: yes
 Depends: fbpanel, feh, xbindkeys, untangle-bootsplash, artwiz-cursor, firefox-r-kiosk, masqmail

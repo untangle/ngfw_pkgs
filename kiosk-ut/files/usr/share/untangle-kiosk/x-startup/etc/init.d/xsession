@@ -137,7 +137,7 @@ case "$1" in
 # Startup Logo
 # DISPLAY=:0 xloadimage -center -onroot -border black \
 #DISPLAY=:0 xloadimage -onroot -fullscreen -border black -quiet $BACKGROUND >/dev/null 2>&1 && break
-DISPLAY=:0 feh --bg-scale /usr/share/kiosk-ut/desktop_background-please_wait-1024x768.png > /dev/null 2>&1 && break
+DISPLAY=:0 feh --bg-scale /usr/share/untangle-kiosk/desktop_background-please_wait-1024x768.png > /dev/null 2>&1 && break
 found="false"
 sleep 1
     done
