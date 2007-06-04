@@ -7,6 +7,6 @@ Standards-Version: 3.7.2
 
 Package: spamc-mv
 Architecture: any
-Depends: spamassassin (>= 3.1.7-2~ut.1), libnet-dns-perl, libmail-spf-query-perl, libnet-ident-perl, razor, libsys-hostname-long-perl, fuzzyocr-ut
+Depends: spamassassin (>= 3.1.7-2~ut.1), libnet-dns-perl, libmail-spf-query-perl, libnet-ident-perl, razor, libsys-hostname-long-perl, untangle-fuzzyocr
 Description: The Untangle spamc utils
  The Untangle SpamAssassin configuration utilities.
