@@ -23,9 +23,9 @@ install-stamp: build-stamp
 	dh_clean -k
 	dh_installdirs
 
-	install -m755 FuzzyOcr.pm $(DESTDIR)/usr/share/fuzzyocr-ut
-	install -m644 FuzzyOcr.cf $(DESTDIR)/usr/share/fuzzyocr-ut
-	install -m644 FuzzyOcr.words.sample $(DESTDIR)/usr/share/fuzzyocr-ut/FuzzyOcr.words
+	install -m755 FuzzyOcr.pm $(DESTDIR)/usr/share/untangle-fuzzyocr
+	install -m644 FuzzyOcr.cf $(DESTDIR)/usr/share/untangle-fuzzyocr
+	install -m644 FuzzyOcr.words.sample $(DESTDIR)/usr/share/untangle-fuzzyocr/FuzzyOcr.words
 	cp -r samples $(DESTDIR)/usr/share/doc/$(PACKAGE)/
 	touch install-stamp
 

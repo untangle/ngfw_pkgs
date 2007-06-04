@@ -1,46 +1,46 @@
-fuzzyocr-ut (2.3b-8) stable; urgency=low
+untangle-fuzzyocr (2.3b-8) stable; urgency=low
 
   * auto build
 
  -- root <root@bebe.metavize.com>  Thu, 15 Mar 2007 16:22:11 -0700
 
-fuzzyocr-ut (2.3b-7) stable; urgency=low
+untangle-fuzzyocr (2.3b-7) stable; urgency=low
 
   * auto build
 
  -- John Irwin <jdi@bebe.metavize.com>  Tue, 13 Mar 2007 11:44:02 -0700
 
-fuzzyocr-ut (2.3b-6) stable; urgency=low
+untangle-fuzzyocr (2.3b-6) stable; urgency=low
 
   * auto build
 
  -- root <root@bebe.metavize.com>  Tue, 13 Mar 2007 11:01:02 -0700
 
-fuzzyocr-ut (2.3b-5) stable; urgency=low
+untangle-fuzzyocr (2.3b-5) stable; urgency=low
 
   * auto build
 
  -- John Irwin <jdi@bebe.metavize.com>  Fri,  9 Mar 2007 13:08:17 -0800
 
-fuzzyocr-ut (2.3b-4) stable; urgency=low
+untangle-fuzzyocr (2.3b-4) stable; urgency=low
 
   * auto build
 
  -- John Irwin <jdi@bebe.metavize.com>  Tue,  6 Mar 2007 16:36:19 -0800
 
-fuzzyocr-ut (2.3b-3) stable; urgency=low
+untangle-fuzzyocr (2.3b-3) stable; urgency=low
 
   * auto build
 
  -- John Irwin <jdi@bebe.metavize.com>  Tue,  6 Mar 2007 16:33:28 -0800
 
-fuzzyocr-ut (2.3b-2) stable; urgency=low
+untangle-fuzzyocr (2.3b-2) stable; urgency=low
 
   * auto build
 
  -- John Irwin <jdi@bebe.metavize.com>  Tue,  6 Mar 2007 14:28:40 -0800
 
-fuzzyocr-ut (2.3b-1) stable; urgency=low
+untangle-fuzzyocr (2.3b-1) stable; urgency=low
 
   * Initial release.
 

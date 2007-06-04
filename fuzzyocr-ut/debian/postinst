@@ -1,6 +1,6 @@
 #! /bin/sh
 
-FDIR=/usr/share/fuzzyocr-ut
+FDIR=/usr/share/untangle-fuzzyocr
 
 # copy in config files
 cp -p $FDIR/FuzzyOcr.cf /etc/mail/spamassassin
