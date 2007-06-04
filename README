@@ -1,19 +1,4 @@
-How to create a private Debian repository:
-
-1. Run deb-add.sh to add the .deb files to /var/www/untangle
-    deb-add.sh /var/www/untangle foo.deb  [more .deb files]
-
-2. Once all .deb files are added, run deb-scan.sh to recreate the Packages.gz file
-    deb-scan.sh /var/www/untangle
-
-Repeat the steps when you want to update any .deb file.
-If you add adding a new package, add an entry in override.testing.untangle.
-The fields for the entry are: package name, package priority, and package section.
-
-To use the repository (atleast this example), add this line to your sources.list file:
-deb http://bebe/untangle     testing untangle
-
-
+http://bebe/mediawiki/index.php/In-house_package_management
 
 Tools:
 push.sh
@@ -28,13 +13,7 @@ push-release-alpha.sh
     pushes /var/www/untangle to release-alpha.untangle.com
     removes non public transforms
 
-deb-add.sh
-    addes deb files ($2+) to repository ($1)
-
-deb-scan.sh
-    Scans debian packages in repository ($1) and builds Packages list
-
-clean-packages.sh
+clean-packages.rb
     clean-packages in the repository (used to clean out tons of old packages)
     "sudo ./clean-packages.sh /var/www/dmorris/pool/untangle/ 3 delete"
     deletes all but the newest three version of everything
