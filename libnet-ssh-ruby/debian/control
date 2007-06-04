@@ -9,7 +9,7 @@ Standards-Version: 3.7.2
 Package: libnet-ssh-ruby1.8
 Architecture: all
 Provides: libnet-ssh-ruby
-Depends: libopenssl-ruby1.8 (>= 1.8.1+1.8.2pre1-1), libneedle-ruby1.8 (>= 1.2.0-1)
+Depends: libopenssl-ruby1.8 (>= 1.8.1+1.8.2pre1-1), libneedle-ruby1.8 (>= 1.3.0)
 Description: pure ruby module that emulates an SSH client
  Net::SSH is to SSH as Net::Telnet is to Telnet and Net::HTTP is to HTTP.
  Perform non-interactive SSH processing, purely from Ruby!
