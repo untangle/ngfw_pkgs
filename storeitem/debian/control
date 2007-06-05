@@ -1,13 +1,13 @@
-Source: storeitem-mv
+Source: untangle-storeitem
 Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
-Package: standard-bundle-storeitem
+Package: untangle-storeitem-standard-bundle
 Architecture: any
-Depends: airgap-storeitem, spyware-storeitem, httpblocker-storeitem, clam-storeitem, protofilter-storeitem, nat-storeitem, firewall-storeitem, spamassassin-storeitem, clamphish-storeitem, openvpn-storeitem, ids-storeitem, reporting-storeitem, portal-storeitem
+Depends: untangle-storeitem-airgap, untangle-storeitem-spyware, untangle-storeitem-httpblocker, untangle-storeitem-clam, untangle-storeitem-protofilter, untangle-storeitem-nat, untangle-storeitem-firewall, untangle-storeitem-spamassassin, untangle-storeitem-clamphish, untangle-storeitem-openvpn, untangle-storeitem-ids, untangle-storeitem-reporting, untangle-storeitem-portal
 Conflicts: standard-bundle-disabler, spyware-disabler, httpblocker-disabler, protofilter-disabler, spamassassin-disabler, clamphish-disabler, ids-disabler
 XB-Price: 0
 XB-View-Position: 10
@@ -102,7 +102,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
 Description: Untangle Total Security Bundle
  The Untangle Total Security Bundle Store Item.
 
-Package: airgap-storeitem
+Package: untangle-storeitem-airgap
 Architecture: any
 Depends: airgap-transform
 XB-Price: 0
@@ -213,11 +213,11 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
 Description: Untangle Attack Blocker
  The Untangle Attack Blocker Store Item.
 
-Package: spyware-storeitem
+Package: untangle-storeitem-spyware
 Architecture: any
 Depends: spyware-transform
 Conflicts: spyware-disabler
-Provides: spyware-trial30-storeitem
+Provides: untangle-storeitem-spyware-trial30
 XB-Price: 0
 XB-View-Position: 20
 XB-Display-Name: Spyware Blocker
@@ -302,11 +302,11 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
 Description: Untangle Spyware Blocker
  The Untangle Spyware Blocker Store Item.
 
-Package: httpblocker-storeitem
+Package: untangle-storeitem-httpblocker
 Architecture: any
 Depends: httpblocker-transform
 Conflicts: httpblocker-disabler
-Provides: httpblocker-trial30-storeitem
+Provides: untangle-storeitem-httpblocker-trial30
 XB-Price: 0
 XB-View-Position: 30
 XB-Display-Name: Web Filter
@@ -402,11 +402,11 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
 Description: Untangle Web Filter
  The Untangle Web Filter Store Item.
 
-Package: hauri-storeitem
+Package: untangle-storeitem-hauri
 Architecture: any
 Depends: hauri-transform
 Conflicts: hauri-disabler
-Provides: hauri-trial30-storeitem
+Provides: untangle-storeitem-hauri-trial30
 XB-Price: 399
 XB-View-Position: 60
 XB-Display-Name: Dual Virus Blocker
@@ -518,7 +518,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
 Description: Untangle Dual Virus Blocker
  The Untangle Dual Virus Blocker Store Item.
 
-Package: clam-storeitem
+Package: untangle-storeitem-clam
 Architecture: any
 Depends: clam-transform
 XB-Price: 0
@@ -624,11 +624,11 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
 Description: Untangle Clam Virus Blocker
  The Untangle Clam Virus Blocker Store Item.
 
-Package: protofilter-storeitem
+Package: untangle-storeitem-protofilter
 Architecture: any
 Depends: protofilter-transform
 Conflicts: protofilter-disabler
-Provides: protofilter-trial30-storeitem
+Provides: untangle-storeitem-protofilter-trial30
 XB-Price: 0
 XB-View-Position: 80
 XB-Display-Name: Protocol Control
@@ -747,7 +747,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
 Description: Untangle Protocol Control
  The Untangle Protocol Control Store Item.
 
-Package: nat-storeitem
+Package: untangle-storeitem-nat
 Architecture: any
 Depends: nat-transform
 XB-Price: 0
@@ -841,7 +841,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
 Description: Untangle Router
  The Untangle Router Store Item.
 
-Package: firewall-storeitem
+Package: untangle-storeitem-firewall
 Architecture: any
 Depends: firewall-transform
 XB-Price: 0
@@ -928,11 +928,11 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
 Description: Untangle Firewall
  The Untangle Firewall Store Item.
 
-Package: spamassassin-storeitem
+Package: untangle-storeitem-spamassassin
 Architecture: any
 Depends: spamassassin-transform
 Conflicts: spamassassin-disabler
-Provides: spamassassin-trial30-storeitem
+Provides: untangle-storeitem-spamassassin-trial30
 XB-Price: 0
 XB-View-Position: 15
 XB-Display-Name: Spam Blocker
@@ -1045,11 +1045,11 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
 Description: Untangle Spam Blocker
  The Untangle Spam Blocker Store Item.
 
-Package: clamphish-storeitem
+Package: untangle-storeitem-clamphish
 Architecture: any
 Depends: clamphish-transform
 Conflicts: clamphish-disabler
-Provides: clamphish-trial30-storeitem
+Provides: untangle-storeitem-clamphish-trial30
 XB-Price: 0
 XB-View-Position: 17
 XB-Display-Name: Phish Blocker
@@ -1176,7 +1176,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
 Description: Untangle Phish Blocker
  The Untangle Phish Blocker Store Item.
 
-Package: test-storeitem
+Package: untangle-storeitem-test
 Architecture: any
 Depends: test-transform
 XB-Price: 0
@@ -1318,7 +1318,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
 Description: Untangle Test
  The Untangle Test Store Item.
 
-Package: openvpn-storeitem
+Package: untangle-storeitem-openvpn
 Architecture: any
 Depends: openvpn-transform
 XB-Price: 0
@@ -1422,11 +1422,11 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
 Description: OpenVPN
  OpenVPN Store Item.
 
-Package: ids-storeitem
+Package: untangle-storeitem-ids
 Architecture: any
 Depends: ids-transform, untangle-snort-rules
 Conflicts: ids-disabler
-Provides: ids-trial30-storeitem
+Provides: untangle-storeitem-ids-trial30
 XB-Price: 0
 XB-View-Position: 75
 XB-Display-Name: Intrusion Prevention
@@ -1530,7 +1530,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
 Description: Untangle Intrusion Prevention
  The Untangle Intrusion Prevention Store Item.
 
-Package: reporting-storeitem
+Package: untangle-storeitem-reporting
 Architecture: any
 Depends: reporting-transform
 XB-Price: 0
@@ -1616,11 +1616,11 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
 Description: Untangle Reports
  Untangle Reports Store Item.
 
-Package: boxbackup-storeitem
+Package: untangle-storeitem-boxbackup
 Architecture: any
 Depends: boxbackup-transform
 Conflicts: boxbackup-disabler
-Provides: boxbackup-trial30-storeitem
+Provides: untangle-storeitem-boxbackup-trial30
 XB-Price: 99
 XB-View-Position: 1015
 XB-Display-Name: Configuration Backup
@@ -1738,11 +1738,11 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
 Description: Untangle Configuration Backup
  The Untangle Configuration Backup Store Item.
 
-Package: portal-storeitem
+Package: untangle-storeitem-portal
 Architecture: any
 Depends: portal-transform
 Conflicts: portal-disabler
-Provides: portal-trial30-storeitem
+Provides: untangle-storeitem-portal-trial30
 XB-Price: 99
 XB-View-Position: 1015
 XB-Display-Name: Remote Access Portal
@@ -1848,9 +1848,9 @@ XB-Desc-Icon:  iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YM
 Description: Untangle Remote Access Portal
  The Untangle Remote Access Portal Store Item.
 
-Package: standard-bundle-trial30-storeitem
+Package: untangle-storeitem-standard-bundle-trial30
 Architecture: any
-Depends: airgap-storeitem, spyware-trial30-storeitem, httpblocker-trial30-storeitem, clam-storeitem, protofilter-trial30-storeitem, nat-storeitem, firewall-storeitem, spamassassin-trial30-storeitem, clamphish-trial30-storeitem, openvpn-storeitem, ids-storeitem, reporting-storeitem, portal-trial30-storeitem
+Depends: untangle-storeitem-airgap, untangle-storeitem-spyware-trial30, untangle-storeitem-httpblocker-trial30, untangle-storeitem-clam, untangle-storeitem-protofilter-trial30, untangle-storeitem-nat, untangle-storeitem-firewall, untangle-storeitem-spamassassin-trial30, untangle-storeitem-clamphish-trial30, untangle-storeitem-openvpn, untangle-storeitem-ids, untangle-storeitem-reporting, untangle-storeitem-portal-trial30
 XB-Price: 0
 XB-View-Position: 10
 XB-Display-Name: Total Security Bundle 30-Day Trial
@@ -1944,7 +1944,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
 Description: Untangle Total Security Bundle 30-Day Trial
  The Untangle Total Security Bundle 30-Day Trial Store Item.
 
-Package: spyware-trial30-storeitem
+Package: untangle-storeitem-spyware-trial30
 Architecture: any
 Depends: spyware-transform, spyware-disabler
 XB-Price: 0
@@ -2031,7 +2031,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
 Description: Untangle Spyware Blocker 30-Day Trial
  The Untangle Spyware Blocker 30-Day Trial Store Item.
 
-Package: httpblocker-trial30-storeitem
+Package: untangle-storeitem-httpblocker-trial30
 Architecture: any
 Depends: httpblocker-transform, httpblocker-disabler
 XB-Price: 0
@@ -2129,7 +2129,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
 Description: Untangle Web Filter 30-Day Trial
  The Untangle Web Filter 30-Day Trial Store Item.
 
-Package: hauri-trial30-storeitem
+Package: untangle-storeitem-hauri-trial30
 Architecture: any
 Depends: hauri-transform, hauri-disabler
 XB-Price: 399
@@ -2243,7 +2243,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
 Description: Untangle Dual Virus Blocker 30-Day Trial
  The Untangle Dual Virus Blocker 30-Day Trial Store Item.
 
-Package: protofilter-trial30-storeitem
+Package: untangle-storeitem-protofilter-trial30
 Architecture: any
 Depends: protofilter-transform, protofilter-disabler
 XB-Price: 0
@@ -2364,7 +2364,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
 Description: Untangle Protocol Control 30-Day Trial
  The Untangle Protocol Control 30-Day Trial Store Item.
 
-Package: spamassassin-trial30-storeitem
+Package: untangle-storeitem-spamassassin-trial30
 Architecture: any
 Depends: spamassassin-transform, spamassassin-disabler
 XB-Price: 0
@@ -2479,7 +2479,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
 Description: Untangle Spam Blocker 30-Day Trial
  The Untangle Spam Blocker 30-Day Trial Store Item.
 
-Package: clamphish-trial30-storeitem
+Package: untangle-storeitem-clamphish-trial30
 Architecture: any
 Depends: clamphish-transform, clamphish-disabler
 XB-Price: 0
@@ -2608,7 +2608,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
 Description: Untangle Phish Blocker 30-Day Trial
  The Untangle Phish Blocker 30-Day Trial Store Item.
 
-Package: portal-trial30-storeitem
+Package: untangle-storeitem-portal-trial30
 Architecture: any
 Depends: portal-transform, portal-disabler
 XB-Price: 0
@@ -2714,7 +2714,7 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
 Description: Untangle Remote Access Portal 30-Day Trial
  The Untangle Remote Access Portal 30-Day Trial Store Item.
 
-Package: boxbackup-trial30-storeitem
+Package: untangle-storeitem-boxbackup-trial30
 Architecture: any
 Depends: boxbackup-transform, boxbackup-disabler
 XB-Price: 99
