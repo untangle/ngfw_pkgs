@@ -36,7 +36,7 @@ build-stamp: configure-stamp
 
 	# Add here commands to compile the package.
 	ruby1.8 setup.rb setup
-	#docbook-to-man debian/libnet-ssh-ruby.sgml > libnet-ssh-ruby.1
+	#docbook-to-man debian/untangle-libnet-ssh-ruby.sgml > untangle-libnet-ssh-ruby.1
 
 	touch build-stamp
 
@@ -57,15 +57,15 @@ install: build
 	dh_clean -k 
 	dh_installdirs
 
-	# Add here commands to install the package into debian/libnet-ssh-ruby.
-	#$(MAKE) install DESTDIR=$(CURDIR)/debian/libnet-ssh-ruby
-	ruby1.8 setup.rb install --prefix=$(CURDIR)/debian/libnet-ssh-ruby1.8
+	# Add here commands to install the package into debian/untangle-libnet-ssh-ruby.
+	#$(MAKE) install DESTDIR=$(CURDIR)/debian/untangle-libnet-ssh-ruby
+	ruby1.8 setup.rb install --prefix=$(CURDIR)/debian/untangle-libnet-ssh-ruby1.8
 
-	mkdir -p $(CURDIR)/debian/libnet-ssh-ruby1.8/usr/share/doc/libnet-ssh-ruby1.8
+	mkdir -p $(CURDIR)/debian/untangle-libnet-ssh-ruby1.8/usr/share/doc/untangle-libnet-ssh-ruby1.8
 	cp -a doc \
-	  $(CURDIR)/debian/libnet-ssh-ruby1.8/usr/share/doc/libnet-ssh-ruby1.8
+	  $(CURDIR)/debian/untangle-libnet-ssh-ruby1.8/usr/share/doc/untangle-libnet-ssh-ruby1.8
 	rm \
-	  $(CURDIR)/debian/libnet-ssh-ruby1.8/usr/share/doc/libnet-ssh-ruby1.8/doc/LICENSE-*
+	  $(CURDIR)/debian/untangle-libnet-ssh-ruby1.8/usr/share/doc/untangle-libnet-ssh-ruby1.8/doc/LICENSE-*
 
 
 

@@ -1,35 +1,35 @@
-libnet-ssh-ruby (1.1.1-1) unstable; urgency=medium
+untangle-libnet-ssh-ruby (1.1.1-1) unstable; urgency=medium
 
   * New upstream release
 
  -- Sebastien Delafond <seb@untangle.com>  Fri, 25 May 2007 11:16:31 -0700
 
-libnet-ssh-ruby (1.0.10-1) unstable; urgency=medium
+untangle-libnet-ssh-ruby (1.0.10-1) unstable; urgency=medium
 
   * New upstream release
 
  -- Tatsuki Sugiura <sugi@nemui.org>  Tue, 17 Oct 2006 15:24:54 +0900
 
-libnet-ssh-ruby (1.0.2-1) unstable; urgency=low
+untangle-libnet-ssh-ruby (1.0.2-1) unstable; urgency=low
 
   * New upstream release
 
  -- Tatsuki Sugiura <sugi@nemui.org>  Wed,  3 Aug 2005 07:29:58 +0900
 
-libnet-ssh-ruby (1.0.0-1) unstable; urgency=low
+untangle-libnet-ssh-ruby (1.0.0-1) unstable; urgency=low
 
   * New upstream release
   * add build ruby1.8 in Build-Depends (Closes: #302349)
 
  -- Tatsuki Sugiura <sugi@nemui.org>  Fri,  1 Apr 2005 10:29:10 +0900
 
-libnet-ssh-ruby (0.9.0-1) unstable; urgency=low
+untangle-libnet-ssh-ruby (0.9.0-1) unstable; urgency=low
 
   * New upstream release
 
  -- Tatsuki Sugiura <sugi@nemui.org>  Tue,  1 Feb 2005 12:28:54 +0900
 
-libnet-ssh-ruby (0.6.0-1) unstable; urgency=low
+untangle-libnet-ssh-ruby (0.6.0-1) unstable; urgency=low
 
   * Initial Release.
 
