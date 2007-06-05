@@ -10,7 +10,7 @@ Package: untangle-support-agent
 Architecture: all
 Replaces: rbot
 Conflicts: rbot
-Depends: ruby (>= 1.8), ruby (<< 1.9), libdb4.3-ruby1.8 | libdb4.2-ruby1.8, libopenssl-ruby1.8, libnet-ssh-ruby1.8 (>= 1.1.1), untangle-support-keyring, sudo
+Depends: ruby (>= 1.8), ruby (<< 1.9), libdb4.3-ruby1.8 | libdb4.2-ruby1.8, libopenssl-ruby1.8, untangle-libnet-ssh-ruby1.8 (>= 1.1.1), untangle-support-keyring, sudo
 Description: IRC bot written in ruby
  Rbot is very extensible thanks to a well designed plugin
  scheme. It has native infobot-style keywords, fact database,
