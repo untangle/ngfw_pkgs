@@ -1,5 +1,0 @@
-#!/bin/sh
-
-## Install localhost into the /etc/resolv.conf file
-
-sed -i -e '/127.0.0.1/d' -e '1inameserver 127.0.0.1' /etc/resolv.conf
