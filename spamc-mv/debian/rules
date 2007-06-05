@@ -31,7 +31,7 @@ build: configure
 	rm -rf ./debian/tmp
 	mkdir -p ./debian/tmp
 	dh_installdirs -A -v
-	for i in `cat debian/spamc-mv.dirs` ; do mkdir -p debian/tmp/$$i ; done
+	for i in `cat debian/untangle-spamassassin-update.dirs` ; do mkdir -p debian/tmp/$$i ; done
 	cp -r ./files/* ./debian/tmp/
 	find ./debian/tmp -name ".svn" | xargs rm -rf 
 
@@ -39,7 +39,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-arch-stamp build-indep-stamp configure-stamp
-	rm -rf debian/tmp debian/spamc-mv sav-install
+	rm -rf debian/tmp debian/untangle-spamassassin-update sav-install
 	dh_clean
 
 binary-arch: build
