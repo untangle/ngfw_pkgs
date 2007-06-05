@@ -31,11 +31,11 @@ build: configure
 	rm -rf ./debian/tmp
 	mkdir -p ./debian/tmp
 	dh_installdirs -A -v
-	for i in `cat debian/restore-mv.dirs` ; do mkdir -p debian/tmp/$$i ; done
+	for i in `cat debian/untangle-restore-tools.dirs` ; do mkdir -p debian/tmp/$$i ; done
 	cp ./edgeguard-restore ./debian/tmp/usr/bin/
 	cp ./mvvmdb-restore ./debian/tmp/usr/bin/
 	cp ./backup-mv ./debian/tmp/usr/bin/
-	cp ./restore-mv ./debian/tmp/usr/bin/
+	cp ./untangle-restore-tools ./debian/tmp/usr/bin/
 	cp ./factory-defaults ./debian/tmp/usr/bin/
 	mkdir -p ./debian/tmp/usr/share/metavize/conf
 	cd canonical && tar zcf  ../debian/tmp/usr/share/metavize/conf/canonical.tar.gz --exclude '.svn' *
@@ -46,7 +46,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-arch-stamp build-indep-stamp configure-stamp
-	rm -rf debian/tmp debian/restore-mv sav-install
+	rm -rf debian/tmp debian/untangle-restore-tools sav-install
 	dh_clean
 
 binary-arch: build

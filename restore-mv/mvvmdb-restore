@@ -108,9 +108,9 @@ restore()
             instfile=$indir/installed-$choice
 
             # restore choice
-            /usr/bin/restore-mv $dumpfile $tarfile $instfile
+            /usr/bin/untangle-restore-tools $dumpfile $tarfile $instfile
 
-            # restore-mv might restart MVVM, stop it
+            # untangle-restore-tools might restart MVVM, stop it
             /etc/init.d/mvvm stop
 
             return $?

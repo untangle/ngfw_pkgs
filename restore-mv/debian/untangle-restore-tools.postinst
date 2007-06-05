@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# start untangle-restore-tools
+if [ -x "/etc/init.d/untangle-restore-tools" ]; then
+    update-rc.d untangle-restore-tools defaults 99 > /dev/null
+fi

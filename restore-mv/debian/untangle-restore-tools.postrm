@@ -1,0 +1,6 @@
+#!/bin/sh
+
+if [ "$1" = "purge" ] ; then
+    rm -f /etc/init.d/untangle-restore-tools
+    update-rc.d untangle-restore-tools remove > /dev/null
+fi

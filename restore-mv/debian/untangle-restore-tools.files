@@ -2,7 +2,7 @@
 /usr/bin/edgeguard-restore
 /usr/bin/factory-defaults
 /usr/bin/mvvmdb-restore
-/usr/bin/restore-mv
+/usr/bin/untangle-restore-tools
 /usr/share/metavize/conf/canonical.tar.gz
 /usr/share/metavize/conf/initial.ldif
 /usr/share/metavize/conf/ldap.DB_CONFIG
