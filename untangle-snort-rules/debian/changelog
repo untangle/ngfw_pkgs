@@ -1,0 +1,102 @@
+untangle-snort-rules (0-17) mustang; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@untangle.com>  Wed,  9 May 2007 19:26:27 -0700
+
+untangle-snort-rules (0-16) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@bebe.metavize.com>  Tue, 13 Mar 2007 17:17:35 -0700
+
+untangle-snort-rules (0-15) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@bebe.metavize.com>  Tue, 13 Mar 2007 17:14:54 -0700
+
+untangle-snort-rules (0-14) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@bebe.metavize.com>  Tue, 13 Mar 2007 17:02:13 -0700
+
+untangle-snort-rules (0-13) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@localhost>  Tue, 13 Mar 2007 15:55:27 -0700
+
+untangle-snort-rules (0-12) stable; urgency=low
+
+  * auto build
+
+ -- root <root@bebe.metavize.com>  Tue,  7 Nov 2006 16:47:08 -0800
+
+untangle-snort-rules (0-11) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@untangle.com>  Sun, 26 Feb 2006 13:14:10 -0800
+
+untangle-snort-rules (0-10) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@untangle.com>  Fri, 24 Feb 2006 17:50:29 -0800
+
+untangle-snort-rules (0-9) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@untangle.com>  Fri, 24 Feb 2006 17:45:33 -0800
+
+untangle-snort-rules (0-8) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@untangle.com>  Fri, 24 Feb 2006 17:34:30 -0800
+
+untangle-snort-rules (0-7) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@untangle.com>  Fri, 24 Feb 2006 13:53:25 -0800
+
+untangle-snort-rules (0-6) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@untangle.com>  Wed, 15 Feb 2006 11:26:57 -0800
+
+untangle-snort-rules (0-5) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@untangle.com>  Thu,  9 Feb 2006 18:18:13 -0800
+
+untangle-snort-rules (0-4) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@untangle.com>  Thu,  9 Feb 2006 18:14:52 -0800
+
+untangle-snort-rules (0-3) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@untangle.com>  Thu,  9 Feb 2006 17:42:30 -0800
+
+untangle-snort-rules (0-2) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@untangle.com>  Sun,  5 Feb 2006 13:58:51 -0800
+
+untangle-snort-rules (0-1) stable; urgency=low
+
+  * auto build
+
+ -- Dirk Morris <dmorris@untangle.com>  Sun, 05 Feb 2006 13:06:39 -0700
+

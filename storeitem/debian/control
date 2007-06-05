@@ -1424,7 +1424,7 @@ Description: OpenVPN
 
 Package: ids-storeitem
 Architecture: any
-Depends: ids-transform, snort-rules-current
+Depends: ids-transform, untangle-snort-rules
 Conflicts: ids-disabler
 Provides: ids-trial30-storeitem
 XB-Price: 0

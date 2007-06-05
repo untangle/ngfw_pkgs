@@ -1,0 +1,40 @@
+# Copyright 2001-2005 Sourcefire, Inc. All Rights Reserved
+#
+# This file may contain proprietary rules that were created, tested and
+# certified by Sourcefire, Inc. (the "VRT Certified Rules") as well as
+# rules that were created by Sourcefire and other third parties and
+# distributed under the GNU General Public License (the "GPL Rules").  The
+# VRT Certified Rules contained in this file are the property of
+# Sourcefire, Inc. Copyright 2005 Sourcefire, Inc. All Rights Reserved.
+# The GPL Rules created by Sourcefire, Inc. are the property of
+# Sourcefire, Inc. Copyright 2002-2005 Sourcefire, Inc. All Rights
+# Reserved.  All other GPL Rules are owned and copyrighted by their
+# respective owners (please see www.snort.org/contributors for a list of
+# owners and their respective copyrights).  In order to determine what
+# rules are VRT Certified Rules or GPL Rules, please refer to the VRT
+# Certified Rules License Agreement.
+#
+#
+# $Id: virus.rules,v 1.28.2.1.2.5 2006/01/05 16:35:33 mwatchinski Exp $
+#------------
+# VIRUS RULES
+#------------
+#
+# We don't care about virus rules anymore.  BUT, you people won't stop asking
+# us for virus rules.  So... here ya go.
+#
+# There is now one rule that looks for any of the following attachment types:
+#
+#   ade, adp, asd, asf, asx, bat, chm, cli, cmd, com, cpp, diz, dll, dot, emf,
+#   eml, exe, hlp, hsq, hta, ini, js, jse, lnk, mda, mdb, mde, mdw, msi, msp,
+#   nws, ocx, pif, pl, pm, pot, pps, ppt, reg, rtf, scr, shs, swf, sys, vb,
+#   vbe, vbs, vcf, vxd, wmd, wmf, wms, wmz, wpd, wpm, wps, wpz, wsc, wsf, wsh,
+#   xlt, xlw
+#
+
+alert tcp $HOME_NET any -> $EXTERNAL_NET 25 (msg:"VIRUS OUTBOUND bad file attachment"; flow:to_server,established; content:"Content-Disposition|3A|"; nocase; pcre:"/filename\s*=\s*.*?\.(?=[abcdehijlmnoprsvwx])(a(d[ep]|s[dfx])|c([ho]m|li|md|pp)|d(iz|ll|ot)|e(m[fl]|xe)|h(lp|sq|ta)|jse?|m(d[abew]|s[ip])|p(p[st]|if|[lm]|ot)|r(eg|tf)|s(cr|[hy]s|wf)|v(b[es]?|cf|xd)|w(m[dfsz]|p[dmsz]|s[cfh])|xl[tw]|bat|ini|lnk|nws|ocx)[\x27\x22\n\r\s]/iR"; classtype:suspicious-filename-detect; sid:721; rev:8;)
+alert tcp $HOME_NET any -> [128.118.25.3,128.138.140.44,128.2.129.21,128.2.136.71,128.206.12.130,128.59.59.177,129.132.2.21,130.235.20.3,130.88.200.6,130.88.200.98,131.188.3.221,131.188.3.223,131.216.1.101,132.163.4.101,132.163.4.102,132.163.4.103,132.236.56.250,132.246.168.148] 37 (msg:"VIRUS Possible Sober virus set one NTP time check attempt"; flow:stateless; flags:S,12; threshold:type limit, track by_src, count 1, seconds 60; classtype:unusual-client-port-connection; sid:5321; rev:4;)
+alert tcp $HOME_NET any -> [132.246.168.164,138.96.64.10,142.3.100.15,146.164.48.1,148.6.0.1,150.254.183.15,161.53.30.3,162.23.41.34,18.7.21.144,192.43.244.18,192.53.103.103,192.53.103.104,192.53.103.107,193.2.1.66,193.204.114.105,193.204.114.233,194.137.39.69,198.60.22.240] 37 (msg:"VIRUS Possible Sober virus set two NTP time check attempt"; flow:stateless; flags:S,12; threshold:type limit, track by_src, count 1, seconds 60; classtype:unusual-client-port-connection; sid:5322; rev:2;)
+alert tcp $HOME_NET any -> [198.72.72.10,200.254.135.2,208.14.208.19,209.87.233.53,213.239.201.102,216.193.203.2,69.25.96.13] 37 (msg:"VIRUS Possible Sober virus set three NTP time check attempt"; flow:stateless; flags:S,12; threshold:type limit, track by_src, count 1, seconds 60; classtype:unusual-client-port-connection; sid:5323; rev:2;)
+alert tcp $HOME_NET any -> $EXTERNAL_NET $HTTP_PORTS (msg:"VIRUS Possible Sober virus set two call home attempt"; flow:to_server,established; uricontent:".exe"; pcre:"/\x2f(?=[abdefijoqrsuvwxz])(d(ixqshv\x2fqzccs|yddznydqir\x2fevi)|f(seqepagqfphv\x2fsfd|ulmxct\x2fmqoyc)|i(ohgdhkzfhdzo\x2fuwp|yxegtd\x2fefcwg)|j((bevgezfmegwy\x2fnt|mqnqgijmng\x2foj)a|hjhgquqssq\x2fpjm|pjpoptwql\x2frlnj)|s(mtmeihf\x2fhiuxz|vclxatmlhavj\x2fvsy)|(aohobygi\x2fzwiw|rprpgbnrppb\x2fci)f|bnymomspyo\x2fzowy|eveocczmthmmq\x2fomzl|ocllceclbhs\x2fgth|(qlqqlbojvii\x2fgt|xbqyosoe\x2fcpvm)i|urfiqileuq\x2ftjzu|(vvvjkhmbgnbbw\x2fqbn|wjpropqmlpohj\x2flo)q|zzzvmkituktgr\x2fetie)\.exe/U"; classtype:suspicious-filename-detect; sid:5324; rev:2;)
+alert tcp $HOME_NET any -> $EXTERNAL_NET $HTTP_PORTS (msg:"VIRUS Possible Sober virus set one call home attempt"; flow:to_server,established; uricontent:"/"; pcre:"/\x2f(?=[defghilmnoqrstwz])(m(ookflolfctm\x2fnmot\.fmu|clvompycem\x2fcen\.vcn)|e(etbuviaebe\x2feqv\.bvv|mcndvwoemn\x2flvv\.jde)|s(fhfksjzsfu\x2fahm\.uqs|rvziadzvzr\x2fsaei\.vvt)|n(kxlvcob\x2fkmpk\.ibl|pgwtjgxwthx\x2fbyb\.xky|hirmvtg\x2fggqh\.kqh)|(wlpgskmv\x2flwzo\.qv|gdvsotuqwsg\x2fdxt\.hd)g|(twfofrfzlugq\x2feve\.qd|doarauzeraqf\x2fvvv\.ul|qisezhin\x2fiqor\.ym)v|fowclxccdxn\x2fuxwn\.ddy|lnzzlnbk\x2fpkrm\.fin|iufilfwulmfi\x2friuf\.lio|(hsdszhmoshh\x2flhr\.cn|oakmanympnw\x2flnkd\.pk)h|riggiymd\x2fwdhi\.vhi|zmnjgmomgbdz\x2fzzmw\.gzt)/U"; classtype:suspicious-filename-detect; sid:5320; rev:2;)
