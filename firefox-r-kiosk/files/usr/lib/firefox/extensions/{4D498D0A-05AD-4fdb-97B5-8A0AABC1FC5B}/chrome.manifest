@@ -1,3 +1,0 @@
-
-overlay	chrome://browser/content/browser.xul	chrome://rkiosk/content/rkioskbrowser.xul
-content	rkiosk	jar:chrome/rkiosk.jar!/content/rkiosk/
