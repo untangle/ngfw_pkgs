@@ -1,17 +1,17 @@
-Source: untangle-untangle-gocr
+Source: untangle-gocr
 Section: graphics
 Priority: optional
 Maintainer: Cosimo Alfarano <kalfa@debian.org>
 Standards-Version: 3.5.10
 Build-Depends: tetex-bin, debhelper (>= 3.0), autoconf, libgtk1.2-dev, libnetpbm10-dev, netpbm, transfig, gs, gsfonts
 
-Package: untangle-untangle-gocr
+Package: untangle-gocr
 Architecture: any
 Depends: ${shlibs:Depends}
-Suggests: untangle-untangle-gocr-doc
+Suggests: untangle-gocr-doc
 Recommends: libjpeg-progs, bzip2, netpbm, transfig
 Description: A command line OCR
- untangle-untangle-gocr is a multi-platform OCR (Optical Character Recognition) program.
+ untangle-gocr is a multi-platform OCR (Optical Character Recognition) program.
  .
  It can read pnm, pbm, pgm, ppm, some pcx and tga image files.
  .
@@ -19,37 +19,37 @@ Description: A command line OCR
  in one column and do not have tables. Font sizes of 20 to 60
  pixels are supported.
  .
- If you want to write your own OCR, libuntangle-untangle-gocr is provided in a separate
+ If you want to write your own OCR, libuntangle-gocr is provided in a separate
  package. Documentation and graphical wrapper are provided in separated
  packages, too.
      
-Package: untangle-untangle-gocr-doc
+Package: untangle-gocr-doc
 Section: doc
 Architecture: all
-Description: untangle-untangle-gocr documentation
- untangle-untangle-gocr is a multi-platform OCR (Optical Character Recognition) program.
+Description: untangle-gocr documentation
+ untangle-gocr is a multi-platform OCR (Optical Character Recognition) program.
  .
  It can read pnm, pbm, pgm, ppm, some pcx and tga image files.
  .
- It is documentation about untangle-untangle-gocr and OCRs.
+ It is documentation about untangle-gocr and OCRs.
 
-Package: untangle-untangle-gocr-tk
+Package: untangle-gocr-tk
 Architecture: any
-Depends: untangle-untangle-gocr, tk8.4 | wish
+Depends: untangle-gocr, tk8.4 | wish
 Suggests: xsane
-Description: A tcl/tk wrapper around untangle-untangle-gocr
- untangle-untangle-gocr is a multi-platform OCR (Optical Character Recognition) program.
+Description: A tcl/tk wrapper around untangle-gocr
+ untangle-gocr is a multi-platform OCR (Optical Character Recognition) program.
  .
  It can read pnm, pbm, pgm, ppm, some pcx and tga image files.
  .
- It is a tlc/tk GUI to untangle-untangle-gocr (a command line program).
+ It is a tlc/tk GUI to untangle-gocr (a command line program).
  
-Package: untangle-untangle-gocr-gtk
+Package: untangle-gocr-gtk
 Architecture: any
-Depends: untangle-untangle-gocr, ${shlibs:Depends}
-Description: A GTK wrapper around untangle-untangle-gocr
- untangle-untangle-gocr is a multi-platform OCR (Optical Character Recognition) program.
+Depends: untangle-gocr, ${shlibs:Depends}
+Description: A GTK wrapper around untangle-gocr
+ untangle-gocr is a multi-platform OCR (Optical Character Recognition) program.
  .
  It can read pnm, pbm, pgm, ppm, some pcx and tga image files.
  .
- It is a GTK GUI to untangle-untangle-gocr (command line program).
+ It is a GTK GUI to untangle-gocr (command line program).
