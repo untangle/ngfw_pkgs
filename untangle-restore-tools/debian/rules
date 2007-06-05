@@ -35,7 +35,7 @@ build: configure
 	cp ./edgeguard-restore ./debian/tmp/usr/bin/
 	cp ./mvvmdb-restore ./debian/tmp/usr/bin/
 	cp ./backup-mv ./debian/tmp/usr/bin/
-	cp ./untangle-restore-tools ./debian/tmp/usr/bin/
+	cp ./untangle-restore ./debian/tmp/usr/bin/
 	cp ./factory-defaults ./debian/tmp/usr/bin/
 	mkdir -p ./debian/tmp/usr/share/metavize/conf
 	cd canonical && tar zcf  ../debian/tmp/usr/share/metavize/conf/canonical.tar.gz --exclude '.svn' *
