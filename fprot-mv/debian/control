@@ -1,11 +1,11 @@
-Source: fprot-mv
+Source: untangle-fprot
 Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
-Package: fprot-mv
+Package: untangle-fprot
 Architecture: any
 Depends:
 Conflicts: f-prot
