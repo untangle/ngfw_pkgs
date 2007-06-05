@@ -1,7 +1,7 @@
 #! /bin/sh
 
 NSIS_FILES=`dpkg -L nsis`
-LIST=/usr/share/nsis-mv/copied-files
+LIST=/usr/share/untangle-nsis/copied-files
 
 while read f ; do
   # remove it only if it doesn't belong in nsis
@@ -9,4 +9,4 @@ while read f ; do
   echo "$NSIS_FILES" | grep -q "$nsisFile" || rm -f "$nsisFile"
 done < $LIST
 
-rm -fr /usr/share/nsis-mv
+rm -fr /usr/share/untangle-nsis
