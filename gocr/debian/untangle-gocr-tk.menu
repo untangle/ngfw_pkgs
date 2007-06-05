@@ -1,0 +1,4 @@
+?package(untangle-gocr-tk):needs=X11 \
+	section=Apps/Graphics \
+	title="TK Gocr" \
+	command="/usr/bin/untangle-gocr.tcl"

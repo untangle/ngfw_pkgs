@@ -1,4 +1,0 @@
-?package(gocr-tk):needs=X11 \
-	section=Apps/Graphics \
-	title="TK Gocr" \
-	command="/usr/bin/gocr.tcl"

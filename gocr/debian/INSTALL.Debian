@@ -1,7 +1,7 @@
-gocr for Debian
+untangle-gocr for Debian
 ----------------------
 
-This is Debian package of gocr.
+This is Debian package of untangle-gocr.
 Please, read README*
 
 You can modify debian/rules choosing to compile or not database and examples
@@ -9,6 +9,6 @@ You can modify debian/rules choosing to compile or not database and examples
 Actually database is for developing purpouses only, so if you a user, you
 don't need them. If you are a develper you know what do with them.
 
-Examples will be installed in /usr/share/gocr/examples if compiled.
+Examples will be installed in /usr/share/untangle-gocr/examples if compiled.
 
  -- Cosimo Alfarano <alfarano@students.cs.unibo.it>, Fri, 26 Aug 2000 17:44:00 +0200

@@ -1,9 +1,9 @@
 .\" wing requests are required for all man pages.
-.TH gocr 1 "Sun Sep  3 14:59:19 CEST 2000" "" "Gnu Optical Character Recognition"
+.TH untangle-gocr 1 "Sun Sep  3 14:59:19 CEST 2000" "" "Gnu Optical Character Recognition"
 .SH NAME
-gocr - Gnu Optical Character Recognition
+untangle-gocr - Gnu Optical Character Recognition
 .SH SYNOPSIS
-.B gocr 
+.B untangle-gocr 
 .RB [options] 
 .IR pnm_file_name
 .SH OPTIONS
@@ -15,7 +15,7 @@ get this help
 input image file (pnm,pgm,pbm,ppm,pcx,...)
 .TP
 .BI \-i\ \-
-read PNM from stdin (djpeg -gray a.jpg | gocr -)
+read PNM from stdin (djpeg -gray a.jpg | untangle-gocr -)
 .TP
 .BI \-o\  name
 output file  (redirection of stdout)
@@ -71,35 +71,35 @@ output of text
 .TP
 .B How to start? (QUICK START)
 .TP
-gocr -h
+untangle-gocr -h
 help
 .TP
-gocr file.pbm
+untangle-gocr file.pbm
 minimum options
 .TP
-gocr -v 1 file.pbm >out.txt 2>out.log
+untangle-gocr -v 1 file.pbm >out.txt 2>out.log
 generate text- and log file
-.\" djpeg -pnm -gray text.jpg | gocr -    # using JPEG-files
+.\" djpeg -pnm -gray text.jpg | untangle-gocr -    # using JPEG-files
 .TP
-gzip -cd text.pbm.gz | gocr -
+gzip -cd text.pbm.gz | untangle-gocr -
 using gzipped PBM-files
-.\"  giftopnm text.gif | gocr -            # using GIF-files
+.\"  giftopnm text.gif | untangle-gocr -            # using GIF-files
 .TP
-gocr -v 1 -v 32 -m 4 file.pbm
+untangle-gocr -v 1 -v 32 -m 4 file.pbm
 zoning and out30.bmp output
 .\"  xli -geometry 400x400 out30.bmp # see details using xli (recommanded viewer)
 .TP
-wish gocr.tcl
+wish untangle-gocr.tcl
 X11-tcl/tk-frontend (development version)
 
 
 
 .SH EXAMPLES
-There is some examples in /usr/share/doc/gocr
+There is some examples in /usr/share/doc/untangle-gocr
 
 Try to something like:
 .TP
-.B gocr -i file.pbm -o file.txt -e file.log -v X -m Y
+.B untangle-gocr -i file.pbm -o file.txt -e file.log -v X -m Y
 .TP
 where X and Y are the sum of values you want. i.e.:
 .B -v 15 
@@ -116,7 +116,7 @@ where X and Y are the sum of values you want. i.e.:
 .\" .Sh STANDARDS
 .\" .Sh HISTORY
 .SH SEE ALSO
-gocr.tcl(1) gtk-ocr(1)
+untangle-gocr.tcl(1) gtk-ocr(1)
 .SH AUTHORS
 Joerg.Schulenburg@physik.uni-magdeburg.de,
 jschulen@gmx.de

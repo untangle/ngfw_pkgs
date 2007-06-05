@@ -79,11 +79,11 @@ install: build
 
 	# Add here commands to install the package into debian/tmp.
 #	$(MAKE) install exec_prefix=$(CURDIR)/debian/tmp/usr prefix=$(CURDIR)/debian/tmp/usr INSTALL=/usr/bin/install
-	install -D $(CURDIR)/bin/gocr $(CURDIR)/debian/gocr/usr/bin/gocr
-	install -D $(CURDIR)/bin/gocr.tcl $(CURDIR)/debian/gocr-tk/usr/bin/gocr.tcl
-	install -D $(CURDIR)/frontend/gnome/src/gtk-ocr $(CURDIR)/debian/gocr-gtk/usr/bin/gtk-ocr
+	install -D $(CURDIR)/bin/untangle-gocr $(CURDIR)/debian/untangle-gocr/usr/bin/untangle-gocr
+	install -D $(CURDIR)/bin/untangle-gocr.tcl $(CURDIR)/debian/untangle-gocr-tk/usr/bin/untangle-gocr.tcl
+	install -D $(CURDIR)/frontend/gnome/src/gtk-ocr $(CURDIR)/debian/untangle-gocr-gtk/usr/bin/gtk-ocr
 
-#	install -D $(CURDIR)/doc/*ps $(CURDIR)/doc/*dvi $(CURDIR)/doc/*txt $(CURDIR)/debian/gocr-doc/usr/share/doc/gocr/doc
+#	install -D $(CURDIR)/doc/*ps $(CURDIR)/doc/*dvi $(CURDIR)/doc/*txt $(CURDIR)/debian/untangle-gocr-doc/usr/share/doc/untangle-gocr/doc
 
 
 # Build architecture-independent
@@ -99,16 +99,16 @@ binary-indep: build install
 
 	dh_installchangelogs -i
 
-	dh_compress -i -Xusr/share/doc/gocr/examples/font21.pcx
+	dh_compress -i -Xusr/share/doc/untangle-gocr/examples/font21.pcx
 	dh_fixperms -i
 	# dh_fixperms doesn't fix subdir perms
-#	find debian/gocr/usr/share/doc/$(package) -type d -exec chmod 0755 {} \;
+#	find debian/untangle-gocr/usr/share/doc/$(package) -type d -exec chmod 0755 {} \;
 
 	dh_makeshlibs -i
 	dh_installdeb -i
 
 	dh_shlibdeps -i
-if [[ -f debian/version ]] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
+	if [[ -f debian/version ]] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
 
 	dh_md5sums -i
 	dh_builddeb -i
@@ -129,11 +129,11 @@ binary-arch: build install
 	dh_installchangelogs -a
 
 	dh_strip -a
-	dh_compress -a -Xusr/share/doc/gocr/examples/font21.pcx
+	dh_compress -a -Xusr/share/doc/untangle-gocr/examples/font21.pcx
 
 	dh_fixperms -a
 	# dh_fixperms doesn't fix subdir perms
-#	find debian/gocr/usr/share/doc/$(package) -type d -exec chmod 0755 {} \;
+#	find debian/untangle-gocr/usr/share/doc/$(package) -type d -exec chmod 0755 {} \;
 
 	dh_makeshlibs -a
 	dh_installdeb -a
