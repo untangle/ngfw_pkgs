@@ -1,0 +1,28 @@
+#!/bin/sh
+
+JAR_DIR=/usr/share/untangle-ujac2pdf/libs
+JARS="itext-1.4.jar ujac.jar commons-logging.jar"
+
+JAVA_HOME=${JAVA_HOME:-/usr/lib/jvm/java-1.5.0-sun}
+
+
+if [ "$#x" != "3x" ]; then
+    echo "USAGE: $0 <template> <properties> <output>"
+    exit -1
+fi
+
+template=$1
+properties=$2
+output=$3
+
+CLASSPATH=
+
+for t in ${JARS} ; do
+    if [ -n "${CLASSPATH}" ]; then
+        CLASSPATH="${CLASSPATH}:"
+    fi
+    
+    CLASSPATH="${CLASSPATH}${JAR_DIR}/${t}"
+done
+
+exec ${JAVA_HOME}/bin/java -cp ${CLASSPATH} org.ujac.print.ReportGenerator ${template} ${properties} ${output}
