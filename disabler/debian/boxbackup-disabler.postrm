@@ -1,0 +1,23 @@
+#!/bin/sh
+
+if [ "x$1" == "xpurge" ] ; then
+    # leave used flag 
+    mkdir -p /usr/share/metavize/conf/trials &> /dev/null
+    touch /usr/share/metavize/conf/trials/boxbackup.expired
+
+    # remove my at jobs
+    for i in `atq | awk '{print $1}'` ; do 
+        if [ ! -z "`at -c $i | grep \"boxbackup-transform\"`" ] ; then
+            atrm $i
+        fi
+    done
+
+    # reenable usage
+    mcli enable boxbackup-transform &> /dev/null
+    # change extraname to nothing
+    mcli extraname boxbackup-transform "" &> /dev/null &
+fi
+
+exit 0
+
+
