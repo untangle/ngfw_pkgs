@@ -30,14 +30,14 @@ build: configure
 	dh_testdir
 	mkdir -p ./debian/tmp
 	dh_installdirs -A -v
-	for i in `cat debian/fakekdm-mv.dirs` ; do mkdir -p debian/tmp/$$i ; done
-	for i in `cat debian/fakekdm-mv.files` ; do cp -r $$i debian/tmp/$$i ; done
+	for i in `cat debian/untangle-fakekdm.dirs` ; do mkdir -p debian/tmp/$$i ; done
+	for i in `cat debian/untangle-fakekdm.files` ; do cp -r $$i debian/tmp/$$i ; done
 
 clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-arch-stamp build-indep-stamp configure-stamp
-	rm -rf debian/tmp debian/fakekdm-mv 
+	rm -rf debian/tmp debian/untangle-fakekdm 
 	dh_clean
 
 binary-arch: build
