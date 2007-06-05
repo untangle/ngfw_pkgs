@@ -1,4 +1,0 @@
-?package(untangle-gocr-gtk):needs=X11 \
-	section=Apps/Graphics \
-	title="GTK Gocr" \
-	command="/usr/bin/gtk-ocr"
