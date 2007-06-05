@@ -35,7 +35,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-arch-stamp build-indep-stamp configure-stamp
-	rm -rf debian/tmp debian/postgresql-mv
+	rm -rf debian/tmp debian/untangle-postgresql-config
 	dh_clean
 
 binary-arch: build
