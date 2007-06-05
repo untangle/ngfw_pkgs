@@ -3,8 +3,8 @@
 
 VERSION := $(shell dpkg-parsechangelog | egrep '^Version:' | cut -f2 -d' ')
 UPSTREAM_VERSION := $(shell dpkg-parsechangelog | egrep '^Version:' | cut -f2 -d' ' | cut -f1 -d-)
-DEB_TARBALL := libnfnetlink-$(UPSTREAM_VERSION).tar.bz2
-DEB_TAR_SRCDIR := libnfnetlink-$(UPSTREAM_VERSION)
+DEB_TARBALL := untangle-libnfnetlink-$(UPSTREAM_VERSION).tar.bz2
+DEB_TAR_SRCDIR := untangle-libnfnetlink-$(UPSTREAM_VERSION)
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 #include /usr/share/cdbs/1/rules/tarball.mk
