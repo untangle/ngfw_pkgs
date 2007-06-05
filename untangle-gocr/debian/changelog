@@ -1,9 +1,3 @@
-untangle-gocr (0.41+5.0.0~svn20070605r10500-1) seb; urgency=low
-
-  * auto build
-
- -- Sebastien Delafond <seb@untangle.com>  Tue,  5 Jun 2007 10:39:36 -0700
-
 untangle-gocr (0.41-1) unstable; urgency=low
 
   * 0.41 plus PNM patch.
