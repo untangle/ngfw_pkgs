@@ -5,9 +5,9 @@
 ## DP: No description.
 
 @DPATCH@
-diff -urNad untangle-spamassassin~/lib/Mail/SpamAssassin/Constants.pm untangle-spamassassin/lib/Mail/SpamAssassin/Constants.pm
---- untangle-spamassassin~/lib/Mail/SpamAssassin/Constants.pm	2006-10-04 10:01:16.000000000 -0400
-+++ untangle-spamassassin/lib/Mail/SpamAssassin/Constants.pm	2007-02-14 22:06:59.000000000 -0500
+diff -urNad spamassassin~/lib/Mail/SpamAssassin/Constants.pm spamassassin/lib/Mail/SpamAssassin/Constants.pm
+--- spamassassin~/lib/Mail/SpamAssassin/Constants.pm	2006-10-04 10:01:16.000000000 -0400
++++ spamassassin/lib/Mail/SpamAssassin/Constants.pm	2007-02-14 22:06:59.000000000 -0500
 @@ -38,6 +38,7 @@
  	META_TEST_MIN_PRIORITY HARVEST_DNSBL_PRIORITY MBX_SEPARATOR
  	MAX_BODY_LINE_LENGTH MAX_HEADER_KEY_LENGTH MAX_HEADER_VALUE_LENGTH
@@ -26,9 +26,9 @@ diff -urNad untangle-spamassassin~/lib/Mail/SpamAssassin/Constants.pm untangle-s
  # used for meta rules and "if" conditionals in Conf::Parser
  use constant ARITH_EXPRESSION_LEXER => qr/(?:
          [\-\+\d\.]+|                            # A Number
-diff -urNad untangle-spamassassin~/lib/Mail/SpamAssassin/EvalTests.pm untangle-spamassassin/lib/Mail/SpamAssassin/EvalTests.pm
---- untangle-spamassassin~/lib/Mail/SpamAssassin/EvalTests.pm	2006-10-04 10:01:16.000000000 -0400
-+++ untangle-spamassassin/lib/Mail/SpamAssassin/EvalTests.pm	2007-02-14 22:06:59.000000000 -0500
+diff -urNad spamassassin~/lib/Mail/SpamAssassin/EvalTests.pm spamassassin/lib/Mail/SpamAssassin/EvalTests.pm
+--- spamassassin~/lib/Mail/SpamAssassin/EvalTests.pm	2006-10-04 10:01:16.000000000 -0400
++++ spamassassin/lib/Mail/SpamAssassin/EvalTests.pm	2007-02-14 22:06:59.000000000 -0500
 @@ -3167,4 +3167,9 @@
    return 0;
  }
@@ -39,9 +39,9 @@ diff -urNad untangle-spamassassin~/lib/Mail/SpamAssassin/EvalTests.pm untangle-s
 +}
 + 
  1;
-diff -urNad untangle-spamassassin~/lib/Mail/SpamAssassin/HTML.pm untangle-spamassassin/lib/Mail/SpamAssassin/HTML.pm
---- untangle-spamassassin~/lib/Mail/SpamAssassin/HTML.pm	2006-10-04 10:01:16.000000000 -0400
-+++ untangle-spamassassin/lib/Mail/SpamAssassin/HTML.pm	2007-02-14 22:06:59.000000000 -0500
+diff -urNad spamassassin~/lib/Mail/SpamAssassin/HTML.pm spamassassin/lib/Mail/SpamAssassin/HTML.pm
+--- spamassassin~/lib/Mail/SpamAssassin/HTML.pm	2006-10-04 10:01:16.000000000 -0400
++++ spamassassin/lib/Mail/SpamAssassin/HTML.pm	2007-02-14 22:06:59.000000000 -0500
 @@ -26,6 +26,7 @@
  
  use HTML::Parser 3.24 ();
@@ -110,9 +110,9 @@ diff -urNad untangle-spamassassin~/lib/Mail/SpamAssassin/HTML.pm untangle-spamas
      push(@{$self->{uri}->{$self->{anchor_last}}->{anchor_text}}, '');
      push(@{$self->{anchor}}, '');
    }
-diff -urNad untangle-spamassassin~/lib/Mail/SpamAssassin/PerMsgStatus.pm untangle-spamassassin/lib/Mail/SpamAssassin/PerMsgStatus.pm
---- untangle-spamassassin~/lib/Mail/SpamAssassin/PerMsgStatus.pm	2006-10-04 10:01:16.000000000 -0400
-+++ untangle-spamassassin/lib/Mail/SpamAssassin/PerMsgStatus.pm	2007-02-14 22:06:59.000000000 -0500
+diff -urNad spamassassin~/lib/Mail/SpamAssassin/PerMsgStatus.pm spamassassin/lib/Mail/SpamAssassin/PerMsgStatus.pm
+--- spamassassin~/lib/Mail/SpamAssassin/PerMsgStatus.pm	2006-10-04 10:01:16.000000000 -0400
++++ spamassassin/lib/Mail/SpamAssassin/PerMsgStatus.pm	2007-02-14 22:06:59.000000000 -0500
 @@ -2009,6 +2009,7 @@
    # get URIs from HTML parsing
    # use the metadata version since $self->{html} may not be setup
@@ -136,9 +136,9 @@ diff -urNad untangle-spamassassin~/lib/Mail/SpamAssassin/PerMsgStatus.pm untangl
      # setup the cache and return
      $self->{parsed_uri_list} = \@uris;
    }
-diff -urNad untangle-spamassassin~/rules/20_body_tests.cf untangle-spamassassin/rules/20_body_tests.cf
---- untangle-spamassassin~/rules/20_body_tests.cf	2006-09-29 09:06:41.000000000 -0400
-+++ untangle-spamassassin/rules/20_body_tests.cf	2007-02-14 22:06:59.000000000 -0500
+diff -urNad spamassassin~/rules/20_body_tests.cf spamassassin/rules/20_body_tests.cf
+--- spamassassin~/rules/20_body_tests.cf	2006-09-29 09:06:41.000000000 -0400
++++ spamassassin/rules/20_body_tests.cf	2007-02-14 22:06:59.000000000 -0500
 @@ -148,3 +148,6 @@
  describe INTERRUPTUS          Message looks to contain HTML-interrupted text
  

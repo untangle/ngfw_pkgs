@@ -2,8 +2,8 @@
 ## 10_edit_config_paths.dpatch by Duncan Findlay <duncf@debian.org>
 ##
 ## All lines beginning with `## DP:' are a description of the patch.
-## DP: Change all instances of /etc/mail/untangle-spamassassin in the documentation
-## DP: to /etc/untangle-spamassassin, since thats where the configuration is going.
+## DP: Change all instances of /etc/mail/spamassassin in the documentation
+## DP: to /etc/spamassassin, since thats where the configuration is going.
 
 if [ $# -lt 1 ]; then
     echo "`basename $0`: script expects -patch|-unpatch as argument" >&2
@@ -24,22 +24,22 @@ esac
 exit 0
 
 @DPATCH@
-diff -urNad untangle-spamassassin~/README untangle-spamassassin/README
---- untangle-spamassassin~/README	2006-03-10 14:30:24.000000000 -0500
-+++ untangle-spamassassin/README	2006-05-07 16:45:40.000000000 -0400
+diff -urNad spamassassin~/README spamassassin/README
+--- spamassassin~/README	2006-03-10 14:30:24.000000000 -0500
++++ spamassassin/README	2006-05-07 16:45:40.000000000 -0400
 @@ -104,13 +104,13 @@
  	Distributed configuration files, with all defaults.  Do not modify
  	these, as they are overwritten when you upgrade.
  
--  - /etc/mail/untangle-spamassassin/*.cf:
-+  - /etc/untangle-spamassassin/*.cf:
+-  - /etc/mail/spamassassin/*.cf:
++  - /etc/spamassassin/*.cf:
  
    	Site config files, for system admins to create, modify, and
  	add local rules and scores to.  Modifications here will be
  	appended to the config loaded from the above directory.
  
--  - /etc/mail/untangle-spamassassin/*.pre:
-+  - /etc/untangle-spamassassin/*.pre:
+-  - /etc/mail/spamassassin/*.pre:
++  - /etc/spamassassin/*.pre:
  
          Plugin control files, installed from the distribution. These are
          used to control what plugins are loaded.  Modifications here will
@@ -47,37 +47,37 @@ diff -urNad untangle-spamassassin~/README untangle-spamassassin/README
          
          You want to modify these files if you want to load additional
          plugins, or inhibit loading a plugin that is enabled by default.
--        If the files exist in /etc/mail/untangle-spamassassin, they will not
-+        If the files exist in /etc/untangle-spamassassin, they will not
+-        If the files exist in /etc/mail/spamassassin, they will not
++        If the files exist in /etc/spamassassin, they will not
          be overwritten during future installs.
  
-   - /usr/share/untangle-spamassassin/user_prefs.template:
+   - /usr/share/spamassassin/user_prefs.template:
 @@ -127,14 +127,14 @@
  	Distributed default user preferences. Do not modify this, as it is
  	overwritten when you upgrade.
  
--  - /etc/mail/untangle-spamassassin/user_prefs.template:
-+  - /etc/untangle-spamassassin/user_prefs.template:
+-  - /etc/mail/spamassassin/user_prefs.template:
++  - /etc/spamassassin/user_prefs.template:
  
  	Default user preferences, for system admins to create, modify, and
  	set defaults for users' preferences files.  Takes precedence over
  	the above prefs file, if it exists.
  
          Do not put system-wide settings in here; put them in a file in the
--        "/etc/mail/untangle-spamassassin" directory ending in ".cf". This file is
-+        "/etc/untangle-spamassassin" directory ending in ".cf". This file is
+-        "/etc/mail/spamassassin" directory ending in ".cf". This file is
++        "/etc/spamassassin" directory ending in ".cf". This file is
          just a template, which will be copied to a user's home directory
          for them to change.
  
-diff -urNad untangle-spamassassin~/UPGRADE untangle-spamassassin/UPGRADE
---- untangle-spamassassin~/UPGRADE	2006-03-10 14:30:23.000000000 -0500
-+++ untangle-spamassassin/UPGRADE	2006-05-07 16:45:40.000000000 -0400
+diff -urNad spamassassin~/UPGRADE spamassassin/UPGRADE
+--- spamassassin~/UPGRADE	2006-03-10 14:30:23.000000000 -0500
++++ spamassassin/UPGRADE	2006-05-07 16:45:40.000000000 -0400
 @@ -8,7 +8,7 @@
    perldoc Mail::SpamAssassin::Plugin::* (ie AWL, DCC, etc)
  
  - There are now multiple files read to enable plugins in the
--  /etc/mail/untangle-spamassassin directory; previously only one, "init.pre" was
-+  /etc/untangle-spamassassin directory; previously only one, "init.pre" was
+-  /etc/mail/spamassassin directory; previously only one, "init.pre" was
++  /etc/spamassassin directory; previously only one, "init.pre" was
    read.  Now both "init.pre", "v310.pre", and any other files ending
    in ".pre" will be read.  As future releases are made, new plugins
    will be added to new files named according to the release they're
@@ -85,20 +85,20 @@ diff -urNad untangle-spamassassin~/UPGRADE untangle-spamassassin/UPGRADE
  - If you are using a UNIX machine with all database files on local disks,
    and no sharing of those databases across NFS filesystems, you can use a
    more efficient, but non-NFS-safe, locking mechanism.   Do this by adding
--  the line "lock_method flock" to the /etc/mail/untangle-spamassassin/local.cf
-+  the line "lock_method flock" to the /etc/untangle-spamassassin/local.cf
+-  the line "lock_method flock" to the /etc/mail/spamassassin/local.cf
++  the line "lock_method flock" to the /etc/spamassassin/local.cf
    file. This is strongly recommended if you're not using NFS, as it is
    much faster than the NFS-safe locker.
  
-diff -urNad untangle-spamassassin~/USAGE untangle-spamassassin/USAGE
---- untangle-spamassassin~/USAGE	2006-03-10 14:30:24.000000000 -0500
-+++ untangle-spamassassin/USAGE	2006-05-07 16:45:40.000000000 -0400
+diff -urNad spamassassin~/USAGE spamassassin/USAGE
+--- spamassassin~/USAGE	2006-03-10 14:30:24.000000000 -0500
++++ spamassassin/USAGE	2006-05-07 16:45:40.000000000 -0400
 @@ -116,7 +116,7 @@
      CPU-intensive task before they can send mail to you, so we give that
      some bonus points.  However, it requires that you list what addresses
      you expect to receive mail for, by adding 'hashcash_accept' lines to
--    your ~/.untangle-spamassassin/user_prefs or /etc/mail/untangle-spamassassin/local.cf
-+    your ~/.untangle-spamassassin/user_prefs or /etc/untangle-spamassassin/local.cf
+-    your ~/.spamassassin/user_prefs or /etc/mail/spamassassin/local.cf
++    your ~/.spamassassin/user_prefs or /etc/spamassassin/local.cf
      files.  See the Mail::SpamAssassin::Plugin::Hashcash manual page for
      details on how to specify these.
  
@@ -106,73 +106,73 @@ diff -urNad untangle-spamassassin~/USAGE untangle-spamassassin/USAGE
  
  
    - You can create your own system-wide rules files in
--    /etc/mail/untangle-spamassassin; their filenames should end in ".cf".  Multiple
-+    /etc/untangle-spamassassin; their filenames should end in ".cf".  Multiple
+-    /etc/mail/spamassassin; their filenames should end in ".cf".  Multiple
++    /etc/spamassassin; their filenames should end in ".cf".  Multiple
      files will be read, and SpamAssassin will not overwrite these files
      when installing a new version.
  
  
-   - You should not modify the files in /usr/share/untangle-spamassassin; these
+   - You should not modify the files in /usr/share/spamassassin; these
      will be overwritten when you upgrade.  Any changes you make in
--    files in the /etc/mail/untangle-spamassassin directory,  however, will
-+    files in the /etc/untangle-spamassassin directory,  however, will
+-    files in the /etc/mail/spamassassin directory,  however, will
++    files in the /etc/spamassassin directory,  however, will
      override these files.
  
  
-diff -urNad untangle-spamassassin~/ldap/README untangle-spamassassin/ldap/README
---- untangle-spamassassin~/ldap/README	2006-03-10 14:29:49.000000000 -0500
-+++ untangle-spamassassin/ldap/README	2006-05-07 16:45:40.000000000 -0400
+diff -urNad spamassassin~/ldap/README spamassassin/ldap/README
+--- spamassassin~/ldap/README	2006-03-10 14:29:49.000000000 -0500
++++ spamassassin/ldap/README	2006-05-07 16:45:40.000000000 -0400
 @@ -13,7 +13,7 @@
  database or LDAP server.
  
  SpamAssassin will check the global configuration file (ie. any file matching
--/etc/mail/untangle-spamassassin/*.cf) for the following settings:
-+/etc/untangle-spamassassin/*.cf) for the following settings:
+-/etc/mail/spamassassin/*.cf) for the following settings:
++/etc/spamassassin/*.cf) for the following settings:
  
    user_scores_dsn ldap://host:port/dc=basedn,dc=de?attr?scope?uid=__USERNAME__
    user_scores_ldap_username	bind dn
-diff -urNad untangle-spamassassin~/lib/Mail/SpamAssassin/Conf.pm untangle-spamassassin/lib/Mail/SpamAssassin/Conf.pm
---- untangle-spamassassin~/lib/Mail/SpamAssassin/Conf.pm	2006-03-10 14:29:55.000000000 -0500
-+++ untangle-spamassassin/lib/Mail/SpamAssassin/Conf.pm	2006-05-07 16:45:40.000000000 -0400
+diff -urNad spamassassin~/lib/Mail/SpamAssassin/Conf.pm spamassassin/lib/Mail/SpamAssassin/Conf.pm
+--- spamassassin~/lib/Mail/SpamAssassin/Conf.pm	2006-03-10 14:29:55.000000000 -0500
++++ spamassassin/lib/Mail/SpamAssassin/Conf.pm	2006-05-07 16:45:40.000000000 -0400
 @@ -39,7 +39,7 @@
  =head1 DESCRIPTION
  
  SpamAssassin is configured using traditional UNIX-style configuration files,
--loaded from the C</usr/share/untangle-spamassassin> and C</etc/mail/untangle-spamassassin>
-+loaded from the C</usr/share/untangle-spamassassin> and C</etc/untangle-spamassassin>
+-loaded from the C</usr/share/spamassassin> and C</etc/mail/spamassassin>
++loaded from the C</usr/share/spamassassin> and C</etc/spamassassin>
  directories.
  
  The C<#> character starts a comment, which continues until end of line.
 @@ -1590,7 +1590,7 @@
  
  These settings differ from the ones above, in that they are considered
- 'privileged'.  Only users running C<untangle-spamassassin> from their procmailrc's or
--forward files, or sysadmins editing a file in C</etc/mail/untangle-spamassassin>, can
-+forward files, or sysadmins editing a file in C</etc/untangle-spamassassin>, can
+ 'privileged'.  Only users running C<spamassassin> from their procmailrc's or
+-forward files, or sysadmins editing a file in C</etc/mail/spamassassin>, can
++forward files, or sysadmins editing a file in C</etc/spamassassin>, can
  use them.   C<spamd> users cannot use them in their C<user_prefs> files, for
  security and efficiency reasons, unless C<allow_user_rules> is enabled (and
  then, they may only add rules from below).
-diff -urNad untangle-spamassassin~/lib/Mail/SpamAssassin/Plugin/Test.pm untangle-spamassassin/lib/Mail/SpamAssassin/Plugin/Test.pm
---- untangle-spamassassin~/lib/Mail/SpamAssassin/Plugin/Test.pm	2006-03-10 14:29:54.000000000 -0500
-+++ untangle-spamassassin/lib/Mail/SpamAssassin/Plugin/Test.pm	2006-05-07 16:45:40.000000000 -0400
+diff -urNad spamassassin~/lib/Mail/SpamAssassin/Plugin/Test.pm spamassassin/lib/Mail/SpamAssassin/Plugin/Test.pm
+--- spamassassin~/lib/Mail/SpamAssassin/Plugin/Test.pm	2006-03-10 14:29:54.000000000 -0500
++++ spamassassin/lib/Mail/SpamAssassin/Plugin/Test.pm	2006-05-07 16:45:40.000000000 -0400
 @@ -26,7 +26,7 @@
  =head1 DESCRIPTION
  
  To try this plugin, write the above two lines in the synopsis to
--C</etc/mail/untangle-spamassassin/plugintest.cf>.
-+C</etc/untangle-spamassassin/plugintest.cf>.
+-C</etc/mail/spamassassin/plugintest.cf>.
++C</etc/spamassassin/plugintest.cf>.
  
  =cut
  
-diff -urNad untangle-spamassassin~/lib/untangle-spamassassin-run.pod untangle-spamassassin/lib/untangle-spamassassin-run.pod
---- untangle-spamassassin~/lib/untangle-spamassassin-run.pod	2006-03-10 14:29:55.000000000 -0500
-+++ untangle-spamassassin/lib/untangle-spamassassin-run.pod	2006-05-07 16:45:40.000000000 -0400
+diff -urNad spamassassin~/lib/spamassassin-run.pod spamassassin/lib/spamassassin-run.pod
+--- spamassassin~/lib/spamassassin-run.pod	2006-03-10 14:29:55.000000000 -0500
++++ spamassassin/lib/spamassassin-run.pod	2006-05-07 16:45:40.000000000 -0400
 @@ -43,7 +43,7 @@
   -p prefs, --prefspath=file, --prefs-file=file
                                     Set user preferences file
   --siteconfigpath=path             Path for site configs
--                                   (def: /etc/mail/untangle-spamassassin)
-+                                   (def: /etc/untangle-spamassassin)
+-                                   (def: /etc/mail/spamassassin)
++                                   (def: /etc/spamassassin)
   -x, --nocreate-prefs              Don't create user preferences file
   -e, --exit-code                   Exit with a non-zero exit code if the
                                     tested message was spam
@@ -180,56 +180,56 @@ diff -urNad untangle-spamassassin~/lib/untangle-spamassassin-run.pod untangle-sp
  =item B<--siteconfigpath>=I<path>
  
  Use the specified path for locating site-specific configuration files.  Ignore
--the default directories (usually C</etc/mail/untangle-spamassassin> or similar).
-+the default directories (usually C</etc/untangle-spamassassin> or similar).
+-the default directories (usually C</etc/mail/spamassassin> or similar).
++the default directories (usually C</etc/spamassassin> or similar).
  
  =item B<-p> I<prefs>, B<--prefspath>=I<prefs>, B<--prefs-file>=I<prefs>
  
-diff -urNad untangle-spamassassin~/rules/30_text_fr.cf untangle-spamassassin/rules/30_text_fr.cf
---- untangle-spamassassin~/rules/30_text_fr.cf	2006-03-10 14:30:02.000000000 -0500
-+++ untangle-spamassassin/rules/30_text_fr.cf	2006-05-07 16:45:40.000000000 -0400
+diff -urNad spamassassin~/rules/30_text_fr.cf spamassassin/rules/30_text_fr.cf
+--- spamassassin~/rules/30_text_fr.cf	2006-03-10 14:30:02.000000000 -0500
++++ spamassassin/rules/30_text_fr.cf	2006-05-07 16:45:40.000000000 -0400
 @@ -4,7 +4,7 @@
  # Latest revision: 2003/11/14
  #
  # Please don't modify this file as your changes will be overwritten with
--# the next update. Use /etc/mail/untangle-spamassassin/local.cf instead.
-+# the next update. Use /etc/untangle-spamassassin/local.cf instead.
+-# the next update. Use /etc/mail/spamassassin/local.cf instead.
++# the next update. Use /etc/spamassassin/local.cf instead.
  # See 'perldoc Mail::SpamAssassin::Conf' for details.
  #
  # <@LICENSE>
-diff -urNad untangle-spamassassin~/rules/30_text_pt_br.cf untangle-spamassassin/rules/30_text_pt_br.cf
---- untangle-spamassassin~/rules/30_text_pt_br.cf	2006-03-10 14:30:02.000000000 -0500
-+++ untangle-spamassassin/rules/30_text_pt_br.cf	2006-05-07 16:45:40.000000000 -0400
+diff -urNad spamassassin~/rules/30_text_pt_br.cf spamassassin/rules/30_text_pt_br.cf
+--- spamassassin~/rules/30_text_pt_br.cf	2006-03-10 14:30:02.000000000 -0500
++++ spamassassin/rules/30_text_pt_br.cf	2006-05-07 16:45:40.000000000 -0400
 @@ -4,7 +4,7 @@
  # Feita por Marcelo Cruzeta ZOE Informática
  #
  # Por Favor, não modifique este arquivo, pois suas mudanças serão sobrescritas com
--# o próximo update. Use /etc/mail/untangle-spamassassin/local.cf para isso.
-+# o próximo update. Use /etc/untangle-spamassassin/local.cf para isso.
+-# o próximo update. Use /etc/mail/spamassassin/local.cf para isso.
++# o próximo update. Use /etc/spamassassin/local.cf para isso.
  # Veja 'perldoc Mail::SpamAssassin::Conf' para detalhes.
  #
  # Este programa é um software gratuito; você pode distribuí-lo e/ou modificá-lo
-diff -urNad untangle-spamassassin~/rules/user_prefs.template untangle-spamassassin/rules/user_prefs.template
---- untangle-spamassassin~/rules/user_prefs.template	2006-03-10 14:30:02.000000000 -0500
-+++ untangle-spamassassin/rules/user_prefs.template	2006-05-07 16:45:40.000000000 -0400
+diff -urNad spamassassin~/rules/user_prefs.template spamassassin/rules/user_prefs.template
+--- spamassassin~/rules/user_prefs.template	2006-03-10 14:30:02.000000000 -0500
++++ spamassassin/rules/user_prefs.template	2006-05-07 16:45:40.000000000 -0400
 @@ -5,7 +5,7 @@
  #* directory. At runtime, if a user has no preferences in their home directory
  #* already, it will be copied for them, allowing them to perform personalised
  #* customisation.  If you want to make changes to the site-wide defaults,
--#* create a file in /etc/untangle-spamassassin or /etc/mail/untangle-spamassassin instead.
-+#* create a file in /etc/untangle-spamassassin instead.
+-#* create a file in /etc/spamassassin or /etc/mail/spamassassin instead.
++#* create a file in /etc/spamassassin instead.
  ###########################################################################
  
  # How many points before a mail is considered spam.
-diff -urNad untangle-spamassassin~/sa-learn.raw untangle-spamassassin/sa-learn.raw
---- untangle-spamassassin~/sa-learn.raw	2006-03-10 14:30:23.000000000 -0500
-+++ untangle-spamassassin/sa-learn.raw	2006-05-07 16:45:40.000000000 -0400
+diff -urNad spamassassin~/sa-learn.raw spamassassin/sa-learn.raw
+--- spamassassin~/sa-learn.raw	2006-03-10 14:30:23.000000000 -0500
++++ spamassassin/sa-learn.raw	2006-05-07 16:45:40.000000000 -0400
 @@ -570,7 +570,7 @@
   -u username, --username=username  Override username taken from the runtime environment
   -C path, --configpath=path, --config-file=path   Path to standard configuration dir
   -p prefs, --prefspath=file, --prefs-file=file    Set user preferences file
-- --siteconfigpath=path             Path for site configs (def: /etc/mail/untangle-spamassassin)
-+ --siteconfigpath=path             Path for site configs (def: /etc/untangle-spamassassin)
+- --siteconfigpath=path             Path for site configs (def: /etc/mail/spamassassin)
++ --siteconfigpath=path             Path for site configs (def: /etc/spamassassin)
   -D, --debug-level                 Print debugging messages
   -V, --version                     Print version
   -h, --help                        Print usage message
@@ -237,93 +237,93 @@ diff -urNad untangle-spamassassin~/sa-learn.raw untangle-spamassassin/sa-learn.r
  =item B<--siteconfigpath>=I<path>
  
  Use the specified path for locating site-specific configuration files.  Ignore
--the default directories (usually C</etc/mail/untangle-spamassassin> or similar).
-+the default directories (usually C</etc/untangle-spamassassin> or similar).
+-the default directories (usually C</etc/mail/spamassassin> or similar).
++the default directories (usually C</etc/spamassassin> or similar).
  
  =item B<-p> I<prefs>, B<--prefspath>=I<prefs>, B<--prefs-file>=I<prefs>
  
-diff -urNad untangle-spamassassin~/spamc/spamc.pod untangle-spamassassin/spamc/spamc.pod
---- untangle-spamassassin~/spamc/spamc.pod	2006-03-10 14:30:13.000000000 -0500
-+++ untangle-spamassassin/spamc/spamc.pod	2006-05-07 16:46:23.000000000 -0400
+diff -urNad spamassassin~/spamc/spamc.pod spamassassin/spamc/spamc.pod
+--- spamassassin~/spamc/spamc.pod	2006-03-10 14:30:13.000000000 -0500
++++ spamassassin/spamc/spamc.pod	2006-05-07 16:46:23.000000000 -0400
 @@ -211,8 +211,8 @@
  
  If the B<-F> switch is specified, that file will be used.  Otherwise,
  C<spamc> will attempt to load spamc.conf in C<SYSCONFDIR> (default:
--/etc/mail/untangle-spamassassin). If that file doesn't exist, and the B<-F>
+-/etc/mail/spamassassin). If that file doesn't exist, and the B<-F>
 -switch is not specified, no configuration file will be read.
-+/etc/untangle-spamassassin). If that file doesn't exist, and the B<-F> switch
++/etc/spamassassin). If that file doesn't exist, and the B<-F> switch
 +is not specified, no configuration file will be read.
  
  Example:
  
-diff -urNad untangle-spamassassin~/spamd/README untangle-spamassassin/spamd/README
---- untangle-spamassassin~/spamd/README	2006-03-10 14:30:23.000000000 -0500
-+++ untangle-spamassassin/spamd/README	2006-05-07 16:45:40.000000000 -0400
+diff -urNad spamassassin~/spamd/README spamassassin/spamd/README
+--- spamassassin~/spamd/README	2006-03-10 14:30:23.000000000 -0500
++++ spamassassin/spamd/README	2006-05-07 16:45:40.000000000 -0400
 @@ -105,7 +105,7 @@
  If you plan to use Bayesian classification (the BAYES rules) with spamd,
  you will need to either
  
--  1. modify /etc/mail/untangle-spamassassin/local.cf to use a shared database of
-+  1. modify /etc/untangle-spamassassin/local.cf to use a shared database of
+-  1. modify /etc/mail/spamassassin/local.cf to use a shared database of
++  1. modify /etc/spamassassin/local.cf to use a shared database of
    tokens, by setting the 'bayes_path' setting to a path all users can read
    and write to.  You will also need to set the 'bayes_file_mode' setting
    to 0666 so that created files are shared, too.
-diff -urNad untangle-spamassassin~/spamd/README.vpopmail untangle-spamassassin/spamd/README.vpopmail
---- untangle-spamassassin~/spamd/README.vpopmail	2006-03-10 14:30:23.000000000 -0500
-+++ untangle-spamassassin/spamd/README.vpopmail	2006-05-07 16:45:40.000000000 -0400
+diff -urNad spamassassin~/spamd/README.vpopmail spamassassin/spamd/README.vpopmail
+--- spamassassin~/spamd/README.vpopmail	2006-03-10 14:30:23.000000000 -0500
++++ spamassassin/spamd/README.vpopmail	2006-05-07 16:45:40.000000000 -0400
 @@ -43,7 +43,7 @@
- 	/home/vpopmail/domains/somedomain.net/4/userid/.untangle-spamassassin/user_prefs
+ 	/home/vpopmail/domains/somedomain.net/4/userid/.spamassassin/user_prefs
  
  5. One gotcha - cannot have personal AWL dbs - only a sitewide AWL will work.
--This is specified in your /etc/mail/untangle-spamassassin/local.cf file.  Perhaps a
-+This is specified in your /etc/untangle-spamassassin/local.cf file.  Perhaps a
+-This is specified in your /etc/mail/spamassassin/local.cf file.  Perhaps a
++This is specified in your /etc/spamassassin/local.cf file.  Perhaps a
  future enhancement would be to add the capability to have personal AWL db.
  
  6. Of course vpopmail must have the seekable patch installed (see 
-diff -urNad untangle-spamassassin~/spamd/spamd.raw untangle-spamassassin/spamd/spamd.raw
---- untangle-spamassassin~/spamd/spamd.raw	2006-03-10 14:30:23.000000000 -0500
-+++ untangle-spamassassin/spamd/spamd.raw	2006-05-07 16:45:40.000000000 -0400
+diff -urNad spamassassin~/spamd/spamd.raw spamassassin/spamd/spamd.raw
+--- spamassassin~/spamd/spamd.raw	2006-03-10 14:30:23.000000000 -0500
++++ spamassassin/spamd/spamd.raw	2006-05-07 16:45:40.000000000 -0400
 @@ -2283,7 +2283,7 @@
  =item B<--siteconfigpath>=I<path>
  
  Use the specified path for locating site-specific configuration files.  Ignore
--the default directories (usually C</etc/mail/untangle-spamassassin> or similar).
-+the default directories (usually C</etc/untangle-spamassassin> or similar).
+-the default directories (usually C</etc/mail/spamassassin> or similar).
++the default directories (usually C</etc/spamassassin> or similar).
  
  =item B<-d>, B<--daemonize>
  
-diff -urNad untangle-spamassassin~/sql/README untangle-spamassassin/sql/README
---- untangle-spamassassin~/sql/README	2006-03-10 14:30:12.000000000 -0500
-+++ untangle-spamassassin/sql/README	2006-05-07 16:45:40.000000000 -0400
+diff -urNad spamassassin~/sql/README spamassassin/sql/README
+--- spamassassin~/sql/README	2006-03-10 14:30:12.000000000 -0500
++++ spamassassin/sql/README	2006-05-07 16:45:40.000000000 -0400
 @@ -18,7 +18,7 @@
  SQL preferences.
  
  SpamAssassin will check the global configuration file (ie. any file matching
--/etc/mail/untangle-spamassassin/*.cf) for the following settings:
-+/etc/untangle-spamassassin/*.cf) for the following settings:
+-/etc/mail/spamassassin/*.cf) for the following settings:
++/etc/spamassassin/*.cf) for the following settings:
  
    user_scores_dsn		DBI:driver:connection
    user_scores_sql_username	dbusername
-diff -urNad untangle-spamassassin~/sql/README.awl untangle-spamassassin/sql/README.awl
---- untangle-spamassassin~/sql/README.awl	2006-03-10 14:30:12.000000000 -0500
-+++ untangle-spamassassin/sql/README.awl	2006-05-07 16:45:40.000000000 -0400
+diff -urNad spamassassin~/sql/README.awl spamassassin/sql/README.awl
+--- spamassassin~/sql/README.awl	2006-03-10 14:30:12.000000000 -0500
++++ spamassassin/sql/README.awl	2006-05-07 16:45:40.000000000 -0400
 @@ -15,7 +15,7 @@
  auto_whitelist_factory Mail::SpamAssassin::SQLBasedAddrList
  
  SpamAssassin will check the global configuration file (ie. any file
--matching /etc/mail/untangle-spamassassin/*.cf) for the following settings:
-+matching /etc/untangle-spamassassin/*.cf) for the following settings:
+-matching /etc/mail/spamassassin/*.cf) for the following settings:
++matching /etc/spamassassin/*.cf) for the following settings:
  
  user_awl_dsn                 DBI:driver:database:hostname[:port]
  user_awl_sql_username        dbusername
-diff -urNad untangle-spamassassin~/t/data/testplugin.pm untangle-spamassassin/t/data/testplugin.pm
---- untangle-spamassassin~/t/data/testplugin.pm	2006-03-10 14:30:21.000000000 -0500
-+++ untangle-spamassassin/t/data/testplugin.pm	2006-05-07 16:45:40.000000000 -0400
+diff -urNad spamassassin~/t/data/testplugin.pm spamassassin/t/data/testplugin.pm
+--- spamassassin~/t/data/testplugin.pm	2006-03-10 14:30:21.000000000 -0500
++++ spamassassin/t/data/testplugin.pm	2006-05-07 16:45:40.000000000 -0400
 @@ -1,6 +1,6 @@
  =head1 
  
--To try this out, write these lines to /etc/mail/untangle-spamassassin/plugintest.cf:
-+To try this out, write these lines to /etc/untangle-spamassassin/plugintest.cf:
+-To try this out, write these lines to /etc/mail/spamassassin/plugintest.cf:
++To try this out, write these lines to /etc/spamassassin/plugintest.cf:
  
    loadplugin     myTestPlugin
    header         MY_TEST_PLUGIN eval:check_test_plugin()
