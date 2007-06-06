@@ -1,88 +1,88 @@
-untangle-nsis (0-15) mustang; urgency=low
+untangle-nsis-addons (0-15) mustang; urgency=low
 
   * auto build
 
  -- Sebastien Delafond <seb@untangle.com>  Wed,  9 May 2007 19:25:58 -0700
 
-untangle-nsis (0-14) stable; urgency=low
+untangle-nsis-addons (0-14) stable; urgency=low
 
   * auto build
 
  -- root <root@bebe.metavize.com>  Tue,  7 Nov 2006 16:27:49 -0800
 
-untangle-nsis (0-13) stable; urgency=low
+untangle-nsis-addons (0-13) stable; urgency=low
 
   * auto build
 
  -- root <root@bebe.metavize.com>  Tue,  7 Nov 2006 13:06:35 -0800
 
-untangle-nsis (0-12) stable; urgency=low
+untangle-nsis-addons (0-12) stable; urgency=low
 
   * auto build
 
  -- John Irwin <jdi@untangle.com>  Tue, 21 Feb 2006 09:49:04 -0800
 
-untangle-nsis (0-11) stable; urgency=low
+untangle-nsis-addons (0-11) stable; urgency=low
 
   * auto build
 
  -- John Irwin <jdi@untangle.com>  Wed, 15 Feb 2006 11:24:47 -0800
 
-untangle-nsis (0-10) stable; urgency=low
+untangle-nsis-addons (0-10) stable; urgency=low
 
   * auto build
 
  -- Dirk Morris <dmorris@untangle.com>  Sun, 15 Jan 2006 14:44:29 -0800
 
-untangle-nsis (0-9) stable; urgency=low
+untangle-nsis-addons (0-9) stable; urgency=low
 
   * auto build
 
  -- Dirk Morris <dmorris@untangle.com>  Sun, 15 Jan 2006 14:35:48 -0800
 
-untangle-nsis (0-8) stable; urgency=low
+untangle-nsis-addons (0-8) stable; urgency=low
 
   * auto build
 
  -- Dirk Morris <dmorris@untangle.com>  Sun, 15 Jan 2006 13:53:53 -0800
 
-untangle-nsis (0-7) stable; urgency=low
+untangle-nsis-addons (0-7) stable; urgency=low
 
   * auto build
 
  -- Dirk Morris <dmorris@untangle.com>  Sun, 15 Jan 2006 13:51:23 -0800
 
-untangle-nsis (0-6) stable; urgency=low
+untangle-nsis-addons (0-6) stable; urgency=low
 
   * auto build
 
  -- Dirk Morris <dmorris@untangle.com>  Sun, 15 Jan 2006 13:46:00 -0800
 
-untangle-nsis (0-5) stable; urgency=low
+untangle-nsis-addons (0-5) stable; urgency=low
 
   * auto build
 
  -- Dirk Morris <dmorris@untangle.com>  Sun, 15 Jan 2006 13:44:20 -0800
 
-untangle-nsis (0-4) stable; urgency=low
+untangle-nsis-addons (0-4) stable; urgency=low
 
   * auto build
 
  -- Dirk Morris <dmorris@untangle.com>  Sun, 15 Jan 2006 13:40:25 -0800
 
-untangle-nsis (0-3) stable; urgency=low
+untangle-nsis-addons (0-3) stable; urgency=low
 
   * auto build
 
  -- Dirk Morris <dmorris@untangle.com>  Sun, 15 Jan 2006 13:30:35 -0800
 
-untangle-nsis (0-2) stable; urgency=low
+untangle-nsis-addons (0-2) stable; urgency=low
 
   * auto build
 
  -- M. Srikant <srikant@untangle.com>  Wed, 23 Nov 2005 13:03:18 -0800
 
-untangle-nsis (0-1) stable; urgency=low
+untangle-nsis-addons (0-1) stable; urgency=low
 
   * auto build
 
