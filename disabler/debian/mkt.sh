@@ -10,10 +10,10 @@ for i in $pkgs ; do
 
     echo "Making pkgs for" $tname " ... " 
 
-    for templatefile in `ls template-disabler*` ; do 
-        newfile="`echo $templatefile | sed -s \"s/template-disabler/$tran/\" `"
+    for templatefile in `ls template-untangle-disabler*` ; do 
+        newfile="`echo $templatefile | sed -s \"s/template-untangle-disabler/$tran/\" `"
         echo $newfile
-        cat $templatefile | sed -s "s/template-disabler/$tran/" | sed -s "s/template/$tname/" > $newfile
+        cat $templatefile | sed -s "s/template-untangle-disabler/$tran/" | sed -s "s/template/$tname/" > $newfile
     done
 done
 
