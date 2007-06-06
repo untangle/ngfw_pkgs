@@ -1,21 +1,21 @@
-Source: untangle-untangle-libnetfilter-queue
+Source: untangle-libnetfilter-queue
 Section: libs
 Priority: optional
 Maintainer: Francois Toussenel <f.toussenel@inl.fr>
 Build-Depends: cdbs (>= 0.4), debhelper (>= 4.2), gcc (>= 3.4), untangle-libnfnetlink-dev (>= 0.0.16)
 Standards-Version: 3.6.2
 
-Package: untangle-untangle-libnetfilter-queue0
+Package: untangle-libnetfilter-queue0
 Architecture: any
 Depends: ${shlibs:Depends}
 Conflicts: libnetfilter-queue0
 Description: Netfilter netfilter-queue library
  This is the userspace library for netfilter_queue.
 
-Package: untangle-untangle-libnetfilter-queue-dev
+Package: untangle-libnetfilter-queue-dev
 Architecture: any
 Section: libdevel
-Depends: untangle-untangle-libnetfilter-queue0 (= ${Source-Version}), untangle-libnfnetlink-dev (>= 0.0.16)
+Depends: untangle-libnetfilter-queue0 (= ${Source-Version}), untangle-libnfnetlink-dev (>= 0.0.16)
 Conflicts: libnetfilter-queue-dev
 Description: Netfilter netfilter-queue library
  This is the userspace library for netfilter_queue.
