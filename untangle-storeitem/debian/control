@@ -8,7 +8,7 @@ Standards-Version: 3.7.2
 Package: untangle-storeitem-standard-bundle
 Architecture: any
 Depends: untangle-storeitem-airgap, untangle-storeitem-spyware, untangle-storeitem-httpblocker, untangle-storeitem-clam, untangle-storeitem-protofilter, untangle-storeitem-nat, untangle-storeitem-firewall, untangle-storeitem-spamassassin, untangle-storeitem-clamphish, untangle-storeitem-openvpn, untangle-storeitem-ids, untangle-storeitem-reporting, untangle-storeitem-portal
-Conflicts: standard-bundle-disabler, spyware-disabler, httpblocker-disabler, protofilter-disabler, spamassassin-disabler, clamphish-disabler, ids-disabler
+Conflicts: standard-bundle-untangle-disabler, spyware-untangle-disabler, httpblocker-untangle-disabler, protofilter-untangle-disabler, spamassassin-untangle-disabler, clamphish-untangle-disabler, ids-untangle-disabler
 XB-Price: 0
 XB-View-Position: 10
 XB-Display-Name: Total Security Bundle
@@ -216,7 +216,7 @@ Description: Untangle Attack Blocker
 Package: untangle-storeitem-spyware
 Architecture: any
 Depends: spyware-transform
-Conflicts: spyware-disabler
+Conflicts: spyware-untangle-disabler
 Provides: untangle-storeitem-spyware-trial30
 XB-Price: 0
 XB-View-Position: 20
@@ -305,7 +305,7 @@ Description: Untangle Spyware Blocker
 Package: untangle-storeitem-httpblocker
 Architecture: any
 Depends: httpblocker-transform
-Conflicts: httpblocker-disabler
+Conflicts: httpblocker-untangle-disabler
 Provides: untangle-storeitem-httpblocker-trial30
 XB-Price: 0
 XB-View-Position: 30
@@ -405,7 +405,7 @@ Description: Untangle Web Filter
 Package: untangle-storeitem-hauri
 Architecture: any
 Depends: hauri-transform
-Conflicts: hauri-disabler
+Conflicts: hauri-untangle-disabler
 Provides: untangle-storeitem-hauri-trial30
 XB-Price: 399
 XB-View-Position: 60
@@ -627,7 +627,7 @@ Description: Untangle Clam Virus Blocker
 Package: untangle-storeitem-protofilter
 Architecture: any
 Depends: protofilter-transform
-Conflicts: protofilter-disabler
+Conflicts: protofilter-untangle-disabler
 Provides: untangle-storeitem-protofilter-trial30
 XB-Price: 0
 XB-View-Position: 80
@@ -931,7 +931,7 @@ Description: Untangle Firewall
 Package: untangle-storeitem-spamassassin
 Architecture: any
 Depends: spamassassin-transform
-Conflicts: spamassassin-disabler
+Conflicts: spamassassin-untangle-disabler
 Provides: untangle-storeitem-spamassassin-trial30
 XB-Price: 0
 XB-View-Position: 15
@@ -1048,7 +1048,7 @@ Description: Untangle Spam Blocker
 Package: untangle-storeitem-clamphish
 Architecture: any
 Depends: clamphish-transform
-Conflicts: clamphish-disabler
+Conflicts: clamphish-untangle-disabler
 Provides: untangle-storeitem-clamphish-trial30
 XB-Price: 0
 XB-View-Position: 17
@@ -1425,7 +1425,7 @@ Description: OpenVPN
 Package: untangle-storeitem-ids
 Architecture: any
 Depends: ids-transform, untangle-snort-rules
-Conflicts: ids-disabler
+Conflicts: ids-untangle-disabler
 Provides: untangle-storeitem-ids-trial30
 XB-Price: 0
 XB-View-Position: 75
@@ -1619,7 +1619,7 @@ Description: Untangle Reports
 Package: untangle-storeitem-boxbackup
 Architecture: any
 Depends: boxbackup-transform
-Conflicts: boxbackup-disabler
+Conflicts: boxbackup-untangle-disabler
 Provides: untangle-storeitem-boxbackup-trial30
 XB-Price: 99
 XB-View-Position: 1015
@@ -1741,7 +1741,7 @@ Description: Untangle Configuration Backup
 Package: untangle-storeitem-portal
 Architecture: any
 Depends: portal-transform
-Conflicts: portal-disabler
+Conflicts: portal-untangle-disabler
 Provides: untangle-storeitem-portal-trial30
 XB-Price: 99
 XB-View-Position: 1015
@@ -1946,7 +1946,7 @@ Description: Untangle Total Security Bundle 30-Day Trial
 
 Package: untangle-storeitem-spyware-trial30
 Architecture: any
-Depends: spyware-transform, spyware-disabler
+Depends: spyware-transform, spyware-untangle-disabler
 XB-Price: 0
 XB-View-Position: 20
 XB-Display-Name: Spyware Blocker 30-Day Trial
@@ -2033,7 +2033,7 @@ Description: Untangle Spyware Blocker 30-Day Trial
 
 Package: untangle-storeitem-httpblocker-trial30
 Architecture: any
-Depends: httpblocker-transform, httpblocker-disabler
+Depends: httpblocker-transform, httpblocker-untangle-disabler
 XB-Price: 0
 XB-View-Position: 30
 XB-Display-Name: Web Filter 30-Day Trial
@@ -2131,7 +2131,7 @@ Description: Untangle Web Filter 30-Day Trial
 
 Package: untangle-storeitem-hauri-trial30
 Architecture: any
-Depends: hauri-transform, hauri-disabler
+Depends: hauri-transform, hauri-untangle-disabler
 XB-Price: 399
 XB-View-Position: 60
 XB-Display-Name: Dual Virus Blocker 30-Day Trial
@@ -2245,7 +2245,7 @@ Description: Untangle Dual Virus Blocker 30-Day Trial
 
 Package: untangle-storeitem-protofilter-trial30
 Architecture: any
-Depends: protofilter-transform, protofilter-disabler
+Depends: protofilter-transform, protofilter-untangle-disabler
 XB-Price: 0
 XB-View-Position: 80
 XB-Display-Name: Protocol Control 30-Day Trial
@@ -2366,7 +2366,7 @@ Description: Untangle Protocol Control 30-Day Trial
 
 Package: untangle-storeitem-spamassassin-trial30
 Architecture: any
-Depends: spamassassin-transform, spamassassin-disabler
+Depends: spamassassin-transform, spamassassin-untangle-disabler
 XB-Price: 0
 XB-View-Position: 15
 XB-Display-Name: Spam Blocker 30-Day Trial
@@ -2481,7 +2481,7 @@ Description: Untangle Spam Blocker 30-Day Trial
 
 Package: untangle-storeitem-clamphish-trial30
 Architecture: any
-Depends: clamphish-transform, clamphish-disabler
+Depends: clamphish-transform, clamphish-untangle-disabler
 XB-Price: 0
 XB-View-Position: 17
 XB-Display-Name: Phish Blocker 30-Day Trial
@@ -2610,7 +2610,7 @@ Description: Untangle Phish Blocker 30-Day Trial
 
 Package: untangle-storeitem-portal-trial30
 Architecture: any
-Depends: portal-transform, portal-disabler
+Depends: portal-transform, portal-untangle-disabler
 XB-Price: 0
 XB-View-Position: 75
 XB-Display-Name: Remote Access Portal 30-Day Trial
@@ -2716,7 +2716,7 @@ Description: Untangle Remote Access Portal 30-Day Trial
 
 Package: untangle-storeitem-boxbackup-trial30
 Architecture: any
-Depends: boxbackup-transform, boxbackup-disabler
+Depends: boxbackup-transform, boxbackup-untangle-disabler
 XB-Price: 99
 XB-View-Position: 1015
 XB-Display-Name: Configuration Backup 30-Day Trial
