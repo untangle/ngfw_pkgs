@@ -8,6 +8,7 @@ Standards-Version: 3.6.2
 Package: untangle-untangle-libnetfilter-queue0
 Architecture: any
 Depends: ${shlibs:Depends}
+Conflicts: libnetfilter-queue0
 Description: Netfilter netfilter-queue library
  This is the userspace library for netfilter_queue.
 
@@ -15,6 +16,7 @@ Package: untangle-untangle-libnetfilter-queue-dev
 Architecture: any
 Section: libdevel
 Depends: untangle-untangle-libnetfilter-queue0 (= ${Source-Version}), untangle-libnfnetlink-dev (>= 0.0.16)
+Conflicts: libnetfilter-queue-dev
 Description: Netfilter netfilter-queue library
  This is the userspace library for netfilter_queue.
  .
