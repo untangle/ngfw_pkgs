@@ -1,4 +1,4 @@
 version=2
 
-http://www.apache.org/dist/spamassassin/source/Mail-SpamAssassin-(.*)\.tar\.gz \
+http://www.apache.org/dist/untangle-spamassassin/source/Mail-SpamAssassin-(.*)\.tar\.gz \
     debian uupdate

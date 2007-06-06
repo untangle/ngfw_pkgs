@@ -25,7 +25,7 @@ ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
 endif
 
-# For building both spamc and spamassassin
+# For building both spamc and untangle-spamassassin
 patch: patch-stamp
 patch-stamp:
 	dpatch apply-all
@@ -40,8 +40,8 @@ configure-stamp: patch
 	dh_testdir
 
 	perl Makefile.PL INSTALLDIRS=vendor \
-	 DESTDIR=$(CURDIR)/debian/spamassassin \
-	 CONFDIR=/etc/spamassassin \
+	 DESTDIR=$(CURDIR)/debian/untangle-spamassassin \
+	 CONFDIR=/etc/untangle-spamassassin \
 	 ENABLE_SSL=yes < /dev/null
 
 	touch configure-stamp
@@ -66,10 +66,10 @@ clean1:
 
 	dh_clean
 
-#debian/po/templates.pot: debian/spamassassin.templates
+#debian/po/templates.pot: debian/untangle-spamassassin.templates
 #	-debconf-updatepo
 
-# Spamassassin (and spamassassin-tools) ONLY
+# Spamassassin (and untangle-spamassassin-tools) ONLY
 
 build-indep: build-indep-stamp
 #build-indep-stamp: configure debian/po/templates.pot
@@ -84,12 +84,12 @@ build-indep-stamp: configure
 	touch build-indep-stamp
 
 
-#install-indep: install-spamassassin install-spamassassin-tools
-install-indep: install-spamassassin
+#install-indep: install-untangle-spamassassin install-untangle-spamassassin-tools
+install-indep: install-untangle-spamassassin
 
 # SpamAssassin
 
-install-spamassassin: build-indep
+install-untangle-spamassassin: build-indep
 	dh_testdir
 	dh_testroot
 	dh_clean -k
@@ -99,36 +99,36 @@ install-spamassassin: build-indep
 
 
 #	Get rid of SPAMC stuff.
-	rm debian/spamassassin/usr/bin/spamc debian/spamassassin/usr/share/man/man1/spamc.1p
+	rm debian/untangle-spamassassin/usr/bin/spamc debian/untangle-spamassassin/usr/share/man/man1/spamc.1p
 
 
 #	Move spamd to /usr/sbin + fix the man file
 	sed 's#SPAMD 1#SPAMD 8#' \
-	 debian/spamassassin/usr/share/man/man1/spamd.1p \
-	 > debian/spamassassin/usr/share/man/man8/spamd.8p
-	rm debian/spamassassin/usr/share/man/man1/spamd.1p
+	 debian/untangle-spamassassin/usr/share/man/man1/spamd.1p \
+	 > debian/untangle-spamassassin/usr/share/man/man8/spamd.8p
+	rm debian/untangle-spamassassin/usr/share/man/man1/spamd.1p
 
-	mv debian/spamassassin/usr/bin/spamd debian/spamassassin/usr/sbin/
+	mv debian/untangle-spamassassin/usr/bin/spamd debian/untangle-spamassassin/usr/sbin/
 
 #	Install Debian specific files
-	cp debian/65_debian.cf debian/spamassassin/usr/share/spamassassin/65_debian.cf
+	cp debian/65_debian.cf debian/untangle-spamassassin/usr/share/untangle-spamassassin/65_debian.cf
 
-	-rmdir -p debian/spamassassin/usr/lib/perl5
+	-rmdir -p debian/untangle-spamassassin/usr/lib/perl5
 
 #	dh_installdocs isn't flexible enough to install all the docs to the right place
 #	Do it here!
-	cp debian/copyright 				debian/spamassassin/usr/share/doc/spamassassin/
-	cp debian/spamassassin.README.Debian		debian/spamassassin/usr/share/doc/spamassassin/README.Debian
-	cp BUGS CREDITS README TRADEMARK UPGRADE USAGE NOTICE 	debian/spamassassin/usr/share/doc/spamassassin/
-	cp ldap/README 					debian/spamassassin/usr/share/doc/spamassassin/README.ldap
-	cp rules/STATISTICS*.txt 			debian/spamassassin/usr/share/doc/spamassassin/rules/
-	cp spamd/README 				debian/spamassassin/usr/share/doc/spamassassin/README.spamd
-	cp spamd/README.vpopmail 			debian/spamassassin/usr/share/doc/spamassassin/README.spamd-vpopmail
-	cp -r sql/ 					debian/spamassassin/usr/share/doc/spamassassin/
+	cp debian/copyright 				debian/untangle-spamassassin/usr/share/doc/untangle-spamassassin/
+	cp debian/untangle-spamassassin.README.Debian		debian/untangle-spamassassin/usr/share/doc/untangle-spamassassin/README.Debian
+	cp BUGS CREDITS README TRADEMARK UPGRADE USAGE NOTICE 	debian/untangle-spamassassin/usr/share/doc/untangle-spamassassin/
+	cp ldap/README 					debian/untangle-spamassassin/usr/share/doc/untangle-spamassassin/README.ldap
+	cp rules/STATISTICS*.txt 			debian/untangle-spamassassin/usr/share/doc/untangle-spamassassin/rules/
+	cp spamd/README 				debian/untangle-spamassassin/usr/share/doc/untangle-spamassassin/README.spamd
+	cp spamd/README.vpopmail 			debian/untangle-spamassassin/usr/share/doc/untangle-spamassassin/README.spamd-vpopmail
+	cp -r sql/ 					debian/untangle-spamassassin/usr/share/doc/untangle-spamassassin/
 
 #	Clean up any .svn stuff creeping in (only applicable for building
 #	from svn)
-	-find debian/spamassassin/ -path '*/.svn' -print0 | xargs -0 rm -Rf
+	-find debian/untangle-spamassassin/ -path '*/.svn' -print0 | xargs -0 rm -Rf
 
 binary-indep: build-indep install-indep
 	dh_testdir -i
@@ -144,7 +144,7 @@ binary-indep: build-indep install-indep
 	dh_fixperms -i
 	dh_installdeb -i
 	dh_perl -i
-if [[ -f debian/version ]] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
+	if [[ -f debian/version ]] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
 	dh_md5sums -i
 	dh_builddeb -i
 
