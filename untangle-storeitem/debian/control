@@ -7,8 +7,8 @@ Standards-Version: 3.7.2
 
 Package: untangle-storeitem-standard-bundle
 Architecture: any
-Depends: untangle-storeitem-airgap, untangle-storeitem-spyware, untangle-storeitem-httpblocker, untangle-storeitem-clam, untangle-storeitem-protofilter, untangle-storeitem-nat, untangle-storeitem-firewall, untangle-storeitem-spamassassin, untangle-storeitem-clamphish, untangle-storeitem-openvpn, untangle-storeitem-ids, untangle-storeitem-reporting, untangle-storeitem-portal
-Conflicts:untangle-disabler-standard-bundle, spyware-untangle-disabler, httpblocker-untangle-disabler, protofilter-untangle-disabler, spamassassin-untangle-disabler, clamphish-untangle-disabler, ids-untangle-disabler
+Depends: untangle-storeitem-airgap, untangle-storeitem-spyware, untangle-storeitem-httpblocker, untangle-storeitem-clam, untangle-storeitem-protofilter, untangle-storeitem-nat, untangle-storeitem-firewall, untangle-storeitem-untangle-spamassassin, untangle-storeitem-clamphish, untangle-storeitem-openvpn, untangle-storeitem-ids, untangle-storeitem-reporting, untangle-storeitem-portal
+Conflicts:untangle-disabler-standard-bundle, spyware-untangle-disabler, httpblocker-untangle-disabler, protofilter-untangle-disabler, untangle-spamassassin-untangle-disabler, clamphish-untangle-disabler, ids-untangle-disabler
 XB-Price: 0
 XB-View-Position: 10
 XB-Display-Name: Total Security Bundle
@@ -928,11 +928,11 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
 Description: Untangle Firewall
  The Untangle Firewall Store Item.
 
-Package: untangle-storeitem-spamassassin
+Package: untangle-storeitem-untangle-spamassassin
 Architecture: any
-Depends: spamassassin-transform
-Conflicts:untangle-disabler-spamassassin
-Provides: untangle-storeitem-spamassassin-trial30
+Depends: untangle-spamassassin-transform
+Conflicts:untangle-disabler-untangle-spamassassin
+Provides: untangle-storeitem-untangle-spamassassin-trial30
 XB-Price: 0
 XB-View-Position: 15
 XB-Display-Name: Spam Blocker
@@ -1850,7 +1850,7 @@ Description: Untangle Remote Access Portal
 
 Package: untangle-storeitem-standard-bundle-trial30
 Architecture: any
-Depends: untangle-storeitem-airgap, untangle-storeitem-spyware-trial30, untangle-storeitem-httpblocker-trial30, untangle-storeitem-clam, untangle-storeitem-protofilter-trial30, untangle-storeitem-nat, untangle-storeitem-firewall, untangle-storeitem-spamassassin-trial30, untangle-storeitem-clamphish-trial30, untangle-storeitem-openvpn, untangle-storeitem-ids, untangle-storeitem-reporting, untangle-storeitem-portal-trial30
+Depends: untangle-storeitem-airgap, untangle-storeitem-spyware-trial30, untangle-storeitem-httpblocker-trial30, untangle-storeitem-clam, untangle-storeitem-protofilter-trial30, untangle-storeitem-nat, untangle-storeitem-firewall, untangle-storeitem-untangle-spamassassin-trial30, untangle-storeitem-clamphish-trial30, untangle-storeitem-openvpn, untangle-storeitem-ids, untangle-storeitem-reporting, untangle-storeitem-portal-trial30
 XB-Price: 0
 XB-View-Position: 10
 XB-Display-Name: Total Security Bundle 30-Day Trial
@@ -2364,9 +2364,9 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
 Description: Untangle Protocol Control 30-Day Trial
  The Untangle Protocol Control 30-Day Trial Store Item.
 
-Package: untangle-storeitem-spamassassin-trial30
+Package: untangle-storeitem-untangle-spamassassin-trial30
 Architecture: any
-Depends:untangle-disabler-spamassassin-transform, spamassassin
+Depends:untangle-disabler-untangle-spamassassin-transform, untangle-spamassassin
 XB-Price: 0
 XB-View-Position: 15
 XB-Display-Name: Spam Blocker 30-Day Trial

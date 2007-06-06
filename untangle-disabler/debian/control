@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: untangle-disabler-standard-bundle
 Architecture: any
-Depends: untangle-disabler-spyware, untangle-disabler-httpblocker, untangle-disabler-protofilter, untangle-disabler-spamassassin, untangle-disabler-clamphish
+Depends: untangle-disabler-spyware, untangle-disabler-httpblocker, untangle-disabler-protofilter, untangle-disabler-untangle-spamassassin, untangle-disabler-clamphish
 Description: The Untangle Security Bundle Disabler
  The Untangle Total Security Bundle Disabler.
 
@@ -31,7 +31,7 @@ Architecture: any
 Description: The Untangle Rogue Protocol Control Disabler
  The Untangle Rogue Protocol Control Software Appliance Disabler.
 
-Package: untangle-disabler-spamassassin
+Package: untangle-disabler-untangle-spamassassin
 Architecture: any
 Description: The Untangle SpamGuard Disabler
  The Untangle SpamGuard Software Appliance Disabler.
