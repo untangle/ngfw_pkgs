@@ -1,23 +1,23 @@
-Source: untangle-untangle-libnfnetlink
+Source: untangle-libnfnetlink
 Section: libs
 Priority: optional
 Maintainer: Max Kellermann <max@duempel.org>
 Build-Depends: cdbs (>= 0.4), debhelper (>= 4.2), gcc (>= 3.4)
 Standards-Version: 3.6.2
 
-Package: untangle-untangle-libnfnetlink0
+Package: untangle-libnfnetlink0
 Architecture: any
 Depends: ${shlibs:Depends}
 Description: Netfilter netlink library
- untangle-untangle-libnfnetlink is a lowlevel C library which helps accessing the
+ untangle-libnfnetlink is a lowlevel C library which helps accessing the
  netfilter netlink layer in the kernel.
 
-Package: untangle-untangle-libnfnetlink-dev
+Package: untangle-libnfnetlink-dev
 Architecture: any
 Section: libdevel
-Depends: untangle-untangle-libnfnetlink0 (= ${Source-Version})
+Depends: untangle-libnfnetlink0 (= ${Source-Version})
 Description: Netfilter netlink library
- untangle-untangle-libnfnetlink is a lowlevel C library which helps accessing the
+ untangle-libnfnetlink is a lowlevel C library which helps accessing the
  netfilter netlink layer in the kernel.
  .
  This package provides the development files.
