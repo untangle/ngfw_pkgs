@@ -8,5 +8,5 @@ Abstract: This document describes the netfilter architecture for Linux,
 Section: Apps/Programming
 
 Format: HTML
-Index: /usr/share/doc/iptables-dev/html/netfilter-hacking-HOWTO.html
-Files: /usr/share/doc/iptables-dev/html/netfilter-hacking-HOWTO-?.html
+Index: /usr/share/doc/untangle-iptables-dev/html/netfilter-hacking-HOWTO.html
+Files: /usr/share/doc/untangle-iptables-dev/html/netfilter-hacking-HOWTO-?.html

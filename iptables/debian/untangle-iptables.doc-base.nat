@@ -7,5 +7,5 @@ Abstract: This document describes how to do masquerading, transparent
 Section: Apps/System
 
 Format: HTML
-Index: /usr/share/doc/iptables/html/NAT-HOWTO.html
-Files: /usr/share/doc/iptables/html/NAT-HOWTO*.html
+Index: /usr/share/doc/untangle-iptables/html/NAT-HOWTO.html
+Files: /usr/share/doc/untangle-iptables/html/NAT-HOWTO*.html

@@ -1,17 +1,17 @@
-Christoph Lameter (christoph@lameter.com) created the Debian iptables 
+Christoph Lameter (christoph@lameter.com) created the Debian untangle-iptables 
 package on March 26, 2000.
 
-iptables sources were downloaded from:
+untangle-iptables sources were downloaded from:
 
   source code and changelogs: 
 
-    http://www.iptables.org/files/
+    http://www.untangle-iptables.org/files/
 
   SGML HOWTOs: 
 
-    http://www.iptables.org/documentation/HOWTO/
+    http://www.untangle-iptables.org/documentation/HOWTO/
 
-iptables authors:
+untangle-iptables authors:
 
   The core team: 
 
@@ -19,16 +19,16 @@ iptables authors:
 
   Additional contributors listed at: 
 
-    http://www.iptables.org/about.html#contrib
+    http://www.untangle-iptables.org/about.html#contrib
 
-iptables copyright:
+untangle-iptables copyright:
 
-  iptables is free software; you can redistribute it and/or modify
+  untangle-iptables is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published
   by the Free Software Foundation; either version 2, or (at your
   option) any later version.
 
-  iptables is distributed in the hope that it will be useful,
+  untangle-iptables is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
   General Public License for more details.

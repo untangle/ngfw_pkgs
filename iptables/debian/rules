@@ -3,19 +3,19 @@
 # Unpack the source and apply patches with either of
 # "make prep" or "debian/rules prep" in the top directory.
 
-# Change the kernel source/header and iptables source
+# Change the kernel source/header and untangle-iptables source
 # versions in prep.sh in the top directory.
 
-# Custom build tips: Modify and repack iptables source
+# Custom build tips: Modify and repack untangle-iptables source
 # into upstream/. Account for patches/*, patch-o-matic,
-# and install directives in */debian/iptables*.install.
+# and install directives in */debian/untangle-iptables*.install.
 # Alternatively, you can unpack and then modify sources
 # in debian/build/, but take note that the clean target
 # WILL definitely erase all of your work amd various 
 # build tools call the clean target by default.
 
 # source directory symlinks, see prep.sh
-IPTABLES = iptables_profectio
+IPTABLES = untangle-iptables_profectio
 KERNEL = kernel_profectio
 
 BUILD_DIR := $(CURDIR)/debian/build
@@ -25,7 +25,7 @@ STAMP_DIR := $(BUILD_DIR)/stamp
 MANDIR = MANDIR=/usr/share/man
 BINDIR = BINDIR=/sbin
 LIBDIR = LIBDIR=/lib
-DESTDIR := DESTDIR=$(CURDIR)/debian/iptables
+DESTDIR := DESTDIR=$(CURDIR)/debian/untangle-iptables
 #KERNEL_DIR := KERNEL_DIR=$(BUILD_DIR)/$(KERNEL)
 KERNEL_DIR := KERNEL_DIR=/space/kernel/kpkg/2.6.16-ck11/linux-2.6.16-ck11-prod
 
@@ -44,7 +44,7 @@ $(STAMP_DIR)/build-stamp: prep
 
 	$(MAKE) -C $(SRC_DIR) $(BUILD_TARGETS) $(BUILD_VARS)
 
-	cd $(SRC_DIR); ar rcs libiptables.a iptables.o
+	cd $(SRC_DIR); ar rcs libuntangle-iptables.a untangle-iptables.o
 	cd $(SRC_DIR); ar rcs libip6tables.a ip6tables.o
 
 	touch $@
@@ -60,8 +60,8 @@ install: build
 
 	$(MAKE) -C $(SRC_DIR) install $(INSTALL_VARS)
 	rm -rf $(SRC_DIR)/include/libipulog
-	install -m0644 -D $(CURDIR)/debian/iptables.lintian.override \
-	$(CURDIR)/debian/iptables/usr/share/lintian/overrides/iptables
+	install -m0644 -D $(CURDIR)/debian/untangle-iptables.lintian.override \
+	$(CURDIR)/debian/untangle-iptables/usr/share/lintian/overrides/untangle-iptables
 
 binary-indep: build install
 
