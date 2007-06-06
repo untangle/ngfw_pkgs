@@ -1,4 +1,4 @@
-Source: untangle-untangle-spamassassin
+Source: untangle-spamassassin
 Section: mail
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 4.1.16), perl (>= 5.6.0-16), libssl-dev,
  dpatch, libhtml-parser-perl (>= 3.24), libdigest-sha1-perl
 Standards-Version: 3.7.2
 
-Package: untangle-untangle-spamassassin
+Package: untangle-spamassassin
 Architecture: all
 Conflicts: spamass-milter (<< 0.2.0-7), gotmail (<= 0.8.1-1), fuzzyocr-mv
 Depends: ${perl:Depends}, libhtml-parser-perl (>= 3.31),
@@ -17,7 +17,7 @@ Recommends: perl (>= 5.8.0) | libmime-base64-perl, spamc (>= 2.30),
 Suggests: libnet-perl | perl-modules (>= 5.8.0), razor (>= 2.361-2),
  libnet-ident-perl, libio-socket-ssl-perl, perl (>= 5.8.0) |
  libtime-hires-perl, libdbi-perl, dcc-client, pyzor
-Provides: libmail-untangle-untangle-spamassassin-perl
+Provides: libmail-untangle-spamassassin-perl
 Description: Perl-based spam filter using text analysis
  SpamAssassin is a very powerful and fully configurable spam filter
  with numerous features including automatic white-listing, RBL
@@ -25,9 +25,9 @@ Description: Perl-based spam filter using text analysis
  designed to be called from a user's .procmail or .forward file, but
  can also be integrated into a Mail Transport Agent (MTA).
  .
- Included in this package is a daemonized form of untangle-untangle-spamassassin (spamd)
+ Included in this package is a daemonized form of untangle-spamassassin (spamd)
  which communicates with its client (spamc) via TCP, to reduce the
  overhead of loading perl with each message. To take advantage of
  this, you must install the spamc package.
  .
- Homepage: http://www.untangle-untangle-spamassassin.org
+ Homepage: http://www.untangle-spamassassin.org
