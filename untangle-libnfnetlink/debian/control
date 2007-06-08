@@ -9,6 +9,8 @@ Package: untangle-libnfnetlink0
 Architecture: any
 Depends: ${shlibs:Depends}
 Conflicts: libnfnetlink0
+Provides: libnfnetlink0
+Replaces: libnfnetlink0
 Description: Netfilter netlink library
  untangle-libnfnetlink is a lowlevel C library which helps accessing the
  netfilter netlink layer in the kernel.
@@ -18,6 +20,8 @@ Architecture: any
 Section: libdevel
 Depends: untangle-libnfnetlink0 (= ${Source-Version})
 Conflicts: libnfnetlink-dev
+Provides: libnfnetlink-dev
+Replaces: libnfnetlink-dev
 Description: Netfilter netlink library
  untangle-libnfnetlink is a lowlevel C library which helps accessing the
  netfilter netlink layer in the kernel.

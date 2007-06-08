@@ -9,6 +9,8 @@ Package: untangle-kiosk
 Architecture: any
 Essential: yes
 Depends: fbpanel, feh, xbindkeys, untangle-bootsplash, artwiz-cursor, firefox-r-kiosk, masqmail
-Conflicts: exim4-config, exim4-base, exim4, exim4-daemon-light
+Conflicts: exim4-config, exim4-base, exim4, exim4-daemon-light, kiosk-mv
+Provides: kiosk-mv
+Replaces: kiosk-mv
 Description: The Untangle kiosk utils
  The Untangle kiosk mode utilities.

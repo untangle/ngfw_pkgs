@@ -6,9 +6,9 @@ Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
 Package: untangle-snort-rules
-Conflicts: snort-rules
-Replaces: snort-rules
-Provides: snort-rules
+Conflicts: snort-rules, snort-rules-current
+Replaces: snort-rules, snort-rules-current
+Provides: snort-rules, snort-rules-current
 Architecture: any
 Description: Current versions of GPL snort rules
  Current versions of GPL snort rules.

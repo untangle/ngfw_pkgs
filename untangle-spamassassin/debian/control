@@ -8,7 +8,8 @@ Standards-Version: 3.7.2
 
 Package: untangle-spamassassin
 Architecture: all
-Conflicts: spamass-milter (<< 0.2.0-7), gotmail (<= 0.8.1-1), fuzzyocr-mv
+Conflicts: spamass-milter (<< 0.2.0-7), gotmail (<= 0.8.1-1), fuzzyocr-mv, spamassassin
+Replaces: spamassassin
 Depends: ${perl:Depends}, libhtml-parser-perl (>= 3.31),
  libdigest-sha1-perl, ${misc:Depends}, libsocket6-perl,
  libarchive-tar-perl, libwww-perl
@@ -17,7 +18,7 @@ Recommends: perl (>= 5.8.0) | libmime-base64-perl, spamc (>= 2.30),
 Suggests: libnet-perl | perl-modules (>= 5.8.0), razor (>= 2.361-2),
  libnet-ident-perl, libio-socket-ssl-perl, perl (>= 5.8.0) |
  libtime-hires-perl, libdbi-perl, dcc-client, pyzor
-Provides: libmail-untangle-spamassassin-perl
+Provides: libmail-untangle-spamassassin-perl, spamassassin
 Description: Perl-based spam filter using text analysis
  SpamAssassin is a very powerful and fully configurable spam filter
  with numerous features including automatic white-listing, RBL

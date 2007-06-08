@@ -9,6 +9,8 @@ Package: untangle-gocr
 Architecture: any
 Depends: ${shlibs:Depends}
 Conflicts: gocr
+Provides: gocr
+Replaces: gocr
 Recommends: libjpeg-progs, bzip2, netpbm, transfig
 Description: A command line OCR
  untangle-gocr is a multi-platform OCR (Optical Character Recognition) program.

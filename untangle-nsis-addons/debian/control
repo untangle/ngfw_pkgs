@@ -8,4 +8,7 @@ Standards-Version: 3.7.2
 Package: untangle-nsis-addons
 Architecture: any
 Depends: nsis (>= 2.06-6)
+Conflicts: nsis-mv
+Provides: nsis-mv
+Replaces: nsis-mv
 Description: Packages to complete the NSIS installation generator utility.

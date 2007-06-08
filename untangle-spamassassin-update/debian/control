@@ -1,12 +1,15 @@
-Source: untangle-untangle-spamassassin-update
+Source: untangle-spamassassin-update
 Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
-Package: untangle-untangle-spamassassin-update
+Package: untangle-spamassassin-update
 Architecture: any
 Depends: untangle-spamassassin (>= 3.1.7-2~ut.1), libnet-dns-perl, libmail-spf-query-perl, libnet-ident-perl, razor, libsys-hostname-long-perl, untangle-fuzzyocr
-Description: The Untangle spamc utils
- The Untangle SpamAssassin configuration utilities.
+Conflicts: spamc-mv
+Provides: spamc-mv
+Replaces: spamc-mv
+Description: The Untangle Spamassassin update utilities
+ The Untangle Spamassassin update utilities.

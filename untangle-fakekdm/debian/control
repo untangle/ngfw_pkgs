@@ -7,8 +7,8 @@ Standards-Version: 3.7.2
 
 Package: untangle-fakekdm
 Architecture: any
-Depends: 
-Conflicts: 
-Provides: kdm
+Conflicts: fakekdm-mv
+Provides: kdm, fakekdm-mv
+Replaces: fakekdm-mv
 Description: Fake KDM
  An empty package that supplies KDM.

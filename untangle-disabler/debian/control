@@ -8,45 +8,72 @@ Standards-Version: 3.7.2
 Package: untangle-disabler-standard-bundle
 Architecture: any
 Depends: untangle-disabler-spyware, untangle-disabler-httpblocker, untangle-disabler-protofilter, untangle-disabler-untangle-spamassassin, untangle-disabler-clamphish
+Provides: standard-bundle-disabler
+Conflicts: standard-bundle-disabler
+Replaces: standard-bundle-disabler
 Description: The Untangle Security Bundle Disabler
  The Untangle Total Security Bundle Disabler.
 
 Package: untangle-disabler-spyware
 Architecture: any
+Provides: spyware-disabler
+Conflicts: spyware-disabler 
+Replaces: spyware-disabler
 Description: The Untangle Spyware Blocker Disabler
  The Untangle Spyware Blocker Software Appliance Disabler.
 
 Package: untangle-disabler-httpblocker
 Architecture: any
+Provides: httpblocker-bundle-disabler
+Conflicts: httpblocker-bundle-disabler
+Replaces: httpblocker-bundle-disabler
 Description: The Untangle Web Filter Disabler
  The Untangle Web Filter Software Appliance Disabler.
 
 Package: untangle-disabler-hauri
 Architecture: any
+Provides: hauri-disabler
+Conflicts: hauri-disabler 
+Replaces: hauri-disabler
 Description: The Hauri AntiVirus Scanner Disabler
  The Hauri AntiVirus Scanner Software Appliance Disabler.
 
 Package: untangle-disabler-protofilter
 Architecture: any
+Provides: protofilter-disabler
+Conflicts: protofilter-disabler
+Replaces: protofilter-disabler
 Description: The Untangle Rogue Protocol Control Disabler
  The Untangle Rogue Protocol Control Software Appliance Disabler.
 
 Package: untangle-disabler-untangle-spamassassin
 Architecture: any
+Provides: spamassassin-disabler
+Conflicts: spamassassin-disabler
+Replaces: spamassassin-disabler
 Description: The Untangle SpamGuard Disabler
  The Untangle SpamGuard Software Appliance Disabler.
 
 Package: untangle-disabler-clamphish
 Architecture: any
+Provides: clamphish-disabler
+Conflicts: clamphish-disabler
+Replaces: clamphish-disabler
 Description: The Untangle PhishNet Disabler
  The Untangle PhishNet Software Appliance Disabler.
 
 Package: untangle-disabler-portal
 Architecture: any
+Provides: portal-disabler
+Conflicts: portal-disabler
+Replaces: portal-disabler
 Description: The Untangle Remote Access Portal Disabler
  The Untangle Remote Access Portal Disabler.
 
 Package: untangle-disabler-boxbackup
 Architecture: any
+Provides: boxbackup-disabler
+Conflicts: boxbackup-disabler
+Replaces: boxbackup-disabler
 Description: The Untangle Configuration Backup Disabler
  The Untangle Configuration Backup Disabler.

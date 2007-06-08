@@ -7,6 +7,8 @@ Standards-Version: 3.7.2
 
 Package: untangle-ujac2pdf
 Architecture: any
-Depends:
+Conflicts: ujac-to-pdf
+Provides: ujac-to-pdf
+Replaces: ujac-to-pdf
 Description: Utility for converting UJAC XML files to PDF
  Utility for converting UJAC XML files to PDF.

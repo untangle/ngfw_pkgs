@@ -9,5 +9,8 @@ Package: untangle-bootsplash
 Architecture: any
 Essential: yes
 Depends: ${shlibs:Depends}
+Provides: bootsplash-mv
+Conflicts: bootsplash-mv
+Replaces: bootsplash-mv
 Description: The Untangle bootsplash utilities
  The Untangle bootsplash utilities.

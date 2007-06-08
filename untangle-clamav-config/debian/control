@@ -8,5 +8,8 @@ Standards-Version: 3.7.2
 Package: untangle-clamav-config
 Architecture: any
 Depends: clamav, clamav-daemon, clamav-freshclam, unrar, lha, arj, unzoo
+Provides: clamav-mv
+Conflicts: clamav-mv
+Replaces: clamav-mv
 Description: The Untangle clamav utils
  The Untangle clamav utilities.

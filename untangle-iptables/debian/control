@@ -2,7 +2,7 @@ Source: untangle-iptables
 Section: net
 Priority: important
 Maintainer: Laurence J. Lane <ljlane@debian.org>
-Build-Depends: debhelper (>>4.0), linuxdoc-tools, html2text, bzip2, linux-kernel-headers (>= 2.6.11.2-0ubuntu10)
+Build-Depends: debhelper (>>4.0), linuxdoc-tools, html2text, bzip2, untangle-linux-kernel-headers (>= 2.6.11)
 Standards-Version: 3.5.6.0
 
 Package: untangle-iptables
@@ -11,6 +11,9 @@ Priority: important
 Suggests: iproute
 Section: net
 Depends: ${shlibs:Depends}
+Provides: iptables
+Conflicts: iptables
+Replaces: iptables
 Description: Linux kernel 2.4+ untangle-iptables administration tools
  netfilter and untangle-iptables provide a Linux kernel framework for
  stateful and stateless packet filtering, network and port addresss
@@ -28,6 +31,9 @@ Architecture: any
 Priority: optional
 Depends: 
 Section: devel
+Provides: iptables-dev
+Conflicts: iptables-dev
+Replaces: iptables-dev
 Description: development files for iptable's libipq and libiptc
  Header files, static libs and documentation for libipq (untangle-iptables 
  user-space packet queuing library) and libiptc.
