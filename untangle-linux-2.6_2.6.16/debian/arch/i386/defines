@@ -1,0 +1,12 @@
+[base]
+flavours:
+subarches:
+ cd
+ prod
+ prod-xd
+
+kernel-arch: i386
+kernel-header-dirs: i386
+
+[image]
+suggests: grub | lilo (>= 19.1)
