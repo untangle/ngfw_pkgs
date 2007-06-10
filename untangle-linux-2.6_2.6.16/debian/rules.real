@@ -69,7 +69,8 @@ endif
 binary-arch-subarch: install-header-$(ARCH)-$(SUBARCH)
 binary-arch-flavour: install-image-$(ARCH)-$(SUBARCH)-$(FLAVOUR)-$(TYPE) install-header-$(ARCH)-$(SUBARCH)-$(FLAVOUR)
 
-binary-indep: install-source install-tree
+#FIXME: source, patch !
+binary-indep: install-tree
 
 build: $(STAMPS_DIR)/build-$(ARCH)-$(SUBARCH)-$(FLAVOUR)-$(TYPE)
 

@@ -1,7 +1,7 @@
 [base]
 flavours:
 subarches:
- cd
+# cd
  prod
  prod-xd
 

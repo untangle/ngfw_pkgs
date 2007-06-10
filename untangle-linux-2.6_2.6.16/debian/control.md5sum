@@ -12,7 +12,7 @@ ae445dec660100137d54407e4c6bfd73  debian/templates/control.main.in
 958d11a2576b2ab01c92180ee19602c4  debian/templates/control.source.in
 0a8e099ce800260e49be7a6018bfa4ff  debian/templates/control.tree.in
 c799d3b71037d63da2d8207c34295987  debian/arch/defines
-445bbc21026e4ffa45ed01c67c65f6c1  debian/arch/i386/defines
+98fac3d7e8657de82b99dba6d8f8fbc4  debian/arch/i386/defines
 12e58d69aaa475fd0ecfa4fb80b463b9  debian/arch/i386/cd/defines
 12e58d69aaa475fd0ecfa4fb80b463b9  debian/arch/i386/prod-xd/defines
 12e58d69aaa475fd0ecfa4fb80b463b9  debian/arch/i386/prod/defines
