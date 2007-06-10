@@ -60,7 +60,7 @@ def parse_version(version):
             \d+
         )
         (?:
-            -
+            [\-\+]
             (?P<modifier>
                 .+?
             )
