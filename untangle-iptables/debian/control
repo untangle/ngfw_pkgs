@@ -2,7 +2,7 @@ Source: untangle-iptables
 Section: net
 Priority: important
 Maintainer: Laurence J. Lane <ljlane@debian.org>
-Build-Depends: debhelper (>>4.0), linuxdoc-tools, html2text, bzip2, untangle-linux-kernel-headers (>= 2.6.11)
+Build-Depends: debhelper (>>4.0), linuxdoc-tools, html2text, bzip2, untangle-linux-headers-2.6.16-ck11 (>= 2.6.11)
 Standards-Version: 3.5.6.0
 
 Package: untangle-iptables
