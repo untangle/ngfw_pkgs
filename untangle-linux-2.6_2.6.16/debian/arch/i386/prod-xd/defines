@@ -11,3 +11,8 @@ suggests: grub | lilo (>= 19.1)
 [486]
 class: x86
 longclass: x86 and compatible
+
+[486_image]
+conflicts: kernel-prod-xd-mv
+provides: kernel-prod-xd-mv
+replaces: kernel-prod-xd-mv
