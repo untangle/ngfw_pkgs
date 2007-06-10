@@ -15,7 +15,7 @@
 # build tools call the clean target by default.
 
 # source directory symlinks, see prep.sh
-IPTABLES = untangle-iptables_profectio
+IPTABLES = iptables_profectio
 KERNEL = kernel_profectio
 
 BUILD_DIR := $(CURDIR)/debian/build
@@ -44,7 +44,7 @@ $(STAMP_DIR)/build-stamp: prep
 
 	$(MAKE) -C $(SRC_DIR) $(BUILD_TARGETS) $(BUILD_VARS)
 
-	cd $(SRC_DIR); ar rcs libuntangle-iptables.a untangle-iptables.o
+	cd $(SRC_DIR); ar rcs libiptables.a iptables.o
 	cd $(SRC_DIR); ar rcs libip6tables.a ip6tables.o
 
 	touch $@
