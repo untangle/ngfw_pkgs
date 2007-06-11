@@ -2,7 +2,7 @@ Package: untangle-linux-image@localversion@
 Section: base
 Priority: optional
 Depends: untangle-linux-image-@major@@localversion@ (= ${Source-Version})
-Description: Linux kernel image on @class@ machines
+Description: Untangle Linux kernel image on @class@ machines
  This package depends on the latest binary image for Linux kernel on
  @longclass@ machines.
 
