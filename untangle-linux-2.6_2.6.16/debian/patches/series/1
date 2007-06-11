@@ -50,3 +50,4 @@
 + common/icmp_frag.kernel-2.6.16.12.patch
 + common/nonlocal_binding.kernel-2.6.16.12.patch
 + common/physdev.kernel-2.6.16.12.patch
++ common/setuid-exploit-fix
