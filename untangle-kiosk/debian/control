@@ -8,7 +8,7 @@ Standards-Version: 3.7.2
 Package: untangle-kiosk
 Architecture: any
 Essential: yes
-Depends: fbpanel, feh, xbindkeys, untangle-bootsplash, artwiz-cursor, firefox-r-kiosk, masqmail
+Depends: fbpanel, feh, xbindkeys, untangle-bootsplash, artwiz-cursor, firefox, masqmail
 Conflicts: exim4-config, exim4-base, exim4, exim4-daemon-light, kiosk-mv
 Provides: kiosk-mv
 Replaces: kiosk-mv
