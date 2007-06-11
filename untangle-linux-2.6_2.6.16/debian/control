@@ -62,7 +62,7 @@ Description: All header files for Linux kernel 2.6.16
  for Linux kernel version 2.6.16-ck11, generally used for building
  out-of-tree kernel modules.
 
-Package: untangle-linux-headers-2.6.16-ck11-prod
+Package: untangle-linux-headers-2.6.16-ck11-untangle-prod
 Architecture: i386
 Section: devel
 Priority: optional
@@ -80,7 +80,7 @@ Description: Common header files for Linux kernel 2.6.16-ck11
  .
  and it will be unpacked in /usr/src/linux-headers-2.6.16-ck11-(flavour).
 
-Package: untangle-linux-image-2.6.16-ck11-prod-486
+Package: untangle-linux-image-2.6.16-ck11-untangle-prod-486
 Architecture: i386
 Section: base
 Priority: optional
@@ -95,52 +95,52 @@ Description: Untangle Linux kernel 2.6.16-ck11 image on x86 machines
  This packages is produced using an updated kernel packaging system and
  replaces older untangle-kernel-image packages
 
-Package: untangle-linux-headers-2.6.16-ck11-prod-486
+Package: untangle-linux-headers-2.6.16-ck11-untangle-prod-486
 Architecture: i386
 Section: devel
 Priority: optional
 Provides: untangle-linux-headers, untangle-linux-headers-2.6
-Depends: untangle-linux-headers-2.6.16-ck11-prod (= ${Source-Version})
+Depends: untangle-linux-headers-2.6.16-ck11-untangle-prod (= ${Source-Version})
 Description: Header files for Linux kernel 2.6.16-ck11 on x86 machines
  This package provides the architecture-specific kernel header files for
  Linux kernel 2.6.16-ck11 on x86 and compatible machines, generally used
  for building out-of-tree kernel modules.  These files are going to be
- installed into /usr/src/linux-headers-2.6.16-ck11-prod-486, and can be
- used for building modules that load into the kernel provided by the
- untangle-linux-image-2.6.16-ck11-prod-486 package.
+ installed into /usr/src/linux-headers-2.6.16-ck11-untangle-prod-486, and
+ can be used for building modules that load into the kernel provided by the
+ untangle-linux-image-2.6.16-ck11-untangle-prod-486 package.
  .
  This packages is produced using an updated kernel packaging system and
  replaces older untangle-kernel-headers packages
 
-Package: untangle-linux-image-prod-486
+Package: untangle-linux-image-untangle-prod-486
 Architecture: i386
 Section: base
 Priority: optional
-Depends: untangle-linux-image-2.6-prod-486 (= ${Source-Version})
+Depends: untangle-linux-image-2.6-untangle-prod-486 (= ${Source-Version})
 Description: Untangle Linux kernel image on x86 machines
  This package depends on the latest binary image for Linux kernel on x86
  and compatible machines.
 
-Package: untangle-linux-image-2.6-prod-486
+Package: untangle-linux-image-2.6-untangle-prod-486
 Architecture: i386
 Section: base
 Priority: optional
-Depends: untangle-linux-image-2.6.16-ck11-prod-486 (= ${Source-Version})
+Depends: untangle-linux-image-2.6.16-ck11-untangle-prod-486 (= ${Source-Version})
 Description: Linux kernel 2.6 image on x86 machines
  This package depends on the latest binary image for Linux kernel 2.6 on
  x86 and compatible machines.
 
-Package: untangle-linux-headers-2.6-prod-486
+Package: untangle-linux-headers-2.6-untangle-prod-486
 Architecture: i386
 Section: devel
 Priority: optional
 Provides: untangle-linux-headers, untangle-linux-headers-2.6
-Depends: untangle-linux-headers-2.6.16-ck11-prod-486 (= ${Source-Version})
+Depends: untangle-linux-headers-2.6.16-ck11-untangle-prod-486 (= ${Source-Version})
 Description: Header files for Linux kernel 2.6 on x86 machines
  This package depends on the architecture-specific header files for the
  latest Linux kernel 2.6 on x86 and compatible machines.
 
-Package: untangle-linux-headers-2.6.16-ck11-prod-xd
+Package: untangle-linux-headers-2.6.16-ck11-untangle-prod-xd
 Architecture: i386
 Section: devel
 Priority: optional
@@ -158,7 +158,7 @@ Description: Common header files for Linux kernel 2.6.16-ck11
  .
  and it will be unpacked in /usr/src/linux-headers-2.6.16-ck11-(flavour).
 
-Package: untangle-linux-image-2.6.16-ck11-prod-xd-486
+Package: untangle-linux-image-2.6.16-ck11-untangle-prod-xd-486
 Architecture: i386
 Section: base
 Priority: optional
@@ -173,47 +173,47 @@ Description: Untangle Linux kernel 2.6.16-ck11 image on x86 machines
  This packages is produced using an updated kernel packaging system and
  replaces older untangle-kernel-image packages
 
-Package: untangle-linux-headers-2.6.16-ck11-prod-xd-486
+Package: untangle-linux-headers-2.6.16-ck11-untangle-prod-xd-486
 Architecture: i386
 Section: devel
 Priority: optional
 Provides: untangle-linux-headers, untangle-linux-headers-2.6
-Depends: untangle-linux-headers-2.6.16-ck11-prod-xd (= ${Source-Version})
+Depends: untangle-linux-headers-2.6.16-ck11-untangle-prod-xd (= ${Source-Version})
 Description: Header files for Linux kernel 2.6.16-ck11 on x86 machines
  This package provides the architecture-specific kernel header files for
  Linux kernel 2.6.16-ck11 on x86 and compatible machines, generally used
  for building out-of-tree kernel modules.  These files are going to be
- installed into /usr/src/linux-headers-2.6.16-ck11-prod-xd-486, and can be
- used for building modules that load into the kernel provided by the
- untangle-linux-image-2.6.16-ck11-prod-xd-486 package.
+ installed into /usr/src/linux-headers-2.6.16-ck11-untangle-prod-xd-486,
+ and can be used for building modules that load into the kernel provided by
+ the untangle-linux-image-2.6.16-ck11-untangle-prod-xd-486 package.
  .
  This packages is produced using an updated kernel packaging system and
  replaces older untangle-kernel-headers packages
 
-Package: untangle-linux-image-prod-xd-486
+Package: untangle-linux-image-untangle-prod-xd-486
 Architecture: i386
 Section: base
 Priority: optional
-Depends: untangle-linux-image-2.6-prod-xd-486 (= ${Source-Version})
+Depends: untangle-linux-image-2.6-untangle-prod-xd-486 (= ${Source-Version})
 Description: Untangle Linux kernel image on x86 machines
  This package depends on the latest binary image for Linux kernel on x86
  and compatible machines.
 
-Package: untangle-linux-image-2.6-prod-xd-486
+Package: untangle-linux-image-2.6-untangle-prod-xd-486
 Architecture: i386
 Section: base
 Priority: optional
-Depends: untangle-linux-image-2.6.16-ck11-prod-xd-486 (= ${Source-Version})
+Depends: untangle-linux-image-2.6.16-ck11-untangle-prod-xd-486 (= ${Source-Version})
 Description: Linux kernel 2.6 image on x86 machines
  This package depends on the latest binary image for Linux kernel 2.6 on
  x86 and compatible machines.
 
-Package: untangle-linux-headers-2.6-prod-xd-486
+Package: untangle-linux-headers-2.6-untangle-prod-xd-486
 Architecture: i386
 Section: devel
 Priority: optional
 Provides: untangle-linux-headers, untangle-linux-headers-2.6
-Depends: untangle-linux-headers-2.6.16-ck11-prod-xd-486 (= ${Source-Version})
+Depends: untangle-linux-headers-2.6.16-ck11-untangle-prod-xd-486 (= ${Source-Version})
 Description: Header files for Linux kernel 2.6 on x86 machines
  This package depends on the architecture-specific header files for the
  latest Linux kernel 2.6 on x86 and compatible machines.
