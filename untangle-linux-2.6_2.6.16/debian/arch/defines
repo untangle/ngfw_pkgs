@@ -8,6 +8,10 @@ arches:
 [image]
 type: kernel-package
 
+[commands-image-initramfs-generators]
+initramfs-tools: mkinitramfs-kpkg
+yaird: mkinitrd.yaird
+
 [relations]
 gcc: gcc (>= 4:4.0)
 gcc-3.3: gcc-3.3
