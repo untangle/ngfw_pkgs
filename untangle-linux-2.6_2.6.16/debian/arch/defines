@@ -6,6 +6,7 @@ arches:
  i386
 
 [image]
+initramfs-generators: initramfs-tools yaird
 type: kernel-package
 
 [commands-image-initramfs-generators]
