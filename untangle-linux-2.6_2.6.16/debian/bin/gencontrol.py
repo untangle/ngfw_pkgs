@@ -159,7 +159,7 @@ class gencontrol(debian_linux.gencontrol.gencontrol):
         entry = self.process_package(in_entry, vars)
         if vars.has_key('desc'):
             entry['Description'].long[1:1] = [vars['desc']]
-        for field in 'Depends', 'Provides', 'Suggests', 'Recommends', 'Conflicts':
+        for field in 'Depends', 'Provides', 'Suggests', 'Recommends', 'Conflicts', 'Replaces':
             value = entry.get(field, package_relation_list())
             t = vars.get(field.lower(), [])
             value.extend(t)
