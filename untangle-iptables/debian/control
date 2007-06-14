@@ -29,7 +29,7 @@ Description: Linux kernel 2.4+ untangle-iptables administration tools
 Package: untangle-iptables-dev
 Architecture: any
 Priority: optional
-Depends: 
+Depends: untangle-iptables, ${shlibs:Depends}
 Section: devel
 Provides: iptables-dev
 Conflicts: iptables-dev
