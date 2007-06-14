@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "x$1" == "xpurge" ] ; then
-    /usr/bin/mvunsub boxbackup-storeitem &> /dev/null &
+    /usr/bin/mvunsub boxbackup-libitem &> /dev/null &
 fi
 
 exit 0

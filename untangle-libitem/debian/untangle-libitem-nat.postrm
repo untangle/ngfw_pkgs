@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "x$1" == "xpurge" ] ; then
-    /usr/bin/mvunsub nat-storeitem &> /dev/null &
+    /usr/bin/mvunsub nat-libitem &> /dev/null &
 fi
 
 exit 0

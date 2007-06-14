@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "x$1" == "xpurge" ] ; then
-    /usr/bin/mvunsub template-storeitem &> /dev/null &
+    /usr/bin/mvunsub template-libitem &> /dev/null &
 fi
 
 exit 0

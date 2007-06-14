@@ -10,10 +10,10 @@ for i in $pkgs ; do
 
     echo "Making pkgs for" $tname " ... " 
 
-    for templatefile in `ls template-storeitem*` ; do 
-        newfile="`echo $templatefile | sed -s \"s/template-storeitem/$tran/\" `"
+    for templatefile in `ls template-libitem*` ; do 
+        newfile="`echo $templatefile | sed -s \"s/template-libitem/$tran/\" `"
         echo $newfile
-        cat $templatefile | sed -s "s/template-storeitem/$tran/g" | sed -s "s/template/$tname/g" > $newfile
+        cat $templatefile | sed -s "s/template-libitem/$tran/g" | sed -s "s/template/$tname/g" > $newfile
     done
 done
 

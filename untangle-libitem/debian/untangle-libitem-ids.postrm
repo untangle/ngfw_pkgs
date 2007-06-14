@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "x$1" == "xpurge" ] ; then
-    /usr/bin/mvunsub ids-storeitem &> /dev/null &
+    /usr/bin/mvunsub ids-libitem &> /dev/null &
 fi
 
 exit 0
