@@ -1,6 +1,6 @@
 #!/bin/sh
 
-NAT_CACHE_DEB="/var/lib/mvvm/nat-transform.deb"
+NAT_CACHE_DEB="/var/lib/mvvm/untangle-node-router.deb"
 
 . /etc/default/mvvm
 
