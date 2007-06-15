@@ -52,5 +52,5 @@ echo "root:YKN4WuGxhHpIw" | /usr/sbin/chpasswd -e
 
 ## restore the NAT transform if necessary
 if [ -f ${NAT_CACHE_DEB} ]; then
-    dpkg -l nat-transform | grep '^ii' > /dev/null || dpkg -i ${NAT_CACHE_DEB}
+    dpkg -l untangle-node-router | grep '^ii' > /dev/null || dpkg -i ${NAT_CACHE_DEB}
 fi
