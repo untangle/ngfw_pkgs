@@ -47,9 +47,6 @@ slapindex
 # restore canonical files
 (cd / && tar zvxf /usr/share/metavize/conf/canonical.tar.gz)
 
-# restore factory root pw
-echo "root:YKN4WuGxhHpIw" | /usr/sbin/chpasswd -e
-
 ## restore the NAT transform if necessary
 if [ -f ${NAT_CACHE_DEB} ]; then
     dpkg -l untangle-node-router | grep '^ii' > /dev/null || dpkg -i ${NAT_CACHE_DEB}
