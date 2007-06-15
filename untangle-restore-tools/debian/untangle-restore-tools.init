@@ -2,9 +2,9 @@
 
 case "$1" in
     start)
-        if [ ! -z "`cat /proc/cmdline | grep edgeguard-restore`" ] ; then
+        if [ ! -z "`cat /proc/cmdline | grep ut-restore`" ] ; then
           echo "Starting Edgeguard Restore."
-          /usr/bin/edgeguard-restore reboot
+          /usr/bin/ut-restore reboot
         fi
         ;;
 

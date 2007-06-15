@@ -79,7 +79,7 @@
     </Group>
     <Group>
       <Control id="-2" popup="0">
-    <Command term="0" sn="0">/home/kiosk/utils/edgeguard-restore.sh</Command>
+    <Command term="0" sn="0">/home/kiosk/utils/ut-restore.sh</Command>
     <Tooltip>Untangle Recovery</Tooltip>
     <Icon id="5"/>
       </Control>

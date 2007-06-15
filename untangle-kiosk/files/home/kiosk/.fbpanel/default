@@ -91,7 +91,7 @@ Plugin {
         button {
             image = /usr/share/kiosk-mv/panel/RecoveryUtilities.png
             tooltip = Launch Untangle Recovery Tools
-            action = /home/kiosk/utils/edgeguard-restore.sh
+            action = /home/kiosk/utils/ut-restore.sh
         }
     }
 }

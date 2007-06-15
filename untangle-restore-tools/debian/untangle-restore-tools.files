@@ -1,5 +1,5 @@
 /usr/bin/backup-ut
-/usr/bin/edgeguard-restore
+/usr/bin/ut-restore
 /usr/bin/factory-defaults
 /usr/bin/mvvmdb-restore
 /usr/bin/untangle-restore-tools
