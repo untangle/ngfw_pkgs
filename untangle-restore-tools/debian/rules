@@ -34,7 +34,7 @@ build: configure
 	for i in `cat debian/untangle-restore-tools.dirs` ; do mkdir -p debian/tmp/$$i ; done
 	cp ./edgeguard-restore ./debian/tmp/usr/bin/
 	cp ./mvvmdb-restore ./debian/tmp/usr/bin/
-	cp ./backup-mv ./debian/tmp/usr/bin/
+	cp ./backup-ut ./debian/tmp/usr/bin/
 	cp ./untangle-restore ./debian/tmp/usr/bin/
 	cp ./factory-defaults ./debian/tmp/usr/bin/
 	mkdir -p ./debian/tmp/usr/share/metavize/conf

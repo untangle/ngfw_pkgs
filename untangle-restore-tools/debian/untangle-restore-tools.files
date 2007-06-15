@@ -1,4 +1,4 @@
-/usr/bin/backup-mv
+/usr/bin/backup-ut
 /usr/bin/edgeguard-restore
 /usr/bin/factory-defaults
 /usr/bin/mvvmdb-restore
