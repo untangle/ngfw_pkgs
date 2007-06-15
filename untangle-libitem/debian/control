@@ -5,11 +5,13 @@ Maintainer: Dirk Morris <dmorris@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.5.2
 
-Package: untangle-libitem-standard-bundle
+Package: untangle-libitem-opensource-package
 Architecture: any
-Depends: untangle-libitem-airgap,untangle-libitem-spyware,untangle-libitem-httpblocker,untangle-libitem-clam,untangle-libitem-protofilter,untangle-libitem-nat,untangle-libitem-firewall,untangle-libitem-spamassassin,untangle-libitem-clamphish,untangle-libitem-openvpn,untangle-libitem-ids,untangle-libitem-reporting
+Depends: untangle-libitem-airgap,untangle-libitem-spyware,untangle-libitem-webfilter,untangle-libitem-clam,untangle-libitem-protofilter,untangle-libitem-router,untangle-libitem-firewall,untangle-libitem-spamassassin,untangle-libitem-phish,untangle-libitem-openvpn,untangle-libitem-ips,untangle-libitem-reporting
 Conflicts: standard-bundle-disabler, spyware-disabler, httpblocker-disabler, protofilter-disabler, spamassassin-disabler, clamphish-disabler, ids-disabler
-XB-Price: 0
+Conflicts: standard-bundle-storeitem
+Replaces: standard-bundle-storeitem
+Provides: standard-bundle-storeitem
 XB-View-Position: 10
 XB-Display-Name: Open Source Package
 XB-Is-Bundle: true
@@ -104,9 +106,8 @@ Description: Untangle Total Security Bundle
 
 Package: untangle-libitem-professional-package
 Architecture: any
-Depends: untangle-libitem-portal,untangle-libitem-boxbackup
+Depends: untangle-libitem-portal,untangle-libitem-boxbackup, untangle-professional-package
 Conflicts: professional-package-disabler, portal-disabler, boxbackup-disabler
-XB-Price: 0
 XB-View-Position: 20
 XB-Display-Name: Professional Package
 XB-Is-Bundle: true
@@ -201,8 +202,10 @@ Description: Untangle Professional Package
 
 Package: untangle-libitem-airgap
 Architecture: any
-Depends: airgap-transform
-XB-Price: 0
+Depends: untangle-node-airgap
+Conflicts: airgap-storeitem
+Replaces: airgap-storeitem
+Provides: airgap-storeitem
 XB-View-Position: 1010
 XB-Display-Name: Attack Blocker
 XB-Is-Core: true
@@ -312,10 +315,12 @@ Description: Untangle Attack Blocker
 
 Package: untangle-libitem-spyware
 Architecture: any
-Depends: spyware-transform
+Depends: untangle-node-spyware
 Conflicts: spyware-disabler
 Provides: untangle-libitem-trial30-spyware
-XB-Price: 0
+Conflicts: spyware-storeitem
+Replaces: spyware-storeitem
+Provides: spyware-storeitem
 XB-View-Position: 20
 XB-Display-Name: Spyware Blocker
 XB-Is-Security: true
@@ -399,14 +404,16 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
 Description: Untangle Spyware Blocker
  The Untangle Spyware Blocker Store Item.
 
-Package: untangle-libitem-httpblocker
+Package: untangle-libitem-webfilter
 Architecture: any
-Depends: httpblocker-transform
-Conflicts: httpblocker-disabler
+Depends: untangle-node-webfilter
 Provides: untangle-libitem-trial30-httpblocker
-XB-Price: 0
+Conflicts: httpblocker-disabler
+Conflicts: httpblocker-storeitem
+Replaces: httpblocker-storeitem
+Provides: httpblocker-storeitem
 XB-View-Position: 30
-XB-Display-Name: Web Content Control
+XB-Display-Name: Web Filter
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0RVh0
  U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d03e2c04c
@@ -501,10 +508,12 @@ Description: Untangle Web Content Control
 
 Package: untangle-libitem-hauri
 Architecture: any
-Depends: hauri-transform
+Depends: untangle-node-hauri
 Conflicts: hauri-disabler
+Conflicts: hauri-storeitem
+Replaces: hauri-storeitem
+Provides: hauri-storeitem
 Provides: untangle-libitem-trial30-hauri
-XB-Price: 399
 XB-View-Position: 60
 XB-Display-Name: Dual Virus Blocker
 XB-Is-Security: true
@@ -617,8 +626,10 @@ Description: Untangle Dual Virus Blocker
 
 Package: untangle-libitem-clam
 Architecture: any
-Depends: clam-transform
-XB-Price: 0
+Depends: untangle-node-clam
+Conflicts: clam-storeitem
+Replaces: clam-storeitem
+Provides: clam-storeitem
 XB-View-Position: 70
 XB-Display-Name: Virus Blocker
 XB-Is-Security: true
@@ -723,10 +734,12 @@ Description: Untangle Clam Virus Blocker
 
 Package: untangle-libitem-protofilter
 Architecture: any
-Depends: protofilter-transform
+Depends: untangle-node-protofilter
 Conflicts: protofilter-disabler
+Conflicts: protofilter-storeitem
+Replaces: protofilter-storeitem
+Provides: protofilter-storeitem
 Provides: untangle-libitem-trial30-protofilter
-XB-Price: 0
 XB-View-Position: 80
 XB-Display-Name: Protocol Control
 XB-Is-Security: true
@@ -844,10 +857,12 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
 Description: Untangle Protocol Control
  The Untangle Protocol Control Store Item.
 
-Package: untangle-libitem-nat
+Package: untangle-libitem-router
 Architecture: any
-Depends: nat-transform
-XB-Price: 0
+Depends: untangle-node-router
+Conflicts: nat-storeitem
+Replaces: nat-storeitem
+Provides: nat-storeitem
 XB-View-Position: 1000
 XB-Display-Name: Router
 XB-Is-Core: true
@@ -940,8 +955,10 @@ Description: Untangle Router
 
 Package: untangle-libitem-firewall
 Architecture: any
-Depends: firewall-transform
-XB-Price: 0
+Depends: untangle-node-firewall
+Conflicts: firewall-storeitem
+Replaces: firewall-storeitem
+Provides: firewall-storeitem
 XB-View-Position: 90
 XB-Display-Name: Firewall
 XB-Is-Security: true
@@ -1027,10 +1044,12 @@ Description: Untangle Firewall
 
 Package: untangle-libitem-spamassassin
 Architecture: any
-Depends: spamassassin-transform
+Depends: untangle-node-spamassassin
 Conflicts: spamassassin-disabler
+Conflicts: spamassassin-storeitem
+Replaces: spamassassin-storeitem
+Provides: spamassassin-storeitem
 Provides: untangle-libitem-trial30-spamassassin
-XB-Price: 0
 XB-View-Position: 15
 XB-Display-Name: Spam Blocker
 XB-Is-Security: true
@@ -1142,14 +1161,16 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
 Description: Untangle Spam Blocker
  The Untangle Spam Blocker Store Item.
 
-Package: untangle-libitem-clamphish
+Package: untangle-libitem-phish
 Architecture: any
-Depends: clamphish-transform
+Depends: untangle-node-phish
 Conflicts: clamphish-disabler
+Conflicts: clamphish-storeitem
+Replaces: clamphish-storeitem
+Provides: clamphish-storeitem
 Provides: untangle-libitem-trial30-clamphish
-XB-Price: 0
 XB-View-Position: 17
-XB-Display-Name: Identity Theft Blocker
+XB-Display-Name: Phish Blocker
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1275,8 +1296,10 @@ Description: Untangle Identity Theft Blocker
 
 Package: untangle-libitem-test
 Architecture: any
-Depends: test-transform
-XB-Price: 0
+Depends: untangle-node-test
+Conflicts: test-storeitem
+Replaces: test-storeitem
+Provides: test-storeitem
 XB-View-Position: 2002
 XB-Display-Name: Test
 XB-Is-Core: true
@@ -1417,8 +1440,10 @@ Description: Untangle Test
 
 Package: untangle-libitem-openvpn
 Architecture: any
-Depends: openvpn-transform
-XB-Price: 0
+Depends: untangle-node-openvpn
+Conflicts: openvpn-storeitem
+Replaces: openvpn-storeitem
+Provides: openvpn-storeitem
 XB-View-Position: 1003
 XB-Display-Name: OpenVPN
 XB-Is-Core: true
@@ -1519,12 +1544,14 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
 Description: OpenVPN
  OpenVPN Store Item.
 
-Package: untangle-libitem-ids
+Package: untangle-libitem-ips
 Architecture: any
-Depends: ids-transform, snort-rules-current
+Depends: untangle-node-ips
 Conflicts: ids-disabler
+Conflicts: ids-storeitem
+Replaces: ids-storeitem
+Provides: ids-storeitem
 Provides: untangle-libitem-trial30-ids
-XB-Price: 0
 XB-View-Position: 75
 XB-Display-Name: Intrusion Prevention
 XB-Is-Security: true
@@ -1629,8 +1656,10 @@ Description: Untangle Intrusion Prevention
 
 Package: untangle-libitem-reporting
 Architecture: any
-Depends: reporting-transform
-XB-Price: 0
+Depends: untangle-node-reporting
+Conflicts: reporting-storeitem
+Replaces: reporting-storeitem
+Provides: reporting-storeitem
 XB-View-Position: 1020
 XB-Display-Name: Untangle Reports
 XB-Is-Core: true
@@ -1715,12 +1744,14 @@ Description: Untangle Reports
 
 Package: untangle-libitem-boxbackup
 Architecture: any
-Depends: untangle-libitem-boxbackup-transform, professional-package
+Depends: untangle-node-boxbackup, untangle-libitem-professional-package
 Conflicts: boxbackup-disabler
+Conflicts: boxbackup-storeitem
+Replaces: boxbackup-storeitem
+Provides: boxbackup-storeitem
 Provides: untangle-libitem-trial30-boxbackup
-XB-Price: 99
 XB-View-Position: 1015
-XB-Display-Name: 24-Hour Replacement
+XB-Display-Name: Configuration Backup
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1832,15 +1863,17 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  UhSjFBXBSZSlEzlQ4Qb8b0QSAyroSUWMCjqU1BjiQBEI87Hw49XvxG34jfnnTR9v2GzFMFBT
  AWk1QmLfV3ukhaYK9I4Wfe83CCwb8LTUuhOUECxqyCoy+D/E/leAAQDhy3XsyDOL8wAAAABJ
  RU5ErkJggg==
-Description: Untangle 24-Hour Replacement
- The Untangle 24-Hour Replacement Store Item.
+Description: Untangle Configuration Backup
+ The Untangle Configuration Backup Store Item.
 
 Package: untangle-libitem-portal
 Architecture: any
-Depends: untangle-libitem-portal-transform, professional-package
+Depends: untangle-node-portal, untangle-libitem-professional-package
 Conflicts: portal-disabler
+Conflicts: portal-storeitem
+Replaces: portal-storeitem
+Provides: portal-storeitem
 Provides: untangle-libitem-trial30-portal
-XB-Price: 99
 XB-View-Position: 1015
 XB-Display-Name: Remote Access Portal
 XB-Is-Core: true
@@ -1947,8 +1980,7 @@ Description: Untangle Remote Access Portal
 
 Package: untangle-libitem-trial30-professional-package
 Architecture: any
-Depends: untangle-libitem-trial30-portal-trial30,untangle-libitem-boxbackup
-XB-Price: 0
+Depends: untangle-libitem-trial30-portal,untangle-libitem-trial30-boxbackup, untangle-professional-package, untangle-professional-package-disabler
 XB-View-Position: 10
 XB-Display-Name: Professional Package 30-Day Trial
 XB-Is-Bundle: true
@@ -2043,8 +2075,10 @@ Description: Untangle Professional Packages 30-Day Trial
 
 Package: untangle-libitem-trial30-hauri
 Architecture: any
-Depends: hauri-transform, hauri-disabler
-XB-Price: 399
+Depends: untangle-node-hauri, hauri-disabler
+Conflicts: hauri-storeitem
+Replaces: hauri-storeitem
+Provides: hauri-storeitem
 XB-View-Position: 60
 XB-Display-Name: Dual Virus Blocker 30-Day Trial
 XB-Is-Security: true
@@ -2157,8 +2191,10 @@ Description: Untangle Dual Virus Blocker 30-Day Trial
 
 Package: untangle-libitem-trial30-portal
 Architecture: any
-Depends: portal-transform, portal-disabler
-XB-Price: 0
+Depends: untangle-node-portal, portal-disabler
+Conflicts: portal-storeitem
+Replaces: portal-storeitem
+Provides: portal-storeitem
 XB-View-Position: 75
 XB-Display-Name: Remote Access Portal 30-Day Trial
 XB-Is-Security: true
@@ -2263,10 +2299,12 @@ Description: Untangle Remote Access Portal 30-Day Trial
 
 Package: untangle-libitem-trial30-boxbackup
 Architecture: any
-Depends: boxbackup-transform, boxbackup-disabler
-XB-Price: 99
+Depends: untangle-node-boxbackup, boxbackup-disabler
+Conflicts: boxbackup-storeitem
+Replaces: boxbackup-storeitem
+Provides: boxbackup-storeitem
 XB-View-Position: 1015
-XB-Display-Name: 24-Hour Replacement 30-Day Trial
+XB-Display-Name: Configuration Backup 30-Day Trial
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -2378,5 +2416,5 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  UhSjFBXBSZSlEzlQ4Qb8b0QSAyroSUWMCjqU1BjiQBEI87Hw49XvxG34jfnnTR9v2GzFMFBT
  AWk1QmLfV3ukhaYK9I4Wfe83CCwb8LTUuhOUECxqyCoy+D/E/leAAQDhy3XsyDOL8wAAAABJ
  RU5ErkJggg==
-Description: Untangle 24-Hour Replacement 30-Day Trial
- The Untangle 24-Hour Replacement 30-Day Trial Store Item.
+Description: Untangle Configuration Backup 30-Day Trial
+ The Untangle Configuration Backup 30-Day Trial Store Item.
