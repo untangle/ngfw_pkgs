@@ -18,7 +18,7 @@ else
     done
 
     # schedule disabling - this gets double checked by the cron job
-    echo "/usr/bin/mvdisable spamassassin-transform &> /dev/null" | at "+30 days" &> /dev/null
+    echo "/usr/share/untangle/bin/utdisable spamassassin-transform &> /dev/null" | at "+30 days" &> /dev/null
     mkdir -p /usr/share/metavize/conf/trials &> /dev/null
 fi
 
