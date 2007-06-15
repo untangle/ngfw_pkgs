@@ -7,7 +7,7 @@ Standards-Version: 3.5.2
 
 Package: untangle-libitem-opensource-package
 Architecture: any
-Depends: untangle-libitem-airgap,untangle-libitem-spyware,untangle-libitem-webfilter,untangle-libitem-clam,untangle-libitem-protofilter,untangle-libitem-router,untangle-libitem-firewall,untangle-libitem-spamassassin,untangle-libitem-phish,untangle-libitem-openvpn,untangle-libitem-ips,untangle-libitem-reporting
+Depends: untangle-libitem-shield,untangle-libitem-spyware,untangle-libitem-webfilter,untangle-libitem-clam,untangle-libitem-protofilter,untangle-libitem-router,untangle-libitem-firewall,untangle-libitem-spamassassin,untangle-libitem-phish,untangle-libitem-openvpn,untangle-libitem-ips,untangle-libitem-reporting
 Conflicts: standard-bundle-disabler, spyware-disabler, httpblocker-disabler, protofilter-disabler, spamassassin-disabler, clamphish-disabler, ids-disabler
 Conflicts: standard-bundle-storeitem
 Replaces: standard-bundle-storeitem
@@ -200,9 +200,9 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
 Description: Untangle Professional Package
  The Untangle Professional Package Store Item.
 
-Package: untangle-libitem-airgap
+Package: untangle-libitem-shield
 Architecture: any
-Depends: untangle-node-airgap
+Depends: untangle-node-shield
 Conflicts: airgap-storeitem
 Replaces: airgap-storeitem
 Provides: airgap-storeitem
