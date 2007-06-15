@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "x$1" == "xpurge" ] ; then
-    /usr/bin/mvunsub reporting-libitem &> /dev/null &
+    /usr/share/untangle/bin/utunsub reporting-libitem &> /dev/null &
 fi
 
 exit 0

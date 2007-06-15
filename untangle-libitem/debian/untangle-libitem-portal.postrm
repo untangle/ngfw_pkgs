@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "x$1" == "xpurge" ] ; then
-    /usr/bin/mvunsub portal-libitem &> /dev/null &
+    /usr/share/untangle/bin/utunsub portal-libitem &> /dev/null &
 fi
 
 exit 0

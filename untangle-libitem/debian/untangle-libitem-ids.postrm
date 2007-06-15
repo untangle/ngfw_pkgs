@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "x$1" == "xpurge" ] ; then
-    /usr/bin/mvunsub ids-libitem &> /dev/null &
+    /usr/share/untangle/bin/utunsub ids-libitem &> /dev/null &
 fi
 
 exit 0

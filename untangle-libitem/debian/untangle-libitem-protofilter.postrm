@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "x$1" == "xpurge" ] ; then
-    /usr/bin/mvunsub protofilter-libitem &> /dev/null &
+    /usr/share/untangle/bin/utunsub protofilter-libitem &> /dev/null &
 fi
 
 exit 0
