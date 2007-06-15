@@ -81,7 +81,7 @@ class SSHPlugin < Plugin
   def downloadKey(m, params)
     m.reply "Downloading key..."
     licenseKey = File.open(@@ACTIVATION_KEY_FILE).read.strip
-    internalIp = `/usr/bin/mvip`.strip
+    internalIp = `/usr/share/untangle/bin/utip`.strip
 
     # FIXME: don't hardcode URL
     myHttp = Net::HTTP.new(@@HOST, 443)
@@ -110,10 +110,10 @@ class SSHPlugin < Plugin
       end
     end
   end
-  
+
   def enable(m, params)
     if @isEstablished
-      m.reply "The forwarding channel is already enabled on port #{@port}" 
+      m.reply "The forwarding channel is already enabled on port #{@port}"
       return
     end
 
