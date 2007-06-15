@@ -2,18 +2,17 @@
 
 
 
-pkgs="`cat control | grep Package | awk '{print $2}'`"
+pkgs="`cat control | grep 'Package:' | awk '{print $2}'`"
 
 for i in $pkgs ; do 
-    tran="`echo $i | awk -F\. '{print $1}' `"
-    tname="`echo $tran | awk -F- '{print $1}' `"
+    item="`echo $i | sed 's/untangle-libitem-//'`"
+    
+    echo "Making pkgs for" $item " ... " 
 
-    echo "Making pkgs for" $tname " ... " 
-
-    for templatefile in `ls template-libitem*` ; do 
-        newfile="`echo $templatefile | sed -s \"s/template-libitem/$tran/\" `"
+    for templatefile in `ls *-template*` ; do 
+        newfile="`echo $templatefile | sed -s \"s/template/$item/\" `"
         echo $newfile
-        cat $templatefile | sed -s "s/template-libitem/$tran/g" | sed -s "s/template/$tname/g" > $newfile
+        cat $templatefile | sed -s "s/template/$item/g"  > $newfile
     done
 done
 
