@@ -10,10 +10,10 @@ dropdb -U postgres mvvm
 createuser -U postgres -d -A metavize 2>/dev/null
 createuser -U postgres -d -A untangle 2>/dev/null
 createdb -O postgres -U postgres mvvm
-update-schema settings mvvm
-update-schema events mvvm
-update-schema settings nat-transform
-update-schema events nat-transform
+/usr/share/untangle/bin/update-schema settings mvvm
+/usr/share/untangle/bin/update-schema events mvvm
+/usr/share/untangle/bin/update-schema settings nat-transform
+/usr/share/untangle/bin/update-schema events nat-transform
 psql -X -U postgres mvvm <<EOF
 INSERT INTO tid VALUES (1);
 INSERT INTO transform_manager_state VALUES (nextval('hibernate_sequence'), 2);
