@@ -14,5 +14,5 @@ EOF
 sed -i -e 's/up\(.*\)pump *-i *\([^ ]*\).*/up\1 dhclient \2 || true/' /etc/network/interfaces
 
 ## Remove the previous /etc/dhcp3/exit hooks
-rm -f /etc/dhcp3/dhclient-exit-hooks.d/mvvm-pump.sh
+rm -f /etc/dhcp3/dhclient-exit-hooks.d/ut-pump.sh
 
