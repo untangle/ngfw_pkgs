@@ -1,7 +1,7 @@
 /usr/bin/backup-ut
 /usr/bin/ut-restore
 /usr/bin/factory-defaults
-/usr/bin/mvvmdb-restore
+/usr/bin/uvmdb-restore
 /usr/bin/untangle-restore-tools
 /usr/share/metavize/conf/canonical.tar.gz
 /usr/share/metavize/conf/initial.ldif
