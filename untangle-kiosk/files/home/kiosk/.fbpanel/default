@@ -95,3 +95,14 @@ Plugin {
         }
     }
 }
+
+Plugin {
+    type = launchbar
+    config {
+        button {
+            image = /usr/share/kiosk-mv/panel/RecoveryUtilities.png
+            tooltip = Launch Terminal
+            action = /home/kiosk/utils/ut-restore.sh
+        }
+    }
+}
