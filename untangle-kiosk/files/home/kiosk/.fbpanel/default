@@ -34,7 +34,7 @@ Plugin {
     type = launchbar
     config {
         button {
-            image = /usr/share/kiosk-mv/panel/LaunchGUI.png
+            image = /usr/share/untangle-kiosk/panel/LaunchGUI.png
             tooltip = Launch Untangle Client
             action = /usr/bin/untangle-client
         }
@@ -49,12 +49,12 @@ Plugin {
     type = launchbar
     config {
         button {
-            image = /usr/share/kiosk-mv/panel/ScreensaverOn.png
+            image = /usr/share/untangle-kiosk/panel/ScreensaverOn.png
             tooltip = Enable Screensaver
             action = /home/kiosk/utils/screensaver.sh on
         }
         button {
-            image = /usr/share/kiosk-mv/panel/ScreensaverOff.png
+            image = /usr/share/untangle-kiosk/panel/ScreensaverOff.png
             tooltip = Disable Screensaver
             action = /home/kiosk/utils/screensaver.sh off
         }
@@ -69,12 +69,12 @@ Plugin {
     type = launchbar
     config {
         button {
-            image = /usr/share/kiosk-mv/panel/RestartBox.png
+            image = /usr/share/untangle-kiosk/panel/RestartBox.png
             tooltip = Restart
             action = /home/kiosk/utils/ut-reboot.sh
         }
         button {
-            image = /usr/share/kiosk-mv/panel/ShutdownBox.png
+            image = /usr/share/untangle-kiosk/panel/ShutdownBox.png
             tooltip = Shutdown
             action = /home/kiosk/utils/ut-off.sh
         }
@@ -89,7 +89,7 @@ Plugin {
     type = launchbar
     config {
         button {
-            image = /usr/share/kiosk-mv/panel/RecoveryUtilities.png
+            image = /usr/share/untangle-kiosk/panel/RecoveryUtilities.png
             tooltip = Launch Untangle Recovery Tools
             action = /home/kiosk/utils/ut-restore.sh
         }
@@ -100,9 +100,9 @@ Plugin {
     type = launchbar
     config {
         button {
-            image = /usr/share/kiosk-mv/panel/RecoveryUtilities.png
+            image = /usr/share/untangle-kiosk/panel/Terminal.png
             tooltip = Launch Terminal
-            action = /home/kiosk/utils/ut-restore.sh
+            action = /home/kiosk/utils/ut-shell.sh
         }
     }
 }
