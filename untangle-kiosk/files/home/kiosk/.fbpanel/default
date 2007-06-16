@@ -71,12 +71,12 @@ Plugin {
         button {
             image = /usr/share/kiosk-mv/panel/RestartBox.png
             tooltip = Restart
-            action = /home/kiosk/utils/edgeguard-reboot.sh
+            action = /home/kiosk/utils/ut-reboot.sh
         }
         button {
             image = /usr/share/kiosk-mv/panel/ShutdownBox.png
             tooltip = Shutdown
-            action = /home/kiosk/utils/edgeguard-off.sh
+            action = /home/kiosk/utils/ut-off.sh
         }
     }
 }
