@@ -17,7 +17,7 @@ rsync -Ha /usr/share/untangle-kiosk/x-startup/etc/ /etc/
 if mount | grep -q '/dev/hda1 on /' ; then
   if tune2fs -l /dev/hda1 | perl -w -ne 'my $cutoff=20061211 ; my %months = ("Jan","01","Feb","02","Mar","03","Apr","04","May","05","Jun","06","Jul","07","Aug","08","Sep","09","Oct","10","Nov","11","Dec","12") ; if (/^Filesystem created:/) { chomp ; $_ =~ s/^Filesystem created:\s+// ; my ($wd, $m, $d, $h, $y) = split /\s+/ ; my $date=int($y . $months{$m} . $d) ; if ($cutoff > $date) { exit 0 } else { exit 1 } }' && grep -q fbdev /etc/X11/XF86Config-4 ; then
     perl -i -npe 's/fbdev/ati/' /etc/X11/XF86Config-4
-    if [ -x /etc/init.d/mvvm ]; then
+    if [ -x /etc/init.d/untangle-vm ]; then
       uvm-restart reboot
     fi
   fi

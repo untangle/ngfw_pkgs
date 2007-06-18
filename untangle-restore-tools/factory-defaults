@@ -1,20 +1,19 @@
 #!/bin/sh
 
-NAT_CACHE_DEB="/var/lib/mvvm/untangle-node-router.deb"
+NAT_CACHE_DEB="/var/lib/uvm/untangle-node-router.deb"
 
-. /etc/default/mvvm
+. /etc/default/untangle-vm
 
 # restore database
-dropdb -U postgres mvvm
+dropdb -U postgres uvm
 
-createuser -U postgres -d -A metavize 2>/dev/null
 createuser -U postgres -d -A untangle 2>/dev/null
-createdb -O postgres -U postgres mvvm
-/usr/share/untangle/bin/update-schema settings mvvm
-/usr/share/untangle/bin/update-schema events mvvm
-/usr/share/untangle/bin/update-schema settings nat-transform
-/usr/share/untangle/bin/update-schema events nat-transform
-psql -X -U postgres mvvm <<EOF
+createdb -O postgres -U postgres uvm
+/usr/share/untangle/bin/update-schema settings uvm
+/usr/share/untangle/bin/update-schema events uvm
+/usr/share/untangle/bin/update-schema settings router-node
+/usr/share/untangle/bin/update-schema events router-node
+psql -X -U postgres uvm <<EOF
 INSERT INTO tid VALUES (1);
 INSERT INTO transform_manager_state VALUES (nextval('hibernate_sequence'), 2);
 INSERT INTO transform_persistent_state VALUES (nextval('hibernate_sequence'), 'nat-transform', 1, '\\\\001\\\\000', 'running');
@@ -26,26 +25,26 @@ INSERT INTO tr_nat_settings VALUES (nextval('hibernate_sequence'), 1, 0, true, n
 EOF
 
 # remove files
-rm -f /usr/share/metavize/conf/networking.sh
-rm -f /usr/share/metavize/conf/timezone
-rm -f /usr/share/metavize/conf/keystore
+rm -f /usr/share/untangle/conf/networking.sh
+rm -f /usr/share/untangle/conf/timezone
+rm -f /usr/share/untangle/conf/keystore
 # need to preserve the key (bug #2510)
 mv -f $ACTIVATION_KEY_FILE $ACTIVATION_KEY_FILE_TMP
-rm -rf /usr/share/metavize/conf/openvpn
-rm -rf /usr/share/metavize/quarantine
+rm -rf /usr/share/untangle/conf/openvpn
+rm -rf /usr/share/untangle/quarantine
 rm -rf /etc/openvpn
 
 # restore initial LDAP db
 /etc/init.d/slapd stop
 rm -rf /var/lib/ldap
 mkdir /var/lib/ldap
-cp /usr/share/metavize/conf/ldap.DB_CONFIG /var/lib/ldap/DB_CONFIG
-slapadd -l /usr/share/metavize/conf/initial.ldif
+cp /usr/share/untangle/conf/ldap.DB_CONFIG /var/lib/ldap/DB_CONFIG
+slapadd -l /usr/share/untangle/conf/initial.ldif
 slapindex
 /etc/init.d/slapd start
 
 # restore canonical files
-(cd / && tar zvxf /usr/share/metavize/conf/canonical.tar.gz)
+(cd / && tar zvxf /usr/share/untangle/conf/canonical.tar.gz)
 
 ## restore the NAT transform if necessary
 if [ -f ${NAT_CACHE_DEB} ]; then

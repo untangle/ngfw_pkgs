@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. /etc/default/mvvm
+. /etc/default/untangle-vm
 
 # screensaver is off by default
 xset s off

@@ -6,7 +6,7 @@ BOGUS_NETMASK="255.255.0.0"
 #
 # Error checking
 #
-mkdir -p /var/log/mvvm &> /dev/null
+mkdir -p /var/log/uvm &> /dev/null
 
 MCLI="/usr/bin/mcli"
 
@@ -16,7 +16,7 @@ function updateResolvConf()
 }
 
 if [ ! -f ${MCLI} ] ; then 
-    echo "$0: ${MCLI} missing (`date`)" >> /var/log/mvvm/wrapper.log 2>&1
+    echo "$0: ${MCLI} missing (`date`)" >> /var/log/uvm/wrapper.log 2>&1
     exit 1
 fi
 
@@ -28,26 +28,26 @@ fi
 case "${reason}" in
     ## Lease is updated, call mcli updateAddress
     "BOUND"|"RENEW"|"REBIND"|"REBOOT")
-        echo "$0: DHCP - ${reason}. (`date`)" >> /var/log/mvvm/iptables.log 2>&1
+        echo "$0: DHCP - ${reason}. (`date`)" >> /var/log/uvm/iptables.log 2>&1
         ## These must be backgrounded due to the locking around network configuration.
-        ${MCLI} updateAddress >> /var/log/mvvm/iptables.log 2>&1 &
+        ${MCLI} updateAddress >> /var/log/uvm/iptables.log 2>&1 &
         updateResolvConf
         ;;
 
     ## Failed to update lease, set to bogus address and then call update address.
     "FAIL"|"TIMEOUT"|"EXPIRE")
-        echo "$0: DHCP - ${reason}. Setting to bogus address(`date`)" >> /var/log/mvvm/iptables.log 2>&1
+        echo "$0: DHCP - ${reason}. Setting to bogus address(`date`)" >> /var/log/uvm/iptables.log 2>&1
     
         ## If it fails, bring the interface up with a bogus address
         if [ -n "${interface}" ]; then
             ifconfig ${interface} ${BOGUS_ADDRESS_BASE} netmask ${BOGUS_NETMASK} up
         else
             echo "$0: interface is not set, unable to set to bogus address" \
-                >> /var/log/mvvm/iptables.log 2>&1
+                >> /var/log/uvm/iptables.log 2>&1
         fi
 
         ## These must be backgrounded due to the locking around network configuration.
-        ${MCLI} updateAddress >> /var/log/mvvm/iptables.log 2>&1 &
+        ${MCLI} updateAddress >> /var/log/uvm/iptables.log 2>&1 &
         updateResolvConf
         ;;
 

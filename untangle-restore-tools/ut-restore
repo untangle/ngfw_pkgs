@@ -5,7 +5,7 @@ if [ $# -gt 0 ] ; then
     FLAG=1 # reboot after quit
 else
     # this is for started from X
-    FLAG=0 # start mvvm after quit
+    FLAG=0 # start uvm after quit
 fi
 
 reboot() {
@@ -15,8 +15,8 @@ reboot() {
 
 quit() {
     echo Quit
-    if [ -x /etc/init.d/mvvm ] ; then
-        /etc/init.d/mvvm start
+    if [ -x /etc/init.d/untangle-vm ] ; then
+        /etc/init.d/untangle-vm start
     fi
     exit
 }
@@ -128,7 +128,7 @@ upgrade_menu()
             case $choice in
                 "Upgrade Untangle Platform")
                     apt-get dist-upgrade $UPGD_OPTS
-                    /etc/init.d/mvvm stop
+                    /etc/init.d/untangle-vm stop
                     state=SUCCESS_SPLASH
                     ;;
                 "Resume Halted Upgrade")
@@ -184,9 +184,9 @@ main_menu()
                     ;;
                 "Reset Administrative Accounts")
                     if confirm "Reset administrative accounts to factory defaults (admin/passwd)?"; then
-                        psql -X -U postgres mvvm >/dev/null <<EOF
-DELETE FROM mvvm_user;
-DELETE FROM admin_settings;
+                        psql -X -U postgres uvm >/dev/null <<EOF
+DELETE FROM u_user;
+DELETE FROM u_admin_settings;
 EOF
                         state=SUCCESS_SPLASH
                     else
@@ -207,9 +207,9 @@ EOF
     esac
 }
 
-# Stop the mvvm
-if [ -x /etc/init.d/mvvm ] ; then
-    /etc/init.d/mvvm stop
+# Stop the uvm
+if [ -x /etc/init.d/untangle-vm ] ; then
+    /etc/init.d/untangle-vm stop
 fi
 
 state=MAIN_MENU

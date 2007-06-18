@@ -1,6 +1,6 @@
 #!/bin/sh
 
-LOCAL_DUMP=/usr/share/metavize/dump
+LOCAL_DUMP=/usr/share/untangle/dump
 mkdir -p $LOCAL_DUMP
 
 tmpfile=$(tempfile)
@@ -82,8 +82,8 @@ restore()
     indir=$1
 
     filelist=""
-    for f in $(ls $indir/mvvmdb-*.gz | sort -r 2> /dev/null); do
-        d=$(echo $f | sed 's|^.*/mvvmdb-\([0-9]\+\)\.gz$|\1|')
+    for f in $(ls $indir/uvmdb-*.gz | sort -r 2> /dev/null); do
+        d=$(echo $f | sed 's|^.*/uvmdb-\([0-9]\+\)\.gz$|\1|')
         filelist="$filelist $d $(ls -hl $f | cut -d' ' -f6 2>/dev/null) "
         toggle=off
     done
@@ -103,15 +103,15 @@ restore()
 
     case $retval in
         0) # OK
-            dumpfile=$indir/mvvmdb-$choice.gz
+            dumpfile=$indir/uvmdb-$choice.gz
             tarfile=$indir/files-$choice.tar.gz
             instfile=$indir/installed-$choice
 
             # restore choice
             /usr/bin/untangle-restore-tools $dumpfile $tarfile $instfile
 
-            # untangle-restore-tools might restart MVVM, stop it
-            /etc/init.d/mvvm stop
+            # untangle-restore-tools might restart UVM, stop it
+            /etc/init.d/untangle-vm stop
 
             return $?
             ;;

@@ -4,36 +4,36 @@ tar_files()
 {
     tarfile=$1
 
-    slapcat -l /usr/share/metavize/conf/dirbackup.ldif
+    slapcat -l /usr/share/untangle/conf/dirbackup.ldif
 
     tar zcf $tarfile --ignore-failed-read -C / \
         etc/hostname \
         etc/network/interfaces \
         etc/openvpn \
         etc/resolv.conf \
-        usr/share/metavize/conf/argon.properties \
-        usr/share/metavize/conf/keystore \
-        usr/share/metavize/conf/mvvm.networking.properties \
-        usr/share/metavize/conf/networking.sh \
-        usr/share/metavize/conf/openvpn/misc \
-        usr/share/metavize/conf/openvpn/pki \
-        usr/share/metavize/conf/timezone \
-        usr/share/metavize/conf/dirbackup.ldif
+        usr/share/untangle/conf/argon.properties \
+        usr/share/untangle/conf/keystore \
+        usr/share/untangle/conf/uvm.networking.properties \
+        usr/share/untangle/conf/networking.sh \
+        usr/share/untangle/conf/openvpn/misc \
+        usr/share/untangle/conf/openvpn/pki \
+        usr/share/untangle/conf/timezone \
+        usr/share/untangle/conf/dirbackup.ldif
 }
 
 dump_installed()
 {
     instlist=$1
 
-    mkg installed > $instlist
+    @UVM_HOME@/bin/mkg installed > $instlist
 }
 
 dump_db()
 {
     outfile=$1
-    (pg_dump -U postgres -n settings mvvm;
+    (pg_dump -U postgres -n settings uvm;
         echo "SET SESSION AUTHORIZATION 'postgres';";
-        pg_dump -U postgres -n events -s mvvm) \
+        pg_dump -U postgres -n events -s uvm) \
         | gzip > $outfile 2>/dev/null
 }
 
@@ -42,7 +42,7 @@ backup()
     outdir=$1
 
     datestamp=$(date '+%Y%m%d%H%M')
-    dumpfile=$outdir/mvvmdb-$datestamp.gz
+    dumpfile=$outdir/uvmdb-$datestamp.gz
     tarfile=$outdir/files-$datestamp.tar.gz
     instlist=$outdir/installed-$datestamp
 
