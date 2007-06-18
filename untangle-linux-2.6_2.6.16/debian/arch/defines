@@ -6,7 +6,7 @@ arches:
  i386
 
 [image]
-initramfs-generators: initramfs-tools yaird
+initramfs-generators: libc6
 type: kernel-package
 
 [commands-image-initramfs-generators]
@@ -16,7 +16,5 @@ yaird: mkinitrd.yaird
 [relations]
 gcc: gcc (>= 4:4.0)
 gcc-3.3: gcc-3.3
-initramfs-fallback: linux-initramfs-tool
-initramfs-tools: initramfs-tools (>= 0.53)
-yaird: yaird
-
+libc6: libc6
+initramfs-fallback: libc6
