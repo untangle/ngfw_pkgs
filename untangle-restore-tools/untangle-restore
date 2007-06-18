@@ -24,9 +24,9 @@ restore_db()
 
 clean_dirs()
 {
-    rm -rf /usr/share/metavize/conf/openvpn
+    rm -rf /usr/share/untangle/conf/openvpn
     rm -rf /etc/openvpn
-    rm -f  /usr/share/metavize/conf/dirbackup.ldif
+    rm -f  /usr/share/untangle/conf/dirbackup.ldif
 }
 
 restore_packages()
@@ -58,16 +58,16 @@ restore_db $dumpfile
 # clean out stuff that restore would otherwise append to
 clean_dirs
 
-# restore the files, both system and the /usr/share/metavize important stuf
+# restore the files, both system and the /usr/share/untangle important stuf
 tar zxf $tarfile -C /
 
 # restore the LDAP configuration
-if [ -f /usr/share/metavize/conf/dirbackup.ldif ]; then
+if [ -f /usr/share/untangle/conf/dirbackup.ldif ]; then
     /etc/init.d/slapd stop
     rm -rf /var/lib/ldap
     mkdir /var/lib/ldap
-    cp /usr/share/metavize/conf/ldap.DB_CONFIG /var/lib/ldap/DB_CONFIG
-    slapadd -l /usr/share/metavize/conf/dirbackup.ldif
+    cp /usr/share/untangle/conf/ldap.DB_CONFIG /var/lib/ldap/DB_CONFIG
+    slapadd -l /usr/share/untangle/conf/dirbackup.ldif
     slapindex
     /etc/init.d/slapd start
 fi

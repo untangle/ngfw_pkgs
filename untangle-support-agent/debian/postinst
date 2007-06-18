@@ -5,10 +5,10 @@ mkdir -p /home/rbot/.ssh
 chmod 700 /home/rbot/.ssh
 
 RBOT_CONF_FILE=/home/rbot/.rbot/conf.yaml
-ACTIVATION_KEY_FILE=/usr/share/metavize/activation.key
+ACTIVATION_KEY_FILE=/usr/share/untangle/activation.key
 
 if [[ -f $ACTIVATION_KEY_FILE ]] ; then
-  KEY=`perl -npe 's/-//g' /usr/share/metavize/activation.key`
+  KEY=`perl -npe 's/-//g' /usr/share/untangle/activation.key`
   CHANNEL="#untangle"
   if [[ $KEY = 012747a7bbff0752 || $KEY = 0000000000000000 ]] ; then
     KEY=`hostname | perl -npe 's/\..*//'`

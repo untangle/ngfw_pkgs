@@ -53,7 +53,7 @@ class SSHPlugin < Plugin
   @@HOST = "activation.untangle.com"
   @@PRIVATE_KEY_FILE = "/home/#{@@USER}/.ssh/key.dsa"
   @@CGI_URL = "/cgi-bin/sshkey.rb?license_key=%s&internal_ip=%s"
-  @@ACTIVATION_KEY_FILE = "/usr/share/metavize/activation.key"
+  @@ACTIVATION_KEY_FILE = "/usr/share/untangle/activation.key"
 
   def initialize
     super()

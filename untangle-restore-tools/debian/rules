@@ -37,10 +37,10 @@ build: configure
 	cp ./backup-ut ./debian/tmp/usr/bin/
 	cp ./untangle-restore ./debian/tmp/usr/bin/
 	cp ./factory-defaults ./debian/tmp/usr/bin/
-	mkdir -p ./debian/tmp/usr/share/metavize/conf
-	cd canonical && tar zcf  ../debian/tmp/usr/share/metavize/conf/canonical.tar.gz --exclude '.svn' *
-	cp ./initial.ldif ./debian/tmp/usr/share/metavize/conf
-	cp ./ldap.DB_CONFIG ./debian/tmp/usr/share/metavize/conf
+	mkdir -p ./debian/tmp/usr/share/untangle/conf
+	cd canonical && tar zcf  ../debian/tmp/usr/share/untangle/conf/canonical.tar.gz --exclude '.svn' *
+	cp ./initial.ldif ./debian/tmp/usr/share/untangle/conf
+	cp ./ldap.DB_CONFIG ./debian/tmp/usr/share/untangle/conf
 
 clean:
 	dh_testdir
