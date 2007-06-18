@@ -10,6 +10,6 @@ dpkg --get-selections "*trial30*" | awk '{print $1}' > ${TRIALS}
 rm -f /usr/share/untangle/conf/trials/*.expired
 cat ${TRIALS} | xargs apt-get install --yes
 
-/etc/init.d/mvvm restart
+/etc/init.d/untangle-vm restart
 
 rm -f ${DISABLERS} ${TRIALS}
