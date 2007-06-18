@@ -2,7 +2,7 @@
 /usr/bin/ut-restore
 /usr/bin/factory-defaults
 /usr/bin/uvmdb-restore
-/usr/bin/untangle-restore-tools
+/usr/bin/untangle-restore
 /usr/share/metavize/conf/canonical.tar.gz
 /usr/share/metavize/conf/initial.ldif
 /usr/share/metavize/conf/ldap.DB_CONFIG
