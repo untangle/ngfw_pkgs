@@ -1,7 +1,7 @@
 Source: untangle-libnfnetlink
 Section: libs
 Priority: optional
-Maintainer: Max Kellermann <max@duempel.org>
+Maintainer: Sebastien Delafond <seb@untangle.com>
 Build-Depends: cdbs (>= 0.4), debhelper (>= 4.2), gcc (>= 3.4)
 Standards-Version: 3.6.2
 
