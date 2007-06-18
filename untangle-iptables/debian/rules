@@ -27,7 +27,7 @@ BINDIR = BINDIR=/sbin
 LIBDIR = LIBDIR=/lib
 DESTDIR := DESTDIR=$(CURDIR)/debian/untangle-iptables
 #KERNEL_DIR := KERNEL_DIR=$(BUILD_DIR)/$(KERNEL)
-KERNEL_DIR := KERNEL_DIR=/usr/src/untangle-linux-headers-2.6.16
+KERNEL_DIR := KERNEL_DIR=/usr/src/untangle-linux-headers-2.6.16-ck11-untangle-prod
 
 BUILD_VARS := $(LIBDIR) $(KERNEL_DIR)
 INSTALL_VARS := $(DESTDIR) $(MANDIR) $(LIBDIR) $(BINDIR) $(KERNEL_DIR)
