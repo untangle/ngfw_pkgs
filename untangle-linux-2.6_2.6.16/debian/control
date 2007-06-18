@@ -85,7 +85,7 @@ Architecture: i386
 Section: base
 Priority: optional
 Provides: untangle-linux-image, untangle-linux-image-2.6, kernel-prod-mv
-Depends: module-init-tools (>= 0.9.13), initramfs-tools (>= 0.53) | yaird | linux-initramfs-tool
+Depends: module-init-tools (>= 0.9.13), libc6 | libc6
 Suggests: untangle-linux-doc-2.6.16 | untangle-linux-source-2.6.16, grub | lilo (>= 19.1)
 Replaces: kernel-prod-mv
 Conflicts: kernel-prod-mv
@@ -164,7 +164,7 @@ Architecture: i386
 Section: base
 Priority: optional
 Provides: untangle-linux-image, untangle-linux-image-2.6, kernel-prod-xd-mv
-Depends: module-init-tools (>= 0.9.13), initramfs-tools (>= 0.53) | yaird | linux-initramfs-tool
+Depends: module-init-tools (>= 0.9.13), libc6 | libc6
 Suggests: untangle-linux-doc-2.6.16 | untangle-linux-source-2.6.16, grub | lilo (>= 19.1)
 Replaces: kernel-prod-xd-mv
 Conflicts: kernel-prod-xd-mv

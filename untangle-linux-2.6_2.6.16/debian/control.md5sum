@@ -11,7 +11,7 @@ ae445dec660100137d54407e4c6bfd73  debian/templates/control.main.in
 3639281f348730aab1a2cb1def061304  debian/templates/control.modules.in
 958d11a2576b2ab01c92180ee19602c4  debian/templates/control.source.in
 0a8e099ce800260e49be7a6018bfa4ff  debian/templates/control.tree.in
-c799d3b71037d63da2d8207c34295987  debian/arch/defines
+584b692d34edaaac8024f37f699e4e93  debian/arch/defines
 9213ea6b1db6a156e1eaefc84672897f  debian/arch/i386/defines
 1166b98a30cef77f19828bc9c1b45a9d  debian/arch/i386/untangle-cd/defines
 9772824e3f35c2cd6e50ca2ce4ea5ee9  debian/arch/i386/untangle-prod/defines
