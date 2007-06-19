@@ -7,7 +7,8 @@ b7217461a173ffb4c62f78141e83e93f  debian/templates/control.extra.in
 1ac0fd52b27de4b2dba97a70718662a1  debian/templates/control.headers.subarch.in
 517b1e4fc8c11005a0cb919d4b7afc66  debian/templates/control.image.in
 3480280f749e27d931f3294b43078e52  debian/templates/control.image.latest.in
-ae445dec660100137d54407e4c6bfd73  debian/templates/control.main.in
+210f22c870480c5843863b4e01a05d95  debian/templates/control.main.in
+ae445dec660100137d54407e4c6bfd73  debian/templates/control.main.in~
 3639281f348730aab1a2cb1def061304  debian/templates/control.modules.in
 958d11a2576b2ab01c92180ee19602c4  debian/templates/control.source.in
 0a8e099ce800260e49be7a6018bfa4ff  debian/templates/control.tree.in

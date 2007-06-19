@@ -2,7 +2,7 @@
 flavours:
 subarches:
 # untangle-cd
- untangle-prod
+# untangle-prod
  untangle-prod-xd
 
 kernel-arch: i386

@@ -330,6 +330,9 @@ endif
 	  echo "mv \"$(BUILD_DIR)/$$i\" ..";				\
 	  mv "$(BUILD_DIR)/$$i" ..;					\
 	done
+	find $(DIR) -iregex '.*image-.*\(pre\|post\)\(\rm\|inst\).*' | while read f do \
+	  rm -f "$f" \
+	done
 
 install-image-$(ARCH)-$(SUBARCH)-$(FLAVOUR)-plain-xen: MODULES_PACKAGE_NAME = untangle-linux-modules-$(REAL_VERSION)
 install-image-$(ARCH)-$(SUBARCH)-$(FLAVOUR)-plain-xen: MODULES_PACKAGE_DIR = $(CURDIR)/debian/$(MODULES_PACKAGE_NAME)
