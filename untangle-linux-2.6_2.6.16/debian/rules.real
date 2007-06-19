@@ -37,9 +37,9 @@ include debian/rules.defs
 kpkg_image := make-kpkg --append-to-version '$(ABINAME)$(LOCALVERSION)'
 kpkg_image += --arch '$(ARCH)'
 kpkg_image += --stem untangle-linux
-ifneq ($(INITRAMFS),False)
-  kpkg_image += --initrd
-endif
+#ifneq ($(INITRAMFS),False)
+#  kpkg_image += --initrd
+#endif
 ifdef KPKG_SUBARCH
   kpkg_image += --subarch '$(KPKG_SUBARCH)'
 endif
