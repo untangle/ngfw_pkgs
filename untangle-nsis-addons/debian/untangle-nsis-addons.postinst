@@ -1,19 +1,20 @@
 #!/bin/sh
 
 LIST=/usr/share/untangle-nsis-addons/copied-files
-DIR="`pwd`"
 
-cd /usr/share/untangle-nsis-addons/
-for i in `find . -type f` ; do 
-    if [ ! -f /usr/share/nsis/$i ] ; then
-        echo $i >> $LIST
-        mkdir -p `dirname /usr/share/nsis/$i`
-        cp -r $i /usr/share/nsis/$i
+BASE_DIR=/usr/share/untangle-nsis-addons
+DEST_DIR=/usr/share/nsis
+
+for i in `find ${BASE_DIR} -type f` ; do 
+    if [ "$i" == "${LIST}" ]; then 
+        continue ;
+    fi
+
+    relativePath=${i#${BASE_DIR}/}
+    if [ ! -f ${DEST_DIR}/${relativePath} ] ; then
+        echo ${relativePath} >> $LIST
+        mkdir -p `dirname ${DEST_DIR}/${relativePath}`
+        cp -r $i ${DEST_DIR}/${relativePath}
     fi
 done
 
-# Copy in the NSISKill DLL
-cp /usr/share/untangle-nsis-addons/Plugins/processwork.dll /usr/share/nsis/Plugins/
-
-cd ${DIR}
-unset DIR
