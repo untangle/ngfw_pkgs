@@ -1,8 +1,8 @@
 #! /bin/sh
 
-chown -R rbot /home/rbot
 mkdir -p /home/rbot/.ssh
 chmod 700 /home/rbot/.ssh
+chown -R rbot /home/rbot
 
 RBOT_CONF_FILE=/home/rbot/.rbot/conf.yaml
 ACTIVATION_KEY_FILE=/usr/share/untangle/activation.key
