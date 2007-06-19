@@ -330,8 +330,8 @@ endif
 	  echo "mv \"$(BUILD_DIR)/$$i\" ..";				\
 	  mv "$(BUILD_DIR)/$$i" ..;					\
 	done
-	find $(DIR) -iregex '.*image-.*\(pre\|post\)\(\rm\|inst\).*' | while read f do \
-	  echo -e '#! /bin/sh\nexit 0' >| "$$f" \
+	find $(DIR) -iregex '.*image-.*\(pre\|post\)\(\rm\|inst\).*' | while read f ; do \
+	  echo -e '#! /bin/sh\nexit 0' >| "$$f" ; \
 	done
 
 install-image-$(ARCH)-$(SUBARCH)-$(FLAVOUR)-plain-xen: MODULES_PACKAGE_NAME = untangle-linux-modules-$(REAL_VERSION)

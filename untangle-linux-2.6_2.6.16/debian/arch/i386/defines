@@ -1,9 +1,9 @@
 [base]
 flavours:
 subarches:
-# untangle-cd
+ untangle-cd
 # untangle-prod
- untangle-prod-xd
+# untangle-prod-xd
 
 kernel-arch: i386
 kernel-header-dirs: i386
