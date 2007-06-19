@@ -16,3 +16,4 @@ longclass: x86 and compatible
 conflicts: kernel-cd-mv
 provides: kernel-cd-mv
 replaces: kernel-cd-mv
+depends: untangle-linux-config
