@@ -300,6 +300,8 @@ install-header-$(ARCH)-$(SUBARCH)-$(FLAVOUR): $(STAMPS_DIR)/build-$(ARCH)-$(SUBA
 	cd $(SOURCE_DIR); \
 	tar $(foreach t, *.c *.cc *.h *.l *.o *.y *.cmd *.glade *.gperf *POTFILES.in .gitignore *lxdialog* *package* *_shipped, --exclude=$(t)) -chf - scripts | \
 	(cd "${DIR}"; umask 000; tar -xvsf -)
+
+	/usr/bin/find ${DIR} -name .svn -type d | xargs rm -f
 	
 	$(MAKE) -f debian/rules.real install-base
 
