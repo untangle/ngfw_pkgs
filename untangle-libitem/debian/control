@@ -14,6 +14,7 @@ Replaces: standard-bundle-storeitem
 Provides: standard-bundle-storeitem
 XB-View-Position: 10
 XB-Display-Name: Open Source Package
+XB-Untangle-Type: lib_item
 XB-Is-Bundle: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -110,6 +111,7 @@ Depends: untangle-libitem-portal,untangle-libitem-boxbackup, untangle-profession
 Conflicts: professional-package-disabler, portal-disabler, boxbackup-disabler
 XB-View-Position: 20
 XB-Display-Name: Professional Package
+XB-Untangle-Type: lib_item
 XB-Is-Bundle: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -208,6 +210,7 @@ Replaces: airgap-storeitem
 Provides: airgap-storeitem
 XB-View-Position: 1010
 XB-Display-Name: Attack Blocker
+XB-Untangle-Type: lib_item
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -323,6 +326,7 @@ Replaces: spyware-storeitem
 Provides: spyware-storeitem
 XB-View-Position: 20
 XB-Display-Name: Spyware Blocker
+XB-Untangle-Type: lib_item
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -414,6 +418,7 @@ Replaces: httpblocker-storeitem
 Provides: httpblocker-storeitem
 XB-View-Position: 30
 XB-Display-Name: Web Filter
+XB-Untangle-Type: lib_item
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0RVh0
  U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d03e2c04c
@@ -516,6 +521,7 @@ Provides: hauri-storeitem
 Provides: untangle-libitem-trial30-hauri
 XB-View-Position: 60
 XB-Display-Name: Dual Virus Blocker
+XB-Untangle-Type: lib_item
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
  AAAKTWlDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVN3WJP3Fj7f92UPVkLY8LGXbIEA
@@ -632,6 +638,7 @@ Replaces: clam-storeitem
 Provides: clam-storeitem
 XB-View-Position: 70
 XB-Display-Name: Virus Blocker
+XB-Untangle-Type: lib_item
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
  AAAABGdBTUEAANjr9RwUqgAAACBjSFJNAABtmAAAc44AAPJxAACDbAAAg7sAANTIAAAx7AAA
@@ -742,6 +749,7 @@ Provides: protofilter-storeitem
 Provides: untangle-libitem-trial30-protofilter
 XB-View-Position: 80
 XB-Display-Name: Protocol Control
+XB-Untangle-Type: lib_item
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -865,6 +873,7 @@ Replaces: nat-storeitem
 Provides: nat-storeitem
 XB-View-Position: 1000
 XB-Display-Name: Router
+XB-Untangle-Type: lib_item
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -961,6 +970,7 @@ Replaces: firewall-storeitem
 Provides: firewall-storeitem
 XB-View-Position: 90
 XB-Display-Name: Firewall
+XB-Untangle-Type: lib_item
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1052,6 +1062,7 @@ Provides: spamassassin-storeitem
 Provides: untangle-libitem-trial30-spamassassin
 XB-View-Position: 15
 XB-Display-Name: Spam Blocker
+XB-Untangle-Type: lib_item
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1171,6 +1182,7 @@ Provides: clamphish-storeitem
 Provides: untangle-libitem-trial30-clamphish
 XB-View-Position: 17
 XB-Display-Name: Phish Blocker
+XB-Untangle-Type: lib_item
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1302,6 +1314,7 @@ Replaces: test-storeitem
 Provides: test-storeitem
 XB-View-Position: 2002
 XB-Display-Name: Test
+XB-Untangle-Type: lib_item
 XB-Is-Core: true
 XB-Org-Icon:  iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1446,6 +1459,7 @@ Replaces: openvpn-storeitem
 Provides: openvpn-storeitem
 XB-View-Position: 1003
 XB-Display-Name: OpenVPN
+XB-Untangle-Type: lib_item
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1554,6 +1568,7 @@ Provides: ids-storeitem
 Provides: untangle-libitem-trial30-ids
 XB-View-Position: 75
 XB-Display-Name: Intrusion Prevention
+XB-Untangle-Type: lib_item
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1662,6 +1677,7 @@ Replaces: reporting-storeitem
 Provides: reporting-storeitem
 XB-View-Position: 1020
 XB-Display-Name: Untangle Reports
+XB-Untangle-Type: lib_item
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1752,6 +1768,7 @@ Provides: boxbackup-storeitem
 Provides: untangle-libitem-trial30-boxbackup
 XB-View-Position: 1015
 XB-Display-Name: Configuration Backup
+XB-Untangle-Type: lib_item
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1876,6 +1893,7 @@ Provides: portal-storeitem
 Provides: untangle-libitem-trial30-portal
 XB-View-Position: 1015
 XB-Display-Name: Remote Access Portal
+XB-Untangle-Type: lib_item
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -1983,6 +2001,7 @@ Architecture: any
 Depends: untangle-libitem-trial30-portal,untangle-libitem-trial30-boxbackup, untangle-professional-package, untangle-professional-package-disabler
 XB-View-Position: 10
 XB-Display-Name: Professional Package 30-Day Trial
+XB-Untangle-Type: lib_item
 XB-Is-Bundle: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -2081,6 +2100,7 @@ Replaces: hauri-storeitem
 Provides: hauri-storeitem
 XB-View-Position: 60
 XB-Display-Name: Dual Virus Blocker 30-Day Trial
+XB-Untangle-Type: lib_item
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
  AAAKTWlDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVN3WJP3Fj7f92UPVkLY8LGXbIEA
@@ -2197,6 +2217,7 @@ Replaces: portal-storeitem
 Provides: portal-storeitem
 XB-View-Position: 75
 XB-Display-Name: Remote Access Portal 30-Day Trial
+XB-Untangle-Type: lib_item
 XB-Is-Security: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
@@ -2305,6 +2326,7 @@ Replaces: boxbackup-storeitem
 Provides: boxbackup-storeitem
 XB-View-Position: 1015
 XB-Display-Name: Configuration Backup 30-Day Trial
+XB-Untangle-Type: lib_item
 XB-Is-Core: true
 XB-Org-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAbzSURBVHja5Fh7bBzFGZ+ZnX3d
