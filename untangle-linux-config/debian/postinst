@@ -81,7 +81,6 @@ case $flavor in
     mkdir -p /lib/modules/$flavor/extra
     cp -f /usr/share/untangle-linux-config/modules/extra/cloop.ko /lib/modules/$flavor/extra/
     cp -f /usr/share/untangle-linux-config/modules/kernel/fs/unionfs/unionfs.ko /lib/modules/$flavor/kernel/fs/unionfs/
-    depmod -a
 esac
 
 exit 0
