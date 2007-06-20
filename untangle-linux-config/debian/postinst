@@ -2,7 +2,7 @@
 
 flavor=`COLUMNS=300 dpkg -l "untangle-linux-image*486" | awk '/^ii/ { gsub(/untangle-linux-image-/, "", $2) ; print $2}'`
 
-ln -s /boot/vmlinuz-$flavor /vmlinuz-ut
+ln -sf /boot/vmlinuz-$flavor /vmlinuz-ut
 
 if [ -f /boot/grub/menu.lst ] ; then
   # FIXME: don't do anything
@@ -70,7 +70,7 @@ updateMinirt() {
 # by grub
 initrd=/boot/initrd.img
 grubFile=/boot/grub/menu.lst
-if [ -f $grubFile ] && [ `readlink $initrd` == *2.6* ] ; then
+if [ -f $grubFile ] && [ -e $initrd ] && [ `readlink $initrd` == *2.6* ] ; then
   updateMinirt /boot/initrd.img && cat /boot/initrd.splash >> /boot/initrd.img
 fi
 
