@@ -221,7 +221,7 @@ Replaces: spyware-storeitem
 Provides: spyware-storeitem
 XB-View-Position: 20
 XB-Display-Name: Spyware Blocker
-XB-Untangle-Type: lib_item
+XB-Untangle-Type: trial
 XB-Is-Security: true
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMgAAABl0RVh0
  U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAjsSURBVHjaxFlrTFXZFV5XQMEHTx0G0Qgj
@@ -278,7 +278,7 @@ Replaces: httpblocker-storeitem
 Provides: httpblocker-storeitem
 XB-View-Position: 30
 XB-Display-Name: Web Filter
-XB-Untangle-Type: lib_item
+XB-Untangle-Type: trial
 XB-Is-Security: true
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAsLSURBVHjaxFkJbJzFFf7+3f33
@@ -348,7 +348,7 @@ Provides: hauri-storeitem
 Provides: untangle-libitem-trial30-hauri
 XB-View-Position: 60
 XB-Display-Name: Dual Virus Blocker
-XB-Untangle-Type: lib_item
+XB-Untangle-Type: trial
 XB-Is-Security: true
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAATVSURBVHjazJhLbxxFEMerZ2Yd
@@ -426,7 +426,7 @@ Provides: protofilter-storeitem
 Provides: untangle-libitem-trial30-protofilter
 XB-View-Position: 80
 XB-Display-Name: Protocol Control
-XB-Untangle-Type: lib_item
+XB-Untangle-Type: trial
 XB-Is-Security: true
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAA+BSURBVHjalFkJlFTlmb3vvdp7
@@ -634,7 +634,7 @@ Provides: spamassassin-storeitem
 Provides: untangle-libitem-trial30-spamassassin
 XB-View-Position: 15
 XB-Display-Name: Spam Blocker
-XB-Untangle-Type: lib_item
+XB-Untangle-Type: trial
 XB-Is-Security: true
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAA5RSURBVHjaxFlrjB3nWX7mzPXM
@@ -719,7 +719,7 @@ Provides: clamphish-storeitem
 Provides: untangle-libitem-trial30-clamphish
 XB-View-Position: 17
 XB-Display-Name: Phish Blocker
-XB-Untangle-Type: lib_item
+XB-Untangle-Type: trial
 XB-Is-Security: true
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
  AAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAA
@@ -1000,7 +1000,7 @@ Provides: ids-storeitem
 Provides: untangle-libitem-trial30-ids
 XB-View-Position: 75
 XB-Display-Name: Intrusion Prevention
-XB-Untangle-Type: lib_item
+XB-Untangle-Type: trial
 XB-Is-Security: true
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
  AAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAA
@@ -1130,7 +1130,7 @@ Provides: boxbackup-storeitem
 Provides: untangle-libitem-trial30-boxbackup
 XB-View-Position: 1015
 XB-Display-Name: Configuration Backup
-XB-Untangle-Type: lib_item
+XB-Untangle-Type: trial
 XB-Is-Core: true
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAA81SURBVHjaxFlpeFRlln5v7Xul
@@ -1220,7 +1220,7 @@ Provides: portal-storeitem
 Provides: untangle-libitem-trial30-portal
 XB-View-Position: 1015
 XB-Display-Name: Remote Access Portal
-XB-Untangle-Type: lib_item
+XB-Untangle-Type: trial
 XB-Is-Core: true
 XB-Desc-Icon:  iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAy9SURBVHjaxFjbb1xXvV5rr7X2
@@ -1293,7 +1293,7 @@ Architecture: any
 Depends: untangle-libitem-trial30-portal,untangle-libitem-trial30-boxbackup, untangle-professional-package, untangle-professional-package-disabler
 XB-View-Position: 10
 XB-Display-Name: Professional Package 30-Day Trial
-XB-Untangle-Type: lib_item
+XB-Untangle-Type: trial
 XB-Is-Bundle: true
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAomSURBVHjaxFlLcxxXGT3d93bP
@@ -1357,7 +1357,7 @@ Replaces: hauri-storeitem
 Provides: hauri-storeitem
 XB-View-Position: 60
 XB-Display-Name: Dual Virus Blocker 30-Day Trial
-XB-Untangle-Type: lib_item
+XB-Untangle-Type: trial
 XB-Is-Security: true
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAATVSURBVHjazJhLbxxFEMerZ2Yd
@@ -1395,7 +1395,7 @@ Replaces: portal-storeitem
 Provides: portal-storeitem
 XB-View-Position: 75
 XB-Display-Name: Remote Access Portal 30-Day Trial
-XB-Untangle-Type: lib_item
+XB-Untangle-Type: trial
 XB-Is-Security: true
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
  AAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAA
@@ -1469,7 +1469,7 @@ Replaces: boxbackup-storeitem
 Provides: boxbackup-storeitem
 XB-View-Position: 1015
 XB-Display-Name: Configuration Backup 30-Day Trial
-XB-Untangle-Type: lib_item
+XB-Untangle-Type: trial
 XB-Is-Core: true
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAA81SURBVHjaxFlpeFRlln5v7Xul
