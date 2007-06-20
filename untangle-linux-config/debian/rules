@@ -14,6 +14,8 @@ export DH_COMPAT=4
 
 MKDIR=/bin/mkdir -p
 
+DESTDIR=debian/untangle-linux-config
+
 ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -g
 endif
@@ -28,14 +30,14 @@ configure-stamp:
 
 build: configure
 	dh_testdir
-	rm -rf ./debian/tmp
-	mkdir -p ./debian/tmp
+	rm -rf $(DESTDIR)
+	mkdir -p $(DESTDIR)
 	dh_installdirs -A -v
-	for i in `cat debian/untangle-linux-config.dirs` ; do mkdir -p debian/tmp/$$i ; done
-	cp -r ./files/* ./debian/tmp/
-	find ./debian/tmp -name "\.svn" | xargs rm -rf
-	find ./debian/tmp/root -type f | xargs chmod 640
-	find ./debian/tmp/root -type d | xargs chmod 750
+	for i in `cat debian/untangle-linux-config.dirs` ; do mkdir -p $(DESTDIR)/$$i ; done
+	cp -r ./files/* $(DESTDIR)/
+	find $(DESTDIR) -name "\.svn" | xargs rm -rf
+	find $(DESTDIR)/root -type f | xargs chmod 640
+	find $(DESTDIR)/root -type d | xargs chmod 750
 
 clean:
 	dh_testdir
@@ -47,7 +49,7 @@ clean:
 binary-arch: build
 	dh_testdir  
 	dh_testroot   
-	dh_movefiles 
+#	dh_movefiles 
 #	dh_installdebconf   
 	dh_shlibdeps  
 	dh_installdocs   
