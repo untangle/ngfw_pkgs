@@ -79,8 +79,8 @@ case $flavor in
   *cd*)
     mkdir -p /lib/modules/$flavor/kernel/fs/unionfs/
     mkdir -p /lib/modules/$flavor/extra
-    cp -f /usr/share/untangle-linux-config/modules/cloop.ko /lib/modules/$flavor/extra/
-    cp -f /usr/share/untangle-linux-config/modules/unionfs.ko /lib/modules/$flavor/kernel/fs/unionfs/
+    cp -f /usr/share/untangle-linux-config/modules/extra/cloop.ko /lib/modules/$flavor/extra/
+    cp -f /usr/share/untangle-linux-config/modules/kernel/fs/unionfs/unionfs.ko /lib/modules/$flavor/kernel/fs/unionfs/
     depmod -a
 esac
 
