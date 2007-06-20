@@ -1,6 +1,6 @@
 #!/bin/sh
 
-flavor=`COLUMNS=300 dpkg -l "untangle-linux*486" | awk '/^ii/ { gsub(/untangle-linux-image/, "", $2) ; print $2}'`
+flavor=`COLUMNS=300 dpkg -l "untangle-linux-image*486" | awk '/^ii/ { gsub(/untangle-linux-image-/, "", $2) ; print $2}'`
 
 ln -s /boot/vmlinuz-$flavor /vmlinuz-ut
 
