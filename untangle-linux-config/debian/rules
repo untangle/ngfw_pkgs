@@ -36,8 +36,6 @@ build: configure
 	for i in `cat debian/untangle-linux-config.dirs` ; do mkdir -p $(DESTDIR)/$$i ; done
 	cp -r ./files/* $(DESTDIR)/
 	find $(DESTDIR) -name "\.svn" | xargs rm -rf
-	find $(DESTDIR)/root -type f | xargs chmod 640
-	find $(DESTDIR)/root -type d | xargs chmod 750
 
 clean:
 	dh_testdir
