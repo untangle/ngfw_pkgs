@@ -298,10 +298,10 @@ install-header-$(ARCH)-$(SUBARCH)-$(FLAVOUR): $(STAMPS_DIR)/build-$(ARCH)-$(SUBA
 	# a file with exclude patterns, then copy everything minus excluded files.
 	#
 	cd $(SOURCE_DIR); \
-	tar $(foreach t, *.c *.cc *.h *.l *.o *.y *.cmd *.glade *.gperf *POTFILES.in .gitignore *lxdialog* *package* *_shipped, --exclude=$(t)) -chf - scripts | \
+	tar $(foreach t, .svn *.c *.cc *.h *.l *.o *.y *.cmd *.glade *.gperf *POTFILES.in .gitignore *lxdialog* *package* *_shipped, --exclude=$(t)) -chf - scripts | \
 	(cd "${DIR}"; umask 000; tar -xvsf -)
 
-	/usr/bin/find ${DIR} -name .svn -type d | xargs rm -fr
+	/usr/bin/find ${DIR} -name .svn | xargs rm -fr
 
 	$(MAKE) -f debian/rules.real install-base
 
