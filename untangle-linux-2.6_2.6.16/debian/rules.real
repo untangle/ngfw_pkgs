@@ -253,7 +253,7 @@ install-header-$(ARCH)-$(SUBARCH)-$(FLAVOUR): $(STAMPS_DIR)/build-$(ARCH)-$(SUBA
 		-name Makefile -o -type d \) \
 		-printf "../${PACKAGE_NAME_HEADERS}/%f\n" | \
 		xargs ln -s --target-directory="${DIR}"
-	
+
 	cd ${SOURCE_DIR}; \
 	find "arch/${KERNEL_ARCH}" -mindepth 1 -maxdepth 1 \( \
 		-type d -a ! -name include -a ! -name kernel -o \
@@ -273,7 +273,7 @@ install-header-$(ARCH)-$(SUBARCH)-$(FLAVOUR): $(STAMPS_DIR)/build-$(ARCH)-$(SUBA
 		-printf "../../${PACKAGE_NAME_HEADERS}/%p\n" | \
 		xargs ln -s --target-directory="${DIR}/include"
 	cp -a ${SOURCE_DIR}/include/config "${DIR}/include"
-	
+
 	ln -sf "asm-${KERNEL_ARCH}" "${DIR}/include/asm"
 
 	cd ${SOURCE_DIR}; \
@@ -289,10 +289,10 @@ install-header-$(ARCH)-$(SUBARCH)-$(FLAVOUR): $(STAMPS_DIR)/build-$(ARCH)-$(SUBA
 			fi \
 		done \
 	done
-	
+
 	mkdir -p "${PACKAGE_DIR}/lib/modules/${REAL_VERSION}"
 	ln -s "/usr/src/${PACKAGE_NAME}" "${PACKAGE_DIR}/lib/modules/${REAL_VERSION}/build"
-	
+
 	# Populate the scripts directory. The strategy here is to specify what
 	# *not* to copy, to make things a little bit more robust. We first create
 	# a file with exclude patterns, then copy everything minus excluded files.
@@ -302,7 +302,7 @@ install-header-$(ARCH)-$(SUBARCH)-$(FLAVOUR): $(STAMPS_DIR)/build-$(ARCH)-$(SUBA
 	(cd "${DIR}"; umask 000; tar -xvsf -)
 
 	/usr/bin/find ${DIR} -name .svn -type d | xargs rm -fr
-	
+
 	$(MAKE) -f debian/rules.real install-base
 
 install-headers-all: PACKAGE_NAME = untangle-linux-headers-$(VERSION)
@@ -319,6 +319,9 @@ install-image-$(ARCH)-$(SUBARCH)-$(FLAVOUR)-$(TYPE): REAL_VERSION = $(UPSTREAMVE
 install-image-$(ARCH)-$(SUBARCH)-$(FLAVOUR)-$(TYPE): PACKAGE_NAME = untangle-linux-image-$(REAL_VERSION)
 install-image-$(ARCH)-$(SUBARCH)-$(FLAVOUR)-$(TYPE): PACKAGE_DIR = $(CURDIR)/debian/$(PACKAGE_NAME)
 install-image-$(ARCH)-$(SUBARCH)-$(FLAVOUR)-$(TYPE): DIR=$(BUILD_DIR)/build-$(ARCH)-$(SUBARCH)-$(FLAVOUR)
+	find $(DIR) -iregex '.*image-.*\(pre\|post\)\(\rm\|inst\).*' | while read f ; do \
+	  echo -e '#! /bin/sh\nexit 0' >| "$$f" ; \
+	done
 
 install-image-$(ARCH)-$(SUBARCH)-$(FLAVOUR)-kernel-package: $(STAMPS_DIR)/build-$(ARCH)-$(SUBARCH)-$(FLAVOUR)-$(TYPE)
 ifdef IMAGE_POSTPROC
@@ -331,9 +334,6 @@ endif
 	@for i in $$(awk '{ print $$1; }' '$(DIR)/debian/files'); do	\
 	  echo "mv \"$(BUILD_DIR)/$$i\" ..";				\
 	  mv "$(BUILD_DIR)/$$i" ..;					\
-	done
-	find $(DIR) -iregex '.*image-.*\(pre\|post\)\(\rm\|inst\).*' | while read f ; do \
-	  echo -e '#! /bin/sh\nexit 0' >| "$$f" ; \
 	done
 
 install-image-$(ARCH)-$(SUBARCH)-$(FLAVOUR)-plain-xen: MODULES_PACKAGE_NAME = untangle-linux-modules-$(REAL_VERSION)
