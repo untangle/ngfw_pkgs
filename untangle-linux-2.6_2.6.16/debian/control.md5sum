@@ -13,6 +13,6 @@ b7217461a173ffb4c62f78141e83e93f  debian/templates/control.extra.in
 0a8e099ce800260e49be7a6018bfa4ff  debian/templates/control.tree.in
 584b692d34edaaac8024f37f699e4e93  debian/arch/defines
 a314d818a19f72532b3fd7d7593b39ec  debian/arch/i386/defines
-f962f128d33b80efc28016bf791f9113  debian/arch/i386/untangle-cd/defines
-cdd96b491259f725ad5e0be56793742d  debian/arch/i386/untangle-prod/defines
-4f38840c67761c2d280d8fd4395a2365  debian/arch/i386/untangle-prod-xd/defines
+170088b776f2e678722943aa1dd352cf  debian/arch/i386/untangle-cd/defines
+03b45be706bab9ad03dfe785bff33182  debian/arch/i386/untangle-prod/defines
+0eed82f989258cbe9de2889744adac7c  debian/arch/i386/untangle-prod-xd/defines

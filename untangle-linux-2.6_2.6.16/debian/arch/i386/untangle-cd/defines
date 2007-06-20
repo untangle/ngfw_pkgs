@@ -13,7 +13,7 @@ class: x86
 longclass: x86 and compatible
 
 [486_image]
-conflicts: kernel-cd-mv
+conflicts: kernel-cd-mv, untangle-linux-image-2.6.16-ck11-untangle-prod-486, untangle-linux-image-2.6.16-ck11-untangle-prod-xd-486
 provides: kernel-cd-mv
 replaces: kernel-cd-mv
 depends: untangle-linux-config
