@@ -319,6 +319,7 @@ install-image-$(ARCH)-$(SUBARCH)-$(FLAVOUR)-$(TYPE): REAL_VERSION = $(UPSTREAMVE
 install-image-$(ARCH)-$(SUBARCH)-$(FLAVOUR)-$(TYPE): PACKAGE_NAME = untangle-linux-image-$(REAL_VERSION)
 install-image-$(ARCH)-$(SUBARCH)-$(FLAVOUR)-$(TYPE): PACKAGE_DIR = $(CURDIR)/debian/$(PACKAGE_NAME)
 install-image-$(ARCH)-$(SUBARCH)-$(FLAVOUR)-$(TYPE): DIR=$(BUILD_DIR)/build-$(ARCH)-$(SUBARCH)-$(FLAVOUR)
+install-image-$(ARCH)-$(SUBARCH)-$(FLAVOUR)-$(TYPE):
 	find $(DIR) -iregex '.*image-.*\(pre\|post\)\(\rm\|inst\).*' | while read f ; do \
 	  echo -e '#! /bin/sh\nexit 0' >| "$$f" ; \
 	done
