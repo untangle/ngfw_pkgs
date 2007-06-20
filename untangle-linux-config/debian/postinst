@@ -3,6 +3,7 @@
 flavor=`COLUMNS=300 dpkg -l "untangle-linux-image*486" | awk '/^ii/ { gsub(/untangle-linux-image-/, "", $2) ; print $2}'`
 
 ln -sf /boot/vmlinuz-$flavor /vmlinuz-ut
+ln -sf /boot/vmlinuz-$flavor /boot/vmlinuz-ut
 
 if [ -f /boot/grub/menu.lst ] ; then
   # FIXME: don't do anything
