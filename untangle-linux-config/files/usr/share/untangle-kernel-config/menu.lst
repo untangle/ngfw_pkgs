@@ -1,0 +1,16 @@
+default     0
+timeout     5
+splashimage=(hd0,0)/boot/grub/mvsplash.xpm.gz
+
+title       Untangle Platform
+root        (hd0,0)
+kernel      /boot/vmlinuz-ut root=/dev/hda1 ro ramdisk_size=100000 init=/etc/init lang=us apm=power-off screen=1024x768 splash=silent nomce quiet vga=791 nodhcp panic=5
+initrd      /boot/initrd.splash
+savedefault
+boot
+
+title       Untangle Platform Recovery Mode
+root        (hd0,0)
+kernel      /boot/vmlinuz-ut root=/dev/hda1 ro ramdisk_size=100000 init=/etc/init lang=us apm=power-off screen=1024x768 nosplash nomce quiet vga=791 nodhcp panic=5 ut-restore
+initrd      /boot/initrd.splash
+boot

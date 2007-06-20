@@ -1,0 +1,45 @@
+This package was first debianized by Eduard Bloch <blade@debian.org> on
+Sat,  5 Mar 2005 10:01:57 +0100.
+
+It was downloaded from <http://www.fsl.cs.sunysb.edu/project-unionfs.html>.
+
+Copyright Holders: Erez Zadok <ezk@cs.sunysb.edu>,
+		   Charles P. Wright <cwright@cs.sunysb.edu>,
+		   Josef Sipek,
+		   Arun M. Krishnakumar <arunmk@fsl.cs.sunysb.edu>,
+		   David P. Quigley <dquigley@fsl.cs.sunysb.edu>,
+		   Mohammad Nayyer Zubair,
+		   Puja Gupta,
+		   Harikesavan Krishnan,
+		   Stony Brook University,
+		   The Research Foundation of State University of New York.
+
+License:
+
+	Copyright (C) 2003-2006 Erez Zadok <ezk@cs.sunysb.edu>
+	Copyright (C) 2003-2006 Charles P. Wright <cwright@cs.sunysb.edu>
+	Copyright (C) 2005-2006 Josef Sipek
+	Copyright (C) 2005 Arun M. Krishnakumar <arunmk@fsl.cs.sunysb.edu>
+	Copyright (C) 2005-2006 David P. Quigley <dquigley@fsl.cs.sunysb.edu>
+	Copyright (C) 2003-2004 Mohammad Nayyer Zubair
+	Copyright (C) 2003 Puja Gupta
+	Copyright (C) 2003 Harikesavan Krishnan
+	Copyright (C) 2003-2006 Stony Brook University
+	Copyright (C) 2003-2006 The Research Foundation of State University of New York
+
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+
+On Debian systems, the complete text of the GNU General Public License
+can be found in /usr/share/common-licenses/GPL file.

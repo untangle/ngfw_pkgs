@@ -1,0 +1,87 @@
+#!/bin/sh
+
+flavor=`COLUMNS=300 dpkg -l "untangle-linux*486" | awk '/^ii/ { gsub(/untangle-linux-image/, "", $2) ; print $2}'`
+
+ln -s /boot/vmlinuz-$flavor /vmlinuz-ut
+
+if [ -f /boot/grub/menu.lst ] ; then
+  # FIXME: don't do anything
+  exit 0
+fi
+
+cp /usr/share/untangle-linux-config/menu.lst /boot/grub/menu.lst
+
+if [ -x /etc/init.d/untangle-vm ]; then
+    uvm-restart reboot
+fi
+
+# Restore the timezone if we've ever set it
+TZFILE=/usr/share/untangle/conf/timezone
+if [ -f $TZFILE ]; then
+    ZONE=`cat $TZFILE`
+    grep -sq lang= /boot/grub/menu.lst && sed -i -e "s|\( tz=[^ ]*\)\? lang=| tz=$ZONE lang=|" /boot/grub/menu.lst
+fi
+
+root=`awk '/ \/ / {print $1}' /etc/mtab`
+perl -i -npe "s|root=.*? |root=$root |g" /boot/grub/menu.lst
+
+# FIXME: now let's update the pre-existing initrd.img; this is not
+# exactly elegant, but it does get the job done. I'll write a better
+# replacement using mkinitrd or make-kpkg later on...
+updateMinirt() {
+  MINIRT=$1
+  LINUXRC=${2}
+  MINIRT_UNZIPPED=${MINIRT/.gz}
+  MOUNT_POINT=/tmp/minirt
+  gunzip -f $MINIRT || return 0 # maybe this is just an image
+
+  # add some space to the filesystem
+  dd if=/dev/zero of=/tmp/tempFile bs=100k count=28
+  cat /tmp/tempFile >> ${MINIRT_UNZIPPED}
+  rm -f /tmp/tempFile
+  e2fsck -f -y ${MINIRT_UNZIPPED}
+  resize2fs ${MINIRT_UNZIPPED}
+
+  mkdir -p $MOUNT_POINT
+  mount -o loop ${MINIRT_UNZIPPED} $MOUNT_POINT
+  find $MOUNT_POINT/modules -name '*.ko' | while read module ; do
+    m=`basename ${module}`
+    # for the netboot minirt some module names are prefixed by 00_
+    m=${m/00_}
+
+    modulesDir=`find /lib/modules/$flavor -maxdepth 1 | tail -1`
+    a=`find $modulesDir -name $m`
+    if [[ -z $a ]] ; then
+      echo "  $m was not found in the Untangle kernel package; assuming it's compiled in..."
+    else
+      cp -f $a $module
+    fi
+  done
+
+  umount $MOUNT_POINT
+  gzip -f ${MINIRT_UNZIPPED}
+  # at this point the minirt is zipped back and should work with
+  # the kernel from kernel-cd-mv
+
+  chmod 444 ${MINIRT}
+}
+
+# only take action if the Knoppix-generated initrd is present and used
+# by grub
+initrd=/boot/initrd.img
+grubFile=/boot/grub/menu.lst
+if [ -f $grubFile ] && [ `readlink $initrd` == *2.6* ] ; then
+  updateMinirt /boot/initrd.img && cat /boot/initrd.splash >> /boot/initrd.img
+fi
+
+# install additional modules if the kernel is the cd one
+case $flavor in
+  *cd*)
+    mkdir -p /lib/modules/$flavor/kernel/fs/unionfs/
+    mkdir -p /lib/modules/$flavor/extra
+    cp -f /usr/share/untangle-linux-config/modules/cloop.ko /lib/modules/$flavor/extra/
+    cp -f /usr/share/untangle-linux-config/modules/unionfs.ko /lib/modules/$flavor/kernel/fs/unionfs/
+    depmod -a
+esac
+
+exit 0

@@ -1,0 +1,26 @@
+cloop for Debian
+----------------
+
+What is cloop? It is a simple way to compress a real filesystem and mount it
+per loopback, so you can access all the data on-the-fly.
+
+Before starting, you will need to build the filesystem module and load it into
+the running kernel. Please read the create_compressed_fs(1) manpage about how
+to create a compressed filesystem volume and how to mount it.
+
+To install the cloop modules package you better use module-assistant. To get,
+build and install, simply run:
+
+    module-assistant auto-install cloop
+
+(or "m-a a-i cloop").
+
+To build with make-kpkg and install manually please consult the documentation
+of dpkg (manpage) and kernel-package.
+
+IMPORTANT: configure the kernel with zlib functions, set the config
+variable CONFIG_ZLIB_INFLATE to y! Building zlib-inflate code as module
+DOES NOT WORK, at least not until you add a line in the kernel source to
+export some symbol, see http://bugs.debian.org/184246 for details.
+
+ -- Eduard Bloch <blade@debian.org>  Sat, 20 Aug 2005 02:37:56 +0200
