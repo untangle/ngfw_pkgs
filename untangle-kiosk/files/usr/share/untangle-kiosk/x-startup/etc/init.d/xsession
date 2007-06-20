@@ -15,9 +15,9 @@ fi
 #BOOTSPLASH_CFG_2=$BLANK_BOOTSPLASH_CFG
 
 pasteBootsplash() {
-  /sbin/splash -s -u 0 /etc/bootsplash-mv/config/$1
-  /sbin/splash -s -u 4 /etc/bootsplash-mv/config/$1
-  /sbin/splash -s -u 6 /etc/bootsplash-mv/config/$1
+  /sbin/splash -s -u 0 /etc/untangle-bootsplash/config/$1
+  /sbin/splash -s -u 4 /etc/untangle-bootsplash/config/$1
+  /sbin/splash -s -u 6 /etc/untangle-bootsplash/config/$1
 }
 
 pasteBootsplash $BOOTSPLASH_CFG_1
