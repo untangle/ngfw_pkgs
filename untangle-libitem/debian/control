@@ -1290,7 +1290,7 @@ Description: Untangle Remote Access Portal
 
 Package: untangle-libitem-trial30-professional-package
 Architecture: any
-Depends: untangle-libitem-trial30-portal,untangle-libitem-trial30-boxbackup, untangle-professional-package
+Depends: untangle-libitem-trial30-portal,untangle-libitem-trial30-boxbackup, untangle-professional-core
 XB-View-Position: 10
 XB-Display-Name: Professional Package 30-Day Trial
 XB-Untangle-Type: trial
