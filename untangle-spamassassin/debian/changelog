@@ -218,9 +218,9 @@ untangle-spamassassin (3.0.1-1) unstable; urgency=low
     - Fixes file descriptior issue with pyzor or dccifd and amavis (Closes: #273290)
   * Conflict with packages broken with SpamAssassin 3.0.0 (Closes:
     #274993)
-  * Create PIDFILE option in /etc/default/untangle-spamassassin so that init
+  * Create PIDFILE option in /etc/default/spamassassin so that init
     script works with spamd -u (Closes: #275370)
-  * Note in /etc/default/untangle-spamassassin to use --max-children with no
+  * Note in /etc/default/spamassassin to use --max-children with no
     more than 5 due to preforking. (Closes: #275308)
   * Rewrote package dependencies in control, added Suggests: on
     dcc-client (Closes: #276729), versioned recommends on
@@ -229,7 +229,7 @@ untangle-spamassassin (3.0.1-1) unstable; urgency=low
   * Fix muttrc example to use --no-sync instead of --no-rebuild (Closes:
     #273670)
   * Fixed typo in README.Debian for untangle-spamassassin -- if
-    /usr/share/untangle-spamassassin is edited you will NOT be prompted about it.
+    /usr/share/spamassassin is edited you will NOT be prompted about it.
     (Closes: #275675)
 
  -- Duncan Findlay <duncf@debian.org>  Wed, 27 Oct 2004 00:28:33 -0400
@@ -250,7 +250,7 @@ untangle-spamassassin (3.0.0-1) unstable; urgency=low
     - More documentation fixes: --user-config is on by default (Closes: #263845, #263846)
     - Doc: Typo "on" -> "or" (Closes: #271865)
 	
-  * Changed /etc/default/untangle-spamassassin to be more verbose (Closes: #265518)
+  * Changed /etc/default/spamassassin to be more verbose (Closes: #265518)
   * Got rid of untangle-spamassassin-tools since it was more pain than it was worth.
 
  -- Duncan Findlay <duncf@debian.org>  Sun,  5 Sep 2004 22:05:47 -0400
@@ -338,7 +338,7 @@ untangle-spamassassin (2.99pre3.0.0svn20040529-1) experimental; urgency=low
   * New upstream release
   * Added italian debconf translation from Luca Monducci <luca.mo@tiscali.it>
       (Closes: #251279)
-  * Fix /etc/init.d/untangle-spamassassin to actually exit when ENABLED=0.
+  * Fix /etc/init.d/spamassassin to actually exit when ENABLED=0.
       (Closes: #251481, #251598)
 
  -- Duncan Findlay <duncf@debian.org>  Sat, 29 May 2004 21:18:01 -0400
@@ -375,8 +375,8 @@ untangle-spamassassin (2.99pre3.0.0svn20040525-1) experimental; urgency=low
   * Improved debian specific rules in 65_debian.cf (Closes: #237995, #240983)
   * Changed dependencies for 3.0.0. Now suggest pyzor (Closes: #242456)
   * Fixed logcheck files for whitespace (Closes: #243820)
-  * Changed /etc/init.d/untangle-spamassassin to warn when disabled (Closes: #247058)
-  * Changed /etc/default/untangle-spamassassin to not say "/etc/default/spamd.conf"
+  * Changed /etc/init.d/spamassassin to warn when disabled (Closes: #247058)
+  * Changed /etc/default/spamassassin to not say "/etc/default/spamd.conf"
     (Closes: #243431)
   * Include Danish debconf translation from Claus Hindsgaul <claus_h@image.dk>
     (Closes: #233072)
@@ -462,7 +462,7 @@ untangle-spamassassin (2.59pre2.60rc3-1) experimental; urgency=low
       should already be using). (See README.Upgrade)
   * Works around symlinks being left behind in /etc/logcheck on upgrade.
     (Closes: #201324)
-  * Added symlink from /etc/mail/untangle-spamassassin to /etc/untangle-spamassassin
+  * Added symlink from /etc/mail/spamassassin to /etc/spamassassin
     (Closes: #207233, #207234)
 
  -- Duncan Findlay <duncf@debian.org>  Thu, 28 Aug 2003 20:59:24 -0400
@@ -495,7 +495,7 @@ untangle-spamassassin (2.59pre2.60cvs20030619-1) experimental; urgency=low
       More verbose error from untangle-spamassassin -r (Closes: #192133, #197881)
       Improved configurability of headers (Closes: #178648, #193872)
       Able to add charset to safe reports (Closes: #183810)
-  * Added a few more "default" options to spamd in /etc/default/untangle-spamassassin
+  * Added a few more "default" options to spamd in /etc/default/spamassassin
   * Fixed spamc's manpage to refer to spamd(8) not spamd(1) (Closes: #197880)
   * Added doc on integrating untangle-spamassassin sitewide with Exim3 from
     John Girash <girash@skyron.harvard.edu> (Closes: #196706)
@@ -589,7 +589,7 @@ untangle-spamassassin (2.50-1) unstable; urgency=low
       #165428, #165731, #170881, #154812, #163179, #164960, #161696,
       #163297, #163328
 	
-  * Added rules/STATISTICS.txt to /usr/share/doc/untangle-spamassassin (Closes: #179799)
+  * Added rules/STATISTICS.txt to /usr/share/doc/spamassassin (Closes: #179799)
 
  -- Duncan Findlay <duncf@debian.org>  Wed, 26 Feb 2003 22:58:58 -0500
 
@@ -634,7 +634,7 @@ untangle-spamassassin (2.42-1) unstable; urgency=low
       Various misc bug fixes.
   * Added SENT_BY_AFBACKUP and SENT_BY_APTLC to 65_debian.cf
     (Closes: #155527, #155634)
-  * Added --oknodo's in /etc/init.d/untangle-spamassassin (Closes: #161981)
+  * Added --oknodo's in /etc/init.d/spamassassin (Closes: #161981)
 
  -- Duncan Findlay <duncf@debian.org>  Fri,  4 Oct 2002 18:18:10 -0400
 
@@ -708,7 +708,7 @@ untangle-spamassassin (2.20-2) unstable; urgency=low
 
   * Added depends on libnet-smtp-server-perl (Closes: #145297). Depending on
     the outcome of bug 119517, this may be downgraded to a Recommends:.
-  * Removed extra empty dir /usr/share/untangle-spamassassin (Closes: #145323)
+  * Removed extra empty dir /usr/share/spamassassin (Closes: #145323)
   * Added recommends: for libmailtools-perl (Closes: #143935)
 
  -- Duncan Findlay <duncf@rogers.com>  Fri, 10 May 2002 20:37:08 -0400
@@ -726,7 +726,7 @@ untangle-spamassassin (2.20-1) unstable; urgency=medium
 untangle-spamassassin (2.11-4) unstable; urgency=medium
 
   * "Fixes" configuration files "problem"/"bug." I'm really not happy with
-    putting upstream rules and scores in /etc/untangle-spamassassin. But I guess I
+    putting upstream rules and scores in /etc/spamassassin. But I guess I
     don't have a choice. Do I? (Closes: #141484)
   * Fixes pathes in Mail::SpamAssassin::Conf docs. (Closes: #141172)
   * Fixes "spelling" mistake in description. (Closes #141512)
@@ -768,7 +768,7 @@ untangle-spamassassin (2.10-1) unstable; urgency=medium
   * Included logcheck files (Closes: #131161)
   * Actually added README.Upgrade (Closes: #131188)
   * Fixed some postrm to purge old files (from 1.5)
-  * Added a line to /etc/init.d/untangle-spamassassin to clarify (stupid)
+  * Added a line to /etc/init.d/spamassassin to clarify (stupid)
     misconceptions (Closes: #134566)
   * Moved manpages to their proper place (ie. .3perl and .8)
   * Included (fixed) check_whitelist in examples dir (Closes: #135383)
@@ -799,7 +799,7 @@ untangle-spamassassin (1.5-4) unstable; urgency=low
 
   * Fixed my (ahem...) little typo (that caused untangle-spamassassin to not work at
     all) (Closes: #123721)
-  * Moved /etc/default/spamd.conf to /etc/default/untangle-spamassassin (Closes:
+  * Moved /etc/default/spamd.conf to /etc/default/spamassassin (Closes:
     #123722)
   * Fixed hang bug in untangle-spamassassin.cf (VERY_SUSP_RECIPS and
     VERY_SUSP_CC_RECIPS)
@@ -810,8 +810,8 @@ untangle-spamassassin (1.5-3) unstable; urgency=low
 
   * Changed the regexp for SUBJ_HAS_UNIQ_ID so it doesn't get triggered on
     stuff like "Subject: Broken: tar -zxvf" (Closes: #123196)
-  * Moved /usr/share/perl5/untangle-spamassassin.cf and .prefs to
-    /usr/share/untangle-spamassassin/ (Closes: #123475)
+  * Moved /usr/share/perl5/spamassassin.cf and .prefs to
+    /usr/share/spamassassin/ (Closes: #123475)
   * Fixed "name" in init script to spamd (not untangle-spamassassin) like it was in
     1.5-1 (Closes: #123545)
   * Fixed -e option.  (Closes: #123551)

@@ -9,7 +9,7 @@
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=/usr/sbin/spamd
 NAME=spamd
-SNAME=untangle-spamassassin
+SNAME=spamassassin
 DESC="SpamAssassin Mail Filter Daemon"
 PIDFILE="/var/run/$NAME.pid"
 PNAME="spamd"
@@ -17,17 +17,17 @@ PNAME="spamd"
 export TMPDIR=/tmp
 # Apparently people have trouble if this isn't explicitly set...
 
-# Defaults - don't touch, edit /etc/default/untangle-spamassassin
+# Defaults - don't touch, edit /etc/default/spamassassin
 ENABLED=0
 OPTIONS=""
 NICE=
 
-test -f /etc/default/untangle-spamassassin && . /etc/default/untangle-spamassassin
+test -f /etc/default/spamassassin && . /etc/default/spamassassin
 
 DOPTIONS="-d --pidfile=$PIDFILE"
 
 if [ "$ENABLED" = "0" ]; then
-    echo "$DESC: disabled, see /etc/default/untangle-spamassassin"
+    echo "$DESC: disabled, see /etc/default/spamassassin"
     exit 0
 fi
 

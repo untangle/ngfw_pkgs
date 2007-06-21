@@ -12,7 +12,7 @@ the following as root:
 # sa-update
 
 This will download the latest set of rules to a directory under
-/var/lib/untangle-spamassassin/
+/var/lib/spamassassin/
 
 Trusted Networks
 ----------------
@@ -44,8 +44,8 @@ relating to external programs and perl modules has been removed and
 placed in plugins. For example, Razor, DCC and Pyzor have been
 "pluginized".
 
-Plugins can be enabled and disabled in /etc/untangle-spamassassin/init.pre and
-/etc/untangle-spamassassin/v310.pre. You may wish to read through those files
+Plugins can be enabled and disabled in /etc/spamassassin/init.pre and
+/etc/spamassassin/v310.pre. You may wish to read through those files
 to see which plugins you might want to install. In general, plugins
 may have dependencies that you may need to install for them to
 function. For example, the Razor2 plugin requires that you install
@@ -57,16 +57,16 @@ are no longer free for patent reasons.
 Configuring spamd
 -----------------
 
-spamd, the daemonized form of untangle-spamassassin, is generally the preferred
-way of running untangle-spamassassin. Please read man spamd and README.spamd
+spamd, the daemonized form of spamassassin, is generally the preferred
+way of running spamassassin. Please read man spamd and README.spamd
 for more information. Init scripts are provided with this package in
-/etc/init.d/untangle-spamassassin. To change the command line options, please
-edit /etc/default/untangle-spamassassin.
+/etc/init.d/spamassassin. To change the command line options, please
+edit /etc/default/spamassassin.
 
 If you intend to use Bayes sitewide, it is recommended that you set up
 an SQL-based Bayes storage module. (You may also want to store scores
 and other prefences in SQL too.) Please read the documentation in
-/usr/share/doc/untangle-spamassassin/sql/ for more information.
+/usr/share/doc/spamassassin/sql/ for more information.
 
 Please note that SQL storage is not very private -- anyone that has
 access to the database can read and write it freely, meaning users
@@ -95,7 +95,7 @@ can use the --dbpath option to specify the database path)
 You can also disable automatic expiry by setting the
 "bayes_auto_expire 0" option in your configuration and running
 sa-learn --force-expire from a cronjob. See
-http://wiki.untangle-spamassassin.org/BayesForceExpire
+http://wiki.spamassassin.org/BayesForceExpire
 
 Mail stream integration
 -----------------------
@@ -103,36 +103,36 @@ Mail stream integration
 Please read README for instructions on setting up SpamAssassin into
 your mail stream. There is also a very incomplete set of examples in
 the examples/ directory. More examples are welcome! Please file a bug
-against untangle-spamassassin with the minor or wishlist severity and attach a
+against spamassassin with the minor or wishlist severity and attach a
 file or patch.
 
-There is a large amount of information on setting untangle-spamassassin up with
+There is a large amount of information on setting spamassassin up with
 your mail system at
-http://wiki.apache.org/untangle-spamassassin/UsingSpamAssassin.
+http://wiki.apache.org/spamassassin/UsingSpamAssassin.
 
 Configuration Files
 -------------------
 
 To add rules, change scores or edit the report template, edit
-/etc/untangle-spamassassin/local.cf. Please don't touch the files in
-/usr/share/untangle-spamassassin, as you will NOT be prompted to overwrite them
+/etc/spamassassin/local.cf. Please don't touch the files in
+/usr/share/spamassassin, as you will NOT be prompted to overwrite them
 on upgrade. Configuration file details are available in the
 Mail::SpamAssassin::Conf(3) man page.
 
 User-specific configuration is the automatically created
-~/.untangle-spamassassin/user_prefs, which is copied from
-/etc/untangle-spamassassin/user_prefs.template. It is automatically created
-whenever untangle-spamassassin is called, or when spamc is used with 'spamd
+~/.spamassassin/user_prefs, which is copied from
+/etc/spamassassin/user_prefs.template. It is automatically created
+whenever spamassassin is called, or when spamc is used with 'spamd
 -c'.
 
 Non-free RBLs
 -------------
 
-By default, untangle-spamassassin checks certain free RBLs. Other, commercial
+By default, spamassassin checks certain free RBLs. Other, commercial
 RBLs can easily be enabled. See the README for more
 information. Furthermore, SpamAssassin supports using third-party
 programs Razor, DCC and Pyzor, but Razor and DCC are disabled by
 default since they are not free for non-personal use. Feel free to
-enable them in /etc/untangle-spamassassin/init.pre
+enable them in /etc/spamassassin/init.pre
 
  -- Duncan Findlay <duncf@debian.org>, Mon, 19 Jun 2006 01:01:44 -0400

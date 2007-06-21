@@ -41,7 +41,7 @@ configure-stamp: patch
 
 	perl Makefile.PL INSTALLDIRS=vendor \
 	 DESTDIR=$(CURDIR)/debian/untangle-spamassassin \
-	 CONFDIR=/etc/untangle-spamassassin \
+	 CONFDIR=/etc/spamassassin \
 	 ENABLE_SSL=yes < /dev/null
 
 	touch configure-stamp

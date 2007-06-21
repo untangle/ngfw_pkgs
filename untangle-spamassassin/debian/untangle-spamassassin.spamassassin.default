@@ -1,4 +1,4 @@
-# /etc/default/untangle-spamassassin
+# /etc/default/spamassassin
 # Duncan Findlay
 
 # WARNING: please read README.spamd before using.
