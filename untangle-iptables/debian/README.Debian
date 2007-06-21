@@ -1,10 +1,10 @@
-untangle-iptables for Debian
+iptables for Debian
 ===================
 
   0. introduction
   1. upgrade notes
   2. quick start
-  3. running untangle-iptables
+  3. running iptables
   4. kernel configuration
   5. extension and compilation notes
   6. help! help! help!
@@ -12,7 +12,7 @@ untangle-iptables for Debian
 
 [ 0. introduction ]
 
-  The untangle-iptables binary is basically a user-space configuration tool
+  The iptables binary is basically a user-space configuration tool
   for the linux kernel's netfilter packet filtering. It can be used
   to configure NAT/MASQUERADING (Network Address Translation),
   firewalling, ip accounting and other things. The package does not
@@ -23,16 +23,16 @@ untangle-iptables for Debian
 
   init scripts
   
-    If you have upgraded from an earlier version of the untangle-iptables
+    If you have upgraded from an earlier version of the iptables
     package, you may still have the deprecated init.d scripts and
     state information installed, but orphaned from the package.
     This was necessary to preserve existing configurations. Run
-    "update-rc.d -f untangle-iptables remove" and delete this list of files
+    "update-rc.d -f iptables remove" and delete this list of files
     and directories to get rid of it all:
   
-      /etc/default/untangle-iptables 
-      /etc/init.d/untangle-iptables 
-      /var/lib/untangle-iptables/
+      /etc/default/iptables 
+      /etc/init.d/iptables 
+      /var/lib/iptables/
       /var/lib/ip6tables/
 
     I'm certain someone will file a bug report about the orphaned
@@ -59,7 +59,7 @@ untangle-iptables for Debian
     iface eth0 inet dhcp
       pre-up /etc/myfirewall.sh 
 
-  The next example uses in-line calls to untangle-iptables to configure ip
+  The next example uses in-line calls to iptables to configure ip
   masquerading (basically, connection sharing) for a ppp or pppoe
   provider. This example is not intended to secure or anything.
 
@@ -67,12 +67,12 @@ untangle-iptables for Debian
     iface ppp0 inet ppp
       provider bobsispchickenandribshack
       pre-up echo 1 > /proc/sys/net/ipv4/ip_forward
-      pre-up untangle-iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+      pre-up iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
 
 
-[ 3. running untangle-iptables ]
+[ 3. running iptables ]
 
-  There are a number of ways to "run" untangle-iptables in Debian.  Many 
+  There are a number of ways to "run" iptables in Debian.  Many 
   may prefer packages like firehol, shorewall, firestarter,
   ipmenu, fireflier, ferm, gnome-lokkit, guarddog, hlfl, knetfilter,
   mason, lokkit, fiaif, filtergen, guidedog, or uif--just to name
@@ -89,15 +89,15 @@ untangle-iptables for Debian
   
     update-rc.d myfirewall start 40 S . stop 89 0 6 .
   
-  Some may prefer to use untangle-iptables-save and untangle-iptables-restore to save
-  rule sets. The deprecated untangle-iptables init.d script in included in
+  Some may prefer to use iptables-save and iptables-restore to save
+  rule sets. The deprecated iptables init.d script in included in
   the example section as a reference for a state based init script.
   You can get the same basic functionality by using saving your
-  rules with untangle-iptables-save and using ifupdown to apply them.
+  rules with iptables-save and using ifupdown to apply them.
 
     # sample /etc/network/interfaces lines
-    pre-up untangle-iptables-restore < /etc/untangle-iptables.up.rules
-    post-down untangle-iptables-restore < /etc/untangle-iptables.down.rules
+    pre-up iptables-restore < /etc/iptables.up.rules
+    post-down iptables-restore < /etc/iptables.down.rules
   
   One of the more powerful packet filter configurations is a number
   of scripts called through Debian's ifupdown system. Here is a
@@ -130,7 +130,7 @@ untangle-iptables for Debian
 
 [ 4. kernel configuration ]
 
-  untangle-iptables requires kernel netfilter support and support for various
+  iptables requires kernel netfilter support and support for various
   netfilter capabilities. Here are a hints from the menuconfig
   selections in the kernel source for 2.6.12:
 
@@ -143,20 +143,20 @@ untangle-iptables for Debian
 
 [ 5. extension and compilation notes ]
 
-  untangle-iptables extensions (plug-ins) are installed in /lib/untangle-iptables/.
+  iptables extensions (plug-ins) are installed in /lib/iptables/.
   There are generally two types of extensions: targets and matches.
   Targets usually have an upper-case portion of the filename: i.e,.
   libipt_SNAT.so is used as "--jump SNAT". Matches are usually all
   lower case: i.e., libipt_owner.so is used as "--match owner".
 
   The various extensions are built based on the kernel source used
-  to compile untangle-iptables. untangle-iptables source code includes kernel patches
+  to compile iptables. iptables source code includes kernel patches
   that will allow additional extensions to be built. The additions
-  are not official and are not documented in the untangle-iptables man page.
+  are not official and are not documented in the iptables man page.
   A number of the extensions conflict with one another, some are
   broken, and some require kernel level changes to netfilter that
-  require a specific untangle-iptables build. A custom untangle-iptables build may
-  require a custom kernel build. The custom untangle-iptables binaries may
+  require a specific iptables build. A custom iptables build may
+  require a custom kernel build. The custom iptables binaries may
   not work with "regular" and stock kernel builds and packages.
 
   An innocuous set of additional extensions are included with the
@@ -167,18 +167,18 @@ untangle-iptables for Debian
 [ 6. help! help! help! ]
 
   Need more help? You can find more information in
-  /usr/share/doc/untangle-iptables/. The NAT and packet filtering HOWTOS are
+  /usr/share/doc/iptables/. The NAT and packet filtering HOWTOS are
   there in English in HTML format -- other languages are available
-  at http://www.untangle-iptables.org/ and http://www.netfilter.org/.
+  at http://www.iptables.org/ and http://www.netfilter.org/.
   There are example packet filtering scripts available in
-  /usr/share/doc/untangle-iptables/examples/.
+  /usr/share/doc/iptables/examples/.
 
-  For any problems specific to the Debian untangle-iptables package, you can
-  send e-mail to untangle-iptables@packages.debian.org or file bug reports.
+  For any problems specific to the Debian iptables package, you can
+  send e-mail to iptables@packages.debian.org or file bug reports.
   See http://bugs.debian.org/ and please use the reportbug program
   in the reportbug package for sending bug reports if possible.
 
-  (IMPORTANT BUG REPORT NOTE! The untangle-iptables package contains support
+  (IMPORTANT BUG REPORT NOTE! The iptables package contains support
   for features that your kernel may not support. If your kernel
   has support built-in or the appropriate modules are loaded, the
   table, match, and target names should be visible in the /proc
@@ -189,13 +189,13 @@ untangle-iptables for Debian
      /proc/net/ip_tables_targets
 
   As an example, to use "-m blah" you should see "blah" listed in 
-  /proc/net/ip_tables_matches. If not, untangle-iptables will complain about
+  /proc/net/ip_tables_matches. If not, iptables will complain about
   a missing target/chain/match. You will have to add "blah" support
   to your kernel.)
 
   Debian mailing lists, such as debian-firewall and debian-user are
   also available. See http://lists.debian.org/ for more information.
-  The untangle-iptables/netfilter sites (the URLs are above) also host useful
+  The iptables/netfilter sites (the URLs are above) also host useful
   mailing lists.
 
 

@@ -1,17 +1,20 @@
+This package was modified by Untangle, Inc. in 2007.
+These changes are Copyright (c) 2007 Untangle, Inc.
+
 Christoph Lameter (christoph@lameter.com) created the Debian untangle-iptables 
 package on March 26, 2000.
 
-untangle-iptables sources were downloaded from:
+iptables sources were downloaded from:
 
   source code and changelogs: 
 
-    http://www.untangle-iptables.org/files/
+    http://www.iptables.org/files/
 
   SGML HOWTOs: 
 
-    http://www.untangle-iptables.org/documentation/HOWTO/
+    http://www.iptables.org/documentation/HOWTO/
 
-untangle-iptables authors:
+iptables authors:
 
   The core team: 
 
@@ -19,16 +22,16 @@ untangle-iptables authors:
 
   Additional contributors listed at: 
 
-    http://www.untangle-iptables.org/about.html#contrib
+    http://www.iptables.org/about.html#contrib
 
-untangle-iptables copyright:
+iptables copyright:
 
-  untangle-iptables is free software; you can redistribute it and/or modify
+  iptables is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published
   by the Free Software Foundation; either version 2, or (at your
   option) any later version.
 
-  untangle-iptables is distributed in the hope that it will be useful,
+  iptables is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
   General Public License for more details.
