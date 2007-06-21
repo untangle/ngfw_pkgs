@@ -85,34 +85,6 @@ install: build
 
 #	install -D $(CURDIR)/doc/*ps $(CURDIR)/doc/*dvi $(CURDIR)/doc/*txt $(CURDIR)/debian/untangle-gocr-doc/usr/share/doc/untangle-gocr/doc
 
-
-# Build architecture-independent
-binary-indep: build install
-	dh_testdir 
-	dh_testroot
-
-	dh_installdocs -i
-	dh_installexamples -i
-
-	dh_installmenu -i
-	dh_installman -i
-
-	dh_installchangelogs -i
-
-	dh_compress -i -Xusr/share/doc/untangle-gocr/examples/font21.pcx
-	dh_fixperms -i
-	# dh_fixperms doesn't fix subdir perms
-#	find debian/untangle-gocr/usr/share/doc/$(package) -type d -exec chmod 0755 {} \;
-
-	dh_makeshlibs -i
-	dh_installdeb -i
-
-	dh_shlibdeps -i
-	if [[ -f debian/version ]] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
-
-	dh_md5sums -i
-	dh_builddeb -i
-
 # Build architecture-dependent
 binary-arch: build install
 	dh_testdir 
@@ -145,6 +117,6 @@ binary-arch: build install
 	dh_builddeb -a
 
 
-binary: binary-indep binary-arch
+binary: binary-arch
 
-.PHONY: build clean binary binary-indep binary-arch binary install configure
+.PHONY: build clean binary binary-arch binary install configure
