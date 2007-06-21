@@ -1,6 +1,0 @@
-#!/bin/sh
-
-/usr/share/untangle/bin/xpd upm-trial.ulg 0x37ba10163b3e6acd f17e945442da6dc2a17409f9bf0df0ce
-/usr/share/untangle/bin/xpd uudi-trial.ulg 0x69a57518449d15dd 3023c6a06a7f46f374f3f1ec882a70e9
-/usr/share/untangle/bin/xpd uudm-trial.ulg 0x10af02977fed4055 a2966e17d2f8eb570555ef638be5f9d8
-

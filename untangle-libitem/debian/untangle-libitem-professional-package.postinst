@@ -1,5 +1,0 @@
-#!/bin/sh
-
-/usr/share/untangle/bin/xpd upm.ulg  0x74844c9c12ad1675 947327ce7d2c9d66f4b8c338a2bbc0a3
-/usr/share/untangle/bin/xpd uudi.ulg 0x266f319f1c0c4185 b4c30f044588c8ae9e6edbdc76622015
-/usr/share/untangle/bin/xpd uudm.ulg 0x4d7a3f1e575c6bfd 374c0dc2fc0de5fd28238eca348ee66f
