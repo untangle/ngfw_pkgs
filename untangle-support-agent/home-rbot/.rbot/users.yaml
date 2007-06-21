@@ -1,8 +1,0 @@
---- 
-master: !ruby/struct:UserData 
-  level: 1000
-  password: untangle
-  hostmasks: 
-  - *!*@localhost
-  - *!*@*untangle.com
-  - *!*@*metaloft.com
