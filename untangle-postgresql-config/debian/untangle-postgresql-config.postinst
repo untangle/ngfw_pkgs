@@ -3,7 +3,7 @@
 PG_CONF="`/usr/bin/find /etc/postgresql -name 'postgresql.conf' -type f`"
 PG_MAST="`/usr/bin/find /etc/postgresql -name 'postmaster.conf' -type f`"
 PG_HBA="`/usr/bin/find /etc/postgresql -name 'pg_hba.conf' -type f`"
-PG_INIT="`/usr/bin/find /etc/init.d/ -name 'postgres*' -type f -perm /u+x`"
+PG_INIT="`/usr/bin/find /etc/init.d/ -name 'postgres*' -type f -perm u+x`"
 DATE="`date '+%Y%m%d%H%M%S'`"
 
 echo $PG_CONF
