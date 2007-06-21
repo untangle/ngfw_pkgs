@@ -3,78 +3,95 @@
 PG_CONF="`/usr/bin/find /etc/postgresql -name 'postgresql.conf' -type f`"
 PG_MAST="`/usr/bin/find /etc/postgresql -name 'postmaster.conf' -type f`"
 PG_HBA="`/usr/bin/find /etc/postgresql -name 'pg_hba.conf' -type f`"
-PG_INIT="`/usr/bin/find /etc/init.d/ -name 'postgres*' -type f -perm u+x`"
+PG_INIT="`/usr/bin/find /etc/init.d/ -name 'postgres*' -type f`"
 DATE="`date '+%Y%m%d%H%M%S'`"
 
 echo $PG_CONF
 
-if [ -z $PG_CONF ] ; then 
+if [ -z "$PG_CONF" ] ; then 
     echo "ERROR: Can't locate postgresql.conf"
     exit 0
 fi
-if [ -z $PG_HBA ] ; then 
+if [ -z "$PG_HBA" ] ; then 
     echo "ERROR: Can't locate pg_hba.conf"
     exit 0
 fi
 
-cp -f $PG_CONF $PG_CONF.$DATE
-cp -f $PG_MAST $PG_MAST.$DATE
-cp -f $PG_HBA  $PG_HBA.$DATE
+for i in $PG_CONF ; do
+    cp -f $i $i.$DATE
+done
+for i in $PG_MAST ; do
+    cp -f $i $i.$DATE
+done
+for i in $PG_HBA ; do
+    cp -f $i  $i.$DATE
+done
 
-# The tuning depends on the memory available.  We have settings for >= 2Gig, >= 1Gig,
-# and < 1Gig.
-
-# XXX This should be pulled out into a config script called from here
-# so users can run this at a later date
+# XXX 
+# This should be pulled out into a seperate script 
+# so it can be called whenever something changes
 
 echo "Customizing postgres settings..."
 
 MEM=$(awk '/MemTotal/ { print $2 }' < /proc/meminfo)
 if [ $MEM -gt 1900000 ] ; then
-  SHARED_BUFFERS=10000
-  SORT_MEM=32768
-  VACUUM_MEM=131072
-  EFFECTIVE_CACHE_SIZE=40000
-  # Also in this case we need to adjust the shmmax in the kernel
-  MAXLINE="kernel.shmmax=134217728"
-  if grep -q kernel.shmmax /etc/sysctl.conf ; then
-    sed -i -e "s|^.*kernel.shmmax.*|${MAXLINE}|" /etc/sysctl.conf
-  else
-    echo $MAXLINE >> /etc/sysctl.conf
-  fi
-  /sbin/sysctl -w $MAXLINE
+    echo "Using settings for 2 gigabytes of memory"
+    SHARED_BUFFERS=10000
+    SORT_MEM=32768
+    VACUUM_MEM=131072
+    EFFECTIVE_CACHE_SIZE=40000
+    # Also in this case we need to adjust the shmmax in the kernel
+    MAXLINE="kernel.shmmax=134217728"
+    if grep -q kernel.shmmax /etc/sysctl.conf ; then
+        sed -i -e "s|^.*kernel.shmmax.*|${MAXLINE}|" /etc/sysctl.conf
+    else
+        echo $MAXLINE >> /etc/sysctl.conf
+    fi
+    /sbin/sysctl -w $MAXLINE
 elif [ $MEM -gt 900000 ] ; then
-  SHARED_BUFFERS=3000
-  SORT_MEM=16384
-  VACUUM_MEM=65536
-  EFFECTIVE_CACHE_SIZE=9000
+    echo "Using settings for 1 gigabyte of memory"
+    SHARED_BUFFERS=3000
+    SORT_MEM=16384
+    VACUUM_MEM=65536
+    EFFECTIVE_CACHE_SIZE=9000
 else
-  SHARED_BUFFERS=2000
-  SORT_MEM=4096
-  VACUUM_MEM=32768
-  EFFECTIVE_CACHE_SIZE=3000
+    echo "Using settings for 512 megabytes of memory"
+    SHARED_BUFFERS=2000
+    SORT_MEM=4096
+    VACUUM_MEM=32768
+    EFFECTIVE_CACHE_SIZE=3000
 fi
 
-# Allow all local access
-sed -i -e "s/\#\(local.*all.*all.*trust\)/\1/" $PG_HBA
-sed -i -e "s/\#\(host.*all.*all.*127.0.0.1.*255.255.255.255.*trust\)/\1/" $PG_HBA
-sed -i -e "s/.*virtual_host.*=.*/virtual_host='127.0.0.1'/" $PG_CONF
 
-# Tune memory usage & query optimizer
-sed -i -e "s/[# ]*shared_buffers *=.*/shared_buffers = ${SHARED_BUFFERS}/" $PG_CONF
-sed -i -e "s/[# ]*sort_mem *=.*/sort_mem = ${SORT_MEM}/" $PG_CONF
-sed -i -e "s/[# ]*vacuum_mem *=.*/vacuum_mem = ${VACUUM_MEM}/" $PG_CONF
-sed -i -e "s/[# ]*effective_cache_size *=.*/effective_cache_size = ${EFFECTIVE_CACHE_SIZE}/" $PG_CONF
-sed -i -e "s/[# ]*checkpoint_segments *=.*/checkpoint_segments = 12/" $PG_CONF
+for file in $PG_HBA ; do
+    sed -i -e "s/\#\(local.*all.*all.*trust\)/\1/" $file
+    sed -i -e "s/\#\(host.*all.*all.*127.0.0.1.*255.255.255.255.*trust\)/\1/" $file
+done
 
-if [ ! -z $PG_MAST ] ; then 
-    # Turn off automatic vacuuming (now done nightly just after rollup, before reporting)
-    sed -i -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" $PG_MAST
-else
+for file in $PG_CONF ; do
+    sed -i -e "s/.*virtual_host.*=.*/virtual_host='127.0.0.1'/" $file
+    # Tune memory usage & query optimizer
+    sed -i -e "s/[# ]*shared_buffers *=.*/shared_buffers = ${SHARED_BUFFERS}/" $file
+    sed -i -e "s/[# ]*sort_mem *=.*/sort_mem = ${SORT_MEM}/" $file
+    sed -i -e "s/[# ]*vacuum_mem *=.*/vacuum_mem = ${VACUUM_MEM}/" $file
+    sed -i -e "s/[# ]*effective_cache_size *=.*/effective_cache_size = ${EFFECTIVE_CACHE_SIZE}/" $file
+    sed -i -e "s/[# ]*checkpoint_segments *=.*/checkpoint_segments = 12/" $file
+    # Search both settings and events schemas by default
+    sed -i -e "s/.*search_path.*=.*/search_path = 'public,settings,events'/" $file
+done
+
+for file in $PG_MAST; do
+    sed -i -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" $file
+done
+
+if [ -z "$PG_MAST" ] ; then 
     echo "WARNING: postmaster.conf not found (failed to disable autovacuum)"
 fi
 
-# Search both settings and events schemas by default
-sed -i -e "s/.*search_path.*=.*/search_path = 'public,settings,events'/" $PG_CONF
+if [ ! -z "$PG_INIT" ] ; then
+    for init in $PG_INIT ; do
+        $init restart || true
+    done
+fi
 
-$PG_INIT restart || true
+exit 0
