@@ -78,7 +78,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/tmp.
-	$(MAKE) install exec_prefix=$(CURDIR)/debian/tmp/usr prefix=$(CURDIR)/debian/tmp/usr INSTALL=/usr/bin/install
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp exec_prefix=$(CURDIR)/debian/tmp/usr prefix=$(CURDIR)/debian/tmp/usr INSTALL=/usr/bin/install
 	install -D $(CURDIR)/bin/gocr $(CURDIR)/debian/untangle-gocr/usr/bin/gocr
 #	install -D $(CURDIR)/bin/gocr.tcl $(CURDIR)/debian/untangle-gocr-tk/usr/bin/gocr.tcl
 #	install -D $(CURDIR)/frontend/gnome/src/gtk-ocr $(CURDIR)/debian/untangle-gocr-gtk/usr/bin/gtk-ocr

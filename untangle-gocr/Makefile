@@ -10,7 +10,7 @@
 #      make install DESTDIR=$RPM_BUILD_ROOT
 #
 
-prefix = /usr
+prefix ?= /usr
 #bindir = $(prefix)/bin
 bindir = /usr${exec_prefix}/bin
 
