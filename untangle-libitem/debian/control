@@ -1290,7 +1290,7 @@ Description: Untangle Remote Access Portal
 
 Package: untangle-libitem-trial30-professional-package
 Architecture: any
-Depends: untangle-libitem-trial30-portal,untangle-libitem-trial30-boxbackup, untangle-professional-package, untangle-professional-package-disabler
+Depends: untangle-libitem-trial30-portal,untangle-libitem-trial30-boxbackup, untangle-professional-package
 XB-View-Position: 10
 XB-Display-Name: Professional Package 30-Day Trial
 XB-Untangle-Type: trial
@@ -1352,7 +1352,7 @@ Description: Untangle Professional Packages 30-Day Trial
 
 Package: untangle-libitem-trial30-hauri
 Architecture: any
-Depends: untangle-node-hauri, hauri-disabler
+Depends: untangle-node-hauri
 Conflicts: hauri-storeitem
 Replaces: hauri-storeitem
 Provides: hauri-storeitem
@@ -1391,7 +1391,7 @@ Description: Untangle Dual Virus Blocker 30-Day Trial
 
 Package: untangle-libitem-trial30-portal
 Architecture: any
-Depends: untangle-node-portal, portal-disabler
+Depends: untangle-node-portal
 Conflicts: portal-storeitem
 Replaces: portal-storeitem
 Provides: portal-storeitem
@@ -1466,7 +1466,7 @@ Description: Untangle Remote Access Portal 30-Day Trial
 
 Package: untangle-libitem-trial30-boxbackup
 Architecture: any
-Depends: untangle-node-boxbackup, boxbackup-disabler
+Depends: untangle-node-boxbackup
 Conflicts: boxbackup-storeitem
 Replaces: boxbackup-storeitem
 Provides: boxbackup-storeitem
