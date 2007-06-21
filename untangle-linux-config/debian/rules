@@ -14,7 +14,7 @@ export DH_COMPAT=4
 
 MKDIR=/bin/mkdir -p
 
-DESTDIR=debian/untangle-linux-config
+DESTDIR=debian/untangle-linux-2.6.16-ck11-config
 
 ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -g
@@ -33,7 +33,7 @@ build: configure
 	rm -rf $(DESTDIR)
 	mkdir -p $(DESTDIR)
 	dh_installdirs -A -v
-	for i in `cat debian/untangle-linux-config.dirs` ; do mkdir -p $(DESTDIR)/$$i ; done
+	for i in `cat debian/untangle-linux-2.6.16-ck11-config.dirs` ; do mkdir -p $(DESTDIR)/$$i ; done
 	cp -r ./files/* $(DESTDIR)/
 	find $(DESTDIR) -name "\.svn" | xargs rm -rf
 
@@ -41,7 +41,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-arch-stamp build-indep-stamp configure-stamp
-	rm -rf debian/tmp debian/untangle-linux-config sav-install
+	rm -rf debian/tmp debian/untangle-linux-2.6.16-ck11-config sav-install
 	dh_clean
 
 binary-arch: build

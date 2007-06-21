@@ -6,7 +6,7 @@ ln -sf boot/vmlinuz-$flavor /vmlinuz-ut
 ln -sf vmlinuz-$flavor /boot/vmlinuz-ut
 
 if [ ! -f /boot/grub/menu.lst ] ; then
-  cp /usr/share/untangle-linux-config/menu.lst /boot/grub/menu.lst
+  cp /usr/share/untangle-linux-2.6.16-ck11-config/menu.lst /boot/grub/menu.lst
 fi
 
 if [ -x /etc/init.d/untangle-vm ]; then
@@ -77,8 +77,8 @@ case $flavor in
   *cd*)
     mkdir -p /lib/modules/$flavor/kernel/fs/unionfs/
     mkdir -p /lib/modules/$flavor/extra
-    cp -f /usr/share/untangle-linux-config/modules/extra/cloop.ko /lib/modules/$flavor/extra/
-    cp -f /usr/share/untangle-linux-config/modules/kernel/fs/unionfs/unionfs.ko /lib/modules/$flavor/kernel/fs/unionfs/
+    cp -f /usr/share/untangle-linux-2.6.16-ck11-config/modules/extra/cloop.ko /lib/modules/$flavor/extra/
+    cp -f /usr/share/untangle-linux-2.6.16-ck11-config/modules/kernel/fs/unionfs/unionfs.ko /lib/modules/$flavor/kernel/fs/unionfs/
 esac
 
 exit 0

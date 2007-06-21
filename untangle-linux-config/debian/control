@@ -1,11 +1,11 @@
-Source: untangle-linux-config
+Source: untangle-linux-2.6.16-ck11-config
 Section: admin
 Priority: important
 Maintainer: Sebastien Delafond <seb@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
-Package: untangle-linux-config
+Package: untangle-linux-2.6.16-ck11-config
 Architecture: any
 Depends: grub, untangle-linux-image-2.6.16-ck11-untangle-prod-486 | untangle-linux-image-2.6.16-ck11-untangle-prod-xd-486 | untangle-linux-image-2.6.16-ck11-untangle-cd-486
 Description: The Untangle kernel config
