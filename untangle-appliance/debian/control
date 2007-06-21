@@ -1,0 +1,14 @@
+Source: untangle-appliance
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.7.2
+
+Package: untangle-appliance
+Architecture: any
+Depends: untangle-kiosk, untangle-client-windows-jre, untangle-bootsplash, untangle-restore-tools, untangle-dhclient-config, firefox, exim4, ntp-simple, snmpd, snmp, sg3-utils, atop
+Pre-Depends: untangle-postgresql-config
+Conflicts: dlocate, slocate, firefox-r-kiosk, masqmail
+Description: The Untangle appliance
+ The Untangle appliance mode.

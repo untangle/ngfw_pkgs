@@ -72,7 +72,7 @@ Description: Untangle Total Security Bundle
 
 Package: untangle-libitem-professional-package
 Architecture: any
-Depends: untangle-libitem-portal,untangle-libitem-boxbackup, untangle-professional-package
+Depends: untangle-libitem-portal,untangle-libitem-boxbackup, untangle-professional-core
 Conflicts: professional-package-disabler, portal-disabler, boxbackup-disabler
 XB-View-Position: 20
 XB-Display-Name: Professional Package

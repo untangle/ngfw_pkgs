@@ -1,0 +1,91 @@
+#!/bin/sh
+
+APT_CACHE_DIR="/var/cache/apt/archives"
+
+# is this the best place to do this ?
+[[ -x /bin/zsh ]] && chsh -s /bin/zsh root
+
+find /root/.zsh -type f | xargs chmod 640
+find /root/.zsh -type d | xargs chmod 750
+
+# fix for bug #2352: if / is /dev/hda1, and that filesystem was
+# created before the first Untangle CD got released, then we are on an
+# edgeguard box, and we need to use the ati as a video driver instead
+# of fbdev, and then we reboot so the changes will take effect.
+if mount | grep -q '/dev/hda1 on /' ; then
+  if tune2fs -l /dev/hda1 | perl -w -ne 'my $cutoff=20061211 ; my %months = ("Jan","01","Feb","02","Mar","03","Apr","04","May","05","Jun","06","Jul","07","Aug","08","Sep","09","Oct","10","Nov","11","Dec","12") ; if (/^Filesystem created:/) { chomp ; $_ =~ s/^Filesystem created:\s+// ; my ($wd, $m, $d, $h, $y) = split /\s+/ ; my $date=int($y . $months{$m} . $d) ; if ($cutoff > $date) { exit 0 } else { exit 1 } }' && grep -q fbdev /etc/X11/XF86Config-4 ; then
+    perl -i -npe 's/fbdev/ati/' /etc/X11/XF86Config-4
+    if [ -x /etc/init.d/untangle-vm ]; then
+      uvm-restart reboot
+    fi
+  fi
+fi
+
+# fix sources.list
+sed -i -e 's/\([^:]\)metavize/\1untangle/g' /etc/apt/sources.list
+
+# modify limit to support many file descriptors
+LIMITS_FILE=/etc/security/limits.conf
+LIMITS_LINE="${USER}    soft    nofile  128000"
+LIMITS_LINE2="${USER}   hard    nofile  128000"
+
+if [ -z "`grep ${USER} ${LIMITS_FILE}`" ] ; then
+    echo ${LIMITS_LINE} >> ${LIMITS_FILE}
+    echo ${LIMITS_LINE2} >> ${LIMITS_FILE}
+else
+    sed -i -e "s|^${USER}.*soft.*|${LIMITS_LINE}|g" ${LIMITS_FILE}
+    sed -i -e "s|^${USER}.*hard.*|${LIMITS_LINE2}|g" ${LIMITS_FILE}
+fi
+
+# tell PAM (login and su) to read the limits file
+LOGIN_LINE="session    required   pam_limits.so"
+
+LOGIN_FILE=/etc/pam.d/login
+if [ -z "`grep pam_limits.so ${LOGIN_FILE}`" ] ; then
+    echo ${LOGIN_LINE} >> ${LOGIN_FILE}
+else
+    sed -i -e "s|^.*pam_limits.so.*|${LOGIN_LINE}|g" ${LOGIN_FILE}
+fi
+
+LOGIN_FILE=/etc/pam.d/su
+if [ -z "`grep pam_limits.so ${LOGIN_FILE}`" ] ; then
+    echo ${LOGIN_LINE} >> ${LOGIN_FILE}
+else
+    sed -i -e "s|^.*pam_limits.so.*|${LOGIN_LINE}|g" ${LOGIN_FILE}
+fi
+
+# Have cron.daily run earlier in the day, at a random time between 1:00 and 2:00
+CRONTAB_FILE=/etc/crontab
+if [ -f "${CRONTAB_FILE}" ] ; then
+    let "ranmin = $RANDOM % 60"
+    grep -sq "^25 6" ${CRONTAB_FILE} && sed -i -e "s|^25 6|${ranmin} 1|" ${CRONTAB_FILE}
+fi
+
+# Extract the activation key if we were installed by a version older than 3.1
+if [ ! -f /usr/share/metavize/activation.key ]; then
+    grep -sq "release.*\.untangle\.com" /etc/apt/sources.list && grep "release.*\.untangle\.com" /etc/apt/sources.list | sed -e "s|^.*http://||" -e "s|:.*||" > /usr/share/metavize/activation.key
+fi
+
+# Fix up older production boxes
+if [ -d /usr/sbin/mv ]; then
+    sed -i -e "s|FSCKFIX=.*|FSCKFIX=yes|" /etc/default/rcS
+    sed -i -e "s|errors=remount-ro|errors=panic|" /etc/fstab
+    grep -sq panic= /boot/grub/menu.lst || sed -i -e "s|nodhcp|nodhcp panic=5|" /boot/grub/menu.lst
+fi
+
+# Fix up boxes so they don't fsck after 6 months.  Now only limit is 32 reboots.
+rootdev=`cat /etc/mtab | grep " / " | awk '{print $1}'`
+tune2fs -i 0 $rootdev
+
+# Be very careful with this one.
+CHECKROOTSH=/etc/init.d/checkroot.sh
+SYSVINITVER=
+SYSVINITPKG="`dpkg --get-selections sysvinit | egrep 'install$' | awk '{print $1}'`"
+if [ ! -z "$SYSVINITPKG" ] ; then
+    SYSVINITVER=`dpkg-query -W "$SYSVINITPKG" | awk '{ if ($2) print $2; }'`
+    if [ "2:2.84-188" = "$SYSVINITVER" ] ; then
+        grep -sq -e '-gt 1' $CHECKROOTSH && sed -i -e 's|-gt 1|-gt 3|' -e 's|reboot -f|reboot -f\n    elif [ $? -ge 2 ]\n    then\n      reboot -f|' $CHECKROOTSH
+    fi
+fi
+
+exit 0
