@@ -7,6 +7,9 @@
  *
  * Copyright (c) 2005 Propero Limited
  *
+ * This file was modified by Untangle, Inc. in 2007.
+ * These changes are Copyright (c) 2007 Untangle, Inc.
+ *
  * Purpose: ISO layer of communication
  */
 package net.propero.rdp;
