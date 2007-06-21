@@ -8,7 +8,7 @@ Standards-Version: 3.7.2
 
 Package: untangle-spamassassin
 Architecture: all
-Conflicts: spamass-milter (<< 0.2.0-7), gotmail (<= 0.8.1-1), fuzzyocr-mv, spamassassin
+Conflicts: spamass-milter (<< 0.2.0-7), gotmail (<= 0.8.1-1), spamassassin
 Replaces: spamassassin
 Depends: ${perl:Depends}, libhtml-parser-perl (>= 3.31),
  libdigest-sha1-perl, ${misc:Depends}, libsocket6-perl,
