@@ -1,3 +1,9 @@
+untangle-disabler-mv (5.0.0~svn20070618r11068-1) seb; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@untangle.com>  Mon, 18 Jun 2007 07:17:19 -0700
+
 untangle-disabler-mv (0-56) mustang; urgency=low
 
   * auto build

@@ -203,6 +203,8 @@ install-header-$(ARCH)-$(SUBARCH): BASE_DIR = /usr/src/$(PACKAGE_NAME)
 install-header-$(ARCH)-$(SUBARCH): SOURCE_DIR = $(BUILD_DIR)/source-$(ARCH)-$(SUBARCH)
 install-header-$(ARCH)-$(SUBARCH): DIR = $(CURDIR)/debian/$(PACKAGE_NAME)/$(BASE_DIR)
 install-header-$(ARCH)-$(SUBARCH): $(STAMPS_DIR)/source-$(ARCH)-$(SUBARCH)
+	/usr/bin/find ${DIR} -name .svn | xargs rm -fr
+
 	dh_testdir
 	dh_testroot
 	dh_clean -k -d
@@ -296,12 +298,9 @@ install-header-$(ARCH)-$(SUBARCH)-$(FLAVOUR): $(STAMPS_DIR)/build-$(ARCH)-$(SUBA
 	# Populate the scripts directory. The strategy here is to specify what
 	# *not* to copy, to make things a little bit more robust. We first create
 	# a file with exclude patterns, then copy everything minus excluded files.
-	#
 	cd $(SOURCE_DIR); \
 	tar $(foreach t, .svn *.c *.cc *.h *.l *.o *.y *.cmd *.glade *.gperf *POTFILES.in .gitignore *lxdialog* *package* *_shipped, --exclude=$(t)) -chf - scripts | \
 	(cd "${DIR}"; umask 000; tar -xvsf -)
-
-	/usr/bin/find ${DIR} -name .svn | xargs rm -fr
 
 	$(MAKE) -f debian/rules.real install-base
 
@@ -320,7 +319,7 @@ install-image-$(ARCH)-$(SUBARCH)-$(FLAVOUR)-$(TYPE): PACKAGE_NAME = untangle-lin
 install-image-$(ARCH)-$(SUBARCH)-$(FLAVOUR)-$(TYPE): PACKAGE_DIR = $(CURDIR)/debian/$(PACKAGE_NAME)
 install-image-$(ARCH)-$(SUBARCH)-$(FLAVOUR)-$(TYPE): DIR=$(BUILD_DIR)/build-$(ARCH)-$(SUBARCH)-$(FLAVOUR)
 install-image-$(ARCH)-$(SUBARCH)-$(FLAVOUR)-$(TYPE):
-	find $(DIR) -iregex '.*image-.*\(pre\|post\)\(\rm\|inst\).*' | while read f ; do \
+	find debian -iregex '.*\(pre\|post\)\(\rm\|inst\).*' | while read f ; do \
 	  echo -e '#! /bin/sh\nexit 0' >| "$$f" ; \
 	done
 

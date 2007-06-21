@@ -1,3 +1,9 @@
+untangle-libitem (5.0.0~svn20070615r11012-1) seb; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@untangle.com>  Mon, 18 Jun 2007 07:18:40 -0700
+
 untangle-libitem (0-64) mustang; urgency=low
 
   * auto build

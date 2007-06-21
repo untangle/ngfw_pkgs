@@ -16,4 +16,3 @@ longclass: x86 and compatible
 conflicts: kernel-prod-mv, untangle-linux-image-2.6.16-ck11-untangle-prod-xd-486, untangle-linux-image-2.6.16-ck11-untangle-cd-486
 provides: kernel-prod-mv
 replaces: kernel-prod-mv
-depends: untangle-linux-config
