@@ -137,7 +137,7 @@ binary-indep: build-indep install-indep
 	dh_installlogcheck -i
 	dh_installdocs -i
 	dh_installexamples -i
-	dh_installinit -i -- defaults 19 21
+	dh_installinit --name=spamassassin -i -- defaults 19 21
 	dh_installchangelogs Changes -i
 	dh_link -i
 	dh_compress -i
