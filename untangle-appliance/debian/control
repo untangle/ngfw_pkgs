@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: untangle-appliance
 Architecture: any
-Depends: untangle-kiosk, untangle-client-windows-jre, untangle-bootsplash, untangle-restore-tools, untangle-dhclient-config, firefox, exim4, ntp-simple, snmpd, snmp, sg3-utils, atop
+Depends: untangle-kiosk, untangle-restore-tools, untangle-dhclient-config, firefox, exim4, ntp-simple, snmpd, snmp
 Pre-Depends: untangle-postgresql-config
 Conflicts: dlocate, slocate, firefox-r-kiosk, masqmail
 Description: The Untangle appliance
