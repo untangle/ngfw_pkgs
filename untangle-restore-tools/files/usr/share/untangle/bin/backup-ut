@@ -25,7 +25,7 @@ dump_installed()
 {
     instlist=$1
 
-    @UVM_HOME@/bin/mkg installed > $instlist
+    /usr/share/untangle/bin/mkg installed > $instlist
 }
 
 dump_db()
