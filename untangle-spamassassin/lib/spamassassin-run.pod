@@ -43,7 +43,7 @@ Options:
  -p prefs, --prefspath=file, --prefs-file=file
                                    Set user preferences file
  --siteconfigpath=path             Path for site configs
-                                   (def: /etc/mail/spamassassin)
+                                   (def: /etc/spamassassin)
  -x, --nocreate-prefs              Don't create user preferences file
  -e, --exit-code                   Exit with a non-zero exit code if the
                                    tested message was spam
@@ -229,7 +229,7 @@ Ignore the default directories (usually C</usr/share/spamassassin> or similar).
 =item B<--siteconfigpath>=I<path>
 
 Use the specified path for locating site-specific configuration files.  Ignore
-the default directories (usually C</etc/mail/spamassassin> or similar).
+the default directories (usually C</etc/spamassassin> or similar).
 
 =item B<-p> I<prefs>, B<--prefspath>=I<prefs>, B<--prefs-file>=I<prefs>
 

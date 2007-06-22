@@ -2289,7 +2289,7 @@ Ignore the default directories (usually C</usr/share/spamassassin> or similar).
 =item B<--siteconfigpath>=I<path>
 
 Use the specified path for locating site-specific configuration files.  Ignore
-the default directories (usually C</etc/mail/spamassassin> or similar).
+the default directories (usually C</etc/spamassassin> or similar).
 
 =item B<-d>, B<--daemonize>
 

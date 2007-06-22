@@ -576,7 +576,7 @@ Options:
  -u username, --username=username  Override username taken from the runtime environment
  -C path, --configpath=path, --config-file=path   Path to standard configuration dir
  -p prefs, --prefspath=file, --prefs-file=file    Set user preferences file
- --siteconfigpath=path             Path for site configs (def: /etc/mail/spamassassin)
+ --siteconfigpath=path             Path for site configs (def: /etc/spamassassin)
  -D, --debug-level                 Print debugging messages
  -V, --version                     Print version
  -h, --help                        Print usage message
@@ -729,7 +729,7 @@ Ignore the default directories (usually C</usr/share/spamassassin> or similar).
 =item B<--siteconfigpath>=I<path>
 
 Use the specified path for locating site-specific configuration files.  Ignore
-the default directories (usually C</etc/mail/spamassassin> or similar).
+the default directories (usually C</etc/spamassassin> or similar).
 
 =item B<-p> I<prefs>, B<--prefspath>=I<prefs>, B<--prefs-file>=I<prefs>
 

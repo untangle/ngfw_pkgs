@@ -13,7 +13,7 @@ therefore, the only way to have their own local settings would be through a
 database or LDAP server.
 
 SpamAssassin will check the global configuration file (ie. any file matching
-/etc/mail/spamassassin/*.cf) for the following settings:
+/etc/spamassassin/*.cf) for the following settings:
 
   user_scores_dsn ldap://host:port/dc=basedn,dc=de?attr?scope?uid=__USERNAME__
   user_scores_ldap_username	bind dn

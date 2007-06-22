@@ -111,7 +111,7 @@ install-untangle-spamassassin: build-indep
 	mv debian/untangle-spamassassin/usr/bin/spamd debian/untangle-spamassassin/usr/sbin/
 
 #	Install Debian specific files
-	cp debian/65_debian.cf debian/untangle-spamassassin/usr/share/untangle-spamassassin/65_debian.cf
+	cp debian/65_debian.cf debian/untangle-spamassassin/usr/share/untangle/65_debian.cf
 
 	-rmdir -p debian/untangle-spamassassin/usr/lib/perl5
 

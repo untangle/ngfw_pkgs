@@ -105,7 +105,7 @@ The Bayesian Classifier
 If you plan to use Bayesian classification (the BAYES rules) with spamd,
 you will need to either
 
-  1. modify /etc/mail/spamassassin/local.cf to use a shared database of
+  1. modify /etc/spamassassin/local.cf to use a shared database of
   tokens, by setting the 'bayes_path' setting to a path all users can read
   and write to.  You will also need to set the 'bayes_file_mode' setting
   to 0666 so that created files are shared, too.

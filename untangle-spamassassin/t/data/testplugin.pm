@@ -1,6 +1,6 @@
 =head1 
 
-To try this out, write these lines to /etc/mail/spamassassin/plugintest.cf:
+To try this out, write these lines to /etc/spamassassin/plugintest.cf:
 
   loadplugin     myTestPlugin
   header         MY_TEST_PLUGIN eval:check_test_plugin()
