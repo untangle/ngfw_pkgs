@@ -105,7 +105,7 @@ $SUB_VERSION = (split(/\s+/,'$LastChangedDate: 2006-10-05 10:59:08 -0700 (Thu, 0
 
 # If you hacked up your SA, you should add a version_tag to your .cf files.
 # This variable should not be modified directly.
-@EXTRA_VERSION = qw(deb);
+@EXTRA_VERSION = qw();
 if (defined $IS_DEVEL_BUILD && $IS_DEVEL_BUILD) {
   push(@EXTRA_VERSION,
        ('r' . qw{$LastChangedRevision: 453304 $ updated by SVN}[1]));

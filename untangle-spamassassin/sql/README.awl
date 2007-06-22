@@ -15,7 +15,7 @@ so:
 auto_whitelist_factory Mail::SpamAssassin::SQLBasedAddrList
 
 SpamAssassin will check the global configuration file (ie. any file
-matching /etc/spamassassin/*.cf) for the following settings:
+matching /etc/mail/spamassassin/*.cf) for the following settings:
 
 user_awl_dsn                 DBI:driver:database:hostname[:port]
 user_awl_sql_username        dbusername

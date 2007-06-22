@@ -116,7 +116,7 @@ Other Installation Notes
     CPU-intensive task before they can send mail to you, so we give that
     some bonus points.  However, it requires that you list what addresses
     you expect to receive mail for, by adding 'hashcash_accept' lines to
-    your ~/.spamassassin/user_prefs or /etc/spamassassin/local.cf
+    your ~/.spamassassin/user_prefs or /etc/mail/spamassassin/local.cf
     files.  See the Mail::SpamAssassin::Plugin::Hashcash manual page for
     details on how to specify these.
 
@@ -128,14 +128,14 @@ Other Installation Notes
 
 
   - You can create your own system-wide rules files in
-    /etc/spamassassin; their filenames should end in ".cf".  Multiple
+    /etc/mail/spamassassin; their filenames should end in ".cf".  Multiple
     files will be read, and SpamAssassin will not overwrite these files
     when installing a new version.
 
 
   - You should not modify the files in /usr/share/spamassassin; these
     will be overwritten when you upgrade.  Any changes you make in
-    files in the /etc/spamassassin directory,  however, will
+    files in the /etc/mail/spamassassin directory,  however, will
     override these files.
 
 

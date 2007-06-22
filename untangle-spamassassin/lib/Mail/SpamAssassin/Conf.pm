@@ -40,7 +40,7 @@ Mail::SpamAssassin::Conf - SpamAssassin configuration file
 =head1 DESCRIPTION
 
 SpamAssassin is configured using traditional UNIX-style configuration files,
-loaded from the C</usr/share/spamassassin> and C</etc/spamassassin>
+loaded from the C</usr/share/spamassassin> and C</etc/mail/spamassassin>
 directories.
 
 The C<#> character starts a comment, which continues until end of line.
@@ -1591,7 +1591,7 @@ Clear the unsafe_report template.
 
 These settings differ from the ones above, in that they are considered
 'privileged'.  Only users running C<spamassassin> from their procmailrc's or
-forward files, or sysadmins editing a file in C</etc/spamassassin>, can
+forward files, or sysadmins editing a file in C</etc/mail/spamassassin>, can
 use them.   C<spamd> users cannot use them in their C<user_prefs> files, for
 security and efficiency reasons, unless C<allow_user_rules> is enabled (and
 then, they may only add rules from below).

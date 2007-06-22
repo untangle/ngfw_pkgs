@@ -27,7 +27,7 @@ Test - test plugin
 =head1 DESCRIPTION
 
 To try this plugin, write the above two lines in the synopsis to
-C</etc/spamassassin/plugintest.cf>.
+C</etc/mail/spamassassin/plugintest.cf>.
 
 =cut
 

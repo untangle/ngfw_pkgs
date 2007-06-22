@@ -18,7 +18,7 @@ In addition, any config options marked as Admin Only will NOT be parsed from
 SQL preferences.
 
 SpamAssassin will check the global configuration file (ie. any file matching
-/etc/spamassassin/*.cf) for the following settings:
+/etc/mail/spamassassin/*.cf) for the following settings:
 
   user_scores_dsn		DBI:driver:connection
   user_scores_sql_username	dbusername

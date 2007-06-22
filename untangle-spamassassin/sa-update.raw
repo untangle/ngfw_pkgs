@@ -146,7 +146,6 @@ GetOptions(
   'debug|D:s'                           => \$opt{'debug'},
   'version|V'                           => \$opt{'version'},
   'help|h|?'                            => \$opt{'help'},
-  'allowplugins'                        => \$opt{'allowplugins'},
 
   # allow multiple of these on the commandline
   'gpgkey=s'				=> $opt{'gpgkey'},
@@ -903,16 +902,9 @@ sub taint_safe_archive_extract {
     if (open OUT, ">".$outfname) {
       my $content = $tar->get_content($file);
 
+      # replace macros in the update files if it's a .pre or .cf
       if ($outfname =~ /\.(?:pre|cf)$/) {
-        # replace macros in the update files if it's a .pre or .cf
         $content =~ s/\@\@([^\@]+)\@\@/$MACRO_VALUES{$1} || "\@\@$1\@\@"/ge;
-
-        # also, if --allowplugins is not specified, comment out
-        # all loadplugin or tryplugin lines
-        if ( !$opt{'allowplugins'} ) {
-          $content =~ s{^\s*((?:load|try)plugin|bayes_store_module|auto_whitelist_factory)\b}
-            {#(commented by sa-update, no --allowplugins switch specified)# $1}gmx;
-        }
       }
 
       print OUT $content;
@@ -1238,7 +1230,8 @@ Options:
   --channel channel		Retrieve updates from this channel
   				Use multiple times for multiple channels
   --channelfile file		Retrieve updates from the channels in the file
-  --allowplugins                Allow updates to load plugin code
+
+
   --gpgkey key			Trust the key id to sign releases
   				Use multiple times for multiple keys
   --gpgkeyfile file		Trust the key ids in the file to sign releases
@@ -1288,12 +1281,6 @@ multiple times, once per channel.  i.e.:
 Similar to the B<--channel> option, except specify the additional channels in a
 file instead of on the commandline.  This is extremely useful when there are a
 lot of additional channels.
-
-=item B<--allowplugins>
-
-Allow downloaded updates to activate plugins.  The default is not to
-activate plugins; any C<loadplugin> or C<tryplugin> lines will be commented
-in the downloaded update rules files.
 
 =item B<--gpg>, B<--nogpg>
 

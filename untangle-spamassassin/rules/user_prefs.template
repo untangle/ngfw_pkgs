@@ -5,7 +5,7 @@
 #* directory. At runtime, if a user has no preferences in their home directory
 #* already, it will be copied for them, allowing them to perform personalised
 #* customisation.  If you want to make changes to the site-wide defaults,
-#* create a file in /etc/spamassassin instead.
+#* create a file in /etc/spamassassin or /etc/mail/spamassassin instead.
 ###########################################################################
 
 # How many points before a mail is considered spam.

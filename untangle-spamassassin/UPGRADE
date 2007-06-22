@@ -8,7 +8,7 @@ Note for Users Upgrading to SpamAssassin 3.1.0
   perldoc Mail::SpamAssassin::Plugin::* (ie AWL, DCC, etc)
 
 - There are now multiple files read to enable plugins in the
-  /etc/spamassassin directory; previously only one, "init.pre" was
+  /etc/mail/spamassassin directory; previously only one, "init.pre" was
   read.  Now both "init.pre", "v310.pre", and any other files ending
   in ".pre" will be read.  As future releases are made, new plugins
   will be added to new files named according to the release they're
@@ -165,7 +165,7 @@ Note for Users Upgrading to SpamAssassin 3.0.x
 - If you are using a UNIX machine with all database files on local disks,
   and no sharing of those databases across NFS filesystems, you can use a
   more efficient, but non-NFS-safe, locking mechanism.   Do this by adding
-  the line "lock_method flock" to the /etc/spamassassin/local.cf
+  the line "lock_method flock" to the /etc/mail/spamassassin/local.cf
   file. This is strongly recommended if you're not using NFS, as it is
   much faster than the NFS-safe locker.
 
