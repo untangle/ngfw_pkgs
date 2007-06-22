@@ -4,7 +4,7 @@ case "$1" in
     start)
         if [ ! -z "`cat /proc/cmdline | grep ut-restore`" ] ; then
           echo "Starting Edgeguard Restore."
-          /usr/bin/ut-restore reboot
+          /usr/share/untangle/bin/ut-restore reboot
         fi
         ;;
 

@@ -1,8 +1,1 @@
-/usr/bin/backup-ut
-/usr/bin/ut-restore
-/usr/bin/factory-defaults
-/usr/bin/uvmdb-restore
-/usr/bin/untangle-restore
-/usr/share/untangle/conf/canonical.tar.gz
-/usr/share/untangle/conf/initial.ldif
-/usr/share/untangle/conf/ldap.DB_CONFIG
+*

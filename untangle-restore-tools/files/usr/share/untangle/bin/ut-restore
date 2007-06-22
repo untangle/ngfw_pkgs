@@ -169,14 +169,14 @@ main_menu()
         0) # OK
             case $choice in
                 "Backup & Restore")
-                    if [ -x /usr/bin/uvmdb-restore ] ; then
-                        /usr/bin/uvmdb-restore
+                    if [ -x /usr/share/untangle/bin/uvmdb-restore ] ; then
+                        /usr/share/untangle/bin/uvmdb-restore
                     fi
                     state=MAIN_MENU
                     ;;
                 "Return to Factory Defaults")
                     if confirm "Return all settings to factory defaults?"; then
-                        factory-defaults
+                        /usr/share/untangle/bin/factory-defaults
                         state=FACTORY_SUCCESS_SPLASH
                     else
                         state=MAIN_MENU
