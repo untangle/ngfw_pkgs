@@ -9,7 +9,7 @@ case $TERM in
     precmd() { print -Pn "\e]0;%n@%m\a" } ;;
   sun*|vt*|screen*|xterm*)
     RPROMPT=$VT_RPROMPT
-    preexec() { print -Pn "\ek%n@%m $1\e\\" }
+#    preexec() { print -Pn "\ek%n@%m $1\e\\" }
     precmd() { print -Pn "\ek%n@%m\e\\" } ;;
   *)
     RPROMPT=$REGULAR_RPROMPT ;;
