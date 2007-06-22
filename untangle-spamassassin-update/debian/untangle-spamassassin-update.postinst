@@ -37,7 +37,7 @@ clear_report_template
 report _SUMMARY_
 EOF
 
-saVersion=$(dpkg-query --showformat='${Version}\n' -W spamassassin)
+saVersion=$(dpkg-query --showformat='${Version}\n' -W untangle-spamassassin)
 
 if dpkg --compare-versions $saVersion lt 3.1.4 ; then
   perl -i -npe 's/.*focr_pre314.*/focr_pre314 1/' /etc/mail/spamassassin/FuzzyOcr.cf
