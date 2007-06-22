@@ -1,9 +1,9 @@
 etc
 etc/init.d
 etc/default
-usr/share/doc/untangle-spamassassin
-usr/share/doc/untangle-spamassassin/rules
-usr/share/untangle-spamassassin
+usr/share/doc/spamassassin
+usr/share/doc/spamassassin/rules
+usr/share/spamassassin
 etc/logcheck/ignore.d.paranoid
 etc/logcheck/violations.ignore.d
 usr/share/man/man8

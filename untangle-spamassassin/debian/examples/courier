@@ -1,4 +1,4 @@
-Some notes on how to integrate untangle-spamassassin with courier
+Some notes on how to integrate spamassassin with courier
 --------------------------------------------------------
 
 Contributed by:
@@ -11,7 +11,7 @@ DEFAULTDELIVERY="| /usr/bin/maildrop"
 
 2) In /etc/courier/maildroprc add the line:
 
-xfilter "/usr/bin/untangle-spamassassin"
+xfilter "/usr/bin/spamassassin"
 or
 xfilter "/usr/bin/spamc"
 

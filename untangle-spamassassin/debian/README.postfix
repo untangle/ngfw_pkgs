@@ -5,11 +5,11 @@ for incoming mails.
 
 1. Set SpamAssassin to start after booting the system
 
-Edit /etc/defaults/untangle-spamassassin and set SpamAssassin to start after a reboot.
+Edit /etc/defaults/spamassassin and set SpamAssassin to start after a reboot.
 
 2. Start SpamAssassin
 
-/etc/init.d/untangle-spamassassin start
+/etc/init.d/spamassassin start
 
 3. Create a filter user.
 
@@ -25,7 +25,7 @@ exit $?
 
 Be sure to chmod it to 750, at least.
 
-A more complete example can be found under /usr/share/doc/untangle-spamassassin/examples
+A more complete example can be found under /usr/share/doc/spamassassin/examples
 
 5. Set /etc/postfix/master.cf
 
