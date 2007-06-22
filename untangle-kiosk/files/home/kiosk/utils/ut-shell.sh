@@ -11,4 +11,4 @@ if [ ! -z `sudo su -c 'grep "^root:YKN4WuGxhHpIw:" /etc/shadow'` ] ; then
     sudo su root -c "xterm -T 'Please choose a password' -e '/usr/bin/passwd'"
 fi
     
-xterm -T Password -e su root
+xterm -T xterm -e su root
