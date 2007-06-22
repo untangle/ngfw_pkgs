@@ -11,14 +11,14 @@ createuser -U postgres -d -A untangle 2>/dev/null
 createdb -O postgres -U postgres uvm
 /usr/share/untangle/bin/update-schema settings uvm
 /usr/share/untangle/bin/update-schema events uvm
-/usr/share/untangle/bin/update-schema settings untangle-router-node
-/usr/share/untangle/bin/update-schema events untnagle-router-node
+/usr/share/untangle/bin/update-schema settings untangle-node-router
+/usr/share/untangle/bin/update-schema events untnagle-node-router
 psql -X -U postgres uvm <<EOF
-INSERT INTO tid VALUES (1);
+INSERT INTO u_tid VALUES (1);
 INSERT INTO u_node_manager_state VALUES (nextval('hibernate_sequence'), 2);
 INSERT INTO u_node_persistent_state VALUES (nextval('hibernate_sequence'), 'untangle-node-router', 1, '\\\\001\\\\000', 'running');
 INSERT INTO u_node_preferences VALUES (nextval('hibernate_sequence'), 1, 255, 175, 175, 255);
-INSERT INTO tid VALUES (2);
+INSERT INTO u_tid VALUES (2);
 INSERT INTO u_node_persistent_state VALUES (nextval('hibernate_sequence'), 'untangle-casing-ftp', 2, '\\\\002\\\\000', 'running');
 INSERT INTO u_node_preferences VALUES (nextval('hibernate_sequence'), 2, 255, 175, 175, 255);
 INSERT INTO n_router_settings VALUES (nextval('hibernate_sequence'), 1, 0, true, null, null, false, null, true, null, null, 0, true, null, false);
