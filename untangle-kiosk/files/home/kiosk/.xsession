@@ -6,9 +6,6 @@
 xset s off
 xset -dpms
 
-# only used when the screeensaver runs, but doesn't hurt anything
-xsetroot -solid black
-
 # disable the middle button through a 3rd party app
 xbindkeys &
 
