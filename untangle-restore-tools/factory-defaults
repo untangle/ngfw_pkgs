@@ -11,17 +11,17 @@ createuser -U postgres -d -A untangle 2>/dev/null
 createdb -O postgres -U postgres uvm
 /usr/share/untangle/bin/update-schema settings uvm
 /usr/share/untangle/bin/update-schema events uvm
-/usr/share/untangle/bin/update-schema settings router-node
-/usr/share/untangle/bin/update-schema events router-node
+/usr/share/untangle/bin/update-schema settings untangle-router-node
+/usr/share/untangle/bin/update-schema events untnagle-router-node
 psql -X -U postgres uvm <<EOF
 INSERT INTO tid VALUES (1);
-INSERT INTO transform_manager_state VALUES (nextval('hibernate_sequence'), 2);
-INSERT INTO transform_persistent_state VALUES (nextval('hibernate_sequence'), 'nat-transform', 1, '\\\\001\\\\000', 'running');
-INSERT INTO transform_preferences VALUES (nextval('hibernate_sequence'), 1, 255, 175, 175, 255);
+INSERT INTO u_node_manager_state VALUES (nextval('hibernate_sequence'), 2);
+INSERT INTO u_node_persistent_state VALUES (nextval('hibernate_sequence'), 'untangle-node-router', 1, '\\\\001\\\\000', 'running');
+INSERT INTO u_node_preferences VALUES (nextval('hibernate_sequence'), 1, 255, 175, 175, 255);
 INSERT INTO tid VALUES (2);
-INSERT INTO transform_persistent_state VALUES (nextval('hibernate_sequence'), 'ftp-casing', 2, '\\\\002\\\\000', 'running');
-INSERT INTO transform_preferences VALUES (nextval('hibernate_sequence'), 2, 255, 175, 175, 255);
-INSERT INTO tr_nat_settings VALUES (nextval('hibernate_sequence'), 1, 0, true, null, null, false, null, true, null, null, 0, true, null, false);
+INSERT INTO u_node_persistent_state VALUES (nextval('hibernate_sequence'), 'untangle-casing-ftp', 2, '\\\\002\\\\000', 'running');
+INSERT INTO u_node_preferences VALUES (nextval('hibernate_sequence'), 2, 255, 175, 175, 255);
+INSERT INTO n_router_settings VALUES (nextval('hibernate_sequence'), 1, 0, true, null, null, false, null, true, null, null, 0, true, null, false);
 EOF
 
 # remove files
@@ -44,7 +44,7 @@ slapindex
 /etc/init.d/slapd start
 
 # restore canonical files
-(cd / && tar zvxf /usr/share/untangle/conf/canonical.tar.gz)
+tar -C / zvxf /usr/share/untangle/conf/canonical.tar.gz
 
 ## restore the NAT transform if necessary
 if [ -f ${NAT_CACHE_DEB} ]; then
