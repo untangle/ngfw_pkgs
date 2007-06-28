@@ -9,7 +9,7 @@ Package: untangle-postgresql-config
 Architecture: any
 Depends: procps (>= 3.2.7-2~bpo.1), postgresql
 Conflicts: procps (<< 3.2.7-2~bpo.1), postgresql-mv
-Provides: postgresql-mv
+Provides: postgresql-mv, postgresql-server-mv
 Replaces: postgresql-mv
 Description: Untangle Postgres wrapper package
  The Untangle Postgres config for Postgres 7.4
