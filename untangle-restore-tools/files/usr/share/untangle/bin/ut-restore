@@ -89,15 +89,19 @@ support_menu()
         0) # OK
             case $choice in
                 "Enable Remote Support")
-                    /etc/init.d/ssh start &> /dev/null
-                    update-rc.d ssh defaults &> /dev/null
+		    apt-get install --yes untangle-support-agent
+		    for service in ssh untangle-support-agent ; do
+		      /etc/init.d/$service start &> /dev/null
+		      update-rc.d $service defaults &> /dev/null
+		    done
                     state=SUCCESS_SPLASH
                     ;;
                 "Disable Remote Support")
-                    /etc/init.d/ssh stop &> /dev/null
-                    mv /etc/init.d/ssh /etc/init.d/ssh.tmp &> /dev/null
-                    update-rc.d ssh remove &> /dev/null
-                    mv /etc/init.d/ssh.tmp /etc/init.d/ssh &> /dev/null
+		    for service in ssh untangle-support-agent ; do
+		      /etc/init.d/$service stop &> /dev/null
+		      mv /etc/init.d/$service /etc/init.d/$service.tmp &> /dev/null
+		      update-rc.d $service remove &> /dev/null
+		      mv /etc/init.d/$service.tmp /etc/init.d/$service &> /dev/null
                     state=SUCCESS_SPLASH
                     ;;
                 *)
