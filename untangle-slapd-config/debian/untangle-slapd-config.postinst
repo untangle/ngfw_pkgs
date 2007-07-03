@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if FIXME ; then
+  /etc/init.d/slapd stop
+  rm -rf /var/lib/ldap
+  mkdir /var/lib/ldap
+  cp /usr/share/untangle/conf/ldap.DB_CONFIG /var/lib/ldap/DB_CONFIG
+  slapadd -l /usr/share/untangle/conf/initial.ldif
+  slapindex
+  /etc/init.d/slapd start
+fi
