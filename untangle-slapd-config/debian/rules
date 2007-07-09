@@ -14,6 +14,8 @@ export DH_COMPAT=3
 
 MKDIR=/bin/mkdir -p
 
+DESTDIR=debian/untangle-slapd-config
+
 ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -g
 endif
@@ -28,20 +30,24 @@ configure-stamp:
 
 build: configure
 	dh_testdir
-	mkdir -p ./debian/tmp
+	rm -rf $(DESTDIR)
+	mkdir -p $(DESTDIR)
 	dh_installdirs -A -v
+	for i in `cat debian/untangle-nsis-addons.dirs` ; do mkdir -p $(DESTDIR)/$$i ; done
+	cp -r ./files/* $(DESTDIR)/
+	find $(DESTDIR) -name ".svn" -print0 | xargs -0 rm -rf 
 
 clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-arch-stamp build-indep-stamp configure-stamp
-	rm -rf debian/tmp debian/untangle-slapd-config
+	rm -rf debian/$(DESTDIR) sav-install
 	dh_clean
 
 binary-arch: build
 	dh_testdir  
 	dh_testroot   
-	dh_movefiles  
+#	dh_movefiles  
 #	dh_installdebconf   
 #	dh_shlibdeps   # FIXME - had to remove
 	dh_installdocs   

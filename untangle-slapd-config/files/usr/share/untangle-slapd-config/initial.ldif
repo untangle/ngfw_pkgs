@@ -1,0 +1,28 @@
+dn: dc=nodomain
+objectClass: top
+objectClass: dcObject
+objectClass: organization
+o: nodomain
+dc: nodomain
+structuralObjectClass: organization
+entryUUID: 8f449312-845a-102a-92df-91eb9830b270
+creatorsName: cn=anonymous
+modifiersName: cn=anonymous
+createTimestamp: 20060530190218Z
+modifyTimestamp: 20060530190218Z
+entryCSN: 20060530190218Z#000001#00#000000
+
+dn: cn=admin,dc=nodomain
+objectClass: simpleSecurityObject
+objectClass: organizationalRole
+cn: admin
+description: LDAP administrator
+userPassword:: e2NyeXB0fWx4b3VUQTg5NnJackk=
+structuralObjectClass: organizationalRole
+entryUUID: 8f4af4fa-845a-102a-92e0-91eb9830b270
+creatorsName: cn=anonymous
+modifiersName: cn=anonymous
+createTimestamp: 20060530190218Z
+modifyTimestamp: 20060530190218Z
+entryCSN: 20060530190218Z#000002#00#000000
+
