@@ -1,13 +1,13 @@
 #!/bin/sh
 
 LDAP_LIB_DIR=/var/lib/ldap
-UNTANGLE_CONFIG_DIR=/usr/share/untangle-slapd-config
-if [ -n "`diff ${LDAP_LIB_DIR}/ldap.DB_CONFIG ${UNTANGLE_CONFIG_DIR}/ldap.DB_CONFIG`" ] ; then
+UNTANGLE_SLAPD_CONFIG_DIR=/usr/share/untangle-slapd-config
+if [ -n "`diff ${LDAP_LIB_DIR}/DB_CONFIG ${UNTANGLE_SLAPD_CONFIG_DIR}/DB_CONFIG`" ] ; then
   /etc/init.d/slapd stop
   rm -rf ${LDAP_LIB_DIR}
   mkdir ${LDAP_LIB_DIR}
-  cp ${UNTANGLE_CONFIG_DIR}/ldap.DB_CONFIG ${LDAP_LIB_DIR}/DB_CONFIG
-  slapadd -l ${UNTANGLE_CONFIG_DIR}/initial.ldif
+  cp ${UNTANGLE_SLAPD_CONFIG_DIR}/DB_CONFIG ${LDAP_LIB_DIR}/DB_CONFIG
+  slapadd -l ${UNTANGLE_SLAPD_CONFIG_DIR}/initial.ldif
   slapindex
   /etc/init.d/slapd start
 fi
