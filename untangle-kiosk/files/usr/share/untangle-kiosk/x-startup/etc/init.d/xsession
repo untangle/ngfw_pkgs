@@ -42,6 +42,9 @@ XMODULE=""
 
 [ -n "$BACKGROUND" -a -e "$BACKGROUND" ] || BACKGROUND="-solid black"
 
+# fbdev is bound to fail, change it to vesa
+perl -i -npe 's/(?<=Driver)\s+"fbdev/"vesa/' /etc/X11/XF86Config-4
+
 # See how we were called.
 case "$1" in
   start)
