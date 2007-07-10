@@ -9,8 +9,6 @@ Package: untangle-slapd-config
 Architecture: any
 Pre-Depends: debconf (>= 0.5)
 Depends: slapd, ldap-utils
-Conflicts: untangle-slapd
-Provides: untangle-slapd
-Replaces: untangle-slapd
+Conflicts: untangle-slapd, untangle-ldap-utils, untangle-libldap-2.2-7
 Description: Untangle Slapd config package
  The Untangle slapd config for slapd 2.2.23
