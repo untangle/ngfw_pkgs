@@ -25,7 +25,7 @@ diff -urNad fuzzyocr-mv~/FuzzyOcr.cf fuzzyocr-mv/FuzzyOcr.cf
  ##### Wordlists #####
  # Here we defined the words to scan for (Default value: /etc/mail/spamassassin/FuzzyOcr.words)
 -focr_global_wordlist /etc/mail/spamassassin/FuzzyOcr.words
-+focr_global_wordlist /usr/share/fuzzyocr-mv/FuzzyOcr.words
++focr_global_wordlist /usr/share/untangle-fuzzyocr/FuzzyOcr.words
  #
  # This is the path RELATIVE to the respektive home directory for the personalized list
  # This list is merged with the global word list on execution (Default value: .spamassassin/fuzzyocr.words)
