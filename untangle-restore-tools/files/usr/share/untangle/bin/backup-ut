@@ -31,10 +31,7 @@ dump_installed()
 dump_db()
 {
     outfile=$1
-    (pg_dump -U postgres -n settings uvm;
-        echo "SET SESSION AUTHORIZATION 'postgres';";
-        pg_dump -U postgres -n events -s uvm) \
-        | gzip > $outfile 2>/dev/null
+    pg_dump -U postgres -n settings uvm | gzip > $outfile 2>/dev/null
 }
 
 backup()
