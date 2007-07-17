@@ -29,8 +29,8 @@ Package: untangle-linux-tree-2.6.16
 Architecture: all
 Section: devel
 Priority: optional
-Provides: linux-tree-2.6.16-ck11-1, linux-tree-2.6.16-ck11-2
-Depends: linux-patch-debian-2.6.16 (= 2.6.16-ck11-2), linux-source-2.6.16 (= 2.6.16-ck11-1) | linux-source-2.6.16 (= 2.6.16-ck11-2)
+Provides: linux-tree-2.6.16-ck11-1, linux-tree-2.6.16-ck11-2, linux-tree-2.6.16-ck11-3
+Depends: linux-patch-debian-2.6.16 (= 2.6.16-ck11-3), linux-source-2.6.16 (= 2.6.16-ck11-1) | linux-source-2.6.16 (= 2.6.16-ck11-2) | linux-source-2.6.16 (= 2.6.16-ck11-3)
 Description: Linux kernel source tree for building Debian kernel images
  This meta package is used as a build dependency of Debian
  untangle-linux-image packages to prevent a version discrepancy between the

@@ -1,5 +1,5 @@
 05566290592422653d9c4441f803c3dd  debian/bin/gencontrol.py
-9567b5e09049a1bec1e0aeb674e83184  debian/changelog
+aa8762858105eb1d7fea3509d901f3da  debian/changelog
 b7217461a173ffb4c62f78141e83e93f  debian/templates/control.extra.in
 61943ef73fb1c4c32c3384c318bd4c96  debian/templates/control.headers.arch.in
 15ce8b60d6b19c5cb3ebbf6a4c4590d0  debian/templates/control.headers.in
@@ -10,7 +10,6 @@ b7217461a173ffb4c62f78141e83e93f  debian/templates/control.extra.in
 210f22c870480c5843863b4e01a05d95  debian/templates/control.main.in
 3639281f348730aab1a2cb1def061304  debian/templates/control.modules.in
 92fddf8fc78d7f0cb2419105c36e4af3  debian/templates/control.source.in
-958d11a2576b2ab01c92180ee19602c4  debian/templates/control.source.in~
 0a8e099ce800260e49be7a6018bfa4ff  debian/templates/control.tree.in
 a96af98abb5819056d51efffad056c51  debian/arch/defines
 a314d818a19f72532b3fd7d7593b39ec  debian/arch/i386/defines
