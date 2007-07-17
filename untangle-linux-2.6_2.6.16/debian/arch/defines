@@ -14,7 +14,7 @@ initramfs-tools: mkinitramfs-kpkg
 yaird: mkinitrd.yaird
 
 [relations]
-gcc: gcc (>= 4:4.0)
+gcc: gcc
 gcc-3.3: gcc-3.3
 libc6: libc6
 initramfs-fallback: libc6
