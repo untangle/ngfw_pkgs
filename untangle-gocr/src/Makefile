@@ -43,7 +43,7 @@ CPPFLAGS=
 # to see the config.h
 CFLAGS=-g -O2 $(CPPFLAGS) -I../include $(DEFS)
 LDFLAGS=-lm  -lnetpbm  -L.
-DESTDIR=/usr
+DESTDIR=/home/seb/work/pkgs/untangle-gocr/debian/tmp/usr
 
 .c.o: $(INCLUDEFILES)
 	$(CC) $(CFLAGS) -c -o $*.o $<

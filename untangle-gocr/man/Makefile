@@ -7,7 +7,7 @@ PROGRAM = gocr
 mandir = ${prefix}/share/man
 
 INSTALL=/usr/bin/install -c
-DESTDIR=/usr
+DESTDIR=/home/seb/work/pkgs/untangle-gocr/debian/tmp/usr
 
 default: all
 
