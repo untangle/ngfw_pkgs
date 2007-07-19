@@ -102,6 +102,7 @@ support_menu()
 		      mv /etc/init.d/$service /etc/init.d/$service.tmp &> /dev/null
 		      update-rc.d $service remove &> /dev/null
 		      mv /etc/init.d/$service.tmp /etc/init.d/$service &> /dev/null
+		    done
                     state=SUCCESS_SPLASH
                     ;;
                 *)
