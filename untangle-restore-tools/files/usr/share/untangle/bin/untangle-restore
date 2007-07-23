@@ -62,13 +62,13 @@ clean_dirs
 tar zxf $tarfile -C /
 
 # restore the LDAP configuration
-if [ -f /usr/share/untangle/conf/dirbackup.ldif ]; then
+if [ -x /usr/sbin/slapadd -a -f /usr/share/untangle/conf/dirbackup.ldif ]; then
     /etc/init.d/slapd stop
     rm -rf /var/lib/ldap
     mkdir /var/lib/ldap
     cp /usr/share/untangle/conf/ldap.DB_CONFIG /var/lib/ldap/DB_CONFIG
-    slapadd -l /usr/share/untangle/conf/dirbackup.ldif
-    slapindex
+    /usr/sbin/slapadd -l /usr/share/untangle/conf/dirbackup.ldif
+    /usr/sbin/slapindex
     /etc/init.d/slapd start
 fi
 

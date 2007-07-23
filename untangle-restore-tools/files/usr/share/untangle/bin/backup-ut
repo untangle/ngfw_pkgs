@@ -4,7 +4,7 @@ tar_files()
 {
     tarfile=$1
 
-    slapcat -l /usr/share/untangle/conf/dirbackup.ldif
+    [ -x /usr/sbin/slapcat ] && /usr/sbin/slapcat -l /usr/share/untangle/conf/dirbackup.ldif
 
     tar zcf $tarfile --ignore-failed-read -C / \
         etc/hostname \
@@ -19,6 +19,9 @@ tar_files()
         usr/share/untangle/conf/openvpn/pki \
         usr/share/untangle/conf/timezone \
         usr/share/untangle/conf/dirbackup.ldif
+
+    # Tar exits with non-zero when some files don't exist, which can happen.
+    return 0
 }
 
 dump_installed()

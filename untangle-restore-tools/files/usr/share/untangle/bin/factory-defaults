@@ -34,14 +34,16 @@ rm -rf /usr/share/untangle/conf/openvpn
 rm -rf /usr/share/untangle/quarantine
 rm -rf /etc/openvpn
 
-# restore initial LDAP db
-/etc/init.d/slapd stop
-rm -rf /var/lib/ldap
-mkdir /var/lib/ldap
-cp /usr/share/untangle/conf/ldap.DB_CONFIG /var/lib/ldap/DB_CONFIG
-slapadd -l /usr/share/untangle/conf/initial.ldif
-slapindex
-/etc/init.d/slapd start
+if [ -x /usr/sbin/slapadd ]; then
+    # restore initial LDAP db
+    /etc/init.d/slapd stop
+    rm -rf /var/lib/ldap
+    mkdir /var/lib/ldap
+    cp /usr/share/untangle/conf/ldap.DB_CONFIG /var/lib/ldap/DB_CONFIG
+    /usr/sbin/slapadd -l /usr/share/untangle/conf/initial.ldif
+    /usr/sbin/slapindex
+    /etc/init.d/slapd start
+fi
 
 # restore canonical files
 tar -C / zvxf /usr/share/untangle/conf/canonical.tar.gz
