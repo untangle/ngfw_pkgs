@@ -1,3 +1,9 @@
+untangle-libnfnetlink (5.0.1-1) mustang-1; urgency=low
+
+  * auto build
+
+ --  <seb@untangle.com>  Fri, 27 Jul 2007 14:44:29 -0700
+
 untangle-libnfnetlink (0.0.16) unstable; urgency=low
 
   * new upstream release
