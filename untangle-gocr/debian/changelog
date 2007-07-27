@@ -1,3 +1,9 @@
+untangle-gocr (5.0.1-1) mustang-1; urgency=low
+
+  * auto build
+
+ --  <seb@untangle.com>  Fri, 27 Jul 2007 14:42:13 -0700
+
 untangle-gocr (0.41-1) unstable; urgency=low
 
   * 0.41 plus PNM patch.
