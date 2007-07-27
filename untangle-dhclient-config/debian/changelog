@@ -1,3 +1,9 @@
+untangle-dhclient-config (5.0.1-1) mustang-1; urgency=low
+
+  * auto build
+
+ --  <seb@untangle.com>  Fri, 27 Jul 2007 14:42:00 -0700
+
 untangle-dhclient-config (0-24) mustang; urgency=low
 
   * auto build
