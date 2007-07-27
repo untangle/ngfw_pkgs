@@ -1,3 +1,9 @@
+untangle-kiosk (5.0.1-1) mustang-1; urgency=low
+
+  * auto build
+
+ --  <seb@untangle.com>  Fri, 27 Jul 2007 14:44:01 -0700
+
 untangle-kiosk (0-112) mustang; urgency=low
 
   * auto build
