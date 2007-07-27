@@ -1,3 +1,9 @@
+untangle-ujac2pdf (5.0.1-1) mustang-1; urgency=low
+
+  * auto build
+
+ --  <seb@untangle.com>  Fri, 27 Jul 2007 14:47:35 -0700
+
 untangle-ujac2pdf (0-4) mustang; urgency=low
 
   * auto build
