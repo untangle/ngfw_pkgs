@@ -1,3 +1,9 @@
+untangle-fuzzyocr (5.0.1-1) mustang-1; urgency=low
+
+  * auto build
+
+ --  <seb@untangle.com>  Fri, 27 Jul 2007 14:42:06 -0700
+
 untangle-fuzzyocr (2.3b-8) stable; urgency=low
 
   * auto build
