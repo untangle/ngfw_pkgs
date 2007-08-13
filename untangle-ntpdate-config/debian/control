@@ -8,5 +8,5 @@ Standards-Version: 3.7.2
 Package: untangle-ntpdate-config
 Architecture: any
 Depends: ntpdate
-Description: The Untangle clamav utils
- The Untangle clamav utilities.
+Description: The Untangle ntpdate config
+ The Untangle ntpdate config.
