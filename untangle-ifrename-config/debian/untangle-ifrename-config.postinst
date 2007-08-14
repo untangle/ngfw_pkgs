@@ -3,7 +3,7 @@
 IFRENAME_INIT_SCRIPT=untangle-ifrename
 IFRENAME_CONF_FILE=/etc/iftab
 
-ifconfig -a | grep "^eth" | awk '{ print $1 "\tmac " $5 }' > ${IFRENAME_CONF_FILE}
+ifconfig -a | awk '/^eth/ { print $1 "\tmac " $5 }' > ${IFRENAME_CONF_FILE}
 
 #DEBHELPER#
 
