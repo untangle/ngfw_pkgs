@@ -1,0 +1,10 @@
+#!/bin/sh
+
+IFRENAME_INIT_SCRIPT=untangle-ifrename
+IFRENAME_CONF_FILE=/etc/iftab
+
+ifconfig | grep eth | awk '{ print $1 "\tmac " $5 }' > ${IFRENAME_CONF_FILE}
+
+#DEBHELPER#
+
+exit 0

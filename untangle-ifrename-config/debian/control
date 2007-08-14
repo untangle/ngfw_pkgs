@@ -1,0 +1,12 @@
+Source: untangle-ifrename-config
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.7.2
+
+Package: untangle-ifrename-config
+Architecture: any
+Depends: ifrename
+Description: The Untangle ifrename config
+ The Untangle ifrename config.
