@@ -3,19 +3,33 @@
 # Remap the interfaces to the way they should be
 #
 
-IFRENAME=/sbin/ifrename
+IFRENAME_BINARY=/sbin/ifrename
+IFRENAME_ERROR_MSG="${IFRENAME_BINARY} missing, unable to remap interfaces."
+IFRENAME_CONF_FILE=/etc/iftab
+
+[ ! -x ${IFRENAME_BINARY} ] && echo ${IFRENAME_ERROR_MSG} && exit 1
 
 case "$1" in
   start)
-    if [ -x ${IFRENAME} ]; then
-      ${IFRENAME} -t
-    else    
-      echo "${IFRENAME} is not installed, unable to remap interfaces."
+    # store this so we don't run as many ifconfig processes as we
+    # have NICs
+    ifconfig=`ifconfig -a`
+    while read ifname foo ifmac ; do
+      # iterate over lines in the conf file; if one of them refers
+      # to a NIC that's missing, schedule it for removal from the
+      # config # file
+      echo "$ifconfig" | grep -q $ifmac || macsToRemove="-e '/${ifmac}/d' $macsToRemove"
+    done < ${IFRENAME_CONF_FILE}
+    # execute scheduled removal(s) if necessary
+    [ -n "$macsToRemove" ] && sed -i $macsToRemove ${IFRENAME_CONF_FILE}
+    # eventually, run ifrename itself to lable the interfaces
+    ${IFRENAME} -t
     fi
     ;;
   stop)
     ;;
   restart|force-reload)
+    $0 start
     ;;
   *)  
     echo "Usage: $0 {start|stop|restart|force-reload}" >&2
