@@ -24,7 +24,6 @@ case "$1" in
     [ -n "$macsToRemove" ] && sed -i $macsToRemove ${IFRENAME_CONF_FILE}
     # eventually, run ifrename itself to lable the interfaces
     ${IFRENAME} -t
-    fi
     ;;
   stop)
     ;;
