@@ -1,3 +1,9 @@
+untangle-ntpdate-config (5.0.2-1) mustang-2; urgency=low
+
+  * auto build
+
+ -- Robert Scott <rbscott@untangle.com>  Tue, 21 Aug 2007 15:18:19 -0700
+
 untangle-ntpdate-config (0-0) stable; urgency=low
 
   * First release
