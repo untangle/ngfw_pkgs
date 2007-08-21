@@ -23,7 +23,7 @@ case "$1" in
     # execute scheduled removal(s) if necessary
     [ -n "$macsToRemove" ] && sed -i $macsToRemove ${IFRENAME_CONF_FILE}
     # eventually, run ifrename itself to lable the interfaces
-    ${IFRENAME} -t
+    ${IFRENAME_BINARY} -t
     ;;
   stop)
     ;;
