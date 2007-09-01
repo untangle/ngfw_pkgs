@@ -1,0 +1,21 @@
+<table>
+  <tr>
+    <th>Edit</th>
+    <th>Index</th>
+    <th>Name</th>
+    <th>MAC Address</th>
+  </tr>
+  
+  <% for interface in @interfaces %>
+  <tr>
+    <td class="button">
+      <%= link_to 'edit', :action => 'edit', :id => interface %>
+    </td>
+    <td><%= interface.index %></td>
+    <td><%= interface.name %></td>
+    <td><%= interface.mac_address %></td>
+  </tr>
+  <% end %>
+</table>
+
+<%= link_to 'reload', :action => 'reload' %>
