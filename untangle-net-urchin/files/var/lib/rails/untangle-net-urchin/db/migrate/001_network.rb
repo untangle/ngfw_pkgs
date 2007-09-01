@@ -22,15 +22,6 @@ class Network < ActiveRecord::Migration
 
       ## Configuration type[static,dynamic,bridge,etc]
       table.column :type, :string
-
-      ## Static configuration
-      table.column :intf_static_id, :integer
-
-      ## Dynamic configuration
-      table.column :intf_dynamic_id, :integer
-
-      ## Bridge configuration
-      table.column :intf_bridge_id, :integer
     end
 
     ## This is a single IP network.
@@ -42,6 +33,8 @@ class Network < ActiveRecord::Migration
 
     ## static interface configuration.
     create_table :intf_statics do |table|
+      table.column :interface_id, :integer
+
       table.column :mtu, :integer
       table.column :media, :string
       table.column :speed, :string
@@ -57,6 +50,8 @@ class Network < ActiveRecord::Migration
 
     ## dynamic interface configuration.
     create_table :intf_dynamics do |table|
+      table.column :interface_id, :integer
+
       table.column :forward_traffic, :boolean
       table.column :allow_ping, :boolean
     end
@@ -69,8 +64,10 @@ class Network < ActiveRecord::Migration
 
     ## Bridge interface configuration
     create_table :intf_bridges do |table|
-      ## Interface to bridge to
       table.column :interface_id, :integer
+
+      ## Interface to bridge to
+      table.column :bridge_interface_id, :integer
     end
 
     ## Hostname parameters
