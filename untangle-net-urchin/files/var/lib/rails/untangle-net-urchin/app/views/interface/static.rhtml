@@ -1,6 +1,14 @@
 <div>
   <h1>Static interface configuration for <%= @interface.name %></h1>
 
-  <%= link_to_remote( "Add Network", :url => { :action => :create_new_network } ) %>
-  <%= render(:partial => "static_ip_networks" , :object => @staticConfig.ip_networks ) %>
+  <%= start_form_tag :action => 'intf_static_save' %>
+    <%= link_to_remote( "Add Network", :url => { :action => :create_new_network } ) %>
+    <%= render(:partial => "static_ip_networks" , :object => @staticConfig.ip_networks ) %>
+
+
+    <%= submit_tag "Cancel" %>
+    <%= submit_tag "Save Changes" %>
+
+  <%= end_form_tag %>
+
 </div>
