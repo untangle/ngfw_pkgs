@@ -1,17 +1,6 @@
 <div>
   <h1>Static interface configuration for <%= @interface.name %></h1>
-  
-  <table>
-    <tr>
-      <th>Address and Netmask</th>
-      <th>Delete</th>
-    </tr>
-    
-    <% for network in @staticConfig.ip_networks %>
-    <tr>
-      <td><%= "#{network.ip} / #{network.netmask}" %></td>
-      <td>delete</td>
-    </tr>
-    <% end %>
-  </table>
+
+  <%= link_to_remote( "Add Network", :url => { :action => :create_new_network } ) %>
+  <%= render(:partial => "static_ip_networks" , :object => @staticConfig.ip_networks ) %>
 </div>

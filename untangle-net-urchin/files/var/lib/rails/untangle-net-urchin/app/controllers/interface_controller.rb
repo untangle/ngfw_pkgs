@@ -1,4 +1,6 @@
 class InterfaceController < ApplicationController
+  layout "main"
+
   ## DDD These are subject to internationalization DDD
   DefaultInterfaceMapping = {
     # default Display name plus the index
@@ -42,7 +44,23 @@ class InterfaceController < ApplicationController
     
     ## Retrieve the static configuration, creating a new one if necessary.
     @staticConfig = @interface.intf_static
-    @staticConfig = IntfStatic.new if @staticConfig.nil?
+    if @staticConfig.nil?
+      @staticConfig = IntfStatic.new 
+    end
+  end
+
+  def create_new_network
+    @network = IpNetwork.new
+    @network.ip = "0.0.0.0"
+    @network.netmask = "255.255.255.0"
+    @network.allow_ping = false
+  end
+
+  def remove_network
+    @rowId = params[ :id ]
+
+    ## should validate the syntax
+    raise "no row id" if @rowId.nil?
   end
 
   private

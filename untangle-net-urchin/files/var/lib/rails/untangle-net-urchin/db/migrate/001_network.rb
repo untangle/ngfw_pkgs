@@ -21,7 +21,7 @@ class Network < ActiveRecord::Migration
       table.column :speed, :string
 
       ## Configuration type[static,dynamic,bridge,etc]
-      table.column :type, :string
+      table.column :config_type, :string
     end
 
     ## This is a single IP network.

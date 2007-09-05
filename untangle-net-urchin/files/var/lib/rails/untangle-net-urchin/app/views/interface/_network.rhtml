@@ -1,0 +1,9 @@
+<% rowId = "ip-row-#{rand( 0x100000000 )}" %>
+<tr id="<%= rowId  %>" class="network-row">
+  <td>
+    <%= "#{network.ip} / #{network.netmask}" %>
+  </td>
+  <td>
+    <%= link_to_remote( "Delete", :url => { :action => :remove_network, :id => rowId } ) %>
+  </td>
+</td>
