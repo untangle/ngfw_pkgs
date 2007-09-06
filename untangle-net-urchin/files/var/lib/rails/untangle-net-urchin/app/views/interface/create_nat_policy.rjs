@@ -1,0 +1,1 @@
+page.insert_html( :bottom, "nat_policies", :partial => "nat_policy", :object => @natPolicy )

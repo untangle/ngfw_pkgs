@@ -1,0 +1,13 @@
+<% rowId = "nat-policy-row-#{rand( 0x100000000 )}" %>
+<tr id="<%= rowId  %>" class="nat-policy">
+  <td>
+    <%= hidden_field_tag( "natIndices[]", rowId ) %>
+    <%= text_field_tag( "natNetworks[#{rowId}]", "#{nat_policy.ip} / #{nat_policy.netmask}", :size => 30 ) %>
+  </td>
+  <td>
+    <%= text_field_tag( "natNewSources[#{rowId}]", "#{nat_policy.new_source}", :size => 20 ) %>
+  </td>
+  <td>
+    <%= link_to_remote( "-", :url => { :action => :remove_nat_policy, :id => rowId } ) %>
+  </td>
+</td>

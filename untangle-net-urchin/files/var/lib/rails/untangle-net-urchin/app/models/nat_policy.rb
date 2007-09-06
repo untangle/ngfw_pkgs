@@ -1,4 +1,4 @@
-class IpNetwork < ActiveRecord::Base
+class NatPolicy < ActiveRecord::Base
   ## Parse a network and netmask combination.
   ## Valid Syntax:
   ## w.x.y.z -> w.x.y.z / 32
@@ -6,7 +6,7 @@ class IpNetwork < ActiveRecord::Base
   ## w.x.y.z / <cidr>
   def parseNetwork( value )
     ## Split it up, and strip the whitespace.
-    self.ip, self.netmask  = value.split( "/" ).map { |n| n.strip }
+    self.ip, self.netmask = value.split( "/" ).map { |n| n.strip }
   end
 
   def netmask=( value )

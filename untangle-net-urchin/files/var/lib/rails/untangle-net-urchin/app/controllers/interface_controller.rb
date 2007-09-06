@@ -18,7 +18,7 @@ class InterfaceController < ApplicationController
     @title = "Interface List"
     @description = "List of all of the available interfaces."
     
-    @interfaces = Interface.find_all
+    @interfaces = Interface.find(:all)
 
     if ( @interfaces.nil? || @interfaces.empty? )       
       @interfaces = loadInterfaces
@@ -44,21 +44,92 @@ class InterfaceController < ApplicationController
     
     ## Retrieve the static configuration, creating a new one if necessary.
     @staticConfig = @interface.intf_static
-    if @staticConfig.nil?
-      @staticConfig = IntfStatic.new 
-    end
+    @staticConfig = IntfStatic.new if @staticConfig.nil?
   end
 
+  def intf_static_save
+    interface_id = params[:id]
+    return redirect_to( :action => 'list' ) if interface_id.nil?
+    @interface = Interface.find( interface_id )
+    return redirect_to( :action => 'list' ) if @interface.nil?
+    
+    ## Get the static interface
+    staticConfig = @interface.intf_static
+    
+    ## Create a new one if it is nil
+    staticConfig = IntfStatic.new if staticConfig.nil?
+    
+    ## save the networks
+    networkStringHash = params[:networks]
+    ## allow ping is checkbox, so it may not have values for each index.
+    allowPingHash = params[:allowPing]
+    ## indices is used to guarantee they are done in proper order.
+    indices = params[:networkIndices]
+    allowPingHash = {} if allowPingHash.nil?
+    
+    ## clear out all of the ip networks.
+    staticConfig.ip_networks = []
+    unless indices.nil?
+      indices.each do |key,value|
+        network = IpNetwork.new
+        network.parseNetwork( networkStringHash[key] )
+        network.allow_ping = ( allowPingHash[key] == "1" )
+        staticConfig.ip_networks << network
+      end
+    end
+    
+    ## save the nat policies
+    natNetworkHash = params[:natNetworks]
+    natNewSourceHash = params[:natNewSources]
+
+    ## indices is used to guarantee they are done in proper order.
+    indices = params[:natIndices]
+
+    ## Delete all of the nat policies
+    staticConfig.nat_policies = []
+    
+    unless indices.nil?
+      indices.each do |key|
+        natPolicy = NatPolicy.new
+        logger.debug( "index: #{key}" )
+        natPolicy.parseNetwork( natNetworkHash[key] )
+        natPolicy.new_source = natNewSourceHash[key]
+        staticConfig.nat_policies << natPolicy
+      end
+    end
+    
+    staticConfig.save
+
+    @interface.intf_static = staticConfig
+    @interface.save
+
+    return redirect_to( :action => 'list' )
+  end
+    
   def create_new_network
     @network = IpNetwork.new
     @network.ip = "0.0.0.0"
     @network.netmask = "255.255.255.0"
-    @network.allow_ping = false
+    @network.allow_ping = true
   end
 
   def remove_network
     @rowId = params[ :id ]
 
+    ## should validate the syntax
+    raise "no row id" if @rowId.nil?
+  end
+
+  def create_nat_policy
+    @natPolicy = NatPolicy.new
+    @natPolicy.ip = "1.2.3.4"
+    @natPolicy.netmask = "24"
+    @natPolicy.new_source = "auto"
+  end
+
+  def remove_nat_policy
+    @rowId = params[ :id ]
+    
     ## should validate the syntax
     raise "no row id" if @rowId.nil?
   end
@@ -95,7 +166,7 @@ class InterfaceController < ApplicationController
     interfaceArray.each do |interface|
       
     end
-
+    
     interfaceArray
   end
 end

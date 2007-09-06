@@ -1,14 +1,25 @@
 <div>
   <h1>Static interface configuration for <%= @interface.name %></h1>
 
-  <%= start_form_tag :action => 'intf_static_save' %>
-    <%= link_to_remote( "Add Network", :url => { :action => :create_new_network } ) %>
+  <% form_tag( :action => 'intf_static_save', :id => @interface ) do -%>
+    <h2>IP Addresses</h2>
+    <%= link_to_remote( "+", :url => { :action => :create_new_network } ) %>
     <%= render(:partial => "static_ip_networks" , :object => @staticConfig.ip_networks ) %>
 
+    <h2>NAT Policy</h2>
+    <%= link_to_remote( "+", :url => { :action => :create_nat_policy } ) %>
+    <%= render(:partial => "nat_policies" , :object => @staticConfig.nat_policies ) %>
+  
+    <h2>General</h2>
+    <p><label for="mtu">MTU:</label>
+    <%= text_field_tag ( "mtu", "#{@staticConfig.mtu}", :size => 30 ) %></p>
 
+    <p><label for="forward">Forward Traffic:</label>
+    <%= check_box_tag( "forward", 1, @staticConfig.forward_traffic ) %></p>
+    
     <%= submit_tag "Cancel" %>
     <%= submit_tag "Save Changes" %>
 
-  <%= end_form_tag %>
+  <% end -%>
 
 </div>

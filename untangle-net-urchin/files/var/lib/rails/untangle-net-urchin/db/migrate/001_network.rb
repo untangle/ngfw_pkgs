@@ -28,24 +28,33 @@ class Network < ActiveRecord::Migration
     create_table :ip_networks do |table|
       table.column :ip, :string
       table.column :netmask, :string
-      table.column :allow_ping, :string
+      table.column :allow_ping, :boolean
+    end
+
+    ## This is a single NAT policy.
+    create_table :nat_policies do |table|
+      table.column :ip, :string
+      table.column :netmask, :string
+      table.column :new_source, :string
     end
 
     ## static interface configuration.
     create_table :intf_statics do |table|
       table.column :interface_id, :integer
-
       table.column :mtu, :integer
-      table.column :media, :string
-      table.column :speed, :string
       table.column :forward_traffic, :boolean
-      table.column :allow_ping, :boolean
     end
 
     ## Join between an IP network and a static configuration.
     create_table :intf_statics_ip_networks, :id => false do |table|
       table.column :intf_static_id, :integer
       table.column :ip_network_id, :integer
+    end
+
+    ## Join between a static configuration and a NAT Policy.
+    create_table :intf_statics_nat_policies, :id => false do |table|
+      table.column :intf_static_id, :integer
+      table.column :nat_policy_id, :integer
     end
 
     ## dynamic interface configuration.
@@ -80,8 +89,10 @@ class Network < ActiveRecord::Migration
   def self.down
     drop_table :interfaces
     drop_table :ip_networks
+    drop_table :nat_policies
     drop_table :intf_statics
     drop_table :intf_statics_ip_networks
+    drop_table :intf_statics_nat_policies
     drop_table :intf_dynamics
     drop_table :intf_dynamics_ip_networks
     drop_table :intf_bridges
