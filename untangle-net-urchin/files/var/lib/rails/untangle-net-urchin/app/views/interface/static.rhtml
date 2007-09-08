@@ -11,11 +11,11 @@
     <%= render(:partial => "nat_policies" , :object => @staticConfig.nat_policies ) %>
   
     <h2>General</h2>
-    <p><label for="mtu">MTU:</label>
-    <%= text_field_tag ( "mtu", "#{@staticConfig.mtu}", :size => 30 ) %></p>
+    <p><label for="static[mtu]">MTU:</label>
+    <%= text_field_tag ( "static[mtu]", "#{@staticConfig.mtu}", :size => 30 ) %></p>
 
-    <p><label for="forward">Forward Traffic:</label>
-    <%= check_box_tag( "forward", 1, @staticConfig.forward_traffic ) %></p>
+    <p><label for="static[forward_traffic]">Forward Traffic:</label>
+    <%= check_box( "static", "forward_traffic", { :checked => @staticConfig.forward_traffic }, true, false ) %></p>
     
     <%= submit_tag "Cancel" %>
     <%= submit_tag "Save Changes" %>

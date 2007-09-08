@@ -73,7 +73,7 @@ class InterfaceController < ApplicationController
       indices.each do |key,value|
         network = IpNetwork.new
         network.parseNetwork( networkStringHash[key] )
-        network.allow_ping = ( allowPingHash[key] == "1" )
+        network.allow_ping = ( allowPingHash[key] )
         staticConfig.ip_networks << network
       end
     end
@@ -97,6 +97,8 @@ class InterfaceController < ApplicationController
         staticConfig.nat_policies << natPolicy
       end
     end
+
+    staticConfig.update_attributes(params[:static])
     
     staticConfig.save
 
