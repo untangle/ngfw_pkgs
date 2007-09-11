@@ -2,20 +2,15 @@
 
 CLAMAV_CONF_FILE=/etc/clamav/clamd.conf
 
-grep -q TCP $CLAMAV_CONF_FILE || cat >> $CLAMAV_CONF_FILE <<EOF 
+grep -q TCPAddr $CLAMAV_CONF_FILE || cat >> $CLAMAV_CONF_FILE <<EOF 
 TCPAddr 127.0.0.1
+EOF
+grep -q TCPSocket $CLAMAV_CONF_FILE || cat >> $CLAMAV_CONF_FILE <<EOF 
 TCPSocket 3310 
 EOF
 
 sed -i -e "s|[# ]*LocalSocket.*|#LocalSocket /var/run/clamav/clamd.ctl|" $CLAMAV_CONF_FILE
 
-if [ ! -f /var/run/clamav/clamd.pid ] ; then
-    /etc/init.d/clamav-daemon start
-else # since this postinst script now modifies the conf file, we need
-     #to restart clamav-daemon if it was already running
-    /etc/init.d/clamav-daemon restart
-fi
-
-if [ ! -f /var/run/clamav/freshclam.pid ] ; then
-    /etc/init.d/clamav-freshclam start
-fi
+# Since upstream uses invoke-rc.d, which currently has issues, we do this instead.
+/etc/init.d/clamav-freshclam restart
+/etc/init.d/clamav-daemon restart
