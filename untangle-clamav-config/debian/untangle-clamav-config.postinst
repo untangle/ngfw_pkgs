@@ -11,6 +11,10 @@ EOF
 
 sed -i -e "s|[# ]*LocalSocket.*|#LocalSocket /var/run/clamav/clamd.ctl|" $CLAMAV_CONF_FILE
 
+# Upstream bug causes duplicate signatures when upgrading.  To work around, we remove
+# the existing signatures.  Freshclam will restore them quickly.
+rm -rf /var/lib/clamav/*
+
 # Since upstream uses invoke-rc.d, which currently has issues, we do this instead.
 /etc/init.d/clamav-freshclam restart
 /etc/init.d/clamav-daemon restart
