@@ -47,6 +47,18 @@ class InterfaceController < ApplicationController
     @staticConfig = IntfStatic.new if @staticConfig.nil?
   end
 
+  def dynamic
+    interface_id = params[:id]
+    return redirect_to( :action => 'list' ) if interface_id.nil?
+    @interface = Interface.find( interface_id )
+    return redirect_to( :action => 'list' ) if interface_id.nil?
+    @title = "Dynamic Interface Configuration"
+    
+    ## Retrieve the static configuration, creating a new one if necessary.
+    @dynamic = @interface.intf_dynamic
+    @dynamic = IntfDynamic.new if @dynamic.nil?
+  end
+
   def intf_static_save
     interface_id = params[:id]
     return redirect_to( :action => 'list' ) if interface_id.nil?
@@ -103,6 +115,50 @@ class InterfaceController < ApplicationController
     staticConfig.save
 
     @interface.intf_static = staticConfig
+    @interface.config_type = InterfaceHelper::ConfigType::STATIC
+    @interface.save
+
+    return redirect_to( :action => 'list' )
+  end
+
+  def intf_dynamic_save
+    interface_id = params[:id]
+    return redirect_to( :action => 'list' ) if interface_id.nil?
+    @interface = Interface.find( interface_id )
+    return redirect_to( :action => 'list' ) if @interface.nil?
+    
+    ## Get the dynamic configuration
+    dynamic = @interface.intf_dynamic
+    
+    ## Create a new one if it is nil
+    dynamic = IntfDynamic.new if dynamic.nil?
+    
+    ## save the networks
+    networkStringHash = params[:networks]
+    ## allow ping is checkbox, so it may not have values for each index.
+    allowPingHash = params[:allowPing]
+    ## indices is used to guarantee they are done in proper order.
+    indices = params[:networkIndices]
+    allowPingHash = {} if allowPingHash.nil?
+    
+    ## clear out all of the ip networks.
+    dynamic.ip_networks = []
+    unless indices.nil?
+      indices.each do |key,value|
+        network = IpNetwork.new
+        network.parseNetwork( networkStringHash[key] )
+        network.allow_ping = ( allowPingHash[key] )
+        dynamic.ip_networks << network
+      end
+    end
+    
+
+    dynamic.update_attributes(params[:dynamic])
+    
+    dynamic.save
+
+    @interface.intf_dynamic = dynamic
+    @interface.config_type = InterfaceHelper::ConfigType::DYNAMIC
     @interface.save
 
     return redirect_to( :action => 'list' )
@@ -156,6 +212,7 @@ class InterfaceController < ApplicationController
       parameters = [ name, currentIndex += 1 ] if parameters.nil?
       interface.name  = parameters[0]
       interface.index = parameters[1]
+      interface.config_type = InterfaceHelper::ConfigType::STATIC
 
       ## Set the mac address
       File.open( "/sys/class/net/#{name}/address", "r" ) { |f| interface.mac_address = f.readline.strip }

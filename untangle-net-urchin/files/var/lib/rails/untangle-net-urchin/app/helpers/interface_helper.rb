@@ -8,7 +8,13 @@ module InterfaceHelper
       return
                   
       cidr = netmask.to_i
-      errors.add( "CIDR Notation is between 0 and 32, #{cidr}" ) if ( cidr < 0 || cidr > 32 ) 
+      errors.add( "CIDR Notation is between 0 and 32, #{cidr} " ) if ( cidr < 0 || cidr > 32 ) 
     end
+  end
+
+  class ConfigType
+    STATIC="static"
+    DYNAMIC="dynamic"
+    BRIDGE="bridge"
   end
 end

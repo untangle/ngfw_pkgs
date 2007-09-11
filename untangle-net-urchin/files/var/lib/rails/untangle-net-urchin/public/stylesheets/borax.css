@@ -1,0 +1,29 @@
+div.text-fields label
+{
+  width: 200px;
+  float: left;
+  text-align: right;
+  margin-right: 0.5em;
+  display: block;
+}
+
+div.ip-networks
+{ 
+  border: 0px;
+  height: 100px;
+  width: 420px;
+  overflow: auto;
+ }
+
+table.ip-networks
+{ 
+  border-collapse: collapse;
+  width: 400px;
+ }
+
+table.ip-networks td,th
+{ 
+  border: 1px black solid;
+  border-collapse: collapse;
+  padding: 5px;
+ }

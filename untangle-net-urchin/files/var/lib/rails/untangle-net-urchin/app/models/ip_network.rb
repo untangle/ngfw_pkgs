@@ -10,7 +10,7 @@ class IpNetwork < ActiveRecord::Base
   end
 
   def netmask=( value )
-    value = 32 if ( value.nil? )
+    value = "32" if ( value.nil? )
     self[:netmask] = value
   end
 

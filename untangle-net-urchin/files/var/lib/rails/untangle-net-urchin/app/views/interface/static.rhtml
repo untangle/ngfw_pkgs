@@ -12,7 +12,7 @@
   
     <h2>General</h2>
     <p><label for="static[mtu]">MTU:</label>
-    <%= text_field_tag ( "static[mtu]", "#{@staticConfig.mtu}", :size => 30 ) %></p>
+    <%= text_field( "static", "mtu", { :value => "#{@staticConfig.mtu}", :size => 30 } ) %></p>
 
     <p><label for="static[forward_traffic]">Forward Traffic:</label>
     <%= check_box( "static", "forward_traffic", { :checked => @staticConfig.forward_traffic }, true, false ) %></p>

@@ -41,6 +41,7 @@ class Network < ActiveRecord::Migration
     ## static interface configuration.
     create_table :intf_statics do |table|
       table.column :interface_id, :integer
+      ## Set to -1 for automatic
       table.column :mtu, :integer
       table.column :forward_traffic, :boolean
     end
@@ -60,6 +61,18 @@ class Network < ActiveRecord::Migration
     ## dynamic interface configuration.
     create_table :intf_dynamics do |table|
       table.column :interface_id, :integer
+
+      ## The following are overrides, set to nil to not use
+      table.column :ip, :string
+      table.column :netmask, :string
+      table.column :default_gateway, :string
+
+      ## These are delicate because of the way dns may or may not be handled.
+      table.column :dns_1, :string
+      table.column :dns_2, :string
+
+      ## Set to -1 for automatic
+      table.column :mtu, :integer
 
       table.column :forward_traffic, :boolean
       table.column :allow_ping, :boolean
