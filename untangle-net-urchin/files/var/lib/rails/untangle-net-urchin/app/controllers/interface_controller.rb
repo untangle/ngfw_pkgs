@@ -59,12 +59,35 @@ class InterfaceController < ApplicationController
     @dynamic = IntfDynamic.new if @dynamic.nil?
   end
 
+  def bridge
+    config do
+      @title = "Bridge Interface Configuration"
+    
+      ## Retrieve the static configuration, creating a new one if necessary.
+      @bridge = @interface.intf_bridge
+      @bridge = IntfBridge.new if @bridge.nil?
+
+      conditions = [ "config_type IN (?) AND id != ?" ]
+      conditions << InterfaceHelper::BRIDGEABLE_CONFIGTYPES
+      conditions << @interface.id
+      
+      ## Create a selection map
+      @bridgeInterfaces = Interface.find( :all, :conditions => conditions ).collect do |interface|
+        ## XXX config_type and name will need internationalization
+        [ "#{interface.name} (#{interface.config_type})", interface.id ]
+      end
+    end
+  end
+
   def intf_static_save
+    return redirect_to( :action => 'list' ) if ( params[:commit] == "Cancel" )
+
     interface_id = params[:id]
+    ## XXXX These are terrible redirects
     return redirect_to( :action => 'list' ) if interface_id.nil?
     @interface = Interface.find( interface_id )
     return redirect_to( :action => 'list' ) if @interface.nil?
-    
+
     ## Get the static interface
     staticConfig = @interface.intf_static
     
@@ -152,7 +175,6 @@ class InterfaceController < ApplicationController
       end
     end
     
-
     dynamic.update_attributes(params[:dynamic])
     
     dynamic.save
@@ -162,6 +184,37 @@ class InterfaceController < ApplicationController
     @interface.save
 
     return redirect_to( :action => 'list' )
+  end
+
+  ## Save a bridged interface.
+  def intf_bridge_save
+    save do
+      ## Get the dynamic configuration
+      bridge = @interface.intf_bridge
+      
+      ## Create a new one if it is nil
+      bridge = IntfBridge.new if bridge.nil?
+      
+      bridge.update_attributes(params[:bridge])
+      
+      break false if params[:bridge_interface].nil?
+      
+      bridge_interface = Interface.find( params[:bridge_interface] )
+      
+      break false if bridge_interface.nil?
+
+      bridge.bridge_interface = bridge_interface
+      bridge_interface.bridged_interfaces << bridge
+      @interface.intf_bridge = bridge
+      @interface.config_type = InterfaceHelper::ConfigType::BRIDGE
+      @interface.save
+      
+      if ( params[:commit] == "Configure" )
+        return redirect_to( :action => bridge_interface.config_type, :id => bridge_interface.id ) 
+      end
+      
+      true
+    end
   end
     
   def create_new_network
@@ -227,5 +280,31 @@ class InterfaceController < ApplicationController
     end
     
     interfaceArray
+  end
+
+  ## Load the necessary values for a config page
+  def config
+    interface_id = params[:id]
+    return redirect_to( :action => 'list' ) if interface_id.nil?
+    @interface = Interface.find( interface_id )
+    return redirect_to( :action => 'list' ) if interface_id.nil?
+
+    yield
+  end
+
+  ## Load the necessary values for a save page
+  def save
+    return redirect_to( :action => 'list' ) if ( params[:commit] == "Cancel" )
+    interface_id = params[:id]
+    ## XXXX These are terrible redirects
+    return redirect_to( :action => 'list' ) if interface_id.nil?
+    @interface = Interface.find( interface_id )
+    return redirect_to( :action => 'list' ) if @interface.nil?
+    
+    success = yield
+
+    logger.debug( "Unable to save settings" ) unless success
+    
+    redirect_to( :action => 'list' )
   end
 end

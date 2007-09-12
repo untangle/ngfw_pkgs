@@ -7,6 +7,20 @@ div.text-fields label
   display: block;
 }
 
+div#interface-list
+{ 
+  border: 0px;
+  height: 100px;
+  width: 420px;
+  overflow: auto;
+ }
+
+div#interface-list table
+{ 
+  border-collapse: collapse;
+  width: 400px;  
+  }
+
 div.ip-networks
 { 
   border: 0px;

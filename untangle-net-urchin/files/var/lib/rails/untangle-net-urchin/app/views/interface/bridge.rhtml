@@ -1,0 +1,14 @@
+<div id="bridge">
+  <h1>Bridge Configuration for <%= @interface.name %></h1>
+  
+  <div class="text-fields">
+    <% form_tag( :action => 'intf_bridge_save', :id => @interface ) do -%>
+      <p><label for="bridge_interface">Bridge To:</label>
+      <%= select_tag( "bridge_interface", options_for_select( @bridgeInterfaces )) %>
+      <%= submit_tag "Configure", :onclick => "return #{confirm_javascript_function( "Save, and configure?" )}, , :disable_with => true"  %></p>
+
+      <%= submit_tag "Cancel" %>
+      <%= submit_tag "Save Changes", :onclick => "return #{confirm_javascript_function( "Are you sure?" )}", :disable_with => true %>
+    <% end -%>
+  </div>
+</div>
