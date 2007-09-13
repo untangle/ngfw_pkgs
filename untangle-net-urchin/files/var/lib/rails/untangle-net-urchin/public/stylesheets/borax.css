@@ -10,15 +10,48 @@ div.text-fields label
 div#interface-list
 { 
   border: 0px;
-  height: 100px;
-  width: 420px;
+  height: 200px;
+  width: 640px;
   overflow: auto;
  }
 
 div#interface-list table
 { 
   border-collapse: collapse;
-  width: 400px;  
+  width: 600px;  
+  }
+
+div#interface-list td
+{ 
+  padding-top: 5px;
+  height: 28px;
+  text-align: center;
+  }
+
+td#interface-os-data
+{ 
+  width: 300px;
+  }
+
+ul#interface-os-list
+{ 
+  padding: 0px;
+  margin: 0px 4px 0px 8px;
+  list-style: none inside none;
+  }
+
+ul#interface-os-list li
+{ 
+  cursor: move;
+  /* position: relative; */
+  /* float: left; */
+  margin: 2px 2px 0px 0px;
+  width: 260px;
+  height: 28px;
+  border: 1px solid #C0C0C0;
+  text-align: center;
+  padding-top: 5px;
+  background-color: #eeFFee;
   }
 
 div.ip-networks

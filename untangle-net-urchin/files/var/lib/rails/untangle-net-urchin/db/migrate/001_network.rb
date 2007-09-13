@@ -11,6 +11,9 @@ class Network < ActiveRecord::Migration
       ## MAC Address of the interface
       table.column :mac_address, :string
       
+      ## O/S interface identifier (eg eth0 or en0, can be modified in some cases)
+      table.column :os_name, :string
+      
       ## BUS Identifier.
       table.column :bus_id, :string
 

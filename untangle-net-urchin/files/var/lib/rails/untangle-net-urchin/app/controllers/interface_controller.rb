@@ -255,11 +255,19 @@ class InterfaceController < ApplicationController
     interfaceArray = []
 
     ## Find all of the physical interfaces
-    currentIdex = DefaultInterfaceMapping.size - 1
-    `find /sys/devices -name 'net:*'`.each do |sys_device_path| 
-      name=sys_device_path.sub( /.*net:/, "" ).strip
+    currentIndex = DefaultInterfaceMapping.size - 1
+    devices=`find /sys/devices -name 'net:*' | sed 's|.*net:||'`
+
+    ## This is test code to fake a third interface
+    devices << "dummy0" if File.exists?( "/sys/class/net/dummy0" )
+
+    devices.each do |sys_device_path| 
+      name=sys_device_path.strip
       interface = Interface.new
       parameters = DefaultInterfaceMapping[name]
+
+      ## Save the os name
+      interface.os_name = name
 
       ## Use the os name if it doesn't have a predefined virtual name
       parameters = [ name, currentIndex += 1 ] if parameters.nil?

@@ -6,9 +6,10 @@
       <th>Edit</th>
       <th>Index</th>
       <th>Name</th>
-      <th>MAC Address</th>
+      <th>Physical Interface</th>
     </tr>
     
+    <% first = true %>
     <% for interface in @interfaces %>
     <tr>
       <td class="button">
@@ -16,7 +17,16 @@
       </td>
       <td><%= interface.index %></td>
       <td><%= interface.name %></td>
-      <td><%= interface.mac_address %></td>
+      <% if first %>
+        <td id="interface-os-data" rowspan="<%= @interfaces.size %>">
+          <ul id="interface-os-list">
+            <% for n_interface in @interfaces %>
+            <li><%= "#{n_interface.os_name} (#{n_interface.mac_address})" %></li>
+            <% end %>
+          </ul>
+        </td>
+        <% first = false %>
+      <% end %>
     </tr>
     <% end %>
   </table>
