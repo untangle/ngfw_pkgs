@@ -25,6 +25,8 @@ class InterfaceController < ApplicationController
       ## Save all of the new interfaces
       @interfaces.each { |interface| interface.save }
     end
+
+    @interfaces.sort! { |a,b| a.index <=> b.index }
   end
 
   def reload
@@ -77,6 +79,54 @@ class InterfaceController < ApplicationController
         [ "#{interface.name} (#{interface.config_type})", interface.id ]
       end
     end
+  end
+
+  ## Rewire the interfaces.
+  def intf_order_save
+    ## Nothing to do on cancel
+    return redirect_to( :action => 'list' ) if ( params[:commit] == "Cancel" )
+    
+    ## These are the original values
+    original = params[:interfaceOrigList]
+
+    ## This is the new mapping
+    order = params[:interfaceOrderList]
+    
+    ## nothing to do if the two lists are identical
+    return redirect_to( :action => 'list' ) if original == order
+
+    ## Easy check if the sizes are different
+    ## xxx needs some error messaging here
+    return redirect_to( :action => 'list' ) unless original.sort == order.sort
+
+    ## Check that all items are uniq (these two checks guarantees both are uniq.)
+    ## xxx needs some error messaging here
+    return redirect_to( :action => 'list' ) unless original.uniq.size == original.size
+    
+    ## Get all of the interfaces
+    interfaces = Interface.find( :all )
+
+    ## used to test the lists have all of the ids
+    ids = interfaces.collect { |i| i.id }.sort
+
+    ## make sure they have all of the interfaces (inefficient call of sort twice, but lists are small)
+    ## xxx needs some error messaging here
+    return redirect_to( :action => 'list' ) unless original.sort != ids
+    
+    ## now actually do the remapping
+    ## copy out the stuff that is moved.
+    physicalData = {}
+    interfaces.each { |i| physicalData[i.id.to_s] = [ i.os_name, i.mac_address, i.bus, i.vendor ] }
+    
+    ## xxx this should definitely be a transaction
+    [ original, order ].transpose.each do |original_id,order_id|
+      i = Interface.find( original_id )
+      logger.debug( "Remapping #{i} to #{physicalData[order_id]}" )
+      i.os_name, i.mac_address, i.bus, i.vendor = physicalData[order_id]
+      i.save
+    end
+    
+    return redirect_to( :action => 'list' )
   end
 
   def intf_static_save

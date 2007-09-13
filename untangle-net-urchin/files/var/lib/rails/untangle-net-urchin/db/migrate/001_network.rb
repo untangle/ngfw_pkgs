@@ -15,7 +15,10 @@ class Network < ActiveRecord::Migration
       table.column :os_name, :string
       
       ## BUS Identifier.
-      table.column :bus_id, :string
+      table.column :bus, :string
+
+      ## Vendor identifier.
+      table.column :vendor, :string
 
       ## Duplexing on this interface (half, full or auto)
       table.column :duplex, :string

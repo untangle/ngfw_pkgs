@@ -9,6 +9,7 @@ div.text-fields label
 
 div#interface-list
 { 
+  padding-top: 5px;
   border: 0px;
   height: 200px;
   width: 640px;

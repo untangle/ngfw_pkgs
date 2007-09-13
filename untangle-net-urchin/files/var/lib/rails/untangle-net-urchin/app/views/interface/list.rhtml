@@ -1,33 +1,49 @@
-<%= link_to 'reload', :action => 'reload' %>
-
-<div id="interface-list">
-  <table>
-    <tr>
-      <th>Edit</th>
-      <th>Index</th>
-      <th>Name</th>
-      <th>Physical Interface</th>
-    </tr>
-    
-    <% first = true %>
-    <% for interface in @interfaces %>
-    <tr>
-      <td class="button">
-        <%= link_to 'edit', :action => interface.config_type, :id => interface %>
-      </td>
-      <td><%= interface.index %></td>
-      <td><%= interface.name %></td>
-      <% if first %>
-        <td id="interface-os-data" rowspan="<%= @interfaces.size %>">
+<% form_tag( :action => 'intf_order_save' ) do -%>
+  <%= link_to 'reload', :action => 'reload' %>
+  <%= submit_tag "Cancel" %>
+  <%= submit_tag "Save Changes" %>
+  
+  <div id="interface-list">
+    <table>
+      <tr>
+        <th>Edit</th>
+        <th>Index</th>
+        <th>Name</th>
+        <th>Physical Interface</th>
+      </tr>
+      <% 
+      ## Indicate that this is the first row, the first row has the sortable interface list.
+      first = true
+      for interface in @interfaces
+      %>
+      <tr>
+        <td class="button">
+          <%= link_to 'edit', :action => interface.config_type, :id => interface %>
+        </td>
+        <td><%= interface.index %></td>
+        <td><%= interface.name %></td>
+        <% if first %>
+          <td id="interface-os-data" rowspan="<%= @interfaces.size %>">
+          <% for n_interface in @interfaces %>
+            <%= hidden_field_tag( "interfaceOrigList[]", n_interface.id ) %>
+          <% end %>
           <ul id="interface-os-list">
             <% for n_interface in @interfaces %>
-            <li><%= "#{n_interface.os_name} (#{n_interface.mac_address})" %></li>
+              <li id="<%= n_interface.id %>">
+                <%= hidden_field_tag( "interfaceOrderList[]", n_interface.id ) %>
+                <%= "#{n_interface.os_name} (#{n_interface.mac_address})" %>
+              </li>
             <% end %>
           </ul>
         </td>
         <% first = false %>
       <% end %>
-    </tr>
+      </tr>
+
     <% end %>
   </table>
-</div>
+
+  <%= sortable_element( "interface-os-list" ) %> 
+  </div>
+<% end -%>
+  
