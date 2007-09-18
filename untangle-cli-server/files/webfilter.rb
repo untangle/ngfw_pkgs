@@ -33,15 +33,6 @@ class WebFilter < UVMFilterNode
     #
     # Server service methods
     #
-    #def getPolicies()`
-        #@diag.if_level(2) { puts! "getPolicies" }
-        #puts! "getPolicies"
-      #policies = @uvmRemoteContext.policyManager.getPolicies
-      #policies.each { |p|
-          #p policies
-      #} if policies
-    #end
-
     def execute(args)
         
         begin
@@ -78,6 +69,17 @@ class WebFilter < UVMFilterNode
                 }
                 @diag.if_level(2) { puts! "webfilter: #{webfilter_list}" }
                 return webfilter_list
+            when "help"
+                help_text = <<-WEBFILTER_HELP
+
+- webfilter list -- enumerate all web filters running on effective #{@brand} server.            
+- webfilter <#X> block-list -- display block-list URLs for web filter #X
+- webfilter <#X> pass-list -- display pass-list URLs
+- webfilter <#X> block-list [type:category|URL|mime|file] [item] <log:true|false> -- add item to block-list by type (or update) with specified block and log settings.
+- webfilter <#X> pass-list URL [pass:true|false] -- add URL to pass-list with specified pass setting.
+- webfilter <#X> eventlog <tail <#>>|<after-time> <before-time> -- display event log entries, either the # tail entries or those between after-time and before-time.
+                WEBFILTER_HELP
+                return help_text
             when "block-list"
                 return manage_block_list(tid, args)
             when "pass-list"
@@ -211,3 +213,13 @@ class WebFilter < UVMFilterNode
     end
 
 end # WebFilter
+
+
+#def getPolicies()`
+    #@diag.if_level(2) { puts! "getPolicies" }
+    #puts! "getPolicies"
+  #policies = @uvmRemoteContext.policyManager.getPolicies
+  #policies.each { |p|
+      #p policies
+  #} if policies
+#end
