@@ -14,12 +14,14 @@ include Readline
 require 'abbrev'
 require 'optparse'
 require 'thread'
-
 require 'ucli_util'
 
+include UCLIUtil
+
 #
-# The UCLI Client effects a "simple" command line interface used to send operational and diagnostic
-# commands to an Untangle server.  The UCLIClient functionality current includes (as of 9/5/07):
+# The UCLI Client effects a command line interface used to send operational and diagnostic
+# commands to an Untangle server and to the filter nodes running on it.  The UCLIClient
+# functionality current includes (as of 9/5/07):  ***TODO: NEEDS TO BE UPDATED.
 #   1) Command line editing with history.
 #   2) Quick commands via reference to historical commands, e.g., !2, !eval, which would run
 #       command #2 or the most recent command beginning with the prefix "eval", respectively.
@@ -42,7 +44,7 @@ require 'ucli_util'
 #   - Quote handling on command line?  Do we need it?
 #   - Command level help strings.
 #   - history N
-#   - server list: #1, #2,... populated via open server:port, then #1 command
+#   - tasks command to review background tasks
 #
 # Open Issues:
 #   - Do we need to save/load history?
@@ -82,6 +84,7 @@ class UCLIClient
         @verbose = 1
         @tasks = []
         @tasks_lock = Mutex.new
+        @task_num = 1
         @diag = Diag.new(3)
         
         # Commands legend and creation of readline auto-completion abbreviations
@@ -99,6 +102,7 @@ class UCLIClient
             ["servers", true, "list servers currently under management by this #{client_name} session."],
             ["webfilter#X", true, "Send command to webfilter #X -- enter 'webfilter help' for details."],
             ["with <server #s|##> <-i>]", true, "Send multiple commands to servers #, #..., ## for all servers, -i for interactive -- with #1 #2 ..."],
+            ["tasks", false, "List all background tasks currently running."],
             # The following are not top level commands but are included here so tab completion will support them.
             ["block-list", false, nil],
             ["block", false, nil],
@@ -207,10 +211,12 @@ class UCLIClient
             return nil            
         end
 
+        # ***TODO: need to handle case of "foo&", which is distinct from "foo &" (note the space between 'foo' and '&')
         if cmd_a[-1] == "&"
             cmd_a.pop # remove &
             @tasks_lock.synchronize {
-                @tasks << Thread.new { self.__send__(*cmd_a); puts! "Done (#{cmd_a.join(' ')})" }
+                @tasks << [Thread.new { self.__send__(*cmd_a); puts! "Done (#{cmd_a.join(' ')})" }, cmd_s, @task_num]
+                @task_num += 1
             }
         else
             self.__send__(*cmd_a)
@@ -311,7 +317,7 @@ class UCLIClient
 
     # Cleanly shutdown the CLI
     def shutdown
-        @tasks.each { |t| t.join }  # wait for any remaining background tasks to complete.
+        @tasks.each { |t| t[0].join }  # wait for any remaining background tasks to complete.
     end
     
     # Display message to console IFF message level is <= verbosity level
@@ -576,8 +582,8 @@ class UCLIClient
             puts! "Error: 'with' command processor encountered an unhandled exception: " + ex
         ensure
             @tasks_lock.synchronize {
-                @tasks.each { |t| t.join }  # wait for any tasks spawned by this 'with script' to finish
-                @tasks = tasks              # BEFORE restoring state of @tasks and @drb_server
+                @tasks.each { |t| t[0].join }   # wait for any tasks spawned by this 'with script' to finish
+                @tasks = tasks                  # BEFORE restoring state of @tasks and @drb_server
             }
             @client_lock.synchronize {
                 @drb_server = drb_server
@@ -606,7 +612,15 @@ class UCLIClient
             puts! @drb_server[2].webfilter(args)
         end
     end
-        
+
+    def tasks(*args)
+        @tasks_lock.synchronize {
+            @tasks.each { |task|
+                puts! "[#{task[2]}] #{task[1]} (#{task[0].status})" if task[0].status
+            }
+        }
+    end
+    
 end # class UCLIClient
 
 if __FILE__ == $0
