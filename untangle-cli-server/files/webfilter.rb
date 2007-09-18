@@ -106,16 +106,65 @@ class WebFilter < UVMFilterNode
             node = node_ctx.node()
             settings =  node.getSettings()
             blocked_urls_list = settings.getBlockedUrls()
-            blocked_urls = ""
+            blocked_urls = "URL,block,log\n"
             blocked_urls_list.each { |url|
-                blocked_urls << (url.getString() + "\n")
-                @diag.if_level(3) { puts! url.getString() }
+                blocked = ""
+                blocked << (url.getString() + "," + url.isLive().to_s + "," + url.getLog().to_s + "\n")
+                blocked_urls << blocked
+                @diag.if_level(3) { puts! blocked }
             } if blocked_urls_list
             return blocked_urls
-        when "categories"
+        when "categories", "cats"
+            # List blocked categories
+            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node = node_ctx.node()
+            settings =  node.getSettings()
+            blocked_cats_list = settings.getBlacklistCategories()
+            blocked_cats = "Category, description, block domains, block URLs, block expressions, log only\n"
+            blocked_cats_list.each { |cat|
+                blocked = ""
+                blocked << (cat.getDisplayName() + cat.getDescription())
+                blocked << (cat.isLive() + "," + cat.getBlockDomains().to_s + "," + cat.getBlockUrls().to_s + "," + cat.getBlockExpressions().to_s + "," + cat.getLogOnly().to_s + "\n")
+                blocked_cats << blocked
+                @diag.if_level(3) { puts! blocked }
+            } if blocked_cats_list
+            return blocked_cats
         when "mime"
+            # List blocked categories
+            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node = node_ctx.node()
+            settings =  node.getSettings()
+            blocked_mime_types_list = settings.getBlockedMimeTypes()
+            blocked_mime_types = "MIME type,block,name,category,description,log\n"
+            blocked_mime_types_list.each { |mime_type_rule|
+                mime_type = mime_type_rule.getMimeType                
+                blocked = ""
+                blocked << (mime_type.getType + "," + mime_type.isLive.to_s)
+                blocked << ("," + mime_type_rule.getName)
+                blocked << ("," + mime_type_rule.getCategory)
+                blocked << ("," + mime_type_rule.getDescription)
+                blocked << ("," + (mime_type_rule.getLog ? "logged" : "not logged"))
+                blocked << "\n"
+                blocked_mime_types << blocked
+                @diag.if_level(3) { puts! blocked }
+            } if blocked_mime_types_list
+            return blocked_mime_types
         when "file"
-            return "Not yet supported"
+            # List blocked URLs
+            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node = node_ctx.node()
+            settings =  node.getSettings()
+            blocked_files_list = settings.getBlockedExtensions()
+            blocked_files = "File ext.,block,description"
+            blocked_files_list.each { |extension|
+                blocked_file = ""
+                blocked_file << extension.getString() + ","
+                blocked_file << extension.isLive().to_s + ","
+                blocked_file << extension.getString() + "\n"
+                blocked_file << blocked_files
+                @diag.if_level(3) { puts! blocked_file }
+            } if blocked_files_list
+            return blocked_files
         when "block"
             case args[1]
             when nil, ""
@@ -136,6 +185,7 @@ class WebFilter < UVMFilterNode
                         @diag.if_level(2) { puts! "Attempting to add #{url} to blocked list." }
                         stringRule = com.untangle.uvm.node.StringRule.new(url)
                         stringRule.setLog(true) if args[3].nil? || (args[3] == "true")
+                        stringRule.setLive(true)
                         blocked_urls_list.add(stringRule)
                         settings.setBlockedUrls(blocked_urls_list)
                         node.setSettings(settings)

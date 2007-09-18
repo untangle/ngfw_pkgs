@@ -146,7 +146,7 @@ if __FILE__ == $0
 loop do
     ucli_server = nil
     begin
-        if true
+        if UVM
             puts! "Creating UVM CLI Server..."
             ucli_server = UVMServer.new(ARGV)
         else
