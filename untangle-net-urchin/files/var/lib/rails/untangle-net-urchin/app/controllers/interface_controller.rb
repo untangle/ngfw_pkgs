@@ -1,3 +1,5 @@
+require_dependency "os_library"
+
 class InterfaceController < ApplicationController
   layout "main"
 
@@ -15,6 +17,9 @@ class InterfaceController < ApplicationController
   end
 
   def list
+    OSLibrary.getOS( "DebianSarge" ).manager( "network_manager" ).interfaces
+    logger.debug( "Looking up the distro #{OSLibrary.getOS( "DebianSarge" ).distribution}" )
+    
     @title = "Interface List"
     @description = "List of all of the available interfaces."
     

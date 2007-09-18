@@ -9,6 +9,7 @@
         <th>Edit</th>
         <th>Index</th>
         <th>Name</th>
+        <th>Config Type</th>
         <th>Physical Interface</th>
       </tr>
       <% 
@@ -22,6 +23,7 @@
         </td>
         <td><%= interface.index %></td>
         <td><%= interface.name %></td>
+        <td><%= interface.config_type %></td>
         <% if first %>
           <td id="interface-os-data" rowspan="<%= @interfaces.size %>">
           <% for n_interface in @interfaces %>
