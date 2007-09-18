@@ -53,14 +53,18 @@ include UCLIUtil
 #   - Is a DRb.service_shutdown required?
 #   - Should history include the history command itself, like csh, tcsh?
 #   - Do we need aliases?
+#   - Do we need to manage/shrink the task list so its objects can be freed up?
 #
 class UCLIClient
    
-    attr_reader :client_name, :welcome, :server_name
-    attr_reader :history_size, :commands, :verbose
-   
+    # Constants
     DEFAULT_PORT = 7777
-
+    FORBIDDEN_BACKGROUND_COMMANDS = %w{ with }     # commands that cannot be run in the background
+    FORBIDDEN_WITH_COMMANDS = %w{ open quit exit with history tasks servers } 
+            
+    # Accessors
+    attr_reader :client_name, :welcome, :server_name, :history_size, :commands, :verbose
+   
     #
     #   Initialization related methods
     #
@@ -70,7 +74,7 @@ class UCLIClient
     end
 
     def init(options)
-        # setup defaults
+        # Setup defaults
         @brand = "Untangle"
         @client_name = "UCLI Client"
         @server_name = "UCLI Server"
@@ -100,7 +104,7 @@ class UCLIClient
             ["help", false, "display help information"],
             ["open", false, "open connection to #{@server_name} -- open (host-name|ip):port"],
             ["servers", true, "list servers currently under management by this #{client_name} session."],
-            ["webfilter#X", true, "Send command to webfilter #X -- enter 'webfilter help' for details."],
+            ["webfilter #X", true, "Send command to webfilter #X -- enter 'webfilter help' for details."],
             ["with <server #s|##> <-i>]", true, "Send multiple commands to servers #, #..., ## for all servers, -i for interactive -- with #1 #2 ..."],
             ["tasks", false, "List all background tasks currently running."],
             # The following are not top level commands but are included here so tab completion will support them.
@@ -137,7 +141,8 @@ class UCLIClient
         # Process command line options
         process_options(options)
     end
-    
+
+    # Process command line options    
     def process_options(options)
         opts = OptionParser.new
         opts.banner = "Usage: #{File.basename(__FILE__)} [OPTIONS]"
@@ -169,6 +174,7 @@ class UCLIClient
 
     end
     
+    # Process config file settings ***TODO
     def process_config_file(config_filename)
         # TBC
         # Read config params
@@ -176,8 +182,8 @@ class UCLIClient
     end
 
      #
-     # Main CLI loop and command runner: read a command line (w/abbreviation/tab-completion
-     # support), preprocess it for command history references, execute the commandand add
+     # Main CLI loop: read a command line (w/abbreviation/tab-completion support),
+     # preprocess it for command history references, execute the command, and add
      # command to history for future reference.
      #
     def run
@@ -189,13 +195,15 @@ class UCLIClient
             cmd_s = readline("[##{@server_id}:#{@cmd_num}] ", true)
             next if (cmd_s.nil? || cmd_s.length == 0)
 
-            cmd_a = run_command(cmd_s);
+            cmd_a = run_command(cmd_s)
             next if cmd_a.nil?
             
             # Only commands entered into the top level "shell" are added to the session history
             @history.shift unless @history.length < @history_size
             @history << [@cmd_num,cmd_a.join(' ')]
             @cmd_num += 1
+            
+            @cleanup
         end
     end
     
@@ -207,17 +215,24 @@ class UCLIClient
         return nil if (cmd_a.nil? || cmd_a.length == 0)
         
         if (@drb_server.nil? || @drb_server[2].nil?) && command_requires_server(cmd_a[0])
-            puts! "There is no open #{@server_name}: one must be opened before certain commands can be issued."
+            puts! "There is no open #{@server_name}: at least one server must be opened before this command can be issued."
             return nil            
         end
 
         # ***TODO: need to handle case of "foo&", which is distinct from "foo &" (note the space between 'foo' and '&')
         if cmd_a[-1] == "&"
-            cmd_a.pop # remove &
+            FORBIDDEN_BACKGROUND_COMMANDS.detect { |cmd|
+                if (cmd == cmd_a[0])
+                    puts! "Error: '#{cmd}' cannot be executed in the background."
+                    return
+                end
+            }
+            cmd_a.pop # remove '&' from arg list
             @tasks_lock.synchronize {
                 @tasks << [Thread.new { self.__send__(*cmd_a); puts! "Done (#{cmd_a.join(' ')})" }, cmd_s, @task_num]
                 @task_num += 1
             }
+            cmd_a << "&" # restore popped '&'
         else
             self.__send__(*cmd_a)
         end
@@ -225,7 +240,7 @@ class UCLIClient
     end
     
     
-    # Preprocess a pending command: perform history replacement (nothing else at this time.()
+    # Preprocess a pending command: perform history replacement, etc.
     def preprocess(cmd)
         cmd_a = cmd.strip.split
         cmd = cmd_a[0].strip
@@ -258,11 +273,11 @@ class UCLIClient
             puts! hist_cmd[1]                       # Echo actual command used to console, as other shells do
             cmd_a = hist_cmd[1].split               # Use found historical command
         elsif (/^#\d+$/ =~ cmd)
-            svr_num = $&[1..-1].to_i                
+            svr_id = $&[1..-1].to_i                
             @client_lock.synchronize do
-                if (svr_num > 0) && (svr_num <= @ucli_servers.length)
-                    @drb_server = @ucli_servers[svr_num-1]
-                    @server_id = svr_num
+                if (svr_id >= 1) && (svr_id <= @ucli_servers.length)
+                    @drb_server = @ucli_servers[svr_id-1]
+                    @server_id = svr_id
                     # cmd_a is passed back as initialized above
                 else
                     puts! "Error: invalid server number - valid server numbers at this moment are 1...#{@ucli_servers.length}"
@@ -279,6 +294,20 @@ class UCLIClient
         }
         # if command is unknown or is known but marked as requires server then return true
         return cmd.nil? || (cmd[1] == true) 
+    end
+    
+    # Clean dynamic resources as necessary to keep client under control
+    def cleanup
+        
+        # Remove/dereference finished tasks from task list so GC can clean them up.
+        @tasks_lock.synchronize {
+            live_tasks = []
+            @tasks.each { |task|
+                live_tasks << task if task.status
+            }
+            @tasks = live_tasks
+        } if @tasks.length > MAX_TASKS_LENGTH
+        
     end
     
     #
@@ -356,6 +385,8 @@ class UCLIClient
                 else
                     raise Exception, "malformed command."
                 end
+            elsif /^#/ =~ cmd   # trap server select and do nothing, so command is added to history.
+                return 
             else
                 server = nil
                 @client_lock.synchronize do
@@ -365,7 +396,7 @@ class UCLIClient
                 res.each { |r| puts! r } if res
             end
         rescue Exception
-            puts! "Error: invalid, malformed or unknown command."
+            puts! "Error: invalid, malformed or unknown command '#{cmd}'."
         end
     end
     
@@ -402,7 +433,7 @@ class UCLIClient
         @history.each { |h| puts! "[#{h[0]}] #{h[1]}" }
     end
     
-    # Pass the given Ruby code to the UCLI server for execution, i.e., pass it to eval.
+    # Pass the given Ruby code to the UCLI server for execution.
     # Argument can either be a text String or file containing Ruby code.  UCLI Server
     # taint level may restrict certain code from being executed for security reasons.
     def ruby(*args)
@@ -428,7 +459,7 @@ class UCLIClient
         @verbose = 0
     end
     
-    # Set verbosity level - it no arg provided then display the current level.
+    # Set verbose level - it no arg provided then display the current level.
     def verbose(*args)
         begin
             if args.nil? || args.length == 0
@@ -441,7 +472,8 @@ class UCLIClient
         end
     end
 
-    # Check currently server responsiveness with all message levels set to alert.
+    # Check effective server responsiveness with all message levels set to alert.
+    # ***TODO: add support for "pong #X", to pong a server w/out changing the active server.
     def pong(*args)
         server = nil
         @client_lock.synchronize do
@@ -450,6 +482,7 @@ class UCLIClient
         pong_(server, -1, -1, -1)
     end
     
+    # List open/connected-to UCLI servers and display in console.
     def servers(*args)
         servers = nil
         @client_lock.synchronize do
@@ -466,6 +499,7 @@ class UCLIClient
         end
     end
 
+    # Open a connection to a UCLI sever and add to open servers list.
     def open(*args)
         # Validate host address format
         server_to_open = args[0].split(':')
@@ -477,25 +511,29 @@ class UCLIClient
         # Ensure server is not already opened
         servers = nil
         @client_lock.synchronize do
-            servers = @ucli_servers
-        end
-        found = servers.detect { |svr|
-            # found if host name and port match
-            (svr[0] == server_to_open[0]) && (svr[1] == server_to_open[1].to_i)
-        }
-        if found
-            puts! "Server #{args[0]} is aleady open (type 'servers' to review open servers.)"
-            return
-        end
+            found = @ucli_servers.detect { |svr|
+                # found if host name and port match  ***TODO: what if IP of an open host is used or visa versa?
+                (svr[0] == server_to_open[0]) && (svr[1] == server_to_open[1].to_i)
+            }
+            if found
+                puts! "Server #{args[0]} is aleady open (type 'servers' to review open servers.)"
+                return
+            end
         
-        # Connect to server and add to list of open servers
-        @client_lock.synchronize do
+            # Connect to server and add to list of open servers
             @ucli_servers << [server_to_open[0], server_to_open[1], DRbObject.new(nil, "druby://#{server_to_open[0]}:#{server_to_open[1]}")]
             @drb_server = @ucli_servers[-1]
-            @server_number = @ucli_servers.length
+            @server_id = @ucli_servers.length
         end
     end
     
+    # Dymamically collect UCLI client commands and apply them to list of servers, e.g.,
+    #   with #2 #3
+    #   [1] pong
+    #   [2] webfilter list
+    #   [3] end
+    # Note: all commands are sent to one server before going on to the next server. "-i" as the final
+    # argument does so in interactive mode, ie, user is prompted before sending commands to each server.
     def with(*args)
 
         # Fetch state we'll need to restore when we're done
@@ -527,26 +565,28 @@ class UCLIClient
             svr_ids = Array.new(ucli_servers.length)
             svr_ids.fill {|i| i + 1}
         else
-            svr_ids = args.join(' ').delete('#').split
-            svr_ids.each_with_index { |n,i| svr_ids[i] = n.to_i }
-            svr_ids.uniq!
-            svr_ids.each { |id|
-                if (id < 1) || (id > ucli_servers.length)
-                    puts! "Error: Invalid server number given -- '#{id}'"
-                    return
-                end
-            }
+            begin 
+                svr_ids = args.join(' ').delete('#').split
+                svr_ids.each_with_index { |n,i| svr_ids[i] = n.to_i }
+                svr_ids.uniq!
+                svr_ids.each { |id|
+                    raise Exception if (id < 1) || (id > ucli_servers.length)
+                }
+            rescue Exception
+                # Catches all server id errors, ie, to_i failure, # out of range, etc.
+                puts! "Error: Invalid server number(s) given."
+                return
+            end
         end
             
         # Read commands in local loop to apply to server list
-        forbidden_commands = %w{ open quit exit with history } 
         cmd_num = 1
         commands = []
         loop do
             cmd_s = readline("[#{cmd_num}] ", true)
             next if cmd_s.nil? || cmd_s.length == 0
             break if cmd_s == "end"
-            if forbidden_commands.include?(cmd_s) || (cmd_s =~ /^[!#].*/)
+            if FORBIDDEN_WITH_COMMANDS.include?(cmd_s) || (cmd_s =~ /^[!#].*/)
                 puts! "Error: '#{cmd_s}' is not allowed within a 'with' script."
                 next
             end
@@ -556,6 +596,7 @@ class UCLIClient
             
         return if commands.length < 1   # nothing to do
 
+        # Send commands to each server...
         begin            
             svr_ids.each { |svr_id|
                 @client_lock.synchronize {
@@ -596,32 +637,21 @@ class UCLIClient
         #@drb_server[2].getPolicies
     #end
     
+    # Send a webfilter command to server.
     def webfilter(*args)
-        if args[0] == "help"
-            print! <<-WEBFILTER_HELP
-
-- webfilter list -- enumerate all web filters running on effective #{@brand} server.            
-- webfilter <#X> block-list -- display block-list URLs for web filter #X
-- webfilter <#X> pass-list -- display pass-list URLs
-- webfilter <#X> block-list [type:category|URL|mime|file] [item] <log:true|false> -- add item to block-list by type (or update) with specified block and log settings.
-- webfilter <#X> pass-list URL [pass:true|false] -- add URL to pass-list with specified pass setting.
-- webfilter <#X> eventlog <tail <#>>|<after-time> <before-time> -- display event log entries, either the # tail entries or those between after-time and before-time.
-`
-            WEBFILTER_HELP
-        else
-            puts! @drb_server[2].webfilter(args)
-        end
+        puts! @drb_server[2].webfilter(args)
     end
 
+    # List all active tasks
     def tasks(*args)
         @tasks_lock.synchronize {
             @tasks.each { |task|
-                puts! "[#{task[2]}] #{task[1]} (#{task[0].status})" if task[0].status
+                puts! "[#{task[2]}] #{task[1]}" if task[0].status
             }
         }
     end
     
-end # class UCLIClient
+end # UCLIClient
 
 if __FILE__ == $0
 
