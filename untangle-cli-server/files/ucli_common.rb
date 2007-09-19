@@ -24,5 +24,6 @@ DEFAULT_DIAG_LEVEL = 3
 # Shared error messages & strings - Perhaps we'll package these another way.
 ERROR_INCOMPLETE_COMMAND = "Error: incomplete command - arguments required."
 ERROR_UNKNOWN_COMMAND = "Error: unknown command"
+ERROR_COMMAND_FAILED = "Error: unable to execute command"
 
 end # UCLICommon

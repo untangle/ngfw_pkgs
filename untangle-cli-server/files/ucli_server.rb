@@ -44,7 +44,6 @@ class UCLIServer
         @server_port = 7777
         @server_name = "UCLI Server"
 
-        
         # Process command line options
         process_options(options)
 
@@ -99,8 +98,15 @@ class UCLIServer
         return expected_response;
     end
 
-    # This method is not correct: we don't know if the command was not found or not.
+    # ***TODO: this method is not correct. `` returns output but not whether the command
+    # was found or not.  System() tells us if the command was found but does not yield
+    # the output. popen() succeeds when the given command is not found and does not appear
+    # to have a way to detect this case.  We could use system() with output redirection
+    # but then we have to manage temp files in a thread safe manner and also have to cover
+    # the case where the command itself may have I/O redirection or pipes. So we'll go with
+    # `cmd` for now and work on this later.
     def execute(cmd)
+        @diag.if_level(3) { puts! "executing '#{cmd}'" }
         `#{cmd}`
     end
     
@@ -169,7 +175,6 @@ loop do
         break
     rescue Exception => ex
         puts! "#{ucli_server.nil? ? "The UCLI Server" : ucli_server.server_name} has encountered an unhandled exception: " + ex
-        p ex
 	if INTERACTIVE
 	    print! "Restart server (y/n)? "
 	    break unless getyn("y")
