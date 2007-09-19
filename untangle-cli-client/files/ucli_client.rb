@@ -396,8 +396,8 @@ class UCLIClient
                     server = @drb_server[2]
                 end
 		# *** WIP
-                #res = server.execute(cmd + ' ' + args.join(' '));  # execute command on remote server host - print output to console
-                res = server.__send__(cmd + ' ' + args.join(' '));  # execute command on remote server host - print output to console
+                res = server.execute(cmd + ' ' + args.join(' '));  # execute command on remote server host - print output to console
+                #res = server.__send__(cmd + ' ' + args.join(' '));  # execute command on remote server host - print output to console
                 res.each { |r| puts! r } if res
             end
         rescue Exception
