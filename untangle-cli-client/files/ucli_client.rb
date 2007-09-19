@@ -395,7 +395,9 @@ class UCLIClient
                 @client_lock.synchronize do
                     server = @drb_server[2]
                 end
-                res = server.execute(cmd + ' ' + args.join(' '));  # execute command on remote server host - print output to console
+		# *** WIP
+                #res = server.execute(cmd + ' ' + args.join(' '));  # execute command on remote server host - print output to console
+                res = server.__send__(cmd + ' ' + args.join(' '));  # execute command on remote server host - print output to console
                 res.each { |r| puts! r } if res
             end
         rescue Exception
