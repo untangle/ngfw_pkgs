@@ -19,7 +19,7 @@ require 'proxy'
 require 'debug'
 end
 
-DEFAULT_DIAG_LEVEL = 2
+DEFAULT_DIAG_LEVEL = 3
 
 # Shared error messages & strings - Perhaps we'll package these another way.
 ERROR_INCOMPLETE_COMMAND = "Error: incomplete command - arguments required."

@@ -143,6 +143,11 @@ class UVMServer < UCLIServer
         return res
     end
 
+    def method_missing(args)
+	# *** WIP
+	puts! "Unknown command '#{args.join(' ')}"
+    end
+
 end # UVMServer
 
 if __FILE__ == $0

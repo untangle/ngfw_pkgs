@@ -44,6 +44,7 @@ class WebFilter < UVMFilterNode
             return ERROR_NO_WEBFILTER_NODES if tids.nil? || tids.length < 1
     
             if /^#/ =~ args[0]
+                # ***TODO: need to handle case where node # fails on to_i
                 node_num = (args[0].slice(1,-1).to_i) - 1
                 tid = tids[node_num]
                 cmd = args[1]
@@ -128,23 +129,24 @@ class WebFilter < UVMFilterNode
             blocked_cats = "Category, description, block domains, block URLs, block expressions, log only\n"
             blocked_cats_list.each { |cat|
                 blocked = ""
-                blocked << (cat.getDisplayName() + cat.getDescription())
-                blocked << (cat.isLive() + "," + cat.getBlockDomains().to_s + "," + cat.getBlockUrls().to_s + "," + cat.getBlockExpressions().to_s + "," + cat.getLogOnly().to_s + "\n")
+                blocked << (cat.getDisplayName() + "," + cat.getDescription() + ",")
+                blocked << (cat.getBlockDomains().to_s + "," + cat.getBlockUrls().to_s + "," + cat.getBlockExpressions().to_s + "," + cat.getLogOnly().to_s + "\n")
                 blocked_cats << blocked
                 @diag.if_level(3) { puts! blocked }
             } if blocked_cats_list
             return blocked_cats
         when "mime"
-            # List blocked categories
+            # List blocked mime types
             node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
             blocked_mime_types_list = settings.getBlockedMimeTypes()
+            @diag.if_level(3) { puts "# blocked mime types = #{blocked_mime_types_list.length}" if blocked_mime_types_list }
             blocked_mime_types = "MIME type,block,name,category,description,log\n"
             blocked_mime_types_list.each { |mime_type_rule|
                 mime_type = mime_type_rule.getMimeType                
-                blocked = ""
-                blocked << (mime_type.getType + "," + mime_type.isLive.to_s)
+                blocked = mime_type.getType
+                blocked << ("," + mime_type_rule.isLive.to_s)
                 blocked << ("," + mime_type_rule.getName)
                 blocked << ("," + mime_type_rule.getCategory)
                 blocked << ("," + mime_type_rule.getDescription)
@@ -154,21 +156,21 @@ class WebFilter < UVMFilterNode
                 @diag.if_level(3) { puts! blocked }
             } if blocked_mime_types_list
             return blocked_mime_types
-        when "file"
-            # List blocked URLs
+        when "file", "files"
+            # List blocked file types
             node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
             blocked_files_list = settings.getBlockedExtensions()
-            blocked_files = "File ext.,block,description"
+            blocked_files = "File ext., block, description"
             blocked_files_list.each { |extension|
                 blocked_file = ""
                 blocked_file << extension.getString() + ","
                 blocked_file << extension.isLive().to_s + ","
-                blocked_file << extension.getString() + "\n"
-                blocked_file << blocked_files
-                @diag.if_level(3) { puts! blocked_file }
+                blocked_file << extension.getDescription + "\n"
+                blocked_files << blocked_file
             } if blocked_files_list
+            @diag.if_level(3) { puts! blocked_files }
             return blocked_files
         when "block"
             case args[1]
@@ -204,10 +206,11 @@ class WebFilter < UVMFilterNode
                     node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
                     node = node_ctx.node()
                     settings =  node.getSettings()
-                    blockedMimesList = settings.getBlockedMimeTypes()   
-                    @diag.if_level(2) { puts! "Attempting to add #{args[2]} to Block list." }
+                    blockedMimesList = settings.getBlockedMimeTypes()
+                    return "There are no blocked mime types defined." if blockedMimesList.nil? || blockedMimesList.length == 0
+                    @diag.if_level(3) { puts! "Attempting to add #{args[2]} to Block list." }
                     mimeType = com.untangle.uvm.node.MimeType.new(args[2])
-                    block = (args[3] && (args[3] == "true")) ? true : false
+                    block = (args[3].nil? || (args[3] != "true")) ? false : true
                     name = args[4] ? args[4] : "[no name]"
                     mimeTypeRule = com.untangle.uvm.node.MimeTypeRule.new(mimeType, name, "[no category]", "[no description]", block)
                     blockedMimesList.add(mimeTypeRule)
@@ -223,21 +226,21 @@ class WebFilter < UVMFilterNode
             when "file"
                 # Block given file extension
                 begin
-                    p args
-                    return ERROR_INCOMPLETE_COMMAND if args.length < 5
+                    return ERROR_INCOMPLETE_COMMAND if args.length < 3
                     node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
                     node = node_ctx.node()
                     settings =  node.getSettings()
                     blockedExtensionsList = settings.getBlockedExtensions()   
                     @diag.if_level(2) { puts! "Attempting to add #{args[2]} to Block list." }
-                    block = (args[3] == "true")
-                    category = args[4]
-                    stringRule = com.untangle.uvm.node.StringRule.new(args[2], "[no name]", category, "[no description]", block)
+                    file = args[2]
+                    block = (args[3].nil? || (args[3] != "true")) ? false : true
+                    cat = args[4] ? args[4] : ""
+                    stringRule = com.untangle.uvm.node.StringRule.new(file, "[no name]", cat, "[no description]", block)
                     blockedExtensionsList.add(stringRule)
                     settings.setBlockedMimeTypes(blockedMimesList)
                     node.setSettings(settings)
                     msg = "File extension '#{args[2]}' added to Block list."
-                    @diag.if_level(2) { puts! msg }
+                    @diag.if_level(3) { puts! msg }
                     return msg
                 rescue Exception => ex
                     @diag.if_level(3) { p ex }
