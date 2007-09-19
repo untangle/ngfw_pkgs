@@ -51,6 +51,7 @@ class UCLIServer
 	@diag.if_level(2) { puts! "Done initializing..." }
     end
 
+    # Process and apply command line options
     def process_options(options)
 	@diag.if_level(2) { puts! "Processing options..." }
 
@@ -84,6 +85,7 @@ class UCLIServer
     end
 
     def shutdown
+        # ***TBD
     end
 
     # Methods to handle server requests
@@ -91,6 +93,7 @@ class UCLIServer
         eval(ruby)
     end
     
+    # Respond to "pong" w/expected_response: used to check if sever is alive.
     def pong(expected_response)
 	@diag.if_level(2) { puts! "I've been ponged." }
         return expected_response;
@@ -102,6 +105,7 @@ class UCLIServer
     end
     
     def reset
+        # ***TBD
     end
     
 end
@@ -165,7 +169,7 @@ loop do
 	    print! "Restart server (y/n)? "
 	    break unless getyn("y")
 	else
-            puts! "Restarting #{ucli_server.server_name}...\n"
+            puts! "Restarting #{ucli_server.nil? ? "The UCLI Server" : ucli_server.server_name}...\n"
 	end
     ensure
         #ucli_server.shutdown
