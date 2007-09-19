@@ -14,8 +14,10 @@ include Readline
 require 'abbrev'
 require 'optparse'
 require 'thread'
-require 'ucli_util'
+require 'shellwords'
+include Shellwords
 
+require 'ucli_util'
 include UCLIUtil
 
 #
@@ -242,7 +244,8 @@ class UCLIClient
     
     # Preprocess a pending command: perform history replacement, etc.
     def preprocess(cmd)
-        cmd_a = cmd.strip.split
+        #cmd_a = cmd.strip.split
+        cmd_a = shellwords cmd
         cmd = cmd_a[0].strip
         
         # Check for meta-commands first, ie, histrory, server selection...
@@ -637,11 +640,6 @@ class UCLIClient
         #@drb_server[2].getPolicies
     #end
     
-    # Send a webfilter command to server.
-    def webfilter(*args)
-        puts! @drb_server[2].webfilter(args)
-    end
-
     # List all active tasks
     def tasks(*args)
         @tasks_lock.synchronize {
@@ -651,6 +649,11 @@ class UCLIClient
         }
     end
     
+    # Send a webfilter command to server.
+    def webfilter(*args)
+        puts! @drb_server[2].webfilter(args)
+    end
+
 end # UCLIClient
 
 if __FILE__ == $0
