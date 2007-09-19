@@ -1,0 +1,22 @@
+#!/bin/sh
+
+function debug
+{
+    echo -e "[DEBUG: `date`] ${*}"
+}
+
+DEBUG=/bin/true
+
+if [ "${IF_CLEANUP_DEBUG}" == "true" ]; then DEBUG=debug ; fi
+
+if [ "$IFACE" != "cleanup" ]; then
+    $DEBUG "Ignoring the interface ${IFACE}"
+    exit 0
+fi
+
+$DEBUG "Executing cleanup"
+
+## REVIEW : Possibly add a label for dynamically configured interfaces.
+$DEBUG "Flushing interface addresses."
+sudo ip addr flush scope global
+

@@ -90,6 +90,10 @@ EOF
 ## If you modify this file manually, your changes
 ## may be overriden
 
+auto cleanup
+iface cleanup inet manual
+        cleanup_debug true
+
 ## Configuration for the loopback interface
 auto lo
 iface lo inet loopback
