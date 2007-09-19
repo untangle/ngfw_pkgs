@@ -12,6 +12,7 @@ module InterfaceHelper
     end
   end
 
+  ## REVIEW :: These Strings need to be internationalized.
   class ConfigType
     STATIC="static"
     DYNAMIC="dynamic"

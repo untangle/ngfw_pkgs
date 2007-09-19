@@ -17,9 +17,6 @@ class InterfaceController < ApplicationController
   end
 
   def list
-    OSLibrary.getOS( "DebianSarge" ).manager( "network_manager" ).interfaces
-    logger.debug( "Looking up the distro #{OSLibrary.getOS( "DebianSarge" ).distribution}" )
-    
     @title = "Interface List"
     @description = "List of all of the available interfaces."
     
@@ -130,6 +127,9 @@ class InterfaceController < ApplicationController
       i.os_name, i.mac_address, i.bus, i.vendor = physicalData[order_id]
       i.save
     end
+
+    ## Actually commit the changes
+    networkManager.commit
     
     return redirect_to( :action => 'list' )
   end
@@ -195,6 +195,9 @@ class InterfaceController < ApplicationController
     @interface.intf_static = staticConfig
     @interface.config_type = InterfaceHelper::ConfigType::STATIC
     @interface.save
+
+    ## Actually commit the changes
+    networkManager.commit
 
     return redirect_to( :action => 'list' )
   end
@@ -311,37 +314,30 @@ class InterfaceController < ApplicationController
 
     ## Find all of the physical interfaces
     currentIndex = DefaultInterfaceMapping.size - 1
-    devices=`find /sys/devices -name 'net:*' | sed 's|.*net:||'`
 
-    ## This is test code to fake a third interface
-    devices << "dummy0" if File.exists?( "/sys/class/net/dummy0" )
-
-    devices.each do |sys_device_path| 
-      name=sys_device_path.strip
+    ## REVIEW DebianSarge is hardcoded, need to move this out.
+    ia = networkManager.interfaces
+    
+    ia.each do |i| 
+      logger.debug( "Loaded the interface #{i}" )
+      
       interface = Interface.new
-      parameters = DefaultInterfaceMapping[name]
 
-      ## Save the os name
-      interface.os_name = name
+      ## Save the parameters from the physical interface.
+      interface.os_name, interface.mac_address, interface.bus = i.os_name, i.mac_address, i.bus
 
+      parameters = DefaultInterfaceMapping[i.os_name]
       ## Use the os name if it doesn't have a predefined virtual name
-      parameters = [ name, currentIndex += 1 ] if parameters.nil?
-      interface.name  = parameters[0]
-      interface.index = parameters[1]
-      interface.config_type = InterfaceHelper::ConfigType::STATIC
+      parameters = [ i.os_name, currentIndex += 1 ] if parameters.nil?
+      interface.name, interface.index  = parameters
 
-      ## Set the mac address
-      File.open( "/sys/class/net/#{name}/address", "r" ) { |f| interface.mac_address = f.readline.strip }
+      ## default it to a static config
+      interface.config_type = InterfaceHelper::ConfigType::STATIC
       
       ## Add the interface.
       interfaceArray << interface
     end
 
-    ## Update the index for each one
-    interfaceArray.each do |interface|
-      
-    end
-    
     interfaceArray
   end
 
@@ -369,5 +365,9 @@ class InterfaceController < ApplicationController
     logger.debug( "Unable to save settings" ) unless success
     
     redirect_to( :action => 'list' )
+  end
+
+  def networkManager
+    OSLibrary.getOS( "DebianSarge" ).manager( "network_manager" )
   end
 end
