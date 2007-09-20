@@ -110,6 +110,7 @@ class UCLIClient
             ["with <server #s|##> <-i>]", true, "Send multiple commands to servers #, #..., ## for all servers, -i for interactive -- with #1 #2 ..."],
             ["tasks", false, "List all background tasks currently running."],
             # The following are not top level commands but are included here so tab completion will support them.
+            ["localhost", false, nil],
             ["block-list", false, nil],
             ["block", false, nil],
             ["block-list", false, nil],
@@ -395,9 +396,7 @@ class UCLIClient
                 @client_lock.synchronize do
                     server = @drb_server[2]
                 end
-		# *** WIP
-                res = server.execute(cmd + ' ' + args.join(' '));  # execute command on remote server host - print output to console
-                #res = server.__send__(cmd + ' ' + args.join(' '));  # execute command on remote server host - print output to console
+                res = server.__send__(cmd, *args);
                 res.each { |r| puts! r } if res
             end
         rescue Exception
