@@ -1,22 +1,61 @@
-#!/bin/sh
+#!/bin/dash
 
-function debug
+debug()
 {
-    echo -e "[DEBUG: `date`] ${*}"
+    /bin/echo -e "[DEBUG: `date`] ${*}"
+}
+
+
+## Return the expected/desired state of the bridge interfaces
+bridge_expected()
+{
+    awk '
+      /^iface.*inet/ { interface = $2  }
+      /bridge_ports/ { gsub( "^[ \t]*bridge_ports[ \t]*", "")
+                       split( $0, intf_array )
+                       for ( i in intf_array ) print interface "[" intf_array[i] "]" }' \
+                           /etc/network/interfaces | sort | md5sum | awk '{ print $1}'
+}
+
+## Return the current state of the bridge interfaces
+bridge_current()
+{
+    find /sys/class/net/ -path '*/brif/*' | \
+        sed -e 's|/sys/class/net/||' -e 's|/brif/|[|' -e 's|$|]|' | \
+        sort | md5sum | awk '{ print $1}'
+}
+
+bridge_configured()
+{
+    local t_expected=`bridge_expected`
+    local t_current=`bridge_current`
+    
+    $DEBUG "EXPECTED(${t_expected}) CURRENT(${t_current})"
+
+    test "${t_expected}" = "${t_current}"
 }
 
 DEBUG=/bin/true
 
-if [ "${IF_CLEANUP_DEBUG}" == "true" ]; then DEBUG=debug ; fi
+test "${IF_CLEANUP_DEBUG}" = "true" && DEBUG=debug
 
-if [ "$IFACE" != "cleanup" ]; then
+test "$IFACE" != "cleanup" && {
     $DEBUG "Ignoring the interface ${IFACE}"
     exit 0
-fi
+}
 
-$DEBUG "Executing cleanup"
+$DEBUG "Cleaning up the interface state."
 
-## REVIEW : Possibly add a label for dynamically configured interfaces.
+## REVIEW : Possibly add a label for dynamically configured 
+## interfaces.
+## REVIEW : Down all interfaces that are not supposed to be
+## configured, eg ifconfig down <intf> for everything that is not
+## used.
+
 $DEBUG "Flushing interface addresses."
 sudo ip addr flush scope global
 
+bridge_configured || {
+    # Determine which bridges need to be removed
+    $DEBUG "Destroying all of the bridges."
+}
