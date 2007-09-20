@@ -51,17 +51,16 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
     raise "Unable to reconfigure network settings" unless Kernel.system( "#{Service} restart" )
   end
 
+  private
+
   ## Dump out the configuration for a statically configured interface.
   def static( interface )
-    ## Index of the interface that is being configured (nil for th first one)
-    i = nil
-
     ## name of the interface
     name = interface.os_name
         
     bridge = bridgeSettings( interface )
 
-    name = "br.#{name}" unless bridge.nil?
+    name, i = bridge_name( interface ), 0 unless bridge.empty?
     
     static = interface.intf_static
     
@@ -75,18 +74,16 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
       ip_network_name = "#{name}#{i.nil? ? "" : ":#{i}"}"
       i = i.nil? ? 0 : i + 1
 
-      base = <<EOF
+      base = bridge
+      
+      bridge = ""
+
+      base += <<EOF
 auto #{ip_network_name}
 iface #{ip_network_name} inet static
 \taddress #{ip_network.ip}
 \tnetmask #{OSLibrary::NetworkManager.parseNetmask( ip_network.netmask)}
 EOF
-      ## Only add the bridge stuff once
-      base += bridge unless bridge.nil?
-      bridge = nil
-      
-      
-      base
     end.join( "\n" )
   end
 
@@ -109,15 +106,20 @@ EOF
     bridged_interfaces = bridged_interfaces.map { |ib| ib.interface }.delete_if { |ib| ib.nil? }
 
     ## If this is nil or empty, it is not a bridge.    
-    return nil if ( bridged_interfaces.nil? || bridged_interfaces.empty? )
+    return "" if ( bridged_interfaces.nil? || bridged_interfaces.empty? )
     
     ## Append this interface
     bridged_interfaces << interface
 
+    bridge_name = bridge_name( interface )
+
     <<EOF
+auto #{bridge_name}
+iface #{bridge_name} inet manual
 \turchin_bridge_ports #{bridged_interfaces.map{ |i| i.os_name }.join( " " )}
 \turchin_debug true
 \tbridge_ageing 900
+
 EOF
   end
 
@@ -135,5 +137,10 @@ iface cleanup inet manual
 auto lo
 iface lo inet loopback
 EOF
+  end
+
+  ## Given an interface, this returns the expected bridge name
+  def bridge_name( interface )
+    "br.#{interface.os_name}"
   end
 end
