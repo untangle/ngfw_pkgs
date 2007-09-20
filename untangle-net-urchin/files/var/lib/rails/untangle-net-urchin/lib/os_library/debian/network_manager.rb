@@ -3,6 +3,7 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
 
   Service = "/etc/init.d/networking"
   InterfacesConfigFile = "/etc/network/interfaces"
+  InterfacesStatusFile = "/etc/network/ifstate"
 
   def interfaces
     logger.debug( "Running inside of the network manager for debian" )
@@ -44,6 +45,9 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
     File.open( InterfacesConfigFile, "w" ) { |f| f.print( interfaces_file.join( "\n" )) }
     
     ## Restart networking
+    ## Clear out all of the interface state.
+    File.open( InterfacesStatusFile, "w" ) { |f| f.print( "lo=lo" ) }
+
     raise "Unable to reconfigure network settings" unless Kernel.system( "#{Service} restart" )
   end
 
@@ -54,6 +58,10 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
 
     ## name of the interface
     name = interface.os_name
+        
+    bridge = bridgeSettings( interface )
+
+    name = "br.#{name}" unless bridge.nil?
     
     static = interface.intf_static
     
@@ -67,12 +75,18 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
       ip_network_name = "#{name}#{i.nil? ? "" : ":#{i}"}"
       i = i.nil? ? 0 : i + 1
 
-      <<EOF
+      base = <<EOF
 auto #{ip_network_name}
 iface #{ip_network_name} inet static
 \taddress #{ip_network.ip}
 \tnetmask #{OSLibrary::NetworkManager.parseNetmask( ip_network.netmask)}
 EOF
+      ## Only add the bridge stuff once
+      base += bridge unless bridge.nil?
+      bridge = nil
+      
+      
+      base
     end.join( "\n" )
   end
 
@@ -81,7 +95,30 @@ EOF
   end
 
   def bridge( interface )
+    logger.debug( "Nothing needed for the bridge interface" )
     ""
+  end
+
+  ## These are the settings that should be appended to the first
+  ## interface index that is inside of the interface (if this is in fact a bridge)
+  def bridgeSettings( interface )
+    ## Check if this is a bridge
+    bridged_interfaces = interface.bridged_interfaces
+    
+    ## Create a new set of bridged interfaces
+    bridged_interfaces = bridged_interfaces.map { |ib| ib.interface }.delete_if { |ib| ib.nil? }
+
+    ## If this is nil or empty, it is not a bridge.    
+    return nil if ( bridged_interfaces.nil? || bridged_interfaces.empty? )
+    
+    ## Append this interface
+    bridged_interfaces << interface
+
+    <<EOF
+\turchin_bridge_ports #{bridged_interfaces.map{ |i| i.os_name }.join( " " )}
+\turchin_debug true
+\tbridge_ageing 900
+EOF
   end
 
   def header
@@ -92,7 +129,7 @@ EOF
 
 auto cleanup
 iface cleanup inet manual
-        cleanup_debug true
+\turchin_debug true
 
 ## Configuration for the loopback interface
 auto lo

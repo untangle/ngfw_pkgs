@@ -71,6 +71,12 @@ class InterfaceController < ApplicationController
       @bridge = @interface.intf_bridge
       @bridge = IntfBridge.new if @bridge.nil?
 
+      if @bridge.bridge_interface.nil?
+        @bridge_interface_id = nil
+      else
+        @bridge_interface_id = @bridge.bridge_interface.id
+      end
+
       conditions = [ "config_type IN (?) AND id != ?" ]
       conditions << InterfaceHelper::BRIDGEABLE_CONFIGTYPES
       conditions << @interface.id
@@ -95,6 +101,7 @@ class InterfaceController < ApplicationController
     order = params[:interfaceOrderList]
     
     ## nothing to do if the two lists are identical
+    # REVIEW : Should this force a commit regardless of whether or not they are the same
     return redirect_to( :action => 'list' ) if original == order
 
     ## Easy check if the sizes are different
@@ -270,6 +277,9 @@ class InterfaceController < ApplicationController
       if ( params[:commit] == "Configure" )
         return redirect_to( :action => bridge_interface.config_type, :id => bridge_interface.id ) 
       end
+
+      ## Actually commit the changes
+      networkManager.commit
       
       true
     end

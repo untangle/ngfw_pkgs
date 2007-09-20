@@ -1,0 +1,103 @@
+#!/bin/dash
+
+# You don't usually need to touch this file at all, the full configuration
+# of the bridge can be done in a standard way on /etc/network/interfaces.
+
+## Script borrowed from Debian.
+
+## Untangle 09-19-07
+## * Removed the "all" option for the ports.
+## * Removed the "none" option for for the ports.
+## * Removed all of the waiting code.
+
+debug()
+{
+    /bin/echo -e "[DEBUG: `date`] ${*}"
+}
+
+DEBUG=/bin/true
+
+test "${IF_URCHIN_DEBUG}" = "true" && DEBUG=debug
+
+if [ ! -x /usr/sbin/brctl ]
+then
+    $DEBUG "Bridge utilities are not installed."
+    exit 0
+fi
+
+case "$IF_URCHIN_BRIDGE_PORTS" in
+    "")
+	exit 0
+	;;
+    none)
+        $DEBUG "'none' is not supported by the untangle-net-urchin"
+	INTERFACES=""
+	;;
+    all)
+        $DEBUG "'all' is not supported by the untangle-net-urchin"
+	INTERFACES=""
+	;;
+    *)
+	INTERFACES="$IF_URCHIN_BRIDGE_PORTS"
+	;;
+esac
+
+brctl addbr $IFACE && {
+    for port in $INTERFACES ; do
+        if [ -x /etc/network/if-pre-up.d/vlan ]; then
+            env IFACE=$port /etc/network/if-pre-up.d/vlan
+        fi
+        if [ "$IF_BRIDGE_HW" ]
+            then
+            ifconfig $port down; ifconfig $port hw ether $IF_BRIDGE_HW
+        fi
+        brctl addif $IFACE $port && ifconfig $port 0.0.0.0 up
+    done
+}
+
+if [ "$IF_BRIDGE_AGEING" ]
+then
+  brctl setageing $IFACE $IF_BRIDGE_AGEING
+fi
+
+if [ "$IF_BRIDGE_BRIDGEPRIO" ]
+then
+  brctl setbridgeprio $IFACE $IF_BRIDGE_BRIDGEPRIO
+fi
+
+if [ "$IF_BRIDGE_FD" ]
+then
+  brctl setfd $IFACE $IF_BRIDGE_FD
+fi
+
+if [ "$IF_BRIDGE_GCINT" ]
+then
+  brctl setgcint $IFACE $IF_BRIDGE_GCINT
+fi
+
+if [ "$IF_BRIDGE_HELLO" ]
+then
+  brctl sethello $IFACE $IF_BRIDGE_HELLO
+fi
+
+if [ "$IF_BRIDGE_MAXAGE" ]
+then
+  brctl setmaxage $IFACE $IF_BRIDGE_MAXAGE
+fi
+
+if [ "$IF_BRIDGE_PATHCOST" ]
+then
+  brctl setpathcost $IFACE $IF_BRIDGE_PATHCOST
+fi
+
+if [ "$IF_BRIDGE_PORTPRIO" ]
+then
+  brctl setportprio $IFACE $IF_BRIDGE_PORTPRIO
+fi
+
+if [ "$IF_BRIDGE_STP" ]
+then
+  brctl stp $IFACE $IF_BRIDGE_STP
+fi
+
+ifconfig $IFACE 0.0.0.0 up

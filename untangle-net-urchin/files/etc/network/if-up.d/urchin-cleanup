@@ -1,0 +1,100 @@
+#!/bin/dash
+
+debug()
+{
+    /bin/echo -e "[DEBUG: `date`] ${*}"
+}
+
+## Return the expected/desired state of the bridge interfaces
+bridge_expected()
+{
+    awk '
+      /^iface.*inet/ { interface = $2  }
+      /urchin_bridge_ports/ { print interface "[]"
+                              gsub( "^[ \t]*urchin_bridge_ports[ \t]*", "")
+                              split( $0, intf_array )
+                              for ( i in intf_array ) print interface "[" intf_array[i] "]" }' \
+                                  /etc/network/interfaces | sort | md5sum | awk '{ print $1}'
+}
+
+## Return the current state of the bridge interfaces
+## REVIEW : This doesn't include empty bridges.
+bridge_current()
+{
+    find /sys/class/net/ -path '*/brif*' | \
+        sed -e 's|/sys/class/net/\([^/]*\)/brif/\?\(.*\)|\1[\2]|' | \
+        sort | md5sum | awk '{ print $1}'
+}
+
+bridge_configured()
+{
+    local l_expected=`bridge_expected`
+    local l_current=`bridge_current`
+    
+    $DEBUG "EXPECTED(${l_expected}) CURRENT(${l_current})"
+
+    test "${l_expected}" = "${l_current}"
+}
+
+## Return a list of all of the bridges
+bridge_list()
+{
+    find /sys/class/net/ -name 'bridge_id' | sed -e 's|/sys/class/net/\([^/]*\)/.*|\1|'
+}
+
+## Return a list of interfaces that are in bridge. 
+bridge_port_list()
+{
+    local l_bridge=$1
+    
+    test -n "${l_bridge}" && {
+        find /sys/class/net/${l_bridge}/brif/ -maxdepth 1 -mindepth 1 -exec basename {} \;
+    }
+}
+
+## Deconfigure all of the active bridges
+bridge_delete_all()
+{
+    local l_bridge
+    local l_port
+    for l_bridge in `bridge_list` ; do
+        $DEBUG "Deleting all of the interfaces in the bridge '${l_bridge}'."
+        for l_port in `bridge_port_list ${l_bridge}` ; do
+            $DEBUG "Deleting the interface '${l_port}' from the bridge '${l_bridge}'."
+            brctl delif ${l_bridge} ${l_port}
+            ifconfig ${l_port} 0.0.0.0
+            ifconfig ${l_port} down
+        done
+        ifconfig ${l_bridge} down
+        brctl delbr ${l_bridge}
+    done
+}
+
+DEBUG=/bin/true
+
+test "${IF_URCHIN_DEBUG}" = "true" && DEBUG=debug
+
+test "$IFACE" != "cleanup" && {
+    $DEBUG "Ignoring the interface ${IFACE}"
+    exit 0
+}
+
+$DEBUG "Cleaning up the interface state."
+
+## REVIEW : Possibly add a label for dynamically configured 
+## interfaces.
+## REVIEW : Down all interfaces that are not supposed to be
+## configured, eg ifconfig down <intf> for everything that is not
+## used.
+
+$DEBUG "Flushing interface addresses."
+sudo ip addr flush scope global
+
+bridge_configured || {
+    # Determine which bridges need to be removed
+    $DEBUG "Destroying all of the bridges."
+    bridge_delete_all
+}
+
+## always exit 0
+exit 0
