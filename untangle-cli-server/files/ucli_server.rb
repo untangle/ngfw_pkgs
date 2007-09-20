@@ -87,9 +87,11 @@ class UCLIServer
         # ***TBD
     end
 
+    #
     # Methods to handle server requests
+    #
     def ruby(ruby)
-        eval(ruby)
+        self.instance_eval(ruby)
     end
     
     # Respond to "pong" w/expected_response: used to check if sever is alive.
@@ -106,7 +108,7 @@ class UCLIServer
     # the case where the command itself may have I/O redirection or pipes. So we'll go with
     # `cmd` for now and work on this later.
     def execute(cmd)
-        @diag.if_level(3) { puts! "executing '#{cmd}'" }
+        @diag.if_level(3) { puts! "Executing '#{cmd}'" }
         `#{cmd}`
     end
     
@@ -114,6 +116,40 @@ class UCLIServer
         # ***TBD
     end
     
+    def method_missing(method_id, *args)
+        begin
+            node = method_id.id2name
+            @diag.if_level(3) { puts! "#{node} method not found - attempting to dynamically load component..." ; p args }
+
+            # Attempt to load a component with the name of the missing method.
+            require node
+            
+            # If successful, create an new instance of the component loaded via the require.
+            self.instance_variable_set("@#{node}", eval("#{node.capitalize}.new"))
+            
+            # Now define the missing method such that it delegates to the loaded component.
+            self.instance_eval %{
+                def #{node}(params)
+                    @#{node}.execute(params)
+                end
+            }
+            
+            # Lastly, fulfill the call for which the method was missing in the first place
+            self.send("#{node}", *args)
+            # At this point, future calls to the missing method will be handed by the delegator we just created.
+
+        rescue LoadError
+            # #{node}.rb not found so assume the missing method is really a program to run.
+            return `#{node} #{args.join(' ')}`
+        rescue Exception => ex
+            msg = "Error: unable to load component for command '#{method_id}' " + ex
+            @diag.if_level(2) {
+                puts! "#{msg}"
+                p ex
+            }
+            return msg
+        end
+    end
 end
 
 #
@@ -131,28 +167,23 @@ class UVMServer < UCLIServer
 	@diag.if_level(2) { puts! "Initializing UVMServer..." }
         
         # Init/setup server filter interfaces
-        if UVM
-            @webfilter = WebFilter.new
-        end
+        #if UVM
+        #    @webfilter = WebFilter.new
+        #end
 
 	@diag.if_level(2) { puts! "Done initializing UVMServer..." }
     end
 
-    def webfilter(args)
-        res = nil
-        begin
-            res = @webfilter.execute(args)
-        rescue Exception => ex
-            res = "#{server_name}:webfilter has raised an unhandled exception -- " + ex
-            @diag.if_level(1) { puts! res }
-        end
-        return res
-    end
-
-    def method_missing(args)
-	# *** WIP
-	puts! "Unknown command '#{args.join(' ')}"
-    end
+    #def webfilter(args)
+    #    res = nil
+    #    begin
+    #        res = @webfilter.execute(args)
+    #    rescue Exception => ex
+    #        res = "#{server_name}:webfilter has raised an unhandled exception -- " + ex
+    #        @diag.if_level(1) { puts! res }
+    #    end
+    #    return res
+    #end
 
 end # UVMServer
 
@@ -176,7 +207,7 @@ loop do
     rescue Exception => ex
         puts! "#{ucli_server.nil? ? "The UCLI Server" : ucli_server.server_name} has encountered an unhandled exception: " + ex
 	if INTERACTIVE
-	    print! "Restart server (y/n)? "
+	    puts! "Restart server (y/n)? "
 	    break unless getyn("y")
 	else
             puts! "Restarting #{ucli_server.nil? ? "The UCLI Server" : ucli_server.server_name}...\n"

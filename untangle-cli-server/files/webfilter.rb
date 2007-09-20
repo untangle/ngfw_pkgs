@@ -18,7 +18,7 @@ include UCLIUtil
 
 require 'filternode'
 
-class WebFilter < UVMFilterNode
+class Webfilter < UVMFilterNode
     
     ERROR_NO_WEBFILTER_NODES = "No web filter modules are installed on the effective server."
     WEBFILTER_NODE_NAME = "untangle-node-webfilter"
@@ -37,6 +37,8 @@ class WebFilter < UVMFilterNode
     # Server service methods
     #
     def execute(args)
+
+        @diag.if_level(3) { puts! "Webfilter::execute(#{args.join(' ')})" }
         
         begin
             # Get tids of all web filters.
