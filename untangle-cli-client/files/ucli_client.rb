@@ -91,7 +91,7 @@ class UCLIClient
         @tasks = []
         @tasks_lock = Mutex.new
         @task_num = 1
-        @diag = Diag.new(3)
+        @diag = Diag.new(2)
         
         # Commands legend and creation of readline auto-completion abbreviations
         @commands_with_help = [
@@ -205,8 +205,6 @@ class UCLIClient
             @history.shift unless @history.length < @history_size
             @history << [@cmd_num,cmd_a.join(' ')]
             @cmd_num += 1
-            
-            @cleanup
         end
     end
     
@@ -230,9 +228,21 @@ class UCLIClient
                     return
                 end
             }
-            cmd_a.pop # remove '&' from arg list
+            cmd_a.pop # remove '&' from arg list - background tasks are handled WITHIN this client and not by the system that runs the command in the back ground.
             @tasks_lock.synchronize {
-                @tasks << [Thread.new { self.__send__(*cmd_a); puts! "Done (#{cmd_a.join(' ')})" }, cmd_s, @task_num]
+                # must store task record before creating thread so command processor can tell if the command is in the background or not.
+                task_index = @task_num-1
+                @tasks[task_index] = [nil, cmd_s, @task_num, true, ""]  # [ task thread, cmd string, task num, background?, output]
+                t = Thread.new(task_index) { |t_idx|
+                    # ***TODO: set thread local variable with task index - then the thread can look it up
+                    # and decide whether to do certain things if its a background task or not.
+                    Thread.current[:task_index] = t_idx
+                    Thread.current[:background] = true
+                    res = self.__send__(*cmd_a);
+                    @tasks_lock.synchronize { @tasks[t_idx][4] = res }
+                    puts! "\nDone (#{cmd_a.join(' ')}) - use command %#{t_idx+1} to view output."
+                }
+                @tasks[task_index][0] = t
                 @task_num += 1
             }
             cmd_a << "&" # restore popped '&'
@@ -288,6 +298,17 @@ class UCLIClient
                     return nil
                 end
             end
+        elsif (/^%\d+$/ =~ cmd)
+            @tasks_lock.synchronize {
+                task_num = $&[1..-1].to_i
+                if task_num < 1 || task_num > @tasks.length
+                    puts! "Error: invalid task number."
+                elsif @tasks[task_num-1][4].nil?
+                    puts! "Error: task #{task_num} has already been cleaned up - no output is available."
+                else
+                    @tasks[task_num-1][4].each { |line| puts! line }
+                end
+            }
         end
         cmd_a
     end
@@ -305,12 +326,12 @@ class UCLIClient
         
         # Remove/dereference finished tasks from task list so GC can clean them up.
         @tasks_lock.synchronize {
-            live_tasks = []
-            @tasks.each { |task|
-                live_tasks << task if task.status
+            @tasks.each_with_index { |task,i|
+                if task[i] && !task[i].status
+                    @tasks[i][0] = @tasks[i][4] = nil
+                end
             }
-            @tasks = live_tasks
-        } if @tasks.length > MAX_TASKS_LENGTH
+        }
         
     end
     
@@ -384,8 +405,22 @@ class UCLIClient
             cmd = method_id.id2name
             if /^:/ =~ cmd
                 if cmd.length > 1
-                    res = system(cmd.slice(1,cmd.length-1) + ' '  + args.join(' '));  # execute command locally - output will go to console
-                    puts! "Error - command not found." unless res
+                    cmd = cmd.slice(1,cmd.length-1)
+                    if (args.length > 0) then cmd << (' '  + args.join(' ')) end
+                    @diag.if_level(3) { puts! "Executing '#{cmd}'" }
+                    begin
+                        pipe = IO.popen(cmd, "r")   # note pipe is half duplex so no need to close_write
+                        lines = []
+                        pipe.readlines.each { |line|
+                            puts! line unless Thread.current[:background]
+                            lines << line
+                        }
+                        return lines
+                    rescue IOError => ex
+                        err = "Error: unable to execute '#{cmd}' - command not found or not executable."
+                        @diag.if_level(3) { puts! err ; p ex }
+                        return
+                    end
                 else
                     raise Exception, "malformed command."
                 end
@@ -396,7 +431,7 @@ class UCLIClient
                 @client_lock.synchronize do
                     server = @drb_server[2]
                 end
-                res = server.__send__(cmd, *args);
+                res = (args.nil? || (args.length == 0)) ? server.__send__(cmd, []) : server.__send__(cmd, *args);
                 res.each { |r| puts! r } if res
             end
         rescue Exception
@@ -645,7 +680,9 @@ class UCLIClient
     def tasks(*args)
         @tasks_lock.synchronize {
             @tasks.each { |task|
-                puts! "[#{task[2]}] #{task[1]}" if task[0].status
+                t = "[#{task[2]}] #{task[1]}"
+                t << (task[0].status ? " (in progress)" : " (done)")
+                puts! t
             }
         }
     end
