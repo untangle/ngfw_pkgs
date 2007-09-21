@@ -10,16 +10,7 @@
 
 module UCLICommon
 
-# Use full UVM server functionality (requires jruby, etc.)?
-UVM = true
-
-if UVM
-require 'java'
-require 'proxy'
-require 'debug'
-end
-
-DEFAULT_DIAG_LEVEL = 3
+DEFAULT_DIAG_LEVEL = 2
 
 # Shared error messages & strings - Perhaps we'll package these another way.
 ERROR_INCOMPLETE_COMMAND = "Error: incomplete command - arguments required."

@@ -11,6 +11,10 @@
 #   - Should mime types entered via the CLI be validated against a list of known legal values?
 #
 
+require 'java'
+require 'proxy'
+require 'debug'
+
 require 'ucli_common'
 include UCLICommon
 require 'ucli_util'

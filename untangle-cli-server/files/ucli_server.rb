@@ -8,7 +8,7 @@
 # @version 0.1
 #
 
-# Should server restarts be controlled interactively (used for debugging)
+# Should server restarts be controlled interactively (used for debugging)?
 INTERACTIVE = $DEBUG
 
 require 'drb'
@@ -19,12 +19,9 @@ include UCLICommon
 require 'ucli_util'
 include UCLIUtil
 
-require 'webfilter'
-
 #
-#   UCLI server base class: contains no JRuby code so it can be run as a "stub" on systems without the
-#   untangle server.  See UVMServer below for the real meat-and-potatos server.
-#   @author <a href="mailto:ken@untangle.com">Ken Hilton</a>
+#   UCLI server core class ***TODO: doc the extensibilty if this class and the
+#   component API.
 #
 class UCLIServer
     
@@ -47,6 +44,10 @@ class UCLIServer
         # Process command line options
         process_options(options)
 
+        # Misc
+        trap("HUP") { self.reset }
+        @component_methods = []
+        
 	@diag.if_level(2) { puts! "Done initializing..." }
     end
 
@@ -83,66 +84,45 @@ class UCLIServer
         DRb.thread.join
     end
 
-    def shutdown
-        # ***TBD
-    end
-
     #
     # Methods to handle server requests
     #
-    def ruby(ruby)
-        self.instance_eval(ruby)
-    end
-    
-    # Respond to "pong" w/expected_response: used to check if sever is alive.
-    def pong(expected_response)
-	@diag.if_level(2) { puts! "I've been ponged." }
-        return expected_response;
-    end
-
-    # ***TODO: this method is not correct. `` returns output but not whether the command
-    # was found or not.  System() tells us if the command was found but does not yield
-    # the output. popen() succeeds when the given command is not found and does not appear
-    # to have a way to detect this case.  We could use system() with output redirection
-    # but then we have to manage temp files in a thread safe manner and also have to cover
-    # the case where the command itself may have I/O redirection or pipes. So we'll go with
-    # `cmd` for now and work on this later.
-    def execute(cmd)
-        @diag.if_level(3) { puts! "Executing '#{cmd}'" }
-        `#{cmd}`
-    end
-    
-    def reset
-        # ***TBD
-    end
-    
     def method_missing(method_id, *args)
         begin
             node = method_id.id2name
-            @diag.if_level(3) { puts! "#{node} method not found - attempting to dynamically load component..." ; p args }
+            @diag.if_level(3) { puts! "'#{node}' method not found - attempting to dynamically load component..." ; p args }
 
-            # Attempt to load a component with the name of the missing method.
+            # Attempt to load a node CLI with the name of the missing method.
             require node
             
-            # If successful, create an new instance of the component loaded via the require.
+            # If successful, create an new instance of the node CLI loaded via the require.
             self.instance_variable_set("@#{node}", eval("#{node.capitalize}.new"))
             
-            # Now define the missing method such that it delegates to the loaded component.
+            # Now define the missing method such that it delegates to the instance of the node CLI.
             self.instance_eval %{
                 def #{node}(params)
                     @#{node}.execute(params)
                 end
+                @component_methods << :#{node}
             }
             
             # Lastly, fulfill the call for which the method was missing in the first place
-            self.send("#{node}", *args)
-            # At this point, future calls to the missing method will be handed by the delegator we just created.
+            (args.length > 0) ? self.send("#{node}", *args) : self.send("#{node}", [])
+            
+            # At this point, future calls to the missing method will be handed by the delegator we just created above.
 
         rescue LoadError
             # #{node}.rb not found so assume the missing method is really a program to run.
-            return `#{node} #{args.join(' ')}`
+            return execute("#{node} #{args.join(' ')}")
+        rescue NameError, NoMethodError => ex
+            msg = "Error: component '#{node}' does not have the proper structure - " + ex
+            @diag.if_level(3) {
+                puts! "#{msg}"
+                p ex
+            }
+            return msg
         rescue Exception => ex
-            msg = "Error: unable to load component for command '#{method_id}' " + ex
+            msg = "Error: unable to load component '#{method_id}' " + ex
             @diag.if_level(2) {
                 puts! "#{msg}"
                 p ex
@@ -150,56 +130,61 @@ class UCLIServer
             return msg
         end
     end
-end
 
-#
-#   UVMServer extends UCLIServer adding functionality to send commands to
-#   various UMV components, e.g. filter nodes, configuration, etc.
-#   @author <a href="mailto:ken@untangle.com">Ken Hilton</a>
-#
-class UVMServer < UCLIServer
+    def execute(cmd)
+        cmd = cmd.strip
+        @diag.if_level(3) { puts! "Executing '#{cmd}'" }
+        begin
+            pipe = IO.popen(cmd, "r")   # note pipe is half duplex to no need to close_write
+            return pipe.readlines
+        rescue IOError => ex
+            err = "Error: unable to execute '#{cmd}' - command not found or not executable."
+            @diag.if_level(3) { puts! err ; p ex }
+            return err
+        end
+    end
     
-    #
-    # Server initialization and setup
-    #
-    def initialize(options)
-        super options
-	@diag.if_level(2) { puts! "Initializing UVMServer..." }
-        
-        # Init/setup server filter interfaces
-        #if UVM
-        #    @webfilter = WebFilter.new
-        #end
-
-	@diag.if_level(2) { puts! "Done initializing UVMServer..." }
+    def ruby(ruby)
+        self.instance_eval(ruby)
+    end
+    
+    # Respond to "pong" w/expected_response: used to check if sever is alive.
+    def pong(expected_response)
+	@diag.if_level(3) { puts! "I've been ponged." }
+        return expected_response
     end
 
-    #def webfilter(args)
-    #    res = nil
-    #    begin
-    #        res = @webfilter.execute(args)
-    #    rescue Exception => ex
-    #        res = "#{server_name}:webfilter has raised an unhandled exception -- " + ex
-    #        @diag.if_level(1) { puts! res }
-    #    end
-    #    return res
-    #end
+    # ***TODO: this works but I don't fully understand it.  Need to study.  See this link for a start:
+    # http://groups.google.com/group/comp.lang.ruby/browse_thread/thread/f991a8a9adc34574/5361f7b93427ca60?hl=en&lnk=gst&q=remove+instance+method&rnum=8#5361f7b93427ca60
+    def delete_method(name)
+        class << self; self end.     # overcome remove beign private ...
+        __send__(:remove_method,name) 
+    end
+    
+    # Is this thread safe?
+    def reset
+      # Remove added components (removing their methods will cause them to be reloaded.)
+      p self.methods.sort
+      @component_methods.each { |meth_name|
+          delete_method meth_name
+      }
+      p self.methods.sort
+      @component_methods = []
+    end
+    
+    def shutdown
+        # ***TBD
+    end
 
-end # UVMServer
+end
+
 
 if __FILE__ == $0
 
 loop do
     ucli_server = nil
     begin
-        if UVM
-            puts! "Creating UVM CLI Server..."
-            ucli_server = UVMServer.new(ARGV)
-        else
-            puts! "Creating Simple UCLI Server..."
-            ucli_server = UCLIServer.new(ARGV)
-        end
-        trap("HUP") { ucli_server.reset }
+        ucli_server = UCLIServer.new(ARGV)
         ucli_server.run
         break
     rescue Interrupt
@@ -207,7 +192,7 @@ loop do
     rescue Exception => ex
         puts! "#{ucli_server.nil? ? "The UCLI Server" : ucli_server.server_name} has encountered an unhandled exception: " + ex
 	if INTERACTIVE
-	    puts! "Restart server (y/n)? "
+	    print! "Restart server (y/n)? "
 	    break unless getyn("y")
 	else
             puts! "Restarting #{ucli_server.nil? ? "The UCLI Server" : ucli_server.server_name}...\n"
@@ -215,6 +200,7 @@ loop do
     ensure
         #ucli_server.shutdown
     end
+    
 end # loop
 
 exit 0
