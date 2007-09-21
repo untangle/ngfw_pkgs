@@ -45,13 +45,19 @@ class Webfilter < UVMFilterNode
         @diag.if_level(3) { puts! "Webfilter::execute(#{args.join(' ')})" }
         
         begin
-            # Get tids of all web filters.
+            # Get tids of all web filters once and for all commands we might execute below.
             tids = @uvmRemoteContext.nodeManager.nodeInstances(WEBFILTER_NODE_NAME)
             return ERROR_NO_WEBFILTER_NODES if tids.nil? || tids.length < 1
     
             if /^#/ =~ args[0]
-                # ***TODO: need to handle case where node # fails on to_i
-                node_num = (args[0].slice(1,-1).to_i) - 1
+                begin
+                    node_num = (args[0].slice(1,-1).to_i) - 1
+                rescue Exception => ex
+                    err = "Error: invalid webfilter node number '#{args[0].slice(1,-1)}'"
+                    @diag.if_level(2) { puts! err + " " + ex ; p ex }
+                    return err
+                end
+                    
                 tid = tids[node_num]
                 cmd = args[1]
                 args.shift
@@ -62,7 +68,7 @@ class Webfilter < UVMFilterNode
                 tid = tids[0]
                 args.shift
             end
-            
+    
             @diag.if_level(3) { puts! "webfilter: node # = #{node_num}, command = #{cmd}" }
             
             case cmd
@@ -82,10 +88,10 @@ class Webfilter < UVMFilterNode
             when "help"
                 help_text = <<-WEBFILTER_HELP
 
-- webfilter list -- enumerate all web filters running on effective #{@brand} server.            
-- webfilter <#X> block-list [item-type:urls|mime|file] -- display block-list URLs for web filter #X
+- webfilter -- enumerate all web filters running on effective #{@brand} server.
+- webfilter <#X> block-list [item-type:cats|urls|mime|file] -- display block-list of item-type for webfilter #X
 - webfilter <#X> pass-list [item-type:urls|clients] -- display pass-list URLs
-- webfilter <#X> block-list block [item-type:url|mime|file] [item] <log:true|false> -- add item to block-list by type (or update) with specified block and log settings.
+- webfilter <#X> block-list block [item-type:cat|url|mime|file] [item] <log:true|false> -- add item to block-list by type (or update) with specified block and log settings.
 - webfilter <#X> pass-list URL [pass:true|false] -- add URL to pass-list with specified pass setting.
 - webfilter <#X> eventlog <tail <#>>|<after-time> <before-time> -- display event log entries, either the # tail entries or those between after-time and before-time.
                 WEBFILTER_HELP
@@ -132,11 +138,22 @@ class Webfilter < UVMFilterNode
             node = node_ctx.node()
             settings =  node.getSettings()
             blocked_cats_list = settings.getBlacklistCategories()
-            blocked_cats = "Category, description, block domains, block URLs, block expressions, log only\n"
+            blocked_cats = "Category, description, block/log\n"
             blocked_cats_list.each { |cat|
                 blocked = ""
-                blocked << (cat.getDisplayName() + "," + cat.getDescription() + ",")
-                blocked << (cat.getBlockDomains().to_s + "," + cat.getBlockUrls().to_s + "," + cat.getBlockExpressions().to_s + "," + cat.getLogOnly().to_s + "\n")
+                blocked << (cat.getDisplayName() + "," + cat.getDescription())
+                # ***TODO: get these block combos to match the GUI
+                if cat.getBlockDomains() && cat.getBlockUrls() && cat.getBlockExpressions() && !cat.getLogOnly()
+                    blocked << ",block and log"
+                elsif !cat.getBlockDomains() && !cat.getBlockUrls() && !cat.getBlockExpressions() && !cat.getLogOnly()
+                    blocked << ",pass"
+                elsif cat.getBlockDomains() && cat.getBlockUrls() && cat.getBlockExpressions() && cat.getLogOnly()
+                    blocked << ",pass and log"
+                else
+                    blocked << ",action unknown - correct via #{@brand} admin. GUI."
+                end
+                @diag.if_level(3) { blocked << (" (" + cat.getBlockDomains().to_s + "," + cat.getBlockUrls().to_s + "," + cat.getBlockExpressions().to_s + "," + cat.getLogOnly().to_s + ")") }
+                blocked << "\n"
                 blocked_cats << blocked
                 @diag.if_level(3) { puts! blocked }
             } if blocked_cats_list
@@ -252,8 +269,35 @@ class Webfilter < UVMFilterNode
                     @diag.if_level(3) { p ex }
                     return "Adding extension '#{args[2]}' to block list failed:\n" + ex
                 end
-            when "category"
-                return "Not yet supported."
+            when "category", "cat"
+                # Block given category
+                return ERROR_INCOMPLETE_COMMAND if args.length < 3
+                node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+                node = node_ctx.node()
+                settings = node.getSettings()
+                blocked_cats_list = settings.getBlacklistCategories()
+                cat_to_block = args[2].downcase
+                cat_idx = 0
+                blocked_cat = blocked_cats_list.find { |cat|
+                    found = cat.getDisplayName().downcase == cat_to_block
+                    cat_idx += 1 unless found
+                    found
+                }
+                if blocked_cat
+                    block = (args[3].nil? || (args[3] != "true")) ? false : true
+                    log = (args[4].nil? || (args[4] != "true")) ? false : true
+                    new_cat = blocked_cats_list[cat_idx]
+                    new_cat.setBlockDomains(block)
+                    new_cat.setBlockUrls(block)
+                    new_cat.setBlockExpressions(block)
+                    new_cat.setLogOnly(block ? !log : log)
+                    blocked_cats_list[cat_idx] = new_cat
+                    settings.setBlacklistCategories(blocked_cats_list)
+                    node.setSettings(settings)
+                    msg = "Category '#{args[2]}' action updated."
+                    @diag.if_level(2) { puts! msg }
+                    return msg
+                end
             else
                 return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
             end
