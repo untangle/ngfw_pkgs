@@ -109,6 +109,7 @@ class UCLIClient
             ["webfilter #X", true, "Send command to webfilter #X -- enter 'webfilter help' for details."],
             ["with <server #s|##> <-i>]", true, "Send multiple commands to servers #, #..., ## for all servers, -i for interactive -- with #1 #2 ..."],
             ["tasks", false, "List all background tasks currently running."],
+            ["cleanup", false, "Cleanup client resources, e.g., garbage collect, release stored task outputs, etc."],
             # The following are not top level commands but are included here so tab completion will support them.
             ["localhost", false, nil],
             ["block-list", false, nil],
@@ -259,7 +260,7 @@ class UCLIClient
         cmd_a = shellwords cmd
         cmd = cmd_a[0].strip
         
-        # Check for meta-commands first, ie, histrory, server selection...
+        # Check for meta-commands first, ie, histrory, etc.
         if (/^!!/ =~ cmd)                           # User wants the last command run again
             hist_cmd = @history[-1]
             cmd_a = hist_cmd[1].split
@@ -286,29 +287,6 @@ class UCLIClient
             end
             puts! hist_cmd[1]                       # Echo actual command used to console, as other shells do
             cmd_a = hist_cmd[1].split               # Use found historical command
-        elsif (/^#\d+$/ =~ cmd)
-            svr_id = $&[1..-1].to_i                
-            @client_lock.synchronize do
-                if (svr_id >= 1) && (svr_id <= @ucli_servers.length)
-                    @drb_server = @ucli_servers[svr_id-1]
-                    @server_id = svr_id
-                    # cmd_a is passed back as initialized above
-                else
-                    puts! "Error: invalid server number - valid server numbers at this moment are 1...#{@ucli_servers.length}"
-                    return nil
-                end
-            end
-        elsif (/^%\d+$/ =~ cmd)
-            @tasks_lock.synchronize {
-                task_num = $&[1..-1].to_i
-                if task_num < 1 || task_num > @tasks.length
-                    puts! "Error: invalid task number."
-                elsif @tasks[task_num-1][4].nil?
-                    puts! "Error: task #{task_num} has already been cleaned up - no output is available."
-                else
-                    @tasks[task_num-1][4].each { |line| puts! line }
-                end
-            }
         end
         cmd_a
     end
@@ -318,20 +296,24 @@ class UCLIClient
             command == c[0]
         }
         # if command is unknown or is known but marked as requires server then return true
+        # (unknown commands may be system commands which require our server to be running
+        # in order for them to be run.)
         return cmd.nil? || (cmd[1] == true) 
     end
     
     # Clean dynamic resources as necessary to keep client under control
     def cleanup
         
-        # Remove/dereference finished tasks from task list so GC can clean them up.
+        # Remove/dereference resources held by finished tasks from task list so GC can clean them up.
         @tasks_lock.synchronize {
             @tasks.each_with_index { |task,i|
-                if task[i] && !task[i].status
-                    @tasks[i][0] = @tasks[i][4] = nil
+                if task[0] && !task[0].status
+                    @tasks[i] = [nil, nil, nil, nil]
                 end
             }
         }
+        
+        GC.start
         
     end
     
@@ -419,13 +401,36 @@ class UCLIClient
                     rescue IOError => ex
                         err = "Error: unable to execute '#{cmd}' - command not found or not executable."
                         @diag.if_level(3) { puts! err ; p ex }
-                        return
+                        return nil
                     end
                 else
                     raise Exception, "malformed command."
                 end
-            elsif /^#/ =~ cmd   # trap server select and do nothing, so command is added to history.
-                return 
+            elsif /^#\d+/ =~ cmd   # trap server select and do nothing, so command is added to history.
+                svr_id = $&[1..-1].to_i                
+                @client_lock.synchronize do
+                    if (svr_id >= 1) && (svr_id <= @ucli_servers.length)
+                        @drb_server = @ucli_servers[svr_id-1]
+                        @server_id = svr_id
+                        # cmd_a is passed back as initialized above
+                    else
+                        puts! "Error: invalid server number - valid server numbers at this moment are 1...#{@ucli_servers.length}"
+                        return nil
+                    end
+                end
+            elsif (/^%\d+$/ =~ cmd)
+                @tasks_lock.synchronize {
+                    task_num = $&[1..-1].to_i
+                    if task_num < 1 || task_num > @tasks.length
+                        puts! "Error: invalid task number."
+                        return nil
+                    elsif @tasks[task_num-1][4].nil?
+                        puts! "Error: task #{task_num} has already been cleaned up - no output is available."
+                        return nil
+                    else
+                        @tasks[task_num-1][4].each { |line| puts! line }
+                    end
+                }
             else
                 server = nil
                 @client_lock.synchronize do
@@ -680,9 +685,11 @@ class UCLIClient
     def tasks(*args)
         @tasks_lock.synchronize {
             @tasks.each { |task|
-                t = "[#{task[2]}] #{task[1]}"
-                t << (task[0].status ? " (in progress)" : " (done)")
-                puts! t
+                if task[0]
+                    t = "[#{task[2]}] #{task[1]}"
+                    t << (task[0].status ? " (in progress)" : " (done)")
+                    puts! t
+                end
             }
         }
     end
