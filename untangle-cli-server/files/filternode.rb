@@ -16,9 +16,7 @@ include UCLIUtil
 
 class UVMFilterNode
 
-    if UVM
-        include Proxy
-    end
+    include Proxy
     
     DefaultTimeoutMillis = 600000
 

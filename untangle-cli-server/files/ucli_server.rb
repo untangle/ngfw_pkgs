@@ -13,6 +13,7 @@ INTERACTIVE = $DEBUG
 
 require 'drb'
 require 'optparse'
+require 'thread'
 
 require 'ucli_common'
 include UCLICommon
@@ -44,9 +45,12 @@ class UCLIServer
         # Process command line options
         process_options(options)
 
+        @component_methods = []
+        @component_lock = Mutex.new
+
         # Misc
         trap("HUP") { self.reset }
-        @component_methods = []
+
         
 	@diag.if_level(2) { puts! "Done initializing..." }
     end
@@ -92,24 +96,25 @@ class UCLIServer
             node = method_id.id2name
             @diag.if_level(3) { puts! "'#{node}' method not found - attempting to dynamically load component..." ; p args }
 
-            # Attempt to load a node CLI with the name of the missing method.
-            require node
-            
-            # If successful, create an new instance of the node CLI loaded via the require.
-            self.instance_variable_set("@#{node}", eval("#{node.capitalize}.new"))
-            
-            # Now define the missing method such that it delegates to the instance of the node CLI.
-            self.instance_eval %{
-                def #{node}(params)
-                    @#{node}.execute(params)
-                end
-                @component_methods << :#{node}
+            @component_lock.synchronize {
+                # Attempt to load a node CLI with the name of the missing method.
+                require node
+                
+                # If successful, create an new instance of the node CLI loaded via the require.
+                self.instance_variable_set("@#{node}", eval("#{node.capitalize}.new"))
+                
+                # Now define the missing method such that it delegates to the instance of the node CLI.
+                self.instance_eval %{
+                    def #{node}(params)
+                        @#{node}.execute(params)
+                    end
+                    @component_methods << :#{node}
+                }
             }
+            # At this point, future calls to the missing method will be handed by the delegator we just created above.
             
             # Lastly, fulfill the call for which the method was missing in the first place
-            (args.length > 0) ? self.send("#{node}", *args) : self.send("#{node}", [])
-            
-            # At this point, future calls to the missing method will be handed by the delegator we just created above.
+            return (args.length > 0) ? self.send("#{node}", *args) : self.send("#{node}", [])
 
         rescue LoadError
             # #{node}.rb not found so assume the missing method is really a program to run.
@@ -161,7 +166,9 @@ class UCLIServer
         __send__(:remove_method,name) 
     end
     
-    # Is this thread safe?
+    # Is this thread safe? No, someone could be perhaps modifying the component list while we're
+    # trying to delete from it.  We need to understand if DRb creates a new object per request or
+    # just a new thread.  I believe it just creates a new thread and uses the same object.
     def reset
       # Remove added components (removing their methods will cause them to be reloaded.)
       p self.methods.sort
