@@ -105,6 +105,7 @@ class UCLIClient
             ["exit", false, "terminate immediately"],
             ["help", false, "display help information"],
             ["open", false, "open connection to #{@server_name} -- open (host-name|ip):port"],
+            ["close #X", true, "close connection to #{@server_name} #X -- close #1"],
             ["servers", true, "list servers currently under management by this #{client_name} session."],
             ["webfilter #X", true, "Send command to webfilter #X -- enter 'webfilter help' for details."],
             ["with <server #s|##> <-i>]", true, "Send multiple commands to servers #, #..., ## for all servers, -i for interactive -- with #1 #2 ..."],
@@ -135,9 +136,9 @@ class UCLIClient
         # We start w/no uvm servers: server can be loaded and opened via our dot file
         # and/or specified via a command line options.
         @ucli_servers = []
-        @drb_server = nil               # Active drb server from uvm_servers array (defined below.)
+        @drb_server = nil                   # Active drb server from uvm_servers array (defined below.)
         @server_id = 0
-        @client_lock = Mutex.new
+        @drb_servers_lock = Mutex.new       # Obtain this lock before manipulating any of the server related objects.
         
         # Process config file
         process_config_file(@config_filename)
@@ -171,7 +172,7 @@ class UCLIClient
         if !ucli_server_host.nil?
             # Since this method could be called outside the context of object initialization
             # we must sync before changing the state of the server list.
-            @client_lock.synchronize do
+            @drb_servers_lock.synchronize do
                 @ucli_servers << [ucli_server_host, ucli_server_port, nil];
             end
         end
@@ -304,7 +305,7 @@ class UCLIClient
     # Clean dynamic resources as necessary to keep client under control
     def cleanup
         
-        # Remove/dereference resources held by finished tasks from task list so GC can clean them up.
+        # Remove/dereference resources held by finished tasks so GC can clean them up.
         @tasks_lock.synchronize {
             @tasks.each_with_index { |task,i|
                 if task[0] && !task[0].status
@@ -312,8 +313,6 @@ class UCLIClient
                 end
             }
         }
-        
-        GC.start
         
     end
     
@@ -324,20 +323,20 @@ class UCLIClient
     # Launch thread to ping server and advise user if server can't be connected to.
     def launch_server_pong
         @server_ping_thread = Thread.new do
-            sleep @server_ping_frequency    # Give server connections a chance to come up - sleep first, then loop
             loop do
-                @ucli_servers.each { |svr|
-                    pong_(svr, 2, 0, 0)
-                    # spread pongs out over the range of time over which to check the servers;
-                    # This way the pongs don't create as much overhead on the client.
-                    sleep @server_ping_frequency / @ucli_servers.length
-                }
+                sleep @server_ping_frequency
+                @drb_servers_lock.synchronize do
+                    @ucli_servers.each { |svr|
+                        pong_(svr, 2, 0, 0)
+                    }
+                end
             end
         end
     end
 
+    # ***TODO: perhaps refactor this code to use open(), so the DRB logic is not duplicated.
     def connect_to_all_ucli_servers
-        @client_lock.synchronize do
+        @drb_servers_lock.synchronize do
             unless @ucli_servers.nil? || @ucli_servers.length == 0
                 svr_num = 1
                 @ucli_servers.each { |uvm|
@@ -408,7 +407,7 @@ class UCLIClient
                 end
             elsif /^#\d+/ =~ cmd   # trap server select and do nothing, so command is added to history.
                 svr_id = $&[1..-1].to_i                
-                @client_lock.synchronize do
+                @drb_servers_lock.synchronize do
                     if (svr_id >= 1) && (svr_id <= @ucli_servers.length)
                         @drb_server = @ucli_servers[svr_id-1]
                         @server_id = svr_id
@@ -433,7 +432,7 @@ class UCLIClient
                 }
             else
                 server = nil
-                @client_lock.synchronize do
+                @drb_servers_lock.synchronize do
                     server = @drb_server[2]
                 end
                 res = (args.nil? || (args.length == 0)) ? server.__send__(cmd, []) : server.__send__(cmd, *args);
@@ -483,7 +482,7 @@ class UCLIClient
     def ruby(*args)
         begin
             server = nil
-            @client_lock.synchronize do
+            @drb_servers_lock.synchronize do
                 server = @drb_server[2];
             end
             if File.exist?(args[0])
@@ -520,7 +519,7 @@ class UCLIClient
     # ***TODO: add support for "pong #X", to pong a server w/out changing the active server.
     def pong(*args)
         server = nil
-        @client_lock.synchronize do
+        @drb_servers_lock.synchronize do
             server = @drb_server
         end
         pong_(server, -1, -1, -1)
@@ -529,13 +528,13 @@ class UCLIClient
     # List open/connected-to UCLI servers and display in console.
     def servers(*args)
         servers = nil
-        @client_lock.synchronize do
+        @drb_servers_lock.synchronize do
             servers = @ucli_servers;
         end
         unless servers.length == 0
             svr_num = 1
             servers.each { |svr|
-                puts! "##{svr_num}: #{svr[0]}:#{svr[1]}"
+                puts! "##{svr_num}: #{svr[0]}:#{svr[1]}" if svr[2]
                 svr_num += 1
             }
         else
@@ -554,7 +553,7 @@ class UCLIClient
 
         # Ensure server is not already opened
         servers = nil
-        @client_lock.synchronize do
+        @drb_servers_lock.synchronize do
             found = @ucli_servers.detect { |svr|
                 # found if host name and port match  ***TODO: what if IP of an open host is used or visa versa?
                 (svr[0] == server_to_open[0]) && (svr[1] == server_to_open[1].to_i)
@@ -568,9 +567,34 @@ class UCLIClient
             @ucli_servers << [server_to_open[0], server_to_open[1], DRbObject.new(nil, "druby://#{server_to_open[0]}:#{server_to_open[1]}")]
             @drb_server = @ucli_servers[-1]
             @server_id = @ucli_servers.length
+            
+            puts! "#{args[0]} opened as server ##{@server_id}"
         end
     end
     
+    # Open a connection to a UCLI sever and add to open servers list.
+    def close(*args)
+
+        puts! "Close not yet implemented."
+        return
+    
+        #if /^#\d+/ =~ args[0]
+        #    svr_idx = ($&[1..-1].to_i) - 1
+        #else
+        #    puts! "Error: invalid server number."
+        #    return
+        #end
+        #
+        #@drb_servers_lock.synchronize do
+        #    closed_server = @ucli_servers[svr_idx][2]
+        #    @ucli_servers[svr_idx] = [nil,nil,nil]
+        #    if closed_server == @drb_server
+        #        
+        #    end
+        #end
+    end
+    
+
     # Dymamically collect UCLI client commands and apply them to list of servers, e.g.,
     #   with #2 #3
     #   [1] pong
@@ -585,7 +609,7 @@ class UCLIClient
         server_id = nil
         drb_server = nil
         tasks = nil
-        @client_lock.synchronize {
+        @drb_servers_lock.synchronize {
             ucli_servers = @ucli_servers
             server_id = @server_id
             drb_server = @drb_server
@@ -643,7 +667,7 @@ class UCLIClient
         # Send commands to each server...
         begin            
             svr_ids.each { |svr_id|
-                @client_lock.synchronize {
+                @drb_servers_lock.synchronize {
                     @drb_server = ucli_servers[svr_id-1]
                 }
                 
@@ -670,7 +694,7 @@ class UCLIClient
                 @tasks.each { |t| t[0].join }   # wait for any tasks spawned by this 'with script' to finish
                 @tasks = tasks                  # BEFORE restoring state of @tasks and @drb_server
             }
-            @client_lock.synchronize {
+            @drb_servers_lock.synchronize {
                 @drb_server = drb_server
             }
         end
@@ -688,6 +712,7 @@ class UCLIClient
                 if task[0]
                     t = "[#{task[2]}] #{task[1]}"
                     t << (task[0].status ? " (in progress)" : " (done)")
+                    t << " '#{task[4][0].slice(0,20)}...'" unless
                     puts! t
                 end
             }
