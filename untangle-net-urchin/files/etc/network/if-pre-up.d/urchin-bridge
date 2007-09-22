@@ -9,6 +9,7 @@
 ## * Removed the "all" option for the ports.
 ## * Removed the "none" option for for the ports.
 ## * Removed all of the waiting code.
+## * Added urchin_bridge_mtu which sets the MTU for all of the interfaces
 
 debug()
 {
@@ -31,11 +32,11 @@ case "$IF_URCHIN_BRIDGE_PORTS" in
 	;;
     none)
         $DEBUG "'none' is not supported by the untangle-net-urchin"
-	INTERFACES=""
+	exit 0
 	;;
     all)
         $DEBUG "'all' is not supported by the untangle-net-urchin"
-	INTERFACES=""
+        exit 0
 	;;
     *)
 	INTERFACES="$IF_URCHIN_BRIDGE_PORTS"
@@ -100,4 +101,17 @@ then
   brctl stp $IFACE $IF_BRIDGE_STP
 fi
 
+## Done here so the setting takes effect every time, not just
+## when the bridge is created.
+if [ "$IF_URCHIN_BRIDGE_MTU" ]; then
+    for port in $INTERFACES ; do
+        ifconfig ${port} mtu $IF_URCHIN_BRIDGE_MTU
+    done
+
+    ## don't believe this is necessary, but it can't hurt
+    ifconfig ${IFACE} mtu $IF_URCHIN_BRIDGE_MTU
+fi
+
 ifconfig $IFACE 0.0.0.0 up
+
+exit 0

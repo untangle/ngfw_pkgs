@@ -1,10 +1,11 @@
-module OSLibrary
-  class NetworkManager
-    include OSLibrary::Manager
-    
-    CIDR = {
-      "0"  => "0.0.0.0",
-      "1"  => "128.0.0.0",
+class OSLibrary::NetworkManager
+  DefaultMTU = 1500
+  
+  include OSLibrary::Manager
+  
+  CIDR = {
+    "0"  => "0.0.0.0",
+    "1"  => "128.0.0.0",
     "2"  => "192.0.0.0",
     "3"  => "224.0.0.0",
     "4"  => "240.0.0.0",
@@ -37,40 +38,39 @@ module OSLibrary
     "31" => "255.255.255.254",
     "32" => "255.255.255.255"
   }
+  
+  ## Parse a netmask and convert to a netmask string.
+  ## 24 -> 255.255.255.0
+  ## 255.255.255.0 -> 255.255.255.0
+  ## Raises an exception if the netmask is not valid
+  def self.parseNetmask( netmask )
+    return netmask unless InterfaceHelper::IPAddressPattern.match( netmask ).nil?
+    netmask = CIDR[netmask.to_s.strip]
+    raise "Invalid netmask: '#{netmask}'" if netmask.nil?
+    return netmask
+  end
 
-    ## Parse a netmask and convert to a netmask string.
-    ## 24 -> 255.255.255.0
-    ## 255.255.255.0 -> 255.255.255.0
-    ## Raises an exception if the netmask is not valid
-    def NetworkManager.parseNetmask( netmask )
-      return netmask unless InterfaceHelper::IPAddressPattern.match( netmask ).nil?
-      netmask = CIDR[netmask.to_s.strip]
-      raise "Invalid netmask: '#{netmask}'" if netmask.nil?
-      return netmask
-    end
-
-    ## Just a little helper used to convey interfaces
-    class PhysicalInterface
-      def initialize( os_name, mac_address, bus )
-        @os_name, @mac_address, @bus_id = os_name, mac_address, bus
-      end
-      
-      def to_s
-        "physical-interface <#{os_name},#{mac_address},#{bus}>"
-      end
-
-      attr_reader :os_name, :mac_address, :bus
+  ## Just a little helper used to convey interfaces
+  class PhysicalInterface
+    def initialize( os_name, mac_address, bus )
+      @os_name, @mac_address, @bus_id = os_name, mac_address, bus
     end
     
-    ## This should return 
-    ## an array of PhysicalInterfaces that are on the box.
-    def interfaces
-      raise "base class, override in an os specific class"
+    def to_s
+      "physical-interface <#{os_name},#{mac_address},#{bus}>"
     end
 
-    ## This should commit and update all of the network related settings.
-    def commit
-      raise "base class, override in an os specific class"
-    end
+    attr_reader :os_name, :mac_address, :bus
+  end
+  
+  ## This should return 
+  ## an array of PhysicalInterfaces that are on the box.
+  def interfaces
+    raise "base class, override in an os specific class"
+  end
+
+  ## This should commit and update all of the network related settings.
+  def commit
+    raise "base class, override in an os specific class"
   end
 end

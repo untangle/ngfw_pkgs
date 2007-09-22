@@ -1,4 +1,6 @@
 class NatPolicy < ActiveRecord::Base
+  Automatic = "auto"
+
   ## Parse a network and netmask combination.
   ## Valid Syntax:
   ## w.x.y.z -> w.x.y.z / 32

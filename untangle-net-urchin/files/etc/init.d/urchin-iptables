@@ -1,0 +1,46 @@
+#!/bin/dash
+
+### BEGIN INIT INFO
+# Provides:          urchin-iptables
+# Required-Start:    $local_fs $remote_fs
+# Required-Stop:
+# Default-Start:     S 3 4 5
+# Default-Stop:      0 1 6
+### END INIT INFO
+
+# Author: Robert Scott <rbscott@untangle.com>
+
+DESC="Service for creating and removing the iptables rules"
+
+IPTABLES_RULES=/etc/untangle-net-urchin/iptables-rules
+
+## This should be a file containing all of the iptables tables
+IPTABLES_NAMES=/proc/net/ip_tables_names
+
+case "$1" in
+    ## start is atomic, it automatically integrates stop.
+    reload|restart|force-reload|start)
+        # make sure privileges don't persist across reboots
+        if [ -f ${IPTABLES_RULES} ]; then
+            . ${IPTABLES_RULES}
+        else
+            /bin/echo "The file '${IPTABLES_RULES}' does not exist"
+        fi
+        ;;
+    stop)
+        if [ -f ${IPTABLES_NAMES} ]; then
+            for t_table in `cat ${IPTABLES_NAMES}` ; do 
+                /sbin/iptables -t ${t_table} -F && true
+            done
+        else
+            /bin/echo "The file '${IPTABLES_NAMES}' does not exist, unable to flush the iptables rules"
+        fi
+        ;;        
+    *)
+        /bin/echo "Usage: $0 {start|stop|restart|force-reload}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0
+
