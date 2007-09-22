@@ -1,4 +1,4 @@
-## REVIEW.  there should be an observer.
+## REVIEW.  there should be an observer, or some global management framework
 require_dependency "os_library/debian/packet_filter_manager"
 
 class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
@@ -6,7 +6,7 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
 
   Service = "/etc/init.d/networking"
   InterfacesConfigFile = "/etc/network/interfaces"
-  InterfacesStatusFile = "/etc/network/ifstate"
+  InterfacesStatusFile = "/etc/network/run/ifstate"
 
   def interfaces
     logger.debug( "Running inside of the network manager for debian" )
@@ -33,27 +33,29 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
   def commit
     interfaces_file = []
     interfaces_file << header
-    Interface.find( :all ).each do |interface| 
-      case interface.config_type
-      when InterfaceHelper::ConfigType::STATIC
-        interfaces_file << static( interface )
-      when InterfaceHelper::ConfigType::DYNAMIC
-        interfaces_file << dynamic( interface )
-      when InterfaceHelper::ConfigType::BRIDGE
-        interfaces_file << bridge( interface )
+    Interface.find( :all ).each do |interface|
+      config = interface.current_config
+      ## REVIEW refactor me.
+      case config
+      when IntfStatic
+        interfaces_file << static( interface, config )
+      when IntfDynamic
+        interfaces_file << dynamic( interface, config )
+      when IntfBridge
+        interfaces_file << bridge( interface, config )
       end
     end
 
     ## Delete all empty or nil parts
     interfaces_file = interfaces_file.delete_if { |p| p.nil? || p.empty? }
 
-    File.open( InterfacesConfigFile, "w" ) { |f| f.print( interfaces_file.join( "\n" )) }
+    File.open( InterfacesConfigFile, "w" ) { |f| f.print( interfaces_file.join( "\n" ), "\n" ) }
     
     ## Restart networking
     ## Clear out all of the interface state.
     File.open( InterfacesStatusFile, "w" ) { |f| f.print( "lo=lo" ) }
 
-    raise "Unable to reconfigure network settings." unless Kernel.system( "#{Service} restart" )
+    raise "Unable to reconfigure network settings." unless Kernel.system( "#{Service} start" )
 
     ## XXX THIS SHOULDN'T BE HERE ##
     OSLibrary::Debian::PacketFilterManager.instance.commit
@@ -67,13 +69,11 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
   private
 
   ## Dump out the configuration for a statically configured interface.
-  def static( interface )
+  def static( interface, static )
     i = nil
 
     ## name of the interface
     name = interface.os_name
-
-    static = interface.intf_static
     
     if static.nil?
       logger.warn( "The interface #{interface} is not configured" )
@@ -87,10 +87,14 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
     ## set the name
     ## update the index to 0 (bridges are configured as the base so they are not deconfigured on restart)
     ## Clear the MTU because that is set in the bridge
-    name, i, mtu = OSLibrary::Debian::NetworkManager.bridge_name( interface ), 0, nil unless bridge.empty?
+    unless bridge.empty?
+      name = OSLibrary::Debian::NetworkManager.bridge_name( interface )
+      i = 0
+      mtu = nil
+    end
     
     ## Configure each IP and then join it all together with some newlines.
-    interface.intf_static.ip_networks.map do |ip_network|
+    static.ip_networks.map do |ip_network|
       ip_network_name = "#{name}#{i.nil? ? "" : ":#{i}"}"
       i = i.nil? ? 0 : i + 1
 
@@ -114,18 +118,46 @@ EOF
     end.join( "\n" )
   end
 
-  def dynamic( interface )
-    ""
+  def dynamic( interface, dynamic )
+    ## REVIEW this is the first area that requires managers for separate files.
+    ## this is updated in /etc/network/interfaces.
+    ## The hostname may be modified here, or in /etc/dhcp3/dhclient.conf, ...
+    ## overrides definitely go in /etc/dhcp3/dhclient.conf
+    ## Default gateway override settings?
+
+    ## REVIEW what should timeout be on configuring the interface
+
+    i = nil
+
+    ## name of the interface
+    name = interface.os_name
+    
+    if dynamic.nil?
+      logger.warn( "The interface #{interface} is not configured" )
+      return ""
+    end
+    
+    bridge = bridgeSettings( interface, dynamic.mtu, "dhcp" )
+    
+    mtu = mtuSetting( dynamic.mtu )
+    
+    ## set the name
+    return bridge unless bridge.empty?
+
+    <<EOF
+auto #{name}
+iface #{name} inet dhcp
+EOF
   end
 
-  def bridge( interface )
-    logger.debug( "Nothing needed for the bridge interface" )
+  def bridge( interface, bridge )
+    logger.debug( "Nothing needed for a bridge interface" )
     ""
   end
 
   ## These are the settings that should be appended to the first
   ## interface index that is inside of the interface (if this is in fact a bridge)
-  def bridgeSettings( interface, mtu )
+  def bridgeSettings( interface, mtu, config_method = "manual"  )
     ## Check if this is a bridge
     bridged_interfaces = interface.bridged_interfaces
     
@@ -152,7 +184,7 @@ EOF
 
     <<EOF
 auto #{bridge_name}
-iface #{bridge_name} inet manual
+iface #{bridge_name} inet #{config_method}
 \turchin_bridge_ports #{bridged_interfaces.map{ |i| i.os_name }.join( " " )}
 \turchin_debug true
 \tbridge_ageing 900

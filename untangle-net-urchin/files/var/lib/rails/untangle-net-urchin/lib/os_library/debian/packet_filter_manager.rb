@@ -66,8 +66,7 @@ EOF
     ## Delete all empty or nil parts
     pf_file = pf_file.delete_if { |p| p.nil? || p.empty? }
     
-
-    File.open( ConfigFile, "w" ) { |f| f.print( pf_file.join( "\n" )) ; f.print "\n" }
+    File.open( ConfigFile, "w" ) { |f| f.print( pf_file.join( "\n" ), "\n" ) }
 
     raise "Unable to iptables rules." unless Kernel.system( "#{Service} restart" )
   end

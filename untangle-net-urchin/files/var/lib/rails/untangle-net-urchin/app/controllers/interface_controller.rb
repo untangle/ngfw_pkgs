@@ -248,6 +248,9 @@ class InterfaceController < ApplicationController
     @interface.config_type = InterfaceHelper::ConfigType::DYNAMIC
     @interface.save
 
+    ## Actually commit the changes
+    networkManager.commit
+
     return redirect_to( :action => 'list' )
   end
 

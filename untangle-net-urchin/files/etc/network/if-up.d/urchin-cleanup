@@ -79,6 +79,9 @@ test "$IFACE" != "cleanup" && {
     exit 0
 }
 
+$DEBUG "Stopping all dhcp daemons"
+killall -QUIT -qr '(dhclient3|pump|dhclient)'
+
 $DEBUG "Cleaning up the interface state."
 
 ## REVIEW : Possibly add a label for dynamically configured 
