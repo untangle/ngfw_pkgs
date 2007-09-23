@@ -57,7 +57,7 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
 
     raise "Unable to reconfigure network settings." unless Kernel.system( "#{Service} start" )
 
-    ## XXX THIS SHOULDN'T BE HERE ##
+    ## XXX THIS SHOULDN'T BE HERE, should be in an observer ##
     OSLibrary::Debian::PacketFilterManager.instance.commit
   end
 
@@ -85,37 +85,11 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
     mtu = mtuSetting( static.mtu )
     
     ## set the name
-    ## update the index to 0 (bridges are configured as the base so they are not deconfigured on restart)
     ## Clear the MTU because that is set in the bridge
-    unless bridge.empty?
-      name = OSLibrary::Debian::NetworkManager.bridge_name( interface )
-      i = 0
-      mtu = nil
-    end
+    name, mtu = OSLibrary::Debian::NetworkManager.bridge_name( interface ), nil unless bridge.empty?
     
     ## Configure each IP and then join it all together with some newlines.
-    static.ip_networks.map do |ip_network|
-      ip_network_name = "#{name}#{i.nil? ? "" : ":#{i}"}"
-      i = i.nil? ? 0 : i + 1
-
-      base = bridge + "\n"
-      
-      ## Only add the bridge string on the first one
-      bridge = ""
-
-      base += <<EOF
-auto #{ip_network_name}
-iface #{ip_network_name} inet static
-\taddress #{ip_network.ip}
-\tnetmask #{OSLibrary::NetworkManager.parseNetmask( ip_network.netmask)}
-EOF
-
-      ## Append the MTU
-      base += mtu unless mtu.nil?
-      mtu = nil
-
-      base
-    end.join( "\n" )
+    bridge + "\n" + append_ip_networks( static.ip_networks, name, mtu, !bridge.empty? )
   end
 
   def dynamic( interface, dynamic )
@@ -137,17 +111,23 @@ EOF
       return ""
     end
     
-    bridge = bridgeSettings( interface, dynamic.mtu, "dhcp" )
+    ## assume it is a bridge until determining otherwise
+    name = OSLibrary::Debian::NetworkManager.bridge_name( interface )
     
-    mtu = mtuSetting( dynamic.mtu )
-    
-    ## set the name
-    return bridge unless bridge.empty?
+    base_string = bridgeSettings( interface, dynamic.mtu, "dhcp" )
 
-    <<EOF
+    ## REVIEW MTU Setting doesn't do anything in this case.
+    if base_string.empty?
+      name = interface.os_name
+      base_string  = <<EOF
 auto #{name}
 iface #{name} inet dhcp
+#{mtuSetting( dynamic.mtu )}
 EOF
+    end
+
+    ## never set the mtu, and always start with an alias.
+    base_string + "\n" + append_ip_networks( dynamic.ip_networks, name, nil, true )
   end
 
   def bridge( interface, bridge )
@@ -190,6 +170,29 @@ iface #{bridge_name} inet #{config_method}
 \tbridge_ageing 900
 #{mtuSetting( mtu, "urchin_bridge_" )}
 EOF
+  end
+
+  def append_ip_networks( ip_networks, name, mtu_string, start_with_alias )
+    ## this determines whether the indexing should start with an alias.
+    ## mtu never applies to an alias.
+    i, mtu_string = ( start_with_alias ) ? [ 0, nil ] : [ nil, mtu_string ]
+
+    ip_networks.map do |ip_network|
+      ip_network_name = "#{name}#{i.nil? ? "" : ":#{i}"}"
+      i = i.nil? ? 0 : i + 1
+      
+      base = <<EOF
+auto #{ip_network_name}
+iface #{ip_network_name} inet static
+\taddress #{ip_network.ip}
+\tnetmask #{OSLibrary::NetworkManager.parseNetmask( ip_network.netmask)}
+EOF
+
+      base += mtu_string + "\n" unless mtu_string.nil?
+      mtu_string = nil
+      
+      base
+    end.join( "\n" )
   end
 
   ## mtu is always set, just in case the user overrides it
