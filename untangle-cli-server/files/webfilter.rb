@@ -103,7 +103,7 @@ class Webfilter < UVMFilterNode
             when "eventlog"
                 return "Event Log not yet supported."
             else
-                return ERROR_UNKNOWN_COMMAND + "-- " + args.join(' ')
+                return ERROR_UNKNOWN_COMMAND + " -- '#{args.join(' ')}'"
             end
         rescue Exception => ex
             msg = "webfilter has raised an unhandled exception -- " + ex
