@@ -200,7 +200,7 @@ class Webfilter < UVMFilterNode
             when nil, ""
                 return ERROR_INCOMPLETE_COMMAND
             when "url"
-                # Block given URL ***TODO: verify format of url?
+                # Block given URL
                 begin
                     return ERROR_INCOMPLETE_COMMAND if args.length < 3
                     node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
@@ -209,10 +209,19 @@ class Webfilter < UVMFilterNode
                     blockedUrlsList = settings.getBlockedUrls()   
                     url = args[2].gsub(/^www./, '')
                     @diag.if_level(2) { puts! "Attempting to add #{url} to blocked list." }
-                    stringRule = com.untangle.uvm.node.StringRule.new(url)
-                    stringRule.setLog(true) if args[3].nil? || (args[3] == "true")
-                    stringRule.setLive(true)
-                    blockedUrlsList.add(stringRule)
+                    newUrlToBlock = com.untangle.uvm.node.StringRule.new(url)
+                    newUrlToBlock.setLog(true) if args[3].nil? || (args[3] == "true")
+                    newUrlToBlock.setLive(true)
+                    newUrlToBlock.setDescription(args[4]) if args[4]
+                    rule_to_update = -1
+                    blockedUrlsList.each_with_index { |blocked_url, i|
+                        rule_to_update = i if blocked_url.getString() == newUrlToBlock.getString()
+                    }
+                    if rule_to_update == -1
+                        blockedUrlsList.add(newUrlToBlock)
+                    else
+                        blockedUrlsList[rule_to_update] = newUrlToBlock
+                    end
                     settings.setBlockedUrls(blockedUrlsList)
                     node.setSettings(settings)
                     msg = "URL '#{args[2]}' added to Block list."
