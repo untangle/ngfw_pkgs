@@ -126,8 +126,7 @@ class Webfilter < UVMFilterNode
             blocked_urls_list = settings.getBlockedUrls()
             blocked_urls = "URL,block,log\n"
             blocked_urls_list.each { |url|
-                blocked = ""
-                blocked << (url.getString() + "," + url.isLive().to_s + "," + url.getLog().to_s + "\n")
+                blocked = (url.getString() + "," + url.isLive().to_s + "," + url.getLog().to_s + "," + url.getDescription() + "\n")
                 blocked_urls << blocked
                 @diag.if_level(3) { puts! blocked }
             } if blocked_urls_list
@@ -321,76 +320,110 @@ class Webfilter < UVMFilterNode
         when nil, ""
             return ERROR_INCOMPLETE_COMMAND
         when "urls"
-            # List blocked URLs
+            # List pass-list URLs
             node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
-            blocked_urls_list = settings.getBlockedUrls()
-            blocked_urls = "URL,block,log\n"
-            blocked_urls_list.each { |url|
-                blocked = ""
-                blocked << (url.getString() + "," + url.isLive().to_s + "," + url.getLog().to_s + "\n")
-                blocked_urls << blocked
-                @diag.if_level(3) { puts! blocked }
-            } if blocked_urls_list
-            return blocked_urls
+            passed_urls_list = settings.getPassedUrls()
+            passed_urls = "URL,pass,description\n"
+            passed_urls_list.each { |url|
+                passed = ""
+                passed << (url.getString() + "," + url.isLive().to_s + "," + url.getDescription() + "\n")
+                passed_urls << passed
+                @diag.if_level(3) { puts! passed }
+            } if passed_urls_list
+            return passed_urls
         when "clients"
-            # List blocked categories
+            # List pass-list Clients
             node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
-            blocked_cats_list = settings.getBlacklistCategories()
-            blocked_cats = "Category, description, block domains, block URLs, block expressions, log only\n"
-            blocked_cats_list.each { |cat|
-                blocked = ""
-                blocked << (cat.getDisplayName() + cat.getDescription())
-                blocked << (cat.isLive() + "," + cat.getBlockDomains().to_s + "," + cat.getBlockUrls().to_s + "," + cat.getBlockExpressions().to_s + "," + cat.getLogOnly().to_s + "\n")
-                blocked_cats << blocked
-                @diag.if_level(3) { puts! blocked }
-            } if blocked_cats_list
-            return blocked_cats
+            passed_clients_list = settings.getPassedClients()
+            passed_clients = "URL,pass,description\n"
+            passed_clients_list.each { |client|
+                passed = ""
+                passed << (client.getIpMaddr().getAddr() + "," + client.isLive().to_s + "," + client.getDescription() + "\n")
+                passed_clients << passed
+                @diag.if_level(3) { puts! passed }
+            } if passed_clients_list
+            return passed_clients
         when "pass"
             case args[1]
             when nil, ""
                 return ERROR_INCOMPLETE_COMMAND
             when "url"
                 # Block given URL
-                case args[2]
-                when nil, ""
-                    return ERROR_INCOMPLETE_COMMAND + "-- URL to block is missing."
-                else
-                    # TBC - verify format of url?
+                begin
+                    return ERROR_INCOMPLETE_COMMAND if args.length < 3
                     node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
                     node = node_ctx.node()
                     settings =  node.getSettings()
-                    blocked_urls_list = settings.getBlockedUrls()   
-                    begin
-                        url = args[2].gsub(/^www./, '')
-                        @diag.if_level(2) { puts! "Attempting to add #{url} to blocked list." }
-                        stringRule = com.untangle.uvm.node.StringRule.new(url)
-                        stringRule.setLog(true) if args[3].nil? || (args[3] == "true")
-                        stringRule.setLive(true)
-                        blocked_urls_list.add(stringRule)
-                        settings.setBlockedUrls(blocked_urls_list)
-                        node.setSettings(settings)
-                        msg = "#{args[2]} added to blocked list."
-                        puts! msg
-                        return msg
-                    rescue Exception => ex
-                        p ex
-                        return "Adding URL to block list failed:\n" + ex
+                    passedUrlsList = settings.getPassedUrls()   
+                    url = args[2].gsub(/^www./, '')
+                    @diag.if_level(2) { puts! "Attempting to add #{url} to passed list." }
+                    newUrlToPass = com.untangle.uvm.node.StringRule.new(url)
+                    newUrlToPass.setLog(true) if args[3].nil? || (args[3] == "true")
+                    newUrlToPass.setLive(true)
+                    newUrlToPass.setDescription(args[4]) if args[4]
+                    rule_to_update = -1
+                    passedUrlsList.each_with_index { |passed_url, i|
+                        rule_to_update = i if passed_url.getString() == newUrlToPass.getString()
+                    }
+                    if rule_to_update == -1
+                        passedUrlsList.add(newUrlToPass)
+                    else
+                        passedUrlsList[rule_to_update] = newUrlToPass
                     end
+                    settings.setPassedUrls(passedUrlsList)
+                    node.setSettings(settings)
+                    msg = "URL '#{args[2]}' added to Pass List."
+                    @diag.if_level(3) { puts! msg }
+                    return msg
+                rescue Exception => ex
+                    @diag.if_level(3) { p ex }
+                    return "Adding URL to block list failed:\n" + ex
                 end
             when "client"
-                return "Not yet supported."
+                # Block given Client by IP address
+                begin
+                    return ERROR_INCOMPLETE_COMMAND if args.length < 2
+                    node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+                    node = node_ctx.node()
+                    settings =  node.getSettings()
+                    passedClientsList = settings.getPassedClients()   
+                    client = args[2] # ***MUST DO: should verify format of IP address
+                    @diag.if_level(2) { puts! "Attempting to add #{client} to passed list." }
+                    newClientIpMaddr = com.untangle.uvm.node.IPMaddr.new(client)
+                    newClientToPass = com.untangle.uvm.node.IPMaddrRule.new()
+                    newClientToPass.setIpMaddr(newClientIpMaddr)
+                    newClientToPass.setLive(true) if args[3] && args[3] == "true"
+                    newClientToPass.setDescription(args[4]) if args[4]
+                    rule_to_update = -1
+                    passedClientsList.each_with_index { |passed_client, i|
+                        rule_to_update = i if passed_client.getIpMaddr().getAddr() == newClientToPass.getIpMaddr().getAddr()
+                    }
+                    if rule_to_update == -1
+                        passedClientsList.add(newClientToPass)
+                    else
+                        passedClientsList[rule_to_update] = newClientToPass
+                    end
+                    settings.setPassedClients(passedClientsList)
+                    node.setSettings(settings)
+                    msg = "URL '#{args[2]}' added to Pass List."
+                    @diag.if_level(3) { puts! msg }
+                    return msg
+                rescue Exception => ex
+                    @diag.if_level(3) { p ex }
+                    return "Adding URL to block list failed:\n" + ex
+                end
             else
                 return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
             end
-        when "unblock"
         else
             return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
         end
     end
+
 
 end # WebFilter
 
