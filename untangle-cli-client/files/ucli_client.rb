@@ -19,6 +19,8 @@ include Shellwords
 
 require 'ucli_util'
 include UCLIUtil
+require 'ucli_common'
+include UCLICommon
 
 #
 # The UCLI Client effects a command line interface used to send operational and diagnostic
@@ -29,11 +31,12 @@ include UCLIUtil
 #       command #2 or the most recent command beginning with the prefix "eval", respectively.
 #   3) The ability to send raw Ruby code, either as a command line or as a file, to the Untangle
 #       server for execution there.
-#   4) Any unknown command is passed on to the user's effective shell assuming it is a Linux
-#       system command of some type: this allows virtually anything to be done from the UCLI Client
-#       without having to shell out.
-#   5) More high level functionality is expected in the near future, e.g., operational commands such as
-#       "add a user", diagnostic commands such as "dump the state of Java object XYZ", etc., etc.
+#   4) Commands, both UCLI internal and external (ie, system commands) can be sent to the
+#       effective UCLI server or to the host of the UCLI client.
+#   5) Commands beginning with an Untangle UVM node name are passed to the UCLI server along
+#       along with any command arguments for execution.
+#   6) Inline command scripts can be written in the UCLI client console and routed to
+#       multiple UCLI servers using the "with" command.
 #
 # Note that the UCLIClient can be caused to reinitialize itself without shutting down by sending
 # its process a SIGHUP, i.e., kill -1.
@@ -43,8 +46,6 @@ include UCLIUtil
 #   - Autoload, ie, .uclirc file.
 #   - Logon/log off - how?  Server ACL with password?
 #   - Feedback for failed remote command
-#   - Quote handling on command line?  Do we need it?
-#   - Command level help strings.
 #   - history N
 #   - tasks command to review background tasks
 #
@@ -53,9 +54,7 @@ include UCLIUtil
 #   - Do we need a .ucli file so various settings can be runtime configured per user?
 #   - Should the history indicator character, i.e., '!', be abstacted?
 #   - Is a DRb.service_shutdown required?
-#   - Should history include the history command itself, like csh, tcsh?
 #   - Do we need aliases?
-#   - Do we need to manage/shrink the task list so its objects can be freed up?
 #
 class UCLIClient
    
@@ -83,7 +82,7 @@ class UCLIClient
         @config_filename = ".uclirc"
         @cmd_num = 1
         @history = []
-        @history_size = 20
+        @history_size = 50
         @welcome = "\nWelcome to the #{@client_name} - type 'help' for assistance.\n\n"
         @server_ping_thread = nil
         @server_ping_frequency = 60
@@ -91,7 +90,7 @@ class UCLIClient
         @tasks = []
         @tasks_lock = Mutex.new
         @task_num = 1
-        @diag = Diag.new(2)
+        @diag = Diag.new(3)
         
         # Commands legend and creation of readline auto-completion abbreviations
         @commands_with_help = [
@@ -111,6 +110,7 @@ class UCLIClient
             ["with <server #s|##> <-i>]", true, "Send multiple commands to servers #, #..., ## for all servers, -i for interactive -- with #1 #2 ..."],
             ["tasks", false, "List all background tasks currently running."],
             ["cleanup", false, "Cleanup client resources, e.g., garbage collect, release stored task outputs, etc."],
+            ["source", false, "Source (i.e., run) the given script (use '.' as shortcut) -- source file or . file"],
             # The following are not top level commands but are included here so tab completion will support them.
             ["localhost", false, nil],
             ["block-list", false, nil],
@@ -205,7 +205,7 @@ class UCLIClient
             
             # Only commands entered into the top level "shell" are added to the session history
             @history.shift unless @history.length < @history_size
-            @history << [@cmd_num,cmd_a.join(' ')]
+            @history << [@cmd_num,cmd_a.join(' '),@server_id]
             @cmd_num += 1
         end
     end
@@ -251,13 +251,12 @@ class UCLIClient
         else
             self.__send__(*cmd_a)
         end
-        cmd_a   # return command components IFF command is run
+        cmd_a   # return command components IFF command is run, whether or not its succesful.
     end
     
     
     # Preprocess a pending command: perform history replacement, etc.
     def preprocess(cmd)
-        #cmd_a = cmd.strip.split
         cmd_a = shellwords cmd
         cmd = cmd_a[0].strip
         
@@ -288,6 +287,11 @@ class UCLIClient
             end
             puts! hist_cmd[1]                       # Echo actual command used to console, as other shells do
             cmd_a = hist_cmd[1].split               # Use found historical command
+        elsif cmd_a[0] == "."
+            cmd_a[0] = "source"                     # convert abbr. for script source command                     
+        elsif (/^\..*/ =~ cmd)
+            cmd_a = cmd.split('.')
+            cmd_a[0] = "source"                     # convert abbr. for script source command                     
         end
         cmd_a
     end
@@ -418,18 +422,7 @@ class UCLIClient
                     end
                 end
             elsif (/^%\d+$/ =~ cmd)
-                @tasks_lock.synchronize {
-                    task_num = $&[1..-1].to_i
-                    if task_num < 1 || task_num > @tasks.length
-                        puts! "Error: invalid task number."
-                        return nil
-                    elsif @tasks[task_num-1][4].nil?
-                        puts! "Error: task #{task_num} has already been cleaned up - no output is available."
-                        return nil
-                    else
-                        @tasks[task_num-1][4].each { |line| puts! line }
-                    end
-                }
+                get_task_output($&[1..-1].to_i).each { |line| puts! line }
             else
                 server = nil
                 @drb_servers_lock.synchronize do
@@ -473,7 +466,19 @@ class UCLIClient
 
     # Display command history in console    
     def history(*args)
-        @history.each { |h| puts! "[#{h[0]}] #{h[1]}" }
+        if args.nil? || args.length == 0
+            @history.each { |h| puts! "[#{h[0]}] #{h[1]} (##{h[2]})"}
+        elsif /^#\d+/ =~ args[0]
+            begin
+                svr_id = $&[1..-1].to_i
+                raise Exception if svr_id < 1 || svr_id > @ucli_servers.length
+                @history.each { |h| puts! "[#{h[0]}] #{h[1]}" if h[2] == svr_id }
+            rescue Exception => ex
+                puts! "Error: invalid server number."
+                @diag.if_level(3) { p ex }
+                return
+            end
+        end
     end
     
     # Pass the given Ruby code to the UCLI server for execution.
@@ -570,6 +575,7 @@ class UCLIClient
             
             puts! "#{args[0]} opened as server ##{@server_id}"
         end
+        pong []
     end
     
     # Open a connection to a UCLI sever and add to open servers list.
@@ -624,6 +630,10 @@ class UCLIClient
             args.pop if interactive
         end
 
+        source_file = nil
+        if args.length >= 1
+            source_file = args.pop if File.exist?(args[args.length-1])
+        end
         # Get list of server ids to which the 'with' commands shall be applied
         if args.length < 1
             # if no server given then apply to the current server
@@ -648,21 +658,38 @@ class UCLIClient
         end
             
         # Read commands in local loop to apply to server list
-        cmd_num = 1
         commands = []
-        loop do
-            cmd_s = readline("[#{cmd_num}] ", true)
-            next if cmd_s.nil? || cmd_s.length == 0
-            break if cmd_s == "end"
-            if FORBIDDEN_WITH_COMMANDS.include?(cmd_s) || (cmd_s =~ /^[!#].*/)
-                puts! "Error: '#{cmd_s}' is not allowed within a 'with' script."
-                next
+        if source_file
+            begin
+                commands = File.readlines(source_file)
+            rescue Exception => ex
+                puts! "Error: can't read 'with' script '#{source_file}'"
+                @diag.if_level(3) { p ex }
             end
-            commands << cmd_s
-            cmd_num += 1
+        else
+            cmd_num = 1
+            loop do
+                cmd_s = readline("[#{cmd_num}] ", true)
+                next if cmd_s.nil? || cmd_s.length == 0
+                break if cmd_s == "end"
+                if FORBIDDEN_WITH_COMMANDS.include?(cmd_s) || (cmd_s =~ /^[!#].*/)
+                    puts! "Error: '#{cmd_s}' is not allowed within a 'with' script."
+                    next
+                end
+                commands << cmd_s
+                cmd_num += 1
+            end
         end
-            
+        
         return if commands.length < 1   # nothing to do
+
+        # Code to disallow with scripts with background tasks.        
+        #commands.each_with_index { |cmd,i|
+        #    if /.*&$/ =~ cmd
+        #        puts "Error: 'with' scripts may not run tasks in the background (see line #{i+1})"
+        #        return
+        #    end
+        #}
 
         # Send commands to each server...
         begin            
@@ -680,16 +707,19 @@ class UCLIClient
                 commands.each { |cmd|
                     puts! cmd if interactive
                     cmd_a = run_command(cmd)
-                    raise Interrupt if cmd_a.nil?
+                    raise CommandFiled if cmd_a.nil?
                 }
             }
         rescue UserCancel
             puts! "With script halted by user."
-        rescue Interrupt
+        rescue CommandFailed
             puts! "Error: 'with' command '#{cmd}' failed -- halting 'with' processing."
+        rescue Interrupt
+            puts! "With script interrupted."
         rescue Exception => ex
             puts! "Error: 'with' command processor encountered an unhandled exception: " + ex
         ensure
+            puts! "With: waiting for background tasks to complete." if @tasks.length > 0
             @tasks_lock.synchronize {
                 @tasks.each { |t| t[0].join }   # wait for any tasks spawned by this 'with script' to finish
                 @tasks = tasks                  # BEFORE restoring state of @tasks and @drb_server
@@ -717,6 +747,79 @@ class UCLIClient
                 end
             }
         }
+    end
+
+    def get_task_output(task_num)
+        @tasks_lock.synchronize {
+            if task_num < 1 || task_num > @tasks.length
+                puts! "Error: invalid task number."
+                return []
+            elsif @tasks[task_num-1][4].nil?
+                puts! "Error: task #{task_num} has already been cleaned up - no output is available."
+                return []
+            else
+                return @tasks[task_num-1][4]
+            end
+        }
+    end
+    
+    def save(*args)
+        if args.length < 2
+            puts! "Error: missing argument(s) - save requires a task ID and a filename."
+            return
+        end
+        
+        if /^%\d+$/ =~ args[0]
+            begin
+                output = get_task_output($&[1..-1].to_i)
+                if output.nil? || output.length < 1
+                    puts "Error: task #{args[0]} has no output to save."
+                    return
+                end
+            
+                if File.exists? args[1]
+                    print! "File '#{args[1]}' already exists - overwrite (y/n)? "
+                    return unless getyn("y")
+                    File.delete args[1]
+                end
+                
+                File.open(args[1], "w") { |f|
+                    output.each { |l| f.write l }
+                }
+            rescue NoMethodError => ex
+                puts! "Error: invalid task ID '#{args[0]}'}"
+                @diag.if_level(3) { p ex }
+            rescue Exception => ex
+                puts! "Error: unable to write to file '#{args[1]}'."
+                @diag.if_level(3) { p ex }
+            end
+        else
+            puts! "Error: invalid task ID '#{args[0]}'"
+        end
+    end
+
+    def source(*args)
+        if args.nil? || args.length < 1
+            puts! "Error: invalid arguments - run requires the name of a file to source."
+            return
+        end
+        if !File.exists? args[0]
+            puts! "Error: script file '#{args[0]}' not found."
+            return
+        end
+        
+        begin
+            interactive = (args[-1] == "-i")
+            script = File.readlines(args[0])
+            script.each { |cmd|
+                cmd.chomp!
+                puts! cmd if interactive
+                run_command cmd if cmd && cmd != ""
+            } unless script.nil? || script.length == 0
+        rescue Exception => ex
+            puts! "Error: unable to open or read from file '#{args[0]}' - check permissions."
+            @diag.if_level(3) { p ex }
+        end
     end
     
     # Send a webfilter command to server.
