@@ -98,12 +98,15 @@ class UCLIServer
 
             @component_lock.synchronize {
                 # Attempt to load a node CLI with the name of the missing method.
+                puts! "requiring..."
                 require node
                 
                 # If successful, create an new instance of the node CLI loaded via the require.
+                puts! "inst var set..."
                 self.instance_variable_set("@#{node}", eval("#{node.capitalize}.new"))
                 
                 # Now define the missing method such that it delegates to the instance of the node CLI.
+                puts! "inst eval..."
                 self.instance_eval %{
                     def #{node}(params)
                         @#{node}.execute(params)
@@ -114,7 +117,8 @@ class UCLIServer
             # At this point, future calls to the missing method will be handed by the delegator we just created above.
             
             # Lastly, fulfill the call for which the method was missing in the first place
-            return (args.length > 0) ? self.send("#{node}", *args) : self.send("#{node}", [])
+            puts! "delegating..."
+            return (args.length > 0) ? self.send("#{node}", args) : self.send("#{node}", [])
 
         rescue LoadError
             # #{node}.rb not found so assume the missing method is really a program to run.
@@ -127,7 +131,7 @@ class UCLIServer
             }
             return msg
         rescue Exception => ex
-            msg = "Error: unable to load component '#{method_id}' " + ex
+            msg = "Error: unable to load component '#{method_id}': " + ex
             @diag.if_level(2) {
                 puts! "#{msg}"
                 p ex
