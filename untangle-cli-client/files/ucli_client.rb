@@ -407,6 +407,7 @@ class UCLIClient
     #
     
     def method_missing(method_id, *args)
+        
         begin
             cmd = method_id.id2name
             if /^:/ =~ cmd          # request to run a local system command
@@ -451,7 +452,7 @@ class UCLIClient
                     server = @drb_server[2]
                 end unless server
 
-                res = server.__send__(cmd, *args);
+                res = server.__send__(cmd, args);
                 res.each { |r| puts! r } if res && !Thread.current[:background]
                 return res
             end
