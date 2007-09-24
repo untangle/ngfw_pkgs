@@ -83,6 +83,7 @@ class UCLIClient
         @cmd_num = 1
         @history = []
         @history_size = 50
+        @history_lock = Mutex.new
         @welcome = "\nWelcome to the #{@client_name} - type 'help' for assistance.\n\n"
         @server_ping_thread = nil
         @server_ping_frequency = 60
@@ -204,9 +205,11 @@ class UCLIClient
             next if cmd_a.nil?
             
             # Only commands entered into the top level "shell" are added to the session history
-            @history.shift unless @history.length < @history_size
-            @history << [@cmd_num,cmd_a.join(' '),@server_id]
-            @cmd_num += 1
+            @history_lock.synchronize {
+                @history.shift unless @history.length < @history_size
+                @history << [@cmd_num,cmd_a.join(' '),@server_id]
+                @cmd_num += 1
+            }
         end
     end
     
@@ -261,38 +264,40 @@ class UCLIClient
         cmd = cmd_a[0].strip
         
         # Check for meta-commands first, ie, histrory, etc.
-        if (/^!!/ =~ cmd)                           # User wants the last command run again
-            hist_cmd = @history[-1]
-            cmd_a = hist_cmd[1].split
-            puts! hist_cmd[1]                       # Echo actual command used to console, as other shells do
-        elsif (/^![\d]+$/ =~ cmd)                   # It appears to be a historical command number
-            cmd_num = $&[1..-1].to_i                # Strip bang from command #         
-            hist_cmd = @history.detect {|h|         # Find history with effective command #
-                h[0] == cmd_num
-            }
-            if hist_cmd.nil?
-                puts! "Command ##{cmd_num} not found."
-                return nil
+        @history_lock.synchronize {
+            if (/^!!/ =~ cmd)                           # User wants the last command run again
+                hist_cmd = @history[-1]
+                cmd_a = hist_cmd[1].split
+                puts! hist_cmd[1]                       # Echo actual command used to console, as other shells do
+            elsif (/^![\d]+$/ =~ cmd)                   # It appears to be a historical command number
+                cmd_num = $&[1..-1].to_i                # Strip bang from command #         
+                hist_cmd = @history.detect {|h|         # Find history with effective command #
+                    h[0] == cmd_num
+                }
+                if hist_cmd.nil?
+                    puts! "Command ##{cmd_num} not found."
+                    return nil
+                end
+                puts! hist_cmd[1]                       # Echo actual command used to console, as other shells do
+                cmd_a = hist_cmd[1].split               # Use found historical command
+            elsif (/^!\w+$/ =~ cmd)                     # It appears to be a historical command prefix
+                prefix = $&[1..-1]                      # Strip bang from command prefix
+                hist_cmd = @history.reverse.detect {|h| # Find history with effective command prefix
+                    /^#{prefix}/ =~ h[1]
+                }
+                if hist_cmd.nil?
+                    puts! "Command with prefix '#{prefix}' not found."
+                    return nil
+                end
+                puts! hist_cmd[1]                       # Echo actual command used to console, as other shells do
+                cmd_a = hist_cmd[1].split               # Use found historical command
+            elsif cmd_a[0] == "."
+                cmd_a[0] = "source"                     # convert abbr. for script source command                     
+            elsif (/^\..*/ =~ cmd)
+                cmd_a = cmd.split('.')
+                cmd_a[0] = "source"                     # convert abbr. for script source command                     
             end
-            puts! hist_cmd[1]                       # Echo actual command used to console, as other shells do
-            cmd_a = hist_cmd[1].split               # Use found historical command
-        elsif (/^!\w+$/ =~ cmd)                     # It appears to be a historical command prefix
-            prefix = $&[1..-1]                      # Strip bang from command prefix
-            hist_cmd = @history.reverse.detect {|h| # Find history with effective command prefix
-                /^#{prefix}/ =~ h[1]
-            }
-            if hist_cmd.nil?
-                puts! "Command with prefix '#{prefix}' not found."
-                return nil
-            end
-            puts! hist_cmd[1]                       # Echo actual command used to console, as other shells do
-            cmd_a = hist_cmd[1].split               # Use found historical command
-        elsif cmd_a[0] == "."
-            cmd_a[0] = "source"                     # convert abbr. for script source command                     
-        elsif (/^\..*/ =~ cmd)
-            cmd_a = cmd.split('.')
-            cmd_a[0] = "source"                     # convert abbr. for script source command                     
-        end
+        }
         cmd_a
     end
 
@@ -409,7 +414,7 @@ class UCLIClient
                 else
                     raise Exception, "malformed command."
                 end
-            elsif /^#\d+/ =~ cmd   # trap server select and do nothing, so command is added to history.
+            elsif /^#\d+/ =~ cmd   # trap server select and switch servers
                 svr_id = $&[1..-1].to_i                
                 @drb_servers_lock.synchronize do
                     if (svr_id >= 1) && (svr_id <= @ucli_servers.length)
@@ -431,8 +436,9 @@ class UCLIClient
                 res = (args.nil? || (args.length == 0)) ? server.__send__(cmd, []) : server.__send__(cmd, *args);
                 res.each { |r| puts! r } if res
             end
-        rescue Exception
+        rescue Exception => ex
             puts! "Error: invalid, malformed or unknown command '#{cmd}'."
+            @diag.if_level(2) { p ex }
         end
     end
     
@@ -466,19 +472,21 @@ class UCLIClient
 
     # Display command history in console    
     def history(*args)
-        if args.nil? || args.length == 0
-            @history.each { |h| puts! "[#{h[0]}] #{h[1]} (##{h[2]})"}
-        elsif /^#\d+/ =~ args[0]
-            begin
-                svr_id = $&[1..-1].to_i
-                raise Exception if svr_id < 1 || svr_id > @ucli_servers.length
-                @history.each { |h| puts! "[#{h[0]}] #{h[1]}" if h[2] == svr_id }
-            rescue Exception => ex
-                puts! "Error: invalid server number."
-                @diag.if_level(3) { p ex }
-                return
+        @history_lock.synchronize {
+            if args.nil? || args.length == 0
+                @history.each { |h| puts! "[#{h[0]}] #{h[1]} (##{h[2]})"}
+            elsif /^#\d+/ =~ args[0]
+                begin
+                    svr_id = $&[1..-1].to_i
+                    raise Exception if svr_id < 1 || svr_id > @ucli_servers.length
+                    @history.each { |h| puts! "[#{h[0]}] #{h[1]}" if h[2] == svr_id }
+                rescue Exception => ex
+                    puts! "Error: invalid server number."
+                    @diag.if_level(3) { p ex }
+                    return
+                end
             end
-        end
+        }
     end
     
     # Pass the given Ruby code to the UCLI server for execution.
@@ -822,11 +830,6 @@ class UCLIClient
         end
     end
     
-    # Send a webfilter command to server.
-    def webfilter(*args)
-        puts! @drb_server[2].webfilter(args)
-    end
-
 end # UCLIClient
 
 if __FILE__ == $0
