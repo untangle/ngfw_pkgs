@@ -60,7 +60,7 @@ class UCLIClient
    
     # Constants
     DEFAULT_PORT = 7777
-    FORBIDDEN_BACKGROUND_COMMANDS = %w{ with }     # commands that cannot be run in the background
+    FORBIDDEN_BACKGROUND_COMMANDS = %w{ with ^#\d }     # commands that cannot be run in the background
     FORBIDDEN_WITH_COMMANDS = %w{ open quit exit with history tasks servers } 
             
     # Accessors
@@ -79,7 +79,8 @@ class UCLIClient
         @brand = "Untangle"
         @client_name = "UCLI Client"
         @server_name = "UCLI Server"
-        @config_filename = ".uclirc"
+        @config_filename = ".ucli"
+        @running = false
         @cmd_num = 1
         @history = []
         @history_size = 50
@@ -112,6 +113,8 @@ class UCLIClient
             ["tasks", false, "List all background tasks currently running."],
             ["cleanup", false, "Cleanup client resources, e.g., garbage collect, release stored task outputs, etc."],
             ["source", false, "Source (i.e., run) the given script (use '.' as shortcut) -- source file or . file"],
+            ["%X", false, "Display output of background task 'X' -- %1"],
+            ["#X", true, "Switch effective server to server ID 'X' -- #3"],
             # The following are not top level commands but are included here so tab completion will support them.
             ["localhost", false, nil],
             ["block-list", false, nil],
@@ -139,7 +142,7 @@ class UCLIClient
         @ucli_servers = []
         @drb_server = nil                   # Active drb server from uvm_servers array (defined below.)
         @server_id = 0
-        @drb_servers_lock = Mutex.new       # Obtain this lock before manipulating any of the server related objects.
+        @servers_lock = Mutex.new       # Obtain this lock before manipulating any of the server related objects.
         
         # Process config file
         process_config_file(@config_filename)
@@ -173,7 +176,7 @@ class UCLIClient
         if !ucli_server_host.nil?
             # Since this method could be called outside the context of object initialization
             # we must sync before changing the state of the server list.
-            @drb_servers_lock.synchronize do
+            @servers_lock.synchronize do
                 @ucli_servers << [ucli_server_host, ucli_server_port, nil];
             end
         end
@@ -193,6 +196,12 @@ class UCLIClient
      # command to history for future reference.
      #
     def run
+        if @running
+            puts! "${client_name} main loop is not reenterant."
+            return
+        else
+            @running = true
+        end
         connect_to_all_ucli_servers
         launch_server_pong
         print! @welcome
@@ -228,28 +237,36 @@ class UCLIClient
         # ***TODO: need to handle case of "foo&", which is distinct from "foo &" (note the space between 'foo' and '&')
         if cmd_a[-1] == "&"
             FORBIDDEN_BACKGROUND_COMMANDS.detect { |cmd|
-                if (cmd == cmd_a[0])
-                    puts! "Error: '#{cmd}' cannot be executed in the background."
+                if (/#{cmd}/ =~ cmd_a[0])
+                    puts! "Error: '#{cmd_a[0]}' may not be executed in the background."
                     return
                 end
             }
             cmd_a.pop # remove '&' from arg list - background tasks are handled WITHIN this client and not by the system that runs the command in the back ground.
+            
+            # Cache effective drb server object BEFORE launching thread - this way if
+            # the user or a command changes the effective server while the thread is
+            # starting up we won't be effected, ie, caused to send any server commands
+            # to the wrong server.
+            drb_server = nil
+            @servers_lock.synchronize { drb_server = @drb_server[2] }
+            
             @tasks_lock.synchronize {
                 # must store task record before creating thread so command processor can tell if the command is in the background or not.
                 task_index = @task_num-1
                 @tasks[task_index] = [nil, cmd_s, @task_num, true, ""]  # [ task thread, cmd string, task num, background?, output]
                 t = Thread.new(task_index) { |t_idx|
-                    # ***TODO: set thread local variable with task index - then the thread can look it up
-                    # and decide whether to do certain things if its a background task or not.
+                    Thread.current[:drb_server] = drb_server
                     Thread.current[:task_index] = t_idx
                     Thread.current[:background] = true
                     res = self.__send__(*cmd_a);
                     @tasks_lock.synchronize { @tasks[t_idx][4] = res }
-                    puts! "\nDone (#{cmd_a.join(' ')}) - use command %#{t_idx+1} to view output."
+                    puts! "\nDone (#{cmd_a.join(' ')}) - use command '%#{t_idx+1}' to view output."
                 }
                 @tasks[task_index][0] = t
                 @task_num += 1
             }
+            
             cmd_a << "&" # restore popped '&'
         else
             self.__send__(*cmd_a)
@@ -265,6 +282,7 @@ class UCLIClient
         
         # Check for meta-commands first, ie, histrory, etc.
         @history_lock.synchronize {
+            
             if (/^!!/ =~ cmd)                           # User wants the last command run again
                 hist_cmd = @history[-1]
                 cmd_a = hist_cmd[1].split
@@ -334,7 +352,7 @@ class UCLIClient
         @server_ping_thread = Thread.new do
             loop do
                 sleep @server_ping_frequency
-                @drb_servers_lock.synchronize do
+                @servers_lock.synchronize do
                     @ucli_servers.each { |svr|
                         pong_(svr, 2, 0, 0)
                     }
@@ -345,7 +363,7 @@ class UCLIClient
 
     # ***TODO: perhaps refactor this code to use open(), so the DRB logic is not duplicated.
     def connect_to_all_ucli_servers
-        @drb_servers_lock.synchronize do
+        @servers_lock.synchronize do
             unless @ucli_servers.nil? || @ucli_servers.length == 0
                 svr_num = 1
                 @ucli_servers.each { |uvm|
@@ -388,12 +406,10 @@ class UCLIClient
     #   CLI Command Handlers
     #
     
-    # Assume unknown commands, i.e., missing methods, are requests to run some external
-    # Linux command.  If command prefixed by ':' then run locally, else run remotely on server.
     def method_missing(method_id, *args)
         begin
             cmd = method_id.id2name
-            if /^:/ =~ cmd
+            if /^:/ =~ cmd          # request to run a local system command
                 if cmd.length > 1
                     cmd = cmd.slice(1,cmd.length-1)
                     if (args.length > 0) then cmd << (' '  + args.join(' ')) end
@@ -414,30 +430,33 @@ class UCLIClient
                 else
                     raise Exception, "malformed command."
                 end
-            elsif /^#\d+/ =~ cmd   # trap server select and switch servers
+            elsif /^#\d+/ =~ cmd            # request to change effective server
                 svr_id = $&[1..-1].to_i                
-                @drb_servers_lock.synchronize do
+                @servers_lock.synchronize do
                     if (svr_id >= 1) && (svr_id <= @ucli_servers.length)
                         @drb_server = @ucli_servers[svr_id-1]
                         @server_id = svr_id
                         # cmd_a is passed back as initialized above
                     else
-                        puts! "Error: invalid server number - valid server numbers at this moment are 1...#{@ucli_servers.length}"
+                        puts! "Error: invalid server ID - use the 'servers' command for a list of valid server IDs"
                         return nil
                     end
                 end
-            elsif (/^%\d+$/ =~ cmd)
-                get_task_output($&[1..-1].to_i).each { |line| puts! line }
-            else
-                server = nil
-                @drb_servers_lock.synchronize do
+            elsif (/^%\d+$/ =~ cmd)     # request to display output of task %X
+                output = get_task_output($&[1..-1].to_i)
+                output.each { |line| puts! line } if output
+            else    # send unknown method request to server for processing
+                server = Thread.current[:drb_server]
+                @servers_lock.synchronize do
                     server = @drb_server[2]
-                end
-                res = (args.nil? || (args.length == 0)) ? server.__send__(cmd, []) : server.__send__(cmd, *args);
-                res.each { |r| puts! r } if res
+                end unless server
+
+                res = server.__send__(cmd, *args);
+                res.each { |r| puts! r } if res && !Thread.current[:background]
+                return res
             end
         rescue Exception => ex
-            puts! "Error: invalid, malformed or unknown command '#{cmd}'."
+            puts! "Error: invalid, malformed or unknown command '#{cmd}' - " + ex
             @diag.if_level(2) { p ex }
         end
     end
@@ -494,10 +513,10 @@ class UCLIClient
     # taint level may restrict certain code from being executed for security reasons.
     def ruby(*args)
         begin
-            server = nil
-            @drb_servers_lock.synchronize do
+            server = Thread.current[:drb_server]
+            @servers_lock.synchronize do
                 server = @drb_server[2];
-            end
+            end unless server
             if File.exist?(args[0])
                 server.ruby(IO.read(args[0]))
             else
@@ -528,20 +547,19 @@ class UCLIClient
         end
     end
 
-    # Check effective server responsiveness with all message levels set to alert.
     # ***TODO: add support for "pong #X", to pong a server w/out changing the active server.
     def pong(*args)
         server = nil
-        @drb_servers_lock.synchronize do
+        @servers_lock.synchronize do
             server = @drb_server
         end
         pong_(server, -1, -1, -1)
     end
-    
+
     # List open/connected-to UCLI servers and display in console.
     def servers(*args)
         servers = nil
-        @drb_servers_lock.synchronize do
+        @servers_lock.synchronize do
             servers = @ucli_servers;
         end
         unless servers.length == 0
@@ -566,7 +584,7 @@ class UCLIClient
 
         # Ensure server is not already opened
         servers = nil
-        @drb_servers_lock.synchronize do
+        @servers_lock.synchronize do
             found = @ucli_servers.detect { |svr|
                 # found if host name and port match  ***TODO: what if IP of an open host is used or visa versa?
                 (svr[0] == server_to_open[0]) && (svr[1] == server_to_open[1].to_i)
@@ -599,7 +617,7 @@ class UCLIClient
         #    return
         #end
         #
-        #@drb_servers_lock.synchronize do
+        #@servers_lock.synchronize do
         #    closed_server = @ucli_servers[svr_idx][2]
         #    @ucli_servers[svr_idx] = [nil,nil,nil]
         #    if closed_server == @drb_server
@@ -623,7 +641,7 @@ class UCLIClient
         server_id = nil
         drb_server = nil
         tasks = nil
-        @drb_servers_lock.synchronize {
+        @servers_lock.synchronize {
             ucli_servers = @ucli_servers
             server_id = @server_id
             drb_server = @drb_server
@@ -702,7 +720,7 @@ class UCLIClient
         # Send commands to each server...
         begin            
             svr_ids.each { |svr_id|
-                @drb_servers_lock.synchronize {
+                @servers_lock.synchronize {
                     @drb_server = ucli_servers[svr_id-1]
                 }
                 
@@ -732,17 +750,13 @@ class UCLIClient
                 @tasks.each { |t| t[0].join }   # wait for any tasks spawned by this 'with script' to finish
                 @tasks = tasks                  # BEFORE restoring state of @tasks and @drb_server
             }
-            @drb_servers_lock.synchronize {
+            @servers_lock.synchronize {
                 @drb_server = drb_server
             }
         end
             
     end
 
-    #def policies(*args)
-        #@drb_server[2].getPolicies
-    #end
-    
     # List all active tasks
     def tasks(*args)
         @tasks_lock.synchronize {
@@ -763,7 +777,7 @@ class UCLIClient
                 puts! "Error: invalid task number."
                 return []
             elsif @tasks[task_num-1][4].nil?
-                puts! "Error: task #{task_num} has already been cleaned up - no output is available."
+                puts! "Error: task #{task_num} had no output or has already been cleaned up - output not available."
                 return []
             else
                 return @tasks[task_num-1][4]
