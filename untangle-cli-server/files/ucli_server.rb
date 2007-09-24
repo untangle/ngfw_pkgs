@@ -91,8 +91,12 @@ class UCLIServer
     #
     # Methods to handle server requests
     #
-    def method_missing(method_id, *args)
+    def method_missing(method_id, args)
         begin
+            puts! "svr mthd msng"
+            p args
+            
+            args = [] if args.nil?
             node = method_id.id2name
             @diag.if_level(3) { puts! "'#{node}' method not found - attempting to dynamically load component..." ; p args }
 
@@ -105,8 +109,8 @@ class UCLIServer
                 
                 # Now define the missing method such that it delegates to the instance of the node CLI.
                 self.instance_eval %{
-                    def #{node}(params)
-                        @#{node}.execute(params)
+                    def #{node}(params_ary)
+                        @#{node}.execute(params_ary)
                     end
                     @component_methods << :#{node}
                 }
@@ -114,7 +118,7 @@ class UCLIServer
             }
             
             # Lastly, fulfill the call for which the method was missing in the first place
-            return (args.length > 0) ? self.send("#{node}", args) : self.send("#{node}", [])
+            return self.send("#{node}", args)
 
         rescue LoadError
             # #{node}.rb not found so assume the missing method is really a program to run.
