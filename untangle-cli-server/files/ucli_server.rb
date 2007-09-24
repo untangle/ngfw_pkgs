@@ -98,31 +98,28 @@ class UCLIServer
 
             @component_lock.synchronize {
                 # Attempt to load a node CLI with the name of the missing method.
-                puts! "requiring..."
                 require node
                 
                 # If successful, create an new instance of the node CLI loaded via the require.
-                puts! "inst var set..."
                 self.instance_variable_set("@#{node}", eval("#{node.capitalize}.new"))
                 
                 # Now define the missing method such that it delegates to the instance of the node CLI.
-                puts! "inst eval..."
                 self.instance_eval %{
                     def #{node}(params)
                         @#{node}.execute(params)
                     end
                     @component_methods << :#{node}
                 }
+                # At this point, future calls to the missing method will be handed by the delegator we just created above.
             }
-            # At this point, future calls to the missing method will be handed by the delegator we just created above.
             
             # Lastly, fulfill the call for which the method was missing in the first place
-            puts! "delegating..."
             return (args.length > 0) ? self.send("#{node}", args) : self.send("#{node}", [])
 
         rescue LoadError
             # #{node}.rb not found so assume the missing method is really a program to run.
-            return execute("#{node} #{args.join(' ')}")
+            res  = execute("#{node} #{args.join(' ') if args}")
+            return res
         rescue NameError, NoMethodError => ex
             msg = "Error: component '#{node}' does not have the proper structure - " + ex
             @diag.if_level(3) {
@@ -145,7 +142,8 @@ class UCLIServer
         @diag.if_level(3) { puts! "Executing '#{cmd}'" }
         begin
             pipe = IO.popen(cmd, "r")   # note pipe is half duplex to no need to close_write
-            return pipe.readlines
+            out = pipe.readlines
+            return out
         rescue IOError => ex
             err = "Error: unable to execute '#{cmd}' - command not found or not executable."
             @diag.if_level(3) { puts! err ; p ex }
