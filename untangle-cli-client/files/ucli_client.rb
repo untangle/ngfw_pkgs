@@ -83,12 +83,12 @@ class UCLIClient
         @running = false
         @cmd_num = 1
         @history = []
-        @history_size = 50
+        @history_size = @history_num_to_display = 50
         @history_lock = Mutex.new
         @welcome = "\nWelcome to the #{@client_name} - type 'help' for assistance.\n\n"
         @server_ping_thread = nil
         @server_ping_frequency = 60
-        @verbose = 1
+        @verbose = 2
         @tasks = []
         @tasks_lock = Mutex.new
         @task_num = 1
@@ -354,7 +354,7 @@ class UCLIClient
                 sleep @server_ping_frequency
                 @servers_lock.synchronize do
                     @ucli_servers.each { |svr|
-                        pong_(svr, 2, 0, 0)
+                        _pong_(svr, 2, 1, 1)
                     }
                 end
             end
@@ -388,7 +388,7 @@ class UCLIClient
     end
 
     # Pong (ie, "ping") server and issue messages based on given message levels for each type of server response.
-    def pong_(svr, success_msg_lvl=2, error_msg_lvl=0, failure_msg_lvl=0)
+    def _pong_(svr, success_msg_lvl=2, error_msg_lvl=0, failure_msg_lvl=0)
         begin
             expected_response = "pong"
             response = svr[2].pong(expected_response);
@@ -494,16 +494,25 @@ class UCLIClient
     def history(*args)
         @history_lock.synchronize {
             if args.nil? || args.length == 0
-                @history.each { |h| puts! "[#{h[0]}] #{h[1]} (##{h[2]})"}
+                @history.each_with_index { |h,i|
+                    puts! "[##{h[2]}:#{h[0]}] #{h[1]}" if i >= @history.length-@history_num_to_display
+                }
+            elsif /^\d+/ =~ args[0]
+                n = args[0].to_i
+                if n < 1 || n > @history_size
+                    puts! "Error: invalid history display length."
+                    return
+                end
+                @history_num_to_display = n
+                message "History display count set to #{@history_num_to_display}", 2
             elsif /^#\d+/ =~ args[0]
                 begin
                     svr_id = $&[1..-1].to_i
                     raise Exception if svr_id < 1 || svr_id > @ucli_servers.length
                     @history.each { |h| puts! "[#{h[0]}] #{h[1]}" if h[2] == svr_id }
                 rescue Exception => ex
-                    puts! "Error: invalid server number."
+                    puts! "Error: invalid server number -- " + ex
                     @diag.if_level(3) { p ex }
-                    return
                 end
             end
         }
@@ -554,9 +563,21 @@ class UCLIClient
     def pong(*args)
         server = nil
         @servers_lock.synchronize do
-            server = @drb_server
+            if args.nil? || args.length == 0
+                server = @drb_server
+            elsif /^#\d+$/ =~ args[0]
+                svr_id = $&[1..-1].to_i
+                if svr_id < 1 || svr_id > @ucli_servers.length
+                    puts! "Error: invalid server ID '#{svd_id}'"
+                    return
+                end
+                server = @ucli_servers[svr_id-1]
+            else
+                puts! "Error: invalid server ID '{#args[0]}'"
+                return
+            end
         end
-        pong_(server, -1, -1, -1)
+        _pong_(server, -1, -1, -1) if server
     end
 
     # List open/connected-to UCLI servers and display in console.
