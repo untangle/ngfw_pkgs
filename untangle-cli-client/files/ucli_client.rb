@@ -87,7 +87,7 @@ class UCLIClient
         @history_lock = Mutex.new
         @welcome = "\nWelcome to the #{@client_name} - type 'help' for assistance.\n\n"
         @server_ping_thread = nil
-        @server_ping_frequency = 60
+        @server_ping_frequency = 120 # in seconds
         @verbose = 2
         @tasks = []
         @tasks_lock = Mutex.new
@@ -106,7 +106,7 @@ class UCLIClient
             ["exit", false, "terminate immediately"],
             ["help", false, "display help information"],
             ["open", false, "open connection to #{@server_name} -- open (host-name|ip):port"],
-            ["close #X", true, "close connection to #{@server_name} #X -- close #1"],
+            #["close #X", true, "close connection to #{@server_name} #X -- close #1"],
             ["servers", true, "list servers currently under management by this #{client_name} session."],
             ["webfilter #X", true, "Send command to webfilter #X -- enter 'webfilter help' for details."],
             ["with <server #s|##> <-i>]", true, "Send multiple commands to servers #, #..., ## for all servers, -i for interactive -- with #1 #2 ..."],
@@ -354,7 +354,7 @@ class UCLIClient
                 sleep @server_ping_frequency
                 @servers_lock.synchronize do
                     @ucli_servers.each { |svr|
-                        _pong_(svr, 2, 1, 1)
+                        _pong_(svr, 3, 1, 1)
                     }
                 end
             end
@@ -810,37 +810,52 @@ class UCLIClient
     end
     
     def save(*args)
+        invalid_args_msg = "Error: missing argument(s) - save requires a valid task ID and a legal filename."
+        
         if args.length < 2
-            puts! "Error: missing argument(s) - save requires a task ID and a filename."
+            puts! invalid_args_msg
             return
         end
         
-        if /^%\d+$/ =~ args[0]
-            begin
+        begin
+            if /^%\d+$/ =~ args[0]
+                
                 output = get_task_output($&[1..-1].to_i)
                 if output.nil? || output.length < 1
-                    puts "Error: task #{args[0]} has no output to save."
+                    message "Task #{args[0]} has no output to save.", 2
                     return
                 end
             
-                if File.exists? args[1]
-                    print! "File '#{args[1]}' already exists - overwrite (y/n)? "
-                    return unless getyn("y")
-                    File.delete args[1]
-                end
+                return unless confirm_overwrite args[1]
                 
                 File.open(args[1], "w") { |f|
                     output.each { |l| f.write l }
                 }
-            rescue NoMethodError => ex
-                puts! "Error: invalid task ID '#{args[0]}'}"
-                @diag.if_level(3) { p ex }
-            rescue Exception => ex
-                puts! "Error: unable to write to file '#{args[1]}'."
-                @diag.if_level(3) { p ex }
+            elsif /^%%/ =~ args[0]
+                
+                return unless confirm_overwrite args[1]
+    
+                File.open(args[1], "w") { |f| 
+                    @tasks_lock.synchronize {
+                        @tasks.each { |task|
+                            f.write(task[1] + "\n")
+                            if task[4].nil? || task[4].length == 0
+                                f.write("[no output]\n")
+                            else
+                                task[4].each { |line| f.write line }
+                            end
+                        }
+                    }
+                }
+            else
+                puts! invalid_args_msg
             end
-        else
-            puts! "Error: invalid task ID '#{args[0]}'"
+        rescue NoMethodError => ex
+            puts! "Error: invalid task ID '#{args[0]}'}"
+            @diag.if_level(3) { p ex }
+        rescue IOError => ex
+            puts! "Error: unable to write to file '#{args[1]}'."
+            @diag.if_level(3) { p ex }
         end
     end
 

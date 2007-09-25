@@ -37,6 +37,15 @@ module UCLIUtil
         end
     end
     
+    def confirm_overwrite(file)
+        if File.exists? file
+            print! "File '#{file}' already exists - overwrite (y/n)? "
+            return false unless getyn("y")
+            File.delete args[1]
+        end
+        return true
+    end
+    
     # Exceptions
     class UserCancel < Interrupt
     end
