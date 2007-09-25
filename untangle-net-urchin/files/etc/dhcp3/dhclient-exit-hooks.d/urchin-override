@@ -1,0 +1,65 @@
+#!/bin/dash
+
+mkdir -p /var/log/untangle-net-urchin/
+
+exec >> /var/log/untangle-net-urchin/dhcp.log 2>&1
+
+debug()
+{
+    /bin/echo -e "[DEBUG: `date`] ${*}"
+}
+
+update_dns_servers()
+{
+    local new_domain_name_servers=${DHCP_DNS_SERVERS}
+    local new_domain_name=${DHCP_DOMAIN_NAME}
+    
+    make_resolv_conf
+}
+
+OVERRIDE_VARIABLES="/etc/untangle-net-urchin/dhcp-overrides.${interface}"
+
+DEBUG=/bin/true
+
+DEBUG=debug
+
+test "${URCHIN_DEBUG}" = "true" && DEBUG=debug
+
+test -f "${OVERRIDE_VARIABLES}" || { 
+    ${DEBUG} "No override file for the interface: '${interface}'"
+    exit 0
+}
+
+case ${reason} in
+    BOUND|RENEW|REBIND|REBOOT)
+        debug "Enabling overrides on dhcp reason ${reason}"
+        ;;
+    *)
+        debug "Ignoring dhcp reason to ${reason}"
+        exit 0
+        ;;
+esac
+
+. ${OVERRIDE_VARIABLES}
+
+DHCP_IP_ADDDRESS=${DHCP_IP_ADDDRESS:-${new_ip_address}}
+DHCP_IP_NETMASK=${DHCP_IP_NETMASK:-${new_subnet_mask}}
+DHCP_GATEWAY=${DHCP_GATEWAY:-${new_routers}}
+
+DHCP_DNS_SERVERS=${DHCP_DNS_SERVERS:-${new_domain_name_servers}}
+DHCP_DOMAIN_NAME=${DHCP_DOMAIN_NAME:-${new_domain_name}}
+
+## Reconfigure the interface
+ifconfig ${interface} ${DHCP_IP_ADDRESS} netmask ${DHCP_IP_NETMASK}
+
+## Update the default gateway
+if [ "${DHCP_GATEWAY}" != "ignore" ]; then
+    ip route replace default via ${DHCP_GATEWAY}
+fi
+
+## Update the dns servers
+update_dns_servers
+
+## REVIEW: Should this set MTU here.
+
+exit 0

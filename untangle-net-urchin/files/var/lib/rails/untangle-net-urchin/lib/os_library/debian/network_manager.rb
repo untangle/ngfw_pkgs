@@ -1,5 +1,7 @@
 ## REVIEW.  there should be an observer, or some global management framework
 require_dependency "os_library/debian/packet_filter_manager"
+## REVIEW.  there should be an observer, or some global management framework
+require_dependency "os_library/debian/dhcp_manager"
 
 class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
   include Singleton
@@ -55,10 +57,12 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
     ## Clear out all of the interface state.
     File.open( InterfacesStatusFile, "w" ) { |f| f.print( "lo=lo" ) }
 
-    raise "Unable to reconfigure network settings." unless Kernel.system( "#{Service} start" )
-
     ## XXX THIS SHOULDN'T BE HERE, should be in an observer ##
     OSLibrary::Debian::PacketFilterManager.instance.commit
+    ## XXX THIS SHOULDN'T BE HERE, should be in an observer ##
+    OSLibrary::Debian::DhcpManager.instance.commit
+
+    raise "Unable to reconfigure network settings." unless Kernel.system( "#{Service} start" )
   end
 
   ## Given an interface, this returns the expected bridge name
