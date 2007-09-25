@@ -519,14 +519,16 @@ class UCLIClient
                 server = @drb_server[2];
             end unless server
             if File.exist?(args[0])
-                server.ruby(IO.read(args[0]))
+                code = IO.read(args[0])
+                server.ruby(code)
             else
                 server.ruby(args.join(' '))
             end
         rescue DRb::DRbConnError
             puts! "Unable to connect to #{@server_name} at #{@server_host}:#{@server_port} - is the #{@server_name} running (try the 'pong' command to check)?"
         rescue Exception => ex
-            puts! "Unable to run the given code - server returned the following error(s):\n" + ex
+            puts! "Unable to run the given code."
+            @diag.if_level(3) { p ex }
         end        
     end
 
