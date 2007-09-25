@@ -19,8 +19,8 @@ require 'ucli_common'
 include UCLICommon
 require 'ucli_util'
 include UCLIUtil
-require 'ucli_api'
-include UCLIApi
+#require 'ucli_api'
+#include UCLIApi
 
 #
 #   UCLI server core class ***TODO: doc the extensibilty if this class and the
