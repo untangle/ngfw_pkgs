@@ -96,7 +96,7 @@ class UCLIClient
         
         # Commands legend and creation of readline auto-completion abbreviations
         @commands_with_help = [
-            # Cmd name     Svr Required    Help text
+            # Cmd name, Server Required, Help text
             ["history", false, "display command history, up to #{@history_size} events"],
             ["ruby", true, "send Ruby code to sever for execution -- ruby statement | file"],
             ["quiet", false, "quiet all but alert level #{@client_name} messages"],
@@ -106,29 +106,32 @@ class UCLIClient
             ["exit", false, "terminate immediately"],
             ["help", false, "display help information"],
             ["open", false, "open connection to #{@server_name} -- open (host-name|ip):port"],
-            #["close #X", true, "close connection to #{@server_name} #X -- close #1"],
-            ["servers", true, "list servers currently under management by this #{client_name} session."],
-            ["webfilter #X", true, "Send command to webfilter #X -- enter 'webfilter help' for details."],
-            ["with <server #s|##> <-i>]", true, "Send multiple commands to servers #, #..., ## for all servers, -i for interactive -- with #1 #2 ..."],
+            ["close", false, "close connection to #{@server_name} #X -- close #1"],
+            ["servers", false, "list servers currently under management by this #{client_name} session."],
+            ["webfilter", true, "Send command to webfilter -- enter 'webfilter help' for details."],
+            ["with", true, "Send multiple commands to servers, ## for all servers, -i for interactive -- with #1 #2 #4 -i"],
             ["tasks", false, "List all background tasks currently running."],
-            ["cleanup", false, "Cleanup client resources, e.g., garbage collect, release stored task outputs, etc."],
-            ["source", false, "Source (i.e., run) the given script (use '.' as shortcut) -- source file or . file"],
+            ["cleanup", false, "Cleanup client resources, e.g., release stored task outputs, etc."],
+            ["source", false, "Source (i.e., run) the given script (use '.' as shortcut) -- source filename or . filename"],
             ["%X", false, "Display output of background task 'X' -- %1"],
-            ["#X", true, "Switch effective server to server ID 'X' -- #3"],
+            ["#X", false, "Switch effective #{server_name} to server 'X' -- #3"],
+            ["save", false, "Save output stored with task ID #X to filename -- save %3 myoutput.txt"],
             # The following are not top level commands but are included here so tab completion will support them.
+            # They can be distinguished from top level commands because they have no help text.
             ["localhost", false, nil],
             ["block-list", false, nil],
             ["block", false, nil],
-            ["block-list", false, nil],
             ["pass-list", false, nil],
+            ["pass", false, nil],
             ["categories", false, nil],
             ["url", false, nil],
             ["mime", false, nil],
             ["file", false, nil],
-            ["eventlog", false, nil]
+            ["client", false, nil],
+            ["localhost", false, nil]
         ]
         @commands = [];
-        @commands_with_help.each {|c| commands << c[0]}
+        @commands_with_help.each {|c| commands << c[0] unless c[2].nil?}
         @abbrevs = @commands.abbrev
         Readline.completion_proc = proc do |string|
             @abbrevs[string]
@@ -142,7 +145,7 @@ class UCLIClient
         @ucli_servers = []
         @drb_server = nil                   # Active drb server from uvm_servers array (defined below.)
         @server_id = 0
-        @servers_lock = Mutex.new       # Obtain this lock before manipulating any of the server related objects.
+        @servers_lock = Mutex.new           # Obtain this lock before manipulating any of the server related objects.
         
         # Process config file
         process_config_file(@config_filename)
@@ -229,8 +232,9 @@ class UCLIClient
         cmd_a = preprocess(cmd_s);
         return nil if (cmd_a.nil? || cmd_a.length == 0)
         
-        if (@drb_server.nil? || @drb_server[2].nil?) && command_requires_server(cmd_a[0])
-            puts! "There is no open #{@server_name}: at least one server must be opened before this command can be issued."
+        # If no server is active and the command is not a local system command and command requires a sever then disallow command.
+        if (@drb_server.nil? || @drb_server[2].nil?) && !(/^:/ =~ cmd_s) && !(/^#\d+$/ =~ cmd_s) && command_requires_server(cmd_a[0])
+            puts! "Error: There is no open (or selected) #{@server_name} -- a server must be opened and selected before this command can be issued."
             return nil            
         end
 
@@ -354,7 +358,7 @@ class UCLIClient
                 sleep @server_ping_frequency
                 @servers_lock.synchronize do
                     @ucli_servers.each { |svr|
-                        _pong_(svr, 3, 1, 1)
+                        _pong_(svr, 3, 1, 1) if svr[3] # only pong server if its open
                     }
                 end
             end
@@ -369,6 +373,7 @@ class UCLIClient
                 @ucli_servers.each { |uvm|
                     message "Connecting to #{@server_name} ##{svr_num}: #{uvm[0]}:#{uvm[1]}...\n", 1
                     uvm[2] = DRbObject.new(nil, "druby://#{uvm[0]}:#{uvm[1]}")
+                    uvm[3] = true   # mark server open
                     svr_num += 1
                 }
                 @drb_server = @ucli_servers[0]
@@ -434,13 +439,16 @@ class UCLIClient
             elsif /^#\d+/ =~ cmd            # request to change effective server
                 svr_id = $&[1..-1].to_i                
                 @servers_lock.synchronize do
-                    if (svr_id >= 1) && (svr_id <= @ucli_servers.length)
+                    if svr_id < 1 || svr_id > @ucli_servers.length
+                        puts! "Error: invalid server ID - use the 'servers' command for a list of valid server IDs"
+                        return nil
+                    elsif @ucli_servers[svr_id-1][3] == false
+                        puts! "Error: server ##{svr_id} is closed.  Use open to reopen it."
+                        return nil
+                    else
                         @drb_server = @ucli_servers[svr_id-1]
                         @server_id = svr_id
                         # cmd_a is passed back as initialized above
-                    else
-                        puts! "Error: invalid server ID - use the 'servers' command for a list of valid server IDs"
-                        return nil
                     end
                 end
             elsif (/^%\d+$/ =~ cmd)     # request to display output of task %X
@@ -464,17 +472,21 @@ class UCLIClient
     
     # Display UCLI help info
     def help(*args)
-        print "\nSupported commands: #{@commands.join(', ')}\n"
-        @commands_with_help.sort{|x,y| x <=> y }.each { |c| print "- #{c[0]} - #{c[2]}\n" unless c[2].nil? }
+        
+        print "\nSupported commands: #{@commands.sort{|x,y| x <=> y}.join(', ')}\n"
+        
+        @commands_with_help.sort{|x,y| x[0] <=> y[0] }.each {
+            |c| print "> #{c[0]} - #{c[2]}\n" unless c[2].nil?
+        }
+        
         print! <<-HERE
-- module-name help - Get help on commands supported by a module: webfilter help
-- #X - Select UVM server number X for subsequent commands.
-- !! - Execute last/most recent command
-- !{number} - Execute historical command 'number'
-- !{prefix} - Execute most recent historical command beginning with 'prefix'
-- command - Execute non-UCLI command on UCLI server host.
-- :command - Execute non-UCLI command on UCLI client host.
-- When entering a command, press [Tab] for command auto-completion.
+> module-name help - Get help on commands supported by a module: webfilter help
+> !! - Execute last/most recent command
+> !{number} - Execute historical command 'number'
+> !{prefix} - Execute most recent historical command beginning with 'prefix'
+> command - Execute non-UCLI command on UCLI server (remote) host.
+> :command - Execute non-UCLI command on UCLI client (local) host.
+> When entering a command, press [Tab] for command/word auto-completion.
     
         HERE
     end
@@ -525,7 +537,7 @@ class UCLIClient
         begin
             server = Thread.current[:drb_server]
             @servers_lock.synchronize do
-                server = @drb_server[2];
+                server = @drb_server[2]
             end unless server
             if File.exist?(args[0])
                 code = IO.read(args[0])
@@ -563,7 +575,7 @@ class UCLIClient
     def pong(*args)
         server = nil
         @servers_lock.synchronize do
-            if args.nil? || args.length == 0
+            if args.length == 0
                 server = @drb_server
             elsif /^#\d+$/ =~ args[0]
                 svr_id = $&[1..-1].to_i
@@ -587,10 +599,8 @@ class UCLIClient
             servers = @ucli_servers;
         end
         unless servers.length == 0
-            svr_num = 1
-            servers.each { |svr|
-                puts! "##{svr_num}: #{svr[0]}:#{svr[1]}" if svr[2]
-                svr_num += 1
+            servers.each_with_index { |svr,i|
+                puts! "##{i+1}: #{svr[0]}:#{svr[1]}" if svr[2] && svr[3]
             }
         else
             puts! "There are no servers currently open."
@@ -605,49 +615,70 @@ class UCLIClient
             puts! "Error: invalid server address - valid addresses are of the form (host-name|ip):port"
             return
         end
+        server_to_open[1] = server_to_open[1].to_i
 
         # Ensure server is not already opened
-        servers = nil
+        opened = false
         @servers_lock.synchronize do
+            svr_index = 0
             found = @ucli_servers.detect { |svr|
                 # found if host name and port match  ***TODO: what if IP of an open host is used or visa versa?
-                (svr[0] == server_to_open[0]) && (svr[1] == server_to_open[1].to_i)
+               found = (svr[0] == server_to_open[0]) && (svr[1] == server_to_open[1])
+               svr_index += 1 unless found
+               found
             }
-            if found
+            if found && found[3] == true
                 puts! "Server #{args[0]} is aleady open (type 'servers' to review open servers.)"
                 return
             end
-        
-            # Connect to server and add to list of open servers
-            @ucli_servers << [server_to_open[0], server_to_open[1], DRbObject.new(nil, "druby://#{server_to_open[0]}:#{server_to_open[1]}")]
-            @drb_server = @ucli_servers[-1]
-            @server_id = @ucli_servers.length
-            
+            # At this point, a server entry was not found OR one was found but it was marked as closed.
+
+            # Create new server entry and if it was not found append it to the servers list;
+            # if it was found but it was closed, store the new entry in the same server location
+            # it was originally in. A server entry is an array as follows: [host,port,drb object, open/closed]
+            new_server = [server_to_open[0], server_to_open[1], DRbObject.new(nil, "druby://#{server_to_open[0]}:#{server_to_open[1]}"), true]
+            if !found
+                @ucli_servers << new_server
+                @drb_server = new_server
+                @server_id = @ucli_servers.length
+            else
+                @ucli_servers[svr_index] = new_server
+                @drb_server = new_server
+                @server_id = svr_index+1
+            end
+           
             puts! "#{args[0]} opened as server ##{@server_id}"
+            opened = true
         end
-        pong []
+        pong if opened # pong the server after opening it to inform the user of its status.
     end
     
     # Open a connection to a UCLI sever and add to open servers list.
     def close(*args)
+        invalid_server_id_msg = "Error: invalid server ID."
 
-        puts! "Close not yet implemented."
-        return
-    
-        #if /^#\d+/ =~ args[0]
-        #    svr_idx = ($&[1..-1].to_i) - 1
-        #else
-        #    puts! "Error: invalid server number."
-        #    return
-        #end
-        #
-        #@servers_lock.synchronize do
-        #    closed_server = @ucli_servers[svr_idx][2]
-        #    @ucli_servers[svr_idx] = [nil,nil,nil]
-        #    if closed_server == @drb_server
-        #        
-        #    end
-        #end
+        @servers_lock.synchronize do
+            svr_id = -1
+            if args.length == 0
+                svr_id = @server_id
+            elsif /^#\d+/ =~ args[0]
+                svr_id = $&[1..-1].to_i
+                if svr_id < 1 || svr_id > @ucli_servers.length
+                    puts! invalid_server_id_msg
+                elsif !@ucli_servers[svr_id-1][3]
+                    message "Server #{args[0]} is already closed.", 2
+                else # "close" the sever
+                    svr_idx = svr_id -1
+                    @ucli_servers[svr_idx][2] = nil     # deref server DRbObject
+                    @ucli_servers[svr_idx][3] = false   # mark server closed
+                    @server_id = 0
+                    @drb_server = nil
+                    message "Server #{args[0]} is closed -- use #X to select another server or open one before continuing.", 2
+                end
+            else
+                puts! invalid_server_id_msg
+            end
+        end
     end
     
 
@@ -911,3 +942,4 @@ end
 exit(0)
 
 end # if __FILE__
+
