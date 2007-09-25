@@ -19,6 +19,8 @@ require 'ucli_common'
 include UCLICommon
 require 'ucli_util'
 include UCLIUtil
+require 'ucli_api'
+include UCLIApi
 
 #
 #   UCLI server core class ***TODO: doc the extensibilty if this class and the
@@ -156,7 +158,13 @@ class UCLIServer
     end
     
     def ruby(ruby)
-        self.instance_eval(ruby)
+        begin
+            return eval(ruby)
+        rescue Exception => ex
+            err = "Error: the Ruby code received for evaluation has thrown an unhandled exception -- " + ex
+            @diag.if_level(3) { puts! err ; p ex ; p ruby }
+            return err
+        end
     end
     
     # Respond to "pong" w/expected_response: used to check if sever is alive.
