@@ -113,10 +113,10 @@ class UCLIClient
             ["exit", false, "terminate immediately"],
             ["help", false, "display help information"],
             ["open", false, "open connection to #{@server_name} -- open (host-name|ip):port"],
-            ["close", false, "close connection to #{@server_name} #X -- close #1"],
+            ["close", false, "close connection to #{@server_name} #X or host-name -- close #1"],
             ["servers", false, "list servers currently under management by this #{client_name} session."],
             ["webfilter", true, "send command to webfilter -- enter 'webfilter help' for details."],
-            ["with", true, "send multiple commands to servers, ## for all servers, -i for interactive -- with #1 #2 #4 -i"],
+            ["with", true, "send multiple commands to servers, '##' or 'all' for all servers, '-i' for interactive -- with host-name #2 #4 -i"],
             ["tasks", false, "list all background tasks currently running."],
             ["cleanup", false, "cleanup client resources, e.g., release stored task outputs, etc."],
             ["source", false, "source (i.e., run) the given script (use '.' as shortcut) -- source filename or . filename"],
@@ -218,7 +218,7 @@ class UCLIClient
 
         # Execute commands passed in via the command line then return (don't go interactive)        
         if @commands_to_execute != []
-            connect_to_all_ucli_servers(true)
+            connect_to_all_ucli_servers(true)       # connect quietly
             @commands_to_execute.each { |command|
                 command.split(';').each { |cmd|
                     run_command(cmd.strip)
@@ -233,7 +233,7 @@ class UCLIClient
         print! @welcome
         
         loop do
-            cmd_s = readline("[##{@server_id}:#{@cmd_num}] ", true)
+            cmd_s = readline("[#{@drb_server?@drb_server[0]:'none'}:#{@cmd_num}] ", true)
             next if (cmd_s.nil? || cmd_s.length == 0)
 
             cmd_a = run_command(cmd_s)
@@ -256,10 +256,12 @@ class UCLIClient
         return nil if (cmd_a.nil? || cmd_a.length == 0)
         
         # If no server is active and the command is not a local system command and command requires a sever then disallow command.
-        if (@drb_server.nil? || @drb_server[2].nil?) && !(/^:/ =~ cmd_s) && !(/^#\d+$/ =~ cmd_s) && command_requires_server(cmd_a[0])
-            puts! "Error: There is no open (or selected) #{@server_name} -- a server must be opened and selected before this command can be issued."
-            return nil            
-        end
+        @servers_lock.synchronize {
+            if (@drb_server.nil? || @drb_server[2].nil?) && !(/^:/ =~ cmd_s) && !(/^#\d+$/ =~ cmd_s) && command_requires_server(cmd_a[0])
+                puts! "Error: There is no open (or selected) #{@server_name} -- a server must be opened and selected before this command can be issued."
+                return nil            
+            end
+        }
 
         # ***TODO: need to handle case of "foo&", which is distinct from "foo &" (note the space between 'foo' and '&')
         if cmd_a[-1] == "&"
@@ -379,11 +381,11 @@ class UCLIClient
         @server_ping_thread = Thread.new do
             loop do
                 sleep @server_ping_frequency
-                @servers_lock.synchronize do
-                    @ucli_servers.each { |svr|
-                        _pong_(svr, 3, 1, 1) if svr[3] # only pong server if its open
-                    }
-                end
+                servers = []
+                @servers_lock.synchronize {
+                    @ucli_servers.each { |svr| servers << svr if svr[3] } # only pong server if its open
+                }
+                servers.each { |svr| _pong_(svr, 3, 1, 0)  }
             end
         end
     end
@@ -430,6 +432,41 @@ class UCLIClient
         end
     end
    
+    # Returns server descriptor given either a host-name or a server ID #.
+    def get_server(server_id)
+        server = nil
+        @servers_lock.synchronize {
+            if /^#\d+$/ =~ server_id
+                svr_id = $&[1..-1].to_i
+                server = @ucli_servers[svr_id-1] if svr_id >= 1 && svr_id <= @ucli_servers.length
+            else
+                server = @ucli_servers.detect { |server|
+                    (server[0] == server_id) || ("#{sever[0]}:#{server[1]}" == server_id)
+                }
+            end
+        }        
+        server
+    end
+    
+    def get_server_index(server_id)
+        server_index = nil
+        @servers_lock.synchronize {
+            if /^#\d+$/ =~ server_id
+                svr_id = $&[1..-1].to_i
+                server_index = (svr_id-1) if svr_id >= 1 && svr_id <= @ucli_servers.length
+            else
+                found_at = 0
+                server = @ucli_servers.detect { |server|
+                    found = (server[0] == server_id) || ("#{server[0]}:#{server[1]}" == server_id)
+                    found_at += 1 unless found
+                    found
+                }
+                server_index = found_at if server
+            end
+        }        
+        server_index
+    end
+    
     #
     #   CLI Command Handlers
     #
@@ -603,21 +640,13 @@ class UCLIClient
     # ***TODO: add support for "pong #X", to pong a server w/out changing the active server.
     def pong(*args)
         server = nil
-        @servers_lock.synchronize do
-            if args.length == 0
-                server = @drb_server
-            elsif /^#\d+$/ =~ args[0]
-                svr_id = $&[1..-1].to_i
-                if svr_id < 1 || svr_id > @ucli_servers.length
-                    puts! "Error: invalid server ID '#{svd_id}'"
-                    return
-                end
-                server = @ucli_servers[svr_id-1]
-            else
-                puts! "Error: invalid server ID '{#args[0]}'"
-                return
-            end
+        if args.length == 0
+            @servers_lock.synchronize { server = @drb_server }
+        else
+            server = get_server(args[0])
+            if !server then puts! "Error: invalid server ID '#{args[0]}'"; return; end
         end
+
         _pong_(server, -1, -1, -1) if server
     end
 
@@ -684,30 +713,46 @@ class UCLIClient
     
     # Open a connection to a UCLI sever and add to open servers list.
     def close(*args)
-        invalid_server_id_msg = "Error: invalid server ID."
+        invalid_server_id_msg = "Error: invalid server ID"
 
-        @servers_lock.synchronize do
-            svr_id = -1
-            if args.length == 0
-                svr_id = @server_id
-            elsif /^#\d+/ =~ args[0]
-                svr_id = $&[1..-1].to_i
-                if svr_id < 1 || svr_id > @ucli_servers.length
-                    puts! invalid_server_id_msg
-                elsif !@ucli_servers[svr_id-1][3]
-                    message "Server #{args[0]} is already closed.", 2
-                else # "close" the sever
-                    svr_idx = svr_id -1
-                    @ucli_servers[svr_idx][2] = nil     # deref server DRbObject
-                    @ucli_servers[svr_idx][3] = false   # mark server closed
-                    @server_id = 0
-                    @drb_server = nil
-                    message "Server #{args[0]} is closed -- use #X to select another server or open one before continuing.", 2
-                end
+        # Can't lock whole method because util methods need access to the locks to do their thing. Only lock where needed.
+        svr_index = nil
+        svr_indices = nil
+        if args.length == 0
+            # close the currently selected server
+            @servers_lock.synchronize { svr_index  = @server_id - 1 }
+            svr_indices = [ svr_index ]
+        elsif (args[0] == "##") || (args[0] == "all")
+            # close all open servers
+            svr_indices = Array.new(@ucli_servers.length)
+            svr_indices.fill { |i| i }
+        else
+            # close just the named server IFF the name refers to a valid and open server
+            svr_index = get_server_index(args[0])
+            if svr_index.nil?
+                puts! invalid_server_id_msg + " '#{args[0]}'"; return
             else
-                puts! invalid_server_id_msg
+                closed = nil
+                @servers_lock.synchronize { closed = !@ucli_servers[svr_index][3] }
+                if closed then message "Server #{args[0]} is already closed.", 2; return; end
             end
+            svr_indices = [ svr_index ]
         end
+        
+        # All is well: close the server
+        @servers_lock.synchronize {
+            svr_indices.each { |i|
+                # Leave host and port fields in tact so this sever entry can
+                # be found and reused should the same server be opened again.
+                @ucli_servers[i][2] = nil     # deref server DRbObject
+                @ucli_servers[i][3] = false   # mark server closed
+                message "#{@ucli_servers[i][0]}:#{@ucli_servers[i][1]} closed.", 2
+            }
+            # deselect any server - force use to select the one to use going forward.
+            @server_id = 0
+            @drb_server = nil
+            message "Select an open server or open a new one to continue.", 2
+        }
     end
     
 
@@ -719,6 +764,7 @@ class UCLIClient
     # Note: all commands are sent to one server before going on to the next server. "-i" as the final
     # argument does so in interactive mode, ie, user is prompted before sending commands to each server.
     def with(*args)
+        invalid_server_id_msg = "Error: invalid server ID"
 
         # Fetch state we'll need to restore when we're done
         ucli_servers = nil
@@ -736,40 +782,49 @@ class UCLIClient
         }
         
         if args.length >= 1
-            interactive = args[args.length-1] == "-i"
+            interactive = args[-1] == "-i"
             args.pop if interactive
         end
 
         source_file = nil
         if args.length >= 1
-            source_file = args.pop if File.exist?(args[args.length-1])
+            source_file = args.pop if File.exist?(args[-1])
         end
+
         # Get list of server ids to which the 'with' commands shall be applied
-        if args.length < 1
-            # if no server given then apply to the current server
-            svr_ids = [server_id]
-        elsif args[0] == "##"
-            # if '##' given then apply to all open servers
-            svr_ids = Array.new(ucli_servers.length)
-            svr_ids.fill {|i| i + 1}
+        svr_index = svr_indices = nil
+        if args.length == 0
+            # close the currently selected server
+            @servers_lock.synchronize { svr_index  = @server_id - 1 }
+            svr_indices = [ svr_index ]
+        elsif (args[0] == "##") || (args[0] == "all")
+            # close all open servers
+            svr_indices = Array.new(@ucli_servers.length)
+            svr_indices.fill { |i| i }
         else
-            begin 
-                svr_ids = args.join(' ').delete('#').split
-                svr_ids.each_with_index { |n,i| svr_ids[i] = n.to_i }
-                svr_ids.uniq!
-                svr_ids.each { |id|
-                    raise Exception if (id < 1) || (id > ucli_servers.length)
-                }
-            rescue Exception
-                # Catches all server id errors, ie, to_i failure, # out of range, etc.
-                puts! "Error: Invalid server number(s) given."
-                return
-            end
+            svr_indices = []
+            args.each { |arg|
+                svr_index = get_server_index(arg)
+                if svr_index.nil?
+                    puts! invalid_server_id_msg + " '#{args[0]}'"; return
+                else
+                    closed = nil
+                    @servers_lock.synchronize { closed = !@ucli_servers[svr_index][3] }
+                    if closed then message "Error: server #{arg} is closed - 'with' scripts cannot be sent to a closed server.", 1; return; end
+                end
+                svr_indices << svr_index
+            }
+        end
+        
+        # Confirm its OK if list of servers contains duplicates
+        if svr_indices.length != svr_indices.uniq.length
+            print! "'with' server list contains duplicate entries; continue (y/n)? "
+            return unless getyn("y")
         end
             
-        # Read commands in local loop to apply to server list
         commands = []
         if source_file
+            # Read commands to run from given source file
             begin
                 commands = File.readlines(source_file)
             rescue Exception => ex
@@ -777,6 +832,7 @@ class UCLIClient
                 @diag.if_level(3) { p ex }
             end
         else
+            # Read commands in local console loop to apply to server list
             cmd_num = 1
             loop do
                 cmd_s = readline("[#{cmd_num}] ", true)
@@ -793,24 +849,27 @@ class UCLIClient
         
         return if commands.length < 1   # nothing to do
 
-        # Code to disallow with scripts with background tasks.        
-        #commands.each_with_index { |cmd,i|
-        #    if /.*&$/ =~ cmd
-        #        puts "Error: 'with' scripts may not run tasks in the background (see line #{i+1})"
-        #        return
-        #    end
-        #}
+        # Disallow with scripts with background tasks.        
+        commands.each_with_index { |cmd,i|
+            if /.*&$/ =~ cmd
+                puts "Error: 'with' scripts may not run tasks in the background (see line #{i+1})"
+                return
+            end
+        }
 
         # Send commands to each server...
         begin            
-            svr_ids.each { |svr_id|
+            svr_indices.each { |svr_idx|
+                svr_name = nil
                 @servers_lock.synchronize {
-                    @drb_server = ucli_servers[svr_id-1]
+                    @drb_server = ucli_servers[svr_idx]
+                    @server_id = svr_idx+1
+                    svr_name = @drb_server[0]
                 }
                 
                 if interactive
-                    print! "Send 'with' commands to server ##{svr_id} (y/n)? "
-                    raise UserCancel, "user interrupt" if !getyn("y")
+                    print! "Send 'with' commands to server #{svr_name} (y/n)? "
+                    raise UserCancel, "user interrupt" unless getyn("y")
                 end
                 
                 # Must not hold client lock while running commands, as certain commands need the lock.
@@ -829,8 +888,8 @@ class UCLIClient
         rescue Exception => ex
             puts! "Error: 'with' command processor encountered an unhandled exception: " + ex
         ensure
-            puts! "With: waiting for background tasks to complete." if @tasks.length > 0
             @tasks_lock.synchronize {
+                message "Waiting for background tasks to complete...", 2 if @tasks.length > 0
                 @tasks.each { |t| t[0].join }   # wait for any tasks spawned by this 'with script' to finish
                 @tasks = tasks                  # BEFORE restoring state of @tasks and @drb_server
             }
