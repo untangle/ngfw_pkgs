@@ -108,16 +108,14 @@ class UCLIClient
             ["open", false, "open connection to #{@server_name} -- open (host-name|ip):port"],
             ["close", false, "close connection to #{@server_name} #X -- close #1"],
             ["servers", false, "list servers currently under management by this #{client_name} session."],
-            ["webfilter", true, "Send command to webfilter -- enter 'webfilter help' for details."],
-            ["with", true, "Send multiple commands to servers, ## for all servers, -i for interactive -- with #1 #2 #4 -i"],
-            ["tasks", false, "List all background tasks currently running."],
-            ["cleanup", false, "Cleanup client resources, e.g., release stored task outputs, etc."],
-            ["source", false, "Source (i.e., run) the given script (use '.' as shortcut) -- source filename or . filename"],
-            ["%X", false, "Display output of background task 'X' -- %1"],
-            ["#X", false, "Switch effective #{server_name} to server 'X' -- #3"],
-            ["save", false, "Save output stored with task ID #X to filename -- save %3 myoutput.txt"],
-            # The following are not top level commands but are included here so tab completion will support them.
-            # They can be distinguished from top level commands because they have no help text.
+            ["webfilter", true, "send command to webfilter -- enter 'webfilter help' for details."],
+            ["with", true, "send multiple commands to servers, ## for all servers, -i for interactive -- with #1 #2 #4 -i"],
+            ["tasks", false, "list all background tasks currently running."],
+            ["cleanup", false, "cleanup client resources, e.g., release stored task outputs, etc."],
+            ["source", false, "source (i.e., run) the given script (use '.' as shortcut) -- source filename or . filename"],
+            ["%X", false, "display output of background task 'X' -- %1"],
+            ["#X", false, "switch effective #{server_name} to server 'X' -- #3"],
+            ["save", false, "save output stored with task %X to filename -- save %3 myoutput.txt"],
             ["localhost", false, nil],
             ["block-list", false, nil],
             ["block", false, nil],
@@ -130,8 +128,8 @@ class UCLIClient
             ["client", false, nil],
             ["localhost", false, nil]
         ]
-        @commands = [];
-        @commands_with_help.each {|c| commands << c[0] unless c[2].nil?}
+        @commands = []
+        @commands_with_help.each {|cmd| commands << cmd[0]}
         @abbrevs = @commands.abbrev
         Readline.completion_proc = proc do |string|
             @abbrevs[string]
@@ -472,20 +470,26 @@ class UCLIClient
     
     # Display UCLI help info
     def help(*args)
-        
-        print "\nSupported commands: #{@commands.sort{|x,y| x <=> y}.join(', ')}\n"
-        
-        @commands_with_help.sort{|x,y| x[0] <=> y[0] }.each {
-            |c| print "> #{c[0]} - #{c[2]}\n" unless c[2].nil?
+
+        # Rebuild supported commands on each call to help in the event new commands
+        # have been dynamically loaded since the last call to help.
+        supported_commands = []
+        @commands_with_help.each { |cmd|
+            supported_commands << cmd[0] unless cmd[2].nil?
+        }
+        print "\nSupported commands: #{supported_commands.sort{|x,y| x <=> y}.join(',')}\n"
+            
+        @commands_with_help.sort{|x,y| x[0] <=> y[0]}.each { |c|
+            print "> #{c[0]} - #{c[2]}\n" unless c[2].nil?
         }
         
         print! <<-HERE
-> module-name help - Get help on commands supported by a module: webfilter help
-> !! - Execute last/most recent command
-> !{number} - Execute historical command 'number'
-> !{prefix} - Execute most recent historical command beginning with 'prefix'
-> command - Execute non-UCLI command on UCLI server (remote) host.
-> :command - Execute non-UCLI command on UCLI client (local) host.
+> module-name help - get help on commands supported by a module: webfilter help
+> !! - execute last/most recent command
+> !{number} - execute historical command 'number'
+> !{prefix} - execute most recent historical command beginning with 'prefix'
+> command - execute non-UCLI command on UCLI server (remote) host.
+> :command - execute non-UCLI command on UCLI client (local) host.
 > When entering a command, press [Tab] for command/word auto-completion.
     
         HERE
