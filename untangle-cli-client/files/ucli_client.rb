@@ -71,7 +71,13 @@ class UCLIClient
     #
     def initialize(options)
         init(options)
-        DRb.start_service
+        begin
+            DRb.start_service
+        rescue Exception => ex
+            message "Fatal error: unable to start DRb server - terminating."
+            p ex
+            exit(-1)
+        end
     end
 
     def init(options)
@@ -93,6 +99,7 @@ class UCLIClient
         @tasks_lock = Mutex.new
         @task_num = 1
         @diag = Diag.new(3)
+        @commands_to_execute = []
         
         # Commands legend and creation of readline auto-completion abbreviations
         @commands_with_help = [
@@ -116,6 +123,9 @@ class UCLIClient
             ["%X", false, "display output of background task 'X' -- %1"],
             ["#X", false, "switch effective #{server_name} to server 'X' -- #3"],
             ["save", false, "save output stored with task %X to filename -- save %3 myoutput.txt"],
+            # The following are not top level commands but are included here so they can be part of the
+            # word completion list we pass to readline.  These can be distinguished and filtered from 
+            # this list by noting that they have nil for their help text settings.
             ["localhost", false, nil],
             ["block-list", false, nil],
             ["block", false, nil],
@@ -129,7 +139,9 @@ class UCLIClient
             ["localhost", false, nil]
         ]
         @commands = []
-        @commands_with_help.each {|cmd| commands << cmd[0]}
+        @commands_with_help.each {|cmd|
+            commands << cmd[0]
+        }
         @abbrevs = @commands.abbrev
         Readline.completion_proc = proc do |string|
             @abbrevs[string]
@@ -168,6 +180,10 @@ class UCLIClient
             puts! opts.to_s
             exit(0)
         }
+        opts.on("-e", "--exec 'command'", String, "UCLI command to execute.") { |command|
+            @commands_to_execute << command
+        }
+
         remainder = opts.parse(options);
         if remainder.length > 0
             print! "Unknown options encountered: #{remainder}\nContinue [y/n]? "
@@ -197,12 +213,21 @@ class UCLIClient
      # command to history for future reference.
      #
     def run
-        if @running
-            puts! "${client_name} main loop is not reenterant."
+        if @running then message("${client_name} main loop is not reenterant.", 0); return; end
+        @running = true
+
+        # Execute commands passed in via the command line then return (don't go interactive)        
+        if @commands_to_execute != []
+            connect_to_all_ucli_servers(true)
+            @commands_to_execute.each { |command|
+                command.split(';').each { |cmd|
+                    run_command(cmd.strip)
+                }
+            }
             return
-        else
-            @running = true
         end
+        
+        # Interactively collect UCLI commands and execute them, keeping a historical record.
         connect_to_all_ucli_servers
         launch_server_pong
         print! @welcome
@@ -364,12 +389,12 @@ class UCLIClient
     end
 
     # ***TODO: perhaps refactor this code to use open(), so the DRB logic is not duplicated.
-    def connect_to_all_ucli_servers
+    def connect_to_all_ucli_servers(quiet=false)
         @servers_lock.synchronize do
             unless @ucli_servers.nil? || @ucli_servers.length == 0
                 svr_num = 1
                 @ucli_servers.each { |uvm|
-                    message "Connecting to #{@server_name} ##{svr_num}: #{uvm[0]}:#{uvm[1]}...\n", 1
+                    message("Connecting to #{@server_name} ##{svr_num}: #{uvm[0]}:#{uvm[1]}...\n", 1) unless quiet
                     uvm[2] = DRbObject.new(nil, "druby://#{uvm[0]}:#{uvm[1]}")
                     uvm[3] = true   # mark server open
                     svr_num += 1
@@ -926,21 +951,18 @@ if __FILE__ == $0
 #   Main loop: continue to recreate and run CLI until a valid quit is encountered.
 #
 loop do
-    ucli_client = UCLIClient.new(ARGV)
-    
     begin
-        ucli_client.run
-        raise RuntimeError, "command interpreter returned unexpectedly."
+        ucli_client = UCLIClient.new(ARGV)
+        ucli_client.run     # only returns if commands were given on the command line that launched this process, otherwise run loops forever.
+        break
     rescue Interrupt
-        ucli_client.shutdown
         break
     rescue Exception => ex
-        puts "#{ucli_client.client_name} has encountered techinical difficulties: " + ex
-        p ex
+        puts "#{ucli_client.client_name} has encountered an unhandled exception: " + ex
         puts "Restarting #{ucli_client.client_name}...\n"
+    ensure
+        ucli_client.shutdown
     end
-    
-    ucli_client.shutdown
 end
 
 exit(0)
