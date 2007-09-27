@@ -306,6 +306,9 @@ class UCLIClient
     
     # Preprocess a pending command: perform history replacement, etc.
     def preprocess(cmd)
+        
+        cmd = cmd.gsub(/&$/, ' &') if /[^\s]&$/ =~ cmd  # ensure background task indicator is seen as a separate word in the command (add white space if neccessary)
+        puts! cmd
         cmd_a = shellwords cmd
         cmd = cmd_a[0].strip
         
@@ -600,6 +603,7 @@ class UCLIClient
     # Argument can either be a text String or file containing Ruby code.  UCLI Server
     # taint level may restrict certain code from being executed for security reasons.
     def ruby(*args)
+        output = nil
         begin
             server = Thread.current[:drb_server]
             @servers_lock.synchronize do
@@ -607,9 +611,13 @@ class UCLIClient
             end unless server
             if File.exist?(args[0])
                 code = IO.read(args[0])
-                server.ruby(code)
+                output = server.ruby(code)
             else
-                server.ruby(args.join(' '))
+                output = server.ruby(args.join(' '))
+            end
+            unless output.nil?
+                output = [output] unless output.kind_of? Array
+                output.each { |out| puts! out }
             end
         rescue DRb::DRbConnError
             puts! "Unable to connect to #{@server_name} at #{@server_host}:#{@server_port} - is the #{@server_name} running (try the 'pong' command to check)?"
@@ -868,7 +876,7 @@ class UCLIClient
                 }
                 
                 if interactive
-                    print! "Send 'with' commands to server #{svr_name} (y/n)? "
+                    print! "Send 'with' commands to server '#{svr_name}' (y/n)? "
                     raise UserCancel, "user interrupt" unless getyn("y")
                 end
                 
@@ -876,7 +884,7 @@ class UCLIClient
                 commands.each { |cmd|
                     puts! cmd if interactive
                     cmd_a = run_command(cmd)
-                    raise CommandFiled if cmd_a.nil?
+                    raise CommandFailed if cmd_a.nil?
                 }
             }
         rescue UserCancel
