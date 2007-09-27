@@ -37,10 +37,6 @@ module UCLIUtil
         end
     end
     
-    # Exceptions
-    class UserCancel < Interrupt
-    end
-
 end # UCLIUtil
 
 if $0 == __FILE__

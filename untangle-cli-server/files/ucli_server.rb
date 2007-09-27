@@ -34,7 +34,7 @@ class UCLIServer
     def initialize(options)
         init(options)
     end
-
+    
     def init(options)
         @diag = Diag.new(DEFAULT_DIAG_LEVEL)
 	@diag.if_level(2) { puts! "Initializing UCLIServer..." }
@@ -51,8 +51,8 @@ class UCLIServer
         @component_lock = Mutex.new
 
         # Misc
+        @running = false
         trap("HUP") { self.reset }
-
         
 	@diag.if_level(2) { puts! "Done initializing..." }
     end
@@ -84,6 +84,9 @@ class UCLIServer
     
     # Server main loop
     def run
+        if @running then message("${server_name} main loop is not reenterant.", 0); return; end
+        @running = true
+        
         puts! "Starting #{@server_name} at #{@server_host}:#{@server_port}..."
         DRb.start_service("druby://#{@server_host}:#{@server_port}", self)
         puts! "#{@server_name} started."
@@ -120,7 +123,7 @@ class UCLIServer
             }
             
             # Lastly, fulfill the call for which the method was missing in the first place
-            return self.send("#{node}", args)
+            return self.__send__("#{node}", args)
 
         rescue LoadError
             # #{node}.rb not found so assume the missing method is really a program to run.
@@ -179,17 +182,16 @@ class UCLIServer
         __send__(:remove_method,name) 
     end
     
-    # Is this thread safe? No, someone could be perhaps modifying the component list while we're
-    # trying to delete from it.  We need to understand if DRb creates a new object per request or
-    # just a new thread.  I believe it just creates a new thread and uses the same object.
     def reset
-      # Remove added components (removing their methods will cause them to be reloaded.)
-      p self.methods.sort
-      @component_methods.each { |meth_name|
-          delete_method meth_name
+      # Remove added components (removing their delegator methods will cause them to be reloaded.)
+      @diag.if_level(3) { p self.methods.sort }
+      @component_lock.synchronize {
+        @component_methods.each { |meth_name|
+            delete_method meth_name
+        }
+        @component_methods = []
       }
-      p self.methods.sort
-      @component_methods = []
+      @diag.if_level(3) { p self.methods.sort }
     end
     
     def shutdown

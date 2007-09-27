@@ -1,6 +1,6 @@
 #!/usr/local/bin/ruby
 #
-# ucli_server.rb - Untangle Command Line Interface Server
+# ucli_common.rb - Untangle Command Line Interface Server Common Code
 #
 # Copyright (c) 2007 Untangle Inc., all rights reserved.
 #
@@ -16,5 +16,9 @@ DEFAULT_DIAG_LEVEL = 3
 ERROR_INCOMPLETE_COMMAND = "Error: incomplete command - arguments required."
 ERROR_UNKNOWN_COMMAND = "Error: unknown command"
 ERROR_COMMAND_FAILED = "Error: unable to execute command"
+
+# Exceptions
+class UserCancel < Interrupt
+end
 
 end # UCLICommon
