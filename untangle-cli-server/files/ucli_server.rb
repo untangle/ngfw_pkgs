@@ -147,9 +147,8 @@ class UCLIServer
         cmd = cmd.strip
         @diag.if_level(3) { puts! "Executing '#{cmd}'" }
         begin
-            pipe = IO.popen(cmd, "r")   # note pipe is half duplex to no need to close_write
-            out = pipe.readlines
-            return out
+            output = `#{cmd}`
+            return ($? >> 8) == 127 ? "Error: #{cmd} not found." : output
         rescue IOError => ex
             err = "Error: unable to execute '#{cmd}' - command not found or not executable."
             @diag.if_level(3) { puts! err ; p ex }
@@ -176,7 +175,7 @@ class UCLIServer
     # ***TODO: this works but I don't fully understand it.  Need to study.  See this link for a start:
     # http://groups.google.com/group/comp.lang.ruby/browse_thread/thread/f991a8a9adc34574/5361f7b93427ca60?hl=en&lnk=gst&q=remove+instance+method&rnum=8#5361f7b93427ca60
     def delete_method(name)
-        class << self; self end.     # overcome remove beign private ...
+        class << self; self end.     # overcome remove being private ...
         __send__(:remove_method,name) 
     end
     
