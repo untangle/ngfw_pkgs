@@ -148,7 +148,7 @@ class UCLIServer
         @diag.if_level(3) { puts! "Executing '#{cmd}'" }
         begin
             output = `#{cmd}`
-            return ($? >> 8) == 127 ? "Error: #{cmd} not found." : output
+            return ($? >> 8) == 127 ? "Error: command '#{cmd}' not found." : output
         rescue IOError => ex
             err = "Error: unable to execute '#{cmd}' - command not found or not executable."
             @diag.if_level(3) { puts! err ; p ex }
