@@ -187,7 +187,7 @@ class UCLIClient
         remainder = opts.parse(options);
         if remainder.length > 0
             print! "Unknown options encountered: #{remainder}\nContinue [y/n]? "
-            raise Interrupt unless STDIN.gets.chomp.downcase == "y"
+            raise Terminate unless STDIN.gets.chomp.downcase == "y"
         end
         
         if !ucli_server_host.nil?
@@ -308,7 +308,6 @@ class UCLIClient
     def preprocess(cmd)
         
         cmd = cmd.gsub(/&$/, ' &') if /[^\s]&$/ =~ cmd  # ensure background task indicator is seen as a separate word in the command (add white space if neccessary)
-        puts! cmd
         cmd_a = shellwords cmd
         cmd = cmd_a[0].strip
         
@@ -388,7 +387,9 @@ class UCLIClient
                 @servers_lock.synchronize {
                     @ucli_servers.each { |svr| servers << svr if svr[3] } # only pong server if its open
                 }
-                servers.each { |svr| _pong_(svr, 3, 1, 0)  }
+                servers.each { |svr|
+                    _pong_(svr, 3, 1, 0)
+                }
             end
         end
     end
@@ -421,17 +422,21 @@ class UCLIClient
     end
 
     # Pong (ie, "ping") server and issue messages based on given message levels for each type of server response.
+    # Returns 0 on OK, 1 on bad response, 2 on failure to contact.
     def _pong_(svr, success_msg_lvl=2, error_msg_lvl=0, failure_msg_lvl=0)
         begin
             expected_response = "pong"
             response = svr[2].pong(expected_response);
             if response != expected_response
                 message "\n#{@server_name} at #{svr[0]}:#{svr[1]} responded incorrectly to pong: #{response}.", error_msg_lvl
+                return 1
             else
                 message "#{@server_name} at #{svr[0]}:#{svr[1]} appears to be responsive.", success_msg_lvl
+                return 0
             end
         rescue Exception => ex
             message "\nUnable to contact #{@server_name} at #{svr[0]}:#{svr[1]}: " + ex + "\n", failure_msg_lvl
+            return 2
         end
     end
    
@@ -518,11 +523,7 @@ class UCLIClient
                 output = get_task_output($&[1..-1].to_i)
                 output.each { |line| puts! line } if output
             else    # send unknown method request to server for processing
-                server = Thread.current[:drb_server]
-                @servers_lock.synchronize do
-                    server = @drb_server[2]
-                end unless server
-
+                server = Thread.current[:drb_server] || @servers_lock.synchronize { server = @drb_server[2] }
                 res = server.__send__(cmd, args);
                 res.each { |r| puts! r } if res && !Thread.current[:background]
                 return res
@@ -568,7 +569,7 @@ class UCLIClient
 
     # Exit w/out confirmation
     def exit(*args)
-        raise Interrupt, "exiting..."
+        raise Terminate, "exiting..."
     end
 
     # Display command history in console    
@@ -666,7 +667,13 @@ class UCLIClient
         end
         unless servers.length == 0
             servers.each_with_index { |svr,i|
-                puts! "##{i+1}: #{svr[0]}:#{svr[1]}" if svr[2] && svr[3]
+                status = "unknown"
+                case _pong_(svr, 444, 444, 444)   # pong to get status but do it quietly
+                when 0; status = "responding"
+                when 1; status = "not responding"
+                when 2; status = "can't contact"
+                end
+                puts! "##{i+1}: #{svr[0]}:#{svr[1]} (#{status})" if svr[2] && svr[3]
             }
         else
             puts! "There are no servers currently open."
@@ -1022,7 +1029,7 @@ loop do
         ucli_client = UCLIClient.new(ARGV)
         ucli_client.run     # only returns if commands were given on the command line that launched this process, otherwise run loops forever.
         break
-    rescue Interrupt
+    rescue Terminate
         break
     rescue Exception => ex
         puts "#{ucli_client.client_name} has encountered an unhandled exception: " + ex
