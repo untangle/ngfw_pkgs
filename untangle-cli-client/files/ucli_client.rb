@@ -190,21 +190,15 @@ class UCLIClient
             raise Terminate unless STDIN.gets.chomp.downcase == "y"
         end
         
-        if !ucli_server_host.nil?
-            # Since this method could be called outside the context of object initialization
-            # we must sync before changing the state of the server list.
-            @servers_lock.synchronize do
-                @ucli_servers << [ucli_server_host, ucli_server_port, nil];
-            end
-        end
+        @servers_lock.synchronize do
+            @ucli_servers << [ucli_server_host, ucli_server_port, nil];
+        end if ucli_server_host
 
     end
     
     # Process config file settings ***TODO
     def process_config_file(config_filename)
         # TBC
-        # Read config params
-        # Read list of servers to open in format of: uvm-1=ip:port, uvm-2=ip:port
     end
 
      #
@@ -221,7 +215,12 @@ class UCLIClient
             connect_to_all_ucli_servers(true)       # connect quietly
             @commands_to_execute.each { |command|
                 command.split(';').each { |cmd|
-                    run_command(cmd.strip)
+                    begin
+                        run_command(cmd.strip)
+                    rescue Exception => ex
+                        puts! "Error: command '#{cmd}' failed - terminating.'"
+                        return
+                    end
                 }
             }
             return
@@ -252,55 +251,62 @@ class UCLIClient
     # which may differ from the given command string if, say, history substitution is performed.
     def run_command(cmd_s)
         
-        cmd_a = preprocess(cmd_s);
-        return nil if (cmd_a.nil? || cmd_a.length == 0)
-        
-        # If no server is active and the command is not a local system command and command requires a sever then disallow command.
-        @servers_lock.synchronize {
-            if (@drb_server.nil? || @drb_server[2].nil?) && !(/^:/ =~ cmd_s) && !(/^#\d+$/ =~ cmd_s) && command_requires_server(cmd_a[0])
-                puts! "Error: There is no open (or selected) #{@server_name} -- a server must be opened and selected before this command can be issued."
-                return nil            
-            end
-        }
-
-        # ***TODO: need to handle case of "foo&", which is distinct from "foo &" (note the space between 'foo' and '&')
-        if cmd_a[-1] == "&"
-            FORBIDDEN_BACKGROUND_COMMANDS.detect { |cmd|
-                if (/#{cmd}/ =~ cmd_a[0])
-                    puts! "Error: '#{cmd_a[0]}' may not be executed in the background."
-                    return
+        begin
+            cmd_a = preprocess(cmd_s);
+            return nil if (cmd_a.nil? || cmd_a.length == 0)
+            
+            # If no server is active and the command is not a local system command and command requires a sever then disallow command.
+            @servers_lock.synchronize {
+                if (@drb_server.nil? || @drb_server[2].nil?) && !(/^:/ =~ cmd_s) && !(/^#\d+$/ =~ cmd_s) && command_requires_server(cmd_a[0])
+                    puts! "Error: There is no open (or selected) #{@server_name} -- a server must be opened and selected before this command can be issued."
+                    return nil            
                 end
             }
-            cmd_a.pop # remove '&' from arg list - background tasks are handled WITHIN this client and not by the system that runs the command in the back ground.
-            
-            # Cache effective drb server object BEFORE launching thread - this way if
-            # the user or a command changes the effective server while the thread is
-            # starting up we won't be effected, ie, caused to send any server commands
-            # to the wrong server.
-            drb_server = nil
-            @servers_lock.synchronize { drb_server = @drb_server[2] }
-            
-            @tasks_lock.synchronize {
-                # must store task record before creating thread so command processor can tell if the command is in the background or not.
-                task_index = @task_num-1
-                @tasks[task_index] = [nil, cmd_s, @task_num, true, ""]  # [ task thread, cmd string, task num, background?, output]
-                t = Thread.new(task_index) { |t_idx|
-                    Thread.current[:drb_server] = drb_server
-                    Thread.current[:task_index] = t_idx
-                    Thread.current[:background] = true
-                    res = self.__send__(*cmd_a);
-                    @tasks_lock.synchronize { @tasks[t_idx][4] = res }
-                    puts! "\nDone (#{cmd_a.join(' ')}) - use command '%#{t_idx+1}' to view output."
+    
+            # ***TODO: need to handle case of "foo&", which is distinct from "foo &" (note the space between 'foo' and '&')
+            if cmd_a[-1] == "&"
+                FORBIDDEN_BACKGROUND_COMMANDS.detect { |cmd|
+                    if (/#{cmd}/ =~ cmd_a[0])
+                        puts! "Error: '#{cmd_a[0]}' may not be executed in the background."
+                        return
+                    end
                 }
-                @tasks[task_index][0] = t
-                @task_num += 1
-            }
-            
-            cmd_a << "&" # restore popped '&'
-        else
-            self.__send__(*cmd_a)
+                cmd_a.pop # remove '&' from arg list - background tasks are handled WITHIN this client and not by the system that runs the command in the back ground.
+                
+                # Cache effective drb server object BEFORE launching thread - this way if
+                # the user or a command changes the effective server while the thread is
+                # starting up we won't be effected, ie, caused to send any server commands
+                # to the wrong server.
+                drb_server = nil
+                @servers_lock.synchronize { drb_server = @drb_server[2] }
+                if drb_server.nil? then puts! "Bug: there is no effective DRb server.  Recommend restarting #{client_name}."; return; end
+                
+                @tasks_lock.synchronize {
+                    # must store task record before creating thread so command processor can tell if the command is in the background or not.
+                    task_index = @task_num-1
+                    @tasks[task_index] = [nil, cmd_s, @task_num, true, ""]  # [ task thread, cmd string, task num, background?, output]
+                    t = Thread.new(task_index) { |t_idx|
+                        Thread.current[:drb_server] = drb_server
+                        Thread.current[:task_index] = t_idx
+                        Thread.current[:background] = true
+                        res = self.__send__(*cmd_a);
+                        @tasks_lock.synchronize { @tasks[t_idx][4] = res }
+                        puts! "\nDone (#{cmd_a.join(' ')}) - use command '%#{t_idx+1}' to view output."
+                    }
+                    @tasks[task_index][0] = t
+                    @task_num += 1
+                }
+                
+                cmd_a << "&" # restore popped '&'
+            else
+                self.__send__(*cmd_a)
+            end
+            return cmd_a   # return command components IFF command is run, whether or not its succesful.
+        rescue TypeError
+            puts! "#{@client_name} has encountered a 'Type Error'"
+            puts! "Try quoting your command to preserve argument types, i.e., '#{cmd_s}'"
+            return cmd_a
         end
-        cmd_a   # return command components IFF command is run, whether or not its succesful.
     end
     
     
@@ -308,8 +314,8 @@ class UCLIClient
     def preprocess(cmd)
         
         cmd = cmd.gsub(/&$/, ' &') if /[^\s]&$/ =~ cmd  # ensure background task indicator is seen as a separate word in the command (add white space if neccessary)
-        cmd_a = shellwords cmd
-        cmd = cmd_a[0].strip
+        cmd_a = shellwords cmd                          # preprocess command with shell-words quoting rules, eg, quoted words are treated as one word, etc.
+        cmd = cmd_a[0].strip                            # normalize the effective command word.
         
         # Check for meta-commands first, ie, histrory, etc.
         @history_lock.synchronize {
@@ -350,19 +356,18 @@ class UCLIClient
         cmd_a
     end
 
+    # if command is unknown or is known but marked as requires an effective and open
+    # server to be run then return true (unknown commands may be system commands which
+    # require our server to be running in order for them to be run); otherwise return false.
     def command_requires_server(command)
         cmd = @commands_with_help.detect { |c|
             command == c[0]
         }
-        # if command is unknown or is known but marked as requires server then return true
-        # (unknown commands may be system commands which require our server to be running
-        # in order for them to be run.)
         return cmd.nil? || (cmd[1] == true) 
     end
     
     # Clean dynamic resources as necessary to keep client under control
     def cleanup
-        
         # Remove/dereference resources held by finished tasks so GC can clean them up.
         @tasks_lock.synchronize {
             @tasks.each_with_index { |task,i|
@@ -371,12 +376,8 @@ class UCLIClient
                 end
             }
         }
-        
+        # Force GC now?
     end
-    
-    #
-    #   Support (non-CLI command) methods
-    #
     
     # Launch thread to ping server and advise user if server can't be connected to.
     def launch_server_pong
@@ -440,7 +441,7 @@ class UCLIClient
         end
     end
    
-    # Returns server descriptor given either a host-name or a server ID #.
+    # Returns server descriptor [] given either a host-name or a server ID #.
     def get_server(server_id)
         server = nil
         @servers_lock.synchronize {
@@ -487,7 +488,7 @@ class UCLIClient
                 if cmd.length > 1
                     cmd = cmd.slice(1,cmd.length-1)
                     if (args.length > 0) then cmd << (' '  + args.join(' ')) end
-                    @diag.if_level(3) { puts! "Executing '#{cmd}'" }
+                    @diag.if_level(4) { puts! "Executing '#{cmd}'" }
                     begin
                         pipe = IO.popen(cmd, "r")   # note pipe is half duplex so no need to close_write
                         lines = []
@@ -528,6 +529,8 @@ class UCLIClient
                 res.each { |r| puts! r } if res && !Thread.current[:background]
                 return res
             end
+        rescue Interrupt
+            message "Command interrupted.", 2
         rescue Exception => ex
             puts! "Error: invalid, malformed or unknown command '#{cmd}' - " + ex
             @diag.if_level(2) { p ex }
@@ -1029,11 +1032,12 @@ loop do
         ucli_client = UCLIClient.new(ARGV)
         ucli_client.run     # only returns if commands were given on the command line that launched this process, otherwise run loops forever.
         break
-    rescue Terminate
+    rescue Terminate, Interrupt
         break
     rescue Exception => ex
-        puts "#{ucli_client.client_name} has encountered an unhandled exception: " + ex
-        puts "Restarting #{ucli_client.client_name}...\n"
+        puts! "#{ucli_client.client_name} has encountered an unhandled exception: " + ex
+        p ex
+        puts! "Restarting #{ucli_client.client_name}...\n"
     ensure
         ucli_client.shutdown
     end
