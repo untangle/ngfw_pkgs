@@ -1,0 +1,3 @@
+#/bin/zsh
+echo !!:*
+./uvm-jruby ./ucli_server.rb !!:*

@@ -12,6 +12,8 @@ module UCLICommon
 
 DEFAULT_DIAG_LEVEL = 3
 
+BRAND="Untangle"
+
 # Shared error messages & strings - Perhaps we'll package these another way.
 ERROR_INCOMPLETE_COMMAND = "Error: incomplete command - arguments required."
 ERROR_UNKNOWN_COMMAND = "Error: unknown command"
