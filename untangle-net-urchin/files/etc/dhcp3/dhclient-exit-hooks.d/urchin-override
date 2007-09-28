@@ -13,6 +13,8 @@ update_dns_servers()
 {
     local new_domain_name_servers=${DHCP_DNS_SERVERS}
     local new_domain_name=${DHCP_DOMAIN_NAME}
+
+    if [ "${DHCP_DNS_SERVERS}" = "ignore" ]; then return 0; fi
     
     make_resolv_conf
 }
@@ -27,16 +29,16 @@ test "${URCHIN_DEBUG}" = "true" && DEBUG=debug
 
 test -f "${OVERRIDE_VARIABLES}" || { 
     ${DEBUG} "No override file for the interface: '${interface}'"
-    exit 0
+    return 0
 }
 
 case ${reason} in
     BOUND|RENEW|REBIND|REBOOT)
-        debug "Enabling overrides on dhcp reason ${reason}"
+        ${DEBUG} "Enabling overrides on dhcp reason ${reason}"
         ;;
     *)
-        debug "Ignoring dhcp reason to ${reason}"
-        exit 0
+        ${DEBUG} "Ignoring dhcp reason to ${reason}"
+        return 0
         ;;
 esac
 
@@ -61,5 +63,4 @@ fi
 update_dns_servers
 
 ## REVIEW: Should this set MTU here.
-
-exit 0
+return 0
