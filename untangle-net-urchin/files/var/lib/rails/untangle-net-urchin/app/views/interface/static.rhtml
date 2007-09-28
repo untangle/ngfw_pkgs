@@ -6,6 +6,23 @@
     <%= link_to_remote( "+", :url => { :action => :create_new_network } ) %>
     <%= render(:partial => "static_ip_networks" , :object => @staticConfig.ip_networks ) %>
 
+    <% if @interface.wan %>
+      <div class="text-fields">
+        <p><label for="static[default_gateway]">Default Gateway:</label>
+        <%= text_field( "static", "default_gateway", { :value => "#{@staticConfig.default_gateway}", :size => 30 } ) %></p>
+        
+        <p><label for="static[dns_1]">Primary DNS Server:</label>
+        <%= text_field( "static", "dns_1", { :value => "#{@staticConfig.dns_1}", :size => 30 } ) %></p>
+        
+        <p><label for="static[dns_2]">Primary DNS Server:</label>
+        <%= text_field( "static", "dns_2", { :value => "#{@staticConfig.dns_2}", :size => 30 } ) %></p>
+      </div>
+    <% else %>
+      <%= hidden_field( "static", "default_gateway", { :value => "" } ) %>
+      <%= hidden_field( "static", "dns_1", { :value => "" } ) %>
+      <%= hidden_field( "static", "dns_2", { :value => "" } ) %>
+    <% end %>
+
     <h2>NAT Policy</h2>
     <%= link_to_remote( "+", :url => { :action => :create_nat_policy } ) %>
     <%= render(:partial => "nat_policies" , :object => @staticConfig.nat_policies ) %>

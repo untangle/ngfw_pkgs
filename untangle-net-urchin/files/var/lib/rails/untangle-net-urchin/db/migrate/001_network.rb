@@ -8,6 +8,9 @@ class Network < ActiveRecord::Migration
       ## Interface index
       table.column :index, :integer
 
+      ## True iff this is a WAN interface
+      table.column :wan, :boolean
+
       ## MAC Address of the interface
       table.column :mac_address, :string
       
@@ -47,9 +50,14 @@ class Network < ActiveRecord::Migration
     ## static interface configuration.
     create_table :intf_statics do |table|
       table.column :interface_id, :integer
-      ## Set to -1 for automatic
+      ## Set to 0 for automatic
       table.column :mtu, :integer
       table.column :forward_traffic, :boolean
+      
+      ## This is only visible on a WAN interface.
+      table.column :default_gateway, :string
+      table.column :dns_1, :string
+      table.column :dns_2, :string
     end
 
     ## Join between an IP network and a static configuration.
@@ -100,8 +108,15 @@ class Network < ActiveRecord::Migration
 
     ## Hostname parameters
     create_table :hostnames do |table|
-      table.column :name, :string
-      
+      table.column :name, :string      
+    end
+
+    ## File Overrides
+    create_table :file_overrides do |table|
+      table.column :position, :integer
+      table.column :enabled, :boolean
+      table.column :writeable, :boolean
+      table.column :path, :string
     end
   end
 
@@ -116,5 +131,6 @@ class Network < ActiveRecord::Migration
     drop_table :intf_dynamics_ip_networks
     drop_table :intf_bridges
     drop_table :hostnames
+    drop_table :file_overrides
   end
 end

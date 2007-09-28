@@ -1,4 +1,4 @@
-<% rowId = "ip-row-#{rand( 0x100000000 )}" %>
+<% rowId="ip-row-#{rand( 0x100000000 )}" %>
 <tr id="<%= rowId  %>" class="ip-network">
   <td>
     <%= hidden_field_tag( "networkIndices[]", rowId ) %>

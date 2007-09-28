@@ -52,7 +52,7 @@ ul#interface-os-list li
   border: 1px solid #C0C0C0;
   text-align: center;
   padding-top: 5px;
-  background-color: #eeFFee;
+  background-color: #EEFFEE;
   }
 
 div.ip-networks
@@ -60,7 +60,7 @@ div.ip-networks
   border: 0px;
   height: 100px;
   width: 420px;
-  overflow: auto;
+  overflow-y: auto;
  }
 
 table.ip-networks
@@ -75,3 +75,85 @@ table.ip-networks td,th
   border-collapse: collapse;
   padding: 5px;
  }
+
+
+div#file-overrides
+{ 
+  margin: 10px 0px 10px 0px;
+  width: 620px;
+  overflow-y: scroll;
+  height: 200px;
+  }
+
+div#file-overrides ul#file-override-list
+{ 
+  width: 602px;
+  list-style: none inside none;
+  margin: 0px;
+  padding: 0px;
+ }
+
+ul#file-override-list div
+{
+  float: left;
+  }
+
+ul#file-override-list li
+{
+  overflow: auto;
+  }
+
+ul#file-override-list li.header
+{ 
+  background-color: #C0C0C0;
+  text-align: center;
+ }
+
+ul#file-override-list div.header-1, div.column-1
+{ 
+  width: 100px;
+  }
+
+ul#file-override-list div.header-2, div.column-2
+{ 
+  width: 100px;
+  }
+
+ul#file-override-list div.header-3, div.column-3
+{ 
+  width: 300px;
+  }
+
+ul#file-override-list div.header-4, div.column-4
+{ 
+  width: 100px;
+  }
+
+ul#file-override-list li.file-override
+{ 
+  background-color: #EEFFEE;
+  border: 1px solid #C0C0C0;
+  border-top: 0px;
+ }
+
+
+ul#file-override-list div.column-1
+{ 
+  text-align: center;
+  }
+
+ul#file-override-list div.column-2
+{
+  text-align: center;
+  }
+
+ul#file-override-list div.column-3
+{ 
+  }
+
+ul#file-override-list div.column-4
+{ 
+  text-align: center;
+  }
+
+

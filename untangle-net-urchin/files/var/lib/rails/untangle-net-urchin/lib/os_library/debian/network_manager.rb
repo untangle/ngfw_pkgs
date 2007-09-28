@@ -1,4 +1,6 @@
 ## REVIEW.  there should be an observer, or some global management framework
+require_dependency "os_library/debian/dns_server_manager"
+## REVIEW.  there should be an observer, or some global management framework
 require_dependency "os_library/debian/packet_filter_manager"
 ## REVIEW.  there should be an observer, or some global management framework
 require_dependency "os_library/debian/dhcp_manager"
@@ -58,6 +60,8 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
     File.open( InterfacesStatusFile, "w" ) { |f| f.print( "lo=lo" ) }
 
     ## XXX THIS SHOULDN'T BE HERE, should be in an observer ##
+    OSLibrary::Debian::DnsServerManager.instance.commit
+    ## XXX THIS SHOULDN'T BE HERE, should be in an observer ##
     OSLibrary::Debian::PacketFilterManager.instance.commit
     ## XXX THIS SHOULDN'T BE HERE, should be in an observer ##
     OSLibrary::Debian::DhcpManager.instance.commit
@@ -87,13 +91,19 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
     bridge = bridgeSettings( interface, static.mtu )
     
     mtu = mtuSetting( static.mtu )
+
+    gw = static.default_gateway
+    gateway_string = ""
+    if ( interface.wan && !gw.nil? && !gw.empty? )
+      gateway_string = "\tgateway #{static.default_gateway}\n" 
+    end
     
     ## set the name
     ## Clear the MTU because that is set in the bridge
     name, mtu = OSLibrary::Debian::NetworkManager.bridge_name( interface ), nil unless bridge.empty?
     
     ## Configure each IP and then join it all together with some newlines.
-    bridge + "\n" + append_ip_networks( static.ip_networks, name, mtu, !bridge.empty? )
+    bridge + "\n" + append_ip_networks( static.ip_networks, name, mtu, !bridge.empty? ) + gateway_string
   end
 
   def dynamic( interface, dynamic )

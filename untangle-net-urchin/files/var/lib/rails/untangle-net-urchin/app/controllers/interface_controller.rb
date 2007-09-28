@@ -4,6 +4,7 @@ class InterfaceController < ApplicationController
   layout "main"
 
   ## DDD These are subject to internationalization DDD
+  ## REVIEW : These are also linux specific.
   DefaultInterfaceMapping = {
     # default Display name plus the index
     "eth0" => [ "External", 1 ],
@@ -277,6 +278,8 @@ class InterfaceController < ApplicationController
       @interface.config_type = InterfaceHelper::ConfigType::BRIDGE
       @interface.save
       
+      ## Review : should this save network settings first.
+      ## Review : Internationalization
       if ( params[:commit] == "Configure" )
         return redirect_to( :action => bridge_interface.config_type, :id => bridge_interface.id ) 
       end
@@ -328,9 +331,13 @@ class InterfaceController < ApplicationController
     ## Find all of the physical interfaces
     currentIndex = DefaultInterfaceMapping.size - 1
 
-    ## REVIEW DebianSarge is hardcoded, need to move this out.
     ia = networkManager.interfaces
+
+    raise "Unable to detect any interfaces" if ia.nil?
     
+    ## True iff the list found a WAN interface.
+    foundWAN = false
+
     ia.each do |i| 
       logger.debug( "Loaded the interface #{i}" )
       
@@ -346,10 +353,21 @@ class InterfaceController < ApplicationController
 
       ## default it to a static config
       interface.config_type = InterfaceHelper::ConfigType::STATIC
+
+      if ( interface.index == 1 )
+        interface.wan = true
+        foundWAN = true
+      else
+        interface.wan = false
+      end
       
       ## Add the interface.
       interfaceArray << interface
     end
+
+    ## If it hasn't found the WAN interface, set the one with the lowest index
+    ## to the WAN interface.
+    interfaceArray.min { |a,b| a.index <=> b }.wan = true unless foundWAN
 
     interfaceArray
   end
@@ -381,6 +399,7 @@ class InterfaceController < ApplicationController
   end
 
   def networkManager
+    ## REVIEW DebianSarge is hardcoded, need to move this out.
     OSLibrary.getOS( "DebianSarge" ).manager( "network_manager" )
   end
 end

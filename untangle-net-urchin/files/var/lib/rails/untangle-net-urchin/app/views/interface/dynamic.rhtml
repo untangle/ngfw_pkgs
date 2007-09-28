@@ -7,12 +7,20 @@
        <%= text_field( "dynamic", "ip", { :size => 30 } ) %></p>
        <p><label for="dynamic[netmask]">Netmask:</label>
        <%= text_field( "dynamic", "netmask", { :size => 30 } ) %></p>
-       <p><label for="dynamic[default_gateway]">Default Gateway:</label>
-       <%= text_field( "dynamic", "default_gateway", { :size => 30 } ) %></p>
-       <p><label for="dynamic[dns_1]">Primary DNS Server:</label>
-       <%= text_field( "dynamic", "dns_1", { :size => 30 } ) %></p>
-       <p><label for="dynamic[dns_2]">Secondary DNS Server:</label>
-       <%= text_field( "dynamic", "dns_2", { :size => 30 } ) %></p>
+
+       <% if @interface.wan %>
+         <p><label for="dynamic[default_gateway]">Default Gateway:</label>
+         <%= text_field( "dynamic", "default_gateway", { :size => 30 } ) %></p>
+         <p><label for="dynamic[dns_1]">Primary DNS Server:</label>
+         <%= text_field( "dynamic", "dns_1", { :size => 30 } ) %></p>
+         <p><label for="dynamic[dns_2]">Secondary DNS Server:</label>
+         <%= text_field( "dynamic", "dns_2", { :size => 30 } ) %></p>
+       <% else %>
+         <%= hidden_field( "dynamic", "default_gateway", { :value => "" } ) %>
+         <%= hidden_field( "dynamic", "dns_1", { :value => "" } ) %>
+         <%= hidden_field( "dynamic", "dns_2", { :value => "" } ) %>
+       <% end %>
+  
        <p><label for="dynamic[mtu]">MTU:</label>
        <%= text_field( "dynamic", "mtu", { :size => 6 } ) %></p>
        <p><label for="dynamic[allow_ping]">Allow Ping:</label>

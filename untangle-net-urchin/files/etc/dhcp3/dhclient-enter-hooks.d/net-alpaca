@@ -1,0 +1,70 @@
+#!/bin/dash
+
+mkdir -p /var/log/untangle-net-alpaca/
+
+exec >> /var/log/untangle-net-alpaca/dhcp.log 2>&1
+
+debug()
+{
+    /bin/echo -e "[DEBUG: `date`] ${*}"
+}
+
+OVERRIDE_VARIABLES="/etc/untangle-net-alpaca/dhcp-overrides.${interface}"
+
+DEBUG=/bin/true
+
+DEBUG=debug
+
+test -f "${OVERRIDE_VARIABLES}" || { 
+    ${DEBUG} "No override file for the interface: '${interface}'"
+    return 0
+}
+
+# This one always runs, just in case.
+. ${OVERRIDE_VARIABLES}
+
+# Indicator to not overwrite the DNS servers.
+if [ "${DHCP_DNS_SERVERS}" = "ignore" ]; then
+    ${DEBUG} "Disabling make resolv conf"
+    make_resolv_conf() { 
+        /bin/echo "make_resolv_conf has been disabled by the net-alpaca"
+    }
+
+    ## Set here so the code below works cleanly
+    DHCP_DNS_SERVERS=""
+    new_domain_name_servers=""
+fi
+
+if [ "${DHCP_GATEWAY}" = "ignore" ]; then
+    ${DEBUG} "Disabling gateway update."
+    ## Set here so the code below works cleanly
+    DHCP_GATEWAY=""
+    new_routers=""
+fi
+
+case ${reason} in
+    BOUND|RENEW|REBIND|REBOOT)
+        ${DEBUG} "Enabling overrides on dhcp reason ${reason}"
+        ;;
+    *)
+        ${DEBUG} "Ignoring overrides for dhcp reason '${reason}'"
+        return 0
+        ;;
+esac
+
+## Review!!! : Check if this causes a delay for bridges because
+## old_ip_address doesn't make new_ip_address Also, this may cause
+## routes to be deleted, may need a hook in dhclient-exit-hooks.d to
+## rebuild routes.
+new_ip_address=${DHCP_IP_ADDRESS:-${new_ip_address}}
+new_subnet_mask=${DHCP_IP_NETMASK:-${new_subnet_mask}}
+new_routers=${DHCP_GATEWAY:-${new_routers}}
+
+${DEBUG} "ip '${new_ip_address}' subnet '${new_subnet_mask}' routers '${new_routers}'"
+
+new_domain_name_servers=${DHCP_DNS_SERVERS:-${new_domain_name_servers}}
+new_domain_name=${DHCP_DOMAIN_NAME:-${new_domain_name}}
+
+## REVIEW: Should this set MTU here.
+return 0
+

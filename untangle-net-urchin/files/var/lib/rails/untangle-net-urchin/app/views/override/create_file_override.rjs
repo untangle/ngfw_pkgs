@@ -1,0 +1,2 @@
+page.insert_html( :bottom, "file-override-list", :partial => "file_override", :object => @file_override )
+page.sortable( "file-override-list" )
