@@ -15,7 +15,7 @@ DEFAULT_DIAG_LEVEL = 3
 BRAND="Untangle"
 
 # Shared error messages & strings - Perhaps we'll package these another way.
-ERROR_INCOMPLETE_COMMAND = "Error: incomplete command - arguments required."
+ERROR_INCOMPLETE_COMMAND = "Error: incomplete command -- missing required arguments (see help.)"
 ERROR_UNKNOWN_COMMAND = "Error: unknown command"
 ERROR_COMMAND_FAILED = "Error: unable to execute command"
 
@@ -23,4 +23,13 @@ ERROR_COMMAND_FAILED = "Error: unable to execute command"
 class UserCancel < Interrupt
 end
 
+# Ruby "extensions"
+module Kernel
+    private
+        # returns the name of the method that calls 'this_method'
+        def this_method
+            caller[0] =~ /`([^']*)'/ and $1
+        end
+end
+    
 end # UCLICommon

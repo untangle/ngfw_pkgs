@@ -11,11 +11,6 @@ require 'java'
 require 'proxy'
 require 'debug'
 
-require 'ucli_common'
-include UCLICommon
-require 'ucli_util'
-include UCLIUtil
-
 require 'filternode'
 
 class Firewall < UVMFilterNode
@@ -26,10 +21,7 @@ class Firewall < UVMFilterNode
     def initialize
         @diag = Diag.new(DEFAULT_DIAG_LEVEL)
 	@diag.if_level(3) { puts! "Initializing Fire Wall..." }
-
         super
-        connect
-
 	@diag.if_level(3) { puts! "Done initializing Fire Wall..." }
     end
 
@@ -119,13 +111,87 @@ class Firewall < UVMFilterNode
     def manage_rule_list(tid, args)
         case args[0]
         when nil, ""
-            return ERROR_INCOMPLETE_COMMAND
+            return get_rule_list(tid)
         when "add"
-            return "not yet implemented"
-        when "update"
-            return "not yet implemented"
+            return add_rule(tid, *args.shift)
         else
             return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
+        end
+    end
+
+   #public FirewallRule( boolean       isLive,     ProtocolDBMatcher protocol,
+   #                      boolean       inbound,    boolean outbound, 
+   #                      IPDBMatcher   srcAddress, IPDBMatcher       dstAddress,
+   #                      PortDBMatcher srcPort,    PortDBMatcher     dstPort,
+   #                      boolean isTrafficBlocker )
+
+    def get_rule_list(tid)
+        begin
+            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node = node_ctx.node()
+            settings =  node.getSettings()
+            fireWallRuleList = settings.getFirewallRuleList()
+            rules = "#,enabled,action,log,traffic-type,direction,src-addr,dest-addr,src-port,dst-port,category,description\n"
+            rule_num = 1
+            fireWallRuleList.each { |rule|
+                rules << "#{rule_num},#{rule.isLive().to_s},#{rule.getAction()},#{rule.getLog()}"
+                rules << ",#{rule.getProtocol().toDatabaseString()}"
+                rules << ",#{rule.getDirection()}"
+                rules << ",#{rule.getSrcAddress().toDatabaseString()}"
+                rules << ",#{rule.getDstAddress().toDatabaseString()}"
+                rules << ",#{rule.getSrcPort().toDatabaseString()}"
+                rules << ",#{rule.getDstPort().toDatabaseString()}"
+                rules << ",'#{rule.getCategory()}'"
+                rules << ",'#{rule.getDescription()}'"
+                rules << "\n"
+                rule_num += 1                
+            }
+            return rules
+        rescue Exception => ex
+            msg = "Error: #{self.class}.get_rule_list caught an unhandled exception -- " + ex
+            @diag.if_level(2) { puts! msg ; p ex }
+            return msg
+        end
+    end
+
+    def add_rule(tid, enable="true", action="block", log="false", traffic_type=nil, direction=nil, src_addr=nil, dst_addr=nil, src_port=nil, dst_port=nil, category=nil, desc=nil)
+	
+	# Validate arguments...
+	if !(traffic_type && direction && src_addr && dst_addr && src_port && dst_port)
+	    return ERROR_INCOMPLETE_COMMAND
+	elsif !["true", "false"].include(enable)
+	    return "Error: invalid value for 'enable' - valid values are 'true' and 'false'."
+	elsif !["block", "pass"].include(action)
+	    return "Error: invalid value for 'action' - valid values are 'block' and 'pass'."
+	elsif !["true", "false"].include(log)
+	    return "Error: invalid value for 'log' - valid values are 'true' and 'false'."
+	end
+	
+	# Add new rule...
+        begin
+            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node = node_ctx.node()
+            settings =  node.getSettings()
+            fireWallRuleList = settings.getFirewallRuleList()
+
+	    rule = com.untangle.uvm.node.FirewallRule.new
+	    rule.setLive(block == "true")
+	    rule.setAction(action)
+	    rule.setLog(log == "true")
+	    rule.setProtocol()
+	    rule.setDirection()
+	    rule.setSrcAddress().toDatabaseString()
+	    rule.setDstAddress().toDatabaseString()
+	    rule.setSrcPort().toDatabaseString()
+	    rule.setDstPort().toDatabaseString()
+	    rule.setCategory()
+	    rule.setDescription()
+
+            return rules
+        rescue Exception => ex
+            msg = "Error: #{self.class}.get_rule_list caught an unhandled exception -- " + ex
+            @diag.if_level(2) { puts! msg ; p ex }
+            return msg
         end
     end
 
@@ -140,25 +206,51 @@ class Firewall < UVMFilterNode
 	    case args[1]
 	    when "default"
 		if args[2].nil?
-		    return list_settings_default_action(tid, args)
+		    return list_settings_default_action(tid)
 		else
-		    return "not yet implemented"
+		    return settings_default_action(tid, args[2])
 		end
 	    else
 		return ERROR_INCOMPLETE_COMMAND
-	    end
-	        
+	    end	        
         else
             return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
         end
     end
 
-    def list_settings_default_action(tid, args)
-	node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
-	node = node_ctx.node()
-	settings =  node.getSettings()
-	default_action = "Default action: #{settings.isDefaultAccpt() ? "pass" : "block"}"
+    def list_settings_default_action(tid)
+        begin
+            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node = node_ctx.node()
+            settings =  node.getSettings()
+            default_action = "Default action: #{settings.isDefaultAccept() ? "pass" : "block"}"
+        rescue Exception => ex
+            msg = "Error: #{self.class}.list_settings_default_action caught an unhandled exception -- " + ex
+            @diag.if_level(2) { puts! msg ; p ex }
+            return msg
+        end
     end
+    
+    def settings_default_action(tid, action="block")
+        begin
+            raise ArgumentError unless (action == "block") || (action == "pass")
+            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node = node_ctx.node()
+            settings =  node.getSettings()
+            settings.setDefaultAccept(action == "pass")
+            node.setSettings(settings)
+            res = "#{self.class} Settings Default Action set to '#{action}'"
+            @diag.if_level(2) { puts! res }
+            return res
+        rescue ArgumentError
+            return "Error: invalid value for Default Action -- valid actions are 'pass' and 'block'."
+        rescue Exception => ex
+            msg = "Error: #{self.class}.settings_default_actioncaught an unhandled exception -- " + ex
+            @diag.if_level(2) { puts! msg ; p ex }
+            return msg
+        end
+    end
+
     
 end # Firewall
 

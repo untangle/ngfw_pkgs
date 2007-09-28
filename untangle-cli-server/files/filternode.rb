@@ -28,6 +28,7 @@ class UVMFilterNode
         
         ## Retrieve the factory
         @factory = com.untangle.uvm.client.RemoteUvmContextFactory.factory
+        connect
         
         ## This just guarantees that all of the connections are terminated.
         at_exit { disconnect }

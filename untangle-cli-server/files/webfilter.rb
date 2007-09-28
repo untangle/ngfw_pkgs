@@ -29,10 +29,7 @@ class Webfilter < UVMFilterNode
     def initialize
         @diag = Diag.new(DEFAULT_DIAG_LEVEL)
 	@diag.if_level(3) { puts! "Initializing WebFilter..." }
-
         super
-        connect
-
 	@diag.if_level(3) { puts! "Done initializing WebFilter..." }
     end
 
@@ -126,13 +123,13 @@ class Webfilter < UVMFilterNode
         when nil, ""
             return ERROR_INCOMPLETE_COMMAND
         when "urls"
-            return list_blocked_urls(tid)
+            return get_blocked_urls(tid)
         when "categories", "cats"
-            return list_blocked_categories(tid)
+            return get_blocked_categories(tid)
         when "mime", "mimes"
-            return list_blocked_mime_types(tid)
+            return get_blocked_mime_types(tid)
         when "file", "files"
-            return list_blocked_file_types(tid)
+            return get_blocked_file_types(tid)
         when "block"
             case args[1]
             when nil, ""
@@ -154,7 +151,7 @@ class Webfilter < UVMFilterNode
         end
     end
 
-    def list_blocked_urls(tid)
+    def get_blocked_urls(tid)
         node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
         settings =  node.getSettings()
@@ -168,7 +165,7 @@ class Webfilter < UVMFilterNode
         return blocked_urls
     end
 
-    def list_blocked_categories(tid)
+    def get_blocked_categories(tid)
         node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
         settings =  node.getSettings()
@@ -195,7 +192,7 @@ class Webfilter < UVMFilterNode
         return blocked_cats
     end
     
-    def list_blocked_mime_types(tid)
+    def get_blocked_mime_types(tid)
         node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
         settings =  node.getSettings()
@@ -217,7 +214,7 @@ class Webfilter < UVMFilterNode
         return blocked_mime_types
     end
 
-    def list_blocked_file_types(tid)
+    def get_blocked_file_types(tid)
         node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
         settings =  node.getSettings()
@@ -366,9 +363,9 @@ class Webfilter < UVMFilterNode
         when nil, ""
             return ERROR_INCOMPLETE_COMMAND
         when "urls"
-            return list_passed_urls(tid)
+            return get_passed_urls(tid)
         when "clients"
-            return list_passed_clients(tid)
+            return get_passed_clients(tid)
         when "pass"
             case args[1]
             when nil, ""
@@ -385,7 +382,7 @@ class Webfilter < UVMFilterNode
         end
     end
 
-    def list_passed_urls(tid)
+    def get_passed_urls(tid)
         node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
         settings =  node.getSettings()
@@ -400,7 +397,7 @@ class Webfilter < UVMFilterNode
         return passed_urls
     end
 
-    def list_passed_clients(tid)
+    def get_passed_clients(tid)
         node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
         settings =  node.getSettings()
