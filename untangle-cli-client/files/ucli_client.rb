@@ -853,15 +853,19 @@ class UCLIClient
             # Read commands in local console loop to apply to server list
             cmd_num = 1
             loop do
-                cmd_s = readline("[#{cmd_num}] ", true)
-                next if cmd_s.nil? || cmd_s.length == 0
-                break if cmd_s == "end"
-                if FORBIDDEN_WITH_COMMANDS.include?(cmd_s) || (cmd_s =~ /^[!#].*/)
-                    puts! "Error: '#{cmd_s}' is not allowed within a 'with' script."
-                    next
+                begin
+                    cmd_s = readline("[#{cmd_num}] ", true)
+                    next if cmd_s.nil? || cmd_s.length == 0
+                    break if cmd_s == "end"
+                    if FORBIDDEN_WITH_COMMANDS.include?(cmd_s) || (cmd_s =~ /^[!#].*/)
+                        puts! "Error: '#{cmd_s}' is not allowed within a 'with' script."
+                        next
+                    end
+                    commands << cmd_s
+                    cmd_num += 1
+                rescue Interrupt
+                    message "'with' script terminated by user interrupt.", 3
                 end
-                commands << cmd_s
-                cmd_num += 1
             end
         end
         
@@ -892,7 +896,7 @@ class UCLIClient
                 
                 # Must not hold client lock while running commands, as certain commands need the lock.
                 commands.each { |cmd|
-                    puts! cmd if interactive
+                    puts! "> #{cmd}" if interactive
                     cmd_a = run_command(cmd)
                     raise CommandFailed if cmd_a.nil?
                 }

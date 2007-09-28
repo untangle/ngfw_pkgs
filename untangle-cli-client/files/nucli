@@ -1,0 +1,3 @@
+#/bin/zsh
+# To do - check for existance of Ruby
+ruby ./ucli_client.rb !!:*
