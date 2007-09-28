@@ -190,6 +190,8 @@ class UCLIClient
             raise Terminate unless STDIN.gets.chomp.downcase == "y"
         end
         
+        # If we ever allow more than one server to be opened via command line options
+        # then we'll need to ensure the same host:port is not added twice.
         @servers_lock.synchronize do
             @ucli_servers << [ucli_server_host, ucli_server_port, nil];
         end if ucli_server_host
@@ -199,6 +201,9 @@ class UCLIClient
     # Process config file settings ***TODO
     def process_config_file(config_filename)
         # TBC
+        # When loading lost list, ensure no host:port is added twice, or
+        # add a service method to add a new server and it can enfore this
+        # for us.
     end
 
      #
@@ -395,13 +400,14 @@ class UCLIClient
         end
     end
 
-    # ***TODO: perhaps refactor this code to use open(), so the DRB logic is not duplicated.
+    # ***TODO: perhaps refactor this code to use open(), so the DRB logic is not duplicated and
+    # since this logic does not protect against opening the same server twice!!!
     def connect_to_all_ucli_servers(quiet=false)
         @servers_lock.synchronize do
             unless @ucli_servers.nil? || @ucli_servers.length == 0
                 svr_num = 1
                 @ucli_servers.each { |uvm|
-                    message("Connecting to #{@server_name} ##{svr_num}: #{uvm[0]}:#{uvm[1]}...\n", 1) unless quiet
+                    message("Connecting to #{@server_name} ##{svr_num}: #{uvm[0]}:#{uvm[1]}...\n", 2) unless quiet
                     uvm[2] = DRbObject.new(nil, "druby://#{uvm[0]}:#{uvm[1]}")
                     uvm[3] = true   # mark server open
                     svr_num += 1
