@@ -9,7 +9,7 @@ class OverrideController < ApplicationController
   end
 
   def manage
-    @fileOverrideList = FileOverride.find( :all, :order => "position" )
+    @fileOverrideList = FileOverride.ordered_find( :all )
   end
 
   def create_file_override

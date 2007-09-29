@@ -60,8 +60,6 @@ new_ip_address=${DHCP_IP_ADDRESS:-${new_ip_address}}
 new_subnet_mask=${DHCP_IP_NETMASK:-${new_subnet_mask}}
 new_routers=${DHCP_GATEWAY:-${new_routers}}
 
-${DEBUG} "ip '${new_ip_address}' subnet '${new_subnet_mask}' routers '${new_routers}'"
-
 new_domain_name_servers=${DHCP_DNS_SERVERS:-${new_domain_name_servers}}
 new_domain_name=${DHCP_DOMAIN_NAME:-${new_domain_name}}
 
