@@ -2,10 +2,10 @@
 <tr id="<%= rowId  %>" class="ip-network">
   <td>
     <%= hidden_field_tag( "networkIndices[]", rowId ) %>
-    <%= text_field( "networks", rowId, { :value => "#{network.ip} / #{network.netmask}", :size => 30 } ) %>
+    <%= text_field( "networks", rowId, { :value => "#{ip_network.ip} / #{ip_network.netmask}", :size => 30 } ) %>
   </td>
   <td>
-    <%= check_box( "allowPing", rowId, { :checked => network.allow_ping }, true, false ) %>
+    <%= check_box( "allowPing", rowId, { :checked => ip_network.allow_ping }, true, false ) %>
   </td>
   <td>
     <%= link_to_remote( "-".t, :url => { :action => :remove_network, :id => rowId } ) %>

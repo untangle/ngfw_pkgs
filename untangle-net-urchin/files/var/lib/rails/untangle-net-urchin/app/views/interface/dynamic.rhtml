@@ -29,8 +29,8 @@
     </div>
 
     <h2><%= "IP Addresses".t %></h2>
-    <%= link_to_remote( "+".t, :url => { :action => :create_new_network } ) %>
-    <%= render(:partial => "static_ip_networks" , :object => @dynamic.ip_networks ) %>
+    <%= link_to_remote( "+".t, :url => { :action => :create_ip_network } ) %>
+    <%= render(:partial => "ip_networks" , :object => @dynamic.ip_networks ) %>
     
     <%= submit_tag "Cancel".t %>
     <%= submit_tag "Save Changes".t %>

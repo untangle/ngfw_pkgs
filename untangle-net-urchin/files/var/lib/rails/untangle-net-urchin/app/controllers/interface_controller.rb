@@ -38,31 +38,26 @@ class InterfaceController < ApplicationController
   end
 
   def static
-    interface_id = params[:id]
-    return redirect_to( :action => 'list' ) if interface_id.nil?
-    @interface = Interface.find( interface_id )
-    return redirect_to( :action => 'list' ) if interface_id.nil?
-    @title = "Static Interface Configuration"
-    
-    ## Retrieve the static configuration, creating a new one if necessary.
-    @staticConfig = @interface.intf_static
-    @staticConfig = IntfStatic.new if @staticConfig.nil?
+    config do
+      @title = "Static Interface Configuration"
+      
+      ## Retrieve the static configuration, creating a new one if necessary.
+      @static = @interface.intf_static
+      @static = IntfStatic.new if @static.nil?
+    end
   end
 
   def dynamic
-    interface_id = params[:id]
-    return redirect_to( :action => 'list' ) if interface_id.nil?
-    @interface = Interface.find( interface_id )
-    return redirect_to( :action => 'list' ) if interface_id.nil?
-    @title = "Dynamic Interface Configuration"
-    
-    ## Retrieve the static configuration, creating a new one if necessary.
-    @dynamic = @interface.intf_dynamic
-    @dynamic = IntfDynamic.new if @dynamic.nil?
+    config do
+      @title = "Dynamic Interface Configuration"
+      
+      ## Retrieve the static configuration, creating a new one if necessary.
+      @dynamic = @interface.intf_dynamic
+      @dynamic = IntfDynamic.new if @dynamic.nil?
+    end
   end
 
   def bridge
-    ## Review : Change all of them to use this config model.
     config do
       @title = "Bridge Interface Configuration"
     
@@ -141,116 +136,109 @@ class InterfaceController < ApplicationController
   end
 
   def intf_static_save
-    return redirect_to( :action => 'list' ) if ( params[:commit] == "Cancel" )
-
-    interface_id = params[:id]
-    ## XXXX These are terrible redirects
-    return redirect_to( :action => 'list' ) if interface_id.nil?
-    @interface = Interface.find( interface_id )
-    return redirect_to( :action => 'list' ) if @interface.nil?
-
-    ## Get the static interface
-    staticConfig = @interface.intf_static
-    
-    ## Create a new one if it is nil
-    staticConfig = IntfStatic.new if staticConfig.nil?
-    
-    ## save the networks
-    networkStringHash = params[:networks]
-    ## allow ping is checkbox, so it may not have values for each index.
-    allowPingHash = params[:allowPing]
-    ## indices is used to guarantee they are done in proper order.
-    indices = params[:networkIndices]
-    allowPingHash = {} if allowPingHash.nil?
-    
-    ## clear out all of the ip networks.
-    staticConfig.ip_networks = []
-    unless indices.nil?
-      indices.each do |key,value|
-        network = IpNetwork.new
-        network.parseNetwork( networkStringHash[key] )
-        network.allow_ping = ( allowPingHash[key] )
-        staticConfig.ip_networks << network
+    save do
+      ## Get the static interface
+      static = @interface.intf_static
+      
+      ## Create a new one if it is nil
+      static = IntfStatic.new if static.nil?
+      
+      ## save the networks
+      networkStringHash = params[:networks]
+      ## allow ping is checkbox, so it may not have values for each index.
+      allowPingHash = params[:allowPing]
+      ## indices is used to guarantee they are done in proper order.
+      indices = params[:networkIndices]
+      allowPingHash = {} if allowPingHash.nil?
+      
+      ## clear out all of the ip networks.
+      static.ip_networks = []
+      unless indices.nil?
+        indices.each do |key,value|
+          network = IpNetwork.new
+          network.parseNetwork( networkStringHash[key] )
+          network.allow_ping = ( allowPingHash[key] )
+          static.ip_networks << network
+        end
       end
-    end
-    
-    ## save the nat policies
-    natNetworkHash = params[:natNetworks]
-    natNewSourceHash = params[:natNewSources]
-
-    ## indices is used to guarantee they are done in proper order.
-    indices = params[:natIndices]
-
-    ## Delete all of the nat policies
-    staticConfig.nat_policies = []
-    
-    unless indices.nil?
-      indices.each do |key|
-        natPolicy = NatPolicy.new
-        logger.debug( "index: #{key}" )
-        natPolicy.parseNetwork( natNetworkHash[key] )
-        natPolicy.new_source = natNewSourceHash[key]
-        staticConfig.nat_policies << natPolicy
+      
+      ## save the nat policies
+      natNetworkHash = params[:natNetworks]
+      natNewSourceHash = params[:natNewSources]
+      
+      ## indices is used to guarantee they are done in proper order.
+      indices = params[:natIndices]
+      
+      ## Delete all of the nat policies
+      static.nat_policies = []
+      
+      unless indices.nil?
+        indices.each do |key|
+          natPolicy = NatPolicy.new
+          logger.debug( "index: #{key}" )
+          natPolicy.parseNetwork( natNetworkHash[key] )
+          natPolicy.new_source = natNewSourceHash[key]
+          static.nat_policies << natPolicy
+        end
       end
+      
+      static.update_attributes(params[:static])
+      
+      static.save
+      
+      @interface.intf_static = static
+      @interface.config_type = InterfaceHelper::ConfigType::STATIC
+      @interface.save
+      
+      ## Actually commit the changes
+      networkManager.commit
+      
+      ## Indicate the command was successful
+      true
     end
-
-    staticConfig.update_attributes(params[:static])
-    
-    staticConfig.save
-
-    @interface.intf_static = staticConfig
-    @interface.config_type = InterfaceHelper::ConfigType::STATIC
-    @interface.save
-
-    ## Actually commit the changes
-    networkManager.commit
-
-    return redirect_to( :action => 'list' )
   end
 
   def intf_dynamic_save
-    interface_id = params[:id]
-    return redirect_to( :action => 'list' ) if interface_id.nil?
-    @interface = Interface.find( interface_id )
-    return redirect_to( :action => 'list' ) if @interface.nil?
-    
-    ## Get the dynamic configuration
-    dynamic = @interface.intf_dynamic
-    
-    ## Create a new one if it is nil
-    dynamic = IntfDynamic.new if dynamic.nil?
-    
-    ## save the networks
-    networkStringHash = params[:networks]
-    ## allow ping is checkbox, so it may not have values for each index.
-    allowPingHash = params[:allowPing]
-    ## indices is used to guarantee they are done in proper order.
-    indices = params[:networkIndices]
-    allowPingHash = {} if allowPingHash.nil?
-    
-    ## clear out all of the ip networks.
-    dynamic.ip_networks = []
-    unless indices.nil?
-      indices.each do |key,value|
-        network = IpNetwork.new
-        network.parseNetwork( networkStringHash[key] )
-        network.allow_ping = ( allowPingHash[key] )
-        dynamic.ip_networks << network
+    save do
+      ## Get the dynamic configuration
+      dynamic = @interface.intf_dynamic
+      
+      ## Create a new one if it is nil
+      dynamic = IntfDynamic.new if dynamic.nil?
+      
+      ## save the networks
+      networkStringHash = params[:networks]
+      ## allow ping is checkbox, so it may not have values for each index.
+      allowPingHash = params[:allowPing]
+      ## indices is used to guarantee they are done in proper order.
+      indices = params[:networkIndices]
+      allowPingHash = {} if allowPingHash.nil?
+      
+      ## clear out all of the ip networks.
+      dynamic.ip_networks = []
+      unless indices.nil?
+        indices.each do |key,value|
+          network = IpNetwork.new
+          network.parseNetwork( networkStringHash[key] )
+          network.allow_ping = ( allowPingHash[key] )
+          dynamic.ip_networks << network
+        end
       end
+    
+      dynamic.update_attributes(params[:dynamic])
+    
+      dynamic.save
+
+      @interface.intf_dynamic = dynamic
+      @interface.config_type = InterfaceHelper::ConfigType::DYNAMIC
+      @interface.save
+
+      ## Actually commit the changes
+      networkManager.commit
+
+      ## Return true
+      true
     end
-    
-    dynamic.update_attributes(params[:dynamic])
-    
-    dynamic.save
-
-    @interface.intf_dynamic = dynamic
-    @interface.config_type = InterfaceHelper::ConfigType::DYNAMIC
-    @interface.save
-
-    ## Actually commit the changes
-    networkManager.commit
-
-    return redirect_to( :action => 'list' )
   end
 
   ## Save a bridged interface.
@@ -285,15 +273,17 @@ class InterfaceController < ApplicationController
       ## Actually commit the changes
       networkManager.commit
       
+      ## return true
       true
     end
   end
     
-  def create_new_network
-    @network = IpNetwork.new
-    @network.ip = "0.0.0.0"
-    @network.netmask = "255.255.255.0"
-    @network.allow_ping = true
+  def create_ip_network
+    ## Review : How to set defaults
+    @ip_network = IpNetwork.new
+    @ip_network.ip = "0.0.0.0"
+    @ip_network.netmask = "255.255.255.0"
+    @ip_network.allow_ping = true
   end
 
   def remove_network
