@@ -113,7 +113,7 @@ class Firewall < UVMFilterNode
         when nil, ""
             return get_rule_list(tid)
         when "add"
-            return add_rule(tid, *args.shift)
+            return add_rule(tid, *args.slice(1,args.length-1))
         else
             return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
         end
@@ -156,14 +156,14 @@ class Firewall < UVMFilterNode
 
     def add_rule(tid, enable="true", action="block", log="false", traffic_type=nil, direction=nil, src_addr=nil, dst_addr=nil, src_port=nil, dst_port=nil, category=nil, desc=nil)
 	
-	# Validate arguments...
+	# Validate arguments...  ***TODO: validate format of addresses and ports?
 	if !(traffic_type && direction && src_addr && dst_addr && src_port && dst_port)
 	    return ERROR_INCOMPLETE_COMMAND
-	elsif !["true", "false"].include(enable)
+	elsif !["true", "false"].include?(enable)
 	    return "Error: invalid value for 'enable' - valid values are 'true' and 'false'."
-	elsif !["block", "pass"].include(action)
+	elsif !["block", "pass"].include?(action)
 	    return "Error: invalid value for 'action' - valid values are 'block' and 'pass'."
-	elsif !["true", "false"].include(log)
+	elsif !["true", "false"].include?(log)
 	    return "Error: invalid value for 'log' - valid values are 'true' and 'false'."
 	end
 	
@@ -172,24 +172,55 @@ class Firewall < UVMFilterNode
             node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
-            fireWallRuleList = settings.getFirewallRuleList()
-
-	    rule = com.untangle.uvm.node.FirewallRule.new
-	    rule.setLive(block == "true")
+            firewallRuleList = settings.getFirewallRuleList()
+            
+	    rule = com.untangle.node.firewall.FirewallRule.new
+	    rule.setLive(enable == "true")
 	    rule.setAction(action)
 	    rule.setLog(log == "true")
-	    rule.setProtocol()
-	    rule.setDirection()
-	    rule.setSrcAddress().toDatabaseString()
-	    rule.setDstAddress().toDatabaseString()
-	    rule.setSrcPort().toDatabaseString()
-	    rule.setDstPort().toDatabaseString()
-	    rule.setCategory()
-	    rule.setDescription()
-
-            return rules
+	    begin rule.setProtocol(com.untangle.uvm.node.firewall.protocol.ProtocolMatcherFactory.parse(traffic_type))
+            rescue ParseError => ex
+                msg = "Error: invalid protocol value."
+                @diag.if_level(2) { puts! msg ; p ex }
+                return msg
+	    end
+	    rule.setDirection(direction)
+	    begin rule.setSrcAddress(com.untangle.uvm.node.firewall.ip.IPMatcherFactory.parse(src_addr))
+            rescue ParseError => ex
+                msg = "Error: invalid source address value."
+                @diag.if_level(2) { puts! msg ; p ex }
+                return msg
+	    end
+	    begin rule.setDstAddress(com.untangle.uvm.node.firewall.ip.IPMatcherFactory.parse(dst_addr))
+            rescue ParseError => ex
+                msg = "Error: invalid destination address value."
+                @diag.if_level(2) { puts! msg ; p ex }
+                return msg
+	    end
+	    begin rule.setSrcPort(com.untangle.uvm.node.firewall.port.PortMatcherFactory.parse(src_addr))
+            rescue ParseError => ex
+                msg = "Error: invalid source port value."
+                @diag.if_level(2) { puts! msg ; p ex }
+                return msg
+	    end
+	    begin rule.setDstPort(com.untangle.uvm.node.firewall.port.PortMatcherFactory.parse(dst_port))
+            rescue ParseError => ex
+                msg = "Error: invalid destination port value."
+                @diag.if_level(2) { puts! msg ; p ex }
+                return msg
+	    end	    
+	    rule.setCategory(category) if category
+	    rule.setDescription(desc) if desc
+	    
+	    firewallRuleList.add(rule)
+	    settings.setFirewallRuleList(firewallRuleList)
+	    node.setSettings(settings)
+	    
+	    msg = "Rule added to firewall rule list."
+	    @diag.if_level(2) { puts! msg }
+            return msg
         rescue Exception => ex
-            msg = "Error: #{self.class}.get_rule_list caught an unhandled exception -- " + ex
+            msg = "Error: #{self.class}.add_rule caught an unhandled exception -- " + ex
             @diag.if_level(2) { puts! msg ; p ex }
             return msg
         end
