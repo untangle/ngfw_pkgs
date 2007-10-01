@@ -27,7 +27,6 @@ module Alpaca::ActiveRecordExtensions
   
   def self.included(klass)
     super
-    puts "#{klass.find( :all )}"
     klass.extend( ExtensionClassMethods )
   end
   

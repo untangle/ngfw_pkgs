@@ -1,15 +1,15 @@
 <% form_tag( :action => 'intf_order_save' ) do -%>
-  <%= link_to 'reload', :action => 'reload' %>
-  <%= submit_tag "Cancel" %>
-  <%= submit_tag "Save Changes" %>
+  <%= link_to 'reload'.t, :action => 'reload' %>
+  <%= submit_tag "Cancel".t %>
+  <%= submit_tag "Save Changes".t %>
   
   <div id="interface-list">
     <table>
       <tr>
-        <th>Edit</th>
-        <th>Name</th>
-        <th>Config Type</th>
-        <th>Physical Interface</th>
+        <th><%= "Edit".t %></th>
+        <th><%= "Name".t %></th>
+        <th><%= "Config Type".t %></th>
+        <th><%= "Physical Interface".t %></th>
       </tr>
       <% 
       ## Review: Indicate that this is the first row, the first row has the sortable interface list.
@@ -18,7 +18,7 @@
       %>
       <tr>
         <td class="button">
-          <%= link_to 'edit', :action => interface.config_type, :id => interface %>
+          <%= link_to 'edit'.t, :action => interface.config_type, :id => interface %>
         </td>
         <td><%= interface.name %></td>
         <td><%= interface.config_type %></td>

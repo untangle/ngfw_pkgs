@@ -1,7 +1,4 @@
-require_dependency "os_library"
-
 class OverrideController < ApplicationController
-  layout "main"
   
   def index
     manage
@@ -32,7 +29,7 @@ class OverrideController < ApplicationController
 
   def save
     ## Review : Internationalization
-    return redirect_to( :action => "manage" ) if ( params[:commit] != "Save Changes" )
+    return redirect_to( :action => "manage" ) if ( params[:commit] != "Save Changes".t )
 
     fileOverrideList = []
 

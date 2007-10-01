@@ -24,12 +24,14 @@ class Network < ActiveRecord::Migration
       table.column :vendor, :string
 
       ## Duplexing on this interface (half, full or auto)
+      ## Review : Do we want to translate?
       table.column :duplex, :string
 
       ## Speed of the interface (10,100,1000 or auto)
       table.column :speed, :string
 
       ## Configuration type[static,dynamic,bridge,etc]
+      ## Review : Do we want to translate?
       table.column :config_type, :string
     end
 
@@ -118,6 +120,12 @@ class Network < ActiveRecord::Migration
       table.column :writeable, :boolean
       table.column :path, :string
     end
+
+    ## Locale selection
+    ## Pretty much just one locale, could do it per user when that gets going.
+    create_table :locale_settings do |table|
+      table.column :key, :string
+    end
   end
 
   def self.down
@@ -132,5 +140,6 @@ class Network < ActiveRecord::Migration
     drop_table :intf_bridges
     drop_table :hostnames
     drop_table :file_overrides
+    drop_table :locale_settings
   end
 end

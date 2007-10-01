@@ -1,19 +1,19 @@
 <div>
-  <h1>Dynamic interface configuration for <%= @interface.name %></h1>
+  <h1><%= "Dynamic interface configuration for %s".t / @interface.name %></h1>
 
   <% form_tag( :action => 'intf_dynamic_save', :id => @interface ) do -%>
      <div class="text-fields"> 
-       <p><label for="dynamic[ip]">IP Address:</label>
+       <p><label for="dynamic[ip]"><%= "IP Address:".t %></label>
        <%= text_field( "dynamic", "ip", { :size => 30 } ) %></p>
-       <p><label for="dynamic[netmask]">Netmask:</label>
+       <p><label for="dynamic[netmask]"><%= "Netmask:".t %></label>
        <%= text_field( "dynamic", "netmask", { :size => 30 } ) %></p>
 
        <% if @interface.wan %>
-         <p><label for="dynamic[default_gateway]">Default Gateway:</label>
+         <p><label for="dynamic[default_gateway]"><%= "Default Gateway:".t %></label>
          <%= text_field( "dynamic", "default_gateway", { :size => 30 } ) %></p>
-         <p><label for="dynamic[dns_1]">Primary DNS Server:</label>
+         <p><label for="dynamic[dns_1]"><%= "Primary DNS Server:".t %></label>
          <%= text_field( "dynamic", "dns_1", { :size => 30 } ) %></p>
-         <p><label for="dynamic[dns_2]">Secondary DNS Server:</label>
+         <p><label for="dynamic[dns_2]"><%= "Secondary DNS Server:".t %></label>
          <%= text_field( "dynamic", "dns_2", { :size => 30 } ) %></p>
        <% else %>
          <%= hidden_field( "dynamic", "default_gateway", { :value => "" } ) %>
@@ -21,18 +21,19 @@
          <%= hidden_field( "dynamic", "dns_2", { :value => "" } ) %>
        <% end %>
   
-       <p><label for="dynamic[mtu]">MTU:</label>
+       <p><label for="dynamic[mtu]"><%= "MTU:".t %></label>
+       <% # Review : Presently ignoring all localization %>
        <%= text_field( "dynamic", "mtu", { :size => 6 } ) %></p>
-       <p><label for="dynamic[allow_ping]">Allow Ping:</label>
+       <p><label for="dynamic[allow_ping]"><%= "Allow Ping:".t %></label>
        <%= check_box( "dynamic", "allow_ping", {}, true, false ) %>
     </div>
 
-    <h2>IP Addresses</h2>
-    <%= link_to_remote( "+", :url => { :action => :create_new_network } ) %>
+    <h2><%= "IP Addresses".t %></h2>
+    <%= link_to_remote( "+".t, :url => { :action => :create_new_network } ) %>
     <%= render(:partial => "static_ip_networks" , :object => @dynamic.ip_networks ) %>
     
-    <%= submit_tag "Cancel" %>
-    <%= submit_tag "Save Changes" %>
+    <%= submit_tag "Cancel".t %>
+    <%= submit_tag "Save Changes".t %>
 
   <% end -%>
 </div>

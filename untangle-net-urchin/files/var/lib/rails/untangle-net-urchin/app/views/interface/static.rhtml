@@ -1,20 +1,20 @@
 <div>
-  <h1>Static interface configuration for <%= @interface.name %></h1>
+  <h1><%= "Static interface configuration for %s".t / @interface.name %></h1>
 
   <% form_tag( :action => 'intf_static_save', :id => @interface ) do -%>
-    <h2>IP Addresses</h2>
-    <%= link_to_remote( "+", :url => { :action => :create_new_network } ) %>
+    <h2><%= "IP Addresses".t %></h2>
+    <%= link_to_remote( "+".t, :url => { :action => :create_new_network } ) %>
     <%= render(:partial => "static_ip_networks" , :object => @staticConfig.ip_networks ) %>
 
     <% if @interface.wan %>
       <div class="text-fields">
-        <p><label for="static[default_gateway]">Default Gateway:</label>
+        <p><label for="static[default_gateway]"><%= "Default Gateway:".t %></label>
         <%= text_field( "static", "default_gateway", { :value => "#{@staticConfig.default_gateway}", :size => 30 } ) %></p>
         
-        <p><label for="static[dns_1]">Primary DNS Server:</label>
+        <p><label for="static[dns_1]"><%= "Primary DNS Server:".t %></label>
         <%= text_field( "static", "dns_1", { :value => "#{@staticConfig.dns_1}", :size => 30 } ) %></p>
         
-        <p><label for="static[dns_2]">Primary DNS Server:</label>
+        <p><label for="static[dns_2]"><%= "Secondary DNS Server:".t %></label>
         <%= text_field( "static", "dns_2", { :value => "#{@staticConfig.dns_2}", :size => 30 } ) %></p>
       </div>
     <% else %>
@@ -23,21 +23,21 @@
       <%= hidden_field( "static", "dns_2", { :value => "" } ) %>
     <% end %>
 
-    <h2>NAT Policy</h2>
-    <%= link_to_remote( "+", :url => { :action => :create_nat_policy } ) %>
+    <h2><%= "NAT Policy".t %></h2>
+    <%= link_to_remote( "+".t, :url => { :action => :create_nat_policy } ) %>
     <%= render(:partial => "nat_policies" , :object => @staticConfig.nat_policies ) %>
   
-    <h2>General</h2>
+    <h2><%= "General".t %></h2>
     <div class="text-fields">
-      <p><label for="static[mtu]">MTU:</label>
+      <p><label for="static[mtu]"><%= "MTU:".t %></label>
       <%= text_field( "static", "mtu", { :value => "#{@staticConfig.mtu}", :size => 30 } ) %></p>
       
-      <p><label for="static[forward_traffic]">Forward Traffic:</label>
+      <p><label for="static[forward_traffic]"><%= "Forward Traffic:".t %></label>
       <%= check_box( "static", "forward_traffic", { :checked => @staticConfig.forward_traffic }, true, false ) %></p>
     </div>
       
-    <%= submit_tag "Cancel" %>
-    <%= submit_tag "Save Changes" %>
+    <%= submit_tag "Cancel".t %>
+    <%= submit_tag "Save Changes".t %>
 
   <% end -%>
 

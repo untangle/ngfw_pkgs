@@ -2,6 +2,20 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+  layout "main"
+
+  DefaultTitle = "Untangle Net Alpaca"
+  
   # Pick a unique cookie name to distinguish our session data from others'
-  session :session_key => '_untangle-net-urchin_session_id'
+  session :session_key => '_untangle-net-alpaca_session_id'
+  
+  before_filter :setLocale
+
+  def setLocale
+    settings = LocaleSetting.find( :first )
+    
+    ## Do nothing if the value doesn't exist, this way it will go to the default setting
+    Locale.set( settings.key ) unless settings.nil?
+  end
+
 end

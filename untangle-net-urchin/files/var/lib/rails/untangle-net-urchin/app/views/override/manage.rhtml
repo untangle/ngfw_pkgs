@@ -1,14 +1,14 @@
 <% form_tag( :action => 'save' ) do -%>
 
-  <%= link_to_remote( "+", :url => { :action => :create_file_override } ) %>
+  <%= link_to_remote( "+".t, :url => { :action => :create_file_override } ) %>
 
   <div id="file-overrides">
     <ul id="file-override-list">
       <li class="header">
-        <div class="header-1">Enabled</div>
-        <div class="header-2">Writeable</div>
-        <div class="header-3">File Path</div>
-        <div class="header-4">Delete</div>
+        <div class="header-1"><%= "Enabled".t %></div>
+        <div class="header-2"><%= "Writeable".t %></div>
+        <div class="header-3"><%= "File Path".t %></div>
+        <div class="header-4"><%= "Delete".t %></div>
       </li>
       
       <%= render( :partial => "file_override", :collection => @fileOverrideList ) %>
@@ -17,7 +17,7 @@
     <%= sortable_element( "file-override-list" ) %> 
   </div>
 
-  <%= submit_tag "Cancel" %>
-  <%= submit_tag "Save Changes" %>
+  <%= submit_tag "Cancel".t %>
+  <%= submit_tag "Save Changes".t %>
 
 <% end %>

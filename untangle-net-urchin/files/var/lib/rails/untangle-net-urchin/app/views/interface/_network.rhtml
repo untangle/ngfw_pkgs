@@ -8,6 +8,6 @@
     <%= check_box( "allowPing", rowId, { :checked => network.allow_ping }, true, false ) %>
   </td>
   <td>
-    <%= link_to_remote( "-", :url => { :action => :remove_network, :id => rowId } ) %>
+    <%= link_to_remote( "-".t, :url => { :action => :remove_network, :id => rowId } ) %>
   </td>
 </td>

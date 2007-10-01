@@ -1,7 +1,4 @@
-require_dependency "os_library"
-
 class InterfaceController < ApplicationController
-  layout "main"
 
   ## DDD These are subject to internationalization DDD
   ## REVIEW : These are also linux specific.
@@ -65,6 +62,7 @@ class InterfaceController < ApplicationController
   end
 
   def bridge
+    ## Review : Change all of them to use this config model.
     config do
       @title = "Bridge Interface Configuration"
     
