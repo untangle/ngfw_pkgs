@@ -42,7 +42,7 @@ class Webfilter < UVMFilterNode
         
         begin
             # Get tids of all web filters once and for all commands we might execute below.
-            tids = @uvmRemoteContext.nodeManager.nodeInstances(WEBFILTER_NODE_NAME)
+            tids = get_webfilter_tids()
             return ERROR_NO_WEBFILTER_NODES if tids.nil? || tids.length < 1
     
             if /^#/ =~ args[0]
@@ -115,6 +115,11 @@ class Webfilter < UVMFilterNode
         
     end
 
+
+    def get_webfilter_tids
+        return @uvmRemoteContext.nodeManager.nodeInstances(WEBFILTER_NODE_NAME)
+    end
+    
     #
     # Block List related methods
     #
