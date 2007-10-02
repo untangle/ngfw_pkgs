@@ -130,22 +130,43 @@ class Webfilter < UVMFilterNode
             return get_blocked_mime_types(tid)
         when "file", "files"
             return get_blocked_file_types(tid)
-        when "block"
+        when "add"
             case args[1]
             when nil, ""
                 return ERROR_INCOMPLETE_COMMAND
             when "url"
-                return block_url(tid, args[2], args[3], args[4], args[5])
+                return block_list_add_url(tid, args[2], args[3], args[4], args[5])
             when "mime"
-                return block_mime_type(tid, args[2], args[3], args[4])
+                return block_list_add_mime_type(tid, args[2], args[3], args[4])
             when "file"
-                return block_file_type(tid, args[2], args[3], args[4])
-            when "category", "cat"
-                return block_category(tid, args[2], args[3], args[4])
+                return block_list_add_file_type(tid, args[2], args[3], args[4])
             else
                 return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
             end
-        when "unblock"
+        when "update"
+            case args[1]
+            when nil, ""
+                return ERROR_INCOMPLETE_COMMAND
+            when "category", "cat"
+                return block_list_update_category(tid, args[2], args[3], args[4])
+            else
+                return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
+            end
+        when "remove"
+            case args[1]
+            when nil, ""
+                return ERROR_INCOMPLETE_COMMAND
+            when "url"
+                return block_list_remove_url(tid, args[2])
+            when "mime"
+                return block_list_remove_mime_type(tid, args[2])
+            when "file"
+                return block_list_remove_file_type(tid, args[2])
+            when "category", "cat"
+                return "Error: block list categories cannot be removed."
+            else
+                return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
+            end
         else
             return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
         end
@@ -231,7 +252,7 @@ class Webfilter < UVMFilterNode
         return blocked_files
     end
 
-    def block_url(tid, url=nil, block="true", log="true", desc=nil)
+    def block_list_add_url(tid, url, block, log, desc)
         begin
             return ERROR_INCOMPLETE_COMMAND if url.nil?
             node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
@@ -264,20 +285,57 @@ class Webfilter < UVMFilterNode
         end
     end
     
-    def block_mime_type(tid, mime_type, block=nil, name=nil)
+    def block_list_remove_url(tid, url)
+        begin
+            return ERROR_INCOMPLETE_COMMAND if url.nil?
+            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node = node_ctx.node()
+            settings =  node.getSettings()
+            blockedUrlsList = settings.getBlockedUrls()   
+            url = url.gsub(/^www./, '')
+            @diag.if_level(2) { puts! "Attempting to remove #{url} from blocked list." }
+
+            rule_to_remove = blockedUrlsList.detect { |blocked_url|
+                blocked_url.getString() == url
+            }
+            if rule_to_remove
+                blockedUrlsList.remove(rule_to_remove)
+                settings.setBlockedUrls(blockedUrlsList)
+                node.setSettings(settings)
+                msg = "URL '#{url}' removed from block list."
+            else
+                msg = "Error: can't remove - URL not found."
+            end
+
+            @diag.if_level(3) { puts! msg }
+            return msg
+        rescue Exception => ex
+            @diag.if_level(3) { p ex }
+            return "Adding URL to block list failed:\n" + ex
+        end
+    end
+    
+    def block_list_add_mime_type(tid, mime_type, block=nil, name=nil)
         begin
             return ERROR_INCOMPLETE_COMMAND if mime_type.nil? || mime_type == ""
             node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
             blockedMimesList = settings.getBlockedMimeTypes()
-            return "There are no blocked mime types defined." if blockedMimesList.nil? || blockedMimesList.length == 0
             @diag.if_level(3) { puts! "Attempting to add #{mime_type} to Block list." }
             mimeType = com.untangle.uvm.node.MimeType.new(mime_type)
             block = (block.nil? || (block != "true")) ? false : true
             name ||= "[no name]" 
             mimeTypeRule = com.untangle.uvm.node.MimeTypeRule.new(mimeType, name, "[no category]", "[no description]", block)
-            blockedMimesList.add(mimeTypeRule)
+            rule_to_update = -1
+            blockedMimesList.each_with_index { |blocked_mime,i|
+                rule_to_update = i if blocked_mime.getMimeType().getType() == mime_type
+            }
+            if rule_to_update == -1
+                blockedMimesList.add(mimeTypeRule)
+            else
+                blockedMimesList[rule_to_update] = mimeTypeRule
+            end
             settings.setBlockedMimeTypes(blockedMimesList)
             node.setSettings(settings)
             msg = "Mime type '#{mime_type}' added to Block list."
@@ -285,34 +343,103 @@ class Webfilter < UVMFilterNode
             return msg
         rescue Exception => ex
             @diag.if_level(3) { p ex }
-            return "Adding URL to block list failed:\n" + ex
+            return "Adding mime type to block list failed:\n" + ex
         end
     end
 
-    def block_file_type(tid, file_type, block="true", category=nil)
+    def block_list_remove_mime_type(tid, mime_type)
         begin
-            return ERROR_INCOMPLETE_COMMAND if file_type.nil? || file_type==""
+            return ERROR_INCOMPLETE_COMMAND if mime_type.nil? || mime_type == ""
+            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node = node_ctx.node()
+            settings =  node.getSettings()
+            blockedMimesList = settings.getBlockedMimeTypes()
+            return "Error: there are no blocked mime types defined." if blockedMimesList.nil? || blockedMimesList.length == 0
+            
+            @diag.if_level(3) { puts! "Attempting to remove #{mime_type} from block list." }
+            rule_to_remove = blockedMimesList.detect{ |blocked_mime|
+                blocked_mime.getMimeType().getType() == mime_type
+            }
+            if rule_to_remove
+                blockedMimesList.remove(rule_to_remove)
+                settings.setBlockedMimeTypes(blockedMimesList)
+                node.setSettings(settings)
+                msg = "MIME type '#{mime_type}' removed from block list."
+            else
+                msg = "Error: can't remove - MIME type not found."
+            end
+            
+            @diag.if_level(2) { puts! msg }
+            return msg
+        rescue Exception => ex
+            msg = "Remove of MIME type from block list failed:\n" + ex
+            @diag.if_level(3) { puts! msg ; p ex }
+            return msg
+        end
+    end
+
+    def block_list_add_file_type(tid, file_ext, block="true", category=nil)
+        begin
+            return ERROR_INCOMPLETE_COMMAND if file_ext.nil? || file_ext==""
             node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
             blockedExtensionsList = settings.getBlockedExtensions()   
-            @diag.if_level(2) { puts! "Attempting to add #{file_type} to Block list." }
+            @diag.if_level(2) { puts! "Attempting to add #{file_ext} to Block list." }
             block = (block.nil? || (block != "true")) ? false : true
             category = "" unless category
-            stringRule = com.untangle.uvm.node.StringRule.new(file_type, "[no name]", category, "[no description]", block)
-            blockedExtensionsList.add(stringRule)
+            stringRule = com.untangle.uvm.node.StringRule.new(file_ext, "[no name]", category, "[no description]", block)
+            rule_to_update = -1
+            blockedExtensionsList.each_with_index { |blocked_ext,i|
+                blocked_ext.getString() == stringRule.getString()
+            }
+            if rule_to_update == -1
+                blockedExtensionsList.add(stringRule)
+            else
+                blockedExtensionsList[rule_to_update] = stringRule
+            end
             settings.setBlockedExtensions(blockedExtensionsList)
             node.setSettings(settings)
-            msg = "File extension '#{file_type}' added to Block list."
+            msg = "File extension '#{file_ext}' added to Block list."
             @diag.if_level(3) { puts! msg }
             return msg
         rescue Exception => ex
             @diag.if_level(3) { p ex }
-            return "Adding extension '#{file_type}' to block list failed:\n" + ex
+            return "Adding extension '#{file_ext}' to block list failed:\n" + ex
         end
     end
 
-    def block_category(tid, cat_to_block, block="true", log="true")
+    def block_list_remove_file_type(tid, file_ext)
+        begin
+            return ERROR_INCOMPLETE_COMMAND if file_ext.nil? || file_ext==""
+            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node = node_ctx.node()
+            settings = node.getSettings()
+            blockedExtensionsList = settings.getBlockedExtensions()   
+            @diag.if_level(2) { puts! "Attempting to remove #{file_ext} from block list." }
+
+            rule_to_remove = blockedExtensionsList.detect{ |blocked_file|
+                blocked_file.getString() == file_ext
+            }
+            if rule_to_remove
+                blockedExtensionsList.remove(rule_to_remove)
+                settings.setBlockedExtensions(blockedExtensionsList)
+                node.setSettings(settings)
+                msg = "File type '#{file_ext}' removed from block list."
+            else
+                msg = "Error: can't remove - File type not found."
+            end
+            
+            @diag.if_level(2) { puts! msg }
+            return msg
+
+        rescue Exception => ex
+            @diag.if_level(3) { p ex }
+            return "Remove file type '#{file_ext}' from block list failed:\n" + ex
+        end
+    end
+
+    def block_list_update_category(tid, cat_to_block, block="true", log="true")
         return ERROR_INCOMPLETE_COMMAND if cat_to_block.nil? || cat_to_block==""
         node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
@@ -363,17 +490,28 @@ class Webfilter < UVMFilterNode
         when nil, ""
             return ERROR_INCOMPLETE_COMMAND
         when "urls"
-            return get_passed_urls(tid)
+            return pass_list_get_urls(tid)
         when "clients"
-            return get_passed_clients(tid)
-        when "pass"
+            return pass_list_get_clients(tid)
+        when "add"
             case args[1]
             when nil, ""
                 return ERROR_INCOMPLETE_COMMAND
             when "url"
-                return pass_url(tid, args[2], args[3], args[4])
+                return pass_list_add_url(tid, args[2], args[3], args[4])
             when "client"
-                return pass_client(tid, args[2], args[3], args[4])
+                return pass_list_add_client(tid, args[2], args[3], args[4])
+            else
+                return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
+            end
+        when "remove"
+            case args[1]
+            when nil, ""
+                return ERROR_INCOMPLETE_COMMAND
+            when "url"
+                return pass_list_remove_url(tid, args[2])
+            when "client"
+                return pass_list_remove_client(tid, args[2])
             else
                 return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
             end
@@ -382,7 +520,7 @@ class Webfilter < UVMFilterNode
         end
     end
 
-    def get_passed_urls(tid)
+    def pass_list_get_urls(tid)
         node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
         settings =  node.getSettings()
@@ -397,7 +535,7 @@ class Webfilter < UVMFilterNode
         return passed_urls
     end
 
-    def get_passed_clients(tid)
+    def pass_list_get_clients(tid)
         node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
         settings =  node.getSettings()
@@ -412,7 +550,7 @@ class Webfilter < UVMFilterNode
         return passed_clients
     end
     
-    def pass_url(tid, url, block="true", desc=nil)
+    def pass_list_add_url(tid, url, block="true", desc=nil)
         begin
             return ERROR_INCOMPLETE_COMMAND if url.nil? || url==""
             node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
@@ -425,7 +563,7 @@ class Webfilter < UVMFilterNode
             newUrlToPass.setLive(block == "true")
             newUrlToPass.setDescription(desc) if desc
             rule_to_update = -1
-            passedUrlsList.each_with_index { |passed_url, i|
+            passedUrlsList.each_with_index { |passed_url,i|
                 rule_to_update = i if passed_url.getString() == newUrlToPass.getString()
             }
             if rule_to_update == -1
@@ -435,7 +573,37 @@ class Webfilter < UVMFilterNode
             end
             settings.setPassedUrls(passedUrlsList)
             node.setSettings(settings)
-            msg = "URL '#{url}' added to Pass List."
+            msg = (rule_to_update == -1) ? "URL '#{url}' added to Pass List." : "Pass list URL '#{url}' updated.'"
+            @diag.if_level(3) { puts! msg }
+            return msg
+        rescue Exception => ex
+            msg = "Adding URL to block list failed: " + ex
+            @diag.if_level(3) { puts! msg ; p ex }
+            return msg
+        end
+    end
+
+    def pass_list_remove_url(tid, url)
+        begin
+            return ERROR_INCOMPLETE_COMMAND if url.nil? || url==""
+            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node = node_ctx.node()
+            settings =  node.getSettings()
+            passedUrlsList = settings.getPassedUrls()   
+            url = url.gsub(/^www./, '')
+            @diag.if_level(2) { puts! "Attempting to add #{url} to passed list." }
+
+            rule_to_remove = passedUrlsList.detect { |passed_url|
+                passed_url.getString() == url
+            }
+            if rule_to_remove
+                passedUrlsList.remove(rule_to_remove)
+                settings.setPassedUrls(passedUrlsList)
+                node.setSettings(settings)
+                msg = "URL '#{url}' removed from pass List."
+            else
+                msg = "Error: can't remove - URL not found."
+            end
             @diag.if_level(3) { puts! msg }
             return msg
         rescue Exception => ex
@@ -444,21 +612,21 @@ class Webfilter < UVMFilterNode
         end
     end
 
-    def pass_client(tid, client, block="true", desc=nil)
+    def pass_list_add_client(tid, client, block="true", desc=nil)
         begin
             return ERROR_INCOMPLETE_COMMAND if client.nil? || client==""
             node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
-            passedClientsList = settings.getPassedClients()   
+            passedClientsList = settings.getPassedClients()
             @diag.if_level(2) { puts! "Attempting to add #{client} to passed list." }
             newClientIpMaddr = com.untangle.uvm.node.IPMaddr.new(client)
             newClientToPass = com.untangle.uvm.node.IPMaddrRule.new()
             newClientToPass.setIpMaddr(newClientIpMaddr)
-            newClientToPass.setLive(block == "true") 
+            newClientToPass.setLive(block == "true")
             newClientToPass.setDescription(desc) if desc
             rule_to_update = -1
-            passedClientsList.each_with_index { |passed_client, i|
+            passedClientsList.each_with_index { |passed_client,i|
                 rule_to_update = i if passed_client.getIpMaddr().getAddr() == newClientToPass.getIpMaddr().getAddr()
             }
             if rule_to_update == -1
@@ -469,6 +637,34 @@ class Webfilter < UVMFilterNode
             settings.setPassedClients(passedClientsList)
             node.setSettings(settings)
             msg = "Client '#{client}' added to Pass List."
+            @diag.if_level(3) { puts! msg }
+            return msg
+        rescue Exception => ex
+            @diag.if_level(3) { p ex }
+            return "Adding client to pass list failed:\n" + ex
+        end
+    end
+
+    def pass_list_remove_client(tid, client, block="true", desc=nil)
+        begin
+            return ERROR_INCOMPLETE_COMMAND if client.nil? || client==""
+            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node = node_ctx.node()
+            settings =  node.getSettings()
+            passedClientsList = settings.getPassedClients()   
+            @diag.if_level(2) { puts! "Attempting to remove #{client} from pass list." }
+            
+            rule_to_remove = passedClientsList.detect { |passed_client|
+                passed_client.getIpMaddr().getAddr() == client
+            }
+            if rule_to_remove
+                passedClientsList.remove(rule_to_remove)
+                settings.setPassedClients(passedClientsList)
+                node.setSettings(settings)
+                msg = "Client '#{client}' removed from pass List."
+            else
+                msg = "Error: can't remove - client address not found."
+            end
             @diag.if_level(3) { puts! msg }
             return msg
         rescue Exception => ex

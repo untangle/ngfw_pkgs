@@ -77,17 +77,19 @@ class Firewall < UVMFilterNode
                 help_text = <<-FIREWALL_HELP
 
 - firewall -- enumerate all web filters running on effective #{BRAND} server.
-- firewall <#X> rule-list
+- firewall <#X> rules
     -- Display rule list for firewall #X
-- firewall <#X> rule-list add ...
+- firewall <#X> rules add enable action log traffic_type direction src-addr dst-addr src-port dst-port category description
     -- Add item to rule-list by type (or update) with specified block and log settings.
+- firewall <#X> rules remove [rule-number]
+    -- Remove item '[rule-number]' from rule list.
 - firewall <#X> settings ...
     -- Display settings for firewall #X
 - firewall <#X> settings action [pass|block]
     -- Change settings for firewall #X
                 FIREWALL_HELP
                 return help_text
-            when "rule-list"
+            when "rules", "rule"
                 return manage_rule_list(tid, args)
             when "settings"
                 return manage_settings(tid, args)
@@ -113,17 +115,15 @@ class Firewall < UVMFilterNode
         when nil, ""
             return get_rule_list(tid)
         when "add"
-            return add_rule(tid, *args.slice(1,args.length-1))
+            return add_rule(tid, -1, *args.slice(1,args.length-1))
+        when "update"
+            return add_rule(tid, args[1], *args.slice(2,args.length-2))
+        when "remove"
+            return remove_rule(tid, args[1])
         else
             return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
         end
     end
-
-   #public FirewallRule( boolean       isLive,     ProtocolDBMatcher protocol,
-   #                      boolean       inbound,    boolean outbound, 
-   #                      IPDBMatcher   srcAddress, IPDBMatcher       dstAddress,
-   #                      PortDBMatcher srcPort,    PortDBMatcher     dstPort,
-   #                      boolean isTrafficBlocker )
 
     def get_rule_list(tid)
         begin
@@ -154,7 +154,7 @@ class Firewall < UVMFilterNode
         end
     end
 
-    def add_rule(tid, enable="true", action="block", log="false", traffic_type=nil, direction=nil, src_addr=nil, dst_addr=nil, src_port=nil, dst_port=nil, category=nil, desc=nil)
+    def add_rule(tid, rule_num, enable="true", action="block", log="false", traffic_type=nil, direction=nil, src_addr=nil, dst_addr=nil, src_port=nil, dst_port=nil, category=nil, desc=nil)
 	
 	# Validate arguments...  ***TODO: validate format of addresses and ports?
 	if !(traffic_type && direction && src_addr && dst_addr && src_port && dst_port)
@@ -173,6 +173,11 @@ class Firewall < UVMFilterNode
             node = node_ctx.node()
             settings =  node.getSettings()
             firewallRuleList = settings.getFirewallRuleList()
+
+            rule_num = rule_num.to_i
+            if (rule_num < 1 || rule_num > firewallRuleList.length) && (rule_num != -1)
+                return "Error: invalid rule number - valid values are 1...#{firewallRuleList.length}"
+            end
             
 	    rule = com.untangle.node.firewall.FirewallRule.new
 	    rule.setLive(enable == "true")
@@ -212,11 +217,16 @@ class Firewall < UVMFilterNode
 	    rule.setCategory(category) if category
 	    rule.setDescription(desc) if desc
 	    
-	    firewallRuleList.add(rule)
+	    if rule_num == -1
+                firewallRuleList.add(rule)
+	    else
+                firewallRuleList[rule_num-1] = rule
+	    end
+	    
 	    settings.setFirewallRuleList(firewallRuleList)
 	    node.setSettings(settings)
 	    
-	    msg = "Rule added to firewall rule list."
+	    msg = (rule_num == -1) ? "Rule #{rule_num} updated in firewall rule list." : "Rule added to firewall rule list."
 	    @diag.if_level(2) { puts! msg }
             return msg
         rescue Exception => ex
@@ -226,24 +236,44 @@ class Firewall < UVMFilterNode
         end
     end
 
-    #
-    #   Pass list related methods
-    #
+    def remove_rule(tid, rule_num)
+	
+	# Remove rule...
+        begin
+            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node = node_ctx.node()
+            settings =  node.getSettings()
+            firewallRuleList = settings.getFirewallRuleList()
+
+            rule_num = rule_num.to_i
+            if (rule_num < 1 || rule_num > firewallRuleList.length)
+                return "Error: invalid rule number - valid values are 1...#{firewallRuleList.length}"
+            end
+
+            firewallRuleList.remove(firewallRuleList[rule_num-1])
+	    settings.setFirewallRuleList(firewallRuleList)
+	    node.setSettings(settings)
+	    
+	    msg = "Rule #{rule_num} removed from firewall rule list."
+	    @diag.if_level(2) { puts! msg }
+            return msg
+        rescue Exception => ex
+            msg = "Error: #{self.class}.remove_rule caught an unhandled exception -- " + ex
+            @diag.if_level(2) { puts! msg ; p ex }
+            return msg
+        end
+    end
+   
     def manage_settings(tid, args)
         case args[0]
         when nil, ""
             return ERROR_INCOMPLETE_COMMAND
-        when "action"
-	    case args[1]
-	    when "default"
-		if args[2].nil?
-		    return list_settings_default_action(tid)
-		else
-		    return settings_default_action(tid, args[2])
-		end
-	    else
-		return ERROR_INCOMPLETE_COMMAND
-	    end	        
+        when "default-action"
+            if args[1].nil?
+                return list_settings_default_action(tid)
+            else
+                return settings_default_action(tid, args[1])
+            end
         else
             return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
         end
