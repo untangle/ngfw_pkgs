@@ -130,11 +130,11 @@ class Webfilter < UVMFilterNode
         when "urls"
             return get_blocked_urls(tid)
         when "categories", "cats"
-            return get_blocked_categories(tid)
+            return block_list_get_categories(tid)
         when "mime", "mimes"
-            return get_blocked_mime_types(tid)
+            return block_list_get_mime_types(tid)
         when "file", "files"
-            return get_blocked_file_types(tid)
+            return block_list_get_file_types(tid)
         when "add"
             case args[1]
             when nil, ""
@@ -191,7 +191,7 @@ class Webfilter < UVMFilterNode
         return blocked_urls
     end
 
-    def get_blocked_categories(tid)
+    def block_list_get_categories(tid)
         node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
         settings =  node.getSettings()
@@ -218,7 +218,7 @@ class Webfilter < UVMFilterNode
         return blocked_cats
     end
     
-    def get_blocked_mime_types(tid)
+    def block_list_get_mime_types(tid)
         node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
         settings =  node.getSettings()
@@ -240,7 +240,7 @@ class Webfilter < UVMFilterNode
         return blocked_mime_types
     end
 
-    def get_blocked_file_types(tid)
+    def block_list_get_file_types(tid)
         node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
         settings =  node.getSettings()
