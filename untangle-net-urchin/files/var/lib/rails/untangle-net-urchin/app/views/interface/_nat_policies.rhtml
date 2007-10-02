@@ -1,11 +1,13 @@
 <div class="nat-policies">
-  <table id="nat_policies">
-    <tr>        
-      <th><%= "Address and Netmask".t %></th>
-      <th><%= "Source Address".t %></th>
-      <th><%= "Delete".t %></th>
-    </tr>
+  <ul id="nat-policy-list">
+    <li class="np-header">
+      <div class="np-header-1"><%= "Address and Netmask".t %></div>
+      <div class="np-header-2"><%= "Source Address".t %></div>
+      <div class="np-header-3"><%= "Delete".t %></div>
+    </li>
     
     <%= render(:partial => "nat_policy" , :collection => nat_policies ) %>
-  </table>
+  </ul>
+
+  <%= sortable_element( "nat-policy-list" ) %> 
 </div>

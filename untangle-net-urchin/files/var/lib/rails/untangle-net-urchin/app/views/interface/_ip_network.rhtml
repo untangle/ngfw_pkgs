@@ -1,13 +1,13 @@
 <% rowId="ip-row-#{rand( 0x100000000 )}" %>
-<tr id="<%= rowId  %>" class="ip-network">
-  <td>
-    <%= hidden_field_tag( "networkIndices[]", rowId ) %>
+<li id="<%= rowId  %>" class="ip-network">
+  <%= hidden_field_tag( "networkIndices[]", rowId ) %>
+  <div class="in-column-1">
     <%= text_field( "networks", rowId, { :value => "#{ip_network.ip} / #{ip_network.netmask}", :size => 30 } ) %>
-  </td>
-  <td>
+  </div>
+  <div class="in-column-2">
     <%= check_box( "allowPing", rowId, { :checked => ip_network.allow_ping }, true, false ) %>
-  </td>
-  <td>
+  </div>
+  <div class="in-column-3">
     <%= link_to_remote( "-".t, :url => { :action => :remove_network, :id => rowId } ) %>
-  </td>
-</td>
+  </div>
+</li>

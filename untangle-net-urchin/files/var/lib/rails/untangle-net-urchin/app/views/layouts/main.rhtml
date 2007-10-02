@@ -4,6 +4,9 @@
     <title><%= (( @title.nil? ) ? ApplicationController::DefaultTitle : @title ).t %></title>
     <%= javascript_include_tag :defaults %>
     <%= stylesheet_link_tag "borax" %>
+    <%= stylesheet_link_tag "borax-ip-network" %>
+    <%= stylesheet_link_tag "borax-nat-policy" %>
+    <%= stylesheet_link_tag "borax-file-override" %>
   </head>
   <body>
     <%= yield %>

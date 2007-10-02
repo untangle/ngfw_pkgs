@@ -27,14 +27,22 @@
     <%= link_to_remote( "+".t, :url => { :action => :create_nat_policy } ) %>
     <%= render(:partial => "nat_policies" , :object => @static.nat_policies ) %>
   
-    <h2><%= "General".t %></h2>
-    <div class="text-fields">
-      <p><label for="static[mtu]"><%= "MTU:".t %></label>
-      <%= text_field( "static", "mtu", { :value => "#{@static.mtu}", :size => 30 } ) %></p>
-      
-      <p><label for="static[forward_traffic]"><%= "Forward Traffic:".t %></label>
-      <%= check_box( "static", "forward_traffic", { :checked => @static.forward_traffic }, true, false ) %></p>
-    </div>
+    
+    <fieldset>
+      <legend><%= "General".t %></legend>
+      <ul class="text-fields">
+        <li>
+          <label for="static[mtu]"><%= "MTU:".t %></label>
+          <%= text_field( "static", "mtu", { :value => "#{@static.mtu}", :size => 30 } ) %>
+        </li>
+        
+        
+        <li>
+          <label for="static[forward_traffic]"><%= "Forward Traffic:".t %></label>
+          <%= check_box( "static", "forward_traffic", { :checked => @static.forward_traffic }, true, false ) %>
+        </li>
+      </ul>
+    </fieldset>
       
     <%= submit_tag "Cancel".t %>
     <%= submit_tag "Save Changes".t %>

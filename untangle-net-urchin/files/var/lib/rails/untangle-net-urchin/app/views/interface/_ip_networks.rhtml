@@ -1,11 +1,11 @@
 <div class="ip-networks">
-  <table id="ip_networks" class="ip-networks">
-    <tr>        
-      <th><%= "Address and Netmask".t %></th>
-      <th><%= "ping".t %></th>
-      <th><%= "Delete".t %></th>
-    </tr>
+  <ul id="ip-network-list">
+    <li class="in-header">
+      <div class="in-header-1"><%= "Address and Netmask".t %></div>
+      <div class="in-header-2"><%= "ping".t %></div>
+      <div class="in-header-2"><%= "Delete".t %></div>
+    </li>
     
     <%= render(:partial => "ip_network" , :collection => ip_networks ) %>
-  </table>
+  </ul>
 </div>

@@ -11,6 +11,7 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
   Service = "/etc/init.d/networking"
   InterfacesConfigFile = "/etc/network/interfaces"
   InterfacesStatusFile = "/etc/network/run/ifstate"
+  IfTabConfigFile = "/etc/network/run/ifstate"
 
   def interfaces
     logger.debug( "Running inside of the network manager for debian" )
@@ -37,7 +38,9 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
   def commit
     interfaces_file = []
     interfaces_file << header
-    Interface.find( :all ).each do |interface|
+
+    interfaces = Interface.find( :all )
+    interfaces.each do |interface|
       config = interface.current_config
       ## REVIEW refactor me.
       case config
@@ -56,8 +59,11 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
     ## Review : This is a bit verbose, and it has DebianSarge hardcoded
     overrideManager = OSLibrary.getOS( "DebianSarge" ).manager( "override_manager" )    
     overrideManager.write_file( InterfacesConfigFile, interfaces_file.join( "\n" ), "\n" )
+
+    ## Write the /etc/iftab file, ifrename is not executed
+    ## Review : now because we no longer need to remap interfaces
+    write_iftab( interfaces )
     
-    ## Restart networking
     ## Clear out all of the interface state.
     ## Review: Should this be immutable.
     File.open( InterfacesStatusFile, "w" ) { |f| f.print( "lo=lo" ) }
@@ -69,6 +75,7 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
     ## XXX THIS SHOULDN'T BE HERE, should be in an observer ##
     OSLibrary::Debian::DhcpManager.instance.commit
 
+    ## Restart networking
     raise "Unable to reconfigure network settings." unless Kernel.system( "#{Service} start" )
   end
 
@@ -218,6 +225,15 @@ EOF
     mtu = OSLibrary::NetworkManager::DefaultMTU if mtu <= 0
 
     return "\t#{prefix}mtu #{mtu}"
+  end
+
+  def write_iftab( interfaces )
+    ## Iterate all of the interfaces
+    iftab = interfaces.map { |i| "#{i.os_name}\tmac\t#{i.mac}" }
+    
+    ## Review : This is a bit verbose, and it has DebianSarge hardcoded
+    overrideManager = OSLibrary.getOS( "DebianSarge" ).manager( "override_manager" )    
+    overrideManager.write_file( IfTabConfigFile, iftab.join( "\n" ), "\n" )
   end
 
   def header
