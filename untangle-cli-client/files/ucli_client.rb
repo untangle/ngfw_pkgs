@@ -47,7 +47,7 @@ include UCLICommon
 #   - Logon/log off - how?  Server ACL with password?
 #   - Feedback for failed remote command
 #   - history N
-#   - tasks command to review background tasks
+#   - jobs command to review background jobs
 #
 # Open Issues:
 #   - Do we need to save/load history?
@@ -61,7 +61,7 @@ class UCLIClient
     # Constants
     DEFAULT_PORT = 7777
     FORBIDDEN_BACKGROUND_COMMANDS = %w{ with ^#\d }     # commands that cannot be run in the background
-    FORBIDDEN_WITH_COMMANDS = %w{ open quit exit with history tasks servers } 
+    FORBIDDEN_WITH_COMMANDS = %w{ open quit exit with history jobs servers } 
             
     # Accessors
     attr_reader :client_name, :welcome, :server_name, :history_size, :commands, :verbose
@@ -95,9 +95,9 @@ class UCLIClient
         @server_ping_thread = nil
         @server_ping_frequency = 120 # in seconds
         @verbose = 2
-        @tasks = []
-        @tasks_lock = Mutex.new
-        @task_num = 1
+        @jobs = []
+        @jobs_lock = Mutex.new
+        @job_num = 1
         @diag = Diag.new(3)
         @commands_to_execute = []
         
@@ -117,12 +117,12 @@ class UCLIClient
             ["servers", false, "list servers currently under management by this #{client_name} session."],
             ["webfilter", true, "send command to webfilter -- enter 'webfilter help' for details."],
             ["with", true, "send multiple commands to servers, '##' or 'all' for all servers, '-i' for interactive -- with host-name #2 #4 -i"],
-            ["tasks", false, "list all background tasks currently running."],
-            ["cleanup", false, "cleanup client resources, e.g., release stored task outputs, etc."],
+            ["jobs", false, "list all background jobs currently running."],
+            ["cleanup", false, "cleanup client resources, e.g., release stored job outputs, etc."],
             ["source", false, "source (i.e., run) the given script (use '.' as shortcut) -- source filename or . filename"],
-            ["%X", false, "display output of background task 'X' -- %1"],
+            ["%X", false, "display output of background job 'X' -- %1"],
             ["#X", false, "switch effective #{server_name} to server 'X' -- #3"],
-            ["save", false, "save output stored with task %X to filename -- save %3 myoutput.txt"],
+            ["save", false, "save output stored with job %X to filename -- save %3 myoutput.txt"],
             # The following are not top level commands but are included here so they can be part of the
             # word completion list we pass to readline.  These can be distinguished and filtered from 
             # this list by noting that they have nil for their help text settings.
@@ -131,10 +131,13 @@ class UCLIClient
             ["block", false, nil],
             ["pass-list", false, nil],
             ["pass", false, nil],
+            ["category", false, nil],
             ["categories", false, nil],
             ["url", false, nil],
             ["mime", false, nil],
             ["file", false, nil],
+            ["add", false, nil],
+            ["remove", false, nil],
             ["client", false, nil],
             ["localhost", false, nil]
         ]
@@ -276,7 +279,7 @@ class UCLIClient
                         return
                     end
                 }
-                cmd_a.pop # remove '&' from arg list - background tasks are handled WITHIN this client and not by the system that runs the command in the back ground.
+                cmd_a.pop # remove '&' from arg list - background jobs are handled WITHIN this client and not by the system that runs the command in the back ground.
                 
                 # Cache effective drb server object BEFORE launching thread - this way if
                 # the user or a command changes the effective server while the thread is
@@ -286,20 +289,20 @@ class UCLIClient
                 @servers_lock.synchronize { drb_server = @drb_server[2] }
                 if drb_server.nil? then puts! "Bug: there is no effective DRb server.  Recommend restarting #{client_name}."; return; end
                 
-                @tasks_lock.synchronize {
-                    # must store task record before creating thread so command processor can tell if the command is in the background or not.
-                    task_index = @task_num-1
-                    @tasks[task_index] = [nil, cmd_s, @task_num, true, ""]  # [ task thread, cmd string, task num, background?, output]
-                    t = Thread.new(task_index) { |t_idx|
+                @jobs_lock.synchronize {
+                    # must store job record before creating thread so command processor can tell if the command is in the background or not.
+                    job_index = @job_num-1
+                    @jobs[job_index] = [nil, cmd_s, @job_num, true, ""]  # [ job thread, cmd string, job num, background?, output]
+                    t = Thread.new(job_index) { |t_idx|
                         Thread.current[:drb_server] = drb_server
-                        Thread.current[:task_index] = t_idx
+                        Thread.current[:job_index] = t_idx
                         Thread.current[:background] = true
                         res = self.__send__(*cmd_a);
-                        @tasks_lock.synchronize { @tasks[t_idx][4] = res }
+                        @jobs_lock.synchronize { @jobs[t_idx][4] = res }
                         puts! "\nDone (#{cmd_a.join(' ')}) - use command '%#{t_idx+1}' to view output."
                     }
-                    @tasks[task_index][0] = t
-                    @task_num += 1
+                    @jobs[job_index][0] = t
+                    @job_num += 1
                 }
                 
                 cmd_a << "&" # restore popped '&'
@@ -318,7 +321,7 @@ class UCLIClient
     # Preprocess a pending command: perform history replacement, etc.
     def preprocess(cmd)
         
-        cmd = cmd.gsub(/&$/, ' &') if /[^\s]&$/ =~ cmd  # ensure background task indicator is seen as a separate word in the command (add white space if neccessary)
+        cmd = cmd.gsub(/&$/, ' &') if /[^\s]&$/ =~ cmd  # ensure background job indicator is seen as a separate word in the command (add white space if neccessary)
         cmd_a = shellwords cmd                          # preprocess command with shell-words quoting rules, eg, quoted words are treated as one word, etc.
         cmd = cmd_a[0].strip                            # normalize the effective command word.
         
@@ -373,11 +376,11 @@ class UCLIClient
     
     # Clean dynamic resources as necessary to keep client under control
     def cleanup
-        # Remove/dereference resources held by finished tasks so GC can clean them up.
-        @tasks_lock.synchronize {
-            @tasks.each_with_index { |task,i|
-                if task[0] && !task[0].status
-                    @tasks[i] = [nil, nil, nil, nil]
+        # Remove/dereference resources held by finished jobs so GC can clean them up.
+        @jobs_lock.synchronize {
+            @jobs.each_with_index { |job,i|
+                if job[0] && !job[0].status
+                    @jobs[i] = [nil, nil, nil, nil]
                 end
             }
         }
@@ -420,7 +423,7 @@ class UCLIClient
 
     # Cleanly shutdown the CLI
     def shutdown
-        @tasks.each { |t| t[0].join }  # wait for any remaining background tasks to complete.
+        @jobs.each { |t| t[0].join }  # wait for any remaining background jobs to complete.
     end
     
     # Display message to console IFF message level is <= verbosity level
@@ -526,8 +529,8 @@ class UCLIClient
                         # cmd_a is passed back as initialized above
                     end
                 end
-            elsif (/^%\d+$/ =~ cmd)     # request to display output of task %X
-                output = get_task_output($&[1..-1].to_i)
+            elsif (/^%\d+$/ =~ cmd)     # request to display output of job %X
+                output = get_job_output($&[1..-1].to_i)
                 output.each { |line| puts! line } if output
             else    # send unknown method request to server for processing
                 server = Thread.current[:drb_server] || @servers_lock.synchronize { server = @drb_server[2] }
@@ -794,15 +797,15 @@ class UCLIClient
         ucli_servers = nil
         server_id = nil
         drb_server = nil
-        tasks = nil
+        jobs = nil
         @servers_lock.synchronize {
             ucli_servers = @ucli_servers
             server_id = @server_id
             drb_server = @drb_server
         }
-        @tasks_lock.synchronize {
-            tasks = @tasks
-            @tasks = []
+        @jobs_lock.synchronize {
+            jobs = @jobs
+            @jobs = []
         }
         
         if args.length >= 1
@@ -877,10 +880,10 @@ class UCLIClient
         
         return if commands.length < 1   # nothing to do
 
-        # Disallow with scripts with background tasks.        
+        # Disallow with scripts with background jobs.        
         commands.each_with_index { |cmd,i|
             if /.*&$/ =~ cmd
-                puts "Error: 'with' scripts may not run tasks in the background (see line #{i+1})"
+                puts "Error: 'with' scripts may not run jobs in the background (see line #{i+1})"
                 return
             end
         }
@@ -916,10 +919,10 @@ class UCLIClient
         rescue Exception => ex
             puts! "Error: 'with' command processor encountered an unhandled exception: " + ex
         ensure
-            @tasks_lock.synchronize {
-                message "Waiting for background tasks to complete...", 2 if @tasks.length > 0
-                @tasks.each { |t| t[0].join }   # wait for any tasks spawned by this 'with script' to finish
-                @tasks = tasks                  # BEFORE restoring state of @tasks and @drb_server
+            @jobs_lock.synchronize {
+                message "Waiting for background jobs to complete...", 2 if @jobs.length > 0
+                @jobs.each { |t| t[0].join }   # wait for any jobs spawned by this 'with script' to finish
+                @jobs = jobs                  # BEFORE restoring state of @jobs and @drb_server
             }
             @servers_lock.synchronize {
                 @drb_server = drb_server
@@ -928,36 +931,36 @@ class UCLIClient
             
     end
 
-    # List all active tasks
-    def tasks(*args)
-        @tasks_lock.synchronize {
-            @tasks.each { |task|
-                if task[0]
-                    t = "[#{task[2]}] #{task[1]}"
-                    t << (task[0].status ? " (in progress)" : " (done)")
-                    t << " '#{task[4][0].slice(0,20)}...'" unless
+    # List all active jobs
+    def jobs(*args)
+        @jobs_lock.synchronize {
+            @jobs.each { |job|
+                if job[0]
+                    t = "[#{job[2]}] #{job[1]}"
+                    t << (job[0].status ? " (in progress)" : " (done)")
+                    t << " '#{job[4][0].slice(0,20)}...'" unless
                     puts! t
                 end
             }
         }
     end
 
-    def get_task_output(task_num)
-        @tasks_lock.synchronize {
-            if task_num < 1 || task_num > @tasks.length
-                puts! "Error: invalid task number."
+    def get_job_output(job_num)
+        @jobs_lock.synchronize {
+            if job_num < 1 || job_num > @jobs.length
+                puts! "Error: invalid job number."
                 return []
-            elsif @tasks[task_num-1][4].nil?
-                puts! "Error: task #{task_num} had no output or has already been cleaned up - output not available."
+            elsif @jobs[job_num-1][4].nil?
+                puts! "Error: job #{job_num} had no output or has already been cleaned up - output not available."
                 return []
             else
-                return @tasks[task_num-1][4]
+                return @jobs[job_num-1][4]
             end
         }
     end
     
     def save(*args)
-        invalid_args_msg = "Error: missing argument(s) - save requires a valid task ID and a legal filename."
+        invalid_args_msg = "Error: missing argument(s) - save requires a valid job ID and a legal filename."
         
         if args.length < 2
             puts! invalid_args_msg
@@ -967,7 +970,7 @@ class UCLIClient
         begin
             if /^%\d+$/ =~ args[0]
                 
-                output = get_task_output($&[1..-1].to_i)
+                output = get_job_output($&[1..-1].to_i)
                 if output.nil? || output.length < 1
                     message "Task #{args[0]} has no output to save.", 2
                     return
@@ -983,13 +986,13 @@ class UCLIClient
                 return unless confirm_overwrite args[1]
     
                 File.open(args[1], "w") { |f| 
-                    @tasks_lock.synchronize {
-                        @tasks.each { |task|
-                            f.write(task[1] + "\n")
-                            if task[4].nil? || task[4].length == 0
+                    @jobs_lock.synchronize {
+                        @jobs.each { |job|
+                            f.write(job[1] + "\n")
+                            if job[4].nil? || job[4].length == 0
                                 f.write("[no output]\n")
                             else
-                                task[4].each { |line| f.write line }
+                                job[4].each { |line| f.write line }
                             end
                         }
                     }
@@ -998,7 +1001,7 @@ class UCLIClient
                 puts! invalid_args_msg
             end
         rescue NoMethodError => ex
-            puts! "Error: invalid task ID '#{args[0]}'}"
+            puts! "Error: invalid job ID '#{args[0]}'}"
             @diag.if_level(3) { p ex }
         rescue IOError => ex
             puts! "Error: unable to write to file '#{args[1]}'."
