@@ -7,6 +7,6 @@ Standards-Version: 3.7.2
 
 Package: untangle-kiosk
 Architecture: any
-Depends: fbpanel, feh, xbindkeys, artwiz-cursor, firefox
+Depends: fbpanel, feh, xbindkeys, artwiz-cursor, firefox, rsync
 Description: The Untangle kiosk utils
  The Untangle kiosk mode utilities.
