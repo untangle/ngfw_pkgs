@@ -6,7 +6,7 @@ div.nat-policies
   height: 120px;
   }
 
-div.nat-policies ul#nat-policy-list
+div.nat-policies ul.nat-policy-list
 { 
   width: 602px;
   list-style: none inside none;
@@ -14,38 +14,38 @@ div.nat-policies ul#nat-policy-list
   padding: 0px;
  }
 
-ul#nat-policy-list div
+ul.nat-policy-list div
 {
   float: left;
   }
 
-ul#nat-policy-list li
+ul.nat-policy-list li
 {
   overflow: auto;
   }
 
-ul#nat-policy-list li.np-header
+ul.nat-policy-list li.np-header
 { 
   background-color: #C0C0C0;
   text-align: center;
  }
 
-ul#nat-policy-list div.np-header-1, div.np-column-1
+ul.nat-policy-list div.np-header-1, div.np-column-1
 { 
   width: 300px;
   }
 
-ul#nat-policy-list div.np-header-2, div.np-column-2
+ul.nat-policy-list div.np-header-2, div.np-column-2
 { 
   width: 200px;
   }
 
-ul#nat-policy-list div.np-header-3, div.np-column-3
+ul.nat-policy-list div.np-header-3, div.np-column-3
 { 
   width: 100px;
   }
 
-ul#nat-policy-list li.nat-policy
+ul.nat-policy-list li.nat-policy
 { 
   background-color: #EEFFEE;
   border: 1px solid #C0C0C0;
@@ -53,15 +53,15 @@ ul#nat-policy-list li.nat-policy
  }
 
 
-ul#nat-policy-list div.np-column-1
+ul.nat-policy-list div.np-column-1
 { 
   }
 
-ul#nat-policy-list div.np-column-2
+ul.nat-policy-list div.np-column-2
 {
   }
 
-ul#nat-policy-list div.np-column-3
+ul.nat-policy-list div.np-column-3
 { 
   text-align: center;
   }

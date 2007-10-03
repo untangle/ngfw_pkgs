@@ -19,6 +19,9 @@ module InterfaceHelper
     BRIDGE="bridge"
   end
 
+  ## Array of all of the available config types
+  CONFIGTYPES = [ ConfigType::STATIC, ConfigType::DYNAMIC, ConfigType::BRIDGE ].freeze
+
   ## An array of the config types that you can bridge with
-  BRIDGEABLE_CONFIGTYPES = [ ConfigType::STATIC, ConfigType::DYNAMIC ]
+  BRIDGEABLE_CONFIGTYPES = [ ConfigType::STATIC, ConfigType::DYNAMIC ].freeze
 end

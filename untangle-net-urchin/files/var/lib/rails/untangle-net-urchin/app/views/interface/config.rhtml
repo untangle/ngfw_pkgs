@@ -1,0 +1,21 @@
+<div>
+  <% 
+    ## Define a few convenience variables
+    bridge_locals = { :interface => @interface, :bridge_interfaces => @bridge_interfaces, 
+                      :bridge_interface_id => @bridge_interface_id }
+  %>
+  <h1><%= "Interface Configuration for %s".t / @interface.name %></h1>
+  <% form_tag( :action => 'null' ) do -%>
+    <p><label for="config_type"><%= "Config Type".t %></label>
+    <%= select_tag( "config_type", options_for_select( @config_types, @config_type_id )) %>
+    <%= observe_field( "config_type", { :url => { :action => :change_config_type }, :with => "config_type" } ) %>
+  <% end -%>
+
+  <div id="config-type">
+    <%= render( :partial => "static", :object => @static, :locals => { :interface => @interface }  ) %>
+    
+    <%= render( :partial => "dynamic", :object => @dynamic, :locals => { :interface => @interface } ) %>
+      
+    <%= render( :partial => "bridge", :object => @bridge, :locals => bridge_locals ) %>
+  </div>
+</div>

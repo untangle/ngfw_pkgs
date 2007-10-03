@@ -1,5 +1,5 @@
 <div class="nat-policies">
-  <ul id="nat-policy-list">
+  <ul class="nat-policy-list" id="<%= list_id %>">
     <li class="np-header">
       <div class="np-header-1"><%= "Address and Netmask".t %></div>
       <div class="np-header-2"><%= "Source Address".t %></div>
@@ -9,5 +9,5 @@
     <%= render(:partial => "nat_policy" , :collection => nat_policies ) %>
   </ul>
 
-  <%= sortable_element( "nat-policy-list" ) %> 
+  <%= sortable_element( list_id ) %> 
 </div>

@@ -6,7 +6,7 @@ div.ip-networks
   height: 150px;
   }
 
-div.ip-networks ul#ip-network-list
+div.ip-networks ul.ip-network-list
 { 
   width: 502px;
   list-style: none inside none;
@@ -14,38 +14,38 @@ div.ip-networks ul#ip-network-list
   padding: 0px;
  }
 
-ul#ip-network-list div
+ul.ip-network-list div
 {
   float: left;
   }
 
-ul#ip-network-list li
+ul.ip-network-list li
 {
   overflow: auto;
   }
 
-ul#ip-network-list li.in-header
+ul.ip-network-list li.in-header
 { 
   background-color: #C0C0C0;
   text-align: center;
  }
 
-ul#ip-network-list div.in-header-1, div.in-column-1
+ul.ip-network-list div.in-header-1, div.in-column-1
 { 
   width: 300px;
   }
 
-ul#ip-network-list div.in-header-2, div.in-column-2
+ul.ip-network-list div.in-header-2, div.in-column-2
 { 
   width: 100px;
   }
 
-ul#ip-network-list div.in-header-3, div.in-column-3
+ul.ip-network-list div.in-header-3, div.in-column-3
 { 
   width: 100px;
   }
 
-ul#ip-network-list li.ip-network
+ul.ip-network-list li.ip-network
 { 
   background-color: #EEFFEE;
   border: 1px solid #C0C0C0;
@@ -53,16 +53,16 @@ ul#ip-network-list li.ip-network
  }
 
 
-ul#ip-network-list div.in-column-1
+ul.ip-network-list div.in-column-1
 { 
   }
 
-ul#ip-network-list div.in-column-2
+ul.ip-network-list div.in-column-2
 {
   text-align: center;
   }
 
-ul#ip-network-list div.in-column-3
+ul.ip-network-list div.in-column-3
 { 
   text-align: center;
   }

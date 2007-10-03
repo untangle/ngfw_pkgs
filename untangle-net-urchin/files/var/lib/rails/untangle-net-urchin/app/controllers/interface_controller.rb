@@ -37,49 +37,25 @@ class InterfaceController < ApplicationController
     return redirect_to( :action => 'list' )
   end
 
-  def static
-    config do
-      @title = "Static Interface Configuration"
+  def config
+    load_config do
+      @title = "Interface Configuration"
       
       ## Retrieve the static configuration, creating a new one if necessary.
-      @static = @interface.intf_static
-      @static = IntfStatic.new if @static.nil?
-    end
-  end
+      static
 
-  def dynamic
-    config do
-      @title = "Dynamic Interface Configuration"
-      
-      ## Retrieve the static configuration, creating a new one if necessary.
-      @dynamic = @interface.intf_dynamic
-      @dynamic = IntfDynamic.new if @dynamic.nil?
-    end
-  end
+      ## Retrieve the dynamic configuration, creating a new one if necessary.
+      dynamic
 
-  def bridge
-    config do
-      @title = "Bridge Interface Configuration"
-    
-      ## Retrieve the static configuration, creating a new one if necessary.
-      @bridge = @interface.intf_bridge
-      @bridge = IntfBridge.new if @bridge.nil?
+      ## Retrieve the bridge configuration, creating a new one if necessary.
+      bridge
 
-      if @bridge.bridge_interface.nil?
-        @bridge_interface_id = nil
-      else
-        @bridge_interface_id = @bridge.bridge_interface.id
-      end
+      @config_type_id = @interface.config_type
 
-      conditions = [ "config_type IN (?) AND id != ?" ]
-      conditions << InterfaceHelper::BRIDGEABLE_CONFIGTYPES
-      conditions << @interface.id
-      
-      ## Create a selection map
-      @bridgeInterfaces = Interface.find( :all, :conditions => conditions ).collect do |interface|
-        ## XXX config_type and name will need internationalization
-        [ "#{interface.name} (#{interface.config_type})", interface.id ]
-      end
+      @config_types = InterfaceHelper::CONFIGTYPES.map { |type| [ type, type ] }
+
+      @hide_types = InterfaceHelper::CONFIGTYPES.dup
+      @hide_types.delete( @interface.config_type )
     end
   end
 
@@ -266,8 +242,8 @@ class InterfaceController < ApplicationController
       
       ## Review : should this save network settings first.
       ## Review : Internationalization
-      if ( params[:commit] == "Configure" )
-        return redirect_to( :action => bridge_interface.config_type, :id => bridge_interface.id ) 
+      if ( params[:commit] == "Configure".t )
+        return redirect_to( :action => "config", :id => bridge_interface.id ) 
       end
 
       ## Actually commit the changes
@@ -277,8 +253,22 @@ class InterfaceController < ApplicationController
       true
     end
   end
+  
+  ## Change the configuration type
+  def change_config_type
+    @config_type = params[ :config_type ]
     
+    raise "invalid config type" unless InterfaceHelper::CONFIGTYPES.include?( @config_type )
+
+    @hide_types = InterfaceHelper::CONFIGTYPES.dup
+    @hide_types.delete( @config_type )
+  end
+
   def create_ip_network
+    @list_id = params[ :list_id ]
+    raise "no row id" if @list_id.nil?
+    raise "invalid list id syntax" if /^ip-network-list-[a-z]*$/.match( @list_id ).nil?
+
     ## Review : How to set defaults
     @ip_network = IpNetwork.new
     @ip_network.ip = "0.0.0.0"
@@ -289,11 +279,15 @@ class InterfaceController < ApplicationController
   def remove_network
     @rowId = params[ :id ]
 
-    ## should validate the syntax
     raise "no row id" if @rowId.nil?
+
+    raise "invalid row id syntax" if /^ip-row-[0-9]*$/.match( @rowId ).nil?
   end
 
   def create_nat_policy
+    @list_id = params[ :list_id ]
+    raise "invalid list id syntax" if /^nat-policy-list-[a-z]*$/.match( @list_id ).nil?
+
     @natPolicy = NatPolicy.new
     @natPolicy.ip = "1.2.3.4"
     @natPolicy.netmask = "24"
@@ -303,11 +297,47 @@ class InterfaceController < ApplicationController
   def remove_nat_policy
     @rowId = params[ :id ]
     
-    ## should validate the syntax
     raise "no row id" if @rowId.nil?
+
+    raise "invalid row id syntax" if /^nat-policy-row-[0-9]*$/.match( @rowId ).nil?
   end
 
   private
+
+  def static
+    ## Retrieve the static configuration, creating a new one if necessary.
+    @static = @interface.intf_static
+    @static = IntfStatic.new if @static.nil?
+  end
+
+  def dynamic
+    ## Retrieve the dynamic configuration, creating a new one if necessary.
+    @dynamic = @interface.intf_dynamic
+    @dynamic = IntfDynamic.new if @dynamic.nil?
+  end
+
+  def bridge
+    ## Retrieve the bridge configuration, creating a new one if necessary.
+    @bridge = @interface.intf_bridge
+    @bridge = IntfBridge.new if @bridge.nil?
+    
+    if @bridge.bridge_interface.nil?
+      @bridge_interface_id = nil
+    else
+      @bridge_interface_id = @bridge.bridge_interface.id
+    end
+    
+    conditions = [ "config_type IN (?) AND id != ?" ]
+    conditions << InterfaceHelper::BRIDGEABLE_CONFIGTYPES
+    conditions << @interface.id
+    
+    ## Create a selection map
+    @bridge_interfaces = Interface.find( :all, :conditions => conditions ).collect do |interface|
+      ## XXX config_type and name will need internationalization
+      [ "#{interface.name} (#{interface.config_type})", interface.id ]
+    end
+  end
+
   
   ## Load all physical devices
 
@@ -361,7 +391,7 @@ class InterfaceController < ApplicationController
   end
 
   ## Load the necessary values for a config page
-  def config
+  def load_config
     interface_id = params[:id]
     return redirect_to( :action => 'list' ) if interface_id.nil?
     @interface = Interface.find( interface_id )

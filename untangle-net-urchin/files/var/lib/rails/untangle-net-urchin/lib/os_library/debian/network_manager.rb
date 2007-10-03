@@ -62,7 +62,7 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
 
     ## Write the /etc/iftab file, ifrename is not executed
     ## Review : now because we no longer need to remap interfaces
-    write_iftab( interfaces )
+    ## furthermore, udev is kind enough to handle this automatically.
     
     ## Clear out all of the interface state.
     ## Review: Should this be immutable.
@@ -225,15 +225,6 @@ EOF
     mtu = OSLibrary::NetworkManager::DefaultMTU if mtu <= 0
 
     return "\t#{prefix}mtu #{mtu}"
-  end
-
-  def write_iftab( interfaces )
-    ## Iterate all of the interfaces
-    iftab = interfaces.map { |i| "#{i.os_name}\tmac\t#{i.mac}" }
-    
-    ## Review : This is a bit verbose, and it has DebianSarge hardcoded
-    overrideManager = OSLibrary.getOS( "DebianSarge" ).manager( "override_manager" )    
-    overrideManager.write_file( IfTabConfigFile, iftab.join( "\n" ), "\n" )
   end
 
   def header

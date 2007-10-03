@@ -1,14 +1,13 @@
-<div>
-  <h1><%= "Dynamic interface configuration for %s".t / @interface.name %></h1>
-
-  <% form_tag( :action => 'intf_dynamic_save', :id => @interface ) do -%>
+<% style = @hide_types.include?( "dynamic" ) ? 'style="display: none"' : nil  %>
+<div id="dynamic" <%= style %>>
+  <% form_tag( :action => 'intf_dynamic_save', :id => interface ) do -%>
      <div class="text-fields"> 
        <p><label for="dynamic[ip]"><%= "IP Address:".t %></label>
        <%= text_field( "dynamic", "ip", { :size => 30 } ) %></p>
        <p><label for="dynamic[netmask]"><%= "Netmask:".t %></label>
        <%= text_field( "dynamic", "netmask", { :size => 30 } ) %></p>
 
-       <% if @interface.wan %>
+       <% if interface.wan %>
          <p><label for="dynamic[default_gateway]"><%= "Default Gateway:".t %></label>
          <%= text_field( "dynamic", "default_gateway", { :size => 30 } ) %></p>
          <p><label for="dynamic[dns_1]"><%= "Primary DNS Server:".t %></label>
@@ -29,8 +28,11 @@
     </div>
 
     <h2><%= "IP Addresses".t %></h2>
-    <%= link_to_remote( "+".t, :url => { :action => :create_ip_network } ) %>
-    <%= render(:partial => "ip_networks" , :object => @dynamic.ip_networks ) %>
+    <% list_id = "ip-network-list-dynamic" %>
+    <%= link_to_remote( "+".t, :url => { :action => :create_ip_network, :list_id => list_id  } ) %>
+    
+    <%= render( :partial => "ip_networks" , :object => dynamic.ip_networks, 
+                :locals => { :list_id => list_id } ) %>
     
     <%= submit_tag "Cancel".t %>
     <%= submit_tag "Save Changes".t %>
