@@ -1,5 +1,4 @@
 class InterfaceController < ApplicationController
-
   ## DDD These are subject to internationalization DDD
   ## REVIEW : These are also linux specific.
   DefaultInterfaceMapping = {

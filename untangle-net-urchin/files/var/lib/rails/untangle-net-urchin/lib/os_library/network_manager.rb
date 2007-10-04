@@ -52,15 +52,15 @@ class OSLibrary::NetworkManager
 
   ## Just a little helper used to convey interfaces
   class PhysicalInterface
-    def initialize( os_name, mac_address, bus )
-      @os_name, @mac_address, @bus_id = os_name, mac_address, bus
+    def initialize( os_name, mac_address, bus, vendor )
+      @os_name, @mac_address, @bus_id, @vendor = os_name, mac_address, bus, vendor
     end
     
     def to_s
       "physical-interface <#{os_name},#{mac_address},#{bus}>"
     end
 
-    attr_reader :os_name, :mac_address, :bus
+    attr_reader :os_name, :mac_address, :bus, :vendor
   end
   
   ## This should return 

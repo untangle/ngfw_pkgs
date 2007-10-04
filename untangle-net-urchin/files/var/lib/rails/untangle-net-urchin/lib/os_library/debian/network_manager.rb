@@ -29,7 +29,7 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
       bus_id=""
       mac_address = File.open( "/sys/class/net/#{os_name}/address", "r" ) { |f| f.readline.strip }
 
-      interfaceArray << PhysicalInterface.new( os_name, mac_address, bus_id )
+      interfaceArray << PhysicalInterface.new( os_name, mac_address, bus_id, "untangle" )
     end
     
     interfaceArray

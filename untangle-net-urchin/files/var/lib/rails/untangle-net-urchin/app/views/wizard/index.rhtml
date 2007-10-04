@@ -1,0 +1,44 @@
+<div id="steps">
+  <ul id="step-list">
+    <li id="sl-welcome" class="current">
+      <%= "Welcome".t %>
+    </li>
+
+    <li id="sl-interface-test">
+      <%= "Interface Test".t %>
+    </li>
+    
+    <li id="sl-interface[0]">
+      <%= "External".t %>
+    </li>
+
+    <li id="sl-interface[1]">
+      <%= "Internal".t %>
+    </li>
+
+    <li id="sl-review">
+      <%= "Review".t %>
+    </li>
+  </ul>
+</div>
+
+<div id="content">
+  <%= render( :partial => "welcome" ) %>
+
+  <%= render( :partial => "interface_test", :locals => { :interfaces => @interfaces } ) %>
+
+  <% # This is a form used to hold variables regarding the state of the wizard navigation, %>
+  <% form_remote_tag( :url => { :action => 'nav' }, :html => { :id => "nav" } ) do -%>
+    <%= hidden_field_tag( "current", "0" ) %>
+  <% end -%>
+
+  <div id="nav-buttons">
+    <div id="prev" class="button" onclick="prevPage()">
+      <%= "Previous".t %>
+    </div>
+    
+    <div id="next" class="button" onclick="nextPage()">
+      <%= "Next".t %>
+    </div>
+  </div>
+</div>

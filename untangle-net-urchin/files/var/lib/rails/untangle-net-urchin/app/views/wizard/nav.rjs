@@ -1,0 +1,3 @@
+page.call( "changeCurrent", "sl-#{@current}" )
+page.hide( "welcome" )
+page.show( @current )

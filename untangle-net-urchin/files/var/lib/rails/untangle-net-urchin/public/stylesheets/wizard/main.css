@@ -1,0 +1,85 @@
+body
+{ 
+  font-family: Arial,Geneva,sans-serif;
+ }
+
+div#wizard
+{ 
+  width: 800px;
+  height: 500px;
+  background-image: url( "/images/wizard/background.png" );
+ }
+
+div#steps
+{ 
+  padding: 22px 0px 0px 24px;
+ }
+
+ul#step-list
+{ 
+  width: 220px;
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+ }
+
+ul#step-list li
+{
+  height: 28px;
+  background-image: url( "/images/wizard/steps/incomplete.png" );
+  background-repeat: no-repeat;
+  margin-top: 4px;
+  padding-left: 40px;
+  padding-top: 4px;
+  font-weight: bold;
+  font-size: 14pt;
+  }
+
+ul#step-list li.current
+{
+  background-image: url( "/images/wizard/steps/current.png" );
+  }
+
+ul#step-list li.completed
+{
+  background-image: url( "/images/wizard/steps/completed.png" );
+  }
+
+div#content
+{ 
+  position: absolute;
+  height: 480px;
+  width: 500px;
+  left: 275px;
+  top: 10px;
+  }
+
+div#nav-buttons
+{ 
+  background-color: #C0C0C0;
+  position: absolute;
+  bottom: 10px;
+  right: 0px;
+  width: 120px;
+ }
+
+div.button
+{
+  background-color: #EEFFEE;
+  padding: 2px;
+  border: 1px solid #C0C0C0;
+  position: absolute;
+  bottom: 0px;
+  }
+
+div#next
+{ 
+  position: absolute;
+  right: 0px;
+  }
+
+div.button:hover
+{
+  background-color: #3FE0C6;
+  cursor: pointer;
+  }
