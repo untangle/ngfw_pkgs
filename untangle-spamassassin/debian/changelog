@@ -1,9 +1,3 @@
-untangle-spamassassin (5.0.1-1) mustang-1; urgency=low
-
-  * auto build
-
- --  <seb@untangle.com>  Fri, 27 Jul 2007 14:47:13 -0700
-
 untangle-spamassassin (3.1.7-2~ut.1) unstable; urgency=low
 
   * auto build
