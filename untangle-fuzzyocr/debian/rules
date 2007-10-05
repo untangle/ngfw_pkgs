@@ -3,7 +3,6 @@
 include /usr/share/dpatch/dpatch.make
 
 PACKAGE=$(shell dh_listpackages)
-
 DESTDIR=$(CURDIR)/debian/$(PACKAGE)
 
 clean: unpatch
