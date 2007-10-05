@@ -106,23 +106,25 @@ class UCLIClient
             # Cmd name, Server Required, Help text
             ["history", false, "display command history, up to #{@history_size} events"],
             ["ruby", true, "send Ruby code to sever for execution -- ruby statement | file"],
-            ["quiet", false, "quiet all but alert level #{@client_name} messages"],
-            ["verbose", false, "set level of messages/chatter from #{@client_name} -- verbose [integer]"],
+            ["quiet", false, "quiet all but alert level messages"],
+            ["verbose", false, "set level of messages/chatter from client -- verbose [integer>=0]"],
             ["pong", true, "test responsiveness of UCLI server"],
             ["quit", false, "terminate after user confirmation"],
             ["exit", false, "terminate immediately"],
             ["help", false, "display help information"],
-            ["open", false, "open connection to #{@server_name} -- open (host-name|ip):port"],
-            ["close", false, "close connection to #{@server_name} #X or host-name -- close #1"],
-            ["servers", false, "list servers currently under management by this #{client_name} session."],
+            ["open", false, "open connection to server -- open (host-name|ip):port"],
+            ["close", false, "close connection to server #X or host-name -- close #1"],
+            ["servers", false, "list servers currently under management during this  session."],
             ["webfilter", true, "send command to webfilter -- enter 'webfilter help' for details."],
             ["with", true, "send multiple commands to servers, '##' or 'all' for all servers, '-i' for interactive -- with host-name #2 #4 -i"],
             ["jobs", false, "list all background jobs currently running."],
             ["cleanup", false, "cleanup client resources, e.g., release stored job outputs, etc."],
             ["source", false, "source (i.e., run) the given script (use '.' as shortcut) -- source filename or . filename"],
             ["%X", false, "display output of background job 'X' -- %1"],
-            ["#X", false, "switch effective #{server_name} to server 'X' -- #3"],
+            ["#X", false, "switch effective server to server 'X' -- #3"],
             ["save", false, "save output stored with job %X to filename -- save %3 myoutput.txt"],
+            [":command", false, "run external command on local host -- :ls /tmp"],
+            ["command", false, "run external command on server host -- who"],
             # The following are not top level commands but are included here so they can be part of the
             # word completion list we pass to readline.  These can be distinguished and filtered from 
             # this list by noting that they have nil for their help text settings.
@@ -423,7 +425,12 @@ class UCLIClient
 
     # Cleanly shutdown the CLI
     def shutdown
-        @jobs.each { |t| t[0].join }  # wait for any remaining background jobs to complete.
+        # wait for any remaining background jobs to complete.
+        @jobs.each { |t| t[0].join }
+        # shut down all sever connections
+        @servers_lock.synchronize {
+            @ucli_servers.each {|svr| svr[2].shutdown() }
+        }
     end
     
     # Display message to console IFF message level is <= verbosity level
@@ -568,6 +575,8 @@ class UCLIClient
 > !{prefix} - execute most recent historical command beginning with 'prefix'
 > command - execute non-UCLI command on UCLI server (remote) host.
 > :command - execute non-UCLI command on UCLI client (local) host.
+> Append '&' to any command to run it as a "background" job.
+> %N - display output associated with command run as background job 'N'
 > When entering a command, press [Tab] for command/word auto-completion.
     
         HERE
@@ -771,6 +780,7 @@ class UCLIClient
             svr_indices.each { |i|
                 # Leave host and port fields in tact so this sever entry can
                 # be found and reused should the same server be opened again.
+                @ucli_servers[i][2].shutdown()
                 @ucli_servers[i][2] = nil     # deref server DRbObject
                 @ucli_servers[i][3] = false   # mark server closed
                 message "#{@ucli_servers[i][0]}:#{@ucli_servers[i][1]} closed.", 2
@@ -1052,6 +1062,7 @@ loop do
         p ex
         puts! "Restarting #{ucli_client.client_name}...\n"
     ensure
+        puts! "Shutting down #{ucli_client.client_name}...\n"
         ucli_client.shutdown
     end
 end
