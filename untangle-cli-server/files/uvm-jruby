@@ -18,4 +18,7 @@ done
 export CLASSPATH
 echo $CLASSPATH
 
+export RUBYLIB=/home/ken/work/pkgs/untangle-cli-server/files:$RUBYLIB
+echo $RUBYLIB
+
 jruby $*

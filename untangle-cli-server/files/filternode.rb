@@ -9,10 +9,10 @@
 # @version 0.1
 #
 
-require 'ucli_common'
-include UCLICommon
-require 'ucli_util'
-include UCLIUtil
+require 'common'
+include NUCLICommon
+require 'util'
+include NUCLIUtil
 
 class UVMFilterNode
 

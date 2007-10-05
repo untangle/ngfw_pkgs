@@ -14,11 +14,6 @@ require 'java'
 require 'proxy'
 require 'debug'
 
-require 'ucli_common'
-include UCLICommon
-require 'ucli_util'
-include UCLIUtil
-
 require 'filternode'
 
 class Webfilter < UVMFilterNode

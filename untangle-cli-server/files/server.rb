@@ -19,8 +19,6 @@ require 'common'
 include NUCLICommon
 require 'util'
 include NUCLIUtil
-#require 'ucli_api'
-#include NUCLIApi
 
 #
 #   NUCLI server core class ***TODO: doc the extensibilty if this class and the
@@ -98,19 +96,19 @@ class NUCLIServer
     #
     def method_missing(method_id, args)
         begin
-            puts! "svr mthd msng"
-            p args
-            
             args = [] if args.nil?
             node = method_id.id2name
             @diag.if_level(3) { puts! "'#{node}' method not found - attempting to dynamically load component..." ; p args }
 
             @component_lock.synchronize {
                 # Attempt to load a node CLI with the name of the missing method.
+                @diag.if_level(3) { puts! "Trying to require '#{node}'" }
                 require node
+                @diag.if_level(3) { puts! "Found filter node '#{node}'" }
                 
                 # If successful, create an new instance of the node CLI loaded via the require.
                 self.instance_variable_set("@#{node}", eval("#{node.capitalize}.new"))
+                @diag.if_level(3) { puts! "Filter node instanced" ; p @node }
                 
                 # Now define the missing method such that it delegates to the instance of the node CLI.
                 self.instance_eval %{
@@ -119,13 +117,16 @@ class NUCLIServer
                     end
                     @component_methods << :#{node}
                 }
+                @diag.if_level(3) { puts! "Filter node delegator created." ; p methods }
+                                
                 # At this point, future calls to the missing method will be handed by the delegator we just created above.
             }
             
             # Lastly, fulfill the call for which the method was missing in the first place
             return self.__send__("#{node}", args)
 
-        rescue LoadError
+        rescue LoadError => ex
+            p ex
             # #{node}.rb not found so assume the missing method is really a program to run.
             res  = execute("#{node} #{args.join(' ') if args}")
             return res
