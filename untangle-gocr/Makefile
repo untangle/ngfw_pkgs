@@ -10,9 +10,9 @@
 #      make install DESTDIR=$RPM_BUILD_ROOT
 #
 
-prefix = /home/seb/work/pkgs/untangle-gocr/debian/tmp/usr
+prefix = /localhome/seb/svn/work/pkgs/untangle-gocr/debian/tmp/usr
 #bindir = $(prefix)/bin
-bindir = /home/seb/work/pkgs/untangle-gocr/debian/tmp/usr${exec_prefix}/bin
+bindir = /localhome/seb/svn/work/pkgs/untangle-gocr/debian/tmp/usr${exec_prefix}/bin
 
 SHELL = /bin/sh
 # this does not work on SuSE 6.0, why? (autoconf 2.12 do not set /bin/sh ?)
@@ -118,7 +118,7 @@ database:
 	$(SHELL) bin/create_db
 
 # you can override this variable by: make install DESTDIR=yourpath
-DESTDIR=/home/seb/work/pkgs/untangle-gocr/debian/tmp/usr
+DESTDIR=/localhome/seb/svn/work/pkgs/untangle-gocr/debian/tmp/usr
 .PHONY : install uninstall test examples
 install:
 	$(MAKE) -C src install

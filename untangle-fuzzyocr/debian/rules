@@ -27,6 +27,9 @@ install-stamp: build-stamp
 	install -m644 FuzzyOcr.cf $(DESTDIR)/usr/share/untangle-fuzzyocr
 	install -m644 FuzzyOcr.words.sample $(DESTDIR)/usr/share/untangle-fuzzyocr/FuzzyOcr.words
 	cp -r samples $(DESTDIR)/usr/share/doc/$(PACKAGE)/
+
+	/usr/bin/find $(DESTDIR) -depth -name .svn -exec rm -fr "{}" \;
+
 	touch install-stamp
 
 binary-indep: install
@@ -34,6 +37,7 @@ binary-indep: install
 	dh_testroot
 	dh_installdocs
 	dh_installchangelogs
+	dh_compress
 	dh_fixperms
 	dh_installdeb
 	if [[ -f debian/version ]] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi

@@ -16,7 +16,6 @@ endif
 #export DH_VERBOSE=1
 
 # This is the debhelper compatability version to use.
-export DH_COMPAT=4
 
 # set any of this variable to TRUE to  install them, to FALSE to do not install
 INSTALLDATABASE=FALSE
