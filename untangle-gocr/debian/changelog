@@ -1,3 +1,10 @@
+untangle-gocr (1:0.41-1) mustang-1; urgency=low
+
+  * Adding epoch=1 to work around earlier mistake (not preserving upstream
+    version).
+
+ -- Sebastien Delafond <seb@untangle.com>  Fri, 05 Oct 2007 11:04:45 +0000
+
 untangle-gocr (5.0.1-1) mustang-1; urgency=low
 
   * auto build
