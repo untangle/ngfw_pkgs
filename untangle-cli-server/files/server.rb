@@ -1,6 +1,6 @@
-#!/usr/local/bin/ruby
+#!/usr/bin/jruby
 #
-# ucli_server.rb - Untangle Command Line Interface Server
+# server.rb - New Untangle Command Line Interface (NNUCLI) Server
 #
 # Copyright (c) 2007 Untangle Inc., all rights reserved.
 #
@@ -15,18 +15,18 @@ require 'drb'
 require 'optparse'
 require 'thread'
 
-require 'ucli_common'
-include UCLICommon
-require 'ucli_util'
-include UCLIUtil
+require 'common'
+include NUCLICommon
+require 'util'
+include NUCLIUtil
 #require 'ucli_api'
-#include UCLIApi
+#include NUCLIApi
 
 #
-#   UCLI server core class ***TODO: doc the extensibilty if this class and the
+#   NUCLI server core class ***TODO: doc the extensibilty if this class and the
 #   component API.
 #
-class UCLIServer
+class NUCLIServer
     
     attr_reader :server_name, :server_host, :server_port
 
@@ -37,12 +37,12 @@ class UCLIServer
     
     def init(options)
         @diag = Diag.new(DEFAULT_DIAG_LEVEL)
-	@diag.if_level(2) { puts! "Initializing UCLIServer..." }
+	@diag.if_level(2) { puts! "Initializing NUCLIServer..." }
 
         # Setup defaults
         @server_host = 'localhost'
         @server_port = 7777
-        @server_name = "UCLI Server"
+        @server_name = "NUCLI Server"
 
         # Process command line options
         process_options(options)
@@ -206,18 +206,18 @@ if __FILE__ == $0
 loop do
     ucli_server = nil
     begin
-        ucli_server = UCLIServer.new(ARGV)
+        ucli_server = NUCLIServer.new(ARGV)
         ucli_server.run
         break
     rescue Interrupt
         break
     rescue Exception => ex
-        puts! "#{ucli_server.nil? ? "The UCLI Server" : ucli_server.server_name} has encountered an unhandled exception: " + ex
+        puts! "#{ucli_server.nil? ? "The NUCLI Server" : ucli_server.server_name} has encountered an unhandled exception: " + ex
 	if INTERACTIVE
 	    print! "Restart server (y/n)? "
 	    break unless getyn("y")
 	else
-            puts! "Restarting #{ucli_server.nil? ? "The UCLI Server" : ucli_server.server_name}...\n"
+            puts! "Restarting #{ucli_server.nil? ? "The NUCLI Server" : ucli_server.server_name}...\n"
 	end
     ensure
         #ucli_server.shutdown
