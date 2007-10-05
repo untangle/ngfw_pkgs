@@ -11,11 +11,6 @@ ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
 endif
 
-# Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
-
-# This is the debhelper compatability version to use.
-
 # set any of this variable to TRUE to  install them, to FALSE to do not install
 INSTALLDATABASE=FALSE
 
