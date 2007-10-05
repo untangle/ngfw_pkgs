@@ -1,6 +1,6 @@
 #!/usr/local/bin/ruby
 #
-# ucli_client.rb - Untangle Command Line Interface Client
+# client.rb - New Untangle Command Line Interface (NNUCLI) Client
 #
 # Copyright (c) 2007 Untangle Inc., all rights reserved.
 #
@@ -17,28 +17,28 @@ require 'thread'
 require 'shellwords'
 include Shellwords
 
-require 'ucli_util'
-include UCLIUtil
-require 'ucli_common'
-include UCLICommon
+require 'common'
+include NUCLICommon
+require 'util'
+include NUCLIUtil
 
 #
-# The UCLI Client effects a command line interface used to send operational and diagnostic
-# commands to an Untangle server and to the filter nodes running on it.  The UCLIClient
+# The NUCLI Client effects a command line interface used to send operational and diagnostic
+# commands to an Untangle server and to the filter nodes running on it.  The NUCLIClient
 # functionality current includes (as of 9/5/07):  ***TODO: NEEDS TO BE UPDATED.
 #   1) Command line editing with history.
 #   2) Quick commands via reference to historical commands, e.g., !2, !eval, which would run
 #       command #2 or the most recent command beginning with the prefix "eval", respectively.
 #   3) The ability to send raw Ruby code, either as a command line or as a file, to the Untangle
 #       server for execution there.
-#   4) Commands, both UCLI internal and external (ie, system commands) can be sent to the
-#       effective UCLI server or to the host of the UCLI client.
-#   5) Commands beginning with an Untangle UVM node name are passed to the UCLI server along
+#   4) Commands, both NUCLI internal and external (ie, system commands) can be sent to the
+#       effective NUCLI server or to the host of the NUCLI client.
+#   5) Commands beginning with an Untangle UVM node name are passed to the NUCLI server along
 #       along with any command arguments for execution.
-#   6) Inline command scripts can be written in the UCLI client console and routed to
-#       multiple UCLI servers using the "with" command.
+#   6) Inline command scripts can be written in the NUCLI client console and routed to
+#       multiple NUCLI servers using the "with" command.
 #
-# Note that the UCLIClient can be caused to reinitialize itself without shutting down by sending
+# Note that the NUCLIClient can be caused to reinitialize itself without shutting down by sending
 # its process a SIGHUP, i.e., kill -1.
 #
 # To Do:
@@ -56,7 +56,7 @@ include UCLICommon
 #   - Is a DRb.service_shutdown required?
 #   - Do we need aliases?
 #
-class UCLIClient
+class NUCLIClient
    
     # Constants
     DEFAULT_PORT = 7777
@@ -83,8 +83,8 @@ class UCLIClient
     def init(options)
         # Setup defaults
         @brand = "Untangle"
-        @client_name = "UCLI Client"
-        @server_name = "UCLI Server"
+        @client_name = "NUCLI Client"
+        @server_name = "NUCLI Server"
         @config_filename = ".ucli"
         @running = false
         @cmd_num = 1
@@ -108,7 +108,7 @@ class UCLIClient
             ["ruby", true, "send Ruby code to sever for execution -- ruby statement | file"],
             ["quiet", false, "quiet all but alert level messages"],
             ["verbose", false, "set level of messages/chatter from client -- verbose [integer>=0]"],
-            ["pong", true, "test responsiveness of UCLI server"],
+            ["pong", true, "test responsiveness of NUCLI server"],
             ["quit", false, "terminate after user confirmation"],
             ["exit", false, "terminate immediately"],
             ["help", false, "display help information"],
@@ -174,18 +174,18 @@ class UCLIClient
         opts = OptionParser.new
         opts.banner = "Usage: #{File.basename(__FILE__)} [OPTIONS]"
         ucli_server_host = nil
-        opts.on("-h", "--host HOST", String, "UCLI server host name or IP address.") { |host|
+        opts.on("-h", "--host HOST", String, "NUCLI server host name or IP address.") { |host|
             ucli_server_host = host
         }
         ucli_server_port = DEFAULT_PORT
-        opts.on("-p", "--port PORT", Integer, "UCLI server port number.") { |port|
+        opts.on("-p", "--port PORT", Integer, "NUCLI server port number.") { |port|
             ucli_server_port = port
         }
         opts.on("-?", "--help", "Display help.") {
             puts! opts.to_s
             exit(0)
         }
-        opts.on("-e", "--exec 'command'", String, "UCLI command to execute.") { |command|
+        opts.on("-e", "--exec 'command'", String, "NUCLI command to execute.") { |command|
             @commands_to_execute << command
         }
 
@@ -236,7 +236,7 @@ class UCLIClient
             return
         end
         
-        # Interactively collect UCLI commands and execute them, keeping a historical record.
+        # Interactively collect NUCLI commands and execute them, keeping a historical record.
         connect_to_all_ucli_servers
         launch_server_pong
         print! @welcome
@@ -553,7 +553,7 @@ class UCLIClient
         end
     end
     
-    # Display UCLI help info
+    # Display NUCLI help info
     def help(*args)
 
         # Rebuild supported commands on each call to help in the event new commands
@@ -573,8 +573,8 @@ class UCLIClient
 > !! - execute last/most recent command
 > !{number} - execute historical command 'number'
 > !{prefix} - execute most recent historical command beginning with 'prefix'
-> command - execute non-UCLI command on UCLI server (remote) host.
-> :command - execute non-UCLI command on UCLI client (local) host.
+> command - execute non-NUCLI command on NUCLI server (remote) host.
+> :command - execute non-NUCLI command on NUCLI client (local) host.
 > Append '&' to any command to run it as a "background" job.
 > %N - display output associated with command run as background job 'N'
 > When entering a command, press [Tab] for command/word auto-completion.
@@ -621,8 +621,8 @@ class UCLIClient
         }
     end
     
-    # Pass the given Ruby code to the UCLI server for execution.
-    # Argument can either be a text String or file containing Ruby code.  UCLI Server
+    # Pass the given Ruby code to the NUCLI server for execution.
+    # Argument can either be a text String or file containing Ruby code.  NUCLI Server
     # taint level may restrict certain code from being executed for security reasons.
     def ruby(*args)
         output = nil
@@ -680,7 +680,7 @@ class UCLIClient
         _pong_(server, -1, -1, -1) if server
     end
 
-    # List open/connected-to UCLI servers and display in console.
+    # List open/connected-to NUCLI servers and display in console.
     def servers(*args)
         servers = nil
         @servers_lock.synchronize do
@@ -701,7 +701,7 @@ class UCLIClient
         end
     end
 
-    # Open a connection to a UCLI sever and add to open servers list.
+    # Open a connection to a NUCLI sever and add to open servers list.
     def open(*args)
         # Validate host address format
         server_to_open = args[0].split(':')
@@ -747,7 +747,7 @@ class UCLIClient
         pong if opened # pong the server after opening it to inform the user of its status.
     end
     
-    # Open a connection to a UCLI sever and add to open servers list.
+    # Open a connection to a NUCLI sever and add to open servers list.
     def close(*args)
         invalid_server_id_msg = "Error: invalid server ID"
 
@@ -793,7 +793,7 @@ class UCLIClient
     end
     
 
-    # Dymamically collect UCLI client commands and apply them to list of servers, e.g.,
+    # Dymamically collect NUCLI client commands and apply them to list of servers, e.g.,
     #   with #2 #3
     #   [1] pong
     #   [2] webfilter list
@@ -1043,7 +1043,7 @@ class UCLIClient
         end
     end
     
-end # UCLIClient
+end # NUCLIClient
 
 if __FILE__ == $0
 
@@ -1052,7 +1052,7 @@ if __FILE__ == $0
 #
 loop do
     begin
-        ucli_client = UCLIClient.new(ARGV)
+        ucli_client = NUCLIClient.new(ARGV)
         ucli_client.run     # only returns if commands were given on the command line that launched this process, otherwise run loops forever.
         break
     rescue Terminate, Interrupt
