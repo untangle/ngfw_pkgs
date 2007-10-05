@@ -27,9 +27,14 @@ class UVMFilterNode
 	@diag.if_level(2) { puts! "Initializing UVMFilterNode..." }
         
         ## Retrieve the factory
-        @factory = com.untangle.uvm.client.RemoteUvmContextFactory.factory
-        connect
-        
+        begin
+            @factory = com.untangle.uvm.client.RemoteUvmContextFactory.factory
+            connect
+        rescue Exception
+            puts! "Error: unable to connect to Remote UVM Context Factory -- UVM server may not be running."
+            raise
+        end
+                
         ## This just guarantees that all of the connections are terminated.
         at_exit { disconnect }
 
@@ -49,7 +54,7 @@ class UVMFilterNode
       
       @uvmRemoteContext = @factory.systemLogin( DefaultTimeoutMillis )
       
-      ## Register the remove context as a proxy.
+      ## Register the remote context as a proxy.
       register( @uvmRemoteContext )
       true
     end
