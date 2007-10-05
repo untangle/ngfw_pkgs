@@ -8,7 +8,7 @@
 # @version 0.1
 #
 
-module UCLIUtil
+module NUCLIUtil
     
     def print!(msg)
         print msg

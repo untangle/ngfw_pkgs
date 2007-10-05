@@ -8,7 +8,7 @@
 # @version 0.1
 #
 
-module UCLICommon
+module NUCLICommon
 
 # Error Messages
 
