@@ -1,0 +1,8 @@
+<div id="<%= config_id %>">
+  <ul class="text-fields">
+    <li>
+      <label for="bridge"><%= "Bridge With:".t %></label>
+      <%= select_tag( "#{config_id}.bridge_interface", options_for_select( [], nil )) %>
+    </li>
+  </ul>
+</div>

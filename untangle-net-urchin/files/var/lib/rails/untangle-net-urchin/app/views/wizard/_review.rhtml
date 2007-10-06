@@ -1,0 +1,14 @@
+<div id="<%= stage.id %>" style="display: none">
+  <h1><%= "Review".t %></h1>
+  
+  <h2><%= "You have configured the following.".t %></h2>
+
+  <h2><%= "Click next to save the configuration".t %></h2>
+</div>
+
+<%= javascript_tag <<EOF
+pageHandlers['#{stage.id}'] = function() { 
+  document.getElementById("wizard-data").onsubmit();
+};
+EOF
+%>

@@ -1,0 +1,26 @@
+<div id="<%= config_id %>">
+  <ul class="text-fields">
+    <li>
+      <label><%= "Address:".t %></label>
+      <%= text_field_tag( "#{config_id}.address", "", :size => 16 ) %> /
+      <%= select_tag( "#{config_id}.netmask", options_for_select( @cidr_options, "24" ), :class => "netmask" ) %>
+    </li>
+
+    <% if is_external %>
+      <li>
+        <label for="default_gateway"><%= "Default Gateway:".t %></label>
+        <%= text_field_tag( "#{config_id}.default_gateway", "", :size => 16 ) %>
+      </li>
+
+      <li>
+        <label for="dns_1"><%= "Primary DNS Server:".t %></label>
+        <%= text_field_tag( "#{config_id}.dns_1", "", :size => 16 ) %>
+      </li>
+    
+      <li>
+        <label for="dns_1"><%= "Secondary DNS Server:".t %></label>
+        <%= text_field_tag( "#{config_id}.dns_2", "", :size => 16 ) %>
+      </li>
+    <% end %>
+  </ul>
+</div>

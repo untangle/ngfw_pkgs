@@ -1,0 +1,1 @@
+page.alert( @error ) unless @error.nil?

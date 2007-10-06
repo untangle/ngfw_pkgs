@@ -31,17 +31,21 @@ ul#step-list li
   margin-top: 4px;
   padding-left: 40px;
   padding-top: 4px;
-  font-weight: bold;
+  font-weight: normal;
   font-size: 14pt;
+  color: #C0C0C0;
   }
 
 ul#step-list li.current
 {
   background-image: url( "/images/wizard/steps/current.png" );
+  font-weight: bold;
+  color: #3CD0BA;
   }
 
 ul#step-list li.completed
 {
+  color: #65C013;
   background-image: url( "/images/wizard/steps/completed.png" );
   }
 
@@ -83,3 +87,38 @@ div.button:hover
   background-color: #3FE0C6;
   cursor: pointer;
   }
+
+select.netmask
+{
+  width: 40px;
+  }
+
+/* This only works in firefox */
+select.netmask option
+{
+  width: 150px;
+  }
+
+ul.text-fields
+{
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+}
+
+ul.text-fields li
+{
+  list-style: none;
+  padding: 2px;
+  margin: 0px;
+}
+
+ul.text-fields label
+{
+  width: 200px;
+  float: left;
+  text-align: right;
+  margin-right: 0.5em;
+  display: block;
+}
+

@@ -1,0 +1,42 @@
+<%
+is_external = ( stage.id == "interface-config[0]" ) ? true : false
+config_options = [[ "Static".t, "static"]]
+config_options << [ "Dynamic".t, "dynamic" ] if is_external
+config_options << [ "Bridge".t, "bridge" ] unless is_external
+intf = stage.handler.interface
+%>
+<%= hidden_field_tag( "interfaceList[]", stage.id ) %>
+<%= hidden_field_tag( "#{stage.id}.os_name", intf.os_name ) %>
+<%= hidden_field_tag( "#{stage.id}.name", stage.handler.name ) %>
+<div id="<%= stage.id %>" style="display: none">
+  <h1><%= "Configure".t %></h1>
+  
+  <ul class="text-fields">
+    <li>
+      <label for="config-type"><%= "Configuration Type:".t %></label>
+      <%= select_tag( "#{stage.id}.type", options_for_select( config_options, config_options[0][0] )) %>
+      <%= observe_field( "#{stage.id}.type", { :function => "setConfigType( '#{stage.id}' )" } ) %>
+    </li>
+  </ul>
+
+  <%= render( :partial => "interface_config_static", 
+              :locals => { :config_id => "#{stage.id}-static", :is_external => is_external } ) %>
+
+  <% if is_external %>
+    <%= render( :partial => "interface_config_dynamic", 
+                :locals => { :config_id => "#{stage.id}-dynamic", :is_external => is_external } ) %>
+  <% else %>
+    <%= render( :partial => "interface_config_bridge", 
+                :locals => { :config_id => "#{stage.id}-bridge", :is_external => is_external } ) %>
+  <% end %>
+  
+</div>
+<%= javascript_tag <<EOF
+interfaceArray.push( new Interface( '#{stage.id}', '#{intf.os_name}', '#{stage.handler.name}' ));
+pageHandlers['#{stage.id}'] = function() { 
+  /* Update all of the bridgeable interfaces */
+  updateBridges('#{stage.id}');
+};
+EOF
+%>
+<%= javascript_tag "setConfigType('#{stage.id}','static')" %>

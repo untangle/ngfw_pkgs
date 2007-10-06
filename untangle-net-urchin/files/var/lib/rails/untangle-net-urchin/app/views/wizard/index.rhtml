@@ -1,43 +1,28 @@
 <div id="steps">
   <ul id="step-list">
-    <li id="sl-welcome" class="current">
-      <%= "Welcome".t %>
-    </li>
-
-    <li id="sl-interface-test">
-      <%= "Interface Test".t %>
-    </li>
-    
-    <li id="sl-interface[0]">
-      <%= "External".t %>
-    </li>
-
-    <li id="sl-interface[1]">
-      <%= "Internal".t %>
-    </li>
-
-    <li id="sl-review">
-      <%= "Review".t %>
-    </li>
+    <% first = true %>
+    <% @stages.each do |stage| %>
+      <li id="<%= stage.list_id %>" <%= first ? 'class="current"' : "" %>>
+        <%= stage.name.t / [ stage.handler.name ] %>
+      </li>
+      <% first = false %>
+    <% end %>
   </ul>
 </div>
 
 <div id="content">
-  <%= render( :partial => "welcome" ) %>
-
-  <%= render( :partial => "interface_test", :locals => { :interfaces => @interfaces } ) %>
-
-  <% # This is a form used to hold variables regarding the state of the wizard navigation, %>
-  <% form_remote_tag( :url => { :action => 'nav' }, :html => { :id => "nav" } ) do -%>
-    <%= hidden_field_tag( "current", "0" ) %>
+  <% form_remote_tag( :url => { :action => 'save' }, :html => { :id => "wizard-data", :action => "#" } ) do -%>
+    <% @stages.each do |stage| %>
+      <%= render( :partial => stage.partial, :locals => { :stage => stage } ) %>
+    <% end %>
   <% end -%>
 
   <div id="nav-buttons">
-    <div id="prev" class="button" onclick="prevPage()">
+    <div id="prev" class="button" onclick="prevStage()">
       <%= "Previous".t %>
     </div>
     
-    <div id="next" class="button" onclick="nextPage()">
+    <div id="next" class="button" onclick="nextStage()">
       <%= "Next".t %>
     </div>
   </div>
