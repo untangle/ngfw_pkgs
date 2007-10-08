@@ -1,7 +1,8 @@
 <%
-is_external = ( stage.id == "interface-config[0]" ) ? true : false
+## Review : This is pretty flimsy
+is_external = ( stage.id == "interface-config-0" ) ? true : false
 config_options = [[ "Static".t, "static"]]
-config_options << [ "Dynamic".t, "dynamic" ] if is_external
+config_options << [ "Dynamic (dhcp)".t, "dynamic" ] if is_external
 config_options << [ "Bridge".t, "bridge" ] unless is_external
 intf = stage.handler.interface
 %>
@@ -9,7 +10,7 @@ intf = stage.handler.interface
 <%= hidden_field_tag( "#{stage.id}.os_name", intf.os_name ) %>
 <%= hidden_field_tag( "#{stage.id}.name", stage.handler.name ) %>
 <div id="<%= stage.id %>" style="display: none">
-  <h1><%= "Configure".t %></h1>
+  <h1><%= stage.name.t / [ stage.handler.name ] %></h1>
   
   <ul class="text-fields">
     <li>

@@ -71,8 +71,8 @@ class OSLibrary::Debian::DhcpManager < OSLibrary::DhcpManager
        [ OverrideNetmask, config.netmask ], 
        [ OverrideGateway, gateway ],
        [ OverrideDnsServer, dns ]].each do |var,val|
-        next if ( val.nil? || val.empty? )
-        cfg << "#{var}=#{val}"
+        next if ( val.nil? || val.empty? || val == "null" )
+        cfg << "#{var}=\"#{val}\""
       end
       
       next if cfg.size == 0

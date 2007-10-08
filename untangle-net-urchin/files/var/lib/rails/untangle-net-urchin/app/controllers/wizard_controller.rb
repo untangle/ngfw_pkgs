@@ -20,7 +20,7 @@ class WizardController < ApplicationController
 
     ## Name of the partial used to render this stage
     def partial
-      @id.sub( /\[[0-9]+\]$/, "" ).gsub( "-", "_" )
+      @id.sub( /-[0-9]+$/, "" ).gsub( "-", "_" )
     end
 
     attr_reader :id, :name, :is_array, :handler
@@ -85,6 +85,9 @@ class WizardController < ApplicationController
 
     ## Review : This is bad, it is just bad.
     Interface.destroy_all
+    IntfStatic.destroy_all
+    IntfBridge.destroy_all
+    IntfDynamic.destroy_all
 
     ## Create a new interface for each one (they are ordered)
     interfaceList.each do |interface|
@@ -111,6 +114,8 @@ class WizardController < ApplicationController
       ## Setup all of the parameters about the interface
       n_intf.name, n_intf.index, n_intf.os_name = name, index += 1, os_name
       n_intf.mac_address, n_intf.bus, n_intf.vendor = a.mac_address, a.bus, a.vendor
+
+      n_intf.wan = ( n_intf.index == 1 )
       
       ## Set the configuration
       case config_type
@@ -120,6 +125,8 @@ class WizardController < ApplicationController
       else return @error = "Unknown configuration type #{config_type}"
       end
     end
+
+    networkManager.commit
   end
 
   private
@@ -137,7 +144,7 @@ class WizardController < ApplicationController
       handlers = keys[p.id]
       next nil if handlers.nil?
 
-      handlers.size.times { |n| values << WizardStage.new( "#{p.id}[#{n}]", p.name, false, handlers[n] ) }
+      handlers.size.times { |n| values << WizardStage.new( "#{p.id}-#{n}", p.name, false, handlers[n] ) }
       values
     end.flatten.delete_if { |p| p.nil? }
   end
@@ -161,6 +168,7 @@ class WizardController < ApplicationController
       natPolicy.ip = "0.0.0.0"
       natPolicy.netmask = "0"
       natPolicy.new_source = "auto"
+      static.nat_policies << natPolicy
     end
 
     static.save
@@ -173,6 +181,12 @@ class WizardController < ApplicationController
     dynamic = IntfDynamic.new
     dynamic.allow_ping = true
 
+    dynamic.ip = nil
+    dynamic.netmask = nil
+    dynamic.default_gateway = nil
+    dynamic.dns_1 = nil
+    dynamic.dns_2 = nil
+
     dynamic.save
     interface.config_type = InterfaceHelper::ConfigType::DYNAMIC
     interface.intf_dynamic = dynamic
@@ -184,11 +198,11 @@ class WizardController < ApplicationController
     os_name = params["#{interface_stage_id}-bridge.bridge_interface"]
     return logger.warn( "Bridge interface is not specified" ) if os_name.nil?
     
-    bridge_interface = Interface.find( :os_name => os_name )
+    bridge_interface = Interface.find( :first, :conditions => [ "os_name = ?", os_name ] )
     return logger.warn( "Unable to find the interface '#{os_name}'" ) if bridge_interface.nil?
     
-    brdige.bridge_interface = bridge_interface
-    bridge_interface.bridge_interfaces << bridge
+    bridge.bridge_interface = bridge_interface
+    bridge_interface.bridged_interfaces << bridge
 
     interface.intf_bridge = bridge
     interface.config_type = InterfaceHelper::ConfigType::BRIDGE
