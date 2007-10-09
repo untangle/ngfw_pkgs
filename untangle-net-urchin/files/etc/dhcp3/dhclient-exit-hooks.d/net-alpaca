@@ -1,0 +1,12 @@
+#!/bin/dash
+
+ruby <<EOF
+require "xmlrpc/client"
+
+client = XMLRPC::Client.new( "localhost", "/interface/api", 3000 )
+ok, status = client.call2( "update_address", "eth0", false )
+
+EOF
+
+true
+

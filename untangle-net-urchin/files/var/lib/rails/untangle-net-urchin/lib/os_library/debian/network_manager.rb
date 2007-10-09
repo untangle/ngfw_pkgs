@@ -79,6 +79,11 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
     raise "Unable to reconfigure network settings." unless Kernel.system( "#{Service} start" )
   end
 
+  def update_address
+    ## XXX THIS SHOULDN'T BE HERE, should be in an observer ##
+    OSLibrary::Debian::PacketFilterManager.instance.update_address    
+  end
+
   ## Given an interface, this returns the expected bridge name
   def self.bridge_name( interface )
     "br.#{interface.os_name}"

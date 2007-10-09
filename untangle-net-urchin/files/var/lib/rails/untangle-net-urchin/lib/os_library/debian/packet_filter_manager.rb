@@ -72,6 +72,12 @@ EOF
     
     raise "Unable to iptables rules." unless Kernel.system( "#{Service} restart" )
   end
+
+  ## Regenerate the iptables rules.
+  def update_address
+    logger.debug( "Recreating the iptables rules" )
+    commit
+  end
   
   private
   

@@ -8,6 +8,9 @@ class InterfaceController < ApplicationController
     "eth2" => [ "DMZ", 3 ]
   }
 
+  ## Implement the reload interfaces web api.
+  web_service_api InterfaceApi
+
   def index
     list
     render :action => 'list'
@@ -110,7 +113,9 @@ class InterfaceController < ApplicationController
     end
 
     ## Actually commit the changes
-    networkManager.commit
+    spawn do
+      networkManager.commit
+    end
     
     return redirect_to( :action => 'list' )
   end
@@ -171,7 +176,9 @@ class InterfaceController < ApplicationController
       @interface.save
       
       ## Actually commit the changes
-      networkManager.commit
+      spawn do
+        networkManager.commit
+      end
       
       ## Indicate the command was successful
       true
@@ -214,7 +221,9 @@ class InterfaceController < ApplicationController
       @interface.save
 
       ## Actually commit the changes
-      networkManager.commit
+      spawn do
+        networkManager.commit
+      end
 
       ## Return true
       true
@@ -251,7 +260,9 @@ class InterfaceController < ApplicationController
       end
 
       ## Actually commit the changes
-      networkManager.commit
+      spawn do
+        networkManager.commit
+      end
       
       ## return true
       true
@@ -304,6 +315,19 @@ class InterfaceController < ApplicationController
     raise "no row id" if @rowId.nil?
 
     raise "invalid row id syntax" if /^nat-policy-row-[0-9]*$/.match( @rowId ).nil?
+  end
+
+  def update_address( interface_name, wait_for )
+    logger.debug( "Updating the address for #{interface_name}" )
+    
+    ## Run in a separate thread.
+    spawn do
+      logger.debug( "[START] Updating in a separate process." )
+      networkManager.update_address
+      logger.debug( "[DONE] Updating in a separate process." )
+    end
+    
+    true
   end
 
   private

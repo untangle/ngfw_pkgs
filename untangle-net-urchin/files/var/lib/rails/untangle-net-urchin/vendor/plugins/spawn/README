@@ -1,0 +1,44 @@
+Spawn
+=====
+
+This plugin provides a 'spawn' method to easily fork off long-running sections of
+code so that your application can return results to the user more quickly.
+The "trick" of this plugin is to fork another process and generate a new database
+connection for ActiveRecord::Base in the child process so that the parent process's
+connection doesn't clash with the child's connection.
+
+Example
+-------
+
+Here's a simple example of how to demonstrate this.   In one of your controllers, insert
+this code:
+
+  spawn do
+    logger.info("I feel sleepy...")
+    sleep 11
+    logger.info("Time to wake up!")
+  end
+  
+If everything is working correctly, your controller should finish quickly then you'll see
+the last log message several seconds later.
+
+If you need to wait for the spawned child process, then you can use the returned PID and
+tell spawn to not detach from the process like this:
+
+  pid = spawn(:detach => false) do
+    sleep 11
+  end
+  Process.wait(pid)
+
+If you use the ":detach => false" option you must either wait for or detach from the
+child process so that you don't create a zombie process.
+
+Acknowledgement
+---------------
+
+This plugin was inspired by Scott Persinger's blog post on how to use fork in rails for
+background processing.
+    http://geekblog.vodpod.com/?p=26
+
+
+Copyright (c) 2007 Tom Anderson (tom@squeat.com), see LICENSE
