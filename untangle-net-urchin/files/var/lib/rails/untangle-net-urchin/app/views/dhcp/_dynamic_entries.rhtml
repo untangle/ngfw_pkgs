@@ -1,0 +1,12 @@
+<div class="dynamic-entries">
+  <ul class="dynamic-entry-list" id="dynamic-entry-list-1024">
+    <li class="de-header">
+      <div class="de-header-1"><%= "MAC Address".t %></div>
+      <div class="de-header-2"><%= "IP Address".t %></div>
+      <div class="de-header-3"><%= "Hostname".t %></div>
+      <div class="de-header-4"></div>
+    </li>
+    
+    <%= render(:partial => "dynamic_entry" , :collection => [ 1, 2 ] ) %>
+  </ul>
+</div>

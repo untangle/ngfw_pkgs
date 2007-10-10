@@ -2,12 +2,12 @@
 <li id="<%= rowId  %>" class="nat-policy">
   <div class="np-column-1">
     <%= hidden_field_tag( "natIndices[]", rowId ) %>
-    <%= text_field_tag( "natNetworks[#{rowId}]", "#{nat_policy.ip} / #{nat_policy.netmask}", :size => 30 ) %>
+    <%= text_field_tag( "natNetworks[#{rowId}]", "#{nat_policy.ip} / #{nat_policy.netmask}", :class => "in-table" ) %>
   </div>
   <div class="np-column-2">
-    <%= text_field_tag( "natNewSources[#{rowId}]", "#{nat_policy.new_source}", :size => 20 ) %>
+    <%= text_field_tag( "natNewSources[#{rowId}]", "#{nat_policy.new_source}", :class => "in-table" ) %>
   </div>
-  <div class="np-column-3">
-    <%= link_to_remote( "-", :url => { :action => :remove_nat_policy, :id => rowId } ) %>
+  <div class="np-column-3" onclick="removeListItem( '<%= rowId %>' )">
+    <%= "-".t %>
   </div>
 </li>

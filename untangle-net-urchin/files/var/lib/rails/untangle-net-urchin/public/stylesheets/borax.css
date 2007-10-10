@@ -58,7 +58,16 @@ ul#interface-os-list li
 input[type="text"]
 {
   background-color: #DDDDDD;
-  border: 1px solid #101010;
+  border-style: solid;
+  border-color:  #101010;
+  border-width: 1px;
+ }
+
+input[type="text"].in-table
+{
+  background-color: transparent;
+  border-width: 0px;
+  width: 100%;
  }
 
 form fieldset li {

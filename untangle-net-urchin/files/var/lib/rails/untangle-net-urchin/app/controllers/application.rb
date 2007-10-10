@@ -10,6 +10,9 @@ class ApplicationController < ActionController::Base
   session :session_key => '_untangle-net-alpaca_session_id'
   
   before_filter :setLocale
+  before_filter :setStylesheets
+  before_filter :setScripts
+  
 
   def setLocale
     settings = LocaleSetting.find( :first )
@@ -18,4 +21,19 @@ class ApplicationController < ActionController::Base
     Locale.set( settings.key ) unless settings.nil?
   end
 
+  def setStylesheets
+    @stylesheets = []
+    begin
+      @stylesheets = stylesheets
+    rescue
+    end
+  end
+  
+  def setScripts
+    @scripts = []
+    begin
+      @scripts = scripts
+    rescue
+    end
+  end
 end

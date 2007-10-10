@@ -126,7 +126,9 @@ class WizardController < ApplicationController
       end
     end
 
-    networkManager.commit
+    spawn do
+      networkManager.commit
+    end
   end
 
   private

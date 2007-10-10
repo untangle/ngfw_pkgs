@@ -1,0 +1,17 @@
+<% rowId="se-row-#{rand( 0x100000000 )}" %>
+<li id="<%= rowId  %>" class="static-entry">
+  <%= hidden_field_tag( "staticEntries[]", rowId ) %>
+  <div class="se-column-1">
+    <%= text_field( "hostname", rowId, { :value => "", :class => "in-table" } ) %>
+  </div>
+  <div class="se-column-2">
+    <%= text_field( "address", rowId, { :value => "", :class => "in-table"  } ) %>
+  </div>
+  <div class="se-column-3">
+    <%= text_field( "description", rowId, { :value => "", :class => "in-table" } ) %>
+  </div>
+  <div class="se-column-4">
+    -
+  </div>
+
+</li>

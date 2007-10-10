@@ -27,8 +27,10 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
       os_name = os_name.strip
 
       bus_id=""
+      logger.debug( "Before opening file" )
       mac_address = File.open( "/sys/class/net/#{os_name}/address", "r" ) { |f| f.readline.strip }
-
+      logger.debug( "After opening file" )
+      
       interfaceArray << PhysicalInterface.new( os_name, mac_address, bus_id, "untangle" )
     end
     
@@ -76,7 +78,7 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
     OSLibrary::Debian::DhcpManager.instance.commit
 
     ## Restart networking
-    raise "Unable to reconfigure network settings." unless Kernel.system( "#{Service} start" )
+    raise "Unable to reconfigure network settings." unless Kernel.system( "nohup #{Service} start" )
   end
 
   def update_address

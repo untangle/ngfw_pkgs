@@ -2,12 +2,12 @@
 <li id="<%= rowId  %>" class="ip-network">
   <%= hidden_field_tag( "networkIndices[]", rowId ) %>
   <div class="in-column-1">
-    <%= text_field( "networks", rowId, { :value => "#{ip_network.ip} / #{ip_network.netmask}", :size => 30 } ) %>
+    <%= text_field( "networks", rowId, { :value => "#{ip_network.ip} / #{ip_network.netmask}", :class => "in-table" } ) %>
   </div>
   <div class="in-column-2">
     <%= check_box( "allowPing", rowId, { :checked => ip_network.allow_ping }, true, false ) %>
   </div>
-  <div class="in-column-3">
-    <%= link_to_remote( "-".t, :url => { :action => :remove_network, :id => rowId } ) %>
+  <div class="in-column-3" onclick="removeListItem( '<%= rowId %>' )">
+    <%= "-".t %>
   </div>
 </li>

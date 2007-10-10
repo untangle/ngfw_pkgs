@@ -1,0 +1,12 @@
+<div class="static-entries">
+  <ul class="static-entry-list" id="<%= 1024 %>">
+    <li class="se-header">
+      <div class="se-header-1"><%= "Hostname".t %></div>
+      <div class="se-header-2"><%= "IP Address".t %></div>
+      <div class="se-header-3"><%= "Description".t %></div>
+      <div class="se-header-4"><%= "Delete".t %></div>
+    </li>
+    
+    <%= render(:partial => "static_entry" , :collection => static_entries ) %>
+  </ul>
+</div>

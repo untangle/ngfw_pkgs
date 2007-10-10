@@ -1,0 +1,33 @@
+<div>
+  <h1><%= "DHCP Server Configuration".t %></h1>
+
+  <% form_tag( :action => 'save' ) do -%>
+    <fieldset>
+      <ul class="text-fields">
+        <li>
+          <label for="dhcp[enabled]"><%= "Enabled:".t %></label>
+          <%= check_box( "dhcp", "enabled", { :checked => true }, true, false ) %>
+        </li>
+
+        <li>
+          <label for="dhcp[start]"><%= "Start:".t %></label>
+          <%= text_field( "dhcp", "start", { :value => "", :size => 16 } ) %>
+        </li>
+
+        <li>
+          <label for="dhcp[end]"><%= "End:".t %></label>
+          <%= text_field( "dhcp", "end", { :value => "", :size => 16 } ) %>
+        </li>
+      </ul>
+
+      <h2><%= "Static DHCP Entries".t %></h2>
+      +
+      <%= render( :partial => "static_entries" , :object => @static_entries ) %>
+
+      <h2><%= "Automatic DHCP Entries".t %></h2>
+      Refresh
+      <%= render( :partial => "dynamic_entries" , :object => @dynamic_entries ) %>
+    </fieldset>
+  <% end -%>
+
+</div>

@@ -3,10 +3,20 @@
   <head>
     <title><%= (( @title.nil? ) ? ApplicationController::DefaultTitle : @title ).t %></title>
     <%= javascript_include_tag :defaults %>
+
+    <% @scripts.each do |script| %>
+      <%= javascript_include_tag script %>
+    <% end %>
+
     <%= stylesheet_link_tag "borax" %>
     <%= stylesheet_link_tag "borax-ip-network" %>
     <%= stylesheet_link_tag "borax-nat-policy" %>
     <%= stylesheet_link_tag "borax-file-override" %>
+    
+    <% @stylesheets.each do |sheet| %>
+      <%= stylesheet_link_tag sheet %>
+    <% end %>
+
   </head>
   <body>
     <%= yield %>

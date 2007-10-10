@@ -2,14 +2,14 @@
 div#file-overrides
 { 
   margin: 10px 0px 10px 0px;
-  width: 620px;
+  width: 623px;
   overflow-y: scroll;
   height: 200px;
   }
 
 div#file-overrides ul#file-override-list
 { 
-  width: 602px;
+  width: 605px;
   list-style: none inside none;
   margin: 0px;
   padding: 0px;
@@ -58,9 +58,15 @@ ul#file-override-list li.file-override
   border-top: 0px;
  }
 
+li.file-override div
+{ 
+  border-left: 1px solid #C0C0C0;
+  height: 20px;
+  }
 
 ul#file-override-list div.column-1
 { 
+  border-left: 0px none  #C0C0C0;
   text-align: center;
   }
 

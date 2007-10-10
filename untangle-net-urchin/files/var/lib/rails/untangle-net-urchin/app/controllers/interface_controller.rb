@@ -330,6 +330,10 @@ class InterfaceController < ApplicationController
     true
   end
 
+  def scripts
+    [ "interface" ]
+  end
+
   private
 
   def static

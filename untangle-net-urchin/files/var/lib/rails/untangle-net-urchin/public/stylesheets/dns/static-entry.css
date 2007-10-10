@@ -1,0 +1,87 @@
+div.static-entries
+{ 
+  margin: 10px 0px 10px 0px;
+  width: 764px;
+  overflow-y: scroll;
+  height: 150px;
+  }
+
+div.static-entries ul.static-entry-list
+{ 
+  width: 744px;
+  list-style: none inside none;
+  margin: 0px;
+  padding: 0px;
+ }
+
+ul.static-entry-list div
+{
+  float: left;
+  }
+
+ul.static-entry-list li
+{
+  overflow: auto;
+  padding: 0px;
+  }
+
+ul.static-entry-list li.se-header
+{ 
+  background-color: #C0C0C0;
+  text-align: center;
+ }
+
+li.static-entry div
+{ 
+  border-left: 1px solid #C0C0C0;
+  height: 20px;
+  }
+
+ul.static-entry-list div.se-header-1, div.se-column-1
+{ 
+  width: 270px;
+  }
+
+ul.static-entry-list div.se-header-2, div.se-column-2
+{ 
+  width: 140px;
+  }
+
+ul.static-entry-list div.se-header-3, div.se-column-3
+{ 
+  width: 200px;
+  }
+
+ul.static-entry-list div.se-header-4, div.se-column-4
+{ 
+  width: 100px;
+  }
+
+
+ul.static-entry-list li.static-entry
+{ 
+  background-color: #EEFFEE;
+  border: 1px solid #C0C0C0;
+  border-top: 0px;
+ }
+
+ul.static-entry-list div.se-column-1
+{
+  border-left: 0px none #C0C0C0;
+  text-align: center;
+  }
+
+ul.static-entry-list div.se-column-2
+{
+  text-align: center;
+  }
+
+ul.static-entry-list div.se-column-3
+{ 
+  text-align: center;
+  }
+
+ul.static-entry-list div.se-column-4
+{ 
+  text-align: center;
+  }

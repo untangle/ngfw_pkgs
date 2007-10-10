@@ -1,14 +1,14 @@
 div.ip-networks
 { 
   margin: 10px 0px 10px 0px;
-  width: 520px;
+  width: 523px;
   overflow-y: scroll;
   height: 150px;
   }
 
 div.ip-networks ul.ip-network-list
 { 
-  width: 502px;
+  width: 505px;
   list-style: none inside none;
   margin: 0px;
   padding: 0px;
@@ -52,9 +52,15 @@ ul.ip-network-list li.ip-network
   border-top: 0px;
  }
 
+li.ip-network div
+{ 
+  border-left: 1px solid #C0C0C0;
+  height: 20px;
+  }
 
 ul.ip-network-list div.in-column-1
 { 
+  border-left: 0px none #C0C0C0;
   }
 
 ul.ip-network-list div.in-column-2
@@ -67,4 +73,8 @@ ul.ip-network-list div.in-column-3
   text-align: center;
   }
 
-
+ul.ip-network-list div.in-column-3:hover
+{ 
+  cursor: pointer;
+  background-color: #E1EB26;  
+  }
