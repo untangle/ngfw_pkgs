@@ -16,7 +16,8 @@ require 'optparse'
 require 'thread'
 require 'shellwords'
 include Shellwords
-
+require 'getoptlong'
+    
 require 'common'
 include NUCLICommon
 require 'util'
@@ -185,7 +186,7 @@ class NUCLIClient
             puts! opts.to_s
             exit(0)
         }
-        opts.on("-e", "--exec 'command'", String, "NUCLI command to execute.") { |command|
+        opts.on("-e", "--exec COMMAND", String, "NUCLI command to execute.") { |command|
             @commands_to_execute << command
         }
 
@@ -194,8 +195,8 @@ class NUCLIClient
             print! "Unknown options encountered: #{remainder}\nContinue [y/n]? "
             raise Terminate unless STDIN.gets.chomp.downcase == "y"
         end
-        
-        # If we ever allow more than one server to be opened via command line options
+
+        # TODO: If we ever allow more than one server to be opened via command line options
         # then we'll need to ensure the same host:port is not added twice.
         @servers_lock.synchronize do
             @ucli_servers << [ucli_server_host, ucli_server_port, nil];
@@ -1052,9 +1053,10 @@ if __FILE__ == $0
 #   Main loop: continue to recreate and run CLI until a valid quit is encountered.
 #
 loop do
+    nucli_client = nil
     begin
-        ucli_client = NUCLIClient.new(ARGV)     # run only returns if commands were given on the command
-        ucli_client.run                         # line that launched this process, otherwise run loops 
+        nucli_client = NUCLIClient.new(ARGV)     # run only returns if commands were given on the command
+        nucli_client.run                         # line that launched this process, otherwise run loops 
         break                                   # until a terminate, interrupt or unhandled exception is raised.
     rescue Terminate, Interrupt
         break
@@ -1063,7 +1065,7 @@ loop do
         p ex
         puts! "Restarting...\n"
     ensure
-        ucli_client.shutdown
+        nucli_client.shutdown if nucli_client
     end
 end
 
