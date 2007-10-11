@@ -9,11 +9,45 @@ debug()
     /bin/echo -e "[DEBUG: `date`] ${*}"
 }
 
+## Wait bridge check attempts for the bridge to come up(if this is a bridge)
+BRIDGE_CHECK_ATTEMPTS=15
+
+## This is the time to wait in between checking the bridge status
+BRIDGE_CHECK_INTERVAL=1
+
+wait_for_bridge()
+{
+    local t_interface
+    local t_ready=${BRIDGE_CHECK_ATTEMPTS}
+    local t_count
+    
+    for (( t_count = 0 ; t_count < ${BRIDGE_CHECK_ATTEMPTS} ; t_count++ )) {
+        t_ready="true"
+        ## Iterate all of the interfaces in the bridge
+        for t_interface in `find /sys/class/net/ -path "/sys/class/net/${interface}/brif/*" -printf "%f "`; do
+            ## Skip the files that don't exist.
+            test -f /sys/class/net/${t_interface}/brport/state || continue
+            
+            ## Search for interfaces that are disabled or forwarding
+            grep -q "[03]" /sys/class/net/${t_interface}/brport/state || t_ready="false" 
+        done
+        
+        ${t_ready} && break
+        
+        sleep ${BRIDGE_CHECK_INTERVAL}
+    }
+
+    debug "Waited ${t_count} counts for the bridge ${interface}"
+}
+
 OVERRIDE_VARIABLES="/etc/untangle-net-alpaca/dhcp-overrides.${interface}"
 
 DEBUG=/bin/true
 
 DEBUG=debug
+
+## Wait for the bridge to come up
+wait_for_bridge
 
 test -f "${OVERRIDE_VARIABLES}" || { 
     ${DEBUG} "No override file for the interface: '${interface}'"
@@ -51,6 +85,7 @@ case ${reason} in
         return 0
         ;;
 esac
+
 
 ## Review!!! : Check if this causes a delay for bridges because
 ## old_ip_address doesn't make new_ip_address Also, this may cause

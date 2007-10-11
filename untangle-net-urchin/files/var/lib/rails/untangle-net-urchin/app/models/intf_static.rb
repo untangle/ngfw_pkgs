@@ -1,3 +1,5 @@
+require "ipaddr"
+
 class IntfStatic < ActiveRecord::Base
   belongs_to :interface
   
@@ -11,7 +13,7 @@ class IntfStatic < ActiveRecord::Base
     errors.add( "Invalid Primary DNS Server '#{dns_1}'" ) unless checkField( dns_1 )
     errors.add( "Invalid Secondary DNS Server '#{dns_2}'" ) unless checkField( dns_2 )
 
-    errors.each { |e,f| logger.debug( e + " " + f ) }
+    errors.each { |e,f| logger.debug( e.to_s + " " + f.to_s ) }
   end
 
   def checkField( field )
@@ -19,6 +21,6 @@ class IntfStatic < ActiveRecord::Base
     return true if ApplicationHelper.null?( field )
     
     ## The field is valid if the match is non-nil
-    return !InterfaceHelper::IPAddressPattern.match( field ).nil?
+    return !IPAddr.parse( field ).nil?
   end
 end

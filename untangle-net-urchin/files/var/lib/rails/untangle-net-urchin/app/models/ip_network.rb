@@ -1,3 +1,5 @@
+require "ipaddr"
+
 class IpNetwork < ActiveRecord::Base
   ## Parse a network and netmask combination.
   ## Valid Syntax:
@@ -16,8 +18,7 @@ class IpNetwork < ActiveRecord::Base
 
   protected
   def validate
-    ## All of the strings have to be internationalized.
-    errors.add( "Invalid IP Address '#{ip}'" ) if InterfaceHelper::IPAddressPattern.match( ip ).nil?
-    InterfaceHelper::validateNetmask( errors, netmask )
+    errors.add( "Invalid IP Address '#{ip}'" ) if IPAddr.parse( "#{ip}/32" ).nil?        
+    errors.add( "Invalid Netmask '#{netmask}'" ) if IPAddr.parse( "1.2.3.4/#{netmask}" ).nil?
   end
 end

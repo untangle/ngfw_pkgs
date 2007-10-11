@@ -19,6 +19,6 @@ class IntfDynamic < ActiveRecord::Base
     return true if ApplicationHelper.null?( field )
     
     ## The field is valid if the match is non-nil
-    return !InterfaceHelper::IPAddressPattern.match( field ).nil?
+    return !IPAddr.parse( field ).nil?
   end
 end

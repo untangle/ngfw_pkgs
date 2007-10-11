@@ -1,3 +1,5 @@
+require "ipaddr"
+
 class OSLibrary::NetworkManager
   DefaultMTU = 1500
   
@@ -44,10 +46,7 @@ class OSLibrary::NetworkManager
   ## 255.255.255.0 -> 255.255.255.0
   ## Raises an exception if the netmask is not valid
   def self.parseNetmask( netmask )
-    return netmask unless InterfaceHelper::IPAddressPattern.match( netmask ).nil?
-    netmask = CIDR[netmask.to_s.strip]
-    raise "Invalid netmask: '#{netmask}'" if netmask.nil?
-    return netmask
+    IPAddr.new( "255.255.255.255/#{netmask}" ).to_s
   end
 
   ## Just a little helper used to convey interfaces

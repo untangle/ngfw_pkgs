@@ -322,9 +322,7 @@ class InterfaceController < ApplicationController
     
     ## Run in a separate thread.
     spawn do
-      logger.debug( "[START] Updating in a separate process." )
       networkManager.update_address
-      logger.debug( "[DONE] Updating in a separate process." )
     end
     
     true

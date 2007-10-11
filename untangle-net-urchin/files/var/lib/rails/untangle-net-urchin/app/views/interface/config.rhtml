@@ -8,10 +8,10 @@
   <% form_tag( :action => 'null' ) do -%>
     <p><label for="config_type"><%= "Config Type".t %></label>
     <%= select_tag( "config_type", options_for_select( @config_types, @config_type_id )) %>
-    <%= observe_field( "config_type", { :url => { :action => :change_config_type }, :with => "config_type" } ) %>
+    <%= observe_field( "config_type", { :function => "setConfigType()" } ) %>
   <% end -%>
 
-  <div id="config-type">
+  <div id="config-panels">
     <%= render( :partial => "static", :object => @static, :locals => { :interface => @interface }  ) %>
     
     <%= render( :partial => "dynamic", :object => @dynamic, :locals => { :interface => @interface } ) %>
@@ -19,3 +19,4 @@
     <%= render( :partial => "bridge", :object => @bridge, :locals => bridge_locals ) %>
   </div>
 </div>
+<%= javascript_tag "setConfigType()" %>
