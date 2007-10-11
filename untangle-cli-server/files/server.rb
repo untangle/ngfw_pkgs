@@ -45,8 +45,10 @@ class NUCLIServer
         # Process command line options
         process_options(options)
 
+        # TODO: Rename this
         @component_methods = []
         @component_lock = Mutex.new
+        @filter_nodes = []
 
         # Misc
         @running = false
@@ -104,11 +106,12 @@ class NUCLIServer
                 # Attempt to load a node CLI with the name of the missing method.
                 @diag.if_level(3) { puts! "Trying to require '#{node}'" }
                 require node
-                @diag.if_level(3) { puts! "Found filter node '#{node}'" }
+                @diag.if_level(3) { puts! "Found code for '#{node}'" }
                 
                 # If successful, create an new instance of the node CLI loaded via the require.
                 self.instance_variable_set("@#{node}", eval("#{node.capitalize}.new"))
-                @diag.if_level(3) { puts! "Filter node instanced" ; p @node }
+                instance_eval("@filter_nodes << @#{node}")
+                @diag.if_level(3) { puts! "Filter node instanced" ; p @filter_nodes }
                 
                 # Now define the missing method such that it delegates to the instance of the node CLI.
                 self.instance_eval %{
@@ -126,7 +129,6 @@ class NUCLIServer
             return self.__send__("#{node}", args)
 
         rescue LoadError => ex
-            p ex
             # #{node}.rb not found so assume the missing method is really a program to run.
             res  = execute("#{node} #{args.join(' ') if args}")
             return res

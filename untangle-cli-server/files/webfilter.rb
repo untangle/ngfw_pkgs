@@ -69,7 +69,7 @@ class Webfilter < UVMFilterNode
                 webfilter_list = ""
                 webfilter_num = 1
                 tids.each { |tid|
-                    node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+                    node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
                     desc = node_ctx.getNodeDesc()
                     webfilter_list << "##{webfilter_num} #{desc}\n"
                     webfilter_num += 1
@@ -88,6 +88,8 @@ class Webfilter < UVMFilterNode
     -- Display pass-list items
 - webfilter <#X> pass-list [item-type:url|client] [pass:true|false] <description>
     -- Add item to pass-list with specified settings.
+- webfilter <#X> stats <snmp>
+    -- Display webfilter #X statistics in human readable format (use snmp option for snmp formatted statistics)
 - webfilter <#X> eventlog <tail <#>>|<after-time> <before-time> (***NOT YET IMPLEMENTED***)
     -- Display event log entries, either the # tail entries or those between after-time and before-time.
                 WEBFILTER_HELP
@@ -96,6 +98,8 @@ class Webfilter < UVMFilterNode
                 return manage_block_list(tid, args)
             when "pass-list"
                 return manage_pass_list(tid, args)
+            when "statistics", "stats"
+                return get_node_statistics(tid, args)
             when "eventlog"
                 return "Event Log not yet supported."
             else
@@ -110,9 +114,8 @@ class Webfilter < UVMFilterNode
         
     end
 
-
     def get_webfilter_tids
-        return @uvmRemoteContext.nodeManager.nodeInstances(WEBFILTER_NODE_NAME)
+        return @@uvmRemoteContext.nodeManager.nodeInstances(WEBFILTER_NODE_NAME)
     end
     
     #
@@ -173,7 +176,7 @@ class Webfilter < UVMFilterNode
     end
 
     def get_blocked_urls(tid)
-        node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+        node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
         settings =  node.getSettings()
         blocked_urls_list = settings.getBlockedUrls()
@@ -187,7 +190,7 @@ class Webfilter < UVMFilterNode
     end
 
     def block_list_get_categories(tid)
-        node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+        node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
         settings =  node.getSettings()
         blocked_cats_list = settings.getBlacklistCategories()
@@ -214,7 +217,7 @@ class Webfilter < UVMFilterNode
     end
     
     def block_list_get_mime_types(tid)
-        node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+        node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
         settings =  node.getSettings()
         blocked_mime_types_list = settings.getBlockedMimeTypes()
@@ -236,7 +239,7 @@ class Webfilter < UVMFilterNode
     end
 
     def block_list_get_file_types(tid)
-        node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+        node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
         settings =  node.getSettings()
         blocked_files_list = settings.getBlockedExtensions()
@@ -255,7 +258,7 @@ class Webfilter < UVMFilterNode
     def block_list_add_url(tid, url, block, log, desc)
         begin
             return ERROR_INCOMPLETE_COMMAND if url.nil?
-            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
             blockedUrlsList = settings.getBlockedUrls()   
@@ -288,7 +291,7 @@ class Webfilter < UVMFilterNode
     def block_list_remove_url(tid, url)
         begin
             return ERROR_INCOMPLETE_COMMAND if url.nil?
-            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
             blockedUrlsList = settings.getBlockedUrls()   
@@ -318,7 +321,7 @@ class Webfilter < UVMFilterNode
     def block_list_add_mime_type(tid, mime_type, block=nil, name=nil)
         begin
             return ERROR_INCOMPLETE_COMMAND if mime_type.nil? || mime_type == ""
-            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
             blockedMimesList = settings.getBlockedMimeTypes()
@@ -350,7 +353,7 @@ class Webfilter < UVMFilterNode
     def block_list_remove_mime_type(tid, mime_type)
         begin
             return ERROR_INCOMPLETE_COMMAND if mime_type.nil? || mime_type == ""
-            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
             blockedMimesList = settings.getBlockedMimeTypes()
@@ -381,7 +384,7 @@ class Webfilter < UVMFilterNode
     def block_list_add_file_type(tid, file_ext, block="true", category=nil)
         begin
             return ERROR_INCOMPLETE_COMMAND if file_ext.nil? || file_ext==""
-            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
             blockedExtensionsList = settings.getBlockedExtensions()   
@@ -412,7 +415,7 @@ class Webfilter < UVMFilterNode
     def block_list_remove_file_type(tid, file_ext)
         begin
             return ERROR_INCOMPLETE_COMMAND if file_ext.nil? || file_ext==""
-            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings = node.getSettings()
             blockedExtensionsList = settings.getBlockedExtensions()   
@@ -441,7 +444,7 @@ class Webfilter < UVMFilterNode
 
     def block_list_update_category(tid, cat_to_block, block="true", log="true")
         return ERROR_INCOMPLETE_COMMAND if cat_to_block.nil? || cat_to_block==""
-        node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+        node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
         settings = node.getSettings()
         blocked_cats_list = settings.getBlacklistCategories()
@@ -521,7 +524,7 @@ class Webfilter < UVMFilterNode
     end
 
     def pass_list_get_urls(tid)
-        node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+        node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
         settings =  node.getSettings()
         passed_urls_list = settings.getPassedUrls()
@@ -536,7 +539,7 @@ class Webfilter < UVMFilterNode
     end
 
     def pass_list_get_clients(tid)
-        node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+        node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
         settings =  node.getSettings()
         passed_clients_list = settings.getPassedClients()
@@ -553,7 +556,7 @@ class Webfilter < UVMFilterNode
     def pass_list_add_url(tid, url, block="true", desc=nil)
         begin
             return ERROR_INCOMPLETE_COMMAND if url.nil? || url==""
-            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
             passedUrlsList = settings.getPassedUrls()   
@@ -586,7 +589,7 @@ class Webfilter < UVMFilterNode
     def pass_list_remove_url(tid, url)
         begin
             return ERROR_INCOMPLETE_COMMAND if url.nil? || url==""
-            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
             passedUrlsList = settings.getPassedUrls()   
@@ -615,7 +618,7 @@ class Webfilter < UVMFilterNode
     def pass_list_add_client(tid, client, block="true", desc=nil)
         begin
             return ERROR_INCOMPLETE_COMMAND if client.nil? || client==""
-            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
             passedClientsList = settings.getPassedClients()
@@ -648,7 +651,7 @@ class Webfilter < UVMFilterNode
     def pass_list_remove_client(tid, client, block="true", desc=nil)
         begin
             return ERROR_INCOMPLETE_COMMAND if client.nil? || client==""
-            node_ctx = @uvmRemoteContext.nodeManager.nodeContext(tid)
+            node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
             passedClientsList = settings.getPassedClients()   
@@ -672,5 +675,17 @@ class Webfilter < UVMFilterNode
             return "Adding URL to block list failed:\n" + ex
         end
     end
-    
+
+    def get_node_statistics(tid, args)
+        begin
+            node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
+            nodeStats = node_ctx.getStats()
+            @diag.if_level(2) { puts! "Got node stats for #{tid}" ; p nodeStats }
+        rescue Exception => ex
+            msg = "Get webfilter node statistics failed:\n" + ex
+            @diag.if_level(3) { puts! msg ; p ex }
+            return msg
+        end
+    end
+
 end # WebFilter
