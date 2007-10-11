@@ -34,6 +34,7 @@ class Webfilter < UVMFilterNode
     def execute(args)
 
         @diag.if_level(3) { puts! "Webfilter::execute(#{args.join(' ')})" }
+        retried = false
         
         begin
             # Get tids of all web filters once and for all commands we might execute below.
@@ -99,11 +100,19 @@ class Webfilter < UVMFilterNode
             when "pass-list"
                 return manage_pass_list(tid, args)
             when "statistics", "stats"
-                return get_node_statistics(tid, args)
+                return get_statistics(tid, args)
             when "eventlog"
                 return "Event Log not yet supported."
             else
                 return ERROR_UNKNOWN_COMMAND + " -- '#{args.join(' ')}'"
+            end
+        rescue LoginExpiredException => ex
+            if !retried
+                @diag.if_level(2) { puts! "Login expired - logging back on and trying one more time" ; p ex }
+                @@filter_node_lock.synchronize { login }
+                retry
+            else
+                raise Exception
             end
         rescue Exception => ex
             msg = "webfilter has raised an unhandled exception -- " + ex
@@ -676,11 +685,56 @@ class Webfilter < UVMFilterNode
         end
     end
 
-    def get_node_statistics(tid, args)
+    def get_statistics(tid, args)
+        @diag.if_level(3) { puts! "Attempting to get stats for TID #{tid}" }
         begin
             node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
             nodeStats = node_ctx.getStats()
-            @diag.if_level(2) { puts! "Got node stats for #{tid}" ; p nodeStats }
+            @diag.if_level(3) { puts! "Got node stats for #{tid}" ; p nodeStats }
+            tcpsc  = nodeStats.tcpSessionCount()
+            tcpst  = nodeStats.tcpSessionTotal()
+            tcpsrt = nodeStats.tcpSessionRequestTotal()
+            udpsc  = nodeStats.udpSessionCount()
+            udpst  = nodeStats.udpSessionTotal()
+            udpsrt = nodeStats.udpSessionRequestTotal()
+            c2tb   = nodeStats.c2tBytes()
+            c2tc   = nodeStats.c2tChunks()
+            t2sb   = nodeStats.t2sBytes()
+            t2sc   = nodeStats.t2sChunks()
+            s2tb   = nodeStats.s2tBytes()
+            s2tc   = nodeStats.s2tChunks()
+            t2cb   = nodeStats.t2cBytes()
+            t2cc   = nodeStats.t2cChunks()
+            sdate  = nodeStats.startDate()
+            lcdate = nodeStats.lastConfigureDate()
+            ladate = nodeStats.lastActivityDate()
+            counters = []
+            (0..15).each { |i| counters[i] = nodeStats.getCount(i) }
+            stats = ""
+            if args[0] && args[0] == "snmp"
+                # format stats for snmp usage
+                stats << "TID(#{tid});"
+                stats << "TCP(#{tcpsc},#{tcpst},#{tcpsrt});"
+                stats << "UDP(#{udpsc},#{udpst},#{udpsrt});"
+                stats << "C2N(#{c2tb},#{c2tc});"
+                stats << "N2C(#{t2cb},#{t2cc});"
+                stats << "S2N(#{s2tb},#{s2tc});"
+                stats << "N2S(#{t2sb},#{t2sc});"
+                stats << "CNTRS(#{counters.join(',')});"
+                stats << "DATES(#{sdate},#{lcdate},#{ladate});"
+            else
+                # formant stats for human readability
+                stats << "TCP Sessions (count, total, requests): #{tcpsc}, #{tcpst}, #{tcpsrt}\n"
+                stats << "UDP Sessions (count, total, requests): #{udpsc}, #{udpst}, #{udpsrt}\n"
+                stats << "Client to Node (bytes, chunks): #{c2tb}, #{c2tc}\n"
+                stats << "Node to Client (bytes, chunks): #{t2cb}, #{t2cc}\n"
+                stats << "Server to Node (bytes, chunks): #{s2tb}, #{s2tc}\n"
+                stats << "Node to Server (bytes, chunks): #{t2sb}, #{t2sc}\n"
+                stats << "Counters: #{counters.join(',')}\n"
+                stats << "Dates (start, last config, last activity): #{sdate}, #{lcdate}, #{ladate}\n"
+            end
+            @diag.if_level(3) { puts! stats }
+            return stats
         rescue Exception => ex
             msg = "Get webfilter node statistics failed:\n" + ex
             @diag.if_level(3) { puts! msg ; p ex }

@@ -18,12 +18,10 @@ class UVMFilterNode
 
     include Proxy
 
-    private
-        
+    protected
         DefaultTimeoutMillis = 600000
-    
-        # @@factory_lock guards @@factory AND @@uvmReoteContext
-        @@factory_lock = Mutex.new
+        # @@filter_node_lock guards @@factory AND @@uvmReoteContext
+        @@filter_node_lock = Mutex.new
         @@factory = nil
         @@uvmRemoteContext = nil
 
@@ -33,8 +31,8 @@ class UVMFilterNode
             @diag.if_level(2) { puts! "Initializing UVMFilterNode..." }
             
             begin
-                @@factory_lock.synchronize {
-                    if !@@factory
+                @@filter_node_lock.synchronize {
+                    if @@factory.nil?
                         @@factory = com.untangle.uvm.client.RemoteUvmContextFactory.factory
                         connect
                     end
@@ -45,13 +43,13 @@ class UVMFilterNode
             end
                     
             ## This just guarantees that all of the connections are terminated.
-            at_exit { @@factory_lock.synchronize { disconnect } }
+            at_exit { @@filter_node_lock.synchronize { disconnect } }
     
             @diag.if_level(2) { puts! "Done initializing UVMFilterNode..." }
         end
 
-    private
-        # Caller MUST have obtained @@factory_lock before calling this method.
+    protected
+        # Caller MUST have obtained @@filter_node_lock before calling this method.
         def connect
           ## Just in case
           begin
@@ -60,14 +58,19 @@ class UVMFilterNode
             ## ignore errors
           end
 
-          # TODO: Add exception handling.    
-          @@uvmRemoteContext = @@factory.systemLogin( DefaultTimeoutMillis )
+          # TODO: Add exception handling.
+          login
+
           ## Register the remote context as a proxy.
-          register( @@uvmRemoteContext )
+          register @@uvmRemoteContext
           true
         end
 
-        # Caller MUST have obtained @@factory_lock before calling this method.
+        def login
+            @@uvmRemoteContext = @@factory.systemLogin( DefaultTimeoutMillis )
+        end
+        
+        # Caller MUST have obtained @@filter_node_lock before calling this method.
         def disconnect
           return if @@uvmRemoteContext.nil?
           begin

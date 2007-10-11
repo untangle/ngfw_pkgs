@@ -32,6 +32,8 @@ class Attackblocker < UVMFilterNode
 
         @diag.if_level(3) { puts! "Attackblocker::execute(#{args.join(' ')})" }
         
+        retried = false
+        
         begin
             # Get tids of all web filters once and for all commands we might execute below.
             tids = @@uvmRemoteContext.nodeManager.nodeInstances(ATTACKBLOCKER_NODE_NAME)
@@ -98,6 +100,14 @@ class Attackblocker < UVMFilterNode
             else
                 return ERROR_UNKNOWN_COMMAND + " -- '#{args.join(' ')}'"
             end
+        rescue LoginExpiredException => ex
+            if !retried
+                @diag.if_level(2) { puts! "Login expired - logging back on and trying one more time" ; p ex }
+                @@filter_node_lock.synchronize { login }
+                retry
+            else
+                raise Exception
+            end            
         rescue Exception => ex
             msg = "Attackblocker has raised an unhandled exception -- " + ex
             @diag.if_level(1) { puts! msg }
