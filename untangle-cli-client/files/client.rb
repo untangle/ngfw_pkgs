@@ -424,7 +424,8 @@ class NUCLIClient
     end
 
     # Cleanly shutdown the CLI
-    def shutdown
+    def shutdown(quiet=false)
+        puts! "Shutting down...\n" unless (quiet || (@commands_to_execute.length > 0))
         # wait for any remaining background jobs to complete.
         @jobs.each { |t| t[0].join }
         # shut down all sever connections
@@ -1052,17 +1053,16 @@ if __FILE__ == $0
 #
 loop do
     begin
-        ucli_client = NUCLIClient.new(ARGV)
-        ucli_client.run     # only returns if commands were given on the command line that launched this process, otherwise run loops forever.
-        break
+        ucli_client = NUCLIClient.new(ARGV)     # run only returns if commands were given on the command
+        ucli_client.run                         # line that launched this process, otherwise run loops 
+        break                                   # until a terminate, interrupt or unhandled exception is raised.
     rescue Terminate, Interrupt
         break
     rescue Exception => ex
-        puts! "#{ucli_client.client_name} has encountered an unhandled exception: " + ex
+        puts! "NUCLI client has encountered an unhandled exception: " + ex
         p ex
-        puts! "Restarting #{ucli_client.client_name}...\n"
+        puts! "Restarting...\n"
     ensure
-        puts! "Shutting down #{ucli_client.client_name}...\n"
         ucli_client.shutdown
     end
 end
