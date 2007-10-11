@@ -174,7 +174,7 @@ class NUCLIClient
     def process_options(options)
         opts = OptionParser.new
         opts.banner = "Usage: #{File.basename(__FILE__)} [OPTIONS]"
-        ucli_server_host = nil
+        ucli_server_host = 'localhost'
         opts.on("-h", "--host HOST", String, "NUCLI server host name or IP address.") { |host|
             ucli_server_host = host
         }
@@ -324,6 +324,7 @@ class NUCLIClient
     # Preprocess a pending command: perform history replacement, etc.
     def preprocess(cmd)
         
+        cmd.gsub!(/%20/,' ')
         cmd = cmd.gsub(/&$/, ' &') if /[^\s]&$/ =~ cmd  # ensure background job indicator is seen as a separate word in the command (add white space if neccessary)
         cmd_a = shellwords cmd                          # preprocess command with shell-words quoting rules, eg, quoted words are treated as one word, etc.
         cmd = cmd_a[0].strip                            # normalize the effective command word.
