@@ -10,8 +10,8 @@ bridge_expected()
 {
     awk '
       /^iface.*inet/ { interface = $2  }
-      /urchin_bridge_ports/ { print interface "[]"
-                              gsub( "^[ \t]*urchin_bridge_ports[ \t]*", "")
+      /alpaca_bridge_ports/ { print interface "[]"
+                              gsub( "^[ \t]*alpaca_bridge_ports[ \t]*", "")
                               split( $0, intf_array )
                               for ( i in intf_array ) print interface "[" intf_array[i] "]" }' \
                                   /etc/network/interfaces | sort | md5sum | awk '{ print $1}'
@@ -72,7 +72,7 @@ bridge_delete_all()
 
 DEBUG=/bin/true
 
-test "${IF_URCHIN_DEBUG}" = "true" && DEBUG=debug
+test "${IF_ALPACA_DEBUG}" = "true" && DEBUG=debug
 
 test "$IFACE" != "cleanup" && {
     $DEBUG "Ignoring the interface ${IFACE}"

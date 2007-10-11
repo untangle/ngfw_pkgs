@@ -9,7 +9,7 @@
 ## * Removed the "all" option for the ports.
 ## * Removed the "none" option for for the ports.
 ## * Removed all of the waiting code.
-## * Added urchin_bridge_mtu which sets the MTU for all of the interfaces
+## * Added alpaca_bridge_mtu which sets the MTU for all of the interfaces
 
 debug()
 {
@@ -18,7 +18,7 @@ debug()
 
 DEBUG=/bin/true
 
-test "${IF_URCHIN_DEBUG}" = "true" && DEBUG=debug
+test "${IF_ALPACA_DEBUG}" = "true" && DEBUG=debug
 
 if [ ! -x /usr/sbin/brctl ]
 then
@@ -26,20 +26,20 @@ then
     exit 0
 fi
 
-case "$IF_URCHIN_BRIDGE_PORTS" in
+case "$IF_ALPACA_BRIDGE_PORTS" in
     "")
 	exit 0
 	;;
     none)
-        $DEBUG "'none' is not supported by the untangle-net-urchin"
+        $DEBUG "'none' is not supported by the untangle-net-alpaca"
 	exit 0
 	;;
     all)
-        $DEBUG "'all' is not supported by the untangle-net-urchin"
+        $DEBUG "'all' is not supported by the untangle-net-alpaca"
         exit 0
 	;;
     *)
-	INTERFACES="$IF_URCHIN_BRIDGE_PORTS"
+	INTERFACES="$IF_ALPACA_BRIDGE_PORTS"
 	;;
 esac
 
@@ -103,13 +103,13 @@ fi
 
 ## Done here so the setting takes effect every time, not just
 ## when the bridge is created.
-if [ "$IF_URCHIN_BRIDGE_MTU" ]; then
+if [ "$IF_ALPACA_BRIDGE_MTU" ]; then
     for port in $INTERFACES ; do
-        ifconfig ${port} mtu $IF_URCHIN_BRIDGE_MTU
+        ifconfig ${port} mtu $IF_ALPACA_BRIDGE_MTU
     done
 
     ## don't believe this is necessary, but it can't hurt
-    ifconfig ${IFACE} mtu $IF_URCHIN_BRIDGE_MTU
+    ifconfig ${IFACE} mtu $IF_ALPACA_BRIDGE_MTU
 fi
 
 ifconfig $IFACE 0.0.0.0 up

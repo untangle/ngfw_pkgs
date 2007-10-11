@@ -1,7 +1,7 @@
 #!/bin/dash
 
 ### BEGIN INIT INFO
-# Provides:          urchin-iptables
+# Provides:          alpaca-iptables
 # Required-Start:    $local_fs $remote_fs
 # Required-Stop:
 # Default-Start:     S 3 4 5
@@ -12,7 +12,7 @@
 
 DESC="Service for creating and removing the iptables rules"
 
-IPTABLES_RULES=/etc/untangle-net-urchin/iptables-rules
+IPTABLES_RULES=/etc/untangle-net-alpaca/iptables-rules
 
 ## This should be a file containing all of the iptables tables
 IPTABLES_NAMES=/proc/net/ip_tables_names
