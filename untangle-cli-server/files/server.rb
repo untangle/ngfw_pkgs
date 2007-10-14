@@ -103,17 +103,17 @@ class NUCLIServer
             @diag.if_level(3) { puts! "'#{node}' method not found - attempting to dynamically load component..." ; p args }
 
             @component_lock.synchronize {
-                # Attempt to load a node CLI with the name of the missing method.
+                # Attempt to load a filter node with the name of the missing method.
                 @diag.if_level(3) { puts! "Trying to require '#{node}'" }
                 require node
                 @diag.if_level(3) { puts! "Found code for '#{node}'" }
                 
-                # If successful, create an new instance of the node CLI loaded via the require.
+                # If successful, create an new instance of the filter node loaded via require.
                 self.instance_variable_set("@#{node}", eval("#{node.capitalize}.new"))
                 instance_eval("@filter_nodes << @#{node}")
                 @diag.if_level(3) { puts! "Filter node instanced" ; p @filter_nodes }
                 
-                # Now define the missing method such that it delegates to the instance of the node CLI.
+                # Now define the missing method such that it delegates to the instance of the filter node.
                 self.instance_eval %{
                     def #{node}(params_ary)
                         @#{node}.execute(params_ary)
@@ -122,7 +122,8 @@ class NUCLIServer
                 }
                 @diag.if_level(3) { puts! "Filter node delegator created." ; p methods }
                                 
-                # At this point, future calls to the missing method will be handed by the delegator we just created above.
+                # At this point, future calls to the missing method will be handed by the delegator 
+		# method we just created above.
             }
             
             # Lastly, fulfill the call for which the method was missing in the first place
