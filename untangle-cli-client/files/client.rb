@@ -524,7 +524,7 @@ class NUCLIClient
                 else
                     raise Exception, "malformed command."
                 end
-            elsif /^#\d+/ =~ cmd            # request to change effective server
+            elsif /^#\d+/ =~ cmd            # request to change effective server by server #
                 svr_id = $&[1..-1].to_i                
                 @servers_lock.synchronize do
                     if svr_id < 1 || svr_id > @ucli_servers.length
@@ -536,6 +536,17 @@ class NUCLIClient
                     else
                         @drb_server = @ucli_servers[svr_id-1]
                         @server_id = svr_id
+                        # cmd_a is passed back as initialized above
+                    end
+                end
+            elsif (svr_idx = get_server_index(cmd)) != nil            # request to change effective server by name
+                @servers_lock.synchronize do
+                    if @ucli_servers[svr_idx][3] == false
+                        puts! "Error: server #{cmd} is closed.  Use open to reopen it."
+                        return nil
+                    else
+                        @drb_server = @ucli_servers[svr_idx]
+                        @server_id = svr_idx+1
                         # cmd_a is passed back as initialized above
                     end
                 end
