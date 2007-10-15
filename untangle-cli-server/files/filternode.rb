@@ -14,6 +14,11 @@ include NUCLICommon
 require 'util'
 include NUCLIUtil
 require 'thread'
+
+class FilterNodeAPIVioltion < Exception
+# TODO: perhaps this should derive from a more specific type of Exception?
+end
+
 class UVMFilterNode
 
     include Proxy
@@ -81,6 +86,13 @@ class UVMFilterNode
           @@uvmRemoteContext = nil
           true
         end
+    
+    public
+        # If derived class does not override this method then its not a valid filter node.
+        def execute(args)
+            raise FilterNodeAPIVioltion, "Filter nodes does not implement the required 'execute' method"
+        end
+        
 
 end # UVMFilterNode
 
