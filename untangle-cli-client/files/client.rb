@@ -468,8 +468,8 @@ class NUCLIClient
                 svr_id = $&[1..-1].to_i
                 server = @ucli_servers[svr_id-1] if svr_id >= 1 && svr_id <= @ucli_servers.length
             else
-                server = @ucli_servers.detect { |server|
-                    (server[0] == server_id) || ("#{sever[0]}:#{server[1]}" == server_id)
+                server = @ucli_servers.detect { |svr|
+                    (svr[0] == server_id) || ("#{svr[0]}:#{svr[1]}" == server_id)
                 }
             end
         }        
