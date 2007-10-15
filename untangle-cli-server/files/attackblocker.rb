@@ -16,7 +16,7 @@ require 'filternode'
 class Attackblocker < UVMFilterNode
     
     ERROR_NO_ATTACKBLOCKER_NODES = "No attackblocker modules are installed on the effective server."
-    ATTACKBLOCKER_NODE_NAME = "untangle-node-attackblocker"
+    NODE_NAME = "untangle-node-attackblocker"
 
     def initialize
         @diag = Diag.new(DEFAULT_DIAG_LEVEL)
@@ -36,41 +36,32 @@ class Attackblocker < UVMFilterNode
         
         begin
             # Get tids of all web filters once and for all commands we might execute below.
-            tids = @@uvmRemoteContext.nodeManager.nodeInstances(ATTACKBLOCKER_NODE_NAME)
+            tids = @@uvmRemoteContext.nodeManager.nodeInstances(NODE_NAME)
             return ERROR_NO_ATTACKBLOCKER_NODES if tids.nil? || tids.length < 1
     
-            if /^#/ =~ args[0]
-                begin
-                    node_num = (args[0].slice(1,-1).to_i) - 1
-                rescue Exception => ex
-                    err = "Error: invalid attackblocker node number '#{args[0].slice(1,-1)}'"
-                    @diag.if_level(2) { puts! err + " " + ex ; p ex }
-                    return err
-                end
-                    
-                tid = tids[node_num]
-                cmd = args[1]
-                args.shift
-                args.shift
-            else
-                node_num = 0
-                cmd = args[0]
-                tid = tids[0]
-                args.shift
+           begin
+                tid_and_cmd = extract_tid_and_command(tids, args)
+                raise FilterNodeException unless tid_and_cmd
+                tid = tid_and_cmd[0]
+                cmd = tid_and_cmd[1]
+            rescue Exception => ex
+                msg = "Error: invalid #{NODE_NAME} node number or ID '#{ex}'"
+                @diag.if_level(3) { puts! msg ; p ex}
+                return msg
             end
-    
-            @diag.if_level(3) { puts! "attackblocker: node # = #{node_num}, command = #{cmd}" }
+            
+            @diag.if_level(3) { puts! "TID = #{tid}, command = #{cmd}" }
             
             case cmd
             when nil, "", "list"
                 # List/enumerate web filter nodes
                 @diag.if_level(2) { puts! "attackblocker: listing nodes..." }
-                attackblocker_list = ""
+                attackblocker_list = "#,TID,Description\n"
                 attackblocker_num = 1
                 tids.each { |tid|
                     node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
                     desc = node_ctx.getNodeDesc()
-                    attackblocker_list << "##{attackblocker_num} #{desc}\n"
+                    attackblocker_list << "##{attackblocker_num},#{tid},#{desc}\n"
                     attackblocker_num += 1
                 }
                 @diag.if_level(2) { puts! "attackblocker: #{attackblocker_list}" }
