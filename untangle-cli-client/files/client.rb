@@ -263,7 +263,7 @@ class NUCLIClient
     def run_command(cmd_s)
         
         begin
-            cmd_a = preprocess(cmd_s);
+            cmd_a = preprocess(cmd_s)
             return nil if (cmd_a.nil? || cmd_a.length == 0)
             
             # If no server is active and the command is not a local system command and command requires a sever then disallow command.
@@ -324,7 +324,7 @@ class NUCLIClient
     # Preprocess a pending command: perform history replacement, etc.
     def preprocess(cmd)
         
-        cmd.gsub!(/%20/,' ')
+        cmd = cmd.gsub(/%20/,' ')
         cmd = cmd.gsub(/&$/, ' &') if /[^\s]&$/ =~ cmd  # ensure background job indicator is seen as a separate word in the command (add white space if neccessary)
         cmd_a = shellwords cmd                          # preprocess command with shell-words quoting rules, eg, quoted words are treated as one word, etc.
         cmd = cmd_a[0].strip                            # normalize the effective command word.
