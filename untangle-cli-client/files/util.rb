@@ -24,6 +24,10 @@ module NUCLIUtil
         STDIN.gets.chomp.downcase == y_or_n
     end
     
+    def empty?(obj)
+        obj.nil? || (obj=="") || ((obj.respond_to? :length) && (obj.length == 0))
+    end
+    
     class Diag
         
         attr_accessor :level

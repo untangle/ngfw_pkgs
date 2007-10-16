@@ -88,7 +88,6 @@ class NUCLIClient
         @server_name = "NUCLI Server"
         @config_filename = ".ucli"
         @running = false
-        @cmd_num = 1
         @history = []
         @history_size = @history_num_to_display = 50
         @history_lock = Mutex.new
@@ -101,31 +100,34 @@ class NUCLIClient
         @job_num = 1
         @diag = Diag.new(3)
         @commands_to_execute = []
+        @ssh_tunnels = true
+        @user = 'root'
         
         # Commands legend and creation of readline auto-completion abbreviations
         @commands_with_help = [
             # Cmd name, Server Required, Help text
-            ["history", false, "display command history, up to #{@history_size} events"],
-            ["ruby", true, "send Ruby code to sever for execution -- ruby statement | file"],
-            ["quiet", false, "quiet all but alert level messages"],
-            ["verbose", false, "set level of messages/chatter from client -- verbose [integer>=0]"],
-            ["pong", true, "test responsiveness of NUCLI server"],
-            ["quit", false, "terminate after user confirmation"],
-            ["exit", false, "terminate immediately"],
-            ["help", false, "display help information"],
-            ["open", false, "open connection to server -- open (host-name|ip):port"],
-            ["close", false, "close connection to server #X or host-name -- close #1"],
-            ["servers", false, "list servers currently under management during this  session."],
-            ["webfilter", true, "send command to webfilter -- enter 'webfilter help' for details."],
-            ["with", true, "send multiple commands to servers, '##' or 'all' for all servers, '-i' for interactive -- with host-name #2 #4 -i"],
-            ["jobs", false, "list all background jobs currently running."],
-            ["cleanup", false, "cleanup client resources, e.g., release stored job outputs, etc."],
-            ["source", false, "source (i.e., run) the given script (use '.' as shortcut) -- source filename or . filename"],
-            ["%X", false, "display output of background job 'X' -- %1"],
-            ["#X", false, "switch effective server to server 'X' -- #3"],
-            ["save", false, "save output stored with job %X to filename -- save %3 myoutput.txt"],
-            [":command", false, "run external command on local host -- :ls /tmp"],
-            ["command", false, "run external command on server host -- who"],
+            ["history", false, "display command history, up to #{@history_size} events", nil],
+            ["ruby", true, "send Ruby code to sever for execution -- ruby statement | file", nil],
+            ["quiet", false, "quiet all but alert level messages", nil],
+            ["verbose", false, "set level of messages/chatter from client -- verbose [integer>=0]", nil],
+            ["pong", true, "test responsiveness of NUCLI server", nil],
+            ["quit", false, "terminate after user confirmation", nil],
+            ["exit", false, "terminate immediately", nil],
+            ["help", false, "display help information", nil],
+            ["open", false, "open connection to server -- open (host-name|ip):port [-l user]", nil],
+            ["close", false, "close connection to server #X or host-name -- close #1", nil],
+            ["servers", false, "list servers currently under management during this  session.", nil],
+            ["webfilter", true, "send command to webfilter -- enter 'webfilter help' for details.", nil],
+            ["with", true, "send multiple commands to servers, '##' or 'all' for all servers, '-i' for interactive, '-e' for echo -- with host-name #2 #4 -i -e", nil],
+            ["jobs", false, "list all background jobs currently running.", nil],
+            ["cleanup", false, "cleanup client resources, e.g., release stored job outputs, etc.", nil],
+            ["source", false, "source (i.e., run) the given script (use '.' as shortcut) -- source filename or . filename", nil],
+            ["%X", false, "display output of background job 'X' -- %1", nil],
+            ["#X", false, "switch effective server to server 'X' -- #3", nil],
+            ["save", false, "save output stored with job %X to filename -- save %3 myoutput.txt", nil],
+            [":command", false, "run external command on local host -- :ls /tmp", nil],
+            ["command", false, "run external command on server host -- who", nil],
+            ["^%\\d+$", false, nil],
             # The following are not top level commands but are included here so they can be part of the
             # word completion list we pass to readline.  These can be distinguished and filtered from 
             # this list by noting that they have nil for their help text settings.
@@ -161,7 +163,7 @@ class NUCLIClient
         @ucli_servers = []
         @drb_server = nil                   # Active drb server from uvm_servers array (defined below.)
         @server_id = 0
-        @servers_lock = Mutex.new           # Obtain this lock before manipulating any of the server related objects.
+        @servers_lock = Mutex.new           # This lock guards @ucli_servers, @drb_server, and @server_id.
         
         # Process config file
         process_config_file(@config_filename)
@@ -188,6 +190,12 @@ class NUCLIClient
         }
         opts.on("-e", "--exec COMMAND", String, "NUCLI command to execute.") { |command|
             @commands_to_execute << command
+        }
+        opts.on("-u", "--user USERNAME", String, "User to login to NUCLI server as.") { |user|
+            @user = user
+        }
+        opts.on("-t", "--no-tunnels", "Disable SSH tunneling.") { |user|
+            @ssh_tunnels = false
         }
 
         remainder = opts.parse(options);
@@ -240,10 +248,12 @@ class NUCLIClient
         # Interactively collect NUCLI commands and execute them, keeping a historical record.
         connect_to_all_ucli_servers
         launch_server_pong
+        
         print! @welcome
         
+        cmd_num = 1
         loop do
-            cmd_s = readline("[#{@drb_server?@drb_server[0]:'none'}:#{@cmd_num}] ", true)
+            cmd_s = readline("[#{@drb_server?@drb_server[0]:'none'}:#{cmd_num}] ", true)
             next if (cmd_s.nil? || cmd_s.length == 0)
 
             cmd_a = run_command(cmd_s)
@@ -252,9 +262,11 @@ class NUCLIClient
             # Only commands entered into the top level "shell" are added to the session history
             @history_lock.synchronize {
                 @history.shift unless @history.length < @history_size
-                @history << [@cmd_num,cmd_a.join(' '),@server_id]
-                @cmd_num += 1
+                server_id = nil
+                @servers_lock.synchronize { server_id = @server_id }
+                @history << [cmd_num, cmd_a.join(' '), server_id]
             }
+            cmd_num += 1
         end
     end
     
@@ -288,14 +300,14 @@ class NUCLIClient
                 # the user or a command changes the effective server while the thread is
                 # starting up we won't be effected, ie, caused to send any server commands
                 # to the wrong server.
-                drb_server = nil
-                @servers_lock.synchronize { drb_server = @drb_server[2] }
+                drb_server = server_id  = nil
+                @servers_lock.synchronize { drb_server = @drb_server[2]; server_id = @server_id }
                 if drb_server.nil? then puts! "Bug: there is no effective DRb server.  Recommend restarting #{client_name}."; return; end
                 
                 @jobs_lock.synchronize {
                     # must store job record before creating thread so command processor can tell if the command is in the background or not.
                     job_index = @job_num-1
-                    @jobs[job_index] = [nil, cmd_s, @job_num, true, ""]  # [ job thread, cmd string, job num, background?, output]
+                    @jobs[job_index] = [nil, cmd_s, @job_num, true, "", server_id]  # [ job thread, cmd string, job num, background?, output, server_id of job]
                     t = Thread.new(job_index) { |t_idx|
                         Thread.current[:drb_server] = drb_server
                         Thread.current[:job_index] = t_idx
@@ -321,7 +333,7 @@ class NUCLIClient
     end
     
     
-    # Preprocess a pending command: perform history replacement, etc.
+    # Preprocess a pending command: perform history replacement, short cut replacement, etc.
     def preprocess(cmd)
         
         cmd = cmd.gsub(/%20/,' ')
@@ -359,10 +371,10 @@ class NUCLIClient
                 puts! hist_cmd[1]                       # Echo actual command used to console, as other shells do
                 cmd_a = hist_cmd[1].split               # Use found historical command
             elsif cmd_a[0] == "."
-                cmd_a[0] = "source"                     # convert abbr. for script source command                     
+                cmd_a[0] = "source"                     # convert abbr. for script source command (case of ". script" => "source script")              
             elsif (/^\..*/ =~ cmd)
                 cmd_a = cmd.split('.')
-                cmd_a[0] = "source"                     # convert abbr. for script source command                     
+                cmd_a[0] = "source"                     # convert abbr. for script source command (case of ".script" => "source script")                    
             end
         }
         cmd_a
@@ -372,9 +384,20 @@ class NUCLIClient
     # server to be run then return true (unknown commands may be system commands which
     # require our server to be running in order for them to be run); otherwise return false.
     def command_requires_server(command)
+        
+        # Pre-create command regexps, once and for all, but only once this
+        # command is called, ie, lazy evaluate since we may never need these.
+        if @commands_with_help[0][3].nil?
+            (0...@commands_with_help.length).each { |i|
+                @commands_with_help[i][3] = Regexp.new(@commands_with_help[i][0])
+            }
+        end
+        
+        # Now, try to find command in @commands_with_help set.
         cmd = @commands_with_help.detect { |c|
-            command == c[0]
+            c[3].match(command) != nil
         }
+        
         return cmd.nil? || (cmd[1] == true) 
     end
     
@@ -407,16 +430,21 @@ class NUCLIClient
         end
     end
 
-    # ***TODO: perhaps refactor this code to use open(), so the DRB logic is not duplicated and
-    # since this logic does not protect against opening the same server twice!!!
+    # ***TODO: this logic does not protect against opening the same server twice!!!
     def connect_to_all_ucli_servers(quiet=false)
         @servers_lock.synchronize do
             unless @ucli_servers.nil? || @ucli_servers.length == 0
                 svr_num = 1
                 @ucli_servers.each { |uvm|
                     message("Connecting to #{@server_name} ##{svr_num}: #{uvm[0]}:#{uvm[1]}...\n", 2) unless quiet
-                    uvm[2] = DRbObject.new(nil, "druby://#{uvm[0]}:#{uvm[1]}")
-                    uvm[3] = true   # mark server open
+                    if !ssh_port_forward_tunnel(uvm[0], uvm[1], @user)
+                        puts "Error: unable to connect to #{@server_name} at #{uvm[0]}:#{uvm[1]} -- could not establish SSH tunnel."
+                        uvm[2] = nil
+                        uvm[3] = false   # mark server NOT open
+                    else
+                        uvm[2] = DRbObject.new(nil, "druby://localhost:#{uvm[1]}")
+                        uvm[3] = true   # mark server open
+                    end
                     svr_num += 1
                 }
                 @drb_server = @ucli_servers[0]
@@ -711,20 +739,28 @@ class NUCLIClient
                 puts! "##{i+1}: #{svr[0]}:#{svr[1]} (#{status})" if svr[2] && svr[3]
             }
         else
-            puts! "There are no servers currently open."
+            message "There are no servers currently open.", 1
         end
     end
 
     # Open a connection to a NUCLI sever and add to open servers list.
     def open(*args)
-        # Validate host address format
+        # Process arguments: validate host address format, extract ssh user name and sleep time for tunnel.
         server_to_open = args[0].split(':')
         if (server_to_open.length != 2) || !(server_to_open[1] =~ /\d+/)
             puts! "Error: invalid server address - valid addresses are of the form (host-name|ip):port"
             return
         end
         server_to_open[1] = server_to_open[1].to_i
-
+        user = 'root'
+        if args[1] == '-l'
+            if args[2].nil?
+                puts! "Error: -l (login user) option requires a user name."
+                return
+            end
+            user = args[2]
+        end
+        
         # Ensure server is not already opened
         opened = false
         @servers_lock.synchronize do
@@ -739,12 +775,18 @@ class NUCLIClient
                 puts! "Server #{args[0]} is aleady open (type 'servers' to review open servers.)"
                 return
             end
-            # At this point, a server entry was not found OR one was found but it was marked as closed.
-
+            
+            # At this point, a server entry was not found OR one was found but it was marked as closed, so we can open it.
+            # Estabish ssh tunnel to server_to_open
+            ssh_port_forward_tunnel(server_to_open[0], server_to_open[1], @user)
+            
+            # Open DRb connection to server_to_open
+            drb = DRbObject.new(nil, "druby://localhost:#{server_to_open[1]}")
+            
             # Create new server entry and if it was not found append it to the servers list;
             # if it was found but it was closed, store the new entry in the same server location
             # it was originally in. A server entry is an array as follows: [host,port,drb object, open/closed]
-            new_server = [server_to_open[0], server_to_open[1], DRbObject.new(nil, "druby://#{server_to_open[0]}:#{server_to_open[1]}"), true]
+            new_server = [server_to_open[0], server_to_open[1], drb, true]
             if !found
                 @ucli_servers << new_server
                 @drb_server = new_server
@@ -805,7 +847,16 @@ class NUCLIClient
             message "Select an open server or open a new one to continue.", 2
         }
     end
-    
+
+    # Open an ssh tunnel to host:port via port @ localhost
+    def ssh_port_forward_tunnel(host, port, user, sleep=15, quiet=false)
+        return true if !@ssh_tunnels
+        if !system("ssh -f #{user}@#{host} -L #{port}:localhost:#{port} sleep #{sleep}")
+            puts! "Error: unable to create ssh tunnel to #{user}@#{host}:#{port}" unless quiet
+            return false
+        end
+        return true
+    end
 
     # Dymamically collect NUCLI client commands and apply them to list of servers, e.g.,
     #   with #2 #3
@@ -833,8 +884,8 @@ class NUCLIClient
         }
         
         if args.length >= 1
-            interactive = args[-1] == "-i"
-            args.pop if interactive
+            if (interactive = args.include?("-i")) then args.delete("-i") end
+            if (echo = args.include?("-e")) then args.delete("-e") end
         end
 
         source_file = nil
@@ -904,7 +955,7 @@ class NUCLIClient
         
         return if commands.length < 1   # nothing to do
 
-        # Disallow with scripts with background jobs.        
+        # Disallow with scripts with background jobs contained in them.        
         commands.each_with_index { |cmd,i|
             if /.*&$/ =~ cmd
                 puts "Error: 'with' scripts may not run jobs in the background (see line #{i+1})"
@@ -919,17 +970,17 @@ class NUCLIClient
                 @servers_lock.synchronize {
                     @drb_server = ucli_servers[svr_idx]
                     @server_id = svr_idx+1
-                    svr_name = @drb_server[0]
+                    svr_name = "#{@drb_server[0]}:#{@drb_server[1]}"
                 }
                 
                 if interactive
                     print! "Send 'with' commands to server '#{svr_name}' (y/n)? "
-                    raise UserCancel, "user interrupt" unless getyn("y")
+                    raise UserCancel, "user cancel" unless getyn("y")
                 end
                 
                 # Must not hold client lock while running commands, as certain commands need the lock.
                 commands.each { |cmd|
-                    puts! "> #{cmd}" if interactive
+                    puts! "> #{cmd} @ #{@drb_server[0]}:#{@drb_server[1]}" if echo
                     cmd_a = run_command(cmd)
                     raise CommandFailed if cmd_a.nil?
                 }
