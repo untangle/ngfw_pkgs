@@ -61,12 +61,9 @@ class NUCLIClient
    
     # Constants
     DEFAULT_PORT = 7777
-    FORBIDDEN_BACKGROUND_COMMANDS = %w{ with ^#\d }     # commands that cannot be run in the background
-    FORBIDDEN_WITH_COMMANDS = %w{ open quit exit with history jobs servers } 
+    FORBIDDEN_BACKGROUND_COMMANDS = %w{ with ^#\d+ } # commands that cannot be run in the background.
+    FORBIDDEN_WITH_COMMANDS = %w{ open quit exit with history jobs servers } # commands that cannot be used in a with script.
             
-    # Accessors
-    attr_reader :client_name, :welcome, :server_name, :history_size, :commands, :verbose
-   
     #
     #   Initialization related methods
     #
@@ -100,7 +97,7 @@ class NUCLIClient
         @job_num = 1
         @diag = Diag.new(3)
         @commands_to_execute = []
-        @ssh_tunnels = true
+        @use_ssh_tunnels = true
         @user = 'root'
         
         # Commands legend and creation of readline auto-completion abbreviations
@@ -148,15 +145,12 @@ class NUCLIClient
         ]
         @commands = []
         @commands_with_help.each {|cmd|
-            commands << cmd[0]
+            @commands << cmd[0]
         }
         @abbrevs = @commands.abbrev
         Readline.completion_proc = proc do |string|
             @abbrevs[string]
         end
-        
-        # Setup signals to trap
-        trap("HUP") { puts! "\nReinitializing client (per SIGHUP)...\nPress [Enter] to continue."; self.init }
         
         # We start w/no uvm servers: server can be loaded and opened via our dot file
         # and/or specified via a command line options.
@@ -166,10 +160,10 @@ class NUCLIClient
         @servers_lock = Mutex.new           # This lock guards @ucli_servers, @drb_server, and @server_id.
         
         # Process config file
-        process_config_file(@config_filename)
+        process_config_file(@config_filename) if @config_filename
         
         # Process command line options
-        process_options(options)
+        process_options(options) if options
     end
 
     # Process command line options    
@@ -195,13 +189,13 @@ class NUCLIClient
             @user = user
         }
         opts.on("-t", "--no-tunnels", "Disable SSH tunneling.") { |user|
-            @ssh_tunnels = false
+            @use_ssh_tunnels = false
         }
 
         remainder = opts.parse(options);
         if remainder.length > 0
             print! "Unknown options encountered: #{remainder}\nContinue [y/n]? "
-            raise Terminate unless STDIN.gets.chomp.downcase == "y"
+            raise Terminate, "unknown command line option(s)." unless getyn("y")
         end
 
         # TODO: If we ever allow more than one server to be opened via command line options
@@ -221,7 +215,7 @@ class NUCLIClient
     end
 
      #
-     # Main CLI loop: read a command line (w/abbreviation/tab-completion support),
+     # Main CLI command loop: read a command line (w/abbreviation/tab-completion support),
      # preprocess it for command history references, execute the command, and add
      # command to history for future reference.
      #
@@ -244,7 +238,7 @@ class NUCLIClient
             }
             return
         end
-        
+
         # Interactively collect NUCLI commands and execute them, keeping a historical record.
         connect_to_all_ucli_servers
         launch_server_pong
@@ -374,7 +368,10 @@ class NUCLIClient
                 cmd_a[0] = "source"                     # convert abbr. for script source command (case of ". script" => "source script")              
             elsif (/^\..*/ =~ cmd)
                 cmd_a = cmd.split('.')
-                cmd_a[0] = "source"                     # convert abbr. for script source command (case of ".script" => "source script")                    
+                cmd_a[0] = "source"                     # convert abbr. for script source command (case of ".script" => "source script")
+            elsif (/@.*/ =~ cmd)
+                eval("p #{$&}")                         # debugging support: print value of member variable
+                return nil                              # terminate command.
             end
         }
         cmd_a
@@ -455,13 +452,16 @@ class NUCLIClient
 
     # Cleanly shutdown the CLI
     def shutdown(quiet=false)
-        puts! "Shutting down...\n" unless (quiet || (@commands_to_execute.length > 0))
+        message("Shutting down...\n", 1) unless (quiet || (@commands_to_execute.length > 0))
+        
         # wait for any remaining background jobs to complete.
         @jobs.each { |t| t[0].join }
+        
         # shut down all sever connections
         @servers_lock.synchronize {
-            @ucli_servers.each {|svr| svr[2].shutdown() }
+            @ucli_servers.each {|svr| svr[2].shutdown() if svr[2] }
         }
+
     end
     
     # Display message to console IFF message level is <= verbosity level
@@ -849,13 +849,14 @@ class NUCLIClient
     end
 
     # Open an ssh tunnel to host:port via port @ localhost
-    def ssh_port_forward_tunnel(host, port, user, sleep=15, quiet=false)
-        return true if !@ssh_tunnels
-        if !system("ssh -f #{user}@#{host} -L #{port}:localhost:#{port} sleep #{sleep}")
+    def ssh_port_forward_tunnel(host, port, user, sleep=5, quiet=false)
+        return true if !@use_ssh_tunnels
+        tunnel = "ssh -f #{user}@#{host} -L #{port}:localhost:#{port} sleep #{sleep}"
+        if !system(tunnel)
             puts! "Error: unable to create ssh tunnel to #{user}@#{host}:#{port}" unless quiet
             return false
         end
-        return true
+        true
     end
 
     # Dymamically collect NUCLI client commands and apply them to list of servers, e.g.,
@@ -1107,32 +1108,29 @@ class NUCLIClient
             @diag.if_level(3) { p ex }
         end
     end
-    
-end # NUCLIClient
 
-if __FILE__ == $0
+end # NUCLIClient
 
 #
 #   Main loop: continue to recreate and run CLI until a valid quit is encountered.
 #
-loop do
-    nucli_client = nil
-    begin
-        nucli_client = NUCLIClient.new(ARGV)     # run only returns if commands were given on the command
-        nucli_client.run                         # line that launched this process, otherwise run loops 
-        break                                   # until a terminate, interrupt or unhandled exception is raised.
-    rescue Terminate, Interrupt
-        break
-    rescue Exception => ex
-        puts! "NUCLI client has encountered an unhandled exception: " + ex
-        p ex
-        puts! "Restarting...\n"
-    ensure
-        nucli_client.shutdown if nucli_client
+if __FILE__ == $0
+    loop do
+        nucli_client = nil
+        begin
+            nucli_client = NUCLIClient.new(ARGV)    # run only returns if commands were given on the command
+            nucli_client.run                        # line that launched this process, otherwise run loops 
+            break                                   # until a terminate, interrupt or unhandled exception is raised.
+        rescue Terminate, Interrupt
+            break
+        rescue Exception => ex
+            puts! "NUCLI client has encountered an unhandled exception: " + ex + "\nRestarting...\n"
+        ensure
+            nucli_client.shutdown if nucli_client
+        end
     end
-end
 
-exit(0)
+    exit(0)
 
 end # if __FILE__
 

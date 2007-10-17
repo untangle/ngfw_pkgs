@@ -13,10 +13,10 @@ module NUCLICommon
 # Error Messages
 
 # Exceptions
-class CommandFailed < Interrupt
+class CommandFailed < Exception
 end
 
-class Terminate < Interrupt
+class Terminate < Exception
 end
 
 end
