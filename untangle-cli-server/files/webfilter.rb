@@ -23,6 +23,7 @@ class Webfilter < UVMFilterNode
     
     ERROR_NO_WEBFILTER_NODES = "No web filter modules are installed on the effective server."
     NODE_NAME = "untangle-node-webfilter"
+    WEBFILTER_MIB_ROOT = ".1.3.6.1.4.1.2021.1234.1"
 
     def initialize
         @diag = Diag.new(DEFAULT_DIAG_LEVEL)
@@ -681,42 +682,71 @@ class Webfilter < UVMFilterNode
 
     def get_statistics(tid, args)
         @diag.if_level(3) { puts! "Attempting to get stats for TID #{tid}" }
+        
+        # Validate arguments.
+        if args[0]
+            if (args[0] =~ /^-[ng]$/) == nil
+                @diag.if_level(1) { puts "Error: invalid get statistics argument '#{args[0]}"}
+                return nil
+            elsif !args[1] || !(args[1] =~ /(\.\d+)+/)
+                @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[0] ? args[0] : 'missing value'}" }
+                return nil
+            elsif (args[1] =~ /^#{WEBFILTER_MIB_ROOT}/) == nil 
+                @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[0]} is not a webfiler OID." }
+            end
+        end
+        
         begin
             node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
             nodeStats = node_ctx.getStats()
+            # TODO: add [nodeStats,timeNow] to hash keyed on tid so we can cache
             @diag.if_level(3) { puts! "Got node stats for #{tid}" ; p nodeStats }
-            tcpsc  = nodeStats.tcpSessionCount()
-            tcpst  = nodeStats.tcpSessionTotal()
-            tcpsrt = nodeStats.tcpSessionRequestTotal()
-            udpsc  = nodeStats.udpSessionCount()
-            udpst  = nodeStats.udpSessionTotal()
-            udpsrt = nodeStats.udpSessionRequestTotal()
-            c2tb   = nodeStats.c2tBytes()
-            c2tc   = nodeStats.c2tChunks()
-            t2sb   = nodeStats.t2sBytes()
-            t2sc   = nodeStats.t2sChunks()
-            s2tb   = nodeStats.s2tBytes()
-            s2tc   = nodeStats.s2tChunks()
-            t2cb   = nodeStats.t2cBytes()
-            t2cc   = nodeStats.t2cChunks()
-            sdate  = nodeStats.startDate()
-            lcdate = nodeStats.lastConfigureDate()
-            ladate = nodeStats.lastActivityDate()
-            counters = []
-            (0..15).each { |i| counters[i] = nodeStats.getCount(i) }
             stats = ""
-            if args[0] && args[0] == "snmp"
-                # format stats for snmp usage
-                stats << "TID(#{tid});"
-                stats << "TCP(#{tcpsc},#{tcpst},#{tcpsrt});"
-                stats << "UDP(#{udpsc},#{udpst},#{udpsrt});"
-                stats << "C2N(#{c2tb},#{c2tc});"
-                stats << "N2C(#{t2cb},#{t2cc});"
-                stats << "S2N(#{s2tb},#{s2tc});"
-                stats << "N2S(#{t2sb},#{t2sc});"
-                stats << "CNTRS(#{counters.join(',')});"
-                stats << "DATES(#{sdate},#{lcdate},#{ladate});"
+            if args[0]
+                oid = (args[0] == '-g') ? args[1] : oid_next(args[1], tid)
+                return nil unless oid
+                case oid.split('.')[-1].to_i
+                    when 1;  stat, type = nodeStats.tcpSessionCount(), "integer"
+                    when 2;  stat, type = nodeStats.tcpSessionTotal(), "integer"
+                    when 3;  stat, type = nodeStats.tcpSessionRequestTotal(), "integer"
+                    when 4;  stat, type = nodeStats.udpSessionCount(), "integer"
+                    when 5;  stat, type = nodeStats.udpSessionTotal(), "integer"
+                    when 6;  stat, type = nodeStats.udpSessionRequestTotal(), "integer"
+                    when 7;  stat, type = nodeStats.c2tBytes(), "integer"
+                    when 8;  stat, type = nodeStats.c2tChunks(), "integer"
+                    when 9;  stat, type = nodeStats.t2sBytes(), "integer"
+                    when 10; stat, type = nodeStats.t2sChunks(), "integer"
+                    when 11; stat, type = nodeStats.s2tBytes(), "integer"
+                    when 12; stat, type = nodeStats.s2tChunks(), "integer"
+                    when 13; stat, type = nodeStats.t2cBytes(), "integer"
+                    when 14; stat, type = nodeStats.t2cChunks(), "integer"
+                    when 15; stat, type = nodeStats.startDate(), "string"
+                    when 16; stat, type = nodeStats.lastConfigureDate(), "string"
+                    when 17; stat, type = nodeStats.lastActivityDate(), "string"
+                else
+                    return nil
+                end
+                stats = "#{oid}\n#{type}\n#{stat}"
             else
+                tcpsc  = nodeStats.tcpSessionCount()
+                tcpst  = nodeStats.tcpSessionTotal()
+                tcpsrt = nodeStats.tcpSessionRequestTotal()
+                udpsc  = nodeStats.udpSessionCount()
+                udpst  = nodeStats.udpSessionTotal()
+                udpsrt = nodeStats.udpSessionRequestTotal()
+                c2tb   = nodeStats.c2tBytes()
+                c2tc   = nodeStats.c2tChunks()
+                t2sb   = nodeStats.t2sBytes()
+                t2sc   = nodeStats.t2sChunks()
+                s2tb   = nodeStats.s2tBytes()
+                s2tc   = nodeStats.s2tChunks()
+                t2cb   = nodeStats.t2cBytes()
+                t2cc   = nodeStats.t2cChunks()
+                sdate  = nodeStats.startDate()
+                lcdate = nodeStats.lastConfigureDate()
+                ladate = nodeStats.lastActivityDate()
+                counters = []
+                (0..15).each { |i| counters[i] = nodeStats.getCount(i) }
                 # formant stats for human readability
                 stats << "TCP Sessions (count, total, requests): #{tcpsc}, #{tcpst}, #{tcpsrt}\n"
                 stats << "UDP Sessions (count, total, requests): #{udpsc}, #{udpst}, #{udpsrt}\n"
@@ -736,4 +766,14 @@ class Webfilter < UVMFilterNode
         end
     end
 
+    def oid_next(oid, tid)
+        root = WEBFILTER_MIB_ROOT
+        case oid
+        when "#{root}.#{tid}"; return "#{root}.#{tid}.1"
+        when /#{root}.#{tid}.\d+/; oid.succ
+        else
+            return nil
+        end
+    end
+    
 end # WebFilter
