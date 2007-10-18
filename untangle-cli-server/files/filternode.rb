@@ -44,6 +44,39 @@ class UVMFilterNode
         @@factory = nil
         @@uvmRemoteContext = nil
 
+    public
+        def initialize
+            @diag = Diag.new(DEFAULT_DIAG_LEVEL)
+            @diag.if_level(2) { puts! "Initializing UVMFilterNode..." }
+            
+            begin
+                @@filternode_lock.synchronize {
+                    if @@factory.nil?
+                        @@factory = com.untangle.uvm.client.RemoteUvmContextFactory.factory
+                        connect
+                    end
+                } 
+            rescue Exception => ex
+                puts! "Error: unable to connect to Remote UVM Context Factory; UVM server may not be running -- " + ex
+                raise
+            end
+            
+            @stats_cache = {}
+            @stats_cache_lock = Mutex.new
+
+            ## This just guarantees that all of the connections are terminated.
+            at_exit { @@filternode_lock.synchronize { disconnect } }
+    
+            @diag.if_level(2) { puts! "Done initializing UVMFilterNode..." }
+        end
+
+    public
+    
+        # If derived class does not override this method then its not a valid filter node.
+        def execute(args)
+            raise FilterNodeAPIVioltion, "Filter nodes does not implement the required 'execute' method"
+        end
+
     protected
         # Caller MUST have obtained @@filternode_lock before calling this method.
         def connect
@@ -250,40 +283,6 @@ class UVMFilterNode
             @diag.if_level(3) { puts! "Next oid: #{next_oid}" }
             return next_oid
         end
-
-    public
-        def initialize
-            @diag = Diag.new(DEFAULT_DIAG_LEVEL)
-            @diag.if_level(2) { puts! "Initializing UVMFilterNode..." }
-            
-            begin
-                @@filternode_lock.synchronize {
-                    if @@factory.nil?
-                        @@factory = com.untangle.uvm.client.RemoteUvmContextFactory.factory
-                        connect
-                    end
-                } 
-            rescue Exception => ex
-                puts! "Error: unable to connect to Remote UVM Context Factory; UVM server may not be running -- " + ex
-                raise
-            end
-            
-            @stats_cache = {}
-            @stats_cache_lock = Mutex.new
-
-            ## This just guarantees that all of the connections are terminated.
-            at_exit { @@filternode_lock.synchronize { disconnect } }
-    
-            @diag.if_level(2) { puts! "Done initializing UVMFilterNode..." }
-        end
-
-    public
-    
-        # If derived class does not override this method then its not a valid filter node.
-        def execute(args)
-            raise FilterNodeAPIVioltion, "Filter nodes does not implement the required 'execute' method"
-        end
-
 
 end # UVMFilterNode
 
