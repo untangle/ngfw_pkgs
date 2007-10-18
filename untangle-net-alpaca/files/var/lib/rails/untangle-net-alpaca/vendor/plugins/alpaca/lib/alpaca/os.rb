@@ -34,7 +34,7 @@ module Alpaca::OS
         manager = eval( "#{fqn}.instance" )
 
         ## Only return managers.
-        return manager if manager.class.include? Alpaca::OS::ManagerBase
+        return manager if manager.is_a? Alpaca::OS::ManagerBase
 
         logger.debug( "#{manager} does not include ManagerBase" )
       rescue LoadError => load_error

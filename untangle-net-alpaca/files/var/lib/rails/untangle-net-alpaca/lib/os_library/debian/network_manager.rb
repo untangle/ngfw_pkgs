@@ -80,6 +80,10 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
     raise "Unable to reconfigure network settings." unless Kernel.system( "nohup #{Service} start" )
   end
 
+  def hook_nancy
+    "nancy"
+  end
+
   def update_address
     ## XXX THIS SHOULDN'T BE HERE, should be in an observer ##
     OSLibrary::Debian::PacketFilterManager.instance.update_address    

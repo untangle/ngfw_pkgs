@@ -1,6 +1,4 @@
-class OSLibrary::OverrideManager
-  include Alpaca::OS::ManagerBase
-  
+class OSLibrary::OverrideManager < Alpaca::OS::ManagerBase
   ## This should commit and update all of the packet filter settings.
   def commit
     logger.debug "commit has nothing to do for the override manager"
