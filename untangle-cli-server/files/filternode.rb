@@ -35,7 +35,7 @@ class UVMFilterNode
 
     protected
 
-        UVM_FILTERNODE_MIB_ROOT = ".1.3.6.1.4.1.2021.1234"
+        UVM_FILTERNODE_MIB_ROOT = ".1.3.6.1.4.1.1234"
         
         DefaultTimeoutMillis = 600000
         
@@ -138,10 +138,10 @@ class UVMFilterNode
                     @diag.if_level(1) { puts "Error: invalid get statistics argument '#{args[0]}"}
                     return nil
                 elsif !args[1] || !(args[1] =~ /(\.\d+)+/)
-                    @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[0] ? args[0] : 'missing value'}" }
+                    @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[1] ? args[1] : 'missing value'}" }
                     return nil
                 elsif (args[1] =~ /^#{mib_root}/) == nil 
-                    @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[0]} is not a filter node OID." }
+                    @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[1]} is not a filter node OID." }
                 end
             end
             
