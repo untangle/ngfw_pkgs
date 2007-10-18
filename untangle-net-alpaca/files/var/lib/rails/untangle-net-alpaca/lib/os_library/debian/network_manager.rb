@@ -1,10 +1,3 @@
-## REVIEW.  there should be an observer, or some global management framework
-require_dependency "os_library/debian/dns_server_manager"
-## REVIEW.  there should be an observer, or some global management framework
-require_dependency "os_library/debian/packet_filter_manager"
-## REVIEW.  there should be an observer, or some global management framework
-require_dependency "os_library/debian/dhcp_manager"
-
 class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
   include Singleton
 
@@ -37,10 +30,15 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
     interfaceArray
   end
 
-  def commit
+  def hook_commit
+    write_files
+    run_services
+  end
+
+  def hook_write_files
     interfaces_file = []
     interfaces_file << header
-
+    
     interfaces = Interface.find( :all )
     interfaces.each do |interface|
       config = interface.current_config
@@ -58,8 +56,7 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
     ## Delete all empty or nil parts
     interfaces_file = interfaces_file.delete_if { |p| p.nil? || p.empty? }
 
-    overrideManager = os["override_manager"]
-    overrideManager.write_file( InterfacesConfigFile, interfaces_file.join( "\n" ), "\n" )
+    os["override_manager"].write_file( InterfacesConfigFile, interfaces_file.join( "\n" ), "\n" )
 
     ## Write the /etc/iftab file, ifrename is not executed
     ## Review : now because we no longer need to remap interfaces
@@ -68,25 +65,15 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
     ## Clear out all of the interface state.
     ## Review: Should this be immutable.
     File.open( InterfacesStatusFile, "w" ) { |f| f.print( "lo=lo" ) }
+  end
 
-    ## XXX THIS SHOULDN'T BE HERE, should be in an observer ##
-    OSLibrary::Debian::DnsServerManager.instance.commit
-    ## XXX THIS SHOULDN'T BE HERE, should be in an observer ##
-    OSLibrary::Debian::PacketFilterManager.instance.commit
-    ## XXX THIS SHOULDN'T BE HERE, should be in an observer ##
-    OSLibrary::Debian::DhcpManager.instance.commit
-
+  def hook_run_services
     ## Restart networking
     raise "Unable to reconfigure network settings." unless Kernel.system( "nohup #{Service} start" )
   end
 
-  def hook_nancy
-    "nancy"
-  end
-
-  def update_address
-    ## XXX THIS SHOULDN'T BE HERE, should be in an observer ##
-    OSLibrary::Debian::PacketFilterManager.instance.update_address    
+  ## Holder for other managers to latch onto updates when the address changes.
+  def hook_update_address
   end
 
   ## Given an interface, this returns the expected bridge name

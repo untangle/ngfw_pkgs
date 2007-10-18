@@ -1,11 +1,13 @@
-require_dependency "os_library/debian/network_manager"
-
 class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
   include Singleton
 
   ResolvConfFile = "/etc/resolv.conf"
 
-  def commit
+  def register_hooks
+    os["network_manager"].register_hook( -200, "dns_server_manager", "write_files", :hook_commit )
+  end
+
+  def hook_commit
     resolv_conf
   end
 

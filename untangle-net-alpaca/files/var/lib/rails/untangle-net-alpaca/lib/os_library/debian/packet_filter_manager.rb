@@ -1,5 +1,3 @@
-require_dependency "os_library/debian/network_manager"
-
 class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   include Singleton
 
@@ -8,6 +6,16 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   Service = "/etc/init.d/alpaca-iptables"
 
   ConfigFile = "/etc/untangle-net-alpaca/iptables-rules"
+
+  def register_hooks
+    os["network_manager"].register_hook( 100, "packet_filter_manager", "write_file", :hook_write_file )
+
+    os["network_manager"].register_hook( 100, "packet_filter_manager", "run_services", :hook_run_services )
+    
+    ## Run whenever the address is updated.
+    ## REVIEW : This may just be moved into a script.
+    os["network_manager"].register_hook( 100, "packet_filter_manager", "update_address", :hook_commit )
+  end
   
   class Chain
     def initialize( name, table, start_chain, init = "" )
@@ -41,7 +49,12 @@ EOF
     Order = [ MarkInterface, PreNat, PostNat ]
   end
   
-  def commit
+  def hook_commit
+    write_files
+    run_services
+  end
+
+  def hook_write_files
     pf_file = []
 
     pf_file << header
@@ -66,8 +79,10 @@ EOF
     ## Delete all empty or nil parts
     pf_file = pf_file.delete_if { |p| p.nil? || p.empty? }
     
-    os["override_manager"].write_file( ConfigFile, pf_file.join( "\n" ), "\n" )
-    
+    os["override_manager"].write_file( ConfigFile, pf_file.join( "\n" ), "\n" )    
+  end
+
+  def hook_run_services
     raise "Unable to iptables rules." unless Kernel.system( "#{Service} restart" )
   end
 

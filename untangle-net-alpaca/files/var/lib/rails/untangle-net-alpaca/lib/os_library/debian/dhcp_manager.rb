@@ -1,6 +1,3 @@
-## REVIEW : This is not legit
-require_dependency "os_library/debian/network_manager"
-
 class OSLibrary::Debian::DhcpManager < OSLibrary::DhcpManager
   include Singleton
   
@@ -12,8 +9,12 @@ class OSLibrary::Debian::DhcpManager < OSLibrary::DhcpManager
   OverrideGateway = "DHCP_GATEWAY"
   OverrideDnsServer = "DHCP_DNS_SERVERS"
   OverrideDomainName = "DHCP_DOMAIN_NAME"
+
+  def register_hooks
+    os["network_manager"].register_hook( -100, "dhcp_manager", "write_files", :hook_commit )
+  end
   
-  def commit
+  def hook_commit
     ## Delete all of the existing config files
     delete_config_files
 
