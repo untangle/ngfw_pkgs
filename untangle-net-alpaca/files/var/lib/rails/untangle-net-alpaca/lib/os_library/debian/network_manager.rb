@@ -58,8 +58,7 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
     ## Delete all empty or nil parts
     interfaces_file = interfaces_file.delete_if { |p| p.nil? || p.empty? }
 
-    ## Review : This is a bit verbose, and it has DebianSarge hardcoded
-    overrideManager = OSLibrary.getOS( "DebianSarge" ).manager( "override_manager" )    
+    overrideManager = os["override_manager"]
     overrideManager.write_file( InterfacesConfigFile, interfaces_file.join( "\n" ), "\n" )
 
     ## Write the /etc/iftab file, ifrename is not executed

@@ -66,9 +66,7 @@ EOF
     ## Delete all empty or nil parts
     pf_file = pf_file.delete_if { |p| p.nil? || p.empty? }
     
-    ## Review : This is a bit verbose, and it has DebianSarge hardcoded
-    overrideManager = OSLibrary.getOS( "DebianSarge" ).manager( "override_manager" )    
-    overrideManager.write_file( ConfigFile, pf_file.join( "\n" ), "\n" )
+    os["override_manager"].write_file( ConfigFile, pf_file.join( "\n" ), "\n" )
     
     raise "Unable to iptables rules." unless Kernel.system( "#{Service} restart" )
   end

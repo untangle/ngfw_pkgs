@@ -27,10 +27,8 @@ class OSLibrary::Debian::DhcpManager < OSLibrary::DhcpManager
   def delete_config_files
     Dir.foreach( ConfigDir ) do |file_name|
       next if file_name.match( /^#{ConfigFileBase}/ ).nil?
-      
-      ## Review : This is a bit verbose, and it has DebianSarge hardcoded
-      overrideManager = OSLibrary.getOS( "DebianSarge" ).manager( "override_manager" )
-      overrideManager.rm_file( "#{ConfigDir}/#{file_name}" )
+
+      os["override_manager"].rm_file( "#{ConfigDir}/#{file_name}" )
     end
   end
 
@@ -57,8 +55,7 @@ class OSLibrary::Debian::DhcpManager < OSLibrary::DhcpManager
         dns = [ config.dns_1, config.dns_2 ].join( " " ).strip 
       end
 
-      ## Review : This is a bit verbose, and it has DebianSarge hardcoded
-      overrideManager = OSLibrary.getOS( "DebianSarge" ).manager( "override_manager" )    
+      overrideManager = os["override_manager"]
 
       ## Review : should this ignore the entry, because it isn't actually under the control
       ## of the net-alpaca.
@@ -79,9 +76,7 @@ class OSLibrary::Debian::DhcpManager < OSLibrary::DhcpManager
       
       file_name = "#{ConfigDir}/#{ConfigFileBase}#{name}"
 
-      ## Review : This is a bit verbose, and it has DebianSarge hardcoded
-      overrideManager = OSLibrary.getOS( "DebianSarge" ).manager( "override_manager" )    
-      overrideManager.write_file( file_name, header, "\n", cfg.join( "\n" ), "\n" )
+      os["override_manager"].write_file( file_name, header, "\n", cfg.join( "\n" ), "\n" )
     end
   end
 

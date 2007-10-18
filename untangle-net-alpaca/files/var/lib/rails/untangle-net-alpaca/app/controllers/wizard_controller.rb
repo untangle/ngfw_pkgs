@@ -134,8 +134,7 @@ class WizardController < ApplicationController
   private
 
   def networkManager
-    ## REVIEW DebianSarge is hardcoded, need to move this out.
-    OSLibrary.getOS( "DebianSarge" ).manager( "network_manager" )
+    os["network_manager"]
   end
 
   ## This is the navigational form  

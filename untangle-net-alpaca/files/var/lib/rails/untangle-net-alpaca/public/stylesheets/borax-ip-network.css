@@ -8,7 +8,7 @@ div.ip-networks
 
 div.ip-networks ul.ip-network-list
 { 
-  width: 505px;
+  width: 100%;
   list-style: none inside none;
   margin: 0px;
   padding: 0px;

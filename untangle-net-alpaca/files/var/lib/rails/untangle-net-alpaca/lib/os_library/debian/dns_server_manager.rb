@@ -35,9 +35,7 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
 ## may be overriden
 EOF
 
-    ## Review : This is a bit verbose, and it has DebianSarge hardcoded
-    overrideManager = OSLibrary.getOS( "DebianSarge" ).manager( "override_manager" )    
-    overrideManager.write_file( ResolvConfFile, header, name_servers.join( "\n" ), "\n" )
+    os["override_manager"].write_file( ResolvConfFile, header, name_servers.join( "\n" ), "\n" )
   end
 end
 

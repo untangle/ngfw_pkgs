@@ -3,7 +3,7 @@ require "ipaddr"
 class OSLibrary::NetworkManager
   DefaultMTU = 1500
   
-  include OSLibrary::Manager
+  include Alpaca::OS::ManagerBase
   
   CIDR = {
     "0"  => "0.0.0.0",

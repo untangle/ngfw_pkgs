@@ -20,7 +20,7 @@ module Alpaca::ActiveRecordExtensions
   def self.append_features(mod)
     #  help out people counting on transitive mixins
     unless mod.instance_of?(Class)
-      raise TypeError, "Inclusion of the OO-Singleton module in module #{mod}"
+      raise TypeError, "Inclusion of an ActiveRecordExtensions in a module #{mod}"
     end
     super
   end

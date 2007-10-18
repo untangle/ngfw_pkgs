@@ -1,5 +1,5 @@
 class OSLibrary::DhcpManager
-  include OSLibrary::Manager
+  include Alpaca::OS::ManagerBase
   
   ## This should commit and update all of the dhcp settings
   def commit
