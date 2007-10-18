@@ -23,7 +23,8 @@ class Webfilter < UVMFilterNode
     
     ERROR_NO_WEBFILTER_NODES = "No web filter modules are installed on the effective server."
     NODE_NAME = "untangle-node-webfilter"
-    WEBFILTER_MIB_ROOT = ".1.3.6.1.4.1.2021.1234.1"
+    WEBFILTER_MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".1"
+    NUM_STAT_COUNTERS = 16
 
     def initialize
         @diag = Diag.new(DEFAULT_DIAG_LEVEL)
@@ -692,7 +693,7 @@ class Webfilter < UVMFilterNode
                 @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[0] ? args[0] : 'missing value'}" }
                 return nil
             elsif (args[1] =~ /^#{WEBFILTER_MIB_ROOT}/) == nil 
-                @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[0]} is not a webfiler OID." }
+                @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[0]} is not a webfilter OID." }
             end
         end
         
@@ -705,24 +706,32 @@ class Webfilter < UVMFilterNode
             if args[0]
                 oid = (args[0] == '-g') ? args[1] : oid_next(args[1], tid)
                 return nil unless oid
-                case oid.split('.')[-1].to_i
-                    when 1;  stat, type = nodeStats.tcpSessionCount(), "integer"
-                    when 2;  stat, type = nodeStats.tcpSessionTotal(), "integer"
-                    when 3;  stat, type = nodeStats.tcpSessionRequestTotal(), "integer"
-                    when 4;  stat, type = nodeStats.udpSessionCount(), "integer"
-                    when 5;  stat, type = nodeStats.udpSessionTotal(), "integer"
-                    when 6;  stat, type = nodeStats.udpSessionRequestTotal(), "integer"
-                    when 7;  stat, type = nodeStats.c2tBytes(), "integer"
-                    when 8;  stat, type = nodeStats.c2tChunks(), "integer"
-                    when 9;  stat, type = nodeStats.t2sBytes(), "integer"
-                    when 10; stat, type = nodeStats.t2sChunks(), "integer"
-                    when 11; stat, type = nodeStats.s2tBytes(), "integer"
-                    when 12; stat, type = nodeStats.s2tChunks(), "integer"
-                    when 13; stat, type = nodeStats.t2cBytes(), "integer"
-                    when 14; stat, type = nodeStats.t2cChunks(), "integer"
-                    when 15; stat, type = nodeStats.startDate(), "string"
-                    when 16; stat, type = nodeStats.lastConfigureDate(), "string"
-                    when 17; stat, type = nodeStats.lastActivityDate(), "string"
+                webfilter_mib_pieces = WEBFILTER_MIB_ROOT.split('.')
+                oid_pieces = oid.split('.')
+                stat_id = oid_pieces[webfilter_mib_pieces.length-oid_pieces.length+1,2].join('.')
+                puts! stat_id
+                case stat_id
+                    when "1";  stat, type = nodeStats.tcpSessionCount(), "integer"
+                    when "2";  stat, type = nodeStats.tcpSessionTotal(), "integer"
+                    when "3";  stat, type = nodeStats.tcpSessionRequestTotal(), "integer"
+                    when "4";  stat, type = nodeStats.udpSessionCount(), "integer"
+                    when "5";  stat, type = nodeStats.udpSessionTotal(), "integer"
+                    when "6";  stat, type = nodeStats.udpSessionRequestTotal(), "integer"
+                    when "7";  stat, type = nodeStats.c2tBytes(), "integer"
+                    when "8";  stat, type = nodeStats.c2tChunks(), "integer"
+                    when "9";  stat, type = nodeStats.t2sBytes(), "integer"
+                    when "10"; stat, type = nodeStats.t2sChunks(), "integer"
+                    when "11"; stat, type = nodeStats.s2tBytes(), "integer"
+                    when "12"; stat, type = nodeStats.s2tChunks(), "integer"
+                    when "13"; stat, type = nodeStats.t2cBytes(), "integer"
+                    when "14"; stat, type = nodeStats.t2cChunks(), "integer"
+                    when "15"; stat, type = nodeStats.startDate(), "string"
+                    when "16"; stat, type = nodeStats.lastConfigureDate(), "string"
+                    when "17"; stat, type = nodeStats.lastActivityDate(), "string"
+                    when /18\.\d+/
+                        counter = oid_pieces[-1].to_i()-1
+                        return nil unless counter < NUM_STAT_COUNTERS
+                        stat, type = nodeStats.getCount(counter), "counter32"
                 else
                     return nil
                 end
@@ -746,7 +755,7 @@ class Webfilter < UVMFilterNode
                 lcdate = nodeStats.lastConfigureDate()
                 ladate = nodeStats.lastActivityDate()
                 counters = []
-                (0..15).each { |i| counters[i] = nodeStats.getCount(i) }
+                (0...NUM_STAT_COUNTERS).each { |i| counters[i] = nodeStats.getCount(i) }
                 # formant stats for human readability
                 stats << "TCP Sessions (count, total, requests): #{tcpsc}, #{tcpst}, #{tcpsrt}\n"
                 stats << "UDP Sessions (count, total, requests): #{udpsc}, #{udpst}, #{udpsrt}\n"
@@ -769,11 +778,17 @@ class Webfilter < UVMFilterNode
     def oid_next(oid, tid)
         root = WEBFILTER_MIB_ROOT
         case oid
-        when "#{root}.#{tid}"; return "#{root}.#{tid}.1"
-        when /#{root}.#{tid}.\d+/; oid.succ
+        when "#{root}.#{tid}"; next_oid = "#{root}.#{tid}.1"
+        when "#{root}.#{tid}.9"; next_oid = "#{root}.#{tid}.10"
+        when "#{root}.#{tid}.17"; next_oid = "#{root}.#{tid}.18.1"
+        when "#{root}.#{tid}.18.9"; next_oid = "#{root}.#{tid}.18.10"
+        when "#{root}.#{tid}.18.15"; next_oid = "#{root}.#{tid}.19"
+        when /#{root}\.#{tid}(\.\d+)+/; next_oid = oid.succ
         else
-            return nil
+            next_oid = nil
         end
+        @diag.if_level(3) { puts! "Next oid: #{next_oid}" }
+        return next_oid
     end
     
 end # WebFilter

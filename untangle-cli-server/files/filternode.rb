@@ -31,6 +31,8 @@ class UVMFilterNode
 
     protected
 
+        UVM_FILTERNODE_MIB_ROOT = ".1.3.6.1.4.1.2021.1234"
+        
         DefaultTimeoutMillis = 600000
         
         # @@filternode_lock guards @@factory AND @@uvmReoteContext
