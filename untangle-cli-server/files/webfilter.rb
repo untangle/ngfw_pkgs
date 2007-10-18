@@ -10,11 +10,10 @@
 #   - Should mime types entered via the CLI be validated against a list of known legal values?
 #
 
-require 'java'
-require 'proxy'
-require 'debug'
+#require 'java'
+#require 'proxy'
+#require 'debug'
 
-require 'thread'
 require 'filternode'
 
 require 'common'
@@ -30,8 +29,6 @@ class Webfilter < UVMFilterNode
         @diag = Diag.new(DEFAULT_DIAG_LEVEL)
 	@diag.if_level(3) { puts! "Initializing WebFilter..." }
         super
-        @stats_cache = {}
-        @stats_cache_lock = Mutex.new
 	@diag.if_level(3) { puts! "Done initializing WebFilter..." }
     end
 

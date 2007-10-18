@@ -8,11 +8,15 @@
 # @author <a href="mailto:ken@untangle.com">Ken Hilton</a>
 # @version 0.1
 #
+require 'java'
+require 'proxy'
+require 'debug'
 
 require 'common'
 include NUCLICommon
 require 'util'
 include NUCLIUtil
+
 require 'thread'
 
 # Local exception definitions
@@ -116,40 +120,14 @@ class UVMFilterNode
             return [tid, cmd]
         end
 
-    public
-        def initialize
-            @diag = Diag.new(DEFAULT_DIAG_LEVEL)
-            @diag.if_level(2) { puts! "Initializing UVMFilterNode..." }
-            
-            begin
-                @@filternode_lock.synchronize {
-                    if @@factory.nil?
-                        @@factory = com.untangle.uvm.client.RemoteUvmContextFactory.factory
-                        connect
-                    end
-                } 
-            rescue Exception => ex
-                puts! "Error: unable to connect to Remote UVM Context Factory; UVM server may not be running -- " + ex
-                raise
-            end
-                    
-            ## This just guarantees that all of the connections are terminated.
-            at_exit { @@filternode_lock.synchronize { disconnect } }
-    
-            @diag.if_level(2) { puts! "Done initializing UVMFilterNode..." }
-        end
-
     protected
         NUM_STAT_COUNTERS = 16
         STATS_CACHE_EXPIRY = 5
     
-    public
-    
-        # If derived class does not override this method then its not a valid filter node.
-        def execute(args)
-            raise FilterNodeAPIVioltion, "Filter nodes does not implement the required 'execute' method"
-        end
-
+        # A variety of filter nodes have the same, standard set of statistics.  If
+        # your node exposes stats in the standard format then simply call this method
+        # from your get_statistics() method.  Otherwise, you can use this method as a
+        # guide for implementing your own get_statistics method.
         def get_standard_statistics(mib_root, tid, args)
             
             @diag.if_level(3) { puts! "Attempting to get stats for TID #{tid}" }
@@ -163,7 +141,7 @@ class UVMFilterNode
                     @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[0] ? args[0] : 'missing value'}" }
                     return nil
                 elsif (args[1] =~ /^#{mib_root}/) == nil 
-                    @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[0]} is not a webfilter OID." }
+                    @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[0]} is not a filter node OID." }
                 end
             end
             
@@ -252,7 +230,7 @@ class UVMFilterNode
                 @diag.if_level(3) { puts! stats }
                 return stats
             rescue Exception => ex
-                msg = "Get webfilter node statistics failed:\n" + ex
+                msg = "Get filter node statistics failed:\n" + ex
                 @diag.if_level(3) { puts! msg ; p ex }
                 return msg
             end
@@ -272,6 +250,40 @@ class UVMFilterNode
             @diag.if_level(3) { puts! "Next oid: #{next_oid}" }
             return next_oid
         end
+
+    public
+        def initialize
+            @diag = Diag.new(DEFAULT_DIAG_LEVEL)
+            @diag.if_level(2) { puts! "Initializing UVMFilterNode..." }
+            
+            begin
+                @@filternode_lock.synchronize {
+                    if @@factory.nil?
+                        @@factory = com.untangle.uvm.client.RemoteUvmContextFactory.factory
+                        connect
+                    end
+                } 
+            rescue Exception => ex
+                puts! "Error: unable to connect to Remote UVM Context Factory; UVM server may not be running -- " + ex
+                raise
+            end
+            
+            @stats_cache = {}
+            @stats_cache_lock = Mutex.new
+
+            ## This just guarantees that all of the connections are terminated.
+            at_exit { @@filternode_lock.synchronize { disconnect } }
+    
+            @diag.if_level(2) { puts! "Done initializing UVMFilterNode..." }
+        end
+
+    public
+    
+        # If derived class does not override this method then its not a valid filter node.
+        def execute(args)
+            raise FilterNodeAPIVioltion, "Filter nodes does not implement the required 'execute' method"
+        end
+
 
 end # UVMFilterNode
 
