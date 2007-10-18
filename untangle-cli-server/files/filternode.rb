@@ -139,13 +139,139 @@ class UVMFilterNode
             @diag.if_level(2) { puts! "Done initializing UVMFilterNode..." }
         end
 
+    protected
+        NUM_STAT_COUNTERS = 16
+        STATS_CACHE_EXPIRY = 5
+    
     public
+    
         # If derived class does not override this method then its not a valid filter node.
         def execute(args)
             raise FilterNodeAPIVioltion, "Filter nodes does not implement the required 'execute' method"
         end
 
-        
+        def get_standard_statistics(mib_root, tid, args)
+            
+            @diag.if_level(3) { puts! "Attempting to get stats for TID #{tid}" }
+            
+            # Validate arguments.
+            if args[0]
+                if (args[0] =~ /^-[ng]$/) == nil
+                    @diag.if_level(1) { puts "Error: invalid get statistics argument '#{args[0]}"}
+                    return nil
+                elsif !args[1] || !(args[1] =~ /(\.\d+)+/)
+                    @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[0] ? args[0] : 'missing value'}" }
+                    return nil
+                elsif (args[1] =~ /^#{mib_root}/) == nil 
+                    @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[0]} is not a webfilter OID." }
+                end
+            end
+            
+            begin
+                nodeStats = nil
+                @stats_cache_lock.synchronize {
+                    cached_stats = @stats_cache[tid]
+                    if !cached_stats || ((Time.now.to_i - cached_stats[1]) > STATS_CACHE_EXPIRY)
+                        @diag.if_level(3) { puts! "Stat cache miss / expiry." }
+                        node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
+                        nodeStats = node_ctx.getStats()
+                        @stats_cache[tid] = [nodeStats, Time.now.to_i]
+                    else
+                        @diag.if_level(3) { puts! "Stat cache hit." }
+                        nodeStats = cached_stats[0]
+                    end
+                }
+    
+                @diag.if_level(3) { puts! "Got node stats for #{tid}" ; p nodeStats }
+                stats = ""
+                if args[0]
+                    oid = (args[0] == '-g') ? args[1] : oid_next(mib_root, args[1], tid)
+                    return nil unless oid
+                    # Construct OID fragment to match on from >up to< the last two
+                    # pieces of the effective OID, eg, xxx.1 => 1, xxx.18.2 ==> 18.2
+                    int = "integer"; str = "string", c32 = "counter32"
+                    mib_pieces = mib_root.split('.')
+                    oid_pieces = oid.split('.')
+                    stat_id = oid_pieces[(mib_pieces.length-oid_pieces.length)+1 ,2].join('.')
+                    case stat_id
+                        when "1";  stat, type = nodeStats.tcpSessionCount(), int
+                        when "2";  stat, type = nodeStats.tcpSessionTotal(), int
+                        when "3";  stat, type = nodeStats.tcpSessionRequestTotal(), int
+                        when "4";  stat, type = nodeStats.udpSessionCount(), int
+                        when "5";  stat, type = nodeStats.udpSessionTotal(), int
+                        when "6";  stat, type = nodeStats.udpSessionRequestTotal(), int
+                        when "7";  stat, type = nodeStats.c2tBytes(), int
+                        when "8";  stat, type = nodeStats.c2tChunks(), int
+                        when "9";  stat, type = nodeStats.t2sBytes(), int
+                        when "10"; stat, type = nodeStats.t2sChunks(), int
+                        when "11"; stat, type = nodeStats.s2tBytes(), int
+                        when "12"; stat, type = nodeStats.s2tChunks(), int
+                        when "13"; stat, type = nodeStats.t2cBytes(), int
+                        when "14"; stat, type = nodeStats.t2cChunks(), int
+                        when "15"; stat, type = nodeStats.startDate(), str
+                        when "16"; stat, type = nodeStats.lastConfigureDate(), str
+                        when "17"; stat, type = nodeStats.lastActivityDate(), str
+                        when /18\.\d+/
+                            counter = oid_pieces[-1].to_i()-1
+                            return nil unless counter < NUM_STAT_COUNTERS
+                            stat, type = nodeStats.getCount(counter), c32
+                    else
+                        return nil
+                    end
+                    stats = "#{oid}\n#{type}\n#{stat}"
+                else
+                    tcpsc  = nodeStats.tcpSessionCount()
+                    tcpst  = nodeStats.tcpSessionTotal()
+                    tcpsrt = nodeStats.tcpSessionRequestTotal()
+                    udpsc  = nodeStats.udpSessionCount()
+                    udpst  = nodeStats.udpSessionTotal()
+                    udpsrt = nodeStats.udpSessionRequestTotal()
+                    c2tb   = nodeStats.c2tBytes()
+                    c2tc   = nodeStats.c2tChunks()
+                    t2sb   = nodeStats.t2sBytes()
+                    t2sc   = nodeStats.t2sChunks()
+                    s2tb   = nodeStats.s2tBytes()
+                    s2tc   = nodeStats.s2tChunks()
+                    t2cb   = nodeStats.t2cBytes()
+                    t2cc   = nodeStats.t2cChunks()
+                    sdate  = nodeStats.startDate()
+                    lcdate = nodeStats.lastConfigureDate()
+                    ladate = nodeStats.lastActivityDate()
+                    counters = []
+                    (0...NUM_STAT_COUNTERS).each { |i| counters[i] = nodeStats.getCount(i) }
+                    # formant stats for human readability
+                    stats << "TCP Sessions (count, total, requests): #{tcpsc}, #{tcpst}, #{tcpsrt}\n"
+                    stats << "UDP Sessions (count, total, requests): #{udpsc}, #{udpst}, #{udpsrt}\n"
+                    stats << "Client to Node (bytes, chunks): #{c2tb}, #{c2tc}\n"
+                    stats << "Node to Client (bytes, chunks): #{t2cb}, #{t2cc}\n"
+                    stats << "Server to Node (bytes, chunks): #{s2tb}, #{s2tc}\n"
+                    stats << "Node to Server (bytes, chunks): #{t2sb}, #{t2sc}\n"
+                    stats << "Counters: #{counters.join(',')}\n"
+                    stats << "Dates (start, last config, last activity): #{sdate}, #{lcdate}, #{ladate}\n"
+                end
+                @diag.if_level(3) { puts! stats }
+                return stats
+            rescue Exception => ex
+                msg = "Get webfilter node statistics failed:\n" + ex
+                @diag.if_level(3) { puts! msg ; p ex }
+                return msg
+            end
+        end
+    
+        def oid_next(mib_root, oid, tid)
+            case oid
+            when "#{mib_root}.#{tid}"; next_oid = "#{mib_root}.#{tid}.1"
+            when "#{mib_root}.#{tid}.9"; next_oid = "#{mib_root}.#{tid}.10"
+            when "#{mib_root}.#{tid}.17"; next_oid = "#{mib_root}.#{tid}.18.1"
+            when "#{mib_root}.#{tid}.18.9"; next_oid = "#{mib_root}.#{tid}.18.10"
+            when "#{mib_root}.#{tid}.18.15"; next_oid = "#{mib_root}.#{tid}.19"
+            when /#{mib_root}\.#{tid}(\.\d+)+/; next_oid = oid.succ
+            else
+                next_oid = nil
+            end
+            @diag.if_level(3) { puts! "Next oid: #{next_oid}" }
+            return next_oid
+        end
 
 end # UVMFilterNode
 
