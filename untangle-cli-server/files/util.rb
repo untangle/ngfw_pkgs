@@ -37,6 +37,10 @@ module NUCLIUtil
         end
     end
     
+    def empty?(obj)
+        obj.nil? || (obj=="") || ((obj.respond_to? :length) && (obj.length == 0))
+    end
+
 end # UCLIUtil
 
 if $0 == __FILE__

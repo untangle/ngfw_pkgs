@@ -19,16 +19,6 @@ include NUCLIUtil
 
 require 'thread'
 
-# Local exception definitions
-class FilterNodeException < Exception
-end
-class FilterNodeAPIVioltion < FilterNodeException
-end
-class InvalidNodeNumber < Exception
-end
-class InvalidNodeId < Exception
-end
-
 class UVMFilterNode
 
     include Proxy
@@ -71,12 +61,18 @@ class UVMFilterNode
         end
 
     public
-    
         # If derived class does not override this method then its not a valid filter node.
         def execute(args)
             raise FilterNodeAPIVioltion, "Filter nodes does not implement the required 'execute' method"
         end
 
+    public
+        # Derived classes must provide an implementation of get_filternode_tids: this method is to
+        # return a list of all tids of the filter node's type.
+        def get_filternode_tids()
+            raise FilterNodeAPIVioltion, "Derived class of UVMFilterNode does not implement required method 'get_filternode_tids'"
+        end
+        
     protected
         # Caller MUST have obtained @@filternode_lock before calling this method.
         def connect
@@ -115,9 +111,9 @@ class UVMFilterNode
     
     protected
         # Given a filter node command request in the standard format, e.g., filternode [#X|Y] command
-        # return a 2 element array conposed of the effective tid and command and strip these items
-        # from the provided args array.
-        def extract_tid_and_command(tids, args)
+        # return a 2 element array composed of the effective tid and command, and strip these items
+        # from the provided args array, ie, this method alters the args parameter passed into it.
+        def extract_tid_and_command(tids, args, no_default_tid_for_cmds=[])
             if /^#\d+$/ =~ args[0]
                 begin
                     node_num = $&[1..-1].to_i()
@@ -132,10 +128,9 @@ class UVMFilterNode
             elsif /^\d+$/ =~ args[0]
                 begin
                     rtid = $&.to_i
-                    node_num = -1
+                    rtid_s = rtid.to_s
                     tid = tids.detect { |jtid|
-                        node_num += 1
-                        rtid.to_s == jtid.to_s  # rtid is a ruby int, jtid is Java OBJECT - can't compare directly so use to_s
+                        rtid_s == jtid.to_s  # rtid_s is a ruby string but jtid is Java OBJECT: can't compare them directly so use .to_s
                     }
                     raise ArgumentError unless tid
                     cmd = args[1]
@@ -146,7 +141,8 @@ class UVMFilterNode
                 end
             else
                 cmd = args[0]
-                tid = tids[0]
+                tid = no_default_tid_for_cmds.include?(cmd) ? nil : tids[0]
+                @diag.if_level(3) { puts! "extract_tid_and_command: cmd=#{cmd}, tid=#{tid ? tid : '<no tid>'}" }
                 args.shift
             end
             
@@ -163,7 +159,7 @@ class UVMFilterNode
         # guide for implementing your own get_statistics method.
         def get_standard_statistics(mib_root, tid, args)
             
-            @diag.if_level(3) { puts! "Attempting to get stats for TID #{tid}" }
+            @diag.if_level(3) { puts! "Attempting to get stats for TID #{tid ? tid : '<no tid>'}" ; p args}
             
             # Validate arguments.
             if args[0]
@@ -179,25 +175,33 @@ class UVMFilterNode
             end
             
             begin
-                nodeStats = nil
-                @stats_cache_lock.synchronize {
-                    cached_stats = @stats_cache[tid]
-                    if !cached_stats || ((Time.now.to_i - cached_stats[1]) > STATS_CACHE_EXPIRY)
-                        @diag.if_level(3) { puts! "Stat cache miss / expiry." }
-                        node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
-                        nodeStats = node_ctx.getStats()
-                        @stats_cache[tid] = [nodeStats, Time.now.to_i]
-                    else
-                        @diag.if_level(3) { puts! "Stat cache hit." }
-                        nodeStats = cached_stats[0]
-                    end
-                }
-    
-                @diag.if_level(3) { puts! "Got node stats for #{tid}" ; p nodeStats }
+
                 stats = ""
                 if args[0]
+                    # Get the effective OID to respond to
                     oid = (args[0] == '-g') ? args[1] : oid_next(mib_root, args[1], tid)
-                    return nil unless oid
+                    return nil unless oid[0]
+                    tid = oid[1]
+                    oid = oid[0]
+                    
+                    # Get the effective node stats, either from the cache or from the UVM.
+                    # (Must be after we have the OID because the TID may be nil and we'll need something to cache on.)
+                    nodeStats = nil
+                    @stats_cache_lock.synchronize {
+                        cached_stats = @stats_cache[tid]
+                        if !cached_stats || ((Time.now.to_i - cached_stats[1]) > STATS_CACHE_EXPIRY)
+                            @diag.if_level(3) { puts! "Stat cache miss / expiry." }
+                            node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
+                            nodeStats = node_ctx.getStats()
+                            @stats_cache[tid] = [nodeStats, Time.now.to_i]
+                        else
+                            @diag.if_level(3) { puts! "Stat cache hit." }
+                            nodeStats = cached_stats[0]
+                        end
+                    }
+
+                    @diag.if_level(3) { puts! "Got node stats for #{tid}" ; p nodeStats }
+                    
                     # Construct OID fragment to match on from >up to< the last two
                     # pieces of the effective OID, eg, xxx.1 => 1, xxx.18.2 ==> 18.2
                     int = "integer"; str = "string", c32 = "counter32"
@@ -270,7 +274,34 @@ class UVMFilterNode
         end
     
         def oid_next(mib_root, oid, tid)
+
+            @diag.if_level(3) { puts! "oid_next: #{mib_root}, #{oid}, #{tid ? tid : '<no tid>'}" }
+
+            if !tid
+                if (oid == mib_root)
+                    # Caller wants to walk the entire mib tree of the associated filter node type.
+                    # So, ignore the given tid and work through tid list from the beginning.
+                    tids = get_filternode_tids()
+                    tid = tids[0]
+                else
+                    # Pick effective TID up from incoming OID to construct next oid.
+                    mib_pieces = mib_root.split('.')
+                    oid_pieces = oid.split('.')
+                    cur_tid = oid_pieces[mib_pieces.length]
+                    tids = get_filternode_tids()
+                    tid = nil
+                    tids.each_with_index { |t,i|
+                        if t.to_s == cur_tid
+                            tid = t
+                            break
+                        end
+                    }
+                end
+                @diag.if_level(3) { puts! "oid_next: full subtree walk - effective tid=#{tid}" }                    
+            end
+            
             case oid
+            when "#{mib_root}"; next_oid = "#{mib_root}.#{tid}.1"
             when "#{mib_root}.#{tid}"; next_oid = "#{mib_root}.#{tid}.1"
             when "#{mib_root}.#{tid}.9"; next_oid = "#{mib_root}.#{tid}.10"
             when "#{mib_root}.#{tid}.17"; next_oid = "#{mib_root}.#{tid}.18.1"
@@ -278,11 +309,41 @@ class UVMFilterNode
             when "#{mib_root}.#{tid}.18.15"; next_oid = "#{mib_root}.#{tid}.19"
             when /#{mib_root}\.#{tid}(\.\d+)+/; next_oid = oid.succ
             else
-                next_oid = nil
+                if tid
+                    # terminate the oid walk
+                    next_oid = nil
+                else
+                    # advance to the next tid in the tid list; if none, terminate the walk.
+                    tids = get_filternode_tids()
+                    cur_tid = oid.split('.')[-2]
+                    next_tid = nil
+                    tids.each_with_index { |tid,i|
+                        if tid.to_s == cur_tid
+                            next_tid = tids[i+1]
+                            break
+                        end
+                    }
+                    if next_tid
+                        tid = next_tid
+                        next_oid = "#{mib_root}.#{tid}.1"
+                    else
+                        next_oid = nil
+                    end
+                end
             end
             @diag.if_level(3) { puts! "Next oid: #{next_oid}" }
-            return next_oid
+            return [next_oid, tid]
         end
 
 end # UVMFilterNode
+
+# Local exception definitions
+class FilterNodeException < Exception
+end
+class FilterNodeAPIVioltion < FilterNodeException
+end
+class InvalidNodeNumber < FilterNodeException
+end
+class InvalidNodeId < FilterNodeException
+end
 

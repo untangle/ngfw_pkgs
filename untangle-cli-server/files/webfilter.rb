@@ -41,12 +41,11 @@ class Webfilter < UVMFilterNode
         retried = false
         
         begin
-            # Get tids of all web filters once and for all commands we might execute below.
-            tids = get_webfilter_tids()
-            return ERROR_NO_WEBFILTER_NODES if tids.nil? || tids.length < 1
+            tids = get_filternode_tids()
+            return ERROR_NO_WEBFILTER_NODES if empty?(tids)
     
             begin
-                tid_and_cmd = extract_tid_and_command(tids, args)
+                tid_and_cmd = extract_tid_and_command(tids, args, ["stats"]) # no default tid wanted if command is "stats"
                 raise FilterNodeException unless tid_and_cmd
                 tid = tid_and_cmd[0]
                 cmd = tid_and_cmd[1]
@@ -56,7 +55,7 @@ class Webfilter < UVMFilterNode
                 return msg
             end
             
-            @diag.if_level(3) { puts! "TID = #{tid}, command = #{cmd}" }
+            @diag.if_level(3) { puts! "TID = #{tid ? tid : '<no tid>'}, command = #{cmd}" }
             
             case cmd
             when nil, "", "list"
@@ -118,7 +117,7 @@ class Webfilter < UVMFilterNode
         
     end
 
-    def get_webfilter_tids
+    def get_filternode_tids
         return @@uvmRemoteContext.nodeManager.nodeInstances(NODE_NAME)
     end
     
