@@ -175,7 +175,6 @@ class UVMFilterNode
             end
             
             begin
-
                 stats = ""
                 if args[0]
                     # Get the effective OID to respond to
@@ -267,67 +266,70 @@ class UVMFilterNode
                 @diag.if_level(3) { puts! stats }
                 return stats
             rescue Exception => ex
-                msg = "Get filter node statistics failed:\n" + ex
+                msg = "Error: get filter node statistics failed: " + ex
                 @diag.if_level(3) { puts! msg ; p ex }
                 return msg
             end
         end
     
         def oid_next(mib_root, oid, tid)
-
             @diag.if_level(3) { puts! "oid_next: #{mib_root}, #{oid}, #{tid ? tid : '<no tid>'}" }
+            orig_tid = tid    
 
             if !tid
                 if (oid == mib_root)
                     # Caller wants to walk the entire mib tree of the associated filter node type.
-                    # So, ignore the given tid and work through tid list from the beginning.
+                    # So, walk through tid list from the beginning.
                     tids = get_filternode_tids()
                     tid = tids[0]
                 else
-                    # Pick effective TID up from incoming OID to construct next oid.
+                    # If oid != mib_root and !tid, then we're in the middle of walking the
+                    # entire mib subtree.  Since we the only state we can count on is the
+                    # incoming OID, pick up curent TID from incoming OID and then convert
+                    # it from a ruby string fragment into true TID (JRuby) object.
                     mib_pieces = mib_root.split('.')
                     oid_pieces = oid.split('.')
                     cur_tid = oid_pieces[mib_pieces.length]
                     tids = get_filternode_tids()
                     tid = nil
-                    tids.each_with_index { |t,i|
-                        if t.to_s == cur_tid
-                            tid = t
-                            break
-                        end
+                    tid = tids.detect { |t|
+                        t.to_s == cur_tid
                     }
                 end
                 @diag.if_level(3) { puts! "oid_next: full subtree walk - effective tid=#{tid}" }                    
             end
-            
+
+            # Map the current OID to next OID.  This contraption of code is necessary because
+            # Ruby's successor method does not simply increment its argument: it advances
+            # its operand to the next logical value, e.g., "32.9".succ => "33.0", not "32.10"
+            # as we want.  If no match for the OID is found the either halt the walk or advance
+            # to the next TID in the tid list.
             case oid
-            when "#{mib_root}"; next_oid = "#{mib_root}.#{tid}.1"
-            when "#{mib_root}.#{tid}"; next_oid = "#{mib_root}.#{tid}.1"
-            when "#{mib_root}.#{tid}.9"; next_oid = "#{mib_root}.#{tid}.10"
-            when "#{mib_root}.#{tid}.17"; next_oid = "#{mib_root}.#{tid}.18.1"
-            when "#{mib_root}.#{tid}.18.9"; next_oid = "#{mib_root}.#{tid}.18.10"
-            when "#{mib_root}.#{tid}.18.15"; next_oid = "#{mib_root}.#{tid}.19"
-            when /#{mib_root}\.#{tid}(\.\d+)+/; next_oid = oid.succ
+                when "#{mib_root}"; next_oid = "#{mib_root}.#{tid}.1"
+                when "#{mib_root}.#{tid}"; next_oid = "#{mib_root}.#{tid}.1"
+                when "#{mib_root}.#{tid}.9"; next_oid = "#{mib_root}.#{tid}.10"
+                when "#{mib_root}.#{tid}.17"; next_oid = "#{mib_root}.#{tid}.18.1"
+                when "#{mib_root}.#{tid}.18.9"; next_oid = "#{mib_root}.#{tid}.18.10"
+                when "#{mib_root}.#{tid}.18.15"; next_oid = "#{mib_root}.#{tid}.19"
+                when /#{mib_root}\.#{tid}(\.\d+)+/; next_oid = oid.succ
             else
-                if tid
-                    # terminate the oid walk
+                if orig_tid
+                    # we started w/a given tid so terminate the oid walk if no oid is matched above.
                     next_oid = nil
                 else
-                    # advance to the next tid in the tid list; if none, terminate the walk.
+                    # the orig_tid is nil so we're walking the whole sub-tree: advance to the next
+                    # tid in the tid list; if none, terminate the walk.
+                    mib_pieces = mib_root.split('.')
+                    oid_pieces = oid.split('.')
+                    cur_tid = oid_pieces[mib_pieces.length]
                     tids = get_filternode_tids()
-                    cur_tid = oid.split('.')[-2]
                     next_tid = nil
-                    tids.each_with_index { |tid,i|
-                        if tid.to_s == cur_tid
-                            next_tid = tids[i+1]
-                            break
-                        end
-                    }
+                    tids.each_with_index { |tid,i| next_tid = tids[i+1] if tid.to_s == cur_tid }
                     if next_tid
                         tid = next_tid
                         next_oid = "#{mib_root}.#{tid}.1"
                     else
-                        next_oid = nil
+                        next_oid = tid = nil
                     end
                 end
             end

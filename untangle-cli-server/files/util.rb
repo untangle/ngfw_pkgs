@@ -30,10 +30,17 @@ module NUCLIUtil
         
         def initialize(diagnostic_level=0)
             @diagnostic_level = diagnostic_level
+            @tracer = 1
         end
             
         def if_level(diagnostic_level, *args)
             yield args if block_given? && diagnostic_level <= @diagnostic_level
+        end
+        
+        def trace(tracer = @tracer)
+            @tracer = 1 if tracer == 1
+            puts! tracer
+            @tracer += 1
         end
     end
     
