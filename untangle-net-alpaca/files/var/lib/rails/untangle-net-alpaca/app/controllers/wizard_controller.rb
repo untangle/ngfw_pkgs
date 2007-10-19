@@ -1,6 +1,13 @@
 class WizardController < ApplicationController
   InterfaceKey = "interface-config"
 
+  def register_menu_items
+    ## REVIEW : This should be declared in the status controller.
+    ## REVIEW : Perhaps the register menu_items calls should be moved into a separate file, this makes it easier to consolidate all of the constructions, and avoids create a new ApplicationController on each invocation.
+    menu_organizer.register_item( "/main/status", Alpaca::Menu::Item.new( 50, "Status", "#not-ready" ))
+    menu_organizer.register_item( "/main/status/wizard", Alpaca::Menu::Item.new( 100, "Wizard", "/wizard" ))
+  end
+
   class SimpleStageHandler
     def name
       ""

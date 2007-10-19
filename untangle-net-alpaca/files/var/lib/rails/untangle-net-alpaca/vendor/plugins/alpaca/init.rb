@@ -11,9 +11,16 @@ require "alpaca/os"
 ## Insert the specific os that is presently loaded.
 require "alpaca/os/current_os"
 
-## OS extensions for alpaca.
+## Manager base
 require "alpaca/os/manager_base"
 
 ## OS extensions for alpaca.
 require "alpaca/os/os_extensions"
+
+## Menu System
+require "alpaca/menu"
+require "alpaca/menu/item"
+require "alpaca/menu/organizer"
+require "alpaca/menu/extensions"
+
 

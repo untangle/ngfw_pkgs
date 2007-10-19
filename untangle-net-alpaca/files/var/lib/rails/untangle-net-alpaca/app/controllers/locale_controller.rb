@@ -1,4 +1,8 @@
 class LocaleController < ApplicationController
+  def register_menu_items
+    menu_organizer.register_item( "/main/locale", Alpaca::Menu::Item.new( 500, "Locale", "/locale" ))
+  end
+
   def index
     manage
     render :action => 'manage'

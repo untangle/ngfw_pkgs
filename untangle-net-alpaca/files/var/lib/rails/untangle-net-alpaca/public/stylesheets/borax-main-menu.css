@@ -1,0 +1,75 @@
+ul.main-menu-depth-0, .main-menu-depth-0 ul
+{
+  margin: 0px;
+  padding: 0px;
+  cursor: default;
+  list-style-type: none;
+  display: inline;
+}
+
+ul.main-menu-depth-0
+{
+  display: table;
+  font-weight: bold;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+
+ul.main-menu-depth-0 > li
+{
+  display: table-cell;
+  position: relative;
+  padding: 2px 6px;
+}
+
+ul.main-menu-depth-0 li > ul
+{
+  display: none;
+  position: absolute;
+  max-width: 40ex;
+  margin-left: -6px;
+  margin-top: 2px;
+}
+
+.main-menu-depth-0 ul li a
+{ 
+  display: block;
+  padding: 2px 10px;
+  }
+
+ul.main-menu-depth-0 li:hover > ul
+{
+  display : block;
+}
+
+/*Menu styles*/
+
+ul.main-menu-depth-0, .main-menu-depth-0 ul, .main-menu-depth-0 ul li a
+{
+  background-color: rgb( 233, 233, 233 );
+  color: rgb( 114, 116, 120);
+}
+
+ul.main-menu-depth-0 li:hover, .main-menu-depth-0 ul li a:hover
+{
+  background-color: rgb( 101, 198, 28 );
+  color: rgb( 28, 47, 12);
+  cursor: pointer;
+}
+
+ul.main-menu-depth-0, .main-menu-depth-0 ul
+{
+  border: 1px solid #C0C0C0;
+}
+
+.main-menu-depth-0 a
+{ 
+  color: rgb( 114, 116, 120);
+  text-decoration: none;
+ }
+
+.main-menu-depth-0 a:visited, .main-menu-depth-0 a:active
+{ 
+  color: rgb( 114, 116, 120);  
+ }

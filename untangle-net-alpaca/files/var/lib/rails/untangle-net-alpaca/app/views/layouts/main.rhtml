@@ -1,5 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+  <% main_menu = menu_organizer.get_node( "/main" ) %>
   <head>
     <title><%= (( @title.nil? ) ? ApplicationController::DefaultTitle : @title ).t %></title>
     <%= javascript_include_tag :defaults %>
@@ -12,6 +13,7 @@
     <%= stylesheet_link_tag "borax-ip-network" %>
     <%= stylesheet_link_tag "borax-nat-policy" %>
     <%= stylesheet_link_tag "borax-file-override" %>
+    <%= stylesheet_link_tag "borax-main-menu" %>
     
     <% @stylesheets.each do |sheet| %>
       <%= stylesheet_link_tag sheet %>
@@ -19,6 +21,13 @@
 
   </head>
   <body>
-    <%= yield %>
+    
+    <div id="main-menu">
+      <%= render( :partial => main_menu.partial, 
+                  :locals => { :menu => main_menu, :css_class => "main-menu", :depth => 0, :max_depth => 2 } ) %>
+    </div>
+    <div id="main-content">
+      <%= yield %>
+    </div>
   </body>
 </html>
