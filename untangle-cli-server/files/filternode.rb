@@ -234,6 +234,8 @@ class UVMFilterNode
                     end
                     stats = "#{oid}\n#{type}\n#{stat}"
                 else
+                    node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
+                    nodeStats = node_ctx.getStats()
                     tcpsc  = nodeStats.tcpSessionCount()
                     tcpst  = nodeStats.tcpSessionTotal()
                     tcpsrt = nodeStats.tcpSessionRequestTotal()

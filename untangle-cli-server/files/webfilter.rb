@@ -45,7 +45,7 @@ class Webfilter < UVMFilterNode
             return ERROR_NO_WEBFILTER_NODES if empty?(tids)
     
             begin
-                tid_and_cmd = extract_tid_and_command(tids, args, ["stats"]) # no default tid wanted if command is "stats"
+                tid_and_cmd = extract_tid_and_command(tids, args, ["snmp"]) # no default tid wanted if command is "snmp"
                 raise FilterNodeException unless tid_and_cmd
                 tid = tid_and_cmd[0]
                 cmd = tid_and_cmd[1]
@@ -87,17 +87,17 @@ class Webfilter < UVMFilterNode
     -- Add item to pass-list with specified settings.
 - webfilter <#X> pass-list remove [item-type:url|client] [item:url|ip]
     -- Remove item from pass-list with specified settings.
-- webfilter <#X> stats <snmp>
-    -- Display webfilter #X statistics in human readable format (use snmp option for snmp formatted statistics)
-- webfilter <#X> eventlog <tail <#>>|<after-time> <before-time> (***NOT YET IMPLEMENTED***)
-    -- Display event log entries, either the # tail entries or those between after-time and before-time.
+- webfilter <#X> stats
+    -- Display webfilter #X statistics in human readable format
+- webfilter snmp
+    -- Display webfilter #X statistics in snmp compliant format (getnext)
                 WEBFILTER_HELP
                 return help_text
             when "block-list"
                 return manage_block_list(tid, args)
             when "pass-list"
                 return manage_pass_list(tid, args)
-            when "statistics", "stats"
+            when "stats", "snmp"
                 return get_statistics(tid, args)
             when "eventlog"
                 return "Event Log not yet supported."
