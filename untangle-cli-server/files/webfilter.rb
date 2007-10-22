@@ -77,12 +77,16 @@ class Webfilter < UVMFilterNode
 - webfilter -- enumerate all web filters running on effective #{BRAND} server.
 - webfilter <#X> block-list [item-type:cats|urls|mime|files]
     -- Display block-list of item-type for webfilter #X
-- webfilter <#X> block-list block [item-type:cat|url|mime|file] [item] <block:true|false> <log:true|false> <description>
+- webfilter <#X> block-list add [item-type:cat|url|mime|file] [item] <block:true|false> <log:true|false> <description>
     -- Add item to block-list by type (or update) with specified block and log settings.
+- webfilter <#X> block-list remove [item-type:cat|url|mime|file] [item]
+    -- Remove item from block-list by type (or update) with specified block and log settings.
 - webfilter <#X> pass-list [item-type:urls|clients]
     -- Display pass-list items
-- webfilter <#X> pass-list [item-type:url|client] [pass:true|false] <description>
+- webfilter <#X> pass-list add [item-type:url|client] [item:url|ip] [pass:true|false] <description>
     -- Add item to pass-list with specified settings.
+- webfilter <#X> pass-list remove [item-type:url|client] [item:url|ip]
+    -- Remove item from pass-list with specified settings.
 - webfilter <#X> stats <snmp>
     -- Display webfilter #X statistics in human readable format (use snmp option for snmp formatted statistics)
 - webfilter <#X> eventlog <tail <#>>|<after-time> <before-time> (***NOT YET IMPLEMENTED***)
@@ -546,7 +550,7 @@ class Webfilter < UVMFilterNode
         node = node_ctx.node()
         settings =  node.getSettings()
         passed_clients_list = settings.getPassedClients()
-        passed_clients = "URL,pass,description\n"
+        passed_clients = "Client IP,pass,description\n"
         passed_clients_list.each { |client|
             passed = ""
             passed << (client.getIpMaddr().getAddr() + "," + client.isLive().to_s + "," + client.getDescription() + "\n")
