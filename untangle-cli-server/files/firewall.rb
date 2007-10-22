@@ -69,17 +69,15 @@ class Firewall < UVMFilterNode
             when "help"
                 help_text = <<-FIREWALL_HELP
 
-- firewall -- enumerate all web filters running on effective #{BRAND} server.
-- firewall <#X> rules
-    -- Display rule list for firewall #X
-- firewall <#X> rules add enable action log traffic_type direction src-addr dst-addr src-port dst-port category description
+- firewall -- enumerate all filewall nodes running on effective #{BRAND} server.
+- firewall <#X|TID> rules
+    -- Display rule list for firewall #X|TID
+- firewall <#X|TID> rules add enable action log traffic_type direction src-addr dst-addr src-port dst-port category description
     -- Add item to rule-list by type (or update) with specified block and log settings.
-- firewall <#X> rules remove [rule-number]
+- firewall <#X|TID> rules remove [rule-number]
     -- Remove item '[rule-number]' from rule list.
-- firewall <#X> settings ...
-    -- Display settings for firewall #X
-- firewall <#X> settings action [pass|block]
-    -- Change settings for firewall #X
+- firewall <#X|TID> settings default-action <new-default-action>
+    -- Display or update default-actions settings for firewall #X|TID
                 FIREWALL_HELP
                 return help_text
             when "rules", "rule"
@@ -184,33 +182,33 @@ class Firewall < UVMFilterNode
 	    rule.setLive(enable == "true")
 	    rule.setAction(action)
 	    rule.setLog(log == "true")
-	    begin rule.setProtocol(com.untangle.uvm.node.firewall.protocol.ProtocolMatcherFactory.parse(traffic_type))
-            rescue ParseError => ex
+	    begin rule.setProtocol(com.untangle.uvm.node.firewall.protocol.ProtocolMatcherFactory.parse(traffic_type.upcase))
+            rescue Exception => ex
                 msg = "Error: invalid protocol value."
                 @diag.if_level(2) { puts! msg ; p ex }
                 return msg
 	    end
 	    rule.setDirection(direction)
 	    begin rule.setSrcAddress(com.untangle.uvm.node.firewall.ip.IPMatcherFactory.parse(src_addr))
-            rescue ParseError => ex
+            rescue Exception => ex
                 msg = "Error: invalid source address value."
                 @diag.if_level(2) { puts! msg ; p ex }
                 return msg
 	    end
 	    begin rule.setDstAddress(com.untangle.uvm.node.firewall.ip.IPMatcherFactory.parse(dst_addr))
-            rescue ParseError => ex
+            rescue Exception => ex
                 msg = "Error: invalid destination address value."
                 @diag.if_level(2) { puts! msg ; p ex }
                 return msg
 	    end
 	    begin rule.setSrcPort(com.untangle.uvm.node.firewall.port.PortMatcherFactory.parse(src_addr))
-            rescue ParseError => ex
+            rescue Exception => ex
                 msg = "Error: invalid source port value."
                 @diag.if_level(2) { puts! msg ; p ex }
                 return msg
 	    end
 	    begin rule.setDstPort(com.untangle.uvm.node.firewall.port.PortMatcherFactory.parse(dst_port))
-            rescue ParseError => ex
+            rescue Exception => ex
                 msg = "Error: invalid destination port value."
                 @diag.if_level(2) { puts! msg ; p ex }
                 return msg
