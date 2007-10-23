@@ -11,8 +11,7 @@
 module NUCLICommon
 
 DEFAULT_DIAG_LEVEL = 3
-
-BRAND="Untangle"
+BRAND = "Untangle"
 
 # Shared error messages & strings - Perhaps we'll package these another way.
 ERROR_INCOMPLETE_COMMAND = "Error: incomplete command -- missing required arguments (see help.)"
