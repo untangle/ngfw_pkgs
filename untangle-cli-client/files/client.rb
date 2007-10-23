@@ -1012,7 +1012,7 @@ class NUCLIClient
         @jobs_lock.synchronize {
             @jobs.each { |job|
                 if job[0]
-                    t = "[#{job[2]}] #{job[1]}"
+                    t = "%#{job[2]}: #{job[1]}"
                     t << (job[0].status ? " (in progress)" : " (done)")
                     t << " '#{job[4][0].slice(0,20)}...'" unless
                     puts! t
