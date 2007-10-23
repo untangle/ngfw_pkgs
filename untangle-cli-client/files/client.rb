@@ -64,6 +64,9 @@ class NUCLIClient
     FORBIDDEN_BACKGROUND_COMMANDS = %w{ with ^#\d+ } # commands that cannot be run in the background.
     FORBIDDEN_WITH_COMMANDS = %w{ open quit exit with history jobs servers } # commands that cannot be used in a with script.
             
+    # Accessors
+    attr_accessor :use_ssh_tunnels, :user
+    
     #
     #   Initialization related methods
     #
@@ -80,7 +83,6 @@ class NUCLIClient
 
     def init(options)
         # Setup defaults
-        @brand = "Untangle"
         @client_name = "NUCLI Client"
         @server_name = "NUCLI Server"
         @config_filename = ".ucli"
@@ -220,7 +222,7 @@ class NUCLIClient
      # command to history for future reference.
      #
     def run
-        if @running then message("${client_name} main loop is not reenterant.", 0); return; end
+        if @running then message("${@client_name} main loop is not reenterant.", 0); return; end
         @running = true
 
         # Execute commands passed in via the command line then return (don't go interactive)        
@@ -295,20 +297,20 @@ class NUCLIClient
                 # starting up we won't be effected, ie, caused to send any server commands
                 # to the wrong server.
                 drb_server = server_id  = nil
-                @servers_lock.synchronize { drb_server = @drb_server[2]; server_id = @server_id }
-                if drb_server.nil? then puts! "Bug: there is no effective DRb server.  Recommend restarting #{client_name}."; return; end
+                @servers_lock.synchronize { drb_server = @drb_server[2]; server_id = @server_id } if @drb_server
+                #if drb_server.nil? then puts! "Bug: there is no effective DRb server.  Recommend restarting #{@client_name}."; return; end
                 
                 @jobs_lock.synchronize {
                     # must store job record before creating thread so command processor can tell if the command is in the background or not.
                     job_index = @job_num-1
                     @jobs[job_index] = [nil, cmd_s, @job_num, true, "", server_id]  # [ job thread, cmd string, job num, background?, output, server_id of job]
-                    t = Thread.new(job_index) { |t_idx|
+                    t = Thread.new(job_index) { |job_idx|
                         Thread.current[:drb_server] = drb_server
-                        Thread.current[:job_index] = t_idx
+                        Thread.current[:job_index] = job_idx
                         Thread.current[:background] = true
                         res = self.__send__(*cmd_a);
-                        @jobs_lock.synchronize { @jobs[t_idx][4] = res }
-                        puts! "\nDone (#{cmd_a.join(' ')}) - use command '%#{t_idx+1}' to view output."
+                        @jobs_lock.synchronize { @jobs[job_idx][4] = res }
+                        puts! "\nDone (#{cmd_a.join(' ')}) - use command '%#{job_idx+1}' to view output."
                     }
                     @jobs[job_index][0] = t
                     @job_num += 1
@@ -404,7 +406,7 @@ class NUCLIClient
         @jobs_lock.synchronize {
             @jobs.each_with_index { |job,i|
                 if job[0] && !job[0].status
-                    @jobs[i] = [nil, nil, nil, nil]
+                    @jobs[i] = [nil, nil, nil, nil, nil, nil]
                 end
             }
         }
@@ -467,6 +469,7 @@ class NUCLIClient
     # Display message to console IFF message level is <= verbosity level
     def message(msg, level=1)
         puts! msg unless level > @verbose
+        return level <= @verbose
     end
 
     # Pong (ie, "ping") server and issue messages based on given message levels for each type of server response.
@@ -1035,6 +1038,12 @@ class NUCLIClient
         }
     end
     
+    def get_job(job_index)
+        @jobs_lock.synchronize {
+            return @jobs[job_index]
+        }
+    end
+
     def save(*args)
         invalid_args_msg = "Error: missing argument(s) - save requires a valid job ID and a legal filename."
         

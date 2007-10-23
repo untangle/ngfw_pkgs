@@ -10,6 +10,8 @@
 
 module NUCLICommon
 
+BRAND = "Untangle"
+
 # Error Messages
 
 # Exceptions
