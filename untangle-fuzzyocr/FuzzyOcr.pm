@@ -41,7 +41,7 @@
 #
 # written by Christian Holler decoder_at_own-hero_dot_net
 
-package FuzzyOcr;
+package Mail::SpamAssassin::Plugin::FuzzyOcr;
 
 use strict;
 use warnings;
@@ -763,8 +763,6 @@ sub check_fuzzy_ocr {
                         return 0;
                     }
                 }
-                debuglog("Hash not yet known to the database, saving for later db storage...");
-                push(@hashes, $digest);
             } else {
                 debuglog("Image hashing disabled in configuration, skipping...");
             }
@@ -787,6 +785,8 @@ sub check_fuzzy_ocr {
                 push( @ocr_results, [@ocrdata] );
                 push( @used_scansets, $scanset );
             }
+
+            my $mcnt = 0;
             foreach my $w (@words) {
                 my $wthreshold;
                 if ($w =~ /^(.*?)::(0(\.\d+){0,1})/) {
@@ -818,16 +818,25 @@ sub check_fuzzy_ocr {
                     $gcnt++;
                 }
                 $cnt += $wcnt;
+                $mcnt += $wcnt;
                 if ( ( $verbose > 0 ) and ($wcnt) ) {
                     push( @found, "\"$w\" in $wcnt lines" );
                 }
+            }
+            if ($mcnt > 0) {
+                debuglog("Image contains $mcnt word matches, looks like spam.");
+                if ($enable_image_hashing && $hashing_learn_scanned) {
+                    push(@hashes, $digest);
+                }
+            } else {
+                debuglog("Image contains no word matches, and will be ignored.");
             }
         }
     }
     if ( $cnt >= $countreq ) {
         my $score = ( $base_score + ( $cnt - $countreq ) * $add_score );
         if($enable_image_hashing and $hashing_learn_scanned) {
-            debuglog("Message is spam (score $score), storing all image hashes in database...");
+            debuglog("Message is spam (score $score), adding spam images to the database...");
             foreach (@hashes) {
                 add_image_hash_db($_, $score);
             }
