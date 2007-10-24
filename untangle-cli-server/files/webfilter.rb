@@ -33,6 +33,13 @@ class Webfilter < UVMFilterNode
     end
 
     #
+    # Required UVMFilterNode methods.
+    #
+    def get_node_name()
+        NODE_NAME
+    end
+    
+    #
     # Server service methods
     #
     def execute(args)
@@ -41,7 +48,7 @@ class Webfilter < UVMFilterNode
         retried = false
         
         begin
-            tids = get_filternode_tids(NODE_NAME)
+            tids = get_filternode_tids(get_node_name())
             return ERROR_NO_WEBFILTER_NODES if empty?(tids)
     
             begin

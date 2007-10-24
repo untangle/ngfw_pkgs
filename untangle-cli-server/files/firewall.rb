@@ -27,6 +27,13 @@ class Firewall < UVMFilterNode
     end
 
     #
+    # Required UVMFilterNode methods.
+    #
+    def get_node_name()
+        NODE_NAME
+    end
+
+    #
     # Server service methods
     #
     def execute(args)
@@ -37,7 +44,7 @@ class Firewall < UVMFilterNode
         
         begin
             # Get tids of all web filters once and for all commands we might execute below.
-            tids = get_filternode_tids(NODE_NAME)
+            tids = get_filternode_tids(get_node_name())
             return ERROR_NO_FIREWALL_NODES if empty?(tids)
     
             begin
@@ -96,7 +103,7 @@ class Firewall < UVMFilterNode
             else
                 return ERROR_UNKNOWN_COMMAND + " -- '#{args.join(' ')}'"
             end
-        rescue LoginExpiredException => ex
+        rescue Exception => ex
             if !retried
                 @diag.if_level(2) { puts! "Login expired - logging back on and trying one more time" ; p ex }
                 @@filter_node_lock.synchronize { login }
@@ -319,7 +326,7 @@ class Firewall < UVMFilterNode
     end
 
     def get_statistics(tid, args)
-        return get_standard_statistics(WEBFILTER_MIB_ROOT, tid, args)
+        return get_standard_statistics(FIREWALL_MIB_ROOT, tid, args)
     end
     
 end # Firewall

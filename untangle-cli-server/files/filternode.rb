@@ -66,13 +66,6 @@ class UVMFilterNode
             raise FilterNodeAPIVioltion, "Filter nodes does not implement the required 'execute' method"
         end
 
-    public
-        # Derived classes must provide an implementation of get_filternode_tids: this method is to
-        # return a list of all tids of the filter node's type.
-        def get_filternode_tids()
-            raise FilterNodeAPIVioltion, "Derived class of UVMFilterNode does not implement required method 'get_filternode_tids'"
-        end
-        
     protected
         # Caller MUST have obtained @@filternode_lock before calling this method.
         def connect
@@ -108,7 +101,11 @@ class UVMFilterNode
           @@uvmRemoteContext = nil
           true
         end
-    
+
+    protected
+        def get_node_name()
+            raise NoMethodError, "Derived class of UVMFilterNode does not implement required method 'get_node_name()'"
+        end
     protected
         def get_filternode_tids(node_name)
             return @@uvmRemoteContext.nodeManager.nodeInstances(node_name)
@@ -213,24 +210,25 @@ class UVMFilterNode
                     oid_pieces = oid.split('.')
                     stat_id = oid_pieces[(mib_pieces.length-oid_pieces.length)+1 ,2].join('.')
                     case stat_id
-                        when "1";  stat, type = nodeStats.tcpSessionCount(), int
-                        when "2";  stat, type = nodeStats.tcpSessionTotal(), int
-                        when "3";  stat, type = nodeStats.tcpSessionRequestTotal(), int
-                        when "4";  stat, type = nodeStats.udpSessionCount(), int
-                        when "5";  stat, type = nodeStats.udpSessionTotal(), int
-                        when "6";  stat, type = nodeStats.udpSessionRequestTotal(), int
-                        when "7";  stat, type = nodeStats.c2tBytes(), int
-                        when "8";  stat, type = nodeStats.c2tChunks(), int
-                        when "9";  stat, type = nodeStats.t2sBytes(), int
-                        when "10"; stat, type = nodeStats.t2sChunks(), int
-                        when "11"; stat, type = nodeStats.s2tBytes(), int
-                        when "12"; stat, type = nodeStats.s2tChunks(), int
-                        when "13"; stat, type = nodeStats.t2cBytes(), int
-                        when "14"; stat, type = nodeStats.t2cChunks(), int
-                        when "15"; stat, type = nodeStats.startDate(), str
-                        when "16"; stat, type = nodeStats.lastConfigureDate(), str
-                        when "17"; stat, type = nodeStats.lastActivityDate(), str
-                        when /18\.\d+/
+                        when "1";  stat, type = get_node_name, str
+                        when "2";  stat, type = nodeStats.tcpSessionCount(), int
+                        when "3";  stat, type = nodeStats.tcpSessionTotal(), int
+                        when "4";  stat, type = nodeStats.tcpSessionRequestTotal(), int
+                        when "5";  stat, type = nodeStats.udpSessionCount(), int
+                        when "6";  stat, type = nodeStats.udpSessionTotal(), int
+                        when "7";  stat, type = nodeStats.udpSessionRequestTotal(), int
+                        when "8";  stat, type = nodeStats.c2tBytes(), int
+                        when "9";  stat, type = nodeStats.c2tChunks(), int
+                        when "10";  stat, type = nodeStats.t2sBytes(), int
+                        when "11"; stat, type = nodeStats.t2sChunks(), int
+                        when "12"; stat, type = nodeStats.s2tBytes(), int
+                        when "13"; stat, type = nodeStats.s2tChunks(), int
+                        when "14"; stat, type = nodeStats.t2cBytes(), int
+                        when "15"; stat, type = nodeStats.t2cChunks(), int
+                        when "16"; stat, type = nodeStats.startDate(), str
+                        when "17"; stat, type = nodeStats.lastConfigureDate(), str
+                        when "18"; stat, type = nodeStats.lastActivityDate(), str
+                        when /19\.\d+/
                             counter = oid_pieces[-1].to_i()-1
                             return nil unless counter < NUM_STAT_COUNTERS
                             stat, type = nodeStats.getCount(counter), c32
@@ -287,7 +285,7 @@ class UVMFilterNode
                 if (oid == mib_root)
                     # Caller wants to walk the entire mib tree of the associated filter node type.
                     # So, walk through tid list from the beginning.
-                    tids = get_filternode_tids()
+                    tids = get_filternode_tids(get_node_name())
                     tid = tids[0]
                 else
                     # If oid != mib_root and !tid, then we're in the middle of walking the
@@ -297,7 +295,7 @@ class UVMFilterNode
                     mib_pieces = mib_root.split('.')
                     oid_pieces = oid.split('.')
                     cur_tid = oid_pieces[mib_pieces.length]
-                    tids = get_filternode_tids()
+                    tids = get_filternode_tids(get_node_name())
                     tid = nil
                     tid = tids.detect { |t|
                         t.to_s == cur_tid
@@ -315,9 +313,9 @@ class UVMFilterNode
                 when "#{mib_root}"; next_oid = "#{mib_root}.#{tid}.1"
                 when "#{mib_root}.#{tid}"; next_oid = "#{mib_root}.#{tid}.1"
                 when "#{mib_root}.#{tid}.9"; next_oid = "#{mib_root}.#{tid}.10"
-                when "#{mib_root}.#{tid}.17"; next_oid = "#{mib_root}.#{tid}.18.1"
-                when "#{mib_root}.#{tid}.18.9"; next_oid = "#{mib_root}.#{tid}.18.10"
-                when "#{mib_root}.#{tid}.18.15"; next_oid = "#{mib_root}.#{tid}.19"
+                when "#{mib_root}.#{tid}.18"; next_oid = "#{mib_root}.#{tid}.19.1"
+                when "#{mib_root}.#{tid}.19.9"; next_oid = "#{mib_root}.#{tid}.19.10"
+                when "#{mib_root}.#{tid}.19.15"; next_oid = "#{mib_root}.#{tid}.20"
                 when /#{mib_root}\.#{tid}(\.\d+)+/; next_oid = oid.succ
             else
                 if orig_tid
@@ -329,7 +327,7 @@ class UVMFilterNode
                     mib_pieces = mib_root.split('.')
                     oid_pieces = oid.split('.')
                     cur_tid = oid_pieces[mib_pieces.length]
-                    tids = get_filternode_tids()
+                    tids = get_filternode_tids(get_node_name())
                     next_tid = nil
                     tids.each_with_index { |tid,i| next_tid = tids[i+1] if tid.to_s == cur_tid }
                     if next_tid
