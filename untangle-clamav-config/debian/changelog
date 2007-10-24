@@ -1,3 +1,9 @@
+untangle-clamav-config (5.0.3-1) mustang-3; urgency=low
+
+  * auto build
+
+ --  <seb@untangle.com>  Tue, 23 Oct 2007 17:18:12 -0700
+
 untangle-clamav-config (5.0.1-1) mustang-1; urgency=low
 
   * auto build
