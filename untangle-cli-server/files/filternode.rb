@@ -152,6 +152,11 @@ class UVMFilterNode
         end
 
     protected
+        def get_statistics(tid, args)
+            return get_standard_statistics(get_mib_root(), tid, args)
+        end
+
+    protected
         NUM_STAT_COUNTERS = 16
         STATS_CACHE_EXPIRY = 5
     

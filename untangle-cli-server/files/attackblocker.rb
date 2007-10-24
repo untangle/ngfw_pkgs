@@ -16,7 +16,8 @@ require 'filternode'
 class Attackblocker < UVMFilterNode
     
     ERROR_NO_ATTACKBLOCKER_NODES = "No attackblocker modules are installed on the effective server."
-    NODE_NAME = "untangle-node-attackblocker"
+    NODE_NAME = "untangle-node-shield"
+    ATTACKBLOCKER_MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".3"
 
     def initialize
         @diag = Diag.new(DEFAULT_DIAG_LEVEL)
@@ -25,6 +26,17 @@ class Attackblocker < UVMFilterNode
 	@diag.if_level(3) { puts! "Done initializing Attack Blocker..." }
     end
 
+    #
+    # Required UVMFilterNode methods.
+    #
+    def get_node_name()
+        NODE_NAME
+    end
+
+    def get_mib_root()
+        ATTACKBLOCKER_MIB_ROOT
+    end
+    
     #
     # Server service methods
     #
@@ -36,11 +48,12 @@ class Attackblocker < UVMFilterNode
         
         begin
             # Get tids of all web filters once and for all commands we might execute below.
-            tids = @@uvmRemoteContext.nodeManager.nodeInstances(NODE_NAME)
-            return ERROR_NO_ATTACKBLOCKER_NODES if tids.nil? || tids.length < 1
+            tids = get_filternode_tids(get_node_name())
+            @diag.if_level(3) { puts! "No attack blockers found." if empty?(tids) }            
+            return ERROR_NO_ATTACKBLOCKER_NODES if empty?(tids)
     
            begin
-                tid_and_cmd = extract_tid_and_command(tids, args)
+                tid_and_cmd = extract_tid_and_command(tids, args, ["snmp"])
                 raise FilterNodeException unless tid_and_cmd
                 tid = tid_and_cmd[0]
                 cmd = tid_and_cmd[1]
@@ -88,6 +101,8 @@ class Attackblocker < UVMFilterNode
                 return manage_settings(tid, args)
             when "eventlog"
                 return "Event Log not yet supported."
+            when "stats", "snmp"
+                return get_statistics(tid, args)
             else
                 return ERROR_UNKNOWN_COMMAND + " -- '#{args.join(' ')}'"
             end
@@ -313,6 +328,5 @@ class Attackblocker < UVMFilterNode
         end
     end
 
-    
 end # Attackblocker
 

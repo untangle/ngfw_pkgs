@@ -39,6 +39,10 @@ class Webfilter < UVMFilterNode
         NODE_NAME
     end
     
+    def get_mib_root()
+        WEBFILTER_MIB_ROOT
+    end
+
     #
     # Server service methods
     #
@@ -684,10 +688,6 @@ class Webfilter < UVMFilterNode
             @diag.if_level(3) { p ex }
             return "Adding URL to block list failed:\n" + ex
         end
-    end
-
-    def get_statistics(tid, args)
-        return get_standard_statistics(WEBFILTER_MIB_ROOT, tid, args)
     end
 
 end # WebFilter

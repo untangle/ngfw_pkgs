@@ -33,6 +33,10 @@ class Firewall < UVMFilterNode
         NODE_NAME
     end
 
+    def get_mib_root()
+        FIREWALL_MIB_ROOT
+    end
+    
     #
     # Server service methods
     #
@@ -325,9 +329,5 @@ class Firewall < UVMFilterNode
         end
     end
 
-    def get_statistics(tid, args)
-        return get_standard_statistics(FIREWALL_MIB_ROOT, tid, args)
-    end
-    
 end # Firewall
 
