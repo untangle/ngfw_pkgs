@@ -25,7 +25,7 @@ class UVMFilterNode
 
     protected
 
-        UVM_FILTERNODE_MIB_ROOT = ".1.3.6.1.4.1.1234"
+        UVM_FILTERNODE_MIB_ROOT = ".1.3.6.1.4.1.2021.6971"
         
         DefaultTimeoutMillis = 600000
         
@@ -107,6 +107,11 @@ class UVMFilterNode
           end
           @@uvmRemoteContext = nil
           true
+        end
+    
+    protected
+        def get_filternode_tids(node_name)
+            return @@uvmRemoteContext.nodeManager.nodeInstances(node_name)
         end
     
     protected

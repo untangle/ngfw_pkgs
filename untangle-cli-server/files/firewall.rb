@@ -17,7 +17,8 @@ class Firewall < UVMFilterNode
     
     ERROR_NO_FIREWALL_NODES = "No firewall modules are installed on the effective server."
     NODE_NAME = "untangle-node-firewall"
-
+    FIREWALL_MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".2"
+    
     def initialize
         @diag = Diag.new(DEFAULT_DIAG_LEVEL)
 	@diag.if_level(3) { puts! "Initializing Fire Wall..." }
@@ -36,11 +37,11 @@ class Firewall < UVMFilterNode
         
         begin
             # Get tids of all web filters once and for all commands we might execute below.
-            tids = @@uvmRemoteContext.nodeManager.nodeInstances(NODE_NAME)
-            return ERROR_NO_FIREWALL_NODES if tids.nil? || tids.length < 1
+            tids = get_filternode_tids(NODE_NAME)
+            return ERROR_NO_FIREWALL_NODES if empty?(tids)
     
             begin
-                tid_and_cmd = extract_tid_and_command(tids, args)
+                tid_and_cmd = extract_tid_and_command(tids, args, ["snmp"])
                 raise FilterNodeException unless tid_and_cmd
                 tid = tid_and_cmd[0]
                 cmd = tid_and_cmd[1]
@@ -78,6 +79,10 @@ class Firewall < UVMFilterNode
     -- Remove item '[rule-number]' from rule list.
 - firewall <#X|TID> settings default-action <new-default-action>
     -- Display or update default-actions settings for firewall #X|TID
+- firewall <#X> stats
+    -- Display firewall #X statistics in human readable format
+- firewall snmp
+    -- Display firewall #X statistics in snmp compliant format (getnext)    
                 FIREWALL_HELP
                 return help_text
             when "rules", "rule"
@@ -86,6 +91,8 @@ class Firewall < UVMFilterNode
                 return manage_settings(tid, args)
             when "eventlog"
                 return "Event Log not yet supported."
+            when "stats", "snmp"
+                return get_statistics(tid, args)
             else
                 return ERROR_UNKNOWN_COMMAND + " -- '#{args.join(' ')}'"
             end
@@ -311,6 +318,9 @@ class Firewall < UVMFilterNode
         end
     end
 
+    def get_statistics(tid, args)
+        return get_standard_statistics(WEBFILTER_MIB_ROOT, tid, args)
+    end
     
 end # Firewall
 

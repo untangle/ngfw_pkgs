@@ -41,7 +41,7 @@ class Webfilter < UVMFilterNode
         retried = false
         
         begin
-            tids = get_filternode_tids()
+            tids = get_filternode_tids(NODE_NAME)
             return ERROR_NO_WEBFILTER_NODES if empty?(tids)
     
             begin
@@ -121,10 +121,6 @@ class Webfilter < UVMFilterNode
         
     end
 
-    def get_filternode_tids
-        return @@uvmRemoteContext.nodeManager.nodeInstances(NODE_NAME)
-    end
-    
     #
     # Block List related methods
     #
