@@ -63,7 +63,8 @@ class NUCLIClient
     DEFAULT_PORT = 7777
     FORBIDDEN_BACKGROUND_COMMANDS = %w{ with ^#\d+ } # commands that cannot be run in the background.
     FORBIDDEN_WITH_COMMANDS = %w{ open quit exit with history jobs servers } # commands that cannot be used in a with script.
-            
+    FORBIDDEN_COMMAND_LINE_COMMMANDS = %w{ with quit exit history jobs }
+    
     # Accessors
     attr_accessor :use_ssh_tunnels, :user
     
@@ -227,6 +228,15 @@ class NUCLIClient
 
         # Execute commands passed in via the command line then return (don't go interactive)        
         if @commands_to_execute != []
+            ## Verify all commands before running any of them.  Run none if any are forbidden
+            @commands_to_execute.each { |command|
+                command.split(';').each { |cmd|
+                    if FORBIDDEN_COMMAND_LINE_COMMMANDS.include?(cmd)
+                        puts! "Error: '#{cmd}' cannot be used from the command line.'"
+                        return
+                    end
+                }
+            }
             connect_to_all_ucli_servers(true)       # connect quietly
             @commands_to_execute.each { |command|
                 command.split(';').each { |cmd|
