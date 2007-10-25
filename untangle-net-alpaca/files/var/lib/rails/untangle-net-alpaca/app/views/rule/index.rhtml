@@ -1,0 +1,28 @@
+<%= javascript_tag <<EOF
+InterfaceHandler.interfaceList = new Array( #{@interfaces.join( ", ")} );
+EOF
+%>
+
+<div class="list-table rules">
+  <% form_tag( :action => 'save' ) do -%>
+    <ul id="rule-builder" class="rule-list">
+      <li class="header">
+        <div class="type first-column">
+          Type
+        </div>
+        <div class="value">
+          Value
+        </div>
+
+        <div class="plus">
+        </div>
+
+        <div class="minus">
+        </div>
+      </li>
+
+      <%= render(:partial => "parameter" , :collection => [ 1, 2 ] ) %>
+      </li>
+    </ul>
+  <% end -%>
+</div>

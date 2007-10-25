@@ -1,0 +1,63 @@
+div.list-table
+{ 
+  overflow-y: scroll;
+ }
+
+div.list-table ul
+{
+  width: 100%;
+  list-style: none inside none;
+  margin: 0px;
+  padding: 0px;
+ }
+
+div.list-table ul li
+{
+  overflow: auto;
+  }
+
+/* Style each row in the list */
+div.list-table li
+{ 
+  background-color: #EEFFEE;
+  border: 1px solid #C0C0C0;
+  border-top: 0px;
+  border-right: 0px;
+ }
+
+div.list-table ul li div
+{
+  float: left;
+  }
+
+div.list-table ul li div
+{ 
+  border-left: 1px solid #C0C0C0;
+  height: 20px;
+  }
+
+/* Style the header */
+div.list-table ul li.header
+{ 
+  background-color: #C0C0C0;
+  text-align: center;
+ }
+
+
+/* Fix the border for the first column */
+div.list-table li div.first-column
+{ 
+  border-left: 0px none #C0C0C0;
+  }
+
+div.list-table select
+{ 
+  width: 100%;
+}
+
+div.list-table input[type="text"]
+{
+  background-color: transparent;
+  border-width: 0px;
+  width: 100%;
+ }
