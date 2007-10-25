@@ -49,10 +49,10 @@ class Attackblocker < UVMFilterNode
         begin
             # Get tids of all web filters once and for all commands we might execute below.
             tids = get_filternode_tids(get_node_name())
-            @diag.if_level(3) { puts! "No attack blockers found." if empty?(tids) }            
-            return ERROR_NO_ATTACKBLOCKER_NODES if empty?(tids)
+            @diag.if_level(3) { puts! "No attack blockers found." if empty?(tids) }
+            if empty?(tids) then return (args[0] == "snmp") ? nil : ERROR_NO_ATTACKBLOCKER_NODES ; end
     
-           begin
+            begin
                 tid_and_cmd = extract_tid_and_command(tids, args, ["snmp"])
                 raise FilterNodeException unless tid_and_cmd
                 tid = tid_and_cmd[0]

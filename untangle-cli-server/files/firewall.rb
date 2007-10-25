@@ -49,7 +49,7 @@ class Firewall < UVMFilterNode
         begin
             # Get tids of all web filters once and for all commands we might execute below.
             tids = get_filternode_tids(get_node_name())
-            return ERROR_NO_FIREWALL_NODES if empty?(tids)
+            if empty?(tids) then return (args[0] == "snmp") ? nil : ERROR_NO_FIREWALL_NODES ; end
     
             begin
                 tid_and_cmd = extract_tid_and_command(tids, args, ["snmp"])

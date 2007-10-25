@@ -53,7 +53,7 @@ class Webfilter < UVMFilterNode
         
         begin
             tids = get_filternode_tids(get_node_name())
-            return ERROR_NO_WEBFILTER_NODES if empty?(tids)
+            if empty?(tids) then return (args[0] == "snmp") ? nil : ERROR_NO_WEBFILTER_NODES ; end
     
             begin
                 tid_and_cmd = extract_tid_and_command(tids, args, ["snmp"]) # no default tid wanted if command is "snmp"
