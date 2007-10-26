@@ -8,6 +8,9 @@
 # @version 0.1
 #
 
+$:.unshift File.dirname(__FILE__)
+
+
 require 'drb'
 require 'readline'
 include Readline
