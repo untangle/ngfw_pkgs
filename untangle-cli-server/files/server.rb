@@ -8,6 +8,8 @@
 # @version 0.1
 #
 
+$:.unshift File.dirname(__FILE__)
+
 # Should server restarts be controlled interactively (used for debugging)?
 INTERACTIVE = $DEBUG
 
