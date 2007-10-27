@@ -1,3 +1,11 @@
+#
+# attackblocker.rb - Attack Blocker interfaces with the UVM and its Attack Blocker Filter Nodes.
+#
+# Copyright (c) 2007 Untangle Inc., all rights reserved.
+#
+# @author <a href="mailto:ken@untangle.com">Catalin </a>
+# @version 0.1
+#
 require 'java'
 require 'proxy'
 require 'debug'
@@ -5,6 +13,7 @@ require 'debug'
 require 'filternode'
 
 # TODO: the following modules should de used by all the nodes, but i'm not sure where to put them
+# Ken says: we can locate these in common, until we think of a better way to package this.
 
 module CmdDispatcher
   protected
@@ -55,6 +64,7 @@ module RetryLogin
 end
 
 # TODO: we can't use camel case for the class name (ProtoFilter won't work)
+# Ken says: if we want to rip some code off of Rails, perhaps we can use their camel case converter.
 class Protofilter < UVMFilterNode
   include CmdDispatcher
   include RetryLogin
@@ -85,11 +95,11 @@ class Protofilter < UVMFilterNode
     begin
       retryLogin {
         # Get tids of all protocol filters once and for all commands we might execute below.
-        tids = @@uvmRemoteContext.nodeManager.nodeInstances(NODE_NAME)
-        return ERROR_NO_PROTOFILTER_NODES if tids.nil? || tids.length < 1
+        tids = get_filternode_tids(get_node_name())
+        return ERROR_NO_PROTOFILTER_NODES if empty?(tids)
 
         begin
-          tid, cmd = *extract_tid_and_command(tids, args)
+          tid, cmd = *extract_tid_and_command(tids, args, ["snmp"])
         rescue Exception => ex
           return "Error: invalid #{NODE_NAME} node number or ID '#{ex}'"
         end

@@ -17,7 +17,7 @@ class Attackblocker < UVMFilterNode
     
     ERROR_NO_ATTACKBLOCKER_NODES = "No attackblocker modules are installed on the effective server."
     NODE_NAME = "untangle-node-shield"
-    ATTACKBLOCKER_MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".3"
+    ATTACKBLOCKER_MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".4"
 
     def initialize
         @diag = Diag.new(DEFAULT_DIAG_LEVEL)
@@ -53,12 +53,10 @@ class Attackblocker < UVMFilterNode
             if empty?(tids) then return (args[0] == "snmp") ? nil : ERROR_NO_ATTACKBLOCKER_NODES ; end
     
             begin
-                tid_and_cmd = extract_tid_and_command(tids, args, ["snmp"])
-                raise FilterNodeException unless tid_and_cmd
-                tid = tid_and_cmd[0]
-                cmd = tid_and_cmd[1]
+                tid, cmd = *extract_tid_and_command(tids, args, ["snmp"])
+                raise FilterNodeException unless cmd
             rescue Exception => ex
-                msg = "Error: invalid #{NODE_NAME} node number or ID '#{ex}'"
+                msg = "Error: attachblocker encountered an unhandled exception: " + p
                 @diag.if_level(3) { puts! msg ; p ex}
                 return msg
             end

@@ -106,6 +106,12 @@ class UVMFilterNode
         def get_node_name()
             raise NoMethodError, "Derived class of UVMFilterNode does not implement required method 'get_node_name()'"
         end
+        
+    protected
+        def get_mib_root()
+            raise NoMethodError, "Derived class of UVMFilterNode does not implement required method 'get_mib_root()'"
+        end
+
     protected
         def get_filternode_tids(node_name)
             return @@uvmRemoteContext.nodeManager.nodeInstances(node_name)

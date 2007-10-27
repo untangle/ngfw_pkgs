@@ -52,12 +52,10 @@ class Firewall < UVMFilterNode
             if empty?(tids) then return (args[0] == "snmp") ? nil : ERROR_NO_FIREWALL_NODES ; end
     
             begin
-                tid_and_cmd = extract_tid_and_command(tids, args, ["snmp"])
-                raise FilterNodeException unless tid_and_cmd
-                tid = tid_and_cmd[0]
-                cmd = tid_and_cmd[1]
+                tid, cmd = *extract_tid_and_command(tids, args, ["snmp"])
+                raise FilterNodeException unless cmd
             rescue Exception => ex
-                msg = "Error: invalid #{NODE_NAME} node number or ID '#{ex}'"
+                msg = "Error: firewall encountered an unhandled exception: " + p
                 @diag.if_level(3) { puts! msg ; p ex}
                 return msg
             end
@@ -243,7 +241,7 @@ class Firewall < UVMFilterNode
 	    settings.setFirewallRuleList(firewallRuleList)
 	    node.setSettings(settings)
 	    
-	    msg = (rule_num == -1) ? "Rule #{rule_num} updated in firewall rule list." : "Rule added to firewall rule list."
+	    msg = (rule_num != -1) ? "Rule ##{rule_num} updated in firewall rule list." : "Rule added to firewall rule list."
 	    @diag.if_level(2) { puts! msg }
             return msg
         rescue Exception => ex
