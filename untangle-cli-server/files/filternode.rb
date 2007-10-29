@@ -43,8 +43,6 @@ class UVMFilterNode
                 @@filternode_lock.synchronize {
                     if @@factory.nil?
                         @@factory = com.untangle.uvm.client.RemoteUvmContextFactory.factory
-                        @@factory = src.uvm-lib.api.com.untangle.uvm.client.RemoteUvmContextFactory.factory
-                        #@@factory = com.untangle.uvm.client.RemoteUvmContextFactory.factory
                         connect
                     end
                 } 
@@ -178,14 +176,14 @@ class UVMFilterNode
             
             # Validate arguments.
             if args[0]
-                if (args[0] =~ /^-[ng]$/) == nil
+                if (/^-[ng]$/ =~ args[0]) == nil
                     @diag.if_level(1) { puts "Error: invalid get statistics argument '#{args[0]}"}
                     return nil
-                elsif !args[1] || !(args[1] =~ /(\.\d+)+/)
+                elsif !args[1] || !(/(\.\d+)+/ =~ args[1])
                     @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[1] ? args[1] : 'missing value'}" }
                     return nil
-                elsif (args[1] =~ /^#{mib_root}/) == nil 
-                    @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[1]} is not a filter node OID." }
+                elsif (/^#{mib_root}/ =~ args[1]) == nil 
+                    @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[1]} is not a filter node OID." ; mib_root.inspect }
                 end
             end
             
@@ -320,7 +318,7 @@ class UVMFilterNode
             # Map the current OID to next OID.  This contraption of code is necessary because
             # Ruby's successor method does not simply increment its argument: it advances
             # its operand to the next logical value, e.g., "32.9".succ => "33.0", not "32.10"
-            # as we want.  If no match for the OID is found the either halt the walk or advance
+            # as we want.  If no match for the OID is found then either halt the walk or advance
             # to the next TID in the tid list.
             case oid
                 when "#{mib_root}"; next_oid = "#{mib_root}.#{tid}.1"

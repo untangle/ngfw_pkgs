@@ -84,7 +84,7 @@ class Protofilter < UVMFilterNode
 
   ERROR_NO_PROTOFILTER_NODES = "No Protocol Filter modules are installed on the effective server."
   NODE_NAME = "untangle-node-protofilter"
-  PROTOFILTER_MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".3"
+  PROTOFILTER_MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".4"
 
   def initialize
     @diag = Diag.new(DEFAULT_DIAG_LEVEL)
@@ -109,7 +109,7 @@ class Protofilter < UVMFilterNode
       retryLogin {
         # Get tids of all protocol filters once and for all commands we might execute below.
         tids = get_filternode_tids(get_node_name())
-        return ERROR_NO_PROTOFILTER_NODES if empty?(tids)
+        if empty?(tids) then return (args[0] == "snmp") ? nil : ERROR_NO_PROTOFILTER_NODES ; end
 
         begin
           tid, cmd = *extract_tid_and_command(tids, args, ["snmp"])
