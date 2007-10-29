@@ -2,7 +2,7 @@
 
 UVM_ROOT=${UVM_ROOT:-}
 
-CLASSPATH="${UVM_ROOT}/usr/share/untangle/lib/untangle-vm-api:${UVM_ROOT}/usr/share/java/uvm/hibernate3.jar:${UVM_ROOT}/usr/share/java/uvm/log4j-1.2.9.jar"
+CLASSPATH="${UVM_ROOT}/usr/share/untangle/lib/untangle-libuvm-api:${UVM_ROOT}/usr/share/java/uvm/hibernate3.jar:${UVM_ROOT}/usr/share/java/uvm/log4j-1.2.9.jar"
 for f in ${UVM_ROOT}/usr/share/java/reports/*jar ; do
     CLASSPATH="$CLASSPATH:$f"
 done

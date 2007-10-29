@@ -53,7 +53,6 @@ class Firewall < UVMFilterNode
     
             begin
                 tid, cmd = *extract_tid_and_command(tids, args, ["snmp"])
-                raise FilterNodeException unless cmd
             rescue Exception => ex
                 msg = "Error: firewall encountered an unhandled exception: " + p
                 @diag.if_level(3) { puts! msg ; p ex}

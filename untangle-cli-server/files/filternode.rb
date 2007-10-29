@@ -43,6 +43,8 @@ class UVMFilterNode
                 @@filternode_lock.synchronize {
                     if @@factory.nil?
                         @@factory = com.untangle.uvm.client.RemoteUvmContextFactory.factory
+                        @@factory = src.uvm-lib.api.com.untangle.uvm.client.RemoteUvmContextFactory.factory
+                        #@@factory = com.untangle.uvm.client.RemoteUvmContextFactory.factory
                         connect
                     end
                 } 
