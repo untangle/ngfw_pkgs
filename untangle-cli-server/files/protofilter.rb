@@ -1,9 +1,9 @@
 #
-# attackblocker.rb - Attack Blocker interfaces with the UVM and its Attack Blocker Filter Nodes.
+# protofilter.rb - Protocol Control interfaces with the UVM and its Protocol Filter Nodes.
 #
 # Copyright (c) 2007 Untangle Inc., all rights reserved.
 #
-# @author <a href="mailto:ken@untangle.com">Catalin </a>
+# @author <a href="mailto:cmatei@untangle.com">Catalin Matei</a>
 # @version 0.1
 #
 require 'java'
@@ -179,6 +179,7 @@ HELP
               pattern.getDescription,
               pattern.getDefinition,
              ].join(",")
+      ret << "\n"
     }
     return ret
   end
