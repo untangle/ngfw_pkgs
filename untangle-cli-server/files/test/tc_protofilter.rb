@@ -6,7 +6,7 @@ require 'protofilter'
 
 class TestProtofilter < Test::Unit::TestCase
   def setup
-    @protofilter = Protofilter.new
+    @protofilter = ProtoFilter.new
   end
 
   def test_help

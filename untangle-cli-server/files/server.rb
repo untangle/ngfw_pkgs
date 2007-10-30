@@ -111,7 +111,8 @@ class NUCLIServer
                 @diag.if_level(3) { puts! "Found code for '#{node}'" }
                 
                 # If successful, create an new instance of the filter node loaded via require.
-                self.instance_variable_set("@#{node}", eval("#{node.capitalize}.new"))
+                class_name = UVMFilterNode.last_subclass
+                self.instance_variable_set("@#{node}", eval("#{class_name}.new"))
                 instance_eval("@filter_nodes << @#{node}")
                 @diag.if_level(3) { puts! "Filter node instanced" ; p @filter_nodes }
                 

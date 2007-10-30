@@ -34,6 +34,8 @@ class UVMFilterNode
         @@factory = nil
         @@uvmRemoteContext = nil
 
+        @@last_subclass = nil 
+  
     public
         def initialize
             @diag = Diag.new(DEFAULT_DIAG_LEVEL)
@@ -58,6 +60,14 @@ class UVMFilterNode
             at_exit { @@filternode_lock.synchronize { disconnect } }
     
             @diag.if_level(2) { puts! "Done initializing UVMFilterNode..." }
+        end
+
+        def self.inherited(subclass)
+          @@last_subclass = subclass
+        end
+
+        def self.last_subclass
+          @@last_subclass
         end
 
     public

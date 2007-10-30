@@ -76,9 +76,7 @@ module RetryLogin
   end
 end
 
-# TODO: we can't use camel case for the class name (ProtoFilter won't work)
-# ***Ken says: if we want to rip some code off of Rails, perhaps we can use their camel case converter.
-class Protofilter < UVMFilterNode
+class ProtoFilter < UVMFilterNode
   include CmdDispatcher
   include RetryLogin
 
