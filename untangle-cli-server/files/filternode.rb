@@ -336,7 +336,7 @@ class UVMFilterNode
                 when "#{mib_root}.#{tid}.9"; next_oid = "#{mib_root}.#{tid}.10"
                 when "#{mib_root}.#{tid}.18"; next_oid = "#{mib_root}.#{tid}.19.1"
                 when "#{mib_root}.#{tid}.19.9"; next_oid = "#{mib_root}.#{tid}.19.10"
-                when "#{mib_root}.#{tid}.19.15"; next_oid = "#{mib_root}.#{tid}.20"
+                when "#{mib_root}.#{tid}.19.16"; next_oid = "#{mib_root}.#{tid}.20"
                 when /#{mib_root}\.#{tid}(\.\d+)+/; next_oid = oid.succ
             else
                 if orig_tid
