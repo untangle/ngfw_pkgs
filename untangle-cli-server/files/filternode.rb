@@ -369,6 +369,19 @@ class UVMFilterNode
             @diag.if_level(3) { puts! "Next oid: #{next_oid}" }
             return [next_oid, tid]
         end
+        
+    protected
+        def list_filternodes(tids)
+          # List/enumerate protofilter nodes
+          @diag.if_level(2) { puts! "#{get_node_name()}: listing nodes..." }
+
+          ret = "#,TID,Description\n";
+          tids.each_with_index { |tid, i|
+            ret << "##{i+1},#{tid}," + @@uvmRemoteContext.nodeManager.nodeContext(tid).getNodeDesc().to_s + "\n"
+          }
+          @diag.if_level(2) { puts! "#{ret}" }
+          return ret
+        end
 
 end # UVMFilterNode
 

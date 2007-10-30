@@ -72,18 +72,7 @@ class Attackblocker < UVMFilterNode
             
             case cmd
             when nil, "", "list"
-                # List/enumerate web filter nodes
-                @diag.if_level(2) { puts! "attackblocker: listing nodes..." }
-                attackblocker_list = "#,TID,Description\n"
-                attackblocker_num = 1
-                tids.each { |tid|
-                    node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
-                    desc = node_ctx.getNodeDesc()
-                    attackblocker_list << "##{attackblocker_num},#{tid},#{desc}\n"
-                    attackblocker_num += 1
-                }
-                @diag.if_level(2) { puts! "attackblocker: #{attackblocker_list}" }
-                return attackblocker_list
+                return list_filternodes(tids)
             when "help"
                 help_text = <<-ATTACKBLOCKER_HELP
 

@@ -76,18 +76,7 @@ class Webfilter < UVMFilterNode
             
             case cmd
             when nil, "", "list"
-                # List/enumerate web filter nodes
-                @diag.if_level(2) { puts! "webfilter: listing nodes..." }
-                webfilter_list = "#,TID,Description\n"
-                webfilter_num = 1
-                tids.each { |tid|
-                    node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
-                    desc = node_ctx.getNodeDesc()
-                    webfilter_list << "##{webfilter_num},#{tid},#{desc}\n"
-                    webfilter_num += 1
-                }
-                @diag.if_level(2) { puts! "webfilter: #{webfilter_list}" }
-                return webfilter_list
+                return list_filternodes(tids)
             when "help"
                 help_text = <<-WEBFILTER_HELP
 
@@ -125,6 +114,7 @@ class Webfilter < UVMFilterNode
             if !retried
                 @diag.if_level(2) { puts! "Login expired - logging back on and trying one more time" ; p ex }
                 @@filter_node_lock.synchronize { login }
+                retried = true
                 retry
             else
                 raise Exception

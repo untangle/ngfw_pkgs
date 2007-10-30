@@ -130,16 +130,12 @@ class ProtoFilter < UVMFilterNode
         @diag.if_level(3) { puts! "TID = #{tid}, command = #{cmd}" }
 
         # TODO: integrate in dispatcer?
+        # ***Ken asks... Seems like an debatable separation of concerns for this to be in the dispatcher.
+        # Why not as a common method in UVMFilterNode???   I'll go ahead and refactor it into UVMFilterNode
+        # however if you disagree Catalin feel free to push back and propose or implement an alternative
+        # solution - I'm very open minded :)
         if cmd.nil? then
-          # List/enumerate protofilter nodes
-          @diag.if_level(2) { puts! "protofilter: listing nodes..." }
-
-          ret = "#,TID,Description\n";
-          tids.each_with_index { |tid, i|
-            ret << "##{i+1},#{tid}," + @@uvmRemoteContext.nodeManager.nodeContext(tid).getNodeDesc().to_s + "\n"
-          }
-          @diag.if_level(2) { puts! "protofilter: #{ret}" }
-          return ret
+          return list_filternodes(tids)
         else
           return dispatch_cmd("cmd_", args.empty? ? [cmd, tid] : [cmd, tid, *args])
         end

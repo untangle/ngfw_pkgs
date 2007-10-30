@@ -75,18 +75,7 @@ class Firewall < UVMFilterNode
             
             case cmd
             when nil, "", "list"
-                # List/enumerate web filter nodes
-                @diag.if_level(2) { puts! "firewall: listing nodes..." }
-                firewall_list = "#,TID,Description\n"
-                firewall_num = 1
-                tids.each { |tid|
-                    node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
-                    desc = node_ctx.getNodeDesc()
-                    firewall_list << "##{firewall_num},#{tid},#{desc}\n"
-                    firewall_num += 1
-                }
-                @diag.if_level(2) { puts! "firewall: #{firewall_list}" }
-                return firewall_list
+                return list_filternodes(tids)
             when "help"
                 help_text = <<-FIREWALL_HELP
 
