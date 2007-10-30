@@ -24,6 +24,7 @@ BRAND = "Untangle"
 ERROR_INCOMPLETE_COMMAND = "Error: incomplete command -- missing required arguments (see help.)"
 ERROR_UNKNOWN_COMMAND = "Error: unknown command"
 ERROR_COMMAND_FAILED = "Error: unable to execute command"
+ERROR_INVALID_NODE_ID = "Error: invalid node identifier"
 
 # Exceptions
 class UserCancel < Interrupt

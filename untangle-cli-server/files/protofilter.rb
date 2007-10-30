@@ -120,8 +120,12 @@ class ProtoFilter < UVMFilterNode
 
         begin
           tid, cmd = *extract_tid_and_command(tids, args, ["snmp"])
+        rescue InvalidNodeNumber, InvalidNodeId => ex
+            msg = ERROR_INVALID_NODE_ID + ": " + ex
+            @diag.if_level(3) { puts! msg ; p ex}
+            return msg
         rescue Exception => ex
-          return "Error: invalid #{NODE_NAME} node number or ID '#{ex}'"
+          msg = "Error: protofilter encountered an unhandled exception: " + p
         end
         @diag.if_level(3) { puts! "TID = #{tid}, command = #{cmd}" }
 
