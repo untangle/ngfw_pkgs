@@ -120,6 +120,11 @@ class UVMFilterNode
         end
 
     protected
+        def get_uvm_node_name()
+            raise NoMethodError, "Derived class of UVMFilterNode does not implement required method 'get_uvm_node_name()'"
+        end
+        
+    protected
         def get_node_name()
             raise NoMethodError, "Derived class of UVMFilterNode does not implement required method 'get_node_name()'"
         end
@@ -238,7 +243,7 @@ class UVMFilterNode
                     oid_pieces = oid.split('.')
                     stat_id = oid_pieces[(mib_pieces.length-oid_pieces.length)+1 ,2].join('.')
                     case stat_id
-                        when "1";  stat, type = get_node_name, str
+                        when "1";  stat, type = get_uvm_node_name, str
                         when "2";  stat, type = nodeStats.tcpSessionCount(), int
                         when "3";  stat, type = nodeStats.tcpSessionTotal(), int
                         when "4";  stat, type = nodeStats.tcpSessionRequestTotal(), int
@@ -265,6 +270,7 @@ class UVMFilterNode
                     end
                     stats = "#{oid}\n#{type}\n#{stat}"
                 else
+                    return "Error: a node ID [#X|TID] must be specified in order to retrieve " unless tid
                     node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
                     nodeStats = node_ctx.getStats()
                     tcpsc  = nodeStats.tcpSessionCount()
@@ -313,7 +319,7 @@ class UVMFilterNode
                 if (oid == mib_root)
                     # Caller wants to walk the entire mib tree of the associated filter node type.
                     # So, walk through tid list from the beginning.
-                    tids = get_filternode_tids(get_node_name())
+                    tids = get_filternode_tids(get_uvm_node_name())
                     tid = tids[0]
                 else
                     # If oid != mib_root and !tid, then we're in the middle of walking the
@@ -323,7 +329,7 @@ class UVMFilterNode
                     mib_pieces = mib_root.split('.')
                     oid_pieces = oid.split('.')
                     cur_tid = oid_pieces[mib_pieces.length]
-                    tids = get_filternode_tids(get_node_name())
+                    tids = get_filternode_tids(get_uvm_node_name())
                     tid = nil
                     tid = tids.detect { |t|
                         t.to_s == cur_tid
@@ -355,7 +361,7 @@ class UVMFilterNode
                     mib_pieces = mib_root.split('.')
                     oid_pieces = oid.split('.')
                     cur_tid = oid_pieces[mib_pieces.length]
-                    tids = get_filternode_tids(get_node_name())
+                    tids = get_filternode_tids(get_uvm_node_name())
                     next_tid = nil
                     tids.each_with_index { |tid,i| next_tid = tids[i+1] if tid.to_s == cur_tid }
                     if next_tid
@@ -373,7 +379,7 @@ class UVMFilterNode
     protected
         def list_filternodes(tids)
           # List/enumerate protofilter nodes
-          @diag.if_level(2) { puts! "#{get_node_name()}: listing nodes..." }
+          @diag.if_level(2) { puts! "#{get_uvm_node_name()}: listing nodes..." }
 
           ret = "#,TID,Description\n";
           tids.each_with_index { |tid, i|

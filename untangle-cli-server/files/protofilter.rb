@@ -37,8 +37,12 @@ class ProtoFilter < UVMFilterNode
     @diag.if_level(3) { puts! "Done initializing Protocol Filter..." }
   end
   
-  def get_node_name()
+  def get_uvm_node_name()
     NODE_NAME
+  end
+  
+  def get_node_name()
+    "Protocol Filter"
   end
   
   def get_mib_root()

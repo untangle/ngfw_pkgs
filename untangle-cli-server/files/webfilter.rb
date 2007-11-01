@@ -40,10 +40,14 @@ class Webfilter < UVMFilterNode
     #
     # Required UVMFilterNode methods.
     #
-    def get_node_name()
+    def get_uvm_node_name()
         NODE_NAME
     end
     
+    def get_node_name()
+        "Web Filter"
+    end
+
     def get_mib_root()
         WEBFILTER_MIB_ROOT
     end
@@ -57,7 +61,7 @@ class Webfilter < UVMFilterNode
         retried = false
         
         begin
-            tids = get_filternode_tids(get_node_name())
+            tids = get_filternode_tids(get_uvm_node_name())
             if empty?(tids) then return (args[0] == "snmp") ? nil : ERROR_NO_WEBFILTER_NODES ; end
     
             begin

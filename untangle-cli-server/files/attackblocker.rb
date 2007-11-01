@@ -37,8 +37,12 @@ class Attackblocker < UVMFilterNode
     #
     # Required UVMFilterNode methods.
     #
-    def get_node_name()
+    def get_uvm_node_name()
         NODE_NAME
+    end
+
+    def get_node_name()
+        "Attack Blocker"
     end
 
     def get_mib_root()
@@ -56,7 +60,7 @@ class Attackblocker < UVMFilterNode
         
         begin
             # Get tids of all web filters once and for all commands we might execute below.
-            tids = get_filternode_tids(get_node_name())
+            tids = get_filternode_tids(get_uvm_node_name())
             @diag.if_level(3) { puts! "No attack blockers found." if empty?(tids) }
             if empty?(tids) then return (args[0] == "snmp") ? nil : ERROR_NO_ATTACKBLOCKER_NODES ; end
     
