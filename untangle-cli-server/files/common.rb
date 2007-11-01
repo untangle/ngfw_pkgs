@@ -40,3 +40,69 @@ module Kernel
 end
     
 end # UCLICommon
+
+module CmdDispatcher
+  #
+  # Calls a method for processing the specified command.
+  #
+  # The name of the method should be the command name prefixed with _prefix_.
+  # The command name is defined to be the first element of the _args_ array.
+  # The remaining elements will be used as paramaters to the method call
+  #
+  
+  protected
+  def dispatch_cmd(args, prefix = "cmd")
+    catch :unknown_command do
+      return dispatch_cmd_helper(prefix, args)
+    end
+    return ERROR_UNKNOWN_COMMAND + " -- '#{args.join(' ')}'"
+  end
+
+  private
+  def dispatch_cmd_helper(prefix, args)
+    cmd_name = args.empty? ? "" : args[0]
+    new_args = args[1..-1]
+    full_name = "#{prefix}_#{cmd_name}"
+    matches = methods.select { |m| m =~ /^#{full_name}/ }.length
+    if respond_to?(full_name) and (matches == 1 or new_args.empty?) then
+      begin
+        return send(full_name, *new_args)
+      rescue ArgumentError => ex
+        @diag.if_level(3) {
+          puts! "Dispatching failure: " + full_name + "(" + new_args.inspect  + ")"
+          puts! ex
+          puts! ex.backtrace
+        }
+        return ERROR_INCOMPLETE_COMMAND
+      end
+    elsif matches > 0 and args.length > 0
+      return dispatch_cmd_helper(full_name, new_args)
+    end
+    throw :unknown_command
+  end
+end
+
+module RetryLogin
+
+  # ***Ken says... Aaron Read (another of our engineers) thinks this belongs at a lower level of the UVM API.  I'll
+  # review this with him and get back to you :)
+  # 
+  # Runs the asociated block. If the block throws an LoginExpiredException, it logs in
+  # and runs the block again.
+  def retryLogin
+    retried = false
+    begin
+      yield
+    rescue com.untangle.uvm.client.LoginExpiredException => ex
+      if !retried
+        retried = true
+        @diag.if_level(2) { puts! "Login expired - logging back on and trying one more time" ; p ex }
+        @@filter_node_lock.synchronize { login }
+        retry
+      else
+        raise
+      end
+    end
+  end
+end
+

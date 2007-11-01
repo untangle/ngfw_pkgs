@@ -20,70 +20,7 @@ require 'proxy'
 require 'debug'
 
 require 'filternode'
-
-# TODO: the following modules should de used by all the nodes, but i'm not sure where to put them
-# ***Ken says: we can locate these in common, until we think of a better way to package this.
-
-module CmdDispatcher
-  protected
-
-  # Calls a method for processing the specified command.
-  #
-  # The name of the method should be the command name prefixed with _prefix_.
-  # The command name is defined to be the first element of the _args_ array.
-  # The remaining elements will be used as paramaters to the method call
-  #
-  # ***Ken says: I like this approach however it may not scale well to more complex filters,
-  # for example the webfilter, which manages set of related items and has a command line like this:
-  # webfilter block-list add url www.foobarbaz.com true false.  And since we don't know how many
-  # values of args[] comprise the actual command, in the case 3: block-list, add, url, I'm not
-  # sure this solution is general enough. But, then again, it does get rid of one level of
-  # parsing, or the next level of command processing could simply append the next arg
-  # and call dispatch again with a prefix of ""?  Thoughts?
-  #
-
-  def dispatch_cmd(prefix, args)
-    if respond_to?(prefix + args[0]) then
-      begin
-        new_args = args[1..-1]
-        return send(prefix + args[0], *new_args)
-      rescue ArgumentError => ex
-        @diag.if_level(3) {
-          puts! "Dispatching failure: " + prefix+args[0] + "(" + new_args.inspect  + ")"
-          puts! ex
-          puts! ex.backtrace
-        }
-        return ERROR_INCOMPLETE_COMMAND
-      end
-    else
-      return ERROR_UNKNOWN_COMMAND + " -- '#{args.join(' ')}'"
-    end
-  end
-end
-
-module RetryLogin
-
-  # ***Ken says... Aaron Read (another of our engineers) thinks this belongs at a lower level of the UVM API.  I'll
-  # review this with him and get back to you :)
-  # 
-  # Runs the asociated block. If the block throws an LoginExpiredException, it logs in
-  # and runs the block again.
-  def retryLogin
-    retried = false
-    begin
-      yield
-    rescue com.untangle.uvm.client.LoginExpiredException => ex
-      if !retried
-        retried = true
-        @diag.if_level(2) { puts! "Login expired - logging back on and trying one more time" ; p ex }
-        @@filter_node_lock.synchronize { login }
-        retry
-      else
-        raise
-      end
-    end
-  end
-end
+require 'common'
 
 class ProtoFilter < UVMFilterNode
   include CmdDispatcher
@@ -137,7 +74,7 @@ class ProtoFilter < UVMFilterNode
         if cmd.nil? then
           return list_filternodes(tids)
         else
-          return dispatch_cmd("cmd_", args.empty? ? [cmd, tid] : [cmd, tid, *args])
+          return dispatch_cmd(args.empty? ? [cmd, tid] : [cmd, tid, *args])
         end
       }
     rescue Exception => ex
