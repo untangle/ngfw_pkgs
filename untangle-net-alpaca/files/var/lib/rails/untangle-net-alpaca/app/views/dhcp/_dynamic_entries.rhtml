@@ -1,12 +1,13 @@
-<div class="dynamic-entries">
-  <ul class="dynamic-entry-list" id="dynamic-entry-list-1024">
-    <li class="de-header">
-      <div class="de-header-1"><%= "MAC Address".t %></div>
-      <div class="de-header-2"><%= "IP Address".t %></div>
-      <div class="de-header-3"><%= "Hostname".t %></div>
-      <div class="de-header-4"></div>
+<div class="list-table" id="dhcp-dynamic-entries">
+  <ul class="dhcp-dynamic-entry-list" id="dhcp-dynamic-entry-list">
+    <li class="header">
+      <!-- Should this show when the leases expires -->
+      <div class="first-column mac-address"><%= "MAC Address".t %></div>
+      <div class="ip-address"><%= "IP Address".t %></div>
+      <div class="hostname"><%= "Hostname".t %></div>
+      <div class="action"></div>
     </li>
     
-    <%= render(:partial => "dynamic_entry" , :collection => [ 1, 2 ] ) %>
+    <%= render(:partial => "dynamic_entry" , :collection => dynamic_entries ) %>
   </ul>
 </div>

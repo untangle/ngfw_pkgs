@@ -193,4 +193,4 @@ var RuleBuilder = {
 
         return numChildren;
     }
-}
+};

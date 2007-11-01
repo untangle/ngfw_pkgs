@@ -1,19 +1,18 @@
-<% rowId="se-row-#{rand( 0x100000000 )}" %>
+<% rowId="de-row-#{rand( 0x100000000 )}" %>
 <li id="<%= rowId  %>" class="dynamic-entry">
-  <%= hidden_field_tag( "dynamicEntries[]", rowId ) %>
-  <div class="de-column-1">
-    32:D1:A8:A0:50:2E
+  <div class="first-column mac-address">
+    <%= dynamic_entry.mac_address %>
   </div>
 
-  <div class="de-column-2">
-    10.0.0.187
+  <div class="ip-address">
+    <%= dynamic_entry.ip_address %>
   </div>
 
-  <div class="de-column-3">
-    rbs-macbook
+  <div class="hostname">
+    <%= dynamic_entry.hostname %>
   </div>
 
-  <div class="de-column-4">
+  <div class="action">
     <%= "Add Static".t %>
   </div>
 </li>

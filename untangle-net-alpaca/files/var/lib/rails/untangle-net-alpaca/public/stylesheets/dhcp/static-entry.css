@@ -1,14 +1,14 @@
 div.dhcp-static-entries
 { 
   margin: 10px 0px 10px 0px;
-  width: 614px;
+  width: 634px;
   overflow-y: scroll;
   height: 150px;
   }
 
 ul.dhcp-static-entry-list div.mac-address
 { 
-  width: 140px;
+  width: 160px;
  }
 
 ul.dhcp-static-entry-list div.ip-address
@@ -25,4 +25,10 @@ ul.dhcp-static-entry-list div.minus
 { 
   width: 100px;
   text-align: center;
+  }
+
+li.static-entry div.minus:hover
+{ 
+  cursor: pointer;
+  background-color: #E1EB26;  
   }

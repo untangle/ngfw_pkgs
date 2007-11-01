@@ -1,0 +1,1 @@
+page.insert_html( :bottom, "dhcp-static-entry-list", :partial => "static_entry", :object => @static_entry )

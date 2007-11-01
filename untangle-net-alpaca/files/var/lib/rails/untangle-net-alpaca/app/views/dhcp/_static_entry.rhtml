@@ -10,7 +10,7 @@
   <div class="description">
     <%= text_field( "description", rowId, { :value => static_entry.description } ) %>
   </div>
-  <div class="minus">
+  <div class="minus" onclick="DhcpServerManager.removeStaticEntry( '<%= rowId %>' )">
     -
   </div>
 </li>
