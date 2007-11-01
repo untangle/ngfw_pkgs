@@ -1,5 +1,10 @@
 <%= javascript_tag <<EOF
 InterfaceHandler.interfaceList = new Array( #{@interfaces.join( ", ")} );
+
+DayHandler.dayList = new Array( #{@day_list.join( ", ")} );
+
+ProtocolHandler.protocolList = new Array( #{@protocol_list.join( ", ")} );
+
 EOF
 %>
 

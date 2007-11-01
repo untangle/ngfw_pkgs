@@ -6,28 +6,27 @@
       <ul class="text-fields">
         <li>
           <label for="dhcp[enabled]"><%= "Enabled:".t %></label>
-          <%= check_box( "dhcp", "enabled", { :checked => true }, true, false ) %>
+          <%= check_box( "dhcp", "enabled", { :checked => @dhcp_server_settings.enabled }, true, false ) %>
         </li>
 
         <li>
           <label for="dhcp[start]"><%= "Start:".t %></label>
-          <%= text_field( "dhcp", "start", { :value => "", :size => 16 } ) %>
+          <%= text_field( "dhcp", "start", { :value => @dhcp_server_settings.start } ) %>
         </li>
 
         <li>
           <label for="dhcp[end]"><%= "End:".t %></label>
-          <%= text_field( "dhcp", "end", { :value => "", :size => 16 } ) %>
+          <%= text_field( "dhcp", "end", { :value => @dhcp_server_settings.end } ) %>
         </li>
       </ul>
-
-      <h2><%= "Static DHCP Entries".t %></h2>
-      +
-      <%= render( :partial => "static_entries" , :object => @static_entries ) %>
-
-      <h2><%= "Automatic DHCP Entries".t %></h2>
-      Refresh
-      <%= render( :partial => "dynamic_entries" , :object => @dynamic_entries ) %>
     </fieldset>
-  <% end -%>
 
+    <h2><%= "Static DHCP Entries".t %></h2>
+    +
+    <%= render( :partial => "static_entries" , :object => @static_entries ) %>
+    
+    <h2><%= "Automatic DHCP Entries".t %></h2>
+    Refresh
+    <%= render( :partial => "dynamic_entries" , :object => @dynamic_entries ) %>
+  <% end -%>
 </div>

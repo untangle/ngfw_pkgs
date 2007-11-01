@@ -44,12 +44,12 @@ var RuleBuilder = {
         this.deleteExtensions( rowId );
 
         /* Replace the item at that position */
-        Element.update( value, handler.content());
+        Element.update( value, handler.content( rowId ));
 
         /* Insert any of the extensions */
         if (( typeof handler.extensions ) == "function" ) {
             /* Insert them backways, this way they are ordered properly */
-            var extensions = handler.extensions().toArray();
+            var extensions = handler.extensions( rowId ).toArray();
             
             var newExtensions = new Array();
             for ( var c = 0 ; c < extensions.length  ; c++ ) {
@@ -61,6 +61,8 @@ var RuleBuilder = {
 
             if ( newExtensions.length > 0 ) new Insertion.After( row, newExtensions.join( "\n" ));
         }
+        
+        if ( type == "protocol" ) ProtocolHandler.setValue( rowId, { "icmp" : true, "tcp" : true, "udp" : true } );
     },
     
     removeClass : function( element, className )
@@ -99,7 +101,32 @@ var RuleBuilder = {
     /* Remove a parameter from the list, this will not let you remove the last one */
     removeParameter : function( rowId )
     {
+        /* Not allowed to delete the first item */
+        if ( this.numParameters() <= 1 ) return;
+
+        var element = document.getElementById( rowId );
         
+        /* Ignore anything that doesn't exists */
+        if ( element == null ) return;
+        
+        /* Ignore anything that is not a list item */
+        if ( element.nodeName != "LI" && element.nodeName != "li" ) return;
+        
+        /* Remove any extensions that have been added */
+        this.deleteExtensions( rowId );
+        
+        try {
+            Element.remove( rowId );
+        } catch ( e ) {
+            /* ignoring the error */
+        }
+    },
+
+    addParameter : function()
+    {
+        new Ajax.Request('/rule/create_parameter?list_id=rule-builder', 
+            { asynchronous:true, evalScripts:true} );
+        return false;
     },
     
     registerType : function( name, handler )
@@ -139,5 +166,31 @@ var RuleBuilder = {
             /* Delete this item */
             if ( found == true ) Element.remove( children[c] );
         }
+    },
+
+    /* This updates all of the rules filter types so that no two rules
+     * have the same ones available */
+    updateFilterTypes : function()
+    {
+    },
+
+    /* Return the number of elements in the rule builder */
+    numParameters : function()
+    {
+        var list = document.getElementById( "rule-builder" );
+        if ( list == null ) return;
+
+        var children = list.childNodes;
+
+        var numChildren = 0;
+
+        for ( var c = 0 ; c < children.length ; c++ ) {
+            if ( children[c].nodeName != "LI" && children[c].nodeName != "li" ) continue;
+            
+            if ( !this.hasClass( children[c], "rule" )) continue;
+            numChildren++;
+        }
+
+        return numChildren;
     }
 }

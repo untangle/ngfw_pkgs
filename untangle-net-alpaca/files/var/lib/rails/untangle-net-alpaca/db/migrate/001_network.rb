@@ -126,6 +126,20 @@ class Network < ActiveRecord::Migration
     create_table :locale_settings do |table|
       table.column :key, :string
     end
+
+    ## DHCP Server settings
+    create_table :dhcp_server_settings do |table|
+      table.column :enabled, :boolean
+      table.column :start, :string
+      table.column :end, :string
+    end
+
+    create_table :dhcp_static_entries do |table|
+      table.column :position, :integer
+      table.column :mac_address, :string
+      table.column :ip_address, :string
+      table.column :description, :string
+    end
   end
 
   def self.down
@@ -141,5 +155,7 @@ class Network < ActiveRecord::Migration
     drop_table :hostnames
     drop_table :file_overrides
     drop_table :locale_settings
+    drop_table :dhcp_server_settings
+    drop_table :dhcp_static_entries
   end
 end

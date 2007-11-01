@@ -1,10 +1,10 @@
-<div class="static-entries">
-  <ul class="static-entry-list" id="static-entry-list-1024">
-    <li class="se-header">
-      <div class="se-header-1"><%= "MAC Address".t %></div>
-      <div class="se-header-2"><%= "IP Address".t %></div>
-      <div class="se-header-3"><%= "Description".t %></div>
-      <div class="se-header-4"><%= "Delete".t %></div>
+<div class="list-table dhcp-static-entries">
+  <ul class="dhcp-static-entry-list" id="static-entry-list-1024">
+    <li class="header">
+      <div class="mac-address first-column"><%= "MAC Address".t %></div>
+      <div class="ip-address"><%= "IP Address".t %></div>
+      <div class="description"><%= "Description".t %></div>
+      <div class="minus"><%= "Delete".t %></div>
     </li>
     
     <%= render(:partial => "static_entry" , :collection => static_entries ) %>

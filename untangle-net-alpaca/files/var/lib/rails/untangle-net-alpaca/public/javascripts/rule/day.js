@@ -1,11 +1,11 @@
-var InterfaceHandler =
+var DayHandler =
 {
     /* Function to generate the content */
     content : function( rowId ) {
-        
         var newContent = new Array();
-        for ( var c = 0 ; ( c < 2 ) && ( c < this.interfaceList.length ) ; c++ ) {
-            newContent.push( this.checkbox( this.interfaceList[c][0], this.interfaceList[c][1] ));
+
+        for ( var c = 0 ; ( c < 2 ) && ( c < this.dayList.length ) ; c++ ) {
+            newContent.push( this.checkbox( this.dayList[c][0], this.dayList[c][1] ));
         }
         return newContent.join( "\n" );
     },
@@ -14,12 +14,12 @@ var InterfaceHandler =
     extensions : function( rowId ) {
         var a = new Array();
         var newContent = null;
-        for ( var c = 2 ; c < this.interfaceList.length ; c++ ) {
+        for ( var c = 2 ; c < this.dayList.length ; c++ ) {
             if (( c % 3 ) == 2 ) {
                 if ( newContent != null ) a.push( newContent.join( "\n" ));
                 newContent = new Array();
             }
-            newContent.push( this.checkbox( this.interfaceList[c][0], this.interfaceList[c][1] ));
+            newContent.push( this.checkbox( this.dayList[c][0], this.dayList[c][1] ));
         }
 
         if (( newContent != null ) && ( newContent.length > 0 )) a.push( newContent.join( "\n" ));
@@ -33,12 +33,11 @@ var InterfaceHandler =
 
     /* Function to build a single checkbox */
     checkbox : function( identifier, name ) {
-        var line = "<input type='checkbox' name='interface' value='" + identifier + "'/> " + name;
+        var line = "<input type='checkbox' name='day-of-week' value='" + identifier + "'/> " + name;
         /* Wrap it in a div */
         return "<div class='checkbox'>" + line + "</div>";
     }
 }
 
-RuleBuilder.registerType( "d-intf", InterfaceHandler );
-RuleBuilder.registerType( "s-intf", InterfaceHandler );
+RuleBuilder.registerType( "day-of-week", DayHandler );
 

@@ -1,7 +1,7 @@
 var IPAddressHandler =
 {
     /* Function to generate the content */
-    content : function() {
+    content : function( rowId ) {
         return '<input id="ruleValue[]" name="ruleValue[]" type="text"/>';
     },
 

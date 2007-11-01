@@ -1,4 +1,4 @@
-div.static-entries
+div.dhcp-static-entries
 { 
   margin: 10px 0px 10px 0px;
   width: 614px;
@@ -6,81 +6,23 @@ div.static-entries
   height: 150px;
   }
 
-div.static-entries ul.static-entry-list
-{ 
-  width: 594px;
-  list-style: none inside none;
-  margin: 0px;
-  padding: 0px;
- }
-
-ul.static-entry-list div
-{
-  float: left;
-  }
-
-ul.static-entry-list li
-{
-  overflow: auto;
-  padding: 0px;
-  }
-
-ul.static-entry-list li.se-header
-{ 
-  background-color: #C0C0C0;
-  text-align: center;
- }
-
-ul.static-entry-list div.se-header-1, div.se-column-1
+ul.dhcp-static-entry-list div.mac-address
 { 
   width: 140px;
-  }
+ }
 
-ul.static-entry-list div.se-header-2, div.se-column-2
+ul.dhcp-static-entry-list div.ip-address
 { 
   width: 140px;
-  }
+ }
 
-ul.static-entry-list div.se-header-3, div.se-column-3
-{ 
+ul.dhcp-static-entry-list div.description
+{
   width: 200px;
   }
 
-ul.static-entry-list div.se-header-4, div.se-column-4
+ul.dhcp-static-entry-list div.minus
 { 
   width: 100px;
-  }
-
-ul.static-entry-list li.static-entry
-{ 
-  background-color: #EEFFEE;
-  border: 1px solid #C0C0C0;
-  border-top-width: 0px;
- }
-
-li.static-entry div
-{ 
-  border-left: 1px solid #C0C0C0;
-  height: 20px;
-  }
-
-ul.static-entry-list div.se-column-1
-{ 
-  border-left: 0px none #C0C0C0;
-  text-align: center;
-  }
-
-ul.static-entry-list div.se-column-2
-{
-  text-align: center;
-  }
-
-ul.static-entry-list div.se-column-3
-{ 
-  text-align: center;
-  }
-
-ul.static-entry-list div.se-column-4
-{ 
   text-align: center;
   }

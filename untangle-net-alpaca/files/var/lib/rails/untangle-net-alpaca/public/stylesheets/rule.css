@@ -1,0 +1,45 @@
+
+div.rules
+{ 
+  margin: 10px 0px 10px 0px;
+  width: 623px;
+  height: 200px;
+  }
+
+ul.rule-list div.type
+{
+  width: 200px;
+  }
+
+ul.rule-list div.value
+{
+  width: 300px;
+  }
+
+ul.rule-list div.plus
+{
+  width: 50px;
+  text-align: center;
+  }
+
+ul.rule-list div.minus
+{
+  width: 50px;
+  text-align: center;
+  }
+
+li.rule div.minus:hover, li.rule div.plus:hover
+{ 
+  cursor: pointer;
+  background-color: #E1EB26;  
+  }
+
+ul.rule-list div.checkbox
+{ 
+  width: 125px;
+  }
+
+div.rules li.extension
+{ 
+  padding-left: 201px;
+ }
