@@ -117,7 +117,7 @@ class Network < ActiveRecord::Migration
     create_table :file_overrides do |table|
       table.column :position, :integer
       table.column :enabled, :boolean
-      table.column :writeable, :boolean
+      table.column :writable, :boolean
       table.column :path, :string
     end
 

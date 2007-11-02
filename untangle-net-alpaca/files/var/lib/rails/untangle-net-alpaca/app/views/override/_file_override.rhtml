@@ -1,19 +1,19 @@
 <% rowId="fo-row-#{rand( 0x100000000 )}" %>
 <li id="<%= rowId  %>" class="file-override">
   <%= hidden_field_tag( "fileOverrides[]", rowId ) %>
-  <div class="column-1">
+  <div class="enabled">
     <%= check_box( "enabled", rowId, { :checked => file_override.enabled }, true, false ) %>
   </div>
   
-  <div class="column-2">
-    <%= check_box( "writeable", rowId, { :checked => file_override.writeable }, true, false ) %>
+  <div class="writable">
+    <%= check_box( "writable", rowId, { :checked => file_override.writable }, true, false ) %>
   </div>
   
-  <div class="column-3">
+  <div class="path">
     <%= text_field( "path", rowId, { :value => file_override.path, :class => "in-table" } ) %>
   </div>
 
-  <div class="column-4">
+  <div class="minus">
     <%= link_to_remote( "-", :url => { :action => :file_override_remove, :id => rowId } ) %>
   </div>
 </li>

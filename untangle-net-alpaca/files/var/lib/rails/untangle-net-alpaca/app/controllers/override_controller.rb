@@ -19,7 +19,7 @@ class OverrideController < ApplicationController
     ## Reasonable defaults
     ## Review: is there some way to do this in the model.
     @file_override.enabled = true
-    @file_override.writeable = false
+    @file_override.writable = false
     @file_override.path = ""
     @file_override.position = -1
   end
@@ -41,7 +41,7 @@ class OverrideController < ApplicationController
 
     indices = params[:fileOverrides]
     enabled = params[:enabled]
-    writeable = params[:writeable]
+    writable = params[:writable]
     path = params[:path]
     
     # No file overrides to save if there are no indices
@@ -50,7 +50,7 @@ class OverrideController < ApplicationController
       indices.each do |key,value|
         ## fileOverride
         fo = FileOverride.new()
-        fo.enabled, fo.writeable, fo.path = enabled[key], writeable[key], path[key]
+        fo.enabled, fo.writable, fo.path = enabled[key], writable[key], path[key]
         fo.position = position
         position += 1
         fileOverrideList << fo
@@ -65,5 +65,9 @@ class OverrideController < ApplicationController
 
     ## Review : should have some indication that is saved.
     return redirect_to( :action => "manage" )
+  end
+
+  def stylesheets
+    [ "borax/list-table", "borax-file-override" ]
   end
 end

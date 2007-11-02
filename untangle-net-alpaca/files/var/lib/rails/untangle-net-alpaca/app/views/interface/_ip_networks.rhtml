@@ -1,9 +1,9 @@
-<div class="ip-networks">
+<div class="list-table ip-networks">
   <ul class="ip-network-list" id="<%= list_id %>">
-    <li class="in-header">
-      <div class="in-header-1"><%= "Address and Netmask".t %></div>
-      <div class="in-header-2"><%= "ping".t %></div>
-      <div class="in-header-2"><%= "Delete".t %></div>
+    <li class="header">
+      <div class="first-column ip-address"><%= "Address and Netmask".t %></div>
+      <div class="ping"><%= "ping".t %></div>
+      <div class="minus"><%= "Delete".t %></div>
     </li>
     
     <%= render(:partial => "ip_network" , :collection => ip_networks ) %>

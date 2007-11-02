@@ -464,4 +464,9 @@ class InterfaceController < ApplicationController
   def networkManager
     os["network_manager"]
   end
+
+  def stylesheets
+    [ "borax-ip-network", "borax-nat-policy", "borax/list-table" ]
+  end
+
 end

@@ -2,78 +2,31 @@ div.ip-networks
 { 
   margin: 10px 0px 10px 0px;
   width: 523px;
-  overflow-y: scroll;
   height: 150px;
   }
 
-div.ip-networks ul.ip-network-list
-{ 
-  width: 100%;
-  list-style: none inside none;
-  margin: 0px;
-  padding: 0px;
- }
-
-ul.ip-network-list div
-{
-  float: left;
-  }
-
-ul.ip-network-list li
-{
-  overflow: auto;
-  }
-
-ul.ip-network-list li.in-header
-{ 
-  background-color: #C0C0C0;
-  text-align: center;
- }
-
-ul.ip-network-list div.in-header-1, div.in-column-1
+ul.ip-network-list div.ip-address
 { 
   width: 300px;
   }
 
-ul.ip-network-list div.in-header-2, div.in-column-2
+ul.ip-network-list div.ping
 { 
   width: 100px;
   }
 
-ul.ip-network-list div.in-header-3, div.in-column-3
+ul.ip-network-list div.minus
 { 
   width: 100px;
   }
 
-ul.ip-network-list li.ip-network
-{ 
-  background-color: #EEFFEE;
-  border: 1px solid #C0C0C0;
-  border-top: 0px;
- }
-
-li.ip-network div
-{ 
-  border-left: 1px solid #C0C0C0;
-  height: 20px;
-  }
-
-ul.ip-network-list div.in-column-1
-{ 
-  border-left: 0px none #C0C0C0;
-  }
-
-ul.ip-network-list div.in-column-2
-{
-  text-align: center;
-  }
-
-ul.ip-network-list div.in-column-3
+li.ip-network div.minus, li.ip-network div.ping
 { 
   text-align: center;
   }
 
-ul.ip-network-list div.in-column-3:hover
+
+li.ip-network div.minus:hover
 { 
   cursor: pointer;
   background-color: #E1EB26;  

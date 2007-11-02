@@ -60,7 +60,7 @@ class OSLibrary::Debian::DhcpManager < OSLibrary::DhcpManager
 
       ## Review : should this ignore the entry, because it isn't actually under the control
       ## of the net-alpaca.
-      unless overrideManager.writeable?( OSLibrary::Debian::DnsServerManager::ResolvConfFile )
+      unless overrideManager.writable?( OSLibrary::Debian::DnsServerManager::ResolvConfFile )
         ## Always ignore the DNS update if resolv.conf shouldn't be updated.
         dns = "ignore"
       end

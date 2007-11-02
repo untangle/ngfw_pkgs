@@ -2,77 +2,30 @@ div.nat-policies
 { 
   margin: 10px 0px 10px 0px;
   width: 543px;
-  overflow-y: scroll;
   height: 120px;
   }
 
-div.nat-policies ul.nat-policy-list
-{ 
-  width: 525px;
-  list-style: none inside none;
-  margin: 0px;
-  padding: 0px;
- }
-
-ul.nat-policy-list div
-{
-  float: left;
-  }
-
-ul.nat-policy-list li
-{
-  overflow: auto;
-  }
-
-ul.nat-policy-list li.np-header
-{ 
-  background-color: #C0C0C0;
-  text-align: center;
- }
-
-ul.nat-policy-list div.np-header-1, div.np-column-1
+ul.nat-policy-list div.ip-address
 { 
   width: 260px;
   }
 
-ul.nat-policy-list div.np-header-2, div.np-column-2
+ul.nat-policy-list div.new-source
 { 
   width: 160px;
   }
 
-ul.nat-policy-list div.np-header-3, div.np-column-3
+ul.nat-policy-list div.minus
 { 
   width: 100px;
   }
 
-ul.nat-policy-list li.nat-policy
-{ 
-  background-color: #EEFFEE;
-  border: 1px solid #C0C0C0;
-  border-top: 0px;
- }
-
-li.nat-policy div
-{ 
-  border-left: 1px solid #C0C0C0;
-  height: 20px;
-  }
-
-ul.nat-policy-list div.np-column-1
-{ 
-  border-left: 0px none #C0C0C0;
-  }
-
-ul.nat-policy-list div.np-column-2
-{
-  }
-
-ul.nat-policy-list div.np-column-3
+li.nat-policy div.minus
 { 
   text-align: center;
   }
 
-ul.nat-policy-list div.np-column-3:hover
+li.nat-policy div.minus:hover
 { 
   cursor: pointer;
   background-color: #E1EB26;  

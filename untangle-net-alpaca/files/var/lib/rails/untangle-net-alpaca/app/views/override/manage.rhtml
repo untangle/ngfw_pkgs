@@ -2,20 +2,7 @@
 
   <%= link_to_remote( "+".t, :url => { :action => :create_file_override } ) %>
 
-  <div id="file-overrides">
-    <ul id="file-override-list">
-      <li class="header">
-        <div class="header-1"><%= "Enabled".t %></div>
-        <div class="header-2"><%= "Writeable".t %></div>
-        <div class="header-3"><%= "File Path".t %></div>
-        <div class="header-4"><%= "Delete".t %></div>
-      </li>
-      
-      <%= render( :partial => "file_override", :collection => @fileOverrideList ) %>
-    </ul>
-
-    <%= sortable_element( "file-override-list" ) %> 
-  </div>
+  <%= render( :partial => "file_overrides" , :object => @fileOverrideList ) %>
 
   <%= submit_tag "Cancel".t %>
   <%= submit_tag "Save Changes".t %>

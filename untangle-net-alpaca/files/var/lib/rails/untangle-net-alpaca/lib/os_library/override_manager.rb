@@ -4,7 +4,7 @@ class OSLibrary::OverrideManager < Alpaca::OS::ManagerBase
     logger.debug "commit has nothing to do for the override manager"
   end
 
-  def writeable?( path )
+  def writable?( path )
     fileOverrideList = FileOverride.ordered_find( :all )
     
     fileOverrideList.each do |fo|
@@ -19,10 +19,10 @@ class OSLibrary::OverrideManager < Alpaca::OS::ManagerBase
       next if path.match( pattern ).nil?
 
       ## Return 
-      return fo.writeable
+      return fo.writable
     end
     
-    ## Default to writeable
+    ## Default to writable
     return true
   end
 
@@ -34,7 +34,7 @@ class OSLibrary::OverrideManager < Alpaca::OS::ManagerBase
   ## Helper method to only write out 
   ## a file, if allowed to.
   def write_file( path, *contents )
-    return nil unless writeable?( path )
+    return nil unless writable?( path )
     
     ## Write out the contentse of the file
     File.open( path, "w" ) { |f| f.print( contents ) }
@@ -42,7 +42,7 @@ class OSLibrary::OverrideManager < Alpaca::OS::ManagerBase
 
   ## Helper method to only remove a file if allowed to.
   def rm_file( path )
-    return nil unless writeable?( path )
+    return nil unless writable?( path )
     
     FileUtils.rm( path, :force => true )
   end

@@ -1,13 +1,13 @@
 <% rowId="ip-row-#{rand( 0x100000000 )}" %>
 <li id="<%= rowId  %>" class="ip-network">
   <%= hidden_field_tag( "networkIndices[]", rowId ) %>
-  <div class="in-column-1">
-    <%= text_field( "networks", rowId, { :value => "#{ip_network.ip} / #{ip_network.netmask}", :class => "in-table" } ) %>
+  <div class="first-column ip-address">
+    <%= text_field( "networks", rowId, { :value => "#{ip_network.ip} / #{ip_network.netmask}" } ) %>
   </div>
-  <div class="in-column-2">
+  <div class="ping">
     <%= check_box( "allowPing", rowId, { :checked => ip_network.allow_ping }, true, false ) %>
   </div>
-  <div class="in-column-3" onclick="removeListItem( '<%= rowId %>' )">
+  <div class="minus" onclick="removeListItem( '<%= rowId %>' )">
     <%= "-".t %>
   </div>
 </li>

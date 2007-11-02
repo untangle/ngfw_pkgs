@@ -1,9 +1,9 @@
-<div class="nat-policies">
+<div class="list-table nat-policies">
   <ul class="nat-policy-list" id="<%= list_id %>">
-    <li class="np-header">
-      <div class="np-header-1"><%= "Address and Netmask".t %></div>
-      <div class="np-header-2"><%= "Source Address".t %></div>
-      <div class="np-header-3"><%= "Delete".t %></div>
+    <li class="header">
+      <div class="first-column ip-address"><%= "Address and Netmask".t %></div>
+      <div class="new-source"><%= "Source Address".t %></div>
+      <div class="minus"><%= "Delete".t %></div>
     </li>
     
     <%= render(:partial => "nat_policy" , :collection => nat_policies ) %>
