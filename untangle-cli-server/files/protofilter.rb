@@ -56,7 +56,7 @@ class ProtoFilter < UVMFilterNode
     begin
       retryLogin {
         # Get tids of all protocol filters once and for all commands we might execute below.
-        tids = get_filternode_tids(get_node_name())
+        tids = get_filternode_tids(get_uvm_node_name())
         if empty?(tids) then return (args[0] == "snmp") ? nil : ERROR_NO_PROTOFILTER_NODES ; end
 
         begin
