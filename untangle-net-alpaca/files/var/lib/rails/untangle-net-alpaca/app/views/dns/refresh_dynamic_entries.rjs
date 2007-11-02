@@ -1,0 +1,1 @@
+page.replace( "dns-dynamic-entries", :partial => "dynamic_entries", :object => @dynamic_entries )

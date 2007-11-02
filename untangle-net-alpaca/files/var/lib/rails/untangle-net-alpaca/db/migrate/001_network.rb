@@ -140,6 +140,19 @@ class Network < ActiveRecord::Migration
       table.column :ip_address, :string
       table.column :description, :string
     end
+
+    ## DNS Server settings
+    create_table :dns_server_settings do |table|
+      table.column :enabled, :boolean
+      table.column :suffix, :string
+    end
+
+    create_table :dns_static_entries do |table|
+      table.column :position, :integer
+      table.column :hostname, :string
+      table.column :ip_address, :string
+      table.column :description, :string
+    end
   end
 
   def self.down
@@ -157,5 +170,7 @@ class Network < ActiveRecord::Migration
     drop_table :locale_settings
     drop_table :dhcp_server_settings
     drop_table :dhcp_static_entries
+    drop_table :dns_server_settings
+    drop_table :dns_static_entries
   end
 end

@@ -36,6 +36,7 @@ class OverrideController < ApplicationController
     ## Review : Internationalization
     return redirect_to( :action => "manage" ) if ( params[:commit] != "Save Changes".t )
 
+    
     fileOverrideList = []
 
     indices = params[:fileOverrides]
@@ -62,7 +63,7 @@ class OverrideController < ApplicationController
     ## Save all of the new ones
     fileOverrideList.each { |fo| fo.save }
 
-    ## Review : Internationalization
+    ## Review : should have some indication that is saved.
     return redirect_to( :action => "manage" )
   end
 end

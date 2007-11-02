@@ -1,17 +1,16 @@
 <% rowId="se-row-#{rand( 0x100000000 )}" %>
 <li id="<%= rowId  %>" class="static-entry">
-  <%= hidden_field_tag( "staticEntries[]", rowId ) %>
-  <div class="se-column-1">
-    <%= text_field( "hostname", rowId, { :value => "", :class => "in-table" } ) %>
+  <%= hidden_field_tag( "static_entries[]", rowId ) %>
+  <div class="first-column ip-address">
+    <%= text_field( "ip_address", rowId, { :value => static_entry.ip_address } ) %>
   </div>
-  <div class="se-column-2">
-    <%= text_field( "address", rowId, { :value => "", :class => "in-table" } ) %>
+  <div class="hostname">
+    <%= text_field( "hostname", rowId, { :value => static_entry.hostname } ) %>
   </div>
-  <div class="se-column-3">
-    <%= text_field( "description", rowId, { :value => "", :class => "in-table" } ) %>
+  <div class="description">
+    <%= text_field( "description", rowId, { :value => static_entry.description } ) %>
   </div>
-  <div class="se-column-4">
+  <div class="minus" onclick="DnsServerManager.removeStaticEntry( '<%= rowId %>' )">
     -
   </div>
-
 </li>

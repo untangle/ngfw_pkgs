@@ -23,6 +23,38 @@ class DhcpController < ApplicationController
     refresh_dynamic_entries
   end
 
+  def save
+    ## Review : Internationalization
+    return redirect_to( :action => "manage" ) if ( params[:commit] != "Save Changes".t )
+
+    dhcp_server_settings = DhcpServerSettings.find( :first )
+    dhcp_server_settings = DhcpServerSettings.new if dhcp_server_settings.nil?
+    dhcp_server_settings.update_attributes( params[:dhcp_server_settings] )
+    dhcp_server_settings.save
+    
+    static_entry_list = []
+    indices = params[:static_entries]
+    mac_addresses = params[:mac_address]
+    ip_addresses = params[:ip_address]
+    descriptions = params[:description]
+
+    position = 0
+    unless indices.nil?
+      indices.each do |key,value|
+        dse = DhcpStaticEntry.new
+        dse.mac_address, dse.ip_address, dse.description = mac_addresses[key], ip_addresses[key], descriptions[key]
+        dse.position, position = position, position + 1
+        static_entry_list << dse
+      end
+    end
+
+    DhcpStaticEntry.destroy_all
+    static_entry_list.each { |dse| dse.save }
+    
+    ## Review : should have some indication that is saved.
+    return redirect_to( :action => "manage" )
+  end
+
   def refresh_dynamic_entries
     ## Retrieve all of the dynamic entries from the DHCP server manager
     @dynamic_entries = os["dhcp_server_manager"].dynamic_entries    

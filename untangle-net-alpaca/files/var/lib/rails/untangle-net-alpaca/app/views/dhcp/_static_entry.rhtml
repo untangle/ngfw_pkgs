@@ -1,6 +1,6 @@
 <% rowId="se-row-#{rand( 0x100000000 )}" %>
 <li id="<%= rowId  %>" class="static-entry">
-  <%= hidden_field_tag( "staticEntries[]", rowId ) %>
+  <%= hidden_field_tag( "static_entries[]", rowId ) %>
   <div class="mac-address first-column">
     <%= text_field( "mac_address", rowId, { :value => static_entry.mac_address } ) %>
   </div>

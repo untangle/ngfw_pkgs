@@ -6,7 +6,7 @@ class OSLibrary::Debian::DhcpServerManager < OSLibrary::DhcpServerManager
   def register_hooks
   end
 
-  ## Same entry
+  ## Sample entry
   ## 1193908192 00:0e:0c:a0:dc:a9 10.0.0.112 gobbleswin 01:00:0e:0c:a0:dc:a9
   def dynamic_entries
     entries = []

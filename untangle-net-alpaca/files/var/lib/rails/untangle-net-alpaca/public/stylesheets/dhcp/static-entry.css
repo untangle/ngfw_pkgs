@@ -6,22 +6,22 @@ div.dhcp-static-entries
   height: 150px;
   }
 
-ul.dhcp-static-entry-list div.mac-address
+ul#dhcp-static-entry-list div.mac-address
 { 
   width: 160px;
  }
 
-ul.dhcp-static-entry-list div.ip-address
+ul#dhcp-static-entry-list div.ip-address
 { 
   width: 140px;
  }
 
-ul.dhcp-static-entry-list div.description
+ul#dhcp-static-entry-list div.description
 {
   width: 200px;
   }
 
-ul.dhcp-static-entry-list div.minus
+ul#dhcp-static-entry-list div.minus
 { 
   width: 100px;
   text-align: center;

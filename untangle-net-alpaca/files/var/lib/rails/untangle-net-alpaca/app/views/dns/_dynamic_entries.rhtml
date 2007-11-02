@@ -1,8 +1,8 @@
-<div class="dynamic-entries">
-  <ul class="dynamic-entry-list" id="<%= 1024 %>">
-    <li class="de-header">
-      <div class="de-header-1"><%= "Hostname".t %></div>
-      <div class="de-header-2"><%= "IP Address".t %></div>
+<div class="list-table" id="dns-dynamic-entries">
+  <ul id="dns-dynamic-entry-list">
+    <li class="header">
+      <div class="first-column ip-address"><%= "IP Address".t %></div>
+      <div class="hostname"><%= "Hostname".t %></div>
     </li>
     
     <%= render(:partial => "dynamic_entry" , :collection => dynamic_entries ) %>

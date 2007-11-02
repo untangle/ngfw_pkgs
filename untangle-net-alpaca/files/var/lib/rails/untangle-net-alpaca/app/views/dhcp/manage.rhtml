@@ -5,18 +5,18 @@
     <fieldset>
       <ul class="text-fields">
         <li>
-          <label for="dhcp[enabled]"><%= "Enabled:".t %></label>
-          <%= check_box( "dhcp", "enabled", { :checked => @dhcp_server_settings.enabled }, true, false ) %>
+          <label for="dhcp_server_settings[enabled]"><%= "Enabled:".t %></label>
+          <%= check_box( "dhcp_server_settings", "enabled", { :checked => @dhcp_server_settings.enabled }, true, false ) %>
         </li>
 
         <li>
-          <label for="dhcp[start]"><%= "Start:".t %></label>
-          <%= text_field( "dhcp", "start", { :value => @dhcp_server_settings.start } ) %>
+          <label for="dhcp_server_settings[start]"><%= "Start:".t %></label>
+          <%= text_field( "dhcp_server_settings", "start" ) %>
         </li>
 
         <li>
-          <label for="dhcp[end]"><%= "End:".t %></label>
-          <%= text_field( "dhcp", "end", { :value => @dhcp_server_settings.end } ) %>
+          <label for="dhcp_server_settings[end]"><%= "End:".t %></label>
+          <%= text_field( "dhcp_server_settings", "end" ) %>
         </li>
       </ul>
     </fieldset>
@@ -29,5 +29,9 @@
     <%= link_to_remote( "Refresh".t, :url => { :action => :refresh_dynamic_entries } ) %>
 
     <%= render( :partial => "dynamic_entries" , :object => @dynamic_entries ) %>
+
+    <%= submit_tag "Cancel".t %>
+    <%= submit_tag "Save Changes".t %>
+
   <% end -%>
 </div>

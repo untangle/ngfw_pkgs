@@ -1,6 +1,7 @@
 div.list-table
 { 
   overflow-y: scroll;
+  background-color: #EEFFEE;
  }
 
 div.list-table ul

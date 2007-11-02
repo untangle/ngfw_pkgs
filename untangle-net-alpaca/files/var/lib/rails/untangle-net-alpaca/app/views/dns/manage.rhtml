@@ -1,28 +1,30 @@
 <div>
-  <h1><%= "Dns Server Configuration".t %></h1>
+  <h1><%= "DNS Server Configuration".t %></h1>
 
   <% form_tag( :action => 'save' ) do -%>
     <fieldset>
       <ul class="text-fields">
         <li>
-          <label for="dns[enabled]"><%= "Enabled:".t %></label>
-          <%= check_box( "dns", "enabled", { :checked => true }, true, false ) %>
+          <label for="dns_server_settings[enabled]"><%= "Enabled:".t %></label>
+          <%= check_box( "dns_server_settings", "enabled", { :checked => true }, true, false ) %>
         </li>
 
         <li>
-          <label for="dns[suffix]"><%= "Domain Name Suffix:".t %></label>
-          <%= text_field( "dns", "suffix", { :value => "", :size => 30 } ) %>
+          <label for="dns_server_settings[suffix]"><%= "Domain Name Suffix:".t %></label>
+          <%= text_field( "dns_server_settings", "suffix" ) %>
         </li>
       </ul>
-
-      <h2><%= "Static DNS Entries".t %></h2>
-      +
-      <%= render( :partial => "static_entries" , :object => @static_entries ) %>
-
-      <h2><%= "Automatic DNS Entries".t %></h2>
-      Refresh
-      <%= render( :partial => "dynamic_entries" , :object => @dynamic_entries ) %>
     </fieldset>
-  <% end -%>
 
+    <h2><%= "Static DNS Entries".t %></h2>
+    <%= link_to_remote( "+".t, :url => { :action => :create_static_entry } ) %>
+    <%= render( :partial => "static_entries" , :object => @static_entries ) %>
+
+    <h2><%= "Automatic DNS Entries".t %></h2>
+    <%= link_to_remote( "Refresh".t, :url => { :action => :refresh_dynamic_entries } ) %>
+    <%= render( :partial => "dynamic_entries" , :object => @dynamic_entries ) %>
+
+    <%= submit_tag "Cancel".t %>
+    <%= submit_tag "Save Changes".t %>
+  <% end -%>
 </div>
