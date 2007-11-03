@@ -29,9 +29,9 @@ class Firewall < UVMFilterNode
     
     def initialize
         @diag = Diag.new(DEFAULT_DIAG_LEVEL)
-	@diag.if_level(3) { puts! "Initializing Fire Wall..." }
+	@diag.if_level(3) { puts! "Initializing #{get_node_name()}..." }
         super
-	@diag.if_level(3) { puts! "Done initializing Fire Wall..." }
+	@diag.if_level(3) { puts! "Done initializing #{get_node_name()}..." }
     end
 
     #
@@ -87,10 +87,10 @@ class Firewall < UVMFilterNode
 - firewall <#X|TID> rules
     -- Display rule list for firewall #X|TID
 - firewall <#X|TID> rules add enable action log traffic_type direction src-addr dst-addr src-port dst-port category description
-    -- Add item to rule-list by type (or update) with specified block and log settings.
+    -- Add item to rules list by type (or update) with specified block and log settings.
 - firewall <#X|TID> rules remove [rule-number]
     -- Remove item '[rule-number]' from rule list.
-- firewall <#X|TID> settings default-action <new-default-action>
+- firewall <#X|TID> settings defaultaction <new-default-action>
     -- Display or update default-actions settings for firewall #X|TID
 - firewall <#X> stats
     -- Display firewall #X statistics in human readable format

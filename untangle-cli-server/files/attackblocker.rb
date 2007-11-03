@@ -29,9 +29,9 @@ class Attackblocker < UVMFilterNode
 
     def initialize
         @diag = Diag.new(DEFAULT_DIAG_LEVEL)
-	@diag.if_level(3) { puts! "Initializing Attack Blocker..." }
+	@diag.if_level(3) { puts! "Initializing #{get_node_name()}..." }
         super
-	@diag.if_level(3) { puts! "Done initializing Attack Blocker..." }
+	@diag.if_level(3) { puts! "Done initializing #{get_node_name()}..." }
     end
 
     #

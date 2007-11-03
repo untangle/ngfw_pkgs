@@ -32,9 +32,9 @@ class Webfilter < UVMFilterNode
 
     def initialize
         @diag = Diag.new(DEFAULT_DIAG_LEVEL)
-	@diag.if_level(3) { puts! "Initializing WebFilter..." }
+	@diag.if_level(3) { puts! "Initializing #{get_node_name()}..." }
         super
-	@diag.if_level(3) { puts! "Done initializing WebFilter..." }
+	@diag.if_level(3) { puts! "Done initializing #{get_node_name()}..." }
     end
 
     #
@@ -85,27 +85,27 @@ class Webfilter < UVMFilterNode
                 help_text = <<-WEBFILTER_HELP
 
 - webfilter -- enumerate all web filters running on effective #{BRAND} server.
-- webfilter <#X> block-list [item-type:cats|urls|mime|files]
-    -- Display block-list of item-type for webfilter #X
-- webfilter <#X> block-list add [item-type:cat|url|mime|file] [item] <block:true|false> <log:true|false> <description>
-    -- Add item to block-list by type (or update) with specified block and log settings.
-- webfilter <#X> block-list remove [item-type:cat|url|mime|file] [item]
-    -- Remove item from block-list by type (or update) with specified block and log settings.
-- webfilter <#X> pass-list [item-type:urls|clients]
-    -- Display pass-list items
-- webfilter <#X> pass-list add [item-type:url|client] [item:url|ip] [pass:true|false] <description>
-    -- Add item to pass-list with specified settings.
-- webfilter <#X> pass-list remove [item-type:url|client] [item:url|ip]
-    -- Remove item from pass-list with specified settings.
+- webfilter <#X> blocklist [item-type:cats|urls|mime|files]
+    -- Display blocklist of item-type for webfilter #X
+- webfilter <#X> blocklist add [item-type:cat|url|mime|file] [item] <block:true|false> <log:true|false> <description>
+    -- Add item to blocklist by type (or update) with specified block and log settings.
+- webfilter <#X> blocklist remove [item-type:cat|url|mime|file] [item]
+    -- Remove item from blocklist by type (or update) with specified block and log settings.
+- webfilter <#X> passlist [item-type:urls|clients]
+    -- Display passlist items
+- webfilter <#X> passlist add [item-type:url|client] [item:url|ip] [pass:true|false] <description>
+    -- Add item to passlist with specified settings.
+- webfilter <#X> passlist remove [item-type:url|client] [item:url|ip]
+    -- Remove item from passlist with specified settings.
 - webfilter <#X> stats
     -- Display webfilter #X statistics in human readable format
 - webfilter snmp
     -- Display webfilter #X statistics in snmp compliant format (getnext)
                 WEBFILTER_HELP
                 return help_text
-            when "block-list"
+            when "blocklist"
                 return manage_block_list(tid, args)
-            when "pass-list"
+            when "passlist"
                 return manage_pass_list(tid, args)
             when "stats", "snmp"
                 return get_statistics(tid, args)

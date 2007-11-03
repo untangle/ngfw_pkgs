@@ -32,9 +32,9 @@ class ProtoFilter < UVMFilterNode
 
   def initialize
     @diag = Diag.new(DEFAULT_DIAG_LEVEL)
-    @diag.if_level(3) { puts! "Initializing Protocol Filter..." }
+    @diag.if_level(3) { puts! "Initializing #{get_node_name()}..." }
     super
-    @diag.if_level(3) { puts! "Done initializing Protocol Filter..." }
+    @diag.if_level(3) { puts! "Done initializing #{get_node_name()}..." }
   end
   
   def get_uvm_node_name()
@@ -175,18 +175,6 @@ HELP
     settings = node.getSettings
     settings.setPatterns(patterns)
     node.setSettings(settings)
-  end
-
-  def validate_bool(var, varname)
-    unless ["true", "false"].include?(var)
-      raise "Error: invalid value for '#{varname}' - valid values are 'true' and 'false'."
-    end
-  end
-
-  def validate_range(var, range, varname)
-    unless range === var
-      raise "Error: invalid value for '#{varname}' - valid values are #{range.min}..#{range.max}"
-    end
   end
 
   def update_protocol_helper(tid, pos, category, protocol, block, log, description, signature)

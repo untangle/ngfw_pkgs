@@ -49,12 +49,14 @@ class UVMFilterNode
             @diag.if_level(2) { puts! "Initializing UVMFilterNode..." }
             
             begin
-                @@filternode_lock.synchronize {
-                    if @@factory.nil?
-                        @@factory = com.untangle.uvm.client.RemoteUvmContextFactory.factory
-                        connect
-                    end
-                } 
+                if @@factory.nil?
+                    @@filternode_lock.synchronize {
+                        if @@factory.nil?
+                            @@factory = com.untangle.uvm.client.RemoteUvmContextFactory.factory
+                            connect
+                        end
+                    }
+                end
             rescue Exception => ex
                 puts! "Error: unable to connect to Remote UVM Context Factory; UVM server may not be running -- " + ex
                 raise
@@ -299,6 +301,8 @@ class UVMFilterNode
                     stats << "Node to Client (bytes, chunks): #{t2cb}, #{t2cc}\n"
                     stats << "Server to Node (bytes, chunks): #{s2tb}, #{s2tc}\n"
                     stats << "Node to Server (bytes, chunks): #{t2sb}, #{t2sc}\n"
+                    stats << "Client to Server (bytes, chunks): #{c2tb + t2sb}, #{c2tc + t2sc}\n"                    
+                    stats << "Server to Client (bytes, chunks): #{s2tb + t2cb}, #{s2tc + t2cc}\n"                    
                     stats << "Counters: #{counters.join(',')}\n"
                     stats << "Dates (start, last config, last activity): #{sdate}, #{lcdate}, #{ladate}\n"
                 end
@@ -388,6 +392,22 @@ class UVMFilterNode
           @diag.if_level(2) { puts! "#{ret}" }
           return ret
         end
+        
+    protected
+        def validate_bool(var, varname)
+          unless ["true", "false"].include?(var)
+            raise "Error: invalid value for '#{varname}' - valid values are 'true' and 'false'."
+          end
+          var == "true"
+        end
+      
+    protected
+        def validate_range(var, range, varname)
+          unless range === var
+            raise "Error: invalid value for '#{varname}' - valid values are #{range.min}..#{range.max}"
+          end
+        end
+
 
 end # UVMFilterNode
 
