@@ -1,6 +1,6 @@
 <% rowId = "nat-policy-row-#{rand( 0x100000000 )}" %>
 <li id="<%= rowId  %>" class="nat-policy">
-  <div class="first-column ip-address">
+  <div class="ip-address">
     <%= hidden_field_tag( "natIndices[]", rowId ) %>
     <%= text_field_tag( "natNetworks[#{rowId}]", "#{nat_policy.ip} / #{nat_policy.netmask}", :class => "in-table" ) %>
   </div>

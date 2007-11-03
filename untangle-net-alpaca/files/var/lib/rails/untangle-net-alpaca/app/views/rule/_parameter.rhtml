@@ -1,6 +1,6 @@
 <% rowId="ip-row-#{rand( 0x100000000 )}" %>
 <li id="<%= rowId  %>" class="rule">
-  <div class="type first-column">
+  <div class="type">
     <%= hidden_field_tag( "ruleList[]", "random"  ) %>
     <%= select_tag( "ruleType[]", options_for_select( @filter_types ), 
     { :onchange => "RuleBuilder.changeType( '#{rowId}' )" } ) %>

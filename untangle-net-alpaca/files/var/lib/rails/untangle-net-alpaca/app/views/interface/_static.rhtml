@@ -12,17 +12,17 @@
         <ul class="text-fields">
           <li>
             <label for="static[default_gateway]"><%= "Default Gateway:".t %></label>
-            <%= text_field( "static", "default_gateway", { :value => "#{static.default_gateway}", :size => 18 } ) %>
+            <%= text_field( "static", "default_gateway", { :value => "#{static.default_gateway}" } ) %>
           </li>
         
           <li>
             <label for="static[dns_1]"><%= "Primary DNS Server:".t %></label>
-            <%= text_field( "static", "dns_1", { :value => "#{static.dns_1}", :size => 18 } ) %>
+            <%= text_field( "static", "dns_1", { :value => "#{static.dns_1}" } ) %>
           </li>
         
           <li>
             <label for="static[dns_2]"><%= "Secondary DNS Server:".t %></label>
-            <%= text_field( "static", "dns_2", { :value => "#{static.dns_2}", :size => 18 } ) %>
+            <%= text_field( "static", "dns_2", { :value => "#{static.dns_2}" } ) %>
           </li>
         </ul>
       </fieldset>
@@ -43,7 +43,7 @@
       <ul class="text-fields">
         <li>
           <label for="static[mtu]"><%= "MTU:".t %></label>
-          <%= text_field( "static", "mtu", { :value => "#{static.mtu}", :size => 30 } ) %>
+          <%= text_field( "static", "mtu", { :value => "#{static.mtu}" } ) %>
         </li>
         
         

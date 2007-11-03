@@ -3,17 +3,17 @@
   <% form_tag( :action => 'intf_dynamic_save', :id => interface ) do -%>
      <div class="text-fields"> 
        <p><label for="dynamic[ip]"><%= "IP Address:".t %></label>
-       <%= text_field( "dynamic", "ip", { :size => 18 } ) %></p>
+       <%= text_field( "dynamic", "ip" ) %></p>
        <p><label for="dynamic[netmask]"><%= "Netmask:".t %></label>
-       <%= text_field( "dynamic", "netmask", { :size => 18 } ) %></p>
+       <%= text_field( "dynamic", "netmask" ) %></p>
 
        <% if interface.wan %>
          <p><label for="dynamic[default_gateway]"><%= "Default Gateway:".t %></label>
-         <%= text_field( "dynamic", "default_gateway", { :size => 18 } ) %></p>
+         <%= text_field( "dynamic", "default_gateway" ) %></p>
          <p><label for="dynamic[dns_1]"><%= "Primary DNS Server:".t %></label>
-         <%= text_field( "dynamic", "dns_1", { :size => 18 } ) %></p>
+         <%= text_field( "dynamic", "dns_1" ) %></p>
          <p><label for="dynamic[dns_2]"><%= "Secondary DNS Server:".t %></label>
-         <%= text_field( "dynamic", "dns_2", { :size => 18 } ) %></p>
+         <%= text_field( "dynamic", "dns_2" ) %></p>
        <% else %>
          <%= hidden_field( "dynamic", "default_gateway", { :value => "" } ) %>
          <%= hidden_field( "dynamic", "dns_1", { :value => "" } ) %>
