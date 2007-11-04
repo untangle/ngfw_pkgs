@@ -200,14 +200,15 @@ class UVMFilterNode
             
             # Validate arguments.
             if args[0]
-                if (/^-[ng]$/ =~ args[0]) == nil
+                if (args[0] =~ /^-[ng]$/) == nil
                     @diag.if_level(1) { puts "Error: invalid get statistics argument '#{args[0]}"}
                     return nil
-                elsif !args[1] || !(/(\.\d+)+/ =~ args[1])
+                elsif !args[1] || !(args[1] =~ /(\.\d+)+/)
                     @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[1] ? args[1] : 'missing value'}" }
                     return nil
-                elsif (/^#{mib_root}/ =~ args[1]) == nil 
+                elsif (args[1] =~ /^#{mib_root}/) == nil 
                     @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[1]} is not a filter node OID." ; mib_root.inspect }
+                    return nil
                 end
             end
             
@@ -215,10 +216,12 @@ class UVMFilterNode
                 stats = ""
                 if args[0]
                     # Get the effective OID to respond to
-                    oid = (args[0] == '-g') ? args[1] : oid_next(mib_root, args[1], tid)
-                    return nil unless oid[0]
-                    tid = oid[1]
-                    oid = oid[0]
+                    if (args[0] == '-g') # snmp get
+                        oid, tid = args[1], get_true_tid_wrt_oid(mib_root,args[1])
+                    else # args[0] == '-n' snmp get Next
+                        oid, tid = *oid_next(mib_root, args[1], tid)
+                    end
+                    return nil unless oid
                     
                     # Get the effective node stats, either from the cache or from the UVM.
                     # (Must be after we have the OID because the TID may be nil and we'll need something to cache on.)
@@ -315,6 +318,20 @@ class UVMFilterNode
             end
         end
     
+        # Derive a true TID from a given OID by convert
+        # it from a ruby string fragment into true JRuby object.
+        def get_true_tid_wrt_oid(mib_root, oid)
+            mib_pieces = mib_root.split('.')
+            oid_pieces = oid.split('.')
+            cur_tid = oid_pieces[mib_pieces.length]
+            tids = get_filternode_tids(get_uvm_node_name())
+            tid = nil
+            tid = tids.detect { |t|
+                t.to_s == cur_tid
+            }
+            return tid
+        end
+
         def oid_next(mib_root, oid, tid)
             @diag.if_level(3) { puts! "oid_next: #{mib_root}, #{oid}, #{tid ? tid : '<no tid>'}" }
             orig_tid = tid    
@@ -328,16 +345,8 @@ class UVMFilterNode
                 else
                     # If oid != mib_root and !tid, then we're in the middle of walking the
                     # entire mib subtree.  Since we the only state we can count on is the
-                    # incoming OID, pick up curent TID from incoming OID and then convert
-                    # it from a ruby string fragment into true TID (JRuby) object.
-                    mib_pieces = mib_root.split('.')
-                    oid_pieces = oid.split('.')
-                    cur_tid = oid_pieces[mib_pieces.length]
-                    tids = get_filternode_tids(get_uvm_node_name())
-                    tid = nil
-                    tid = tids.detect { |t|
-                        t.to_s == cur_tid
-                    }
+                    # incoming OID, pick up curent TID from incoming OID.
+                    tid = get_true_tid_wrt_oid(mib_root, oid)
                 end
                 @diag.if_level(3) { puts! "oid_next: full subtree walk - effective tid=#{tid}" }                    
             end
