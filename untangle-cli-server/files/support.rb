@@ -63,9 +63,17 @@ class Support < UVMFilterNode
     def cmd_help(tid, *args)
       return <<-HELP
 - support allow access [true|false]
-    -- Query the value of Support Access Restrictions "Allow" setting - change value to [true|false] if provided.
+    -- Query the value of Support Access Restrictions "Allow" setting - change value to [true|false], if provided.
 - support allow send [true|false]
-    -- Query the value of Support Access Restrictions "Send" setting - change value to [true|false] if provided.
+    -- Query the value of Support Access Restrictions "Send" setting - change value to [true|false], if provided.
+- support protocol weboverride [true|false]
+    -- Query the value of Support: Manual Protocol: Web Override setting - change value to [true|false], if provided.
+- support protocol longuris [true|false] [max-uri-length]
+    -- Query the value of Support: Manual Protocol: Long Urls setting - change value to [true|false] and set [max-uri-length], if provided.
+- support protocol longheaders [true|false] [max-header-length]
+    -- Query the value of Support: Manual Protocol: Long Headers setting - change value to [true|false] and set [max-header-length], if provided.
+- support protocol nonhttp [true|false]
+    -- Query the value of Support: Manual Protocol: Non-HTTP Blocking setting - change value to [true|false], if provided.
     HELP
     end
 
@@ -73,6 +81,26 @@ class Support < UVMFilterNode
       allow_access(*args)
     end
   
+    def cmd_allow_send(*args)
+      allow_send(*args)
+    end
+
+    def cmd_protocol_weboverride(*args)
+      protocol_weboverride(*args)
+    end
+
+    def cmd_protocol_longuris(*args)
+      protocol_longuris(*args)
+    end
+
+    def cmd_protocol_longheaders(*args)
+      protocol_longheaders(*args)
+    end
+
+    def cmd_protocol_nonhttp(*args)
+      protocol_nonhttp(*args)
+    end
+
     def allow_access(*args)
       settings = @@uvmRemoteContext.networkManager().getAccessSettings()
       if args.length > 0
@@ -80,13 +108,139 @@ class Support < UVMFilterNode
           settings.setIsSupportEnabled(validate_bool(args[0], "access"))
           @@uvmRemoteContext.networkManager().setAccessSettings(settings)
         rescue Exception => ex
-          @diag.if_level(3) { puts! ex; puts! ex.backtrace }          
-          return ex
+          msg = "Error: unable to set support access to '#{args[0]}'"
+          @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
+          return msg + ": #{ex}"
         end
       end
-      msg = "Support access is #{ settings.getIsSupportEnabled() ? 'allowed.' : 'not allowed.'}"
+      msg = "Support access is #{ settings.getIsSupportEnabled() ? 'allowed.' : 'disallowed.'}"
+      @diag.if_level(3) { puts! msg }          
+      return msg
+    end
+
+    def allow_send(*args)
+      settings = @@uvmRemoteContext.networkManager().getMiscSettings()
+      if args.length > 0
+        begin
+          settings.setIsExceptionReportingEnabled(validate_bool(args[0], "send"))
+          @@uvmRemoteContext.networkManager().setMiscSettings(settings)
+        rescue Exception => ex
+          msg = "Error: unable to set #{BRAND} reporting to '#{args[0]}'"
+          @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
+          return msg + ": #{ex}"
+        end
+      end
+      msg = "Sending of #{BRAND} Server data to #{BRAND} is #{ settings.getIsExceptionReportingEnabled() ? 'allowed.' : 'disallowed.'}"
+      @diag.if_level(3) { puts! msg }          
+      return msg
+    end
+
+    def get_http_casing
+      tids = get_filternode_tids("untangle-casing-http")
+      if tids.empty?
+        msg = "Error: there is no HTTP casing running on the effective UVM server - this is unexpected: contact techical support."
+        @diag.if_level(3) { puts! msg }
+        return msg
+      end
+      node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tids[0])
+      node_ctx.node()
+    end
+    
+    def protocol_weboverride(*args)
+      node = get_http_casing()
+      if args.length > 0
+        begin
+          settings = node.getSettings()
+          settings.setEnabled(validate_bool(args[0], "weboverride"))
+          node.setSettings(settings)
+        rescue Exception => ex
+          msg = "Error: unable to set web override to '#{args[0]}'"
+          @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
+          return msg + ": #{ex}"
+        end
+      end
+      settings = node.getSettings()
+      msg = "Processing of web traffic is #{ settings.isEnabled() ? 'enabled.' : 'disabled.'}"
+      @diag.if_level(3) { puts! msg }          
+      return msg
+    end
+    
+    def protocol_longuris(*args)
+      node = get_http_casing()
+      if args.length > 0
+        begin
+          settings = node.getSettings()
+          settings.setBlockLongUris(!validate_bool(args[0], "longuris"))
+          if args.length > 1
+            begin
+              max_uri = Integer(args[1])
+              settings.setMaxUriLength(max_uri)
+            rescue Exception => ex
+              msg = "Error: invalid maximum URI length '#{args[1]}'"
+              @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
+              return msg + ": #{ex}"
+            end
+          end
+          node.setSettings(settings)
+        rescue Exception => ex
+          msg = "Error: unable to set long URIs to '#{args[0]}'"
+          @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
+          return msg + ": #{ex}"
+        end
+      end
+      settings = node.getSettings()
+      msg = "Processing of long URIs is #{ settings.getBlockLongUris() ? 'diabled' : 'enabled'} (#{settings.getMaxUriLength()})" 
+      @diag.if_level(3) { puts! msg }          
+      return msg
+    end
+
+    def protocol_longheaders(*args)
+      node = get_http_casing()
+      if args.length > 0
+        begin
+          settings = node.getSettings()
+          settings.setBlockLongHeaders(!validate_bool(args[0], "longheaders"))
+          if args.length > 1
+            begin
+              max_hdr = Integer(args[1])
+              settings.setMaxHeaderLength(max_hdr)
+            rescue Exception => ex
+              msg = "Error: invalid maximum header length '#{args[1]}'"
+              @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
+              return msg + ": #{ex}"
+            end
+          end
+          node.setSettings(settings)
+        rescue Exception => ex
+          msg = "Error: unable to set long headers to '#{args[0]}'"
+          @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
+          return msg + ": #{ex}"
+        end
+      end
+      settings = node.getSettings()
+      msg = "Processing of long headers is #{ settings.getBlockLongHeaders() ? 'diabled' : 'enabled'} (#{settings.getMaxHeaderLength()})" 
+      @diag.if_level(3) { puts! msg }          
+      return msg
+    end
+    
+    def protocol_nonhttp(*args)
+      node = get_http_casing()
+      if args.length > 0
+        begin
+          settings = node.getSettings()
+          settings.setNonHttpBlocked(!validate_bool(args[0], "nonhttp"))
+          node.setSettings(settings)
+        rescue Exception => ex
+          msg = "Error: unable to set non-http blocking to '#{args[0]}'"
+          @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
+          return msg + ": #{ex}"
+        end
+      end
+      settings = node.getSettings()
+      msg = "Processing of non-http traffic is #{ settings.isNonHttpBlocked() ? 'diabled.' : 'enabled.'}" 
       @diag.if_level(3) { puts! msg }          
       return msg
     end
 
 end
+
