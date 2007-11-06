@@ -15,110 +15,31 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-require 'java'
-require 'proxy'
-require 'debug'
+require 'remoteapp'
 
-require 'common'
-include NUCLICommon
-require 'util'
-include NUCLIUtil
-
-require 'thread'
-
-class UVMFilterNode
-
-    include Proxy
+class UVMFilterNode < UVMRemoteApp
 
     protected
 
         UVM_FILTERNODE_MIB_ROOT = ".1.3.6.1.4.1.2021.6971"
         
-        DefaultTimeoutMillis = 600000
-        
-        # @@filternode_lock guards @@factory AND @@uvmReoteContext
-        @@filternode_lock = Mutex.new
-        @@factory = nil
-        @@uvmRemoteContext = nil
-
-        @@last_subclass = nil 
-  
     public
         def initialize
             @diag = Diag.new(DEFAULT_DIAG_LEVEL)
             @diag.if_level(2) { puts! "Initializing UVMFilterNode..." }
             
-            begin
-                if @@factory.nil?
-                    @@filternode_lock.synchronize {
-                        if @@factory.nil?
-                            @@factory = com.untangle.uvm.client.RemoteUvmContextFactory.factory
-                            connect
-                        end
-                    }
-                end
-            rescue Exception => ex
-                puts! "Error: unable to connect to Remote UVM Context Factory; UVM server may not be running -- " + ex
-                raise
-            end
-            
+            super
+    
             @stats_cache = {}
             @stats_cache_lock = Mutex.new
 
-            ## This just guarantees that all of the connections are terminated.
-            at_exit { @@filternode_lock.synchronize { disconnect } }
-    
             @diag.if_level(2) { puts! "Done initializing UVMFilterNode..." }
-        end
-
-        def self.inherited(subclass)
-          @@last_subclass = subclass
-        end
-
-        def self.last_subclass
-          @@last_subclass
         end
 
     public
         # If derived class does not override this method then its not a valid filter node.
         def execute(args)
             raise FilterNodeAPIVioltion, "Filter nodes does not implement the required 'execute' method"
-        end
-
-    protected
-        # Caller MUST have obtained @@filternode_lock before calling this method.
-        def connect
-          ## Just in case
-          begin
-            @@factory.logout 
-          rescue
-            ## ignore errors
-          end
-
-          # TODO: Add exception handling.
-          login
-
-          ## Register the remote context as a proxy.
-          register @@uvmRemoteContext
-          true
-        end
-
-    protected
-        def login
-            @@uvmRemoteContext = @@factory.systemLogin( DefaultTimeoutMillis )
-        end
-        
-    protected
-        # Caller MUST have obtained @@filternode_lock before calling this method.
-        def disconnect
-          return if @@uvmRemoteContext.nil?
-          begin
-            @@factory.logout
-          rescue
-            ## ignore errors
-          end
-          @@uvmRemoteContext = nil
-          true
         end
 
     protected
