@@ -70,16 +70,7 @@ class ProtoFilter < UVMFilterNode
         end
         @diag.if_level(3) { puts! "TID = #{tid}, command = #{cmd}" }
 
-        # TODO: integrate in dispatcer?
-        # ***Ken asks... Seems like an debatable separation of concerns for this to be in the dispatcher.
-        # Why not as a common method in UVMFilterNode???   I'll go ahead and refactor it into UVMFilterNode
-        # however if you disagree Catalin feel free to push back and propose or implement an alternative
-        # solution - I'm very open minded :)
-        if cmd.nil? then
-          return list_filternodes(tids)
-        else
-          return dispatch_cmd(args.empty? ? [cmd, tid] : [cmd, tid, *args])
-        end
+        return dispatch_cmd(args.empty? ? [cmd, tid] : [cmd, tid, *args])
       }
     rescue Exception => ex
       @diag.if_level(3) { puts! ex; puts! ex.backtrace }
@@ -87,6 +78,12 @@ class ProtoFilter < UVMFilterNode
     end    
   end
 
+  # Default command: list all protocol filters
+  # TODO: we should consider moving this method to UVMFilterNode class
+  def cmd_(*args)
+    return list_filternodes()
+  end
+  
   # Add a protocol to the list
   def add_protocol(tid, category, protocol, block, log, description, signature)
     update_protocol_helper(tid, -1, category, protocol, block, log, description, signature)

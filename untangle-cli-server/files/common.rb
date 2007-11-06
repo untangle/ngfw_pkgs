@@ -63,8 +63,8 @@ module CmdDispatcher
     cmd_name = args.empty? ? "" : args[0]
     new_args = args[1..-1]
     full_name = "#{prefix}_#{cmd_name}"
-    matches = methods.select { |m| m =~ /^#{full_name}/ }.length
-    if respond_to?(full_name) and (matches == 1 or new_args.empty?) then
+    matches = candidates(full_name)
+    if respond_to?(full_name) and (new_args.empty? or candidates("#{full_name}_#{new_args[0]}") == 0) then
       begin
         return send(full_name, *new_args)
       rescue ArgumentError => ex
@@ -80,7 +80,13 @@ module CmdDispatcher
     end
     throw :unknown_command
   end
+  
+  def candidates(cmd_name)
+    methods.select { |m| m =~ /^#{cmd_name}/ }.length
+  end
 end
+
+
 
 module RetryLogin
 

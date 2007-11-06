@@ -395,7 +395,7 @@ class UVMFilterNode
         end
         
     protected
-        def list_filternodes(tids)
+        def list_filternodes(tids = get_filternode_tids(get_uvm_node_name()))
           # List/enumerate protofilter nodes
           @diag.if_level(2) { puts! "#{get_uvm_node_name()}: listing nodes..." }
 
