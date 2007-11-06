@@ -62,13 +62,25 @@ class Support < UVMRemoteApp
 - support allow send [true|false]
     -- Query the value of Support Access Restrictions "Send" setting - change value to [true|false], if provided.
 - support protocol weboverride [true|false]
-    -- Query the value of Support: Manual Protocol: Web Override setting - change value to [true|false], if provided.
+    -- Query the value of Support: Manual Protocol Override: Web Override setting - change value to [true|false], if provided.
 - support protocol longuris [true|false] [max-uri-length]
-    -- Query the value of Support: Manual Protocol: Long Urls setting - change value to [true|false] and set [max-uri-length], if provided.
+    -- Query the value of Support: Manual Protocol Override: Long Urls setting - change value to [true|false] and set [max-uri-length], if provided.
 - support protocol longheaders [true|false] [max-header-length]
-    -- Query the value of Support: Manual Protocol: Long Headers setting - change value to [true|false] and set [max-header-length], if provided.
+    -- Query the value of Support: Manual Protocol Override: Long Headers setting - change value to [true|false] and set [max-header-length], if provided.
 - support protocol nonhttp [true|false]
-    -- Query the value of Support: Manual Protocol: Non-HTTP Blocking setting - change value to [true|false], if provided.
+    -- Query the value of Support: Manual Protocol Override: Non-HTTP Blocking setting - change value to [true|false], if provided.
+- support protocol smtp [true|false]
+    -- Query the value of Support: Manual Protocol Override: Mail Settings: SMTP - change value to [true|false], if provided.
+- support protocol pop [true|false]
+    -- Query the value of Support: Manual Protocol Override: Mail Settings: POP - change value to [true|false], if provided.
+- support protocol imap [true|false]
+    -- Query the value of Support: Manual Protocol Override: Mail Settings: IMAP - change value to [true|false], if provided.
+- support protocol smtp timeout [seconds]
+    -- Query the value of Support: Manual Protocol Override: Mail Settings: SMTP timeout - change value to [seconds], if provided.
+- support protocol pop timeout [seconds]
+    -- Query the value of Support: Manual Protocol Override: Mail Settings: POP timeout - change value to [seconds], if provided.
+- support protocol imap timeout [seconds]
+    -- Query the value of Support: Manual Protocol Override: Mail Settings: IMAP timeout - change value to [seconds], if provided.
     HELP
     end
 
@@ -118,6 +130,10 @@ class Support < UVMRemoteApp
 
     def cmd_protocol_imap_timeout(*args)
       protocol_imap_timeout(*args)
+    end
+
+    def cmd_protocol_ftp(*args)
+      protocol_ftp(*args)
     end
 
     def allow_access(*args)
@@ -382,6 +398,36 @@ class Support < UVMRemoteApp
       end
       settings = node.getSettings()
       msg = "IMAP timeout is #{settings.getPopTimeout()/1000} seconds." 
+      @diag.if_level(3) { puts! msg }          
+      return msg
+    end
+
+    def get_ftp_casing
+      tids = @@uvmRemoteContext.nodeManager.nodeInstances("untangle-casing-ftp")
+      if tids.empty?
+        msg = "Error: there is no FTP casing running on the effective UVM server! This is unexpected; contact techical support."
+        @diag.if_level(3) { puts! msg }
+        return msg
+      end
+      node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tids[0])
+      node_ctx.node()
+    end
+    
+    def protocol_ftp(*args)
+      node = get_ftp_casing()
+      if args.length > 0
+        begin
+          settings = node.getSettings()
+          settings.setEnabled(validate_bool(args[0], "ftp"))
+          node.setSettings(settings)
+        rescue Exception => ex
+          msg = "Error: unable to set FTP processing to '#{args[0]}'"
+          @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
+          return msg + ": #{ex}"
+        end
+      end
+      settings = node.getSettings()
+      msg = "Processing of FTP traffic is #{ settings.isEnabled() ? 'enabled.' : 'disabled.'}" 
       @diag.if_level(3) { puts! msg }          
       return msg
     end
