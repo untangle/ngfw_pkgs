@@ -1,8 +1,12 @@
 class Alpaca::OS::ManagerBase
   include Alpaca::OS::Logging
-
+  
+  @@hooks_register = {}
+  
   ## Override at your own risk
   def initialize
+    ## REVIEW: Since this is a singleton, this can lock the system
+    ## If one of the managers registers a hook with itself.
     register_hooks
   end
 
@@ -33,7 +37,7 @@ class Alpaca::OS::ManagerBase
   end
 
   ## Register a hook with this manager
-  def register_hook( index, manager, hook_name, method_id )
+  def register_hook( index, manager, hook_name, method_id )    
     ## Initialize the method array if necessary
     @@hooks[hook_name] = [] if @@hooks[hook_name].nil?
 

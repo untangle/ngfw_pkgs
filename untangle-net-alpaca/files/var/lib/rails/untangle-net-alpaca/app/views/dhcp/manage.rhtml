@@ -18,17 +18,24 @@
           <label for="dhcp_server_settings[end]"><%= "End:".t %></label>
           <%= text_field( "dhcp_server_settings", "end" ) %>
         </li>
+
+        <li>
+          <label for="dhcp_server_settings[lease_duration]"><%= "Lease Duration:".t %></label>
+          <%= text_field( "dhcp_server_settings", "lease_duration", { :class => "number" } ) %>
+        </li>
+
+        <li>
+          <label for="dhcp_server_settings[gateway]"><%= "Gateway:".t %></label>
+          <%= text_field( "dhcp_server_settings", "gateway" ) %>
+        </li>
+
+        <li>
+          <label for="dhcp_server_settings[netmask]"><%= "Netmask:".t %></label>
+          <%= text_field( "dhcp_server_settings", "netmask" ) %>
+        </li>
+
       </ul>
     </fieldset>
-
-    <h2><%= "Static DHCP Entries".t %></h2>
-    <%= link_to_remote( "+".t, :url => { :action => :create_static_entry } ) %>
-    <%= render( :partial => "static_entries" , :object => @static_entries ) %>
-    
-    <h2><%= "Automatic DHCP Entries".t %></h2>
-    <%= link_to_remote( "Refresh".t, :url => { :action => :refresh_dynamic_entries } ) %>
-
-    <%= render( :partial => "dynamic_entries" , :object => @dynamic_entries ) %>
 
     <%= submit_tag "Cancel".t %>
     <%= submit_tag "Save Changes".t %>

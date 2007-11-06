@@ -132,6 +132,11 @@ class Network < ActiveRecord::Migration
       table.column :enabled, :boolean
       table.column :start, :string
       table.column :end, :string
+
+      ## Length of the lease in seconds.
+      table.column :lease_duration, :int
+      table.column :gateway, :string
+      table.column :netmask, :string
     end
 
     create_table :dhcp_static_entries do |table|

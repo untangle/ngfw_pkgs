@@ -68,6 +68,12 @@ input[type="text"]
   border-width: 1px;
  }
 
+input[type="text"].number
+{
+  width: 50px;
+ }
+
+
 input[type="text"].in-table
 {
   background-color: transparent;

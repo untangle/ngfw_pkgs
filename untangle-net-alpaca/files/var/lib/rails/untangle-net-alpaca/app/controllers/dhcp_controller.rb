@@ -7,7 +7,10 @@ class DhcpController < ApplicationController
   end
 
   def register_menu_items
-    menu_organizer.register_item( "/main/dhcp_server", Alpaca::Menu::Item.new( 300, "DHCP Server", "/dhcp" ))
+    menu_organizer.register_item( "/main/dhcp_server", 
+                                  Alpaca::Menu::Item.new( 300, "DHCP Server", "/dhcp/manage" ))
+    menu_organizer.register_item( "/main/dhcp_server/entries", 
+                                  Alpaca::Menu::Item.new( 1, "Static Entries", "/dhcp/manage_entries" ))
   end
 
   def create_static_entry
@@ -15,6 +18,11 @@ class DhcpController < ApplicationController
   end
 
   def manage
+    @dhcp_server_settings = DhcpServerSettings.find( :first )
+    @dhcp_server_settings = DhcpServerSettings.new if @dhcp_server_settings.nil?
+  end
+
+  def manage_entries
     @dhcp_server_settings = DhcpServerSettings.find( :first )
     @dhcp_server_settings = DhcpServerSettings.new if @dhcp_server_settings.nil?
     @static_entries = DhcpStaticEntry.find( :all )
@@ -32,6 +40,13 @@ class DhcpController < ApplicationController
     dhcp_server_settings.update_attributes( params[:dhcp_server_settings] )
     dhcp_server_settings.save
     
+    os["dhcp_server_manager"].commit
+
+    ## Review : should have some indication that is saved.
+    return redirect_to( :action => "manage" )
+  end
+
+  def save_entries
     static_entry_list = []
     indices = params[:static_entries]
     mac_addresses = params[:mac_address]
@@ -50,9 +65,9 @@ class DhcpController < ApplicationController
 
     DhcpStaticEntry.destroy_all
     static_entry_list.each { |dse| dse.save }
-    
-    ## Review : should have some indication that is saved.
-    return redirect_to( :action => "manage" )
+
+    os["dhcp_server_manager"].commit
+    return redirect_to( :action => "manage_entries" )
   end
 
   def refresh_dynamic_entries

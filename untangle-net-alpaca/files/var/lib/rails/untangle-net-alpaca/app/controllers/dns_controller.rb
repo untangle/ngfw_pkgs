@@ -44,6 +44,8 @@ class DnsController < ApplicationController
 
     DnsStaticEntry.destroy_all
     static_entry_list.each { |dse| dse.save }
+
+    os["dns_server_manager"].commit
     
     ## Review : should have some indication that is saved.
     return redirect_to( :action => "manage" )
