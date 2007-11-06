@@ -3,8 +3,4 @@ class OSLibrary::PacketFilterManager < Alpaca::OS::ManagerBase
   def commit
     raise "base class, override in an os specific class"
   end
-
-  def update_address
-    raise "base class, override in an os specific class"
-  end
 end

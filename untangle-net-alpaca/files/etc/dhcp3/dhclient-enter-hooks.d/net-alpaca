@@ -37,7 +37,7 @@ wait_for_bridge()
         sleep ${BRIDGE_CHECK_INTERVAL}
     }
 
-    debug "Waited ${t_count} counts for the bridge ${interface}"
+    debug "Waited ${t_count} counts for the bridge(s) before configuring ${interface}"
 }
 
 OVERRIDE_VARIABLES="/etc/untangle-net-alpaca/dhcp-overrides.${interface}"

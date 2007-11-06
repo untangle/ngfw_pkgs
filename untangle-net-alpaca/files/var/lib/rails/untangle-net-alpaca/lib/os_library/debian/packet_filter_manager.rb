@@ -8,13 +8,14 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   ConfigFile = "/etc/untangle-net-alpaca/iptables-rules"
 
   def register_hooks
-    os["network_manager"].register_hook( 100, "packet_filter_manager", "write_file", :hook_write_file )
+    os["network_manager"].register_hook( 100, "packet_filter_manager", "write_files", :hook_write_files )
 
     os["network_manager"].register_hook( 100, "packet_filter_manager", "run_services", :hook_run_services )
     
     ## Run whenever the address is updated.
-    ## REVIEW : This may just be moved into a script.
-    os["network_manager"].register_hook( 100, "packet_filter_manager", "update_address", :hook_commit )
+    ## REVIEW : This may just be moved into a script
+    ## RESOLUTION : the restart has been moved into a script, any rule modification
+    ## requires additional scripts will be done in a .d directory.
   end
   
   class Chain
@@ -84,12 +85,6 @@ EOF
 
   def hook_run_services
     raise "Unable to iptables rules." unless Kernel.system( "#{Service} restart" )
-  end
-
-  ## Regenerate the iptables rules.
-  def update_address
-    logger.debug( "Recreating the iptables rules" )
-    commit
   end
   
   private

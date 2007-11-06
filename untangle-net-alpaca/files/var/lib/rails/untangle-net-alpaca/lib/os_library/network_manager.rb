@@ -70,9 +70,4 @@ class OSLibrary::NetworkManager < Alpaca::OS::ManagerBase
   def commit
     raise "base class, override in an os specific class"
   end
-
-  ## The address has been changed from underneath us.
-  def update_address
-    raise "base class, override in an os specific class"
-  end
 end

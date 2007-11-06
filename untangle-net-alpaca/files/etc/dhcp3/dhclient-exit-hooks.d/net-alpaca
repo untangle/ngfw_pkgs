@@ -1,12 +1,10 @@
 #!/bin/dash
 
-ruby <<EOF
-require "xmlrpc/client"
+mkdir -p /var/log/untangle-net-alpaca/
 
-client = XMLRPC::Client.new( "localhost", "/interface/api", 3000 )
-ok, status = client.call2( "update_address", "eth0", false )
+exec >> /var/log/untangle-net-alpaca/dhcp.log 2>&1
 
-EOF
+run-parts /etc/untangle-net-alpaca/scripts/update-address.d
 
 true
 

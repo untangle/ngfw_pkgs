@@ -1,0 +1,17 @@
+#!/bin/dash
+
+# These variables are for the use of the scripts run by run-parts
+# PPP_IFACE="$1"
+# PPP_TTY="$2"
+# PPP_SPEED="$3"
+# PPP_LOCAL="$4"
+# PPP_REMOTE="$5"
+# PPP_IPPARAM="$6"
+
+mkdir -p /var/log/untangle-net-alpaca/
+
+exec >> /var/log/untangle-net-alpaca/pppoe.log 2>&1
+
+run-parts /etc/untangle-net-alpaca/scripts/update-address.d
+
+true

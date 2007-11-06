@@ -273,7 +273,6 @@ EOF
       os_name = route[2]
     end
 
-    puts "os name: #{os_name}"
     next_hop = `ip route show | awk '/default via.*#{os_name}/ { print $3 }'`.strip
 
     ## Default gateway is not on the same interface.

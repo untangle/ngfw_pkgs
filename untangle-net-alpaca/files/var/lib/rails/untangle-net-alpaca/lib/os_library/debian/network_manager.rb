@@ -72,10 +72,6 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
     raise "Unable to reconfigure network settings." unless Kernel.system( "nohup #{Service} start" )
   end
 
-  ## Holder for other managers to latch onto updates when the address changes.
-  def hook_update_address
-  end
-
   ## Given an interface, this returns the expected bridge name
   def self.bridge_name( interface )
     "br.#{interface.os_name}"

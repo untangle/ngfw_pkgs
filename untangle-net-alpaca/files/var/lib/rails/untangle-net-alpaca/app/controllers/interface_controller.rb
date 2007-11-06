@@ -332,17 +332,6 @@ class InterfaceController < ApplicationController
     raise "invalid row id syntax" if /^nat-policy-row-[0-9]*$/.match( @rowId ).nil?
   end
 
-  def update_address( interface_name, wait_for )
-    logger.debug( "Updating the address for #{interface_name}" )
-    
-    ## Run in a separate thread.
-    spawn do
-      networkManager.update_address
-    end
-    
-    true
-  end
-
   def scripts
     [ "interface" ]
   end
