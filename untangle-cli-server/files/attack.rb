@@ -21,11 +21,12 @@ require 'debug'
 
 require 'filternode'
 
-class Attackblocker < UVMFilterNode
+class Attack < UVMFilterNode
     
     ERROR_NO_ATTACKBLOCKER_NODES = "No attackblocker modules are installed on the effective server."
-    NODE_NAME = "untangle-node-shield"
-    ATTACKBLOCKER_MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".3"
+    UVM_NODE_NAME = "untangle-node-shield"
+    NODE_NAME = "Attack Blocker"
+    MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".3"
 
     def initialize
         @diag = Diag.new(DEFAULT_DIAG_LEVEL)
@@ -38,15 +39,15 @@ class Attackblocker < UVMFilterNode
     # Required UVMFilterNode methods.
     #
     def get_uvm_node_name()
-        NODE_NAME
+        UVM_NODE_NAME
     end
 
     def get_node_name()
-        "Attack Blocker"
+        NODE_NAME
     end
 
     def get_mib_root()
-        ATTACKBLOCKER_MIB_ROOT
+        MIB_ROOT
     end
     
     #

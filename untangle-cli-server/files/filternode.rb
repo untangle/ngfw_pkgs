@@ -231,7 +231,12 @@ class UVMFilterNode
                         if !cached_stats || ((Time.now.to_i - cached_stats[1]) > STATS_CACHE_EXPIRY)
                             @diag.if_level(3) { puts! "Stat cache miss / expiry." }
                             node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
-                            nodeStats = node_ctx.getStats()
+                            begin
+                                nodeStats = node_ctx.getStats()
+                            rescue Exception => ex
+                                @diag.if_level(2) { puts! "Error: unable to get statistics for node: " ; p node_ctx ; p ex ; ex.backtrace }
+                                return nil
+                            end
                             @stats_cache[tid] = [nodeStats, Time.now.to_i]
                         else
                             @diag.if_level(3) { puts! "Stat cache hit." }
