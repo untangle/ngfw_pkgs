@@ -96,6 +96,30 @@ class Support < UVMRemoteApp
       protocol_nonhttp(*args)
     end
 
+    def cmd_protocol_smtp(*args)
+      protocol_smtp(*args)
+    end
+
+    def cmd_protocol_pop(*args)
+      protocol_pop(*args)
+    end
+
+    def cmd_protocol_imap(*args)
+      protocol_imap(*args)
+    end
+
+    def cmd_protocol_smtp_timeout(*args)
+      protocol_smtp_timeout(*args)
+    end
+
+    def cmd_protocol_pop_timeout(*args)
+      protocol_pop_timeout(*args)
+    end
+
+    def cmd_protocol_imap_timeout(*args)
+      protocol_imap_timeout(*args)
+    end
+
     def allow_access(*args)
       settings = @@uvmRemoteContext.networkManager().getAccessSettings()
       if args.length > 0
@@ -131,9 +155,9 @@ class Support < UVMRemoteApp
     end
 
     def get_http_casing
-      tids = get_filternode_tids("untangle-casing-http")
+      tids = @@uvmRemoteContext.nodeManager.nodeInstances("untangle-casing-http")
       if tids.empty?
-        msg = "Error: there is no HTTP casing running on the effective UVM server - this is unexpected: contact techical support."
+        msg = "Error: there is no HTTP casing running on the effective UVM server!  This is unexpected; contact techical support."
         @diag.if_level(3) { puts! msg }
         return msg
       end
@@ -233,6 +257,131 @@ class Support < UVMRemoteApp
       end
       settings = node.getSettings()
       msg = "Processing of non-http traffic is #{ settings.isNonHttpBlocked() ? 'diabled.' : 'enabled.'}" 
+      @diag.if_level(3) { puts! msg }          
+      return msg
+    end
+
+    def get_mail_casing
+      tids = @@uvmRemoteContext.nodeManager.nodeInstances("untangle-casing-mail")
+      if tids.empty?
+        msg = "Error: there is no mail casing running on the effective UVM server! This is unexpected; contact techical support."
+        @diag.if_level(3) { puts! msg }
+        return msg
+      end
+      node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tids[0])
+      node_ctx.node()
+    end
+    
+    def protocol_smtp(*args)
+      node = get_mail_casing()
+      if args.length > 0
+        begin
+          settings = node.getSettings()
+          settings.setSmtpEnabled(validate_bool(args[0], "smtp"))
+          node.setSettings(settings)
+        rescue Exception => ex
+          msg = "Error: unable to set SMPT processing to '#{args[0]}'"
+          @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
+          return msg + ": #{ex}"
+        end
+      end
+      settings = node.getSettings()
+      msg = "Processing of SMTP email is #{ settings.isSmtpEnabled() ? 'enabled.' : 'disabled.'}" 
+      @diag.if_level(3) { puts! msg }          
+      return msg
+    end
+    
+    def protocol_pop(*args)
+      node = get_mail_casing()
+      if args.length > 0
+        begin
+          settings = node.getSettings()
+          settings.setPopEnabled(validate_bool(args[0], "pop"))
+          node.setSettings(settings)
+        rescue Exception => ex
+          msg = "Error: unable to set POP processing to '#{args[0]}'"
+          @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
+          return msg + ": #{ex}"
+        end
+      end
+      settings = node.getSettings()
+      msg = "Processing of POP email is #{ settings.isPopEnabled() ? 'enabled.' : 'disabled.'}" 
+      @diag.if_level(3) { puts! msg }          
+      return msg
+    end
+
+    def protocol_imap(*args)
+      node = get_mail_casing()
+      if args.length > 0
+        begin
+          settings = node.getSettings()
+          settings.setImapEnabled(validate_bool(args[0], "imap"))
+          node.setSettings(settings)
+        rescue Exception => ex
+          msg = "Error: unable to set IMAP processing to '#{args[0]}'"
+          @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
+          return msg + ": #{ex}"
+        end
+      end
+      settings = node.getSettings()
+      msg = "Processing of IMAP email is #{ settings.isPopEnabled() ? 'enabled.' : 'disabled.'}" 
+      @diag.if_level(3) { puts! msg }          
+      return msg
+    end
+
+    def protocol_smtp_timeout(*args)
+      node = get_mail_casing()
+      if args.length > 0
+        begin
+          settings = node.getSettings()
+          settings.setSmtpTimeout(Integer(args[0])*1000)
+          node.setSettings(settings)
+        rescue Exception => ex
+          msg = "Error: unable to set SMPT processing to '#{args[0]}'"
+          @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
+          return msg + ": #{ex}"
+        end
+      end
+      settings = node.getSettings()
+      msg = "SMTP timeout is #{settings.getSmtpTimeout()/1000} seconds." 
+      @diag.if_level(3) { puts! msg }          
+      return msg
+    end
+
+    def protocol_pop_timeout(*args)
+      node = get_mail_casing()
+      if args.length > 0
+        begin
+          settings = node.getSettings()
+          settings.setPopTimeout(Integer(args[0])*1000)
+          node.setSettings(settings)
+        rescue Exception => ex
+          msg = "Error: unable to set POP processing to '#{args[0]}'"
+          @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
+          return msg + ": #{ex}"
+        end
+      end
+      settings = node.getSettings()
+      msg = "POP timeout is #{settings.getPopTimeout()/1000} seconds." 
+      @diag.if_level(3) { puts! msg }          
+      return msg
+    end
+
+    def protocol_imap_timeout(*args)
+      node = get_mail_casing()
+      if args.length > 0
+        begin
+          settings = node.getSettings()
+          settings.setImapTimeout(Integer(args[0])*1000)
+          node.setSettings(settings)
+        rescue Exception => ex
+          msg = "Error: unable to set IMAP processing to '#{args[0]}'"
+          @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
+          return msg + ": #{ex}"
+        end
+      end
+      settings = node.getSettings()
+      msg = "IMAP timeout is #{settings.getPopTimeout()/1000} seconds." 
       @diag.if_level(3) { puts! msg }          
       return msg
     end

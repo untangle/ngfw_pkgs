@@ -57,6 +57,19 @@ module NUCLIUtil
         obj.nil? || (obj=="") || ((obj.respond_to? :length) && (obj.length == 0))
     end
 
+    def validate_bool(var, varname)
+        unless ["true", "false"].include?(var)
+            raise "Error: invalid value for '#{varname}' - valid values are 'true' and 'false'."
+        end
+        var == "true"
+    end
+  
+    def validate_range(var, range, varname)
+        unless range === var
+            raise "Error: invalid value for '#{varname}' - valid values are #{range.min}..#{range.max}"
+        end
+    end
+
 end # UCLIUtil
 
 if $0 == __FILE__

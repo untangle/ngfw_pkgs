@@ -58,7 +58,7 @@ class NUCLIServer
         # TODO: Rename this
         @component_methods = []
         @component_lock = Mutex.new
-        @filter_nodes = []
+        @loaded_elements = []
 
         # Misc
         @running = false
@@ -119,10 +119,10 @@ class NUCLIServer
                 @diag.if_level(3) { puts! "Found code for '#{node}'" }
                 
                 # If successful, create an new instance of the filter node loaded via require.
-                class_name = UVMFilterNode.last_subclass
+                class_name = UVMRemoteApp.last_subclass
                 self.instance_variable_set("@#{node}", eval("#{class_name}.new"))
-                instance_eval("@filter_nodes << @#{node}")
-                @diag.if_level(3) { puts! "Filter node instanced" ; p @filter_nodes }
+                instance_eval("@loaded_elements << @#{node}")
+                @diag.if_level(3) { puts! "Dynamic element instanced" ; p @loaded_elements }
                 
                 # Now define the missing method such that it delegates to the instance of the filter node.
                 self.instance_eval %{

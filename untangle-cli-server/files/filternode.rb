@@ -328,22 +328,6 @@ class UVMFilterNode < UVMRemoteApp
           return ret
         end
         
-    protected
-        def validate_bool(var, varname)
-          unless ["true", "false"].include?(var)
-            raise "Error: invalid value for '#{varname}' - valid values are 'true' and 'false'."
-          end
-          var == "true"
-        end
-      
-    protected
-        def validate_range(var, range, varname)
-          unless range === var
-            raise "Error: invalid value for '#{varname}' - valid values are #{range.min}..#{range.max}"
-          end
-        end
-
-
 end # UVMFilterNode
 
 # Local exception definitions
