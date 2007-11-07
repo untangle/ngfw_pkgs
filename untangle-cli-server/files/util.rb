@@ -69,6 +69,13 @@ module NUCLIUtil
             raise "Error: invalid value for '#{varname}' - valid values are #{range.min}..#{range.max}"
         end
     end
+    
+    def validate_list(var, list, varname)
+      unless list.find {|allowed_val| allowed_val == var}
+        raise "Error: invalid value for '#{varname}' - valid values are #{list.join(', ')}"
+      end
+    end
+    
 
 end # UCLIUtil
 
