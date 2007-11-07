@@ -51,23 +51,23 @@ module CmdDispatcher
   #
   
   protected
-  def dispatch_cmd(args, prefix = "cmd")
+  def dispatch_cmd(args, has_tid = true, prefix = "cmd")
     catch :unknown_command do
-      return dispatch_cmd_helper(prefix, args)
+      return dispatch_cmd_helper(prefix, has_tid, args)
     end
     return ERROR_UNKNOWN_COMMAND + " -- '#{args.join(' ')}'"
   end
 
   private
-  def dispatch_cmd_helper(prefix, args)
+  def dispatch_cmd_helper(prefix, has_tid, args)
     cmd_name = args.empty? ? "" : args[0]
-    tid = args[1]
-    new_args = args[2..-1]
+    tid = has_tid ? args[1] : nil
+    new_args = has_tid ? args[2..-1] : args[1..-1]
     full_name = "#{prefix}_#{cmd_name}"
     matches = candidates(full_name)
     if respond_to?(full_name) and (new_args.empty? or candidates("#{full_name}_#{new_args[0]}") == 0) then
       begin
-        return send(full_name, tid, *new_args)
+        return has_tid ? send(full_name, tid, *new_args) : send(full_name, *new_args)
       rescue ArgumentError => ex
         @diag.if_level(3) {
           puts! "Dispatching failure: " + full_name + "(" + new_args.inspect  + ")"
@@ -77,7 +77,7 @@ module CmdDispatcher
         return ERROR_INCOMPLETE_COMMAND
       end
     elsif matches > 0 and args.length > 0
-      return dispatch_cmd_helper(full_name, [new_args[0], tid, *new_args[1..-1]])
+      return dispatch_cmd_helper(full_name, has_tid, has_tid ? [new_args[0], tid, *new_args[1..-1]] : new_args)
     end
     throw :unknown_command
   end
