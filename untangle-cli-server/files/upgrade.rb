@@ -51,7 +51,7 @@ class Support < UVMRemoteApp
       return <<-HELP
 - upgrade automatic [true|false]
     -- Query the value of Upgrade "Automatically install..." setting - change value to [true|false], if provided.
-- upgrade schedule sunday:true|false monday:true|false ... saturday:true|false hours:minutes
+- upgrade schedule sunday|monday|...|saturday hours:minutes
     -- Query the values of Upgrade schedule - change schedule to given values, if provided (all must be given to change any one value.)
     HELP
     end
@@ -87,22 +87,23 @@ class Support < UVMRemoteApp
         begin
           settings = @@uvmRemoteContext.toolboxManager().getUpgradeSettings()  
           period = settings.getPeriod()
-          period.setSunday(validate_bool(args[0], "sunday"))
-          period.setMonday(validate_bool(args[1], "monday"))
-          period.setTuesday(validate_bool(args[2], "tuesday"))
-          period.setWednesday(validate_bool(args[3], "wednesday"))
-          period.setThursday(validate_bool(args[4], "thursday"))
-          period.setFriday(validate_bool(args[5], "friday"))
-          period.setSaturday(validate_bool(args[6], "saturday"))
-          if !args[7].nil?
-            time = args[7].split(':')
-            period.setHour(time[0].to_i)
-            period.setMinute(time[1].to_i)
+          sched = args.join
+          period.setSunday(sched =~ /sun/i ? true : false)
+          period.setMonday(sched =~ /mon/i ? true : false)
+          period.setTuesday(sched =~ /tuen/i ? true : false)
+          period.setWednesday(sched =~ /wed/i ? true : false)
+          period.setThursday(sched =~ /thu/i ? true : false)
+          period.setFriday(sched =~ /fri/i ? true : false)
+          period.setSaturday(sched =~ /sat/i ? true : false)
+          if args[-1] && (args[-1] =~ /^\d+:\d+$/)
+            at = args[-1].split(':')
+            period.setHour(at[0].to_i)
+            period.setMinute(at[1].to_i)
           end
           settings.setPeriod(period)
           @@uvmRemoteContext.toolboxManager().setUpgradeSettings(settings)
         rescue Exception => ex
-          msg = "Error: unable to upgrade schedule to '#{args.join(' ')}' (check command syntax via help.)"
+          msg = "Error: unable to upgrade schedule to '#{args.join(' ')}' (check command syntax via help)"
           @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
           return msg + ": #{ex}"
         end
