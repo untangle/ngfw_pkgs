@@ -10,6 +10,7 @@ done
 for m in ${UVM_ROOT}/usr/share/untangle/web/webstart/untangle-node*gui.jar; do 
 	CLASSPATH="$CLASSPATH:$m"
 done
+CLASSPATH="$CLASSPATH:${UVM_ROOT}/usr/share/untangle/web/webstart/untangle-base-spam-gui.jar"
 
 for m in ${UVM_ROOT}/usr/share/untangle/web/webstart/untangle-casing*gui.jar; do 
 	CLASSPATH="$CLASSPATH:$m"
