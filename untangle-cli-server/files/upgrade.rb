@@ -38,7 +38,7 @@ class Support < UVMRemoteApp
 
     begin
       retryLogin {
-        return dispatch_cmd(args)
+        return args.empty? ? ERROR_INCOMPLETE_COMMAND : dispatch_cmd(args)
       }
     rescue Exception => ex
       @diag.if_level(3) { puts! ex; puts! ex.backtrace }
@@ -47,7 +47,7 @@ class Support < UVMRemoteApp
   end
 
   protected
-    def cmd_help(tid, *args)
+    def cmd_help(*args)
       return <<-HELP
 - upgrade automatic [true|false]
     -- Query the value of Upgrade "Automatically install..." setting - change value to [true|false], if provided.
@@ -67,17 +67,17 @@ class Support < UVMRemoteApp
     def automatic(*args)
       if args.length > 0
         begin
-          settings = @@uvmRemoteContext.toolboxManager().getUpgradeSettings()  
+          settings = @@uvmRemoteContext.toolboxManager().getUpgradeSettings()
           settings.setAutoUpgrade(validate_bool(args[0], "autoupgrade"))
           @@uvmRemoteContext.toolboxManager().setUpgradeSettings(settings)
         rescue Exception => ex
-          msg = "Error: unable to upgrade schedule to '#{args.join}'"
+          msg = "Error: unable to set automatic upgrade '#{args[0]}'"
           @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
           return msg + ": #{ex}"
         end
       end
       settings = @@uvmRemoteContext.toolboxManager().getUpgradeSettings()
-      msg = "Upgrade automatically is #{settings.setAutoUpgrade() ? 'enabled.' : 'disabled.'}"
+      msg = "Upgrade automatically is #{settings.getAutoUpgrade() ? 'enabled.' : 'disabled.'}"
       @diag.if_level(3) { puts! msg }          
       return msg
     end

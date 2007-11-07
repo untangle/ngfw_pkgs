@@ -29,7 +29,7 @@ class Backup < UVMRemoteApp
   end
   
   def get_node_name()
-    "Upgrade"
+    "Backup"
   end
   
   def execute(args)
@@ -38,7 +38,7 @@ class Backup < UVMRemoteApp
 
     begin
       retryLogin {
-        return dispatch_cmd(args)
+        return args.empty? ? ERROR_INCOMPLETE_COMMAND : dispatch_cmd(args, false)
       }
     rescue Exception => ex
       @diag.if_level(3) { puts! ex; puts! ex.backtrace }
@@ -47,26 +47,30 @@ class Backup < UVMRemoteApp
   end
 
   protected
-    def cmd_help(tid, *args)
+    def cmd_help(tid)
       return <<-HELP
 - backup to_disk
-    -- Backup ${BRAND} server settings on the ${BRAND} server's local hard drive.
+    -- Backup ${BRAND} server settings on the server's local hard drive.
 - backup to_usb
-    -- Backup ${BRAND} server settings on the ${BRAND} server's USB-key drive.
-- backup get filename
+    -- Backup ${BRAND} server settings on the server's USB-key drive.
+- backup to_file filename
     -- Backup ${BRAND} server settings to <filename> on the calling system.
     HELP
     end
 
     def cmd_to_disk(*args)
-      backup_to_disk(*args)
+      backup_to_disk()
     end
 
     def cmd_to_usb(*args)
-      backup_to_usb(*args)
+      backup_to_usb()
     end
   
-    def backup_to_disk(*args)
+    def cmd_to_file(*args)
+      backup_to_file()
+    end
+
+    def backup_to_disk()
       begin
         @@uvmRemoteContext.localBackup()
       rescue Exception => ex
@@ -74,10 +78,10 @@ class Backup < UVMRemoteApp
         @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
         return msg + ": #{ex}"
       end
-      return "Local backup complete."
+      return "Backup to #{BRAND} server local disk complete."
     end
 
-    def backup_to_usb(*args)
+    def backup_to_usb()
       begin
         @@uvmRemoteContext.usbBackup()
       rescue Exception => ex
@@ -85,7 +89,21 @@ class Backup < UVMRemoteApp
         @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
         return msg + ": #{ex}"
       end
-      return "USB-key backup complete."
+      return "Backup to #{BRAND} server USB-key complete."
+    end
+
+    def backup_to_file()
+      begin
+        settings = @@uvmRemoteContext.createBackup() # returns byte array but we can send this Java type back to a Ruby client.
+        res = "" # so, convert byte array to raw string so we can pass it back via DRb.
+        settings.each {|s| res << s } 
+        return res
+      rescue Exception => ex
+        msg = "Error: create of backup failed."
+        @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
+        return nil
+      end
+      return nil
     end
 
 end

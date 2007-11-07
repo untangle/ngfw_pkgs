@@ -28,17 +28,9 @@ class Support < UVMRemoteApp
     @diag.if_level(3) { puts! "Done initializing #{get_node_name()}..." }
   end
   
-  def get_uvm_node_name()
-    return "Error: this is not a UVM node."
-  end
-  
   def get_node_name()
     "Support"
   end
-  
-  def get_mib_root()
-    raise Exception, "Error: #{get_node_name()} does not offer SNMP support."
-  end  
   
   def execute(args)
     # TODO: BUG: if we don't return something the client reports an exception
@@ -46,7 +38,7 @@ class Support < UVMRemoteApp
 
     begin
       retryLogin {
-        return dispatch_cmd(args)
+        return args.empty? ? ERROR_INCOMPLETE_COMMAND : dispatch_cmd(args, false)
       }
     rescue Exception => ex
       @diag.if_level(3) { puts! ex; puts! ex.backtrace }
