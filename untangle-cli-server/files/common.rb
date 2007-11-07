@@ -61,12 +61,13 @@ module CmdDispatcher
   private
   def dispatch_cmd_helper(prefix, args)
     cmd_name = args.empty? ? "" : args[0]
-    new_args = args[1..-1]
+    tid = args[1]
+    new_args = args[2..-1]
     full_name = "#{prefix}_#{cmd_name}"
     matches = candidates(full_name)
     if respond_to?(full_name) and (new_args.empty? or candidates("#{full_name}_#{new_args[0]}") == 0) then
       begin
-        return send(full_name, *new_args)
+        return send(full_name, tid, *new_args)
       rescue ArgumentError => ex
         @diag.if_level(3) {
           puts! "Dispatching failure: " + full_name + "(" + new_args.inspect  + ")"
@@ -76,7 +77,7 @@ module CmdDispatcher
         return ERROR_INCOMPLETE_COMMAND
       end
     elsif matches > 0 and args.length > 0
-      return dispatch_cmd_helper(full_name, new_args)
+      return dispatch_cmd_helper(full_name, [new_args[0], tid, *new_args[1..-1]])
     end
     throw :unknown_command
   end
