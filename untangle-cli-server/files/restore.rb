@@ -64,18 +64,13 @@ class Restore < UVMRemoteApp
           @diag.if_level(3) { puts! msg }
           return msg
       elsif !File.exist?(args[0]) && !File.exist?("#{args[0]}.backup")
-          msg = "Backup file '#{args[0]}' not found, nor was '#{args[0]}.backup'"
+          msg = "Backup file '#{args[0]}' not found, nor was '#{args[0]}.backup' - can't restore."
           @diag.if_level(3) { puts! msg }
           return msg
       end
-
-      if !File.exist?(args[0]) && File.exist?("#{args[0]}.backup")
-          filename = "#{args[0]}.backup"
-      else
-          filename = args[0]
-      end
       
       begin
+        filename !File.exist?(args[0]) && File.exist?("#{args[0]}.backup") ? "#{args[0]}.backup" : args[0]
         @@uvmRemoteContext.restoreBackup(filename)
         msg = "Restoration of #{BRAND} server settings from '#{filename}' complete."
         @diag.if_level(3) { puts! msg }          
