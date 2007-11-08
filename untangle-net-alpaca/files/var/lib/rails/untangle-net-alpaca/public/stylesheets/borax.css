@@ -60,7 +60,7 @@ ul#interface-os-list li
   background-color: #EEFFEE;
   }
 
-input[type="text"]
+input[type="text"], input[type="password"]
 {
   background-color: #DDDDDD;
   border-style: solid;

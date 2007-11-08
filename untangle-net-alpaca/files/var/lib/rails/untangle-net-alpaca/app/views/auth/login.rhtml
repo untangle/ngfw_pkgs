@@ -1,0 +1,28 @@
+<div>
+  <h1><%= "Login".t %></h1>
+
+  <% if flash[:warning] %>
+    <%= "<div id='warning'>#{flash[:warning]}</div>" %>
+  <% end %>
+
+  <% form_tag( :action => 'check_credentials' ) do -%>
+    <fieldset>
+      <ul class="text-fields">
+        <li>
+          <label for="credentials[username]"><%= "Username:".t %></label>
+          <%= text_field( "credentials", "username" ) %>
+        </li>
+
+        <li>
+          <label for="credentials[password]"><%= "Password:".t %></label>
+          <%= password_field( "credentials", "password" ) %>
+        </li>
+
+        <li>
+          <%= submit_tag "Login".t %>
+        </li>
+      </ul>
+      
+    <% end -%>
+  </fieldset>
+</div>

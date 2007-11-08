@@ -17,6 +17,7 @@ class ApplicationController < ActionController::Base
   before_filter :setLocale
   before_filter :setStylesheets
   before_filter :setScripts
+  before_filter :authenticate
   
   def setLocale
     settings = LocaleSetting.find( :first )
@@ -71,5 +72,21 @@ class ApplicationController < ActionController::Base
       ## Load the manager for this os, this will complete all of the initialization at
       os["#{manager.sub( /.rb$/, "" )}"]
     end
+  end
+  
+  def authenticate
+    ## Nothing needed if authentication is not required on this page.
+    return unless authentication_required
+
+    if session[:username].nil?
+      session[:return_to] = @request.request_uri
+      redirect_to :controller => "auth"
+      return false
+    end
+  end
+
+  ## override to indicate that authentication is not required.
+  def authentication_required
+    true
   end
 end

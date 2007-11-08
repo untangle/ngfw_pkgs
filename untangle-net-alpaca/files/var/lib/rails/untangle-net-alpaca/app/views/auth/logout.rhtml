@@ -1,0 +1,8 @@
+<div>
+  <h1><%= "Logout".t %></h1>
+
+  <% form_tag( :action => 'end_session' ) do -%>
+    <p>Are you sure your want to logout?</p>
+    <%= submit_tag "Logout".t %>
+  <% end -%>
+</div>

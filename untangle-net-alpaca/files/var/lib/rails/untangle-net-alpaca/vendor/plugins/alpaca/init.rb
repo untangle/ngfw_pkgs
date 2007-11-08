@@ -23,4 +23,7 @@ require "alpaca/menu/item"
 require "alpaca/menu/organizer"
 require "alpaca/menu/extensions"
 
+## Require the pam extension
+# require "pam_auth"
+
 

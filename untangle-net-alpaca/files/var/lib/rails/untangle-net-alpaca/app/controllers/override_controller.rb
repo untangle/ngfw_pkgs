@@ -25,7 +25,7 @@ class OverrideController < ApplicationController
   end
 
   def file_override_remove
-    @rowId = params[ :id ]
+    @rowId = params[:id]
 
     raise "no row id" if @rowId.nil?
 
