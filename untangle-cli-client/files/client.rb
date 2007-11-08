@@ -117,6 +117,7 @@ class NUCLIClient
         # Commands legend and creation of readline auto-completion abbreviations
         @commands_with_help = [
             # Cmd name, Server Required, Help text
+            ["loadrules", false, "load rules into filter node from given file -- loadrules webfilter filename", nil],
             ["history", false, "display command history, up to #{@history_size} events", nil],
             ["ruby", true, "send Ruby code to sever for execution -- ruby statement | file", nil],
             ["quiet", false, "quiet all but alert level messages", nil],
@@ -129,6 +130,7 @@ class NUCLIClient
             ["close", false, "close connection to server #X or host-name -- close #1", nil],
             ["servers", false, "list servers currently under management during this  session.", nil],
             ["webfilter", true, "send command to webfilter -- enter 'webfilter help' for details.", nil],
+            ["firewall", true, "send command to firewall -- enter 'firewall help' for details.", nil],
             ["with", true, "send multiple commands to servers, '##' or 'all' for all servers, '-i' for interactive, '-e' for echo -- with host-name #2 #4 -i -e", nil],
             ["jobs", false, "list all background jobs currently running.", nil],
             ["cleanup", false, "cleanup client resources, e.g., release stored job outputs, etc.", nil],
@@ -139,6 +141,8 @@ class NUCLIClient
             [":command", false, "run external command on local host -- :ls /tmp", nil],
             ["command", false, "run external command on server host -- who", nil],
             ["^%\\d+$", false, nil],
+            ["backup", false, "backup #{BRAND} server settings -- backup [to_disk|to_usb|to_file <filename>]", nil],
+            ["restore", false, "restore #{BRAND} server settings from local file -- restore <filename.backup>]", nil],
             # The following are not top level commands but are included here so they can be part of the
             # word completion list we pass to readline.  These can be distinguished and filtered from 
             # this list by noting that they have nil for their help text settings.
@@ -196,7 +200,7 @@ class NUCLIClient
             puts! opts.to_s
             exit(0)
         }
-        opts.on("-e", "--exec COMMAND", String, "NUCLI command to execute.") { |command|
+        opts.on("-c", "--command COMMAND", String, "NUCLI command to execute.") { |command|
             @commands_to_execute << command
         }
         opts.on("-u", "--user USERNAME", String, "User to login to NUCLI server as.") { |user|
@@ -606,8 +610,7 @@ class NUCLIClient
                 output = get_job_output($&[1..-1].to_i)
                 output.each { |line| puts! line } if output
             else    # send unknown method request to server for processing
-                server = Thread.current[:drb_server] || @servers_lock.synchronize { server = @drb_server[2] }
-                res = server.__send__(cmd, args);
+                res = send_to_server(cmd, args)
                 res.each { |r| puts! r } if res && !Thread.current[:background]
                 return res
             end
@@ -618,7 +621,13 @@ class NUCLIClient
             @diag.if_level(2) { p ex }
         end
     end
-    
+
+    def send_to_server(cmd, args)
+        server = Thread.current[:drb_server] || @servers_lock.synchronize { server = @drb_server[2] }
+        res = server.__send__(cmd, args);
+        return res
+    end
+        
     # Display NUCLI help info
     def help(*args)
 
@@ -1136,6 +1145,83 @@ class NUCLIClient
         rescue Exception => ex
             puts! "Error: unable to open or read from file '#{args[0]}' - check permissions."
             @diag.if_level(3) { p ex }
+        end
+    end
+
+    def loadrules(*args)
+        if args.length < 2
+            puts! ERROR_INCOMPLETE_COMMAND
+        elsif !File.exist?(args[1])
+            puts! "Error: rules file '#{args[1]}' not found."
+        else
+            File.open(args[1]) { |rules|
+                until rules.eof? do
+                    run_command("#{args[0]} #{rules.gets.chomp.strip}")
+                end
+            }
+        end
+    end
+
+    def backup(*args)
+        if (args.length < 1)
+            puts! ERROR_INCOMPLETE_COMMAND
+            return
+        end
+        
+        if (to_file = (args[0] == "to_file"))
+            if args.length < 2
+                puts! ERROR_INCOMPLETE_COMMAND
+                return
+            elsif File.exist?(args[1])
+                print! "File '#{args[1]}' exists  - overwrite it (y/n)? "
+                return unless getyn('y')
+            end
+        end
+
+        if to_file
+            message("Retrieving #{BRAND} server settings: this many take as much as a few minutes to complete - please wait...", 2)
+            settings = send_to_server("backup", args)
+            if !settings
+                puts! "Error: unable to retrieve #{BRAND} server settings - backup failed.";
+            else
+                filename = args[1]
+                filename << ".backup"
+                File.open(filename, File::CREAT | File::TRUNC | File::RDWR) { |f|
+                    f.syswrite(settings)
+                }
+                message("Server settings successfully backed up to '#{filename}'.'", 1)
+            end
+        else
+            res = send_to_server("backup", args)
+            puts! res if res
+        end
+    end
+    
+    def restore(*args)
+        if (args.length < 1)
+            puts! ERROR_INCOMPLETE_COMMAND
+            return
+        elsif !File.exist?(args[1]) && !File.exist?("#{args[1]}.backup")
+            puts! "Backup file '#{args[1]}' not found, nor was '#{args[1]}.backup'"
+            return
+        end
+
+        if !File.exist?(args[1]) && File.exist?("#{args[1]}.backup")
+            filename = "#{args[1]}.backup"
+        else
+            filename = args[1]
+        end
+        
+        begin
+            settings = nil
+            File.open(filename) { |f|
+                settings = f.sysread(File.stat(filename).size?)
+            }
+            res = send_to_server("restore", [settings])
+            puts! res if res
+        rescue Exception => ex
+            puts! "Error: unable to open (or read) '#{filename}': " + ex
+            @diag.if_level(3) { puts! ex }
         end
     end
 

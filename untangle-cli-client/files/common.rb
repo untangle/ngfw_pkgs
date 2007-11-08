@@ -1,5 +1,3 @@
-#!/usr/local/bin/ruby
-
 #
 # $HeadURL:$
 # Copyright (c) 2003-2007 Untangle, Inc. 
@@ -19,11 +17,17 @@
 #
 module NUCLICommon
 
+# Misc Constants
 BRAND = "Untangle"
 
-# Error Messages
+# Shared Error Messages
+ERROR_INCOMPLETE_COMMAND = "Error: incomplete command -- missing required arguments (see help.)"
+ERROR_UNKNOWN_COMMAND = "Error: unknown command"
+ERROR_COMMAND_FAILED = "Error: unable to execute command"
+ERROR_INVALID_NODE_ID = "Error: invalid node identifier"
 
-# Exceptions
+
+# Shared Exceptions
 class CommandFailed < Exception
 end
 
