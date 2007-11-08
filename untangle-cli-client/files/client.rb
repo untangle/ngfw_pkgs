@@ -1197,34 +1197,6 @@ class NUCLIClient
         end
     end
     
-    def restore(*args)
-        if (args.length < 1)
-            puts! ERROR_INCOMPLETE_COMMAND
-            return
-        elsif !File.exist?(args[1]) && !File.exist?("#{args[1]}.backup")
-            puts! "Backup file '#{args[1]}' not found, nor was '#{args[1]}.backup'"
-            return
-        end
-
-        if !File.exist?(args[1]) && File.exist?("#{args[1]}.backup")
-            filename = "#{args[1]}.backup"
-        else
-            filename = args[1]
-        end
-        
-        begin
-            settings = nil
-            File.open(filename) { |f|
-                settings = f.sysread(File.stat(filename).size?)
-            }
-            res = send_to_server("restore", [settings])
-            puts! res if res
-        rescue Exception => ex
-            puts! "Error: unable to open (or read) '#{filename}': " + ex
-            @diag.if_level(3) { puts! ex }
-        end
-    end
-
 end # NUCLIClient
 
 #
