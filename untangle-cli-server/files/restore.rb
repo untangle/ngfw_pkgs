@@ -34,7 +34,7 @@ class Restore < UVMRemoteApp
   
   def execute(args)
     # TODO: BUG: if we don't return something the client reports an exception
-    @diag.if_level(3) { puts! "#{get_node_name}::execute(#{args.join(', ')})" }
+    # @diag.if_level(3) { puts! "#{get_node_name}::execute(#{args.join(', ')})" }
 
     begin
       retryLogin {
@@ -60,13 +60,14 @@ class Restore < UVMRemoteApp
 
     def restore_from_file(*args)
       begin
+        puts! "Restore from file."
         bytes = Array.new(args[0].length).to_java :byte
         i = 0
         args[0].each_byte { |b| bytes[i] = b ; i += 1; }
         @@uvmRemoteContext.restoreBackup(bytes)
         msg = "Restoration of #{BRAND} server settings from file complete."
-        @diag.if_level(3) { puts! msg }          
-        return msg
+        @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
+        return msg + ": #{ex}"
       rescue Exception => ex
         msg = "Error: restore of server settings from file failed."
         @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          

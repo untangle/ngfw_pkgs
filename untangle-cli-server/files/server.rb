@@ -110,7 +110,7 @@ class NUCLIServer
         begin
             args = [] if args.nil?
             node = method_id.id2name
-            @diag.if_level(3) { puts! "'#{node}' method not found - attempting to dynamically load component..." ; p args }
+            @diag.if_level(3) { puts! "'#{node}' method not found - attempting to dynamically load component..." }
 
             @component_lock.synchronize {
                 # Attempt to load a filter node with the name of the missing method.
