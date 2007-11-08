@@ -27,7 +27,7 @@ class SpamBlocker < UVMFilterNode
   ERROR_NO_SPAMBLOCKER_NODES = "No Spam Blocker modules are installed on the effective server."
   NODE_NAME = "untangle-node-spamassassin"
   # TODO check with Ken the real MIB for spamblocker
-  SPAMBLOCKER_MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".5"
+  SPAMBLOCKER_MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".10"
 
   @@strengthValues = {
     "low" => SpamProtoConfig::LOW_STRENGTH,
