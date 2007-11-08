@@ -59,21 +59,32 @@ class Restore < UVMRemoteApp
     end
 
     def restore_from_file(*args)
+      if (args.length < 1)
+          msg = ERROR_INCOMPLETE_COMMAND
+          @diag.if_level(3) { puts! msg }
+          return msg
+      elsif !File.exist?(args[0]) && !File.exist?("#{args[0]}.backup")
+          msg = "Backup file '#{args[0]}' not found, nor was '#{args[0]}.backup'"
+          @diag.if_level(3) { puts! msg }
+          return msg
+      end
+
+      if !File.exist?(args[0]) && File.exist?("#{args[0]}.backup")
+          filename = "#{args[0]}.backup"
+      else
+          filename = args[0]
+      end
+      
       begin
-        puts! "Restore from file."
-        bytes = Array.new(args[0].length).to_java :byte
-        i = 0
-        args[0].each_byte { |b| bytes[i] = b ; i += 1; }
-        @@uvmRemoteContext.restoreBackup(bytes)
-        msg = "Restoration of #{BRAND} server settings from file complete."
-        @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
-        return msg + ": #{ex}"
+        @@uvmRemoteContext.restoreBackup(filename)
+        msg = "Restoration of #{BRAND} server settings from '#{filename}' complete."
+        @diag.if_level(3) { puts! msg }          
+        return msg
       rescue Exception => ex
-        msg = "Error: restore of server settings from file failed."
-        @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
-        return msg + ": #{ex}"
+        msg = "Error: unable to open/read '#{filename}': " + ex
+        @diag.if_level(3) { puts! msg }
+        return msg
       end
     end
-
 end
 
