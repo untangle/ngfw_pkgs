@@ -17,13 +17,13 @@
 #
 require 'filternode'
 
-class Ips < UVMFilterNode
+class Router < UVMFilterNode
   include CmdDispatcher
   include RetryLogin
 
   ERROR_NO_FILTER_NODES = "No Router modules are installed on the effective server."
   UVM_NODE_NAME = "untangle-node-router"
-  NODE_NAME = "IPS"
+  NODE_NAME = "Router"
   MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".7"
 
   def initialize
