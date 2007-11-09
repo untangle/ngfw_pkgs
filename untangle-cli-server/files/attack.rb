@@ -19,7 +19,7 @@ require 'filternode'
 
 class Attack < UVMFilterNode
     
-    ERROR_NO_ATTACKBLOCKER_NODES = "No attackblocker modules are installed on the effective server."
+    ERROR_NO_FILTER_NODES = "No attackblocker modules are installed on the effective server."
     UVM_NODE_NAME = "untangle-node-shield"
     NODE_NAME = "Attack Blocker"
     MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".3"
@@ -51,15 +51,14 @@ class Attack < UVMFilterNode
     #
     def execute(args)
 
-        @diag.if_level(3) { puts! "Attackblocker::execute(#{args.join(' ')})" }
+        @diag.if_level(3) { puts! "Attack::execute(#{args.join(' ')})" }
         
         retried = false
         
         begin
             # Get tids of all web filters once and for all commands we might execute below.
             tids = get_filternode_tids(get_uvm_node_name())
-            @diag.if_level(3) { puts! "No attack blockers found." if empty?(tids) }
-            if empty?(tids) then return (args[0] == "snmp") ? nil : ERROR_NO_ATTACKBLOCKER_NODES ; end
+            if empty?(tids) then return (args[0] == "snmp") ? nil : ERROR_NO_FILTER_NODES ; end
     
             begin
                 tid, cmd = *extract_tid_and_command(tids, args, ["snmp"])

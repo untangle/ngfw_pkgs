@@ -25,7 +25,7 @@ class UVMFilterNode < UVMRemoteApp
         
     public
         def initialize
-            @diag = Diag.new(DEFAULT_DIAG_LEVEL)
+            @diag = Diag.new(2) #DEFAULT_DIAG_LEVEL)
             @diag.if_level(2) { puts! "Initializing UVMFilterNode..." }
             
             super
@@ -117,7 +117,7 @@ class UVMFilterNode < UVMRemoteApp
         # guide for implementing your own get_statistics method.
         def get_standard_statistics(mib_root, tid, args)
             
-            @diag.if_level(3) { puts! "Attempting to get stats for TID #{tid ? tid : '<no tid>'}" ; p args}
+            @diag.if_level(2) { puts! "Attempting to get stats for TID #{tid ? tid : '<no tid>'}" ; p args}
             
             # Validate arguments.
             if args[0]
@@ -127,7 +127,7 @@ class UVMFilterNode < UVMRemoteApp
                 elsif !args[1] || !(args[1] =~ /(\.\d+)+/)
                     @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[1] ? args[1] : 'missing value'}" }
                     return nil
-                elsif (args[1] =~ /^#{mib_root}/) == nil 
+                elsif !(args[1] =~ /^#{mib_root}/)
                     @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[1]} is not a filter node OID." ; mib_root.inspect }
                     return nil
                 end
@@ -137,10 +137,13 @@ class UVMFilterNode < UVMRemoteApp
                 stats = ""
                 if args[0]
                     # Get the effective OID to respond to
+                    oid = nil
                     if (args[0] == '-g') # snmp get
                         oid, tid = args[1], get_true_tid_wrt_oid(mib_root,args[1])
-                    else # args[0] == '-n' snmp get Next
+                    elsif (args[0] == '-n') # snmp get Next
                         oid, tid = *oid_next(mib_root, args[1], tid)
+                    else
+                        @diag.if_level(2) { puts! "Error: invalid SNMP option encountered: '#{args[1]}'" }
                     end
                     return nil unless oid
                     
@@ -150,7 +153,7 @@ class UVMFilterNode < UVMRemoteApp
                     @stats_cache_lock.synchronize {
                         cached_stats = @stats_cache[tid]
                         if !cached_stats || ((Time.now.to_i - cached_stats[1]) > STATS_CACHE_EXPIRY)
-                            @diag.if_level(3) { puts! "Stat cache miss / expiry." }
+                            @diag.if_level(2) { puts! "Stat cache miss / expiry." }
                             node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
                             begin
                                 nodeStats = node_ctx.getStats()
@@ -160,12 +163,12 @@ class UVMFilterNode < UVMRemoteApp
                             end
                             @stats_cache[tid] = [nodeStats, Time.now.to_i]
                         else
-                            @diag.if_level(3) { puts! "Stat cache hit." }
+                            @diag.if_level(2) { puts! "Stat cache hit." }
                             nodeStats = cached_stats[0]
                         end
                     }
 
-                    @diag.if_level(3) { puts! "Got node stats for #{tid}" ; p nodeStats }
+                    @diag.if_level(2) { puts! "Got node stats for #{tid}" ; p nodeStats }
                     
                     # Construct OID fragment to match on from >up to< the last two
                     # pieces of the effective OID, eg, xxx.1 => 1, xxx.18.2 ==> 18.2
@@ -173,6 +176,7 @@ class UVMFilterNode < UVMRemoteApp
                     mib_pieces = mib_root.split('.')
                     oid_pieces = oid.split('.')
                     stat_id = oid_pieces[(mib_pieces.length-oid_pieces.length)+1 ,2].join('.')
+                    @diag.if_level(2) { puts! "stat_id = #{stat_id}"}
                     case stat_id
                         when "1";  stat, type = get_uvm_node_name, str
                         when "2";  stat, type = nodeStats.tcpSessionCount(), int
@@ -194,10 +198,14 @@ class UVMFilterNode < UVMRemoteApp
                         when "18"; stat, type = nodeStats.lastActivityDate(), str
                         when /19\.\d+/
                             counter = oid_pieces[-1].to_i()-1
-                            return nil unless counter < NUM_STAT_COUNTERS
+                            return "" unless counter < NUM_STAT_COUNTERS
                             stat, type = nodeStats.getCount(counter), c32
+                        when "20"
+                            @diag.if_level(2) { puts! "mib tree end - halting walk #1"}
+                            return ""
                     else
-                        return nil
+                        @diag.if_level(2) { puts! "mib tree end - halting walk #2"}
+                        return ""
                     end
                     stats = "#{oid}\n#{type}\n#{stat}"
                 else
@@ -235,11 +243,11 @@ class UVMFilterNode < UVMRemoteApp
                     stats << "Counters: #{counters.join(',')}\n"
                     stats << "Dates (start, last config, last activity): #{sdate}, #{lcdate}, #{ladate}\n"
                 end
-                @diag.if_level(3) { puts! stats }
+                @diag.if_level(2) { puts! stats }
                 return stats
             rescue Exception => ex
                 msg = "Error: get filter node statistics failed: " + ex
-                @diag.if_level(3) { puts! msg ; p ex }
+                @diag.if_level(2) { puts! msg ; p ex ; p ex.backtrace }
                 return msg
             end
         end
@@ -259,22 +267,24 @@ class UVMFilterNode < UVMRemoteApp
         end
 
         def oid_next(mib_root, oid, tid)
-            @diag.if_level(3) { puts! "oid_next: #{mib_root}, #{oid}, #{tid ? tid : '<no tid>'}" }
+            @diag.if_level(2) { puts! "oid_next: #{mib_root}, #{oid}, #{tid ? tid : '<no tid>'}" }
             orig_tid = tid    
 
             if !tid
                 if (oid == mib_root)
                     # Caller wants to walk the entire mib tree of the associated filter node type.
                     # So, walk through tid list from the beginning.
+                    @diag.if_level(2) { puts! "oid == mibroot" }
                     tids = get_filternode_tids(get_uvm_node_name())
                     tid = tids[0]
                 else
                     # If oid != mib_root and !tid, then we're in the middle of walking the
                     # entire mib subtree.  Since we the only state we can count on is the
                     # incoming OID, pick up curent TID from incoming OID.
+                    @diag.if_level(2) { puts! "oid != mibroot" }
                     tid = get_true_tid_wrt_oid(mib_root, oid)
                 end
-                @diag.if_level(3) { puts! "oid_next: full subtree walk - effective tid=#{tid}" }                    
+                @diag.if_level(2) { puts! "oid_next: full subtree walk - effective tid=#{tid}" }                    
             end
 
             # Map the current OID to next OID.  This contraption of code is necessary because
@@ -282,17 +292,20 @@ class UVMFilterNode < UVMRemoteApp
             # its operand to the next logical value, e.g., "32.9".succ => "33.0", not "32.10"
             # as we want.  If no match for the OID is found then either halt the walk or advance
             # to the next TID in the tid list.
+            @diag.if_level(2) { puts! "oid = #{oid}, tid = #{tid}" }
             case oid
                 when "#{mib_root}"; next_oid = "#{mib_root}.#{tid}.1"
                 when "#{mib_root}.#{tid}"; next_oid = "#{mib_root}.#{tid}.1"
                 when "#{mib_root}.#{tid}.9"; next_oid = "#{mib_root}.#{tid}.10"
                 when "#{mib_root}.#{tid}.18"; next_oid = "#{mib_root}.#{tid}.19.1"
                 when "#{mib_root}.#{tid}.19.9"; next_oid = "#{mib_root}.#{tid}.19.10"
-                when "#{mib_root}.#{tid}.19.16"; next_oid = "#{mib_root}.#{tid}.20"
+                when "#{mib_root}.#{tid}.19.16"; next_oid = nil;
                 when /#{mib_root}\.#{tid}(\.\d+)+/; next_oid = oid.succ
-            else
+            end
+            if next_oid.nil?
                 if orig_tid
                     # we started w/a given tid so terminate the oid walk if no oid is matched above.
+                    @diag.if_level(2) { puts! "mib tree end - halting walk #3"}
                     next_oid = nil
                 else
                     # the orig_tid is nil so we're walking the whole sub-tree: advance to the next
@@ -302,16 +315,18 @@ class UVMFilterNode < UVMRemoteApp
                     cur_tid = oid_pieces[mib_pieces.length]
                     tids = get_filternode_tids(get_uvm_node_name())
                     next_tid = nil
-                    tids.each_with_index { |tid,i| next_tid = tids[i+1] if tid.to_s == cur_tid }
+                    tids.each_with_index { |tid,i| next_tid = tids[i+1] if ((i < tids.length) && (tid.to_s == cur_tid)) }
                     if next_tid
+                        @diag.if_level(2) { puts! "Advancing to next tid: #{next_tid}"}
                         tid = next_tid
                         next_oid = "#{mib_root}.#{tid}.1"
                     else
+                        @diag.if_level(2) { puts! "mib tree end - halting walk #4"}
                         next_oid = tid = nil
                     end
                 end
             end
-            @diag.if_level(3) { puts! "Next oid: #{next_oid}" }
+            @diag.if_level(2) { puts! "Next oid: #{next_oid}" }
             return [next_oid, tid]
         end
         
