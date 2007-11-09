@@ -4,10 +4,6 @@ class DnsController < ApplicationController
     render :action => 'manage'
   end
   
-  def register_menu_items
-    menu_organizer.register_item( "/main/dns_server", Alpaca::Menu::Item.new( 400, "DNS Server", "/dns" ))
-  end
-
   def manage
     @dns_server_settings = DnsServerSettings.find( :first )
     @dns_server_settings = DnsServerSettings.new if @dns_server_settings.nil?

@@ -1,16 +1,14 @@
 <%
-## Review : This is pretty flimsy
-is_external = ( stage.id == "interface-config-0" ) ? true : false
+intf = stage.interface
 config_options = [[ "Static".t, "static"]]
-config_options << [ "Dynamic (dhcp)".t, "dynamic" ] if is_external
-config_options << [ "Bridge".t, "bridge" ] unless is_external
-intf = stage.handler.interface
+config_options << [ "Dynamic (dhcp)".t, "dynamic" ] if stage.wan
+config_options << [ "Bridge".t, "bridge" ] unless stage.wan
 %>
 <%= hidden_field_tag( "interfaceList[]", stage.id ) %>
 <%= hidden_field_tag( "#{stage.id}.os_name", intf.os_name ) %>
-<%= hidden_field_tag( "#{stage.id}.name", stage.handler.name ) %>
+<%= hidden_field_tag( "#{stage.id}.name", stage.name ) %>
 <div id="<%= stage.id %>" style="display: none">
-  <h1><%= stage.name.t / [ stage.handler.name ] %></h1>
+  <h1><%= stage.name %></h1>
   
   <ul class="text-fields">
     <li>
@@ -21,19 +19,19 @@ intf = stage.handler.interface
   </ul>
 
   <%= render( :partial => "interface_config_static", 
-              :locals => { :config_id => "#{stage.id}-static", :is_external => is_external } ) %>
+              :locals => { :config_id => "#{stage.id}-static", :wan => stage.wan } ) %>
 
-  <% if is_external %>
+  <% if stage.wan %>
     <%= render( :partial => "interface_config_dynamic", 
-                :locals => { :config_id => "#{stage.id}-dynamic", :is_external => is_external } ) %>
+                :locals => { :config_id => "#{stage.id}-dynamic", :wan => stage.wan } ) %>
   <% else %>
     <%= render( :partial => "interface_config_bridge", 
-                :locals => { :config_id => "#{stage.id}-bridge", :is_external => is_external } ) %>
+                :locals => { :config_id => "#{stage.id}-bridge", :wan => stage.wan } ) %>
   <% end %>
   
 </div>
 <%= javascript_tag <<EOF
-interfaceArray.push( new Interface( '#{stage.id}', '#{intf.os_name}', '#{stage.handler.name}' ));
+interfaceArray.push( new Interface( '#{stage.id}', '#{intf.os_name}', '#{stage.name}' ));
 pageHandlers['#{stage.id}'] = function() { 
   /* Update all of the bridgeable interfaces */
   updateBridges('#{stage.id}');

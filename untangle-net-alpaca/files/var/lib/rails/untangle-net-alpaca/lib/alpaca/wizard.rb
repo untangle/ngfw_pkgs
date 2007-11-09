@@ -1,0 +1,2 @@
+module Alpaca::Wizard
+end

@@ -1,9 +1,9 @@
 <div id="steps">
   <ul id="step-list">
     <% first = true %>
-    <% @stages.each do |stage| %>
+    <% @builder.iterate_pieces do |stage| %>
       <li id="<%= stage.list_id %>" <%= first ? 'class="current"' : "" %>>
-        <%= stage.name.t / [ stage.handler.name ] %>
+        <%= stage.name %>
       </li>
       <% first = false %>
     <% end %>
@@ -12,7 +12,7 @@
 
 <div id="content">
   <% form_remote_tag( :url => { :action => 'save' }, :html => { :id => "wizard-data", :action => "#" } ) do -%>
-    <% @stages.each do |stage| %>
+    <% @builder.iterate_pieces do |stage| %>
       <%= render( :partial => stage.partial, :locals => { :stage => stage } ) %>
     <% end %>
   <% end -%>

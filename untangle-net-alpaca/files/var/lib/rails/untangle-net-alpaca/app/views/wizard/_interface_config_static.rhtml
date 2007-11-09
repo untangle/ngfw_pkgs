@@ -7,7 +7,7 @@
       <%= select_tag( "#{config_id}.netmask", options_for_select( @cidr_options, "24" ), :class => "netmask" ) %>
     </li>
 
-    <% if is_external %>
+    <% if wan %>
       <li>
         <label for="default_gateway"><%= "Default Gateway:".t %></label>
         <%= text_field_tag( "#{config_id}.default_gateway", "", :size => 16 ) %>

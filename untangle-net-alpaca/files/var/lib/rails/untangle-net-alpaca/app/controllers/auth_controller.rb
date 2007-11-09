@@ -7,12 +7,6 @@ class AuthController < ApplicationController
   ## Page to redirect to on a fresh login.
   DefaultPage = "/interface"
 
-  def register_menu_items
-    ## REVIEW : should be a more elegant way of specifying the URL.
-    ## Review : Shouldn't show this page if they are not logged in.
-    menu_organizer.register_item( "/main/logout", Alpaca::Menu::Item.new( 1000, "Logout", "/auth/logout" ))
-  end
-    
   ## Indicate that you do not need to be authenticated to view these pages.
   def authentication_required
     false
@@ -66,12 +60,13 @@ class AuthController < ApplicationController
     return redirect_to( DefaultPage ) if ApplicationHelper.null?( return_to )
 
     logger.debug "Returning to: #{return_to}"
-    return redirect_to( return_to )
+    redirect_to( return_to )
   end
 
   def end_session
     session[:username] = nil
-    request_login
+    
+    redirect_to( DefaultPage )
   end
 
   private

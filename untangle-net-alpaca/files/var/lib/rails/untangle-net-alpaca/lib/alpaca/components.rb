@@ -1,0 +1,2 @@
+module Alpaca::Components
+end

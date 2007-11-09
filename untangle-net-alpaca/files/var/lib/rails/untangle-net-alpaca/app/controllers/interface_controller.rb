@@ -11,21 +11,6 @@ class InterfaceController < ApplicationController
   ## Implement the reload interfaces web api.
   web_service_api InterfaceApi
   
-  ## Register all of the menu items.
-  def register_menu_items
-    ## REVIEW : should be a more elegant way of specifying the URL.
-    menu_organizer.register_item( "/main/interfaces", Alpaca::Menu::Item.new( 200, "Interfaces", "/interface/list" ))
-
-    ## Retrieve all of the interfaces
-    interfaces = Interface.find(:all)
-    interfaces.sort! { |a,b| a.index <=> b.index }
-
-    interfaces.each do |i|
-      menu_item = Alpaca::Menu::Item.new( i.index, i.name, "/interface/config/#{i.id}" )
-      menu_organizer.register_item( "/main/interfaces/#{i.os_name}", menu_item )
-    end    
-  end
-
   def index
     list
     render :action => 'list'

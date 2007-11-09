@@ -4,6 +4,4 @@ module Alpaca::Menu::Extensions
   end
 end
 
-ActionController::Base.send :include, Alpaca::Menu::Extensions
-
 ActionView::Base.send :include, Alpaca::Menu::Extensions

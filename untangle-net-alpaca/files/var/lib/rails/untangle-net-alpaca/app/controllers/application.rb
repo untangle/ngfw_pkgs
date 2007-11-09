@@ -2,10 +2,11 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+  @components = nil
+
   layout "main"
 
   DefaultTitle = "Untangle Net Alpaca"
-
 
   RegisterMenuMethod = "register_menu_items"
   
@@ -44,23 +45,13 @@ class ApplicationController < ActionController::Base
 
   ## Build the menu structure
   def build_menu_structure
+    menu_organizer = Alpaca::Menu::Organizer.instance
     menu_organizer.flush
     menu_organizer.register_item( "/main", Alpaca::Menu::Item.new( 0, "Main Menu", "#blank", "layouts/main_menu" ))
     
-    Dir.new( "#{RAILS_ROOT}/app/controllers" ).each do |controller|
-      next if /_controller.rb$/.match( controller ).nil?
-      
-      ## convert the string to camel caps, and strip of the rb
-      controller = controller.sub( /.rb$/, "" ).camelize
-      
-      ## Load the manager for this os, this will complete all of the initialization at
-      klazz = Module.const_get( controller ) rescue next
-
-      logger.debug "found #{controller} #{klazz}"
-
-      controller = klazz.new
-      next unless controller.methods.include?( RegisterMenuMethod )
-      controller.send( RegisterMenuMethod )
+    iterate_components do |component|
+      next unless component.methods.include?( RegisterMenuMethod )
+      component.send( RegisterMenuMethod, menu_organizer )
     end
   end
 
@@ -88,5 +79,31 @@ class ApplicationController < ActionController::Base
   ## override to indicate that authentication is not required.
   def authentication_required
     true
+  end
+
+  ## Useful for iterating all of the component modules.  This is where
+  ## Global parameters are set, things like the menu structure and the
+  ## initialization functions for the wizard.
+  def iterate_components
+    load_components if @components.nil?
+    
+    @components.each { |component| yield( component ) }
+  end
+
+  def load_components
+    @components = []
+
+    Dir.new( "#{RAILS_ROOT}/lib/alpaca/components" ).each do |component|
+      next if /_component.rb$/.match( component ).nil?
+
+      ## convert the string to camel caps, and strip of the rb
+      component = component.sub( /.rb$/, "" ).camelize
+      
+      ## Load the manager for this os, this will complete all of the initialization at
+      klazz = Alpaca::Components.const_get( component )
+
+      logger.debug( "Found the class #{klazz}" )
+      @components << klazz.new( params, session, request )
+    end
   end
 end

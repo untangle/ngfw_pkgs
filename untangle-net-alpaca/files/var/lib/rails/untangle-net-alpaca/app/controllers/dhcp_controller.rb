@@ -6,13 +6,6 @@ class DhcpController < ApplicationController
     render :action => 'manage'
   end
 
-  def register_menu_items
-    menu_organizer.register_item( "/main/dhcp_server", 
-                                  Alpaca::Menu::Item.new( 300, "DHCP Server", "/dhcp/manage" ))
-    menu_organizer.register_item( "/main/dhcp_server/entries", 
-                                  Alpaca::Menu::Item.new( 1, "Static Entries", "/dhcp/manage_entries" ))
-  end
-
   def create_static_entry
     @static_entry = DhcpStaticEntry.new
   end

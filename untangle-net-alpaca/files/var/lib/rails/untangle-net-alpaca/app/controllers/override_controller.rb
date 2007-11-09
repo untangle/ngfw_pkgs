@@ -1,10 +1,4 @@
-class OverrideController < ApplicationController
-
-  def register_menu_items
-    ## REVIEW : This should be declared in the status controller.
-    menu_organizer.register_item( "/main/override", Alpaca::Menu::Item.new( 600, "Overrides", "/override" ))
-  end
-  
+class OverrideController < ApplicationController  
   def index
     manage
     render :action => 'manage'
