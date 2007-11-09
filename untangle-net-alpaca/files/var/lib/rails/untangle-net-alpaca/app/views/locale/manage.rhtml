@@ -1,15 +1,18 @@
-<% form_tag( :action => 'save' ) do -%>
-
+<div>
   <h1><%= "Please select your locale".t %></h1>
-
-  <div class="text-fields">
-    <p>
-      <label for="locale"><%= "Language:".t %></label>
-      <%= select_tag( "locale", options_for_select( @localeArray, @settings.key )) %>
-    </p>
-  </div>
   
-  <%= submit_tag "Cancel".t %>
-  <%= submit_tag "Save Changes".t %>
-<% end %>
+  <% form_tag( :action => 'save' ) do -%>
+    <fieldset>
+      <ul class="text-fields">
+        <li>
+          <label for="locale"><%= "Language:".t %></label>
+          <%= select_tag( "locale", options_for_select( @localeArray, @settings.key )) %>
+        </li>
+      </ul>
+    </fieldset>
+    
+    <%= submit_tag "Cancel".t %>
+    <%= submit_tag "Save Changes".t %>
+  <% end %>
+</div>
   

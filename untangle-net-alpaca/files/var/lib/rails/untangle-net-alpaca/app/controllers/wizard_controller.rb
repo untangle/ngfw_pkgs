@@ -5,7 +5,7 @@ class WizardController < ApplicationController
   ## to the wizard.
   InsertStagesMethod = "wizard_insert_stages"
 
-  SaveMethod = "wizard_save"
+  InsertClosersMethod = "wizard_insert_closers"
 
   def index
     @title = "Setup Wizard"
@@ -25,13 +25,18 @@ class WizardController < ApplicationController
   end
   
   def save
+    builder = Alpaca::Wizard::Builder.new( Alpaca::Wizard::Closer )
+
     ## Iterate all of the components in search of stages for the wizard
     iterate_components do |component|
-      next unless component.methods.include?( SaveMethod )
-      component.send( SaveMethod )
+      next unless component.methods.include?( InsertClosersMethod )
+      component.send( InsertClosersMethod, builder )
     end
     
-    ## Should be in the wizard manager
-    spawn { os["network_manager"].commit }
+    ## Iterate all of the closers calling save.
+    builder.iterate_pieces do |closer|
+      closer.save
+    end
   end
+
 end

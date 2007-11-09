@@ -23,7 +23,6 @@ class LocaleController < ApplicationController
     ## Review : validation
     return redirect_to( :action => "manage" ) if newLocale.nil? || LOCALES[newLocale].nil?
 
-    
     LocaleSetting.destroy_all
 
     ## Save the new locale

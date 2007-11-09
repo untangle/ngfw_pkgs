@@ -1,0 +1,12 @@
+<div id="<%= stage.id %>" style="display: none">
+  <h1><%= stage.name %></h1>
+
+  <p><%= "Please select your locale".t %></p>
+  
+  <ul class="text-fields">
+    <li>
+      <label for="locale"><%= "Language:".t %></label>
+      <%= select_tag( "locale", options_for_select( stage.locale_array, stage.settings.key )) %>
+    </li>
+  </ul>
+</div>

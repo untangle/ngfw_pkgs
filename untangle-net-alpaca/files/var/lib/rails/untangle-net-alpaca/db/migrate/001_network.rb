@@ -130,8 +130,8 @@ class Network < ActiveRecord::Migration
     ## DHCP Server settings
     create_table :dhcp_server_settings do |table|
       table.column :enabled, :boolean
-      table.column :start, :string
-      table.column :end, :string
+      table.column :start_address, :string
+      table.column :end_address, :string
 
       ## Length of the lease in seconds.
       table.column :lease_duration, :int
