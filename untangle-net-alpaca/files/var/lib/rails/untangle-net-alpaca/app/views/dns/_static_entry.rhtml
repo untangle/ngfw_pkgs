@@ -1,7 +1,7 @@
 <% rowId="se-row-#{rand( 0x100000000 )}" %>
 <li id="<%= rowId  %>" class="static-entry">
-  <%= hidden_field_tag( "static_entries[]", rowId ) %>
   <div class="ip-address">
+    <%= hidden_field_tag( "static_entries[]", rowId ) %>
     <%= text_field( "ip_address", rowId, { :value => static_entry.ip_address } ) %>
   </div>
   <div class="hostname">
