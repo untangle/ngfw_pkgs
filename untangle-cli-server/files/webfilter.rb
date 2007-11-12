@@ -49,15 +49,15 @@ class Webfilter < UVMFilterNode
 - webfilter -- enumerate all web filters running on effective #{BRAND} server.
 - webfilter <TID> list blocklist [item-type:cats|urls|mimetypes|filetypes]
     -- Display blocklist of item-type for webfilter TID
-- webfilter <TID> add blocklist [item-type:cat|url|mimetype|filetype] [item] <block:true|false> <log:true|false> <description>
+- webfilter <TID> add blocklist [item-type:url|mimetype|filetype] item <block:true|false> <log:true|false> <description>
     -- Add item to blocklist by type (or update) with specified block and log settings.
-- webfilter <TID> remove blocklist [item-type:cat|url|mime|file] [item]
+- webfilter <TID> remove blocklist [item-type:url|mime|file] item
     -- Remove item from blocklist by type (or update) with specified block and log settings.
 - webfilter <TID> list passlist [item-type:urls|clients]
     -- Display passlist items
-- webfilter <TID> add passlist [item-type:url|client] [item:url|ip] [pass:true|false] <description>
+- webfilter <TID> add passlist [item-type:url|client] item [pass:true|false] <description>
     -- Add item to passlist with specified settings.
-- webfilter <TID> remove passlist [item-type:url|client] [item:url|ip]
+- webfilter <TID> remove passlist [item-type:url|client] item
     -- Remove item from passlist with specified settings.
 - webfilter <TID> stats
     -- Display webfilter TID statistics in human readable format
@@ -328,7 +328,7 @@ class Webfilter < UVMFilterNode
         end
     end
 
-    def block_list_add_file_type(tid, file_ext, block="true", category=nil)
+    def block_list_add_file_type(tid, file_ext, block="true", description=nil)
         begin
             return ERROR_INCOMPLETE_COMMAND if file_ext.nil? || file_ext==""
             node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
@@ -337,8 +337,7 @@ class Webfilter < UVMFilterNode
             blockedExtensionsList = settings.getBlockedExtensions()   
             @diag.if_level(2) { puts! "Attempting to add #{file_ext} to Block list." }
             block = (block.nil? || (block != "true")) ? false : true
-            category = "" unless category
-            stringRule = com.untangle.uvm.node.StringRule.new(file_ext, "[no name]", category, "[no description]", block)
+            stringRule = com.untangle.uvm.node.StringRule.new(file_ext, "[no name]", "[no category]", description, block)
             rule_to_update = -1
             blockedExtensionsList.each_with_index { |blocked_ext,i|
                 blocked_ext.getString() == stringRule.getString()
