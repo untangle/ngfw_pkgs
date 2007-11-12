@@ -60,12 +60,12 @@ module CmdDispatcher
 
   private
   def dispatch_cmd_helper(prefix, has_tid, args)
-    cmd_name = args.empty? ? "" : args[0]
+    cmd_name = args.empty? ? "" : format_command_name(args[0])
     tid = has_tid ? args[1] : nil
     new_args = has_tid ? args[2..-1] : args[1..-1]
     full_name = "#{prefix}_#{cmd_name}"
     matches = candidates(full_name)
-    if respond_to?(full_name) and (new_args.empty? or candidates("#{full_name}_#{new_args[0]}") == 0) then
+    if respond_to?(full_name) and (new_args.empty? or candidates("#{full_name}_#{format_command_name(new_args[0])}") == 0) then
       begin
         return has_tid ? send(full_name, tid, *new_args) : send(full_name, *new_args)
       rescue ArgumentError => ex
@@ -85,6 +85,11 @@ module CmdDispatcher
   def candidates(cmd_name)
     methods.select { |m| m =~ /^#{cmd_name}/ }.length
   end
+  
+  def format_command_name(cmd_name)
+    cmd_name.nil? ? cmd_name : cmd_name.gsub(/-/, "_")
+  end
+  
 end
 
 
