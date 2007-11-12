@@ -206,8 +206,8 @@ class NUCLIClient
         opts.on("-u", "--user USERNAME", String, "User to login to NUCLI server as.") { |user|
             @user = user
         }
-        opts.on("-t", "--no-tunnels", "Disable SSH tunneling.") { |user|
-            @use_ssh_tunnels = false
+        opts.on("-t", "--use-ssh-tunnel", "Enable SSH tunneling.") { |user|
+            @use_ssh_tunnels = true
         }
 
         remainder = opts.parse(options);
@@ -283,9 +283,9 @@ class NUCLIClient
             # Only commands entered into the top level "shell" are added to the session history
             @history_lock.synchronize {
                 @history.shift unless @history.length < @history_size
-                server_id = nil
-                @servers_lock.synchronize { server_id = @server_id }
-                @history << [cmd_num, cmd_a.join(' '), server_id]
+                server_name = nil
+                @servers_lock.synchronize { server_name = @drb_server[0] }
+                @history << [cmd_num, cmd_a.join(' '), server_name]
             }
             cmd_num += 1
         end
@@ -673,7 +673,7 @@ class NUCLIClient
         @history_lock.synchronize {
             if args.nil? || args.length == 0
                 @history.each_with_index { |h,i|
-                    puts! "[##{h[2]}:#{h[0]}] #{h[1]}" if i >= @history.length-@history_num_to_display
+                    puts! "[*#{h[2]}:#{h[0]}] #{h[1]}" if i >= @history.length-@history_num_to_display
                 }
             elsif /^\d+/ =~ args[0]
                 n = args[0].to_i
