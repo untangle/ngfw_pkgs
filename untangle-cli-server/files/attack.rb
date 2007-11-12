@@ -47,17 +47,13 @@ class Attack < UVMFilterNode
     
     def get_help_text()
         return <<-HELP
-- attackblocker -- enumerate all web filters running on effective #{BRAND} server.
-- attackblocker <#X> rules
-    -- Display rule list for attackblocker #X
-- attackblocker <#X> rules add enable action log traffic_type direction src-addr dst-addr src-port dst-port category description
+- attack -- enumerate all web filters running on effective #{BRAND} server.
+- attack <TID> list
+    -- Display rule list for attack TID
+- attack <TID> add enable action log traffic_type direction src-addr dst-addr src-port dst-port category description
     -- Add item to rule-list by type (or update) with specified block and log settings.
-- attackblocker <#X> rules remove [rule-number]
+- attack <TID> remove [rule-number]
     -- Remove item '[rule-number]' from rule list.
-- attackblocker <#X> settings ...
-    -- Display settings for attackblocker #X
-- attackblocker <#X> settings action [pass|block]
-    -- Change settings for attackblocker #X
     HELP
     end
 
@@ -69,15 +65,15 @@ class Attack < UVMFilterNode
     end
     
     def cmd_add(tid, *args)
-        return add_rule(tid, -1, *args.slice(1,args.length-1))
+        return add_rule(tid, -1, *args)
     end
     
     def cmd_update(tid, *args)
-        return add_rule(tid, args[1], *args.slice(2,args.length-2))
+        return add_rule(tid, *args)
     end
     
     def cmd_remove(tid, *args)
-        return remove_rule(tid, args[1])
+        return remove_rule(tid, *args)
     end
     
     def list_rules(tid)
@@ -85,108 +81,73 @@ class Attack < UVMFilterNode
             node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
-            attackBlockerRuleList = settings.getAttackblockerRuleList()
-            rules = "#,enabled,action,log,traffic-type,direction,src-addr,dest-addr,src-port,dst-port,category,description\n"
+            ruleList = settings.getShieldNodeRuleList()
+            rules = "#,enabled,address/netmask,user count,description\n"
             rule_num = 1
-            attackBlockerRuleList.each { |rule|
-                rules << "#{rule_num},#{rule.isLive().to_s},#{rule.getAction()},#{rule.getLog()}"
-                rules << ",#{rule.getProtocol().toDatabaseString()}"
-                rules << ",#{rule.getDirection()}"
-                rules << ",#{rule.getSrcAddress().toDatabaseString()}"
-                rules << ",#{rule.getDstAddress().toDatabaseString()}"
-                rules << ",#{rule.getSrcPort().toDatabaseString()}"
-                rules << ",#{rule.getDstPort().toDatabaseString()}"
-                rules << ",'#{rule.getCategory()}'"
-                rules << ",'#{rule.getDescription()}'"
-                rules << "\n"
+            ruleList.each { |rule|
+                rules << "#{rule_num},#{rule.isLive().to_s},#{rule.getAddress()},'#{rule.getDescription()}'\n"
                 rule_num += 1                
             }
             return rules
         rescue Exception => ex
-            msg = "Error: #{self.class}.get_rule_list caught an unhandled exception -- " + ex
-            @diag.if_level(2) { puts! msg ; p ex }
+            msg = "Error: #{self.class}.list_rules caught an unhandled exception -- " + ex
+            @diag.if_level(3) { puts! msg ; p ex }
             return msg
         end
     end
 
-    def add_rule(tid, rule_num, enable="true", action="block", log="false", traffic_type=nil, direction=nil, src_addr=nil, dst_addr=nil, src_port=nil, dst_port=nil, category=nil, desc=nil)
+    def add_rule(tid, rule_num, enable, address, user_count, description=nil)
 	
-	# Validate arguments...  ***TODO: validate format of addresses and ports?
-	if !(traffic_type && direction && src_addr && dst_addr && src_port && dst_port)
-	    return ERROR_INCOMPLETE_COMMAND
-	elsif !["true", "false"].include?(enable)
-	    return "Error: invalid value for 'enable' - valid values are 'true' and 'false'."
-	elsif !["block", "pass"].include?(action)
-	    return "Error: invalid value for 'action' - valid values are 'block' and 'pass'."
-	elsif !["true", "false"].include?(log)
-	    return "Error: invalid value for 'log' - valid values are 'true' and 'false'."
+	if !["true", "false"].include?(enable)
+	    msg = "Error: invalid value for 'enable' - valid values are 'true' and 'false'."
+            @diag.if_level(3) { puts! msg }
+            return msg
+	elsif !(address =~ /(\d+\.)+\d+/)
+            msg = "Error: invalid value for 'address' - valid values are well formatted IP addresses plus optional netmask, e.g., 192.168.0.10[/255.255.255.0]"
+            @diag.if_level(3) { puts! msg }
+            return msg
+	elsif !["5", "25", "50", "100"].include?(user_count)
+	    msg = "Error: invalid value for 'user-count' - valid values are 5, 25, 50, 100."
+            @diag.if_level(3) { puts! msg }
+            return msg
 	end
 	
-	# Add new rule...
+	# Add rule...
         begin
             node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
-            attackblockerRuleList = settings.getAttackblockerRuleList()
+            ruleList = settings.getShieldNodeRuleList()
 
             rule_num = rule_num.to_i
-            if (rule_num < 1 || rule_num > attackblockerRuleList.length) && (rule_num != -1)
-                return "Error: invalid rule number - valid values are 1...#{attackblockerRuleList.length}"
+            if (rule_num < 1 || rule_num > ruleList.length) && (rule_num != -1)
+                msg = "Error: invalid rule number - valid values are 1...#{ruleList.length}"
+                @diag.if_level(3) { puts! msg }
+                return msg
             end
             
-	    rule = com.untangle.node.attackblocker.AttackblockerRule.new
+	    rule = com.untangle.node.shield.ShieldNodeRule.new
 	    rule.setLive(enable == "true")
-	    rule.setAction(action)
-	    rule.setLog(log == "true")
-	    begin rule.setProtocol(com.untangle.uvm.node.attackblocker.protocol.ProtocolMatcherFactory.parse(traffic_type))
-            rescue ParseError => ex
-                msg = "Error: invalid protocol value."
-                @diag.if_level(2) { puts! msg ; p ex }
-                return msg
-	    end
-	    rule.setDirection(direction)
-	    begin rule.setSrcAddress(com.untangle.uvm.node.attackblocker.ip.IPMatcherFactory.parse(src_addr))
-            rescue ParseError => ex
-                msg = "Error: invalid source address value."
-                @diag.if_level(2) { puts! msg ; p ex }
-                return msg
-	    end
-	    begin rule.setDstAddress(com.untangle.uvm.node.attackblocker.ip.IPMatcherFactory.parse(dst_addr))
-            rescue ParseError => ex
-                msg = "Error: invalid destination address value."
-                @diag.if_level(2) { puts! msg ; p ex }
-                return msg
-	    end
-	    begin rule.setSrcPort(com.untangle.uvm.node.attackblocker.port.PortMatcherFactory.parse(src_addr))
-            rescue ParseError => ex
-                msg = "Error: invalid source port value."
-                @diag.if_level(2) { puts! msg ; p ex }
-                return msg
-	    end
-	    begin rule.setDstPort(com.untangle.uvm.node.attackblocker.port.PortMatcherFactory.parse(dst_port))
-            rescue ParseError => ex
-                msg = "Error: invalid destination port value."
-                @diag.if_level(2) { puts! msg ; p ex }
-                return msg
-	    end	    
-	    rule.setCategory(category) if category
-	    rule.setDescription(desc) if desc
+	    rule.setCategory("[no category]")
+	    rule.setDescription(description) if description
+	    begin 
+                rule.setAddress(com.untangle.uvm.node.IPaddr.parse(address))
+	    rescue Exception
+                msg = "Error: invalid IP address '#{address}'"
+                @diag.if_level(3) { puts! msg }
+                return msg                
+            end
 	    
-	    if rule_num == -1
-                attackblockerRuleList.add(rule)
-	    else
-                attackblockerRuleList[rule_num-1] = rule
-	    end
-	    
-	    settings.setAttackblockerRuleList(attackblockerRuleList)
+	    (rule_num == -1) ? ruleList.add(rule) : ruleList[rule_num-1] = rule
+	    settings.setShieldNodeRuleList(ruleList)
 	    node.setSettings(settings)
 	    
-	    msg = (rule_num == -1) ? "Rule #{rule_num} updated in attackblocker rule list." : "Rule added to attackblocker rule list."
-	    @diag.if_level(2) { puts! msg }
+	    msg = (rule_num != -1) ? "Rule ##{rule_num} updated in #{get_node_name} rule list." : "Rule added to #{get_node_name} rule list."
+	    @diag.if_level(3) { puts! msg }
             return msg
         rescue Exception => ex
             msg = "Error: #{self.class}.add_rule caught an unhandled exception -- " + ex
-            @diag.if_level(2) { puts! msg ; p ex }
+            @diag.if_level(3) { puts! msg ; p ex }
             return msg
         end
     end
@@ -198,18 +159,18 @@ class Attack < UVMFilterNode
             node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
-            attackblockerRuleList = settings.getAttackblockerRuleList()
+            ruleList = settings.getShieldNodeRuleList()
 
             rule_num = rule_num.to_i
-            if (rule_num < 1 || rule_num > attackblockerRuleList.length)
-                return "Error: invalid rule number - valid values are 1...#{attackblockerRuleList.length}"
+            if (rule_num < 1 || rule_num > ruleList.length)
+                return "Error: invalid rule number - valid values are 1...#{ruleList.length}"
             end
 
-            attackblockerRuleList.remove(attackblockerRuleList[rule_num-1])
-	    settings.setAttackblockerRuleList(attackblockerRuleList)
+            ruleList.remove(ruleList[rule_num-1])
+	    settings.setShieldNodeRuleList(ruleList)
 	    node.setSettings(settings)
 	    
-	    msg = "Rule #{rule_num} removed from attackblocker rule list."
+	    msg = "Rule #{rule_num} removed from #{get_node_name} rule list."
 	    @diag.if_level(2) { puts! msg }
             return msg
         rescue Exception => ex
@@ -219,49 +180,4 @@ class Attack < UVMFilterNode
         end
     end
    
-    def cmd_settings(tid, *args)
-        return ERROR_INCOMPLETE_COMMAND
-    end
-
-    def cmd_settings_defaultaction(tid, *args)
-        if args[0].nil?
-            return list_settings_default_action(tid)
-        else
-            return settings_default_action(tid, args[1])
-        end
-    end
-
-    def list_settings_default_action(tid)
-        begin
-            node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
-            node = node_ctx.node()
-            settings =  node.getSettings()
-            default_action = "Default action: #{settings.isDefaultAccept() ? "pass" : "block"}"
-        rescue Exception => ex
-            msg = "Error: #{self.class}.list_settings_default_action caught an unhandled exception -- " + ex
-            @diag.if_level(2) { puts! msg ; p ex }
-            return msg
-        end
-    end
-    
-    def settings_default_action(tid, action="block")
-        begin
-            raise ArgumentError unless (action == "block") || (action == "pass")
-            node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
-            node = node_ctx.node()
-            settings =  node.getSettings()
-            settings.setDefaultAccept(action == "pass")
-            node.setSettings(settings)
-            res = "#{self.class} Settings Default Action set to '#{action}'"
-            @diag.if_level(2) { puts! res }
-            return res
-        rescue ArgumentError
-            return "Error: invalid value for Default Action -- valid actions are 'pass' and 'block'."
-        rescue Exception => ex
-            msg = "Error: #{self.class}.settings_default_actioncaught an unhandled exception -- " + ex
-            @diag.if_level(2) { puts! msg ; p ex }
-            return msg
-        end
-    end
-
-end # Attackblocker
+end # Attack
