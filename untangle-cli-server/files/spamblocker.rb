@@ -21,12 +21,9 @@ include_class(['com.untangle.node.spam.SpamProtoConfig',
               'com.untangle.node.spam.SMTPSpamMessageAction'])
 
 class SpamBlocker < UVMFilterNode
-  include CmdDispatcher
-  include RetryLogin
 
-  ERROR_NO_SPAMBLOCKER_NODES = "No Spam Blocker modules are installed on the effective server."
-  NODE_NAME = "untangle-node-spamassassin"
-  # TODO check with Ken the real MIB for spamblocker
+  UVM_NODE_NAME = "untangle-node-spamassassin"
+  NODE_NAME = "Spam Blocker"
   SPAMBLOCKER_MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".10"
 
   @@strengthValues = {
@@ -56,55 +53,22 @@ class SpamBlocker < UVMFilterNode
     @diag.if_level(3) { puts! "Done initializing #{get_node_name()}..." }
   end
   
+  #
+  # Required UVMFilterNode methods.
+  #
   def get_uvm_node_name()
-    NODE_NAME
+    UVM_NODE_NAME
   end
   
   def get_node_name()
-    "Spam Blocker"
+    NODE_NAME
   end
   
   def get_mib_root()
     SPAMBLOCKER_MIB_ROOT
   end  
   
-  def execute(args)
-    # TODO: BUG: if we don't return something the client reports an exception
-    @diag.if_level(3) { puts! "SpamBlocker::execute(#{args.join(', ')})" }
-
-    begin
-      retryLogin {
-        # Get tids of all spam blockers once and for all commands we might execute below.
-        tids = get_filternode_tids(get_uvm_node_name())
-        if empty?(tids) then return (args[0] == "snmp") ? nil : ERROR_NO_SPAMBLOCKER_NODES ; end
-
-        begin
-          tid, cmd = *extract_tid_and_command(tids, args, ["snmp"])
-        rescue InvalidNodeNumber, InvalidNodeId => ex
-            msg = ERROR_INVALID_NODE_ID + ": " + ex
-            @diag.if_level(3) { puts! msg ; p ex}
-            return msg
-        rescue Exception => ex
-          msg = "Error: spamblocker encountered an unhandled exception: " + p
-        end
-        @diag.if_level(3) { puts! "TID = #{tid}, command = #{cmd}" }
-
-        return dispatch_cmd(args.empty? ? [cmd, tid] : [cmd, tid, *args])
-      }
-    rescue Exception => ex
-      @diag.if_level(3) { puts! ex; puts! ex.backtrace }
-      return "Uncaught exception #{ex}"
-    end    
-  end
-
-  # Default command: list all span blocker FNs
-  # TODO: we should consider moving this method to UVMFilterNode class
-  def cmd_(*args)
-    return list_filternodes()
-  end
-  
-  protected
-  def cmd_help(tid, *args)
+  def get_help_text()
     return <<HELP
 - spamblocker -- enumerate all spam blocker nodes running on effective #{BRAND} server.
 - spamblocker <#X|TID> [protocol:SMTP|POP|IMAP]
@@ -121,6 +85,16 @@ class SpamBlocker < UVMFilterNode
 HELP
   end
 
+  #
+  # Command handlers.
+  #
+
+  # Default command: list all span blocker FNs
+  # TODO: we should consider moving this method to UVMFilterNode class
+  def cmd_(*args)
+    return list_filternodes()
+  end
+  
   def cmd_SMTP(tid)
     display_settings(tid, "SMTP")
   end

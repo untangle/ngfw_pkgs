@@ -19,6 +19,9 @@ require 'remoteapp'
 
 class UVMFilterNode < UVMRemoteApp
 
+    include CmdDispatcher
+    include RetryLogin
+
     protected
 
         UVM_FILTERNODE_MIB_ROOT = ".1.3.6.1.4.1.2021.6971"
@@ -37,9 +40,40 @@ class UVMFilterNode < UVMRemoteApp
         end
 
     public
-        # If derived class does not override this method then its not a valid filter node.
         def execute(args)
-            raise FilterNodeAPIVioltion, "Filter nodes does not implement the required 'execute' method"
+          # TODO: BUG: if we don't return something the client reports an exception
+          @diag.if_level(3) { puts! "Protofilter::execute(#{args.join(', ')})" }
+      
+          begin
+            orig_args = args.dup
+            retryLogin {
+              # Get tids of all protocol filters once and for all commands we might execute below.
+      
+              begin
+                tids = get_filternode_tids(get_uvm_node_name())
+                if empty?(tids) then return (args[0] == "snmp") ? nil : ERROR_NO_fILTER_NODES ; end
+                tid, cmd = *extract_tid_and_command(tids, args, ["snmp"])
+              rescue InvalidNodeNumber, InvalidNodeId => ex
+                  msg = ERROR_INVALID_NODE_ID + ": " + ex
+                  @diag.if_level(3) { puts! msg ; p ex}
+                  return msg
+              rescue Exception => ex
+                msg = "Error: #{get_node_name} filter node has encountered an unhandled exception: " + ex
+                @diag.if_level(3) { puts! msg; puts! ex ; ex.backtrace }
+                return msg
+              end
+              @diag.if_level(3) { puts! "Executing command = #{cmd} on filter node TID = #{tid}" }
+              return dispatch_cmd(args.empty? ? [cmd, tid] : [cmd, tid, *args])
+            }
+          rescue NoMethodError => ex
+              msg = ERROR_UNKNOWN_COMMAND + ": '#{orig_args.join(' ')}'"
+              @diag.if_level(3) { puts! msg; puts! ex ; ex.backtrace }
+              return msg
+          rescue Exception => ex
+            msg = "Error: '#{get_node_name}' filter node has encountered an unhandled exception: " + ex
+            @diag.if_level(3) { puts! msg; puts! ex ; ex.backtrace }
+            return msg
+          end    
         end
 
     protected
@@ -55,6 +89,11 @@ class UVMFilterNode < UVMRemoteApp
     protected
         def get_mib_root()
             raise NoMethodError, "Derived class of UVMFilterNode does not implement required method 'get_mib_root()'"
+        end
+
+    protected
+        def get_help_text()
+            raise NoMethodError, "Derived class of UVMFilterNode does not implement required method 'get_help_text()'"
         end
 
     protected
@@ -341,6 +380,29 @@ class UVMFilterNode < UVMRemoteApp
           }
           @diag.if_level(2) { puts! "#{ret}" }
           return ret
+        end
+
+    protected
+        ERROR_NO_fILTER_NODES = "No filter nodes of the requested type are installed on the effective UVM."
+
+    protected
+        def cmd_(tid, *args)
+            return list_filternodes()
+        end
+
+    protected
+        def cmd_help(tid, *args)
+            return get_help_text()
+        end
+
+    protected
+        def cmd_stats(tid, *args)
+            get_statistics(tid, args)
+        end
+        
+    protected
+        def cmd_snmp(tid, *args)
+            get_statistics(tid, args)
         end
         
 end # UVMFilterNode

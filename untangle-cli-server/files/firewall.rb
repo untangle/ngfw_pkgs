@@ -19,8 +19,8 @@ require 'filternode'
 
 class Firewall < UVMFilterNode
     
-    ERROR_NO_FIREWALL_NODES = "No firewall modules are installed on the effective server."
-    NODE_NAME = "untangle-node-firewall"
+    UVM_NODE_NAME = "untangle-node-firewall"
+    NODE_NAME = "Firewall"
     FIREWALL_MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".2"
     
     def initialize
@@ -34,124 +34,65 @@ class Firewall < UVMFilterNode
     # Required UVMFilterNode methods.
     #
     def get_uvm_node_name()
-        NODE_NAME
+        UVM_NODE_NAME
     end
 
     def get_node_name()
-        "Firewall"
+        NODE_NAME
     end
 
     def get_mib_root()
         FIREWALL_MIB_ROOT
     end
     
-    #
-    # Server service methods
-    #
-    def execute(args)
-
-        @diag.if_level(3) { puts! "Firewall::execute(#{args.join(' ')})" }
-        
-        retried = false
-        
-        begin
-            # Get tids of all web filters once and for all commands we might execute below.
-            tids = get_filternode_tids(get_uvm_node_name())
-            if empty?(tids) then return (args[0] == "snmp") ? nil : ERROR_NO_FIREWALL_NODES ; end
-    
-            begin
-                tid, cmd = *extract_tid_and_command(tids, args, ["snmp"])
-            rescue InvalidNodeNumber, InvalidNodeId => ex
-                msg = ERROR_INVALID_NODE_ID + ": " + ex
-                @diag.if_level(3) { puts! msg ; p ex}
-                return msg
-            rescue Exception => ex
-                msg = "Error: firewall encountered an unhandled exception: " + p
-                @diag.if_level(3) { puts! msg ; p ex}
-                return msg
-            end
-            
-            @diag.if_level(3) { puts! "TID = #{tid}, command = #{cmd}" }
-            
-            case cmd
-            when nil, "", "list"
-                return list_filternodes(tids)
-            when "help"
-                help_text = <<-FIREWALL_HELP
-
+    def get_help_text()
+        return <<-HELP
 - firewall -- enumerate all filewall nodes running on effective #{BRAND} server.
-- firewall <#X|TID> rules
-    -- Display rule list for firewall #X|TID
-- firewall <#X|TID> rules add enable action log traffic_type direction src-addr dst-addr src-port dst-port category description
-    -- Add item to rules list by type (or update) with specified block and log settings.
-- firewall <#X|TID> rules remove [rule-number]
-    -- Remove item '[rule-number]' from rule list.
-- firewall <#X|TID> settings defaultaction <new-default-action>
-    -- Display or update default-actions settings for firewall #X|TID
-- firewall <#X> stats
-    -- Display firewall #X statistics in human readable format
-- firewall snmp
-    -- Display firewall #X statistics in snmp compliant format (getnext)    
-                FIREWALL_HELP
-                return help_text
-            when "rules", "rule"
-                return manage_rule_list(tid, args)
-            when "settings"
-                return manage_settings(tid, args)
-            when "eventlog"
-                return "Event Log not yet supported."
-            when "stats", "snmp"
-                return get_statistics(tid, args)
-            else
-                return ERROR_UNKNOWN_COMMAND + " -- '#{args.join(' ')}'"
-            end
-        rescue Exception => ex
-            if !retried
-                @diag.if_level(2) { puts! "Login expired - logging back on and trying one more time" ; p ex }
-                @@filter_node_lock.synchronize { login }
-                retry
-            else
-                raise Exception
-            end            
-        rescue Exception => ex
-            msg = "Firewall has raised an unhandled exception -- " + ex
-            @diag.if_level(1) { puts! msg }
-            p ex
-            return msg
-        end
-        
+- firewall <TID> list
+    -- Display rule list for firewall TID
+- firewall <TID> add enable action log traffic_type src-addr dst-addr src-port dst-port category description
+    -- Add item to rule list by type (or update) with specified block and log settings.
+- firewall <TID> update RULE# enable action log traffic_type src-addr dst-addr src-port dst-port category description
+    -- Add item to rule list by type (or update) with specified block and log settings.
+- firewall <TID> remove RULE#
+    -- Remove item 'RULE#' from rule list.
+- firewall <TID> defaultaction <new-default-action>
+    -- Display or update default-actions settings for firewall TID
+- firewall <TID> stats
+    -- Display firewall TID statistics in human readable format
+        HELP
     end
 
     #
-    # Rule List related methods
+    # Command handlers.
     #
-    def manage_rule_list(tid, args)
-        case args[0]
-        when nil, ""
-            return get_rule_list(tid)
-        when "add"
-            return add_rule(tid, -1, *args.slice(1,args.length-1))
-        when "update"
-            return add_rule(tid, args[1], *args.slice(2,args.length-2))
-        when "remove"
-            return remove_rule(tid, args[1])
-        else
-            return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
-        end
+    def cmd_list(tid, *args)
+        return list_rules(tid)
+    end
+    
+    def cmd_add(tid, *args)
+        return add_rule(tid, -1, *args)
+    end
+    
+    def cmd_update(tid, *args)
+        return add_rule(tid, *args)
+    end
+    
+    def cmd_remove(tid, *args)
+        return remove_rule(tid, *args)
     end
 
-    def get_rule_list(tid)
+    def list_rules(tid)
         begin
             node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
             fireWallRuleList = settings.getFirewallRuleList()
-            rules = "#,enabled,action,log,traffic-type,direction,src-addr,dest-addr,src-port,dst-port,category,description\n"
+            rules = "#,enabled,action,log,traffic-type,src-addr,dest-addr,src-port,dst-port,category,description\n"
             rule_num = 1
             fireWallRuleList.each { |rule|
                 rules << "#{rule_num},#{rule.isLive().to_s},#{rule.getAction()},#{rule.getLog()}"
                 rules << ",#{rule.getProtocol().toDatabaseString()}"
-                rules << ",#{rule.getDirection()}"
                 rules << ",#{rule.getSrcAddress().toDatabaseString()}"
                 rules << ",#{rule.getDstAddress().toDatabaseString()}"
                 rules << ",#{rule.getSrcPort().toDatabaseString()}"
@@ -169,10 +110,10 @@ class Firewall < UVMFilterNode
         end
     end
 
-    def add_rule(tid, rule_num, enable="true", action="block", log="false", traffic_type=nil, direction=nil, src_addr=nil, dst_addr=nil, src_port=nil, dst_port=nil, category=nil, desc=nil)
+    def add_rule(tid, rule_num, enable="true", action="block", log="false", traffic_type=nil, src_addr=nil, dst_addr=nil, src_port=nil, dst_port=nil, category=nil, desc=nil)
 	
 	# Validate arguments...  ***TODO: validate format of addresses and ports?
-	if !(traffic_type && direction && src_addr && dst_addr && src_port && dst_port)
+	if !(traffic_type && src_addr && dst_addr && src_port && dst_port)
 	    return ERROR_INCOMPLETE_COMMAND
 	elsif !["true", "false"].include?(enable)
 	    return "Error: invalid value for 'enable' - valid values are 'true' and 'false'."
@@ -204,7 +145,6 @@ class Firewall < UVMFilterNode
                 @diag.if_level(2) { puts! msg ; p ex }
                 return msg
 	    end
-	    rule.setDirection(direction)
 	    begin rule.setSrcAddress(com.untangle.uvm.node.firewall.ip.IPMatcherFactory.parse(src_addr))
             rescue Exception => ex
                 msg = "Error: invalid source address value."
@@ -279,22 +219,15 @@ class Firewall < UVMFilterNode
         end
     end
    
-    def manage_settings(tid, args)
-        case args[0]
-        when nil, ""
-            return ERROR_INCOMPLETE_COMMAND
-        when "default-action"
-            if args[1].nil?
-                return list_settings_default_action(tid)
-            else
-                return settings_default_action(tid, args[1])
-            end
+    def cmd_defaultaction(tid, *args)
+        if args[0].nil?
+            return list_default_action(tid)
         else
-            return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
+            return default_action(tid, args[0])
         end
     end
 
-    def list_settings_default_action(tid)
+    def list_default_action(tid)
         begin
             node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
@@ -307,7 +240,7 @@ class Firewall < UVMFilterNode
         end
     end
     
-    def settings_default_action(tid, action="block")
+    def default_action(tid, action="block")
         begin
             raise ArgumentError unless (action == "block") || (action == "pass")
             node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
@@ -328,4 +261,3 @@ class Firewall < UVMFilterNode
     end
 
 end # Firewall
-

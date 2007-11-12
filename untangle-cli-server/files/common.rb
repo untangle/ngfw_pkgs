@@ -55,7 +55,7 @@ module CmdDispatcher
     catch :unknown_command do
       return dispatch_cmd_helper(prefix, has_tid, args)
     end
-    return ERROR_UNKNOWN_COMMAND + " -- '#{args.join(' ')}'"
+    raise NoMethodError, "No command handler method found for '#{args.join(' ')}'."
   end
 
   private

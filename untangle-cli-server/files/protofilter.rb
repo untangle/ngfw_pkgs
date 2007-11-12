@@ -18,11 +18,9 @@
 require 'filternode'
 
 class ProtoFilter < UVMFilterNode
-  include CmdDispatcher
-  include RetryLogin
 
-  ERROR_NO_PROTOFILTER_NODES = "No Protocol Filter modules are installed on the effective server."
-  NODE_NAME = "untangle-node-protofilter"
+  UVM_NODE_NAME = "untangle-node-protofilter"
+  NODE_NAME = "Protocol Filter"
   PROTOFILTER_MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".4"
 
   def initialize
@@ -32,47 +30,41 @@ class ProtoFilter < UVMFilterNode
     @diag.if_level(3) { puts! "Done initializing #{get_node_name()}..." }
   end
   
+  #
+  # Required UVMFilterNode methods.
+  #
   def get_uvm_node_name()
-    NODE_NAME
+    UVM_NODE_NAME
   end
   
   def get_node_name()
-    "Protocol Filter"
+    NODE_NAME
   end
   
   def get_mib_root()
     PROTOFILTER_MIB_ROOT
   end  
-  
-  def execute(args)
-    # TODO: BUG: if we don't return something the client reports an exception
-    @diag.if_level(3) { puts! "Protofilter::execute(#{args.join(', ')})" }
 
-    begin
-      retryLogin {
-        # Get tids of all protocol filters once and for all commands we might execute below.
-        tids = get_filternode_tids(get_uvm_node_name())
-        if empty?(tids) then return (args[0] == "snmp") ? nil : ERROR_NO_PROTOFILTER_NODES ; end
-
-        begin
-          tid, cmd = *extract_tid_and_command(tids, args, ["snmp"])
-        rescue InvalidNodeNumber, InvalidNodeId => ex
-            msg = ERROR_INVALID_NODE_ID + ": " + ex
-            @diag.if_level(3) { puts! msg ; p ex}
-            return msg
-        rescue Exception => ex
-          msg = "Error: protofilter encountered an unhandled exception: " + p
-        end
-        @diag.if_level(3) { puts! "TID = #{tid}, command = #{cmd}" }
-
-        return dispatch_cmd(args.empty? ? [cmd, tid] : [cmd, tid, *args])
-      }
-    rescue Exception => ex
-      @diag.if_level(3) { puts! ex; puts! ex.backtrace }
-      return "Uncaught exception #{ex}"
-    end    
+  def get_help_text()
+    return <<-HELP
+- protofilter -- enumerate all protocol filter nodes running on effective #{BRAND} server.
+- protofilter <TID> list
+    -- Display protocol list list for protofilter node TID
+- protofilter <TID> add category protocol block log description signature
+    -- Add a protocol to the protocol list with specified settings.
+- protofilter <TID> update [proto-number] category protocol block log description signature
+    -- Update item '[proto-number]' with specified settings.
+- protofilter <TID> remove [proto-number]
+    -- Remove item '[proto-number]' from protocol list.
+- protofilter <TID> <snmp|stats>
+    -- Display protocol filter TID statistics (TODO document this)
+  HELP
   end
 
+  #
+  # Command handlers.
+  #
+  
   # Default command: list all protocol filters
   # TODO: we should consider moving this method to UVMFilterNode class
   def cmd_(*args)
@@ -104,23 +96,9 @@ class ProtoFilter < UVMFilterNode
     end
   end
 
-  protected
-  def cmd_help(tid, *args)
-    return <<HELP
-- protofilter -- enumerate all protocol filter nodes running on effective #{BRAND} server.
-- protofilter <#X|TID> list
-    -- Display protocol list list for protofilter node #X|TID
-- protofilter <#X|TID> add category protocol block log description signature
-    -- Add a protocol to the protocol list with specified settings.
-- protofilter <#X|TID> update [proto-number] category protocol block log description signature
-    -- Update item '[proto-number]' with specified settings.
-- protofilter <#X|TID> remove [proto-number]
-    -- Remove item '[proto-number]' from protocol list.
-- protofilter <#X|TID> <snmp|stats>
-    -- Display protocol filter #X|TID statistics (TODO document this)
-HELP
-  end
-
+  #
+  # Command handlers.
+  #
   def cmd_list(tid)
     ret = "#,category,protocol,block,log,description,signature\n"
     get_patterns(tid).each_with_index { |pattern, index|

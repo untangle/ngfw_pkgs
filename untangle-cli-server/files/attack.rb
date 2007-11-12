@@ -19,7 +19,6 @@ require 'filternode'
 
 class Attack < UVMFilterNode
     
-    ERROR_NO_FILTER_NODES = "No attackblocker modules are installed on the effective server."
     UVM_NODE_NAME = "untangle-node-shield"
     NODE_NAME = "Attack Blocker"
     MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".3"
@@ -46,36 +45,8 @@ class Attack < UVMFilterNode
         MIB_ROOT
     end
     
-    #
-    # Server service methods
-    #
-    def execute(args)
-
-        @diag.if_level(3) { puts! "Attack::execute(#{args.join(' ')})" }
-        
-        retried = false
-        
-        begin
-            # Get tids of all web filters once and for all commands we might execute below.
-            tids = get_filternode_tids(get_uvm_node_name())
-            if empty?(tids) then return (args[0] == "snmp") ? nil : ERROR_NO_FILTER_NODES ; end
-    
-            begin
-                tid, cmd = *extract_tid_and_command(tids, args, ["snmp"])
-            rescue Exception => ex
-                msg = "Error: attachblocker encountered an unhandled exception: " + p
-                @diag.if_level(3) { puts! msg ; p ex}
-                return msg
-            end
-            
-            @diag.if_level(3) { puts! "TID = #{tid}, command = #{cmd}" }
-            
-            case cmd
-            when nil, "", "list"
-                return list_filternodes(tids)
-            when "help"
-                help_text = <<-ATTACKBLOCKER_HELP
-
+    def get_help_text()
+        return <<-HELP
 - attackblocker -- enumerate all web filters running on effective #{BRAND} server.
 - attackblocker <#X> rules
     -- Display rule list for attackblocker #X
@@ -87,63 +58,37 @@ class Attack < UVMFilterNode
     -- Display settings for attackblocker #X
 - attackblocker <#X> settings action [pass|block]
     -- Change settings for attackblocker #X
-                ATTACKBLOCKER_HELP
-                return help_text
-            when "rules", "rule"
-                return manage_rule_list(tid, args)
-            when "settings"
-                return manage_settings(tid, args)
-            when "eventlog"
-                return "Event Log not yet supported."
-            when "stats", "snmp"
-                return get_statistics(tid, args)
-            else
-                return ERROR_UNKNOWN_COMMAND + " -- '#{args.join(' ')}'"
-            end
-        rescue LoginExpiredException => ex
-            if !retried
-                @diag.if_level(2) { puts! "Login expired - logging back on and trying one more time" ; p ex }
-                @@filter_node_lock.synchronize { login }
-                retry
-            else
-                raise Exception
-            end            
-        rescue Exception => ex
-            msg = "Attackblocker has raised an unhandled exception -- " + ex
-            @diag.if_level(1) { puts! msg }
-            p ex
-            return msg
-        end
-        
+    HELP
     end
 
     #
-    # Rule List related methods
+    # Command handlers.
     #
-    def manage_rule_list(tid, args)
-        case args[0]
-        when nil, ""
-            return get_rule_list(tid)
-        when "add"
-            return add_rule(tid, -1, *args.slice(1,args.length-1))
-        when "update"
-            return add_rule(tid, args[1], *args.slice(2,args.length-2))
-        when "remove"
-            return remove_rule(tid, args[1])
-        else
-            return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
-        end
+    def cmd_list(tid, *args)
+        return list_rules(tid)
     end
-
-    def get_rule_list(tid)
+    
+    def cmd_add(tid, *args)
+        return add_rule(tid, -1, *args.slice(1,args.length-1))
+    end
+    
+    def cmd_update(tid, *args)
+        return add_rule(tid, args[1], *args.slice(2,args.length-2))
+    end
+    
+    def cmd_remove(tid, *args)
+        return remove_rule(tid, args[1])
+    end
+    
+    def list_rules(tid)
         begin
             node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
             node = node_ctx.node()
             settings =  node.getSettings()
-            fireWallRuleList = settings.getAttackblockerRuleList()
+            attackBlockerRuleList = settings.getAttackblockerRuleList()
             rules = "#,enabled,action,log,traffic-type,direction,src-addr,dest-addr,src-port,dst-port,category,description\n"
             rule_num = 1
-            fireWallRuleList.each { |rule|
+            attackBlockerRuleList.each { |rule|
                 rules << "#{rule_num},#{rule.isLive().to_s},#{rule.getAction()},#{rule.getLog()}"
                 rules << ",#{rule.getProtocol().toDatabaseString()}"
                 rules << ",#{rule.getDirection()}"
@@ -274,18 +219,15 @@ class Attack < UVMFilterNode
         end
     end
    
-    def manage_settings(tid, args)
-        case args[0]
-        when nil, ""
-            return ERROR_INCOMPLETE_COMMAND
-        when "default-action"
-            if args[1].nil?
-                return list_settings_default_action(tid)
-            else
-                return settings_default_action(tid, args[1])
-            end
+    def cmd_settings(tid, *args)
+        return ERROR_INCOMPLETE_COMMAND
+    end
+
+    def cmd_settings_defaultaction(tid, *args)
+        if args[0].nil?
+            return list_settings_default_action(tid)
         else
-            return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
+            return settings_default_action(tid, args[1])
         end
     end
 
@@ -323,4 +265,3 @@ class Attack < UVMFilterNode
     end
 
 end # Attackblocker
-

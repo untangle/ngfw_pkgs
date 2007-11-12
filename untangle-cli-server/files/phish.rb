@@ -18,10 +18,7 @@
 require 'filternode'
 
 class Phish < UVMFilterNode
-  include CmdDispatcher
-  include RetryLogin
 
-  ERROR_NO_FILTER_NODES = "No Phish Blocker modules are installed on the effective server."
   UVM_NODE_NAME = "untangle-node-phish"
   NODE_NAME = "Phish Blocker"
   MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".6"
@@ -32,6 +29,10 @@ class Phish < UVMFilterNode
     super
     @diag.if_level(3) { puts! "Done initializing #{get_node_name()}..." }
   end
+
+  #
+  # Required UVMFilterNode methods.
+  #
   
   def get_uvm_node_name()
     UVM_NODE_NAME
@@ -45,58 +46,10 @@ class Phish < UVMFilterNode
     MIB_ROOT
   end  
   
-  def execute(args)
-    # TODO: BUG: if we don't return something the client reports an exception
-    @diag.if_level(3) { puts! "Phish::execute(#{args.join(', ')})" }
-
-    begin
-      retryLogin {
-        # Get tids of all protocol filters once and for all commands we might execute below.
-        tids = get_filternode_tids(get_uvm_node_name())
-        if empty?(tids) then return (args[0] == "snmp") ? nil : ERROR_NO_FILTER_NODES ; end
-
-        begin
-          tid, cmd = *extract_tid_and_command(tids, args, ["snmp"])
-        rescue InvalidNodeNumber, InvalidNodeId => ex
-            msg = ERROR_INVALID_NODE_ID + ": " + ex
-            @diag.if_level(3) { puts! msg ; p ex}
-            return msg
-        rescue Exception => ex
-          msg = "Error: #{get_node_name} has encountered an unhandled exception: " + ex
-          @diag.if_level(3) { puts! msg ; p ex}
-          return msg
-        end
-        @diag.if_level(3) { puts! "TID = #{tid}, command = #{cmd}" }
-
-        if cmd.nil? then
-          return list_filternodes(tids)
-        else
-          return dispatch_cmd(args.empty? ? [cmd, tid] : [cmd, tid, *args])
-        end
-      }
-    rescue Exception => ex
-      msg = "Error: #{get_node_name} has encountered an unhandled exception"
-      @diag.if_level(3) { puts! msg ; puts! ex; puts! ex.backtrace }
-      return msg + ": #{ex}"
-    end    
-  end
-
-  protected
-  def cmd_help(tid, *args)
+  def get_help_text()
     return <<-HELP
 -- To be implemented.
     HELP
-  end
-
-  def cmd_list(tid)
-  end
-
-  def cmd_snmp(tid, *args)
-    get_statistics(tid, args)
-  end
-
-  def cmd_stats(tid, *args)
-    get_statistics(tid, args)
   end
 
 end

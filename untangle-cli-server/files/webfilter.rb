@@ -19,8 +19,7 @@ require 'filternode'
 
 class Webfilter < UVMFilterNode
     
-    ERROR_NO_WEBFILTER_NODES = "No web filter modules are installed on the effective server."
-    NODE_NAME = "untangle-node-webfilter"
+    UVM_NODE_NAME = "untangle-node-webfilter"
     WEBFILTER_MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".1"
 
     def initialize
@@ -34,7 +33,7 @@ class Webfilter < UVMFilterNode
     # Required UVMFilterNode methods.
     #
     def get_uvm_node_name()
-        NODE_NAME
+        UVM_NODE_NAME
     end
     
     def get_node_name()
@@ -45,144 +44,85 @@ class Webfilter < UVMFilterNode
         WEBFILTER_MIB_ROOT
     end
 
-    #
-    # Server service methods
-    #
-    def execute(args)
-
-        @diag.if_level(3) { puts! "Webfilter::execute(#{args.join(' ')})" }
-        retried = false
-        
-        begin
-            tids = get_filternode_tids(get_uvm_node_name())
-            if empty?(tids) then return (args[0] == "snmp") ? nil : ERROR_NO_WEBFILTER_NODES ; end
-    
-            begin
-                tid, cmd = *extract_tid_and_command(tids, args, ["snmp"]) # no default tid wanted if command is "snmp"
-            rescue InvalidNodeNumber, InvalidNodeId => ex
-                msg = ERROR_INVALID_NODE_ID + ": " + ex
-                @diag.if_level(3) { puts! msg ; p ex}
-                return msg
-            rescue Exception => ex
-                msg = "Error: webfilter encountered an unhandled exception: " + p
-                @diag.if_level(3) { puts! msg ; p ex}
-                return msg
-            end
-            
-            @diag.if_level(3) { puts! "TID = #{tid ? tid : '<no tid>'}, command = #{cmd}" }
-            
-            case cmd
-            when nil, "", "list"
-                return list_filternodes(tids)
-            when "help"
-                help_text = <<-WEBFILTER_HELP
-
+    def get_help_text
+        return <<-HELP
 - webfilter -- enumerate all web filters running on effective #{BRAND} server.
-- webfilter <#X> blocklist [item-type:cats|urls|mime|files]
-    -- Display blocklist of item-type for webfilter #X
-- webfilter <#X> blocklist add [item-type:cat|url|mime|file] [item] <block:true|false> <log:true|false> <description>
+- webfilter <TID> list blocklist [item-type:cats|urls|mimetypes|filetypes]
+    -- Display blocklist of item-type for webfilter TID
+- webfilter <TID> add blocklist [item-type:cat|url|mimetype|filetype] [item] <block:true|false> <log:true|false> <description>
     -- Add item to blocklist by type (or update) with specified block and log settings.
-- webfilter <#X> blocklist remove [item-type:cat|url|mime|file] [item]
+- webfilter <TID> remove blocklist [item-type:cat|url|mime|file] [item]
     -- Remove item from blocklist by type (or update) with specified block and log settings.
-- webfilter <#X> passlist [item-type:urls|clients]
+- webfilter <TID> list passlist [item-type:urls|clients]
     -- Display passlist items
-- webfilter <#X> passlist add [item-type:url|client] [item:url|ip] [pass:true|false] <description>
+- webfilter <TID> add passlist [item-type:url|client] [item:url|ip] [pass:true|false] <description>
     -- Add item to passlist with specified settings.
-- webfilter <#X> passlist remove [item-type:url|client] [item:url|ip]
+- webfilter <TID> remove passlist [item-type:url|client] [item:url|ip]
     -- Remove item from passlist with specified settings.
-- webfilter <#X> stats
-    -- Display webfilter #X statistics in human readable format
+- webfilter <TID> stats
+    -- Display webfilter TID statistics in human readable format
 - webfilter snmp
-    -- Display webfilter #X statistics in snmp compliant format (getnext)
-                WEBFILTER_HELP
-                return help_text
-            when "blocklist"
-                return manage_block_list(tid, args)
-            when "passlist"
-                return manage_pass_list(tid, args)
-            when "stats", "snmp"
-                return get_statistics(tid, args)
-            when "eventlog"
-                return "Event Log not yet supported."
-            else
-                return ERROR_UNKNOWN_COMMAND + " -- '#{args.join(' ')}'"
-            end
-        rescue com.untangle.uvm.client.LoginExpiredException => ex
-            if !retried
-                @diag.if_level(2) { puts! "Login expired - logging back on and trying one more time" ; p ex }
-                @@filter_node_lock.synchronize { login }
-                retried = true
-                retry
-            else
-                raise Exception
-            end
-        rescue Exception => ex
-            msg = "webfilter has raised an unhandled exception -- " + ex
-            @diag.if_level(1) { puts! msg }
-            p ex
-            return msg
-        end
-        
+    -- Display webfilter TID statistics in snmp compliant format (getnext)
+        HELP
     end
 
-    #
-    # Block List related methods
-    #
-    def manage_block_list(tid, args)
-        case args[0]
-        when nil, ""
-            return ERROR_INCOMPLETE_COMMAND
-        when "urls"
-            return get_blocked_urls(tid)
-        when "categories", "cats"
-            return block_list_get_categories(tid)
-        when "mime", "mimes"
-            return block_list_get_mime_types(tid)
-        when "file", "files"
-            return block_list_get_file_types(tid)
-        when "add"
-            case args[1]
-            when nil, ""
-                return ERROR_INCOMPLETE_COMMAND
-            when "url"
-                return block_list_add_url(tid, args[2], args[3], args[4], args[5])
-            when "mime"
-                return block_list_add_mime_type(tid, args[2], args[3], args[4])
-            when "file"
-                return block_list_add_file_type(tid, args[2], args[3], args[4])
-            else
-                return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
-            end
-        when "update"
-            case args[1]
-            when nil, ""
-                return ERROR_INCOMPLETE_COMMAND
-            when "category", "cat"
-                return block_list_update_category(tid, args[2], args[3], args[4])
-            else
-                return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
-            end
-        when "remove"
-            case args[1]
-            when nil, ""
-                return ERROR_INCOMPLETE_COMMAND
-            when "url"
-                return block_list_remove_url(tid, args[2])
-            when "mime"
-                return block_list_remove_mime_type(tid, args[2])
-            when "file"
-                return block_list_remove_file_type(tid, args[2])
-            when "category", "cat"
-                return "Error: block list categories cannot be removed."
-            else
-                return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
-            end
-        else
-            return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
-        end
+    def cmd_(tid, *args)
+        return list_filternodes()
     end
 
-    def get_blocked_urls(tid)
+    def cmd_list_blocklist(tid, *args)
+        return ERROR_INCOMPLETE_COMMAND
+    end
+    
+    def cmd_list_blocklist_urls(tid, *args)
+        return block_list_get_urls(tid)
+    end
+
+    def cmd_list_blocklist_cats(tid, *args)
+        return block_list_get_categories(tid)
+    end
+
+    def cmd_list_blocklist_categories(tid, *args)
+        return block_list_get_categories(tid)
+    end
+
+    def cmd_list_blocklist_mimetypes(tid, *args)
+        return block_list_get_mime_types(tid)
+    end
+
+    def cmd_list_blocklist_filetypes(tid, *args)
+        return block_list_get_file_types(tid)
+    end
+
+    def cmd_add_blocklist_url(tid, *args)
+        return block_list_add_url(tid, args[0], args[1], args[2], args[3])
+    end
+
+    def cmd_add_blocklist_mimetype(tid, *args)
+        return block_list_add_mime_type(tid, args[0], args[1], args[2])
+    end
+            
+    def cmd_add_blocklist_filetype(tid, *args)
+        return block_list_add_file_type(tid, args[0], args[1], args[2])
+    end
+
+    def cmd_update_blocklist_category(tid, *args)
+        return block_list_update_category(tid, args[0], args[1], args[2])
+    end
+    
+    def cmd_block_list_remove_url(tid, *args)
+        return block_list_remove_url(tid, args[0])
+    end
+    
+    def cmd_block_list_remove_mimetype(tid, *args)
+        return block_list_remove_mime_type(tid, args[0])
+    end
+    
+    def cmd_block_list_remove_filetype(tid, *args)
+        return block_list_remove_file_type(tid, args[0])
+    end
+
+    def block_list_get_urls(tid)
         node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
         settings =  node.getSettings()
@@ -495,42 +435,47 @@ class Webfilter < UVMFilterNode
     #
     #   Pass list related methods
     #
-    def manage_pass_list(tid, args)
-        case args[0]
-        when nil, ""
-            return ERROR_INCOMPLETE_COMMAND
-        when "urls"
-            return pass_list_get_urls(tid)
-        when "clients"
-            return pass_list_get_clients(tid)
-        when "add"
-            case args[1]
-            when nil, ""
-                return ERROR_INCOMPLETE_COMMAND
-            when "url"
-                return pass_list_add_url(tid, args[2], args[3], args[4])
-            when "client"
-                return pass_list_add_client(tid, args[2], args[3], args[4])
-            else
-                return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
-            end
-        when "remove"
-            case args[1]
-            when nil, ""
-                return ERROR_INCOMPLETE_COMMAND
-            when "url"
-                return pass_list_remove_url(tid, args[2])
-            when "client"
-                return pass_list_remove_client(tid, args[2])
-            else
-                return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
-            end
-        else
-            return ERROR_UNKNOWN_COMMAND + " -- " + args.join(' ')
-        end
+    def cmd_passlist(tid, *args)
+        return ERROR_INCOMPLETE_COMMAND
+    end
+    
+    def cmd_list_passlist(tid, *args)
+        return ERROR_INCOMPLETE_COMMAND
     end
 
-    def pass_list_get_urls(tid)
+    def cmd_list_passlist_urls(tid, *args)
+        return list_passlist_urls(tid)
+    end
+    
+    def cmd_list_passlist_clients(tid, *args)
+        return list_passlist_clients(tid)
+    end
+    
+    def cmd_add_passlist(tid, *args)
+        return ERROR_INCOMPLETE_COMMAND
+    end
+    
+    def cmd_add_passlist_url(tid, *args)
+        return add_passlist_url(tid, args[0], args[1], args[2])
+    end
+    
+    def cmd_add_passlist_client(tid, *args)
+        return add_passlist_client(tid, args[0], args[1], args[2])
+    end
+    
+    def cmd_remove_passlist(tid, *args)
+        return ERROR_INCOMPLETE_COMMAND
+    end
+    
+    def cmd_remove_passlist_url(tid, *args)
+        return remove_passlist_url(tid, args[0])
+    end
+    
+    def cmd_remove_passlist_client(tid, *args)
+        return remove_passlist_client(tid, args[0])
+    end
+
+    def list_passlist_urls(tid)
         node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
         settings =  node.getSettings()
@@ -545,7 +490,7 @@ class Webfilter < UVMFilterNode
         return passed_urls
     end
 
-    def pass_list_get_clients(tid)
+    def list_passlist_clients(tid)
         node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
         node = node_ctx.node()
         settings =  node.getSettings()
@@ -560,7 +505,7 @@ class Webfilter < UVMFilterNode
         return passed_clients
     end
     
-    def pass_list_add_url(tid, url, block="true", desc=nil)
+    def add_passlist_url(tid, url, block="true", desc=nil)
         begin
             return ERROR_INCOMPLETE_COMMAND if url.nil? || url==""
             node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
@@ -593,7 +538,7 @@ class Webfilter < UVMFilterNode
         end
     end
 
-    def pass_list_remove_url(tid, url)
+    def remove_passlist_url(tid, url)
         begin
             return ERROR_INCOMPLETE_COMMAND if url.nil? || url==""
             node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
@@ -622,7 +567,7 @@ class Webfilter < UVMFilterNode
         end
     end
 
-    def pass_list_add_client(tid, client, block="true", desc=nil)
+    def add_passlist_client(tid, client, block="true", desc=nil)
         begin
             return ERROR_INCOMPLETE_COMMAND if client.nil? || client==""
             node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
@@ -655,7 +600,7 @@ class Webfilter < UVMFilterNode
         end
     end
 
-    def pass_list_remove_client(tid, client, block="true", desc=nil)
+    def remove_passlist_client(tid, client, block="true", desc=nil)
         begin
             return ERROR_INCOMPLETE_COMMAND if client.nil? || client==""
             node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
