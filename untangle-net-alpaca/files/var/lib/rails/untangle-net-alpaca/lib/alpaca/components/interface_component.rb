@@ -4,6 +4,7 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
     ## REVIEW : should be a more elegant way of specifying the URL.
     menu_organizer.register_item( "/main/interfaces", Alpaca::Menu::Item.new( 200, "Interfaces", "/interface/list" ))
 
+
     ## Retrieve all of the interfaces
     interfaces = Interface.find(:all)
     interfaces.sort! { |a,b| a.index <=> b.index }

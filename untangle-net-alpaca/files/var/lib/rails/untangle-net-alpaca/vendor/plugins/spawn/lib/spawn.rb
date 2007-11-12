@@ -13,6 +13,10 @@ module Spawn
     # child process but that doesn't seem to work reliably.
     spec = ActiveRecord::Base.remove_connection
     child = fork do
+      
+      ## This closes the server socket in the child process
+      ObjectSpace.each_object( TCPServer ) { |socket| socket.close }
+
       ActiveRecord::Base.establish_connection(spec)
       begin
         # run the block of code that takes so long
@@ -31,5 +35,4 @@ module Spawn
     ActiveRecord::Base.establish_connection(spec)
     return child
   end
-
 end

@@ -1,4 +1,5 @@
-var DnsServerManager = {
+var DnsServerManager =
+{
     removeStaticEntry : function( rowId )
     {
         try {

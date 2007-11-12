@@ -1,0 +1,62 @@
+#!/bin/dash
+
+### BEGIN INIT INFO
+# Provides:          alpaca
+# Required-Start:    $local_fs $remote_fs
+# Required-Stop:
+# Default-Start:     S 3 4 5
+# Default-Stop:      0 1 6
+### END INIT INFO
+
+# Author: Robert Scott <rbscott@untangle.com>
+
+DESC="Service for starting the untangle net alpaca"
+
+NAME="alpaca"
+
+MONGREL_RAILS="/var/lib/gems/1.8/bin/mongrel_rails"
+BASE_DIR="/var/lib/rails/untangle-net-alpaca"
+
+if [ -r /etc/default/$NAME ]; then
+    . /etc/default/$NAME
+fi
+
+start()
+{
+    cd ${BASE_DIR} || {
+        log_failure_msg "${NAME} could not change into the directory ${BASE_DIR}" 
+        exit -1
+    }
+    ## Load the latest version of the of the schema
+    rake db:migrate || { 
+        log_failure_msg "${NAME} could not load database schema ${BASE_DIR}"
+        exit -2
+    }
+    
+    ${MONGREL_RAILS} start -c ${BASE_DIR} -d
+}
+
+stop()
+{
+    ${MONGREL_RAILS} stop -w 5 -c ${BASE_DIR}
+}
+
+case "$1" in
+    ## start is atomic, it automatically integrates stop.
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    reload|restart|force-reload)
+        stop
+        start
+        ;;
+    *)
+        /bin/echo "Usage: $0 {start|stop|restart|force-reload}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0

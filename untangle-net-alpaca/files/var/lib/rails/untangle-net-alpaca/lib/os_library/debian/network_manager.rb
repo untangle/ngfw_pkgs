@@ -69,7 +69,7 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
 
   def hook_run_services
     ## Restart networking
-    raise "Unable to reconfigure network settings." unless Kernel.system( "nohup #{Service} start" )
+    raise "Unable to reconfigure network settings." unless Kernel.system( "sh #{Service} start" )
   end
 
   ## Given an interface, this returns the expected bridge name
