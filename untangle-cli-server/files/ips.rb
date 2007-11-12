@@ -54,4 +54,25 @@ class Ips < UVMFilterNode
     HELP
   end
 
+  def cmd_rule_list(tid)
+    ret = "#,category,block,log,description,info URL,sid,signature\n"
+    get_rules(tid).each_with_index { |rule, index|
+      ret << [(index+1).to_s,
+              rule.getCategory,
+#              pattern.getProtocol,
+#              pattern.isBlocked.to_s,
+              rule.getLog.to_s,
+              rule.getDescription,
+              rule.getRule
+             ].join(",")
+      ret << "\n"
+    }
+    return ret
+  end
+
+  #-- Helper methods
+  def get_rules(tid)
+    @@uvmRemoteContext.nodeManager.nodeContext(tid).node.getIPSSettings.getRules
+  end
+
 end
