@@ -284,7 +284,7 @@ class NUCLIClient
             @history_lock.synchronize {
                 @history.shift unless @history.length < @history_size
                 server_name = nil
-                @servers_lock.synchronize { server_name = @drb_server[0] }
+                @servers_lock.synchronize { server_name = @drb_server.nil? ? "(none)" : @drb_server[0] }
                 @history << [cmd_num, cmd_a.join(' '), server_name]
             }
             cmd_num += 1
@@ -1213,6 +1213,7 @@ if __FILE__ == $0
             break
         rescue Exception => ex
             puts! "NUCLI client has encountered an unhandled exception: " + ex + "\nRestarting...\n"
+            p ex.backtrace
         ensure
             nucli_client.shutdown if nucli_client
         end
