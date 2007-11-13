@@ -148,7 +148,7 @@ class UVMFilterNode < UVMRemoteApp
 
     protected
         NUM_STAT_COUNTERS = 16
-        STATS_CACHE_EXPIRY = 5
+        STATS_CACHE_EXPIRY = 60 # time (in seconds) to expiry of node stats in get_std_statistics stats cache.
     
         # A variety of filter nodes have the same, standard set of statistics.  If
         # your node exposes stats in the standard format then simply call this method
