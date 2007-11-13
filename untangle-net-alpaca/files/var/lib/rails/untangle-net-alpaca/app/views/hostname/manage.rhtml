@@ -1,0 +1,18 @@
+<div>
+  <h1><%= "Hostname".t %></h1>
+
+  <% form_tag( :action => 'save' ) do -%>
+    <fieldset>
+      <ul class="text-fields">
+        <li>
+          <label for="hostname_settings[hostname]"><%= "Hostname:".t %></label>
+          <%= text_field( "hostname_settings", "hostname" ) %>
+        </li>
+      </ul>
+    </fieldset>
+
+    <%= submit_tag "Cancel".t %>
+    <%= submit_tag "Save Changes".t %>
+    
+  <% end -%>
+</div>

@@ -109,8 +109,8 @@ class Network < ActiveRecord::Migration
     end
 
     ## Hostname parameters
-    create_table :hostnames do |table|
-      table.column :name, :string      
+    create_table :hostname_settings do |table|
+      table.column :hostname, :string
     end
 
     ## File Overrides
@@ -170,7 +170,7 @@ class Network < ActiveRecord::Migration
     drop_table :intf_dynamics
     drop_table :intf_dynamics_ip_networks
     drop_table :intf_bridges
-    drop_table :hostnames
+    drop_table :hostname_settings
     drop_table :file_overrides
     drop_table :locale_settings
     drop_table :dhcp_server_settings

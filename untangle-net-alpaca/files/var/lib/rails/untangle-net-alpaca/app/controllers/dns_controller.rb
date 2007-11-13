@@ -1,9 +1,4 @@
-class DnsController < ApplicationController
-  def index
-    manage
-    render :action => 'manage'
-  end
-  
+class DnsController < ApplicationController  
   def manage
     @dns_server_settings = DnsServerSettings.find( :first )
     @dns_server_settings = DnsServerSettings.new if @dns_server_settings.nil?
@@ -11,7 +6,12 @@ class DnsController < ApplicationController
 
     ## Retrieve all of the dynamic entries from the DHCP server manager
     refresh_dynamic_entries
+    
+    ## this allows this method to be aliased.
+    render :action => 'manage'
   end
+
+  alias :index :manage
 
   def save
     ## Review : Internationalization

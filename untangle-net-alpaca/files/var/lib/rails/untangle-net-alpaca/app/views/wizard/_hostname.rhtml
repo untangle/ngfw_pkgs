@@ -1,0 +1,10 @@
+<div id="<%= stage.id %>" style="display: none">
+  <h1><%= stage.name %></h1>
+  
+  <ul class="text-fields">
+    <li>
+      <label for="locale"><%= "Hostname:".t %></label>
+      <%= text_field_tag( "hostname", stage.hostname ) %>
+    </li>
+  </ul>
+</div>

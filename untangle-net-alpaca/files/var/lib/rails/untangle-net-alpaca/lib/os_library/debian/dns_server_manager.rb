@@ -48,6 +48,10 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
   def register_hooks
     os["network_manager"].register_hook( -200, "dns_server_manager", "write_files", :hook_write_files )
     os["network_manager"].register_hook( 200, "dns_server_manager", "run_services", :hook_run_services )
+
+    ## Register with the hostname manager to update when there are
+    ## changes to the hostname
+    os["hostname_manager"].register_hook( 200, "dns_server_manager", "commit", :hook_commit )
   end
 
   def hook_commit
@@ -119,6 +123,12 @@ EOF
     dns_server_settings = DnsServerSettings.find( :first )
     unless ( dns_server_settings.nil? || dns_server_settings.enabled )
       DnsStaticEntry.find(:all).each { |dse| h_file << "#{dse.ip_address} #{dse.hostname}" }
+    end
+
+    ## Append the hostname
+    settings = HostnameSettings.find( :first )
+    unless ( settings.nil? || settings.hostname.nil? || settings.hostname.empty? )
+      h_file << "127.0.0.1 #{settings.hostname}"
     end
 
     os["override_manager"].write_file( DnsMasqHostFile, h_file.join( "\n" ), "\n" )
