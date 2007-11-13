@@ -1,6 +1,10 @@
 #!/bin/sh
 
 UVM_ROOT=${UVM_ROOT:-}
+export JRUBY_HOME=/usr/lib/jruby-ut0.9
+export GEM_HOME=/usr/lib/jruby-ut0.9/lib/ruby/gems/1.8
+export RUBYLIB=/usr/lib/jruby-ut0.9/lib/ruby:/usr/lib/jruby-ut0.9/lib/site_ruby/1.8
+export PREFIX=/usr/lib/jruby-ut0.9
 
 CLASSPATH="${UVM_ROOT}/usr/share/untangle/lib/untangle-libuvm-api:${UVM_ROOT}/usr/share/java/uvm/hibernate3.jar:${UVM_ROOT}/usr/share/java/uvm/log4j-1.2.9.jar"
 for f in ${UVM_ROOT}/usr/share/java/reports/*jar ; do
