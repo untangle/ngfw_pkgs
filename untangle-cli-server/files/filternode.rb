@@ -42,7 +42,7 @@ class UVMFilterNode < UVMRemoteApp
     public
         def execute(args)
           # TODO: BUG: if we don't return something the client reports an exception
-          @diag.if_level(3) { puts! "Protofilter::execute(#{args.join(', ')})" }
+          @diag.if_level(3) { puts! "execute(#{args.join(', ')})" }
       
           begin
             orig_args = args.dup
@@ -188,26 +188,35 @@ class UVMFilterNode < UVMRemoteApp
                     
                     # Get the effective node stats, either from the cache or from the UVM.
                     # (Must be after we have the OID because the TID may be nil and we'll need something to cache on.)
-                    nodeStats = nil
+                    node_stats = nil
                     @stats_cache_lock.synchronize {
                         cached_stats = @stats_cache[tid]
                         if !cached_stats || ((Time.now.to_i - cached_stats[1]) > STATS_CACHE_EXPIRY)
-                            @diag.if_level(2) { puts! "Stat cache miss / expiry." }
-                            node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
                             begin
-                                nodeStats = node_ctx.getStats()
+                                @diag.if_level(2) { puts! "Stat cache miss / expiry." }
+                                @diag.if_level(2) { p tid }
+                                if (tid != "0")
+                                    # We're reporting stats of a specific FN element
+                                    node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
+                                    node_stats = hash_node_stats(node_ctx.getStats())
+                                else
+                                    # We're reporting stats of the aggregation of all FN's of the effective type.
+                                    node_stats = aggregate_node_stats()
+                                end
+                                raise Exception, "Unable to fetch node stats for TID #{tid}" unless node_stats
+                                @diag.if_level(2) { puts! "Updating stats cache for tid #{tid}" ; p node_stats }
+                                @stats_cache[tid] = [node_stats, Time.now.to_i]
                             rescue Exception => ex
-                                @diag.if_level(2) { puts! "Error: unable to get statistics for node: " ; p node_ctx ; p ex ; ex.backtrace }
+                                @diag.if_level(2) { puts! "Error: unable to get statistics for node: " ; p node_ctx ; p ex ; p ex.backtrace }
                                 return nil
                             end
-                            @stats_cache[tid] = [nodeStats, Time.now.to_i]
                         else
                             @diag.if_level(2) { puts! "Stat cache hit." }
-                            nodeStats = cached_stats[0]
+                            node_stats = cached_stats[0]
                         end
                     }
 
-                    @diag.if_level(2) { puts! "Got node stats for #{tid}" ; p nodeStats }
+                    @diag.if_level(2) { puts! "Got node stats for #{tid}" ; p node_stats }
                     
                     # Construct OID fragment to match on from >up to< the last two
                     # pieces of the effective OID, eg, xxx.1 => 1, xxx.18.2 ==> 18.2
@@ -218,27 +227,27 @@ class UVMFilterNode < UVMRemoteApp
                     @diag.if_level(2) { puts! "stat_id = #{stat_id}"}
                     case stat_id
                         when "1";  stat, type = get_uvm_node_name, str
-                        when "2";  stat, type = nodeStats.tcpSessionCount(), int
-                        when "3";  stat, type = nodeStats.tcpSessionTotal(), int
-                        when "4";  stat, type = nodeStats.tcpSessionRequestTotal(), int
-                        when "5";  stat, type = nodeStats.udpSessionCount(), int
-                        when "6";  stat, type = nodeStats.udpSessionTotal(), int
-                        when "7";  stat, type = nodeStats.udpSessionRequestTotal(), int
-                        when "8";  stat, type = nodeStats.c2tBytes(), int
-                        when "9";  stat, type = nodeStats.c2tChunks(), int
-                        when "10";  stat, type = nodeStats.t2sBytes(), int
-                        when "11"; stat, type = nodeStats.t2sChunks(), int
-                        when "12"; stat, type = nodeStats.s2tBytes(), int
-                        when "13"; stat, type = nodeStats.s2tChunks(), int
-                        when "14"; stat, type = nodeStats.t2cBytes(), int
-                        when "15"; stat, type = nodeStats.t2cChunks(), int
-                        when "16"; stat, type = nodeStats.startDate(), str
-                        when "17"; stat, type = nodeStats.lastConfigureDate(), str
-                        when "18"; stat, type = nodeStats.lastActivityDate(), str
+                        when "2";  stat, type = node_stats[:tcp_session_count], int
+                        when "3";  stat, type = node_stats[:tcp_session_total], int
+                        when "4";  stat, type = node_stats[:tcp_session_request_total], int
+                        when "5";  stat, type = node_stats[:udp_session_count], int
+                        when "6";  stat, type = node_stats[:udp_session_total], int
+                        when "7";  stat, type = node_stats[:udp_session_request_total], int
+                        when "8";  stat, type = node_stats[:c2t_bytes], int
+                        when "9";  stat, type = node_stats[:c2t_chunks], int
+                        when "10"; stat, type = node_stats[:t2s_bytes], int
+                        when "11"; stat, type = node_stats[:t2s_chunks], int
+                        when "12"; stat, type = node_stats[:s2t_bytes], int
+                        when "13"; stat, type = node_stats[:s2t_chunks], int
+                        when "14"; stat, type = node_stats[:t2c_bytes], int
+                        when "15"; stat, type = node_stats[:t2c_chunks], int
+                        when "16"; stat, type = node_stats[:start_date], str
+                        when "17"; stat, type = node_stats[:last_configure_date], str
+                        when "18"; stat, type = node_stats[:last_activity_date], str
                         when /19\.\d+/
                             counter = oid_pieces[-1].to_i()-1
                             return "" unless counter < NUM_STAT_COUNTERS
-                            stat, type = nodeStats.getCount(counter), c32
+                            stat, type = node_stats["counter#{counter}".to_sym], c32
                         when "20"
                             @diag.if_level(2) { puts! "mib tree end - halting walk #1"}
                             return ""
@@ -250,26 +259,26 @@ class UVMFilterNode < UVMRemoteApp
                 else
                     return "Error: a node ID [#X|TID] must be specified in order to retrieve " unless tid
                     node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
-                    nodeStats = node_ctx.getStats()
-                    tcpsc  = nodeStats.tcpSessionCount()
-                    tcpst  = nodeStats.tcpSessionTotal()
-                    tcpsrt = nodeStats.tcpSessionRequestTotal()
-                    udpsc  = nodeStats.udpSessionCount()
-                    udpst  = nodeStats.udpSessionTotal()
-                    udpsrt = nodeStats.udpSessionRequestTotal()
-                    c2tb   = nodeStats.c2tBytes()
-                    c2tc   = nodeStats.c2tChunks()
-                    t2sb   = nodeStats.t2sBytes()
-                    t2sc   = nodeStats.t2sChunks()
-                    s2tb   = nodeStats.s2tBytes()
-                    s2tc   = nodeStats.s2tChunks()
-                    t2cb   = nodeStats.t2cBytes()
-                    t2cc   = nodeStats.t2cChunks()
-                    sdate  = nodeStats.startDate()
-                    lcdate = nodeStats.lastConfigureDate()
-                    ladate = nodeStats.lastActivityDate()
+                    node_stats = hash_node_stats(node_ctx.getStats())
+                    tcpsc  = node_stats[:tcp_session_count]
+                    tcpst  = node_stats[:tcp_session_total]
+                    tcpsrt = node_stats[:tcp_session_request_total]
+                    udpsc  = node_stats[:udp_session_count]
+                    udpst  = node_stats[:udp_session_total]
+                    udpsrt = node_stats[:udp_session_request_total]
+                    c2tb   = node_stats[:c2t_bytes]
+                    c2tc   = node_stats[:c2t_chunks]
+                    t2sb   = node_stats[:t2s_bytes]
+                    t2sc   = node_stats[:t2s_chunks]
+                    s2tb   = node_stats[:s2t_bytes]
+                    s2tc   = node_stats[:s2t_chunks]
+                    t2cb   = node_stats[:t2c_bytes]
+                    t2cc   = node_stats[:t2c_chunks]
+                    sdate  = node_stats[:start_date]
+                    lcdate = node_stats[:last_configure_date]
+                    ladate = node_stats[:last_activity_date]
                     counters = []
-                    (0...NUM_STAT_COUNTERS).each { |i| counters[i] = nodeStats.getCount(i) }
+                    (0...NUM_STAT_COUNTERS).each { |i| counters[i] = node_stats["counter#{i}".to_sym] }
                     # formant stats for human readability
                     stats << "TCP Sessions (count, total, requests): #{tcpsc}, #{tcpst}, #{tcpsrt}\n"
                     stats << "UDP Sessions (count, total, requests): #{udpsc}, #{udpst}, #{udpsrt}\n"
@@ -291,12 +300,15 @@ class UVMFilterNode < UVMRemoteApp
             end
         end
     
-        # Derive a true TID from a given OID by convert
-        # it from a ruby string fragment into true JRuby object.
+        # Derive a true TID from a given OID by converting
+        # it from a ruby string fragment into true JRuby object,
+        # except in the specicial case of the zero TID, in which
+        # case return "0".
         def get_true_tid_wrt_oid(mib_root, oid)
             mib_pieces = mib_root.split('.')
             oid_pieces = oid.split('.')
             cur_tid = oid_pieces[mib_pieces.length]
+            return "0" if cur_tid == "0"
             tids = get_filternode_tids(get_uvm_node_name())
             tid = nil
             tid = tids.detect { |t|
@@ -312,10 +324,12 @@ class UVMFilterNode < UVMRemoteApp
             if !tid
                 if (oid == mib_root)
                     # Caller wants to walk the entire mib tree of the associated filter node type.
-                    # So, walk through tid list from the beginning.
+                    # So, walk through tid list from the beginning, which in our case starts with
+                    # the mythical tid zero, which represents the sum total of the stats for all
+                    # filterer node instances of the effective type.  Then we move on the the stats
+                    # for the individual filter node instances from the tids list.
                     @diag.if_level(2) { puts! "oid == mibroot" }
-                    tids = get_filternode_tids(get_uvm_node_name())
-                    tid = tids[0]
+                    tid = "0"
                 else
                     # If oid != mib_root and !tid, then we're in the middle of walking the
                     # entire mib subtree.  Since we the only state we can count on is the
@@ -352,9 +366,13 @@ class UVMFilterNode < UVMRemoteApp
                     mib_pieces = mib_root.split('.')
                     oid_pieces = oid.split('.')
                     cur_tid = oid_pieces[mib_pieces.length]
-                    tids = get_filternode_tids(get_uvm_node_name())
                     next_tid = nil
-                    tids.each_with_index { |tid,i| next_tid = tids[i+1] if ((i < tids.length) && (tid.to_s == cur_tid)) }
+                    tids = get_filternode_tids(get_uvm_node_name())
+                    if cur_tid == "0"
+                        next_tid = tids[0]
+                    else
+                        tids.each_with_index { |tid,i| next_tid = tids[i+1] if ((i < tids.length) && (tid.to_s == cur_tid)) }
+                    end
                     if next_tid
                         @diag.if_level(2) { puts! "Advancing to next tid: #{next_tid}"}
                         tid = next_tid
@@ -368,7 +386,70 @@ class UVMFilterNode < UVMRemoteApp
             @diag.if_level(2) { puts! "Next oid: #{next_oid}" }
             return [next_oid, tid]
         end
+
+    protected
+        # Create a Ruby hash representation of a JRuby NodeStats object.
+        def hash_node_stats(nodeStats)
+            stats_hash = {}
+            stats_hash[:tcp_session_count] = nodeStats.tcpSessionCount()
+            stats_hash[:tcp_session_total] = nodeStats.tcpSessionTotal()
+            stats_hash[:tcp_session_request_total] = nodeStats.tcpSessionRequestTotal()
+            stats_hash[:udp_session_count] = nodeStats.udpSessionCount()
+            stats_hash[:udp_session_total] = nodeStats.udpSessionTotal()
+            stats_hash[:udp_session_request_total] = nodeStats.udpSessionRequestTotal()
+            stats_hash[:c2t_bytes] = nodeStats.c2tBytes()
+            stats_hash[:c2t_chunks] = nodeStats.c2tChunks()
+            stats_hash[:t2s_bytes] = nodeStats.t2sBytes()
+            stats_hash[:t2s_chunks] = nodeStats.t2sChunks()
+            stats_hash[:s2t_bytes] = nodeStats.s2tBytes()
+            stats_hash[:s2t_chunks] = nodeStats.s2tChunks()
+            stats_hash[:t2c_bytes] = nodeStats.t2cBytes()
+            stats_hash[:t2c_chunks] = nodeStats.t2cChunks()
+            stats_hash[:start_date] = nodeStats.startDate()
+            stats_hash[:last_configure_date] = nodeStats.lastConfigureDate()
+            stats_hash[:last_activity_date] = nodeStats.lastActivityDate()
+            (0..15).each { |i|
+                stats_hash["counter#{i}".to_sym] = nodeStats.getCount(i)
+            }
+            return stats_hash
+        end
         
+    protected
+        def aggregate_node_stats()
+            @diag.if_level(2) { puts! "aggregate_node_stats" }
+            tids = get_filternode_tids(get_uvm_node_name())
+            node_stats = nil        
+            tids.each { |tid|
+                node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
+                nodeStats = node_ctx.getStats()
+                if !node_stats
+                    node_stats = hash_node_stats(nodeStats)
+                    next
+                end
+                node_stats[:tcp_session_count] += nodeStats.tcpSessionCount()
+                node_stats[:tcp_session_total] += nodeStats.tcpSessionTotal()
+                node_stats[:tcp_session_request_total] += nodeStats.tcpSessionRequestTotal()
+                node_stats[:udp_session_count] += nodeStats.udpSessionCount()
+                node_stats[:udp_session_total] += nodeStats.udpSessionTotal()
+                node_stats[:udp_session_request_total] += nodeStats.udpSessionRequestTotal()
+                node_stats[:c2t_bytes] += nodeStats.c2tBytes()
+                node_stats[:c2t_chunks] += nodeStats.c2tChunks()
+                node_stats[:t2s_bytes] += nodeStats.t2sBytes()
+                node_stats[:t2s_chunks] += nodeStats.t2sChunks()
+                node_stats[:s2t_bytes] += nodeStats.s2tBytes()
+                node_stats[:s2t_chunks] += nodeStats.s2tChunks()
+                node_stats[:t2c_bytes] += nodeStats.t2cBytes()
+                node_stats[:t2c_chunks] += nodeStats.t2cChunks()
+                node_stats[:start_date] = nodeStats.getStartDate()
+                node_stats[:last_config_date] = nodeStats.getLastConfigurationDate()
+                node_stats[:last_activity_date] = nodeStats.getLastActivityDate()
+                (0..15).each { |i|
+                    node_stats["counter#{i}".to_sym] += nodeStats.getCount(i)
+                }
+            }
+            return node_stats
+        end
+            
     protected
         def list_filternodes(tids = get_filternode_tids(get_uvm_node_name()))
           # List/enumerate protofilter nodes
