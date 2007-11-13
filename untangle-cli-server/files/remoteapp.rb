@@ -34,7 +34,7 @@ class UVMRemoteApp
 
     protected
 
-        DEFAULT_TIMEOUT = 600000
+        DEFAULT_TIMEOUT = 60000000
         
         # @@filternode_lock guards @@factory AND @@uvmReoteContext
         @@filternode_lock = Mutex.new
