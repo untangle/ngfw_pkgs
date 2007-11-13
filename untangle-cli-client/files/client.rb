@@ -50,9 +50,6 @@ include NUCLIUtil
 #   6) Inline command scripts can be written in the NUCLI client console and routed to
 #       multiple NUCLI servers using the "with" command.
 #
-# Note that the NUCLIClient can be caused to reinitialize itself without shutting down by sending
-# its process a SIGHUP, i.e., kill -1.
-#
 # To Do:
 #   - Save history to file
 #   - Autoload, ie, .uclirc file.
