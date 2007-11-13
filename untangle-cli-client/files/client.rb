@@ -111,7 +111,7 @@ class NUCLIClient
         @job_num = 1
         @diag = Diag.new(3)
         @commands_to_execute = []
-        @use_ssh_tunnels = true
+        @use_ssh_tunnels = false
         @user = 'root'
         
         # Commands legend and creation of readline auto-completion abbreviations
