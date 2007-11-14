@@ -126,8 +126,6 @@ class NUCLIClient
             ["open", false, "open connection to server -- open (host-name|ip):port [-l user]", nil],
             ["close", false, "close connection to server #X or host-name -- close #1", nil],
             ["servers", false, "list servers currently under management during this  session.", nil],
-            ["webfilter", true, "send command to webfilter -- enter 'webfilter help' for details.", nil],
-            ["firewall", true, "send command to firewall -- enter 'firewall help' for details.", nil],
             ["with", true, "send multiple commands to servers, '##' or 'all' for all servers, '-i' for interactive, '-e' for echo -- with host-name #2 #4 -i -e", nil],
             ["jobs", false, "list all background jobs currently running.", nil],
             ["cleanup", false, "cleanup client resources, e.g., release stored job outputs, etc.", nil],
@@ -140,6 +138,16 @@ class NUCLIClient
             ["^%\\d+$", false, nil],
             ["backup", false, "backup #{BRAND} server settings -- backup [to_disk|to_usb|to_file <filename>]", nil],
             ["restore", false, "restore #{BRAND} server settings from local file -- restore <filename.backup>]", nil],
+            ["webfilter", true, "send command to Web Filter -- enter 'webfilter help' for details.", nil],
+            ["firewall", true, "send command to Firewall -- enter 'firewall help' for details.", nil],
+            ["attack", true, "send command to Attack Blocker -- enter 'attack help' for details.", nil],
+            ["protofilter", true, "send command to Protocol Filter -- enter 'protofilter help' for details.", nil],
+            ["ips", true, "send command to Intrusion Prevention System -- enter 'ips help' for details.", nil],
+            ["phish", true, "send command to Phish Blocker -- enter 'phish help' for details.", nil],
+            ["router", true, "send command to Router -- enter 'firewall help' for details.", nil],
+            ["spyware", true, "send command to Spyware Blocker -- enter 'spyware help' for details.", nil],
+            ["virus", true, "send command to Virus Blocker -- enter 'virus help' for details.", nil],
+            ["spamblocker", true, "send command to Spam Blocker -- enter 'spamblocker help' for details.", nil],
             # The following are not top level commands but are included here so they can be part of the
             # word completion list we pass to readline.  These can be distinguished and filtered from 
             # this list by noting that they have nil for their help text settings.
