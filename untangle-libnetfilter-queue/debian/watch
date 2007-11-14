@@ -1,0 +1,3 @@
+version=3
+
+ftp://ftp.netfilter.org/pub/libnetfilter_queue/libnetfilter_queue-(\S+).tar.bz2

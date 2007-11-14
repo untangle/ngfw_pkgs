@@ -73,6 +73,9 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LDFLAGS = @LDFLAGS@
+LIBNFNETLINK_CFLAGS = @LIBNFNETLINK_CFLAGS@
+LIBNFNETLINK_LIBS = @LIBNFNETLINK_LIBS@
+LIBNFQUEUE_LIBS = @LIBNFQUEUE_LIBS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
@@ -88,6 +91,7 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
@@ -165,9 +169,9 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
 	installdirs-recursive install-recursive uninstall-recursive \
 	check-recursive installcheck-recursive
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/configure COPYING \
-	ChangeLog Makefile.am acinclude.m4 aclocal.m4 config.guess \
-	config.sub configure configure.in depcomp install-sh \
-	libnetfilter_queue.pc.in ltmain.sh missing mkinstalldirs
+	Makefile.am aclocal.m4 config.guess config.sub configure \
+	configure.in depcomp install-sh libnetfilter_queue.pc.in \
+	ltmain.sh missing mkinstalldirs
 DIST_SUBDIRS = $(SUBDIRS)
 all: all-recursive
 
@@ -186,7 +190,7 @@ $(top_builddir)/config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 $(srcdir)/configure:  $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
 	cd $(srcdir) && $(AUTOCONF)
 
-$(ACLOCAL_M4):  configure.in acinclude.m4
+$(ACLOCAL_M4):  configure.in 
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 libnetfilter_queue.pc: $(top_builddir)/config.status libnetfilter_queue.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
