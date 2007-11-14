@@ -141,12 +141,21 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
+
+# This is _NOT_ the library release version, it's an API version.
+# Please read Chapter 6 "Library interface versions" of the libtool
+# documentation before making any modification
+# http://sources.redhat.com/autobook/autobook/autobook_91.html
+LIBVERSION = 2:0:2
+
+INCLUDES = $(all_includes) -I$(top_srcdir)/include
+
 AUTOMAKE_OPTIONS = foreign dist-bzip2 1.6
 
-EXTRA_DIST = $(man_MANS) debian
+EXTRA_DIST = $(man_MANS)
 
-SUBDIRS = src include
-DIST_SUBDIRS = src include
+SUBDIRS = src include utils
+DIST_SUBDIRS = src include utils
 
 man_MANS = #nfnetlink.3
 
@@ -166,16 +175,16 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
 	installdirs-recursive install-recursive uninstall-recursive \
 	check-recursive installcheck-recursive
 DIST_COMMON = README $(srcdir)/Makefile.in $(srcdir)/configure \
-	Makefile.am aclocal.m4 config.guess config.sub configure \
-	configure.in depcomp install-sh libnfnetlink.pc.in ltmain.sh \
-	missing mkinstalldirs
+	$(top_srcdir)/Make_global.am Makefile.am aclocal.m4 \
+	config.guess config.sub configure configure.in depcomp \
+	install-sh libnfnetlink.pc.in ltmain.sh missing mkinstalldirs
 all: all-recursive
 
 .SUFFIXES:
 
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno
-$(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
+$(srcdir)/Makefile.in:  Makefile.am $(top_srcdir)/Make_global.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
 	  $(AUTOMAKE) --foreign  Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status

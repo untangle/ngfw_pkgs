@@ -15,7 +15,6 @@
 #define aligned_u64 unsigned long long __attribute__((aligned(8)))
 #endif
 
-#include <linux/types.h>
 #include <sys/socket.h>	/* for sa_family_t */
 #include <linux/netlink.h>
 #include <libnfnetlink/linux_nfnetlink.h>
@@ -98,6 +97,42 @@ extern struct nlmsghdr *nfnl_get_msg_next(struct nfnl_handle *h,
 					  const unsigned char *buf,
 					  size_t len);
 
+/* callback verdict */
+enum {
+	NFNL_CB_FAILURE = -1,   /* failure */
+	NFNL_CB_STOP = 0,       /* stop the query */
+	NFNL_CB_CONTINUE = 1,   /* keep iterating */
+};
+
+/* join a certain netlink multicast group */
+extern int nfnl_join(const struct nfnl_handle *nfnlh, unsigned int group);
+
+/* process a netlink message */
+extern int nfnl_process(struct nfnl_handle *h,
+			const unsigned char *buf,
+			size_t len);
+
+/* iterator API */
+
+extern struct nfnl_iterator *
+nfnl_iterator_create(const struct nfnl_handle *h,
+		     const char *buf,
+		     size_t len);
+
+extern void nfnl_iterator_destroy(struct nfnl_iterator *it);
+
+extern int nfnl_iterator_process(struct nfnl_handle *h,
+				 struct nfnl_iterator *it);
+
+extern int nfnl_iterator_next(const struct nfnl_handle *h,
+			      struct nfnl_iterator *it);
+
+/* replacement for nfnl_listen */
+extern int nfnl_catch(struct nfnl_handle *h);
+
+/* replacement for nfnl_talk */
+extern int nfnl_query(struct nfnl_handle *h, struct nlmsghdr *nlh);
+
 #define nfnl_attr_present(tb, attr)			\
 	(tb[attr-1])
 
@@ -116,10 +151,10 @@ extern struct nlmsghdr *nfnl_get_msg_next(struct nfnl_handle *h,
 	 })
 
 /* nfnl attribute handling functions */
-extern int nfnl_addattr_l(struct nlmsghdr *, int, int, void *, int);
+extern int nfnl_addattr_l(struct nlmsghdr *, int, int, const void *, int);
 extern int nfnl_addattr16(struct nlmsghdr *, int, int, u_int16_t);
 extern int nfnl_addattr32(struct nlmsghdr *, int, int, u_int32_t);
-extern int nfnl_nfa_addattr_l(struct nfattr *, int, int, void *, int);
+extern int nfnl_nfa_addattr_l(struct nfattr *, int, int, const void *, int);
 extern int nfnl_nfa_addattr16(struct nfattr *, int, int, u_int16_t);
 extern int nfnl_nfa_addattr32(struct nfattr *, int, int, u_int32_t);
 extern int nfnl_parse_attr(struct nfattr **, int, struct nfattr *, int);
@@ -127,7 +162,7 @@ extern int nfnl_parse_attr(struct nfattr **, int, struct nfattr *, int);
 	nfnl_parse_attr((tb), (max), NFA_DATA((nfa)), NFA_PAYLOAD((nfa)))
 #define nfnl_nest(nlh, bufsize, type) 				\
 ({	struct nfattr *__start = NLMSG_TAIL(nlh);		\
-	nfnl_addattr_l(nlh, bufsize, (NFNL_NFA_NEST | type), NULL, 0); 	\
+	nfnl_addattr_l(nlh, bufsize, type, NULL, 0); 	\
 	__start; })
 #define nfnl_nest_end(nlh, tail) 				\
 ({	(tail)->nfa_len = (void *) NLMSG_TAIL(nlh) - (void *) tail; })
@@ -139,6 +174,25 @@ extern unsigned int nfnl_rcvbufsiz(struct nfnl_handle *h, unsigned int size);
 
 
 extern void nfnl_dump_packet(struct nlmsghdr *, int, char *);
+
+/*
+ * index to interface name API
+ */
+
+#ifndef IFNAMSIZ
+#define IFNAMSIZ 16
+#endif
+
+struct nlif_handle;
+
+struct nlif_handle *nlif_open(void);
+void nlif_close(struct nlif_handle *orig);
+int nlif_fd(struct nlif_handle *nlif_handle);
+int nlif_query(struct nlif_handle *nlif_handle);
+int nlif_catch(struct nlif_handle *nlif_handle);
+int nlif_index2name(struct nlif_handle *nlif_handle, 
+		    unsigned int index, 
+		    char *name);
 
 /* Pablo: What is the equivalence of be64_to_cpu in userspace?
  * 
