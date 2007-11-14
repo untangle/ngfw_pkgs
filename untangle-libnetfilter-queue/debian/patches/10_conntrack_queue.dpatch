@@ -5,9 +5,9 @@
 ## DP: No description.
 
 @DPATCH@
-diff -urNad untangle-libnetfilter-queue/include/libnetfilter_queue/libnetfilter_queue.h /tmp/dpep.fHcnhi/untangle-libnetfilter-queue/include/libnetfilter_queue/libnetfilter_queue.h
---- untangle-libnetfilter-queue/include/libnetfilter_queue/libnetfilter_queue.h	2007-03-21 16:49:46.000000000 -0700
-+++ /tmp/dpep.fHcnhi/untangle-libnetfilter-queue/include/libnetfilter_queue/libnetfilter_queue.h	2007-11-14 14:55:26.000000000 -0800
+diff -urNad untangle-libnetfilter-queue/include/libnetfilter_queue/libnetfilter_queue.h /tmp/dpep.HDI7bo/untangle-libnetfilter-queue/include/libnetfilter_queue/libnetfilter_queue.h
+--- untangle-libnetfilter-queue/include/libnetfilter_queue/libnetfilter_queue.h	2007-11-14 15:05:46.000000000 -0800
++++ /tmp/dpep.HDI7bo/untangle-libnetfilter-queue/include/libnetfilter_queue/libnetfilter_queue.h	2007-11-14 15:05:47.000000000 -0800
 @@ -18,6 +18,88 @@
  
  #include <libnetfilter_queue/linux_nfnetlink_queue.h>
@@ -102,15 +102,38 @@ diff -urNad untangle-libnetfilter-queue/include/libnetfilter_queue/libnetfilter_
  extern int nfq_get_payload(struct nfq_data *nfad, char **data);
  
 +/* return -1 if problem, 0 otherwise */
-+int nfq_get_conntrack(struct nfq_data *nfad, struct nf_conntrack_tuple** original, struct nf_conntrack_tuple** reply )
++int nfq_get_conntrack(struct nfq_data *nfad, struct nf_conntrack_tuple** original, struct nf_conntrack_tuple** reply );
 +
 +
  
  
  #endif	/* __LIBNFQNETLINK_H */
-diff -urNad untangle-libnetfilter-queue/src/libnetfilter_queue.c /tmp/dpep.fHcnhi/untangle-libnetfilter-queue/src/libnetfilter_queue.c
---- untangle-libnetfilter-queue/src/libnetfilter_queue.c	2007-03-21 16:49:46.000000000 -0700
-+++ /tmp/dpep.fHcnhi/untangle-libnetfilter-queue/src/libnetfilter_queue.c	2007-11-14 14:56:20.000000000 -0800
+diff -urNad untangle-libnetfilter-queue/include/libnetfilter_queue/linux_nfnetlink_queue.h /tmp/dpep.HDI7bo/untangle-libnetfilter-queue/include/libnetfilter_queue/linux_nfnetlink_queue.h
+--- untangle-libnetfilter-queue/include/libnetfilter_queue/linux_nfnetlink_queue.h	2007-06-13 11:43:21.000000000 -0700
++++ /tmp/dpep.HDI7bo/untangle-libnetfilter-queue/include/libnetfilter_queue/linux_nfnetlink_queue.h	2007-11-14 15:11:06.000000000 -0800
+@@ -44,7 +44,9 @@
+ 	NFQA_IFINDEX_PHYSOUTDEV,	/* u_int32_t ifindex */
+ 	NFQA_HWADDR,			/* nfqnl_msg_packet_hw */
+ 	NFQA_PAYLOAD,			/* opaque data payload */
+-
++	NFQA_CT_INFO,
++	NFQA_CT_DIR_ORIGINAL,
++	NFQA_CT_DIR_REPLY,
+ 	__NFQA_MAX
+ };
+ #define NFQA_MAX (__NFQA_MAX - 1)
+@@ -75,6 +77,8 @@
+ 	NFQNL_COPY_PACKET,
+ };
+ 
++#define NFQNL_COPY_UNTANGLE_MODE 0x10
++
+ struct nfqnl_msg_config_params {
+ 	u_int32_t	copy_range;
+ 	u_int8_t	copy_mode;	/* enum nfqnl_config_mode */
+diff -urNad untangle-libnetfilter-queue/src/libnetfilter_queue.c /tmp/dpep.HDI7bo/untangle-libnetfilter-queue/src/libnetfilter_queue.c
+--- untangle-libnetfilter-queue/src/libnetfilter_queue.c	2007-11-14 15:05:46.000000000 -0800
++++ /tmp/dpep.HDI7bo/untangle-libnetfilter-queue/src/libnetfilter_queue.c	2007-11-14 15:05:47.000000000 -0800
 @@ -461,3 +461,13 @@
  
  	return -1;
