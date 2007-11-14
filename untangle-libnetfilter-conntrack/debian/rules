@@ -71,12 +71,10 @@ binary-arch: build install
 	dh_testdir -a
 	dh_testroot -a
 	dh_installdocs -plibnetfilter-conntrack1
-	ln -sf libnetfilter-conntrack1 debian/libnetfilter-conntrack1-dbg/usr/share/doc/libnetfilter-conntrack1-dbg
-	ln -sf libnetfilter-conntrack1 debian/libnetfilter-conntrack-dev/usr/share/doc/libnetfilter-conntrack-dev
+	ln -sf libnetfilter-conntrack1 debian/untangle-libnetfilter-conntrack-dev/usr/share/doc/libnetfilter-conntrack-dev
 	dh_installchangelogs -plibnetfilter-conntrack1
 	dh_install -a --sourcedir=debian/tmp
 	dh_link -a
-	dh_strip -a --dbg-package=libnetfilter-conntrack1-dbg
 	dh_compress -a
 	dh_fixperms -a
 	dh_makeshlibs -a -V 'libnetfilter-conntrack1 (>= 0.0.31)'

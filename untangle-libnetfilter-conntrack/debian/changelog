@@ -1,10 +1,10 @@
-libnetfilter-conntrack (0.0.81-1) unstable; urgency=low
+untangle-libnetfilter-conntrack (0.0.81-1) unstable; urgency=low
 
   * New upstream release.
 
  -- Robert Scott <rbscott@untangle.com>  Mon, 22 Oct 2007 14:00:00 +0200
 
-libnetfilter-conntrack (0.0.31-1) unstable; urgency=low
+untangle-libnetfilter-conntrack (0.0.31-1) unstable; urgency=low
 
   * initial debian release (Closes: #388614)
 

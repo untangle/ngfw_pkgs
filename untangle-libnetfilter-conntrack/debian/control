@@ -1,35 +1,28 @@
-Source: libnetfilter-conntrack
+Source: untangle-libnetfilter-conntrack
 Section: libs
 Priority: optional
 Maintainer: netfilter maintainers <netfilter-maintainers@ned.snow-crash.org>
 Uploaders: Max Kellermann <max@duempel.org>, Alexander Wirt <formorer@debian.org>
-Build-Depends: debhelper (>= 4.2), libnfnetlink-dev (>= 0.0.16)
+Build-Depends: debhelper (>= 4.2), untangle-libnfnetlink-dev (>= 0.0.30), gcc (>= 3.4), automake1.7, linux-kernel-headers (>= 2.6.17)
 Standards-Version: 3.7.2
 
-Package: libnetfilter-conntrack1
+Package: untangle-libnetfilter-conntrack1
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: libc6 (>= 2.3.2.ds1-21), untangle-libnfnetlink0 (>= 0.0.30)
+Conflicts: libnetfilter-conntrack1
+Provides: libnetfilter-conntrack1
+Replaces: libnetfilter-conntrack1
 Description: Netfilter netlink-conntrack library
  libnetfilter_conntrack is a userspace library providing a programming
  interface (API) to the in-kernel connection tracking state table.
 
-Package: libnetfilter-conntrack1-dbg
+Package: untangle-libnetfilter-conntrack-dev
 Section: libdevel
 Architecture: any
-Depends: ${shlibs:Depends}, libnetfilter-conntrack1 (= ${Source-Version})
-Description: Debugging symbols for libnetfilter-conntrack1
- libnetfilter_conntrack is a userspace library providing a programming
- interface (API) to the in-kernel connection tracking state table.
- .
- This package provides the debugging symbols.
-
-Package: libnetfilter-conntrack-dev
-Section: libdevel
-Architecture: any
-Depends: ${shlibs:Depends}, pkg-config,
- libnetfilter-conntrack1 (= ${Source-Version}),
- libnfnetlink-dev (>= 0.0.16)
-Description: Development files for libnetfilter-conntrack1
+Depends: libc6 (>= 2.3.2.ds1-21), untangle-libnfnetlink0 (>= 0.0.30), pkg-config,
+ untangle-libnetfilter-conntrack1 (= ${Source-Version}),
+ untangle-libnfnetlink-dev (>= 0.0.30)
+Description: Development files for untangle-libnetfilter-conntrack1
  libnetfilter_conntrack is a userspace library providing a programming
  interface (API) to the in-kernel connection tracking state table.
  .
