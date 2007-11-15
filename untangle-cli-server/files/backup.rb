@@ -94,12 +94,14 @@ class Backup < UVMRemoteApp
 
     def backup_to_file()
       begin
-        settings = @@uvmRemoteContext.createBackup() # returns byte array but we can send this Java type back to a Ruby client.
+        settings = @@uvmRemoteContext.createBackup() # returns byte array but we can't send this Java type back to a Ruby client.
+        @diag.if_level(3) { puts! "create backup succeeded." }          
         res = "" # so, convert byte array to raw string so we can pass it back via DRb.
         settings.each {|s| res << s } 
+        @diag.if_level(3) { puts! "conversion from byte[] to string succeeded." }          
         return res
       rescue Exception => ex
-        msg = "Error: create of backup failed."
+        msg = "Error: failed to obtain backup data from server."
         @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
         return nil
       end
