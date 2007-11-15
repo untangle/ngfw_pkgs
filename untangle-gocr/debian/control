@@ -3,7 +3,7 @@ Section: graphics
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
 Standards-Version: 3.7.2
-Build-Depends: tetex-bin, debhelper (>= 3.0), autoconf, libgtk1.2-dev, libnetpbm10-dev, netpbm, transfig, gs, gsfonts
+Build-Depends: tetex-bin, debhelper (>= 3.0), autoconf, libnetpbm10-dev, netpbm, transfig, gs, gsfonts
 
 Package: untangle-gocr
 Architecture: any
