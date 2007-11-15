@@ -1,8 +1,10 @@
 
 div.rules
 { 
-  margin: 10px 0px 10px 0px;
-  width: 623px;
+  position: relative;
+  left: 50%;
+  margin-left: -310px;
+  width: 620px;
   height: 200px;
   }
 
@@ -13,25 +15,40 @@ ul.rule-list div.type
 
 ul.rule-list div.value
 {
-  width: 300px;
+  width: 400px;
   }
 
-ul.rule-list div.plus
+ul.rule-list li.rule > div.plus, ul.rule-list li.rule > div.minus
 {
   width: 50px;
   text-align: center;
+  background-color: #EFEFEF;
   }
 
-ul.rule-list div.minus
+ul.rule-list li.rule > div.minus
+{
+  position: absolute;
+  right: 50px;
+}
+
+ul.rule-list li.rule > div.plus
+{
+  position: absolute;
+  right: 0px;
+}
+
+
+ul.rule-list li.rule > div.plus, ul.rule-list li.rule > div.minus
 {
   width: 50px;
   text-align: center;
+  background-color: #EFEFEF;
   }
 
-li.rule div.minus:hover, li.rule div.plus:hover
+ul.rule-list li.rule > div.plus:hover, ul.rule-list li.rule > div.minus:hover
 { 
   cursor: pointer;
-  background-color: #E1EB26;  
+  background-color: #E1EB26;
   }
 
 ul.rule-list div.checkbox
@@ -39,7 +56,36 @@ ul.rule-list div.checkbox
   width: 125px;
   }
 
-div.rules li.extension
+div.actions
 { 
-  padding-left: 201px;
+  position: absolute;
+  right: 20px;
+  width: 250px;
+  margin-top: 10px;
+  }
+
+div.update, div.cancel
+{ 
+  position: absolute;
+  top: 0px;
+  background-color: #EFE;
+  width: 100px;
+  border: 1px solid #C0C0C0;
+  text-align: center;
+ }
+
+div.update
+{ 
+  left: 125px;
+ }
+
+div.update:hover, div.cancel:hover
+{ 
+  background-color: #3FE0C6;
+  cursor: pointer;
+ }
+
+ul.rule-list input[type="text"]
+{
+  width: 290px;
  }

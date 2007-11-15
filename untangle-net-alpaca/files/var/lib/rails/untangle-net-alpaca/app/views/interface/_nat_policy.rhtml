@@ -2,10 +2,10 @@
 <li id="<%= rowId  %>" class="nat-policy">
   <div class="ip-address">
     <%= hidden_field_tag( "natIndices[]", rowId ) %>
-    <%= text_field_tag( "natNetworks[#{rowId}]", "#{nat_policy.ip} / #{nat_policy.netmask}", :class => "in-table" ) %>
+    <%= text_field_tag( "natNetworks[#{rowId}]", "#{nat_policy.ip} / #{nat_policy.netmask}" ) %>
   </div>
   <div class="new-source">
-    <%= text_field_tag( "natNewSources[#{rowId}]", "#{nat_policy.new_source}", :class => "in-table" ) %>
+    <%= text_field_tag( "natNewSources[#{rowId}]", "#{nat_policy.new_source}" ) %>
   </div>
   <div class="minus" onclick="removeListItem( '<%= rowId %>' )">
     <%= "-".t %>

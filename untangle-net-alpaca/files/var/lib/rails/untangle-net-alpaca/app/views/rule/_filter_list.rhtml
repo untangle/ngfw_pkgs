@@ -26,7 +26,7 @@ EOF
         </div>
       </li>
 
-       <%= render(:partial => "rule/parameter" , :collection => @parameter_list ) %>
+       <%= render( :partial => "rule/parameter" , :collection => @parameter_list ) %>
     </ul>
   <% end -%>
 </div>
@@ -36,8 +36,8 @@ EOF
     <%= "Cancel".t %>
   </div>
   
-  <div class="save" onclick="RuleBuilder.save()">
-    <%= "Save".t %>
+  <div class="update" onclick="RuleBuilder.update('<%= @filter_id %>') ; RuleBuilder.close();">
+    <%= "Update".t %>
   </div>
 </div>
 

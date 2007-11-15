@@ -1,22 +1,12 @@
-var RuleBuilder = {
+var RuleBuilder =
+{
     handlers : new Array(),
 
-    /* Update the current type of a rule */
-    changeType : function( rowId )
+    /* Use this to set a type and its value */
+    setType : function( rowId, parameter, newValue )
     {
         var row  = document.getElementById( rowId );
         
-        /* need some error handling */
-        if ( row == null ) return;
-        
-        /* Retrieve the first select */
-        var type  = row.getElementsByTagName( "select" );
-
-        if (( type == null ) || ( type.length == 0 )) return;
-
-        /* Get the first elements value */
-        type = type[0].value;
-
         /* Try to get the element */
         value = row.getElementsByTagName( "div" );
 
@@ -35,34 +25,42 @@ var RuleBuilder = {
 
         if ( !found ) return;
         
-        var handler = this.handlers[type];
+        var handler = this.handlers[parameter];
 
         /* Unable to update if the handler is not known */
         if ( handler == null ) return;
 
-        /* Remove any extensions that have been added */
-        this.deleteExtensions( rowId );
+        /* Retrieve the first select and change it to */
+        var select  = row.getElementsByTagName( "select" );
+        
+        if (( select == null ) || ( select.length == 0 )) return;
+        
+        /* set the first elements value */
+        select[0].value = parameter;
 
         /* Replace the item at that position */
         Element.update( value, handler.content( rowId ));
 
-        /* Insert any of the extensions */
-        if (( typeof handler.extensions ) == "function" ) {
-            /* Insert them backways, this way they are ordered properly */
-            var extensions = handler.extensions( rowId ).toArray();
-            
-            var newExtensions = new Array();
-            for ( var c = 0 ; c < extensions.length  ; c++ ) {
-                var extension = extensions[c];
-                extension = "<div class='first-column'>" + extension + "</div>";
-                extension = "<li class='extension'>" + extension + "</li>";
-                newExtensions.push( extension );
-            }
+        if ( newValue != null ) handler.setValue( rowId, newValue );
+    },
 
-            if ( newExtensions.length > 0 ) new Insertion.After( row, newExtensions.join( "\n" ));
-        }
+    /* Update the current type of a rule */
+    selectType : function( rowId )
+    {
+        var row  = document.getElementById( rowId );
         
-        if ( type == "protocol" ) ProtocolHandler.setValue( rowId, { "icmp" : true, "tcp" : true, "udp" : true } );
+        /* need some error handling */
+        if ( row == null ) return;
+        
+        /* Retrieve the first select */
+        var parameter  = row.getElementsByTagName( "select" );
+        
+        if (( parameter == null ) || ( parameter.length == 0 )) return;
+        
+        /* Get the first elements value */
+        parameter = parameter[0].value;
+
+        this.setType( rowId, parameter, null );
     },
     
     removeClass : function( element, className )
@@ -111,10 +109,7 @@ var RuleBuilder = {
         
         /* Ignore anything that is not a list item */
         if ( element.nodeName != "LI" && element.nodeName != "li" ) return;
-        
-        /* Remove any extensions that have been added */
-        this.deleteExtensions( rowId );
-        
+                
         try {
             Element.remove( rowId );
         } catch ( e ) {
@@ -136,37 +131,6 @@ var RuleBuilder = {
     },
 
     /* Delete a parameter, this will not let you delete the last parameter. */
-
-    /* Delete all of the extensions of a row */
-    deleteExtensions : function( rowId )
-    {
-        var list = document.getElementById( "rule-builder" );
-        if ( list == null ) return;
-        
-        /* True once it has found the row */
-        var found = false;
-        
-        /* Get the children of the list */
-        var children = list.childNodes;
-
-        for ( var c = 0 ; c < children.length ; c++ ) {
-            if ( children[c].nodeName != "LI" && children[c].nodeName != "li" ) continue;
-                        
-            if ( children[c].id == rowId ) {
-                /* Something has gone wrong, if it has already found an element */
-                if ( found == true ) break;
-
-                found = true;
-                continue;
-            }
-
-            /* break out once you find the first non-extension after finding the row */
-            if ( !this.hasClass( children[c], "extension" ) && found ) break;
-
-            /* Delete this item */
-            if ( found == true ) Element.remove( children[c] );
-        }
-    },
 
     /* This updates all of the rules filter types so that no two rules
      * have the same ones available */
@@ -192,5 +156,73 @@ var RuleBuilder = {
         }
 
         return numChildren;
+    },
+
+    edit : function( rowId )
+    {
+        var filters = document.getElementById( "filters_" + rowId );
+        if (( filters == null ) || 
+            (( filters.nodeName != "input" ) && ( filters.nodeName != "INPUT" ))) {
+            return;
+        }
+        
+        filters = Hash.toQueryString( { filters : filters.value, filter_id : "filters_" + rowId } );
+
+        new Ajax.Request('/rule/create_filter_list', { asynchronous:false, evalScripts:true, parameters: filters } );
+        
+        Element.show( "overlay" );
+    },
+
+    /* Close the rule builder */
+    close : function()
+    {
+        Element.hide( "overlay" );
+    },
+
+    /* Update the entry */
+    update : function( filterId )
+    {
+        var list = document.getElementById( "rule-builder" );
+        if ( list == null ) return;
+
+        var filters = document.getElementById( filterId );
+        if ( filters == null ) return;
+
+        var children = list.childNodes;
+
+        var value = "";
+
+        for ( var c = 0 ; c < children.length ; c++ ) {
+            if ( children[c].nodeName != "LI" && children[c].nodeName != "li" ) continue;
+            
+            if ( !this.hasClass( children[c], "rule" )) continue;
+            
+            var row = children[c];
+            
+            /* Retrieve the select */
+            var select  = row.getElementsByTagName( "select" );
+            
+            if (( select == null ) || ( select.length == 0 )) continue;
+
+            var parameter = select[0].value;
+
+            var handler = this.handlers[parameter];
+
+            if ( handler == null ) continue;
+
+            if ( value != "" ) value += "|";
+            
+            /* append the value */
+            value += parameter + ":" + handler.parseValue( row.id );
+        }
+
+        filters.value = value;
     }
 };
+
+function Rule( parameter, value )
+{
+    this.parameter = parameter;
+    this.value = value;
+}
+

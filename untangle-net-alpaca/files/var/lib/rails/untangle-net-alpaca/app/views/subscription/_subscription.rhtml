@@ -1,0 +1,28 @@
+<% 
+rowId="sub-row-#{rand( 0x100000000 )}"
+filter=subscription.filter
+filter="" if filter.nil?
+%>
+<li id="<%= rowId  %>" class="subscription">
+  <div class="enabled">
+    <%= hidden_field_tag( "subscriptions[]", rowId ) %>
+    <%= check_box( "enabled", rowId, { :checked => subscription.enabled }, true, false ) %>
+  </div>
+  
+  <div class="subscribe">
+    <%= check_box( "subscribe", rowId, { :checked => subscription.subscribe }, true, false ) %>
+  </div>
+  
+  <div class="description" >
+    <%= text_field( "description", rowId, { :value => subscription.description } ) %>
+  </div>
+
+  <div class="edit" onclick="RuleBuilder.edit( '<%= rowId %>' )">
+    <%= hidden_field( "filters", rowId, { :value => filter } ) %>
+    <%= "e".t %>
+  </div>
+  <div class="minus" onclick="SubscriptionManager.removeListItem( '<%= rowId %>' )">
+    <%= "-".t %>
+  </div>
+  
+</li>

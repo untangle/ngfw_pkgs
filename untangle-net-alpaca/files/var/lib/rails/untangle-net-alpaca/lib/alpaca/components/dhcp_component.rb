@@ -21,7 +21,7 @@ class Alpaca::Components::DhcpComponent < Alpaca::Component
     dhcp_server_settings = DhcpServerSettings.new
     
     internal_network = nil
-    config = interface.current_config
+    config = interface.current_config unless interface.nil?
 
     case config 
     when IntfStatic then internal_network = config.ip_networks[0]

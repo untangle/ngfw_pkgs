@@ -1,49 +1,63 @@
 class RuleController < ApplicationController
-  ## Not using a hash because hashes are not sorted
-  FilterTypes = [[ "Source Address".t, "s-addr" ], [ "Destination Address".t, "d-addr" ],
-                 [ "Source Port".t, "s-port" ], [ "Destination Port".t, "d-port" ],
-                 [ "Source Interface".t, "s-intf" ], [ "Destination Interface".t, "d-intf" ],
-                 [ "Time".t, "time" ], [ "Day of Week".t, "day-of-week" ],
-                 [ "Protocol".t, "protocol" ]]
-
-  DayOfWeek = [[ "sunday", "Sunday".t ],
-               [ "monday", "Monday".t ],
-               [ "tuesday", "Tuesday".t ],
-               [ "wednesday", "Wednesday".t ],
-               [ "thursday", "Thursday".t ],
-               [ "friday", "Friday".t ],
-               [ "saturday", "Saturday".t ]]
-  
-  ProtocolList = [[ "icmp", "icmp".t ],
-                  [ "tcp", "tcp".t ],
-                  [ "udp", "udp".t ],
-                  [ "gre", "gre".t ],
-                  [ "esp", "esp".t ],
-                  [ "ah", "ah".t ],
-                  [ "sctp", "sctp".t ]]
-
   def stylesheets
     [ "rule", "borax/list-table" ]
   end
 
   def scripts
-    [ "rule", "rule/ip_address", "rule/port", "rule/interface", "rule/day", "rule/time", "rule/protocol" ]
+    RuleHelper::Scripts
   end
 
   def create_parameter
     @list_id = params[:list_id]
-    @filter_types = FilterTypes
+
+    @parameter = Rule.new
+    @parameter.parameter, @parameter.value = "s-addr", ""
   end
 
   def index
-    @filter_types = FilterTypes
-    interfaces = Interface.find(:all)
+    interfaces = Interface.find( :all )
     interfaces.sort! { |a,b| a.index <=> b.index }
+
     ## This is a javascript array of the interfaces
     @interfaces = interfaces.map { |i| "new Array( '#{i.index}', '#{i.name.t}' )" }
 
+    filters = params[:filters]
+    
+    unless ApplicationHelper.null?( filters )
+      @parameter_list = filters.split( "|" ).map do |f| 
+        rule = Rule.new
+        rule.parameter, rule.value = f.split( ":" )
+        rule
+      end
+    end
 
-    @day_list = DayOfWeek.map { |d| "new Array( '#{d[0]}', '#{d[1]}' )" }
-    @protocol_list = ProtocolList.map { |d| "new Array( '#{d[0]}', '#{d[1]}' )" }
+    @parameter_list =  [ Rule.new ] if ( @parameter_list.nil? || @parameter_list.empty? )
+  end
+  
+  def create_filter_list
+    interfaces = Interface.find( :all )
+    interfaces.sort! { |a,b| a.index <=> b.index }
+
+    @filter_id = params[:filter_id]
+    raise "unspecified filter id" if @filter_id.nil?
+
+    ## This is a javascript array of the interfaces
+    @interfaces = interfaces.map { |i| "new Array( '#{i.index}', '#{i.name.t}' )" }
+    
+    filters = params[:filters]
+
+    unless ApplicationHelper.null?( filters )
+      @parameter_list = filters.split( "|" ).map do |f| 
+        rule = Rule.new
+        rule.parameter, rule.value = f.split( ":" )
+        rule
+      end
+    end
+
+    if ( @parameter_list.nil? || @parameter_list.empty? )
+      r = Rule.new
+      r.parameter, r.value = "s-addr", ""
+      @parameter_list = [r]
+    end
   end
 end

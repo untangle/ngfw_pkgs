@@ -1,0 +1,55 @@
+
+div.subscriptions
+{ 
+  margin: 10px 0px 10px 0px;
+  width: 623px;
+  height: 200px;
+  }
+
+ul#subscription-list div.enabled
+{ 
+  width: 100px;
+  }
+
+ul#subscription-list div.subscribe
+{ 
+  width: 100px;
+  }
+
+ul#subscription-list div.description
+{ 
+  width: 360px;
+  }
+
+ul#subscription-list div.edit
+{ 
+  width: 20px;
+  }
+
+ul#subscription-list div.minus
+{ 
+  width: 20px;
+  }
+
+ul#subscription-list div.enabled, ul#subscription-list div.subscribe, ul#subscription-list div.minus, ul#subscription-list div.edit
+{ 
+  text-align: center;
+  }
+
+li.subscription div.minus:hover, li.subscription div.edit:hover
+{ 
+  cursor: pointer;
+  background-color: #E1EB26;  
+  }
+
+div#overlay > div#rule-dialog
+{ 
+  position: relative;
+  left: 50%;
+  margin-left: -350px;
+  width: 700px;
+  height: 300px;
+  margin-top: 100px;
+  padding-top: 50px;
+  background-color: #EEEEFF;
+  }

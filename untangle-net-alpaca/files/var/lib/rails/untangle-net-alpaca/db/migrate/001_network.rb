@@ -158,6 +158,28 @@ class Network < ActiveRecord::Migration
       table.column :ip_address, :string
       table.column :description, :string
     end
+
+    create_table :rules do |table|
+      ## parameter type (s-addr, protocol, etc)
+      table.column :parameter, :string
+      table.column :value, :string
+    end
+
+    ## uvm subscription
+    create_table :subscriptions do |table|
+      table.column :position, :integer
+      table.column :enabled, :boolean
+      table.column :subscribe, :boolean
+      table.column :filter, :string
+      table.column :description, :string
+    end
+    
+    ## Join between subscription and a rule.
+    create_table :rules_subscriptions, :id => false do |table|
+      table.column :subscription_id, :integer
+      table.column :rule_id, :integer
+    end
+
   end
 
   def self.down
@@ -177,5 +199,8 @@ class Network < ActiveRecord::Migration
     drop_table :dhcp_static_entries
     drop_table :dns_server_settings
     drop_table :dns_static_entries
+    drop_table :rules
+    drop_table :subscriptions
+    drop_table :rules_subscriptions
   end
 end

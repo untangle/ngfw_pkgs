@@ -48,7 +48,7 @@ class DhcpController < ApplicationController
 
     position = 0
     unless indices.nil?
-      indices.each do |key,value|
+      indices.each do |key|
         dse = DhcpStaticEntry.new
         dse.mac_address, dse.ip_address, dse.description = mac_addresses[key], ip_addresses[key], descriptions[key]
         dse.position, position = position, position + 1

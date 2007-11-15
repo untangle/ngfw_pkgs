@@ -73,14 +73,6 @@ input[type="text"].number
   width: 50px;
  }
 
-
-input[type="text"].in-table
-{
-  background-color: transparent;
-  border-width: 0px;
-  width: 100%;
- }
-
 form fieldset li {
   list-style: none;
   padding: 5px;

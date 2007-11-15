@@ -1,0 +1,2 @@
+page.insert_html( :bottom, "subscription-list", :partial => "subscription", :object => @subscription )
+page.sortable( "subscription-list" )

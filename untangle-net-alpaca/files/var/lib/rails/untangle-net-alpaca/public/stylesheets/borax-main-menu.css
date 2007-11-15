@@ -1,5 +1,6 @@
 ul.main-menu-depth-0, .main-menu-depth-0 ul
 {
+  z-index: 200;
   margin: 0px;
   padding: 0px;
   cursor: default;

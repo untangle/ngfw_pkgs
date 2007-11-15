@@ -31,10 +31,9 @@ div.list-table ul > li div
   float: left;
   }
 
-div.list-table ul li div
+div.list-table ul li > div
 { 
   border-left: 1px solid #C0C0C0;
-  height: 20px;
   }
 
 /* Style the header */

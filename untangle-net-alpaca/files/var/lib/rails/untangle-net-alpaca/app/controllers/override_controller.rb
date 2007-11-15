@@ -1,12 +1,10 @@
 class OverrideController < ApplicationController  
-  def index
-    manage
+  def manage
+    @fileOverrideList = FileOverride.ordered_find( :all )
     render :action => 'manage'
   end
 
-  def manage
-    @fileOverrideList = FileOverride.ordered_find( :all )
-  end
+  alias :index :manage
 
   def create_file_override
     @file_override = FileOverride.new
@@ -29,7 +27,6 @@ class OverrideController < ApplicationController
   def save
     ## Review : Internationalization
     return redirect_to( :action => "manage" ) if ( params[:commit] != "Save Changes".t )
-
     
     fileOverrideList = []
 

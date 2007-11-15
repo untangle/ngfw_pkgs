@@ -1,15 +1,4 @@
-var PortHandler =
-{
-    /* Function to generate the content */
-    content : function() {
-        return '<input id="ruleValue[]" name="ruleValue[]" type="text"/>';
-    },
-
-    /* Validation function */
-    validate : function( rowId ) {
-        
-    }
-}
+var PortHandler = new Textbox();
 
 RuleBuilder.registerType( "d-port", PortHandler );
 RuleBuilder.registerType( "s-port", PortHandler );

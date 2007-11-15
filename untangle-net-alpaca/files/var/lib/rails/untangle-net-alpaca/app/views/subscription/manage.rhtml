@@ -1,0 +1,15 @@
+<div id="overlay"  style="display: none">
+  <div id="rule-dialog">
+  </div>
+</div>
+<% form_tag( :action => 'save' ) do -%>
+
+  <%= link_to_remote( "+".t, :url => { :action => :create_subscription } ) %>
+
+  <%= render( :partial => "subscriptions" , :object => @subscription_list ) %>
+
+  <%= submit_tag "Cancel".t %>
+  <%= submit_tag "Save Changes".t %>
+
+<% end %>
+  

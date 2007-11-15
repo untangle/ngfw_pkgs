@@ -1,9 +1,9 @@
-<% rowId="ip-row-#{rand( 0x100000000 )}" %>
+<% rowId="parameter-#{rand( 0x100000000 )}" %>
 <li id="<%= rowId  %>" class="rule">
   <div class="type">
     <%= hidden_field_tag( "ruleList[]", "random"  ) %>
-    <%= select_tag( "ruleType[]", options_for_select( @filter_types ), 
-    { :onchange => "RuleBuilder.changeType( '#{rowId}' )" } ) %>
+    <%= select_tag( "ruleType[]", options_for_select( RuleHelper::FilterTypes, parameter.parameter ), 
+    { :onchange => "RuleBuilder.selectType( '#{rowId}' )" } ) %>
   </div>
   <div class="value middle">
   </div>
@@ -15,4 +15,11 @@
   <div class="plus" onclick="RuleBuilder.addParameter()">
     <%= "+".t %>
   </div>
+
 </li>
+
+<%= javascript_tag <<EOF
+  RuleBuilder.setType( '#{rowId}', '#{parameter.parameter}', '#{parameter.value}' );
+EOF
+%>
+
