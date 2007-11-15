@@ -26,5 +26,5 @@ module RuleHelper
 
   ProtocolListJavascript = ProtocolList.map { |d| "new Array( '#{d[0]}', '#{d[1]}' )" }.join( ", " )
 
-  Scripts = [ "rule", "rule/textbox", "rule/checkbox", "rule/ip_address", "rule/port", "rule/interface", "rule/day", "rule/time", "rule/protocol" ]
+  Scripts = [ "rule_builder", "rule/textbox", "rule/checkbox", "rule/ip_address", "rule/port", "rule/interface", "rule/day", "rule/time", "rule/protocol" ]
 end
