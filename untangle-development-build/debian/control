@@ -10,6 +10,6 @@ Architecture: any
 Conflicts: dev-mv
 Provides: dev-mv
 Replaces: dev-mv
-Depends: libxml2-dev, sun-java5-jdk, fakeroot, debhelper, make, module-assistant, subversion, subversion-tools, untangle-iptables-dev (>= 1.2.11-10), untangle-libnfnetlink-dev, untangle-libnetfilter-queue-dev, gcc, libc6-dev, linux-kernel-headers, libsysfs-dev, g++, devscripts, dput, rake (>= 0.7.0-1build1), libncurses-dev, dput, lintian, dpatch, autoconf, libnetpbm10-dev, libssl-dev, docbook-xsl, linuxdoc-tools, untangle-linux-headers-2.6.16-ck11-untangle-prod-486 (>= 2.6.11), libdbi-ruby, libgettext-ruby1.8, libgettext-ruby-util
+Depends: libxml2-dev, sun-java5-jdk, fakeroot, debhelper, make, module-assistant, subversion, subversion-tools, untangle-iptables-dev (>= 1.2.11-10), untangle-libnfnetlink-dev, untangle-libnetfilter-queue-dev, gcc, libc6-dev, linux-kernel-headers, libsysfs-dev, g++, devscripts, dput, rake (>= 0.7.0-1build1), libncurses-dev, dput, lintian, dpatch, autoconf, libnetpbm10-dev, libssl-dev, docbook-xsl, linuxdoc-tools, untangle-linux-headers-2.6.16-ck11-untangle-prod-486 (>= 2.6.11), libdbi-ruby, libgettext-ruby1.8, libgettext-ruby-util, cowdancer (>= 0.161), pdebuild (>= 0.25)
 Description: Untangle Development Environment
  The Untangle Development Environment.
