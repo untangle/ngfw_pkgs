@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 
 Xdialog --default-no --wrap --title "Recovery" --yesno "Are you sure want to run Recovery? It will stop Untangle services." 15 60
 

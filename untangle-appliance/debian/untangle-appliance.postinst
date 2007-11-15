@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 
 # modify limit to support many file descriptors
 LIMITS_FILE=/etc/security/limits.conf

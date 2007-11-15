@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 # ltconfig - Create a system-specific libtool.
 # Copyright (C) 1996-1999 Free Software Foundation, Inc.

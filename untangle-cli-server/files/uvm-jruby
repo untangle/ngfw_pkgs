@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 
 UVM_ROOT=${UVM_ROOT:-}
 export JRUBY_HOME=/usr/lib/jruby-ut0.9

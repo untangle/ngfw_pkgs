@@ -1,4 +1,4 @@
-#!/bin/dash
+#! /bin/bash
 
 # These variables are for the use of the scripts run by run-parts
 # PPP_IFACE="$1"

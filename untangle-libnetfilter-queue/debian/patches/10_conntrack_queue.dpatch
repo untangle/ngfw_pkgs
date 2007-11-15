@@ -1,4 +1,4 @@
-#! /bin/sh /usr/share/dpatch/dpatch-run
+#! /bin/bash
 ## 10_conntrack_queue.dpatch by  <rbscott@rbscott-eg>
 ##
 ## All lines beginning with `## DP:' are a description of the patch.

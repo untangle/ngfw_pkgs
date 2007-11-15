@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 
 JAR_DIR=/usr/share/untangle-ujac2pdf/libs
 JARS="itext-1.4.jar ujac.jar commons-logging.jar"

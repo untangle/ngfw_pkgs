@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /bin/bash
 GOCR=gocr
 if test -x ./gocr; then GOCR=./gocr; fi
 for ifile in $*; do

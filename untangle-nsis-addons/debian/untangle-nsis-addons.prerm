@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 NSIS_FILES=`dpkg -L nsis`
 LIST=/usr/share/untangle-nsis-addons/copied-files

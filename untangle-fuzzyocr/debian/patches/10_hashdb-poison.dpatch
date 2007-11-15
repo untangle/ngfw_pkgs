@@ -1,4 +1,4 @@
-#! /bin/sh /usr/share/dpatch/dpatch-run
+#! /bin/bash
 ## 10_hashdb-poison.dpatch by Sebastien Delafond <seb@untanglenetworks.net>
 ##
 ## All lines beginning with `## DP:' are a description of the patch.

@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 
 CLAMAV_CONF_FILE=/etc/clamav/clamd.conf
 

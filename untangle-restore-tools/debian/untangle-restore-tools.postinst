@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 
 # start untangle-restore-tools
 if [ -x "/etc/init.d/untangle-restore-tools" ]; then

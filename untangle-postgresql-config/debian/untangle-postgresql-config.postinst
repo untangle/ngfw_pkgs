@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 
 PG_CONF="`/usr/bin/find /etc/postgresql -name 'postgresql.conf' -type f`"
 PG_MAST="`/usr/bin/find /etc/postgresql -name 'postmaster.conf' -type f`"

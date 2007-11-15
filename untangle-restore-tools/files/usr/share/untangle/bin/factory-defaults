@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 
 NAT_CACHE_DEB="/var/lib/uvm/untangle-node-router.deb"
 

@@ -1,4 +1,4 @@
-#!/bin/dash
+#! /bin/bash
 
 ## Regenerate all of the iptables rules.
 /etc/init.d/alpaca-iptables restart

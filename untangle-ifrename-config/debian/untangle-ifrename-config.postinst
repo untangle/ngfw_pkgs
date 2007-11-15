@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 
 IFRENAME_INIT_SCRIPT=untangle-ifrename
 IFRENAME_CONF_FILE=/etc/iftab

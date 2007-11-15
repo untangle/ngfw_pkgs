@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 
 # setting up the user account we use to run the daemons
 adduser --gecos "" --firstuid 10000 --disabled-password kiosk 2>/dev/null

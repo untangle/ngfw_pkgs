@@ -1,4 +1,4 @@
-#!/bin/dash
+#! /bin/bash
 
 # You don't usually need to touch this file at all, the full configuration
 # of the bridge can be done in a standard way on /etc/network/interfaces.

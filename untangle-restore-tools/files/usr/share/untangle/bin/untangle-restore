@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 
 INST_OPTS=" -o DPkg::Options::=--force-confnew --yes --force-yes --fix-broken "
 UPGD_OPTS=" -o DPkg::Options::=--force-confnew --yes --force-yes --fix-broken "

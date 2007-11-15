@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 
 Xdialog --default-no --wrap --title "Reboot" --yesno "Are you sure you want to reboot the Untangle Server?" 15 60
 

@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 
 XSESSION_FILE=/home/kiosk/.xsession
 XSET_S_OPTIONS="s blank s 120 15"

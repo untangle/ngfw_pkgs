@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 #
 # Remap the interfaces to the way they should be
 #

@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 
 if [ ! -z `sudo su -c 'grep "^root:\*:" /etc/shadow'` ] ; then
     # set the password for the first time

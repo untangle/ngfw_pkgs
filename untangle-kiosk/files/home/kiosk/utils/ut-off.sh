@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 
 Xdialog --default-no --wrap --title "Power off" --yesno "Are you sure you want to turn off the Untangle Server?" 15 60
 

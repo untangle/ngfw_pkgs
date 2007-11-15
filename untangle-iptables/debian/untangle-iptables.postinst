@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 set -e
 
 #clean-up 1.2.6-a{1,2} posinst error

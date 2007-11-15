@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 
 if [ $# -gt 0 ] ; then
     # this is for started from init.d

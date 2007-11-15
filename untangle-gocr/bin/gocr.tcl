@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 # --- tcl/tk-GUI for gocr --- (c) Joerg Schulenburg
 #  start: wish gocr.tcl
 #

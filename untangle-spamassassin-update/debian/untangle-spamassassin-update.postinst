@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 
 # The tuning depends on the memory available.  We have settings for >= 2Gig, >= 1Gig,
 # and < 1Gig.

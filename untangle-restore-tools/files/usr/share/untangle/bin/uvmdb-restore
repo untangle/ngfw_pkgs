@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 
 LOCAL_DUMP=/usr/share/untangle/dump
 mkdir -p $LOCAL_DUMP

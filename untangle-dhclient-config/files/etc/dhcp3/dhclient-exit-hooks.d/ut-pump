@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 
 BOGUS_ADDRESS_BASE="169.254.210.50"
 BOGUS_NETMASK="255.255.0.0"

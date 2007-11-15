@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /bin/bash
 # Single Xwindow/KDE startup script
 # (C) Klaus Knopper Jun 2001
 
