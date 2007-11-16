@@ -146,17 +146,11 @@ class NUCLIServer
             return res
         rescue NameError, NoMethodError => ex
             msg = "Error: component '#{node}' does not have the proper structure - " + ex
-            @diag.if_level(3) {
-                puts! "#{msg}"
-                p ex
-            }
+            @diag.if_level(3) { puts! msg; p ex }
             return msg
         rescue Exception => ex
             msg = "Error: unable to load component '#{method_id}': " + ex
-            @diag.if_level(2) {
-                puts! "#{msg}"
-                p ex
-            }
+            @diag.if_level(3) { puts! msg; p ex }
             return msg
         end
     end
