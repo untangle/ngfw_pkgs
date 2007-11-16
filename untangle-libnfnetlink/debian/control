@@ -2,7 +2,7 @@ Source: untangle-libnfnetlink
 Section: libs
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
-Build-Depends: cdbs (>= 0.4), debhelper (>= 4.2), gcc (>= 3.4), automake1.7, linux-kernel-headers (>= 2.6.17)
+Build-Depends: cdbs (>= 0.4), debhelper (>= 4.2), gcc (>= 3.4), automake1.7, linux-kernel-headers (>= 2.6.17), libtool
 Standards-Version: 3.7.2
 
 Package: untangle-libnfnetlink0
