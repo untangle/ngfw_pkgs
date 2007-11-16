@@ -1167,38 +1167,45 @@ class NUCLIClient
     end
 
     def backup(*args)
-        if (args.length < 1)
-            puts! ERROR_INCOMPLETE_COMMAND
-            return
-        end
-        
-        if (to_file = (args[0] == "to_file"))
-            if args.length < 2
+
+        begin
+            if (args.length < 1)
                 puts! ERROR_INCOMPLETE_COMMAND
                 return
-            elsif File.exist?(args[1])
-                print! "File '#{args[1]}' exists  - overwrite it (y/n)? "
-                return unless getyn('y')
             end
-        end
-
-        if to_file
-            message("Retrieving #{BRAND} server settings: this many take as much as a few minutes to complete - please wait...", 2)
-            settings = send_to_server("backup", args)
-            if !settings
-                puts! "Error: unable to retrieve #{BRAND} server settings - backup failed.";
-            else
+            
+            filename = nil
+            if (to_file = (args[0] == "to-file"))
+                if args.length < 2
+                    puts! ERROR_INCOMPLETE_COMMAND
+                    return
+                end
                 filename = args[1]
-                filename << ".backup"
-                File.open(filename, File::CREAT | File::TRUNC | File::RDWR) { |f|
-                    f.syswrite(settings)
-                }
-                message("Server settings successfully backed up to '#{filename}'.'", 1)
+                filename << ".backup" unless (filename =~ /.backup$/)
+                if File.exist?(filename)
+                    print! "File '#{args[1]}' exists  - overwrite it (y/n)? "
+                    return unless getyn('y')
+                end
             end
-        else
-            res = send_to_server("backup", args)
-            puts! res if res
+    
+            if to_file
+                message("Retrieving #{BRAND} server settings: this many take some time - please wait...", 2)
+                settings = send_to_server("backup", args)
+                if !settings
+                    puts! "Error: unable to retrieve #{BRAND} server settings - backup failed.";
+                else
+                    File.open(filename, File::CREAT | File::TRUNC | File::RDWR) { |f|
+                        f.syswrite(settings)
+                    }
+                    message("Server settings successfully backed up to '#{filename}'", 1)
+                end
+            else
+                res = send_to_server("backup", args)
+                puts! res if res
+            end
         end
+    rescue Exception => ex
+        puts! "Error: backup encountered an unhandled exception: " + ex
     end
     
 end # NUCLIClient
