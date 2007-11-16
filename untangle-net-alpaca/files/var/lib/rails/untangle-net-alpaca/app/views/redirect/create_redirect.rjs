@@ -1,0 +1,2 @@
+page.insert_html( :bottom, "redirect-list", :partial => "redirect", :object => @redirect )
+page.sortable( "redirect-list" )

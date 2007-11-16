@@ -159,6 +159,7 @@ class Network < ActiveRecord::Migration
       table.column :description, :string
     end
 
+    ## REVIEW : These are goings away
     create_table :rules do |table|
       ## parameter type (s-addr, protocol, etc)
       table.column :parameter, :string
@@ -173,13 +174,17 @@ class Network < ActiveRecord::Migration
       table.column :filter, :string
       table.column :description, :string
     end
-    
-    ## Join between subscription and a rule.
-    create_table :rules_subscriptions, :id => false do |table|
-      table.column :subscription_id, :integer
-      table.column :rule_id, :integer
-    end
 
+    ## uvm redirect
+    create_table :redirects do |table|
+      table.column :position, :integer
+      table.column :enabled, :boolean
+      table.column :new_ip, :string
+      ## this is the encapsulated packet id, aka port.
+      table.column :new_enc_id, :string
+      table.column :filter, :string
+      table.column :description, :string
+    end
   end
 
   def self.down
@@ -201,6 +206,6 @@ class Network < ActiveRecord::Migration
     drop_table :dns_static_entries
     drop_table :rules
     drop_table :subscriptions
-    drop_table :rules_subscriptions
+    drop_table :redirects
   end
 end

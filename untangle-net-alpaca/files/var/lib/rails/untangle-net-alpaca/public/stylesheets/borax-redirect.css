@@ -1,0 +1,56 @@
+
+div.redirects
+{ 
+  margin: 10px 0px 10px 0px;
+  width: 623px;
+  height: 200px;
+  }
+
+ul#redirect-list div.enabled
+{ 
+  width: 100px;
+  }
+
+ul#redirect-list div.description
+{ 
+  width: 460px;
+  }
+
+ul#redirect-list div.edit
+{ 
+  width: 20px;
+  }
+
+ul#redirect-list div.minus
+{ 
+  width: 20px;
+  }
+
+ul#redirect-list div.enabled, ul#redirect-list div.subscribe, ul#redirect-list div.minus, ul#redirect-list div.edit
+{ 
+  text-align: center;
+  }
+
+li.redirect div.minus:hover, li.redirect div.edit:hover
+{ 
+  cursor: pointer;
+  background-color: #E1EB26;  
+  }
+
+div#overlay > div#rule-dialog
+{ 
+  position: relative;
+  top: 100px;
+  left: 50%;
+  margin-left: -350px;
+  width: 700px;
+  height: 475px;
+  padding-top: 20px;
+  background-color: #CCCCD0;
+  border: 1px solid #5F5F5F;
+  }
+
+div#rule-dialog > h2.title
+{ 
+  text-align: center;
+  }

@@ -9,7 +9,7 @@ class SubscriptionController < ApplicationController
 
   def create_subscription
     ## Reasonable defaults
-    @subscription = Subscription.new( :enabled => true, :subscribe => true, :position => -1 )    
+    @subscription = Subscription.new( :enabled => true, :subscribe => true, :position => -1, :description => "" )
   end
 
   def save

@@ -160,16 +160,29 @@ var RuleBuilder =
 
     edit : function( rowId )
     {
-        var filters = document.getElementById( "filters_" + rowId );
-        if (( filters == null ) || 
-            (( filters.nodeName != "input" ) && ( filters.nodeName != "INPUT" ))) {
-            return;
+        var fieldHash = { row_id : rowId };
+
+        for ( var c = 0 ; c < this.manager.fields.length ; c++ ) {
+            var field = document.getElementById( this.manager.fields[c] + "_" + rowId );
+            
+            if ( field == null ) {
+                alert( "Missing the field: " + field );
+                return;
+            }
+            
+            /* Append this value to the field array */
+            fieldHash[this.manager.fields[c]] = field.value;
         }
         
-        filters = Hash.toQueryString( { filters : filters.value, filter_id : "filters_" + rowId } );
-
-        new Ajax.Request('/rule/create_filter_list', { asynchronous:false, evalScripts:true, parameters: filters } );
+        var request = new Ajax.Request( this.manager.editFilter(), 
+            { asynchronous:false, evalScripts:true, 
+              parameters: Hash.toQueryString( fieldHash ) } );
         
+        if ( !request.success() ) {
+            alert( "unable to edit the redirect." );
+            return;
+        }
+
         Element.show( "overlay" );
     },
 
@@ -180,17 +193,14 @@ var RuleBuilder =
     },
 
     /* Update the entry */
-    update : function( filterId )
+    update : function( rowId )
     {
         var list = document.getElementById( "rule-builder" );
         if ( list == null ) return;
 
-        var filters = document.getElementById( filterId );
-        if ( filters == null ) return;
-
         var children = list.childNodes;
-
-        var value = "";
+        
+        var filterValue = "";
 
         for ( var c = 0 ; c < children.length ; c++ ) {
             if ( children[c].nodeName != "LI" && children[c].nodeName != "li" ) continue;
@@ -210,13 +220,32 @@ var RuleBuilder =
 
             if ( handler == null ) continue;
 
-            if ( value != "" ) value += "|";
+            if ( filterValue != "" ) filterValue += "|";
             
-            /* append the value */
-            value += parameter + ":" + handler.parseValue( row.id );
+            /* append the filterValue */
+            filterValue += parameter + ":" + handler.parseValue( row.id );
         }
 
-        filters.value = value;
+        for ( var c = 0 ; c < this.manager.fields.length ; c++ ) {
+            var field = document.getElementById( this.manager.fields[c] + "_" + rowId );
+            
+            if ( field == null ) {
+                alert( "Missing the field: " + this.manager.fields[c] );
+                return;
+            }
+
+            if ( this.manager.fields[c] == "filters" ) {
+                field.value = filterValue;
+            } else {
+                var newValue = document.getElementById( this.manager.fields[c] );
+                if ( newValue == null ) {
+                    alert( "Missing the value: " + this.manager.fields[c] );
+                    return;
+                }
+
+                field.value = newValue.value;
+            }
+        }
     }
 };
 
