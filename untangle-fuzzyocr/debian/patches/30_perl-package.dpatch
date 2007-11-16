@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/bash /usr/share/dpatch/dpatch-run
 ## 30_perl-package.dpatch by Sebastien Delafond <seb@debian.org>
 ##
 ## All lines beginning with `## DP:' are a description of the patch.

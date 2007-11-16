@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/bash /usr/share/dpatch/dpatch-run
 ## 20_conf-file.dpatch by Sebastien Delafond <seb@debian.org>
 ##
 ## All lines beginning with `## DP:' are a description of the patch.
