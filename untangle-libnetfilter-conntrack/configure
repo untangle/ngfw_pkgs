@@ -19725,7 +19725,7 @@ echo "$as_me: error: Linux only, dude!" >&2;}
    { (exit 1); exit 1; }; };;
 esac
 
-LIBNFNETLINK_REQUIRED=0.0.25
+LIBNFNETLINK_REQUIRED=0.0.30
 
 
 
