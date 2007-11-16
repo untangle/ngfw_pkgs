@@ -1172,7 +1172,7 @@ class NUCLIClient
             return
         end
         
-        if (to_file = (args[0] == "to-file"))
+        if (to_file = (args[0] == "to_file"))
             if args.length < 2
                 puts! ERROR_INCOMPLETE_COMMAND
                 return
