@@ -131,8 +131,8 @@ class Webfilter < UVMFilterNode
         blocked_urls_list.each { |url|
             blocked = (url.getString() + "," + url.isLive().to_s + "," + url.getLog().to_s + "," + url.getDescription() + "\n")
             blocked_urls << blocked
-            @diag.if_level(3) { puts! blocked }
         } if blocked_urls_list
+        @diag.if_level(3) { puts! blocked_urls }
         return blocked_urls
     end
 

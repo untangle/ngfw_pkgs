@@ -33,19 +33,19 @@ module NUCLIUtil
         STDIN.gets.chomp.downcase == y_or_n
     end
     
-    class Diag
+    class Diag #nostic class
         
         attr_accessor :level
         
-        def initialize(diagnostic_level=0)
-            @diagnostic_level = diagnostic_level
+        def initialize(level=0)
+            @level = level
             @tracer = 1
         end
             
-        def if_level(diagnostic_level, *args)
-            yield args if block_given? && diagnostic_level <= @diagnostic_level
+        def if_level(level)
+            yield if block_given? && level <= @level
         end
-        
+
         def trace(tracer = @tracer)
             @tracer = 1 if tracer == 1
             puts! tracer
