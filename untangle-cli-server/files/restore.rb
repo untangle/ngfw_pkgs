@@ -15,9 +15,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-require 'remoteapp'
+require 'configelem'
 
-class Restore < UVMRemoteApp
+class Restore < UVMConfigElement
   include CmdDispatcher
   include RetryLogin
 
@@ -32,29 +32,15 @@ class Restore < UVMRemoteApp
     "Restore"
   end
   
-  def execute(args)
-    # TODO: BUG: if we don't return something the client reports an exception
-    # @diag.if_level(3) { puts! "#{get_node_name}::execute(#{args.join(', ')})" }
-
-    begin
-      retryLogin {
-        return args.empty? ? ERROR_INCOMPLETE_COMMAND : dispatch_cmd(args, false)
-      }
-    rescue Exception => ex
-      @diag.if_level(3) { puts! ex; puts! ex.backtrace }
-      return "Error: Unhandled exception -- " + ex
-    end    
-  end
-
   protected
-    def cmd_help(tid)
+    def get_help_text()
       return <<-HELP
 - restore from <filename[.backup]>
-    -- Restore ${BRAND} server settings from local file.
+    -- Restore #{BRAND} server settings from local file.
     HELP
     end
 
-    def cmd_from(*args)
+    def cmd_from_file(*args)
       return restore_from_file(*args)
     end
 
@@ -70,7 +56,7 @@ class Restore < UVMRemoteApp
       end
       
       begin
-        filename !File.exist?(args[0]) && File.exist?("#{args[0]}.backup") ? "#{args[0]}.backup" : args[0]
+        filename = !File.exist?(args[0]) && File.exist?("#{args[0]}.backup") ? "#{args[0]}.backup" : args[0]
         @@uvmRemoteContext.restoreBackup(filename)
         msg = "Restoration of #{BRAND} server settings from '#{filename}' complete."
         @diag.if_level(3) { puts! msg }          
