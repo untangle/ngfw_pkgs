@@ -1,5 +1,4 @@
-#! /bin/bash
-
+#!/bin/sh
 UVM_ROOT=${UVM_ROOT:-}
 export JRUBY_HOME=/usr/lib/jruby1.0
 export RUBYLIB=/home/ken/work/pkgs/untangle-cli-server/files:$RUBYLIB
