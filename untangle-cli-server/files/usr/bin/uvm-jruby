@@ -23,7 +23,7 @@ done
 export CLASSPATH
 echo $CLASSPATH
 
-export RUBYLIB=/home/ken/work/pkgs/untangle-cli-server/files:$RUBYLIB
+export RUBYLIB=/usr/share/untangle-cli-server/src:$RUBYLIB
 echo $RUBYLIB
 
-jruby $*
+/usr/bin/jruby1.0 $*
