@@ -1,0 +1,37 @@
+#!/bin/sh
+
+DAEMON=/usr/bin/nucli-server
+PIDFILE=/var/run/untangle-nucli-server.pid
+
+[ -x $DAEMON ] || exit 0
+
+killDaemon() {
+  ps aux | grep " $DAEMON" | awk '{print $2}' | xargs kill -9 2> /dev/null
+}
+
+case "$1" in
+  start)
+    echo -n "Starting $DAEMON: "
+    killDaemon # just to be sure
+    start-stop-daemon --start --quiet --pidfile $PIDFILE \
+      --make-pidfile --exec $DAEMON
+    echo "done"
+    ;;
+  stop)
+    echo -n "Stopping $DAEMON: "
+    start-stop-daemon --stop --oknodo --quiet --pidfile $PIDFILE \
+      --exec $DAEMON
+    sleep 1
+    killDaemon
+    echo "done"
+    ;;
+  restart)
+    $0 stop
+    $0 start
+    ;;
+  force-reload)
+    $0 restart
+    ;;
+esac
+
+exit 0
