@@ -1,56 +1,5 @@
 #! /bin/bash
 
-# The tuning depends on the memory available.  We have settings for >= 2Gig, >= 1Gig,
-# and < 1Gig.
-MEM=$(awk '/MemTotal/ { print $2 }' < /proc/meminfo)
-if [ $MEM -gt 1900000 ] ; then
-    MAX_CHILDREN=20
-    MAX_SPARE=1
-elif [ $MEM -gt 900000 ] ; then
-    MAX_CHILDREN=15
-    MAX_SPARE=1
-else
-    MAX_CHILDREN=8
-    MAX_SPARE=1
-fi
-
-# setting up the user account we use to run the daemons
-adduser --gecos "" --firstuid 10000 --disabled-password spamc 2>/dev/null
-chown -R spamc:spamc /home/spamc
-
-# enable in /etc/default/spamassassin
-sed -i "s/^ENABLED=.*/ENABLED=1/" /etc/default/spamassassin
-sed -i "s/^OPTIONS=.*/OPTIONS=\"--create-prefs --max-children $MAX_CHILDREN --max-spare $MAX_SPARE --helper-home-dir\"/" /etc/default/spamassassin
-
-# XXX moved /etc/spamassassin/local.cf overwrites to database settings schema
-## turn off stuff in local.cf
-rm -f /etc/spamassassin/local.cf
-cat > /etc/spamassassin/local.cf << EOF
-# Untangle global Spam Blocker settings
-score ALL_TRUSTED 0
-lock_method flock
-auto_whitelist_factor 0.3
-pyzor_timeout 3
-
-# A simple-to-parse report format
-clear_report_template
-report _SUMMARY_
-EOF
-
-if dpkg -l untangle-spamassassin | grep -q ii ; then
-  sa=untangle-spamassassin
-else
-  sa=spamassassin
-fi
-saVersion=$(dpkg-query --showformat='${Version}\n' -W $sa)
-
-if dpkg --compare-versions $saVersion lt 3.1.4 ; then
-  perl -i -npe 's/.*focr_pre314.*/focr_pre314 1/' /etc/mail/spamassassin/FuzzyOcr.cf
-else
-  perl -i -npe 's/.*focr_pre314.*/#focr_pre314 1/' /etc/mail/spamassassin/FuzzyOcr.cf
-fi
-
-# start spamassassin
-/etc/init.d/spamassassin restart &> /dev/null &
+#DEBHELPER#
 
 exit 0

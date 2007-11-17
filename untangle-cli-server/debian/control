@@ -7,6 +7,6 @@ Standards-Version: 3.7.2
 
 Package: untangle-cli-server
 Architecture: any
-Depends: jruby1.0 (>= 1.0.2)
+Depends: jruby1.0
 Description: The Untangle CLI Server
  The Untangle CLI Server.
