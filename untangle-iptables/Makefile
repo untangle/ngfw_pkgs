@@ -2,7 +2,7 @@ default:
 	@cat README
 
 prep:
-	$(SHELL) $(CURDIR)/scripts/prep.sh
+	bash $(CURDIR)/scripts/prep.sh
 
 clean:
 	$(MAKE) -f $(CURDIR)/debian/rules clean
