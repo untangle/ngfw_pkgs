@@ -7,9 +7,7 @@ Standards-Version: 3.7.2
 
 Package: untangle-postgresql-config
 Architecture: any
-Depends: procps (>= 3.2.7-2~bpo.1), postgresql
-Conflicts: procps (<< 3.2.7-2~bpo.1), postgresql-mv
-Provides: postgresql-mv, postgresql-server-mv
-Replaces: postgresql-mv
+Depends: procps (>= 3.2.7-2~bpo.1), postgresql-client | postgresql-client-7.4 | postgresql-client-8.1 | postgresql-client-8.2, postgresql | postgresql-7.4 | postgresql-8.1 | postgresql-8.2
+Conflicts: procps (<< 3.2.7-2~bpo.1)
 Description: Untangle Postgres wrapper package
- The Untangle Postgres config for Postgres 7.4
+ The Untangle Postgres config for Postgres 7.4, 8.1, 8.2
