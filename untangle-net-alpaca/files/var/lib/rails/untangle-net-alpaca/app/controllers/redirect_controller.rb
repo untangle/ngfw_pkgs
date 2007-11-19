@@ -14,7 +14,7 @@ class RedirectController < ApplicationController
 
   def edit
     @row_id = params[:row_id]
-    raise "unspecified filter id" if @row_id.nil?
+    raise "unspecified row id" if @row_id.nil?
     
     ## This is questionable
     @redirect = Redirect.new

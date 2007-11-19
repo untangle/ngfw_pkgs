@@ -175,13 +175,22 @@ class Network < ActiveRecord::Migration
       table.column :description, :string
     end
 
-    ## uvm redirect
+    ## redirect rules
     create_table :redirects do |table|
       table.column :position, :integer
       table.column :enabled, :boolean
       table.column :new_ip, :string
       ## this is the encapsulated packet id, aka port.
       table.column :new_enc_id, :string
+      table.column :filter, :string
+      table.column :description, :string
+    end
+
+    ## firewall rules
+    create_table :firewalls do |table|
+      table.column :position, :integer
+      table.column :enabled, :boolean
+      table.column :target, :string
       table.column :filter, :string
       table.column :description, :string
     end
@@ -207,5 +216,6 @@ class Network < ActiveRecord::Migration
     drop_table :rules
     drop_table :subscriptions
     drop_table :redirects
+    drop_table :firewalls
   end
 end

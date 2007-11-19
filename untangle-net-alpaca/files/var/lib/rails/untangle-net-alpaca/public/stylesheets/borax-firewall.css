@@ -1,0 +1,61 @@
+
+div.firewalls
+{ 
+  margin: 10px 0px 10px 0px;
+  width: 623px;
+  height: 200px;
+  }
+
+ul#firewall-list div.enabled
+{ 
+  width: 100px;
+  }
+
+ul#firewall-list div.target
+{ 
+  width: 100px;
+ }
+
+ul#firewall-list div.description
+{ 
+  width: 360px;
+  }
+
+ul#firewall-list div.edit
+{ 
+  width: 20px;
+  }
+
+ul#firewall-list div.minus
+{ 
+  width: 20px;
+  }
+
+ul#firewall-list div.enabled, ul#firewall-list div.subscribe, ul#firewall-list div.minus, ul#firewall-list div.edit
+{ 
+  text-align: center;
+  }
+
+li.firewall div.minus:hover, li.firewall div.edit:hover
+{ 
+  cursor: pointer;
+  background-color: #E1EB26;  
+  }
+
+div#overlay > div#rule-dialog
+{ 
+  position: relative;
+  top: 100px;
+  left: 50%;
+  margin-left: -350px;
+  width: 700px;
+  height: 475px;
+  padding-top: 20px;
+  background-color: #CCCCD0;
+  border: 1px solid #5F5F5F;
+  }
+
+div#rule-dialog > h2.title
+{ 
+  text-align: center;
+  }

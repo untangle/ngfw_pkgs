@@ -1,0 +1,2 @@
+page.insert_html( :bottom, "firewall-list", :partial => "firewall", :object => @firewall )
+page.sortable( "firewall-list" )

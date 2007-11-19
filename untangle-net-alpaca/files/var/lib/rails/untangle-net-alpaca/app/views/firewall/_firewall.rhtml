@@ -1,0 +1,28 @@
+<% 
+rowId="sub-row-#{rand( 0x100000000 )}"
+filter=firewall.filter
+filter="" if filter.nil?
+%>
+<li id="<%= rowId  %>" class="firewall">
+  <div class="enabled">
+    <%= hidden_field_tag( "firewalls[]", rowId ) %>
+    <%= check_box( "enabled", rowId, { :checked => firewall.enabled }, true, false ) %>
+  </div>
+
+  <div class="target">
+    <%= select( "target", rowId, @actions, { :selected => firewall.target } ) %>
+  </div>
+    
+  <div class="description" >
+    <%= text_field( "description", rowId, { :value => firewall.description } ) %>
+  </div>
+
+  <div class="edit" onclick="RuleBuilder.edit( '<%= rowId %>' )">
+    <%= hidden_field( "filters", rowId, { :value => filter } ) %>
+    <%= "e".t %>
+  </div>
+  <div class="minus" onclick="RedirectManager.removeListItem( '<%= rowId %>' )">
+    <%= "-".t %>
+  </div>
+  
+</li>

@@ -1,0 +1,61 @@
+<%= javascript_tag <<EOF
+InterfaceHandler.interfaceList = new Array( #{@interfaces.join( ", ")} );
+
+DayHandler.dayList = new Array( #{RuleHelper::DayOfWeekJavascript} );
+
+ProtocolHandler.protocolList = new Array( #{RuleHelper::ProtocolListJavascript} );
+
+EOF
+%>
+
+<h2 class="title"><%= "Edit".t %></h2>
+<% form_tag( :action => '#' ) do -%>
+  <div class="list-table rules">
+    <ul id="rule-builder" class="rule-list">
+      <li class="header">
+        <div class="type">
+          Type
+        </div>
+        <div class="value">
+          Value
+        </div>
+
+        <div class="plus">
+        </div>
+
+        <div class="minus">
+        </div>
+      </li>
+
+       <%= render( :partial => "rule/parameter" , :collection => @parameter_list ) %>
+    </ul>
+  </div>
+  <fieldset>
+    <ul class="text-fields">
+      <li>
+        <label for="enabled"><%= "Enabled:".t %></label>
+        <%= check_box_tag( "enabled", true, @firewall.enabled ) %>
+      </li>
+
+      <li>
+        <label for="description"><%= "Description:".t %></label>
+        <%= text_field_tag( "description", @firewall.description ) %>
+      </li>
+
+      <li>
+        <label for="target"><%= "Action:".t %></label>
+        <%= select_tag( "target", options_for_select( @actions, @firewall.target )) %>
+      </li>      
+    </ul>
+  </fieldset>
+<% end -%>
+  
+<div class="actions">
+  <div class="cancel" onclick="RuleBuilder.close()">
+    <%= "Cancel".t %>
+  </div>
+  
+  <div class="update" onclick="RuleBuilder.update('<%= @row_id %>') ; RuleBuilder.close();">
+  <%= "Update".t %>
+</div>
+

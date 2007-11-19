@@ -166,12 +166,16 @@ var RuleBuilder =
             var field = document.getElementById( this.manager.fields[c] + "_" + rowId );
             
             if ( field == null ) {
-                alert( "Missing the field: " + field );
+                alert( "Missing the field: " + this.manager.fields[c] );
                 return;
             }
-            
+                        
             /* Append this value to the field array */
-            fieldHash[this.manager.fields[c]] = field.value;
+            if ( field.type == "checkbox" ) {
+                fieldHash[this.manager.fields[c]] = field.checked;
+            } else {
+                fieldHash[this.manager.fields[c]] = field.value;
+            }            
         }
         
         var request = new Ajax.Request( this.manager.editFilter(), 
@@ -242,8 +246,12 @@ var RuleBuilder =
                     alert( "Missing the value: " + this.manager.fields[c] );
                     return;
                 }
-
-                field.value = newValue.value;
+                
+                if ( field.type == "checkbox" ) {
+                    field.checked = newValue.checked;
+                } else {
+                    field.value = newValue.value;
+                }
             }
         }
     }
