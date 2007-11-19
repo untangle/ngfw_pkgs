@@ -2,7 +2,7 @@ Source: untangle-libnetfilter-queue
 Section: libs
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
-Build-Depends: gcc (>= 3.4), untangle-libnfnetlink-dev (>= 0.0.16), libtool, pkg-config, dpatch, linux-kernel-headers (>= 2.6.17)
+Build-Depends: gcc (>= 3.4), untangle-libnfnetlink-dev (>= 0.0.30), libtool, pkg-config, dpatch, linux-kernel-headers (>= 2.6.17)
 Build-Depends-Indep: dpatch, debhelper (>= 4.2), cdbs (>= 0.4)
 Standards-Version: 3.7.2
 
@@ -18,7 +18,7 @@ Description: Netfilter netfilter-queue library
 Package: untangle-libnetfilter-queue-dev
 Architecture: any
 Section: libdevel
-Depends: untangle-libnetfilter-queue0 (= ${Source-Version}), untangle-libnfnetlink-dev (>= 0.0.16)
+Depends: untangle-libnetfilter-queue0 (= ${Source-Version}), untangle-libnfnetlink-dev (>= 0.0.30)
 Conflicts: libnetfilter-queue-dev
 Provides: libnetfilter-queue-dev
 Replaces: libnetfilter-queue-dev
