@@ -1,29 +1,22 @@
-#! /bin/bash
+#!/bin/bash
 
 UVM_ROOT=${UVM_ROOT:-}
-export JRUBY_HOME=/usr/lib/jruby-ut0.9
-export GEM_HOME=/usr/lib/jruby-ut0.9/lib/ruby/gems/1.8
-export RUBYLIB=/usr/lib/jruby-ut0.9/lib/ruby:/usr/lib/jruby-ut0.9/lib/site_ruby/1.8
-export PREFIX=/usr/lib/jruby-ut0.9
 
-CLASSPATH="${UVM_ROOT}/usr/share/untangle/lib/untangle-libuvm-api:${UVM_ROOT}/usr/share/java/uvm/hibernate3.jar:${UVM_ROOT}/usr/share/java/uvm/log4j-1.2.9.jar"
-for f in ${UVM_ROOT}/usr/share/java/reports/*jar ; do
-    CLASSPATH="$CLASSPATH:$f"
+CLASSPATH="${UVM_ROOT}/usr/share/untangle/lib/untangle-libuvm-api:${UVM_ROOT}/usr/share/java/uvm/hibernate3.jar:${UVM_ROOT}/usr/share/java/uvm/log4j-1.2.14.jar"
+for j in ${UVM_ROOT}/usr/share/java/reports/*jar ; do
+    CLASSPATH="$CLASSPATH:$j"
 done
 
-for m in ${UVM_ROOT}/usr/share/untangle/web/webstart/untangle-node*gui.jar; do 
-	CLASSPATH="$CLASSPATH:$m"
+for j in ${UVM_ROOT}/usr/share/untangle/web/webstart/untangle-node*gui.jar; do 
+	CLASSPATH="$CLASSPATH:$j"
 done
 CLASSPATH="$CLASSPATH:${UVM_ROOT}/usr/share/untangle/web/webstart/untangle-base-spam-gui.jar"
 
-for m in ${UVM_ROOT}/usr/share/untangle/web/webstart/untangle-casing*gui.jar; do 
-	CLASSPATH="$CLASSPATH:$m"
+for j in ${UVM_ROOT}/usr/share/untangle/web/webstart/untangle-casing*gui.jar; do 
+	CLASSPATH="$CLASSPATH:$j"
 done
 
 export CLASSPATH
-echo $CLASSPATH
-
-export RUBYLIB=/usr/share/untangle-cli-server/src:$RUBYLIB
-echo $RUBYLIB
+export JRUBY_HOME=/usr/lib/jruby1.0
 
 /usr/bin/jruby1.0 $*
