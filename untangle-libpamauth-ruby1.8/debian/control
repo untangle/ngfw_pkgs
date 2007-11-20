@@ -2,11 +2,11 @@ Source: untangle-libpamauth-ruby1.8
 Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
-Build-Depends: debhelper (>> 3.0.0), ruby1.8-dev, ruby1.8, cdbs, libpam0g-dev
+Build-Depends: debhelper (>> 4.0.0), ruby1.8-dev, ruby1.8, cdbs, libpam0g-dev
 Standards-Version: 3.7.2
 
 Package: untangle-libpamauth-ruby1.8
 Architecture: any
 Depends: ${shlibs:Depends}
 Description: The Untangle Ruby PAM Authentication
- The Untangle Ruby PAM Authentication.
+ This is the Untangle Ruby PAM Authentication module.
