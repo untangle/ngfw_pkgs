@@ -1,5 +1,5 @@
-untangle-libpamauth-ruby1.8 (0.1.2-8) unstable; urgency=low
+untangle-libpamauth-ruby1.8 (0.1.0-1) unstable; urgency=low
 
-  * intial version
+  * initial version
 
  -- Robert Scott <rbscott@untangle.com>  Tue,  20 Nov 2007 11:00:02 +0900
