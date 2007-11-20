@@ -19,7 +19,7 @@
 $:.unshift File.dirname(__FILE__)
 
 # Should server restarts be controlled interactively (used for debugging)?
-INTERACTIVE = true
+INTERACTIVE = false
 
 require 'drb'
 require 'optparse'
@@ -212,6 +212,10 @@ end
 
 if __FILE__ == $0
 
+restarts = 0
+max_restarts_per_min = 5
+start_time = Time.now
+
 loop do
     ucli_server = nil
     begin
@@ -226,7 +230,14 @@ loop do
 	    print! "Restart server (y/n)? "
 	    break unless getyn("y")
 	else
-            puts! "Restarting #{ucli_server.nil? ? "The NUCLI Server" : ucli_server.server_name}...\n"
+	    restarts += 1
+	    mins = (1.0 + ((Time.now() - start_time) / 60)).floor
+	    if (restarts / mins) > max_restarts_per_min
+		puts! "Maximum restarts (#{max_restarts_per_min}) per minute exceeded: terminating."		
+		exit(-1)
+	    else
+                puts! "Restarting #{ucli_server.nil? ? "The NUCLI Server" : ucli_server.server_name}...\n"
+	    end
 	end
     ensure
         #ucli_server.shutdown
