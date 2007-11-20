@@ -1,0 +1,13 @@
+#!/usr/bin/make -f
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+
+configure/untangle-libpamauth-ruby1.8::
+        ruby1.8 extconf.rb
+
+build/untangle-libpamauth-ruby1.8::
+        $(MAKE)
+
+install/untangle-libpamauth-ruby1.8::
+        $(MAKE) install DESTDIR=$(CURDIR)/debian/untangle-libpamauth-ruby1.8 \
+                        sitedir='$$(prefix)/lib/ruby
