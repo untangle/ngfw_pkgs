@@ -1,0 +1,12 @@
+Source: untangle-ruby-pamauth
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Build-Depends: debhelper (>> 3.0.0), ruby1.8, libpam0g-dev
+Standards-Version: 3.7.2
+
+Package: untangle-ruby-pamauth
+Architecture: any
+Depends: libpam0g
+Description: The Untangle Ruby PAM Authentication
+ The Untangle Ruby PAM Authentication.
