@@ -2,7 +2,7 @@ Source: untangle-libnetfilter-queue
 Section: libs
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
-Build-Depends: gcc (>= 3.4), untangle-libnfnetlink-dev (>= 1:0.0.30), libtool, pkg-config, dpatch
+Build-Depends: gcc (>= 3.4), untangle-libnfnetlink-dev (>= 1:0.0.30), libtool, pkg-config, linux-kernel-headers (>= 2.6.17)
 Build-Depends-Indep: dpatch, debhelper (>= 4.2), cdbs (>= 0.4)
 Standards-Version: 3.7.2
 
