@@ -1,8 +1,9 @@
 class FirewallController < ApplicationController  
   def manage
-    @firewalls = Firewall.find( :all )
-    @actions = FirewallHelper::Actions.map { |o| [ o[0].t, o[1] ] }
+    @firewalls = Firewall.find( :all, :conditions => [ "system_id IS NULL" ] )
+    @system_firewall_list = Firewall.find( :all, :conditions => [ "system_id IS NOT NULL" ] )
 
+    @actions = FirewallHelper::Actions.map { |o| [ o[0].t, o[1] ] }
     render :action => 'manage'
   end
 
@@ -38,25 +39,10 @@ class FirewallController < ApplicationController
       return false
     end
 
-    fw_list = []
-    firewalls = params[:firewalls]
-    enabled = params[:enabled]
-    filters = params[:filters]
-    description = params[:description]
-    target = params[:target]
-
-    position = 0
-    unless firewalls.nil?
-      firewalls.each do |key|
-        fw = Firewall.new
-        fw.enabled, fw.filter, fw.target = enabled[key], filters[key], target[key]
-        fw.description, fw.position, position = description[key], position, position + 1
-        fw_list << fw
-      end
-    end
-
-    Firewall.destroy_all
-    fw_list.each { |fw| fw.save }
+    save_user_rules
+    
+    ## Now update the system rules
+    save_system_rules
 
     ## Review : should have some indication that is saved.
     redirect_to( :action => "manage" )
@@ -68,5 +54,48 @@ class FirewallController < ApplicationController
 
   def scripts
     RuleHelper::Scripts + [ "firewall_manager" ]
+  end
+
+  private
+  
+  def save_user_rules
+    fw_list = []
+    firewalls = params[:firewalls]
+    enabled = params[:enabled]
+    filters = params[:filters]
+    description = params[:description]
+    target = params[:target]
+
+    position = 0
+    unless firewalls.nil?
+      firewalls.each do |key|
+        fw = Firewall.new
+        fw.system_id = nil
+        fw.enabled, fw.filter, fw.target = enabled[key], filters[key], target[key]
+        fw.description, fw.position, position = description[key], position, position + 1
+        fw_list << fw
+      end
+    end
+
+    Firewall.destroy_all( "system_id IS NULL" );
+    fw_list.each { |fw| fw.save }
+  end
+
+  def save_system_rules
+    rules = params[:system_firewalls]
+    system_ids = params[:system_system_id]
+    enabled = params[:system_enabled]
+    
+    unless rules.nil?
+      rules.each do |key|
+        ## Skip anything with an empty or null key.
+        next if ApplicationHelper.null?( key )
+
+        fw = Firewall.find( :first, :conditions => [ "system_id = ?", key ] )
+        next if fw.nil?
+        fw.enabled = enabled[key]
+        fw.save
+      end
+    end
   end
 end

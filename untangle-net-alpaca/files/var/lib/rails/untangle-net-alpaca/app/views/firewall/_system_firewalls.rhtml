@@ -1,0 +1,10 @@
+<div class="list-table system-firewalls">
+  <ul class="system-firewall-list">
+    <li class="header">
+      <div class="enabled"><%= "Enabled".t %></div>
+      <div class="description"><%= "Description".t %></div>
+    </li>
+    
+    <%= render( :partial => "system_firewall", :collection => system_firewalls ) %>
+  </ul>
+</div>

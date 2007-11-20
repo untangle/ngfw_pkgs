@@ -1,0 +1,13 @@
+<% 
+rowId=system_firewall.system_id
+%>
+<li id="<%= rowId  %>" class="system-firewall">
+  <div class="enabled">
+    <%= hidden_field_tag( "system_firewalls[]", rowId ) %>
+    <%= check_box( "system_enabled", rowId, { :checked => system_firewall.enabled }, true, false ) %>
+  </div>
+    
+  <div class="description" >
+    <%= system_firewall.description %>
+  </div>  
+</li>

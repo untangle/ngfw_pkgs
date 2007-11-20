@@ -37,6 +37,26 @@ li.redirect div.minus:hover, li.redirect div.edit:hover
   background-color: #E1EB26;  
   }
 
+/* System rules */
+div.system-redirects
+{ 
+  margin: 10px 0px 10px 0px;
+  width: 623px;
+  height: 200px;
+  }
+
+
+ul.system-redirect-list div.enabled
+{ 
+  width: 100px;
+  text-align: center;
+  }
+
+ul.system-redirect-list div.description
+{ 
+  width: 403px;
+ }
+
 div#overlay > div#rule-dialog
 { 
   position: relative;

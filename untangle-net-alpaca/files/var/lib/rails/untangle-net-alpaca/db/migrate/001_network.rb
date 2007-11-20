@@ -179,6 +179,11 @@ class Network < ActiveRecord::Migration
     create_table :redirects do |table|
       table.column :position, :integer
       table.column :enabled, :boolean
+
+      ## non-null if this is a system rule, system rules cannot
+      ## be deleted or modified by a user, only enabled / disabled.
+      table.column :system_id, :string
+
       table.column :new_ip, :string
       ## this is the encapsulated packet id, aka port.
       table.column :new_enc_id, :string
@@ -190,8 +195,15 @@ class Network < ActiveRecord::Migration
     create_table :firewalls do |table|
       table.column :position, :integer
       table.column :enabled, :boolean
+
+      ## non-null if this is a system rule, system rules cannot
+      ## be deleted or modified by a user, only enabled / disabled.
+      table.column :system_id, :string
+      
       table.column :target, :string
       table.column :filter, :string
+
+      ## Review : Internationalization
       table.column :description, :string
     end
   end
