@@ -2,13 +2,12 @@ Source: untangle-iptables
 Section: net
 Priority: important
 Maintainer: Sebastien Delafond <seb@untangle.com>
-Build-Depends: debhelper (>>4.0), linuxdoc-tools, html2text, bzip2, untangle-linux-headers-2.6.16-ck11-untangle-prod-486 (>= 2.6.11), libc6-dev
+Build-Depends: debhelper (>>4.0), linuxdoc-tools, html2text, bzip2, linux-headers-untangle, libc6-dev, bash
 Standards-Version: 3.7.2
 
 Package: untangle-iptables
 Architecture: any
 Priority: important
-Suggests: iproute
 Section: net
 Depends: ${shlibs:Depends}
 Provides: iptables

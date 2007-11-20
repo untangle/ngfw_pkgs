@@ -27,22 +27,23 @@ BINDIR = BINDIR=/sbin
 LIBDIR = LIBDIR=/lib
 DESTDIR := DESTDIR=$(CURDIR)/debian/untangle-iptables
 #KERNEL_DIR := KERNEL_DIR=$(BUILD_DIR)/$(KERNEL)
-KERNEL_DIR := KERNEL_DIR=/usr/src/untangle-linux-headers-2.6.16-ck11-untangle-prod-486
+KERNEL_DIR := KERNEL_DIR=/usr/src/linux-headers-2.6.22-14-untangle
 
-BUILD_VARS := $(LIBDIR) $(KERNEL_DIR)
-INSTALL_VARS := $(DESTDIR) $(MANDIR) $(LIBDIR) $(BINDIR) $(KERNEL_DIR)
+SHELL_VAR := SHELL=/bin/bash
+BUILD_VARS := $(LIBDIR) $(KERNEL_DIR) $(SHELL_VAR)
+INSTALL_VARS := $(DESTDIR) $(MANDIR) $(LIBDIR) $(BINDIR) $(KERNEL_DIR) $(SHELL_VAR)
 BUILD_TARGETS = all ip6tables-save ip6tables-restore
 
 prep: $(STAMP_DIR)/prep-stamp
 $(STAMP_DIR)/prep-stamp:
-	$(MAKE) prep
+	$(MAKE) prep $(SHELL_VAR)
 	touch $@
 
 build: $(STAMP_DIR)/build-stamp
 $(STAMP_DIR)/build-stamp: prep
 	dh_testdir
 
-	$(MAKE) -C $(SRC_DIR) $(BUILD_TARGETS) $(BUILD_VARS)
+	$(MAKE) --debug -C $(SRC_DIR) $(BUILD_TARGETS) $(BUILD_VARS)
 
 	cd $(SRC_DIR); ar rcs libiptables.a iptables.o
 	cd $(SRC_DIR); ar rcs libip6tables.a ip6tables.o

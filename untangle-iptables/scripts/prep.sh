@@ -86,8 +86,8 @@ for  i in $pomng_force; do
 done
 
 # do man pages here, after pomng, so local patches can be applied
-dinfo "buidling man pages..."
-(cd "$iptables_profectio"; make iptables.8 ip6tables.8)
+dinfo "building man pages..."
+(cd "$iptables_profectio"; make SHELL=/bin/bash iptables.8 ip6tables.8)
 
 # compile upstream changelog
 dinfo "assembling changelog..."
