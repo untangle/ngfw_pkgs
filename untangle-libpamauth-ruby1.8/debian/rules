@@ -3,11 +3,15 @@
 include /usr/share/cdbs/1/rules/debhelper.mk
 
 configure/untangle-libpamauth-ruby1.8::
-        ruby1.8 extconf.rb
+	ruby1.8 extconf.rb
 
 build/untangle-libpamauth-ruby1.8::
-        $(MAKE)
+	$(MAKE)
 
 install/untangle-libpamauth-ruby1.8::
-        $(MAKE) install DESTDIR=$(CURDIR)/debian/untangle-libpamauth-ruby1.8 \
-                        sitedir='$$(prefix)/lib/ruby
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/untangle-libpamauth-ruby1.8 \
+		sitedir='$$(prefix)/lib/ruby'
+	find $(CURDIR)/debian/untangle-libpamauth-ruby1.8 -name '.svn' | xargs rm -rf
+
+clean::
+	rm -f Makefile mkmf.log pam_auth.so pam_auth.o
