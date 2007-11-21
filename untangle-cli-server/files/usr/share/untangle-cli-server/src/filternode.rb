@@ -203,7 +203,7 @@ class UVMFilterNode < UVMRemoteApp
                                     node_stats = hash_node_stats(node_ctx.getStats())
                                 else
                                     # We're reporting stats of the aggregation of all FN's of the effective type.
-                                    node_stats = aggregate_node_stats()
+                                    node_stats = accumulate_node_stats()
                                 end
                                 raise Exception, "Unable to fetch node stats for TID #{tid}" unless node_stats
                                 @diag.if_level(3) { puts! "Updating stats cache for tid #{tid}" ; p node_stats }
@@ -417,17 +417,27 @@ class UVMFilterNode < UVMRemoteApp
         end
         
     protected
-        def aggregate_node_stats()
-            @diag.if_level(3) { puts! "aggregate_node_stats" }
+        # Must be called from within stats_cache_lock
+        def accumulate_node_stats()
+            @diag.if_level(3) { puts! "accumulate_node_stats" }
             tids = get_filternode_tids(get_uvm_node_name())
             node_stats = nil        
             tids.each { |tid|
+                # get stats for this tid.
                 node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
                 nodeStats = node_ctx.getStats()
+
+                # whenever we fetch stats from the UVM, freshen the values in the cache.
+                hashed_stats = hash_node_stats(nodeStats)
+                @stats_cache["#{get_mib_root}.#{tid}"] = [hashed_stats, Time.now.to_i]
+
+                # use first stat values as those to accumulate (add) in to.
                 if !node_stats
-                    node_stats = hash_node_stats(nodeStats)
+                    node_stats = hashed_stats
                     next
                 end
+                    
+                # add Nth node stats to accumulator...
                 node_stats[:tcp_session_count] += nodeStats.tcpSessionCount()
                 node_stats[:tcp_session_total] += nodeStats.tcpSessionTotal()
                 node_stats[:tcp_session_request_total] += nodeStats.tcpSessionRequestTotal()
