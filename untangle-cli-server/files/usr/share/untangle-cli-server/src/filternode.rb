@@ -162,13 +162,13 @@ class UVMFilterNode < UVMRemoteApp
             # Validate arguments.
             if args[0]
                 if (args[0] =~ /^-[ng]$/) == nil
-                    @diag.if_level(1) { puts "Error: invalid get statistics argument '#{args[0]}"}
+                    @diag.if_level(1) { puts! "Error: invalid get statistics argument '#{args[0]}"}
                     return nil
                 elsif !args[1] || !(args[1] =~ /(\.\d+)+/)
-                    @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[1] ? args[1] : 'missing value'}" }
+                    @diag.if_level(1) { puts! "Error: invalid get statistics OID: #{args[1] ? args[1] : 'missing value'}" }
                     return nil
                 elsif !(args[1] =~ /^#{mib_root}/)
-                    @diag.if_level(1) { puts "Error: invalid get statistics OID: #{args[1]} is not a filter node OID." ; mib_root.inspect }
+                    @diag.if_level(1) { puts! "Error: invalid get statistics OID: #{args[1]} is not a filter node OID." ; puts! mib_root.inspect }
                     return nil
                 end
             end
