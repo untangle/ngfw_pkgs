@@ -1,0 +1,8 @@
+--- daemonize.rb-or	2007-03-09 10:42:21.386497814 -0300
++++ daemonize.rb	2007-03-09 10:42:08.429347983 -0300
+@@ -0,0 +1,5 @@
++# This proxy allows backward compatibility with 
++# libdaemonize-ruby1.8. It shall be dropped 
++# after lenny release.
++
++require 'daemons/daemonize'

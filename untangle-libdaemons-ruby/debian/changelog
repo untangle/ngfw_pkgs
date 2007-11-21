@@ -1,0 +1,19 @@
+untangle-libdaemons-ruby (1.0.8-1) unstable; urgency=low
+
+  * New upstream release.
+  * Removed libdaemonize-ruby(1.8) from the conflicts, it does
+    no longer exist in lenny/sid.
+
+ -- Paul van Tilburg <paulvt@debian.org>  Sun, 07 Oct 2007 12:05:50 +0200
+
+untangle-libdaemons-ruby (1.0.6-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Paul van Tilburg <paulvt@debian.org>  Sun, 20 May 2007 21:50:38 +0200
+
+untangle-libdaemons-ruby (1.0.5-1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Filipe Lautert <filipe@icewall.org>  Wed, 28 Feb 2007 16:02:03 -0300

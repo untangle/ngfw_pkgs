@@ -1,0 +1,21 @@
+This package was debianized by Antonio Terceiro <terceiro@softwarelivre.org> on
+Tue, 24 Jul 2007 15:27:45 -0300.
+
+It was downloaded from http://mocha.rubyforge.org/
+
+Upstream Author: James Mead <jamesmead@reevoo.com> and others.
+
+Copyright (c) 2006 Revieworld Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+setup.rb is Copyright (c) 2000-2004 Minero Aoki and is distirbuted under the
+terms of the GNU LGPL, Lesser General Public License version 2.1. See
+`/usr/share/common-licenses/LGPL-2.1'.
+
+The Debian packaging is (C) 2007, Antonio Terceiro <terceiro@softwarelivre.org>
+and is licensed under the GPL, see `/usr/share/common-licenses/GPL'.
