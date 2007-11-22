@@ -13,16 +13,14 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
 
     devices=`find /sys/devices -name 'net:*' | sed 's|.*net:||'`
 
-    ## This is test code to fake a third interface
-    devices << "dummy0" if File.exists?( "/sys/class/net/dummy0" )
-
     devices.each do |os_name|
       os_name = os_name.strip
 
       bus_id=""
-      logger.debug( "Before opening file" )
-      mac_address = File.open( "/sys/class/net/#{os_name}/address", "r" ) { |f| f.readline.strip }
-      logger.debug( "After opening file" )
+
+      ## For some reason, on some systems this causes ruby to hang, use 'cat' instead.
+      # mac_address = File.open( "/sys/class/net/#{os_name}/address", "r" ) { |f| f.readline.strip }
+      mac_address = `cat "/sys/class/net/#{os_name}/address"`.strip
       
       interfaceArray << PhysicalInterface.new( os_name, mac_address, bus_id, "untangle" )
     end
@@ -215,7 +213,7 @@ EOF
   ## mtu is always set, just in case the user overrides it
   def mtuSetting( mtu, prefix = "" )
     ## MTU of 0 or less is ignored
-    mtu = OSLibrary::NetworkManager::DefaultMTU if mtu <= 0
+    mtu = OSLibrary::NetworkManager::DefaultMTU if ( mtu.nil? || mtu <= 0 )
 
     return "\t#{prefix}mtu #{mtu}"
   end

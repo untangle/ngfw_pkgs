@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: untangle-net-alpaca
 Architecture: any
-Depends: mongrel, rails (>= 1.2.4), untangle-ruby-pamauth
+Depends: mongrel, rails (>= 1.2.3), untangle-libpamauth-ruby1.8, dnsmasq
 Description: The Untangle Network Alpaca
  The Untangle Network Alpaca.  A web-based configuration utility for
  your network and related settings.

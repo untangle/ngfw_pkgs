@@ -71,7 +71,7 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
   
   ## Restart DNS Masq
   def hook_run_services
-    raise "Unable to restart DNS Masq." unless Kernel.system( "nohup sh #{StartScript} restart false" )
+    raise "Unable to restart DNS Masq." unless Kernel.system( "sh #{StartScript} restart false" )
   end
 
   ## Sample entry

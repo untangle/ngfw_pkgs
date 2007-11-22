@@ -1,5 +1,6 @@
 #! /bin/bash
 
+mkdir -p /var/log/untangle-net-alpaca
 exec >> /var/log/untangle-net-alpaca/dnsmasq.log 2>&1
 
 ACTION=${1:-restart}

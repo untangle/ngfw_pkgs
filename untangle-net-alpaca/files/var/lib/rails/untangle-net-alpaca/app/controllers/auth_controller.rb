@@ -1,4 +1,4 @@
-require "alpaca/pam_auth"
+require "pam_auth"
 
 class AuthController < ApplicationController
   ## REVIEW : This should be configurable

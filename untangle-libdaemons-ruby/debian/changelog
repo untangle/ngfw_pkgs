@@ -1,3 +1,33 @@
+untangle-libdaemons-ruby (5.1.0~svn20071121r12990+rbscott20071121T140746-1etch) rbscott; urgency=low
+
+  * auto build
+
+ -- Robert Scott <rbscott@untangle.com>  Wed, 21 Nov 2007 14:07:46 -0800
+
+untangle-libdaemons-ruby (5.1.0~svn20071121r12990+rbscott20071121T135852-1sarge) rbscott; urgency=low
+
+  * auto build
+
+ -- Robert Scott <rbscott@untangle.com>  Wed, 21 Nov 2007 13:58:52 -0800
+
+untangle-libdaemons-ruby (5.1.0~svn20071121r12990+rbscott20071121T135315-1sarge) rbscott; urgency=low
+
+  * auto build
+
+ -- Robert Scott <rbscott@untangle.com>  Wed, 21 Nov 2007 13:53:15 -0800
+
+untangle-libdaemons-ruby (5.1.0~svn20071121r12990+rbscott20071121T135010-1sarge) rbscott; urgency=low
+
+  * auto build
+
+ -- Robert Scott <rbscott@untangle.com>  Wed, 21 Nov 2007 13:50:11 -0800
+
+untangle-libdaemons-ruby (5.1.0~svn20071121r12990-1sarge) rbscott; urgency=low
+
+  * auto build
+
+ -- Robert Scott <rbscott@untangle.com>  Wed, 21 Nov 2007 13:47:06 -0800
+
 untangle-libdaemons-ruby (1.0.8-1) unstable; urgency=low
 
   * New upstream release.

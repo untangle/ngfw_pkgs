@@ -152,3 +152,4 @@ static VALUE _authenticate( VALUE self, VALUE rb_username, VALUE rb_password )
     return ( ret == 1 ) ? Qtrue : Qfalse;
 }
 
+

@@ -1,7 +1,7 @@
 Source: untangle-libmocha-ruby
 Section: interpreters
 Priority: optional
-Maintainer: Antonio Terceiro <terceiro@softwarelivre.org>
+Maintainer: Robert Scott <rbscott@untangle.com>
 Uploaders: Debian Ruby Extras Maintainers <pkg-ruby-extras-maintainers@lists.alioth.debian.org>
 Build-Depends: cdbs, debhelper (>= 4.2), ruby-pkg-tools
 Standards-Version: 3.7.2

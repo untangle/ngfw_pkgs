@@ -10,11 +10,13 @@
 
 # Author: Robert Scott <rbscott@untangle.com>
 
+. /lib/lsb/init-functions
+
 DESC="Service for starting the untangle net alpaca"
 
 NAME="alpaca"
 
-MONGREL_RAILS="/var/lib/gems/1.8/bin/mongrel_rails"
+MONGREL_RAILS="/usr/bin/mongrel_rails"
 BASE_DIR="/var/lib/rails/untangle-net-alpaca"
 
 if [ -r /etc/default/$NAME ]; then
