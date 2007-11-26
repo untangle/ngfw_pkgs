@@ -46,6 +46,14 @@ class TestPhish < Test::Unit::TestCase
     assert_match(/test-description/, @phish.execute(["#1", "POP"]), "display POP settings after update")
   end
 
+  def test_web_settings
+    assert_match(/Web anti-phishing protection enabled/, @phish.execute(%w(#1 web true)), "enable web settings")
+    assert_match(/Web anti-phishing protection: enabled/, @phish.execute(["#1", "web"]), "display web settings")
+    
+    assert_match(/Web anti-phishing protection disabled/, @phish.execute(%w(#1 web false)), "disable web settings")
+    assert_match(/Web anti-phishing protection: disabled/, @phish.execute(["#1", "web"]), "display web settings")
+  end
+
   def test_validation
     # TODO
   end
