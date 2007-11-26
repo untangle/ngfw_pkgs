@@ -1,0 +1,11 @@
+#!/bin/bash
+if [ ${#UVM_ROOT} != 0 ] ; then
+    NUCLI_ROOT=${UVM_ROOT}/../../pkgs/untangle-cli-server/files
+else
+    NUCLI_ROOT=""
+fi
+
+export RUBYLIB=${UVM_ROOT}/usr/share/untangle/nucli:$RUBYLIB
+
+cd ${NUCLI_ROOT}/usr/share/untangle-cli-server/src
+${NUCLI_ROOT}/usr/bin/uvm-jruby ${NUCLI_ROOT}/usr/share/untangle-cli-server/test/$1
