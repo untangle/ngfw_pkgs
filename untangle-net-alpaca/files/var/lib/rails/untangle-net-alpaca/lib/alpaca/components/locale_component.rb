@@ -1,6 +1,6 @@
 class Alpaca::Components::LocaleComponent < Alpaca::Component
   def register_menu_items( menu_organizer )
-    menu_organizer.register_item( "/main/locale", Alpaca::Menu::Item.new( 600, "Locale", "/locale" ))
+    menu_organizer.register_item( "/main/advanced/locale", Alpaca::Menu::Item.new( 100, "Locale", "/locale" ))
   end
   
   class LocaleStage < Alpaca::Wizard::Stage
@@ -24,7 +24,7 @@ class Alpaca::Components::LocaleComponent < Alpaca::Component
   def wizard_insert_closers( builder )
     ## Doesn't really matter when this happens
     builder.insert_piece( Alpaca::Wizard::Closer.new( 50 ) { validate } )
-    builder.insert_piece( Alpaca::Wizard::Closer.new( 1050 ) { save } )
+    builder.insert_piece( Alpaca::Wizard::Closer.new( 1999 ) { save } )
   end
 
   private

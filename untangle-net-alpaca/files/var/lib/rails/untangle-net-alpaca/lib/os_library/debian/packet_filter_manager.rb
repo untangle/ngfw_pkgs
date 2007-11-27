@@ -172,6 +172,14 @@ EOF
     rules.join( "\n" )
   end
 
+  def redirect
+    
+  end
+
+  def firewall
+    
+  end
+
   def header
     <<EOF
 #!/bin/dash

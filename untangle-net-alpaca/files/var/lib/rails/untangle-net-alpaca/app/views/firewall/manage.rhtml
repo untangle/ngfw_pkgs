@@ -4,9 +4,13 @@
 </div>
 <% form_tag( :action => 'save' ) do -%>
 
+  <h2>User Firewall Rules</h2>
+
   <%= link_to_remote( "+".t, :url => { :action => :create_firewall } ) %>
 
   <%= render( :partial => "firewalls" , :object => @firewall_list ) %>
+
+  <h2>System Firewall Rules</h2>
 
   <%= render( :partial => "system_firewalls" , :object => @system_firewall_list ) %>
 

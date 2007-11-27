@@ -1,10 +1,14 @@
 module RuleHelper
   ## Not using a hash because hashes are not sorted
-  FilterTypes = [[ "From Local".t, "d-local" ], [ "Source Address".t, "s-addr" ], 
-                 [ "Destined Local".t, "s-local" ], [ "Destination Address".t, "d-addr" ],
+  FilterTypes = [[ "Source Address".t, "s-addr" ], 
+                 [ "Destined Local".t, "d-local" ], [ "Destination Address".t, "d-addr" ],
                  [ "Source Port".t, "s-port" ], [ "Destination Port".t, "d-port" ],
-                 [ "Source Interface".t, "s-intf" ], [ "Destination Interface".t, "d-intf" ],
-                 [ "Time".t, "time" ], [ "Day of Week".t, "day-of-week" ],
+                 [ "Source Interface".t, "s-intf" ],
+                 ## Destination interface is too tricky to handle, and
+                 ## it doesn't provide a lot of benefit.
+                 ## [ "Destination Interface".t, "d-intf" ],
+                 ## Time is presently not supported.
+                 ## [ "Time".t, "time" ], [ "Day of Week".t, "day-of-week" ],
                  [ "Protocol".t, "protocol" ]]
   
   DayOfWeek = [[ "sunday", "Sunday".t ],
