@@ -7,6 +7,6 @@ Standards-Version: 3.7.2
 
 Package: untangle-appliance
 Architecture: any
-Depends: untangle-dhclient-config, untangle-ntpdate-config, untangle-postgresql-config, firefox, exim4, ntp-simple, snmpd, snmp, untangle-client
+Depends: untangle-dhclient-config, untangle-ntpdate-config, untangle-postgresql-config, firefox, untangle-exim4-config, ntp-server, snmpd, snmp, untangle-client
 Description: The Untangle appliance
  The Untangle appliance mode.
