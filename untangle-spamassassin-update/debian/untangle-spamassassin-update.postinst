@@ -1,5 +1,11 @@
 #! /bin/bash
 
+SPAM_USER=spamc
+SPAM_GROUP=spamc
+GPG_KEYS_DIR=/usr/share/untangle-spamassassin-update
+SA_GPG_KEY=${GPG_KEYS_DIR}/sa.gpg
+SARE_GPG_KEY=${GPG_KEYS_DIR}/sare.gpg
+
 # The tuning depends on the memory available.  We have settings for >= 2Gig, >= 1Gig,
 # and < 1Gig.
 MEM=$(awk '/MemTotal/ { print $2 }' < /proc/meminfo)
@@ -15,8 +21,8 @@ else
 fi
 
 # setting up the user account we use to run the daemons
-adduser --gecos "" --firstuid 10000 --disabled-password spamc 2>/dev/null
-chown -R spamc:spamc /home/spamc
+adduser --gecos "" --firstuid 10000 --disabled-password $SPAM_USER 2>/dev/null
+chown -R $SPAM_USER:$SPAM_GROUP /home/$SPAM_USER
 
 # enable in /etc/default/spamassassin
 sed -i "s/^ENABLED=.*/ENABLED=1/" /etc/default/spamassassin
@@ -49,6 +55,12 @@ if dpkg --compare-versions $saVersion lt 3.1.4 ; then
 else
   perl -i -npe 's/.*focr_pre314.*/#focr_pre314 1/' /etc/mail/spamassassin/FuzzyOcr.cf
 fi
+
+# download + import the GPG keys for both the official SA and SARE
+curl --silent -o $SA_GPG_KEY http://daryl.dostech.ca/sa-update/sare/GPG.KEY
+curl --silent -o $SARE_GPG_KEY http://spamassassin.apache.org/updates/GPG.KEY
+chmod 700 /etc/spamassassin/sa-update-keys
+sa-update --import $SA_GPG_KEY --import $SARE_GPG_KEY 2> /dev/null
 
 # start spamassassin
 /etc/init.d/spamassassin restart &> /dev/null &
