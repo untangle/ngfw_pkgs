@@ -59,4 +59,11 @@ module RuleHelper
 
     [ interfaces, parameter_list ]
   end
+
+  def self.is_valid_port?( port_str )
+    port = port_str.to_i
+    return false if ( port.to_s != port_str )
+    return false if (( port < 0 ) || ( port > 0xFFFF ))
+    return true
+  end
 end

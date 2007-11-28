@@ -8,22 +8,26 @@ class OSLibrary::Debian::Filter::PortHandler
     if ( value.include?( "-" ))
       range_start, range_end, extra = value.split( "-" )
       raise "invalid range #{value}" unless extra.nil?
-      raise "Invalid range start #{range_start}" if ( range_start.to_i.to_s != range_start )
-      raise "Invalid range end #{range_end}" if ( range_end.to_i.to_s != range_end )
       
-      filters[parameter] = "-m multiport --#{is_src ? "source" : "ports"} #{range_start}:#{range_end}"
-    elsif ( value.include?( "," ))
-      value.split( "," ).each { |p| raise "Invalid port" if p.to_i.to_s != p }
-      filters[parameter] = "-m multiport --#{is_src ? "source" : "ports"} #{value}"
+      raise "Invalid range start '#{range_start}'" unless RuleHelper.is_valid_port?( range_start )
+      raise "Invalid range end '#{range_end}'" unless RuleHelper.is_valid_port?( range_end )
+
+      ## Create a multiport rule to match the range.
+      filters[parameter] = "#{match( parameter)} #{range_start}:#{range_end}"
     else
-      ## just verify that it parses
-      raise "Invalid port" if value.to_i.to_s != value
-      filters[parameter] = "--#{is_src ? "source" : "destination"}-port #{value}"
+      value.split( "," ).each { |p| raise "Invalid port '#{p}'" unless RuleHelper.is_valid_port?( p )}
+      filters[parameter] = "#{match( parameter)} #{value}"
     end
   end
 
   def parameters
     [ "s-port", "d-port" ]
+  end
+  
+  def match( parameter )
+    match = "-m multiport "
+    return "#{match} --source-ports " if ( parameter == "s-port" )
+    return "#{match} --destination-ports "
   end
 end
   

@@ -74,6 +74,11 @@ EOF
     ## Chain Used for natting in the postrouting table.
     PreNat = Chain.new( "alpaca-pre-nat", "nat", "PREROUTING" )
 
+    ## Chain used to redirect traffic
+    Redirect = Chain.new( "alpaca-redirect", "nat", "PREROUTING", <<'EOF' )
+
+EOF
+
     ## Chain used for actually blocking and dropping data
     FirewallBlock = Chain.new( "alpaca-firewall", "filter", "INPUT", <<'EOF' )
 ## Ignore any traffic that isn't marked
@@ -83,7 +88,8 @@ EOF
 #{IPTablesCommand} #{args} -m mark --mark #{MarkFwDrop}/#{MarkFwDrop} -j DROP
 
 ## Reset any tcp traffic that is marked to reject.
-#{IPTablesCommand} #{args} -p tcp -m mark --mark #{MarkFwReject}/#{MarkFwReject} -j REJECT --reject-with tcp-reset
+#{IPTablesCommand} #{args} -p tcp -m mark --mark #{MarkFwReject}/#{MarkFwReject} \
+  -j REJECT --reject-with tcp-reset
 
 ## Reject all other traffic with ICMP port unreachable
 #{IPTablesCommand} #{args} -m mark --mark #{MarkFwReject}/#{MarkFwReject} -j REJECT
@@ -99,7 +105,8 @@ EOF
 #{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwDrop}
 EOF
 
-    Order = [ MarkInterface, PreNat, PostNat, FirewallBlock, FirewallMarkReject, FirewallMarkDrop ]
+    Order = [ MarkInterface, PreNat, PostNat, FirewallBlock, FirewallMarkReject, FirewallMarkDrop,
+            Redirect ]
   end
   
   def hook_commit
@@ -201,6 +208,8 @@ EOF
         next if target.nil?
             
         filters.each do |filter|
+          ## Nothing to do if the filtering string is empty.
+          break if filter.strip.empty?
           text << "#{IPTablesCommand} -t mangle -A #{chain} #{filter} #{target}\n"
         end
       rescue
@@ -216,28 +225,34 @@ EOF
     rules += Redirect.find( :all, :conditions => [ "system_id IS NOT NULL AND enabled='t'" ] )
     
     text = header
-
     rules.each do |rule|
       begin
         filters, chain = OSLibrary::Debian::Filter::Factory.instance.filter( rule.filter )
 
-        ## Always use the POSTROUTING CHAIN
+        ## Always use PREROUTING nat.
         chain = "PREROUTING"
         
-        target = nil
-        case rule.target
-        when "pass" then target = "-j RETURN"
-        when "drop" then target = "-g alpaca-firewall-drop"
-        when "reject" then target = "-g alpaca-firewall-reject"
-        end
+        destination = rule.new_ip
+        new_enc_id = rule.new_enc_id
+
+        next if ApplicationHelper.null?( destination )
         
-        next if target.nil?
+        ## Try to parse the new ip
+        IPAddr.new( "#{destination}/32" )
+        
+        unless ApplicationHelper.null?( new_enc_id )
+          raise "Invalid port redirect '#{new_enc_id}'" unless RuleHelper.is_valid_port?( new_enc_id )
+          destination += ":#{new_enc_id}"
+        end
             
         filters.each do |filter|
-          text << "#{IPTablesCommand} -t mangle -A #{chain} #{filter} #{target}\n"
+          ## Nothing to do if the filtering string is empty.
+          break if filter.strip.empty?
+          text << "#{IPTablesCommand} #{Chain::Redirect.args} #{filter} -j DNAT --to-destination #{destination}\n"
         end
       rescue
         logger.warn( "The filter '#{rule.filter}' could not be parsed: #{$!}" )
+        logger.warn( $!.backtrace.join( "\n" ) )
       end
     end
 
