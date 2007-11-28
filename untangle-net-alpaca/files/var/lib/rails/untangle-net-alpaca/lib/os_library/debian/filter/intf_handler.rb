@@ -1,18 +1,23 @@
 ## Handler for interface based filtering
 class OSLibrary::Debian::Filter::IntfHandler
+  include OSLibrary::Debian::Filter
   include Singleton
   
   def handle( parameter, value, filters )    
-    filters[parameter]  = value.split( "," ).uniq.map do |index|
+    ## Indicate which marks should be set
+    intf_marks = value.split( "," ).uniq.map do |index|
       n = index.to_i
       raise "invalid index #{index}" if n.to_s != index
       raise "invalid index #{index}" if (( n > 8 ) || ( n < 1 ))
       mark = ( 1 << ( n - 1 ))
 
-      ## anyone bit set should trigger the mark
-      ## Review : change to bitmark when we get that working.
-      "-m mark --mark #{mark}/#{mark}"
+      ## The mask is the mark
+      [ mark, mark ]
     end
+
+    filters["mark"] = Mark.expand( filters["mark"], intf_marks )
+
+    puts "marks: #{filters["mark"]}"
   end
 
   def parameters

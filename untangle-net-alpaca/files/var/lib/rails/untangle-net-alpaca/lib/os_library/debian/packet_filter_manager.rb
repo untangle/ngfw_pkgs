@@ -7,6 +7,9 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
 
   ConfigDirectory = "/etc/untangle-net-alpaca/iptables-rules.d"
   
+  ## If the names of these config files are ever changed, make sure to delete the
+  ## old ones.
+  
   ## Set to 10, just in case some script wants to do something before flush
   ## For instance, the UVM will want to flush the tune target first, because
   ## it contains all of the queuing rules.
@@ -21,6 +24,9 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
 
   ## Mark that causes the firewall to drop a packet.
   MarkFwDrop   = 0x08000000
+
+  ## Mark that indicates a  packet is destined to one of the machines IP addresses
+  MarkInput    = 0x00000800
 
   def register_hooks
     os["network_manager"].register_hook( 100, "packet_filter_manager", "write_files", :hook_write_files )
@@ -173,16 +179,17 @@ EOF
   end
 
   def write_firewall
-    user_rules = Firewall.find( :all, :conditions => [ "system_id IS NULL AND enabled='t'" ] )
-    system_rules = Firewall.find( :all, :conditions => [ "system_id IS NOT NULL AND enabled='t'" ] )
+    rules = Firewall.find( :all, :conditions => [ "system_id IS NULL AND enabled='t'" ] )
+    rules += Firewall.find( :all, :conditions => [ "system_id IS NOT NULL AND enabled='t'" ] )
     
     text = header
 
-    user_rules.each do |rule|
+    rules.each do |rule|
       begin
         filters, chain = OSLibrary::Debian::Filter::Factory.instance.filter( rule.filter )
 
-        chain = "PREROUTING" if chain.nil?
+        ## Always use PREROUTING
+        chain = "PREROUTING" 
         
         target = nil
         case rule.target
@@ -205,7 +212,36 @@ EOF
   end
 
   def write_redirect
+    rules = Redirect.find( :all, :conditions => [ "system_id IS NULL AND enabled='t'" ] )
+    rules += Redirect.find( :all, :conditions => [ "system_id IS NOT NULL AND enabled='t'" ] )
     
+    text = header
+
+    rules.each do |rule|
+      begin
+        filters, chain = OSLibrary::Debian::Filter::Factory.instance.filter( rule.filter )
+
+        ## Always use the POSTROUTING CHAIN
+        chain = "PREROUTING"
+        
+        target = nil
+        case rule.target
+        when "pass" then target = "-j RETURN"
+        when "drop" then target = "-g alpaca-firewall-drop"
+        when "reject" then target = "-g alpaca-firewall-reject"
+        end
+        
+        next if target.nil?
+            
+        filters.each do |filter|
+          text << "#{IPTablesCommand} -t mangle -A #{chain} #{filter} #{target}\n"
+        end
+      rescue
+        logger.warn( "The filter '#{rule.filter}' could not be parsed: #{$!}" )
+      end
+    end
+
+    os["override_manager"].write_file( RedirectConfigFile, text, "\n" )    
   end
 
   ## REVIEW Need some way of labelling bridges, this means it needs an index.
@@ -214,11 +250,26 @@ EOF
   ## Interface labelling
   def marking( interface )
     match = "-i #{interface.os_name}"
-    match = "-m physdev --physdev-in #{interface.os_name}" if interface.is_bridge?
-    mask = 1 << ( interface.index - 1 )
-    rules = "#{IPTablesCommand} #{Chain::MarkInterface.args} #{match} -j MARK --or-mark #{mask}"
 
-    ## REVIEW Insert the mark for locally destined packets.
+    ## This is the name used to retrieve the ip addresses.
+    name = interface.os_name
+
+    if interface.is_bridge?
+      name = OSLibrary::Debian::NetworkManager.bridge_name( interface ) if interface.is_bridge?
+      match = "-m physdev --physdev-in #{interface.os_name}" if interface.is_bridge?
+    end
+    
+    index = interface.index
+    mask = 1 << ( index - 1 )
+    rules = <<EOF
+#{IPTablesCommand} #{Chain::MarkInterface.args} #{match} -j MARK --or-mark #{mask}
+
+## Mark packets destined for each IP address as local.
+ for t_intf in `get_ip_addresses #{name}` ; do
+#{IPTablesCommand} #{Chain::MarkInterface.args} -d ${t_intf} -j MARK --or-mark #{MarkInput | ( index << 8 )}
+done
+
+EOF
 
     rules
   end

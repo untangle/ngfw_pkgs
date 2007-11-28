@@ -13,6 +13,17 @@ IPTABLES=/sbin/iptables
 
 IPTABLES="iptables_debug"
 
+get_ip_addresses()
+{
+    local t_intf=$1
+
+    if [ -z "${t_intf}" ]; then return; fi
+
+    ## Throw away error data.
+    ip -f inet addr show ${t_intf} 2>/dev/null | \
+        awk '/inet/ { $ip = $2 ; sub( /\/.*$/, "", $ip ) ; print $ip  }'
+}
+
 IPTABLES_DIRECTORY=/etc/untangle-net-alpaca/iptables-rules.d
 
 if [ ! -d ${IPTABLES_DIRECTORY} ]; then
@@ -20,6 +31,6 @@ if [ ! -d ${IPTABLES_DIRECTORY} ]; then
     exit 0
 fi
 
+## Would use run-parts, but that doesn't maintain environment variables 
+## or the iptables_debug function.
 for t in ${IPTABLES_DIRECTORY}/* ; do . $t ; done
-
-## run-parts ${IPTABLES_DIRECTORY}
