@@ -43,7 +43,7 @@ class OSLibrary::Debian::Filter::Factory
 
     ## This indicates which chain to insert the rule into.
     chain = filters.delete( "chain" )
-    
+
     ## Convert from a hash to an ordered array
     filters = filters.to_a.sort do |a,b| 
       next 0 if a[0] == b[0]

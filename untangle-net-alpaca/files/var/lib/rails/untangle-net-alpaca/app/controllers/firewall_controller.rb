@@ -44,6 +44,9 @@ class FirewallController < ApplicationController
     ## Now update the system rules
     save_system_rules
 
+    ## Commit all of the packet filter rules.
+    os["packet_filter_manager"].commit
+
     ## Review : should have some indication that is saved.
     redirect_to( :action => "manage" )
   end

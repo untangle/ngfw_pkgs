@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/dash
 
 ### BEGIN INIT INFO
 # Provides:          alpaca-iptables
@@ -10,9 +10,11 @@
 
 # Author: Robert Scott <rbscott@untangle.com>
 
+. /lib/lsb/init-functions
+
 DESC="Service for creating and removing the iptables rules"
 
-IPTABLES_RULES=/etc/untangle-net-alpaca/iptables-rules
+IPTABLES_RULES=/etc/untangle-net-alpaca/scripts/iptables
 
 ## This should be a file containing all of the iptables tables
 IPTABLES_NAMES=/proc/net/ip_tables_names

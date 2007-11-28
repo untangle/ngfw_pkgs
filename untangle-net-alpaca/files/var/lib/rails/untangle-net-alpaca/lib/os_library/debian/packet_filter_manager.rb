@@ -5,7 +5,22 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
 
   Service = "/etc/init.d/alpaca-iptables"
 
-  ConfigFile = "/etc/untangle-net-alpaca/iptables-rules"
+  ConfigDirectory = "/etc/untangle-net-alpaca/iptables-rules.d"
+  
+  ## Set to 10, just in case some script wants to do something before flush
+  ## For instance, the UVM will want to flush the tune target first, because
+  ## it contains all of the queuing rules.
+  FlushConfigFile      = "#{ConfigDirectory}/010-flush"
+  ChainsConfigFile     = "#{ConfigDirectory}/100-init-chains"
+  NetworkingConfigFile = "#{ConfigDirectory}/200-networking"
+  FirewallConfigFile   = "#{ConfigDirectory}/400-firewall"
+  RedirectConfigFile   = "#{ConfigDirectory}/600-redirect"
+
+  ## Mark that causes the firewall to reject a packet.
+  MarkFwReject = 0x04000000
+
+  ## Mark that causes the firewall to drop a packet.
+  MarkFwDrop   = 0x08000000
 
   def register_hooks
     os["network_manager"].register_hook( 100, "packet_filter_manager", "write_files", :hook_write_files )
@@ -22,6 +37,12 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
     def initialize( name, table, start_chain, init = "" )
       @name, @table, @start_chain = name, table, start_chain
       @init = eval( "String.new( \"#{init}\" )" )
+
+      
+      ## Prepend
+      unless start_chain.nil?
+        @init = "#{IPTablesCommand} -t #{table} -A #{start_chain} -j #{name}\n" + @init
+      end
     end
     
     def to_s
@@ -47,7 +68,32 @@ EOF
     ## Chain Used for natting in the postrouting table.
     PreNat = Chain.new( "alpaca-pre-nat", "nat", "PREROUTING" )
 
-    Order = [ MarkInterface, PreNat, PostNat ]
+    ## Chain used for actually blocking and dropping data
+    FirewallBlock = Chain.new( "alpaca-firewall", "filter", "INPUT", <<'EOF' )
+## Ignore any traffic that isn't marked
+#{IPTablesCommand} #{args} -m mark --mark 0/#{MarkFwReject | MarkFwDrop} -j RETURN
+
+## Drop any traffic that is marked to drop
+#{IPTablesCommand} #{args} -m mark --mark #{MarkFwDrop}/#{MarkFwDrop} -j DROP
+
+## Reset any tcp traffic that is marked to reject.
+#{IPTablesCommand} #{args} -p tcp -m mark --mark #{MarkFwReject}/#{MarkFwReject} -j REJECT --reject-with tcp-reset
+
+## Reject all other traffic with ICMP port unreachable
+#{IPTablesCommand} #{args} -m mark --mark #{MarkFwReject}/#{MarkFwReject} -j REJECT
+EOF
+    
+    FirewallMarkReject = Chain.new( "alpaca-firewall-reject", "mangle", nil, <<'EOF' )
+## Mark the packets
+#{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwReject}
+EOF
+
+    FirewallMarkDrop = Chain.new( "alpaca-firewall-drop", "mangle", nil, <<'EOF' )
+## Mark the packets
+#{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwDrop}
+EOF
+
+    Order = [ MarkInterface, PreNat, PostNat, FirewallBlock, FirewallMarkReject, FirewallMarkDrop ]
   end
   
   def hook_commit
@@ -56,31 +102,20 @@ EOF
   end
 
   def hook_write_files
-    pf_file = []
+    ## Script to flush all of the iptables rules
+    write_flush
 
-    pf_file << header
-
-    ## insert the commands to flush the existing tables.
-    pf_file << flush
-
-    ## insert the commands to create all of the tables
-    pf_file << init_chains
+    ## Script to initialize any custom chains we use.
+    write_chains_config
     
-    Interface.find( :all ).each do |interface|
-      ## labelling
-      pf_file << marking( interface )
-      
-      ## Insert the commands to filter traffic
-      pf_file << filtering( interface )
-      
-      ## Insert the commands to handle NAT
-      pf_file << nat( interface )
-    end
+    ## Script to initialize all of the network / NAT rules
+    write_networking
 
-    ## Delete all empty or nil parts
-    pf_file = pf_file.delete_if { |p| p.nil? || p.empty? }
+    ## Script to initialize all of the filtering rules
+    write_firewall
     
-    os["override_manager"].write_file( ConfigFile, pf_file.join( "\n" ), "\n" )    
+    # Script to initialize all of the redirect rules
+    write_redirect
   end
 
   def hook_run_services
@@ -88,28 +123,91 @@ EOF
   end
   
   private
-  
-  ## Flush all of the existing rules
-  def flush
+    
+  def write_flush
+    text = header
+    
     ## The space before the for is so that emacs parses this line properly.
-    <<EOF
+    text += <<EOF
 ## Flush all of the rules.
  for t_table in `cat /proc/net/ip_tables_names` ; do #{IPTablesCommand} -t ${t_table} -F ; done
 EOF
+    
+    os["override_manager"].write_file( FlushConfigFile, text, "\n" )
   end
 
-  ## Create all of the sub tables
-  def init_chains
-    Chain::Order.map do |chain|
+  def write_chains_config
+    ## insert the commands to create all of the tables
+    text = header
+    text << Chain::Order.map do |chain|
       <<EOF
 #{IPTablesCommand} -t #{chain.table} -N #{chain.name} 2> /dev/null
 #{IPTablesCommand} -t #{chain.table} -F #{chain.name}
-#{IPTablesCommand} -t #{chain.table} -A #{chain.start_chain} -j #{chain.name}
 #{chain.init}
 EOF
     end.join( "\n" )
+
+    os["override_manager"].write_file( ChainsConfigFile, text, "\n" )
   end
-  
+
+  def write_networking
+    text = []
+    
+    text << header
+    
+    Interface.find( :all ).each do |interface|
+      ## labelling
+      text << marking( interface )
+      
+      ## Insert the commands to filter traffic
+      text << filtering( interface )
+      
+      ## Insert the commands to handle NAT
+      text << nat( interface )
+    end
+
+    ## Delete all empty or nil parts
+    text = text.delete_if { |p| p.nil? || p.empty? }
+    
+    os["override_manager"].write_file( NetworkingConfigFile, text.join( "\n" ), "\n" )    
+  end
+
+  def write_firewall
+    user_rules = Firewall.find( :all, :conditions => [ "system_id IS NULL AND enabled='t'" ] )
+    system_rules = Firewall.find( :all, :conditions => [ "system_id IS NOT NULL AND enabled='t'" ] )
+    
+    text = header
+
+    user_rules.each do |rule|
+      begin
+        filters, chain = OSLibrary::Debian::Filter::Factory.instance.filter( rule.filter )
+
+        chain = "PREROUTING" if chain.nil?
+        
+        target = nil
+        case rule.target
+        when "pass" then target = "-j RETURN"
+        when "drop" then target = "-g alpaca-firewall-drop"
+        when "reject" then target = "-g alpaca-firewall-reject"
+        end
+        
+        next if target.nil?
+            
+        filters.each do |filter|
+          text << "#{IPTablesCommand} -t mangle -A #{chain} #{filter} #{target}\n"
+        end
+      rescue
+        logger.warn( "The filter '#{rule.filter}' could not be parsed: #{$!}" )
+      end
+    end
+
+    os["override_manager"].write_file( FirewallConfigFile, text, "\n" )    
+  end
+
+  def write_redirect
+    
+  end
+
   ## REVIEW Need some way of labelling bridges, this means it needs an index.
   ## bridges right now are somewhat of a virtual concept (see is_bridge in interface).
   ## so indexing them is tough.
@@ -150,7 +248,8 @@ EOF
     rules = []
 
     nat_policies.each do |policy|
-      ## REVIEW Need to handle the proper ports
+      ## REVIEW : Need to handle the proper ports.
+      ## REVIEW : Need to use the correct interface marks, but that needs a bridge mark
       if ( policy.new_source == NatPolicy::Automatic )
         target = "MASQUERADE"
       else
@@ -172,14 +271,6 @@ EOF
     rules.join( "\n" )
   end
 
-  def redirect
-    
-  end
-
-  def firewall
-    
-  end
-
   def header
     <<EOF
 #!/bin/dash
@@ -188,16 +279,6 @@ EOF
 ## Auto Generated by the Untangle Net Alpaca
 ## If you modify this file manually, your changes
 ## may be overriden
-
-iptables_debug()
-{
-   echo /sbin/iptables $*
-   /sbin/iptables $*
-}
-
-IPTABLES=/sbin/iptables
-
-IPTABLES="iptables_debug"
 
 EOF
   end

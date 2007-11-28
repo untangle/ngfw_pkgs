@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/dash
 
 ### BEGIN INIT INFO
 # Provides:          alpaca
@@ -41,6 +41,9 @@ start()
 stop()
 {
     ${MONGREL_RAILS} stop -w 5 -c ${BASE_DIR}
+
+    ## Remove the pid file.
+    rm -f ${BASE_DIR}/log/mongrel.pid
 }
 
 case "$1" in
