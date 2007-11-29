@@ -1,7 +1,7 @@
 #! /bin/bash
 
 if [ -x /usr/bin/sa-update ]; then
-    /usr/bin/sa-update --channelfile /usr/share/untangle-spamassassin-update/sa-update-channels.txt
+    /usr/bin/sa-update --channelfile /usr/share/untangle-spamassassin-update/sa-update-channels.txt --gpgkey 856AA88A
 fi
 
 # sa-update exits with a status to tell us if an update happened.
