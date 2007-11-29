@@ -1,0 +1,44 @@
+#!/bin/dash
+
+## Function to determine the pid of the process that owns the queue
+
+UVM_PID="invalid"
+
+# this needs to be turned off when the interface is brought up
+TUN_DEV=utun
+
+queue_owner()
+{
+    if [ "${UVM_PID}x" != "invalidx" ]; then return ; fi
+    
+    UVM_PID="invalid"
+    
+    if [ ! -f /proc/net/netfilter/nfnetlink_queue ] ; then return ; fi
+    local t_queue_pid=`awk '{ print $2 }' /proc/net/netfilter/nfnetlink_queue`
+    if [ -z "${t_queue_pid}" ]; then return ; fi
+    
+    UVM_PID=${t_queue_pid}  
+}
+
+## Function to determine if the UVM is running
+is_uvm_running()
+{
+    queue_owner
+    if [ "${UVM_PID}x" = "invalidx" ]; then return ; fi
+    
+    grep -q com.untangle.uvm /proc/${UVM_PID}/cmdline 2>| /dev/null  && echo "true"
+}
+
+bunnicula_home()
+{
+    perl -pe 's/[^0-9=a-zA-Z\/\-\+\*\.]/\n/g' /proc/${UVM_PID}/cmdline | \
+        awk '/^-Dbunnicula.home=/ { gsub( "-Dbunnicula.home=", "" ) ; print }'
+}
+  
+## Load the networking file
+UVM_NETWORKING_CONFIG=`bunnicula_home`/conf/networking.sh
+
+## This setting should always be disabled.
+if [ -f /proc/sys/net/ipv4/conf/${TUN_DEV}/rp_filter ] ; then
+    echo 0 > /proc/sys/net/ipv4/conf/${TUN_DEV}/rp_filter
+fi

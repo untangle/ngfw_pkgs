@@ -16,8 +16,6 @@ class OSLibrary::Debian::Filter::IntfHandler
     end
 
     filters["mark"] = Mark.expand( filters["mark"], intf_marks )
-
-    puts "marks: #{filters["mark"]}"
   end
 
   def parameters
