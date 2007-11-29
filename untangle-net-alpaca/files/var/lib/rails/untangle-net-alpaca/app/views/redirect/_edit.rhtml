@@ -33,6 +33,11 @@ EOF
   <fieldset>
     <ul class="text-fields">
       <li>
+        <label for="enabled"><%= "Enabled:".t %></label>
+        <%= check_box_tag( "enabled", true, @redirect.enabled ) %>
+      </li>
+
+      <li>
         <label for="description"><%= "Description:".t %></label>
         <%= text_field_tag( "description", @redirect.description ) %>
       </li>

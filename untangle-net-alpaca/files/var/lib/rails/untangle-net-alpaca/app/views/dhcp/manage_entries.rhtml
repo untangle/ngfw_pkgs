@@ -4,7 +4,7 @@
     <%= link_to_remote( "+".t, :url => { :action => :create_static_entry } ) %>
     <%= render( :partial => "static_entries" , :object => @static_entries ) %>
   
-    <h2><%= "Automatic DHCP Entries".t %></h2>
+    <h2><%= "Current DHCP Entries".t %></h2>
     <%= link_to_remote( "Refresh".t, :url => { :action => :refresh_dynamic_entries } ) %>
     
     <%= render( :partial => "dynamic_entries" , :object => @dynamic_entries ) %>

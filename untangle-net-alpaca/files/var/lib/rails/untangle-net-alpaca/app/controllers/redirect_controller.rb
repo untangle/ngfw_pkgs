@@ -22,6 +22,7 @@ class RedirectController < ApplicationController
     @redirect.description = params[:description]
     @redirect.new_ip = params[:new_ip]
     @redirect.new_enc_id = params[:new_enc_id]
+    @redirect.enabled = params[:enabled]
 
     @interfaces, @parameter_list = RuleHelper::get_edit_fields( params )
   end

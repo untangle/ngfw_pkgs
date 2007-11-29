@@ -1,2 +1,2 @@
-module SubscriptionHelper
+module RedirectHelper
 end
