@@ -38,6 +38,16 @@ class TestProtofilter < Test::Unit::TestCase
   end
 
   def test_validation
-    # TODO
+    # add
+    assert_match(/Error: invalid value for 'block' - valid values are 'true' and 'false'/, @protofilter.execute(%w(#1 add test-cat1 test-proto1 xxx true desc1 sign1)), "validation for adding a protocol - block")    
+    assert_match(/Error: invalid value for 'log' - valid values are 'true' and 'false'/, @protofilter.execute(%w(#1 add test-cat1 test-proto1 true yyy desc1 sign1)), "validation for adding a protocol - log")    
+    
+    # update
+    assert_match(/Error: invalid value for 'protocol number'/, @protofilter.execute(%w(#1 update -2 test-cat1 test-proto1 xxx true desc1 sign1)), "validation for updating a protocol - item-number")    
+    assert_match(/Error: invalid value for 'block' - valid values are 'true' and 'false'/, @protofilter.execute(%w(#1 update 1 test-cat1 test-proto1 xxx true desc1 sign1)), "validation for updating a protocol - block")    
+    assert_match(/Error: invalid value for 'log' - valid values are 'true' and 'false'/, @protofilter.execute(%w(#1 update 1 test-cat1 test-proto1 true yyy desc1 sign1)), "validation for updating a protocol - log")    
+    
+    # remove
+    assert_match(/Error: invalid value for 'protocol number'/, @protofilter.execute(%w(#1 remove -2)), "validation for removing a protocol - item-number")    
   end
 end

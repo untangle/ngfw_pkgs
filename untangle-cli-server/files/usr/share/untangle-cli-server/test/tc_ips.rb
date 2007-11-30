@@ -38,11 +38,30 @@ class TestIps < Test::Unit::TestCase
     assert_match(/Rule 3 was removed/, @ips.execute(%w(#1 rule-list remove 3)), "remove rule")
   end
   
+  def test_validation_rule_list
+    # add a rule needed for update
+    assert_match(/Rule added/, @ips.execute(%w(#1 rule-list add 1 test-cat1 true true desc1 http://www.k1.com sign1)), "add rule")
+
+    # add
+    assert_match(/Error: invalid value for 'block' - valid values are 'true' and 'false'/, @ips.execute(%w(#1 rule-list add 1 test-cat1 xxx true desc1 http://www.k1.com sign1)), "validation for adding a rule - block")    
+    assert_match(/Error: invalid value for 'log' - valid values are 'true' and 'false'/, @ips.execute(%w(#1 rule-list add 1 test-cat1 true yyy desc1 http://www.k1.com sign1)), "validation for adding a rule - log")    
+    
+    # update
+    assert_match(/Error: invalid value for 'block' - valid values are 'true' and 'false'/, @ips.execute(%w(#1 rule-list update 1 test-cat1 xxx true desc1 http://www.k1.com sign1)), "validation for updating a rule - block")    
+    assert_match(/Error: invalid value for 'log' - valid values are 'true' and 'false'/, @ips.execute(%w(#1 rule-list update 1 test-cat1 true yyy desc1 http://www.k1.com sign1)), "validation for updating a rule - log")    
+    
+    # remove
+#    assert_match(/Error: invalid value for 'rule number'/, @ips.execute(%w(#1 rule-list remove -1)), "validation for removing a rule - rule-number")
+    
+    # remove the initial rule
+    assert_match(/Rule 1 was removed/, @ips.execute(%w(#1 rule-list remove 1)), "remove rule")
+  end
+  
   def test_variable_list
     assert_match(/name,value,description/, @ips.execute(["#1", "variable-list"]), "tid variable listing")
   end
   
-  def test_update_rule_list
+  def test_update_variable_list
     assert_match(/Variable added/, @ips.execute(%w(#1 variable-list add name1 value1 desc1)), "add variable")
     assert_match(/Variable added/, @ips.execute(%w(#1 variable-list add name2 value2 desc2)), "add variable")
     assert_match(/Variable added/, @ips.execute(%w(#1 variable-list add name3 value3 desc3)), "add variable")
@@ -54,7 +73,4 @@ class TestIps < Test::Unit::TestCase
     assert_match(/Variable name3 was removed/, @ips.execute(%w(#1 variable-list remove name3)), "remove variable")
   end
   
-  def test_validation
-    # TODO
-  end
 end
