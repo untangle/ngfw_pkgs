@@ -197,7 +197,7 @@ class NUCLIClient
         opts.on("-h", "--host HOST", String, "NUCLI server host name or IP address.") { |host|
             ucli_server_host = host
         }
-        ucli_server_port = DEFAULT_PORT
+        ucli_server_port = ENV['NUCLI_PORT'] || DEFAULT_PORT
         opts.on("-p", "--port PORT", Integer, "NUCLI server port number.") { |port|
             ucli_server_port = port
         }
