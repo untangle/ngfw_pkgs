@@ -12,6 +12,9 @@ class ApplicationController < ActionController::Base
   
   # Pick a unique cookie name to distinguish our session data from others'
   session :session_key => '_untangle-net-alpaca_session_id'
+
+  ## Disable all calls to the API, these are RPC calls.
+  session :off, :if => Proc.new { |req| req.path_parameters[:action] == "api" }
   
   before_filter :build_menu_structure
   before_filter :reload_managers
@@ -66,11 +69,41 @@ class ApplicationController < ActionController::Base
   end
   
   def authenticate
+    logger.debug( "Is webservice: '#{params[:nonce]}', session_enabled #{session_enabled?}" )
+
     ## Nothing needed if authentication is not required on this page.
     return unless authentication_required
 
+    ## Nothing to do if the user is already authenticated
+    return if ( session_enabled? && !session[:username].nil? )
+
+    ## Check if they have a nonce
+    nonce = params[:nonce]
+
+    unless nonce.nil? || nonce.empty?
+      nonces=`head -n 2 /etc/untangle-net-alpaca/nonce 2>/dev/null`.strip.split
+      
+      ## Test the parameter against the nonce.
+      nonces.each do |n| 
+        next unless nonce == n.strip
+        
+        ## This way, they don't have to be authenticated again
+        session[:username] = "nonce-authenticated" if session_enabled?
+
+        ## Return indicating that it succeeded
+        return
+      end
+    end
+    
+    ## Only allowed to use the nonce if the session is disabled.
+    unless session_enabled?
+      ## Return a page indicating access is denied
+      render :nothing => true, :status => 401
+      return false
+    end
+
     if session[:username].nil?
-      session[:return_to] = @request.request_uri
+      session[:return_to] = request.request_uri
       redirect_to :controller => "auth"
       return false
     end

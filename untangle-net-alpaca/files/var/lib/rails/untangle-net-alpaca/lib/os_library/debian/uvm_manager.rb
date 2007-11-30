@@ -16,50 +16,21 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
     text += <<EOF
 HELPER_SCRIPT="/usr/share/untangle-net-alpaca/scripts/uvm/iptables"
 
-if [ !-f ${HELPER_SCRIPT} ]; then
+if [ ! -f ${HELPER_SCRIPT} ]; then
   echo "The script ${HELPER_SCRIPT} is not available"
   return 0
 fi
 
 . ${HELPER_SCRIPT}
 
-if [ ! -f ${UVM_NETWORKING_CONFIG} ]; then 
-  echo "'${UVM_NETWORKING_CONFIG}' does not exist."
-  return 0
+if [ `is_uvm_running` != "true" ]; then
+  echo "The UVM is currently not running"
+else
+  echo "The UVM running, inserting queueing hooks"
+  uvm_iptables_rules
 fi
- 
-. ${UVM_NETWORKING_CONFIG}
 
-MARK_ANTISUB=$((0x01000000))
-MARK_NOTRACK=$((0x02000000))
-
-# Do not conntrack entries in that have the NOTRACK bit set.
-${IPTABLES} -A OUTPUT -t raw -m mark --mark ${MARK_NOTRACK}/${MARK_NOTRACK} -j NOTRACK
-
-## Don't mangle resets, for some reason the routing drops them if they
-get mangled.
-${IPTABLES} -A OUTPUT -t mangle -j RETURN -p tcp --tcp-flags SYN,ACK,RST ACK,RST
-
-#dont queue anthing on output
-# mangling notracked packets from the raw socket causes the packets to
-# be silently dropped in routing.  so we need to let them pass
-${IPTABLES} -A OUTPUT -t mangle -j MARK -m mark --mark 0/${MARK_NOTRACK} --or-mark $MARK_ANTISUB
-
-#dont queue anthing from localhost
-${IPTABLES} -A PREROUTING -t mangle -i lo -j MARK --or-mark $MARK_ANTISUB
-
-#redirect  anthing re-injected packets from the TUN interface to us
-${IPTABLES} -A PREROUTING -t nat -i ${TUN_DEV} -t nat -p tcp \
-   -j DNAT --to-destination 192.0.2.42:${TCP_REDIRECT_PORTS}
-
-# Ignore traffic that we have antisubscribed to.
-${IPTABLES} -A POSTROUTING -t tune -m mark --mark $MARK_ANTISUB/$MARK_ANTISUB  -j RETURN
-
-# Queue all of the SYN packets.
-${IPTABLES} -A POSTROUTING -t tune -p tcp --syn -j NFQUEUE
-
-# Queue all of the UDP packets.
-${IPTABLES} -A POSTROUTING -t tune -m addrtype --dst-type unicast -p udp -j NFQUEUE
+return 0
 
 EOF
 

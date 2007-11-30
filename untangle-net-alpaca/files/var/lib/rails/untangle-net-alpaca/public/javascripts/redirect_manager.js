@@ -27,7 +27,7 @@ var RedirectManager =
         
     },
     
-    fields : new Array( "filters", "description", "new_ip", "new_enc_id" )
+    fields : new Array( "filters", "description", "new_ip", "new_enc_id", "enabled" )
 }
 
 RuleBuilder.manager = RedirectManager;

@@ -23,6 +23,9 @@ if [ -r /etc/default/$NAME ]; then
     . /etc/default/$NAME
 fi
 
+## Just to guarantee that at least one nonce exist
+/etc/cron.daily/rebuild_nonce
+
 start()
 {
     cd ${BASE_DIR} || {

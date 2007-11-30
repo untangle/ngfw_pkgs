@@ -40,14 +40,18 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   end
   
   class Chain
-    def initialize( name, table, start_chain, init = "" )
-      @name, @table, @start_chain = name, table, start_chain
+    def initialize( name, table, start_chains, init = "" )
+      @name, @table = name, table
+      ## This is done as an eval so that functions like args can be used
+      ## in the scrpt
       @init = eval( "String.new( \"#{init}\" )" )
-
       
       ## Prepend
-      unless start_chain.nil?
-        @init = "#{IPTablesCommand} -t #{table} -A #{start_chain} -j #{name}\n" + @init
+      unless start_chains.nil?
+        start_chains = [ start_chains ].flatten
+        start_chains.each do |chain|
+          @init = "#{IPTablesCommand} -t #{table} -A #{chain} -j #{name}\n" + @init
+        end
       end
     end
     
@@ -59,7 +63,7 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
       "-t #{table} -A #{name}"
     end
 
-    attr_reader :name, :table, :start_chain, :init
+    attr_reader :name, :table, :init
 
     MarkInterface = Chain.new( "markintf", "mangle", "PREROUTING", <<'EOF' )
 ## Clear out all of the bits for the interface mark
@@ -80,7 +84,7 @@ EOF
 EOF
 
     ## Chain used for actually blocking and dropping data
-    FirewallBlock = Chain.new( "alpaca-firewall", "filter", "INPUT", <<'EOF' )
+    FirewallBlock = Chain.new( "alpaca-firewall", "filter", [ "INPUT", "FORWARD" ], <<'EOF' )
 ## Ignore any traffic that isn't marked
 #{IPTablesCommand} #{args} -m mark --mark 0/#{MarkFwReject | MarkFwDrop} -j RETURN
 
