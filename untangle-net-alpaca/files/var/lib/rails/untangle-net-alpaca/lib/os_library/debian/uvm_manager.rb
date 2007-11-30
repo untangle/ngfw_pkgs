@@ -23,11 +23,11 @@ fi
 
 . ${HELPER_SCRIPT}
 
-if [ `is_uvm_running` != "true" ]; then
-  echo "The UVM is currently not running"
-else
+if [ "`is_uvm_running`x" = "truex" ]; then
   echo "The UVM running, inserting queueing hooks"
   uvm_iptables_rules
+else
+  echo "The UVM is currently not running"
 fi
 
 return 0

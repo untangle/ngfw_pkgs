@@ -24,7 +24,7 @@ if [ -r /etc/default/$NAME ]; then
 fi
 
 ## Just to guarantee that at least one nonce exist
-/etc/cron.daily/rebuild_nonce
+/etc/cron.hourly/rebuild_nonce
 
 start()
 {

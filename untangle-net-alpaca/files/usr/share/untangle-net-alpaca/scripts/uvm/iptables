@@ -53,14 +53,12 @@ fi
 ## Set the path for the bunnicula networking script
 UVM_NETWORKING_CONFIG=`bunnicula_home`/conf/networking.sh
 
-
 if [ ! -f ${UVM_NETWORKING_CONFIG} ]; then 
   echo "'${UVM_NETWORKING_CONFIG}' does not exist."
   return 0
 fi
  
 . ${UVM_NETWORKING_CONFIG}
-
 
 uvm_iptables_rules()
 {

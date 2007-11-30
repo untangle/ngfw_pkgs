@@ -11,6 +11,12 @@ build: configure
 	dh_testdir
 	mkdir -p $(DESTDIR)
 	cp -r ./files/* $(DESTDIR)
+## Delete any lingering database files
+	find $(DESTDIR) -path '*/database/*.db' | xargs rm -f
+## Delete any lingering log files
+	find $(DESTDIR) -path '*/log/*.log' | xargs rm -f
+## Delete the symlink to rails
+	find $(DESTDIR) -path '*/vendor/rails' -type l | xargs rm -f 
 	find $(DESTDIR) -name "\.svn" | xargs rm -rf
 
 clean:
