@@ -1,0 +1,6 @@
+untangle-webfilter-init (0-0) stable; urgency=low
+
+  * Initial packaging.
+
+ -- Aaron Read <amread@untangle.com>  Thu, 29 Nov 2007 11:24:55 -0800
+
