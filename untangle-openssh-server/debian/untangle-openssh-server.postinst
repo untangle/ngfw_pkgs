@@ -1,0 +1,38 @@
+#!/bin/bash
+
+SERVICE=untangle-ssh
+
+create_key() {
+  msg="$1"
+  file="$2"
+  shift ; shift # because we use "$@" later on
+
+  if [ ! -f "$file" ] ; then
+    echo -n $msg
+    ssh-keygen -q -f "$file" -N '' "$@"
+    echo
+  fi
+}
+
+create_keys() {
+  create_key "Creating SSH2 RSA key; this may take some time ..." \
+    /etc/untangle-ssh/ssh_host_rsa_key -t rsa
+  create_key "Creating SSH2 DSA key; this may take some time ..." \
+    /etc/untangle-ssh/ssh_host_dsa_key -t dsa
+}
+
+setup_init() {
+  if [ -x /etc/init.d/untangle-ssh ]; then
+    update-rc.d untangle-ssh start 16 2 3 4 5 . stop 84 1 . >/dev/null
+    if [ -x /usr/sbin/invoke-rc.d ]; then
+      invoke-rc.d untangle-ssh restart
+    else
+      /etc/init.d/untangle-ssh restart
+    fi
+  fi
+}
+
+create_keys
+setup_init
+
+exit 0

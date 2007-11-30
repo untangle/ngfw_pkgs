@@ -1,0 +1,23 @@
+#! /bin/bash
+
+SERVICE=untangle-ssh
+
+case "$1" in
+    remove|deconfigure)
+	if [ -x /etc/init.d/$SERVICE ]; then
+		if [ -x /usr/sbin/invoke-rc.d ]; then
+			invoke-rc.d $SERVICE stop
+		else
+			/etc/init.d/$SERVICE stop
+		fi
+	fi
+	;;
+    failed-upgrade)
+        ;;
+    *)
+        echo "prerm called with unknown argument \`$1'" >&2
+        exit 0
+    ;;
+esac
+
+exit 0

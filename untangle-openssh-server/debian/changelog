@@ -1,0 +1,5 @@
+untangle-openssh-server (5.0.1-1) stable; urgency=low
+
+  * Initial release.
+
+ -- Sebastien Delafond <seb@untangle.com>  Fri, 30 Nov 2007 15:00:12 -0800
