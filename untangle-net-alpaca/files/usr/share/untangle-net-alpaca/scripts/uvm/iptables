@@ -41,7 +41,8 @@ bunnicula_home()
     
     if [ ! -f /proc/${UVM_PID}/cmdline ]; then return ; fi
 
-    perl -pe 's/[^0-9=a-zA-Z\/\-\+\*\.]/\n/g' /proc/${UVM_PID}/cmdline | \
+    ## Ignore errors
+    perl -pe 's/[^0-9=a-zA-Z\/\-\+\*\.]/\n/g' /proc/${UVM_PID}/cmdline 2>| /dev/null | \
         awk '/^-Dbunnicula.home=/ { gsub( "-Dbunnicula.home=", "" ) ; print }'
 }
   
@@ -54,7 +55,7 @@ fi
 UVM_NETWORKING_CONFIG=`bunnicula_home`/conf/networking.sh
 
 if [ ! -f ${UVM_NETWORKING_CONFIG} ]; then 
-  echo "'${UVM_NETWORKING_CONFIG}' does not exist."
+  echo "[`date`] '${UVM_NETWORKING_CONFIG}' does not exist."
   return 0
 fi
  

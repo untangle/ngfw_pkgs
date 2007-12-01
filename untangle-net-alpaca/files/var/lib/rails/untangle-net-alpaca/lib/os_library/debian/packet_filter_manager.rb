@@ -31,7 +31,8 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   def register_hooks
     os["network_manager"].register_hook( 100, "packet_filter_manager", "write_files", :hook_write_files )
 
-    os["network_manager"].register_hook( 100, "packet_filter_manager", "run_services", :hook_run_services )
+    ## This is run automatically by etc/network/interfaces
+    ## os["network_manager"].register_hook( 100, "packet_filter_manager", "run_services", :hook_run_services )
     
     ## Run whenever the address is updated.
     ## REVIEW : This may just be moved into a script

@@ -51,6 +51,14 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
       end
     end
 
+    interfaces_file.push <<EOF
+## This will run any scripts that need to execute when the address changes.
+auto update
+iface update inet manual
+
+EOF
+    
+
     ## Delete all empty or nil parts
     interfaces_file = interfaces_file.delete_if { |p| p.nil? || p.empty? }
 
@@ -225,6 +233,7 @@ EOF
 ## If you modify this file manually, your changes
 ## may be overriden
 
+## This causes a script to tear down any bridges that are not necessary.
 auto cleanup
 iface cleanup inet manual
 \talpaca_debug true
@@ -232,6 +241,7 @@ iface cleanup inet manual
 ## Configuration for the loopback interface
 auto lo
 iface lo inet loopback
+
 EOF
   end
 end

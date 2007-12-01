@@ -1,0 +1,16 @@
+#!/bin/dash
+
+## Make all of the scripts executable for run-parts
+chmod +x \
+    /etc/dhcp3/dhclient-exit-hooks.d/net-alpaca \
+    /etc/dhcp3/dhclient-enter-hooks.d/net-alpaca \
+    /etc/network/if-up.d/alpaca-cleanup \
+    /etc/network/if-up.d/alpaca-update-address \
+    /etc/network/if-pre-up.d/alpaca-bridge \
+    /etc/ppp/ip-up.d/99-net-alpaca \
+    /etc/untangle-net-alpaca/scripts/update-address.d/99-packet-filter \
+    /etc/untangle-net-alpaca/scripts/update-address.d/50-uvm \
+    /etc/untangle-net-alpaca/scripts/dnsmasq \
+    /etc/untangle-net-alpaca/scripts/iptables \
+    /etc/cron.hourly/rebuild-nonce
+

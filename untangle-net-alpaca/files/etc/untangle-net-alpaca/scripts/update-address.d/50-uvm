@@ -1,0 +1,56 @@
+#!/bin/dash
+
+UVM_PID="invalid"
+
+queue_owner()
+{
+    if [ "${UVM_PID}x" != "invalidx" ]; then return ; fi
+    
+    UVM_PID="invalid"
+    
+    if [ ! -f /proc/net/netfilter/nfnetlink_queue ] ; then return ; fi
+
+    local t_queue_pid=`awk '{ print $2 }' /proc/net/netfilter/nfnetlink_queue`
+    if [ -z "${t_queue_pid}" ]; then return ; fi
+    
+    UVM_PID=${t_queue_pid}  
+}
+
+
+bunnicula_home()
+{
+    queue_owner
+    
+    if [ ! -f /proc/${UVM_PID}/cmdline ]; then return ; fi
+
+    perl -pe 's/[^0-9=a-zA-Z\/\-\+\*\.]/\n/g' /proc/${UVM_PID}/cmdline 2>| /dev/null | \
+        awk '/^-Dbunnicula.home=/ { gsub( "-Dbunnicula.home=", "" ) ; print }'
+}
+
+BUNNICULA_HOME=`bunnicula_home`
+
+if [ -z "${BUNNICULA_HOME}" ]; then
+    echo "[`date`] UVM is not running"
+    exit 0
+fi
+
+## Bunnicula home points to <root>/usr/share/untangle/
+UCLI=${BUNNICULA_HOME}/../../bin/ucli
+
+if [ ! -f "${UCLI}" ]; then
+    echo "[`date`] ${UCLI} does not exist."
+    exit 0    
+fi
+
+${UCLI} updateAddress
+
+## Just in case these settings were lost.
+ifconfig dummy0 192.0.2.42 netmask 255.255.255.0 up
+if [ -f /proc/sys/net/ipv4/conf/utun/rp_filter ]; then
+    ifconfig utun up
+    echo 0 > /proc/sys/net/ipv4/conf/utun/rp_filter
+else
+    echo "[`date`] utun device not exist."
+fi
+
+exit 0

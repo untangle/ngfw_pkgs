@@ -17,17 +17,17 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
 HELPER_SCRIPT="/usr/share/untangle-net-alpaca/scripts/uvm/iptables"
 
 if [ ! -f ${HELPER_SCRIPT} ]; then
-  echo "The script ${HELPER_SCRIPT} is not available"
+  echo "[`date`] The script ${HELPER_SCRIPT} is not available"
   return 0
 fi
 
 . ${HELPER_SCRIPT}
 
 if [ "`is_uvm_running`x" = "truex" ]; then
-  echo "The UVM running, inserting queueing hooks"
+  echo "[`date`] The UVM running, inserting queueing hooks"
   uvm_iptables_rules
 else
-  echo "The UVM is currently not running"
+  echo "[`date`] The UVM is currently not running"
 fi
 
 return 0
