@@ -16,7 +16,6 @@ queue_owner()
     UVM_PID=${t_queue_pid}  
 }
 
-
 bunnicula_home()
 {
     queue_owner

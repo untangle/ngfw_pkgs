@@ -1,3 +1,9 @@
+untangle-net-alpaca (5.1.0~svn20071130r13281+rbscott20071201T142336-1sarge) rbscott; urgency=low
+
+  * auto build
+
+ -- Robert Scott <rbscott@untangle.com>  Sat,  1 Dec 2007 14:23:37 -0800
+
 untangle-net-alpaca (5.1.0~svn20071120r12941+rbscott20071121T173210-1etch) rbscott; urgency=low
 
   * auto build
