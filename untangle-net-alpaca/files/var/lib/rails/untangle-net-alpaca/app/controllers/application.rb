@@ -18,11 +18,13 @@ class ApplicationController < ActionController::Base
   
   before_filter :build_menu_structure
   before_filter :reload_managers
-  before_filter :setLocale
+  ## This is disabled until we switch to ruby gettext.
+  ## before_filter :setLocale
   before_filter :setStylesheets
   before_filter :setScripts
   before_filter :authenticate
-  
+
+  ## This is disabled until we switch to ruby gettext.
   def setLocale
     settings = LocaleSetting.find( :first )
     

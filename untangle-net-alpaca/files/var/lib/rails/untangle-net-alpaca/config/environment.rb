@@ -58,8 +58,9 @@ end
 # Mime::Type.register "application/x-mobile", :mobile
 
 # Include your application configuration below
-include Globalize
-Locale.set_base_language('en-US')
+## We are no longer using globalize.
+# include Globalize
+# Locale.set_base_language('en-US')
 
 # These are the available locales a user can selected from
 ## Review : Country should be separated from the language.

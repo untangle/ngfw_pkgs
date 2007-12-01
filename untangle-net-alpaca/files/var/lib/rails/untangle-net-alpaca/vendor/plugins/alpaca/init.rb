@@ -11,6 +11,9 @@ require "alpaca/os"
 ## Insert the specific os that is presently loaded.
 require "alpaca/os/current_os"
 
+## Temporary extensions to replace globalize.
+require "alpaca/localization_extensions"
+
 ## Manager base
 require "alpaca/os/manager_base"
 
