@@ -46,7 +46,7 @@ if [ -x /usr/sbin/slapadd ]; then
 fi
 
 # restore canonical files
-tar -C / zvxf /usr/share/untangle/conf/canonical.tar.gz
+tar -C / -zvxf /usr/share/untangle/conf/canonical.tar.gz
 
 ## restore the NAT transform if necessary
 if [ -f ${NAT_CACHE_DEB} ]; then
