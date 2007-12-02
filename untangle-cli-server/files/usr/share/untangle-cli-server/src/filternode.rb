@@ -25,11 +25,11 @@ class UVMFilterNode < UVMRemoteApp
 
     protected
 
-        UVM_FILTERNODE_MIB_ROOT = ".1.3.6.1.4.1.2021.6971"
+        UVM_FILTERNODE_MIB_ROOT = ".1.3.6.1.4.1.30054"
         
     public
         def initialize
-            @diag = Diag.new(0)
+            @diag = Diag.new(DEFAULT_DIAG_LEVEL)
             @diag.if_level(3) { puts! "Initializing UVMFilterNode..." }
             
             super
