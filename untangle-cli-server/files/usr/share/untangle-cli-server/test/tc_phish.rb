@@ -24,7 +24,7 @@ class TestPhish < Test::Unit::TestCase
   
   def test_SMTP
     # display
-    assert_match(/scan,action,description\n.*SMTP/, @phish.execute(["#1", "SMTP"]), "display SMTP settings")
+    assert_match(/scan,action,description/, @phish.execute(["#1", "SMTP"]), "display SMTP settings")
 
     # update
     assert_match(/scan for SMTP updated/, @phish.execute(%w(#1 SMTP update scan false)), "update SMTP scan - false")
@@ -47,7 +47,7 @@ class TestPhish < Test::Unit::TestCase
   
   def test_POP
     # display
-    assert_match(/scan,action,description\n.*POP/, @phish.execute(["#1", "POP"]), "display POP settings")
+    assert_match(/scan,action,description/, @phish.execute(["#1", "POP"]), "display POP settings")
 
     # update
     assert_match(/scan for POP updated/, @phish.execute(%w(#1 POP update scan false)), "update POP scan - false")
@@ -70,7 +70,7 @@ class TestPhish < Test::Unit::TestCase
   
   def test_IMAP
     # display
-    assert_match(/scan,action,description\n.*IMAP/, @phish.execute(["#1", "IMAP"]), "display IMAP settings")
+    assert_match(/scan,action,description/, @phish.execute(["#1", "IMAP"]), "display IMAP settings")
 
     # update
     assert_match(/scan for IMAP updated/, @phish.execute(%w(#1 IMAP update scan false)), "update IMAP scan - false")

@@ -89,7 +89,7 @@ class TestVirus < Test::Unit::TestCase
   
   def test_SMTP
     # display
-    assert_match(/scan,action,description\n.*SMTP/, @virus.execute(["#1", "SMTP"]), "display SMTP settings")
+    assert_match(/scan,action,description/, @virus.execute(["#1", "SMTP"]), "display SMTP settings")
 
     # update
     assert_match(/Scan for SMTP was updated/, @virus.execute(%w(#1 SMTP update scan false)), "update SMTP scan - false")
@@ -112,7 +112,7 @@ class TestVirus < Test::Unit::TestCase
   
   def test_POP
     # display
-    assert_match(/scan,action,description\n.*POP/, @virus.execute(["#1", "POP"]), "display POP settings")
+    assert_match(/scan,action,description/, @virus.execute(["#1", "POP"]), "display POP settings")
 
     # update
     assert_match(/Scan for POP was updated/, @virus.execute(%w(#1 POP update scan false)), "update POP scan - false")
@@ -135,7 +135,7 @@ class TestVirus < Test::Unit::TestCase
   
   def test_IMAP
     # display
-    assert_match(/scan,action,description\n.*IMAP/, @virus.execute(["#1", "IMAP"]), "display IMAP settings")
+    assert_match(/scan,action,description/, @virus.execute(["#1", "IMAP"]), "display IMAP settings")
 
     # update
     assert_match(/Scan for IMAP was updated/, @virus.execute(%w(#1 IMAP update scan false)), "update IMAP scan - false")

@@ -24,7 +24,7 @@ class TestSpamblocker < Test::Unit::TestCase
 
   def test_SMTP
     # display
-    assert_match(/scan,strength,action,tarpit,description\n.*SMTP/, @spamblocker.execute(["#1", "SMTP"]), "display SMTP settings")
+    assert_match(/scan,strength,action,tarpit,description/, @spamblocker.execute(["#1", "SMTP"]), "display SMTP settings")
 
     # update
     assert_match(/scan for SMTP updated/, @spamblocker.execute(%w(#1 SMTP update scan false)), "update SMTP scan - false")
@@ -59,7 +59,7 @@ class TestSpamblocker < Test::Unit::TestCase
   
   def test_POP
     # display
-    assert_match(/scan,strength,action,description\n.*POP/, @spamblocker.execute(["#1", "POP"]), "display POP settings")
+    assert_match(/scan,strength,action,description/, @spamblocker.execute(["#1", "POP"]), "display POP settings")
 
     # update
     assert_match(/scan for POP updated/, @spamblocker.execute(%w(#1 POP update scan false)), "update POP scan - false")
@@ -88,7 +88,7 @@ class TestSpamblocker < Test::Unit::TestCase
   
   def test_IMAP
     # display
-    assert_match(/scan,strength,action,description\n.*IMAP/, @spamblocker.execute(["#1", "IMAP"]), "display IMAP settings")
+    assert_match(/scan,strength,action,description/, @spamblocker.execute(["#1", "IMAP"]), "display IMAP settings")
 
     # update
     assert_match(/scan for IMAP updated/, @spamblocker.execute(%w(#1 IMAP update scan false)), "update IMAP scan - false")
