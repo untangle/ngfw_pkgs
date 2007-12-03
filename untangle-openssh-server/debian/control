@@ -1,5 +1,5 @@
 Source: untangle-openssh-server
-Section: qa
+Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
