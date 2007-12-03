@@ -1,0 +1,2 @@
+module DdclientHelper
+end

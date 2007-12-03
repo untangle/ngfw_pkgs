@@ -6,6 +6,7 @@ class DdclientSchema < ActiveRecord::Migration
       table.column :run_ipup,        :boolean
       table.column :use_ssl,         :boolean
       table.column :daemon, :integer
+      table.column :service,        :string
       table.column :protocol,        :string
       table.column :server,          :string
       table.column :login,           :string

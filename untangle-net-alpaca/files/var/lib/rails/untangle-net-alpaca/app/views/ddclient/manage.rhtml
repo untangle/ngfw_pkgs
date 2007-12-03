@@ -8,24 +8,14 @@
           <label for="ddclient_settings[enabled]"><%= "Enabled:".t %></label>
           <%= check_box( "ddclient_settings", "enabled", { :checked => @ddclient_settings.enabled }, true, false ) %>
         </li>
-        <li>
-          <label for="ddclient_settings[use_ssl]"><%= "Use SSL:".t %></label>
-          <%= check_box( "ddclient_settings", "use_ssl", { :checked => @ddclient_settings.use_ssl }, true, false ) %>
-        </li>
-        <li>
-          <label for="dhcp_server_settings[daemon]"><%= "Daemon Interval:".t %></label>
-          <%= text_field( "ddclient_settings", "daemon", { :class => "number" } ) %>
-        </li>
-        <li>
-          <label for="ddclient_settings[protocol]"><%= "Protocol:".t %></label>
-          <%= select( "ddclient_settings", "protocol", [ ["dyndns2", "dyndns2"], ["zoneedit1", "zoneedit1"], ["easydns", "easydns"], ["hammernode1", "hammernode1"], ["dslreports1", "dslreports1"] ] ) %>
-        </li>
 
-        <li>
-          <label for="ddclient_settings[server]"><%= "Server:".t %></label>
-          <%= text_field( "ddclient_settings", "server" ) %>
+       <li>
+          <label for="ddclient_settings[service]"><%= "Service:".t %></label>
+          <%= 
+services = []
+OSLibrary::DdclientManager::ConfigService.each_key { |key| services << [key, key] }
+select( "ddclient_settings", "service", services ) %>
         </li>
-
         <li>
           <label for="ddclient_settings[login]"><%= "Login:".t %></label>
           <%= text_field( "ddclient_settings", "login" ) %>
@@ -37,7 +27,7 @@
         </li>
 
         <li>
-          <label for="ddclient_settings[hostname]"><%= "Hostname:".t %></label>
+          <label for="ddclient_settings[hostname]"><%= "Hostname(s):".t %></label>
           <%= text_field( "ddclient_settings", "hostname" ) %>
         </li>
 
