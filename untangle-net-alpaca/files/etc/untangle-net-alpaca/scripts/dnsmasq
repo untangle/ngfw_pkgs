@@ -6,7 +6,7 @@ exec >> /var/log/untangle-net-alpaca/dnsmasq.log 2>&1
 ACTION=${1:-restart}
 
 if [ "${ACTION}x" == "stop" ]; then
-    echo "[DEBUG:`date`] Stopping DNS masq"
+    /bin/echo -e "[DEBUG:`date`] Stopping DNS masq"
     /etc/init.d/dnsmasq stop
     exit 0
 fi
@@ -16,28 +16,33 @@ DNSMASQ_HASH="/var/run/untangle-net-alpaca/dnsmasq-hash"
 
 NEW_HASH=`mktemp`
 
-md5sum /etc/untangle-net-alpaca/dnsmasq-hosts /etc/hosts /etc/dnsmasq.conf /etc/resolv.conf > ${NEW_HASH}
+mkdir -p `dirname ${DNSMASQ_HASH}`
+
+## Strip out newlines and comments
+for t in /etc/untangle-net-alpaca/dnsmasq-hosts /etc/hosts /etc/dnsmasq.conf /etc/resolv.conf ; do
+    sed -e '/^#/d' -e '/^$/d' /etc/dnsmasq.conf | md5sum | awk "{ print \$1 \" $t\" }" >> ${NEW_HASH}
+done
 
 currentPid=`pidof dnsmasq`
 expectedPid=`cat /var/run/dnsmasq.pid`
 
 ## Always do a restart
 if [ -z "${currentPid}" ] || [ "${currentPid}x" != "${expectedPid}x" ]; then
-    echo "[DEBUG:`date`] Forcing a restart of dnsmasq"
+    /bin/echo -e "[DEBUG:`date`] Forcing a restart of dnsmasq"
     FORCE_RESTART=true
 fi
 
 if [ ${FORCE_RESTART} == "false" ] && [ -f ${DNSMASQ_HASH} ]; then
     ## If they are the same do nothing
     diff ${NEW_HASH} ${DNSMASQ_HASH} > /dev/null 2>&1 && { 
-        echo "[DEBUG:`date`] Skipping dnsmasq restart" 
+        /bin/echo -e "[DEBUG:`date`] Skipping dnsmasq restart" 
         rm -f ${NEW_HASH}
         exit 0 
     }
 
     ## If the host files differ, just send a SIGHUP
     diff -I '\/etc\/hosts' -I '/\etc\/untangle-net-alpaca\/dnsmasq-hosts' ${NEW_HASH} ${DNSMASQ_HASH} > /dev/null 2>&1 && {
-        echo "[DEBUG:`date`] sending dnsmasq SIGHUP to reload host file." 
+        /bin/echo -e "[DEBUG:`date`] sending dnsmasq SIGHUP to reload host file." 
         kill -HUP ${currentPid}
         mv ${NEW_HASH} ${DNSMASQ_HASH}
         exit 0
@@ -45,7 +50,7 @@ if [ ${FORCE_RESTART} == "false" ] && [ -f ${DNSMASQ_HASH} ]; then
 fi
 
 ## Otherwise force a restart
-echo "[DEBUG:`date`] Restarting dnsmasq." 
+/bin/echo -e "[DEBUG:`date`] Restarting dnsmasq." 
 /etc/init.d/dnsmasq restart
 
 mv ${NEW_HASH} ${DNSMASQ_HASH}

@@ -13,6 +13,31 @@ class OSLibrary::Debian::DhcpManager < OSLibrary::DhcpManager
   def register_hooks
     os["network_manager"].register_hook( -100, "dhcp_manager", "write_files", :hook_commit )
   end
+
+  def get_dhcp_status( interface )
+    config = interface.current_config
+
+    ## Return an empty one
+    return DhcpStatus.new if ( config.nil? || !config.is_a?( IntfDynamic ))
+    
+    ## Get the correct name
+    name = interface.os_name
+    name = OSLibrary::Debian::NetworkManager.bridge_name( interface ) if interface.is_bridge?
+
+    ## Grab the current IP and Netmask    
+    address, netmask = `ifconfig #{name} 2>/dev/null | awk '/^ *inet / { sub( "addr:", "", $2 ) ; sub( "Mask:", "", $4 ) ; print $2 " " $4 }'`.strip.split( " " )
+
+    ## This is all that is needed for non-wan interfaces
+    return DhcpStatus.new( address, netmask ) unless interface.wan
+
+    ## Grab the default gateway
+    default_gateway = `ip route show | awk ' /^default via.*#{name}/ { print $3 } '`.strip
+
+    ## DNS Servers are only stored in the 
+    dns_1, dns_2 = `awk '/^server/ { sub( "server=", "" ); print }' /etc/dnsmasq.conf`.strip.split
+    
+    DhcpStatus.new( address, netmask, default_gateway, dns_1, dns_2 )
+  end
   
   def hook_commit
     ## Delete all of the existing config files
@@ -69,7 +94,9 @@ class OSLibrary::Debian::DhcpManager < OSLibrary::DhcpManager
        [ OverrideNetmask, config.netmask ], 
        [ OverrideGateway, gateway ],
        [ OverrideDnsServer, dns ]].each do |var,val|
-        next if ( val.nil? || val.empty? || val == "null" )
+        next if ( ApplicationHelper.null?( val ))
+        next if ( IPAddr.parse( val ).nil? )
+
         cfg << "#{var}=\"#{val}\""
       end
       

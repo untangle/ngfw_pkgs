@@ -92,3 +92,29 @@ form label {
   display: block;
 }
 
+form div.dynamic input[type="text"]
+{ 
+  width: 140px;
+  }
+
+form div.dynamic div.header
+{ 
+  width: 140px;
+  float: left;
+  text-align: center;
+ }
+
+
+form div.dynamic div.first
+{ 
+  margin-left: 210px;
+ }
+
+form div.dynamic div.current
+{ 
+  width: 150px;
+  float: left;
+ }
+
+
+

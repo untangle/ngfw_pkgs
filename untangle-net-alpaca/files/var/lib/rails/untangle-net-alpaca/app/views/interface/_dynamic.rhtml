@@ -1,28 +1,50 @@
 <% style = @hide_types.include?( "dynamic" ) ? 'style="display: none"' : nil  %>
 <div id="dynamic" <%= style %>>
   <% form_tag( :action => 'intf_dynamic_save', :id => interface ) do -%>
-     <div class="text-fields"> 
-       <p><label for="dynamic[ip]"><%= "IP Address:".t %></label>
-       <%= text_field( "dynamic", "ip" ) %></p>
-       <p><label for="dynamic[netmask]"><%= "Netmask:".t %></label>
-       <%= text_field( "dynamic", "netmask" ) %></p>
+     <div class="text-fields dynamic"> 
+       <div class="first header">Current</div>
+       <div class="header">Override</div>
+
+       <br/>
+       <p>
+         <label for="dynamic[ip]"><%= "IP Address:".t %></label>
+         <div class="current"><%= @dhcp_status.ip %></div>
+         <%= text_field( "dynamic", "ip" ) %>
+       </p>
+       <p>
+         <label for="dynamic[netmask]"><%= "Netmask:".t %></label>
+         <div class="current"><%= @dhcp_status.netmask %></div>
+         <%= text_field( "dynamic", "netmask" ) %>
+       </p>
 
        <% if interface.wan %>
-         <p><label for="dynamic[default_gateway]"><%= "Default Gateway:".t %></label>
-         <%= text_field( "dynamic", "default_gateway" ) %></p>
-         <p><label for="dynamic[dns_1]"><%= "Primary DNS Server:".t %></label>
-         <%= text_field( "dynamic", "dns_1" ) %></p>
-         <p><label for="dynamic[dns_2]"><%= "Secondary DNS Server:".t %></label>
-         <%= text_field( "dynamic", "dns_2" ) %></p>
+         <p>
+           <label for="dynamic[default_gateway]"><%= "Default Gateway:".t %></label>
+           <div class="current"><%= @dhcp_status.default_gateway %></div>
+           <%= text_field( "dynamic", "default_gateway" ) %>
+         </p>
+         <p>
+           <label for="dynamic[dns_1]"><%= "Primary DNS Server:".t %></label>
+           <div class="current"><%= @dhcp_status.dns_1 %></div>
+           <%= text_field( "dynamic", "dns_1" ) %>
+         </p>
+         <p>
+           <label for="dynamic[dns_2]"><%= "Secondary DNS Server:".t %></label>
+           <div class="current"><%= @dhcp_status.dns_2 %></div>
+           <%= text_field( "dynamic", "dns_2" ) %>
+         </p>
        <% else %>
          <%= hidden_field( "dynamic", "default_gateway", { :value => "" } ) %>
          <%= hidden_field( "dynamic", "dns_1", { :value => "" } ) %>
          <%= hidden_field( "dynamic", "dns_2", { :value => "" } ) %>
        <% end %>
   
-       <p><label for="dynamic[mtu]"><%= "MTU:".t %></label>
-       <% # Review : Presently ignoring all localization %>
-       <%= text_field( "dynamic", "mtu", { :clas => "number" } ) %></p>
+       <p>
+         <label for="dynamic[mtu]"><%= "MTU:".t %></label>
+         <% # Review : Presently ignoring all localization %>
+         <%= text_field( "dynamic", "mtu", { :clas => "number" } ) %>
+       </p>
+
        <p><label for="dynamic[allow_ping]"><%= "Allow Ping:".t %></label>
        <%= check_box( "dynamic", "allow_ping", {}, true, false ) %>
     </div>

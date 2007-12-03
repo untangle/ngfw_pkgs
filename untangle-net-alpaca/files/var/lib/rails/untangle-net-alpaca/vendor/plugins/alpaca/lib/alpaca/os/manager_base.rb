@@ -1,10 +1,14 @@
 class Alpaca::OS::ManagerBase
   include Alpaca::OS::Logging
-  
-  @@hooks_register = {}
-  
+    
   ## Override at your own risk
   def initialize
+    ## Hash of all of the hooks.
+    ## @@hooks[method_name] => a sorted array of the MethodHandles to invoke
+    ## Methods at 0 are invoke right before the hook, methods at 1 are 
+    ## invoked right after the hook
+    @hooks = {}
+
     ## REVIEW: Since this is a singleton, this can lock the system
     ## If one of the managers registers a hook with itself.
     register_hooks
@@ -26,12 +30,6 @@ class Alpaca::OS::ManagerBase
     attr_reader :index, :manager, :method_id
   end
 
-  ## Hash of all of the hooks.
-  ## @@hooks[method_name] => a sorted array of the MethodHandles to invoke
-  ## Methods at 0 are invoke right before the hook, methods at 1 are 
-  ## invoked right after the hook
-  @@hooks = {}
-
   ## Override this method in order to register hooks.
   def register_hooks
   end
@@ -39,9 +37,9 @@ class Alpaca::OS::ManagerBase
   ## Register a hook with this manager
   def register_hook( index, manager, hook_name, method_id )    
     ## Initialize the method array if necessary
-    @@hooks[hook_name] = [] if @@hooks[hook_name].nil?
+    @hooks[hook_name] = [] if @hooks[hook_name].nil?
 
-    hooks = @@hooks[hook_name]
+    hooks = @hooks[hook_name]
 
     ## Delete any duplicate entries
     hooks.delete_if { |handle| (( handle.manager == manager ) && ( handle.index == index )) }
@@ -58,7 +56,7 @@ class Alpaca::OS::ManagerBase
   ## Remove all calls into a particular manager, useful for unregistering
   ## a currently installed manager.
   def self.remove_hook( manager )
-    @@hooks.each do |k,v|
+    @hooks.each do |k,v|
       v.delete_if  { |handle| handle.manager == manager }
     end
   end
@@ -66,7 +64,7 @@ class Alpaca::OS::ManagerBase
   ## This is the method that gets defined automatically
   def self.hook_method_lamba( hook_method_name, hook_method_id )
     lambda do |*args| 
-      hooks = @@hooks[hook_method_name]
+      hooks = @hooks[hook_method_name]
       hooks = [] if hooks.nil?
       ## (invoke method)
       im = true

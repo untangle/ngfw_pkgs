@@ -55,6 +55,13 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
   end
 
   def hook_commit
+    
+    begin
+      raise
+    rescue e
+      puts e.backtrace.join( "\n" )
+    end
+
     write_files
     
     run_services

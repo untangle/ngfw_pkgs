@@ -57,7 +57,6 @@ auto update
 iface update inet manual
 
 EOF
-    
 
     ## Delete all empty or nil parts
     interfaces_file = interfaces_file.delete_if { |p| p.nil? || p.empty? }

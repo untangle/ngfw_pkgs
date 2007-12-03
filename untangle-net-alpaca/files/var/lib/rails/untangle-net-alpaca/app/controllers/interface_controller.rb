@@ -333,6 +333,7 @@ class InterfaceController < ApplicationController
     ## Retrieve the dynamic configuration, creating a new one if necessary.
     @dynamic = @interface.intf_dynamic
     @dynamic = IntfDynamic.new if @dynamic.nil?
+    @dhcp_status = os["dhcp_manager"].get_dhcp_status( @interface )
   end
 
   def bridge
