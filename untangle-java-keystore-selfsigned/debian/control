@@ -1,0 +1,12 @@
+Source: untangle-java-keystore-selfsigned
+Section: qa
+Priority: standard
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.7.2
+
+Package: untangle-java-keystore-selfsigned
+Architecture: any
+Conflicts: untangle-java-keystore
+Description: The self-signed Untangle java keystore
+ The self-signed Untangle java keystore for signing jars.

@@ -1,0 +1,5 @@
+untangle-java-keystore-selfsigned (5.0.1-1) stable; urgency=low
+
+  * Initial release.
+
+ -- Sebastien Delafond <seb@untangle.com>  Fri, 12 Oct 2007 14:58:24 -0700
