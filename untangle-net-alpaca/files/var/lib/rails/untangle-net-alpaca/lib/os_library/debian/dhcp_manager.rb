@@ -34,7 +34,7 @@ class OSLibrary::Debian::DhcpManager < OSLibrary::DhcpManager
     default_gateway = `ip route show | awk ' /^default via.*#{name}/ { print $3 } '`.strip
 
     ## DNS Servers are only stored in the 
-    dns_1, dns_2 = `awk '/^server/ { sub( "server=", "" ); print }' /etc/dnsmasq.conf`.strip.split
+    dns_1, dns_2 = `awk '/^server=/ { sub( "server=", "" ); print }' /etc/dnsmasq.conf`.strip.split
     
     DhcpStatus.new( address, netmask, default_gateway, dns_1, dns_2 )
   end

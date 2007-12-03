@@ -55,13 +55,6 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
   end
 
   def hook_commit
-    
-    begin
-      raise
-    rescue e
-      puts e.backtrace.join( "\n" )
-    end
-
     write_files
     
     run_services
@@ -198,16 +191,22 @@ EOF
     conditions = [ "wan=? and config_type=?", true, InterfaceHelper::ConfigType::STATIC ]
     i = Interface.find( :first, :conditions => conditions )
 
-    unless i.nil?
+    ## zero them out
+    dns_1, dns_2 = []
+    if i.nil?
+      ## Use the current nameserves if the WAN interface isn't set to static
+      name_servers = `awk '/^server=/ { sub( "server=", "" ); print }' /etc/dnsmasq.conf`.strip.split
+    else
       config = i.current_config
 
-      next if config.nil?
-      name_servers << config.dns_1
-      name_servers << config.dns_2
+      unless config.nil?
+        name_servers << config.dns_1
+        name_servers << config.dns_2
+      end
     end
 
     ## Delete all of the empty name servers, and fix the lines.
-    name_servers = name_servers.delete_if { |ns| ns.nil? || ns.empty? }
+    name_servers = name_servers.delete_if { |ns| ns.nil? || ns.empty? || IPAddr.parse( ns ).nil? }
     name_servers.map { |ns| "#{FlagDnsServer}=#{ns}" }.join( "\n" )
   end
 

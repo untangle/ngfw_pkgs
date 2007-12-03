@@ -4,11 +4,7 @@ class OSLibrary::DhcpManager < Alpaca::OS::ManagerBase
   class DhcpStatus
     Unset = "unset"
     def initialize( ip = Unset, netmask = Unset, default_gateway = Unset, dns_1 = Unset, dns_2 = Unset )
-      @ip = ( ip.nil? ) ? Unset : ip
-      @netmask = ( netmask.nil? ) ? Unset : netmask
-      @default_gateway = ( default_gateway.nil? ) ? "" : default_gateway
-      @dns_1 = ( dns_1.nil? ) ? Unset : dns_1
-      @dns_2 = ( dns_2.nil? ) ? Unset : dns_2
+      @ip, @netmask, @default_gateway, @dns_1, @dns_2 = ip, netmask, default_gateway, dns_1, dns_2 
     end
 
     attr_reader :ip, :netmask, :default_gateway, :dns_1, :dns_2
