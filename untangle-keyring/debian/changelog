@@ -1,0 +1,5 @@
+untangle-archive-keyring (5.0.1-1) stable; urgency=low
+
+  * Initial release.
+
+ -- Sebastien Delafond <seb@untangle.com>  Tue, 27 Nov 2007 12:20:19 -0800
