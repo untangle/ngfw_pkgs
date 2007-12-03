@@ -2,7 +2,7 @@
 
 APT_KEY=/usr/bin/apt-key
 KEYRINGS_DIR=/usr/share/keyrings
-VALID_KEYS_FILE=${KEYRINGS_DIR}/untangle-archive-keyring.gpg
+VALID_KEYS_FILE=${KEYRINGS_DIR}/untangle-keyring.gpg
 REMOVED_KEYS_FILE=${KEYRINGS_DIR}/untangle-archive-removed-keys.gpg
 if [ -x $APT_KEY ]; then
     $APT_KEY add ${VALID_KEYS_FILE} > /dev/null

@@ -1,11 +1,11 @@
-Source: untangle-archive-keyring
+Source: untangle-keyring
 Section: qa
 Priority: Standard
 Maintainer: Sebastien Delafond <seb@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
-Package: untangle-archive-keyring
+Package: untangle-keyring
 Architecture: any
 Depends: gnupg (>= 1.0.6-4)
 Description: GnuPG archive keys of the Untangle archive
