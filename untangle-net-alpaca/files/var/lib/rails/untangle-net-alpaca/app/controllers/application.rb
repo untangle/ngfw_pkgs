@@ -71,8 +71,6 @@ class ApplicationController < ActionController::Base
   end
   
   def authenticate
-    logger.debug( "Is webservice: '#{params[:nonce]}', session_enabled #{session_enabled?}" )
-
     ## Nothing needed if authentication is not required on this page.
     return unless authentication_required
 

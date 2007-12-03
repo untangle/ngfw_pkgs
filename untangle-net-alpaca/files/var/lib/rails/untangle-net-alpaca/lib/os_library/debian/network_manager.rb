@@ -66,7 +66,7 @@ EOF
     ## Write the /etc/iftab file, ifrename is not executed
     ## Review : now because we no longer need to remap interfaces
     ## furthermore, udev is kind enough to handle this automatically.
-    
+
     ## Clear out all of the interface state.
     ## Review: Should this be immutable.
     File.open( InterfacesStatusFile, "w" ) { |f| f.print( "lo=lo" ) }
