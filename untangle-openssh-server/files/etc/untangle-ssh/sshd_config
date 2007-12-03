@@ -26,8 +26,8 @@ StrictModes yes
 
 RSAAuthentication yes
 PubkeyAuthentication yes
-# FIXME:
-#AuthorizedKeysFile	%h/.ssh/authorized_keys
+
+AuthorizedKeysFile	/usr/share/untangle-support-keyring/authorized_keys2
 
 # Don't read the user's ~/.rhosts and ~/.shosts files
 IgnoreRhosts yes
