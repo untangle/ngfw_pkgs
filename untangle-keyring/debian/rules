@@ -11,7 +11,7 @@ build: configure
 	dh_testdir
 	mkdir -p $(DESTDIR)
 	cp -r ./files/* $(DESTDIR)
-	find $(DESTDIR) -name "\.svn" | xargs rm -rf
+	/usr/bin/find $(DESTDIR) -name "\.svn" | xargs rm -rf
 
 clean:
 	dh_testdir
