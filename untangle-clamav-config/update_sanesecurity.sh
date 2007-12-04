@@ -517,6 +517,7 @@ print_usage()
 	echo -e "Downloads unofficial ClamAV signature files from sanesecurity.com and msrbl.com."
 	echo -e "Usage: $0 [options]"
 	echo -e "OPTIONS:"
+	echo -e "\t--sleep=seconds\t\tSets the update sleep delay to 'seconds'."
 	echo -e "\t--syslog-loglevel=level\t\tSets the log level for syslog to 'level'."
 	echo -e "\t--stderr-loglevel=level\t\tSets the log level for stderr to 'level'."
 	echo -e "\t--debug\t\t\t\tShorthand for --stderr-loglevel=debug."
@@ -555,6 +556,10 @@ parse_arguments()
 				;;
 			--unprivileged-child)
 				unprivileged_child=1
+				;;
+			--sleep)
+				sleep_time=$2
+				shift
 				;;
 			--help|-h|-\?)
 				print_usage
@@ -617,12 +622,13 @@ log_startup_summary()
 }
 
 # Sleep for a random time (determined by $min_sleep_time and $max_sleep_time global variables)
+# unless sleep_time is non-zero.
 #
 # Usage: random_sleep
 #
 random_sleep()
 {
-	if [ sleep_time == 0 ]; then
+	if [ $sleep_time == 0 ]; then
 	   sleep_time=$(($RANDOM * $(($max_sleep_time-$min_sleep_time)) / 32767 + $min_sleep_time))
 	fi
 	log debug "Sleeping for $sleep_time seconds..."
