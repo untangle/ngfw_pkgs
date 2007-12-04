@@ -15,6 +15,10 @@ sed -i -e "s|[# ]*LocalSocket.*|#LocalSocket /var/run/clamav/clamd.ctl|" $CLAMAV
 # the existing signatures.  Freshclam will restore them quickly.
 rm -rf /var/lib/clamav/*
 
+# Make executable and then fetch unofficial clam phishing signatures.
+chmod +x /etc/cron.hourly/update_sanesecurity.sh
+/etc/cron.hourly/update_sanesecurity.sh &
+
 # Since upstream uses invoke-rc.d, which currently has issues, we do this instead.
 /etc/init.d/clamav-freshclam restart
 /etc/init.d/clamav-daemon restart
