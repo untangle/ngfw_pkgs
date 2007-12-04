@@ -15,10 +15,11 @@ module InterfaceHelper
     STATIC="static"
     DYNAMIC="dynamic"
     BRIDGE="bridge"
+    PPPOE="PPPoE"
   end
 
   ## Array of all of the available config types
-  CONFIGTYPES = [ ConfigType::STATIC, ConfigType::DYNAMIC, ConfigType::BRIDGE ].freeze
+  CONFIGTYPES = [ ConfigType::STATIC, ConfigType::DYNAMIC, ConfigType::BRIDGE, ConfigType::PPPOE ].freeze
 
   ## An array of the config types that you can bridge with
   BRIDGEABLE_CONFIGTYPES = [ ConfigType::STATIC, ConfigType::DYNAMIC ].freeze

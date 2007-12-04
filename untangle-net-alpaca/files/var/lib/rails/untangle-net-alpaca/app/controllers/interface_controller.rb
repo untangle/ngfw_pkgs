@@ -40,6 +40,7 @@ class InterfaceController < ApplicationController
     IntfStatic.destroy_all
     IntfBridge.destroy_all
     IntfDynamic.destroy_all
+    IntfPppoe.destroy_all
 
     return redirect_to( :action => 'list' )
   end
@@ -56,6 +57,9 @@ class InterfaceController < ApplicationController
 
       ## Retrieve the bridge configuration, creating a new one if necessary.
       bridge
+
+      ## Retrieve the pppoe configuration, creating a new one if necessary.
+      pppoe
 
       @config_type_id = @interface.config_type
 
@@ -268,6 +272,33 @@ class InterfaceController < ApplicationController
       true
     end
   end
+
+  def intf_pppoe_save
+    save do
+      ## Get the pppoe interface
+      pppoe = @interface.intf_pppoe
+      
+      ## Create a new one if it is nil
+      pppoe = IntfPppoe.new if pppoe.nil?
+ 
+      pppoe.update_attributes(params[:pppoe])
+      
+      pppoe.save
+      
+      @interface.intf_pppoe = pppoe
+      @interface.config_type = InterfaceHelper::ConfigType::PPPOE
+      @interface.save
+      
+      ## Actually commit the changes
+      spawn do
+        networkManager.commit
+      end
+      
+      ## Indicate the command was successful
+      true
+    end
+  end
+
   
   ## Change the configuration type
   def change_config_type
@@ -356,6 +387,12 @@ class InterfaceController < ApplicationController
       ## XXX config_type and name will need internationalization
       [ "#{interface.name} (#{interface.config_type})", interface.id ]
     end
+  end
+
+  def pppoe
+    ## Retrieve the dynamic configuration, creating a new one if necessary.
+    @pppoe = @interface.intf_pppoe
+    @pppoe = IntfPppoe.new if @pppoe.nil?
   end
 
   

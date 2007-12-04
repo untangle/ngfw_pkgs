@@ -1,0 +1,26 @@
+<%
+style = @hide_types.include?( "PPPoE" ) ? 'style="display: none"' : nil
+def print_pppoe( value )
+  return value unless ApplicationHelper.null?( value )
+  "Unset"
+end
+%>
+<div id="PPPoE" <%= style %>>
+  <% form_tag( :action => 'intf_pppoe_save', :id => interface ) do -%>
+     <div class="text-fields pppoe"> 
+       <% if interface.wan %>
+         <p>
+           <label for="pppoe[username]"><%= "Username:".t %></label>
+           <%= text_field( "pppoe", "username" ) %>
+         </p>
+         <p>
+           <label for="pppoe[password]"><%= "Password:".t %></label>
+           <%= password_field( "pppoe", "password" ) %>
+         </p>
+       <% end %>
+    </div>
+    <%= submit_tag "Cancel".t %>
+    <%= submit_tag "Save Changes".t %>
+
+  <% end -%>
+</div>

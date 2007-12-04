@@ -48,6 +48,8 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
         interfaces_file << dynamic( interface, config )
       when IntfBridge
         interfaces_file << bridge( interface, config )
+      when IntfPppoe
+        interfaces_file << pppoe( interface, config )
       end
     end
 
@@ -193,6 +195,34 @@ iface #{bridge_name} inet #{config_method}
 #{mtuSetting( mtu, "alpaca_bridge_" )}
 EOF
   end
+
+  def pppoe( interface, pppoe )
+    ## REVIEW this is the first area that requires managers for separate files.
+    ## this is updated in /etc/network/interfaces.
+    ## Default gateway override settings?
+
+    ## REVIEW what should timeout be on configuring the interface
+
+    i = nil
+
+    ## name of the interface
+    name = interface.os_name
+    
+    if pppoe.nil?
+      logger.warn( "The interface #{interface} is not configured" )
+      return ""
+    end
+    
+    base_string  = <<EOF
+auto #{name}
+iface #{name} inet manual
+\tup poff -a
+\tup pon #{OSLibrary::PppoeManager::PeersFilePrefix}-#{name}
+EOF
+
+    base_string
+  end
+
 
   def append_ip_networks( ip_networks, name, mtu_string, start_with_alias )
     ## this determines whether the indexing should start with an alias.

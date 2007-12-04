@@ -17,6 +17,8 @@
     <%= render( :partial => "dynamic", :object => @dynamic, :locals => { :interface => @interface } ) %>
       
     <%= render( :partial => "bridge", :object => @bridge, :locals => bridge_locals ) %>
+
+    <%= render( :partial => "pppoe", :object => @pppoe, :locals =>  { :interface => @interface } ) %>
   </div>
 </div>
 <%= javascript_tag "setConfigType()" %>

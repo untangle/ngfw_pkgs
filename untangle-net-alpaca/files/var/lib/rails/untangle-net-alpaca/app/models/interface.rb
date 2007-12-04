@@ -8,6 +8,10 @@ class Interface < ActiveRecord::Base
   ## Link for the bridge configuration.
   has_one :intf_bridge
 
+  ## Link for the pppoe configuration.
+  has_one :intf_pppoe
+
+
   ## Link for all of the interfaces that are bridged with this interface.
   has_many( :bridged_interfaces, :class_name => "IntfBridge", :foreign_key => "bridge_interface_id" )
   
@@ -35,6 +39,8 @@ class Interface < ActiveRecord::Base
       return intf_dynamic
     when InterfaceHelper::ConfigType::BRIDGE
       return intf_bridge
+    when InterfaceHelper::ConfigType::PPPOE
+      return intf_pppoe
     end
 
     ## unknown config type?
