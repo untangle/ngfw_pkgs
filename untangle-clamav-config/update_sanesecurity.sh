@@ -138,10 +138,12 @@ stderr_loglevel=none
 syslog_facility=mail
 
 # The script will sleep for a random amount of time before starting the
-# actual update. This evens out the load on the update servers when people
-# have a tendency to set cron jobs on the hour, half hour or quarter hour.
-# The extra padding keeps the servers from being hammered all at once.
-# These are the minimum and maximum sleep times in seconds.
+# actual update, unless '--sleep' is used and in this case it will sleep
+# the given amount of time. This evens out the load on the update servers 
+# when people # have a tendency to set cron jobs on the hour, half hour or 
+# quarter hour.  The extra padding keeps the servers from being hammered 
+# all at once.  These are the minimum and maximum sleep times in seconds.
+sleep_time=0
 min_sleep_time=30
 max_sleep_time=600
 
@@ -620,9 +622,9 @@ log_startup_summary()
 #
 random_sleep()
 {
-	local sleep_time
-
-	sleep_time=$(($RANDOM * $(($max_sleep_time-$min_sleep_time)) / 32767 + $min_sleep_time))
+	if [ sleep_time == 0 ]; then
+	   sleep_time=$(($RANDOM * $(($max_sleep_time-$min_sleep_time)) / 32767 + $min_sleep_time))
+	fi
 	log debug "Sleeping for $sleep_time seconds..."
 	sleep $sleep_time
 }
