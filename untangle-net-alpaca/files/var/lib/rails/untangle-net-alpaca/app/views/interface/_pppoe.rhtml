@@ -17,6 +17,10 @@ end
            <label for="pppoe[password]"><%= "Password:".t %></label>
            <%= password_field( "pppoe", "password" ) %>
          </p>
+         <p>
+           <label for="pppoe[use_peer_dns]"><%= "Use peer DNS:".t %></label>
+           <%= check_box( "pppoe", "use_peer_dns", { :checked => @pppoe.use_peer_dns }, true, false ) %>
+         </p>
        <% end %>
     </div>
     <%= submit_tag "Cancel".t %>
