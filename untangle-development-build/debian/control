@@ -2,12 +2,12 @@ Source: untangle-development-build
 Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
-Build-Depends: debhelper (>> 3.0.0), dput
+Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
 Package: untangle-development-build
 Architecture: any
 Recommends: subversion-tools
-Depends: libxml2-dev, sun-java5-jdk, fakeroot, debhelper, make, module-assistant, subversion, iptables-dev, untangle-libnfnetlink-dev, untangle-libnetfilter-queue-dev, gcc, libc6-dev, linux-libc-dev | linux-kernel-headers, libsysfs-dev, g++, devscripts, dput, rake (>= 0.7.0-1build1), libncurses-dev, dput, lintian, dpatch, autoconf, libnetpbm10-dev, libssl-dev, docbook-xsl, linuxdoc-tools, untangle-linux-headers-2.6.16-ck11-untangle-prod-486 (>= 2.6.11) | linux-headers-2.6.22-14-untangle, libgettext-ruby1.8, libgettext-ruby-util, cowdancer (>= 0.25), pbuilder (>= 0.161), bzip2, untangle-libnetfilter-conntrack-dev
+Depends: libxml2-dev, sun-java5-jdk, fakeroot, debhelper (>> 3.0.0), make, module-assistant, subversion, iptables-dev (>= 1.3.3), untangle-libnfnetlink-dev (>= 1:0.0.30), untangle-libnetfilter-queue-dev (>= 1:0.0.15), gcc, libc6-dev, linux-libc-dev, libsysfs-dev, g++, devscripts, dput, rake (>= 0.7.0-1build1), libncurses-dev, lintian, dpatch, autoconf, libnetpbm10-dev, libssl-dev, docbook-xsl, linuxdoc-tools, untangle-linux-headers-2.6.16-ck11-untangle-prod-486 (>= 2.6.11) | linux-headers-2.6.22-14-untangle, libgettext-ruby1.8, libgettext-ruby-util, cowdancer (>= 0.25), pbuilder (>= 0.161), bzip2, untangle-libnetfilter-conntrack-dev, unzip, untangle-java-keystore | untangle-java-keystore-selfsigned
 Description: Untangle Development Environment
  The Untangle Development Environment.
