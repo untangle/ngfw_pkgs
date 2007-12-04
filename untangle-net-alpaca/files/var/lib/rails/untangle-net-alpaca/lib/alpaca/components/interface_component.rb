@@ -1,20 +1,4 @@
 class Alpaca::Components::InterfaceComponent < Alpaca::Component
-  ## Register all of the menu items.
-  def register_menu_items( menu_organizer )
-    ## REVIEW : should be a more elegant way of specifying the URL.
-    menu_organizer.register_item( "/main/interfaces", Alpaca::Menu::Item.new( 200, "Interfaces", "/interface/list" ))
-
-
-    ## Retrieve all of the interfaces
-    interfaces = Interface.find(:all)
-    interfaces.sort! { |a,b| a.index <=> b.index }
-
-    interfaces.each do |i|
-      menu_item = Alpaca::Menu::Item.new( i.index, i.name, "/interface/config/#{i.id}" )
-      menu_organizer.register_item( "/main/interfaces/#{i.os_name}", menu_item )
-    end    
-  end
-
   class InterfaceTestStage < Alpaca::Wizard::Stage
     def initialize( interface_list )
       super( "interface-test", "Detection".t, 200 )
@@ -37,6 +21,30 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
       "interface_config"
     end
     attr_reader :interface, :wan
+  end
+
+  class InterfaceReview
+    def initialize( name, os_name, config_type, value )
+      @name, @os_name, @config_type, @value = name, os_name, config_type, value 
+    end
+    
+    attr_reader :name, :os_name, :config_type, :value 
+  end
+
+  ## Register all of the menu items.
+  def register_menu_items( menu_organizer )
+    ## REVIEW : should be a more elegant way of specifying the URL.
+    menu_organizer.register_item( "/main/interfaces", Alpaca::Menu::Item.new( 200, "Interfaces", "/interface/list" ))
+
+
+    ## Retrieve all of the interfaces
+    interfaces = Interface.find(:all)
+    interfaces.sort! { |a,b| a.index <=> b.index }
+
+    interfaces.each do |i|
+      menu_item = Alpaca::Menu::Item.new( i.index, i.name, "/interface/config/#{i.id}" )
+      menu_organizer.register_item( "/main/interfaces/#{i.os_name}", menu_item )
+    end    
   end
 
   ## Insert the desired stages for the wizard.
@@ -67,6 +75,49 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
     end
   end
 
+  def wizard_generate_review( review )
+    interfaceList = params[:interfaceList]
+    
+    raise "Invalid interface list" if ( interfaceList.nil?  || interfaceList.empty? )
+
+    is_first = true
+    il = []
+    ## Create a new interface for each one (they are ordered)
+    interfaceList.each do |interface|
+      ## Retrive the os_name
+      os_name = params["#{interface}.os_name"]
+
+      ## Retrive the name
+      name = params["#{interface}.name"]
+
+      ## Retrieve the config type
+      config_type = params["#{interface}.type"]
+      
+      value = ""
+      case config_type
+      when InterfaceHelper::ConfigType::STATIC 
+        value = "#{params["#{interface}-static.address"]}/#{params["#{interface}-static.netmask"]}"
+        if is_first
+          review["default_gateway"] = params["#{interface}-static.default_gateway"]
+          review["dns_1"] = params["#{interface}-static.dns_1"]
+          review["dns_2"] = params["#{interface}-static.dns_2"]
+        end
+      when InterfaceHelper::ConfigType::DYNAMIC
+        value = "automatic"
+        if is_first
+          review["default_gateway"], review["dns_1"], review["dns_2"] = [ "auto", "auto", "auto" ]
+        end
+      when InterfaceHelper::ConfigType::BRIDGE
+        value = params["#{interface}-bridge.bridge_interface"]
+      else raise "Unknown configuration type #{config_type}"  
+      end
+      is_first = false
+      il << InterfaceReview.new( name, os_name, config_type, value )
+    end
+
+    review["interface-list"] = il
+  end
+
   def wizard_insert_closers( builder )
     ## Validate the settings
     builder.insert_piece( Alpaca::Wizard::Closer.new( 0 ) { validate } )
@@ -87,7 +138,7 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
   def save
     ## Iterate all of the interfaces
     interfaceList = params[:interfaceList]
-      
+    
     raise "Invalid interface list" if ( interfaceList.nil?  || interfaceList.empty? )
 
     ## These are all of the interfaces that are presently available

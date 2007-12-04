@@ -67,4 +67,50 @@ ul.interface-list div.i-column-3
   text-align: center;
   }
 
+div.interface-review
+{ 
+  font-size: 90%;
+ }
 
+div.interface-review li.header
+{ 
+  font-weight: bold;
+  border: 0px none #000;
+ }
+
+div.interface-review li div
+{ 
+  border: 0px none #000;
+ }
+
+div.interface-review li div.name
+{ 
+  width: 75px;
+ }
+
+div.interface-review li div.os_name
+{ 
+  width: 75px;
+ }
+
+
+div.interface-review li div.type
+{ 
+  width: 100px;
+ }
+
+div.interface-review li div.value
+{ 
+  width: 200px;
+
+ }
+
+div.interface-review
+{ 
+  border: 1px solid #C0C0C0;
+  width: 470px;
+  height: 100px;
+  overflow-y: hidden;
+  background-color: transparent;
+  margin-bottom: 10px;
+ }

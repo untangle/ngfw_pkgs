@@ -5,6 +5,9 @@ class WizardController < ApplicationController
   ## to the wizard.
   InsertStagesMethod = "wizard_insert_stages"
 
+  ## This is a method to register variables that are needed to generate the review page
+  ReviewMethod = "wizard_generate_review"
+
   InsertClosersMethod = "wizard_insert_closers"
 
   def index
@@ -21,6 +24,19 @@ class WizardController < ApplicationController
     iterate_components do |component|
       next unless component.methods.include?( InsertStagesMethod )
       component.send( InsertStagesMethod, @builder )
+    end
+  end
+
+  def generate_review
+    @stage_id = params[:stage_id]
+    
+    raise "Unable to determine stage to replace" if ApplicationHelper.null?( @stage_id )
+
+    @review = {}
+    ## Iterate all of the components in search of stages for the wizard
+    iterate_components do |component|
+      next unless component.methods.include?( ReviewMethod )
+      component.send( ReviewMethod, @review )
     end
   end
   

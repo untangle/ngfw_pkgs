@@ -22,14 +22,15 @@ class Alpaca::Components::LocaleComponent < Alpaca::Component
     ## Review : using en-US here is flimsy
     settings = LocaleSetting.new( :key => "en-US" ) if settings.nil?
 
-    ## This is disabled.
+    ## This is disabled until we support multiple locales.
     ## builder.insert_piece( LocaleStage.new( LOCALES.collect { |key,name| [ name.t, key ] }, settings ))
   end
 
   def wizard_insert_closers( builder )
+    ## This is disabled until we support multiple locales.
     ## Doesn't really matter when this happens
-    builder.insert_piece( Alpaca::Wizard::Closer.new( 50 ) { validate } )
-    builder.insert_piece( Alpaca::Wizard::Closer.new( 1999 ) { save } )
+    ## builder.insert_piece( Alpaca::Wizard::Closer.new( 50 ) { validate } )
+    ## builder.insert_piece( Alpaca::Wizard::Closer.new( 1999 ) { save } )
   end
 
   private

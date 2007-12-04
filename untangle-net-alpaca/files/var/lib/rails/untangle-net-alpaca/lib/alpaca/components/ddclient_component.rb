@@ -5,7 +5,7 @@ class Alpaca::Components::DdclientComponent < Alpaca::Component
   end
 
   def wizard_insert_closers( builder )
-    builder.insert_piece( Alpaca::Wizard::Closer.new( 1200 ) { save } )
+    ## builder.insert_piece( Alpaca::Wizard::Closer.new( 1200 ) { save } )
   end
 
   #private

@@ -1,8 +1,11 @@
 /* The current stage */
 var currentStage = 0;
 
-/* Next page listeners */
-var pageHandlers = new Array();
+/* Next page callbacks, called when entering this page */
+var nextEnterCallback = new Array();
+
+/* Next page callback, called when exiting this page */
+var nextExitCallback = new Array();
 
 /* Go to the previous stage, if possible */
 function prevStage()
@@ -37,8 +40,12 @@ function changeCurrent( current )
         current = len - 1;
     }
 
+    /* True if the current is an advancing move (callbacks are only invoked when moving to the next
+     * step */
+    var isNext = ( current == ( currentStage + 1 ))
+    
     var j = 0;
-    var stage = null;
+
     for( var i = 0 ; i < len; i++ ) {
         /* Ignore anything that is not a list item */
         if ( children[i].nodeName != "LI" && children[i].nodeName != "li" ) continue;
@@ -49,24 +56,29 @@ function changeCurrent( current )
             children[i].className = "current";
             className = "incomplete";
             try {
+                var callback = nextEnterCallback[panelId];
+                if ( isNext && ( callback != null )) callback();
                 Element.show( panelId );
             } catch ( e ) { }
         } else {
-            
             children[i].className = className;
             try {
                 Element.hide( panelId );
-            } catch ( e ) { }
+                
+                /* If this is the panel before, and this is going to
+                 * the next panel, calll the exit callback */
+                if (( j == ( current - 1)) && isNext ) {
+                    var callback = nextExitCallback[panelId];
+                    if ( callback != null ) callback();
+                }
+            } catch ( e ) { 
+                alert( "Unable to do it" + e )
+            }
         }
-
-        /* Trigger the event for the panel right before (only trigger on next events) */
-        if (( j == currentStage ) && ( currentStage == ( current - 1 ))) stage = panelId;
 
         /* This is the index of the actual list items */
         j++;
     }
-
-    if (( stage != null ) && pageHandlers[stage] != null ) pageHandlers[stage]();
 
     /* Update the value of the current item */
     currentStage = current;

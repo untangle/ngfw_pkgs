@@ -1,0 +1,14 @@
+<div class="interface-review list-table">
+  <ul>
+    <li class="header">
+      <div class="name">Name</div>
+      <div class="os_name">&nbsp;</div>
+      <div class="type">Type</div>
+      <div class="value">Value</div>
+    </li>
+  </ul>
+  
+  <ul>
+    <%= render( :partial => "interface_review" , :collection => @review["interface-list"] ) %>
+  </ul>
+</div>

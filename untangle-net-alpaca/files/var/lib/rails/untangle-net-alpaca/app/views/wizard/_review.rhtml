@@ -1,13 +1,40 @@
-<div id="<%= stage.id %>" style="display: none">
+<div class="review" id="<%= @stage_id %>" style="display: none">
   <h1><%= "Review".t %></h1>
   
   <h2><%= "You have configured the following.".t %></h2>
+
+  <%= render( :partial => "interfaces_review", :object => @review["interface-list"] ) %>
+
+  <ul class="text-fields">
+    <li>
+      <label for="default_gateway"><%= "Default Gateway:".t %></label>
+      <%= @review["default_gateway"] %>
+    </li>
+    
+    <li>
+      <label for="dns_1"><%= "Primary DNS Server:".t %></label>
+      <%= @review["dns_1"] %>
+    </li>
+    
+    <li>
+      <label for="dns_1"><%= "Secondary DNS Server:".t %></label>
+      <%= @review["dns_2"] %>
+    </li>
+
+    <li>
+      <label for="dns_1"><%= "Hostname:".t %></label>
+      <%= @review["hostname"] %>
+    </li>
+  </ul>
+
+      
 
   <h2><%= "Click next to save the configuration".t %></h2>
 </div>
 
 <%= javascript_tag <<EOF
-pageHandlers['#{stage.id}'] = function() { 
+nextExitCallback['#{@stage_id}'] = function()
+{ 
   document.getElementById("wizard-data").onsubmit();
 };
 EOF

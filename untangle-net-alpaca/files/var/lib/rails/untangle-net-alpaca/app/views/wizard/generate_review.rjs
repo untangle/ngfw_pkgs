@@ -1,0 +1,1 @@
+page.replace( @stage_id, :partial => "review" )

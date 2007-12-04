@@ -32,8 +32,9 @@ config_options << [ "Bridge".t, "bridge" ] unless stage.wan
 </div>
 <%= javascript_tag <<EOF
 interfaceArray.push( new Interface( '#{stage.id}', '#{intf.os_name}', '#{stage.name}' ));
-pageHandlers['#{stage.id}'] = function() { 
-  /* Update all of the bridgeable interfaces */
+/* Update all of the bridgeable interfaces when entering a stage */
+nextEnterCallback['#{stage.id}'] = function()
+{ 
   updateBridges('#{stage.id}');
 };
 EOF
