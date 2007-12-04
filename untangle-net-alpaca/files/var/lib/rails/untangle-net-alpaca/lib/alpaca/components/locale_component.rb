@@ -18,9 +18,12 @@ class Alpaca::Components::LocaleComponent < Alpaca::Component
   def wizard_insert_stages( builder )
     ## Register the detection stage
     settings = LocaleSetting.find( :first )
+
     ## Review : using en-US here is flimsy
     settings = LocaleSetting.new( :key => "en-US" ) if settings.nil?
-    builder.insert_piece( LocaleStage.new( LOCALES.collect { |key,name| [ name.t, key ] }, settings ))
+
+    ## This is disabled.
+    ## builder.insert_piece( LocaleStage.new( LOCALES.collect { |key,name| [ name.t, key ] }, settings ))
   end
 
   def wizard_insert_closers( builder )

@@ -224,10 +224,10 @@ var RuleBuilder =
 
             if ( handler == null ) continue;
 
-            if ( filterValue != "" ) filterValue += "|";
+            if ( filterValue != "" ) filterValue += "&&";
             
             /* append the filterValue */
-            filterValue += parameter + ":" + handler.parseValue( row.id );
+            filterValue += parameter + "::" + handler.parseValue( row.id );
         }
 
         for ( var c = 0 ; c < this.manager.fields.length ; c++ ) {

@@ -21,8 +21,8 @@ class OSLibrary::Debian::Filter::Factory
     rules = rules.gsub( " ", "" );
     
     ## Limit the parameters to only use each filter once.
-    rules.split( "|" ).each do |f|
-      parameter, value = f.split( ":" )
+    rules.split( RuleHelper::Separator ).each do |f|
+      parameter, value = f.split( RuleHelper::TypeSeparator )
       ## Skip to the next one if either of the fields are nil
       next if ApplicationHelper.null?( parameter ) || ApplicationHelper.null?( value )
       

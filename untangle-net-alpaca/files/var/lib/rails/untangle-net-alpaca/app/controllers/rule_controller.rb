@@ -24,9 +24,9 @@ class RuleController < ApplicationController
     filters = params[:filters]
     
     unless ApplicationHelper.null?( filters )
-      @parameter_list = filters.split( "|" ).map do |f| 
+      @parameter_list = filters.split( RuleHelper::Separator ).map do |f| 
         rule = Rule.new
-        rule.parameter, rule.value = f.split( ":" )
+        rule.parameter, rule.value = f.split( RuleHelper::TypeSeparator )
         rule
       end
     end
@@ -47,9 +47,9 @@ class RuleController < ApplicationController
     filters = params[:filters]
 
     unless ApplicationHelper.null?( filters )
-      @parameter_list = filters.split( "|" ).map do |f| 
+      @parameter_list = filters.split( RuleHelper::Separator ).map do |f| 
         rule = Rule.new
-        rule.parameter, rule.value = f.split( ":" )
+        rule.parameter, rule.value = f.split( RuleHelper::TypeSeparator )
         rule
       end
     end

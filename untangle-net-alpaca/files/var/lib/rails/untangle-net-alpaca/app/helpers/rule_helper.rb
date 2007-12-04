@@ -33,6 +33,13 @@ module RuleHelper
 
   Scripts = [ "rule_builder", "rule/textbox", "rule/checkbox", "rule/ip_address", "rule/port", "rule/interface", "rule/day", "rule/time", "rule/protocol" ]
 
+  ## This is used to separate each parameter in a rule
+  Separator = "&&"
+  
+  ## This is used to separate the type from the parameter
+  TypeSeparator = "::"
+  
+
   # Returns a list of interfaces and an array of
   def self.get_edit_fields( params )
     interfaces = Interface.find( :all )
@@ -44,9 +51,9 @@ module RuleHelper
     filters = params[:filters]
 
     unless ApplicationHelper.null?( filters )
-      parameter_list = filters.split( "|" ).map do |f| 
+      parameter_list = filters.split( Separator ).map do |f| 
         rule = Rule.new
-        rule.parameter, rule.value = f.split( ":" )
+        rule.parameter, rule.value = f.split( TypeSeparator )
         rule
       end
     end
