@@ -12,7 +12,7 @@ createdb -O postgres -U postgres uvm
 /usr/share/untangle/bin/update-schema settings uvm
 /usr/share/untangle/bin/update-schema events uvm
 /usr/share/untangle/bin/update-schema settings untangle-node-router
-/usr/share/untangle/bin/update-schema events untnagle-node-router
+/usr/share/untangle/bin/update-schema events untangle-node-router
 psql -X -U postgres uvm <<EOF
 INSERT INTO u_tid VALUES (1);
 INSERT INTO u_node_manager_state VALUES (nextval('hibernate_sequence'), 2);
