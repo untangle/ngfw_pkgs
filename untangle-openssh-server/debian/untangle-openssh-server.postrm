@@ -16,6 +16,6 @@ case $1 in
     ;;
 esac
 
-update-rc.d $SERVICE remove >/dev/null
+update-rc.d -f $SERVICE remove >/dev/null
 
 exit 0
