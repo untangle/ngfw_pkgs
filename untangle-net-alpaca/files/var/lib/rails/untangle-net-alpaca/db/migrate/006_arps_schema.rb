@@ -11,7 +11,6 @@ class ArpsSchema < ActiveRecord::Migration
       table.column :live,            :boolean
       table.column :alert,           :boolean
       table.column :log,             :boolean
-      table.column :settings_id,     :boolean
     end
   end
 
