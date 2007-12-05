@@ -1,7 +1,6 @@
 <% rowId="parameter-#{rand( 0x100000000 )}" %>
 <li id="<%= rowId  %>" class="rule">
   <div class="type">
-    <%= hidden_field_tag( "ruleList[]", "random"  ) %>
     <%= select_tag( "ruleType[]", options_for_select( RuleHelper::FilterTypes, parameter.parameter ), 
     { :onchange => "RuleBuilder.selectType( '#{rowId}' )" } ) %>
   </div>

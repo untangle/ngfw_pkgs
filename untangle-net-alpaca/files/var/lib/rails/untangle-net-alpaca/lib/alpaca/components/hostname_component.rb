@@ -9,7 +9,7 @@ class Alpaca::Components::HostnameComponent < Alpaca::Component
   end
 
   ## Register all of the menu items.
-  def register_menu_items( menu_organizer )
+  def register_menu_items( menu_organizer, config_level )
     ## REVIEW : should be a more elegant way of specifying the URL.
     menu_organizer.register_item( "/main/hostname", Alpaca::Menu::Item.new( 300, "Hostname", "/hostname/" ))
   end

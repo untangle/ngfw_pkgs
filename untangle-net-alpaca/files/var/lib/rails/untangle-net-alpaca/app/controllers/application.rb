@@ -16,13 +16,30 @@ class ApplicationController < ActionController::Base
   ## Disable all calls to the API, these are RPC calls.
   session :off, :if => Proc.new { |req| req.path_parameters[:action] == "api" }
   
+  ## This has to happen first, since the menu depends on this.
+  before_filter :set_config_level
+  
   before_filter :build_menu_structure
+
+  ## Perhaps this should be disabled in Production mode
   before_filter :reload_managers
   ## This is disabled until we switch to ruby gettext.
   ## before_filter :setLocale
   before_filter :setStylesheets
+  
   before_filter :setScripts
   before_filter :authenticate
+
+  def set_config_level
+    @alpaca_settings = AlpacaSettings.find( :first )
+    if @alpaca_settings.nil?
+      @alpaca_settings = AlpacaSettings.new
+      @alpaca_settings.config_level = AlpacaSettings::Level::Basic.level
+      @alpaca_settings.save
+    end
+
+    @config_level = @alpaca_settings.get_config_level
+  end
 
   ## This is disabled until we switch to ruby gettext.
   def setLocale
@@ -33,30 +50,25 @@ class ApplicationController < ActionController::Base
   end
 
   def setStylesheets
-    @stylesheets = []
-    begin
-      @stylesheets = stylesheets
-    rescue
-    end
+    @stylesheets = ( self.respond_to?( "stylesheets" )) ? stylesheets : []
   end
   
   def setScripts
-    @scripts = []
-    begin
-      @scripts = scripts
-    rescue
-    end
+    @scripts = ( self.respond_to?( "scripts" )) ? scripts : []
   end
 
   ## Build the menu structure
   def build_menu_structure
+    ## No need to waste time builing the menu for an API call
+    return if ( request.path_parameters[:action] == "api" )
+
     menu_organizer = Alpaca::Menu::Organizer.instance
     menu_organizer.flush
     menu_organizer.register_item( "/main", Alpaca::Menu::Item.new( 0, "Main Menu", "#blank", "layouts/main_menu" ))
     
     iterate_components do |component|
-      next unless component.methods.include?( RegisterMenuMethod )
-      component.send( RegisterMenuMethod, menu_organizer )
+      next unless component.respond_to?( RegisterMenuMethod )
+      component.send( RegisterMenuMethod, menu_organizer, @config_level )
     end
   end
 

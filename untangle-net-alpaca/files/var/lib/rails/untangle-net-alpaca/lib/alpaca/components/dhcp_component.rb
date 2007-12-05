@@ -1,5 +1,5 @@
 class Alpaca::Components::DhcpComponent < Alpaca::Component
-  def register_menu_items( menu_organizer )
+  def register_menu_items( menu_organizer, config_level )
     menu_organizer.register_item( "/main/dhcp_server", 
                                   Alpaca::Menu::Item.new( 400, "DHCP Server", "/dhcp/manage" ))
     menu_organizer.register_item( "/main/dhcp_server/entries", 

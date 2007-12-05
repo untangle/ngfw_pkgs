@@ -1,0 +1,17 @@
+div.config-level
+{ 
+  width: 400px;
+ }
+
+div.config-level div.button
+{
+  width: 120px;
+  margin-left: 100px;
+  }
+
+div.config-level div.button:hover
+{
+  background-color: #3FE0C6;
+  cursor: pointer;
+  }
+

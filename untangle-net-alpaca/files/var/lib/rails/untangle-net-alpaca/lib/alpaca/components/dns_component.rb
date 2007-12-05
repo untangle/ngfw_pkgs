@@ -1,5 +1,5 @@
 class Alpaca::Components::DnsComponent < Alpaca::Component
-  def register_menu_items( menu_organizer )
+  def register_menu_items( menu_organizer, config_level )
     menu_organizer.register_item( "/main/dns_server", Alpaca::Menu::Item.new( 500, "DNS Server", "/dns" ))
   end
   

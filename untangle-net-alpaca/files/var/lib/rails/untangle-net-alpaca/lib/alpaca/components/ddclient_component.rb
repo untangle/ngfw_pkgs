@@ -1,6 +1,6 @@
 class Alpaca::Components::DdclientComponent < Alpaca::Component
-  def register_menu_items( menu_organizer )
-    menu_organizer.register_item( "/main/ddclient", 
+  def register_menu_items( menu_organizer, config_level )
+    menu_organizer.register_item( "/main/hostname/ddclient", 
                                   Alpaca::Menu::Item.new( 400, "Dynamic DNS", "/ddclient/manage" ))
   end
 

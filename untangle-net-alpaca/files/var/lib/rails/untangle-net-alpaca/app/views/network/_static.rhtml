@@ -1,0 +1,33 @@
+<%
+static = config.static
+%>
+<ul class="text-fields">
+  <li>
+    <label for="#{config_id}_ip"><%= "Address:".t %></label>
+    <%= text_field_tag( "#{config_id}_ip", static.ip ) %>
+    <%= select_tag( "#{config_id}_netmask", options_for_select( @cidr_options, static.netmask ), :class => "netmask" ) %>
+  </li>
+  
+  <% if config.interface.wan %>
+  <li>
+    <label for="#{config_id}_default_gateway"><%= "Default Gateway:".t %></label>
+    <%= text_field_tag( "#{config_id}_default_gateway", static.default_gateway ) %>
+  </li>
+  
+  <li>
+    <label for="#{config_id}_dns_1"><%= "Primary DNS Server:".t %></label>
+    <%= text_field_tag( "#{config_id}_dns_1", static.dns_1 ) %>
+  </li>
+  
+  <li>
+    <label for="#{config_id}_dns_2"><%= "Secondary DNS Server:".t %></label>
+    <%= text_field_tag( "#{config_id}_dns_2", static.dns_2 ) %>
+  </li>
+  <% else %>
+    <%= hidden_field_tag( "#{config_id}_default_gateway", "" ) %>
+    <%= hidden_field_tag( "#{config_id}_dns_1", "" ) %>
+    <%= hidden_field_tag( "#{config_id}_dns_2", "" ) %>
+  <% end %>
+</ul>
+
+

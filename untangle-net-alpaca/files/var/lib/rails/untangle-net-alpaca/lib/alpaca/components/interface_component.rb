@@ -10,7 +10,7 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
 
   class InterfaceStage < Alpaca::Wizard::Stage
     def initialize( id, interface, wan )
-      name = InterfaceController::DefaultInterfaceMapping[interface.os_name]
+      name = InterfaceHelper::DefaultInterfaceMapping[interface.os_name]
       name = [ interface.os_name ] if name.nil?
       name = name[0]
       super( id, name, 300 )
@@ -32,7 +32,7 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
   end
 
   ## Register all of the menu items.
-  def register_menu_items( menu_organizer )
+  def register_menu_items( menu_organizer, config_level )
     ## REVIEW : should be a more elegant way of specifying the URL.
     menu_organizer.register_item( "/main/interfaces", Alpaca::Menu::Item.new( 200, "Interfaces", "/interface/list" ))
 
@@ -53,8 +53,8 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
 
     ## Sort the interface list
     interface_list.sort! do |a,b|
-      a_mapping = InterfaceController::DefaultInterfaceMapping[a.os_name]
-      b_mapping = InterfaceController::DefaultInterfaceMapping[b.os_name]
+      a_mapping = InterfaceHelper::DefaultInterfaceMapping[a.os_name]
+      b_mapping = InterfaceHelper::DefaultInterfaceMapping[b.os_name]
       
       next a.os_name <=> b.os_name if ( a_mapping.nil? && b_mapping.nil? )
       next -1 if !a_mapping.nil? && b_mapping.nil?
@@ -201,10 +201,9 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
 
   def static( interface, interface_stage_id )
     static = IntfStatic.new
-    network = IpNetwork.new
+    network = IpNetwork.new( :position => 1, :allow_ping => true )
     network.ip = params["#{interface_stage_id}-static.address"]
     network.netmask = params["#{interface_stage_id}-static.netmask"]
-    network.allow_ping = true
     static.ip_networks << network
     
     if interface.index == 1
@@ -214,10 +213,7 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
       static.dns_2 = params["#{interface_stage_id}-static.dns_2"]
     else
       ## Add a NAT policy (this not the external interface)
-      natPolicy = NatPolicy.new
-      natPolicy.ip = "0.0.0.0"
-      natPolicy.netmask = "0"
-      natPolicy.new_source = "auto"
+      natPolicy = NatPolicy.new( :ip => "0.0.0.0", :netmask => "0", :new_source => "auto", :position => 1 )
       static.nat_policies << natPolicy
     end
 

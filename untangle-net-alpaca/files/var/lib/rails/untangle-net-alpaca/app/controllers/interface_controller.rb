@@ -1,12 +1,4 @@
 class InterfaceController < ApplicationController
-  ## DDD These are subject to internationalization DDD
-  ## REVIEW : These are also linux specific.
-  DefaultInterfaceMapping = {
-    # default Display name plus the index
-    "eth0" => [ "External", 1 ],
-    "eth1" => [ "Internal", 2 ],
-    "eth2" => [ "DMZ", 3 ]
-  }
 
   ## Implement the reload interfaces web api.
   web_service_api InterfaceApi
@@ -23,7 +15,7 @@ class InterfaceController < ApplicationController
     @interfaces = Interface.find(:all)
 
     if ( @interfaces.nil? || @interfaces.empty? )       
-      @interfaces = loadInterfaces
+      @interfaces = InterfaceHelper.loadInterfaces
       ## Save all of the new interfaces
       @interfaces.each { |interface| interface.save }
     end
@@ -142,11 +134,13 @@ class InterfaceController < ApplicationController
       
       ## clear out all of the ip networks.
       static.ip_networks = []
+      position = 1
       unless indices.nil?
         indices.each do |key,value|
           network = IpNetwork.new
           network.parseNetwork( networkStringHash[key] )
           network.allow_ping = ( allowPingHash[key] )
+          network.position, position = position, position + 1
           static.ip_networks << network
         end
       end
@@ -161,12 +155,14 @@ class InterfaceController < ApplicationController
       ## Delete all of the nat policies
       static.nat_policies = []
       
+      position = 1
       unless indices.nil?
         indices.each do |key|
           natPolicy = NatPolicy.new
           logger.debug( "index: #{key}" )
           natPolicy.parseNetwork( natNetworkHash[key] )
           natPolicy.new_source = natNewSourceHash[key]
+          natPolicy.position, position = position, position + 1
           static.nat_policies << natPolicy
         end
       end
@@ -207,11 +203,13 @@ class InterfaceController < ApplicationController
       
       ## clear out all of the ip networks.
       dynamic.ip_networks = []
+      position = 1
       unless indices.nil?
         indices.each do |key,value|
           network = IpNetwork.new
           network.parseNetwork( networkStringHash[key] )
           network.allow_ping = ( allowPingHash[key] )
+          network.position, position = position, position + 1
           dynamic.ip_networks << network
         end
       end
@@ -352,6 +350,10 @@ class InterfaceController < ApplicationController
     [ "interface" ]
   end
 
+  def stylesheets
+    [ "borax-ip-network", "borax-nat-policy", "borax/list-table" ]
+  end
+
   private
 
   def static
@@ -398,55 +400,6 @@ class InterfaceController < ApplicationController
   
   ## Load all physical devices
 
-  ## DDD some of this code may be debian specific DDD
-  def loadInterfaces
-    ## Create an empty array
-    interfaceArray = []
-
-    ## Find all of the physical interfaces
-    currentIndex = DefaultInterfaceMapping.size - 1
-
-    ia = networkManager.interfaces
-
-    raise "Unable to detect any interfaces" if ia.nil?
-    
-    ## True iff the list found a WAN interface.
-    foundWAN = false
-
-    ia.each do |i| 
-      logger.debug( "Loaded the interface #{i}" )
-      
-      interface = Interface.new
-
-      ## Save the parameters from the physical interface.
-      interface.os_name, interface.mac_address, interface.bus = i.os_name, i.mac_address, i.bus
-
-      parameters = DefaultInterfaceMapping[i.os_name]
-      ## Use the os name if it doesn't have a predefined virtual name
-      parameters = [ i.os_name, currentIndex += 1 ] if parameters.nil?
-      interface.name, interface.index  = parameters
-
-      ## default it to a static config
-      interface.config_type = InterfaceHelper::ConfigType::STATIC
-
-      if ( interface.index == 1 )
-        interface.wan = true
-        foundWAN = true
-      else
-        interface.wan = false
-      end
-      
-      ## Add the interface.
-      interfaceArray << interface
-    end
-
-    ## If it hasn't found the WAN interface, set the one with the lowest index
-    ## to the WAN interface.
-    interfaceArray.min { |a,b| a.index <=> b }.wan = true unless foundWAN
-
-    interfaceArray
-  end
-
   ## Load the necessary values for a config page
   def load_config
     interface_id = params[:id]
@@ -459,7 +412,7 @@ class InterfaceController < ApplicationController
 
   ## Load the necessary values for a save page
   def save
-    return redirect_to( :action => 'list' ) if ( params[:commit] == "Cancel" )
+    return redirect_to( :action => 'list' ) unless ( params[:commit] == "Save" )
     interface_id = params[:id]
     ## XXXX These are terrible redirects
     return redirect_to( :action => 'list' ) if interface_id.nil?
@@ -476,9 +429,4 @@ class InterfaceController < ApplicationController
   def networkManager
     os["network_manager"]
   end
-
-  def stylesheets
-    [ "borax-ip-network", "borax-nat-policy", "borax/list-table" ]
-  end
-
 end

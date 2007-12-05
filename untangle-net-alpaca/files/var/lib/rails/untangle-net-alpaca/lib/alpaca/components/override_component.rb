@@ -1,7 +1,8 @@
 class Alpaca::Components::OverrideComponent < Alpaca::Component
-  def register_menu_items( menu_organizer )
-    ## REVIEW : This should be declared in the status controller.
-    menu_organizer.register_item( "/main/advanced/override", Alpaca::Menu::Item.new( 600, "Overrides", "/override" ))
+  def register_menu_items( menu_organizer, config_level )
+    if ( config_level >= AlpacaSettings::Level::Advanced ) 
+      menu_organizer.register_item( "/main/advanced/override", Alpaca::Menu::Item.new( 600, "Overrides", "/override" ))
+    end
   end
 
   def wizard_insert_closers( builder )

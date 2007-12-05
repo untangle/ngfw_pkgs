@@ -1,0 +1,38 @@
+
+select.netmask
+{
+  width: 40px;
+  }
+
+/* This only works in firefox */
+select.netmask option
+{
+  width: 150px;
+  }
+
+div.basic-interface-config div#interface_1
+{ 
+  height: 160px;
+ }
+
+div.basic-interface-config
+{ 
+  background-color: #EEE;
+  border: 1px solid #C0C0C0;
+  width: 500px;
+  height: 140px;
+  margin: 0px 0px 20px 0px;
+  padding: 0px 10px 0px 10px;
+  }
+
+div.basic-interface-config.wan
+{ 
+  height: 220px;
+ }
+
+form li
+{
+  list-style: none;
+  padding-bottom: 4px;
+  margin: 0;
+}

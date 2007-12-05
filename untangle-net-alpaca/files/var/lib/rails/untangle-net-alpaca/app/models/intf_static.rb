@@ -3,9 +3,9 @@ require "ipaddr"
 class IntfStatic < ActiveRecord::Base
   belongs_to :interface
   
-  has_and_belongs_to_many :ip_networks
+  has_and_belongs_to_many :ip_networks, :order => "position"
 
-  has_and_belongs_to_many :nat_policies
+  has_and_belongs_to_many :nat_policies, :order => "position"
 
   protected
   def validate

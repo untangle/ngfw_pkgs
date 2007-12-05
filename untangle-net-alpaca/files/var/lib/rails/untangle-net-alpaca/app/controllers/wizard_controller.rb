@@ -22,7 +22,7 @@ class WizardController < ApplicationController
 
     ## Iterate all of the helpers in search of stages for the wizard
     iterate_components do |component|
-      next unless component.methods.include?( InsertStagesMethod )
+      next unless component.respond_to?( InsertStagesMethod )
       component.send( InsertStagesMethod, @builder )
     end
   end
@@ -35,7 +35,7 @@ class WizardController < ApplicationController
     @review = {}
     ## Iterate all of the components in search of stages for the wizard
     iterate_components do |component|
-      next unless component.methods.include?( ReviewMethod )
+      next unless component.respond_to?( ReviewMethod )
       component.send( ReviewMethod, @review )
     end
   end
@@ -45,7 +45,7 @@ class WizardController < ApplicationController
 
     ## Iterate all of the components in search of stages for the wizard
     iterate_components do |component|
-      next unless component.methods.include?( InsertClosersMethod )
+      next unless component.respond_to?( InsertClosersMethod )
       component.send( InsertClosersMethod, builder )
     end
     

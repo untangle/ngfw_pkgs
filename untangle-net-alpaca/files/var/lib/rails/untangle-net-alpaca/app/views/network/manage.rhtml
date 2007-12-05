@@ -1,0 +1,10 @@
+<div>
+  <h2><%= "Network Configuration".t %></h2>
+  
+  <% form_tag( :action => 'save' ) do -%>
+    <%= render( :partial => "config", :collection => @config_list ) %>
+
+    <%= submit_tag "Cancel".t %>
+    <%= submit_tag "Save".t, :onclick => "return #{confirm_javascript_function( "Are you sure?".t )}"%>
+  <% end -%>
+</div>

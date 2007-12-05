@@ -4,6 +4,7 @@ body
   width: 800px;
   margin-left: -400px;
   position: relative;
+  font-family: Arial,Geneva,sans-serif;
  }
 
 div.text-fields label
@@ -124,5 +125,17 @@ form div.dynamic div.current
   float: left;
  }
 
+div.button
+{ 
+  background-color: #EEFFEE;
+  padding: 4px 4px 4px 8px;
+  border: 1px solid #C0C0C0;
+  font-size: 90%;
+  font-weight: bold;
+ }
 
-
+div.button:hover
+{
+  background-color: #3FE0C6;
+  cursor: pointer;
+  }

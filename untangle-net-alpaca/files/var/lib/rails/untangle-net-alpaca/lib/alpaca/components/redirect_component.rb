@@ -1,5 +1,5 @@
 class Alpaca::Components::RedirectComponent < Alpaca::Component
-  def register_menu_items( menu_organizer )
+  def register_menu_items( menu_organizer, config_level )
     menu_organizer.register_item( "/main/redirects", Alpaca::Menu::Item.new( 200, "Port Forwards", "/redirect" ))
   end
   

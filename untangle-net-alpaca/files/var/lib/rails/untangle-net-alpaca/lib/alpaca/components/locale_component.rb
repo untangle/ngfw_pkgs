@@ -1,5 +1,5 @@
 class Alpaca::Components::LocaleComponent < Alpaca::Component
-  def register_menu_items( menu_organizer )
+  def register_menu_items( menu_organizer, config_level )
     ## This is disabled until we switch to ruby gettext.
     ## before_filter :setLocale
     # menu_organizer.register_item( "/main/advanced/locale", Alpaca::Menu::Item.new( 100, "Locale", "/locale" ))
