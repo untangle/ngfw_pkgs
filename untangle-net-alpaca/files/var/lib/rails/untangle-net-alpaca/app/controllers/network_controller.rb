@@ -1,6 +1,6 @@
 class NetworkController < ApplicationController
   def index
-    network
+    manage
     render :action => 'manage'
   end
 
