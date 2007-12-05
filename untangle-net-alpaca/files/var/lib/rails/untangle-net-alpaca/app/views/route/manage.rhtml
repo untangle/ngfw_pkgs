@@ -1,0 +1,16 @@
+<div>
+  <h1><%= "Static Route Management".t %></h1>
+
+<h2><%= "Current Routes".t %></h2>
+
+<pre>
+<%= @current_routes %>
+</pre>
+
+  <% form_tag( :action => 'save' ) do -%>
+
+    <%= submit_tag "Cancel".t %>
+    <%= submit_tag "Save Changes".t %>
+
+  <% end -%>
+</div>

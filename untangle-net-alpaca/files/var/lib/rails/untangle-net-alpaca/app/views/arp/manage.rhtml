@@ -1,0 +1,24 @@
+<div>
+  <h1><%= "Static ARP Management".t %></h1>
+
+<pre>
+<%= @current_arps %>
+</pre>
+
+  <% form_tag( :action => 'save' ) do -%>
+<table>
+<tr><th>Hostname</th><th>HWaddress</th><th></th></tr>
+    <% 
+rowId = 0
+@static_arps.each do |static_arp| -%>
+        <tr><td><%= text_field_tag("static_arp[][hostname]", "#{static_arp.hostname}") %></td><td><%= text_field_tag("static_arp[][hw_addr]", "#{static_arp.hw_addr}") %></td><td></td></tr>
+    <% 
+rowId = rowId + 1
+end -%>
+<tr><td colspan="3">
+    <%= submit_tag "Cancel".t %>
+    <%= submit_tag "Save Changes".t %>
+</tr>
+</table>
+  <% end -%>
+</div>
