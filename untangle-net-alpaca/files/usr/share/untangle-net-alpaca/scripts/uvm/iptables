@@ -78,6 +78,9 @@ uvm_iptables_rules()
     #dont queue anthing from localhost
     ${IPTABLES} -A PREROUTING -t mangle -i lo -j MARK --or-mark ${MARK_ANTISUB}
 
+    #dont queue anthing that was liberated, or is connmarked antisubscribe
+    ${IPTABLES} -A PREROUTING -t mangle -m connmark --mark ${MARK_ANTISUB}/${MARK_ANTISUB} -j MARK --set-mark  ${MARK_ANTISUB}
+
     #redirect  anthing re-injected packets from the TUN interface to us
     ${IPTABLES} -A PREROUTING -t nat -i ${TUN_DEV} -t nat -p tcp \
         -j DNAT --to-destination 192.0.2.42:${TCP_REDIRECT_PORTS}
@@ -85,10 +88,17 @@ uvm_iptables_rules()
     # Ignore traffic that we have antisubscribed to.
     ${IPTABLES} -A POSTROUTING -t tune -m mark --mark ${MARK_ANTISUB}/${MARK_ANTISUB}  -j RETURN
 
+    # save the packets mark to a connmark so the rest of the packets in the session will get anti-subed.
+    ${IPTABLES} -A POSTROUTING -t tune -p tcp --syn -j CONNMARK --set-mark  ${MARK_ANTISUB}
+
     # Queue all of the SYN packets.
     ${IPTABLES} -A POSTROUTING -t tune -p tcp --syn -j NFQUEUE
 
     # Queue all of the UDP packets.
-    ${IPTABLES} -A POSTROUTING -t tune -m addrtype --dst-type unicast -p udp -j NFQUEUE
+    ${IPTABLES} -A POSTROUTING -t tune -m addrtype --dst-type unicast -p udp -j CONNMARK --set-mark ${MARK_ANTISUB}
+
+    # Queue all of the UDP packets.
+    ${IPTABLES} -A POSTROUTING -t tune -m addrtype --dst-type unicast -p udp -j NFQUEUE 
+
 }
 
