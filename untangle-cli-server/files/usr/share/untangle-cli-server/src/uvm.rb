@@ -72,130 +72,25 @@ class Uvm < UVMFilterNode
     end    
   end
 
-  # Default command: list all protocol filters
-  # TODO: we should consider moving this method to UVMFilterNode class
+  # What should the deault UVM command do?  Return info about the UVM node?
   def cmd_(*args)
-    return list_filternodes()
+    return "There is no default command for 'uvm'"
   end
   
-  # Add a protocol to the list
-  def add_protocol(tid, category, protocol, block, log, description, signature)
-    update_protocol_helper(tid, -1, category, protocol, block, log, description, signature)
+  def cmd_kill_all_sessions(*args)
+    return kill_all_sessions()
   end
-
-  # Update the protocol at position pos
-  def update_protocol(tid, pos, category, protocol, block, log, description, signature)
-    update_protocol_helper(tid, pos, category, protocol, block, log, description, signature)
-  end
-
-  # Remove a protocol from the list
-  def remove_protocol(tid, pos)
-    patterns = get_patterns(tid)
-    begin
-      validate_range(pos, 1..patterns.length, "protocol number")
-      patterns.remove(patterns[pos - 1])
-      update_patterns(tid, patterns)
-      msg = "Protocol #{pos} was removed from the list."
-      @diag.if_level(2) { puts! msg }
-      return msg
-    rescue => ex
-      return ex.to_s
-    end
-  end
-
+  
   protected
   def cmd_help(tid, *args)
     return <<HELP
-- protofilter -- enumerate all protocol filter nodes running on effective #{BRAND} server.
-- protofilter <#X|TID> list
-    -- Display protocol list list for protofilter node #X|TID
-- protofilter <#X|TID> add category protocol block log description signature
-    -- Add a protocol to the protocol list with specified settings.
-- protofilter <#X|TID> update [proto-number] category protocol block log description signature
-    -- Update item '[proto-number]' with specified settings.
-- protofilter <#X|TID> remove [proto-number]
-    -- Remove item '[proto-number]' from protocol list.
-- protofilter <#X|TID> <snmp|stats>
-    -- Display protocol filter #X|TID statistics (TODO document this)
+- uvm kill all sessions 
+    -- Terminate/kill all open UVM network user sessions.
 HELP
   end
 
-  def cmd_list(tid)
-    ret = "#,category,protocol,block,log,description,signature\n"
-    get_patterns(tid).each_with_index { |pattern, index|
-      ret << [(index+1).to_s,
-              pattern.getCategory,
-              pattern.getProtocol,
-              pattern.isBlocked.to_s,
-              pattern.getLog.to_s,
-              pattern.getDescription,
-              pattern.getDefinition,
-             ].join(",")
-      ret << "\n"
-    }
-    return ret
+  # Kill all network sessions currently active on the effective UVM server.
+  def kill_all_sessions(policy=nil)
   end
 
-  def cmd_add(tid, *args)
-    add_protocol(tid, *args)
-  end
-
-  def cmd_update(tid, pos, *args)
-    update_protocol(tid, pos.to_i, *args)
-  end
-
-  def cmd_remove(tid, pos)
-    remove_protocol(tid, pos.to_i)
-  end
-
-  def cmd_snmp(tid, *args)
-    get_statistics(tid, args)
-  end
-
-  def cmd_stats(tid, *args)
-    get_statistics(tid, args)
-  end
-
-  #-- Helper methods
-  def get_patterns(tid)
-    @@uvmRemoteContext.nodeManager.nodeContext(tid).node.getSettings.getPatterns
-  end
-
-  def update_patterns(tid, patterns)
-    node = @@uvmRemoteContext.nodeManager.nodeContext(tid).node
-    settings = node.getSettings
-    settings.setPatterns(patterns)
-    node.setSettings(settings)
-  end
-
-  def update_protocol_helper(tid, pos, category, protocol, block, log, description, signature)
-    patterns = get_patterns(tid)
-    begin
-      validate_range(pos, 1..patterns.length, "protocol number") unless pos == -1
-      validate_bool(block, "block")
-      validate_bool(log, "log")
-      pattern = com.untangle.node.protofilter.ProtoFilterPattern.new
-      pattern.setCategory(category)
-      pattern.setProtocol(protocol)
-      pattern.setBlocked(block == "true")
-      pattern.setLog(log == "true")
-      pattern.setDescription(description)
-      pattern.setDefinition(signature)
-    rescue => ex
-      return ex.to_s
-    end
-
-    if pos == -1
-      patterns.add(pattern)
-      msg = "Protocol added to the list."
-    else
-      patterns[pos - 1] = pattern
-      msg = "Protocol #{pos} updated."
-    end
-
-    update_patterns(tid, patterns)
-
-    @diag.if_level(2) { puts! msg }
-    return msg
-  end
 end
