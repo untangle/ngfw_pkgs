@@ -148,6 +148,7 @@ class NUCLIClient
             ["spyware", true, "send command to Spyware Blocker -- enter 'spyware help' for details.", nil],
             ["virus", true, "send command to Virus Blocker -- enter 'virus help' for details.", nil],
             ["spamblocker", true, "send command to Spam Blocker -- enter 'spamblocker help' for details.", nil],
+            ["uvm", true, "send command to UVM -- enter 'uvm help' for details.", nil],
             ["sh", false, "run command on local host -- sh ls /dev", nil],
             ["rsh", false, "run command on remote server host -- rsh who", nil],
             # The following are not top level commands but are included here so they can be part of the
