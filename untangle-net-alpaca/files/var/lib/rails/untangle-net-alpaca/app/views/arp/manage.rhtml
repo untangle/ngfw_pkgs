@@ -5,8 +5,27 @@
 <%= @current_arps %>
 </pre>
 
-  <% form_tag( :action => 'save' ) do -%>
+  <% form_tag( :action => 'save' ) do
+
+rows = []
+@static_arps.each do |static_arp|
+    rows << { :columns => [ { :value => static_arp.hostname },
+    	               { :value => static_arp.hw_addr } ] }
+end
+-%>
+
+<%= editable_table( :action => "/arp/create_entry", 
+  :header_columns => [ { :name => "Hostname".t }, 
+                       { :name => "HWaddress".t } ],
+  :column_names =>  [ "hostname", "hw_addr" ],
+  :title => "Static Arp".t,
+  :rows => rows,
+  :rows_name => "static_arp"
+  )
+%>
+
 <table>
+<!--
 <tr><th>Hostname</th><th>HWaddress</th><th></th></tr>
     <% 
 rowId = 0
@@ -15,6 +34,7 @@ rowId = 0
     <% 
 rowId = rowId + 1
 end -%>
+-->
 <tr><td colspan="3">
     <%= submit_tag "Cancel".t %>
     <%= submit_tag "Save Changes".t %>

@@ -1,43 +1,17 @@
-class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
+class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
   include Singleton
 
-  ConfigFile = "/etc/ddclient.conf"
+  ConfigFile = "/etc/untangle-net-alpacs/routes"
 
-  ConfigDaemon = "daemon_interval"
-  ConfigRunDaemon = "run_daemon"
-  ConfigProtocol = "protocol"
-  ConfigLogin = "login"
-  ConfigPassword = "password"
-  ConfigServer = "server"
-  ConfigPid = "pid"
-  ConfigUse = "use"
-
-  ConfigDaemonInterval = "300"
-
-  ConfigService = {
-    "ZoneEdit" => [ "zoneedit1", "www.zoneedit.com" ],
-    #"No-IP" => [ "zoneedit1", "www.zoneedit.com" ],
-    "EasyDNS" => [ "easydns", "members.easydns.com" ],
-    "DynDNS" => [ "dyndns2", "members.dyndns.org" ]
-  }
-
-  DdclientRcd          = "/usr/sbin/update-rc.d ddclient defaults"
-  DdclientCmd          = "/etc/init.d/ddclient "
-  DdclientCmdStop  = DdclientCmd + " stop"
-  DdclientCmdRestart  = DdclientCmd + " restart"
-  DdclientConfFile    = "/etc/ddclient.conf"
-  DdclientDefaultFile    = "/etc/default/ddclient"
-  DdclientPidFile    = "/var/run/ddclient.pid"
 
 
   def register_hooks
-    os["network_manager"].register_hook( -100, "ddclient_manager", "write_files", :hook_commit )
+#    os["network_manager"].register_hook( -100, "routes_manager", "write_files", :hook_commit )
   end
   
   def hook_commit
     settings = DdclientSettings.find( :first )
     return if ( settings.nil? )
-    
     cfg = []
     defaults = []
     
@@ -57,21 +31,12 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
         next if ( val.nil? || val == "null" )
         cfg << "#{var}=\"#{val}\""
       end
-
-      [ [ ConfigDaemon, ConfigDaemonInterval ],
-        [ ConfigRunDaemon, settings.enabled ]
-        ].each do |var,val|
-        next if ( val.nil? || val == "null" )
-        defaults << "#{var}=\"#{val}\""
-      end
-
     end
     
     
     #logger.debug( "running: " + DdclientCmdStop )
     Kernel.system( DdclientCmdStop  )
     os["override_manager"].write_file( ConfigFile, header, "\n", cfg.join( "\n" ), "\n" )
-    os["override_manager"].write_file( DdclientDefaultFile, header, "\n", defaults.join( "\n" ), "\n" )
     if ( settings.enabled )
       #logger.debug( "running: " + DdclientRcd )
       Kernel.system( DdclientRcd  )
