@@ -79,7 +79,7 @@ uvm_iptables_rules()
     ${IPTABLES} -A PREROUTING -t mangle -i lo -j MARK --or-mark ${MARK_ANTISUB}
 
     #dont queue anthing that was liberated, or is connmarked antisubscribe
-    ${IPTABLES} -A PREROUTING -t mangle -m connmark --mark ${MARK_ANTISUB}/${MARK_ANTISUB} -j MARK --set-mark  ${MARK_ANTISUB}
+    ${IPTABLES} -A PREROUTING -t mangle -m connmark --mark ${MARK_ANTISUB}/${MARK_ANTISUB} -j MARK --or-mark  ${MARK_ANTISUB}
 
     #redirect  anthing re-injected packets from the TUN interface to us
     ${IPTABLES} -A PREROUTING -t nat -i ${TUN_DEV} -t nat -p tcp \
