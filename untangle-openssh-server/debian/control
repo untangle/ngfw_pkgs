@@ -7,6 +7,6 @@ Standards-Version: 3.7.2
 
 Package: untangle-openssh-server
 Architecture: any
-Depends: openssh-server
+Depends: ssh
 Description: The Untangle ssh server
  Runs on a high port.
