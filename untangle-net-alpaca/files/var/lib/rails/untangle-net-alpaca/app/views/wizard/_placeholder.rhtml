@@ -4,7 +4,7 @@
 
 <%= javascript_tag <<EOF
 /* Call the RJS requested in the callback */
-nextEnterCallback['#{stage.id}'] = function()
+Wizard.nextEnterCallback['#{stage.id}'] = function()
 { 
   new Ajax.Request( '/wizard/#{stage.rjs}?stage_id=#{stage.id}', { asynchronous:false, evalScripts:true, parameters:Form.serialize('wizard-data')} );
 };

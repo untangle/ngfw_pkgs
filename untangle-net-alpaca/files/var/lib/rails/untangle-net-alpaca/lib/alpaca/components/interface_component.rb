@@ -102,6 +102,10 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
           review["default_gateway"] = params["#{interface}-static.default_gateway"]
           review["dns_1"] = params["#{interface}-static.dns_1"]
           review["dns_2"] = params["#{interface}-static.dns_2"]
+
+          review["default_gateway"] = "unset" if ApplicationHelper.null?( review["default_gateway"] )
+          review["dns_1"] = "unset" if ApplicationHelper.null?( review["dns_1"] )
+          review["dns_2"] = "unset" if ApplicationHelper.null?( review["dns_2"] )
         end
       when InterfaceHelper::ConfigType::DYNAMIC
         value = "automatic"

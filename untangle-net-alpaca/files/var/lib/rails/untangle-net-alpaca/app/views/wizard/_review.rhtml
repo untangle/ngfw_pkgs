@@ -27,13 +27,11 @@
     </li>
   </ul>
 
-      
-
   <h2><%= "Click next to save the configuration".t %></h2>
 </div>
 
 <%= javascript_tag <<EOF
-nextExitCallback['#{@stage_id}'] = function()
+Wizard.nextExitCallback['#{@stage_id}'] = function()
 { 
   document.getElementById("wizard-data").onsubmit();
 };

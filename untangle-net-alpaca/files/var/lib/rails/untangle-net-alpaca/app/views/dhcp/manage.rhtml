@@ -19,21 +19,22 @@
           <%= text_field( "dhcp_server_settings", "end_address" ) %>
         </li>
 
-        <li>
-          <label for="dhcp_server_settings[lease_duration]"><%= "Lease Duration:".t %></label>
-          <%= text_field( "dhcp_server_settings", "lease_duration", { :class => "number" } ) %>
-        </li>
+        <% if ( @config_level > AlpacaSettings::Level::Basic ) %>
+          <li>
+            <label for="dhcp_server_settings[lease_duration]"><%= "Lease Duration:".t %></label>
+            <%= text_field( "dhcp_server_settings", "lease_duration", { :class => "number" } ) %>
+          </li>
 
-        <li>
-          <label for="dhcp_server_settings[gateway]"><%= "Gateway:".t %></label>
-          <%= text_field( "dhcp_server_settings", "gateway" ) %>
-        </li>
-
-        <li>
-          <label for="dhcp_server_settings[netmask]"><%= "Netmask:".t %></label>
-          <%= text_field( "dhcp_server_settings", "netmask" ) %>
-        </li>
-
+          <li>
+            <label for="dhcp_server_settings[gateway]"><%= "Gateway:".t %></label>
+            <%= text_field( "dhcp_server_settings", "gateway" ) %>
+          </li>
+          
+          <li>
+            <label for="dhcp_server_settings[netmask]"><%= "Netmask:".t %></label>
+            <%= text_field( "dhcp_server_settings", "netmask" ) %>
+          </li>
+        <% end %>
       </ul>
     </fieldset>
 
