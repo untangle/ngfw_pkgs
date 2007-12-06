@@ -141,9 +141,8 @@ class NUCLIServer
             return self.__send__("#{node}", args)
 
         rescue LoadError => ex
-            # #{node}.rb not found so assume the missing method is really a program to run.
-            res  = execute("#{node} #{args.join(' ') if args}")
-            return res
+            # #{node}.rb not found 
+            return ERROR_UNKNOWN_COMMAND 
         rescue NameError, NoMethodError => ex
             msg = "Error: component '#{node}' does not have the proper structure - " + ex
             @diag.if_level(3) { puts! msg; p ex }
@@ -165,6 +164,14 @@ class NUCLIServer
             err = "Error: unable to execute '#{cmd}' - command not found or not executable."
             @diag.if_level(3) { puts! err ; p ex }
             return err
+        end
+    end
+
+    def rsh(*args)
+	if empty?(args)
+            return ERROR_UNKNOWN_COMMAND
+        else
+            return execute("#{args.join(' ')}")
         end
     end
     

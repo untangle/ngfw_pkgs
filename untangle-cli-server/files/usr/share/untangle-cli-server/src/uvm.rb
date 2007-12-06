@@ -15,56 +15,34 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-require 'filternode'
+require 'remoteapp'
 
-class Uvm < UVMFilterNode
+class Uvm < UVMRemoteApp
   include CmdDispatcher
   include RetryLogin
   
-  NODE_NAME = "uvm"
-  UVM_MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".0"
+  #UVM_MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".0"
 
   def initialize
     @diag = Diag.new(DEFAULT_DIAG_LEVEL)
-    @diag.if_level(3) { puts! "Initializing #{get_node_name()}..." }
+    @diag.if_level(3) { puts! "Initializing UVM..." }
     super
-    @diag.if_level(3) { puts! "Done initializing #{get_node_name()}..." }
+    @diag.if_level(3) { puts! "Done initializing UVM..." }
   end
   
-  def get_uvm_node_name()
-    NODE_NAME
-  end
-  
-  def get_node_name()
-    "UVM"
-  end
-  
-  def get_mib_root()
-    UVM_MIB_ROOT
-  end  
+  #def get_mib_root()
+    #UVM_MIB_ROOT
+  #end  
   
   def execute(args)
     # TODO: BUG: if we don't return something the client reports an exception
-    @diag.if_level(3) { puts! "Protofilter::execute(#{args.join(', ')})" }
+    @diag.if_level(3) { puts! "Uvm::execute(#{args.join(', ')})" }
 
     begin
       retryLogin {
-        # Get tids of all protocol filters once and for all commands we might execute below.
-        tids = get_filternode_tids(get_uvm_node_name())
-        if empty?(tids) then return (args[0] == "snmp") ? nil : ERROR_NO_PROTOFILTER_NODES ; end
-
-        begin
-          tid, cmd = *extract_tid_and_command(tids, args, ["snmp"])
-        rescue InvalidNodeNumber, InvalidNodeId => ex
-            msg = ERROR_INVALID_NODE_ID + ": " + ex
-            @diag.if_level(3) { puts! msg ; p ex}
-            return msg
-        rescue Exception => ex
-          msg = "Error: protofilter encountered an unhandled exception: " + p
-        end
-        @diag.if_level(3) { puts! "TID = #{tid}, command = #{cmd}" }
-
-        return dispatch_cmd(args.empty? ? [cmd, tid] : [cmd, tid, *args])
+    	return "There is no default command for 'uvm'" if args.empty?
+	cmd = args.shift
+        return dispatch_cmd([cmd, nil, *args])
       }
     rescue Exception => ex
       @diag.if_level(3) { puts! ex; puts! ex.backtrace }
@@ -74,7 +52,6 @@ class Uvm < UVMFilterNode
 
   # What should the deault UVM command do?  Return info about the UVM node?
   def cmd_(*args)
-    return "There is no default command for 'uvm'"
   end
   
   def cmd_kill_all_sessions(*args)
@@ -91,6 +68,10 @@ HELP
 
   # Kill all network sessions currently active on the effective UVM server.
   def kill_all_sessions(policy=nil)
+	pMgr = @@uvmRemoteContext.policyManager()
+	pMgr.shutdownSessions(nil)
+	return "Kill all sessions request sent to #{BRAND} server."
   end
 
 end
+

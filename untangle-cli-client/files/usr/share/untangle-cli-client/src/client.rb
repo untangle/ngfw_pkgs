@@ -1,4 +1,4 @@
-#!/usr/local/bin/ruby
+#!/usr/bin/ruby
 #
 # $HeadURL:$
 # Copyright (c) 2003-2007 Untangle, Inc. 
@@ -148,6 +148,8 @@ class NUCLIClient
             ["spyware", true, "send command to Spyware Blocker -- enter 'spyware help' for details.", nil],
             ["virus", true, "send command to Virus Blocker -- enter 'virus help' for details.", nil],
             ["spamblocker", true, "send command to Spam Blocker -- enter 'spamblocker help' for details.", nil],
+            ["sh", false, "run command on local host -- sh ls /dev", nil],
+            ["rsh", false, "run command on remote server host -- rsh who", nil],
             # The following are not top level commands but are included here so they can be part of the
             # word completion list we pass to readline.  These can be distinguished and filtered from 
             # this list by noting that they have nil for their help text settings.
@@ -304,9 +306,9 @@ class NUCLIClient
             cmd_a = preprocess(cmd_s)
             return nil if (cmd_a.nil? || cmd_a.length == 0)
             
-            # If no server is active and the command is not a local system command and command requires a sever then disallow command.
+            # If no server is active and the command requires a sever then disallow command.
             @servers_lock.synchronize {
-                if (@drb_server.nil? || @drb_server[2].nil?) && !(/^:/ =~ cmd_s) && !(/^#\d+$/ =~ cmd_s) && command_requires_server(cmd_a[0])
+                if (@drb_server.nil? || @drb_server[2].nil?) && !(/^#\d+$/ =~ cmd_s) && command_requires_server(cmd_a[0])
                     puts! "Error: There is no open (or selected) #{@server_name} -- a server must be opened and selected before this command can be issued."
                     return nil            
                 end
@@ -564,28 +566,7 @@ class NUCLIClient
         
         begin
             cmd = method_id.id2name
-            if /^:/ =~ cmd          # request to run a local system command
-                if cmd.length > 1
-                    cmd = cmd.slice(1,cmd.length-1)
-                    if (args.length > 0) then cmd << (' '  + args.join(' ')) end
-                    @diag.if_level(4) { puts! "Executing '#{cmd}'" }
-                    begin
-                        pipe = IO.popen(cmd, "r")   # note pipe is half duplex so no need to close_write
-                        lines = []
-                        pipe.readlines.each { |line|
-                            puts! line unless Thread.current[:background]
-                            lines << line
-                        }
-                        return lines
-                    rescue IOError => ex
-                        err = "Error: unable to execute '#{cmd}' - command not found or not executable."
-                        @diag.if_level(3) { puts! err ; p ex }
-                        return nil
-                    end
-                else
-                    raise Exception, "malformed command."
-                end
-            elsif /^#\d+/ =~ cmd            # request to change effective server by server #
+            if /^#\d+/ =~ cmd            # request to change effective server by server #
                 svr_id = $&[1..-1].to_i                
                 @servers_lock.synchronize do
                     if svr_id < 1 || svr_id > @ucli_servers.length
@@ -1206,6 +1187,23 @@ class NUCLIClient
         end
     rescue Exception => ex
         puts! "Error: backup encountered an unhandled exception: " + ex
+    end
+
+    def sh(*args)
+	begin
+	    	cmd = args.join(' ')
+		puts! "In sh: #{cmd}"
+		pipe = IO.popen(cmd, "r")   # note pipe is half duplex so no need to close_write on the pipe
+		lines = []
+		pipe.readlines.each { |line|
+		    puts! line unless Thread.current[:background]
+		    lines << line
+		}
+		return lines
+	rescue Exception => ex
+		puts! "Error: command not found or not executable."
+		return nil
+	end
     end
     
 end # NUCLIClient
