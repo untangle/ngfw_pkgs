@@ -16,29 +16,17 @@ end
 
 <%= editable_table( :action => "/arp/create_entry", 
   :header_columns => [ { :name => "Hostname".t }, 
-                       { :name => "HWaddress".t } ],
+                       { :name => "HWaddress".t },
+		       { :name => "Delete".t } ],
   :column_names =>  [ "hostname", "hw_addr" ],
   :title => "Static Arp".t,
   :rows => rows,
-  :rows_name => "static_arp"
+  :rows_name => "static_arp",
+  :auto_size => true
   )
 %>
 
-<table>
-<!--
-<tr><th>Hostname</th><th>HWaddress</th><th></th></tr>
-    <% 
-rowId = 0
-@static_arps.each do |static_arp| -%>
-        <tr><td><%= text_field_tag("static_arp[][hostname]", "#{static_arp.hostname}") %></td><td><%= text_field_tag("static_arp[][hw_addr]", "#{static_arp.hw_addr}") %></td><td></td></tr>
-    <% 
-rowId = rowId + 1
-end -%>
--->
-<tr><td colspan="3">
-    <%= submit_tag "Cancel".t %>
-    <%= submit_tag "Save Changes".t %>
-</tr>
-</table>
+  <%= submit_tag "Cancel".t %>
+  <%= submit_tag "Save Changes".t %>
   <% end -%>
 </div>
