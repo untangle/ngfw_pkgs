@@ -1,6 +1,10 @@
 #!/usr/bin/make -f
 
-DESTDIR := debian/$(shell dh_listpackages)
+DESTDIR := debian/tmp
+
+
+ALPACA_DESTDIR := debian/untangle-net-alpaca
+IPTABLES_DESTDIR := debian/untangle-net-alpaca-iptables
 
 configure: configure-stamp
 configure-stamp:
@@ -25,10 +29,10 @@ clean:
 	rm -rf configure-stamp $(DESTDIR)
 	dh_clean
 
-binary-arch: build
+binary-arch:
 	dh_testdir  
 	dh_testroot   
-#	dh_movefiles 
+	dh_movefiles 
 #	dh_installdebconf   
 #	dh_shlibdeps  
 	dh_installdocs
@@ -39,7 +43,7 @@ binary-arch: build
 #	dh_installemacsen   
 #	dh_installpam   
 #	dh_installmime   
-#	dh_installinit
+	dh_installinit
 #	dh_installcron   
 #	dh_installman   
 #	dh_installinfo   
@@ -54,7 +58,7 @@ binary-arch: build
 	if [ -f debian/version ] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
 	dh_md5sums     
 
-binary-indep: build
+binary-indep:
 # nothing to do
 
 binary: binary-indep binary-arch
