@@ -14,3 +14,7 @@ chmod +x \
     /etc/untangle-net-alpaca/scripts/iptables \
     /etc/cron.hourly/rebuild-nonce
 
+## Create a new group for alapca users
+grep -q alpaca /etc/group || addgroup alpaca
+
+exit 0
