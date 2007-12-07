@@ -25,7 +25,7 @@ module ApplicationHelper
       blank_columns << "</div>"
     end
 
-    result << javascript_tag("function addRow"+tableId+"() { var rowId=Math.floor(Math.random()*10000000000); new Insertion.Bottom('"+tableId+"','<li id=\"'+rowId+'\" class=\"list-table-row\"><input type=\"hidden\" name=\""+options[:rows_name]+"[]\" value=\"'+rowId+'\" />"+blank_columns+"<div class=\"minus\" onClick=\"Alpaca.removeStaticEntry(\\''+rowId+'\\')\"> - </div></li> ') }")
+    result << javascript_tag("function addRow"+tableId+"() { var rowId=Math.floor(Math.random()*10000000000); new Insertion.Bottom('"+tableId+"','<li id=\"'+rowId+'\" class=\"list-table-row\"><input type=\"hidden\" name=\""+options[:rows_name]+"[]\" value=\"'+rowId+'\" />"+blank_columns+"<div class=\"minus\" onClick=\"Alpaca.removeStaticEntry(\\''+rowId+'\\')\"> - </div></li> '); resize"+tableId+"(); }")
 
     result << button_to_function("+".t, "addRow"+tableId+"()")
     result << "<div class=\"list-table " + options[:class].to_s + "\">"
@@ -56,9 +56,12 @@ module ApplicationHelper
     end
     result << "</ul>\n</div>\n"
 
+    auto_size = "function resize"+tableId+"() {"
     if options[:auto_size]
-      result << javascript_tag("var v"+tableId+" = document.getElementById('"+tableId+"'); var v"+tableId+"w= v"+tableId+".offsetWidth;  var c"+tableId+" = v"+tableId+".childNodes; for(var i = 0; i < c"+tableId+".length; i++){if (c"+tableId+"[i].nodeName.toLowerCase() == 'li') { var lic = c"+tableId+"[i].childNodes; for (var c = 0; c < lic.length; c++) { if (lic[c].nodeName.toLowerCase() == 'div') { lic[c].style.width = Math.floor((v"+tableId+"w) / "+options[:header_columns].length.to_s+")-1+'px';} } } }")
+      auto_size << "var v"+tableId+" = document.getElementById('"+tableId+"'); var v"+tableId+"w= v"+tableId+".offsetWidth;  var c"+tableId+" = v"+tableId+".childNodes; for(var i = 0; i < c"+tableId+".length; i++){if (c"+tableId+"[i].nodeName.toLowerCase() == 'li') { var lic = c"+tableId+"[i].childNodes; for (var c = 0; c < lic.length; c++) { if (lic[c].nodeName.toLowerCase() == 'div') { lic[c].style.width = Math.floor((v"+tableId+"w) / "+options[:header_columns].length.to_s+")-1+'px';} } } }"
     end
+    auto_size << "}"
+    result << javascript_tag(auto_size)
     return result
   end
 end

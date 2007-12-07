@@ -8,7 +8,7 @@ class ArpController < ApplicationController
   def manage
     @current_arps = `arp`
     @static_arps = StaticArp.find( :all )
-    @static_arps = [] if @static_arp.nil?
+    @static_arps = [] if @static_arps.nil?
     @static_arps << StaticArp.new
   end
 
@@ -20,7 +20,7 @@ class ArpController < ApplicationController
 
     params[:static_arp].each do |static_arp_row| 
       static_arp_obj = StaticArp.new
-      static_arp_obj.update_attributes( static_arp_row )
+      static_arp_obj.update_attributes( :hw_addr => params[:hw_addr][static_arp_row], :hostname => params[:hostname][static_arp_row] )
       static_arp_obj.save
     end
     
