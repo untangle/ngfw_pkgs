@@ -60,14 +60,14 @@ EOF
     settings = UvmSettings.new if settings.nil?
     
     intf_order = settings.interface_order
-    intf_order = "" if ApplicationHelper.null?( intf_order )
+    intf_order = UvmHelper::DefaultOrder if ApplicationHelper.null?( intf_order )
 
     intf_order = intf_order.split( "," ).map { |idx| idx.to_i }.delete_if { |idx| idx == 0 }
     
     values = []
     ## Go through and delete the interfaces that are in the map.
     intf_order.each do |idx|
-      next value << "VPN:tun0:#{idx}" if idx == VpnIndex
+      next values << "VPN:tun0:#{idx}" if idx == UvmHelper::VpnIndex
       
       interface = interfaces[idx]
       next if interface.nil?

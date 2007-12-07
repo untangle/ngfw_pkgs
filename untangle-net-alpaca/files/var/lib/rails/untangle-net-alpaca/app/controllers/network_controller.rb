@@ -1,5 +1,10 @@
 class NetworkController < ApplicationController
   def index
+    ## Cannot use this panel in advanced mode.
+    if ( @config_level > AlpacaSettings::Level::Basic )
+      return redirect_to( :controller => 'interface', :action => 'list' )
+    end
+
     manage
     render :action => 'manage'
   end
