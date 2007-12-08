@@ -34,7 +34,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-arch-stamp build-indep-stamp configure-stamp
-	rm -rf debian/tmp debian/untangle-exim4-config
+	rm -rf debian/tmp debian/untangle-snmpd-config
 	dh_clean
 
 binary-arch: build
