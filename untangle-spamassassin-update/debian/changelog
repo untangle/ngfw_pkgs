@@ -1,3 +1,9 @@
+untangle-spamassassin-update (5.1.0~svn20071128r13214-1etch) qa; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@debian.org>  Wed, 05 Dec 2007 16:45:58 -0800
+
 untangle-spamassassin-update (5.0.1-1) mustang-1; urgency=low
 
   * auto build
