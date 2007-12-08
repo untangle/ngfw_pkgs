@@ -7,7 +7,35 @@
 <%= @current_routes %>
 </pre>
 
-  <% form_tag( :action => 'save' ) do -%>
+  <% form_tag( :action => 'save' ) do
+rows = []
+@network_routes.each do |network_route|
+    rows << { :columns => [ { :value => network_route.target },
+    	                    { :value => network_route.netmask },
+    	                    { :value => network_route.gateway },
+    	                    { :value => network_route.name },
+#    	                    { :value => network_route.category },
+#    	                    { :value => network_route.description },
+#    	                    { :value => network_route.live },
+#    	                    { :value => network_route.alert },
+#    	                    { :value => network_route.log }
+	] }
+end
+-%>
+
+<%= editable_table( :action => "/route/create_entry", 
+  :header_columns => [ { :name => "Target".t }, 
+                       { :name => "Netmask".t },
+                       { :name => "Gateway".t },
+                       { :name => "Name".t },
+		       { :name => "Delete".t } ],
+  :column_names =>  [ "target", "netmask", "gateway", "name" ],
+  :title => "Static Routes".t,
+  :rows => rows,
+  :rows_name => "network_route",
+  :auto_size => true
+  )
+%>
 
     <%= submit_tag "Cancel".t %>
     <%= submit_tag "Save Changes".t %>

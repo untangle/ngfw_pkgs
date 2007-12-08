@@ -1,7 +1,7 @@
 class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
   include Singleton
 
-  ConfigFile = "/etc/untangle-net-alpacs/routes"
+  ConfigFile = "/etc/untangle-net-alpaca/routes"
 
 
 
@@ -10,40 +10,15 @@ class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
   end
   
   def hook_commit
-    settings = DdclientSettings.find( :first )
-    return if ( settings.nil? )
+    network_routes = NetworkRoute.find( :all )
+    
     cfg = []
-    defaults = []
-    
-    if ( settings.enabled )
-      conditions = [ "wan=?", true ]
-      wanInterface = Interface.find( :first, :conditions => conditions )
-      #logger.debug("settings.service is: " + settings.service)
-      protocol = ConfigService[settings.service][0]
-      server = ConfigService[settings.service][1]
-      [ [ ConfigPid, DdclientPidFile ],
-        [ ConfigUse, "if, if=" + wanInterface.os_name ],
-        [ ConfigProtocol, protocol ],
-        [ ConfigLogin, settings.login ],
-        [ ConfigPassword, settings.password ],
-        [ ConfigServer, server + '" "' +settings.hostname ]
-      ].each do |var,val|
-        next if ( val.nil? || val == "null" )
-        cfg << "#{var}=\"#{val}\""
-      end
-    end
-    
-    
-    #logger.debug( "running: " + DdclientCmdStop )
-    Kernel.system( DdclientCmdStop  )
-    os["override_manager"].write_file( ConfigFile, header, "\n", cfg.join( "\n" ), "\n" )
-    if ( settings.enabled )
-      #logger.debug( "running: " + DdclientRcd )
-      Kernel.system( DdclientRcd  )
-      #logger.debug( "running: " + DdclientCmdRestart )
-      Kernel.system( DdclientCmdRestart  )
-    end
 
+    network_routes.each do |network_route|
+          cfg << network_route.target + "\t" + network_route.netmask+ "\t" + network_route.gateway + "\t" + network_route.name
+    end
+    
+    os["override_manager"].write_file( ConfigFile, header, "\n", cfg.join( "\n" ), "\n" )
     #Kernel.system( "hostname #{settings.hostname}" )
   end
   

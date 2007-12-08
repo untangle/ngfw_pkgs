@@ -20,7 +20,7 @@ module ApplicationHelper
 
     blank_columns = ""
     options[:column_names].each do |column|
-      blank_columns << "<div class=\"list-table-column\">"
+      blank_columns << "<div class=\"list-table-column "+column+"\">"
       blank_columns << "<input name=\""+column+"['+rowId+']\" type=\"text\" size=\"30\" />"
       blank_columns << "</div>"
     end
@@ -46,7 +46,7 @@ module ApplicationHelper
       
       column_count = 0
       row[:columns].each do |column|
-        result << "<div class=\"list-table-column " + column[:class].to_s  + "\">"
+        result << "<div class=\"list-table-column " + column[:class].to_s  + " " + options[:column_names][column_count] + "\">"
         result << text_field( options[:column_names][column_count], rowId, { :value => column[:value] } )
         result << "</div>"
         column_count = column_count + 1

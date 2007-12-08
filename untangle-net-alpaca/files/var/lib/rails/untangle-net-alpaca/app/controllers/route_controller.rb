@@ -8,19 +8,35 @@ class RouteController < ApplicationController
   def manage
     @current_routes = `/bin/netstat -rn`
     @network_routes = NetworkRoute.find( :all )
-    #@network_routes = NetworkRoute.new if @network_routes.nil?
+    @network_routes = [] if @network_routes.nil?
+    @network_routes << NetworkRoute.new
   end
 
   def save
     ## Review : Internationalization
     return redirect_to( :action => "manage" ) if ( params[:commit] != "Save Changes".t )
 
-    #ddclient_settings = DdclientSettings.find( :first )
-    #ddclient_settings = DdclientSettings.new if ddclient_settings.nil?
-    #ddclient_settings.update_attributes( params[:ddclient_settings] )
-    #ddclient_settings.save
+    NetworkRoute.destroy_all
+
+    params[:network_route].each do |network_route_row|
+      if (!(params[:target][network_route_row].nil?) \
+          && params[:target][network_route_row].length > 0\
+          && !(params[:netmask][network_route_row].nil?) \
+          && params[:netmask][network_route_row].length > 0\
+          && !(params[:gateway][network_route_row].nil?) \
+          && params[:gateway][network_route_row].length > 0)
+
+        if (params[:name][network_route_row].nil?)
+          params[:name][network_route_row] = ""
+        end
+          
+        network_route_obj = NetworkRoute.new
+        network_route_obj.update_attributes( :target => params[:target][network_route_row], :netmask => params[:netmask][network_route_row], :gateway => params[:gateway][network_route_row], :name => params[:name][network_route_row] )
+        network_route_obj.save
+      end
+    end
     
-    #os["ddclient_manager"].commit
+    os["routes_manager"].commit
 
     ## Review : should have some indication that is saved.
     return redirect_to( :action => "manage" )

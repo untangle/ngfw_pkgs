@@ -19,9 +19,15 @@ class ArpController < ApplicationController
     StaticArp.destroy_all
 
     params[:static_arp].each do |static_arp_row| 
-      static_arp_obj = StaticArp.new
-      static_arp_obj.update_attributes( :hw_addr => params[:hw_addr][static_arp_row], :hostname => params[:hostname][static_arp_row] )
-      static_arp_obj.save
+      if (!(params[:hw_addr][static_arp_row].nil?) \
+          && params[:hw_addr][static_arp_row].length > 0\
+          && !(params[:hostname][static_arp_row].nil?)\
+          && params[:hostname][static_arp_row].length > 0)
+          
+        static_arp_obj = StaticArp.new
+        static_arp_obj.update_attributes( :hw_addr => params[:hw_addr][static_arp_row], :hostname => params[:hostname][static_arp_row] )
+        static_arp_obj.save
+      end
     end
     
     os["arps_manager"].commit

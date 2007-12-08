@@ -1,7 +1,7 @@
 class OSLibrary::ArpsManager < Alpaca::OS::ManagerBase
   include Singleton
 
-  ConfigFile = "/etc/untangle-net-alpacs/arps"
+  ConfigFile = "/etc/untangle-net-alpaca/arps"
 
   def register_hooks
 #    os["network_manager"].register_hook( -100, "arps_manager", "write_files", :hook_commit )
@@ -13,10 +13,10 @@ class OSLibrary::ArpsManager < Alpaca::OS::ManagerBase
     cfg = []
 
     static_arps.each do |static_arp|
-      cfg << static_arp.hostname + "\t" + static_arp.hw_addr
+          cfg << static_arp.hostname + "\t" + static_arp.hw_addr
     end
     
-    #os["override_manager"].write_file( ConfigFile, header, "\n", cfg.join( "\n" ), "\n" )
+    os["override_manager"].write_file( ConfigFile, header, "\n", cfg.join( "\n" ), "\n" )
     #Kernel.system( "hostname #{settings.hostname}" )
   end
   
