@@ -139,3 +139,8 @@ div.button:hover
   background-color: #3FE0C6;
   cursor: pointer;
   }
+
+div.minus
+{
+  cursor: pointer;
+}
