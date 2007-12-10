@@ -9,6 +9,64 @@ module ApplicationHelper
     false
   end
 
+  #Needs work for better validation
+  #Do we need to support more than standard Ethernet?
+  #The arp protocol does.
+  def ApplicationHelper.mac?( address )
+    return ApplicationHelper.safe_characters?( address )
+  end
+
+  #Needs work for better validation
+  #Maybe see RFCs mentioned in http://en.wikipedia.org/wiki/FQDN
+  def ApplicationHelper.hostname?( address )
+    return ApplicationHelper.safe_characters?( address )
+  end
+
+  #Needs work for better validation
+  #Could more precisely match ipv4 and ipv6 notation
+  #But should be OK with networks and netmasks maybe even CIDR notation
+  def ApplicationHelper.ip_address?( address )
+    return ApplicationHelper.safe_characters?( address )
+  end
+
+  #attempt at a shell safe set of characters
+  #especially avoiding ; " ' | > < && || / \
+  def ApplicationHelper.safe_characters?( chars )
+    if chars =~ /^[-A-Za-z0-9:_.,]+$/
+      return true
+    end
+    return false
+  end
+
+
+  # generates the editable tables
+  # Arguments are a hash like:
+  #editable_table( 
+  # action is no used
+  #:action => "/arp/create_entry", 
+  # the GetText translatable names that go at the tops of the columns
+  #:header_columns => [ { :name => "Hostname".t }, 
+  #                     { :name => "HWaddress".t },
+  #		       { :name => "Delete".t } ],
+  # the internal database names for the columns, must be in the same
+  # order as the header
+  #:column_names =>  [ "hostname", "hw_addr" ],
+  # title that is displayed in h2 tags before the data
+  #:title => "Static Arp".t,
+  # rows is array of hashes in a format like the following comment below  
+  #:rows => rows,
+  # name of the variable to be used in the form, probably name of db table
+  #:rows_name => "static_arp",
+  # if auto size is true then javascript code will make each column the same
+  # size
+  #:auto_size => true )
+  #
+  # Rows look like:
+  #rows = []
+  # @static_arps.each do |static_arp|
+  #  rows << { :columns => [ { :value => static_arp.hostname },
+  #  	               { :value => static_arp.hw_addr } ] }
+  #end
   def editable_table( options = {} )
     result = ""
     if ! options[:title].nil?
