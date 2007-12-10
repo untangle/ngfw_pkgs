@@ -89,20 +89,11 @@ support_menu()
         0) # OK
             case $choice in
                 "Enable Remote Support")
-		    apt-get install --yes untangle-support-agent
-		    for service in ssh untangle-support-agent ; do
-		      /etc/init.d/$service start &> /dev/null
-		      update-rc.d $service defaults &> /dev/null
-		    done
+		    apt-get install -o DPkg::Options::=--force-confnew --yes --force-yes --fix-broken --purge untangle-support-agent
                     state=SUCCESS_SPLASH
                     ;;
                 "Disable Remote Support")
-		    for service in ssh untangle-support-agent ; do
-		      /etc/init.d/$service stop &> /dev/null
-		      mv /etc/init.d/$service /etc/init.d/$service.tmp &> /dev/null
-		      update-rc.d $service remove &> /dev/null
-		      mv /etc/init.d/$service.tmp /etc/init.d/$service &> /dev/null
-		    done
+                    apt-get remove --yes --force-yes --fix-broken --purge untangle-support-agent
                     state=SUCCESS_SPLASH
                     ;;
                 *)
