@@ -15,7 +15,7 @@ class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
     cfg = []
 
     network_routes.each do |network_route|
-          cfg << "route add " + network_route.target + " netmask " + network_route.netmask + " gw " + network_route.gateway + " # " + network_route.name
+          cfg << "route add -net " + network_route.target + " netmask " + network_route.netmask + " gw " + network_route.gateway + " # " + network_route.name
     end
     
     os["override_manager"].write_file( ConfigFile, header, "\n", cfg.join( "\n" ), "\n" )
