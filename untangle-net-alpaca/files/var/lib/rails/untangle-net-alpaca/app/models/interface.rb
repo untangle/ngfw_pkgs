@@ -11,7 +11,6 @@ class Interface < ActiveRecord::Base
   ## Link for the pppoe configuration.
   has_one :intf_pppoe
 
-
   ## Link for all of the interfaces that are bridged with this interface.
   has_many( :bridged_interfaces, :class_name => "IntfBridge", :foreign_key => "bridge_interface_id" )
   
@@ -45,5 +44,23 @@ class Interface < ActiveRecord::Base
 
     ## unknown config type?
     nil
+  end
+
+  class ConfigVisitor
+    def intf_static( interface, config )
+    end
+
+    def intf_dynamic( interface, config )
+    end
+
+    def intf_bridge( interface, config )
+    end
+
+    def intf_pppoe( interface, config )
+    end
+  end
+
+  def visit_config( visitor )
+    current_config.accept( self, visitor )
   end
 end

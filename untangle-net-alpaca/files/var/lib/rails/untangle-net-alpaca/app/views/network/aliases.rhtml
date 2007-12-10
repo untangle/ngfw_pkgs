@@ -1,0 +1,19 @@
+<div>
+  <h2><%= "External Aliases".t %></h2>
+  <% if @msg.nil? %>
+    <% form_tag( :action => 'save_aliases' ) do -%>
+
+      <% list_id = "external-aliases" %>
+      <%= link_to_remote( "+".t, :url => { :action => :create_ip_network, :list_id => list_id  } ) %>
+  
+      <%= render( :partial => "ip_networks" , :object => @external_aliases, 
+                  :locals => { :list_id => list_id } ) %>
+
+      <%= submit_tag "Cancel".t %>
+      <%= submit_tag "Save".t, :onclick => "return #{confirm_javascript_function( "Are you sure?".t )}"%>
+    <% end -%>
+  <% else %>
+     <div>Unable to configure the External Aliases</div>
+     <div><%= @msg %></div>
+  <% end %>
+</div>

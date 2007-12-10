@@ -23,4 +23,8 @@ class IntfStatic < ActiveRecord::Base
     ## The field is valid if the match is non-nil
     return !IPAddr.parse( field ).nil?
   end
+
+  def accept( interface, visitor )
+    visitor.intf_static( interface, self )
+  end
 end

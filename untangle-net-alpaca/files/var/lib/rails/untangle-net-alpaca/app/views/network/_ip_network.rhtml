@@ -1,0 +1,13 @@
+<% rowId="ip-row-#{rand( 0x100000000 )}" %>
+<li id="<%= rowId  %>" class="ip-network">
+  <div class="ip-address">
+    <%= hidden_field_tag( "networkIndices[]", rowId ) %>
+    <%= text_field( "networks", rowId, { :value => "#{ip_network.ip} / #{ip_network.netmask}" } ) %>
+  </div>
+  <div class="ping">
+    <%= check_box( "allowPing", rowId, { :checked => ip_network.allow_ping }, true, false ) %>
+  </div>
+  <div class="minus" onclick="Network.removeListItem( '<%= rowId %>' )">
+    <%= "-".t %>
+  </div>
+</li>

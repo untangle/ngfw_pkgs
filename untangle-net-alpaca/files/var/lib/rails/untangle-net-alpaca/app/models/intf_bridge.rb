@@ -12,4 +12,8 @@ class IntfBridge < ActiveRecord::Base
       return errors.add( "Unable to bridge with the interface #{bridge.name}" )
     end
   end
+
+  def accept( interface, visitor )
+    visitor.intf_bridge( interface, self )
+  end
 end

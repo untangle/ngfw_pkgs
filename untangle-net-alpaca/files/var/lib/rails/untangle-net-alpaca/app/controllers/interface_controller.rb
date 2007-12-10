@@ -315,8 +315,8 @@ class InterfaceController < ApplicationController
 
     ## Review : How to set defaults
     @ip_network = IpNetwork.new
-    @ip_network.ip = "0.0.0.0"
-    @ip_network.netmask = "255.255.255.0"
+    @ip_network.ip = "1.2.3.4"
+    @ip_network.netmask = "24"
     @ip_network.allow_ping = true
   end
 

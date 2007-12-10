@@ -1,13 +1,17 @@
 require "ipaddr"
 
 module InterfaceHelper
+  ExternalIndex = 1
+  InternalIndex = 2
+  DmzIndex = 3
+
   ## DDD These are subject to internationalization DDD
   ## REVIEW : These are also linux specific.
   DefaultInterfaceMapping = {
     # default Display name plus the index
-    "eth0" => [ "External", 1 ],
-    "eth1" => [ "Internal", 2 ],
-    "eth2" => [ "DMZ", 3 ]
+    "eth0" => [ "External", ExternalIndex ],
+    "eth1" => [ "Internal", InternalIndex ],
+    "eth2" => [ "DMZ", DmzIndex ]
   }
 
   def self.validateNetmask( errors, netmask )

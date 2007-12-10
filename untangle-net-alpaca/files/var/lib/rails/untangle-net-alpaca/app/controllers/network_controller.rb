@@ -91,6 +91,80 @@ class NetworkController < ApplicationController
     return redirect_to( :action => 'manage' )
   end
 
+  ## These are the aliases for the external interface.
+  def aliases
+    ## Index is a reserved word, so the column name must be quoted.
+    conditions = [ "\"index\" = ?", InterfaceHelper::ExternalIndex ]
+     
+    external_interface = Interface.find( :first, :conditions => conditions )
+    
+    if external_interface
+      @external_aliases, @msg = external_interface.visit_config( AliasVisitor.new )
+    else 
+      @external_aliases = []
+      @msg = "There presently isn't an external interface."
+    end
+    
+    logger.debug( "Found the aliases: '#{@external_aliases}'" )
+    @external_aliases.each { |a| logger.debug( "Found the aliases: '#{a}'" ) }
+  end
+
+  def create_ip_network
+    @list_id = params[:list_id]
+    raise "no row id" if @list_id.nil?
+    raise "invalid list id  #{@list_id} syntax" if @list_id != "external-aliases"
+
+    ## Review : How to set defaults
+    @ip_network = IpNetwork.new
+    @ip_network.ip = "1.2.3.4"
+    @ip_network.netmask = "24"
+    @ip_network.allow_ping = true
+  end
+
+  def save_aliases
+    return redirect_to( :action => 'aliases' ) unless ( params[:commit] == "Save" )
+
+    ## Index is a reserved word, so the column name must be quoted.
+    conditions = [ "\"index\" = ?", InterfaceHelper::ExternalIndex ]    
+    external_interface = Interface.find( :first, :conditions => conditions )
+    
+    @msg = nil
+    if external_interface
+      current_config = external_interface.current_config
+
+      static = external_interface.intf_static
+      if static.nil?
+        static = IntfStatic.new 
+        external_interface.intf_static = static
+      end      
+
+      dynamic = external_interface.intf_dynamic
+      if dynamic.nil?
+        dynamic = IntfDynamic.new 
+        external_interface.intf_dynamic = dynamic
+      end
+
+      pppoe = external_interface.intf_pppoe
+      if pppoe.nil?
+        pppoe = IntfPppoe.new 
+        external_interface.intf_pppoe = pppoe
+      end
+      
+      aliasVisitor = SaveAliasesVisitor.new( params )
+      [ static, dynamic, pppoe ].each do |config|
+        msg = config.accept( external_interface, aliasVisitor )
+        @msg = msg if ( current_config == config )
+      end
+    else 
+      @msg = "There presently isn't an external interface."
+    end
+    
+    ## Show the error page unless the message is non-nil.
+    return unless @msg.nil?
+
+    return redirect_to( :action => 'aliases' )
+  end
+
   def scripts
     [ "network" ]
   end
@@ -99,7 +173,91 @@ class NetworkController < ApplicationController
     [ "borax/list-table", "borax/network" ]
   end
 
-  private 
+  private
+
+  class AliasVisitor < Interface::ConfigVisitor
+    def intf_static( interface, config )
+      ## Create a copy of the array.
+      aliases = [ config.ip_networks ].flatten
+
+      ## Delete the alias at the first position from the list
+      aliases.delete_if { |a| a.position == 1 }
+      [ aliases, nil ]
+    end
+
+    def intf_dynamic( interface, config )
+      [ config.ip_networks, nil ]
+    end
+
+    def intf_bridge( interface, config )
+      [ nil, "External Interface is presently configured as a bridge" ]
+    end
+
+    def intf_pppoe( interface, config )
+      ## Review : We currently support this.
+      [ nil, "External Interface is presently configured for PPPoE" ]
+    end
+  end
+
+  class SaveAliasesVisitor < Interface::ConfigVisitor
+    def initialize( params )
+      @params = params
+    end
+
+    def intf_static( interface, config )
+      ## Create the ip_network list, starting with position 2
+      ip_networks = ip_network_list( 2 )
+      external = config.ip_networks[0]
+      if external.nil?
+        config.ip_networks = ip_networks
+      else
+        ## Put it at the beginning
+        config.ip_networks = [ external ] + ip_networks 
+      end
+      
+      nil
+    end
+
+    def intf_dynamic( interface, config )
+      config.ip_networks = ip_network_list( 1 )
+
+      nil
+    end
+
+    def intf_bridge( interface, config )
+      "External Interface is presently configured as a bridge"
+    end
+
+    def intf_pppoe( interface, config )
+      ## Review : We currently support this.
+      "External Interface is presently configured for PPPoE"
+    end
+
+    private
+    def ip_network_list( position )
+      ## save the networks
+      networkStringHash = @params[:networks]
+      ## allow ping is checkbox, so it may not have values for each index.
+      allowPingHash = @params[:allowPing]
+      ## indices is used to guarantee they are done in proper order.
+      indices = @params[:networkIndices]
+      allowPingHash = {} if allowPingHash.nil?
+      
+      ip_networks = []
+      unless indices.nil?
+        indices.each do |key,value|
+          network = IpNetwork.new
+          network.parseNetwork( networkStringHash[key] )
+          network.allow_ping = ( allowPingHash[key] )
+          network.position, position = position, position + 1
+          ip_networks << network
+        end
+      end
+      
+      ip_networks
+    end
+  end
+
   def static( interface, panel_id )
     static = interface.intf_static
     static = IntfStatic.new if static.nil?
@@ -111,12 +269,17 @@ class NetworkController < ApplicationController
       network = IpNetwork.new( :allow_ping => true, :position => 1 )
       network.parseNetwork( "#{params["#{panel_id}_static_ip"]}/#{params["#{panel_id}_static_netmask"]}" )
       static.ip_networks = [ network ]
-    else
+    elsif ( network.position == 1 )
       ## Replace the one that is there
       network.ip = params["#{panel_id}_static_ip"]
       network.netmask = params["#{panel_id}_static_netmask"]
       network.allow_ping = true
       network.save
+    else
+      ## The first one doesn't exist, need to insert one at the beginning
+      network = IpNetwork.new( :allow_ping => true, :position => 1 )
+      network.parseNetwork( "#{params["#{panel_id}_static_ip"]}/#{params["#{panel_id}_static_netmask"]}" )
+      static.ip_networks << network
     end
     
     if interface.wan
