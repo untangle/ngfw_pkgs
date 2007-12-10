@@ -1,0 +1,4 @@
+#!/bin/bash
+
+##Add static routes rules
+. /etc/untangle-net-alpaca/routes

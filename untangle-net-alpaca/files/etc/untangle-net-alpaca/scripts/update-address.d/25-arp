@@ -1,0 +1,4 @@
+#!/bin/bash
+
+##Add static arp rules
+. /etc/untangle-net-alpaca/arps
