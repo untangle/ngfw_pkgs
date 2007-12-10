@@ -21,11 +21,6 @@ var RedirectManager =
     {
         return "/redirect/edit";
     },
-
-    getAction : function( value )
-    {
-        
-    },
     
     fields : new Array( "filters", "description", "new_ip", "new_enc_id", "enabled" )
 }

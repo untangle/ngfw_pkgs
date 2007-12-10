@@ -1,12 +1,20 @@
 class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
   include Singleton
 
+  IPTablesCommand = OSLibrary::Debian::PacketFilterManager::IPTablesCommand
+  
+  Chain = OSLibrary::Debian::PacketFilterManager::Chain
+
   ## uvm subscription file
   UvmSubscriptionFile = "#{OSLibrary::Debian::PacketFilterManager::ConfigDirectory}/700-uvm"
 
   ## UVM interface properties file
   UvmInterfaceProperties = "/etc/untangle-net-alpaca/interface.properties"
   UvmInterfaceOrderProperty = "com.untangle.interface-order"
+
+  ## Function that contains all of the subscription / bypass rules
+  BypassRules = "bypass_rules"
+  
 
   def register_hooks
     os["packet_filter_manager"].register_hook( 100, "uvm_manager", "write_files", :hook_write_files )
@@ -20,11 +28,12 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
   end
   
   private
-
+  
   def write_iptables_script
     text = header
-
-    ## Presently there are no settings for this.
+    
+    text += subscription_rules
+    
     text += <<EOF
 HELPER_SCRIPT="/usr/share/untangle-net-alpaca/scripts/uvm/iptables"
 
@@ -38,6 +47,8 @@ fi
 if [ "`is_uvm_running`x" = "truex" ]; then
   echo "[`date`] The UVM running, inserting queueing hooks"
   uvm_iptables_rules
+  
+  #{BypassRules}
 else
   echo "[`date`] The UVM is currently not running"
 fi
@@ -89,6 +100,33 @@ EOF
 # may be overriden
 #{UvmInterfaceOrderProperty}=#{values.join( "," )}
 EOF
+  end
+
+  def subscription_rules
+    text = "#{BypassRules}() {\n"
+
+    ## Add the user rules
+    rules = Subscription.find( :all, :conditions => [ "system_id IS NULL AND enabled='t'" ] )
+    ## Add the system rules
+    rules += Subscription.find( :all, :conditions => [ "system_id IS NOT NULL AND enabled='t'" ] )
+    
+    rules.each do |rule|
+      begin
+        filters, chain = OSLibrary::Debian::Filter::Factory.instance.filter( rule.filter )
+        
+        target = ( rule.subscribe ) ? "-j RETURN" : "-g #{Chain::BypassMark}"
+
+        filters.each do |filter|
+          break if filter.strip.empty?
+          text << "#{IPTablesCommand} #{Chain::BypassRules.args} #{filter} #{target}\n"
+        end
+        
+      rescue
+        logger.warn( "The filter '#{rule.filter}' could not be parsed: #{$!}" )
+      end
+    end
+    
+    text + "\n}\n"
   end
 
   ## Review: This should be a global function

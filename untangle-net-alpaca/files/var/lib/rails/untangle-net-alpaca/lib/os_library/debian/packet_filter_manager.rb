@@ -19,6 +19,12 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   FirewallConfigFile   = "#{ConfigDirectory}/400-firewall"
   RedirectConfigFile   = "#{ConfigDirectory}/600-redirect"
 
+  ## Mark to indicate that the packet shouldn't be caught by the UVM.
+  MarkBypass   = 0x01000000
+  
+  ## Mark indicating that the packet shouldn't hit the conntrack table.
+  MarkNoTrack  = 0x02000000
+
   ## Mark that causes the firewall to reject a packet.
   MarkFwReject = 0x04000000
 
@@ -76,9 +82,6 @@ EOF
 #{IPTablesCommand} #{args} -o lo -j RETURN
 EOF
 
-    ## Chain Used for natting in the postrouting table.
-    PreNat = Chain.new( "alpaca-pre-nat", "nat", "PREROUTING" )
-
     ## Chain used to redirect traffic
     Redirect = Chain.new( "alpaca-redirect", "nat", "PREROUTING", <<'EOF' )
 
@@ -100,6 +103,10 @@ EOF
 #{IPTablesCommand} #{args} -m mark --mark #{MarkFwReject}/#{MarkFwReject} -j REJECT
 EOF
     
+    ## Chain where all of the firewalls rules should go
+    FirewallRules = Chain.new( "firewall-rules", "mangle", "PREROUTING", "" )
+
+    ## Goto chains used to indicate that a packet should be rejected or dropped.
     FirewallMarkReject = Chain.new( "alpaca-firewall-reject", "mangle", nil, <<'EOF' )
 ## Mark the packets
 #{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwReject}
@@ -110,8 +117,20 @@ EOF
 #{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwDrop}
 EOF
 
-    Order = [ MarkInterface, PreNat, PostNat, FirewallBlock, FirewallMarkReject, FirewallMarkDrop,
-            Redirect ]
+    ## Chain where all of the Bypass Rules go (This shouldn't be  defined unless
+    ## There is a UVM, but it should only be a minor performance hit
+    BypassRules = Chain.new( "bypass-rules", "mangle", "PREROUTING", "" )
+
+    ## Chain where traffic should go to be marked for bypass.
+    BypassMark = Chain.new( "bypass-mark", "mangle", nil, <<'EOF' )
+## Mark the packets
+#{IPTablesCommand} #{args} -j MARK --or-mark #{MarkBypass}
+EOF
+
+    ## Review : Should the Firewall Rules go before the redirects?
+    Order = [ MarkInterface, PostNat, 
+      FirewallBlock, FirewallMarkReject, FirewallMarkDrop, FirewallRules,
+      BypassRules, BypassMark, Redirect ]
   end
   
   def hook_commit
@@ -199,15 +218,12 @@ EOF
     rules.each do |rule|
       begin
         filters, chain = OSLibrary::Debian::Filter::Factory.instance.filter( rule.filter )
-
-        ## Always use PREROUTING
-        chain = "PREROUTING" 
         
         target = nil
         case rule.target
         when "pass" then target = "-j RETURN"
-        when "drop" then target = "-g alpaca-firewall-drop"
-        when "reject" then target = "-g alpaca-firewall-reject"
+        when "drop" then target = "-g #{FirewallMarkDrop.name}"
+        when "reject" then target = "-g #{FirewallMarkReject.name}"
         end
         
         next if target.nil?
@@ -215,7 +231,7 @@ EOF
         filters.each do |filter|
           ## Nothing to do if the filtering string is empty.
           break if filter.strip.empty?
-          text << "#{IPTablesCommand} -t mangle -A #{chain} #{filter} #{target}\n"
+          text << "#{IPTablesCommand} #{Chain::FirewallRules.args} #{filter} #{target}\n"
         end
       rescue
         logger.warn( "The filter '#{rule.filter}' could not be parsed: #{$!}" )

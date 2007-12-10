@@ -170,9 +170,9 @@ class Network < ActiveRecord::Migration
     create_table :subscriptions do |table|
       table.column :position, :integer
       table.column :enabled, :boolean
-      table.column :subscribe, :boolean
       table.column :filter, :string
       table.column :description, :string
+      table.column :subscribe, :boolean
     end
 
     ## redirect rules

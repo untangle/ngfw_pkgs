@@ -15,5 +15,14 @@ var SubscriptionManager =
         } catch ( e ) {
             /* ignoring the error */
         }
-    }
+    },
+
+    editFilter : function()
+    {
+        return "/uvm/edit";
+    },
+    
+    fields : new Array( "filters", "description", "subscribe", "enabled" )
 }
+
+RuleBuilder.manager = SubscriptionManager;

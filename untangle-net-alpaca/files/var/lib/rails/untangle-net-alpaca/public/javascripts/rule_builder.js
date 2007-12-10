@@ -183,7 +183,7 @@ var RuleBuilder =
               parameters: Hash.toQueryString( fieldHash ) } );
         
         if ( !request.success() ) {
-            alert( "unable to edit the redirect." );
+            alert( "unable to edit the filter." );
             return;
         }
 

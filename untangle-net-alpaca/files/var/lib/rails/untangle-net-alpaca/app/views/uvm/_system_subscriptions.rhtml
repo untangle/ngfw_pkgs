@@ -1,0 +1,12 @@
+<div class="list-table system-subscriptions">
+  <ul class="system-subscription-list">
+    <li class="header">
+      <div class="enabled"><%= "Enabled".t %></div>
+      <div class="description"><%= "Description".t %></div>
+    </li>
+    
+    <%= render( :partial => "system_subscription", :collection => system_subscriptions ) %>
+  </ul>
+  
+  <%= sortable_element( "subscription-list" ) %> 
+</div>

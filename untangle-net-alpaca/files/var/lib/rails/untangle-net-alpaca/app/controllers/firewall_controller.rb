@@ -34,7 +34,7 @@ class FirewallController < ApplicationController
 
   def save
     ## Review : Internationalization
-    if ( params[:commit] != "Save Changes".t )
+    if ( params[:commit] != "Save".t )
       redirect_to( :action => "manage" )
       return false
     end
@@ -86,7 +86,6 @@ class FirewallController < ApplicationController
 
   def save_system_rules
     rules = params[:system_firewalls]
-    system_ids = params[:system_system_id]
     enabled = params[:system_enabled]
     
     unless rules.nil?

@@ -17,7 +17,6 @@ class RedirectController < ApplicationController
     @row_id = params[:row_id]
     raise "unspecified row id" if @row_id.nil?
     
-    ## This is questionable
     @redirect = Redirect.new
     @redirect.description = params[:description]
     @redirect.new_ip = params[:new_ip]
@@ -29,7 +28,7 @@ class RedirectController < ApplicationController
 
   def save
     ## Review : Internationalization
-    if ( params[:commit] != "Save Changes".t )
+    if ( params[:commit] != "Save".t )
       redirect_to( :action => "manage" ) 
       return false
     end

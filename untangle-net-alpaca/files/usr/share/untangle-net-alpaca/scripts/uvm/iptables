@@ -4,8 +4,10 @@
 
 UVM_PID="invalid"
 
-# this needs to be turned off when the interface is brought up
 TUN_DEV=utun
+
+## The DHCP ports 67 is client 68 is server
+DHCP_PORTS="67,68"
 
 MARK_ANTISUB=$((0x01000000))
 MARK_NOTRACK=$((0x02000000))
@@ -47,6 +49,7 @@ bunnicula_home()
 }
   
 ## This setting should always be disabled.
+# this needs to be turned off when the interface is brought up
 if [ -f /proc/sys/net/ipv4/conf/${TUN_DEV}/rp_filter ] ; then
     echo 0 > /proc/sys/net/ipv4/conf/${TUN_DEV}/rp_filter
 fi
@@ -82,23 +85,15 @@ uvm_iptables_rules()
     ${IPTABLES} -A PREROUTING -t mangle -m connmark --mark ${MARK_ANTISUB}/${MARK_ANTISUB} -j MARK --or-mark  ${MARK_ANTISUB}
 
     #redirect  anthing re-injected packets from the TUN interface to us
-    ${IPTABLES} -A PREROUTING -t nat -i ${TUN_DEV} -t nat -p tcp \
+    ${IPTABLES} -I PREROUTING 1 -t nat -i ${TUN_DEV} -t nat -p tcp \
         -j DNAT --to-destination 192.0.2.42:${TCP_REDIRECT_PORTS}
 
     # Ignore traffic that we have antisubscribed to.
     ${IPTABLES} -A POSTROUTING -t tune -m mark --mark ${MARK_ANTISUB}/${MARK_ANTISUB}  -j RETURN
 
-    # save the packets mark to a connmark so the rest of the packets in the session will get anti-subed.
-    ${IPTABLES} -A POSTROUTING -t tune -p tcp --syn -j CONNMARK --set-mark  ${MARK_ANTISUB}
-
     # Queue all of the SYN packets.
     ${IPTABLES} -A POSTROUTING -t tune -p tcp --syn -j NFQUEUE
 
     # Queue all of the UDP packets.
-    ${IPTABLES} -A POSTROUTING -t tune -m addrtype --dst-type unicast -p udp -j CONNMARK --set-mark ${MARK_ANTISUB}
-
-    # Queue all of the UDP packets.
     ${IPTABLES} -A POSTROUTING -t tune -m addrtype --dst-type unicast -p udp -j NFQUEUE 
-
 }
-
