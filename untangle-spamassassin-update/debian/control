@@ -7,7 +7,8 @@ Standards-Version: 3.7.2
 
 Package: untangle-spamassassin-update
 Architecture: any
-Depends: spamassassin (>= 3.1.7), libnet-dns-perl, libmail-spf-query-perl, libnet-ident-perl, razor, libsys-hostname-long-perl, untangle-fuzzyocr | fuzzyocr
+Depends: spamassassin (>= 3.1.7), libnet-dns-perl, libmailtools-perl, libhtml-format-perl, libwww-perl, libarchive-tar-perl, libio-zlib-perl, libmail-spf-perl | libmail-spf-query-perl, libnet-ident-perl, razor, libsys-hostname-long-perl, libhtml-parser-perl, libdigest-sha1-perl, re2c, untangle-fuzzyocr | fuzzyocr
+Recommends: libsys-syslog-perl, libmail-dkim-perl
 Conflicts: spamc-mv
 Provides: spamc-mv
 Replaces: spamc-mv
