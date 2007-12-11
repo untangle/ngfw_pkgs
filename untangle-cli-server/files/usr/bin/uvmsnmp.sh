@@ -4,4 +4,4 @@ if [ ${#UVM_ROOT} != 0 ] ; then
 else
     NUCLI_ROOT=""
 fi
-/usr/bin/ruby -X ${NUCLI_ROOT}/usr/share/untangle-cli-client/src -- ./client.rb -h localhost -p 7777 -c $1%20snmp%20$2%20$3
+/usr/bin/ruby -X ${NUCLI_ROOT}/usr/share/untangle-cli-client/src -- ./client.rb -h localhost -c $1%20snmp%20$2%20$3

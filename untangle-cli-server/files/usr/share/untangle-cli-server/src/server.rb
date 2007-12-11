@@ -49,7 +49,7 @@ class NUCLIServer
 
         # Setup defaults
         @server_host = 'localhost'
-        @server_port = ENV['NUCLI_PORT'] || 7777
+        @server_port = ENV['NUCLI_PORT'] || 6971
         @server_name = "NUCLI Server"
 
         # Process command line options

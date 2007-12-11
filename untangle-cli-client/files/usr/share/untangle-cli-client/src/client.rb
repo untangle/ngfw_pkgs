@@ -68,7 +68,7 @@ include NUCLIUtil
 class NUCLIClient
    
     # Constants
-    DEFAULT_PORT = 7777
+    DEFAULT_PORT = 6971
     FORBIDDEN_BACKGROUND_COMMANDS = %w{ with ^#\d+ } # commands that cannot be run in the background.
     FORBIDDEN_WITH_COMMANDS = %w{ open quit exit with history jobs servers } # commands that cannot be used in a with script.
     FORBIDDEN_COMMAND_LINE_COMMMANDS = %w{ with quit exit history jobs }
