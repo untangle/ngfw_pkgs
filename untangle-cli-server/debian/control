@@ -1,7 +1,7 @@
 Source: untangle-cli-server
 Section: admin
 Priority: optional
-Maintainer: Sebastien Delafond <seb@untangle.com>
+Maintainer: Ken Hilton <ken@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 

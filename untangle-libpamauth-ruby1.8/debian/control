@@ -1,7 +1,7 @@
 Source: untangle-libpamauth-ruby1.8
 Section: admin
 Priority: optional
-Maintainer: Sebastien Delafond <seb@untangle.com>
+Maintainer: Robert Scott <rbscott@untangle.com>
 Build-Depends: debhelper (>> 4.0.0), ruby1.8-dev, ruby1.8, cdbs, libpam0g-dev
 Standards-Version: 3.7.2
 

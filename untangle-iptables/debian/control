@@ -1,7 +1,7 @@
 Source: untangle-iptables
 Section: net
 Priority: important
-Maintainer: Sebastien Delafond <seb@untangle.com>
+Maintainer: Robert Scott <rbscott@untangle.com>
 Build-Depends: debhelper (>>4.0), linuxdoc-tools, html2text, bzip2, linux-headers-untangle, libc6-dev, bash
 Standards-Version: 3.7.2
 

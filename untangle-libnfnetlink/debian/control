@@ -1,12 +1,12 @@
 Source: untangle-libnfnetlink
 Section: libs
 Priority: optional
-Maintainer: Sebastien Delafond <seb@untangle.com>
+Maintainer: Robert Scott <rbscott@untangle.com>
 Build-Depends: cdbs (>= 0.4), debhelper (>= 4.2), gcc, automake1.7, linux-libc-dev (>= 2.6.22), libtool, iptables-dev
 Standards-Version: 3.7.2
 
 Package: untangle-libnfnetlink0
-Architecture: any
+Architecture: all
 Depends: ${shlibs:Depends}
 Conflicts: libnfnetlink1, libnfnetlink0
 Provides: libnfnetlink1, libnfnetlink0
@@ -16,7 +16,7 @@ Description: Netfilter netlink library
  netfilter netlink layer in the kernel.
 
 Package: untangle-libnfnetlink-dev
-Architecture: any
+Architecture: all
 Section: libdevel
 Depends: untangle-libnfnetlink0 (= ${Source-Version})
 Conflicts: libnfnetlink-dev

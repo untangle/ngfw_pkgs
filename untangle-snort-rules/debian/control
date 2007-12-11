@@ -1,7 +1,7 @@
 Source: untangle-snort-rules
 Section: admin
 Priority: optional
-Maintainer: Sebastien Delafond <seb@untangle.com>
+Maintainer: John Irwin <jdi@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 

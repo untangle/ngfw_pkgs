@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 4.2), untangle-libnfnetlink-dev (>= 0.0.30), gcc (>
 Standards-Version: 3.7.2
 
 Package: untangle-libnetfilter-conntrack1
-Architecture: any
+Architecture: all
 Depends: libc6 (>= 2.3.2.ds1-21), untangle-libnfnetlink0 (>= 0.0.30)
 Conflicts: libnetfilter-conntrack1
 Provides: libnetfilter-conntrack1
@@ -18,7 +18,7 @@ Description: Netfilter netlink-conntrack library
 
 Package: untangle-libnetfilter-conntrack-dev
 Section: libdevel
-Architecture: any
+Architecture: all
 Depends: libc6 (>= 2.3.2.ds1-21), untangle-libnfnetlink0 (>= 0.0.30), pkg-config,
  untangle-libnetfilter-conntrack1 (= ${Source-Version}),
  untangle-libnfnetlink-dev (>= 0.0.30)
