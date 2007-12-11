@@ -158,6 +158,20 @@ EOF
   def hook_run_services
     raise "Unable to iptables rules." unless Kernel.system( "#{Service} restart" )
   end
+
+  def session_redirect_create( filter, new_ip, new_port )
+    parse_session_redirect( filter, new_ip, new_port )
+
+
+    `iptables -t nat -I #{Chain::Redirect} 1 #{filter} -j DNAT --to-destination #{new_ip}:#{new_port}`
+    `iptables -t mangle -I #{Chain::FirewallRules} 1 #{filter} -j RETURN`    
+  end
+
+  def session_redirect_delete( filter, new_ip, new_port )
+    parse_session_redirect( filter, new_ip, new_port )
+    `iptables -t mangle -D #{Chain::FirewallRules} #{filter} -j RETURN`
+    `iptables -t nat -D #{Chain::Redirect} #{filter} -j DNAT --to-destination #{new_ip}:#{new_port}`
+  end
   
   private
     
@@ -368,5 +382,17 @@ EOF
 ## may be overriden
 
 EOF
+  end
+
+  def parse_session_redirect( filter, new_ip, new_port )
+    raise "Invalid filter: '#{filter}'" if /^[-a-zA-Z0-9._ ]*$/.match( filter ).nil?
+    
+    raise "Invalid destination '#{new_ip}'" if IPAddr.parse( "#{new_ip}/32" ).nil?
+
+    ## Convert new_port to a number
+    new_port_string = new_port.to_s
+    
+    new_port = new_port.to_i.to_s
+    raise "Invalid redirect port '#{new_port_string}'" unless ( new_port == new_port_string )
   end
 end

@@ -50,11 +50,27 @@ class UvmController < ApplicationController
   def generate_rules
     ## Execute all of the packet filter rules.
     os["packet_filter_manager"].run_services
+    nil
   end
   
   def commit_rules
     ## Commit all of the packet filter rules.
-    os["packet_filter_manager"].commit    
+    os["packet_filter_manager"].commit
+
+    nil
+  end
+
+  def session_redirect_create( filter, new_ip, new_port )
+    logger.debug( "Creating a new session redirect: #{filter} #{new_ip} #{new_port}" )
+    
+    os["packet_filter_manager"].session_redirect_create( filter, new_ip, new_port )
+    true
+  end
+
+  def session_redirect_delete( filter, new_ip, new_port )
+    logger.debug( "Deleting a new session redirect: #{filter} #{new_ip} #{new_port}" )
+    os["packet_filter_manager"].session_redirect_delete( filter, new_ip, new_port )
+    true
   end
 
   def stylesheets
@@ -64,7 +80,6 @@ class UvmController < ApplicationController
   def scripts
     RuleHelper::Scripts + [ "subscription_manager" ]
   end
-
 
   private
   def save_user_rules
