@@ -1,4 +1,6 @@
 #!/bin/bash
 
 ##Add static routes rules
-. /etc/untangle-net-alpaca/routes
+if [ -e /etc/untangle-net-alpaca/routes ] ; then 
+	. /etc/untangle-net-alpaca/routes
+fi

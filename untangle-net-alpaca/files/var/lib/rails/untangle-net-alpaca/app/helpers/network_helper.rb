@@ -2,9 +2,10 @@ module NetworkHelper
   ## Helper class to represent all of the information about an interface
   ## configuration
   class InterfaceConfig
-    def initialize( interface, static, bridge, bridgeable_interfaces )
+    def initialize( interface, static, bridge, bridgeable_interfaces, pppoe )
       @interface, @static, @bridge = interface, static, bridge
       @bridgeable_interfaces = bridgeable_interfaces
+      @pppoe = pppoe
     end
 
     def config_types
@@ -23,7 +24,7 @@ module NetworkHelper
       config_types.map { |type| [ type, type ] }
     end
     
-    attr_reader :interface, :static, :bridge, :bridgeable_interfaces
+    attr_reader :interface, :static, :bridge, :bridgeable_interfaces, :pppoe
   end
 
   class StaticConfig
@@ -62,8 +63,12 @@ module NetworkHelper
 
     bridgeable_interfaces = 
       interface_list.map { |i| [ i.name, i.id ] }.delete_if{ |n| n[1] == interface.id }
-    
+
+    pppoe = interface.intf_pppoe
+    pppoe = IntfPppoe.new if pppoe.nil?
+
+
     ## Return the new interface config.
-    InterfaceConfig.new( interface, static, bridge, bridgeable_interfaces )
+    InterfaceConfig.new( interface, static, bridge, bridgeable_interfaces, pppoe )
   end
 end

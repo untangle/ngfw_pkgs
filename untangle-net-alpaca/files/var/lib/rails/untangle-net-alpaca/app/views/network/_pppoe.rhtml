@@ -1,0 +1,23 @@
+<%
+pppoe = config.pppoe
+def print_pppoe( value )
+  return value unless ApplicationHelper.null?( value )
+  "Unset"
+end
+%>
+<div class="text-fields pppoe"> 
+   <% if config.interface.wan %>
+     <p>
+       <label for="<%= "#{config_id}_username" %>"><%= "Username:".t %></label>
+       <%= text_field_tag( "#{config_id}_username", pppoe.username ) %>
+     </p>
+     <p>
+       <label for="<%= "#{config_id}_password" %>"><%= "Password:".t %></label>
+       <%= password_field_tag( "#{config_id}_password", pppoe.password ) %>
+     </p>
+     <p>
+       <label for="<%= "#{config_id}_use_peer_dns" %>"><%= "Use peer DNS:".t %></label>
+       <%= check_box_tag( "#{config_id}_use_peer_dns", "true", { :checked => pppoe.use_peer_dns }) %>
+     </p>
+   <% end %>
+</div>

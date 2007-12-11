@@ -79,6 +79,7 @@ class NetworkController < ApplicationController
       when InterfaceHelper::ConfigType::STATIC then static( interface, panel_id )
       when InterfaceHelper::ConfigType::DYNAMIC then dynamic( interface, panel_id )
       when InterfaceHelper::ConfigType::BRIDGE then bridge( interface, panel_id )
+      when InterfaceHelper::ConfigType::PPPOE then pppoe( interface, panel_id )
       ## REVIEW : Move this into the validation part
       else raise "Unknown configuration type #{config_type}"  
       end
@@ -335,5 +336,17 @@ class NetworkController < ApplicationController
     interface.config_type = InterfaceHelper::ConfigType::DYNAMIC
     interface.intf_dynamic = dynamic
     interface.save    
+  end
+
+  def pppoe( interface, panel_id )
+    pppoe = interface.intf_pppoe
+    pppoe = IntfPppoe.new if pppoe.nil?
+    pppoe.username = params["#{panel_id}_pppoe_username"]
+    pppoe.password = params["#{panel_id}_pppoe_password"]
+    pppoe.use_peer_dns = params["#{panel_id}_pppoe_use_peer_dns"]
+    pppoe.save
+    interface.config_type = InterfaceHelper::ConfigType::PPPOE
+    interface.intf_pppoe = pppoe
+    interface.save
   end
 end
