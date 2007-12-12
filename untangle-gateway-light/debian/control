@@ -6,7 +6,7 @@ Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
 Package: untangle-gateway-light
-Architecture: any
+Architecture: all
 Provides: untangle-appliance
 Conflicts: untangle-appliance
 Replaces: untangle-appliance
