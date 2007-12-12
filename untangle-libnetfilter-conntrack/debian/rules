@@ -70,9 +70,10 @@ binary-indep: build install
 binary-arch: build install
 	dh_testdir -a
 	dh_testroot -a
-	dh_installdocs -plibnetfilter-conntrack1
+	dh_installdocs -puntangle-libnetfilter-conntrack1
+	# FIXME: WDF is that ???
 	ln -sf libnetfilter-conntrack1 debian/untangle-libnetfilter-conntrack-dev/usr/share/doc/libnetfilter-conntrack-dev
-	dh_installchangelogs -plibnetfilter-conntrack1
+	dh_installchangelogs -puntangle-libnetfilter-conntrack1
 	dh_install -a --sourcedir=debian/tmp
 	dh_link -a
 	dh_compress -a
