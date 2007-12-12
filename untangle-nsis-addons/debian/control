@@ -6,7 +6,7 @@ Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
 Package: untangle-nsis-addons
-Architecture: any
+Architecture: all
 Depends: nsis (>= 2.06-6)
 Conflicts: nsis-mv
 Provides: nsis-mv

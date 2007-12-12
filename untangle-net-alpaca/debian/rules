@@ -29,7 +29,7 @@ clean:
 	rm -rf configure-stamp $(DESTDIR)
 	dh_clean
 
-binary-arch:
+binary-indep:
 	dh_testdir  
 	dh_testroot   
 	dh_movefiles 
@@ -58,7 +58,7 @@ binary-arch:
 	if [ -f debian/version ] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
 	dh_md5sums     
 
-binary-indep:
+binary-arch:
 # nothing to do
 
 binary: binary-indep binary-arch

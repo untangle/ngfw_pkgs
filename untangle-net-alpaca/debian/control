@@ -6,13 +6,13 @@ Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
 Package: untangle-net-alpaca-iptables
-Architecture: any
+Architecture: all
 Depends: dash, ethtool, bridge-utils, coreutils, iptables
 Description: The Untangle Network Alpaca IP Tables Startup Scripts
   Script to initialize the iptables rules.
 
 Package: untangle-net-alpaca
-Architecture: any
+Architecture: all
 Depends: mongrel, rails (>= 1.2.3), untangle-libpamauth-ruby1.8, dnsmasq, dash, openssl, ethtool, bridge-utils, sqlite3, libsqlite3-ruby, coreutils, untangle-net-alpaca-iptables
 Description: The Untangle Network Alpaca
  The Untangle Network Alpaca.  A web-based configuration utility for

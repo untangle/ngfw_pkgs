@@ -6,7 +6,7 @@ Build-Depends: debhelper (>> 3.0.0), dpatch
 Standards-Version: 3.7.2
 
 Package: untangle-fuzzyocr
-Architecture: any
+Architecture: all
 Conflicts: fuzzyocr-mv, fuzzyocr-ut
 Provides: fuzzyocr-mv, fuzzyocr-ut
 Replaces: fuzzyocr-mv, fuzzyocr-ut

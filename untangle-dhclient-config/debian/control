@@ -6,7 +6,7 @@ Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
 Package: untangle-dhclient-config
-Architecture: any
+Architecture: all
 Depends: dhcp3-client
 Conflicts: pump, pump-mv
 Provides: pump-mv

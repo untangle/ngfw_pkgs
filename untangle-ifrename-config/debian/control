@@ -6,7 +6,7 @@ Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
 Package: untangle-ifrename-config
-Architecture: any
+Architecture: all
 Depends: ifrename
 Description: The Untangle ifrename config
  The Untangle ifrename config.

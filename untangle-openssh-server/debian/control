@@ -6,7 +6,7 @@ Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
 Package: untangle-openssh-server
-Architecture: any
+Architecture: all
 Depends: ssh
 Description: The Untangle ssh server
  Runs on a high port.

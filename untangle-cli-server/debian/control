@@ -6,7 +6,7 @@ Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
 Package: untangle-cli-server
-Architecture: any
+Architecture: all
 Depends: jruby1.0, untangle-vm
 Description: The Untangle CLI Server
  The Untangle CLI Server.

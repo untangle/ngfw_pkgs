@@ -6,7 +6,7 @@ Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
 Package: untangle-kiosk
-Architecture: any
+Architecture: all
 Depends: fbpanel, feh, xbindkeys, firefox, rsync, artwiz-cursor
 Description: The Untangle kiosk utils
  The Untangle kiosk mode utilities.

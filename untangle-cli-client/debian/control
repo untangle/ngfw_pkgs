@@ -6,7 +6,7 @@ Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
 Package: untangle-cli-client
-Architecture: any
+Architecture: all
 Depends: ruby
 Description: The Untangle CLI Client
  The Untangle CLI Client.

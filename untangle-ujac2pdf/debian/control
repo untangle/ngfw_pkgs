@@ -6,7 +6,7 @@ Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
 Package: untangle-ujac2pdf
-Architecture: any
+Architecture: all
 Conflicts: ujac-to-pdf
 Provides: ujac-to-pdf
 Replaces: ujac-to-pdf

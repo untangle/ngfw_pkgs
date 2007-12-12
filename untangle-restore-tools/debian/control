@@ -6,7 +6,7 @@ Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.7.2
 
 Package: untangle-restore-tools
-Architecture: any
+Architecture: all
 Conflicts: restore-mv
 Provides: restore-mv
 Replaces: restore-mv
