@@ -61,3 +61,8 @@ div.list-table input[type="text"]
   border-width: 0px;
   width: 100%;
  }
+
+.list-table-arp, .list-table-route
+{
+  height: 10em;
+}

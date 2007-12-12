@@ -15,11 +15,12 @@ end
 -%>
 
 <%= editable_table( :action => "/arp/create_entry", 
-  :header_columns => [ { :name => "Hostname".t }, 
+  :header_columns => [ { :name => "IP Address".t }, 
                        { :name => "HWaddress".t },
 		       { :name => "Delete".t } ],
   :column_names =>  [ "hostname", "hw_addr" ],
   :title => "Static Arp".t,
+  :class => "list-table-arp",
   :rows => rows,
   :rows_name => "static_arp",
   :auto_size => true

@@ -6,7 +6,7 @@ class RouteController < ApplicationController
   end
 
   def manage
-    @current_routes = `/bin/netstat -rn`
+    @current_routes = `/bin/netstat -rn | grep -v dummy0`
     @network_routes = NetworkRoute.find( :all )
     @network_routes = [] if @network_routes.nil?
     @network_routes << NetworkRoute.new

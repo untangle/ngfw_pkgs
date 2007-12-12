@@ -3,6 +3,9 @@
     ## Define a few convenience variables
     bridge_locals = { :interface => @interface, :bridge_interfaces => @bridge_interfaces, 
                       :bridge_interface_id => @bridge_interface_id }
+    if (!@interface.wan)
+       @config_types.delete( [ "pppoe", "pppoe" ] )
+    end
   %>
   <h1><%= "Interface Configuration for %s".t / @interface.name %></h1>
   <% form_tag( :action => 'null' ) do -%>
@@ -18,7 +21,7 @@
       
     <%= render( :partial => "bridge", :object => @bridge, :locals => bridge_locals ) %>
 
-    <%= render( :partial => "pppoe", :object => @pppoe, :locals =>  { :interface => @interface } ) %>
+    <%= render( :partial => "pppoe", :object => @pppoe, :locals =>  { :interface => @interface } ) if @interface.wan %>
   </div>
 </div>
 <%= javascript_tag "setConfigType()" %>
