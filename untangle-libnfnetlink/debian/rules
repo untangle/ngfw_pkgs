@@ -70,10 +70,8 @@ binary-indep: build install
 binary-arch: build install
 	dh_testdir -a
 	dh_testroot -a
-	dh_installdocs -plibnfnetlink-dev
-	dh_installdocs -plibnfnetlink1
-	dh_installchangelogs -plibnfnetlink1
-	dh_installchangelogs -plibnfnetlink-dev
+	dh_installdocs -puntangle-libnfnetlink-dev -puntangle-libnfnetlink0
+	dh_installchangelogs -puntangle-libnfnetlink-dev -puntangle-libnfnetlink0
 	dh_install -a --sourcedir=debian/tmp
 	dh_link -a
 	dh_compress -a

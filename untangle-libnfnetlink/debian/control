@@ -6,7 +6,7 @@ Build-Depends: cdbs (>= 0.4), debhelper (>= 4.2), gcc, automake1.7, linux-libc-d
 Standards-Version: 3.7.2
 
 Package: untangle-libnfnetlink0
-Architecture: all
+Architecture: any
 Depends: ${shlibs:Depends}
 Conflicts: libnfnetlink1, libnfnetlink0
 Provides: libnfnetlink1, libnfnetlink0
@@ -16,7 +16,7 @@ Description: Netfilter netlink library
  netfilter netlink layer in the kernel.
 
 Package: untangle-libnfnetlink-dev
-Architecture: all
+Architecture: any
 Section: libdevel
 Depends: untangle-libnfnetlink0 (= ${Source-Version})
 Conflicts: libnfnetlink-dev
