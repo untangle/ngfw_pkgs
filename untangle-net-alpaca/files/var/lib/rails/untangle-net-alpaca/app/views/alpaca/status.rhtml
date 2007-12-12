@@ -1,0 +1,16 @@
+<%= editable_table( :header_columns => [ { :name => "Network Interface".t },
+		 		      { :name => "OS Name".t },
+		 		      { :name => "Connection".t }, 
+		 		      { :name => "Address".t }, 
+				      ],
+                 :column_names => [ "name", "os_name", "carrier", "mac" ],
+		 :title => "Status",
+		 :class => "list-table-status",
+		 :rows => @interfaces,
+		 :rows_name => "interface",
+		 :auto_size => true,
+		 :add => false,
+		 :delete => false,
+		 :read_only => true
+    )
+%>

@@ -83,9 +83,13 @@ module ApplicationHelper
       blank_columns << "</div>"
     end
 
-    result << javascript_tag("function addRow"+tableId+"() { var rowId=Math.floor(Math.random()*10000000000); new Insertion.Bottom('"+tableId+"','<li id=\"'+rowId+'\" class=\"list-table-row\"><input type=\"hidden\" name=\""+options[:rows_name]+"[]\" value=\"'+rowId+'\" />"+blank_columns+"<div class=\"minus\" onClick=\"Alpaca.removeStaticEntry(\\''+rowId+'\\')\"> - </div></li> '); resize"+tableId+"(); }")
+    if options[:add].nil? || options[:add]
 
-    result << button_to_function("+".t, "addRow"+tableId+"()")
+      result << javascript_tag("function addRow"+tableId+"() { var rowId=Math.floor(Math.random()*10000000000); new Insertion.Bottom('"+tableId+"','<li id=\"'+rowId+'\" class=\"list-table-row\"><input type=\"hidden\" name=\""+options[:rows_name]+"[]\" value=\"'+rowId+'\" />"+blank_columns+"<div class=\"minus\" onClick=\"Alpaca.removeStaticEntry(\\''+rowId+'\\')\"> - </div></li> '); resize"+tableId+"(); }")
+
+      result << button_to_function("+".t, "addRow"+tableId+"()")
+    end
+
     result << "<div class=\"list-table " + options[:class].to_s + "\">"
     result << "<ul id=\"" + tableId + "\" class=\"list-table-list " + options[:class].to_s + "\">"
     result << "<li class=\"header " + options[:header_class].to_s + "\">"
@@ -105,17 +109,24 @@ module ApplicationHelper
       column_count = 0
       row[:columns].each do |column|
         result << "<div class=\"list-table-column " + column[:class].to_s  + " " + options[:column_names][column_count] + "\">"
-        result << text_field( options[:column_names][column_count], rowId, { :value => column[:value] } )
+        column_args = { :value => column[:value] }
+        if ! options[:read_only].nil? && options[:read_only] == true
+          column_args[:readonly] = "readonly"
+        end
+        result << text_field( options[:column_names][column_count], rowId, column_args )
         result << "</div>"
         column_count = column_count + 1
       end
-      result << "<div class=\"minus\" onClick=\"Alpaca.removeStaticEntry( '" + rowId + "' )\"> - </div>"
+      if options[:delete].nil? || options[:delete]
+        result << "<div class=\"minus\" onClick=\"Alpaca.removeStaticEntry( '" + rowId + "' )\"> - </div>"
+      end
+      
       result << "</li>"
     end
     result << "</ul>\n</div>\n"
 
     auto_size = "function resize"+tableId+"() {"
-    if options[:auto_size]
+    if ! options[:auto_size].nil? && options[:auto_size] == true
       auto_size << "var v"+tableId+" = document.getElementById('"+tableId+"'); var v"+tableId+"w= v"+tableId+".offsetWidth;  var c"+tableId+" = v"+tableId+".childNodes; for(var i = 0; i < c"+tableId+".length; i++){if (c"+tableId+"[i].nodeName.toLowerCase() == 'li') { var lic = c"+tableId+"[i].childNodes; for (var c = 0; c < lic.length; c++) { if (lic[c].nodeName.toLowerCase() == 'div') { lic[c].style.width = Math.floor((v"+tableId+"w) / "+options[:header_columns].length.to_s+")-1+'px';} } } }"
     end
     auto_size << "}"
