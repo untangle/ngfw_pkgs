@@ -6,6 +6,7 @@ DEFAULT_FILE="/etc/default/snmpd"
 # Second test is because this package is new in 5.1.
 if [ -z "$2" ] && ! grep -q "UDP" $DEFAULT_FILE ; then
    # Disable by default (enabled by setting snmp settings in UI)
+   /etc/init.d/snmpd stop
    sed -i "s/^SNMPDRUN=.*/SNMPDRUN=no/" $DEFAULT_FILE
    sed -i "s/^TRAPDRUN=.*/TRAPDRUN=no/" $DEFAULT_FILE
 fi
