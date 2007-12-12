@@ -58,9 +58,6 @@ TCPKeepAlive yes
 #MaxStartups 10:30:60
 #Banner /etc/issue.net
 
-# Allow client to pass locale environment variables
-AcceptEnv LANG LC_*
-
 Subsystem sftp /usr/lib/openssh/sftp-server
 
 UsePAM yes
