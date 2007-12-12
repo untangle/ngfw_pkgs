@@ -1,0 +1,16 @@
+Source: untangle-gateway-light
+Section: admin
+Priority: optional
+Maintainer: John Irwin <jdi@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.7.2
+
+Package: untangle-gateway-light
+Architecture: any
+Provides: untangle-appliance
+Conflicts: untangle-appliance
+Replaces: untangle-appliance
+Depends: untangle-vm, untangle-client, untangle-cli-server, untangle-cli-client, untangle-postgresql-config, untangle-dhclient-config, untangle-ddclient-config, untangle-exim4-config, untangle-snmpd-config, firefox | web-browser, ntp-server, ntpdate
+Description: The Untangle gateway light 
+ The light version of the Untangle Gateway.
+ Contains everything you need to run the Untangle Gateway, minus the kiosk.
