@@ -1,2 +1,0 @@
-ABCD abcd EFGHI efghi JKLMN jklmn OPQR opqr
-STUVW stuvw XYZ xyz 12345 67890  !?'&/\=+-*#(){}[]<>
