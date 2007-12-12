@@ -7,7 +7,7 @@ Build-Depends-Indep: dpatch, debhelper (>= 4.2), cdbs (>= 0.4)
 Standards-Version: 3.7.2
 
 Package: untangle-libnetfilter-queue0
-Architecture: all
+Architecture: any
 Depends: libc6 (>= 2.3.2.ds1-21), untangle-libnfnetlink0 (>= 1:0.0.30)
 Conflicts: libnetfilter-queue1, libnetfilter-queue0
 Provides: libnetfilter-queue1, libnetfilter-queue0
@@ -16,7 +16,7 @@ Description: Netfilter netfilter-queue library
  This is the userspace library for netfilter_queue.
 
 Package: untangle-libnetfilter-queue-dev
-Architecture: all
+Architecture: any
 Section: libdevel
 Depends: untangle-libnetfilter-queue0 (= ${Source-Version}), untangle-libnfnetlink-dev (>= 1:0.0.30)
 Conflicts: libnetfilter-queue-dev
