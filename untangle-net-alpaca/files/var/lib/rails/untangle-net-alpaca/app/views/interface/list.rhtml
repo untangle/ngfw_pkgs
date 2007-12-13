@@ -1,8 +1,4 @@
-<% form_tag( :action => 'intf_order_save' ) do -%>
-  <%= link_to 'reload'.t, :action => 'reload' %>
-  <%= submit_tag "Cancel".t %>
-  <%= submit_tag "Save Changes".t %>
-  
+<% form_tag( :action => 'intf_order_save' ) do -%>  
   <div id="interface-list">
     <table>
       <tr>
@@ -45,5 +41,8 @@
 
   <%= sortable_element( "interface-os-list" ) %> 
   </div>
+
+  <%= submit_tag "Cancel".t %>
+  <%= submit_tag "Save Changes".t %>
 <% end -%>
   

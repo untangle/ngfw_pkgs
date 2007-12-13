@@ -1,14 +1,14 @@
 div.interfaces
 { 
   margin: 10px 0px 10px 0px;
-  width: 420px;
+  width: 500px;
   overflow: auto;
   height: 175px;
   }
 
 div.interfaces ul.interface-list
 { 
-  width: 402px;
+  width: 482px;
   list-style: none inside none;
   margin: 0px;
   padding: 0px;
@@ -35,14 +35,17 @@ ul.interface-list div.i-header-1, div.i-column-1
   width: 100px;
   }
 
+/* Some vendors get carried away with their vendor names */
 ul.interface-list div.i-header-2, div.i-column-2
 { 
-  width: 100px;
+  width: 200px;
+  overflow: hidden;
+  height: 1.2em;
   }
 
 ul.interface-list div.i-header-3, div.i-column-3
 { 
-  width: 200px;
+  width: 180px;
   }
 
 ul.interface-list li.interface
@@ -57,7 +60,7 @@ ul.interface-list div.i-column-1
 { 
   }
 
-ul.interface-list div.i-column-2
+ul.interface-list div.i-header-2
 {
   text-align: center;
   }

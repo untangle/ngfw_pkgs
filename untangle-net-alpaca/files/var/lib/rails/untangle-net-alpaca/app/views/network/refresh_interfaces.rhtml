@@ -1,0 +1,34 @@
+<div class="config-level">
+  <h2><%= "Refresh Interfaces".t %></h2>
+
+  <% if @new_interfaces.empty? && @deleted_interfaces.empty? %>
+    <h3><%= "Up to date".t %></h3>
+    
+    <p class="description">
+      <%= "Unable to detect any removed or installed interfaces." %>
+    </p>
+  <% else %>
+    <% unless @new_interfaces.empty?  %>
+      <h3><%= "Following interfaces have been added.".t %></h3>
+      <%= render( :partial => "interfaces", :object => @new_interfaces ) %>
+    <% end %>
+
+    <% unless @deleted_interfaces.empty?  %>
+      <h3><%= "The following interfaces have been removed.".t %></h3>
+      <%= render( :partial => "interfaces", :object => @deleted_interfaces ) %>
+    <% end %>
+
+    <% form_tag( :action => 'commit_interfaces', :id => "commit" ) do -%>
+      <% @deleted_interfaces.each do |interface| %>
+        <%= hidden_field_tag( "deleted_interfaces[]", interface.mac_address ) %>
+      <% end %>
+      <% @new_interfaces.each do |interface| %>
+        <%= hidden_field_tag( "new_interfaces[]", interface.mac_address) %>
+      <% end %>
+
+      <%= submit_tag "Cancel".t %>
+      <%= submit_tag "Save".t %>
+    <% end -%>
+  <% end %>
+  
+</div>

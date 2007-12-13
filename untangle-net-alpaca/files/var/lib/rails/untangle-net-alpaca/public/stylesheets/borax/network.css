@@ -70,3 +70,29 @@ li.ip-network div.minus:hover
   cursor: pointer;
   background-color: #E1EB26;  
   }
+
+/* list of interfaces */
+div.list-table.interfaces
+{ 
+  margin: 10px 0px 10px 0px;
+  width: 523px;
+  height: 100px;
+  }
+
+div.list-table.interfaces ul li > div.name
+{ 
+  width: 100px;
+  }
+
+div.list-table.interfaces ul li > div.vendor
+{ 
+  width: 200px;
+  }
+
+div.list-table.interfaces ul li > div.mac-address
+{ 
+  width: 200px;
+  text-align: center;
+  }
+
+

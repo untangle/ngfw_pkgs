@@ -37,6 +37,36 @@ module InterfaceHelper
   ## An array of the config types that you can bridge with
   BRIDGEABLE_CONFIGTYPES = [ ConfigType::STATIC, ConfigType::DYNAMIC ].freeze
 
+  ## Load the new interfaces and return two arrays.
+  ## first the array of new interfaces to delete.
+  ## Second is the array of interfaces that should be deleted.
+  ## REVIEW : this will not work if the mac address has a different case.
+  def self.load_new_interfaces
+    delete_interfaces = []
+    new_interfaces = []
+
+    physical_interfaces = self.loadInterfaces
+    mac_addresses = {}
+    existing_mac_addresses = {}
+    physical_interfaces.each do |interface|
+      mac_addresses[interface.mac_address] = true unless ApplicationHelper.null? interface.mac_address
+    end
+    
+    Interface.find( :all ).each do |interface|
+      ## Delete any items that are not in the list of current mac addresses.
+      delete_interfaces << interface unless mac_addresses[interface.mac_address] == true
+
+      ## Build the list of mac_addresses
+      existing_mac_addresses[interface.mac_address] = true
+    end
+
+    physical_interfaces.each do |interface|
+      new_interfaces << interface unless existing_mac_addresses[interface.mac_address] == true
+    end
+
+    [ new_interfaces, delete_interfaces ]
+  end
+
   ## DDD some of this code may be debian specific DDD
   def self.loadInterfaces
     ## Create an empty array
@@ -56,7 +86,8 @@ module InterfaceHelper
       interface = Interface.new
 
       ## Save the parameters from the physical interface.
-      interface.os_name, interface.mac_address, interface.bus = i.os_name, i.mac_address, i.bus
+      interface.os_name, interface.mac_address, interface.bus, interface.vendor = 
+        i.os_name, i.mac_address, i.bus, i.vendor
 
       parameters = DefaultInterfaceMapping[i.os_name]
       ## Use the os name if it doesn't have a predefined virtual name

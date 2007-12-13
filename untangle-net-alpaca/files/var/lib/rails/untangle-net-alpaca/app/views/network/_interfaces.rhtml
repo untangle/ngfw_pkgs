@@ -1,0 +1,11 @@
+<div class="list-table interfaces">
+  <ul class="interface-list">
+    <li class="header">
+      <div class="name"><%= "Name".t %></div>
+      <div class="vendor"><%= "Vendor".t %></div>
+      <div class="mac-address"><%= "MAC Address".t %></div>
+    </li>
+    
+    <%= render( :partial => "interface" , :collection => interfaces ) %>
+  </ul>
+</div>

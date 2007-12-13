@@ -17,12 +17,13 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
       os_name = os_name.strip
 
       bus_id=""
+      vendor=get_vendor( os_name )
 
       ## For some reason, on some systems this causes ruby to hang, use 'cat' instead.
       # mac_address = File.open( "/sys/class/net/#{os_name}/address", "r" ) { |f| f.readline.strip }
       mac_address = `cat "/sys/class/net/#{os_name}/address"`.strip
       
-      interfaceArray << PhysicalInterface.new( os_name, mac_address, bus_id, "untangle" )
+      interfaceArray << PhysicalInterface.new( os_name, mac_address, bus_id, vendor )
     end
     
     interfaceArray
@@ -253,6 +254,26 @@ EOF
     mtu = OSLibrary::NetworkManager::DefaultMTU if ( mtu.nil? || mtu <= 0 )
 
     return "\t#{prefix}mtu #{mtu}"
+  end
+
+  def get_vendor( os_name )
+    path="/sys/class/net/#{os_name}/device/uevent"
+    bus,vendor_id = `awk '/(PHYSDEVBUS|PCI_ID|PRODUCT)/ { sub( /^[^=]*=/, "" );  print $0 }' #{path}`.strip.split( "\n" )
+    
+    return "Unknown" if ApplicationHelper.null?( vendor_id ) || ApplicationHelper.null?( bus )
+
+    vendor_id = vendor_id.sub( /[:\/].*/, "" )
+    
+    case bus
+    when "usb"
+      vendor = `zcat /usr/share/misc/usb.ids | awk '/^#{vendor_id}/ { $1 = "" ; print $0 }'`.strip
+    when "pci"
+      vendor = `awk '/^#{vendor_id}/ { $1 = "" ; print $0 }' /usr/share/misc/pci.ids`.strip
+    else return "Unknown"
+    end
+    
+    return "Unknown" if ApplicationHelper.null?( vendor )
+    return vendor
   end
 
   def header

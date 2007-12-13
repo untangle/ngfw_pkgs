@@ -125,7 +125,7 @@ form div.dynamic div.current
   float: left;
  }
 
-div.button
+div.button, span.button
 { 
   background-color: #EEFFEE;
   padding: 4px 4px 4px 8px;
@@ -134,7 +134,7 @@ div.button
   font-weight: bold;
  }
 
-div.button:hover
+div.button:hover, span.button:hover
 {
   background-color: #3FE0C6;
   cursor: pointer;

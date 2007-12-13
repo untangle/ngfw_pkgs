@@ -96,7 +96,6 @@ class NetworkController < ApplicationController
   def aliases
     ## Index is a reserved word, so the column name must be quoted.
     conditions = [ "\"index\" = ?", InterfaceHelper::ExternalIndex ]
-     
     external_interface = Interface.find( :first, :conditions => conditions )
     
     if external_interface
@@ -126,7 +125,7 @@ class NetworkController < ApplicationController
     return redirect_to( :action => 'aliases' ) unless ( params[:commit] == "Save" )
 
     ## Index is a reserved word, so the column name must be quoted.
-    conditions = [ "\"index\" = ?", InterfaceHelper::ExternalIndex ]    
+    conditions = [ "\"index\" = ?", InterfaceHelper::ExternalIndex ]
     external_interface = Interface.find( :first, :conditions => conditions )
     
     @msg = nil
@@ -164,6 +163,52 @@ class NetworkController < ApplicationController
     return unless @msg.nil?
 
     return redirect_to( :action => 'aliases' )
+  end
+
+  def refresh_interfaces
+    @new_interfaces, @deleted_interfaces = InterfaceHelper.load_new_interfaces
+  end
+
+  def commit_interfaces
+    ## Ignore if they hit cancel
+    return redirect_to( :action => 'manage' ) unless ( params[:commit] == "Save" )
+    
+    new_interfaces, deleted_interfaces = InterfaceHelper.load_new_interfaces
+
+    new_interface_list = params[:new_interfaces]
+    deleted_interface_list = params[:deleted_interfaces]
+
+    new_interface_list = [] if new_interface_list.nil?
+    deleted_interface_list = [] if deleted_interface_list.nil?
+
+    if ( new_interface_list.size != new_interfaces.size || 
+         deleted_interface_list.size != deleted_interfaces.size )
+      return redirect_to( :action => 'refresh_interfaces' ) 
+    end
+
+    ## Verify that the new and deleted interfaces line up.
+    ma = {}
+    new_interface_list.each { |i| ma[i] = true }
+    logger.debug( "ma : #{ma}" )
+    new_interfaces.each do |i|
+      return redirect_to( :action => 'refresh_interfaces' )  unless ma[i.mac_address] == true
+    end
+
+    ma = {}
+    logger.debug( "ma : #{ma}" )
+    deleted_interface_list.each { |i| ma[i] = true }
+    deleted_interfaces.each do |i|
+      return redirect_to( :action => 'refresh_interfaces' )  unless ma[i.mac_address] == true
+    end
+    
+    ## Destroy the interfaces to be deleted.
+    deleted_interfaces.each { |i| i.destroy }
+    
+    ## Save the interfaces that are 
+    new_interfaces.each{ |i| i.save }
+
+    ## Do not commit, until the user has a chance to look at the new settings.
+    return redirect_to( :action => 'manage' )
   end
 
   def scripts

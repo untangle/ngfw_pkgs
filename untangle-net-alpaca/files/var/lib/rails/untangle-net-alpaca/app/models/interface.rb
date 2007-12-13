@@ -1,15 +1,15 @@
 class Interface < ActiveRecord::Base
   ## Link for a static configuration
-  has_one :intf_static
+  has_one :intf_static, :dependent => :destroy
   
   ## Link for the dynamic/dhcp configuration
-  has_one :intf_dynamic
+  has_one :intf_dynamic, :dependent => :destroy
 
   ## Link for the bridge configuration.
-  has_one :intf_bridge
+  has_one :intf_bridge, :dependent => :destroy
 
   ## Link for the pppoe configuration.
-  has_one :intf_pppoe
+  has_one :intf_pppoe, :dependent => :destroy
 
   ## Link for all of the interfaces that are bridged with this interface.
   has_many( :bridged_interfaces, :class_name => "IntfBridge", :foreign_key => "bridge_interface_id" )
