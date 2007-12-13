@@ -8,6 +8,11 @@ class DhcpController < ApplicationController
 
   def create_static_entry
     @static_entry = DhcpStaticEntry.new
+    if ! params[:mac_address].nil? && ! params[:ip_address].nil?
+      @static_entry.mac_address = params[:mac_address]
+      @static_entry.ip_address = params[:ip_address]
+      @static_entry.description = params[:description]
+    end
   end
 
   def manage

@@ -1,1 +1,7 @@
+if @static_entry.nil? && ! param[:mac_address].nil? && ! param[:ip_address].nil?
+   @static_entry = DhcpStaticEntry.new
+   @static_entry.mac_address = param[:mac_address]
+   @static_entry.ip_address = param[:ip_address]
+   @static_entry.description = param[:description]
+end
 page.insert_html( :bottom, "dhcp-static-entry-list", :partial => "static_entry", :object => @static_entry )
