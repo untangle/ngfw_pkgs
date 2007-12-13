@@ -1,12 +1,6 @@
 <div>
   <h1><%= "Static Route Management".t %></h1>
 
-<h2><%= "Current Routes".t %></h2>
-
-<pre>
-<%= @current_routes %>
-</pre>
-
   <% form_tag( :action => 'save' ) do
 rows = []
 @network_routes.each do |network_route|
@@ -42,4 +36,10 @@ end
     <%= submit_tag "Save Changes".t %>
 
   <% end -%>
+<h2><%= "Current Routes".t %></h2>
+
+<pre>
+<%= @current_routes %>
+</pre>
+
 </div>

@@ -1,1 +1,2 @@
-page.replace( "dns-dynamic-entries", :partial => "dynamic_entries", :object => @dynamic_entries )
+#page.replace( "dns-dynamic-entries", :partial => "dynamic_entries", :object => @dynamic_entries )
+page << "window.location.reload(true)"
