@@ -1,0 +1,18 @@
+untangle-appliance-int (5.0.3-1) stable; urgency=low
+
+  * 5.0.3
+
+ -- Sebastien Delafond <seb@untangle.com>  Mon, 22 Oct 2007 16:38:58 -0700
+
+untangle-appliance-int (5.0.1-1) mustang-1; urgency=low
+
+  * auto build
+
+ --  <seb@untangle.com>  Fri, 27 Jul 2007 14:35:49 -0700
+
+untangle-appliance-int (0-0) stable; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@untangle.com>  Thu, 21 June 2007 17:35:53 -0700
+
