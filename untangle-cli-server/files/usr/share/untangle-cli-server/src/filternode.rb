@@ -185,7 +185,7 @@ class UVMFilterNode < UVMRemoteApp
                     else
                         @diag.if_level(3) { puts! "Error: invalid SNMP option encountered: '#{args[1]}'" }
                     end
-                    return nil unless oid
+                    return nil unless (oid && tid)
                     
                     # Get the effective node stats, either from the cache or from the UVM.
                     # (Must be after we have the OID because the TID may be nil and we'll need something to cache on.)
@@ -209,7 +209,10 @@ class UVMFilterNode < UVMRemoteApp
                                 @diag.if_level(3) { puts! "Updating stats cache for tid #{tid}" ; p node_stats }
                                 @stats_cache["#{mib_root}.#{tid}"] = [node_stats, Time.now.to_i]
                             rescue Exception => ex
-                                @diag.if_level(3) { puts! "Error: unable to get statistics for node: " ; p node_ctx ; p ex ; p ex.backtrace }
+                                @diag.if_level(3) { 
+									puts! "Error: unable to get statistics for node: "
+									p node_ctx if node_ctx; p ex; p ex.backtrace
+								}
                                 return nil
                             end
                         else
