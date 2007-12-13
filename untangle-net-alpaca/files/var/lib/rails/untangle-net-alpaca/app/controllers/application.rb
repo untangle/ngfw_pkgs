@@ -30,6 +30,26 @@ class ApplicationController < ActionController::Base
   before_filter :setScripts
   before_filter :authenticate
 
+  before_filter :update_activity_time, :except => :session_expiry
+
+  MAX_SESSION_TIME = 30
+
+  def update_activity_time
+    if !session[:expires_at].nil? && session[:expires_at] < Time.now
+      reset_session
+    end
+    session[:expires_at] = MAX_SESSION_TIME.minutes.from_now
+    return true
+  end
+
+  def session_expiry
+    @time_left = ( session[:expires_at] - Time.now ).to_i
+    unless @time_left > 0
+      reset_session
+      #redict_to( '/' ) this doesn't work
+    end
+  end
+
   def set_config_level
     @alpaca_settings = AlpacaSettings.find( :first )
     if @alpaca_settings.nil?

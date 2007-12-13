@@ -1,0 +1,5 @@
+#/bin/dash
+
+## Expire RoR sessions based on time.
+
+find /var/lib/rails/untangle-net-alpaca/tmp/sessions/ -maxdepth 1 -type f -cmin +50 -exec rm \{\} \;
