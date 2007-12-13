@@ -3,7 +3,7 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
 
   IPTablesCommand = "${IPTABLES}"
 
-  Service = "/etc/init.d/alpaca-iptables"
+  Service = "/etc/init.d/untangle-net-alpaca-iptables"
 
   ConfigDirectory = "/etc/untangle-net-alpaca/iptables-rules.d"
   
