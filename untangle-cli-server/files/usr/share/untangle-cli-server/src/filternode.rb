@@ -208,6 +208,9 @@ class UVMFilterNode < UVMRemoteApp
                                 raise Exception, "Unable to fetch node stats for TID #{tid}" unless node_stats
                                 @diag.if_level(3) { puts! "Updating stats cache for tid #{tid}" ; p node_stats }
                                 @stats_cache["#{mib_root}.#{tid}"] = [node_stats, Time.now.to_i]
+                            rescue java.lang.IllegalStateException => ex
+                                @diag.if_level(3) { puts! "Can't collect stats from TID #{tid} - invalid state." ; p ex }
+                                return ""
                             rescue Exception => ex
                                 @diag.if_level(3) { 
 									puts! "Error: unable to get statistics for node: "
