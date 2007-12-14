@@ -361,11 +361,11 @@ EOF
       if ( policy.netmask == "0" || policy.netmask == "0.0.0.0" )
         config.ip_networks.each do |ip_network|
           network = "#{ip_network.ip}/#{OSLibrary::NetworkManager.parseNetmask( ip_network.netmask )}"
-          rules << "#{IPTablesCommand} #{Chain::PostNat.args} ! -o #{name} -s #{network} -j #{target}"
+          rules << "#{IPTablesCommand} #{Chain::PostNat.args} -m conntrack ! --ctorigdst #{network} -s #{network} -j #{target}"
         end
       else
         network = "#{policy.ip}/#{OSLibrary::NetworkManager.parseNetmask( policy.netmask )}"
-        rules << "#{IPTablesCommand} #{Chain::PostNat.args} ! -o #{name} -s #{network} -j #{target}"
+        rules << "#{IPTablesCommand} #{Chain::PostNat.args}  -m conntrack ! --ctorigdst #{network} -s #{network} -j #{target}"
       end
     end
 
