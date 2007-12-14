@@ -38,7 +38,7 @@ start()
         exit -2
     }
     
-    ${MONGREL_RAILS} start -c ${BASE_DIR} -d
+    ${MONGREL_RAILS} start -c ${BASE_DIR} --prefix "alpaca" -d
 }
 
 stop()

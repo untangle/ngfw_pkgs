@@ -1,7 +1,6 @@
 class Alpaca::Components::WizardComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
-    menu_organizer.register_item( "/main/status/wizard", Alpaca::Menu::Item.new( 100, "Wizard", "/wizard" ))
-    menu_organizer.register_item( "/main/advanced", Alpaca::Menu::Item.new( 900, "Advanced", "#blank" ))
+    menu_organizer.register_item( "/main/status/wizard", menu_item( 100, "Wizard", {} ))
   end
 
   def wizard_insert_stages( builder )

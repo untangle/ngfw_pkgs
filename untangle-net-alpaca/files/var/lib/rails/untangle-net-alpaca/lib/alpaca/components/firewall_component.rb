@@ -2,8 +2,8 @@ class Alpaca::Components::FirewallComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
     
     if ( config_level >= AlpacaSettings::Level::Advanced ) 
-      menu_organizer.register_item( "/main/advanced/firewalls", 
-                                    Alpaca::Menu::Item.new( 200, "Packet Filter", "/firewall" ))
+      menu_organizer.register_item( "/main/advanced/firewalls",
+                                    menu_item( 200, "Packet Filter", :action => "manage" ))
     end
   end
   

@@ -2,8 +2,7 @@ class Alpaca::Components::ArpComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
     
     if ( config_level >= AlpacaSettings::Level::Advanced ) 
-      menu_organizer.register_item( "/main/advanced/arp", 
-                                    Alpaca::Menu::Item.new( 400, "ARP", "/arp" ))
+      menu_organizer.register_item( "/main/advanced/arp", menu_item( 400, "ARP", {} ))
     end
   end
   

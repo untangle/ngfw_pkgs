@@ -1,11 +1,14 @@
 class Alpaca::Components::NetworkComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
     if ( config_level == AlpacaSettings::Level::Basic )    
-      menu_organizer.register_item( "/main/network", Alpaca::Menu::Item.new( 200, "Network", "/network" ))
-      menu_organizer.register_item( "/main/network/aliases", Alpaca::Menu::Item.new( 100, "Aliases", "/network/aliases" ))
-      menu_organizer.register_item( "/main/network/refresh", Alpaca::Menu::Item.new( 900, "Refresh", "/network/refresh_interfaces" ))
+      menu_organizer.register_item( "/main/network", menu_item( 200, "Network", {} ))
+      menu_organizer.register_item( "/main/network/aliases", 
+                                    menu_item( 100, "Aliases", :action => "aliases" ))
+      menu_organizer.register_item( "/main/network/refresh", 
+                                    menu_item( 900, "Refresh", :action => "refresh_interfaces" ))
     else
-      menu_organizer.register_item( "/main/interfaces/refresh", Alpaca::Menu::Item.new( 900, "Refresh", "/network/refresh_interfaces" ))
+      menu_organizer.register_item( "/main/interfaces/refresh", 
+                                    menu_item( 900, "Refresh", :action => "refresh_interfaces" ))
     end
   end
 

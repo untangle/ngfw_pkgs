@@ -10,8 +10,7 @@ class Alpaca::Components::HostnameComponent < Alpaca::Component
 
   ## Register all of the menu items.
   def register_menu_items( menu_organizer, config_level )
-    ## REVIEW : should be a more elegant way of specifying the URL.
-    menu_organizer.register_item( "/main/hostname", Alpaca::Menu::Item.new( 300, "Hostname", "/hostname/" ))
+    menu_organizer.register_item( "/main/hostname", menu_item( 300, "Hostname", :action => "manage" ))
   end
 
   def wizard_generate_review( review )

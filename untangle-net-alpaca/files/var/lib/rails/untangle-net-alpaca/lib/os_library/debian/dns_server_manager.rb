@@ -228,7 +228,7 @@ EOF
     end
     
     duration = dhcp_server_settings.lease_duration
-    duration = DefaultDuration if duration <= 0
+    duration = DefaultDuration if duration.nil? || duration <= 0
     duration = MinLeaseDuration if duration < MinLeaseDuration
     duration = MaxLeaseDuration if duration > MaxLeaseDuration
 

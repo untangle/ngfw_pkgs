@@ -168,7 +168,7 @@ class ApplicationController < ActionController::Base
       klazz = Alpaca::Components.const_get( component )
 
       logger.debug( "Found the class #{klazz}" )
-      @components << klazz.new( params, session, request )
+      @components << klazz.new( self, params, session, request )
     end
   end
 end

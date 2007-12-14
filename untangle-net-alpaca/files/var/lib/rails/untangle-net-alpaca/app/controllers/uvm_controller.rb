@@ -73,6 +73,124 @@ class UvmController < ApplicationController
     true
   end
 
+  ## Set the settings up as if this was for the wizard (UVM wizard not the alpaca wizard)
+  def wizard_start
+    interfaces = InterfaceHelper.loadInterfaces
+
+    internal, external = nil, nil
+    interfaces.each do |interface|
+      case interface.index
+        when InterfaceHelper::ExternalIndex then external = interface
+        when InterfaceHelper::InternalIndex then internal = interface
+      end
+    end
+    
+    raise "Missing internal or external interface" if external.nil? || internal.nil?
+
+    Interface.destroy_all
+    ## Have to save them in order to get valid indices for bridging.
+    interfaces.each { |interface| interface.save }
+
+    interfaces.each do |interface|
+      case interface.index
+      when InterfaceHelper::ExternalIndex 
+        ## Configure the external interface for DHCP
+        interface.intf_dynamic = IntfDynamic.new
+        interface.config_type = InterfaceHelper::ConfigType::DYNAMIC
+        
+      when InterfaceHelper::InternalIndex 
+        ## Configure the internal interface as a static
+        static = IntfStatic.new
+        static.ip_networks = [ IpNetwork.new( :ip => "192.168.2.254", :netmask => "24", :position => 1 )]
+        static.nat_policies = [ NatPolicy.new( :ip => "0.0.0.0", :netmask => "0", :new_source => "auto" )]
+        interface.intf_static = static
+        interface.config_type = InterfaceHelper::ConfigType::STATIC
+      else
+        ## Bridge all other interfaces with external
+        bridge = IntfBridge.new
+        bridge.bridge_interface = external
+        external.bridged_interfaces << bridge
+        interface.intf_bridge = bridge
+        interface.config_type = InterfaceHelper::ConfigType::BRIDGE
+      end 
+
+      ## Save the changes to the interface
+      interface.save
+    end
+    
+    DhcpServerSettings.destroy_all
+    DhcpServerSettings.new( :enabled => true, :start_address => "192.168.2.100", :end_address => "192.168.2.200" ).save
+
+    DnsServerSettings.destroy_all
+    DnsServerSettings.new( :enabled => true, :suffix => "example.com" ).save
+    
+    os["dhcp_server_manager"].commit
+
+    ## os["network_manager"].commit
+
+    nil
+  end
+
+  def wizard_external_interface_static( ip, netmask, default_gateway, dns_1, dns_2 )
+    wizard_manage_interface( InterfaceHelper::ExternalIndex ) do |external_interface|
+      static = IntfStatic.new
+      static.ip_networks = [ IpNetwork.new( :ip => ip, :netmask => netmask, :position => 1 )]
+      static.default_gateway, static.dns_1, static.dns_2 = default_gateway, dns_1, dns_2
+      external_interface.intf_static = static
+      external_interface.config_type = InterfaceHelper::ConfigType::STATIC
+    end
+  end
+
+  def wizard_external_interface_dynamic
+    wizard_manage_interface( InterfaceHelper::ExternalIndex ) do |external_interface|
+      external_interface.intf_dynamic = IntfDynamic.new
+      external_interface.config_type = InterfaceHelper::ConfigType::DYNAMIC
+    end
+  end
+
+  def wizard_external_interface_pppoe( username, password )
+    wizard_manage_interface( InterfaceHelper::ExternalIndex ) do |external_interface|
+      external_interface.intf_pppoe = IntfPppoe.new( :username => username, :password => password )
+      external_interface.config_type = InterfaceHelper::ConfigType::PPPOE
+    end
+  end
+
+  def wizard_internal_interface_bridge
+    wizard_manage_interface( InterfaceHelper::InternalIndex ) do |internal_interface|
+      wizard_manage_interface( InterfaceHelper::ExternalIndex, false ) do |external_interface|
+        bridge = IntfBridge.new
+        bridge.bridge_interface = external_interface
+        external_interface.bridged_interfaces << bridge
+        internal_interface.intf_bridge = bridge
+        internal_interface.config_type = InterfaceHelper::ConfigType::BRIDGE
+      end
+
+      ## Disable DHCP and DNS?
+      DhcpServerSettings.destroy_all
+      DhcpServerSettings.new( :enabled => false, :start_address => "", :end_address => "" ).save
+      
+      DnsServerSettings.destroy_all
+      DnsServerSettings.new( :enabled => false, :suffix => "example.com" ).save
+    end
+  end
+
+  def wizard_internal_interface_nat( ip, netmask, dhcp_start, dhcp_end, suffix )
+    wizard_manage_interface( InterfaceHelper::InternalIndex ) do |internal_interface|
+      static = IntfStatic.new
+      static.ip_networks = [ IpNetwork.new( :ip => ip, :netmask => netmask, :position => 1 )]
+      static.nat_policies = [ NatPolicy.new( :ip => "0.0.0.0", :netmask => "0", :new_source => "auto" )]
+      internal_interface.intf_static = static
+      internal_interface.config_type = InterfaceHelper::ConfigType::STATIC
+
+      ## Enable DHCP and DNS
+      DhcpServerSettings.destroy_all
+      DhcpServerSettings.new( :enabled => true, :start_address => dhcp_start, :end_address => dhcp_end ).save
+      
+      DnsServerSettings.destroy_all
+      DnsServerSettings.new( :enabled => true, :suffix => suffix ).save
+    end    
+  end
+
   def stylesheets
     [ "borax/list-table", "borax-subscription", "borax-overlay", "rule" ]
   end
@@ -122,5 +240,18 @@ class UvmController < ApplicationController
     end
   end
 
+  def wizard_manage_interface( interface_index, commit = true )
+    interface = Interface.find( :first, :conditions => [ "\"index\" = ?", interface_index ] )
+
+    raise "Missing an interface" if interface.nil?
+    yield interface
+
+    interface.save
+
+    ## Only commit if told to.
+    os["network_manager"].commit if commit
+
+    nil
+  end
 
 end

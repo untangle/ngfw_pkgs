@@ -1,6 +1,6 @@
 class Alpaca::Components::RedirectComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
-    menu_organizer.register_item( "/main/redirects", Alpaca::Menu::Item.new( 200, "Port Forwards", "/redirect" ))
+    menu_organizer.register_item( "/main/redirects", menu_item( 200, "Port Forwards", {} ))
   end
   
   def wizard_insert_closers( builder )

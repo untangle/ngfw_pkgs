@@ -35,16 +35,15 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
     return unless ( config_level >= AlpacaSettings::Level::Advanced )
 
-    ## REVIEW : should be a more elegant way of specifying the URL.
-    menu_organizer.register_item( "/main/interfaces", Alpaca::Menu::Item.new( 200, "Interfaces", "/interface/list" ))
+    menu_organizer.register_item( "/main/interfaces", menu_item( 200, "Interfaces", :action => "list" ))
     
     ## Retrieve all of the interfaces
     interfaces = Interface.find(:all)
     interfaces.sort! { |a,b| a.index <=> b.index }
     
     interfaces.each do |i|
-      menu_item = Alpaca::Menu::Item.new( i.index, i.name, "/interface/config/#{i.id}" )
-      menu_organizer.register_item( "/main/interfaces/#{i.os_name}", menu_item )
+      mi = menu_item( i.index, i.name, :action => "config", :id => i.id )
+      menu_organizer.register_item( "/main/interfaces/#{i.os_name}", mi )
     end    
   end
 

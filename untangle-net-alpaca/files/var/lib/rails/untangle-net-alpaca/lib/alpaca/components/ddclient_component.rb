@@ -1,7 +1,7 @@
 class Alpaca::Components::DdclientComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
-    menu_organizer.register_item( "/main/hostname/ddclient", 
-                                  Alpaca::Menu::Item.new( 400, "Dynamic DNS", "/ddclient/manage" ))
+    menu_organizer.register_item( "/main/hostname/ddclient",
+                                  menu_item( 400, "Dynamic DNS", :action => "manage" ))
   end
 
   def wizard_insert_closers( builder )

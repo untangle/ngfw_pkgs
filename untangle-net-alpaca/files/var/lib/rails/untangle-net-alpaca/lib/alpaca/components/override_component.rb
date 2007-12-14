@@ -1,7 +1,7 @@
 class Alpaca::Components::OverrideComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
     if ( config_level >= AlpacaSettings::Level::Advanced ) 
-      menu_organizer.register_item( "/main/advanced/override", Alpaca::Menu::Item.new( 900, "Overrides", "/override" ))
+      menu_organizer.register_item( "/main/advanced/override", menu_item( 900, "Overrides", {} ))
     end
   end
 

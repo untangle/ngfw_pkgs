@@ -1,8 +1,7 @@
 class Alpaca::Components::UvmComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
     if ( config_level >= AlpacaSettings::Level::Advanced ) 
-      menu_organizer.register_item( "/main/advanced/uvm", 
-                                    Alpaca::Menu::Item.new( 300, "UVM", "/uvm" ))
+      menu_organizer.register_item( "/main/advanced/uvm", menu_item( 300, "UVM", {} ))
     end
   end
 
