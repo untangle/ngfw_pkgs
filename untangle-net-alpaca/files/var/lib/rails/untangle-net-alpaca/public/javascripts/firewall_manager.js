@@ -17,11 +17,6 @@ var FirewallManager =
         }
     },
 
-    editFilter : function()
-    {
-        return "/firewall/edit";
-    },
-
     getAction : function( value )
     {
         

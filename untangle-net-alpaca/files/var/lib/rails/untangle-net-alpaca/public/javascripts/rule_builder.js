@@ -119,8 +119,7 @@ var RuleBuilder =
 
     addParameter : function()
     {
-        new Ajax.Request('/rule/create_parameter?list_id=rule-builder', 
-            { asynchronous:true, evalScripts:true} );
+        new Ajax.Request( this.createParameter, { asynchronous:true, evalScripts:true} );
         return false;
     },
     
@@ -178,7 +177,7 @@ var RuleBuilder =
             }            
         }
         
-        var request = new Ajax.Request( this.manager.editFilter(), 
+        var request = new Ajax.Request( this.manager.editFilter, 
             { asynchronous:false, evalScripts:true, 
               parameters: Hash.toQueryString( fieldHash ) } );
         

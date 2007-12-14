@@ -16,11 +16,6 @@ var SubscriptionManager =
             /* ignoring the error */
         }
     },
-
-    editFilter : function()
-    {
-        return "/uvm/edit";
-    },
     
     fields : new Array( "filters", "description", "subscribe", "enabled" )
 }

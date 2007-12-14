@@ -16,11 +16,6 @@ var RedirectManager =
             /* ignoring the error */
         }
     },
-
-    editFilter : function()
-    {
-        return "/redirect/edit";
-    },
     
     fields : new Array( "filters", "description", "new_ip", "new_enc_id", "enabled" )
 }

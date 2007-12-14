@@ -17,4 +17,9 @@
   <%= submit_tag "Save".t %>
 
 <% end %>
-  
+
+<%= javascript_tag <<EOF
+SubscriptionManager.editFilter = '#{url_for( :action => "edit" )}';
+RuleBuilder.createParameter = '#{url_for( :controller => "rule", :action => "create_parameter", :list_id => "rule-builder" )}';
+EOF
+%>
