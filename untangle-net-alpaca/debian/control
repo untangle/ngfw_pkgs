@@ -13,7 +13,7 @@ Description: The Untangle Network Alpaca IP Tables Startup Scripts
 
 Package: untangle-net-alpaca
 Architecture: all
-Depends: mongrel, rails (>= 1.2.3), untangle-libpamauth-ruby1.8, dnsmasq, dash, openssl, ethtool, bridge-utils, sqlite3, libsqlite3-ruby, coreutils, untangle-net-alpaca-iptables, pppoe
+Depends: mongrel, rails (>= 1.2.3), untangle-libpamauth-ruby1.8, dnsmasq, dash, openssl, ethtool, bridge-utils, sqlite3, libsqlite3-ruby, coreutils, untangle-net-alpaca-iptables, pppoe, pciutils, usbutils
 Conflicts: network-manager
 Description: The Untangle Network Alpaca
  The Untangle Network Alpaca.  A web-based configuration utility for

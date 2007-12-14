@@ -1,18 +1,5 @@
 class Alpaca::OS::ManagerBase
   include Alpaca::OS::Logging
-    
-  ## Override at your own risk
-  def initialize
-    ## Hash of all of the hooks.
-    ## @@hooks[method_name] => a sorted array of the MethodHandles to invoke
-    ## Methods at 0 are invoke right before the hook, methods at 1 are 
-    ## invoked right after the hook
-    @hooks = {}
-
-    ## REVIEW: Since this is a singleton, this can lock the system
-    ## If one of the managers registers a hook with itself.
-    register_hooks
-  end
 
   MethodPrefixRegex = /^hook_/
 
@@ -28,6 +15,41 @@ class Alpaca::OS::ManagerBase
     end
 
     attr_reader :index, :manager, :method_id
+  end
+    
+  ## Override at your own risk
+  def initialize
+    ## Hash of all of the hooks.
+    ## @@hooks[method_name] => a sorted array of the MethodHandles to invoke
+    ## Methods at 0 are invoke right before the hook, methods at 1 are 
+    ## invoked right after the hook
+    @hooks = {}
+
+    ## REVIEW: Since this is a singleton, this can lock the system
+    ## If one of the managers registers a hook with itself.
+    register_hooks
+  end
+
+
+  ## Run a comamnd and returns its exit status
+  def run_command( command, timeout = 30 )
+    p = nil
+    begin
+      status = 127
+      t = Thread.new do 
+        p = IO.popen( command )
+        pid, status = Process.wait2( p.pid )
+        status = status.exitstatus
+      end
+      
+      ## Kill the thread
+      t.join( timeout )
+      t.kill if t.alive?
+
+      return status
+    ensure
+      p.close unless p.nil?
+    end
   end
 
   ## Override this method in order to register hooks.

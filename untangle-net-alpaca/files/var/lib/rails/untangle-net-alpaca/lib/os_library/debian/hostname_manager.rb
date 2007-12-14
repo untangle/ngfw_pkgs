@@ -19,7 +19,7 @@ class OSLibrary::Debian::HostnameManager < OSLibrary::HostnameManager
     ## Save the hostname
     os["override_manager"].write_file( HostnameFile, "#{settings.hostname}" )
 
-    Kernel.system( "hostname #{settings.hostname}" )
+    run_command( "hostname #{settings.hostname}" )
   end
 end
 

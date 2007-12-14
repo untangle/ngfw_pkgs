@@ -18,7 +18,6 @@ class OSLibrary::ArpsManager < Alpaca::OS::ManagerBase
     end
     
     os["override_manager"].write_file( ConfigFile, header, "\n", cfg.join( "\n" ), "\n" )
-    #Kernel.system( "hostname #{settings.hostname}" )
   end
   
   def header

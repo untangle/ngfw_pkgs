@@ -77,7 +77,7 @@ EOF
 
   def hook_run_services
     ## Restart networking
-    raise "Unable to reconfigure network settings." unless Kernel.system( "sh #{Service} start" )
+    raise "Unable to reconfigure network settings." unless run_command( "sh #{Service} start" ) == 0
   end
 
   ## Given an interface, this returns the expected bridge name

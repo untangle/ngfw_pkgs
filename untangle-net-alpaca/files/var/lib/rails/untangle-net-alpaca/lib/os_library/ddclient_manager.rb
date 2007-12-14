@@ -69,17 +69,17 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
     
     
     #logger.debug( "running: " + DdclientCmdStop )
-    Kernel.system( DdclientCmdStop  )
+    run_command( DdclientCmdStop  )
     os["override_manager"].write_file( ConfigFile, header, "\n", cfg.join( "\n" ), "\n" )
     os["override_manager"].write_file( DdclientDefaultFile, header, "\n", defaults.join( "\n" ), "\n" )
     if ( settings.enabled )
       #logger.debug( "running: " + DdclientRcd )
-      Kernel.system( DdclientRcd  )
+      run_command( DdclientRcd  )
       #logger.debug( "running: " + DdclientCmdRestart )
-      Kernel.system( DdclientCmdRestart  )
+      run_command( DdclientCmdRestart  )
     end
 
-    #Kernel.system( "hostname #{settings.hostname}" )
+    #run_command( "hostname #{settings.hostname}" )
   end
   
   def header
