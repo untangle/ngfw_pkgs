@@ -127,7 +127,9 @@ class NUCLIServer
                 # Now define the missing method such that it delegates to the instance of the filter node.
                 self.instance_eval %{
                     def #{node}(params_ary)
-                        @#{node}.execute(params_ary)
+						@component_lock.synchronize {
+							@#{node}.execute(params_ary)
+						}
                     end
                     @component_methods << :#{node}
                 }
