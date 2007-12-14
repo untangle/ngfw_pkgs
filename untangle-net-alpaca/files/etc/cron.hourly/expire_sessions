@@ -1,4 +1,4 @@
-#/bin/dash
+#! /bin/dash
 
 ## Expire RoR sessions based on time.
 

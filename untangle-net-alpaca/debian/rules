@@ -17,6 +17,8 @@ build: configure
 	cp -r ./files/* $(DESTDIR)
 ## Delete any lingering database files
 	find $(DESTDIR) -path '*/database/*.db' | xargs rm -f
+## Delete any session files
+	find $(DESTDIR) -path '*/tmp/sessions/ruby_sess*' | xargs rm -f
 ## Delete any lingering log files
 	find $(DESTDIR) -path '*/log/*.log' | xargs rm -f
 ## Delete the symlink to rails
