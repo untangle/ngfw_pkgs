@@ -14,7 +14,7 @@ class RouteController < ApplicationController
 
   def save
     ## Review : Internationalization
-    return redirect_to( :action => "manage" ) if ( params[:commit] != "Save Changes".t )
+    return redirect_to( :action => "manage" ) if ( params[:commit] != "Save".t )
 
     NetworkRoute.destroy_all
 

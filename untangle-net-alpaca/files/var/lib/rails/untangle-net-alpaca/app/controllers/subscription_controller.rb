@@ -14,7 +14,7 @@ class SubscriptionController < ApplicationController
 
   def save
     ## Review : Internationalization
-    if ( params[:commit] != "Save Changes".t )
+    if ( params[:commit] != "Save".t )
       redirect_to( :action => "manage" ) 
       return false
     end

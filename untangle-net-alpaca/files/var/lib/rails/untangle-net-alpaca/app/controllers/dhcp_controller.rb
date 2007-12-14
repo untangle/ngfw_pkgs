@@ -31,7 +31,7 @@ class DhcpController < ApplicationController
 
   def save
     ## Review : Internationalization
-    return redirect_to( :action => "manage" ) if ( params[:commit] != "Save Changes".t )
+    return redirect_to( :action => "manage" ) if ( params[:commit] != "Save".t )
 
     dhcp_server_settings = DhcpServerSettings.find( :first )
     dhcp_server_settings = DhcpServerSettings.new if dhcp_server_settings.nil?

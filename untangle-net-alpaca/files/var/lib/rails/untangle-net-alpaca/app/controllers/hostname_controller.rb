@@ -14,7 +14,7 @@ class HostnameController < ApplicationController
 
   def save
     ## Review : Internationalization
-    return redirect_to( :action => "manage" ) if ( params[:commit] != "Save Changes".t )
+    return redirect_to( :action => "manage" ) if ( params[:commit] != "Save".t )
 
     hostname_settings = HostnameSettings.find( :first )
     hostname_settings = HostnameSettings.new if hostname_settings.nil?

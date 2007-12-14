@@ -15,7 +15,7 @@ class DnsController < ApplicationController
 
   def save
     ## Review : Internationalization
-    return redirect_to( :action => "manage" ) if ( params[:commit] != "Save Changes".t )
+    return redirect_to( :action => "manage" ) if ( params[:commit] != "Save".t )
 
     dns_server_settings = DnsServerSettings.find( :first )
     dns_server_settings = DnsServerSettings.new if dns_server_settings.nil?

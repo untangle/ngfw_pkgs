@@ -12,7 +12,7 @@ class DdclientController < ApplicationController
 
   def save
     ## Review : Internationalization
-    return redirect_to( :action => "manage" ) if ( params[:commit] != "Save Changes".t )
+    return redirect_to( :action => "manage" ) if ( params[:commit] != "Save".t )
 
     ddclient_settings = DdclientSettings.find( :first )
     ddclient_settings = DdclientSettings.new if ddclient_settings.nil?
