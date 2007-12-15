@@ -24,16 +24,18 @@ class AlpacaController < ApplicationController
       carrier = "Unknown".t
       address = "Unknown".t
       begin
-        sysfs = File.new( "/sys/class/net/" + interface.os_name + "/carrier", "r" )
-        if sysfs.readchar == 1
+        f = "/sys/class/net/" + interface.os_name + "/carrier"
+        sysfs = File.new( f, "r" )
+        c = sysfs.readchar
+        if c == 49 #ascii for 1
           carrier = "Connected".t
         else
           carrier = "Disconnected".t
         end
       rescue Exception => exception
+        logger.error "Error reading carrier status: " + exception.to_s
         carrier = "Unknown".t
       end
-
       begin
         sysfs = File.new( "/sys/class/net/" + interface.os_name + "/address", "r" )
         address = sysfs.readline
