@@ -362,16 +362,12 @@ EOF
         config.ip_networks.each do |ip_network|
           network = "#{ip_network.ip}/#{OSLibrary::NetworkManager.parseNetmask( ip_network.netmask )}"
           rules << "#{IPTablesCommand} #{Chain::PostNat.args} -m conntrack ! --ctorigdst #{network} -s #{network} -j #{target}"
-          #XXX TMB To block routing of natted ip address implement something like
-          #iptables -A FORWARD -i #{name} -s ! #{network} -j DROP
-          #iptables -A OUTPUT -o #{name} -s ! #{network} -j DROP
+          rules << "#{IPTablesCommand} -t mangle -A PREROUTING -i ! #{name} -d #{network} -j DROP"
         end
       else
         network = "#{policy.ip}/#{OSLibrary::NetworkManager.parseNetmask( policy.netmask )}"
         rules << "#{IPTablesCommand} #{Chain::PostNat.args}  -m conntrack ! --ctorigdst #{network} -s #{network} -j #{target}"
-        #XXX TMB To block routing of natted ip address implement something like
-        #iptables -A FORWARD -i #{name} -s ! #{network} -j DROP
-        #iptables -A OUTPUT -o #{name} -s ! #{network} -j DROP
+        rules << "#{IPTablesCommand} -t mangle -A PREROUTING -i ! #{name} -d #{network} -j DROP"
       end
     end
 
