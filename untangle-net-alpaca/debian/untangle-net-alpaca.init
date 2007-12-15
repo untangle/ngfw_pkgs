@@ -18,6 +18,7 @@ NAME="untangle-net-alpaca"
 
 MONGREL_RAILS="/usr/bin/mongrel_rails"
 BASE_DIR="/var/lib/rails/untangle-net-alpaca"
+MONGREL_ARGS="-e production"
 
 if [ -r /etc/default/$NAME ]; then
     . /etc/default/$NAME
@@ -38,7 +39,7 @@ start()
         exit -2
     }
     
-    ${MONGREL_RAILS} start -c ${BASE_DIR} --prefix "alpaca" -d
+    ${MONGREL_RAILS} start -c ${BASE_DIR} ${MONGREL_ARGS} --prefix "alpaca" -d
 }
 
 stop()

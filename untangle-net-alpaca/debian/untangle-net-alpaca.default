@@ -1,5 +1,10 @@
 #! /bin/dash
 
 ## Uncomment this line if you want to run the untangle-net-alpaca from a separate directory.
-#BASE_DIR="/home/devel/untangle-net-alpaca/var/lib/rails/untangle-net-alpaca"
+# BASE_DIR="/home/devel/untangle-net-alpaca/var/lib/rails/untangle-net-alpaca"
+
+## Uncomment this line to override the some of the arguments to mongrel_rails (the sample changes to the development environment)
+# ## The default args are :  "-e development "
+# MONGREL_ARGS="-e development "
+
 
