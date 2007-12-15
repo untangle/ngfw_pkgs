@@ -162,7 +162,8 @@ var Wizard =
     nextStage : function()
     {
         if ( Wizard.completed ) {
-            location.href = '/network';
+            /* Redirect the user to go to the URL of the network page. */
+            location.href = this.networkURL;
             return;
         }
 

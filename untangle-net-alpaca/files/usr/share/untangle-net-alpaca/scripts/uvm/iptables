@@ -6,9 +6,6 @@ UVM_PID="invalid"
 
 TUN_DEV=utun
 
-## The DHCP ports 67 is client 68 is server
-DHCP_PORTS="67,68"
-
 MARK_ANTISUB=$((0x01000000))
 MARK_NOTRACK=$((0x02000000))
 MARK_DUPE=$((0x20000000))

@@ -7,7 +7,7 @@ div#wizard
 { 
   width: 800px;
   height: 500px;
-  background-image: url( "/images/wizard/background.png" );
+  background-image: url( "../../images/wizard/background.png" );
  }
 
 div#steps
@@ -26,7 +26,7 @@ ul#step-list
 ul#step-list li
 {
   height: 28px;
-  background-image: url( "/images/wizard/steps/incomplete.png" );
+  background-image: url( "../../images/wizard/steps/incomplete.png" );
   background-repeat: no-repeat;
   margin-top: 4px;
   padding-left: 40px;
@@ -38,7 +38,7 @@ ul#step-list li
 
 ul#step-list li.current
 {
-  background-image: url( "/images/wizard/steps/current.png" );
+  background-image: url( "../../images/wizard/steps/current.png" );
   font-weight: bold;
   color: #3CD0BA;
   }
@@ -46,7 +46,7 @@ ul#step-list li.current
 ul#step-list li.completed
 {
   color: #65C013;
-  background-image: url( "/images/wizard/steps/completed.png" );
+  background-image: url( "../../images/wizard/steps/completed.png" );
   }
 
 div#content
