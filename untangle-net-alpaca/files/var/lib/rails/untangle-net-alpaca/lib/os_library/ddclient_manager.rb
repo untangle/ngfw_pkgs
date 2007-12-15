@@ -16,7 +16,7 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
 
   ConfigService = {
     "ZoneEdit" => [ "zoneedit1", "www.zoneedit.com" ],
-    "No-IP" => [ "no-ip", "no-ip" ],
+    #"No-IP" => [ "no-ip", "no-ip" ],
     "EasyDNS" => [ "easydns", "members.easydns.com" ],
     "DynDNS" => [ "dyndns2", "members.dyndns.org" ]
   }
@@ -29,6 +29,14 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
   DdclientDefaultFile    = "/etc/default/ddclient"
   DdclientPidFile    = "/var/run/ddclient.pid"
 
+  DdclientPackage = "ddclient"
+
+  NoipRcd = "/usr/sbin/update-rc.d no-ip defaults"
+  NoipCmd = "/etc/init.d/no-ip "
+  NoipCmdStop = NoipCmd + " stop"
+  NoipCmdRestart = NoipCmd + " restart"
+  NoipConfFile = "/etc/no-ip.conf"
+  NoipPackage = "no-ip"
 
   def register_hooks
     os["network_manager"].register_hook( -100, "ddclient_manager", "write_files", :hook_commit )

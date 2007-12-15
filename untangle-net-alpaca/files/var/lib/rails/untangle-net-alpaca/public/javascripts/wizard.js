@@ -42,6 +42,11 @@ function updateBridges( stageId )
     var len = interfaceArray.length;
     var select = stageId + "-bridge.bridge_interface";
 
+    var selectTag = document.getElementById( select );
+    if ( selectTag == null ) {
+	return;
+    }
+    selectTag.options.length = 0;
     for ( var c = 0 ; c< len ; c++ ) {
         var intf = interfaceArray[c];
 
@@ -59,7 +64,8 @@ function updateBridges( stageId )
         switch ( configType ) {
         case 'static':
         case 'dynamic':
-            html += "<option value='" + intf.osName + "'>" + intf.name + "</option>";
+	    /*            html += "<option value='" + intf.osName + "'>" + intf.name + "</option>";*/
+	    selectTag.options[c] = new Option( intf.name, intf.osName );
             break;
 
         default:
@@ -68,7 +74,7 @@ function updateBridges( stageId )
     }
     
     /* Time to update the comboxbox */
-    if ( select != null && document.getElementById( select) != null ) Element.update( select, html );
+    /*    if ( select != null && document.getElementById( select) != null ) Element.update( select, html ); */
 }
 
 var Wizard = 
