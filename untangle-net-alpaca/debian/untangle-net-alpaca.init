@@ -18,7 +18,9 @@ NAME="untangle-net-alpaca"
 
 MONGREL_RAILS="/usr/bin/mongrel_rails"
 BASE_DIR="/var/lib/rails/untangle-net-alpaca"
-MONGREL_ARGS="-e production"
+MONGREL_ARGS=""
+## rails environment, defaults to production
+MONGREL_ENV="production"
 
 if [ -r /etc/default/$NAME ]; then
     . /etc/default/$NAME
@@ -34,12 +36,12 @@ start()
         exit -1
     }
     ## Load the latest version of the of the schema
-    rake db:migrate || { 
+    rake db:migrate RAILS_ENV=${MONGREL_ENV} || { 
         log_failure_msg "${NAME} could not load database schema ${BASE_DIR}"
         exit -2
     }
     
-    ${MONGREL_RAILS} start -c ${BASE_DIR} ${MONGREL_ARGS} --prefix "/alpaca" -d
+    ${MONGREL_RAILS} start -c ${BASE_DIR} -e ${MONGREL_ENV} ${MONGREL_ARGS} --prefix "/alpaca" -d
 }
 
 stop()
