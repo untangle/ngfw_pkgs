@@ -6,8 +6,13 @@
 APT_CACHE_DIR="/var/cache/apt/archives"
 
 if [ "$REPOSITORY" = "sarge" ]; then
-    # Fix timezone
-    [ -f /usr/share/untangle/conf/timezone ] && cat /usr/share/untangle/conf/timezone > /etc/timezone
+    # Restore the timezone if we've ever set it
+    TZFILE=/usr/share/untangle/conf/timezone
+    if [ -f "$TZFILE" ]; then
+        ZONE=`cat $TZFILE`
+        grep -sq lang= /boot/grub/menu.lst && sed -i -e "s|\( tz=[^ ]*\)\? lang=| tz=$ZONE lang=|" /boot/grub/menu.lst
+        cat "$TZFILE" > /etc/timezone
+    fi
 fi
 
 # Have cron.daily run earlier in the day, at a random time between 1:00 and 2:00
