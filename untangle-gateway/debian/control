@@ -10,6 +10,6 @@ Architecture: all
 Provides: untangle-appliance-int
 Conflicts: untangle-appliance-int
 Replaces: untangle-appliance-int
-Depends: untangle-vm, untangle-gateway-light, untangle-kiosk, untangle-ntp-config, untangle-client-windows-jre, untangle-bootsplash, atop, untangle-restore-tools, untangle-linux-config
+Depends: untangle-vm, untangle-gateway-light, untangle-kiosk, untangle-ntp-config, untangle-client-windows-jre, untangle-bootsplash, atop, untangle-restore-tools, untangle-linux-config, untangle-system-config
 Description: The Untangle appliance internal
  The Untangle appliance internal-to-untangle mode.
