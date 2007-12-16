@@ -33,4 +33,10 @@ fi
 
 ## Would use run-parts, but that doesn't maintain environment variables 
 ## or the iptables_debug function.
-for t in ${IPTABLES_DIRECTORY}/* ; do . $t ; done
+if [ `find ${IPTABLES_DIRECTORY} -type f 2>| /dev/null | wc -l ` -gt 0 ]; then
+    for t in ${IPTABLES_DIRECTORY}/* ; do . $t ; done
+else
+    echo "${IPTABLES_DIRECTORY} is empty."
+fi
+
+#exit 0
