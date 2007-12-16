@@ -7,6 +7,6 @@ Standards-Version: 3.7.2
 
 Package: untangle-client-local
 Architecture: all
-Depends: untangle-client, xfce4 | x-window-manager, xorg | x-window-system, untangle-fakekdm | gdm | x-display-manager
+Depends: untangle-client, xfce4 | x-window-manager, x11-common | xfree86-common, xserver-xorg | xserver-xfree86, xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable, xbase-clients, xutils, xterm | x-terminal-emulator, gdm | slim | untangle-fakekdm | x-display-manager
 Description: The Untangle client, local on appliance version
  Contains dependencies needed for a basic desktop.  Untangle-kiosk provides the full kiosk.
