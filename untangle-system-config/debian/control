@@ -1,0 +1,13 @@
+Source: untangle-system-config
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.7.2
+
+Package: untangle-system-config
+Architecture: all
+Depends: untangle-vm
+Description: The Untangle system config
+ The Untangle system configurator.  Top level configurations not belonging in
+ a more specific configurator are here. 
