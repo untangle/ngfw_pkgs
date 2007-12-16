@@ -10,4 +10,9 @@ rsync -Ha /usr/share/untangle-kiosk/x-startup/etc/ /etc/
 cp -f /usr/share/untangle-kiosk/prefs.js /etc/firefox/profile/prefs.js
 cp -f /usr/share/untangle-kiosk/bookmarks.html /etc/firefox/profile/bookmarks.html
 
+# Moved here from untangle-gateway
+[[ -x /bin/zsh ]] && chsh -s /bin/zsh root
+find /root/.zsh -type f | xargs chmod 640
+find /root/.zsh -type d | xargs chmod 750
+
 exit 0
