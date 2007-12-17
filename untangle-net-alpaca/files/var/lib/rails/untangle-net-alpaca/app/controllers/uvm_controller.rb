@@ -124,7 +124,6 @@ class UvmController < ApplicationController
     DnsServerSettings.destroy_all
     DnsServerSettings.new( :enabled => true, :suffix => "example.com" ).save
 
-    os["dns_server_manager"].commit
     os["network_manager"].commit
 
     nil
@@ -169,7 +168,7 @@ class UvmController < ApplicationController
       DhcpServerSettings.new( :enabled => false, :start_address => "", :end_address => "" ).save
       
       DnsServerSettings.destroy_all
-      DnsServerSettings.new( :enabled => false, :suffix => "example.com" ).save
+      DnsServerSettings.new( :enabled => true, :suffix => "example.com" ).save
     end
   end
 
@@ -249,7 +248,6 @@ class UvmController < ApplicationController
 
     ## Only commit if told to.
     os["network_manager"].commit if commit
-    os["dns_server_manager"].commit
 
     nil
   end
