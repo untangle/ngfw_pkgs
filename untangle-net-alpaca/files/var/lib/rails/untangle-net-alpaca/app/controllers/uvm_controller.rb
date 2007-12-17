@@ -124,6 +124,7 @@ class UvmController < ApplicationController
     DnsServerSettings.destroy_all
     DnsServerSettings.new( :enabled => true, :suffix => "example.com" ).save
 
+    os["dns_server_manager"].commit
     os["network_manager"].commit
 
     nil
