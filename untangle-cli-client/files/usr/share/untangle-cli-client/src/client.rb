@@ -824,7 +824,7 @@ class NUCLIClient
     
     # Open a connection to a NUCLI sever and add to open servers list.
     def close(*args)
-        invalid_server_id_msg = "Error: invalid server ID"
+        invalid_server_id_msg = "Error: invalid server identifier"
 
         # Can't lock whole method because util methods need access to the locks to do their thing. Only lock where needed.
         svr_index = nil
@@ -850,7 +850,13 @@ class NUCLIClient
             svr_indices = [ svr_index ]
         end
         
-        # All is well: close the server
+        if svr_indices.length == 0
+			# no servers to close
+			puts! invalid_server_id_msg
+			return
+		end
+
+        # All is well: close the server(s)
         @servers_lock.synchronize {
             svr_indices.each { |i|
                 # Leave host and port fields in tact so this sever entry can
@@ -863,7 +869,7 @@ class NUCLIClient
             # deselect any server - force use to select the one to use going forward.
             @server_id = 0
             @drb_server = nil
-            message "Select an open server or open a new one to continue.", 2
+            message "Select an open server (help servers) or open a new one (help open) to continue.", 2
         }
     end
 
