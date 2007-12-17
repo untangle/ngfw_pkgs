@@ -1,5 +1,8 @@
 #!/bin/sh
 
-#DEBHELPER#
+if [ -x "/etc/init.d/untangle-net-alpaca-iptables" ]; then
+    update-rc.d untangle-net-alpaca-iptables defaults >/dev/null
+    /etc/init.d/untangle-net-alpaca-iptables restart || exit 0
+fi
 
 exit 0

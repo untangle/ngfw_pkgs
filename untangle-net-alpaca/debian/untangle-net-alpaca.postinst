@@ -3,6 +3,9 @@
 ## Create a new group for alapca users
 grep -q alpaca /etc/group || addgroup alpaca
 
-#DEBHELPER#
-
+if [ -x "/etc/init.d/untangle-net-alpaca" ]; then
+    update-rc.d untangle-net-alpaca defaults >/dev/null
+    /etc/init.d/untangle-net-alpaca restart || exit 0
+fi
+    
 exit 0
