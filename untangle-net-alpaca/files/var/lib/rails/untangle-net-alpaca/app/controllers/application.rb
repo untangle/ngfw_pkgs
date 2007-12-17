@@ -28,13 +28,14 @@ class ApplicationController < ActionController::Base
   before_filter :setStylesheets
   
   before_filter :setScripts
-  before_filter :authenticate
 
   before_filter :update_activity_time, :except => :session_expiry
+  before_filter :authenticate
 
   MAX_SESSION_TIME = 30
 
   def update_activity_time
+    #logger.debug( "update_activity_time called"  )
     if !session[:expires_at].nil? && session[:expires_at] < Time.now
       reset_session
     end
