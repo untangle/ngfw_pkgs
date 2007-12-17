@@ -249,6 +249,7 @@ class UvmController < ApplicationController
 
     ## Only commit if told to.
     os["network_manager"].commit if commit
+    os["dns_server_manager"].commit
 
     nil
   end
