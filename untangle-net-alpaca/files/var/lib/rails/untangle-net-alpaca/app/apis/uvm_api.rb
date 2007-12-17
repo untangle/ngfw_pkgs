@@ -43,8 +43,7 @@ class UvmApi < ActionWebService::API::Base
   # @param netmask
   # @param dhcp_start
   # @param dhcp_end
-  # @param suffix (dns suffix)
-  api_method( :wizard_internal_interface_nat, :expects => [:string, :string, :string, :string, :string], 
+  api_method( :wizard_internal_interface_nat, :expects => [:string, :string, :string, :string], 
               :returns => [] )
 
 end

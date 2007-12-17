@@ -123,10 +123,8 @@ class UvmController < ApplicationController
 
     DnsServerSettings.destroy_all
     DnsServerSettings.new( :enabled => true, :suffix => "example.com" ).save
-    
-    os["dhcp_server_manager"].commit
 
-    ## os["network_manager"].commit
+    os["network_manager"].commit
 
     nil
   end
@@ -174,7 +172,7 @@ class UvmController < ApplicationController
     end
   end
 
-  def wizard_internal_interface_nat( ip, netmask, dhcp_start, dhcp_end, suffix )
+  def wizard_internal_interface_nat( ip, netmask, dhcp_start, dhcp_end )
     wizard_manage_interface( InterfaceHelper::InternalIndex ) do |internal_interface|
       static = IntfStatic.new
       static.ip_networks = [ IpNetwork.new( :ip => ip, :netmask => netmask, :position => 1 )]
@@ -187,7 +185,7 @@ class UvmController < ApplicationController
       DhcpServerSettings.new( :enabled => true, :start_address => dhcp_start, :end_address => dhcp_end ).save
       
       DnsServerSettings.destroy_all
-      DnsServerSettings.new( :enabled => true, :suffix => suffix ).save
+      DnsServerSettings.new( :enabled => true, :suffix => "example.com" ).save
     end    
   end
 
