@@ -80,7 +80,8 @@ test "$IFACE" != "cleanup" && {
 }
 
 $DEBUG "Stopping all dhcp daemons"
-killall -QUIT -qr '(dhclient3|pump|dhclient)'
+## If there are any processes, wait a little, then make sure they are gone.
+pkill -QUIT '(dhclient3|pump|dhclient)' && { sleep 1 ; pkill '(dhclient3|pump|dhclient)' }
 
 $DEBUG "Cleaning up the interface state."
 

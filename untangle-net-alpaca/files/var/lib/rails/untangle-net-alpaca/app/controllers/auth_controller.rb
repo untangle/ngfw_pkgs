@@ -2,7 +2,7 @@ require "pam_auth"
 
 class AuthController < ApplicationController
   ## REVIEW : This should be configurable
-  AlpacaGroups = [ "alpaca", "root" ]
+  AlpacaGroups = [ "alpaca", "root", "admin" ]
 
   ## Page to redirect to on a fresh login.
   DefaultPage = "/interface"

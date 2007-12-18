@@ -4,7 +4,7 @@
 # Provides:          untangle-net-alpaca-iptables
 # Required-Start:    $local_fs $remote_fs
 # Required-Stop:
-# Default-Start:     S 3 4 5
+# Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 ### END INIT INFO
 

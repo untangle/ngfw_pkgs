@@ -1,10 +1,10 @@
 #! /bin/dash
 
 ### BEGIN INIT INFO
-# Provides:          alpaca
+# Provides:          untangle-net-alpaca
 # Required-Start:    $local_fs $remote_fs
 # Required-Stop:
-# Default-Start:     S 3 4 5
+# Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 ### END INIT INFO
 
@@ -41,7 +41,9 @@ start()
         exit -2
     }
     
-    ${MONGREL_RAILS} start -c ${BASE_DIR} -e ${MONGREL_ENV} ${MONGREL_ARGS} --prefix "/alpaca" -d
+    ## The root handler is used to automatically redirect requests to /.
+    ${MONGREL_RAILS} start -S ${BASE_DIR}/root-handler.conf -c ${BASE_DIR} -e ${MONGREL_ENV} \
+        ${MONGREL_ARGS} --prefix "/alpaca" -d
 }
 
 stop()
