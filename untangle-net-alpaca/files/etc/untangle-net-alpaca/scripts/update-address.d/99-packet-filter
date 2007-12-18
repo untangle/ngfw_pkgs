@@ -1,4 +1,4 @@
 #! /bin/bash
 
 ## Regenerate all of the iptables rules.
-/etc/init.d/alpaca-iptables restart
+/etc/init.d/untangle-net-alpaca-iptables restart
