@@ -3,6 +3,10 @@ class IntfDynamic < ActiveRecord::Base
   
   has_and_belongs_to_many :ip_networks, :order => "position"
 
+  def accept( interface, visitor )
+    visitor.intf_dynamic( interface, self )
+  end
+
   protected
   def validate
     errors.add( "Invalid IP Address '#{ip}'" ) unless checkField( ip )
@@ -20,9 +24,5 @@ class IntfDynamic < ActiveRecord::Base
     
     ## The field is valid if the match is non-nil
     return !IPAddr.parse( field ).nil?
-  end
-
-  def accept( interface, visitor )
-    visitor.intf_dynamic( interface, self )
   end
 end

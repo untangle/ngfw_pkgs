@@ -7,6 +7,10 @@ class IntfStatic < ActiveRecord::Base
 
   has_and_belongs_to_many :nat_policies, :order => "position"
 
+  def accept( interface, visitor )
+    visitor.intf_static( interface, self )
+  end
+
   protected
   def validate
     errors.add( "Invalid Default Gateway '#{default_gateway}'" ) unless checkField( default_gateway )
@@ -22,9 +26,5 @@ class IntfStatic < ActiveRecord::Base
     
     ## The field is valid if the match is non-nil
     return !IPAddr.parse( field ).nil?
-  end
-
-  def accept( interface, visitor )
-    visitor.intf_static( interface, self )
   end
 end
