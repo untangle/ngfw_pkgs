@@ -31,6 +31,8 @@ fi
 
 start()
 {
+    local t_pid
+
     cd ${BASE_DIR} || {
         log_failure_msg "${NAME} could not change into the directory ${BASE_DIR}" 
         exit -1
@@ -40,6 +42,14 @@ start()
         log_failure_msg "${NAME} could not load database schema ${BASE_DIR}"
         exit -2
     }
+
+    ## Check for a PID File
+    if [ -f ${BASE_DIR}/log/mongrel.pid ]; then
+        echo "PID File exists, attempting to clean it up"
+        t_pid=`cat ${BASE_DIR}/log/mongrel.pid`
+        kill ${t_pid} > /dev/null 2>&1
+        rm -f ${BASE_DIR}/log/mongrel.pid
+    fi
     
     ## The root handler is used to automatically redirect requests to /.
     ${MONGREL_RAILS} start -S ${BASE_DIR}/root-handler.conf -c ${BASE_DIR} -e ${MONGREL_ENV} \
