@@ -2,3 +2,5 @@
 
 ## Regenerate all of the iptables rules.
 /etc/init.d/untangle-net-alpaca-iptables restart
+
+exit 0

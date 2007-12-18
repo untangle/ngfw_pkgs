@@ -4,3 +4,5 @@
 if [ -e /etc/untangle-net-alpaca/routes ] ; then 
 	. /etc/untangle-net-alpaca/routes
 fi
+
+exit 0
