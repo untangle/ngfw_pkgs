@@ -16,4 +16,10 @@ class NetworkRoute < ActiveRecord::Base
       errors.add( :name, "is missing or invalid" )
     end
   end
+
+  def NetworkRoute.get_active( os )
+    return os["routes_manager"].get_active
+  end
+  
+
 end

@@ -3,6 +3,21 @@ class OSLibrary::ArpsManager < Alpaca::OS::ManagerBase
 
   ConfigFile = "/etc/untangle-net-alpaca/arps"
 
+  def get_active
+    results = []
+    arp = `arp -n`.split( "\n" )
+    number_of_heading_lines = 1
+    arp = arp.slice( number_of_heading_lines, arp.length )
+    arp.each do |entry|
+      items = entry.split
+      results << { :columns => [ { :value => items[0] }, #IP Address
+                                 { :value => items[2] }, #MAC Address
+                                 { :value => items[4] }  #Interface
+                               ] }
+    end
+    return results
+  end
+
   def register_hooks
 #    os["network_manager"].register_hook( -100, "arps_manager", "write_files", :hook_commit )
   end

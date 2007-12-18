@@ -79,13 +79,18 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
   ## 1193908192 00:0e:0c:a0:dc:a9 10.0.0.112 gobbleswin 01:00:0e:0c:a0:dc:a9
   def dynamic_entries
     entries = []
-    ## Open up the dns-masq leases file and print create a table for each entry
-    File.open( DnsMasqLeases ) do |f|
-      f.each_line do |line|
-        expiration, mac_address, ip_address, hostname, client_id = line.split( " " )
-        next if ( hostname.nil? || hostname == "*" )
-        entries << DynamicEntry.new( ip_address, hostname )
+    
+    begin
+      ## Open up the dns-masq leases file and print create a table for each entry
+      File.open( DnsMasqLeases ) do |f|
+        f.each_line do |line|
+          expiration, mac_address, ip_address, hostname, client_id = line.split( " " )
+          next if ( hostname.nil? || hostname == "*" )
+          entries << DynamicEntry.new( ip_address, hostname )
+        end
       end
+    rescue Exception => exception
+      logger.warn( "Error reading " + DnsMasqLeases.to_s + " " + exception.to_s )
     end
     entries.sort!
     entries

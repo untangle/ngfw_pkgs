@@ -3,6 +3,22 @@ class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
 
   ConfigFile = "/etc/untangle-net-alpaca/routes"
 
+  def get_active
+    results = []
+    netstat = `netstat -rn | grep -v dummy0`.split( "\n" )
+    number_of_heading_lines = 2
+    netstat = netstat.slice( number_of_heading_lines, netstat.length )
+    netstat.each do |entry|
+      items = entry.split
+      results << { :columns => [ { :value => items[0] }, #target
+                                 { :value => items[2] }, #netmask
+                                 { :value => items[1] }, #gateway
+                                 { :value => "" },
+                                 { :value => items[7] } ] } #iface
+    end
+    return results
+  end
+
 
 
   def register_hooks

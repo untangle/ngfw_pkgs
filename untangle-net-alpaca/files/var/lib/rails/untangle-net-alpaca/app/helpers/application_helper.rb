@@ -59,7 +59,14 @@ module ApplicationHelper
   #:rows_name => "static_arp",
   # if auto size is true then javascript code will make each column the same
   # size
-  #:auto_size => true )
+  #:auto_size => true,
+  # to prevent editing on the client side
+  #:read_only => true,
+  # delete to false to remove the delete column
+  #:delete => false,
+  # add to false to remove plus button
+  #:add => false
+  # )
   #
   # Rows look like:
   #rows = []

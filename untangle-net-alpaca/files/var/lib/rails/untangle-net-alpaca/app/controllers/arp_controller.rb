@@ -6,7 +6,8 @@ class ArpController < ApplicationController
   end
 
   def manage
-    @current_arps = `arp -n`
+    @active_arps = StaticArp.get_active( os )
+    #@current_arps = `arp -n`
     @static_arps = StaticArp.find( :all )
     @static_arps = [] if @static_arps.nil?
     @static_arps << StaticArp.new

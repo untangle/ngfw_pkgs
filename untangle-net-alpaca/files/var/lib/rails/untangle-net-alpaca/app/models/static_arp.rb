@@ -8,4 +8,9 @@ class StaticArp < ActiveRecord::Base
       errors.add( :hostname, "is missing or invalid" )
     end
   end
+
+  def StaticArp.get_active( os )
+    return os["arps_manager"].get_active
+  end
+
 end

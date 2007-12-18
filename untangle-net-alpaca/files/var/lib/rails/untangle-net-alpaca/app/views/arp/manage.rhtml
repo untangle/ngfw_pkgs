@@ -14,7 +14,7 @@ end
                        { :name => "HWaddress".t },
 		       { :name => "Delete".t } ],
   :column_names =>  [ "hostname", "hw_addr" ],
-  :title => "Static Arp".t,
+  :title => "Static ARP".t,
   :class => "list-table-arp",
   :rows => rows,
   :rows_name => "static_arp",
@@ -26,9 +26,21 @@ end
   <%= submit_tag "Save".t %>
   <% end -%>
 
-<h2><%= "Current ARP Table".t %></h2>
-<pre>
-<%= @current_arps %>
-</pre>
+
+<%= editable_table( :action => "/arp/create_entry", 
+  :header_columns => [ { :name => "IP Address".t }, 
+                       { :name => "HWaddress".t },
+		       { :name => "Interface".t } ],
+  :column_names =>  [ "hostname", "hw_addr", "interface" ],
+  :title => "Active ARP Table".t,
+  :class => "list-table-arp",
+  :rows => @active_arps,
+  :rows_name => "active_arp",
+  :auto_size => true,
+  :read_only => true,
+  :delete => false,
+  :add => false
+  )
+%>
 
 </div>
