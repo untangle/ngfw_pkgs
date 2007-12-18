@@ -13,6 +13,9 @@ if [ "$REPOSITORY" = "sarge" ]; then
         grep -sq lang= /boot/grub/menu.lst && sed -i -e "s|\( tz=[^ ]*\)\? lang=| tz=$ZONE lang=|" /boot/grub/menu.lst
         cat "$TZFILE" > /etc/timezone
     fi
+
+    # Turn off the now unneeded knoppix startup scripts that hose udev
+    update-rc.d -f knoppix-hd-config remove
 fi
 
 # Have cron.daily run earlier in the day, at a random time between 1:00 and 2:00
