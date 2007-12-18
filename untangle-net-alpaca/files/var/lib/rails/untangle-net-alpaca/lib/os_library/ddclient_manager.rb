@@ -60,10 +60,10 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
         [ ConfigProtocol, protocol ],
         [ ConfigLogin, settings.login ],
         [ ConfigPassword, settings.password ],
-        [ ConfigServer, server + '" "' +settings.hostname ]
+        [ ConfigServer, server + ' ' +settings.hostname ]
       ].each do |var,val|
         next if ( val.nil? || val == "null" )
-        cfg << "#{var}=\"#{val}\""
+        cfg << "#{var}=#{val}"
       end
 
       [ [ ConfigDaemon, ConfigDaemonInterval ],
