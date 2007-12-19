@@ -5,7 +5,7 @@ class AuthController < ApplicationController
   AlpacaGroups = [ "alpaca", "root", "admin" ]
 
   ## Page to redirect to on a fresh login.
-  DefaultPage = url_for( :controller => "interface" )
+  DefaultPage = { :controller => "network" }
 
   ## Indicate that you do not need to be authenticated to view these pages.
   def authentication_required
@@ -57,7 +57,7 @@ class AuthController < ApplicationController
     return_to = session[:return_to] 
     session[:return_to] = nil
 
-    return redirect_to( DefaultPage ) if ApplicationHelper.null?( return_to )
+    return redirect_to( url_for( DefaultPage ) ) if ApplicationHelper.null?( return_to )
 
     logger.debug "Returning to: #{return_to}"
     redirect_to( return_to )
@@ -66,7 +66,7 @@ class AuthController < ApplicationController
   def end_session
     session[:username] = nil
     
-    redirect_to( DefaultPage )
+    redirect_to( url_for( DefaultPage ) )
   end
 
   private
