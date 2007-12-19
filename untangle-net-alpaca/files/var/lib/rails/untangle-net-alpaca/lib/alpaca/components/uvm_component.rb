@@ -16,6 +16,9 @@ class Alpaca::Components::UvmComponent < Alpaca::Component
     ## Update the settings
     intf_order = uvm_settings.interface_order
 
+    puts "Interface order: #{intf_order}"
+    puts "Interface list: #{interface_list.join( ",")}"
+
     intf_order = intf_order.split( "," ).map { |idx| idx.to_i }.delete_if { |idx| idx == 0 }
     
     ## Iterate the available interfaces and add them manually.
@@ -27,16 +30,18 @@ class Alpaca::Components::UvmComponent < Alpaca::Component
     intf_order.each do |i|
       next if interfaces[i].nil? && ( i != UvmHelper::VpnIndex )
       new_intf_order << i
-      
+
       ## Delete the interface from interfaces.
       interfaces.delete( i ) 
     end
 
-    ## Now add all of the interfaces that are not there.
-    interfaces.keys.sort.each{ |i| new_intf_order << i }
+    ## Now add all of the interfaces that are not there. (beginning of the list)
+    interfaces.keys.sort.each{ |i| new_intf_order = [i] + new_intf_order }
     
     uvm_settings.interface_order = new_intf_order.join( "," )
     uvm_settings.save
+
+    os["uvm_manager"].write_files
   end
 
   private

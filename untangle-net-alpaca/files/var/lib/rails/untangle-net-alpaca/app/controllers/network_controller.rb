@@ -211,7 +211,7 @@ class NetworkController < ApplicationController
     ## Iterate all of the helpers telling them about the new interfaces
     iterate_components do |component|
       next unless component.respond_to?( UpdateInterfaces )
-      component.send( UpdateInterfaces, new_interfaces )
+      component.send( UpdateInterfaces, Interface.find( :all ) )
     end
 
     ## Do not commit, until the user has a chance to look at the new settings.
