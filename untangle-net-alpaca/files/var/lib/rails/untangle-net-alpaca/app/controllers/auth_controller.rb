@@ -5,7 +5,7 @@ class AuthController < ApplicationController
   AlpacaGroups = [ "alpaca", "root", "admin" ]
 
   ## Page to redirect to on a fresh login.
-  DefaultPage = "/interface"
+  DefaultPage = url_for( :controller => "interface" )
 
   ## Indicate that you do not need to be authenticated to view these pages.
   def authentication_required
