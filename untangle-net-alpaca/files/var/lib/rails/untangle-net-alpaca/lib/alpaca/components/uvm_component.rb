@@ -17,13 +17,15 @@ class Alpaca::Components::UvmComponent < Alpaca::Component
     intf_order = uvm_settings.interface_order
 
     puts "Interface order: #{intf_order}"
-    puts "Interface list: #{interface_list.join( ",")}"
+    puts "Interface list: #{interface_list.map{ |i| i.index }.join( ",")}"
 
     intf_order = intf_order.split( "," ).map { |idx| idx.to_i }.delete_if { |idx| idx == 0 }
     
     ## Iterate the available interfaces and add them manually.
     interfaces = {}
     interface_list.each { |interface| interfaces[interface.index] = interface }
+
+    puts "Interface list: #{interfaces.keys.join( "," )}"
 
     ## Find all of the interfaces that exist
     new_intf_order = []
@@ -36,6 +38,7 @@ class Alpaca::Components::UvmComponent < Alpaca::Component
     end
 
     ## Now add all of the interfaces that are not there. (beginning of the list)
+    puts "Interface list: #{interfaces.keys.join( "," )}"
     interfaces.keys.sort.each{ |i| new_intf_order = [i] + new_intf_order }
     
     uvm_settings.interface_order = new_intf_order.join( "," )

@@ -73,7 +73,7 @@ module InterfaceHelper
     interfaceArray = []
 
     ## Find all of the physical interfaces
-    currentIndex = DefaultInterfaceMapping.size - 1
+    currentIndex = DefaultInterfaceMapping.size
 
     ia = networkManager.interfaces
 
