@@ -8,14 +8,39 @@ class Alpaca::Components::UvmComponent < Alpaca::Component
   def wizard_insert_closers( builder )
     builder.insert_piece( Alpaca::Wizard::Closer.new( 1900 ) { save } )
   end
+  
+  def update_interfaces( interface_list )
+    uvm_settings = UvmSettings.find( :first )
+    uvm_settings = UvmSettings.new( :interface_order => UvmHelper::DefaultOrder ) if uvm_settings.nil?
+
+    ## Update the settings
+    intf_order = uvm_settings.interface_order
+
+    intf_order = intf_order.split( "," ).map { |idx| idx.to_i }.delete_if { |idx| idx == 0 }
+    
+    ## Iterate the available interfaces and add them manually.
+    interfaces = {}
+    interface_list.each { |interface| interfaces[interface.index] = interface }
+
+    ## Find all of the interfaces that exist
+    new_intf_order = []
+    intf_order.each do |i|
+      next if interfaces[i].nil? && ( i != UvmHelper::VpnIndex )
+      new_intf_order << i
+      
+      ## Delete the interface from interfaces.
+      interfaces.delete( i ) 
+    end
+
+    ## Now add all of the interfaces that are not there.
+    interfaces.keys.sort.each{ |i| new_intf_order << i }
+    
+    uvm_settings.interface_order = new_intf_order.join( "," )
+    uvm_settings.save
+  end
 
   private
   def save
-    uvm_settings = UvmSettings.new
-    uvm_settings.interface_order = UvmHelper::DefaultOrder
-    UvmSettings.destroy_all
-
-    uvm_settings.save
+    update_interfaces( Interfaces.find( :all ))
   end
-  
 end

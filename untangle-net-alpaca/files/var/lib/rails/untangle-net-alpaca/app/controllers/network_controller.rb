@@ -1,4 +1,5 @@
 class NetworkController < ApplicationController
+  UpdateInterfaces = "update_interfaces"
   def index
     ## Cannot use this panel in advanced mode.
     if ( @config_level > AlpacaSettings::Level::Basic )
@@ -206,6 +207,12 @@ class NetworkController < ApplicationController
     
     ## Save the interfaces that are 
     new_interfaces.each{ |i| i.save }
+    
+    ## Iterate all of the helpers telling them about the new interfaces
+    iterate_components do |component|
+      next unless component.respond_to?( UpdateInterfaces )
+      component.send( UpdateInterfaces, new_interfaces )
+    end
 
     ## Do not commit, until the user has a chance to look at the new settings.
     return redirect_to( :action => 'manage' )
