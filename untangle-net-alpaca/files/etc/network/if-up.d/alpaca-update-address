@@ -12,8 +12,8 @@ DEBUG=/bin/true
 
 test "${IF_ALPACA_DEBUG}" = "true" && DEBUG=debug
 
-test "$IFACE" != "update" && {
-    $DEBUG "Ignoring the interface ${IFACE}"
+[ "$IFACE" != "update" ] && {
+    $DEBUG "Ignoring the interface '${IFACE}'"
     exit 0
 }
 
