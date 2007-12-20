@@ -54,7 +54,7 @@ binary-indep:
 #	dh_strip  
 	dh_link   
 	dh_compress   
-#	dh_fixperms   
+	dh_fixperms   
 	dh_installdeb  
 #	dh_perl     
 	if [ -f debian/version ] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
