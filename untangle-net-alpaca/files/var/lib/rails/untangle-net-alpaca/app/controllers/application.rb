@@ -113,14 +113,14 @@ class ApplicationController < ActionController::Base
     return if ( session_enabled? && !session[:username].nil? )
 
     ## Check if they have a nonce
-    nonce = params[:nonce]
+    argyle = params[:argyle]
 
-    unless nonce.nil? || nonce.empty?
+    unless argyle.nil? || argyle.empty?
       nonces=`head -n 2 /etc/untangle-net-alpaca/nonce 2>/dev/null`.strip.split
       
       ## Test the parameter against the nonce.
       nonces.each do |n| 
-        next unless nonce == n.strip
+        next unless argyle == n.strip
         
         ## This way, they don't have to be authenticated again
         session[:username] = "nonce-authenticated" if session_enabled?
@@ -130,7 +130,7 @@ class ApplicationController < ActionController::Base
       end
     end
     
-    ## Only allowed to use the nonce if the session is disabled.
+    ## Only allowed to use the username/password if the session is disabled.
     unless session_enabled?
       ## Return a page indicating access is denied
       render :nothing => true, :status => 401

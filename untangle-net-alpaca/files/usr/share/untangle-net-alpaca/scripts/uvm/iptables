@@ -63,7 +63,7 @@ fi
 . ${UVM_NETWORKING_CONFIG}
 
 uvm_iptables_rules()
-{
+{    
     # Do not conntrack entries in that have the NOTRACK bit set.
     ${IPTABLES} -A OUTPUT -t raw -m mark --mark ${MARK_NOTRACK}/${MARK_NOTRACK} -j NOTRACK
     
@@ -102,4 +102,13 @@ uvm_iptables_rules()
 
     # Queue all of the UDP packets.
     ${IPTABLES} -A POSTROUTING -t tune -m addrtype --dst-type unicast -p udp -j NFQUEUE 
+
+    ## Just in case these settings were lost.
+    ifconfig dummy0 192.0.2.42 netmask 255.255.255.0 up
+    if [ -f /proc/sys/net/ipv4/conf/utun/rp_filter ]; then
+        ifconfig utun up
+        echo 0 > /proc/sys/net/ipv4/conf/utun/rp_filter
+    else
+        echo "[`date`] utun device not exist."
+    fi
 }
