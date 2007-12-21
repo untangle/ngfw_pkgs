@@ -222,9 +222,9 @@ class NetworkController < ApplicationController
     [ "network" ]
   end
 
-  def stylesheets
-    [ "borax/list-table", "borax/network" ]
-  end
+  #def stylesheets
+  #  [ "borax/list-table", "borax/network" ]
+  #end
 
   private
 

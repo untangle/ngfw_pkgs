@@ -12,9 +12,9 @@ class NetworkRoute < ActiveRecord::Base
       errors.add( :gateway, "is missing or invalid" )
     end
 
-    unless name && ApplicationHelper.safe_characters?( name )
-      errors.add( :name, "is missing or invalid" )
-    end
+    #unless name && ApplicationHelper.description?( name )
+    #  errors.add( :name, "is missing or invalid" )
+    #end
   end
 
   def NetworkRoute.get_active( os )

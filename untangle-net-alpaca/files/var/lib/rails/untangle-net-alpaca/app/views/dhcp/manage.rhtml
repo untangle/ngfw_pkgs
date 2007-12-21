@@ -1,5 +1,5 @@
 <div>
-  <h1><%= "DHCP Server Configuration".t %></h1>
+  <div id="title"><h1><%= "DHCP Server Configuration".t %></h1></div>
 
   <% form_tag( :action => 'save' ) do -%>
     <fieldset>
@@ -38,6 +38,17 @@
       </ul>
     </fieldset>
 
+    <%= submit_tag "Cancel".t %>
+    <%= submit_tag "Save".t %>
+    <h2><%= "Static DHCP Entries".t %></h2>
+    <%= link_to_remote( "+".t, :url => { :action => :create_static_entry } ) %>
+    <%= render( :partial => "static_entries" , :object => @static_entries ) %>
+  
+    <h2><%= "Current DHCP Entries".t %></h2>
+    <%= link_to_remote( "Refresh".t, :url => { :action => :refresh_dynamic_entries } ) %>
+    
+    <%= render( :partial => "dynamic_entries" , :object => @dynamic_entries ) %>
+    
     <%= submit_tag "Cancel".t %>
     <%= submit_tag "Save".t %>
 

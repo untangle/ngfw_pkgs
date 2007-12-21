@@ -1,10 +1,14 @@
+<%= javascript_tag <<EOF
+RuleBuilder.manager = RedirectManager;
+EOF
+%>
 <div id="overlay"  style="display: none">
   <div id="rule-dialog">
   </div>
 </div>
 <% form_tag( :action => 'save' ) do -%>
 
-  <h2>User Redirects</h2>
+  <div id="title><h1>User Redirects</h1></div>
 
   <%= link_to_remote( "+".t, :url => { :action => :create_redirect } ) %>
 

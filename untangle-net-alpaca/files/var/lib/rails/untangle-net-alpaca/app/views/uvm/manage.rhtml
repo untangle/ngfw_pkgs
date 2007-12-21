@@ -4,7 +4,7 @@
 </div>
 <% form_tag( :action => 'save' ) do -%>
 
-  <h2>User Subscriptions</h2>
+  <div id="title"><h1>User Subscriptions</h1></div>
 
   <%= link_to_remote( "+".t, :url => { :action => :create_subscription } ) %>
 

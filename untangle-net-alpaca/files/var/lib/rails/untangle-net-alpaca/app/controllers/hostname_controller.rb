@@ -8,6 +8,10 @@ class HostnameController < ApplicationController
       @hostname_settings.hostname = os["hostname_manager"].current
     end
 
+    @ddclient_settings = DdclientSettings.find( :first )
+    @ddclient_settings = DdclientSettings.new if @ddclient_settings.nil?
+
+
     ## this allows this method to be aliased.
     render :action => 'manage'
   end
@@ -22,6 +26,14 @@ class HostnameController < ApplicationController
     hostname_settings.save
     
     os["hostname_manager"].commit
+
+    ddclient_settings = DdclientSettings.find( :first )
+    ddclient_settings = DdclientSettings.new if ddclient_settings.nil?
+    ddclient_settings.update_attributes( params[:ddclient_settings] )
+    ddclient_settings.save
+    
+    os["ddclient_manager"].commit
+
 
     ## Review : should have some indication that is saved.
     return redirect_to( :action => "manage" )

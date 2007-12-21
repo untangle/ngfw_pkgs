@@ -1,5 +1,5 @@
 <div>
-  <h1><%= "Hostname".t %></h1>
+  <div id="title"><h1><%= "Hostname".t %></h1></div>
 
   <% form_tag( :action => 'save' ) do -%>
     <fieldset>
@@ -13,6 +13,42 @@
 
     <%= submit_tag "Cancel".t %>
     <%= submit_tag "Save".t %>
-    
+  <div id="title"><h1><%= "Dynamic DNS Client Configuration".t %></h1></div>
+    <fieldset>
+      <ul class="text-fields">
+        <li>
+          <label for="ddclient_settings[enabled]"><%= "Enabled:".t %></label>
+          <%= check_box( "ddclient_settings", "enabled", { :checked => @ddclient_settings.enabled }, true, false ) %>
+        </li>
+
+       <li>
+          <label for="ddclient_settings[service]"><%= "Service:".t %></label>
+          <%= 
+services = []
+OSLibrary::DdclientManager::ConfigService.each_key { |key| services << [key, key] }
+select( "ddclient_settings", "service", services ) %>
+        </li>
+        <li>
+          <label for="ddclient_settings[login]"><%= "Login:".t %></label>
+          <%= text_field( "ddclient_settings", "login" ) %>
+        </li>
+
+        <li>
+          <label for="ddclient_settings[password]"><%= "Password:".t %></label>
+          <%= password_field( "ddclient_settings", "password", :autocomplete=>"off" ) %>
+        </li>
+
+        <li>
+          <label for="ddclient_settings[hostname]"><%= "Hostname(s):".t %></label>
+          <%= text_field( "ddclient_settings", "hostname" ) %>
+        </li>
+
+      </ul>
+    </fieldset>
+
+    <%= submit_tag "Cancel".t %>
+    <%= submit_tag "Save".t %>
+
   <% end -%>
+
 </div>

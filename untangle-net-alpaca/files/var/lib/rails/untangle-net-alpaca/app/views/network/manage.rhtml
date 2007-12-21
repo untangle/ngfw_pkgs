@@ -1,9 +1,13 @@
 <div>
-  <h2><%= "Network Configuration".t %></h2>  
+  <div id="title"><h1><%= "Network Configuration".t %></h1></div>
   <% form_tag( :action => 'save' ) do -%>
     <%= render( :partial => "config", :collection => @config_list ) %>
 
     <%= submit_tag "Cancel".t %>
     <%= submit_tag "Save".t, :onclick => "return #{confirm_javascript_function( "Are you sure?".t )}"%>
   <% end -%>
+<br />
+  <%= link_to( "External Aliases".t, :action => :aliases ) %>
+<br />
+  <%= link_to( "Refresh Interfaces".t, :action => :refresh_interfaces ) %>
 </div>

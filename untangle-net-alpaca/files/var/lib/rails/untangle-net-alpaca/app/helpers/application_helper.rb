@@ -38,6 +38,16 @@ module ApplicationHelper
     return false
   end
 
+  #attempt at safe characters for description
+  #especially avoiding ; " ' | > < && || / \
+  def ApplicationHelper.description?( chars )
+    if chars =~ /^[-A-Za-z0-9:_., ]*$/
+      return true
+    end
+    return false
+  end
+
+
 
   # generates the editable tables
   # Arguments are a hash like:
@@ -51,7 +61,7 @@ module ApplicationHelper
   # the internal database names for the columns, must be in the same
   # order as the header
   #:column_names =>  [ "hostname", "hw_addr" ],
-  # title that is displayed in h2 tags before the data
+  # title that is displayed in h1 tags before the data
   #:title => "Static Arp".t,
   # rows is array of hashes in a format like the following comment below  
   #:rows => rows,
@@ -75,9 +85,9 @@ module ApplicationHelper
   #  	               { :value => static_arp.hw_addr } ] }
   #end
   def editable_table( options = {} )
-    result = ""
+    result = "<div>"
     if ! options[:title].nil?
-      result << "<h2>" + options[:title] + "</h2>"
+      result << "<div id=\"title\"><h1>" + options[:title] + "</h1></div>"
     end
 
     tableId="e_table_#{rand( 0x100000000 )}"
@@ -130,7 +140,7 @@ module ApplicationHelper
       
       result << "</li>"
     end
-    result << "</ul>\n</div>\n"
+    result << "</ul>\n</div></div>\n"
 
     auto_size = "function resize"+tableId+"() {"
     if ! options[:auto_size].nil? && options[:auto_size] == true

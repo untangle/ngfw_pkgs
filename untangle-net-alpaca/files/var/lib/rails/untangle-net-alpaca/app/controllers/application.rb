@@ -4,7 +4,8 @@
 class ApplicationController < ActionController::Base
   @components = nil
 
-  layout "main"
+  #layout "main"
+  layout proc { |controller| controller.request.xhr? ? 'ajax' : 'main' }
 
   DefaultTitle = "Untangle Net Alpaca"
 
@@ -28,6 +29,7 @@ class ApplicationController < ActionController::Base
   before_filter :setStylesheets
   
   before_filter :setScripts
+  before_filter :setButtons
 
   before_filter :update_activity_time, :except => :session_expiry
   before_filter :authenticate
@@ -71,11 +73,18 @@ class ApplicationController < ActionController::Base
   end
 
   def setStylesheets
-    @stylesheets = ( self.respond_to?( "stylesheets" )) ? stylesheets : []
+    @stylesheets = ( self.respond_to?( "stylesheets" )) ? stylesheets : [ ]
+    @stylesheets << "rack.css"
   end
   
   def setScripts
     @scripts = ( self.respond_to?( "scripts" )) ? scripts : []
+    @scripts.concat( RuleHelper::Scripts )
+    @scripts.concat( [ "network", "redirect_manager", "dhcp_server_manager", "dns_server_manager" ] )
+  end
+
+  def setButtons
+    @buttons = [ "Help", "Cancel", "Save" ]
   end
 
   ## Build the menu structure

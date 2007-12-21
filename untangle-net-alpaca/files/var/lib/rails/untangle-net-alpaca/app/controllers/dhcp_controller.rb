@@ -18,6 +18,7 @@ class DhcpController < ApplicationController
   def manage
     @dhcp_server_settings = DhcpServerSettings.find( :first )
     @dhcp_server_settings = DhcpServerSettings.new if @dhcp_server_settings.nil?
+    manage_entries
   end
 
   def manage_entries
@@ -40,6 +41,7 @@ class DhcpController < ApplicationController
     
     os["dhcp_server_manager"].commit
 
+    save_entries
     ## Review : should have some indication that is saved.
     return redirect_to( :action => "manage" )
   end
@@ -65,7 +67,7 @@ class DhcpController < ApplicationController
     static_entry_list.each { |dse| dse.save }
 
     os["dhcp_server_manager"].commit
-    return redirect_to( :action => "manage_entries" )
+    #return redirect_to( :action => "manage_entries" )
   end
 
   def refresh_dynamic_entries

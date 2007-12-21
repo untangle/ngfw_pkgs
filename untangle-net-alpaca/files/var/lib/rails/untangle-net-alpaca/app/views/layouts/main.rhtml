@@ -3,19 +3,14 @@
   <% main_menu = menu_organizer.get_node( "/main" ) %>
   <head>
     <title><%= (( @title.nil? ) ? ApplicationController::DefaultTitle : @title ).t %></title>
-    <%= javascript_include_tag :defaults %>
-
-    <% @scripts.each do |script| %>
-      <%= javascript_include_tag script %>
-    <% end %>
-
-    <%= stylesheet_link_tag "borax" %>
-    <%= stylesheet_link_tag "borax-main-menu" %>
-    
     <% @stylesheets.each do |sheet| %>
       <%= stylesheet_link_tag sheet %>
     <% end %>
 
+    <%= javascript_include_tag :defaults %>
+    <% @scripts.each do |script| %>
+      <%= javascript_include_tag script %>
+    <% end %>
   </head>
   <body>
     <div id="main-menu">
@@ -24,6 +19,9 @@
     </div>
     <div id="main-content">
       <%= yield %>
+    </div>
+    <div id="main-footer">
+      <%= render( :partial => "layouts/main_footer", :locals => { :buttons => @buttons } ) %>
     </div>
   </body>
 </html>

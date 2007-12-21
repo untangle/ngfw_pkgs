@@ -1,0 +1,1035 @@
+div#dns-dynamic-entries
+{ 
+  margin: 10px 0 10px 0;
+  width: 364px;
+  overflow-y: scroll;
+  height: 150px;
+  }
+
+ul#dns-dynamic-entry-list div.ip-address
+{ 
+  width: 140px;
+  }
+
+ul#dns-dynamic-entry-list div.hostname
+{ 
+  width: 200px;
+  }
+div.dns-static-entries
+{ 
+  margin: 10px 0 10px 0;
+  width: 664px;
+  height: 150px;
+  }
+
+ul#dns-static-entry-list div.ip-address
+{ 
+  width: 140px;
+ }
+
+ul#dns-static-entry-list div.hostname
+{ 
+  width: 200px;
+ }
+
+ul#dns-static-entry-list div.description
+{
+  width: 200px;
+  }
+
+ul#dns-static-entry-list div.minus
+{ 
+  width: 100px;
+  text-align: center;
+  }
+
+li.static-entry div.minus:hover
+{ 
+  cursor: pointer;
+  background-color: #E1EB26;  
+  }
+div.list-table
+{ 
+  overflow-y: scroll;
+  background-color: #EEFFEE;
+  border-left: 1px solid #C0C0C0;
+  border-bottom: 1px solid #C0C0C0;
+ }
+
+div.list-table ul
+{
+  width: 100%;
+  list-style: none inside none;
+  margin: 0;
+  padding: 0;
+ }
+
+div.list-table ul li
+{
+  overflow: auto;
+  }
+
+/* Style each row in the list */
+/* This leaves the double border in the last item when the items fill the list vertically) */
+div.list-table li
+{ 
+  border-bottom: 1px solid #C0C0C0;
+ }
+
+div.list-table ul > li div
+{
+  float: left;
+  }
+
+div.list-table ul li > div
+{ 
+  border-left: 1px solid #C0C0C0;
+  }
+
+/* Style the header */
+div.list-table ul li.header
+{ 
+  background-color: #C0C0C0;
+  text-align: center;
+ }
+
+
+/* Fix the border for the first column */
+div.list-table li div:first-child
+{ 
+  border-left: 0 none #C0C0C0;
+  }
+
+div.list-table select
+{ 
+  width: 100%;
+}
+
+div.list-table input[type="text"]
+{
+  background-color: transparent;
+  border-width: 0;
+  width: 100%;
+ }
+
+.list-table-arp, .list-table-route
+{
+  height: 10em;
+}
+select.netmask
+{
+  width: 40px;
+  }
+
+/* This only works in firefox */
+select.netmask option
+{
+  width: 150px;
+  }
+
+div.basic-interface-config div#interface_1
+{ 
+  height: 160px;
+ }
+
+div.basic-interface-config
+{ 
+  background-color: #EEE;
+  border: 1px solid #C0C0C0;
+  width: 500px;
+  height: 140px;
+  margin: 0 0 20px 0;
+  padding: 0 10px 0 10px;
+  }
+
+div.basic-interface-config.wan
+{ 
+  height: 220px;
+ }
+
+form li
+{
+  list-style: none;
+  padding-bottom: 4px;
+  margin: 0;
+}
+
+div.ip-networks
+{ 
+  margin: 10px 0 10px 0;
+  width: 523px;
+  height: 150px;
+  }
+
+ul.ip-network-list div.ip-address
+{ 
+  width: 300px;
+  }
+
+ul.ip-network-list div.ping
+{ 
+  width: 100px;
+  }
+
+ul.ip-network-list div.minus
+{ 
+  width: 100px;
+  }
+
+li.ip-network div.minus, li.ip-network div.ping
+{ 
+  text-align: center;
+  }
+
+
+li.ip-network div.minus:hover
+{ 
+  cursor: pointer;
+  background-color: #E1EB26;  
+  }
+
+/* list of interfaces */
+div.list-table.interfaces
+{ 
+  margin: 10px 0 10px 0;
+  width: 523px;
+  height: 100px;
+  }
+
+div.list-table.interfaces ul li > div.name
+{ 
+  width: 100px;
+  }
+
+div.list-table.interfaces ul li > div.vendor
+{ 
+  width: 200px;
+  }
+
+div.list-table.interfaces ul li > div.mac-address
+{ 
+  width: 200px;
+  text-align: center;
+  }
+
+
+div#dhcp-dynamic-entries
+{ 
+  margin: 10px 0 10px 0;
+  width: 634px;
+  overflow-y: scroll;
+  height: 150px;
+  }
+
+
+ul.dhcp-dynamic-entry-list div.mac-address
+{ 
+  width: 160px;
+  }
+
+ul.dhcp-dynamic-entry-list div.ip-address
+{ 
+  width: 140px;
+  }
+
+ul.dhcp-dynamic-entry-list div.hostname
+{ 
+  width: 200px;
+  }
+
+ul.dhcp-dynamic-entry-list div.action
+{ 
+  width: 100px;
+  }
+div.dhcp-static-entries
+{ 
+  margin: 10px 0 10px 0;
+  width: 634px;
+  overflow-y: scroll;
+  height: 150px;
+  }
+
+ul#dhcp-static-entry-list div.mac-address
+{ 
+  width: 160px;
+ }
+
+ul#dhcp-static-entry-list div.ip-address
+{ 
+  width: 140px;
+ }
+
+ul#dhcp-static-entry-list div.description
+{
+  width: 200px;
+  }
+
+ul#dhcp-static-entry-list div.minus
+{ 
+  width: 100px;
+  text-align: center;
+  }
+
+li.static-entry div.minus:hover
+{ 
+  cursor: pointer;
+  background-color: #E1EB26;  
+  }
+
+div.subscriptions
+{ 
+  margin: 10px 0 10px 0;
+  width: 623px;
+  height: 200px;
+  }
+
+ul#subscription-list div.enabled
+{ 
+  width: 100px;
+  }
+
+ul#subscription-list div.subscribe
+{ 
+  width: 100px;
+  }
+
+ul#subscription-list div.description
+{ 
+  width: 360px;
+  }
+
+ul#subscription-list div.edit
+{ 
+  width: 20px;
+  }
+
+ul#subscription-list div.minus
+{ 
+  width: 20px;
+  }
+
+ul#subscription-list div.enabled, ul#subscription-list div.subscribe, ul#subscription-list div.minus, ul#subscription-list div.edit
+{ 
+  text-align: center;
+  }
+
+li.subscription div.minus:hover, li.subscription div.edit:hover
+{ 
+  cursor: pointer;
+  background-color: #E1EB26;  
+  }
+
+/* System subscriptions */
+
+div.system-subscriptions
+{ 
+  margin: 10px 0 10px 0;
+  width: 623px;
+  height: 200px;
+  }
+
+ul.system-subscription-list div.enabled
+{ 
+  width: 100px;
+  }
+
+ul.system-subscription-list div.description
+{ 
+  width: 500px;
+  }
+
+ul.system-subscription-list div.enabled
+{ 
+  text-align: center;
+  }
+
+li.subscription div.minus:hover, li.subscription div.edit:hover
+{ 
+  cursor: pointer;
+  background-color: #E1EB26;  
+  }
+
+
+div#overlay > div#rule-dialog
+{ 
+  position: relative;
+  top: 100px;
+  left: 50%;
+  margin-left: -350px;
+  width: 700px;
+  height: 475px;
+  padding-top: 20px;
+  background-color: #CCCCD0;
+  border: 1px solid #5F5F5F;
+  }
+div.ip-networks
+{ 
+  margin: 10px 0 10px 0;
+  width: 523px;
+  height: 150px;
+  }
+
+ul.ip-network-list div.ip-address
+{ 
+  width: 300px;
+  }
+
+ul.ip-network-list div.ping
+{ 
+  width: 100px;
+  }
+
+ul.ip-network-list div.minus
+{ 
+  width: 100px;
+  }
+
+li.ip-network div.minus, li.ip-network div.ping
+{ 
+  text-align: center;
+  }
+
+
+li.ip-network div.minus:hover
+{ 
+  cursor: pointer;
+  background-color: #E1EB26;  
+  }
+div.nat-policies
+{ 
+  margin: 10px 0 10px 0;
+  width: 543px;
+  height: 120px;
+  }
+
+ul.nat-policy-list div.ip-address
+{ 
+  width: 260px;
+  }
+
+ul.nat-policy-list div.new-source
+{ 
+  width: 160px;
+  }
+
+ul.nat-policy-list div.minus
+{ 
+  width: 100px;
+  }
+
+li.nat-policy div.minus
+{ 
+  text-align: center;
+  }
+
+li.nat-policy div.minus:hover
+{ 
+  cursor: pointer;
+  background-color: #E1EB26;  
+  }
+
+
+div#overlay
+{ 
+  left: 0; 
+  top: 0;
+  z-index: 100;
+  position: absolute; 
+  background-image: url( '../images/overlay.png' );
+  background-repeat: repeat;
+  width: 100%;
+  height: 100%;
+ }
+
+div.redirects
+{ 
+  margin: 10px 0 10px 0;
+  width: 623px;
+  height: 200px;
+  }
+
+ul#redirect-list div.enabled
+{ 
+  width: 100px;
+  }
+
+ul#redirect-list div.description
+{ 
+  width: 460px;
+  }
+
+ul#redirect-list div.edit
+{ 
+  width: 20px;
+  }
+
+ul#redirect-list div.minus
+{ 
+  width: 20px;
+  }
+
+ul#redirect-list div.enabled, ul#redirect-list div.subscribe, ul#redirect-list div.minus, ul#redirect-list div.edit
+{ 
+  text-align: center;
+  }
+
+li.redirect div.minus:hover, li.redirect div.edit:hover
+{ 
+  cursor: pointer;
+  background-color: #E1EB26;  
+  }
+
+/* System rules */
+div.system-redirects
+{ 
+  margin: 10px 0 10px 0;
+  width: 623px;
+  height: 200px;
+  }
+
+
+ul.system-redirect-list div.enabled
+{ 
+  width: 100px;
+  text-align: center;
+  }
+
+ul.system-redirect-list div.description
+{ 
+  width: 403px;
+ }
+
+div#overlay > div#rule-dialog
+{ 
+  position: relative;
+  top: 100px;
+  left: 50%;
+  margin-left: -350px;
+  width: 700px;
+  height: 475px;
+  padding-top: 20px;
+  background-color: #CCCCD0;
+  border: 1px solid #5F5F5F;
+  }
+
+div#rule-dialog > h2.title
+{ 
+  text-align: center;
+  }
+body
+{ 
+  font-family: Arial,Geneva,sans-serif;
+  margin: 0;
+  padding: 0;
+ }
+div.text-fields label
+{
+  width: 200px;
+  float: left;
+  text-align: right;
+  margin-right: 0.5em;
+  display: block;
+}
+div#main-menu
+{ 
+  height: 34px;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  overflow: auto;
+ }
+div#main-content
+{
+  position: absolute;
+  top: 34px;
+  left: 0;
+  overflow: auto;
+  height: 80%;
+  width: 100%;
+  z-index: 100;
+  background-color: #f0f0f0;
+ }
+div#title
+{ 
+  background: url(/alpaca/images/rackunit.png) repeat-x top left;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  height: 54px;
+  }
+h1
+{
+  margin:0 0 0 5px; 
+  padding: 0 0 0 25px;
+  font-size: 12pt;
+  color: #3e3e3e;
+  line-height: 54px;
+  background: url(/alpaca/images/rackscrew.png) no-repeat center left;
+  }
+div#main-content > form, div#main-content form, div#main-content * form
+{ 
+  margin-left: 25px;
+  margin-top: 15px;
+ }
+#tabs 
+{
+  position: absolute;
+  list-style: none;
+  margin-top: 5px;
+  }
+#tabs li 
+{
+  float: left;
+  }
+#tabs a 
+{
+  float: left;
+  padding: 5px 6px;
+  margin-left: 6px;
+  background-color: #DCDCDC;
+  text-decoration: none;
+  color: #999999;
+  }
+#tabs a.active-tab 
+{
+  background-color: #3e3e3e;
+  color: #ccc;
+  }
+div#main-footer
+{ 
+  height: 50px;
+  width: 100%;
+  background-color: #e8e8e8;
+  border-top: 2px outset #d9d9d9;
+  position: absolute;
+  top: 90%;
+  left: 0;
+  z-index: 1;
+  overflow: auto;
+  }
+div#interface-list
+{ 
+  padding-top: 5px;
+  border: 0;
+  height: 200px;
+  width: 640px;
+  overflow: auto;
+ }
+
+div#interface-list table
+{ 
+  border-collapse: collapse;
+  width: 600px;  
+  }
+
+div#interface-list td
+{ 
+  padding-top: 5px;
+  height: 28px;
+  text-align: center;
+  }
+
+td#interface-os-data
+{ 
+  width: 300px;
+  }
+
+ul#interface-os-list
+{ 
+  padding: 0;
+  margin: 0 4px 0 8px;
+  list-style: none inside none;
+  }
+
+ul#interface-os-list li
+{ 
+  cursor: move;
+  /* position: relative; */
+  /* float: left; */
+  margin: 2px 2px 0 0;
+  width: 260px;
+  height: 28px;
+  border: 1px solid #C0C0C0;
+  text-align: center;
+  padding-top: 5px;
+  background-color: #EEFFEE;
+  }
+
+input[type="text"], input[type="password"]
+{
+  background-color: #DDDDDD;
+  border-style: solid;
+  border-color:  #101010;
+  border-width: 1px;
+ }
+
+input[type="text"].number
+{
+  width: 50px;
+ }
+
+form fieldset li {
+  list-style: none;
+  padding: 5px;
+  margin: 0;
+}
+
+form fieldset {
+  border: none;
+  margin: 3px 0 0;
+}
+
+form label {
+  width: 200px;
+  float: left;
+  text-align: right;
+  margin-right: 0.5em;
+  display: block;
+}
+
+form div.dynamic input[type="text"]
+{ 
+  width: 140px;
+  }
+
+form div.dynamic div.header
+{ 
+  width: 140px;
+  float: left;
+  text-align: center;
+ }
+
+
+form div.dynamic div.first
+{ 
+  margin-left: 210px;
+ }
+
+form div.dynamic div.current
+{ 
+  width: 150px;
+  float: left;
+ }
+
+div.button, span.button
+{ 
+  background-color: #EEFFEE;
+  padding: 4px 4px 4px 8px;
+  border: 1px solid #C0C0C0;
+  font-size: 90%;
+  font-weight: bold;
+ }
+
+div.button:hover, span.button:hover
+{
+  background-color: #3FE0C6;
+  cursor: pointer;
+  }
+
+div.minus
+{
+  cursor: pointer;
+}
+div.file-overrides
+{ 
+  margin: 10px 0 10px 0;
+  width: 623px;
+  height: 200px;
+  }
+
+ul#file-override-list div.enabled
+{ 
+  width: 100px;
+  }
+
+ul#file-override-list div.writable
+{ 
+  width: 100px;
+  }
+
+ul#file-override-list div.path
+{ 
+  width: 300px;
+  }
+
+ul#file-override-list div.minus
+{ 
+  width: 100px;
+  }
+
+
+li.file-override div.enabled, li.file-override div.writable, li.file-override div.minus
+{ 
+  text-align: center;
+  }
+
+
+div.firewalls
+{ 
+  margin: 10px 0 10px 0;
+  width: 623px;
+  height: 200px;
+  }
+
+ul#firewall-list div.enabled
+{ 
+  width: 100px;
+  }
+
+ul#firewall-list div.target
+{ 
+  width: 100px;
+ }
+
+ul#firewall-list div.description
+{ 
+  width: 360px;
+  }
+
+ul#firewall-list div.edit
+{ 
+  width: 20px;
+  }
+
+ul#firewall-list div.minus
+{ 
+  width: 20px;
+  }
+
+ul#firewall-list div.enabled, ul#firewall-list div.subscribe, ul#firewall-list div.minus, ul#firewall-list div.edit
+{ 
+  text-align: center;
+  }
+
+li.firewall div.minus:hover, li.firewall div.edit:hover
+{ 
+  cursor: pointer;
+  background-color: #E1EB26;  
+  }
+
+/* System rules */
+div.system-firewalls
+{ 
+  margin: 10px 0 10px 0;
+  width: 623px;
+  height: 200px;
+  }
+
+
+ul.system-firewall-list div.enabled
+{ 
+  width: 100px;
+  text-align: center;
+  }
+
+ul.system-firewall-list div.description
+{ 
+  width: 403px;
+ }
+
+
+div#overlay > div#rule-dialog
+{ 
+  position: relative;
+  top: 100px;
+  left: 50%;
+  margin-left: -350px;
+  width: 700px;
+  height: 475px;
+  padding-top: 20px;
+  background-color: #CCCCD0;
+  border: 1px solid #5F5F5F;
+  }
+
+div#rule-dialog > h2.title
+{ 
+  text-align: center;
+  }
+div.config-level div.button
+{
+  width: 120px;
+  margin-left: 100px;
+  }
+div.config-level div.button:hover
+{
+  background-color: #3FE0C6;
+  cursor: pointer;
+  }
+
+ul.main-menu-depth-0, .main-menu-depth-0 ul
+{
+  z-index: 200;
+  margin: 0;
+  padding: 0;
+  cursor: default;
+  list-style-type: none;
+  display: inline;
+}
+
+ul.main-menu-depth-0
+{
+  display: table;
+  font-weight: bold;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+
+ul.main-menu-depth-0 > li
+{
+  display: table-cell;
+  position: relative;
+  padding: 2px 6px;
+}
+
+ul.main-menu-depth-0 li > ul
+{
+  display: none;
+  position: absolute;
+  max-width: 40ex;
+  margin-left: -6px;
+  margin-top: 2px;
+}
+
+.main-menu-depth-0 ul li a
+{ 
+  display: block;
+  padding: 2px 10px;
+  }
+
+ul.main-menu-depth-0 li:hover > ul
+{
+  display : block;
+}
+
+/*Menu styles*/
+
+ul.main-menu-depth-0, .main-menu-depth-0 ul, .main-menu-depth-0 ul li a
+{
+  background-color: rgb( 233, 233, 233 );
+  color: rgb( 114, 116, 120);
+}
+
+ul.main-menu-depth-0 li:hover, .main-menu-depth-0 ul li a:hover
+{
+  background-color: rgb( 101, 198, 28 );
+  color: rgb( 28, 47, 12);
+  cursor: pointer;
+}
+
+ul.main-menu-depth-0, .main-menu-depth-0 ul
+{
+  border: 1px solid #C0C0C0;
+}
+
+.main-menu-depth-0 a
+{ 
+  color: rgb( 114, 116, 120);
+  text-decoration: none;
+ }
+
+.main-menu-depth-0 a:visited, .main-menu-depth-0 a:active
+{ 
+  color: rgb( 114, 116, 120);  
+ }
+div.rules
+{ 
+  position: relative;
+  left: 50%;
+  margin-left: -310px;
+  width: 620px;
+  height: 200px;
+  }
+
+ul.rule-list div.type
+{
+  width: 200px;
+  }
+
+ul.rule-list div.value
+{
+  width: 400px;
+  }
+
+ul.rule-list li.rule > div.plus, ul.rule-list li.rule > div.minus
+{
+  width: 50px;
+  text-align: center;
+  background-color: #EFEFEF;
+  }
+
+ul.rule-list li.rule > div.minus
+{
+  position: absolute;
+  right: 50px;
+}
+
+ul.rule-list li.rule > div.plus
+{
+  position: absolute;
+  right: 0;
+}
+
+
+ul.rule-list li.rule > div.plus, ul.rule-list li.rule > div.minus
+{
+  width: 50px;
+  text-align: center;
+  background-color: #EFEFEF;
+  }
+
+ul.rule-list li.rule > div.plus:hover, ul.rule-list li.rule > div.minus:hover
+{ 
+  cursor: pointer;
+  background-color: #E1EB26;
+  }
+
+ul.rule-list div.checkbox
+{ 
+  width: 125px;
+  }
+
+div.actions
+{ 
+  position: absolute;
+  right: 20px;
+  width: 250px;
+  margin-top: 10px;
+  }
+
+div.update, div.cancel
+{ 
+  position: absolute;
+  top: 0;
+  background-color: #EFE;
+  width: 100px;
+  border: 1px solid #808080;
+  text-align: center;
+ }
+
+div.update
+{ 
+  left: 125px;
+ }
+
+div.update:hover, div.cancel:hover
+{ 
+  background-color: #3FE0C6;
+  cursor: pointer;
+ }
+ul.rule-list input[type="text"]
+{
+  width: 290px;
+ }
+input[type="submit"]
+{
+  margin: 3px;
+  padding-left: 23px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  }
+input[type="submit"][value="Save"]
+{ 
+  background: #FFF url(/alpaca/images/rack/IconSave_23x16.png) no-repeat left center;
+  }

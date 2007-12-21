@@ -1,20 +1,5 @@
-<% if (( depth < max_depth ) && menu.children? ) %>
-  <% unless depth == 0 %>
-    <li>
-      <a href="<%= menu.action %>"><%= menu.name.t %></a>
-  <% end %>
-      
-  <ul class="<%= "#{css_class}-depth-#{depth}" %>">
-    <% for menu_item in menu.children %>
-      <%= render( :partial => "/layouts/main_menu", :locals => { :menu => menu_item, :css_class => "main-menu", :depth => depth + 1, :max_depth => max_depth  } ) %>
-    <% end %>
-  </ul>
-
-  <% unless depth == 0 %>
-    </li>
-  <% end %>
-<% else %>
-  <li>
-    <a href="<%= menu.action %>"><%= menu.name.t %></a>
-  </li>
+<ul id="tabs">
+<% for menu_item in menu.children %>
+   <li><a href="<%= menu_item.action %>"><%= menu_item.name.t %></a></li>
 <% end %>
+</ul>
