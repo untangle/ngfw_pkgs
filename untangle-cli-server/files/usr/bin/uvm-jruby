@@ -19,5 +19,6 @@ done
 
 export CLASSPATH
 export JRUBY_HOME=/usr/lib/jruby1.0
+export JAVA_OPTS=
 
 /usr/bin/jruby1.0 -J-Xmx64M $*
