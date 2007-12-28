@@ -33,6 +33,9 @@ class AuthController < ApplicationController
     session[:username] = nil
 
     credentials = params[:credentials]
+    if ( credentials.nil? )
+      credentials = {}
+    end
     username = credentials[:username]
     password = credentials[:password]
 

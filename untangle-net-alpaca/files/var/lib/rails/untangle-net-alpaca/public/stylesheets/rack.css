@@ -433,7 +433,7 @@ div#overlay
 { 
   left: 0; 
   top: 0;
-  z-index: 100;
+  z-index: 1000000;
   position: absolute; 
   background-image: url( '../images/overlay.png' );
   background-repeat: repeat;
