@@ -10,5 +10,5 @@ if [ -r /etc/default/$NAME ]; then
     . /etc/default/$NAME
 fi
 
-ruby ${BASE_DIR}/usr/share/untangle-net-alpaca/scripts/cleanup.rb ${BASE_DIR}
+ruby /usr/share/untangle-net-alpaca/scripts/cleanup.rb ${BASE_DIR}
 exit 0
