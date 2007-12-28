@@ -7,18 +7,19 @@ EOF
   </div>
 </div>
 <% form_tag( :action => 'save' ) do -%>
-
-  <div id="title><h1>User Redirects</h1></div>
-
+  <div id="title"><h1>User Redirects</h1></div>
+  <div id="main-content-body">
   <%= link_to_remote( "+".t, :url => { :action => :create_redirect } ) %>
 
   <%= render( :partial => "redirects" , :object => @redirect_list ) %>
 
   <h2>System Redirects</h2>
   <%= render( :partial => "system_redirects" , :object => @system_redirect_list ) %>
-
+  </div>
+  <div id="main-content-footer">
   <%= submit_tag "Cancel".t %>
   <%= submit_tag "Save".t %>
+  </div>
 
 <% end %>
 

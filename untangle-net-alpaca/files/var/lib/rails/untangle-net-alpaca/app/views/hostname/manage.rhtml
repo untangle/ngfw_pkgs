@@ -1,7 +1,6 @@
-<div>
-  <div id="title"><h1><%= "Hostname".t %></h1></div>
-
   <% form_tag( :action => 'save' ) do -%>
+  <div id="title"><h1><%= "Hostname".t %></h1></div>
+  <div id="main-content-body">
     <fieldset>
       <ul class="text-fields">
         <li>
@@ -10,10 +9,7 @@
         </li>
       </ul>
     </fieldset>
-
-    <%= submit_tag "Cancel".t %>
-    <%= submit_tag "Save".t %>
-  <div id="title"><h1><%= "Dynamic DNS Client Configuration".t %></h1></div>
+  <h2><%= "Dynamic DNS Client Configuration".t %></h2>
     <fieldset>
       <ul class="text-fields">
         <li>
@@ -45,10 +41,9 @@ select( "ddclient_settings", "service", services ) %>
 
       </ul>
     </fieldset>
-
+    </div>
+    <div id="main-content-footer">
     <%= submit_tag "Cancel".t %>
     <%= submit_tag "Save".t %>
-
+    </div>
   <% end -%>
-
-</div>

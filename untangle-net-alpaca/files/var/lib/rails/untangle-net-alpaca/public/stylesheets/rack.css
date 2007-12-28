@@ -551,6 +551,17 @@ div#main-content
   z-index: 100;
   background-color: #f0f0f0;
  }
+div#main-content-body
+{
+  position: absolute;
+/*  top: 34px;*/
+  left: 0;
+  overflow: auto;
+  height: 80%;
+  width: 100%;
+  z-index: 100;
+  background-color: #f0f0f0;
+ }
 div#title
 { 
   background: url(/alpaca/images/rackunit.png) repeat-x top left;
@@ -567,7 +578,15 @@ h1
   line-height: 54px;
   background: url(/alpaca/images/rackscrew.png) no-repeat center left;
   }
-div#main-content > form, div#main-content form, div#main-content * form
+h2
+{
+  color: #666;
+  font-size: 11pt;
+  border-bottom: 2px inset #f2f2f3;
+  width: 80%;
+  margin-left: 25px;
+}
+div#main-content-body > form, div#main-content-body form, div#main-content-body * form
 { 
   margin-left: 25px;
   margin-top: 15px;
@@ -596,7 +615,7 @@ div#main-content > form, div#main-content form, div#main-content * form
   background-color: #3e3e3e;
   color: #ccc;
   }
-div#main-footer
+div#main-content-footer
 { 
   height: 50px;
   width: 100%;

@@ -1,7 +1,6 @@
-<div>
+<% form_tag( :action => 'save' ) do -%>
   <div id="title"><h1><%= "DNS Server Configuration".t %></h1></div>
-
-  <% form_tag( :action => 'save' ) do -%>
+  <div id="main-content-body">
     <fieldset>
       <ul class="text-fields">
         <li>
@@ -23,8 +22,9 @@
     <h2><%= "Automatic DNS Entries".t %></h2>
     <!--<%= link_to_remote( "Refresh".t, :url => { :action => :refresh_dynamic_entries } ) %>-->
     <%= render( :partial => "dynamic_entries" , :object => @dynamic_entries ) %>
-
+    </div>
+    <div id="main-content-footer">
     <%= submit_tag "Cancel".t %>
     <%= submit_tag "Save".t %>
-  <% end -%>
-</div>
+    </div>
+<% end -%>

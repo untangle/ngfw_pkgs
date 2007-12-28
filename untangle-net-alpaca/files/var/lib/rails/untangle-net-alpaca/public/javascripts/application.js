@@ -66,16 +66,26 @@ Fabtabs.prototype = {
 	var footerTop = '800px';
 	var contentHeight = '800px';
 	if (window.innerHeight !== undefined) {
-	    footerTop = (window.innerHeight - 52).toString() + 'px';
-	    contentHeight =  (window.innerHeight - 84).toString() + 'px';
+	    footerTop = (window.innerHeight - 86).toString() + 'px';
+	    bodyHeight =  (window.innerHeight - 138).toString() + 'px';
+	    contentHeight =  (window.innerHeight - 34).toString() + 'px';
 	} else {
-	    footerTop = (document.documentElement.clientHeight - 52).toString() + 'px';
-	    contentHeight =  (document.documentElement.clientHeight - 84).toString() + 'px';   
+	    footerTop = (document.documentElement.clientHeight - 86).toString() + 'px';
+	    bodyHeight =  (document.documentElement.clientHeight - 138).toString() + 'px';   
+	    contentHeight =  (document.documentElement.clientHeight - 34).toString() + 'px';   
 	}
-	var emf = $('main-footer');
-	emf.setStyle( { top: footerTop } );
 	var emc = $('main-content');
-	emc.setStyle( { height: contentHeight } );
+	if (emc) {
+	    emc.setStyle( { height: contentHeight } );
+	}
+	var emcf = $('main-content-footer');
+	if (emcf) {
+	    emcf.setStyle( { top: footerTop } );
+	}
+	var emcb = $('main-content-body');
+	if (emcb) {
+	    emcb.setStyle( { height: bodyHeight } );
+	}
     }
 
 Event.observe(window,'load',function(){ new Fabtabs('tabs'); },false);

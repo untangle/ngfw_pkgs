@@ -1,7 +1,6 @@
-<div>
+<% form_tag( :action => 'save' ) do -%>
   <div id="title"><h1><%= "DHCP Server Configuration".t %></h1></div>
-
-  <% form_tag( :action => 'save' ) do -%>
+  <div id="main-content-body">
     <fieldset>
       <ul class="text-fields">
         <li>
@@ -38,8 +37,6 @@
       </ul>
     </fieldset>
 
-    <%= submit_tag "Cancel".t %>
-    <%= submit_tag "Save".t %>
     <h2><%= "Static DHCP Entries".t %></h2>
     <%= link_to_remote( "+".t, :url => { :action => :create_static_entry } ) %>
     <%= render( :partial => "static_entries" , :object => @static_entries ) %>
@@ -48,9 +45,10 @@
     <%= link_to_remote( "Refresh".t, :url => { :action => :refresh_dynamic_entries } ) %>
     
     <%= render( :partial => "dynamic_entries" , :object => @dynamic_entries ) %>
-    
+    </div>
+    <div id="main-content-footer">
     <%= submit_tag "Cancel".t %>
     <%= submit_tag "Save".t %>
+    </div>
 
-  <% end -%>
-</div>
+<% end -%>
