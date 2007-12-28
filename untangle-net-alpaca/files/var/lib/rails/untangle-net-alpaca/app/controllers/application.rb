@@ -185,7 +185,10 @@ class ApplicationController < ActionController::Base
     #   case options
     #   when String
     logger.debug( "redirecting to url_for: " + url_for( options ) )
-    url = url_for( options ).split( "localhost:3000" )[1]
+    url = url_for( options ).split( request.host_with_port )[1]
+    if url.nil? or url.length == 0
+      return super( options, *parameters_for_method_reference )
+    end
     response.redirect( url )
     response.redirected_to = url
     @performed_redirect = true
