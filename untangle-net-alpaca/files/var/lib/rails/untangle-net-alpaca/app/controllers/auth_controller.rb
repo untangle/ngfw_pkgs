@@ -57,6 +57,8 @@ class AuthController < ApplicationController
     return_to = session[:return_to] 
     session[:return_to] = nil
 
+    logger.debug "Returning to default " + url_for( DefaultPage ) if ApplicationHelper.null?( return_to )
+
     return redirect_to( url_for( DefaultPage ) ) if ApplicationHelper.null?( return_to )
 
     logger.debug "Returning to: #{return_to}"

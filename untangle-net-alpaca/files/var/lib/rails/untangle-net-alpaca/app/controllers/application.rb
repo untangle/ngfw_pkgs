@@ -181,4 +181,16 @@ class ApplicationController < ActionController::Base
       @components << klazz.new( self, params, session, request )
     end
   end
+  def redirect_to( options = {}, *parameters_for_method_reference )
+    #   case options
+    #   when String
+    logger.debug( "redirecting to url_for: " + url_for( options ) )
+    url = url_for( options ).split( "localhost:3000" )[1]
+    response.redirect( url )
+    response.redirected_to = url
+    @performed_redirect = true
+    #    else
+    #      super( options, *parameters_for_method_reference )
+    #    end
+  end
 end
