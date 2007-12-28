@@ -1,6 +1,6 @@
 div#dns-dynamic-entries
 { 
-  margin: 10px 0 10px 0;
+  /*margin: 10px 0 10px 0;*/
   width: 364px;
   overflow-y: scroll;
   height: 150px;
@@ -17,7 +17,7 @@ ul#dns-dynamic-entry-list div.hostname
   }
 div.dns-static-entries
 { 
-  margin: 10px 0 10px 0;
+  /*margin: 10px 0 10px 0;*/
   width: 664px;
   height: 150px;
   }
@@ -54,6 +54,7 @@ div.list-table
   background-color: #EEFFEE;
   border-left: 1px solid #C0C0C0;
   border-bottom: 1px solid #C0C0C0;
+  margin: 30px;
  }
 
 div.list-table ul
@@ -64,33 +65,35 @@ div.list-table ul
   padding: 0;
  }
 
-div.list-table ul li
-{
-  overflow: auto;
-  }
-
 /* Style each row in the list */
 /* This leaves the double border in the last item when the items fill the list vertically) */
-div.list-table li
-{ 
+div.list-table li, div.list-table ul li, div.list-table ul > li
+{
   border-bottom: 1px solid #C0C0C0;
+  overflow: auto; 
+  width: 100%;
+  float: left;
  }
 
-div.list-table ul > li div
-{
-  float: left;
+div.list-table-column, div.list-table-header-column, div.list-table div
+{  
+  float: left; 
+  border-left: 1px solid #C0C0C0;
   }
 
 div.list-table ul li > div
 { 
   border-left: 1px solid #C0C0C0;
+  float: left;
   }
 
 /* Style the header */
 div.list-table ul li.header
 { 
   background-color: #C0C0C0;
-  text-align: center;
+/*  text-align: center;*/
+  float: left;
+  width: 100%;
  }
 
 
@@ -105,11 +108,12 @@ div.list-table select
   width: 100%;
 }
 
-div.list-table input[type="text"]
+div.list-table input
 {
   background-color: transparent;
   border-width: 0;
   width: 100%;
+  padding: 0;
  }
 
 .list-table-arp, .list-table-route
@@ -138,7 +142,7 @@ div.basic-interface-config
   border: 1px solid #C0C0C0;
   width: 500px;
   height: 140px;
-  margin: 0 0 20px 0;
+  margin: 0 0 20px 30px;
   padding: 0 10px 0 10px;
   }
 
@@ -156,7 +160,7 @@ form li
 
 div.ip-networks
 { 
-  margin: 10px 0 10px 0;
+  /*margin: 10px 0 10px 0;*/
   width: 523px;
   height: 150px;
   }
@@ -191,7 +195,7 @@ li.ip-network div.minus:hover
 /* list of interfaces */
 div.list-table.interfaces
 { 
-  margin: 10px 0 10px 0;
+  /*margin: 10px 0 10px 0;*/
   width: 523px;
   height: 100px;
   }
@@ -215,7 +219,7 @@ div.list-table.interfaces ul li > div.mac-address
 
 div#dhcp-dynamic-entries
 { 
-  margin: 10px 0 10px 0;
+  /*margin: 10px 0 10px 0;*/
   width: 634px;
   overflow-y: scroll;
   height: 150px;
@@ -243,7 +247,7 @@ ul.dhcp-dynamic-entry-list div.action
   }
 div.dhcp-static-entries
 { 
-  margin: 10px 0 10px 0;
+  /*margin: 10px 0 10px 0;*/
   width: 634px;
   overflow-y: scroll;
   height: 150px;
@@ -278,7 +282,7 @@ li.static-entry div.minus:hover
 
 div.subscriptions
 { 
-  margin: 10px 0 10px 0;
+  /*margin: 10px 0 10px 0;*/
   width: 623px;
   height: 200px;
   }
@@ -323,7 +327,7 @@ li.subscription div.minus:hover, li.subscription div.edit:hover
 
 div.system-subscriptions
 { 
-  margin: 10px 0 10px 0;
+  /*margin: 10px 0 10px 0;*/
   width: 623px;
   height: 200px;
   }
@@ -364,7 +368,7 @@ div#overlay > div#rule-dialog
   }
 div.ip-networks
 { 
-  margin: 10px 0 10px 0;
+  /*margin: 10px 0 10px 0;*/
   width: 523px;
   height: 150px;
   }
@@ -397,7 +401,7 @@ li.ip-network div.minus:hover
   }
 div.nat-policies
 { 
-  margin: 10px 0 10px 0;
+  /*margin: 10px 0 10px 0;*/
   width: 543px;
   height: 120px;
   }
@@ -443,7 +447,7 @@ div#overlay
 
 div.redirects
 { 
-  margin: 10px 0 10px 0;
+  /*margin: 10px 0 10px 0;*/
   width: 623px;
   height: 200px;
   }
@@ -471,6 +475,7 @@ ul#redirect-list div.minus
 ul#redirect-list div.enabled, ul#redirect-list div.subscribe, ul#redirect-list div.minus, ul#redirect-list div.edit
 { 
   text-align: center;
+  float: left;
   }
 
 li.redirect div.minus:hover, li.redirect div.edit:hover
@@ -482,7 +487,7 @@ li.redirect div.minus:hover, li.redirect div.edit:hover
 /* System rules */
 div.system-redirects
 { 
-  margin: 10px 0 10px 0;
+/*  margin: 10px 0 10px 0;*/
   width: 623px;
   height: 200px;
   }
@@ -752,7 +757,7 @@ div.minus
 }
 div.file-overrides
 { 
-  margin: 10px 0 10px 0;
+  /*margin: 10px 0 10px 0;*/
   width: 623px;
   height: 200px;
   }
@@ -786,7 +791,7 @@ li.file-override div.enabled, li.file-override div.writable, li.file-override di
 
 div.firewalls
 { 
-  margin: 10px 0 10px 0;
+  /*margin: 10px 0 10px 0;*/
   width: 623px;
   height: 200px;
   }
@@ -830,7 +835,7 @@ li.firewall div.minus:hover, li.firewall div.edit:hover
 /* System rules */
 div.system-firewalls
 { 
-  margin: 10px 0 10px 0;
+  /*margin: 10px 0 10px 0;*/
   width: 623px;
   height: 200px;
   }
