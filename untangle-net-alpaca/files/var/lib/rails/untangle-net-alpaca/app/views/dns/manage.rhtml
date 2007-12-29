@@ -24,7 +24,12 @@
     <%= render( :partial => "dynamic_entries" , :object => @dynamic_entries ) %>
     </div>
     <div id="main-content-footer">
-    <%= submit_tag "Cancel".t %>
-    <%= submit_tag "Save".t %>
+<div id="help-footer">
+    <%= submit_tag "Help".t %>
+</div>
+<div id="action-footer">
+  <%= submit_tag "Cancel".t %>
+  <%= submit_tag "Save".t %>
+</div>
     </div>
 <% end -%>

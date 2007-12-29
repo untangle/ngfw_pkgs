@@ -1,7 +1,7 @@
-<div>
-  <div id="title"><h1><%= "Please select your locale".t %></h1></div>
+<div id="title"><h1><%= "Please select your locale".t %></h1></div>
   
-  <% form_tag( :action => 'save' ) do -%>
+<% form_tag( :action => 'save' ) do -%>
+    <div id="main-body-content">
     <fieldset>
       <ul class="text-fields">
         <li>
@@ -10,9 +10,17 @@
         </li>
       </ul>
     </fieldset>
-    
+
+    </div>
+  <div id="main-content-footer">
+  <div id="help-footer">
+    <%= submit_tag "Help".t %>
+  </div>
+  <div id="action-footer">
     <%= submit_tag "Cancel".t %>
     <%= submit_tag "Save".t %>
-  <% end %>
-</div>
+  </div>
+  </div>
+<% end %>
+
   

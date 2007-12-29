@@ -1,10 +1,17 @@
 <% form_tag( :action => 'save' ) do -%>
-
+<div id="title"<h1><%= "File Overrides".t %></h1></div>
+<div id="main-content-body">
   <%= link_to_remote( "+".t, :url => { :action => :create_file_override } ) %>
 
   <%= render( :partial => "file_overrides" , :object => @fileOverrideList ) %>
-
-  <%= submit_tag "Cancel".t %>
-  <%= submit_tag "Save".t %>
-
+</div>
+  <div id="main-content-footer">
+  <div id="help-footer">
+    <%= submit_tag "Help".t %>
+  </div>
+  <div id="action-footer">
+    <%= submit_tag "Cancel".t %>
+    <%= submit_tag "Save".t %>
+  </div>
+  </div>
 <% end %>

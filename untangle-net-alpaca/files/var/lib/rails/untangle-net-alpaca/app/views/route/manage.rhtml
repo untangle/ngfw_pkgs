@@ -1,7 +1,5 @@
-<div>
-  <div id="title"><h1><%= "Static Route Management".t %></h1></div>
-
-  <% form_tag( :action => 'save' ) do
+<div id="title"><h1><%= "Static Route Management".t %></h1></div>
+<% form_tag( :action => 'save' ) do
 rows = []
 @network_routes.each do |network_route|
     rows << { :columns => [ { :value => network_route.target },
@@ -17,6 +15,7 @@ rows = []
 end
 -%>
 
+<div id="main-content-body">
 <%= editable_table( :action => "/route/create_entry", 
   :header_columns => [ { :name => "Target".t }, 
                        { :name => "Netmask".t },
@@ -31,12 +30,6 @@ end
   :auto_size => true
   )
 %>
-
-    <%= submit_tag "Cancel".t %>
-    <%= submit_tag "Save".t %>
-
-  <% end -%>
-
 
 <%= editable_table( :action => "/route/create_entry", 
   :header_columns => [ { :name => "Target".t }, 
@@ -55,5 +48,14 @@ end
   :add => false
   )
 %>
-
 </div>
+<div id="main-content-footer">
+<div id="help-footer">
+    <%= submit_tag "Help".t %>
+</div>
+<div id="action-footer">
+  <%= submit_tag "Cancel".t %>
+  <%= submit_tag "Save".t %>
+</div>
+</div>
+<% end -%>

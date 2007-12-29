@@ -1,3 +1,9 @@
+body
+{ 
+  font-family: Arial,Geneva,sans-serif;
+  margin: 0;
+  padding: 0;
+ }
 div#dns-dynamic-entries
 { 
   /*margin: 10px 0 10px 0;*/
@@ -521,12 +527,6 @@ div#rule-dialog > h2.title
 { 
   text-align: center;
   }
-body
-{ 
-  font-family: Arial,Geneva,sans-serif;
-  margin: 0;
-  padding: 0;
- }
 div.text-fields label
 {
   width: 200px;
@@ -544,11 +544,12 @@ div#main-menu
   left: 0;
   z-index: 50;
   overflow: auto;
+  background-color: #e8e8e8;
  }
 div#main-content
 {
   position: absolute;
-  top: 34px;
+  top: 32px;
   left: 0;
   overflow: auto;
   height: 80%;
@@ -565,7 +566,8 @@ div#main-content-body
   height: 80%;
   width: 100%;
   z-index: 100;
-  background-color: #f0f0f0;
+  background-color: #f7f7f7;
+  border-bottom: 1px solid #d3d3d3;
  }
 div#title
 { 
@@ -600,38 +602,61 @@ div#main-content-body > form, div#main-content-body form, div#main-content-body 
 {
   position: absolute;
   list-style: none;
-  margin-top: 5px;
+  margin-top: 12px;
   }
 #tabs li 
 {
   float: left;
+  border-right: 1px solid #5c5c5d;
+  border-left: 1px solid #4d4d4d;
+  border-top: 1px solid #555;
+  border-bottom: 1px solid #555;
+  margin-left: 3px;
   }
-#tabs a 
+#tabs a
 {
   float: left;
-  padding: 5px 6px;
-  margin-left: 6px;
-  background-color: #DCDCDC;
+  padding: 0px 6px;
+  background: #d7d7d7 url(/alpaca/images/rack/tab-tile.png) repeat-x;
   text-decoration: none;
-  color: #999999;
+  font-size: 9pt;
+  color: #333333;
+  border-right: 1px solid #ddd;
+  border-left: 1px solid #aeaeae;
+  border-top: 1px solid #cfcfcf;
+  border-bottom: 1px solid #bcbcbc;
   }
 #tabs a.active-tab 
 {
-  background-color: #3e3e3e;
-  color: #ccc;
+  background-color: #c4c4c4;
+  background-image: none;
+  border-bottom: 1px solid #b8b8b8;
+  /*color: #ccc;*/
+  font-size: 10pt;
+  font-weight: 550;
   }
 div#main-content-footer
 { 
   height: 50px;
   width: 100%;
-  background-color: #e8e8e8;
-  border-top: 2px outset #d9d9d9;
+  background-color: #e4e4e4;
+  border-top: 1px solid #f1f1f1;
   position: absolute;
   top: 90%;
   left: 0;
   z-index: 1;
   overflow: auto;
   }
+div#help-footer
+{ 
+  margin-top: 10px;
+  float: left;
+ }
+div#action-footer
+{  
+  margin-top: 10px;
+  float: right;
+}
 div#interface-list
 { 
   padding-top: 5px;
@@ -1055,5 +1080,13 @@ input[type="submit"]
   }
 input[type="submit"][value="Save"]
 { 
-  background: #FFF url(/alpaca/images/rack/IconSave_23x16.png) no-repeat left center;
+  background: #edf0f2 url(/alpaca/images/rack/IconSave_23x16.png) no-repeat left center;
+  }
+input[type="submit"][value="Cancel"]
+{ 
+  background: #edf0f2 url(/alpaca/images/rack/IconCancel_16x16.png) no-repeat left center;
+  }
+input[type="submit"][value="Help"]
+{ 
+  background: #edf0f2 url(/alpaca/images/rack/IconHelp_18x16.png) no-repeat left center;
   }

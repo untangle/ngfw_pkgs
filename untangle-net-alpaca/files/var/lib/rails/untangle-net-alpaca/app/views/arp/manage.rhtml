@@ -1,14 +1,12 @@
-<div>
-  <div id="title"><h1><%= "Static ARP Management".t %></h1></div>
-  <% form_tag( :action => 'save' ) do
-
+<% form_tag( :action => 'save' ) do
 rows = []
 @static_arps.each do |static_arp|
     rows << { :columns => [ { :value => static_arp.hostname },
     	               { :value => static_arp.hw_addr } ] }
 end
 -%>
-
+<div id="title"><h1><%= "Static ARP Management".t %></h1></div>
+<div id="main-content-body">
 <%= editable_table( :action => "/arp/create_entry", 
   :header_columns => [ { :name => "IP Address".t }, 
                        { :name => "HWaddress".t },
@@ -21,11 +19,6 @@ end
   :auto_size => true
   )
 %>
-
-  <%= submit_tag "Cancel".t %>
-  <%= submit_tag "Save".t %>
-  <% end -%>
-
 
 <%= editable_table( :action => "/arp/create_entry", 
   :header_columns => [ { :name => "IP Address".t }, 
@@ -44,3 +37,15 @@ end
 %>
 
 </div>
+
+<div id="main-content-footer">
+<div id="help-footer">
+    <%= submit_tag "Help".t %>
+</div>
+<div id="action-footer">
+  <%= submit_tag "Cancel".t %>
+  <%= submit_tag "Save".t %>
+</div>
+</div>
+<% end -%>
+

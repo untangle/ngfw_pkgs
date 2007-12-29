@@ -66,13 +66,13 @@ Fabtabs.prototype = {
 	var footerTop = '800px';
 	var contentHeight = '800px';
 	if (window.innerHeight !== undefined) {
-	    footerTop = (window.innerHeight - 86).toString() + 'px';
+	    footerTop = (window.innerHeight - 83).toString() + 'px';
 	    bodyHeight =  (window.innerHeight - 138).toString() + 'px';
-	    contentHeight =  (window.innerHeight - 34).toString() + 'px';
+	    contentHeight =  (window.innerHeight - 32).toString() + 'px';
 	} else {
-	    footerTop = (document.documentElement.clientHeight - 86).toString() + 'px';
+	    footerTop = (document.documentElement.clientHeight - 83).toString() + 'px';
 	    bodyHeight =  (document.documentElement.clientHeight - 138).toString() + 'px';   
-	    contentHeight =  (document.documentElement.clientHeight - 34).toString() + 'px';   
+	    contentHeight =  (document.documentElement.clientHeight - 32).toString() + 'px';   
 	}
 	var emc = $('main-content');
 	if (emc) {

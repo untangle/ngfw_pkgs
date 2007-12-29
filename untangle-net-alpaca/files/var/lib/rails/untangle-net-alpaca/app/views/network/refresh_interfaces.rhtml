@@ -1,6 +1,7 @@
+<div id="title"><h1><%= "Refresh Interfaces".t %></h1></div>
+<% form_tag( :action => 'commit_interfaces', :id => "commit" ) do -%>
+<div id="main-content-body">
 <div class="config-level">
-  <h2><%= "Refresh Interfaces".t %></h2>
-
   <% if @new_interfaces.empty? && @deleted_interfaces.empty? %>
     <h3><%= "Up to date".t %></h3>
     
@@ -18,7 +19,6 @@
       <%= render( :partial => "interfaces", :object => @deleted_interfaces ) %>
     <% end %>
 
-    <% form_tag( :action => 'commit_interfaces', :id => "commit" ) do -%>
       <% @deleted_interfaces.each do |interface| %>
         <%= hidden_field_tag( "deleted_interfaces[]", interface.mac_address ) %>
       <% end %>
@@ -26,9 +26,18 @@
         <%= hidden_field_tag( "new_interfaces[]", interface.mac_address) %>
       <% end %>
 
-      <%= submit_tag "Cancel".t %>
-      <%= submit_tag "Save".t %>
-    <% end -%>
   <% end %>
-  
 </div>
+</div>
+<div id="main-content-footer">
+<div id="help-footer">
+    <%= submit_tag "Help".t %>
+</div>
+<div id="action-footer">
+     <% if ! @new_interfaces.empty? || ! @deleted_interfaces.empty? %>
+       <%= submit_tag "Cancel".t %>
+       <%= submit_tag "Save".t %>
+     <% end -%>
+</div>
+</div>
+<% end -%>
