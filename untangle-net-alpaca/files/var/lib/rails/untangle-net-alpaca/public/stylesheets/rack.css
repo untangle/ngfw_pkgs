@@ -571,7 +571,7 @@ div#main-content-body
  }
 div#title
 { 
-  background: url(/alpaca/images/rackunit.png) repeat-x top left;
+  background: url(../images/rackunit.png) repeat-x top left;
   border-top: 1px solid black;
   border-bottom: 1px solid black;
   height: 54px;
@@ -583,7 +583,7 @@ h1
   font-size: 12pt;
   color: #3e3e3e;
   line-height: 54px;
-  background: url(/alpaca/images/rackscrew.png) no-repeat center left;
+  background: url(../images/rackscrew.png) no-repeat center left;
   }
 h2
 {
@@ -617,7 +617,7 @@ div#main-content-body > form, div#main-content-body form, div#main-content-body 
 {
   float: left;
   padding: 0px 6px;
-  background: #d7d7d7 url(/alpaca/images/rack/tab-tile.png) repeat-x;
+  background: #d7d7d7 url(../images/rack/tab-tile.png) repeat-x;
   text-decoration: none;
   font-size: 9pt;
   color: #333333;
@@ -1080,13 +1080,13 @@ input[type="submit"]
   }
 input[type="submit"][value="Save"]
 { 
-  background: #edf0f2 url(/alpaca/images/rack/IconSave_23x16.png) no-repeat left center;
+  background: #edf0f2 url(../images/rack/IconSave_23x16.png) no-repeat left center;
   }
 input[type="submit"][value="Cancel"]
 { 
-  background: #edf0f2 url(/alpaca/images/rack/IconCancel_16x16.png) no-repeat left center;
+  background: #edf0f2 url(../images/rack/IconCancel_16x16.png) no-repeat left center;
   }
 input[type="submit"][value="Help"]
 { 
-  background: #edf0f2 url(/alpaca/images/rack/IconHelp_18x16.png) no-repeat left center;
+  background: #edf0f2 url(../images/rack/IconHelp_18x16.png) no-repeat left center;
   }
