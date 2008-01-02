@@ -45,12 +45,6 @@
           <label for="static[mtu]"><%= "MTU:".t %></label>
           <%= text_field( "static", "mtu", { :class => "number" } ) %>
         </li>
-        
-        
-        <li>
-          <label for="static[forward_traffic]"><%= "Forward Traffic:".t %></label>
-          <%= check_box( "static", "forward_traffic", { :checked => static.forward_traffic }, true, false ) %>
-        </li>
       </ul>
     </fieldset>
       

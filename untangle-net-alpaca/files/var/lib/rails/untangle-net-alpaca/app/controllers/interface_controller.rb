@@ -126,11 +126,8 @@ class InterfaceController < ApplicationController
       
       ## save the networks
       networkStringHash = params[:networks]
-      ## allow ping is checkbox, so it may not have values for each index.
-      allowPingHash = params[:allowPing]
       ## indices is used to guarantee they are done in proper order.
       indices = params[:networkIndices]
-      allowPingHash = {} if allowPingHash.nil?
       
       ## clear out all of the ip networks.
       static.ip_networks = []
@@ -139,7 +136,6 @@ class InterfaceController < ApplicationController
         indices.each do |key,value|
           network = IpNetwork.new
           network.parseNetwork( networkStringHash[key] )
-          network.allow_ping = ( allowPingHash[key] )
           network.position, position = position, position + 1
           static.ip_networks << network
         end
@@ -208,7 +204,6 @@ class InterfaceController < ApplicationController
         indices.each do |key,value|
           network = IpNetwork.new
           network.parseNetwork( networkStringHash[key] )
-          network.allow_ping = ( allowPingHash[key] )
           network.position, position = position, position + 1
           dynamic.ip_networks << network
         end

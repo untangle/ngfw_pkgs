@@ -5,7 +5,7 @@
       <ul class="text-fields">
         <li>
           <label for="dns_server_settings[enabled]"><%= "Enabled:".t %></label>
-          <%= check_box( "dns_server_settings", "enabled", { :checked => true }, true, false ) %>
+          <%= check_box( "dns_server_settings", "enabled", { :checked => @dns_server_settings.enabled }, true, false ) %>
         </li>
 
         <li>

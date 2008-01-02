@@ -4,9 +4,6 @@
     <%= hidden_field_tag( "networkIndices[]", rowId ) %>
     <%= text_field( "networks", rowId, { :value => "#{ip_network.ip} / #{ip_network.netmask}" } ) %>
   </div>
-  <div class="ping">
-    <%= check_box( "allowPing", rowId, { :checked => ip_network.allow_ping }, true, false ) %>
-  </div>
   <div class="minus" onclick="Network.removeListItem( '<%= rowId %>' )">
     <%= "-".t %>
   </div>

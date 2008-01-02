@@ -127,7 +127,7 @@ EOF
 EOF
 
     dns_server_settings = DnsServerSettings.find( :first )
-    unless ( dns_server_settings.nil? || dns_server_settings.enabled )
+    unless ( dns_server_settings.nil? || !dns_server_settings.enabled )
       DnsStaticEntry.find(:all).each { |dse| h_file << "#{dse.ip_address} #{dse.hostname}" }
     end
 

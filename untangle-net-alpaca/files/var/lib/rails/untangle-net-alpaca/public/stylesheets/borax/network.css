@@ -40,7 +40,7 @@ form li
 div.ip-networks
 { 
   margin: 10px 0px 10px 0px;
-  width: 523px;
+  width: 423px;
   height: 150px;
   }
 
@@ -49,17 +49,12 @@ ul.ip-network-list div.ip-address
   width: 300px;
   }
 
-ul.ip-network-list div.ping
-{ 
-  width: 100px;
-  }
-
 ul.ip-network-list div.minus
 { 
   width: 100px;
   }
 
-li.ip-network div.minus, li.ip-network div.ping
+li.ip-network div.minus
 { 
   text-align: center;
   }

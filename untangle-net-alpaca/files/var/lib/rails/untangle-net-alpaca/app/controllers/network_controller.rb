@@ -290,18 +290,14 @@ class NetworkController < ApplicationController
     def ip_network_list( position )
       ## save the networks
       networkStringHash = @params[:networks]
-      ## allow ping is checkbox, so it may not have values for each index.
-      allowPingHash = @params[:allowPing]
       ## indices is used to guarantee they are done in proper order.
       indices = @params[:networkIndices]
-      allowPingHash = {} if allowPingHash.nil?
       
       ip_networks = []
       unless indices.nil?
         indices.each do |key,value|
           network = IpNetwork.new
           network.parseNetwork( networkStringHash[key] )
-          network.allow_ping = ( allowPingHash[key] )
           network.position, position = position, position + 1
           ip_networks << network
         end
