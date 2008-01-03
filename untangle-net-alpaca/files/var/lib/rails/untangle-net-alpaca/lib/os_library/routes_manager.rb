@@ -1,6 +1,7 @@
 class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
   include Singleton
 
+  Service = "/etc/init.d/networking"
   ConfigFile = "/etc/untangle-net-alpaca/routes"
 
   def get_active
@@ -26,6 +27,11 @@ class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
   end
   
   def hook_commit
+    write_files
+    run_services
+  end
+
+  def hook_write_files
     network_routes = NetworkRoute.find( :all )
     
     cfg = []
@@ -37,7 +43,12 @@ class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
     
     os["override_manager"].write_file( ConfigFile, header, "\n", cfg.join( "\n" ), "\n" )
   end
-  
+
+  def hook_run_services
+    ## Restart networking
+    raise "Unable to reconfigure network and route settings." unless run_command( "sh #{Service} restart" ) == 0
+  end
+
   def header
     <<EOF
 #!/bin/bash

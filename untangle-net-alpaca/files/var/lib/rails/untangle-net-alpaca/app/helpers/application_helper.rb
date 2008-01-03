@@ -90,6 +90,11 @@ module ApplicationHelper
       result << "<div id=\"title\"><h1>" + options[:title] + "</h1></div>"
     end
 
+    if ! options[:heading].nil?
+      result << "<h2>" + options[:heading] + "</h2>"
+    end
+
+
     tableId="e_table_#{rand( 0x100000000 )}"
     #result << link_to_remote( "+".t, :url => { :action => options[:action].to_s } )
 
