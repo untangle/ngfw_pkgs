@@ -7,7 +7,7 @@
        @config_types.delete( [ "pppoe", "pppoe" ] )
     end
   %>
-  <h1><%= "Interface Configuration for %s".t / @interface.name %></h1>
+  <div id="title"><h1><%= "Interface Configuration for %s".t / @interface.name %></h1></div>
   <% form_tag( :action => 'null' ) do -%>
     <p><label for="config_type"><%= "Config Type".t %></label>
     <%= select_tag( "config_type", options_for_select( @config_types, @config_type_id )) %>

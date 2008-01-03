@@ -1,5 +1,30 @@
+<%
+special_tabs = [ "Advanced", "Logout" ]
+advanced = nil
+logout = nil
+%>
 <ul id="tabs">
 <% for menu_item in menu.children %>
+   <% if ( special_tabs.index( menu_item.name ).nil? ) %>
      <li><div class="tl"><span class="tr"><span class="solid"><a href="<%= menu_item.action %>"><%= menu_item.name.t %></a></span></span></div></li>
+   <% elsif ( menu_item.name == "Advanced" ) 
+      	    advanced = menu_item %>
+   <% elsif ( menu_item.name == "Logout" ) 
+      	    logout = menu_item %>
+   <% end %>
 <% end %>
 </ul>
+<% if ! advanced.nil? %>
+   <div id="advanced"><span><a href="<%= advanced.action %>"><%= advanced.name.t %></a></span>
+   <% if ( advanced.children? ) %>
+    <ul id="advanced-dropdown">
+     <% for menu_item in advanced.children %>
+     <li><a href="<%= menu_item.action %>"><%= menu_item.name.t %></a></li>
+     <% end %>
+    </ul>
+   <% end %>
+   </div>
+<% end %>
+<% if ! logout.nil? %>
+   <div id="logout"><span><a href="<%= logout.action %>"><%= logout.name.t %></a></span></div>
+<% end %>
