@@ -538,7 +538,7 @@ div#main-menu
 div#main-content
 {
   position: absolute;
-  top: 32px;
+  top: 29px;
   left: 0;
   overflow: auto;
   height: 80%;
@@ -596,31 +596,38 @@ div#main-content-body > form, div#main-content-body form, div#main-content-body 
 #tabs li 
 {
   float: left;
-  border-right: 1px solid #5c5c5d;
-  border-left: 1px solid #4d4d4d;
-  border-top: 1px solid #555;
-  border-bottom: 1px solid #555;
-  margin-left: 3px;
+  }
+
+#tabs div.tl
+{ 
+  padding: 0 0 0 6px;
+  background: transparent url(../images/rack/tab-tl.png) no-repeat scroll left top;
+  }
+#tabs span.tr
+{
+  padding: 0 3px 0 0;
+  background: transparent url(../images/rack/tab-tr.png) no-repeat scroll right top;
+  }
+#tabs div.tls
+{
+  padding: 0 0 0 6px;
+  background: transparent url(../images/rack/tab-tls.png) no-repeat left top;
+  }
+#tabs span.trs
+{ 
+  padding: 0 3px 0 0;
+  background: transparent url(../images/rack/tab-trs.png) no-repeat right top;
   }
 #tabs a
 {
-  float: left;
-  padding: 0px 6px;
-  background: #d7d7d7 url(../images/rack/tab-tile.png) repeat-x;
+  padding: 3px 2px 0 2px;
   text-decoration: none;
   font-size: 9pt;
   color: #333333;
-  border-right: 1px solid #ddd;
-  border-left: 1px solid #aeaeae;
-  border-top: 1px solid #cfcfcf;
-  border-bottom: 1px solid #bcbcbc;
   }
 #tabs a.active-tab 
 {
-  background-color: #c4c4c4;
-  background-image: none;
-  border-bottom: 1px solid #b8b8b8;
-  /*color: #ccc;*/
+  padding: 3px 2px 0 2px;
   font-size: 10pt;
   font-weight: 550;
   }

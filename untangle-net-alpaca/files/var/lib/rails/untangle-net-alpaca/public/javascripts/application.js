@@ -39,11 +39,21 @@ Fabtabs.prototype = {
     hide : function(elm) {
 	$(elm).removeClassName('active-tab');
 	//$(this.tabID(elm)).removeClassName('active-tab-body');
+	var ancestors = $(elm).ancestors();
+	ancestors[1].removeClassName('trs');
+	ancestors[2].removeClassName('tls');
+	ancestors[1].addClassName('tr');
+	ancestors[2].addClassName('tl');
     },
     show : function(elm) {
 	$(elm).addClassName('active-tab');
 	var up = new Ajax.Updater($('main-content'), $(elm).href, { evalScripts: true });
 	//$(this.tabID(elm)).addClassName('active-tab-body');
+	var ancestors = $(elm).ancestors();
+	ancestors[1].addClassName('trs');
+	ancestors[2].addClassName('tls');
+	ancestors[1].removeClassName('tr');
+	ancestors[2].removeClassName('tl');
     },
     //tabID : function(elm) {
     //return elm.href.match(/#(\w.+)/)[1];
@@ -53,7 +63,7 @@ Fabtabs.prototype = {
     	    var loc = RegExp.$1;
     	    var elm = this.menu.find(function(value) { return value.href.match(/(\w.+)/)[1] == loc; });
     	    if (elm) {
-	        $(elm).addClassName('active-tab');
+	        this.show(elm);
 		return elm
 	    }
 	}
@@ -66,13 +76,13 @@ Fabtabs.prototype = {
 	var footerTop = '800px';
 	var contentHeight = '800px';
 	if (window.innerHeight !== undefined) {
-	    footerTop = (window.innerHeight - 83).toString() + 'px';
+	    footerTop = (window.innerHeight - 80).toString() + 'px';
 	    bodyHeight =  (window.innerHeight - 138).toString() + 'px';
-	    contentHeight =  (window.innerHeight - 32).toString() + 'px';
+	    contentHeight =  (window.innerHeight - 29).toString() + 'px';
 	} else {
-	    footerTop = (document.documentElement.clientHeight - 83).toString() + 'px';
+	    footerTop = (document.documentElement.clientHeight - 80).toString() + 'px';
 	    bodyHeight =  (document.documentElement.clientHeight - 138).toString() + 'px';   
-	    contentHeight =  (document.documentElement.clientHeight - 32).toString() + 'px';   
+	    contentHeight =  (document.documentElement.clientHeight - 29).toString() + 'px';   
 	}
 	var emc = $('main-content');
 	if (emc) {
