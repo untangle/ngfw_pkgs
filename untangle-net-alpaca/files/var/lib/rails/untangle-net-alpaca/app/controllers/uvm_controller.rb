@@ -101,7 +101,7 @@ class UvmController < ApplicationController
       when InterfaceHelper::InternalIndex 
         ## Configure the internal interface as a static
         static = IntfStatic.new
-        static.ip_networks = [ IpNetwork.new( :ip => "192.168.2.254", :netmask => "24", :position => 1 )]
+        static.ip_networks = [ IpNetwork.new( :ip => "192.168.2.1", :netmask => "24", :position => 1 )]
         static.nat_policies = [ NatPolicy.new( :ip => "0.0.0.0", :netmask => "0", :new_source => "auto" )]
         interface.intf_static = static
         interface.config_type = InterfaceHelper::ConfigType::STATIC
