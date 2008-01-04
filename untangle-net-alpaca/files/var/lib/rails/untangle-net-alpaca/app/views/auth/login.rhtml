@@ -5,7 +5,7 @@
     <%= "<div id='warning'>#{flash[:warning]}</div>" %>
   <% end %>
 
-  <% form_tag( :action => 'check_credentials' ) do -%>
+  <% form_tag( :controller => 'auth', :action => 'check_credentials' ) do -%>
     <fieldset>
       <ul class="text-fields">
         <li>

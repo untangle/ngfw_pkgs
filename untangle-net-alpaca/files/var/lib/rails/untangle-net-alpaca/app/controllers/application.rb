@@ -146,7 +146,11 @@ class ApplicationController < ActionController::Base
 
     if session[:username].nil?
       session[:return_to] = request.request_uri
-      redirect_to :controller => "auth"
+      if request.xhr?
+        render :template => "auth/login", :layout => "ajax"
+      else
+        redirect_to :controller => "auth"
+      end
       return false
     end
   end
