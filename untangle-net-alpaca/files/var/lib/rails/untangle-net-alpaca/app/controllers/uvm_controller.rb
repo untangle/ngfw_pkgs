@@ -73,6 +73,18 @@ class UvmController < ApplicationController
     true
   end
 
+  def save_hostname( hostname )
+    logger.debug( "Saving the hostname: '#{hostname}'" )
+
+    hostname_settings = HostnameSettings.find( :first )
+    hostname_settings = HostnameSettings.new if hostname_settings.nil?
+    hostname_settings.hostname = hostname
+    hostname_settings.save
+    
+    os["hostname_manager"].commit
+    true
+  end
+
   ## Set the settings up as if this was for the wizard (UVM wizard not the alpaca wizard)
   def wizard_start
     interfaces = InterfaceHelper.loadInterfaces

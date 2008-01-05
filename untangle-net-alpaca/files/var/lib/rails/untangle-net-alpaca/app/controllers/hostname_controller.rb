@@ -25,15 +25,13 @@ class HostnameController < ApplicationController
     hostname_settings.update_attributes( params[:hostname_settings] )
     hostname_settings.save
     
-    os["hostname_manager"].commit
-
     ddclient_settings = DdclientSettings.find( :first )
     ddclient_settings = DdclientSettings.new if ddclient_settings.nil?
     ddclient_settings.update_attributes( params[:ddclient_settings] )
     ddclient_settings.save
-    
-    os["ddclient_manager"].commit
 
+    os["hostname_manager"].commit    
+    os["ddclient_manager"].commit
 
     ## Review : should have some indication that is saved.
     return redirect_to( :action => "manage" )

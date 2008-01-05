@@ -8,6 +8,9 @@ class UvmApi < ActionWebService::API::Base
   ## in /etc/untangle-net-alpaca/iptables-rules.d
   api_method :commit_rules, :expects => [], :returns => []
 
+  ## Save hostname
+  api_method :save_hostname, :expects => [:string], :returns => [:boolean]
+
   ## Create a new session redirect
   ## Returns a unique identifier to delete the session redirect later.
   api_method :session_redirect_create, :expects => [:string, :string, :integer], :returns => [:boolean]
