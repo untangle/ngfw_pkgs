@@ -14,17 +14,29 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
 
   ## Function that contains all of the subscription / bypass rules
   BypassRules = "bypass_rules"
-  
+
+  ## Script to tell the UVM that the configuration has changed.
+  UvmUpdateConfiguration = "/usr/share/untangle-net-alpaca/scripts/uvm/update-configuration"
 
   def register_hooks
     os["packet_filter_manager"].register_hook( 100, "uvm_manager", "write_files", :hook_write_files )
     os["network_manager"].register_hook( 100, "uvm_manager", "write_files", :hook_write_files )
+
+    ## Register with the hostname manager to update when there are
+    ## changes to the hostname
+    os["hostname_manager"].register_hook( 1000, "uvm_manager", "commit", :hook_update_configuration )
   end
 
   ## Write out the files to load all of the iptables rules necessary to queue traffic.
   def hook_write_files
     write_iptables_script
     write_interface_order
+  end
+
+  ## Tell the UVM that there has been a change in the alpaca settings.  This is only used when something
+  ## Changes but doesn't call the network manager.
+  def hook_update_configuration
+    run_command( UvmUpdateConfiguration )
   end
   
   private

@@ -1,0 +1,30 @@
+#!/bin/dash
+
+mkdir -p /var/log/untangle-net-alpaca/
+exec >> /var/log/untangle-net-alpaca/uvm.log 2>&1
+
+HELPER_SCRIPT="/usr/share/untangle-net-alpaca/scripts/uvm/iptables"
+
+if [ ! -f ${HELPER_SCRIPT} ]; then
+  echo "[`date`] The script ${HELPER_SCRIPT} is not available"
+  return 0
+fi
+
+. ${HELPER_SCRIPT}
+
+BUNNICULA_HOME=`bunnicula_home`
+
+if [ -z "${BUNNICULA_HOME}" ]; then
+    echo "[`date`] UVM is not running"
+    exit 0
+fi
+
+## Bunnicula home points to <root>/usr/share/untangle/
+UCLI=${BUNNICULA_HOME}/../../bin/ucli
+
+if [ ! -f "${UCLI}" ]; then
+    echo "[`date`] ${UCLI} does not exist."
+    exit 0    
+fi
+
+${UCLI} updateAddress
