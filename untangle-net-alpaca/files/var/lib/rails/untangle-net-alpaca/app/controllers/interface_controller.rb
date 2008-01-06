@@ -23,20 +23,6 @@ class InterfaceController < ApplicationController
     @interfaces.sort! { |a,b| a.index <=> b.index }
   end
 
-  def reload
-    ## DDD This makes it really hard to remap interfaces and save settings. DDD ###
-    ## DDD since the settings are stored inside of the interface.           DDD ###
-    Interface.destroy_all
-    ## Review : This is bad, it is just bad.
-    Interface.destroy_all
-    IntfStatic.destroy_all
-    IntfBridge.destroy_all
-    IntfDynamic.destroy_all
-    IntfPppoe.destroy_all
-
-    return redirect_to( :action => 'list' )
-  end
-
   def config
     load_config do
       @title = "Interface Configuration"

@@ -53,9 +53,16 @@ class UvmController < ApplicationController
     nil
   end
   
-  def commit_rules
-    ## Commit all of the packet filter rules.
-    os["packet_filter_manager"].commit
+  def write_files
+    ## Load all of the interfaces if the settings haven't been initialized yet.
+    if ( Interface.find( :first ).nil? )
+      new_interfaces, deleted_interfaces = InterfaceHelper.load_new_interfaces
+      new_interfaces.each { |i| i.save }
+    end
+
+    ## Write all of the configuration files for the packet filter rules
+    ## This also causes the uvm manager to write a few files.
+    os["packet_filter_manager"].write_files
 
     nil
   end

@@ -6,7 +6,7 @@ class UvmApi < ActionWebService::API::Base
   
   ## Commit all of the iptables rules, run this at start to ensure that the uvm scripts are
   ## in /etc/untangle-net-alpaca/iptables-rules.d
-  api_method :commit_rules, :expects => [], :returns => []
+  api_method :write_files, :expects => [], :returns => []
 
   ## Save hostname
   api_method :save_hostname, :expects => [:string], :returns => [:boolean]
