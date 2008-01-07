@@ -1,3 +1,7 @@
+<%= javascript_tag <<EOF
+RuleBuilder.manager = FirewallManager;
+EOF
+%>
 <% form_tag( :action => 'save' ) do -%>
   <div id="title"><h1>Packet Filter</h1></div>
   <div id="main-content-body">

@@ -1,4 +1,7 @@
 class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
+  ## Review : Many if not all of the generated iptables scripts contain zero variables,
+  ## and don't actually need to be generated on the fly.
+
   include Singleton
 
   IPTablesCommand = OSLibrary::Debian::PacketFilterManager::IPTablesCommand
@@ -7,6 +10,9 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
 
   ## uvm subscription file
   UvmSubscriptionFile = "#{OSLibrary::Debian::PacketFilterManager::ConfigDirectory}/700-uvm"
+
+  ## list of rules for openvpn
+  UvmOpenVPNFile = "#{OSLibrary::Debian::PacketFilterManager::ConfigDirectory}/475-openvpn-pf"
 
   ## UVM interface properties file
   UvmInterfaceProperties = "/etc/untangle-net-alpaca/interface.properties"
@@ -30,6 +36,7 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
   ## Write out the files to load all of the iptables rules necessary to queue traffic.
   def hook_write_files
     write_iptables_script
+    write_openvpn_script
     write_interface_order
   end
 
@@ -60,6 +67,9 @@ if [ "`is_uvm_running`x" = "truex" ]; then
   echo "[`date`] The UVM running, inserting queueing hooks"
   uvm_iptables_rules
   
+  ## Ignore any traffic that is on the utun interface
+  #{IPTablesCommand} -t #{Chain::FirewallRules.table} -I #{Chain::FirewallRules} 1 -i ${TUN_DEV} -j RETURN
+  
   #{BypassRules}
 else
   echo "[`date`] The UVM is currently not running"
@@ -70,6 +80,56 @@ return 0
 EOF
 
     os["override_manager"].write_file( UvmSubscriptionFile, text, "\n" )    
+  end
+
+  def write_openvpn_script
+    text = header
+    ## REVIEW This presently doesn't mark openvpn traffic as local.
+    ## REVIEW 0x80 is a magic number.
+    text  += <<EOF
+HELPER_SCRIPT="/usr/share/untangle-net-alpaca/scripts/uvm/iptables"
+
+if [ ! -f ${HELPER_SCRIPT} ]; then
+  echo "[`date`] The script ${HELPER_SCRIPT} is not available"
+  return 0
+fi
+
+. ${HELPER_SCRIPT}
+
+if [ "`is_uvm_running`x" != "truex" ]; then 
+  echo "[`date`] The UVM running, not inserting rules for openvpn"
+  return 0
+fi
+
+if [ "`pidof openvpn`x" = "x" ]; then
+  echo "[`date`] OpenVPN is not running, not inserting rules for openvpn"
+  return 0
+fi    
+
+## This is the mark rule
+#{IPTablesCommand} #{Chain::MarkInterface.args} -i tun0 -j MARK --or-mark #{0x80}
+
+## Function designed to insert the necessary filter rule to pass traffic from a
+## a VPN interface.
+insert_vpn_export()
+{
+  local t_network=$1
+  local t_netmask=$2
+
+  #{IPTablesCommand} #{Chain::FirewallRules.args} -i tun0 -d ${t_network}/${t_netmask} -j RETURN
+}
+
+## Now insert all exports
+EXPORTS_FILE=`bunnicula_home`/conf/openvpn-pf
+
+if [ -f ${EXPORTS_FILE} ]; then 
+  . ${EXPORTS_FILE}
+  ## At the end block everything else
+  #{IPTablesCommand} #{Chain::FirewallRules.args} -i tun0 -j DROP
+fi
+EOF
+    
+    os["override_manager"].write_file( UvmOpenVPNFile, text, "\n" )    
   end
 
   ## This writes a file that indicates to the UVM the order

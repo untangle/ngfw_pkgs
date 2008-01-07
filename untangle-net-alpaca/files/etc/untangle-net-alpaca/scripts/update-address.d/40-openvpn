@@ -1,0 +1,19 @@
+#!/bin/dash
+
+## Restart any of the running openvpn daemons
+restart_vpn()
+{
+    local t_pid
+    for t_pid in /var/run/openvpn.*.pid ; do
+        t_pid=`cat ${t_pid}`
+        grep -q openvpn /proc/${t_pid}/cmdline && {
+            echo "[`date`] Restarting openvpn"
+            /etc/init.d/openvpn restart
+            break
+        }
+    done
+}
+
+restart_vpn 2> /dev/null
+
+exit 0

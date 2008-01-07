@@ -104,7 +104,7 @@ uvm_iptables_rules()
     ${IPTABLES} -A POSTROUTING -t tune -p tcp --syn -j NFQUEUE
 
     # Queue all of the UDP packets.
-    ${IPTABLES} -A POSTROUTING -t tune -m addrtype --dst-type unicast -p udp -j NFQUEUE 
+    ${IPTABLES} -A POSTROUTING -t tune -m addrtype --dst-type unicast -p udp -j NFQUEUE
 
     ## Just in case these settings were lost.
     ifconfig dummy0 192.0.2.42 netmask 255.255.255.0 up

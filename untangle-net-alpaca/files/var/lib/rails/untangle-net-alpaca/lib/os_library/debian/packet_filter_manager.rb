@@ -17,6 +17,9 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   ChainsConfigFile     = "#{ConfigDirectory}/100-init-chains"
   NetworkingConfigFile = "#{ConfigDirectory}/200-networking"
   FirewallConfigFile   = "#{ConfigDirectory}/400-firewall"
+
+  ## This will block any traffic trying to penetrate NAT.
+  NatFirewallConfigFile = "#{ConfigDirectory}/500-nat-firewall"
   RedirectConfigFile   = "#{ConfigDirectory}/600-redirect"
 
   ## Mark to indicate that the packet shouldn't be caught by the UVM.
@@ -203,8 +206,10 @@ EOF
 
   def write_networking
     text = []
+    fw_text = []
     
     text << header
+    fw_text << header
     
     Interface.find( :all ).each do |interface|
       ## labelling
@@ -214,13 +219,17 @@ EOF
       text << filtering( interface )
       
       ## Insert the commands to handle NAT
-      text << nat( interface )
+      a, b = nat( interface )
+      text << a
+      fw_text << b
     end
 
     ## Delete all empty or nil parts
     text = text.delete_if { |p| p.nil? || p.empty? }
+    fw_text = fw_text.delete_if { |p| p.nil? || p.empty? }
     
-    os["override_manager"].write_file( NetworkingConfigFile, text.join( "\n" ), "\n" )    
+    os["override_manager"].write_file( NetworkingConfigFile, text.join( "\n" ), "\n" )
+    os["override_manager"].write_file( NatFirewallConfigFile, fw_text.join( "\n" ), "\n" )
   end
 
   def write_firewall
@@ -347,6 +356,7 @@ EOF
     name = OSLibrary::Debian::NetworkManager.bridge_name( interface ) if interface.is_bridge?
     
     rules = []
+    fw_rules = []
 
     nat_policies.each do |policy|
       ## REVIEW : Need to handle the proper ports.
@@ -362,16 +372,16 @@ EOF
         config.ip_networks.each do |ip_network|
           network = "#{ip_network.ip}/#{OSLibrary::NetworkManager.parseNetmask( ip_network.netmask )}"
           rules << "#{IPTablesCommand} #{Chain::PostNat.args} -m conntrack ! --ctorigdst #{network} -s #{network} -j #{target}"
-          rules << "#{IPTablesCommand} -t mangle -A PREROUTING -i ! #{name} -d #{network} -j DROP"
+          fw_rules << "#{IPTablesCommand} #{Chain::FirewallRules.args} -i ! #{name} -d #{network} -j DROP"
         end
       else
         network = "#{policy.ip}/#{OSLibrary::NetworkManager.parseNetmask( policy.netmask )}"
         rules << "#{IPTablesCommand} #{Chain::PostNat.args}  -m conntrack ! --ctorigdst #{network} -s #{network} -j #{target}"
-        rules << "#{IPTablesCommand} -t mangle -A PREROUTING -i ! #{name} -d #{network} -j DROP"
+        fw_rules << "#{IPTablesCommand} #{Chain::FirewallRules.args} -i ! #{name} -d #{network} -j DROP"
       end
     end
 
-    rules.join( "\n" )
+    [ rules.join( "\n" ), fw_rules.join( "\n" ) ]
   end
 
   def header
