@@ -93,7 +93,7 @@ support_menu()
                     state=SUCCESS_SPLASH
                     ;;
                 "Disable Remote Support")
-                    apt-get remove --yes --force-yes --fix-broken --purge untangle-support-agent
+                    apt-get remove --yes --force-yes --fix-broken --purge untangle-support-agent untangle-openssh-server
                     state=SUCCESS_SPLASH
                     ;;
                 *)
