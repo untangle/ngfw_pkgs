@@ -203,7 +203,7 @@ class UVMFilterNode < UVMRemoteApp
                                     node_stats = hash_node_stats(node_ctx.getStats())
                                 else
                                     # We're reporting stats of the aggregation of all FN's of the effective type.
-                                    node_stats = accumulate_node_stats()
+                                    node_stats = accumulate_node_stats(mib_root)
                                 end
                                 raise Exception, "Unable to fetch node stats for TID #{tid}" unless node_stats
                                 @diag.if_level(3) { puts! "Updating stats cache for tid #{tid}" ; p node_stats }
@@ -424,7 +424,7 @@ class UVMFilterNode < UVMRemoteApp
         
     protected
         # Must be called from within stats_cache_lock
-        def accumulate_node_stats()
+        def accumulate_node_stats(mib_root)
             @diag.if_level(3) { puts! "accumulate_node_stats" }
             tids = get_filternode_tids(get_uvm_node_name())
             node_stats = nil        
@@ -435,7 +435,7 @@ class UVMFilterNode < UVMRemoteApp
 
                 # whenever we fetch stats from the UVM, freshen the values in the cache.
                 hashed_stats = hash_node_stats(nodeStats)
-                @stats_cache["#{get_mib_root}.#{tid}"] = [hashed_stats, Time.now.to_i]
+                @stats_cache["#{mib_root}.#{tid}"] = [hashed_stats, Time.now.to_i]
 
                 # use first stat values as those to accumulate (add) in to.
                 if !node_stats
