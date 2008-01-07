@@ -44,6 +44,10 @@ module RuleHelper
   def self.get_edit_fields( params )
     interfaces = Interface.find( :all )
     interfaces.sort! { |a,b| a.index <=> b.index }
+
+    ## REVIEW.
+    ## (UVM dependent) VPN Special case
+    interfaces << Interface.new( :index => 8, :name => "VPN" )
     
     ## This is a javascript array of the interfaces
     interfaces = interfaces.map { |i| "new Array( '#{i.index}', '#{i.name.t}' )" }

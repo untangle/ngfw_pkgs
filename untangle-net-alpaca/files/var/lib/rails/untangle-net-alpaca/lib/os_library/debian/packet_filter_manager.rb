@@ -245,8 +245,8 @@ EOF
         target = nil
         case rule.target
         when "pass" then target = "-j RETURN"
-        when "drop" then target = "-g #{FirewallMarkDrop.name}"
-        when "reject" then target = "-g #{FirewallMarkReject.name}"
+        when "drop" then target = "-g #{Chain::FirewallMarkDrop.name}"
+        when "reject" then target = "-g #{Chain::FirewallMarkReject.name}"
         end
         
         next if target.nil?
