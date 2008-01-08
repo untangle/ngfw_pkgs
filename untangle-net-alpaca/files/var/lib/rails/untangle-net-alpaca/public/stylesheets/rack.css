@@ -114,7 +114,7 @@ div.list-table select
   width: 100%;
 }
 
-div.list-table input
+div.list-table input.textfield
 {
   background-color: transparent;
   border-width: 0;

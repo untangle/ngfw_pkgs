@@ -1,8 +1,36 @@
 #enhancements to the helper functions
 module ActionView
   module Helpers
-    module FormTagHelper
 
+    module FormHelper
+
+      alias_method :orig_check_box, :check_box
+
+      def check_box( object_name, method, options = {}, checked_value= "1", unchecked_value = "0" )
+        css_class = "checkbox"
+        
+        if options.include?( :class )
+          css_class = options[:class] + " " + css_class
+        end
+
+        orig_check_box( object_name, method, options.merge( :class => css_class), checked_value, unchecked_value )
+      end
+
+      alias_method :orig_text_field, :text_field
+
+      def text_field( object_name, method, options = {} )
+        css_class = "textfield"
+        
+        if options.include?( :class )
+          css_class = options[:class] + " " + css_class
+        end
+        
+        orig_text_field( object_name, method, options.merge( :class => css_class) )
+      end
+
+    end
+
+    module FormTagHelper
       alias_method :orig_submit_tag, :submit_tag
 
       def submit_tag( value, options = {})
