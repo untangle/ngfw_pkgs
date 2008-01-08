@@ -190,11 +190,11 @@ class UVMFilterNode < UVMRemoteApp
                     # (Must be after we have the OID because the TID may be nil and we'll need something to cache on.)
                     node_stats = nil
                     @stats_cache_lock.synchronize {
-                        @@diag.if_level(3) { puts! "checking stats cache for tid #{tid}" }
+                        @@diag.if_level(2) { puts! "Checking stats cache for #{mib_root}.#{tid}" }
                         cached_stats = @stats_cache["#{mib_root}.#{tid}"]
                         if !cached_stats || ((Time.now.to_i - cached_stats[1]) > STATS_CACHE_EXPIRY)
                             begin
-                                @@diag.if_level(3) { puts! "Stat cache miss (or expiry) - updating cache..." }
+                                @@diag.if_level(2) { puts! "Stat cache miss (or expiry) for #{mib_root}.#{tid} - updating cache..." }
                                 @@diag.if_level(3) { p tid }
                                 if (tid != "0")
                                     # We're reporting stats of a specific FN element
@@ -205,7 +205,7 @@ class UVMFilterNode < UVMRemoteApp
                                     node_stats = accumulate_node_stats(mib_root)
                                 end
                                 raise Exception, "Unable to fetch node stats for TID #{tid}" unless node_stats
-                                @@diag.if_level(3) { puts! "Updating stats cache for tid #{tid}" ; p node_stats }
+                                @@diag.if_level(2) { puts! "Updating stats cache for #{mib_root}.#{tid}" }
                                 @stats_cache["#{mib_root}.#{tid}"] = [node_stats, Time.now.to_i]
                             rescue java.lang.IllegalStateException => ex
                                 @@diag.if_level(3) { puts! "Can't collect stats from TID #{tid} - invalid state." ; p ex }
@@ -218,7 +218,7 @@ class UVMFilterNode < UVMRemoteApp
                                 return nil
                             end
                         else
-                            @@diag.if_level(3) { puts! "Stats cache hit." }
+                            @@diag.if_level(2) { puts! "Stats cache hit for #{mib_root}.#{tid}" }
                             node_stats = cached_stats[0]
                         end
                     }
@@ -434,6 +434,7 @@ class UVMFilterNode < UVMRemoteApp
 
                 # whenever we fetch stats from the UVM, freshen the values in the cache.
                 hashed_stats = hash_node_stats(nodeStats)
+		@@diag.if_level(2) { puts! "Updating stats cache for #{mib_root}.#{tid}" }
                 @stats_cache["#{mib_root}.#{tid}"] = [hashed_stats, Time.now.to_i]
 
                 # use first stat values as those to accumulate (add) in to.
