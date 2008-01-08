@@ -69,6 +69,7 @@ class NUCLIClient
    
     # Constants
     DEFAULT_PORT = 6971
+    DEFAULT_DIAG_LEVEL = 1
     FORBIDDEN_BACKGROUND_COMMANDS = %w{ with ^#\d+ } # commands that cannot be run in the background.
     FORBIDDEN_WITH_COMMANDS = %w{ open quit exit with history jobs servers } # commands that cannot be used in a with script.
     FORBIDDEN_COMMAND_LINE_COMMMANDS = %w{ with quit exit history jobs }
@@ -106,7 +107,7 @@ class NUCLIClient
         @jobs = []
         @jobs_lock = Mutex.new
         @job_num = 1
-        @diag = Diag.new(3)
+        @diag = Diag.new(DEFAULT_DIAG_LEVEL)
         @commands_to_execute = []
         @use_ssh_tunnels = false
         @user = 'root'
