@@ -69,7 +69,7 @@ module CmdDispatcher
       begin
         return has_tid ? send(full_name, tid, *new_args) : send(full_name, *new_args)
       rescue ArgumentError => ex
-        @diag.if_level(3) {
+        @@diag.if_level(3) {
           puts! "Dispatching failure: " + full_name + "(" + new_args.inspect  + ")"
           puts! ex
           puts! ex.backtrace
@@ -108,7 +108,7 @@ module RetryLogin
     rescue com.untangle.uvm.client.LoginExpiredException => ex
       if !retried
         retried = true
-        @diag.if_level(2) { puts! "Login expired - logging back on and trying one more time" ; p ex }
+        @@diag.if_level(2) { puts! "Login expired - logging back on and trying one more time" ; p ex }
         @@filter_node_lock.synchronize { login }
         retry
       else

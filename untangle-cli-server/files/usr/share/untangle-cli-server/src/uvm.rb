@@ -24,10 +24,9 @@ class Uvm < UVMRemoteApp
   #UVM_MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".0"
 
   def initialize
-    @diag = Diag.new(DEFAULT_DIAG_LEVEL)
-    @diag.if_level(3) { puts! "Initializing UVM..." }
+    @@diag.if_level(3) { puts! "Initializing UVM..." }
     super
-    @diag.if_level(3) { puts! "Done initializing UVM..." }
+    @@diag.if_level(3) { puts! "Done initializing UVM..." }
   end
   
   #def get_mib_root()
@@ -36,7 +35,7 @@ class Uvm < UVMRemoteApp
   
   def execute(args)
     # TODO: BUG: if we don't return something the client reports an exception
-    @diag.if_level(3) { puts! "Uvm::execute(#{args.join(', ')})" }
+    @@diag.if_level(3) { puts! "Uvm::execute(#{args.join(', ')})" }
 
     begin
       retryLogin {
@@ -45,7 +44,7 @@ class Uvm < UVMRemoteApp
         return dispatch_cmd([cmd, nil, *args])
       }
     rescue Exception => ex
-      @diag.if_level(3) { puts! ex; puts! ex.backtrace }
+      @@diag.if_level(3) { puts! ex; puts! ex.backtrace }
       return "Uncaught exception #{ex}"
     end    
   end

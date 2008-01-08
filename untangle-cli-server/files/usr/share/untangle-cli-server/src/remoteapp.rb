@@ -42,11 +42,12 @@ class UVMRemoteApp
         @@uvmRemoteContext = nil
 
         @@last_subclass = nil 
+
+        @@diag = Diag.new(DEFAULT_DIAG_LEVEL)
   
     public
         def initialize
-            @diag = Diag.new(DEFAULT_DIAG_LEVEL)
-            @diag.if_level(2) { puts! "Initializing UVMRemoteApp..." }
+            @@diag.if_level(2) { puts! "Initializing UVMRemoteApp..." }
             
             begin
                 if @@factory.nil?
@@ -65,7 +66,7 @@ class UVMRemoteApp
             ## This just guarantees that all of the connections are terminated.
             at_exit { @@filternode_lock.synchronize { disconnect } }
     
-            @diag.if_level(2) { puts! "Done initializing UVMRemoteApp..." }
+            @@diag.if_level(2) { puts! "Done initializing UVMRemoteApp..." }
         end
 
     protected

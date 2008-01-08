@@ -22,10 +22,9 @@ class Support < UVMRemoteApp
   include RetryLogin
 
   def initialize
-    @diag = Diag.new(DEFAULT_DIAG_LEVEL)
-    @diag.if_level(3) { puts! "Initializing #{get_node_name()}..." }
+    @@diag.if_level(3) { puts! "Initializing #{get_node_name()}..." }
     super
-    @diag.if_level(3) { puts! "Done initializing #{get_node_name()}..." }
+    @@diag.if_level(3) { puts! "Done initializing #{get_node_name()}..." }
   end
   
   def get_node_name()
@@ -34,14 +33,14 @@ class Support < UVMRemoteApp
   
   def execute(args)
     # TODO: BUG: if we don't return something the client reports an exception
-    @diag.if_level(3) { puts! "#{get_node_name}::execute(#{args.join(', ')})" }
+    @@diag.if_level(3) { puts! "#{get_node_name}::execute(#{args.join(', ')})" }
 
     begin
       retryLogin {
         return args.empty? ? ERROR_INCOMPLETE_COMMAND : dispatch_cmd(args)
       }
     rescue Exception => ex
-      @diag.if_level(3) { puts! ex; puts! ex.backtrace }
+      @@diag.if_level(3) { puts! ex; puts! ex.backtrace }
       return "Error: Unhandled exception -- " + ex
     end    
   end
@@ -72,13 +71,13 @@ class Support < UVMRemoteApp
           @@uvmRemoteContext.toolboxManager().setUpgradeSettings(settings)
         rescue Exception => ex
           msg = "Error: unable to set automatic upgrade '#{args[0]}'"
-          @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
+          @@diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
           return msg + ": #{ex}"
         end
       end
       settings = @@uvmRemoteContext.toolboxManager().getUpgradeSettings()
       msg = "Upgrade automatically is #{settings.getAutoUpgrade() ? 'enabled.' : 'disabled.'}"
-      @diag.if_level(3) { puts! msg }          
+      @@diag.if_level(3) { puts! msg }          
       return msg
     end
 
@@ -104,7 +103,7 @@ class Support < UVMRemoteApp
           @@uvmRemoteContext.toolboxManager().setUpgradeSettings(settings)
         rescue Exception => ex
           msg = "Error: unable to upgrade schedule to '#{args.join(' ')}' (check command syntax via help)"
-          @diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
+          @@diag.if_level(3) { puts! msg; puts! ex; puts! ex.backtrace }          
           return msg + ": #{ex}"
         end
       end
@@ -120,7 +119,7 @@ class Support < UVMRemoteApp
       msg << "#{!period.getFriday() ? '' : 'Fri '}"
       msg << "#{!period.getSaturday() ? '' : 'Sat '}"
       msg << "@ #{period.getHour() > 12 ? period.getHour()-12 : period.getHour()}:#{period.getMinute() > 9 ? period.getMinute() : "0" + period.getMinute().to_s} (#{period.getHour() >= 12 ? "PM" : "AM"})"
-      @diag.if_level(3) { puts! msg }          
+      @@diag.if_level(3) { puts! msg }          
       return msg
     end
 

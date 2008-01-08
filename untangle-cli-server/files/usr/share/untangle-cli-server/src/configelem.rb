@@ -25,28 +25,27 @@ class UVMConfigElement < UVMRemoteApp
 
     public
         def initialize
-            @diag = Diag.new(0)
-            @diag.if_level(3) { puts! "Initializing UVMConfigElement..." }
+            @@diag.if_level(3) { puts! "Initializing UVMConfigElement..." }
             
             super
     
             @stats_cache = {}
             @stats_cache_lock = Mutex.new
 
-            @diag.if_level(3) { puts! "Done initializing UVMConfigElement..." }
+            @@diag.if_level(3) { puts! "Done initializing UVMConfigElement..." }
         end
 
     public
         def execute(args)
           # TODO: BUG: if we don't return something the client reports an exception
-          @diag.if_level(3) { puts! "#{get_node_name}::execute(#{args.join(', ')})" }
+          @@diag.if_level(3) { puts! "#{get_node_name}::execute(#{args.join(', ')})" }
       
           begin
             retryLogin {
               return args.empty? ? ERROR_INCOMPLETE_COMMAND : dispatch_cmd(args, false)
             }
           rescue Exception => ex
-            @diag.if_level(3) { puts! ex; puts! ex.backtrace }
+            @@diag.if_level(3) { puts! ex; puts! ex.backtrace }
             return "Error: Unhandled exception -- " + ex
           end    
         end
