@@ -5,6 +5,10 @@ require "alpaca.rb"
 ## Overload the ipaddr class to have a parse method.
 require "alpaca/ipaddr"
 
+## Overload the helper class to do more automagic stuff.
+require "alpaca/helpers"
+
+
 ## Insert the support for the os base
 require "alpaca/os"
 

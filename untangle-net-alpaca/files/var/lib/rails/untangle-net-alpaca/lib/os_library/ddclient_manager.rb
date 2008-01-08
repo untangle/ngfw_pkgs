@@ -16,22 +16,28 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
 
   ConfigService = {
     "ZoneEdit" => [ "zoneedit1", "www.zoneedit.com" ],
-    #"No-IP" => [ "no-ip", "no-ip" ],
+    "No-IP" => [ "no-ip", "no-ip" ],
     "EasyDNS" => [ "easydns", "members.easydns.com" ],
+    "DSL-Reports" => [ "dslreports1", "www.dslreports.com" ],
+    "DNSPark" => [ "dnspark", "www.dnspark.com" ],
+    "Namecheap" => [ "namecheap", "dynamicdns.park-your-domain.com" ],
     "DynDNS" => [ "dyndns2", "members.dyndns.org" ]
   }
 
-  DdclientRcd          = "/usr/sbin/update-rc.d ddclient defaults"
-  DdclientCmd          = "/etc/init.d/ddclient "
-  DdclientCmdStop  = DdclientCmd + " stop"
+  DdclientRcdDefaults = "/usr/sbin/update-rc.d ddclient defaults"
+  DdclientRcdRemove   = "/usr/sbin/update-rc.d -f ddclient remove"
+  DdclientCmd         = "/etc/init.d/ddclient "
+  DdclientCmdStop     = DdclientCmd + " stop"
   DdclientCmdRestart  = DdclientCmd + " restart"
   DdclientConfFile    = "/etc/ddclient.conf"
-  DdclientDefaultFile    = "/etc/default/ddclient"
-  DdclientPidFile    = "/var/run/ddclient.pid"
+  DdclientDefaultFile = "/etc/default/ddclient"
+  DdclientPidFile     = "/var/run/ddclient.pid"
 
   DdclientPackage = "ddclient"
 
-  NoipRcd = "/usr/sbin/update-rc.d no-ip defaults"
+  NoipRcdDefaults = "/usr/sbin/update-rc.d no-ip defaults"
+  NoipRcdRemove = "/usr/sbin/update-rc.d -f no-ip remove"
+  NoipConfigure = "no-ip -C "
   NoipCmd = "/etc/init.d/no-ip "
   NoipCmdStop = NoipCmd + " stop"
   NoipCmdRestart = NoipCmd + " restart"
@@ -45,7 +51,22 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
   def hook_commit
     settings = DdclientSettings.find( :first )
     return if ( settings.nil? )
-    
+
+    if ( settings.enabled )
+      if settings.service == "No-IP"
+        commit_noip( settings )
+        disable_ddclient
+      else
+        commit_ddclient( settings )
+        disable_noip
+      end
+    else
+      disable_noip
+      disable_ddclient
+    end
+  end
+
+  def commit_ddclient( settings )
     cfg = []
     defaults = []
     
@@ -72,7 +93,6 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
         next if ( val.nil? || val == "null" )
         defaults << "#{var}=\"#{val}\""
       end
-
     end
     
     
@@ -81,15 +101,43 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
     os["override_manager"].write_file( ConfigFile, header, "\n", cfg.join( "\n" ), "\n" )
     os["override_manager"].write_file( DdclientDefaultFile, header, "\n", defaults.join( "\n" ), "\n" )
     if ( settings.enabled )
-      #logger.debug( "running: " + DdclientRcd )
-      run_command( DdclientRcd  )
+      #logger.debug( "running: " + DdclientRcdDefaults )
+      run_command( DdclientRcdDefaults )
       #logger.debug( "running: " + DdclientCmdRestart )
-      run_command( DdclientCmdRestart  )
+      run_command( DdclientCmdRestart )
     end
 
     #run_command( "hostname #{settings.hostname}" )
   end
-  
+
+  def commit_noip( settings )
+    cfg = []
+    defaults = []
+    
+    #TODO Bug FixMe this will clobber all host names configured with no-ip
+    # and update all of them to the untangle box :-(
+    conditions = [ "wan=?", true ]
+    wanInterface = Interface.find( :first, :conditions => conditions )
+    run_command( "yes | " + NoipConfigure + " -U 300 -I " + wanInterface.os_name + " -u " + settings.login + " -p " + settings.password )
+    
+    if ( settings.enabled )
+      #logger.debug( "running: " + NoipRcdDefaults )
+      run_command( NoipRcdDefaults )
+      #logger.debug( "running: " + DdclientCmdRestart )
+      run_command( NoipCmdRestart )
+    end
+
+    #run_command( "hostname #{settings.hostname}" )
+  end
+
+  def disable_ddclient
+    run_command( DdclientRcdRemove )
+  end
+
+  def disable_noip
+    run_command( NoipRcdRemove )
+  end
+
   def header
     <<EOF
 ## #{Time.new}
