@@ -19,6 +19,8 @@ NAME="untangle-net-alpaca"
 MONGREL_RAILS="/usr/bin/mongrel_rails"
 BASE_DIR="/var/lib/rails/untangle-net-alpaca"
 MONGREL_ARGS=""
+
+BIND_ADDRESS="127.0.0.1"
 ## rails environment, defaults to production
 MONGREL_ENV="production"
 
@@ -49,6 +51,11 @@ start()
         t_pid=`cat ${BASE_DIR}/log/mongrel.pid`
         kill ${t_pid} > /dev/null 2>&1
         rm -f ${BASE_DIR}/log/mongrel.pid
+    fi
+
+    ## If the bind address is set, then tell mongrel to bind to that address.
+    if [ -n "${BIND_ADDRESS}" ] ; then
+        MONGREL_ARGS=" ${MONGREL_ARGS} -a ${BIND_ADDRESS} "
     fi
     
     ## The root handler is used to automatically redirect requests to /.
