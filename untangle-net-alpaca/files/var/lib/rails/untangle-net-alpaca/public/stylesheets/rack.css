@@ -632,34 +632,36 @@ div#main-content-body > form, div#main-content-body form, div#main-content-body 
   font-weight: 550;
   }
 
-#advanced, #logout
+div#advanced, div#logout
 {
   position: absolute;
   top: 4px;
-  padding-left: 6px;
+  padding-left: 8px;
   background: transparent url(../images/rack/button-tl.png) no-repeat scroll left top;
   height: 21px;
   }
-#advanced 
+div#advanced
 { 
   right: 90px;
  }
 
-#logout { 
+div#logout { 
   right: 12px;
  }
-#advanced span, #logout span
+div#advanced span, div#logout span
 {
   height: 21px;
-  padding-right: 7px;
+  padding-right: 8px;
   padding-bottom: 4px;
   background: transparent url(../images/rack/button-tr.png) no-repeat scroll right top;
   }
-#advanced span a, #logout span a
+div#advanced span a, div#logout span a
 {
   text-decoration: none;
   font-size: 9pt;
   color: #333;
+  height: 21px;
+  padding-bottom: 4px;
  }
 #advanced-dropdown
 { 
@@ -1130,22 +1132,41 @@ ul.rule-list input[type="text"]
 {
   width: 290px;
  }
-input[type="submit"]
+
+span.iconbutton
 {
-  margin: 3px;
-  padding-left: 23px;
-  padding-top: 2px;
+  background: transparent url(../images/rack/button-tl.png) no-repeat scroll left top;
+  height: 21px;
+  padding-left: 6px;
   padding-bottom: 2px;
+  margin: 5px 10px;
   }
-input[type="submit"][value="Save"]
-{ 
-  background: #edf0f2 url(../images/rack/IconSave_23x16.png) no-repeat left center;
+span.iconbutton span
+{
+  background: transparent url(../images/rack/button-tr.png) no-repeat scroll right top;
+  height: 21px;
+  padding-right: 5px;
+  padding-bottom: 4px;
   }
-input[type="submit"][value="Cancel"]
-{ 
-  background: #edf0f2 url(../images/rack/IconCancel_16x16.png) no-repeat left center;
+input.submit, input[type="submit"]
+{
+  padding-left: 23px;
+  padding-bottom: 2px;
+  border: 0;
   }
-input[type="submit"][value="Help"]
+input.submit:hover
 { 
-  background: #edf0f2 url(../images/rack/IconHelp_18x16.png) no-repeat left center;
+ cursor: pointer;
+ }
+input.Save, input[type="submit"][value="Save"]
+{ 
+  background: transparent url(../images/rack/IconSave_23x16.png) no-repeat 4px center;
+  }
+input.Cancel, input[type="submit"][value="Cancel"]
+{ 
+  background: transparent url(../images/rack/IconCancel_16x16.png) no-repeat 5px center;
+  }
+input.Help, input[type="submit"][value="Help"]
+{ 
+  background: transparent url(../images/rack/IconHelp_18x16.png) no-repeat 5px center;
   }

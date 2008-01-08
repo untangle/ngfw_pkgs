@@ -9,24 +9,24 @@ end
 <ul class="text-fields">
   <li>
     <label for="<%= "#{config_id}_ip" %>"><%= "Address:".t %></label>
-    <div><%= print_dynamic( @dhcp_status.ip ) %></div>
+    <span><%= print_dynamic( @dhcp_status.ip ) %></span>
   </li>
   <li>
     <label for="<%= "#{config_id}_ip" %>"><%= "Netmask:".t %></label>
-    <div><%= print_dynamic( @dhcp_status.netmask ) %>
+    <span><%= print_dynamic( @dhcp_status.netmask ) %></span>
   </li>  
   <li>
     <label for="<%= "#{config_id}_default_gateway" %>"><%= "Default Gateway:".t %></label>
-    <div><%= print_dynamic( @dhcp_status.default_gateway ) %></div>
+    <span><%= print_dynamic( @dhcp_status.default_gateway ) %></span>
   </li>
   
   <li>
     <label for="<%= "#{config_id}_dns_1" %>"><%= "Primary DNS Server:".t %></label>
-    <div><%= print_dynamic( @dhcp_status.dns_1 )%></div>
+    <span><%= print_dynamic( @dhcp_status.dns_1 )%></span>
   </li>
   
   <li>
     <label for="<%= "#{config_id}_dns_2" %>"><%= "Secondary DNS Server:".t %></label>
-    <div><%= print_dynamic( @dhcp_status.dns_2 ) %></div>
+    <span><%= print_dynamic( @dhcp_status.dns_2 ) %></span>
   </li>
 </ul>
