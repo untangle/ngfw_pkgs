@@ -45,6 +45,7 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
   FlagOption = "dhcp-option"
   OptionGateway = "3"
   OptionNetmask = "1"
+  OptionNameservers = "6"
 
   def register_hooks
     os["network_manager"].register_hook( -200, "dns_server_manager", "write_files", :hook_write_files )
@@ -194,7 +195,7 @@ EOF
     settings << FlagDnsLocalize
 
     ## append the dns servers to use
-    settings << dhcp_name_servers
+    settings << dns_config_name_servers
 
     unless dns_server_settings.enabled
       logger.debug( "DNS Settings are disabled, not using all configuration options." );
@@ -212,8 +213,12 @@ EOF
     settings.join( "\n" )
   end
 
-  def dhcp_name_servers
-    name_servers = []
+  def dns_config_name_servers
+    name_servers.map { |ns| "#{FlagDnsServer}=#{ns}" }.join( "\n" )
+  end
+  
+  def name_servers
+    ns = []
     conditions = [ "wan=? and config_type=?", true, InterfaceHelper::ConfigType::STATIC ]
     i = Interface.find( :first, :conditions => conditions )
 
@@ -221,19 +226,18 @@ EOF
     dns_1, dns_2 = []
     if i.nil?
       ## Use the current nameserves if the WAN interface isn't set to static
-      name_servers = `awk '/^server=/ { sub( "server=", "" ); print }' /etc/dnsmasq.conf`.strip.split
+      ns = `awk '/^server=/ { sub( "server=", "" ); print }' /etc/dnsmasq.conf`.strip.split
     else
       config = i.current_config
 
       unless config.nil?
-        name_servers << config.dns_1
-        name_servers << config.dns_2
+        ns << config.dns_1
+        ns << config.dns_2
       end
     end
 
     ## Delete all of the empty name servers, and fix the lines.
-    name_servers = name_servers.delete_if { |ns| ns.nil? || ns.empty? || IPAddr.parse( ns ).nil? }
-    name_servers.map { |ns| "#{FlagDnsServer}=#{ns}" }.join( "\n" )
+    ns = ns.delete_if { |n| n.nil? || n.empty? || IPAddr.parse( n ).nil? }
   end
 
   def dhcp_config( dhcp_server_settings, dns_server_settings )
@@ -269,6 +273,10 @@ EOF
     ## Default gateway
     settings << "#{FlagOption}=#{OptionGateway},#{gateway}" unless gateway.nil?
     settings << "#{FlagOption}=#{OptionNetmask},#{netmask}" unless netmask.nil?
+
+    unless dns_server_settings.enabled
+      settings << "#{FlagOption}=#{OptionNameservers},#{name_servers.join( " " )}"
+    end
 
     ## Static entries
     DhcpStaticEntry.find( :all ).each do |dse| 
