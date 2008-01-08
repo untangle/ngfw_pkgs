@@ -15,6 +15,7 @@
 DESC="Service for creating and removing the iptables rules"
 
 IPTABLES_RULES=/etc/untangle-net-alpaca/scripts/iptables
+HELPER_MODULES=/etc/untangle-net-alpaca/scripts/modules
 
 ## This should be a file containing all of the iptables tables
 IPTABLES_NAMES=/proc/net/ip_tables_names
@@ -27,6 +28,11 @@ case "$1" in
             . ${IPTABLES_RULES}
         else
             /bin/echo "The file '${IPTABLES_RULES}' does not exist"
+        fi
+        if [ -f ${HELPER_MODULES} ]; then
+            . ${HELPER_MODULES}
+        else
+            /bin/echo "The file '${HELPER_MODULES}' does not exist"
         fi
         ;;
     stop)
