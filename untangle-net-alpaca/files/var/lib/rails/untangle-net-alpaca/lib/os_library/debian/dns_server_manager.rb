@@ -8,7 +8,7 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
   DnsMasqConfFile = "/etc/dnsmasq.conf"
   DnsMasqHostFile = "/etc/untangle-net-alpaca/dnsmasq-hosts"
   
-  DefaultDomain = "local.domain"
+  DefaultDomain = "example.com"
 
   ## REVIEW : This should be done inside of a module for DNS masq and
   ## then the OS Manager would include the desired module.  This gets
@@ -128,7 +128,26 @@ EOF
 
     dns_server_settings = DnsServerSettings.find( :first )
     unless ( dns_server_settings.nil? || !dns_server_settings.enabled )
-      DnsStaticEntry.find(:all).each { |dse| h_file << "#{dse.ip_address} #{dse.hostname}" }
+      domain_name = domain_name_suffix
+      DnsStaticEntry.find(:all).each do |dse| 
+        ## Validate the IP address.
+        ip = dse.ip_address
+        next if IPAddr.parse( ip ).nil?
+
+        ## Validate the hostnames
+        h = dse.hostname
+
+        v = []
+
+        logger.debug "Found the hostname #{h}"
+        h.split( " " ).each do |hostname| 
+          ## XXXX Should validate the hostname
+          v << hostname
+          v << "#{hostname}.#{domain_name_suffix}" if hostname.index( "." ).nil?
+        end
+        next if v.empty?
+        h_file << "#{dse.ip_address} #{v.join( " " )}"
+      end
     end
 
     ## Append the hostname
@@ -169,23 +188,23 @@ EOF
       return ""
     end
     
-    unless dns_server_settings.enabled
-      logger.debug( "DNS Settings are disabled, not writing the file" );
-      return ""
-    end
-
     settings = []
     
     ## localize queries
     settings << FlagDnsLocalize
 
+    ## append the dns servers to use
+    settings << dhcp_name_servers
+
+    unless dns_server_settings.enabled
+      logger.debug( "DNS Settings are disabled, not using all configuration options." );
+      return settings.join( "\n" )
+    end
+    
     ## Expand hosts so that unqualified hostnames lookup on local entries
     settings << FlagDnsExpandHosts
 
     settings << "#{FlagDnsHostFile}=#{DnsMasqHostFile}"
-
-    ## append the dns servers to use
-    settings << dhcp_name_servers
 
     ## set the domain name suffix
     settings << "#{FlagDnsLocalDomain}=#{domain_name_suffix}"
