@@ -34,13 +34,18 @@ module ActionView
       alias_method :orig_submit_tag, :submit_tag
 
       def submit_tag( value, options = {})
+
+        if value == "Help"
+          return "<span class=\"iconbutton\"><span>" + link_to( "Help", "http://www.untangle.com/docs/get.php?version=5.1&source=networking_config", :popup => [ 'new_window', 'height=300,width=600,scrollbars=1,toolbar=1,status=1,location=1,menubar=1,resizeable=1' ], :class => "Help" ) + "</span></span>"
+        end
+
         result_prefix = ""
         result_suffix = ""
 
         css_class = "submit"
 
         #List of buttons with an icon:
-        icon_submit = [ "Save", "Cancel", "Help" ]
+        icon_submit = [ "Save", "Cancel" ]
        
         if icon_submit.include?( value )
           result_prefix = result_prefix + "<span class=\"iconbutton\"><span>"

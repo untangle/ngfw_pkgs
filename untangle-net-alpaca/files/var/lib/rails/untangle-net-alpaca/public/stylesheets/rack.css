@@ -1153,11 +1153,13 @@ span.iconbutton span
   padding-right: 5px;
   padding-bottom: 4px;
   }
-input.submit, input[type="submit"]
+input.submit, a.Help, input[type="submit"]
 {
   padding-left: 23px;
   padding-bottom: 2px;
   border: 0;
+  text-decoration: none;
+  color: black;
   }
 input.submit:hover
 { 
@@ -1171,7 +1173,7 @@ input.Cancel, input[type="submit"][value="Cancel"]
 { 
   background: transparent url(../images/rack/IconCancel_16x16.png) no-repeat 5px center;
   }
-input.Help, input[type="submit"][value="Help"]
+a.Help, button.Help, input.Help, input[type="submit"][value="Help"]
 { 
   background: transparent url(../images/rack/IconHelp_18x16.png) no-repeat 5px center;
   }
