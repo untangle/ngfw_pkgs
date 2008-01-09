@@ -69,6 +69,8 @@ class UVMFilterNode < UVMRemoteApp
               msg = ERROR_UNKNOWN_COMMAND + ": '#{orig_args.join(' ')}'"
               @@diag.if_level(3) { puts! msg; puts! ex ; ex.backtrace }
               return msg
+	  rescue com.untangle.uvm.client.LoginExpiredException
+	      raise
           rescue Exception => ex
             msg = "Error: '#{get_node_name}' filter node has encountered an unhandled exception: " + ex
             @@diag.if_level(3) { puts! msg; puts! ex ; ex.backtrace }
