@@ -20,4 +20,3 @@ var SubscriptionManager =
     fields : new Array( "filters", "description", "subscribe", "enabled" )
 }
 
-RuleBuilder.manager = SubscriptionManager;

@@ -72,6 +72,14 @@ class ApplicationController < ActionController::Base
     Locale.set( settings.key ) unless settings.nil?
   end
 
+  before_filter :instantiate_controller_and_action_names
+  
+  def instantiate_controller_and_action_names
+    $current_action = action_name
+    $current_controller = controller_name
+  end 
+  
+
   def setStylesheets
     @stylesheets = ( self.respond_to?( "stylesheets" )) ? stylesheets : [ ]
     @stylesheets << "rack.css"
@@ -80,7 +88,7 @@ class ApplicationController < ActionController::Base
   def setScripts
     @scripts = ( self.respond_to?( "scripts" )) ? scripts : []
     @scripts.concat( RuleHelper::Scripts )
-    @scripts.concat( [ "network", "redirect_manager", "dhcp_server_manager", "dns_server_manager" ] )
+    @scripts.concat( [ "network", "redirect_manager", "dhcp_server_manager", "dns_server_manager", "subscription_manager" ] )
   end
 
   def setButtons

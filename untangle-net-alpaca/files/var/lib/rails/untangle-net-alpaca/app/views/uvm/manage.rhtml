@@ -1,7 +1,7 @@
-<div id="overlay"  style="display: none">
-  <div id="rule-dialog">
-  </div>
-</div>
+<%= javascript_tag <<EOF
+RuleBuilder.manager =  SubscriptionManager;
+EOF
+%>
 <% form_tag( :action => 'save' ) do -%>
 
   <div id="title"><h1>User Subscriptions</h1></div>

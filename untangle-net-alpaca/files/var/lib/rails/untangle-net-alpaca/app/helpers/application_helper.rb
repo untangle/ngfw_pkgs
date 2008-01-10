@@ -149,7 +149,7 @@ module ApplicationHelper
 
     auto_size = "function resize"+tableId+"() {"
     if ! options[:auto_size].nil? && options[:auto_size] == true
-      auto_size << "var v"+tableId+" = document.getElementById('"+tableId+"'); var v"+tableId+"w= v"+tableId+".offsetWidth;  var c"+tableId+" = v"+tableId+".childNodes; for(var i = 0; i < c"+tableId+".length; i++){if (c"+tableId+"[i].nodeName.toLowerCase() == 'li') { var lic = c"+tableId+"[i].childNodes; for (var c = 0; c < lic.length; c++) { if (lic[c].nodeName.toLowerCase() == 'div') { lic[c].style.width = Math.floor((v"+tableId+"w) / "+options[:header_columns].length.to_s+")-5+'px';} } } }"
+      auto_size << "var v"+tableId+" = document.getElementById('"+tableId+"'); var v"+tableId+"w= v"+tableId+".offsetWidth;  var c"+tableId+" = v"+tableId+".childNodes; for(var i = 0; i < c"+tableId+".length; i++){if (c"+tableId+"[i].nodeName.toLowerCase() == 'li') { var lic = c"+tableId+"[i].childNodes; for (var c = 0; c < lic.length; c++) { if (lic[c].nodeName.toLowerCase() == 'div') { lic[c].style.width = Math.floor((v"+tableId+"w) / "+options[:header_columns].length.to_s+")-6+'px';} } } }"
     end
     auto_size << "}"
     auto_size << "resize"+tableId+"();"

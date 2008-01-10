@@ -102,5 +102,3 @@ Event.observe(window,'load',function(){ new Fabtabs('tabs'); },false);
 
 Event.observe(window,'load',handleResize,false);
 Event.observe(window,'resize',handleResize,false);
-
-

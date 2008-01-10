@@ -1160,6 +1160,7 @@ input.submit, a.Help, input[type="submit"]
   border: 0;
   text-decoration: none;
   color: black;
+  font-size: 9pt;
   }
 input.submit:hover
 { 
@@ -1175,5 +1176,5 @@ input.Cancel, input[type="submit"][value="Cancel"]
   }
 a.Help, button.Help, input.Help, input[type="submit"][value="Help"]
 { 
-  background: transparent url(../images/rack/IconHelp_18x16.png) no-repeat 5px center;
+  background: transparent url(../images/rack/IconHelp_18x16.png) no-repeat 3px center;
   }
