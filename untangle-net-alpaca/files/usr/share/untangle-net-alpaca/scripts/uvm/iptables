@@ -12,6 +12,12 @@ MARK_DUPE=$((0x20000000))
 
 ## Always set this just in case.
 TCP_REDIRECT_PORTS="9500-9627"
+HTTPS_INTERNAL_REDIRECT_PORT="64157"
+## This is the port the UVM is serving HTTPs on the external interface.
+HTTPS_EXTERNAL_PORT="443"
+
+## This is the address everything in the UVM binds to.
+UVM_BIND_ADDRESS="192.0.2.42"
 
 queue_owner()
 {
@@ -87,7 +93,7 @@ uvm_iptables_rules()
 
     #redirect  anthing re-injected packets from the TUN interface to us
     ${IPTABLES} -I PREROUTING 1 -t nat -i ${TUN_DEV} -t nat -p tcp \
-        -j DNAT --to-destination 192.0.2.42:${TCP_REDIRECT_PORTS}
+        -j DNAT --to-destination ${UVM_BIND_ADDRESS}:${TCP_REDIRECT_PORTS}
 
     # when packets are released from the queue they restart at the top of the table.
     # we set this mark on them before releasing and catch conmark them so we wont catch the rest of the session 
@@ -110,7 +116,7 @@ uvm_iptables_rules()
     ${IPTABLES} -A POSTROUTING -t tune -m addrtype --dst-type unicast -p udp -j NFQUEUE
 
     ## Just in case these settings were lost.
-    ifconfig dummy0 192.0.2.42 netmask 255.255.255.0 up
+    ifconfig dummy0 ${UVM_BIND_ADDRESS} netmask 255.255.255.0 up
     if [ -f /proc/sys/net/ipv4/conf/utun/rp_filter ]; then
         ifconfig utun up
         echo 0 > /proc/sys/net/ipv4/conf/utun/rp_filter
@@ -118,3 +124,46 @@ uvm_iptables_rules()
         echo "[`date`] utun device not exist."
     fi
 }
+
+uvm_packet_filter_standard_internal()
+{
+    ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 80 \
+        -m mark --mark 2050/2050 -j DNAT --to-destination ${UVM_BIND_ADDRESS}
+    ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 80 \
+        -m mark --mark 2050/2050 -j RETURN
+}
+
+uvm_packet_filter_secure_internal()
+{
+    ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 443 \
+        -m mark --mark 2050/2050 -j DNAT --to-destination ${UVM_BIND_ADDRESS}:${HTTPS_INTERNAL_REDIRECT_PORT}
+    ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 443 \
+        -m mark --mark 2050/2050 -j RETURN
+}
+
+uvm_packet_filter_secure_external()
+{
+    if [ "${UVM_ALLOW_OUT_HTTPS}x" != "truex" ] ; then return ; fi
+    
+    ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports ${HTTPS_EXTERNAL_PORT} \
+        -m mark --mark 2048/2048 -j DNAT --to-destination ${UVM_BIND_ADDRESS}:443
+    
+    ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports ${HTTPS_EXTERNAL_PORT} \
+        -m mark --mark 2048/2048 -j RETURN
+}
+
+uvm_packet_filter_secure_public()
+{
+    if [ "${HTTPS_PUBLIC_REDIRECT_EN}x" != "truex" ] ; then return ; fi
+
+    if [ "${HTTPS_PUBLIC_PORT}x" = "x" ] ; then return ; fi
+
+    if [ "${HTTPS_PUBLIC_ADDR}x" = "x" ] ; then return ; fi
+    
+    ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} \
+        --destination-ports ${HTTPS_PUBLIC_PORT} -j DNAT --to-destination ${UVM_BIND_ADDRESS}:443
+    
+    ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} \
+        --destination-ports ${HTTPS_PUBLIC_PORT} -j RETURN
+}
+

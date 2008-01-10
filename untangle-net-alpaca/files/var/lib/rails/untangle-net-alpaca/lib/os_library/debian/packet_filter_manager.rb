@@ -37,6 +37,11 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   ## Mark that indicates a  packet is destined to one of the machines IP addresses
   MarkInput    = 0x00000800
 
+  ## Mark that the packet filter used to indicate that this packet should only be filter
+  ## if it is destined to the local box.
+  MarkFwInput  = 0x40000000
+  MarkClearFwInput = ( 0xFFFFFFFF ^ MarkFwInput )
+
   def register_hooks
     os["network_manager"].register_hook( 100, "packet_filter_manager", "write_files", :hook_write_files )
 
@@ -90,7 +95,10 @@ EOF
 EOF
 
     ## Chain used for actually blocking and dropping data
-    FirewallBlock = Chain.new( "alpaca-firewall", "filter", [ "INPUT", "FORWARD" ], <<'EOF' )
+    FirewallBlock = Chain.new( "alpaca-firewall", "filter", [ "INPUT" ], <<'EOF' )
+## Do not block traffic that has the INPUT mark set.
+#{IPTablesCommand} -t #{table} -A FORWARD -m mark --mark 0/#{MarkFwInput} -j #{name}
+
 ## Ignore any traffic that isn't marked
 #{IPTablesCommand} #{args} -m mark --mark 0/#{MarkFwReject | MarkFwDrop} -j RETURN
 
@@ -114,14 +122,29 @@ EOF
 EOF
 
     ## Goto chains used to indicate that a packet should be rejected or dropped.
-    FirewallMarkReject = Chain.new( "alpaca-firewall-reject", "mangle", nil, <<'EOF' )
+    FirewallMarkReject = Chain.new( "alpaca-pf-reject", "mangle", nil, <<'EOF' )
+## Clear the INPUT mark
+#{IPTablesCommand} #{args} -j MARK --and-mark #{MarkClearFwInput}
 ## Mark the packets
 #{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwReject}
 EOF
 
-    FirewallMarkDrop = Chain.new( "alpaca-firewall-drop", "mangle", nil, <<'EOF' )
+    FirewallMarkDrop = Chain.new( "alpaca-pf-drop", "mangle", nil, <<'EOF' )
+## Clear the INPUT mark
+#{IPTablesCommand} #{args} -j MARK --and-mark #{MarkClearFwInput}
 ## Mark the packets
 #{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwDrop}
+EOF
+
+    ## Jumps chains used to indicate that a packet should be rejected or dropped on the INPUT chain
+    FirewallMarkInputReject = Chain.new( "alpaca-pfi-reject", "mangle", nil, <<'EOF' )
+## Mark the packets
+#{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwReject | MarkFwInput}
+EOF
+
+    FirewallMarkInputDrop = Chain.new( "alpaca-pfi-drop", "mangle", nil, <<'EOF' )
+## Mark the packets
+#{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwDrop | MarkFwInput}
 EOF
 
     ## Chain where all of the Bypass Rules go (This shouldn't be  defined unless
@@ -136,8 +159,10 @@ EOF
 
     ## Review : Should the Firewall Rules go before the redirects?
     Order = [ MarkInterface, PostNat, 
-      FirewallBlock, FirewallMarkReject, FirewallMarkDrop, FirewallRules,
-      BypassRules, BypassMark, Redirect ]
+              FirewallBlock, FirewallMarkReject, FirewallMarkDrop, 
+              FirewallMarkInputReject, FirewallMarkInputDrop,
+              FirewallRules,              
+              BypassRules, BypassMark, Redirect ]
   end
   
   def hook_commit
@@ -168,7 +193,6 @@ EOF
 
   def session_redirect_create( filter, new_ip, new_port )
     parse_session_redirect( filter, new_ip, new_port )
-
 
     `iptables -t nat -I #{Chain::Redirect} 1 #{filter} -j DNAT --to-destination #{new_ip}:#{new_port}`
     `iptables -t mangle -I #{Chain::FirewallRules} 1 #{filter} -j RETURN`    
@@ -252,9 +276,16 @@ EOF
         
         target = nil
         case rule.target
-        when "pass" then target = "-j RETURN"
-        when "drop" then target = "-g #{Chain::FirewallMarkDrop.name}"
-        when "reject" then target = "-g #{Chain::FirewallMarkReject.name}"
+        when "pass"
+          target = "-j RETURN"
+          
+        when "drop"
+          target = "-g #{Chain::FirewallMarkDrop.name}"
+          target = "-j #{Chain::FirewallMarkInputDrop.name}" if /d-local::true/.match( rule.filter )
+          
+        when "reject"
+          target = "-g #{Chain::FirewallMarkReject.name}"
+          target = "-j #{Chain::FirewallMarkInputReject.name}" if /d-local::true/.match( rule.filter )
         end
         
         next if target.nil?
@@ -420,15 +451,23 @@ EOF
 
   def handle_custom_firewall_rule( rule )
     case rule.system_id
+
     when "accept-dhcp-internal-e92de349"
+      ## Accept traffic to the DHCP server on the Internal interface
       mark = 1 << ( InterfaceHelper::InternalIndex - 1 )
-      return "#{IPTablesCommand} -t filter -A INPUT -p udp -m mark --mark #{mark}/#{mark} -m multiport --destination-ports 67 -j RETURN\n"
+      return "#{IPTablesCommand} -t filter -I INPUT 1 -p udp -m mark --mark #{mark}/#{mark} -m multiport --destination-ports 67 -j RETURN\n"
+
     when "accept-dhcp-dmz-7a5a003c"
+      ## Accept traffic to the DHCP server on the DMZ interface
       mark = 1 << ( InterfaceHelper::DmzIndex - 1 )
-      return "#{IPTablesCommand} -t filter -A INPUT -p udp -m mark --mark #{mark}/#{mark} -m multiport --destination-ports 67 -j RETURN\n"
+      return "#{IPTablesCommand} -t filter -I INPUT 1 -p udp -m mark --mark #{mark}/#{mark} -m multiport --destination-ports 67 -j RETURN\n"
+
     when "block-dhcp-remaining-58b3326c"
+      ## Block remaining DHCP traffic to the server.
       return "#{IPTablesCommand} -t filter -A INPUT -p udp -m multiport --destination-port 67 -j DROP\n"
+
     when "control-dhcp-cb848bea"
+      ## Limit DHCP traffic to the Internal interface
       dhcp_server_settings = DhcpServerSettings.find( :first )
 
       ## No need to control DHCP if we are not running a server
@@ -440,6 +479,10 @@ EOF
       ## Drop dhcp responses from being forwarded to the internal interface.
       return "#{IPTablesCommand} -t mangle -A FORWARD -p udp -m multiport --destination-ports 67,68 -m physdev --physdev-is-bridged --physdev-out #{i.os_name} -j DROP\n" +
         "#{IPTablesCommand} -t mangle -A FORWARD -p udp -m multiport --destination-ports 67,68 -m physdev --physdev-is-bridged --physdev-in #{i.os_name} -j DROP\n"
+
+    when "accept-dhcp-client-43587bff"
+      ## Accept all traffic to the local DHCP client
+      return "#{IPTablesCommand} -t filter -I INPUT 1 -p udp -m multiport --destination-ports 68 -j RETURN\n"
     else return ""
     end
   end

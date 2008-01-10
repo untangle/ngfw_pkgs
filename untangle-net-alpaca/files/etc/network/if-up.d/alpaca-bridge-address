@@ -1,0 +1,42 @@
+#! /bin/bash
+
+# You don't usually need to touch this file at all, the full configuration
+# of the bridge can be done in a standard way on /etc/network/interfaces.
+
+debug()
+{
+    /bin/echo -e "[DEBUG: `date`] ${*}"
+}
+
+DEBUG=/bin/true
+
+test "${IF_ALPACA_DEBUG}" = "true" && DEBUG=debug
+
+if [ ! -x /usr/sbin/brctl ]
+then
+    $DEBUG "Bridge utilities are not installed."
+    exit 0
+fi
+
+case "$IF_ALPACA_BRIDGE_PORTS" in
+    "")
+	exit 0
+	;;
+    none)
+        $DEBUG "'none' is not supported by the untangle-net-alpaca"
+	exit 0
+	;;
+    all)
+        $DEBUG "'all' is not supported by the untangle-net-alpaca"
+        exit 0
+	;;
+    *)
+	INTERFACES="$IF_ALPACA_BRIDGE_PORTS"
+	;;
+esac
+
+if [ -n "${IF_ADDRESS}" ] && [ -n "${IF_NETMASK}" ]; then
+   ifconfig $IFACE ${IF_ADDRESS} netmask ${IF_NETMASK} up
+fi
+
+exit 0

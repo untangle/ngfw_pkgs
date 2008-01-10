@@ -80,6 +80,10 @@ module Alpaca::SystemRules
                         :filter => "", :is_custom => true,
                         :system_id => "control-dhcp-cb848bea" )
 
+  rm.add_firewall_rule( :description => "Accept DHCP traffic to the local DHCP client.",
+                        :filter => "", :is_custom => true,
+                        :system_id => "accept-dhcp-client-43587bff" )
+
   rm.add_firewall_rule( :description => "Accept DNS traffic from the Internal and VPN interfaces to the local DNS Server.",
                         :filter => "d-local::true&&s-intf::2,8&&d-port::53&&protocol::udp",
                         :target => "pass",

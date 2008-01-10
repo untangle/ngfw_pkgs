@@ -223,7 +223,10 @@ EOF
   end
 
   def subscription_rules
-    text = "#{BypassRules}() {\n"
+    text = <<EOF
+#{BypassRules}() {
+  local t_rule
+EOF
 
     ## Add the user rules
     rules = Subscription.find( :all, :conditions => [ "system_id IS NULL AND enabled='t'" ] )
