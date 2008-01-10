@@ -30,3 +30,4 @@ require "alpaca/menu/item"
 require "alpaca/menu/organizer"
 require "alpaca/menu/extensions"
 
+require "alpaca/system_rules"

@@ -98,8 +98,12 @@ EOF
       logger.warn( "The interface #{interface} is not configured" )
       return ""
     end
-    
-    bridge = bridgeSettings( interface, static.mtu )
+
+    ## Copy the array of ip_networks
+    ip_networks = [ static.ip_networks ].flatten
+
+    ## This will automatically remove the first ip_network if it is assigned to the bridge.
+    bridge = bridgeSettings( interface, static.mtu, "manual", ip_networks )
     
     mtu = mtuSetting( static.mtu )
 
@@ -114,7 +118,11 @@ EOF
     name, mtu = OSLibrary::Debian::NetworkManager.bridge_name( interface ), nil unless bridge.empty?
     
     ## Configure each IP and then join it all together with some newlines.
-    bridge + "\n" + append_ip_networks( static.ip_networks, name, mtu, !bridge.empty? ) + gateway_string
+    bridge += "\n" + append_ip_networks( ip_networks, name, mtu, !bridge.empty? )
+
+    ## Append the gateway at the end, this way if one of the aliases
+    ## is routed to the gateway it will still work.
+    bridge + gateway_string
   end
 
   def dynamic( interface, dynamic )
@@ -162,7 +170,7 @@ EOF
 
   ## These are the settings that should be appended to the first
   ## interface index that is inside of the interface (if this is in fact a bridge)
-  def bridgeSettings( interface, mtu, config_method = "manual"  )
+  def bridgeSettings( interface, mtu, config_method, ip_networks = []  )
     ## Check if this is a bridge
     bridged_interfaces = interface.bridged_interfaces
     
@@ -187,7 +195,7 @@ EOF
     ## doesn't call ifconfig br.intf down, if this happens the
     ## bridge has to relearn creating 30seconds of down time.
 
-    <<EOF
+    configuration = <<EOF
 auto #{bridge_name}
 iface #{bridge_name} inet #{config_method}
 \talpaca_bridge_ports #{bridged_interfaces.map{ |i| i.os_name }.join( " " )}
@@ -195,6 +203,17 @@ iface #{bridge_name} inet #{config_method}
 \tbridge_ageing 900
 #{mtuSetting( mtu, "alpaca_bridge_" )}
 EOF
+
+    unless ip_networks.empty?
+      ## Append the configuration for the first item
+      primary_network = ip_networks.delete_at(0)
+      configuration += <<EOF
+\taddress #{primary_network.ip}
+\tnetmask #{OSLibrary::NetworkManager.parseNetmask( primary_network.netmask)}
+EOF
+    end
+
+    return configuration
   end
 
   def pppoe( interface, pppoe )

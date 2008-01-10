@@ -11,8 +11,12 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
   ## uvm subscription file
   UvmSubscriptionFile = "#{OSLibrary::Debian::PacketFilterManager::ConfigDirectory}/700-uvm"
 
+  ## list of rules for the UVM (before the firewall (those rules should override these rules)).
+  UvmServicesFile = "#{OSLibrary::Debian::PacketFilterManager::ConfigDirectory}/475-uvm-services"
+
   ## list of rules for openvpn
   UvmOpenVPNFile = "#{OSLibrary::Debian::PacketFilterManager::ConfigDirectory}/475-openvpn-pf"
+
 
   ## UVM interface properties file
   UvmInterfaceProperties = "/etc/untangle-net-alpaca/interface.properties"
@@ -35,9 +39,25 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
 
   ## Write out the files to load all of the iptables rules necessary to queue traffic.
   def hook_write_files
-    write_iptables_script
+    ## These are all of the rules that are used to vector traffic to the UVM.
+    write_subscription_script
+    ## These are all of the rules to filter / accept traffic to the various services
+    ## the UVM provides (80, 443, etc)
+    write_packet_filter_script
     write_openvpn_script
     write_interface_order
+  end
+
+  ## A helper function for the packet filter manager.
+  def handle_custom_rule( rule )
+    case rule.system_id
+      when "accept-internal-uvm-ede0af7d"
+        raise "mismatch type" unless rule.is_a? 
+      when "accept-internal-uvm-ede0af7d"
+      else return nil
+    end
+
+    return nil
   end
 
   ## Tell the UVM that there has been a change in the alpaca settings.  This is only used when something
@@ -48,7 +68,7 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
   
   private
   
-  def write_iptables_script
+  def write_subscription_script
     text = header
     
     text += subscription_rules
@@ -80,6 +100,34 @@ return 0
 EOF
 
     os["override_manager"].write_file( UvmSubscriptionFile, text, "\n" )    
+  end
+
+  def write_packet_filter_script
+    text = header
+    
+    text += <<EOF
+HELPER_SCRIPT="/usr/share/untangle-net-alpaca/scripts/uvm/iptables"
+
+if [ ! -f ${HELPER_SCRIPT} ]; then
+  echo "[`date`] The script ${HELPER_SCRIPT} is not available"
+  return 0
+fi
+
+. ${HELPER_SCRIPT}
+
+if [ "`is_uvm_running`x" = "truex" ]; then
+  echo "[`date`] The UVM running, service rules."
+  uvm_packet_filter_secure_internal
+  uvm_packet_filter_secure_external
+  uvm_packet_filter_secure_public
+else
+  echo "[`date`] The UVM is currently not running"
+fi
+
+return 0
+EOF
+
+    os["override_manager"].write_file( UvmServicesFile, text, "\n" )    
   end
 
   def write_openvpn_script
@@ -129,7 +177,7 @@ if [ -f ${EXPORTS_FILE} ]; then
 fi
 EOF
     
-    os["override_manager"].write_file( UvmOpenVPNFile, text, "\n" )    
+    os["override_manager"].write_file( UvmOpenVPNFile, text, "\n" )
   end
 
   ## This writes a file that indicates to the UVM the order
@@ -184,6 +232,8 @@ EOF
     
     rules.each do |rule|
       begin
+        next if rule.is_custom
+
         filters, chain = OSLibrary::Debian::Filter::Factory.instance.filter( rule.filter )
         
         target = ( rule.subscribe ) ? "-j RETURN" : "-g #{Chain::BypassMark}"

@@ -40,8 +40,7 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   def register_hooks
     os["network_manager"].register_hook( 100, "packet_filter_manager", "write_files", :hook_write_files )
 
-    ## This is run automatically by etc/network/interfaces
-    ## os["network_manager"].register_hook( 100, "packet_filter_manager", "run_services", :hook_run_services )
+    os["dns_server_manager"].register_hook( 100, "packet_filter_manager", "commit", :hook_commit )
     
     ## Run whenever the address is updated.
     ## REVIEW : This may just be moved into a script
@@ -107,7 +106,12 @@ EOF
 EOF
     
     ## Chain where all of the firewalls rules should go
-    FirewallRules = Chain.new( "firewall-rules", "mangle", "PREROUTING", "" )
+    FirewallRules = Chain.new( "firewall-rules", "mangle", "PREROUTING", <<'EOF' )
+## Ignore any traffic that is related to an existing session
+#{IPTablesCommand} #{args} -i lo -j RETURN
+#{IPTablesCommand} #{args} -m state --state ESTABLISHED -j RETURN
+#{IPTablesCommand} #{args} -m state --state RELATED -j RETURN
+EOF
 
     ## Goto chains used to indicate that a packet should be rejected or dropped.
     FirewallMarkReject = Chain.new( "alpaca-firewall-reject", "mangle", nil, <<'EOF' )
@@ -185,6 +189,8 @@ EOF
     text += <<EOF
 ## Flush all of the rules.
  for t_table in `cat /proc/net/ip_tables_names` ; do #{IPTablesCommand} -t ${t_table} -F ; done
+
+echo > /dev/null
 EOF
     
     os["override_manager"].write_file( FlushConfigFile, text, "\n" )
@@ -236,11 +242,13 @@ EOF
     rules = Firewall.find( :all, :conditions => [ "system_id IS NULL AND enabled='t'" ] )
     rules += Firewall.find( :all, :conditions => [ "system_id IS NOT NULL AND enabled='t'" ] )
     
-    text = header
+    text = header + "\n"
 
     rules.each do |rule|
       begin
         filters, chain = OSLibrary::Debian::Filter::Factory.instance.filter( rule.filter )
+        
+        next text << handle_custom_firewall_rule( rule ) if rule.is_custom
         
         target = nil
         case rule.target
@@ -278,6 +286,8 @@ EOF
         
         destination = rule.new_ip
         new_enc_id = rule.new_enc_id
+
+        next if rule.is_custom
 
         next if ApplicationHelper.null?( destination )
         
@@ -406,5 +416,31 @@ EOF
     
     new_port = new_port.to_i.to_s
     raise "Invalid redirect port '#{new_port_string}'" unless ( new_port == new_port_string )
+  end
+
+  def handle_custom_firewall_rule( rule )
+    case rule.system_id
+    when "accept-dhcp-internal-e92de349"
+      mark = 1 << ( InterfaceHelper::InternalIndex - 1 )
+      return "#{IPTablesCommand} -t filter -A INPUT -p udp -m mark --mark #{mark}/#{mark} -m multiport --destination-ports 67 -j RETURN\n"
+    when "accept-dhcp-dmz-7a5a003c"
+      mark = 1 << ( InterfaceHelper::DmzIndex - 1 )
+      return "#{IPTablesCommand} -t filter -A INPUT -p udp -m mark --mark #{mark}/#{mark} -m multiport --destination-ports 67 -j RETURN\n"
+    when "block-dhcp-remaining-58b3326c"
+      return "#{IPTablesCommand} -t filter -A INPUT -p udp -m multiport --destination-port 67 -j DROP\n"
+    when "control-dhcp-cb848bea"
+      dhcp_server_settings = DhcpServerSettings.find( :first )
+
+      ## No need to control DHCP if we are not running a server
+      return "" if ( dhcp_server_settings.nil? || !dhcp_server_settings.enabled )
+
+      i = Interface.find( :first, :conditions => [ "\"index\" = ?", InterfaceHelper::InternalIndex ] )
+      return "" if i.nil? || i.os_name.nil?
+
+      ## Drop dhcp responses from being forwarded to the internal interface.
+      return "#{IPTablesCommand} -t mangle -A FORWARD -p udp -m multiport --destination-ports 67,68 -m physdev --physdev-is-bridged --physdev-out #{i.os_name} -j DROP\n" +
+        "#{IPTablesCommand} -t mangle -A FORWARD -p udp -m multiport --destination-ports 67,68 -m physdev --physdev-is-bridged --physdev-in #{i.os_name} -j DROP\n"
+    else return ""
+    end
   end
 end
