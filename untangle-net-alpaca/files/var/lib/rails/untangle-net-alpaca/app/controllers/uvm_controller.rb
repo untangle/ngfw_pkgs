@@ -149,6 +149,9 @@ class UvmController < ApplicationController
   end
 
   def wizard_external_interface_static( ip, netmask, default_gateway, dns_1, dns_2 )
+    if netmask.include?( "255." )
+      netmask = OSLibrary::NetworkManager::CIDR.index( netmask )
+    end
     wizard_manage_interface( InterfaceHelper::ExternalIndex ) do |external_interface|
       static = IntfStatic.new
       static.ip_networks = [ IpNetwork.new( :ip => ip, :netmask => netmask, :position => 1 )]
@@ -192,6 +195,9 @@ class UvmController < ApplicationController
   end
 
   def wizard_internal_interface_nat( ip, netmask, dhcp_start, dhcp_end )
+    if netmask.include?( "255." )
+      netmask = OSLibrary::NetworkManager::CIDR.index( netmask )
+    end
     wizard_manage_interface( InterfaceHelper::InternalIndex ) do |internal_interface|
       static = IntfStatic.new
       static.ip_networks = [ IpNetwork.new( :ip => ip, :netmask => netmask, :position => 1 )]
