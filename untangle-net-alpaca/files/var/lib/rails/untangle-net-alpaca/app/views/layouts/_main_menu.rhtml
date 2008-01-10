@@ -15,9 +15,7 @@ logout = nil
 <% end %>
 </ul>
 <% if ! advanced.nil? %>
-   <div id="advanced"><span><a href="<%= advanced.action %>"><%if ( advanced.children? )
-   puts image_tag( "rack/button-menu.png"  )
-end %><%= advanced.name.t %></a></span>
+   <div id="advanced"><span><a href="<%= advanced.action %>"><%if ( advanced.children? ) %><%= image_tag( "rack/button-menu.png"  ) %>&nbsp;&nbsp;<% end %><%= advanced.name.t %></a></span>
    <% if ( advanced.children? ) %>
     <ul id="advanced-dropdown">
      <% for menu_item in advanced.children %>

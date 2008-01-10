@@ -636,7 +636,6 @@ div#advanced, div#logout
 {
   position: absolute;
   top: 4px;
-  /*padding-left: 8px;*/
   background: transparent url(../images/rack/button-tl.png) no-repeat scroll left top;
   height: 21px;
   }
@@ -645,25 +644,35 @@ div#advanced
   right: 90px;
   width: 100px;
  }
-
 div#logout { 
   right: 12px;
  }
 div#advanced span, div#logout span
 {
-  height: 21px;
   margin-left: 8px;
   padding-right: 8px;
   padding-bottom: 4px;
   background: transparent url(../images/rack/button-tr.png) no-repeat scroll right top;
   }
+div#advanced span 
+{ 
+  position: absolute;
+  top: 0px;
+  height: 21px;
+ }
+div#advanced span a img
+{
+  border: 0;
+  margin: 0;
+  padding: 0;
+  clear: none;
+ }
 div#advanced span a, div#logout span a
 {
   text-decoration: none;
   font-size: 9pt;
   color: #333;
   height: 21px;
-  padding-bottom: 4px;
  }
 #advanced-dropdown
 { 
@@ -676,7 +685,7 @@ div#advanced span a, div#logout span a
 #advanced:hover #advanced-dropdown
 { 
   display: block;
-  margin-top: 2px;
+  margin-top: 21px;
   border-top: 1px solid #797979;
   border-bottom: 1px solid #797979;
  }
