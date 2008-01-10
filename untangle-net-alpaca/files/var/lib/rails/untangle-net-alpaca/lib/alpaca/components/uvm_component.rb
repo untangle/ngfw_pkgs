@@ -49,6 +49,6 @@ class Alpaca::Components::UvmComponent < Alpaca::Component
 
   private
   def save
-    update_interfaces( Interfaces.find( :all ))
+    update_interfaces( Interface.find( :all ))
   end
 end
