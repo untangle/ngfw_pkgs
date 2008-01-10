@@ -97,6 +97,9 @@ uvm_iptables_rules()
     # Ignore traffic that is related to a session we are not watching.
     ${IPTABLES} -A POSTROUTING -t tune -m conntrack --ctstate RELATED  -j RETURN
 
+    # Ignore traffic that has no conntrack info because we cant NAT it.
+    ${IPTABLES} -A POSTROUTING -t tune -m conntrack --ctstate INVALID  -j RETURN
+
     # Ignore traffic that we have antisubscribed to.
     ${IPTABLES} -A POSTROUTING -t tune -m mark --mark ${MARK_ANTISUB}/${MARK_ANTISUB}  -j RETURN
 
