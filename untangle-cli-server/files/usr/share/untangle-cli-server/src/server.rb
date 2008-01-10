@@ -213,7 +213,7 @@ class NUCLIServer
     end
     
     def shutdown
-        # ***TBD
+        exit(0)
     end
 
 end
