@@ -15,7 +15,9 @@ logout = nil
 <% end %>
 </ul>
 <% if ! advanced.nil? %>
-   <div id="advanced"><span><a href="<%= advanced.action %>"><%= advanced.name.t %></a></span>
+   <div id="advanced"><span><a href="<%= advanced.action %>"><%if ( advanced.children? )
+   puts image_tag( "rack/button-menu.png"  )
+end %><%= advanced.name.t %></a></span>
    <% if ( advanced.children? ) %>
     <ul id="advanced-dropdown">
      <% for menu_item in advanced.children %>
@@ -25,6 +27,6 @@ logout = nil
    <% end %>
    </div>
 <% end %>
-<% if ! logout.nil? %>
+<% if ! logout.nil? and session[:username] != "nonce-authenticated" %>
    <div id="logout"><span><a href="<%= logout.action %>"><%= logout.name.t %></a></span></div>
 <% end %>
