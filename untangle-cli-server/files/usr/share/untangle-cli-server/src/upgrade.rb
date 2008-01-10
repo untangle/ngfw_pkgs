@@ -57,11 +57,11 @@ class Support < UVMRemoteApp
     HELP
     end
 
-    def cmd_automatic(*args)
+    def cmd_automatic(tid, *args)
       automatic(*args)
     end
   
-    def cmd_schedule(*args)
+    def cmd_schedule(tid, *args)
       schedule(*args)
     end
   
