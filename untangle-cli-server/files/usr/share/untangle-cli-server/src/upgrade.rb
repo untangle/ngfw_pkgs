@@ -37,7 +37,9 @@ class Support < UVMRemoteApp
 
     begin
       retryLogin {
-        return args.empty? ? ERROR_INCOMPLETE_COMMAND : dispatch_cmd(args)
+        return ERROR_INCOMPLETE_COMMAND if args.empty?
+	cmd = args.shift
+        return dispatch_cmd([cmd, nil, *args])
       }
     rescue Exception => ex
       @@diag.if_level(3) { puts! ex; puts! ex.backtrace }
@@ -46,7 +48,7 @@ class Support < UVMRemoteApp
   end
 
   protected
-    def cmd_help(*args)
+    def cmd_help(tid, *args)
       return <<-HELP
 - upgrade automatic [true|false]
     -- Query the value of Upgrade "Automatically install..." setting - change value to [true|false], if provided.
