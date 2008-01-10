@@ -1,9 +1,5 @@
 <%
 pppoe = config.pppoe
-def print_pppoe( value )
-  return value unless ApplicationHelper.null?( value )
-  "Unset"
-end
 %>
 <div class="text-fields pppoe"> 
    <% if config.interface.wan %>

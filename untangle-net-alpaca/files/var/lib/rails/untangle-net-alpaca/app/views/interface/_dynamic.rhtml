@@ -2,7 +2,7 @@
 style = @hide_types.include?( "dynamic" ) ? 'style="display: none"' : nil
 def print_dynamic( value )
   return value unless ApplicationHelper.null?( value )
-  "Unset"
+  "&nbsp;"
 end
 %>
 <div id="dynamic" <%= style %>>

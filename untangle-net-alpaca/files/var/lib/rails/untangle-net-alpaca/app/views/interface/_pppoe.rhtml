@@ -1,9 +1,5 @@
 <%
 style = @hide_types.include?( "pppoe" ) ? 'style="display: none"' : nil
-def print_pppoe( value )
-  return value unless ApplicationHelper.null?( value )
-  "Unset"
-end
 %>
 <div id="pppoe" <%= style %>>
   <% form_tag( :action => 'intf_pppoe_save', :id => interface ) do -%>
