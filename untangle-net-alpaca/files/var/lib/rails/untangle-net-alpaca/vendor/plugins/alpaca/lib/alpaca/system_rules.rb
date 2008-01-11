@@ -61,70 +61,73 @@ module Alpaca::SystemRules
     end
   end
   
-  rm = RuleManager.instance
+  def self.insert_system_rules
+    rm = RuleManager.instance
 
-  rm.add_firewall_rule( :description => "Allow DHCP Requests from the internal interface.",
-                        :filter => "", :is_custom => true,
-                        :system_id => "accept-dhcp-internal-e92de349" )
+    
+    rm.add_firewall_rule( :description => "Allow DHCP Requests from the internal interface.",
+                          :filter => "", :is_custom => true,
+                          :system_id => "accept-dhcp-internal-e92de349" )
 
-  ## Disabled by default.
-  rm.add_firewall_rule( :description => "Allow DHCP Requests from the DMZ interface..",
-                        :filter => "", :enabled => false, :is_custom => true,
-                        :system_id => "accept-dhcp-dmz-7a5a003c" )
+    ## Disabled by default.
+    rm.add_firewall_rule( :description => "Allow DHCP Requests from the DMZ interface..",
+                          :filter => "", :enabled => false, :is_custom => true,
+                          :system_id => "accept-dhcp-dmz-7a5a003c" )
+    
+    rm.add_firewall_rule( :description => "Block all DHCP Requests to the local DHCP Server.",
+                          :filter => "", :is_custom => true,
+                          :system_id => "block-dhcp-remaining-58b3326c" )
 
-  rm.add_firewall_rule( :description => "Block all DHCP Requests to the local DHCP Server.",
-                        :filter => "", :is_custom => true,
-                        :system_id => "block-dhcp-remaining-58b3326c" )
+    rm.add_firewall_rule( :description => "Control DHCP Traffic from non-internal interfaces.",
+                          :filter => "", :is_custom => true,
+                          :system_id => "control-dhcp-cb848bea" )
 
-  rm.add_firewall_rule( :description => "Control DHCP Traffic from non-internal interfaces.",
-                        :filter => "", :is_custom => true,
-                        :system_id => "control-dhcp-cb848bea" )
+    rm.add_firewall_rule( :description => "Accept DHCP traffic to the local DHCP client.",
+                          :filter => "", :is_custom => true,
+                          :system_id => "accept-dhcp-client-43587bff" )
 
-  rm.add_firewall_rule( :description => "Accept DHCP traffic to the local DHCP client.",
-                        :filter => "", :is_custom => true,
-                        :system_id => "accept-dhcp-client-43587bff" )
+    rm.add_firewall_rule( :description => "Accept DNS traffic from the Internal and VPN interfaces to the local DNS Server.",
+                          :filter => "d-local::true&&s-intf::2,8&&d-port::53&&protocol::udp",
+                          :target => "pass",
+                          :system_id => "accept-dns-internal-cbd25823" )
+    
+    rm.add_firewall_rule( :description => "Accept DNS traffic to the local DNS Server from all interfaces.",
+                          :filter => "d-local::true&&d-port::53&&protocol::udp",
+                          :target => "pass", :enabled => false,
+                          :system_id => "accept-dns-45de53dd" )
 
-  rm.add_firewall_rule( :description => "Accept DNS traffic from the Internal and VPN interfaces to the local DNS Server.",
-                        :filter => "d-local::true&&s-intf::2,8&&d-port::53&&protocol::udp",
-                        :target => "pass",
-                        :system_id => "accept-dns-internal-cbd25823" )
-  
-  rm.add_firewall_rule( :description => "Accept DNS traffic to the local DNS Server from all interfaces.",
-                        :filter => "d-local::true&&d-port::53&&protocol::udp",
-                        :target => "pass", :enabled => false,
-                        :system_id => "accept-dns-45de53dd" )
+    rm.add_firewall_rule( :description => "Accept SNMP traffic from the Internal interface.",
+                          :filter => "d-local::true&&s-intf::2&&d-port::161&&protocol::udp",
+                          :target => "pass",
+                          :system_id => "accept-snmp-internal-0b50244c" )
+    
+    rm.add_firewall_rule( :description => "Accept SNMP traffic from all interfaces.",
+                          :filter => "d-local::true&&d-port::161&&protocol::udp",
+                          :target => "pass", :enabled => false,
+                          :system_id => "accept-snmp-029571bd" )
 
-  rm.add_firewall_rule( :description => "Accept SNMP traffic from the Internal interface.",
-                        :filter => "d-local::true&&s-intf::2&&d-port::161&&protocol::udp",
-                        :target => "pass",
-                        :system_id => "accept-snmp-internal-0b50244c" )
-  
-  rm.add_firewall_rule( :description => "Accept SNMP traffic from all interfaces.",
-                        :filter => "d-local::true&&d-port::161&&protocol::udp",
-                        :target => "pass", :enabled => false,
-                        :system_id => "accept-snmp-029571bd" )
+    rm.add_firewall_rule( :description => "Accept OpenVPN traffic from all interfaces.",
+                          :filter => "d-local::true&&d-port::1194&&protocol::udp",
+                          :target => "pass",
+                          :system_id => "accept-openvpn-4ebba2eb" )
 
-  rm.add_firewall_rule( :description => "Accept OpenVPN traffic from all interfaces.",
-                        :filter => "d-local::true&&d-port::1194&&protocol::udp",
-                        :target => "pass",
-                        :system_id => "accept-openvpn-4ebba2eb" )
+    rm.add_firewall_rule( :description => "Accept SSH traffic from all interfaces.",
+                          :filter => "d-local::true&&d-port::22&&protocol::tcp",
+                          :target => "pass",
+                          :system_id => "accept-ssh-40be25e3" )
 
-  rm.add_firewall_rule( :description => "Accept SSH traffic from all interfaces.",
-                        :filter => "d-local::true&&d-port::22&&protocol::tcp",
-                        :target => "pass",
-                        :system_id => "accept-ssh-40be25e3" )
+    rm.add_firewall_rule( :description => "Block all local traffic.",
+                          :filter => "d-local::true",
+                          :target => "drop",
+                          :system_id => "block-all-local-04a98864" )
 
-  rm.add_firewall_rule( :description => "Block all local traffic.",
-                        :filter => "d-local::true",
-                        :target => "drop",
-                        :system_id => "block-all-local-04a98864" )
+    ## Bypass Rules
+    rm.add_bypass_rule( :description => "Pass DHCP Traffic",
+                        :system_id => DhcpHelper::RuleSystemID,
+                        :filter => "s-port::67,68&&d-port::67,68&&protocol::udp",
+                        :subscribe => false )
 
-  ## Bypass Rules
-  rm.add_bypass_rule( :description => "Pass DHCP Traffic",
-                      :system_id => DhcpHelper::RuleSystemID,
-                      :filter => "s-port::67,68&&d-port::67,68&&protocol::udp",
-                      :subscribe => false )
-
-  ## Always call this last
-  rm.save_rules
+    ## Always call this last
+    rm.save_rules
+  end
 end

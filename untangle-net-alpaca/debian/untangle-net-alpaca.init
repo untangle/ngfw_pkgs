@@ -40,7 +40,7 @@ start()
         exit -1
     }
     ## Load the latest version of the of the schema
-    rake db:migrate RAILS_ENV=${MONGREL_ENV} || { 
+    rake alpaca:init RAILS_ENV=${MONGREL_ENV} || { 
         log_failure_msg "${NAME} could not load database schema ${BASE_DIR}"
         exit -2
     }
