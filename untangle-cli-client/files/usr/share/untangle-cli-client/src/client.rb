@@ -494,9 +494,9 @@ class NUCLIClient
         @jobs.each { |t| t[0].join }
         
         # shut down all sever connections
-        @servers_lock.synchronize {
-            @ucli_servers.each {|svr| svr[2].shutdown() if svr[2] }
-        }
+        #@servers_lock.synchronize {
+            #@ucli_servers.each {|svr| svr[2].shutdown() if svr[2] }
+        #}
 
     end
     
@@ -862,7 +862,7 @@ class NUCLIClient
             svr_indices.each { |i|
                 # Leave host and port fields in tact so this sever entry can
                 # be found and reused should the same server be opened again.
-                @ucli_servers[i][2].shutdown()
+                #@ucli_servers[i][2].shutdown()
                 @ucli_servers[i][2] = nil     # deref server DRbObject
                 @ucli_servers[i][3] = false   # mark server closed
                 message "#{@ucli_servers[i][0]}:#{@ucli_servers[i][1]} closed.", 2
