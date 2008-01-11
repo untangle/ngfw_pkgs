@@ -14,7 +14,7 @@ class WizardController < ApplicationController
     @title = "Setup Wizard"
 
     ## This should be in a global place
-    @cidr_options = OSLibrary::NetworkManager::CIDR.map { |k,v| [ format( "%-3s %s", k, v ) , k ] }
+    @cidr_options = OSLibrary::NetworkManager::CIDR.map { |k,v| [ format( "%-3s &nbsp; %s", k, v ) , k ] }
 
     @cidr_options.sort! { |a,b| a[1].to_i <=> b[1].to_i }
 
