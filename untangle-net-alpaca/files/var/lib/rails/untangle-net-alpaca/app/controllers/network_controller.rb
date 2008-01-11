@@ -162,6 +162,10 @@ class NetworkController < ApplicationController
     
     ## Show the error page unless the message is non-nil.
     return unless @msg.nil?
+    
+    spawn do
+      os["network_manager"].commit
+    end
 
     return redirect_to( :action => 'aliases' )
   end
