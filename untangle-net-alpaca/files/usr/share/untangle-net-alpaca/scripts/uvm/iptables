@@ -127,6 +127,8 @@ uvm_iptables_rules()
 
 uvm_packet_filter_standard_internal()
 {
+    if [ "${UVM_ALLOW_IN_HTTP}x" != "truex" ]; then return ; fi
+
     ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 80 \
         -m mark --mark 2050/2050 -j DNAT --to-destination ${UVM_BIND_ADDRESS}
     ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 80 \

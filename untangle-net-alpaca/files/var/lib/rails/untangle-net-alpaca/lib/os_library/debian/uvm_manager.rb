@@ -117,6 +117,7 @@ fi
 
 if [ "`is_uvm_running`x" = "truex" ]; then
   echo "[`date`] The UVM running, service rules."
+  uvm_packet_filter_standard_internal
   uvm_packet_filter_secure_internal
   uvm_packet_filter_secure_external
   uvm_packet_filter_secure_public

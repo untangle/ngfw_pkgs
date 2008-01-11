@@ -254,6 +254,14 @@ EOF
       fw_text << b
     end
 
+    block_all = Firewall.find( :first, :conditions => [ "system_id = ?", "block-all-local-04a98864"] )
+
+    if !block_all.nil? && block_all.enabled
+      ##A little rule to block all local traffic, done here so that custom items can
+      ## insert rules in between.
+      fw_text << "#{IPTablesCommand} #{Chain::FirewallRules.args} -m mark --mark 2048/2048 -j #{Chain::FirewallMarkInputDrop.name}"
+    end
+
     ## Delete all empty or nil parts
     text = text.delete_if { |p| p.nil? || p.empty? }
     fw_text = fw_text.delete_if { |p| p.nil? || p.empty? }

@@ -116,9 +116,11 @@ module Alpaca::SystemRules
                           :target => "pass",
                           :system_id => "accept-ssh-40be25e3" )
 
+    ## This rule is custom because it is added to the NAT firewall rather than to
+    ## basic firewall.
     rm.add_firewall_rule( :description => "Block all local traffic.",
                           :filter => "d-local::true",
-                          :target => "drop",
+                          :target => "drop", :is_custom => true,
                           :system_id => "block-all-local-04a98864" )
 
     ## Bypass Rules
