@@ -16,7 +16,7 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
 
   ConfigService = {
     "ZoneEdit" => [ "zoneedit1", "www.zoneedit.com" ],
-    "No-IP" => [ "no-ip", "no-ip" ],
+    #"No-IP" => [ "no-ip", "no-ip" ],
     "EasyDNS" => [ "easydns", "members.easydns.com" ],
     "DSL-Reports" => [ "dslreports1", "www.dslreports.com" ],
     "DNSPark" => [ "dnspark", "www.dnspark.com" ],
