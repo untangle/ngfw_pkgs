@@ -1,0 +1,16 @@
+#!/bin/dash
+
+BACKUP_FILE=$0
+
+if [ -z "${BACKUP_FILE}" ] || [ "${BACKUP_FILE%.uab}x" = "${BACKUP_FILE}x" ]; then
+    echo "USAGE: $0 <file-name>"
+    echo "\t<file-name>: Backup file to restore (.uab extension)"
+    exit 0
+fi
+
+## Create a temporary directory to place everything
+RESTORE_DIRECTORY=`mktemp -d`
+
+## Stop the alpaca
+/etc/init.d/untangle-net-alpaca stop
+
