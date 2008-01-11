@@ -392,6 +392,8 @@ class NetworkController < ApplicationController
     pppoe.username = params["#{panel_id}_pppoe_username"]
     pppoe.password = params["#{panel_id}_pppoe_password"]
     pppoe.use_peer_dns = params["#{panel_id}_pppoe_use_peer_dns"]
+    pppoe.dns_1 = params["#{panel_id}_dns_1"]
+    pppoe.dns_2 = params["#{panel_id}_dns_2"]
     pppoe.save
     interface.config_type = InterfaceHelper::ConfigType::PPPOE
     interface.intf_pppoe = pppoe

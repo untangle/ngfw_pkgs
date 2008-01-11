@@ -219,7 +219,7 @@ EOF
   
   def name_servers
     ns = []
-    conditions = [ "wan=? and config_type=?", true, InterfaceHelper::ConfigType::STATIC ]
+    conditions = [ "wan=? and ( config_type=? or config_type=? )", true, InterfaceHelper::ConfigType::STATIC, InterfaceHelper::ConfigType::PPPOE ]
     i = Interface.find( :first, :conditions => conditions )
 
     ## zero them out

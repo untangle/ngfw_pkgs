@@ -6,6 +6,8 @@ class PppoeSchema < ActiveRecord::Migration
       table.column :use_peer_dns,    :boolean
       table.column :username,        :string
       table.column :password,        :string
+      table.column :dns_1,        :string
+      table.column :dns_2,        :string
     end
   end
 

@@ -15,5 +15,14 @@ pppoe = config.pppoe
        <label for="<%= "#{config_id}_use_peer_dns" %>"><%= "Use peer DNS:".t %></label>
        <%= check_box_tag( "#{config_id}_use_peer_dns", "true", { :checked => pppoe.use_peer_dns }) %>
      </p>
+     <p>
+       <label for="<%= "#{config_id}_dns_1" %>"><%= "Primary DNS Server:".t %></label>
+       <%= text_field_tag( "#{config_id}_dns_1", pppoe.dns_1 ) %>
+     </p>
+     <p>
+       <label for="<%= "#{config_id}_dns_2" %>"><%= "Secondary DNS Server:".t %></label>
+       <%= text_field_tag( "#{config_id}_dns_2", pppoe.dns_2 ) %>
+     </p>
+
    <% end %>
 </div>
