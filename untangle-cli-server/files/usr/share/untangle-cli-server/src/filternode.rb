@@ -229,7 +229,7 @@ class UVMFilterNode < UVMRemoteApp
                     
                     # Construct OID fragment to match on from >up to< the last two
                     # pieces of the effective OID, eg, xxx.1 => 1, xxx.18.2 ==> 18.2
-                    int = "integer"; str = "string", c32 = "counter32"
+                    int = "integer"; str = "string"; c32 = "counter32"
                     mib_pieces = mib_root.split('.')
                     oid_pieces = oid.split('.')
                     stat_id = oid_pieces[(mib_pieces.length-oid_pieces.length)+1 ,2].join('.')
