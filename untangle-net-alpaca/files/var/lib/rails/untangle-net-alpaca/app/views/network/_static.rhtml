@@ -1,11 +1,12 @@
 <%
 static = config.static
+netmask_options =  options_for_select( @cidr_options, static.netmask ).gsub( /&amp;nbsp;/, "&nbsp;" )
 %>
 <ul class="text-fields">
   <li>
     <label for="<%= "#{config_id}_ip" %>"><%= "Address:".t %></label>
     <%= text_field_tag( "#{config_id}_ip", static.ip ) %>
-    <%= select_tag( "#{config_id}_netmask", options_for_select( @cidr_options, static.netmask ), :class => "netmask" ) %>
+    <%= select_tag( "#{config_id}_netmask", netmask_options, :class => "netmask" ) %>
   </li>
   
   <% if config.interface.wan %>
