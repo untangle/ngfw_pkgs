@@ -1,6 +1,35 @@
 #!/bin/dash
 
-BACKUP_FILE=$0
+BACKUP_FILE=$1
+
+get_value()
+{
+    awk "/^${1}:/ { \$1 = \"\" ; sub( \"^ *\", \"\" ) ; print \$0 }" ${RESTORE_DIRECTORY}/backup/info.txt
+}
+get_hash()
+{
+    get_value "hash"
+}
+
+get_date()
+{
+    get_value "date"
+}
+
+get_version()
+{
+    get_value "version"
+}
+
+get_backup_version()
+{
+    get_value "backup-version"
+}
+
+get_description()
+{
+    awk 'BEGIN { in_decription = 0 } ; /^description:/ { description = "" ; in_description = 1 } ; /^./ { if ( in_description == 1 ) { in_description = 2 } else if ( in_description == 2 )  { sub( "^ *", "" ) ; sub( " *$", "" ) ; description = description $0 "\n" } } ;   /^$/ { in_description = 0 } ; END { print description }' ${RESTORE_DIRECTORY}/backup/info.txt
+}
 
 if [ -z "${BACKUP_FILE}" ] || [ "${BACKUP_FILE%.uab}x" = "${BACKUP_FILE}x" ]; then
     echo "USAGE: $0 <file-name>"
@@ -10,7 +39,66 @@ fi
 
 ## Create a temporary directory to place everything
 RESTORE_DIRECTORY=`mktemp -d`
+tar -xzf ${BACKUP_FILE} -C ${RESTORE_DIRECTORY} 
+RESTORE_DIRECTORY=${RESTORE_DIRECTORY}
+
+HASH=`get_hash`
+
+echo "hash: '${HASH}'"
+echo "date: '`get_date`'"
+echo "description: '`get_description`'"
+echo "version: '`get_version`'"
+echo "backup-version: '`get_backup_version`'"
+
+DATA_HASH=`cat ${RESTORE_DIRECTORY}/backup/etc.tar ${RESTORE_DIRECTORY}/backup/database.tar | md5sum | awk '{ print $1 }'`
+
+if [ "${DATA_HASH}x" != "${HASH}x" ]; then
+    echo "The file ${BACKUP_FILE} has been corrupted"
+    exit -2
+fi
+
+BASE_DIR=/var/lib/rails/untangle-net-alpaca
+
+if [ -f /etc/default/untangle-net-alpaca ]; then
+    . /etc/default/untangle-net-alpaca
+fi
+
+if [ ! -f ${BASE_DIR}/vendor/plugins/alpaca/init.rb ]; then
+    echo "The directory '${BASE_DIR}' is not valid (check /etc/default/untangle-net-alpaca)"
+    exit -1
+fi
 
 ## Stop the alpaca
 /etc/init.d/untangle-net-alpaca stop
+
+## Expand all of the etc files
+tar -C / -xf ${RESTORE_DIRECTORY}/backup/etc.tar
+
+## Expand the database files
+tar -C ${BASE_DIR} -xf ${RESTORE_DIRECTORY}/backup/database.tar
+
+## Invoke the utility to refresh the settings.
+CURRENT_DIR=`pwd`
+
+cd ${BASE_DIR} && {
+    rake alpaca:restore
+} || {
+    echo "Unable to change into '${BASE_DIR}', cannot call restore."
+}
+
+cd ${CURRENT_DIR}
+
+## Restart the alpaca
+/etc/init.d/untangle-net-alpaca restart
+
+## Remove all of the files
+rm -f ${RESTORE_DIRECTORY}/backup/etc.tar
+rm -f ${RESTORE_DIRECTORY}/backup/database.tar
+rm -f ${RESTORE_DIRECTORY}/backup/info.txt
+rmdir ${RESTORE_DIRECTORY}/backup
+rmdir ${RESTORE_DIRECTORY}
+
+
+
+
 

@@ -17,7 +17,6 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
   ## list of rules for openvpn
   UvmOpenVPNFile = "#{OSLibrary::Debian::PacketFilterManager::ConfigDirectory}/475-openvpn-pf"
 
-
   ## UVM interface properties file
   UvmInterfaceProperties = "/etc/untangle-net-alpaca/interface.properties"
   UvmInterfaceOrderProperty = "com.untangle.interface-order"

@@ -1,6 +1,8 @@
 #!/bin/dash
 
-BACKUP_FILE=$0
+BACKUP_FILE=$1
+
+DESCRIPTION="$2"
 
 if [ -z "${BACKUP_FILE}" ] || [ "${BACKUP_FILE%.uab}x" = "${BACKUP_FILE}x" ]; then
     echo "USAGE: $0 <file-name> [<description>]"
@@ -9,16 +11,61 @@ if [ -z "${BACKUP_FILE}" ] || [ "${BACKUP_FILE%.uab}x" = "${BACKUP_FILE}x" ]; th
     exit 0
 fi
 
-BASE_DIR=untangle-net-alpaca/files/var/lib/rails/untangle-net-alpaca
+DESCRIPTION=${DESCRIPTION:-"Automatic backup"}
+
+BASE_DIR=/var/lib/rails/untangle-net-alpaca
 
 if [ -f /etc/default/untangle-net-alpaca ]; then
     . /etc/default/untangle-net-alpaca
 fi
 
+if [ ! -f ${BASE_DIR}/vendor/plugins/alpaca/init.rb ]; then
+    echo "The directory '${BASE_DIR}' is not valid (check /etc/default/untangle-net-alpaca)"
+    exit -1
+fi
+
 ## Create a temporary directory to place everything
 BACKUP_DIRECTORY=`mktemp -d`
+mkdir -p ${BACKUP_DIRECTORY}/backup
 
-<<EOF > ${BACKUP_DIRECTORY}
+FILE_LIST=/usr/share/untangle-net-alpaca/file-list
+
+if [ ! -f ${FILE_LIST} ]; then
+    echo "The list of files to backup '${FILE_LIST}' doesn't exist"
+    exit -1
+fi
+
+## Save all of the etc files.
+cat ${FILE_LIST} | xargs tar --exclude .svn --ignore-failed-read -C / -cf ${BACKUP_DIRECTORY}/backup/etc.tar
+
+## Save all of the database files
+tar -C ${BASE_DIR} --exclude .svn -cf ${BACKUP_DIRECTORY}/backup/database.tar database 
+
+DATA_HASH=`cat ${BACKUP_DIRECTORY}/backup/etc.tar ${BACKUP_DIRECTORY}/backup/database.tar | md5sum | awk '{ print $1 }'`
+
+ALPACA_VERSION="source distribution"
+
+if [ "${BASE_DIR}x" = "/var/lib/rails/untangle-net-alpacax" ]; then
+    ALPACA_VERSION=`dpkg-query -W untangle-net-alpaca | awk '{ print $2 }'`
+fi
+
+cat <<EOF > ${BACKUP_DIRECTORY}/backup/info.txt
+hash: ${DATA_HASH}
+date: `date`
+version: ${ALPACA_VERSION}
+backup-version: 0.1
+description:
+ ${DESCRIPTION}
 
 EOF
+
+## Now tar up the goods.
+tar -czf ${BACKUP_FILE} -C ${BACKUP_DIRECTORY} backup
+
+## Remove all of the files
+rm -f ${BACKUP_DIRECTORY}/backup/etc.tar
+rm -f ${BACKUP_DIRECTORY}/backup/database.tar
+rm -f ${BACKUP_DIRECTORY}/backup/info.txt
+rmdir ${BACKUP_DIRECTORY}/backup
+rmdir ${BACKUP_DIRECTORY}
 

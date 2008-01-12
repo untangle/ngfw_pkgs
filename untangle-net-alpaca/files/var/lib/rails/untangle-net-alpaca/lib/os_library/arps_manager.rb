@@ -1,6 +1,6 @@
 class OSLibrary::ArpsManager < Alpaca::OS::ManagerBase
   include Singleton
-
+  
   ConfigFile = "/etc/untangle-net-alpaca/arps"
 
   def get_active
@@ -19,7 +19,7 @@ class OSLibrary::ArpsManager < Alpaca::OS::ManagerBase
   end
 
   def register_hooks
-#    os["network_manager"].register_hook( -100, "arps_manager", "write_files", :hook_commit )
+    os["network_manager"].register_hook( -100, "arps_manager", "write_files", :hook_write_files )
   end
   
   def hook_commit

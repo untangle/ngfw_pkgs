@@ -20,10 +20,8 @@ class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
     return results
   end
 
-
-
   def register_hooks
-#    os["network_manager"].register_hook( -100, "routes_manager", "write_files", :hook_commit )
+    os["network_manager"].register_hook( -100, "routes_manager", "write_files", :hook_write_files )
   end
   
   def hook_commit
