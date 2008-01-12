@@ -110,6 +110,7 @@ class NUCLIClient
         @diag = Diag.new(DEFAULT_DIAG_LEVEL)
         @commands_to_execute = []
         @use_ssh_tunnels = false
+        @use_server = true
         @user = 'root'
         
         # Commands legend and creation of readline auto-completion abbreviations
@@ -209,18 +210,27 @@ class NUCLIClient
             puts! opts.to_s
             exit(0)
         }
+        command_mode = false
         opts.on("-c", "--command COMMAND", String, "NUCLI command to execute.") { |command|
             @commands_to_execute << command
+	    command_mode = true
+        }
+        opts.on("-e", "--command COMMAND", String, "NUCLI command to execute.") { |command|
+            @commands_to_execute << command
+	    command_mode = true
         }
         opts.on("-u", "--user USERNAME", String, "User to login to NUCLI server as.") { |user|
             @user = user
+        }
+        opts.on("-s", "--no-server", "Don't connect to NUCLI server.") { |user|
+            @use_server = false
         }
         opts.on("-t", "--use-ssh-tunnel", "Enable SSH tunneling.") { |user|
             @use_ssh_tunnels = true
         }
 
         remainder = opts.parse(options);
-        if remainder.length > 0
+        if (remainder.length > 0) && !command_mode
             print! "Unknown options encountered: #{remainder}\nContinue [y/n]? "
             raise Terminate, "unknown command line option(s)." unless getyn("y")
         end
@@ -475,7 +485,7 @@ class NUCLIClient
                         uvm[2] = nil
                         uvm[3] = false   # mark server NOT open
                     else
-                        uvm[2] = DRbObject.new(nil, "druby://localhost:#{uvm[1]}")
+                        uvm[2] = @use_server ? DRbObject.new(nil, "druby://localhost:#{uvm[1]}") : nil
                         uvm[3] = true   # mark server open
                     end
                     svr_num += 1
@@ -801,7 +811,7 @@ class NUCLIClient
             ssh_port_forward_tunnel(server_to_open[0], server_to_open[1], @user)
             
             # Open DRb connection to server_to_open
-            drb = DRbObject.new(nil, "druby://localhost:#{server_to_open[1]}")
+            drb = @use_server ? DRbObject.new(nil, "druby://localhost:#{server_to_open[1]}") : nil
             
             # Create new server entry and if it was not found append it to the servers list;
             # if it was found but it was closed, store the new entry in the same server location
@@ -1200,7 +1210,6 @@ class NUCLIClient
     def sh(*args)
 	begin
 	    	cmd = args.join(' ')
-		puts! "In sh: #{cmd}"
 		pipe = IO.popen(cmd, "r")   # note pipe is half duplex so no need to close_write on the pipe
 		lines = []
 		pipe.readlines.each { |line|
@@ -1229,8 +1238,9 @@ if __FILE__ == $0
         rescue Terminate, Interrupt
             break
         rescue Exception => ex
-            puts! "NUCLI client has encountered an unhandled exception: " + ex + "\nRestarting...\n"
-            p ex.backtrace
+            puts! "NUCLI client has encountered an unhandled exception: " + ex
+	    p ex.backtrace
+	    break
         ensure
             nucli_client.shutdown if nucli_client
         end
