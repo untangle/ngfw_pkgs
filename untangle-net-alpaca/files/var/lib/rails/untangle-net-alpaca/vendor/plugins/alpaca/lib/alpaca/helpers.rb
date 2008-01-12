@@ -1,4 +1,17 @@
 #enhancements to the helper functions
+
+class String
+    def shank( side )
+        self.insert( self.length / 2, side )
+    end
+end
+
+class Array
+    def shank( side )
+        self.insert( self.length / 2, side )
+    end
+end
+
 module ActionView
   module Helpers
 
