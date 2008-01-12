@@ -1,15 +1,17 @@
 #enhancements to the helper functions
 
-class String
+module AlpacaShank
     def shank( side )
         self.insert( self.length / 2, side )
     end
 end
 
+class String
+    include AlpacaShank
+end
+
 class Array
-    def shank( side )
-        self.insert( self.length / 2, side )
-    end
+    include AlpacaShank
 end
 
 module ActionView
