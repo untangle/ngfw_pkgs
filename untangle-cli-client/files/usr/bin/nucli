@@ -5,4 +5,4 @@ else
     NUCLI_ROOT=""
 fi
 
-ruby -X ${NUCLI_ROOT}/usr/share/untangle-cli-client/src -- ./client.rb $1 $2 $3 $4 $5 $6 $7 $8 $9
+ruby -X ${NUCLI_ROOT}/usr/share/untangle-cli-client/src -- ./client.rb "$@"
