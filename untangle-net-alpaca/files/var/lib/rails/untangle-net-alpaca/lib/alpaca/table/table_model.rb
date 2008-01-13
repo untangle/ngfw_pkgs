@@ -12,8 +12,8 @@ class Alpaca::Table::TableModel
   end
 
   ## Override these methods to remove these buttons
-  def has_add_button
-    true
+  def has_action
+    self.respond_to? "action"
   end
 
   def has_label

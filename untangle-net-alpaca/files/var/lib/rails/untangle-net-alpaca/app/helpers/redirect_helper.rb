@@ -20,7 +20,7 @@ EOF
       
       ## This gets complicated.
       ## html_options = { "onlick" => "RuleBuilder.edit( '#{row_id}' )" }
-      columns << Alpaca::Table::Column.new( "edit", "Edit".t ) do |redirect,options|
+      columns << Alpaca::Table::EditColumn.new do |redirect,options|
         row_id = options[:row_id]
         filter = redirect.filter
         filter = "" if filter.nil?
@@ -40,6 +40,14 @@ EOF
 
     def row_id( row )
       "row-#{rand( 0x100000000 )}"
+    end
+
+    def action( table_data, view )
+      <<EOF
+<div onclick="#{view.remote_function( :url => { :action => :create_redirect } )}" class="add-button">
+  #{"Add".t}
+</div>
+EOF
     end
   end
 

@@ -1,3 +1,4 @@
-page.insert_html( :bottom, "redirect-list", :partial => "redirect", :object => @redirect )
+page.insert_html( :bottom, "redirect-list", :partial => "application/table_row", :object => @redirect, :locals => { :table_model => redirect_table_model, :data => Alpaca::Table::Data.new( "redirect-list", [ @redirect ] ) } )
 page.sortable( "redirect-list" )
-page << "RuleBuilder.edit( '" + $rowId + "' )"
+page << "TableManager.updateRowStyles( 'redirect-list' );"
+page << "RuleBuilder.edit( '" + @row_id + "' );"

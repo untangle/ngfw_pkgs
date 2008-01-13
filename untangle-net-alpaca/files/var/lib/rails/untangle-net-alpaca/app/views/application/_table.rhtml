@@ -3,8 +3,8 @@
 <% if table_model.has_label %>
   <div align="right" class="table-label <%= table_model.css_class %>">
     <div class="table-title"><%= table_model.table_name.t %></div>
-    <% if table_model.has_add_button %>
-      <div class="add-button"><%= "Add".t %></div>
+    <% if table_model.has_action %>
+      <%= table_model.action( data, self ) %>
     <% else %>
       <div>&nbsp;</div>
     <% end %>
@@ -18,7 +18,7 @@
 
       <% table_model.columns.each do |column| %>
         <div class="<%= "#{column.css_class} #{first_css_class}" %>">
-          <%= column.title %>
+          <%= column.title.t %>
         </div>
         <% first_css_class = "" %>
       <% end %>

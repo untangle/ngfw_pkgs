@@ -1,6 +1,6 @@
 class Alpaca::Table::DeleteColumn < Alpaca::Table::Column
   def initialize
-    super( "minus", "Delete".t )
+    super( "minus", "Delete" )
   end
 
   ## Override this method for more advanced attributes
