@@ -1,7 +1,24 @@
 body
 { 
-  font-family: Helvetica;
+  font-family: Arial, Helvetica;
  }
+
+/* ----------------------------- Buttons ----------------------------- */
+div.add-button
+{ 
+  width: 68px;
+  height: 21px;
+  line-height: 21px;
+  background-image: url( "../images/add-button.gif");
+  background-repeat: no-repeat;
+  text-indent: 32px;
+  color: #333333;
+  font-size: 90%;
+  overflow: none;
+  text-align: left;
+ }
+
+/* ----------------------------- Tables ----------------------------- */
 
 div.list-table-container
 { 
@@ -49,6 +66,13 @@ div.list-table-container ul.header div.first
 div.list-table-container div.list-table li
 { 
   overflow: auto;
+  line-height: 25px;
+  }
+
+div.list-table-container div.list-table li div
+{ 
+  overflow: auto;
+  height: 25px;
   }
 
 /* Format the data itself */
@@ -58,6 +82,11 @@ div.list-table-container div.list-table
   background-color: #E9E9E9;
   border: 0px solid #C0C0C0;
   margin: 0px;
+ }
+
+div.list-table-container div.list-table li.odd
+{ 
+  background-color: #DDDDDD;
  }
 
 div.list-table-container div.list-table ul li
@@ -70,12 +99,10 @@ div.list-table-container div.list-table ul li.first
   border-top: 0px solid #999999;
   }
 
-
 div.list-table-container div.list-table ul li div.list-table-column
 { 
   float: left;
   border-left: 1px solid #999999;
-  line-height: 24px;
   }
 
 div.list-table-container div.list-table ul li div.list-table-column.first
@@ -109,9 +136,36 @@ div.list-table-container div.list-table div.minus:hover
   background-color: #E1EB26;
   }
 
+/* ----------------------------- Table Labels ----------------------------- */
+div.table-label
+{ 
+  margin-bottom: 10px;
+ }
+
+div.table-label div.table-title
+{ 
+  color: #666666;
+  line-height: 21px;
+  float: left;
+ }
+
+/* ------------------ Style the input fields ------------------ */
+div.list-table-container div.list-table input.textfield
+{ 
+  background-color: transparent;
+  border: 0px;
+  width: 95%;
+  margin-left: 10px;
+  margin-top: 5px;
+
+  }
+
+div.list-table-container div.list-table input
+{ 
+  margin-top: 5px;
+ }
+
 /* ------------------ Style the redirect table ---------------- */
-
-
 div.list-table-container.redirects
 { 
   width: 644px;
@@ -132,9 +186,10 @@ div.list-table-container.redirects div.description
   width: 470px;
   }
 
-div.list-table-container.redirects div.list-table div.enabled, div.list-table-container.redirects div.list-table div.minus, div.list-table-container.redirects div.list-table div.edit
+div.list-table-container.redirects div.enabled, div.list-table-container.redirects div.minus, div.list-table-container.redirects div.edit
 { 
   text-align: center;
+  text-indent: 0px;
   }
 
 

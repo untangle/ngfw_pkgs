@@ -1,12 +1,13 @@
 <% 
 row_id = table_model.row_id( table_row ) 
 first_css_class = "first"
+options = { :data => data, :table_mode => table_model , :view => self, :row_id => row_id }
 %>
 
 <li id="<%= row_id %>" class="<%= "#{table_model.row_css_class} #{@first_row_css_class}" %> ">
   <% table_model.columns.each do |column| %>
-    <div class="list-table-column <%= "#{column.css_class} #{first_css_class}" %>"  >
-      <%= column.generate_column( table_row, :row_id => row_id, :data => data, :table_mode => table_model , :view => self ) %>
+    <div class="list-table-column <%= "#{column.css_class} #{first_css_class}" %>" <%= column.generate_attributes( table_row,options ) %>>
+      <%= column.generate_column( table_row, options ) %>
     </div>
   <% first_css_class = "" %>
   <% end %>
