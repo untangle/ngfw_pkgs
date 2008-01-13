@@ -44,10 +44,6 @@ class RedirectController < ApplicationController
     redirect_to( :action => "manage" )
   end
 
-  def stylesheets
-    [ "borax/list-table", "borax-redirect", "borax-overlay", "rule" ]
-  end
-
   def scripts
     RuleHelper::Scripts + [ "redirect_manager" ]
   end

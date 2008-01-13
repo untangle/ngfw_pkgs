@@ -83,12 +83,13 @@ class ApplicationController < ActionController::Base
   def setStylesheets
     @stylesheets = ( self.respond_to?( "stylesheets" )) ? stylesheets : [ ]
     @stylesheets << "rack.css"
+    @stylesheets << "simple-table.css"
   end
   
   def setScripts
     @scripts = ( self.respond_to?( "scripts" )) ? scripts : []
     @scripts.concat( RuleHelper::Scripts )
-    @scripts.concat( [ "network", "redirect_manager", "dhcp_server_manager", "dns_server_manager", "subscription_manager" ] )
+    @scripts.concat( [ "network", "redirect_manager", "dhcp_server_manager", "dns_server_manager", "subscription_manager", "table_manager" ] )
   end
 
   def setButtons

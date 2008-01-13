@@ -1,5 +1,16 @@
 <% @first_row_css_class = "first" %>
 
+<% if table_model.has_label %>
+  <div align="right" class="table-label <%= table_model.css_class %>">
+    <div class="table-title"><%= table_model.table_name.t %></div>
+    <% if table_model.has_add_button %>
+      <div class="add-button"><%= "Add".t %></div>
+    <% else %>
+      <div>&nbsp;</div>
+    <% end %>
+  </div>
+<% end %>
+
 <div class="list-table-container <%= table_model.css_class %>">
   <ul class="header">
     <li>

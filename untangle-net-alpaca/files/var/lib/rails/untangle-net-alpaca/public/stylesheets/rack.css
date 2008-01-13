@@ -1,9 +1,10 @@
 body
 { 
-  font-family: Arial,Geneva,sans-serif;
+  font-family: Arial, Helvetica;
   margin: 0;
   padding: 0;
  }
+
 div#dns-dynamic-entries
 { 
   /*margin: 10px 0 10px 0;*/
@@ -54,6 +55,7 @@ li.static-entry div.minus:hover
   cursor: pointer;
   background-color: #E1EB26;  
   }
+
 div.list-table
 { 
   overflow-y: scroll;
@@ -217,7 +219,6 @@ div.list-table.interfaces ul li > div.mac-address
   text-align: center;
   }
 
-
 div#dhcp-dynamic-entries
 { 
   /*margin: 10px 0 10px 0;*/
@@ -225,7 +226,6 @@ div#dhcp-dynamic-entries
   overflow-y: scroll;
   height: 150px;
   }
-
 
 ul.dhcp-dynamic-entry-list div.mac-address
 { 
@@ -440,65 +440,6 @@ div#overlay
   height: 100%;
  }
 
-div.redirects
-{ 
-  /*margin: 10px 0 10px 0;*/
-  width: 623px;
-  height: 200px;
-  }
-
-ul#redirect-list div.enabled
-{ 
-  width: 100px;
-  }
-
-ul#redirect-list div.description
-{ 
-  width: 460px;
-  }
-
-ul#redirect-list div.edit
-{ 
-  width: 20px;
-  }
-
-ul#redirect-list div.minus
-{ 
-  width: 20px;
-  }
-
-ul#redirect-list div.enabled, ul#redirect-list div.subscribe, ul#redirect-list div.minus, ul#redirect-list div.edit
-{ 
-  text-align: center;
-  float: left;
-  }
-
-li.redirect div.minus:hover, li.redirect div.edit:hover
-{ 
-  cursor: pointer;
-  background-color: #E1EB26;  
-  }
-
-/* System rules */
-div.system-redirects
-{ 
-/*  margin: 10px 0 10px 0;*/
-  width: 623px;
-  height: 200px;
-  }
-
-
-ul.system-redirect-list div.enabled
-{ 
-  width: 100px;
-  text-align: center;
-  }
-
-ul.system-redirect-list div.description
-{ 
-  width: 403px;
- }
-
 div#overlay > div#rule-dialog
 { 
   position: relative;
@@ -555,15 +496,17 @@ div#main-content-body
   height: 80%;
   width: 100%;
   z-index: 100;
-  background-color: #f7f7f7;
+  background-image: url( "../images/background-main.png" );
+  background-repeat: repeat-x;
+  background-color: #F6F6F6;
   border-bottom: 1px solid #d3d3d3;
  }
 div#title
 { 
-  background: url(../images/rackunit.png) repeat-x top left;
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
-  height: 54px;
+  background: url(../images/background-title.png) repeat-x top left;
+  border-top: 0px solid black;
+  border-bottom: 0px solid black;
+  height: 57px;
   }
 h1
 {
@@ -572,7 +515,7 @@ h1
   font-size: 12pt;
   color: #3e3e3e;
   line-height: 54px;
-  background: url(../images/rackscrew.png) no-repeat center left;
+  background: url(../images/rackscrew.gif) no-repeat center left;
   }
 h2
 {
