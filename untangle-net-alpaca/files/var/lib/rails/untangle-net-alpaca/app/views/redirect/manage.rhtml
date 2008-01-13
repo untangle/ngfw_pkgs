@@ -3,25 +3,15 @@ RuleBuilder.manager = RedirectManager;
 EOF
 %>
 <% form_tag( :action => 'save' ) do -%>
-  <div id="title"><h1>User Redirects</h1></div>
+  <div id="title"><h1>Port Forwards</h1></div>
   <div id="main-content-body">
-  <%= link_to_remote( "+".t, :url => { :action => :create_redirect } ) %>
+    <h2>Port Forwards</h2>
+    <%= link_to_remote( "+".t, :url => { :action => :create_redirect } ) %>
 
-  <%= render( :partial => "redirects" , :object => @redirect_list ) %>
-
-  <h2>System Redirects</h2>
-  <%= render( :partial => "system_redirects" , :object => @system_redirect_list ) %>
-  </div>
-  <div id="main-content-footer">
-  <div id="help-footer">
-    <%= submit_tag "Help".t %>
-  </div>
-  <div id="action-footer">
-  <%= submit_tag "Cancel".t %>
-  <%= submit_tag "Save".t %>
-  </div>
+    <%= build_table( Alpaca::Table::Data.new( "redirect-list", @redirects ), redirect_table_model) %> 
   </div>
 
+  <%= build_footer %>
 <% end %>
 
 <%= javascript_tag <<EOF

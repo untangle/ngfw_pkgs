@@ -1,0 +1,21 @@
+<% @first_row_css_class = "first" %>
+
+<div class="list-table-container <%= table_model.css_class %>">
+  <ul class="header">
+    <li>
+      <% first_css_class = "first" %>
+
+      <% table_model.columns.each do |column| %>
+        <div class="<%= "#{column.css_class} #{first_css_class}" %>">
+          <%= column.title %>
+        </div>
+        <% first_css_class = "" %>
+      <% end %>
+    </li>
+  </ul>
+  <div class="list-table">
+    <ul id="<%= data.css_id %>" class="<%= table_model.css_class %>">
+      <%= render( :partial => "application/table_row", :collection => data.rows, :locals => { :table_model => table_model, :data => data } ) %>
+    </ul>
+  </div>
+</div>

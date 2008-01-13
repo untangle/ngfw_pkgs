@@ -1,0 +1,140 @@
+body
+{ 
+  font-family: Helvetica;
+ }
+
+div.list-table-container
+{ 
+  border: 1px solid #999999;
+ }
+
+div.list-table-container ul
+{ 
+  width: 100%;
+  list-style: none inside none;
+  padding: 0px;
+  margin: 0;
+ }
+
+/* The header */
+div.list-table-container ul.header
+{ 
+  padding: 0px;
+  margin: 0px;
+  font-weight: bold;
+  color: #333333;
+  background-color: #B4B4B4;
+  height: 23px;
+  font-size: 80%;
+  border-bottom: 2px solid #666666;
+  }
+
+div.list-table-container ul.header div
+{ 
+  float: left;
+  text-indent: 10px;
+  /* Insert a border to the left of every column */
+  border-left: 1px solid #E6E6E6;
+  line-height: 23px;
+ }
+
+/* Remove the border from the left of the first column */
+div.list-table-container ul.header div.first
+{ 
+  border-left: 0px solid #E6E6E6;
+ }
+
+/* End of header */
+
+div.list-table-container div.list-table li
+{ 
+  overflow: auto;
+  }
+
+/* Format the data itself */
+div.list-table-container div.list-table
+{ 
+  overflow-y: scroll;
+  background-color: #E9E9E9;
+  border: 0px solid #C0C0C0;
+  margin: 0px;
+ }
+
+div.list-table-container div.list-table ul li
+{ 
+  border-top: 1px solid #999999;
+  }
+
+div.list-table-container div.list-table ul li.first
+{ 
+  border-top: 0px solid #999999;
+  }
+
+
+div.list-table-container div.list-table ul li div.list-table-column
+{ 
+  float: left;
+  border-left: 1px solid #999999;
+  line-height: 24px;
+  }
+
+div.list-table-container div.list-table ul li div.list-table-column.first
+{ 
+  border-left: 0px solid #E6E6E6;
+  }
+
+div.list-table-container div.edit, div.list-table-container div.minus
+{ 
+  width: 50px;
+  }
+
+div.list-table-container div.list-table div.edit
+{
+  background-image: url( "../images/edit.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+  }
+
+div.list-table-container.redirects div.list-table div.minus
+{ 
+  background-image: url( "../images/minus.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+  }
+
+div.list-table-container div.list-table div.edit:hover, 
+div.list-table-container div.list-table div.minus:hover
+{ 
+  cursor: pointer;
+  background-color: #E1EB26;
+  }
+
+/* ------------------ Style the redirect table ---------------- */
+
+
+div.list-table-container.redirects
+{ 
+  width: 644px;
+ }
+
+div.list-table-container.redirects div.list-table
+{ 
+  height: 200px;
+  }
+
+div.list-table-container.redirects div.enabled
+{ 
+  width: 50px;
+  }
+
+div.list-table-container.redirects div.description
+{ 
+  width: 470px;
+  }
+
+div.list-table-container.redirects div.list-table div.enabled, div.list-table-container.redirects div.list-table div.minus, div.list-table-container.redirects div.list-table div.edit
+{ 
+  text-align: center;
+  }
+
+

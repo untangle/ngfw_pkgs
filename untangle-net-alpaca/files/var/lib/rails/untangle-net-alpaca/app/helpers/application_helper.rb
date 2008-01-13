@@ -9,6 +9,22 @@ module ApplicationHelper
     false
   end
 
+  def build_table( data, table_model )
+    render( :partial => "application/table", :locals => { :table_model => table_model, :data => data } )
+  end
+
+  def build_footer
+    render( :partial => "application/footer" )
+  end
+
+  def table_delete_button( row_id )
+    "&nbsp;"
+  end
+
+  def table_checkbox( row_id, name, enabled )
+    check_box( name, row_id, { :checked => enabled }, true, false )
+  end
+
   #Needs work for better validation
   #Do we need to support more than standard Ethernet?
   #The arp protocol does.
@@ -46,8 +62,6 @@ module ApplicationHelper
     end
     return false
   end
-
-
 
   # generates the editable tables
   # Arguments are a hash like:
