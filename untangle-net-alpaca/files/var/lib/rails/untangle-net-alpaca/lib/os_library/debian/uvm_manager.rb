@@ -34,6 +34,7 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
     ## Register with the hostname manager to update when there are
     ## changes to the hostname
     os["hostname_manager"].register_hook( 1000, "uvm_manager", "commit", :hook_update_configuration )
+    os["dns_server_manager"].register_hook( 1000, "uvm_manager", "commit", :hook_update_configuration )
   end
 
   ## Write out the files to load all of the iptables rules necessary to queue traffic.

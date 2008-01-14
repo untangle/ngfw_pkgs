@@ -46,13 +46,13 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
 
   def register_hooks
     os["network_manager"].register_hook( -100, "ddclient_manager", "write_files", :hook_commit )
+    os["hostname_manager"].register_hook( 100, "ddclient_manager", "commit", :hook_commit )
   end
   
   def hook_commit
     settings = DdclientSettings.find( :first )
-    return if ( settings.nil? )
 
-    if ( settings.enabled )
+    if ( !settings.nil? && settings.enabled )
       if settings.service == "No-IP"
         commit_noip( settings )
         disable_ddclient

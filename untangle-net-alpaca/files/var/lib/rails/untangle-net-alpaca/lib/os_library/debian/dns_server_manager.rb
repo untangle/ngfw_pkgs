@@ -197,7 +197,10 @@ EOF
     ## append the dns servers to use
     settings << dns_config_name_servers
 
-    unless dns_server_settings.enabled
+    if ( dns_server_settings.nil? || !dns_server_settings.enabled )
+      ## Review : This is a messy trick for the UVM to be able to tell if the
+      ## DNS server is disabled.
+      settings << "# DNS Server disabled, not saving hosts."
       logger.debug( "DNS Settings are disabled, not using all configuration options." );
       return settings.join( "\n" )
     end
@@ -275,7 +278,7 @@ EOF
     settings << "#{FlagOption}=#{OptionNetmask},#{netmask}" unless netmask.nil?
 
     unless dns_server_settings.enabled
-      settings << "#{FlagOption}=#{OptionNameservers},#{name_servers.join( " " )}"
+      settings << "#{FlagOption}=#{OptionNameservers},#{name_servers.join( "," )}"
     end
 
     ## Static entries
