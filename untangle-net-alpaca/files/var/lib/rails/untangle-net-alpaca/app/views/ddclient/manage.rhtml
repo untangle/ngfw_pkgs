@@ -22,7 +22,7 @@ select( "ddclient_settings", "service", services ) %>
 
         <li>
           <label for="ddclient_settings[password]"><%= "Password:".t %></label>
-          <%= password_field( "ddclient_settings", "password", :autocomplete=>"off" ) %>
+          <%= password_field_tag( "ddclient_settings[password]", ddclient_settings.hidden_password, :autocomplete=>"off" ) %>
         </li>
 
         <li>
