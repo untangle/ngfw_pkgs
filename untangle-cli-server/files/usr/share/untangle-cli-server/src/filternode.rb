@@ -47,30 +47,22 @@ class UVMFilterNode < UVMRemoteApp
           begin
             orig_args = args.dup
             retryLogin {
-              # Get tids of all protocol filters once and for all commands we might execute below.
-      
               begin
-                tids = get_filternode_tids(get_uvm_node_name())
-                if empty?(tids) then return (args[0] == "snmp") ? nil : ERROR_NO_fILTER_NODES ; end
-                tid, cmd = *extract_tid_and_command(tids, args, ["snmp"])
+                  tids = get_filternode_tids(get_uvm_node_name())
+                  if empty?(tids) then return (args[0] == "snmp") ? nil : ERROR_NO_fILTER_NODES ; end
+                  tid, cmd = *extract_tid_and_command(tids, args, ["snmp"])
+                  @@diag.if_level(3) { puts! "Executing command = #{cmd} on filter node TID = #{tid}" }
+                  return dispatch_cmd(args.empty? ? [cmd, tid] : [cmd, tid, *args])
               rescue InvalidNodeNumber, InvalidNodeId => ex
                   msg = ERROR_INVALID_NODE_ID + ": " + ex
                   @@diag.if_level(3) { puts! msg ; p ex}
                   return msg
-              rescue Exception => ex
-                msg = "Error: #{get_node_name} filter node has encountered an unhandled exception: " + ex
-                @@diag.if_level(3) { puts! msg; puts! ex ; ex.backtrace }
-                return msg
+              rescue NoMethodError => ex
+                  msg = ERROR_UNKNOWN_COMMAND + ": '#{orig_args.join(' ')}'"
+                  @@diag.if_level(3) { puts! msg; puts! ex ; ex.backtrace }
+                  return msg
               end
-              @@diag.if_level(3) { puts! "Executing command = #{cmd} on filter node TID = #{tid}" }
-              return dispatch_cmd(args.empty? ? [cmd, tid] : [cmd, tid, *args])
             }
-          rescue NoMethodError => ex
-              msg = ERROR_UNKNOWN_COMMAND + ": '#{orig_args.join(' ')}'"
-              @@diag.if_level(3) { puts! msg; puts! ex ; ex.backtrace }
-              return msg
-	  rescue com.untangle.uvm.client.LoginExpiredException
-	      raise
           rescue Exception => ex
             msg = "Error: '#{get_node_name}' filter node has encountered an unhandled exception: " + ex
             @@diag.if_level(3) { puts! msg; puts! ex ; ex.backtrace }
