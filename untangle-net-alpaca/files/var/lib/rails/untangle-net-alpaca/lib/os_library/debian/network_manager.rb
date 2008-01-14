@@ -77,7 +77,7 @@ EOF
 
   def hook_run_services
     ## Restart networking
-    raise "Unable to reconfigure network settings." unless run_command( "sh #{Service} start" ) == 0
+    logger.warn "Unable to reconfigure network settings." unless run_command( "sh #{Service} start" ) == 0
   end
 
   ## Given an interface, this returns the expected bridge name
@@ -122,7 +122,7 @@ EOF
 
     ## Append the gateway at the end, this way if one of the aliases
     ## is routed to the gateway it will still work.
-    bridge + gateway_string
+    "\n" + bridge.strip + "\n" + gateway_string
   end
 
   def dynamic( interface, dynamic )

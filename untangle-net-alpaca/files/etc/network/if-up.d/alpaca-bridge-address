@@ -39,4 +39,8 @@ if [ -n "${IF_ADDRESS}" ] && [ -n "${IF_NETMASK}" ]; then
    ifconfig $IFACE ${IF_ADDRESS} netmask ${IF_NETMASK} up
 fi
 
+if [ -n "${IF_GATEWAY}" ]; then
+    ip route replace default via ${IF_GATEWAY}
+fi
+
 exit 0
