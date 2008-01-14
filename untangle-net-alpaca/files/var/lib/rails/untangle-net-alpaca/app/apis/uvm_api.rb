@@ -44,9 +44,7 @@ class UvmApi < ActionWebService::API::Base
   ## setup the internal interface for NAT.
   # @param ip
   # @param netmask
-  # @param dhcp_start
-  # @param dhcp_end
-  api_method( :wizard_internal_interface_nat, :expects => [:string, :string, :string, :string], 
+  api_method( :wizard_internal_interface_nat, :expects => [:string, :string], 
               :returns => [] )
 
 end

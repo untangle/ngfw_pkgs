@@ -194,7 +194,7 @@ class UvmController < ApplicationController
     end
   end
 
-  def wizard_internal_interface_nat( ip, netmask, dhcp_start, dhcp_end )
+  def wizard_internal_interface_nat( ip, netmask )
     if netmask.include?( "255." )
       netmask = OSLibrary::NetworkManager::CIDR.index( netmask )
     end
@@ -207,7 +207,12 @@ class UvmController < ApplicationController
 
       ## Enable DHCP and DNS
       DhcpServerSettings.destroy_all
-      DhcpServerSettings.new( :enabled => true, :start_address => dhcp_start, :end_address => dhcp_end ).save
+      dhcp_server_settings = DhcpServerSettings.new
+      wizard_calculate_dhcp_range( ip, netmask, dhcp_server_settings )
+      dhcp_server_settings.save
+
+      ## Destroy all of the static entries.
+      DhcpStaticEntry.destroy_all
       
       DnsServerSettings.destroy_all
       DnsServerSettings.new( :enabled => true, :suffix => "example.com" ).save
@@ -276,5 +281,36 @@ class UvmController < ApplicationController
 
     nil
   end
+  
+  def wizard_calculate_dhcp_range( ip, netmask, dhcp_server_settings )
+    ip = IPAddr.parse( ip )
+    netmask = IPAddr.parse( "255.255.255.255/#{netmask}" )
 
+    dhcp_server_settings.enabled = false
+    dhcp_server_settings.start_address = "192.168.1.100"
+    dhcp_server_settings.end_address = "192.168.1.200"
+
+    ## This will only configure /24 or larger network, the logic for
+    ## smaller networks is complicated and isn't really worth it.
+    unless ( ip.nil? || netmask.nil? )
+      start_address, end_address = nil, nil
+      if (( netmask & IPAddr.parse( "0.0.0.255" )) == IPAddr.parse( "0.0.0.0" ))
+        ## /24 or larger network
+        mask = ip & netmask
+        if (( mask | IPAddr.parse( "0.0.0.100" )).to_i > ip.to_i )
+          start_address = mask | IPAddr.parse( "0.0.0.100" )
+          end_address = mask | IPAddr.parse( "0.0.0.200" )
+        else
+          start_address = mask | IPAddr.parse( "0.0.0.16" )
+          end_address = mask | IPAddr.parse( "0.0.0.99" )
+        end
+      end
+            
+      unless ( start_address.nil? || end_address.nil? )
+        dhcp_server_settings.enabled = true
+        dhcp_server_settings.start_address = start_address.to_s
+        dhcp_server_settings.end_address = end_address.to_s
+      end
+    end
+  end
 end
