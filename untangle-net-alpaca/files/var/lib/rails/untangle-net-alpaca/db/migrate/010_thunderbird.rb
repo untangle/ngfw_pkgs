@@ -1,4 +1,4 @@
-class Network < ActiveRecord::Migration
+class Thunderbird < ActiveRecord::Migration
   def self.up
     ## Table for storing the configuration for each of the interfaces
     create_table :interfaces do |table|
@@ -40,6 +40,7 @@ class Network < ActiveRecord::Migration
       table.column :ip, :string
       table.column :netmask, :string
       table.column :allow_ping, :boolean
+      table.column :position, :integer
     end
 
     ## This is a single NAT policy.
@@ -47,6 +48,7 @@ class Network < ActiveRecord::Migration
       table.column :ip, :string
       table.column :netmask, :string
       table.column :new_source, :string
+      table.column :position, :integer
     end
 
     ## static interface configuration.
@@ -119,6 +121,7 @@ class Network < ActiveRecord::Migration
       table.column :enabled, :boolean
       table.column :writable, :boolean
       table.column :path, :string
+      table.column :description, :string
     end
 
     ## Locale selection
@@ -173,6 +176,8 @@ class Network < ActiveRecord::Migration
       table.column :filter, :string
       table.column :description, :string
       table.column :subscribe, :boolean
+      table.column :system_id, :string
+      table.column :is_custom, :boolean
     end
 
     ## redirect rules
@@ -189,6 +194,7 @@ class Network < ActiveRecord::Migration
       table.column :new_enc_id, :string
       table.column :filter, :string
       table.column :description, :string
+      table.column :is_custom, :boolean
     end
 
     ## firewall rules
@@ -205,7 +211,111 @@ class Network < ActiveRecord::Migration
 
       ## Review : Internationalization
       table.column :description, :string
+
+      table.column :is_custom, :boolean
     end
+
+    ##Table for dynamic dns ddclient settings
+    create_table :ddclient_settings do |table|
+      table.column :enabled,        :boolean
+      table.column :run_ipup,        :boolean
+      table.column :use_ssl,         :boolean
+      table.column :daemon, :integer
+      table.column :service,        :string
+      table.column :protocol,        :string
+      table.column :server,          :string
+      table.column :login,           :string
+      table.column :password,        :string
+      table.column :hostname,        :string
+    end
+
+    ## Create a table for all of the UVM settings
+    create_table :uvm_settings do |table|
+      ## An orderered list of the interface indices, separated by a comma.
+      table.column :interface_order, :string
+    end
+
+    ##Table for pppoe settings
+    create_table :intf_pppoes do |table|
+      table.column :interface_id,    :integer
+      table.column :use_peer_dns,    :boolean
+      table.column :username,        :string
+      table.column :password,        :string
+      table.column :dns_1,        :string
+      table.column :dns_2,        :string
+    end
+
+    ## Create a table for all of the alpaca settings.
+    create_table :alpaca_settings do |table|
+      ## The configuration level
+      table.column :config_level, :integer
+    end
+
+    ##Table for static arps
+    create_table :static_arps do |table|
+      table.column :rule_id,         :integer
+      table.column :hostname,          :string
+      table.column :hw_addr,         :string
+      table.column :name,            :string
+      table.column :category,        :string
+      table.column :description,     :string
+      table.column :live,            :boolean
+      table.column :alert,           :boolean
+      table.column :log,             :boolean
+    end
+
+    ##Table for static routes
+    create_table :network_routes do |table|
+      table.column :rule_id,         :integer
+      table.column :target,          :string
+      table.column :netmask,         :string
+      table.column :gateway,         :string
+      table.column :name,            :string
+      table.column :category,        :string
+      table.column :description,     :string
+      table.column :live,            :boolean
+      table.column :alert,           :boolean
+      table.column :log,             :boolean
+      table.column :settings_id,     :integer
+    end
+    
+    FileOverride.new( :enabled => true, :writable => true, :description => "Network Configuration",
+                      :path => "/etc/network/interfaces" ).save
+    FileOverride.new( :enabled => true, :writable => true,
+                      :description => "Box Hostname",
+                      :path => "/etc/hostname" ).save
+    FileOverride.new( :enabled => true, :writable => true, :description => "DNS Server Configuration",
+                      :path => "/etc/resolv.conf" ).save
+    FileOverride.new( :enabled => true, :writable => true, 
+                      :description => "Caching DNS / DHCP server.",
+                      :path => "/etc/dnsmasq.conf" ).save
+    FileOverride.new( :enabled => true, :writable => true, 
+                      :description => "Caching DNS / DHCP server.",
+                      :path => "/etc/untangle-net-alpaca/dnsmasq-hosts" ).save
+    FileOverride.new( :enabled => true, :writable => true, 
+                      :description => "Dynamic DNS Configuration",
+                      :path => "/etc/ddclient.conf" ).save
+    FileOverride.new( :enabled => true, :writable => true, 
+                      :description => "Dynamic DNS Configuration",
+                      :path => "/etc/default/ddclient" ).save
+    FileOverride.new( :enabled => true, :writable => true,
+                      :description => "PPP Passwords",
+                      :path => "/etc/ppp/pap-secrets" ).save
+    FileOverride.new( :enabled => true, :writable => true, 
+                      :description => "ARP Table",
+                      :path => "/etc/untangle-net-alpaca/arps" ).save
+    FileOverride.new( :enabled => true, :writable => true, 
+                      :description => "Routing Table",
+                      :path => "/etc/untangle-net-alpaca/routes" ).save
+    FileOverride.new( :enabled => true, :writable => true, 
+                      :description => "IPTables Rules",
+                      :path => "/etc/untangle-net-alpaca/iptables-rules.d/.*" ).save
+    FileOverride.new( :enabled => false, :writable => true, 
+                      :description => "Network state (caution).",
+                      :path => "/etc/network/run/ifstate" ).save
+    FileOverride.new( :enabled => false, :writable => false, 
+                      :description => "Sample Catchall rule.",
+                      :path => "/etc/.*" ).save
   end
 
   def self.down
@@ -229,5 +339,11 @@ class Network < ActiveRecord::Migration
     drop_table :subscriptions
     drop_table :redirects
     drop_table :firewalls
+    drop_table :ddclient_settings
+    drop_table :uvm_settings
+    drop_table :intf_pppoes
+    drop_table :alpaca_settings
+    drop_table :static_arps
+    drop_table :network_routes
   end
 end
