@@ -329,3 +329,29 @@ div.list-table-container.dynamic-entry div.action
 
 
 
+div.list-table-container.interface-status
+{
+  width: 702px;
+ }
+
+div.table-label.interface-status
+{
+  width: 704px;
+ }
+
+div.list-table-container.interface-status div.network_interface
+{ 
+  width: 170px;
+  }
+div.list-table-container.interface-status div.os_name
+{ 
+  width: 142px;
+  }
+div.list-table-container.interface-status div.carrier
+{ 
+  width: 152px;
+  }
+div.list-table-container.interface-status div.mac
+{ 
+  width: 202px;
+  }

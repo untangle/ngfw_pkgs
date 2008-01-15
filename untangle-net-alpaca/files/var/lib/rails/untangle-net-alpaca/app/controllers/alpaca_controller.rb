@@ -18,37 +18,7 @@ class AlpacaController < ApplicationController
   end
 
   def status
-    @interface_list = Interface.find( :all )
-    @interfaces = []
-    @interface_list.each do |interface|
-      carrier = "Unknown".t
-      address = "Unknown".t
-      begin
-        f = "/sys/class/net/" + interface.os_name + "/carrier"
-        sysfs = File.new( f, "r" )
-        c = sysfs.readchar
-        if c == 49 #ascii for 1
-          carrier = "Connected".t
-        else
-          carrier = "Disconnected".t
-        end
-      rescue Exception => exception
-        logger.error "Error reading carrier status: " + exception.to_s
-        carrier = "Unknown".t
-      end
-      begin
-        sysfs = File.new( "/sys/class/net/" + interface.os_name + "/address", "r" )
-        address = sysfs.readline
-      rescue Exception => exception
-        address = "Unknown".t
-      end
-      
-
-      @interfaces << { :columns => [ { :value => interface.name },
-                                     { :value => interface.os_name },
-                                     { :value => carrier },
-                                     { :value => address } ] }
-    end
+    @interfaces = Interface.find( :all )
   end
 
   def stylesheets

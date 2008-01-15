@@ -63,4 +63,36 @@ class Interface < ActiveRecord::Base
   def visit_config( visitor )
     current_config.accept( self, visitor )
   end
+
+
+  def carrier
+    carrier = "Unknown".t
+    begin
+      f = "/sys/class/net/" + self.os_name + "/carrier"
+      sysfs = File.new( f, "r" )
+      c = sysfs.readchar
+      if c == 49 #ascii for 1
+        carrier = "Connected".t
+      else
+        carrier = "Disconnected".t
+      end
+    rescue Exception => exception
+      logger.error "Error reading carrier status: " + exception.to_s
+      carrier = "Unknown".t
+    end
+    return carrier
+  end
+
+  def hardware_address
+    address = "Unknown".t
+    begin
+      sysfs = File.new( "/sys/class/net/" + self.os_name + "/address", "r" )
+      address = sysfs.readline
+    rescue Exception => exception
+      address = "Unknown".t
+    end
+    return address
+  end
+
+
 end

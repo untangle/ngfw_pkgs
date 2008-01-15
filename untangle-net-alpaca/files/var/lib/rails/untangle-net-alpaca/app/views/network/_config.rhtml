@@ -29,6 +29,9 @@ panel_class += " wan" if ( config.interface.wan )
                     :locals => { :config => config, :config_id => "#{panel_id}_#{type}" } ) %>
       </div>
     <% end %>
+    <% if ( config.interface.wan ) %>
+      <%= link_to( "External Aliases".t, :action => :aliases ) %>
+    <% end %>
   </div>
 
 </div>

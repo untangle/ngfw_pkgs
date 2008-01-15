@@ -2,8 +2,6 @@
   <div id="title"><h1><%= "Network Configuration".t %></h1></div>
   <div id="main-content-body">
     <br />
-    <%= link_to( "External Aliases".t, :action => :aliases ) %>
-    <br />
     <%= link_to( "Refresh Interfaces".t, :action => :refresh_interfaces ) %>
 
     <%= render( :partial => "config", :collection => @config_list ) %>
