@@ -24,19 +24,32 @@ get_ip_addresses()
         awk '/inet/ { $ip = $2 ; sub( /\/.*$/, "", $ip ) ; print $ip  }'
 }
 
+run_iptables_scripts()
+{
+    local t_script
+    local t_ran_script=""
+
+    if [ ! -d ${IPTABLES_DIRECTORY} ]; then
+        echo "[`date`] ${IPTABLES_DIRECTORY} does not exist."
+        return 0
+    fi
+    
+    ## Would use run-parts, but that doesn't maintain environment variables 
+    ## or the iptables_debug function.
+
+    ## Do not run any of the dpkg backup files.
+    for t_script in `find ${IPTABLES_DIRECTORY} -name '*dpkg*' -prune -o -type f -print | sort` ; do
+        . ${t_script}
+        t_ran_script="true"
+    done
+    
+    if [ "${t_ran_script}x" != "truex" ]; then
+        echo "[`date`] ${IPTABLES_DIRECTORY} is empty."
+    fi
+}
+
 IPTABLES_DIRECTORY=/etc/untangle-net-alpaca/iptables-rules.d
 
-if [ ! -d ${IPTABLES_DIRECTORY} ]; then
-    echo "${IPTABLES_DIRECTORY} does not exist."
-    exit 0
-fi
+run_iptables_scripts
 
-## Would use run-parts, but that doesn't maintain environment variables 
-## or the iptables_debug function.
-if [ `find ${IPTABLES_DIRECTORY} -type f 2>| /dev/null | wc -l ` -gt 0 ]; then
-    for t in ${IPTABLES_DIRECTORY}/* ; do . $t ; done
-else
-    echo "${IPTABLES_DIRECTORY} is empty."
-fi
-
-#exit 0
+echo "" > /dev/null
