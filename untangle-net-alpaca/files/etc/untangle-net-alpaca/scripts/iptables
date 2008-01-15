@@ -11,7 +11,7 @@ iptables_debug()
 
 IPTABLES=/sbin/iptables
 
-IPTABLES="iptables_debug"
+#IPTABLES="iptables_debug"
 
 get_ip_addresses()
 {

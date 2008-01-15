@@ -199,7 +199,6 @@ EOF
 auto #{bridge_name}
 iface #{bridge_name} inet #{config_method}
 \talpaca_bridge_ports #{bridged_interfaces.map{ |i| i.os_name }.join( " " )}
-\talpaca_debug true
 \tbridge_ageing 900
 #{mtuSetting( mtu, "alpaca_bridge_" )}
 EOF
@@ -305,7 +304,6 @@ EOF
 ## This causes a script to tear down any bridges that are not necessary.
 auto cleanup
 iface cleanup inet manual
-\talpaca_debug true
 
 ## Configuration for the loopback interface
 auto lo
