@@ -76,10 +76,10 @@ class DhcpController < ApplicationController
   end
 
   def stylesheets
-    [ "dhcp/static-entry", "dhcp/dynamic-entry", "borax/list-table" ]
+    [] ## [ "dhcp/static-entry", "dhcp/dynamic-entry", "borax/list-table" ]
   end
 
   def scripts
-    [ "dhcp_server_manager" ] 
+    [] ## [ "dhcp_server_manager" ] 
   end
 end

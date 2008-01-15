@@ -16,7 +16,9 @@ class OSLibrary::Debian::DhcpServerManager < OSLibrary::DhcpServerManager
       File.open( DnsMasqLeases ) do |f|
         f.each_line do |line|
           expiration, mac_address, ip_address, hostname, client_id = line.split( " " )
+          next if mac_address.nil? || ip_address.nil?
           expiration = Time.at( expiration.to_i )
+
           entries << DynamicEntry.new( expiration, mac_address, ip_address, hostname, client_id )
         end
       end

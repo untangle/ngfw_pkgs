@@ -1,1 +1,2 @@
-page.replace( "dhcp-dynamic-entries", :partial => "dynamic_entries", :object => @dynamic_entries )
+page.replace( "dhcp-dynamic-entry-list", :partial => "application/table", :locals => { :table_model => dynamic_entry_table_model, :data => Alpaca::Table::Data.new( "dhcp-dynamic-entry-list", @dynamic_entries ), :table_only => true } )
+

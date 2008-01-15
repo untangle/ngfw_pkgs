@@ -1,5 +1,7 @@
 var TableManager = 
 {
+    styledTable : {},
+
     remove : function( tableId, rowId )
     {
         var element = document.getElementById( rowId );

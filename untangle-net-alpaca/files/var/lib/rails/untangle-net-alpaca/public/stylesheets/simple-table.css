@@ -9,16 +9,32 @@ div.add-button
   background-repeat: no-repeat;
   text-indent: 32px;
   color: #333333;
-  font-size: 90%;
+  font-size: 80%;
   overflow: none;
   text-align: left;
  }
+
+div.refresh-button
+{ 
+  width: 68px;
+  height: 21px;
+  line-height: 21px;
+  background-image: url( "../images/refresh-button.gif");
+  background-repeat: no-repeat;
+  text-indent: 20px;
+  color: #333333;
+  font-size: 80%;
+  overflow: none;
+  text-align: left;
+ }
+
 
 /* ----------------------------- Tables ----------------------------- */
 
 div.list-table-container
 { 
   border: 1px solid #999999;
+  margin-bottom: 30px;
  }
 
 div.list-table-container ul
@@ -73,6 +89,11 @@ div.list-table-container div.list-table li div
   }
 
 /* Format the data itself */
+div.list-table-container div.list-table li div
+{ 
+  text-indent: 10px;
+ }
+
 div.list-table-container div.list-table
 { 
   overflow-y: scroll;
@@ -120,7 +141,7 @@ div.list-table-container div.list-table div.edit
   background-position: center;
   }
 
-div.list-table-container.redirects div.list-table div.minus
+div.list-table-container div.list-table div.minus
 { 
   background-image: url( "../images/minus.gif");
   background-repeat: no-repeat;
@@ -153,9 +174,7 @@ div.list-table-container div.list-table input.textfield
   background-color: transparent;
   border: 0px;
   width: 95%;
-  margin-left: 10px;
   margin-top: 5px;
-
   }
 
 div.list-table-container div.list-table input
@@ -169,7 +188,7 @@ div.list-table-container.redirects, div.list-table-container.ip_networks
   width: 644px;
  }
 
-div.table-label.redirects, div.table-label.ip_networks
+div.table-label.redirects
 { 
   /* Two extra pixels for the border */
   width: 646px;
@@ -196,6 +215,7 @@ div.list-table-container.redirects div.enabled, div.list-table-container.redirec
   text-indent: 0;
   }
 
+/* ------------------ Style the IP Networks ---------------- */
 div.list-table-container.ip_networks
 { 
   width: 300px;
@@ -212,3 +232,100 @@ div.list-table-container.ip_networks div.networks
 {
   width: 205px; 
   }
+
+/* ------------------ Style the DHCP Static Entries ---------------- */
+div.list-table-container.static-entry
+{ 
+  width: 634px;
+ }
+
+div.table-label.static-entry
+{ 
+  /* Two extra pixels for the border */
+  width: 636px;
+ }
+
+div.list-table-container.static-entry div.list-table
+{ 
+  height: 200px;
+  }
+
+div.list-table-container.static-entry div.mac-address
+{ 
+  width: 160px;
+  }
+
+div.list-table-container.static-entry div.ip-address
+{ 
+  width: 140px;
+  }
+
+div.list-table-container.static-entry div.description
+{ 
+  width: 250px;
+  }
+
+div.list-table-container.static-entry div.list-table input.textfield
+{ 
+  width: 80%;
+  }
+
+/* ------------------ Style the DHCP Dynamic Entries ---------------- */
+div.list-table-container.dynamic-entry
+{ 
+  width: 634px;
+ }
+
+div.table-label.dynamic-entry
+{ 
+  /* Two extra pixels for the border */
+  width: 636px;
+ }
+
+div.list-table-container.dynamic-entry div.list-table, div.list-table
+{ 
+  height: 200px;
+  }
+
+
+div.list-table-container.dynamic-entry div.mac-address
+{ 
+  width: 160px;
+  }
+
+div.list-table-container.dynamic-entry div.ip-address
+{ 
+  width: 140px;
+  }
+
+div.list-table-container.dynamic-entry div.hostname
+{ 
+  width: 250px;
+  }
+
+div.list-table-container.dynamic-entry div.add-static
+{ 
+  width: 50px;
+  }
+
+div.list-table-container.dynamic-entry div.list-table div.add-static
+{ 
+  background-image: url( "../images/add.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+  }
+
+div.list-table-container.dynamic-entry div.list-table div.add-static:hover
+{ 
+  cursor: pointer;
+  background-color: #E1EB26;
+ }
+
+
+div.list-table-container.dynamic-entry div.action
+{ 
+  width: 100px;
+  }
+
+
+

@@ -4,4 +4,6 @@ if @static_entry.nil? && ! param[:mac_address].nil? && ! param[:ip_address].nil?
    @static_entry.ip_address = param[:ip_address]
    @static_entry.description = param[:description]
 end
-page.insert_html( :bottom, "dhcp-static-entry-list", :partial => "static_entry", :object => @static_entry )
+page.insert_html( :bottom, "dhcp-static-entry-list", :partial => "application/table_row", :object => @static_entry, :locals => { :table_model => static_entry_table_model, :data => Alpaca::Table::Data.new( "dhcp-static-entry-list", [ @static_entry ] ) } )
+
+page << "TableManager.updateRowStyles( 'dhcp-static-entry-list' );"

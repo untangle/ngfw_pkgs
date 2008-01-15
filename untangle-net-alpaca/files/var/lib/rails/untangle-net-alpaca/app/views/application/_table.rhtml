@@ -1,6 +1,9 @@
-<% @first_row_css_class = "first" %>
+<% 
+@first_row_css_class = "first" 
+table_only = false if table_only.nil?
+%>
 
-<% if table_model.has_label %>
+<% if table_model.has_label && !table_only %>
   <div align="right" class="table-label <%= table_model.css_class %>">
     <div class="table-title"><%= table_model.table_name.t %></div>
     <% if table_model.has_action %>
@@ -11,6 +14,7 @@
   </div>
 <% end %>
 
+<% unless table_only %>
 <div class="list-table-container <%= table_model.css_class %>">
   <ul class="header">
     <li>
@@ -25,10 +29,15 @@
     </li>
   </ul>
   <div class="list-table">
+
+<% end %>
     <ul id="<%= data.css_id %>" class="<%= table_model.css_class %>">
       <%= render( :partial => "application/table_row", :collection => data.rows, :locals => { :table_model => table_model, :data => data } ) %>
     </ul>
+
+<% unless table_only %>
   </div>
 </div>
+<% end %>
 
 <%= javascript_tag "TableManager.updateRowStyles( '#{data.css_id}' );" %>
