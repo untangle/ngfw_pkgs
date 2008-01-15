@@ -2,7 +2,7 @@
 /* ----------------------------- Buttons ----------------------------- */
 div.add-button
 { 
-  width: 68px;
+  width: 74px;
   height: 21px;
   line-height: 21px;
   background-image: url( "../images/add-button.gif");
@@ -17,7 +17,7 @@ div.add-button
 
 div.refresh-button
 { 
-  width: 68px;
+  width: 74px;
   height: 21px;
   line-height: 21px;
   background-image: url( "../images/refresh-button.gif");
