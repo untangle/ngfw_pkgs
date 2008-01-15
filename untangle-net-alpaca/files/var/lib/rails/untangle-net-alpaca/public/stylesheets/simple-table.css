@@ -12,6 +12,7 @@ div.add-button
   font-size: 80%;
   overflow: none;
   text-align: left;
+  cursor: pointer;
  }
 
 div.refresh-button
@@ -26,6 +27,7 @@ div.refresh-button
   font-size: 80%;
   overflow: none;
   text-align: left;
+  cursor: pointer;
  }
 
 

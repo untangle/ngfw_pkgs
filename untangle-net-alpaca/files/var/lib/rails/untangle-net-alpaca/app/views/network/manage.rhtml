@@ -1,8 +1,9 @@
 <% form_tag( :action => 'save' ) do -%>
   <div id="title"><h1><%= "Network Configuration".t %></h1></div>
   <div id="main-content-body">
-    <br />
-    <%= link_to( "Refresh Interfaces".t, :action => :refresh_interfaces ) %>
+    <div align="right" style="width: 550px; margin-bottom: 15px;">
+    <div class="refresh-button" onclick="location.href='<%= url_for( :action => :refresh_interfaces ) %>'"> Refresh </div>
+    </div>
 
     <%= render( :partial => "config", :collection => @config_list ) %>
   </div>
