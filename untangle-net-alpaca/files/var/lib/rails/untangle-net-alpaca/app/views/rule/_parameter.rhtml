@@ -6,15 +6,12 @@
   </div>
   <div class="value middle">
   </div>
-
   <div class="minus" onclick="RuleBuilder.removeParameter( '<%= rowId %>' )">
-    <%= "-".t %>
+   <%= image_tag( "rack/minus.gif" ) %> 
   </div>
-  
   <div class="plus" onclick="RuleBuilder.addParameter()">
-    <%= "+".t %>
+   <%= image_tag( "rack/plus.gif" ) %> 
   </div>
-
 </li>
 
 <%= javascript_tag <<EOF

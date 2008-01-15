@@ -10,26 +10,6 @@ EOF
 
 <h2 class="title"><%= "Edit".t %></h2>
 <% form_tag( :action => '#' ) do -%>
-  <div class="list-table rules">
-    <ul id="rule-builder" class="rule-list">
-      <li class="header">
-        <div class="type">
-          Type
-        </div>
-        <div class="value">
-          Value
-        </div>
-
-        <div class="plus">
-        </div>
-
-        <div class="minus">
-        </div>
-      </li>
-
-       <%= render( :partial => "rule/parameter" , :collection => @parameter_list ) %>
-    </ul>
-  </div>
   <fieldset>
     <ul class="text-fields">
       <li>
@@ -53,14 +33,40 @@ EOF
       </li>
     </ul>
   </fieldset>
-<% end -%>
-  
-<div class="actions">
-  <div class="cancel" onclick="RuleBuilder.close()">
-    <%= "Cancel".t %>
-  </div>
-  
-  <div class="update" onclick="RuleBuilder.update('<%= @row_id %>') ; RuleBuilder.close();">
-  <%= "Update".t %>
-</div>
+  <div class="list-table rules">
+    <ul id="rule-builder" class="rule-list">
+      <li class="header">
+        <div class="type">
+          Type
+        </div>
+        <div class="value">
+          Value
+        </div>
 
+        <div class="plus">
+        </div>
+
+        <div class="minus">
+        </div>
+      </li>
+
+       <%= render( :partial => "rule/parameter" , :collection => @parameter_list ) %>
+    </ul>
+  </div>
+  <div class="actions">
+    <div class="rule-help">
+      <%= submit_tag( "Help" ) %>
+    </div>
+    <div class="update" onclick="RuleBuilder.update('<%= @row_id %>') ; RuleBuilder.close();">
+      <span class="iconbutton"><span><a class="submit Update">
+      <%= "Update".t %>
+      </a></span></span>
+    </div>
+    <div class="cancel" onclick="RuleBuilder.close()">
+      <span class="iconbutton"><span><a class="submit Cancel">
+      <%= "Cancel".t %>
+      </a></span></span>
+    </div>
+
+  </div>
+<% end -%>
