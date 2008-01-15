@@ -108,7 +108,6 @@ module RetryLogin
     rescue com.untangle.uvm.client.LoginExpiredException => ex
       if !retried
         retried = true
-        @@diag.if_level(2) { puts! "Login expired - logging back on and trying one more time" ; p ex }
         @@filter_node_lock.synchronize { login }
         retry
       else
