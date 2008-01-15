@@ -97,8 +97,3 @@ rm -f ${RESTORE_DIRECTORY}/backup/database.tar
 rm -f ${RESTORE_DIRECTORY}/backup/info.txt
 rmdir ${RESTORE_DIRECTORY}/backup
 rmdir ${RESTORE_DIRECTORY}
-
-
-
-
-

@@ -6,6 +6,8 @@ tar_files()
 
     [ -x /usr/sbin/slapcat ] && /usr/sbin/slapcat -l /usr/share/untangle/conf/dirbackup.ldif
 
+    [ -x  /usr/share/untangle-net-alpaca/scripts/backup ] && /usr/share/untangle-net-alpaca/scripts/backup /usr/share/untangle/conf/alpaca-backup.uab "UVM Backup"
+
     tar zcf $tarfile --ignore-failed-read -C / \
         etc/hostname \
         etc/network/interfaces \
@@ -18,7 +20,8 @@ tar_files()
         usr/share/untangle/conf/openvpn/misc \
         usr/share/untangle/conf/openvpn/pki \
         usr/share/untangle/conf/timezone \
-        usr/share/untangle/conf/dirbackup.ldif
+        usr/share/untangle/conf/dirbackup.ldif \
+        usr/share/untangle/conf/alpaca-backup.uab
 
     # Tar exits with non-zero when some files don't exist, which can happen.
     return 0
