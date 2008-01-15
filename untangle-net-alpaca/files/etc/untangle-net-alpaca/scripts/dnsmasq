@@ -20,7 +20,7 @@ mkdir -p `dirname ${DNSMASQ_HASH}`
 
 ## Strip out newlines and comments
 for t in /etc/untangle-net-alpaca/dnsmasq-hosts /etc/hosts /etc/dnsmasq.conf /etc/resolv.conf ; do
-    sed -e '/^#/d' -e '/^$/d' /etc/dnsmasq.conf | md5sum | awk "{ print \$1 \" $t\" }" >> ${NEW_HASH}
+    sed -e '/^#/d' -e '/^$/d' ${t} | md5sum | awk "{ print \$1 \" $t\" }" >> ${NEW_HASH}
 done
 
 currentPid=`pidof dnsmasq`

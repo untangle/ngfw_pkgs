@@ -22,39 +22,6 @@ ul#dns-dynamic-entry-list div.hostname
 { 
   width: 200px;
   }
-div.dns-static-entries
-{ 
-  /*margin: 10px 0 10px 0;*/
-  width: 664px;
-  height: 150px;
-  }
-
-ul#dns-static-entry-list div.ip-address
-{ 
-  width: 140px;
- }
-
-ul#dns-static-entry-list div.hostname
-{ 
-  width: 200px;
- }
-
-ul#dns-static-entry-list div.description
-{
-  width: 200px;
-  }
-
-ul#dns-static-entry-list div.minus
-{ 
-  width: 100px;
-  text-align: center;
-  }
-
-li.static-entry div.minus:hover
-{ 
-  cursor: pointer;
-  background-color: #E1EB26;  
-  }
 
 div.list-table
 { 

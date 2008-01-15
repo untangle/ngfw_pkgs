@@ -15,21 +15,10 @@
       </ul>
     </fieldset>
 
-    <h2><%= "Static DNS Entries".t %></h2>
-    <%= link_to_remote( "+".t, :url => { :action => :create_static_entry } ) %>
-    <%= render( :partial => "static_entries" , :object => @static_entries ) %>
+    <%= build_table( Alpaca::Table::Data.new( "dns-static-entry-list", @static_entries ), static_entry_table_model) %> 
 
-    <h2><%= "Automatic DNS Entries".t %></h2>
-    <%= link_to_remote( "Refresh".t, :url => { :action => :refresh_dynamic_entries } ) %>
-    <%= render( :partial => "dynamic_entries" , :object => @dynamic_entries ) %>
-    </div>
-    <div id="main-content-footer">
-<div id="help-footer">
-    <%= submit_tag "Help".t %>
-</div>
-<div id="action-footer">
-  <%= submit_tag "Cancel".t %>
-  <%= submit_tag "Save".t %>
-</div>
-    </div>
+    <%= build_table( Alpaca::Table::Data.new( "dns-dynamic-entry-list", @dynamic_entries ), dynamic_entry_table_model) %>
+  </div>
+    
+  <%= build_footer %>
 <% end -%>

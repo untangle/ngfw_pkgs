@@ -97,7 +97,7 @@ div.list-table-container div.list-table li div
 div.list-table-container div.list-table
 { 
   overflow-y: scroll;
-  background-color: #E9E9E9;
+  background-color: #666666;
   border: 0px solid #C0C0C0;
   margin: 0px;
  }
@@ -106,6 +106,12 @@ div.list-table-container div.list-table li.odd
 { 
   background-color: #DDDDDD;
  }
+
+div.list-table-container div.list-table li.even
+{ 
+  background-color: #E9E9E9;
+ }
+
 
 div.list-table-container div.list-table ul li
 { 
@@ -234,101 +240,165 @@ div.list-table-container.ip_networks div.networks
   }
 
 /* ------------------ Style the DHCP Static Entries ---------------- */
-div.list-table-container.static-entry
+div.list-table-container.dhcp-static-entry
 { 
   width: 634px;
  }
 
-div.table-label.static-entry
+div.table-label.dhcp-static-entry
 { 
   /* Two extra pixels for the border */
   width: 636px;
  }
 
-div.list-table-container.static-entry div.list-table
+div.list-table-container.dhcp-static-entry div.list-table
 { 
   height: 200px;
   }
 
-div.list-table-container.static-entry div.mac-address
+div.list-table-container.dhcp-static-entry div.mac-address
 { 
   width: 160px;
   }
 
-div.list-table-container.static-entry div.ip-address
+div.list-table-container.dhcp-static-entry div.ip-address
 { 
   width: 140px;
   }
 
-div.list-table-container.static-entry div.description
+div.list-table-container.dhcp-static-entry div.description
 { 
   width: 250px;
   }
 
-div.list-table-container.static-entry div.list-table input.textfield
+div.list-table-container.dhcp-static-entry div.list-table input.textfield
 { 
-  width: 80%;
+  width: 85%;
   }
 
 /* ------------------ Style the DHCP Dynamic Entries ---------------- */
-div.list-table-container.dynamic-entry
+div.list-table-container.dhcp-dynamic-entry
 { 
   width: 634px;
  }
 
-div.table-label.dynamic-entry
+div.table-label.dhcp-dynamic-entry
 { 
   /* Two extra pixels for the border */
   width: 636px;
  }
 
-div.list-table-container.dynamic-entry div.list-table, div.list-table
+div.list-table-container.dhcp-dynamic-entry div.list-table, div.list-table
 { 
   height: 200px;
   }
 
 
-div.list-table-container.dynamic-entry div.mac-address
+div.list-table-container.dhcp-dynamic-entry div.mac-address
 { 
   width: 160px;
   }
 
-div.list-table-container.dynamic-entry div.ip-address
+div.list-table-container.dhcp-dynamic-entry div.ip-address
 { 
   width: 140px;
   }
 
-div.list-table-container.dynamic-entry div.hostname
+div.list-table-container.dhcp-dynamic-entry div.hostname
 { 
   width: 250px;
   }
 
-div.list-table-container.dynamic-entry div.add-static
+div.list-table-container.dhcp-dynamic-entry div.add-static
 { 
   width: 50px;
   }
 
-div.list-table-container.dynamic-entry div.list-table div.add-static
+div.list-table-container.dhcp-dynamic-entry div.list-table div.add-static
 { 
   background-image: url( "../images/add.gif");
   background-repeat: no-repeat;
   background-position: center;
   }
 
-div.list-table-container.dynamic-entry div.list-table div.add-static:hover
+div.list-table-container.dhcp-dynamic-entry div.list-table div.add-static:hover
 { 
   cursor: pointer;
   background-color: #E1EB26;
  }
 
 
-div.list-table-container.dynamic-entry div.action
+div.list-table-container.dhcp-dynamic-entry div.action
 { 
   width: 100px;
   }
 
 
+/* ------------------ Style the DNS Static Entries ---------------- */
+div.list-table-container.dns-static-entry
+{ 
+  width: 634px;
+ }
 
+div.table-label.dns-static-entry
+{ 
+  /* Two extra pixels for the border */
+  width: 636px;
+ }
+
+div.list-table-container.dns-static-entry div.list-table
+{ 
+  height: 200px;
+  }
+
+div.list-table-container.dns-static-entry div.ip-address
+{ 
+  width: 160px;
+  }
+
+div.list-table-container.dns-static-entry div.hostname
+{ 
+  width: 190px;
+  }
+
+div.list-table-container.dns-static-entry div.description
+{ 
+  width: 200px;
+  }
+
+div.list-table-container.dns-static-entry div.list-table input.textfield
+{ 
+  width: 80%;
+  }
+
+/* ------------------ Style the DNS Dynamic Entries ---------------- */
+div.list-table-container.dns-dynamic-entry
+{ 
+  width: 634px;
+ }
+
+div.table-label.dns-dynamic-entry
+{ 
+  /* Two extra pixels for the border */
+  width: 636px;
+ }
+
+div.list-table-container.dns-dynamic-entry div.list-table, div.list-table
+{ 
+  height: 200px;
+  }
+
+div.list-table-container.dns-dynamic-entry div.ip-address
+{ 
+  width: 140px;
+  }
+
+div.list-table-container.dns-dynamic-entry div.hostname
+{ 
+  width: 430px;
+  }
+
+/* ------------------ Interface Status Panel ---------------- */
 div.list-table-container.interface-status
 {
   width: 702px;

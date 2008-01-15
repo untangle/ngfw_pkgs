@@ -1,2 +1,2 @@
 page.replace( "dhcp-dynamic-entry-list", :partial => "application/table", :locals => { :table_model => dynamic_entry_table_model, :data => Alpaca::Table::Data.new( "dhcp-dynamic-entry-list", @dynamic_entries ), :table_only => true } )
-
+page << "TableManager.updateRowStyles( 'dhcp-dynamic-entry-list' );"

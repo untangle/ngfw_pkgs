@@ -57,11 +57,11 @@ class DnsController < ApplicationController
   end
 
   def stylesheets
-    [ "dns/static-entry", "dns/dynamic-entry", "borax/list-table" ]
+    [] # [ "dns/static-entry", "dns/dynamic-entry", "borax/list-table" ]
   end
 
   def scripts
-    [ "dns_server_manager" ] 
+    [] # [ "dns_server_manager" ] 
   end
 
 end

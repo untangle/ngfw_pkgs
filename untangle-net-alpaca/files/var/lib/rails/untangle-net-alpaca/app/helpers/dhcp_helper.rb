@@ -29,7 +29,7 @@ EOF
       
       columns << Alpaca::Table::DeleteColumn.new
       
-      super(  "Static DHCP Entries", "static-entry", "", "static_entry", columns )
+      super(  "Static DHCP Entries", "dhcp-static-entry", "", "dhcp-static_entry", columns )
     end
 
     def row_id( row )
@@ -64,7 +64,6 @@ EOF
     end
   end
 
-
   class DynamicEntryTableModel < Alpaca::Table::TableModel
     include Singleton
 
@@ -84,7 +83,7 @@ EOF
       
       columns << Alpaca::Table::AddStaticColumn.new
       
-      super(  "Current DHCP Entries", "dynamic-entry", "", "dynamic_entry", columns )
+      super(  "Current DHCP Entries", "dhcp-dynamic-entry", "", "dhcp-dynamic_entry", columns )
     end
 
     def row_id( row )
@@ -103,6 +102,4 @@ EOF
   def dynamic_entry_table_model
     DynamicEntryTableModel.instance
   end
-
-
 end
