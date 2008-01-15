@@ -25,12 +25,12 @@ case "$1" in
     reload|restart|force-reload|start)
         # make sure privileges don't persist across reboots
         if [ -f ${IPTABLES_RULES} ]; then
-            . ${IPTABLES_RULES}
+            sh ${IPTABLES_RULES}
         else
             /bin/echo "The file '${IPTABLES_RULES}' does not exist"
         fi
         if [ -f ${HELPER_MODULES} ]; then
-            . ${HELPER_MODULES}
+            sh ${HELPER_MODULES}
         else
             /bin/echo "The file '${HELPER_MODULES}' does not exist"
         fi

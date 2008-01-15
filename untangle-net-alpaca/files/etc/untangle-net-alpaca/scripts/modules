@@ -18,10 +18,10 @@ for module in $MODULES ; do
     modprobe $module
     if [ "$?" -gt 0 ]; then
         echo "ERROR loading module $module"
-        exit 1
     else
         echo "$module loaded successfully."
     fi
 done
 
 exit 0
+
