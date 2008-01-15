@@ -16,11 +16,7 @@ MODULES="nf_conntrack \
 
 for module in $MODULES ; do 
     modprobe $module
-    if [ "$?" -gt 0 ]; then
-        echo "ERROR loading module $module"
-    else
-        echo "$module loaded successfully."
-    fi
+    if [ "$?" -gt 0 ]; then echo "ERROR loading module $module";  fi
 done
 
 exit 0
