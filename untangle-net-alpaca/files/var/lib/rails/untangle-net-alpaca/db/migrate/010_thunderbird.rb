@@ -310,7 +310,7 @@ class Thunderbird < ActiveRecord::Migration
     FileOverride.new( :enabled => true, :writable => true, 
                       :description => "IPTables Rules",
                       :path => "/etc/untangle-net-alpaca/iptables-rules.d/.*" ).save
-    FileOverride.new( :enabled => false, :writable => true, 
+    FileOverride.new( :enabled => true, :writable => true, 
                       :description => "Network state (caution).",
                       :path => "/etc/network/run/ifstate" ).save
     FileOverride.new( :enabled => false, :writable => false, 
