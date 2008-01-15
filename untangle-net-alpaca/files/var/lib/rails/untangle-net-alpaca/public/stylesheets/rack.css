@@ -489,12 +489,14 @@ div#main-content
  }
 div#main-content-body
 {
+  padding-left: 35px;
+  padding-top: 18px;
   position: absolute;
-/*  top: 34px;*/
   left: 0;
+  top: 57px;
   overflow: auto;
+  width: 90%;
   height: 80%;
-  width: 100%;
   z-index: 100;
   background-image: url( "../images/background-main.png" );
   background-repeat: repeat-x;

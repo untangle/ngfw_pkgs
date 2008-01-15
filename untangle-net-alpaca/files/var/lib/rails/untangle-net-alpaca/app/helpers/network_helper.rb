@@ -71,4 +71,46 @@ module NetworkHelper
     ## Return the new interface config.
     InterfaceConfig.new( interface, static, bridge, bridgeable_interfaces, pppoe )
   end
+
+
+  class IPNetworksTableModel < Alpaca::Table::TableModel
+    include Singleton
+
+    def initialize
+      columns = []
+      
+      columns << Alpaca::Table::Column.new( "networks", "Address and Netmask".t ) do |network,options| 
+        view = options[:view]
+        row_id = options[:row_id]
+        field = options[:view].text_field( "networks", options[:row_id], { :value => "#{network.ip} / #{network.netmask}" } )
+<<EOF
+    #{field} #{view.hidden_field_tag( "networkIndices[]", row_id)}
+    &nbsp;
+EOF
+      end
+      columns << Alpaca::Table::DeleteColumn.new
+      
+      super( table_name="IP Networks", css_class="ip_networks", header_css_class="ip_networks_header", row_css_class="ip_networks_row", columns )
+    end
+
+    def row_id( row )
+      "row-#{rand( 0x100000000 )}"
+    end
+
+    def action( table_data, view )
+      <<EOF
+<div onclick="#{view.remote_function( :url => { :action => :create_ip_network, :list_id => "external-aliases" } )}" class="add-button">
+  #{"Add".t}
+</div>
+EOF
+    end
+  end
+
+  def ip_networks_table_model
+    IPNetworksTableModel.instance
+  end
+
+
+
+
 end

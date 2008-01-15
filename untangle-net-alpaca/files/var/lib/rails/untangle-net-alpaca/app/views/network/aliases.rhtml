@@ -2,22 +2,12 @@
 
 <% form_tag( :action => 'save_aliases' ) do -%>
   <% if @msg.nil? %>
-  <div id="main-content-body">
-      <% list_id = "external-aliases" %>
-      <%= link_to_remote( "+".t, :url => { :action => :create_ip_network, :list_id => list_id  } ) %>
-  
-      <%= render( :partial => "ip_networks" , :object => @external_aliases, 
-                  :locals => { :list_id => list_id } ) %>
-      </div>
-      <div id="main-content-footer">
-      <div id="help-footer">
-       <%= submit_tag "Help".t %>
-      </div>
-      <div id="action-footer">
-       <%= submit_tag "Cancel".t %>
-       <%= submit_tag "Save".t, :onclick => "return #{confirm_javascript_function( "Are you sure?".t )}"%>
-      </div>
-      </div>
+
+ <div id="main-content-body">
+    <%= build_table( Alpaca::Table::Data.new( "external-aliases", @external_aliases ), ip_networks_table_model) %> 
+  </div>
+
+  <%= build_footer %>
   <% else %>
      <div id="main-content-body">
      <div>Unable to configure the External Aliases</div>

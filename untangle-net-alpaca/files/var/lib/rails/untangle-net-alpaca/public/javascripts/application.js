@@ -75,14 +75,17 @@ Fabtabs.prototype = {
     var handleResize = function () {
 	var footerTop = '800px';
 	var contentHeight = '800px';
+	var bodyWidth = '100%';
 	if (window.innerHeight !== undefined) {
 	    footerTop = (window.innerHeight - 80).toString() + 'px';
-	    bodyHeight =  (window.innerHeight - 136).toString() + 'px';
-	    contentHeight =  (window.innerHeight - 29).toString() + 'px';
+	    bodyHeight = (window.innerHeight - 154).toString() + 'px';
+	    bodyWidth = (window.innerWidth - 35).toString() + 'px';
+	    contentHeight = (window.innerHeight - 29).toString() + 'px';
 	} else {
 	    footerTop = (document.documentElement.clientHeight - 80).toString() + 'px';
-	    bodyHeight =  (document.documentElement.clientHeight - 136).toString() + 'px';   
-	    contentHeight =  (document.documentElement.clientHeight - 29).toString() + 'px';   
+	    bodyHeight =  (document.documentElement.clientHeight - 154).toString() + 'px';
+	    bodyWidth = (document.documentElement.clientWidth - 35).toString() + 'px';
+	    contentHeight =  (document.documentElement.clientHeight - 29).toString() + 'px';
 	}
 	var emc = $('main-content');
 	if (emc) {
@@ -95,6 +98,7 @@ Fabtabs.prototype = {
 	var emcb = $('main-content-body');
 	if (emcb) {
 	    emcb.setStyle( { height: bodyHeight } );
+	    emcb.setStyle( { width: bodyWidth } );
 	}
     }
 

@@ -164,18 +164,18 @@ div.list-table-container div.list-table input
  }
 
 /* ------------------ Style the redirect table ---------------- */
-div.list-table-container.redirects
+div.list-table-container.redirects, div.list-table-container.ip_networks
 { 
   width: 644px;
  }
 
-div.table-label.redirects
+div.table-label.redirects, div.table-label.ip_networks
 { 
   /* Two extra pixels for the border */
   width: 646px;
  }
 
-div.list-table-container.redirects div.list-table
+div.list-table-container.redirects div.list-table, div.list-table-container.ip_networks div.list-table
 { 
   height: 200px;
   }
@@ -190,10 +190,25 @@ div.list-table-container.redirects div.description
   width: 470px;
   }
 
-div.list-table-container.redirects div.enabled, div.list-table-container.redirects div.minus, div.list-table-container.redirects div.edit
+div.list-table-container.redirects div.enabled, div.list-table-container.redirects div.minus, div.list-table-container.redirects div.edit, div.list-table-container.ip_networks div.networks, div.list-table-container.ip_networks div.minus
 { 
   text-align: center;
-  text-indent: 0px;
+  text-indent: 0;
   }
 
+div.list-table-container.ip_networks
+{ 
+  width: 300px;
+ }
 
+div.table-label.ip_networks
+{ 
+  /* Two extra pixels for the border */
+  width: 302px;
+ }
+
+
+div.list-table-container.ip_networks div.networks
+{
+  width: 215px; 
+  }
