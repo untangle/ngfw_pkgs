@@ -15,7 +15,7 @@ EOF
       end
       
       columns << Alpaca::Table::Column.new( "description", "Description".t ) do |redirect,options| 
-        options[:view].text_field( "description", options[:row_id], { :value => redirect.description } )
+        "&nbsp;" + options[:view].text_field( "description", options[:row_id], { :value => redirect.description } )
       end
       
       ## This gets complicated.
