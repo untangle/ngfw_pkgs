@@ -7,6 +7,6 @@ Standards-Version: 3.7.2
 
 Package: untangle-cli-client
 Architecture: all
-Depends: ruby
+Depends: ruby, untangle-cli-server
 Description: The Untangle CLI Client
  The Untangle CLI Client.
