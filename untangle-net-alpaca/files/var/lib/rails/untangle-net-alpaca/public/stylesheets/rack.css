@@ -947,29 +947,16 @@ ul.rule-list input[type="text"]
   width: 290px;
  }
 
-span.iconbutton
-{
-  background: transparent url(../images/rack/button-tl.png) no-repeat scroll left top;
-  height: 21px;
-  padding-left: 6px;
-  padding-bottom: 5px;
-  margin: 5px 10px;
-  }
-span.iconbutton span
-{
-  background: transparent url(../images/rack/button-tr.png) no-repeat scroll right top;
-  height: 21px;
-  padding-right: 5px;
-  padding-bottom: 4px;
-  }
 input.submit, a.Help, input[type="submit"]
 {
-  padding-left: 23px;
-  padding-bottom: 2px;
+  margin: 5px;
+  padding-left: 21px;
   border: 0;
   text-decoration: none;
   color: black;
   font-size: 9pt;
+  width: 88px;
+  height: 21px;
   }
 input.submit:hover
 { 
@@ -977,13 +964,17 @@ input.submit:hover
  }
 input.Save, input[type="submit"][value="Save"]
 { 
-  background: transparent url(../images/rack/IconSave_23x16.png) no-repeat 4px center;
+  background: transparent url(../images/save-button.gif) no-repeat top left;
   }
 input.Cancel, input[type="submit"][value="Cancel"]
 { 
-  background: transparent url(../images/rack/IconCancel_16x16.png) no-repeat 5px center;
+  background: transparent url(../images/cancel-button.gif) no-repeat top left;
   }
 a.Help, button.Help, input.Help, input[type="submit"][value="Help"]
 { 
-  background: transparent url(../images/rack/IconHelp_18x16.png) no-repeat 3px center;
+  display: block;
+  margin-left: 10px;
+  padding-left: 30px;
+  padding-top: 3px;
+  background: transparent url(../images/help-button.gif) no-repeat top left;
   }

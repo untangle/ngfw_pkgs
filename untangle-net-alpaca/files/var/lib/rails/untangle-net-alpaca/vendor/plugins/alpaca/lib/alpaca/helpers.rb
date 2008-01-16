@@ -51,7 +51,9 @@ module ActionView
       def submit_tag( value, options = {})
 
         if value == "Help"
-          return "<span class=\"iconbutton\"><span>" + link_to( "Help", HELP_URL + "?version=" + UNTANGLE_VERSION + "&source=" + HELP_NAMESPACE + "_" + $current_controller + "_" + $current_action, :popup => [ 'new_window', 'height=450,width=650,scrollbars=1,toolbar=1,status=1,location=1,menubar=1,resizeable=1' ], :class => "Help" ) + "</span></span>"
+          # "<span class=\"iconbutton\"><span>" +
+          return link_to( "Help", HELP_URL + "?version=" + UNTANGLE_VERSION + "&source=" + HELP_NAMESPACE + "_" + $current_controller + "_" + $current_action, :popup => [ 'new_window', 'height=450,width=650,scrollbars=1,toolbar=1,status=1,location=1,menubar=1,resizeable=1' ], :class => "Help" )
+          #  + "</span></span>"
         end
 
         result_prefix = ""
@@ -63,8 +65,8 @@ module ActionView
         icon_submit = [ "Save", "Cancel" ]
        
         if icon_submit.include?( value )
-          result_prefix = result_prefix + "<span class=\"iconbutton\"><span>"
-          result_suffix = "</span></span>" + result_suffix
+          #result_prefix = result_prefix + "<span class=\"iconbutton\"><span>"
+          #result_suffix = "</span></span>" + result_suffix
           css_class = css_class + " " + value
         end
 
