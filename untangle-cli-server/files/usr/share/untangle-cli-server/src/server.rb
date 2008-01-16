@@ -23,7 +23,7 @@ INTERACTIVE = false
 
 require 'drb'
 require 'optparse'
-require 'thread'
+require 'thread.rb'
 
 require 'common'
 include NUCLICommon
