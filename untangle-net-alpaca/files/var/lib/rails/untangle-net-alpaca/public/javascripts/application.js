@@ -23,8 +23,7 @@ Fabtabs.prototype = {
 	this.element = $(element);
 	var options = Object.extend({}, arguments[1] || {});
 	this.menu = $A(this.element.getElementsByTagName('a'));
-	//this.show(
-	this.getInitialTab();//);
+	this.getInitialTab();
 	this.menu.each(this.setupTab.bind(this));
     },
     setupTab : function(elm) {
@@ -38,22 +37,14 @@ Fabtabs.prototype = {
     },
     hide : function(elm) {
 	$(elm).removeClassName('active-tab');
-	//$(this.tabID(elm)).removeClassName('active-tab-body');
 	var ancestors = $(elm).ancestors();
-	ancestors[1].removeClassName('trs');
-	ancestors[2].removeClassName('tls');
-	ancestors[1].addClassName('tr');
-	ancestors[2].addClassName('tl');
+	ancestors[1].removeClassName('active-tab');
     },
     show : function(elm) {
 	$(elm).addClassName('active-tab');
 	var up = new Ajax.Updater($('main-content'), $(elm).href, { evalScripts: true });
-	//$(this.tabID(elm)).addClassName('active-tab-body');
 	var ancestors = $(elm).ancestors();
-	ancestors[1].addClassName('trs');
-	ancestors[2].addClassName('tls');
-	ancestors[1].removeClassName('tr');
-	ancestors[2].removeClassName('tl');
+	ancestors[1].addClassName('active-tab');
     },
     //tabID : function(elm) {
     //return elm.href.match(/#(\w.+)/)[1];

@@ -6,7 +6,7 @@ logout = nil
 <ul id="tabs">
 <% for menu_item in menu.children %>
    <% if ( special_tabs.index( menu_item.name ).nil? ) %>
-     <li><div class="tl"><span class="tr"><span class="solid"><a href="<%= menu_item.action %>"><%= menu_item.name.t %></a></span></span></div></li>
+     <li><div><a href="<%= menu_item.action %>"><%= menu_item.name.t %></a></div></li>
    <% elsif ( menu_item.name == "Advanced" ) 
       	    advanced = menu_item %>
    <% elsif ( menu_item.name == "Logout" ) 

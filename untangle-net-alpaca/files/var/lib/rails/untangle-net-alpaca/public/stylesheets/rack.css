@@ -416,44 +416,32 @@ div#main-content-body > form, div#main-content-body form, div#main-content-body 
 {
   position: absolute;
   list-style: none;
-  margin-top: 12px;
+  margin-top: 9px;
   }
 #tabs li 
 {
   float: left;
+  background: transparent url(../images/tab.gif) no-repeat scroll left top;
+  height: 20px;
+  width: 90px;
+  padding-top: 6px;
+  text-align: center;
   }
-
-#tabs div.tl
-{ 
-  padding: 0 0 0 6px;
-  background: transparent url(../images/rack/tab-tl.png) no-repeat scroll left top;
-  }
-#tabs span.tr
+#tabs li.active-tab
 {
-  padding: 0 3px 0 0;
-  background: transparent url(../images/rack/tab-tr.png) no-repeat scroll right top;
-  }
-#tabs div.tls
-{
-  padding: 0 0 0 6px;
-  background: transparent url(../images/rack/tab-tls.png) no-repeat left top;
-  }
-#tabs span.trs
-{ 
-  padding: 0 3px 0 0;
-  background: transparent url(../images/rack/tab-trs.png) no-repeat right top;
-  }
+  background: transparent url(../images/tab-active.gif) no-repeat scroll left top;
+  padding-top: 4px;
+ }
 #tabs a
 {
-  padding: 3px 2px 0 2px;
   text-decoration: none;
-  font-size: 9pt;
+  font-size: 8pt;
   color: #333;
   }
 #tabs a.active-tab 
 {
-  padding: 3px 2px 0 2px;
-  font-size: 10pt;
+  font-size: 9pt;
+  line-height: 9pt;
   font-weight: 550;
   }
 
