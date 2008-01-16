@@ -57,15 +57,14 @@ EOF
     <div class="rule-help">
       <%= submit_tag( "Help" ) %>
     </div>
-    <div class="update" onclick="RuleBuilder.update('<%= @row_id %>') ; RuleBuilder.close();">
-      <span class="iconbutton"><span><a class="submit Update">
+    <div class="update" onclick="RuleBuilder.update('<%= @row_id %>') ; RuleBuilder.close();"><a class="submit Update">
       <%= "Update".t %>
-      </a></span></span>
+      </a>
     </div>
     <div class="cancel" onclick="RuleBuilder.close()">
-      <span class="iconbutton"><span><a class="submit Cancel">
+      <a class="submit Cancel">
       <%= "Cancel".t %>
-      </a></span></span>
+      </a>
     </div>
 
   </div>

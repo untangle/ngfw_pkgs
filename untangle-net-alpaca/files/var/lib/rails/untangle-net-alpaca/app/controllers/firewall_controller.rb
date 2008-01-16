@@ -51,10 +51,6 @@ class FirewallController < ApplicationController
     redirect_to( :action => "manage" )
   end
 
-  def stylesheets
-    [ "borax/list-table", "borax-firewall", "borax-overlay", "rule" ]
-  end
-
   def scripts
     RuleHelper::Scripts + [ "firewall_manager" ]
   end

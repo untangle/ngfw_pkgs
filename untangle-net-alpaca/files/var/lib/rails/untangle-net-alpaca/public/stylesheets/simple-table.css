@@ -427,3 +427,57 @@ div.list-table-container.interface-status div.mac
 { 
   width: 202px;
   }
+
+/* ------------------- Packet Filter Panel -------------------- */
+div.list-table-container.firewalls
+{
+  width: 673px;
+ }
+
+div.table-label.firewalls
+{
+  width: 675px;
+ }
+div.list-table-container.firewalls div.enabled
+{ 
+  width: 50px;
+  }
+
+div.list-table-container.firewalls div.target
+{ 
+  width: 90px;
+ }
+
+div.list-table-container.firewalls div.description
+{ 
+  width: 365px;
+  }
+
+div.list-table-container.firewalls div.edit
+{ 
+  width: 70px;
+  }
+
+div.list-table-container.firewalls div.minus
+{ 
+  width: 70px;
+  }
+
+div.list-table-container.system-firewalls
+{
+  width: 673px;
+ }
+
+div.table-label.system-firewalls
+{
+  width: 675px;
+ }
+div.list-table-container.system-firewalls div.enabled
+{ 
+  width: 50px;
+  }
+
+div.list-table-container.system-firewalls div.description
+{ 
+  width: 600px;
+  }
