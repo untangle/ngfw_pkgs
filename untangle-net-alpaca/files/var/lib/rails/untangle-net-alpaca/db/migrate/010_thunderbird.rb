@@ -243,6 +243,7 @@ class Thunderbird < ActiveRecord::Migration
       table.column :password,        :string
       table.column :dns_1,        :string
       table.column :dns_2,        :string
+      table.column :secret_field, :string
     end
 
     ## Create a table for all of the alpaca settings.

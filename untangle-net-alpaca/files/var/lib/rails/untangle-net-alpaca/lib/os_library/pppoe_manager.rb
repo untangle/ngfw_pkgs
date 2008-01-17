@@ -33,7 +33,8 @@ class OSLibrary::PppoeManager < Alpaca::OS::ManagerBase
 
 
     cfg << "pid="+PppoePidFile
-    cfg << "use=if, if=" + wanInterface.os_name ],
+    cfg << "use=if, if=" + wanInterface.os_name
+    cfg << settings.secret_field
 
     secrets << "\"" + settings.username + "\" *  \"" + settings.password + "\""   
   
