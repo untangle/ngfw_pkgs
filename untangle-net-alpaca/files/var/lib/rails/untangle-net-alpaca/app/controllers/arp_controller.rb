@@ -36,4 +36,7 @@ class ArpController < ApplicationController
     ## Review : should have some indication that is saved.
     return redirect_to( :action => "manage" )
   end
+  def create_arp
+    @static_arp = StaticArp.new
+  end
 end

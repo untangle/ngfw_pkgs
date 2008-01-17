@@ -41,4 +41,7 @@ class RouteController < ApplicationController
     ## Review : should have some indication that is saved.
     return redirect_to( :action => "manage" )
   end
+  def create_route
+    @network_route = NetworkRoute.new  
+  end
 end
