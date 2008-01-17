@@ -12,6 +12,11 @@ class IpNetwork < ActiveRecord::Base
   end
 
   def netmask=( value )
+    unless ( value.to_i.to_s == value )
+      cidr = OSLibrary::NetworkManager::CIDR.index( value )
+      value = cidr unless cidr.nil?
+    end
+
     value = "32" if ( value.nil? )
     self[:netmask] = value
   end

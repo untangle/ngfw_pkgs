@@ -20,6 +20,4 @@ class NetworkRoute < ActiveRecord::Base
   def NetworkRoute.get_active( os )
     return os["routes_manager"].get_active
   end
-  
-
 end

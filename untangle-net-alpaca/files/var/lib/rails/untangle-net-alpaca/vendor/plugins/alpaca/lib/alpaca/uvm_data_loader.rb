@@ -49,6 +49,15 @@ class Alpaca::UvmDataLoader
     @dbh = DBI.connect('DBI:Pg:uvm', 'postgres')
     begin
       load_network_settings
+
+      load_redirects
+
+      load_routes
+
+      load_hostname
+      
+      ## Loads the DHCP and DNS settings
+      load_dhcp_server_settings
     ensure
       @dbh.disconnect if @dbh
     end
@@ -96,6 +105,162 @@ class Alpaca::UvmDataLoader
       end
     end
   end
+
+  def load_redirects
+    Redirect.destroy_all( "system_id IS NULL" )
+
+    query  = "SELECT  redirect_port, redirect_addr, live, description, is_local_redirect,"
+    query += " src_intf_matcher, protocol_matcher, src_ip_matcher, dst_ip_matcher,"
+    query += " src_port_matcher, dst_port_matcher"
+    query += " FROM u_redirect_rule"
+
+    position = 1
+
+    @dbh.execute( query ) do |result|
+      result.fetch_all.each do |r|
+        begin
+          redirect  = Redirect.new( :position => position )
+          position += 1
+          
+          ## First build the filter
+          filter = ""
+          filter += parse_protocol_matcher( "protocol", r["protocol_matcher"] )
+          filter += parse_intf_matcher( "s-intf", r["src_intf_matcher"] )
+          filter += parse_ip_matcher( "s-addr", r["src_ip_matcher"] )
+          filter += parse_ip_matcher( "d-addr", r["dst_ip_matcher"] )
+          filter += parse_port_matcher( "s-port", r["src_port_matcher"] )
+          filter += parse_port_matcher( "d-port", r["dst_port_matcher"] )
+          
+          ## Append a d-local if necessary.
+          filter += "d-local::true" if ( r["is_local_redirect"] == true && /d-local::/.match( filter ).nil? )
+          redirect.filter = filter
+
+          @logger.debug( "Created the filter: #{filter}" )
+          
+          ## Set the redirect ip and address
+          redirect.new_ip = r["redirect_addr"]
+          redirect.new_enc_id = r["redirect_port"].to_i
+          redirect.new_enc_id = nil if redirect.new_enc_id == 0
+          redirect.description = r["description"]
+          
+          redirect.system_id = nil
+          redirect.is_custom = false
+          redirect.enabled = ( @network_settings.is_enabled && r["live"] == true )
+          redirect.save
+        rescue
+          logger.warn( "Unable to parse a redirect #{$!}" )
+        end
+      end
+    end
+  end
+
+  def load_routes
+    NetworkRoute.destroy_all
+
+    ## Nothing to load if the routes are not enabled.
+    return unless @network_settings.is_enabled
+    
+    query  = "SELECT  network_space, destination, next_hop, description,  live"
+    query += " FROM u_network_route"
+    query += " ORDER BY position"
+
+    @dbh.execute( query ) do |result|
+      result.fetch_all.each do |r| 
+        next unless r["live"]
+
+        network, netmask = r["destination"].split( "/" )
+        netmask = 32 if netmask.nil?
+        NetworkRoute.new( :target => network, :netmask => netmask, :gateway => r["next_hop"],
+                          :description => r["description"], :live => true ).save
+      end
+    end
+  end
+
+  def load_hostname
+    query  = "SELECT  hostname FROM u_address_settings LIMIT 1"
+    @dbh.execute( query ) do |result|
+      h = result.fetch
+      
+      unless h.nil?
+        hostname_settings = HostnameSettings.find( :first )
+        hostname_settings = HostnameSettings.new if hostname_settings.nil?
+        hostname_settings.hostname = h["hostname"]
+        hostname_settings.save
+      end
+    end
+
+    query  = "SELECT  enabled, provider, login, password FROM u_ddns_settings LIMIT 1"
+
+    @dbh.execute( query ) do |result|
+      d = result.fetch
+      
+      unless d.nil?
+        ddclient_settings = DdclientSettings.find( :first )
+        ddclient_settings = DdclientSettings.new if ddclient_settings.nil?
+        ddclient_settings.enabled =  d["enabled"]
+        ddclient_settings.service = d["provider"]
+        ddclient_settings.password = d["password"]
+        ddclient_settings.login = d["login"]
+        ddclient_settings.save
+      end
+    end
+  end
+
+  def load_dhcp_server_settings
+    query  = "SELECT  is_dhcp_enabled, dhcp_start_address, dhcp_end_address, dhcp_lease_time, "
+    query += "  dns_enabled, dns_local_domain"
+    query += " FROM u_network_services LIMIT 1"
+
+    DhcpServerSettings.destroy_all
+    DnsServerSettings.destroy_all
+    DhcpStaticEntry.destroy_all
+    DnsStaticEntry.destroy_all
+    
+    @dbh.execute( query ) do |result|
+      d = result.fetch
+      
+      unless d.nil?
+        dhcp = DhcpServerSettings.new
+        dhcp.enabled = ( @network_settings.is_enabled && d["is_dhcp_enabled"] )
+        dhcp.start_address = d["dhcp_start_address"]
+        dhcp.end_address = d["dhcp_end_address"]
+        dhcp.lease_duration = d["dhcp_lease_time"]
+        dhcp.save
+
+        dns = DnsServerSettings.new
+        dns.enabled = ( @network_settings.is_enabled && d["dns_enabled"] )
+        dns.suffix = d["dns_local_domain"]
+        dns.save
+      end
+    end
+
+    ## Load the static entries for DHCP
+    query  = "SELECT mac_address, hostname, static_address, description "
+    query += " FROM u_dhcp_lease_rule"
+
+    position = 1
+    @dbh.execute( query ) do |result|
+      result.fetch_all.each do |lr| 
+        DhcpStaticEntry.new( :mac_address => lr["mac_address"], :position => lr["position"],
+                             :ip_address => lr["static_address"], :description => lr["description"] ).save
+        position += 1
+      end
+    end
+    
+    ## Load the static entries for DNS
+    query  = "SELECT hostname_list, static_address, description "
+    query += " FROM u_dns_static_host_rule"
+
+    position = 1
+    @dbh.execute( query ) do |result|
+      result.fetch_all.each do |lr| 
+        DnsStaticEntry.new( :hostname => lr["hostname_list"], :position => lr["position"],
+                            :ip_address => lr["static_address"], :description => lr["description"] ).save
+        position += 1
+      end
+    end
+  end
+
   
   def configure_external_interface( interface, bridge_hash )
     query  = "SELECT network_space, media, is_dhcp_enabled, mtu "
@@ -104,6 +269,7 @@ class Alpaca::UvmDataLoader
     query += " WHERE u_network_intf.argon_intf = 0"
     mtu = 0
     ns = 0
+
     @dbh.execute( query ) do |result|
       ## Assuming an interface exists for the external interface.
       row = result.fetch 
@@ -281,6 +447,47 @@ class Alpaca::UvmDataLoader
 
     return dmz_host
   end
-  
 
+  ANY_MATCHER = [ "*", "any", "all" ]
+  INTF_MAP =  { "O" => 1, "I" => 2, "D" => 3, "V" => 8, "0" => 1, "1" => 2, "3" => 4, "7" => 8 }
+
+  def parse_protocol_matcher( filter_string, value )
+    value.strip!
+
+    return "" if ( value == "" || ANY_MATCHER.include?( value ))
+    filter_string + "::" + value.split( "&" ).map { |protocol| protocol.strip.downcase }.join( "," ) + "&&"
+  end
+
+  def parse_intf_matcher( filter_string, value )
+    value.strip!
+
+    return "" if ( value == "" || ANY_MATCHER.include?( value ))
+    filter = value.split( "," ).map { |intf| INTF_MAP[intf.strip] }
+    filter.delete_if { |i| i.nil? }
+    "#{filter_string}::#{filter.join( "," )}&&"
+  end
+
+  ALL_PUBLIC_MATCHER = [ "external address & aliases", "all external addresses" ]
+  PUBLIC_MATCHER = [ "external address", "local", "edgeguard" ]
+
+  def parse_ip_matcher( filter_string, value )
+    value.strip!
+
+    return "" if ( value == "" || ANY_MATCHER.include?( value ))
+
+    ## Yikes!, this will match a lot.
+    return "d-local::true&&"  if ALL_PUBLIC_MATCHER.include?( value ) || PUBLIC_MATCHER.include?( value )
+
+    ## all the other types are just handled properly
+    "#{filter_string}::#{value}&&"
+  end
+  
+  def parse_port_matcher( filter_string, value )
+    value.strip!
+
+    return "" if ( value == "" || ANY_MATCHER.include?( value ))
+    
+    ## all the port types are just handled properly
+    "#{filter_string}::#{value}&&"
+  end
 end

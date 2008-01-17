@@ -2,9 +2,8 @@ class Redirect < ActiveRecord::Base
   include Alpaca::ActiveRecordExtensions
 
   def before_save
-    if self.filter =~ /protocol::/
-      return true
-    else
+    f = self.filter
+    if ( /port::/.match( f ) && /protocol::/.match( f ).nil? )
       self.filter << "&&protocol::tcp,udp"
     end
   end

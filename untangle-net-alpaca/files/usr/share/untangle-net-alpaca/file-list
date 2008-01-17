@@ -5,7 +5,7 @@ etc/ddclient.conf
 etc/hostname
 etc/default/ddclient
 etc/network/interfaces
-etc/untangle-net-alapca/dnsmasq-hosts
+etc/untangle-net-alpaca/dnsmasq-hosts
 etc/untangle-net-alpaca/arps
 etc/untangle-net-alpaca/routes
 etc/untangle-net-alpaca/interface.properties
