@@ -599,6 +599,10 @@ div.table-label.routes
 { 
   width: 702px;
  }
+div.list-table-container.routes div input.textfield
+{ 
+  width: 136px;
+ }
 div.list-table-container.routes div.target
 {
   width: 150px;
