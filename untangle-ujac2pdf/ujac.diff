@@ -1,0 +1,1418 @@
+diff -ruNb UJAC-orig/build.xml UJAC/build.xml
+--- UJAC-orig/build.xml	2007-09-30 09:19:22.000000000 -0700
++++ UJAC/build.xml	2008-01-16 22:44:41.000000000 -0800
+@@ -175,7 +175,7 @@
+ 	</target>
+ 
+ 	<!-- builds the libraries -->
+-	<target name="libs" depends="compile,test"> 
++    <target name="libs" depends="compile">
+ 		<!-- all UJAC classes -->
+ 		<jar destfile="lib/ujac.jar">
+ 			<fileset dir="classes">
+Binary files UJAC-orig/GPATH and UJAC/GPATH differ
+Binary files UJAC-orig/GRTAGS and UJAC/GRTAGS differ
+Binary files UJAC-orig/GSYMS and UJAC/GSYMS differ
+Binary files UJAC-orig/GTAGS and UJAC/GTAGS differ
+Binary files UJAC-orig/lib/ext/commons-fileupload-1.2.jar and UJAC/lib/ext/commons-fileupload-1.2.jar differ
+diff -ruNb UJAC-orig/src/org/ujac/print/DefaultDocumentTagFactory.java UJAC/src/org/ujac/print/DefaultDocumentTagFactory.java
+--- UJAC-orig/src/org/ujac/print/DefaultDocumentTagFactory.java	2007-02-25 14:59:58.000000000 -0800
++++ UJAC/src/org/ujac/print/DefaultDocumentTagFactory.java	2008-01-16 17:29:36.000000000 -0800
+@@ -22,11 +22,11 @@
+ 
+ package org.ujac.print;
+ 
+-import java.util.Map;
+-import java.util.List;
++import java.util.ArrayList;
+ import java.util.HashMap;
+ import java.util.Iterator;
+-import java.util.ArrayList;
++import java.util.List;
++import java.util.Map;
+ 
+ import org.ujac.print.tag.AddRowTag;
+ import org.ujac.print.tag.AlterColumnTag;
+@@ -40,71 +40,72 @@
+ import org.ujac.print.tag.BoxTag;
+ import org.ujac.print.tag.CaseTag;
+ import org.ujac.print.tag.ChapterTag;
++import org.ujac.print.tag.ChartTag;
+ import org.ujac.print.tag.ColorDefTag;
+ import org.ujac.print.tag.ColumnTextTag;
+ import org.ujac.print.tag.CustomTagTag;
+-import org.ujac.print.tag.DefineColumnTag;
+-import org.ujac.print.tag.DefineTableTag;
+-import org.ujac.print.tag.EncryptionTag;
+-import org.ujac.print.tag.ExtraRowTag;
+-import org.ujac.print.tag.HeadTag;
+-import org.ujac.print.tag.IndexTag;
+-import org.ujac.print.tag.InsertColumnTag;
+-import org.ujac.print.tag.InsertDocumentTag;
+-import org.ujac.print.tag.JavascriptTag;
+-import org.ujac.print.tag.ListItemTag;
+-import org.ujac.print.tag.ListSymbolTag;
+-import org.ujac.print.tag.ListTag;
+-import org.ujac.print.tag.LogTag;
+-import org.ujac.print.tag.MetaTag;
+-import org.ujac.print.tag.ModuleTag;
+-import org.ujac.print.tag.OverlayTag;
+-import org.ujac.print.tag.PageFormatTag;
+-import org.ujac.print.tag.PdfTableRowTag;
+-import org.ujac.print.tag.PrintFooterRowTag;
+-import org.ujac.print.tag.PrintGroupRowTag;
+-import org.ujac.print.tag.PrintGroupTitleRowTag;
+-import org.ujac.print.tag.PrintHeaderRowTag;
+-import org.ujac.print.tag.RegisterFontTag;
+-import org.ujac.print.tag.RegisterTagTag;
+-import org.ujac.print.tag.RemoveColumnTag;
+-import org.ujac.print.tag.RowCellTag;
+-import org.ujac.print.tag.ChartTag;
+ import org.ujac.print.tag.DateFormatTag;
+ import org.ujac.print.tag.DefaultTag;
++import org.ujac.print.tag.DefineColumnTag;
++import org.ujac.print.tag.DefineTableTag;
+ import org.ujac.print.tag.DocumentTag;
+ import org.ujac.print.tag.ElseTag;
++import org.ujac.print.tag.EncryptionTag;
++import org.ujac.print.tag.ExtraRowTag;
+ import org.ujac.print.tag.FontDefTag;
+ import org.ujac.print.tag.FontTag;
+ import org.ujac.print.tag.FooterPartTag;
+ import org.ujac.print.tag.FooterTag;
+ import org.ujac.print.tag.ForeachTag;
++import org.ujac.print.tag.HeadTag;
+ import org.ujac.print.tag.HeaderPartTag;
+ import org.ujac.print.tag.HeaderTag;
+ import org.ujac.print.tag.IfTag;
+ import org.ujac.print.tag.ImageTag;
+ import org.ujac.print.tag.ImportTag;
++import org.ujac.print.tag.IndexTag;
++import org.ujac.print.tag.InsertColumnTag;
++import org.ujac.print.tag.InsertDocumentTag;
++import org.ujac.print.tag.InsertSubDocumentTag;
+ import org.ujac.print.tag.ItalicTag;
+ import org.ujac.print.tag.ItemTag;
+ import org.ujac.print.tag.ItemsTag;
++import org.ujac.print.tag.JavascriptTag;
++import org.ujac.print.tag.ListItemTag;
++import org.ujac.print.tag.ListSymbolTag;
++import org.ujac.print.tag.ListTag;
++import org.ujac.print.tag.LogTag;
+ import org.ujac.print.tag.MacroDefTag;
+ import org.ujac.print.tag.MacroTag;
++import org.ujac.print.tag.MetaTag;
++import org.ujac.print.tag.ModuleTag;
+ import org.ujac.print.tag.NewLineTag;
+ import org.ujac.print.tag.NewPageTag;
+ import org.ujac.print.tag.NumberFormatTag;
+ import org.ujac.print.tag.OutlineTag;
++import org.ujac.print.tag.OverlayTag;
++import org.ujac.print.tag.PageFormatTag;
+ import org.ujac.print.tag.ParagraphTag;
+ import org.ujac.print.tag.ParameterDefTag;
+ import org.ujac.print.tag.ParameterTag;
+ import org.ujac.print.tag.PdfCellBlockTag;
+ import org.ujac.print.tag.PdfCellTag;
+ import org.ujac.print.tag.PdfTableHeaderTag;
++import org.ujac.print.tag.PdfTableRowTag;
+ import org.ujac.print.tag.PdfTableSplitTag;
+ import org.ujac.print.tag.PdfTableTag;
+ import org.ujac.print.tag.PhraseTag;
++import org.ujac.print.tag.PrintFooterRowTag;
++import org.ujac.print.tag.PrintGroupRowTag;
++import org.ujac.print.tag.PrintGroupTitleRowTag;
++import org.ujac.print.tag.PrintHeaderRowTag;
+ import org.ujac.print.tag.PrintRowTag;
+ import org.ujac.print.tag.PrintTableTag;
++import org.ujac.print.tag.RegisterFontTag;
++import org.ujac.print.tag.RegisterTagTag;
++import org.ujac.print.tag.RemoveColumnTag;
+ import org.ujac.print.tag.ResourceBundleTag;
++import org.ujac.print.tag.RowCellTag;
+ import org.ujac.print.tag.SectionTag;
+ import org.ujac.print.tag.SegmentTag;
+ import org.ujac.print.tag.SetFieldTag;
+@@ -123,7 +124,6 @@
+ import org.ujac.print.tag.UnderlineTag;
+ import org.ujac.print.tag.ViewerPreferencesTag;
+ import org.ujac.print.tag.WatermarkTag;
+-
+ import org.ujac.print.tag.acroform.CheckBoxAcroFieldTag;
+ import org.ujac.print.tag.acroform.ComboBoxAcroFieldTag;
+ import org.ujac.print.tag.acroform.HiddenFieldAcroFieldTag;
+@@ -346,6 +346,7 @@
+     registerTag(TocTag.TAG_NAME, TocTag.class);
+     registerTag(IndexTag.TAG_NAME, IndexTag.class);
+     registerTag(InsertDocumentTag.TAG_NAME, InsertDocumentTag.class);
++    registerTag(InsertSubDocumentTag.TAG_NAME, InsertSubDocumentTag.class);
+     registerTag(SubscriptTag.TAG_NAME, SubscriptTag.class);
+     registerTag(SuperscriptTag.TAG_NAME, SuperscriptTag.class);
+     registerTag(ViewerPreferencesTag.TAG_NAME, ViewerPreferencesTag.class);
+diff -ruNb UJAC-orig/src/org/ujac/print/DocumentHandler.java UJAC/src/org/ujac/print/DocumentHandler.java
+--- UJAC-orig/src/org/ujac/print/DocumentHandler.java	2007-03-21 16:57:57.000000000 -0700
++++ UJAC/src/org/ujac/print/DocumentHandler.java	2008-01-16 16:48:24.000000000 -0800
+@@ -23,66 +23,55 @@
+ package org.ujac.print;
+ 
+ import java.awt.Color;
+-
+ import java.io.IOException;
+ import java.io.OutputStream;
+ import java.io.PrintWriter;
+-
+ import java.sql.Time;
+ import java.sql.Timestamp;
+ import java.text.Format;
+-
+-import java.util.Map;
++import java.util.ArrayList;
+ import java.util.Date;
+-import java.util.List;
+ import java.util.HashMap;
+ import java.util.Iterator;
+-import java.util.ArrayList;
++import java.util.List;
++import java.util.Map;
+ import java.util.StringTokenizer;
+ 
++import com.lowagie.text.DocWriter;
++import com.lowagie.text.Document;
++import com.lowagie.text.DocumentException;
++import com.lowagie.text.Font;
++import com.lowagie.text.FontFactory;
++import com.lowagie.text.Paragraph;
++import com.lowagie.text.Rectangle;
++import com.lowagie.text.pdf.BaseFont;
++import com.lowagie.text.pdf.FontMapper;
++import com.lowagie.text.pdf.PdfDestination;
++import com.lowagie.text.pdf.PdfPageEvent;
++import com.lowagie.text.pdf.PdfPageEventHelper;
++import com.lowagie.text.pdf.PdfPageLabels;
++import com.lowagie.text.pdf.PdfTemplate;
++import com.lowagie.text.pdf.PdfWriter;
+ import org.apache.commons.logging.Log;
+ import org.apache.commons.logging.LogFactory;
+ import org.apache.commons.logging.impl.SimpleLog;
+-
++import org.ujac.print.tag.InsertSubDocumentTag;
+ import org.ujac.print.tag.MacroDefTag;
+-
+ import org.ujac.util.BeanUtils;
++import org.ujac.util.exi.ExpressionException;
++import org.ujac.util.io.ResourceLoader;
+ import org.ujac.util.template.DefaultTemplateInterpreterFactory;
+ import org.ujac.util.template.TemplateContext;
+ import org.ujac.util.template.TemplateException;
+ import org.ujac.util.template.TemplateInterpreter;
+-
+-
+-import org.ujac.util.exi.ExpressionException;
+-import org.ujac.util.io.ResourceLoader;
+-
+ import org.ujac.util.text.FormatHelper;
+-
+-import org.xml.sax.Locator;
+ import org.xml.sax.Attributes;
++import org.xml.sax.Locator;
+ import org.xml.sax.SAXException;
+-
+ import org.xml.sax.helpers.AttributesImpl;
+ import org.xml.sax.helpers.DefaultHandler;
+ import org.xml.sax.helpers.LocatorImpl;
+ 
+-import com.lowagie.text.Document;
+-import com.lowagie.text.DocWriter;
+-import com.lowagie.text.DocumentException;
+-import com.lowagie.text.Font;
+-import com.lowagie.text.FontFactory;
+-import com.lowagie.text.Paragraph;
+-import com.lowagie.text.Rectangle;
+-
+-import com.lowagie.text.pdf.BaseFont;
+-import com.lowagie.text.pdf.FontMapper;
+-import com.lowagie.text.pdf.PdfDestination;
+-import com.lowagie.text.pdf.PdfPageLabels;
+-import com.lowagie.text.pdf.PdfTemplate;
+-import com.lowagie.text.pdf.PdfWriter;
+-import com.lowagie.text.pdf.PdfPageEvent;
+-import com.lowagie.text.pdf.PdfPageEventHelper;
+-
+ /**
+  * Name: DocumentHandler<br>
+  * Description: XML content handler, managing core tasks of the XML to iText processing framework.<br>
+@@ -2073,8 +2062,12 @@
+       // finally closing document writer, to make sure everything 
+       // has been written properly to the output stream when the 
+       // DocumentPrinter has finished its Job.      
++      Integer depth = (Integer)getTemplateContext().getProperty(InsertSubDocumentTag.PROPERTY_DEPTH);
++      System.out.println( "DocumentHandler: The depth is: " + depth );
++      if ((depth == null) || (depth == 0)) {
+       documentWriter.close();
+     }
++    }
+     
+     if (templateCopyWriter != null) {
+       templateCopyWriter.flush();
+diff -ruNb UJAC-orig/src/org/ujac/print/tag/#DocumentTag.java# UJAC/src/org/ujac/print/tag/#DocumentTag.java#
+--- UJAC-orig/src/org/ujac/print/tag/#DocumentTag.java#	1969-12-31 16:00:00.000000000 -0800
++++ UJAC/src/org/ujac/print/tag/#DocumentTag.java#	2008-01-16 16:46:54.000000000 -0800
+@@ -0,0 +1,538 @@
++/*
++ * Copyright (C) 2003 - 2007 by Christian Lauer.
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Library General Public
++ * License as published by the Free Software Foundation; either
++ * version 2 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Library General Public License for more details.
++ *
++ * You should have received a copy of the GNU Library General Public
++ * License along with this library; if not, write to the Free
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ *
++ * If you didn't download this code from the following link, you should check if
++ * you aren't using an obsolete version:
++ * http://sourceforge.net/projects/ujac
++ */
++
++package org.ujac.print.tag;
++
++import java.awt.Color;
++import java.lang.reflect.Field;
++import java.sql.Time;
++import java.sql.Timestamp;
++import java.util.Date;
++
++import com.lowagie.text.DocWriter;
++import com.lowagie.text.Document;
++import com.lowagie.text.DocumentException;
++import com.lowagie.text.Element;
++import com.lowagie.text.PageSize;
++import com.lowagie.text.Paragraph;
++import com.lowagie.text.Rectangle;
++import com.lowagie.text.pdf.PdfWriter;
++import org.ujac.print.AttributeDefinitionMap;
++import org.ujac.print.BaseDocumentTag;
++import org.ujac.print.ChildDefinition;
++import org.ujac.print.DocumentHandlerException;
++import org.ujac.print.ElementContainer;
++import org.ujac.print.NewPageHandler;
++import org.ujac.print.ParameterDefHolder;
++import org.ujac.print.ParameterDefinition;
++import org.ujac.print.StyleHolder;
++import org.ujac.print.tag.acroform.BaseAcroFieldTag;
++import org.ujac.print.tag.graphics.GraphicsTag;
++import org.ujac.util.template.TemplateContext;
++
++/**
++ * Name: DocumentTag<br>
++ * Description: A class handling &lt;document&gt; tags.<br>
++ *
++ * @author lauerc
++ */
++public class DocumentTag
++  extends BaseDocumentTag
++  implements ElementContainer, ParameterDefHolder, NewPageHandler, StyleHolder {
++
++  /** The item's name. */
++  public static final String TAG_NAME = "document";
++  /** The item's supported attributes. */
++  private static final AttributeDefinitionMap supportedAttributes = new AttributeDefinitionMap(CommonAttributes.PAGE_SIZE)
++    .addDefinition(CommonAttributes.PAGE_WIDTH)
++    .addDefinition(CommonAttributes.PAGE_HEIGHT)
++    .addDefinition(CommonAttributes.PAGE_ROTATE)
++    .addDefinition(CommonAttributes.MARGIN_LEFT)
++    .addDefinition(CommonAttributes.MARGIN_RIGHT)
++    .addDefinition(CommonAttributes.MARGIN_TOP)
++    .addDefinition(CommonAttributes.MARGIN_BOTTOM)
++    .addDefinition(CommonAttributes.BACKGROUND_COLOR)
++    .addDefinition(CommonAttributes.LINE_SPACING)
++    .addDefinition(CommonAttributes.PDF_VERSION)
++    .addDefinition(CommonAttributes.LOGICAL_PAGENUMBERING)
++    .addDefinition(CommonAttributes.LOGICAL_PAGETEXT);
++
++  /** The item's supported attributes. */
++  private static final AttributeDefinitionMap supportedStyleAttributes = new AttributeDefinitionMap(CommonStyleAttributes.PAGE_SIZE)
++    .addDefinition(CommonStyleAttributes.PAGE_WIDTH)
++    .addDefinition(CommonStyleAttributes.PAGE_HEIGHT)
++    .addDefinition(CommonStyleAttributes.PAGE_ROTATE)
++    .addDefinition(CommonStyleAttributes.MARGIN_LEFT)
++    .addDefinition(CommonStyleAttributes.MARGIN_RIGHT)
++    .addDefinition(CommonStyleAttributes.MARGIN_TOP)
++    .addDefinition(CommonStyleAttributes.MARGIN_BOTTOM)
++    .addDefinition(CommonStyleAttributes.BACKGROUND_COLOR)
++    .addDefinition(CommonStyleAttributes.LINE_SPACING);
++
++  /** The item's supported childs. */
++  private static final ChildDefinition[] supportedChilds = {
++    new ChildDefinition(ViewerPreferencesTag.class, 0, 1),
++    new ChildDefinition(EncryptionTag.class, 0, 1),
++    new ChildDefinition(RegisterFontTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(RegisterTagTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(StyleDefTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(ColorDefTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(FontDefTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(ModuleTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(ParameterDefTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(CustomTagTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(MacroDefTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(HeadTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(PageFormatTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(HeaderTag.class, 0, 1),
++    new ChildDefinition(FooterTag.class, 0, 1),
++    new ChildDefinition(StickyTag.class, 0, 1),
++    new ChildDefinition(SegmentTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(BaseFontTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(IfTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(ElseTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(LogTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(SwitchTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(ForeachTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(TocTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(IndexTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(ChapterTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(PhraseTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(ParagraphTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(TableTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(PdfTableTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(PrintTableTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(SetFormatTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(ResourceBundleTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(AnchorTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(AnnotationTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(ImageTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(MetaTag.class, 0, 1),
++    new ChildDefinition(ListTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(OverlayTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(BoxTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(SetPropertyTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(DefineTableTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(AddRowTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(AssertTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(ImportTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(MacroTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(NewLineTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(NewPageTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(OutlineTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(ColumnTextTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(BaseAcroFieldTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(GraphicsTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(BarcodeTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(JavascriptTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(InsertDocumentTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(InsertSubDocumentTag.class, 0, ChildDefinition.UNLIMITED)
++
++  };
++
++  /** The iText document. */
++  private Document document = null;
++  /** The line spacing attribute. */
++  private float lineSpacing = DEFAULT_LINE_SPACING;
++  //Added by Kiran
++  /** The pdf Version attribute. */
++  private char pdfVersion = '4';
++
++  /**
++   * Gets the item's name.
++   * @return The item's name.
++   */
++  public String getName() {
++    return TAG_NAME;
++  }
++
++  /**
++   * Gets a brief description for the item.
++   * @return The item's description.
++   */
++  public String getDescription() {
++    return "Root element of the document.";
++  }
++
++  /**
++   * Gets the list of supported attributes.
++   * @return The attribute definitions.
++   */
++  public AttributeDefinitionMap getSupportedAttributes() {
++    return supportedAttributes;
++  }
++
++  /**
++   * Gets the list of supported style attributes.
++   * @return The attribute definitions.
++   */
++  public AttributeDefinitionMap getSupportedStyleAttributes() {
++    return supportedStyleAttributes;
++  }
++
++  /**
++   * Gets the list of supported childs.
++   * @return The child definitions.
++   */
++  public ChildDefinition[] getSupportedChilds() {
++    return supportedChilds;
++  }
++
++  /**
++   * Tells whether or not this tag does respect style attributes or not.
++   * @return always <code>true</code>.
++   */
++  public boolean isStyleable() {
++    return true;
++  }
++
++  /**
++   * Is the item a possible document root tag, such as &lt;document&gt; or &lt;module&gt;.
++   * @return true if the item is a possible root tag, else false.
++   */
++  public boolean isDocumentRoot() {
++    return true;
++  }
++
++  /**
++   * Opens the item.
++   * @exception DocumentHandlerException Thrown in case something went wrong while opening the document item.
++   */
++  public void openItem() throws DocumentHandlerException {
++    super.openItem();
++
++    Rectangle size = null;
++    String sizeAttr = getStringAttribute(CommonAttributes.PAGE_SIZE, true, CommonStyleAttributes.PAGE_SIZE);
++    if (sizeAttr != null) {
++      try {
++        Field sizeField = PageSize.class.getField(sizeAttr);
++        size = (Rectangle) sizeField.get(null);
++      } catch (Exception e) {
++        throw new DocumentHandlerException(locator(), "Unable to set page size: " + e.getMessage(), e);
++      }
++    } else {
++      if (isAttributeDefined(CommonAttributes.PAGE_WIDTH, CommonStyleAttributes.PAGE_WIDTH) &&
++          isAttributeDefined(CommonAttributes.PAGE_HEIGHT, CommonStyleAttributes.PAGE_HEIGHT)) {
++        float width = getDimensionAttribute(CommonAttributes.PAGE_WIDTH, true, CommonStyleAttributes.PAGE_WIDTH);
++        float height = getDimensionAttribute(CommonAttributes.PAGE_HEIGHT, true, CommonStyleAttributes.PAGE_HEIGHT);
++        size = new Rectangle(width, height);
++      }
++    }
++
++    this.lineSpacing = getDimensionAttribute(CommonAttributes.LINE_SPACING, DEFAULT_LINE_SPACING, true, CommonStyleAttributes.LINE_SPACING);
++
++    if (size != null) {
++      String rotateAttr = getStringAttribute(CommonAttributes.ROTATE, true, CommonStyleAttributes.ROTATE);
++      boolean rotate = false;
++      if (rotateAttr != null) {
++        rotate = new Boolean(rotateAttr).booleanValue();
++      }
++
++      Color bgColor = getColorAttribute(CommonAttributes.BACKGROUND_COLOR, true, CommonStyleAttributes.BACKGROUND_COLOR);
++
++      float marginLeft = getDimensionAttribute(CommonAttributes.MARGIN_LEFT, true, CommonStyleAttributes.MARGIN_LEFT);
++      float marginRight = getDimensionAttribute(CommonAttributes.MARGIN_RIGHT, true, CommonStyleAttributes.MARGIN_RIGHT);
++      float marginTop = getDimensionAttribute(CommonAttributes.MARGIN_TOP, true, CommonStyleAttributes.MARGIN_TOP);
++      float marginBottom = getDimensionAttribute(CommonAttributes.MARGIN_BOTTOM, true, CommonStyleAttributes.MARGIN_BOTTOM);
++
++      //Adding 48 becoz the char '0' ascii value is 48.
++      this.pdfVersion = (char) (this.getIntegerAttribute(CommonAttributes.PDF_VERSION, 4, true, null) + 48);
++
++      if (rotate) {
++        // rotating document size.
++        size = size.rotate();
++      }
++      if (bgColor != null) {
++        size.setBackgroundColor(bgColor);
++      }
++
++      if (isAttributeDefined(CommonAttributes.LOGICAL_PAGENUMBERING)) {
++        // Gets the value for the Logical Page Numbering Attribute.
++        int logicalPageNumberStyle = this.getIntegerAttribute(CommonAttributes.LOGICAL_PAGENUMBERING, true, null);
++        // setting the page number style at document handler
++        documentHandler.setLogicalPageNumberStyle(logicalPageNumberStyle);
++      }
++
++      if (isAttributeDefined(CommonAttributes.LOGICAL_PAGETEXT)) {
++        // Gets the value for the Logical Page Numbering Text Attribute.
++        String logicalPageNumberText = this.getStringAttribute(CommonAttributes.LOGICAL_PAGETEXT, "", true, null);
++        // setting the page number text at document handler
++        documentHandler.setLogicalPageNumberText(logicalPageNumberText);
++      }
++
++      if (isAttributeDefined(CommonAttributes.PDF_VERSION)) {
++        //Added by Kiran
++        //This will set the Acrobat version for the generated PDF.
++        ((PdfWriter) documentHandler.getDocumentWriter(false)).setPdfVersion(this.pdfVersion);
++      }
++    }
++
++    try {
++        startDocument(size, marginLeft, marginRight, marginTop, marginBottom);
++    } catch (DocumentException ex) {
++        throw new DocumentHandlerException(locator(), "Unable to start document", ex);
++    }
++  }
++
++  /**
++   * Closes the item.
++   * @exception DocumentHandlerException Thrown in case something went wrong while closing the document item.
++   */
++  public void closeItem() throws DocumentHandlerException {
++    if (document != null) {
++        /* Only close the document if this is the root level */
++        Integer depth = (Integer)documentHandler.getTemplateContext().getProperty(InsertSubDocumentTag.PROPERTY_DEPTH);
++        System.out.println( "DocumentTag: The depth is: " + depth );
++        if ((depth == null) || (depth == 0)) {
++            document.close();
++        }
++    }
++  }
++
++  /**
++   * Adds a element to the container.
++   * @param item The document item.
++   * @param element The element to be added.
++   * @exception DocumentHandlerException If something went wrong when adding the element.
++   */
++  public void addElement(BaseDocumentTag item, Element element) throws DocumentHandlerException {
++    try {
++      Document document = getDocument(true);
++      // workaround for the missing multipliedLeading (aka line-spacing) support in iText
++      if (item instanceof ParagraphTag) {
++        ParagraphTag tag = (ParagraphTag) item;
++        float leading = tag.getLeading();
++        float lineSpacing = tag.getLineSpacing();
++        extendLeading((Paragraph) element, item.getFont().getFont(), leading, lineSpacing);
++      }
++      document.add(element);
++    } catch (DocumentException ex) {
++        throw new DocumentHandlerException(locator(), "Unable to add element <" + item.getName() + "> to the " + getName() + ": " + ex.getMessage(), ex);
++    }
++  }
++
++  /**
++   * Tells whether the element container is a top level container or not.
++   * @return true if the element container is a top level container, else false.
++   */
++  public boolean isTopLevel() {
++    return true;
++  }
++
++  /**
++   * Gets the line spacing.
++   * @return The current line spacing.
++   */
++  public float getLineSpacing() {
++    return lineSpacing;
++  }
++
++  /**
++   * Gets the leading distance.
++   * @return The current leading distance.
++   */
++  public float getLeading() {
++    return DEFAULT_LEADING;
++  }
++
++  /**
++   * Gets the iText document.
++   * @return The iText document.
++   */
++  public Document getDocument() {
++    return getDocument(true);
++  }
++  /**
++   * Setter method for property document.
++   * @param document The document to set.
++   */
++  protected void setDocument(Document document) {
++    this.document = document;
++  }
++
++  /**
++   * Gets the iText document.
++   * @param openDocumentRequired True, if an open document is required, else false.
++   * @return The iText document.
++   */
++  public Document getDocument(boolean openDocumentRequired) {
++    if (openDocumentRequired) {
++      if (!document.isOpen()) {
++        document.open();
++      }
++    }
++    return document;
++  }
++
++  /**
++   * Sets a parameter definition.
++   * @param parameterDef  The parameter definition.
++   * @exception DocumentHandlerException In case the a problem was detected with the parameter definition.
++   */
++  public void setParameterDef(ParameterDefinition parameterDef) throws DocumentHandlerException {
++    TemplateContext ctx = documentHandler.getTemplateContext();
++    String paramName = parameterDef.getName();
++    Object paramValue = ctx.getProperty(paramName);
++    if (paramValue == null) {
++      if (!parameterDef.isOptional()) {
++        throw new DocumentHandlerException(locator(), "The mandatory document parameter '" + paramName + "' was not defined in the document properties.");
++      }
++      paramValue = parameterDef.getDefaultValue();
++      if (paramValue != null) {
++        // using default value
++        ctx.setProperty(paramName, parameterDef.getDefaultValue());
++      }
++    } else {
++      // checking parameter type
++      String attr = (String) parameterDef.getDefaultValue();
++      if (attr != null) {
++        switch (parameterDef.getType()) {
++          case ParameterDefinition.TYPE_BOOLEAN:
++            if (!(paramValue instanceof Boolean)) {
++              throw new DocumentHandlerException(locator(), "The document parameter '" + paramName + "' was declared as boolean but was given as instance of class '" + paramValue.getClass().getName() + "'.");
++            }
++            break;
++
++          case ParameterDefinition.TYPE_INT:
++            if (!(paramValue instanceof Number)) {
++              throw new DocumentHandlerException(locator(), "The document parameter '" + paramName + "' was declared as int but was given as instance of class '" + paramValue.getClass().getName() + "'.");
++            }
++            break;
++
++          case ParameterDefinition.TYPE_FLOAT:
++            if (!(paramValue instanceof Number)) {
++              throw new DocumentHandlerException(locator(), "The document parameter '" + paramName + "' was declared as float but was given as instance of class '" + paramValue.getClass().getName() + "'.");
++            }
++            break;
++
++          case ParameterDefinition.TYPE_DOUBLE:
++            if (!(paramValue instanceof Number)) {
++              throw new DocumentHandlerException(locator(), "The document parameter '" + paramName + "' was declared as double but was given as instance of class '" + paramValue.getClass().getName() + "'.");
++            }
++            break;
++
++          case ParameterDefinition.TYPE_DATE:
++            if (!(paramValue instanceof Date)) {
++              throw new DocumentHandlerException(locator(), "The document parameter '" + paramName + "' was declared as Date but was given as instance of class '" + paramValue.getClass().getName() + "'.");
++            }
++            break;
++
++          case ParameterDefinition.TYPE_TIME:
++            if (!(paramValue instanceof Date)) {
++              throw new DocumentHandlerException(locator(), "The document parameter '" + paramName + "' was declared as Time but was given as instance of class '" + paramValue.getClass().getName() + "'.");
++            }
++            if (!(paramValue instanceof Time)) {
++              paramValue = new Time(((Date) paramValue).getTime());
++            }
++            break;
++
++          case ParameterDefinition.TYPE_TIMESTAMP:
++            if (!(paramValue instanceof Date)) {
++              throw new DocumentHandlerException(locator(), "The document parameter '" + paramName + "' was declared as Timestamp but was given as instance of class '" + paramValue.getClass().getName() + "'.");
++            }
++            if (!(paramValue instanceof Timestamp)) {
++              paramValue = new Timestamp(((Timestamp) paramValue).getTime());
++            }
++            break;
++
++          case ParameterDefinition.TYPE_STRING:
++            if (!(paramValue instanceof String)) {
++              throw new DocumentHandlerException(locator(), "The document parameter '" + paramName + "' was declared as String but was given as instance of class '" + paramValue.getClass().getName() + "'.");
++            }
++            break;
++
++          case ParameterDefinition.TYPE_COLOR:
++            if (!(paramValue instanceof Color) && !(paramValue instanceof String)) {
++              throw new DocumentHandlerException(locator(), "The document parameter '" + paramName + "' was declared as Color but was given as instance of class '" + paramValue.getClass().getName() + "'.");
++            }
++            break;
++
++          case ParameterDefinition.TYPE_FONT:
++            if (!(paramValue instanceof String)) {
++              throw new DocumentHandlerException(locator(), "The document parameter '" + paramName + "' was declared as Font but was given as instance of class '" + paramValue.getClass().getName() + "'.");
++            }
++            break;
++
++          case ParameterDefinition.TYPE_FORMAT:
++            if (!(paramValue instanceof String)) {
++              throw new DocumentHandlerException(locator(), "The document parameter '" + paramName + "' was declared as Format but was given as instance of class '" + paramValue.getClass().getName() + "'.");
++            }
++            break;
++        }
++      }
++    }
++  }
++
++  /**
++   * Handles a new page request.
++   * @param size The new document size, null if the size should remain the same.
++   * @param margins The new document margins, null if the margins should remain the same.
++   * @return A reference to the document.
++   * @exception DocumentHandlerException In case something went wrong.
++   */
++  public Document handleNewPage(Rectangle size, Rectangle margins)
++    throws DocumentHandlerException {
++
++    try {
++      if (size != null) {
++        document.setPageSize(size);
++      }
++      if (margins != null) {
++        document.setMargins(
++            margins.getBorderWidthLeft(),
++            margins.getBorderWidthRight(),
++            margins.getBorderWidthTop(),
++            margins.getBorderWidthBottom()
++        );
++      }
++      document.newPage();
++    } catch (Exception ex) {
++      throw new DocumentHandlerException(locator(), "Unable to start a new page: " + ex.getMessage(), ex);
++    }
++    return document;
++  }
++
++  private void startDocument( Rectangle size, float marginLeft, float marginRight, float marginTop, float marginBottom )
++    throws DocumentHandlerException, DocumentException {
++    TemplateContext templateContext = documentHandler.getTemplateContext();
++
++    Document currentDocument = (Document)templateContext.getProperty(InsertSubDocumentTag.PROPERTY_DOCUMENT);
++
++    if ( currentDocument != null ) {
++      System.out.println("Using parent document: " + currentDocument);
++      DocWriter currentWriter = (DocWriter)templateContext.getProperty(InsertSubDocumentTag.PROPERTY_DOCUMENT_WRITER);
++
++      this.document = currentDocument;
++      documentHandler.setDocumentAndWriter(this.document,currentWriter);
++
++       /* Create a new page for the document */
++       // Not sure if this is necessary, definitely have to setup the margins and what not, see InsertDocumentTag for
++       // that.
++       document.newPage();
++    } else {
++       this.document = new Document(size, marginLeft, marginRight, marginTop, marginBottom);
++       // setting document at document handler
++       documentHandler.setDocument(this.document);
++    }
++  }
++
++}
+diff -ruNb UJAC-orig/src/org/ujac/print/tag/DocumentTag.java UJAC/src/org/ujac/print/tag/DocumentTag.java
+--- UJAC-orig/src/org/ujac/print/tag/DocumentTag.java	2007-08-14 15:55:13.000000000 -0700
++++ UJAC/src/org/ujac/print/tag/DocumentTag.java	2008-01-16 18:03:13.000000000 -0800
+@@ -23,36 +23,31 @@
+ package org.ujac.print.tag;
+ 
+ import java.awt.Color;
+-
+ import java.lang.reflect.Field;
+-
+ import java.sql.Time;
+ import java.sql.Timestamp;
+-
+ import java.util.Date;
+ 
+-import com.lowagie.text.Element;
++import com.lowagie.text.DocWriter;
+ import com.lowagie.text.Document;
+-import com.lowagie.text.PageSize;
+ import com.lowagie.text.DocumentException;
++import com.lowagie.text.Element;
++import com.lowagie.text.PageSize;
+ import com.lowagie.text.Paragraph;
+-
+ import com.lowagie.text.Rectangle;
+ import com.lowagie.text.pdf.PdfWriter;
+-
+ import org.ujac.print.AttributeDefinitionMap;
+ import org.ujac.print.BaseDocumentTag;
+ import org.ujac.print.ChildDefinition;
+-import org.ujac.print.ElementContainer;
+ import org.ujac.print.DocumentHandlerException;
++import org.ujac.print.ElementContainer;
+ import org.ujac.print.NewPageHandler;
+ import org.ujac.print.ParameterDefHolder;
+ import org.ujac.print.ParameterDefinition;
+ import org.ujac.print.StyleHolder;
+-
++import org.ujac.print.tag.InsertSubDocumentTag;
+ import org.ujac.print.tag.acroform.BaseAcroFieldTag;
+ import org.ujac.print.tag.graphics.GraphicsTag;
+-
+ import org.ujac.util.template.TemplateContext;
+ 
+ /**
+@@ -149,8 +144,10 @@
+     new ChildDefinition(BaseAcroFieldTag.class, 0, ChildDefinition.UNLIMITED),
+     new ChildDefinition(GraphicsTag.class, 0, ChildDefinition.UNLIMITED),
+     new ChildDefinition(BarcodeTag.class, 0, ChildDefinition.UNLIMITED),
+-    new ChildDefinition(InsertDocumentTag.class, 0, ChildDefinition.UNLIMITED),
+     new ChildDefinition(JavascriptTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(InsertDocumentTag.class, 0, ChildDefinition.UNLIMITED),
++    new ChildDefinition(InsertSubDocumentTag.class, 0, ChildDefinition.UNLIMITED)
++
+   };
+ 
+   /** The iText document. */
+@@ -284,10 +281,11 @@
+       }
+ 
+       // creating document
+-      document = new Document(size, marginLeft, marginRight, marginTop, marginBottom);
+-      // setting document at document handler
+-      documentHandler.setDocument(document);
+-      
++      try {
++          startDocument(size, marginLeft, marginRight, marginTop, marginBottom);
++      } catch (DocumentException ex) {
++          throw new DocumentHandlerException(locator(), "Unable to start document", ex);
++      }
+       
+       if (isAttributeDefined(CommonAttributes.PDF_VERSION)) {
+         //Added by Kiran
+@@ -303,9 +301,14 @@
+    */
+   public void closeItem() throws DocumentHandlerException {
+     if (document != null) {
++        /* Only close the document if this is the root level */
++        Integer depth = (Integer)documentHandler.getTemplateContext().getProperty(InsertSubDocumentTag.PROPERTY_DEPTH);
++        System.out.println( "DocumentTag: The depth is: " + depth );
++        if ((depth == null) || (depth == 0)) {
+       document.close();
+     }
+   }
++  }
+ 
+   /**
+    * Adds a element to the container.
+@@ -510,4 +513,28 @@
+     return document;
+   }
+ 
++  private void startDocument( Rectangle size, float marginLeft, float marginRight, float marginTop, float marginBottom )
++    throws DocumentHandlerException, DocumentException {
++    TemplateContext templateContext = documentHandler.getTemplateContext();
++
++    Document currentDocument = (Document)templateContext.getProperty(InsertSubDocumentTag.PROPERTY_DOCUMENT);
++
++    if ( currentDocument != null ) {
++      System.out.println("Using parent document: " + currentDocument);
++      DocWriter currentWriter = (DocWriter)templateContext.getProperty(InsertSubDocumentTag.PROPERTY_DOCUMENT_WRITER);
++
++      this.document = currentDocument;
++      documentHandler.setDocumentAndWriter(this.document,currentWriter);
++
++       /* Create a new page for the document */
++       // Not sure if this is necessary, definitely have to setup the margins and what not, see InsertDocumentTag for
++       // that.
++       document.newPage();
++    } else {
++       this.document = new Document(size, marginLeft, marginRight, marginTop, marginBottom);
++       // setting document at document handler
++       documentHandler.setDocument(this.document);
++    }
++  }
++
+ }
+diff -ruNb UJAC-orig/src/org/ujac/print/tag/#DocumentTag.java.rej# UJAC/src/org/ujac/print/tag/#DocumentTag.java.rej#
+--- UJAC-orig/src/org/ujac/print/tag/#DocumentTag.java.rej#	1969-12-31 16:00:00.000000000 -0800
++++ UJAC/src/org/ujac/print/tag/#DocumentTag.java.rej#	2008-01-16 16:46:54.000000000 -0800
+@@ -0,0 +1,41 @@
++***************
++*** 333,339 ****
++      new ChildDefinition(BaseAcroFieldTag.class, 0, ChildDefinition.UNLIMITED),
++      new ChildDefinition(GraphicsTag.class, 0, ChildDefinition.UNLIMITED),
++      new ChildDefinition(BarcodeTag.class, 0, ChildDefinition.UNLIMITED),
++-     new ChildDefinition(InsertDocumentTag.class, 0, ChildDefinition.UNLIMITED)
++    };
++  
++    /** The iText document. */
++--- 334,341 ----
++      new ChildDefinition(BaseAcroFieldTag.class, 0, ChildDefinition.UNLIMITED),
++      new ChildDefinition(GraphicsTag.class, 0, ChildDefinition.UNLIMITED),
++      new ChildDefinition(BarcodeTag.class, 0, ChildDefinition.UNLIMITED),
+++     new ChildDefinition(InsertDocumentTag.class, 0, ChildDefinition.UNLIMITED),
+++     new ChildDefinition(InsertSubDocumentTag.class, 0, ChildDefinition.UNLIMITED)
++    };
++  
++    /** The iText document. */
++***************
++*** 438,453 ****
++        }
++  
++        // creating document
++-       document = new Document(size, marginLeft, marginRight, marginTop, marginBottom);
++-       // setting document at document handler
++-       documentHandler.setDocument(document);
++      }
++    }
++  
++--- 440,450 ---- 
++       }
++  
++        // creating document
+++       try {
+++           startDocument(size, marginLeft, marginRight, marginTop, marginBottom);
+++       } catch (DocumentException ex) {
+++           throw new DocumentHandlerException(locator(), "Unable to start document", ex);
+++       }
++      }
++    }
++  
+diff -ruNb UJAC-orig/src/org/ujac/print/tag/InsertDocumentTag.java UJAC/src/org/ujac/print/tag/InsertDocumentTag.java
+--- UJAC-orig/src/org/ujac/print/tag/InsertDocumentTag.java	2007-09-10 15:00:31.000000000 -0700
++++ UJAC/src/org/ujac/print/tag/InsertDocumentTag.java	2008-01-16 21:02:08.000000000 -0800
+@@ -23,28 +23,25 @@
+ package org.ujac.print.tag;
+ 
+ import java.io.IOException;
+-
+ import java.util.HashMap;
+ import java.util.List;
+ import java.util.Map;
+ 
+-import org.ujac.print.AttributeDefinition;
+-import org.ujac.print.AttributeDefinitionMap;
+-import org.ujac.print.BaseDocumentTag;
+-import org.ujac.print.ChildDefinition;
+-import org.ujac.print.DocumentHandlerException;
+-import org.ujac.print.DocumentHolder;
+-import org.ujac.print.OutlineItem;
+-
+ import com.lowagie.text.Document;
+ import com.lowagie.text.Rectangle;
+-
+ import com.lowagie.text.pdf.PdfContentByte;
+ import com.lowagie.text.pdf.PdfDestination;
+ import com.lowagie.text.pdf.PdfImportedPage;
+ import com.lowagie.text.pdf.PdfOutline;
+ import com.lowagie.text.pdf.PdfReader;
+ import com.lowagie.text.pdf.PdfWriter;
++import org.ujac.print.AttributeDefinition;
++import org.ujac.print.AttributeDefinitionMap;
++import org.ujac.print.BaseDocumentTag;
++import org.ujac.print.ChildDefinition;
++import org.ujac.print.DocumentHandlerException;
++import org.ujac.print.DocumentHolder;
++import org.ujac.print.OutlineItem;
+ 
+ /**
+  * Name: InsertDocumentTag<br>
+@@ -67,6 +64,9 @@
+   private static final AttributeDefinition Y = new AttributeDefinition(CommonAttributes.ATTR_Y, 
+       AttributeDefinition.TYPE_DIMENSION, false,
+       "The vertical offset for the page output.");
++  private static final AttributeDefinition NAME = new AttributeDefinition(CommonAttributes.ATTR_NAME,
++      AttributeDefinition.TYPE_STRING, false,
++      "The name to use for an anchor to the first page of this document.");
+   /** Definition of the 'from' attribute. */
+   private static final AttributeDefinition FROM = new AttributeDefinition(CommonAttributes.ATTR_FROM, 
+       AttributeDefinition.TYPE_DIMENSION, false,
+@@ -84,7 +84,8 @@
+     .addDefinition(FROM)
+     .addDefinition(TO)
+     .addDefinition(X)
+-    .addDefinition(Y);
++    .addDefinition(Y)
++    .addDefinition(NAME);
+  
+   /** The source of the document to insert. */
+   private Object source;
+@@ -141,6 +142,9 @@
+     float xOffset = getDimensionAttribute(X, 0.0F, true, null);
+     float yOffset = getDimensionAttribute(Y, 0.0F, true, null);
+     
++    /* Load the name of the anchor, if unspecified, don't use */
++    String anchorName = getStringAttribute(NAME,"",true,null).trim();
++
+     // loading source
+     int page = 1;
+     List outlineItems = null;
+@@ -249,6 +253,12 @@
+                   destination = new PdfDestination(PdfDestination.FITH, y);
+                 }
+                 PdfContentByte directContent = writer.getDirectContent();
++
++                // Insert an anchor if this is the first page
++                if ((page==firstPage) && (anchorName != null) && (anchorName.length() > 0)) {
++                  directContent.localDestination( anchorName, new PdfDestination( PdfDestination.FIT ));
++                }
++
+                 directContent.localDestination(outlineItem.getName(), destination);
+               }
+               
+diff -ruNb UJAC-orig/src/org/ujac/print/tag/InsertSubDocumentTag.java UJAC/src/org/ujac/print/tag/InsertSubDocumentTag.java
+--- UJAC-orig/src/org/ujac/print/tag/InsertSubDocumentTag.java	1969-12-31 16:00:00.000000000 -0800
++++ UJAC/src/org/ujac/print/tag/InsertSubDocumentTag.java	2008-01-16 22:28:29.000000000 -0800
+@@ -0,0 +1,274 @@
++/*
++ * Copyright (C) 2003, 2004, 2005 by Christian Lauer.
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Library General Public
++ * License as published by the Free Software Foundation; either
++ * version 2 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Library General Public License for more details.
++ *
++ * You should have received a copy of the GNU Library General Public
++ * License along with this library; if not, write to the Free
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ *
++ * If you didn't download this code from the following link, you should check if
++ * you aren't using an obsolete version:
++ * http://sourceforge.net/projects/ujac
++ */
++
++package org.ujac.print.tag;
++
++import java.io.FileInputStream;
++import java.io.FileNotFoundException;
++import java.io.IOException;
++import java.util.HashMap;
++import java.util.Map;
++
++import com.lowagie.text.DocWriter;
++import com.lowagie.text.Document;
++import org.ujac.print.AttributeDefinition;
++import org.ujac.print.AttributeDefinitionMap;
++import org.ujac.print.BaseDocumentTag;
++import org.ujac.print.ChildDefinition;
++import org.ujac.print.DocumentHandlerException;
++import org.ujac.print.DocumentPrinter;
++import org.ujac.util.io.FileResourceLoader;
++import org.ujac.util.template.TemplateContext;
++
++/**
++ * Name: InsertSubDocumentTag<br>
++ * Description: Class handling the set-property tag.
++ * <br>Log: $Log: InsertSubDocumentTag.java,v $
++ * <br>Log: Revision 1.9  2005/03/29 04:31:39  lauerc
++ * <br>Log: Added support for property type 'Object'.
++ * <br>Log:
++ * <br>Log: Revision 1.8  2005/03/25 10:31:56  lauerc
++ * <br>Log: Replaced ExpressionInterpreter by the new TemplateInterpreter component for dynamic evaluations to achieve more flexibility.
++ * <br>Log:
++ * <br>Log: Revision 1.7  2004/06/02 06:56:34  lauerc
++ * <br>Log: Fixed copy/paste bug at method openItem.
++ * <br>Log:
++ * <br>Log: Revision 1.6  2004/06/02 06:51:27  lauerc
++ * <br>Log: Consequently using expression interpreter now to parse values.
++ * <br>Log:
++ * <br>Log: Revision 1.5  2004/05/27 20:07:33  lauerc
++ * <br>Log: Fixed behaviour of font tags when nested in loop tags.
++ * <br>Log:
++ * <br>Log: Revision 1.4  2004/03/21 11:42:28  lauerc
++ * <br>Log: Applied attribute handling changes performed at BaseDocumentTag.
++ * <br>Log:
++ * <br>Log: Revision 1.3  2004/03/05 23:20:14  lauerc
++ * <br>Log: Fixed type for attribute 'value'.
++ * <br>Log:
++ * <br>Log: Revision 1.2  2004/02/17 20:48:21  lauerc
++ * <br>Log: Fixed bugs in declarations of supported attributes and childs.
++ * <br>Log:
++ * <br>Log: Revision 1.1  2003/11/22 01:37:52  lauerc
++ * <br>Log: Initial revision.
++ * <br>Log:
++ * @author $Author: lauerc $
++ * @version $Revision: 1.9 $
++ */
++public class InsertSubDocumentTag extends BaseDocumentTag {
++  private static final FileResourceLoader fileLoader;
++
++  public static final String PROPERTY_DEPTH = "hiddenPropertyOfDepth";
++  public static final String PROPERTY_DOCUMENT = "hiddenPropertyOfDocument";
++  public static final String PROPERTY_DOCUMENT_WRITER = "hiddenPropertyOfDocumentWriter";
++
++  /** The item's name. */
++  public static final String TAG_NAME = "insert-sub-document";
++  /** The item's supported attributes. */
++
++  private static final AttributeDefinitionMap supportedAttributes = new AttributeDefinitionMap()
++    .addDefinition(new AttributeDefinition(CommonAttributes.ATTR_SOURCE, AttributeDefinition.TYPE_STRING, true,
++                                           "The location of the sub-document to insert at the current position."))
++    .addDefinition(new AttributeDefinition(CommonAttributes.ATTR_PROPERTIES, AttributeDefinition.TYPE_STRING, false,
++                                           "The location of a properties file to load before inserting the sub-document."))
++    .addDefinition(new AttributeDefinition(CommonAttributes.ATTR_PROPERTIES_CLASS, AttributeDefinition.TYPE_STRING, false,
++                                           "The name of a class to load properties from before inserting the sub-document."))
++    .addDefinition(new AttributeDefinition(CommonAttributes.ATTR_NAME, AttributeDefinition.TYPE_STRING, false,
++                                           "The name to use for an anchor to the first page of this document."));
++
++  /** The sub documents name name. */
++  private String source = null;
++  /** Properties file to load. */
++  private String properties = null;
++  /** Class to call to get the properties */
++  private String propertiesClass = null;
++  /** Name of anchor for the first page */
++  private String anchorName = null;
++  /** Non-global Properties before inserting the document */
++  private Map propertiesBefore = null;
++  /** The properties while inside of the sub-document */
++  private Map newProperties;
++  /** Global properties before inserting the document */
++  private Map globalPropertiesBefore = null;
++
++  /**
++   * Gets the item's name.
++   * @return The item's name.
++   */
++  public String getName() {
++    return CommonAttributes.ATTR_NAME;
++  }
++
++  /**
++   * Gets a brief description for the item.
++   * @return The item's description.
++   */
++    public String getDescription() {
++    return "Insert a sub-document into this document." ;
++  }
++
++  /**
++   * Gets the list of supported attributes.
++   * @return The attribute definitions.
++   */
++  public AttributeDefinitionMap getSupportedAttributes() {
++    return supportedAttributes;
++  }
++
++  /**
++   * Gets the list of supported childs.
++   * @return The child definitions.
++   */
++  public ChildDefinition[] getSupportedChilds() {
++    return null;
++  }
++
++  /**
++   * Initializes the item.
++   * @exception DocumentHandlerException If something went badly wrong.
++   */
++  public void initialize() throws DocumentHandlerException {
++    super.initialize();
++  }
++
++  /**
++   * Opens the item.
++   * @exception DocumentHandlerException Thrown in case something went wrong while opening the document item.
++   */
++  public void openItem() throws DocumentHandlerException {
++    super.openItem();
++
++    if (!isValid()) {
++      return;
++    }
++
++    /* Get all of the attributes */
++    this.source = getStringAttribute(CommonAttributes.ATTR_SOURCE, "", true, null);
++    this.properties = getStringAttribute(CommonAttributes.ATTR_PROPERTIES,"",true,null).trim();
++    this.propertiesClass = getStringAttribute(CommonAttributes.ATTR_PROPERTIES_CLASS,"",true, null).trim();
++    this.anchorName = getStringAttribute(CommonAttributes.ATTR_NAME,"",true, null).trim();
++
++    /* Save the properties before running */
++    this.propertiesBefore = documentHandler.getTemplateContext().getProperties();
++    this.newProperties = (this.propertiesBefore != null) ? new HashMap(this.propertiesBefore) : new HashMap();
++    this.globalPropertiesBefore = documentHandler.getTemplateContext().getGlobalProperties();
++
++    /* Set a global property for the depth of the document */
++    setDocumentDepth();
++
++    /* Set a global property defining the document and document writer to use */
++    setDocument();
++
++    /* Load the new properties */
++    loadPropertiesFile();
++    loadPropertiesClass();
++  }
++
++  /**
++   * Closes the inserted document, and resets the properties to the values they were before.
++   * @exception DocumentHandlerException Thrown in case something went wrong while finishing the sub document.
++   */
++  public void closeItem() throws DocumentHandlerException {
++    if (!isValid()) {
++      return;
++    }
++
++    try {
++        FileInputStream templateStream = new FileInputStream(this.source);
++        DocumentPrinter documentPrinter = new DocumentPrinter(templateStream,this.newProperties);
++        documentPrinter.setResourceLoader(fileLoader);
++        /* Have to grab the current pdf stream */
++        // documentPrinter.printDocument(documentHandler.getOutputStream());
++        documentPrinter.printDocument(null);
++
++        /* Close the stream for the sub document */
++        templateStream.close();
++    } catch (FileNotFoundException ex) {
++        throw new DocumentHandlerException(locator(), "Error adding subdocument, the file '" + this.source + "' wasn't found.", ex);
++    } catch (IOException ex) {
++        throw new DocumentHandlerException(locator(), "Error adding subdocument", ex);
++    }
++
++    /* Reload the properties after finishing with the document */
++    /* Done this way to allow for the to parse all documents in one context.  If that is possible */
++    documentHandler.getTemplateContext().setProperties(this.propertiesBefore);
++    documentHandler.getTemplateContext().setGlobalProperties(this.globalPropertiesBefore);
++
++    super.closeItem();
++  }
++
++
++  /* Private methods */
++  private void setDocumentDepth() {
++    Integer depth = (Integer)documentHandler.getTemplateContext().getProperty(PROPERTY_DEPTH);
++    if (depth != null) {
++      depth++;
++    } else {
++      depth = 1;
++    }
++
++    this.newProperties.put(PROPERTY_DEPTH,depth);
++  }
++
++  private void setDocument() throws DocumentHandlerException {
++    TemplateContext templateContext = documentHandler.getTemplateContext();
++    Document currentDocument = (Document)templateContext.getProperty(PROPERTY_DOCUMENT);
++    DocWriter currentWriter = (DocWriter)templateContext.getProperty(PROPERTY_DOCUMENT_WRITER);
++
++    if ((currentDocument == null) || (currentWriter==null)) {
++      currentDocument = documentHandler.getDocument(true);
++      currentWriter = documentHandler.getDocumentWriter();
++    }
++
++    /* Set the new document, this should be a single wrapper object with the depth, document and writer. */
++    this.newProperties.put(PROPERTY_DOCUMENT,currentDocument);
++    this.newProperties.put(PROPERTY_DOCUMENT_WRITER,currentWriter);
++  }
++
++  private void loadPropertiesFile() throws DocumentHandlerException {
++    if ((properties == null) || (properties.length() == 0)) return;
++
++    try {
++      this.newProperties.putAll(DocumentPrinter.loadProperties(this.properties));
++    } catch (IOException ex) {
++      throw new DocumentHandlerException(locator(), "Unable to load properties from location '" + source + "': " + ex.getMessage(), ex);
++    }
++  }
++
++  private void loadPropertiesClass() {
++    if ((propertiesClass == null) || (propertiesClass.length() == 0)) return;
++    /* implement me, cool idea, but should be thought out.  It is really
++     * only useful if it has an argument. */
++  }
++
++    static {
++        FileResourceLoader loader = null;
++
++        try {
++            loader = new FileResourceLoader( "./" );
++        } catch ( IOException e ) {
++            System.err.println( "Unable to create a file resource loader for the current directory." );
++            System.exit( -1 );
++        }
++
++        fileLoader = loader;
++    }
++}
+diff -ruNb UJAC-orig/src/org/ujac/print/tag/TagAttributes.java UJAC/src/org/ujac/print/tag/TagAttributes.java
+--- UJAC-orig/src/org/ujac/print/tag/TagAttributes.java	2007-02-25 14:59:58.000000000 -0800
++++ UJAC/src/org/ujac/print/tag/TagAttributes.java	2008-01-16 20:47:33.000000000 -0800
+@@ -162,6 +162,10 @@
+   String ATTR_LINE_SPACING = "line-spacing";
+   /** Constant for attribute 'source' used at items: image */ 
+   String ATTR_SOURCE = "source";
++  /** Constant for attribute 'properties' used at items: insert-sub-document */
++  String ATTR_PROPERTIES = "properties";
++  /** Constant for attribute 'properties-class' used at items: insert-sub-document */
++  String ATTR_PROPERTIES_CLASS = "properties-class";
+ 
+   /** Constant for attribute 'value' used at items: switch, case */ 
+   String ATTR_VALUE = "value";
+diff -ruNb UJAC-orig/src/org/ujac/util/exi/ExpressionContext.java UJAC/src/org/ujac/util/exi/ExpressionContext.java
+--- UJAC-orig/src/org/ujac/util/exi/ExpressionContext.java	2007-02-25 15:08:29.000000000 -0800
++++ UJAC/src/org/ujac/util/exi/ExpressionContext.java	2008-01-16 18:11:48.000000000 -0800
+@@ -26,7 +26,6 @@
+ import java.io.ObjectInputStream;
+ import java.io.ObjectOutputStream;
+ import java.io.Serializable;
+-
+ import java.util.Collection;
+ import java.util.HashMap;
+ import java.util.Iterator;
+@@ -240,6 +239,22 @@
+   }
+ 
+   /**
++   * Get a copy of the properties map
++   */
++  public Map getProperties()
++  {
++    return new HashMap(this.properties);
++  }
++
++  /**
++   * Set the properties map
++   */
++  public void setProperties(Map properties)
++  {
++    this.properties = ( properties != null ) ? new HashMap(properties ) : new HashMap();
++  }
++
++  /**
+    * Writes the object's data to the given stream.
+    * @param s The stream to write to
+    * @exception IOException In case the data output failed.
+diff -ruNb UJAC-orig/src/org/ujac/util/template/TemplateContext.java UJAC/src/org/ujac/util/template/TemplateContext.java
+--- UJAC-orig/src/org/ujac/util/template/TemplateContext.java	2007-02-25 15:08:29.000000000 -0800
++++ UJAC/src/org/ujac/util/template/TemplateContext.java	2008-01-16 17:52:23.000000000 -0800
+@@ -25,7 +25,6 @@
+ import java.io.IOException;
+ import java.io.ObjectInputStream;
+ import java.io.ObjectOutputStream;
+-
+ import java.util.ArrayList;
+ import java.util.Collection;
+ import java.util.HashMap;
+@@ -220,6 +219,38 @@
+   
+   
+   /**
++   * Get the non-global properties map
++   */
++  public Map getProperties()
++  {
++    return super.getProperties();
++  }
++
++  /**
++   * Set the non-global properties map
++   */
++  public void setProperties(Map properties)
++  {
++    super.setProperties(properties);
++  }
++
++  /**
++   * Get the global properties map
++   */
++  public Map getGlobalProperties()
++  {
++    return new HashMap(this.globalProperties);
++  }
++
++  /**
++   * Set the global properties map
++   */
++  public void setGlobalProperties(Map properties)
++  {
++    this.globalProperties = (properties != null) ? new HashMap(properties) : new HashMap();
++  }
++
++  /**
+    * Writes the object's data to the given stream.
+    * @param s The stream to write to
+    * @exception IOException In case the data output failed.

@@ -1,4 +1,4 @@
 /usr/bin/untangle-ujac2pdf
 /usr/share/untangle-ujac2pdf/libs/commons-logging.jar
-/usr/share/untangle-ujac2pdf/libs/itext-1.4.jar
+/usr/share/untangle-ujac2pdf/libs/itext-2.05.jar
 /usr/share/untangle-ujac2pdf/libs/ujac.jar
