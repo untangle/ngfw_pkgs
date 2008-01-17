@@ -178,10 +178,10 @@ class Alpaca::UvmDataLoader
 
   def load_hostname
     query  = "SELECT  hostname FROM u_address_settings LIMIT 1"
+    hostname = nil
     @dbh.execute( query ) do |result|
       h = result.fetch
-      
-      hostname = nil
+
       unless h.nil?
         hostname_settings = HostnameSettings.find( :first )
         hostname_settings = HostnameSettings.new if hostname_settings.nil?

@@ -26,6 +26,18 @@ namespace :alpaca do
   desc "Upgrade task for settings from the UVM."
   task :upgrade => "db:migrate" do
     Alpaca::UvmDataLoader.new.load_settings
+
+    ## Reload all of the managers
+    os = Alpaca::OS.current_os
+    Dir.new( "#{RAILS_ROOT}/lib/os_library" ).each do |manager|
+      next if /_manager.rb$/.match( manager ).nil?
+      
+      ## Load the manager for this os, this will complete all of the initialization at
+      os["#{manager.sub( /.rb$/, "" )}"]
+    end
+
+    ## Commit the network settings only if there are interfaces setup.
+    os["network_manager"].commit unless Interface.find( :first ).nil?
   end
 end
 
