@@ -10,10 +10,11 @@ class OSLibrary::ArpsManager < Alpaca::OS::ManagerBase
     arp = arp.slice( number_of_heading_lines, arp.length )
     arp.each do |entry|
       items = entry.split
-      results << { :columns => [ { :value => items[0] }, #IP Address
-                                 { :value => items[2] }, #MAC Address
-                                 { :value => items[4] }  #Interface
-                               ] }
+      a = ActiveArp.new
+      a.ip_address = items[0]
+      a.mac_address = items[2]
+      a.interface = items[4]
+      results << a
     end
     return results
   end

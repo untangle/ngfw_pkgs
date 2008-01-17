@@ -1,51 +1,11 @@
-<% form_tag( :action => 'save' ) do
-rows = []
-@static_arps.each do |static_arp|
-    rows << { :columns => [ { :value => static_arp.hostname },
-    	               { :value => static_arp.hw_addr } ] }
-end
--%>
+<% form_tag( :action => 'save' ) do -%>
 <div id="title"><h1><%= "Static ARP Management".t %></h1></div>
 <div id="main-content-body">
-<%= editable_table( :action => "/arp/create_entry", 
-  :header_columns => [ { :name => "IP Address".t }, 
-                       { :name => "HWaddress".t },
-		       { :name => "Delete".t } ],
-  :column_names =>  [ "hostname", "hw_addr" ],
-  :heading => "Static ARP".t,
-  :class => "list-table-arp",
-  :rows => rows,
-  :rows_name => "static_arp",
-  :auto_size => true
-  )
-%>
+  <%= build_table( Alpaca::Table::Data.new( "static_arps", @static_arps ), arp_table_model) %> 
 
-<%= editable_table( :action => "/arp/create_entry", 
-  :header_columns => [ { :name => "IP Address".t }, 
-                       { :name => "HWaddress".t },
-		       { :name => "Interface".t } ],
-  :column_names =>  [ "hostname", "hw_addr", "interface" ],
-  :heading => "Active ARP Table".t,
-  :class => "list-table-arp",
-  :rows => @active_arps,
-  :rows_name => "active_arp",
-  :auto_size => true,
-  :read_only => true,
-  :delete => false,
-  :add => false
-  )
-%>
+  <%= build_table( Alpaca::Table::Data.new( "active_arps", @active_arps ), system_arp_table_model) %> 
 
 </div>
-
-<div id="main-content-footer">
-<div id="help-footer">
-    <%= submit_tag "Help".t %>
-</div>
-<div id="action-footer">
-  <%= submit_tag "Cancel".t %>
-  <%= submit_tag "Save".t %>
-</div>
-</div>
+<%= build_footer %>
 <% end -%>
 

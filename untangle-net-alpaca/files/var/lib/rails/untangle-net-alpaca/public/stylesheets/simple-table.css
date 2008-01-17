@@ -564,3 +564,29 @@ div.list-table-container.system-subscriptions div.description
 { 
   width: 550px;
   }
+
+/* ------------------- Static ARP -------------------- */
+div.list-table-container.arps
+{
+  width: 615px;
+ }
+div.table-label.arps
+{ 
+  width: 617px;
+ }
+div.list-table-container.arps div.hostname
+{
+  width: 250px;
+ }
+div.list-table-container.arps div.hw_addr
+{ 
+  width: 240px;
+ }
+div.list-table-container.arps div.interface
+{ 
+  width: 95px;
+ }
+div.list-table-container.arps div.minus
+{ 
+  width: 70px;
+ }

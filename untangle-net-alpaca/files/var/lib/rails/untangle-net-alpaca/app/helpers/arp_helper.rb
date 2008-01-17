@@ -4,39 +4,22 @@ module ArpHelper
 
     def initialize
       columns = []
-      columns << Alpaca::Table::Column.new( "enabled", "On".t ) do |arp,options|
+      columns << Alpaca::Table::Column.new( "hostname", "IP Address".t ) do |arp,options|
         row_id = options[:row_id]
         view = options[:view]
 <<EOF
-        #{view.hidden_field_tag( "arps[]", row_id )}
-        #{view.table_checkbox( row_id, "enabled", arp.enabled )}
+        #{view.hidden_field_tag( "static_arp[]", row_id )}
+        #{view.text_field( "hostname", options[:row_id], { :value => arp.hostname } )}
 EOF
       end
-
-      columns << Alpaca::Table::Column.new( "target", "Target".t ) do |arp,options| 
-        "&nbsp;" + options[:view].select( "target", options[:row_id], Actions, { :selected => arp.target } )
-      end
       
-      columns << Alpaca::Table::Column.new( "description", "Description".t ) do |arp,options| 
-        "&nbsp;" + options[:view].text_field( "description", options[:row_id], { :value => arp.description } )
-      end
-      
-      ## This gets complicated.
-      ## html_options = { "onlick" => "RuleBuilder.edit( '#{row_id}' )" }
-      columns << Alpaca::Table::EditColumn.new do |arp,options|
-        row_id = options[:row_id]
-        filter = arp.filter
-        filter = "" if filter.nil?
-        view = options[:view]
-<<EOF
-    #{view.hidden_field( "filters", row_id, { :value => filter } )}
-    &nbsp;
-EOF
+      columns << Alpaca::Table::Column.new( "hw_addr", "HW Address".t ) do |arp,options| 
+        "&nbsp;" + options[:view].text_field( "hw_addr", options[:row_id], { :value => arp.hw_addr } )
       end
 
       columns << Alpaca::Table::DeleteColumn.new
       
-      super(  "User Packet Filter Rules", "arps", "", "arp", columns )
+      super(  "Static ARP Entries", "arps", "", "arp", columns )
     end
 
     def row_id( row )
@@ -61,23 +44,25 @@ EOF
 
     def initialize
       columns = []
-      columns << Alpaca::Table::Column.new( "enabled", "On".t ) do |system_arp,options|
-        row_id = system_arp.system_id
+      columns << Alpaca::Table::Column.new( "hostname", "IP Address".t ) do |system_arp,options|
+        row_id = options[:row_id]
         view = options[:view]
-
 <<EOF
         #{view.hidden_field_tag( "system_arps[]", row_id )}
-        #{view.table_checkbox( row_id, "system_enabled", system_arp.enabled )}
-        #{view.hidden_field( "filters", row_id, { :value => system_arp.filter } )}
+        #{system_arp.ip_address}
 EOF
       end
 
       
-      columns << Alpaca::Table::Column.new( "description", "Description".t ) do |system_arp,options| 
-        "&nbsp;" + options[:view].text_field( "description", system_arp.system_id, { :value => system_arp.description } )
+      columns << Alpaca::Table::Column.new( "hw_addr", "HW Address".t ) do |system_arp,options| 
+        "&nbsp;" + system_arp.mac_address
+      end
+
+      columns << Alpaca::Table::Column.new( "interface", "Interface".t ) do |system_arp,options| 
+        "&nbsp;" + system_arp.interface
       end
             
-      super(  "System Packet Filter Rules", "system-arps", "", "system_arp", columns )
+      super(  "Active ARP Entries", "arps", "", "system_arp", columns )
     end
   end
 
