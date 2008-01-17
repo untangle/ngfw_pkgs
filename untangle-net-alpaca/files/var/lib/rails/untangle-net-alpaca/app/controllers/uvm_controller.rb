@@ -219,10 +219,6 @@ class UvmController < ApplicationController
     end    
   end
 
-  def stylesheets
-    [ "borax/list-table", "borax-subscription", "borax-overlay", "rule" ]
-  end
-
   def scripts
     RuleHelper::Scripts + [ "subscription_manager" ]
   end

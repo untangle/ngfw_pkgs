@@ -513,3 +513,54 @@ div.list-table-container.overrides div.minus
 { 
   width: 70px;
   }
+/* ------------------- Subscriptions -------------------- */
+div.list-table-container.subscriptions
+{ 
+  width: 645px;
+  }
+div.table-label.subscriptions
+{ 
+  width: 647px;
+  }
+div.list-table-container.subscriptions div.enabled
+{ 
+  width: 50px;
+  }
+
+div.list-table-container.subscriptions div.subscribe
+{ 
+  width: 90px;
+  }
+
+div.list-table-container.subscriptions div.description
+{ 
+  width: 340px;
+  }
+
+div.list-table-container.subscriptions div.edit
+{ 
+  width: 70px;
+  }
+
+div.list-table-container.subscriptions div.minus
+{ 
+  width: 70px;
+  }
+
+/* System subscriptions */
+div.list-table-container.system-subscriptions
+{ 
+  width: 645px;
+  }
+div.table-label.system-subscriptions
+{ 
+  width: 647px;
+  }
+div.list-table-container.system-subscriptions div.enabled
+{ 
+  width: 50px;
+  }
+div.list-table-container.system-subscriptions div.description
+{ 
+  width: 550px;
+  }

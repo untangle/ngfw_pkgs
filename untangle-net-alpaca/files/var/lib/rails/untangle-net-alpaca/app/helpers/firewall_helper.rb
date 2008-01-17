@@ -66,26 +66,22 @@ EOF
     def initialize
       columns = []
       columns << Alpaca::Table::Column.new( "enabled", "On".t ) do |system_firewall,options|
-        row_id = options[:row_id]
+        row_id = system_firewall.system_id
         view = options[:view]
 
 <<EOF
         #{view.hidden_field_tag( "system_firewalls[]", row_id )}
-        #{view.table_checkbox( row_id, "enabled", system_firewall.enabled )}
+        #{view.table_checkbox( row_id, "system_enabled", system_firewall.enabled )}
         #{view.hidden_field( "filters", row_id, { :value => system_firewall.filter } )}
 EOF
       end
 
       
       columns << Alpaca::Table::Column.new( "description", "Description".t ) do |system_firewall,options| 
-        "&nbsp;" + options[:view].text_field( "description", options[:row_id], { :value => system_firewall.description } )
+        "&nbsp;" + options[:view].text_field( "description", system_firewall.system_id, { :value => system_firewall.description } )
       end
             
       super(  "System Packet Filter Rules", "system-firewalls", "", "system_firewall", columns )
-    end
-
-    def row_id( row )
-      "row-#{rand( 0x100000000 )}"
     end
   end
 
