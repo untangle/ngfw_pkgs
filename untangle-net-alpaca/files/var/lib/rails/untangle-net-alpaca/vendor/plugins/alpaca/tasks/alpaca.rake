@@ -18,9 +18,14 @@ namespace :alpaca do
       os["#{manager.sub( /.rb$/, "" )}"]
     end
 
-    
     ## Commit the network settings only if there are interfaces setup.
     os["network_manager"].commit unless Interface.find( :first ).nil?
+  end
+
+
+  desc "Upgrade task for settings from the UVM."
+  task :upgrade => "db:migrate" do
+    Alpaca::UvmDataLoader.new.load_settings
   end
 end
 

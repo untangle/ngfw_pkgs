@@ -7,7 +7,8 @@ EOF
   <div id="main-content-body">
     <%= build_table( Alpaca::Table::Data.new( "redirect-list", @redirects ), redirect_table_model) %> 
   </div>
-
+  
+  <%= sortable_element( "redirect-list" ) %>
   <%= build_footer %>
 <% end %>
 
