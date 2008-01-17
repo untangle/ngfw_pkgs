@@ -45,10 +45,8 @@ EOF
     def initialize
       columns = []
       columns << Alpaca::Table::Column.new( "hostname", "IP Address".t ) do |system_arp,options|
-        row_id = options[:row_id]
         view = options[:view]
 <<EOF
-        #{view.hidden_field_tag( "system_arps[]", row_id )}
         #{system_arp.ip_address}
 EOF
       end
@@ -69,6 +67,4 @@ EOF
   def system_arp_table_model
     SystemArpTableModel.instance
   end
-
-
 end

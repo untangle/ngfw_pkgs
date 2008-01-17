@@ -590,3 +590,36 @@ div.list-table-container.arps div.minus
 { 
   width: 70px;
  }
+/* ------------------- Static Routes -------------------- */
+div.list-table-container.routes
+{
+  width: 700px;
+ }
+div.table-label.routes
+{ 
+  width: 702px;
+ }
+div.list-table-container.routes div.target
+{
+  width: 150px;
+ }
+div.list-table-container.routes div.netmask
+{ 
+  width: 150px;
+ }
+div.list-table-container.routes div.gateway
+{ 
+  width: 150px;
+ }
+div.list-table-container.routes div.name
+{ 
+  width: 150px;
+ }
+div.list-table-container.routes div.interface
+{ 
+  width: 150px;
+ }
+div.list-table-container.routes div.minus
+{ 
+  width: 70px;
+ }

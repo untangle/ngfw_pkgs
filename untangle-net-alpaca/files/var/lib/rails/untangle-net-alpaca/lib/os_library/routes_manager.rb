@@ -11,11 +11,13 @@ class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
     netstat = netstat.slice( number_of_heading_lines, netstat.length )
     netstat.each do |entry|
       items = entry.split
-      results << { :columns => [ { :value => items[0] }, #target
-                                 { :value => items[2] }, #netmask
-                                 { :value => items[1] }, #gateway
-                                 { :value => "" },
-                                 { :value => items[7] } ] } #iface
+      g = ActiveRoute.new
+      g.target = items[0]
+      g.netmask = items[2]
+      g.gateway = items[1]
+      g.description = ""
+      g.interface = items[7]
+      results << g
     end
     return results
   end

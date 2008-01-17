@@ -1,22 +1,17 @@
 <div id="title"><h1><%= "Static Route Management".t %></h1></div>
-<% form_tag( :action => 'save' ) do
-rows = []
-@network_routes.each do |network_route|
-    rows << { :columns => [ { :value => network_route.target },
-    	                    { :value => network_route.netmask },
-    	                    { :value => network_route.gateway },
-    	                    { :value => network_route.name },
-#    	                    { :value => network_route.category },
-#    	                    { :value => network_route.description },
-#    	                    { :value => network_route.live },
-#    	                    { :value => network_route.alert },
-#    	                    { :value => network_route.log }
-	] }
-end
--%>
+<% form_tag( :action => 'save' ) do -%>
 
 <div id="main-content-body">
-<%= editable_table( :action => "/route/create_entry", 
+  <%= build_table( Alpaca::Table::Data.new( "network_routes", @network_routes ), route_table_model) %> 
+
+  <%= build_table( Alpaca::Table::Data.new( "active_routes", @current_routes ), system_route_table_model) %>
+
+</div>
+<%= build_footer %>
+<% end -%>
+
+
+editable_table( :action => "/route/create_entry", 
   :header_columns => [ { :name => "Target".t }, 
                        { :name => "Netmask".t },
                        { :name => "Gateway".t },
@@ -29,9 +24,8 @@ end
   :rows_name => "network_route",
   :auto_size => true
   )
-%>
 
-<%= editable_table( :action => "/route/create_entry", 
+editable_table( :action => "/route/create_entry", 
   :header_columns => [ { :name => "Target".t }, 
                        { :name => "Netmask".t },
                        { :name => "Gateway".t },
@@ -47,15 +41,4 @@ end
   :delete => false,
   :add => false
   )
-%>
 </div>
-<div id="main-content-footer">
-<div id="help-footer">
-    <%= submit_tag "Help".t %>
-</div>
-<div id="action-footer">
-  <%= submit_tag "Cancel".t %>
-  <%= submit_tag "Save".t %>
-</div>
-</div>
-<% end -%>
