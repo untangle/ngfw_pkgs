@@ -481,3 +481,35 @@ div.list-table-container.system-firewalls div.description
 { 
   width: 600px;
   }
+
+/* ------------------- File Overrides -------------------- */
+
+div.list-table-container.overrides
+{ 
+  width: 593px;
+  
+}
+div.table-label.overrides
+{
+  width: 597px;
+ }
+
+div.list-table-container.overrides div.enabled
+{ 
+  width: 50px;
+  }
+
+div.list-table-container.overrides div.writable
+{ 
+  width: 100px;
+  }
+
+div.list-table-container.overrides div.path
+{ 
+  width: 350px;
+  }
+
+div.list-table-container.overrides div.minus
+{ 
+  width: 70px;
+  }

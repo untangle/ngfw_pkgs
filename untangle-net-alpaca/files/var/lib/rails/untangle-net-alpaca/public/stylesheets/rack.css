@@ -666,38 +666,6 @@ div.minus
 {
   cursor: pointer;
 }
-div.file-overrides
-{ 
-  /*margin: 10px 0 10px 0;*/
-  width: 623px;
-  height: 200px;
-  }
-
-ul#file-override-list div.enabled
-{ 
-  width: 100px;
-  }
-
-ul#file-override-list div.writable
-{ 
-  width: 100px;
-  }
-
-ul#file-override-list div.path
-{ 
-  width: 300px;
-  }
-
-ul#file-override-list div.minus
-{ 
-  width: 100px;
-  }
-
-
-li.file-override div.enabled, li.file-override div.writable, li.file-override div.minus
-{ 
-  text-align: center;
-  }
 ul.system-firewall-list div.enabled
 { 
   width: 100px;
