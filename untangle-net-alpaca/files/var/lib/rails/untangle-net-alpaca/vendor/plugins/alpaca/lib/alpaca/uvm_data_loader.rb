@@ -95,11 +95,11 @@ class Alpaca::UvmDataLoader
           @logger.warn( "WAN is not the external interface" )
         end
         
-        @logger.debug( "Configuring the external interface" )
+        # @logger.debug( "Configuring the external interface" )
         ## Configure the external/wan interface
         configure_external_interface( interface, bridge_hash )
       else
-        @logger.debug( "Configuring #{interface}" )
+        # @logger.debug( "Configuring #{interface}" )
         ## Configure any of the other interfaces
         configure_interface( interface, bridge_hash )
       end
@@ -135,7 +135,7 @@ class Alpaca::UvmDataLoader
           filter += "d-local::true" if ( r["is_local_redirect"] == true && /d-local::/.match( filter ).nil? )
           redirect.filter = filter
 
-          @logger.debug( "Created the filter: #{filter}" )
+          # @logger.debug( "Created the filter: #{filter}" )
           
           ## Set the redirect ip and address
           redirect.new_ip = r["redirect_addr"]
@@ -181,10 +181,12 @@ class Alpaca::UvmDataLoader
     @dbh.execute( query ) do |result|
       h = result.fetch
       
+      hostname = nil
       unless h.nil?
         hostname_settings = HostnameSettings.find( :first )
         hostname_settings = HostnameSettings.new if hostname_settings.nil?
-        hostname_settings.hostname = h["hostname"]
+        hostname = h["hostname"]
+        hostname_settings.hostname = hostname
         hostname_settings.save
       end
     end
@@ -201,6 +203,7 @@ class Alpaca::UvmDataLoader
         ddclient_settings.service = d["provider"]
         ddclient_settings.password = d["password"]
         ddclient_settings.login = d["login"]
+        ddclient_settings.hostname = hostname
         ddclient_settings.save
       end
     end
@@ -418,7 +421,7 @@ class Alpaca::UvmDataLoader
         ip_network.parseNetwork( ipn["network"] )
         ip_network.position, position = position, position + 1
         
-        @logger.debug( "Added the network: #{ip_network}" )
+        # @logger.debug( "Added the network: #{ip_network}" )
         config.ip_networks << ip_network
       end
     end
