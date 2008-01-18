@@ -61,10 +61,9 @@ class NUCLIServer
         @loaded_elements = []
 
 	# Logging
-	@logging = true
+	@logging = false
 	log_file = "#{ENV['UVM_ROOT']}/var/log/uvm/nucliserver.log"
 	STDOUT.reopen(File.open(log_file, "a")) if @logging
-	at_exit { STDOUT.close }
 
         # Misc
 	@start_time = Time.now
