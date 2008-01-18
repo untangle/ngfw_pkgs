@@ -60,7 +60,14 @@ class NUCLIServer
         @component_lock = Mutex.new
         @loaded_elements = []
 
+	# Logging
+	@logging = true
+	log_file = "#{ENV['UVM_ROOT']}/var/log/uvm/nucliserver.log"
+	STDOUT.reopen(File.open(log_file, "a")) if @logging
+	at_exit { STDOUT.close }
+
         # Misc
+	@start_time = Time.now
         @running = false
         trap("HUP") { self.reset }
         
@@ -97,9 +104,9 @@ class NUCLIServer
         if @running then message("${server_name} main loop is not reenterant.", 0); return; end
         @running = true
         
-        puts! "Starting #{@server_name} at #{@server_host}:#{@server_port}..."
+        puts! "Starting #{@server_name} on #{@server_host}:#{@server_port}..."
         DRb.start_service("druby://#{@server_host}:#{@server_port}", self)
-        puts! "#{@server_name} started."
+        puts! "#{@server_name} started at #{Time.now}."
         DRb.thread.join
     end
 
@@ -214,6 +221,10 @@ class NUCLIServer
     
     def shutdown
         exit(0)
+    end
+
+    def info(*args)
+	"Start time: #{@start_time}\n"
     end
 
 end
