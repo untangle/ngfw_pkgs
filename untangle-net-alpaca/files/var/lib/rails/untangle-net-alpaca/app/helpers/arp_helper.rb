@@ -14,7 +14,7 @@ EOF
       end
       
       columns << Alpaca::Table::Column.new( "hw_addr", "HW Address".t ) do |arp,options| 
-        "&nbsp;" + options[:view].text_field( "hw_addr", options[:row_id], { :value => arp.hw_addr } )
+        options[:view].text_field( "hw_addr", options[:row_id], { :value => arp.hw_addr } )
       end
 
       columns << Alpaca::Table::DeleteColumn.new
