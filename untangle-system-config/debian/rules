@@ -13,6 +13,8 @@
 
 MKDIR=/bin/mkdir -p
 
+DESTDIR := debian/$(shell dh_listpackages)
+
 ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -g
 endif
@@ -27,23 +29,22 @@ configure-stamp:
 
 build: configure
 	dh_testdir
-	rm -rf ./debian/tmp
-	mkdir -p ./debian/tmp
-	dh_installdirs -A -v
-	for i in `cat debian/untangle-system-config.dirs` ; do mkdir -p debian/tmp/$$i ; done
-	find ./debian/tmp -name ".svn" | xargs rm -rf 
+	rm -rf ./$(DESTDIR)
+	mkdir -p ./$(DESTDIR)
+	cp -r ./files/* $(DESTDIR)
+	find ./$(DESTDIR) -name ".svn" | xargs rm -rf 
 
 clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-arch-stamp build-indep-stamp configure-stamp
-	rm -rf debian/tmp debian/untangle-system-config sav-install
+	rm -rf $(DESTDIR) debian/untangle-system-config sav-install
 	dh_clean
 
 binary-indep: build
 	dh_testdir  
 	dh_testroot   
-	dh_movefiles 
+#	dh_movefiles
 #	dh_installdebconf   
 	dh_shlibdeps  
 	dh_installdocs   

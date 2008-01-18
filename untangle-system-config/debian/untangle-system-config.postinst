@@ -35,4 +35,7 @@ if [ -n "$rootdev" ]; then
     tune2fs -i 0 $rootdev
 fi
 
+# fix problem about duplicate SSH keys
+/usr/share/untangle-system-config/fix-ssh-keys.sh
+
 exit 0
