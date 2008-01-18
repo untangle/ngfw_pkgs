@@ -58,7 +58,9 @@ Fabtabs.prototype = {
 		return elm
 	    }
 	}
-	$(this.menu.first()).addClassName('active-tab');
+	//$(this.menu.first()).addClassName('active-tab');
+	//var ancestors = $(this.menu.first()).ancestors();
+	//ancestors[1].addClassName('active-tab');
 	return this.menu.first();
     }
 }
