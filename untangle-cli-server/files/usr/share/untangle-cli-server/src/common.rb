@@ -92,28 +92,3 @@ module CmdDispatcher
   
 end
 
-
-
-module RetryLogin
-
-  # ***Ken says... Aaron Read (another of our engineers) thinks this belongs at a lower level of the UVM API.  I'll
-  # review this with him and get back to you :)
-  # 
-  # Runs the asociated block. If the block throws an LoginExpiredException, it logs in
-  # and runs the block again.
-  def retryLogin
-    retried = false
-    begin
-      yield
-    rescue com.untangle.uvm.client.LoginExpiredException => ex
-      if !retried
-        retried = true
-        @@filter_node_lock.synchronize { login }
-        retry
-      else
-        raise
-      end
-    end
-  end
-end
-

@@ -21,7 +21,6 @@ require 'remoteapp'
 class UVMConfigElement < UVMRemoteApp
 
     include CmdDispatcher
-    include RetryLogin
 
     public
         def initialize

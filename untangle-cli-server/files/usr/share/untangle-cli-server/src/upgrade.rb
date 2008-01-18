@@ -19,7 +19,6 @@ require 'remoteapp'
 
 class Support < UVMRemoteApp
   include CmdDispatcher
-  include RetryLogin
 
   def initialize
     @@diag.if_level(3) { puts! "Initializing #{get_node_name()}..." }

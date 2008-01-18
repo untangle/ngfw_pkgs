@@ -19,7 +19,6 @@ require 'remoteapp'
 
 class Uvm < UVMRemoteApp
   include CmdDispatcher
-  include RetryLogin
   
   #UVM_MIB_ROOT = UVM_FILTERNODE_MIB_ROOT + ".0"
 

@@ -44,7 +44,19 @@ class UVMRemoteApp
         @@last_subclass = nil 
 
         @@diag = Diag.new(DEFAULT_DIAG_LEVEL)
-  
+ 
+    protected 
+	def retryLogin
+	    retried = false
+	    begin
+                yield
+            rescue com.untangle.uvm.client.LoginExpiredException
+		raise if retried
+                @@filternode_lock.synchronize { login }
+                retry
+            end
+        end
+
     public
         def initialize
             @@diag.if_level(2) { puts! "Initializing UVMRemoteApp..." }
@@ -97,6 +109,7 @@ class UVMRemoteApp
         end
 
     protected
+        # Caller MUST have obtained @@filternode_lock before calling this method.
         def login
             @@uvmRemoteContext = @@factory.systemLogin( DEFAULT_TIMEOUT )
         end

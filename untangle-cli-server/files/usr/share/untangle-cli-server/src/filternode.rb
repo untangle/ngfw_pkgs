@@ -21,7 +21,6 @@ require 'remoteapp'
 class UVMFilterNode < UVMRemoteApp
 
     include CmdDispatcher
-    include RetryLogin
 
     protected
 
