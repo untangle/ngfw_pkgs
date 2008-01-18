@@ -405,9 +405,9 @@ class UVMFilterNode < UVMRemoteApp
             stats_hash[:s2t_chunks] = nodeStats.s2tChunks()
             stats_hash[:t2c_bytes] = nodeStats.t2cBytes()
             stats_hash[:t2c_chunks] = nodeStats.t2cChunks()
-            stats_hash[:start_date] = nodeStats.startDate()
-            stats_hash[:last_configure_date] = nodeStats.lastConfigureDate()
-            stats_hash[:last_activity_date] = nodeStats.lastActivityDate()
+            stats_hash[:start_date] = nodeStats.startDate().to_s
+            stats_hash[:last_configure_date] = nodeStats.lastConfigureDate().to_s
+            stats_hash[:last_activity_date] = nodeStats.lastActivityDate().to_s
             (0..15).each { |i|
                 stats_hash["counter#{i}".to_sym] = nodeStats.getCount(i)
             }
@@ -451,9 +451,12 @@ class UVMFilterNode < UVMRemoteApp
                 node_stats[:s2t_chunks] += nodeStats.s2tChunks()
                 node_stats[:t2c_bytes] += nodeStats.t2cBytes()
                 node_stats[:t2c_chunks] += nodeStats.t2cChunks()
-                node_stats[:start_date] = nodeStats.getStartDate()
-                node_stats[:last_config_date] = nodeStats.getLastConfigurationDate()
-                node_stats[:last_activity_date] = nodeStats.getLastActivityDate()
+                date = nodeStats.getStartDate()
+                node_stats[:start_date] = date if (date < node_stats[:start_date])
+                date = nodeStats.getLastConfigurationDate()
+                node_stats[:last_config_date] = date if (date > node_stats[:last_config_date])
+                date = nodeStats.getLastActivityDate()
+                node_stats[:last_activity_date] = date if (date > nodeStats.getLastActivityDate())
                 (0..15).each { |i|
                     node_stats["counter#{i}".to_sym] += nodeStats.getCount(i)
                 }
