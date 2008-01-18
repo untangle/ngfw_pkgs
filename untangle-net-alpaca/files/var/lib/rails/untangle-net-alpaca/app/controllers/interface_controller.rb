@@ -102,6 +102,20 @@ class InterfaceController < ApplicationController
     return redirect_to( :action => 'list' )
   end
 
+  def intf_save_director
+    return redirect_to( :action => 'list' ) if ( params[:commit] == "Cancel" )
+    if params[:config_type] == "static"
+      intf_static_save
+    elsif params[:config_type] == "dynamic"
+      intf_dynamic_save
+    elsif params[:config_type] == "bridge"
+      intf_bridge_save
+    elsif params[:config_type] == "pppoe"
+      intf_pppoe_save
+    end
+    
+  end
+
   def intf_static_save
     save do
       ## Get the static interface

@@ -6,7 +6,7 @@ if ( ! pppoe.password.nil? && pppoe.password.length > 0 )
 end
 %>
 <div id="pppoe" <%= style %>>
-  <% form_tag( :action => 'intf_pppoe_save', :id => interface ) do -%>
+<!--  <% form_tag( :action => 'intf_pppoe_save', :id => interface ) do -%> -->
      <div class="text-fields pppoe"> 
        <% if interface.wan %>
        <ul class="text-fields">
@@ -29,8 +29,8 @@ end
        </ul>
        <% end %>
     </div>
-    <%= submit_tag "Cancel".t %>
+<!--    <%= submit_tag "Cancel".t %>
     <%= submit_tag "Save".t %>
 
-  <% end -%>
+  <% end -%> -->
 </div>

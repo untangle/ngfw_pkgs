@@ -6,7 +6,7 @@ def print_dynamic( value )
 end
 %>
 <div id="dynamic" <%= style %>>
-  <% form_tag( :action => 'intf_dynamic_save', :id => interface ) do -%>
+<!--  <% form_tag( :action => 'intf_dynamic_save', :id => interface ) do -%> -->
      <div class="text-fields dynamic"> 
        <div class="first header">Current</div>
        <div class="header">Override</div>
@@ -58,9 +58,10 @@ end
     
     <%= render( :partial => "ip_networks" , :object => dynamic.ip_networks, 
                 :locals => { :list_id => list_id } ) %>
-    
+<!--    
     <%= submit_tag "Cancel".t %>
     <%= submit_tag "Save".t %>
 
   <% end -%>
+-->
 </div>

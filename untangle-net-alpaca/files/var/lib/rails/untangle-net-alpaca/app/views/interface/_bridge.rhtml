@@ -1,13 +1,14 @@
 <% style = @hide_types.include?( "bridge" ) ? 'style="display: none"' : nil  %>
 <div id="bridge" <%= style %>>
   <div class="text-fields">
-    <% form_tag( :action => 'intf_bridge_save', :id => interface ) do -%>
+<!--    <% form_tag( :action => 'intf_bridge_save', :id => interface ) do -%> -->
       <p><label for="bridge_interface"><%= "Bridge To:".t %></label>
       <%= select_tag( "bridge_interface", options_for_select( bridge_interfaces, bridge_interface_id )) %>
       <%= submit_tag "Configure".t, :onclick => "return #{confirm_javascript_function( "Save, and configure?".t )}, , :disable_with => true"  %></p>
-
+<!--
       <%= submit_tag "Cancel".t %>
       <%= submit_tag "Save".t, :onclick => "return #{confirm_javascript_function( "Are you sure?".t )}"%>
     <% end -%>
+-->
   </div>
 </div>

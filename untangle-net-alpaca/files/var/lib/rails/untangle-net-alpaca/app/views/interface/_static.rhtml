@@ -1,6 +1,6 @@
 <% style = @hide_types.include?( "static" ) ? 'style="display: none"' : nil  %>
 <div id="static" <%= style %>>
-  <% form_tag( :action => 'intf_static_save', :id => interface ) do -%>
+  <!-- <% form_tag( :action => 'intf_static_save', :id => interface ) do -%> -->
     <h2><%= "IP Addresses".t %></h2>
     <% list_id = "ip-network-list-static" %>
     <%= link_to_remote( "+".t, :url => { :action => :create_ip_network, :list_id => list_id } ) %>
@@ -47,10 +47,9 @@
         </li>
       </ul>
     </fieldset>
-      
+<!--      
     <%= submit_tag "Cancel".t %>
     <%= submit_tag "Save".t %>
-
-  <% end -%>
+  <% end -%>-->
 
 </div>
