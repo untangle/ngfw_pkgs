@@ -34,6 +34,10 @@ rm -rf /usr/share/untangle/conf/openvpn
 rm -rf /usr/share/untangle/quarantine
 rm -rf /etc/openvpn
 
+# remove old generated reports.  (only good for next 992 years). bug3535
+rm -rf /usr/share/untangle/web/reports/2*
+rm /usr/share/untangle/web/reports/current
+
 if [ -x /usr/sbin/slapadd ]; then
     # restore initial LDAP db
     /etc/init.d/slapd stop
