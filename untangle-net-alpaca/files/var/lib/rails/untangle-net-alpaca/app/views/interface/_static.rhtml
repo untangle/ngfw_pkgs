@@ -3,7 +3,6 @@
   <!-- <% form_tag( :action => 'intf_static_save', :id => interface ) do -%> -->
     <h2><%= "IP Addresses".t %></h2>
     <% list_id = "ip-network-list-static" %>
-    <%= link_to_remote( "+".t, :url => { :action => :create_ip_network, :list_id => list_id } ) %>
     <%= render( :partial => "ip_networks" , :object => static.ip_networks,
                 :locals => { :list_id => list_id } ) %>
 
@@ -34,7 +33,6 @@
 
     <h2><%= "NAT Policy".t %></h2>
     <% list_id = "nat-policy-list-static" %>
-    <%= link_to_remote( "+".t, :url => { :action => :create_nat_policy, :list_id => list_id  } ) %>
     <%= render( :partial => "nat_policies" , :object => static.nat_policies,
                 :locals => { :list_id => list_id } ) %>  
     

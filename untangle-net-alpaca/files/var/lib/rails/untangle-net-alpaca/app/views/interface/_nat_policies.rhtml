@@ -1,3 +1,5 @@
+<%= build_table( Alpaca::Table::Data.new( list_id, nat_policies ), nat_table_model) %>
+<!--
 <div class="list-table nat-policies">
   <ul class="nat-policy-list" id="<%= list_id %>">
     <li class="header">
@@ -6,8 +8,11 @@
       <div class="minus"><%= "Delete".t %></div>
     </li>
     
-    <%= render(:partial => "nat_policy" , :collection => nat_policies ) %>
+    <%= ""
+#render(:partial => "nat_policy" , :collection => nat_policies ) 
+%>
   </ul>
 
   <%= sortable_element( list_id ) %> 
 </div>
+-->

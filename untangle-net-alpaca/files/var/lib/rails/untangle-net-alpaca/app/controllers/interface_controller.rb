@@ -112,8 +112,7 @@ class InterfaceController < ApplicationController
       intf_bridge_save
     elsif params[:config_type] == "pppoe"
       intf_pppoe_save
-    end
-    
+    end 
   end
 
   def intf_static_save
@@ -343,10 +342,6 @@ class InterfaceController < ApplicationController
 
   def scripts
     [ "interface" ]
-  end
-
-  def stylesheets
-    [ "borax-ip-network", "borax-nat-policy", "borax/list-table" ]
   end
 
   private

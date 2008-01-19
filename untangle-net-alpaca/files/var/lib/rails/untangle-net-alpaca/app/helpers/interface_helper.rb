@@ -119,4 +119,81 @@ module InterfaceHelper
     Alpaca::OS.current_os["network_manager"]
   end
 
+  class IPNetworkTableModel < Alpaca::Table::TableModel
+    include Singleton
+
+    def initialize
+      columns = []
+      columns << Alpaca::Table::Column.new( "ip-network", "Address and Netmask".t ) do |ip_network,options|
+        row_id = options[:row_id]
+        view = options[:view]
+<<EOF
+        #{view.hidden_field_tag( "networkIndices[]", row_id )}
+        #{view.text_field( "networks", options[:row_id], { :value => "#{ip_network.ip} / #{ip_network.netmask}" } )}
+EOF
+      end
+
+      columns << Alpaca::Table::DeleteColumn.new
+      
+      super(  "IP Addresses", "ip_networks", "", "ip_network", columns )
+    end
+
+    def row_id( row )
+      "row-#{rand( 0x100000000 )}"
+    end
+
+    def action( table_data, view )
+      <<EOF
+<div onclick="#{view.remote_function( :url => { :action => :create_ip_network, :list_id => table_data.css_id } )}" class="add-button">
+  #{"Add".t}
+</div>
+EOF
+    end
+  end
+
+  def ip_network_table_model
+    IPNetworkTableModel.instance
+  end
+
+  class NatTableModel < Alpaca::Table::TableModel
+    include Singleton
+
+    def initialize
+      columns = []
+      columns << Alpaca::Table::Column.new( "ip-address", "Address and Netmask".t ) do |nat,options|
+        row_id = options[:row_id]
+        view = options[:view]
+<<EOF
+        #{view.hidden_field_tag( "natIndicides[]", row_id )}
+        #{view.text_field( "natNetworks", options[:row_id], { :value => "#{nat.ip} / #{nat.netmask}" } )}
+EOF
+      end
+      
+      columns << Alpaca::Table::Column.new( "new-source", "Source Address".t ) do |nat,options| 
+        options[:view].text_field( "natNewSources", options[:row_id], { :value => "#{nat.new_source}" } )
+      end
+
+      columns << Alpaca::Table::DeleteColumn.new
+      
+      super(  "NAT Policies", "nats", "", "nat", columns )
+    end
+
+    def row_id( row )
+      "row-#{rand( 0x100000000 )}"
+    end
+
+    def action( table_data, view )
+      <<EOF
+<div onclick="#{view.remote_function( :url => { :action => :create_nat_policy, :list_id => table_data.css_id } )}" class="add-button">
+  #{"Add".t}
+</div>
+EOF
+    end
+  end
+
+  def nat_table_model
+    NatTableModel.instance
+  end
+
+
 end

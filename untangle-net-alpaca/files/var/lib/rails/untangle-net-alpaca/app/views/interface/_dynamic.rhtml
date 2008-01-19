@@ -54,7 +54,6 @@ end
 
     <h2><%= "IP Addresses".t %></h2>
     <% list_id = "ip-network-list-dynamic" %>
-    <%= link_to_remote( "+".t, :url => { :action => :create_ip_network, :list_id => list_id  } ) %>
     
     <%= render( :partial => "ip_networks" , :object => dynamic.ip_networks, 
                 :locals => { :list_id => list_id } ) %>
