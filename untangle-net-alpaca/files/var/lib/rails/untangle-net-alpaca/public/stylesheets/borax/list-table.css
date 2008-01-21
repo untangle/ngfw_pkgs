@@ -1,1 +1,64 @@
+div.wizard-list-table
+{ 
+  overflow-y: scroll;
+  background-color: #EEFFEE;
+  border-left: 1px solid #C0C0C0;
+  border-bottom: 1px solid #C0C0C0;
+ }
+ 
+div.wizard-list-table ul
+{
+  width: 100%;
+  list-style: none inside none;
+  margin: 0px;
+  padding: 0px;
+ }
+
+div.wizard-list-table ul li
+{
+  overflow: auto;
+  }
+
+/* Style each row in the list */
+/* This leaves the double border in the last item when the items fill the list vertically) */
+div.wizard-list-table li
+{ 
+  border-bottom: 1px solid #C0C0C0;
+ }
+
+div.wizard-list-table ul > li div
+{
+  float: left;
+  }
+
+div.wizard-list-table ul li > div
+{ 
+  border-left: 1px solid #C0C0C0;
+  }
+
+/* Style the header */
+div.wizard-list-table ul li.header
+{ 
+  background-color: #C0C0C0;
+  text-align: center;
+ }
+
+
+/* Fix the border for the first column */
+div.wizard-list-table li div:first-child
+{ 
+  border-left: 0px none #C0C0C0;
+  }
+
+div.wizard-list-table select
+{ 
+  width: 100%;
+}
+
+div.wizard-list-table input[type="text"]
+{
+  background-color: transparent;
+  border-width: 0px;
+  width: 100%;
+ }
 
