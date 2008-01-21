@@ -38,7 +38,7 @@ class Uvm < UVMRemoteApp
 
     begin
       retryLogin {
-    	return "There is no default command for 'uvm'" if args.empty?
+    	return "There is no default command for 'uvm' (try 'uvm help' for assistance)." if args.empty?
 	cmd = args.shift
         return dispatch_cmd([cmd, nil, *args])
       }
@@ -61,6 +61,8 @@ class Uvm < UVMRemoteApp
     return <<HELP
 - uvm kill all sessions 
     -- Terminate/kill all open UVM network user sessions.
+- uvm instances
+    -- Enumerate all node instances running in the effective UVM.
 HELP
   end
 
@@ -71,5 +73,27 @@ HELP
 	return "Kill all sessions request sent to #{BRAND} server."
   end
 
+  def cmd_instances(tid, *args)
+	instances()
+  end
+
+  def instances()
+	tm = @@uvmRemoteContext.nodeManager()
+	tids = tm.nodeInstances() 
+	instance_list = ""
+	tids.each do |tid|
+		ctx = tm.nodeContext(tid)
+		next unless ctx
+		node = ctx.node()
+		next unless node
+		name = tid.getName()
+		desc = ctx.getNodeDesc().getName()
+		policy = tid.getPolicy()
+		state = node.getRunState()
+		instance_list << sprintf("%s\t%30s %32s %s\n", name, desc, policy, state)
+	end
+	@@diag.if_level(3) { puts! instance_list }
+	return instance_list
+  end
 end
 
