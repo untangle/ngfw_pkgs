@@ -6,7 +6,9 @@
     <h3><%= "Up to date".t %></h3>
     
     <p class="description">
-      <%= "Unable to detect any removed or installed interfaces." %>
+      <%= "Unable to detect any removed or installed interfaces.".t %>
+      <%= link_to( "Return to list.".t, { :action => "manage" } ) %>
+      <%= javascript_tag( "window.setTimeout('location.href=\"" + url_for( :action => "manage" ) + "\"', 5000);" ) %>
     </p>
   <% else %>
     <% unless @new_interfaces.empty?  %>

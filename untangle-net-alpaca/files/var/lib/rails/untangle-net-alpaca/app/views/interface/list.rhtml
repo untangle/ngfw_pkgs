@@ -2,6 +2,7 @@
 <% form_tag( :action => 'intf_order_save' ) do -%>
   <div id="main-content-body">
   <div id="interface-list">
+    <div class="refresh-button" onclick="location.href='<%= url_for( :controller => :network, :action => :refresh_interfaces ) %>'"> Refresh </div>
     <table>
       <tr>
         <th><%= "Edit".t %></th>
