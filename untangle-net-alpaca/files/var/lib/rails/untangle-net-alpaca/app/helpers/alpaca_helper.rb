@@ -13,7 +13,7 @@ module AlpacaHelper
         options[:view].text_field( "interfaces", options[:row_id], { :value => "#{interface.os_name}", :readonly => true, :size => 8 } )
       end
       columns << Alpaca::Table::Column.new( "carrier", "Connection".t ) do |interface,options| 
-        options[:view].text_field( "interfaces", options[:row_id], { :value => "#{interface.carrier}", :readonly => true, :size => 13 } )
+        options[:view].text_field( "interfaces", options[:row_id], { :value => "#{interface.interface_status}", :readonly => true, :size => 13 } )
       end
       columns << Alpaca::Table::Column.new( "mac", "Hardware Address".t ) do |interface,options| 
         options[:view].text_field( "interfaces", options[:row_id], { :value => "#{interface.hardware_address}", :readonly => true } )

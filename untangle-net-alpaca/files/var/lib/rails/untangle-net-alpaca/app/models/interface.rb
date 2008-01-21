@@ -83,6 +83,10 @@ class Interface < ActiveRecord::Base
     return carrier
   end
 
+  def interface_status
+    return `/usr/share/untangle-net-alpaca/scripts/get-interface-status #{self.os_name}`
+  end
+
   def hardware_address
     address = "Unknown".t
     begin
