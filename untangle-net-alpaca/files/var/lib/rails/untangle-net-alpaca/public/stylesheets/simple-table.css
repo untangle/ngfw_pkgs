@@ -47,6 +47,11 @@ div.list-table-container ul
   margin: 0;
  }
 
+div.list-table-container ul li
+{
+  list-style: none inside none;
+ }
+
 /* The header */
 div.list-table-container ul.header
 { 

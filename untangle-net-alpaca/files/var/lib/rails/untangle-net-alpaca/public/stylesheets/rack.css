@@ -1,10 +1,20 @@
-body
-{ 
-  font-family: Arial, Helvetica;
-  margin: 0;
-  padding: 0;
- }
+/*
+Copyright (c) 2007, Yahoo! Inc. All rights reserved.
+Code licensed under the BSD License:
+http://developer.yahoo.net/yui/license.txt
+version: 2.4.1
+*/
+html{color:#000;background:#FFF;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}li{list-style:none;}caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}abbr,acronym {border:0;font-variant:normal;}sup {vertical-align:text-top;}sub {vertical-align:text-bottom;}input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}legend{color:#000;}body {font:13px/1.231 arial,helvetica,clean,sans-serif;*font-size:small;*font:x-small;}table {font-size:inherit;font:100%;}pre,code,kbd,samp,tt{font-family:monospace;*font-size:108%;line-height:100%;}
 
+/*
+Copyright (c) 2007, Yahoo! Inc. All rights reserved.
+Code licensed under the BSD License:
+http://developer.yahoo.net/yui/license.txt
+version: 2.4.1
+*/
+h1{font-size:138.5%;}h2{font-size:123.1%;}h3{font-size:108%;}h1,h2,h3{margin:1em 0;}h1,h2,h3,h4,h5,h6,strong{font-weight:bold;}abbr,acronym{border-bottom:1px dotted #000;cursor:help;} em{font-style:italic;}blockquote,ul,ol,dl{margin:1em;}ol,ul,dl{margin-left:2em;}ol li{list-style:decimal outside;}ul li{list-style:disc outside;}dl dd{margin-left:1em;}th,td{border:1px solid #000;padding:.5em;}th{font-weight:bold;text-align:center;}caption{margin-bottom:.5em;text-align:center;}p,fieldset,table,pre{margin-bottom:1em;}input[type=text],input[type=password],textarea{width:12.25em;*width:11.9em;}
+
+/* Untangle CSS Stuff */
 div#dns-dynamic-entries
 { 
   /*margin: 10px 0 10px 0;*/
@@ -260,7 +270,6 @@ div#rule-dialog > h2.title
   margin: 0;
   width: 100%;
   text-indent: 15px;
-  font-family: "Helvetica Neue", Arial, sans-serif;
   border: 0;
   }
 div.text-fields label
@@ -352,6 +361,7 @@ div#main-content-body > form, div#main-content-body form, div#main-content-body 
   width: 90px;
   padding-top: 6px;
   text-align: center;
+  list-style: none;
   }
 #tabs li.active-tab
 {
@@ -433,6 +443,7 @@ div#advanced span a, div#logout span a
  background-color: #FFF;
  border-left: 1px solid #797979;
  border-right: 1px solid #797979;
+ list-style-type: none;
  }
 #advanced-dropdown li:hover
 {
@@ -482,16 +493,23 @@ div#action-footer
 */
 div#interface-list table
 { 
+  border: 0;
   border-collapse: collapse;
   width: 600px;  
   }
 
 div#interface-list td
 { 
+  border: 0;
   padding-top: 5px;
   height: 28px;
   text-align: center;
   }
+
+div#interface-list th
+{
+  border: 0;
+ }
 
 td#interface-os-data
 { 
@@ -627,7 +645,6 @@ ul.main-menu-depth-0
 {
   display: table;
   font-weight: bold;
-  font-family: "Helvetica Neue", Arial, sans-serif;
   text-transform: uppercase;
   font-size: 10px;
 }
