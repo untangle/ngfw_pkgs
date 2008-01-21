@@ -41,8 +41,11 @@ Fabtabs.prototype = {
 	ancestors[1].removeClassName('active-tab');
     },
     show : function(elm) {
-	$(elm).addClassName('active-tab');
 	var up = new Ajax.Updater($('main-content'), $(elm).href, { evalScripts: true });
+        this.highlight(elm);
+    },
+    highlight : function(elm) {
+	$(elm).addClassName('active-tab');
 	var ancestors = $(elm).ancestors();
 	ancestors[1].addClassName('active-tab');
     },
@@ -52,9 +55,15 @@ Fabtabs.prototype = {
     getInitialTab : function() {
     	if(document.location.href.match(/(\w.+)/)) {
     	    var loc = RegExp.$1;
-    	    var elm = this.menu.find(function(value) { return value.href.match(/(\w.+)/)[1] == loc; });
+    	    var elm = this.menu.find(function(value) {
+		    var href = value.href.match(/(\w.+)/)[1];
+		    href = href.replace(/\/list/,"")
+		    href = href.replace(/\/manage/,"")
+		    return loc.substring(href.length, 0) == href;
+		    //return value.href.match(/(\w.+)/)[1] == loc; 
+		});
     	    if (elm) {
-	        this.show(elm);
+	        this.highlight(elm);
 		return elm
 	    }
 	}
