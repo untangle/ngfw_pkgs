@@ -102,6 +102,8 @@ class NUCLIServer
     def run
         if @running then message("${server_name} main loop is not reenterant.", 0); return; end
         @running = true
+
+	at_exit { DRb.stop_service ; DRb.thread.kill }
         
         puts! "Starting #{@server_name} on #{@server_host}:#{@server_port}..."
         DRb.start_service("druby://#{@server_host}:#{@server_port}", self)
