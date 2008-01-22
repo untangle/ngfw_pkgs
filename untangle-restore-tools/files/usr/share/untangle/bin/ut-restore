@@ -172,7 +172,7 @@ main_menu()
                     ;;
                 "Return to Factory Defaults")
                     if confirm "Return all settings to factory defaults?"; then
-                        /usr/share/untangle/bin/factory-defaults
+                        /usr/share/untangle/bin/factory-defaults  > /var/log/uvm/factory-defaults.log 2>&1
                         state=FACTORY_SUCCESS_SPLASH
                     else
                         state=MAIN_MENU
