@@ -14,6 +14,12 @@ version: 2.4.1
 */
 h1{font-size:138.5%;}h2{font-size:123.1%;}h3{font-size:108%;}h1,h2,h3{margin:1em 0;}h1,h2,h3,h4,h5,h6,strong{font-weight:bold;}abbr,acronym{border-bottom:1px dotted #000;cursor:help;} em{font-style:italic;}blockquote,ul,ol,dl{margin:1em;}ol,ul,dl{margin-left:2em;}ol li{list-style:decimal outside;}ul li{list-style:disc outside;}dl dd{margin-left:1em;}th,td{border:1px solid #000;padding:.5em;}th{font-weight:bold;text-align:center;}caption{margin-bottom:.5em;text-align:center;}p,fieldset,table,pre{margin-bottom:1em;}input[type=text],input[type=password],textarea{width:12.25em;*width:11.9em;}
 
+#main-menu, #main-content
+{ 
+	font-size: 93%; /* renders 12px */
+}
+
+
 /* Untangle CSS Stuff */
 div#dns-dynamic-entries
 { 
@@ -431,6 +437,13 @@ div#advanced span a, div#logout span a
   list-style-type: none;
   display: none
  }
+#advanced-dropdown.shown {
+	display: block;
+  margin-top: 21px;
+  border-top: 1px solid #797979;
+  border-bottom: 1px solid #797979;
+}
+/*
 #advanced:hover #advanced-dropdown
 { 
   display: block;
@@ -438,6 +451,16 @@ div#advanced span a, div#logout span a
   border-top: 1px solid #797979;
   border-bottom: 1px solid #797979;
  }
+*/
+/*
+#advanced span a:hover  #advanced-dropdown {
+  display: block;
+  margin-top: 21px;
+  border-top: 1px solid #797979;
+  border-bottom: 1px solid #797979;	
+border: 1px solid red;
+}*/
+
 #advanced-dropdown li
 {
  background-color: #FFF;
@@ -445,7 +468,15 @@ div#advanced span a, div#logout span a
  border-right: 1px solid #797979;
  list-style-type: none;
  }
+/*
 #advanced-dropdown li:hover
+{
+ background-color: #DDD;
+ border-left: 1px solid #797979;
+ border-right: 1px solid #797979;
+ }
+*/
+#advanced-dropdown li.highlight
 {
  background-color: #DDD;
  border-left: 1px solid #797979;

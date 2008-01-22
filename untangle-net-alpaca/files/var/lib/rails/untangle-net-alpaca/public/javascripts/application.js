@@ -104,7 +104,59 @@ Fabtabs.prototype = {
 	}
     }
 
+
+	function showAdvancedMenu(event) {
+		//var element = Event.element(event);
+		$('advanced-dropdown').addClassName('shown');
+	}
+	function hideAdvancedMenu(event) {
+		//var element = Event.element(event);
+		$('advanced-dropdown').removeClassName('shown');
+	}
+	function highlightMenuItem(event) {
+		var element = Event.element(event);
+		
+		while (element != document.body && element.nodeName.toLowerCase() != 'li') {
+			element = element.parentNode;
+		}
+		if (element.nodeName.toLowerCase() != 'li') {
+			return null;
+		}
+		
+		element.addClassName('highlight');
+	}
+	function unhighlightMenuItem(event) {
+		
+		var element = Event.element(event);
+		while (element != document.body && element.nodeName.toLowerCase() != 'li') {
+			element = element.parentNode;
+		}
+		if (element.nodeName.toLowerCase() != 'li') {
+			return null;
+		}
+		element.removeClassName('highlight');	
+		
+	}
+	function init(event) {
+
+		$('advanced').observe('mouseover', showAdvancedMenu);
+		$('advanced').observe('mouseout', hideAdvancedMenu);
+		
+		var menuChildren = $('advanced').getElementsByTagName('li');
+		for(var i=0; i<menuChildren.length; i++) {
+			var thisMenuItem = menuChildren[i];
+			if (thisMenuItem.nodeName.toLowerCase() == "li") {
+				Element.extend(thisMenuItem);
+				thisMenuItem.observe('mouseover', highlightMenuItem);
+				thisMenuItem.observe('mouseout', unhighlightMenuItem);
+			}
+		}
+	}
+
+
 Event.observe(window,'load',function(){ new Fabtabs('tabs'); },false);
 
 Event.observe(window,'load',handleResize,false);
 Event.observe(window,'resize',handleResize,false);
+Event.observe(window, 'load', init, false);
+
