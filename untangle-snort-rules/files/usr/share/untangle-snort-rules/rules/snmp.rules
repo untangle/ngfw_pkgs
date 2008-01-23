@@ -15,7 +15,7 @@
 # Certified Rules License Agreement.
 #
 #
-# $Id: snmp.rules,v 1.17.2.1.2.3 2007/02/01 22:05:37 vrtbuild Exp $
+# $Id: snmp.rules,v 1.17.2.1.2.4 2007/08/01 19:57:59 vrtbuild Exp $
 # ---------------
 # SNMP RULES
 # ---------------
@@ -37,3 +37,4 @@ alert tcp $EXTERNAL_NET any -> $HOME_NET 162 (msg:"SNMP trap tcp"; flow:stateles
 alert tcp $EXTERNAL_NET any -> $HOME_NET 705 (msg:"SNMP AgentX/tcp request"; flow:stateless; reference:bugtraq,4088; reference:bugtraq,4089; reference:bugtraq,4132; reference:cve,2002-0012; reference:cve,2002-0013; classtype:attempted-recon; sid:1421; rev:11;)
 alert udp $EXTERNAL_NET any -> $HOME_NET 161 (msg:"SNMP PROTOS test-suite-req-app attempt"; content:"0&|02 01 00 04 06|public|A0 19 02 01 00 02 01 00 02 01 00|0|0E|0|0C 06 08|+|06 01 02 01 01 05 00 05 00|"; reference:url,www.ee.oulu.fi/research/ouspg/protos/testing/c06/snmpv1/index.html; classtype:misc-attack; sid:1426; rev:5;)
 alert udp $EXTERNAL_NET any -> $HOME_NET 162 (msg:"SNMP PROTOS test-suite-trap-app attempt"; content:"08|02 01 00 04 06|public|A4|+|06|"; reference:url,www.ee.oulu.fi/research/ouspg/protos/testing/c06/snmpv1/index.html; classtype:misc-attack; sid:1427; rev:4;)
+alert udp $EXTERNAL_NET any -> $HOME_NET 161 (msg:"SNMP MS Windows getbulk request"; content:"0"; depth:1; byte_test:1,!&,128,0,relative; content:"|02 01 01 04|"; within:4; distance:1; byte_test:1,!&,128,0,relative; byte_jump:1,0, relative; content:"|A5|"; within:1; reference:cve,2006-5583; classtype:attempted-admin; sid:12198; rev:1;)

@@ -15,7 +15,7 @@
 # Certified Rules License Agreement.
 #
 #
-# $Id: attack-responses.rules,v 1.32.2.3.2.5 2006/10/19 14:23:30 vrtbuild Exp $
+# $Id: attack-responses.rules,v 1.32.2.3.2.6 2007/06/12 18:17:37 vrtbuild Exp $
 # ----------------
 # ATTACK RESPONSES
 # ----------------
@@ -32,7 +32,7 @@ alert tcp $HTTP_SERVERS $HTTP_PORTS -> $EXTERNAL_NET any (msg:"ATTACK-RESPONSES 
 alert tcp $HTTP_SERVERS $HTTP_PORTS -> $EXTERNAL_NET any (msg:"ATTACK-RESPONSES 403 Forbidden"; flow:from_server,established; content:"HTTP/1.1 403"; depth:12; classtype:attempted-recon; sid:1201; rev:7;)
 
 alert ip any any -> any any (msg:"ATTACK-RESPONSES id check returned root"; content:"uid=0|28|root|29|"; classtype:bad-unknown; sid:498; rev:6;)
-# alert ip $HOME_NET any -> $EXTERNAL_NET any (msg:"ATTACK-RESPONSES id check returned userid"; content:"uid="; byte_test:5,<,65537,0,relative,dec,string; content:" gid="; within:15; byte_test:5,<,65537,0,relative,dec,string; classtype:bad-unknown; sid:1882; rev:12;)
+# alert ip $HOME_NET any -> $EXTERNAL_NET any (msg:"ATTACK-RESPONSES id check returned userid"; content:"uid="; nocase; content:" gid="; distance:0; pcre:"/uid=\d{1,5}\S+\s+gid=\d{1,5}/smi"; classtype:bad-unknown; sid:1882; rev:14;)
 
 alert tcp $HOME_NET 8002 -> $EXTERNAL_NET any (msg:"ATTACK-RESPONSES oracle one hour install"; flow:from_server,established; content:"Oracle Applications One-Hour Install"; reference:nessus,10737; classtype:bad-unknown; sid:1464; rev:5;)
 alert tcp $HOME_NET 749 -> $EXTERNAL_NET any (msg:"ATTACK-RESPONSES successful kadmind buffer overflow attempt"; flow:established,from_server; content:"*GOBBLE*"; depth:8; reference:bugtraq,5731; reference:bugtraq,6024; reference:cve,2002-1226; reference:cve,2002-1235; reference:url,www.kb.cert.org/vuls/id/875073; classtype:successful-admin; sid:1900; rev:10;)

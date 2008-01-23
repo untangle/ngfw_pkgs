@@ -15,7 +15,7 @@
 # Certified Rules License Agreement.
 #
 #
-# $Id: ftp.rules,v 1.57.2.7.2.21 2007/02/01 22:05:34 vrtbuild Exp $
+# $Id: ftp.rules,v 1.57.2.7.2.23 2007/04/03 21:48:32 vrtbuild Exp $
 #----------
 # FTP RULES
 #----------
@@ -29,7 +29,7 @@ alert tcp $EXTERNAL_NET any -> $HOME_NET 21 (msg:"FTP ALLO overflow attempt"; fl
 alert tcp $EXTERNAL_NET any -> $HOME_NET 21 (msg:"FTP RNTO overflow attempt"; flow:to_server,established; content:"RNTO"; nocase; isdataat:200,relative; pcre:"/^RNTO(?!\n)\s[^\n]{200}/smi"; reference:bugtraq,8315; reference:cve,2000-0133; reference:cve,2001-1021; reference:cve,2003-0466; classtype:attempted-admin; sid:2389; rev:9;)
 alert tcp $EXTERNAL_NET any -> $HOME_NET 21 (msg:"FTP STOU overflow attempt"; flow:to_server,established; content:"STOU"; nocase; isdataat:200,relative; pcre:"/^STOU\s[^\n]{200}/smi"; reference:bugtraq,8315; reference:cve,2003-0466; classtype:attempted-admin; sid:2390; rev:5;)
 alert tcp $EXTERNAL_NET any -> $HOME_NET 21 (msg:"FTP APPE overflow attempt"; flow:to_server,established; content:"APPE"; nocase; isdataat:200,relative; pcre:"/^APPE(?!\n)\s[^\n]{200}/smi"; reference:bugtraq,8315; reference:bugtraq,8542; reference:cve,2000-0133; reference:cve,2003-0466; classtype:attempted-admin; sid:2391; rev:9;)
-alert tcp $EXTERNAL_NET any -> $HOME_NET 21 (msg:"FTP RETR overflow attempt"; flow:to_server,established; content:"RETR"; nocase; isdataat:200,relative; pcre:"/^RETR(?!\n)\s[^\n]{200}/smi"; reference:bugtraq,8315; reference:cve,2003-0466; reference:cve,2004-0287; reference:cve,2004-0298; classtype:attempted-admin; sid:2392; rev:9;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET 21 (msg:"FTP RETR overflow attempt"; flow:to_server,established; content:"RETR"; nocase; isdataat:200,relative; pcre:"/^RETR(?!\n)\s[^\n]{200}/smi"; reference:bugtraq,23168; reference:bugtraq,8315; reference:cve,2003-0466; reference:cve,2004-0287; reference:cve,2004-0298; classtype:attempted-admin; sid:2392; rev:10;)
 alert tcp $EXTERNAL_NET any -> $HOME_NET 21 (msg:"FTP STOR overflow attempt"; flow:to_server,established; content:"STOR"; nocase; isdataat:200,relative; pcre:"/^STOR(?!\n)\s[^\n]{200}/smi"; reference:bugtraq,8668; reference:cve,2000-0133; classtype:attempted-admin; sid:2343; rev:5;)
 alert tcp $EXTERNAL_NET any -> $HOME_NET 21 (msg:"FTP CEL overflow attempt"; flow:to_server,established; content:"CEL"; nocase; isdataat:100,relative; pcre:"/^CEL(?!\n)\s[^\n]{100}/smi"; reference:arachnids,257; reference:bugtraq,679; reference:cve,1999-0789; reference:nessus,10009; classtype:attempted-admin; sid:337; rev:13;)
 alert tcp $EXTERNAL_NET any -> $HOME_NET 21 (msg:"FTP XCWD overflow attempt"; flow:to_server,established; content:"XCWD"; nocase; isdataat:100,relative; pcre:"/^XCWD(?!\n)\s[^\n]{100}/smi"; reference:bugtraq,11542; reference:bugtraq,8704; classtype:attempted-admin; sid:2344; rev:4;)
@@ -119,3 +119,4 @@ alert tcp $EXTERNAL_NET any -> $HOME_NET 21 (msg:"FTP PORT overflow attempt"; fl
 alert tcp $EXTERNAL_NET any -> $HOME_NET 21 (msg:"FTP HELP overflow attempt"; flow:to_server,established; content:"HELP"; nocase; isdataat:200,relative; pcre:"/^HELP(?!\n)\s[^\n]{200}/smi"; reference:bugtraq,2972; reference:cve,2001-0826; classtype:attempted-admin; sid:8479; rev:1;)
 alert tcp $EXTERNAL_NET any -> $HOME_NET 21 (msg:"FTP WZD-FTPD SITE arbitrary command execution attempt"; flow:established,to_server; content:"SITE"; nocase; pcre:"/^SITE\s*(\w+\s*)+\x7c/smi"; reference:bugtraq,14935; reference:cve,2005-3081; classtype:attempted-admin; sid:8707; rev:1;)
 # alert tcp $EXTERNAL_NET any -> $HOME_NET 21 (msg:"FTP PASV overflow attempt"; flow:to_server,established; content:"PASV"; nocase; isdataat:493,relative; pcre:"/^PASV(?!\n)\s[^\n]{493}/smi"; reference:url,www.milw0rm.com/exploits/2952; classtype:attempted-admin; sid:9792; rev:1;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET 21 (msg:"FTP Wsftp XMD5 overflow attempt"; flow:to_server,established; content:"XMD5"; nocase; isdataat:200,relative; pcre:"/^XMD5(?!\n)\s[^\n]{200}/smi"; reference:bugtraq,20076; reference:cve,2006-5000; classtype:attempted-admin; sid:10188; rev:1;)

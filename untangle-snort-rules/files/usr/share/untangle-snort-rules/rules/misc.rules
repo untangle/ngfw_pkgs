@@ -15,7 +15,7 @@
 # Certified Rules License Agreement.
 #
 #
-# $Id: misc.rules,v 1.53.2.7.2.12 2007/02/01 22:05:34 vrtbuild Exp $
+# $Id: misc.rules,v 1.53.2.7.2.22 2007/09/04 21:26:06 vrtbuild Exp $
 #-----------
 # MISC RULES
 #-----------
@@ -37,7 +37,7 @@ alert udp $EXTERNAL_NET any -> $HOME_NET 177 (msg:"MISC xdmcp query"; content:"|
 # alert udp $EXTERNAL_NET any -> $HOME_NET 177 (msg:"MISC xdmcp info query"; content:"|00 01 00 02 00 01 00|"; reference:nessus,10891; classtype:attempted-recon; sid:1867; rev:2;)
 # alert udp $EXTERNAL_NET any -> $HOME_NET any (msg:"MISC Large UDP Packet"; dsize:>4000; reference:arachnids,247; classtype:bad-unknown; sid:521; rev:2;)
 alert udp $EXTERNAL_NET any -> $HOME_NET 1900 (msg:"MISC UPnP malformed advertisement"; content:"NOTIFY * "; nocase; reference:bugtraq,3723; reference:cve,2001-0876; reference:cve,2001-0877; reference:nessus,10829; reference:url,www.microsoft.com/technet/security/bulletin/MS01-059.mspx; classtype:misc-attack; sid:1384; rev:9;)
-alert udp $EXTERNAL_NET any -> $HOME_NET 1900 (msg:"MISC UPnP Location overflow"; content:"Location|3A|"; nocase; pcre:"/^Location\:[^\n]{128}/smi"; reference:bugtraq,3723; reference:cve,2001-0876; reference:nessus,10829; reference:url,www.microsoft.com/technet/security/bulletin/MS01-059.mspx; classtype:misc-attack; sid:1388; rev:14;)
+alert udp $EXTERNAL_NET any -> $HOME_NET any (msg:"MISC UPnP Location overflow attempt"; content:"Location"; nocase; pcre:"/^Location\s*\x3a\s*\w+\x3a\/\/([^\n]*\x3a)?[^\n]{128}/smi"; reference:bugtraq,3723; reference:cve,2001-0876; reference:cve,2007-2386; reference:nessus,10829; reference:url,www.microsoft.com/technet/security/bulletin/MS01-059.mspx; classtype:misc-attack; sid:1388; rev:15;)
 alert tcp $AIM_SERVERS any -> $HOME_NET any (msg:"MISC AIM AddGame attempt"; flow:to_client,established; content:"aim|3A|AddGame?"; nocase; reference:bugtraq,3769; reference:cve,2002-0005; reference:url,www.w00w00.org/files/w00aimexp/; classtype:misc-attack; sid:1393; rev:12;)
 alert tcp $AIM_SERVERS any -> $HOME_NET any (msg:"MISC AIM AddExternalApp attempt"; flow:to_client,established; content:"aim|3A|AddExternalApp?"; nocase; reference:url,www.w00w00.org/files/w00aimexp/; classtype:misc-attack; sid:1752; rev:4;)
 alert udp $EXTERNAL_NET any -> $HOME_NET 7001 (msg:"MISC AFS access"; content:"|00 00 03 E7 00 00 00 00 00 00 00|e|00 00 00 00 00 00 00 00 0D 05 00 00 00 00 00 00 00|"; reference:nessus,10441; classtype:misc-activity; sid:1504; rev:6;)
@@ -62,7 +62,6 @@ alert tcp $EXTERNAL_NET any -> $HOME_NET 7100 (msg:"MISC xfs overflow attempt"; 
 alert udp $HOME_NET 49 -> $EXTERNAL_NET any (msg:"MISC xtacacs failed login response"; content:"|80 02|"; depth:2; content:"|02|"; distance:4; classtype:misc-activity; sid:2041; rev:2;)
 alert udp $HOME_NET 500 -> $EXTERNAL_NET 500 (msg:"MISC isakmp login failed"; content:"|10 05|"; depth:2; offset:17; content:"|00 00 00 01 01 00 00 18|"; within:8; distance:13; classtype:misc-activity; sid:2043; rev:2;)
 alert tcp $EXTERNAL_NET any -> $HOME_NET 873 (msg:"MISC rsyncd module list access"; flow:to_server,established; content:"|23|list"; depth:5; classtype:misc-activity; sid:2047; rev:2;)
-alert tcp $EXTERNAL_NET any -> $HOME_NET 873 (msg:"MISC rsyncd overflow attempt"; flow:to_server,established; byte_test:2,>,4000,0; content:"|00 00|"; depth:2; offset:2; reference:bugtraq,9153; reference:cve,2003-0962; reference:nessus,11943; classtype:misc-activity; sid:2048; rev:7;)
 
 
 # This rule needs some work since you don't have to pass BEGIN and END
@@ -118,4 +117,10 @@ alert tcp $EXTERNAL_NET any -> $HOME_NET 5000 (msg:"MISC UPnP Location overflow"
 # alert ip $EXTERNAL_NET any -> $HOME_NET any (msg:"MISC IP option SATID stream_id set"; ipopts:satid; classtype:bad-unknown; sid:8733; rev:1;)
 # alert ip $EXTERNAL_NET any -> $HOME_NET any (msg:"MISC IP option SEC security set"; ipopts:sec; classtype:bad-unknown; sid:8732; rev:1;)
 # alert ip $EXTERNAL_NET any -> $HOME_NET any (msg:"MISC IP option TS timestamp set"; ipopts:ts; classtype:bad-unknown; sid:8731; rev:2;)
-alert udp $EXTERNAL_NET any -> $HOME_NET 11000 (msg:"MISC bomberclone buffer overflow attempt"; content:"|00 00 00 00|8|03|A"; depth:7; isdataat:764; reference:bugtraq,16697; reference:url,www.frsirt.com/english/advisories/2006/0643; classtype:attempted-user; sid:10125; rev:1;)
+alert udp $EXTERNAL_NET any -> $HOME_NET 11000 (msg:"MISC bomberclone buffer overflow attempt"; content:"|00 00 00 00|8|03|A"; depth:7; isdataat:764; reference:bugtraq,16697; reference:cve,2006-0460; classtype:attempted-user; sid:10125; rev:2;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET 2869 (msg:"MISC UPNP notification type overflow attempt"; flow:to_server,established; content:"SUBSCRIBE"; nocase; pcre:"/^(UN)?SUBSCRIBE\s/smi"; pcre:"/^(NT|CallBack|SID|TimeOut)\s*\x3a\s*[^\n]{512}/Rsmi"; reference:cve,2007-1204; reference:url,www.microsoft.com/technet/security/bulletin/MS07-019.mspx; classtype:attempted-admin; sid:10475; rev:3;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET 1080 (msg:"MISC Sun Java web proxy sockd buffer overflow attempt"; flow:to_server,established; content:"|05 01|"; depth:2; content:"|03|"; within:1; distance:1; byte_test:1,>,136,0,relative; reference:bugtraq,24165; reference:cve,2007-2881; reference:url,sunsolve.sun.com/search/document.do?assetkey=1-26-102927-1; classtype:attempted-admin; sid:11680; rev:3;)
+alert tcp $EXTERNAL_NET $HTTP_PORTS -> $HOME_NET any (msg:"MISC Visio version number anomaly"; flow:established,to_client; content:"Visio |28|TM|29| Drawing|0D 0A 00 00 00 00|"; nocase; pcre:"/Visio \x28TM\x29 Drawing\r\n\x00{4}([^\x00]|\x00[^\x00]|\x00\x00[^\x00]|\x00\x00\x00[^\x01-\x06\x0b])/smi"; reference:cve,2007-0934; reference:url,www.microsoft.com/technet/security/bulletin/MS07-030.mspx; classtype:misc-activity; sid:11836; rev:2;)
+alert tcp $EXTERNAL_NET 80 -> $HOME_NET any (msg:"MISC Microsoft Excel rtWindow1 record handling arbitrary code execution attempt"; flow:from_server,established; flowbits:isset,xls.download; content:"|FF FF FF FF FF FF FF FF 09 08|"; content:"|00 00|"; within:2; distance:1; content:"|05 00|"; within:2; distance:1; pcre:"/\x3d\x00\x12\x00..........(.[\x80-\xff]|...[\x80-\xff])/smiR"; reference:bugtraq,22555; reference:cve,2007-3029; reference:url,secunia.com/advisories/25995; reference:url,www.microsoft.com/technet/security/bulletin/MS07-036.mspx; classtype:attempted-user; sid:12099; rev:1;)
+alert tcp $EXTERNAL_NET 80 -> $HOME_NET any (msg:"MISC Microsoft Excel workbook workspace designation handling arbitrary code execution attempt"; flow:from_server,established; content:"|FF FF FF FF FF FF FF FF 09 08|"; flowbits:isset,xls.download; pcre:"/\xff{8}\x09\x08[\x08\x10]\x00\x00[\x05\x06]\x00\x01/sm"; reference:bugtraq,24803; reference:cve,2007-3030; reference:url,secunia.com/advisories/25995; reference:url,www.microsoft.com/technet/security/Bulletin/MS07-036.mspx; classtype:attempted-user; sid:12184; rev:1;)
+# alert tcp $EXTERNAL_NET $HTTP_PORTS -> $HOME_NET any (msg:"MISC asf file download"; flow:established,to_client; content:"HTTP"; depth:4; content:"|0D 0A 0D 0A C4 AB CD AB|"; within:768; reference:cve,2007-3040; reference:url,www.microsoft.com/technet/security/bulletin/ms07-051.mspx; classtype:misc-activity; sid:12454; rev:2;)

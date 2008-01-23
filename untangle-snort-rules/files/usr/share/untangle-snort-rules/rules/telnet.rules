@@ -15,7 +15,7 @@
 # Certified Rules License Agreement.
 #
 #
-# $Id: telnet.rules,v 1.35.2.4.2.9 2007/02/13 22:56:03 vrtbuild Exp $
+# $Id: telnet.rules,v 1.35.2.4.2.11 2007/04/11 14:32:56 vrtbuild Exp $
 #-------------
 # TELNET RULES
 #-------------
@@ -44,4 +44,5 @@ alert tcp $EXTERNAL_NET 23 -> $HOME_NET any (msg:"TELNET client LINEMODE SLC ove
 alert tcp $EXTERNAL_NET 23 -> $HOME_NET any (msg:"TELNET client ENV OPT escape overflow attempt"; flow:to_client,established; content:"|FF FA|'|01|"; rawbytes; pcre:"/(\x02([\x01\x02\x03]|\xFF\xFF)){100,}/RBsm"; content:"|FF F0|"; distance:0; rawbytes; reference:bugtraq,12918; reference:cve,2005-0469; classtype:attempted-user; sid:3537; rev:2;)
 alert tcp $EXTERNAL_NET 23 -> $HOME_NET any (msg:"TELNET client ENV OPT USERVAR information disclosure"; flow:to_client,established; content:"|FF FA|'|01 03|"; rawbytes; reference:bugtraq,13940; reference:cve,2005-1205; reference:url,www.microsoft.com/technet/Security/bulletin/ms05-033.mspx; classtype:attempted-recon; sid:3687; rev:3;)
 alert tcp $EXTERNAL_NET 23 -> $HOME_NET any (msg:"TELNET client ENV OPT VAR information disclosure"; flow:to_client,established; content:"|FF FA|'|01 00|"; rawbytes; reference:bugtraq,13940; reference:cve,2005-1205; reference:url,www.microsoft.com/technet/Security/bulletin/ms05-033.mspx; classtype:attempted-recon; sid:3688; rev:3;)
-alert tcp $EXTERNAL_NET any -> $HOME_NET 23 (msg:"TELNET Solaris login environment variable authentication bypass attempt"; flow:to_server,established; content:"|FF FA|"; rawbytes; content:"USER|01|-f"; distance:0; rawbytes; reference:bugtraq,22512; classtype:attempted-admin; sid:10136; rev:3;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET 23 (msg:"TELNET Solaris login environment variable authentication bypass attempt"; flow:to_server,established; content:"|FF FA|"; rawbytes; content:"USER|01|-f"; distance:0; rawbytes; reference:bugtraq,22512; reference:cve,2007-0882; classtype:attempted-admin; sid:10136; rev:4;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET 23 (msg:"TELNET kerberos login environment variable authentication bypass attempt"; flow:to_server,established; content:"|FF FA|"; rawbytes; content:"USER|01|-e"; distance:0; rawbytes; reference:cve,2007-0956; reference:url,web.mit.edu/kerberos/advisories/MITKRB5-SA-2007-001-telnetd.txt; classtype:attempted-admin; sid:10464; rev:1;)

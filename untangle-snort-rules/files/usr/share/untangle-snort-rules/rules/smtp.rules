@@ -15,7 +15,7 @@
 # Certified Rules License Agreement.
 #
 #
-# $Id: smtp.rules,v 1.44.2.4.2.25 2007/02/09 20:42:56 vrtbuild Exp $
+# $Id: smtp.rules,v 1.44.2.4.2.28 2007/06/13 04:50:34 vrtbuild Exp $
 #-----------
 # SMTP RULES
 #-----------
@@ -116,3 +116,8 @@ alert tcp $EXTERNAL_NET any -> $SMTP_SERVERS 465 (msg:"SMTP SSLv2 openssl get sh
 # alert tcp $EXTERNAL_NET any -> $SMTP_SERVERS 25 (msg:"SMTP YPOPS buffer overflow attempt"; flow:established,to_server; flowbits:isset,ypops.banner; flowbits:unset,ypops.banner; pcre:"/[^\x0d\x00\x0a]{509}/"; reference:bugtraq,11256; reference:cve,2004-1558; classtype:attempted-admin; sid:8705; rev:3;)
 alert tcp $EXTERNAL_NET any -> $SMTP_SERVERS 25 (msg:"SMTP Microsoft Outlook VEVENT overflow attempt"; flow:to_server,established; content:"VEVENT"; nocase; content:"DTSTART|3B|TZID"; nocase; pcre:"/DTSTART\x3BTZID(?![=\x22])/smi"; reference:bugtraq,21931; reference:cve,2007-0033; reference:url,www.microsoft.com/technet/security/Bulletin/MS07-003.mspx; classtype:attempted-user; sid:9841; rev:3;)
 alert tcp $EXTERNAL_NET any -> $SMTP_SERVERS 25 (msg:"SMTP Microsoft Outlook VEVENT non-TZID overflow attempt"; flow:to_server,established; content:"DTSTART|3B|"; nocase; content:!"value"; within:5; nocase; content:!"TZID"; within:4; nocase; reference:bugtraq,21931; reference:cve,2007-0033; reference:url,www.microsoft.com/technet/security/Bulletin/MS07-003.mspx; classtype:attempted-user; sid:10012; rev:1;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET 25 (msg:"SMTP ClamAV mime parsing directory traversal"; flow:to_server,established; content:"Message/Partial"; nocase; pcre:"/Content-Type\s*\x3a\s*Message\x2fPartial/smi"; pcre:"/id\s*=\s*[\x22\x27]?[^\x22\x27\n]*..[\x2f\x5c]/smi"; reference:bugtraq,22581; reference:cve,2007-0898; reference:url,labs.idefense.com/intelligence/vulnerabilities/display.php?id=476; classtype:attempted-user; sid:10186; rev:1;)
+alert tcp $EXTERNAL_NET any -> $SMTP_SERVERS 25 (msg:"SMTP Exchange MODPROPS denial of service attempt"; flow:to_server,established; content:"content-classescalendarmessage"; nocase; pcre:"/^X-MICROSOFT-CDO-MODPROPS\x3A[^\n]*(?P<prop>\w+),[^\n]*(?=prop)/mi"; reference:cve,2007-0039; reference:url,www.microsoft.com/technet/security/Bulletin/MS07-026.mspx; classtype:attempted-dos; sid:11222; rev:1;)
+alert tcp $EXTERNAL_NET any -> $SMTP_SERVERS 25 (msg:"SMTP possible BDAT DoS attempt"; flow:to_server,established; content:"BDAT"; nocase; byte_jump:2,1,relative,string,dec; content:!"|0D 0A|"; within:2; reference:bugtraq,4204; reference:cve,2002-0055; reference:url,www.microsoft.com/technet/security/bulletin/ms02-012.mspx; classtype:denial-of-service; sid:10995; rev:1;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET 25 (msg:"SMTP MS Windows Mail UNC navigation remote command execution"; flow:established, to_server; content:"Content-Type|3A| text/html"; nocase; pcre:"/.*<[^>]*href[^>]*(file\x3A|[cC]\x3A|\\\\).*>/"; reference:cve,2007-1658; reference:url,www.microsoft.com/technet/security/bulletin/MS07-034.mspx; classtype:attempted-user; sid:11837; rev:2;)
+alert tcp $EXTERNAL_NET any -> $SMTP_SERVERS 25 (msg:"SMTP Microsoft CDO long header name"; flow:to_server,established; content:"|0D 0A|DATA|0D 0A|"; pcre:"/\r\n\w{200,}\x3a.*\r\n/"; reference:bugtraq,15067; reference:cve,2005-1987; reference:url,www.microsoft.com/technet/security/bulletin/ms05-048.mspx; classtype:attempted-admin; sid:12423; rev:1;)

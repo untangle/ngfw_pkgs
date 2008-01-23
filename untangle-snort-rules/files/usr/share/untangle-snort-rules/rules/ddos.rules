@@ -15,7 +15,7 @@
 # Certified Rules License Agreement.
 #
 #
-# $Id: ddos.rules,v 1.23.2.3.2.4 2006/10/19 14:23:30 vrtbuild Exp $
+# $Id: ddos.rules,v 1.23.2.3.2.5 2007/06/26 20:42:28 vrtbuild Exp $
 #-----------
 # DDOS RULES
 #-----------
@@ -23,7 +23,7 @@
 alert icmp $EXTERNAL_NET any -> $HOME_NET any (msg:"DDOS TFN Probe"; icmp_id:678; itype:8; content:"1234"; reference:arachnids,443; reference:cve,2000-0138; classtype:attempted-recon; sid:221; rev:5;)
 alert icmp $EXTERNAL_NET any -> $HOME_NET any (msg:"DDOS tfn2k icmp possible communication"; icmp_id:0; itype:0; content:"AAAAAAAAAA"; reference:arachnids,425; reference:cve,2000-0138; classtype:attempted-dos; sid:222; rev:3;)
 alert udp $EXTERNAL_NET any -> $HOME_NET 31335 (msg:"DDOS Trin00 Daemon to Master PONG message detected"; content:"PONG"; reference:arachnids,187; reference:cve,2000-0138; classtype:attempted-recon; sid:223; rev:4;)
-alert icmp $EXTERNAL_NET any -> $HOME_NET any (msg:"DDOS TFN client command BE"; icmp_id:456; icmp_seq:0; itype:0; reference:arachnids,184; reference:cve,2000-0138; classtype:attempted-dos; sid:228; rev:4;)
+alert icmp $EXTERNAL_NET any -> $HOME_NET any (msg:"DDOS TFN client command BE"; icmp_id:456; icmp_seq:0; itype:0; pcre:"/^[0-9]{1,5}\x00/"; reference:arachnids,184; reference:cve,2000-0138; classtype:attempted-dos; sid:228; rev:5;)
 
 
 alert tcp $HOME_NET 20432 -> $EXTERNAL_NET any (msg:"DDOS shaft client login to handler"; flow:from_server,established; content:"login|3A|"; reference:arachnids,254; reference:cve,2000-0138; reference:url,security.royans.net/info/posts/bugtraq_ddos3.shtml; classtype:attempted-dos; sid:230; rev:6;)
@@ -51,7 +51,7 @@ alert udp $EXTERNAL_NET any -> $HOME_NET 10498 (msg:"DDOS mstream agent pong to 
 alert tcp $EXTERNAL_NET any -> $HOME_NET 12754 (msg:"DDOS mstream client to handler"; flow:to_server,established; content:">"; reference:cve,2000-0138; classtype:attempted-dos; sid:247; rev:4;)
 alert tcp $HOME_NET 12754 -> $EXTERNAL_NET any (msg:"DDOS mstream handler to client"; flow:to_client,established; content:">"; reference:cve,2000-0138; classtype:attempted-dos; sid:248; rev:4;)
 # alert tcp $HOME_NET 15104 -> $EXTERNAL_NET any (msg:"DDOS mstream handler to client"; flow:from_server,established; content:">"; reference:cve,2000-0138; classtype:attempted-dos; sid:250; rev:5;)
-alert icmp $EXTERNAL_NET any -> $HOME_NET any (msg:"DDOS - TFN client command LE"; icmp_id:51201; icmp_seq:0; itype:0; reference:arachnids,183; reference:cve,2000-0138; classtype:attempted-dos; sid:251; rev:4;)
+alert icmp $EXTERNAL_NET any -> $HOME_NET any (msg:"DDOS - TFN client command LE"; icmp_id:51201; icmp_seq:0; itype:0; pcre:"/^[0-9]{1,5}\x00/"; reference:arachnids,183; reference:cve,2000-0138; classtype:attempted-dos; sid:251; rev:5;)
 
 
 alert icmp 3.3.3.3/32 any -> $EXTERNAL_NET any (msg:"DDOS Stacheldraht server spoof"; icmp_id:666; itype:0; reference:arachnids,193; reference:cve,2000-0138; classtype:attempted-dos; sid:224; rev:4;)

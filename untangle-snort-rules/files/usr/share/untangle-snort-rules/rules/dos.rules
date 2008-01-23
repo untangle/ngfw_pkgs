@@ -15,7 +15,7 @@
 # Certified Rules License Agreement.
 #
 #
-# $Id: dos.rules,v 1.39.2.4.2.16 2007/02/09 20:42:53 vrtbuild Exp $
+# $Id: dos.rules,v 1.39.2.4.2.22 2007/08/01 19:57:58 vrtbuild Exp $
 #----------
 # DOS RULES
 #----------
@@ -45,5 +45,11 @@ alert udp $EXTERNAL_NET any -> $HOME_NET 2048 (msg:"DOS squid WCCP I_SEE_YOU mes
 # alert udp $HOME_NET any -> $HOME_NET 67 (msg:"DOS ISC DHCP server 2 client_id length denial of service attempt"; content:"c|82|Sc"; content:"= "; distance:0; reference:cve,2006-3122; reference:url,www.debian.org/security/2006/dsa-1143; classtype:attempted-dos; sid:8056; rev:1;)
 # alert icmp $EXTERNAL_NET any -> $HOME_NET any (msg:"DOS record route rr denial of service attempt"; ipopts:rr; icode:0; itype:8; reference:bugtraq,870; reference:cve,1999-0986; reference:cve,1999-1339; reference:cve,2001-0752; classtype:attempted-dos; sid:8730; rev:3;)
 # alert tcp $EXTERNAL_NET any -> $HOME_NET 2513 (msg:"DOS Citrix IMA DOS event data length denial of service attempt"; flow:established,to_server; byte_test:4,<,6,8,little; reference:bugtraq,20986; reference:cve,2006-5861; classtype:denial-of-service; sid:9325; rev:1;)
-# alert udp $EXTERNAL_NET any -> $HOME_NET 512 (msg:"DOS Spiffit UDP denial of service attempt"; content:"@0"; pcre:"/^[\x00]?+/R"; dsize:10; reference:cve,1999-0194; classtype:attempted-dos; sid:9622; rev:1;)
+# alert udp $EXTERNAL_NET any -> $HOME_NET 512 (msg:"DOS Spiffit UDP denial of service attempt"; dsize:10; content:"@0"; pcre:"/@0\x00*$/sm"; threshold:type both, track by_src, count 10, seconds 100; reference:cve,1999-0194; classtype:attempted-dos; sid:9622; rev:2;)
 # alert tcp $EXTERNAL_NET any -> $HOME_NET 3128 (msg:"DOS Squid proxy FTP denial of service attempt"; flow:established,to_server; content:"GET"; nocase; content:"FTP|3A|//"; nocase; pcre:"/ftp\x3A\x2F\x2F[\w\x2E\x2F]+[^\x2F]\x3Btype=D/i"; reference:bugtraq,22079; reference:cve,2007-0247; classtype:denial-of-service; sid:10135; rev:1;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET 9191 (msg:"DOS CA eTrust key handling dos -- password"; flow:established,to_server; content:"|01 06 00 00 00|"; depth:5; offset:2; byte_test:4,<,4,128,relative, little; reference:bugtraq,22743; reference:cve,2007-1005; classtype:denial-of-service; sid:11186; rev:1;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET 9191 (msg:"DOS CA eTrust key handling dos -- username"; flow:established,to_server; content:"|01 06 00 00 00|"; depth:5; offset:2; byte_test:4,<,4,0,relative, little; reference:bugtraq,22743; reference:cve,2007-1005; classtype:denial-of-service; sid:11185; rev:1;)
+# alert tcp $EXTERNAL_NET any -> $HOME_NET 443 (msg:"DOS Apache mod_ssl non-SSL connection to SSL port denial of service attempt"; flow:to_server,established; content:"HTTP/"; nocase; pcre:"/^(GET|POST|PUT|HEAD)/mi"; reference:bugtraq,16152; reference:cve,2005-3357; classtype:attempted-dos; sid:11263; rev:1;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET $HTTP_PORTS (msg:"DOS Microsoft XML parser IIS WebDAV attack attempt"; flow:established,to_server; content:"PROPFIND"; depth:8; nocase; pcre:"/(xmlns\x3A.*){15}/"; reference:bugtraq,11384; reference:cve,2003-0718; classtype:denial-of-service; sid:12043; rev:3;)
+alert udp $EXTERNAL_NET any -> $HOME_NET 5151 (msg:"DOS Ipswitch WS_FTP log server long unicode string"; content:"|AB AA|"; byte_test:2,>,2123,0,relative,little; reference:cve,2007-3823; reference:url,secunia.com/advisories/26040; classtype:denial-of-service; sid:12076; rev:2;)
+# alert tcp $EXTERNAL_NET any -> $HOME_NET 3101 (msg:"DOS RIM BlackBerry SRP negative string size"; flow:to_server,established; content:"S|FF FF FF|"; reference:bugtraq,16100; reference:cve,2005-2342; classtype:attempted-dos; sid:12199; rev:1;)

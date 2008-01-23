@@ -15,7 +15,7 @@
 # Certified Rules License Agreement.
 #
 #
-# $Id: web-coldfusion.rules,v 1.27.2.2.2.5 2006/10/19 14:23:32 vrtbuild Exp $
+# $Id: web-coldfusion.rules,v 1.27.2.2.2.6 2007/06/19 20:55:10 vrtbuild Exp $
 #---------------------
 # WEB-COLDFUSION RULES
 #---------------------
@@ -33,7 +33,7 @@ alert tcp $EXTERNAL_NET any -> $HTTP_SERVERS $HTTP_PORTS (msg:"WEB-COLDFUSION ex
 alert tcp $EXTERNAL_NET any -> $HTTP_SERVERS $HTTP_PORTS (msg:"WEB-COLDFUSION parks access"; flow:to_server,established; uricontent:"/cfdocs/examples/parks/detail.cfm"; nocase; reference:bugtraq,550; reference:cve,1999-0760; classtype:attempted-recon; sid:912; rev:6;)
 alert tcp $EXTERNAL_NET any -> $HTTP_SERVERS $HTTP_PORTS (msg:"WEB-COLDFUSION cfappman access"; flow:to_server,established; uricontent:"/cfappman/index.cfm"; nocase; reference:bugtraq,550; reference:cve,1999-0760; classtype:attempted-recon; sid:913; rev:6;)
 alert tcp $EXTERNAL_NET any -> $HTTP_SERVERS $HTTP_PORTS (msg:"WEB-COLDFUSION beaninfo access"; flow:to_server,established; uricontent:"/cfdocs/examples/cvbeans/beaninfo.cfm"; nocase; reference:bugtraq,550; reference:cve,1999-0760; classtype:attempted-recon; sid:914; rev:6;)
-alert tcp $EXTERNAL_NET any -> $HTTP_SERVERS $HTTP_PORTS (msg:"WEB-COLDFUSION evaluate.cfm access"; flow:to_server,established; uricontent:"/cfdocs/snippets/evaluate.cfm"; nocase; reference:bugtraq,550; reference:cve,1999-0760; classtype:attempted-recon; sid:915; rev:6;)
+alert tcp $EXTERNAL_NET any -> $HTTP_SERVERS $HTTP_PORTS (msg:"WEB-COLDFUSION evaluate.cfm access"; flow:to_server,established; content:"/cfdocs/snippets/evaluate.cfm"; nocase; reference:bugtraq,550; reference:cve,1999-0760; classtype:attempted-recon; sid:915; rev:7;)
 alert tcp $EXTERNAL_NET any -> $HTTP_SERVERS $HTTP_PORTS (msg:"WEB-COLDFUSION getodbcdsn access"; flow:to_server,established; content:"CFUSION_GETODBCDSN|28 29|"; nocase; reference:bugtraq,550; reference:cve,1999-0760; classtype:web-application-attack; sid:916; rev:8;)
 alert tcp $EXTERNAL_NET any -> $HTTP_SERVERS $HTTP_PORTS (msg:"WEB-COLDFUSION db connections flush attempt"; flow:to_server,established; content:"CFUSION_DBCONNECTIONS_FLUSH|28 29|"; nocase; reference:bugtraq,550; reference:cve,1999-0760; classtype:web-application-attack; sid:917; rev:8;)
 alert tcp $EXTERNAL_NET any -> $HTTP_SERVERS $HTTP_PORTS (msg:"WEB-COLDFUSION expeval access"; flow:to_server,established; uricontent:"/cfdocs/expeval/"; nocase; reference:bugtraq,550; reference:cve,1999-0477; reference:cve,1999-0760; classtype:attempted-user; sid:918; rev:7;)
