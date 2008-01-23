@@ -14,6 +14,10 @@ if [ "$REPOSITORY" = "sarge" ]; then
         cat "$TZFILE" > /etc/timezone
     fi
 
+    # get rid of bogus cache, as sarge packages have various bugs with it
+    rm /etc/blkid.tab
+    ln -s /dev/null /etc/blkid.tab
+
     # Turn off the now unneeded knoppix startup scripts that hose udev
     [ -d /etc/knoppix ] && mv /etc/knoppix /etc/knoppix.orig
 fi
