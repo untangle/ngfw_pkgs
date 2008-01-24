@@ -407,7 +407,6 @@ class Alpaca::UvmDataLoader
     interface.save
   end
 
-
   def configure_ip_networks( config, ns )
     ## Load the ip networks
     query = "select network FROM u_ip_network WHERE space_id=? ORDER BY position"
