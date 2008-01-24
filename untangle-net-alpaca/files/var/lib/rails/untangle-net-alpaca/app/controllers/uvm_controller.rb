@@ -80,13 +80,22 @@ class UvmController < ApplicationController
     true
   end
 
-  def save_hostname( hostname )
+  def save_hostname( hostname, save_suffix = false )
     logger.debug( "Saving the hostname: '#{hostname}'" )
 
     hostname_settings = HostnameSettings.find( :first )
     hostname_settings = HostnameSettings.new if hostname_settings.nil?
     hostname_settings.hostname = hostname
     hostname_settings.save
+
+    ## Update the domain name suffix.
+    if save_suffix
+      suffix = hostname.sub( /^[^\.]*\./, "" )
+      dns_server_settings = DnsServerSettings.find(:first)
+      dns_server_settings = DnsServerSettings.new if dns_server_settings.nil?
+      dns_server_settings.suffix = suffix
+      dns_server_settings.save
+    end
     
     os["hostname_manager"].commit
     true

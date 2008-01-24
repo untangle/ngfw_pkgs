@@ -285,6 +285,9 @@ class Thunderbird < ActiveRecord::Migration
     FileOverride.new( :enabled => true, :writable => true,
                       :description => "Box Hostname",
                       :path => "/etc/hostname" ).save
+    FileOverride.new( :enabled => true, :writable => true,
+                      :description => "Box Mail Name",
+                      :path => "/etc/mailname" ).save
     FileOverride.new( :enabled => true, :writable => true, :description => "DNS Server Configuration",
                       :path => "/etc/resolv.conf" ).save
     FileOverride.new( :enabled => true, :writable => true, 

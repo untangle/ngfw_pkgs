@@ -3,6 +3,8 @@ class OSLibrary::Debian::HostnameManager < OSLibrary::HostnameManager
 
   HostnameFile = "/etc/hostname"
 
+  MailNameFile = "/etc/mailname"
+
   ## Retrieve the current hostnanme
   def current
     `hostname`.strip
@@ -17,7 +19,10 @@ class OSLibrary::Debian::HostnameManager < OSLibrary::HostnameManager
     return if ( settings.nil? || settings.hostname.nil? || settings.hostname.empty? )
 
     ## Save the hostname
-    os["override_manager"].write_file( HostnameFile, "#{settings.hostname}" )
+    os["override_manager"].write_file( HostnameFile, "#{settings.hostname}\n" )
+    
+    ## Save the hostname to /etc/mailname
+    os["override_manager"].write_file( MailNameFile, "#{settings.hostname}\n" )
 
     run_command( "hostname #{settings.hostname}" )
   end

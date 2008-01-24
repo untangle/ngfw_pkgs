@@ -154,7 +154,13 @@ EOF
     ## Append the hostname
     settings = HostnameSettings.find( :first )
     unless ( settings.nil? || settings.hostname.nil? || settings.hostname.empty? )
-      h_file << "127.0.0.1 #{settings.hostname}"
+      hostname = settings.hostname
+      h =  hostname.split( "." )[0]
+      
+      ## Append the unqualified name if necessary.
+      hostname = "#{hostname} #{h}" unless ( h == hostname )
+      
+      h_file << "127.0.0.1 #{hostname}"
     end
 
     os["override_manager"].write_file( DnsMasqHostFile, h_file.join( "\n" ), "\n" )

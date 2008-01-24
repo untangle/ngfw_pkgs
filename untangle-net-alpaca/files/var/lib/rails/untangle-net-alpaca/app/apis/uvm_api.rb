@@ -9,7 +9,7 @@ class UvmApi < ActionWebService::API::Base
   api_method :write_files, :expects => [], :returns => []
 
   ## Save hostname
-  api_method :save_hostname, :expects => [:string], :returns => [:boolean]
+  api_method :save_hostname, :expects => [:string, :boolean], :returns => [:boolean]
 
   ## Create a new session redirect
   ## Returns a unique identifier to delete the session redirect later.
