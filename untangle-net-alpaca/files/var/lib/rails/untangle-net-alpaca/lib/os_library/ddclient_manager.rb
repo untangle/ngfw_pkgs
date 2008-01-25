@@ -74,6 +74,7 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
       conditions = [ "wan=?", true ]
       wanInterface = Interface.find( :first, :conditions => conditions )
       #logger.debug("settings.service is: " + settings.service)
+
       protocol = ConfigService[settings.service][0]
       server = ConfigService[settings.service][1]
       [ [ ConfigPid, DdclientPidFile ],

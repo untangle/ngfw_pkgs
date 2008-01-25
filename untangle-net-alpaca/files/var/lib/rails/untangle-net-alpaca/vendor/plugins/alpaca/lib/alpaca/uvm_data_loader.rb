@@ -366,7 +366,7 @@ class Alpaca::UvmDataLoader
       bridge_interface = bridge_hash[ns]
 
       ## Always use the external interface if the settings are not on.
-      bridge_interface = @external_iterface unless @network_settings.is_enabled
+      bridge_interface = @external_interface unless @network_settings.is_enabled
       unless bridge_interface.nil?
         bridge = IntfBridge.new
         bridge.bridge_interface = bridge_interface
