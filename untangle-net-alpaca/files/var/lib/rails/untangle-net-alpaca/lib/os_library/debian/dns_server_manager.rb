@@ -246,7 +246,7 @@ EOF
     end
 
     ## Delete all of the empty name servers, and fix the lines.
-    ns = ns.delete_if { |n| n.nil? || n.empty? || IPAddr.parse( n ).nil? }
+    ns = ns.delete_if { |n| n.nil? || n.empty? || IPAddr.parse( "#{n}/32" ).nil? }
   end
 
   def dhcp_config( dhcp_server_settings, dns_server_settings )

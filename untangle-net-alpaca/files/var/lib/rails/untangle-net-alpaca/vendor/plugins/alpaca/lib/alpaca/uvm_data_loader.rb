@@ -28,7 +28,10 @@ class Alpaca::UvmDataLoader
 
   class NetworkSettings
     def initialize( is_enabled, default_route, dns_1, dns_2 )
-      @is_enabled, @default_route, @dns_1, @dns_2 = is_enabled, default_route, dns_1, dns_2 
+      @is_enabled, @default_route, @dns_1, @dns_2 = is_enabled, default_route, dns_1, dns_2
+
+      @dns_1 = "" if IPAddr.parse( "#{@dns_1}/32" ).nil?
+      @dns_2 = "" if IPAddr.parse( "#{@dns_2}/32" ).nil?
     end
     
     def to_s
