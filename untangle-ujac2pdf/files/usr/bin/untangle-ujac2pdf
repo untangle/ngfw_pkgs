@@ -1,7 +1,7 @@
 #! /bin/bash
 
 JAR_DIR=/usr/share/untangle-ujac2pdf/libs
-JARS="itext-2.05.jar ujac.jar commons-logging.jar"
+JARS="itext-1.4.jar ujac.jar commons-logging.jar"
 
 JAVA_HOME=${JAVA_HOME:-/usr/lib/jvm/java-1.5.0-sun}
 
@@ -25,4 +25,4 @@ for t in ${JARS} ; do
     CLASSPATH="${CLASSPATH}${JAR_DIR}/${t}"
 done
 
-exec ${JAVA_HOME}/bin/java -cp ${CLASSPATH} org.ujac.print.DocumentPrinter ${template} ${output} ${properties}
+exec ${JAVA_HOME}/bin/java -cp ${CLASSPATH} org.ujac.print.ReportGenerator ${template} ${properties} ${output}
