@@ -27,18 +27,19 @@ class Alpaca::UvmDataLoader
   end
 
   class NetworkSettings
-    def initialize( is_enabled, default_route, dns_1, dns_2 )
+    def initialize( is_enabled, default_route, dns_1, dns_2, setting_id )
       @is_enabled, @default_route, @dns_1, @dns_2 = is_enabled, default_route, dns_1, dns_2
+      @setting_id = setting_id
 
       @dns_1 = "" if IPAddr.parse( "#{@dns_1}/32" ).nil?
       @dns_2 = "" if IPAddr.parse( "#{@dns_2}/32" ).nil?
     end
     
     def to_s
-      "<network-nettings: on[#{@is_enabled}] gw[#{@default_route}] dns1[#{@dns_1}] dns2[#{@dns_2}]>"
+      "<network-nettings: [@setting_id] on[#{@is_enabled}] gw[#{@default_route}] dns1[#{@dns_1}] dns2[#{@dns_2}]>"
     end
     
-    attr_reader :is_enabled, :default_route, :dns_1, :dns_2
+    attr_reader :is_enabled, :default_route, :dns_1, :dns_2, :setting_id
   end
 
   LOG_FILE = '/var/log/untangle-net-alpaca/alpaca-upgrade.log'
@@ -72,7 +73,7 @@ class Alpaca::UvmDataLoader
     @dbh.execute( "SELECT * FROM u_network_settings LIMIT 1" ) do |result|
       result.fetch_all.each do |s|
         @network_settings = 
-          NetworkSettings.new( s["is_enabled"], s["default_route"], s["dns_1"], s["dns_2"] )
+          NetworkSettings.new( s["is_enabled"], s["default_route"], s["dns_1"], s["dns_2"], s["settings_id"] )
       end
     end
 
@@ -115,11 +116,13 @@ class Alpaca::UvmDataLoader
     query  = "SELECT  redirect_port, redirect_addr, live, description, is_local_redirect,"
     query += " src_intf_matcher, protocol_matcher, src_ip_matcher, dst_ip_matcher,"
     query += " src_port_matcher, dst_port_matcher"
-    query += " FROM u_redirect_rule"
+    query += " FROM u_redirect_rule JOIN u_redirects ON u_redirect_rule.rule_id = u_redirects.rule_id"
+    query += " WHERE setting_id = ?"
+    query += " ORDER BY position"
 
     position = 1
 
-    @dbh.execute( query ) do |result|
+    @dbh.execute( query, @network_settings.setting_id ) do |result|
       result.fetch_all.each do |r|
         begin
           redirect  = Redirect.new( :position => position )
@@ -165,9 +168,10 @@ class Alpaca::UvmDataLoader
     
     query  = "SELECT  network_space, destination, next_hop, description,  live"
     query += " FROM u_network_route"
+    query += " WHERE settings_id = ?"
     query += " ORDER BY position"
 
-    @dbh.execute( query ) do |result|
+    @dbh.execute( query, @network_settings.setting_id ) do |result|
       result.fetch_all.each do |r| 
         next unless r["live"]
 
@@ -218,7 +222,7 @@ class Alpaca::UvmDataLoader
   end
 
   def load_dhcp_server_settings
-    query  = "SELECT  is_dhcp_enabled, dhcp_start_address, dhcp_end_address, dhcp_lease_time, "
+    query  = "SELECT  settings_id, is_dhcp_enabled, dhcp_start_address, dhcp_end_address, dhcp_lease_time, "
     query += "  dns_enabled, dns_local_domain"
     query += " FROM u_network_services LIMIT 1"
 
@@ -226,7 +230,9 @@ class Alpaca::UvmDataLoader
     DnsServerSettings.destroy_all
     DhcpStaticEntry.destroy_all
     DnsStaticEntry.destroy_all
-    
+
+    settings_id = -1
+
     @dbh.execute( query ) do |result|
       d = result.fetch
       
@@ -242,15 +248,20 @@ class Alpaca::UvmDataLoader
         dns.enabled = ( @network_settings.is_enabled && d["dns_enabled"] )
         dns.suffix = d["dns_local_domain"]
         dns.save
+
+        settings_id = d["settings_id"]
       end
     end
 
     ## Load the static entries for DHCP
     query  = "SELECT mac_address, hostname, static_address, description "
-    query += " FROM u_dhcp_lease_rule"
+    query += " FROM u_dhcp_lease_rule JOIN u_dhcp_lease_list"
+    query += " ON u_dhcp_lease_rule.rule_id = u_dhcp_lease_list.rule_id "
+    query += " WHERE setting_id = ?"
+    query += " ORDER BY position"
 
     position = 1
-    @dbh.execute( query ) do |result|
+    @dbh.execute( query, settings_id ) do |result|
       result.fetch_all.each do |lr| 
         DhcpStaticEntry.new( :mac_address => lr["mac_address"], :position => lr["position"],
                              :ip_address => lr["static_address"], :description => lr["description"] ).save
@@ -260,10 +271,13 @@ class Alpaca::UvmDataLoader
     
     ## Load the static entries for DNS
     query  = "SELECT hostname_list, static_address, description "
-    query += " FROM u_dns_static_host_rule"
+    query += " FROM u_dns_static_host_rule JOIN u_dns_host_list"
+    query += " ON u_dns_static_host_rule.rule_id = u_dns_host_list.rule_id"
+    query += " WHERE setting_id = ?"
+    query += " ORDER BY position"
 
     position = 1
-    @dbh.execute( query ) do |result|
+    @dbh.execute( query, settings_id ) do |result|
       result.fetch_all.each do |lr| 
         DnsStaticEntry.new( :hostname => lr["hostname_list"], :position => lr["position"],
                             :ip_address => lr["static_address"], :description => lr["description"] ).save
@@ -277,11 +291,11 @@ class Alpaca::UvmDataLoader
     query  = "SELECT network_space, media, is_dhcp_enabled, mtu "
     query += " FROM u_network_intf JOIN u_network_space "
     query += " ON u_network_intf.network_space = u_network_space.rule_id  "
-    query += " WHERE u_network_intf.argon_intf = 0"
+    query += " WHERE u_network_intf.argon_intf = 0 AND u_network_space.settings_id = ?"
     mtu = 0
     ns = 0
 
-    @dbh.execute( query ) do |result|
+    @dbh.execute( query, @network_settings.setting_id ) do |result|
       ## Assuming an interface exists for the external interface.
       row = result.fetch 
       
@@ -350,13 +364,13 @@ class Alpaca::UvmDataLoader
     query += " nat_address, nat_space, is_nat_enabled "
     query += " FROM u_network_intf JOIN u_network_space "
     query += " ON u_network_intf.network_space = u_network_space.rule_id  "
-    query += " WHERE u_network_intf.argon_intf = ?"
+    query += " WHERE u_network_intf.argon_intf = ? AND u_network_space.settings_id = ?"
 
     nat_address = nil
     dmz_host = nil
     
     ## First check if it is bridged with another configured interface
-    @dbh.execute( query, interface.index - 1 ) do |result|
+    @dbh.execute( query, interface.index - 1, @network_settings.setting_id ) do |result|
       row = result.fetch
       
       if row.nil?
