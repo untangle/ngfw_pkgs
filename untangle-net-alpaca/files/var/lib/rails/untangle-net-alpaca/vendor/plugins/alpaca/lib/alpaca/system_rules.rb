@@ -63,7 +63,6 @@ module Alpaca::SystemRules
   
   def self.insert_system_rules
     rm = RuleManager.instance
-
     
     rm.add_firewall_rule( :description => "Allow DHCP Requests from the internal interface.",
                           :filter => "", :is_custom => true,
@@ -115,6 +114,11 @@ module Alpaca::SystemRules
                           :filter => "d-local::true&&d-port::22&&protocol::tcp",
                           :target => "pass",
                           :system_id => "accept-ssh-40be25e3" )
+
+    rm.add_firewall_rule( :description => "Accept ICMP on all interfaces.",
+                          :filter => "d-local::true&&protocol::icmp",
+                          :target => "pass",
+                          :system_id => "accept-icmp-30d37e70" )
 
     ## This rule is custom because it is added to the NAT firewall rather than to
     ## basic firewall.

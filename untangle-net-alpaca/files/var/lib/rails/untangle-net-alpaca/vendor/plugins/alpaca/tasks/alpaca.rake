@@ -24,6 +24,7 @@ namespace :alpaca do
 
 
   desc "Upgrade task for settings from the UVM."
+  task :upgrade => "alpaca:insert_system_rules"
   task :upgrade => "db:migrate" do
     Alpaca::UvmDataLoader.new.load_settings
 
