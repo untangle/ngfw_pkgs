@@ -4,7 +4,7 @@
     <fieldset>
       <ul class="text-fields">
         <li>
-          <label for="hostname_settings[hostname]"><%= "Hostname:".t %></label>
+          <label for="hostname_settings_hostname"><%= "Hostname:".t %></label>
           <%= text_field( "hostname_settings", "hostname" ) %>
         </li>
       </ul>
@@ -13,19 +13,19 @@
     <fieldset>
       <ul class="text-fields">
         <li>
-          <label for="ddclient_settings[enabled]"><%= "Enabled:".t %></label>
+          <label for="ddclient_settings_enabled"><%= "Enabled:".t %></label>
           <%= check_box( "ddclient_settings", "enabled", { :checked => @ddclient_settings.enabled }, true, false ) %>
         </li>
 
        <li>
-          <label for="ddclient_settings[service]"><%= "Service:".t %></label>
+          <label for="ddclient_settings_service"><%= "Service:".t %></label>
           <%= 
 services = []
 OSLibrary::DdclientManager::ConfigService.each_key { |key| services << [key, key] }
 select( "ddclient_settings", "service", services ) %>
         </li>
         <li>
-          <label for="ddclient_settings[login]"><%= "Login:".t %></label>
+          <label for="ddclient_settings_login"><%= "Login:".t %></label>
           <%= text_field( "ddclient_settings", "login" ) %>
         </li>
 
@@ -35,7 +35,7 @@ select( "ddclient_settings", "service", services ) %>
         </li>
 
         <li>
-          <label for="ddclient_settings[hostname]"><%= "Hostname(s):".t %></label>
+          <label for="ddclient_settings_hostname"><%= "Hostname(s):".t %></label>
           <%= text_field( "ddclient_settings", "hostname" ) %>
         </li>
 

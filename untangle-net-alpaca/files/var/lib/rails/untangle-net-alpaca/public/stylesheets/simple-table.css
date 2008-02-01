@@ -37,13 +37,14 @@ div.list-table-container
 { 
   border: 1px solid #999999;
   margin-bottom: 30px;
+  position: relative;
  }
 
 div.list-table-container ul
 { 
   width: 100%;
   list-style: none inside none;
-  padding: 0px;
+  padding: 0;
   margin: 0;
  }
 
@@ -59,7 +60,7 @@ div.list-table-container ul.header
   margin: 0px;
   font-weight: bold;
   color: #333333;
-  background-color: #B4B4B4;
+  background-color: #B4B4B4; 
   height: 23px;
   font-size: 80%;
   border-bottom: 2px solid #666666;
@@ -104,9 +105,11 @@ div.list-table-container div.list-table li div
 div.list-table-container div.list-table
 { 
   overflow-y: scroll;
+  overflow-x: hidden;
   background-color: #666666;
-  border: 0px solid #C0C0C0;
-  margin: 0px;
+  border: 0 solid #C0C0C0;
+  margin: 0;
+  position: relative;
  }
 
 div.list-table-container div.list-table li.odd
@@ -117,6 +120,11 @@ div.list-table-container div.list-table li.odd
 div.list-table-container div.list-table li.even
 { 
   background-color: #E9E9E9;
+ }
+
+div.list-table-container div.list-table li.new
+{ 
+  background-color: #B0D9EA;
  }
 
 
@@ -179,6 +187,8 @@ div.table-label div.table-title
   color: #666666;
   line-height: 21px;
   float: left;
+	font-size: 93%; /*equiv 12px */
+	font-weight: bold;
  }
 
 /* ------------------ Style the input fields ------------------ */
@@ -193,6 +203,13 @@ div.list-table-container div.list-table input.textfield
 div.list-table-container div.list-table input
 { 
   margin-top: 5px;
+ }
+
+div.list-table-container ul.header div.drag, div.drag
+{
+  width: 30px;
+  padding-top: 4px;
+  text-indent: 7px;
  }
 
 /* ------------------ Style the redirect table ---------------- */
@@ -214,12 +231,12 @@ div.list-table-container.redirects div.list-table, div.list-table-container.ip_n
 
 div.list-table-container.redirects div.enabled
 { 
-  width: 50px;
+  width: 40px;
   }
 
 div.list-table-container.redirects div.description
 { 
-  width: 470px;
+  width: 450px;
   }
 
 div.list-table-container.redirects div.enabled, div.list-table-container.redirects div.minus, div.list-table-container.redirects div.edit, div.list-table-container.ip_networks div.networks, div.list-table-container.ip_networks div.minus
@@ -241,7 +258,7 @@ div.table-label.ip_networks
  }
 
 
-div.list-table-container.ip_networks div.networks
+div.list-table-container.ip_networks div.networks, div.list-table-container.ip_networks div.ip-network
 {
   width: 205px; 
   }
@@ -419,6 +436,7 @@ div.table-label.interface-status
 div.list-table-container.interface-status div.network_interface
 { 
   width: 170px;
+  padding-left: 10px;
   }
 div.list-table-container.interface-status div.os_name
 { 
@@ -426,7 +444,7 @@ div.list-table-container.interface-status div.os_name
   }
 div.list-table-container.interface-status div.carrier
 { 
-  width: 152px;
+  width: 275px;
   }
 div.list-table-container.interface-status div.mac
 { 
@@ -455,7 +473,7 @@ div.list-table-container.firewalls div.target
 
 div.list-table-container.firewalls div.description
 { 
-  width: 365px;
+  width: 340px;
   }
 
 div.list-table-container.firewalls div.edit
@@ -491,27 +509,27 @@ div.list-table-container.system-firewalls div.description
 
 div.list-table-container.overrides
 { 
-  width: 593px;
+  width: 600px;
   
 }
 div.table-label.overrides
 {
-  width: 597px;
+  width: 602px;
  }
 
 div.list-table-container.overrides div.enabled
 { 
-  width: 50px;
+  width: 43px;
   }
 
 div.list-table-container.overrides div.writable
 { 
-  width: 100px;
+  width: 68px;
   }
 
 div.list-table-container.overrides div.path
 { 
-  width: 350px;
+  width: 330px;
   }
 
 div.list-table-container.overrides div.minus
@@ -529,17 +547,17 @@ div.table-label.subscriptions
   }
 div.list-table-container.subscriptions div.enabled
 { 
-  width: 50px;
+  width: 40px;
   }
 
 div.list-table-container.subscriptions div.subscribe
 { 
-  width: 90px;
+  width: 85px;
   }
 
 div.list-table-container.subscriptions div.description
 { 
-  width: 340px;
+  width: 330px;
   }
 
 div.list-table-container.subscriptions div.edit
@@ -629,6 +647,28 @@ div.list-table-container.routes div.interface
   width: 150px;
  }
 div.list-table-container.routes div.minus
+{ 
+  width: 70px;
+ }
+
+/* ------------------- NAT Policy -------------------- */
+div.list-table-container.nats
+{
+  width: 700px;
+ }
+div.table-label.nats
+{ 
+  width: 702px;
+ }
+div.list-table-container.nats div.ip-address
+{
+  width: 205px;
+ }
+div.list-table-container.nats div.new-source
+{ 
+  width: 205px;
+ }
+div.list-table-container.nats div.minus
 { 
   width: 70px;
  }

@@ -13,7 +13,31 @@ class Interface < ActiveRecord::Base
 
   ## Link for all of the interfaces that are bridged with this interface.
   has_many( :bridged_interfaces, :class_name => "IntfBridge", :foreign_key => "bridge_interface_id" )
-  
+
+  def Interface.valid_dhcp_server?
+    dhcp_server_settings = DhcpServerSettings.find( :first )
+    if dhcp_server_settings.nil? or dhcp_server_settings.enabled == false
+      return true
+    end
+    if dhcp_server_settings.start_address.nil? or dhcp_server_settings.start_address.length == 0 or dhcp_server_settings.end_address.nil? or dhcp_server_settings.end_address.length == 0
+      return false
+    end
+    start_address = IPAddr.new( dhcp_server_settings.start_address )
+    end_address = IPAddr.new( dhcp_server_settings.end_address )
+    interfaces = Interface.find( :all )
+    interfaces.each do |interface|
+      if interface.config_type == InterfaceHelper::ConfigType::STATIC and ! interface.intf_static.nil?
+        interface.intf_static.ip_networks.each do |ip_network|
+          ip_addr = IPAddr.new( ip_network.ip + "/" + ip_network.netmask )
+          if ip_addr.include?( start_address ) and ip_addr.include?( end_address )
+            return true
+          end
+        end
+      end
+    end
+    return false
+  end
+
   ## Return true if this interface is bridged with another interface
   def is_bridge?
     ## If the config is in bridge mode, then just return true if the bridged
@@ -85,6 +109,13 @@ class Interface < ActiveRecord::Base
 
   def interface_status
     return `/usr/share/untangle-net-alpaca/scripts/get-interface-status #{self.os_name}`
+  end
+
+  def current_mtu
+    mtu_line = `ifconfig #{self.os_name} | grep MTU`
+    after_label = mtu_line.split("MTU:")[1]
+    mtu = after_label.split(" ")[0]
+    return mtu
   end
 
   def hardware_address

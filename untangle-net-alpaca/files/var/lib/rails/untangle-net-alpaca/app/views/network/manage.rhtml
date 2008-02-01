@@ -1,6 +1,7 @@
 <% form_tag( :action => 'save' ) do -%>
   <div id="title"><h1><%= "Network Configuration".t %></h1></div>
   <div id="main-content-body">
+  <%= handle_flash_messages %>
     <div align="right" style="width: 550px; margin-bottom: 15px;">
     <div class="refresh-button" onclick="location.href='<%= url_for( :action => :refresh_interfaces ) %>'"> Refresh </div>
     </div>
@@ -13,7 +14,7 @@
   </div>
   <div id="action-footer">
     <%= submit_tag "Cancel".t %>
-    <%= submit_tag "Save".t, :onclick => "return #{confirm_javascript_function( "Are you sure?".t )}"%>
+    <%= submit_tag "Save".t, :onclick => "return #{confirm_javascript_function( `hostname`.strip() + " is about to save its settings. These settings are critical to proper network operationand you should be sure these are the settings you want. Your Untangle Client may be logged out. Would you like to proceed?".t )}"%>
   </div>
   </div>
 <% end -%>

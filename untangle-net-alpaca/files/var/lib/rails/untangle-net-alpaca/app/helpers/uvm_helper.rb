@@ -12,6 +12,7 @@ module UvmHelper
 
     def initialize
       columns = []
+      columns << Alpaca::Table::DragColumn.new
       columns << Alpaca::Table::Column.new( "enabled", "On".t ) do |subscription,options|
         row_id = options[:row_id]
         view = options[:view]
@@ -20,11 +21,11 @@ module UvmHelper
         #{view.table_checkbox( row_id, "enabled", subscription.enabled )}
 EOF
       end
-      columns << Alpaca::Table::Column.new( "subscribe", "Subscribe".t ) do |subscription,options|
+      columns << Alpaca::Table::Column.new( "subscribe", "Bypass".t ) do |subscription,options|
         row_id = options[:row_id]
         view = options[:view]
 <<EOF
-        #{view.check_box( "subscribe", row_id, { :checked => subscription.subscribe }, true, false )}
+        #{view.check_box( "subscribe", row_id, { :checked => ! subscription.subscribe }, false, true )}
 EOF
       end
       
@@ -47,7 +48,7 @@ EOF
 
       columns << Alpaca::Table::DeleteColumn.new
       
-      super(  "User Subscriptions", "subscriptions", "", "subscription", columns )
+      super(  "Bypass Rules".t, "subscriptions", "", "subscription", columns )
     end
 
     def row_id( row )
@@ -88,7 +89,7 @@ EOF
         "&nbsp;" + options[:view].text_field( "description", system_subscription.system_id, { :value => system_subscription.description } )
       end
             
-      super(  "System Subscriptions", "system-subscriptions", "", "system_subscription", columns )
+      super(  "System Bypass Rules".t, "system-subscriptions", "", "system_subscription", columns )
     end
   end
 

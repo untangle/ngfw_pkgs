@@ -7,7 +7,7 @@
   <div class="new-source">
     <%= text_field_tag( "natNewSources[#{rowId}]", "#{nat_policy.new_source}" ) %>
   </div>
-  <div class="minus" onclick="removeListItem( '<%= rowId %>' )">
+  <div class="minus" onclick="Network.removeListItem( '<%= rowId %>' )">
     <%= "-".t %>
   </div>
 </li>

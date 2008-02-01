@@ -1,1 +1,1 @@
-page.insert_html( :bottom, @list_id, :partial => "ip_network", :object => @ip_network )
+page.insert_html( :top, @list_id, :partial => "ip_network", :object => @ip_network )

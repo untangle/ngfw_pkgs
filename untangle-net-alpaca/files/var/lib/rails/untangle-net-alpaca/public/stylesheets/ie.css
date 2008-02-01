@@ -1,0 +1,4 @@
+/* IE specific styles */
+
+#tabs li.active-tab { background-position: 100% -200px; font-weight: bold; height: auto; margin-top: 0; }
+#tabs li.active-tab a.active-tab { background-position: 0% -200px; font-weight: bold; height:  auto; padding-top: 2px; }

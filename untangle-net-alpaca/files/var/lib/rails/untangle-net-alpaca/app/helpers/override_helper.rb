@@ -4,6 +4,9 @@ module OverrideHelper
 
     def initialize
       columns = []
+
+      columns << Alpaca::Table::DragColumn.new
+
       columns << Alpaca::Table::Column.new( "enabled", "On".t ) do |override,options|
         row_id = options[:row_id]
         view = options[:view]
@@ -14,11 +17,11 @@ EOF
       end
 
       columns << Alpaca::Table::Column.new( "writable", "Writable".t ) do |override,options| 
-        "&nbsp;" + options[:view].check_box( "writable", options[:row_id], { :checked => override.writable }, true, false )
+        options[:view].check_box( "writable", options[:row_id], { :checked => override.writable }, true, false )
       end
       
       columns << Alpaca::Table::Column.new( "path", "File Path".t ) do |override,options|
-        "&nbsp;" + options[:view].text_field( "path", options[:row_id], { :value => override.path } )
+        options[:view].text_field( "path", options[:row_id], { :value => override.path } )
       end
 
       columns << Alpaca::Table::DeleteColumn.new

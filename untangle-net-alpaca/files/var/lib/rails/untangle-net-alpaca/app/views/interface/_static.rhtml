@@ -41,6 +41,7 @@
       <ul class="text-fields">
         <li>
           <label for="static[mtu]"><%= "MTU:".t %></label>
+	  <%= @interface.current_mtu %>
           <%= text_field( "static", "mtu", { :class => "number" } ) %>
         </li>
       </ul>

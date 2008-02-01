@@ -12,47 +12,47 @@ end
        <div class="header">Override</div>
 
        <br/>
-       <p>
+       <div>
          <label for="dynamic[ip]"><%= "IP Address:".t %></label>
          <div class="current"><%= print_dynamic( @dhcp_status.ip ) %></div>
          <%= text_field( "dynamic", "ip" ) %>
-       </p>
-       <p>
+       </div>
+       <div>
          <label for="dynamic[netmask]"><%= "Netmask:".t %></label>
          <div class="current"><%= print_dynamic( @dhcp_status.netmask )%></div>
          <%= text_field( "dynamic", "netmask" ) %>
-       </p>
+       </div>
 
        <% if interface.wan %>
-         <p>
+         <div>
            <label for="dynamic[default_gateway]"><%= "Default Gateway:".t %></label>
            <div class="current"><%= print_dynamic( @dhcp_status.default_gateway ) %></div>
            <%= text_field( "dynamic", "default_gateway" ) %>
-         </p>
-         <p>
+         </div>
+         <div>
            <label for="dynamic[dns_1]"><%= "Primary DNS Server:".t %></label>
            <div class="current"><%= print_dynamic( @dhcp_status.dns_1 )%></div>
            <%= text_field( "dynamic", "dns_1" ) %>
-         </p>
-         <p>
+         </div>
+         <div>
            <label for="dynamic[dns_2]"><%= "Secondary DNS Server:".t %></label>
            <div class="current"><%= print_dynamic( @dhcp_status.dns_2 )%></div>
            <%= text_field( "dynamic", "dns_2" ) %>
-         </p>
+         </div>
        <% else %>
          <%= hidden_field( "dynamic", "default_gateway", { :value => "" } ) %>
          <%= hidden_field( "dynamic", "dns_1", { :value => "" } ) %>
          <%= hidden_field( "dynamic", "dns_2", { :value => "" } ) %>
        <% end %>
   
-       <p>
+       <div>
          <label for="dynamic[mtu]"><%= "MTU:".t %></label>
          <% # Review : Presently ignoring all localization %>
-         <%= text_field( "dynamic", "mtu", { :clas => "number" } ) %>
-       </p>
+	 <div class="current"><%= print_dynamic( @interface.current_mtu ) %></div>
+         <%= text_field( "dynamic", "mtu", { :class => "number" } ) %>
+       </div>
     </div>
 
-    <h2><%= "IP Addresses".t %></h2>
     <% list_id = "ip-network-list-dynamic" %>
     
     <%= render( :partial => "ip_networks" , :object => dynamic.ip_networks, 

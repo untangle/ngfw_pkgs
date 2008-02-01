@@ -39,13 +39,51 @@ module ActionView
         if options.include?( :class )
           css_class = options[:class] + " " + css_class
         end
+
+        if ! options.include?( :tabindex )
+          options[:tabindex] = 1
+        end
         
-        orig_text_field( object_name, method, options.merge( :class => css_class) )
+        orig_text_field( object_name, method, options.merge( :class => css_class ) )
       end
+
+      alias_method :orig_password_field, :password_field
+
+      def password_field( object_name, method, options = {} )
+        css_class = "textfield"
+        
+        if options.include?( :class )
+          css_class = options[:class] + " " + css_class
+        end
+
+        if ! options.include?( :tabindex )
+          options[:tabindex] = 1
+        end
+        
+        orig_password_field( object_name, method, options.merge( :class => css_class ) )
+      end
+
 
     end
 
     module FormTagHelper
+      alias_method :orig_password_field_tag, :password_field_tag
+
+      def password_field_tag( name="password", value=nil, options={} )
+        css_class = "textfield"
+        
+        if options.include?( :class )
+          css_class = options[:class] + " " + css_class
+        end
+
+        if ! options.include?( :tabindex )
+          options[:tabindex] = 1
+        end
+        
+          
+        orig_password_field_tag( name, value, options.merge( :class => css_class) )
+      end
+
       alias_method :orig_submit_tag, :submit_tag
 
       def submit_tag( value, options = {})
@@ -77,9 +115,40 @@ module ActionView
         if options.include?( :class )
           css_class = options[:class] + " " + css_class
         end
+
+        if ! options.include?( :tabindex )
+          options[:tabindex] = 1
+        end
         
         results = result_prefix + orig_submit_tag( value, options.merge( :class => css_class)) + result_suffix
       end
     end
+
+#    module PrototypeHelper
+#      module JavaScriptGenerator
+#        module GeneratorMethods
+#          alias_method :orig_sortable, :sortable
+#          def sortable( id, options = {} )
+#            if ! options.include?( :ghosting )
+#              options[:ghosting] = true
+#            end        
+#            orig_sortable( id, options )
+#          end
+#        end
+#      end
+#    end
+
+    module ScriptaculousHelper
+      alias_method :orig_sortable_element, :sortable_element
+
+      def sortable_element( element_id, options = {} )
+        if ! options.include?( :ghosting )
+          options[:ghosting] = true
+        end
+        orig_sortable_element( element_id, options )
+      end
+
+    end
+
   end
 end

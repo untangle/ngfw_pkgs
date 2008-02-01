@@ -8,6 +8,9 @@ module FirewallHelper
 
     def initialize
       columns = []
+
+      columns << Alpaca::Table::DragColumn.new
+
       columns << Alpaca::Table::Column.new( "enabled", "On".t ) do |firewall,options|
         row_id = options[:row_id]
         view = options[:view]

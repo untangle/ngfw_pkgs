@@ -25,11 +25,4 @@ class DdclientController < ApplicationController
     return redirect_to( :action => "manage" )
   end
 
-  def stylesheets
-    [ "borax/list-table" ]
-  end
-
-  def scripts
-    [ ] 
-  end
 end

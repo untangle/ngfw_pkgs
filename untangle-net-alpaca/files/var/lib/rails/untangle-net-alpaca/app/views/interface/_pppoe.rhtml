@@ -18,7 +18,7 @@ end
            <%= password_field_tag( "pppoe[password]", pppoe.hidden_password ) %>
          </li><li>
            <label for="pppoe[use_peer_dns]"><%= "Use peer DNS:".t %></label>
-           <%= check_box( "pppoe", "use_peer_dns", { :checked => @pppoe.use_peer_dns }, true, false ) %>
+           <%= check_box( "pppoe", "use_peer_dns", { :checked => false, :disabled => true }, true, false ) %>
          </li><li>
            <label for="pppoe[dns_1]"><%= "Primary DNS Server:".t %></label>
            <%= text_field( "pppoe", "dns_1" ) %>

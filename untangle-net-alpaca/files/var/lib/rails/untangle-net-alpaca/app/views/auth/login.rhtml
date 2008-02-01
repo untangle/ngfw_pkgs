@@ -11,12 +11,12 @@
     <fieldset>
       <ul class="text-fields">
         <li>
-          <label for="credentials[username]"><%= "Username:".t %></label>
+          <label for="credentials_username"><%= "Username:".t %></label>
           <%= text_field( "credentials", "username" ) %>
         </li>
 
         <li>
-          <label for="credentials[password]"><%= "Password:".t %></label>
+          <label for="credentials_password"><%= "Password:".t %></label>
           <%= password_field( "credentials", "password" ) %>
         </li>
 
@@ -27,5 +27,12 @@
       
     <% end -%>
   </fieldset>
+</div>
+</div>
+<div id="main-content-footer">
+<div id="help-footer">
+<%= submit_tag "Help".t %>
+</div>
+<div id="action-footer">
 </div>
 </div>

@@ -1,4 +1,4 @@
-<div id="title"><h1><%= "Refresh Interfaces".t %></h1></div>
+<div id="title"><h1><%= "Refresh Network Interfaces".t %></h1></div>
 <% form_tag( :action => 'commit_interfaces', :id => "commit" ) do -%>
 <div id="main-content-body">
 <div class="config-level">
@@ -6,9 +6,9 @@
     <h3><%= "Up to date".t %></h3>
     
     <p class="description">
-      <%= "Unable to detect any removed or installed interfaces.".t %>
+      <%= "Unable to detect any removed or installed network interfaces.".t %>
       <%= link_to( "Return to list.".t, { :action => "manage" } ) %>
-      <%= javascript_tag( "window.setTimeout('location.href=\"" + url_for( :action => "manage" ) + "\"', 5000);" ) %>
+      <%= javascript_tag( "window.setTimeout('location.href=\"" + url_for( :action => "manage" ) + "\"', 3000);" ) %>
     </p>
   <% else %>
     <% unless @new_interfaces.empty?  %>

@@ -20,9 +20,4 @@ class AlpacaController < ApplicationController
   def status
     @interfaces = Interface.find( :all )
   end
-
-  def stylesheets
-    [ "alpaca-settings", "borax/list-table" ]
-  end
-
 end

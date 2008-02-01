@@ -25,6 +25,11 @@ class Alpaca::Table::Column
     ## Convert the options into an HTML string
     @attributes.map { |k,v| "#{k}='#{v}'" }.join( " " )
   end
+
+  ## Override this to generate a more complicated header
+  def generate_header( options = {} )
+    self.title.t
+  end
   
   attr_reader :css_class, :title, :attributes
 end

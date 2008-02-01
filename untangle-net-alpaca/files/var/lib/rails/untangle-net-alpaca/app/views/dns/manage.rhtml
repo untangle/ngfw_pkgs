@@ -4,12 +4,12 @@
     <fieldset>
       <ul class="text-fields">
         <li>
-          <label for="dns_server_settings[enabled]"><%= "Enabled:".t %></label>
+          <label for="dns_server_settings_enabled"><%= "Enabled:".t %></label>
           <%= check_box( "dns_server_settings", "enabled", { :checked => @dns_server_settings.enabled }, true, false ) %>
         </li>
 
         <li>
-          <label for="dns_server_settings[suffix]"><%= "Domain Name Suffix:".t %></label>
+          <label for="dns_server_settings_suffix"><%= "Domain Name Suffix:".t %></label>
           <%= text_field( "dns_server_settings", "suffix" ) %>
         </li>
       </ul>

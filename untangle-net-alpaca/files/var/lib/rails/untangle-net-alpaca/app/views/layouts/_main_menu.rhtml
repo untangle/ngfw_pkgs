@@ -4,18 +4,25 @@ advanced = nil
 logout = nil
 %>
 <ul id="tabs">
-<% for menu_item in menu.children %>
+<% 	i = 0;
+	for menu_item in menu.children 
+		i += 1 %>
    <% if ( special_tabs.index( menu_item.name ).nil? ) %>
-     <li><div><a href="<%= menu_item.action %>"><%= menu_item.name.t %></a></div></li>
+     <li<% if (i == (menu.children.length - 2)) %> class="lastitem"<% end %>><a href="<%= menu_item.action %>"><%= menu_item.name.t %></a></li>
    <% elsif ( menu_item.name == "Advanced" ) 
       	    advanced = menu_item %>
    <% elsif ( menu_item.name == "Logout" ) 
       	    logout = menu_item %>
-   <% end %>
+   <% 		end %>
 <% end %>
 </ul>
+
 <% if ! advanced.nil? %>
-   <div id="advanced"><span><a href="<%= advanced.action %>"><%if ( advanced.children? ) %><%= image_tag( "rack/button-menu.png"  ) %>&nbsp;&nbsp;<% end %><%= advanced.name.t %></a></span>
+
+
+<ul id="extranav">	
+	
+  <li id="advanced<%if ( advanced.children? ) %>-menu<% end %>"><a href="<%= advanced.action %>"><%= advanced.name.t %></a>
    <% if ( advanced.children? ) %>
     <ul id="advanced-dropdown">
      <% for menu_item in advanced.children %>
@@ -23,8 +30,9 @@ logout = nil
      <% end %>
     </ul>
    <% end %>
-   </div>
+   </li> 
 <% end %>
 <% if ! logout.nil? and session[:username] != "nonce-authenticated" %>
-   <div id="logout"><span><a href="<%= logout.action %>"><%= logout.name.t %></a></span></div>
+  <li id="logout"><a href="<%= logout.action %>"><%= logout.name.t %></a></li>
+</ul>
 <% end %>

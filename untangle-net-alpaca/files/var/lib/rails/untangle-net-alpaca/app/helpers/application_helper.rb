@@ -9,6 +9,13 @@ module ApplicationHelper
     false
   end
 
+  def ApplicationHelper.active_record_to_json( results )
+    rows = results.collect{ |u| u.attributes }
+    fields = rows[0].keys.collect{ |u| { :name => u } }
+    
+    return { :metaData => { :totalProperty => 'count', :root => 'rows', :id => 'id', :fields => fields  }, :count => results.length, :rows => rows }.to_json
+  end
+
   def build_table( data, table_model )
     render( :partial => "application/table", :locals => { :table_model => table_model, :data => data } )
   end
@@ -23,6 +30,27 @@ module ApplicationHelper
 
   def table_checkbox( row_id, name, enabled )
     check_box( name, row_id, { :checked => enabled }, true, false )
+  end
+
+  def handle_flash_messages
+    css_class = false
+    body = ""
+    if !flash[:notification].nil? and flash[:notification].length > 0
+      css_class = "notification"
+      body << flash[:notification]
+    end
+    if !flash[:warning].nil? and flash[:warning].length > 0
+      css_class = "warning"
+      body << flash[:warning]
+    end
+    if !flash[:error].nil? and flash[:error].length > 0
+      css_class = "error"
+      body << flash[:error]
+    end
+    if css_class != false
+      return "<div class=\"#{css_class}\">#{body}</div>"
+    end
+    return ""
   end
 
   #Needs work for better validation

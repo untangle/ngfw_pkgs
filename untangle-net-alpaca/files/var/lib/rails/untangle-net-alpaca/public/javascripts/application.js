@@ -23,6 +23,8 @@ Fabtabs.prototype = {
 	this.element = $(element);
 	var options = Object.extend({}, arguments[1] || {});
 	this.menu = $A(this.element.getElementsByTagName('a'));
+	//this.menu = $A(this.element.getElementsByTagName('li'));
+
 	this.getInitialTab();
 	this.menu.each(this.setupTab.bind(this));
     },
@@ -38,7 +40,7 @@ Fabtabs.prototype = {
     hide : function(elm) {
 	$(elm).removeClassName('active-tab');
 	var ancestors = $(elm).ancestors();
-	ancestors[1].removeClassName('active-tab');
+	ancestors[0].removeClassName('active-tab');
     },
     show : function(elm) {
 	var up = new Ajax.Updater($('main-content'), $(elm).href, { evalScripts: true });
@@ -47,7 +49,7 @@ Fabtabs.prototype = {
     highlight : function(elm) {
 	$(elm).addClassName('active-tab');
 	var ancestors = $(elm).ancestors();
-	ancestors[1].addClassName('active-tab');
+	ancestors[0].addClassName('active-tab');
     },
     //tabID : function(elm) {
     //return elm.href.match(/#(\w.+)/)[1];
@@ -74,10 +76,12 @@ Fabtabs.prototype = {
     }
 }
 
+
     var handleResize = function () {
 	var footerTop = '800px';
 	var contentHeight = '800px';
 	var bodyWidth = '100%';
+	/*
 	if (window.innerHeight !== undefined) {
 	    footerTop = (window.innerHeight - 80).toString() + 'px';
 	    bodyHeight = (window.innerHeight - 154).toString() + 'px';
@@ -89,29 +93,52 @@ Fabtabs.prototype = {
 	    bodyWidth = (document.documentElement.clientWidth - 35).toString() + 'px';
 	    contentHeight =  (document.documentElement.clientHeight - 29).toString() + 'px';
 	}
+	*/
+	if (window.innerHeight !== undefined) {
+	    bodyHeight = $('main-content-body').getHeight();
+	    windowHeight = (window.innerHeight - $('main-menu').getHeight() - 126).toString() + 'px';
+	    if (windowHeight > bodyHeight) {
+		bodyHeight = windowHeight;
+	    }
+
+	    contentHeight = bodyHeight;
+	    bodyWidth = (window.innerWidth - 50).toString() + 'px';
+	    //	    contentHeight = (window.innerHeight - $('main-menu').getHeight() - 1).toString() + 'px';
+		//footerTop = (window.innerHeight - 50).toString() + 'px';
+	} else {
+	    //footerTop = (document.documentElement.clientHeight - 120).toString() + 'px';
+	    bodyHeight =  (document.documentElement.clientHeight - $('main-menu').getHeight() - 127).toString() + 'px';
+	    bodyWidth = (document.documentElement.clientWidth - 50).toString() + 'px';
+	    contentHeight =  (document.documentElement.clientHeight - $('main-menu').getHeight()).toString() + 'px';
+	    
+	}
 	var emc = $('main-content');
 	if (emc) {
-	    emc.setStyle( { height: contentHeight } );
+	   emc.setStyle( { height: contentHeight } );
+	   emc.setStyle( { width: bodyWidth } );
 	}
 	var emcf = $('main-content-footer');
 	if (emcf) {
-	    emcf.setStyle( { top: footerTop } );
+	//   emcf.setStyle( { top: footerTop } );
 	}
 	var emcb = $('main-content-body');
 	if (emcb) {
-	    emcb.setStyle( { height: bodyHeight } );
-	    emcb.setStyle( { width: bodyWidth } );
+	//	alert(bodyHeight)
+	   emcb.setStyle( { height: bodyHeight } );
+	   emcb.setStyle( { width: bodyWidth } );
 	}
     }
-
-
 	function showAdvancedMenu(event) {
-		//var element = Event.element(event);
+	    //var element = Event.element(event);
+	    if ($('advanced-dropdown')){
 		$('advanced-dropdown').addClassName('shown');
+	    }
 	}
 	function hideAdvancedMenu(event) {
-		//var element = Event.element(event);
+	    //var element = Event.element(event);
+	    if ($('advanced-dropdown')){
 		$('advanced-dropdown').removeClassName('shown');
+	    }
 	}
 	function highlightMenuItem(event) {
 		var element = Event.element(event);
@@ -137,26 +164,174 @@ Fabtabs.prototype = {
 		element.removeClassName('highlight');	
 		
 	}
-	function init(event) {
 
-		$('advanced').observe('mouseover', showAdvancedMenu);
-		$('advanced').observe('mouseout', hideAdvancedMenu);
-		
-		var menuChildren = $('advanced').getElementsByTagName('li');
-		for(var i=0; i<menuChildren.length; i++) {
-			var thisMenuItem = menuChildren[i];
-			if (thisMenuItem.nodeName.toLowerCase() == "li") {
-				Element.extend(thisMenuItem);
-				thisMenuItem.observe('mouseover', highlightMenuItem);
-				thisMenuItem.observe('mouseout', unhighlightMenuItem);
-			}
+function focusTableField(event) {
+    var element = Event.element(event);
+    element.addClassName('focus');
+}
+
+function blurTableField(event) {
+    var element = Event.element(event);
+    element.removeClassName('focus');
+}
+
+
+function init() {
+
+    //	Event.observe(window,'click', toggleGuide, false);
+    
+    
+    //run resize on font-size change
+    if( window.getComputedStyle ) {
+	lastSize = window.getComputedStyle(document.documentElement,null).fontSize;
+	setInterval(function () {
+		var sz = window.getComputedStyle(document.documentElement,null).fontSize;
+		if( sz != lastSize ) {
+		    //do whatever fixes you wanted
+		    handleResize();
+		    lastSize = sz;
 		}
+	    },1000);
+    } else {
+	//do the IE hackaround
+    }
+    if ($('advanced-menu')) {
+	$('advanced-menu').observe('mouseover', showAdvancedMenu);
+	$('advanced-menu').observe('mouseout', hideAdvancedMenu);
+	
+	var menuChildren = $('advanced-menu').getElementsByTagName('li');
+	for(var i=0; i<menuChildren.length; i++) {
+	    var thisMenuItem = menuChildren[i];
+	    if (thisMenuItem.nodeName.toLowerCase() == "li") {
+		Element.extend(thisMenuItem);
+		thisMenuItem.observe('mouseover', highlightMenuItem);
+		thisMenuItem.observe('mouseout', unhighlightMenuItem);
+	    }
 	}
+    }
 
+    var textfields = $$('input.textfield');
+    for(var i=0; i<textfields.length; i++) {
+	textfields[i].observe('focus', focusTableField);
+	textfields[i].observe('blur', blurTableField); 
+    }
 
+}
+
+	
+	function toggleGuide() {
+
+	if ($('guide').getStyle('display') == 'block')	{
+		$('guide').setStyle({
+		  display: 'none'
+		});
+	} else {
+		$('guide').setStyle({
+		  display: 'block'
+		});
+	}
+		//alert('here')
+	}
+	
 Event.observe(window,'load',function(){ new Fabtabs('tabs'); },false);
 
+Event.observe(window,'load', init, false);
 Event.observe(window,'load',handleResize,false);
 Event.observe(window,'resize',handleResize,false);
-Event.observe(window, 'load', init, false);
+Event.observe(window,'scroll',handleResize,false);
 
+
+var Network =
+{
+    setConfigType : function ( id ) 
+    {
+        var configType = document.getElementById( "config_type_" + id );
+
+        /* Retrieve the value of the drop down */
+        configType = configType.value;
+        
+        var element = document.getElementById( id + "_" + configType );
+        
+        /* Ignore anything that doesn't exists */
+        if ( element == null ) return;
+
+        /* Ignore anything that is not a DIV */
+        if ( element.nodeName != "DIV" && element.nodeName != "div" ) return;
+
+        var container = document.getElementById( id );
+        
+        /* Ignore anything that is not a DIV */
+        if ( container == null ) return;
+        
+        var children = container.childNodes;
+        var len = children.length;
+        
+        for ( var i = 0 ; i < len ; i++ ) {
+            /* Ignore anything that is not a list item */
+            if ( children[i].nodeName != "DIV" && children[i].nodeName != "div" ) continue;
+            
+            if ( children[i] == element  ) {
+                Element.show( children[i] );
+            } else {
+                Element.hide( children[i] );
+            }
+        }
+    },
+
+    removeListItem : function ( id )
+    {
+        var element = document.getElementById( id );
+        
+        /* Ignore anything that doesn't exists */
+        if ( element == null ) return;
+        
+        /* Ignore anything that is not a list item */
+        if ( element.nodeName != "LI" && element.nodeName != "li" ) return;
+        
+        try {
+            Element.remove( id );
+        } catch ( e ) {
+            /* ignoring the error */
+        }
+    }
+};
+
+var Interface = 
+{
+    setConfigType : function ()
+    {
+	var configType = document.getElementById( "config_type" );
+    
+	if ( configType == null ) return;
+
+	/* Retrieve the value of the drop down */
+	configType = configType.value;
+
+	var element = document.getElementById( configType );
+    
+	/* Ignore anything that doesn't exists */
+	if ( element == null ) return;
+    
+	/* Ignore anything that is not a DIV */
+	if ( element.nodeName != "DIV" && element.nodeName != "div" ) return;
+
+	var container = document.getElementById( "config-panels" );
+    
+	/* Ignore anything that is not a DIV */
+	if ( container == null ) return;
+    
+	var children = container.childNodes;
+	var len = children.length;
+
+	for ( var i = 0 ; i < len ; i++ ) {
+	    /* Ignore anything that is not a list item */
+	    if ( children[i].nodeName != "DIV" && children[i].nodeName != "div" ) continue;
+        
+	    if ( children[i].id == configType ) {
+		Element.show( children[i] );
+	    } else {
+		Element.hide( children[i] );
+	    }
+	}
+    }
+};

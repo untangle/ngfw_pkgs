@@ -1,6 +1,7 @@
 <div id="title"><h1><%= "Interfaces".t %></h1></div>
 <% form_tag( :action => 'intf_order_save' ) do -%>
   <div id="main-content-body">
+  <%= handle_flash_messages %>
   <div id="interface-list">
     <div class="refresh-button" onclick="location.href='<%= url_for( :controller => :network, :action => :refresh_interfaces ) %>'"> Refresh </div>
     <table>
@@ -17,7 +18,7 @@
       %>
       <tr>
         <td class="button">
-          <%= link_to 'edit'.t, :action => "config", :id => interface %>
+          <%= link_to_remote 'edit'.t, :update => "main-content", :url => { :action => "config", :id => interface } %>
         </td>
         <td><%= interface.name %></td>
         <td><%= interface.config_type %></td>

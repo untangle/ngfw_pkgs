@@ -1,7 +1,8 @@
 <div id="title"><h1><%= "Configuration Level".t %></h1></div>
+<div id="main-content-body">
 <div class="config-level">
 
-  <h3>Presently in <%= @config_level.name %> mode</h3>
+  <h3>Currently in <%= @config_level.name %> mode</h3>
 
   <% if @config_level == AlpacaSettings::Level::Basic %>
     <p class="mode-selection">
@@ -18,10 +19,13 @@
 
   <% else %>
     <p class="mode-selection">
-      <%= "You are presently in Advanced mode, in order to return to Basic
+      <%= "You are currently in Advanced mode, in order to return to Basic
       mode, you must rerun the wizard, or restore settings that were
       configured in basic mode.".t %>
     </p>
     <% end %>
   </p>
+</div>
+</div>
+<div id="main-content-footer">
 </div>

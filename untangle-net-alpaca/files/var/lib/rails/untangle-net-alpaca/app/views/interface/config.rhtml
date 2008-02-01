@@ -12,7 +12,7 @@
   <div id="main-content-body">
     <p><label for="config_type"><%= "Config Type".t %></label>
     <%= select_tag( "config_type", options_for_select( @config_types, @config_type_id )) %>
-    <%= observe_field( "config_type", { :function => "setConfigType()" } ) %>
+    <%= observe_field( "config_type", { :function => "Interface.setConfigType()" } ) %>
 
   <div id="config-panels">
     <%= render( :partial => "static", :object => @static, :locals => { :interface => @interface }  ) %>
@@ -27,4 +27,4 @@
   <%= build_footer %>
   <% end -%>
 </div>
-<%= javascript_tag "setConfigType()" %>
+<%= javascript_tag "Interface.setConfigType()" %>

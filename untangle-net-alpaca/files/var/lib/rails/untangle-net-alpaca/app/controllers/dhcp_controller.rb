@@ -19,6 +19,9 @@ class DhcpController < ApplicationController
     @dhcp_server_settings = DhcpServerSettings.find( :first )
     @dhcp_server_settings = DhcpServerSettings.new if @dhcp_server_settings.nil?
     manage_entries
+    if ! Interface.valid_dhcp_server?
+      flash[:warning] = "DHCP Server is configured on a subnet that is not on any configured interfaces."
+    end
   end
 
   def manage_entries
@@ -28,6 +31,18 @@ class DhcpController < ApplicationController
 
     ## Retrieve all of the dynamic entries from the DHCP server manager
     refresh_dynamic_entries
+  end
+
+  def static_entries_json
+    static_entries = DhcpStaticEntry.find( :all )
+    json = ApplicationHelper.active_record_to_json( static_entries )
+    render :json => json
+  end
+  
+  def dynamic_entries_json
+    dynamic_entries = os["dhcp_server_manager"].dynamic_entries
+    json = ApplicationHelper.active_record_to_json( dynamic_entries )
+    render :json => json
   end
 
   def save

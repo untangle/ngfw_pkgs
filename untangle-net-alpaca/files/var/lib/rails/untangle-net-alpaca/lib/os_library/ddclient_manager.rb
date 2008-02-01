@@ -77,8 +77,12 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
 
       protocol = ConfigService[settings.service][0]
       server = ConfigService[settings.service][1]
+      use = "if, if=" + wanInterface.os_name
+      if server.include?( 'dyndns.org' )
+	use = "web, web=checkip.dyndns.com/, web-skip='IP Address'"  
+      end
       [ [ ConfigPid, DdclientPidFile ],
-        [ ConfigUse, "if, if=" + wanInterface.os_name ],
+        [ ConfigUse, use ],
         [ ConfigProtocol, protocol ],
         [ ConfigLogin, settings.login ],
         [ ConfigPassword, settings.password ],

@@ -89,7 +89,8 @@ class ApplicationController < ActionController::Base
   def setScripts
     @scripts = ( self.respond_to?( "scripts" )) ? scripts : []
     @scripts.concat( RuleHelper::Scripts )
-    @scripts.concat( [ "network", "redirect_manager", "dhcp_server_manager", "dns_server_manager", "subscription_manager", "table_manager" ] )
+    @scripts.concat( [ "redirect_manager", "dhcp_server_manager", "dns_server_manager", "subscription_manager", "table_manager", "redirect_manager", "firewall_manager" ] )
+    #, "ext-base", "ext-prototype-adapter", "ext-all" 
   end
 
   def setButtons

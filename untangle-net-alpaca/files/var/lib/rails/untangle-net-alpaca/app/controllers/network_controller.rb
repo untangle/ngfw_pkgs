@@ -34,7 +34,13 @@ class NetworkController < ApplicationController
 
     ## This should be in a global place
     @cidr_options = OSLibrary::NetworkManager::CIDR.map { |k,v| [ format( "%-3s &nbsp; %s", k, v ) , k ] }
-    @cidr_options.sort! { |a,b| a[1].to_i <=> b[1].to_i }    
+    @cidr_options.sort! { |a,b| a[1].to_i <=> b[1].to_i }
+
+
+    if ! Interface.valid_dhcp_server?
+      flash[:warning] = "DHCP Server is configured on a subnet that is not on any configured interfaces."
+    end
+
   end
 
   def save
@@ -89,7 +95,7 @@ class NetworkController < ApplicationController
     spawn do
       os["network_manager"].commit
     end
-    
+
     return redirect_to( :action => 'manage' )
   end
 

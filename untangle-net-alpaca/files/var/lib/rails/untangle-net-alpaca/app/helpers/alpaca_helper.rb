@@ -9,9 +9,9 @@ module AlpacaHelper
       columns << Alpaca::Table::Column.new( "network_interface", "Network Interface".t ) do |interface,options| 
         options[:view].text_field( "interfaces", options[:row_id], { :value => "#{interface.name}", :readonly => true, :size => 18 } )
       end
-      columns << Alpaca::Table::Column.new( "os_name", "OS Name".t ) do |interface,options| 
-        options[:view].text_field( "interfaces", options[:row_id], { :value => "#{interface.os_name}", :readonly => true, :size => 8 } )
-      end
+      #columns << Alpaca::Table::Column.new( "os_name", "OS Name".t ) do |interface,options| 
+      #  options[:view].text_field( "interfaces", options[:row_id], { :value => "#{interface.os_name}", :readonly => true, :size => 8 } )
+      #end
       columns << Alpaca::Table::Column.new( "carrier", "Connection".t ) do |interface,options| 
         options[:view].text_field( "interfaces", options[:row_id], { :value => "#{interface.interface_status}", :readonly => true, :size => 13 } )
       end

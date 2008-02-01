@@ -30,7 +30,7 @@ panel_class += " wan" if ( config.interface.wan )
       </div>
     <% end %>
     <% if ( config.interface.wan ) %>
-      <%= link_to( "External Aliases".t, :action => :aliases ) %>
+      <%= link_to_remote( "External Aliases".t, :update => "main-content", :url => { :action => :aliases } ) %>
     <% end %>
   </div>
 
