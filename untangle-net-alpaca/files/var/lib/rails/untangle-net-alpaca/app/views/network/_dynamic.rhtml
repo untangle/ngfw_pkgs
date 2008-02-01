@@ -29,4 +29,7 @@ end
     <label for="<%= "#{config_id}_dns_2" %>"><%= "Secondary DNS Server:".t %></label>
     <span><%= print_dynamic( @dhcp_status.dns_2 ) %></span>
   </li>
+  <li>
+    <%= submit_to_remote( "Renew", "Renew".t, options = { :url => { :action => "commit" }, :update => "main-content", :html => { :class => "submit" } } ) %>
+   </li>
 </ul>

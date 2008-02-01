@@ -51,6 +51,9 @@ end
 	 <div class="current"><%= print_dynamic( @interface.current_mtu ) %></div>
          <%= text_field( "dynamic", "mtu", { :class => "number" } ) %>
        </div>
+       <div>
+         <%= submit_to_remote( "Renew", "Renew".t, options = { :url => { :action => "commit" }, :update => "main-content", :html => { :class => "submit" } } ) %>
+       </div>
     </div>
 
     <% list_id = "ip-network-list-dynamic" %>

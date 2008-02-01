@@ -345,9 +345,13 @@ class InterfaceController < ApplicationController
     raise "invalid row id syntax" if /^nat-policy-row-[0-9]*$/.match( @rowId ).nil?
   end
 
-  def scripts
-    [ "interface" ]
+  def commit
+    spawn do
+      os["network_manager"].commit
+    end
+    return redirect_to( :action => 'list' )
   end
+
 
   private
 
@@ -419,13 +423,6 @@ class InterfaceController < ApplicationController
     logger.debug( "Unable to save settings" ) unless success
     
     redirect_to( :action => 'list' )
-  end
-
-  def commit
-    spawn do
-      os["network_manager"].commit
-    end
-    return redirect_to( :action => 'list' )
   end
 
   def networkManager

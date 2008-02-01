@@ -235,14 +235,6 @@ class NetworkController < ApplicationController
     return redirect_to( :action => 'manage' )
   end
 
-  def scripts
-    [ "network" ]
-  end
-
-  #def stylesheets
-  #  [ "borax/list-table", "borax/network" ]
-  #end
-
   private
 
   class AliasVisitor < Interface::ConfigVisitor
