@@ -99,6 +99,13 @@ class NetworkController < ApplicationController
     return redirect_to( :action => 'manage' )
   end
 
+  def commit
+    spawn do
+      os["network_manager"].commit
+    end
+    return redirect_to( :action => 'manage' )
+  end
+
   ## These are the aliases for the external interface.
   def aliases
     ## Index is a reserved word, so the column name must be quoted.

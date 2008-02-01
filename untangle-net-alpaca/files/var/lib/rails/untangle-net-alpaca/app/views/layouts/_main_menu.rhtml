@@ -22,17 +22,17 @@ logout = nil
 
 <ul id="extranav">	
 	
-  <li id="advanced<%if ( advanced.children? ) %>-menu<% end %>"><a href="<%= advanced.action %>"><%= advanced.name.t %></a>
+  <li id="advanced<%if ( advanced.children? ) %>-menu<% end %>"><%= link_to_remote advanced.name.t, :update => "main-content", :url => advanced.action %></a>
    <% if ( advanced.children? ) %>
     <ul id="advanced-dropdown">
      <% for menu_item in advanced.children %>
-     <li><a href="<%= menu_item.action %>"><%= menu_item.name.t %></a></li>
+     <li><%= link_to_remote  menu_item.name.t, :update => "main-content", :url => menu_item.action %></li>
      <% end %>
     </ul>
    <% end %>
    </li> 
 <% end %>
 <% if ! logout.nil? and session[:username] != "nonce-authenticated" %>
-  <li id="logout"><a href="<%= logout.action %>"><%= logout.name.t %></a></li>
+  <li id="logout"><%= link_to_remote logout.name.t, :update=> "main-content", :url => logout.action %></li>
 </ul>
 <% end %>

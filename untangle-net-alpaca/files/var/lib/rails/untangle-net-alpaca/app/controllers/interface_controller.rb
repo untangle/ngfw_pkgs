@@ -421,6 +421,13 @@ class InterfaceController < ApplicationController
     redirect_to( :action => 'list' )
   end
 
+  def commit
+    spawn do
+      os["network_manager"].commit
+    end
+    return redirect_to( :action => 'list' )
+  end
+
   def networkManager
     os["network_manager"]
   end

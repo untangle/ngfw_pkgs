@@ -1,5 +1,5 @@
 <% form_tag( :action => 'save' ) do -%>
-<div id="title"<h1><%= "File Overrides".t %></h1></div>
+<div id="title"><h1><%= "File Overrides".t %></h1></div>
 <div id="main-content-body">
    <%= build_table( Alpaca::Table::Data.new( "override-list", @fileOverrideList ), override_table_model) %> 
 </div>

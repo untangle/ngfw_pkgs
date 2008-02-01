@@ -63,7 +63,7 @@ div.list-table-container ul.header
   background-color: #B4B4B4; 
   height: 23px;
   font-size: 80%;
-  border-bottom: 2px solid #666666;
+  border-bottom: 1px solid #666666;
   }
 
 div.list-table-container ul.header div
@@ -132,11 +132,6 @@ div.list-table-container div.list-table ul li
 { 
   border-top: 1px solid #999999;
   border-bottom: 0px solid #999999;
-  }
-
-div.list-table-container div.list-table ul li.first
-{ 
-  border-top: 0px solid #999999;
   }
 
 div.list-table-container div.list-table ul li div.list-table-column
@@ -248,19 +243,19 @@ div.list-table-container.redirects div.enabled, div.list-table-container.redirec
 /* ------------------ Style the IP Networks ---------------- */
 div.list-table-container.ip_networks
 { 
-  width: 300px;
+  width: 644px;
  }
 
 div.table-label.ip_networks
 { 
   /* Two extra pixels for the border */
-  width: 302px;
+  width: 646px;
  }
 
 
 div.list-table-container.ip_networks div.networks, div.list-table-container.ip_networks div.ip-network
 {
-  width: 205px; 
+  width: 250px; 
   }
 
 /* ------------------ Style the DHCP Static Entries ---------------- */
@@ -654,19 +649,19 @@ div.list-table-container.routes div.minus
 /* ------------------- NAT Policy -------------------- */
 div.list-table-container.nats
 {
-  width: 700px;
+  width: 644px;
  }
 div.table-label.nats
 { 
-  width: 702px;
+  width: 646px;
  }
 div.list-table-container.nats div.ip-address
 {
-  width: 205px;
+  width: 250px;
  }
 div.list-table-container.nats div.new-source
 { 
-  width: 205px;
+  width: 250px;
  }
 div.list-table-container.nats div.minus
 { 
