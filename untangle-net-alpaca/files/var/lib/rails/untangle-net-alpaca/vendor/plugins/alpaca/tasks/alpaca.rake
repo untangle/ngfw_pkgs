@@ -22,7 +22,6 @@ namespace :alpaca do
     os["network_manager"].commit unless Interface.find( :first ).nil?
   end
 
-
   desc "Upgrade task for settings from the UVM."
   task :upgrade => "alpaca:insert_system_rules"
   task :upgrade => "db:migrate" do
@@ -38,7 +37,7 @@ namespace :alpaca do
     end
 
     ## Commit the network settings only if there are interfaces setup.
-    os["network_manager"].commit unless Interface.find( :first ).nil?
+    # os["network_manager"].commit unless Interface.find( :first ).nil?
   end
 end
 

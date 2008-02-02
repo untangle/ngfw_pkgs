@@ -56,6 +56,10 @@ class Alpaca::UvmDataLoader
 
       load_redirects
 
+      ## Load the various DMZ host settings, this should occur after port forwards.
+      ## because they are default port forwards.
+      load_dmz_host
+
       load_routes
 
       load_hostname
@@ -183,6 +187,41 @@ class Alpaca::UvmDataLoader
     end
   end
 
+  def load_dmz_host
+    ## Do not load the DMZ host if network settings are not enabled.
+    return unless @network_settings.is_enabled
+
+    ## Here is the query to find the DMZ host.
+    query  = "SELECT dmz_host FROM u_network_space"
+    query += " WHERE dmz_host_enabled AND settings_id=?"
+    query += " LIMIT 1"
+
+    @dbh.execute( query, @network_settings.setting_id ) do |result|
+      result.fetch_all.each do |r|
+        ## Create a DMZ host redirect rule
+        ## these were the only protocols supported in the UVM.
+        filter  = "protocol::tcp,udp,icmp"
+        ## Match traffic on the external interface
+        filter += "&&s-intf::1"
+        filter += "&&d-local::true"
+
+        ## Find the redirect with the greatest position.
+        last_redirect = Redirect.find( :first, :order => "position desc" )
+        position = 1
+        position = last_redirect.position + 1 unless last_redirect.nil?
+
+        redirect  = Redirect.new( :position => position, :system_id => nil, 
+                                  :is_custom => false, :enabled => true )
+        redirect.filter = filter
+        dmz_host = r["dmz_host"]
+        redirect.new_ip = dmz_host
+        redirect.new_enc_id = nil
+        redirect.description = "DMZ Host(#{dmz_host})"
+        redirect.save
+      end
+    end
+  end
+    
   def load_hostname
     query  = "SELECT  hostname FROM u_address_settings LIMIT 1"
     hostname = nil
@@ -360,14 +399,13 @@ class Alpaca::UvmDataLoader
     mtu = 0
     ns = 0
     
-    query  = "SELECT network_space, media, mtu, dmz_host_enabled, dmz_host, "
-    query += " nat_address, nat_space, is_nat_enabled "
-    query += " FROM u_network_intf JOIN u_network_space "
-    query += " ON u_network_intf.network_space = u_network_space.rule_id  "
+    query  = "SELECT network_space, media, mtu,"
+    query += " nat_address, nat_space, is_nat_enabled"
+    query += " FROM u_network_intf JOIN u_network_space"
+    query += " ON u_network_intf.network_space = u_network_space.rule_id"
     query += " WHERE u_network_intf.argon_intf = ? AND u_network_space.settings_id = ?"
 
     nat_address = nil
-    dmz_host = nil
     
     ## First check if it is bridged with another configured interface
     @dbh.execute( query, interface.index - 1, @network_settings.setting_id ) do |result|
@@ -400,7 +438,6 @@ class Alpaca::UvmDataLoader
       end
 
       nat_address = get_nat_address( row )
-      @dmz_host = get_dmz_host( row )
     end
     
     ## Must be configured for a static address
@@ -460,16 +497,6 @@ class Alpaca::UvmDataLoader
 
     ## Otherwise use auto (review)
     return "auto"
-  end
-
-  def get_dmz_host( row )
-    ## Don't use it if it is not enabled.
-    return nil unless row["dmz_host_enabled"] == true
-    
-    dmz_host = row["dmz_host"]
-    return nil if ApplicationHelper::null?( dmz_host )
-
-    return dmz_host
   end
 
   ANY_MATCHER = [ "*", "any", "all" ]
