@@ -9,36 +9,3 @@
 </div>
 <%= build_footer %>
 <% end -%>
-
-
-editable_table( :action => "/route/create_entry", 
-  :header_columns => [ { :name => "Target".t }, 
-                       { :name => "Netmask".t },
-                       { :name => "Gateway".t },
-                       { :name => "Name".t },
-		       { :name => "Delete".t } ],
-  :column_names =>  [ "target", "netmask", "gateway", "name" ],
-  :heading => "Static Routes".t,
-  :class => "list-table-route",
-  :rows => rows,
-  :rows_name => "network_route",
-  :auto_size => true
-  )
-
-editable_table( :action => "/route/create_entry", 
-  :header_columns => [ { :name => "Target".t }, 
-                       { :name => "Netmask".t },
-                       { :name => "Gateway".t },
-                       { :name => "Name".t },
-		       { :name => "Interface".t } ],
-  :column_names =>  [ "target", "netmask", "gateway", "name", "interface" ],
-  :heading => "Active Routes".t,
-  :class => "list-table-route",
-  :rows => @current_routes,
-  :rows_name => "active_route",
-  :auto_size => true,
-  :read_only => true,
-  :delete => false,
-  :add => false
-  )
-</div>
