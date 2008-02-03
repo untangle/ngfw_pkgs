@@ -3,16 +3,16 @@
 <% form_tag( :action => 'save_aliases' ) do -%>
   <% if @msg.nil? %>
 
- <div id="main-content-body">
+ <div id="main-content-body"><div id="wrapper">
     <%= build_table( Alpaca::Table::Data.new( "external-aliases", @external_aliases ), ip_networks_table_model) %> 
-  </div>
+  </div></div>
 
   <%= build_footer %>
   <% else %>
-     <div id="main-content-body">
+     <div id="main-content-body"><div id="wrapper">
      <div>Unable to configure the External Aliases</div>
      <div><%= @msg %></div>
-     </div>
+     </div></div>
      <div id="main-content-footer">
      <div id="help-footer">
       <%= submit_tag "Help".t %>

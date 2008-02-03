@@ -76,8 +76,7 @@ Fabtabs.prototype = {
     }
 }
 
-
-    var handleResize = function () {
+var handleResize = function () {
 	var footerTop = '800px';
 	var contentHeight = '800px';
 	var bodyWidth = '100%';
@@ -112,6 +111,7 @@ Fabtabs.prototype = {
 	    contentHeight =  (document.documentElement.clientHeight - $('main-menu').getHeight()).toString() + 'px';
 	    
 	}
+	/*
 	var emc = $('main-content');
 	if (emc) {
 	   emc.setStyle( { height: contentHeight } );
@@ -127,6 +127,7 @@ Fabtabs.prototype = {
 	   emcb.setStyle( { height: bodyHeight } );
 	   emcb.setStyle( { width: bodyWidth } );
 	}
+	*/
     }
 	function showAdvancedMenu(event) {
 	    //var element = Event.element(event);
@@ -188,13 +189,16 @@ function init() {
 		var sz = window.getComputedStyle(document.documentElement,null).fontSize;
 		if( sz != lastSize ) {
 		    //do whatever fixes you wanted
-		    handleResize();
+		   // handleResize();
 		    lastSize = sz;
 		}
 	    },1000);
     } else {
 	//do the IE hackaround
     }
+
+
+
     if ($('advanced-menu')) {
 	$('advanced-menu').observe('mouseover', showAdvancedMenu);
 	$('advanced-menu').observe('mouseout', hideAdvancedMenu);
@@ -236,9 +240,9 @@ function init() {
 Event.observe(window,'load',function(){ new Fabtabs('tabs'); },false);
 
 Event.observe(window,'load', init, false);
-Event.observe(window,'load',handleResize,false);
-Event.observe(window,'resize',handleResize,false);
-Event.observe(window,'scroll',handleResize,false);
+//Event.observe(window,'load',handleResize,false);
+//Event.observe(window,'resize',handleResize,false);
+//Event.observe(window,'scroll',handleResize,false);
 
 
 var Network =

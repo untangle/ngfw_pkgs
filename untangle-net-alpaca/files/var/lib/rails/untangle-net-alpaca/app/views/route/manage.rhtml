@@ -1,11 +1,11 @@
 <div id="title"><h1><%= "Static Route Management".t %></h1></div>
 <% form_tag( :action => 'save' ) do -%>
 
-<div id="main-content-body">
+<div id="main-content-body"><div id="wrapper">
   <%= build_table( Alpaca::Table::Data.new( "network_routes", @network_routes ), route_table_model) %> 
 
   <%= build_table( Alpaca::Table::Data.new( "active_routes", @current_routes ), system_route_table_model) %>
 
-</div>
+</div></div>
 <%= build_footer %>
 <% end -%>

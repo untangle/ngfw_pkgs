@@ -1,6 +1,7 @@
 <% form_tag( :action => 'save' ) do -%>
   <div id="title"><h1><%= "DHCP Server Configuration".t %></h1></div>
   <div id="main-content-body">
+	<div id="wrapper">
   <%= handle_flash_messages %>
     <fieldset>
       <ul class="text-fields">
@@ -76,7 +77,7 @@
   <%= build_table( Alpaca::Table::Data.new( "dhcp-static-entry-list", @static_entries ), static_entry_table_model) %> 
     
     <%= build_table( Alpaca::Table::Data.new( "dhcp-dynamic-entry-list", @dynamic_entries ), dynamic_entry_table_model) %>
-    </div>
+    </div></div>
   
   <%= build_footer %>
 

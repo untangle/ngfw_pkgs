@@ -1,6 +1,6 @@
 <% form_tag( :action => 'save' ) do -%>
   <div id="title"><h1><%= "DNS Server Configuration".t %></h1></div>
-  <div id="main-content-body">
+  <div id="main-content-body"><div id="wrapper">
     <fieldset>
       <ul class="text-fields">
         <li>
@@ -18,7 +18,7 @@
     <%= build_table( Alpaca::Table::Data.new( "dns-static-entry-list", @static_entries ), static_entry_table_model) %> 
 
     <%= build_table( Alpaca::Table::Data.new( "dns-dynamic-entry-list", @dynamic_entries ), dynamic_entry_table_model) %>
-  </div>
+  </div></div>
     
   <%= build_footer %>
 <% end -%>

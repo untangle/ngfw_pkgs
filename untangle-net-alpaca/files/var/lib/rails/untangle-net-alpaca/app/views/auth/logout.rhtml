@@ -1,12 +1,12 @@
 <div id="title"><h1><%= "Logout".t %></h1></div>
-<div id="main-content-body">
+<div id="main-content-body"><div id="wrapper">
 <div>
   <% form_tag( :action => 'end_session' ) do -%>
     <p>Are you sure you want to logout?</p>
     <%= submit_tag "Logout".t %>
   <% end -%>
 </div>
-</div>
+</div></div>
 <div id="main-content-footer">
 <div id="help-footer">
 <%= submit_tag "Help".t %>

@@ -4,9 +4,9 @@ EOF
 %>
 <% form_tag( :action => 'save' ) do -%>
   <div id="title"><h1>Port Forwards</h1></div>
-  <div id="main-content-body">
+  <div id="main-content-body"><div id="wrapper">
     <%= build_table( Alpaca::Table::Data.new( "redirect-list", @redirects ), redirect_table_model) %> 
-  </div>
+  </div></div>
   
   <%= sortable_element( "redirect-list" ) %>
   <%= build_footer %>

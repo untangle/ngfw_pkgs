@@ -1,6 +1,6 @@
 <div id="title"><h1><%= "Refresh Network Interfaces".t %></h1></div>
 <% form_tag( :action => 'commit_interfaces', :id => "commit" ) do -%>
-<div id="main-content-body">
+<div id="main-content-body"><div id="wrapper">
 <div class="config-level">
   <% if @new_interfaces.empty? && @deleted_interfaces.empty? %>
     <h3><%= "Up to date".t %></h3>
@@ -30,7 +30,7 @@
 
   <% end %>
 </div>
-</div>
+</div></div>
 <div id="main-content-footer">
 <div id="help-footer">
     <%= submit_tag "Help".t %>

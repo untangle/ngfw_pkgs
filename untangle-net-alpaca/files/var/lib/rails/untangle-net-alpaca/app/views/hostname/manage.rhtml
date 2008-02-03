@@ -1,6 +1,6 @@
   <% form_tag( :action => 'save' ) do -%>
   <div id="title"><h1><%= "Hostname".t %></h1></div>
-  <div id="main-content-body">
+  <div id="main-content-body"><div id="wrapper">
     <fieldset>
       <ul class="text-fields">
         <li>
@@ -41,7 +41,7 @@ select( "ddclient_settings", "service", services ) %>
 
       </ul>
     </fieldset>
-    </div>
+    </div></div>
     <div id="main-content-footer">
   <div id="help-footer">
     <%= submit_tag "Help".t %>

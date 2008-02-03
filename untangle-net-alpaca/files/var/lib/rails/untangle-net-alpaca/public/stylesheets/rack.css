@@ -15,8 +15,12 @@ version: 2.4.1
 h1{font-size:138.5%;}h2{font-size:123.1%;}h3{font-size:108%;}h1,h2,h3{margin:1em 0;}h1,h2,h3,h4,h5,h6,strong{font-weight:bold;}abbr,acronym{border-bottom:1px dotted #000;cursor:help;} em{font-style:italic;}blockquote,ul,ol,dl{margin:1em;}ol,ul,dl{margin-left:2em;}ol li{list-style:decimal outside;}ul li{list-style:disc outside;}dl dd{margin-left:1em;}th,td{border:1px solid #000;padding:.5em;}th{font-weight:bold;text-align:center;}caption{margin-bottom:.5em;text-align:center;}p,fieldset,table,pre{margin-bottom:1em;}input[type=text],input[type=password],textarea{width:12.25em;*width:11.9em;}
 
 
-html{overflow-y: scroll;}
+html{/*overflow-y: scroll;*/}
 
+html, body {
+	height: 100%;
+	background-color: #F6F6F6; 
+}
 /*** begin erik stuff ***/
 body{font-family: arial,helvetica,"Utkal","Nimbus Sans L","FreeSans","Malayalam","Phetsarath OT","Garuda",clean,sans-serif;}
 h1{font-size: 108%; }
@@ -352,30 +356,45 @@ div.text-fields label
   margin-right: 0.5em;
   display: block;
 }
+
 div#main-menu
 { width: 100%;
- min-height: 2.6em; 
+  min-height: 2.6em; 
   background-color: #e8e8e8;
   /*overflow: hidden;*/
   z-index: 100000;
   position: fixed;
- }
+}
 
 div#main-content
 { 
   z-index: 100;
-  background-color: #f0f0f0;
+  background-color: #F6F6F6; 
+  background-image: url( "../images/background-main.png" );
+  background-repeat: repeat-x;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
  }
+
+div#wrapper {
+  padding-left:35px;
+}
+
 div#main-content-body
 {
-  padding-left: 35px; 
+  /* padding-left: 35px; */
   padding-top: 8em;
   padding-bottom: 65px;
   z-index: 100;
-  background-image: url( "../images/background-main.png" ); 
+  height: 100%;
+  width: 100%;
+/*background-image: url( "../images/background-main.png" ) ;
   background-repeat: repeat-x;
-  background-color: #F6F6F6;
-  border-bottom: 1px solid #d3d3d3;
+  background-color: #F6F6F6; */
+  /*  border-bottom: 1px solid #d3d3d3;*/
+  background: transparent;
  }
 
 div#main-content-footer {
@@ -421,7 +440,8 @@ h2
 }
 div#main-content-body > form, div#main-content-body form, div#main-content-body * form
 { 
-  margin-left: 25px;
+/*  margin-left: 25px; */
+padding-left: 25px;
   margin-top: 15px;
  }
 
