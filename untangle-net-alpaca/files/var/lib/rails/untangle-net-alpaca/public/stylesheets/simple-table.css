@@ -104,8 +104,8 @@ div.list-table-container div.list-table li div
 
 div.list-table-container div.list-table
 { 
-/*  overflow-y: scroll; */
-overflow-y: auto;
+  /*overflow-y: scroll; */
+  overflow-y: auto;
   overflow-x: hidden;
  /* background-color: #666666; */
 	background-color: transparent;
@@ -413,8 +413,8 @@ div.list-table-container.dns-dynamic-entry div.list-table, div.list-table
   }
 
 div.list-table-container.dns-dynamic-entry div.ip-address
-{ 17
-  width: 140px;
+{
+  width: 160px;
   }
 
 div.list-table-container.dns-dynamic-entry div.hostname

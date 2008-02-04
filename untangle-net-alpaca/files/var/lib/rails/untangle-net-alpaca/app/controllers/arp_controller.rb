@@ -9,8 +9,7 @@ class ArpController < ApplicationController
     @active_arps = StaticArp.get_active( os )
     #@current_arps = `arp -n`
     @static_arps = StaticArp.find( :all )
-    @static_arps = [] if @static_arps.nil?
-    @static_arps << StaticArp.new
+    @static_arps = [StaticArp.new] if @static_arps.nil?
   end
 
   def save
@@ -18,16 +17,18 @@ class ArpController < ApplicationController
     return redirect_to( :action => "manage" ) if ( params[:commit] != "Save".t )
 
     StaticArp.destroy_all
-
-    params[:static_arp].each do |static_arp_row| 
-      if (!(params[:hw_addr][static_arp_row].nil?) \
-          && params[:hw_addr][static_arp_row].length > 0\
-          && !(params[:hostname][static_arp_row].nil?)\
-          && params[:hostname][static_arp_row].length > 0)
+    
+    if ! params[:static_arp].nil?
+      params[:static_arp].each do |static_arp_row| 
+        if (!(params[:hw_addr][static_arp_row].nil?) \
+            && params[:hw_addr][static_arp_row].length > 0\
+            && !(params[:hostname][static_arp_row].nil?)\
+            && params[:hostname][static_arp_row].length > 0)
           
-        static_arp_obj = StaticArp.new
-        static_arp_obj.update_attributes( :hw_addr => params[:hw_addr][static_arp_row], :hostname => params[:hostname][static_arp_row] )
-        static_arp_obj.save
+          static_arp_obj = StaticArp.new
+          static_arp_obj.update_attributes( :hw_addr => params[:hw_addr][static_arp_row], :hostname => params[:hostname][static_arp_row] )
+          static_arp_obj.save
+        end
       end
     end
     
