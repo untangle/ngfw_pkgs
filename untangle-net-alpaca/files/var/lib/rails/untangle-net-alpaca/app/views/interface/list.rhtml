@@ -1,6 +1,6 @@
 <div id="title"><h1><%= "Interfaces".t %></h1></div>
 <% form_tag( :action => 'intf_order_save' ) do -%>
-  <div id="main-content-body"><div id="wrapper">
+  <div id="main-content-body"><div class="wrapper">
   <%= handle_flash_messages %>
   <div id="interface-list">
     <div class="refresh-button" onclick="location.href='<%= url_for( :controller => :network, :action => :refresh_interfaces ) %>'"> Refresh </div>
@@ -47,12 +47,14 @@
   </div>
   </div></div>
   <div id="main-content-footer">
+	<div id="footer-buttons">
 <div id="help-footer">
     <%= submit_tag "Help".t %>
 </div>
 <div id="action-footer">
   <%= submit_tag "Cancel".t %>
   <%= submit_tag "Save".t %>
+</div>
 </div>
   </div>
 <% end -%>

@@ -111,6 +111,7 @@ var handleResize = function () {
 	    contentHeight =  (document.documentElement.clientHeight - $('main-menu').getHeight()).toString() + 'px';
 	    
 	}
+	
 	/*
 	var emc = $('main-content');
 	if (emc) {
@@ -128,6 +129,7 @@ var handleResize = function () {
 	   emcb.setStyle( { width: bodyWidth } );
 	}
 	*/
+	
     }
 	function showAdvancedMenu(event) {
 	    //var element = Event.element(event);

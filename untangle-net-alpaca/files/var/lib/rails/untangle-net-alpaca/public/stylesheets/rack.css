@@ -22,7 +22,7 @@ html, body {
 	background-color: #F6F6F6; 
 }
 /*** begin erik stuff ***/
-body{font-family: arial,helvetica,"Utkal","Nimbus Sans L","FreeSans","Malayalam","Phetsarath OT","Garuda",clean,sans-serif;}
+body{font-family: arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,sans-serif;}
 h1{font-size: 108%; }
 
 /* Size body fonts to equiv. 11px */
@@ -52,6 +52,10 @@ li label {
 	font-size: 85%; /* 11px equiv */
 	color: #333;
 }
+div.list-table-container ul.header {
+	font-size: 85%; /* 11px equiv */
+}
+
 
 input {
 	color: #666666;	
@@ -68,6 +72,9 @@ select {
 	/*width: 13.7em;*/
 	color: #666666;
 	font-size: 85%; /* 11px equiv */
+}
+#hostname select {
+	width: 13.7em;
 }
 .textfield, .passwordfield {
 	/* for IE6 */
@@ -361,40 +368,48 @@ div#main-menu
 { width: 100%;
   min-height: 2.6em; 
   background-color: #e8e8e8;
-  /*overflow: hidden;*/
-  z-index: 100000;
+  overflow: hidden;
+  z-index: 100000; 
   position: fixed;
 }
 
 div#main-content
 { 
-  z-index: 100;
+/*  z-index: 100; */
   background-color: #F6F6F6; 
-  background-image: url( "../images/background-main.png" );
+  background-image: url( "../images/background-main2.png" );
   background-repeat: repeat-x;
-  height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;
+  height:auto !important; /* real browsers */
+  height:100%; /* IE6: treaded as min-height*/
+  min-height:100%; /* real browsers */
  }
 
-div#wrapper {
+div.wrapper {
   padding-left:35px;
+  padding-top: 8em;
+  padding-bottom: 65px;
 }
 
 div#main-content-body
 {
+
   /* padding-left: 35px; */
-  padding-top: 8em;
-  padding-bottom: 65px;
+  /*  padding-bottom: 65px; */
+  padding: 0;
+  margin: 0;
   z-index: 100;
-  height: 100%;
   width: 100%;
 /*background-image: url( "../images/background-main.png" ) ;
   background-repeat: repeat-x;
   background-color: #F6F6F6; */
   /*  border-bottom: 1px solid #d3d3d3;*/
   background: transparent;
+  height:auto !important; /* real browsers */
+  height:100%; /* IE6: treaded as min-height*/
+  min-height:100%; /* real browsers */
  }
 
 div#main-content-footer {
@@ -411,12 +426,12 @@ div#main-content-footer {
 div#title
 { 
   position: fixed;
-  top: 2.6em;
+  top: 2.7em;
   background: url(../images/background-title.png) repeat-x top left;
-  border-top: 0px solid black;
-  border-bottom: 0px solid black;
+  border-top: 0px solid #555555;
+  border-bottom: 0px solid #555555;
   width: 100%;
-  height: 57px;
+  height: 56px;
   z-index: 10000;
   }
 h1
@@ -532,6 +547,9 @@ padding-left: 25px;
   }
 */
 
+div#extramenu {
+	margin: 0; padding: 0; 
+}
 ul#extranav 
 {
   list-style: none;
@@ -539,7 +557,8 @@ ul#extranav
   margin: 0; padding: 0;
   /* float: right; */
   /* display: inline; */
-  position: absolute;
+z-index: 100001;
+  position: fixed;
   right: 0;
   top: 0.4em;
 }
@@ -628,7 +647,8 @@ li#logout a
  }
 #advanced-dropdown li:hover
 {
- background-color: #DDD;
+ /*background-color: #DDD;*/
+background-color: #b0d9ea; /* blue */
  border-left: 1px solid #797979;
  border-right: 1px solid #797979;
  }
@@ -652,6 +672,9 @@ div#action-footer
 {  
   margin-top: 10px;
   float: right;
+}
+div#footer-buttons {
+	width: 677px;
 }
 /*div#interface-list
 { 
@@ -996,6 +1019,7 @@ input.submit:hover
 input.Save
 { 
   background: transparent url(../images/save-button.gif) no-repeat top left;
+margin-right: 0px;
   }
 input.Cancel
 { 
@@ -1014,4 +1038,5 @@ a.Help, button.Help, input.Help
   width: 88px;
   height: 21px;
   background: transparent url(../images/help-button.gif) no-repeat top left;
+margin-top: 5px; margin-bottom: 5px;
   }

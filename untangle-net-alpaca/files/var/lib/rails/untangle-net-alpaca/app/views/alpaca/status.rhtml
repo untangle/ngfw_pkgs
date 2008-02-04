@@ -1,13 +1,17 @@
 <div id="title"><h1>Status</h1></div>
-<div id="main-content-body"><div id="wrapper">
+<div id="main-content-body"><div class="wrapper">
 <%= build_table( Alpaca::Table::Data.new( "status", @interfaces ), status_table_model) %>
 <i>(Reloading in <span id="countdown"> 10 </span> seconds)<i>
 <br />
 <%= link_to( "Configuration Wizard".t, :controller => :wizard ) %>
 </div></div>
 <div id="main-content-footer">
+	<div id="footer-buttons">
 <div id="help-footer">
 <%= submit_tag("Help") %>
+</div>
+<div id="action-footer">
+  </div>
 </div>
 </div>
 

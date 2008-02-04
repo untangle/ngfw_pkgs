@@ -3,6 +3,7 @@ special_tabs = [ "Advanced", "Logout" ]
 advanced = nil
 logout = nil
 %>
+<div id="main-menu">
 <ul id="tabs">
 <% 	i = 0;
 	for menu_item in menu.children 
@@ -16,11 +17,13 @@ logout = nil
    <% 		end %>
 <% end %>
 </ul>
-
+</div>
+<div id="extramenu">
+<ul id="extranav">
 <% if ! advanced.nil? %>
 
 
-<ul id="extranav">	
+
 	
   <li id="advanced<%if ( advanced.children? ) %>-menu<% end %>"><%= link_to_remote advanced.name.t, :update => "main-content", :url => advanced.action %></a>
    <% if ( advanced.children? ) %>
@@ -34,5 +37,8 @@ logout = nil
 <% end %>
 <% if ! logout.nil? and session[:username] != "nonce-authenticated" %>
   <li id="logout"><%= link_to_remote logout.name.t, :update=> "main-content", :url => logout.action %></li>
-</ul>
+
 <% end %>
+</ul>
+
+</div>

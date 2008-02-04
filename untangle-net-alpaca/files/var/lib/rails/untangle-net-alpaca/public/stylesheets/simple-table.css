@@ -59,11 +59,11 @@ div.list-table-container ul.header
   padding: 0px;
   margin: 0px;
   font-weight: bold;
-  color: #333333;
+ color: #333333; 
   background-color: #B4B4B4; 
   height: 23px;
-  font-size: 80%;
-  border-bottom: 1px solid #666666;
+/*  font-size: 80%; */
+  border-bottom: 2px solid #666666;
   }
 
 div.list-table-container ul.header div
@@ -104,9 +104,11 @@ div.list-table-container div.list-table li div
 
 div.list-table-container div.list-table
 { 
-  overflow-y: scroll;
+/*  overflow-y: scroll; */
+overflow-y: auto;
   overflow-x: hidden;
-  background-color: #666666;
+ /* background-color: #666666; */
+	background-color: transparent;
   border: 0 solid #C0C0C0;
   margin: 0;
   position: relative;
@@ -119,7 +121,8 @@ div.list-table-container div.list-table li.odd
 
 div.list-table-container div.list-table li.even
 { 
-  background-color: #E9E9E9;
+/*  background-color: #E9E9E9; */
+	background-color: transparent;
  }
 
 div.list-table-container div.list-table li.new
@@ -130,8 +133,8 @@ div.list-table-container div.list-table li.new
 
 div.list-table-container div.list-table ul li
 { 
-  border-top: 1px solid #999999;
-  border-bottom: 0px solid #999999;
+  border-top: 0px solid #999999;
+  border-bottom: 1px solid #999999;
   }
 
 div.list-table-container div.list-table ul li div.list-table-column
@@ -210,13 +213,15 @@ div.list-table-container ul.header div.drag, div.drag
 /* ------------------ Style the redirect table ---------------- */
 div.list-table-container.redirects, div.list-table-container.ip_networks
 { 
-  width: 644px;
+/*  width: 644px; */
+	width: 633px;
  }
 
 div.table-label.redirects
 { 
   /* Two extra pixels for the border */
-  width: 646px;
+ /* width: 646px; */
+	width: 635px;
  }
 
 div.list-table-container.redirects div.list-table, div.list-table-container.ip_networks div.list-table
@@ -408,7 +413,7 @@ div.list-table-container.dns-dynamic-entry div.list-table, div.list-table
   }
 
 div.list-table-container.dns-dynamic-entry div.ip-address
-{ 
+{ 17
   width: 140px;
   }
 
@@ -420,30 +425,37 @@ div.list-table-container.dns-dynamic-entry div.hostname
 /* ------------------ Interface Status Panel ---------------- */
 div.list-table-container.interface-status
 {
-  width: 702px;
+ /* width: 702px; */
+	width: 633px;
  }
 
 div.table-label.interface-status
 {
-  width: 704px;
+ /* width: 704px; */
+	width: 635px;
  }
 
 div.list-table-container.interface-status div.network_interface
 { 
-  width: 170px;
+/*  width: 170px; */
+	width: 24%;
   padding-left: 10px;
   }
 div.list-table-container.interface-status div.os_name
 { 
-  width: 142px;
-  }
+/* width: 142px; */
+	width: 20%; 
+}
 div.list-table-container.interface-status div.carrier
 { 
-  width: 275px;
+/*  width: 275px; */
+	width: 42%; 
+	
   }
 div.list-table-container.interface-status div.mac
 { 
-  width: 202px;
+/*  width: 202px; */
+	width: 32%;	
   }
 
 /* ------------------- Packet Filter Panel -------------------- */
