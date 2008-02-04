@@ -3,16 +3,23 @@
 ##Add static routes rules
 current_hostname=`hostname`
 
-MARKER="ut-marker.example.com"
+MARKER="hostname.marker.untangle.com"
 OLD_MARKER="ut-marker.example.com"
 
 update_hosts()
 {
     local t_address
-    local t_host_script=" -e '\$a 127.0.0.1 ${current_hostname} ${MARKER}' "
+    local t_host_script=""
+   
+    local t_temp=`mktemp`
+    local t_dest="/etc/hosts"
 
-    ## a dubious technique, at best.
-    echo sed -i -e "/${MARKER}/d" -e "/${OLD_MARKER}/d" ${t_host_script} /etc/hosts | sh
+    t_host_script="print \"127.0.0.1 ${current_hostname} ${MARKER}\";"
+    
+    ## Remove the existing hostname entries and update the new one.
+    awk '!'"/(${MARKER}|${OLD_MARKER})/ { print \$0 }; END { ${t_host_script} }" ${t_dest} > ${t_temp}
+    chmod 744 ${t_temp}
+    mv ${t_temp} ${t_dest}
 }
 
 if [ -z "${current_hostname}" ]; then
