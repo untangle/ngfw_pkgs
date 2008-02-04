@@ -55,6 +55,10 @@ li label {
 div.list-table-container ul.header {
 	font-size: 85%; /* 11px equiv */
 }
+div.list-table a {
+	font-size: 85%; /* 11px equiv */
+}
+
 
 
 input {
@@ -427,11 +431,13 @@ div#title
 { 
   position: fixed;
   top: 2.7em;
-  background: url(../images/background-title.png) repeat-x top left;
+/*  background: url(../images/background-title.png) repeat-x top left; */
+  background: url(../images/background-title2.png) repeat-x top left; 
+
   border-top: 0px solid #555555;
   border-bottom: 0px solid #555555;
   width: 100%;
-  height: 56px;
+  height: 60px;
   z-index: 10000;
   }
 h1
