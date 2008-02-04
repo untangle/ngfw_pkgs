@@ -178,6 +178,13 @@ function blurTableField(event) {
     element.removeClassName('focus');
 }
 
+function focusBlurTextFields() {
+    var textfields = $$('input.textfield');
+    for(var i=0; i<textfields.length; i++) {
+	textfields[i].observe('focus', focusTableField);
+	textfields[i].observe('blur', blurTableField); 
+    }
+}
 
 function init() {
 
@@ -215,15 +222,8 @@ function init() {
 	    }
 	}
     }
-
-    var textfields = $$('input.textfield');
-    for(var i=0; i<textfields.length; i++) {
-	textfields[i].observe('focus', focusTableField);
-	textfields[i].observe('blur', blurTableField); 
-    }
-
+    focusBlurTextFields();
 }
-
 	
 	function toggleGuide() {
 

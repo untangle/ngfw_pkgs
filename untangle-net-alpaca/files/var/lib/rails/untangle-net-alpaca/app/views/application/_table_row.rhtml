@@ -20,7 +20,7 @@ options = { :data => data, :table_mode => table_model , :view => self, :row_id =
   <% end %>
 </li>
 <% if  controller.request.xhr?  && controller.request.request_uri().include?("create") %>
-  <%= javascript_tag(visual_effect(:highlight, @row_id, :duration => 1)) %>
+  <%= javascript_tag( visual_effect(:highlight, @row_id, :duration => 1) + "focusBlurTextFields();" ) %>
 <% end %>
 <%= javascript_tag("
 ") %>
