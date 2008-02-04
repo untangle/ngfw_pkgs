@@ -1,1 +1,1 @@
-page.insert_html( :top, @list_id, :partial => "parameter" )
+page.insert_html( :bottom, @list_id, :partial => "parameter" )

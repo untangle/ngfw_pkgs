@@ -1,7 +1,7 @@
 class Alpaca::Components::UvmComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
     if ( config_level >= AlpacaSettings::Level::Advanced ) 
-      menu_organizer.register_item( "/main/advanced/uvm", menu_item( 300, "UVM", {} ))
+      menu_organizer.register_item( "/main/advanced/uvm", menu_item( 300, "Bypass Rules", {} ))
     end
   end
 
