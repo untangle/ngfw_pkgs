@@ -35,6 +35,7 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
   
   ## Flag to specify to use a separate /etc/ host file.
   FlagDnsHostFile = "addn-hosts"
+  FlagNoDnsHost = "no-hosts"
 
   FlagDnsServer = "server"
 
@@ -222,6 +223,7 @@ EOF
     settings << FlagDnsExpandHosts
 
     settings << "#{FlagDnsHostFile}=#{DnsMasqHostFile}"
+    settings << "#{FlagNoDnsHost}"
 
     ## set the domain name suffix
     settings << "#{FlagDnsLocalDomain}=#{domain_name_suffix}"
