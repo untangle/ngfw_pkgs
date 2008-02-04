@@ -4,27 +4,19 @@
 current_hostname=`hostname`
 
 MARKER="ut-marker.example.com"
-
-get_primary_addresses()
-{
-    ip addr show primary | awk '/^[0-9]/ { current_intf=$2 } ; /inet/ { $ip = $2 ; sub( /\/.*$/, "", $ip ) ; if ( current_intf != "dummy0:" && current_intf != "utun:" && current_intf != "lo:" ) print $ip  }'
-}
+OLD_MARKER="ut-marker.example.com"
 
 update_hosts()
 {
     local t_address
     local t_host_script=" -e '\$a 127.0.0.1 ${current_hostname} ${MARKER}' "
 
-    for t_address in `get_primary_addresses` ; do
-        t_host_script="${t_host_script}  -e '\$a ${t_address}  ${current_hostname} ${MARKER}'"
-    done
-
     ## a dubious technique, at best.
-    echo sed -i -e "/${MARKER}/d" ${t_host_script} /etc/hosts | sh
+    echo sed -i -e "/${MARKER}/d" -e "/${OLD_MARKER}/d" ${t_host_script} /etc/hosts | sh
 }
 
 if [ -z "${current_hostname}" ]; then
-    echo "hostname is not available"
+    echo "[`date`] hostname is not available"
     exit 0
 fi
 

@@ -47,6 +47,9 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
   OptionNetmask = "1"
   OptionNameservers = "6"
 
+  ## Update hostname script, used to update the files /etc/untangle-net-alpaca/dnsmasq-hosts
+  UpdateHostNameScript = "/etc/untangle-net-alpaca/scripts/update-address.d/11-dnsmasq-hosts"
+
   def register_hooks
     os["network_manager"].register_hook( -200, "dns_server_manager", "write_files", :hook_write_files )
     os["network_manager"].register_hook( 200, "dns_server_manager", "run_services", :hook_run_services )
@@ -67,6 +70,10 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
 
     ## Write the separate DNS Masq file that is used by dnsmasq
     write_dnsmasq_hosts
+
+    ## Call the update dnsmasq script, this is used to write out the hostname to all
+    ## of the primary addresses.
+    run_command( UpdateHostNameScript )
 
     write_dnsmasq_conf
   end

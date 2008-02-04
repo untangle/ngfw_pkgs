@@ -5,6 +5,9 @@ class OSLibrary::Debian::HostnameManager < OSLibrary::HostnameManager
 
   MailNameFile = "/etc/mailname"
 
+  ## Update hostname script, used to update the files /etc/hosts
+  UpdateHostNameScript = "/etc/untangle-net-alpaca/scripts/update-address.d/10-hostname"
+
   ## Retrieve the current hostnanme
   def current
     `hostname`.strip
@@ -25,6 +28,9 @@ class OSLibrary::Debian::HostnameManager < OSLibrary::HostnameManager
     os["override_manager"].write_file( MailNameFile, "#{settings.hostname}\n" )
 
     run_command( "hostname #{settings.hostname}" )
+
+    ## Update /etc/hosts
+    run_command( UpdateHostNameScript )
   end
 end
 

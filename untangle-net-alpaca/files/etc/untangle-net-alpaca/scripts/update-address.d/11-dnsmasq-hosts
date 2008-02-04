@@ -1,0 +1,36 @@
+#!/bin/dash
+
+##Add static routes rules
+current_hostname=`hostname`
+
+MARKER="hostname.marker.untangle.com"
+OLD_MARKER="ut-marker.example.com"
+
+## This gets all addresses.
+get_addresses()
+{
+    ip addr show | awk '/^[0-9]/ { current_intf=$2 } ; /inet/ { $ip = $2 ; sub( /\/.*$/, "", $ip ) ; if ( current_intf != "dummy0:" && current_intf != "utun:" && current_intf != "lo:" ) print $ip  }'
+}
+
+update_dnsmasq_hosts()
+{
+    local t_address
+    local t_host_script=""
+
+    for t_address in `get_primary_addresses` ; do
+        t_host_script="${t_host_script}  -e '\$a ${t_address}  ${current_hostname} ${MARKER}'"
+    done
+
+    ## a dubious technique, at best.
+    echo sed -i -e "/${MARKER}/d" -e "/${OLD_MARKER}/d" \
+        ${t_host_script} /etc/untangle-net-alpaca/dnsmasq-hosts | sh
+}
+
+if [ -z "${current_hostname}" ]; then
+    echo "[`date`] hostname is not available"
+    exit 0
+fi
+
+update_dnsmasq_hosts
+
+exit 0
