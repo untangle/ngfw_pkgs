@@ -10,7 +10,7 @@ class RedirectController < ApplicationController
 
   def create_redirect
     ## Reasonable defaults
-    @redirect = Redirect.new( :enabled => true, :position => -1, :description => "" )
+    @redirect = Redirect.new( :enabled => true, :position => -1, :description => "", :filter => "d-port::&&d-local::true&&protocol::tcp&&s-intf::1" )
   end
 
   def edit

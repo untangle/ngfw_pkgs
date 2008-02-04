@@ -11,7 +11,8 @@ class UvmController < ApplicationController
   def create_subscription
     ## Reasonable defaults
     @subscription = Subscription.new( :enabled => true, :subscribe => false, 
-                                      :position => -1, :description => "" )
+                                      :position => -1, :description => "", 
+                                      :filter => "d-port::&&protocol::tcp" )
   end
 
   def edit
@@ -25,7 +26,6 @@ class UvmController < ApplicationController
     @subscription.enabled = params[:enabled]
 
     @interfaces, @parameter_list = RuleHelper::get_edit_fields( params )
-    
   end
   
   def save
