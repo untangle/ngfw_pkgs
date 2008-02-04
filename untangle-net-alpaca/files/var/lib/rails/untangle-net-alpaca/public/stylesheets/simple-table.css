@@ -87,6 +87,7 @@ div.list-table-container div.list-table li
 { 
   overflow: auto;
   line-height: 25px;
+  height: 25px;
   padding-bottom: 0px;
   }
 

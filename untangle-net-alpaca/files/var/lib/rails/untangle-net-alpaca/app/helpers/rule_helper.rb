@@ -63,9 +63,11 @@ module RuleHelper
     end
 
     if ( parameter_list.nil? || parameter_list.empty? )
+      protocolRule = Rule.new
+      protocolRule.parameter, protocolRule.value = "protocol", "tcp"
       r = Rule.new
       r.parameter, r.value = FilterTypes[0][1], ""
-      parameter_list = [r]
+      parameter_list = [protocolRule, r]
     end
 
     [ interfaces, parameter_list ]

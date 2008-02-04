@@ -10,7 +10,7 @@ class UvmController < ApplicationController
 
   def create_subscription
     ## Reasonable defaults
-    @subscription = Subscription.new( :enabled => true, :subscribe => true, 
+    @subscription = Subscription.new( :enabled => true, :subscribe => false, 
                                       :position => -1, :description => "" )
   end
 
@@ -25,6 +25,7 @@ class UvmController < ApplicationController
     @subscription.enabled = params[:enabled]
 
     @interfaces, @parameter_list = RuleHelper::get_edit_fields( params )
+    
   end
   
   def save
