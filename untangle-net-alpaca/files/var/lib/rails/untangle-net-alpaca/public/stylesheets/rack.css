@@ -573,7 +573,7 @@ li#advanced, li#advanced-menu
   display: inline;
   /* right: 90px; */
   padding-right: 12px;
-  padding-bottom: 5px;
+  padding-bottom: 10px;
   width: 100px;
   position: relative; 
   overflow: visible;
@@ -589,7 +589,7 @@ li#logout {
   width: 88px;
   display: inline;
   padding-right: 30px;
-  padding-bottom: 5px;
+  padding-bottom: 10px;
   overflow: visible;
   position: relative;
  }
