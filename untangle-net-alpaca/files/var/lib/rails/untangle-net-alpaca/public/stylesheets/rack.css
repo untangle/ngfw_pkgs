@@ -714,6 +714,7 @@ form div.dynamic div.header
   width: 140px;
   float: left;
   text-align: center;
+  clear: none;
  }
 
 
@@ -727,6 +728,12 @@ form div.dynamic div.current
   width: 115px;
   padding: 3px 0 0 15px;
   float: left;
+  clear: none;
+ }
+
+form div.dynamic div
+{
+  clear: both;
  }
 
 div.button, span.button
