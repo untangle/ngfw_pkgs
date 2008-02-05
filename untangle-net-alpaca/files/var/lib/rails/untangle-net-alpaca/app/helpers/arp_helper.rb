@@ -13,7 +13,7 @@ module ArpHelper
 EOF
       end
       
-      columns << Alpaca::Table::Column.new( "hw_addr", "HW Address".t ) do |arp,options| 
+      columns << Alpaca::Table::Column.new( "hw_addr", "MAC Address".t ) do |arp,options| 
         options[:view].text_field( "hw_addr", options[:row_id], { :value => arp.hw_addr } )
       end
 
@@ -52,7 +52,7 @@ EOF
       end
 
       
-      columns << Alpaca::Table::Column.new( "hw_addr", "HW Address".t ) do |system_arp,options| 
+      columns << Alpaca::Table::Column.new( "hw_addr", "MAC Address".t ) do |system_arp,options| 
         "&nbsp;" + system_arp.mac_address
       end
 
