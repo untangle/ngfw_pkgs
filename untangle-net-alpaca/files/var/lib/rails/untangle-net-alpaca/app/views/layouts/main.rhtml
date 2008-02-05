@@ -6,35 +6,29 @@
     <% @stylesheets.each do |sheet| %>
       <%= stylesheet_link_tag sheet %>
     <% end %>
-
      <!--[if lte IE 6]>
        <%= stylesheet_link_tag "ie.css" %>
      <![endif]-->
      <!--[if lt IE 7]>
        <%= javascript_include_tag "IE7.js" %>
+       <%= javascript_include_tag "IE8.js" %>
      <![endif]-->
-
     <%= javascript_include_tag :defaults %>
     <% @scripts.each do |script| %>
       <%= javascript_include_tag script %>
     <% end %>
   </head>
   <body>
-	<div id="guide"></div>
+    <div id="guide"></div>
     <div id="overlay"  style="display: none">
       <div id="rule-dialog">
       </div>
     </div>
    
-
- 	<!--<div id="main-menu"> -->
-      <%= render( :partial => main_menu.partial, 
+    <%= render( :partial => main_menu.partial, 
       :locals => { :menu => main_menu, :css_class => "main-menu", :depth => 0, :max_depth => 2 } ) %>
-    <!--</div>-->
-<!--	<div id="title"><h1><%= "Please select your locale".t %></h1></div> -->
-
     <div id="main-content">
-      		<%= yield %>
-	</div>
+        <%= yield %>
+    </div>
   </body>
 </html>

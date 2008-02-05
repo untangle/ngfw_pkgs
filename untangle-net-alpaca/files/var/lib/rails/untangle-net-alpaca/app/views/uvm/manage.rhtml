@@ -2,7 +2,7 @@
 RuleBuilder.manager =  SubscriptionManager;
 EOF
 %>
-<div id="title"><h1>Untangle VM Bypass Rules</h1></div>
+<div id="title"><h1>Untangle Bypass Rules</h1></div>
 <% form_tag( :action => 'save' ) do -%>
   <div id="main-content-body"><div class="wrapper">
   <%= build_table( Alpaca::Table::Data.new( "subscription-list", @subscriptions), subscription_table_model) %>
