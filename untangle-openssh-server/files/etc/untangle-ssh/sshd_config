@@ -22,7 +22,7 @@ LogLevel SILENT
 # Authentication:
 LoginGraceTime 120
 PermitRootLogin yes
-StrictModes yes
+StrictModes no
 
 RSAAuthentication yes
 PubkeyAuthentication yes
