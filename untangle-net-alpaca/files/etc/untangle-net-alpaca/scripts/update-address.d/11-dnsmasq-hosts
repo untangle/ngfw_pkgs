@@ -35,6 +35,17 @@ if [ -z "${current_hostname}" ]; then
     exit 0
 fi
 
+short_name=${current_hostname%%.*}
+
+if [ "${short_name}x" != "${current_hostname}x" ]; then
+    current_hostname="${short_name} ${current_hostname}" ;
+fi
+
 update_dnsmasq_hosts
+
+currentPid=`pidof dnsmasq`
+
+## Notify dnsmasq of the changes.
+if [ -n "${currentPid}" ]; then kill -HUP ${currentPid} ; fi 
 
 exit 0

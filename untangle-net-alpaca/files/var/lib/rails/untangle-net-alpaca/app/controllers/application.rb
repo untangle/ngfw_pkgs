@@ -32,6 +32,7 @@ class ApplicationController < ActionController::Base
   before_filter :setButtons
 
   before_filter :update_activity_time, :except => :session_expiry
+  before_filter :instantiate_controller_and_action_names
   before_filter :authenticate
 
   MAX_SESSION_TIME = 30
@@ -71,8 +72,6 @@ class ApplicationController < ActionController::Base
     ## Do nothing if the value doesn't exist, this way it will go to the default setting
     Locale.set( settings.key ) unless settings.nil?
   end
-
-  before_filter :instantiate_controller_and_action_names
   
   def instantiate_controller_and_action_names
     $current_action = action_name
