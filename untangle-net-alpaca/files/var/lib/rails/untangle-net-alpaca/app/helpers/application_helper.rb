@@ -20,8 +20,8 @@ module ApplicationHelper
     render( :partial => "application/table", :locals => { :table_model => table_model, :data => data } )
   end
 
-  def build_footer
-    render( :partial => "application/footer" )
+  def build_footer( actionable=true )
+    render( :partial => "application/footer", :locals => { :actionable => actionable } )
   end
 
   def table_delete_button( row_id )

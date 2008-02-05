@@ -5,15 +5,8 @@
 <br />
 <%= link_to( "Configuration Wizard".t, :controller => :wizard ) %>
 </div></div>
-<div id="main-content-footer">
-	<div id="footer-buttons">
-<div id="help-footer">
-<%= submit_tag("Help") %>
-</div>
-<div id="action-footer">
-  </div>
-</div>
-</div>
+
+<%= build_footer( false ) %>
 
 <%= javascript_tag( "
 var countdown = 10;
@@ -26,6 +19,6 @@ if ( $('countdown') == null || ! $('countdown') ) {
 }
 if ( countdown == 0 ) { 
   window.clearInterval( countdownIntervalID ); new Ajax.Updater($('main-content'), '" + url_for( :action => "status" ) + "', { evalScripts: true } ); } 
-$('countdown').replace('<span id=\"countdown\">'+countdown.toString()+'</span>'); 
+$('countdown').replace('<span id=\"countdown\"> '+countdown.toString()+' </span>'); 
 countdown = countdown - 1;  } , 1000 );
 "  ) %>
