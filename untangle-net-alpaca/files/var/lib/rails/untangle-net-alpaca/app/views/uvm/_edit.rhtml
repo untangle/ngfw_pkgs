@@ -10,6 +10,23 @@ EOF
 
 <h2 class="title"><%= "Edit".t %></h2>
 <% form_tag( :action => '#' ) do -%>
+    <ul class="text-fields">
+      <li>
+        <label for="enabled"><%= "Enabled:".t %></label>
+        <%= check_box_tag( "enabled", true, @subscription.enabled ) %>
+      </li>
+
+      <li>
+        <label for="target"><%= "Bypass:".t %></label>
+        <%= check_box_tag( "subscribe", true, @subscription.subscribe ) %>
+      </li>
+
+      <li>
+        <label for="description"><%= "Description:".t %></label>
+        <%= text_field_tag( "description", @subscription.description ) %>
+      </li>
+    </ul>
+
   <div class="list-table rules">
     <ul id="rule-builder" class="rule-list">
       <li class="header">
@@ -33,31 +50,21 @@ EOF
     </ul>
   </div>
   <fieldset>
-    <ul class="text-fields">
-      <li>
-        <label for="enabled"><%= "Enabled:".t %></label>
-        <%= check_box_tag( "enabled", true, @subscription.enabled ) %>
-      </li>
-
-      <li>
-        <label for="target"><%= "Bypass:".t %></label>
-        <%= check_box_tag( "subscribe", true, @subscription.subscribe ) %>
-      </li>
-
-      <li>
-        <label for="description"><%= "Description:".t %></label>
-        <%= text_field_tag( "description", @subscription.description ) %>
-      </li>
-    </ul>
   </fieldset>
 <% end -%>
-  
-<div class="actions">
-  <div class="cancel" onclick="RuleBuilder.close()">
-    <%= "Cancel".t %>
-  </div>
-  
-  <div class="update" onclick="RuleBuilder.update('<%= @row_id %>') ; RuleBuilder.close();">
-  <%= "Update".t %>
-</div>
 
+  <div class="actions">
+    <div class="rule-help">
+      <%= submit_tag( "Help" ) %>
+    </div>
+    <div class="update" onclick="RuleBuilder.update('<%= @row_id %>') ; RuleBuilder.close();"><a class="submit Update">
+      <%= "Update".t %>
+      </a>
+    </div>
+    <div class="cancel" onclick="RuleBuilder.close()">
+      <a class="submit Cancel">
+      <%= "Cancel".t %>
+      </a>
+    </div>
+
+  </div>

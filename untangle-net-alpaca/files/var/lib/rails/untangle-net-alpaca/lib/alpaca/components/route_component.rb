@@ -2,7 +2,7 @@ class Alpaca::Components::RouteComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
     
     if ( config_level >= AlpacaSettings::Level::Advanced ) 
-      menu_organizer.register_item( "/main/advanced/route", menu_item( 400, "Static Routes", {} ))
+      menu_organizer.register_item( "/main/advanced/route", menu_item( 400, "Routes", {} ))
     end
   end
   

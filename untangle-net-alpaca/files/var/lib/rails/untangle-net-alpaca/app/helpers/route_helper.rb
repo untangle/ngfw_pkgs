@@ -21,7 +21,7 @@ EOF
         "&nbsp;" + options[:view].text_field( "gateway", options[:row_id], { :value => route.gateway } )
       end
 
-      columns << Alpaca::Table::Column.new( "name", "Name".t ) do |route,options| 
+      columns << Alpaca::Table::Column.new( "name", "Description".t ) do |route,options| 
         "&nbsp;" + options[:view].text_field( "name", options[:row_id], { :value => route.name } )
       end
 
