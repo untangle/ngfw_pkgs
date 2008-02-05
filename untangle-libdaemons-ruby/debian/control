@@ -24,9 +24,9 @@ Description: Ruby daemons library
 Package: untangle-libdaemons-ruby1.8
 Architecture: any
 Depends: ${shlibs:Depends}
-Conflicts: libdaemons-ruby, libdaemonize-ruby1.8
-Provides: libdaemons-ruby
-Replaces: libdaemons-ruby
+Conflicts: libdaemons-ruby1.8, libdaemonize-ruby1.8
+Provides: libdaemons-ruby1.8
+Replaces: libdaemons-ruby1.8
 Description: Ruby daemons library
  Daemons provides an easy way to wrap existing ruby scripts (for example
  a self-written server) to be run as a daemon and to be controlled by
