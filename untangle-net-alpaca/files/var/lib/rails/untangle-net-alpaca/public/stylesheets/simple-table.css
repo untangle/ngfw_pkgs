@@ -270,7 +270,7 @@ div.table-label.ip_networks
 
 div.list-table-container.ip_networks div.networks, div.list-table-container.ip_networks div.ip-network
 {
-  width: 250px; 
+  width: 550px; 
   }
 
 /* ------------------ Style the DHCP Static Entries ---------------- */
@@ -730,13 +730,13 @@ div.table-label.nats
  }
 div.list-table-container.nats div.ip-address
 {
-  width: 250px;
+  width: 275px;
  }
 div.list-table-container.nats div.new-source
 { 
-  width: 250px;
+  width: 275px;
  }
 div.list-table-container.nats div.minus
 { 
-  width: 70px;
+  width: 50px;
  }
