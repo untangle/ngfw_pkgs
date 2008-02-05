@@ -4,7 +4,10 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
   Service = "/etc/init.d/networking"
   InterfacesConfigFile = "/etc/network/interfaces"
   InterfacesStatusFile = "/etc/network/run/ifstate"
-  IfTabConfigFile = "/etc/network/run/ifstate"
+
+  def get_interfaces_status_file
+    return InterfacesStatusFile
+  end
 
   def interfaces
     logger.debug( "Running inside of the network manager for debian" )

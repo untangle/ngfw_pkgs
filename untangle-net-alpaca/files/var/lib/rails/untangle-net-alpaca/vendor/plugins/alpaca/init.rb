@@ -13,7 +13,9 @@ require "alpaca/helpers"
 require "alpaca/os"
 
 ## Insert the specific os that is presently loaded.
-require "alpaca/os/current_os"
+require "alpaca/os/os_utils"
+cur_os_file = "os_library/" + Alpaca::OS::OSUtils.distribution() + "/os"
+require cur_os_file
 
 ## Temporary extensions to replace globalize.
 require "alpaca/localization_extensions"
