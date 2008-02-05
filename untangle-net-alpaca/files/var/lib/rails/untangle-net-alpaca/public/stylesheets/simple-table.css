@@ -87,14 +87,14 @@ div.list-table-container div.list-table li
 { 
   overflow: auto;
   line-height: 25px;
-  height: 25px;
+  height: 28px;
   padding-bottom: 0px;
   }
 
 div.list-table-container div.list-table li div
 { 
   overflow: auto;
-  height: 25px;
+  height: 28px;
   }
 
 /* Format the data itself */
@@ -105,8 +105,8 @@ div.list-table-container div.list-table li div
 
 div.list-table-container div.list-table
 { 
-  /*overflow-y: scroll; */
-  overflow-y: auto;
+/*  overflow-y: scroll; */
+ overflow-y: auto; 
   overflow-x: hidden;
  /* background-color: #666666; */
 	background-color: transparent;
@@ -130,7 +130,6 @@ div.list-table-container div.list-table li.new
 { 
   background-color: #B0D9EA;
  }
-
 
 div.list-table-container div.list-table ul li
 { 
@@ -228,23 +227,33 @@ div.table-label.redirects
 div.list-table-container.redirects div.list-table, div.list-table-container.ip_networks div.list-table
 { 
   height: 200px;
-  }
-
+}
 div.list-table-container.redirects div.enabled
 { 
   width: 40px;
-  }
-
+}
 div.list-table-container.redirects div.description
 { 
   width: 450px;
-  }
+}
+div.list-table-container.redirects div.drag {
+	width: 30px;
+}
+div.list-table-container.redirects div.edit {
+	width: 50px;
+}
+div.list-table-container.redirects div.minus {
+	/*width: auto;*/
+	padding-left: 8px; 
+	width: 30px;
+}
+
 
 div.list-table-container.redirects div.enabled, div.list-table-container.redirects div.minus, div.list-table-container.redirects div.edit, div.list-table-container.ip_networks div.networks, div.list-table-container.ip_networks div.minus
 { 
   text-align: center;
   text-indent: 0;
-  }
+ }
 
 /* ------------------ Style the IP Networks ---------------- */
 div.list-table-container.ip_networks
@@ -439,8 +448,9 @@ div.table-label.interface-status
 div.list-table-container.interface-status div.network_interface
 { 
 /*  width: 170px; */
-	width: 24%;
-  padding-left: 10px;
+/*	width: 24%; */
+	width: 170px;
+ /* padding-left: 10px; */
   }
 div.list-table-container.interface-status div.os_name
 { 
@@ -450,24 +460,34 @@ div.list-table-container.interface-status div.os_name
 div.list-table-container.interface-status div.carrier
 { 
 /*  width: 275px; */
-	width: 42%; 
-	
+	/*width: 42%; */
+	width: 250px;
   }
 div.list-table-container.interface-status div.mac
 { 
 /*  width: 202px; */
-	width: 32%;	
+/*	width: 32%;	*/
+	width: auto;
+
   }
+
+div.list-table-container.interface-status input
+{
+/*	text-indent: 10px; */
+	padding-left: 8px;
+}
 
 /* ------------------- Packet Filter Panel -------------------- */
 div.list-table-container.firewalls
 {
-  width: 673px;
+/*  width: 673px; */
+	width: 633px;
  }
 
 div.table-label.firewalls
 {
-  width: 675px;
+/*  width: 675px; */
+	width: 635px;
  }
 div.list-table-container.firewalls div.enabled
 { 
@@ -486,22 +506,30 @@ div.list-table-container.firewalls div.description
 
 div.list-table-container.firewalls div.edit
 { 
-  width: 70px;
+  width: 50px;
   }
 
 div.list-table-container.firewalls div.minus
 { 
-  width: 70px;
+/*  width: 70px; */
+/*width: auto; */
+width: 50px;
+text-indent: 10px;
   }
 
 div.list-table-container.system-firewalls
 {
-  width: 673px;
+ /*  width: 673px; */
+	width: 633px;
  }
-
+div.list-table-container.system-firewalls input
+{
+	/*border: 1px solid red;*/
+}
 div.table-label.system-firewalls
 {
-  width: 675px;
+ /* width: 675px; */
+	width: 635px;
  }
 div.list-table-container.system-firewalls div.enabled
 { 
@@ -510,19 +538,23 @@ div.list-table-container.system-firewalls div.enabled
 
 div.list-table-container.system-firewalls div.description
 { 
-  width: 600px;
+  /*width: 600px; */
+	/* width: auto; */
+	width: 565px;
   }
 
 /* ------------------- File Overrides -------------------- */
 
 div.list-table-container.overrides
 { 
-  width: 600px;
+ /* width: 600px; */
+	width: 633px;
   
 }
 div.table-label.overrides
 {
-  width: 602px;
+/*  width: 602px; */
+	width: 635px;
  }
 
 div.list-table-container.overrides div.enabled
@@ -547,11 +579,13 @@ div.list-table-container.overrides div.minus
 /* ------------------- Subscriptions -------------------- */
 div.list-table-container.subscriptions
 { 
-  width: 645px;
+/*  width: 645px; */
+	width: 633px;
   }
 div.table-label.subscriptions
 { 
-  width: 647px;
+ /* width: 647px; */
+	width: 635px;
   }
 div.list-table-container.subscriptions div.enabled
 { 
@@ -575,17 +609,20 @@ div.list-table-container.subscriptions div.edit
 
 div.list-table-container.subscriptions div.minus
 { 
-  width: 70px;
+ /* width: 70px; */
+	width: 50px;
   }
 
 /* System subscriptions */
 div.list-table-container.system-subscriptions
 { 
-  width: 645px;
+/*  width: 645px; */
+	width: 633px;
   }
 div.table-label.system-subscriptions
 { 
-  width: 647px;
+ /* width: 647px; */
+	width: 635px;
   }
 div.list-table-container.system-subscriptions div.enabled
 { 
@@ -599,11 +636,13 @@ div.list-table-container.system-subscriptions div.description
 /* ------------------- Static ARP -------------------- */
 div.list-table-container.arps
 {
-  width: 615px;
+/*  width: 615px; */
+	width: 633px;
  }
 div.table-label.arps
 { 
-  width: 617px;
+ /* width: 617px; */
+	width: 635px;
  }
 div.list-table-container.arps div.hostname
 {
@@ -621,43 +660,64 @@ div.list-table-container.arps div.minus
 { 
   width: 70px;
  }
+
+div.list-table-container.arps #active_arps-list-table #active_arps .list-table-column {
+	font-size: 85%; /* 11px equiv */
+	color: #666;
+}
+
 /* ------------------- Static Routes -------------------- */
 div.list-table-container.routes
 {
-  width: 700px;
+/*  width: 700px; */
+	width: 633px; 
  }
 div.table-label.routes
 { 
-  width: 702px;
+/*  width: 702px; */
+	width: 635px;
  }
 div.list-table-container.routes div input.textfield
 { 
-  width: 136px;
+ /* width: 136px; */
+	width: 123px;
  }
 div.list-table-container.routes div.target
 {
-  width: 150px;
+/*  width: 150px; */
+	width: 135px;
  }
 div.list-table-container.routes div.netmask
 { 
-  width: 150px;
+	/*  width: 150px; */
+		width: 135px;
  }
 div.list-table-container.routes div.gateway
 { 
-  width: 150px;
+	/*  width: 150px; */
+		width: 135px;
  }
 div.list-table-container.routes div.name
 { 
-  width: 150px;
+	/*  width: 150px; */
+		width: 135px;
  }
 div.list-table-container.routes div.interface
 { 
-  width: 150px;
+	/*  width: 150px; */
+		width: 135px;
  }
 div.list-table-container.routes div.minus
 { 
-  width: 70px;
+/*  width: 70px; */
+/*	width: auto; */
+	width: 50px;
  }
+
+div.list-table-container.routes #active_routes-list-table #active_routes .list-table-column {
+	font-size: 85%; /* 11px equiv */
+	color: #666;
+}
 
 /* ------------------- NAT Policy -------------------- */
 div.list-table-container.nats

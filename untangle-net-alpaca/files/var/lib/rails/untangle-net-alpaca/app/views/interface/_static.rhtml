@@ -1,7 +1,5 @@
 <% style = @hide_types.include?( "static" ) ? 'style="display: none"' : nil  %>
 <div id="static" <%= style %>>
-  <!-- <% form_tag( :action => 'intf_static_save', :id => interface ) do -%> -->
-    <h2><%= "IP Addresses".t %></h2>
     <% list_id = "ip-network-list-static" %>
     <%= render( :partial => "ip_networks" , :object => static.ip_networks,
                 :locals => { :list_id => list_id } ) %>
@@ -23,6 +21,11 @@
             <label for="static[dns_2]"><%= "Secondary DNS Server:".t %></label>
             <%= text_field( "static", "dns_2" ) %>
           </li>
+        <li>
+          <label for="static[mtu]"><%= "MTU:".t %></label>
+	  <%= @interface.current_mtu %>
+          <%= text_field( "static", "mtu", { :class => "number" } ) %>
+        </li>
         </ul>
       </fieldset>
     <% else %>
@@ -31,24 +34,7 @@
       <%= hidden_field( "static", "dns_2", { :value => "" } ) %>
     <% end %>
 
-    <h2><%= "NAT Policy".t %></h2>
     <% list_id = "nat-policy-list-static" %>
     <%= render( :partial => "nat_policies" , :object => static.nat_policies,
-                :locals => { :list_id => list_id } ) %>  
-    
-    <fieldset>
-      <h2><%= "General".t %></h2>
-      <ul class="text-fields">
-        <li>
-          <label for="static[mtu]"><%= "MTU:".t %></label>
-	  <%= @interface.current_mtu %>
-          <%= text_field( "static", "mtu", { :class => "number" } ) %>
-        </li>
-      </ul>
-    </fieldset>
-<!--      
-    <%= submit_tag "Cancel".t %>
-    <%= submit_tag "Save".t %>
-  <% end -%>-->
-
+                :locals => { :list_id => list_id } ) %>
 </div>
