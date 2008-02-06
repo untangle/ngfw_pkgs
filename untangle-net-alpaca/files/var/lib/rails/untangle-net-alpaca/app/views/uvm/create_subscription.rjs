@@ -1,4 +1,4 @@
 page.insert_html( :top, "subscription-list", :partial => "application/table_row", :object => @subscription, :locals => { :table_model => subscription_table_model, :data => Alpaca::Table::Data.new( "subscription-list", [ @subscription ] ) })
 page.sortable( "subscription-list", {:scroll => "'subscription-list-list-table'", :constraint => "vertical"} )
 page << "TableManager.updateRowStyles( 'subscription-list' );"
-page << "RuleBuilder.edit( '" + @row_id + "' );"
+page << "RuleBuilder.edit( '" + @row_id + "', 'subscription-list', true);"

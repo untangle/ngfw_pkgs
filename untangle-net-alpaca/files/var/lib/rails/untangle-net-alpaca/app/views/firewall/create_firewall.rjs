@@ -1,4 +1,4 @@
 page.insert_html( :top, "firewall-list", :partial => "application/table_row", :object => @firewall, :locals => { :table_model => firewall_table_model, :data => Alpaca::Table::Data.new( "firewall-list", [ @firewall ] ) } )
 page.sortable( "firewall-list", {:scroll => "'firewall-list-list-table'", :constraint => "vertical"} )
 page << "TableManager.updateRowStyles( 'firewall-list' );"
-page << "RuleBuilder.edit( '" + @row_id + "' );"
+page << "RuleBuilder.edit( '" + @row_id + "', 'firewall-list', true );"

@@ -26,7 +26,7 @@ end
            <label for="pppoe[dns_2]"><%= "Secondary DNS Server:".t %></label>
            <%= text_field( "pppoe", "dns_2" ) %>
          </li><li>
-	  <%= submit_to_remote( "Renew", "Renew".t, options = { :url => { :action => "commit" }, :update => "main-content", :html => { :class => "submit" } } ) %>
+	  <%= submit_to_remote( "Renew", "Renew Lease".t, options = { :url => { :action => "commit" }, :update => "main-content", :html => { :class => "submit" } } ) %>
          </li>
        </ul>
        <% end %>

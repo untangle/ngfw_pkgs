@@ -30,6 +30,6 @@ end
     <span><%= print_dynamic( @dhcp_status.dns_2 ) %></span>
   </li>
   <li>
-    <%= submit_to_remote( "Renew", "Renew".t, options = { :url => { :action => "commit" }, :update => "main-content", :html => { :class => "submit" } } ) %>
+    <%= submit_to_remote( "Renew", "Renew Lease".t, options = { :url => { :action => "commit" }, :update => "main-content", :html => { :class => "submit" } } ) %>
    </li>
 </ul>

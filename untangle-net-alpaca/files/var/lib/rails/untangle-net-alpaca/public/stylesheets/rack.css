@@ -882,7 +882,7 @@ input.submit
   border: 0;
   text-decoration: none;
   color: black;
-  font-size: 9pt;
+  font-size: 80%;
   width: 88px;
   height: 21px;
   background: transparent url(../images/button.gif) no-repeat top left;

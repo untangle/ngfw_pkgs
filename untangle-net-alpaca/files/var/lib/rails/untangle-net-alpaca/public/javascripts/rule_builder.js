@@ -157,9 +157,14 @@ var RuleBuilder =
         return numChildren;
     },
 
-    edit : function( rowId )
+    edit : function( rowId, tableId, deleteOnCancel )
     {
         var fieldHash = { row_id : rowId };
+
+	this.manager.rowId = rowId
+	this.manager.tableId = tableId;
+
+	this.manager.deleteOnCancel = deleteOnCancel; 
 
         for ( var c = 0 ; c < this.manager.fields.length ; c++ ) {
             var field = document.getElementById( this.manager.fields[c] + "_" + rowId );
@@ -187,6 +192,14 @@ var RuleBuilder =
         }
 
         Element.show( "overlay" );
+    },
+
+    cancel : function()
+    {
+	if (this.manager.deleteOnCancel) {
+	    TableManager.remove( this.manager.tableId, this.manager.rowId );
+	}
+        Element.hide( "overlay" );
     },
 
     /* Close the rule builder */

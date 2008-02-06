@@ -20,7 +20,7 @@ module FirewallHelper
 EOF
       end
 
-      columns << Alpaca::Table::Column.new( "target", "Target".t ) do |firewall,options| 
+      columns << Alpaca::Table::Column.new( "target", "Action".t ) do |firewall,options| 
         "&nbsp;" + options[:view].select( "target", options[:row_id], Actions, { :selected => firewall.target } )
       end
       
