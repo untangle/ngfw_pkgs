@@ -23,6 +23,14 @@ module AlpacaHelper
       super( table_name="Status", css_class="interface-status", header_css_class="interface-status-header", row_css_class="interface-status-row", columns )
     end
 
+    def action( table_data, view )
+      <<EOF
+<div onclick="#{view.remote_function( :update => "main-content", :url => { :action => :status } )}" class="refresh-button">
+  #{"Refresh".t}
+</div>
+EOF
+    end
+
   end
 
   def status_table_model

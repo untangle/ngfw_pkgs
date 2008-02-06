@@ -22,7 +22,7 @@
     <p class="mode-selection">
       <%= "You are currently in Advanced mode, in order to return to Basic
       mode, you must rerun the wizard, or restore settings that were
-      configured in basic mode.".t %>
+      configured in basic mode.".t %> <%= link_to( "Configuration Wizard".t, :controller => :wizard ) %>
     </p>
     <% end %>
   </p>

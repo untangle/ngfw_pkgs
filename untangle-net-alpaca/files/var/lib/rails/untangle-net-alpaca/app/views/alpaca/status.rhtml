@@ -1,24 +1,5 @@
 <div id="title"><h1>Status</h1></div>
 <div id="main-content-body"><div class="wrapper">
 <%= build_table( Alpaca::Table::Data.new( "status", @interfaces ), status_table_model) %>
-<i>(Reloading in <span id="countdown"> 10 </span> seconds)<i>
-<br />
-<%= link_to( "Configuration Wizard".t, :controller => :wizard ) %>
 </div></div>
-
 <%= build_footer( false ) %>
-
-<%= javascript_tag( "
-var countdown = 10;
-var countdownIntervalID
-
-countdownIntervalID  = window.setInterval(  function() { 
-if ( $('countdown') == null || ! $('countdown') ) {
-   window.clearInterval( countdownIntervalID );
-   return;
-}
-if ( countdown == 0 ) { 
-  window.clearInterval( countdownIntervalID ); new Ajax.Updater($('main-content'), '" + url_for( :action => "status" ) + "', { evalScripts: true } ); } 
-$('countdown').replace('<span id=\"countdown\"> '+countdown.toString()+' </span>'); 
-countdown = countdown - 1;  } , 1000 );
-"  ) %>
