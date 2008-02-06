@@ -51,7 +51,7 @@ EOF
 
   class Alpaca::Table::AddStaticColumn < Alpaca::Table::Column
     def initialize
-      super( "add-static", "Add" )
+      super( "add-static", "Add Static" )
     end
     
     ## Override this method for more advanced attributes
