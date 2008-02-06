@@ -1,4 +1,4 @@
-class Thunderbird < ActiveRecord::Migration
+class Thunderbird < Alpaca::Migration
   def self.up
     ## Table for storing the configuration for each of the interfaces
     create_table :interfaces do |table|
@@ -279,47 +279,69 @@ class Thunderbird < ActiveRecord::Migration
       table.column :log,             :boolean
       table.column :settings_id,     :integer
     end
-    
-    FileOverride.new( :enabled => true, :writable => true, :description => "Network Configuration",
-                      :path => "/etc/network/interfaces" ).save
-    FileOverride.new( :enabled => true, :writable => true,
+
+    ## Create a few sample port forward rules.
+    add_redirect( :enabled => false, :filter => "d-port::80&&protocol::tcp&&s-intf::1&&d-local::true",
+                  :new_ip => "192.168.1.5",
+                  :description => "Forward web traffic to an internal web server at 192.168.1.5" )
+
+    add_redirect( :enabled => false, :filter => "d-port::25&&protocol::tcp&&s-intf::1&&d-local::true",
+                  :new_ip => "192.168.1.5",
+                  :description => "Forward mail traffic to an internal mail(SMTP) server at 192.168.1.5" )
+
+    add_redirect( :enabled => false, :filter => "d-port::1000-2000&&protocol::tcp&&s-intf::1&&d-local::true",
+                  :new_ip => "192.168.1.5", :new_enc_id => 1000,
+                  :description => "Forward all TCP traffic going  ports 1000-2000 to 192.168.1.5 port 1000" )
+
+    add_redirect( :enabled => false, :filter => "protocol::tcp,udp,icmp&&s-intf::1&&d-local::true",
+                  :new_ip => "192.168.1.15",
+                  :description => "Forward remaining TCP, ICMP and UDP traffic to 192.168.1.15 (DMZ Host)" )
+
+    ## Create a sample bypass rules.
+    add_bypass_rule( :enabled => false, :filter => "d-port::4500&&protocol::udp", :subscribe => false,
+                     :description => "Bypass IPsec NAT-T traffic." )
+
+    ## Create the file override rules
+    add_file_override( :enabled => true, :writable => true, :description => "Network Configuration",
+                       :path => "/etc/network/interfaces" )
+    add_file_override( :enabled => true, :writable => true,
                       :description => "Box Hostname",
-                      :path => "/etc/hostname" ).save
-    FileOverride.new( :enabled => true, :writable => true,
+                      :path => "/etc/hostname" )
+    add_file_override( :enabled => true, :writable => true,
                       :description => "Box Mail Name",
-                      :path => "/etc/mailname" ).save
-    FileOverride.new( :enabled => true, :writable => true, :description => "DNS Server Configuration",
-                      :path => "/etc/resolv.conf" ).save
-    FileOverride.new( :enabled => true, :writable => true, 
+                      :path => "/etc/mailname" )
+    add_file_override( :enabled => true, :writable => true, :description => "DNS Server Configuration",
+                      :path => "/etc/resolv.conf" )
+    add_file_override( :enabled => true, :writable => true, 
                       :description => "Caching DNS / DHCP server.",
-                      :path => "/etc/dnsmasq.conf" ).save
-    FileOverride.new( :enabled => true, :writable => true, 
+                      :path => "/etc/dnsmasq.conf" )
+    add_file_override( :enabled => true, :writable => true, 
                       :description => "Caching DNS / DHCP server.",
-                      :path => "/etc/untangle-net-alpaca/dnsmasq-hosts" ).save
-    FileOverride.new( :enabled => true, :writable => true, 
+                      :path => "/etc/untangle-net-alpaca/dnsmasq-hosts" )
+    add_file_override( :enabled => true, :writable => true, 
                       :description => "Dynamic DNS Configuration",
-                      :path => "/etc/ddclient.conf" ).save
-    FileOverride.new( :enabled => true, :writable => true, 
+                      :path => "/etc/ddclient.conf" )
+    add_file_override( :enabled => true, :writable => true, 
                       :description => "Dynamic DNS Configuration",
-                      :path => "/etc/default/ddclient" ).save
-    FileOverride.new( :enabled => true, :writable => true,
+                      :path => "/etc/default/ddclient" )
+    add_file_override( :enabled => true, :writable => true,
                       :description => "PPP Passwords",
-                      :path => "/etc/ppp/pap-secrets" ).save
-    FileOverride.new( :enabled => true, :writable => true, 
+                      :path => "/etc/ppp/pap-secrets" )
+    add_file_override( :enabled => true, :writable => true, 
                       :description => "ARP Table",
-                      :path => "/etc/untangle-net-alpaca/arps" ).save
-    FileOverride.new( :enabled => true, :writable => true, 
+                      :path => "/etc/untangle-net-alpaca/arps" )
+    add_file_override( :enabled => true, :writable => true, 
                       :description => "Routing Table",
-                      :path => "/etc/untangle-net-alpaca/routes" ).save
-    FileOverride.new( :enabled => true, :writable => true, 
+                      :path => "/etc/untangle-net-alpaca/routes" )
+    add_file_override( :enabled => true, :writable => true, 
                       :description => "IPTables Rules",
-                      :path => "/etc/untangle-net-alpaca/iptables-rules.d/.*" ).save
-    FileOverride.new( :enabled => true, :writable => true, 
+                      :path => "/etc/untangle-net-alpaca/iptables-rules.d/.*" )
+    add_file_override( :enabled => true, :writable => true, 
                       :description => "Network state (caution).",
-                      :path => "/etc/network/run/ifstate" ).save
-    FileOverride.new( :enabled => false, :writable => false, 
+                      :path => "/etc/network/run/ifstate" )
+    add_file_override( :enabled => false, :writable => false, 
                       :description => "Sample Catchall rule.",
-                      :path => "/etc/.*" ).save
+                      :path => "/etc/.*" )
   end
 
   def self.down

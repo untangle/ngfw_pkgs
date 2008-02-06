@@ -128,9 +128,36 @@ module Alpaca::SystemRules
                           :system_id => "block-all-local-04a98864" )
 
     ## Bypass Rules
-    rm.add_bypass_rule( :description => "Pass DHCP Traffic",
+    rm.add_bypass_rule( :description => "Bypass DHCP Traffic",
                         :system_id => DhcpHelper::RuleSystemID,
                         :filter => "s-port::67,68&&d-port::67,68&&protocol::udp",
+                        :subscribe => false )
+
+    ## Add a bypass rule to pass IPSec traffic.
+    rm.add_bypass_rule( :description => "Bypass IPsec VPN Traffic",
+                        :enabled => true,
+                        :system_id => "bypass-ipsec-vpn-traffic-0f37eb65",
+                        :filter => "d-port::500&&protocol::udp",
+                        :subscribe => false )
+
+    ## Add a bypass rule to pass PPTP traffic.
+    rm.add_bypass_rule( :description => "Bypass PPTP Traffic",
+                        :enabled => true,
+                        :system_id => "bypass-pptp-traffic-4eabdb61",
+                        :filter => "d-port::1723&&protocol::tcp",
+                        :subscribe => false )
+
+    ## Add a bypass rule to allow VOIP traffic on IAX and SIP.
+    rm.add_bypass_rule( :description => "Bypass  VOIP Traffic (SIP)",
+                        :enabled => true,
+                        :system_id => "bypass-voip-sip-traffic-2df1273f",
+                        :filter => "d-port::5060&&protocol::tcp,udp",
+                        :subscribe => false )
+
+    rm.add_bypass_rule( :description => "Bypass  VOIP Traffic (IAX)",
+                        :enabled => true,
+                        :system_id => "bypass-voip-iax--traffic-8e97ab87",
+                        :filter => "d-port::4569&&protocol::udp",
                         :subscribe => false )
 
     ## Always call this last
