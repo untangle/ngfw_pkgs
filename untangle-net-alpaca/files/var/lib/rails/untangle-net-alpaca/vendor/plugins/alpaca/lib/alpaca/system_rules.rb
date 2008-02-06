@@ -77,7 +77,7 @@ module Alpaca::SystemRules
                           :filter => "", :is_custom => true,
                           :system_id => "block-dhcp-remaining-58b3326c" )
 
-    rm.add_firewall_rule( :description => "Control DHCP Traffic from non-internal interfaces.",
+    rm.add_firewall_rule( :description => "Prefer Local DHCP Traffic from non-internal interfaces.",
                           :filter => "", :is_custom => true,
                           :system_id => "control-dhcp-cb848bea" )
 
@@ -115,7 +115,7 @@ module Alpaca::SystemRules
                           :target => "pass",
                           :system_id => "accept-ssh-40be25e3" )
 
-    rm.add_firewall_rule( :description => "Accept ICMP on all interfaces.",
+    rm.add_firewall_rule( :description => "Allow Ping on all interfaces.",
                           :filter => "d-local::true&&protocol::icmp",
                           :target => "pass",
                           :system_id => "accept-icmp-30d37e70" )
