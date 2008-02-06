@@ -14,15 +14,15 @@ EOF
       end
       
       columns << Alpaca::Table::Column.new( "netmask", "Netmask".t ) do |route,options| 
-        "&nbsp;" + options[:view].text_field( "netmask", options[:row_id], { :value => route.netmask } )
+        options[:view].text_field( "netmask", options[:row_id], { :value => route.netmask } )
       end
 
       columns << Alpaca::Table::Column.new( "gateway", "Gateway".t ) do |route,options| 
-        "&nbsp;" + options[:view].text_field( "gateway", options[:row_id], { :value => route.gateway } )
+        options[:view].text_field( "gateway", options[:row_id], { :value => route.gateway } )
       end
 
       columns << Alpaca::Table::Column.new( "name", "Description".t ) do |route,options| 
-        "&nbsp;" + options[:view].text_field( "name", options[:row_id], { :value => route.name } )
+        options[:view].text_field( "name", options[:row_id], { :value => route.name } )
       end
 
       columns << Alpaca::Table::DeleteColumn.new
