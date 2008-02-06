@@ -4,6 +4,7 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
   Service = "/etc/init.d/networking"
   InterfacesConfigFile = "/etc/network/interfaces"
   InterfacesStatusFile = "/etc/network/run/ifstate"
+  NetClassDir = "/sys/class/net"
 
   def get_interfaces_status_file
     return InterfacesStatusFile
@@ -14,18 +15,18 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
 
     interfaceArray = []
 
-    devices=`find /sys/devices -name 'net:*' | sed 's|.*net:||'`
+    devices=`cd #{NetClassDir};echo */device | sed 's|/device||g'`.split
 
     devices.each do |os_name|
-      os_name = os_name.strip
 
-      bus_id=""
+      bus_id = File.readlink("#{NetClassDir}/#{os_name}/device").sub(/.*devices\//, '')
       vendor=get_vendor( os_name )
 
       ## For some reason, on some systems this causes ruby to hang, use 'cat' instead.
-      # mac_address = File.open( "/sys/class/net/#{os_name}/address", "r" ) { |f| f.readline.strip }
-      mac_address = `cat "/sys/class/net/#{os_name}/address"`.strip
+      # mac_address = File.open( "#{NetClassDir}/#{os_name}/address", "r" ) { |f| f.readline.strip }
+      mac_address = `cat "#{NetClassDir}/#{os_name}/address"`.strip
       
+      logger.debug( "found network device: #{os_name}, mac: #{mac_address}, vendor: #{vendor}, bus_id: #{bus_id}" )
       interfaceArray << PhysicalInterface.new( os_name, mac_address, bus_id, vendor )
     end
     
@@ -278,8 +279,11 @@ EOF
   end
 
   def get_vendor( os_name )
-    path="/sys/class/net/#{os_name}/device/uevent"
-    bus,vendor_id = `awk '/(PHYSDEVBUS|PCI_ID|PRODUCT)/ { sub( /^[^=]*=/, "" );  print $0 }' #{path}`.strip.split( "\n" )
+    subsystem="#{NetClassDir}/#{os_name}/device/subsystem"
+    bus = File.readlink(subsystem).sub(/.*\//, '')
+
+    uevent="#{NetClassDir}/#{os_name}/device/uevent"
+    vendor_id = `awk '/(PCI_ID|PRODUCT)/ { sub( /^[^=]*=/, "" );  print $0 }' #{uevent}`.strip
     
     return "Unknown" if ApplicationHelper.null?( vendor_id ) || ApplicationHelper.null?( bus )
 
@@ -287,7 +291,7 @@ EOF
     
     case bus
     when "usb"
-      vendor = `zcat /usr/share/misc/usb.ids | awk '/^#{vendor_id}/ { $1 = "" ; print $0 }'`.strip
+      vendor = `zcat -f /usr/share/misc/usb.ids | awk '/^#{vendor_id}/ { $1 = "" ; print $0 }'`.strip
     when "pci"
       vendor = `awk '/^#{vendor_id}/ { $1 = "" ; print $0 }' /usr/share/misc/pci.ids`.strip
     else return "Unknown"
