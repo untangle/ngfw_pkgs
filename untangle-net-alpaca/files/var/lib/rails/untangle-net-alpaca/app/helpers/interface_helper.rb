@@ -87,7 +87,7 @@ module InterfaceHelper
 
       ## Save the parameters from the physical interface.
       interface.os_name, interface.mac_address, interface.bus, interface.vendor = 
-        i.os_name, i.mac_address, i.bus, i.vendor
+        i.os_name, i.mac_address, i.bus_id, i.vendor
 
       parameters = DefaultInterfaceMapping[i.os_name]
       ## Use the os name if it doesn't have a predefined virtual name

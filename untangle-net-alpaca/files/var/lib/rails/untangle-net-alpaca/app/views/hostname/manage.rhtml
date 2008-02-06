@@ -34,7 +34,7 @@ select( "ddclient_settings", "service", services ) %>
           <%= password_field_tag( "ddclient_settings[password]", @ddclient_settings.hidden_password, :autocomplete=>"off" ) %>
         </li>
 
-        <li>
+        <li title="<%= "Separated by commas".t %>">
           <label for="ddclient_settings_hostname"><%= "Hostname(s):".t %></label>
           <%= text_field( "ddclient_settings", "hostname" ) %>
         </li>
