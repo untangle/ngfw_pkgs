@@ -53,7 +53,7 @@ EOF
 
       
       columns << Alpaca::Table::Column.new( "hw_addr", "MAC Address".t ) do |system_arp,options| 
-        "&nbsp;" + system_arp.mac_address
+        "&nbsp;" + options[:view].mac_address_link( system_arp.mac_address )
       end
 
       columns << Alpaca::Table::Column.new( "interface", "Interface".t ) do |system_arp,options| 

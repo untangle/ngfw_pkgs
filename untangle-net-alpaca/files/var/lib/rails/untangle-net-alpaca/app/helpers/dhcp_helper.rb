@@ -70,7 +70,7 @@ EOF
     def initialize
       columns = []
       columns << Alpaca::Table::Column.new( "mac-address", "MAC Address" ) do |dynamic_entry,options|
-        dynamic_entry.mac_address
+        options[:view].mac_address_link( dynamic_entry.mac_address )
       end
       
       columns << Alpaca::Table::Column.new( "ip-address", "IP Address" ) do |dynamic_entry,options| 

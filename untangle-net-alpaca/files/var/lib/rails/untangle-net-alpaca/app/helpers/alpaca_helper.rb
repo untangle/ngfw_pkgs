@@ -17,7 +17,7 @@ module AlpacaHelper
       end
       columns << Alpaca::Table::Column.new( "mac", "Hardware Address".t ) do |interface,options| 
         #options[:view].text_field( "interfaces", options[:row_id], { :value => "#{interface.hardware_address}", :readonly => true } )
-        options[:view].link_to( interface.hardware_address, "http://standards.ieee.org/cgi-bin/ouisearch?" + interface.hardware_address.slice(0,8),  :popup => [ 'new_window', 'height=450,width=650,scrollbars=1,toolbar=1,status=1,location=1,menubar=1,resizeable=1' ] )
+        options[:view].mac_address_link( interface.hardware_address )
       end
       
       super( table_name="Status", css_class="interface-status", header_css_class="interface-status-header", row_css_class="interface-status-row", columns )

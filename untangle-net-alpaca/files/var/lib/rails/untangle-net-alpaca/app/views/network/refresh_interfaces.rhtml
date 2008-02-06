@@ -8,7 +8,7 @@
     <p class="description">
       <%= "Unable to detect any removed or installed network interfaces.".t %>
       <%= link_to( "Return to list.".t, { :action => "manage" } ) %>
-      <%= javascript_tag( "window.setTimeout('location.href=\"" + url_for( :action => "manage" ) + "\"', 3000);" ) %>
+      <%= javascript_tag( "window.setTimeout('location.href=\"" + url_for( :action => "manage" ) + "\"', 5500);" ) %>
     </p>
   <% else %>
     <% unless @new_interfaces.empty?  %>

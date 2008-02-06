@@ -32,6 +32,11 @@ module ApplicationHelper
     check_box( name, row_id, { :checked => enabled }, true, false )
   end
 
+  def mac_address_link( address )
+    link_to( address, "http://standards.ieee.org/cgi-bin/ouisearch?" + address.slice(0,8),  :popup => [ 'new_window', 'height=450,width=650,scrollbars=1,toolbar=1,status=1,location=1,menubar=1,resizeable=1' ] )
+  end
+
+
   def handle_flash_messages
     css_class = false
     body = ""
