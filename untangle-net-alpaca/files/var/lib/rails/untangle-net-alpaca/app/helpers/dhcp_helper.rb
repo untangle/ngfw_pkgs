@@ -83,7 +83,7 @@ EOF
       
       columns << Alpaca::Table::AddStaticColumn.new
       
-      super(  "Current DHCP Entries", "dhcp-dynamic-entry", "", "dhcp-dynamic_entry", columns )
+      super(  "Current DHCP Entries", "dhcp-dynamic-entry", "", "dhcp-dynamic_entry read-only", columns )
     end
 
     def row_id( row )

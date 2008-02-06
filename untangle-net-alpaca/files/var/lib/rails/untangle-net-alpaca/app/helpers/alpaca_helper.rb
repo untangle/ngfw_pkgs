@@ -20,7 +20,7 @@ module AlpacaHelper
         options[:view].mac_address_link( interface.hardware_address )
       end
       
-      super( table_name="Status", css_class="interface-status", header_css_class="interface-status-header", row_css_class="interface-status-row", columns )
+      super( table_name="Status", css_class="interface-status", header_css_class="interface-status-header", row_css_class="interface-status-row read-only", columns )
     end
 
     def action( table_data, view )

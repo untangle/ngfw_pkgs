@@ -86,10 +86,10 @@ EOF
 
       
       columns << Alpaca::Table::Column.new( "description", "Description".t ) do |system_subscription,options| 
-        "&nbsp;" + options[:view].text_field( "description", system_subscription.system_id, { :value => system_subscription.description } )
+        "&nbsp;" + system_subscription.description
       end
             
-      super(  "System Bypass Rules".t, "system-subscriptions", "", "system_subscription", columns )
+      super(  "System Bypass Rules".t, "system-subscriptions", "", "system_subscription read-only", columns )
     end
   end
 

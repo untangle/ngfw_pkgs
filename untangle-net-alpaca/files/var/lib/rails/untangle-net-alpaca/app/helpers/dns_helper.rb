@@ -58,7 +58,7 @@ EOF
         dynamic_entry.hostname
       end
       
-      super(  "Automatic DNS Entries", "dns-dynamic-entry", "", "dns-dynamic_entry", columns )
+      super(  "Automatic DNS Entries", "dns-dynamic-entry", "", "dns-dynamic_entry read-only", columns )
     end
 
     def row_id( row )

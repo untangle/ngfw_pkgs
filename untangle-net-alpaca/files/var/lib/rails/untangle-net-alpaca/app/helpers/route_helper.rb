@@ -68,7 +68,7 @@ EOF
         "&nbsp;" + system_route.interface
       end
             
-      super( "Active Routes", "routes", "", "system_route", columns )
+      super( "Active Routes", "routes", "", "system_route read-only", columns )
     end
   end
 

@@ -60,7 +60,7 @@ EOF
         "&nbsp;" + system_arp.interface
       end
             
-      super(  "Active ARP Entries", "arps", "", "system_arp", columns )
+      super(  "Active ARP Entries", "arps", "", "system_arp read-only", columns )
     end
   end
 

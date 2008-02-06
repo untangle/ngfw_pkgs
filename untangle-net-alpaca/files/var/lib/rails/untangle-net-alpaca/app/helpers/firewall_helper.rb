@@ -81,10 +81,10 @@ EOF
 
       
       columns << Alpaca::Table::Column.new( "description", "Description".t ) do |system_firewall,options| 
-        "&nbsp;" + options[:view].text_field( "description", system_firewall.system_id, { :value => system_firewall.description } )
+        "&nbsp;" + system_firewall.description
       end
             
-      super(  "System Packet Filter Rules", "system-firewalls", "", "system_firewall", columns )
+      super(  "System Packet Filter Rules", "system-firewalls", "", "system_firewall read-only", columns )
     end
   end
 
