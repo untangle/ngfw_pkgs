@@ -33,9 +33,9 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
 
   ## Register all of the menu items.
   def register_menu_items( menu_organizer, config_level )
-    return unless ( config_level >= AlpacaSettings::Level::Advanced )
+    #return unless ( config_level >= AlpacaSettings::Level::Advanced )
 
-    menu_organizer.register_item( "/main/interfaces", menu_item( 200, "Interfaces", :action => "list" ))
+    menu_organizer.register_item( "/main/interfaces", menu_item( 100, "Interfaces", :action => "list" ))
     
     ## Retrieve all of the interfaces
     interfaces = Interface.find(:all)

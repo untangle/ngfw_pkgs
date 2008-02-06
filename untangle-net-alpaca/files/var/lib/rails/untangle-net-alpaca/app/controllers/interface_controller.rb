@@ -22,10 +22,13 @@ class InterfaceController < ApplicationController
 
     @interfaces.sort! { |a,b| a.index <=> b.index }
 
+
+    @interfaces_vendors = Hash.new
+    networkManager.interfaces.each { |intf| @interfaces_vendors[intf.os_name] = intf.vendor }
+
     if ! Interface.valid_dhcp_server?
       flash[:warning] = "DHCP Server is configured on a subnet that is not on any configured interfaces."
     end
-
   end
 
   def config
@@ -352,6 +355,15 @@ class InterfaceController < ApplicationController
     return redirect_to( :action => 'list' )
   end
 
+  def test_internet_connectivity
+    results = networkManager.internet_connectivity?
+    if results[0]
+      flash[:notice] = "Successfully connected to the Internet."
+    else
+      flash[:notice] = "Failed to connect to the Internet. #{results[1]} failed."
+    end
+    index
+  end
 
   private
 

@@ -55,16 +55,33 @@ class OSLibrary::NetworkManager < Alpaca::OS::ManagerBase
     end
     
     def to_s
-      "physical-interface <#{os_name},#{mac_address},#{bus}>"
+      "physical-interface <#{os_name},#{mac_address},#{bus_id},#{vendor}>"
     end
 
-    attr_reader :os_name, :mac_address, :bus, :vendor
+    attr_reader :os_name, :mac_address, :bus_id, :vendor
   end
   
   ## This should return 
   ## an array of PhysicalInterfaces that are on the box.
   def interfaces
     raise "base class, override in an os specific class"
+  end
+
+  def internet_connectivity?( host="updates.untangle.com" )
+    require "resolv"
+    require "socket"
+    begin
+      address = Resolv.getaddress( host )
+      s = TCPSocket.new( host, "http" )
+      s.close
+      return [true, "tcp"]
+    rescue Errno::ECONNREFUSED
+      return [true, "tcp"] #TODO does this make sense
+    rescue Timeout::Error, StandardError
+      return [false, "tcp"]
+    rescue ResolvError
+      return [false, "DNS"]
+    end
   end
 
   ## This should commit and update all of the network related settings.

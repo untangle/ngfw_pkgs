@@ -32,17 +32,17 @@ module ApplicationHelper
     check_box( name, row_id, { :checked => enabled }, true, false )
   end
 
-  def mac_address_link( address )
-    link_to( address, "http://standards.ieee.org/cgi-bin/ouisearch?" + address.slice(0,8),  :popup => [ 'new_window', 'height=450,width=650,scrollbars=1,toolbar=1,status=1,location=1,menubar=1,resizeable=1' ] )
+  def mac_address_link( address, title )
+    link_to( address, "http://standards.ieee.org/cgi-bin/ouisearch?" + address.slice(0,8),  :title => title, :popup => [ 'new_window', 'height=450,width=650,scrollbars=1,toolbar=1,status=1,location=1,menubar=1,resizeable=1' ] )
   end
 
 
   def handle_flash_messages
     css_class = false
     body = ""
-    if !flash[:notification].nil? and flash[:notification].length > 0
-      css_class = "notification"
-      body << flash[:notification]
+    if !flash[:notice].nil? and flash[:notice].length > 0
+      css_class = "notice"
+      body << flash[:notice]
     end
     if !flash[:warning].nil? and flash[:warning].length > 0
       css_class = "warning"

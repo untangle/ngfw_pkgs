@@ -3,10 +3,13 @@
   <div id="main-content-body"><div class="wrapper">
   <%= handle_flash_messages %>
   <div id="interface-list">
+<%= submit_to_remote( "Test Connectivity", "Test Connectivity".t, options = { :url => { :action => "test_internet_connectivity" }, :update => "main-content", :html => { :class => "submit" } } ) %>
     <div class="refresh-button" onclick="location.href='<%= url_for( :controller => :network, :action => :refresh_interfaces ) %>'"> Refresh </div>
     <table>
       <tr>
+       <% if @config_level >= AlpacaSettings::Level::Advanced %>
         <th><%= "Edit".t %></th>
+       <% end %>
         <th><%= "Name".t %></th>
         <th><%= "Config Type".t %></th>
         <th><%= "Physical Interface".t %></th>
@@ -17,9 +20,11 @@
       for interface in @interfaces
       %>
       <tr>
+       <% if @config_level >= AlpacaSettings::Level::Advanced %>
         <td class="button">
           <%= link_to_remote 'edit'.t, :update => "main-content", :url => { :action => "config", :id => interface } %>
         </td>
+       <% end %>
         <td><%= interface.name %></td>
         <td><%= interface.config_type %></td>
         <% if first %>
@@ -32,7 +37,7 @@
               <li id="<%= n_interface.id %>">
                 <%= hidden_field_tag( "interfaceOrderList[]", n_interface.id ) %>
 		<%= n_interface.interface_status %><br />
-                <%= "(#{mac_address_link( n_interface.mac_address )})" %>
+                <%= "#{mac_address_link( n_interface.mac_address, @interfaces_vendors[n_interface.os_name] )}" %>
               </li>
             <% end %>
           </ul>
