@@ -61,6 +61,23 @@ if [ -f /proc/sys/net/ipv4/conf/${TUN_DEV}/rp_filter ] ; then
     echo 0 > /proc/sys/net/ipv4/conf/${TUN_DEV}/rp_filter
 fi
 
+## increment the UDP timeout to 60 seconds, kind of a hack to have this here.
+if [ -f /proc/sys/net/netfilter/nf_conntrack_udp_timeout ]; then
+    echo 60 > /proc/sys/net/netfilter/nf_conntrack_udp_timeout
+fi
+
+if [ -f /proc/sys/net/netfilter/nf_conntrack_udp_timeout_stream ]; then
+    echo 180 > /proc/sys/net/netfilter/nf_conntrack_udp_timeout_stream
+fi
+
+if [ -f /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout ]; then
+    echo 60 > /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout
+fi
+
+if [ -f /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout_stream ]; then
+    echo 180 > /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout_stream
+fi
+
 ## Set the path for the bunnicula networking script
 UVM_NETWORKING_CONFIG=`bunnicula_home`/conf/networking.sh
 
