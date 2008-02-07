@@ -387,7 +387,7 @@ div.list-table-container.dns-static-entry div.list-table
 
 div.list-table-container.dns-static-entry div.ip-address
 { 
-  width: 160px;
+  width: 140px;
   }
 
 div.list-table-container.dns-static-entry div.hostname
@@ -424,7 +424,7 @@ div.list-table-container.dns-dynamic-entry div.list-table, div.list-table
 
 div.list-table-container.dns-dynamic-entry div.ip-address
 {
-  width: 160px;
+  width: 140px;
   }
 
 div.list-table-container.dns-dynamic-entry div.hostname

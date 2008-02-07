@@ -53,7 +53,8 @@ class DnsController < ApplicationController
 
   def refresh_dynamic_entries
     ## Retrieve all of the dynamic entries from the DNS server manager
-    @dynamic_entries = os["dns_server_manager"].dynamic_entries    
+    @dynamic_entries = os["dns_server_manager"].dynamic_entries
+    @dynamic_entries = @dynamic_entries.sort_by { |a| IPAddr.new(a.ip_address).to_i }   
   end
 
   def stylesheets
