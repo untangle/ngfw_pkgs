@@ -37,7 +37,7 @@
               <li id="<%= n_interface.id %>">
                 <%= hidden_field_tag( "interfaceOrderList[]", n_interface.id ) %>
 		<%= n_interface.interface_status %><br />
-                <%= "#{mac_address_link( n_interface.mac_address, @interfaces_vendors[n_interface.os_name] )}" %>
+                <%= "#{mac_address_link( n_interface.mac_address, n_interface.vendor )}" %>
               </li>
             <% end %>
           </ul>

@@ -1,17 +1,6 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
-var Alpaca =
-{
-    removeStaticEntry : function ( rowId )
-    {
-        try {
-            Element.remove( rowId );
-        } catch ( e ) {
-        }
-    }
-};
-
 //Fabtabulous!
 //http://www.tetlaw.id.au/view/blog/fabtabulous-simple-tabs-using-prototype/
 // CC share and share alike
@@ -430,29 +419,6 @@ var SubscriptionManager =
     fields : new Array( "filters", "description", "subscribe", "enabled" )
 }
 
-var DhcpServerManager = {
-    removeStaticEntry : function( rowId )
-    {
-        try {
-            Element.remove( rowId );
-        } catch ( e ) {
-            /* ignore exceptions */
-        }
-    }
-};
-
-var DnsServerManager =
-{
-    removeStaticEntry : function( rowId )
-    {
-        try {
-            Element.remove( rowId );
-        } catch ( e ) {
-            /* ignore exceptions */
-        }
-    }
-};
-
 var TableManager = 
 {
     styledTable : {},
@@ -474,6 +440,8 @@ var TableManager =
         }
 
         this.updateRowStyles( tableId );
+
+        enableSave();
     },
     
     updateRowStyles : function( tableId )

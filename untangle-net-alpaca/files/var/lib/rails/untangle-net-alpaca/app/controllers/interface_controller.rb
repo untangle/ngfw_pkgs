@@ -22,10 +22,6 @@ class InterfaceController < ApplicationController
 
     @interfaces.sort! { |a,b| a.index <=> b.index }
 
-
-    @interfaces_vendors = Hash.new
-    networkManager.interfaces.each { |intf| @interfaces_vendors[intf.os_name] = intf.vendor }
-
     if ! Interface.valid_dhcp_server?
       flash[:warning] = "DHCP Server is configured on a subnet that is not on any configured interfaces."
     end

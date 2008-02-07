@@ -189,7 +189,7 @@ class ApplicationController < ActionController::Base
       ## Load the manager for this os, this will complete all of the initialization at
       klazz = Alpaca::Components.const_get( component )
 
-      logger.debug( "Found the class #{klazz}" )
+      ## logger.debug( "Found the class #{klazz}" )
       @components << klazz.new( self, params, session, request )
     end
   end

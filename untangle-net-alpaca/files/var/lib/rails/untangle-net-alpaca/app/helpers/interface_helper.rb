@@ -164,7 +164,7 @@ EOF
         row_id = options[:row_id]
         view = options[:view]
 <<EOF
-        #{view.hidden_field_tag( "natIndicides[]", row_id )}
+        #{view.hidden_field_tag( "natIndices[]", row_id )}
         #{view.text_field( "natNetworks", options[:row_id], { :value => "#{nat.ip} / #{nat.netmask}" } )}
 EOF
       end

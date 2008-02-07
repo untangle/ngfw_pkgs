@@ -66,7 +66,7 @@ class Alpaca::OS::ManagerBase
     ## Delete any duplicate entries
     hooks.delete_if { |handle| (( handle.manager == manager ) && ( handle.index == index )) }
 
-    logger.debug( "Registering the hook: #{index}, #{manager}, '#{hook_name}' #{self.class.name}" )
+    ## logger.debug( "Registering the hook: #{index}, #{manager}, '#{hook_name}' #{self.class.name}" )
     
     ## Append the method handle
     hooks << MethodHandler.new( index, manager, method_id )
