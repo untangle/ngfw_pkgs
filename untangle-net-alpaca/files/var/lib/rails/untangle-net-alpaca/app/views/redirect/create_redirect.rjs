@@ -2,3 +2,4 @@ page.insert_html( :top, "redirect-list", :partial => "application/table_row", :o
 page.sortable( "redirect-list", { :scroll => "'redirect-list-list-table'", :constraint => "vertical" } )
 page << "TableManager.updateRowStyles( 'redirect-list' );"
 page << "RuleBuilder.edit( '" + @row_id + "', 'redirect-list', true );"
+page << "enableSaveObservers();"

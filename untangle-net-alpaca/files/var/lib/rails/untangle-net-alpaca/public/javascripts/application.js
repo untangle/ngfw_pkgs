@@ -204,11 +204,8 @@ function enableSave() {
     $('Save').removeClassName('disabled');
 }
 
-function enableSaveOnChange() {
-    myFabTabs.setWarn(false);
-    if (! $('Save')) { return false; }
-    $('Save').disabled = true;
-    $('Save').addClassName('disabled');
+
+function enableSaveObservers() {
     var inputs = $$('input');
     var selects = $$('select');
     for (var i=0; i<inputs.length; i++) {
@@ -221,6 +218,14 @@ function enableSaveOnChange() {
     }
 }
 
+
+function enableSaveOnChange() {
+    myFabTabs.setWarn(false);
+    if (! $('Save')) { return false; }
+    $('Save').disabled = true;
+    $('Save').addClassName('disabled');
+    enableSaveObservers();
+}
 
 function init() {
 

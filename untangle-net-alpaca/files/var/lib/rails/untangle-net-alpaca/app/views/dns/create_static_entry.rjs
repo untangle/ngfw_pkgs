@@ -1,3 +1,4 @@
 page.insert_html( :top, "dns-static-entry-list", :partial => "application/table_row", :object => @static_entry, :locals => { :table_model => static_entry_table_model, :data => Alpaca::Table::Data.new( "dns-static-entry-list", [ @static_entry ] ) } )
 
 page << "TableManager.updateRowStyles( 'dns-static-entry-list' );"
+page << "enableSaveObservers();"
