@@ -39,7 +39,7 @@ h1{font-size: 108%; }
     opacity: 1.0;
     z-index: 20000;
     position: absolute;
-    top: 5; left: 0;
+    top: 5px; left: 0;
     margin-top: 6px;
     display: none;
 }
