@@ -256,23 +256,27 @@ function init() {
     enableSaveOnChange();
 }
 	
-	function toggleGuide() {
-
-	if ($('guide').getStyle('display') == 'block')	{
-		$('guide').setStyle({
-		  display: 'none'
-		});
-	} else {
-		$('guide').setStyle({
-		  display: 'block'
-		});
-	}
-		//alert('here')
-	}
+function toggleGuide() {
+    
+    if ($('guide').getStyle('display') == 'block')	{
+	$('guide').setStyle({
+		display: 'none'
+		    });
+    } else {
+	$('guide').setStyle({
+		display: 'block'
+		    });
+    }
+    //alert('here')
+}
 
 var myFabTabs;
-	
-Event.observe(window,'load',function(){ myFabTabs = new Fabtabs('tabs'); },false);
+
+function onLoadFabTabs() {
+    myFabTabs = new Fabtabs('tabs');
+}
+
+Event.observe(window,'load',onLoadFabTabs(),false);
 
 Event.observe(window,'load', init, false);
 //Event.observe(window,'load',handleResize,false);
