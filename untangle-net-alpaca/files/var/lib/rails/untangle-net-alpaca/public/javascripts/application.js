@@ -27,6 +27,10 @@ Fabtabs.prototype = {
 
 	this.getInitialTab();
 	this.menu.each(this.setupTab.bind(this));
+	this.warn = false;
+    },
+    setWarn : function(value) {
+	this.warn = value;
     },
     setupTab : function(elm) {
 	Event.observe(elm,'click',this.activate.bindAsEventListener(this),false)
@@ -34,6 +38,11 @@ Fabtabs.prototype = {
     activate :  function(ev) {
 	var elm = Event.findElement(ev, "a");
 	Event.stop(ev);
+	if (this.warn) {
+	    if ( ! confirm("Warning: leaving this page will lose unsaved changes!") ) {
+		return false;
+	    }
+	}
 	this.show(elm);
 	this.menu.without(elm).each(this.hide.bind(this));
     },
@@ -186,6 +195,33 @@ function focusBlurTextFields() {
     }
 }
 
+function enableSave() {
+    if (! $('Save')) { return false; }
+    if ($('Save').disabled) {
+	myFabTabs.setWarn(true);
+    }
+    $('Save').disabled = false;
+    $('Save').removeClassName('disabled');
+}
+
+function enableSaveOnChange() {
+    myFabTabs.setWarn(false);
+    if (! $('Save')) { return false; }
+    $('Save').disabled = true;
+    $('Save').addClassName('disabled');
+    var inputs = $$('input');
+    var selects = $$('select');
+    for (var i=0; i<inputs.length; i++) {
+	inputs[i].observe('change', enableSave);
+	inputs[i].observe('keypress', enableSave);
+    }
+    for (var i=0; i<selects.length; i++) {
+	selects[i].observe('change', enableSave);
+	selects[i].observe('keypress', enableSave);
+    }
+}
+
+
 function init() {
 
     //	Event.observe(window,'click', toggleGuide, false);
@@ -223,6 +259,7 @@ function init() {
 	}
     }
     focusBlurTextFields();
+    enableSaveOnChange();
 }
 	
 	function toggleGuide() {
@@ -238,8 +275,10 @@ function init() {
 	}
 		//alert('here')
 	}
+
+var myFabTabs;
 	
-Event.observe(window,'load',function(){ new Fabtabs('tabs'); },false);
+Event.observe(window,'load',function(){ myFabTabs = new Fabtabs('tabs'); },false);
 
 Event.observe(window,'load', init, false);
 //Event.observe(window,'load',handleResize,false);
