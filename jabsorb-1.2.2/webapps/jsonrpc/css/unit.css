@@ -1,0 +1,89 @@
+.test_table {
+    width: 100%;
+    border:1px solid navy;
+    margin:5px;
+    border-collapse:collapse;
+    background-color:white;
+}
+
+.innerTests_table {
+    width:auto;
+    border:1px solid navy;
+    border-collapse:collapse;
+    background-color:white;
+    margin-left:20px;
+    margin-top:0;
+    margin-bottom:0;
+    margin-right:20px;
+}
+
+
+.test_th {
+    border:1px solid navy;
+    color: navy;
+    background-color: #ffffcc;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: left;
+    padding: 2px;
+}
+
+.test_td {
+    border-right:1px solid navy;
+    border-left:1px solid navy;
+    vertical-align: text-top;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    text-align: left;
+    padding: 2px;
+}
+
+.innerTests_td {
+    padding:0;
+    margin-left:20px;
+}
+
+.code_heading {
+    height: 16px;
+}
+
+.result_heading {
+    height: 16px;
+    overflow: hidden;
+}
+
+.pass_heading {
+    height: 16px;
+}
+
+.code_cell {
+}
+
+.result_cell {
+}
+
+.pass_cell {
+    color: #009933;
+}
+
+.fail_cell {
+    color: #f00;
+}
+
+.tr0
+{
+    background-color:#efefef;
+}
+.tr1
+{
+    background-color:white;
+}
+
+.expandcollapse
+{
+  font-size:12px;
+  font-weight:bold;
+  color:navy;
+  cursor:pointer;
+}

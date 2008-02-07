@@ -1,0 +1,311 @@
+<!--
+
+  jabsorb - a Java to JavaScript Advanced Object Request Broker
+  http://jabsorb.org
+
+  Copyright 2007 The jabsorb team
+
+  based on original code from
+  JSON-RPC-Java - a JSON-RPC to Java Bridge with dynamic invocation
+
+  Copyright Metaparadigm Pte. Ltd. 2004.
+  Michael Clark <michael@metaparadigm.com>
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Ant build script for Apache Ant version 1.6.5 or 1.7
+
+-->
+
+<project name="jabsorb" default="dist" basedir=".">
+ 
+  <!-- necessary to be called for every other target, even clean! -->
+  <target name="init">
+    <tstamp />
+    <property file="build.properties" />
+
+    <path id="default-classpath" description="This is used for building the jar">
+      <fileset dir="${lib}">
+        <include name="*.jar"/>
+      </fileset>
+      <fileset dir="${lib-ext}">
+        <include name="*.jar"/>
+      </fileset>
+    </path>
+    <path id="jarClasspath" description="This is used for targets that use the jar">
+      <path refid="default-classpath" />
+      <pathelement path="${app-jar}" />
+    </path>
+  </target>
+  
+  <target name="init-build">
+    <mkdir dir="${build}" />
+  </target>
+
+  <target name="compile" depends="init,init-build" description="Compiles the source into the build directory">
+    <javac debug="true" source="1.4" srcdir="${src}" destdir="${build}">
+      <classpath refid="default-classpath" />
+    </javac>
+  </target>
+
+  <target name="dist" depends="compile,compress-web-content,init-build" description="Puts the compiled source into a jar">
+    <jar destfile="${app-jar}" basedir="${build}" excludes="*~" />
+  </target>
+
+  <target name="test.init" depends="init" description="Makes directories needed for the test jsps">
+    <tstamp />
+    <mkdir dir="${test.lib}" />
+    <mkdir dir="${test.classes}" />
+  </target>
+
+  <target name="compile.test" depends="test.init, dist, init" description="Compiles the testing classes">
+    <javac debug="true" source="1.4" srcdir="${test.src}" destdir="${test.classes}">
+      <classpath>
+      	<path refid="jarClasspath" />
+        <fileset dir="${lib-test}">
+          <include name="*.jar"/>
+        </fileset>
+     </classpath>
+    </javac>
+  </target>
+
+  <target name="test.dist" depends="compile.test,dist,init" description="Creates a war with the test files">
+    <copy file="${app-jar}" tofile="${webinf}/lib/${app-jar}" />
+    <copy file="${test.src}/org/jabsorb/test/Hello.java" tofile="${webapp}/Hello.java.txt" />
+    <copy file="${webapp}/hello.jsp" tofile="${webapp}/hello.jsp.txt" />
+    <copy file="${webapp}/hello.js" tofile="${webapp}/hello.js.txt" />
+    <copy file="${test.src}/org/jabsorb/test/Test.java" tofile="${webapp}/Test.java.txt" />
+    <copy file="${webapp}/test.jsp" tofile="${webapp}/test.jsp.txt" />
+    <copy file="${webapp}/test.js" tofile="${webapp}/test.js.txt" />
+    <copy file="${webapp}/jsonrpc.js" tofile="${webapp}/jsonrpc.js.txt" />
+    <copy file="${webinf}/web.xml" tofile="${webinf}/web.xml.out" />
+    <copy todir="${test.lib}">
+      <fileset dir="./lib">
+        <include name="**/*.jar" />
+      </fileset>
+    </copy>
+    <jar destfile="${test.lib}/rsrc.jar" basedir="${test.rsrc}" excludes="*~" />
+    <war destfile="${app-war}" basedir="${webapp}" excludes="**/*~,WEB-INF/web.xml*" webxml="${webapp}/WEB-INF/web.xml" />
+  </target>
+
+  <target name="docs" depends="init" description="Creates the javadoc api documentation">
+    <echo message="Making docs to ${webapp}/docs" />
+    <javadoc source="1.4" sourcepath="${src}"
+             destdir="${webapp}/docs"
+             public="true"
+             nodeprecated="true"
+             windowtitle="${app} ${version} API"
+             Header="&lt;b&gt;&lt;a href=&quot;http://jabsorb.org&quot;&gt;${app} ${version}&lt;/a&gt;&lt;/b&gt;">
+      <classpath>
+        <path refid="default-classpath" />
+        <pathelement path="${app-jar}" />
+      </classpath>
+
+      <package name="org.jabsorb.*" />
+      <package name="org.json.*" />
+
+      <!-- note that the jdk source code is referenced here so that javadoc will be generated from
+          interface class methods when none is specified in the implementation -->
+
+      <sourcepath path="/j2sdk1.4.2_13/src"/>
+      <link href="http://java.sun.com/j2se/1.4.2/docs/api/"/>
+      <link href="http://java.sun.com/j2ee/1.4/docs/api/"/>
+      <link href="http://www.slf4j.org/api/"/>
+
+      <!-- link href="http://java.sun.com/j2se/1.4.2/docs/api/" / -->
+      <!-- link href="http://java.sun.com/products/servlet/2.2/javadoc/" / -->
+      <doctitle><![CDATA[<h1>${app} ${version} API Documentation</h1>]]></doctitle>
+      <bottom><![CDATA[<i>Copyright &#169; 2007 The jabsorb team.</i>]]></bottom>
+    </javadoc>
+  </target>
+
+  <target name="installpath.check" depends="init" description="Checks that the webapp installpath is present">
+    <available file="${installpath}" type="dir" property="installpath.present"/>
+    <fail message="Please set installpath in build.properties to your web container's webapp directory" unless="installpath.present"/>
+  </target>
+
+  <target name="install" depends="test.dist, installpath.check, init" description="Installs the war to the webapp container directory">
+    <copy file="${app-war}" todir="${installpath}" />
+  </target>
+
+  <target name="uninstall" depends="init, installpath.check" description="Uninstalls the war from the webapp container directory">
+    <delete file="${installpath}/${app-war}" />
+    <delete dir="${installpath}/${app-prefix}/" />
+  </target>
+
+  <target name="clean" depends="init" description="Cleans all files produced by ant">
+    <delete file="${app-war}" />
+    <delete file="${app-jar}" />
+    <delete file="${webapp}/WEB-INF/web.xml.out" />
+    <delete file="${webapp}/WEB-INF/web.xml.generated" />
+    <delete file="${webapp}/Test.java.txt" />
+    <delete file="${webapp}/test.jsp.txt" />
+    <delete file="${webapp}/test.js.txt" />
+    <delete file="${webapp}/Hello.java.txt" />
+    <delete file="${webapp}/hello.jsp.txt" />
+    <delete file="${webapp}/hello.js.txt" />
+    <delete file="${webapp}/jsonrpc.js.txt" />
+    
+    <delete file="${webapp}/jsonrpc.js.gz" />
+    <delete file="${webapp}/jsonrpc-min.js" />
+    <delete file="${webapp}/jsonrpc-min.js.gz" />
+
+    <delete>
+      <fileset dir="." defaultexcludes="no">
+        <include name="**/*~" />
+      </fileset>
+    </delete>
+    <delete includeEmptyDirs="true" quiet="false" failonerror="false">
+      <fileset dir="${build}" />
+      <fileset dir="${webapp}/docs" />
+      <fileset dir="${test.lib}" />
+      <fileset dir="${test.classes}" />
+    </delete>
+    
+    <echo message="Done with clean!" />
+  </target>
+
+  <!-- targets to make building of release distribution files easier -->
+
+  <!-- like clean, but only deletes files not essential for a release bundle -->
+  <target name="release-prep-clean" depends="init" description="Cleans all files (not needed in a release) produced by ant">
+<!--
+    <delete file="${app-war}" />
+    <delete file="${app-jar}" />
+-->
+    <delete file="${webapp}/WEB-INF/web.xml.out" />
+    <delete file="${webapp}/WEB-INF/web.xml.generated" />
+    <delete file="${webapp}/Test.java.txt" />
+    <delete file="${webapp}/test.jsp.txt" />
+    <delete file="${webapp}/test.js.txt" />
+    <delete file="${webapp}/Hello.java.txt" />
+    <delete file="${webapp}/hello.jsp.txt" />
+    <delete file="${webapp}/hello.js.txt" />
+    <delete file="${webapp}/jsonrpc.js.txt" />
+
+<!--
+    <delete file="${webapp}/jsonrpc.js.gz" />
+    <delete file="${webapp}/jsonrpc-min.js" />
+    <delete file="${webapp}/jsonrpc-min.js.gz" />
+-->
+
+    <delete>
+      <fileset dir="." defaultexcludes="no">
+        <include name="**/*~" />
+      </fileset>
+    </delete>
+    <delete includeEmptyDirs="true" quiet="false" failonerror="false">
+      <fileset dir="${build}" />
+<!--      <fileset dir="${webapp}/docs" /> -->
+      <fileset dir="${test.lib}" />
+      <fileset dir="${test.classes}" />
+    </delete>
+    <echo message="Done with release-prep-clean!" />
+  </target>
+
+  <!-- create minified and gzipped versions of jsonrpc.js -->
+  <target name="compress-web-content" depends="init">
+  
+    <!-- Create minimized version with the yui compressor 
+         see http://www.julienlecomte.net/yuicompressor/ -->
+
+    <echo>Creating jsonrpc-min.js from jsonrpc.js using the YUI compressor.</echo>
+    <java jar="lib-ant/yuicompressor-2.2.5.jar" fork="true" failonerror="true">
+      <arg value="-o"/>
+      <arg value="${webapp}/jsonrpc-min.js"/>
+      <arg value="${webapp}/jsonrpc.js"/>
+    </java>
+
+    <!-- create .gz versions - some web/app servers (such as jetty) can
+         automatically scan for gzipped static content with
+         a .gz extensions -->
+
+    <gzip destfile="${webapp}/jsonrpc.js.gz" src="${webapp}/jsonrpc.js"/>
+    <gzip destfile="${webapp}/jsonrpc-min.js.gz" src="${webapp}/jsonrpc-min.js"/>
+  </target>
+
+  <target name="cleanrelease" depends="init" description="clean up release build files">
+    <delete file="${release}/${app-prefix}-src.zip"/>
+    <delete file="${release}/${app-prefix}-src.tar.gz"/>
+    <delete file="${release}/${app-prefix}-full.zip"/>
+    <delete file="${release}/${app-prefix}-full.tar.gz"/>
+    <delete file="${release}/${app-prefix}-minimal.zip"/>
+    <delete file="${release}/${app-prefix}-minimal.tar.gz"/>
+    <delete file="${release}/${app-prefix}-javadoc.zip"/>
+    <delete file="${release}/${app-prefix}-javadoc.tar.gz"/>
+  </target>
+
+  <target name="release" depends="init,cleanrelease,clean,release-src,docs,test.dist,release-prep-clean"
+          description="make complete release distributions for unix and windows">
+
+    <!-- build FULL release which contains the completely built javadoc, war and .jar
+         along with the source code -->
+
+    <zip destfile="${release}/${app-prefix}-full.zip">
+      <zipfileset dir="." prefix="${app-prefix}"
+          excludes="*.zip,*.tar.gz,*.iml,*.ipr,*.iws,**/.svn/**"/>
+    </zip>
+    <tar destfile="${release}/${app-prefix}-full.tar">
+      <tarfileset dir="." prefix="${app-prefix}"
+          excludes="*.zip,*.tar.gz,*.iml,*.ipr,*.iws,**/.svn/**"/>
+    </tar>
+    <gzip destfile="${release}/${app-prefix}-full.tar.gz" src="${release}/${app-prefix}-full.tar"/>
+    <delete file="${release}/${app-prefix}-full.tar"/>
+
+    <!-- build the minimal release which just has the .jar and the .js needed -->
+    <zip destfile="${release}/${app-prefix}-minimal.zip">
+      <zipfileset dir="." prefix="${app-prefix}">
+        <include name="${app-jar}"/>
+      </zipfileset>
+      <zipfileset dir="${webapp}" prefix="${app-prefix}">
+        <include name="jsonrpc*.js*"/>
+      </zipfileset>
+    </zip>
+    <tar destfile="${release}/${app-prefix}-minimal.tar">
+      <tarfileset dir="." prefix="${app-prefix}">
+        <include name="${app-jar}"/>
+      </tarfileset>
+      <tarfileset dir="${webapp}" prefix="${app-prefix}">
+        <include name="jsonrpc*.js*"/>
+      </tarfileset>
+    </tar>
+    <gzip destfile="${release}/${app-prefix}-minimal.tar.gz" src="${release}/${app-prefix}-minimal.tar"/>
+    <delete file="${release}/${app-prefix}-minimal.tar"/>
+
+    <!-- build a javadoc only download -->
+    <zip destfile="${release}/${app-prefix}-javadoc.zip">
+      <zipfileset dir="${webapp}/docs" prefix="javadoc/${app-prefix}"/>
+    </zip>
+    <tar destfile="${release}/${app-prefix}-javadoc.tar">
+      <tarfileset dir="${webapp}/docs" prefix="javadoc/${app-prefix}"/>
+    </tar>
+    <gzip destfile="${release}/${app-prefix}-javadoc.tar.gz" src="${release}/${app-prefix}-javadoc.tar"/>
+    <delete file="${release}/${app-prefix}-javadoc.tar"/>
+
+  </target>
+
+  <!-- create src release -->
+  <target name="release-src">
+    <zip destfile="${release}/${app-prefix}-src.zip">
+      <zipfileset dir="." prefix="${app-prefix}"
+          excludes="*.zip,*.tar.gz,*.iml,*.ipr,*.iws,**/.svn/**"/>
+    </zip>
+    <tar destfile="${release}/${app-prefix}-src.tar">
+      <tarfileset dir="." prefix="${app-prefix}"
+          excludes="*.zip,*.tar.gz,*.iml,*.ipr,*.iws,**/.svn/**"/>
+    </tar>
+    <gzip destfile="${release}/${app-prefix}-src.tar.gz" src="${release}/${app-prefix}-src.tar"/>
+    <delete file="${release}/${app-prefix}-src.tar"/>
+  </target>
+
+</project>
