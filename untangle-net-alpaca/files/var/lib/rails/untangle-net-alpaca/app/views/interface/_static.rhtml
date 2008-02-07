@@ -34,7 +34,9 @@
       <%= hidden_field( "static", "dns_2", { :value => "" } ) %>
     <% end %>
 
+  <% if ! @interface.wan %>
     <% list_id = "nat-policy-list-static" %>
     <%= render( :partial => "nat_policies" , :object => static.nat_policies,
                 :locals => { :list_id => list_id } ) %>
+  <% end %>
 </div>
