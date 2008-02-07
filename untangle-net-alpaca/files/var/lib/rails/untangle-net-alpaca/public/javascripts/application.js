@@ -1,288 +1,6 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
-//Fabtabulous!
-//http://www.tetlaw.id.au/view/blog/fabtabulous-simple-tabs-using-prototype/
-// CC share and share alike
-//http://creativecommons.org/licenses/by-sa/2.5/
-
-var Fabtabs = Class.create();
-Fabtabs.prototype = {
-    initialize : function(element) {
-	this.element = $(element);
-	var options = Object.extend({}, arguments[1] || {});
-	this.menu = $A(this.element.getElementsByTagName('a'));
-	//this.menu = $A(this.element.getElementsByTagName('li'));
-
-	this.getInitialTab();
-	this.menu.each(this.setupTab.bind(this));
-	this.warn = false;
-    },
-    setWarn : function(value) {
-	this.warn = value;
-    },
-    setupTab : function(elm) {
-	Event.observe(elm,'click',this.activate.bindAsEventListener(this),false)
-    },
-    activate :  function(ev) {
-	var elm = Event.findElement(ev, "a");
-	Event.stop(ev);
-	if (this.warn) {
-	    if ( ! confirm("Warning: leaving this page will lose unsaved changes!") ) {
-		return false;
-	    }
-	}
-	this.show(elm);
-	this.menu.without(elm).each(this.hide.bind(this));
-    },
-    hide : function(elm) {
-	$(elm).removeClassName('active-tab');
-	var ancestors = $(elm).ancestors();
-	ancestors[0].removeClassName('active-tab');
-    },
-    show : function(elm) {
-	var up = new Ajax.Updater($('main-content'), $(elm).href, { evalScripts: true });
-        this.highlight(elm);
-    },
-    highlight : function(elm) {
-	$(elm).addClassName('active-tab');
-	var ancestors = $(elm).ancestors();
-	ancestors[0].addClassName('active-tab');
-    },
-    //tabID : function(elm) {
-    //return elm.href.match(/#(\w.+)/)[1];
-    //},
-    getInitialTab : function() {
-    	if(document.location.href.match(/(\w.+)/)) {
-    	    var loc = RegExp.$1;
-    	    var elm = this.menu.find(function(value) {
-		    var href = value.href.match(/(\w.+)/)[1];
-		    href = href.replace(/\/list/,"")
-		    href = href.replace(/\/manage/,"")
-		    return loc.substring(href.length, 0) == href;
-		    //return value.href.match(/(\w.+)/)[1] == loc; 
-		});
-    	    if (elm) {
-	        this.highlight(elm);
-		return elm
-	    }
-	}
-	//$(this.menu.first()).addClassName('active-tab');
-	//var ancestors = $(this.menu.first()).ancestors();
-	//ancestors[1].addClassName('active-tab');
-	return this.menu.first();
-    }
-}
-
-var handleResize = function () {
-	var footerTop = '800px';
-	var contentHeight = '800px';
-	var bodyWidth = '100%';
-	/*
-	if (window.innerHeight !== undefined) {
-	    footerTop = (window.innerHeight - 80).toString() + 'px';
-	    bodyHeight = (window.innerHeight - 154).toString() + 'px';
-	    bodyWidth = (window.innerWidth - 35).toString() + 'px';
-	    contentHeight = (window.innerHeight - 29).toString() + 'px';
-	} else {
-	    footerTop = (document.documentElement.clientHeight - 80).toString() + 'px';
-	    bodyHeight =  (document.documentElement.clientHeight - 154).toString() + 'px';
-	    bodyWidth = (document.documentElement.clientWidth - 35).toString() + 'px';
-	    contentHeight =  (document.documentElement.clientHeight - 29).toString() + 'px';
-	}
-	*/
-	if (window.innerHeight !== undefined) {
-	    bodyHeight = $('main-content-body').getHeight();
-	    windowHeight = (window.innerHeight - $('main-menu').getHeight() - 126).toString() + 'px';
-	    if (windowHeight > bodyHeight) {
-		bodyHeight = windowHeight;
-	    }
-
-	    contentHeight = bodyHeight;
-	    bodyWidth = (window.innerWidth - 50).toString() + 'px';
-	    //	    contentHeight = (window.innerHeight - $('main-menu').getHeight() - 1).toString() + 'px';
-		//footerTop = (window.innerHeight - 50).toString() + 'px';
-	} else {
-	    //footerTop = (document.documentElement.clientHeight - 120).toString() + 'px';
-	    bodyHeight =  (document.documentElement.clientHeight - $('main-menu').getHeight() - 127).toString() + 'px';
-	    bodyWidth = (document.documentElement.clientWidth - 50).toString() + 'px';
-	    contentHeight =  (document.documentElement.clientHeight - $('main-menu').getHeight()).toString() + 'px';
-	    
-	}
-	
-	/*
-	var emc = $('main-content');
-	if (emc) {
-	   emc.setStyle( { height: contentHeight } );
-	   emc.setStyle( { width: bodyWidth } );
-	}
-	var emcf = $('main-content-footer');
-	if (emcf) {
-	//   emcf.setStyle( { top: footerTop } );
-	}
-	var emcb = $('main-content-body');
-	if (emcb) {
-	//	alert(bodyHeight)
-	   emcb.setStyle( { height: bodyHeight } );
-	   emcb.setStyle( { width: bodyWidth } );
-	}
-	*/
-	
-    }
-	function showAdvancedMenu(event) {
-	    //var element = Event.element(event);
-	    if ($('advanced-dropdown')){
-		$('advanced-dropdown').addClassName('shown');
-	    }
-	}
-	function hideAdvancedMenu(event) {
-	    //var element = Event.element(event);
-	    if ($('advanced-dropdown')){
-		$('advanced-dropdown').removeClassName('shown');
-	    }
-	}
-	function highlightMenuItem(event) {
-		var element = Event.element(event);
-		
-		while (element != document.body && element.nodeName.toLowerCase() != 'li') {
-			element = element.parentNode;
-		}
-		if (element.nodeName.toLowerCase() != 'li') {
-			return null;
-		}
-		
-		element.addClassName('highlight');
-	}
-	function unhighlightMenuItem(event) {
-		
-		var element = Event.element(event);
-		while (element != document.body && element.nodeName.toLowerCase() != 'li') {
-			element = element.parentNode;
-		}
-		if (element.nodeName.toLowerCase() != 'li') {
-			return null;
-		}
-		element.removeClassName('highlight');	
-		
-	}
-
-function focusTableField(event) {
-    var element = Event.element(event);
-    element.addClassName('focus');
-}
-
-function blurTableField(event) {
-    var element = Event.element(event);
-    element.removeClassName('focus');
-}
-
-function focusBlurTextFields() {
-    var textfields = $$('input.textfield');
-    for(var i=0; i<textfields.length; i++) {
-	textfields[i].observe('focus', focusTableField);
-	textfields[i].observe('blur', blurTableField); 
-    }
-}
-
-function enableSave() {
-    if (! $('Save')) { return false; }
-    if ($('Save').disabled) {
-	myFabTabs.setWarn(true);
-    }
-    $('Save').disabled = false;
-    $('Save').removeClassName('disabled');
-}
-
-
-function enableSaveObservers() {
-    var inputs = $$('input');
-    var selects = $$('select');
-    for (var i=0; i<inputs.length; i++) {
-	inputs[i].observe('change', enableSave);
-	inputs[i].observe('keypress', enableSave);
-    }
-    for (var i=0; i<selects.length; i++) {
-	selects[i].observe('change', enableSave);
-	selects[i].observe('keypress', enableSave);
-    }
-}
-
-
-function enableSaveOnChange() {
-    myFabTabs.setWarn(false);
-    if (! $('Save')) { return false; }
-    $('Save').disabled = true;
-    $('Save').addClassName('disabled');
-    enableSaveObservers();
-}
-
-function init() {
-
-    //	Event.observe(window,'click', toggleGuide, false);
-    
-    
-    //run resize on font-size change
-    if( window.getComputedStyle ) {
-	lastSize = window.getComputedStyle(document.documentElement,null).fontSize;
-	setInterval(function () {
-		var sz = window.getComputedStyle(document.documentElement,null).fontSize;
-		if( sz != lastSize ) {
-		    //do whatever fixes you wanted
-		   // handleResize();
-		    lastSize = sz;
-		}
-	    },1000);
-    } else {
-	//do the IE hackaround
-    }
-
-
-
-    if ($('advanced-menu')) {
-	$('advanced-menu').observe('mouseover', showAdvancedMenu);
-	$('advanced-menu').observe('mouseout', hideAdvancedMenu);
-	
-	var menuChildren = $('advanced-menu').getElementsByTagName('li');
-	for(var i=0; i<menuChildren.length; i++) {
-	    var thisMenuItem = menuChildren[i];
-	    if (thisMenuItem.nodeName.toLowerCase() == "li") {
-		Element.extend(thisMenuItem);
-		thisMenuItem.observe('mouseover', highlightMenuItem);
-		thisMenuItem.observe('mouseout', unhighlightMenuItem);
-	    }
-	}
-    }
-    focusBlurTextFields();
-    enableSaveOnChange();
-}
-	
-function toggleGuide() {
-    
-    if ($('guide').getStyle('display') == 'block')	{
-	$('guide').setStyle({
-		display: 'none'
-		    });
-    } else {
-	$('guide').setStyle({
-		display: 'block'
-		    });
-    }
-    //alert('here')
-}
-
-var myFabTabs;
-
-function onLoadFabTabs() {
-    myFabTabs = new Fabtabs('tabs');
-}
-
-Event.observe(window,'load',onLoadFabTabs(),false);
-
-Event.observe(window,'load', init, false);
-//Event.observe(window,'load',handleResize,false);
-//Event.observe(window,'resize',handleResize,false);
-//Event.observe(window,'scroll',handleResize,false);
-
 
 var Network =
 {
@@ -514,3 +232,283 @@ var FirewallManager =
     
     fields : new Array( "filters", "description", "target", "enabled" )
 }
+
+//Fabtabulous!
+//http://www.tetlaw.id.au/view/blog/fabtabulous-simple-tabs-using-prototype/
+// CC share and share alike
+//http://creativecommons.org/licenses/by-sa/2.5/
+
+var Fabtabs = Class.create();
+Fabtabs.prototype = {
+    initialize : function(element) {
+	this.element = $(element);
+	if ( this.element ) {
+	    var options = Object.extend({}, arguments[1] || {});
+	    this.menu = $A(this.element.getElementsByTagName('a'));
+	    //this.menu = $A(this.element.getElementsByTagName('li'));
+	    
+	    this.getInitialTab();
+	    this.activate.bind(this);
+	    this.menu.each(this.setupTab.bind(this));
+	    this.warn = false;
+	}
+    },
+    activate :  function(ev) {
+	var elm = Event.findElement(ev, "a");
+	Event.stop(ev);
+	if (this.warn) {
+	    if ( ! confirm("Warning: leaving this page will lose unsaved changes!") ) {
+		return false;
+	    }
+	}
+	this.show(elm);
+	this.menu.without(elm).each(this.hide.bind(this));
+    },
+    setWarn : function(value) {
+	this.warn = value;
+    },
+    setupTab : function(elm) {
+	Event.observe(elm,'click',this.activate.bindAsEventListener(this),false)
+    },
+    hide : function(elm) {
+	$(elm).removeClassName('active-tab');
+	var ancestors = $(elm).ancestors();
+	ancestors[0].removeClassName('active-tab');
+    },
+    show : function(elm) {
+	var up = new Ajax.Updater($('main-content'), $(elm).href, { evalScripts: true });
+        this.highlight(elm);
+    },
+    highlight : function(elm) {
+	$(elm).addClassName('active-tab');
+	var ancestors = $(elm).ancestors();
+	ancestors[0].addClassName('active-tab');
+    },
+    //tabID : function(elm) {
+    //return elm.href.match(/#(\w.+)/)[1];
+    //},
+    getInitialTab : function() {
+    	if(document.location.href.match(/(\w.+)/)) {
+    	    var loc = RegExp.$1;
+    	    var elm = this.menu.find(function(value) {
+		    var href = value.href.match(/(\w.+)/)[1];
+		    href = href.replace(/\/list/,"")
+		    href = href.replace(/\/manage/,"")
+		    return loc.substring(href.length, 0) == href;
+		    //return value.href.match(/(\w.+)/)[1] == loc; 
+		});
+    	    if (elm) {
+	        this.highlight(elm);
+		return elm
+	    }
+	}
+	//$(this.menu.first()).addClassName('active-tab');
+	//var ancestors = $(this.menu.first()).ancestors();
+	//ancestors[1].addClassName('active-tab');
+	return this.menu.first();
+    }
+}
+
+var handleResize = function () {
+	var footerTop = '800px';
+	var contentHeight = '800px';
+	var bodyWidth = '100%';
+	/*
+	if (window.innerHeight !== undefined) {
+	    footerTop = (window.innerHeight - 80).toString() + 'px';
+	    bodyHeight = (window.innerHeight - 154).toString() + 'px';
+	    bodyWidth = (window.innerWidth - 35).toString() + 'px';
+	    contentHeight = (window.innerHeight - 29).toString() + 'px';
+	} else {
+	    footerTop = (document.documentElement.clientHeight - 80).toString() + 'px';
+	    bodyHeight =  (document.documentElement.clientHeight - 154).toString() + 'px';
+	    bodyWidth = (document.documentElement.clientWidth - 35).toString() + 'px';
+	    contentHeight =  (document.documentElement.clientHeight - 29).toString() + 'px';
+	}
+	*/
+	if (window.innerHeight !== undefined) {
+	    bodyHeight = $('main-content-body').getHeight();
+	    windowHeight = (window.innerHeight - $('main-menu').getHeight() - 126).toString() + 'px';
+	    if (windowHeight > bodyHeight) {
+		bodyHeight = windowHeight;
+	    }
+
+	    contentHeight = bodyHeight;
+	    bodyWidth = (window.innerWidth - 50).toString() + 'px';
+	    //	    contentHeight = (window.innerHeight - $('main-menu').getHeight() - 1).toString() + 'px';
+		//footerTop = (window.innerHeight - 50).toString() + 'px';
+	} else {
+	    //footerTop = (document.documentElement.clientHeight - 120).toString() + 'px';
+	    bodyHeight =  (document.documentElement.clientHeight - $('main-menu').getHeight() - 127).toString() + 'px';
+	    bodyWidth = (document.documentElement.clientWidth - 50).toString() + 'px';
+	    contentHeight =  (document.documentElement.clientHeight - $('main-menu').getHeight()).toString() + 'px';
+	    
+	}
+	
+	/*
+	var emc = $('main-content');
+	if (emc) {
+	   emc.setStyle( { height: contentHeight } );
+	   emc.setStyle( { width: bodyWidth } );
+	}
+	var emcf = $('main-content-footer');
+	if (emcf) {
+	//   emcf.setStyle( { top: footerTop } );
+	}
+	var emcb = $('main-content-body');
+	if (emcb) {
+	//	alert(bodyHeight)
+	   emcb.setStyle( { height: bodyHeight } );
+	   emcb.setStyle( { width: bodyWidth } );
+	}
+	*/
+	
+    }
+	var showAdvancedMenu = function(event) {
+	    //var element = Event.element(event);
+	    if ($('advanced-dropdown')){
+		$('advanced-dropdown').addClassName('shown');
+	    }
+	}
+	var hideAdvancedMenu = function(event) {
+	    //var element = Event.element(event);
+	    if ($('advanced-dropdown')){
+		$('advanced-dropdown').removeClassName('shown');
+	    }
+	}
+	var highlightMenuItem = function(event) {
+		var element = Event.element(event);
+		
+		while (element != document.body && element.nodeName.toLowerCase() != 'li') {
+			element = element.parentNode;
+		}
+		if (element.nodeName.toLowerCase() != 'li') {
+			return null;
+		}
+		
+		element.addClassName('highlight');
+	}
+	var unhighlightMenuItem = function(event) {
+		
+		var element = Event.element(event);
+		while (element != document.body && element.nodeName.toLowerCase() != 'li') {
+			element = element.parentNode;
+		}
+		if (element.nodeName.toLowerCase() != 'li') {
+			return null;
+		}
+		element.removeClassName('highlight');	
+		
+	}
+
+var focusTableField = function(event) {
+    var element = Event.element(event);
+    element.addClassName('focus');
+}
+
+var blurTableField = function(event) {
+    var element = Event.element(event);
+    element.removeClassName('focus');
+}
+
+var focusBlurTextFields = function() {
+    var textfields = $$('input.textfield');
+    for(var i=0; i<textfields.length; i++) {
+	textfields[i].observe('focus', focusTableField);
+	textfields[i].observe('blur', blurTableField); 
+    }
+}
+
+var myFabTabs;
+
+var enableSave = function() {
+    if (! $('Save')) { return false; }
+    if ($('Save').disabled) {
+	myFabTabs.setWarn(true);
+    }
+    $('Save').disabled = false;
+    $('Save').removeClassName('disabled');
+}
+
+
+var enableSaveObservers = function() {
+    var inputs = $$('input');
+    var selects = $$('select');
+    for (var i=0; i<inputs.length; i++) {
+	inputs[i].observe('change', enableSave);
+	inputs[i].observe('keypress', enableSave);
+    }
+    for (var i=0; i<selects.length; i++) {
+	selects[i].observe('change', enableSave);
+	selects[i].observe('keypress', enableSave);
+    }
+}
+
+
+var enableSaveOnChange = function() {
+    myFabTabs.setWarn(false);
+    if (! $('Save')) { return false; }
+    $('Save').disabled = true;
+    $('Save').addClassName('disabled');
+    enableSaveObservers();
+}
+
+var init = function() {
+    myFabTabs = new Fabtabs('tabs');
+
+    //	Event.observe(window,'click', toggleGuide, false);
+    
+    
+    //run resize on font-size change
+    if( window.getComputedStyle ) {
+	lastSize = window.getComputedStyle(document.documentElement,null).fontSize;
+	setInterval(function () {
+		var sz = window.getComputedStyle(document.documentElement,null).fontSize;
+		if( sz != lastSize ) {
+		    //do whatever fixes you wanted
+		   // handleResize();
+		    lastSize = sz;
+		}
+	    },1000);
+    } else {
+	//do the IE hackaround
+    }
+
+
+
+    if ($('advanced-menu')) {
+	$('advanced-menu').observe('mouseover', showAdvancedMenu);
+	$('advanced-menu').observe('mouseout', hideAdvancedMenu);
+	
+	var menuChildren = $('advanced-menu').getElementsByTagName('li');
+	for(var i=0; i<menuChildren.length; i++) {
+	    var thisMenuItem = menuChildren[i];
+	    if (thisMenuItem.nodeName.toLowerCase() == "li") {
+		Element.extend(thisMenuItem);
+		thisMenuItem.observe('mouseover', highlightMenuItem);
+		thisMenuItem.observe('mouseout', unhighlightMenuItem);
+	    }
+	}
+    }
+    focusBlurTextFields();
+    enableSaveOnChange();
+}
+	
+var toggleGuide = function() {
+    
+    if ($('guide').getStyle('display') == 'block')	{
+	$('guide').setStyle({
+		display: 'none'
+		    });
+    } else {
+	$('guide').setStyle({
+		display: 'block'
+		    });
+    }
+    //alert('here')
+}
+
+Event.observe(window,'load', init, false);
+//Event.observe(window,'load',handleResize,false);
+//Event.observe(window,'resize',handleResize,false);
+//Event.observe(window,'scroll',handleResize,false);

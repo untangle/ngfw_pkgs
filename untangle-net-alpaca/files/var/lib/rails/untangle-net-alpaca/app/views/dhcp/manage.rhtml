@@ -39,41 +39,6 @@
       </ul>
     </fieldset>
 <div id="static-entries"></div>
-<%= "" 
-# javascript_tag("
-# // create the Data Store
-# var store = new Ext.data.Store({
-#     // load using HTTP
-#     url: '" + url_for( :action => "static_entries_json" ) + "',
-#     // the return will be XML, so lets set up a reader
-#     reader: new Ext.data.JsonReader()
-# });
-
-# var actionButtons = function(data, cell, dataRecord, rowIndex, colIndex, dataStore) {
-# 	return '<p onclick=\"var r = grid.getView().getRow('+rowIndex+'); r.innerHTML = \\\'\\\';\">Delete</p>';
-# }
-
-# // create the grid
-# var grid = new Ext.grid.EditorGridPanel({
-#     store: store,
-#     renderTo:'static-entries',
-#     columns: [
-# 	{id:'mac_address', header: \"MAC Address\", width: 200, sortable: true, dataIndex: 'mac_address', editor: new Ext.form.TextField({ name: 'mac_address', allowBlank: false})},
-#         {header: \"IP Address\", width: 200, sortable: true, dataIndex: 'ip_address', editor: new Ext.form.TextField({allowBlank: false})},
-#         {header: \"Description\", width: 200, sortable: true, dataIndex: 'description', editor: new Ext.form.TextField({allowBlank: true})},
-#         {header: \"Delete\", width: 120, renderer: actionButtons}
-# 	],
-#         width:540,
-#         height:200,
-# 	title:'Static DHCP Entries',
-# 	stripeRows: true,
-# 	clicksToEdit: 1
-# });
-# Ext.onReady(function(){
-#   store.load();
-# });
-# ")
-%>
   <%= build_table( Alpaca::Table::Data.new( "dhcp-static-entry-list", @static_entries ), static_entry_table_model) %> 
     
     <%= build_table( Alpaca::Table::Data.new( "dhcp-dynamic-entry-list", @dynamic_entries ), dynamic_entry_table_model) %>
