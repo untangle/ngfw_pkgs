@@ -25,7 +25,9 @@ logout = nil
 
 
 	
-  <li id="advanced<%if ( advanced.children? ) %>-menu<% end %>"><%= link_to_remote advanced.name.t, :update => "main-content", :url => advanced.action %></a>
+  <li id="advanced<%if ( advanced.children? ) %>-menu<% end %>"><%= link_to advanced.name.t, advanced.action 
+#link_to_remote advanced.name.t, :update => "main-content", :url => advanced.action 
+%></a>
    <% if ( advanced.children? ) %>
     <ul id="advanced-dropdown">
      <% for menu_item in advanced.children %>
