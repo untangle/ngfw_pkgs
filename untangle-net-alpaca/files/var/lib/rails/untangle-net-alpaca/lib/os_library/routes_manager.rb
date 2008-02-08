@@ -13,7 +13,12 @@ class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
       items = entry.split
       g = ActiveRoute.new
       g.target = items[0]
-      g.netmask = items[2]
+      if OSLibrary::NetworkManager::NETMASK_TO_CIDR.key?( items[2] )
+        g.netmask = OSLibrary::NetworkManager::NETMASK_TO_CIDR[items[2]] + " (" + items[2] + ")"
+      else
+        g.netmask = items[2]
+      end
+      
       g.gateway = items[1]
       g.description = ""
       g.interface = items[7]

@@ -29,9 +29,10 @@ class RouteController < ApplicationController
         if (params[:name][network_route_row].nil?)
           params[:name][network_route_row] = ""
         end
-          
+        
+        netmask = OSLibrary::NetworkManager::parseNetmask( params[:netmask][network_route_row] )
         network_route_obj = NetworkRoute.new
-        network_route_obj.update_attributes( :target => params[:target][network_route_row], :netmask => params[:netmask][network_route_row], :gateway => params[:gateway][network_route_row], :name => params[:name][network_route_row] )
+        network_route_obj.update_attributes( :target => params[:target][network_route_row], :netmask => netmask, :gateway => params[:gateway][network_route_row], :name => params[:name][network_route_row] )
         network_route_obj.save
       end
     end

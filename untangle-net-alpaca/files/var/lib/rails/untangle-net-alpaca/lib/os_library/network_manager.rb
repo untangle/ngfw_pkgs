@@ -5,14 +5,6 @@ class OSLibrary::NetworkManager < Alpaca::OS::ManagerBase
   
 #Removed above a class A for overly broad netmask
   CIDR = {
-#    "0"  => "0.0.0.0",
-#    "1"  => "128.0.0.0",
-#    "2"  => "192.0.0.0",
-#    "3"  => "224.0.0.0",
-#    "4"  => "240.0.0.0",
-#    "5"  => "248.0.0.0",
-#    "6"  => "252.0.0.0",
-#    "7"  => "254.0.0.0",
     "8"  => "255.0.0.0",
     "9"  => "255.128.0.0",
     "10" => "255.192.0.0",
@@ -39,7 +31,19 @@ class OSLibrary::NetworkManager < Alpaca::OS::ManagerBase
     "31" => "255.255.255.254",
     "32" => "255.255.255.255"
   }
-  
+
+  FULL_CIDR = CIDR.merge( {
+    "0"  => "0.0.0.0",
+    "1"  => "128.0.0.0",
+    "2"  => "192.0.0.0",
+    "3"  => "224.0.0.0",
+    "4"  => "240.0.0.0",
+    "5"  => "248.0.0.0",
+    "6"  => "252.0.0.0",
+    "7"  => "254.0.0.0" }  )
+
+  NETMASK_TO_CIDR = FULL_CIDR.invert()
+
   ## Parse a netmask and convert to a netmask string.
   ## 24 -> 255.255.255.0
   ## 255.255.255.0 -> 255.255.255.0
