@@ -1,6 +1,6 @@
 class StaticArp < ActiveRecord::Base
   def validate
-    unless hw_addr && ApplicationHelper.ip_address?( hw_addr )
+    unless hw_addr && ApplicationHelper.mac?( hw_addr )
       errors.add( :hw_addr, "is missing or invalid" )
     end
     
