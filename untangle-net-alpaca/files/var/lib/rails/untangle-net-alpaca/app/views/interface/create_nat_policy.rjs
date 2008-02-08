@@ -1,4 +1,4 @@
 page.insert_html( :top, @list_id, :partial => "application/table_row", :object => @natPolicy, :locals => { :table_model => nat_table_model, :data => Alpaca::Table::Data.new( @list_id, [ @natPolicy ] ) } )
 #page.insert_html( :bottom, @list_id, :partial => "nat_policy", :object => @natPolicy )
 page.sortable( @list_id, {:scroll => "'#{@list_id}-list-table'", :constraint => "vertical"} )
-page << "enableSaveObservers();"
+page << "enableSave();"

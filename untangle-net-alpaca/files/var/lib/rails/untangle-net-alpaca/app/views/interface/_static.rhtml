@@ -22,8 +22,7 @@
           <%= text_field( "static", "dns_2" ) %>
         </li>
         <li>
-          <label for="static[mtu]"><%= "MTU:".t %></label>
-          <%= @interface.current_mtu %>
+          <label for="static[mtu]"><%= "MTU (#{@interface.current_mtu}):".t %></label>
           <%= text_field( "static", "mtu", { :class => "number" } ) %>
         </li>
         <li>

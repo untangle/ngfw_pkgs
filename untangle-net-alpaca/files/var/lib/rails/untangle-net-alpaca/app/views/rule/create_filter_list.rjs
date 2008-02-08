@@ -1,2 +1,2 @@
 page.replace_html( "rule-dialog", :partial => "filter_list" )
-page << "enableSaveObservers();"
+page << "enableSave();"

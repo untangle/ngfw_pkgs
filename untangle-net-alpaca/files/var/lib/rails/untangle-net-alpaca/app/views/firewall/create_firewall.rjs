@@ -2,4 +2,4 @@ page.insert_html( :top, "firewall-list", :partial => "application/table_row", :o
 page.sortable( "firewall-list", {:scroll => "'firewall-list-list-table'", :constraint => "vertical"} )
 page << "TableManager.updateRowStyles( 'firewall-list' );"
 page << "RuleBuilder.edit( '" + @row_id + "', 'firewall-list', true );"
-page << "enableSaveObservers();"
+page << "enableSave();"

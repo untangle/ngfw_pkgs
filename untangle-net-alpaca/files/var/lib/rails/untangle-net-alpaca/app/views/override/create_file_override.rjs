@@ -1,4 +1,4 @@
 page.insert_html( :top, "override-list", :partial => "application/table_row", :object => @file_override, :locals => { :table_model => override_table_model, :data => Alpaca::Table::Data.new( "override-list", [ @file_override ] ) } )
 page.sortable( "override-list", {:scroll => "'override-list-list-table'", :constraint => "vertical"})
 page << "TableManager.updateRowStyles( 'override-list' );"
-page << "enableSaveObservers();"
+page << "enableSave();"
