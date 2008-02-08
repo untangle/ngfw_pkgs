@@ -90,8 +90,20 @@ var Interface =
         
 	    if ( children[i].id == configType ) {
 		Element.show( children[i] );
+		var d = children[i].descendants();
+		for (var j = 0; j < d.length; j++ ) {
+		    if (d[j].tagName.toUpperCase() == "INPUT" || d[j].tagName.toUpperCase() == "SELECT") {
+			d[j].disabled = false;
+		    }
+		}
 	    } else {
 		Element.hide( children[i] );
+var d = children[i].descendants();
+		for (var j = 0; j < d.length; j++ ) {
+		    if (d[j].tagName.toUpperCase() == "INPUT" || d[j].tagName.toUpperCase() == "SELECT") {
+			d[j].disabled = true;
+		    }
+		}
 	    }
 	}
     }
