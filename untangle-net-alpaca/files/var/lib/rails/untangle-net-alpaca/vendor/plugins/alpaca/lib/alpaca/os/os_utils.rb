@@ -1,4 +1,4 @@
-# -*-ruby-*-
+#
 # $HeadURL$
 # Copyright (c) 2007-2008 Untangle, Inc.
 #
