@@ -90,7 +90,7 @@ EOF
       end
       columns << Alpaca::Table::DeleteColumn.new
       
-      super( table_name="IP Networks", css_class="ip_networks", header_css_class="ip_networks_header", row_css_class="ip_networks_row", columns )
+      super( table_name="IP Address Aliases", css_class="ip_networks", header_css_class="ip_networks_header", row_css_class="ip_networks_row", columns )
     end
 
     def row_id( row )

@@ -120,9 +120,10 @@ module InterfaceHelper
   end
 
   class IPNetworkTableModel < Alpaca::Table::TableModel
-    include Singleton
-
-    def initialize
+    def initialize( table_name="IP Addresses" )
+      if table_name.nil?
+        table_name = "IP Addresses"
+      end
       columns = []
       columns << Alpaca::Table::Column.new( "ip-network", "Address and Netmask".t ) do |ip_network,options|
         row_id = options[:row_id]
@@ -135,7 +136,7 @@ EOF
 
       columns << Alpaca::Table::DeleteColumn.new
       
-      super(  "IP Addresses", "ip_networks", "", "ip_network", columns )
+      super(  table_name, "ip_networks", "", "ip_network", columns )
     end
 
     def row_id( row )
@@ -151,8 +152,8 @@ EOF
     end
   end
 
-  def ip_network_table_model
-    IPNetworkTableModel.instance
+  def ip_network_table_model(table_name="IP Addresses")
+    IPNetworkTableModel.new(table_name)
   end
 
   class NatTableModel < Alpaca::Table::TableModel

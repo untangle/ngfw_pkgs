@@ -1,1 +1,8 @@
-<%= build_table( Alpaca::Table::Data.new( list_id, ip_networks ), ip_network_table_model) %>
+<%
+begin
+  table_name
+rescue NameError
+  table_name = "IP Addresses"
+end
+%>
+<%= build_table( Alpaca::Table::Data.new( list_id, ip_networks ), ip_network_table_model( table_name ) ) %>

@@ -59,7 +59,7 @@ end
     <% list_id = "ip-network-list-dynamic" %>
     
     <%= render( :partial => "ip_networks" , :object => dynamic.ip_networks, 
-                :locals => { :list_id => list_id } ) %>
+                :locals => { :list_id => list_id, :table_name => "IP Address Aliases".t } ) %>
 <!--    
     <%= submit_tag "Cancel".t %>
     <%= submit_tag "Save".t %>
