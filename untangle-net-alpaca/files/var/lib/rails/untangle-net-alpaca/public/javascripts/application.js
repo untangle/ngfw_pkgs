@@ -311,7 +311,7 @@ Fabtabs.prototype = {
 		    var href = value.href.match(/(\w.+)/)[1];
 		    href = href.replace(/\/list/,"")
 		    href = href.replace(/\/manage/,"")
-		    return loc.substring(href.length, 0) == href;
+		    return loc.substring(0, href.length) == href;
 		    //return value.href.match(/(\w.+)/)[1] == loc; 
 		});
     	    if (elm) {
