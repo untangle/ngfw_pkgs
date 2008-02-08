@@ -28,6 +28,10 @@ class HostnameController < ApplicationController
     ddclient_settings = DdclientSettings.find( :first )
     ddclient_settings = DdclientSettings.new if ddclient_settings.nil?
     ddclient_settings.update_attributes( params[:ddclient_settings] )
+    if ( params[:ddclient_settings][:hostname].nil?() ||
+         params[:ddclient_settings][:hostname].length() == 0 )
+      ddclient_settings.hostname = hostname_settings.hostname
+    end
     ddclient_settings.save
 
     os["hostname_manager"].commit

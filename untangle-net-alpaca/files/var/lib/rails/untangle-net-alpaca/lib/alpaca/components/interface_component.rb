@@ -185,7 +185,7 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
       
       ## Setup all of the parameters about the interface
       n_intf.name, n_intf.index, n_intf.os_name = name, index += 1, os_name
-      n_intf.mac_address, n_intf.bus, n_intf.vendor = a.mac_address, a.bus, a.vendor
+      n_intf.mac_address, n_intf.bus, n_intf.vendor = a.mac_address, a.bus_id, a.vendor
       n_intf.wan = ( n_intf.index == 1 )
       
       ## Set the configuration

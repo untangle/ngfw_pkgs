@@ -33,12 +33,12 @@ select( "ddclient_settings", "service", services ) %>
           <label for="ddclient_settings[password]"><%= "Password:".t %></label>
           <%= password_field_tag( "ddclient_settings[password]", @ddclient_settings.hidden_password, :autocomplete=>"off" ) %>
         </li>
-
+      <% if @config_level >= AlpacaSettings::Level::Advanced %>
         <li title="<%= "Separated by commas".t %>">
           <label for="ddclient_settings_hostname"><%= "Hostname(s):".t %></label>
           <%= text_field( "ddclient_settings", "hostname" ) %>
         </li>
-
+      <% end %>
       </ul>
     </fieldset>
     </div></div>
