@@ -47,17 +47,17 @@ EOF
       columns << Alpaca::Table::Column.new( "hostname", "IP Address".t ) do |system_arp,options|
         view = options[:view]
 <<EOF
-        #{system_arp.ip_address}
+      <span>  #{system_arp.ip_address} </span>
 EOF
       end
 
       
       columns << Alpaca::Table::Column.new( "hw_addr", "MAC Address".t ) do |system_arp,options| 
-        "&nbsp;" + options[:view].mac_address_link( system_arp.mac_address )
+       options[:view].mac_address_link( system_arp.mac_address )
       end
 
       columns << Alpaca::Table::Column.new( "interface", "Interface".t ) do |system_arp,options| 
-        "&nbsp;" + system_arp.interface
+        "<span>" + system_arp.interface + "</span>"
       end
             
       super(  "Active ARP Entries", "arps", "", "system_arp read-only", columns )

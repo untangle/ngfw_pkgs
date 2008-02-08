@@ -31,6 +31,11 @@ div.refresh-button
  }
 
 
+
+div.list-table-container div.list-table div.list-table-column {
+	overflow: hidden;
+}
+
 /* ----------------------------- Tables ----------------------------- */
 
 div.list-table-container
@@ -85,22 +90,25 @@ div.list-table-container ul.header div.first
 
 div.list-table-container div.list-table li
 { 
-  overflow: auto;
-  line-height: 25px;
-  height: 28px;
+/*  overflow: auto; */
+/*  line-height: 25px;
+  height: 28px; */
+	line-height: 25px;
   padding-bottom: 0px;
   }
 
 div.list-table-container div.list-table li div
 { 
-  overflow: auto;
-  height: 28px;
+/*  overflow: auto;
+  height: 28px; */
+	height: 25px;
+	overflow: visible;
   }
 
 /* Format the data itself */
 div.list-table-container div.list-table li div
 { 
-  text-indent: 10px;
+/*  text-indent: 10px; */
  }
 
 div.list-table-container div.list-table
@@ -190,23 +198,48 @@ div.table-label div.table-title
  }
 
 /* ------------------ Style the input fields ------------------ */
-div.list-table-container div.list-table input.textfield
-{ 
-  background-color: transparent;
-  border: 0px;
-  width: 95%;
-  margin-top: 5px;
-  }
+
 
 div.list-table-container div.list-table input
 { 
-  margin-top: 5px;
- }
+  margin-top: 5px; 
+}
+
+div.list-table-container div.list-table input.textfield
+{ 
+	
+  color: #333;
+  background-color: transparent;
+  border: 0px;
+  height: 14px;
+  text-indent: 8px;
+  padding-top: 4px;
+  width: 96%;
+  margin: 2px 4px 2px 2px;
+
+}
+
+/* ie7 & ie6 hack */
+html* div.list-table-container div.list-table input.textfield
+{
+	color: #333;
+	width: 90%;
+	height: 14px;
+	margin: 2px 0px 2px 2px;
+	padding: 4px 0 0 8px;
+	text-indent: 0;
+}
+div.list-table-container div.list-table input.focus, div.list-table-container div.list-table input.textfield.focus {
+  border: 1px inset #ccc !important;
+  background-color: #ecf8f9 !important;
+}
+
+
 
 div.list-table-container ul.header div.drag, div.drag
 {
-  width: 30px;
-  padding-top: 4px;
+width: 30px;
+/*  padding-top: 4px; */
   text-indent: 7px;
  }
 
@@ -302,12 +335,17 @@ div.list-table-container.dhcp-static-entry div.ip-address
 
 div.list-table-container.dhcp-static-entry div.description
 { 
-  width: 250px;
+  width: 265px;
   }
+div.list-table-container.dhcp-static-entry div.minus
+{
+	/* width: 65px; */
+	width: 50px;
+}
 
 div.list-table-container.dhcp-static-entry div.list-table input.textfield
 { 
-  width: 85%;
+  /* width: 85%; */
   }
 
 /* ------------------ Style the DHCP Dynamic Entries ---------------- */
@@ -369,6 +407,12 @@ div.list-table-container.dhcp-dynamic-entry div.action
 
 
 /* ------------------ Style the DNS Static Entries ---------------- */
+
+
+div.list-table-container div.list-table ul li{
+/*	border: 1px solid red; */
+}
+
 div.list-table-container.dns-static-entry
 { 
   width: 634px;
@@ -388,21 +432,31 @@ div.list-table-container.dns-static-entry div.list-table
 div.list-table-container.dns-static-entry div.ip-address
 { 
   width: 140px;
+	/* width: 22%; */
   }
 
 div.list-table-container.dns-static-entry div.hostname
 { 
   width: 190px;
+	/*width: 29%; */
   }
 
 div.list-table-container.dns-static-entry div.description
 { 
-  width: 200px;
+/*  width: 200px; */
+	width: 235px; 
+	/*width: 37%; */
   }
+div.list-table-container.dns-static-entry div.minus
+{ 
+
+	width: 50px;
+	/* width: 10%; */
+}
 
 div.list-table-container.dns-static-entry div.list-table input.textfield
 { 
-  width: 80%;
+/*  width: 80%; */
   }
 
 /* ------------------ Style the DNS Dynamic Entries ---------------- */
@@ -492,6 +546,7 @@ div.table-label.firewalls
 div.list-table-container.firewalls div.enabled
 { 
   width: 50px;
+text-align: center;
   }
 
 div.list-table-container.firewalls div.target
@@ -534,6 +589,7 @@ div.table-label.system-firewalls
 div.list-table-container.system-firewalls div.enabled
 { 
   width: 50px;
+	text-align: center;
   }
 
 div.list-table-container.system-firewalls div.description
@@ -541,6 +597,12 @@ div.list-table-container.system-firewalls div.description
   /*width: 600px; */
 	/* width: auto; */
 	width: 565px;
+  }
+div.list-table-container.system-firewalls span
+{ 
+  font-size: 85%;
+	color: #333;
+	padding-left: 10px;
   }
 
 /* ------------------- File Overrides -------------------- */
@@ -560,21 +622,25 @@ div.table-label.overrides
 div.list-table-container.overrides div.enabled
 { 
   width: 43px;
+	text-align: center;
   }
 
 div.list-table-container.overrides div.writable
 { 
   width: 68px;
+	text-align: center;
   }
 
 div.list-table-container.overrides div.path
 { 
-  width: 330px;
+/*  width: 330px; */
+	width: 420px;
   }
 
 div.list-table-container.overrides div.minus
 { 
-  width: 70px;
+/*  width: 70px; */
+	width: 50px;
   }
 /* ------------------- Subscriptions -------------------- */
 div.list-table-container.subscriptions
@@ -590,11 +656,14 @@ div.table-label.subscriptions
 div.list-table-container.subscriptions div.enabled
 { 
   width: 40px;
+	text-align: center;
   }
 
 div.list-table-container.subscriptions div.subscribe
 { 
   width: 85px;
+	text-align: center;
+
   }
 
 div.list-table-container.subscriptions div.description
@@ -627,12 +696,18 @@ div.table-label.system-subscriptions
 div.list-table-container.system-subscriptions div.enabled
 { 
   width: 50px;
+text-align: center;
   }
 div.list-table-container.system-subscriptions div.description
 { 
   width: 550px;
   }
-
+div.list-table-container.system-subscriptions span
+{ 
+font-size: 85%;
+color: #333;
+padding-left: 10px;
+  }
 /* ------------------- Static ARP -------------------- */
 div.list-table-container.arps
 {
@@ -650,22 +725,31 @@ div.list-table-container.arps div.hostname
  }
 div.list-table-container.arps div.hw_addr
 { 
-  width: 240px;
+/*  width: 240px;*/
+	width: 315px;
  }
 div.list-table-container.arps div.interface
 { 
-  width: 95px;
+  width: 50px;
  }
 div.list-table-container.arps div.minus
 { 
-  width: 70px;
+ /* width: 70px;*/
+	width: 50px;
  }
 
 div.list-table-container.arps #active_arps-list-table #active_arps .list-table-column {
-	font-size: 85%; /* 11px equiv */
-	color: #666;
+/*	font-size: 85%; 
+	color: #666; */
 }
-
+div.list-table-container.arps #active_arps-list-table #active_arps .list-table-column span {
+	font-size: 85%; 
+	color: #333;
+	padding-left: 10px;
+}
+div.list-table-container.arps #active_arps-list-table #active_arps .list-table-column a {
+	padding-left: 10px;
+}
 /* ------------------- Static Routes -------------------- */
 div.list-table-container.routes
 {
@@ -680,7 +764,7 @@ div.table-label.routes
 div.list-table-container.routes div input.textfield
 { 
  /* width: 136px; */
-	width: 123px;
+	/* width: 123px; */
  }
 div.list-table-container.routes div.target
 {
@@ -700,12 +784,13 @@ div.list-table-container.routes div.gateway
 div.list-table-container.routes div.name
 { 
 	/*  width: 150px; */
-		width: 135px;
+	/*	width: 135px; */
+	width: 155px;
  }
 div.list-table-container.routes div.interface
 { 
 	/*  width: 150px; */
-		width: 135px;
+		width: 135px; 
  }
 div.list-table-container.routes div.minus
 { 
@@ -718,6 +803,11 @@ div.list-table-container.routes #active_routes-list-table #active_routes .list-t
 	font-size: 85%; /* 11px equiv */
 	color: #666;
 }
+div.list-table-container.routes span {
+	color: #333;
+	padding-left: 10px;
+}
+
 
 /* ------------------- NAT Policy -------------------- */
 div.list-table-container.nats

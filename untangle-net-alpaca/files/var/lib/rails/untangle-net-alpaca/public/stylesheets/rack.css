@@ -37,7 +37,7 @@ h1{font-size: 108%; }
     width: 1024px;
     background: url(/alpaca/images/guide.png) no-repeat;
     opacity: 1.0;
-    z-index: 20000;
+    z-index: 200000;
     position: absolute;
     top: 5px; left: 0;
     margin-top: 6px;
@@ -138,7 +138,7 @@ div.list-table ul
 /* This leaves the double border in the last item when the items fill the list vertically) */
 div.list-table li, div.list-table ul li, div.list-table ul > li
 {
-  overflow: auto; 
+	overflow: auto; 
   width: 100%;
   float: left;
  }
@@ -551,7 +551,7 @@ li#logout {
  }
 li#advanced a, li#advanced-menu a, li#logout a
 {
-  display: inline-block;
+  display: inline;
   text-decoration: none;
   font-size: 9pt;
   height: 24px;

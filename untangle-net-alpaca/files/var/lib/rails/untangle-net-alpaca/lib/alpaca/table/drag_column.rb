@@ -5,6 +5,6 @@ class Alpaca::Table::DragColumn < Alpaca::Table::Column
 
   def generate_header( options = {} )
     view = options[:view]
-    view.image_tag( "drag.gif" )
+    view.image_tag( "drag.gif", :style => "padding-top:4px;" )
   end
 end

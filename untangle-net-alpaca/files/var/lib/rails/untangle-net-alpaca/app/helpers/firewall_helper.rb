@@ -81,7 +81,7 @@ EOF
 
       
       columns << Alpaca::Table::Column.new( "description", "Description".t ) do |system_firewall,options| 
-        "&nbsp;" + system_firewall.description
+        "<span>" + system_firewall.description + "</span>"
       end
             
       super(  "System Packet Filter Rules", "system-firewalls", "", "system_firewall read-only", columns )

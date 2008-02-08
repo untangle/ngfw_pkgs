@@ -18,12 +18,12 @@ EOF
       end
       
       columns << Alpaca::Table::Column.new( "ip-address", "IP Address" ) do |static_entry,options|
-        "&nbsp;" +
+        "" +
         options[:view].text_field( "ip_address", options[:row_id], { :value => static_entry.ip_address } )
       end
 
       columns << Alpaca::Table::Column.new( "description fill", "Description" ) do |static_entry,options| 
-        "&nbsp;" +
+        "" +
         options[:view].text_field( "description", options[:row_id], { :value => static_entry.description } )
       end
       

@@ -86,7 +86,7 @@ EOF
 
       
       columns << Alpaca::Table::Column.new( "description", "Description".t ) do |system_subscription,options| 
-        "&nbsp;" + system_subscription.description
+        "<span>" + system_subscription.description + "</span>"
       end
             
       super(  "System Bypass Rules".t, "system-subscriptions", "", "system_subscription read-only", columns )

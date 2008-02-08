@@ -53,19 +53,19 @@ EOF
     def initialize
       columns = []
       columns << Alpaca::Table::Column.new( "target", "Target".t ) do |system_route,options| 
-        "&nbsp;" + system_route.target
+        "<span>" + system_route.target + "</span>"
       end
       
       columns << Alpaca::Table::Column.new( "netmask", "Netmask".t ) do |system_route,options| 
-        "&nbsp;" + system_route.netmask
+        "<span>" + system_route.netmask + "</span>"
       end
 
       columns << Alpaca::Table::Column.new( "gateway", "Gateway".t ) do |system_route,options| 
-        "&nbsp;" + system_route.gateway
+        "<span>" + system_route.gateway + "</span>"
       end
 
       columns << Alpaca::Table::Column.new( "interface", "Interface".t ) do |system_route,options| 
-        "&nbsp;" + system_route.interface
+        "<span>" + system_route.interface + "</span>"
       end
             
       super( "Active Routes", "routes", "", "system_route read-only", columns )

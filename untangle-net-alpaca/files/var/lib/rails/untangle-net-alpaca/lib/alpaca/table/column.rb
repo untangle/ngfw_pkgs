@@ -14,6 +14,8 @@ class Alpaca::Table::Column
   
   ## Abstract method, given a row of a data, return the HTML
   ## to fill that row.
+  ## return "&nbsp;" if @generator.nil?
+  
   def generate_column( row, options ={} )
     return "&nbsp;" if @generator.nil?
 

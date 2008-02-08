@@ -6,10 +6,10 @@
     <% @stylesheets.each do |sheet| %>
       <%= stylesheet_link_tag sheet %>
     <% end %>
-     <!--[if lte IE 6]>
+     <!--[if IE]>
        <%= stylesheet_link_tag "ie.css" %>
      <![endif]-->
-     <!--[if lt IE 7]>
+     <!--[if IE]>
        <%= javascript_include_tag "IE7.js" %>
      <![endif]-->
     <%= javascript_include_tag :defaults %>
