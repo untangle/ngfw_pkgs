@@ -723,7 +723,7 @@ form div.dynamic div.first
   margin-left: 195px;
  }
 
-form div.dynamic div.current
+form div#dynamic div.current
 { 
   width: 115px;
   padding: 3px 0 0 15px;

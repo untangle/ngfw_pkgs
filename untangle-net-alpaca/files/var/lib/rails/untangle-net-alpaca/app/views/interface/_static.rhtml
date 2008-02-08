@@ -1,42 +1,60 @@
 <% style = @hide_types.include?( "static" ) ? 'style="display: none"' : nil  %>
 <div id="static" <%= style %>>
-    <% list_id = "ip-network-list-static" %>
-    <%= render( :partial => "ip_networks" , :object => static.ip_networks,
-                :locals => { :list_id => list_id } ) %>
+  <% list_id = "ip-network-list-static" %>
+  <%= render( :partial => "ip_networks" , :object => static.ip_networks,
+              :locals => { :list_id => list_id } ) %>
 
-    <% if interface.wan %>
-      <fieldset>
-        <ul class="text-fields">
-          <li>
-            <label for="static[default_gateway]"><%= "Default Gateway:".t %></label>
-            <%= text_field( "static", "default_gateway" ) %>
-          </li>
+  <% if interface.wan %>
+    <fieldset>
+      <ul class="text-fields">
+        <li>
+          <label for="static[default_gateway]"><%= "Default Gateway:".t %></label>
+          <%= text_field( "static", "default_gateway" ) %>
+        </li>
         
-          <li>
-            <label for="static[dns_1]"><%= "Primary DNS Server:".t %></label>
-            <%= text_field( "static", "dns_1" ) %>
-          </li>
+        <li>
+          <label for="static[dns_1]"><%= "Primary DNS Server:".t %></label>
+          <%= text_field( "static", "dns_1" ) %>
+        </li>
         
-          <li>
-            <label for="static[dns_2]"><%= "Secondary DNS Server:".t %></label>
-            <%= text_field( "static", "dns_2" ) %>
-          </li>
+        <li>
+          <label for="static[dns_2]"><%= "Secondary DNS Server:".t %></label>
+          <%= text_field( "static", "dns_2" ) %>
+        </li>
         <li>
           <label for="static[mtu]"><%= "MTU:".t %></label>
-	  <%= @interface.current_mtu %>
+          <%= @interface.current_mtu %>
           <%= text_field( "static", "mtu", { :class => "number" } ) %>
         </li>
-        </ul>
-      </fieldset>
+        <li>
+          <label for="ethernet_media"><%= "Ethernet Media:".t %></label>
+          <%= ethernet_media_select( interface ) %>
+        </li>
+      </ul>
+    </fieldset>
     <% else %>
       <%= hidden_field( "static", "default_gateway", { :value => "" } ) %>
       <%= hidden_field( "static", "dns_1", { :value => "" } ) %>
       <%= hidden_field( "static", "dns_2", { :value => "" } ) %>
     <% end %>
 
-  <% if ! @interface.wan %>
-    <% list_id = "nat-policy-list-static" %>
-    <%= render( :partial => "nat_policies" , :object => static.nat_policies,
+    <% if ! @interface.wan %>
+      <% list_id = "nat-policy-list-static" %>
+      <%= render( :partial => "nat_policies" , :object => static.nat_policies,
                 :locals => { :list_id => list_id } ) %>
-  <% end %>
+
+      <fieldset>
+        <ul class="text-fields">
+          <li>
+            <label for="static[mtu]"><%= "MTU:".t %></label>
+            <%= @interface.current_mtu %>
+            <%= text_field( "static", "mtu", { :class => "number" } ) %>
+          </li>
+          <li>
+            <label for="ethernet_media"><%= "Ethernet Media:".t %></label>
+            <%= ethernet_media_select( interface ) %>
+          </li>
+        </ul>
+      </fieldset>
+    <% end %>
 </div>

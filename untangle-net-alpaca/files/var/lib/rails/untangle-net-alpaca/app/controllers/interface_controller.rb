@@ -108,6 +108,7 @@ class InterfaceController < ApplicationController
 
   def intf_save_director
     return redirect_to( :action => 'list' ) if ( params[:commit] == "Cancel" )
+    
     if params[:config_type] == "static"
       intf_static_save
     elsif params[:config_type] == "dynamic"
@@ -425,6 +426,9 @@ class InterfaceController < ApplicationController
     return redirect_to( :action => 'list' ) if interface_id.nil?
     @interface = Interface.find( interface_id )
     return redirect_to( :action => 'list' ) if @interface.nil?
+
+    ## Update the ethernet media.    
+    @interface.speed, @interface.duplex = InterfaceHelper.get_speed_duplex( params[:ethernet_media] )
     
     success = yield
 

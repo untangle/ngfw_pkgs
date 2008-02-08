@@ -4,6 +4,8 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
   Service = "/etc/init.d/networking"
   InterfacesConfigFile = "/etc/network/interfaces"
   InterfacesStatusFile = "/etc/network/run/ifstate"
+  ## A simple file used to configure the ethernet media on configure network interfaces.
+  MediaConfigurationFile = "/etc/untangle-net-alpaca/ethernet_media"
   NetClassDir = "/sys/class/net"
 
   def get_interfaces_status_file
@@ -41,6 +43,8 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
   def hook_write_files
     interfaces_file = []
     interfaces_file << header
+
+    media_file = []
     
     interfaces = Interface.find( :all )
     interfaces.each do |interface|
@@ -56,6 +60,8 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
       when IntfPppoe
         interfaces_file << pppoe( interface, config )
       end
+
+      media_file << "#{interface.os_name} #{get_media( interface )}"
     end
 
     interfaces_file.push <<EOF
@@ -69,6 +75,8 @@ EOF
     interfaces_file = interfaces_file.delete_if { |p| p.nil? || p.empty? }
 
     os["override_manager"].write_file( InterfacesConfigFile, interfaces_file.join( "\n" ), "\n" )
+
+    os["override_manager"].write_file( MediaConfigurationFile, media_file.join( "\n" ), "\n" )
 
     ## Write the /etc/iftab file, ifrename is not executed
     ## Review : now because we no longer need to remap interfaces
@@ -300,6 +308,21 @@ EOF
     return "Unknown" if ApplicationHelper.null?( vendor )
     return vendor
   end
+
+  def get_media( interface )
+    case "#{interface.speed}-#{interface.duplex}"
+    when "10-full" then return "10-full-duplex" 
+    when "10-half" then return "10-half-duplex" 
+    when "100-full" then return "100-full-duplex" 
+    when "100-half" then return "100-half-duplex"
+    end
+
+    logger.warn( "Unknown media #{interface.speed},#{interface.duplex}" ) unless interface.speed == "auto"
+    
+    ## default.
+    return "auto"
+  end
+                
 
   def header
     <<EOF

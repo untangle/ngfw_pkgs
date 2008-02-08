@@ -13,7 +13,7 @@ end
 pid_file="#{rails_home}/log/mongrel.pid"
 exit unless File.exist?( pid_file )
 pid=`cat #{pid_file}`
-db_file =`sudo lsof -p #{pid} 2>/dev/null | awk ' /database.*\.db$/ { print $9 }'| head -n 1`.strip
+db_file =`lsof -p #{pid} 2>/dev/null | awk ' /database.*\.db$/ { print $9 }'| head -n 1`.strip
 
 exit if db_file.nil? || db_file.empty?
 exit unless File.exist?( db_file )

@@ -1,5 +1,8 @@
 #! /bin/bash
 
+ETHERNET_MEDIA_CONF="/etc/untangle-net-alpaca/ethernet_media"
+SET_LINK_MEDIA_SCRIPT="/usr/share/untangle-net-alpaca/scripts/set-link-media"
+
 debug()
 {
     /bin/echo -e "[DEBUG: `date`] ${*}"
@@ -72,7 +75,30 @@ bridge_delete_all()
 
 DEBUG=/bin/true
 
+set_ethernet_media()
+{
+    local t_nic
+    local t_media
+
+    test -f "${ETHERNET_MEDIA_CONF}" || { 
+        echo "[WARN: `date`] '${ETHERNET_MEDIA_CONF}' doesn't exist" 
+        return 0
+    }
+
+    test -x "${SET_LINK_MEDIA_SCRIPT}" || { 
+        echo "[WARN: `date`] '${SET_LINK_MEDIA_SCRIPT}' doesn't exist" 
+        return 0
+    }
+    
+    cat "${ETHERNET_MEDIA_CONF}" | awk '/^[a-z][^#]*$/ { print }' | while read t_nic t_media ; do 
+        debug "${t_nic}, ${t_media}"
+        ${SET_LINK_MEDIA_SCRIPT} ${t_nic} ${t_media}
+    done
+}
+
 test "${IF_ALPACA_DEBUG}" = "true" && DEBUG=debug
+
+DEBUG=debug
 
 test "$IFACE" != "cleanup" && {
     $DEBUG "Ignoring the interface ${IFACE}"
@@ -92,7 +118,10 @@ $DEBUG "Cleaning up the interface state."
 ## used.
 
 $DEBUG "Flushing interface addresses."
-sudo ip addr flush scope global
+ip addr flush scope global
+
+$DEBUG "Configuring network media."
+set_ethernet_media
 
 bridge_configured || {
     # Determine which bridges need to be removed

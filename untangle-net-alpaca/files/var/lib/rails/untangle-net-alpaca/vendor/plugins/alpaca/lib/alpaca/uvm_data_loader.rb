@@ -344,7 +344,7 @@ class Alpaca::UvmDataLoader
 
       ## Configure the media
       m = EthernetMedia.get_value( row["media"] )
-      m = EhternetMedia::Auto if m.nil?
+      m = EthernetMedia::Auto if m.nil?
       interface.duplex, interface.speed = m.duplex, m.speed
 
       ## Save the MTU just in case
@@ -418,7 +418,7 @@ class Alpaca::UvmDataLoader
 
       ## Configure the media
       m = EthernetMedia.get_value( row["media"] )
-      m = EhternetMedia::Auto if m.nil?
+      m = EthernetMedia::Auto if m.nil?
       interface.duplex, interface.speed = m.duplex, m.speed
 
       ns = row["network_space"]

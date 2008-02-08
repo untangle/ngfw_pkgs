@@ -37,6 +37,15 @@ module InterfaceHelper
   ## An array of the config types that you can bridge with
   BRIDGEABLE_CONFIGTYPES = [ ConfigType::STATIC, ConfigType::DYNAMIC ].freeze
 
+  ## A hash of all of the various ethernet medias
+  ETHERNET_MEDIA = { "autoauto" => { :name => "Auto", :speed => "auto", :duplex => "auto" },
+    "100full" => { :name => "100 Mbps, Full Duplex", :speed => "100", :duplex => "full" },
+    "100half" => { :name => "100 Mbps, Half Duplex", :speed => "100", :duplex => "half" },
+    "10full" => { :name => "10 Mbps, Full Duplex", :speed => "10", :duplex => "full" },
+    "10half" => { :name => "10 Mbps, Half Duplex", :speed => "10", :duplex => "half" } }.freeze
+
+  ETHERNET_MEDIA_ORDER = [ "autoauto", "100full", "100half", "10full", "10half" ]
+
   ## Load the new interfaces and return two arrays.
   ## first the array of new interfaces to delete.
   ## Second is the array of interfaces that should be deleted.
@@ -196,5 +205,20 @@ EOF
     NatTableModel.instance
   end
 
+  def ethernet_media_select( interface )
+    media = "#{interface.speed}#{interface.duplex}"
+    media = "autoauto" if ETHERNET_MEDIA[media].nil?
 
+    ## this is to enforce order, yes it is kind of shady.
+    options = ETHERNET_MEDIA_ORDER.map { |m| [ ETHERNET_MEDIA[m][:name], m ] }
+
+    select_tag( "ethernet_media", options_for_select( options, media ))
+  end
+
+  ## Given a ethernet media string, this will return the speed and duplex setting
+  def self.get_speed_duplex( media )
+    v = ETHERNET_MEDIA[media]
+    v = ETHERNET_MEDIA["autoauto"] if v.nil?
+    [ v[:speed], v[:duplex]]
+  end
 end

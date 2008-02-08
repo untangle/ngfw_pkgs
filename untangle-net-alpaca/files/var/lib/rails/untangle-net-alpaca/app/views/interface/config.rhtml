@@ -3,7 +3,7 @@
     ## Define a few convenience variables
     bridge_locals = { :interface => @interface, :bridge_interfaces => @bridge_interfaces, 
                       :bridge_interface_id => @bridge_interface_id }
-    if (!@interface.wan)
+    unless @interface.wan
        @config_types.delete( [ "pppoe", "pppoe" ] )
     end
   %>
