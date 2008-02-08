@@ -263,6 +263,11 @@ Fabtabs.prototype = {
 	    this.activate.bind(this);
 	    this.menu.each(this.setupTab.bind(this));
 	    this.warn = false;
+	    if ( $('advanced-menu') ) {
+		this.advancedMenu = $A($('advanced-menu').getElementsByTagName('a'));
+		//this.activateAdvanced.bind(this);
+		this.advancedMenu.each(this.setupTab.bind(this));
+	    }
 	}
     },
     activate :  function(ev) {

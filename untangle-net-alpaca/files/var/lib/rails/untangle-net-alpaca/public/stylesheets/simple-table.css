@@ -241,6 +241,7 @@ div.list-table-container ul.header div.drag, div.drag
 width: 30px;
 /*  padding-top: 4px; */
   text-indent: 7px;
+  cursor: move;
  }
 
 /* ------------------ Style the redirect table ---------------- */
