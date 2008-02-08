@@ -7,6 +7,10 @@
           <label for="hostname_settings_hostname"><%= "Hostname:".t %></label>
           <%= text_field( "hostname_settings", "hostname" ) %>
         </li>
+        <li>
+          <label for="dns_server_settings_suffix"><%= "Domain Name Suffix:".t %></label>
+          <%= text_field( "dns_server_settings", "suffix" ) %>
+        </li>
       </ul>
     </fieldset>
   <h2><%= "Dynamic DNS Client Configuration".t %></h2>

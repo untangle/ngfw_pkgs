@@ -10,11 +10,8 @@ class Alpaca::Components::DnsComponent < Alpaca::Component
   private
   def save
     ## Create a new set of settings
-    dns_server_settings = DnsServerSettings.new
+    dns_server_settings = DnsServerSettings.create_default
     
-    dns_server_settings.enabled = true    
-    dns_server_settings.suffix = nil
-
     ## Parse out the suffix from the hostname if it is specified.
     hostname = params[:hostname]
     unless hostname.nil?

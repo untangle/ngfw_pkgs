@@ -11,6 +11,9 @@ class HostnameController < ApplicationController
     @ddclient_settings = DdclientSettings.find( :first )
     @ddclient_settings = DdclientSettings.new if @ddclient_settings.nil?
 
+    ## Dns server settings used to load the search domain.
+    @dns_server_settings = DnsServerSettings.find( :first )
+    @dns_server_settings = DnsServerSettings.create_default if @dns_server_settings.nil?
 
     ## this allows this method to be aliased.
     render :action => 'manage'
@@ -33,6 +36,12 @@ class HostnameController < ApplicationController
       ddclient_settings.hostname = hostname_settings.hostname
     end
     ddclient_settings.save
+
+    dns_server_settings = DnsServerSettings.find( :first )
+    ## It doesn't harm anything to enable the dns server by default.
+    dns_server_settings = DnsServerSettings.create_default( :enabled => true ) if dns_server_settings.nil?
+    dns_server_settings.update_attributes( params[:dns_server_settings] )
+    dns_server_settings.save
 
     os["hostname_manager"].commit
 

@@ -1,7 +1,7 @@
 class DnsController < ApplicationController  
   def manage
     @dns_server_settings = DnsServerSettings.find( :first )
-    @dns_server_settings = DnsServerSettings.new if @dns_server_settings.nil?
+    @dns_server_settings = DnsServerSettings.create_default if @dns_server_settings.nil?
     @static_entries = DnsStaticEntry.find( :all )
 
     ## Retrieve all of the dynamic entries from the DHCP server manager
@@ -18,7 +18,7 @@ class DnsController < ApplicationController
     return redirect_to( :action => "manage" ) if ( params[:commit] != "Save".t )
 
     dns_server_settings = DnsServerSettings.find( :first )
-    dns_server_settings = DnsServerSettings.new if dns_server_settings.nil?
+    dns_server_settings = DnsServerSettings.create_default if dns_server_settings.nil?
     dns_server_settings.update_attributes( params[:dns_server_settings] )
     dns_server_settings.save
     
