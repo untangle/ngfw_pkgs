@@ -887,6 +887,23 @@ input.submit
   height: 21px;
   background: transparent url(../images/button.gif) no-repeat top left;
   }
+
+input.test-connectivity
+{ 
+  width: 88px;
+  height: 21px;
+  line-height: 21px;
+  background-image: url( "../images/test-connectivity-button.gif");
+  background-repeat: no-repeat;
+  text-indent: 2px;
+  color: #333333;
+  font-size: 80%;
+  overflow: visible;
+  text-align: left;
+  cursor: pointer;
+  border: 0;
+ }
+
 input.submit:hover
 { 
  cursor: pointer;

@@ -15,7 +15,7 @@ div.add-button
   cursor: pointer;
  }
 
-div.refresh-button
+div.refresh-button, input.refresh-button
 { 
   width: 74px;
   height: 21px;
@@ -28,6 +28,7 @@ div.refresh-button
   overflow: visible;
   text-align: left;
   cursor: pointer;
+  border: 0;
  }
 
 
