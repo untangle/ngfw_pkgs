@@ -88,8 +88,26 @@ fi
  
 . ${UVM_NETWORKING_CONFIG}
 
+update_tcp_window_scaling()
+{
+    if [ -f /proc/sys/net/ipv4/tcp_window_scaling ] ; then
+        ## If undefined or non-true, disable window scaling
+        val=0
+        
+        if [ "x${TCP_WINDOW_SCALING_EN}" = "xtrue" ]; then
+            echo "[DEBUG:`date`] enabling TCP Window Scaling"
+            val=1
+        fi
+        
+        echo $val > /proc/sys/net/ipv4/tcp_window_scaling
+    fi
+}
+
 uvm_iptables_rules()
 {    
+    # Update the flag for TCP Window scaling.
+    update_tcp_window_scaling
+
     # Do not conntrack entries in that have the NOTRACK bit set.
     ${IPTABLES} -A OUTPUT -t raw -m mark --mark ${MARK_NOTRACK}/${MARK_NOTRACK} -j NOTRACK
 
@@ -151,6 +169,7 @@ uvm_iptables_rules()
     fi
 }
 
+## Create the rules to allow internal access to port 80.
 uvm_packet_filter_standard_internal()
 {
     if [ "${UVM_ALLOW_IN_HTTP}x" != "truex" ]; then return ; fi
@@ -161,6 +180,7 @@ uvm_packet_filter_standard_internal()
         -m mark --mark 2050/2050 -j RETURN
 }
 
+## Allow internal access to port.
 uvm_packet_filter_secure_internal()
 {
     ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 443 \
@@ -169,15 +189,31 @@ uvm_packet_filter_secure_internal()
         -m mark --mark 2050/2050 -j RETURN
 }
 
+## This is a helper function to generate the necessary filter to restrict external access.
+uvm_restrict_access_string()
+{
+    if [ "${UVM_ALLOW_OUT_RES}x" != "truex" ] ; then return ; fi
+    
+    if [ -z "${UVM_ALLOW_OUT_NET}" ] ; then return ; fi
+    
+    if [ -z "${UVM_ALLOW_OUT_MASK}" ] ; then return ; fi
+    
+    echo " -s ${UVM_ALLOW_OUT_NET}/${UVM_ALLOW_OUT_MASK} "
+}
+
+## Allow secure access to the external port,.
 uvm_packet_filter_secure_external()
 {
+    local t_restrict
     if [ "${UVM_ALLOW_OUT_HTTPS}x" != "truex" ] ; then return ; fi
+
+    t_restrict=`uvm_restrict_access_string`
     
     ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports ${HTTPS_EXTERNAL_PORT} \
-        -m mark --mark 2048/2048 -j DNAT --to-destination ${UVM_BIND_ADDRESS}:443
+        ${t_restrict} -m mark --mark 2048/2048 -j DNAT --to-destination ${UVM_BIND_ADDRESS}:443
     
     ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports ${HTTPS_EXTERNAL_PORT} \
-        -m mark --mark 2048/2048 -j RETURN
+        ${t_restrict} -m mark --mark 2048/2048 -j RETURN
 }
 
 uvm_packet_filter_secure_public()
@@ -187,7 +223,11 @@ uvm_packet_filter_secure_public()
     if [ "${HTTPS_PUBLIC_PORT}x" = "x" ] ; then return ; fi
 
     if [ "${HTTPS_PUBLIC_ADDR}x" = "x" ] ; then return ; fi
-    
+
+
+    ## This doesn't use the restricted address because it assumes the upstream
+    ## router is doing the restrictions.
+
     ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} \
         --destination-ports ${HTTPS_PUBLIC_PORT} -j DNAT --to-destination ${UVM_BIND_ADDRESS}:443
     
