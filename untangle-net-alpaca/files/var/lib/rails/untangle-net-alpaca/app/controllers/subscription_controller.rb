@@ -67,6 +67,6 @@ class SubscriptionController < ApplicationController
   end
 
   def scripts
-    RuleHelper::Scripts + [ "subscription_manager" ]
+    RuleHelper::Scripts
   end
 end

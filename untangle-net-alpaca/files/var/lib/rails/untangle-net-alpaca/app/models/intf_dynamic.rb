@@ -27,7 +27,7 @@ class IntfDynamic < ActiveRecord::Base
   protected
   def validate
     errors.add( "Invalid IP Address '#{ip}'" ) unless checkField( ip )
-    unless ApplicationHelper.null?( netmask ) && IPAddr.parse_netmask( netmask ).nil?
+    if !ApplicationHelper.null?( netmask ) && IPAddr.parse_netmask( netmask ).nil?
       errors.add( "Invalid Netmask '#{netmask}'" ) 
     end
     errors.add( "Invalid Gateway '#{default_gateway}'" ) unless checkField( default_gateway )

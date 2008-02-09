@@ -46,7 +46,7 @@ class DhcpController < ApplicationController
     @dhcp_server_settings = DhcpServerSettings.new if @dhcp_server_settings.nil?
     @static_entries = DhcpStaticEntry.find( :all )
 
-    @static_entries = @static_entries.sort_by { |a| IPAddr.new(a.ip_address).to_i }
+    @static_entries = @static_entries.sort_by { |a| IPAddr.parse(a.ip_address).to_i }
     ## Retrieve all of the dynamic entries from the DHCP server manager
     refresh_dynamic_entries
   end

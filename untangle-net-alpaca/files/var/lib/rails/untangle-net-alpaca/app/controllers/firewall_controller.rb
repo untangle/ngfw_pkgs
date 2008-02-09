@@ -69,7 +69,7 @@ class FirewallController < ApplicationController
   end
 
   def scripts
-    RuleHelper::Scripts + [ "firewall_manager" ]
+    RuleHelper::Scripts
   end
 
   private

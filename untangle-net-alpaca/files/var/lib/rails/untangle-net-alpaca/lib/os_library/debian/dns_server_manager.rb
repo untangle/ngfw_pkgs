@@ -302,6 +302,7 @@ EOF
 
     ## Static entries
     DhcpStaticEntry.find( :all ).each do |dse| 
+      next if IPAddr.parse_ip( dse.ip_address ).nil?
       settings << "#{FlagDhcpHost}=#{dse.mac_address},#{dse.ip_address},24h"
     end
 

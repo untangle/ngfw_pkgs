@@ -266,6 +266,8 @@ var RuleBuilder =
                 }
             }
         }
+
+        enableSave();
     }
 };
 

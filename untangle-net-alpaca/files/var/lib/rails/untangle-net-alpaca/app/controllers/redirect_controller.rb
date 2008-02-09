@@ -62,7 +62,7 @@ class RedirectController < ApplicationController
   end
 
   def scripts
-    RuleHelper::Scripts + [ "redirect_manager" ]
+    RuleHelper::Scripts
   end
 
   private
