@@ -9,6 +9,16 @@ debug()
     /bin/echo -e "[DEBUG: `date`] ${*}"
 }
 
+## Return a list of interfaces that are in bridge. 
+bridge_port_list()
+{
+    local l_bridge=$1
+    
+    test -n "${l_bridge}" && {
+        find /sys/class/net/${l_bridge}/brif/ -maxdepth 1 -mindepth 1 -exec basename {} \; 2>/dev/null
+    }
+}
+
 ## Wait bridge check attempts for the bridge to come up(if this is a bridge)
 BRIDGE_CHECK_ATTEMPTS=15
 
@@ -24,7 +34,7 @@ wait_for_bridge()
     for (( t_count = 0 ; t_count < ${BRIDGE_CHECK_ATTEMPTS} ; t_count++ )) {
         t_ready="true"
         ## Iterate all of the interfaces in the bridge
-        for t_interface in `find /sys/class/net/ -path "/sys/class/net/${interface}/brif/*" -printf "%f "`; do
+        for t_interface in `bridge_port_list ${interface}`; do
             ## Skip the files that don't exist.
             test -f /sys/class/net/${t_interface}/brport/state || continue
             

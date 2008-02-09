@@ -24,7 +24,7 @@ bridge_expected()
 ## REVIEW : This doesn't include empty bridges.
 bridge_current()
 {
-    find /sys/class/net/ -path '*/brif*' | \
+    find /sys/class/net/*/brif* 2>/dev/null | \
         sed -e 's|/sys/class/net/\([^/]*\)/brif/\?\(.*\)|\1[\2]|' | \
         sort | md5sum | awk '{ print $1}'
 }
@@ -42,7 +42,7 @@ bridge_configured()
 ## Return a list of all of the bridges
 bridge_list()
 {
-    find /sys/class/net/ -name 'bridge_id' | sed -e 's|/sys/class/net/\([^/]*\)/.*|\1|'
+    find /sys/class/net/*/bridge -name 'bridge_id' 2>/dev/null | sed -e 's|/sys/class/net/\([^/]*\)/.*|\1|'
 }
 
 ## Return a list of interfaces that are in bridge. 
@@ -51,7 +51,7 @@ bridge_port_list()
     local l_bridge=$1
     
     test -n "${l_bridge}" && {
-        find /sys/class/net/${l_bridge}/brif/ -maxdepth 1 -mindepth 1 -exec basename {} \;
+        find /sys/class/net/${l_bridge}/brif/ -maxdepth 1 -mindepth 1 -exec basename {} \; 2>/dev/null
     }
 }
 
