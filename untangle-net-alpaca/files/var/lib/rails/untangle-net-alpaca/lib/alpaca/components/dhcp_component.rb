@@ -50,8 +50,8 @@ class Alpaca::Components::DhcpComponent < Alpaca::Component
     end
 
     unless internal_network.nil?
-      ip = IPAddr.parse( internal_network.ip )
-      netmask = IPAddr.parse( "255.255.255.255/#{internal_network.netmask}" )
+      ip = IPAddr.parse_ip( internal_network.ip )
+      netmask = IPAddr.parse_netmask( internal_network.netmask )
     end
     
     dhcp_server_settings.enabled = false

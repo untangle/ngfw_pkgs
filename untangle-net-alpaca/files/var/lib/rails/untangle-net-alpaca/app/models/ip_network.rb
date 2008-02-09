@@ -40,7 +40,7 @@ class IpNetwork < ActiveRecord::Base
 
   protected
   def validate
-    errors.add( "Invalid IP Address '#{ip}'" ) if IPAddr.parse( "#{ip}/32" ).nil?        
-    errors.add( "Invalid Netmask '#{netmask}'" ) if IPAddr.parse( "1.2.3.4/#{netmask}" ).nil?
+    errors.add( "Invalid IP Address '#{ip}'" ) if IPAddr.parse_ip( ip ).nil?
+    errors.add( "Invalid Netmask '#{netmask}'" ) if IPAddr.parse_netmask( netmask ).nil?
   end
 end

@@ -36,11 +36,14 @@ class NatPolicy < ActiveRecord::Base
   protected
   def validate
     ## All of the strings have to be internationalized.
-    errors.add( "Invalid IP Address '#{ip}'" ) if IPAddr.parse( "#{ip}/32" ).nil?        
-    errors.add( "Invalid Netmask '#{netmask}'" ) if IPAddr.parse( "1.2.3.4/#{netmask}" ).nil?
+    errors.add( "Invalid IP Address '#{ip}'" ) if IPAddr.parse_ip( ip ).nil?
+
+    errors.add( "Invalid Netmask '#{netmask}'" ) if IPAddr.parse_netmask( ip ).nil?
 
     ## Check the new source address.
-    if (( new_source != Automatic ) && ( IPAddr.parse( "#{new_source}/32" ).nil? ))
+    errors.add( "Invalid Source Address '#{new_source}'" ) if ( new_source.nil? || new_source.empty? )
+
+    if (( new_source != Automatic ) && ( IPAddr.parse_ip( new_source ).nil? ))
       errors.add( "Invalid Source Address '#{new_source}'" )
     end
   end

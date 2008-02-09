@@ -48,8 +48,8 @@ class Alpaca::UvmDataLoader
       @is_enabled, @default_route, @dns_1, @dns_2 = is_enabled, default_route, dns_1, dns_2
       @setting_id = setting_id
 
-      @dns_1 = "" if IPAddr.parse( "#{@dns_1}/32" ).nil?
-      @dns_2 = "" if IPAddr.parse( "#{@dns_2}/32" ).nil?
+      @dns_1 = "" if IPAddr.parse_ip( @dns_1 ).nil?
+      @dns_2 = "" if IPAddr.parse_ip( @dns_2 ).nil?
     end
     
     def to_s

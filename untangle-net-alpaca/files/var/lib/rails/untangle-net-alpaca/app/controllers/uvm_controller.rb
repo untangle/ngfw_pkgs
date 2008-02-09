@@ -302,8 +302,8 @@ class UvmController < ApplicationController
   end
   
   def wizard_calculate_dhcp_range( ip, netmask, dhcp_server_settings )
-    ip = IPAddr.parse( ip )
-    netmask = IPAddr.parse( "255.255.255.255/#{netmask}" )
+    ip = IPAddr.parse_ip( ip )
+    netmask = IPAddr.parse_netmask( netmask )
 
     dhcp_server_settings.enabled = false
     dhcp_server_settings.start_address = "192.168.1.100"

@@ -108,12 +108,12 @@ class OSLibrary::Debian::DhcpManager < OSLibrary::DhcpManager
       end
       
       [[ OverrideIPAddress, config.ip ],
-       [ OverrideNetmask, config.netmask ], 
+       [ OverrideNetmask, IPAddr.parse_netmask( config.netmask ).to_s ], 
        [ OverrideGateway, gateway ],
        [ OverrideDnsServer, dns ]].each do |var,val|
         next if ( ApplicationHelper.null?( val ))
-        next if ( IPAddr.parse( val ).nil? )
-
+        next if ( IPAddr.parse_ip( val ).nil? )
+        
         cfg << "#{var}=\"#{val}\""
       end
       

@@ -479,7 +479,7 @@ EOF
   def parse_session_redirect( filter, new_ip, new_port )
     raise "Invalid filter: '#{filter}'" if /^[-a-zA-Z0-9._ ]*$/.match( filter ).nil?
     
-    raise "Invalid destination '#{new_ip}'" if IPAddr.parse( "#{new_ip}/32" ).nil?
+    raise "Invalid destination '#{new_ip}'" if IPAddr.parse_ip( new_ip ).nil?
 
     ## Convert new_port to a number
     new_port_string = new_port.to_s

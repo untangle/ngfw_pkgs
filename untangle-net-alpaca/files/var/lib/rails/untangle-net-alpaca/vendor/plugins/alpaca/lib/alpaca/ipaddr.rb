@@ -23,12 +23,39 @@ class ::IPAddr
   def self.parse( val )
     begin
       ## Invalid if there are two many slashes (IPAddr doesn't catch this)
+      return nil if val.nil?
+
+      val.strip!
+      
+      return nil if val.empty?
+      
       return nil if ( val.count( "/" ) > 1 )
-      return self.new( val )
+      
+      addr = self.new( val )
+      return nil unless addr.ipv4?
+
+      return addr
     rescue
+      puts "#{$!} : #{val}"
     end
 
     ## Return nil on failure
     nil
+  end
+
+  def self.parse_ip( val )
+    return nil if val.nil?
+    val.strip!
+    return nil if val.empty?
+
+    return self.parse( "#{val}/32" )
+  end
+
+  def self.parse_netmask( val )
+    return nil if val.nil?
+    val.strip!
+    return nil if val.empty?
+
+    return self.parse( "255.255.255.255/#{val}" )
   end
 end

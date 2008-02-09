@@ -128,8 +128,12 @@ EOF
       return ""
     end
 
-    ## Copy the array of ip_networks
-    ip_networks = [ static.ip_networks ].flatten
+    ip_networks = clean_ip_networks( static.ip_networks )
+
+    if ( ip_networks.empty? )
+      logger.warn( "The interface #{interface} does not have any valid IP Networks" )
+      return ""
+    end
 
     ## This will automatically remove the first ip_network if it is assigned to the bridge.
     bridge = bridgeSettings( interface, static.mtu, "manual", ip_networks )
@@ -189,7 +193,8 @@ EOF
     end
 
     ## never set the mtu, and always start with an alias.
-    base_string + "\n" + append_ip_networks( dynamic.ip_networks, name, nil, true )
+    ip_networks = clean_ip_networks( dynamic.ip_networks )
+    base_string + "\n" + append_ip_networks( ip_networks, name, nil, true )
   end
 
   def bridge( interface, bridge )
@@ -357,5 +362,29 @@ auto lo
 iface lo inet loopback
 
 EOF
+  end
+
+  def clean_ip_networks( ip_networks )
+    ## Copy the array of ip_networks
+    ip_networks = [ ip_networks  ].flatten
+
+    ## Copy all of the ip networks
+    ip_networks = ip_networks.map { |i| i.clone }
+
+    ## Remove any interfaces that are not valid.
+    ip_networks.delete_if { |ip_network| !is_valid_ip_network?( ip_network ) }
+  end
+
+  def is_valid_ip_network?( ip_network )
+    return false if ApplicationHelper.null?( ip_network.ip )
+    return false if ApplicationHelper.null?( ip_network.netmask )
+
+    return false if IPAddr.parse_ip( ip_network.ip ).nil?
+    return false if IPAddr.parse_netmask( ip_network.netmask ).nil?
+
+    return false if ( ip_network.ip == "0.0.0.0" || ip_network.ip == "255.255.255.255" )
+    return false if ( ip_network.netmask == "0.0.0.0" )
+
+    true
   end
 end

@@ -42,6 +42,6 @@ class IntfStatic < ActiveRecord::Base
     return true if ApplicationHelper.null?( field )
     
     ## The field is valid if the match is non-nil
-    return !IPAddr.parse( field ).nil?
+    return !IPAddr.parse_ip( field ).nil?
   end
 end

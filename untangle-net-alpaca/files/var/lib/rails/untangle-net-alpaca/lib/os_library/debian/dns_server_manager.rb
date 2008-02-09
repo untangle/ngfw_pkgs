@@ -158,7 +158,7 @@ EOF
       DnsStaticEntry.find(:all).each do |dse| 
         ## Validate the IP address.
         ip = dse.ip_address
-        next if IPAddr.parse( ip ).nil?
+        next if IPAddr.parse_ip( ip ).nil?
 
         ## Validate the hostnames
         h = dse.hostname
@@ -259,7 +259,7 @@ EOF
     end
 
     ## Delete all of the empty name servers, and fix the lines.
-    ns = ns.delete_if { |n| n.nil? || n.empty? || IPAddr.parse( "#{n}/32" ).nil? }
+    ns = ns.delete_if { |n| n.nil? || n.empty? || IPAddr.parse_ip( n ).nil? }
   end
 
   def dhcp_config( dhcp_server_settings, dns_server_settings )
@@ -273,8 +273,8 @@ EOF
       return ""
     end
 
-    if ( IPAddr.parse( dhcp_server_settings.start_address ).nil? || 
-         IPAddr.parse( dhcp_server_settings.end_address ).nil? )
+    if ( IPAddr.parse_ip( dhcp_server_settings.start_address ).nil? || 
+         IPAddr.parse_ip( dhcp_server_settings.end_address ).nil? )
       logger.warn( "Invallid start or end address" );
       return ""
     end
@@ -327,7 +327,7 @@ EOF
     return gateway if valid?( gateway )
 
     ## validate the start range.
-    return nil if IPAddr.parse( dhcp_server_settings.start_address ).nil?
+    return nil if IPAddr.parse_ip( dhcp_server_settings.start_address ).nil?
 
     ## Find the first interface that is in this range.
     ## Find the interface this is being routed out of.
@@ -371,7 +371,7 @@ EOF
   def valid?( value )
     value.strip! unless value.nil?
     ## REVIEW strange constant.
-    return false if ( value.nil? || value.empty? || IPAddr.parse( value ).nil? || ( value == "auto" ))
+    return false if ( value.nil? || value.empty? || IPAddr.parse_ip( value ).nil? || ( value == "auto" ))
     return true
   end
 end

@@ -15,6 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
+
 class Interface < ActiveRecord::Base
   ## Link for a static configuration
   has_one :intf_static, :dependent => :destroy
@@ -36,19 +37,32 @@ class Interface < ActiveRecord::Base
     if dhcp_server_settings.nil? or dhcp_server_settings.enabled == false
       return true
     end
-    if dhcp_server_settings.start_address.nil? or dhcp_server_settings.start_address.length == 0 or dhcp_server_settings.end_address.nil? or dhcp_server_settings.end_address.length == 0
-      return false
-    end
-    start_address = IPAddr.new( dhcp_server_settings.start_address )
-    end_address = IPAddr.new( dhcp_server_settings.end_address )
+
+    start_address = IPAddr.parse_ip( dhcp_server_settings.start_address )
+    end_address = IPAddr.parse_ip( dhcp_server_settings.end_address )
+
+    puts "Testing : #{start_address}, #{end_address}"
+
+    return false if ( start_address.nil? || end_address.nil? )
+
+
     interfaces = Interface.find( :all )
+    ## Iterate each interface and check if there is an ip network that exists containing
+    ## the DHCP server addresess.
     interfaces.each do |interface|
       if interface.config_type == InterfaceHelper::ConfigType::STATIC and ! interface.intf_static.nil?
         interface.intf_static.ip_networks.each do |ip_network|
-          ip_addr = IPAddr.new( ip_network.ip + "/" + ip_network.netmask )
-          if ip_addr.include?( start_address ) and ip_addr.include?( end_address )
-            return true
-          end
+          ip = ip_network.ip
+          netmask = ip_network.netmask
+
+          next if ip.nil?
+          next if netmask.nil?
+
+          ip_addr = IPAddr.parse( "#{ip}/#{netmask}" )
+          next if ip_addr.nil?
+
+          ## If this ip addres is in the range, then return true.
+          return true if ip_addr.include?( start_address ) and ip_addr.include?( end_address )
         end
       end
     end

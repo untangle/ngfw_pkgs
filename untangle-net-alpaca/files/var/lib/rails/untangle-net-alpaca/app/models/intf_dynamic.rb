@@ -27,7 +27,9 @@ class IntfDynamic < ActiveRecord::Base
   protected
   def validate
     errors.add( "Invalid IP Address '#{ip}'" ) unless checkField( ip )
-    InterfaceHelper::validateNetmask( errors, netmask ) unless ApplicationHelper.null?( netmask )
+    unless ApplicationHelper.null?( netmask ) && IPAddr.parse_netmask( netmask ).nil?
+      errors.add( "Invalid Netmask '#{netmask}'" ) 
+    end
     errors.add( "Invalid Gateway '#{default_gateway}'" ) unless checkField( default_gateway )
     errors.add( "Invalid Primary DNS Server '#{dns_1}'" ) unless checkField( dns_1 )
     errors.add( "Invalid Secondary DNS Server '#{dns_2}'" ) unless checkField( dns_2 )
@@ -40,6 +42,6 @@ class IntfDynamic < ActiveRecord::Base
     return true if ApplicationHelper.null?( field )
     
     ## The field is valid if the match is non-nil
-    return !IPAddr.parse( field ).nil?
+    return !IPAddr.parse_ip( field ).nil?
   end
 end

@@ -31,15 +31,6 @@ module InterfaceHelper
     "eth2" => [ "DMZ", DmzIndex ]
   }
 
-  def self.validateNetmask( errors, netmask )
-    ## not an ip address.
-    begin
-      IPAddr.new( "1.2.3.4/#{netmask}" )
-    rescue
-      errors.add( "Invalid Netmask '#{netmask}'" )
-    end
-  end
-
   ## REVIEW :: These Strings need to be internationalized.
   class ConfigType
     STATIC="static"
