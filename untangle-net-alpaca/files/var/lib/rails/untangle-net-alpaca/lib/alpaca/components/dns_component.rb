@@ -32,7 +32,7 @@ class Alpaca::Components::DnsComponent < Alpaca::Component
     ## Parse out the suffix from the hostname if it is specified.
     hostname = params[:hostname]
     unless hostname.nil?
-      hostname = hostname.strip!
+      hostname = hostname.strip
       dns_server_settings.suffix = hostname.sub( /^[^\.]*\./, "" ) unless hostname.empty?
     end
     

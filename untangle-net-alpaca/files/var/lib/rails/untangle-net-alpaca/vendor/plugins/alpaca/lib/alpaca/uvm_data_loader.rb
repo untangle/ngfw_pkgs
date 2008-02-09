@@ -520,14 +520,14 @@ class Alpaca::UvmDataLoader
   INTF_MAP =  { "O" => 1, "I" => 2, "D" => 3, "V" => 8, "0" => 1, "1" => 2, "3" => 4, "7" => 8 }
 
   def parse_protocol_matcher( filter_string, value )
-    value.strip!
+    value = value.strip
 
     return "" if ( value == "" || ANY_MATCHER.include?( value ))
     filter_string + "::" + value.split( "&" ).map { |protocol| protocol.strip.downcase }.join( "," ) + "&&"
   end
 
   def parse_intf_matcher( filter_string, value )
-    value.strip!
+    value = value.strip
 
     return "" if ( value == "" || ANY_MATCHER.include?( value ))
     filter = value.split( "," ).map { |intf| INTF_MAP[intf.strip] }
@@ -539,7 +539,7 @@ class Alpaca::UvmDataLoader
   PUBLIC_MATCHER = [ "external address", "local", "edgeguard" ]
 
   def parse_ip_matcher( filter_string, value )
-    value.strip!
+    value = value.strip
 
     return "" if ( value == "" || ANY_MATCHER.include?( value ))
 
@@ -551,7 +551,7 @@ class Alpaca::UvmDataLoader
   end
   
   def parse_port_matcher( filter_string, value )
-    value.strip!
+    value = value.strip
 
     return "" if ( value == "" || ANY_MATCHER.include?( value ))
     

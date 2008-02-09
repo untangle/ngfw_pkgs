@@ -162,12 +162,13 @@ EOF
 
         ## Validate the hostnames
         h = dse.hostname
-
+        
         v = []
 
         logger.debug "Found the hostname #{h}"
         h.split( " " ).each do |hostname| 
-          ## XXXX Should validate the hostname
+          next unless validator.is_hostname?( hostname )
+
           v << hostname
           v << "#{hostname}.#{domain_name_suffix}" if hostname.index( "." ).nil?
         end
@@ -303,6 +304,7 @@ EOF
     ## Static entries
     DhcpStaticEntry.find( :all ).each do |dse| 
       next if IPAddr.parse_ip( dse.ip_address ).nil?
+      next unless validator.is_mac_address?( dse.mac_address )
       settings << "#{FlagDhcpHost}=#{dse.mac_address},#{dse.ip_address},24h"
     end
 
@@ -316,14 +318,14 @@ EOF
     ## Set the domain name
     domain = settings.suffix
 
-    ## REVIEW: shoud validate that domain is a valid value
-    return DefaultDomain if ( domain.nil? || domain.empty? )
+    ## Validate the domain.
+    return DefaultDomain unless validator.is_hostname?( domain ) == true
     return domain
   end
   
   def calculate_gateway( dhcp_server_settings )
     gateway = dhcp_server_settings.gateway
-    gateway.strip! unless gateway.nil?
+    gateway = gateway.strip unless gateway.nil?
 
     return gateway if valid?( gateway )
 
@@ -361,7 +363,7 @@ EOF
 
   def calculate_netmask( dhcp_server_settings )
     netmask =dhcp_server_settings.netmask
-    netmask.strip! unless netmask.nil?
+    netmask = netmask.strip unless netmask.nil?
 
     ## should check if this is a valid netmask
     return netmask if valid?( netmask )
@@ -370,7 +372,7 @@ EOF
   end
 
   def valid?( value )
-    value.strip! unless value.nil?
+    value = value.strip unless value.nil?
     ## REVIEW strange constant.
     return false if ( value.nil? || value.empty? || IPAddr.parse_ip( value ).nil? || ( value == "auto" ))
     return true

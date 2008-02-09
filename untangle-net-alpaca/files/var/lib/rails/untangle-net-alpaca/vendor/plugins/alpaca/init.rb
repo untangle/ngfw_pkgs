@@ -43,6 +43,9 @@ require "alpaca/os/manager_base"
 ## OS extensions for alpaca.
 require "alpaca/os/os_extensions"
 
+## Validation extensions
+require "alpaca/validator_extensions"
+
 ## Menu System
 require "alpaca/menu"
 require "alpaca/menu/item"

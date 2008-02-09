@@ -41,10 +41,7 @@ class Interface < ActiveRecord::Base
     start_address = IPAddr.parse_ip( dhcp_server_settings.start_address )
     end_address = IPAddr.parse_ip( dhcp_server_settings.end_address )
 
-    puts "Testing : #{start_address}, #{end_address}"
-
     return false if ( start_address.nil? || end_address.nil? )
-
 
     interfaces = Interface.find( :all )
     ## Iterate each interface and check if there is an ip network that exists containing

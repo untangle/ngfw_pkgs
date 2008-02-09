@@ -36,7 +36,11 @@ class OSLibrary::Debian::HostnameManager < OSLibrary::HostnameManager
   
   def hook_commit
     settings = HostnameSettings.find( :first )
-    return if ( settings.nil? || settings.hostname.nil? || settings.hostname.empty? )
+    ## Nothing to do if there are no settings.
+    return if settings.nil?
+
+    ## Ignore invalid hostnames.
+    return unless validator.is_hostname?( settings.hostname )
 
     ## Save the hostname
     os["override_manager"].write_file( HostnameFile, "#{settings.hostname}\n" )

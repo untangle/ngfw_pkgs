@@ -42,7 +42,11 @@ class HostnameController < ApplicationController
 
     hostname_settings = HostnameSettings.find( :first )
     hostname_settings = HostnameSettings.new if hostname_settings.nil?
-    hostname_settings.update_attributes( params[:hostname_settings] )
+    hostname_settings.attributes =  params[:hostname_settings]
+
+    ## Validate the hostname
+    return redirect_to( :action => "manage" ) unless validator.is_hostname?( hostname_settings.hostname )
+
     hostname_settings.save
     
     ddclient_settings = DdclientSettings.find( :first )
@@ -55,9 +59,12 @@ class HostnameController < ApplicationController
     ddclient_settings.save
 
     dns_server_settings = DnsServerSettings.find( :first )
-    ## It doesn't harm anything to enable the dns server by default.
-    dns_server_settings = DnsServerSettings.create_default( :enabled => true ) if dns_server_settings.nil?
-    dns_server_settings.update_attributes( params[:dns_server_settings] )
+    dns_server_settings = DnsServerSettings.create_default if dns_server_settings.nil?
+    dns_server_settings.attributes = params[:dns_server_settings]
+
+    ## Validate the hostname suffix
+    return redirect_to( :action => "manage" ) unless validator.is_hostname?( dns_server_settings.suffix )
+
     dns_server_settings.save
 
     os["hostname_manager"].commit

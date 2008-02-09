@@ -36,7 +36,11 @@ class DnsController < ApplicationController
 
     dns_server_settings = DnsServerSettings.find( :first )
     dns_server_settings = DnsServerSettings.create_default if dns_server_settings.nil?
-    dns_server_settings.update_attributes( params[:dns_server_settings] )
+    dns_server_settings.attributes =  params[:dns_server_settings]
+
+    ## Validate the hostname suffix
+    return redirect_to( :action => "manage" ) unless validator.is_hostname?( dns_server_settings.suffix )
+
     dns_server_settings.save
     
     static_entry_list = []

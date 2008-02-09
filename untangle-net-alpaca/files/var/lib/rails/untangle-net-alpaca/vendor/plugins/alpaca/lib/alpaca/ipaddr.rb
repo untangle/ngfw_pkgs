@@ -25,7 +25,7 @@ class ::IPAddr
       ## Invalid if there are two many slashes (IPAddr doesn't catch this)
       return nil if val.nil?
 
-      val.strip!
+      val = val.strip
       
       return nil if val.empty?
       
@@ -36,7 +36,6 @@ class ::IPAddr
 
       return addr
     rescue
-      puts "#{$!} : #{val}"
     end
 
     ## Return nil on failure
@@ -45,7 +44,7 @@ class ::IPAddr
 
   def self.parse_ip( val )
     return nil if val.nil?
-    val.strip!
+    val = val.strip
     return nil if val.empty?
 
     return self.parse( "#{val}/32" )
@@ -53,7 +52,7 @@ class ::IPAddr
 
   def self.parse_netmask( val )
     return nil if val.nil?
-    val.strip!
+    val = val.strip
     return nil if val.empty?
 
     return self.parse( "255.255.255.255/#{val}" )
