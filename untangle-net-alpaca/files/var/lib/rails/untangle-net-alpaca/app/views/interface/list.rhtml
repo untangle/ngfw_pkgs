@@ -2,10 +2,10 @@
 <% form_tag( :action => 'intf_order_save' ) do -%>
   <div id="main-content-body"><div class="wrapper">
   <%= handle_flash_messages %>
-  <div id="interface-list">
-<%= submit_to_remote( "Test Connectivity", "Test Connectivity".t, options = { :url => { :action => "test_internet_connectivity" }, :update => "main-content", :html => { :class => "test-connectivity" } } ) %>
+  <div id="interface-list">    
+<div class="interface-buttons"><%= submit_to_remote( "Test Connectivity", "Test Connectivity".t, options = { :url => { :action => "test_internet_connectivity" }, :update => "main-content", :html => { :class => "test-connectivity" } } ) %>
 <%= submit_to_remote( "Refresh", "Refresh".t, options = { :url => { :controller => :network, :action => :refresh_interfaces }, :update => "main-content", :html => { :class => "refresh-button" } } ) %>
-    
+</div>
 <!--    <div class="refresh-button" onclick="location.href='<%= url_for( :controller => :network, :action => :refresh_interfaces ) %>'"> Refresh </div> -->
     <table>
       <tr>
