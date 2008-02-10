@@ -68,11 +68,11 @@ EOF
     def initialize
       columns = []
       columns << Alpaca::Table::Column.new( "ip-address", "IP Address" ) do |dynamic_entry,options|
-        dynamic_entry.ip_address
+        "<span>"+dynamic_entry.ip_address+"</span>"
       end
 
       columns << Alpaca::Table::Column.new( "hostname fill", "Hostname" ) do |dynamic_entry,options| 
-        dynamic_entry.hostname
+        "<span>"+dynamic_entry.hostname+"</span>"
       end
       
       super(  "Automatic DNS Entries", "dns-dynamic-entry", "", "dns-dynamic_entry read-only", columns )

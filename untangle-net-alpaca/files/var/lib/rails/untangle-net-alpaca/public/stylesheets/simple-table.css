@@ -373,6 +373,12 @@ div.list-table-container.dhcp-dynamic-entry div.mac-address
   width: 160px;
   }
 
+div.list-table-container.dhcp-dynamic-entry div.mac-address a
+{ 
+  padding-left: 10px;
+  }
+
+
 div.list-table-container.dhcp-dynamic-entry div.ip-address
 { 
   width: 140px;
@@ -380,12 +386,12 @@ div.list-table-container.dhcp-dynamic-entry div.ip-address
 
 div.list-table-container.dhcp-dynamic-entry div.hostname
 { 
-  width: 250px;
+  width: 260px;
   }
 
 div.list-table-container.dhcp-dynamic-entry div.add-static
-{ 
-  width: 70px;
+{
+  width: 65px;
   }
 
 div.list-table-container.dhcp-dynamic-entry div.list-table div.add-static
@@ -407,6 +413,13 @@ div.list-table-container.dhcp-dynamic-entry div.action
   width: 100px;
   }
 
+
+div.list-table-container.dhcp-dynamic-entry span
+{ 
+  font-size: 85%;
+	color: #333;
+	padding-left: 10px;
+  }
 
 /* ------------------ Style the DNS Static Entries ---------------- */
 
@@ -487,6 +500,15 @@ div.list-table-container.dns-dynamic-entry div.hostname
 { 
   width: 430px;
   }
+
+
+div.list-table-container.dns-dynamic-entry span
+{ 
+  font-size: 85%;
+	color: #333;
+	padding-left: 10px;
+  }
+
 
 /* ------------------ Interface Status Panel ---------------- */
 div.list-table-container.interface-status

@@ -77,6 +77,12 @@ select {
     color: #666666;
     font-size: 85%; /* 11px equiv */
 }
+ul#extranav li a {
+	font-size: 85%;
+}
+#footer-buttons a.Help {
+	font-size: 85%;
+}
 #hostname select {
     width: 13.7em;
 }
@@ -887,7 +893,7 @@ input.submit
   border: 0;
   text-decoration: none;
   color: black;
-  font-size: 80%;
+  font-size: 85%;
   width: 88px;
   height: 21px;
   background: transparent url(../images/button.gif) no-repeat top left;
