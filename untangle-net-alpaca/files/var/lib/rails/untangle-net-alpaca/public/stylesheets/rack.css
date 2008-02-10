@@ -924,6 +924,10 @@ input.Save
   background: transparent url(../images/save-button.gif) no-repeat top left;
 margin-right: 0px;
   }
+input.Save.disabled
+{
+  background: transparent url(../images/save-disabled.gif) no-repeat top left;
+  }
 input.Cancel
 { 
   background: transparent url(../images/cancel-button.gif) no-repeat top left;
