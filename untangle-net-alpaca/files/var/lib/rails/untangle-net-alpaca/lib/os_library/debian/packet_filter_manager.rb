@@ -389,6 +389,9 @@ EOF
   ## Interface labelling
   def marking( interface )
     match = "-i #{interface.os_name}"
+    
+    ## use ppp0 if this is a PPPoE interface that is not bridged.
+    match = "-i ppp0" if ( interface.config_type == InterfaceHelper::ConfigType::PPPOE )
 
     ## This is the name used to retrieve the ip addresses.
     name = interface.os_name

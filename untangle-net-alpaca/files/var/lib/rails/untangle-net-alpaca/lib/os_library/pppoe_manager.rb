@@ -43,10 +43,11 @@ class OSLibrary::PppoeManager < Alpaca::OS::ManagerBase
     ## Verify that the settings are actually available.
     return if settings.nil? || !settings.is_a?( IntfPppoe )
     
-    cfg = [ header ]
+    cfg = []
     secrets = []
 
     cfg << <<EOF
+#{header}
 noipdefault
 hide-password
 noauth
@@ -57,8 +58,12 @@ EOF
     cfg << "replacedefaultroute"
     cfg << "usepeerdns" if ( settings.use_peer_dns )
 
+    os_name = wan_interface.os_name
+    ## xxxx refactor this code because it is duplicated in the network manager. xxx #
+    os_name = "br.#{os_name}" if wan_interface.is_bridge?
+
     ## Use the PPPoE daemon and the corrent interface.
-    cfg << "plugin rp-pppoe.so #{wan_interface.os_name}"
+    cfg << "plugin rp-pppoe.so #{os_name}"
 
     ## Append the username
     cfg << "user \"#{settings.username}\""
