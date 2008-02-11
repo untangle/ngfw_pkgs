@@ -49,6 +49,15 @@ if [ -x /usr/sbin/slapadd ]; then
     /etc/init.d/slapd start
 fi
 
+## Backup the current networking settings
+[ -x  /usr/share/untangle-net-alpaca/scripts/backup ] && /usr/share/untangle-net-alpaca/scripts/backup /usr/share/untangle/conf/alpaca-backup.uab "Return to Factory Defaults."
+
+## Stop the network manager
+/etc/init.d/untangle-net-alpaca stop
+
+## Remove the database file (an empty file is also in canonical just in case)
+rm -f /var/lib/rails/untangle-net-alpaca/database/production.db
+
 # restore canonical files
 tar -C / -zvxf /usr/share/untangle/conf/canonical.tar.gz
 
