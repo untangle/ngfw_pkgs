@@ -61,6 +61,8 @@ class OSLibrary::NetworkManager < Alpaca::OS::ManagerBase
 
   NETMASK_TO_CIDR = FULL_CIDR.invert()
 
+  TEST_CONNECTIVITY_TIMEOUT = 20
+
   ## Parse a netmask and convert to a netmask string.
   ## 24 -> 255.255.255.0
   ## 255.255.255.0 -> 255.255.255.0
@@ -91,18 +93,25 @@ class OSLibrary::NetworkManager < Alpaca::OS::ManagerBase
   def internet_connectivity?( host="updates.untangle.com" )
     require "resolv"
     require "socket"
-    begin
-      address = Resolv.getaddress( host )
-      s = TCPSocket.new( host, "http" )
-      s.close
-      return [true, "tcp"]
-    rescue Errno::ECONNREFUSED
-      return [true, "tcp"] #TODO does this make sense
-    rescue Timeout::Error, StandardError
-      return [false, "tcp"]
-    rescue ResolvError
-      return [false, "DNS"]
+    require "thread"
+    result = [false, "Timeout"]
+    t = Thread.new do
+      begin
+        address = Resolv.getaddress( host )
+        s = TCPSocket.new( host, "http" )
+        s.close
+        result = [true, "TCP"]
+      rescue Errno::ECONNREFUSED
+        result = [true, "TCP"] #TODO does this make sense
+      rescue Timeout::Error, StandardError
+        result = [false, "TCP"]
+      rescue ResolvError
+        result = [false, "DNS"]
+      end
     end
+    sleep 0.1
+    t.join(TEST_CONNECTIVITY_TIMEOUT)
+    return result
   end
 
   ## This should commit and update all of the network related settings.
