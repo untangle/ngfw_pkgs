@@ -453,15 +453,11 @@ var spinnerOnSubmit = function() {
     for(var i=0; i<forms.length; i++) {
 	forms[i].observe('submit', showSpinner);
     }
-    var links = $$('a');
-    for(var i=0; i<links.length; i++) {
-	links[i].observe('click', showSpinner);
-    }
+    //var links = $$('a');
+    //for(var i=0; i<links.length; i++) {
+        //links[i].observe('click', showSpinner);
+    //}
     var buttons = $$('input.submit');
-    for(var i=0; i<buttons.length; i++) {
-	buttons[i].observe('click', showSpinner);
-    }
-    var buttons = $$('input.test-connectivity');
     for(var i=0; i<buttons.length; i++) {
 	buttons[i].observe('click', showSpinner);
     }
@@ -472,6 +468,13 @@ var spinnerOnSubmit = function() {
     var buttons = $$('input.refresh-button');
     for(var i=0; i<buttons.length; i++) {
 	buttons[i].observe('click', showSpinner);
+    }
+    var buttons = $$('div.refresh-button');
+    for(var i=0; i<buttons.length; i++) {
+	buttons[i].observe('click', showSpinner);
+    }
+    if ($('Save')) {
+        $('Save').observe('click', showSpinner);
     }
 }
 
