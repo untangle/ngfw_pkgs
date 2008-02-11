@@ -18,45 +18,58 @@
 class OSLibrary::PppoeManager < Alpaca::OS::ManagerBase
   include Singleton
 
-  ConnectionNamePrefix = "connection-"
-  PeersFilePrefix = "/etc/ppp/peers/" + ConnectionNamePrefix
+  ## xxx presently only support one connection xxx
+  ProviderName = "connection0"
+  PeersFile = "/etc/ppp/peers/#{ProviderName}"
   PapSecretsFile = "/etc/ppp/pap-secrets"
 
+
   def register_hooks
-    os["network_manager"].register_hook( -100, "pppoe_manager", "write_files", :hook_commit )
+    os["network_manager"].register_hook( -100, "pppoe_manager", "write_files", :hook_write_files )
   end
   
-  def hook_commit
-    settings = IntfPppoe.find( :first )
-    if ( settings.nil? )
-    end
+  def hook_write_files
+    ## Find the WAN interface that is configured for PPPoE.
+    ## xxx presently PPPoE is only supported on the WAN interface xxx
+    conditions = [ "wan=? and config_type=?", true, InterfaceHelper::ConfigType::PPPOE ]
+    wan_interface = Interface.find( :first, :conditions => conditions )
     
-    cfg = []
-    secrets = []
-   
+    ## No PPPoE interface is available.
+    return if wan_interface.nil?
 
-    cfg << "noipdefault"
-    cfg << "hide-password"
-    cfg << "noauth"
-    cfg << "persist"
+    ## Retrieve the pppoe settings from the wan interface
+    settings = wan_interface.current_config
+
+    ## Verify that the settings are actually available.
+    return if settings.nil? || !settings.is_a?( IntfPppoe )
+    
+    cfg = [ header ]
+    secrets = []
+
+    cfg << <<EOF
+noipdefault
+hide-password
+noauth
+persist
+EOF
+
     cfg << "defaultroute"
     cfg << "replacedefaultroute"
-    if ( settings.use_peer_dns )
-      cfg << "usepeerdns"
-    end
-    
-    conditions = [ "wan=?", true ]
-    wanInterface = Interface.find( :first, :conditions => conditions )
+    cfg << "usepeerdns" if ( settings.use_peer_dns )
 
+    ## Use the PPPoE daemon and the corrent interface.
+    cfg << "plugin rp-pppoe.so #{wan_interface.os_name}"
 
-    cfg << "pid="+PppoePidFile
-    cfg << "use=if, if=" + wanInterface.os_name
+    ## Append the username
+    cfg << "user \"#{settings.username}\""
+
+    ## Append anything that is inside of the secret field for the PPPoE Configuration
     cfg << settings.secret_field
 
-    secrets << "\"" + settings.username + "\" *  \"" + settings.password + "\""   
+    secrets << "\"#{settings.username}\" *  \"#{settings.password}\""   
   
-  
-    os["override_manager"].write_file( PeersFilePrefix+wanInterface.os_name, header, "\n", cfg.join( "\n" ), "\n" )
+    ## This limits us to one connection, hardcoding to 0 for now.
+    os["override_manager"].write_file( PeersFile, cfg.join( "\n" ), "\n" )
     os["override_manager"].write_file( PapSecretsFile, header, "\n", secrets.join( "\n" ), "\n" )
   end
   

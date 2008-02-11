@@ -32,10 +32,14 @@ end
          <label for="ethernet_media"><%= "Ethernet Media:".t %></label>
          <%= ethernet_media_select( interface ) %>
        </li>
-       <li>
-         <%= link_to_remote( "External Aliases".t, :update => "main-content", :url => { :controller => :network, :action => :aliases } ) %>
-         <%= submit_to_remote( "Renew", "Renew Lease".t, options = { :url => { :action => "commit" }, :update => "main-content", :html => { :class => "submit" } } ) %>
-       </li>
     </ul>
   </fieldset>
+
+  <div>
+     <%= submit_to_remote( "Renew", "Renew Lease".t, options = { :url => { :action => "commit" }, :update => "main-content", :html => { :class => "submit" } } ) %>
+  </div>
+
+  <% list_id = "ip-network-list-pppoe" %>
+  <%= render( :partial => "ip_networks" , :object => pppoe.ip_networks,
+              :locals => { :list_id => list_id } ) %>
 </div>

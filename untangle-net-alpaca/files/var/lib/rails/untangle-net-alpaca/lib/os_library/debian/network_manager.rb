@@ -53,6 +53,7 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
   end
 
   def hook_commit
+    puts "NetworkManager"
     write_files
     run_services
   end
@@ -256,8 +257,6 @@ EOF
 
     ## REVIEW what should timeout be on configuring the interface
 
-    i = nil
-
     ## name of the interface
     name = interface.os_name
     
@@ -265,15 +264,29 @@ EOF
       logger.warn( "The interface #{interface} is not configured" )
       return ""
     end
-    
-    base_string  = <<EOF
-auto #{name}
-iface #{name} inet manual
-\tup poff -a
-\tup pon #{OSLibrary::PppoeManager::PeersFilePrefix}-#{name}
-EOF
 
-    base_string
+    ip_networks = clean_ip_networks( pppoe.ip_networks )
+
+    ## This will automatically remove the first ip_network if it is assigned to the bridge.
+    bridge = bridgeSettings( interface, nil, "manual", ip_networks )
+    
+    name = OSLibrary::Debian::NetworkManager.bridge_name( interface ) unless bridge.empty?
+    ## Configure each IP and then join it all together with some newlines.
+    bridge += "\n" + append_ip_networks( ip_networks, name, nil, !bridge.empty? )
+    
+    ## Hardcoded at ppp0
+
+    ## Use the ifconfig to guarantee the device is running, pppoe
+    ## complains if the interface isn't running.
+<<EOF
+#{bridge}
+
+auto ppp0
+iface ppp0 inet ppp
+\tpre-up ifconfig #{name} up
+\tprovider #{OSLibrary::PppoeManager::ProviderName}
+
+EOF
   end
 
 

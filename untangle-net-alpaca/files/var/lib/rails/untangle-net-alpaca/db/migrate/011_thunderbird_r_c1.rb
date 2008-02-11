@@ -1,5 +1,5 @@
 #
-# $HeadURL$
+# $HeadURL: svn://chef/work/pkgs/untangle-net-alpaca/files/var/lib/rails/untangle-net-alpaca/db/migrate/010_thunderbird.rb $
 # Copyright (c) 2007-2008 Untangle, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -15,29 +15,16 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-class IntfPppoe < ActiveRecord::Base
-  belongs_to :interface
-  has_and_belongs_to_many :ip_networks, :order => "position"
-
-  HiddenPassword = "        "
-  def accept( interface, visitor )
-    visitor.intf_pppoe( interface, self )
-  end
-
-  def password=( pass )
-    if ( pass != IntfPppoe::HiddenPassword )
-      write_attribute( :password, pass )
-    else
-      logger.debug( "Ignoring password set to HiddenPassword" )
+class ThunderbirdRC1 < Alpaca::Migration
+  def self.up
+    ## Join between an IP network and a PPPoE configuration.
+    create_table :intf_pppoes_ip_networks, :id => false do |table|
+      table.column :intf_pppoe_id, :integer
+      table.column :ip_network_id, :integer
     end
   end
 
-  def hidden_password
-    pass = read_attribute( :password )
-    if pass.nil? || pass.length == 0
-      return ""
-    end
-    return IntfPppoe::HiddenPassword
+  def self.down
+    drop_table :intf_pppoes_ip_networks
   end
-
 end

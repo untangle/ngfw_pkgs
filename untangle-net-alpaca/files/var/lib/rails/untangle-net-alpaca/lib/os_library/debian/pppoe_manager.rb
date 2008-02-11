@@ -15,5 +15,5 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-class OSLibrary::Debian::PppoeManager < OSLibrary::DdclientManager
+class OSLibrary::Debian::PppoeManager < OSLibrary::PppoeManager
 end

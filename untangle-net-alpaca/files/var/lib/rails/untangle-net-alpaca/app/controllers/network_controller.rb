@@ -136,6 +136,8 @@ class NetworkController < ApplicationController
       @external_aliases = []
       @msg = "There presently isn't an external interface."
     end
+
+    @external_aliases = [] if @external_aliases.nil?
     
     logger.debug( "Found the aliases: '#{@external_aliases}'" )
     @external_aliases.each { |a| logger.debug( "Found the aliases: '#{a}'" ) }
@@ -274,12 +276,12 @@ class NetworkController < ApplicationController
     end
 
     def intf_bridge( interface, config )
-      [ nil, "External Interface is presently configured as a bridge" ]
+      [ [], "External Interface is presently configured as a bridge" ]
     end
 
     def intf_pppoe( interface, config )
       ## Review : We currently support this.
-      [ nil, "External Interface is presently configured for PPPoE" ]
+      [ config.ip_networks, nil ]
     end
   end
 
@@ -313,8 +315,8 @@ class NetworkController < ApplicationController
     end
 
     def intf_pppoe( interface, config )
-      ## Review : We currently support this.
-      "External Interface is presently configured for PPPoE"
+      config.ip_networks = ip_network_list( 1 )
+      nil
     end
 
     private

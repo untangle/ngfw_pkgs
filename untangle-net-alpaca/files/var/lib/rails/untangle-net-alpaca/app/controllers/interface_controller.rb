@@ -295,9 +295,26 @@ class InterfaceController < ApplicationController
       
       ## Create a new one if it is nil
       pppoe = IntfPppoe.new if pppoe.nil?
- 
-      pppoe.update_attributes(params[:pppoe])
       
+      ## save the networks
+      networkStringHash = params[:networks]
+      ## indices is used to guarantee they are done in proper order.
+      indices = params[:networkIndices]
+
+      ## clear out all of the ip networks.
+      pppoe.ip_networks = []
+      position = 1
+      unless indices.nil?
+        indices.each do |key,value|
+          network = IpNetwork.new
+          network.parseNetwork( networkStringHash[key] )
+          network.position, position = position, position + 1
+          pppoe.ip_networks << network
+        end
+      end
+
+      pppoe.update_attributes(params[:pppoe])
+
       pppoe.save
       
       @interface.intf_pppoe = pppoe
