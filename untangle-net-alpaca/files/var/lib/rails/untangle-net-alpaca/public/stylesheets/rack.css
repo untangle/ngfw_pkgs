@@ -949,7 +949,7 @@ margin-top: 5px; margin-bottom: 5px;
   }
 #spinner
 {
-  position: absolute;
+  position: fixed;
   top: 7.5em;
   right: 0;
 }
