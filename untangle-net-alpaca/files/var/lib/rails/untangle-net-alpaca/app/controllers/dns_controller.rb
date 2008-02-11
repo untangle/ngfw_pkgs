@@ -20,7 +20,7 @@ class DnsController < ApplicationController
     @dns_server_settings = DnsServerSettings.find( :first )
     @dns_server_settings = DnsServerSettings.create_default if @dns_server_settings.nil?
     @static_entries = DnsStaticEntry.find( :all )
-
+    @static_entries = @static_entries.sort_by { |a| IPAddr.parse(a.ip_address).to_i }
     ## Retrieve all of the dynamic entries from the DHCP server manager
     refresh_dynamic_entries
     
