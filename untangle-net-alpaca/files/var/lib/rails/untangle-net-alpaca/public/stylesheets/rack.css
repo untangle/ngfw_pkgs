@@ -293,7 +293,7 @@ li.ip-network div.minus
 li.ip-network div.minus:hover
 { 
   cursor: pointer;
-  background-color: #E1EB26;  
+  background-color: #86c5df;  
   }
 
 /* list of interfaces */
@@ -344,7 +344,7 @@ li.ip-network div.minus
 li.ip-network div.minus:hover
 { 
   cursor: pointer;
-  background-color: #E1EB26;  
+  background-color: #86c5df;  
   }
 div.nat-policies
 { 
@@ -376,7 +376,7 @@ li.nat-policy div.minus
 li.nat-policy div.minus:hover
 { 
   cursor: pointer;
-  background-color: #E1EB26;  
+  background-color: #86c5df;  
   }
 
 div#overlay

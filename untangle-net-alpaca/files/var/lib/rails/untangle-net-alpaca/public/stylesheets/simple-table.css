@@ -178,7 +178,7 @@ div.list-table-container div.list-table div.edit:hover,
 div.list-table-container div.list-table div.minus:hover
 { 
   cursor: pointer;
-  background-color: #E1EB26;
+  background-color: #86c5df;
   }
 
 /* ----------------------------- Table Labels ----------------------------- */
@@ -402,7 +402,7 @@ div.list-table-container.dhcp-dynamic-entry div.list-table div.add-static
 div.list-table-container.dhcp-dynamic-entry div.list-table div.add-static:hover
 { 
   cursor: pointer;
-  background-color: #E1EB26;
+  background-color: #86c5df;
  }
 
 
