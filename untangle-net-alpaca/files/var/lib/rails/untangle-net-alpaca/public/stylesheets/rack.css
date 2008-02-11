@@ -86,6 +86,34 @@ ul#extranav li a {
 #hostname select {
     width: 13.7em;
 }
+#network #refresh-container {
+	/*width: 636px; 
+	margin-bottom: 10px;*/
+	position: absolute;
+	width: 636px;
+}
+#network #refresh-container .refresh-button {
+	float: right;	
+}
+#network h2 {
+	margin-top: 0.3em;
+}
+
+#network fieldset.config-type, #network fieldset.config-type ul li, #network fieldset.external-aliases-button, #network fieldset.external-aliases-button ul li {
+margin: 0; padding: 0;
+}
+#network fieldset.external-aliases-button ul {
+	margin: -1em 0 0 0; padding: 0 0 0 262px;
+	overflow: visible;
+	z-index: 1000;
+}
+
+#network fieldset.config-type ul {
+margin: 0 0 0 2em; padding: 0 0 0 0;
+}
+
+
+
 .textfield, .passwordfield {
     /* for IE6 */
     width: 12.7em;
@@ -197,17 +225,17 @@ div.basic-interface-config div#interface_1
 
 div.basic-interface-config
 { 
-  background-color: #EEE;
+ /* background-color: #EEE;
   border: 1px solid #C0C0C0;
   width: 500px;
   height: 140px;
   margin: 0 0 20px 30px;
-  padding: 0 10px 0 10px;
+  padding: 0 10px 0 10px; */
   }
 
 div.basic-interface-config.wan
 { 
-  height: 250px;
+/*  height: 250px; */
  }
 
 form li

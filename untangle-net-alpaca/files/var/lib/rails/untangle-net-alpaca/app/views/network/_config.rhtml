@@ -14,13 +14,17 @@ panel_class += " wan" if ( config.interface.wan )
   <%= hidden_field_tag( "interface_list[]", panel_id ) %>
   <%= hidden_field_tag( "interface_id_list[]", config.interface.id ) %>
     
-  <h3><%= 'Configuration for the %s Interface'.t / config.interface.name %></h3>
+  <h2><%= '%s Interface'.t / config.interface.name %></h2>
   
-  <div>
-    <label for="<%= "config_type_#{panel_id}" %>"><%= "Config Type".t %></label>
-    <%= select_tag( "config_type_#{panel_id}", options_for_select( config_types, config_type_id )) %>
-    <%= observe_field( "config_type_#{panel_id}", { :function => "Network.setConfigType( '#{panel_id}' )" } ) %>
-  </div>
+<fieldset class="config-type">
+      <ul class="text-fields">
+        <li>
+          <label for="<%= "config_type_#{panel_id}" %>"><%= "Config Type".t %>:</label>
+          <%= select_tag( "config_type_#{panel_id}", options_for_select( config_types, config_type_id )) %>
+	    <%= observe_field( "config_type_#{panel_id}", { :function => "Network.setConfigType( '#{panel_id}' )" } ) %>
+        </li>
+		</ul>
+</fieldset> 
 
   <div id="<%= panel_id %>">
     <% config_types.each do |type,type| %>
@@ -30,7 +34,11 @@ panel_class += " wan" if ( config.interface.wan )
       </div>
     <% end %>
     <% if ( config.interface.wan ) %>
-      <%= submit_to_remote( "External Aliases", "External Aliases".t, options = { :url => { :action => :aliases }, :update => "main-content", :html => { :class => "test-connectivity" } } ) %>
+		<fieldset class="external-aliases-button">
+		      <ul class="text-fields">
+		        <li> <%= submit_to_remote( "External Aliases", "External Aliases".t, options = { :url => { :action => :aliases }, :update => "main-content", :html => { :class => "test-connectivity" } } ) %> </li>
+				</ul>
+			</fieldset>
     <% end %>
   </div>
 
