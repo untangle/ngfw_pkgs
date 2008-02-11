@@ -436,6 +436,26 @@ var focusBlurTextFields = function() {
     }
 }
 
+var showSpinner = function() {
+    if ( $('spinner') ) {
+        $('spinner').show();
+    }
+}
+
+var hideSpinner = function() {
+    if ( $('spinner') ) {
+        $('spinner').hide();
+    }
+}
+
+var spinnerOnSubmit = function() {
+    var forms = $$('form');
+    for(var i=0; i<forms.length; i++) {
+	forms[i].observe('submit', showSpinner);
+    }
+}
+
+
 var myFabTabs;
 
 var enableSave = function() {
@@ -509,6 +529,8 @@ var init = function() {
     }
     focusBlurTextFields();
     enableSaveOnChange();
+    spinnerOnSubmit();
+    hideSpinner();
 }
 	
 var toggleGuide = function() {

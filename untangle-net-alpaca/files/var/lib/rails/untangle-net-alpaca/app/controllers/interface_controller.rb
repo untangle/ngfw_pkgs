@@ -42,6 +42,7 @@ class InterfaceController < ApplicationController
     if ! Interface.valid_dhcp_server?
       flash[:warning] = "DHCP Server is configured on a subnet that is not on any configured interfaces."
     end
+    session[:last_controller_before_refresh] = "interface"
   end
 
   def config

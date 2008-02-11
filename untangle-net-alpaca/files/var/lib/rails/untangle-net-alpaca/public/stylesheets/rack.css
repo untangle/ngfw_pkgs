@@ -947,3 +947,9 @@ a.Help, button.Help, input.Help
   background: transparent url(../images/help-button.gif) no-repeat top left;
 margin-top: 5px; margin-bottom: 5px;
   }
+#spinner
+{
+  position: absolute;
+  top: 7.5em;
+  right: 0;
+}

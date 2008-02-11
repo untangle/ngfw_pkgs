@@ -57,6 +57,7 @@ class NetworkController < ApplicationController
     if ! Interface.valid_dhcp_server?
       flash[:warning] = "DHCP Server is configured on a subnet that is not on any configured interfaces."
     end
+    session[:last_controller_before_refresh] = "network"
 
   end
 
@@ -202,6 +203,10 @@ class NetworkController < ApplicationController
 
   def refresh_interfaces
     @new_interfaces, @deleted_interfaces = InterfaceHelper.load_new_interfaces
+    @last_controller = "network"
+    if ! session[:last_controller_before_refresh].nil? && session[:last_controller_before_refresh].length > 0
+        @last_controller = session[:last_controller_before_refresh]
+    end
   end
 
   def commit_interfaces
