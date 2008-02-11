@@ -1,0 +1,7 @@
+?package(untangle-client-local):\
+	needs="x11"\
+	section="Apps/Net"\
+	title="Untangle Gateway Adminstration"\
+	command="/usr/bin/untangle-client"\
+	icon="/usr/share/pixmaps/untangle-client.png"\
+	hints="Network"
