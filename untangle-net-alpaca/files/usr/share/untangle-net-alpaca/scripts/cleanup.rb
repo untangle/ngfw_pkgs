@@ -66,6 +66,12 @@ db.transaction do |connection|
     ## Delete those from the set
     ip_networks.delete( row[0] )
   end
+
+  ## Do not delete the ones used by PPPoE.
+  connection.execute( "SELECT ip_network_id FROM intf_pppoe_ip_networks" ) do |row|
+    ## Delete those from the set
+    ip_networks.delete( row[0] )
+  end
   
   ## Do not delete the nat_policies
   connection.execute( "SELECT nat_policy_id FROM intf_statics_nat_policies" ) do |row|

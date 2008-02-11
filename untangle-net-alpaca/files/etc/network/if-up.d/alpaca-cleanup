@@ -123,6 +123,9 @@ ip addr flush scope global
 $DEBUG "Configuring network media."
 set_ethernet_media
 
+$DEBUG "Stopping all active PPP Connections."
+poff -a
+
 bridge_configured || {
     # Determine which bridges need to be removed
     $DEBUG "Destroying all of the bridges."
