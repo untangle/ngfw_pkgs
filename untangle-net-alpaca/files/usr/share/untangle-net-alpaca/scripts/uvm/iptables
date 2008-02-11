@@ -129,6 +129,7 @@ uvm_iptables_rules()
 
     #dont queue anthing that was liberated, or is connmarked antisubscribe
     ${IPTABLES} -A PREROUTING -t mangle -m connmark --mark ${MARK_ANTISUB}/${MARK_ANTISUB} -j MARK --or-mark  ${MARK_ANTISUB}
+    ${IPTABLES} -A PREROUTING -t mangle -m mark --mark ${MARK_ANTISUB}/${MARK_ANTISUB}  -j RETURN
 
     # Queue all of the ICMP packets (except for pings).
     ${IPTABLES} -A PREROUTING -t mangle -p icmp --icmp-type echo-request -j RETURN
