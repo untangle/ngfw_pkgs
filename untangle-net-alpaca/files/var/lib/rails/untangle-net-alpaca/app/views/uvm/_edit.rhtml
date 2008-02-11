@@ -28,8 +28,13 @@ EOF
     </ul>
 
   <div class="list-table rules">
-    <ul id="rule-builder" class="rule-list">
+    <ul class="rule-list">
+     <li>
+      <span class="edit-condition">If all of the following conditions are met</span>
+      <div class="add-button" onClick="RuleBuilder.addParameter()"><%= "Add".t %></div>
+      </li>
       <li class="header">
+        <div class="and">&nbsp;</div>
         <div class="type">
           Type
         </div>
@@ -45,7 +50,8 @@ EOF
           &nbsp;
         </div>
       </li>
-
+    </ul>
+    <ul id="rule-builder" class="rule-list">
        <%= render( :partial => "rule/parameter" , :collection => @parameter_list ) %>
     </ul>
   </div>

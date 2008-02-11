@@ -288,7 +288,7 @@ function Checkbox( name )
         var items = this.checkList();
         
         for ( var c = 0 ;  c < items.length ; c++ ) {
-            if (( c % 3 ) == 2 ) newContent += "<br/>";
+            //if (( c % 3 ) == 2 ) newContent += "<br/>";
             newContent +=  this.checkbox( rowId, items[c][0], items[c][1] );
         }
 
@@ -343,7 +343,7 @@ function Checkbox( name )
         + "' type='checkbox' name='" + label + "' value='" + identifier + "'/>";
         
         /* Wrap it in a div */
-        return "<div class='checkbox'>" + line + label + "</div>";
+        return "<div class='checkbox'>" + line + '&nbsp;'+ label + "</div>";
     };
     
     this.checkboxId = function( rowId, identifier ) {

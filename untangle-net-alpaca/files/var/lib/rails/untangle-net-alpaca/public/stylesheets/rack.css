@@ -48,7 +48,7 @@ ul.text-fields {
     margin-top: 0.5em;
 /*     width: 50%; */
 }
-li label {
+li, li label {
     font-size: 85%; /* 11px equiv */
     color: #333;
 }
@@ -854,41 +854,73 @@ div.rules ul.rule-list
   margin: 12px 32px;
   width: 620px;
  }
+ul.rule-list div.add-button
+{
+ float: right;
+ clear: none;
+ }
+ul.rule-list div.add-button:hover
+{ 
+ cursor: pointer;
+ }
+span.edit-condition
+{ 
+  clear: none;
+  float: left;
+ }
+ul.rule-list div.and
+{ 
+  width: 25px;
+  }
 ul.rule-list div.type
 {
-  width: 200px;
+  width: 168px;
   }
 ul.rule-list div.value
 {
-  width: 400px;
+  width: 424px;
   }
-ul.rule-list li.rule > div.plus, ul.rule-list li.rule > div.minus
+ul.rule-list li.rule
+{ 
+  background-color: #ddd;
+  border: 1px solid #fff;
+  padding: 3px;
+ }
+ul.rule-list li.rule.even
+{ 
+  background-color: #e8e8e8;
+ }
+ul.rule-list li.rule div.plus, ul.rule-list li.rule div.minus
 {
-  width: 30px;
+  width: 40px;
   text-align: center;
   }
-ul.rule-list li.rule > div.minus
+ul.rule-list li.rule div.minus
 {
   position: absolute;
-  right: 75px;
+  right: 73px;
+  background-image: url( "../images/minus.gif" );
+  background-repeat: no-repeat;
+  background-position: center;
 }
-ul.rule-list li.rule > div.plus
+ul.rule-list li.rule div.plus
 {
   position: absolute;
   right: 45px;
 }
-ul.rule-list li.rule > div.plus, ul.rule-list li.rule > div.minus
+ul.rule-list li.rule div.plus, ul.rule-list li.rule div.minus
 {
   width: 30px;
   text-align: center;
   }
-ul.rule-list li.rule > div.plus:hover, ul.rule-list li.rule > div.minus:hover
+ul.rule-list li.rule div.plus:hover, ul.rule-list li.rule div.minus:hover
 { 
   cursor: pointer;
+  background-color: #86c5df;
   }
 ul.rule-list div.checkbox
 { 
-  width: 125px;
+  width: 103px;
   }
 
 div.actions

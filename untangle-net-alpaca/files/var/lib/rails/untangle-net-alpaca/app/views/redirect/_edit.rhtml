@@ -21,21 +21,16 @@ EOF
         <label for="description"><%= "Description:".t %></label>
         <%= text_field_tag( "description", @redirect.description ) %>
       </li>
-
-      <li>
-        <label for="new_ip"><%= "New Destination:".t %></label>
-        <%= text_field_tag( "new_ip", @redirect.new_ip ) %>
-      </li>
-      
-      <li>
-        <label for="new_enc_id"><%= "New Port:".t %></label>
-        <%= text_field_tag( "new_enc_id", @redirect.new_enc_id ) %> (optional)
-      </li>
     </ul>
   </fieldset>
   <div class="list-table rules">
-    <ul id="rule-builder" class="rule-list">
+    <ul class="rule-list">
+      <li>
+      <span class="edit-condition">If all of the following conditions are met</span>
+      <div class="add-button" onClick="RuleBuilder.addParameter()"><%= "Add".t %></div>
+      </li>
       <li class="header">
+        <div class="and">&nbsp;</div>
         <div class="type">
           Type
         </div>
@@ -50,9 +45,26 @@ EOF
         </div>
       </li>
 
+    </ul>
+    <ul id="rule-builder" class="rule-list">
        <%= render( :partial => "rule/parameter" , :collection => @parameter_list ) %>
     </ul>
   </div>
+  <fieldset>
+    <ul class="text-fields">
+      <li>
+        Forward traffic to the following location
+      </li>
+      <li>
+        <label for="new_ip"><%= "New Destination:".t %></label>
+        <%= text_field_tag( "new_ip", @redirect.new_ip ) %>
+      </li>      
+      <li>
+        <label for="new_enc_id"><%= "New Port (optional):".t %></label>
+        <%= text_field_tag( "new_enc_id", @redirect.new_enc_id ) %>
+      </li>
+    </ul>
+  </fieldset>
   <div class="actions">
     <div class="rule-help">
       <%= submit_tag( "Help" ) %>
