@@ -5,7 +5,7 @@ def print_dynamic( value )
 end
 
 %>
-
+<fieldset>
 <ul class="text-fields">
   <li>
     <label for="<%= "#{config_id}_ip" %>"><%= "Address:".t %></label>
@@ -33,3 +33,4 @@ end
     <%= submit_to_remote( "Renew", "Renew Lease".t, options = { :url => { :action => "commit" }, :update => "main-content", :html => { :class => "submit" } } ) %>
    </li>
 </ul>
+</fieldset>

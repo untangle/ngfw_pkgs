@@ -9,7 +9,7 @@ div.add-button
   background-repeat: no-repeat;
   text-indent: 32px;
   color: #333333;
-  font-size: 80%;
+  font-size: 85%;
   overflow: visible;
   text-align: left;
   cursor: pointer;
@@ -24,7 +24,7 @@ div.refresh-button, input.refresh-button
   background-repeat: no-repeat;
   text-indent: 20px;
   color: #333333;
-  font-size: 80%;
+  font-size: 85%;
   overflow: visible;
   text-align: left;
   cursor: pointer;
@@ -135,7 +135,7 @@ div.list-table-container div.list-table li.even
 
 div.list-table-container div.list-table li.new
 { 
-  background-color: #B0D9EA;
+/*  background-color: #B0D9EA; */
  }
 
 div.list-table-container div.list-table ul li

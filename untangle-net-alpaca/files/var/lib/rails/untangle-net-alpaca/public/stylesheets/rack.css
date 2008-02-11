@@ -86,33 +86,55 @@ ul#extranav li a {
 #hostname select {
     width: 13.7em;
 }
+
+
+#network {
+	width: 636px;
+}
 #network #refresh-container {
 	/*width: 636px; 
 	margin-bottom: 10px;*/
-	position: absolute;
+	/* position: absolute; */
 	width: 636px;
+	text-align: right;
 }
 #network #refresh-container .refresh-button {
 	float: right;	
 }
 #network h2 {
-	margin-top: 0.3em;
+	clear: both;
 }
 
-#network fieldset.config-type, #network fieldset.config-type ul li, #network fieldset.external-aliases-button, #network fieldset.external-aliases-button ul li {
-margin: 0; padding: 0;
+#network fieldset.config-type, #network fieldset.config-type ul li, #network fieldset.config-type ul, #network fieldset.external-aliases-button, #network fieldset.external-aliases-button ul li {
+/* margin: 0; padding: 0; */
+margin-bottom: 0; padding-bottom: 0;
 }
-#network fieldset.external-aliases-button ul {
-	margin: -1em 0 0 0; padding: 0 0 0 262px;
+#network .basic-interface-config {
+	position: relative;
+	clear: both;
+	padding-top: 1px;
+}
+
+#network fieldset.external-aliases-button {
+/*	margin: -1em 0 0 0; padding: 0 0 0 262px;
 	overflow: visible;
-	z-index: 1000;
+	z-index: 1000;*/
+	margin: 0; padding: 0;
+	position: absolute;
+	right: 0px; top:10px;
+	float: right;
 }
-
+#network fieldset.external-aliases-button ul, #network fieldset.external-aliases-button ul li {
+	margin: 0; padding: 0;
+}
 #network fieldset.config-type ul {
 margin: 0 0 0 2em; padding: 0 0 0 0;
 }
 
-
+#network input.submit {
+	position: absolute;
+	top: 5px; right: 93px;
+}
 
 .textfield, .passwordfield {
     /* for IE6 */
@@ -875,6 +897,8 @@ div.actions
   width: 100%;
   padding-top: 3px;
   height: 38px;
+bottom: 0;
+position: absolute;
   }
 
 div.rule-help
@@ -892,7 +916,8 @@ div.update, div.cancel
   height: 21px;
   text-align: center;
   float: right;
-  font-size: 9pt;
+  font-size: 85%;
+	color: #333;
  }
 div.update
 { 
@@ -920,7 +945,7 @@ input.submit
   padding-left: 16px;
   border: 0;
   text-decoration: none;
-  color: black;
+  color: #333;
   font-size: 85%;
   width: 88px;
   height: 21px;
@@ -936,7 +961,7 @@ input.test-connectivity
   background-repeat: no-repeat;
   text-indent: 2px;
   color: #333333;
-  font-size: 80%;
+  font-size: 85%;
   overflow: visible;
   text-align: left;
   cursor: pointer;
@@ -968,7 +993,7 @@ a.Help, button.Help, input.Help
   padding-top: 2px;
   border: 0;
   text-decoration: none;
-  color: black;
+  color: #333;
   font-size: 9pt;
   width: 88px;
   height: 21px;
