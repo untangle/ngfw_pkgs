@@ -48,7 +48,7 @@ ul.text-fields {
     margin-top: 0.5em;
 /*     width: 50%; */
 }
-li, li label {
+li label {
     font-size: 85%; /* 11px equiv */
     color: #333;
 }
@@ -194,7 +194,7 @@ div.list-table ul
 /* This leaves the double border in the last item when the items fill the list vertically) */
 div.list-table li, div.list-table ul li, div.list-table ul > li
 {
-	overflow: auto; 
+  overflow: auto; 
   width: 100%;
   float: left;
  }
@@ -879,6 +879,19 @@ ul.rule-list div.type
 ul.rule-list div.value
 {
   width: 424px;
+  }
+li.info
+{ 
+  font-size: 85%;
+  margin: 0;
+  height: 1.5em;
+  overflow: visible;
+  }
+li.forward-to
+{ 
+  font-size: 85%;
+  margin: 0;
+  height: 0.8em;
   }
 ul.rule-list li.rule
 { 
