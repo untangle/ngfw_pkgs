@@ -103,9 +103,12 @@ class ApplicationController < ActionController::Base
   end
   
   def setScripts
-    @scripts = ( self.respond_to?( "scripts" )) ? scripts : []
-    @scripts.concat( RuleHelper::Scripts )
-    #@scripts.concat( [  "ext-base", "ext-prototype-adapter", "ext-all" ] )
+    @javascripts = []
+    @javascripts = [ self.scripts ].flatten if self.respond_to?( "scripts" )
+
+    @javascripts.concat( RuleHelper::Scripts )
+
+    @javascripts = @javascripts.uniq    
   end
 
   def setButtons

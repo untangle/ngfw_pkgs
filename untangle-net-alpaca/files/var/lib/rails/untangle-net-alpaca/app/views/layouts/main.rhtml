@@ -13,7 +13,8 @@
        <%= javascript_include_tag "IE7.js" %>
      <![endif]-->
     <%= javascript_include_tag :defaults %>
-    <% @scripts.each do |script| %>
+    
+    <% @javascripts.each do |script| %>
       <%= javascript_include_tag script %>
     <% end %>
   </head>
