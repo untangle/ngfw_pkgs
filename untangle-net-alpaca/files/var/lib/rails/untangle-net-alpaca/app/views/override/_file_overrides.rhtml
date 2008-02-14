@@ -10,5 +10,5 @@
     <%= render( :partial => "file_override", :collection => file_overrides ) %>
   </ul>
   
-  <%= sortable_element( "file-override-list" ) %> 
+  <%= sortable_element( "file-override-list", :onChange => "enableSave" ) %> 
 </div>

@@ -8,5 +8,5 @@
     <%= render( :partial => "system_subscription", :collection => system_subscriptions ) %>
   </ul>
   
-  <%= sortable_element( "subscription-list" ) %> 
+  <%= sortable_element( "subscription-list", :onChange => "enableSave" ) %> 
 </div>

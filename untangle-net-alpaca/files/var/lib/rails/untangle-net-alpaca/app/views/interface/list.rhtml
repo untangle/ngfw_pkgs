@@ -51,19 +51,8 @@
     <% end %>
   </table>
 
-  <%= sortable_element( "interface-os-list" ) %> 
+  <%= sortable_element( "interface-os-list", :onChange => "enableSave" ) %> 
   </div>
   </div></div>
-  <div id="main-content-footer">
-	<div id="footer-buttons">
-<div id="help-footer">
-    <%= submit_tag "Help".t %>
-</div>
-<div id="action-footer">
-  <%= submit_tag "Cancel".t %>
-  <%= submit_tag "Save".t %>
-</div>
-</div>
-  </div>
+<%= build_footer %>
 <% end -%>
-<%= javascript_tag "enableSave();" %>
