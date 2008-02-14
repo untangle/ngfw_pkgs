@@ -466,7 +466,7 @@ div#title
 { 
   position: fixed;
   top: 2.7em;
-  background: url(../images/background-title2-trans.png) repeat-x top left; 
+  background: url(../images/background-title2.png) repeat-x top left; 
   border-top: 0px solid #555555;
   border-bottom: 0px solid #555555;
   width: 100%;
@@ -1047,7 +1047,7 @@ div.warning, div.notice, div.error {
 	width: 100%;
 	border-bottom: 1px solid #999;
 	background: url(../images/warning-hatch.png);
-	z-index: 0;	
+	z-index: 10;	
 }
 div.warning ul, div.notice ul, div.error ul {
 	margin: 0; padding: 0;
