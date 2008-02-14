@@ -1,11 +1,13 @@
 <div id="title"><h1><%= "Login".t %></h1></div>
+
+<% if flash[:warning] %>
+  <%= "<div class='warning'><ul>#{flash[:warning]}</ul></div>" %>
+<% end %>
+
 <div id="main-content-body"><div class="wrapper">
 <div>
 
 
-  <% if flash[:warning] %>
-    <%= "<div id='warning'>#{flash[:warning]}</div>" %>
-  <% end %>
 
   <% form_tag( :controller => 'auth', :action => 'check_credentials' ) do -%>
     <fieldset>

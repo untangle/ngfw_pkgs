@@ -1,7 +1,7 @@
 <% form_tag( :action => 'save' ) do -%>
   <div id="title"><h1><%= "Network Configuration".t %></h1></div>
-  <div id="main-content-body"><div class="wrapper" id="network">
-  <%= handle_flash_messages %>
+	<%= handle_flash_messages %>
+<div id="main-content-body"><div class="wrapper" id="network">
     <div id="refresh-container">
     <div class="refresh-button" onclick="location.href='<%= url_for( :action => :refresh_interfaces ) %>'"> Refresh </div>
     </div>

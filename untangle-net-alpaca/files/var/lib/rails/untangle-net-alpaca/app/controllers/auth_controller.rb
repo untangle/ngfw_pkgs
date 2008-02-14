@@ -95,7 +95,7 @@ class AuthController < ApplicationController
 
   def request_login( msg = nil )
     logger.debug msg
-    flash[:warning] = msg  unless msg.nil?
+    flash[:warning] = "<li><strong>Error:</strong> "+msg+"</li>"  unless msg.nil?
     login
     render :action => 'login'
   end

@@ -6,17 +6,21 @@
     <% @stylesheets.each do |sheet| %>
       <%= stylesheet_link_tag sheet %>
     <% end %>
-     <!--[if lte IE 6]>
-       <%= stylesheet_link_tag "ie.css" %>
+     <!--[if lte IE 7]>
+		<%= stylesheet_link_tag "ie.css" %>
      <![endif]-->
-     <!--[if lt IE 7]>
-       <%= javascript_include_tag "IE7.js" %>
-     <![endif]-->
+
     <%= javascript_include_tag :defaults %>
     
     <% @javascripts.each do |script| %>
-      <%= javascript_include_tag script %>
+ 		<%= javascript_include_tag script %>
     <% end %>
+		
+		<!--[if lte IE 7]>
+			<%= javascript_include_tag "ie6.js" %>
+	   <![endif]-->
+
+
   </head>
   <body>
     <div id="guide"></div>

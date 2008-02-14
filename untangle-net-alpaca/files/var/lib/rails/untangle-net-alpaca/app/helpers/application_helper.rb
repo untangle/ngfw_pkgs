@@ -59,18 +59,18 @@ module ApplicationHelper
     body = ""
     if !flash[:notice].nil? and flash[:notice].length > 0
       css_class = "notice"
-      body << flash[:notice]
+      body << "<li>"+flash[:notice]+"</li>"
     end
     if !flash[:warning].nil? and flash[:warning].length > 0
       css_class = "warning"
-      body << flash[:warning]
+      body << "<li>"+flash[:warning]+"</li>"
     end
     if !flash[:error].nil? and flash[:error].length > 0
       css_class = "error"
-      body << flash[:error]
+      body << "<li>"+flash[:error]+"</li>"
     end
     if css_class != false
-      return "<div class=\"#{css_class}\">#{body}</div>"
+      return "<div class=\"#{css_class}\"><ul>#{body}</ul></div>"
     end
     return ""
   end
