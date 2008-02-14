@@ -7,7 +7,7 @@
     
     <p class="description">
       <%= "Unable to detect any removed or installed network interfaces.".t %>
-      <%= link_to( "Return to list.".t, { :action => "manage" } ) %>
+      <%= link_to( "Return to list.".t, { :controller => @last_controller, :action => "index" } ) %>
       <%= javascript_tag( "window.setTimeout('location.href=\"" + url_for( :controller => @last_controller, :action => "index" ) + "\"', 5500);" ) %>
     </p>
   <% else %>
