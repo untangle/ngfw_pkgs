@@ -76,6 +76,7 @@ ul#extranav li a {
 
 #network {
 	width: 636px;
+	
 }
 #network #refresh-container {
 	/*width: 636px; 
@@ -108,10 +109,10 @@ margin-bottom: 0; padding-bottom: 0;
 	margin: 0; padding: 0;
 	position: absolute;
 	right: 0px; top:10px;
-	float: right;
 }
-#network fieldset.external-aliases-button ul, #network fieldset.external-aliases-button ul li {
+#network fieldset.external-aliases-button ul, #network fieldset.external-aliases-button ul li, #network fieldset.external-aliases-button ul li input {
 	margin: 0; padding: 0;
+	display: inline;
 }
 #network fieldset.config-type ul {
 margin: 0 0 0 2em; padding: 0 0 0 0;
@@ -225,6 +226,12 @@ select.netmask option
 {
   width: 150px;
   }
+
+/* ie7 & ie6 hack */
+html* select.netmask
+{
+		width: 130px;
+}
 
 div.basic-interface-config div#interface_1
 { 

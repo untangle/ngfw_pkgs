@@ -8,6 +8,11 @@ body
 #tabs li.active-tab { background-position: 100% -200px; font-weight: bold; height: auto; margin-top: 0; }
 #tabs li.active-tab a.active-tab { background-position: 0% -200px; font-weight: bold; height:  auto; padding-top: 2px; }
 
+
+#network #refresh-container {
+	width: 634px;
+}
+
 div#title {
 /*background: none;
 	
@@ -15,6 +20,14 @@ div#title {
 	background: url(../images/background-title.png) repeat-x;  
 	position: absolute; 
 	top: expression( ( 36 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' ); 
+}
+
+ul#extranav 
+{
+
+  position: absolute;
+	top: expression( ( 8 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' ); 
+
 }
 
 div.warning, div.notice, div.error {
@@ -39,23 +52,9 @@ div#main-content-footer {
     position: absolute;
 	 bottom: auto;
  
-  top: expression( ( -50 + ( document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight ) + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+  top: expression( ( -51 + ( document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight ) + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
  
 }
-
-/*
-ul#extranav 
-{
-  list-style: none;
-  list-style-type: none;
-  margin: 0; padding: 0;
- z-index: 100001;
-  position: absolute;
-  right: 0;
-  top: 0.4em;
-}
-
-*/
 
 #spinner
 {
@@ -64,8 +63,8 @@ ul#extranav
 div#main-menu
 {
 	position: absolute;
-	position: absolute;
- top: expression( ( ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+
+ 	top: expression( ( ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
   
 }
 
@@ -78,4 +77,16 @@ div#main-menu
 }
 #advanced-dropdown .highlight {
 	 background-color: #b0d9ea;
+}
+
+#topmask {
+	border: 1px solid red;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	z-index: 1000000;
+	height: 100px;
+}
+select {
+/*	display: none; */
 }

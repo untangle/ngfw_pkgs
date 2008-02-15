@@ -329,7 +329,9 @@ Fabtabs.prototype = {
 var handleResize = function () {
 	//only kept here for legacy reasons
 }
-
+var replaceSelectBoxes = function () {
+//alert('here');
+}
 var focusTableField = function(event) {
     var element = Event.element(event);
     element.addClassName('focus');
@@ -432,6 +434,7 @@ var init = function() {
     enableSaveOnChange();
     spinnerOnSubmit();
     hideSpinner();
+
 }
 
 Event.observe(window,'load', init, false);

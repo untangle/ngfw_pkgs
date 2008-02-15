@@ -117,6 +117,10 @@ var init_ie6 = function() {
 	    }
 	*/
 
+		//<select>s show through overlayed elements in IE6
+		//this replaces selects with Ext JS selects, which are actually text inputs
+		replaceSelectBoxes(); 
+
 		//handles background image rollover flicker in IE6
 		try {
 		  document.execCommand('BackgroundImageCache', false, true);
@@ -138,8 +142,36 @@ var init_ie6 = function() {
 	    }
 	  
 }
+
+replaceSelectBoxes = function () {
+	
+	//scrollbar needs to be reset in IE6. putting this here b/c it gets called on every page
+	document.documentElement.scrollTop = 0;
+
+
+	//replace select boxes
+	selects = $('main-content').getElementsByTagName('select');
+	
+	var selectIDs = new Array();
+	if (selects.length > 0) {
+		for ( var i = 0; i< selects.length; i++) {
+			selectIDs.push(selects[i].id);
+		}		
+		for (var i = 0; i < selectIDs.length; i++) {
+			 var converted = new Ext.form.ComboBox({
+				    triggerAction: 'all',
+				    transform: selectIDs[i],
+				    width:150,
+					height: 14,
+				    forceSelection:true, 
+					editable: false
+				});
+		}	
+	}
+}
 	
 Event.observe(window,'load', init_ie6, false);
 //Event.observe(window,'load',handleResize_ie6,false);
 //Event.observe(window,'resize',handleResize_ie6,false);
 //Event.observe(window,'scroll',handleResize_ie6,false);	
+//Event.observe(window,'scroll', test, false);

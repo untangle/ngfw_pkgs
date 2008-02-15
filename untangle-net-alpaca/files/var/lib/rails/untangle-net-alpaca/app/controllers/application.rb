@@ -108,7 +108,7 @@ class ApplicationController < ActionController::Base
 
     @javascripts.concat( RuleHelper::Scripts )
 
-    @javascripts = @javascripts.uniq    
+    @javascripts = @javascripts.uniq
   end
 
   def setButtons
