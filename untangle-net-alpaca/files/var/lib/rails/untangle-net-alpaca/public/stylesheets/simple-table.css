@@ -35,6 +35,13 @@ div.list-table-container div.list-table div.list-table-column {
 	overflow: hidden;
 }
 
+
+#dhcp-static-entry-list li:hover, #static_arps li:hover, #dns-static-entry-list li:hover, #firewall-list li:hover, #override-list li:hover, #network_routes li:hover, #subscription-list li:hover, #redirect-list li:hover, #ip-network-list-static li:hover, #ip-network-list-dynamic li:hover, #ip-network-list-pppoe li:hover {
+	background-color: #B0D9EA;
+}
+
+
+
 /* ----------------------------- Tables ----------------------------- */
 
 div.list-table-container

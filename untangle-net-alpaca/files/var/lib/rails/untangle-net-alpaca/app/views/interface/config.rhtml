@@ -9,10 +9,11 @@
   %>
   <div id="title"><h1><%= "Interface Configuration for %s".t / @interface.name %></h1></div>
   <% form_tag( :action => 'intf_save_director', :id => @interface ) do -%>
-  <div id="main-content-body"><div class="wrapper">
-    <p><label for="config_type"><%= "Config Type".t %></label>
+  <div id="main-content-body"><div class="wrapper" id="interface">
+    <fieldset class="config-type">
+	      <ul class="text-fields"><label for="config_type"><%= "Config Type".t %></label>
     <%= select_tag( "config_type", options_for_select( @config_types, @config_type_id )) %>
-    <%= observe_field( "config_type", { :function => "Interface.setConfigType()" } ) %>
+    <%= observe_field( "config_type", { :function => "Interface.setConfigType()" } ) %></li></ul></fieldset>
 
   <div id="config-panels">
     <%= render( :partial => "static", :object => @static, :locals => { :interface => @interface }  ) %>

@@ -404,6 +404,23 @@ var enableSave = function() {
     $('Save').removeClassName('disabled');
 }
 
+var initTableRow = function(thisId) {
+
+	var newRows = $(thisId).getElementsByClassName('new');
+
+	//only take the first one
+	if (newRows.length > 0) {
+		var thisRow = newRows[0];
+		if (thisRow.id) {
+			
+				//handle initial row flicker
+				thisRow.setStyle({visibility: 'hidden'});
+				setTimeout( function() {thisRow.setStyle({visibility: 'visible'})}, 100);
+				
+		}
+	}
+	
+}
 
 var enableSaveObservers = function() {
     var inputs = $$('input');

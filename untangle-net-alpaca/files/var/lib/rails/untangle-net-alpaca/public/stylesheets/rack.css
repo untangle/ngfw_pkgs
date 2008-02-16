@@ -1077,3 +1077,10 @@ div.warning ul li, div.notice ul li, div.error ul li {
   	margin: 0;
 
 }
+#interface fieldset.config-type {
+	padding-left: 3px;
+}
+#interface fieldset.config-type label {
+	font-size: 85%;
+	color: #333;
+}
