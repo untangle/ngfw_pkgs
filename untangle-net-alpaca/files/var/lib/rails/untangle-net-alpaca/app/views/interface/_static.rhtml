@@ -8,21 +8,21 @@
     <fieldset>
       <ul class="text-fields">
         <li>
-          <label for="static[default_gateway]"><%= "Default Gateway:".t %></label>
+          <label for="static_default_gateway"><%= "Default Gateway:".t %></label>
           <%= text_field( "static", "default_gateway" ) %>
         </li>
         
         <li>
-          <label for="static[dns_1]"><%= "Primary DNS Server:".t %></label>
+          <label for="static_dns_1"><%= "Primary DNS Server:".t %></label>
           <%= text_field( "static", "dns_1" ) %>
         </li>
         
         <li>
-          <label for="static[dns_2]"><%= "Secondary DNS Server:".t %></label>
+          <label for="static_dns_2"><%= "Secondary DNS Server:".t %></label>
           <%= text_field( "static", "dns_2" ) %>
         </li>
         <li>
-          <label for="static[mtu]"><%= "MTU (#{@interface.current_mtu}):".t %></label>
+          <label for="static_mtu"><%= "MTU (#{@interface.current_mtu}):".t %></label>
           <%= text_field( "static", "mtu", { :class => "number" } ) %>
         </li>
         <li>
@@ -45,7 +45,7 @@
       <fieldset>
         <ul class="text-fields">
           <li>
-            <label for="static[mtu]"><%= "MTU:".t %></label>
+            <label for="static_mtu"><%= "MTU:".t %></label>
             <%= @interface.current_mtu %>
             <%= text_field( "static", "mtu", { :class => "number" } ) %>
           </li>

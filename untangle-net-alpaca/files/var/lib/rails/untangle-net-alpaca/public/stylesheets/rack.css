@@ -767,7 +767,7 @@ form div.dynamic input[type=text]
 
 form div.dynamic div.header
 { 
-  width: 140px;
+  width: 140px; 
   float: left;
   text-align: center;
   clear: none;
@@ -782,7 +782,7 @@ form div.dynamic div.first
 form div#dynamic div.current
 { 
   width: 115px;
-  padding: 3px 0 0 15px;
+  padding: 3px 0 0 0;
   float: left;
   clear: none;
  }
@@ -1078,9 +1078,38 @@ div.warning ul li, div.notice ul li, div.error ul li {
 
 }
 #interface fieldset.config-type {
-	padding-left: 3px;
+	padding-left: 5px;
 }
 #interface fieldset.config-type label {
 	font-size: 85%;
 	color: #333;
+}
+#interface #ethernet_media {
+	width: 110px; 
+}
+#interface fieldset .header{
+	font-size: 93%;
+	color: #666;
+	font-weight: bold;
+	width: 115px;
+	padding: 3px 0 0 0;
+	float: left;
+	clear: none;
+}
+#interface .current {
+	font-size: 85%;
+	color: #333;
+}
+
+#interface #renew-container {
+	/*width: 636px; 
+	margin-bottom: 10px;*/
+	/* position: absolute; */
+	width: 636px;
+	text-align: right;
+	margin: 0 0 10px 0; padding: 0;
+}
+#interface #renew-container input {
+	/* margin: 0; padding: 0; */
+	margin-right: 0;
 }

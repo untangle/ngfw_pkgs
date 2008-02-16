@@ -9,7 +9,7 @@ end
   <fieldset>
     <ul class="text-fields">
       <li>
-        <label for="pppoe[username]"><%= "Username:".t %></label>
+        <label for="pppoe_username"><%= "Username:".t %></label>
         <%= text_field( "pppoe", "username" ) %>
       </li>
       <li>
@@ -17,15 +17,15 @@ end
         <%= password_field_tag( "pppoe[password]", pppoe.hidden_password ) %>
       </li>
       <li>
-        <label for="pppoe[use_peer_dns]"><%= "Use peer DNS:".t %></label>
+        <label for="pppoe_use_peer_dns"><%= "Use peer DNS:".t %></label>
         <%= check_box( "pppoe", "use_peer_dns", { :checked => false, :disabled => true }, true, false ) %>
       </li>
       <li>
-        <label for="pppoe[dns_1]"><%= "Primary DNS Server:".t %></label>
+        <label for="pppoe_dns_1"><%= "Primary DNS Server:".t %></label>
         <%= text_field( "pppoe", "dns_1" ) %>
       </li>
       <li>
-        <label for="pppoe[dns_2]"><%= "Secondary DNS Server:".t %></label>
+        <label for="pppoe_dns_2"><%= "Secondary DNS Server:".t %></label>
         <%= text_field( "pppoe", "dns_2" ) %>
       </li>
        <li>
@@ -35,7 +35,7 @@ end
     </ul>
   </fieldset>
 
-  <div>
+  <div id="renew-container">
      <%= submit_to_remote( "Renew", "Renew Lease".t, options = { :url => { :action => "commit" }, :update => "main-content", :html => { :class => "submit" } } ) %>
   </div>
 

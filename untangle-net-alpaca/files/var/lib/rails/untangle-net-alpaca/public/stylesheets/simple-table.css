@@ -251,7 +251,7 @@ width: 30px;
  }
 
 /* ------------------ Style the redirect table ---------------- */
-div.list-table-container.redirects, div.list-table-container.ip_networks
+div.list-table-container.redirects
 { 
 /*  width: 644px; */
 	width: 633px;
@@ -298,20 +298,24 @@ div.list-table-container.redirects div.enabled, div.list-table-container.redirec
 /* ------------------ Style the IP Networks ---------------- */
 div.list-table-container.ip_networks
 { 
-  width: 644px;
+/*  width: 644px; */
+	width: 633px;
  }
 
 div.table-label.ip_networks
 { 
   /* Two extra pixels for the border */
-  width: 646px;
+ /* width: 646px; */
+	width: 635px;
  }
 
 
 div.list-table-container.ip_networks div.networks, div.list-table-container.ip_networks div.ip-network
 {
-  width: 550px; 
+  width: 570px; 
   }
+div.list-table-container.ip_networks div.minus {
+}
 
 /* ------------------ Style the DHCP Static Entries ---------------- */
 div.list-table-container.dhcp-static-entry
