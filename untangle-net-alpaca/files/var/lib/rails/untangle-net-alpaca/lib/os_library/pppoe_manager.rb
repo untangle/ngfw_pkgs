@@ -58,12 +58,17 @@ EOF
     cfg << "replacedefaultroute"
     cfg << "usepeerdns" if ( settings.use_peer_dns )
 
-    os_name = wan_interface.os_name
-    ## xxxx refactor this code because it is duplicated in the network manager. xxx #
-    os_name = "br.#{os_name}" if wan_interface.is_bridge?
+    ## Use the PPPoE daemon and the current interface.
+    cfg << "plugin rp-pppoe.so #{wan_interface.os_name}"
 
-    ## Use the PPPoE daemon and the corrent interface.
-    cfg << "plugin rp-pppoe.so #{os_name}"
+    ## Create a comment containing the list of "bridged" interfaces for the UVM and
+    ## the name of the bridge, makes reloading the networking configuration easy.
+    ## XXXX IMPORTANT DATA IN COMMENTS NOT LEGIT XXXX
+    if wan_interface.is_bridge?
+      os_name = ""
+      bia = wan_interface.bridged_interface_array.map{ |i| i.os_name }
+      cfg << "# bridge_configuration: br.#{wan_interface.os_name} #{bia.join(",")}"
+    end
 
     ## Append the username
     cfg << "user \"#{settings.username}\""

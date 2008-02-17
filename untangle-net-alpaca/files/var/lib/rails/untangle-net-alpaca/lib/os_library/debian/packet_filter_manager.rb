@@ -257,6 +257,26 @@ EOF
     
     text << header
     fw_text << header
+
+    ## A little function for marking an interface.
+    text << <<EOF
+mark_local_ip()
+{
+   local t_ip
+   local t_intf=$1
+   local t_index=$2
+   local t_mark
+   ## Verify the interface was specified.
+   test -z "${t_intf}" && return 0
+   test -z "${t_index}" && return 0
+
+   t_mark=$(( #{MarkInput} | ( ${t_index} << 8 )))
+   
+   for t_ip in `get_ip_addresses ${t_intf}` ; do
+     #{IPTablesCommand} #{Chain::MarkInterface.args} -d ${t_ip} -j MARK --or-mark ${t_mark}
+   done
+}
+EOF
     
     Interface.find( :all ).each do |interface|
       ## labelling
@@ -390,30 +410,32 @@ EOF
   def marking( interface )
     match = "-i #{interface.os_name}"
     
-    ## use ppp0 if this is a PPPoE interface that is not bridged.
-    match = "-i ppp0" if ( interface.config_type == InterfaceHelper::ConfigType::PPPOE )
-
     ## This is the name used to retrieve the ip addresses.
     name = interface.os_name
 
-    if interface.is_bridge?
+    ## use ppp0 if this is a PPPoE interface.
+    if ( interface.config_type == InterfaceHelper::ConfigType::PPPOE )
+      match = "-i ppp0" 
+    elsif interface.is_bridge?
       name = OSLibrary::Debian::NetworkManager.bridge_name( interface ) if interface.is_bridge?
       match = "-m physdev --physdev-in #{interface.os_name}" if interface.is_bridge?
     end
     
     index = interface.index
     mask = 1 << ( index - 1 )
-    rules = <<EOF
-#{IPTablesCommand} #{Chain::MarkInterface.args} #{match} -j MARK --or-mark #{mask}
 
-## Mark packets destined for each IP address as local.
- for t_intf in `get_ip_addresses #{name}` ; do
-#{IPTablesCommand} #{Chain::MarkInterface.args} -d ${t_intf} -j MARK --or-mark #{MarkInput | ( index << 8 )}
-done
+    rules = [ "#{IPTablesCommand} #{Chain::MarkInterface.args} #{match} -j MARK --or-mark #{mask}" ]
+    
+    if ( interface.config_type != InterfaceHelper::ConfigType::BRIDGE )
+      rules << "mark_local_ip #{name} #{index}"
+    end
+    
+    ## Append a mark for the ppp0 local addresses.
+    if ( interface.config_type == InterfaceHelper::ConfigType::PPPOE )
+      rules << "mark_local_ip ppp0 #{index}"
+    end
 
-EOF
-
-    rules
+    rules.join( "\n" )
   end
   
   def filtering( interface )

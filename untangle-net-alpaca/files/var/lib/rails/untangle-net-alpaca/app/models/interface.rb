@@ -71,6 +71,9 @@ class Interface < ActiveRecord::Base
     ## If the config is in bridge mode, then just return true if the bridged
     ## interface is non-nil
     return !intf_bridge.bridge_interface.nil? if self.config_type == InterfaceHelper::ConfigType::BRIDGE
+
+    ## Check if this is in a configuration that is bridgeable.
+    return false unless InterfaceHelper::BRIDGEABLE_CONFIGTYPES.include?( self.config_type )
     
     ## Otherwise grab all of the bridged interfaces and check if any of them
     ## are actually configured as bridges
@@ -79,6 +82,28 @@ class Interface < ActiveRecord::Base
     
     ## If there are any entries, then this is a bridge
     ( bi.nil? || bi.empty? ) ? false : true
+  end
+
+  
+  ## This returns a list of interfaces that are bridged with this interface
+  ## and configured in bridge mode.
+  def bridged_interface_array
+    ## Check if this is in a configuration that is bridgeable.
+    return [] unless  InterfaceHelper::BRIDGEABLE_CONFIGTYPES.include?( self.config_type )
+
+    ## bridge interface array (creating a copy)
+    bia = [ self.bridged_interfaces ].flatten
+
+    bia = [] if bia.nil?
+    
+    ## Create a new set of bridged interfaces
+    bia = bia.map { |ib| ib.nil? ? nil : ib.interface }
+    
+    ## Delete all of the nil interfaces and the ones where the bridge type isn't set properly.
+    bia = bia.delete_if { |ib| ib.nil? || ib.config_type != InterfaceHelper::ConfigType::BRIDGE }
+
+    ## If this is nil or empty, it is not a bridge.
+    bia
   end
   
   ## Get the config type

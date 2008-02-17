@@ -205,18 +205,10 @@ EOF
 
   ## These are the settings that should be appended to the first
   ## interface index that is inside of the interface (if this is in fact a bridge)
-  def bridgeSettings( interface, mtu, config_method, ip_networks = []  )
-    ## Check if this is a bridge
-    bridged_interfaces = interface.bridged_interfaces
+  def bridgeSettings( interface, mtu, config_method, ip_networks = [] )
+    ## Retrieve an array of all of the bridged interfaces.
+    bridged_interfaces = interface.bridged_interface_array
     
-    ## Create a new set of bridged interfaces
-    bridged_interfaces = bridged_interfaces.map { |ib| ib.interface }
-    
-    ## Delete all of the nil interfaces and the ones where the bridge type isn't set properly.
-    bridged_interfaces = bridged_interfaces.delete_if do |ib| 
-      ib.nil? || ib.config_type != InterfaceHelper::ConfigType::BRIDGE
-    end
-
     ## If this is nil or empty, it is not a bridge.    
     return "" if ( bridged_interfaces.nil? || bridged_interfaces.empty? )
     
@@ -268,18 +260,21 @@ EOF
     ip_networks = clean_ip_networks( pppoe.ip_networks )
 
     ## This will automatically remove the first ip_network if it is assigned to the bridge.
-    bridge = bridgeSettings( interface, nil, "manual", ip_networks )
+    #bridge = bridgeSettings( interface, nil, "manual", ip_networks )
     
-    name = OSLibrary::Debian::NetworkManager.bridge_name( interface ) unless bridge.empty?
+    #name = OSLibrary::Debian::NetworkManager.bridge_name( interface ) unless bridge.empty?
     ## Configure each IP and then join it all together with some newlines.
-    bridge += "\n" + append_ip_networks( ip_networks, name, nil, !bridge.empty? )
+    #bridge += "\n" + append_ip_networks( ip_networks, name, nil, !bridge.empty? )
+    
+    ## Currently bridges are not supported for PPPoE
+    alias_config = append_ip_networks( ip_networks, name, nil, false )
     
     ## Hardcoded at ppp0
 
     ## Use the ifconfig to guarantee the device is running, pppoe
     ## complains if the interface isn't running.
 <<EOF
-#{bridge}
+#{alias_config}
 
 auto ppp0
 iface ppp0 inet ppp

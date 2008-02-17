@@ -37,7 +37,7 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
   ## UVM interface properties file
   UvmInterfaceProperties = "/etc/untangle-net-alpaca/interface.properties"
   UvmInterfaceOrderProperty = "com.untangle.interface-order"
-
+  
   ## Function that contains all of the subscription / bypass rules
   BypassRules = "bypass_rules"
 
@@ -286,6 +286,11 @@ EOF
   end
 
   def interface_property( interface )
-    "#{interface.name}:#{interface.os_name}:#{interface.index}"
+    os_name = interface.os_name
+
+    ## Always register the interface as ppp0 if this is for PPPoE
+    os_name = "ppp0" if interface.config_type == InterfaceHelper::ConfigType::PPPOE
+
+    "#{interface.name}:#{os_name}:#{interface.index}"
   end
 end

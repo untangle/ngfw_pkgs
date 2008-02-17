@@ -43,7 +43,7 @@ module InterfaceHelper
   CONFIGTYPES = [ ConfigType::STATIC, ConfigType::DYNAMIC, ConfigType::BRIDGE, ConfigType::PPPOE ].freeze
 
   ## An array of the config types that you can bridge with
-  BRIDGEABLE_CONFIGTYPES = [ ConfigType::STATIC, ConfigType::DYNAMIC, ConfigType::PPPOE ].freeze
+  BRIDGEABLE_CONFIGTYPES = [ ConfigType::STATIC, ConfigType::DYNAMIC ].freeze
 
   ## A hash of all of the various ethernet medias
   ETHERNET_MEDIA = { "autoauto" => { :name => "Auto", :speed => "auto", :duplex => "auto" },
