@@ -104,6 +104,8 @@ EOF
     PostNat = Chain.new( "alpaca-post-nat", "nat", "POSTROUTING", <<'EOF' )
 ## Do not NAT packets destined to local host.
 #{IPTablesCommand} #{args} -o lo -j RETURN
+## Do not NAT packets that are destined to the VPN.
+#{IPTablesCommand} #{args} -o tun0 -j RETURN
 EOF
 
     ## Chain used to redirect traffic

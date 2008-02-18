@@ -330,43 +330,16 @@ EOF
     return DefaultDomain unless validator.is_hostname?( domain ) == true
     return domain
   end
-  
+
+  ## If the user didn't specify a value, then let DNS Masq figure it out.
   def calculate_gateway( dhcp_server_settings )
     gateway = dhcp_server_settings.gateway
     gateway = gateway.strip unless gateway.nil?
-
+    
     return gateway if valid?( gateway )
 
-    ## validate the start range.
-    return nil if IPAddr.parse_ip( dhcp_server_settings.start_address ).nil?
-
-    ## Find the first interface that is in this range.
-    ## Find the interface this is being routed out of.
-    
-    ## sample line:
-    ## 1.2.3.4 via 192.168.77.2 dev eth0  src 192.168.77.128  # if there is a next hop
-    ## 192.168.77.2 dev eth0 src 192.168.77.128 # if there isn't a next hop
-    route = `ip route get #{dhcp_server_settings.start_address}`.split( "\n" )[0]
-
-    ## Nothing to do if the route isn't found
-    return nil if route.nil?
-    route = route.split( " " )
-
-    ## REVIEW : not sure if if the language is not english then via will not be used.
-    ## If the next hop is local, then 
-    
-    if (( route.size == 7 ) && ( route[1] == "via" ))
-      os_name = route[4]
-    else
-      os_name = route[2]
-    end
-
-    next_hop = `ip route show | awk '/default via.*#{os_name}/ { print $3 }'`.strip
-
-    ## Default gateway is not on the same interface.
-    return nil if next_hop.empty?
-    
-    return next_hop.strip
+    ## It is just best to let DNS Masq handle this.
+    return nil
   end
 
   def calculate_netmask( dhcp_server_settings )
