@@ -1,4 +1,4 @@
-page.insert_html( :bottom, @list_id, :partial => "application/table_row", :object => @ip_network, :locals => { :table_model => ip_network_table_model, :data => Alpaca::Table::Data.new( @list_id, [ @ip_network ] ) } )
+page.insert_html( :top, @list_id, :partial => "application/table_row", :object => @ip_network, :locals => { :table_model => ip_network_table_model, :data => Alpaca::Table::Data.new( @list_id, [ @ip_network ] ) } )
 page << "TableManager.updateRowStyles( '"+@list_id+"' );"
 page << "initTableRow('"+@list_id+"');"
 page << "enableSave();"
