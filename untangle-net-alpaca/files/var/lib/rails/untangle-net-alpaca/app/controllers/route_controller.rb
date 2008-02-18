@@ -35,7 +35,12 @@ class RouteController < ApplicationController
 
     NetworkRoute.destroy_all
 
-    params[:network_route].each do |network_route_row|
+    network_routes = params[:network_route]
+    
+    ## ignore empty lists
+    network_routes = [] if network_routes.nil?
+    
+    network_routes.each do |network_route_row|
       if (!(params[:target][network_route_row].nil?) \
           && params[:target][network_route_row].length > 0\
           && !(params[:netmask][network_route_row].nil?) \

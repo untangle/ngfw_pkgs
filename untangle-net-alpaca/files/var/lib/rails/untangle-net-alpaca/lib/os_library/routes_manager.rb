@@ -59,8 +59,19 @@ class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
     cfg = []
 
     network_routes.each do |network_route|
-      cfg << "route add -net " + network_route.target + " netmask " + network_route.netmask + " gw " + network_route.gateway 
-      #+ " # " + network_route.name
+      target = network_route.target
+      netmask = network_route.netmask
+      gateway = network_route.gateway
+
+      next if IPAddr.parse_ip( target ).nil?
+      netmask = IPAddr.parse_netmask( netmask )
+      next if IPAddr.parse_ip( gateway ).nil?
+
+      ## Automatically mask off the necessary bits
+      target = IPAddr.parse( "#{target}/#{netmask}" )
+      next if target.nil? || netmask.nil?
+
+      cfg << "route add -net #{target} netmask #{netmask} gw #{gateway}"
     end
     
     os["override_manager"].write_file( ConfigFile, header, "\n", cfg.join( "\n" ), "\n" )
