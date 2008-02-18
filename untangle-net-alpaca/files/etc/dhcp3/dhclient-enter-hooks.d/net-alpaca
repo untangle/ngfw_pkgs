@@ -12,7 +12,7 @@ debug()
 ## Return a list of interfaces that are in bridge. 
 bridge_port_list()
 {
-    local l_bridge=$1
+    local l_bridge="$1"
     
     test -n "${l_bridge}" && {
         find /sys/class/net/${l_bridge}/brif/ -maxdepth 1 -mindepth 1 -exec basename {} \; 2>/dev/null
@@ -28,7 +28,7 @@ BRIDGE_CHECK_INTERVAL=1
 wait_for_bridge()
 {
     local t_interface
-    local t_ready=${BRIDGE_CHECK_ATTEMPTS}
+    local t_ready="${BRIDGE_CHECK_ATTEMPTS}"
     local t_count
     
     for (( t_count = 0 ; t_count < ${BRIDGE_CHECK_ATTEMPTS} ; t_count++ )) {
@@ -64,7 +64,7 @@ ${DEBUG} "Redefining make_resolv_conf"
 
 make_resolv_conf() { 
     if [ -n "$new_domain_name" -o -n "$new_domain_name_servers" ]; then
-        local t_hash=`md5sum /etc/dnsmasq.conf`
+        local t_hash="`md5sum /etc/dnsmasq.conf`"
         ## if [ -n "$new_domain_name" ]; then
             ## echo search $new_domain_name >>$new_resolv_conf
         ## fi
@@ -77,7 +77,7 @@ make_resolv_conf() {
             sed -i -e '/^server=/d' -e 's/^#new_name_server=/server=/' /etc/dnsmasq.conf
         fi
 
-        local t_new_hash=`md5sum /etc/dnsmasq.conf`
+        local t_new_hash="`md5sum /etc/dnsmasq.conf`"
                     
         ## Reststart DNS MASQ if necessary
         if [ "${t_hash}x" != "${t_new_hash}x" ]; then

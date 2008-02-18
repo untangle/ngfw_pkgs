@@ -52,6 +52,7 @@ noipdefault
 hide-password
 noauth
 persist
+maxfail 0
 EOF
 
     cfg << "defaultroute"

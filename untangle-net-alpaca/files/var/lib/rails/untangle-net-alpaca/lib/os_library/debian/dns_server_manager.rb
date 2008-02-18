@@ -245,6 +245,14 @@ EOF
     conditions = [ "wan=? and ( config_type=? or config_type=? )", true, InterfaceHelper::ConfigType::STATIC, InterfaceHelper::ConfigType::PPPOE ]
     i = Interface.find( :first, :conditions => conditions )
 
+    ## Check for PPPoE
+    unless i.nil?
+      config = i.current_config
+
+      ## Do not update the dns servers if it is configured to use peer dns.
+      i = nil if config.is_a?( IntfPppoe ) && ( config.use_peer_dns == true )
+    end
+
     ## zero them out
     dns_1, dns_2 = []
     if i.nil?

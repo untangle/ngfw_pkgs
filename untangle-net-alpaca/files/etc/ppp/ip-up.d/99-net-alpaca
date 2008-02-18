@@ -14,24 +14,27 @@ exec >> /var/log/untangle-net-alpaca/pppoe.log 2>&1
 
 ## This is borrowed from etc/dhcp3/dhclient-enter-hooks.d/net-alpaca.
 make_resolv_conf() { 
-    local t_new_domain_name_servers
     ## This guarantees that ${t_new_domain_name_servers} will just be " "
-    test -n "${DNS1}" && t_new_domain_name_servers="${DNS_1}"
-    test -n "${DNS2}" && t_new_domain_name_servers="${t_new_domain_name_servers} ${DNS_2}"
-        
+    local t_new_domain_name_servers="`echo "${DNS1}\n${DNS2}" | sort | uniq`"
+    
+    ## Check MS_DNSx if the DNS servers were not specified in DNS1 and DNS2
+    test -z "${t_new_domain_name_servers}" && {
+        t_new_domain_name_servers=`echo "${MS_DNS1}\n${MS_DNS2}" | sort | uniq`
+    }
+
     ## only update the dns server when instructed to.
-    if [ -n "$t_new_domain_name_servers" -a "${USEPEERDNS}x" == "1x" ]; then
-        local t_hash=`md5sum /etc/dnsmasq.conf`
+    if [ -n "${t_new_domain_name_servers}" ] && [ "${USEPEERDNS}x" = "1x" ]; then
+        local t_hash="`md5sum /etc/dnsmasq.conf`"
         
-        if [ -n "$t_new_domain_name_servers" ]; then
-            for nameserver in $t_new_domain_name_servers ; do
+        if [ -n "{$t_new_domain_name_servers}" ]; then
+            for nameserver in ${t_new_domain_name_servers} ; do
                 /bin/echo -e "#new_name_server=${nameserver}" >> /etc/dnsmasq.conf
             done
 
             sed -i -e '/^server=/d' -e 's/^#new_name_server=/server=/' /etc/dnsmasq.conf
         fi
 
-        local t_new_hash=`md5sum /etc/dnsmasq.conf`
+        local t_new_hash="`md5sum /etc/dnsmasq.conf`"
                     
         ## Reststart DNS MASQ if necessary
         if [ "${t_hash}x" != "${t_new_hash}x" ]; then

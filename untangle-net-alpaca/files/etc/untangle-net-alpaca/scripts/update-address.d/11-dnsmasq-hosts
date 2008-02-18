@@ -12,6 +12,27 @@ get_addresses()
     ip addr show | awk '/^[0-9]/ { current_intf=$2 } ; /inet/ { $ip = $2 ; sub( /\/.*$/, "", $ip ) ; if ( current_intf != "dummy0:" && current_intf != "utun:" && current_intf != "lo:" ) print $ip  }'
 }
 
+
+pppoe_interface()
+{
+    test -f /etc/network/interfaces || return
+    
+    ## Grab the provider.
+    local t_provider=`awk '/ppp0/ { is_ppp = true }; /^[\t ]*provider/ { sub( /^[\t ]*provider[\t ]*/, "" ) ; if ( is_ppp == true ) print }' /etc/network/interfaces`
+
+    ## check if there is actually a provider
+    test -z "${t_provider}" && return
+    
+    ## Now grab the interface that is linked to this provider.
+    t_provider="/etc/ppp/peers/${t_provider}"
+    test -f ${t_provider} || return
+
+    ## Now print out the name of the interface that is used
+    awk '/^[ \t]*plugin rp-pppoe.so/ { sub( /[ \t]*plugin rp-pppoe.so[ \t]*/, "" ); print }' ${t_provider}
+}
+
+
+
 ## This gets just the address that is used to contact the default
 ## route.  This is probably the address the user is interested in.
 ## Creating an IP with all of the addresses has a few side effects
@@ -20,11 +41,26 @@ get_addresses()
 ## the new behavior.
 get_addresses()
 {
+    local t_interface="`pppoe_interface`"
+    local t_address
+    
+    ## Always favor aliases assigned to the PPPoE interface.
+    test -n "${t_interface}" && {
+        t_address=`ip addr show ${t_interface} | awk "/^ *inet.*scope global ${t_interface}/ { interface = \\$2 ; sub( \"/.*\", \"\", interface ) ; print interface }"`
+
+        ## If there is an address on the PPPoE interface, then go with that.
+        test -n "${t_address}" && {
+            echo "${t_address}"
+            return 0
+        }
+    }
+
+    ## otherwise use the default route to calculate it.
     ## lookup the interface with the default route
-    local t_interface=`ip route show | awk '/^default/ { print $5 }'`
+    local t_interface="`ip route show | awk '/^default/ { print $5 }'`"    
     
     ## Find the first address assigned to that interface.
-    test -n "${t_interface}" && ip addr show $dev | awk "/^ *inet.*scope global ${t_interface}/ { interface = \$2 ; sub( \"/.*\", \"\", interface ) ; print interface }"
+    test -n "${t_interface}" && ip addr show ${t_interface} | awk "/^ *inet.*scope global ${t_interface}/ { interface = \$2 ; sub( \"/.*\", \"\", interface ) ; print interface }"
 }
 
 update_dnsmasq_hosts()
