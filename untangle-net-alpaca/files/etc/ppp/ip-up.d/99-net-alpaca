@@ -44,8 +44,9 @@ make_resolv_conf() {
 
     ## Fix resolv.conf which has inevitably been overwritten by another script.
     local t_suffix
-    if [ -f ${DNS_MASQ_CONF} ]; then
-        t_suffix=`awk '/^domain-suffix=/ { sub( "domain-suffix=", "" ) ; print } ' ${DNS_MASQ_CONF}`
+    
+    if [ -f /etc/dnsmasq.conf ]; then
+        t_suffix=`awk '/^domain-suffix=/ { sub( "domain-suffix=", "" ) ; print }' /etc/dnsmasq.conf`
     fi
     
     t_suffix=${t_suffix:-"example.com"}
