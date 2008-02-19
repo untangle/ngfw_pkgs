@@ -126,6 +126,7 @@ var init_ie6 = function() {
 		  document.execCommand('BackgroundImageCache', false, true);
 		} catch(e) {}
 
+
 	    if ($('advanced-menu')) {
 		$('advanced-menu').observe('mouseover', showAdvancedMenu);
 		$('advanced-menu').observe('mouseout', hideAdvancedMenu);
@@ -140,6 +141,7 @@ var init_ie6 = function() {
 		    }
 		}
 	    }
+	
 	  
 }
 

@@ -397,10 +397,12 @@ div#overlay div#rule-dialog
   z-index: 2000000;
   background-color: #FFF;
   border: 1px solid #6a6a6a;
+text-align: left;
   }
 
 div#overlay div#rule-dialog .rule-content {
 	padding: 6px 12px;
+	text-align: left;
 
 }
 div#overlay div#rule-dialog .rule-content p {
@@ -1090,6 +1092,7 @@ div.update, div.cancel
   float: right;
   font-size: 85%;
 	color: #333;
+	z-index: 40000000;
  }
 div.update
 { 
@@ -1139,6 +1142,7 @@ input.test-connectivity
   cursor: pointer;
   border: 0;
  }
+
 
 input.submit:hover
 { 

@@ -41,6 +41,10 @@ div.list-table-container div.list-table div.list-table-column {
 }
 
 
+div.list-table-container div.minus {
+/* border: 1px solid red;
+	width: auto; */
+}
 
 /* ----------------------------- Tables ----------------------------- */
 
@@ -300,9 +304,8 @@ div.list-table-container.redirects div.edit {
 	width: 50px;
 }
 div.list-table-container.redirects div.minus {
-	/*width: auto;*/
 	padding-left: 8px; 
-	width: 30px;
+	width: 30px; 
 }
 
 

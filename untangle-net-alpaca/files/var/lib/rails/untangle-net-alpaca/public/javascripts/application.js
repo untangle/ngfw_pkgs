@@ -282,6 +282,7 @@ Fabtabs.prototype = {
 	this.menu.without(elm).each(this.hide.bind(this));
     },
     ok : function(ev) {
+		alert('ok');
         this.warn = false;
         Element.hide( "overlay" );
     },
