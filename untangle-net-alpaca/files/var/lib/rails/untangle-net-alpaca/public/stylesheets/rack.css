@@ -387,50 +387,35 @@ div#overlay
 div#overlay table, div#overlay table tr, div#overlay table, div#overlay table tr td {
 	margin: 0; padding: 0; border: none;
 }
+div#overlay div#rule-dialog-cont {
+	position: relative;
+}
 
-div#overlay div#rule-dialog-cont
-{
-/*	position: absolute; */
-  	/*left: 50%;
-  	top: 50%; */
-/*	border: 1px solid red;
-	position: relative;*/
-	position: relative;
-}
-div#overlay div#rule-dialog-cont2
-{
-/*	position: absolute; */
-  	/*left: 50%;
-  	top: 50%; */
-/*	border: 1px solid red;
-	position: relative;
-	display: inline;
-		width: auto; */
-}
 div#overlay div#rule-dialog
 { 
-/*	position: absolute; */
-/*	position: absolute; */
-/*	position: relative;
-	left: -50%; 
-	top: -200px;  */
-/*  top: 100px;*/
-/*  margin-left: -350px; */
- 	width: 700px; 
-/*  height: 392px; */
-min-width: 300px;
-min-height: 150px;
-/*  display: inline; */
 	width: auto;
   z-index: 2000000;
   background-color: #FFF;
   border: 1px solid #6a6a6a;
   }
 
-div#overlay div#rule-dialog.smallBox
-{
-	top: -75px; 
+div#overlay div#rule-dialog .rule-content {
+	padding: 6px 12px;
+
 }
+div#overlay div#rule-dialog .rule-content p {
+	font-size: 85%;
+	color: #333;
+}
+div#overlay div#rule-dialog div.actions
+{ 
+	margin: 0; padding: 0;
+  }
+div#overlay div#rule-dialog div.update
+{ 
+	margin-right: 0; 
+  }
+
 div#rule-dialog h2.title
 { 
   color: #FFF;
@@ -448,7 +433,8 @@ vertical-align: middle;
 
 div#overlay div#rule-dialog .list-table
 { 
-	overflow-y: auto;
+/*	overflow-y: auto; */
+	overflow: hidden;
 	height: auto;
 	padding-bottom: 10px;
 	margin-bottom: -1px;
@@ -458,6 +444,19 @@ div#overlay div#rule-dialog .topline
 { 
 border-top: 1px solid #c0c0c0;
  }
+div#overlay div#rule-dialog .and
+{ 
+	font-size: 85%; color: #333;
+ 	padding-top: 3px;
+}
+div#overlay div#rule-dialog .text-fields #description
+{ 
+	width: 34em;
+}
+div#overlay div#rule-dialog .text-fields .forward-to
+{ 
+	padding: 0.4em 0 0.6em 0;
+}
 div#overlay div#rule-dialog .info
 { 
 	overflow-y: hidden;
@@ -468,6 +467,7 @@ div#overlay div#rule-dialog .edit-condition, div#overlay div#rule-dialog .forwar
 }
 div#overlay div#rule-dialog .checkbox {
 	float: left;
+	padding: 3px 0;
 }
 div#overlay div#rule-dialog .checkbox input {
 	float: left; 
@@ -478,8 +478,8 @@ div#overlay div#rule-dialog .checkbox label {
 	float: left;
 	/*float: right;*/
 	width: 50%;
-	margin: 0; padding: 0;
-	margin-right: 0;
+	margin: 0 0 0 0.6em; padding: 0;
+
 	text-align: left;
 }
 div.text-fields label
@@ -914,22 +914,46 @@ div.config-level div.button:hover
 
 div.rules
 { 
-  position: relative;
+/*  position: relative;
   left: 50%;
   margin-left: -350px;
   width: 700px;
-  height: 200px;
+  height: 200px; */
+	height: 200px;
+	position: relative;
   }
 div.rules ul.rule-list
 { 
-  margin: 12px 32px;
-  width: 620px;
+  margin: 1em 2em;
+/*  width: 620px; */
+width: 47.5em;
+min-width: 620px; 
+clear: both;
+
  }
-ul.rule-list div.add-button
+div.rules #rule-builder
+{ 
+	max-height: 200px;
+	overflow-y: auto;
+	overflow-x: hidden;
+ }
+div.rules ul.rule-list li.header
 {
- float: right;
- clear: none;
+	font-weight: bold;
+	font-size: 85%;
+	color: #333;
+}
+div.rules div.add-button
+{
+/* float: right;
+ clear: none; */
+position: absolute;
+right: 0;
+top: 25px;
+right: 2.1em;
+	z-index: 3000000;
  }
+
 ul.rule-list div.add-button:hover
 { 
  cursor: pointer;
@@ -941,22 +965,31 @@ span.edit-condition
  }
 ul.rule-list div.and
 { 
-  width: 25px;
+	width: 5%;
+	background-color: transparent;
+/*  width: 25px; */
   }
+
+
+
 ul.rule-list div.type
 {
-  width: 168px;
+	width: 27%;
+/*  width: 168px;*/
   }
 ul.rule-list div.value
 {
-  width: 424px;
+	width: 63%;
+/*  width: 424px; */
   }
+
 li.info
 { 
   font-size: 85%;
   margin: 0;
-  height: 1.5em;
-  overflow: visible;
+  height: 1.6em;
+/*  overflow: visible; */
+	position: relative;
   }
 li.forward-to
 { 
@@ -966,23 +999,36 @@ li.forward-to
   }
 ul.rule-list li.rule
 { 
-  background-color: #ddd;
-  border: 1px solid #fff;
-  padding: 3px;
+ background-color: #e4e4e4;
+/*  border: 1px solid #fff; */
+  padding: 3px; 
+	border-top: 1px solid #fff; 
+	border-bottom: 1px solid #fff;
+	float: none;
+	width: 100%;
+	position: relative;
  }
 ul.rule-list li.rule.even
 { 
-  background-color: #e8e8e8;
+/*	background-color: transparent; */
+  background-color: #efefef; 
  }
 ul.rule-list li.rule div.plus, ul.rule-list li.rule div.minus
 {
-  width: 40px;
+/*  width: 40px; */
+/*	width: 5%; */
   text-align: center;
   }
+ul.rule-list li.rule div
+{
+	float: left;
+}
 ul.rule-list li.rule div.minus
 {
   position: absolute;
-  right: 73px;
+	right: 0;
+/*vertical-align: top;
+float: right; */
   background-image: url( "../images/minus.gif" );
   background-repeat: no-repeat;
   background-position: center;
@@ -994,8 +1040,12 @@ ul.rule-list li.rule div.plus
 }
 ul.rule-list li.rule div.plus, ul.rule-list li.rule div.minus
 {
-  width: 30px;
-  text-align: center;
+	width: 10%;
+/*  width: 30px;
+  text-align: right;
+	padding-right: 1em;
+	border: 1px solid red;
+	float: right; */
   }
 ul.rule-list li.rule div.plus:hover, ul.rule-list li.rule div.minus:hover
 { 
@@ -1014,8 +1064,8 @@ div.actions
   padding-top: 3px;
   min-height: 38px;
 
-bottom: 0;
-position: absolute; 
+/*bottom: 0;
+position: absolute; */
   }
 
 div.rule-help
@@ -1024,7 +1074,12 @@ div.rule-help
   margin-right: 10px;
   width: 100px;
   float: left;
+
  }
+div.rule-help a {
+	font-size: 85%;
+	color: #333;	
+}
 div.update, div.cancel
 {
   margin-top: 8px;

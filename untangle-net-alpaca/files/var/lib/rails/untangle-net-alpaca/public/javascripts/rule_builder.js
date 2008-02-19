@@ -112,6 +112,7 @@ var RuleBuilder =
                 
         try {
             Element.remove( rowId );
+			this.updateRowStyles('rule-builder');
         } catch ( e ) {
             /* ignoring the error */
         }
@@ -119,7 +120,6 @@ var RuleBuilder =
 
     addParameter : function()
     {
-		alert(this.createParameter);
         new Ajax.Request( this.createParameter, { asynchronous:true, evalScripts:true} );
         return false;
     },
@@ -269,7 +269,49 @@ var RuleBuilder =
         }
 
         enableSave();
-    }
+    },
+
+  	updateRowStyles : function( tableId)
+    {
+
+		var table = document.getElementById( tableId );
+
+        /* Ignore anything that doesn't exist */
+        if ( table == null ) return;
+
+        /* Ignore anything that is not an unsorted list. */
+        if ( table.nodeName != "UL" && table.nodeName != "ul" ) return;
+
+        var children = table.childNodes;
+
+        var isFirst = true;
+        var isOdd = true;
+
+        for ( var c = 0 ; c < children.length ; c++ ) {
+            if ( children[c].nodeName != "LI" && children[c].nodeName != "li" ) continue;
+
+            var child = children[c];
+
+            if ( isFirst ) {
+                Element.addClassName( child, "first" );
+            } else {
+                Element.removeClassName( child, "first" );
+            }
+
+            if ( isOdd ) {
+                Element.addClassName( child, "odd" );
+                Element.removeClassName( child, "even" );
+            } else {
+                Element.addClassName( child, "even" );
+                Element.removeClassName( child, "odd" );
+            }
+
+            isFirst = false;
+            isOdd = !isOdd;
+        }
+
+
+    },
 };
 
 function Rule( parameter, value )
@@ -344,7 +386,7 @@ function Checkbox( name )
         + "' type='checkbox' name='" + label + "' value='" + identifier + "'/>";
         
         /* Wrap it in a div */
-        return "<div class='checkbox'>" + line + "&nbsp;<label for='"+this.checkboxId( rowId, identifier )+"'>"+ label + "</label></div>";
+        return "<div class='checkbox'>" + line + "<label for='"+this.checkboxId( rowId, identifier )+"'>"+ label + "</label></div>";
     };
     
     this.checkboxId = function( rowId, identifier ) {

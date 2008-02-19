@@ -1,5 +1,5 @@
 <% rowId="parameter-#{rand( 0x100000000 )}" %>
-<li id="<%= rowId  %>" class="rule">
+<li id="<%= rowId  %>" class="rule odd">
   <div class="and">and </div>
   <div class="type">
     <%= select_tag( "ruleType[]", options_for_select( RuleHelper::FilterTypes, parameter.parameter ), 

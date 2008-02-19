@@ -9,7 +9,6 @@ EOF
 %>
 
 <h2 class="title"><%= "Edit".t %></h2>
-<!--<p>whatever</p> -->
 
 <% form_tag( :action => '#' ) do -%>
   <fieldset>
@@ -26,10 +25,10 @@ EOF
     </ul>
   </fieldset>
   <div class="list-table rules">
+	<div class="add-button" onClick="RuleBuilder.addParameter()"><%= "Add".t %></div>
     <ul class="rule-list">
       <li class="info">
       <span class="edit-condition">If all of the following conditions are met:</span>
-      <div class="add-button" onClick="RuleBuilder.addParameter()"><%= "Add".t %></div>
       </li>
       <li class="header">
         <div class="and">&nbsp;</div>
@@ -67,6 +66,7 @@ EOF
       </li>
     </ul>
   </fieldset>
+</div>
   <div class="actions">
     <div class="rule-help">
       <%= submit_tag( "Help" ) %>
@@ -84,19 +84,5 @@ EOF
   </div>
 <% end -%>
 
-<div class="actions">
-  <div class="rule-help">
-    <%= submit_tag( "Help" ) %>
-  </div>
-  <div class="update" onclick="RuleBuilder.update('<%= @row_id %>') ; RuleBuilder.close();"><a class="submit Update">
-    <%= "Update".t %>
-    </a>
-  </div>
-  <div class="cancel" onclick="RuleBuilder.cancel()">
-    <a class="submit Cancel">
-    <%= "Cancel".t %>
-    </a>
-  </div>
 
-</div>
 

@@ -1,1 +1,2 @@
 page.replace_html( "rule-dialog", :partial => "edit", :object => @redirect )
+page << "RuleBuilder.updateRowStyles( 'rule-builder' );"
