@@ -311,7 +311,7 @@ var RuleBuilder =
         }
 
 
-    },
+    }
 };
 
 function Rule( parameter, value )

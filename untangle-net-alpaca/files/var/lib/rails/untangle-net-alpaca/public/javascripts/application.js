@@ -291,7 +291,7 @@ Fabtabs.prototype = {
     },
     tabWarn : function(elm) {
         var request = new Ajax.Request( "../alpaca/tab",
-            { asynchronous:false, evalScripts:true, } );
+            { asynchronous:false, evalScripts:true } );
 
         if ( !request.success() ) {
             alert( "unable to warn on page change." );
