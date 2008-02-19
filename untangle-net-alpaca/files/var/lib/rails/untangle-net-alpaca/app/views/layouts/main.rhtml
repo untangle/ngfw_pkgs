@@ -6,7 +6,7 @@
     <% @stylesheets.each do |sheet| %>
       <%= stylesheet_link_tag sheet %>
     <% end %>
-	<!--[if lte IE 7]>
+	<!--[if lt IE 7]>
 		<%= stylesheet_link_tag "ie.css" %>
 	<![endif]-->
 
@@ -16,7 +16,7 @@
 			<%= javascript_include_tag script %>
 	<% end %>
 					
-	<!--[if lte IE 7]>
+	<!--[if lt IE 7]>
 		
 		<%= javascript_include_tag "ie7/ie7-core.js" %>
 		<%= javascript_include_tag "ie7/ie7-fixed.js" %>
