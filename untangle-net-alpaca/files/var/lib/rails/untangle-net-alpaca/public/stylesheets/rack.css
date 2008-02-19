@@ -165,7 +165,7 @@ ul#dns-dynamic-entry-list div.hostname
 div.list-table
 { 
   overflow-y: scroll;
-  border-bottom: 1px solid #C0C0C0;
+/*  border-bottom: 1px solid #C0C0C0; */
   border-top: 1px solid #C0C0C0;
  }
 
@@ -384,30 +384,104 @@ div#overlay
   height: 100%;
  }
 
+div#overlay table, div#overlay table tr, div#overlay table, div#overlay table tr td {
+	margin: 0; padding: 0; border: none;
+}
+
+div#overlay div#rule-dialog-cont
+{
+/*	position: absolute; */
+  	/*left: 50%;
+  	top: 50%; */
+/*	border: 1px solid red;
+	position: relative;*/
+	position: relative;
+}
+div#overlay div#rule-dialog-cont2
+{
+/*	position: absolute; */
+  	/*left: 50%;
+  	top: 50%; */
+/*	border: 1px solid red;
+	position: relative;
+	display: inline;
+		width: auto; */
+}
 div#overlay div#rule-dialog
 { 
-  position: relative;
-  top: 100px;
-  left: 50%;
-  margin-left: -350px;
-  width: 700px;
-  height: 392px;
+/*	position: absolute; */
+/*	position: absolute; */
+/*	position: relative;
+	left: -50%; 
+	top: -200px;  */
+/*  top: 100px;*/
+/*  margin-left: -350px; */
+ 	width: 700px; 
+/*  height: 392px; */
+min-width: 300px;
+min-height: 150px;
+/*  display: inline; */
+	width: auto;
   z-index: 2000000;
   background-color: #FFF;
-  border: 1px solid #676767;
+  border: 1px solid #6a6a6a;
   }
 
+div#overlay div#rule-dialog.smallBox
+{
+	top: -75px; 
+}
 div#rule-dialog h2.title
 { 
   color: #FFF;
   background-image: url( ../images/rack/overlay_h2.gif );
   background-repeat: repeat-x;
-  background-color: #727272;
-  margin: 0;
+  background-color: #6f6f6f;
+  margin: 0 0 0 0;
+  padding: 6px 0 0 0;
   width: 100%;
-  text-indent: 15px;
+  text-indent: 12px;
   border: 0;
+min-height: 18px;
+vertical-align: middle;
   }
+
+div#overlay div#rule-dialog .list-table
+{ 
+	overflow-y: auto;
+	height: auto;
+	padding-bottom: 10px;
+	margin-bottom: -1px;
+  }
+
+div#overlay div#rule-dialog .topline
+{ 
+border-top: 1px solid #c0c0c0;
+ }
+div#overlay div#rule-dialog .info
+{ 
+	overflow-y: hidden;
+}
+div#overlay div#rule-dialog .edit-condition, div#overlay div#rule-dialog .forward-to {
+	color: #666;
+	font-weight: bold;
+}
+div#overlay div#rule-dialog .checkbox {
+	float: left;
+}
+div#overlay div#rule-dialog .checkbox input {
+	float: left; 
+	display: inline;
+}
+div#overlay div#rule-dialog .checkbox label {
+	display:inline;
+	float: left;
+	/*float: right;*/
+	width: 50%;
+	margin: 0; padding: 0;
+	margin-right: 0;
+	text-align: left;
+}
 div.text-fields label
 {
   width: 200px;
@@ -680,7 +754,9 @@ div#action-footer
   float: right;
 }
 div#footer-buttons {
-    width: 677px;
+/*	width: 52.1em;
+    min-width: 677px; */
+	width: 677px; 
 }
 .interface-buttons
 {
@@ -934,11 +1010,12 @@ ul.rule-list div.checkbox
 div.actions
 { 
   background-color: #e8e8e8;
-  width: 100%;
+  width: auto;
   padding-top: 3px;
-  height: 38px;
+  min-height: 38px;
+
 bottom: 0;
-position: absolute;
+position: absolute; 
   }
 
 div.rule-help

@@ -6,7 +6,7 @@
     <% @stylesheets.each do |sheet| %>
       <%= stylesheet_link_tag sheet %>
     <% end %>
-	<!--[if lt IE 7]>
+	<!--[if lte IE 7]>
 		<%= stylesheet_link_tag "ie.css" %>
 	<![endif]-->
 
@@ -16,7 +16,7 @@
 			<%= javascript_include_tag script %>
 	<% end %>
 					
-	<!--[if lt IE 7]>
+	<!--[if lte IE 7]>
 		
 		<%= javascript_include_tag "ie7/ie7-core.js" %>
 		<%= javascript_include_tag "ie7/ie7-fixed.js" %>
@@ -35,8 +35,23 @@
   <body>
     <div id="spinner" style="display: none"><%= image_tag("spinner.gif") %></div>
     <div id="overlay"  style="display: none">
-      <div id="rule-dialog">
-      </div>
+		<!--<div id="rule-dialog-cont">
+      		<div id="rule-dialog">
+      		</div>
+		</div> -->
+		<!-- this extraneous markup is to get the dialog box to center in the screen regardless of its dimensions -->
+		<table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
+			<tr><td valign="middle" align="center">
+					<table cellpadding="0" cellspacing="0" border="0">
+						<tr><td>
+							<div id="rule-dialog-cont">
+								<div id="rule-dialog">
+					      		</div>
+							</div>
+						</td></tr>
+					</table>
+			</td></tr>
+		</table>
     </div>
     <%= render( :partial => main_menu.partial, 
       :locals => { :menu => main_menu, :css_class => "main-menu", :depth => 0, :max_depth => 2 } ) %>

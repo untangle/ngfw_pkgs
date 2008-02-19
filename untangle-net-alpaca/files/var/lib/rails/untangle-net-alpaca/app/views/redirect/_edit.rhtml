@@ -9,6 +9,8 @@ EOF
 %>
 
 <h2 class="title"><%= "Edit".t %></h2>
+<!--<p>whatever</p> -->
+
 <% form_tag( :action => '#' ) do -%>
   <fieldset>
     <ul class="text-fields">
@@ -26,7 +28,7 @@ EOF
   <div class="list-table rules">
     <ul class="rule-list">
       <li class="info">
-      <span class="edit-condition">If all of the following conditions are met</span>
+      <span class="edit-condition">If all of the following conditions are met:</span>
       <div class="add-button" onClick="RuleBuilder.addParameter()"><%= "Add".t %></div>
       </li>
       <li class="header">
@@ -50,10 +52,10 @@ EOF
        <%= render( :partial => "rule/parameter" , :collection => @parameter_list ) %>
     </ul>
   </div>
-  <fieldset>
+  <fieldset class="topline">
     <ul class="text-fields">
       <li class="forward-to">
-        Forward traffic to the following location
+        Forward traffic to the following location:
       </li>
       <li>
         <label for="new_ip"><%= "New Destination:".t %></label>
@@ -81,3 +83,20 @@ EOF
 
   </div>
 <% end -%>
+
+<div class="actions">
+  <div class="rule-help">
+    <%= submit_tag( "Help" ) %>
+  </div>
+  <div class="update" onclick="RuleBuilder.update('<%= @row_id %>') ; RuleBuilder.close();"><a class="submit Update">
+    <%= "Update".t %>
+    </a>
+  </div>
+  <div class="cancel" onclick="RuleBuilder.cancel()">
+    <a class="submit Cancel">
+    <%= "Cancel".t %>
+    </a>
+  </div>
+
+</div>
+

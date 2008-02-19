@@ -119,6 +119,7 @@ var RuleBuilder =
 
     addParameter : function()
     {
+		alert(this.createParameter);
         new Ajax.Request( this.createParameter, { asynchronous:true, evalScripts:true} );
         return false;
     },
@@ -343,7 +344,7 @@ function Checkbox( name )
         + "' type='checkbox' name='" + label + "' value='" + identifier + "'/>";
         
         /* Wrap it in a div */
-        return "<div class='checkbox'>" + line + '&nbsp;'+ label + "</div>";
+        return "<div class='checkbox'>" + line + "&nbsp;<label for='"+this.checkboxId( rowId, identifier )+"'>"+ label + "</label></div>";
     };
     
     this.checkboxId = function( rowId, identifier ) {
