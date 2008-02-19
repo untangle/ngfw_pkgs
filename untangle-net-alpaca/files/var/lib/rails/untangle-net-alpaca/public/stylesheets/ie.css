@@ -97,3 +97,6 @@ div#main-menu
 select {
 /*	display: none; */
 }
+div.actions {
+	height: 38px;
+}
