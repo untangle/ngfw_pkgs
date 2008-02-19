@@ -102,7 +102,7 @@ EOF
 
     ## Clear out all of the interface state.
     ## Review: Should this be immutable.
-    File.open( InterfacesStatusFile, "w" ) { |f| f.print( "lo=lo" ) }
+    File.open( get_interfaces_status_file(), "w" ) { |f| f.print( "lo=lo" ) }
   end
 
   def hook_run_services
