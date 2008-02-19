@@ -290,7 +290,7 @@ Fabtabs.prototype = {
         Element.hide( "overlay" );
     },
     tabWarn : function(elm) {
-        var request = new Ajax.Request( "../alpaca/tab",
+        var request = new Ajax.Request( "/alpaca/alpaca/tab",
             { asynchronous:false, evalScripts:true } );
 
         if ( !request.success() ) {
@@ -353,12 +353,16 @@ var replaceSelectBoxes = function () {
 }
 var focusTableField = function(event) {
     var element = Event.element(event);
-    element.addClassName('focus');
+	if (element) {
+    	element.addClassName('focus');
+	}
 }
 
 var blurTableField = function(event) {
     var element = Event.element(event);
-    element.removeClassName('focus');
+	if (element) {
+    	element.removeClassName('focus');
+	}
 }
 
 var focusBlurTextFields = function() {
