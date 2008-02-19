@@ -274,12 +274,31 @@ Fabtabs.prototype = {
 	var elm = Event.findElement(ev, "a");
 	Event.stop(ev);
 	if (this.warn) {
-	    if ( ! confirm("Warning: leaving this page will lose unsaved changes!") ) {
-		return false;
-	    }
+            this.tabWarn();
+            this.ok = function(ev) { this.warn = false; this.show(elm); this.menu.without(elm).each(this.hide.bind(this)); Element.hide( "overlay" ); }
+	    return false;
 	}
 	this.show(elm);
 	this.menu.without(elm).each(this.hide.bind(this));
+    },
+    ok : function(ev) {
+        this.warn = false;
+        Element.hide( "overlay" );
+    },
+    cancel : function(ev) {
+        this.warn = true;
+        Element.hide( "overlay" );
+    },
+    tabWarn : function(elm) {
+        var request = new Ajax.Request( "../alpaca/tab",
+            { asynchronous:false, evalScripts:true, } );
+
+        if ( !request.success() ) {
+            alert( "unable to warn on page change." );
+            return;
+        }
+
+        Element.show( "overlay" );
     },
     setWarn : function(value) {
 	this.warn = value;
