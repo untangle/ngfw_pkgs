@@ -100,3 +100,6 @@ select {
 div.actions {
 	height: 38px;
 }
+div.actions div.rule-help a.Help {
+	padding-left: 5px;
+}
