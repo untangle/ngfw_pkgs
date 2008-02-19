@@ -160,7 +160,7 @@ module ActionView
 
       def sortable_element( element_id, options = {} )
         if ! options.include?( :ghosting )
-          options[:ghosting] = true
+          options[:ghosting] = false
         end
         orig_sortable_element( element_id, options )
       end
