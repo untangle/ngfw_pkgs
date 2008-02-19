@@ -103,3 +103,8 @@ div.actions {
 div.actions div.rule-help a.Help {
 	padding-left: 5px;
 }
+div.list-table-container ul li
+{
+	float: left;
+}
+
