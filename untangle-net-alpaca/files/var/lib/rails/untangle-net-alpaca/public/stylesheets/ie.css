@@ -8,14 +8,25 @@ body
 div#overlay
 { 
 	/*
-background-image: url( ../images/overlay-trans.png ); 
-background-repeat: repeat;
+	background-image: url( ../images/overlay-trans.png ); 
+	background-repeat: repeat;
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/overlay.png',sizingMethod='scale'); 
+	*/
+	background: none;
+	position: absolute;
+}
 
-border: 1px solid red;
-*/
 
-	background-image: none;
-	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/overlay.png',sizingMethod='scale');
+div#ie-overlay {
+	z-index: 200000;
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/overlay.png',sizingMethod='scale'); 
+}
+
+div#overlay #rule-dialog {
+z-index: 300000;
 }
 
 #tabs li.active-tab { background-position: 100% -200px; font-weight: bold; height: auto; margin-top: 0; }

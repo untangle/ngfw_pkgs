@@ -275,20 +275,23 @@ Fabtabs.prototype = {
 	Event.stop(ev);
 	if (this.warn) {
             this.tabWarn();
-            this.ok = function(ev) { this.warn = false; this.show(elm); this.menu.without(elm).each(this.hide.bind(this)); Element.hide( "overlay" ); }
+            this.ok = function(ev) { this.warn = false; this.show(elm); this.menu.without(elm).each(this.hide.bind(this)); Element.hide( "overlay" ); Element.hide( "ie-overlay" ); }
 	    return false;
 	}
 	this.show(elm);
 	this.menu.without(elm).each(this.hide.bind(this));
     },
     ok : function(ev) {
-		alert('ok');
         this.warn = false;
+        Element.hide( "ie-overlay" );
         Element.hide( "overlay" );
+
     },
     cancel : function(ev) {
         this.warn = true;
         Element.hide( "overlay" );
+        Element.hide( "ie-overlay" );
+
     },
     tabWarn : function(elm) {
         var request = new Ajax.Request( "/alpaca/alpaca/tab",
@@ -300,6 +303,8 @@ Fabtabs.prototype = {
         }
 
         Element.show( "overlay" );
+        Element.show( "ie-overlay" );
+
     },
     setWarn : function(value) {
 	this.warn = value;

@@ -376,10 +376,11 @@ div#overlay
 { 
   left: 0; 
   top: 0;
-  z-index: 1000000;
   position: absolute;
-  background-image: url( ../images/overlay.png );
-  background-repeat: repeat;
+
+ 	z-index: 1000000;
+background-image: url( ../images/overlay.png );
+  background-repeat: repeat; 
   width: 100%;
   height: 100%;
  }
@@ -388,13 +389,13 @@ div#overlay table, div#overlay table tr, div#overlay table, div#overlay table tr
 	margin: 0; padding: 0; border: none;
 }
 div#overlay div#rule-dialog-cont {
-	position: relative;
+	position: relative; 
 }
 
 div#overlay div#rule-dialog
 { 
 	width: auto;
-  z-index: 2000000;
+  z-index: 2000000; 
   background-color: #FFF;
   border: 1px solid #6a6a6a;
 text-align: left;

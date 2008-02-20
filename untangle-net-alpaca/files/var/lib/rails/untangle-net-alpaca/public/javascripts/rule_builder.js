@@ -193,6 +193,8 @@ var RuleBuilder =
         }
 
         Element.show( "overlay" );
+        Element.show( "ie-overlay" );
+
     },
 
     cancel : function()
@@ -201,12 +203,16 @@ var RuleBuilder =
 	    TableManager.remove( this.manager.tableId, this.manager.rowId );
 	}
         Element.hide( "overlay" );
+        Element.hide( "ie-overlay" );
+
     },
 
     /* Close the rule builder */
     close : function()
     {
         Element.hide( "overlay" );
+        Element.hide( "ie-overlay" );
+
     },
 
     /* Update the entry */
