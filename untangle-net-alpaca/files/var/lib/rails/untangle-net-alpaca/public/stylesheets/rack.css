@@ -981,7 +981,7 @@ ul.rule-list div.type
   }
 ul.rule-list div.value
 {
-	width: 63%;
+	width: 58%;
 /*  width: 424px; */
   }
 
@@ -991,7 +991,7 @@ li.info
   margin: 0;
   height: 1.6em;
 /*  overflow: visible; */
-	position: relative;
+/*	position: relative;*/
   }
 li.forward-to
 { 
@@ -1008,7 +1008,7 @@ ul.rule-list li.rule
 	border-bottom: 1px solid #fff;
 	float: none;
 	width: 100%;
-	position: relative;
+/*	position: relative;*/
  }
 ul.rule-list li.rule.even
 { 
@@ -1027,10 +1027,10 @@ ul.rule-list li.rule div
 }
 ul.rule-list li.rule div.minus
 {
-  position: absolute;
-	right: 0;
-/*vertical-align: top;
-float: right; */
+/*  position: absolute;
+  right: 0;*/
+  vertical-align: top;
+  float: right;
   background-image: url( "../images/minus.gif" );
   background-repeat: no-repeat;
   background-position: center;
