@@ -1,5 +1,6 @@
 <% style = @hide_types.include?( "static" ) ? 'style="display: none"' : nil  %>
 <div id="static" <%= style %>>
+<p>The first entry is the primary IP address, the following entries are aliases.</p>
   <% list_id = "ip-network-list-static" %>
   <%= render( :partial => "ip_networks" , :object => static.ip_networks,
               :locals => { :list_id => list_id } ) %>
