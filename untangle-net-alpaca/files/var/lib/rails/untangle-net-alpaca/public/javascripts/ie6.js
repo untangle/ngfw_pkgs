@@ -145,31 +145,48 @@ var init_ie6 = function() {
 	  
 }
 
+
+configChange = function (e, target, options) {
+	Interface.setConfigType();
+}
 replaceSelectBoxes = function () {
 	
 	//scrollbar needs to be reset in IE6. putting this here b/c it gets called on every page
 	document.documentElement.scrollTop = 0;
 
-
 	//replace select boxes
-	selects = $('main-content').getElementsByTagName('select');
+	var selects = $('main-content').getElementsByTagName('select');
 	
-	var selectIDs = new Array();
-	if (selects.length > 0) {
-		for ( var i = 0; i< selects.length; i++) {
-			selectIDs.push(selects[i].id);
-		}		
-		for (var i = 0; i < selectIDs.length; i++) {
-			 var converted = new Ext.form.ComboBox({
-				    triggerAction: 'all',
-				    transform: selectIDs[i],
-				    width:150,
-					height: 14,
-				    forceSelection:true, 
-					editable: false
-				});
-		}	
+	if (selects) {
+			var selectIDs = new Array();
+			if (selects.length > 0) {
+				for ( var i = 0; i< selects.length; i++) {
+					selectIDs.push(selects[i].id);
+				}		
+				for (var i = 0; i < selectIDs.length; i++) {
+					
+					var thisChild = $(selectIDs[i]);
+					var thisWidth = thisChild.getWidth() + 10;
+					if (thisWidth <= 10) {
+						thisWidth = 150;
+					}
+					 	var converted = new Ext.form.ComboBox({
+							    triggerAction: 'all',
+							    transform: selectIDs[i],
+							    width:thisWidth,
+								height: 14,
+							    forceSelection:true, 
+								editable: false
+							});
+							
+						//add change event listener for converted config_type elect
+						if (selectIDs[i] == "config_type") {
+							converted.on('select', configChange);
+						}
+				}	
+			}
 	}
+
 }
 	
 Event.observe(window,'load', init_ie6, false);

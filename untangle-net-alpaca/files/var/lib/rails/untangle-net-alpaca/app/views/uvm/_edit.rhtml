@@ -13,22 +13,22 @@ EOF
     <ul class="text-fields">
       <li>
         <label for="enabled"><%= "Enabled:".t %></label>
-        <%= check_box_tag( "enabled", true, @subscription.enabled ) %>
+        <%= check_box_tag( "enabled", true, @subscription.enabled, :class => 'checkbox' ) %>
       </li>
 
       <li>
         <label for="target"><%= "Bypass:".t %></label>
-        <%= check_box_tag( "subscribe", true, @subscription.subscribe ) %>
+        <%= check_box_tag( "subscribe", true, @subscription.subscribe, :class => 'checkbox' ) %>
       </li>
 
       <li>
         <label for="description"><%= "Description:".t %></label>
-        <%= text_field_tag( "description", @subscription.description ) %>
+        <%= text_field_tag( "description", @subscription.description, :class => 'textfield' ) %>
       </li>
     </ul>
 
   <div class="list-table rules">
-	  <div class="add-button" onClick="RuleBuilder.addParameter()"><%= "Add".t %></div>
+
     <ul class="rule-list">
       <li class="info">
        <span class="edit-condition">If all of the following conditions are met</span>
@@ -42,14 +42,15 @@ EOF
         <div class="value">
           Value
         </div>
-
+<!--
         <div class="plus">
           &nbsp;
         </div>
 
         <div class="minus">
           &nbsp;
-        </div>
+        </div> -->
+	  <div class="add-button" onClick="RuleBuilder.addParameter()"><%= "Add".t %></div>
       </li>
     </ul>
     <ul id="rule-builder" class="rule-list">
