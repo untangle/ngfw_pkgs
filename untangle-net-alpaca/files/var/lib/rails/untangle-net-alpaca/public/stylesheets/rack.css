@@ -34,6 +34,9 @@ ul.text-fields {
     margin-top: 0.5em;
 /*     width: 50%; */
 }
+ul.text-fields li {
+   clear: both;
+}
 li label {
     font-size: 85%; /* 11px equiv */
     color: #333;
