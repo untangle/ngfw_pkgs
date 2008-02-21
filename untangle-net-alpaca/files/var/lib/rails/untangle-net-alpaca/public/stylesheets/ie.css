@@ -239,3 +239,8 @@ div.list-table-container .redirects div.minus, .redirects .header div.minus {
 /*	padding: 0px;
 	width: 4.3em;*/	
 }
+
+input.test-connectivity
+{
+    text-indent: 4px;
+}

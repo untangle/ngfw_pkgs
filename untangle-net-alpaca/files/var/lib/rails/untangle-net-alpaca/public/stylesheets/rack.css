@@ -1179,7 +1179,7 @@ input.test-connectivity
   line-height: 21px;
   background-image: url( "../images/test-connectivity-button.gif");
   background-repeat: no-repeat;
-  text-indent: 2px;
+  text-indent: 0;
   color: #333333;
   font-size: 85%;
   overflow: visible;
