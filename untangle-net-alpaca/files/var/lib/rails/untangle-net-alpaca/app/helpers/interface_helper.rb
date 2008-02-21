@@ -220,7 +220,7 @@ EOF
     ## this is to enforce order, yes it is kind of shady.
     options = ETHERNET_MEDIA_ORDER.map { |m| [ ETHERNET_MEDIA[m][:name], m ] }
 
-    select_tag( "ethernet_media", options_for_select( options, media ))
+    select_tag( "ethernet_media", options_for_select( options, media ), :id => "ethernet_media_select")
   end
 
   ## Given a ethernet media string, this will return the speed and duplex setting

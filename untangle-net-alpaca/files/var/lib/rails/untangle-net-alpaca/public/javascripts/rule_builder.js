@@ -169,10 +169,12 @@ var RuleBuilder =
 
         for ( var c = 0 ; c < this.manager.fields.length ; c++ ) {
             var field = document.getElementById( this.manager.fields[c] + "_" + rowId );
-            
             if ( field == null ) {
-                alert( "Missing the field: " + this.manager.fields[c] );
-                return;
+				field = document.getElementById( this.manager.fields[c] + "[" + rowId + "]"); //EXT JS wants to put brackets in the variable name when it makes a select box substitution
+				if (field == null) {
+                	alert( "Missing the field: " + this.manager.fields[c] );
+                	return;
+				}
             }
                         
             /* Append this value to the field array */
@@ -253,8 +255,11 @@ var RuleBuilder =
             var field = document.getElementById( this.manager.fields[c] + "_" + rowId );
             
             if ( field == null ) {
-                alert( "Missing the field: " + this.manager.fields[c] );
-                return;
+				field = document.getElementById( this.manager.fields[c] + "[" + rowId + "]");
+				if (field == null) {
+                	alert( "Missing the field: " + this.manager.fields[c] );
+                	return;
+				}
             }
 
             if ( this.manager.fields[c] == "filters" ) {
@@ -389,7 +394,7 @@ function Checkbox( name )
     /* Function to build a single checkbox */
     this.checkbox = function( rowId, identifier, label ) {
         var line = "<input id='" + this.checkboxId( rowId, identifier )
-        + "' type='checkbox' name='" + label + "' value='" + identifier + "'/>";
+        + "' type='checkbox' class='checkbox' name='" + label + "' value='" + identifier + "'/>";
         
         /* Wrap it in a div */
         return "<div class='checkbox'>" + line + "<label for='"+this.checkboxId( rowId, identifier )+"'>"+ label + "</label></div>";
@@ -470,7 +475,7 @@ function Textbox()
     /* Function to generate the content */
     this.content = function( rowId )
     {
-        return '<input id="ruleValue[]" name="ruleValue[]" type="text"/>';
+        return '<input id="ruleValue[]" name="ruleValue[]" type="text" class="textfield"/>';
     };
 
     this.validate = function( rowId )

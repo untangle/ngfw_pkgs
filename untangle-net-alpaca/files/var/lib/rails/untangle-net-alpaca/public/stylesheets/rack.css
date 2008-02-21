@@ -34,6 +34,9 @@ ul.text-fields {
     margin-top: 0.5em;
 /*     width: 50%; */
 }
+ul.text-fields li {
+   clear: both;
+}
 li label {
     font-size: 85%; /* 11px equiv */
     color: #333;
@@ -56,7 +59,22 @@ input[type=text], input[type=password], .textfield {
     color: #666666;
     font-size: 85%; /* 11px equiv */
     padding: 1px 3px;
-    /* height: 1.3em; */
+/*     height: 1.3em; */
+	/*border-left: 1px solid #999;
+	border-right: none;
+	border-bottom: none;
+	border-top: 1px solid #595959;*/
+}
+/* ie7 & ie6 hack */
+html* input.textfield
+{
+		border: 1px solid #999;
+}
+html* input.checkbox
+{
+		border: 0px solid #999;
+		margin-left: -2px;
+/*		border-collapse: collapse; */
 }
 select {
     /*width: 13.7em;*/
@@ -204,7 +222,7 @@ div.list-table ul li.header
  }
 
 
-div.list-table input.textfield
+div.list-table div.list-table-column input.textfield
 {
   background-color: transparent;
   border-width: 0;
@@ -212,6 +230,15 @@ div.list-table input.textfield
   padding: 0;
  }
 
+/*
+div.list-table input.textfield
+{
+  background-color: transparent;
+  border-width: 0;
+  width: 100%;
+  padding: 0;
+ }
+*/
 .list-table-arp, .list-table-route
 {
   height: 10em;
@@ -702,9 +729,10 @@ li#logout a
  }
 #advanced-dropdown
 { 
-  z-index: 1000000;
+  z-index: 100002;
   position: absolute;
-  width: 100%;
+ /*  width: 100%; */
+	width: 10em;
   top: -2px;
   margin: 0;
   padding: 0;
@@ -715,7 +743,7 @@ li#logout a
  }
 #advanced-menu:hover #advanced-dropdown
 {
-  z-index: 1000000;
+  z-index: 100002;
   display: block;
   margin-top: 21px;
   border-top: 1px solid #797979;
@@ -724,6 +752,7 @@ li#logout a
 #advanced-dropdown li
 {
  width: 100%;
+ height: 1.4em;
  background-color: #FFF;
  border-left: 1px solid #797979;
  border-right: 1px solid #797979;
@@ -738,7 +767,7 @@ li#logout a
 ul#extranav li#advanced-menu ul#advanced-dropdown li a, #advanced-menu #advanced-dropdown a
 { 
   text-decoration: none;
-  font-size: 9pt;
+  font-size: 93%;
   color: #333;
   padding: 0 10px 0 5px;
   width: 90px;
@@ -923,16 +952,15 @@ div.rules
   width: 700px;
   height: 200px; */
 	height: 200px;
-	position: relative;
+/*	position: relative; */
   }
 div.rules ul.rule-list
 { 
-  margin: 1em 2em;
-/*  width: 620px; */
-width: 47.5em;
-min-width: 620px; 
-clear: both;
-
+	margin: 1em 2em;
+	/*  width: 620px; */
+	width: 47.5em;
+	min-width: 620px; 
+	clear: both;
  }
 div.rules #rule-builder
 { 
@@ -945,17 +973,32 @@ div.rules ul.rule-list li.header
 	font-weight: bold;
 	font-size: 85%;
 	color: #333;
+	padding-bottom: 0;
+	overflow: visible;
+	border: 1px solid #fff;
+	margin-bottom: 0.4em;
+	
+}
+div.rules ul.rule-list li.header div.value
+{
+ 	width: 20%;
+	padding-top: 0.6em;
+}
+div.rules ul.rule-list li.header div.type
+{
+		padding-top: 0.6em;
+}
+
+div.rules ul.rule-list li.header div.and
+{
+	padding-top: 0;
 }
 div.rules div.add-button
 {
-/* float: right;
- clear: none; */
-position: absolute;
-right: 0;
-top: 25px;
-right: 2.1em;
-	z-index: 3000000;
- }
+ float: right;
+ clear: none; 
+
+}
 
 ul.rule-list div.add-button:hover
 { 
@@ -982,7 +1025,8 @@ ul.rule-list div.type
   }
 ul.rule-list div.value
 {
-	width: 58%;
+	width: 58%;  
+/*	width: 63%; */
 /*  width: 424px; */
   }
 
@@ -991,9 +1035,9 @@ li.info
   font-size: 85%;
   margin: 0;
   height: 1.6em;
-/*  overflow: visible; */
-/*	position: relative;*/
-  }
+/*  overflow: visible; */ 
+/*	position: relative; */
+}
 li.forward-to
 { 
   font-size: 85%;
@@ -1009,7 +1053,8 @@ ul.rule-list li.rule
 	border-bottom: 1px solid #fff;
 	float: none;
 	width: 100%;
-/*	position: relative;*/
+/*	text-align: right; */
+/*	position: relative;  */
  }
 ul.rule-list li.rule.even
 { 
@@ -1028,10 +1073,12 @@ ul.rule-list li.rule div
 }
 ul.rule-list li.rule div.minus
 {
-/*  position: absolute;
-  right: 0;*/
-  vertical-align: top;
-  float: right;
+/*  position: relative;
+  right: 0;
+	top: 0; */
+	float: right;
+/*  vertical-align: top;
+  float: right;  */
   background-image: url( "../images/minus.gif" );
   background-repeat: no-repeat;
   background-position: center;
@@ -1135,7 +1182,7 @@ input.test-connectivity
   line-height: 21px;
   background-image: url( "../images/test-connectivity-button.gif");
   background-repeat: no-repeat;
-  text-indent: 2px;
+  text-indent: 0;
   color: #333333;
   font-size: 85%;
   overflow: visible;
@@ -1215,7 +1262,7 @@ div.warning ul li, div.notice ul li, div.error ul li {
 
 }
 #interface fieldset.config-type {
-	padding-left: 5px;
+/*	padding-left: 5px; */
 }
 #interface fieldset.config-type label {
 	font-size: 85%;
@@ -1249,4 +1296,8 @@ div.warning ul li, div.notice ul li, div.error ul li {
 #interface #renew-container input {
 	/* margin: 0; padding: 0; */
 	margin-right: 0;
+}
+#interface #static p {
+	color: #333;
+	font-size: 85%;
 }

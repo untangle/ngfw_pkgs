@@ -16,7 +16,6 @@ div#overlay
 	position: absolute;
 }
 
-
 div#ie-overlay {
 	z-index: 200000;
 	position: absolute;
@@ -139,9 +138,109 @@ div.list-table-container li
 {
   padding-bottom: 0;
 }
+ul.rule-list div.value
+{
+	width: 58%; 
+/*	width: 63%;  */
+}
+
+div.rules ul.rule-list
+{ 
+	width: 51.5em;
+ }
+ul.rule-list li.rule
+{
+ border: none;
+}
+div#overlay div#rule-dialog .checkbox {
+	padding: 0;
+}
+div.rules ul.rule-list li.info 
+{
+	padding: 1em 0 0 0;
+}
+div.rules ul.rule-list {
+	margin: 0 2em;
+}
+div#overlay div#rule-dialog .checkbox label {
+	padding: 0.4em 0 0 0;
+}
+
+#firewall-list div.list-table-column div.x-form-field-wrap {
+	margin: 4px 0 0 0; padding: 0; height: auto; line-height: 1.21em; float: none;
+	overflow: hidden;
+}
+#firewall-list div.list-table-column div.x-form-field-wrap input.x-form-text {
+margin-top: -2px;
+}
+/***************
+	table rework
+	*****************/
+div.table-label
+{ 
+ /* margin-bottom: 10px;
+	width: 48.9em;
+	min-width: 635px; */
+	width: 47em; 
+ }
+div.list-table-container
+{ 
+/*  border: 1px solid #999999;
+  margin-bottom: 30px;
+  position: relative;
+clear: both; */
+	width: 47em; /* 633px */
+	min-width: 633px;
+ }
+div.list-table-container ul.header div.drag, div.drag
+{
+/*	width: 2.35em; */
+}
+
+div.list-table ul, div.list-table ul li, div.list-table ul li div, div.list-table-container div.list-table ul li div.list-table-column  {
+	/* border-collapse: collapse;
+	border: 0px solid red; */
+	border-collapse: collapse;
+}
 
 /* minus cols */
-div.list-table-container.redirects div.minus {
-	padding-left: 8px; 
-	width: 65px; 
+div.list-table-container .redirects div.minus {
+/*	padding-left: 8px; 
+	width: 65px; */
+}
+div.list-table-container .redirects div.enabled, .redirects .header div.enabled
+{ 
+/*  width: 40px; */
+/*	width: 6%; */
+/*	width: 2.82em; */
+	
+}
+div.list-table-container .redirects div.description, .redirects .header div.description
+{ 
+/*  width: 450px; */
+/*	width: 71%; */
+/*	width: 33.37em; */
+}
+div.list-table-container .redirects div.drag, .redirects .header div.drag
+ {
+/*	width: 30px; */
+/*	width: 5%; */
+/*	width: 2.35em; */ 	
+}
+div.list-table-container .redirects div.edit, .redirects .header div.edit {
+/*	width: 50px; */
+/*	width: 8%; */
+/*	width: 3.76em; */
+}
+div.list-table-container .redirects div.minus, .redirects .header div.minus {
+/*	padding-left: 8px; 
+	width: 30px; */
+/*	width: 5%; */
+/*	padding: 0px;
+	width: 4.3em;*/	
+}
+
+input.test-connectivity
+{
+    text-indent: 4px;
 }
