@@ -480,7 +480,6 @@ var init = function() {
     enableSaveOnChange();
     spinnerOnSubmit();
     hideSpinner();
-replaceSelectBoxes();
 }
 
 Event.observe(window,'load', init, false);

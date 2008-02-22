@@ -275,6 +275,15 @@ var RuleBuilder =
                     field.checked = newValue.checked;
                 } else {
                     field.value = newValue.value;
+					
+					//hack for IE6 Ext combobox
+					//might be better to use combobox.setValue, if we could construct the combobox
+					if (field.nextSibling) {
+
+						if ((" "+field.nextSibling.className+" ").indexOf(" combobox ") != -1) {
+								field.nextSibling.value = newValue.value;								
+						}
+					}
                 }
             }
         }

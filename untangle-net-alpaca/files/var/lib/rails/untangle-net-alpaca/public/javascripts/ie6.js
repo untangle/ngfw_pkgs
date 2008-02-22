@@ -178,7 +178,7 @@ replaceSelectBoxes = function () {
 							    forceSelection:true, 
 								editable: false
 							});
-							
+						converted.addClass('combobox');
 						//add change event listener for converted config_type elect
 						if (selectIDs[i] == "config_type") {
 							converted.on('select', configChange);
