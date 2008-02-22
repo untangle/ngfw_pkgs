@@ -22,9 +22,7 @@ options = { :view => self }
       <% first_css_class = "first" %>
 
       <% table_model.columns.each do |column| %>
-        <div class="<%= "#{column.css_class} #{first_css_class}" %>">
-          <%= column.generate_header( options ) %>
-        </div>
+        <div class="<%= "#{column.css_class} #{first_css_class}" %>"><span><%= column.generate_header( options ) %></span></div>
         <% first_css_class = "" %>
       <% end %>
     </li>

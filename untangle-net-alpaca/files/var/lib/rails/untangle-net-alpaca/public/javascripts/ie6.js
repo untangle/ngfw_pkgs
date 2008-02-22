@@ -157,6 +157,7 @@ replaceSelectBoxes = function () {
 	//replace select boxes
 	var selects = $('main-content').getElementsByTagName('select');
 	
+	/*
 	if (selects) {
 			var selectIDs = new Array();
 			if (selects.length > 0) {
@@ -186,6 +187,7 @@ replaceSelectBoxes = function () {
 				}	
 			}
 	}
+	*/
 
 }
 	

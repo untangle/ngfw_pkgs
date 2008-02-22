@@ -10,23 +10,24 @@ EOF
 
 <h2 class="title"><%= "Edit".t %></h2>
 <% form_tag( :action => '#' ) do -%>
-    <ul class="text-fields">
-      <li>
-        <label for="enabled"><%= "Enabled:".t %></label>
-        <%= check_box_tag( "enabled", true, @subscription.enabled, :class => 'checkbox' ) %>
-      </li>
+	<fieldset>
+	    <ul class="text-fields">
+	
+	      <li>
+	     <label for="enabled"><%= "Enabled:".t %></label>
+	        <%= check_box_tag( "enabled", true, @subscription.enabled, :class => 'checkbox' ) %>
+	      </li>
+	      <li>
+	        <label for="target"><%= "Bypass:".t %></label>
+	        <%= check_box_tag( "subscribe", true, @subscription.subscribe, :class => 'checkbox' ) %>
+	      </li>
+	      <li>
+	        <label for="description"><%= "Description:".t %></label>
+	        <%= text_field_tag( "description", @subscription.description, :class => 'textfield' ) %>
+	      </li>
 
-      <li>
-        <label for="target"><%= "Bypass:".t %></label>
-        <%= check_box_tag( "subscribe", true, @subscription.subscribe, :class => 'checkbox' ) %>
-      </li>
-
-      <li>
-        <label for="description"><%= "Description:".t %></label>
-        <%= text_field_tag( "description", @subscription.description, :class => 'textfield' ) %>
-      </li>
-    </ul>
-
+	    </ul>
+	</fieldset>
   <div class="list-table rules">
 
     <ul class="rule-list">

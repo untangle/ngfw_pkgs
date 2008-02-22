@@ -58,6 +58,10 @@ clear: both;
 	min-width: 633px;
  }
 
+/* IE6 & IE7 hack */
+html* div.list-table-container {
+		width: 47.5em; 
+}
 div.list-table-container ul
 { 
   width: 100%;
@@ -179,7 +183,7 @@ div.list-table-container div.list-table ul li div.list-table-column.first
 
 div.list-table-container div.edit, div.list-table-container div.minus
 { 
-  width: 50px;
+/*  width: 50px; */
   }
 
 div.list-table-container div.list-table div.edit
@@ -203,6 +207,8 @@ div.list-table-container div.list-table div.minus:hover
   background-color: #86c5df;
   }
 
+
+
 /* ----------------------------- Table Labels ----------------------------- */
 div.table-label
 { 
@@ -210,6 +216,11 @@ div.table-label
 	width: 48.9em;
 	min-width: 635px;
  }
+
+/* IE6 & IE7 hack */
+html* div.table-label {
+	width: 47.5em;
+}
 
 div.table-label div.table-title
 { 
@@ -262,165 +273,143 @@ div.list-table-container div.list-table input.focus, div.list-table-container di
 }
 
 
+/* --------------- global column styles -------------------- */
 
 div.list-table-container ul.header div.drag, div.drag
 {
-width: 30px;
-/*  padding-top: 4px; */
-  text-indent: 7px;
-  cursor: move;
- }
+  	width: 2.35em;  	
+	text-indent: 7px;
+  	cursor: move;
+}
+
+div.list-table-container div.minus, div.list-table-container ul.header div.minus {
+	padding: 0px;
+	width: 4.8em;	
+	 text-align: center;
+	  text-indent: 0;	
+}
+div.list-table-container div.enabled, div.list-table-container ul.header div.enabled {
+	width: 2.82em; 		
+	 text-align: center;
+	  text-indent: 0;
+}
+div.list-table-container div.edit, div.list-table-container ul.header div.edit {
+	width: 3.76em; 
+	 text-align: center;
+	  text-indent: 0;
+}
+
+/*
+div.list-table-container.redirects div.enabled, div.list-table-container.redirects div.minus, div.list-table-container.redirects div.edit, div.list-table-container.ip_networks div.networks, div.list-table-container.ip_networks div.minus, 
+div.list-table-container.dhcp-static-entry div.minus,
+div.list-table-container.dns-static-entry div.minus,
+div.list-table-container.firewalls div.enabled
+{ 
+	  text-align: center;
+	  text-indent: 0;
+}
+*/
 
 /* ------------------ Style the redirect table ---------------- */
-div.list-table-container.redirects
-{ 
-/*  width: 644px; */
-/*	width: 633px; */
- }
 
-div.table-label.redirects
+div.list-table-container .redirects div.enabled, .redirects .header div.enabled
 { 
-  /* Two extra pixels for the border */
- /* width: 646px; */
-/*	width: 635px; */
- }
-
-div.list-table-container.redirects div.list-table, div.list-table-container.ip_networks div.list-table
+/*  width: 40px; */
+/*	width: 6%; */
+/*	width: 2.82em; */
+	
+}
+div.list-table-container .redirects div.description, .redirects .header div.description
 { 
-/*  height: 200px; */
+/*  width: 450px; */
+/*	width: 71%; */
+	width: 33.37em; 
 }
-div.list-table-container.redirects div.enabled
-{ 
-  width: 40px;
+div.list-table-container .redirects div.drag, .redirects .header div.drag
+ {
+/*	width: 30px; */
+/*	width: 5%; */
+/*	width: 2.35em; */ 	
 }
-div.list-table-container.redirects div.description
-{ 
-  width: 450px;
+div.list-table-container .redirects div.edit, .redirects .header div.edit {
+/*	width: 50px; */
+/*	width: 8%; */
+/*	width: 3.76em; */
 }
-div.list-table-container.redirects div.drag {
-	width: 30px;
-}
-div.list-table-container.redirects div.edit {
-	width: 50px;
-}
-div.list-table-container.redirects div.minus {
-	padding-left: 8px; 
-	width: 30px; 
+div.list-table-container.redirects div.minus, .redirects .header div.minus {
+/*	padding-left: 8px; 
+	width: 30px; */
+/*	width: 5%; */
+/*	padding: 0px;
+	width: 4.8em; */
 }
 
-
-div.list-table-container.redirects div.enabled, div.list-table-container.redirects div.minus, div.list-table-container.redirects div.edit, div.list-table-container.ip_networks div.networks, div.list-table-container.ip_networks div.minus
-{ 
-  text-align: center;
-  text-indent: 0;
- }
 
 /* ------------------ Style the IP Networks ---------------- */
-div.list-table-container.ip_networks
-{ 
-/*  width: 644px; */
-/*	width: 633px; */
- }
-
-div.table-label.ip_networks
-{ 
-  /* Two extra pixels for the border */
- /* width: 646px; */
-/*	width: 635px; */
- }
-
-
 div.list-table-container.ip_networks div.networks, div.list-table-container.ip_networks div.ip-network
 {
-  width: 570px; 
-  }
+/*  width: 570px; */
+/* width: 90% */
+width: 42.5em;
+}
 div.list-table-container.ip_networks div.minus {
 }
 
 /* ------------------ Style the DHCP Static Entries ---------------- */
-div.list-table-container.dhcp-static-entry
-{ 
-/*  width: 634px; */
- }
-
-div.table-label.dhcp-static-entry
-{ 
-  /* Two extra pixels for the border */
- /* width: 636px; */
- }
-
-div.list-table-container.dhcp-static-entry div.list-table
-{ 
-/*  height: 200px; */
-  }
-
 div.list-table-container.dhcp-static-entry div.mac-address
 { 
-  width: 160px;
-  }
+/*  width: 160px; */
+/* width: 25%; */
+width: 11.75em;
+}
 
 div.list-table-container.dhcp-static-entry div.ip-address
 { 
-  width: 140px;
-  }
+/*  width: 140px; */
+/* width: 22% */
+width: 10.34em;
+}
 
 div.list-table-container.dhcp-static-entry div.description
 { 
-  width: 265px;
-  }
-div.list-table-container.dhcp-static-entry div.minus
-{
-	/* width: 65px; */
-	width: 50px;
+/*  width: 265px; */
+/* width: 42% */
+width: 20.14em;
 }
 
-div.list-table-container.dhcp-static-entry div.list-table input.textfield
-{ 
-  /* width: 85%; */
-  }
-
 /* ------------------ Style the DHCP Dynamic Entries ---------------- */
-div.list-table-container.dhcp-dynamic-entry
-{ 
-/*  width: 634px; */
- }
-
-div.table-label.dhcp-dynamic-entry
-{ 
-  /* Two extra pixels for the border */
- /* width: 636px; */
- }
-
-div.list-table-container.dhcp-dynamic-entry div.list-table
-{ 
-/*  height: 200px; */
-  }
-
-
 div.list-table-container.dhcp-dynamic-entry div.mac-address
 { 
-  width: 160px;
+ /* width: 160px; */
+/* width: 25%; */
+width: 11.75em;
   }
 
 div.list-table-container.dhcp-dynamic-entry div.mac-address a
 { 
-  padding-left: 10px;
-  }
+  padding-left: 10px; 
+}
 
 
 div.list-table-container.dhcp-dynamic-entry div.ip-address
 { 
-  width: 140px;
+/*  width: 140px; */
+/* width: 22% */
+width: 10.34em;
   }
 
 div.list-table-container.dhcp-dynamic-entry div.hostname
 { 
-  width: 250px;
+/*  width: 250px;
+	width: 39%; */
+	width: 19.93em;
   }
 
 div.list-table-container.dhcp-dynamic-entry div.add-static
 {
-  width: 70px;
+/*  width: 70px;
+	width: 11%; */
+	width: 5.17em;
   }
 
 div.list-table-container.dhcp-dynamic-entry div.list-table div.add-static
@@ -439,219 +428,156 @@ div.list-table-container.dhcp-dynamic-entry div.list-table div.add-static:hover
 
 div.list-table-container.dhcp-dynamic-entry div.action
 { 
-  width: 100px;
-  }
+/*  width: 100px;
+  width: 16%; */
+	width: 7.52em;
+}
 
 
-div.list-table-container.dhcp-dynamic-entry span
+div.list-table-container.dhcp-dynamic-entry div.list-table-column span
 { 
   font-size: 85%;
 	color: #333;
-	padding-left: 10px;
+	padding-left: 10px; 
   }
 
 /* ------------------ Style the DNS Static Entries ---------------- */
 
 
-div.list-table-container div.list-table ul li{
-/*	border: 1px solid red; */
-}
-
-div.list-table-container.dns-static-entry
-{ 
-/*  width: 634px; */
- }
-
-div.table-label.dns-static-entry
-{ 
-  /* Two extra pixels for the border */
-/*  width: 636px; */
- }
-
-div.list-table-container.dns-static-entry div.list-table
-{ 
-/*  height: 200px; */
-  }
-
 div.list-table-container.dns-static-entry div.ip-address
 { 
-  width: 140px;
+  	/* width: 140px; */
 	/* width: 22%; */
-  }
+	width: 10.34em;
+}
 
 div.list-table-container.dns-static-entry div.hostname
 { 
-  width: 190px;
+  	/* width: 190px; */
 	/*width: 29%; */
-  }
+	width: 13.63em;
+}
 
 div.list-table-container.dns-static-entry div.description
 { 
-/*  width: 200px; */
-	width: 235px; 
+	/* width: 235px; */
 	/*width: 37%; */
-  }
+	width: 18.39em;
+}
 div.list-table-container.dns-static-entry div.minus
 { 
-
-	width: 50px;
+	/* width: 50px; */
 	/* width: 10%; */
 }
 
-div.list-table-container.dns-static-entry div.list-table input.textfield
-{ 
-/*  width: 80%; */
-  }
-
 /* ------------------ Style the DNS Dynamic Entries ---------------- */
-div.list-table-container.dns-dynamic-entry
-{ 
-/*  width: 634px; */
- }
-
-div.table-label.dns-dynamic-entry
-{ 
-  /* Two extra pixels for the border */
- /* width: 636px; */
- }
-
-div.list-table-container.dns-dynamic-entry div.list-table, div.list-table
-{ 
-/*  height: 200px; */
-  }
-
 div.list-table-container.dns-dynamic-entry div.ip-address
 {
-  width: 140px;
-  }
+  	/* width: 140px; */
+	/* width: 22%; */
+	width: 10.34em;
+}
 
 div.list-table-container.dns-dynamic-entry div.hostname
 { 
-  width: 430px;
-  }
+	/* width: 430px; */
+	/* width: 68%; */
+	width: 37.06em;
+}
 
-
-div.list-table-container.dns-dynamic-entry span
+div.list-table-container.dns-dynamic-entry div.list-table-column span
 { 
   font-size: 85%;
 	color: #333;
-	padding-left: 10px;
-  }
+	padding-left: 10px; 
+}
 
 
 /* ------------------ Interface Status Panel ---------------- */
-div.list-table-container.interface-status
-{
- /* width: 702px; */
-/*	width: 633px; */
- }
 
-div.table-label.interface-status
-{
- /* width: 704px; */
-/*	width: 635px; */
- }
-
+/*
 div.list-table-container.interface-status div.network_interface
 { 
-/*  width: 170px; */
-/*	width: 24%; */
 	width: 170px;
- /* padding-left: 10px; */
-  }
+}
 div.list-table-container.interface-status div.os_name
 { 
-/* width: 142px; */
 	width: 20%; 
 }
 div.list-table-container.interface-status div.carrier
 { 
-/*  width: 275px; */
-	/*width: 42%; */
 	width: 250px;
-  }
+}
 div.list-table-container.interface-status div.mac
 { 
-/*  width: 202px; */
-/*	width: 32%;	*/
 	width: auto;
-
-  }
+}
 
 div.list-table-container.interface-status input
 {
-/*	text-indent: 10px; */
 	padding-left: 8px;
 }
+*/
 
 /* ------------------- Packet Filter Panel -------------------- */
-div.list-table-container.firewalls
-{
-/*  width: 673px; */
-/*	width: 633px; */
- }
 
-div.table-label.firewalls
-{
-/*  width: 675px; */
-/*	width: 635px; */
- }
 div.list-table-container.firewalls div.enabled
 { 
-  width: 50px;
-text-align: center;
+/*  width: 50px;
+text-align: center; */
   }
 
 div.list-table-container.firewalls div.target
 { 
-  width: 90px;
+/*  width: 90px; */
+	width: 6.58em;
  }
 
 div.list-table-container.firewalls div.description
 { 
-  width: 340px;
-  }
+	
+  /*width: 340px; */
+	width: 26.68em;
+}
 
 div.list-table-container.firewalls div.edit
 { 
-  width: 50px;
-  }
+/*  width: 50px; */
+}
 
 div.list-table-container.firewalls div.minus
 { 
 /*  width: 70px; */
 /*width: auto; */
-width: 50px;
-text-indent: 10px;
-  }
+/*width: 50px;
+text-indent: 10px; */
+}
 
 div.list-table-container.system-firewalls
 {
  /*  width: 673px; */
-	width: 633px;
+/*	width: 633px; */
  }
-div.list-table-container.system-firewalls input
-{
-	/*border: 1px solid red;*/
-}
+
 div.table-label.system-firewalls
 {
  /* width: 675px; */
-	width: 635px;
+/*	width: 635px; */
  }
 div.list-table-container.system-firewalls div.enabled
 { 
-  width: 50px;
-	text-align: center;
+ /* width: 50px;
+	text-align: center; */
   }
 
 div.list-table-container.system-firewalls div.description
 { 
   /*width: 600px; */
 	/* width: auto; */
-	width: 565px;
+/*	width: 565px; */
+	width: 44.53em;
   }
-div.list-table-container.system-firewalls span
+div.list-table-container.system-firewalls div.list-table-column span
 { 
   font-size: 85%;
 	color: #333;
@@ -660,135 +586,112 @@ div.list-table-container.system-firewalls span
 
 /* ------------------- File Overrides -------------------- */
 
-div.list-table-container.overrides
-{ 
- /* width: 600px; */
-/*	width: 633px; */
-  
-}
-div.table-label.overrides
-{
-/*  width: 602px; */
-/*	width: 635px; */
- }
-
 div.list-table-container.overrides div.enabled
 { 
-  width: 43px;
-	text-align: center;
+/*  width: 43px;
+	text-align: center; */
   }
 
 div.list-table-container.overrides div.writable
 { 
-  width: 68px;
-	text-align: center;
+/*  width: 68px; */
+	width: 5.17em;
   }
+
+div.list-table-container.overrides div.list-table-column.writable {
+	text-align: center;
+}
+
 
 div.list-table-container.overrides div.path
 { 
 /*  width: 330px; */
-	width: 420px;
+/*	width: 420px; */
+	width: 31.92em;
   }
 
 div.list-table-container.overrides div.minus
 { 
 /*  width: 70px; */
-	width: 50px;
+/*	width: 50px; */
   }
 /* ------------------- Subscriptions -------------------- */
-div.list-table-container.subscriptions
-{ 
-/*  width: 645px; */
-/*	width: 633px; */
-  }
-div.table-label.subscriptions
-{ 
- /* width: 647px; */
-	/*width: 635px; */
-  }
+
 div.list-table-container.subscriptions div.enabled
 { 
-  width: 40px;
-	text-align: center;
+/*  width: 40px;
+	text-align: center; */
   }
 
 div.list-table-container.subscriptions div.subscribe
 { 
-  width: 85px;
-	text-align: center;
-
+/*  width: 85px; */
+	width: 6.58em;
   }
+
+
+div.list-table-container.subscriptions div.list-table-column.subscribe
+{
+	text-align: center;
+}
 
 div.list-table-container.subscriptions div.description
 { 
-  width: 330px;
+/*  width: 330px; */
+	width: 26.64em;
   }
 
 div.list-table-container.subscriptions div.edit
 { 
-  width: 70px;
+/*  width: 70px; */
   }
 
 div.list-table-container.subscriptions div.minus
 { 
  /* width: 70px; */
-	width: 50px;
+/*	width: 50px; */
   }
 
 /* System subscriptions */
-div.list-table-container.system-subscriptions
-{ 
-/*  width: 645px; */
-/*	width: 633px; */
-  }
-div.table-label.system-subscriptions
-{ 
- /* width: 647px; */
-/*	width: 635px; */
-  }
+
 div.list-table-container.system-subscriptions div.enabled
 { 
-  width: 50px;
-text-align: center;
+/*  width: 50px;
+text-align: center; */
   }
 div.list-table-container.system-subscriptions div.description
 { 
-  width: 550px;
+/*  width: 550px; */
+	width: 44.55em;
   }
-div.list-table-container.system-subscriptions span
+div.list-table-container.system-subscriptions div.list-table-column span
 { 
 font-size: 85%;
 color: #333;
 padding-left: 10px;
   }
 /* ------------------- Static ARP -------------------- */
-div.list-table-container.arps
-{
-/*  width: 615px; */
-/*	width: 633px; */
- }
-div.table-label.arps
-{ 
- /* width: 617px; */
-/*	width: 635px; */
- }
+
 div.list-table-container.arps div.hostname
 {
-  width: 250px;
+/*  width: 250px; */
+	width: 18.33em;
  }
 div.list-table-container.arps div.hw_addr
 { 
 /*  width: 240px;*/
-	width: 315px;
+/*	width: 315px; */
+	width: 24.1em;
  }
 div.list-table-container.arps div.interface
 { 
-  width: 50px;
+/*  width: 50px; */
+	width: 4.96em;
  }
 div.list-table-container.arps div.minus
 { 
  /* width: 70px;*/
-	width: 50px;
+/* 	width: 50px; */
  }
 
 div.list-table-container.arps #active_arps-list-table #active_arps .list-table-column {
@@ -804,59 +707,52 @@ div.list-table-container.arps #active_arps-list-table #active_arps .list-table-c
 	padding-left: 10px;
 }
 /* ------------------- Static Routes -------------------- */
-div.list-table-container.routes
-{
-/*  width: 700px; */
-/*	width: 633px; */
- }
-div.table-label.routes
-{ 
-/*  width: 702px; */
-/*	width: 635px; */
- }
-div.list-table-container.routes div input.textfield
-{ 
- /* width: 136px; */
-	/* width: 123px; */
- }
 div.list-table-container.routes div.target
 {
 /*  width: 150px; */
-	width: 135px;
+/*	width: 135px; */
+	width: 9.88em;
  }
 div.list-table-container.routes div.netmask
 { 
 	/*  width: 150px; */
-		width: 135px;
+	/*	width: 135px; */
+		width: 9.88em;
+		
  }
 div.list-table-container.routes div.gateway
 { 
 	/*  width: 150px; */
-		width: 135px;
+	/*	width: 135px; */
+		width: 9.88em;
+		
  }
 div.list-table-container.routes div.name
 { 
 	/*  width: 150px; */
 	/*	width: 135px; */
-	width: 155px;
+	/* width: 155px; */
+	width: 12.58em;
  }
 div.list-table-container.routes div.interface
 { 
 	/*  width: 150px; */
-		width: 135px; 
+	/*	width: 135px; */
+		width: 17.58em;
+		
  }
 div.list-table-container.routes div.minus
 { 
 /*  width: 70px; */
 /*	width: auto; */
-	width: 50px;
+/*	width: 50px; */
  }
 
-div.list-table-container.routes #active_routes-list-table #active_routes .list-table-column {
+div.list-table-container.routes #active_routes-list-table #active_routes .list-table-column span {
 	font-size: 85%; /* 11px equiv */
-	color: #666;
+	color: #333;
 }
-div.list-table-container.routes span {
+div.list-table-container.routes div.list-table-column span {
 	color: #333;
 	padding-left: 10px;
 }
@@ -883,3 +779,8 @@ div.list-table-container.nats div.minus
 { 
   width: 50px;
  }
+
+
+
+
+

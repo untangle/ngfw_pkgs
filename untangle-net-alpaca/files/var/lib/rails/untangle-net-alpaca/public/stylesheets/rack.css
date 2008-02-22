@@ -41,7 +41,7 @@ li label {
     font-size: 85%; /* 11px equiv */
     color: #333;
 }
-div.list-table-container ul.header {
+div.list-table-container ul.header div span{
     font-size: 85%; /* 11px equiv */
 }
 div.list-table a {
@@ -172,12 +172,12 @@ div#dns-dynamic-entries
 
 ul#dns-dynamic-entry-list div.ip-address
 { 
-  width: 140px;
+/*  width: 140px; */
   }
 
 ul#dns-dynamic-entry-list div.hostname
 { 
-  width: 200px;
+/*  width: 200px; */
   }
 
 div.list-table
@@ -285,6 +285,10 @@ form li
   list-style: none;
   padding-bottom: 4px;
   margin: 0;
+}
+
+html* form li {
+/*	padding-bottom: 0; */
 }
 
 div.ip-networks
@@ -851,6 +855,14 @@ form fieldset li {
   height: 1.7em;
 }
 
+html* form fieldset li {
+/*	padding-bottom: 0;
+	margin-bottom: 0;
+	padding-top: 0;
+	margin-top: 0;
+	height: 1.3em; */
+}
+
 form fieldset {
   border: none;
   margin: 0;
@@ -860,12 +872,10 @@ form fieldset {
 form label {
   width: 230px;
   float: left; 
-
   text-align: right;
   margin-right: 0.5em;
   display: block; 
-  padding: 3px 0 0 0;
-    
+  padding: 3px 0 0 0;   
 }
 
 form div.dynamic input[type=text]
