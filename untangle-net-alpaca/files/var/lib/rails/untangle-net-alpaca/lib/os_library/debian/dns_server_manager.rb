@@ -305,7 +305,7 @@ EOF
     settings << "#{FlagOption}=#{OptionGateway},#{gateway}" unless gateway.nil?
     settings << "#{FlagOption}=#{OptionNetmask},#{netmask}" unless netmask.nil?
 
-    unless dns_server_settings.enabled
+    if dns_server_settings.nil? || !dns_server_settings.enabled
       settings << "#{FlagOption}=#{OptionNameservers},#{name_servers.join( "," )}"
     end
 
