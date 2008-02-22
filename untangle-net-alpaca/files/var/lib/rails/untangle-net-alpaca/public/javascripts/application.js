@@ -457,6 +457,9 @@ var enableSaveObservers = function() {
     for (var i=0; i<inputs.length; i++) {
 	inputs[i].observe('change', enableSave);
 	inputs[i].observe('keypress', enableSave);
+	if (inputs[i].type == 'checkbox') {
+  	    inputs[i].observe('click', enableSave);
+        }
     }
     for (var i=0; i<selects.length; i++) {
 	selects[i].observe('change', enableSave);
