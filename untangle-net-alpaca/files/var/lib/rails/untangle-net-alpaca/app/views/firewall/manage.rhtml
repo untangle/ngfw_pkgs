@@ -7,6 +7,7 @@ EOF
   <div id="main-content-body"><div class="wrapper">
   <%= build_table( Alpaca::Table::Data.new( "firewall-list", @firewalls ), firewall_table_model) 
 %>
+  <%= sortable_element( "firewall-list", :onChange => "enableSave" ) %>
 
  <%= build_table( Alpaca::Table::Data.new( "system-firewall-list", @system_firewall_list ), system_firewall_table_model) 
 %>
