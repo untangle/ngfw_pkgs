@@ -51,7 +51,7 @@
     <% end %>
   </table>
 
-  <%= sortable_element( "interface-os-list", :onChange => "enableSave" ) %> 
+  <%= sortable_element( "interface-os-list", :onChange => "function(){enableSave(); TableManager.updateRowStyles( 'interface-os-list' );}" ) %> 
   </div>
   </div></div>
 <%= build_footer %>

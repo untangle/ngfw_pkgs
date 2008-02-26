@@ -1,5 +1,5 @@
 page.insert_html( :top, "redirect-list", :partial => "application/table_row", :object => @redirect, :locals => { :table_model => redirect_table_model, :data => Alpaca::Table::Data.new( "redirect-list", [ @redirect ] ) } )
-page.sortable( "redirect-list", { :scroll => "'redirect-list-list-table'", :constraint => "vertical" } )
+page.sortable( "redirect-list", { :scroll => "'redirect-list-list-table'", :constraint => "vertical", :onChange => "function(){enableSave(); TableManager.updateRowStyles( 'override-list' );}" } )
 page << "TableManager.updateRowStyles( 'redirect-list' );"
 page << "initTableRow('redirect-list');"
 page << "setTimeout(\"RuleBuilder.edit( '" + @row_id + "', 'redirect-list', true )\", 1000);"
