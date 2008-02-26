@@ -337,16 +337,24 @@ Fabtabs.prototype = {
 		    href = href.replace(/\/list/,"")
 		    href = href.replace(/\/manage/,"")
 		    return loc.substring(0, href.length) == href;
-		    //return value.href.match(/(\w.+)/)[1] == loc; 
 		});
+            if (! elm) {
+                var elm = this.menu.find(function(value) { var href = value.href.match(/(\w.+)/)[1];
+                    href = href.replace(/\/list/,"")
+                    href = href.replace(/\/manage/,"")
+                    return (loc.substring(0, href.length) + "network")  == href } );
+            }
+            if (! elm) {
+                var elm = this.menu.find(function(value) { var href = value.href.match(/(\w.+)/)[1];
+                    href = href.replace(/\/list/,"")
+                    href = href.replace(/\/manage/,"")
+                    return (loc.substring(0, href.length) + "interface")  == href } );
+            }
     	    if (elm) {
 	        this.highlight(elm);
-		return elm
+		return elm;
 	    }
 	}
-	//$(this.menu.first()).addClassName('active-tab');
-	//var ancestors = $(this.menu.first()).ancestors();
-	//ancestors[1].addClassName('active-tab');
 	return this.menu.first();
     }
 }
