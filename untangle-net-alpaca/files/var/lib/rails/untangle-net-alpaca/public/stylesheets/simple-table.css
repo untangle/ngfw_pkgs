@@ -179,7 +179,7 @@ div.list-table-container div.list-table ul li div.list-table-column.first
 
 div.list-table-container div.edit, div.list-table-container div.minus
 { 
-  width: 50px;
+  width: 45px;
   }
 
 div.list-table-container div.list-table div.edit
@@ -291,7 +291,7 @@ div.list-table-container.redirects div.list-table, div.list-table-container.ip_n
 }
 div.list-table-container.redirects div.enabled
 { 
-  width: 40px;
+  width: 45px;
 }
 div.list-table-container.redirects div.description
 { 
@@ -371,7 +371,7 @@ div.list-table-container.dhcp-static-entry div.description
 div.list-table-container.dhcp-static-entry div.minus
 {
 	/* width: 65px; */
-	width: 50px;
+	width: 45px;
 }
 
 div.list-table-container.dhcp-static-entry div.list-table input.textfield
@@ -420,7 +420,8 @@ div.list-table-container.dhcp-dynamic-entry div.hostname
 
 div.list-table-container.dhcp-dynamic-entry div.add-static
 {
-  width: 70px;
+  width: 65px;
+  white-space: nowrap;
   }
 
 div.list-table-container.dhcp-dynamic-entry div.list-table div.add-static
@@ -494,7 +495,7 @@ div.list-table-container.dns-static-entry div.description
 div.list-table-container.dns-static-entry div.minus
 { 
 
-	width: 50px;
+	width: 45px;
 	/* width: 10%; */
 }
 
@@ -732,7 +733,7 @@ div.list-table-container.subscriptions div.edit
 div.list-table-container.subscriptions div.minus
 { 
  /* width: 70px; */
-	width: 50px;
+	width: 45px;
   }
 
 /* System subscriptions */
@@ -788,7 +789,7 @@ div.list-table-container.arps div.interface
 div.list-table-container.arps div.minus
 { 
  /* width: 70px;*/
-	width: 50px;
+	width: 45px;
  }
 
 div.list-table-container.arps #active_arps-list-table #active_arps .list-table-column {
@@ -849,7 +850,7 @@ div.list-table-container.routes div.minus
 { 
 /*  width: 70px; */
 /*	width: auto; */
-	width: 50px;
+	width: 45px;
  }
 
 div.list-table-container.routes #active_routes-list-table #active_routes .list-table-column {
@@ -881,5 +882,5 @@ div.list-table-container.nats div.new-source
  }
 div.list-table-container.nats div.minus
 { 
-  width: 50px;
+  width: 45px;
  }
