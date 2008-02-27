@@ -34,7 +34,12 @@ class Interface < ActiveRecord::Base
 
   def Interface.valid_dhcp_server?
     dhcp_server_settings = DhcpServerSettings.find( :first )
-    if dhcp_server_settings.nil? or dhcp_server_settings.enabled == false
+    if dhcp_server_settings.nil? \
+      or dhcp_server_settings.enabled == false \
+      or dhcp_server_settings.start_address.nil? \
+      or dhcp_server_settings.end_address.nil? \
+      or dhcp_server_settings.start_address.length == 0 \
+      or dhcp_server_settings.end_address.length == 0
       return true
     end
 

@@ -36,8 +36,14 @@ class DhcpController < ApplicationController
     @dhcp_server_settings = DhcpServerSettings.find( :first )
     @dhcp_server_settings = DhcpServerSettings.new if @dhcp_server_settings.nil?
     manage_entries
-    if ! Interface.valid_dhcp_server?
-      flash[:warning] = "DHCP Server is configured on a subnet that is not on any configured interfaces."
+    if @dhcp_server_settings.enabled == true and \
+        ( @dhcp_server_settings.start_address.nil? \
+          or @dhcp_server_settings.end_address.nil? \
+          or @dhcp_server_settings.start_address.length == 0 \
+          or @dhcp_server_settings.end_address.length == 0 )
+      flash[:warning] = "Start and End is required if DHCP Server is enabled.".t
+    elsif ! Interface.valid_dhcp_server?
+      flash[:warning] = "DHCP Server is configured on a subnet that is not on any configured interfaces.".t
     end
   end
 
