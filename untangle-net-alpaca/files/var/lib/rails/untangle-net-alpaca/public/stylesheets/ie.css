@@ -228,7 +228,7 @@ div.list-table-container .redirects div.drag, .redirects .header div.drag
 /*	width: 2.35em; */ 	
 }
 div.list-table-container .redirects div.edit, .redirects .header div.edit {
-/*	width: 50px; */
+	width: 40px; 
 /*	width: 8%; */
 /*	width: 3.76em; */
 }
@@ -238,9 +238,15 @@ div.list-table-container .redirects div.minus, .redirects .header div.minus {
 /*	width: 5%; */
 /*	padding: 0px;
 	width: 4.3em;*/	
+	width: 30px;
 }
 
 input.test-connectivity
 {
     text-indent: 4px;
 }
+div.x-form-field-wrap {
+    clear: none;
+    display: inline;
+}
+
