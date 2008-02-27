@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # attempt to fetch the GPG keys anyway
-/usr/share/untangle-spamassassin/sa-fetch-keys.sh
+/usr/share/untangle-spamassassin-update/sa-fetch-keys.sh
 
 if [ -x /usr/bin/sa-update ]; then
     /usr/bin/sa-update --channelfile /usr/share/untangle-spamassassin-update/sa-update-channels.txt --gpgkey 856AA88A
