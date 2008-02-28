@@ -301,6 +301,9 @@ EOF
       fw_text << "#{IPTablesCommand} #{Chain::FirewallRules.args} -m mark --mark 2048/2048 -j #{Chain::FirewallMarkInputDrop.name}"
     end
 
+    ## This is a special rule to block access to the dummy bind address for traffic to port 6000.
+    fw_text << "#{IPTablesCommand} #{Chain::FirewallRules.args} -p tcp -d 192.0.2.42 --destination-port 6000 -j DROP"
+
     ## Delete all empty or nil parts
     text = text.delete_if { |p| p.nil? || p.empty? }
     fw_text = fw_text.delete_if { |p| p.nil? || p.empty? }
