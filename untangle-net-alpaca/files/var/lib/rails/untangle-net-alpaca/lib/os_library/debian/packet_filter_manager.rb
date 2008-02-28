@@ -301,6 +301,9 @@ EOF
       fw_text << "#{IPTablesCommand} #{Chain::FirewallRules.args} -m mark --mark 2048/2048 -j #{Chain::FirewallMarkInputDrop.name}"
     end
 
+    ## Allow traffic to the test IP, this is useful for people who don't know their IP.
+    fw_text << "#{IPTablesCommand} #{Chain::FirewallRules.args} -p tcp --destination-port 443 -d 192.0.2.42 -j RETURN"
+
     ## This is a special rule to block access to the dummy bind address.  Traffic
     ## should always be redirected to the dummy interface (unless it came in over lo.)
     ## which is ignored above.
