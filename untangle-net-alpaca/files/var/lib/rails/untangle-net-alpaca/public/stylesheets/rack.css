@@ -1232,8 +1232,8 @@ a.Help, button.Help, input.Help
   width: 88px;
   height: 21px;
   background: transparent url(../images/help-button.gif) no-repeat top left;
-margin-top: 5px; margin-bottom: 5px;
-  }
+  margin-top: 5px; margin-bottom: 5px;
+}
 #spinner
 {
   position: fixed;
@@ -1243,24 +1243,29 @@ margin-top: 5px; margin-bottom: 5px;
 div.warning, div.notice, div.error {
 	padding-top: 6.9em;
 	margin-bottom: -6.9em; 
-	/*position: fixed;
-	top: 6.9em; */
 	width: 100%;
 	border-bottom: 1px solid #999;
-	background: url(../images/warning-hatch.png);
 	z-index: 10;	
+}
+div.warning, div.error {
+	background: url(../images/warning-hatch.png);
+}
+div.notice {
+	background: url(../images/notice-hatch.png);
 }
 div.warning ul, div.notice ul, div.error ul {
 	margin: 0; padding: 0;
 	min-height: 28px; 
-/*	margin-top: 1.2em;
-	margin-bottom: 1em; */
-	background: url(../images/warning-icon-trans.png) no-repeat 0% 50%;
 	margin-left: 8px;
 	padding-left: 46px;
 	list-style-type: none;
-/*	padding-top: 1.2em; */
 	padding-top: 1.2em; 
+}
+div.warning ul, div.error ul {
+	background: url(../images/warning-icon-trans.png) no-repeat 0% 50%;
+}
+div.notice ul {
+	background: url(../images/notice-icon-trans.png) no-repeat 0% 50%;
 }
 div.warning ul li, div.notice ul li, div.error ul li {
 	font-size: 85%;
@@ -1269,10 +1274,6 @@ div.warning ul li, div.notice ul li, div.error ul li {
 	list-style: none;
   	padding-bottom: 4px;
   	margin: 0;
-
-}
-#interface fieldset.config-type {
-/*	padding-left: 5px; */
 }
 #interface fieldset.config-type label {
 	font-size: 85%;
@@ -1294,17 +1295,12 @@ div.warning ul li, div.notice ul li, div.error ul li {
 	font-size: 85%;
 	color: #333;
 }
-
 #interface #renew-container {
-	/*width: 636px; 
-	margin-bottom: 10px;*/
-	/* position: absolute; */
 	width: 636px;
 	text-align: right;
 	margin: 0 0 10px 0; padding: 0;
 }
 #interface #renew-container input {
-	/* margin: 0; padding: 0; */
 	margin-right: 0;
 }
 #interface #static p {
