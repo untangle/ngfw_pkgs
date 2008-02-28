@@ -1,7 +1,16 @@
 <% style = @hide_types.include?( "static" ) ? 'style="display: none"' : nil  %>
 <div id="static" <%= style %>>
-<p>The first entry is the primary IP address, the following entries are aliases.</p>
-  <% list_id = "ip-network-list-static" %>
+  <% list_id = "ip-network-list-static" 
+     primary_ip_network = static.ip_networks.shift
+     if primary_ip_network.nil?
+         primary_ip_network = IpNetwork.new
+         primary_ip_network.ip = "1.2.3.4"
+         primary_ip_network.netmask = "24"
+     end
+     rowId="ip-row-#{rand( 0x100000000 )}" %>
+    <p>Primary IP Address and Netmask</p>
+    <%= hidden_field_tag( "networkIndices[]", rowId ) %>
+    <%= text_field( "networks", rowId, { :value => "#{primary_ip_network.ip} / #{primary_ip_network.netmask}" } ) %>
   <%= render( :partial => "ip_networks" , :object => static.ip_networks,
               :locals => { :list_id => list_id } ) %>
 
