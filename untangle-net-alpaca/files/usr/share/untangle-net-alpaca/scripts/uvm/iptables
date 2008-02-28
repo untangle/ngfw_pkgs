@@ -19,6 +19,9 @@ HTTPS_EXTERNAL_PORT="443"
 ## This is the address everything in the UVM binds to.
 UVM_BIND_ADDRESS="192.0.2.42"
 
+## UDP Session timeout
+UDP_SESSION_TIMEOUT=70
+
 queue_owner()
 {
     if [ "${UVM_PID}x" != "invalidx" ]; then return ; fi
@@ -63,7 +66,7 @@ fi
 
 ## increment the UDP timeout to 60 seconds, kind of a hack to have this here.
 if [ -f /proc/sys/net/netfilter/nf_conntrack_udp_timeout ]; then
-    echo 60 > /proc/sys/net/netfilter/nf_conntrack_udp_timeout
+    echo ${UDP_SESSION_TIMEOUT} > /proc/sys/net/netfilter/nf_conntrack_udp_timeout
 fi
 
 if [ -f /proc/sys/net/netfilter/nf_conntrack_udp_timeout_stream ]; then
@@ -71,7 +74,7 @@ if [ -f /proc/sys/net/netfilter/nf_conntrack_udp_timeout_stream ]; then
 fi
 
 if [ -f /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout ]; then
-    echo 60 > /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout
+    echo ${UDP_SESSION_TIMEOUT} > /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout
 fi
 
 if [ -f /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout_stream ]; then
