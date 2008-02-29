@@ -13,7 +13,7 @@ pppoe = config.pppoe
        <%= password_field_tag( "#{config_id}_password", pppoe.hidden_password ) %>
      </li><li>
        <label for="<%= "#{config_id}_use_peer_dns" %>"><%= "Use peer DNS:".t %></label>
-       <%= check_box_tag( "#{config_id}_use_peer_dns", true, pppoe.use_peer_dns, { :disabled => true }) %>
+       <%= check_box_tag( "#{config_id}_use_peer_dns", true, pppoe.use_peer_dns ) %>
      </li><li>
        <label for="<%= "#{config_id}_dns_1" %>"><%= "Primary DNS Server:".t %></label>
        <%= text_field_tag( "#{config_id}_dns_1", pppoe.dns_1 ) %>
