@@ -33,6 +33,7 @@ public class ISO_Portaled extends ISO {
     static Logger logger = Logger.getLogger("net.propero.rdp");
 
     public static final String RDP_PROXY_PATH = "/proxy/forward";
+    public static final String RPC_PROXY_PATH = "/rsaproxy/forward";
     public static final String TARGET_HEADER = "Target";
     public static final String COOKIE_HEADER = "Cookie";
 
@@ -68,6 +69,9 @@ public class ISO_Portaled extends ISO {
         try {
             if (Options.target_header == null)
                 throw new IOException("No target for rdp portal");
+	    else
+	 	logger.error("ISO_Portaled: " + Options.target_header);
+	
             initFactory();
             rdpsock = sslFactory.createSocket();
             InetSocketAddress isa = new InetSocketAddress(host, port);
@@ -78,7 +82,10 @@ public class ISO_Portaled extends ISO {
             InputStream sockIn = rdpsock.getInputStream();
             DataInputStream din = new DataInputStream(sockIn);
             StringBuilder sb = new StringBuilder();
-            sb.append("GET ").append(RDP_PROXY_PATH).append(" HTTP/1.1\r\n");
+
+            //sb.append("GET ").append(RDP_PROXY_PATH).append(" HTTP/1.1\r\n");
+            sb.append("GET ").append(RPC_PROXY_PATH).append(" HTTP/1.1\r\n");
+
             sb.append("Host: ").append(host.getHostName()).append("\r\n");
             sb.append("Transfer-Encoding: chunked").append("\r\n");
             sb.append(TARGET_HEADER).append(": ").append(Options.target_header).append("\r\n");
