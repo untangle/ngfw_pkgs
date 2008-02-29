@@ -28,6 +28,8 @@ class InterfaceController < ApplicationController
   def list
     @title = "Interface List"
     @description = "List of all of the available interfaces."
+
+    @new_interfaces, @deleted_interfaces = InterfaceHelper.load_new_interfaces
     
     @interfaces = Interface.find(:all)
 

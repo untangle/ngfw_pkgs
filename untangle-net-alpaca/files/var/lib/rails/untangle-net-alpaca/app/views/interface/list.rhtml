@@ -3,10 +3,12 @@
 <% form_tag( :action => 'intf_order_save' ) do -%>
   <div id="main-content-body"><div class="wrapper" id="interface">
   <div id="interface-list">    
+<% if ! @new_interfaces.empty? || ! @deleted_interfaces.empty? %>
+<%= link_to_remote( "Examine detected physical interface changes.".t, options = { :url => { :controller => :network, :action => :refresh_interfaces }, :update => "main-content" } ) %> 
+<% end %>
 <div class="interface-buttons"><%= submit_to_remote( "Test Connectivity", "Test Connectivity".t, options = { :url => { :action => "test_internet_connectivity" }, :update => "main-content", :html => { :class => "test-connectivity" } } ) %>
-<%= submit_to_remote( "Refresh", "Refresh".t, options = { :url => { :controller => :network, :action => :refresh_interfaces }, :update => "main-content", :html => { :class => "refresh-button" } } ) %>
+<%= submit_to_remote( "Refresh", "Refresh".t, options = { :url => { :controller => :interface, :action => :list }, :update => "main-content", :html => { :class => "refresh-button" } } ) %>
 </div>
-<!--    <div class="refresh-button" onclick="location.href='<%= url_for( :controller => :network, :action => :refresh_interfaces ) %>'"> Refresh </div> -->
     <table>
       <tr>
        <% if @config_level >= AlpacaSettings::Level::Advanced %>
