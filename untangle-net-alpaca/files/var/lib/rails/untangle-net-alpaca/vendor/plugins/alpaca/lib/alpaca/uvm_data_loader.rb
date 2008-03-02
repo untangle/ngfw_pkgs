@@ -53,7 +53,7 @@ class Alpaca::UvmDataLoader
     end
     
     def to_s
-      "<network-nettings: [@setting_id] on[#{@is_enabled}] gw[#{@default_route}] dns1[#{@dns_1}] dns2[#{@dns_2}]>"
+      "<network-nettings: [#{@setting_id}] on[#{@is_enabled}] gw[#{@default_route}] dns1[#{@dns_1}] dns2[#{@dns_2}]>"
     end
     
     attr_reader :is_enabled, :default_route, :dns_1, :dns_2, :setting_id
@@ -64,6 +64,8 @@ class Alpaca::UvmDataLoader
     @dbh = nil
     @logger = Logger.new( LOG_FILE, 10, 1048576 )
   end
+
+  attr_reader :logger
   
   ## Load the networking settings from the UVM and convert them into alpaca settings
   def load_settings

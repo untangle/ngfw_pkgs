@@ -361,7 +361,6 @@ EOF
 ## If you modify this file manually, your changes
 ## may be overriden
 
-## This causes a script to tear down any bridges that are not necessary.
 auto cleanup
 iface cleanup inet manual
 
