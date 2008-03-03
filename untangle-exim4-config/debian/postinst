@@ -1,0 +1,8 @@
+#! /bin/bash
+
+MAILDIR=/var/mail
+
+chown root:mail $MAILDIR
+chmod 2775 $MAILDIR
+
+exit 0
