@@ -7,6 +7,10 @@
     <%= stylesheet_link_tag "wizard/main" %>
     <%= stylesheet_link_tag "borax/list-table" %>
     <%= stylesheet_link_tag "wizard/interface-list" %>
+
+    <!--[if lt IE 7]>
+      <%= stylesheet_link_tag "ie.css" %>
+    <![endif]-->
   </head>
   <body onload="Wizard.changeCurrent( 0 )">
     <div id="wizard">

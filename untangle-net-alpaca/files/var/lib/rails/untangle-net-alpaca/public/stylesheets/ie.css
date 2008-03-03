@@ -227,4 +227,16 @@ div.x-form-field-wrap {
     display: inline;
 }
 
+div.interface-review ul li.header {
+    text-align: left;
+}
+div.interface-review ul li div {
+    display: inline-block;
+    clear: none;
+    float: left;
+}
+div#wizard div#content {
+    margin-top: 20px;
+}
+
 /* table-specific styles */
