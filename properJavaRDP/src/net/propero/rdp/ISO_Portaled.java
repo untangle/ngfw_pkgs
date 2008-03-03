@@ -33,7 +33,6 @@ public class ISO_Portaled extends ISO {
     static Logger logger = Logger.getLogger("net.propero.rdp");
 
     public static final String RDP_PROXY_PATH = "/proxy/forward";
-    //public static final String RPC_PROXY_PATH = "/rsaproxy/forward";
     public static final String TARGET_HEADER = "Target";
     public static final String COOKIE_HEADER = "Cookie";
 
@@ -83,16 +82,17 @@ public class ISO_Portaled extends ISO {
             DataInputStream din = new DataInputStream(sockIn);
             StringBuilder sb = new StringBuilder();
 
-	    if (Options.proxy != null)
+	    if (Options.proxy != null) {
             	sb.append("GET ").append(Options.proxy).append(" HTTP/1.1\r\n");
-	    else
+		logger.error("proxy overridden to: " + Options.proxy);
+	    } else
             	sb.append("GET ").append(RDP_PROXY_PATH).append(" HTTP/1.1\r\n");
 
             sb.append("Host: ").append(host.getHostName()).append("\r\n");
             sb.append("Transfer-Encoding: chunked").append("\r\n");
 	    String target_header = Options.target_header;
 	    if (Options.append_target)
-	    	target_header = target_header + ";" + Options.port + ";" + Options.username;
+	    	target_header = target_header + ";" + Options.port_to_forward + ";" + Options.username;
 	    logger.error("target_header: " + target_header);
             sb.append(TARGET_HEADER).append(": ").append(target_header).append("\r\n");
 

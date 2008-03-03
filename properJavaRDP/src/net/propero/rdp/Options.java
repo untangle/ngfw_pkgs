@@ -38,6 +38,7 @@ public class Options {
 	public static int width = 800; // -g widthxheight
 	public static int height = 600; // -g widthxheight
 	public static int port = 3389; // -t port
+	public static int port_to_forward = 3389; // -P port to forward
 	public static boolean fullscreen = false;
 	public static boolean built_in_licence = false;
     
