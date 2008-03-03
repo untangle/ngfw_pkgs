@@ -32,6 +32,10 @@ class Alpaca::ConfigurationLoader
   def load_configuration
     logger.debug( "Loading configuration #{Time.new}" )
     load_network_settings
+
+    load_hostname
+
+    load_dns_settings
   end
 
   private
@@ -117,6 +121,25 @@ class Alpaca::ConfigurationLoader
     end
   end
 
+  def load_hostname
+    HostnameSettings.destroy_all
+    HostnameSettings.new( :hostname => `hostname`.strip ).save
+  end
+
+  def load_dns_settings
+    suffix = `awk '/^search/ { print $2 ; exit }' /etc/resolv.conf`.strip
+    suffix = "example.com" unless ::Alpaca::Validator.is_hostname?( suffix )
+
+    DhcpServerSettings.destroy_all
+    DnsServerSettings.destroy_all
+    DhcpStaticEntry.destroy_all
+    DnsStaticEntry.destroy_all
+
+    DnsServerSettings.new( :suffix => suffix, :enabled => true ).save
+
+    DhcpServerSettings.new( :enabled => false, :start_address => "", :end_address => "" ).save
+  end
+
   def get_dns_servers
     servers = `awk '/nameserver/ { print $2 }' /etc/resolv.conf`.strip.split
     servers += `awk '/^server=/ { sub( "server=", "" ); print }' /etc/dnsmasq.conf`.strip.split
@@ -127,7 +150,7 @@ class Alpaca::ConfigurationLoader
     
     servers
   end
-  
+
   def get_default_gateway
     `ip route show | awk '/^default/ { print $3 }'`
   end
