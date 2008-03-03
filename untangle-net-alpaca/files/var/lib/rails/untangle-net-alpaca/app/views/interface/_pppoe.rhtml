@@ -18,7 +18,7 @@ end
       </li>
       <li>
         <label for="pppoe[use_peer_dns]"><%= "Use peer DNS:".t %></label>
-        <%= check_box( "pppoe", "use_peer_dns", { :checked => @pppoe.use_peer_dns, :disabled => true }, true, false ) %>
+        <%= check_box( "pppoe", "use_peer_dns", { :checked => @pppoe.use_peer_dns }, true, false ) %>
       </li>
       <li>
         <label for="pppoe[dns_1]"><%= "Primary DNS Server:".t %></label>
