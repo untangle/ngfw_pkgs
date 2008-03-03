@@ -33,7 +33,7 @@ public class ISO_Portaled extends ISO {
     static Logger logger = Logger.getLogger("net.propero.rdp");
 
     public static final String RDP_PROXY_PATH = "/proxy/forward";
-    public static final String RPC_PROXY_PATH = "/rsaproxy/forward";
+    //public static final String RPC_PROXY_PATH = "/rsaproxy/forward";
     public static final String TARGET_HEADER = "Target";
     public static final String COOKIE_HEADER = "Cookie";
 
@@ -83,12 +83,19 @@ public class ISO_Portaled extends ISO {
             DataInputStream din = new DataInputStream(sockIn);
             StringBuilder sb = new StringBuilder();
 
-            //sb.append("GET ").append(RDP_PROXY_PATH).append(" HTTP/1.1\r\n");
-            sb.append("GET ").append(RPC_PROXY_PATH).append(" HTTP/1.1\r\n");
+	    if (Options.proxy != null)
+            	sb.append("GET ").append(Options.proxy).append(" HTTP/1.1\r\n");
+	    else
+            	sb.append("GET ").append(RDP_PROXY_PATH).append(" HTTP/1.1\r\n");
 
             sb.append("Host: ").append(host.getHostName()).append("\r\n");
             sb.append("Transfer-Encoding: chunked").append("\r\n");
-            sb.append(TARGET_HEADER).append(": ").append(Options.target_header).append("\r\n");
+	    String target_header = Options.target_header;
+	    if (Options.append_target)
+	    	target_header = target_header + ";" + Options.port + ";" + Options.username;
+	    logger.error("target_header: " + target_header);
+            sb.append(TARGET_HEADER).append(": ").append(target_header).append("\r\n");
+
             if (Options.cookie_header != null)
                 sb.append(COOKIE_HEADER).append(": ").append("$Version=0; JSESSIONIDSSO=").append(Options.cookie_header).append("\r\n");
             sb.append("\r\n");
