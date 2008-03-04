@@ -387,7 +387,7 @@ class Alpaca::UvmDataLoader
       
       unless p.nil? || !p["live"]
         ## PPPoE settings
-        pppoe = IntfPppoe.new( :username => p["username"], :password => p["password"] )
+        pppoe = IntfPppoe.new( :username => p["username"], :password => p["password"], :secret_field => p["secret_field"] )
 
         configure_ip_networks( pppoe, ns )
         pppoe.dns_1 = @network_settings.dns_1

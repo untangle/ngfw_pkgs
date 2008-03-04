@@ -75,7 +75,8 @@ EOF
     cfg << "user \"#{settings.username}\""
 
     ## Append anything that is inside of the secret field for the PPPoE Configuration
-    cfg << settings.secret_field
+    secret_field = settings.secret_field
+    cfg << settings.secret_field unless secret_field.nil?
 
     secrets << "\"#{settings.username}\" *  \"#{settings.password}\""   
   

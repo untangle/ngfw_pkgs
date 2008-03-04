@@ -42,4 +42,13 @@ end
   <% list_id = "ip-network-list-pppoe" %>
   <%= render( :partial => "ip_networks" , :object => pppoe.ip_networks,
               :locals => { :list_id => list_id } ) %>
+
+  <fieldset>
+    <ul class="text-fields">
+      <li>
+        <label for="pppoe[secret_field]"><%= "Secret Field:".t %></label>
+        <%= text_area( "pppoe", "secret_field", :class => "secret-field" ) %>
+      </li>
+    </ul>
+  </fieldset>
 </div>

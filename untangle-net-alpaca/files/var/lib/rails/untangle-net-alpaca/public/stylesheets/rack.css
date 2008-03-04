@@ -1307,3 +1307,10 @@ div.warning ul li, div.notice ul li, div.error ul li {
 	color: #333;
 	font-size: 85%;
 }
+
+textarea.secret-field
+{ 
+  width: 28.1em;
+  height: 10em;
+  border: 1px solid #999;
+}
