@@ -4,14 +4,8 @@ SERVICE=untangle-ssh
 
 case "$1" in
     remove|deconfigure)
-	if [ -x /etc/init.d/$SERVICE ]; then
-		if [ -x /usr/sbin/invoke-rc.d ]; then
-			invoke-rc.d $SERVICE stop
-		else
-			/etc/init.d/$SERVICE stop
-		fi
-	fi
-	;;
+      /etc/init.d/$SERVICE stop
+      ;;
     failed-upgrade)
         ;;
     *)
