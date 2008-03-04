@@ -66,9 +66,9 @@ EOF
     ## the name of the bridge, makes reloading the networking configuration easy.
     ## XXXX IMPORTANT DATA IN COMMENTS NOT LEGIT XXXX
     if wan_interface.is_bridge?
-      os_name = ""
+      bridge_name = OSLibrary::Debian::NetworkManager.bridge_name( wan_interface )
       bia = wan_interface.bridged_interface_array.map{ |i| i.os_name }
-      cfg << "# bridge_configuration: br.#{wan_interface.os_name} #{bia.join(",")}"
+      cfg << "# bridge_configuration: #{bridge_name} #{bia.join(",")}"
     end
 
     ## Append the username

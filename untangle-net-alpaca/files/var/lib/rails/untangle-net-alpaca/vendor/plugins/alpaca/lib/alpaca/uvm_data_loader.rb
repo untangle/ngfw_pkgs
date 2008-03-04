@@ -106,7 +106,7 @@ class Alpaca::UvmDataLoader
     ## Load all of the interfaces on the box
     interfaces = InterfaceHelper.loadInterfaces
     
-    return logger.warn( "No interfaces are available, exiting" ) if interfaces.empty?
+    return @logger.warn( "No interfaces are available, exiting" ) if interfaces.empty?
     
     ## Sort the interfaces by their index
     interfaces.sort! { |a,b| a.index <=> b.index }
@@ -177,7 +177,7 @@ class Alpaca::UvmDataLoader
           redirect.enabled = ( @network_settings.is_enabled && r["live"] == true )
           redirect.save
         rescue
-          logger.warn( "Unable to parse a redirect #{$!}" )
+          @logger.warn( "Unable to parse a redirect #{$!}" )
         end
       end
     end
@@ -387,10 +387,15 @@ class Alpaca::UvmDataLoader
       
       unless p.nil? || !p["live"]
         ## PPPoE settings
-        interface.intf_pppoe = IntfPppoe.new( :username => p["username"], :password => p["password"] )
-        interface.config_type = InterfaceHelper::ConfigType::PPPOE
+        pppoe = IntfPppoe.new( :username => p["username"], :password => p["password"] )
 
-        ## XXXX Have to insert the aliases for PPPoE.
+        configure_ip_networks( pppoe, ns )
+        pppoe.dns_1 = @network_settings.dns_1
+        pppoe.dns_2 = @network_settings.dns_2
+
+        interface.intf_pppoe = pppoe
+
+        interface.config_type = InterfaceHelper::ConfigType::PPPOE
         interface.save
         return
       end
@@ -431,7 +436,7 @@ class Alpaca::UvmDataLoader
       row = result.fetch
       
       if row.nil?
-        logger.warn( "Nothing is known about the interface #{interface.name}" )
+        @logger.warn( "Nothing is known about the interface #{interface.name}" )
         return
       end
 

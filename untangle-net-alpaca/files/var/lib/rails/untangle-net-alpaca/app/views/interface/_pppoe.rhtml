@@ -14,7 +14,7 @@ end
       </li>
       <li>
         <label for="pppoe[password]"><%= "Password:".t %></label>
-        <%= password_field_tag( "pppoe[password]", pppoe.hidden_password ) %>
+        <%= password_field_tag( "pppoe[password]", pppoe.hidden_password, :autocomplete=>"off" ) %>
       </li>
       <li>
         <label for="pppoe[use_peer_dns]"><%= "Use peer DNS:".t %></label>

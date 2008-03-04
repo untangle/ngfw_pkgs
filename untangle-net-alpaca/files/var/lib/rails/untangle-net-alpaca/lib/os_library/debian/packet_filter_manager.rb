@@ -425,10 +425,14 @@ EOF
 
     ## use ppp0 if this is a PPPoE interface.
     if ( interface.config_type == InterfaceHelper::ConfigType::PPPOE )
-      match = "-i ppp0" 
+      match = "-i ppp0"
     elsif interface.is_bridge?
-      name = OSLibrary::Debian::NetworkManager.bridge_name( interface ) if interface.is_bridge?
       match = "-m physdev --physdev-in #{interface.os_name}" if interface.is_bridge?
+    end
+    
+    ## This is the name that is used to retrieve the local addresses.
+    if interface.is_bridge?
+      name = OSLibrary::Debian::NetworkManager.bridge_name( interface ) if interface.is_bridge?
     end
     
     index = interface.index

@@ -137,7 +137,7 @@ EOF
     end
 
     ## This will automatically remove the first ip_network if it is assigned to the bridge.
-    bridge = bridgeSettings( interface, static.mtu, "manual", ip_networks )
+    bridge = bridgeSettings( interface, static.mtu, "manual", true, ip_networks )
     
     mtu = mtuSetting( static.mtu )
 
@@ -181,7 +181,8 @@ EOF
     ## assume it is a bridge until determining otherwise
     name = OSLibrary::Debian::NetworkManager.bridge_name( interface )
     
-    base_string = bridgeSettings( interface, dynamic.mtu, "dhcp" )
+    ## Retrieve an array of all of the bridged interfaces.
+    base_string = bridgeSettings( interface, dynamic.mtu, "dhcp", true )
 
     ## REVIEW MTU Setting doesn't do anything in this case.
     if base_string.empty?
@@ -205,15 +206,15 @@ EOF
 
   ## These are the settings that should be appended to the first
   ## interface index that is inside of the interface (if this is in fact a bridge)
-  def bridgeSettings( interface, mtu, config_method, ip_networks = [] )
-    ## Retrieve an array of all of the bridged interfaces.
+  ## @param bridge_self Should be set to true unless the interface
+  ## shouldn't be bridged with itself
+  def bridgeSettings( interface, mtu, config_method, bridge_self, ip_networks = [] )
     bridged_interfaces = interface.bridged_interface_array
-    
     ## If this is nil or empty, it is not a bridge.    
     return "" if ( bridged_interfaces.nil? || bridged_interfaces.empty? )
     
     ## Append this interface
-    bridged_interfaces << interface
+    bridged_interfaces << interface if bridge_self
 
     bridge_name = self.class.bridge_name( interface )
 
@@ -260,25 +261,22 @@ EOF
     ip_networks = clean_ip_networks( pppoe.ip_networks )
 
     ## This will automatically remove the first ip_network if it is assigned to the bridge.
-    #bridge = bridgeSettings( interface, nil, "manual", ip_networks )
+    bridge = bridgeSettings( interface, nil, "manual", false, ip_networks )
     
-    #name = OSLibrary::Debian::NetworkManager.bridge_name( interface ) unless bridge.empty?
+    name = self.class.bridge_name( interface ) unless bridge.empty?
     ## Configure each IP and then join it all together with some newlines.
-    #bridge += "\n" + append_ip_networks( ip_networks, name, nil, !bridge.empty? )
-    
-    ## Currently bridges are not supported for PPPoE
-    alias_config = append_ip_networks( ip_networks, name, nil, false )
+    bridge += "\n" + append_ip_networks( ip_networks, name, nil, !bridge.empty? )
     
     ## Hardcoded at ppp0
 
     ## Use the ifconfig to guarantee the device is running, pppoe
     ## complains if the interface isn't running.
 <<EOF
-#{alias_config}
+#{bridge}
 
 auto ppp0
 iface ppp0 inet ppp
-\tpre-up ifconfig #{name} up
+\tpre-up ifconfig #{interface.os_name} up
 \tprovider #{OSLibrary::PppoeManager::ProviderName}
 
 EOF
