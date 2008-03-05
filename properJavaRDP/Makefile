@@ -4,6 +4,8 @@
 
 all:
 	ant -f build-eg.xml
+	cp -f dist/*.jar ../../src/downloads/
+	@echo "*** don't forget to 'svn commit ../../src/downloads/' ***"
 
 clean:
 	ant -f build-eg.xml clean
