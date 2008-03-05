@@ -49,7 +49,7 @@ EOF
 
     </ul>
     <ul id="rule-builder" class="rule-list">
-       <%= render( :partial => "rule/parameter" , :collection => @parameter_list ) %>
+       <%= render( :partial => "rule/parameter" , :collection => @parameter_list, :locals => { :filter_types => @filter_types } ) %>
     </ul>
   </div>
   <fieldset class="topline">
