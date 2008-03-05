@@ -19,7 +19,7 @@ nonce()
 nonce >| ${NEW_NONCE_FILE}
 
 ## Append the old nonce
-head -n 1 ${NONCE_FILE} >> ${NEW_NONCE_FILE}
+[ -f ${NONCE_FILE} ] && head -n 1 ${NONCE_FILE} >> ${NEW_NONCE_FILE}
 
 ## Move the new nonces into the correct location
 mv ${NEW_NONCE_FILE} ${NONCE_FILE}
