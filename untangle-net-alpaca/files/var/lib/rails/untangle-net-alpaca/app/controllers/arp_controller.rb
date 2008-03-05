@@ -24,9 +24,13 @@ class ArpController < ApplicationController
 
   def manage
     @active_arps = StaticArp.get_active( os )
-    @active_arps = @active_arps.sort_by { |a| IPAddr.new(a.ip_address).to_i }
+    @active_arps = @active_arps.sort_by do |a| 
+      address = IPAddr.parse(a.ip_address)
+      next 0 if address.nil?
+      address.to_i
+    end
+
     @active_arps = @active_arps.sort_by { |a| a.interface }
-    #@current_arps = `arp -n`
     @static_arps = StaticArp.find( :all )
     @static_arps = [StaticArp.new] if @static_arps.nil?
   end
