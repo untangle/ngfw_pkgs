@@ -14,7 +14,7 @@ EOF
 
 <%= javascript_tag <<EOF
 RedirectManager.editFilter = '#{url_for( :action => "edit" )}';
-RuleBuilder.createParameter = '#{url_for( :controller => "rule", :action => "create_parameter", :list_id => "rule-builder" )}';
+RuleBuilder.createParameter = '#{url_for( :controller => "rule", :action => "create_port_forward_parameter", :list_id => "rule-builder" )}';
 EOF
 %>
   

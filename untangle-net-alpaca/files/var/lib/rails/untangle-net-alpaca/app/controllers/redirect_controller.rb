@@ -40,7 +40,10 @@ class RedirectController < ApplicationController
     @redirect.new_enc_id = params[:new_enc_id]
     @redirect.enabled = params[:enabled]
 
+    ## Create a copy of the filter types, and remove the source port
     @interfaces, @parameter_list = RuleHelper::get_edit_fields( params )
+    
+    @filter_types = RedirectHelper::filter_types
   end
 
   def save

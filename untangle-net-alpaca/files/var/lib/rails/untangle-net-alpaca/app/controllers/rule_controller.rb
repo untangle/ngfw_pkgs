@@ -31,6 +31,14 @@ class RuleController < ApplicationController
     @parameter.parameter, @parameter.value = "s-addr", ""
   end
 
+  def create_port_forward_parameter
+    ## this little nugget removes the source port for port forwards 
+    @filter_types = RedirectHelper::filter_types
+
+    create_parameter
+    render :action => 'create_parameter'
+  end
+
   def index
     interfaces = Interface.find( :all )
     interfaces.sort! { |a,b| a.index <=> b.index }

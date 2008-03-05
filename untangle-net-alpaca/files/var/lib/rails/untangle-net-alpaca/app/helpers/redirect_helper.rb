@@ -69,6 +69,11 @@ EOF
     end
   end
 
+  def self.filter_types
+    filter_types = Array.new( RuleHelper::FilterTypes )
+    filter_types.delete_if { |name,code| code == "s-port" }
+  end
+
   def redirect_table_model
     RedirectTableModel.instance
   end

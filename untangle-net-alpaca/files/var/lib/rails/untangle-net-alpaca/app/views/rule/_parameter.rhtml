@@ -1,8 +1,9 @@
+<% filter_types = RuleHelper::FilterTypes if filter_types.nil? %>
 <% rowId="parameter-#{rand( 0x100000000 )}" %>
 <li id="<%= rowId  %>" class="rule odd">
   <div class="and">and </div>
   <div class="type">
-    <%= select_tag( "ruleType[]", options_for_select( RuleHelper::FilterTypes, parameter.parameter ), 
+    <%= select_tag( "ruleType[]", options_for_select( filter_types, parameter.parameter ), 
     { :onchange => "RuleBuilder.selectType( '#{rowId}' )" } ) %>
   </div>
   <div class="value middle">
