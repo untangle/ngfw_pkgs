@@ -8,9 +8,11 @@
          primary_ip_network.netmask = "24"
      end
      rowId="ip-row-#{rand( 0x100000000 )}" %>
-    <p>Primary IP Address and Netmask</p>
+    <fieldset><ul class="text-fields"><li>
+    <label for="<%= rowId %>">Primary IP Address and Netmask:</label>
     <%= hidden_field_tag( "networkIndices[]", rowId ) %>
     <%= text_field( "networks", rowId, { :value => "#{primary_ip_network.ip} / #{primary_ip_network.netmask}" } ) %>
+    </li></ul></fieldset>
   <%= render( :partial => "ip_networks" , :object => static.ip_networks,
               :locals => { :list_id => list_id } ) %>
 
