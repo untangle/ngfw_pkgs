@@ -1,9 +1,3 @@
-untangle-libnetfilter-conntrack (5.1~test-seb-1sid) seb; urgency=low
-
-  * auto build
-
- -- Sebastien Delafond <seb@debian.org>  Tue, 04 Mar 2008 17:55:15 -0800
-
 untangle-libnetfilter-conntrack (0.0.81-1) unstable; urgency=low
 
   * New upstream release.
