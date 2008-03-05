@@ -38,9 +38,9 @@ module RuleHelper
 
   DayOfWeekJavascript = DayOfWeek.map { |d| "new Array( '#{d[0]}', '#{d[1]}' )" }.join( ", " )
   
-  ProtocolList = [[ "icmp", "icmp".t ],
-                  [ "tcp", "tcp".t ],
+  ProtocolList = [[ "tcp", "tcp".t ],
                   [ "udp", "udp".t ],
+                  [ "icmp", "icmp".t ],
                   [ "gre", "gre".t ],
                   [ "esp", "esp".t ],
                   [ "ah", "ah".t ],
