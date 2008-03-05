@@ -1,4 +1,3 @@
-
 /* ----------------------------- Buttons ----------------------------- */
 div.add-button
 { 
@@ -13,7 +12,7 @@ div.add-button
   overflow: visible;
   text-align: left;
   cursor: pointer;
- }
+}
 
 div.refresh-button, input.refresh-button
 { 
@@ -29,38 +28,31 @@ div.refresh-button, input.refresh-button
   text-align: left;
   cursor: pointer;
   border: 0;
- }
+}
 
 div.list-table-container div.list-table div.list-table-column {
-	overflow: hidden;
+    overflow: hidden;
 }
 
 
 #dhcp-static-entry-list li:hover, #static_arps li:hover, #dns-static-entry-list li:hover, #firewall-list li:hover, #override-list li:hover, #network_routes li:hover, #subscription-list li:hover, #redirect-list li:hover, #ip-network-list-static li:hover, #ip-network-list-dynamic li:hover, #ip-network-list-pppoe li:hover {
-	background-color: #B0D9EA;
-}
-
-
-div.list-table-container div.minus {
-/* border: 1px solid red;
-	width: auto; */
+    background-color: #B0D9EA;
 }
 
 /* ----------------------------- Tables ----------------------------- */
-
 div.list-table-container
 { 
   border: 1px solid #999999;
   margin-bottom: 30px;
   position: relative;
-clear: both;
-	width: 48.8em; /* 633px */
-	min-width: 633px;
- }
+  clear: both;
+  width: 48.8em; /* 633px */
+  min-width: 633px;
+}
 
 /* IE6 & IE7 hack */
 html* div.list-table-container {
-		width: 47.5em; 
+        width: 47.5em; 
 }
 div.list-table-container ul
 { 
@@ -68,12 +60,12 @@ div.list-table-container ul
   list-style: none inside none;
   padding: 0;
   margin: 0;
- }
+}
 
 div.list-table-container ul li
 {
   list-style: none inside none;
- }
+}
 
 /* The header */
 div.list-table-container ul.header
@@ -81,156 +73,124 @@ div.list-table-container ul.header
   padding: 0px;
   margin: 0px;
   font-weight: bold;
- color: #333333; 
+  color: #333333; 
   background-color: #B4B4B4; 
-  /* height: 23px; */
-height: 2em;
-/*  font-size: 80%; */
+  height: 2em;
   border-bottom: 2px solid #666666;
-  }
+}
 
 div.list-table-container ul.header div
 { 
   float: left;
   text-indent: 10px;
-  /* Insert a border to the left of every column */
   border-left: 1px solid #E6E6E6;
-  /*line-height: 23px; */
-line-height: 2em;
- }
+  line-height: 2em;
+}
 
 /* Remove the border from the left of the first column */
 div.list-table-container ul.header div.first
 { 
   border-left: 0px solid #E6E6E6;
- }
+}
 
 /* End of header */
 
 div.list-table-container div.list-table li
 { 
-/*  overflow: auto; */
-/*  line-height: 25px;
-  height: 28px; */
-/*	line-height: 25px; */
-	line-height: 2em;
+  line-height: 2em;
   padding-bottom: 0px;
-  }
+}
 
 div.list-table-container div.list-table li div
 { 
-/*  overflow: auto;
-  height: 28px; */
-/*	height: 25px; */
-	height: 2em;
-	overflow: auto;
-  }
-
-/* Format the data itself */
-div.list-table-container div.list-table li div
-{ 
-/*  text-indent: 10px; */
- }
+    height: 2em;
+    overflow: auto;
+}
 
 div.list-table-container div.list-table
 { 
-/*  overflow-y: scroll; */
- overflow-y: auto; 
+  overflow-y: auto; 
   overflow-x: hidden;
- /* background-color: #666666; */
-	background-color: transparent;
+  background-color: transparent;
   border: 0 solid #C0C0C0;
   margin: 0;
   position: relative;
-clear: both;
-/*height: 200px; */
-min-height: 200px;
-height: 15.4em;
- }
+  clear: both;
+  min-height: 200px;
+  height: 15.4em;
+}
 
 div.list-table-container div.list-table li.odd
 { 
   background-color: #DDDDDD;
- }
+}
 
 div.list-table-container div.list-table li.even
 { 
-/*  background-color: #E9E9E9; */
-	background-color: transparent;
- }
-
-div.list-table-container div.list-table li.new
-{ 
-/*  background-color: #B0D9EA; */
- }
+    background-color: transparent;
+}
 
 div.list-table-container div.list-table ul li
 { 
   border-top: 0px solid #999999;
   border-bottom: 1px solid #999999;
-  }
+}
 
 div.list-table-container div.list-table ul li div.list-table-column
 { 
   float: left;
   border-left: 1px solid #999999;
-  }
+}
 
 div.list-table-container div.list-table ul li div.list-table-column.first
 { 
   border-left: 0px solid #E6E6E6;
-  }
-
-div.list-table-container div.edit, div.list-table-container div.minus
-{ 
-/*  width: 50px; */
-  }
+}
 
 div.list-table-container div.list-table div.edit
 {
   background-image: url( "../images/edit.gif");
   background-repeat: no-repeat;
   background-position: center;
-  }
+}
 
 div.list-table-container div.list-table div.minus
 { 
   background-image: url( "../images/minus.gif");
   background-repeat: no-repeat;
   background-position: center;
-  }
+}
 
 div.list-table-container div.list-table div.edit:hover, 
 div.list-table-container div.list-table div.minus:hover
 { 
   cursor: pointer;
   background-color: #86c5df;
-  }
+}
 
 
 
 /* ----------------------------- Table Labels ----------------------------- */
 div.table-label
 { 
-  margin-bottom: 10px;
-	width: 48.9em;
-	min-width: 635px;
- }
+    margin-bottom: 10px;
+    width: 48.9em;
+    min-width: 635px;
+}
 
 /* IE6 & IE7 hack */
 html* div.table-label {
-	width: 47.5em;
+    width: 47.5em;
 }
 
 div.table-label div.table-title
 { 
-  color: #666666;
-/*  line-height: 21px; */
-	line-height: 2em;
-  float: left;
-	font-size: 93%; /*equiv 12px */
-	font-weight: bold;
- }
+    color: #666666;
+    line-height: 2em;
+    float: left;
+    font-size: 93%; /*equiv 12px */
+    font-weight: bold;
+}
 
 /* ------------------ Style the input fields ------------------ */
 
@@ -242,12 +202,11 @@ div.list-table-container div.list-table input
 
 div.list-table-container div.list-table input.textfield
 { 
-	
+    
   color: #333;
   background-color: transparent;
   border: 0px;
-/*  height: 14px; */
-	height: 1.45em;
+  height: 1.45em;
   text-indent: 8px;
   padding-top: 4px;
   width: 95%;
@@ -258,14 +217,12 @@ div.list-table-container div.list-table input.textfield
 /* ie7 & ie6 hack */
 html* div.list-table-container div.list-table input.textfield
 {
-	color: #333;
-	width: 90%;
-/*	height: 14px; */
-	height: 1.4em;
-	
-	margin: 2px 0px 2px 2px;
-	padding: 4px 0 0 8px;
-	text-indent: 0;
+    color: #333;
+    width: 90%;
+    height: 1.4em;
+    margin: 2px 0px 2px 2px;
+    padding: 4px 0 0 8px;
+    text-indent: 0;
 }
 div.list-table-container div.list-table input.focus, div.list-table-container div.list-table input.textfield.focus {
   border: 1px inset #ccc !important;
@@ -277,113 +234,61 @@ div.list-table-container div.list-table input.focus, div.list-table-container di
 
 div.list-table-container ul.header div.drag, div.drag
 {
-  	width: 2.35em;  	
-	text-indent: 7px;
-  	cursor: move;
+    width: 2.35em;      
+    text-indent: 7px;
+    cursor: move;
 }
 
 div.list-table-container div.minus, div.list-table-container ul.header div.minus {
-	padding: 0px;
-	width: 4.8em;	
-	 text-align: center;
-	  text-indent: 0;	
+    padding: 0px;
+    width: 4.8em;    
+    text-align: center;
+    text-indent: 0;    
 }
 div.list-table-container div.enabled, div.list-table-container ul.header div.enabled {
-	width: 2.82em; 		
-	 text-align: center;
-	  text-indent: 0;
+    width: 2.82em;         
+    text-align: center;
+    text-indent: 0;
 }
 div.list-table-container div.edit, div.list-table-container ul.header div.edit {
-	width: 3.76em; 
-	 text-align: center;
-	  text-indent: 0;
+    width: 3.76em; 
+    text-align: center;
+    text-indent: 0;
 }
-
-/*
-div.list-table-container.redirects div.enabled, div.list-table-container.redirects div.minus, div.list-table-container.redirects div.edit, div.list-table-container.ip_networks div.networks, div.list-table-container.ip_networks div.minus, 
-div.list-table-container.dhcp-static-entry div.minus,
-div.list-table-container.dns-static-entry div.minus,
-div.list-table-container.firewalls div.enabled
-{ 
-	  text-align: center;
-	  text-indent: 0;
-}
-*/
 
 /* ------------------ Style the redirect table ---------------- */
-
-div.list-table-container .redirects div.enabled, .redirects .header div.enabled
-{ 
-/*  width: 40px; */
-/*	width: 6%; */
-/*	width: 2.82em; */
-	
-}
 div.list-table-container .redirects div.description, .redirects .header div.description
 { 
-/*  width: 450px; */
-/*	width: 71%; */
-	width: 33.37em; 
+    width: 33.37em; 
 }
-div.list-table-container .redirects div.drag, .redirects .header div.drag
- {
-/*	width: 30px; */
-/*	width: 5%; */
-/*	width: 2.35em; */ 	
-}
-div.list-table-container .redirects div.edit, .redirects .header div.edit {
-/*	width: 50px; */
-/*	width: 8%; */
-/*	width: 3.76em; */
-}
-div.list-table-container.redirects div.minus, .redirects .header div.minus {
-/*	padding-left: 8px; 
-	width: 30px; */
-/*	width: 5%; */
-/*	padding: 0px;
-	width: 4.8em; */
-}
-
 
 /* ------------------ Style the IP Networks ---------------- */
 div.list-table-container.ip_networks div.networks, div.list-table-container.ip_networks div.ip-network
 {
-/*  width: 570px; */
-/* width: 90% */
-width: 42.5em;
-}
-div.list-table-container.ip_networks div.minus {
+    width: 42.5em;
 }
 
 /* ------------------ Style the DHCP Static Entries ---------------- */
 div.list-table-container.dhcp-static-entry div.mac-address
 { 
-/*  width: 160px; */
-/* width: 25%; */
-width: 11.75em;
+    width: 11.75em;
 }
 
 div.list-table-container.dhcp-static-entry div.ip-address
 { 
-/*  width: 140px; */
-/* width: 22% */
-width: 10.34em;
+    width: 10.34em;
 }
 
 div.list-table-container.dhcp-static-entry div.description
 { 
-/*  width: 265px; */
-/* width: 42% */
-width: 20.14em;
+    width: 20.14em;
 }
 
 /* ------------------ Style the DHCP Dynamic Entries ---------------- */
 div.list-table-container.dhcp-dynamic-entry div.mac-address
 { 
- /* width: 160px; */
-/* width: 25%; */
-width: 11.75em;
-  }
+    width: 11.75em;
+}
 
 div.list-table-container.dhcp-dynamic-entry div.mac-address a
 { 
@@ -393,394 +298,214 @@ div.list-table-container.dhcp-dynamic-entry div.mac-address a
 
 div.list-table-container.dhcp-dynamic-entry div.ip-address
 { 
-/*  width: 140px; */
-/* width: 22% */
-width: 10.34em;
-  }
+    width: 10.34em;
+}
 
 div.list-table-container.dhcp-dynamic-entry div.hostname
 { 
-/*  width: 250px;
-	width: 39%; */
-	width: 19.93em;
-  }
+    width: 19.93em;
+}
 
 div.list-table-container.dhcp-dynamic-entry div.add-static
 {
-/*  width: 70px;
-	width: 11%; */
-	width: 5.17em;
-  }
+    width: 5.17em;
+}
 
 div.list-table-container.dhcp-dynamic-entry div.list-table div.add-static
 { 
   background-image: url( "../images/add.gif");
   background-repeat: no-repeat;
   background-position: center;
-  }
+}
 
 div.list-table-container.dhcp-dynamic-entry div.list-table div.add-static:hover
 { 
   cursor: pointer;
   background-color: #86c5df;
- }
+}
 
 
 div.list-table-container.dhcp-dynamic-entry div.action
 { 
-/*  width: 100px;
-  width: 16%; */
-	width: 7.52em;
+    width: 7.52em;
 }
 
 
 div.list-table-container.dhcp-dynamic-entry div.list-table-column span
 { 
   font-size: 85%;
-	color: #333;
-	padding-left: 10px; 
-  }
+  color: #333;
+  padding-left: 10px; 
+}
 
 /* ------------------ Style the DNS Static Entries ---------------- */
-
-
 div.list-table-container.dns-static-entry div.ip-address
 { 
-  	/* width: 140px; */
-	/* width: 22%; */
-	width: 10.34em;
+    width: 10.34em;
 }
 
 div.list-table-container.dns-static-entry div.hostname
 { 
-  	/* width: 190px; */
-	/*width: 29%; */
-	width: 13.63em;
+    width: 13.63em;
 }
 
 div.list-table-container.dns-static-entry div.description
 { 
-	/* width: 235px; */
-	/*width: 37%; */
-	width: 18.39em;
-}
-div.list-table-container.dns-static-entry div.minus
-{ 
-	/* width: 50px; */
-	/* width: 10%; */
+    width: 18.39em;
 }
 
 /* ------------------ Style the DNS Dynamic Entries ---------------- */
 div.list-table-container.dns-dynamic-entry div.ip-address
 {
-  	/* width: 140px; */
-	/* width: 22%; */
-	width: 10.34em;
+    width: 10.34em;
 }
 
 div.list-table-container.dns-dynamic-entry div.hostname
 { 
-	/* width: 430px; */
-	/* width: 68%; */
-	width: 37.06em;
+    width: 37.06em;
 }
 
 div.list-table-container.dns-dynamic-entry div.list-table-column span
 { 
   font-size: 85%;
-	color: #333;
-	padding-left: 10px; 
+  color: #333;
+  padding-left: 10px; 
 }
-
-
-/* ------------------ Interface Status Panel ---------------- */
-
-/*
-div.list-table-container.interface-status div.network_interface
-{ 
-	width: 170px;
-}
-div.list-table-container.interface-status div.os_name
-{ 
-	width: 20%; 
-}
-div.list-table-container.interface-status div.carrier
-{ 
-	width: 250px;
-}
-div.list-table-container.interface-status div.mac
-{ 
-	width: auto;
-}
-
-div.list-table-container.interface-status input
-{
-	padding-left: 8px;
-}
-*/
 
 /* ------------------- Packet Filter Panel -------------------- */
 
-div.list-table-container.firewalls div.enabled
-{ 
-/*  width: 50px;
-text-align: center; */
-  }
-
 div.list-table-container.firewalls div.target
 { 
-/*  width: 90px; */
-	width: 6.58em;
- }
+    width: 6.58em;
+}
 
 div.list-table-container.firewalls div.description
 { 
-	
-  /*width: 340px; */
-	width: 26.68em;
+    width: 26.68em;
 }
-
-div.list-table-container.firewalls div.edit
-{ 
-/*  width: 50px; */
-}
-
-div.list-table-container.firewalls div.minus
-{ 
-/*  width: 70px; */
-/*width: auto; */
-/*width: 50px;
-text-indent: 10px; */
-}
-
-div.list-table-container.system-firewalls
-{
- /*  width: 673px; */
-/*	width: 633px; */
- }
-
-div.table-label.system-firewalls
-{
- /* width: 675px; */
-/*	width: 635px; */
- }
-div.list-table-container.system-firewalls div.enabled
-{ 
- /* width: 50px;
-	text-align: center; */
-  }
 
 div.list-table-container.system-firewalls div.description
 { 
-  /*width: 600px; */
-	/* width: auto; */
-/*	width: 565px; */
-	width: 44.53em;
-  }
+    width: 44.53em;
+}
 div.list-table-container.system-firewalls div.list-table-column span
 { 
   font-size: 85%;
-	color: #333;
-	padding-left: 10px;
-  }
+  color: #333;
+  padding-left: 10px;
+}
 
 /* ------------------- File Overrides -------------------- */
 
-div.list-table-container.overrides div.enabled
-{ 
-/*  width: 43px;
-	text-align: center; */
-  }
-
 div.list-table-container.overrides div.writable
 { 
-/*  width: 68px; */
-	width: 5.17em;
-  }
+    width: 5.17em;
+}
 
 div.list-table-container.overrides div.list-table-column.writable {
-	text-align: center;
+    text-align: center;
 }
 
 
 div.list-table-container.overrides div.path
 { 
-/*  width: 330px; */
-/*	width: 420px; */
-	width: 31.92em;
-  }
+    width: 31.92em;
+}
 
-div.list-table-container.overrides div.minus
-{ 
-/*  width: 70px; */
-/*	width: 50px; */
-  }
 /* ------------------- Subscriptions -------------------- */
-
-div.list-table-container.subscriptions div.enabled
-{ 
-/*  width: 40px;
-	text-align: center; */
-  }
 
 div.list-table-container.subscriptions div.subscribe
 { 
-/*  width: 85px; */
-	width: 6.58em;
-  }
+    width: 6.58em;
+}
 
 
 div.list-table-container.subscriptions div.list-table-column.subscribe
 {
-	text-align: center;
+    text-align: center;
 }
 
 div.list-table-container.subscriptions div.description
 { 
-/*  width: 330px; */
-	width: 26.64em;
-  }
+    width: 26.64em;
+}
 
-div.list-table-container.subscriptions div.edit
-{ 
-/*  width: 70px; */
-  }
-
-div.list-table-container.subscriptions div.minus
-{ 
- /* width: 70px; */
-/*	width: 50px; */
-  }
 
 /* System subscriptions */
-
-div.list-table-container.system-subscriptions div.enabled
-{ 
-/*  width: 50px;
-text-align: center; */
-  }
 div.list-table-container.system-subscriptions div.description
 { 
-/*  width: 550px; */
-	width: 44.55em;
-  }
+    width: 44.55em;
+}
 div.list-table-container.system-subscriptions div.list-table-column span
 { 
-font-size: 85%;
-color: #333;
-padding-left: 10px;
-  }
+    font-size: 85%;
+    color: #333;
+    padding-left: 10px;
+}
 /* ------------------- Static ARP -------------------- */
 
 div.list-table-container.arps div.hostname
 {
-/*  width: 250px; */
-	width: 18.33em;
- }
+    width: 18.33em;
+}
 div.list-table-container.arps div.hw_addr
 { 
-/*  width: 240px;*/
-/*	width: 315px; */
-	width: 24.1em;
- }
+    width: 24.1em;
+}
 div.list-table-container.arps div.interface
 { 
-/*  width: 50px; */
-	width: 4.96em;
- }
-div.list-table-container.arps div.minus
-{ 
- /* width: 70px;*/
-/* 	width: 50px; */
- }
-
-div.list-table-container.arps #active_arps-list-table #active_arps .list-table-column {
-/*	font-size: 85%; 
-	color: #666; */
+    width: 4.96em;
 }
 div.list-table-container.arps #active_arps-list-table #active_arps .list-table-column span {
-	font-size: 85%; 
-	color: #333;
-	padding-left: 10px;
+    font-size: 85%; 
+    color: #333;
+    padding-left: 10px;
 }
 div.list-table-container.arps #active_arps-list-table #active_arps .list-table-column a {
-	padding-left: 10px;
+    padding-left: 10px;
 }
 /* ------------------- Static Routes -------------------- */
 div.list-table-container.routes div.target
 {
-/*  width: 150px; */
-/*	width: 135px; */
-	width: 9.88em;
- }
+    width: 9.88em;
+}
 div.list-table-container.routes div.netmask
 { 
-	/*  width: 150px; */
-	/*	width: 135px; */
-		width: 9.88em;
-		
- }
+   width: 9.88em;
+}
 div.list-table-container.routes div.gateway
 { 
-	/*  width: 150px; */
-	/*	width: 135px; */
-		width: 9.88em;
-		
- }
+        width: 9.88em;
+}
 div.list-table-container.routes div.name
 { 
-	/*  width: 150px; */
-	/*	width: 135px; */
-	/* width: 155px; */
-	width: 12.58em;
- }
+    width: 12.58em;
+}
 div.list-table-container.routes div.interface
 { 
-	/*  width: 150px; */
-	/*	width: 135px; */
-		width: 17.58em;
-		
- }
-div.list-table-container.routes div.minus
-{ 
-/*  width: 70px; */
-/*	width: auto; */
-/*	width: 50px; */
- }
+        width: 17.58em;
+}
 
 div.list-table-container.routes #active_routes-list-table #active_routes .list-table-column span {
-	font-size: 85%; /* 11px equiv */
-	color: #333;
+    font-size: 85%; /* 11px equiv */
+    color: #333;
 }
 div.list-table-container.routes div.list-table-column span {
-	color: #333;
-	padding-left: 10px;
+    color: #333;
+    padding-left: 10px;
 }
 
-
 /* ------------------- NAT Policy -------------------- */
-div.list-table-container.nats
-{
-/*  width: 644px; */
- }
-div.table-label.nats
-{ 
-/*  width: 646px; */
- }
 div.list-table-container.nats div.ip-address
 {
   width: 275px;
- }
+}
 div.list-table-container.nats div.new-source
 { 
   width: 275px;
- }
+}
 div.list-table-container.nats div.minus
 { 
   width: 50px;
- }
-
-
-
-
+}
 

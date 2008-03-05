@@ -2,47 +2,36 @@
 special_tabs = [ "Advanced", "Logout" ]
 advanced = nil
 logout = nil
-%>
-<div id="main-menu">
+%><div id="main-menu">
 <ul id="tabs">
-<% 	i = 0;
-	for menu_item in menu.children 
-		i += 1 %>
-   <% if ( special_tabs.index( menu_item.name ).nil? ) %>
-     <li<% if (i == (menu.children.length - 2)) %> class="lastitem"<% end %>><a href="<%= menu_item.action %>"><%= menu_item.name.t %></a></li>
-   <% elsif ( menu_item.name == "Advanced" ) 
-      	    advanced = menu_item %>
-   <% elsif ( menu_item.name == "Logout" ) 
-      	    logout = menu_item %>
-   <% 		end %>
-<% end %>
-</ul>
+<% 
+    i = 0;
+    for menu_item in menu.children 
+        i += 1 
+    if ( special_tabs.index( menu_item.name ).nil? ) %>
+     <li<% if (i == (menu.children.length - 2)) %> class="lastitem"<% end %>><a href="<%= menu_item.action %>"><%= menu_item.name.t %></a></li><% 
+    elsif ( menu_item.name == "Advanced" ) 
+        advanced = menu_item 
+    elsif ( menu_item.name == "Logout" ) 
+        logout = menu_item 
+    end 
+end %></ul>
 </div>
 <div id="extramenu">
 <ul id="extranav">
 <% if ! advanced.nil? %>
-
-
-
-	
   <li id="advanced<%if ( advanced.children? ) %>-menu<% end %>"><%= link_to advanced.name.t, advanced.action 
 #link_to_remote advanced.name.t, :update => "main-content", :url => advanced.action 
-%></a>
-   <% if ( advanced.children? ) %>
+%></a><% 
+    if ( advanced.children? ) %>
     <ul id="advanced-dropdown">
      <% for menu_item in advanced.children %>
      <li><%= link_to  menu_item.name.t, menu_item.action
 #link_to_remote  menu_item.name.t, :update => "main-content", :url => menu_item.action 
-%></li>
-     <% end %>
-    </ul>
-   <% end %>
-   </li> 
-<% end %>
+%></li><% end %>
+    </ul><% end %>
+   </li><% end %>
 <% if ! logout.nil? and session[:username] != "nonce-authenticated" %>
-  <li id="logout"><%= link_to_remote logout.name.t, :update=> "main-content", :url => logout.action %></li>
-
-<% end %>
+  <li id="logout"><%= link_to_remote logout.name.t, :update=> "main-content", :url => logout.action %></li><% end %>
 </ul>
-
 </div>

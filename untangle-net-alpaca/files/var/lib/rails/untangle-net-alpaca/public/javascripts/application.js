@@ -484,6 +484,22 @@ var enableSaveOnChange = function() {
     enableSaveObservers();
 }
 
+var clickingEnabled = true;
+var clickTimeout = 3000;
+
+function isClickingEnabled() {
+    return clickingEnabled;
+}
+
+function enableClicking() {
+    clickingEnabled = true;
+}
+
+function disableClickingFor(time) {
+    clickingEnabled = false;
+    window.setTimeout(enableClicking, time);
+}
+
 var init = function() {
     myFabTabs = new Fabtabs('tabs');
 

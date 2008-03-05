@@ -69,7 +69,7 @@ EOF
 
     def action( table_data, view )
       <<EOF
-<div onclick="#{view.remote_function( :url => { :action => :create_firewall } )}" class="add-button">
+<div onclick="if (isClickingEnabled()) { disableClickingFor(clickTimeout); #{view.remote_function( :url => { :action => :create_firewall } )} }" class="add-button">
   #{"Add".t}
 </div>
 EOF
