@@ -60,13 +60,13 @@ class OSLibrary::OverrideManager < Alpaca::OS::ManagerBase
   ## Helper method to write a script and make it executable
   ## if allowed to.
   def write_executable( path, *contents )
-    return nil unless writeable?( path )
+    return nil unless writable?( path )
     
     ## Write out the contentse of the file
     File.open( path, "w" ) { |f| f.print( contents ) }
 
     ## Make the script executable
-    File.chmod( path, "0755" )
+    File.chmod( 0755, path )
   end
 
   ## Helper method to only remove a file if allowed to.

@@ -56,12 +56,12 @@ class OSLibrary::ArpsManager < Alpaca::OS::ManagerBase
       cfg << "arp -s " + static_arp.hostname + " " + static_arp.hw_addr
     end
     cfg << "exit 0"
-    os["override_manager"].write_file( ConfigFile, header, "\n", cfg.join( "\n" ), "\n" )
+    os["override_manager"].write_executable( ConfigFile, header, "\n", cfg.join( "\n" ), "\n" )
   end
  
   def hook_run_services
     ## Restart networking
-    raise "Unable to reconfigure arp settings." unless run_command( "sh #{ConfigFile}" ) == 0
+    raise "Unable to reconfigure arp settings." unless run_command( "#{ConfigFile}" ) == 0
   end
 
   def header

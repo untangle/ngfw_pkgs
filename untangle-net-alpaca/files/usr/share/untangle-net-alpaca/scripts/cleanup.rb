@@ -35,7 +35,7 @@ db_file =`lsof -p #{pid} 2>/dev/null | awk ' /database.*\.db$/ { print $9 }'| he
 exit if db_file.nil? || db_file.empty?
 exit unless File.exist?( db_file )
 
-puts "Cleaning up the database file: '#{db_file}'"
+puts "[#{Time.new}] Cleaning up the database file: '#{db_file}'"
 
 db = SQLite3::Database.new( db_file )
 
