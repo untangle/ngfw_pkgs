@@ -1,3 +1,20 @@
+#
+# $HeadURL$
+# Copyright (c) 2007-2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
 class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
   include Singleton
 
@@ -35,6 +52,7 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
   
   ## Flag to specify to use a separate /etc/ host file.
   FlagDnsHostFile = "addn-hosts"
+  FlagNoDnsHost = "no-hosts"
 
   FlagDnsServer = "server"
 
@@ -46,6 +64,9 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
   OptionGateway = "3"
   OptionNetmask = "1"
   OptionNameservers = "6"
+
+  ## Update hostname script, used to update the files /etc/untangle-net-alpaca/dnsmasq-hosts
+  UpdateHostNameScript = "/etc/untangle-net-alpaca/scripts/update-address.d/11-dnsmasq-hosts"
 
   def register_hooks
     os["network_manager"].register_hook( -200, "dns_server_manager", "write_files", :hook_write_files )
@@ -68,12 +89,16 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
     ## Write the separate DNS Masq file that is used by dnsmasq
     write_dnsmasq_hosts
 
+    ## Call the update dnsmasq script, this is used to write out the hostname to all
+    ## of the primary addresses.
+    run_command( UpdateHostNameScript )
+
     write_dnsmasq_conf
   end
   
   ## Restart DNS Masq
   def hook_run_services
-    raise "Unable to restart DNS Masq." unless run_command( "sh #{StartScript} restart false" ) == 0
+    raise "Unable to restart DNS Masq." unless run_command( "#{StartScript} restart false" ) == 0
   end
 
   ## Sample entry
@@ -133,16 +158,17 @@ EOF
       DnsStaticEntry.find(:all).each do |dse| 
         ## Validate the IP address.
         ip = dse.ip_address
-        next if IPAddr.parse( ip ).nil?
+        next if IPAddr.parse_ip( ip ).nil?
 
         ## Validate the hostnames
         h = dse.hostname
-
+        
         v = []
 
         logger.debug "Found the hostname #{h}"
         h.split( " " ).each do |hostname| 
-          ## XXXX Should validate the hostname
+          next unless validator.is_hostname?( hostname )
+
           v << hostname
           v << "#{hostname}.#{domain_name_suffix}" if hostname.index( "." ).nil?
         end
@@ -151,14 +177,7 @@ EOF
       end
     end
 
-    ## Append the hostname
-    settings = HostnameSettings.find( :first )
-    unless ( settings.nil? || settings.hostname.nil? || settings.hostname.empty? )
-      h_file << "127.0.0.1 #{settings.hostname}"
-    end
-
     os["override_manager"].write_file( DnsMasqHostFile, h_file.join( "\n" ), "\n" )
-
   end
 
   ## Review: Possibly move the writing of the file to another hook, because
@@ -209,6 +228,7 @@ EOF
     settings << FlagDnsExpandHosts
 
     settings << "#{FlagDnsHostFile}=#{DnsMasqHostFile}"
+    settings << "#{FlagNoDnsHost}"
 
     ## set the domain name suffix
     settings << "#{FlagDnsLocalDomain}=#{domain_name_suffix}"
@@ -225,6 +245,14 @@ EOF
     conditions = [ "wan=? and ( config_type=? or config_type=? )", true, InterfaceHelper::ConfigType::STATIC, InterfaceHelper::ConfigType::PPPOE ]
     i = Interface.find( :first, :conditions => conditions )
 
+    ## Check for PPPoE
+    unless i.nil?
+      config = i.current_config
+
+      ## Do not update the dns servers if it is configured to use peer dns.
+      i = nil if config.is_a?( IntfPppoe ) && ( config.use_peer_dns == true )
+    end
+
     ## zero them out
     dns_1, dns_2 = []
     if i.nil?
@@ -240,7 +268,7 @@ EOF
     end
 
     ## Delete all of the empty name servers, and fix the lines.
-    ns = ns.delete_if { |n| n.nil? || n.empty? || IPAddr.parse( n ).nil? }
+    ns = ns.delete_if { |n| n.nil? || n.empty? || IPAddr.parse_ip( n ).nil? }
   end
 
   def dhcp_config( dhcp_server_settings, dns_server_settings )
@@ -254,8 +282,8 @@ EOF
       return ""
     end
 
-    if ( IPAddr.parse( dhcp_server_settings.start_address ).nil? || 
-         IPAddr.parse( dhcp_server_settings.end_address ).nil? )
+    if ( IPAddr.parse_ip( dhcp_server_settings.start_address ).nil? || 
+         IPAddr.parse_ip( dhcp_server_settings.end_address ).nil? )
       logger.warn( "Invallid start or end address" );
       return ""
     end
@@ -277,12 +305,14 @@ EOF
     settings << "#{FlagOption}=#{OptionGateway},#{gateway}" unless gateway.nil?
     settings << "#{FlagOption}=#{OptionNetmask},#{netmask}" unless netmask.nil?
 
-    unless dns_server_settings.enabled
+    if dns_server_settings.nil? || !dns_server_settings.enabled
       settings << "#{FlagOption}=#{OptionNameservers},#{name_servers.join( "," )}"
     end
 
     ## Static entries
     DhcpStaticEntry.find( :all ).each do |dse| 
+      next if IPAddr.parse_ip( dse.ip_address ).nil?
+      next unless validator.is_mac_address?( dse.mac_address )
       settings << "#{FlagDhcpHost}=#{dse.mac_address},#{dse.ip_address},24h"
     end
 
@@ -296,52 +326,25 @@ EOF
     ## Set the domain name
     domain = settings.suffix
 
-    ## REVIEW: shoud validate that domain is a valid value
-    return DefaultDomain if ( domain.nil? || domain.empty? )
+    ## Validate the domain.
+    return DefaultDomain unless validator.is_hostname?( domain ) == true
     return domain
   end
-  
+
+  ## If the user didn't specify a value, then let DNS Masq figure it out.
   def calculate_gateway( dhcp_server_settings )
     gateway = dhcp_server_settings.gateway
-    gateway.strip! unless gateway.nil?
-
+    gateway = gateway.strip unless gateway.nil?
+    
     return gateway if valid?( gateway )
 
-    ## validate the start range.
-    return nil if IPAddr.parse( dhcp_server_settings.start_address ).nil?
-
-    ## Find the first interface that is in this range.
-    ## Find the interface this is being routed out of.
-    
-    ## sample line:
-    ## 1.2.3.4 via 192.168.77.2 dev eth0  src 192.168.77.128  # if there is a next hop
-    ## 192.168.77.2 dev eth0 src 192.168.77.128 # if there isn't a next hop
-    route = `ip route get #{dhcp_server_settings.start_address}`.split( "\n" )[0]
-
-    ## Nothing to do if the route isn't found
-    return nil if route.nil?
-    route = route.split( " " )
-
-    ## REVIEW : not sure if if the language is not english then via will not be used.
-    ## If the next hop is local, then 
-    
-    if (( route.size == 7 ) && ( route[1] == "via" ))
-      os_name = route[4]
-    else
-      os_name = route[2]
-    end
-
-    next_hop = `ip route show | awk '/default via.*#{os_name}/ { print $3 }'`.strip
-
-    ## Default gateway is not on the same interface.
-    return nil if next_hop.empty?
-    
-    return next_hop.strip
+    ## It is just best to let DNS Masq handle this.
+    return nil
   end
 
   def calculate_netmask( dhcp_server_settings )
     netmask =dhcp_server_settings.netmask
-    netmask.strip! unless netmask.nil?
+    netmask = netmask.strip unless netmask.nil?
 
     ## should check if this is a valid netmask
     return netmask if valid?( netmask )
@@ -350,9 +353,9 @@ EOF
   end
 
   def valid?( value )
-    value.strip! unless value.nil?
+    value = value.strip unless value.nil?
     ## REVIEW strange constant.
-    return false if ( value.nil? || value.empty? || IPAddr.parse( value ).nil? || ( value == "auto" ))
+    return false if ( value.nil? || value.empty? || IPAddr.parse_ip( value ).nil? || ( value == "auto" ))
     return true
   end
 end

@@ -1,7 +1,9 @@
 #! /bin/sh
 
 SSH_KEYS_DIR=/etc/ssh
+DSA_KEY=${SSH_KEYS_DIR}/ssh_host_dsa_key
 DSA_PUBKEY=${SSH_KEYS_DIR}/ssh_host_dsa_key.pub
+RSA_KEY=${SSH_KEYS_DIR}/ssh_host_rsa_key
 RSA_PUBKEY=${SSH_KEYS_DIR}/ssh_host_rsa_key.pub
 DSA_BLACKLIST=`dirname $0`/dsa.blacklist
 RSA_BLACKLIST=`dirname $0`/rsa.blacklist
@@ -14,8 +16,8 @@ create_key() {
 }
 
 create_keys() {
-  create_key ${RSA_PUBKEY} -t rsa
-  create_key ${DSA_PUBKEY} -t dsa
+  create_key ${RSA_KEY} -t rsa
+  create_key ${DSA_KEY} -t dsa
 }
 
 blacklisted() {

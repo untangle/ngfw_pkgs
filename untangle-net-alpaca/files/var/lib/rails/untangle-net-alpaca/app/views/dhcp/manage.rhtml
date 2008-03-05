@@ -1,47 +1,48 @@
 <% form_tag( :action => 'save' ) do -%>
   <div id="title"><h1><%= "DHCP Server Configuration".t %></h1></div>
+	<%= handle_flash_messages %>
   <div id="main-content-body">
+	<div class="wrapper">
     <fieldset>
       <ul class="text-fields">
         <li>
-          <label for="dhcp_server_settings[enabled]"><%= "Enabled:".t %></label>
+          <label for="dhcp_server_settings_enabled"><%= "Enabled:".t %></label>
           <%= check_box( "dhcp_server_settings", "enabled", { :checked => @dhcp_server_settings.enabled }, true, false ) %>
         </li>
 
         <li>
-          <label for="dhcp_server_settings[start_address]"><%= "Start:".t %></label>
+          <label for="dhcp_server_settings_start_address"><%= "Start:".t %></label>
           <%= text_field( "dhcp_server_settings", "start_address" ) %>
         </li>
 
         <li>
-          <label for="dhcp_server_settings[end_address]"><%= "End:".t %></label>
+          <label for="dhcp_server_settings_end_address"><%= "End:".t %></label>
           <%= text_field( "dhcp_server_settings", "end_address" ) %>
         </li>
 
         <% if ( @config_level > AlpacaSettings::Level::Basic ) %>
           <li>
-            <label for="dhcp_server_settings[lease_duration]"><%= "Lease Duration:".t %></label>
+            <label for="dhcp_server_settings_lease_duration"><%= "Lease Duration:".t %></label>
             <%= text_field( "dhcp_server_settings", "lease_duration", { :class => "number" } ) %>
           </li>
 
           <li>
-            <label for="dhcp_server_settings[gateway]"><%= "Gateway:".t %></label>
+            <label for="dhcp_server_settings_gateway"><%= "Gateway:".t %></label>
             <%= text_field( "dhcp_server_settings", "gateway" ) %>
           </li>
           
           <li>
-            <label for="dhcp_server_settings[netmask]"><%= "Netmask:".t %></label>
+            <label for="dhcp_server_settings_netmask"><%= "Netmask:".t %></label>
             <%= text_field( "dhcp_server_settings", "netmask" ) %>
           </li>
         <% end %>
       </ul>
     </fieldset>
-
-    <%= build_table( Alpaca::Table::Data.new( "dhcp-static-entry-list", @static_entries ), static_entry_table_model) %> 
+<div id="static-entries"></div>
+  <%= build_table( Alpaca::Table::Data.new( "dhcp-static-entry-list", @static_entries ), static_entry_table_model) %> 
     
-    <%= build_table( Alpaca::Table::Data.new( "dhcp-dynamic-entry-list", @dynamic_entries ), dynamic_entry_table_model) %> 
-
-    </div>
+    <%= build_table( Alpaca::Table::Data.new( "dhcp-dynamic-entry-list", @dynamic_entries ), dynamic_entry_table_model) %>
+    </div></div>
   
   <%= build_footer %>
 

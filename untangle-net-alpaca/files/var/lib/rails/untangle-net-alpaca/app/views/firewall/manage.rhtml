@@ -4,13 +4,14 @@ EOF
 %>
 <% form_tag( :action => 'save' ) do -%>
   <div id="title"><h1>Packet Filter</h1></div>
-  <div id="main-content-body">
+  <div id="main-content-body"><div class="wrapper">
   <%= build_table( Alpaca::Table::Data.new( "firewall-list", @firewalls ), firewall_table_model) 
 %>
+  <%= sortable_element( "firewall-list", :onChange => "function(){enableSave(); TableManager.updateRowStyles( 'firewall-list' );}" ) %>
 
  <%= build_table( Alpaca::Table::Data.new( "system-firewall-list", @system_firewall_list ), system_firewall_table_model) 
 %>
-  </div>
+  </div></div>
 
  <%= build_footer %>
 <% end %>

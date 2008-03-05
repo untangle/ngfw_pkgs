@@ -4,17 +4,17 @@ EOF
 %>
 <% form_tag( :action => 'save' ) do -%>
   <div id="title"><h1>Port Forwards</h1></div>
-  <div id="main-content-body">
+  <div id="main-content-body"><div class="wrapper">
     <%= build_table( Alpaca::Table::Data.new( "redirect-list", @redirects ), redirect_table_model) %> 
-  </div>
+  </div></div>
   
-  <%= sortable_element( "redirect-list" ) %>
+  <%= sortable_element( "redirect-list", :onChange => "function(){enableSave(); TableManager.updateRowStyles( 'redirect-list' );}" ) %>
   <%= build_footer %>
 <% end %>
 
 <%= javascript_tag <<EOF
 RedirectManager.editFilter = '#{url_for( :action => "edit" )}';
-RuleBuilder.createParameter = '#{url_for( :controller => "rule", :action => "create_parameter", :list_id => "rule-builder" )}';
+RuleBuilder.createParameter = '#{url_for( :controller => "rule", :action => "create_port_forward_parameter", :list_id => "rule-builder" )}';
 EOF
 %>
   

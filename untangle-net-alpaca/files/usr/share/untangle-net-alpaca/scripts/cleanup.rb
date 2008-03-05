@@ -1,4 +1,21 @@
 #!/usr/bin/ruby
+#
+# $HeadURL$
+# Copyright (c) 2007-2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
 
 require "sqlite3"
 
@@ -13,12 +30,12 @@ end
 pid_file="#{rails_home}/log/mongrel.pid"
 exit unless File.exist?( pid_file )
 pid=`cat #{pid_file}`
-db_file =`sudo lsof -p #{pid} 2>/dev/null | awk ' /database.*\.db$/ { print $9 }'| head -n 1`.strip
+db_file =`lsof -p #{pid} 2>/dev/null | awk ' /database.*\.db$/ { print $9 }'| head -n 1`.strip
 
 exit if db_file.nil? || db_file.empty?
 exit unless File.exist?( db_file )
 
-puts "Cleaning up the database file: '#{db_file}'"
+puts "[#{Time.new}] Cleaning up the database file: '#{db_file}'"
 
 db = SQLite3::Database.new( db_file )
 
@@ -46,6 +63,12 @@ db.transaction do |connection|
 
   ## Do not delete the ones used by dynamics.
   connection.execute( "SELECT ip_network_id FROM intf_dynamics_ip_networks" ) do |row|
+    ## Delete those from the set
+    ip_networks.delete( row[0] )
+  end
+
+  ## Do not delete the ones used by PPPoE.
+  connection.execute( "SELECT ip_network_id FROM intf_pppoes_ip_networks" ) do |row|
     ## Delete those from the set
     ip_networks.delete( row[0] )
   end

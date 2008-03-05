@@ -1,3 +1,20 @@
+#
+# $HeadURL$
+# Copyright (c) 2007-2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
 class RedirectController < ApplicationController  
   def manage
     @redirects = Redirect.find( :all, :conditions => [ "system_id IS NULL" ] )
@@ -10,7 +27,7 @@ class RedirectController < ApplicationController
 
   def create_redirect
     ## Reasonable defaults
-    @redirect = Redirect.new( :enabled => true, :position => -1, :description => "" )
+    @redirect = Redirect.new( :enabled => true, :position => -1, :description => "", :filter => "d-port::&&d-local::true&&protocol::tcp&&s-intf::1" )
   end
 
   def edit
@@ -23,7 +40,10 @@ class RedirectController < ApplicationController
     @redirect.new_enc_id = params[:new_enc_id]
     @redirect.enabled = params[:enabled]
 
+    ## Create a copy of the filter types, and remove the source port
     @interfaces, @parameter_list = RuleHelper::get_edit_fields( params )
+    
+    @filter_types = RedirectHelper::filter_types
   end
 
   def save
@@ -45,7 +65,7 @@ class RedirectController < ApplicationController
   end
 
   def scripts
-    RuleHelper::Scripts + [ "redirect_manager" ]
+    RuleHelper::Scripts
   end
 
   private

@@ -34,7 +34,7 @@ ul#redirect-list div.enabled, ul#redirect-list div.subscribe, ul#redirect-list d
 li.redirect div.minus:hover, li.redirect div.edit:hover
 { 
   cursor: pointer;
-  background-color: #E1EB26;  
+  background-color: #86c5df;  
   }
 
 /* System rules */

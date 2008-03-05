@@ -13,6 +13,6 @@
 %>
   </ul>
 
-  <%= sortable_element( list_id ) %> 
+  <%= sortable_element( list_id, :onChange => "function(){enableSave(); TableManager.updateRowStyles( '#{list_id}' );}" ) %> 
 </div>
 -->

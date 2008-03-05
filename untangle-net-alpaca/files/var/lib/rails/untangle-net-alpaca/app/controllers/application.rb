@@ -1,5 +1,22 @@
 # Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
+#
+# $HeadURL$
+# Copyright (c) 2007-2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
 
 class ApplicationController < ActionController::Base
   @components = nil
@@ -32,6 +49,7 @@ class ApplicationController < ActionController::Base
   before_filter :setButtons
 
   before_filter :update_activity_time, :except => :session_expiry
+  before_filter :instantiate_controller_and_action_names
   before_filter :authenticate
 
   MAX_SESSION_TIME = 30
@@ -71,8 +89,6 @@ class ApplicationController < ActionController::Base
     ## Do nothing if the value doesn't exist, this way it will go to the default setting
     Locale.set( settings.key ) unless settings.nil?
   end
-
-  before_filter :instantiate_controller_and_action_names
   
   def instantiate_controller_and_action_names
     $current_action = action_name
@@ -87,9 +103,12 @@ class ApplicationController < ActionController::Base
   end
   
   def setScripts
-    @scripts = ( self.respond_to?( "scripts" )) ? scripts : []
-    @scripts.concat( RuleHelper::Scripts )
-    @scripts.concat( [ "network", "redirect_manager", "dhcp_server_manager", "dns_server_manager", "subscription_manager", "table_manager" ] )
+    @javascripts = []
+    @javascripts = [ self.scripts ].flatten if self.respond_to?( "scripts" )
+
+    @javascripts.concat( RuleHelper::Scripts )
+
+    @javascripts = @javascripts.uniq
   end
 
   def setButtons
@@ -190,7 +209,7 @@ class ApplicationController < ActionController::Base
       ## Load the manager for this os, this will complete all of the initialization at
       klazz = Alpaca::Components.const_get( component )
 
-      logger.debug( "Found the class #{klazz}" )
+      ## logger.debug( "Found the class #{klazz}" )
       @components << klazz.new( self, params, session, request )
     end
   end

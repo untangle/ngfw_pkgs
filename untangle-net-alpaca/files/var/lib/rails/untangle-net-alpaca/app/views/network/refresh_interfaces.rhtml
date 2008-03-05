@@ -1,14 +1,14 @@
-<div id="title"><h1><%= "Refresh Interfaces".t %></h1></div>
+<div id="title"><h1><%= "Refresh Network Interfaces".t %></h1></div>
 <% form_tag( :action => 'commit_interfaces', :id => "commit" ) do -%>
-<div id="main-content-body">
+<div id="main-content-body"><div class="wrapper">
 <div class="config-level">
   <% if @new_interfaces.empty? && @deleted_interfaces.empty? %>
     <h3><%= "Up to date".t %></h3>
     
     <p class="description">
-      <%= "Unable to detect any removed or installed interfaces.".t %>
-      <%= link_to( "Return to list.".t, { :action => "manage" } ) %>
-      <%= javascript_tag( "window.setTimeout('location.href=\"" + url_for( :action => "manage" ) + "\"', 5000);" ) %>
+      <%= "Unable to detect any removed or installed network interfaces.".t %>
+      <%= link_to( "Return to list.".t, { :controller => @last_controller, :action => "index" } ) %>
+      <%= javascript_tag( "window.setTimeout('location.href=\"" + url_for( :controller => @last_controller, :action => "index" ) + "\"', 5500);" ) %>
     </p>
   <% else %>
     <% unless @new_interfaces.empty?  %>
@@ -30,8 +30,9 @@
 
   <% end %>
 </div>
-</div>
+</div></div>
 <div id="main-content-footer">
+	<div id="footer-buttons">
 <div id="help-footer">
     <%= submit_tag "Help".t %>
 </div>
@@ -40,6 +41,7 @@
        <%= submit_tag "Cancel".t %>
        <%= submit_tag "Save".t %>
      <% end -%>
+</div>
 </div>
 </div>
 <% end -%>

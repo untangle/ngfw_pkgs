@@ -39,7 +39,7 @@ ul#subscription-list div.enabled, ul#subscription-list div.subscribe, ul#subscri
 li.subscription div.minus:hover, li.subscription div.edit:hover
 { 
   cursor: pointer;
-  background-color: #E1EB26;  
+  background-color: #86c5df;  
   }
 
 /* System subscriptions */
@@ -69,7 +69,7 @@ ul.system-subscription-list div.enabled
 li.subscription div.minus:hover, li.subscription div.edit:hover
 { 
   cursor: pointer;
-  background-color: #E1EB26;  
+  background-color: #86c5df;  
   }
 
 

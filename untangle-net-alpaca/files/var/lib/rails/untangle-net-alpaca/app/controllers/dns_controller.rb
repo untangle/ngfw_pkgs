@@ -1,9 +1,26 @@
+#
+# $HeadURL$
+# Copyright (c) 2007-2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
 class DnsController < ApplicationController  
   def manage
     @dns_server_settings = DnsServerSettings.find( :first )
-    @dns_server_settings = DnsServerSettings.new if @dns_server_settings.nil?
+    @dns_server_settings = DnsServerSettings.create_default if @dns_server_settings.nil?
     @static_entries = DnsStaticEntry.find( :all )
-
+    @static_entries = @static_entries.sort_by { |a| IPAddr.parse(a.ip_address).to_i }
     ## Retrieve all of the dynamic entries from the DHCP server manager
     refresh_dynamic_entries
     
@@ -18,8 +35,12 @@ class DnsController < ApplicationController
     return redirect_to( :action => "manage" ) if ( params[:commit] != "Save".t )
 
     dns_server_settings = DnsServerSettings.find( :first )
-    dns_server_settings = DnsServerSettings.new if dns_server_settings.nil?
-    dns_server_settings.update_attributes( params[:dns_server_settings] )
+    dns_server_settings = DnsServerSettings.create_default if dns_server_settings.nil?
+    dns_server_settings.attributes =  params[:dns_server_settings]
+
+    ## Validate the hostname suffix
+    return redirect_to( :action => "manage" ) unless validator.is_hostname?( dns_server_settings.suffix )
+
     dns_server_settings.save
     
     static_entry_list = []
@@ -53,7 +74,8 @@ class DnsController < ApplicationController
 
   def refresh_dynamic_entries
     ## Retrieve all of the dynamic entries from the DNS server manager
-    @dynamic_entries = os["dns_server_manager"].dynamic_entries    
+    @dynamic_entries = os["dns_server_manager"].dynamic_entries
+    @dynamic_entries = @dynamic_entries.sort_by { |a| IPAddr.parse(a.ip_address).to_i }
   end
 
   def stylesheets

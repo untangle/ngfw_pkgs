@@ -135,8 +135,6 @@ class NUCLIClient
             ["%X", false, "display output of background job 'X' -- %1", nil],
             ["#X", false, "switch effective server to server 'X' -- #3", nil],
             ["save", false, "save output stored with job %X to filename -- save %3 myoutput.txt", nil],
-            #[":command", false, "run external command on local host -- :ls /tmp", nil],
-            #["command", false, "run external command on server host -- who", nil],
             ["^%\\d+$", false, nil],
             ["backup", false, "backup #{BRAND} server settings -- backup [to_disk|to_usb|to_file <filename>]", nil],
             ["restore", false, "restore #{BRAND} server settings from local file -- restore <filename.backup>]", nil],
@@ -643,11 +641,9 @@ class NUCLIClient
         
         print! <<-HERE
 > !! - execute last/most recent command
-> !{number} - execute historical command 'number'
-> !{prefix} - execute most recent historical command beginning with 'prefix'
-> command - execute non-NUCLI command on NUCLI server (remote) host -- ls /tmp
-> :command - execute non-NUCLI command on NUCLI client (local) host -- :who
-> Append '&' to any command to run it as a "background" job.
+> !number - execute historical command 'number' -- !5
+> !prefix - execute most recent historical command beginning with 'prefix' -- !webfil
+> Append '&' to any command to run it as a "background" job -- rsh who &
 > %N - display output associated with command run as background job 'N' -- %1
 > When entering a command, press [Tab] for command/word auto-completion.
     

@@ -1,3 +1,20 @@
+#
+# $HeadURL$
+# Copyright (c) 2007-2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
 require "ipaddr"
 
 class OSLibrary::NetworkManager < Alpaca::OS::ManagerBase
@@ -5,14 +22,6 @@ class OSLibrary::NetworkManager < Alpaca::OS::ManagerBase
   
 #Removed above a class A for overly broad netmask
   CIDR = {
-#    "0"  => "0.0.0.0",
-#    "1"  => "128.0.0.0",
-#    "2"  => "192.0.0.0",
-#    "3"  => "224.0.0.0",
-#    "4"  => "240.0.0.0",
-#    "5"  => "248.0.0.0",
-#    "6"  => "252.0.0.0",
-#    "7"  => "254.0.0.0",
     "8"  => "255.0.0.0",
     "9"  => "255.128.0.0",
     "10" => "255.192.0.0",
@@ -39,7 +48,21 @@ class OSLibrary::NetworkManager < Alpaca::OS::ManagerBase
     "31" => "255.255.255.254",
     "32" => "255.255.255.255"
   }
-  
+
+  FULL_CIDR = CIDR.merge( {
+    "0"  => "0.0.0.0",
+    "1"  => "128.0.0.0",
+    "2"  => "192.0.0.0",
+    "3"  => "224.0.0.0",
+    "4"  => "240.0.0.0",
+    "5"  => "248.0.0.0",
+    "6"  => "252.0.0.0",
+    "7"  => "254.0.0.0" }  )
+
+  NETMASK_TO_CIDR = FULL_CIDR.invert()
+
+  TEST_CONNECTIVITY_TIMEOUT = 20
+
   ## Parse a netmask and convert to a netmask string.
   ## 24 -> 255.255.255.0
   ## 255.255.255.0 -> 255.255.255.0
@@ -55,16 +78,40 @@ class OSLibrary::NetworkManager < Alpaca::OS::ManagerBase
     end
     
     def to_s
-      "physical-interface <#{os_name},#{mac_address},#{bus}>"
+      "physical-interface <#{os_name},#{mac_address},#{bus_id},#{vendor}>"
     end
 
-    attr_reader :os_name, :mac_address, :bus, :vendor
+    attr_reader :os_name, :mac_address, :bus_id, :vendor
   end
   
   ## This should return 
   ## an array of PhysicalInterfaces that are on the box.
   def interfaces
     raise "base class, override in an os specific class"
+  end
+
+  def internet_connectivity?( host="updates.untangle.com" )
+    require "resolv"
+    require "socket"
+    require "thread"
+    result = [false, "Timeout"]
+    t = Thread.new do
+      begin
+        address = Resolv.getaddress( host )
+        s = TCPSocket.new( host, "http" )
+        s.close
+        result = [true, "TCP"]
+      rescue Errno::ECONNREFUSED
+        result = [true, "TCP"] #TODO does this make sense
+      rescue Timeout::Error, StandardError
+        result = [false, "TCP"]
+      rescue ResolvError
+        result = [false, "DNS"]
+      end
+    end
+    sleep 0.1
+    t.join(TEST_CONNECTIVITY_TIMEOUT)
+    return result
   end
 
   ## This should commit and update all of the network related settings.

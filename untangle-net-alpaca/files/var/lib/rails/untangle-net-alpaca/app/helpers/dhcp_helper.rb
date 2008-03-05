@@ -1,3 +1,20 @@
+#
+# $HeadURL$
+# Copyright (c) 2007-2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
 module DhcpHelper
   ## System ID for rules that block / pass DHCP traffic
   RuleSystemID = "dhcp-system-rule-33d4710d44b25d4115022b8c6f4b7e02"
@@ -18,12 +35,12 @@ EOF
       end
       
       columns << Alpaca::Table::Column.new( "ip-address", "IP Address" ) do |static_entry,options|
-        "&nbsp;" +
+        "" +
         options[:view].text_field( "ip_address", options[:row_id], { :value => static_entry.ip_address } )
       end
 
       columns << Alpaca::Table::Column.new( "description fill", "Description" ) do |static_entry,options| 
-        "&nbsp;" +
+        "" +
         options[:view].text_field( "description", options[:row_id], { :value => static_entry.description } )
       end
       
@@ -51,7 +68,7 @@ EOF
 
   class Alpaca::Table::AddStaticColumn < Alpaca::Table::Column
     def initialize
-      super( "add-static", "Add" )
+      super( "add-static", "Add&nbsp;Static" )
     end
     
     ## Override this method for more advanced attributes
@@ -70,20 +87,20 @@ EOF
     def initialize
       columns = []
       columns << Alpaca::Table::Column.new( "mac-address", "MAC Address" ) do |dynamic_entry,options|
-        dynamic_entry.mac_address
+        options[:view].mac_address_link( dynamic_entry.mac_address )
       end
       
       columns << Alpaca::Table::Column.new( "ip-address", "IP Address" ) do |dynamic_entry,options| 
-        dynamic_entry.ip_address
+        "<span>"+dynamic_entry.ip_address+"</span>"
       end
 
       columns << Alpaca::Table::Column.new( "hostname fill", "Hostname" ) do |dynamic_entry,options| 
-        dynamic_entry.hostname
+        "<span>"+dynamic_entry.hostname+"</span>"
       end
       
       columns << Alpaca::Table::AddStaticColumn.new
       
-      super(  "Current DHCP Entries", "dhcp-dynamic-entry", "", "dhcp-dynamic_entry", columns )
+      super(  "Current DHCP Entries", "dhcp-dynamic-entry", "", "dhcp-dynamic_entry read-only", columns )
     end
 
     def row_id( row )

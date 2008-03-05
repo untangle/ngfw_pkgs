@@ -1,3 +1,20 @@
+#
+# $HeadURL$
+# Copyright (c) 2007-2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
 class Alpaca::Components::DhcpComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
     menu_organizer.register_item( "/main/dhcp_server",
@@ -33,8 +50,8 @@ class Alpaca::Components::DhcpComponent < Alpaca::Component
     end
 
     unless internal_network.nil?
-      ip = IPAddr.parse( internal_network.ip )
-      netmask = IPAddr.parse( "255.255.255.255/#{internal_network.netmask}" )
+      ip = IPAddr.parse_ip( internal_network.ip )
+      netmask = IPAddr.parse_netmask( internal_network.netmask )
     end
     
     dhcp_server_settings.enabled = false

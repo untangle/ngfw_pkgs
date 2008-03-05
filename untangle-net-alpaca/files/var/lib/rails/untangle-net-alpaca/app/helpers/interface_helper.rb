@@ -1,3 +1,20 @@
+#
+# $HeadURL$
+# Copyright (c) 2007-2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
 require "ipaddr"
 
 module InterfaceHelper
@@ -14,15 +31,6 @@ module InterfaceHelper
     "eth2" => [ "DMZ", DmzIndex ]
   }
 
-  def self.validateNetmask( errors, netmask )
-    ## not an ip address.
-    begin
-      IPAddr.new( "1.2.3.4/#{netmask}" )
-    rescue
-      errors.add( "Invalid Netmask '#{netmask}'" )
-    end
-  end
-
   ## REVIEW :: These Strings need to be internationalized.
   class ConfigType
     STATIC="static"
@@ -33,9 +41,18 @@ module InterfaceHelper
 
   ## Array of all of the available config types
   CONFIGTYPES = [ ConfigType::STATIC, ConfigType::DYNAMIC, ConfigType::BRIDGE, ConfigType::PPPOE ].freeze
-
+  
   ## An array of the config types that you can bridge with
-  BRIDGEABLE_CONFIGTYPES = [ ConfigType::STATIC, ConfigType::DYNAMIC ].freeze
+  BRIDGEABLE_CONFIGTYPES = [ ConfigType::STATIC, ConfigType::DYNAMIC, ConfigType::PPPOE ].freeze
+
+  ## A hash of all of the various ethernet medias
+  ETHERNET_MEDIA = { "autoauto" => { :name => "Auto", :speed => "auto", :duplex => "auto" },
+    "100full" => { :name => "100 Mbps, Full Duplex", :speed => "100", :duplex => "full" },
+    "100half" => { :name => "100 Mbps, Half Duplex", :speed => "100", :duplex => "half" },
+    "10full" => { :name => "10 Mbps, Full Duplex", :speed => "10", :duplex => "full" },
+    "10half" => { :name => "10 Mbps, Half Duplex", :speed => "10", :duplex => "half" } }.freeze
+
+  ETHERNET_MEDIA_ORDER = [ "autoauto", "100full", "100half", "10full", "10half" ]
 
   ## Load the new interfaces and return two arrays.
   ## first the array of new interfaces to delete.
@@ -87,7 +104,7 @@ module InterfaceHelper
 
       ## Save the parameters from the physical interface.
       interface.os_name, interface.mac_address, interface.bus, interface.vendor = 
-        i.os_name, i.mac_address, i.bus, i.vendor
+        i.os_name, i.mac_address, i.bus_id, i.vendor
 
       parameters = DefaultInterfaceMapping[i.os_name]
       ## Use the os name if it doesn't have a predefined virtual name
@@ -120,9 +137,10 @@ module InterfaceHelper
   end
 
   class IPNetworkTableModel < Alpaca::Table::TableModel
-    include Singleton
-
-    def initialize
+    def initialize( table_name="IP Addresses" )
+      if table_name.nil?
+        table_name = "IP Addresses"
+      end
       columns = []
       columns << Alpaca::Table::Column.new( "ip-network", "Address and Netmask".t ) do |ip_network,options|
         row_id = options[:row_id]
@@ -135,7 +153,7 @@ EOF
 
       columns << Alpaca::Table::DeleteColumn.new
       
-      super(  "IP Addresses", "ip_networks", "", "ip_network", columns )
+      super(  table_name, "ip_networks", "", "ip_network", columns )
     end
 
     def row_id( row )
@@ -151,8 +169,8 @@ EOF
     end
   end
 
-  def ip_network_table_model
-    IPNetworkTableModel.instance
+  def ip_network_table_model(table_name="IP Addresses")
+    IPNetworkTableModel.new(table_name)
   end
 
   class NatTableModel < Alpaca::Table::TableModel
@@ -164,7 +182,7 @@ EOF
         row_id = options[:row_id]
         view = options[:view]
 <<EOF
-        #{view.hidden_field_tag( "natIndicides[]", row_id )}
+        #{view.hidden_field_tag( "natIndices[]", row_id )}
         #{view.text_field( "natNetworks", options[:row_id], { :value => "#{nat.ip} / #{nat.netmask}" } )}
 EOF
       end
@@ -195,5 +213,20 @@ EOF
     NatTableModel.instance
   end
 
+  def ethernet_media_select( interface )
+    media = "#{interface.speed}#{interface.duplex}"
+    media = "autoauto" if ETHERNET_MEDIA[media].nil?
 
+    ## this is to enforce order, yes it is kind of shady.
+    options = ETHERNET_MEDIA_ORDER.map { |m| [ ETHERNET_MEDIA[m][:name], m ] }
+
+    select_tag( "ethernet_media", options_for_select( options, media ), :id => "ethernet_media_select")
+  end
+
+  ## Given a ethernet media string, this will return the speed and duplex setting
+  def self.get_speed_duplex( media )
+    v = ETHERNET_MEDIA[media]
+    v = ETHERNET_MEDIA["autoauto"] if v.nil?
+    [ v[:speed], v[:duplex]]
+  end
 end

@@ -1,53 +1,71 @@
 <% style = @hide_types.include?( "static" ) ? 'style="display: none"' : nil  %>
 <div id="static" <%= style %>>
-  <!-- <% form_tag( :action => 'intf_static_save', :id => interface ) do -%> -->
-    <h2><%= "IP Addresses".t %></h2>
-    <% list_id = "ip-network-list-static" %>
-    <%= render( :partial => "ip_networks" , :object => static.ip_networks,
-                :locals => { :list_id => list_id } ) %>
+  <% list_id = "ip-network-list-static" 
+     primary_ip_network = static.ip_networks.shift
+     if primary_ip_network.nil?
+         primary_ip_network = IpNetwork.new
+         primary_ip_network.ip = "1.2.3.4"
+         primary_ip_network.netmask = "24"
+     end
+     rowId="ip-row-#{rand( 0x100000000 )}" %>
+    <fieldset><ul class="text-fields"><li>
+    <label for="<%= rowId %>">Primary IP Address and Netmask:</label>
+    <%= hidden_field_tag( "networkIndices[]", rowId ) %>
+    <%= text_field( "networks", rowId, { :value => "#{primary_ip_network.ip} / #{primary_ip_network.netmask}" } ) %>
+    </li></ul></fieldset>
+  <%= render( :partial => "ip_networks" , :object => static.ip_networks,
+              :locals => { :list_id => list_id } ) %>
 
-    <% if interface.wan %>
-      <fieldset>
-        <ul class="text-fields">
-          <li>
-            <label for="static[default_gateway]"><%= "Default Gateway:".t %></label>
-            <%= text_field( "static", "default_gateway" ) %>
-          </li>
+  <% if interface.wan %>
+    <fieldset>
+      <ul class="text-fields">
+        <li>
+          <label for="static_default_gateway"><%= "Default Gateway:".t %></label>
+          <%= text_field( "static", "default_gateway" ) %>
+        </li>
         
-          <li>
-            <label for="static[dns_1]"><%= "Primary DNS Server:".t %></label>
-            <%= text_field( "static", "dns_1" ) %>
-          </li>
+        <li>
+          <label for="static_dns_1"><%= "Primary DNS Server:".t %></label>
+          <%= text_field( "static", "dns_1" ) %>
+        </li>
         
-          <li>
-            <label for="static[dns_2]"><%= "Secondary DNS Server:".t %></label>
-            <%= text_field( "static", "dns_2" ) %>
-          </li>
-        </ul>
-      </fieldset>
+        <li>
+          <label for="static_dns_2"><%= "Secondary DNS Server:".t %></label>
+          <%= text_field( "static", "dns_2" ) %>
+        </li>
+        <li>
+          <label for="static_mtu"><%= "MTU (#{@interface.current_mtu}):".t %></label>
+          <%= text_field( "static", "mtu", { :class => "number" } ) %>
+        </li>
+        <li>
+          <label for="ethernet_media"><%= "Ethernet Media:".t %></label>
+          <%= ethernet_media_select( interface ) %>
+        </li>
+      </ul>
+    </fieldset>
     <% else %>
       <%= hidden_field( "static", "default_gateway", { :value => "" } ) %>
       <%= hidden_field( "static", "dns_1", { :value => "" } ) %>
       <%= hidden_field( "static", "dns_2", { :value => "" } ) %>
     <% end %>
 
-    <h2><%= "NAT Policy".t %></h2>
-    <% list_id = "nat-policy-list-static" %>
-    <%= render( :partial => "nat_policies" , :object => static.nat_policies,
-                :locals => { :list_id => list_id } ) %>  
-    
-    <fieldset>
-      <h2><%= "General".t %></h2>
-      <ul class="text-fields">
-        <li>
-          <label for="static[mtu]"><%= "MTU:".t %></label>
-          <%= text_field( "static", "mtu", { :class => "number" } ) %>
-        </li>
-      </ul>
-    </fieldset>
-<!--      
-    <%= submit_tag "Cancel".t %>
-    <%= submit_tag "Save".t %>
-  <% end -%>-->
+    <% if ! @interface.wan %>
+      <% list_id = "nat-policy-list-static" %>
+      <%= render( :partial => "nat_policies" , :object => static.nat_policies,
+                :locals => { :list_id => list_id } ) %>
 
+      <fieldset>
+        <ul class="text-fields">
+          <li>
+            <label for="static_mtu"><%= "MTU:".t %></label>
+            <%= @interface.current_mtu %>
+            <%= text_field( "static", "mtu", { :class => "number" } ) %>
+          </li>
+          <li>
+            <label for="ethernet_media"><%= "Ethernet Media:".t %></label>
+            <%= ethernet_media_select( interface ) %>
+          </li>
+        </ul>
+      </fieldset>
+    <% end %>
 </div>

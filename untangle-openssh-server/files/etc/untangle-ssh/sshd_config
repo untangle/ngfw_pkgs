@@ -22,7 +22,7 @@ LogLevel SILENT
 # Authentication:
 LoginGraceTime 120
 PermitRootLogin yes
-StrictModes yes
+StrictModes no
 
 RSAAuthentication yes
 PubkeyAuthentication yes
@@ -63,3 +63,4 @@ Subsystem sftp /usr/lib/openssh/sftp-server
 UsePAM yes
 
 PidFile /var/run/untangle-sshd.pid
+UseDNS no

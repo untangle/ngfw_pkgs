@@ -1,13 +1,15 @@
 <div id="title"><h1><%= "Configuration Level".t %></h1></div>
+<div id="main-content-body">
+	<div class="wrapper">
 <div class="config-level">
 
-  <h3>Presently in <%= @config_level.name %> mode</h3>
+  <h3>Currently in <%= @config_level.name %> mode</h3>
 
   <% if @config_level == AlpacaSettings::Level::Basic %>
     <p class="mode-selection">
       <%= "Click the following button to switch into advanced mode.  Since
       Advanced mode contains settings that are unavailable in basic
-      mode, you must rerun the wizard, and reset all of your settings in
+      mode, you must rerun the wizard and reset all of your settings in
       order to return to basic mode.".t %>
     </p>
     
@@ -18,10 +20,11 @@
 
   <% else %>
     <p class="mode-selection">
-      <%= "You are presently in Advanced mode, in order to return to Basic
-      mode, you must rerun the wizard, or restore settings that were
-      configured in basic mode.".t %>
+      <%= "You are currently in Advanced mode, in order to return to Basic
+      mode, you must rerun the wizard which will reset your settings.".t %> <%= link_to( "Configuration Wizard".t, :controller => :wizard ) %>
     </p>
     <% end %>
   </p>
 </div>
+</div></div>
+<%= build_footer( false ) %>

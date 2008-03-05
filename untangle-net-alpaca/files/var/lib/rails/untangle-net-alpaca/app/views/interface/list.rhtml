@@ -1,11 +1,19 @@
 <div id="title"><h1><%= "Interfaces".t %></h1></div>
+<%= handle_flash_messages %>
 <% form_tag( :action => 'intf_order_save' ) do -%>
-  <div id="main-content-body">
-  <div id="interface-list">
-    <div class="refresh-button" onclick="location.href='<%= url_for( :controller => :network, :action => :refresh_interfaces ) %>'"> Refresh </div>
+  <div id="main-content-body"><div class="wrapper" id="interface">
+  <div id="interface-list">    
+<% if ! @new_interfaces.empty? || ! @deleted_interfaces.empty? %>
+<%= link_to_remote( "Examine detected physical interface changes.".t, options = { :url => { :controller => :network, :action => :refresh_interfaces }, :update => "main-content" } ) %> 
+<% end %>
+<div class="interface-buttons"><%= submit_to_remote( "Test Connectivity", "Test Connectivity".t, options = { :url => { :action => "test_internet_connectivity" }, :update => "main-content", :html => { :class => "test-connectivity" } } ) %>
+<%= submit_to_remote( "Refresh", "Refresh".t, options = { :url => { :controller => :interface, :action => :list }, :update => "main-content", :html => { :class => "refresh-button" } } ) %>
+</div>
     <table>
       <tr>
+       <% if @config_level >= AlpacaSettings::Level::Advanced %>
         <th><%= "Edit".t %></th>
+       <% end %>
         <th><%= "Name".t %></th>
         <th><%= "Config Type".t %></th>
         <th><%= "Physical Interface".t %></th>
@@ -16,9 +24,11 @@
       for interface in @interfaces
       %>
       <tr>
+       <% if @config_level >= AlpacaSettings::Level::Advanced %>
         <td class="button">
-          <%= link_to 'edit'.t, :action => "config", :id => interface %>
+          <%= link_to_remote 'edit'.t, :update => "main-content", :url => { :action => "config", :id => interface } %>
         </td>
+       <% end %>
         <td><%= interface.name %></td>
         <td><%= interface.config_type %></td>
         <% if first %>
@@ -30,7 +40,8 @@
             <% for n_interface in @interfaces %>
               <li id="<%= n_interface.id %>">
                 <%= hidden_field_tag( "interfaceOrderList[]", n_interface.id ) %>
-                <%= "#{n_interface.os_name} (#{n_interface.mac_address})" %>
+		<%= n_interface.interface_status.gsub( "unknown","" ) %><br />
+                <%= "#{mac_address_link( n_interface.mac_address, n_interface.vendor )}" %>
               </li>
             <% end %>
           </ul>
@@ -42,17 +53,8 @@
     <% end %>
   </table>
 
-  <%= sortable_element( "interface-os-list" ) %> 
+  <%= sortable_element( "interface-os-list", :onChange => "function(){enableSave(); TableManager.updateRowStyles( 'interface-os-list' );}" ) %> 
   </div>
-  </div>
-  <div id="main-content-footer">
-<div id="help-footer">
-    <%= submit_tag "Help".t %>
-</div>
-<div id="action-footer">
-  <%= submit_tag "Cancel".t %>
-  <%= submit_tag "Save".t %>
-</div>
-  </div>
+  </div></div>
+<%= build_footer %>
 <% end -%>
-  

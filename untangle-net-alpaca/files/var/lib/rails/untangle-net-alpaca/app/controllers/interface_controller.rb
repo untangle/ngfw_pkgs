@@ -1,3 +1,20 @@
+#
+# $HeadURL$
+# Copyright (c) 2007-2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
 class InterfaceController < ApplicationController
 
   ## Implement the reload interfaces web api.
@@ -11,6 +28,8 @@ class InterfaceController < ApplicationController
   def list
     @title = "Interface List"
     @description = "List of all of the available interfaces."
+
+    @new_interfaces, @deleted_interfaces = InterfaceHelper.load_new_interfaces
     
     @interfaces = Interface.find(:all)
 
@@ -21,6 +40,11 @@ class InterfaceController < ApplicationController
     end
 
     @interfaces.sort! { |a,b| a.index <=> b.index }
+
+    if ! Interface.valid_dhcp_server?
+      flash[:warning] = "DHCP Server is configured on a subnet that is not on any configured interfaces."
+    end
+    session[:last_controller_before_refresh] = "interface"
   end
 
   def config
@@ -104,6 +128,7 @@ class InterfaceController < ApplicationController
 
   def intf_save_director
     return redirect_to( :action => 'list' ) if ( params[:commit] == "Cancel" )
+    
     if params[:config_type] == "static"
       intf_static_save
     elsif params[:config_type] == "dynamic"
@@ -272,9 +297,26 @@ class InterfaceController < ApplicationController
       
       ## Create a new one if it is nil
       pppoe = IntfPppoe.new if pppoe.nil?
- 
-      pppoe.update_attributes(params[:pppoe])
       
+      ## save the networks
+      networkStringHash = params[:networks]
+      ## indices is used to guarantee they are done in proper order.
+      indices = params[:networkIndices]
+
+      ## clear out all of the ip networks.
+      pppoe.ip_networks = []
+      position = 1
+      unless indices.nil?
+        indices.each do |key,value|
+          network = IpNetwork.new
+          network.parseNetwork( networkStringHash[key] )
+          network.position, position = position, position + 1
+          pppoe.ip_networks << network
+        end
+      end
+
+      pppoe.update_attributes(params[:pppoe])
+
       pppoe.save
       
       @interface.intf_pppoe = pppoe
@@ -340,8 +382,21 @@ class InterfaceController < ApplicationController
     raise "invalid row id syntax" if /^nat-policy-row-[0-9]*$/.match( @rowId ).nil?
   end
 
-  def scripts
-    [ "interface" ]
+  def commit
+    spawn do
+      os["network_manager"].commit
+    end
+    return redirect_to( :action => 'list' )
+  end
+
+  def test_internet_connectivity
+    results = networkManager.internet_connectivity?
+    if results[0]
+      flash[:notice] = "Successfully connected to the Internet."
+    else
+      flash[:notice] = "Failed to connect to the Internet. #{results[1]} failed."
+    end
+    index
   end
 
   private
@@ -408,6 +463,9 @@ class InterfaceController < ApplicationController
     return redirect_to( :action => 'list' ) if interface_id.nil?
     @interface = Interface.find( interface_id )
     return redirect_to( :action => 'list' ) if @interface.nil?
+
+    ## Update the ethernet media.    
+    @interface.speed, @interface.duplex = InterfaceHelper.get_speed_duplex( params[:ethernet_media] )
     
     success = yield
 

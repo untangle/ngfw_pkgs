@@ -34,9 +34,11 @@ public class Options {
 	public static String command = "";  // -s command
 	public static String directory = ""; // -d directory
 	public static String windowTitle = "properJavaRDP"; // -T windowTitle
+	public static String proxy = null; // -x path to proxy servlet.
 	public static int width = 800; // -g widthxheight
 	public static int height = 600; // -g widthxheight
 	public static int port = 3389; // -t port
+	public static int port_to_forward = 3389; // -P port to forward
 	public static boolean fullscreen = false;
 	public static boolean built_in_licence = false;
     
@@ -111,4 +113,5 @@ public class Options {
     public static String target_header = null;
     public static String cookie_header = null;
 	
+    public static boolean append_target = false;
 }

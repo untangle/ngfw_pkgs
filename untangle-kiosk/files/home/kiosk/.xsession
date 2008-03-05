@@ -1,7 +1,5 @@
 #! /bin/bash
 
-. /etc/default/untangle-vm
-
 # screensaver is off by default
 xset s off
 xset -dpms
@@ -13,7 +11,10 @@ xbindkeys &
 fbpanel &
 
 # automatically start the setup wizard if the license file isn't present
-[ ! -f $ACTIVATION_KEY_FILE ] && /usr/bin/untangle-client &
+if [ -f /etc/default/untangle-vm ] ; then
+    . /etc/default/untangle-vm
+    [ ! -f $ACTIVATION_KEY_FILE ] && /usr/bin/untangle-client &
+fi
 
 # Here's where we launch the window manager. When this finishes we reboot!
 x-session-manager

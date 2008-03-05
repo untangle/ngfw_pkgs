@@ -112,6 +112,7 @@ var RuleBuilder =
                 
         try {
             Element.remove( rowId );
+			this.updateRowStyles('rule-builder');
         } catch ( e ) {
             /* ignoring the error */
         }
@@ -157,16 +158,23 @@ var RuleBuilder =
         return numChildren;
     },
 
-    edit : function( rowId )
+    edit : function( rowId, tableId, deleteOnCancel )
     {
         var fieldHash = { row_id : rowId };
 
+	this.manager.rowId = rowId
+	this.manager.tableId = tableId;
+
+	this.manager.deleteOnCancel = deleteOnCancel; 
+
         for ( var c = 0 ; c < this.manager.fields.length ; c++ ) {
             var field = document.getElementById( this.manager.fields[c] + "_" + rowId );
-            
             if ( field == null ) {
-                alert( "Missing the field: " + this.manager.fields[c] );
-                return;
+				field = document.getElementById( this.manager.fields[c] + "[" + rowId + "]"); //EXT JS wants to put brackets in the variable name when it makes a select box substitution
+				if (field == null) {
+                	alert( "Missing the field: " + this.manager.fields[c] );
+                	return;
+				}
             }
                         
             /* Append this value to the field array */
@@ -187,12 +195,26 @@ var RuleBuilder =
         }
 
         Element.show( "overlay" );
+        Element.show( "ie-overlay" );
+
+    },
+
+    cancel : function()
+    {
+	if (this.manager.deleteOnCancel) {
+	    TableManager.remove( this.manager.tableId, this.manager.rowId );
+	}
+        Element.hide( "overlay" );
+        Element.hide( "ie-overlay" );
+
     },
 
     /* Close the rule builder */
     close : function()
     {
         Element.hide( "overlay" );
+        Element.hide( "ie-overlay" );
+
     },
 
     /* Update the entry */
@@ -233,8 +255,11 @@ var RuleBuilder =
             var field = document.getElementById( this.manager.fields[c] + "_" + rowId );
             
             if ( field == null ) {
-                alert( "Missing the field: " + this.manager.fields[c] );
-                return;
+				field = document.getElementById( this.manager.fields[c] + "[" + rowId + "]");
+				if (field == null) {
+                	alert( "Missing the field: " + this.manager.fields[c] );
+                	return;
+				}
             }
 
             if ( this.manager.fields[c] == "filters" ) {
@@ -250,9 +275,62 @@ var RuleBuilder =
                     field.checked = newValue.checked;
                 } else {
                     field.value = newValue.value;
+					
+					//hack for IE6 Ext combobox
+					//might be better to use combobox.setValue, if we could construct the combobox
+					if (field.nextSibling) {
+
+						if ((" "+field.nextSibling.className+" ").indexOf(" combobox ") != -1) {
+								field.nextSibling.value = newValue.value;								
+						}
+					}
                 }
             }
         }
+
+        enableSave();
+    },
+
+  	updateRowStyles : function( tableId)
+    {
+
+		var table = document.getElementById( tableId );
+
+        /* Ignore anything that doesn't exist */
+        if ( table == null ) return;
+
+        /* Ignore anything that is not an unsorted list. */
+        if ( table.nodeName != "UL" && table.nodeName != "ul" ) return;
+
+        var children = table.childNodes;
+
+        var isFirst = true;
+        var isOdd = true;
+
+        for ( var c = 0 ; c < children.length ; c++ ) {
+            if ( children[c].nodeName != "LI" && children[c].nodeName != "li" ) continue;
+
+            var child = children[c];
+
+            if ( isFirst ) {
+                Element.addClassName( child, "first" );
+            } else {
+                Element.removeClassName( child, "first" );
+            }
+
+            if ( isOdd ) {
+                Element.addClassName( child, "odd" );
+                Element.removeClassName( child, "even" );
+            } else {
+                Element.addClassName( child, "even" );
+                Element.removeClassName( child, "odd" );
+            }
+
+            isFirst = false;
+            isOdd = !isOdd;
+        }
+
+
     }
 };
 
@@ -261,4 +339,265 @@ function Rule( parameter, value )
     this.parameter = parameter;
     this.value = value;
 }
+
+function Checkbox( name )
+{
+    this.name = name;
+
+    this.content = function( rowId ) {
+        var newContent = "";
+        
+        /* Retrieve all of the items that can be checked */
+        var items = this.checkList();
+        
+        for ( var c = 0 ;  c < items.length ; c++ ) {
+            //if (( c % 3 ) == 2 ) newContent += "<br/>";
+            newContent +=  this.checkbox( rowId, items[c][0], items[c][1] );
+        }
+
+        return newContent;
+    };
+
+    this.setValue = function( rowId, value ) {
+        var element = document.getElementById( rowId );
+        if ( element == null ) return;
+
+        var valueArray = value.split( "," );
+        
+        var valueHash = new Array();
+
+        for ( var c = 0 ; c < valueArray.length ; c++ ) {
+            valueHash[valueArray[c].strip()] = true;
+        }
+        
+        /* Clear all of the checkboxes */
+        var checkboxes = element.getElementsByTagName( "input" );
+
+        for ( var c = 0 ; c < checkboxes.length ; c++ ) {
+            if ( checkboxes[c].type == "checkbox" ) {
+                checkboxes[c].checked = ( valueHash[checkboxes[c].value] == true );
+            }
+        }
+    };
+
+    this.parseValue = function( rowId ) {
+        var element = document.getElementById( rowId );
+        if ( element == null ) return;
+        
+        /* Clear all of the checkboxes */
+        var checkboxes = element.getElementsByTagName( "input" );
+        
+        var value = "";
+
+        for ( var c = 0 ; c < checkboxes.length ; c++ ) {
+            if ( checkboxes[c].type == "checkbox" ) {
+                if ( !checkboxes[c].checked ) continue;
+                if ( value != "" ) value += ",";
+                value += checkboxes[c].value;
+            }
+        }
+        
+        return value;
+    };
+
+    /* Function to build a single checkbox */
+    this.checkbox = function( rowId, identifier, label ) {
+        var line = "<input id='" + this.checkboxId( rowId, identifier )
+        + "' type='checkbox' class='checkbox' name='" + label + "' value='" + identifier + "'/>";
+        
+        /* Wrap it in a div */
+        return "<div class='checkbox'>" + line + "<label for='"+this.checkboxId( rowId, identifier )+"'>"+ label + "</label></div>";
+    };
+    
+    this.checkboxId = function( rowId, identifier ) {
+        return identifier + "[]";
+    }
+}
+
+
+var DayHandler = new Checkbox( "day" );
+
+DayHandler.checkList = function()
+{
+    return this.dayList;
+}
+
+RuleBuilder.registerType( "day-of-week", DayHandler );
+
+var InterfaceHandler = new Checkbox( "interface" );
+
+InterfaceHandler.checkList = function()
+{
+    return this.interfaceList;
+}
+
+RuleBuilder.registerType( "d-intf", InterfaceHandler );
+RuleBuilder.registerType( "s-intf", InterfaceHandler );
+
+var LocalInterfaceHandler =
+{
+    content : function( rowId )
+    {
+        /* These don't require anything */
+        return "";
+    },
+
+    validate : function( rowId )
+    {
+    },
+
+    /* Value is ignored */
+    setValue : function( rowId, value )
+    {
+    },
+
+    /* value is ignored */
+    parseValue : function( rowId ) {
+        return true;
+    }
+}
+
+RuleBuilder.registerType( "s-local", LocalInterfaceHandler );
+RuleBuilder.registerType( "d-local", LocalInterfaceHandler );
+
+var IPAddressHandler = new Textbox();
+
+RuleBuilder.registerType( "d-addr", IPAddressHandler );
+RuleBuilder.registerType( "s-addr", IPAddressHandler );
+
+var PortHandler = new Textbox();
+
+RuleBuilder.registerType( "d-port", PortHandler );
+RuleBuilder.registerType( "s-port", PortHandler );
+
+var ProtocolHandler = new Checkbox( "protocol" );
+
+ProtocolHandler.checkList = function()
+{
+    return this.protocolList;
+}
+
+RuleBuilder.registerType( "protocol", ProtocolHandler );
+
+function Textbox()
+{
+    /* Function to generate the content */
+    this.content = function( rowId )
+    {
+        return '<input id="ruleValue[]" name="ruleValue[]" type="text" class="textfield"/>';
+    };
+
+    this.validate = function( rowId )
+    {
+        
+    };
+
+    this.setValue = function( rowId, value )
+    {
+        var element = document.getElementById( rowId );
+        if ( element == null ) return;
+        
+        /* Clear all of the checkboxes */
+        var inputs = element.getElementsByTagName( "input" );
+        
+        for ( var c = 0 ; c < inputs.length ; c++ ) {
+            if ( inputs[c].type == "text" ) {
+                inputs[c].value = value;
+                break;
+            }
+        }
+    };
+
+    this.parseValue = function( rowId ) {
+        var element = document.getElementById( rowId );
+        if ( element == null ) return "";
+        
+        /* Clear all of the checkboxes */
+        var inputs = element.getElementsByTagName( "input" );
+
+        for ( var c = 0 ; c < inputs.length ; c++ ) {
+            if ( inputs[c].type == "text" ) {
+                return inputs[c].value;
+            }
+        }
+
+        return "";
+    };
+}
+var TimeHandler =
+{
+    content : function( rowId ) {
+        return "<div>" + this.time( "start" ) + " to " + this.time( "end" ) + "</div>";
+    },
+
+    validate : function( rowId ) {
+        
+    },
+
+    /* value must be in the format hh,mm,hh,mm
+     * this may look odd, but it is really easy to parse.
+     * hh is 24 hour time.
+     * mm is a 0,15,30,45.
+     */
+    setValue : function( rowId, value )
+    {
+        var element = document.getElementById( rowId );
+        if ( element == null ) return;
+        
+        /* Clear all of the checkboxes */
+        var inputs = element.getElementsByTagName( "select" );
+        
+        var timeArray = value.split( "," );
+        if ( timeArray.length != 4 ) return;
+        
+        for ( var c = 0 ; c < inputs.length ; c++ ) {
+            switch ( inputs[c].id ) {
+            case "start-time-hour": inputs[c].value = timeArray[0]; break;
+            case "start-time-minute": inputs[c].value = timeArray[1]; break;
+            case "end-time-hour": inputs[c].value = timeArray[2]; break;
+            case "end-time-minute": inputs[c].value = timeArray[3]; break;
+            }
+        }
+    },
+
+    parseValue : function( rowId ) {
+        var element = document.getElementById( rowId );
+        if ( element == null ) return;
+        
+        /* Clear all of the checkboxes */
+        var inputs = element.getElementsByTagName( "select" );
+        
+        var timeArray = new Array( 0, 0, 0, 0 );
+        
+        for ( var c = 0 ; c < inputs.length ; c++ ) {
+            switch ( inputs[c].id ) {
+            case "start-time-hour": timeArray[0] = inputs[c].value; break;
+            case "start-time-minute": timeArray[1] = inputs[c].value; break;
+            case "end-time-hour": timeArray[2] = inputs[c].value; break;
+            case "end-time-minute": timeArray[3] = inputs[c].value; break;
+            }
+        }
+        
+        return timeArray.join( "," );
+    },
+
+    time : function( prefix ) {
+        var s = "<select id='" + prefix + "-time-hour'>";
+        for ( var c = 0 ; c <= 23 ; c++ ) {
+            s += "<option value='" + c + "'>" + c + "</option>";
+        }
+        s += "</select> :";
+        
+        s += "<select id='" + prefix + "-time-minute'>";
+        for ( var c = 0 ; c < 4 ; c++ ) {
+            s += "<option value='" + ( c * 15 ) + "'>" + ( c * 15 ) + "</option>";
+        }
+
+        s += "</select>";
+
+        return s;
+    }
+}
+
+RuleBuilder.registerType( "time", TimeHandler );
 

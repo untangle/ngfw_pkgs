@@ -1,3 +1,20 @@
+#
+# $HeadURL$
+# Copyright (c) 2007-2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
 module RouteHelper
   class RouteTableModel < Alpaca::Table::TableModel
     include Singleton
@@ -14,15 +31,15 @@ EOF
       end
       
       columns << Alpaca::Table::Column.new( "netmask", "Netmask".t ) do |route,options| 
-        "&nbsp;" + options[:view].text_field( "netmask", options[:row_id], { :value => route.netmask } )
+        options[:view].text_field( "netmask", options[:row_id], { :value => route.netmask } )
       end
 
       columns << Alpaca::Table::Column.new( "gateway", "Gateway".t ) do |route,options| 
-        "&nbsp;" + options[:view].text_field( "gateway", options[:row_id], { :value => route.gateway } )
+        options[:view].text_field( "gateway", options[:row_id], { :value => route.gateway } )
       end
 
-      columns << Alpaca::Table::Column.new( "name", "Name".t ) do |route,options| 
-        "&nbsp;" + options[:view].text_field( "name", options[:row_id], { :value => route.name } )
+      columns << Alpaca::Table::Column.new( "name", "Description".t ) do |route,options| 
+        options[:view].text_field( "name", options[:row_id], { :value => route.name } )
       end
 
       columns << Alpaca::Table::DeleteColumn.new
@@ -53,22 +70,22 @@ EOF
     def initialize
       columns = []
       columns << Alpaca::Table::Column.new( "target", "Target".t ) do |system_route,options| 
-        "&nbsp;" + system_route.target
+        "<span>" + system_route.target + "</span>"
       end
       
       columns << Alpaca::Table::Column.new( "netmask", "Netmask".t ) do |system_route,options| 
-        "&nbsp;" + system_route.netmask
+        "<span>" + system_route.netmask + "</span>"
       end
 
       columns << Alpaca::Table::Column.new( "gateway", "Gateway".t ) do |system_route,options| 
-        "&nbsp;" + system_route.gateway
+        "<span>" + system_route.gateway + "</span>"
       end
 
       columns << Alpaca::Table::Column.new( "interface", "Interface".t ) do |system_route,options| 
-        "&nbsp;" + system_route.interface
+        "<span>" + system_route.interface + "</span>"
       end
             
-      super( "Active Routes", "routes", "", "system_route", columns )
+      super( "Active Routes", "routes", "", "system_route read-only", columns )
     end
   end
 

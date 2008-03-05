@@ -1,3 +1,20 @@
+#
+# $HeadURL$
+# Copyright (c) 2007-2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
 module DnsHelper
   class StaticEntryTableModel < Alpaca::Table::TableModel
     include Singleton
@@ -14,12 +31,12 @@ EOF
       end
       
       columns << Alpaca::Table::Column.new( "hostname", "Hostname(s)" ) do |static_entry,options|
-        "&nbsp;" +
+        "" +
         options[:view].text_field( "hostname", options[:row_id], { :value => static_entry.hostname } )
       end
 
       columns << Alpaca::Table::Column.new( "description fill", "Description" ) do |static_entry,options| 
-        "&nbsp;" +
+        "" +
         options[:view].text_field( "description", options[:row_id], { :value => static_entry.description } )
       end
       
@@ -51,14 +68,14 @@ EOF
     def initialize
       columns = []
       columns << Alpaca::Table::Column.new( "ip-address", "IP Address" ) do |dynamic_entry,options|
-        dynamic_entry.ip_address
+        "<span>"+dynamic_entry.ip_address+"</span>"
       end
 
       columns << Alpaca::Table::Column.new( "hostname fill", "Hostname" ) do |dynamic_entry,options| 
-        dynamic_entry.hostname
+        "<span>"+dynamic_entry.hostname+"</span>"
       end
       
-      super(  "Automatic DNS Entries", "dns-dynamic-entry", "", "dns-dynamic_entry", columns )
+      super(  "Automatic DNS Entries", "dns-dynamic-entry", "", "dns-dynamic_entry read-only", columns )
     end
 
     def row_id( row )

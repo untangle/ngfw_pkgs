@@ -1,3 +1,20 @@
+#
+# $HeadURL$
+# Copyright (c) 2007-2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
 class NetworkController < ApplicationController
   UpdateInterfaces = "update_interfaces"
   def index
@@ -34,7 +51,14 @@ class NetworkController < ApplicationController
 
     ## This should be in a global place
     @cidr_options = OSLibrary::NetworkManager::CIDR.map { |k,v| [ format( "%-3s &nbsp; %s", k, v ) , k ] }
-    @cidr_options.sort! { |a,b| a[1].to_i <=> b[1].to_i }    
+    @cidr_options.sort! { |a,b| a[1].to_i <=> b[1].to_i }
+
+
+    if ! Interface.valid_dhcp_server?
+      flash[:warning] = "DHCP Server is configured on a subnet that is not on any configured interfaces."
+    end
+    session[:last_controller_before_refresh] = "network"
+
   end
 
   def save
@@ -89,7 +113,14 @@ class NetworkController < ApplicationController
     spawn do
       os["network_manager"].commit
     end
-    
+
+    return redirect_to( :action => 'manage' )
+  end
+
+  def commit
+    spawn do
+      os["network_manager"].commit
+    end
     return redirect_to( :action => 'manage' )
   end
 
@@ -105,6 +136,8 @@ class NetworkController < ApplicationController
       @external_aliases = []
       @msg = "There presently isn't an external interface."
     end
+
+    @external_aliases = [] if @external_aliases.nil?
     
     logger.debug( "Found the aliases: '#{@external_aliases}'" )
     @external_aliases.each { |a| logger.debug( "Found the aliases: '#{a}'" ) }
@@ -172,6 +205,10 @@ class NetworkController < ApplicationController
 
   def refresh_interfaces
     @new_interfaces, @deleted_interfaces = InterfaceHelper.load_new_interfaces
+    @last_controller = "network"
+    if ! session[:last_controller_before_refresh].nil? && session[:last_controller_before_refresh].length > 0
+        @last_controller = session[:last_controller_before_refresh]
+    end
   end
 
   def commit_interfaces
@@ -222,14 +259,6 @@ class NetworkController < ApplicationController
     return redirect_to( :action => 'manage' )
   end
 
-  def scripts
-    [ "network" ]
-  end
-
-  #def stylesheets
-  #  [ "borax/list-table", "borax/network" ]
-  #end
-
   private
 
   class AliasVisitor < Interface::ConfigVisitor
@@ -247,12 +276,12 @@ class NetworkController < ApplicationController
     end
 
     def intf_bridge( interface, config )
-      [ nil, "External Interface is presently configured as a bridge" ]
+      [ [], "External Interface is presently configured as a bridge" ]
     end
 
     def intf_pppoe( interface, config )
       ## Review : We currently support this.
-      [ nil, "External Interface is presently configured for PPPoE" ]
+      [ config.ip_networks, nil ]
     end
   end
 
@@ -286,8 +315,8 @@ class NetworkController < ApplicationController
     end
 
     def intf_pppoe( interface, config )
-      ## Review : We currently support this.
-      "External Interface is presently configured for PPPoE"
+      config.ip_networks = ip_network_list( 1 )
+      nil
     end
 
     private

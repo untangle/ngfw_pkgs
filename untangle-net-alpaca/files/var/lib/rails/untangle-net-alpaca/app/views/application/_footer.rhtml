@@ -1,9 +1,13 @@
 <div id="main-content-footer">
-  <div id="help-footer">
-    <%= submit_tag "Help".t %>
-  </div>
-  <div id="action-footer">
-    <%= submit_tag "Cancel".t %>
-    <%= submit_tag "Save".t %>
+  <div id="footer-buttons">
+    <div id="help-footer">
+      <%= submit_tag "Help".t %>
+    </div>
+    <div id="action-footer">
+      <% if actionable %>
+        <%= submit_tag "Cancel".t %>
+        <%= submit_tag "Save".t, :id => "Save" %>
+      <% end %>
+    </div>
   </div>
 </div>

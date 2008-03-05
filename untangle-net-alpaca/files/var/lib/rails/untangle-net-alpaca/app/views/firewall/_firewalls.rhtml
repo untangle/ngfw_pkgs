@@ -11,5 +11,5 @@
     <%= render( :partial => "firewall", :collection => firewalls ) %>
   </ul>
   
-  <%= sortable_element( "firewall-list" ) %> 
+  <%= sortable_element( "firewall-list", :onChange => "function(){enableSave(); TableManager.updateRowStyles( 'firewall-list' );}" ) %> 
 </div>

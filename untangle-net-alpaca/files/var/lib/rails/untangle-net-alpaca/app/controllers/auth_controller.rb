@@ -1,3 +1,20 @@
+#
+# $HeadURL$
+# Copyright (c) 2007-2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
 require "pam_auth"
 
 class AuthController < ApplicationController
@@ -78,7 +95,7 @@ class AuthController < ApplicationController
 
   def request_login( msg = nil )
     logger.debug msg
-    flash[:warning] = msg  unless msg.nil?
+    flash[:warning] = "<li><strong>Error:</strong> "+msg+"</li>"  unless msg.nil?
     login
     render :action => 'login'
   end

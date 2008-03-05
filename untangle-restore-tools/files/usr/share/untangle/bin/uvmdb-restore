@@ -31,17 +31,14 @@ confirm()
         --yesno "$1" 6 52
 }
 
-function lookupUsbDevice()
+lookup_usb_device()
 {
-    local t_sg
-    local t_dev
-
-    ## The sed command just joins every other line
-    t_sg=`sg_scan -i | sed -e '{N;s|\n| |g;}' | grep -v ATA | head -n 1 | sed 's|\(.*\):.*|\1|'`
-    if [ -z "${t_sg}" ]; then return ; fi
-
-    ## Append the one to always try dev 1
-    sg_map | grep ${t_sg} | awk '{ print $2 "1" }'
+    udevinfo --export | awk '/^N:/ { device="/dev/"$2 ; is_usb=0 ; is_disk=0; is_partition=0 }
+/ID_BUS=usb/ { is_usb=1  }
+/ID_TYPE=disk/ { is_disk=1 }
+/ID_FS_USAGE=filesystem/ { is_partition=1 }
+/^$/ { if ( is_usb == 1 && is_disk == 1 ) { print device ; is_usb=0 ; is_disk=0 ; if ( is_partition == 1 ) exit }}
+' | tail -n 1
 }
 
 usb_mount()
@@ -56,7 +53,7 @@ usb_mount()
 
     case $retval in
         0) # OK
-            t_usb_dev=`lookupUsbDevice`
+            t_usb_dev=`lookup_usb_device`
             if [ -n "${t_usb_dev}" ]; then
                 umount ${MOUNT_POINT} || true
                 mount ${t_usb_dev} ${MOUNT_POINT} && t_success=true

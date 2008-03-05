@@ -1,4 +1,23 @@
+#
+# $HeadURL$
+# Copyright (c) 2007-2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
 class UvmController < ApplicationController  
+  DnsServerSettingsDefaults = { :suffix => "example.com", :enabled => true }
+
   def manage
     @subscriptions = Subscription.find( :all, :conditions => [ "system_id IS NULL" ] )
     @system_subscription_list = Subscription.find( :all, :conditions => [ "system_id IS NOT NULL" ] )
@@ -10,8 +29,9 @@ class UvmController < ApplicationController
 
   def create_subscription
     ## Reasonable defaults
-    @subscription = Subscription.new( :enabled => true, :subscribe => true, 
-                                      :position => -1, :description => "" )
+    @subscription = Subscription.new( :enabled => true, :subscribe => false, 
+                                      :position => -1, :description => "", 
+                                      :filter => "d-port::&&protocol::tcp" )
   end
 
   def edit
@@ -80,13 +100,19 @@ class UvmController < ApplicationController
     true
   end
 
-  def save_hostname( hostname )
+  def save_hostname( hostname, save_suffix = false )
     logger.debug( "Saving the hostname: '#{hostname}'" )
 
     hostname_settings = HostnameSettings.find( :first )
     hostname_settings = HostnameSettings.new if hostname_settings.nil?
     hostname_settings.hostname = hostname
     hostname_settings.save
+
+    ## Update the domain name suffix.
+    if save_suffix
+      suffix = hostname.sub( /^[^\.]*\./, "" )
+      update_dns_server_settings( :suffix => suffix )
+    end
     
     os["hostname_manager"].commit
     true
@@ -140,9 +166,6 @@ class UvmController < ApplicationController
     DhcpServerSettings.destroy_all
     DhcpServerSettings.new( :enabled => true, :start_address => "192.168.2.100", :end_address => "192.168.2.200" ).save
 
-    DnsServerSettings.destroy_all
-    DnsServerSettings.new( :enabled => true, :suffix => "example.com" ).save
-
     os["network_manager"].commit
 
     nil
@@ -185,19 +208,19 @@ class UvmController < ApplicationController
         internal_interface.config_type = InterfaceHelper::ConfigType::BRIDGE
       end
 
-      ## Disable DHCP and DNS?
+      ## Disable DHCP and DNS.
       DhcpServerSettings.destroy_all
       DhcpServerSettings.new( :enabled => false, :start_address => "", :end_address => "" ).save
-      
-      DnsServerSettings.destroy_all
-      DnsServerSettings.new( :enabled => true, :suffix => "example.com" ).save
+
+      update_dns_server_settings( :enabled => false )
     end
   end
-
+    
   def wizard_internal_interface_nat( ip, netmask )
     if netmask.include?( "255." )
       netmask = OSLibrary::NetworkManager::CIDR.index( netmask )
     end
+    
     wizard_manage_interface( InterfaceHelper::InternalIndex ) do |internal_interface|
       static = IntfStatic.new
       static.ip_networks = [ IpNetwork.new( :ip => ip, :netmask => netmask, :position => 1 )]
@@ -211,11 +234,7 @@ class UvmController < ApplicationController
       wizard_calculate_dhcp_range( ip, netmask, dhcp_server_settings )
       dhcp_server_settings.save
 
-      ## Destroy all of the static entries.
-      DhcpStaticEntry.destroy_all
-      
-      DnsServerSettings.destroy_all
-      DnsServerSettings.new( :enabled => true, :suffix => "example.com" ).save
+      update_dns_server_settings( :enabled => true )
     end    
   end
 
@@ -266,12 +285,16 @@ class UvmController < ApplicationController
 
   def wizard_manage_interface( interface_index, commit = true )
     interface = Interface.find( :first, :conditions => [ "\"index\" = ?", interface_index ] )
-
+    
     raise "Missing an interface" if interface.nil?
     yield interface
 
-    interface.save
+    ## Destroy all of the static entries (just safest to always do this).
+    DhcpStaticEntry.destroy_all
+    DnsStaticEntry.destroy_all
 
+    interface.save
+    
     ## Only commit if told to.
     os["network_manager"].commit if commit
 
@@ -279,8 +302,8 @@ class UvmController < ApplicationController
   end
   
   def wizard_calculate_dhcp_range( ip, netmask, dhcp_server_settings )
-    ip = IPAddr.parse( ip )
-    netmask = IPAddr.parse( "255.255.255.255/#{netmask}" )
+    ip = IPAddr.parse_ip( ip )
+    netmask = IPAddr.parse_netmask( netmask )
 
     dhcp_server_settings.enabled = false
     dhcp_server_settings.start_address = "192.168.1.100"
@@ -308,5 +331,12 @@ class UvmController < ApplicationController
         dhcp_server_settings.end_address = end_address.to_s
       end
     end
+  end
+  
+  def update_dns_server_settings( params )
+    dns_server_settings = DnsServerSettings.find( :first )
+    dns_server_settings = DnsServerSettings.new( DnsServerSettingsDefaults ) if dns_server_settings.nil?
+    dns_server_settings.update_attributes( params )
+    dns_server_settings.save
   end
 end

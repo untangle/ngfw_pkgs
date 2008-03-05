@@ -6,61 +6,66 @@ def print_dynamic( value )
 end
 %>
 <div id="dynamic" <%= style %>>
-<!--  <% form_tag( :action => 'intf_dynamic_save', :id => interface ) do -%> -->
-     <div class="text-fields dynamic"> 
-       <div class="first header">Current</div>
-       <div class="header">Override</div>
+  <fieldset>
+    <ul class="text-fields">
+      <li>
+        <label>&nbsp;</label>
+        <div class="header">Current</div>
+        <div class="header">Override</div>
+      </li>
 
-       <br/>
-       <p>
-         <label for="dynamic[ip]"><%= "IP Address:".t %></label>
-         <div class="current"><%= print_dynamic( @dhcp_status.ip ) %></div>
-         <%= text_field( "dynamic", "ip" ) %>
-       </p>
-       <p>
-         <label for="dynamic[netmask]"><%= "Netmask:".t %></label>
-         <div class="current"><%= print_dynamic( @dhcp_status.netmask )%></div>
-         <%= text_field( "dynamic", "netmask" ) %>
-       </p>
-
+      <li>
+        <label for="dynamic_ip"><%= "IP Address:".t %></label>
+        <div class="current"><%= print_dynamic( @dhcp_status.ip ) %></div>
+        <%= text_field( "dynamic", "ip" ) %>
+      </li>
+      <li>
+        <label for="dynamic_netmask"><%= "Netmask:".t %></label>
+        <div class="current"><%= print_dynamic( @dhcp_status.netmask )%></div>
+        <%= text_field( "dynamic", "netmask" ) %>
+      </li>
        <% if interface.wan %>
-         <p>
-           <label for="dynamic[default_gateway]"><%= "Default Gateway:".t %></label>
+         <li>
+           <label for="dynamic_default_gateway"><%= "Default Gateway:".t %></label>
            <div class="current"><%= print_dynamic( @dhcp_status.default_gateway ) %></div>
            <%= text_field( "dynamic", "default_gateway" ) %>
-         </p>
-         <p>
-           <label for="dynamic[dns_1]"><%= "Primary DNS Server:".t %></label>
+         </li>
+         <li>
+           <label for="dynamic_dns_1"><%= "Primary DNS Server:".t %></label>
            <div class="current"><%= print_dynamic( @dhcp_status.dns_1 )%></div>
            <%= text_field( "dynamic", "dns_1" ) %>
-         </p>
-         <p>
-           <label for="dynamic[dns_2]"><%= "Secondary DNS Server:".t %></label>
+         </li>
+         <li>
+           <label for="dynamic_dns_2"><%= "Secondary DNS Server:".t %></label>
            <div class="current"><%= print_dynamic( @dhcp_status.dns_2 )%></div>
            <%= text_field( "dynamic", "dns_2" ) %>
-         </p>
+         </li>
        <% else %>
          <%= hidden_field( "dynamic", "default_gateway", { :value => "" } ) %>
          <%= hidden_field( "dynamic", "dns_1", { :value => "" } ) %>
          <%= hidden_field( "dynamic", "dns_2", { :value => "" } ) %>
        <% end %>
   
-       <p>
-         <label for="dynamic[mtu]"><%= "MTU:".t %></label>
+       <li>
+         <label for="dynamic_mtu"><%= "MTU:".t %></label>
          <% # Review : Presently ignoring all localization %>
-         <%= text_field( "dynamic", "mtu", { :clas => "number" } ) %>
-       </p>
-    </div>
+	 <div class="current"><%= print_dynamic( @interface.current_mtu ) %></div>
+         <%= text_field( "dynamic", "mtu", { :class => "number" } ) %>
+       </li>
 
-    <h2><%= "IP Addresses".t %></h2>
-    <% list_id = "ip-network-list-dynamic" %>
+       <li>
+         <label for="ethernet_media"><%= "Ethernet Media:".t %></label>
+         <%= ethernet_media_select( interface ) %>
+       </li>
+    </ul>
+  </fieldset>
+  
+  <div id="renew-container">
+    <%= submit_to_remote( "Renew", "Renew Lease".t, options = { :url => { :action => "commit" }, :update => "main-content", :html => { :class => "submit" } } ) %>
+  </div>
+
+  <% list_id = "ip-network-list-dynamic" %>
     
-    <%= render( :partial => "ip_networks" , :object => dynamic.ip_networks, 
-                :locals => { :list_id => list_id } ) %>
-<!--    
-    <%= submit_tag "Cancel".t %>
-    <%= submit_tag "Save".t %>
-
-  <% end -%>
--->
+  <%= render( :partial => "ip_networks" , :object => dynamic.ip_networks, 
+              :locals => { :list_id => list_id, :table_name => "IP Address Aliases".t } ) %>
 </div>

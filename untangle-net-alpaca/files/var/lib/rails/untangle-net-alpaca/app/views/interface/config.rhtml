@@ -3,16 +3,17 @@
     ## Define a few convenience variables
     bridge_locals = { :interface => @interface, :bridge_interfaces => @bridge_interfaces, 
                       :bridge_interface_id => @bridge_interface_id }
-    if (!@interface.wan)
+    unless @interface.wan
        @config_types.delete( [ "pppoe", "pppoe" ] )
     end
   %>
   <div id="title"><h1><%= "Interface Configuration for %s".t / @interface.name %></h1></div>
   <% form_tag( :action => 'intf_save_director', :id => @interface ) do -%>
-  <div id="main-content-body">
-    <p><label for="config_type"><%= "Config Type".t %></label>
+  <div id="main-content-body"><div class="wrapper" id="interface">
+    <fieldset class="config-type">
+	      <ul class="text-fields"><li><label for="config_type"><%= "Config Type:".t %></label>
     <%= select_tag( "config_type", options_for_select( @config_types, @config_type_id )) %>
-    <%= observe_field( "config_type", { :function => "setConfigType()" } ) %>
+    <%= observe_field( "config_type", { :function => "Interface.setConfigType()" } ) %></li></ul></fieldset>
 
   <div id="config-panels">
     <%= render( :partial => "static", :object => @static, :locals => { :interface => @interface }  ) %>
@@ -23,8 +24,8 @@
 
     <%= render( :partial => "pppoe", :object => @pppoe, :locals =>  { :interface => @interface } ) if @interface.wan %>
   </div>
-  </div>
+  </div></div>
   <%= build_footer %>
   <% end -%>
 </div>
-<%= javascript_tag "setConfigType()" %>
+<%= javascript_tag "Interface.setConfigType()" %>

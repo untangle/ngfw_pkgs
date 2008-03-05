@@ -1,3 +1,5 @@
-page.insert_html( :bottom, "override-list", :partial => "application/table_row", :object => @file_override, :locals => { :table_model => override_table_model, :data => Alpaca::Table::Data.new( "override-list", [ @file_override ] ) } )
-page.sortable( "override-list" )
+page.insert_html( :top, "override-list", :partial => "application/table_row", :object => @file_override, :locals => { :table_model => override_table_model, :data => Alpaca::Table::Data.new( "override-list", [ @file_override ] ) } )
+page.sortable( "override-list", {:scroll => "'override-list-list-table'", :constraint => "vertical", :onChange => "function(){enableSave(); TableManager.updateRowStyles( 'override-list' );}" } )
 page << "TableManager.updateRowStyles( 'override-list' );"
+page << "initTableRow('override-list');"
+page << "enableSave();"

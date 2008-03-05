@@ -1,28 +1,51 @@
+#
+# $HeadURL$
+# Copyright (c) 2007-2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
 class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
   include Singleton
 
   Service = "/etc/init.d/networking"
   InterfacesConfigFile = "/etc/network/interfaces"
   InterfacesStatusFile = "/etc/network/run/ifstate"
-  IfTabConfigFile = "/etc/network/run/ifstate"
+  ## A simple file used to configure the ethernet media on configure network interfaces.
+  MediaConfigurationFile = "/etc/untangle-net-alpaca/ethernet_media"
+  NetClassDir = "/sys/class/net"
+
+  def get_interfaces_status_file
+    return InterfacesStatusFile
+  end
 
   def interfaces
     logger.debug( "Running inside of the network manager for debian" )
 
     interfaceArray = []
 
-    devices=`find /sys/devices -name 'net:*' | sed 's|.*net:||'`
+    devices=`cd #{NetClassDir};echo */device | sed 's|/device||g'`.split
 
     devices.each do |os_name|
-      os_name = os_name.strip
 
-      bus_id=""
+      bus_id = File.readlink("#{NetClassDir}/#{os_name}/device").sub(/.*devices\//, '')
       vendor=get_vendor( os_name )
 
       ## For some reason, on some systems this causes ruby to hang, use 'cat' instead.
-      # mac_address = File.open( "/sys/class/net/#{os_name}/address", "r" ) { |f| f.readline.strip }
-      mac_address = `cat "/sys/class/net/#{os_name}/address"`.strip
+      # mac_address = File.open( "#{NetClassDir}/#{os_name}/address", "r" ) { |f| f.readline.strip }
+      mac_address = `cat "#{NetClassDir}/#{os_name}/address"`.strip
       
+      logger.debug( "found network device: #{os_name}, mac: #{mac_address}, vendor: #{vendor}, bus_id: #{bus_id}" )
       interfaceArray << PhysicalInterface.new( os_name, mac_address, bus_id, vendor )
     end
     
@@ -30,6 +53,7 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
   end
 
   def hook_commit
+    puts "NetworkManager"
     write_files
     run_services
   end
@@ -37,6 +61,8 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
   def hook_write_files
     interfaces_file = []
     interfaces_file << header
+
+    media_file = []
     
     interfaces = Interface.find( :all )
     interfaces.each do |interface|
@@ -52,6 +78,8 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
       when IntfPppoe
         interfaces_file << pppoe( interface, config )
       end
+
+      media_file << "#{interface.os_name} #{get_media( interface )}"
     end
 
     interfaces_file.push <<EOF
@@ -66,18 +94,20 @@ EOF
 
     os["override_manager"].write_file( InterfacesConfigFile, interfaces_file.join( "\n" ), "\n" )
 
+    os["override_manager"].write_file( MediaConfigurationFile, media_file.join( "\n" ), "\n" )
+
     ## Write the /etc/iftab file, ifrename is not executed
     ## Review : now because we no longer need to remap interfaces
     ## furthermore, udev is kind enough to handle this automatically.
 
     ## Clear out all of the interface state.
     ## Review: Should this be immutable.
-    File.open( InterfacesStatusFile, "w" ) { |f| f.print( "lo=lo" ) }
+    File.open( get_interfaces_status_file(), "w" ) { |f| f.print( "lo=lo" ) }
   end
 
   def hook_run_services
     ## Restart networking
-    logger.warn "Unable to reconfigure network settings." unless run_command( "sh #{Service} start" ) == 0
+    logger.warn "Unable to reconfigure network settings." unless run_command( "#{Service} start" ) == 0
   end
 
   ## Given an interface, this returns the expected bridge name
@@ -99,11 +129,15 @@ EOF
       return ""
     end
 
-    ## Copy the array of ip_networks
-    ip_networks = [ static.ip_networks ].flatten
+    ip_networks = clean_ip_networks( static.ip_networks )
+
+    if ( ip_networks.empty? )
+      logger.warn( "The interface #{interface} does not have any valid IP Networks" )
+      return ""
+    end
 
     ## This will automatically remove the first ip_network if it is assigned to the bridge.
-    bridge = bridgeSettings( interface, static.mtu, "manual", ip_networks )
+    bridge = bridgeSettings( interface, static.mtu, "manual", true, ip_networks )
     
     mtu = mtuSetting( static.mtu )
 
@@ -147,7 +181,8 @@ EOF
     ## assume it is a bridge until determining otherwise
     name = OSLibrary::Debian::NetworkManager.bridge_name( interface )
     
-    base_string = bridgeSettings( interface, dynamic.mtu, "dhcp" )
+    ## Retrieve an array of all of the bridged interfaces.
+    base_string = bridgeSettings( interface, dynamic.mtu, "dhcp", true )
 
     ## REVIEW MTU Setting doesn't do anything in this case.
     if base_string.empty?
@@ -160,7 +195,8 @@ EOF
     end
 
     ## never set the mtu, and always start with an alias.
-    base_string + "\n" + append_ip_networks( dynamic.ip_networks, name, nil, true )
+    ip_networks = clean_ip_networks( dynamic.ip_networks )
+    base_string + "\n" + append_ip_networks( ip_networks, name, nil, true )
   end
 
   def bridge( interface, bridge )
@@ -170,23 +206,15 @@ EOF
 
   ## These are the settings that should be appended to the first
   ## interface index that is inside of the interface (if this is in fact a bridge)
-  def bridgeSettings( interface, mtu, config_method, ip_networks = []  )
-    ## Check if this is a bridge
-    bridged_interfaces = interface.bridged_interfaces
-    
-    ## Create a new set of bridged interfaces
-    bridged_interfaces = bridged_interfaces.map { |ib| ib.interface }
-    
-    ## Delete all of the nil interfaces and the ones where the bridge type isn't set properly.
-    bridged_interfaces = bridged_interfaces.delete_if do |ib| 
-      ib.nil? || ib.config_type != InterfaceHelper::ConfigType::BRIDGE
-    end
-
+  ## @param bridge_self Should be set to true unless the interface
+  ## shouldn't be bridged with itself
+  def bridgeSettings( interface, mtu, config_method, bridge_self, ip_networks = [] )
+    bridged_interfaces = interface.bridged_interface_array
     ## If this is nil or empty, it is not a bridge.    
     return "" if ( bridged_interfaces.nil? || bridged_interfaces.empty? )
     
     ## Append this interface
-    bridged_interfaces << interface
+    bridged_interfaces << interface if bridge_self
 
     bridge_name = self.class.bridge_name( interface )
 
@@ -222,8 +250,6 @@ EOF
 
     ## REVIEW what should timeout be on configuring the interface
 
-    i = nil
-
     ## name of the interface
     name = interface.os_name
     
@@ -231,15 +257,29 @@ EOF
       logger.warn( "The interface #{interface} is not configured" )
       return ""
     end
-    
-    base_string  = <<EOF
-auto #{name}
-iface #{name} inet manual
-\tup poff -a
-\tup pon #{OSLibrary::PppoeManager::PeersFilePrefix}-#{name}
-EOF
 
-    base_string
+    ip_networks = clean_ip_networks( pppoe.ip_networks )
+
+    ## This will automatically remove the first ip_network if it is assigned to the bridge.
+    bridge = bridgeSettings( interface, nil, "manual", false, ip_networks )
+    
+    name = self.class.bridge_name( interface ) unless bridge.empty?
+    ## Configure each IP and then join it all together with some newlines.
+    bridge += "\n" + append_ip_networks( ip_networks, name, nil, !bridge.empty? )
+    
+    ## Hardcoded at ppp0
+
+    ## Use the ifconfig to guarantee the device is running, pppoe
+    ## complains if the interface isn't running.
+<<EOF
+#{bridge}
+
+auto ppp0
+iface ppp0 inet ppp
+\tpre-up ifconfig #{interface.os_name} up
+\tprovider #{OSLibrary::PppoeManager::ProviderName}
+
+EOF
   end
 
 
@@ -275,8 +315,11 @@ EOF
   end
 
   def get_vendor( os_name )
-    path="/sys/class/net/#{os_name}/device/uevent"
-    bus,vendor_id = `awk '/(PHYSDEVBUS|PCI_ID|PRODUCT)/ { sub( /^[^=]*=/, "" );  print $0 }' #{path}`.strip.split( "\n" )
+    subsystem="#{NetClassDir}/#{os_name}/device/subsystem"
+    bus = File.readlink(subsystem).sub(/.*\//, '')
+
+    uevent="#{NetClassDir}/#{os_name}/device/uevent"
+    vendor_id = `awk '/(PCI_ID|PRODUCT)/ { sub( /^[^=]*=/, "" );  print $0 }' #{uevent}`.strip
     
     return "Unknown" if ApplicationHelper.null?( vendor_id ) || ApplicationHelper.null?( bus )
 
@@ -284,7 +327,7 @@ EOF
     
     case bus
     when "usb"
-      vendor = `zcat /usr/share/misc/usb.ids | awk '/^#{vendor_id}/ { $1 = "" ; print $0 }'`.strip
+      vendor = `zcat -f /usr/share/misc/usb.ids | awk '/^#{vendor_id}/ { $1 = "" ; print $0 }'`.strip
     when "pci"
       vendor = `awk '/^#{vendor_id}/ { $1 = "" ; print $0 }' /usr/share/misc/pci.ids`.strip
     else return "Unknown"
@@ -294,6 +337,21 @@ EOF
     return vendor
   end
 
+  def get_media( interface )
+    case "#{interface.speed}-#{interface.duplex}"
+    when "10-full" then return "10-full-duplex" 
+    when "10-half" then return "10-half-duplex" 
+    when "100-full" then return "100-full-duplex" 
+    when "100-half" then return "100-half-duplex"
+    end
+
+    logger.warn( "Unknown media #{interface.speed},#{interface.duplex}" ) unless interface.speed == "auto"
+    
+    ## default.
+    return "auto"
+  end
+                
+
   def header
     <<EOF
 ## #{Time.new}
@@ -301,7 +359,6 @@ EOF
 ## If you modify this file manually, your changes
 ## may be overriden
 
-## This causes a script to tear down any bridges that are not necessary.
 auto cleanup
 iface cleanup inet manual
 
@@ -310,5 +367,29 @@ auto lo
 iface lo inet loopback
 
 EOF
+  end
+
+  def clean_ip_networks( ip_networks )
+    ## Copy the array of ip_networks
+    ip_networks = [ ip_networks  ].flatten
+
+    ## Copy all of the ip networks
+    ip_networks = ip_networks.map { |i| i.clone }
+
+    ## Remove any interfaces that are not valid.
+    ip_networks.delete_if { |ip_network| !is_valid_ip_network?( ip_network ) }
+  end
+
+  def is_valid_ip_network?( ip_network )
+    return false if ApplicationHelper.null?( ip_network.ip )
+    return false if ApplicationHelper.null?( ip_network.netmask )
+
+    return false if IPAddr.parse_ip( ip_network.ip ).nil?
+    return false if IPAddr.parse_netmask( ip_network.netmask ).nil?
+
+    return false if ( ip_network.ip == "0.0.0.0" || ip_network.ip == "255.255.255.255" )
+    return false if ( ip_network.netmask == "0.0.0.0" )
+
+    true
   end
 end

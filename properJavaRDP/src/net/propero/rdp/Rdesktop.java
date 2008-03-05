@@ -264,16 +264,16 @@ public class Rdesktop {
 		alo[7] = new LongOpt("no_encryption", LongOpt.NO_ARGUMENT, null, 0);
 		alo[8] = new LongOpt("use_rdp4", LongOpt.NO_ARGUMENT, null, 0);
 		alo[9] = new LongOpt("use_ssl", LongOpt.NO_ARGUMENT, null, 0);
-        alo[10] = new LongOpt("enable_menu", LongOpt.NO_ARGUMENT, null, 0);
-        alo[11] = new LongOpt("console", LongOpt.NO_ARGUMENT, null, 0);
-        alo[12] = new LongOpt("load_licence", LongOpt.NO_ARGUMENT, null, 0);
-        alo[13] = new LongOpt("save_licence", LongOpt.NO_ARGUMENT, null, 0);
-        alo[14] = new LongOpt("persistent_caching", LongOpt.NO_ARGUMENT, null, 0);
+        	alo[10] = new LongOpt("enable_menu", LongOpt.NO_ARGUMENT, null, 0);
+        	alo[11] = new LongOpt("console", LongOpt.NO_ARGUMENT, null, 0);
+        	alo[12] = new LongOpt("load_licence", LongOpt.NO_ARGUMENT, null, 0);
+        	alo[13] = new LongOpt("save_licence", LongOpt.NO_ARGUMENT, null, 0);
+        	alo[14] = new LongOpt("persistent_caching", LongOpt.NO_ARGUMENT, null, 0);
         
 		String progname = "properJavaRDP";
 
 		Getopt g = new Getopt("properJavaRDP", args,
-				"bc:d:e:f::g:k:l:m:n:p:q:s:t:T:u:o:r:", alo);
+				"abc:d:e:f::g:k:l:m:n:p:P:q:s:t:T:u:o:r:x:", alo);
 
 		ClipChannel clipChannel = null;
                 if (Options.map_clipboard)
@@ -339,6 +339,9 @@ public class Rdesktop {
 
 			case 'o':
 				Options.set_bpp(Integer.parseInt(g.getOptarg()));
+				break;
+			case 'a':
+				Options.append_target = true;
 				break;
 			case 'b':
 				Options.low_latency = false;
@@ -437,6 +440,18 @@ public class Rdesktop {
 			case 'u':
 				Options.username = g.getOptarg();
 				break;
+			case 'x':
+				Options.proxy = g.getOptarg();
+				break;
+			case 'P':
+				arg = g.getOptarg();
+				try {
+					Options.port_to_forward = Integer.parseInt(arg);
+				} catch (NumberFormatException nex) {
+					System.err.println(progname + ": Invalid port to forward number: " + arg);
+					usage();
+				}
+				break;
 			case 't':
 				arg = g.getOptarg();
 				try {
@@ -450,9 +465,10 @@ public class Rdesktop {
 			case 'T':
 				Options.windowTitle = g.getOptarg().replace('_', ' ');
 				break;
-            case 'r':
-                Options.licence_path = g.getOptarg();
-                break;
+
+            		case 'r':
+                		Options.licence_path = g.getOptarg();
+                		break;
                 
 			case '?':
 			default:

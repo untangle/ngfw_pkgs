@@ -1,19 +1,6 @@
 #!/bin/dash
 
-mkdir -p /var/log/untangle-net-alpaca/
-exec >> /var/log/untangle-net-alpaca/interfaces.log 2>&1
-
-debug()
-{
-    /bin/echo -e "[DEBUG: `date`] ${*}"
-}
-
-DEBUG=/bin/true
-
-test "${IF_ALPACA_DEBUG}" = "true" && DEBUG=debug
-
 [ "$IFACE" != "update" ] && {
-    $DEBUG "Ignoring the interface '${IFACE}'"
     exit 0
 }
 

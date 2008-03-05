@@ -1,3 +1,5 @@
-page.insert_html( :bottom, "network_routes", :partial => "application/table_row", :object => @network_route, :locals => { :table_model => route_table_model, :data => Alpaca::Table::Data.new( "network_routes", [ @network_route ] ) } )
+page.insert_html( :top, "network_routes", :partial => "application/table_row", :object => @network_route, :locals => { :table_model => route_table_model, :data => Alpaca::Table::Data.new( "network_routes", [ @network_route ] ) } )
 
 page << "TableManager.updateRowStyles( 'network_routes' );"
+page << "initTableRow('network_routes');"
+page << "enableSave();"

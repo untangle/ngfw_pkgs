@@ -11,5 +11,5 @@
     <%= render( :partial => "subscription", :collection => subscriptions ) %>
   </ul>
   
-  <%= sortable_element( "subscription-list" ) %> 
+  <%= sortable_element( "subscription-list", :onChange => "function(){enableSave(); TableManager.updateRowStyles( 'subscription-list' );}" ) %> 
 </div>

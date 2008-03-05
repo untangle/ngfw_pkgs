@@ -1,3 +1,20 @@
+#
+# $HeadURL$
+# Copyright (c) 2007-2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
 class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
   include Singleton
 
@@ -13,7 +30,12 @@ class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
       items = entry.split
       g = ActiveRoute.new
       g.target = items[0]
-      g.netmask = items[2]
+      if OSLibrary::NetworkManager::NETMASK_TO_CIDR.key?( items[2] )
+        g.netmask = OSLibrary::NetworkManager::NETMASK_TO_CIDR[items[2]] + " (" + items[2] + ")"
+      else
+        g.netmask = items[2]
+      end
+      
       g.gateway = items[1]
       g.description = ""
       g.interface = items[7]
@@ -37,8 +59,19 @@ class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
     cfg = []
 
     network_routes.each do |network_route|
-      cfg << "route add -net " + network_route.target + " netmask " + network_route.netmask + " gw " + network_route.gateway 
-      #+ " # " + network_route.name
+      target = network_route.target
+      netmask = network_route.netmask
+      gateway = network_route.gateway
+
+      next if IPAddr.parse_ip( target ).nil?
+      netmask = IPAddr.parse_netmask( netmask )
+      next if IPAddr.parse_ip( gateway ).nil?
+
+      ## Automatically mask off the necessary bits
+      target = IPAddr.parse( "#{target}/#{netmask}" )
+      next if target.nil? || netmask.nil?
+
+      cfg << "route add -net #{target} netmask #{netmask} gw #{gateway}"
     end
     
     os["override_manager"].write_file( ConfigFile, header, "\n", cfg.join( "\n" ), "\n" )

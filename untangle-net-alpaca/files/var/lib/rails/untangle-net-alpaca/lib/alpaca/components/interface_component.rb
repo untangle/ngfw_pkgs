@@ -1,3 +1,20 @@
+#
+# $HeadURL$
+# Copyright (c) 2007-2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
 class Alpaca::Components::InterfaceComponent < Alpaca::Component
   class InterfaceTestStage < Alpaca::Wizard::Stage
     def initialize( interface_list )
@@ -33,9 +50,9 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
 
   ## Register all of the menu items.
   def register_menu_items( menu_organizer, config_level )
-    return unless ( config_level >= AlpacaSettings::Level::Advanced )
+    #return unless ( config_level >= AlpacaSettings::Level::Advanced )
 
-    menu_organizer.register_item( "/main/interfaces", menu_item( 200, "Interfaces", :action => "list" ))
+    menu_organizer.register_item( "/main/interfaces", menu_item( 100, "Interfaces", :action => "list" ))
     
     ## Retrieve all of the interfaces
     interfaces = Interface.find(:all)
@@ -185,7 +202,7 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
       
       ## Setup all of the parameters about the interface
       n_intf.name, n_intf.index, n_intf.os_name = name, index += 1, os_name
-      n_intf.mac_address, n_intf.bus, n_intf.vendor = a.mac_address, a.bus, a.vendor
+      n_intf.mac_address, n_intf.bus, n_intf.vendor = a.mac_address, a.bus_id, a.vendor
       n_intf.wan = ( n_intf.index == 1 )
       
       ## Set the configuration

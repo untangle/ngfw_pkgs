@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Version=0.9.5
+Name=Untangle Gateway Administration
+Name[vi]=Untangle Gateway Administration
+GenericName=Gateway Manager
+Comment=Administer Untangle Network Gateway
+Icon=untangle-client.png
+TryExec=untangle-client
+Exec=untangle-client
+Path=
+Terminal=false
+MimeType=
+Categories=Network;Settings;System;

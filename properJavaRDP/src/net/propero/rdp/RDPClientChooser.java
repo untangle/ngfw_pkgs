@@ -87,12 +87,16 @@ public class RDPClientChooser {
 
 		// Process arguments (there are more than we need now - need to reduce - also need to check for correct args)
 		
-		Getopt g = new Getopt ("properJavaRDP", args, "bc:d:f::g:k:l:n:p:s:t:T:u:", alo);
+		Getopt g = new Getopt ("properJavaRDP", args, "abc:d:f::g:k:l:n:p:s:t:T:u:x:", alo);
 		
 		while ((c = g.getopt()) != -1) 
 		{
 			switch (c) {
 			
+				case 'a':
+					Options.append_target = true;
+					break;	
+					
 				case 'd':
 					Options.domain = g.getOptarg();		 
 					break;	
@@ -120,6 +124,10 @@ public class RDPClientChooser {
 
 				case 'u':
 					Options.username = g.getOptarg();		 
+					break;
+
+				case 'x':
+					Options.proxy = g.getOptarg();		 
 					break;
 
 				case '?':

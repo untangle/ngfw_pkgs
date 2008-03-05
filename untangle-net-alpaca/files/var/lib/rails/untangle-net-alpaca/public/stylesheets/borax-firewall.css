@@ -39,7 +39,7 @@ ul#firewall-list div.enabled, ul#firewall-list div.subscribe, ul#firewall-list d
 li.firewall div.minus:hover, li.firewall div.edit:hover
 { 
   cursor: pointer;
-  background-color: #E1EB26;  
+  background-color: #86c5df;  
   }
 
 /* System rules */

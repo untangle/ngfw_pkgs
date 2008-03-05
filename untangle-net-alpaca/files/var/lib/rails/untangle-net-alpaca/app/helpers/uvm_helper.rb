@@ -1,3 +1,20 @@
+#
+# $HeadURL$
+# Copyright (c) 2007-2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
 module UvmHelper
   VpnIndex = 8
   ## Indices : 
@@ -12,6 +29,7 @@ module UvmHelper
 
     def initialize
       columns = []
+      columns << Alpaca::Table::DragColumn.new
       columns << Alpaca::Table::Column.new( "enabled", "On".t ) do |subscription,options|
         row_id = options[:row_id]
         view = options[:view]
@@ -20,11 +38,11 @@ module UvmHelper
         #{view.table_checkbox( row_id, "enabled", subscription.enabled )}
 EOF
       end
-      columns << Alpaca::Table::Column.new( "subscribe", "Subscribe".t ) do |subscription,options|
+      columns << Alpaca::Table::Column.new( "subscribe", "Bypass".t ) do |subscription,options|
         row_id = options[:row_id]
         view = options[:view]
 <<EOF
-        #{view.check_box( "subscribe", row_id, { :checked => subscription.subscribe }, true, false )}
+        #{view.check_box( "subscribe", row_id, { :checked => ! subscription.subscribe }, false, true )}
 EOF
       end
       
@@ -47,7 +65,7 @@ EOF
 
       columns << Alpaca::Table::DeleteColumn.new
       
-      super(  "User Subscriptions", "subscriptions", "", "subscription", columns )
+      super(  "Bypass Rules".t, "subscriptions", "", "subscription", columns )
     end
 
     def row_id( row )
@@ -56,7 +74,7 @@ EOF
 
     def action( table_data, view )
       <<EOF
-<div onclick="#{view.remote_function( :url => { :action => :create_subscription } )}" class="add-button">
+<div onclick="if (isClickingEnabled()) { disableClickingFor(clickTimeout); #{view.remote_function( :url => { :action => :create_subscription } )} }" class="add-button">
   #{"Add".t}
 </div>
 EOF
@@ -85,10 +103,10 @@ EOF
 
       
       columns << Alpaca::Table::Column.new( "description", "Description".t ) do |system_subscription,options| 
-        "&nbsp;" + options[:view].text_field( "description", system_subscription.system_id, { :value => system_subscription.description } )
+        "<span>" + system_subscription.description + "</span>"
       end
             
-      super(  "System Subscriptions", "system-subscriptions", "", "system_subscription", columns )
+      super(  "System Bypass Rules".t, "system-subscriptions", "", "system_subscription read-only", columns )
     end
   end
 

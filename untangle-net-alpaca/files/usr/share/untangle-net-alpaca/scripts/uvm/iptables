@@ -19,6 +19,9 @@ HTTPS_EXTERNAL_PORT="443"
 ## This is the address everything in the UVM binds to.
 UVM_BIND_ADDRESS="192.0.2.42"
 
+## UDP Session timeout
+UDP_SESSION_TIMEOUT=70
+
 queue_owner()
 {
     if [ "${UVM_PID}x" != "invalidx" ]; then return ; fi
@@ -61,6 +64,23 @@ if [ -f /proc/sys/net/ipv4/conf/${TUN_DEV}/rp_filter ] ; then
     echo 0 > /proc/sys/net/ipv4/conf/${TUN_DEV}/rp_filter
 fi
 
+## increment the UDP timeout to 60 seconds, kind of a hack to have this here.
+if [ -f /proc/sys/net/netfilter/nf_conntrack_udp_timeout ]; then
+    echo ${UDP_SESSION_TIMEOUT} > /proc/sys/net/netfilter/nf_conntrack_udp_timeout
+fi
+
+if [ -f /proc/sys/net/netfilter/nf_conntrack_udp_timeout_stream ]; then
+    echo 180 > /proc/sys/net/netfilter/nf_conntrack_udp_timeout_stream
+fi
+
+if [ -f /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout ]; then
+    echo ${UDP_SESSION_TIMEOUT} > /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout
+fi
+
+if [ -f /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout_stream ]; then
+    echo 180 > /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout_stream
+fi
+
 ## Set the path for the bunnicula networking script
 UVM_NETWORKING_CONFIG=`bunnicula_home`/conf/networking.sh
 
@@ -71,11 +91,33 @@ fi
  
 . ${UVM_NETWORKING_CONFIG}
 
+update_tcp_window_scaling()
+{
+    if [ -f /proc/sys/net/ipv4/tcp_window_scaling ] ; then
+        ## If undefined or non-true, disable window scaling
+        val=0
+        
+        if [ "x${TCP_WINDOW_SCALING_EN}" = "xtrue" ]; then
+            echo "[DEBUG:`date`] enabling TCP Window Scaling"
+            val=1
+        fi
+        
+        echo $val > /proc/sys/net/ipv4/tcp_window_scaling
+    fi
+}
+
 uvm_iptables_rules()
 {    
+    # Update the flag for TCP Window scaling.
+    update_tcp_window_scaling
+
     # Do not conntrack entries in that have the NOTRACK bit set.
     ${IPTABLES} -A OUTPUT -t raw -m mark --mark ${MARK_NOTRACK}/${MARK_NOTRACK} -j NOTRACK
-    
+
+
+    # dont queue ICMP packets released from the queue.
+    ${IPTABLES} -A PREROUTING -t mangle -m mark --mark ${MARK_DUPE}/${MARK_DUPE} -j RETURN
+
     ## Don't mangle resets, for some reason the routing drops them if they
     ## get mangled.
     ${IPTABLES} -A OUTPUT -t mangle -j RETURN -p tcp --tcp-flags SYN,ACK,RST ACK,RST
@@ -90,6 +132,12 @@ uvm_iptables_rules()
 
     #dont queue anthing that was liberated, or is connmarked antisubscribe
     ${IPTABLES} -A PREROUTING -t mangle -m connmark --mark ${MARK_ANTISUB}/${MARK_ANTISUB} -j MARK --or-mark  ${MARK_ANTISUB}
+    ${IPTABLES} -A PREROUTING -t mangle -m mark --mark ${MARK_ANTISUB}/${MARK_ANTISUB}  -j RETURN
+
+    # Queue all of the ICMP packets (except for pings).
+    ${IPTABLES} -A PREROUTING -t mangle -p icmp --icmp-type echo-request -j RETURN
+    ${IPTABLES} -A PREROUTING -t mangle -p icmp --icmp-type echo-reply   -j RETURN
+    ${IPTABLES} -A PREROUTING -t mangle -p icmp                          -j NFQUEUE
 
     #redirect  anthing re-injected packets from the TUN interface to us
     ${IPTABLES} -I PREROUTING 1 -t nat -i ${TUN_DEV} -t nat -p tcp \
@@ -125,6 +173,7 @@ uvm_iptables_rules()
     fi
 }
 
+## Create the rules to allow internal access to port 80.
 uvm_packet_filter_standard_internal()
 {
     if [ "${UVM_ALLOW_IN_HTTP}x" != "truex" ]; then return ; fi
@@ -135,6 +184,7 @@ uvm_packet_filter_standard_internal()
         -m mark --mark 2050/2050 -j RETURN
 }
 
+## Allow internal access to port.
 uvm_packet_filter_secure_internal()
 {
     ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 443 \
@@ -143,15 +193,31 @@ uvm_packet_filter_secure_internal()
         -m mark --mark 2050/2050 -j RETURN
 }
 
+## This is a helper function to generate the necessary filter to restrict external access.
+uvm_restrict_access_string()
+{
+    if [ "${UVM_ALLOW_OUT_RES}x" != "truex" ] ; then return ; fi
+    
+    if [ -z "${UVM_ALLOW_OUT_NET}" ] ; then return ; fi
+    
+    if [ -z "${UVM_ALLOW_OUT_MASK}" ] ; then return ; fi
+    
+    echo " -s ${UVM_ALLOW_OUT_NET}/${UVM_ALLOW_OUT_MASK} "
+}
+
+## Allow secure access to the external port,.
 uvm_packet_filter_secure_external()
 {
+    local t_restrict
     if [ "${UVM_ALLOW_OUT_HTTPS}x" != "truex" ] ; then return ; fi
+
+    t_restrict=`uvm_restrict_access_string`
     
     ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports ${HTTPS_EXTERNAL_PORT} \
-        -m mark --mark 2048/2048 -j DNAT --to-destination ${UVM_BIND_ADDRESS}:443
+        ${t_restrict} -m mark --mark 2048/2048 -j DNAT --to-destination ${UVM_BIND_ADDRESS}:443
     
     ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports ${HTTPS_EXTERNAL_PORT} \
-        -m mark --mark 2048/2048 -j RETURN
+        ${t_restrict} -m mark --mark 2048/2048 -j RETURN
 }
 
 uvm_packet_filter_secure_public()
@@ -161,7 +227,11 @@ uvm_packet_filter_secure_public()
     if [ "${HTTPS_PUBLIC_PORT}x" = "x" ] ; then return ; fi
 
     if [ "${HTTPS_PUBLIC_ADDR}x" = "x" ] ; then return ; fi
-    
+
+
+    ## This doesn't use the restricted address because it assumes the upstream
+    ## router is doing the restrictions.
+
     ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} \
         --destination-ports ${HTTPS_PUBLIC_PORT} -j DNAT --to-destination ${UVM_BIND_ADDRESS}:443
     

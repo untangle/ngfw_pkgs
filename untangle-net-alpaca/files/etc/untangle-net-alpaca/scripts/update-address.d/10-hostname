@@ -3,29 +3,34 @@
 ##Add static routes rules
 current_hostname=`hostname`
 
-MARKER="ut-marker.example.com"
-
-get_primary_addresses()
-{
-    ip addr show primary | awk '/^[0-9]/ { current_intf=$2 } ; /inet/ { $ip = $2 ; sub( /\/.*$/, "", $ip ) ; if ( current_intf != "dummy0:" && current_intf != "utun:" && current_intf != "lo:" ) print $ip  }'
-}
+MARKER="hostname.marker.untangle.com"
+OLD_MARKER="ut-marker.example.com"
 
 update_hosts()
 {
     local t_address
-    local t_host_script=" -e '\$a 127.0.0.1 ${current_hostname} ${MARKER}' "
+    local t_host_script=""
+   
+    local t_temp=`mktemp`
+    local t_dest="/etc/hosts"
 
-    for t_address in `get_primary_addresses` ; do
-        t_host_script="${t_host_script}  -e '\$a ${t_address}  ${current_hostname} ${MARKER}'"
-    done
-
-    ## a dubious technique, at best.
-    echo sed -i -e "/${MARKER}/d" ${t_host_script} /etc/hosts | sh
+    t_host_script="print \"127.0.0.1 ${current_hostname} ${MARKER}\";"
+    
+    ## Remove the existing hostname entries and update the new one.
+    awk '!'"/(${MARKER}|${OLD_MARKER})/ { print \$0 }; END { ${t_host_script} }" ${t_dest} > ${t_temp}
+    chmod 744 ${t_temp}
+    mv ${t_temp} ${t_dest}
 }
 
 if [ -z "${current_hostname}" ]; then
-    echo "hostname is not available"
+    echo "[`date`] hostname is not available"
     exit 0
+fi
+
+short_name=${current_hostname%%.*}
+
+if [ "${short_name}x" != "${current_hostname}x" ]; then
+    current_hostname="${short_name} ${current_hostname}" ;
 fi
 
 update_hosts

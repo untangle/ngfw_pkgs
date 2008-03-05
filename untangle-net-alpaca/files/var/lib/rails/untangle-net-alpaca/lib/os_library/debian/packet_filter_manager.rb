@@ -1,3 +1,20 @@
+#
+# $HeadURL$
+# Copyright (c) 2007-2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
 class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   include Singleton
 
@@ -87,6 +104,8 @@ EOF
     PostNat = Chain.new( "alpaca-post-nat", "nat", "POSTROUTING", <<'EOF' )
 ## Do not NAT packets destined to local host.
 #{IPTablesCommand} #{args} -o lo -j RETURN
+## Do not NAT packets that are destined to the VPN.
+#{IPTablesCommand} #{args} -o tun0 -j RETURN
 EOF
 
     ## Chain used to redirect traffic
@@ -240,6 +259,26 @@ EOF
     
     text << header
     fw_text << header
+
+    ## A little function for marking an interface.
+    text << <<EOF
+mark_local_ip()
+{
+   local t_ip
+   local t_intf=$1
+   local t_index=$2
+   local t_mark
+   ## Verify the interface was specified.
+   test -z "${t_intf}" && return 0
+   test -z "${t_index}" && return 0
+
+   t_mark=$(( #{MarkInput} | ( ${t_index} << 8 )))
+   
+   for t_ip in `get_ip_addresses ${t_intf}` ; do
+     #{IPTablesCommand} #{Chain::MarkInterface.args} -d ${t_ip} -j MARK --or-mark ${t_mark}
+   done
+}
+EOF
     
     Interface.find( :all ).each do |interface|
       ## labelling
@@ -261,6 +300,14 @@ EOF
       ## insert rules in between.
       fw_text << "#{IPTablesCommand} #{Chain::FirewallRules.args} -m mark --mark 2048/2048 -j #{Chain::FirewallMarkInputDrop.name}"
     end
+
+    ## Allow traffic to the test IP, this is useful for people who don't know their IP.
+    fw_text << "#{IPTablesCommand} #{Chain::FirewallRules.args} -p tcp --destination-port 443 -d 192.0.2.42 -j RETURN"
+
+    ## This is a special rule to block access to the dummy bind address.  Traffic
+    ## should always be redirected to the dummy interface (unless it came in over lo.)
+    ## which is ignored above.
+    fw_text << "#{IPTablesCommand} #{Chain::FirewallRules.args} -d 192.0.2.42 -j DROP"
 
     ## Delete all empty or nil parts
     text = text.delete_if { |p| p.nil? || p.empty? }
@@ -313,7 +360,21 @@ EOF
 
   def write_redirect
     rules = Redirect.find( :all, :conditions => [ "system_id IS NULL AND enabled='t'" ] )
+
+    ## man this is filthy.
+    conditions = [ "system_id = ? AND enabled='t'", "accept-openvpn-4ebba2eb" ] 
+    unless Firewall.find( :first, :conditions => conditions ).nil?
+      ## Create a new redirect rule to send openvpn traffic to the openvpn server.
+      ## openvpn doesn't handle multi-homed addresses very well, this is fixed
+      ## in 2.1, but until we make the switch, we have to deal with this redirect.
+      rules << Redirect.new( :enabled => true, :filter => "d-local::true&&d-port::1194&&protocol::udp",
+                             :is_custom => false, :system_id => "accept-openvpn-4ebba2eb",
+                             :new_ip => "192.0.2.42", :new_enc_id => "1194" )
+    end
+
     rules += Redirect.find( :all, :conditions => [ "system_id IS NOT NULL AND enabled='t'" ] )
+
+
     
     text = header
     rules.each do |rule|
@@ -358,28 +419,37 @@ EOF
   ## Interface labelling
   def marking( interface )
     match = "-i #{interface.os_name}"
-
+    
     ## This is the name used to retrieve the ip addresses.
     name = interface.os_name
 
+    ## use ppp0 if this is a PPPoE interface.
+    if ( interface.config_type == InterfaceHelper::ConfigType::PPPOE )
+      match = "-i ppp0"
+    elsif interface.is_bridge?
+      match = "-m physdev --physdev-in #{interface.os_name}" if interface.is_bridge?
+    end
+    
+    ## This is the name that is used to retrieve the local addresses.
     if interface.is_bridge?
       name = OSLibrary::Debian::NetworkManager.bridge_name( interface ) if interface.is_bridge?
-      match = "-m physdev --physdev-in #{interface.os_name}" if interface.is_bridge?
     end
     
     index = interface.index
     mask = 1 << ( index - 1 )
-    rules = <<EOF
-#{IPTablesCommand} #{Chain::MarkInterface.args} #{match} -j MARK --or-mark #{mask}
 
-## Mark packets destined for each IP address as local.
- for t_intf in `get_ip_addresses #{name}` ; do
-#{IPTablesCommand} #{Chain::MarkInterface.args} -d ${t_intf} -j MARK --or-mark #{MarkInput | ( index << 8 )}
-done
+    rules = [ "#{IPTablesCommand} #{Chain::MarkInterface.args} #{match} -j MARK --or-mark #{mask}" ]
+    
+    if ( interface.config_type != InterfaceHelper::ConfigType::BRIDGE )
+      rules << "mark_local_ip #{name} #{index}"
+    end
+    
+    ## Append a mark for the ppp0 local addresses.
+    if ( interface.config_type == InterfaceHelper::ConfigType::PPPOE )
+      rules << "mark_local_ip ppp0 #{index}"
+    end
 
-EOF
-
-    rules
+    rules.join( "\n" )
   end
   
   def filtering( interface )
@@ -448,7 +518,7 @@ EOF
   def parse_session_redirect( filter, new_ip, new_port )
     raise "Invalid filter: '#{filter}'" if /^[-a-zA-Z0-9._ ]*$/.match( filter ).nil?
     
-    raise "Invalid destination '#{new_ip}'" if IPAddr.parse( "#{new_ip}/32" ).nil?
+    raise "Invalid destination '#{new_ip}'" if IPAddr.parse_ip( new_ip ).nil?
 
     ## Convert new_port to a number
     new_port_string = new_port.to_s

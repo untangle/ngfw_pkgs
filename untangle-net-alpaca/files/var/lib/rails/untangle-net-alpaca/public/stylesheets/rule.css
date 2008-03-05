@@ -48,7 +48,7 @@ ul.rule-list li.rule > div.plus, ul.rule-list li.rule > div.minus
 ul.rule-list li.rule > div.plus:hover, ul.rule-list li.rule > div.minus:hover
 { 
   cursor: pointer;
-  background-color: #E1EB26;
+  background-color: #86c5df;
   }
 
 ul.rule-list div.checkbox
