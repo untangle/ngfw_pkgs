@@ -498,14 +498,9 @@ div.list-table-container.routes div.list-table-column span {
 /* ------------------- NAT Policy -------------------- */
 div.list-table-container.nats div.ip-address
 {
-  width: 275px;
+  width: 21em;
 }
 div.list-table-container.nats div.new-source
 { 
-  width: 275px;
+  width: 21em;
 }
-div.list-table-container.nats div.minus
-{ 
-  width: 50px;
-}
-
