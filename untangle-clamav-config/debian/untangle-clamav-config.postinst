@@ -11,16 +11,19 @@ EOF
 
 sed -i -e "s|[# ]*LocalSocket.*|#LocalSocket /var/run/clamav/clamd.ctl|" $CLAMAV_CONF_FILE
 
+/etc/init.d/clamav-freshclam stop
+/etc/init.d/clamav-daemon stop
+
 # Upstream bug causes duplicate signatures when upgrading.  To work around, we remove
 # the existing signatures.  Freshclam will restore them quickly.
 rm -rf /var/lib/clamav/*
 
-# Since upstream uses invoke-rc.d, which currently has issues, we do this instead.
-/etc/init.d/clamav-freshclam restart
-/etc/init.d/clamav-daemon restart
+/etc/init.d/clamav-freshclam start
+/etc/init.d/clamav-daemon start
+
+sleep 2
 
 # Make executable and then fetch unofficial clam phishing signatures.
 chmod +x /etc/cron.hourly/update_sanesecurity.sh
-sleep 2
-/etc/cron.hourly/update_sanesecurity.sh --sleep 1 &
+nohup /etc/cron.hourly/update_sanesecurity.sh --sleep 1 >/dev/null 2>&1 &
 
