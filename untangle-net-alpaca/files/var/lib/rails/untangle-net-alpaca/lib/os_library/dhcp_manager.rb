@@ -28,7 +28,7 @@ class OSLibrary::DhcpManager < Alpaca::OS::ManagerBase
   end
 
   ## This should be overriden by the o/s specific value.
-  def get_dhcp_status( os_name )
+  def get_dhcp_status( interface )
     raise "base class, override in an os specific class"
   end
 

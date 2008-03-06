@@ -55,10 +55,15 @@ module NetworkHelper
   ## Create an interface config for a particular interface
   ## @param interface The interface to build the config for.
   ## @param interface_list List of interfaces that are configurable
-  def self.build_interface_config( interface, interface_list )
+  ## @param dhcp_status Current DHCP Configuration for the this interface.
+  def self.build_interface_config( interface, interface_list, dhcp_status )
     s = interface.intf_static
     static = nil
-    if s.nil?
+
+    if interface.config_type == InterfaceHelper::ConfigType::DYNAMIC && !dhcp_status.nil?
+      static = StaticConfig.new( dhcp_status.ip, dhcp_status.netmask, dhcp_status.default_gateway, 
+                                 dhcp_status.dns_1, dhcp_status.dns_2 )
+    elsif s.nil?
       ## Just use the defaults
       static = StaticConfig.new
     else

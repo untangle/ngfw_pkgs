@@ -45,8 +45,11 @@ class NetworkController < ApplicationController
     @interface_list.sort! { |a,b| a.index <=> b.index }
     
     @config_list = @interface_list.map do |interface|
-      @dhcp_status = os["dhcp_manager"].get_dhcp_status( interface ) if interface.wan
-      NetworkHelper.build_interface_config( interface, @interface_list )
+      ## This is the dhcp status of this particular interface.
+      d = nil
+      d = @dhcp_status = os["dhcp_manager"].get_dhcp_status( interface ) if interface.wan
+      
+      NetworkHelper.build_interface_config( interface, @interface_list, d )
     end
 
     ## This should be in a global place
