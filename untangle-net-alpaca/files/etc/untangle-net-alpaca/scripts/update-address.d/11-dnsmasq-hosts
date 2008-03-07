@@ -9,7 +9,7 @@ OLD_MARKER="ut-marker.example.com"
 ## This gets all addresses.
 get_addresses()
 {
-    ip addr show | awk '/^[0-9]/ { current_intf=$2 } ; /inet/ { $ip = $2 ; sub( /\/.*$/, "", $ip ) ; if ( current_intf != "dummy0:" && current_intf != "utun:" && current_intf != "lo:" ) print $ip  }'
+    ip addr show | awk '/^[0-9]/ { current_intf=$2 } ; /inet/ { ip = $2 ; sub( /\/.*$/, "", ip ) ; if ( current_intf != "dummy0:" && current_intf != "utun:" && current_intf != "lo:" ) print ip  }'
 }
 
 

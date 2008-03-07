@@ -21,7 +21,7 @@ get_ip_addresses()
 
     ## Throw away error data.
     ip -f inet addr show ${t_intf} 2>/dev/null | \
-        awk '/inet/ { $ip = $2 ; sub( /\/.*$/, "", $ip ) ; print $ip  }'
+        awk '/inet/ { ip = $2 ; sub( /\/.*$/, "", ip ) ; print ip  }'
 }
 
 run_iptables_scripts()
