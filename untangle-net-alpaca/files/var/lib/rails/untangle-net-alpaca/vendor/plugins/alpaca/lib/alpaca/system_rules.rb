@@ -122,6 +122,11 @@ module Alpaca::SystemRules
                           :target => "pass", :enabled => false,
                           :system_id => "accept-snmp-029571bd" )
 
+    rm.add_firewall_rule( :description => "Block OpenVPN traffic from the internal interface.",
+                          :filter => "d-local::true&&s-intf::2&&d-port::1194&&protocol::udp",
+                          :target => "drop",
+                          :system_id => "block-openvpn-internal-e47e6116" )
+
     rm.add_firewall_rule( :description => "Accept OpenVPN traffic from all interfaces.",
                           :filter => "d-local::true&&d-port::1194&&protocol::udp",
                           :target => "pass",

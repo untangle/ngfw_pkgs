@@ -80,7 +80,7 @@ class NetworkController < ApplicationController
     end
 
     ## Verify the list exists.
-      return redirect_to( :action => 'fail_1' ) if interface_list.nil?
+    return redirect_to( :action => 'fail_1' ) if interface_list.nil?
     
     ## Verify the list lines up with the existing interfaces
     interfaces = Interface.find( :all )
