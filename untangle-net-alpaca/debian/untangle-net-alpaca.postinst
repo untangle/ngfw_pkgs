@@ -7,5 +7,9 @@ if [ -x "/etc/init.d/untangle-net-alpaca" ]; then
     update-rc.d untangle-net-alpaca defaults >/dev/null
     /etc/init.d/untangle-net-alpaca restart || exit 0
 fi
+
+
+## Make the dnsmasq script executable.
+[ -f "/etc/untangle-net-alpaca/scripts/dnsmasq" ] && chmod +x /etc/untangle-net-alpaca/scripts/dnsmasq
     
 exit 0

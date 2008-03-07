@@ -136,16 +136,30 @@ EOF
       return ""
     end
 
+    gw = static.default_gateway
+    gateway_string = ""
+    if ( interface.wan && !gw.nil? && !gw.empty? )
+      gateway_src = nil
+
+      ## Iterate the ip networks and find the first one that matches the default gateway.
+      gateway = IPAddr.parse( gw )
+      
+      gateway_string = "\tgateway #{gw}\n" 
+      ip_networks.each do |ipn|
+        n = IPAddr.parse( "#{ipn.ip}/#{ipn.netmask}" )
+        next if n.nil?
+        ## include is nil safe just in case gateway is nil
+        if n.include?( gateway )
+          gateway_string = "\tpost-up ip route add to default src #{ipn.ip} nexthop via #{gw}"
+          break
+        end
+      end      
+    end
+
     ## This will automatically remove the first ip_network if it is assigned to the bridge.
     bridge = bridgeSettings( interface, static.mtu, "manual", true, ip_networks )
     
     mtu = mtuSetting( static.mtu )
-
-    gw = static.default_gateway
-    gateway_string = ""
-    if ( interface.wan && !gw.nil? && !gw.empty? )
-      gateway_string = "\tgateway #{static.default_gateway}\n" 
-    end
     
     ## set the name
     ## Clear the MTU because that is set in the bridge
