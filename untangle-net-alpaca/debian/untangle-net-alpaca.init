@@ -18,11 +18,13 @@ NAME="untangle-net-alpaca"
 
 MONGREL_RAILS="/usr/bin/mongrel_rails"
 BASE_DIR="/var/lib/rails/untangle-net-alpaca"
+MONGREL_PID_FILE=${BASE_DIR}/log/mongrel.pid
 MONGREL_ARGS=""
 
 BIND_ADDRESS="127.0.0.1"
 ## rails environment, defaults to production
 MONGREL_ENV="production"
+
 
 if [ -r /etc/default/$NAME ]; then
     . /etc/default/$NAME
@@ -30,6 +32,10 @@ fi
 
 ## Just to guarantee that at least one nonce exist
 /etc/cron.hourly/rebuild-nonce
+
+sanity-check() {
+  [ -f ${MONGREL_PID_FILE} ] && [ ! -d /proc/`cat ${MONGREL_PID_FILE}` ] && rm -f ${MONGREL_PID_FILE}
+}
 
 start()
 {
@@ -59,11 +65,12 @@ stop()
     pkill mongrel > /dev/null 2>&1
     pkill -9 mongrel > /dev/null 2>&1
     ## Remove the pid file.
-    rm -f ${BASE_DIR}/log/mongrel.pid
+    rm -f ${MONGREL_PID_FILE}
 }
 
 case "$1" in
     start)
+        sanity-check
         start
         ;;
     stop)
