@@ -1,3 +1,9 @@
+untangle-libnfnetlink (1:0.0.30+5.1.1~svn20071211r13598-1sarge) seb; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@debian.org>  Thu, 06 Mar 2008 12:08:40 -0800
+
 untangle-libnfnetlink (1:0.0.30) thunderbird; urgency=low
 
   * new upstream version
