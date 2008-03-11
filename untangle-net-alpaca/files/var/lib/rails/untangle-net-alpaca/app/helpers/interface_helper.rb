@@ -47,12 +47,13 @@ module InterfaceHelper
 
   ## A hash of all of the various ethernet medias
   ETHERNET_MEDIA = { "autoauto" => { :name => "Auto", :speed => "auto", :duplex => "auto" },
+    "1000full" => { :name => "1000 Mbps, Full Duplex", :speed => "1000", :duplex => "full" },
     "100full" => { :name => "100 Mbps, Full Duplex", :speed => "100", :duplex => "full" },
     "100half" => { :name => "100 Mbps, Half Duplex", :speed => "100", :duplex => "half" },
     "10full" => { :name => "10 Mbps, Full Duplex", :speed => "10", :duplex => "full" },
     "10half" => { :name => "10 Mbps, Half Duplex", :speed => "10", :duplex => "half" } }.freeze
 
-  ETHERNET_MEDIA_ORDER = [ "autoauto", "100full", "100half", "10full", "10half" ]
+  ETHERNET_MEDIA_ORDER = [ "autoauto", "1000full", "100full", "100half", "10full", "10half" ]
 
   ## Load the new interfaces and return two arrays.
   ## first the array of new interfaces to delete.
