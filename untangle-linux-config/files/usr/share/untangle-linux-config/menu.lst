@@ -1,3 +1,7 @@
+# Untangle Server grub configuration
+# Do not remove the next line without removing the package:
+# ***Installed by untangle-linux-config package***
+
 # menu.lst - See: grub(8), info grub, update-grub(8)
 #            grub-install(8), grub-floppy(8),
 #            grub-md5-crypt, /usr/share/doc/grub
@@ -11,31 +15,28 @@
 # is the entry saved with the command 'savedefault'.
 # WARNING: If you are using dmraid do not use 'savedefault' or your
 # array will desync and will not let you boot your system.
-default     0
+default     saved
 
 ## timeout sec
 # Set a timeout, in SEC seconds, before automatically booting the default entry
 # (normally the first entry defined).
-timeout     5
+timeout     8
 
 # Use the Untangle splash for the grub menu
 splashimage=(hd0,0)/boot/grub/mvsplash.xpm.gz
 
-title       Untangle Platform
-root        (hd0,0)
-kernel      /boot/vmlinuz-ut root=UUID=@ROOTUUID@ ro ramdisk_size=100000 lang=us apm=power-off screen=1024x768 splash=silent nomce quiet vga=791 nodhcp nofstab panic=5
-initrd      /boot/initrd.img
-savedefault
-boot
+## password ['--md5'] passwd
+# If used in the first section of a menu file, disable all interactive editing
+# control (menu entry editor and command-line)  and entries protected by the
+# command 'lock'
+# e.g. password topsecret
+#      password --md5 $1$gLhU0/$aW78kHK1QfV3P2b2znUoe/
+# password topsecret
 
-title       Untangle Platform Recovery Mode
-root        (hd0,0)
-kernel      /boot/vmlinuz-ut root=UUID=@ROOTUUID@ ro ramdisk_size=100000 lang=us apm=power-off screen=1024x768 nosplash nomce quiet vga=791 nodhcp panic=5 nofstab ut-restore
-initrd      /boot/initrd.img
-boot
 
 #
 # Put static boot stanzas before and/or after AUTOMAGIC KERNEL LIST
+
 
 ### BEGIN AUTOMAGIC KERNELS LIST
 ## lines between the AUTOMAGIC KERNELS LIST markers will be modified
@@ -51,11 +52,7 @@ boot
 ## e.g. kopt=root=/dev/hda1 ro
 ##      kopt_2_6_8=root=/dev/hdc1 ro
 ##      kopt_2_6_8_2_686=root=/dev/hdc2 ro
-# kopt=root=UUID=@ROOTUUID@ ro ramdisk_size=100000 lang=us apm=power-off screen=1024x768 nomce vga=791 nodhcp nofstab panic=5
-
-## Setup crashdump menu entries
-## e.g. crashdump=1
-# crashdump=0
+# kopt=root=@ROOTDEV@ ro ramdisk_size=100000 lang=us apm=power-off screen=1024x768 nomce vga=791 nodhcp nofstab panic=5
 
 ## default grub root device
 ## e.g. groot=(hd0,0)
@@ -90,8 +87,9 @@ boot
 ## altoption boot targets option
 ## multiple altoptions lines are allowed
 ## e.g. altoptions=(extra menu suffix) extra boot options
-##      altoptions=(recovery) single
-# altoptions=(recovery mode) single
+##      altoptions=(single-user) single
+# altoptions=(hardware workaround) acpi=off noapic
+# altoptions=(recovery mode) ut-restore
 
 ## controls how many kernels should be put into the menu.lst
 ## only counts the first occurence of a kernel, not the
@@ -107,11 +105,11 @@ boot
 
 ## should update-grub adjust the value of the default booted system
 ## can be true or false
-# updatedefaultentry=false
+# updatedefaultentry=true
 
 ## should update-grub add savedefault to the default options
 ## can be true or false
-# savedefault=false
+# savedefault=true
 
 ## ## End Default Options ##
 

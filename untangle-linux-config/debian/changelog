@@ -1,7 +1,7 @@
-untangle-linux-2.6.22-config (0-1) stable; urgency=low
+untangle-linux-config (0-1) stable; urgency=low
 
   * initial release
 
- -- Sebastien Delafond <seb@untangle.com>  Tue, 19 Jun 2007 14:36:49 -0700
+ -- John Irwin <jdi@untangle.com>  Tue, 11 Mar 2008 14:36:49 -0700
 
 
