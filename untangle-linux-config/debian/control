@@ -1,0 +1,16 @@
+Source: untangle-linux-2.6.22-config
+Section: admin
+Priority: important
+Maintainer: John Irwin <jdi@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.7.2
+
+Package: untangle-linux-2.6.22-config
+Architecture: any
+Conflicts: untangle-linux-2.6.16-ck11-config
+Replaces: untangle-linux-2.6.16-ck11-config
+Provides: untangle-linux-2.6.16-ck11-config, untangle-linux-config
+Depends: linux-image-2.6.22-14-untangle | linux-image-2.6.22-14-virtual-untangle, linux-ubuntu-modules-2.6.22-14-untangle | linux-ubuntu-modules-2.6.22-14-virtual-untangle, grub, initramfs-tools, udev, e2fsprogs, bash (>= 3.1), mount (>= 2.12)
+Description: The Untangle kernel config
+ The Untangle kernel config for 2.6.22.
+

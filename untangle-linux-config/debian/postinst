@@ -1,0 +1,87 @@
+#!/bin/sh
+
+KVER=2.6.22
+KUVER=14
+
+# Prefer the virtual kernel, if installed.
+flavor="${KVER}-${KUVER}-virtual-untangle"
+if [ ! -f "/boot/vmlinuz-$flavor" ]; then
+    flavor="${KVER}-${KUVER}-untangle"
+fi
+
+ln -sf boot/vmlinuz-$flavor /vmlinuz-ut
+ln -sf vmlinuz-$flavor /boot/vmlinuz-ut
+ln -sf initrd.img-$flavor  /boot/initrd.img
+
+if [ -x /etc/init.d/untangle-vm ]; then
+    uvm-restart reboot
+elif [ -x /etc/init.d/mvvm ]; then
+    mvvm-restart reboot
+fi
+
+# Need to turn this from pre-5.1:
+#- /dev/sda1 / ext3 defaults,errors=panic 0 1
+#- /dev/sda2 none swap defaults 0 0
+# into this:
+#+ # /dev/sda1
+#+ UUID=8ca2c48a-348e-4a9d-bf92-445c7b5fbd86 / ext3 defaults,errors=panic 0 1
+#+ # /dev/sda2
+#+ UUID=8ca2c48a-348e-4a9d-bf92-445c7b5fbd86 none swap defaults 0 0
+root=
+if [ -f /etc/mtab ]; then
+    root=`awk '/[ \t]+\/[ \t]+/ {print $1}' /etc/mtab`
+fi
+if [ -z "$root" -a -f /etc/fstab ]; then
+    # Special handling for install-time when /etc/mtab isn't valid
+    root=`awk '/[ \t]+\/[ \t]+/ {print $1}' /etc/fstab`
+fi
+
+# If we couldn't find a root, don't bother with the rest as we must
+# be in some fake install time.
+if [ -n "$root" ]; then
+
+    case "$root" in /dev/*)
+        rootuuid=`/lib/udev/vol_id -u $root`
+        if [ -z "$rootuuid" ]; then
+	    rootuuid=`uuidgen`
+            # FIXME: Only works for ext2/ext3
+            echo "No root UUID found, making one"
+	    tune2fs -U "$rootuuid" $root
+        fi
+################
+# NOTE: The whitespace here is VERY IMPORTANT as it keeps Knoppix from
+# screwing us.  Don't "clean up" this script.  You've been warned.
+################
+        sed -r -i -e "s:^${root}[ \t]+/[ \t]+ext3.*:# $root entry by Untangle\nUUID=$rootuuid  /  ext3  defaults,errors=panic 0 1:" /etc/fstab
+        ;;
+    esac
+
+    swaps=`awk '/partition/ {print $1}' /proc/swaps`
+    if [ -n "$swaps" ]; then
+        for swap in `echo $swaps`; do
+            case "$swap" in /dev/*)
+                swapuuid=`/lib/udev/vol_id -u $swap`
+                if [ -z "$swapuuid" ]; then
+                    echo "No swap UUID found, making one"
+                    mkswap "$swap"
+                fi
+                swapuuid=`/lib/udev/vol_id -u $swap`
+                if [ -n "$swapuuid" ]; then
+                    sed -r -i -e "s:^${swap}[ \t]+none[ \t]+swap.*:\n# $swap entry by Untangle\nUUID=$swapuuid  none  swap  defaults 0 0:" /etc/fstab
+                fi
+                ;;
+            esac
+        done
+    fi
+
+    # Update the initrd since we added bootsplash.
+    depmod -a ${flavor}
+    update-initramfs -t -u -k ${flavor}
+
+    # Replace menu.lst
+    # if [ ! -f /boot/grub/menu.lst ] || [ `grep title /boot/grub/menu.lst | wc -l` != 2 ] ; then
+    [ -f /boot/grub/menu.lst-pre-untangle ] || cp /boot/grub/menu.lst /boot/grub/menu.lst-pre-untangle
+    sed -e "s/@ROOTUUID@/$rootuuid/" /usr/share/untangle-linux-${KVER}-config/menu.lst > /boot/grub/menu.lst
+fi
+
+exit 0
