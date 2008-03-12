@@ -137,40 +137,34 @@ EOF
     end
 
     gw = static.default_gateway
-    gateway_string = ""
+    
+    ## Convert gw to a one element array, this way the helper functions bridgeSettings and
+    ## append_ip_networks can modify it.
     if ( interface.wan && !gw.nil? && !gw.empty? )
-      gateway_src = nil
-
-      ## Iterate the ip networks and find the first one that matches the default gateway.
-      gateway = IPAddr.parse( gw )
-      
-      gateway_string = "\tgateway #{gw}\n" 
-      ip_networks.each do |ipn|
-        n = IPAddr.parse( "#{ipn.ip}/#{ipn.netmask}" )
-        next if n.nil?
-        ## include is nil safe just in case gateway is nil
-        if n.include?( gateway )
-          gateway_string = "\tpost-up ip route add to default src #{ipn.ip} nexthop via #{gw}"
-          break
-        end
-      end      
+      ## Parse the gateway verifying that it is a valid IP address.
+      gw = ( IPAddr.parse( gw ).nil? ) ? [] : [ gw ]
+    else
+      gw = []
     end
 
     ## This will automatically remove the first ip_network if it is assigned to the bridge.
-    bridge = bridgeSettings( interface, static.mtu, "manual", true, ip_networks )
+    bridge = bridgeSettings( interface, static.mtu, "manual", true, ip_networks, gw )
+
+    is_bridge = bridge.empty?
+    bridge = bridge.strip
     
     mtu = mtuSetting( static.mtu )
     
     ## set the name
     ## Clear the MTU because that is set in the bridge
-    name, mtu = OSLibrary::Debian::NetworkManager.bridge_name( interface ), nil unless bridge.empty?
+    name, mtu = OSLibrary::Debian::NetworkManager.bridge_name( interface ), nil unless is_bridge
     
     ## Configure each IP and then join it all together with some newlines.
-    bridge += "\n" + append_ip_networks( ip_networks, name, mtu, !bridge.empty? )
+    bridge += "\n\n" + append_ip_networks( ip_networks, name, mtu, !is_bridge, gw )
 
-    ## Append the gateway at the end, this way if one of the aliases
-    ## is routed to the gateway it will still work.
-    "\n" + bridge.strip + "\n" + gateway_string
+    ## Append the gateway if none of the values matched it(if one took
+    ## it, or this isn't WAN, gw is an empty array.
+    "\n" + bridge.strip + "\n" + gw.map { |g| "\tgateway #{g}" }.join
   end
 
   def dynamic( interface, dynamic )
@@ -221,8 +215,10 @@ EOF
   ## These are the settings that should be appended to the first
   ## interface index that is inside of the interface (if this is in fact a bridge)
   ## @param bridge_self Should be set to true unless the interface
+  ## @gw_array An array which can be used to append the default gateway if it lines up
+  ## with this ip network.  If it is used, then the address is automatically removed from the array.
   ## shouldn't be bridged with itself
-  def bridgeSettings( interface, mtu, config_method, bridge_self, ip_networks = [] )
+  def bridgeSettings( interface, mtu, config_method, bridge_self, ip_networks = [], gw_array = [] )
     bridged_interfaces = interface.bridged_interface_array
     ## If this is nil or empty, it is not a bridge.    
     return "" if ( bridged_interfaces.nil? || bridged_interfaces.empty? )
@@ -252,6 +248,9 @@ EOF
 \taddress #{primary_network.ip}
 \tnetmask #{OSLibrary::NetworkManager.parseNetmask( primary_network.netmask)}
 EOF
+      
+      ## Check to append the default gateway
+      configuration += handle_default_gateway( primary_network, gw_array )
     end
 
     return configuration
@@ -297,7 +296,7 @@ EOF
   end
 
 
-  def append_ip_networks( ip_networks, name, mtu_string, start_with_alias )
+  def append_ip_networks( ip_networks, name, mtu_string, start_with_alias, gw_array = [] )
     ## this determines whether the indexing should start with an alias.
     ## mtu never applies to an alias.
     i, mtu_string = ( start_with_alias ) ? [ 0, nil ] : [ nil, mtu_string ]
@@ -314,9 +313,10 @@ iface #{ip_network_name} inet static
 EOF
 
       base += mtu_string + "\n" unless mtu_string.nil?
+      base += handle_default_gateway( ip_network, gw_array )
       mtu_string = nil
       
-      base
+      base.strip + "\n"
     end.join( "\n" )
   end
 
@@ -405,5 +405,21 @@ EOF
     return false if ( ip_network.netmask == "0.0.0.0" )
 
     true
+  end
+
+  ## Return the configuration string for the gateway if it falls into the
+  ## range for this ip network.  This also removes the default gateway
+  ## from the array so it cannot be used by subsequent aliaes.
+  def handle_default_gateway( ip_network, gw_array )
+    gateway = gw_array[0]
+    unless gateway.nil?
+      ipn = IPAddr.parse( "#{ip_network.ip}/#{ip_network.netmask}" )
+      if ( ipn.include?( IPAddr.parse( gateway )))
+        gw_array.delete_at(0)
+        return "\tgateway #{gateway}"
+      end
+    end
+
+    ""
   end
 end

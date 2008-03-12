@@ -60,7 +60,7 @@ module NetworkHelper
     s = interface.intf_static
     static = nil
 
-    if interface.config_type == InterfaceHelper::ConfigType::DYNAMIC && !dhcp_status.nil?
+    if (( interface.config_type == InterfaceHelper::ConfigType::DYNAMIC ) && !dhcp_status.nil? )
       static = StaticConfig.new( dhcp_status.ip, dhcp_status.netmask, dhcp_status.default_gateway, 
                                  dhcp_status.dns_1, dhcp_status.dns_2 )
     elsif s.nil?
