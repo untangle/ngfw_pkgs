@@ -7,7 +7,8 @@ Standards-Version: 3.7.2
 
 Package: untangle-system-config
 Architecture: all
-Depends: untangle-vm, untangle-linux-config
+Depends: untangle-vm, untangle-linux-config (>= 5.1.1~svn20080311)
 Description: The Untangle system config
  The Untangle system configurator.  Top level configurations not belonging in
- a more specific configurator are here. 
+ a more specific configurator are here.  Also if this package is present at
+ first Untangle boot, auto-upgrade will default to on.

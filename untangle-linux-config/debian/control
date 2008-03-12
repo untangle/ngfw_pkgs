@@ -10,7 +10,6 @@ Architecture: any
 Conflicts: untangle-linux-2.6.22-config
 Replaces: untangle-linux-2.6.22-config
 Provides: untangle-linux-2.6.22-config
-Depends: linux-untangle | linux-virtual-untangle, grub, initramfs-tools, udev, e2fsprogs, bash (>= 3.1)
+Depends: linux-untangle | linux-virtual-untangle, untangle-bootsplash, grub, initramfs-tools, udev, e2fsprogs, bash (>= 3.1)
 Description: The Untangle kernel config
  The Untangle Linux kernel config package. Provides bootsplash support and grub auto configuration
-

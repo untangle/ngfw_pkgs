@@ -4,14 +4,12 @@
 # kernel is installed.  Thus this package should only be revved when you want a reboot.
 if [ -x /etc/init.d/untangle-vm ]; then
     uvm-restart reboot
-elif [ -x /etc/init.d/mvvm ]; then
-    mvvm-restart reboot
 fi
 
 # Clean up stuff left around by old version
 rm -f /boot/vmlinuz-ut
 rm -f /boot/vmlinuz
-rm -f /boot/initrd.img
+# rm -f /boot/initrd.img
 
 root=
 if [ -f /etc/mtab ]; then
@@ -42,9 +40,9 @@ if [ -n "$root" ]; then
             ;;
     esac
 
-    # Update the initrd since we added bootsplash.
     # depmod -a ${flavor}
-    # update-initramfs -t -u -k ${flavor}
+    # Update the initrd since we added bootsplash.
+    update-initramfs -t -u
 
     # Replace menu.lst
     # if [ ! -f /boot/grub/menu.lst ] || [ `grep title /boot/grub/menu.lst | wc -l` != 2 ] ; then
@@ -54,6 +52,7 @@ if [ -n "$root" ]; then
     else
         [ -f /boot/grub/menu.lst-pre-untangle ] || cp /boot/grub/menu.lst /boot/grub/menu.lst-pre-untangle
         sed -e "s/@ROOTDEV@/$rootdev/" /usr/share/untangle-linux-config/menu.lst > /boot/grub/menu.lst
+        /usr/sbin/update-grub
     fi
 fi
 
