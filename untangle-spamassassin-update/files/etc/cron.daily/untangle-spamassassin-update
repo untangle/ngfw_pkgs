@@ -4,7 +4,7 @@
 /usr/share/untangle-spamassassin-update/sa-fetch-keys.sh
 
 if [ -x /usr/bin/sa-update ]; then
-    /usr/bin/sa-update --channelfile /usr/share/untangle-spamassassin-update/sa-update-channels.txt --gpgkey 856AA88A
+    /usr/bin/sa-update --channelfile /usr/share/untangle-spamassassin-update/sa-update-channels.txt
 fi
 
 # restart spamassassin
