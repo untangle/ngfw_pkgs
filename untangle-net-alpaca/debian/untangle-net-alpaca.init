@@ -33,7 +33,7 @@ fi
 ## Just to guarantee that at least one nonce exist
 /etc/cron.hourly/rebuild-nonce
 
-sanity-check() {
+sanitycheck() {
   [ -f ${MONGREL_PID_FILE} ] && [ ! -d /proc/`cat ${MONGREL_PID_FILE}` ] && rm -f ${MONGREL_PID_FILE}
 }
 
@@ -70,7 +70,7 @@ stop()
 
 case "$1" in
     start)
-        sanity-check
+        sanitycheck
         start
         ;;
     stop)
