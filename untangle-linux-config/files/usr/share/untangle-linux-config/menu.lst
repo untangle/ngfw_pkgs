@@ -20,7 +20,7 @@ default     saved
 ## timeout sec
 # Set a timeout, in SEC seconds, before automatically booting the default entry
 # (normally the first entry defined).
-timeout     8
+timeout     5
 
 # Use the Untangle splash for the grub menu
 splashimage=(hd0,0)/boot/grub/mvsplash.xpm.gz
