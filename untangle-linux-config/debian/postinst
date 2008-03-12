@@ -50,6 +50,7 @@ if [ -n "$root" ]; then
         # need to run update?
         echo "Untangle /boot/grub/menu.lst already installed."
     else
+        echo "Installing Untangle /boot/grub/menu.lst."
         [ -f /boot/grub/menu.lst-pre-untangle ] || cp /boot/grub/menu.lst /boot/grub/menu.lst-pre-untangle
         sed -e "s/@ROOTDEV@/$rootdev/" /usr/share/untangle-linux-config/menu.lst > /boot/grub/menu.lst
         /usr/sbin/update-grub
