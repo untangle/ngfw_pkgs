@@ -1,3 +1,9 @@
+untangle-spamassassin-update (5.1.0.1-1sarge) thunderbird; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@debian.org>  Wed, 12 Mar 2008 17:07:58 -0700
+
 untangle-spamassassin-update (5.0.1-1) mustang-1; urgency=low
 
   * auto build
