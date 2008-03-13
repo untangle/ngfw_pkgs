@@ -1,10 +1,13 @@
 #! /bin/bash
 
 # attempt to fetch the GPG keys anyway
-/usr/share/untangle-spamassassin-update/sa-fetch-keys.sh
+. /usr/share/untangle-spamassassin-update/sa-fetch-keys.sh
+
+# SARE fingerprint
+SARE_FINGERPRINT=`gpg ${SARE_GPG_KEY} | awk '/pub/ {gsub(/.*\//, "", $2) ; print $2}'`
 
 if [ -x /usr/bin/sa-update ]; then
-    /usr/bin/sa-update --channelfile /usr/share/untangle-spamassassin-update/sa-update-channels.txt
+    /usr/bin/sa-update --channelfile /usr/share/untangle-spamassassin-update/sa-update-channels.txt --gpgkey $SARE_FINGERPRINT
 fi
 
 # restart spamassassin
