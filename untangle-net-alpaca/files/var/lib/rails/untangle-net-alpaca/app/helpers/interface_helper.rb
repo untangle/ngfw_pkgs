@@ -95,10 +95,7 @@ module InterfaceHelper
 
     ia = networkManager.interfaces
 
-    raise "Unable to detect any interfaces" if ia.nil?
-    
-    ## True iff the list found a WAN interface.
-    foundWAN = false
+    raise "Unable to detect any interfaces" if ( ia.nil? || ia.empty? )
 
     ia.each do |i| 
       interface = Interface.new
@@ -117,7 +114,6 @@ module InterfaceHelper
 
       if ( interface.index == 1 )
         interface.wan = true
-        foundWAN = true
       else
         interface.wan = false
       end
@@ -125,10 +121,6 @@ module InterfaceHelper
       ## Add the interface.
       interfaceArray << interface
     end
-
-    ## If it hasn't found the WAN interface, set the one with the lowest index
-    ## to the WAN interface.
-    interfaceArray.min { |a,b| a.index <=> b }.wan = true unless foundWAN
 
     interfaceArray
   end
