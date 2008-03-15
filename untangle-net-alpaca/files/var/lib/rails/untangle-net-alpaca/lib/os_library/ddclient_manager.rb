@@ -154,10 +154,12 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
 
   def disable_ddclient
     run_command( DdclientRcdRemove )
+    run_command( DdclientCmdStop )
   end
 
   def disable_noip
     run_command( NoipRcdRemove )
+    run_command( NoipCmdStop )
   end
 
   def header

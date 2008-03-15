@@ -6,6 +6,20 @@ current_hostname=`hostname`
 MARKER="hostname.marker.untangle.com"
 OLD_MARKER="ut-marker.example.com"
 
+## Grab the domain name
+get_domain_name()
+{
+    local t_domain_name
+    t_domain_name=`awk '/^\s*search/ { print $2 ; exit }' /etc/resolv.conf`
+    [ -n "${t_domain_name}" ] && {
+        echo ${t_domain_name}
+        return
+    }
+
+    ## Otherwise, try to get it out of /etc/dnsmasq.conf
+    awk '/domain=/ { sub( "domain=", "" ); print $0; exit }; /domain-suffix=/ { sub( "domain-suffix=", "" ); print $0; exit }' '/etc/dnsmasq.conf'
+}
+
 update_hosts()
 {
     local t_address
@@ -29,8 +43,13 @@ fi
 
 short_name=${current_hostname%%.*}
 
-if [ "${short_name}x" != "${current_hostname}x" ]; then
-    current_hostname="${short_name} ${current_hostname}" ;
+if [ "${short_name}x" = "${current_hostname}x" ]; then
+    ## Hostname is unqualified, append the domain name.
+    domain_name=`get_domain_name`
+    [ -n "${domain_name}" ] && current_hostname="${current_hostname} ${short_name}.${domain_name}"
+else
+    ## Hostname is qualified, append the short name as well.
+    current_hostname="${short_name} ${current_hostname}"
 fi
 
 update_hosts

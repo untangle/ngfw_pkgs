@@ -12,6 +12,20 @@ get_addresses()
     ip addr show | awk '/^[0-9]/ { current_intf=$2 } ; /inet/ { ip = $2 ; sub( /\/.*$/, "", ip ) ; if ( current_intf != "dummy0:" && current_intf != "utun:" && current_intf != "lo:" ) print ip  }'
 }
 
+## Grab the domain name
+get_domain_name()
+{
+    local t_domain_name
+    t_domain_name=`awk '/^\s*search/ { print $2 ; exit }' /etc/resolv.conf`
+    [ -n "${t_domain_name}" ] && {
+        echo ${t_domain_name}
+        return
+    }
+
+    ## Otherwise, try to get it out of /etc/dnsmasq.conf
+    awk '/domain=/ { sub( "domain=", "" ); print $0; exit }; /domain-suffix=/ { sub( "domain-suffix=", "" ); print $0; exit }' '/etc/dnsmasq.conf'
+}
+
 
 pppoe_interface()
 {
@@ -88,8 +102,13 @@ fi
 
 short_name=${current_hostname%%.*}
 
-if [ "${short_name}x" != "${current_hostname}x" ]; then
-    current_hostname="${short_name} ${current_hostname}" ;
+if [ "${short_name}x" = "${current_hostname}x" ]; then
+    ## Hostname is unqualified, append the domain name.
+    domain_name=`get_domain_name`
+    [ -n "${domain_name}" ] && current_hostname="${current_hostname} ${short_name}.${domain_name}"
+else
+    ## Hostname is qualified, append the short name as well.
+    current_hostname="${short_name} ${current_hostname}"
 fi
 
 update_dnsmasq_hosts

@@ -79,7 +79,7 @@ class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
 
   def hook_run_services
     ## Restart networking
-    raise "Unable to reconfigure network and route settings." unless run_command( "sh #{Service} restart" ) == 0
+    raise "Unable to reconfigure network and route settings." unless run_command( "#{Service} restart" ) == 0
   end
 
   def header
