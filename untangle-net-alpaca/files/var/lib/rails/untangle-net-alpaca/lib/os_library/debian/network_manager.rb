@@ -34,7 +34,7 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
 
     interfaceArray = []
 
-    devices=`cd #{NetClassDir};echo */device | sed 's|/device||g'`.split
+    devices=`cd #{NetClassDir};echo */device | sed 's|/device||g' | sort`.split
 
     devices.each do |os_name|
 
@@ -66,6 +66,8 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
     
     interfaces = Interface.find( :all )
     interfaces.each do |interface|
+      next unless interface.is_mapped?
+
       config = interface.current_config
       ## REVIEW refactor me.
       case config

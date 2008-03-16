@@ -17,6 +17,11 @@
 #
 
 class Interface < ActiveRecord::Base
+  ## This is the os_name used for the magic no-interface.  This is
+  ## a placeholder so the user can remove an interface without losing
+  ## their settings for the internal or external interface.
+  Unmapped = "nointerface"
+
   ## Link for a static configuration
   has_one :intf_static, :dependent => :destroy
   
@@ -79,14 +84,10 @@ class Interface < ActiveRecord::Base
 
     ## Check if this is in a configuration that is bridgeable.
     return false unless InterfaceHelper::BRIDGEABLE_CONFIGTYPES.include?( self.config_type )
-    
-    ## Otherwise grab all of the bridged interfaces and check if any of them
-    ## are actually configured as bridges
-    bi = self.bridged_interfaces.map{ |ib| ib.interface }
-    bi = bi.delete_if { |ib| ib.nil? || ib.config_type != InterfaceHelper::ConfigType::BRIDGE }
-    
+
+    bia = self.bridged_interface_array
     ## If there are any entries, then this is a bridge
-    ( bi.nil? || bi.empty? ) ? false : true
+    ( bia.nil? || bia.empty? ) ? false : true
   end
 
   
@@ -98,14 +99,19 @@ class Interface < ActiveRecord::Base
 
     ## bridge interface array (creating a copy)
     bia = [ self.bridged_interfaces ].flatten
-
+    
     bia = [] if bia.nil?
     
     ## Create a new set of bridged interfaces
     bia = bia.map { |ib| ib.nil? ? nil : ib.interface }
     
     ## Delete all of the nil interfaces and the ones where the bridge type isn't set properly.
-    bia = bia.delete_if { |ib| ib.nil? || ib.config_type != InterfaceHelper::ConfigType::BRIDGE }
+    bia = bia.delete_if do |i| 
+      next true if i.nil? 
+      next true unless i.is_mapped?
+      next true unless ( i.config_type == InterfaceHelper::ConfigType::BRIDGE )
+      false
+    end
 
     ## If this is nil or empty, it is not a bridge.
     bia
@@ -165,14 +171,17 @@ class Interface < ActiveRecord::Base
     return carrier
   end
 
+  ## REVIEW : This should be inside of the network_manager since it may be os dependent.
   def interface_status
     return `/usr/share/untangle-net-alpaca/scripts/get-interface-status #{self.os_name}`
   end
 
+  ## REVIEW : This should be inside of the network_manager since it may be os dependent.
   def current_mtu
-    mtu_line = `ifconfig #{self.os_name} | grep MTU`
-    after_label = mtu_line.split("MTU:")[1]
-    mtu = after_label.split(" ")[0]
+    mtu_file = "/sys/class/net/#{self.os_name}/mtu"
+    
+    mtu = `cat #{mtu_file}` if ( File.exists?( mtu_file ))
+    mtu = 1500 if ( mtu.nil? || mtu.empty? )
     return mtu
   end
 
@@ -187,5 +196,8 @@ class Interface < ActiveRecord::Base
     return address
   end
 
-
+  ## Returns true if the interface is mapped to an interface.
+  def is_mapped?
+    return os_name != Unmapped
+  end
 end

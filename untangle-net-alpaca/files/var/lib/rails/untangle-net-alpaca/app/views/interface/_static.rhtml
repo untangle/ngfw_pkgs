@@ -52,7 +52,7 @@ rowId="ip-row-#{rand( 0x100000000 )}"
           <%= text_field( "static", "dns_2", :value => dns_2 ) %>
         </li>
         <li>
-          <label for="static_mtu"><%= "MTU (#{@interface.current_mtu}):".t %></label>
+          <label for="static_mtu"><%= "MTU (%s):".t / @interface.current_mtu %></label>
           <%= text_field( "static", "mtu", { :class => "number" } ) %>
         </li>
         <li>

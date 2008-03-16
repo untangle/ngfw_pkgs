@@ -76,7 +76,7 @@ class UvmController < ApplicationController
   def write_files
     ## Load all of the interfaces if the settings haven't been initialized yet.
     if ( Interface.find( :first ).nil? )
-      new_interfaces, deleted_interfaces = InterfaceHelper.load_new_interfaces
+      new_interfaces = InterfaceHelper.loadInterfaces
       new_interfaces.each { |i| i.save }
     end
 

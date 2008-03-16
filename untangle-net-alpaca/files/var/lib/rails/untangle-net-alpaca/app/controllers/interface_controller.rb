@@ -29,14 +29,17 @@ class InterfaceController < ApplicationController
     @title = "Interface List"
     @description = "List of all of the available interfaces."
 
-    @new_interfaces, @deleted_interfaces = InterfaceHelper.load_new_interfaces
+    @new_interfaces = []
+    @deleted_interfaces = []
     
     @interfaces = Interface.find(:all)
 
-    if ( @interfaces.nil? || @interfaces.empty? )       
+    if ( @interfaces.nil? || @interfaces.empty? )
       @interfaces = InterfaceHelper.loadInterfaces
       ## Save all of the new interfaces
       @interfaces.each { |interface| interface.save }
+    else
+      @new_interfaces, @deleted_interfaces = InterfaceHelper.load_new_interfaces
     end
 
     @interfaces.sort! { |a,b| a.index <=> b.index }
@@ -115,7 +118,13 @@ class InterfaceController < ApplicationController
       i = Interface.find( original_id )
       logger.debug( "Remapping #{i} to #{physicalData[order_id]}" )
       i.os_name, i.mac_address, i.bus, i.vendor = physicalData[order_id]
-      i.save
+
+      ## Delete all non-critical unmapped interfaces.
+      unless ( InterfaceHelper.is_critical_interface( i ) || i.is_mapped? )
+        i.destroy
+      else
+        i.save
+      end
     end
 
     ## Actually commit the changes

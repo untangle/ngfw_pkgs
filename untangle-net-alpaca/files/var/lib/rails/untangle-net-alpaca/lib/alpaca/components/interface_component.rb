@@ -26,18 +26,20 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
   end
 
   class InterfaceStage < Alpaca::Wizard::Stage
-    def initialize( id, interface, wan )
-      name = InterfaceHelper::DefaultInterfaceMapping[interface.os_name]
-      name = [ interface.os_name ] if name.nil?
-      name = name[0]
-      super( id, name, 300 )
-      @interface, @wan = interface, wan
+    def initialize( id, interface )
+      super( id, interface.name, 300 )
+      @interface = interface
     end
 
     def partial
       "interface_config"
     end
-    attr_reader :interface, :wan
+    
+    def wan
+      @interface.wan
+    end
+
+    attr_reader :interface
   end
 
   class InterfaceReview
@@ -50,8 +52,6 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
 
   ## Register all of the menu items.
   def register_menu_items( menu_organizer, config_level )
-    #return unless ( config_level >= AlpacaSettings::Level::Advanced )
-
     menu_organizer.register_item( "/main/interfaces", menu_item( 100, "Interfaces", :action => "list" ))
     
     ## Retrieve all of the interfaces
@@ -66,28 +66,16 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
 
   ## Insert the desired stages for the wizard.
   def wizard_insert_stages( builder )
-    interface_list = os["network_manager"].interfaces
+    interface_list = Array.new( InterfaceHelper.loadInterfaces )
 
-    ## Sort the interface list
-    interface_list.sort! do |a,b|
-      a_mapping = InterfaceHelper::DefaultInterfaceMapping[a.os_name]
-      b_mapping = InterfaceHelper::DefaultInterfaceMapping[b.os_name]
-      
-      next a.os_name <=> b.os_name if ( a_mapping.nil? && b_mapping.nil? )
-      next -1 if !a_mapping.nil? && b_mapping.nil?
-      next 1 if a_mapping.nil? && !b_mapping.nil?
-
-      ## Both are non-nil
-      a_mapping[1] <=> b_mapping[1]
-    end
-
+    interface_list.delete_if { |interface| !interface.is_mapped? }
+    
     ## Register the detection stage
     builder.insert_piece( InterfaceTestStage.new( interface_list ))
 
     ## Register all of the interfaces
-    index = 0
-    interface_list.each do |interface| 
-      s = InterfaceStage.new( "interface-config-#{index+=1}", interface, index == 1 )
+    interface_list.each do |interface|
+      s = InterfaceStage.new( "interface-config-#{interface.index}", interface )
       builder.insert_piece( s )
     end
   end
@@ -163,7 +151,7 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
     raise "Invalid interface list" if ( interfaceList.nil?  || interfaceList.empty? )
 
     ## These are all of the interfaces that are presently available
-    interfaces = Alpaca::OS.current_os["network_manager"].interfaces
+    interfaces = InterfaceHelper.loadInterfaces
     
     ## This is the list of ruby objects to be saved
     n_interfaceList = []
@@ -191,19 +179,12 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
       ## interface is some gnarsty key
       ## REVIEW : move this into the validate side.
       raise "Unknown interface #{interface} '#{os_name}' '#{name}'" if ( os_name.nil? || name.nil? )
-      
-      a = interfaces.select { |intf| intf.os_name == os_name }
-      raise "The interface #{os_name} is not available" if ( a.empty? || ( a.size > 1 ))
-      a = a[0]
-      
-      interfaces.delete( a )
 
-      n_intf = Interface.new
-      
-      ## Setup all of the parameters about the interface
-      n_intf.name, n_intf.index, n_intf.os_name = name, index += 1, os_name
-      n_intf.mac_address, n_intf.bus, n_intf.vendor = a.mac_address, a.bus_id, a.vendor
-      n_intf.wan = ( n_intf.index == 1 )
+      a = interfaces.select { |intf| ( intf.os_name == os_name ) && ( intf.name == name ) }
+      raise "The interface #{os_name}, #{name} is not available" if ( a.size != 1 )
+      ## Remove this interface
+      interfaces  = interfaces - a
+      n_intf = a[0]
       
       ## Set the configuration
       case config_type
@@ -213,6 +194,18 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
       ## REVIEW : Move this into the validation part
       else raise "Unknown configuration type #{config_type}"  
       end
+    end
+    
+    ## Search for the remaining interfaces.
+    interfaces.each do |interface|
+      if ( interface.is_mapped? )
+        raise "The interface #{interface.name}, #{interface.os_name} was not configured in the wizard"
+      end
+      
+      ## Otherwize, just set it to static and save.
+      interface.config_type = InterfaceHelper::ConfigType::STATIC
+      interface.intf_static = IntfStatic.new
+      interface.save
     end
   end
 
@@ -263,10 +256,10 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
   def bridge( interface, interface_stage_id )
     bridge = IntfBridge.new
     os_name = params["#{interface_stage_id}-bridge.bridge_interface"]
-    return logger.warn( "Bridge interface is not specified" ) if os_name.nil?
+    raise "Bridge interface is not specified" if os_name.nil?
     
     bridge_interface = Interface.find( :first, :conditions => [ "os_name = ?", os_name ] )
-    return logger.warn( "Unable to find the interface '#{os_name}'" ) if bridge_interface.nil?
+    raise "Unable to find the interface '#{os_name}'" if bridge_interface.nil?
     
     bridge.bridge_interface = bridge_interface
     bridge_interface.bridged_interfaces << bridge

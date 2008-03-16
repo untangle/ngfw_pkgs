@@ -247,10 +247,32 @@ class NetworkController < ApplicationController
     end
     
     ## Destroy the interfaces to be deleted.
-    deleted_interfaces.each { |i| i.destroy }
+    deleted_interfaces.each do |i| 
+      if ( InterfaceHelper.is_critical_interface( i ))
+        ## Critical interfaces are not deleted, they are just set to the no-interface
+        i.os_name, i.mac_address, i.bus, i.vendor = Interface::Unmapped, "", "", "n/a"
+        i.save
+      else
+        i.destroy
+      end
+    end
+
+    ## This is the array of critical interfaces that haven't been assigned to a phyiscal interface
+    conditions =  [ "os_name = ?", Interface::Unmapped ]
+    unmapped_interfaces = Interface.find( :all, :conditions => conditions )
     
-    ## Save the interfaces that are 
-    new_interfaces.each{ |i| i.save }
+    ## Create the new interfaces
+    new_interfaces.each do |i|
+      unless unmapped_interfaces.empty?
+        ## Map the first unmapped interface
+        ui = unmapped_interfaces.delete_at( 0 )
+        ui.os_name, ui.mac_address, ui.bus, ui.vendor = i.os_name, i.mac_address, i.bus, i.vendor
+        ui.save
+      else
+        ## Otherwise just create a new interface.
+        i.save
+      end
+    end
     
     ## Iterate all of the helpers telling them about the new interfaces
     iterate_components do |component|
