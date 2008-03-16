@@ -1,15 +1,20 @@
 #!/bin/sh
 
+LOG_FILE=/var/log/untangle-net-alpaca/alpaca-upgrade.log
+
+mkdir -p `dirname ${LOG_FILE}`
+
+echo "[`date`] DEBUG debian upgrade." >> ${LOG_FILE}
+
 ## Create a new group for alapca users
 grep -q alpaca /etc/group || addgroup alpaca
 
-if [ -x "/etc/init.d/untangle-net-alpaca" ]; then
-    update-rc.d untangle-net-alpaca defaults >/dev/null
-    /etc/init.d/untangle-net-alpaca restart || exit 0
-fi
-
-
 ## Make the dnsmasq script executable.
 [ -f "/etc/untangle-net-alpaca/scripts/dnsmasq" ] && chmod +x /etc/untangle-net-alpaca/scripts/dnsmasq
+
+if [ -x "/etc/init.d/untangle-net-alpaca" ]; then
+    update-rc.d untangle-net-alpaca defaults >/dev/null
+    /etc/init.d/untangle-net-alpaca restart >> ${LOG_FILE} 2>&1 || exit 0
+fi
     
 exit 0
