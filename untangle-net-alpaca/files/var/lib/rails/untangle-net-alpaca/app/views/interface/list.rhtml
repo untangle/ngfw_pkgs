@@ -29,7 +29,7 @@
           <%= link_to_remote 'edit'.t, :update => "main-content", :url => { :action => "config", :id => interface } %>
         </td>
        <% end %>
-        <td><%= interface.name.t %></td>
+        <td><%= print_field( interface.name ).t %></td>
         <td><%= print_field( interface.config_type, "static" ).t %></td>
         <% if first %>
           <td id="interface-os-data" rowspan="<%= @interfaces.size %>">

@@ -179,16 +179,15 @@ module InterfaceHelper
         interface_hash[match.index] = nil
         interface_hash[index] = match
 
-        match.name = name
         match.index = index
-        name = InterfaceHelper.get_interface_name( match )
+        match.name = InterfaceHelper.get_interface_name( match )
         match.wan = ( index == ExternalIndex )
       end
       
       if ( interface_hash[index].nil? )
-        i = Interface.new( :os_name => Interface::Unmapped, :name => name, :vendor => "n/a" )
+        i = Interface.new( :os_name => Interface::Unmapped, :vendor => "n/a" )
         i.index = index
-        name = InterfaceHelper.get_interface_name( i )
+        i.name = InterfaceHelper.get_interface_name( i )
         i.wan = ( i.index == ExternalIndex )
         interfaceArray << i
       end
@@ -304,6 +303,8 @@ EOF
 
   ## Given an interface, set the name the interface should have.
   def self.get_interface_name( interface )
+    index = interface.index.to_i
+
     case interface.index
     when ExternalIndex then ExternalName
     when InternalIndex then InternalName
