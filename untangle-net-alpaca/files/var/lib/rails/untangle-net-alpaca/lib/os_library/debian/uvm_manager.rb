@@ -288,6 +288,8 @@ EOF
   def interface_property( interface )
     os_name = interface.os_name
 
+    os_name += interface.index.to_s unless interface.is_mapped?
+
     ## Always register the interface as ppp0 if this is for PPPoE
     os_name = "ppp0" if interface.config_type == InterfaceHelper::ConfigType::PPPOE
 
