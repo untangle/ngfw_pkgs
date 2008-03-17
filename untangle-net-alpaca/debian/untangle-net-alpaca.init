@@ -25,6 +25,8 @@ BIND_ADDRESS="127.0.0.1"
 ## rails environment, defaults to production
 MONGREL_ENV="production"
 
+MONGREL_LOG_FILE="/var/log/untangle-net-alpaca/mongrel.log"
+mkdir -p /var/log/untangle-net-alpaca/
 
 if [ -r /etc/default/$NAME ]; then
     . /etc/default/$NAME
@@ -56,7 +58,7 @@ start()
     
     ## The root handler is used to automatically redirect requests to /.
     ${MONGREL_RAILS} start -S ${BASE_DIR}/root-handler.conf -c ${BASE_DIR} -e ${MONGREL_ENV} \
-        ${MONGREL_ARGS} --prefix "/alpaca" -d
+        ${MONGREL_ARGS} --prefix "/alpaca" -d -l ${MONGREL_LOG_FILE}
 }
 
 stop()
