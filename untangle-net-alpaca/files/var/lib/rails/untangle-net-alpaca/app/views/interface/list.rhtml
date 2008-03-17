@@ -40,7 +40,7 @@
             <% for n_interface in @interfaces %>
               <li id="<%= n_interface.id %>">
                 <%= hidden_field_tag( "interfaceOrderList[]", n_interface.id ) %>
-		<%= n_interface.interface_status.gsub( /:* *unknown/,"" ) %><br />
+		<%= n_interface.interface_status.gsub( /:* *unknown/,"" ).gsub( /#{Interface::Unmapped}/, "none".t ) %><br />
                 <%= "#{mac_address_link( n_interface.mac_address, n_interface.vendor )}" %>
               </li>
             <% end %>
