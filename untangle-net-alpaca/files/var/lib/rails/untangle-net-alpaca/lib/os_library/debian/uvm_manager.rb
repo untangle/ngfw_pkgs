@@ -82,6 +82,17 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
   def hook_update_configuration
     run_command( UvmUpdateConfiguration )
   end
+
+  def activation_key()
+    key = "0000-0000-0000-0000"
+    begin
+        file = File.new("/usr/share/untangle/activation.key", "r")
+        key = file.gets
+        key.strip!
+    rescue => err
+    end
+    return key 
+  end
   
   private
   
