@@ -49,7 +49,7 @@ start()
     }
 
     ## Load the latest version of the schema
-    rake -s alpaca:init -s RAILS_ENV=${MONGREL_ENV} > ${MONGREL_LOG_FILE} 2>&1 || { 
+    rake -s alpaca:init -s RAILS_ENV=${MONGREL_ENV} >> ${MONGREL_LOG_FILE} 2>&1 || { 
         log_failure_msg "${NAME} could not load database schema ${BASE_DIR}"
         exit -2
     }
