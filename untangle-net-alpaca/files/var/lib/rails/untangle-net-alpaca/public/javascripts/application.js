@@ -332,6 +332,7 @@ Fabtabs.prototype = {
     getInitialTab : function() {
     	if(document.location.href.match(/(\w.+)/)) {
     	    var loc = RegExp.$1;
+	    loc = loc.replace(/\?.*/,"")
     	    var elm = this.menu.find(function(value) {
 		    var href = value.href.match(/(\w.+)/)[1];
 		    href = href.replace(/\/list/,"")
