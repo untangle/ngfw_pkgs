@@ -75,25 +75,37 @@ class NetworkController < ApplicationController
     ## Convert the interface ids to numbers
     interface_id_list = interface_id_list.map do |interface_id|
       i = interface_id.to_i
-      return redirect_to( :action => 'fail_0' ) if i.to_s != interface_id
+      if i.to_s != interface_id
+          flash[:error] = "Invalid interface id not found."
+          return redirect_to( :action => 'manage' ) 
+      end
       i
     end
 
     ## Verify the list exists.
-    return redirect_to( :action => 'fail_1' ) if interface_list.nil?
+    if interface_list.nil?
+        flash[:error] = "Invalid parameters, interface list missing."
+        return redirect_to( :action => 'manage' ) 
+    end
     
     ## Verify the list lines up with the existing interfaces
     interfaces = Interface.find( :all )
 
     ## Verify the list matches.
-    return redirect_to( :action => 'fail_2' ) if ( interfaces.size != interface_list.size )
+    if ( interfaces.size != interface_list.size )
+        flash[:error] = "Number of submitted interfaces does not match number of configured interfaces."
+        return redirect_to( :action => 'manage' )
+    end
 
     interface_map = {}
     interfaces = interfaces.each{ |interface| interface_map[interface.id] = interface }
     
     ## Verify every id is represented
     interface_id_list.each do |interface_id|
-      return redirect_to( :action => 'fail_4' ) if interface_map[interface_id].nil?
+      if interface_map[interface_id].nil?
+          flash[:error] = "Submitted request does not configure every known interface."
+          return redirect_to( :action => 'manage' ) 
+      end
     end
 
     ## This is where it gets a little hairy, because it should verify all

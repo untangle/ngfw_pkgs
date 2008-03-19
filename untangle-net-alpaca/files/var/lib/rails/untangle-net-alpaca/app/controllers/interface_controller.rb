@@ -271,11 +271,17 @@ class InterfaceController < ApplicationController
       
       bridge.update_attributes(params[:bridge])
       
-      break false if params[:bridge_interface].nil?
+      if params[:bridge_interface].nil?
+        flash[:error] = "Bridge To interface cannot be blank."
+        return redirect_to( :action => "config", :id => @interface.id ) 
+      end
       
       bridge_interface = Interface.find( params[:bridge_interface] )
       
-      break false if bridge_interface.nil?
+      if bridge_interface.nil?
+        flash[:error] = "Bridge To interface not found."
+        return redirect_to( :action => "config", :id => @interface.id )
+      end
 
       bridge.bridge_interface = bridge_interface
       bridge_interface.bridged_interfaces << bridge
