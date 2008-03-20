@@ -92,14 +92,40 @@ class DhcpController < ApplicationController
     ip_addresses = params[:ip_address]
     descriptions = params[:description]
 
+    seen_mac_addresses = []
+    seen_ip_addresses = []
+
+    errors = ""
+
     position = 0
     unless indices.nil?
       indices.each do |key|
+	if seen_mac_addresses.include?( mac_addresses[key] )
+          errors = errors + " Ignoring duplicate MAC address " + mac_addresses[key] + ". "
+          next
+	end
+
+	if seen_ip_addresses.include?( ip_addresses[key] )
+          errors = errors + " Ignoring duplicate IP address " + ip_addresses[key] + ". "
+	  next
+        end
+
         dse = DhcpStaticEntry.new
         dse.mac_address, dse.ip_address, dse.description = mac_addresses[key], ip_addresses[key], descriptions[key]
         dse.position, position = position, position + 1
         static_entry_list << dse
+
+        seen_mac_addresses << mac_addresses[key]
+        seen_ip_addresses << ip_addresses[key]
       end
+    end
+
+    if errors.length > 0
+	if ! flash.has_key?( :error )
+            flash[:error] = ""
+        end
+
+        flash[:error] = flash[:error] + errors
     end
 
     DhcpStaticEntry.destroy_all
