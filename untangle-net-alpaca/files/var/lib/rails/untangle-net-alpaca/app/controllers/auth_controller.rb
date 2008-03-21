@@ -67,8 +67,9 @@ class AuthController < ApplicationController
     ## Validate that the user is in the correct group.
     groups = AlpacaGroups
     groups = [ "root" ] if ( groups.nil? || groups.empty? )
-
-    if `groups #{username} | awk '/:.*(#{groups.join("|")})/ { print $1 }'`.strip.empty?
+    # Compatibility with <6.0 and >6.0 coreutils:
+    membergroups = `groups #{username}`.sub(/.*:/, "").split;
+    if (groups & membergroups).empty?
       ## Review: Should we send this message?
       return request_login( "'#{username}' is not allowed to administer the box." )
     end
