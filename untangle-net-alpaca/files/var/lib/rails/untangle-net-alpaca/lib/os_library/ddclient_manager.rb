@@ -94,7 +94,8 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
 
       protocol = ConfigService[settings.service][0]
       server = ConfigService[settings.service][1]
-      use = "if, if=" + wanInterface.os_name
+      key = os["uvm_manager"].activation_key()
+      use = "web, web=www.untangle.com/ddclient/ip.php?activation=#{key}, web-skip=''"
       if server.include?( 'dyndns.org' )
 	use = "web, web=checkip.dyndns.com/, web-skip='IP Address'"  
       end
@@ -154,10 +155,12 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
 
   def disable_ddclient
     run_command( DdclientRcdRemove )
+    run_command( DdclientCmdStop )
   end
 
   def disable_noip
     run_command( NoipRcdRemove )
+    run_command( NoipCmdStop )
   end
 
   def header

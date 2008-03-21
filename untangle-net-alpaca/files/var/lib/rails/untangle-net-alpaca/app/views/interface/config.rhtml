@@ -8,6 +8,7 @@
     end
   %>
   <div id="title"><h1><%= "Interface Configuration for %s".t / @interface.name %></h1></div>
+<%= handle_flash_messages %>
   <% form_tag( :action => 'intf_save_director', :id => @interface ) do -%>
   <div id="main-content-body"><div class="wrapper" id="interface">
     <fieldset class="config-type">

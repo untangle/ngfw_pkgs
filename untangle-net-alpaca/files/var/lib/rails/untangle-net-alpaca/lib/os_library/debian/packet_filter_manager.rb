@@ -166,14 +166,19 @@ EOF
 #{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwDrop | MarkFwInput}
 EOF
 
-    ## Chain where all of the Bypass Rules go (This shouldn't be  defined unless
-    ## There is a UVM, but it should only be a minor performance hit
-    BypassRules = Chain.new( "bypass-rules", "mangle", "PREROUTING", "" )
-
     ## Chain where traffic should go to be marked for bypass.
     BypassMark = Chain.new( "bypass-mark", "mangle", nil, <<'EOF' )
 ## Mark the packets
 #{IPTablesCommand} #{args} -j MARK --or-mark #{MarkBypass}
+## Connmark the packets
+#{IPTablesCommand} #{args} -j CONNMARK --set-mark #{MarkBypass}/#{MarkBypass}
+EOF
+
+    ## Chain where all of the Bypass Rules go (This shouldn't be  defined unless
+    ## There is a UVM, but it should only be a minor performance hit
+    BypassRules = Chain.new( "bypass-rules", "mangle", "PREROUTING", <<'EOF' )
+## Accept any packets that are connmarked with the bypass mark
+#{IPTablesCommand} #{args} -m connmark --mark #{MarkBypass}/#{MarkBypass} -g #{Chain::BypassMark}
 EOF
 
     ## Review : Should the Firewall Rules go before the redirects?

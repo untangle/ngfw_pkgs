@@ -82,6 +82,17 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
   def hook_update_configuration
     run_command( UvmUpdateConfiguration )
   end
+
+  def activation_key()
+    key = "0000-0000-0000-0000"
+    begin
+        file = File.new("/usr/share/untangle/activation.key", "r")
+        key = file.gets
+        key.strip!
+    rescue => err
+    end
+    return key 
+  end
   
   private
   
@@ -287,6 +298,8 @@ EOF
 
   def interface_property( interface )
     os_name = interface.os_name
+
+    os_name += interface.index.to_s unless interface.is_mapped?
 
     ## Always register the interface as ppp0 if this is for PPPoE
     os_name = "ppp0" if interface.config_type == InterfaceHelper::ConfigType::PPPOE

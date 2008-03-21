@@ -65,6 +65,10 @@ class Alpaca::ConfigurationLoader
       logger.debug( "Loading the interface: #{interface.os_name}" )
       os_name = interface_map[interface]
 
+      unless interface.is_mapped?
+        next interface.save
+      end
+
       ## This should be bridged to another interface
       if ( os_name.is_a?( Interface ))
         bridge_interface = os_name
@@ -166,7 +170,9 @@ class Alpaca::ConfigurationLoader
     os_name_map = {}
 
     ## Default to looking up by os_name
-    interface_array.each do |interface| 
+    interface_array.each do |interface|
+      next unless interface.is_mapped?
+
       logger.debug( "os_name_map[#{interface.os_name}] = #{interface}" )
       os_name_map[interface.os_name] = interface
     end
@@ -195,6 +201,8 @@ class Alpaca::ConfigurationLoader
     ## In the second pass, (use the interface array so it is sorted) and
     ## map the bridges to the first one that matches.
     interface_array.each do |interface|
+      next unless interface.is_mapped?
+
       bridge_name = interface_map[interface]
       ## Skip the interfaces that havent' been remapped.
       next if ( bridge_name.nil? )

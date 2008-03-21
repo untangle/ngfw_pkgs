@@ -1,14 +1,16 @@
 <div id="title"><h1><%= "Interfaces".t %></h1></div>
+<% 
+if ! @new_interfaces.empty? || ! @deleted_interfaces.empty?
+  flash[:warning] = link_to_remote( "Click here to configure changes to your interfaces.".t, options = { :url => { :controller => :network, :action => :refresh_interfaces }, :update => "main-content" } )
+end
+%>
 <%= handle_flash_messages %>
 <% form_tag( :action => 'intf_order_save' ) do -%>
   <div id="main-content-body"><div class="wrapper" id="interface">
-  <div id="interface-list">    
-<% if ! @new_interfaces.empty? || ! @deleted_interfaces.empty? %>
-<%= link_to_remote( "Examine detected physical interface changes.".t, options = { :url => { :controller => :network, :action => :refresh_interfaces }, :update => "main-content" } ) %> 
-<% end %>
-<div class="interface-buttons"><%= submit_to_remote( "Test Connectivity", "Test Connectivity".t, options = { :url => { :action => "test_internet_connectivity" }, :update => "main-content", :html => { :class => "test-connectivity" } } ) %>
+    <div id="interface-list">
+      <div class="interface-buttons"><%= submit_to_remote( "Test Connectivity", "Test Connectivity".t, options = { :url => { :action => "test_internet_connectivity" }, :update => "main-content", :html => { :class => "test-connectivity" } } ) %>
 <%= submit_to_remote( "Refresh", "Refresh".t, options = { :url => { :controller => :interface, :action => :list }, :update => "main-content", :html => { :class => "refresh-button" } } ) %>
-</div>
+      </div>
     <table>
       <tr>
        <% if @config_level >= AlpacaSettings::Level::Advanced %>
@@ -29,8 +31,8 @@
           <%= link_to_remote 'edit'.t, :update => "main-content", :url => { :action => "config", :id => interface } %>
         </td>
        <% end %>
-        <td><%= interface.name %></td>
-        <td><%= interface.config_type %></td>
+        <td><%= print_field( interface.name ).t %></td>
+        <td><%= print_field( interface.config_type, "static" ).t %></td>
         <% if first %>
           <td id="interface-os-data" rowspan="<%= @interfaces.size %>">
           <% for n_interface in @interfaces %>
@@ -40,7 +42,7 @@
             <% for n_interface in @interfaces %>
               <li id="<%= n_interface.id %>">
                 <%= hidden_field_tag( "interfaceOrderList[]", n_interface.id ) %>
-		<%= n_interface.interface_status.gsub( "unknown","" ) %><br />
+		<%= n_interface.interface_status.gsub( /:* *unknown/,"" ).gsub( /#{Interface::Unmapped}/, "none".t ) %><br />
                 <%= "#{mac_address_link( n_interface.mac_address, n_interface.vendor )}" %>
               </li>
             <% end %>

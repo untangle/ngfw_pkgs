@@ -67,12 +67,13 @@ for file in $PG_HBA ; do
     sed -i -e "s/\#\(host.*all.*all.*127.0.0.1.*255.255.255.255.*trust\)/\1/" $file
     sed -i -e 's/\(local.*all.*postgres.*\)\(ident.*sameuser\)/\1trust/'  $file
     sed -i -e 's/\(local.*all.*all.*\)\(ident.*sameuser\)/\1trust/'  $file
-    sed -i -e 's/\(host.*all.*all.*127.0.0.1\/32.*\)\(md5\)/\1trust/'  $file
-    sed -i -e 's/\(host.*all.*all.*::1\/128.*\)\(md5\)/\1trust/'  $file
+    sed -i -e 's/\(host.*all.*all.*127.0.0.1\(\/32\|[ \t]\).*\)\(md5\)/\1trust/'  $file
+    sed -i -e 's/\(host.*all.*all.*::1\(\/128\|[ \t]\).*\)\(md5\)/\1trust/'  $file
 done                                                                       
 
 for file in $PG_CONF ; do
     sed -i -e "s/.*virtual_host.*=.*/virtual_host='127.0.0.1'/" $file
+    sed -i -e "s/.*tcpip_socket.*=.*/tcpip_socket = true/" $file
     # Tune memory usage & query optimizer
     sed -i -e "s/[# ]*shared_buffers *=.*/shared_buffers = ${SHARED_BUFFERS}/" $file
     sed -i -e "s/[# ]*sort_mem *=.*/sort_mem = ${SORT_MEM}/" $file

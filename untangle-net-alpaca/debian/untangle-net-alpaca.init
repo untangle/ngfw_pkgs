@@ -18,11 +18,17 @@ NAME="untangle-net-alpaca"
 
 MONGREL_RAILS="/usr/bin/mongrel_rails"
 BASE_DIR="/var/lib/rails/untangle-net-alpaca"
+MONGREL_PID_FILE="/var/run/untangle-net-alpaca/mongrel.pid"
 MONGREL_ARGS=""
 
 BIND_ADDRESS="127.0.0.1"
 ## rails environment, defaults to production
 MONGREL_ENV="production"
+
+MONGREL_LOG_FILE="/var/log/untangle-net-alpaca/mongrel.log"
+
+mkdir -p /var/log/untangle-net-alpaca/
+mkdir -p /var/run/untangle-net-alpaca/
 
 if [ -r /etc/default/$NAME ]; then
     . /etc/default/$NAME
@@ -31,14 +37,19 @@ fi
 ## Just to guarantee that at least one nonce exist
 /etc/cron.hourly/rebuild-nonce
 
+sanitycheck() {
+  [ -f ${MONGREL_PID_FILE} ] && [ ! -d /proc/`cat ${MONGREL_PID_FILE}` ] && rm -f ${MONGREL_PID_FILE}
+}
+
 start()
 {
     cd ${BASE_DIR} || {
         log_failure_msg "${NAME} could not change into the directory ${BASE_DIR}" 
         exit -1
     }
+
     ## Load the latest version of the schema
-    rake alpaca:init RAILS_ENV=${MONGREL_ENV} || { 
+    rake -s alpaca:init -s RAILS_ENV=${MONGREL_ENV} >> ${MONGREL_LOG_FILE} 2>&1 || { 
         log_failure_msg "${NAME} could not load database schema ${BASE_DIR}"
         exit -2
     }
@@ -50,20 +61,23 @@ start()
     
     ## The root handler is used to automatically redirect requests to /.
     ${MONGREL_RAILS} start -S ${BASE_DIR}/root-handler.conf -c ${BASE_DIR} -e ${MONGREL_ENV} \
-        ${MONGREL_ARGS} --prefix "/alpaca" -d
+        ${MONGREL_ARGS} --prefix "/alpaca" -d -l ${MONGREL_LOG_FILE} --pid ${MONGREL_PID_FILE}
 }
 
 stop()
 {
-    ${MONGREL_RAILS} stop -w 5 -c ${BASE_DIR}
+    ## Check if the PID file exists, mongrel_rails doesn't handle this case well if it doesn't exist
+    [ -f ${MONGREL_PID_FILE} ] && ${MONGREL_RAILS} stop -w 5 -c ${BASE_DIR} --pid ${MONGREL_PID_FILE}
+
     pkill mongrel > /dev/null 2>&1
     pkill -9 mongrel > /dev/null 2>&1
     ## Remove the pid file.
-    rm -f ${BASE_DIR}/log/mongrel.pid
+    rm -f ${MONGREL_PID_FILE}
 }
 
 case "$1" in
     start)
+        sanitycheck
         start
         ;;
     stop)

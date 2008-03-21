@@ -4,17 +4,20 @@ def print_dynamic( value )
   "&nbsp;"
 end
 
+def print_dynamic_network( ip, netmask )
+  return "&nbsp;" if ApplicationHelper.null?( ip ) || ApplicationHelper.null?( netmask )
+  a = OSLibrary::NetworkManager::CIDR.index( netmask )
+  netmask = a unless a.nil?
+  "#{ip} / #{netmask}"
+end
+
 %>
 <fieldset>
 <ul class="text-fields">
   <li>
     <label for="<%= "#{config_id}_ip" %>"><%= "Address:".t %></label>
-    <span><%= print_dynamic( @dhcp_status.ip ) %></span>
+    <span><%= print_dynamic_network( @dhcp_status.ip, @dhcp_status.netmask ) %></span>
   </li>
-  <li>
-    <label for="<%= "#{config_id}_ip" %>"><%= "Netmask:".t %></label>
-    <span><%= print_dynamic( @dhcp_status.netmask ) %></span>
-  </li>  
   <li>
     <label for="<%= "#{config_id}_default_gateway" %>"><%= "Default Gateway:".t %></label>
     <span><%= print_dynamic( @dhcp_status.default_gateway ) %></span>

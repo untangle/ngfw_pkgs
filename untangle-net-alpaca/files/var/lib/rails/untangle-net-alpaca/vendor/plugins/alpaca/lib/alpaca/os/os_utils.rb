@@ -32,6 +32,7 @@ class Alpaca::OS::OSUtils
         when "lenny/sid" then "debian_sid"
         when /7\.10.*/   then "ubuntu_gutsy"
         when /8\.04.*/   then "ubuntu_hardy"
+        when "hardy"     then "ubuntu_hardy"
         else
           logger.warn( "Unable to determine OS, assuming sarge" )
           "debian_sarge"

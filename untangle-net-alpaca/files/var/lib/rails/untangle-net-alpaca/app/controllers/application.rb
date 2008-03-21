@@ -27,6 +27,10 @@ class ApplicationController < ActionController::Base
   DefaultTitle = "Untangle Net Alpaca"
 
   RegisterMenuMethod = "register_menu_items"
+
+  filter_parameter_logging "password"
+  filter_parameter_logging "ddclient_settings"
+  filter_parameter_logging "credentials"
   
   # Pick a unique cookie name to distinguish our session data from others'
   session :session_key => '_untangle-net-alpaca_session_id'

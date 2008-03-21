@@ -45,8 +45,11 @@ class NetworkController < ApplicationController
     @interface_list.sort! { |a,b| a.index <=> b.index }
     
     @config_list = @interface_list.map do |interface|
-      @dhcp_status = os["dhcp_manager"].get_dhcp_status( interface ) if interface.wan
-      NetworkHelper.build_interface_config( interface, @interface_list )
+      ## This is the dhcp status of this particular interface.
+      d = nil
+      d = @dhcp_status = os["dhcp_manager"].get_dhcp_status( interface ) if interface.wan
+      
+      NetworkHelper.build_interface_config( interface, @interface_list, d )
     end
 
     ## This should be in a global place
@@ -72,25 +75,37 @@ class NetworkController < ApplicationController
     ## Convert the interface ids to numbers
     interface_id_list = interface_id_list.map do |interface_id|
       i = interface_id.to_i
-      return redirect_to( :action => 'fail_0' ) if i.to_s != interface_id
+      if i.to_s != interface_id
+          flash[:error] = "Invalid interface id not found."
+          return redirect_to( :action => 'manage' ) 
+      end
       i
     end
 
     ## Verify the list exists.
-      return redirect_to( :action => 'fail_1' ) if interface_list.nil?
+    if interface_list.nil?
+        flash[:error] = "Invalid parameters, interface list missing."
+        return redirect_to( :action => 'manage' ) 
+    end
     
     ## Verify the list lines up with the existing interfaces
     interfaces = Interface.find( :all )
 
     ## Verify the list matches.
-    return redirect_to( :action => 'fail_2' ) if ( interfaces.size != interface_list.size )
+    if ( interfaces.size != interface_list.size )
+        flash[:error] = "Number of submitted interfaces does not match number of configured interfaces."
+        return redirect_to( :action => 'manage' )
+    end
 
     interface_map = {}
     interfaces = interfaces.each{ |interface| interface_map[interface.id] = interface }
     
     ## Verify every id is represented
     interface_id_list.each do |interface_id|
-      return redirect_to( :action => 'fail_4' ) if interface_map[interface_id].nil?
+      if interface_map[interface_id].nil?
+          flash[:error] = "Submitted request does not configure every known interface."
+          return redirect_to( :action => 'manage' ) 
+      end
     end
 
     ## This is where it gets a little hairy, because it should verify all
@@ -244,10 +259,32 @@ class NetworkController < ApplicationController
     end
     
     ## Destroy the interfaces to be deleted.
-    deleted_interfaces.each { |i| i.destroy }
+    deleted_interfaces.each do |i| 
+      if ( InterfaceHelper.is_critical_interface( i ))
+        ## Critical interfaces are not deleted, they are just set to the no-interface
+        i.os_name, i.mac_address, i.bus, i.vendor = Interface::Unmapped, "", "", "n/a"
+        i.save
+      else
+        i.destroy
+      end
+    end
+
+    ## This is the array of critical interfaces that haven't been assigned to a phyiscal interface
+    conditions =  [ "os_name = ?", Interface::Unmapped ]
+    unmapped_interfaces = Interface.find( :all, :conditions => conditions )
     
-    ## Save the interfaces that are 
-    new_interfaces.each{ |i| i.save }
+    ## Create the new interfaces
+    new_interfaces.each do |i|
+      unless unmapped_interfaces.empty?
+        ## Map the first unmapped interface
+        ui = unmapped_interfaces.delete_at( 0 )
+        ui.os_name, ui.mac_address, ui.bus, ui.vendor = i.os_name, i.mac_address, i.bus, i.vendor
+        ui.save
+      else
+        ## Otherwise just create a new interface.
+        i.save
+      end
+    end
     
     ## Iterate all of the helpers telling them about the new interfaces
     iterate_components do |component|

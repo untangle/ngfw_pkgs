@@ -76,7 +76,7 @@ class UvmController < ApplicationController
   def write_files
     ## Load all of the interfaces if the settings haven't been initialized yet.
     if ( Interface.find( :first ).nil? )
-      new_interfaces, deleted_interfaces = InterfaceHelper.load_new_interfaces
+      new_interfaces = InterfaceHelper.loadInterfaces
       new_interfaces.each { |i| i.save }
     end
 
@@ -105,11 +105,12 @@ class UvmController < ApplicationController
 
     hostname_settings = HostnameSettings.find( :first )
     hostname_settings = HostnameSettings.new if hostname_settings.nil?
+
     hostname_settings.hostname = hostname
     hostname_settings.save
 
-    ## Update the domain name suffix.
-    if save_suffix
+    ## Update the domain name suffix (only if the hostname is qualified.)
+    if save_suffix && !( /^[^\.]+\.[^\.]+/.match( hostname ).nil? )
       suffix = hostname.sub( /^[^\.]*\./, "" )
       update_dns_server_settings( :suffix => suffix )
     end

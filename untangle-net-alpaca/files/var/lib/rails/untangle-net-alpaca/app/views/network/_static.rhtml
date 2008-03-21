@@ -1,6 +1,12 @@
 <%
 static = config.static
-netmask_options =  options_for_select( @cidr_options, static.netmask ).gsub( /&amp;nbsp;/, "&nbsp;" )
+
+## Conversion to CIDR.
+netmask = static.netmask
+netmask = OSLibrary::NetworkManager::CIDR.index( netmask )
+netmask = static.netmask if netmask.nil?
+
+netmask_options =  options_for_select( @cidr_options, netmask ).gsub( /&amp;nbsp;/, "&nbsp;" )
 %>
 <fieldset>
 <ul class="text-fields">

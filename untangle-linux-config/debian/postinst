@@ -1,0 +1,62 @@
+#!/bin/sh
+
+# One of the main purposes of this package is to reboot the Untangle Server when a new
+# kernel is installed.  Thus this package should only be revved when you want a reboot.
+if [ -x /etc/init.d/untangle-vm ]; then
+    uvm-restart reboot
+fi
+
+# Clean up stuff left around by old version
+rm -f /boot/vmlinuz-ut
+rm -f /boot/vmlinuz
+# rm -f /boot/initrd.img
+
+root=
+if [ -f /etc/mtab ]; then
+    root=`awk '/[ \t]+\/[ \t]+/ {print $1}' /etc/mtab`
+fi
+if [ -z "$root" -a -f /etc/fstab ]; then
+    # Special handling for install-time when /etc/mtab isn't valid
+    root=`awk '/[ \t]+\/[ \t]+/ {print $1}' /etc/fstab`
+fi
+
+# If we couldn't find a root, don't bother with the rest as we must
+# be in some fake install time.
+if [ -n "$root" ]; then
+
+    case "$root" in /dev/*)
+            rootuuid=`/lib/udev/vol_id -u $root`
+            if [ -z "$rootuuid" ]; then
+	        rootuuid=`uuidgen`
+                # FIXME: Only works for ext2/ext3
+                echo "No root UUID found, making one"
+	        tune2fs -U "$rootuuid" $root
+            fi
+            rootdev="UUID=$rootuuid"
+            ;;
+        *)
+            # Fallback
+            rootdev="$root"
+            ;;
+    esac
+
+    # depmod -a ${flavor}
+    # Update the initrd since we added bootsplash.
+    update-initramfs -t -u
+
+    # Replace menu.lst
+    # if [ ! -f /boot/grub/menu.lst ] || [ `grep title /boot/grub/menu.lst | wc -l` != 2 ] ; then
+    if grep -q "untangle-linux-config" /boot/grub/menu.lst; then
+        # need to run update?
+        echo "Untangle /boot/grub/menu.lst already installed."
+    else
+        echo "Installing Untangle /boot/grub/menu.lst."
+        [ -f /boot/grub/menu.lst-pre-untangle ] || cp /boot/grub/menu.lst /boot/grub/menu.lst-pre-untangle
+        sed -e "s/@ROOTDEV@/$rootdev/" /usr/share/untangle-linux-config/menu.lst > /boot/grub/menu.lst
+        # Must set grub default before updating to avoid bug in grub's updatedefaultentry
+        /usr/sbin/grub-set-default 0
+        /usr/sbin/update-grub
+    fi
+fi
+
+exit 0

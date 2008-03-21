@@ -1,19 +1,37 @@
-<% style = @hide_types.include?( "static" ) ? 'style="display: none"' : nil  %>
+<%
+style = @hide_types.include?( "static" ) ? 'style="display: none"' : nil
+## Create a copy of the ip networks.
+ip_networks = Array.new( static.ip_networks )
+
+list_id = "ip-network-list-static"
+
+primary_ip_network = ip_networks.shift
+if primary_ip_network.nil?
+  primary_ip_network = IpNetwork.new
+  primary_ip_network.ip = "1.2.3.4"
+  primary_ip_network.netmask = "24"
+end
+
+default_gateway, dns_1, dns_2 = static.default_gateway, static.dns_1, static.dns_2
+
+if interface.config_type == InterfaceHelper::ConfigType::DYNAMIC && !@dhcp_status.nil?
+  primary_ip_network.ip, primary_ip_network.netmask = @dhcp_status.ip, @dhcp_status.netmask  
+  default_gateway, dns_1, dns_2 = @dhcp_status.default_gateway, @dhcp_status.dns_1, @dhcp_status.dns_2
+end
+
+rowId="ip-row-#{rand( 0x100000000 )}"
+%>
 <div id="static" <%= style %>>
-  <% list_id = "ip-network-list-static" 
-     primary_ip_network = static.ip_networks.shift
-     if primary_ip_network.nil?
-         primary_ip_network = IpNetwork.new
-         primary_ip_network.ip = "1.2.3.4"
-         primary_ip_network.netmask = "24"
-     end
-     rowId="ip-row-#{rand( 0x100000000 )}" %>
-    <fieldset><ul class="text-fields"><li>
-    <label for="<%= rowId %>">Primary IP Address and Netmask:</label>
-    <%= hidden_field_tag( "networkIndices[]", rowId ) %>
-    <%= text_field( "networks", rowId, { :value => "#{primary_ip_network.ip} / #{primary_ip_network.netmask}" } ) %>
-    </li></ul></fieldset>
-  <%= render( :partial => "ip_networks" , :object => static.ip_networks,
+  <fieldset>
+    <ul class="text-fields">
+      <li>
+        <label for="<%= rowId %>">Primary IP Address and Netmask:</label>
+          <%= hidden_field_tag( "networkIndices[]", rowId ) %>
+          <%= text_field( "networks", rowId, { :value => "#{primary_ip_network.ip} / #{primary_ip_network.netmask}" } ) %>
+      </li>
+    </ul>
+  </fieldset>
+  <%= render( :partial => "ip_networks" , :object => ip_networks,
               :locals => { :list_id => list_id } ) %>
 
   <% if interface.wan %>
@@ -21,20 +39,20 @@
       <ul class="text-fields">
         <li>
           <label for="static_default_gateway"><%= "Default Gateway:".t %></label>
-          <%= text_field( "static", "default_gateway" ) %>
+          <%= text_field( "static", "default_gateway", :value => default_gateway ) %>
         </li>
         
         <li>
           <label for="static_dns_1"><%= "Primary DNS Server:".t %></label>
-          <%= text_field( "static", "dns_1" ) %>
+          <%= text_field( "static", "dns_1", :value => dns_1 ) %>
         </li>
         
         <li>
           <label for="static_dns_2"><%= "Secondary DNS Server:".t %></label>
-          <%= text_field( "static", "dns_2" ) %>
+          <%= text_field( "static", "dns_2", :value => dns_2 ) %>
         </li>
         <li>
-          <label for="static_mtu"><%= "MTU (#{@interface.current_mtu}):".t %></label>
+          <label for="static_mtu"><%= "MTU (%s):".t / @interface.current_mtu %></label>
           <%= text_field( "static", "mtu", { :class => "number" } ) %>
         </li>
         <li>

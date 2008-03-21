@@ -22,14 +22,22 @@ module InterfaceHelper
   InternalIndex = 2
   DmzIndex = 3
 
+  ExternalName = "External"
+  InternalName = "Internal"
+  DmzName = "DMZ"
+
   ## DDD These are subject to internationalization DDD
   ## REVIEW : These are also linux specific.
   DefaultInterfaceMapping = {
     # default Display name plus the index
-    "eth0" => [ "External", ExternalIndex ],
-    "eth1" => [ "Internal", InternalIndex ],
-    "eth2" => [ "DMZ", DmzIndex ]
+    "eth0" => [ ExternalName, ExternalIndex ],
+    "eth1" => [ InternalName, InternalIndex ],
+    "eth2" => [ DmzName, DmzIndex ]
   }
+
+  ## Array of the critical interfaces, these are the interfaces that are displayed
+  ## regardless of whether or not something is "mapped" to them
+  CriticalInterfaces = [ ExternalIndex, InternalIndex ]
 
   ## REVIEW :: These Strings need to be internationalized.
   class ConfigType
@@ -47,12 +55,13 @@ module InterfaceHelper
 
   ## A hash of all of the various ethernet medias
   ETHERNET_MEDIA = { "autoauto" => { :name => "Auto", :speed => "auto", :duplex => "auto" },
+    "1000full" => { :name => "1000 Mbps, Full Duplex", :speed => "1000", :duplex => "full" },
     "100full" => { :name => "100 Mbps, Full Duplex", :speed => "100", :duplex => "full" },
     "100half" => { :name => "100 Mbps, Half Duplex", :speed => "100", :duplex => "half" },
     "10full" => { :name => "10 Mbps, Full Duplex", :speed => "10", :duplex => "full" },
     "10half" => { :name => "10 Mbps, Half Duplex", :speed => "10", :duplex => "half" } }.freeze
 
-  ETHERNET_MEDIA_ORDER = [ "autoauto", "100full", "100half", "10full", "10half" ]
+  ETHERNET_MEDIA_ORDER = [ "autoauto", "1000full", "100full", "100half", "10full", "10half" ]
 
   ## Load the new interfaces and return two arrays.
   ## first the array of new interfaces to delete.
@@ -64,21 +73,51 @@ module InterfaceHelper
 
     physical_interfaces = self.loadInterfaces
     mac_addresses = {}
+
+    ## These are existing in the database
     existing_mac_addresses = {}
+    existing_indices = {}
+
     physical_interfaces.each do |interface|
       mac_addresses[interface.mac_address] = true unless ApplicationHelper.null? interface.mac_address
     end
     
     Interface.find( :all ).each do |interface|
+      next unless interface.is_mapped?
+
       ## Delete any items that are not in the list of current mac addresses.
-      delete_interfaces << interface unless mac_addresses[interface.mac_address] == true
+      next delete_interfaces << interface unless mac_addresses[interface.mac_address] == true
 
       ## Build the list of mac_addresses
       existing_mac_addresses[interface.mac_address] = true
+
+      ## Append the item to the index hash
+      existing_indices[interface.index] = true
     end
 
+    ## Interfaces have to be sorted by index
+    physical_interfaces.sort! { |a,b| a.index <=> b.index }
+
+    ## Mark any interfaces that are not in the database as new, and update the index
+    ## so it doesn't conflict with the current interfaces
     physical_interfaces.each do |interface|
-      new_interfaces << interface unless existing_mac_addresses[interface.mac_address] == true
+      ## Ignore unmapped interfaces
+      next unless interface.is_mapped?
+      
+      unless existing_mac_addresses[interface.mac_address] == true
+        ## Check if the interfaces index is taken, if so, use a different one
+        if ( existing_indices[interface.index] == true )
+          ## Serious magic number (7) here
+          ( interface.index .. 7 ).each do |idx| 
+            break interface.index = idx unless existing_indices[idx] == true
+          end
+
+          interface.name = InterfaceHelper.get_interface_name( interface )
+          existing_indices[interface.index] = true
+          interface.wan = ( interface.index == ExternalIndex )
+        end
+        new_interfaces << interface 
+      end
     end
 
     [ new_interfaces, delete_interfaces ]
@@ -92,12 +131,13 @@ module InterfaceHelper
     ## Find all of the physical interfaces
     currentIndex = DefaultInterfaceMapping.size
 
+    ## Hash from index to interface, used to add the critical internal and external
+    ## interfaces if they don't exist.
+    interface_hash = {}
+
     ia = networkManager.interfaces
 
-    raise "Unable to detect any interfaces" if ia.nil?
-    
-    ## True iff the list found a WAN interface.
-    foundWAN = false
+    raise "Unable to detect any interfaces" if ( ia.nil? || ia.empty? )
 
     ia.each do |i| 
       interface = Interface.new
@@ -114,26 +154,57 @@ module InterfaceHelper
       ## default it to a static config
       interface.config_type = InterfaceHelper::ConfigType::STATIC
 
-      if ( interface.index == 1 )
-        interface.wan = true
-        foundWAN = true
-      else
-        interface.wan = false
-      end
+      interface.wan = ( interface.index == ExternalIndex )
       
       ## Add the interface.
       interfaceArray << interface
+
+      interface_hash[interface.index] = interface
     end
 
-    ## If it hasn't found the WAN interface, set the one with the lowest index
-    ## to the WAN interface.
-    interfaceArray.min { |a,b| a.index <=> b }.wan = true unless foundWAN
+    ## Sort the interface array by index.
+    interfaceArray.sort! { |a,b| a.index <=> b.index }
+
+    ## Append empty interfaces for the ones that don't exists.
+    CriticalInterfaces.each do |index|
+      next unless interface_hash[index].nil?
+      
+      ## Find the first interface that is neither internal or external.
+      match = interfaceArray.select{ |i| !InterfaceHelper.is_critical_interface( i ) }
+      match = match[0]
+
+      ## Remap the first interface
+      unless match.nil?
+        ## Update the interface hash in case it is used later.
+        interface_hash[match.index] = nil
+        interface_hash[index] = match
+
+        match.index = index
+        match.name = InterfaceHelper.get_interface_name( match )
+        match.wan = ( index == ExternalIndex )
+      end
+      
+      if ( interface_hash[index].nil? )
+        i = Interface.new( :os_name => Interface::Unmapped, :vendor => "n/a" )
+        i.index = index
+        i.name = InterfaceHelper.get_interface_name( i )
+        i.wan = ( i.index == ExternalIndex )
+        interfaceArray << i
+      end
+    end
+
+    ## Sort the interface array by index.
+    interfaceArray.sort! { |a,b| a.index <=> b.index }
 
     interfaceArray
   end
 
   def self.networkManager
     Alpaca::OS.current_os["network_manager"]
+  end
+
+  def self.is_critical_interface( interface )
+    CriticalInterfaces.include?( interface.index )
   end
 
   class IPNetworkTableModel < Alpaca::Table::TableModel
@@ -228,5 +299,17 @@ EOF
     v = ETHERNET_MEDIA[media]
     v = ETHERNET_MEDIA["autoauto"] if v.nil?
     [ v[:speed], v[:duplex]]
+  end
+
+  ## Given an interface, set the name the interface should have.
+  def self.get_interface_name( interface )
+    index = interface.index.to_i
+
+    case interface.index
+    when ExternalIndex then ExternalName
+    when InternalIndex then InternalName
+    when DmzIndex then DmzName
+    else interface.os_name
+    end
   end
 end

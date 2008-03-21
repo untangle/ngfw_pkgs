@@ -23,7 +23,7 @@
         <% if ( @config_level > AlpacaSettings::Level::Basic ) %>
           <li>
             <label for="dhcp_server_settings_lease_duration"><%= "Lease Duration:".t %></label>
-            <%= text_field( "dhcp_server_settings", "lease_duration", { :class => "number" } ) %>
+            <%= text_field( "dhcp_server_settings", "lease_duration", { :class => "number", :title => "seconds"} ) %> <span class="units">seconds</span>
           </li>
 
           <li>

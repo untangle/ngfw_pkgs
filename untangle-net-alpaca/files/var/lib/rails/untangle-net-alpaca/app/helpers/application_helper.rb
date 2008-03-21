@@ -20,10 +20,18 @@ module ApplicationHelper
   # return true if a field is nil or null.
   def ApplicationHelper.null?( field )
     return true if field.nil?
+    ## Just in case the field is not a string.
+    field = field.to_s
     field = field.strip
     return true if field.empty?
     return true if ( field.upcase == "NULL" )    
     false
+  end
+
+  # print a default value if null
+  def print_field( value, default_value = "&nbsp;" )
+    return default_value if ApplicationHelper.null?( value )
+    value
   end
 
   def ApplicationHelper.active_record_to_json( results )
@@ -50,6 +58,7 @@ module ApplicationHelper
   end
 
   def mac_address_link( address, title="" )
+    return "" if ApplicationHelper.null?( address )
     link_to( address, "http://standards.ieee.org/cgi-bin/ouisearch?" + address.slice(0,8),  :title => title, :popup => [ 'new_window', 'height=450,width=650,scrollbars=1,toolbar=1,status=1,location=1,menubar=1,resizeable=1' ] )
   end
 

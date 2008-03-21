@@ -1,0 +1,7 @@
+/var/log/untangle-net-alpaca/*.log {
+rotate 4
+size 500k
+compress
+notifempty
+copytruncate
+}

@@ -13,6 +13,8 @@
 
 MKDIR=/bin/mkdir -p
 
+DESTDIR=debian/untangle-linux-config
+
 ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -g
 endif
@@ -27,22 +29,24 @@ configure-stamp:
 
 build: configure
 	dh_testdir
-	rm -rf ./debian/tmp
-	mkdir -p ./debian/tmp
+	rm -rf $(DESTDIR)
+	mkdir -p $(DESTDIR)
 	dh_installdirs -A -v
-	find ./debian/tmp -name ".svn" | xargs rm -rf 
+	for i in `cat debian/untangle-linux-config.dirs` ; do mkdir -p $(DESTDIR)/$$i ; done
+	cp -r ./files/* $(DESTDIR)/
+	find $(DESTDIR) -name "\.svn" | xargs rm -rf
 
 clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-arch-stamp build-indep-stamp configure-stamp
-	rm -rf debian/tmp debian/untangle-dhclient-config sav-install
+	rm -rf debian/tmp debian/untangle-linux-config sav-install
 	dh_clean
 
-binary-indep: build
+binary-arch: build
 	dh_testdir  
 	dh_testroot   
-	dh_movefiles  
+#	dh_movefiles 
 #	dh_installdebconf   
 	dh_shlibdeps  
 	dh_installdocs   
@@ -59,15 +63,15 @@ binary-indep: build
 #	dh_undocumented   
 	dh_installchangelogs    
 #	dh_strip  
-#	dh_link   
+	dh_link   
 	dh_compress   
 #	dh_fixperms   
 	dh_installdeb  
 #	dh_perl     
-	if [ -f debian/version ] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
+	if [[ -f debian/version ]] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
 	dh_md5sums     
 
-binary-arch: build 
+binary-indep: build 
 # nothing to do
 
 binary: binary-indep binary-arch

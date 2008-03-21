@@ -28,7 +28,7 @@ ul.text-fields {
 ul.text-fields li {
    clear: both;
 }
-li label {
+li label, span.units {
     font-size: 85%; /* 11px equiv */
     color: #333;
 }

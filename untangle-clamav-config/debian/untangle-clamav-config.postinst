@@ -10,6 +10,7 @@ TCPSocket 3310
 EOF
 
 sed -i -e "s|[# ]*LocalSocket.*|#LocalSocket /var/run/clamav/clamd.ctl|" $CLAMAV_CONF_FILE
+sed -i -e "s|[# ]*NodalCoreAcceleration|#NodalCoreAcceleration|" $CLAMAV_CONF_FILE
 
 /etc/init.d/clamav-freshclam stop
 /etc/init.d/clamav-daemon stop

@@ -107,7 +107,7 @@ module ActionView
 
         if value == "Help"
           # "<span class=\"iconbutton\"><span>" +
-          return link_to( "Help", HELP_URL + "?version=" + UNTANGLE_VERSION + "&source=" + HELP_NAMESPACE + "_" + $current_controller + "_" + $current_action, :popup => [ 'new_window', 'height=450,width=650,scrollbars=1,toolbar=1,status=1,location=1,menubar=1,resizeable=1' ], :class => "Help" )
+          return link_to( "Help", HELP_URL + "?version=" + UNTANGLE_VERSION + "&source=" + HELP_NAMESPACE + "_" + $current_controller + "_" + $current_action, :popup => [ 'new_window', 'height=600,width=775,scrollbars=1,toolbar=1,status=1,location=1,menubar=1,resizeable=1' ], :class => "Help" )
           #  + "</span></span>"
         end
 
