@@ -59,7 +59,7 @@ module ApplicationHelper
 
   def mac_address_link( address, title="" )
     return "" if ApplicationHelper.null?( address )
-    link_to( address, "http://standards.ieee.org/cgi-bin/ouisearch?" + address.slice(0,8),  :title => title, :popup => [ 'new_window', 'height=450,width=650,scrollbars=1,toolbar=1,status=1,location=1,menubar=1,resizeable=1' ] )
+    link_to( address, "http://standards.ieee.org/cgi-bin/ouisearch?" + address.slice(0,8).gsub(/:/,''),  :title => title, :popup => [ 'new_window', 'height=450,width=650,scrollbars=1,toolbar=1,status=1,location=1,menubar=1,resizeable=1' ] )
   end
 
 
