@@ -332,6 +332,11 @@ EOF
 
   def get_vendor( os_name )
     subsystem="#{NetClassDir}/#{os_name}/device/subsystem"
+    if (!File.exists?(subsystem))
+       # 2.6.16 compatibility:
+       subsystem="#{NetClassDir}/#{os_name}/device/bus"
+    end
+
     bus = File.readlink(subsystem).sub(/.*\//, '')
 
     uevent="#{NetClassDir}/#{os_name}/device/uevent"
