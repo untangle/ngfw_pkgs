@@ -35,6 +35,17 @@ alias r='s apt-get remove --purge'
 alias sc='screen -R -D -A -r main'
 #alias sim='sim > /dev/null 2>&1'
 alias up='s apt-get update'
+alias ut='killall xbindkeys ; cat <<EOF | xmodmap -
+remove Lock = Caps_Lock
+remove Control = Control_L
+keysym Control_L = Caps_Lock
+keysym Caps_Lock = Control_L
+add Lock = Caps_Lock
+add Control = Control_L
+add Control = Control_R
+keycode 113 = BackSpace
+EOF
+'
 alias tee='tee -a'
 alias top='top -s 1' # for non-linux
 alias wget-mirror='wget -r -nv -nH --no-parent'
