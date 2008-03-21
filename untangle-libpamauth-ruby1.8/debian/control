@@ -7,6 +7,6 @@ Standards-Version: 3.7.2
 
 Package: untangle-libpamauth-ruby1.8
 Architecture: all
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, libpam-foreground
 Description: The Untangle Ruby PAM Authentication
  This is the Untangle Ruby PAM Authentication module.
