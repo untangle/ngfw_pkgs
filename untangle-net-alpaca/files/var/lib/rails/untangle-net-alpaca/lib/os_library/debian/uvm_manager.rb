@@ -26,10 +26,13 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
   Chain = OSLibrary::Debian::PacketFilterManager::Chain
 
   ## uvm subscription file
-  UvmSubscriptionFile = "#{OSLibrary::Debian::PacketFilterManager::ConfigDirectory}/700-uvm"
+  UvmSubscriptionFile = "#{OSLibrary::Debian::PacketFilterManager::ConfigDirectory}/800-uvm"
 
   ## list of rules for the UVM (before the firewall (those rules should override these rules)).
   UvmServicesFile = "#{OSLibrary::Debian::PacketFilterManager::ConfigDirectory}/475-uvm-services"
+
+  ## list of rules for the UVM (after the firewall (used when the user wants to override these rules)).
+  UvmServicesPostFile = "#{OSLibrary::Debian::PacketFilterManager::ConfigDirectory}/675-uvm-services"
 
   ## list of rules for openvpn
   UvmOpenVPNFile = "#{OSLibrary::Debian::PacketFilterManager::ConfigDirectory}/475-openvpn-pf"
@@ -156,7 +159,15 @@ fi
 return 0
 EOF
 
-    os["override_manager"].write_file( UvmServicesFile, text, "\n" )    
+    uvm_settings = UvmSettings.find( :first )
+    ## Default to evaluating the rules before the redirects.
+    if ( uvm_settings.nil? || uvm_settings.override_redirects )
+      os["override_manager"].write_file( UvmServicesFile, text, "\n" )    
+      os["override_manager"].write_file( UvmServicesPostFile, header, "\n" )
+    else
+      os["override_manager"].write_file( UvmServicesFile, header, "\n" )    
+      os["override_manager"].write_file( UvmServicesPostFile, text, "\n" )      
+    end
   end
 
   def write_openvpn_script

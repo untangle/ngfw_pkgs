@@ -21,6 +21,10 @@ class UvmController < ApplicationController
   def manage
     @subscriptions = Subscription.find( :all, :conditions => [ "system_id IS NULL" ] )
     @system_subscription_list = Subscription.find( :all, :conditions => [ "system_id IS NOT NULL" ] )
+    
+    @uvm_settings = UvmSettings.find( :first )
+    
+    @uvm_settings = UvmSettings.new if @uvm_settings.nil?
 
     render :action => 'manage'
   end
@@ -53,6 +57,13 @@ class UvmController < ApplicationController
       redirect_to( :action => "manage" )
       return false
     end
+    
+    ## Save the changes to the UVM settings.
+    uvm_settings = UvmSettings.find( :first )
+    uvm_settings = UvmSettings.new if uvm_settings.nil?
+    uvm_settings.update_attributes( params[:uvm_settings] )
+    uvm_settings.save
+
     
     save_user_rules
     

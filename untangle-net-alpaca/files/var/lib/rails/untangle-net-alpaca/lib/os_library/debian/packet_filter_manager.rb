@@ -36,7 +36,7 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   FirewallConfigFile   = "#{ConfigDirectory}/400-firewall"
 
   ## This will block any traffic trying to penetrate NAT.
-  NatFirewallConfigFile = "#{ConfigDirectory}/500-nat-firewall"
+  NatFirewallConfigFile = "#{ConfigDirectory}/700-nat-firewall"
   RedirectConfigFile   = "#{ConfigDirectory}/600-redirect"
 
   ## Mark to indicate that the packet shouldn't be caught by the UVM.
@@ -195,6 +195,9 @@ EOF
   end
 
   def hook_write_files
+    ## Clean directory
+    clean_files
+
     ## Script to flush all of the iptables rules
     write_flush
 
@@ -229,6 +232,13 @@ EOF
   end
   
   private
+
+  ## This is used to handle files that have been moved, this list should never get shorter!
+  def clean_files
+    [ "500-nat-firewall", "700-uvm" ].each do |file_name|
+      os["override_manager"].rm_file( "#{ConfigDirectory}/#{file_name}" )
+    end
+  end
     
   def write_flush
     text = header
