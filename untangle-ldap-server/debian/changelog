@@ -1,0 +1,13 @@
+untangle-ldap-server (5.0.1-1) mustang-1; urgency=low
+
+  * auto build
+
+ --  <seb@untangle.com>  Fri, 27 Jul 2007 14:36:52 -0700
+
+untangle-ldap-server (0-1) stable; urgency=low
+
+  * Initial version.
+
+ -- Sebastien Delafond <seb@untangle.com>  Tue, 03 Jul 2007 16:14:19 -0700
+
+
