@@ -53,7 +53,7 @@ class Alpaca::UvmDataLoader
     end
     
     def to_s
-      "<network-nettings: [#{@setting_id}] on[#{@is_enabled}] gw[#{@default_route}] dns1[#{@dns_1}] dns2[#{@dns_2}]>"
+      "<network-settings: [#{@setting_id}] on[#{@is_enabled}] gw[#{@default_route}] dns1[#{@dns_1}] dns2[#{@dns_2}]>"
     end
     
     attr_reader :is_enabled, :default_route, :dns_1, :dns_2, :setting_id
@@ -63,6 +63,7 @@ class Alpaca::UvmDataLoader
   def initialize
     @dbh = nil
     @logger = Logger.new( LOG_FILE, 10, 1048576 )
+    @config_mode = AlpacaSettings::Level::Basic
   end
 
   attr_reader :logger
@@ -85,6 +86,12 @@ class Alpaca::UvmDataLoader
       
       ## Loads the DHCP and DNS settings
       load_dhcp_server_settings
+
+      ## Save the current mode.
+      alpaca_settings = AlpacaSettings.find( :first )
+      alpaca_settings = AlpacaSettings.new if alpaca_settings.nil?
+      alpaca_settings.config_level = @config_mode.level
+      alpaca_settings.save
     ensure
       @dbh.disconnect if @dbh
     end
@@ -189,7 +196,7 @@ class Alpaca::UvmDataLoader
     ## Nothing to load if the routes are not enabled.
     return unless @network_settings.is_enabled
     
-    query  = "SELECT  network_space, destination, next_hop, description,  live"
+    query  = "SELECT  network_space, destination, next_hop, description, live"
     query += " FROM u_network_route"
     query += " WHERE settings_id = ?"
     query += " ORDER BY position"
@@ -202,6 +209,9 @@ class Alpaca::UvmDataLoader
         netmask = 32 if netmask.nil?
         NetworkRoute.new( :target => network, :netmask => netmask, :gateway => r["next_hop"],
                           :description => r["description"], :live => true ).save
+
+        ## All routing belongs in advanced mode.
+        set_advanced_if { true }
       end
     end
   end
@@ -364,10 +374,12 @@ class Alpaca::UvmDataLoader
       ## Configure the media
       m = EthernetMedia.get_value( row["media"] )
       m = EthernetMedia::Auto if m.nil?
+
+      set_advanced_if { m != EthernetMedia::Auto }
       interface.duplex, interface.speed = m.duplex, m.speed
 
       ## Save the MTU just in case
-      mtu = row["mtu"]
+      mtu = row["mtu"]            
 
       ## First check if it is configured for DHCP.
       if row["is_dhcp_enabled"]
@@ -389,6 +401,8 @@ class Alpaca::UvmDataLoader
         ## PPPoE settings
         pppoe = IntfPppoe.new( :username => p["username"], :password => p["password"], :secret_field => p["secret_field"] )
 
+        set_advanced_if { !ApplicationHelper::null?( pppoe.secret_field ) }
+
         configure_ip_networks( pppoe, ns )
         pppoe.dns_1 = @network_settings.dns_1
         pppoe.dns_2 = @network_settings.dns_2
@@ -407,6 +421,8 @@ class Alpaca::UvmDataLoader
     static.dns_2 = @network_settings.dns_2
     static.default_gateway =  @network_settings.default_route
     static.mtu = mtu
+
+    set_advanced_if { !mtu.nil? && mtu != 1500 }
 
     configure_ip_networks( static, ns )
 
@@ -443,6 +459,8 @@ class Alpaca::UvmDataLoader
       ## Configure the media
       m = EthernetMedia.get_value( row["media"] )
       m = EthernetMedia::Auto if m.nil?
+      set_advanced_if { m != EthernetMedia::Auto }
+
       interface.duplex, interface.speed = m.duplex, m.speed
 
       ns = row["network_space"]
@@ -463,6 +481,8 @@ class Alpaca::UvmDataLoader
 
       nat_address = get_nat_address( row )
     end
+
+    set_advanced_if { !mtu.nil? && mtu != 1500 }
     
     ## Must be configured for a static address
     static = IntfStatic.new
@@ -474,6 +494,8 @@ class Alpaca::UvmDataLoader
     ## setup the static addresses and aliases
     configure_ip_networks( static, ns )
 
+    set_advanced_if { static.ip_networks.length > 1 }
+    
     ## Configure the NAT policy
     unless nat_address.nil?
       ## Add a NAT policy (this not the external interface)
@@ -482,6 +504,9 @@ class Alpaca::UvmDataLoader
       nat_policy.netmask = "0"
       nat_policy.new_source = nat_address
       static.nat_policies = [ nat_policy ]
+    else
+      ## Static that doesn't NAT, this is in advanced mode.
+      set_advanced_if { true }
     end
 
     ## Save the interface as a static
@@ -564,5 +589,17 @@ class Alpaca::UvmDataLoader
     
     ## all the port types are just handled properly
     "#{filter_string}::#{value}&&"
+  end
+  
+  def set_advanced_if
+    begin
+      if ( yield == true ) 
+        @logger.info( "enabling advanced: #{caller[0,2].join( "\n" )}" )
+        @config_mode = AlpacaSettings::Level::Advanced
+      end
+    rescue
+      @logger.warn( "Unable to determine advanced settings, going to advanced #{$!}" )
+      @config_mode = AlpacaSettings::Level::Advanced
+    end
   end
 end
