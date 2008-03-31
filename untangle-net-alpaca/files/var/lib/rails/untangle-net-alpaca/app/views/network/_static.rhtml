@@ -1,7 +1,7 @@
 <%
 static = config.static
 ## Conversion to CIDR.
-if static.ip.length == 0
+if static.nil? or static.ip.nil? or static.ip.length == 0
     netmask = "24"
 else
     netmask = static.netmask
