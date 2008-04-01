@@ -451,12 +451,12 @@ class UVMFilterNode < UVMRemoteApp
                 node_stats[:s2t_chunks] += nodeStats.s2tChunks()
                 node_stats[:t2c_bytes] += nodeStats.t2cBytes()
                 node_stats[:t2c_chunks] += nodeStats.t2cChunks()
-                date = nodeStats.getStartDate()
+                date = nodeStats.startDate()
                 node_stats[:start_date] = date if (date < node_stats[:start_date])
-                date = nodeStats.getLastConfigurationDate()
+                date = nodeStats.lastConfigureDate()
                 node_stats[:last_config_date] = date if (date > node_stats[:last_config_date])
-                date = nodeStats.getLastActivityDate()
-                node_stats[:last_activity_date] = date if (date > nodeStats.getLastActivityDate())
+                date = nodeStats.lastActivityDate()
+                node_stats[:last_activity_date] = date if (date > nodeStats.lastActivityDate())
                 (0..15).each { |i|
                     node_stats["counter#{i}".to_sym] += nodeStats.getCount(i)
                 }

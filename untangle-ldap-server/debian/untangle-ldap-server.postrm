@@ -1,0 +1,14 @@
+#!/bin/bash
+
+SERVICE=untangle-slapd
+
+case $1 in
+  purge)
+    rm -fr /etc/$SERVICE/slapd.conf
+    rmdir --ignore-fail-on-non-empty /etc/$SERVICE
+    ;;
+esac
+
+update-rc.d -f $SERVICE remove >/dev/null
+
+exit 0

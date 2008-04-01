@@ -1,0 +1,13 @@
+#! /bin/bash
+
+SERVICE=untangle-slapd
+
+case "$1" in
+    remove|deconfigure)
+	if [ -x /etc/init.d/$SERVICE ]; then
+	  /etc/init.d/$SERVICE stop
+	fi
+	;;
+esac
+
+exit 0

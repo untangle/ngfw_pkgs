@@ -13,6 +13,8 @@
 
 MKDIR=/bin/mkdir -p
 
+DESTDIR=debian/untangle-ldap-server
+
 ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -g
 endif
@@ -27,46 +29,47 @@ configure-stamp:
 
 build: configure
 	dh_testdir
-	rm -rf ./debian/tmp
-	mkdir ./debian/tmp
+	rm -rf $(DESTDIR)
+	mkdir -p $(DESTDIR)
 	dh_installdirs -A -v
+	for i in `cat debian/untangle-nsis-addons.dirs` ; do mkdir -p $(DESTDIR)/$$i ; done
+	cp -r ./files/* $(DESTDIR)/
+	find $(DESTDIR) -name ".svn" -print0 | xargs -0 rm -rf 
 
 clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-arch-stamp build-indep-stamp configure-stamp
-	rm -rf debian/tmp debian/untangle-ifrename-config sav-install
+	rm -rf debian/$(DESTDIR) sav-install
 	dh_clean
 
 binary-indep: build
-	dh_testdir
-	dh_testroot
-	dh_movefiles
-#	dh_installdebconf
-	dh_shlibdeps
-	dh_installdocs
-#	dh_installexamples
-#	dh_installmenu
-#	dh_installlogrotate
-#	dh_installemacsen
-#	dh_installpam
-#	dh_installmime
-	# FIXME: this only works because the init script name starts with a 'u',
-	# so it's a bit dangerous :\
-	dh_installinit -r --no-start -- start 00 S .
-#	dh_installcron
-#	dh_installman
-#	dh_installinfo
-#	dh_undocumented
-	dh_installchangelogs
-#	dh_strip
-#	dh_link
-	dh_compress
-#	dh_fixperms
-	dh_installdeb
-#	dh_perl
+	dh_testdir  
+	dh_testroot   
+#	dh_movefiles  
+#	dh_installdebconf   
+#	dh_shlibdeps   # FIXME - had to remove
+	dh_installdocs   
+#	dh_installexamples   
+#	dh_installmenu   
+#	dh_installlogrotate   
+#	dh_installemacsen   
+#	dh_installpam   
+#	dh_installmime   
+	dh_installinit -n --init-script=untangle-slapd
+#	dh_installcron   
+#	dh_installman   
+#	dh_installinfo   
+#	dh_undocumented   
+	dh_installchangelogs    
+#	dh_strip  
+#	dh_link   
+	dh_compress   
+#	dh_fixperms   
+	dh_installdeb  
+#	dh_perl     
 	if [ -f debian/version ] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
-	dh_md5sums
+	dh_md5sums     
 
 binary-arch: build 
 # nothing to do

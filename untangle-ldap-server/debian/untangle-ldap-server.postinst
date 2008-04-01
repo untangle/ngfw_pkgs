@@ -1,0 +1,37 @@
+#! /bin/bash
+
+SERVICE=untangle-slapd
+SLAPD_CONFIG=/etc/untangle-ldap/slapd.conf
+SLAPD_LIB_DIR=/var/lib/untangle-ldap
+
+UNTANGLE_SLAPD_CONFIG_DIR=/usr/share/untangle-ldap-server
+
+ldapAdmin() {
+  grep -A 1 -E '^description: LDAP administrator$' $@
+}
+
+if [ -f $SLAPD_CONFIG ] ; then
+  theirAdminAccount=`slapcat -f $SLAPD_CONFIG | ldapAdmin`
+else
+  theirAdminAccount=""
+  cp ${UNTANGLE_SLAPD_CONFIG_DIR}/slapd.conf $SLAPD_CONFIG
+fi
+
+ourAdminAccount=`ldapAdmin ${UNTANGLE_SLAPD_CONFIG_DIR}/initial.ldif`
+
+mkdir -m 0755 -p /var/run/untangle-ldap
+
+if [ ! "$theirAdminAccount" = "$ourAdminAccount" ] ; then
+  /etc/init.d/$SERVICE stop
+  backupDir=/var/backups/untangle-ldap-`date -Iseconds`
+  [ -d ${SLAPD_LIB_DIR} ] && mv ${SLAPD_LIB_DIR} $backupDir
+  mkdir -p ${SLAPD_LIB_DIR}
+  cp ${UNTANGLE_SLAPD_CONFIG_DIR}/DB_CONFIG ${SLAPD_LIB_DIR}/DB_CONFIG
+  slapadd -f $SLAPD_CONFIG -l ${UNTANGLE_SLAPD_CONFIG_DIR}/initial.ldif
+  slapindex -f $SLAPD_CONFIG
+fi
+
+update-rc.d $SERVICE start 16 2 3 4 5 . stop 84 1 . >/dev/null
+/etc/init.d/$SERVICE restart
+
+exit 0
