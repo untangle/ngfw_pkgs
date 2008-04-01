@@ -37,11 +37,8 @@ alias sc='screen -R -D -A -r main'
 alias up='s apt-get update'
 alias ut='killall xbindkeys ; cat <<EOF | xmodmap -
 remove Lock = Caps_Lock
-remove Control = Control_L
-keysym Control_L = Caps_Lock
 keysym Caps_Lock = Control_L
 add Lock = Caps_Lock
-add Control = Control_L
 add Control = Control_R
 keycode 113 = BackSpace
 EOF
