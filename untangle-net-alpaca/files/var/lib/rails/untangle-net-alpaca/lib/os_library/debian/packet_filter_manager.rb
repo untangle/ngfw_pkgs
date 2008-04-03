@@ -298,7 +298,7 @@ EOF
     ## This is used to automatically NAT to a different address when using PPPoE.
     nat_automatic_target = "MASQUERADE"
     
-    conditions = [ "wan=? and config_type=? )", true, InterfaceHelper::ConfigType::PPPOE ]
+    conditions = [ "wan=? and config_type=?", true, InterfaceHelper::ConfigType::PPPOE ]
     i = Interface.find( :first, :conditions => conditions )
 
     ## if the WAN interface is configured for PPPoE, automatically NAT to the first alias.
