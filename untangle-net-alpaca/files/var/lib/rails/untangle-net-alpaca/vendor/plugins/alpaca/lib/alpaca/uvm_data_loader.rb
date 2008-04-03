@@ -356,6 +356,22 @@ class Alpaca::UvmDataLoader
 
   
   def configure_external_interface( interface, bridge_hash )
+    pppoe = nil
+    ## check if it is configured for PPPoE (has to be done before because PPPoE 
+    query = "select * from u_pppoe_connection LIMIT 1"
+    @dbh.execute( query ) do |result|
+      p = result.fetch
+      
+      if !p.nil? && p["live"]
+        ## PPPoE settings
+        pppoe = IntfPppoe.new( :username => p["username"], :password => p["password"], :secret_field => p["secret_field"] )
+
+        pppoe.dns_1 = @network_settings.dns_1
+        pppoe.dns_2 = @network_settings.dns_2
+        pppoe.use_peer_dns = false
+      end
+    end
+
     query  = "SELECT network_space, media, is_dhcp_enabled, mtu "
     query += " FROM u_network_intf JOIN u_network_space "
     query += " ON u_network_intf.network_space = u_network_space.rule_id  "
@@ -383,36 +399,29 @@ class Alpaca::UvmDataLoader
 
       ## First check if it is configured for DHCP.
       if row["is_dhcp_enabled"]
-        dynamic = IntfDynamic.new( :mtu => mtu )
-        configure_ip_networks( dynamic, ns )
-        interface.intf_dynamic = dynamic
-        interface.config_type = InterfaceHelper::ConfigType::DYNAMIC
-        interface.save
-        return
+        if pppoe.nil?
+          dynamic = IntfDynamic.new( :mtu => mtu )
+          configure_ip_networks( dynamic, ns )
+          interface.intf_dynamic = dynamic
+          interface.config_type = InterfaceHelper::ConfigType::DYNAMIC
+          interface.save
+          return
+        else
+          pppoe.use_peer_dns = true
+          pppoe.dns_1 = ""
+          pppoe.dns_2 = ""
+        end
       end
     end
 
-    ## Next check if it is configured for PPPoE
-    query = "select * from u_pppoe_connection LIMIT 1"
-    @dbh.execute( query ) do |result|
-      p = result.fetch
-      
-      unless p.nil? || !p["live"]
-        ## PPPoE settings
-        pppoe = IntfPppoe.new( :username => p["username"], :password => p["password"], :secret_field => p["secret_field"] )
-
-        set_advanced_if { !ApplicationHelper::null?( pppoe.secret_field ) }
-
-        configure_ip_networks( pppoe, ns )
-        pppoe.dns_1 = @network_settings.dns_1
-        pppoe.dns_2 = @network_settings.dns_2
-
-        interface.intf_pppoe = pppoe
-
-        interface.config_type = InterfaceHelper::ConfigType::PPPOE
-        interface.save
-        return
-      end
+    ## Check if this is configured for PPPoE
+    unless pppoe.nil?
+      configure_ip_networks( pppoe, ns )
+      set_advanced_if { !ApplicationHelper::null?( pppoe.secret_field ) }
+      interface.intf_pppoe = pppoe
+      interface.config_type = InterfaceHelper::ConfigType::PPPOE
+      interface.save
+      return
     end
 
     ## Must be configured for a static address
