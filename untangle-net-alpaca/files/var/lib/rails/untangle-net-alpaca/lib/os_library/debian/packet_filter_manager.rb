@@ -295,6 +295,19 @@ mark_local_ip()
 }
 EOF
     
+    ## This is used to automatically NAT to a different address when using PPPoE.
+    nat_automatic_target = "MASQUERADE"
+    
+    conditions = [ "wan=? and config_type=?", true, InterfaceHelper::ConfigType::PPPOE ]
+    i = Interface.find( :first, :conditions => conditions )
+
+    ## if the WAN interface is configured for PPPoE, automatically NAT to the first alias.
+    unless i.nil? || i.intf_pppoe.nil?
+      ## If one exists, NAT to the first user defined IP Network
+      ip_network = i.intf_pppoe.ip_networks[0]
+      nat_automatic_target = "SNAT --to-source #{ip_network.ip}" unless ip_network.nil? || ip_network.ip.nil?
+    end
+    
     Interface.find( :all ).each do |interface|
       ## labelling
       text << marking( interface )
@@ -303,7 +316,7 @@ EOF
       text << filtering( interface )
       
       ## Insert the commands to handle NAT
-      a, b = nat( interface )
+      a, b = nat( interface, nat_automatic_target )
       text << a
       fw_text << b
     end
@@ -472,10 +485,9 @@ EOF
   end
   
   ## REVIEW This doesn't support discontiguous netmasks (like 255.0.255.0) (but neither does ifconfig, so who cares)
-  ## REVIEW Order is important, so this may need a way to reorder them in the UI.
   ## REVIEW should put 0.0.0.0/0 at the bottom.
   ## REVIEW how should auto work, right now it just uses MASQUERADE.
-  def nat( interface )
+  def nat( interface, nat_automatic_target )
     ## static is the only config type that supports NATing
     config = interface.current_config
 
@@ -490,13 +502,13 @@ EOF
     name = OSLibrary::Debian::NetworkManager.bridge_name( interface ) if interface.is_bridge?
     
     rules = []
-    fw_rules = []
+    fw_rules = []    
 
     nat_policies.each do |policy|
       ## REVIEW : Need to handle the proper ports.
       ## REVIEW : Need to use the correct interface marks, but that needs a bridge mark
       if ( policy.new_source == NatPolicy::Automatic )
-        target = "MASQUERADE"
+        target = nat_automatic_target
       else
         target = "SNAT --to-source #{policy.new_source}"
       end

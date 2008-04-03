@@ -53,7 +53,6 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
   end
 
   def hook_commit
-    puts "NetworkManager"
     write_files
     run_services
   end

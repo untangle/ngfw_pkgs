@@ -60,7 +60,7 @@ get_addresses()
     
     ## Always favor aliases assigned to the PPPoE interface.
     test -n "${t_interface}" && {
-        t_address=`ip addr show ${t_interface} | awk "/^ *inet.*scope global ${t_interface}/ { interface = \\$2 ; sub( \"/.*\", \"\", interface ) ; print interface }"`
+        t_address=`ip addr show ${t_interface} | awk "/^ *inet.*scope global ${t_interface}/ { interface = \\$2 ; sub( \"/.*\", \"\", interface ) ; print interface ; exit }"`
 
         ## If there is an address on the PPPoE interface, then go with that.
         test -n "${t_address}" && {
@@ -74,7 +74,7 @@ get_addresses()
     local t_interface="`ip route show | awk '/^default/ { print $5 }'`"    
     
     ## Find the first address assigned to that interface.
-    test -n "${t_interface}" && ip addr show ${t_interface} | awk "/^ *inet.*scope global ${t_interface}/ { interface = \$2 ; sub( \"/.*\", \"\", interface ) ; print interface }"
+    test -n "${t_interface}" && ip addr show ${t_interface} | awk "/^ *inet.*scope global ${t_interface}/ { interface = \$2 ; sub( \"/.*\", \"\", interface ) ; print interface ; exit }"
 }
 
 update_dnsmasq_hosts()
