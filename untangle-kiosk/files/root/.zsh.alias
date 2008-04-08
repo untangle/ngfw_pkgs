@@ -38,8 +38,7 @@ alias up='s apt-get update'
 alias ut='killall xbindkeys ; cat <<EOF | xmodmap -
 remove Lock = Caps_Lock
 keysym Caps_Lock = Control_L
-add Lock = Caps_Lock
-add Control = Control_R
+add Control = Control_L
 keycode 113 = BackSpace
 EOF
 ; xset r 113'
