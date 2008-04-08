@@ -504,3 +504,13 @@ div.list-table-container.nats div.new-source
 { 
   width: 21em;
 }
+
+/* ------------------- QoS -------------------- */
+div.list-table-container.qoss div.priority
+{
+  width: 8em;
+}
+div.list-table-container.qoss div.description
+{ 
+  width: 24.5em;
+}
