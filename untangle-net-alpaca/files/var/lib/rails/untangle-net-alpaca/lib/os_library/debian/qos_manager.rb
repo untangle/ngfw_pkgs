@@ -17,7 +17,7 @@
 class OSLibrary::Debian::QosManager < OSLibrary::QosManager
   include Singleton
 
-  QoSConfig = "/etc/default/untangle-qos"
+  QoSConfig = "/etc/untangle-net-alpaca/untangle-qos"
   Service = "/etc/untangle-net-alpaca/wshaper.htb"
   AptLog = "/var/log/uvm/apt.log"
 

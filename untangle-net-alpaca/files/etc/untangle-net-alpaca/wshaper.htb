@@ -22,7 +22,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-#set these in /etc/default/untangle-qos which is handled by the alpaca UI
+#set these in /etc/untangle-net-alpaca/untangle-qos which is handled by the alpaca UI
 DOWNLINK=
 UPLINK=
 DEV=
@@ -30,7 +30,7 @@ HIGHPRIO=
 MIDPRIO=
 LOWPRIO=
 
-. /etc/default/untangle-qos
+. /etc/untangle-net-alpaca/untangle-qos
 
 if [ "$1" = "status" ]
 then
