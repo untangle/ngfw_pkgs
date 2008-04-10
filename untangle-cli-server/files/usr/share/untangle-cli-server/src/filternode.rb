@@ -91,7 +91,7 @@ class UVMFilterNode < UVMRemoteApp
 
     protected
         def get_filternode_tids(node_name)
-            return @@uvmRemoteContext.nodeManager.nodeInstances(node_name)
+            return @@uvmRemoteContext.nodeManager.nodeInstances(node_name).sort # return tids in sorted order so snmpwalks don't fail.
         end
     
     protected
@@ -202,12 +202,12 @@ class UVMFilterNode < UVMRemoteApp
                                 @stats_cache["#{mib_root}.#{tid}"] = [node_stats, Time.now.to_i]
                             rescue java.lang.IllegalStateException => ex
                                 @@diag.if_level(3) { puts! "Can't collect stats from TID #{tid} - invalid state." ; p ex }
-                                return ""
+                                node_stats = fake_node_stats();
                             rescue Exception => ex
                                 @@diag.if_level(3) { 
-									puts! "Error: unable to get statistics for node: "
-									p node_ctx if node_ctx; p ex; p ex.backtrace
-								}
+					puts! "Error: unable to get statistics for node: "
+					p node_ctx if node_ctx; p ex; p ex.backtrace
+				}
                                 return nil
                             end
                         else
@@ -413,7 +413,35 @@ class UVMFilterNode < UVMRemoteApp
             }
             return stats_hash
         end
-        
+
+    protected
+	# provide fake stats for nodes that are installed but turned off - works around the invalid state bug.
+        def fake_node_stats()
+            @@diag.if_level(3) { puts! "Generating fake node stats." }
+            stats_hash = {}
+            stats_hash[:tcp_session_count] = 0;
+            stats_hash[:tcp_session_total] = 0;
+            stats_hash[:tcp_session_request_total] = 0;
+            stats_hash[:udp_session_count] = 0;
+            stats_hash[:udp_session_total] = 0;
+            stats_hash[:udp_session_request_total] = 0;
+            stats_hash[:c2t_bytes] = 0;
+            stats_hash[:c2t_chunks] = 0;
+            stats_hash[:t2s_bytes] = 0;
+            stats_hash[:t2s_chunks] = 0;
+            stats_hash[:s2t_bytes] = 0;
+            stats_hash[:s2t_chunks] = 0;
+            stats_hash[:t2c_bytes] = 0;
+            stats_hash[:t2c_chunks] = 0;
+            stats_hash[:start_date] = 0;
+            stats_hash[:last_configure_date] = 0;
+            stats_hash[:last_activity_date] = 0;
+            (0..15).each { |i|
+                stats_hash["counter#{i}".to_sym] = 0;
+            }
+            return stats_hash
+        end
+
     protected
         # Must be called from within stats_cache_lock
         def accumulate_node_stats(mib_root)
@@ -422,8 +450,14 @@ class UVMFilterNode < UVMRemoteApp
             node_stats = nil        
             tids.each { |tid|
                 # get stats for this tid.
-                node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
-                nodeStats = node_ctx.getStats()
+		begin
+                    node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
+                    nodeStats = node_ctx.getStats()
+		rescue Exception => ex
+		    # if for any reason we can't get this node's stats then just skip it.
+            	    @@diag.if_level(2) { puts! "Unable to get stats for TID #{tid} - exception caught: " + ex }
+		    next
+		end
 
                 # whenever we fetch stats from the UVM, freshen the values in the cache.
                 hashed_stats = hash_node_stats(nodeStats)
