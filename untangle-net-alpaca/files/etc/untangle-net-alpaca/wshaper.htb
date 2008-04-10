@@ -141,33 +141,7 @@ do
     tc filter add dev $DEV parent 1: protocol ip prio 30 u32 $a flowid 1:30
 done
 
-
-# some traffic however suffers a worse fate
-#for a in $LOWPRIOPORTDST
-#do
-#    tc filter add dev $DEV parent 1: protocol ip prio 14 u32 \
-#       match ip dport $a 0xffff flowid 1:30
-#done
-
-#for a in $LOWPRIOPORTSRC
-#do
-#     tc filter add dev $DEV parent 1: protocol ip prio 15 u32 \
-#       match ip sport $a 0xffff flowid 1:30
-#done
-
-#for a in $LOWPRIOHOSTSRC
-#do
-#     tc filter add dev $DEV parent 1: protocol ip prio 16 u32 \
-#       match ip src $a flowid 1:30
-#done
-
-#for a in $LOWPRIOHOSTDST
-#do
-#     tc filter add dev $DEV parent 1: protocol ip prio 17 u32 \
-#       match ip dst $a flowid 1:30
-#done
-
-# rest is 'non-interactive' ie 'bulk' and ends up in 1:20
+# rest ends up in 1:20
 
 tc filter add dev $DEV parent 1: protocol ip prio 18 u32 \
    match ip dst 0.0.0.0/0 flowid 1:20
