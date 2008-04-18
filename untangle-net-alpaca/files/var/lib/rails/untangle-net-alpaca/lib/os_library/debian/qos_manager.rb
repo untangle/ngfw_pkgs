@@ -18,15 +18,23 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
   include Singleton
 
   QoSConfig = "/etc/untangle-net-alpaca/untangle-qos"
+  QoSRules = "/etc/untangle-net-alpaca/tc-rules.d"
+  PriorityFiles = { "HIGHPRIO" => QoSRules + "/100-high-priority",
+                    "MIDPRIO"  => QoSRules + "/200-mid-priority",
+                    "LOWPRIO"  => QoSRules + "/300-low-priority" }
   Service = "/etc/untangle-net-alpaca/wshaper.htb"
   AptLog = "/var/log/uvm/apt.log"
+
+  def status
+     run_command( "#{Service} status" )
+  end
 
   def estimate_bandwidth
      download = "Unknown"
      upload = "Unknown"
-     f = File.new(AptLog,"r")
+     f = File.new( AptLog, "r" )
      f.each_line do |line|
-       downloadMatchData = line.match(/Fetched.*\(([0-9]+)kB\/s\)/)
+       downloadMatchData = line.match( /Fetched.*\(([0-9]+)kB\/s\)/ )
        if ! downloadMatchData.nil? and downloadMatchData.length >= 2
           download = downloadMatchData[1] 
           #TODO fix this hack
@@ -37,6 +45,13 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
   end
 
   def hook_write_files
+
+    tc_rules_files = {}
+
+    PriorityFiles.each_pair do |key, filename|
+      tc_rules_files[key] = ""
+    end
+
     qos_settings = QosSettings.find( :first )
     qos_settings = QosSettings.new if qos_settings.nil?
     qos_enabled = "NO"
@@ -45,13 +60,12 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
     end
     settings = "QOS_ENABLED=#{qos_enabled}\nDOWNLINK=#{qos_settings.download}\nUPLINK=#{qos_settings.upload}\nDEV=#{Interface.external.os_name}\n\n"
     
-    priorities = { "HIGHPRIO" => [], "MIDPRIO" => [], "LOWPRIO" => [] }
 
     qos_rules = QosRules.find( :all )
     qos_rules.each do |qos_rule|
        if qos_rule.enabled
-         src_filter_string = ""
-         dst_filter_string = ""
+         dev = Interface.external.os_name
+         filter_string = ""
          filters = qos_rule.filter.split( "&&" )
          filters.each do |filter|
            type, value = filter.split( "::" )
@@ -63,8 +77,15 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
                if address_netmask.length == 2
                  netmask = OSLibrary::QosManager::NETMASK32[address_netmask[1]]
                end 
-               src_filter_string << " u32 match ip src #{address} #{netmask} "
-               dst_filter_string << " u32 match ip dst #{address} #{netmask} "
+               filter_string << " match ip src #{address} #{netmask} "
+             elsif type == "d-addr"
+               address_netmask = value.split( "/" )
+               address = address_netmask[0]
+               netmask = "0xFFFFFFFF"
+               if address_netmask.length == 2
+                 netmask = OSLibrary::QosManager::NETMASK32[address_netmask[1]]
+               end 
+               filter_string << " match ip dst #{address} #{netmask} "
              elsif type == "s-port"
                port_mask = value.split( "/" )
                port = port_mask[0]
@@ -72,26 +93,26 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
                if port_mask.length == 2
                  mask = OSLibrary::QosManager::NETMASK16[port_mask[1]]
                end
-               src_filter_string << " u32 match ip sport #{port} #{mask} "
-               dst_filter_string << " u32 match ip dport #{port} #{mask} "
+               filter_string << " match ip sport #{port} #{mask} "
+             elsif type == "d-port"
+               port_mask = value.split( "/" )
+               port = port_mask[0]
+               mask = "0xFFFF"
+               if port_mask.length == 2
+                 mask = OSLibrary::QosManager::NETMASK16[port_mask[1]]
+               end
+               filter_string << " match ip dport #{port} #{mask} "
              end
            end
          end
          priority = QosHelper::QosTableModel::PRIORITY[qos_rule.priority]
-         if ! src_filter_string.nil? and src_filter_string.length > 0
-             priorities[priority] << src_filter_string
-         end
-         if ! dst_filter_string.nil? and dst_filter_string.length > 0
-             priorities[priority] << dst_filter_string
+         if ! filter_string.nil? and filter_string.length > 0
+             tc_rules_files[priority] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_rule.priority} u32 #{filter_string} flowid 1:#{qos_rule.priority}\n" 
          end
        end
     end
-    priorities.each_pair do |key, value|
-      if value.length > 0
-          settings << "#{key}=(\"" + value.join("\" \"") + "\")\n"
-      else
-          settings << "#{key}=()\n"
-      end
+    tc_rules_files.each_pair do |key, file_contents|
+      os["override_manager"].write_file( PriorityFiles[key], file_contents, "\n" )
     end
     os["override_manager"].write_file( QoSConfig, settings, "\n" )
   end

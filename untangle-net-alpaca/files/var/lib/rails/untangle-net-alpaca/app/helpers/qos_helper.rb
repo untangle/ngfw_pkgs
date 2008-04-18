@@ -19,7 +19,7 @@ module QosHelper
   class QosTableModel < Alpaca::Table::TableModel
     include Singleton
     Priorities = [[ "High", "30" ],
-                  [ "Medium", "20" ],
+                  [ "Normal", "20" ],
                   [ "Low", "10" ]]
     PRIORITY = { 10 => "LOWPRIO", 20 => "MIDPRIO", 30 => "HIGHPRIO" }
 

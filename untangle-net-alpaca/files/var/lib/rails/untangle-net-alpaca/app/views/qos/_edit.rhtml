@@ -1,4 +1,8 @@
 <%= javascript_tag <<EOF
+InterfaceHandler.interfaceList = new Array( #{@interfaces.join( ", ")} );
+
+DayHandler.dayList = new Array( #{RuleHelper::DayOfWeekJavascript} );
+
 ProtocolHandler.protocolList = new Array( Array('tcp', 'tcp'), Array('udp', 'udp') );
 EOF
 %>
@@ -41,7 +45,7 @@ EOF
       </li>
     </ul>
     <ul id="rule-builder" class="rule-list">
-       <%= render( :partial => "rule/parameter" , :collection => @parameter_list, :locals => { :filter_types => [[ "IP Address".t, "s-addr" ], [ "Port".t, "s-port" ], [ "Protocol".t, "protocol" ]] } ) %>
+       <%= render( :partial => "rule/parameter" , :collection => @parameter_list ) %>
     </ul>
   </div>
 <% end -%>

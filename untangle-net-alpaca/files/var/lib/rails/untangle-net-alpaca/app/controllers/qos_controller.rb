@@ -86,4 +86,8 @@ class QosController < ApplicationController
     return redirect_to( :action => "manage" )
   end
 
+  def status
+    
+  end
+
 end

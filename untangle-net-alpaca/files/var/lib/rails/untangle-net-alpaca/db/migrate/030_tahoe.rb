@@ -21,9 +21,11 @@ class Tahoe < Alpaca::Migration
       #if true the apply qos and qos_rules, if false do nothing
       table.column :enabled, :boolean
       #upload rate in kbps
-      table.column :upload, :integer
+      table.column :upload, :integer, :default => 384
+      table.column :upload_percentage, :integer, :default => 95
       #download rate in kbps
-      table.column :download, :integer
+      table.column :download, :integer, :default => 1500
+      table.column :download_percentage, :integer, :default => 80
     end
  
     create_table :qos_rules do |table|
