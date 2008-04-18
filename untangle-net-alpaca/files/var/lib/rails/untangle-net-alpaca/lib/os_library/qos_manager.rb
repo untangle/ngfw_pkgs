@@ -111,4 +111,8 @@ class OSLibrary::QosManager < Alpaca::OS::ManagerBase
      return [download, upload]
   end
 
+  def status
+    "None"
+  end
+
 end

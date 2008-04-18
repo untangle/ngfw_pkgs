@@ -47,6 +47,7 @@ class QosController < ApplicationController
     
     @qoss = QosRules.find( :all )
     @bandwidth = os["qos_manager"].estimate_bandwidth
+    @status = os["qos_manager"].status
   end
 
   def save

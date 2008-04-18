@@ -25,7 +25,12 @@ class Tahoe < Alpaca::Migration
       table.column :upload_percentage, :integer, :default => 95
       #download rate in kbps
       table.column :download, :integer, :default => 1500
-      table.column :download_percentage, :integer, :default => 80
+      table.column :download_percentage, :integer, :default => 8
+      table.column :prioritize_ssh, :boolean, :default => false
+      table.column :prioritize_ping, :boolean, :default => false
+      table.column :prioritize_ack, :boolean, :default => true
+      table.column :prioritize_dns, :boolean, :default => true
+      table.column :prioritize_gaming, :boolean, :default => false
     end
  
     create_table :qos_rules do |table|

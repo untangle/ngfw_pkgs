@@ -80,4 +80,43 @@ EOF
   def qos_table_model
     QosTableModel.instance
   end
+
+  class QosStatsModel < Alpaca::Table::TableModel
+    include Singleton
+
+    def initialize
+      columns = []
+
+      columns << Alpaca::Table::Column.new( "priority", "Priority".t ) do |stat,options| 
+        "<span>" + stat[0] + "</span>"
+      end      
+      columns << Alpaca::Table::Column.new( "rate", "Rate".t ) do |stat,options| 
+        "<span>" + stat[1] + "</span>"
+      end
+      columns << Alpaca::Table::Column.new( "burst", "Burst".t ) do |stat,options| 
+        "<span>" + stat[2] + "</span>"
+      end
+      columns << Alpaca::Table::Column.new( "sent", "Sent".t ) do |stat,options| 
+        "<span>" + stat[3] + "</span>"
+      end
+      columns << Alpaca::Table::Column.new( "dropped", "Dropped".t ) do |stat,options| 
+        "<span>" + stat[4] + "</span>"
+      end
+      columns << Alpaca::Table::Column.new( "overlimits", "Overlimits".t ) do |stat,options| 
+        "<span>" + stat[5] + "</span>"
+      end
+
+
+      super( "QoS Statistics", "qosstats", "", "qosstat", columns )
+    end
+
+    def row_id( row )
+      "row-#{rand( 0x100000000 )}"
+    end
+
+  end
+
+  def qos_stats_model
+    QosStatsModel.instance
+  end
 end

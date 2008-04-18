@@ -27,11 +27,30 @@ EOF
           <label for="qos_settings_upload_percentage">Limit Upload to:</label>
           <%= select( "qos_settings", "upload_percentage", [ 100, 95, 90, 80, 70, 60, 50, 40, 30, 20, 10 ] ) %> %
         </li>
+        <li>
+          <label for="qos_settings_prioritize_ack"><%= "Prioritize ACK:".t %></label>
+          <%= check_box( "qos_settings", "prioritize_ack", { :checked => @qos_settings.prioritize_ack }, true, false ) %> <span class="units">Speeds up downloads while uploading</span>
+        </li>
+        <li>
+          <label for="qos_settings_prioritize_dns"><%= "Prioritize DNS:".t %></label>
+          <%= check_box( "qos_settings", "prioritize_dns", { :checked => @qos_settings.prioritize_dns }, true, false ) %>
+        </li>
+        <li>
+          <label for="qos_settings_prioritize_gaming"><%= "Prioritize Gaming:".t %></label>
+          <%= check_box( "qos_settings", "prioritize_gaming", { :checked => @qos_settings.prioritize_gaming }, true, false ) %>
+        </li>
+        <li>
+          <label for="qos_settings_prioritize_ssh"><%= "Prioritize SSH:".t %></label>
+          <%= check_box( "qos_settings", "prioritize_ssh", { :checked => @qos_settings.prioritize_ssh }, true, false ) %>
+        </li>
       </ul>
     </fieldset>
   <%= build_table( Alpaca::Table::Data.new( "qos-list", @qoss ), qos_table_model) 
 %>
   <%= sortable_element( "qos-list", :onChange => "function(){enableSave(); TableManager.updateRowStyles( 'qos-list' );}" ) %>
+  <%= build_table( Alpaca::Table::Data.new( "qos-stats-list", @status ), qos_stats_model) 
+%>
+
 
   </div></div>
  <%= build_footer %>

@@ -19,14 +19,34 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
 
   QoSConfig = "/etc/untangle-net-alpaca/untangle-qos"
   QoSRules = "/etc/untangle-net-alpaca/tc-rules.d"
-  PriorityFiles = { "HIGHPRIO" => QoSRules + "/100-high-priority",
+  PriorityFiles = { "SYSTEM" => QoSRules + "/50-system-priority",
+                    "HIGHPRIO" => QoSRules + "/100-high-priority",
                     "MIDPRIO"  => QoSRules + "/200-mid-priority",
                     "LOWPRIO"  => QoSRules + "/300-low-priority" }
   Service = "/etc/untangle-net-alpaca/wshaper.htb"
   AptLog = "/var/log/uvm/apt.log"
+  PriorityQueueToName = { "30:" => "Low", "20:" => "Normal", "10:" => "High" }
 
   def status
-     run_command( "#{Service} status" )
+     results = []
+     lines = `#{Service} status`
+     pieces = lines.split( Regexp.new( 'qdisc|class', Regexp::MULTILINE ) )
+     pieces.each do |piece|
+       if piece.include?( "htb" ) and piece.include?( "leaf" )
+         stats = piece.split( Regexp.new( ' ', Regexp::MULTILINE ) )
+         
+         if PriorityQueueToName.has_key?( stats[6] )
+           results << [ PriorityQueueToName[stats[6]],
+                        stats[10],
+                        stats[14],
+                        stats[19] + stats[20],
+                        stats[24].sub( /,/, '' ),
+                        stats[26].sub( /\)/, '' )
+                      ]
+         end
+       end
+     end
+     return results
   end
 
   def estimate_bandwidth
@@ -58,8 +78,29 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
     if qos_settings.enabled
       qos_enabled = "YES"
     end
-    settings = "QOS_ENABLED=#{qos_enabled}\nDOWNLINK=#{qos_settings.download}\nUPLINK=#{qos_settings.upload}\nDEV=#{Interface.external.os_name}\n\n"
+    settings = "QOS_ENABLED=#{qos_enabled}\nDOWNLINK=#{qos_settings.download*qos_settings.download_percentage/100}\nUPLINK=#{qos_settings.upload*qos_settings.upload_percentage/100}\nDEV=#{Interface.external.os_name}\n\n"
     
+
+    dev = Interface.external.os_name
+    tc_rules_files["SYSTEM"] = ""
+    if qos_settings.prioritize_ssh
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip tos 0x10 0xff match ip dport 22 0xffff flowid 1:10\n"
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip tos 0x10 0xff match ip sport 22 0xffff flowid 1:10\n"
+    end
+    if qos_settings.prioritize_ping
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip protocol 1 0xff flowid 1:10\n"
+    end
+    if qos_settings.prioritize_ack
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip protocol 6 0xff match u8 0x05 0x0f at 0 match u16 0x0000 0xffc0 at 2 match u8 0x10 0xff at 33 flowid 1:10\n"
+    end
+    if qos_settings.prioritize_dns
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip dport 53 0xffff flowid 1:10\n"
+    end
+    #TODO actually write this
+    if qos_settings.prioritize_gaming
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip protocol 1 0xff flowid 1:10\n"
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip dport 53 0xffff flowid 1:10\n"
+    end
 
     qos_rules = QosRules.find( :all )
     qos_rules.each do |qos_rule|

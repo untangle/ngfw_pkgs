@@ -92,59 +92,9 @@ tc qdisc add dev $DEV parent 1:10 handle 10: sfq perturb 10
 tc qdisc add dev $DEV parent 1:20 handle 20: sfq perturb 10
 tc qdisc add dev $DEV parent 1:30 handle 30: sfq perturb 10
 
-# TOS Minimum Delay (ssh, NOT scp) in 1:10:
-if [ "${OPTIMIZE_SSH}" = "YES" ]
-then
-    tc filter add dev $DEV parent 1:0 protocol ip prio 10 u32 \
-      match ip tos 0x10 0xff match ip dport 22 0xffff flowid 1:10
-
-    tc filter add dev $DEV parent 1:0 protocol ip prio 10 u32 \
-      match ip tos 0x10 0xff match ip sport 22 0xffff flowid 1:10
-fi
-#
-if [ "${OPTIMIZE_DNS}" = "YES" ]
-then
-    tc filter add dev $DEV parent 1:0 protocol ip prio 10 u32 \
-       match ip dport 53 0xffff flowid 1:10
-fi
-
-# ICMP (ip protocol 1) in the interactive class 1:10 so we 
-# can do measurements & impress our friends:
-if [ "${OPTIMIZE_PING}" = "YES" ]
-then
-    tc filter add dev $DEV parent 1:0 protocol ip prio 10 u32 \
-       match ip protocol 1 0xff flowid 1:10
-fi
-
-# To speed up downloads while an upload is going on, put ACK packets in
-# the interactive class:
-if [ "${OPTIMIZE_ACK}" = "YES" ]
-then
-    tc filter add dev $DEV parent 1: protocol ip prio 10 u32 \
-       match ip protocol 6 0xff \
-       match u8 0x05 0x0f at 0 \
-       match u16 0x0000 0xffc0 at 2 \
-       match u8 0x10 0xff at 33 \
-       flowid 1:10
-fi
-
-for a in "$HIGHPRIO"
-do
-    tc filter add dev $DEV parent 1: protocol ip prio 1 u32 $a flowid 1:10
-done
-
-for a in "$MIDPRIO"
-do
-    tc filter add dev $DEV parent 1: protocol ip prio 20 u32 $a flowid 1:20
-done
-
-for a in "$LOWPRIO"
-do
-    tc filter add dev $DEV parent 1: protocol ip prio 30 u32 $a flowid 1:30
-done
+run-parts /etc/untangle-net-alpaca/tc-rules.d
 
 # rest ends up in 1:20
-
 tc filter add dev $DEV parent 1: protocol ip prio 20 u32 \
    match ip dst 0.0.0.0/0 flowid 1:20
 
@@ -155,13 +105,9 @@ tc filter add dev $DEV parent 1: protocol ip prio 20 u32 \
 # ISPs tend to have *huge* queues to make sure big downloads are fast
 #
 # attach ingress policer:
-
 tc qdisc add dev $DEV handle ffff: ingress
 
 # filter *everything* to it (0.0.0.0/0), drop everything that's
 # coming in too fast:
-
 tc filter add dev $DEV parent ffff: protocol ip prio 50 u32 match ip src \
    0.0.0.0/0 police rate ${DOWNLINK}kbit burst 12k drop flowid :1
-
-run-parts /etc/untangle-net-alpaca/tc-rules.d
