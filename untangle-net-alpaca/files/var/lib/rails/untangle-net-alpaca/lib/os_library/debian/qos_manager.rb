@@ -52,14 +52,18 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
   def estimate_bandwidth
      download = "Unknown"
      upload = "Unknown"
-     f = File.new( AptLog, "r" )
-     f.each_line do |line|
-       downloadMatchData = line.match( /Fetched.*\(([0-9]+)kB\/s\)/ )
-       if ! downloadMatchData.nil? and downloadMatchData.length >= 2
-          download = downloadMatchData[1] 
-          #TODO fix this hack
-          upload = downloadMatchData[1].to_f/5.0
+     begin
+       f = File.new( AptLog, "r" )
+       f.each_line do |line|
+         downloadMatchData = line.match( /Fetched.*\(([0-9]+)kB\/s\)/ )
+         if ! downloadMatchData.nil? and downloadMatchData.length >= 2
+            download = downloadMatchData[1] 
+            #TODO fix this hack
+            upload = downloadMatchData[1].to_f/5.0
+         end
        end
+     rescue
+       # default to unkown
      end
      return [download, upload]
   end
@@ -100,6 +104,21 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
     if qos_settings.prioritize_gaming
       tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip protocol 1 0xff flowid 1:10\n"
       tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip dport 53 0xffff flowid 1:10\n"
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip dport 6073 0xffff flowid 1:10\n"
+#      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip dport 2300-2400 0xffff flowid 1:10\n"
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip dport 1200 0xffff flowid 1:10\n"
+#      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip dport 27000-27015,27030-27039 0xffff flowid 1:10\n"
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip dport 4000 0xffff flowid 1:10\n"
+#      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip dport 6112-6119 0xffff flowid 1:10\n"
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip dport 7000 0xffff flowid 1:10\n"
+#      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip dport 1024-6000 0xffff flowid 1:10\n"
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip dport 6003 0xffff flowid 1:10\n"
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip dport 7002 0xffff flowid 1:10\n"
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip dport 27910 0xffff flowid 1:10\n"
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip dport 8080 0xffff flowid 1:10\n"
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip dport 27900 0xffff flowid 1:10\n"
+#      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1:0 protocol ip prio 10 u32 match ip dport 7777-7783 0xffff flowid 1:10\n"
+
     end
 
     qos_rules = QosRules.find( :all )
