@@ -37,6 +37,15 @@ class Interface < ActiveRecord::Base
   ## Link for all of the interfaces that are bridged with this interface.
   has_many( :bridged_interfaces, :class_name => "IntfBridge", :foreign_key => "bridge_interface_id" )
 
+  def Interface.external
+    interfaces = Interface.find( :all, :conditions => [ "wan = ?", true ] )
+    interfaces.each do |interface|
+      if interface.wan
+        return interface
+      end
+    end
+  end
+
   def Interface.valid_dhcp_server?
     dhcp_server_settings = DhcpServerSettings.find( :first )
     if dhcp_server_settings.nil? \
@@ -185,6 +194,7 @@ class Interface < ActiveRecord::Base
     return mtu
   end
 
+  ## REVIEW : This should be inside of the network_manager since it may be os dependent.
   def hardware_address
     address = "Unknown".t
     begin

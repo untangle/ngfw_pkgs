@@ -1,0 +1,65 @@
+<%= javascript_tag <<EOF
+InterfaceHandler.interfaceList = new Array( #{@interfaces.join( ", ")} );
+
+DayHandler.dayList = new Array( #{RuleHelper::DayOfWeekJavascript} );
+
+ProtocolHandler.protocolList = new Array( Array('tcp', 'tcp'), Array('udp', 'udp') );
+EOF
+%>
+
+<h2 class="title"><%= "Edit".t %></h2>
+<% form_tag( :action => '#' ) do -%>
+  <fieldset>
+    <ul class="text-fields">
+      <li>
+        <label for="enabled"><%= "Enabled:".t %></label>
+        <%= check_box_tag( "enabled", true, @qos.enabled, :class => 'checkbox' ) %>
+      </li>
+
+      <li>
+        <label for="description"><%= "Description:".t %></label>
+        <%= text_field_tag( "description", @qos.description, :class => 'textfield' ) %>
+      </li>
+
+      <li>
+        <label for="target"><%= "Priority:".t %></label>
+        <%= select_tag( "priority", options_for_select( @priorities, @qos.priority )) %>
+      </li>      
+    </ul>
+  </fieldset>
+  <div class="list-table rules">
+	  
+    <ul class="rule-list">
+      <li class="info">
+       <span class="edit-condition">If all of the following conditions are met</span>
+      </li>
+      <li class="header">
+        <div class="and">&nbsp;</div>
+        <div class="type">
+          Type
+        </div>
+        <div class="value">
+          Value
+        </div>
+ <div class="add-button" onClick="RuleBuilder.addParameter()"><%= "Add".t %></div>
+      </li>
+    </ul>
+    <ul id="rule-builder" class="rule-list">
+       <%= render( :partial => "rule/parameter" , :collection => @parameter_list ) %>
+    </ul>
+  </div>
+<% end -%>
+  
+<div class="actions">
+    <div class="rule-help">
+      <%= submit_tag( "Help" ) %>
+    </div>  
+  <div class="update" onclick="RuleBuilder.update('<%= @row_id %>') ; RuleBuilder.close();">
+  <%= "Update".t %>
+  </div>
+  <div class="cancel" onclick="RuleBuilder.cancel()">
+    <%= "Cancel".t %>
+  </div>
+</div>
+
+

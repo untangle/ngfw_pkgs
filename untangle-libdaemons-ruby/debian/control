@@ -22,8 +22,8 @@ Description: Ruby daemons library
  version (currently 1.8.x).
 
 Package: untangle-libdaemons-ruby1.8
-Architecture: any
-Depends: ${shlibs:Depends}
+Architecture: all
+Depends: ruby1.8
 Conflicts: libdaemons-ruby1.8, libdaemonize-ruby1.8
 Provides: libdaemons-ruby1.8
 Replaces: libdaemons-ruby1.8

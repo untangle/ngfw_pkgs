@@ -169,6 +169,13 @@ div.list-table-container div.list-table div.minus:hover
 }
 
 
+div.list-table-container div.list-table-column span
+{ 
+  font-size: 85%;
+  color: #333;
+  padding-left: 10px; 
+}
+
 
 /* ----------------------------- Table Labels ----------------------------- */
 div.table-label
@@ -503,4 +510,39 @@ div.list-table-container.nats div.ip-address
 div.list-table-container.nats div.new-source
 { 
   width: 21em;
+}
+
+/* ------------------- QoS -------------------- */
+div.list-table-container.qoss div.priority
+{
+  width: 8em;
+}
+div.list-table-container.qoss div.description
+{ 
+  width: 24.5em;
+}
+
+div.list-table-container.qosstats div.priority
+{
+  width: 8em;
+}
+div.list-table-container.qosstats div.rate
+{ 
+  width: 8em;
+}
+div.list-table-container.qosstats div.burst
+{ 
+  width: 8em;
+}
+div.list-table-container.qosstats div.sent
+{ 
+  width: 8em;
+}
+div.list-table-container.qosstats div.dropped
+{ 
+  width: 8em;
+}
+div.list-table-container.qosstats div.overlimits
+{ 
+  width: 8em;
 }

@@ -1,0 +1,113 @@
+#!/bin/bash
+#The Wonder Shaper        1.1a
+#bert hubert <ahu@ds9a.nl>
+#http://lartc.org/wondershaper
+#(c) Copyright 2002 
+#Licenced under the GPL - see 'COPYING'
+#
+# Modified by Untangle, Inc. 2008
+# Copyright (c) 2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+
+
+#set these in /etc/untangle-net-alpaca/untangle-qos which is handled by the alpaca UI
+DOWNLINK=
+UPLINK=
+DEV=
+HIGHPRIO=
+MIDPRIO=
+LOWPRIO=
+
+. /etc/untangle-net-alpaca/untangle-qos
+
+if [ "$1" = "status" ]
+then
+    tc -s qdisc ls dev $DEV
+    tc -s class ls dev $DEV
+    exit
+fi
+
+
+# clean existing down- and uplink qdiscs, hide errors
+tc qdisc del dev $DEV root    2> /dev/null > /dev/null
+tc qdisc del dev $DEV ingress 2> /dev/null > /dev/null
+
+if [ "$1" = "stop" ] 
+then 
+    exit
+fi
+
+
+
+if [ "$1" = "start" ]
+then
+    if [ "${QOS_ENABLED}" != "YES" ]
+    then
+        exit
+    fi
+else
+    exit
+fi
+
+
+###### uplink
+
+# install root HTB, point default traffic to 1:20:
+
+tc qdisc add dev $DEV root handle 1: htb default 20
+
+# shape everything at $UPLINK speed - this prevents huge queues in your
+# DSL modem which destroy latency:
+
+tc class add dev $DEV parent 1: classid 1:1 htb rate ${UPLINK}kbit burst 18k
+
+# high prio class 1:10:
+
+tc class add dev $DEV parent 1:1 classid 1:10 htb rate ${UPLINK}kbit \
+   burst 12k prio 1
+
+# bulk & default class 1:20 - gets slightly less traffic, 
+# and a lower priority:
+
+tc class add dev $DEV parent 1:1 classid 1:20 htb rate $[9*$UPLINK/10]kbit \
+   burst 9k prio 2
+
+tc class add dev $DEV parent 1:1 classid 1:30 htb rate $[8*$UPLINK/10]kbit \
+   burst 6k prio 2
+
+# all get Stochastic Fairness:
+tc qdisc add dev $DEV parent 1:10 handle 10: sfq perturb 10
+tc qdisc add dev $DEV parent 1:20 handle 20: sfq perturb 10
+tc qdisc add dev $DEV parent 1:30 handle 30: sfq perturb 10
+
+run-parts /etc/untangle-net-alpaca/tc-rules.d
+
+# rest ends up in 1:20
+tc filter add dev $DEV parent 1: protocol ip prio 20 u32 \
+   match ip dst 0.0.0.0/0 flowid 1:20
+
+
+########## downlink #############
+# slow downloads down to somewhat less than the real speed  to prevent 
+# queuing at our ISP. Tune to see how high you can set it.
+# ISPs tend to have *huge* queues to make sure big downloads are fast
+#
+# attach ingress policer:
+tc qdisc add dev $DEV handle ffff: ingress
+
+# filter *everything* to it (0.0.0.0/0), drop everything that's
+# coming in too fast:
+tc filter add dev $DEV parent ffff: protocol ip prio 50 u32 match ip src \
+   0.0.0.0/0 police rate ${DOWNLINK}kbit burst 12k drop flowid :1
