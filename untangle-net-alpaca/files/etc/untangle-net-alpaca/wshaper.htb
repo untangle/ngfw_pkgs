@@ -26,9 +26,6 @@
 DOWNLINK=
 UPLINK=
 DEV=
-HIGHPRIO=
-MIDPRIO=
-LOWPRIO=
 
 . /etc/untangle-net-alpaca/untangle-qos
 
@@ -61,36 +58,37 @@ else
     exit
 fi
 
+touch /var/log/untangle-net-alpaca/qosstart.log
 
 ###### uplink
 
 # install root HTB, point default traffic to 1:20:
-
 tc qdisc add dev $DEV root handle 1: htb default 20
 
 # shape everything at $UPLINK speed - this prevents huge queues in your
 # DSL modem which destroy latency:
-
 tc class add dev $DEV parent 1: classid 1:1 htb rate ${UPLINK}kbit burst 18k
 
 # high prio class 1:10:
-
 tc class add dev $DEV parent 1:1 classid 1:10 htb rate ${UPLINK}kbit \
-   burst 12k prio 1
+   burst 16k prio 1
 
 # bulk & default class 1:20 - gets slightly less traffic, 
 # and a lower priority:
-
 tc class add dev $DEV parent 1:1 classid 1:20 htb rate $[9*$UPLINK/10]kbit \
-   burst 9k prio 2
+   burst 8k prio 2
 
 tc class add dev $DEV parent 1:1 classid 1:30 htb rate $[8*$UPLINK/10]kbit \
-   burst 6k prio 2
+   burst 6k prio 3
 
 # all get Stochastic Fairness:
 tc qdisc add dev $DEV parent 1:10 handle 10: sfq perturb 10
 tc qdisc add dev $DEV parent 1:20 handle 20: sfq perturb 10
 tc qdisc add dev $DEV parent 1:30 handle 30: sfq perturb 10
+
+tc filter add dev $DEV parent 1: protocol ip prio 10 handle 0x00C00000 fw classid 1:10
+tc filter add dev $DEV parent 1: protocol ip prio 20 handle 0x00400000 fw classid 1:20
+tc filter add dev $DEV parent 1: protocol ip prio 30 handle 0x00200000 fw classid 1:30
 
 run-parts /etc/untangle-net-alpaca/tc-rules.d
 
@@ -110,4 +108,4 @@ tc qdisc add dev $DEV handle ffff: ingress
 # filter *everything* to it (0.0.0.0/0), drop everything that's
 # coming in too fast:
 tc filter add dev $DEV parent ffff: protocol ip prio 50 u32 match ip src \
-   0.0.0.0/0 police rate ${DOWNLINK}kbit burst 12k drop flowid :1
+   0.0.0.0/0 police rate ${DOWNLINK}kbit burst 340kb drop flowid :1

@@ -18,10 +18,10 @@
 module QosHelper
   class QosTableModel < Alpaca::Table::TableModel
     include Singleton
-    Priorities = [[ "High", "30" ],
-                  [ "Normal", "20" ],
-                  [ "Low", "10" ]]
-    PRIORITY = { 10 => "LOWPRIO", 20 => "MIDPRIO", 30 => "HIGHPRIO" }
+    Priorities = [[ "High", 10 ],
+                  [ "Normal", 20 ],
+                  [ "Low", 30 ]]
+    PRIORITY = { 30 => "LOWPRIO", 20 => "MIDPRIO", 10 => "HIGHPRIO" }
 
 
     def initialize
@@ -39,7 +39,7 @@ EOF
       end
 
       columns << Alpaca::Table::Column.new( "priority", "Priority".t ) do |qos,options| 
-        options[:view].select( "priority", options[:row_id], Priorities, { :selected => qos.priority } )
+        "<span>" + options[:view].select( "priority", options[:row_id], Priorities, { :selected => qos.priority } ) + "</span>"
       end
       
       columns << Alpaca::Table::Column.new( "description", "Description".t ) do |qos,options| 
@@ -112,6 +112,14 @@ EOF
 
     def row_id( row )
       "row-#{rand( 0x100000000 )}"
+    end
+
+    def action( table_data, view )
+      <<EOF
+<div onclick="#{view.remote_function( :url => { :action => :refresh_status } )}" class="refresh-button">
+  #{"Refresh".t}
+</div>
+EOF
     end
 
   end

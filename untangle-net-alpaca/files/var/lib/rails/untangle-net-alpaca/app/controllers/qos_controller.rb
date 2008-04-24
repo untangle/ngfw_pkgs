@@ -21,7 +21,7 @@ class QosController < ApplicationController
   end
 
   def create_qos
-    @qos = QosRules.new
+    @qos = QosRule.new
   end
 
   def edit
@@ -32,7 +32,7 @@ class QosController < ApplicationController
     ## how changes to the locale manifest themselves.
     @priorities = QosHelper::QosTableModel::Priorities.map { |o| [ o[0].t, o[1] ] }
    
-    @qos = QosRules.new
+    @qos = QosRule.new
     @qos.description = params[:description]
     @qos.priority = params[:priority]
     @qos.enabled = params[:enabled]
@@ -45,9 +45,10 @@ class QosController < ApplicationController
     @qos_settings = QosSettings.find( :first )
     @qos_settings = QosSettings.new if @qos_settings.nil?
     
-    @qoss = QosRules.find( :all )
+    @qoss = QosRule.find( :all )
     @bandwidth = os["qos_manager"].estimate_bandwidth
     @status = os["qos_manager"].status
+    @start_time = os["qos_manager"].start_time
   end
 
   def save
@@ -70,25 +71,25 @@ class QosController < ApplicationController
     position = 0
     unless qoss.nil?
       qoss.each do |key|
-        qos = QosRules.new
+        qos = QosRule.new
         qos.enabled, qos.filter, qos.priority = enabled[key], filters[key], priority[key]
         qos.description, qos.position, position = description[key], position, position + 1
         qos_list << qos
       end
     end
 
-    QosRules.destroy_all( );
+    QosRule.destroy_all( );
     qos_list.each { |qos| qos.save }
 
     
-    os["qos_manager"].commit
+    os["packet_filter_manager"].commit
 
     ## Review : should have some indication that is saved.
     return redirect_to( :action => "manage" )
   end
 
-  def status
-    
+  def refresh_status
+    @status = os["qos_manager"].status    
   end
 
 end

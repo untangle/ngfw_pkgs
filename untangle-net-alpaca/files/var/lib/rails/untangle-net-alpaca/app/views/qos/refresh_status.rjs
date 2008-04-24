@@ -1,0 +1,2 @@
+page.replace( "qos-stats-list", :partial => "application/table", :locals => { :table_model => qos_stats_model, :data => Alpaca::Table::Data.new( "qos-stats-list", @status ), :table_only => true } )
+page << "TableManager.updateRowStyles( 'qos-stats-list' );"
