@@ -21,12 +21,11 @@ else
       cp ${UNTANGLE_SLAPD_CONFIG_DIR}/slapd.conf-after2.4 $SLAPD_CONFIG
   fi
 
-  # Modern slapd has fascist apparmor config that must be adjusted to allow reading our config file.
+  # Modern slapd has restrictive apparmor config that must be supplemented to
+  # allow the untangle-ldap instance to operate.
   apparmorconfig=/etc/apparmor.d/usr.sbin.slapd
-  if [ -f $apparmorconfig ] && ! grep -q $SLAPD_CONFIG $apparmorconfig; then
-      sed -i -e "/slapd.conf/a \
-  $SLAPD_CONFIG r,\
-" $apparmorconfig
+  if [ -f $apparmorconfig ] && ! grep -q untangle-ldap $apparmorconfig; then
+      cp ${UNTANGLE_SLAPD_CONFIG_DIR}/usr.sbin.slapd $apparmorconfig
       if [ -x /etc/init.d/apparmor ]; then
 	  /etc/init.d/apparmor reload
       fi
