@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: untangle-dhclient-config
 Architecture: all
-Depends: dhcp3-client
+Depends: dhcp3-client, untangle-net-alpaca
 Conflicts: pump, pump-mv
 Provides: pump-mv
 Replaces: pump-mv
