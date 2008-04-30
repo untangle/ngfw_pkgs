@@ -27,7 +27,7 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
                     "LOWPRIO"  => QoSRules + "/300-low-priority" }
   Service = "/etc/untangle-net-alpaca/wshaper.htb"
   AptLog = "/var/log/uvm/apt.log"
-  PriorityQueueToName = { "30:" => "Low", "20:" => "Normal", "10:" => "High" }
+  PriorityQueueToName = { "30:" => "Low", "20:" => "Normal", "10:" => "High", "1:" => "Root" }
 
   IPTablesCommand = OSLibrary::Debian::PacketFilterManager::IPTablesCommand
   
@@ -108,7 +108,7 @@ EOF
     tc_rules_files = {}
 
     PriorityFiles.each_pair do |key, filename|
-      tc_rules_files[key] = ""
+      tc_rules_files[key] = header 
     end
 
     qos_settings = QosSettings.find( :first )
@@ -117,48 +117,44 @@ EOF
     if qos_settings.enabled
       qos_enabled = "YES"
     end
-    settings = "QOS_ENABLED=#{qos_enabled}\nDOWNLINK=#{qos_settings.download*qos_settings.download_percentage/100}\nUPLINK=#{qos_settings.upload*qos_settings.upload_percentage/100}\nDEV=#{Interface.external.os_name}\n\n"
+    settings = header
+    settings << "QOS_ENABLED=#{qos_enabled}\nDOWNLINK=#{qos_settings.download*qos_settings.download_percentage/100}\nUPLINK=#{qos_settings.upload*qos_settings.upload_percentage/100}\nDEV=#{Interface.external.os_name}\n\n"
     
 
     dev = Interface.external.os_name
-    tc_rules_files["SYSTEM"] = ""
-
-    if qos_settings.prioritize_ssh
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip tos 0x10 0xff match ip dport 22 0xffff flowid 1:10\n"
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip tos 0x10 0xff match ip sport 22 0xffff flowid 1:10\n"
+    if qos_settings.prioritize_ssh > 0
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ssh} u32 match ip tos 0x10 0xff match ip dport 22 0xffff flowid 1:#{qos_settings.prioritize_ssh}\n"
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ssh} u32 match ip tos 0x10 0xff match ip sport 22 0xffff flowid 1:#{qos_settings.prioritize_ssh}\n"
     end
-    if qos_settings.prioritize_ping
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip protocol 1 0xff flowid 1:10\n"
+    if qos_settings.prioritize_ping > 0
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ping} u32 match ip protocol 1 0xff flowid 1:#{qos_settings.prioritize_ping}\n"
     end
-    if qos_settings.prioritize_ack
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip protocol 6 0xff match u8 0x05 0x0f at 0 match u16 0x0000 0xffc0 at 2 match u8 0x10 0xff at 33 flowid 1:10\n"
-    end
-    if qos_settings.prioritize_dns
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip dport 53 0xffff flowid 1:10\n"
+    if qos_settings.prioritize_ack > 0
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ack} u32 match ip protocol 6 0xff match u8 0x05 0x0f at 0 match u16 0x0000 0xffc0 at 2 match u8 0x10 0xff at 33 flowid 1:#{qos_settings.prioritize_ack}\n"
     end
     #TODO actually write this
-    if qos_settings.prioritize_gaming
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip protocol 1 0xff flowid 1:10\n"
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip dport 53 0xffff flowid 1:10\n"
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip dport 6073 0xffff flowid 1:10\n"
-#      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip dport 2300-2400 0xffff flowid 1:10\n"
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip dport 1200 0xffff flowid 1:10\n"
-#      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip dport 27000-27015,27030-27039 0xffff flowid 1:10\n"
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip dport 4000 0xffff flowid 1:10\n"
-#      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip dport 6112-6119 0xffff flowid 1:10\n"
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip dport 7000 0xffff flowid 1:10\n"
-#      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip dport 1024-6000 0xffff flowid 1:10\n"
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip dport 6003 0xffff flowid 1:10\n"
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip dport 7002 0xffff flowid 1:10\n"
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip dport 27910 0xffff flowid 1:10\n"
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip dport 8080 0xffff flowid 1:10\n"
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip dport 27900 0xffff flowid 1:10\n"
-#      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip dport 7777-7783 0xffff flowid 1:10\n"
+    if qos_settings.prioritize_gaming > 0
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 53 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 6073 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
+#      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 2300-2400 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 1200 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
+#      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 27000-27015,27030-27039 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 4000 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
+#      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 6112-6119 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 7000 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
+#      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 1024-6000 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 6003 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 7002 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 27910 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 8080 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 27900 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
+#      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 7777-7783 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
 
     end
 
     tc_rules_files.each_pair do |key, file_contents|
       os["override_manager"].write_file( PriorityFiles[key], file_contents, "\n" )
+      run_command( "chmod a+x #{PriorityFiles[key]}" )
     end
     os["override_manager"].write_file( QoSConfig, settings, "\n" )
 
@@ -183,10 +179,13 @@ EOF
         case rule.priority
         when 10
           target = " -j MARK --or-mark #{MarkQoSHigh} "
+          tos_target = " -j TOS --set-tos 0x10 "
         when 20
           target = " -j MARK --or-mark #{MarkQoSNormal} "
+          tos_target = " -j TOS --set-tos 0x00 "
         when 30
           target = " -j MARK --or-mark #{MarkQoSLow} "
+          tos_target = " -j TOS --set-tos  0x02 "
         end
         
         next if target.nil?
@@ -195,6 +194,7 @@ EOF
           ## Nothing to do if the filtering string is empty.
           break if filter.strip.empty?
           text << "#{IPTablesCommand} #{QoSMark.args} #{filter} #{target}\n"
+          text << "#{IPTablesCommand} #{QoSMark.args} #{filter} #{tos_target}\n"
         end
       rescue
         logger.warn( "The filter '#{rule.filter}' could not be parsed: #{$!}" )

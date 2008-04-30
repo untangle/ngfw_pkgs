@@ -81,6 +81,10 @@ EOF
     QosTableModel.instance
   end
 
+  def priorities
+    QosTableModel::Priorities
+  end
+
   class QosStatsModel < Alpaca::Table::TableModel
     include Singleton
 

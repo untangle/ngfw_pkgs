@@ -19,6 +19,7 @@ EOF
           <label for="qos_settings_download_percentage">Limit Download to:</label>
           <%= select( "qos_settings", "download_percentage", [ 100, 95, 90, 85, 80, 70, 60, 50, 40, 30, 20, 10 ] ) %> %
         </li>
+        <li></li>
         <li>
           <label for="qos_settings_upload"><%= "Internet Upload Bandwidth:".t %></label>
           <%= text_field( "qos_settings", "upload", { :class => "number" } ) %> <span class="units">kbps (<%= @bandwidth[1] %> kbps estimated)</span>
@@ -27,18 +28,23 @@ EOF
           <label for="qos_settings_upload_percentage">Limit Upload to:</label>
           <%= select( "qos_settings", "upload_percentage", [ 100, 95, 90, 85, 80, 70, 60, 50, 40, 30, 20, 10 ] ) %> %
         </li>
+        <li></li>
         <li>
-          <label for="qos_settings_prioritize_ack"><%= "High Priority ACK:".t %></label>
-          <%= check_box( "qos_settings", "prioritize_ack", { :checked => @qos_settings.prioritize_ack }, true, false ) %> <span class="units">Speeds up downloads while uploading</span>
+          <label for="qos_settings_prioritize_ping"><%= "Ping Priority:".t %></label>
+          <%= select( "qos_settings",  "prioritize_ping",  priorities, { :checked => @qos_settings.prioritize_ping } ) %>
         </li>
         <li>
-          <label for="qos_settings_prioritize_gaming"><%= "High Priority Gaming:".t %></label>
-          <%= check_box( "qos_settings", "prioritize_gaming", { :checked => @qos_settings.prioritize_gaming }, true, false ) %>
+          <label for="qos_settings_prioritize_ack"><%= "ACK Priority:".t %></label>
+          <%= select( "qos_settings",  "prioritize_ack",  priorities, { :checked => @qos_settings.prioritize_ack } ) %> <span class="units">High speeds up downloads while uploading</span>
         </li>
         <li>
+          <label for="qos_settings_prioritize_gaming"><%= "Gaming Priority:".t %></label>
+          <%= select( "qos_settings", "prioritize_gaming", priorities, { :checked => @qos_settings.prioritize_gaming } ) %>
+        </li>
+<!--        <li>
           <label for="qos_settings_prioritize_ssh"><%= "High Priority Untangle Support (SSH):".t %></label>
           <%= check_box( "qos_settings", "prioritize_ssh", { :checked => @qos_settings.prioritize_ssh }, true, false ) %>
-        </li>
+        </li>-->
       </ul>
     </fieldset>
   <%= build_table( Alpaca::Table::Data.new( "qos-list", @qoss ), qos_table_model)

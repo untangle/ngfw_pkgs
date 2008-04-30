@@ -86,16 +86,20 @@ tc qdisc add dev $DEV parent 1:10 handle 10: sfq perturb 10
 tc qdisc add dev $DEV parent 1:20 handle 20: sfq perturb 10
 tc qdisc add dev $DEV parent 1:30 handle 30: sfq perturb 10
 
-tc filter add dev $DEV parent 1: protocol ip prio 10 handle 0x00C00000 fw classid 1:10
-tc filter add dev $DEV parent 1: protocol ip prio 20 handle 0x00400000 fw classid 1:20
-tc filter add dev $DEV parent 1: protocol ip prio 30 handle 0x00200000 fw classid 1:30
+tc filter add dev $DEV parent 1:0 protocol ip prio 1 handle 0xc00000 fw classid 1:10
+tc filter add dev $DEV parent 1:0 protocol ip prio 2 handle 0x400000 fw classid 1:20
+tc filter add dev $DEV parent 1:0 protocol ip prio 3 handle 0x200000 fw classid 1:30
 
 run-parts /etc/untangle-net-alpaca/tc-rules.d
 
 # rest ends up in 1:20
-tc filter add dev $DEV parent 1: protocol ip prio 20 u32 \
-   match ip dst 0.0.0.0/0 flowid 1:20
+#tc filter add dev $DEV parent 1: protocol ip prio 20 u32 \
+#   match ip dst 0.0.0.0/0 flowid 1:20
 
+
+tc filter add dev $DEV parent 1: protocol ip prio 10 u32 match ip tos 0x10 0x10 match ip dst 0.0.0.0/0 flowid 1:10
+tc filter add dev $DEV parent 1: protocol ip prio 20 u32 match ip tos 0x00 0xff match ip dst 0.0.0.0/0 flowid 1:20
+tc filter add dev $DEV parent 1: protocol ip prio 30 u32 match ip tos 0x02 0x02 match ip dst 0.0.0.0/0 flowid 1:30
 
 ########## downlink #############
 # slow downloads down to somewhat less than the real speed  to prevent 
