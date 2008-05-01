@@ -123,9 +123,9 @@ EOF
     
 
     dev = Interface.external.os_name
-    tc_rules_files["SYSTEM"] << "tc filter add dev $DEV parent 1: protocol ip prio 10 u32 match ip tos 0x10 0x10 match ip dst 0.0.0.0/0 flowid 1:10\n"
-    tc_rules_files["SYSTEM"] << "tc filter add dev $DEV parent 1: protocol ip prio 20 u32 match ip tos 0x00 0xff match ip dst 0.0.0.0/0 flowid 1:20\n"
-    tc_rules_files["SYSTEM"] << "tc filter add dev $DEV parent 1: protocol ip prio 30 u32 match ip tos 0x02 0x02 match ip dst 0.0.0.0/0 flowid 1:30\n"
+    tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip tos 0x10 0x10 match ip dst 0.0.0.0/0 flowid 1:10\n"
+    tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 20 u32 match ip tos 0x00 0xff match ip dst 0.0.0.0/0 flowid 1:20\n"
+    tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 30 u32 match ip tos 0x02 0x02 match ip dst 0.0.0.0/0 flowid 1:30\n"
 
 
     if qos_settings.prioritize_ssh > 0
