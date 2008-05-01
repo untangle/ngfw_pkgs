@@ -18,10 +18,12 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
   include Singleton
 
   QoSStartLog = "/var/log/untangle-net-alpaca/qosstart.log"
+  QoSRRDLog = "/var/log/untangle-net-alpaca/qosrrd.log"
 
   QoSConfig = "/etc/untangle-net-alpaca/untangle-qos"
   QoSRules = "/etc/untangle-net-alpaca/tc-rules.d"
-  PriorityFiles = { "SYSTEM" => QoSRules + "/50-system-priority",
+  PriorityMap = { 10 => "HIGHPRIO", 20 => "MIDPRIO", 30 => "LOWPRIO" }
+  PriorityFiles = { "SYSTEM" => QoSRules + "/900-system-priority",
                     "HIGHPRIO" => QoSRules + "/100-high-priority",
                     "MIDPRIO"  => QoSRules + "/200-mid-priority",
                     "LOWPRIO"  => QoSRules + "/300-low-priority" }
@@ -81,10 +83,9 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
          downloadMatchData = line.match( /Fetched.*\(([0-9]+)kB\/s\)/ )
          if ! downloadMatchData.nil? and downloadMatchData.length >= 2
             download = downloadMatchData[1] 
-            #TODO fix this hack
-            upload = downloadMatchData[1].to_f/5.0
          end
        end
+       upload = `rrdtool fetch #{QoSRRDLog} MAX | cut -d " " -f 3 | sort -n | tail -1`.to_i/300
      rescue
        # default to unkown
      end
@@ -122,6 +123,11 @@ EOF
     
 
     dev = Interface.external.os_name
+    tc_rules_files["SYSTEM"] << "tc filter add dev $DEV parent 1: protocol ip prio 10 u32 match ip tos 0x10 0x10 match ip dst 0.0.0.0/0 flowid 1:10\n"
+    tc_rules_files["SYSTEM"] << "tc filter add dev $DEV parent 1: protocol ip prio 20 u32 match ip tos 0x00 0xff match ip dst 0.0.0.0/0 flowid 1:20\n"
+    tc_rules_files["SYSTEM"] << "tc filter add dev $DEV parent 1: protocol ip prio 30 u32 match ip tos 0x02 0x02 match ip dst 0.0.0.0/0 flowid 1:30\n"
+
+
     if qos_settings.prioritize_ssh > 0
       tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ssh} u32 match ip tos 0x10 0xff match ip dport 22 0xffff flowid 1:#{qos_settings.prioritize_ssh}\n"
       tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ssh} u32 match ip tos 0x10 0xff match ip sport 22 0xffff flowid 1:#{qos_settings.prioritize_ssh}\n"
@@ -151,6 +157,51 @@ EOF
 #      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 7777-7783 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
 
     end
+
+
+    # use tc rules for what we can
+    rules = QosRule.find( :all, :conditions => [ "enabled='t'" ] )
+    rules.each do |rule|
+      begin
+        if ! rule.filter.include?( "s-" ) && ! rule.filter.include?( "d-local" ) && rule.filter.include?( "d-" )
+            priority = PriorityMap[rule.priority]
+            filter = ""
+            protocol_filter = []
+            conditions = rule.filter.split( "&&" )
+            conditions.each do |condition|
+               type, value = condition.split( "::" )
+               case type
+               when "d-port"
+                 filter << " match ip dport #{value} 0xffff "
+               when "d-addr"
+                 if ! value.include?( "/" )
+                   value << "/32"
+                 end
+                 filter << " match ip dst #{value} "
+               when "protocol"
+                 value.split( "," ).each do |protocol|
+                   case protocol
+                   when "udp"
+                     protocol_filter << "  match ip protocol 17 0xff "
+                   when "tcp"
+                     protocol_filter << " match ip protocol 6 0xff "
+                   end
+                 end
+               end
+            end
+            if protocol_filter.length == 0
+              protocol_filter = [ "" ]
+            end
+            protocol_filter.each do |protocol_filter|
+              tc_rules_files[priority] << "tc filter add dev #{dev} parent 1: protocol ip prio #{rule.priority} u32 #{protocol_filter} #{filter} flowid 1:#{rule.priority}\n"
+            end
+        end
+
+      rescue
+        logger.warn( "The filter '#{rule.filter}' could not be parsed: #{$!}" )
+      end
+    end
+
 
     tc_rules_files.each_pair do |key, file_contents|
       os["override_manager"].write_file( PriorityFiles[key], file_contents, "\n" )
