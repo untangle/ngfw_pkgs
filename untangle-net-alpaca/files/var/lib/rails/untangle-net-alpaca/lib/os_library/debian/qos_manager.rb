@@ -128,18 +128,18 @@ EOF
     tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 30 u32 match ip tos 0x02 0x02 match ip dst 0.0.0.0/0 flowid 1:30\n"
 
 
-    if qos_settings.prioritize_ssh > 0
+    if ! qos_settings.prioritize_ssh.nil? and qos_settings.prioritize_ssh > 0
       tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ssh} u32 match ip tos 0x10 0xff match ip dport 22 0xffff flowid 1:#{qos_settings.prioritize_ssh}\n"
       tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ssh} u32 match ip tos 0x10 0xff match ip sport 22 0xffff flowid 1:#{qos_settings.prioritize_ssh}\n"
     end
-    if qos_settings.prioritize_ping > 0
+    if ! qos_settings.prioritize_ping.nil? and qos_settings.prioritize_ping > 0
       tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ping} u32 match ip protocol 1 0xff flowid 1:#{qos_settings.prioritize_ping}\n"
     end
-    if qos_settings.prioritize_ack > 0
+    if ! qos_settings.prioritize_ack.nil? and qos_settings.prioritize_ack > 0
       tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ack} u32 match ip protocol 6 0xff match u8 0x05 0x0f at 0 match u16 0x0000 0xffc0 at 2 match u8 0x10 0xff at 33 flowid 1:#{qos_settings.prioritize_ack}\n"
     end
     #TODO actually write this
-    if qos_settings.prioritize_gaming > 0
+    if ! qos_settings.prioritize_ack.nil? and qos_settings.prioritize_gaming > 0
       tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 53 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
       tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 6073 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
 #      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 2300-2400 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
