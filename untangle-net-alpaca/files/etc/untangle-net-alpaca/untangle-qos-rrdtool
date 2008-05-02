@@ -1,0 +1,54 @@
+#!/bin/bash
+
+RRDTOOL=rrdtool
+LOGFILE=/var/log/untangle-net-alpaca/qosrrd.log
+GRAPHFILE=/var/lib/rails/untangle-net-alpaca/public/images/qos/qosrrd
+NOW=`date -u +%s`
+IFCONFIG=/sbin/ifconfig
+
+. /etc/untangle-net-alpaca/untangle-qos
+
+UPPER_LIMIT=$[$DOWNLINK*1000/8]
+
+if [ "$DEV" == "" ] ; then
+   exit 0
+fi
+
+if [ ! -e $LOGFILE ] ; then
+    $RRDTOOL create $LOGFILE           \
+            DS:input:COUNTER:600:0:U   \
+            DS:output:COUNTER:600:0:U  \
+            RRA:AVERAGE:0.5:1:600      \
+            RRA:AVERAGE:0.5:6:700      \
+            RRA:AVERAGE:0.5:24:775     \
+            RRA:AVERAGE:0.5:288:797    \
+            RRA:MAX:0.5:1:600          \
+            RRA:MAX:0.5:6:700          \
+            RRA:MAX:0.5:24:775         \
+            RRA:MAX:0.5:288:797
+fi
+
+if [ "$1" == "graph" ] ; then
+    $RRDTOOL graph ${GRAPHFILE}-week.png -l 0 -u $UPPER_LIMIT --start -604800 \
+            DEF:inoctets=$LOGFILE:input:AVERAGE    \
+            DEF:outoctets=$LOGFILE:output:AVERAGE  \
+            AREA:inoctets#00FF00:"In traffic"          \
+            LINE1:outoctets#0000FF:"Out traffic"
+    $RRDTOOL graph ${GRAPHFILE}-day.png -l 0 -u $UPPER_LIMIT --start -86400 \
+            DEF:inoctets=$LOGFILE:input:AVERAGE    \
+            DEF:outoctets=$LOGFILE:output:AVERAGE  \
+            AREA:inoctets#00FF00:"In traffic"          \
+            LINE1:outoctets#0000FF:"Out traffic"
+    $RRDTOOL graph ${GRAPHFILE}-hour.png -l 0 -u $UPPER_LIMIT --start -3600 \
+            DEF:inoctets=$LOGFILE:input:AVERAGE    \
+            DEF:outoctets=$LOGFILE:output:AVERAGE  \
+            AREA:inoctets#00FF00:"In traffic"          \
+            LINE1:outoctets#0000FF:"Out traffic"
+
+fi
+
+if [ "$1" == "update" ] ; then
+    RECIEVED=`$IFCONFIG $DEV | grep "RX bytes" | cut -d: -f 2 | cut -d" " -f 1`
+    SENT=`$IFCONFIG $DEV | grep "TX bytes" | cut -d: -f 3 | cut -d" " -f 1`
+    $RRDTOOL update $LOGFILE $NOW:$RECIEVED:$SENT
+fi

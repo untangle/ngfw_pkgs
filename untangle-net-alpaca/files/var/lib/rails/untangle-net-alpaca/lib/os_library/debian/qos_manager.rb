@@ -85,7 +85,7 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
             download = downloadMatchData[1] 
          end
        end
-       upload = `rrdtool fetch #{QoSRRDLog} MAX | cut -d " " -f 3 | sort -n | tail -1`.to_i/300
+       upload = `rrdtool fetch #{QoSRRDLog} MAX | cut -d " " -f 3 | sort -n | tail -1`.to_f
      rescue
        # default to unkown
      end
@@ -123,10 +123,6 @@ EOF
     
 
     dev = Interface.external.os_name
-    tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 10 u32 match ip tos 0x10 0x10 match ip dst 0.0.0.0/0 flowid 1:10\n"
-    tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 20 u32 match ip tos 0x00 0xff match ip dst 0.0.0.0/0 flowid 1:20\n"
-    tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio 30 u32 match ip tos 0x02 0x02 match ip dst 0.0.0.0/0 flowid 1:30\n"
-
 
     if ! qos_settings.prioritize_ssh.nil? and qos_settings.prioritize_ssh > 0
       tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ssh} u32 match ip tos 0x10 0xff match ip dport 22 0xffff flowid 1:#{qos_settings.prioritize_ssh}\n"
@@ -220,6 +216,23 @@ EOF
 #{IPTablesCommand} -t #{QoSMark.table} -N #{QoSMark.name} 2> /dev/null
 #{IPTablesCommand} -t #{QoSMark.table} -F #{QoSMark.name}
 #{QoSMark.init}
+
+${IPTABLES} -t mangle -A #{QoSMark.table} -m connmark --mark #{MarkQoSHigh}/#{MarkQoSHigh} -g qos-high-mark
+${IPTABLES} -t mangle -A #{QoSMark.table} -m connmark --mark #{MarkQoSNormal}/#{MarkQoSNormal} -g qos-normal-mark
+${IPTABLES} -t mangle -A #{QoSMark.table} -m connmark --mark #{MarkQoSLow}/#{MarkQoSLow} -g qos-low-mark
+${IPTABLES} -t mangle -N qos-high-mark 2> /dev/null
+${IPTABLES} -t mangle -F qos-high-mark
+${IPTABLES} -t mangle -A qos-high-mark -j MARK --or-mark #{MarkQoSHigh}
+${IPTABLES} -t mangle -A qos-high-mark -j CONNMARK --set-mark #{MarkQoSHigh}/#{MarkQoSHigh}
+${IPTABLES} -t mangle -N qos-normal-mark 2> /dev/null
+${IPTABLES} -t mangle -F qos-hnormal-mark
+${IPTABLES} -t mangle -A qos-normal-mark -j MARK --or-mark #{MarkQoSNormal}
+${IPTABLES} -t mangle -A qos-normal-mark -j CONNMARK --set-mark #{MarkQoSNormal}/#{MarkQoSNormal}
+${IPTABLES} -t mangle -N qos-low-mark 2> /dev/null
+${IPTABLES} -t mangle -F qos-low-mark
+${IPTABLES} -t mangle -A qos-low-mark -j MARK --or-mark #{MarkQoSLow}
+${IPTABLES} -t mangle -A qos-low-mark -j CONNMARK --set-mark #{MarkQoSLow}/#{MarkQoSLow}
+
 EOF
 
     rules.each do |rule|
@@ -229,14 +242,11 @@ EOF
         target = nil
         case rule.priority
         when 10
-          target = " -j MARK --or-mark #{MarkQoSHigh} "
-          tos_target = " -j TOS --set-tos 0x10 "
+          target = " -g qos-high-mark "
         when 20
-          target = " -j MARK --or-mark #{MarkQoSNormal} "
-          tos_target = " -j TOS --set-tos 0x00 "
+          target = " -g qos-normal-mark "
         when 30
-          target = " -j MARK --or-mark #{MarkQoSLow} "
-          tos_target = " -j TOS --set-tos  0x02 "
+          target = " -g qos-low-mark "
         end
         
         next if target.nil?
@@ -245,7 +255,6 @@ EOF
           ## Nothing to do if the filtering string is empty.
           break if filter.strip.empty?
           text << "#{IPTablesCommand} #{QoSMark.args} #{filter} #{target}\n"
-          text << "#{IPTablesCommand} #{QoSMark.args} #{filter} #{tos_target}\n"
         end
       rescue
         logger.warn( "The filter '#{rule.filter}' could not be parsed: #{$!}" )
