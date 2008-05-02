@@ -112,5 +112,11 @@ tc qdisc add dev $DEV handle ffff: ingress
 
 # filter *everything* to it (0.0.0.0/0), drop everything that's
 # coming in too fast:
-tc filter add dev $DEV parent ffff: protocol ip prio 50 u32 match ip src \
-   0.0.0.0/0 police rate ${DOWNLINK}kbit burst 340kb drop flowid :1
+#only drop TCP
+tc filter add dev $DEV parent ffff: protocol ip prio 50 u32 match ip protocol 6 0xff match ip src \
+   0.0.0.0/0 police rate $[95*$DOWNLINK/100]kbit burst 300kb drop flowid :1
+
+#limit ping to 25% of total bandwidth
+tc filter add dev $DEV parent ffff: protocol ip prio 50 u32 match ip protocol 1 0xff match ip src \
+   0.0.0.0/0 police rate $[25*$DOWNLINK/100]kbit burst 30kb drop flowid :1
+

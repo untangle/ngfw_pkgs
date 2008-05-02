@@ -103,10 +103,10 @@ EOF
       columns << Alpaca::Table::Column.new( "sent", "Sent".t ) do |stat,options| 
         "<span>" + stat[3] + "</span>"
       end
-      columns << Alpaca::Table::Column.new( "dropped", "Dropped".t ) do |stat,options| 
+      columns << Alpaca::Table::Column.new( "dropped", "Tokens".t ) do |stat,options| 
         "<span>" + stat[4] + "</span>"
       end
-      columns << Alpaca::Table::Column.new( "overlimits", "Overlimits".t ) do |stat,options| 
+      columns << Alpaca::Table::Column.new( "overlimits", "CTokens".t ) do |stat,options| 
         "<span>" + stat[5] + "</span>"
       end
 

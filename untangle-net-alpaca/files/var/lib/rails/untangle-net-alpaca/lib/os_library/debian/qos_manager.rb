@@ -57,8 +57,8 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
                         stats[10],
                         stats[14],
                         stats[19] + stats[20],
-                        stats[24].sub( /,/, '' ),
-                        stats[26].sub( /\)/, '' )
+                        stats[35],
+                        stats[37]
                       ]
          end
        end
@@ -78,6 +78,7 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
      download = "Unknown"
      upload = "Unknown"
      begin
+       download = `rrdtool fetch #{QoSRRDLog} MAX | cut -d " " -f 2 | sort -n | tail -1`.to_f
        f = File.new( AptLog, "r" )
        f.each_line do |line|
          downloadMatchData = line.match( /Fetched.*\(([0-9]+)kB\/s\)/ )
@@ -134,26 +135,6 @@ EOF
     if ! qos_settings.prioritize_ack.nil? and qos_settings.prioritize_ack > 0
       tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ack} u32 match ip protocol 6 0xff match u8 0x05 0x0f at 0 match u16 0x0000 0xffc0 at 2 match u8 0x10 0xff at 33 flowid 1:#{qos_settings.prioritize_ack}\n"
     end
-    #TODO actually write this
-    if ! qos_settings.prioritize_ack.nil? and qos_settings.prioritize_gaming > 0
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 53 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 6073 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
-#      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 2300-2400 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 1200 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
-#      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 27000-27015,27030-27039 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 4000 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
-#      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 6112-6119 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 7000 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
-#      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 1024-6000 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 6003 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 7002 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 27910 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 8080 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 27900 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
-#      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_gaming} u32 match ip dport 7777-7783 0xffff flowid 1:#{qos_settings.prioritize_gaming}\n"
-
-    end
-
 
     # use tc rules for what we can
     rules = QosRule.find( :all, :conditions => [ "enabled='t'" ] )
@@ -205,10 +186,6 @@ EOF
     end
     os["override_manager"].write_file( QoSConfig, settings, "\n" )
 
-    write_qos
-  end
-
-  def write_qos
     rules = QosRule.find( :all, :conditions => [ "enabled='t'" ] )
     
     text = header + "\n"
@@ -233,7 +210,72 @@ ${IPTABLES} -t mangle -F qos-low-mark
 ${IPTABLES} -t mangle -A qos-low-mark -j MARK --or-mark #{MarkQoSLow}
 ${IPTABLES} -t mangle -A qos-low-mark -j CONNMARK --set-mark #{MarkQoSLow}/#{MarkQoSLow}
 
+${IPTABLES} -t mangle -A #{QoSMark.name} -p tcp --dport ssh -j TOS --set-tos Minimize-Delay
+
 EOF
+
+    if ! qos_settings.prioritize_ack.nil? and qos_settings.prioritize_gaming > 0 and qos_settings.prioritize_gaming != 20
+      case qos_settings.prioritize_gaming
+      when 10
+         target = " -g qos-high-mark "
+      when 30
+         target = " -g qos-low-mark "
+      end
+      #XBOX Live
+      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 88 -g #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 3074 -g #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 3074 -g #{target} \n"
+      if qos_settings.prioritize_gaming == 10
+          text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 88 -g bypass-mark \n"
+          text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 3074 -g bypass-mark \n"
+          text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 3074 -g bypass-mark \n"
+      end
+      #PS3
+      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 5223 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 3478:3479 #{target} \n"
+      if qos_settings.prioritize_gaming == 10
+          text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 5223 -g bypass-mark \n"
+          text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 3478:3479 -g bypass-mark \n"
+      end
+      #wii
+      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 29900 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 29901 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 28910 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 29920 #{target} \n"
+      if qos_settings.prioritize_gaming == 10
+          text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 29900 -g bypass-mark \n"
+          text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 29901 -g bypass-mark \n"
+          text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 28910 -g bypass-mark \n"
+          text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 29920 -g bypass-mark \n"
+      end
+      # other games
+      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 1200 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 1200 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 4000 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 4000 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 6003 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 6003 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 6073 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 7000 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 7000 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 7002 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 7002 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 8080 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 8080 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 27900 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 27900 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 27910 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 27910 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 2300:2400 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 2300:2400 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 6112:6119 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 6112:6119 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 7777:7783 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 7777:7783 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 6112:6119 #{target} \n"
+      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 6112:6119 #{target} \n"
+    end
+
 
     rules.each do |rule|
       begin
