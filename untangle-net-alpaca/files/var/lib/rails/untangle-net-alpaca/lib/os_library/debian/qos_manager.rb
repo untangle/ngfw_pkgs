@@ -53,12 +53,13 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
          stats = piece.split( Regexp.new( ' ', Regexp::MULTILINE ) )
          
          if PriorityQueueToName.has_key?( stats[6] )
+           token_stats = piece.split( Regexp.new( 'c?tokens: ', Regexp::MULTILINE ) )
            results << [ PriorityQueueToName[stats[6]],
                         stats[10],
                         stats[14],
                         stats[19] + stats[20],
-                        stats[35],
-                        stats[37]
+                        token_stats[1],
+                        token_stats[2]
                       ]
          end
        end
