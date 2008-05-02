@@ -217,9 +217,9 @@ EOF
 #{IPTablesCommand} -t #{QoSMark.table} -F #{QoSMark.name}
 #{QoSMark.init}
 
-${IPTABLES} -t mangle -A #{QoSMark.table} -m connmark --mark #{MarkQoSHigh}/#{MarkQoSHigh} -g qos-high-mark
-${IPTABLES} -t mangle -A #{QoSMark.table} -m connmark --mark #{MarkQoSNormal}/#{MarkQoSNormal} -g qos-normal-mark
-${IPTABLES} -t mangle -A #{QoSMark.table} -m connmark --mark #{MarkQoSLow}/#{MarkQoSLow} -g qos-low-mark
+${IPTABLES} -t mangle -A #{QoSMark.name} -m connmark --mark #{MarkQoSHigh}/#{MarkQoSHigh} -g qos-high-mark
+${IPTABLES} -t mangle -A #{QoSMark.name} -m connmark --mark #{MarkQoSNormal}/#{MarkQoSNormal} -g qos-normal-mark
+${IPTABLES} -t mangle -A #{QoSMark.name} -m connmark --mark #{MarkQoSLow}/#{MarkQoSLow} -g qos-low-mark
 ${IPTABLES} -t mangle -N qos-high-mark 2> /dev/null
 ${IPTABLES} -t mangle -F qos-high-mark
 ${IPTABLES} -t mangle -A qos-high-mark -j MARK --or-mark #{MarkQoSHigh}
