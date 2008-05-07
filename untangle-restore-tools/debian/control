@@ -10,6 +10,7 @@ Architecture: all
 Conflicts: restore-mv
 Provides: restore-mv
 Replaces: restore-mv
+Depends: untangle-vm, untangle-ldap-server
 XB-Display-Name: Recovery Utilities
 XB-Untangle-Type: library
 XB-Is-Service: true
