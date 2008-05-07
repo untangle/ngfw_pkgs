@@ -111,7 +111,6 @@ EOF
 
     interface_routes
   end
-
   
   class InterfaceRouteVisitor < Interface::ConfigVisitor
     def intf_static( interface, config )
