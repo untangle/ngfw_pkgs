@@ -144,7 +144,7 @@ class Alpaca::UvmDataLoader
     Redirect.destroy_all( "system_id IS NULL" )
 
     query  = "SELECT  redirect_port, redirect_addr, live, description, is_local_redirect,"
-    query += " src_intf_matcher, protocol_matcher, src_ip_matcher, dst_ip_matcher,"
+    query += " src_intf_matcher, dst_intf_matcher, protocol_matcher, src_ip_matcher, dst_ip_matcher,"
     query += " src_port_matcher, dst_port_matcher"
     query += " FROM u_redirect_rule JOIN u_redirects ON u_redirect_rule.rule_id = u_redirects.rule_id"
     query += " WHERE setting_id = ?"
@@ -164,11 +164,14 @@ class Alpaca::UvmDataLoader
           filter += parse_intf_matcher( "s-intf", r["src_intf_matcher"] )
           filter += parse_ip_matcher( "s-addr", r["src_ip_matcher"] )
           filter += parse_ip_matcher( "d-addr", r["dst_ip_matcher"] )
-          filter += parse_port_matcher( "s-port", r["src_port_matcher"] )
           filter += parse_port_matcher( "d-port", r["dst_port_matcher"] )
           
           ## Append a d-local if necessary.
-          filter += "d-local::true" if ( r["is_local_redirect"] == true && /d-local::/.match( filter ).nil? )
+          if ( /d-local::/.match( filter ).nil? )
+            is_local  = r["is_local_redirect"] == true
+            is_local |= ( ANY_MATCHER.include?( r["dst_ip_matcher"] ) && r["dst_intf_matcher"] == "I" )
+            filter += "d-local::true"  if is_local
+          end
           redirect.filter = filter
 
           # @logger.debug( "Created the filter: #{filter}" )
@@ -176,7 +179,7 @@ class Alpaca::UvmDataLoader
           ## Set the redirect ip and address
           redirect.new_ip = r["redirect_addr"]
           redirect.new_enc_id = r["redirect_port"].to_i
-          redirect.new_enc_id = nil if redirect.new_enc_id == 0
+          redirect.new_enc_id = nil if redirect.new_enc_id <= 0
           redirect.description = r["description"]
           
           redirect.system_id = nil
@@ -556,14 +559,17 @@ class Alpaca::UvmDataLoader
     ## Otherwise use auto (review)
     return "auto"
   end
-
-  ANY_MATCHER = [ "*", "any", "all" ]
+  
+  ANY_MATCHER = [ "*", "any", "all", "ANY", "ALL" ]
+  PING_MATCHER = "PING"
   INTF_MAP =  { "O" => 1, "I" => 2, "D" => 3, "V" => 8, "0" => 1, "1" => 2, "3" => 4, "7" => 8 }
 
   def parse_protocol_matcher( filter_string, value )
     value = value.strip
 
     return "" if ( value == "" || ANY_MATCHER.include?( value ))
+
+    value = "icmp" if value == PING_MATCHER
     filter_string + "::" + value.split( "&" ).map { |protocol| protocol.strip.downcase }.join( "," ) + "&&"
   end
 
@@ -594,7 +600,7 @@ class Alpaca::UvmDataLoader
   def parse_port_matcher( filter_string, value )
     value = value.strip
 
-    return "" if ( value == "" || ANY_MATCHER.include?( value ))
+    return "" if ( value == "" || ANY_MATCHER.include?( value ) || value == "n/a" )
     
     ## all the port types are just handled properly
     "#{filter_string}::#{value}&&"
