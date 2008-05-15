@@ -149,6 +149,12 @@ module Alpaca::SystemRules
                           :target => "drop", :is_custom => true,
                           :system_id => "block-all-local-04a98864" )
 
+    ## This is a custom rule designed to allow the main site to access the clients at VPN clients.
+    rm.add_firewall_rule( :description => "Accept incoming VPN traffic when running as a VPN client.",
+                          :filter => "d-local::true&&s-intf::8",
+                          :target => "pass", :is_custom => false,
+                          :system_id => "accept-client-vpn-8a762ae9" )
+
     ## Bypass Rules
     rm.add_bypass_rule( :description => "Bypass DHCP Traffic",
                         :system_id => DhcpHelper::RuleSystemID,

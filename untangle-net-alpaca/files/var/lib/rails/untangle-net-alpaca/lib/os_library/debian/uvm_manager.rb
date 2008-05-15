@@ -171,6 +171,12 @@ EOF
   end
 
   def write_openvpn_script
+    accept_vpn_client = ""
+
+    if Firewall.find( :first, :conditions => [ "system_id = ? and enabled='t'", "accept-client-vpn-8a762ae9" ] )
+      accept_vpn_client = "true"
+    end
+    
     text = header
     ## REVIEW This presently doesn't mark openvpn traffic as local.
     ## REVIEW 0x80 is a magic number.
@@ -215,8 +221,13 @@ if [ -f ${EXPORTS_FILE} ]; then
   ## At the end block everything else
   #{IPTablesCommand} #{Chain::FirewallRules.args} -i tun0 -j DROP
 fi
+
+## If it is a client, insert the pass rule.
+if [ -n "#{accept_vpn_client}" ] && [ -f /etc/openvpn/client.conf ] ; then
+  #{IPTablesCommand} #{Chain::FirewallRules.args} -i tun0 -j RETURN
+fi
 EOF
-    
+
     os["override_manager"].write_file( UvmOpenVPNFile, text, "\n" )
   end
 
