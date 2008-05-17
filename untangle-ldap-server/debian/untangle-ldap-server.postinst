@@ -14,7 +14,22 @@ if [ -f $SLAPD_CONFIG ] ; then
   theirAdminAccount=`slapcat -f $SLAPD_CONFIG | ldapAdmin`
 else
   theirAdminAccount=""
-  cp ${UNTANGLE_SLAPD_CONFIG_DIR}/slapd.conf $SLAPD_CONFIG
+  slapdVersion=$(dpkg-query --showformat='${Version}\n' -W slapd)
+  if dpkg --compare-versions $slapdVersion lt 2.4 ; then
+      cp ${UNTANGLE_SLAPD_CONFIG_DIR}/slapd.conf-before2.4 $SLAPD_CONFIG
+  else
+      cp ${UNTANGLE_SLAPD_CONFIG_DIR}/slapd.conf-after2.4 $SLAPD_CONFIG
+  fi
+
+  # Modern slapd has restrictive apparmor config that must be supplemented to
+  # allow the untangle-ldap instance to operate.
+  apparmorconfig=/etc/apparmor.d/usr.sbin.slapd
+  if [ -f $apparmorconfig ] && ! grep -q untangle-ldap $apparmorconfig; then
+      cp ${UNTANGLE_SLAPD_CONFIG_DIR}/usr.sbin.slapd $apparmorconfig
+      if [ -x /etc/init.d/apparmor ]; then
+	  /etc/init.d/apparmor reload
+      fi
+  fi
 fi
 
 ourAdminAccount=`ldapAdmin ${UNTANGLE_SLAPD_CONFIG_DIR}/initial.ldif`

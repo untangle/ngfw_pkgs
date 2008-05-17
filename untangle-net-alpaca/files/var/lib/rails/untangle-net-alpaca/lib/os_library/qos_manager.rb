@@ -115,4 +115,8 @@ class OSLibrary::QosManager < Alpaca::OS::ManagerBase
     "None"
   end
 
+  def start_time
+    ""
+  end
+
 end

@@ -1,0 +1,2 @@
+*/5 * * * * root  /etc/untangle-net-alpaca/untangle-qos-rrdtool update
+*/10 * * * * root  /etc/untangle-net-alpaca/untangle-qos-rrdtool graph > /dev/null

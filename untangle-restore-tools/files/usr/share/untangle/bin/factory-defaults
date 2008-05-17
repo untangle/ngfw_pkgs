@@ -7,7 +7,7 @@ NAT_CACHE_DEB="/var/lib/uvm/untangle-node-router.deb"
 # restore database
 dropdb -U postgres uvm
 
-createuser -U postgres -d -A untangle 2>/dev/null
+createuser -U postgres ${PG_CREATEUSER_OPTIONS} untangle 2>/dev/null
 createdb -O postgres -U postgres uvm
 /usr/share/untangle/bin/update-schema settings uvm
 /usr/share/untangle/bin/update-schema events uvm
@@ -38,15 +38,18 @@ rm -rf /etc/openvpn
 rm -rf /usr/share/untangle/web/reports/2*
 rm /usr/share/untangle/web/reports/current
 
-if [ -x /usr/sbin/slapadd ]; then
+SLAPD_CONFIG=/etc/untangle-ldap/slapd.conf
+SLAPD_LIB_DIR=/var/lib/untangle-ldap
+UNTANGLE_SLAPD_CONFIG_DIR=/usr/share/untangle-ldap-server
+if [ -f $SLAPD_CONFIG ]; then
     # restore initial LDAP db
-    /etc/init.d/slapd stop
-    rm -rf /var/lib/ldap
-    mkdir /var/lib/ldap
-    cp /usr/share/untangle/conf/ldap.DB_CONFIG /var/lib/ldap/DB_CONFIG
-    /usr/sbin/slapadd -l /usr/share/untangle/conf/initial.ldif
-    /usr/sbin/slapindex
-    /etc/init.d/slapd start
+    /etc/init.d/untangle-slapd stop
+    rm -rf ${SLAPD_LIB_DIR}
+    mkdir -p ${SLAPD_LIB_DIR}
+    cp ${UNTANGLE_SLAPD_CONFIG_DIR}/DB_CONFIG ${SLAPD_LIB_DIR}/DB_CONFIG
+    slapadd -f $SLAPD_CONFIG -l ${UNTANGLE_SLAPD_CONFIG_DIR}/initial.ldif
+    slapindex -f $SLAPD_CONFIG
+    /etc/init.d/untangle-slapd start
 fi
 
 ## Backup the current networking settings

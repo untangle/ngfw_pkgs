@@ -69,7 +69,7 @@ public class ISO_Portaled extends ISO {
             if (Options.target_header == null)
                 throw new IOException("No target for rdp portal");
 	    else
-	 	logger.error("ISO_Portaled: " + Options.target_header);
+	 	logger.debug("ISO_Portaled: " + Options.target_header);
 	
             initFactory();
             rdpsock = sslFactory.createSocket();
@@ -84,7 +84,7 @@ public class ISO_Portaled extends ISO {
 
 	    if (Options.proxy != null) {
             	sb.append("GET ").append(Options.proxy).append(" HTTP/1.1\r\n");
-		logger.error("proxy overridden to: " + Options.proxy);
+		logger.debug("proxy overridden to: " + Options.proxy);
 	    } else
             	sb.append("GET ").append(RDP_PROXY_PATH).append(" HTTP/1.1\r\n");
 
@@ -93,7 +93,7 @@ public class ISO_Portaled extends ISO {
 	    String target_header = Options.target_header;
 	    if (Options.append_target)
 	    	target_header = target_header + ";" + Options.port_to_forward + ";" + Options.username;
-	    logger.error("target_header: " + target_header);
+	    logger.debug("target_header: " + target_header);
             sb.append(TARGET_HEADER).append(": ").append(target_header).append("\r\n");
 
             if (Options.cookie_header != null)

@@ -25,12 +25,11 @@ class Tahoe < Alpaca::Migration
       table.column :upload_percentage, :integer, :default => 95
       #download rate in kbps
       table.column :download, :integer, :default => 1500
-      table.column :download_percentage, :integer, :default => 8
-      table.column :prioritize_ssh, :boolean, :default => false
-      table.column :prioritize_ping, :boolean, :default => false
-      table.column :prioritize_ack, :boolean, :default => true
-      table.column :prioritize_dns, :boolean, :default => true
-      table.column :prioritize_gaming, :boolean, :default => false
+      table.column :download_percentage, :integer, :default => 80
+      table.column :prioritize_ssh, :integer
+      table.column :prioritize_ping, :integer, :default => 20
+      table.column :prioritize_ack, :integer, :default => 10
+      table.column :prioritize_gaming, :integer, :default => 20
     end
  
     create_table :qos_rules do |table|
@@ -40,6 +39,12 @@ class Tahoe < Alpaca::Migration
       table.column :priority, :integer
       table.column :position, :integer
     end
+
+    add_qos_rule( :enabled => true, :description => "VoIP (SIP) Traffic", :filter => "d-port::5060", :priority => 10, :position => 0 )
+    add_qos_rule( :enabled => true, :description => "VoIP (IAX) Traffic", :filter => "d-port::4569", :priority => 10, :position => 1 )
+    add_qos_rule( :enabled => true, :description => "DNS Traffic", :filter => "d-port::53", :priority => 10, :position => 2 )
+    add_qos_rule( :enabled => false, :description => "SSH Traffic", :filter => "d-port::22", :priority => 10, :position => 3 )
+
   end
 
   def self.down

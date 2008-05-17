@@ -14,6 +14,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-class QosRules < ActiveRecord::Base
-  
+class QosRule < ActiveRecord::Base
+  def before_save
+    f = self.filter
+    if ( /port::/.match( f ) && /protocol::/.match( f ).nil? )
+      self.filter << "&&protocol::tcp,udp"
+    end
+  end
+  def self.order_field
+    "position"
+  end  
 end

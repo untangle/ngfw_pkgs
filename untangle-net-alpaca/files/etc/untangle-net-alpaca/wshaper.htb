@@ -26,9 +26,6 @@
 DOWNLINK=
 UPLINK=
 DEV=
-HIGHPRIO=
-MIDPRIO=
-LOWPRIO=
 
 . /etc/untangle-net-alpaca/untangle-qos
 
@@ -61,43 +58,49 @@ else
     exit
 fi
 
+touch /var/log/untangle-net-alpaca/qosstart.log
 
 ###### uplink
 
 # install root HTB, point default traffic to 1:20:
-
 tc qdisc add dev $DEV root handle 1: htb default 20
 
 # shape everything at $UPLINK speed - this prevents huge queues in your
 # DSL modem which destroy latency:
-
 tc class add dev $DEV parent 1: classid 1:1 htb rate ${UPLINK}kbit burst 18k
 
 # high prio class 1:10:
-
 tc class add dev $DEV parent 1:1 classid 1:10 htb rate ${UPLINK}kbit \
-   burst 12k prio 1
+   burst 16k prio 1
 
 # bulk & default class 1:20 - gets slightly less traffic, 
 # and a lower priority:
-
 tc class add dev $DEV parent 1:1 classid 1:20 htb rate $[9*$UPLINK/10]kbit \
-   burst 9k prio 2
+   burst 8k prio 2
 
 tc class add dev $DEV parent 1:1 classid 1:30 htb rate $[8*$UPLINK/10]kbit \
-   burst 6k prio 2
+   burst 6k prio 3
 
 # all get Stochastic Fairness:
 tc qdisc add dev $DEV parent 1:10 handle 10: sfq perturb 10
 tc qdisc add dev $DEV parent 1:20 handle 20: sfq perturb 10
 tc qdisc add dev $DEV parent 1:30 handle 30: sfq perturb 10
 
+for i in 0 1 2 4 8
+do
+  tc filter add dev $DEV parent 1:0 protocol ip prio 1 handle 0x0c0000$i fw classid 1:10
+  tc filter add dev $DEV parent 1:0 protocol ip prio 2 handle 0x040000$i fw classid 1:20
+  tc filter add dev $DEV parent 1:0 protocol ip prio 3 handle 0x020000$i fw classid 1:30
+  tc filter add dev $DEV parent 1:0 protocol ip prio 1 handle 0x1C0000$i fw classid 1:10
+  tc filter add dev $DEV parent 1:0 protocol ip prio 2 handle 0x140000$i fw classid 1:20
+  tc filter add dev $DEV parent 1:0 protocol ip prio 3 handle 0x120000$i fw classid 1:30
+done
+
 run-parts /etc/untangle-net-alpaca/tc-rules.d
 
 # rest ends up in 1:20
-tc filter add dev $DEV parent 1: protocol ip prio 20 u32 \
-   match ip dst 0.0.0.0/0 flowid 1:20
-
+#tc filter add dev $DEV parent 1: protocol ip prio 20 u32 \
+#   match ip dst 0.0.0.0/0 flowid 1:20
 
 ########## downlink #############
 # slow downloads down to somewhat less than the real speed  to prevent 
@@ -109,5 +112,11 @@ tc qdisc add dev $DEV handle ffff: ingress
 
 # filter *everything* to it (0.0.0.0/0), drop everything that's
 # coming in too fast:
-tc filter add dev $DEV parent ffff: protocol ip prio 50 u32 match ip src \
-   0.0.0.0/0 police rate ${DOWNLINK}kbit burst 12k drop flowid :1
+#only drop TCP
+tc filter add dev $DEV parent ffff: protocol ip prio 50 u32 match ip protocol 6 0xff match ip src \
+   0.0.0.0/0 police rate $[95*$DOWNLINK/100]kbit burst 300kb drop flowid :1
+
+#limit ping to 25% of total bandwidth
+tc filter add dev $DEV parent ffff: protocol ip prio 50 u32 match ip protocol 1 0xff match ip src \
+   0.0.0.0/0 police rate $[25*$DOWNLINK/100]kbit burst 30kb drop flowid :1
+

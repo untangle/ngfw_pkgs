@@ -389,6 +389,8 @@ iface lo inet loopback
 EOF
   end
 
+  ## This should be moved into a central place as something close is
+  ## used in the network manager.
   def clean_ip_networks( ip_networks )
     ## Copy the array of ip_networks
     ip_networks = [ ip_networks  ].flatten
@@ -409,6 +411,9 @@ EOF
 
     return false if ( ip_network.ip == "0.0.0.0" || ip_network.ip == "255.255.255.255" )
     return false if ( ip_network.netmask == "0.0.0.0" )
+
+    return false if /\.0$/.match( ip_network.ip )
+    return false if /\.255$/.match( ip_network.ip )
 
     true
   end
