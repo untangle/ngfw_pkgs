@@ -1,17 +1,29 @@
 #! /bin/bash
 
+getKeyFingerprint() {
+  gpg $1 | awk '/pub/ {gsub(/.*\//, "", $2) ; print $2}'
+}
+
 # attempt to fetch the GPG keys anyway
 . /usr/share/untangle-spamassassin-update/sa-fetch-keys.sh
 
 # SARE fingerprint
-SARE_FINGERPRINT=`gpg ${SARE_GPG_KEY} | awk '/pub/ {gsub(/.*\//, "", $2) ; print $2}'`
+SARE_FINGERPRINT=`getKeyFingerprint ${SARE_GPG_KEY}`
+
+# SOUGHT fingerprint
+SOUGHT_FINGERPRINT=`getKeyFingerprint ${SOUGHT_GPG_KEY}`
+
+needToRestart="false"
 
 if [ -x /usr/bin/sa-update ]; then
-    /usr/bin/sa-update --channelfile /usr/share/untangle-spamassassin-update/sa-update-channels.txt --gpgkey $SARE_FINGERPRINT
+    /usr/bin/sa-update --channelfile ${GPG_KEYS_DIR}/sa-update-channels.txt --gpgkey $SARE_FINGERPRINT
+    [ $? = 0 ] && needToRestart="true"
+    /usr/bin/sa-update --channel sought.rules.yerp.org --gpgkey $SOUGHT_FINGERPRINT
+    [ $? = 0 ] && needToRestart="true"
 fi
 
-# restart spamassassin
-/etc/init.d/spamassassin restart &> /dev/null &
+# restart spamassassin if needed
+[ $needToRestart = "true" ] && /etc/init.d/spamassassin restart &> /dev/null &
 
 # sa-update exits with a status to tell us if an update happened.
 # don't pass this up to cron.
