@@ -3,6 +3,7 @@
 RRDTOOL=rrdtool
 LOGFILE=/var/log/untangle-net-alpaca/qosrrd.log
 GRAPHFILE=/var/lib/rails/untangle-net-alpaca/public/images/qos/qosrrd
+GRAPHDIR=/var/lib/rails/untangle-net-alpaca/public/images/qos
 NOW=`date -u +%s`
 IFCONFIG=/sbin/ifconfig
 
@@ -29,6 +30,7 @@ if [ ! -e $LOGFILE ] ; then
 fi
 
 if [ "$1" == "graph" ] ; then
+    mkdir $GRAPHDIR
     $RRDTOOL graph ${GRAPHFILE}-week.png -l 0 -u $UPPER_LIMIT --start -604800 \
             DEF:inoctets=$LOGFILE:input:AVERAGE    \
             DEF:outoctets=$LOGFILE:output:AVERAGE  \

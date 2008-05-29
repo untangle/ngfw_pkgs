@@ -4,3 +4,4 @@ var/lib/rails/untangle-net-alpaca/database
 var/lib/rails/untangle-net-alpaca/tmp
 var/lib/rails/untangle-net-alpaca/tmp/sessions
 var/lib/rails/untangle-net-alpaca/log
+var/lib/rails/untangle-net-alpaca/public/images/qos
