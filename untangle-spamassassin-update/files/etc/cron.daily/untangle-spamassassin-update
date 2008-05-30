@@ -16,9 +16,9 @@ SOUGHT_FINGERPRINT=`getKeyFingerprint ${SOUGHT_GPG_KEY}`
 needToRestart="false"
 
 if [ -x /usr/bin/sa-update ]; then
-    /usr/bin/sa-update --channelfile ${GPG_KEYS_DIR}/sa-update-channels.txt --gpgkey $SARE_FINGERPRINT
+    /usr/bin/sa-update --channelfile ${GPG_KEYS_DIR}/sa-update-channels.txt --gpgkey $SARE_FINGERPRINT > /dev/null 2>&1
     [ $? = 0 ] && needToRestart="true"
-    /usr/bin/sa-update --channel sought.rules.yerp.org --gpgkey $SOUGHT_FINGERPRINT
+    /usr/bin/sa-update --channel sought.rules.yerp.org --gpgkey $SOUGHT_FINGERPRINT > /dev/null 2>&1
     [ $? = 0 ] && needToRestart="true"
 fi
 
