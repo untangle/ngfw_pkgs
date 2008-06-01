@@ -1,0 +1,63 @@
+#! /bin/dash
+
+### BEGIN INIT INFO
+# Provides:          untangle-barfight
+# Required-Start:    $local_fs $remote_fs
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+### END INIT INFO
+
+# Author: Robert Scott <rbscott@untangle.com>
+
+. /lib/lsb/init-functions
+
+DESC="Service for starting the untangle barfight"
+
+NAME="untangle-barfight"
+
+PID_FILE="/var/run/untangle-barfight.pid"
+
+if [ -r /etc/default/$NAME ]; then
+    . /etc/default/$NAME
+fi
+
+start()
+{
+    ${DAEMON}
+    cd ${BASE_DIR} || {
+        log_failure_msg "${NAME} could not change into the directory ${BASE_DIR}" 
+        exit -1
+    }
+}
+
+stop()
+{
+    ## Check if the PID file exists, mongrel_rails doesn't handle this case well if it doesn't exist
+    [ -f ${PID_FILE} ] && ${MONGREL_RAILS} stop -w 5 -c ${BASE_DIR} --pid ${MONGREL_PID_FILE}
+
+    pkill untangle-barfight > /dev/null 2>&1
+    pkill -9 untangle-barfight > /dev/null 2>&1
+    ## Remove the pid file.
+    rm -f ${PID_FILE}
+}
+
+case "$1" in
+    start)
+        sanitycheck
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    reload|restart|force-reload)
+        stop
+        start
+        ;;
+    *)
+        /bin/echo "Usage: $0 {start|stop|restart|force-reload}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0

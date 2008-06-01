@@ -1,0 +1,69 @@
+#!/usr/bin/make -f
+
+DESTDIR := debian/tmp
+
+
+ALPACA_DESTDIR := debian/untangle-net-alpaca
+IPTABLES_DESTDIR := debian/untangle-net-alpaca-iptables
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	touch configure-stamp
+
+build: configure
+	dh_testdir
+	mkdir -p $(DESTDIR)
+	cp -r ./files/* $(DESTDIR)
+## Delete any lingering database files
+	find $(DESTDIR) -path '*/database/*.db' | xargs rm -f
+## Delete any session files
+	find $(DESTDIR) -path '*/tmp/sessions/ruby_sess*' | xargs rm -f
+## Delete any lingering log files
+	find $(DESTDIR) -path '*/log/*.log' | xargs rm -f
+## Delete the symlink to rails
+	find $(DESTDIR) -path '*/vendor/rails' -type l | xargs rm -f 
+	find $(DESTDIR) -name "\.svn" | xargs rm -rf
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -rf configure-stamp $(DESTDIR)
+	dh_clean
+
+binary-indep:
+	dh_testdir  
+	dh_testroot   
+	dh_movefiles 
+#	dh_installdebconf   
+#	dh_shlibdeps  
+	dh_installdocs
+	dh_installdirs
+#	dh_installexamples   
+#	dh_installmenu   
+	dh_installlogrotate   
+#	dh_installemacsen   
+#	dh_installpam   
+#	dh_installmime   
+	dh_installinit
+#	dh_installcron   
+#	dh_installman   
+#	dh_installinfo   
+#	dh_undocumented   
+	dh_installchangelogs    
+#	dh_strip  
+	dh_link   
+	dh_compress   
+	dh_fixperms   
+	dh_installdeb  
+#	dh_perl     
+	if [ -f debian/version ] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
+	dh_md5sums     
+
+binary-arch:
+# nothing to do
+
+binary: binary-indep binary-arch
+	dh_builddeb 
+
+.PHONY: clean binary-indep binary build configure
