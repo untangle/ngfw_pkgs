@@ -79,7 +79,7 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
      download = "Unknown"
      upload = "Unknown"
      begin
-       download = `rrdtool fetch #{QoSRRDLog} MAX | cut -d " " -f 2 | sort -n | tail -1`.to_f
+       download = `rrdtool fetch #{QoSRRDLog} MAX | cut -d " " -f 2 | sort -n | tail -1`.to_f.round
        f = File.new( AptLog, "r" )
        f.each_line do |line|
          downloadMatchData = line.match( /Fetched.*\(([0-9]+)kB\/s\)/ )
@@ -87,7 +87,7 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
             download = downloadMatchData[1] 
          end
        end
-       upload = `rrdtool fetch #{QoSRRDLog} MAX | cut -d " " -f 3 | sort -n | tail -1`.to_f
+       upload = `rrdtool fetch #{QoSRRDLog} MAX | cut -d " " -f 3 | sort -n | tail -1`.to_f.round
      rescue
        # default to unkown
      end

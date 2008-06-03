@@ -2,16 +2,25 @@
 
 CLAMAV_CONF_FILE=/etc/clamav/clamd.conf
 
-grep -q TCPAddr $CLAMAV_CONF_FILE || cat >> $CLAMAV_CONF_FILE <<EOF 
-TCPAddr 127.0.0.1
+setOption() {
+  
+  grep -qE "^$1" $CLAMAV_CONF_FILE || cat >> $CLAMAV_CONF_FILE <<EOF
+$1 $2
 EOF
-grep -q TCPSocket $CLAMAV_CONF_FILE || cat >> $CLAMAV_CONF_FILE <<EOF 
-TCPSocket 3310 
-EOF
+}
 
+# obsolete options
 sed -i -e "s|[# ]*LocalSocket.*|#LocalSocket /var/run/clamav/clamd.ctl|" $CLAMAV_CONF_FILE
 sed -i -e "s|[# ]*NodalCoreAcceleration|#NodalCoreAcceleration|" $CLAMAV_CONF_FILE
+perl -i -pe 's/^(ArchiveMaxFileSize|StreamMaxLength.*)/#$1/' $CLAMAV_CONF_FILE
 
+# options we need
+setOption TCPAddr 127.0.0.1
+setOption TCPSocket 3310 
+setOption MaxFileSize 100M 
+setOption MaxScanSize 100M 
+
+# reloading daemons
 /etc/init.d/clamav-freshclam stop
 /etc/init.d/clamav-daemon stop
 
@@ -27,4 +36,3 @@ sleep 2
 # Make executable and then fetch unofficial clam phishing signatures.
 chmod +x /etc/cron.hourly/update_sanesecurity.sh
 nohup /etc/cron.hourly/update_sanesecurity.sh --sleep 1 >/dev/null 2>&1 &
-
