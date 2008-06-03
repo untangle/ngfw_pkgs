@@ -48,9 +48,6 @@
 /* 1 second in u-seconds */
 #define _LOAD_INTERVAL_SEC     1000000
 
-/* A limit check to make sure it doesn't go into a long loop */
-#define BLESS_COUNT_MAX        128
-
 /* Flag to indicate that all of the traffic should be passed */
 #define _PASS_ALL_FLAG         0x10DDBA11
 
@@ -407,7 +404,17 @@ int                  barfight_shield_rep_add_chunk ( struct in_addr* ip, int pro
 /* Load in a new shield configuration */
 int   barfight_shield_set_config         ( bouncer_shield_config_t* config )
 {
-    errlog( ERR_CRITICAL, "Implement me\n" );
+    if ( config == NULL ) return errlogargs();
+    
+    /* Due to the multithreaded nature, this is most likely not a good
+     * idea, but none of the values should be terribly corrupted for a
+     * long time so it should be fine. */
+    memcpy( &_shield.cfg, config, sizeof( bouncer_shield_config_t ));
+
+    if ( barfight_lru_config( &_shield.lru, config->lru.high_water, config->lru.low_water, 
+                              config->lru.sieve_size, &_shield.mutex ) < 0 ) {
+        return errlog( ERR_CRITICAL, "barfight_lru_config\n" );
+    }
 
     return 0;
 }
@@ -483,6 +490,12 @@ int barfight_shield_bless_users( barfight_shield_bless_array_t* nodes )
             if ( item->divider < 0 ) _shield.ignore_array[ignore_list_size++] = item->address.s_addr;
         }
 
+        /* Copy in the bless data useful for printint it back out */
+        _shield.cfg.bless_array.count = count;
+        _shield.cfg.bless_array.d = _shield.cfg.bless_data;
+        bzero( _shield.cfg.bless_data, sizeof( _shield.cfg.bless_data ));
+        memcpy( _shield.cfg.bless_data, nodes->d, count * sizeof( barfight_shield_bless_t ));
+
         return 0;
     }
 
@@ -522,7 +535,7 @@ static int _set_node_settings ( double divider, struct in_addr* ip, struct in_ad
 
     if ( netmask->s_addr != 0xFFFFFFFF ) {
         errlog( ERR_WARNING, "Netmask[%s] is not implemented for shield settings\n", 
-                unet_next_inet_ntoa( ip->s_addr ));
+                unet_next_inet_ntoa( netmask->s_addr ));
     }
 
     if ( barfight_trie_insert_and_get( &_shield.trie, ip, NULL, &line ) < 0 ) {
@@ -1034,6 +1047,8 @@ static int _reset_dividers( void )
             continue;            
         }
         reputation->divider = _DEFAULT_DIVIDER;
+        reputation->pass_all = 0;
+
     }
     
     return 0;

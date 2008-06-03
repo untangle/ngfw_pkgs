@@ -16,9 +16,14 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 #include <mvutil/debug.h>
 #include <mvutil/errlog.h>
 #include <mvutil/list.h>
+#include <mvutil/unet.h>
 #include <mvutil/utime.h>
 
 #include <json/json.h>
@@ -57,6 +62,12 @@
  * information is printed about the reputation being analyzed */
 #define _REPUTATION_DEBUG_THRESHOLD 160.0
 
+/* This is the defaults for controlling the log rotation and size,
+ * using these defaults for ten second resolution and about 2 minutes
+ * of back buffer. */
+#define _DEFAULT_LOG_ROTATE_DELAY  SEC_TO_MSEC( 10 )
+#define _DEFAULT_LOG_SIZE          12
+
 
 static void _load_limits( struct json_object* config_json, bouncer_shield_config_t* config );
 static void _load_limit( struct json_object* limit_json, nc_shield_limit_t* limit );
@@ -67,7 +78,9 @@ static void _load_post( struct json_object* post_json, nc_shield_post_t* post );
 
 static void _load_multipliers( struct json_object* multipliers_json, bouncer_shield_config_t* config );
 static void _load_lru( struct json_object* lru_json, bouncer_shield_config_t* config );
-static void _load_debug( struct json_object* debug_json, bouncer_shield_config_t* config );
+static void _load_misc( struct json_object* debug_json, bouncer_shield_config_t* config );
+
+static int _load_user( struct json_object* user_json, barfight_shield_bless_t* user );
 
 static void _update_int( struct json_object* limit_json, char* field, int* value, int allow_zero );
 static void _update_double( struct json_object* limit_json, char* field, double* value, int allow_zero );
@@ -82,7 +95,13 @@ static int _add_post( struct json_object* fence_json, char* name, nc_shield_post
 
 static int _add_multipliers( struct json_object* config_json, bouncer_shield_config_t* config );
 static int _add_lru( struct json_object* config_json, bouncer_shield_config_t* config );
-static int _add_debug( struct json_object* config_json, bouncer_shield_config_t* config );
+static int _add_misc( struct json_object* config_json, bouncer_shield_config_t* config );
+
+static int _add_users( struct json_object* config_json, barfight_shield_bless_array_t* bless_array );
+static int _add_user( struct json_object* users_json, barfight_shield_bless_t* user );
+
+static int _verify_config( bouncer_shield_config_t* config );
+static int _verify_fence( nc_shield_fence_t* fence );
 
 /* Load the default shield configuration */
 int bouncer_shield_config_default( bouncer_shield_config_t* config )
@@ -140,12 +159,22 @@ int bouncer_shield_config_default( bouncer_shield_config_t* config )
                 .error   = { .prob = 0.95, .post = _SHIELD_REP_MAX * 0.40 }
             }
         },
-        .rep_threshold = _REPUTATION_DEBUG_THRESHOLD
+        .rep_threshold = _REPUTATION_DEBUG_THRESHOLD,
+
+        .bless_array = { 
+            .count = 0
+        },
+        
+        
+        .log_rotate_delay_ms = _DEFAULT_LOG_ROTATE_DELAY,
+        .log_size = _DEFAULT_LOG_SIZE,
     };
     
     if ( config == NULL ) return errlogargs();
 
     memcpy ( config, &default_config, sizeof ( bouncer_shield_config_t ));
+
+    config->bless_array.d = config->bless_data;
 
     return 0;
 }
@@ -169,6 +198,10 @@ int bouncer_shield_config_load( bouncer_shield_config_t* config, char* buffer, i
         if ( bouncer_shield_config_load_json( config, config_json ) < 0 ) {
             return errlog( ERR_CRITICAL, "bouncer_shield_config_load_json\n" );
         }
+        
+        if ( _verify_config( config ) < 0 ) {
+            return errlog( ERR_CRITICAL, "_verify_config\n" );
+        }
 
         return 0;
     }
@@ -188,6 +221,8 @@ int bouncer_shield_config_load_json( bouncer_shield_config_t* config, struct jso
     if ( config == NULL ) return errlogargs();
     if ( config_json == NULL ) return errlogargs();
 
+    struct json_object* bless_array_json = NULL;
+
     /* Load the defaults so the configuration only has to override the
      * desired values. */
     if ( bouncer_shield_config_default( config ) < 0 ) {
@@ -203,7 +238,14 @@ int bouncer_shield_config_load_json( bouncer_shield_config_t* config, struct jso
 
     _load_lru( json_object_object_get( config_json, "lru" ), config );
 
-    _load_debug( json_object_object_get( config_json, "debug" ), config );
+    _load_misc( json_object_object_get( config_json, "misc" ), config );
+    
+    if (( bless_array_json = json_object_object_get( config_json, "users" )) != NULL ) {
+        if ( bouncer_shield_config_load_bless_json( &config->bless_array, bless_array_json ) < 0 ) {
+            return errlog( ERR_CRITICAL, "bouncer_shield_config_load_bless_json\n" );
+        }
+    }
+    
 
     return 0;
 }
@@ -225,8 +267,11 @@ struct json_object* bouncer_shield_config_to_json( bouncer_shield_config_t* conf
         if ( _add_lru( config_json, config ) < 0 ) {
             return errlog( ERR_CRITICAL, "_add_lru\n" );
         }
-        if ( _add_debug( config_json, config ) < 0 ) {
-            return errlog( ERR_CRITICAL, "_add_debug\n" );
+        if ( _add_misc( config_json, config ) < 0 ) {
+            return errlog( ERR_CRITICAL, "_add_misc\n" );
+        }
+        if ( _add_users( config_json, &config->bless_array ) < 0 ) {
+            return errlog( ERR_CRITICAL, "_add_users\n" );
         }
 
         return 0;
@@ -243,6 +288,47 @@ struct json_object* bouncer_shield_config_to_json( bouncer_shield_config_t* conf
 
     return config_json;
 }
+
+/* Convert an array of JSON user and fill in a bless array */
+int bouncer_shield_config_load_bless_json( barfight_shield_bless_array_t* bless_array,
+                                           struct json_object* bless_array_json )
+{
+    if ( bless_array == NULL ) return errlogargs();
+    if ( bless_array_json == NULL ) return errlogargs();
+
+    int c = 0;
+    struct array_list* user_array_list = NULL;
+    struct json_object* user_json = NULL;
+
+    if (( user_array_list = json_object_get_array( bless_array_json )) == NULL ) {
+        debug( 10, "The field 'users' is not an array.\n" );
+        return -1;
+    }
+    
+    if (( bless_array->count = array_list_length( user_array_list )) < 0 ) {
+        debug( 10, "The field 'users' is not an array.\n" );
+        return -1;
+    }
+    
+    if ( bless_array->count > BLESS_COUNT_MAX ) {
+        errlog( ERR_WARNING, "Requested to bless %d users, only blessing first %d.\n", 
+                bless_array->count, BLESS_COUNT_MAX );
+        bless_array->count = BLESS_COUNT_MAX;
+    }
+        
+    for ( c = 0; c < bless_array->count ; c++ ) {
+        if (( user_json = array_list_get_idx( user_array_list, c )) == NULL ) {
+            return errlog( ERR_WARNING, "array_list_get_idx\n" );
+        }
+
+        bzero( &bless_array->d[c], sizeof( barfight_shield_bless_t ));
+        
+        if ( _load_user( user_json, &bless_array->d[c] ) < 0 ) return -1;
+    }
+
+    return 0;
+}
+
 
 static void _load_limits( struct json_object* config_json, bouncer_shield_config_t* config )
 {
@@ -270,6 +356,8 @@ static void _load_limit( struct json_object* limit_json, nc_shield_limit_t* limi
 
 static void _load_fences( struct json_object* fences, bouncer_shield_config_t* config )
 {
+    if ( fences == NULL ) return;
+
     _load_fence( json_object_object_get( fences, "relaxed" ), &config->fence.relaxed );
     _load_fence( json_object_object_get( fences, "lax" ), &config->fence.lax );
     _load_fence( json_object_object_get( fences, "tight" ), &config->fence.tight );
@@ -317,14 +405,48 @@ static void _load_lru( struct json_object* lru_json, bouncer_shield_config_t* co
     _update_double( lru_json, "ip-rate", &config->lru.ip_rate, 0 );
 }
 
-static void _load_debug( struct json_object* debug_json, bouncer_shield_config_t* config )
+static void _load_misc( struct json_object* misc_json, bouncer_shield_config_t* config )
 {
-    if ( debug_json == NULL ) return;
+    if ( misc_json == NULL ) return;
 
-    _update_int( debug_json, "rate", &config->print_delay, 0 );
-    _update_double( debug_json, "threshold", &config->rep_threshold, 0 );
+    _update_int( misc_json, "debug-rate", &config->print_delay, 0 );
+    _update_double( misc_json, "debug-threshold", &config->rep_threshold, 0 );
+    _update_int( misc_json, "log-rotate-delay", &config->log_rotate_delay_ms, 0 );
+    _update_int( misc_json, "log-size", &config->log_size, 0 );
 }
 
+static int _load_user( struct json_object* user_json, barfight_shield_bless_t* user )
+{
+    if ( user_json == NULL ) return errlogargs();
+    if ( user == NULL ) return errlogargs();
+    char *ip;
+    char *netmask;
+
+    _update_double( user_json, "divider", &user->divider, 0 );
+
+    if (( ip = json_object_utils_get_string( user_json, "ip" )) == NULL ) {
+        /* Debug because this is not controllable. */
+        debug( 10, "The user is missing an IP\n" );
+        return -1;
+    }
+
+    if (( netmask = json_object_utils_get_string( user_json, "netmask" )) == NULL ) {
+        debug( 10, "The user is missing a netmask\n" );
+        return -1;
+    }
+
+    if (( inet_aton( ip, &user->address )) < 0 ) {
+        debug( 10, "The user has an invalid IP\n" );
+        return -1;        
+    }
+
+    if (( inet_aton( netmask, &user->netmask )) < 0 ) {
+        debug( 10, "The user has an invalid netmask\n" );
+        return -1;        
+    }
+
+    return 0;
+}
 
 static void _update_int( struct json_object* limit_json, char* field, int* value, int allow_zero )
 {
@@ -625,37 +747,172 @@ static int _add_lru( struct json_object* config_json, bouncer_shield_config_t* c
     return 0;
 }
 
-static int _add_debug( struct json_object* config_json, bouncer_shield_config_t* config )
+static int _add_misc( struct json_object* config_json, bouncer_shield_config_t* config )
 {
-    struct json_object* debug_json = NULL;
+    struct json_object* misc_json = NULL;
 
     int _critical_section() {
-        if ( json_object_utils_add_int( debug_json, "rate", config->print_delay ) < 0 ) {
+        if ( json_object_utils_add_int( misc_json, "debug-rate", config->print_delay ) < 0 ) {
             return errlog( ERR_CRITICAL, "json_object_utils_add_double\n" );
         }
-        if ( json_object_utils_add_double( debug_json, "ip-rate", config->rep_threshold ) < 0 ) {
+        if ( json_object_utils_add_double( misc_json, "debug-threshold", config->rep_threshold ) < 0 ) {
             return errlog( ERR_CRITICAL, "json_object_utils_add_double\n" );
+        }
+        if ( json_object_utils_add_int( misc_json, "log-rotate-delay", config->log_rotate_delay_ms ) < 0 ) {
+            return errlog( ERR_CRITICAL, "json_object_utils_add_int\n" );
+        }
+        if ( json_object_utils_add_int( misc_json, "log-size", config->log_size ) < 0 ) {
+            return errlog( ERR_CRITICAL, "json_object_utils_add_int\n" );
         }
 
-        if ( json_object_utils_add_object( config_json, "debug", debug_json ) < 0 ) {
+
+        if ( json_object_utils_add_object( config_json, "misc", misc_json ) < 0 ) {
             /* on failure it has already been scrubbed. */
-            debug_json = NULL;
+            misc_json = NULL;
             return errlog( ERR_CRITICAL, "json_object_utils_add_object\n" );
         }
         
         return 0;
     }
     
-    if (( debug_json = json_object_new_object()) == NULL ) {
+    if (( misc_json = json_object_new_object()) == NULL ) {
         return errlog( ERR_CRITICAL, "json_object_new_object\n" );
     }
 
     if ( _critical_section() < 0 ) {
-        if ( debug_json != NULL ) json_object_put( debug_json );
+        if ( misc_json != NULL ) json_object_put( misc_json );
         return errlog( ERR_CRITICAL, "_critical_section\n" );
     }
 
     return 0;    
 }
+
+static int _add_users( struct json_object* config_json, barfight_shield_bless_array_t* bless_array )
+{
+    struct json_object* users_json = NULL;
+
+    int _critical_section() {
+        int c = 0;
+        int count = bless_array->count;
+
+        if ( count > BLESS_COUNT_MAX ) count = BLESS_COUNT_MAX;
+
+        for ( c = 0 ; c < count  ; c++ ) {
+            if ( _add_user( users_json, &bless_array->d[c] ) < 0 ) {
+                return errlog( ERR_CRITICAL, "_add_user\n" );
+            }
+        }
+
+        if ( json_object_utils_add_object( config_json, "users", users_json ) < 0 ) {
+            /* on failure it has already been scrubbed. */
+            users_json = NULL;
+            return errlog( ERR_CRITICAL, "json_object_utils_add_object\n" );
+        }
+        
+        return 0;
+    }
+    
+    if (( users_json = json_object_new_array()) == NULL ) {
+        return errlog( ERR_CRITICAL, "json_object_new_array\n" );
+    }
+
+    if ( bless_array->count < 0 ) return errlogargs();
+
+    if ( _critical_section() < 0 ) {
+        if ( users_json != NULL ) json_object_put( users_json );
+        return errlog( ERR_CRITICAL, "_critical_section\n" );
+    }
+
+    return 0;
+}
+
+static int _add_user( struct json_object* users_json, barfight_shield_bless_t* user )
+{
+    struct json_object* user_json = NULL;
+
+    int _critical_section() {
+        if ( json_object_utils_add_double( user_json, "divider", user->divider ) < 0 ) {
+            return errlog( ERR_CRITICAL, "json_object_utils_add_double\n" );
+        }
+
+        if ( json_object_utils_add_string( user_json, "ip",
+                                           unet_inet_ntoa( user->address.s_addr )) < 0 ) {
+            return errlog( ERR_CRITICAL, "json_object_utils_add_string\n" );
+        }
+
+        if ( json_object_utils_add_string( user_json, "netmask", 
+                                           unet_inet_ntoa( user->netmask.s_addr )) < 0 ) {
+            return errlog( ERR_CRITICAL, "json_object_utils_add_string\n" );
+        }
+
+        if ( json_object_array_add( users_json, user_json ) < 0 ) {
+            /* on failure it has already been scrubbed. */
+            return errlog( ERR_CRITICAL, "json_object_array_add\n" );
+        }
+        
+        return 0;
+    }
+    
+    if (( user_json = json_object_new_object()) == NULL ) {
+        return errlog( ERR_CRITICAL, "json_object_new_object\n" );
+    }
+
+    if ( _critical_section() < 0 ) {
+        if ( user_json != NULL ) json_object_put( user_json );
+        return errlog( ERR_CRITICAL, "_critical_section\n" );
+    }
+
+    return 0;
+}
+
+
+static int _verify_config            ( bouncer_shield_config_t* config )
+{
+    if ( config->lru.low_water > config->lru.high_water ) {
+        return errlog ( ERR_INFORM, "low water (%d) < high water (%d)\n", 
+                        config->lru.low_water, config->lru.high_water );
+    }
+
+    if ( config->lru.high_water <= 0 ) {
+        return errlog ( ERR_INFORM, "high water < 0 (%d)\n", config->lru.high_water );
+    }
+
+    /* Arbitrary value */
+    if ( config->log_rotate_delay_ms <= 10 ) {
+        return errlog ( ERR_INFORM, "log rotation delay too short(%d)\n", config->log_rotate_delay_ms );
+    }
+
+    if ( config->log_size <= 0 ) {
+        return errlog ( ERR_INFORM, "log rotation size <= 0(%d)\n", config->log_size );
+    }
+    
+    if (( _verify_fence ( &config->fence.relaxed ) < 0 ) ||
+        ( _verify_fence ( &config->fence.lax     ) < 0 ) ||
+        ( _verify_fence ( &config->fence.tight   ) < 0 ) ||
+        ( _verify_fence ( &config->fence.closed  ) < 0 )) {
+        return errlog ( ERR_INFORM, "Shield: Invalid fence configuration\n" );
+    }
+
+    return 0;
+}
+
+static int _verify_fence          ( nc_shield_fence_t* fence )
+{
+    if ( fence->limited.prob < 0 || fence->limited.prob > 1 ) {
+        return errlog ( ERR_INFORM, "Shield: Fence limited probability must be between 0 and 1\n" );
+    }
+    
+    if ( fence->closed.prob < 0 || fence->closed.prob > 1 ) {
+        return errlog ( ERR_INFORM, "Shield: Fence closed probability must be between 0 and 1\n" );
+    }
+
+    if ( fence->closed.post < fence->limited.post ) {
+        return errlog ( ERR_INFORM, "Shield: Fence closed post must be greater than limited post\n" );
+    }
+   
+    return 0;
+}
+
+
 
 

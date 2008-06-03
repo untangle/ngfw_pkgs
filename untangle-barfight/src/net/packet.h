@@ -14,6 +14,7 @@
 
 #include <netinet/in.h>
 #include <netinet/ip.h>
+#include <net/if.h>
 
 #define MAX_BUCKET_SIZE 0x10000
 
@@ -63,6 +64,9 @@ typedef struct
 
     /* This is the queue where the packet came from */
     struct barfight_net_nfqueue* nfqueue;
+
+    /* This is the interface the packet came in on. */
+    char if_name[IF_NAMESIZE];
 
     /* The original and reply tuples. */
     struct {

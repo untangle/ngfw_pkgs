@@ -308,9 +308,6 @@ static int _handle_packet( barfight_bouncer_reader_t* reader, barfight_net_packe
         };
 
         u_int8_t protocol = ip_header->protocol;
-
-        /* fix me */
-        char* if_name = "eth0";
         
         debug( 10, "READER: Adding a session for %s[%d]\n", 
                unet_next_inet_ntoa( client_ip.s_addr ), protocol );
@@ -350,7 +347,7 @@ static int _handle_packet( barfight_bouncer_reader_t* reader, barfight_net_packe
 
         /* Log the event */
         if ( barfight_bouncer_logs_add( reader->logs, client_ip,
-                                        if_name, protocol, response.ans ) < 0 ) {
+                                        packet->if_name, protocol, response.ans ) < 0 ) {
             errlog( ERR_CRITICAL, "barfight_bouncer_logs_add\n" );
         }
         

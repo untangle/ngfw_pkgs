@@ -52,17 +52,6 @@ typedef enum  {
 
 #define NC_SHIELD_MODE_MAX NC_SHIELD_MODE_CLOSED
 
-typedef struct {
-    double divider;
-    struct in_addr address;
-    struct in_addr netmask;
-} barfight_shield_bless_t;
-
-typedef struct {
-    int count;
-    barfight_shield_bless_t* d;
-} barfight_shield_bless_array_t;
-
 int barfight_shield_init( void );
 
 int barfight_shield_destroy( void );

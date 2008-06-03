@@ -326,7 +326,7 @@ static int _post_data_iterator( void *arg, enum MHD_ValueKind kind,
     
     sd->request = json;
     
-    debug( 7, "key[%s] filename[%s] offset[%d] size[%d]\n", key, filename, off, size );    
+    debug( 7, "JSON_SERVER: key[%s] filename[%s] offset[%d] size[%d]\n", key, filename, off, size );    
 
     // errlog( ERR_WARNING, "data:\n----------------------\n%s----------------------\n", data );
     return MHD_YES;

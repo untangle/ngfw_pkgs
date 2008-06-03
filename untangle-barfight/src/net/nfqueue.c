@@ -18,6 +18,7 @@
 
 #include <pthread.h>
 #include <linux/netfilter.h>
+#include <net/if.h>
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
 #include <netinet/udp.h>
@@ -461,10 +462,19 @@ static int _nf_callback( struct nfq_q_handle *qh, struct nfgenmsg *nfmsg,
     /* Verify that the marks match, eventually, it should just go to this other method */
     /* First lookup the physdev in */
 
-    /* XXXX does this work? */
     u_int32_t dev = nfq_get_physindev( nfa );
     if ( dev == 0 ) dev = nfq_get_indev( nfa );
 
+    /* Load the name of the interface */
+    if ( dev != 0 ) {
+        if ( if_indextoname( dev, packet->if_name ) == NULL ) {
+            errlog( ERR_WARNING, "if_indextoname (%s)\n", errstr );
+            strncpy( packet->if_name, "unknown", sizeof( packet->if_name ));
+        }
+    } else {
+        strncpy( packet->if_name, "unknown", sizeof( packet->if_name ));
+    }
+        
     /* Try to get the conntrack information */
     if ( _nfq_get_conntrack( nfa, packet ) <0 ) {
         errlog( ERR_WARNING, "_nfq_get_conntrack\n" );

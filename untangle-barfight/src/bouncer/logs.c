@@ -23,13 +23,18 @@
 #include <mvutil/debug.h>
 #include <mvutil/errlog.h>
 #include <mvutil/unet.h>
+#include <mvutil/utime.h>
 
 #include "bouncer/logs.h"
 #include "bouncer/shield.h"
 
+#include "utils/sched.h"
+
 #include "json/object_utils.h"
 
-/* XXXXXX Verify 727 is prime */
+/* Default timeout for logs if they are scheduled to automatically advance */
+#define _DEFAULT_ADVANCE_TIMEOUT 10000
+
 #define _USER_HASH_SIZE 727
 
 /* No need for locks, this is locked outside */
@@ -38,6 +43,8 @@
 static char *_json_action_keys[] = {
     "identifier", "resets", "drop", "limited", "accepted", "errors", ""
 };
+
+static char *unknown_interface = "unknown";
 
 static int _user_log_event( barfight_bouncer_logs_user_stats_t *user_stats, 
                             barfight_shield_ans_t action, char* if_name );
@@ -86,6 +93,8 @@ int barfight_bouncer_logs_init( barfight_bouncer_logs_t* logs, int size )
     if ( pthread_mutex_init( &logs->mutex, NULL ) < 0 ) return perrlog( "pthread_mutex_init" );
     
     if ( list_init( &logs->logs, LIST_FLAG_CIRCULAR ) < 0 ) return errlog( ERR_CRITICAL, "list_init\n" );
+
+    logs->advance_timeout = _DEFAULT_ADVANCE_TIMEOUT;
     
     int c = 0;
     barfight_bouncer_logs_iteration_t *log_iteration = NULL;
@@ -195,6 +204,9 @@ int barfight_bouncer_logs_add( barfight_bouncer_logs_t* logs, struct in_addr cli
     
     if ( iteration == NULL ) return errlog( ERR_CRITICAL, "_get_current_logs\n" );
 
+    if ( if_name == NULL ) if_name = unknown_interface;
+    if ( if_name[0] == '\0' ) if_name = unknown_interface;
+
     int _critical_section() {
         /* Lookup the client in the hash */
         barfight_bouncer_logs_user_stats_t* user_stats = NULL;
@@ -257,8 +269,16 @@ int barfight_bouncer_logs_advance( barfight_bouncer_logs_t* logs )
         if (( next_item = list_node_next( current_item )) == NULL ) {
             return errlog( ERR_CRITICAL, "list_node_next\n" );
         }
-
-        errlog( ERR_WARNING, "Insert the end times\n" );
+        
+        if (( log_iteration = list_node_val( current_item )) == NULL ) {
+            return errlog( ERR_CRITICAL, "list_node_val\n" );
+        }
+        
+        if ( pthread_mutex_lock( &log_iteration->mutex ) < 0 ) return perrlog( "pthread_mutex_lock" );
+        if ( gettimeofday( &log_iteration->end_time, NULL ) < 0 ) return perrlog( "gettimeofday" );
+        if ( pthread_mutex_unlock( &log_iteration->mutex ) < 0 ) {
+            return perrlog( "pthread_mutex_unlock" );
+        }
         
         if (( log_iteration = list_node_val( next_item )) == NULL ) {
             return errlog( ERR_CRITICAL, "list_node_val\n" );
@@ -307,6 +327,44 @@ int barfight_bouncer_logs_advance( barfight_bouncer_logs_t* logs )
     }
                                                         
     if ( ret < 0 ) return errlog( ERR_CRITICAL, "_critical_section\n" );
+    return 0;
+}
+
+void barfight_bouncer_logs_sched_advance( void* arg )
+{
+    if ( arg == NULL ) {
+        errlogargs();
+        return;
+    }
+
+    barfight_bouncer_logs_t* logs = (barfight_bouncer_logs_t*)arg;
+    
+    debug( 10, "LOGS: Automatically advancing logs.\n" );
+    
+    if ( barfight_bouncer_logs_advance( logs ) < 0 ) {
+        errlog( ERR_CRITICAL, "barfight_bouncer_logs_advance\n" );
+        return;
+    }
+
+    if (( logs->advance_timeout > 0 ) && 
+        ( barfight_sched_event( barfight_bouncer_logs_sched_advance, arg, 
+                                MSEC_TO_USEC( logs->advance_timeout )) < 0 )) {
+        errlog( ERR_CRITICAL, "barfight_sched_event\n" );
+        return;
+    }
+}
+
+/**
+ * Change the delay for automatic log advancing.
+ */
+int barfight_bouncer_logs_set_rotate_delay( barfight_bouncer_logs_t* logs, int timeout )
+{
+    if ( logs == NULL ) return errlogargs();
+
+    debug( 10, "LOGS: Setting log rotate delay to %d\n", timeout );
+    
+    logs->advance_timeout = timeout;
+    
     return 0;
 }
 
@@ -398,7 +456,7 @@ static int _user_log_event( barfight_bouncer_logs_user_stats_t *user_stats,
     
     int c;
     for ( c = 0 ; c < BARFIGHT_BOUNCER_LOGS_INTERFACE_COUNT ; c++ ) {
-        if ( user_stats->if_names[c] == NULL ) break;
+        if ( user_stats->if_names[c][0] == '\0' ) break;
         if ( strncmp( user_stats->if_names[c], if_name, IF_NAMESIZE ) == 0 ) {
             interface_counters = &user_stats->counters[c];
             break;
@@ -411,8 +469,7 @@ static int _user_log_event( barfight_bouncer_logs_user_stats_t *user_stats,
         }
         
         /* Create a new set of stats for this interface. */
-        /* XXX fix this */
-        user_stats->if_names[c] = if_name;
+        strncpy( user_stats->if_names[c], if_name, sizeof( user_stats->if_names[c] ));
         interface_counters = &user_stats->counters[c];
     }
     
@@ -642,7 +699,7 @@ static struct json_object* _build_json_iteration_user( barfight_bouncer_logs_ite
                 check_stats = 0;
                 /* Check all of the stats to see if there is anything besides an accept */
                 for ( d = 0 ; d < BARFIGHT_BOUNCER_LOGS_INTERFACE_COUNT ; d++ ) {
-                    if ( user_stats->if_names[d] == NULL ) break;
+                    if ( user_stats->if_names[d][0] == '\0' ) break;
                     
                     if ( user_stats->counters[d].totals != user_stats->counters[d].accepted ) {
                         check_stats = 1;
@@ -664,7 +721,7 @@ static struct json_object* _build_json_iteration_user( barfight_bouncer_logs_ite
             }
 
             for ( d = 0 ; d < BARFIGHT_BOUNCER_LOGS_INTERFACE_COUNT ; d++ ) {
-                if ( user_stats->if_names[d] == NULL ) break;
+                if ( user_stats->if_names[d][0] == '\0' ) break;
                 
                 if (( ignore_accept_only != 0 ) && 
                     ( user_stats->counters[d].totals == user_stats->counters[d].accepted )) continue;

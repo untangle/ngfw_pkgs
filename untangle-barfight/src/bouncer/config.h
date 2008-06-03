@@ -19,7 +19,13 @@
 #ifndef __BARFIGHT_BOUNCER_CONFIG_H_
 #define __BARFIGHT_BOUNCER_CONFIG_H_
 
+/* A limit check to make sure it doesn't go into a long loop */
+#define BLESS_COUNT_MAX        128
+
+#include <netinet/in.h>
+
 #include <json/json.h>
+
 
 typedef double nc_shield_score_t;
 
@@ -45,6 +51,18 @@ typedef struct {
     /* IP is using an excessive amount of resources and may be notified */
     nc_shield_post_t error;
 } nc_shield_fence_t;
+
+typedef struct
+{
+    double divider;
+    struct in_addr address;
+    struct in_addr netmask;
+} barfight_shield_bless_t;
+
+typedef struct {
+    int count;
+    barfight_shield_bless_t* d;
+} barfight_shield_bless_array_t;
 
 typedef struct {
     struct {
@@ -93,6 +111,15 @@ typedef struct {
     /** If a reputation exceeds this threshold, debugging messages are
      * printed out for a reputation. */
     double rep_threshold;
+
+    /* This is number of milliseconds before rotating the circular logs. */
+    int log_rotate_delay_ms;
+
+    /* This is the number of items that are inside of logs */
+    int log_size;
+
+    barfight_shield_bless_t bless_data[128];
+    barfight_shield_bless_array_t bless_array;    
 } bouncer_shield_config_t;
 
 /* Load the default shield configuration */
@@ -105,6 +132,10 @@ int bouncer_shield_config_load_json( bouncer_shield_config_t* config, struct jso
 
 /* Convert the current configuration to a JSON string */
 struct json_object* bouncer_shield_config_to_json( bouncer_shield_config_t* config );
+
+/* Convert an array of JSON user and fill in a bless array */
+int bouncer_shield_config_load_bless_json( barfight_shield_bless_array_t* bless_array,
+                                           struct json_object* bless_array_json );
 
 #endif // __BARFIGHT_BOUNCER_CONFIG_H_
 

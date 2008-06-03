@@ -21,6 +21,8 @@
 
 #include <pthread.h>
 
+#include <net/if.h>
+
 #include <mvutil/hash.h>
 #include <mvutil/list.h>
 
@@ -46,7 +48,7 @@ typedef struct
 
 typedef struct
 {
-    char *if_names[BARFIGHT_BOUNCER_LOGS_INTERFACE_COUNT];
+    char if_names[BARFIGHT_BOUNCER_LOGS_INTERFACE_COUNT][IF_NAMESIZE];
     barfight_bouncer_logs_action_counters_t counters[BARFIGHT_BOUNCER_LOGS_INTERFACE_COUNT];
 } barfight_bouncer_logs_user_stats_t;
 
@@ -60,7 +62,7 @@ typedef struct
 {
     /* Unique identifier, not really all that useful */
     int id;
-    
+
     /* Grab this mutex to prevent overwriting or deleting stats that are being accessed. */
     pthread_mutex_t mutex;
 
@@ -81,6 +83,9 @@ typedef struct
 {
     /* Grab this mutex in order to advance to the next mutex. */
     pthread_mutex_t mutex;
+
+    /* The amount of time in milliseconds to wait in milliseconds */
+    int advance_timeout;
 
     /* logs are a circular array, which can be advanced.  this is the
      * index of the current log */
@@ -124,6 +129,15 @@ int barfight_bouncer_logs_add( barfight_bouncer_logs_t* logs, struct in_addr cli
  * Advance the circular buffer to the next iteration.
  */
 int barfight_bouncer_logs_advance( barfight_bouncer_logs_t* logs );
+
+/**
+ * Task to automatically advance the log pointer, and then reschedule itself.
+ * @param logs Logs to advance, passed in as a void* so it can used
+ * directly in the scheduler.
+ */
+void barfight_bouncer_logs_sched_advance( void* arg );
+
+int barfight_bouncer_logs_set_rotate_delay( barfight_bouncer_logs_t* logs, int timeout );
 
 /**
  * Convert from logs to JSON.

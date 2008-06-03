@@ -88,6 +88,31 @@ int json_object_utils_add_string( struct json_object* object, char* key, char* s
     return 0;
 }
 
+
+/**
+ * Retrieve a string from a JSON object
+ */
+char* json_object_utils_get_string( struct json_object* object, char* key )
+{
+    if ( object == NULL ) return errlogargs_null();
+    if ( key == NULL ) return errlogargs_null();
+
+    struct json_object *value_json = NULL;
+    char* value = NULL;
+    if (( value_json = json_object_object_get( object, key )) == NULL ) {
+        debug( 10, "The object doesn't contain a value for key %s\n", key );
+        return NULL;
+    }
+
+    if (( value = json_object_get_string( value_json )) == NULL ) {
+        debug( 10, "The object doesn't contain a string a key %s\n", key );
+        return NULL;
+    }
+
+    return value;
+}
+
+
 int json_object_utils_add_int( struct json_object* object, char* key, int value )
 {
     struct json_object* json_value = NULL;
