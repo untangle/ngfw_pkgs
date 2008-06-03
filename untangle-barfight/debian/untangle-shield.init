@@ -1,7 +1,7 @@
 #! /bin/dash
 
 ### BEGIN INIT INFO
-# Provides:          untangle-barfight
+# Provides:          untangle-shield
 # Required-Start:    $local_fs $remote_fs
 # Required-Stop:
 # Default-Start:     2 3 4 5
@@ -12,14 +12,14 @@
 
 . /lib/lsb/init-functions
 
-DESC="Service for starting an untangle barfight"
+DESC="Service for starting an untangle shield"
 
-NAME="untangle-barfight"
+NAME="untangle-shield"
 
-MONITOR="barfight-monitor"
-MONITOR_SCRIPT=/usr/share/untangle-barfight/bin/${MONITOR}
+MONITOR="shield-monitor"
+MONITOR_SCRIPT=/usr/share/untangle-shield/bin/${MONITOR}
 
-PID_FILE="/var/run/untangle-barfight.pid"
+PID_FILE="/var/run/untangle-shield.pid"
 
 start()
 {
@@ -35,7 +35,7 @@ start()
 
 stop()
 {
-    start-stop-daemon -m --pid-file ${PID_FILE} --name barfight-monitor --stop
+    start-stop-daemon -m --pid-file ${PID_FILE} --name shield-monitor --stop
 
     sleep 2
     killall ${MONITOR} > /dev/null  2>&1

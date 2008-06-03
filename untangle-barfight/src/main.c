@@ -45,7 +45,7 @@
 
 #include "json/server.h"
 
-#define DEFAULT_CONFIG_FILE  "/etc/barfight.conf"
+#define DEFAULT_CONFIG_FILE  "/etc/shield.conf"
 #define DEFAULT_DEBUG_LEVEL  5
 #define DEFAULT_BIND_PORT 3001
 

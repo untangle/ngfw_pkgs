@@ -1,5 +1,5 @@
 #! /bin/dash
 
 ## Uncomment to change the default configuration file.
-# BARFIGHT_CONFIG_FILE=/etc/barfight.conf
+# SHIELD_CONFIG_FILE=/etc/shield.conf
 

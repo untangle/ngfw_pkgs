@@ -34,7 +34,7 @@ mvutil_source=libmvutil/src/debug.c libmvutil/src/errlog.c libmvutil/src/hash.c 
 	libmvutil/src/mailbox.c libmvutil/src/mvpoll.c libmvutil/src/unet.c \
 	libmvutil/src/uthread.c libmvutil/src/utime.c
 
-## Barfight source
+## Shield source
 bf_source=src/utils/sched.c src/utils/lru.c src/json/server.c src/json/object_utils.c \
 	src/bouncer/shield.c src/bouncer/mode.c src/bouncer/load.c src/bouncer/reader.c \
 	src/bouncer/config.c src/bouncer/logs.c src/trie/item.c src/trie/base.c \
@@ -42,7 +42,7 @@ bf_source=src/utils/sched.c src/utils/lru.c src/json/server.c src/json/object_ut
 	src/functions.c src/main.c ${mvutil_source}
 
 bf_objects=$(patsubst %.c,${object_dir}/%.o, ${bf_source})
-bf_binary=untangle-barfight
+bf_binary=untangle-shield
 
 default: ${object_dir} mvutil_includes ${bf_binary}
 

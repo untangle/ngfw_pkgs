@@ -1,0 +1,101 @@
+#!/bin/dash
+
+mkdir -p /var/log/shield
+
+exec >> /var/log/shield/monitor.log 2>&1
+
+NAME="untangle-shield"
+SHIELD_PID_FILE="/var/run/${NAME}.pid"
+
+SHIELD_MONITOR_DELAY="10"
+
+load_defaults()
+{
+    SHIELD_BIND_PORT="3001"
+    SHIELD_QUEUE_NUM="3001"
+    
+    SHIELD_CONF_FILE="/etc/shield.conf"
+    
+    SHIELD_MONITOR_DELAY="10"
+
+    SHIELD_LOG_OUT="/var/log/shield/debug.log"
+    SHIELD_LOG_ERR="/var/log/shield/error.log"
+    
+    if [ -f /etc/default/untangle-shield ] ; then
+        . /etc/default/untangle-shield
+    fi
+}
+
+flush_iptables()
+{
+    /etc/init.d/untangle-net-alpaca-iptables restart
+}
+
+reap_child()
+{
+    echo "[`date`] Retrieved signal to stop daemon."
+
+    ## this is ... special
+    for t in `seq 1 10` ; do 
+        pidof ${NAME} || break
+
+        killall ${NAME}
+        sleep 1
+    done
+    
+    sleep 1
+    flush_iptables
+    exit 0
+}
+
+start_shield()
+{
+    killall ${NAME} > /dev/null 2>&1
+
+    load_defaults
+
+    local t_args="-d "
+    
+    test -n "${SHIELD_BIND_PORT}" && t_args="${t_args} -p ${SHIELD_BIND_PORT}"
+    test -n "${SHIELD_QUEUE_NUM}" && t_args="${t_args} -q ${SHIELD_QUEUE_NUM}"
+    test -n "${SHIELD_CONF_FILE}" && t_args="${t_args} -c ${SHIELD_CONF_FILE}"
+    test -n "${SHIELD_LOG_OUT}" && t_args="${t_args} -o ${SHIELD_LOG_OUT}"
+    test -n "${SHIELD_LOG_ERR}" && t_args="${t_args} -e ${SHIELD_LOG_ERR}"
+    
+    /usr/bin/${NAME} ${t_args}
+    
+    ## Give it some time to grab the queue so iptables knows that it is still running
+    sleep 1
+    flush_iptables
+}
+
+is_still_running()
+{
+    local t_pid="invalid"
+    
+    ## First just validate that the queue is bound
+    if [ ! -f /proc/net/netfilter/nfnetlink_queue ] ; then return 1 ; fi
+
+    local t_queue_pid=`awk -v queue=${SHIELD_QUEUE_NUM} '{ if ( $1 == queue ) print $2 }' /proc/net/netfilter/nfnetlink_queue`
+    if [ -z "${t_queue_pid}" ]; then return 1 ; fi
+
+    ## Perform a simple curl call to make sure the server is still running.
+    curl -sf -F 'json_request=@-' -m 10 "http://localhost:${SHIELD_BIND_PORT}"  > /dev/null 2>&1 <<EOF
+{ "function" : "hello_world" }
+EOF
+}
+
+trap reap_child 6
+trap reap_child 15
+trap reap_child 2
+
+while ( true ) ;  do
+    is_still_running || {
+        echo "[`date`] Shield stopped, restarting daemon"
+        start_shield
+    } && {
+        echo "[`date`] shield is still running."
+    }
+
+    sleep ${SHIELD_MONITOR_DELAY}
+done
