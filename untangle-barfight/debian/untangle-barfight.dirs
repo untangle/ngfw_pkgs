@@ -1,6 +1,0 @@
-etc/untangle-net-alpaca/scripts/update-address.d
-etc/untangle-net-alpaca/tc-rules.d
-var/lib/rails/untangle-net-alpaca/database
-var/lib/rails/untangle-net-alpaca/tmp
-var/lib/rails/untangle-net-alpaca/tmp/sessions
-var/lib/rails/untangle-net-alpaca/log

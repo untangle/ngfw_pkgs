@@ -16,9 +16,9 @@ build: configure
 ## rather than a custom makefile.
 install: build
 	mkdir -p $(DESTDIR)
+	tar --exclude=.svn -cf - -C files `find files/ -name '.svn' -prune -o -mindepth 1 -maxdepth 1 -printf "%P "`  | tar -xf - -C $(DESTDIR)
 	mkdir -p $(DESTDIR)/usr/bin
-	cp -a ../untangle-barfight $(DESTDIR)/usr/bin
-	cp -r ./files/* $(DESTDIR)
+	cp -a untangle-barfight $(DESTDIR)/usr/bin
 	find $(DESTDIR) -name "\.svn" | xargs rm -rf
 
 clean:
@@ -31,7 +31,7 @@ clean:
 binary-indep: 
 # nothing to do
 
-binary-arch:
+binary-arch: install
 	dh_testdir  
 	dh_testroot   
 	dh_movefiles 

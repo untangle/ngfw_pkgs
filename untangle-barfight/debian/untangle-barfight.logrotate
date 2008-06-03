@@ -1,4 +1,4 @@
-/var/log/untangle-barfight*.log {
+/var/log/barfight/*.log {
 rotate 2
 size 500k
 compress
