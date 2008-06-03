@@ -47,11 +47,13 @@
 
 #define DEFAULT_CONFIG_FILE  "/var/lib/barfight.js"
 #define DEFAULT_DEBUG_LEVEL  5
+#define DEFAULT_BIND_PORT 3001
 
 #define DEFAULT_QUEUE_NUM 46
 
 /* Using 24, to capture about 2 minutes of logs if they rotate every 5 seconds */
 #define _CIRCULAR_LOG_SIZE  24
+
 
 #define FLAG_ALIVE      0x543D00D
 
@@ -78,7 +80,7 @@ static struct
     .scheduler_thread = 0,
     .daemon = NULL,
     .config_file = NULL,
-    .port = -1,
+    .port = DEFAULT_BIND_PORT,
     .daemonize = 0,
     .std_err_filename = NULL,
     .std_err = -1,
@@ -276,6 +278,8 @@ static int _init( int argc, char** argv )
     if ( _globals.config_file != NULL ) {
         if (( config_file_json = json_object_from_file( _globals.config_file )) == NULL ) {
             /* Ignore the error, and just load the defaults */
+            errlog( ERR_CRITICAL, "json_object_from_file\n" );
+        } else if ( is_error( config_file_json )) {
             errlog( ERR_CRITICAL, "json_object_from_file\n" );
         } else {
             debug( 10, "MAIN: Loading the config file %s\n", _globals.config_file );

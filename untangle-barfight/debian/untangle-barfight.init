@@ -12,7 +12,7 @@
 
 . /lib/lsb/init-functions
 
-DESC="Service for starting the untangle barfight"
+DESC="Service for starting an untangle barfight"
 
 NAME="untangle-barfight"
 
@@ -25,10 +25,6 @@ fi
 start()
 {
     ${DAEMON}
-    cd ${BASE_DIR} || {
-        log_failure_msg "${NAME} could not change into the directory ${BASE_DIR}" 
-        exit -1
-    }
 }
 
 stop()
