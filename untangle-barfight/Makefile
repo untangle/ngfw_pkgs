@@ -42,7 +42,7 @@ bf_source=src/utils/sched.c src/utils/lru.c src/json/server.c src/json/object_ut
 	src/functions.c src/main.c ${mvutil_source}
 
 bf_objects=$(patsubst %.c,${object_dir}/%.o, ${bf_source})
-bf_binary=untangle-shield
+bf_binary=shield
 
 default: ${object_dir} mvutil_includes ${bf_binary}
 

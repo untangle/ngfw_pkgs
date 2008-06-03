@@ -14,9 +14,9 @@
 
 DESC="Service for starting an untangle shield"
 
-NAME="untangle-shield"
+DAEMON_NAME="shield"
 
-MONITOR="shield-monitor"
+MONITOR="monitor"
 MONITOR_SCRIPT=/usr/share/untangle-shield/bin/${MONITOR}
 
 PID_FILE="/var/run/untangle-shield.pid"
@@ -24,32 +24,31 @@ PID_FILE="/var/run/untangle-shield.pid"
 start()
 {
     killall ${MONITOR} > /dev/null  2>&1
-    killall ${NAME} > /dev/null  2>&1
+    killall ${DAEMON_NAME} > /dev/null  2>&1
     rm -f ${PID_FILE}
 
     sleep 2
 
-    start-stop-daemon -m --pid-file ${PID_FILE} --name ${MONITOR} --start --background \
+    start-stop-daemon -m --pidfile ${PID_FILE} --name ${MONITOR} --start --background \
         --startas ${MONITOR_SCRIPT}
 }
 
 stop()
 {
-    start-stop-daemon -m --pid-file ${PID_FILE} --name shield-monitor --stop
+    start-stop-daemon --pidfile ${PID_FILE} --name ${MONITOR} --stop
 
     sleep 2
     killall ${MONITOR} > /dev/null  2>&1
-    killall ${NAME} > /dev/null  2>&1
+    killall ${DAEMON_NAME} > /dev/null  2>&1
     rm -f ${PID_FILE}
 
     ## Wait for the queue to be closed.
     sleep 1
-    /etc/init.d/untangle-net-alpaca restart
+    /etc/init.d/untangle-net-alpaca-iptables restart
 }
 
 case "$1" in
     start)
-        sanitycheck
         start
         ;;
     stop)

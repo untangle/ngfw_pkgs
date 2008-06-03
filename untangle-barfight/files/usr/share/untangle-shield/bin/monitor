@@ -4,7 +4,7 @@ mkdir -p /var/log/shield
 
 exec >> /var/log/shield/monitor.log 2>&1
 
-NAME="untangle-shield"
+NAME="shield"
 SHIELD_PID_FILE="/var/run/${NAME}.pid"
 
 SHIELD_MONITOR_DELAY="10"
@@ -93,8 +93,6 @@ while ( true ) ;  do
     is_still_running || {
         echo "[`date`] Shield stopped, restarting daemon"
         start_shield
-    } && {
-        echo "[`date`] shield is still running."
     }
 
     sleep ${SHIELD_MONITOR_DELAY}
