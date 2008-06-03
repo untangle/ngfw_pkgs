@@ -2,10 +2,6 @@
 
 DESTDIR := debian/tmp
 
-
-ALPACA_DESTDIR := debian/untangle-net-alpaca
-IPTABLES_DESTDIR := debian/untangle-net-alpaca-iptables
-
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
@@ -13,22 +9,23 @@ configure-stamp:
 
 build: configure
 	dh_testdir
+	$(MAKE)
+	touch $@
+
+## This should be done in make install, but, this should also use a ./configure script
+## rather than a custom makefile.
+install: build
 	mkdir -p $(DESTDIR)
+	mkdir -p $(DESTDIR)/usr/bin
+	cp -a ../untangle-barfight $(DESTDIR)/usr/bin
 	cp -r ./files/* $(DESTDIR)
-## Delete any lingering database files
-	find $(DESTDIR) -path '*/database/*.db' | xargs rm -f
-## Delete any session files
-	find $(DESTDIR) -path '*/tmp/sessions/ruby_sess*' | xargs rm -f
-## Delete any lingering log files
-	find $(DESTDIR) -path '*/log/*.log' | xargs rm -f
-## Delete the symlink to rails
-	find $(DESTDIR) -path '*/vendor/rails' -type l | xargs rm -f 
 	find $(DESTDIR) -name "\.svn" | xargs rm -rf
 
 clean:
 	dh_testdir
 	dh_testroot
 	rm -rf configure-stamp $(DESTDIR)
+	$(MAKE) clean
 	dh_clean
 
 binary-indep:

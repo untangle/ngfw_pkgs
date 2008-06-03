@@ -1,5 +1,5 @@
 #! /bin/dash
 
 ## Uncomment to change the default configuration file.
-# BARFIGHT_CONFIG_FILE=/var/lib/barfight.conf
+# BARFIGHT_CONFIG_FILE=/etc/barfight.conf
 

@@ -66,7 +66,7 @@ mvutil_includes:
 clean:
 	@echo "==> Removing object files in ${object_dir}"
 	@rm -rf ${object_dir}
-	@rm -f ${binary}
+	@rm -f ${bf_binary}
 
 install:
 	@echo "Installing"

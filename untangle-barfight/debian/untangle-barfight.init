@@ -16,26 +16,35 @@ DESC="Service for starting an untangle barfight"
 
 NAME="untangle-barfight"
 
-PID_FILE="/var/run/untangle-barfight.pid"
+MONITOR="barfight-monitor"
+MONITOR_SCRIPT=/usr/share/untangle-barfight/bin/${MONITOR}
 
-if [ -r /etc/default/$NAME ]; then
-    . /etc/default/$NAME
-fi
+PID_FILE="/var/run/untangle-barfight.pid"
 
 start()
 {
-    ${DAEMON}
+    killall ${MONITOR} > /dev/null  2>&1
+    killall ${NAME} > /dev/null  2>&1
+    rm -f ${PID_FILE}
+
+    sleep 2
+
+    start-stop-daemon -m --pid-file ${PID_FILE} --name ${MONITOR} --start --background \
+        --startas ${MONITOR_SCRIPT}
 }
 
 stop()
 {
-    ## Check if the PID file exists, mongrel_rails doesn't handle this case well if it doesn't exist
-    [ -f ${PID_FILE} ] && ${MONGREL_RAILS} stop -w 5 -c ${BASE_DIR} --pid ${MONGREL_PID_FILE}
+    start-stop-daemon -m --pid-file ${PID_FILE} --name barfight-monitor --stop
 
-    pkill untangle-barfight > /dev/null 2>&1
-    pkill -9 untangle-barfight > /dev/null 2>&1
-    ## Remove the pid file.
+    sleep 2
+    killall ${MONITOR} > /dev/null  2>&1
+    killall ${NAME} > /dev/null  2>&1
     rm -f ${PID_FILE}
+
+    ## Wait for the queue to be closed.
+    sleep 1
+    /etc/init.d/untangle-net-alpaca restart
 }
 
 case "$1" in
