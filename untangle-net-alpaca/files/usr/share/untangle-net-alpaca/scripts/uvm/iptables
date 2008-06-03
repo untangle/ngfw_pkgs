@@ -30,7 +30,7 @@ queue_owner()
     
     if [ ! -f /proc/net/netfilter/nfnetlink_queue ] ; then return ; fi
 
-    local t_queue_pid=`awk '{ print $2 }' /proc/net/netfilter/nfnetlink_queue`
+    local t_queue_pid=`awk queue=0 '{ if ( $1 == queue ) { print $2 }' /proc/net/netfilter/nfnetlink_queue`
     if [ -z "${t_queue_pid}" ]; then return ; fi
     
     UVM_PID=${t_queue_pid}  
