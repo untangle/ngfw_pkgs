@@ -46,11 +46,9 @@
 #include "json/server.h"
 
 #define DEFAULT_CONFIG_FILE  "/var/lib/barfight.js"
-#define ENV_DEBUG_LEVEL "UNTANGLE_DEBUG_LEVEL"
-#define DEFAULT_DEBUG_LEVEL  "14"
+#define DEFAULT_DEBUG_LEVEL  5
 
-#define ENV_QUEUE_NUM "UNTANGLE_BARFIGHT_QUEUE_NUM"
-#define DEFAULT_QUEUE_NUM "12"
+#define DEFAULT_QUEUE_NUM 46
 
 /* Using 24, to capture about 2 minutes of logs if they rotate every 5 seconds */
 #define _CIRCULAR_LOG_SIZE  24
@@ -65,6 +63,8 @@ static struct
     char *std_err_filename;
     int std_err;
     int port;
+    int queue_num;
+    int debug_level;
     int daemonize;
     int is_running;
     pthread_t scheduler_thread;
@@ -83,7 +83,9 @@ static struct
     .std_err_filename = NULL,
     .std_err = -1,
     .std_out_filename = NULL,
-    .std_out = -1
+    .std_out = -1,
+    .queue_num = DEFAULT_QUEUE_NUM,
+    .debug_level = DEFAULT_DEBUG_LEVEL
 };
 
 static int _parse_args( int argc, char** argv );
@@ -176,7 +178,7 @@ static int _parse_args( int argc, char** argv )
 {
     int c = 0;
     
-    while (( c = getopt( argc, argv, "dhp:c:o:e:" ))  != -1 ) {
+    while (( c = getopt( argc, argv, "dhp:c:o:e:q:l:" ))  != -1 ) {
         switch( c ) {
         case 'd':
             _globals.daemonize = 1;
@@ -199,6 +201,15 @@ static int _parse_args( int argc, char** argv )
 
         case 'e':
             _globals.std_err_filename = optarg;
+            break;
+
+        case 'q':
+            _globals.queue_num = atoi( optarg );
+            break;
+
+        case 'l':
+            _globals.debug_level = atoi( optarg );
+            break;
 
         case '?':
             return -1;
@@ -215,6 +226,10 @@ static int _usage( char *name )
     fprintf( stderr, "\t-p <json-port>: The port to bind to for the JSON interface.\n" );
     fprintf( stderr, "\t-c <config-file>: Config file to use.\n" );
     fprintf( stderr, "\t\tThe config-file can be modified through the JSON interface.\n" );
+    fprintf( stderr, "\t-o <log-file>: File to place standard output(more useful with -d).\n" );
+    fprintf( stderr, "\t-e <log-file>: File to place standard error(more useful with -d).\n" );
+    fprintf( stderr, "\t-q <queue-num>: Queue to use.\n" );
+    fprintf( stderr, "\t-l <debug-level>: Debugging level.\n" );
     fprintf( stderr, "\t-h: Halp (show this message)\n" );
     return -1;
 }
@@ -232,9 +247,7 @@ static int _init( int argc, char** argv )
     }
     
     /* Configure the debug level */
-    char* debug_level = getenv( ENV_DEBUG_LEVEL );
-    if ( debug_level == NULL ) debug_level = DEFAULT_DEBUG_LEVEL;
-    debug_set_mylevel( atoi( debug_level ));
+    debug_set_mylevel( _globals.debug_level );
     
     /* Initialize the scheduler. */
     if ( barfight_sched_init() < 0 ) return errlog( ERR_CRITICAL, "barfight_sched_init\n" );
@@ -300,9 +313,7 @@ static int _init( int argc, char** argv )
         return errlog( ERR_CRITICAL, "barfight_net_nfqueue_global_init\n" );
     }
 
-    char* queue_num = getenv( ENV_QUEUE_NUM );
-    if ( queue_num == NULL ) queue_num = DEFAULT_QUEUE_NUM;
-    if ( barfight_net_nfqueue_init( &_globals.nfqueue, atoi( queue_num ),
+    if ( barfight_net_nfqueue_init( &_globals.nfqueue, _globals.queue_num,
                                     NFQNL_COPY_PACKET | NFQNL_COPY_UNTANGLE_MODE, 0xFFFF ) < 0 ) {
         return errlog( ERR_CRITICAL, "barfight_net_nfqueue_init\n" );
     }

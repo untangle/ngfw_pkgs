@@ -10,7 +10,7 @@ INC           = ${build_dir}/include src
 INC_FLAGS     = $(patsubst %,-I%,$(INC))
 LDDIR         = lib $(build_lib_path)  
 LDDIR_FLAGS   = $(patsubst %,-L%,$(LDDIR))
-LIBS          = mvutil netfilter_conntrack netfilter_queue libjson microhttpd m
+LIBS          = netfilter_conntrack netfilter_queue json microhttpd m
 LIBS_FLAGS    = -pthread $(patsubst %,-l%,$(LIBS)) --warn-common
 FLAGS        += 
 CFLAGS        =  $(FLAGS) $(DEFINES) $(WARNINGS) $(OPTIMIZATIONS) $(INC_FLAGS) $(LDDIR_FLAGS)
@@ -39,14 +39,14 @@ bf_source=src/utils/sched.c src/utils/lru.c src/json/server.c src/json/object_ut
 	src/bouncer/shield.c src/bouncer/mode.c src/bouncer/load.c src/bouncer/reader.c \
 	src/bouncer/config.c src/bouncer/logs.c src/trie/item.c src/trie/base.c \
 	src/trie/root.c src/trie/level.c src/trie/trie.c src/net/packet.c src/net/nfqueue.c \
-	src/functions.c src/main.c
+	src/functions.c src/main.c ${mvutil_source}
 
 bf_objects=$(patsubst %.c,${object_dir}/%.o, ${bf_source})
 bf_binary=barfight
 
 default: ${object_dir} mvutil_includes ${bf_binary}
 
-${bf_binary}: ${bf_objects}
+${bf_binary}: ${bf_objects} ${mvutil_source}
 	@echo "==> gcc ${bf_objects} -> $@"
 	@${CC} ${CFLAGS} ${LIBS_FLAGS} ${bf_objects} -o $@
 
@@ -60,10 +60,8 @@ ${object_dir}:
 	@mkdir -p ${object_dir}
 
 mvutil_includes:
-	@echo "==> Making directory ${build_dir}/include"
-	@mkdir -p ${build_dir}/include
-	@echo "==> cp -a libmvutil/include/\* ${build_dir}/include"
-	@cp -a libmvutil/include/* ${build_dir}/include
+	@echo "==> cp -a libmvutil/include/ ${build_dir}/include"
+	@tar --exclude=.svn -cf - -C libmvutil include | tar -xf - -C ${build_dir}
 
 clean:
 	@echo "==> Removing object files in ${object_dir}"
