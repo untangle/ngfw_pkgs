@@ -176,6 +176,12 @@ int main( int argc, char** argv )
     return 0;
 }
 
+/* This is bogus */
+barfight_bouncer_logs_t* _barfight_logs( void )
+{
+    return &_globals.logs;
+}
+
 static int _parse_args( int argc, char** argv )
 {
     int c = 0;

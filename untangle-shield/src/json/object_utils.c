@@ -202,6 +202,24 @@ int json_object_utils_array_add_int( struct json_object* object, int value )
     return 0;
 }
 
+int json_object_utils_array_add_double( struct json_object* object, double value )
+{
+    struct json_object* json_value = NULL;
+
+    if ( object == NULL ) return errlogargs();
+
+    if (( json_value = json_object_new_double( value )) == NULL ) {
+        return errlog( ERR_CRITICAL, "json_object_new_string\n" );
+    }
+
+    if ( json_object_array_add( object, json_value ) < 0 ) {
+        json_object_put( json_value );
+        return errlog( ERR_CRITICAL, "json_object_array_add\n" );
+    }
+    
+    return 0;
+}
+
 struct json_object* json_object_utils_create_timeval( struct timeval* timeval )
 {
     if ( timeval == NULL ) return errlogargs_null();

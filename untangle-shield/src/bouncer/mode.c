@@ -26,6 +26,7 @@
 
 #include "utils/sched.h"
 
+#include "bouncer/logs.h"
 #include "bouncer/load.h"
 #include "bouncer/shield.h"
 #include "bouncer/config.h"
@@ -52,15 +53,7 @@ static struct
     bouncer_shield_config_t* cfg;
     nc_shield_reputation_t* root_rep;
     barfight_shield_mode_t* mode;
-    nc_shield_fence_t** fence;    
-    
-    struct {
-        /* This is the number of times in each mode since the last tick */
-        int relaxed;
-        int lax;
-        int tight;
-        int closed;
-    } mode_ticks;
+    nc_shield_fence_t** fence;        
 } _shield_mode = {
     .is_alive = 0,
     .cfg      = NULL,
@@ -68,13 +61,6 @@ static struct
     .mode     = NULL,
     .mode     = NULL,
     .fence    = NULL,
-    
-    .mode_ticks = {
-        .relaxed = 0,
-        .lax     = 0,
-        .tight   = 0,
-        .closed  = 0
-    }    
 };
 
 static int  _update( bouncer_shield_config_t* cfg, nc_shield_reputation_t* root_rep, 
@@ -82,12 +68,12 @@ static int  _update( bouncer_shield_config_t* cfg, nc_shield_reputation_t* root_
 
 static void _scheduler_event( void );
 
-static void _reset_counters();
-
 static __inline__ int _is_alive( void )
 {
     return ( _shield_mode.is_alive == _NC_SHIELD_MODE_IS_ALIVE );
 }
+
+extern barfight_bouncer_logs_t* _barfight_logs( void );
 
 int nc_shield_mode_init( bouncer_shield_config_t* cfg, nc_shield_reputation_t* root_rep, 
                          barfight_shield_mode_t* mode, nc_shield_fence_t** fence )
@@ -100,8 +86,6 @@ int nc_shield_mode_init( bouncer_shield_config_t* cfg, nc_shield_reputation_t* r
     _shield_mode.root_rep = root_rep;
     _shield_mode.mode     = mode;
     _shield_mode.fence    = fence;
-        
-    _reset_counters();
     
     debug( NC_SHIELD_DEBUG_LOW, "SHIELD: Shield monitor starting\n" );
 
@@ -169,23 +153,22 @@ static int _update( bouncer_shield_config_t* cfg, nc_shield_reputation_t* root_r
     if ( _EXCEED_MODE( closed )) {
         *mode = NC_SHIELD_MODE_CLOSED;
         *fence = &cfg->fence.closed;
-        _shield_mode.mode_ticks.closed++;
     } 
     else if ( _EXCEED_MODE( tight )) {
         *mode = NC_SHIELD_MODE_TIGHT;
         *fence = &cfg->fence.tight;
-        _shield_mode.mode_ticks.tight++;
     } 
     else if ( _EXCEED_MODE( lax )) {
         *mode = NC_SHIELD_MODE_LAX;
         *fence = &cfg->fence.lax;
-        _shield_mode.mode_ticks.lax++;
     } else {
         *mode = NC_SHIELD_MODE_RELAXED;
         *fence = &cfg->fence.relaxed;
-        _shield_mode.mode_ticks.relaxed++;
     }
     
+    if ( barfight_bouncer_logs_add_mode( _barfight_logs(), *mode ) < 0 ) {
+        errlog( ERR_WARNING, "barfight_bouncer_logs_add_mode\n" );
+    }
     return 0;
 }
 
@@ -209,11 +192,4 @@ static void _scheduler_event( void )
             errlog( ERR_FATAL, "barfight_sched_event_z\n" );
         }
     }
-}
-
-
-static void _reset_counters()
-{
-    /* Zero out all of the counters */
-    bzero( &_shield_mode.mode_ticks, sizeof( _shield_mode.mode_ticks ));    
 }

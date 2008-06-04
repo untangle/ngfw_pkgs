@@ -300,6 +300,7 @@ int barfight_shield_rep_check ( barfight_shield_response_t* response, struct in_
     if ( response == NULL ) return errlogargs();
 
     response->ans = NC_SHIELD_YES;
+    response->reputation = 0;
             
     /* If things are really bad, do not let anything in */
     if ( _shield.mode == NC_SHIELD_MODE_CLOSED ) {
@@ -815,7 +816,9 @@ static int  _get_response        ( barfight_shield_response_t* response, nc_shie
     /* If the reputation is too high, and the load is low enough, print out debugging information. */
     if ( score > _shield.cfg.rep_threshold ) _debug_reputation_threshold( &line );
 
+    response->reputation = score;
     response->ans = _put_in_fence( _shield.fence, score, *reputation, protocol );
+
         
     return 0;
 }
@@ -835,6 +838,7 @@ static int  _get_response_closed ( barfight_shield_response_t* response, nc_shie
 
     response->ans = _put_in_fence( &_shield.cfg.fence.closed, _shield.cfg.fence.closed.limited.post, 
                                    _shield.root, protocol );
+    response->reputation = _shield.root->score;
 
     return 0;
 }

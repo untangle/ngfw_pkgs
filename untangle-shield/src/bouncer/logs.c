@@ -47,7 +47,7 @@ static char *_json_action_keys[] = {
 static char *unknown_interface = "unknown";
 
 static int _user_log_event( barfight_bouncer_logs_user_stats_t *user_stats, 
-                            barfight_shield_ans_t action, char* if_name );
+                            barfight_shield_response_t* response, char* if_name );
 
 static int _global_log_event( barfight_bouncer_logs_global_stats_t *global_stats, 
                               barfight_shield_ans_t action, u_int8_t protocol );
@@ -62,6 +62,7 @@ static struct json_object* _build_json_iteration( barfight_bouncer_logs_iteratio
                                                   int ignore_accept_only );
 
 static struct json_object* _build_json_iteration_globals( barfight_bouncer_logs_iteration_t* iteration );
+static struct json_object* _build_json_iteration_mode( barfight_bouncer_logs_iteration_t* iteration );
 static struct json_object* _build_json_iteration_user( barfight_bouncer_logs_iteration_t* iteration,
                                                        int ignore_accept_only );
 
@@ -196,9 +197,10 @@ void barfight_bouncer_logs_free( barfight_bouncer_logs_t* logs )
 }
 
 int barfight_bouncer_logs_add( barfight_bouncer_logs_t* logs, struct in_addr client, char* if_name,
-                               u_int8_t protocol, barfight_shield_ans_t action )
+                               u_int8_t protocol, barfight_shield_response_t *response )
 {
     if ( logs == NULL ) return errlogargs();
+    if ( response == NULL ) return errlogargs();
 
     barfight_bouncer_logs_iteration_t* iteration = _get_current_iteration( logs );
     
@@ -221,12 +223,12 @@ int barfight_bouncer_logs_add( barfight_bouncer_logs_t* logs, struct in_addr cli
             }
         }
 
-        if ( _user_log_event( user_stats, action, if_name ) < 0 ) {
+        if ( _user_log_event( user_stats, response, if_name ) < 0 ) {
             return errlog( ERR_CRITICAL, "_user_log_event\n" );
         }
 
-        if ( _global_log_event( &iteration->global, action, protocol ) < 0 ) {
-            return errlog( ERR_CRITICAL, "_user_log_event\n" );
+        if ( _global_log_event( &iteration->global, response->ans, protocol ) < 0 ) {
+            return errlog( ERR_CRITICAL, "_global_log_event\n" );
         }
 
         return 0;
@@ -243,6 +245,50 @@ int barfight_bouncer_logs_add( barfight_bouncer_logs_t* logs, struct in_addr cli
     
     return 0;
 }
+
+int barfight_bouncer_logs_add_mode( barfight_bouncer_logs_t* logs, barfight_shield_mode_t mode )
+{
+    barfight_bouncer_logs_iteration_t* iteration = _get_current_iteration( logs );
+    
+    if ( iteration == NULL ) return errlog( ERR_CRITICAL, "_get_current_logs\n" );
+    
+    int _critical_section() {
+        switch ( mode ) {
+        case NC_SHIELD_MODE_RELAXED:
+            iteration->mode_counters.relaxed++;
+            break;
+
+        case NC_SHIELD_MODE_LAX:
+            iteration->mode_counters.lax++;
+            break;
+            
+        case NC_SHIELD_MODE_TIGHT:
+            iteration->mode_counters.tight++;
+            break;
+
+        case NC_SHIELD_MODE_CLOSED:
+            iteration->mode_counters.closed++;
+            break;
+
+        default:
+            errlog( ERR_CRITICAL, "Invalid mode [%d]\n", mode );
+        }
+        
+        return 0;
+    }
+
+    int ret = 0;
+    if ( pthread_mutex_lock( &iteration->mutex ) < 0 ) return perrlog( "pthread_mutex_lock" );
+    ret = _critical_section();
+    if ( pthread_mutex_unlock( &iteration->mutex ) < 0 ) {
+        return perrlog( "pthread_mutex_unlock" );
+    }
+
+    if ( ret < 0 ) return errlog( ERR_CRITICAL, "_critical_section\n" );
+    
+    return 0;
+}
+
 
 /**
  * Advance the circular buffer to the next iteration.
@@ -288,6 +334,7 @@ int barfight_bouncer_logs_advance( barfight_bouncer_logs_t* logs )
         
         /* clean it out */
         bzero( &log_iteration->global, sizeof( barfight_bouncer_logs_global_stats_t ));
+        bzero( &log_iteration->mode_counters, sizeof( log_iteration->mode_counters ));
         bzero( &log_iteration->end_time, sizeof( struct timeval ));
         if ( gettimeofday( &log_iteration->start_time, NULL ) < 0 ) return perrlog( "gettimeofday" );
         
@@ -450,7 +497,7 @@ struct json_object* barfight_bouncer_logs_to_json( barfight_bouncer_logs_t* logs
 }
 
 static int _user_log_event( barfight_bouncer_logs_user_stats_t *user_stats, 
-                            barfight_shield_ans_t action, char* if_name )
+                            barfight_shield_response_t* response, char* if_name  )
 {
     barfight_bouncer_logs_action_counters_t* interface_counters = NULL;
     
@@ -473,7 +520,11 @@ static int _user_log_event( barfight_bouncer_logs_user_stats_t *user_stats,
         interface_counters = &user_stats->counters[c];
     }
     
-    if ( _logs_action_counters_add( interface_counters, action ) < 0 ) {
+    if ( user_stats->max_reputation < response->reputation ) {
+        user_stats->max_reputation = response->reputation;
+    }
+
+    if ( _logs_action_counters_add( interface_counters, response->ans ) < 0 ) {
         return errlog( ERR_CRITICAL, "_logs_action_counters_add\n" );
     }
     
@@ -574,8 +625,16 @@ static struct json_object* _build_json_iteration( barfight_bouncer_logs_iteratio
             return errlog( ERR_CRITICAL, "json_object_utils_add_object\n" );
         }
 
+        if (( temp = _build_json_iteration_mode( iteration )) == NULL ) {
+            return errlog( ERR_CRITICAL, "_build_json_iteration_mode\n" );
+        }
+
+        if ( json_object_utils_add_object( iteration_json, "mode", temp ) < 0 ) {
+            return errlog( ERR_CRITICAL, "json_object_utils_add_object\n" );
+        }
+
         if (( temp = _build_json_iteration_user( iteration, ignore_accept_only )) == NULL ) {
-            return errlog( ERR_CRITICAL, "_build_json_iteration_globals\n" );
+            return errlog( ERR_CRITICAL, "_build_json_iteration_user\n" );
         }
 
         if ( json_object_utils_add_object( iteration_json, "user", temp ) < 0 ) {
@@ -620,7 +679,6 @@ static struct json_object* _build_json_iteration( barfight_bouncer_logs_iteratio
     return iteration_json;
 }
 
-
 static struct json_object* _build_json_iteration_globals( barfight_bouncer_logs_iteration_t* iteration )
 {
     struct json_object* json_array = NULL;
@@ -650,7 +708,7 @@ static struct json_object* _build_json_iteration_globals( barfight_bouncer_logs_
                 return errlog( ERR_CRITICAL, "_build_json_action_counters\n" );
             }
         }
-
+        
         return 0;
     }
     
@@ -663,6 +721,39 @@ static struct json_object* _build_json_iteration_globals( barfight_bouncer_logs_
         return errlog_null( ERR_CRITICAL, "_critical_section\n" );
     }
     return json_array;
+}
+
+static struct json_object* _build_json_iteration_mode( barfight_bouncer_logs_iteration_t* iteration )
+{
+    struct json_object* json_object = NULL;
+    
+    int _critical_section() {
+        if ( json_object_utils_add_int( json_object, "relaxed", iteration->mode_counters.relaxed ) < 0 ) {
+            return errlog( ERR_CRITICAL, "json_object_utils_add_int\n" );
+        }
+        if ( json_object_utils_add_int( json_object, "lax", iteration->mode_counters.lax ) < 0 ) {
+            return errlog( ERR_CRITICAL, "json_object_utils_add_int\n" );
+        }
+        if ( json_object_utils_add_int( json_object, "tight", iteration->mode_counters.tight ) < 0 ) {
+            return errlog( ERR_CRITICAL, "json_object_utils_add_int\n" );
+        }
+        if ( json_object_utils_add_int( json_object, "closed", iteration->mode_counters.closed ) < 0 ) {
+            return errlog( ERR_CRITICAL, "json_object_utils_add_int\n" );
+        }
+
+        return 0;
+    }
+    
+    if (( json_object = json_object_new_object()) == NULL ) {
+        return errlog_null( ERR_CRITICAL, "json_object_new_object\n" );
+    }
+
+    if ( _critical_section() < 0 ) {
+        json_object_put( json_object );
+        return errlog_null( ERR_CRITICAL, "_critical_section\n" );
+    }
+
+    return json_object;    
 }
 
 static struct json_object* _build_json_iteration_user( barfight_bouncer_logs_iteration_t* iteration,
@@ -719,6 +810,14 @@ static struct json_object* _build_json_iteration_user( barfight_bouncer_logs_ite
             if ( json_object_utils_add_object( json_object, ip_string, interface_array ) < 0 ) {
                 return errlog( ERR_CRITICAL, "json_object_utils_array_add_object\n" );
             }
+
+            /* This is probably not the best solution, because it is
+             * kind of magical.  but it is done this way for
+             * efficiency.  Otherwise, each IP would also need a
+             * hash */
+            if ( json_object_utils_array_add_double( interface_array, user_stats->max_reputation ) < 0 ) {
+                return errlog( ERR_CRITICAL, "json_object_utils_array_add\n" );
+            };
 
             for ( d = 0 ; d < BARFIGHT_BOUNCER_LOGS_INTERFACE_COUNT ; d++ ) {
                 if ( user_stats->if_names[d][0] == '\0' ) break;

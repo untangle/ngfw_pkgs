@@ -77,6 +77,8 @@ char* json_object_utils_get_string( struct json_object* object, char* key );
  */
 int json_object_utils_array_add_int( struct json_object* object, int value );
 
+int json_object_utils_array_add_double( struct json_object* object, double value );
+
 /**
  * Create a JSON object to represent a timeval
  */

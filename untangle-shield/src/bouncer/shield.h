@@ -65,6 +65,7 @@ typedef enum {
 
 typedef struct {
     u_char ans;
+    double reputation;
 } barfight_shield_response_t;
 
 typedef struct

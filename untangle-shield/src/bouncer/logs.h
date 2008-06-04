@@ -29,7 +29,6 @@
 #include "bouncer/shield.h"
 #include "json/object_utils.h"
 
-
 /* This is the number of interfaces to track for an individual IP,
  * typically they shouldn't jump around that much. */
 #define BARFIGHT_BOUNCER_LOGS_INTERFACE_COUNT 3
@@ -48,6 +47,8 @@ typedef struct
 
 typedef struct
 {
+    /* This is the highest reputation over the period. */
+    double max_reputation;
     char if_names[BARFIGHT_BOUNCER_LOGS_INTERFACE_COUNT][IF_NAMESIZE];
     barfight_bouncer_logs_action_counters_t counters[BARFIGHT_BOUNCER_LOGS_INTERFACE_COUNT];
 } barfight_bouncer_logs_user_stats_t;
@@ -74,6 +75,13 @@ typedef struct
 
     /* all of the aggregate stats by protocol */
     barfight_bouncer_logs_global_stats_t global;
+
+    struct {
+        int relaxed;
+        int lax;
+        int tight;
+        int closed;
+    } mode_counters;
 
     /* Hash mapping an IP to user stats */
     ht_t user;
@@ -121,9 +129,12 @@ void barfight_bouncer_logs_free( barfight_bouncer_logs_t* logs );
  * @param if_name The interface the event occurred on.
  * @param protocol The protocol of the event.
  * @param action The action taken against the client.
+ * @param reputation The current reputation of the user, the max is kept.
  */
 int barfight_bouncer_logs_add( barfight_bouncer_logs_t* logs, struct in_addr client, char* if_name,
-                               u_int8_t protocol, barfight_shield_ans_t action );
+                               u_int8_t protocol, barfight_shield_response_t *response );
+
+int barfight_bouncer_logs_add_mode( barfight_bouncer_logs_t* logs, barfight_shield_mode_t mode );
 
 /**
  * Advance the circular buffer to the next iteration.

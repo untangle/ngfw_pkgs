@@ -347,7 +347,7 @@ static int _handle_packet( barfight_bouncer_reader_t* reader, barfight_net_packe
 
         /* Log the event */
         if ( barfight_bouncer_logs_add( reader->logs, client_ip,
-                                        packet->if_name, protocol, response.ans ) < 0 ) {
+                                        packet->if_name, protocol, &response ) < 0 ) {
             errlog( ERR_CRITICAL, "barfight_bouncer_logs_add\n" );
         }
         
