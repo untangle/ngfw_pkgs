@@ -203,7 +203,7 @@ ${IPTABLES} -t mangle -F qos-high-mark
 ${IPTABLES} -t mangle -A qos-high-mark -j MARK --or-mark #{MarkQoSHigh}
 ${IPTABLES} -t mangle -A qos-high-mark -j CONNMARK --set-mark #{MarkQoSHigh}/#{MarkQoSHigh}
 ${IPTABLES} -t mangle -N qos-normal-mark 2> /dev/null
-${IPTABLES} -t mangle -F qos-hnormal-mark
+${IPTABLES} -t mangle -F qos-normal-mark
 ${IPTABLES} -t mangle -A qos-normal-mark -j MARK --or-mark #{MarkQoSNormal}
 ${IPTABLES} -t mangle -A qos-normal-mark -j CONNMARK --set-mark #{MarkQoSNormal}/#{MarkQoSNormal}
 ${IPTABLES} -t mangle -N qos-low-mark 2> /dev/null

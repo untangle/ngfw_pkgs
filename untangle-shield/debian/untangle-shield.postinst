@@ -3,10 +3,8 @@
 SHIELD_CONFIG_FILE="/etc/shield.conf"
 SHIELD_DEFAULT_CONFIG="/usr/share/untangle-shield/sample-config/default.js"
 
-[ ! -f /etc/shield.conf ] && {
-    echo "Copying in ${SHIELD_DEFAULT_CONFIG}"
-    cp ${SHIELD_DEFAULT_CONFIG} ${SHIELD_CONFIG_FILE} 
-}
+echo "Copying in ${SHIELD_DEFAULT_CONFIG}"
+cp ${SHIELD_DEFAULT_CONFIG} ${SHIELD_CONFIG_FILE} 
 
 if [ -x "/etc/init.d/untangle-shield" ]; then
     update-rc.d untangle-shield defaults >/dev/null

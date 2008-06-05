@@ -9,9 +9,21 @@ iptables_debug()
    /sbin/iptables $*
 }
 
+iptables_debug_onerror()
+{
+    ## Ignore -N errors
+    /sbin/iptables $* || {
+        test [ "${3}x" != "-N" ] && echo /sbin/iptables $*
+    }
+
+    true
+}
+
 IPTABLES=/sbin/iptables
 
 #IPTABLES="iptables_debug"
+
+IPTABLES=iptables_debug_onerror
 
 get_ip_addresses()
 {

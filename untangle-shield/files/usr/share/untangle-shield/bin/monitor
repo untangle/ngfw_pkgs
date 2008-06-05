@@ -37,7 +37,7 @@ reap_child()
 
     ## this is ... special
     for t in `seq 1 10` ; do 
-        pidof ${NAME} || break
+        pidof ${NAME} > /dev/null 2>&1 || break
 
         killall ${NAME}
         sleep 1
@@ -54,7 +54,9 @@ start_shield()
 
     load_defaults
 
-    local t_args="-d "
+    
+    local t_args="${SHIELD_ARGS} -d "
+    local t
     
     test -n "${SHIELD_BIND_PORT}" && t_args="${t_args} -p ${SHIELD_BIND_PORT}"
     test -n "${SHIELD_QUEUE_NUM}" && t_args="${t_args} -q ${SHIELD_QUEUE_NUM}"
@@ -65,7 +67,11 @@ start_shield()
     /usr/bin/${NAME} ${t_args}
     
     ## Give it some time to grab the queue so iptables knows that it is still running
-    sleep 1
+    for t in `seq 1 10`; do
+        sleep 1
+        
+        is_still_running && break
+    done
     flush_iptables
 }
 

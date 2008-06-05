@@ -25,7 +25,7 @@
                 "closed": { "prob": 95.00, "post": 20.00 },
                 "error": { "prob": 20.00, "post": 40.00 }}},
 
-"multipliers": { "request-load": 2.778000, "session-load": 3.125000,
+"multipliers": { "request-load": 400.778000, "session-load": 3.125000,
                  "evil-load": 0.250000, "tcp-chk-load": 0.012500, 
                  "udp-chk-load": 0.012500, "icmp_chk-load": 40.00,
                  "active-session": 0.032000 },

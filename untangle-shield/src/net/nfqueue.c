@@ -440,7 +440,7 @@ static int _nf_callback( struct nfq_q_handle *qh, struct nfgenmsg *nfmsg,
         return perrlog( "nfq_get_payload" );
     }
 
-    debug( 5, "NFQUEUE: bucket: %#010x ip_header: %#010x difference: %#010x\n", packet->bucket, data, 
+    debug( 10, "NFQUEUE: bucket: %#010x ip_header: %#010x difference: %#010x\n", packet->bucket, data, 
            data - packet->bucket );
 
     packet->ip_header = (struct iphdr*)data;
