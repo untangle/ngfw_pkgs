@@ -49,7 +49,8 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   MarkFwReject = 0x04000000
 
   ## Mark that causes the firewall to drop a packet.
-  MarkFwDrop   = 0x08000000
+  MarkFwDrop   =   0x08000000
+  MarkFirstAlias = 0x10000000
 
   ## Mark that indicates a  packet is destined to one of the machines IP addresses
   MarkInput    = 0x00000800
@@ -110,7 +111,6 @@ EOF
 
     ## Chain used to redirect traffic
     Redirect = Chain.new( "alpaca-redirect", "nat", "PREROUTING", <<'EOF' )
-
 EOF
 
     ## Chain used for actually blocking and dropping data
@@ -287,10 +287,16 @@ mark_local_ip()
    test -z "${t_intf}" && return 0
    test -z "${t_index}" && return 0
 
+   local t_first_alias="true"
    t_mark=$(( #{MarkInput} | ( ${t_index} << 8 )))
-   
+      
    for t_ip in `get_ip_addresses ${t_intf}` ; do
      #{IPTablesCommand} #{Chain::MarkInterface.args} -d ${t_ip} -j MARK --or-mark ${t_mark}
+
+     if [ "${t_first_alias}x" = "truex" ]; then
+       #{IPTablesCommand} #{Chain::MarkInterface.args} -i ${t_intf} -d ${t_ip} -j MARK --or-mark $(( #{MarkFirstAlias} ))
+     fi
+     t_first_alias="false"
    done
 }
 EOF

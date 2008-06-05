@@ -8,6 +8,7 @@ TUN_DEV=utun
 TUN_ADDR="192.0.2.43"
 MARK_ANTISUB=$((0x01000000))
 MARK_NOTRACK=$((0x02000000))
+MARK_FIRST_ALIAS=$((0x10000000))
 MARK_DUPE=$((0x20000000))
 
 ## Always set this just in case.
@@ -180,20 +181,44 @@ uvm_packet_filter_standard_internal()
 {
     if [ "${UVM_ALLOW_IN_HTTP}x" != "truex" ]; then return ; fi
 
+    local t_mark=$(( 0x802 | ${MARK_FIRST_ALIAS} ))
     ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 80 \
-        -m mark --mark 2050/2050 -j DNAT --to-destination ${UVM_BIND_ADDRESS}
+        -m mark --mark ${t_mark}/${t_mark} -j DNAT --to-destination ${UVM_BIND_ADDRESS}
     ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 80 \
-        -m mark --mark 2050/2050 -j RETURN
+        -m mark --mark ${t_mark}/${t_mark} -j RETURN
 }
 
 
 ## Allow internal access to port.
 uvm_packet_filter_secure_internal()
 {
+    local t_mark=$(( 0x802 | ${MARK_FIRST_ALIAS} ))
+    
     ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 443 \
-        -m mark --mark 2050/2050 -j DNAT --to-destination ${UVM_BIND_ADDRESS}:${HTTPS_INTERNAL_REDIRECT_PORT}
+        -m mark --mark ${t_mark}/${t_mark} \
+        -j DNAT --to-destination ${UVM_BIND_ADDRESS}:${HTTPS_INTERNAL_REDIRECT_PORT}
     ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 443 \
-        -m mark --mark 2050/2050 -j RETURN
+        -m mark --mark ${t_mark}/${t_mark} -j RETURN
+
+    t_mark=$(( 0x880 | ${MARK_FIRST_ALIAS} ))
+    
+    ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 443 \
+        -m mark --mark ${t_mark}/${t_mark} \
+        -j DNAT --to-destination ${UVM_BIND_ADDRESS}:${HTTPS_INTERNAL_REDIRECT_PORT}
+    ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 443 \
+        -m mark --mark ${t_mark}/${t_mark} -j RETURN
+
+
+    if [ "${HTTPS_PUBLIC_PORT}x" = "x" ] ; then return ; fi
+
+    if [ "${HTTPS_PUBLIC_ADDR}x" = "x" ] ; then return ; fi
+
+    ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} \
+        -m mark --mark 2/2 --destination-ports ${HTTPS_PUBLIC_PORT} \
+        -j DNAT --to-destination ${UVM_BIND_ADDRESS}:${HTTPS_INTERNAL_REDIRECT_PORT}
+    
+    ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} \
+        -m mark --mark 2/2 --destination-ports ${HTTPS_PUBLIC_PORT} -j RETURN
 }
 
 ## This is a helper function to generate the necessary filter to restrict external access.
