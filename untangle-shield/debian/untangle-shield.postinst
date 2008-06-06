@@ -6,9 +6,11 @@ SHIELD_DEFAULT_CONFIG="/usr/share/untangle-shield/sample-config/default.js"
 echo "Copying in ${SHIELD_DEFAULT_CONFIG}"
 cp ${SHIELD_DEFAULT_CONFIG} ${SHIELD_CONFIG_FILE} 
 
-if [ -x "/etc/init.d/untangle-shield" ]; then
-    update-rc.d untangle-shield defaults >/dev/null
-    /etc/init.d/untangle-shield start || true
-fi
+
+# untangle-shield is started by the node.
+#if [ -x "/etc/init.d/untangle-shield" ]; then
+#    update-rc.d untangle-shield defaults >/dev/null
+#    /etc/init.d/untangle-shield start || true
+#fi
 
 exit 0
