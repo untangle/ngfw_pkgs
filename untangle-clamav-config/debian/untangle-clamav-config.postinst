@@ -3,21 +3,21 @@
 CLAMAV_CONF_FILE=/etc/clamav/clamd.conf
 
 setOption() {
-  
-  grep -qE "^$1" $CLAMAV_CONF_FILE || cat >> $CLAMAV_CONF_FILE <<EOF
+  if grep -qE "^$1" $CLAMAV_CONF_FILE ; then
+    perl -i -pe "s/^$1/$1 $2/" $CLAMAV_CONF_FILE
+  else
+    cat >> $CLAMAV_CONF_FILE <<EOF
 $1 $2
 EOF
 }
 
 # obsolete options
-sed -i -e "s|[# ]*LocalSocket.*|#LocalSocket /var/run/clamav/clamd.ctl|" $CLAMAV_CONF_FILE
-sed -i -e "s|[# ]*NodalCoreAcceleration|#NodalCoreAcceleration|" $CLAMAV_CONF_FILE
-perl -i -pe 's/^(ArchiveMaxFileSize|StreamMaxLength.*)/#$1/' $CLAMAV_CONF_FILE
+perl -i -pe 's/^\s*(ArchiveMax.*|LocalSocket.*|MailMaxRecursion|NodalCoreAcceleration|StreamMaxLength)/#$1/' $CLAMAV_CONF_FILE
 
 # options we need
 setOption TCPAddr 127.0.0.1
 setOption TCPSocket 3310 
-setOption MaxFileSize 100M 
+setOption MaxFileSize 100M
 setOption MaxScanSize 100M 
 
 # reloading daemons
