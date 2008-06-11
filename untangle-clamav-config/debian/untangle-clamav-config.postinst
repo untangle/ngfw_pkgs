@@ -9,6 +9,7 @@ setOption() {
     cat >> $CLAMAV_CONF_FILE <<EOF
 $1 $2
 EOF
+  fi
 }
 
 # obsolete options
