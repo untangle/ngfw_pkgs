@@ -13,7 +13,7 @@ EOF
 }
 
 # obsolete options
-perl -i -pe 's/^\s*(ArchiveMax.*|LocalSocket.*|MailMaxRecursion|NodalCoreAcceleration|StreamMaxLength)/#$1/' $CLAMAV_CONF_FILE
+perl -i -pe 's/^\s*(ArchiveMax.*|ArchiveBlockMax.*|LocalSocket.*|MailMaxRecursion.*|NodalCoreAcceleration.*|StreamMaxLength.*)/#$1/' $CLAMAV_CONF_FILE
 
 # options we need
 setOption TCPAddr 127.0.0.1
