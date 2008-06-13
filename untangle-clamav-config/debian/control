@@ -13,3 +13,4 @@ Conflicts: clamav-mv
 Replaces: clamav-mv
 Description: The Untangle clamav utils
  The Untangle clamav utilities.
+
