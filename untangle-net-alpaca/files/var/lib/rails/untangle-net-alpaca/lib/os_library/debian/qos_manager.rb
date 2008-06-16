@@ -43,6 +43,9 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
   MarkQoSHigh  = 0x00C00000
   MarkQoSNormal= 0x00400000
   MarkQoSLow   = 0x00200000
+  MarkQoSMask  = 0x00E00000
+  MarkQoSInverseMask  = 0xFF1FFFFF
+
 
   def status
      results = []
@@ -195,21 +198,24 @@ EOF
 #{IPTablesCommand} -t #{QoSMark.table} -F #{QoSMark.name}
 #{QoSMark.init}
 
-${IPTABLES} -t mangle -A #{QoSMark.name} -m connmark --mark #{MarkQoSHigh}/#{MarkQoSHigh} -g qos-high-mark
-${IPTABLES} -t mangle -A #{QoSMark.name} -m connmark --mark #{MarkQoSNormal}/#{MarkQoSNormal} -g qos-normal-mark
-${IPTABLES} -t mangle -A #{QoSMark.name} -m connmark --mark #{MarkQoSLow}/#{MarkQoSLow} -g qos-low-mark
+${IPTABLES} -t mangle -A #{QoSMark.name} -m connmark --mark #{MarkQoSHigh}/#{MarkQoSMask} -g qos-high-mark
+${IPTABLES} -t mangle -A #{QoSMark.name} -m connmark --mark #{MarkQoSNormal}/#{MarkQoSMask} -g qos-normal-mark
+${IPTABLES} -t mangle -A #{QoSMark.name} -m connmark --mark #{MarkQoSLow}/#{MarkQoSMask} -g qos-low-mark
 ${IPTABLES} -t mangle -N qos-high-mark 2> /dev/null
 ${IPTABLES} -t mangle -F qos-high-mark
+${IPTABLES} -t mangle -A qos-high-mark -j MARK --and-mark #{MarkQoSInverseMask}
 ${IPTABLES} -t mangle -A qos-high-mark -j MARK --or-mark #{MarkQoSHigh}
-${IPTABLES} -t mangle -A qos-high-mark -j CONNMARK --set-mark #{MarkQoSHigh}/#{MarkQoSHigh}
+${IPTABLES} -t mangle -A qos-high-mark -j CONNMARK --set-mark #{MarkQoSHigh}/#{MarkQoSMask}
 ${IPTABLES} -t mangle -N qos-normal-mark 2> /dev/null
 ${IPTABLES} -t mangle -F qos-normal-mark
+${IPTABLES} -t mangle -A qos-normal-mark -j MARK --and-mark #{MarkQoSInverseMask}
 ${IPTABLES} -t mangle -A qos-normal-mark -j MARK --or-mark #{MarkQoSNormal}
-${IPTABLES} -t mangle -A qos-normal-mark -j CONNMARK --set-mark #{MarkQoSNormal}/#{MarkQoSNormal}
+${IPTABLES} -t mangle -A qos-normal-mark -j CONNMARK --set-mark #{MarkQoSNormal}/#{MarkQoSMask}
 ${IPTABLES} -t mangle -N qos-low-mark 2> /dev/null
 ${IPTABLES} -t mangle -F qos-low-mark
+${IPTABLES} -t mangle -A qos-low-mark -j MARK --and-mark #{MarkQoSInverseMask}
 ${IPTABLES} -t mangle -A qos-low-mark -j MARK --or-mark #{MarkQoSLow}
-${IPTABLES} -t mangle -A qos-low-mark -j CONNMARK --set-mark #{MarkQoSLow}/#{MarkQoSLow}
+${IPTABLES} -t mangle -A qos-low-mark -j CONNMARK --set-mark #{MarkQoSLow}/#{MarkQoSMask}
 
 ${IPTABLES} -t mangle -A #{QoSMark.name} -p tcp --dport ssh -j TOS --set-tos Minimize-Delay
 
