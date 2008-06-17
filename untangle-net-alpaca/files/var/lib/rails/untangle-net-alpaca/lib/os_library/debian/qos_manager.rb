@@ -129,10 +129,6 @@ EOF
 
     dev = Interface.external.os_name
 
-    if ! qos_settings.prioritize_ssh.nil? and qos_settings.prioritize_ssh > 0
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ssh} u32 match ip tos 0x10 0xff match ip dport 22 0xffff flowid 1:#{qos_settings.prioritize_ssh}\n"
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ssh} u32 match ip tos 0x10 0xff match ip sport 22 0xffff flowid 1:#{qos_settings.prioritize_ssh}\n"
-    end
     if ! qos_settings.prioritize_ping.nil? and qos_settings.prioritize_ping > 0
       tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ping} u32 match ip protocol 1 0xff flowid 1:#{qos_settings.prioritize_ping}\n"
     end
@@ -203,21 +199,16 @@ ${IPTABLES} -t mangle -A #{QoSMark.name} -m connmark --mark #{MarkQoSNormal}/#{M
 ${IPTABLES} -t mangle -A #{QoSMark.name} -m connmark --mark #{MarkQoSLow}/#{MarkQoSMask} -g qos-low-mark
 ${IPTABLES} -t mangle -N qos-high-mark 2> /dev/null
 ${IPTABLES} -t mangle -F qos-high-mark
-${IPTABLES} -t mangle -A qos-high-mark -j MARK --and-mark #{MarkQoSInverseMask}
 ${IPTABLES} -t mangle -A qos-high-mark -j MARK --or-mark #{MarkQoSHigh}
 ${IPTABLES} -t mangle -A qos-high-mark -j CONNMARK --set-mark #{MarkQoSHigh}/#{MarkQoSMask}
 ${IPTABLES} -t mangle -N qos-normal-mark 2> /dev/null
 ${IPTABLES} -t mangle -F qos-normal-mark
-${IPTABLES} -t mangle -A qos-normal-mark -j MARK --and-mark #{MarkQoSInverseMask}
 ${IPTABLES} -t mangle -A qos-normal-mark -j MARK --or-mark #{MarkQoSNormal}
 ${IPTABLES} -t mangle -A qos-normal-mark -j CONNMARK --set-mark #{MarkQoSNormal}/#{MarkQoSMask}
 ${IPTABLES} -t mangle -N qos-low-mark 2> /dev/null
 ${IPTABLES} -t mangle -F qos-low-mark
-${IPTABLES} -t mangle -A qos-low-mark -j MARK --and-mark #{MarkQoSInverseMask}
 ${IPTABLES} -t mangle -A qos-low-mark -j MARK --or-mark #{MarkQoSLow}
 ${IPTABLES} -t mangle -A qos-low-mark -j CONNMARK --set-mark #{MarkQoSLow}/#{MarkQoSMask}
-
-${IPTABLES} -t mangle -A #{QoSMark.name} -p tcp --dport ssh -j TOS --set-tos Minimize-Delay
 
 EOF
 
