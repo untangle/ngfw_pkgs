@@ -86,9 +86,9 @@ tc qdisc add dev $DEV parent 1:10 handle 10: sfq perturb 10
 tc qdisc add dev $DEV parent 1:20 handle 20: sfq perturb 10
 tc qdisc add dev $DEV parent 1:30 handle 30: sfq perturb 10
 
-tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match mark 0xc00000 0xe00000 flowid 1:10
-tc filter add dev $DEV parent 1: protocol ip prio 2 u32 match mark 0x400000 0xe00000 flowid 1:20
-tc filter add dev $DEV parent 1: protocol ip prio 3 u32 match mark 0x200000 0xe00000 flowid 1:30
+tc filter add dev $DEV protocol ip parent 1: prio 1 u32 match mark 0x0c00000 0x0e00000 flowid 1:10
+tc filter add dev $DEV protocol ip parent 1: prio 2 u32 match mark 0x0400000 0x0e00000 flowid 1:20
+tc filter add dev $DEV protocol ip parent 1: prio 3 u32 match mark 0x0200000 0x0e00000 flowid 1:30
 
 run-parts /etc/untangle-net-alpaca/tc-rules.d
 
