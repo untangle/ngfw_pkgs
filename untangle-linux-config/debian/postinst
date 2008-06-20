@@ -9,7 +9,7 @@ fi
 # Clean up stuff left around by old version
 rm -f /boot/vmlinuz-ut
 rm -f /boot/vmlinuz
-# rm -f /boot/initrd.img
+rm -f /boot/initrd.img
 
 root=
 if [ -f /etc/mtab ]; then
@@ -39,6 +39,11 @@ if [ -n "$root" ]; then
             rootdev="$root"
             ;;
     esac
+
+# Better to do this now while we have entropy available.
+    if [ ! -f /usr/share/untangle/popid ]; then
+	ruby /usr/share/untangle/bin/createpopid.rb
+    fi
 
     # depmod -a ${flavor}
     # Update the initrd since we added bootsplash.
