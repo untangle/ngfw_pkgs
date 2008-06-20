@@ -1,3 +1,9 @@
+untangle-linux-config (5.3.0~svn20080620r16851release5.3-1sarge) nightly-release53; urgency=low
+
+  * auto build
+
+ -- John Irwin <jdi@untangle.com>  Fri, 20 Jun 2008 15:12:06 -0700
+
 untangle-linux-config (0-1) stable; urgency=low
 
   * initial release

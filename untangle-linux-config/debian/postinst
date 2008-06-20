@@ -40,9 +40,9 @@ if [ -n "$root" ]; then
             ;;
     esac
 
-# Better to do this now while we have entropy available.
+    # Better to do this now while we have entropy available.
     if [ ! -f /usr/share/untangle/popid ]; then
-	ruby /usr/share/untangle/bin/createpopid.rb
+	/usr/share/untangle/bin/utactivate
     fi
 
     # depmod -a ${flavor}
