@@ -27,7 +27,11 @@ DOWNLINK=
 UPLINK=
 DEV=
 
-. /etc/untangle-net-alpaca/untangle-qos
+if [ -e /etc/untangle-net-alpaca/untangle-qos ] ; then
+   . /etc/untangle-net-alpaca/untangle-qos
+else
+   exit 2
+fi
 
 if [ "$1" = "status" ]
 then
