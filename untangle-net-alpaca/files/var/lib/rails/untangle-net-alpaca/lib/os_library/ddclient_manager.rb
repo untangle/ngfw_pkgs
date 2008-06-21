@@ -33,7 +33,6 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
 
   ConfigService = {
     "ZoneEdit" => [ "zoneedit1", "www.zoneedit.com" ],
-    #"No-IP" => [ "no-ip", "no-ip" ],
     "EasyDNS" => [ "easydns", "members.easydns.com" ],
     "DSL-Reports" => [ "dslreports1", "www.dslreports.com" ],
     "DNSPark" => [ "dnspark", "www.dnspark.com" ],
@@ -52,15 +51,6 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
 
   DdclientPackage = "ddclient"
 
-  NoipRcdDefaults = "/usr/sbin/update-rc.d no-ip defaults"
-  NoipRcdRemove = "/usr/sbin/update-rc.d -f no-ip remove"
-  NoipConfigure = "no-ip -C "
-  NoipCmd = "/etc/init.d/no-ip "
-  NoipCmdStop = NoipCmd + " stop"
-  NoipCmdRestart = NoipCmd + " restart"
-  NoipConfFile = "/etc/no-ip.conf"
-  NoipPackage = "no-ip"
-
   def register_hooks
     os["network_manager"].register_hook( -100, "ddclient_manager", "write_files", :hook_commit )
     os["hostname_manager"].register_hook( 100, "ddclient_manager", "commit", :hook_commit )
@@ -70,15 +60,8 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
     settings = DdclientSettings.find( :first )
 
     if ( !settings.nil? && settings.enabled )
-      if settings.service == "No-IP"
-        commit_noip( settings )
-        disable_ddclient
-      else
         commit_ddclient( settings )
-        disable_noip
-      end
     else
-      disable_noip
       disable_ddclient
     end
   end
@@ -133,34 +116,9 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
     #run_command( "hostname #{settings.hostname}" )
   end
 
-  def commit_noip( settings )
-    cfg = []
-    defaults = []
-    
-    #TODO Bug FixMe this will clobber all host names configured with no-ip
-    # and update all of them to the untangle box :-(
-    conditions = [ "wan=?", true ]
-    wanInterface = Interface.find( :first, :conditions => conditions )
-    run_command( "yes | " + NoipConfigure + " -U 300 -I " + wanInterface.os_name + " -u " + settings.login + " -p " + settings.password )
-    
-    if ( settings.enabled )
-      #logger.debug( "running: " + NoipRcdDefaults )
-      run_command( NoipRcdDefaults )
-      #logger.debug( "running: " + DdclientCmdRestart )
-      run_command( NoipCmdRestart )
-    end
-
-    #run_command( "hostname #{settings.hostname}" )
-  end
-
   def disable_ddclient
     run_command( DdclientRcdRemove )
     run_command( DdclientCmdStop )
-  end
-
-  def disable_noip
-    run_command( NoipRcdRemove )
-    run_command( NoipCmdStop )
   end
 
   def header
