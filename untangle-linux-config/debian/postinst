@@ -41,7 +41,7 @@ if [ -n "$root" ]; then
     esac
 
     # Better to do this now while we have entropy available.
-    if [ -f /usr/share/untangle/activation.key -a ! -f /usr/share/untangle/popid ]; then
+    if [ -f /usr/share/untangle/activation.key -a ! -f /usr/share/untangle/popid -a -x /usr/share/untangle/bin/utactivate ]; then
 	/usr/share/untangle/bin/utactivate
     fi
 
