@@ -106,7 +106,9 @@ EOF
     route_visitor = InterfaceRouteVisitor.new
 
     interfaces.each do |interface|
-      interface_routes += interface.current_config.accept( interface, route_visitor )
+      if ! interface.nil? and ! interface.current_config.nil?
+          interface_routes += interface.current_config.accept( interface, route_visitor )
+      end
     end
 
     interface_routes
