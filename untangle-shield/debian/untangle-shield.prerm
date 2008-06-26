@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ -x "/etc/init.d/untangle-shield" ]; then
+    /etc/init.d/untangle-shield stop || true
+fi
+
+echo 0

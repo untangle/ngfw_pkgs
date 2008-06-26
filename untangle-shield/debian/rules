@@ -1,0 +1,66 @@
+#!/usr/bin/make -f
+
+DESTDIR := debian/tmp
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	touch configure-stamp
+
+build: configure
+	dh_testdir
+	$(MAKE)
+	touch $@
+
+## This should be done in make install, but, this should also use a ./configure script
+## rather than a custom makefile.
+install: build
+	mkdir -p $(DESTDIR)
+	tar --exclude=.svn -cf - -C files `find files/ -name '.svn' -prune -o -mindepth 1 -maxdepth 1 -printf "%P "`  | tar -xf - -C $(DESTDIR)
+	mkdir -p $(DESTDIR)/usr/bin
+	cp -a shield $(DESTDIR)/usr/bin
+	find $(DESTDIR) -name "\.svn" | xargs rm -rf
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -rf configure-stamp $(DESTDIR)
+	$(MAKE) clean
+	dh_clean
+
+binary-indep: 
+# nothing to do
+
+binary-arch: install
+	dh_testdir  
+	dh_testroot   
+	dh_movefiles 
+#	dh_installdebconf   
+#	dh_shlibdeps  
+	dh_installdocs
+	dh_installdirs
+#	dh_installexamples   
+#	dh_installmenu   
+	dh_installlogrotate   
+#	dh_installemacsen   
+#	dh_installpam   
+#	dh_installmime   
+	dh_installinit
+#	dh_installcron   
+#	dh_installman   
+#	dh_installinfo   
+#	dh_undocumented   
+	dh_installchangelogs    
+#	dh_strip  
+	dh_link   
+	dh_compress   
+	dh_fixperms   
+	dh_installdeb  
+#	dh_perl     
+	if [ -f debian/version ] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
+	dh_md5sums     
+
+binary: binary-indep binary-arch
+	dh_builddeb 
+
+.PHONY: clean binary-indep binary build configure

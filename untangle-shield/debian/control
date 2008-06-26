@@ -1,0 +1,12 @@
+Source: untangle-shield
+Section: admin
+Priority: optional
+Maintainer: Robert Scott <rbscott@untangle.com>
+Build-Depends: debhelper (>> 3.0.0), untangle-development-build, libjson-dev, libjson0, libmicrohttpd-dev, libmicrohttpd4
+Standards-Version: 3.7.2
+
+Package: untangle-shield
+Architecture: any
+Depends: libjson0, libmicrohttpd4, untangle-net-alpaca, untangle-libnetfilter-conntrack1, untangle-libnetfilter-queue0 (>= 0.0.15), untangle-libnfnetlink0, dash
+Description: The Untangle Shield
+ The Untangle Shield.  A utility for regulating excessive traffic usage.

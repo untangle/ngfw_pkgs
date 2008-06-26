@@ -1,0 +1,5 @@
+#! /bin/dash
+
+## Uncomment to change the default configuration file.
+# SHIELD_CONFIG_FILE=/etc/shield.conf
+

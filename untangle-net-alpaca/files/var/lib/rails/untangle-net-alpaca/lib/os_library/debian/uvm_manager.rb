@@ -156,6 +156,13 @@ else
   echo "[`date`] The UVM is currently not running"
 fi
 
+## Should this be here?  Use type to protect older boxes.
+type uvm_shield_traffic > /dev/null 2>&1 && {
+    uvm_shield_traffic
+} || {
+    echo "[`date`] uvm_shield_traffic is not defined."
+}
+
 return 0
 EOF
 

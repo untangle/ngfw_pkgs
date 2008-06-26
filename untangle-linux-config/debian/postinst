@@ -9,7 +9,7 @@ fi
 # Clean up stuff left around by old version
 rm -f /boot/vmlinuz-ut
 rm -f /boot/vmlinuz
-# rm -f /boot/initrd.img
+rm -f /boot/initrd.img
 
 root=
 if [ -f /etc/mtab ]; then
