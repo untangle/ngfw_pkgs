@@ -38,6 +38,8 @@ class QosController < ApplicationController
     @qos.enabled = params[:enabled]
 
     @interfaces, @parameter_list = RuleHelper::get_edit_fields( params )
+    #remove the VPN interface
+    @interfaces.pop
   end
 
 
