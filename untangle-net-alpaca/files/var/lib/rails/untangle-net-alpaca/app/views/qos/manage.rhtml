@@ -13,7 +13,7 @@ EOF
         </li>
         <li>
           <label for="qos_settings_download"><%= "Internet Download Bandwidth:".t %></label>
-          <%= text_field( "qos_settings", "download", { :class => "number" } ) %> <span class="units">kbps (<%= @bandwidth[0] %> kbps estimated)</span>
+          <%= text_field( "qos_settings", "download", { :class => "number" } ) %> <span class="units">kbps <!-- (<%= @bandwidth[0] %> kbps estimated) --></span>
         </li>
         <li>
           <label for="qos_settings_download_percentage">Limit Download to:</label>
@@ -22,7 +22,7 @@ EOF
         <li></li>
         <li>
           <label for="qos_settings_upload"><%= "Internet Upload Bandwidth:".t %></label>
-          <%= text_field( "qos_settings", "upload", { :class => "number" } ) %> <span class="units">kbps (<%= @bandwidth[1] %> kbps estimated)</span>
+          <%= text_field( "qos_settings", "upload", { :class => "number" } ) %> <span class="units">kbps <!-- (<%= @bandwidth[1] %> kbps estimated) --></span>
         </li>
         <li>
           <label for="qos_settings_upload_percentage">Limit Upload to:</label>
