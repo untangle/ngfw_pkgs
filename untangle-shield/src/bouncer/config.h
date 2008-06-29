@@ -118,6 +118,9 @@ typedef struct {
     /* This is the number of items that are inside of logs */
     int log_size;
 
+    /* This is the minimum number of users */
+    int min_users;
+
     barfight_shield_bless_t bless_data[128];
     barfight_shield_bless_array_t bless_array;    
 } bouncer_shield_config_t;

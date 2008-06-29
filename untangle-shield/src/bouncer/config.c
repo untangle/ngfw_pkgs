@@ -68,6 +68,8 @@
 #define _DEFAULT_LOG_ROTATE_DELAY  SEC_TO_MSEC( 10 )
 #define _DEFAULT_LOG_SIZE          12
 
+/* This is the minimum number of users per node */
+#define _DEFAULT_MIN_USERS 3
 
 static void _load_limits( struct json_object* config_json, bouncer_shield_config_t* config );
 static void _load_limit( struct json_object* limit_json, nc_shield_limit_t* limit );
@@ -164,7 +166,8 @@ int bouncer_shield_config_default( bouncer_shield_config_t* config )
         .bless_array = { 
             .count = 0
         },
-        
+
+        .min_users = _DEFAULT_MIN_USERS,
         
         .log_rotate_delay_ms = _DEFAULT_LOG_ROTATE_DELAY,
         .log_size = _DEFAULT_LOG_SIZE,
@@ -413,6 +416,7 @@ static void _load_misc( struct json_object* misc_json, bouncer_shield_config_t* 
     _update_double( misc_json, "debug-threshold", &config->rep_threshold, 0 );
     _update_int( misc_json, "log-rotate-delay", &config->log_rotate_delay_ms, 0 );
     _update_int( misc_json, "log-size", &config->log_size, 0 );
+    _update_int( misc_json, "min-users", &config->min_users, 0 );
 }
 
 static int _load_user( struct json_object* user_json, barfight_shield_bless_t* user )
@@ -764,7 +768,9 @@ static int _add_misc( struct json_object* config_json, bouncer_shield_config_t* 
         if ( json_object_utils_add_int( misc_json, "log-size", config->log_size ) < 0 ) {
             return errlog( ERR_CRITICAL, "json_object_utils_add_int\n" );
         }
-
+        if ( json_object_utils_add_int( misc_json, "min-users", config->min_users ) < 0 ) {
+            return errlog( ERR_CRITICAL, "json_object_utils_add_int\n" );
+        }
 
         if ( json_object_utils_add_object( config_json, "misc", misc_json ) < 0 ) {
             /* on failure it has already been scrubbed. */

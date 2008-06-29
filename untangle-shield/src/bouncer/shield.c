@@ -43,6 +43,7 @@
 
 #include "bouncer/shield.h"
 #include "bouncer/config.h"
+#include "bouncer/debug.h"
 #include "bouncer/load.h"
 
 /* 1 second in u-seconds */
@@ -176,7 +177,7 @@ static int  _get_response_closed ( barfight_shield_response_t* response, nc_shie
 
 static int  _reputation_update   ( nc_shield_reputation_t* reputation );
 
-static int _update_score( barfight_trie_element_t line );
+int _update_score( barfight_trie_element_t line );
 
 static nc_shield_score_t _reputation_eval     ( barfight_trie_item_t* item );
 static int             _reputation_init     ( barfight_trie_item_t* item, struct in_addr* ip );
@@ -221,8 +222,11 @@ int barfight_shield_init    ( void )
 
     flags = NC_TRIE_INHERIT | NC_TRIE_COPY | NC_TRIE_FREE;
     
-    barfight_load_init( &rep.evil_load,     _LOAD_INTERVAL_EVIL,  NC_LOAD_INIT_TIME );
     barfight_load_init( &rep.request_load,  _LOAD_INTERVAL_SESS,  NC_LOAD_INIT_TIME );
+    barfight_load_init( &rep.accept_load,   _LOAD_INTERVAL_SESS,  NC_LOAD_INIT_TIME );
+    barfight_load_init( &rep.lru_load,      _LOAD_INTERVAL_LRU,   NC_LOAD_INIT_TIME );
+
+    barfight_load_init( &rep.evil_load,     _LOAD_INTERVAL_EVIL,  NC_LOAD_INIT_TIME );
     barfight_load_init( &rep.session_load,  _LOAD_INTERVAL_SESS,  NC_LOAD_INIT_TIME );
     barfight_load_init( &rep.srv_conn_load, _LOAD_INTERVAL_SESS,  NC_LOAD_INIT_TIME );
     barfight_load_init( &rep.srv_fail_load, _LOAD_INTERVAL_SESS,  NC_LOAD_INIT_TIME );
@@ -230,7 +234,6 @@ int barfight_shield_init    ( void )
     barfight_load_init( &rep.udp_chk_load,  _LOAD_INTERVAL_CHK,   NC_LOAD_INIT_TIME );
     barfight_load_init( &rep.icmp_chk_load, _LOAD_INTERVAL_CHK,   NC_LOAD_INIT_TIME );
     barfight_load_init( &rep.byte_load,     _LOAD_INTERVAL_BYTE,  NC_LOAD_INIT_TIME );
-    barfight_load_init( &rep.lru_load,      _LOAD_INTERVAL_LRU,   NC_LOAD_INIT_TIME );
 
     /* Initialize the number of active sessions */
     rep.active_sessions = 0;
@@ -511,6 +514,23 @@ int barfight_shield_bless_users( barfight_shield_bless_array_t* nodes )
     return 0;
 }
 
+int barfight_bouncer_shield_debug( barfight_bouncer_debug_print_t* print, void* arg )
+{
+    int ret = 0;
+
+    if ( print == NULL ) return errlogargs();
+
+    if ( pthread_mutex_lock( &_shield.mutex ) < 0 ) perrlog( "pthread_mutex_lock" );
+    
+    ret = barfight_bouncer_debug_dump_nodes( &_shield.lru, &_shield.root->debug_id, print, arg );
+
+    if ( pthread_mutex_unlock( &_shield.mutex ) < 0 ) perrlog( "pthread_mutex_unlock" );
+    
+    if ( ret < 0 ) return errlog( ERR_CRITICAL, "barfight_bouncer_debug_dump_nodes\n" );
+
+    return 0;
+}
+
 /* First cut, only bless a specific IP address */
 static int _set_node_settings ( double divider, struct in_addr* ip, struct in_addr* netmask )
 {
@@ -585,7 +605,6 @@ static int  _apply_func          ( barfight_trie_element_t element, void* arg, s
     nc_shield_reputation_t* reputation;
     int ret = 0;
     int children;
-    int update_load = 0;
 
     if ( element.item == NULL || ( reputation = barfight_trie_item_data( element.item )) == NULL ) {
         return errlogargs();
@@ -603,13 +622,14 @@ static int  _apply_func          ( barfight_trie_element_t element, void* arg, s
             break;
         }
 
-        /* Count is zero if a node doesn't have any children */
-        children = ( children == 0 ) ? 1 : children;
+        if (( element.base->depth < NC_TRIE_DEPTH_TOTAL ) && ( children <= _shield.cfg.min_users )) {
+            children = _shield.cfg.min_users;
+        }
+        /* something is wrong here */
+        if ( children <= 0 ) children = 1;
         
         /* Apply the function to the argument */
-        /* XXXXX 115 is a magic number */
-        update_load = ( reputation->score < 115 ) ? _NC_UPDATE_LOAD : ~_NC_UPDATE_LOAD;
-        if ( func->func( reputation, children, func->divider, func->arg, update_load ) < 0 ) {
+        if ( func->func( reputation, children, func->divider, func->arg, _NC_UPDATE_LOAD ) < 0 ) {
              ret = errlog( ERR_CRITICAL, "apply_function\n" );
             break;
         }
@@ -683,7 +703,7 @@ static int _add_request ( nc_shield_reputation_t *rep, int count, double divider
                           int update_load )
 {
     if ( update_load == _NC_UPDATE_LOAD ) {
-        return barfight_load_update( &rep->request_load, 1, ((barfight_load_val_t)1.0));
+        return barfight_load_update( &rep->request_load, 1, ( 1.0 / ( divider * count )));
     }
     return 0;
 }
@@ -843,7 +863,7 @@ static int  _get_response_closed ( barfight_shield_response_t* response, nc_shie
     return 0;
 }
 
-static int _update_score( barfight_trie_element_t element )
+int _update_score( barfight_trie_element_t element )
 {
     nc_shield_reputation_t* reputation = element.base->data;
     
@@ -865,15 +885,18 @@ static int _update_score( barfight_trie_element_t element )
  * this is not a problem */
 static int  _reputation_update   ( nc_shield_reputation_t* reputation )
 {
-    if (( barfight_load_update( &reputation->evil_load,     0, 0 ) < 0) ||
-        ( barfight_load_update( &reputation->request_load,  0, 0 ) < 0) ||
+    /* only the request load and the accept load are currently used, and the accept load is just useful for debugging */
+    if (( barfight_load_update( &reputation->request_load,  0, 0 ) < 0) ||
+        ( barfight_load_update( &reputation->accept_load,   0, 0 ) < 0) ||
+        ( barfight_load_update( &reputation->evil_load,     0, 0 ) < 0) ||
         ( barfight_load_update( &reputation->session_load,  0, 0 ) < 0) ||
         ( barfight_load_update( &reputation->srv_conn_load, 0, 0 ) < 0) ||
         ( barfight_load_update( &reputation->srv_fail_load, 0, 0 ) < 0) ||
         ( barfight_load_update( &reputation->tcp_chk_load,  0, 0 ) < 0) ||
         ( barfight_load_update( &reputation->udp_chk_load,  0, 0 ) < 0) ||
         ( barfight_load_update( &reputation->icmp_chk_load, 0, 0 ) < 0) ||
-        ( barfight_load_update( &reputation->byte_load,     0, 0 ) < 0)) {
+        ( barfight_load_update( &reputation->byte_load,     0, 0 ) < 0)
+        ) {
         return errlog(ERR_CRITICAL,"barfight_load_update\n");
     }
     
@@ -909,6 +932,8 @@ static int  _reputation_init     ( barfight_trie_item_t* item, struct in_addr* i
         ( barfight_load_init( &reputation->lru_load,      _LOAD_INTERVAL_LRU,   !NC_LOAD_INIT_TIME ) < 0)) {
         ret = errlog( ERR_CRITICAL, "netap_load_init\n" );
     }
+    
+    reputation->debug_id = 0;
     
     /* Parent is unititialized, set the reputation to zero */
     if ( reputation->score < 0 ) reputation->score = 0;
@@ -1120,7 +1145,7 @@ static void _debug_reputation_threshold       ( barfight_trie_line_t* line )
                 errlog( ERR_CRITICAL, "barfight_trie_element_children\n" );
             }
             
-            children = ( children <= 0 ) ? 1 : children;
+            if ( children <= 0 ) children = 1;
             
             /* This prints out all of hte information that is used to
              * calculate the reputation, at each level */

@@ -338,6 +338,8 @@ static int _init( int argc, char** argv )
         return perrlog( "pthread_create" );
     }
 
+    errlog( ERR_WARNING, "Implement reset and limit.\n" );
+
     return 0;
 }
 
@@ -400,7 +402,7 @@ static int _setup_output( void )
     
     if (( err_fd < 0 ) && ( _globals.std_out > 0 )) err_fd = _globals.std_out;
     
-    if ( err_fd > 0 ) {
+    if ( err_fd >= 0 ) {
         close( STDERR_FILENO );
         if ( dup2( err_fd, STDERR_FILENO ) < 0 ) {
             syslog( LOG_DAEMON | LOG_ERR, "dup2: %s\n", errstr );

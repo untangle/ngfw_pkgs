@@ -9,9 +9,9 @@
 "evil-load": { "lax": 800.00, "tight": 1600.00, "closed": 2000.00 },
 "fence": { 
     "relaxed": { "inheritance": 0.100000,
-                  "limited": { "prob": 70.00, "post": 80.00 },
-                  "closed": { "prob": 85.00, "post": 110.00 },
-                  "error": { "prob": 20.00, "post": 120.00 }},
+                  "limited": { "prob": 70.00, "post": 90.00 },
+                  "closed": { "prob": 50.00, "post": 150.00 },
+                  "error": { "prob": 20.00, "post": 500.00 }},
     "lax": { "inheritance": 0.400000,
              "limited": { "prob": 75.00, "post": 50.00 },
              "closed": { "prob": 80.00, "post": 80.00 },
@@ -25,13 +25,13 @@
                 "closed": { "prob": 95.00, "post": 20.00 },
                 "error": { "prob": 20.00, "post": 40.00 }}},
 
-"multipliers": { "request-load": 10.778000, "session-load": 3.125000,
+"multipliers": { "request-load": 4.000000, "session-load": 3.125000,
                  "evil-load": 0.250000, "tcp-chk-load": 0.012500, 
                  "udp-chk-load": 0.012500, "icmp_chk-load": 40.00,
                  "active-session": 0.032000 },
 
 "lru": { "low-water": 512, "high-water": 1024, "sieve-size": 8, "ip-rate": 0.010000 },
-"misc": { "debug-rate": 0, "debug-threshold": 155.00, "log-rotate-delay": 10000, "log-size": 12 }, 
+"misc": { "debug-rate": 0, "debug-threshold": 2000.00, "log-rotate-delay": 10000, "log-size": 12, "min-users" : 16 }, 
 "users": []
 }
 
