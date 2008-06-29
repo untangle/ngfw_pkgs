@@ -53,10 +53,12 @@ static struct
 {
     barfight_bouncer_logs_t* logs;
     char *config_file;
+    char *bless_filename;
     json_server_function_entry_t function_table[];
 } _globals = {
     .logs = NULL,
     .config_file = NULL,
+    .bless_filename = NULL,
     .function_table = {
         { .name = "hello_world", .function = _hello_world },
         { .name = "advance_logs", .function = _advance_logs },
@@ -69,11 +71,12 @@ static struct
     }
 };
 
-int barfight_functions_init( barfight_bouncer_logs_t* logs, char* config_file )
+int barfight_functions_init( barfight_bouncer_logs_t* logs, char* config_file, char* bless_filename )
 {
     if ( logs == NULL ) return errlogargs();
     _globals.logs = logs;
     _globals.config_file = config_file;
+    _globals.bless_filename = bless_filename;
     return 0;
 }
 
@@ -371,7 +374,16 @@ static struct json_object* _bless_users( struct json_object* request )
                 return 0;
             }
         }
-                
+        
+        if (( _globals.bless_filename != NULL ) &&
+            ( json_object_get_boolean( json_object_object_get( request, "write_users" )) == TRUE )) {
+            debug( 10, "FUNCTIONS: Writing users to the file '%s'\n.", _globals.bless_filename );
+            if ( json_object_to_file( _globals.bless_filename, bless_array_json ) < 0 ) {
+                strncpy( message, "Unable to save users.", sizeof( message ));
+                return 0;
+            }
+        }
+
         snprintf( message, sizeof( message ), "Successfully blessed %d users", bless_array.count );
 
         status = STATUS_OK;
