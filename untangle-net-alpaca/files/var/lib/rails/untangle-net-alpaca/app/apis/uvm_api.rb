@@ -64,4 +64,7 @@ class UvmApi < ActionWebService::API::Base
   api_method( :wizard_internal_interface_nat, :expects => [:string, :string], 
               :returns => [] )
 
+  
+  ## Remap the interfaces
+  api_method( :remap_interfaces, :expects => [[:string],[:string]], :returns => [] )
 end

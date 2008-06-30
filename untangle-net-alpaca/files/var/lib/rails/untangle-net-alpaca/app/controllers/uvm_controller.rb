@@ -83,6 +83,49 @@ class UvmController < ApplicationController
     os["packet_filter_manager"].run_services
     nil
   end
+
+  ## Remap the interfaces
+  def remap_interfaces( os_names, user_names )
+    raise "os and user array must be the same size" if ( os_names.length != user_names.length ) 
+    
+    interface_array = Interface.find( :all )
+    raise "Missing interfaces" if ( interface_array.length != os_names.length )
+    
+    physical_data = {}
+    is_modified = false
+    interface_array.each do |i|
+      os_index = os_names.index( i.os_name )
+      user_index = user_names.index( i.name )
+
+      raise "Missing the interface: #{i.name}" if user_index.nil?
+      raise "Missing the interface: #{i.os_name}" if os_index.nil?
+      
+      if ( user_index != os_index ) 
+        is_modified = true
+        name = user_names[os_index]
+        physical_data[name] = [ i.os_name, i.mac_address, i.bus, i.vendor ]
+      end
+    end
+      
+    ## Nothing to do if the interfaces are not modified.
+    return logger.debug( "Interfaces are not modified" ) unless is_modified
+
+    user_names.each do |name|
+      data = physical_data[name]
+      next if data.nil?
+      
+      i = Interface.find( :first, :conditions => [ "name = ?", name ] )
+      i.os_name, i.mac_address, i.bus, i.vendor = data
+      ## Delete all non-critical unmapped interfaces.
+      unless ( InterfaceHelper.is_critical_interface( i ) || i.is_mapped? )
+        i.destroy
+      else
+        i.save
+      end
+    end
+
+    ## Don't call the network manager here, it is called in the next step.
+  end
   
   def write_files
     ## Load all of the interfaces if the settings haven't been initialized yet.
