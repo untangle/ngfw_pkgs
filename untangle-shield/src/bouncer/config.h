@@ -33,6 +33,7 @@ typedef struct {
     double lax;
     double tight;
     double closed;
+    double max;
 } nc_shield_limit_t;
 
 typedef struct {

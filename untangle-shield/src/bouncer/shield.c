@@ -137,7 +137,8 @@ typedef struct _chk {
 
 /* update_load is 1 if the load should be updated, zero if only totals should update */
 typedef struct {
-    int (*func) ( nc_shield_reputation_t* rep, int count, double divider, void* arg, int update_load );
+    int (*func) ( nc_shield_reputation_t* rep, int depth, int count, double divider, void* arg,
+                  int* update_load );
     void *arg;
     double divider;
 } _apply_func_t;
@@ -149,16 +150,16 @@ static int  _lru_is_deletable( void* data );
 static int  _lru_remove( void* data );
 
 /** These are all helper functions that are called by _apply_func */
-static int  _add_evil( nc_shield_reputation_t* rep, int count, double divider, void* arg, int update_load );
-static int  _add_request( nc_shield_reputation_t* rep, int count, double divider, void* arg, int update_load );
-static int  _add_accept( nc_shield_reputation_t* rep, int count, double divider, void* arg, int update_load );
-static int  _add_session( nc_shield_reputation_t* rep, int count, double divider, void* arg, int update_load );
-static int  _end_session( nc_shield_reputation_t* rep, int count, double divider, void* arg, int update_load );
-static int  _add_chunk( nc_shield_reputation_t* rep, int count, double divider, void* arg, int update_load );
-static int  _add_srv_conn( nc_shield_reputation_t* rep, int count, double divider, void* arg, int update_load );
-static int  _add_srv_fail( nc_shield_reputation_t* rep, int count, double divider, void* arg, int update_load );
+static int  _add_evil( nc_shield_reputation_t* rep, int depth, int count, double divider, void* arg, int* update_load );
+static int  _add_request( nc_shield_reputation_t* rep, int depth, int count, double divider, void* arg, int* update_load );
+static int  _add_accept( nc_shield_reputation_t* rep, int depth, int count, double divider, void* arg, int* update_load );
+static int  _add_session( nc_shield_reputation_t* rep, int depth, int count, double divider, void* arg, int* update_load );
+static int  _end_session( nc_shield_reputation_t* rep, int depth, int count, double divider, void* arg, int* update_load );
+static int  _add_chunk( nc_shield_reputation_t* rep, int depth, int count, double divider, void* arg, int* update_load );
+static int  _add_srv_conn( nc_shield_reputation_t* rep, int depth, int count, double divider, void* arg, int* update_load );
+static int  _add_srv_fail( nc_shield_reputation_t* rep, int depth, int count, double divider, void* arg, int* update_load );
 
-static int   _apply_func( barfight_trie_element_t element, void* arg, struct in_addr* ip );
+static int   _apply_func( barfight_trie_element_t element, void* arg, struct in_addr* ip, int* update_load );
 
 static int  _apply_close         ( struct in_addr* ip, _apply_func_t* func );
 static int  _apply               ( struct in_addr* ip, _apply_func_t* func );
@@ -599,12 +600,13 @@ static void  _trash_fill         ( void* arg )
     }    
 }
 
-static int  _apply_func          ( barfight_trie_element_t element, void* arg, struct in_addr* ip )
+static int  _apply_func( barfight_trie_element_t element, void* arg, struct in_addr* ip, int *update_load )
 {
     _apply_func_t* func;
     nc_shield_reputation_t* reputation;
     int ret = 0;
     int children;
+    int depth = 0;
 
     if ( element.item == NULL || ( reputation = barfight_trie_item_data( element.item )) == NULL ) {
         return errlogargs();
@@ -622,14 +624,15 @@ static int  _apply_func          ( barfight_trie_element_t element, void* arg, s
             break;
         }
 
-        if (( element.base->depth < NC_TRIE_DEPTH_TOTAL ) && ( children <= _shield.cfg.min_users )) {
+        depth = element.base->depth;
+        if (( depth < NC_TRIE_DEPTH_TOTAL ) && ( children <= _shield.cfg.min_users )) {
             children = _shield.cfg.min_users;
         }
         /* something is wrong here */
         if ( children <= 0 ) children = 1;
         
         /* Apply the function to the argument */
-        if ( func->func( reputation, children, func->divider, func->arg, _NC_UPDATE_LOAD ) < 0 ) {
+        if ( func->func( reputation, depth, children, func->divider, func->arg, update_load ) < 0 ) {
              ret = errlog( ERR_CRITICAL, "apply_function\n" );
             break;
         }
@@ -699,39 +702,52 @@ static int  _lru_remove       ( void* arg )
 }
 
 
-static int _add_request ( nc_shield_reputation_t *rep, int count, double divider, void* arg, 
-                          int update_load )
+static int _add_request( nc_shield_reputation_t *rep, int depth, int count, double divider, void* arg, 
+                         int* update_load )
 {
-    if ( update_load == _NC_UPDATE_LOAD ) {
-        return barfight_load_update( &rep->request_load, 1, ( 1.0 / ( divider * count )));
+    if ( *update_load == _NC_UPDATE_LOAD ) {
+        if ( barfight_load_update( &rep->request_load, 1, ( 1.0 / ( divider * count ))) < 0 ) {
+            return errlog( ERR_CRITICAL, "barfight_load_update\n" );
+        }
+
+        double request_load = rep->request_load.load;
+        if ( depth == NC_TRIE_DEPTH_TOTAL && ( request_load > _shield.cfg.limit.request_load.max )) {
+            double prob = ( rand() + 0.0 ) / RAND_MAX;
+
+            if ( prob > ( _shield.cfg.limit.request_load.max / request_load )) {
+                *update_load = ~_NC_UPDATE_LOAD;
+            }
+        }
     }
+
+
     return 0;
 }
 
-static int _add_accept( nc_shield_reputation_t *rep, int count, double divider, void* arg, 
-                        int update_load )
+static int _add_accept( nc_shield_reputation_t *rep, int depth, int count, double divider, void* arg, 
+                        int* update_load )
 {
-    if ( update_load == _NC_UPDATE_LOAD ) {        
+    if ( *update_load == _NC_UPDATE_LOAD ) {        
         return barfight_load_update( &rep->accept_load, 1, ((barfight_load_val_t)1.0));
     }
     return 0;
 }
 
 
-static int _add_session ( nc_shield_reputation_t *rep, int count, double divider, void* arg, 
-                          int update_load )
+static int _add_session ( nc_shield_reputation_t *rep, int depth, int count, double divider, void* arg, 
+                          int* update_load )
 {
     /* Increment the number of sessions */
     rep->active_sessions = ( rep->active_sessions < 1 ) ? 1 : ( rep->active_sessions + 1 );
 
-    if ( update_load == _NC_UPDATE_LOAD ) {
+    if ( *update_load == _NC_UPDATE_LOAD ) {
         return barfight_load_update( &rep->session_load, 1, ((barfight_load_val_t)1.0));
     }
     return 0;
 }
 
-static int _end_session ( nc_shield_reputation_t *rep, int count, double divider, void* arg, 
-                          int update_load )
+static int _end_session ( nc_shield_reputation_t *rep, int depth, int count, double divider, void* arg, 
+                          int* update_load )
 {
     /* Decrement the number of sessions */
     if ( rep->active_sessions < 1 ) rep->active_sessions = 0;
@@ -739,10 +755,10 @@ static int _end_session ( nc_shield_reputation_t *rep, int count, double divider
     return 0;
 }
 
-static int _add_srv_conn ( nc_shield_reputation_t *rep, int count, double divider, void* arg, 
-                           int update_load )
+static int _add_srv_conn ( nc_shield_reputation_t *rep, int depth, int count, double divider, void* arg, 
+                           int* update_load )
 {
-    if ( update_load == _NC_UPDATE_LOAD ) {
+    if ( *update_load == _NC_UPDATE_LOAD ) {
         /* Just in case */
         count = ( count <= 0 ) ? 1 : count;
         return barfight_load_update( &rep->srv_conn_load, 1, ( 1.0 / ( divider * count )));
@@ -750,10 +766,10 @@ static int _add_srv_conn ( nc_shield_reputation_t *rep, int count, double divide
     return 0;
 }
 
-static int _add_srv_fail ( nc_shield_reputation_t *rep, int count, double divider, void* arg, 
-                           int update_load )
+static int _add_srv_fail ( nc_shield_reputation_t *rep, int depth, int count, double divider, void* arg, 
+                           int* update_load )
 {
-    if ( update_load == _NC_UPDATE_LOAD ) {
+    if ( *update_load == _NC_UPDATE_LOAD ) {
         /* Just in case */
         count = ( count <= 0 ) ? 1 : count;
         return barfight_load_update( &rep->srv_fail_load, 1, ( 1.0 / ( divider * count )));
@@ -761,7 +777,8 @@ static int _add_srv_fail ( nc_shield_reputation_t *rep, int count, double divide
     return 0;
 }
 
-static int _add_evil ( nc_shield_reputation_t *rep, int count, double divider, void* arg, int update_load )
+static int _add_evil ( nc_shield_reputation_t *rep, int depth, int count, double divider, void* arg,
+                       int* update_load )
                         
 {
     int evil_count = (int)(long)arg;
@@ -769,12 +786,13 @@ static int _add_evil ( nc_shield_reputation_t *rep, int count, double divider, v
     count = ( count <= 0 ) ? 1 : count;
 
     barfight_load_val_t evil_val = ((barfight_load_val_t)evil_count + 0.0 ) / ( divider * count );
-    if ( update_load == _NC_UPDATE_LOAD ) return barfight_load_update( &rep->evil_load, evil_count, evil_val );
+    if ( *update_load == _NC_UPDATE_LOAD ) return barfight_load_update( &rep->evil_load, evil_count, evil_val );
     
     return 0;
 }
 
-static int _add_chunk ( nc_shield_reputation_t *rep, int count, double divider, void* arg, int update_load )
+static int _add_chunk ( nc_shield_reputation_t *rep, int depth, int count, double divider, void* arg,
+                        int* update_load )
 {
     _chk_t* chk;
     barfight_load_t* load = NULL;
@@ -792,7 +810,7 @@ static int _add_chunk ( nc_shield_reputation_t *rep, int count, double divider, 
     }
     
     if ( chk->if_rx == 1 ) {
-        if ( update_load == _NC_UPDATE_LOAD ) {
+        if ( *update_load == _NC_UPDATE_LOAD ) {
             barfight_load_update( load, 1, ( 1.0 / ( divider * count )));
             barfight_load_update( &rep->byte_load, chk->size, 
                                 ((barfight_load_val_t)chk->size) / ( divider * count ));
@@ -1016,12 +1034,12 @@ static barfight_shield_ans_t _put_in_fence  ( nc_shield_fence_t* fence, nc_shiel
     nc_shield_score_t prob;
     barfight_shield_ans_t ans = NC_SHIELD_DROP;
 
-    prob = ( rand() + 0.0 ) / RAND_MAX;
+    prob = (( rand() + 0.0 ) / RAND_MAX ) * 100;
     
     if ( score > fence->error.post ) {
-        ans = ( prob < fence->error.prob )   ? NC_SHIELD_RESET   : NC_SHIELD_DROP;
+        ans = ( prob < fence->error.prob )   ? NC_SHIELD_RESET   : NC_SHIELD_YES;
     } else if ( score > fence->closed.post ) {
-        ans = ( prob < fence->closed.prob )  ? NC_SHIELD_DROP    : NC_SHIELD_LIMITED;
+        ans = ( prob < fence->closed.prob )  ? NC_SHIELD_DROP    : NC_SHIELD_YES;
     } else if ( score > fence->limited.post ) {
         ans = ( prob < fence->limited.prob ) ? NC_SHIELD_LIMITED : NC_SHIELD_YES;
     } else {
@@ -1222,8 +1240,20 @@ static int  _apply_close( struct in_addr* ip, _apply_func_t* func )
     }
 
     int c;
-    for ( c = 0 ; c < line.count && c <= NC_TRIE_DEPTH_TOTAL ; c++ ) {
-        if ( _apply_func( line.d[c], func, ip ) < 0 ) return errlog( ERR_CRITICAL, "_apply_func\n" );
+    int update_load = _NC_UPDATE_LOAD;
+
+    if ( line.is_bottom_up ) {
+        for ( c = 0 ; c < line.count && c <= NC_TRIE_DEPTH_TOTAL ; c++ ) {
+            if ( _apply_func( line.d[c], func, ip, &update_load ) < 0 ) {
+                return errlog( ERR_CRITICAL, "_apply_func\n" );
+            }
+        }
+    } else {
+        for ( c = ( line.count - 1 ) ; c >= 0 ; c-- ) {
+            if ( _apply_func( line.d[c], func, ip, &update_load ) < 0 ) {
+                return errlog( ERR_CRITICAL, "_apply_func\n" );
+            }
+        }
     }
 
     return 0;
@@ -1255,8 +1285,20 @@ static int  _apply      ( struct in_addr* ip, _apply_func_t* func )
         ((nc_shield_reputation_t*)element.base->data)->divider = _DEFAULT_DIVIDER;
     }
 
-    for ( c = 0 ; c < line.count && c <= NC_TRIE_DEPTH_TOTAL ; c++ ) {
-        if ( _apply_func( line.d[c], func, ip ) < 0 ) return errlog( ERR_CRITICAL, "_apply_func\n" );
+    int update_load = _NC_UPDATE_LOAD;
+
+    if ( line.is_bottom_up ) {
+        for ( c = 0 ; c < line.count && c <= NC_TRIE_DEPTH_TOTAL ; c++ ) {
+            if ( _apply_func( line.d[c], func, ip, &update_load ) < 0 ) {
+                return errlog( ERR_CRITICAL, "_apply_func\n" );
+            }
+        }
+    } else {
+        for ( c = ( line.count - 1 ) ; c >= 0 ; c-- ) {
+            if ( _apply_func( line.d[c], func, ip, &update_load ) < 0 ) {
+                return errlog( ERR_CRITICAL, "_apply_func\n" );
+            }
+        }
     }
     
     return 0;
