@@ -300,7 +300,7 @@ static int _post_data_iterator( void *arg, enum MHD_ValueKind kind,
     if (( strncmp( JSON_REQUEST_PARAM, key, sizeof( JSON_REQUEST_PARAM ))) != 0 ) return MHD_YES;
 
     if ( sd->request != NULL ) {
-        errlog( ERR_CRITICAL, "JSON Request object has already been parsed, ignoring second pass\n" );
+        /* errlog( ERR_CRITICAL, "JSON Request object has already been parsed, ignoring second pass\n" ); */
         return MHD_YES;
     }
 

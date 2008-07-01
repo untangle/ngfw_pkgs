@@ -45,6 +45,10 @@ static struct json_object* _set_config( struct json_object* request );
 
 static struct json_object* _bless_users( struct json_object* request );
 
+static struct json_object* _dump_shield( struct json_object* request );
+
+static int _dump_element( barfight_trie_element_t element, void *arg );
+
 static struct
 {
     barfight_bouncer_logs_t* logs;
@@ -60,6 +64,7 @@ static struct
         { .name = "get_config", .function = _get_config },
         { .name = "set_config", .function = _set_config },
         { .name = "bless_users", .function = _bless_users },
+        { .name = "dump_shield", .function = _dump_shield },
         { .name = NULL, .function = NULL }
     }
 };
@@ -388,3 +393,63 @@ static struct json_object* _bless_users( struct json_object* request )
 
     return response;
 }
+
+static struct json_object* _dump_shield( struct json_object* request )
+{
+    struct json_object* json_array = NULL;
+
+    int _critical_section() {
+        if ( barfight_bouncer_shield_debug( _dump_element, json_array ) < 0 ) {
+            return errlog( ERR_CRITICAL, "barfight_bouncer_shield_debug\n" );
+        }
+
+        return 0;
+    }
+
+    if (( json_array = json_object_new_array()) == NULL ) {
+        return errlog_null( ERR_CRITICAL, "json_object_new_array\n" );
+    }
+
+    if ( _critical_section() < 0 ) {
+        json_object_put( json_array );
+        return errlog_null( ERR_CRITICAL, "_critical_section\n" );
+    }
+    
+    struct json_object* response = NULL;
+    
+    if (( response = json_server_build_response( STATUS_OK, 0, "dumped shield." )) == NULL ) {
+        json_object_put( json_array );
+        return errlog_null( ERR_CRITICAL, "json_server_build_response\n" );
+    }
+
+    if ( json_object_utils_add( response, "shield", json_array ) < 0 ) {
+        json_object_put( json_array );
+        json_object_put( response );
+        return errlog_null( ERR_CRITICAL, "json_object_utils_add\n" );
+    }
+    
+    return response;
+}
+
+/* XXX This is not a good technique XXX */
+extern int _update_score( barfight_trie_element_t element );
+static int _dump_element( barfight_trie_element_t element, void *arg )
+{
+    struct json_object* json_array = NULL;
+    struct json_object* json_child = NULL;
+
+    if (( json_array = arg ) == NULL ) return errlogargs();
+    
+    if ( _update_score( element ) < 0 ) return errlog( ERR_CRITICAL, "_update_score\n" );
+
+    if (( json_child = barfight_bouncer_debug_node_to_json( element )) == NULL ) {
+        return errlog( ERR_CRITICAL, "barfight_bouncer_debug_node_to_json\n" );
+    }
+    
+    if ( json_object_utils_array_add_object( json_array, json_child ) < 0 ) {
+        return errlog( ERR_CRITICAL, "json_object_utils_array_add_object\n" );
+    }
+
+    return 0;
+}
+

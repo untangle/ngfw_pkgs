@@ -36,14 +36,14 @@
 /* Default limits: lax, tight, closed */
 /* XXX CPU Loads are really high (ignored) until we have a way getting a load average with 
  * a shorter interval */
-#define _CPU_LOAD_LIMITS        40.0, 60.0, 80.0
-#define _ACTIVE_SESSION_LIMITS  512, 1024, 1536
-#define _REQUEST_LOAD_LIMITS    60, 75, 85
-#define _SESSION_LOAD_LIMITS    50, 60, 75
-#define _TCP_CHK_LOAD_LIMITS    5000, 10000, 14000
-#define _UDP_CHK_LOAD_LIMITS    3000, 6000, 10000
-#define _ICMP_CHK_LOAD_LIMITS   3000, 6000, 10000
-#define _EVIL_LOAD_LIMITS       800, 1600, 2000
+#define _CPU_LOAD_LIMITS        40.0, 60.0, 80.0, 1000.0
+#define _ACTIVE_SESSION_LIMITS  512, 1024, 1536, 100
+#define _REQUEST_LOAD_LIMITS    60, 75, 85, 200.0
+#define _SESSION_LOAD_LIMITS    50, 60, 75, 200.0
+#define _TCP_CHK_LOAD_LIMITS    5000, 10000, 14000, 5000.0
+#define _UDP_CHK_LOAD_LIMITS    3000, 6000, 10000, 5000.0
+#define _ICMP_CHK_LOAD_LIMITS   3000, 6000, 10000, 1000.0
+#define _EVIL_LOAD_LIMITS       800, 1600, 2000, 1200.0
 
 /* Use a scale from 0 to 100 */
 #define _SHIELD_REP_MAX 100
@@ -68,6 +68,8 @@
 #define _DEFAULT_LOG_ROTATE_DELAY  SEC_TO_MSEC( 10 )
 #define _DEFAULT_LOG_SIZE          12
 
+/* This is the minimum number of users per node */
+#define _DEFAULT_MIN_USERS 3
 
 static void _load_limits( struct json_object* config_json, bouncer_shield_config_t* config );
 static void _load_limit( struct json_object* limit_json, nc_shield_limit_t* limit );
@@ -136,27 +138,27 @@ int bouncer_shield_config_default( bouncer_shield_config_t* config )
         .fence = {
             .relaxed = {
                 .inheritance = .1,
-                .limited = { .prob = 0.70, .post = _SHIELD_REP_MAX * 0.65 },
-                .closed  = { .prob = 0.85, .post = _SHIELD_REP_MAX * 0.90 },
-                .error   = { .prob = 0.95, .post = _SHIELD_REP_MAX * 1.00 }
+                .limited = { .prob = 70.0, .post = _SHIELD_REP_MAX * 0.65 },
+                .closed  = { .prob = 85.0, .post = _SHIELD_REP_MAX * 0.90 },
+                .error   = { .prob = 95.0, .post = _SHIELD_REP_MAX * 1.00 }
             },
             .lax = {
                 .inheritance = .4,
-                .limited = { .prob = 0.75, .post = _SHIELD_REP_MAX * 0.50 },
-                .closed  = { .prob = 0.80, .post = _SHIELD_REP_MAX * 0.80 },
-                .error   = { .prob = 0.95, .post = _SHIELD_REP_MAX * 1.00 }
+                .limited = { .prob = 75.0, .post = _SHIELD_REP_MAX * 0.50 },
+                .closed  = { .prob = 80.0, .post = _SHIELD_REP_MAX * 0.80 },
+                .error   = { .prob = 95.0, .post = _SHIELD_REP_MAX * 1.00 }
             },
             .tight = {
                 .inheritance = .6,
-                .limited = { .prob = 0.70, .post = _SHIELD_REP_MAX * 0.15 },
-                .closed  = { .prob = 0.90, .post = _SHIELD_REP_MAX * 0.60 },
-                .error   = { .prob = 0.95, .post = _SHIELD_REP_MAX * 0.70 }
+                .limited = { .prob = 70.0, .post = _SHIELD_REP_MAX * 0.15 },
+                .closed  = { .prob = 90.0, .post = _SHIELD_REP_MAX * 0.60 },
+                .error   = { .prob = 95.0, .post = _SHIELD_REP_MAX * 0.70 }
             }, 
             .closed = {
                 .inheritance = .9,
-                .limited = { .prob = 0.90, .post = _SHIELD_REP_MAX * 0.05 },
-                .closed  = { .prob = 0.95, .post = _SHIELD_REP_MAX * 0.20 },
-                .error   = { .prob = 0.95, .post = _SHIELD_REP_MAX * 0.40 }
+                .limited = { .prob = 90.0, .post = _SHIELD_REP_MAX * 0.05 },
+                .closed  = { .prob = 95.0, .post = _SHIELD_REP_MAX * 0.20 },
+                .error   = { .prob = 95.0, .post = _SHIELD_REP_MAX * 0.40 }
             }
         },
         .rep_threshold = _REPUTATION_DEBUG_THRESHOLD,
@@ -164,7 +166,8 @@ int bouncer_shield_config_default( bouncer_shield_config_t* config )
         .bless_array = { 
             .count = 0
         },
-        
+
+        .min_users = _DEFAULT_MIN_USERS,
         
         .log_rotate_delay_ms = _DEFAULT_LOG_ROTATE_DELAY,
         .log_size = _DEFAULT_LOG_SIZE,
@@ -350,6 +353,7 @@ static void _load_limit( struct json_object* limit_json, nc_shield_limit_t* limi
     _update_double( limit_json, "lax", &limit->lax, 0 );
     _update_double( limit_json, "tight", &limit->tight, 0 );
     _update_double( limit_json, "closed", &limit->closed, 0 );
+    _update_double( limit_json, "max", &limit->max, 0 );
 
     return;
 }
@@ -413,6 +417,7 @@ static void _load_misc( struct json_object* misc_json, bouncer_shield_config_t* 
     _update_double( misc_json, "debug-threshold", &config->rep_threshold, 0 );
     _update_int( misc_json, "log-rotate-delay", &config->log_rotate_delay_ms, 0 );
     _update_int( misc_json, "log-size", &config->log_size, 0 );
+    _update_int( misc_json, "min-users", &config->min_users, 0 );
 }
 
 static int _load_user( struct json_object* user_json, barfight_shield_bless_t* user )
@@ -517,6 +522,9 @@ static int _add_limit( struct json_object* config_json, char* name, nc_shield_li
             return errlog( ERR_CRITICAL, "json_object_utils_add_double\n" );
         }
         if ( json_object_utils_add_double( limit_json, "closed", limit->closed ) < 0 ) {
+            return errlog( ERR_CRITICAL, "json_object_utils_add_double\n" );
+        }
+        if ( json_object_utils_add_double( limit_json, "max", limit->max ) < 0 ) {
             return errlog( ERR_CRITICAL, "json_object_utils_add_double\n" );
         }
 
@@ -764,7 +772,9 @@ static int _add_misc( struct json_object* config_json, bouncer_shield_config_t* 
         if ( json_object_utils_add_int( misc_json, "log-size", config->log_size ) < 0 ) {
             return errlog( ERR_CRITICAL, "json_object_utils_add_int\n" );
         }
-
+        if ( json_object_utils_add_int( misc_json, "min-users", config->min_users ) < 0 ) {
+            return errlog( ERR_CRITICAL, "json_object_utils_add_int\n" );
+        }
 
         if ( json_object_utils_add_object( config_json, "misc", misc_json ) < 0 ) {
             /* on failure it has already been scrubbed. */

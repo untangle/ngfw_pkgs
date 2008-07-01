@@ -37,7 +37,7 @@ mvutil_source=libmvutil/src/debug.c libmvutil/src/errlog.c libmvutil/src/hash.c 
 ## Shield source
 bf_source=src/utils/sched.c src/utils/lru.c src/json/server.c src/json/object_utils.c \
 	src/bouncer/shield.c src/bouncer/mode.c src/bouncer/load.c src/bouncer/reader.c \
-	src/bouncer/config.c src/bouncer/logs.c src/trie/item.c src/trie/base.c \
+	src/bouncer/config.c src/bouncer/logs.c src/bouncer/debug.c src/trie/item.c src/trie/base.c \
 	src/trie/root.c src/trie/level.c src/trie/trie.c src/net/packet.c src/net/nfqueue.c \
 	src/functions.c src/main.c ${mvutil_source}
 
