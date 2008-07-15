@@ -1,0 +1,13 @@
+Source: untangle-apache2-config
+Section: admin
+Priority: optional
+Maintainer: Aaron Read <amread@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.7.2
+
+Package: untangle-apache2-config
+Architecture: all
+Depends: apache2, libapache2-mod-jk
+Description: The Untangle Apache2 config
+ The Untangle Apache2 config.
+
