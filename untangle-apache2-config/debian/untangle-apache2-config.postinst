@@ -2,4 +2,8 @@
 
 sed -e 's/NO_START=1/NO_START=0/' -i /etc/default/apache2
 
-/etc/init.d/apache2 force-reload
+a2enmod jk
+a2dissite default
+a2ensite uvm
+
+/etc/init.d/apache2 reload
