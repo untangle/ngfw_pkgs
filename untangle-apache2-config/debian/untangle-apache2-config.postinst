@@ -2,8 +2,13 @@
 
 sed -e 's/NO_START=1/NO_START=0/' -i /etc/default/apache2
 
-a2enmod jk
-a2dissite default
-a2ensite uvm
+if [ ! -e /etc/apache2/ssl/apache.pem ]; then
+    /usr/sbin/apache2-ssl-certificate -batch -subj "/CN=$(hostname)"
+fi
+
+/usr/sbin/a2enmod jk
+/usr/sbin/a2enmod ssl
+/usr/sbin/a2dissite default
+/usr/sbin/a2ensite uvm
 
 /etc/init.d/apache2 reload
