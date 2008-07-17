@@ -32,7 +32,7 @@ untangle-snort-rules (0-13) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@localhost>  Tue, 13 Mar 2007 15:55:27 -0700
+ -- John Irwin <jdi@bebe.metavize.com>  Tue, 13 Mar 2007 15:55:27 -0700
 
 untangle-snort-rules (0-12) stable; urgency=low
 

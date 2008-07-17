@@ -1,13 +1,28 @@
-Source: untangle-keyring
-Section: admin
-Priority: standard
-Maintainer: Sebastien Delafond <seb@untangle.com>
-Build-Depends: debhelper (>> 3.0.0)
-Standards-Version: 3.7.2
+Copyright (c) 2003-2007 Untangle, Inc.
 
-Package: untangle-keyring
-Architecture: all
-Depends: gnupg (>= 1.0.6-4)
-Description: GnuPG archive keys of the Untangle archive
- Untangle digitally signs its Release files. This package
- contains the archive keys used for that.
+Untangle licenses the Untangle components of the Untangle Software under
+version 2 of the GNU General Public License (GPL). Certain third-party software
+components distributed with the Untangle Software are licensed under other free
+or open source license terms. Many of the Untangle components and data are also
+licensed with the GNU Classpath exception, which allows linking of independent
+non-GPL modules with the Untangle software. The GNU Classpath exception applies
+to source files in which Untangle has placed a notice stating the exception.
+See the source code files for more details.
+
+-----
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License, version 2,
+as published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful, but
+AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+NONINFRINGEMENT.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+
+On Debian-based systems, the full GPL license can be found under
+/usr/share/common-licenses.

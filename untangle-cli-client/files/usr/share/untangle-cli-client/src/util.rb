@@ -1,4 +1,4 @@
-#!/usr/local/bin/ruby
+#!/usr/bin/ruby
 #
 # $HeadURL:$
 # Copyright (c) 2003-2007 Untangle, Inc. 

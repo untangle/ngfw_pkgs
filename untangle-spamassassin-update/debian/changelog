@@ -206,7 +206,7 @@ untangle-spamassassin-update (0-2) stable; urgency=low
 
   * auto build
 
- -- Dirk Morris <dmorris@butters>  Tue,  7 Jun 2005 13:30:06 -0700
+ -- Dirk Morris <dmorris@untangle.com>  Tue,  7 Jun 2005 13:30:06 -0700
 
 untangle-spamassassin-update (0-1) stable; urgency=low
 

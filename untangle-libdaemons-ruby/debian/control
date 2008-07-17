@@ -2,9 +2,8 @@ Source: untangle-libdaemons-ruby
 Section: interpreters
 Priority: optional
 Maintainer: Robert Scott <rbscott@untangle.com>
-Uploaders: Debian Ruby Extras Maintainers <pkg-ruby-extras-maintainers@lists.alioth.debian.org>, Paul van Tilburg <paulvt@debian.org>
 Build-Depends: debhelper (>= 4.2), cdbs, ruby-pkg-tools (>= 0.8), ruby, ruby1.8-dev
-Standards-Version: 3.7.2
+Standards-Version: 3.8.0
 
 Package: untangle-libdaemons-ruby
 Architecture: all

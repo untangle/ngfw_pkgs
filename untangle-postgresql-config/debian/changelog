@@ -224,7 +224,7 @@ untangle-postgresql-config (0-13) stable; urgency=low
 
   * auto build
 
- -- Dirk Morris <dmorris@butters>  Fri,  9 Sep 2005 11:05:01 -0700
+ -- Dirk Morris <dmorris@untangle.com>  Fri,  9 Sep 2005 11:05:01 -0700
 
 untangle-postgresql-config (0-12) stable; urgency=low
 
