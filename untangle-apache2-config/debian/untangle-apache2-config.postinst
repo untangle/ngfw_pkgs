@@ -3,7 +3,15 @@
 sed -e 's/NO_START=1/NO_START=0/' -i /etc/default/apache2
 
 if [ ! -e /etc/apache2/ssl/apache.pem ]; then
-    /usr/sbin/apache2-ssl-certificate -batch -subj "/CN=$(hostname)"
+    export RANDFILE=/dev/random
+    openssl req -batch -subj "/CN=$(hostname)" \
+        -config /usr/share/apache2/ssleay.cnf \
+        -new -x509 -nodes -out /etc/apache2/ssl/apache.pem \
+        -keyout /etc/apache2/ssl/apache.pem
+    chmod 600 /etc/apache2/ssl/apache.pem
+    ln -sf /etc/apache2/ssl/apache.pem \
+        /etc/apache2/ssl/`/usr/bin/openssl \
+        x509 -noout -hash < /etc/apache2/ssl/apache.pem`.0
 fi
 
 if ! grep "Listen 443" /etc/apache2/ports.conf >/dev/null; then
