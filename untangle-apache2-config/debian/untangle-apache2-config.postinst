@@ -6,6 +6,14 @@ if [ ! -e /etc/apache2/ssl/apache.pem ]; then
     /usr/sbin/apache2-ssl-certificate -batch -subj "/CN=$(hostname)"
 fi
 
+if ! grep "Listen 443" /etc/apache2/ports.conf >/dev/null; then
+    echo "Listen 443" >>/etc/apache2/ports.conf
+fi
+
+if ! grep "Listen 64157" /etc/apache2/ports.conf >/dev/null; then
+    echo "Listen 64157" >>/etc/apache2/ports.conf
+fi
+
 /usr/sbin/a2enmod jk
 /usr/sbin/a2enmod ssl
 /usr/sbin/a2dissite default
