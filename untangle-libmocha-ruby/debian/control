@@ -2,7 +2,7 @@ Source: untangle-libmocha-ruby
 Section: interpreters
 Priority: optional
 Maintainer: Robert Scott <rbscott@untangle.com>
-Uploaders: buildbot <buildbot@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
 Build-Depends: cdbs, debhelper (>= 4.2), ruby-pkg-tools
 Standards-Version: 3.8.0
 
