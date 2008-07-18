@@ -1,17 +1,19 @@
 #! /bin/bash
 
 case "$1" in
-    start)
-        if [ ! -z "`cat /proc/cmdline | grep ut-restore`" ] ; then
-          echo "Starting Edgeguard Restore."
-          /usr/share/untangle/bin/ut-restore reboot
-        fi
-        ;;
-
-    *)
-        echo "Usage: /etc/init.d/untangle-restore-tools {start}"
-        exit
-        ;;
+  start)
+    if [ ! -z "`cat /proc/cmdline | grep ut-restore`" ] ; then
+      echo "Starting Edgeguard Restore."
+      /usr/share/untangle/bin/ut-restore reboot
+    fi
+    ;;
+  stop|restart|force-reload)
+    echo "Can only start a restore."
+    ;;
+  *)
+    echo "Usage: /etc/init.d/untangle-restore-tools {start}"
+    exit
+    ;;
 esac
 
 exit 0

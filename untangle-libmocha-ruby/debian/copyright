@@ -1,21 +1,28 @@
-This package was debianized by Antonio Terceiro <terceiro@softwarelivre.org> on
-Tue, 24 Jul 2008 15:27:45 -0300.
+Copyright (c) 2003-2008 Untangle, Inc.
 
-It was downloaded from http://mocha.rubyforge.org/
+Untangle licenses the Untangle components of the Untangle Software under
+version 2 of the GNU General Public License (GPL). Certain third-party software
+components distributed with the Untangle Software are licensed under other free
+or open source license terms. Many of the Untangle components and data are also
+licensed with the GNU Classpath exception, which allows linking of independent
+non-GPL modules with the Untangle software. The GNU Classpath exception applies
+to source files in which Untangle has placed a notice stating the exception.
+See the source code files for more details.
 
-Upstream Author: James Mead <jamesmead@reevoo.com> and others.
+-----
 
-Copyright (c) 2006 Revieworld Ltd.
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License, version 2,
+as published by the Free Software Foundation.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+This program is distributed in the hope that it will be useful, but
+AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+NONINFRINGEMENT.  See the GNU General Public License for more details.
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-setup.rb is Copyright (c) 2000-2004 Minero Aoki and is distirbuted under the
-terms of the GNU LGPL, Lesser General Public License version 2.1. See
-`/usr/share/common-licenses/LGPL-2.1'.
-
-The Debian packaging is (C) 2008, Antonio Terceiro <terceiro@softwarelivre.org>
-and is licensed under the GPL, see `/usr/share/common-licenses/GPL'.
+On Debian-based systems, the full GPL license can be found under
+/usr/share/common-licenses.

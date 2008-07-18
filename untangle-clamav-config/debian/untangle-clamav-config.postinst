@@ -35,6 +35,5 @@ rm -rf /var/lib/clamav/*
 
 sleep 2
 
-# Make executable and then fetch unofficial clam phishing signatures.
-chmod +x /etc/cron.hourly/update_sanesecurity.sh
-nohup /etc/cron.hourly/update_sanesecurity.sh --sleep 1 >/dev/null 2>&1 &
+# fetch unofficial clam phishing signatures.
+nohup /etc/cron.hourly/update_sanesecurity --sleep 1 >/dev/null 2>&1 &

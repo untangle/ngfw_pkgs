@@ -72,13 +72,13 @@ binary-indep: build install
 binary-arch: build install
 	dh_testdir -a
 	dh_testroot -a
-	dh_installdocs -puntangle-libnetfilter-queue1 debian/copyright
+	dh_installdocs -a
 	# FIXME: WDF is that ???
 	ln -sf libnetfilter-queue1 debian/untangle-libnetfilter-queue-dev/usr/share/doc/libnetfilter-queue-dev
-	dh_installchangelogs -puntangle-libnetfilter-queue1
+	dh_installchangelogs -a
 	dh_install -a --sourcedir=debian/tmp
 	dh_link -a
-	dh_strip -a --dbg-package=untangle-libnetfilter-queue1-dbg
+	dh_strip -a
 	dh_compress -a
 	dh_fixperms -a
 	dh_makeshlibs -a -V 'libnetfilter-queue1 (>= 0.0.15)'

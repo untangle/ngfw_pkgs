@@ -2,6 +2,7 @@ Source: untangle-client-local
 Section: admin
 Priority: optional
 Maintainer: John Irwin <jdi@untangle.com>
+Uploaders: buildbot <buildbot@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.8.0
 
@@ -10,4 +11,5 @@ Architecture: all
 Depends: untangle-client, xfce4 | x-window-manager, x11-common | xfree86-common, xserver-xorg | xserver-xfree86, xbase-clients, xutils, xterm | x-terminal-emulator, slim | gdm | untangle-fakekdm | x-display-manager
 Recommends: xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable
 Description: The Untangle client, local on appliance version
- Contains dependencies needed for a basic desktop.  Untangle-kiosk provides the full kiosk.
+ Contains dependencies needed for a basic desktop (the untangle-kiosk
+ package provides the full kiosk).

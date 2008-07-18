@@ -1,4 +1,4 @@
-#!/usr/bin/jruby
+#! /usr/bin/jruby1.0
 #
 # $HeadURL:$
 # Copyright (c) 2003-2007 Untangle, Inc. 

@@ -2,6 +2,7 @@ Source: untangle-linux-config
 Section: admin
 Priority: important
 Maintainer: John Irwin <jdi@untangle.com>
+Uploaders: buildbot <buildbot@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.8.0
 
@@ -12,4 +13,5 @@ Replaces: untangle-linux-2.6.22-config, untangle-linux-2.6.16-ck11-config
 Provides: untangle-linux-2.6.22-config, untangle-linux-2.6.16-ck11-config
 Depends: linux-untangle (>= 2.6.22.15) | linux-virtual-untangle (>= 2.6.22.15), untangle-bootsplash, grub, initramfs-tools, udev, e2fsprogs (>= 1.37), bash (>= 3.1)
 Description: The Untangle kernel config
- The Untangle Linux kernel config package. Provides bootsplash support and grub auto configuration
+ The Untangle Linux kernel config package. Provides
+ bootsplash support and grub auto-configuration.
