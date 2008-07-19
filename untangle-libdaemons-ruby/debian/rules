@@ -56,7 +56,6 @@ install: build
 
 	# Add here commands to install the package into debian/untangle-libdaemons-ruby.
 	ruby1.8 setup.rb install --prefix=$(CURDIR)/debian/untangle-libdaemons-ruby1.8
-	find $(CURDIR)/debian/untangle-libdaemons-ruby1.8 -name .svn | xargs rm -fr
 
 # Build architecture-independent files here.
 binary-arch: build install
@@ -69,6 +68,8 @@ binary-indep: build install
 	dh_installchangelogs
 	dh_installdocs
 	dh_installexamples
+	find $(CURDIR)/debian/untangle-libdaemons-ruby -name .svn | xargs rm -fr
+	find $(CURDIR)/debian/untangle-libdaemons-ruby1.8 -name .svn | xargs rm -fr
 #	dh_install
 #	dh_installmenu
 #	dh_installdebconf	
