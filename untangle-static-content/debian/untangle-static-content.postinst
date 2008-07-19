@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/usr/sbin/a2ensite untangle-static-content
