@@ -33,8 +33,6 @@ build: configure
 	for i in `cat debian/untangle-kiosk.dirs` ; do mkdir -p debian/tmp/$$i ; done
 	cp -r ./files/* ./debian/tmp/
 	find ./debian/tmp -name "\.svn" | xargs rm -rf
-	find ./debian/tmp/root -type f | xargs chmod 644
-	find ./debian/tmp/root -type d | xargs chmod 750
 
 clean:
 	dh_testdir
@@ -63,7 +61,7 @@ binary-indep: build
 #	dh_undocumented   
 	dh_installchangelogs    
 #	dh_strip  
-	dh_link   
+#	dh_link   
 	dh_compress   
 #	dh_fixperms   
 	dh_installdeb  

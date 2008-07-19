@@ -1,5 +1,3 @@
-#! /bin/bash
-
 # screensaver is off by default
 xset s off
 xset -dpms
