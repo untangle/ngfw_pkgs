@@ -1,0 +1,15 @@
+Source: untangle-gateway
+Section: admin
+Priority: optional
+Maintainer: John Irwin <jdi@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.7.2
+
+Package: untangle-gateway
+Architecture: all
+Provides: untangle-appliance-int
+Conflicts: untangle-appliance-int
+Replaces: untangle-appliance-int
+Depends: untangle-vm, untangle-gateway-light, untangle-kiosk, untangle-ntp-config, untangle-client-windows-jre, untangle-bootsplash, atop, untangle-restore-tools, untangle-exim4-config, untangle-linux-config, untangle-system-config
+Description: The Untangle appliance internal
+ The Untangle appliance internal-to-untangle mode.
