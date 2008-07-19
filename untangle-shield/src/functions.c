@@ -114,7 +114,7 @@ int barfight_functions_load_config( bouncer_shield_config_t* config )
 
 static struct json_object* _hello_world( struct json_object* request )
 {
-    struct json_object* response = json_server_build_response( STATUS_OK, 0, "Hello from barfight" );
+    struct json_object* response = NULL;
     if (( response = json_server_build_response( STATUS_OK, 0, "Hello from barfight" )) == NULL ) {
         return errlog_null( ERR_CRITICAL, "json_server_build_response\n" );
     }
