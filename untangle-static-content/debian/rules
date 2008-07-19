@@ -30,8 +30,8 @@ build: configure
 	rm -rf ./debian/tmp
 	mkdir -p ./debian/tmp
 	dh_installdirs -A -v
-	cp -r ./files/* ./debian/tmp/
-	find ./debian/tmp -name ".svn" | xargs rm -rf
+	cp -r ./files/* ./debian/untangle-static-content
+	find ./debian/untangle-static-content -name ".svn" | xargs rm -rf
 
 clean:
 	dh_testdir

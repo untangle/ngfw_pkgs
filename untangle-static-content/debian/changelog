@@ -1,6 +1,6 @@
-untangle-gateway (0-0) stable; urgency=low
+untangle-static-content (0-0) stable; urgency=low
 
-  * auto build
+  * initial release.
 
- -- John Irwin <jdi@untangle.com>  Thu, 21 June 2007 17:35:53 -0700
+ -- Aaron Read <amread@untangle.com>  Fri, 18 Jul 2008 20:27:26 -0400
 
