@@ -1,3 +1,9 @@
+untangle-shield (5.4.0~svn20080721r17642trunk-1sarge) chaos; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@untangle.com>  Mon, 21 Jul 2008 14:27:23 -0700
+
 untangle-shield (0.1.0-1) unstable; urgency=low
 
   * initial version
