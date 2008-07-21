@@ -1,5 +1,13 @@
 #! /bin/bash
 
+ourInit() {
+if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
+  invoke-rc.d $1 $2
+else
+  /etc/init.d/$1 $2
+fi
+}
+
 CLAMAV_CONF_FILE=/etc/clamav/clamd.conf
 
 setOption() {
@@ -23,15 +31,15 @@ setOption MaxScanSize 100M
 setOption StreamMaxLength 100M
 
 # reloading daemons
-/etc/init.d/clamav-freshclam stop
-/etc/init.d/clamav-daemon stop
+ourInit clamav-freshclam stop
+ourInit clamav-daemon stop
 
 # Upstream bug causes duplicate signatures when upgrading.  To work around, we remove
 # the existing signatures.  Freshclam will restore them quickly.
 rm -rf /var/lib/clamav/*
 
-/etc/init.d/clamav-freshclam start
-/etc/init.d/clamav-daemon start
+ourInit clamav-freshclam start
+ourInit clamav-daemon start
 
 sleep 2
 

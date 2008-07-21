@@ -1,12 +1,20 @@
 #! /bin/bash
 
+ourInit() {
+if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
+  invoke-rc.d $1 $2
+else
+  /etc/init.d/$1 $2
+fi
+}
+
 DEFAULT_FILE="/etc/default/snmpd"
 
 # Only for first time installation.
 # Second test is because this package is new in 5.1.
 if [ -z "$2" ] && ! grep -q "UDP" $DEFAULT_FILE ; then
    # Disable by default (enabled by setting snmp settings in UI)
-   /etc/init.d/snmpd stop
+   ourInit snmpd stop
    sed -i "s/^SNMPDRUN=.*/SNMPDRUN=no/" $DEFAULT_FILE
    sed -i "s/^TRAPDRUN=.*/TRAPDRUN=no/" $DEFAULT_FILE
 fi

@@ -1,5 +1,13 @@
 #! /bin/bash
 
+ourInit() {
+if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
+  invoke-rc.d $1 $2
+else
+  /etc/init.d/$1 $2
+fi
+}
+
 SPAM_USER=spamc
 SPAM_GROUP=spamc
 GPG_KEYS_DIR=/usr/share/untangle-spamassassin-update
@@ -59,6 +67,6 @@ fi
 /usr/share/untangle-spamassassin-update/sa-fetch-keys.sh
 
 # restart spamassassin
-/etc/init.d/spamassassin restart &> /dev/null &
+ourInit spamassassin restart &> /dev/null &
 
 exit 0

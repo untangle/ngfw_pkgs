@@ -1,8 +1,16 @@
 #!/bin/sh
 
+ourInit() {
+if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
+  invoke-rc.d $1 $2
+else
+  /etc/init.d/$1 $2
+fi
+}
+
 # One of the main purposes of this package is to reboot the Untangle Server when a new
 # kernel is installed.  Thus this package should only be revved when you want a reboot.
-if [ -x /etc/init.d/untangle-vm ]; then
+if [ -x ourInit untangle-vm ]; then
     uvm-restart reboot
 fi
 

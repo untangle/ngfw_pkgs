@@ -1,5 +1,13 @@
 #!/bin/sh
 
+ourInit() {
+if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
+  invoke-rc.d $1 $2
+else
+  /etc/init.d/$1 $2
+fi
+}
+
 SHIELD_CONFIG_FILE="/etc/shield.conf"
 SHIELD_DEFAULT_CONFIG="/usr/share/untangle-shield/sample-config/default.js"
 
@@ -8,9 +16,9 @@ cp ${SHIELD_DEFAULT_CONFIG} ${SHIELD_CONFIG_FILE}
 
 
 # untangle-shield is started by the node.
-#if [ -x "/etc/init.d/untangle-shield" ]; then
+#if [ -x "ourInit untangle-shield" ]; then
 #    update-rc.d untangle-shield defaults >/dev/null
-#    /etc/init.d/untangle-shield start || true
+#    ourInit untangle-shield start || true
 #fi
 
 exit 0

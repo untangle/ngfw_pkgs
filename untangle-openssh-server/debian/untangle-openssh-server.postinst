@@ -1,5 +1,13 @@
 #!/bin/bash
 
+ourInit() {
+if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
+  invoke-rc.d $1 $2
+else
+  /etc/init.d/$1 $2
+fi
+}
+
 SERVICE=untangle-ssh
 
 create_key() {
@@ -22,9 +30,9 @@ create_keys() {
 }
 
 setup_init() {
-  if [ -x /etc/init.d/$SERVICE ]; then
+  if [ -x ourInit $SERVICE ]; then
     update-rc.d $SERVICE start 16 2 3 4 5 . stop 84 1 . >/dev/null
-    /etc/init.d/$SERVICE restart
+    ourInit $SERVICE restart
   fi
 }
 

@@ -1,8 +1,16 @@
 #!/bin/sh
 
-if [ -x "/etc/init.d/untangle-net-alpaca-iptables" ]; then
+ourInit() {
+if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
+  invoke-rc.d $1 $2
+else
+  /etc/init.d/$1 $2
+fi
+}
+
+if [ -x "ourInit untangle-net-alpaca-iptables" ]; then
     update-rc.d untangle-net-alpaca-iptables defaults >/dev/null
-    /etc/init.d/untangle-net-alpaca-iptables restart || exit 0
+    ourInit untangle-net-alpaca-iptables restart || exit 0
 fi
 
 exit 0

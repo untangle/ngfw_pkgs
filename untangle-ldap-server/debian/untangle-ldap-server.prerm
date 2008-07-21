@@ -1,11 +1,19 @@
 #! /bin/bash
 
+ourInit() {
+if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
+  invoke-rc.d $1 $2
+else
+  /etc/init.d/$1 $2
+fi
+}
+
 SERVICE=untangle-slapd
 
 case "$1" in
     remove|deconfigure)
-	if [ -x /etc/init.d/$SERVICE ]; then
-	  /etc/init.d/$SERVICE stop
+	if [ -x ourInit $SERVICE ]; then
+	  ourInit $SERVICE stop
 	fi
 	;;
 esac
