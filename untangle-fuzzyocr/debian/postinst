@@ -17,6 +17,6 @@ cp -p $FDIR/FuzzyOcr.pm /usr/share/perl5/Mail/SpamAssassin/Plugin/
 # setting of pre314 var moved to spamc-mv.postinst
 
 # reload SA
-/etc/init.d/spamassassin reload
+ourInit spamassassin reload
 
 exit 0
