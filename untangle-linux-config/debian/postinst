@@ -10,7 +10,7 @@ fi
 
 # One of the main purposes of this package is to reboot the Untangle Server when a new
 # kernel is installed.  Thus this package should only be revved when you want a reboot.
-if [ -x ourInit untangle-vm ]; then
+if [ -x /etc/init.d/untangle-vm ]; then
     uvm-restart reboot
 fi
 

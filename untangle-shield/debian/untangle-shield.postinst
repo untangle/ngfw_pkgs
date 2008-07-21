@@ -16,7 +16,7 @@ cp ${SHIELD_DEFAULT_CONFIG} ${SHIELD_CONFIG_FILE}
 
 
 # untangle-shield is started by the node.
-#if [ -x "ourInit untangle-shield" ]; then
+#if [ -x "/etc/init.d/untangle-shield" ]; then
 #    update-rc.d untangle-shield defaults >/dev/null
 #    ourInit untangle-shield start || true
 #fi

@@ -20,7 +20,7 @@ grep -q alpaca /etc/group || addgroup alpaca
 ## Make the dnsmasq script executable.
 [ -f "/etc/untangle-net-alpaca/scripts/dnsmasq" ] && chmod +x /etc/untangle-net-alpaca/scripts/dnsmasq
 
-if [ -x "ourInit untangle-net-alpaca" ]; then
+if [ -x "/etc/init.d/untangle-net-alpaca" ]; then
     update-rc.d untangle-net-alpaca defaults >/dev/null
     ourInit untangle-net-alpaca restart >> ${LOG_FILE} 2>&1 || exit 0
 fi

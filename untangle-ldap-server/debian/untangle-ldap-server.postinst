@@ -34,8 +34,8 @@ else
   apparmorconfig=/etc/apparmor.d/usr.sbin.slapd
   if [ -f $apparmorconfig ] && ! grep -q untangle-ldap $apparmorconfig; then
       cp ${UNTANGLE_SLAPD_CONFIG_DIR}/usr.sbin.slapd $apparmorconfig
-      if [ -x ourInit apparmor ]; then
-	  ourInit apparmor reload
+      if [ -x /etc/init.d/apparmor ]; then
+	  /etc/init.d/apparmor reload
       fi
   fi
 fi

@@ -8,7 +8,7 @@ else
 fi
 }
 
-if [ -x "ourInit untangle-net-alpaca-iptables" ]; then
+if [ -x "/etc/init.d/untangle-net-alpaca-iptables" ]; then
     update-rc.d untangle-net-alpaca-iptables defaults >/dev/null
     ourInit untangle-net-alpaca-iptables restart || exit 0
 fi
