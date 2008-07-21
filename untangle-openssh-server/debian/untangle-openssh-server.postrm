@@ -9,7 +9,7 @@ case $1 in
     # hasn't dropped some other files in there. Conffiles have
     # already been removed at this point.
     rm -f /etc/init.d/$SERVICE
-    update-rc.d -f $SERVICE remove >/dev/null
+    update-rc.d $SERVICE remove >/dev/null
     rm -f /etc/$SERVICE/ssh_host_rsa_key /etc/$SERVICE/ssh_host_rsa_key.pub
     rm -f /etc/$SERVICE/ssh_host_dsa_key /etc/$SERVICE/ssh_host_dsa_key.pub
     rm -f /etc/$SERVICE/sshd_config
