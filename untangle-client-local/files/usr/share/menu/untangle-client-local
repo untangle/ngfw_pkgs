@@ -3,5 +3,5 @@
 	section="Apps/Net"\
 	title="Untangle Gateway Adminstration"\
 	command="/usr/bin/untangle-client"\
-	icon="/usr/share/pixmaps/untangle-client.png"\
+	icon="/usr/share/pixmaps/untangle-client.xpm"\
 	hints="Network"
