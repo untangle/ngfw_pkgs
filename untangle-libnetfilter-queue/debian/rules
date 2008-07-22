@@ -36,7 +36,7 @@ clean:: unpatch
 	dh_testroot
 	rm -f build-stamp install*-stamp
 
-	-$(MAKE) distclean
+	[ ! -f Makefile ] || $(MAKE) distclean
 
 	dh_clean
 
@@ -81,7 +81,7 @@ binary-arch: build install
 	dh_strip -a
 	dh_compress -a
 	dh_fixperms -a
-	dh_makeshlibs -a -V 'libnetfilter-queue1 (>= 0.0.15)'
+	dh_makeshlibs -a -V 'untangle-libnetfilter-queue1 (>= 0.0.15)'
 	dh_installdeb -a
 	dh_shlibdeps -a
 	dh_gencontrol -a

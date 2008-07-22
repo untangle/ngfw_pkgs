@@ -34,7 +34,7 @@ clean:
 	dh_testroot
 	rm -f build-stamp install*-stamp
 
-	-$(MAKE) distclean
+	[ ! -f Makefile ] || $(MAKE) distclean
 
 	dh_clean
 
@@ -77,7 +77,7 @@ binary-arch: build install
 	dh_strip -a
 	dh_compress -a
 	dh_fixperms -a
-	dh_makeshlibs -a -V 'libnfnetlink1 (>= 0.0.30)'
+	dh_makeshlibs -a -V 'untangle-libnfnetlink1 (>= 0.0.30)'
 	dh_installdeb -a
 	dh_shlibdeps -a
 	dh_gencontrol -a

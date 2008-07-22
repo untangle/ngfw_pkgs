@@ -19,7 +19,7 @@ Description: Netfilter netlink library
 Package: untangle-libnfnetlink-dev
 Architecture: i386 amd64
 Section: libdevel
-Depends: untangle-libnfnetlink0 (= ${Source-Version})
+Depends: untangle-libnfnetlink0 (= ${source:Version})
 Conflicts: libnfnetlink-dev
 Provides: libnfnetlink-dev
 Replaces: libnfnetlink-dev

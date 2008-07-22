@@ -1,8 +1,10 @@
 #! /bin/bash /usr/share/dpatch/dpatch-run
-## 20_conf-file.dpatch by Sebastien Delafond <seb@debian.org>
+## 20_conf-file.dpatch by Sebastien Delafond <seb@untangle.com>
 ##
 ## All lines beginning with `## DP:' are a description of the patch.
-## DP: No description.
+## DP: untangle-specific location for the plugin, log, words and
+## DP: digest files.
+## DP: Also enable image hashing by default.
 
 @DPATCH@
 diff -urNad fuzzyocr-mv~/FuzzyOcr.cf fuzzyocr-mv/FuzzyOcr.cf
