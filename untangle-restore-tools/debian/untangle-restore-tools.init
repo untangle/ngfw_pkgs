@@ -10,7 +10,7 @@
 
 . /lib/lsb/init-functions
 
-DESC="Service for starting an untangle shield"
+DESC="Service for restoring an Untangle server's settings"
 
 case "$1" in
   start)
