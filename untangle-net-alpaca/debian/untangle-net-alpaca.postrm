@@ -5,7 +5,7 @@ SERVICE=untangle-net-alpaca
 case $1 in
   purge)
     rm -f /etc/init.d/$SERVICE
-    update-rc.d $SERVICE remove >/dev/null
+    update-rc.d untangle-net-alpaca remove >/dev/null # lintian...
     ;;
 esac
 
