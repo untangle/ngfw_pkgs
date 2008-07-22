@@ -19,9 +19,7 @@ Description: Netfilter netlink-conntrack library
 Package: untangle-libnetfilter-conntrack-dev
 Section: libdevel
 Architecture: i386 amd64
-Depends: libc6 (>= 2.3.2.ds1-21), untangle-libnfnetlink0 (>= 0.0.30), pkg-config,
- untangle-libnetfilter-conntrack1 (= ${source:Version}),
- untangle-libnfnetlink-dev (>= 0.0.30)
+Depends: libc6 (>= 2.3.2.ds1-21), untangle-libnfnetlink0 (>= 0.0.30), pkg-config, untangle-libnetfilter-conntrack1 (>= 0.0.81), untangle-libnfnetlink-dev (>= 0.0.30)
 Description: Development files for untangle-libnetfilter-conntrack1
  libnetfilter_conntrack is a userspace library providing a programming
  interface (API) to the in-kernel connection tracking state table.

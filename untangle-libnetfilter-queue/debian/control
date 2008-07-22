@@ -18,7 +18,7 @@ Description: Netfilter netfilter-queue library
 Package: untangle-libnetfilter-queue-dev
 Architecture: i386 amd64
 Section: libdevel
-Depends: untangle-libnetfilter-queue0 (= ${source:Version}), untangle-libnfnetlink-dev (>= 1:0.0.30)
+Depends: untangle-libnetfilter-queue0 (>= 1:0.0.15), untangle-libnfnetlink-dev (>= 1:0.0.30)
 Conflicts: libnetfilter-queue-dev
 Provides: libnetfilter-queue-dev
 Replaces: libnetfilter-queue-dev
