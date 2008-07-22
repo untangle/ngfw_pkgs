@@ -53,7 +53,7 @@ install-stamp: build-stamp
 binary-indep: build install
 	dh_testdir -i
 	dh_testroot -i
-	dh_installdocs -i -A README debian/copyright
+	dh_installdocs -n -i -A README debian/copyright
 	dh_installchangelogs -i debian/no-upstream-changelog
 	dh_install -i --sourcedir=debian/tmp
 	dh_link -i
@@ -70,7 +70,7 @@ binary-indep: build install
 binary-arch: build install
 	dh_testdir -a
 	dh_testroot -a
-	dh_installdocs -puntangle-libnfnetlink-dev -puntangle-libnfnetlink0 debian/copyright
+	dh_installdocs -n -puntangle-libnfnetlink-dev -puntangle-libnfnetlink0 debian/copyright
 	dh_installchangelogs -puntangle-libnfnetlink-dev -puntangle-libnfnetlink0
 	dh_install -a --sourcedir=debian/tmp
 	dh_link -a

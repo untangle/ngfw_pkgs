@@ -43,7 +43,7 @@ binary-indep: build
 	dh_movefiles  
 #	dh_installdebconf   
 #	dh_shlibdeps   # FIXME - had to remove
-	dh_installdocs   
+	dh_installdocs -n   
 #	dh_installexamples   
 #	dh_installmenu   
 #	dh_installlogrotate   

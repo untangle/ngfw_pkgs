@@ -34,7 +34,7 @@ install-stamp: build-stamp
 binary-indep: install
 	dh_testdir
 	dh_testroot
-	dh_installdocs
+	dh_installdocs -n
 	dh_installchangelogs
 	dh_compress
 	dh_fixperms
