@@ -1,5 +1,12 @@
-#!/bin/sh
+#!/bin/bash
 
-#DEBHELPER#
+SERVICE=untangle-net-alpaca-iptables
+
+case $1 in
+  purge)
+    rm -f /etc/init.d/$SERVICE
+    update-rc.d $SERVICE remove >/dev/null
+    ;;
+esac
 
 exit 0
