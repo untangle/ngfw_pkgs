@@ -15,6 +15,13 @@ EOF
 EOF
 fi
 
+if [ ! -e /etc/apache2/untangle-homepage ]; then
+    cat >/etc/apache2/untangle-homepage <<EOF
+RedirectMatch 302 /index.html /webui
+EOF
+EOF
+fi
+
 if [ ! -e /etc/apache2/ssl/apache.pem ]; then
     mkdir -p /etc/apache2/ssl
     export RANDFILE=/dev/random
