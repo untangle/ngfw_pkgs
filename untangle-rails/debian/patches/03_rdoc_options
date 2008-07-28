@@ -1,0 +1,52 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+##
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fixes rdoc option passing in some Rakefiles
+
+@DPATCH@
+
+Index: trunk/actionmailer/Rakefile
+===================================================================
+--- trunk/actionmailer/Rakefile (revision 3543)
++++ trunk/actionmailer/Rakefile (revision 3656)
+@@ -34,5 +34,5 @@
+   rdoc.rdoc_dir = 'doc'
+   rdoc.title    = "Action Mailer -- Easy email delivery and testing"
+-  rdoc.options << '--line-numbers --inline-source --main README --accessor adv_attr_accessor=M'
++  rdoc.options << '--line-numbers' << '--inline-source' << '--main README' << '--accessor adv_attr_accessor=M'
+   rdoc.template = "#{ENV['template']}.rb" if ENV['template']
+   rdoc.rdoc_files.include('README', 'CHANGELOG')
+Index: trunk/actionpack/Rakefile
+===================================================================
+--- trunk/actionpack/Rakefile (revision 3553)
++++ trunk/actionpack/Rakefile (revision 3656)
+@@ -45,5 +45,5 @@
+   rdoc.rdoc_dir = 'doc'
+   rdoc.title    = "Action Pack -- On rails from request to response"
+-  rdoc.options << '--line-numbers --inline-source --main README'
++  rdoc.options << '--line-numbers' << '--inline-source' << '--main README'
+   rdoc.template = "#{ENV['template']}.rb" if ENV['template']
+   rdoc.rdoc_files.include('README', 'RUNNING_UNIT_TESTS', 'CHANGELOG')
+Index: trunk/actionwebservice/Rakefile
+===================================================================
+--- trunk/actionwebservice/Rakefile (revision 3543)
++++ trunk/actionwebservice/Rakefile (revision 3656)
+@@ -36,5 +36,5 @@
+   rdoc.rdoc_dir = 'doc'
+   rdoc.title    = "Action Web Service -- Web services for Action Pack"
+-  rdoc.options << '--line-numbers --inline-source --main README --accessor class_inheritable_option=RW'
++  rdoc.options << '--line-numbers' << '--inline-source' << '--main README' << '--accessor class_inheritable_option=RW'
+   rdoc.template = "#{ENV['template']}.rb" if ENV['template']
+   rdoc.rdoc_files.include('README')
+Index: trunk/activesupport/Rakefile
+===================================================================
+--- trunk/activesupport/Rakefile (revision 3125)
++++ trunk/activesupport/Rakefile (revision 3656)
+@@ -30,5 +30,5 @@
+   rdoc.rdoc_dir = 'doc'
+   rdoc.title    = "Active Support -- Utility classes and standard library extensions from Rails"
+-  rdoc.options << '--line-numbers --inline-source --main README'
++  rdoc.options << '--line-numbers' << '--inline-source' << '--main README'
+   rdoc.template = "#{ENV['template']}.rb" if ENV['template']
+   rdoc.rdoc_files.include('README', 'CHANGELOG')

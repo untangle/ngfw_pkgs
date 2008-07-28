@@ -1,0 +1,18 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Upstream changeset 3656 fixing rdoc parameter passing
+
+@DPATCH@
+Index: trunk/railties/Rakefile
+===================================================================
+--- trunk/railties/Rakefile (revision 3543)
++++ trunk/railties/Rakefile (revision 3605)
+@@ -234,5 +234,5 @@
+   rdoc.rdoc_dir = 'doc'
+   rdoc.title    = "Railties -- Gluing the Engine to the Rails"
+-  rdoc.options << '--line-numbers --inline-source --accessor cattr_accessor=object'
++  rdoc.options << '--line-numbers' << '--inline-source' << '--accessor' << 'cattr_accessor=object'
+   rdoc.template = "#{ENV['template']}.rb" if ENV['template']
+   rdoc.rdoc_files.include('README', 'CHANGELOG')

@@ -1,0 +1,25 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 03_anticolorize.dpatch by  <adamm@zombino.com>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Remove default colorize ANSI from logs. ANSI can hide stuff if colors 
+## DP: are not set right. Seems to work correctly with *default* xterm but not 
+## DP: otherwise. You can reset colorize_logging per application basis 
+## DP: (@@colorize_logging in ActiveRecord)
+
+@DPATCH@
+diff -ur rails-0.11.1.old/activerecord/lib/active_record/base.rb rails-0.11.1/activerecord/lib/active_record/base.rb
+--- rails-0.11.1.old/activerecord/lib/active_record/base.rb	2005-04-18 16:48:21.000000000 -0500
++++ rails-0.11.1/activerecord/lib/active_record/base.rb	2005-04-18 16:52:33.000000000 -0500
+@@ -275,9 +275,9 @@
+ 
+     # Determines whether or not to use ANSI codes to colorize the logging statements committed by the connection adapter. These colors
+     # makes it much easier to overview things during debugging (when used through a reader like +tail+ and on a black background), but
+-    # may complicate matters if you use software like syslog. This is true, by default.
++    # may complicate matters if you use software like syslog. This is false, by default.
+     cattr_accessor :colorize_logging
+-    @@colorize_logging = true
++    @@colorize_logging = false
+ 
+     # Determines whether to use Time.local (using :local) or Time.utc (using :utc) when pulling dates and times from the database.
+     # This is set to :local by default.

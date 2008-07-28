@@ -1,0 +1,29 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## logger.dpatch by  <adamm@zombino.com>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fixes logger such that it works with ruby 1.8.3 and 1.8.2
+
+@DPATCH@
+--- trunk/activesupport/lib/active_support/clean_logger.rb
++++ trunk/activesupport/lib/active_support/clean_logger.rb
+@@ -10,9 +10,14 @@
+   end
+ 
+   private
+-    remove_const "Format"
+-    Format = "%s\n"
+-    def format_message(severity, timestamp, msg, progname)
+-      Format % [msg]
++    # Ruby 1.8.3 swapped the format_message params.
++    if RUBY_VERSION < '1.8.3'
++      def format_message(severity, timestamp, msg, progname)
++        "#{msg}\n"
++      end
++    else
++      def format_message(severity, timestamp, progname, msg)
++        "#{msg}\n"
++      end
+     end
+ end
+\No end of line

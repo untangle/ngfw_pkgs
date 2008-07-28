@@ -1,0 +1,20 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 13_FTBFS_464285.dpatch by Sebastien Delafond <seb@untangle.com>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Work around FTBFS (see
+## DP: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=464285)
+
+@DPATCH@
+diff -urNad untangle-rails~/railties/Rakefile untangle-rails/railties/Rakefile
+--- untangle-rails~/railties/Rakefile	2008-07-28 09:38:59.000000000 -0700
++++ untangle-rails/railties/Rakefile	2008-07-28 10:24:54.000000000 -0700
+@@ -231,7 +231,7 @@
+ end
+ 
+ task :generate_app_doc do
+-  File.cp "doc/README_FOR_APP", "#{PKG_DESTINATION}/doc/README_FOR_APP"
++  cp "doc/README_FOR_APP", "#{PKG_DESTINATION}/doc/README_FOR_APP"
+   system %{cd #{PKG_DESTINATION}; rake appdoc}
+ end
+ 

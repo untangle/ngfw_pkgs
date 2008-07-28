@@ -1,0 +1,8 @@
+# Example watch control file for uscan
+# Rename this file to "watch" and then you can run the "uscan" command
+# to check for upstream updates and more.
+# Site		Directory		Pattern			Version	Script
+version=2
+http://rubyforge.org/frs/?group_id=307	.*/rails-(.*).tgz	debian
+
+##http://rubyforge.org/frs/?group_id=307	/frs/download.php/[^/]*/rails-([0-9\.]*)\.tgz	debian

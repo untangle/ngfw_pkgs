@@ -1,0 +1,85 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+
+configure: patch
+
+patch: patch-stamp
+patch-stamp:
+	dpatch apply-all
+	touch patch-stamp
+
+unpatch:
+	dpatch deapply-all
+	rm -rf patch-stamp debian/patched
+
+build: patch build-stamp
+
+build-stamp:
+	# Generate documentation
+	mkdir build
+	cd railties; RAILS_PKG_DESTINATION="`pwd`/../build" rake fresh_rails
+	cp -r railties/configs/databases build/config
+	touch build-stamp
+
+clean: clean-patched unpatch
+clean-patched:
+	dh_testdir
+	dh_testroot
+	dh_clean 
+	rm -rf build build-stamp
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k 
+	dh_installdirs
+
+	# Copy HTML documentation
+	cp -r build/doc/api debian/rails/usr/share/doc/rails/html
+
+	# Install railties
+	cp -r railties ac* debian/rails/usr/share/rails/
+	for i in `find debian/rails/usr/share/rails -type f`; do chown root:root $$i; chmod 0644 $$i; done
+	for i in `find debian/rails/usr/share/rails -type d`; do chown root:root $$i; done
+	for i in actionmailer activerecord actionpack actionwebservice railties; do \
+		ln -s ../../rails/$$i/CHANGELOG debian/rails/usr/share/doc/rails/changelog.$$i; \
+		ln -s ../../rails/$$i/README    debian/rails/usr/share/doc/rails/README.$$i; \
+		rm -f debian/rails/usr/share/rails/$$i/MIT-LICENSE; \
+	done
+	# rm -r debian/rails/usr/share/rails/actionmailer/lib/action_mailer/vendor/tmail*
+	ln -s ../../rails/activesupport/CHANGELOG debian/rails/usr/share/doc/rails/changelog.activesupport; \
+	install -o root -g root -m 0755 rails debian/rails/usr/bin
+	install -o root -g root -m 0644 debian/lintian.overrides debian/rails/usr/share/lintian/overrides/rails
+	ln -s ../../rails/railties/configs debian/rails/usr/share/doc/rails/configs
+
+# Build architecture-independent files here.
+binary-indep: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs
+	dh_installdocs
+	dh_installman
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+# Build architecture-dependent files here.
+binary-arch: build install
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install configure
