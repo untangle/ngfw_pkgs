@@ -1,0 +1,6 @@
+rails (1.1.6-3) unstable; urgency=low
+
+  * Remove the 12_options patch which actually breaks select. 
+    (closes: #406658)
+
+ -- Adam Majer <adamm@zombino.com>  Sun, 14 Jan 2007 12:41:58 -0600
