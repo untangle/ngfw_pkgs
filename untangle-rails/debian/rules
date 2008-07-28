@@ -44,22 +44,22 @@ install: build
 	dh_installdirs
 
 	# Copy HTML documentation
-	cp -r build/doc/api debian/rails/usr/share/doc/rails/html
+	cp -r build/doc/api debian/untangle-rails/usr/share/doc/rails/html
 
 	# Install railties
-	cp -r railties ac* debian/rails/usr/share/rails/
-	for i in `find debian/rails/usr/share/rails -type f`; do chown root:root $$i; chmod 0644 $$i; done
-	for i in `find debian/rails/usr/share/rails -type d`; do chown root:root $$i; done
+	cp -r railties ac* debian/untangle-rails/usr/share/rails/
+	for i in `find debian/untangle-rails/usr/share/rails -type f`; do chown root:root $$i; chmod 0644 $$i; done
+	for i in `find debian/untangle-rails/usr/share/rails -type d`; do chown root:root $$i; done
 	for i in actionmailer activerecord actionpack actionwebservice railties; do \
-		ln -s ../../rails/$$i/CHANGELOG debian/rails/usr/share/doc/rails/changelog.$$i; \
-		ln -s ../../rails/$$i/README    debian/rails/usr/share/doc/rails/README.$$i; \
-		rm -f debian/rails/usr/share/rails/$$i/MIT-LICENSE; \
+		ln -s ../../rails/$$i/CHANGELOG debian/untangle-rails/usr/share/doc/rails/changelog.$$i; \
+		ln -s ../../rails/$$i/README    debian/untangle-rails/usr/share/doc/rails/README.$$i; \
+		rm -f debian/untangle-rails/usr/share/rails/$$i/MIT-LICENSE; \
 	done
 	# rm -r debian/rails/usr/share/rails/actionmailer/lib/action_mailer/vendor/tmail*
-	ln -s ../../rails/activesupport/CHANGELOG debian/rails/usr/share/doc/rails/changelog.activesupport; \
-	install -o root -g root -m 0755 rails debian/rails/usr/bin
-	install -o root -g root -m 0644 debian/lintian.overrides debian/rails/usr/share/lintian/overrides/rails
-	ln -s ../../rails/railties/configs debian/rails/usr/share/doc/rails/configs
+	ln -s ../../rails/activesupport/CHANGELOG debian/untangle-rails/usr/share/doc/rails/changelog.activesupport; \
+	install -o root -g root -m 0755 rails debian/untangle-rails/usr/bin
+	install -o root -g root -m 0644 debian/lintian.overrides debian/untangle-rails/usr/share/lintian/overrides/untangle-rails
+	ln -s ../../rails/railties/configs debian/untangle-rails/usr/share/doc/rails/configs
 
 # Build architecture-independent files here.
 binary-indep: build install
