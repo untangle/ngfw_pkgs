@@ -1,11 +1,11 @@
-Source: rails
+Source: untangle-rails
 Section: web
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
 Build-Depends: debhelper (>= 4.0.0), dpatch, rake (>>0.7.0), rdoc (>>1.8.2), liberb-ruby
 Standards-Version: 3.8.0
 
-Package: rails
+Package: untangle-rails
 Architecture: all
 Depends: ${misc:Depends}, ruby, ruby1.8 (>=1.8.2-3), rake (>>0.7.0), rdoc (>>1.8.2), libpgsql-ruby1.8 | libmysql-ruby1.8 | libdbi-ruby1.8, libredcloth-ruby1.8, liberb-ruby
 Recommends: irb (>>1.8)

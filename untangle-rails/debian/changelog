@@ -1,4 +1,4 @@
-rails (1.1.6-3) unstable; urgency=low
+untangle-rails (1.1.6-3) unstable; urgency=low
 
   * Remove the 12_options patch which actually breaks select. 
     (closes: #406658)
