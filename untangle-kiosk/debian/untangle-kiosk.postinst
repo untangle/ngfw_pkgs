@@ -1,12 +1,13 @@
 #! /bin/bash
 
 rm -fr /etc/xdg/xfce4
-cp -r /home/kiosk/.config/xfce4 /etc/xdg/
 
 rsync -Ha /usr/share/untangle-kiosk/x-startup/etc/ /etc/
 rsync -Ha /usr/share/untangle-kiosk/homes/root/ /root/
 rsync -Ha /usr/share/untangle-kiosk/homes/kiosk/ /home/kiosk/
 chown -R kiosk:kiosk /home/kiosk
+
+cp -r /home/kiosk/.config/xfce4 /etc/xdg/
 
 cp -f /usr/share/untangle-kiosk/prefs.js /etc/firefox/profile/prefs.js
 cp -f /usr/share/untangle-kiosk/bookmarks.html /etc/firefox/profile/bookmarks.html
