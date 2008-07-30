@@ -19,6 +19,7 @@ class Alpaca::Components::UvmComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
     if ( config_level >= AlpacaSettings::Level::Advanced ) 
       menu_organizer.register_item( "/main/advanced/uvm", menu_item( 300, "Bypass Rules", {} ))
+      menu_organizer.register_item( "/main/advanced/snic", menu_item( 1000, "Single NIC", :action => "single_nic" ))
     end
   end
 
@@ -32,9 +33,6 @@ class Alpaca::Components::UvmComponent < Alpaca::Component
 
     ## Update the settings
     intf_order = uvm_settings.interface_order
-    
-    ## Just in case the interface order is somehow nil?
-    intf_order = UvmHelper::DefaultOrder if intf_order.nil?
 
     puts "Interface order: #{intf_order}"
     puts "Interface list: #{interface_list.map{ |i| i.index }.join( ",")}"
