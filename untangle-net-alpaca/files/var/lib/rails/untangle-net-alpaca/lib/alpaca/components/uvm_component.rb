@@ -19,7 +19,6 @@ class Alpaca::Components::UvmComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
     if ( config_level >= AlpacaSettings::Level::Advanced ) 
       menu_organizer.register_item( "/main/advanced/uvm", menu_item( 300, "Bypass Rules", {} ))
-      menu_organizer.register_item( "/main/advanced/snic", menu_item( 1000, "Single NIC", :action => "single_nic" ))
     end
   end
 
