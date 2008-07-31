@@ -21,3 +21,4 @@ JkMount /rsavnc* uvmWorker
 JkMount /rsardp* uvmWorker
 JkMount /rsaproxy* uvmWorker
 JkMount /rsastatic* uvmWorker
+JkMount /http-invoker* uvmWorker
