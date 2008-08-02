@@ -25,7 +25,6 @@ require "alpaca/ipaddr"
 ## Overload the helper class to do more automagic stuff.
 require "alpaca/helpers"
 
-
 ## Insert the support for the os base
 require "alpaca/os"
 
@@ -39,6 +38,8 @@ require "alpaca/localization_extensions"
 
 ## Manager base
 require "alpaca/os/manager_base"
+
+require "alpaca/component_extensions"
 
 ## OS extensions for alpaca.
 require "alpaca/os/os_extensions"

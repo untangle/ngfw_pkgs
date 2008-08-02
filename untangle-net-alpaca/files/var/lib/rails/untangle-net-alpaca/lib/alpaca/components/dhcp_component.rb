@@ -27,6 +27,18 @@ class Alpaca::Components::DhcpComponent < Alpaca::Component
     builder.insert_piece( Alpaca::Wizard::Closer.new( 1200 ) { save } )
   end
 
+  def pre_prepare_configuration( config, settings_hash )
+    settings_hash[self.class] = DhcpServerSettings.new( :enabled => false )
+  end
+  
+  def pre_save_configuration( config, settings_hash )   
+    ## Review : Perhaps this should do something less harsh
+    DhcpStaticEntry.destroy_all
+
+    DhcpServerSettings.destroy_all
+    settings_hash[self.class].save
+  end
+
   private
   def save
     ## Iterate all of the interfaces

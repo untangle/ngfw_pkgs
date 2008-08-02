@@ -17,21 +17,15 @@
 #
 class Alpaca::Components::ArpComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
-    
     if ( config_level >= AlpacaSettings::Level::Advanced ) 
       menu_organizer.register_item( "/main/advanced/arp", menu_item( 400, "ARP", {} ))
     end
   end
-  
+
   def wizard_insert_closers( builder )
   end
 
-  private
-
-  def validate
-  end
-
-  def save
-    ## Leaving the firewalls alone for now.
+  def pre_save_configuration( config, settings_hash )
+    StaticArp.destroy_all
   end
 end

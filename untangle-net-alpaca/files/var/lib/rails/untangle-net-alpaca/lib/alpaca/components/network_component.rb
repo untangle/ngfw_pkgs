@@ -31,4 +31,45 @@ class Alpaca::Components::NetworkComponent < Alpaca::Component
 
   def wizard_insert_stages( builder )
   end
+
+  def pre_prepare_configuration( config, settings_hash )
+    interfaces = InterfaceHelper.loadInterfaces
+    
+    interfaces.each do |i|
+      case i.index
+      when InterfaceHelper::ExternalIndex
+        if ( config["is_dhcp_enabled"] )
+          i.intf_dynamic = IntfDynamic.new
+          i.config_type = InterfaceHelper::ConfigType::DYNAMIC
+        else
+          static = IntfStatic.new
+          network = IpNetwork.new( :ip => config["ip"], :netmask => config["netmask"], :position => 1 )
+          raise "Invalid network #{network.ip} / #{network.netmask}" unless network.valid? 
+          static.ip_networks = [ network ]
+          static.default_gateway = config["gateway"]
+          static.dns_1 = config["dns_1"]
+          static.dns_2 = config["dns_2"]
+          i.intf_static = static
+          i.config_type = InterfaceHelper::ConfigType::STATIC 
+        end
+        ## Auto installs are presently reserved for single NIC boxes, just disable all other NICs.
+        
+        raise "Invalid network settings" unless i.valid?
+      else
+        static = IntfStatic.new
+        i.intf_static = static
+        i.config_type = InterfaceHelper::ConfigType::STATIC
+      end
+    end
+    
+    settings_hash[self.class] = interfaces
+  end
+
+  def pre_save_configuration( config, settings_hash )
+    IntfStatic.destroy_all
+    IntfDynamic.destroy_all
+    
+    Interface.destroy_all
+    settings_hash[self.class].each { |i| i.save }
+  end
 end

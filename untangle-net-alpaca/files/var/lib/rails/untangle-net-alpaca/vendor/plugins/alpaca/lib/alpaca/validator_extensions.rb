@@ -26,3 +26,5 @@ end
 ActionController::Base.send :include, Alpaca::ValidatorExtensions
 
 Alpaca::OS::ManagerBase.send :include, Alpaca::ValidatorExtensions
+
+Alpaca::Component.send :include, Alpaca::ValidatorExtensions

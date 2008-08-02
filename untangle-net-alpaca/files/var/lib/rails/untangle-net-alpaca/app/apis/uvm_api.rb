@@ -15,7 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-class UvmApi < ActionWebService::API::Base
+class UvmApi < ActionWebService::API::Base    
   inflect_names false
   
   ## Restart the iptables rules
@@ -63,5 +63,4 @@ class UvmApi < ActionWebService::API::Base
   # @param netmask
   api_method( :wizard_internal_interface_nat, :expects => [:string, :string], 
               :returns => [] )
-
 end

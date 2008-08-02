@@ -64,6 +64,10 @@ class Alpaca::Components::UvmComponent < Alpaca::Component
     os["uvm_manager"].write_files
   end
 
+  def pre_save_configuration( config, settings_hash )
+    Subscription.destroy_all( "system_id IS NULL" );
+  end
+
   private
   def save
     update_interfaces( Interface.find( :all ))

@@ -16,6 +16,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 require "logger"
+require "json"
 
 ## The ConfigurationLoader loads settings from the current state of
 ## the box.  This is useful in situations when there are no default
@@ -23,6 +24,12 @@ require "logger"
 ## wizard.
 class Alpaca::ConfigurationLoader
   LOG_FILE = '/var/log/untangle-net-alpaca/alpaca-load-configuration.log'
+
+  PrepareConfiguration = "pre_prepare_configuration"
+  SaveConfiguration = "pre_save_configuration"
+
+  include ::Alpaca::ComponentExtensions
+
   def initialize
     @logger = Logger.new( LOG_FILE, 10, 1048576 )
   end
@@ -36,6 +43,30 @@ class Alpaca::ConfigurationLoader
     load_hostname
 
     load_dns_settings
+  end
+
+  def preconfigure
+    logger.debug( "Preconfiguring the box #{Time.new}" )
+
+    config_file = ENV["CONFIG_FILE"]
+
+    config = ""
+    File.open( config_file,  "r" ) { |f| f.each_line { |l| config << l }}
+    config = ::JSON.parse( config )
+
+    settings_hash = {}
+    
+    ## Give all of the components a chance to screen the settings before saving them.
+    iterate_components do |component|
+      next unless component.respond_to? PrepareConfiguration
+      component.send( PrepareConfiguration, config, settings_hash )
+    end
+    
+    ## Order doesn't matter because this is just saving to the database
+    iterate_components do |component|
+      next unless component.respond_to? SaveConfiguration
+      component.send( SaveConfiguration, config, settings_hash )
+    end
   end
 
   private
@@ -221,5 +252,19 @@ class Alpaca::ConfigurationLoader
 
     interface_map
   end
+
+  ## Have to define these in order to use the component util
+  def params
+    {}
+  end
+
+  def session
+    nil
+  end
+
+  def request
+    nil
+  end
+
 
 end

@@ -51,6 +51,21 @@ class Alpaca::Components::HostnameComponent < Alpaca::Component
     raise "invalid hostname" if ApplicationHelper.null?( params[:hostname] )
   end
 
+  def pre_prepare_configuration( config, settings_hash )
+    settings = HostnameSettings.new
+    
+    hostname = config["hostname"]
+    hostname = "untangle.example.com" unless validator.is_hostname?( hostname )
+    settings.hostname = hostname
+
+    settings_hash[self.class] = settings
+  end
+
+  def pre_save_configuration( config, settings_hash )
+    HostnameSettings.destroy_all
+    settings_hash[self.class].save
+  end
+
   def save
     hostname_settings = HostnameSettings.find( :first )
     hostname_settings = HostnameSettings.new if hostname_settings.nil?
