@@ -7,7 +7,6 @@ Standards-Version: 3.7.2
 
 Package: untangle-apache2-config
 Architecture: all
-Depends: apache2, libapache2-mod-jk
+Depends: apache2, libapache2-mod-jk, libapache2-mod-python, python-psycopg
 Description: The Untangle Apache2 config
  The Untangle Apache2 config.
-
