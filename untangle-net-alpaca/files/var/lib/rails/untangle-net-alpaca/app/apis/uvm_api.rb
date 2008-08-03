@@ -63,4 +63,7 @@ class UvmApi < ActionWebService::API::Base
   # @param netmask
   api_method( :wizard_internal_interface_nat, :expects => [:string, :string], 
               :returns => [] )
+
+  ## Determine if the box is still alive.
+  api_method( :hello_world, :expects => [], :returns => [:boolean])
 end

@@ -292,6 +292,12 @@ class UvmController < ApplicationController
     end    
   end
 
+  def hello_world
+    ## Just access the database to make sure another process doesn't have it locked.
+    Interface.find( :first )
+    true
+  end
+
   def scripts
     RuleHelper::Scripts + []
   end

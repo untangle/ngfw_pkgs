@@ -31,6 +31,7 @@ class ApplicationController < ActionController::Base
   filter_parameter_logging "password"
   filter_parameter_logging "ddclient_settings"
   filter_parameter_logging "credentials"
+  filter_parameter_logging "argyle"
   
   # Pick a unique cookie name to distinguish our session data from others'
   session :session_key => '_untangle-net-alpaca_session_id'
