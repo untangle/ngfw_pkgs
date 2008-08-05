@@ -17,7 +17,7 @@
 #
 module NUCLICommon
 
-DEFAULT_DIAG_LEVEL = 1
+DEFAULT_DIAG_LEVEL = 0
 BRAND = "Untangle"
 
 # Shared error messages & strings - Perhaps we'll package these another way.
