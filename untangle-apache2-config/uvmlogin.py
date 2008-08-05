@@ -30,6 +30,7 @@ def headerparserhandler(req):
 
     if None == username and is_root(req):
         username = 'localadmin'
+        save_session_user(sess, realm, username)
 
     if None != username:
         pw = base64.encodestring('%s' % username).strip()
@@ -80,3 +81,15 @@ def login_redirect(req, realm):
 
     redirect_url = '/login/login.py?url=%s&realm=%s' % (url, realm_str)
     util.redirect(req, redirect_url)
+
+def save_session_user(sess, realm, username):
+    if sess.has_key('apache_realms'):
+        apache_realms = sess['apache_realms']
+    else:
+        sess['apache_realms'] = apache_realms = {}
+
+    realm_record = {}
+    realm_record['username'] = username
+    apache_realms[realm] = realm_record
+
+    sess.save()
