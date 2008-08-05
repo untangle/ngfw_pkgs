@@ -69,3 +69,4 @@ class UvmApi < ActionWebService::API::Base
   ## Determine if the box is still alive.
   api_method( :hello_world, :expects => [], :returns => [:boolean])
 end
+
