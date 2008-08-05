@@ -2,11 +2,12 @@ Source: untangle-kiosk
 Section: admin
 Priority: important
 Maintainer: Sebastien Delafond <seb@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
-Standards-Version: 3.7.2
+Standards-Version: 3.8.0
 
 Package: untangle-kiosk
 Architecture: all
-Depends: fbpanel, feh, xbindkeys, firefox, rsync, artwiz-cursor
+Depends: fbpanel, feh, xbindkeys, firefox, rsync, artwiz-cursor, adduser
 Description: The Untangle kiosk utils
  The Untangle kiosk mode utilities.

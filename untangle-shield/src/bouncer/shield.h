@@ -24,8 +24,10 @@
 
 #include "utils/lru.h"
 
-#include "bouncer/load.h"
 #include "bouncer/config.h"
+#include "bouncer/debug.h"
+#include "bouncer/load.h"
+
 
 #define NC_SHIELD_DEBUG_LOW   7
 #define NC_SHIELD_DEBUG_HIGH 11
@@ -74,6 +76,9 @@ typedef struct
     
     /* Node to track this item inside of the LRU */
     barfight_lru_node_t lru_node;
+
+    /* This is the debug count, used to dump all of the nodes */
+    u_int32_t debug_id;
 
     /* Configuration data */
     double divider;
@@ -151,5 +156,8 @@ int   barfight_shield_set_config         ( bouncer_shield_config_t* config );
 
 /* Get the current shield configuration. */
 int   barfight_shield_get_config         ( bouncer_shield_config_t* config );
+
+/* Dump out the current shield configuration */
+int barfight_bouncer_shield_debug( barfight_bouncer_debug_print_t* print, void* arg );
 
 #endif /* __BARFIGHT_SHIELD_H_ */

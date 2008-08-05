@@ -1,17 +1,31 @@
 #! /bin/bash
 
-case "$1" in
-    start)
-        if [ ! -z "`cat /proc/cmdline | grep ut-restore`" ] ; then
-          echo "Starting Edgeguard Restore."
-          /usr/share/untangle/bin/ut-restore reboot
-        fi
-        ;;
+### BEGIN INIT INFO
+# Provides:          untangle-restore-tools
+# Required-Start:    $local_fs $remote_fs
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+### END INIT INFO
 
-    *)
-        echo "Usage: /etc/init.d/untangle-restore-tools {start}"
-        exit
-        ;;
+. /lib/lsb/init-functions
+
+DESC="Service for restoring an Untangle server's settings"
+
+case "$1" in
+  start)
+    if [ ! -z "`cat /proc/cmdline | grep ut-restore`" ] ; then
+      echo "Starting Edgeguard Restore."
+      /usr/share/untangle/bin/ut-restore reboot
+    fi
+    ;;
+  stop|restart|force-reload)
+    echo "Can only start a restore."
+    ;;
+  *)
+    echo "Usage: /etc/init.d/untangle-restore-tools {start}"
+    exit
+    ;;
 esac
 
 exit 0

@@ -24,6 +24,22 @@ class Alpaca::Components::DnsComponent < Alpaca::Component
     builder.insert_piece( Alpaca::Wizard::Closer.new( 1200 ) { save } )
   end
 
+  def pre_prepare_configuration( config, settings_hash )
+    suffix = config["suffix"]
+    suffix = "example.com" unless validator.is_hostname?( suffix )
+    settings_hash[self.class] = DnsServerSettings.new( :enabled => true, :suffix => suffix )
+  end
+
+  def pre_save_configuration( config, settings_hash )
+    DnsServerSettings.destroy_all
+    
+    ## Review : Perhaps this should do something less harsh
+    DnsStaticEntry.destroy_all
+
+    ## Save the settings
+    settings_hash[self.class].save
+  end
+
   private
   def save
     ## Create a new set of settings

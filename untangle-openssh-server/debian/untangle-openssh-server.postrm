@@ -8,6 +8,8 @@ case $1 in
     # can smoothly remove /etc/ssh if and only if the user
     # hasn't dropped some other files in there. Conffiles have
     # already been removed at this point.
+    rm -f /etc/init.d/$SERVICE
+    update-rc.d $SERVICE remove >/dev/null
     rm -f /etc/$SERVICE/ssh_host_rsa_key /etc/$SERVICE/ssh_host_rsa_key.pub
     rm -f /etc/$SERVICE/ssh_host_dsa_key /etc/$SERVICE/ssh_host_dsa_key.pub
     rm -f /etc/$SERVICE/sshd_config
@@ -15,7 +17,5 @@ case $1 in
     rmdir --ignore-fail-on-non-empty /etc/$SERVICE
     ;;
 esac
-
-update-rc.d -f $SERVICE remove >/dev/null
 
 exit 0

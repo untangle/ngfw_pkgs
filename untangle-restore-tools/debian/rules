@@ -49,14 +49,14 @@ binary-indep: build
 	dh_movefiles
 #	dh_installdebconf
 	dh_shlibdeps
-	dh_installdocs
+	dh_installdocs -n
 #	dh_installexamples
 #	dh_installmenu
 #	dh_installlogrotate
 #	dh_installemacsen
 #	dh_installpam
 #	dh_installmime
-	dh_installinit
+	dh_installinit -n
 #	dh_installcron
 #	dh_installman
 #	dh_installinfo

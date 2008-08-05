@@ -18,6 +18,7 @@ build: configure
 	mkdir -p $(DESTDIR)
 	cp -r ./files/* $(DESTDIR)
 	find $(DESTDIR) -name "\.svn" | xargs rm -rf
+	chmod 755 $(DESTDIR)/usr/share/untangle-cli-client/src/util.rb
 
 clean:
 	dh_testdir
@@ -31,7 +32,7 @@ binary-indep: build
 #	dh_movefiles 
 #	dh_installdebconf   
 	dh_shlibdeps  
-	dh_installdocs   
+	dh_installdocs -n   
 #	dh_installexamples   
 #	dh_installmenu   
 #	dh_installlogrotate   

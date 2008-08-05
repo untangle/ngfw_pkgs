@@ -1,0 +1,51 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH RAILS 1 "February  12, 2005"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+rails \- Ruby on Rails deployment script
+.SH SYNOPSIS
+.B rails
+.RI [ options ] " destination(s)"  ...
+.PP
+.\" TeX users may be more comfortable with the \fB<whatever>\fP and
+.\" \fI<whatever>\fP escape sequences to invode bold face and italics, 
+.\" respectively.
+.SH OPTIONS
+.TP
+.B \-d, \-\-no\-docs
+Deploys rails without any documentation.
+.TP
+.B \-C, \-\-copy
+Deploys rails by copying instead of linking vendor libraries.
+.TP
+.B \-F, \-\-force\-overwrite
+Overwrites all previously deployed files, if any.
+.TP
+.B \-D, \-\-database
+Specify the database to be used. Supported values are mysql, oracle, postgresql, sqlite2, 
+and sqlite3.
+.TP
+.B \-I, \-\-internal
+Options to be passed to the upstream rails script.
+.SH SEE ALSO
+Full documentation of rails are available after Ruby On Rails is
+deployed. For getting started instructions, see /usr/share/doc/rails/README.Debian
+
+.SH AUTHOR
+The upstream author of Ruby On Rails is David Heinemeier Hansson
+<david@loudthinking.com>. This manual page was written by Adam Majer <adamm@zombino.com>,
+for the Debian project (but may be used by others).

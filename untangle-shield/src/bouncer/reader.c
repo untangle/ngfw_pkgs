@@ -324,7 +324,6 @@ static int _handle_packet( barfight_bouncer_reader_t* reader, barfight_net_packe
         
         switch ( response.ans ) {
         case NC_SHIELD_RESET:
-            errlog( ERR_WARNING, "Implement reset.\n" );
             verdict = NF_DROP;
             break;
 
@@ -333,7 +332,6 @@ static int _handle_packet( barfight_bouncer_reader_t* reader, barfight_net_packe
             break;
 
         case NC_SHIELD_LIMITED:
-            errlog( ERR_WARNING, "Implement limit.\n" );
             verdict = NF_DROP;
             break;
 

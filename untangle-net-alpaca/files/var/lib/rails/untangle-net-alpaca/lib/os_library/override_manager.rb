@@ -55,6 +55,9 @@ class OSLibrary::OverrideManager < Alpaca::OS::ManagerBase
     
     ## Write out the contentse of the file
     File.open( path, "w" ) { |f| f.print( contents ) }
+
+    ## Make the script executable
+    File.chmod( 0664, path )
   end
 
   ## Helper method to write a script and make it executable

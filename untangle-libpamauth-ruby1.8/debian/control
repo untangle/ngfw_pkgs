@@ -2,8 +2,9 @@ Source: untangle-libpamauth-ruby1.8
 Section: admin
 Priority: optional
 Maintainer: Robert Scott <rbscott@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
 Build-Depends: debhelper (>> 4.0.0), ruby1.8-dev, ruby1.8, cdbs, libpam0g-dev
-Standards-Version: 3.7.2
+Standards-Version: 3.8.0
 
 Package: untangle-libpamauth-ruby1.8
 Architecture: i386 amd64

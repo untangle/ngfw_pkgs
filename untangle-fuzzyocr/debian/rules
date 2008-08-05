@@ -22,7 +22,7 @@ install-stamp: build-stamp
 	dh_clean -k
 	dh_installdirs
 
-	install -m755 FuzzyOcr.pm $(DESTDIR)/usr/share/untangle-fuzzyocr
+	install -m644 FuzzyOcr.pm $(DESTDIR)/usr/share/untangle-fuzzyocr
 	install -m644 FuzzyOcr.cf $(DESTDIR)/usr/share/untangle-fuzzyocr
 	install -m644 FuzzyOcr.words.sample $(DESTDIR)/usr/share/untangle-fuzzyocr/FuzzyOcr.words
 	cp -r samples $(DESTDIR)/usr/share/doc/$(PACKAGE)/
@@ -34,7 +34,7 @@ install-stamp: build-stamp
 binary-indep: install
 	dh_testdir
 	dh_testroot
-	dh_installdocs
+	dh_installdocs -n
 	dh_installchangelogs
 	dh_compress
 	dh_fixperms

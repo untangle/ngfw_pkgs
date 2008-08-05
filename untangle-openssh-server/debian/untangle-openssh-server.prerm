@@ -1,10 +1,18 @@
 #! /bin/bash
 
+ourInit() {
+if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
+  invoke-rc.d $1 $2
+else
+  /etc/init.d/$1 $2
+fi
+}
+
 SERVICE=untangle-ssh
 
 case "$1" in
     remove|deconfigure)
-      /etc/init.d/$SERVICE stop
+      ourInit $SERVICE stop
       ;;
     failed-upgrade)
         ;;

@@ -26,6 +26,10 @@ class Alpaca::Components::RouteComponent < Alpaca::Component
   def wizard_insert_closers( builder )
   end
 
+  def pre_save_configuration( config, settings_hash )
+    NetworkRoute.destroy_all
+  end
+
   private
 
   def validate

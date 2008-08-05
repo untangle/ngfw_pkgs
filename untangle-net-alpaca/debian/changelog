@@ -1,3 +1,9 @@
+untangle-net-alpaca (5.4.0~svn20080616r16742trunk-1sarge) chaos; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@debian.org>  Mon, 16 Jun 2008 13:48:32 -0700
+
 untangle-net-alpaca (0.1.0-1) unstable; urgency=low
 
   * initial version

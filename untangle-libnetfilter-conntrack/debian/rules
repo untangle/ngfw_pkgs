@@ -34,7 +34,7 @@ clean:
 	dh_testroot
 	rm -f build-stamp install*-stamp
 
-	-$(MAKE) distclean
+	[ ! -f Makefile ] || $(MAKE) distclean
 
 	dh_clean
 
@@ -53,7 +53,7 @@ install-stamp: build-stamp
 binary-indep: build install
 	dh_testdir -i
 	dh_testroot -i
-	dh_installdocs -i -A README
+	dh_installdocs -n -i -A README debian/copyright
 	dh_installchangelogs -i debian/no-upstream-changelog
 	dh_install -i --sourcedir=debian/tmp
 	dh_link -i
@@ -70,15 +70,17 @@ binary-indep: build install
 binary-arch: build install
 	dh_testdir -a
 	dh_testroot -a
-	dh_installdocs -puntangle-libnetfilter-conntrack1
+	dh_installdocs -n -a debian/copyright
 	# FIXME: WDF is that ???
 	ln -sf libnetfilter-conntrack1 debian/untangle-libnetfilter-conntrack-dev/usr/share/doc/libnetfilter-conntrack-dev
-	dh_installchangelogs -puntangle-libnetfilter-conntrack1
+	dh_installchangelogs -a
 	dh_install -a --sourcedir=debian/tmp
 	dh_link -a
+	dh_strip -a
+	dh_strip -a
 	dh_compress -a
 	dh_fixperms -a
-	dh_makeshlibs -a -V 'libnetfilter-conntrack1 (>= 0.0.31)'
+	dh_makeshlibs -a -V 'untangle-libnetfilter-conntrack1 (>= 0.0.31)'
 	dh_installdeb -a
 	dh_shlibdeps -a
 	dh_gencontrol -a

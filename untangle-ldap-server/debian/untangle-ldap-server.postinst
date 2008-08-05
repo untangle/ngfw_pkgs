@@ -1,5 +1,13 @@
 #! /bin/bash
 
+ourInit() {
+if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
+  invoke-rc.d $1 $2
+else
+  /etc/init.d/$1 $2
+fi
+}
+
 SERVICE=untangle-slapd
 SLAPD_CONFIG=/etc/untangle-ldap/slapd.conf
 SLAPD_LIB_DIR=/var/lib/untangle-ldap
@@ -27,7 +35,7 @@ else
   if [ -f $apparmorconfig ] && ! grep -q untangle-ldap $apparmorconfig; then
       cp ${UNTANGLE_SLAPD_CONFIG_DIR}/usr.sbin.slapd $apparmorconfig
       if [ -x /etc/init.d/apparmor ]; then
-	  /etc/init.d/apparmor reload
+	  ourInit apparmor reload
       fi
   fi
 fi
@@ -37,7 +45,7 @@ ourAdminAccount=`ldapAdmin ${UNTANGLE_SLAPD_CONFIG_DIR}/initial.ldif`
 mkdir -m 0755 -p /var/run/untangle-ldap
 
 if [ ! "$theirAdminAccount" = "$ourAdminAccount" ] ; then
-  /etc/init.d/$SERVICE stop
+  ourInit $SERVICE stop
   backupDir=/var/backups/untangle-ldap-`date -Iseconds`
   [ -d ${SLAPD_LIB_DIR} ] && mv ${SLAPD_LIB_DIR} $backupDir
   mkdir -p ${SLAPD_LIB_DIR}
@@ -47,6 +55,6 @@ if [ ! "$theirAdminAccount" = "$ourAdminAccount" ] ; then
 fi
 
 update-rc.d $SERVICE start 16 2 3 4 5 . stop 84 1 . >/dev/null
-/etc/init.d/$SERVICE restart
+ourInit $SERVICE restart
 
 exit 0

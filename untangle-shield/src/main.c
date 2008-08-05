@@ -60,6 +60,7 @@
 static struct
 {
     char *config_file;
+    char *bless_filename;
     char *std_out_filename;
     int std_out;
     char *std_err_filename;
@@ -80,6 +81,7 @@ static struct
     .scheduler_thread = 0,
     .daemon = NULL,
     .config_file = NULL,
+    .bless_filename = NULL,
     .port = DEFAULT_BIND_PORT,
     .daemonize = 0,
     .std_err_filename = NULL,
@@ -95,12 +97,13 @@ static int _usage( char *name );
 static int _init( int argc, char** argv );
 static void _destroy( void );
 static int _setup_output( void );
+static int _load_blessed_users( void );
 
 static void _signal_term( int sig );
 static int _set_signals( void );
 
 /* This is defined inside of functions.c */
-extern int barfight_functions_init( barfight_bouncer_logs_t* logs, char *config_file );
+extern int barfight_functions_init( barfight_bouncer_logs_t* logs, char *config_file, char* bless_filename );
 extern json_server_function_entry_t *barfight_functions_get_json_table( void );
 extern int barfight_functions_load_config( bouncer_shield_config_t* config );
 
@@ -186,7 +189,7 @@ static int _parse_args( int argc, char** argv )
 {
     int c = 0;
     
-    while (( c = getopt( argc, argv, "dhp:c:o:e:q:l:" ))  != -1 ) {
+    while (( c = getopt( argc, argv, "dhp:c:o:e:q:l:b:" ))  != -1 ) {
         switch( c ) {
         case 'd':
             _globals.daemonize = 1;
@@ -218,6 +221,10 @@ static int _parse_args( int argc, char** argv )
         case 'l':
             _globals.debug_level = atoi( optarg );
             break;
+            
+        case 'b':
+            _globals.bless_filename = optarg;
+            break;
 
         case '?':
             return -1;
@@ -234,10 +241,12 @@ static int _usage( char *name )
     fprintf( stderr, "\t-p <json-port>: The port to bind to for the JSON interface.\n" );
     fprintf( stderr, "\t-c <config-file>: Config file to use.\n" );
     fprintf( stderr, "\t\tThe config-file can be modified through the JSON interface.\n" );
+    fprintf( stderr, "\t-b <bless-file>: User blessing file.\n" );
+    fprintf( stderr, "\t\tThe bless-file can be modified through the JSON interface.\n" );
     fprintf( stderr, "\t-o <log-file>: File to place standard output(more useful with -d).\n" );
     fprintf( stderr, "\t-e <log-file>: File to place standard error(more useful with -d).\n" );
     fprintf( stderr, "\t-q <queue-num>: Queue to use.\n" );
-    fprintf( stderr, "\t-l <debug-level>: Debugging level.\n" );
+    fprintf( stderr, "\t-l <debug-level>: Debugging level.\n" );    
     fprintf( stderr, "\t-h: Halp (show this message)\n" );
     return -1;
 }
@@ -275,7 +284,7 @@ static int _init( int argc, char** argv )
     if ( barfight_shield_init() < 0 ) return errlog( ERR_CRITICAL, "barfight_shield_init\n" );
 
     /* Create a JSON server */
-    if ( barfight_functions_init( &_globals.logs, _globals.config_file ) < 0 ) {
+    if ( barfight_functions_init( &_globals.logs, _globals.config_file, _globals.bless_filename ) < 0 ) {
         return errlog( ERR_CRITICAL, "barfight_functions_init\n" );
     }
 
@@ -287,6 +296,7 @@ static int _init( int argc, char** argv )
             errlog( ERR_CRITICAL, "json_object_from_file\n" );
         } else if ( is_error( config_file_json )) {
             errlog( ERR_CRITICAL, "json_object_from_file\n" );
+	    config_file_json = NULL;
         } else {
             debug( 10, "MAIN: Loading the config file %s\n", _globals.config_file );
             bouncer_shield_config_t config;
@@ -299,6 +309,9 @@ static int _init( int argc, char** argv )
             }
         }
     }
+    
+    /* Ignore the errors. */
+    if ( _load_blessed_users() < 0 ) errlog( ERR_WARNING, "_load_blessed_users\n" );
 
     /* Start the thread to move the circular log buffer (do it after initializing the config
      * because it load the delay from the config */
@@ -337,6 +350,8 @@ static int _init( int argc, char** argv )
                          barfight_bouncer_reader_donate, &_globals.reader )) {
         return perrlog( "pthread_create" );
     }
+
+    errlog( ERR_WARNING, "Implement reset and limit.\n" );
 
     return 0;
 }
@@ -400,7 +415,7 @@ static int _setup_output( void )
     
     if (( err_fd < 0 ) && ( _globals.std_out > 0 )) err_fd = _globals.std_out;
     
-    if ( err_fd > 0 ) {
+    if ( err_fd >= 0 ) {
         close( STDERR_FILENO );
         if ( dup2( err_fd, STDERR_FILENO ) < 0 ) {
             syslog( LOG_DAEMON | LOG_ERR, "dup2: %s\n", errstr );
@@ -416,6 +431,39 @@ static int _setup_output( void )
         }
     }
     
+    return 0;
+}
+
+static int _load_blessed_users( void )
+{
+    barfight_shield_bless_t bless_data[BLESS_COUNT_MAX];
+    barfight_shield_bless_array_t bless_array = {
+        .d = bless_data
+    };
+
+    /* Load the shield configuration (have to do this after initializing functions */
+    struct json_object* bless_array_json = NULL;
+    if ( _globals.bless_filename == NULL ) return 0;
+
+    if (( bless_array_json = json_object_from_file( _globals.bless_filename )) == NULL ) {
+        /* Ignore the error, and just load the defaults */
+        return errlog( ERR_WARNING, "json_object_from_file\n" );
+    }
+
+    if ( is_error( bless_array_json )) {
+        return errlog( ERR_WARNING, "json_object_from_file\n" );
+    }
+
+    debug( 10, "MAIN: Loading the blessed users %s\n", _globals.bless_filename );
+
+    if ( bouncer_shield_config_load_bless_json( &bless_array, bless_array_json ) < 0 ) {
+        return errlog( ERR_WARNING, "Unable to load JSON bless array." );
+    }
+    
+    if ( barfight_shield_bless_users( &bless_array ) < 0 ) {
+        return errlog( ERR_WARNING, "Unable to load JSON bless array." );
+    }
+
     return 0;
 }
 

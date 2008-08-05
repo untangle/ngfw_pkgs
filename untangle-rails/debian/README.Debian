@@ -1,0 +1,18 @@
+Rails On Debian
+----------------
+
+NOTE: DEST_DIR == destination directory (you choose!)
+
+
+To get started,
+
+1. Install rails into a working directry by running `rails DEST_DIR`.
+2. Run the WEBrick servlet from DEST_DIR: script/server (run with --help for options)
+3. Go to http://localhost:3000/ and get "Congratulations, you've put Ruby on Rails!"
+4. Follow the guidelines on the "Congratulations, you've put Ruby on Rails!" screen
+
+Complete API reference is also available (if you deploy ruby with documentation)
+in DEST_DIR/doc/api/index.html and well as at http://www.rubyonrails.com. 
+
+
+ -- Adam Majer <adamm@zombino.com>, Fri,  7 Mar 2005

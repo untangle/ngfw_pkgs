@@ -1,5 +1,13 @@
 #!/bin/sh
 
+ourInit() {
+if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
+  invoke-rc.d $1 $2
+else
+  /etc/init.d/$1 $2
+fi
+}
+
 LOG_FILE=/var/log/untangle-net-alpaca/alpaca-upgrade.log
 
 mkdir -p `dirname ${LOG_FILE}`
@@ -14,7 +22,7 @@ grep -q alpaca /etc/group || addgroup alpaca
 
 if [ -x "/etc/init.d/untangle-net-alpaca" ]; then
     update-rc.d untangle-net-alpaca defaults >/dev/null
-    /etc/init.d/untangle-net-alpaca restart >> ${LOG_FILE} 2>&1 || exit 0
+    ourInit untangle-net-alpaca restart >> ${LOG_FILE} 2>&1 || exit 0
 fi
     
 exit 0

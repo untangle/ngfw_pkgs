@@ -1,0 +1,94 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## postgres_schema.dpatch by  <adamm@zombino.com>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: set_table_name now adds static mapping to Inflector so proper 
+## DP: table<=>class mappings occur everywhere (fixtures included)
+
+@DPATCH@
+Index: activesupport/lib/active_support/inflector.rb
+===================================================================
+--- a/activesupport/lib/active_support/inflector.rb	(revision 1027)
++++ b/activesupport/lib/active_support/inflector.rb	(working copy)
+@@ -36,13 +36,46 @@
+   end
+ 
+   def tableize(class_name)
++    return @class_to_table_name[class_name] if class_table_relationship? class_name
+     pluralize(underscore(class_name))
+   end
+   
+   def classify(table_name)
++    return @table_to_class_name[table_name] if table_class_relationship? table_name
+     camelize(singularize(table_name))
+   end
+ 
++  def class_table_relationship?(class_name)
++    !@class_to_table_name.nil? and @class_to_table_name.member? class_name
++  end
++
++  def table_class_relationship?(table_name)
++    !@table_to_class_name.nil? and @table_to_class_name.member? table_name
++  end
++
++  # Adds absolute maps between table names and classes. For example,
++  #   add_table_class_relationships 'MyFirstModel' => 'table1', 'MyModelTwo' => 'table2'
++  #
++  # When defined, tableize and classify will return these relationships
++  # instead of guessed ones.
++  # Specifying nil for a table name will remove the absolute map for a given class
++  def add_table_class_relationships(*defs)
++    @class_to_table_name = Hash::new if @class_to_table_name.nil?
++
++    # Assume all mappings will be 1-1
++    defs.each do |d|
++      d.each_pair do |class_name,table_name|
++        if table_name
++          @class_to_table_name[class_name] = table_name
++        else
++          @class_to_table_name.delete class_name
++        end
++      end
++    end
++    @class_to_table_name.rehash
++    @table_to_class_name = @class_to_table_name.invert
++  end
++
+   def foreign_key(class_name, separate_class_name_and_id_with_underscore = true)
+     Inflector.underscore(Inflector.demodulize(class_name)) + 
+       (separate_class_name_and_id_with_underscore ? "_id" : "id")
+Index: activerecord/lib/active_record/base.rb
+===================================================================
+--- a/activerecord/lib/active_record/base.rb	(revision 1027)
++++ b/activerecord/lib/active_record/base.rb	(working copy)
+@@ -544,7 +544,12 @@
+       #      set_table_name "mice"
+       #   end
+       def table_name
+-        "#{table_name_prefix}#{undecorated_table_name(class_name_of_active_record_descendant(self))}#{table_name_suffix}"
++        class_name = class_name_of_active_record_descendant(self)
++        if Inflector.class_table_relationship?(class_name)
++          Inflector.tableize(class_name)
++        else
++          "#{table_name_prefix}#{undecorated_table_name(class_name)}#{table_name_suffix}"
++        end
+       end
+ 
+       # Defines the primary key field -- can be overridden in subclasses. Overwriting will negate any effect of the
+@@ -574,6 +579,7 @@
+       #     set_table_name "project"
+       #   end
+       def set_table_name( value=nil, &block )
++        Inflector.add_table_class_relationships( name => value ) if Inflector.tableize( name ) != value
+         define_attr_method :table_name, value, &block
+       end
+       alias :table_name= :set_table_name
+@@ -610,6 +616,8 @@
+ 
+       # Turns the +table_name+ back into a class name following the reverse rules of +table_name+.
+       def class_name(table_name = table_name) # :nodoc:
++        return Inflector.classify(table_name) if Inflector.table_class_relationship?(table_name)
++
+         # remove any prefix and/or suffix from the table name
+         class_name = Inflector.camelize(table_name[table_name_prefix.length..-(table_name_suffix.length + 1)])
+         class_name = Inflector.singularize(class_name) if pluralize_table_names

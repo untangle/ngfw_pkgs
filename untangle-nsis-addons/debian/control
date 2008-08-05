@@ -2,8 +2,9 @@ Source: untangle-nsis-addons
 Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
-Standards-Version: 3.7.2
+Standards-Version: 3.8.0
 
 Package: untangle-nsis-addons
 Architecture: all
@@ -11,4 +12,5 @@ Depends: nsis (>= 2.06-6)
 Conflicts: nsis-mv
 Provides: nsis-mv
 Replaces: nsis-mv
-Description: Packages to complete the NSIS installation generator utility.
+Description: Packages to complete the NSIS installation generator utility
+ Addons for the Untangle NSIS installation.

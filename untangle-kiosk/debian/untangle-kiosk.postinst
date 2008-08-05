@@ -1,11 +1,13 @@
 #! /bin/bash
 
-chown -R kiosk:kiosk /home/kiosk
-
 rm -fr /etc/xdg/xfce4
-cp -r /home/kiosk/.config/xfce4 /etc/xdg/
 
 rsync -Ha /usr/share/untangle-kiosk/x-startup/etc/ /etc/
+rsync -Ha /usr/share/untangle-kiosk/homes/root/ /root/
+rsync -Ha /usr/share/untangle-kiosk/homes/kiosk/ /home/kiosk/
+chown -R kiosk:kiosk /home/kiosk
+
+cp -r /home/kiosk/.config/xfce4 /etc/xdg/
 
 cp -f /usr/share/untangle-kiosk/prefs.js /etc/firefox/profile/prefs.js
 cp -f /usr/share/untangle-kiosk/bookmarks.html /etc/firefox/profile/bookmarks.html
@@ -14,5 +16,7 @@ cp -f /usr/share/untangle-kiosk/bookmarks.html /etc/firefox/profile/bookmarks.ht
 [[ -x /bin/zsh ]] && chsh -s /bin/zsh root
 find /root/.zsh -type f | xargs chmod 640
 find /root/.zsh -type d | xargs chmod 750
+
+ln -sf /usr/share/untangle-kiosk/desktop_background-please_wait-1024x768.png /usr/local/lib/knoppix.jpg
 
 exit 0

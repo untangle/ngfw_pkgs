@@ -14,97 +14,97 @@ untangle-postgresql-config (0-48) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@bebe.metavize.com>  Wed, 21 Mar 2007 13:07:25 -0700
+ -- John Irwin <jdi.com>  Wed, 21 Mar 2007 13:07:25 -0700
 
 untangle-postgresql-config (0-47) stable; urgency=low
 
   * auto build
 
- -- root <root@bebe.metavize.com>  Mon, 12 Mar 2007 16:19:24 -0700
+ -- root <root.com>  Mon, 12 Mar 2007 16:19:24 -0700
 
 untangle-postgresql-config (0-46) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@bebe.metavize.com>  Mon, 12 Mar 2007 10:27:50 -0700
+ -- John Irwin <jdi.com>  Mon, 12 Mar 2007 10:27:50 -0700
 
 untangle-postgresql-config (0-45) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@bebe.metavize.com>  Fri,  9 Mar 2007 15:13:39 -0800
+ -- John Irwin <jdi.com>  Fri,  9 Mar 2007 15:13:39 -0800
 
 untangle-postgresql-config (0-44) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@bebe.metavize.com>  Fri,  9 Mar 2007 11:19:30 -0800
+ -- John Irwin <jdi.com>  Fri,  9 Mar 2007 11:19:30 -0800
 
 untangle-postgresql-config (0-43) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@bebe.metavize.com>  Wed,  7 Mar 2007 17:09:07 -0800
+ -- John Irwin <jdi.com>  Wed,  7 Mar 2007 17:09:07 -0800
 
 untangle-postgresql-config (0-42) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@bebe.metavize.com>  Wed,  7 Mar 2007 17:08:24 -0800
+ -- John Irwin <jdi.com>  Wed,  7 Mar 2007 17:08:24 -0800
 
 untangle-postgresql-config (0-41) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@bebe.metavize.com>  Tue,  6 Mar 2007 18:15:22 -0800
+ -- John Irwin <jdi.com>  Tue,  6 Mar 2007 18:15:22 -0800
 
 untangle-postgresql-config (0-40) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@bebe.metavize.com>  Mon,  5 Mar 2007 19:21:40 -0800
+ -- John Irwin <jdi.com>  Mon,  5 Mar 2007 19:21:40 -0800
 
 untangle-postgresql-config (0-39) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@bebe.metavize.com>  Mon,  5 Mar 2007 19:08:43 -0800
+ -- John Irwin <jdi.com>  Mon,  5 Mar 2007 19:08:43 -0800
 
 untangle-postgresql-config (0-38) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@bebe.metavize.com>  Thu,  1 Mar 2007 14:44:32 -0800
+ -- John Irwin <jdi.com>  Thu,  1 Mar 2007 14:44:32 -0800
 
 untangle-postgresql-config (0-37) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@bebe.metavize.com>  Thu,  1 Mar 2007 14:43:54 -0800
+ -- John Irwin <jdi.com>  Thu,  1 Mar 2007 14:43:54 -0800
 
 untangle-postgresql-config (0-36) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@bebe.metavize.com>  Thu,  1 Mar 2007 13:57:51 -0800
+ -- John Irwin <jdi.com>  Thu,  1 Mar 2007 13:57:51 -0800
 
 untangle-postgresql-config (0-35) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@bebe.metavize.com>  Thu,  1 Mar 2007 13:39:02 -0800
+ -- John Irwin <jdi.com>  Thu,  1 Mar 2007 13:39:02 -0800
 
 untangle-postgresql-config (0-34) stable; urgency=low
 
   * auto build
 
- -- John Irwin <jdi@bebe.metavize.com>  Thu,  1 Mar 2007 12:36:02 -0800
+ -- John Irwin <jdi.com>  Thu,  1 Mar 2007 12:36:02 -0800
 
 untangle-postgresql-config (0-33) stable; urgency=low
 
   * auto build
 
- -- Aaron Read <amread@bebe.metavize.com>  Fri,  3 Nov 2006 16:31:55 -0800
+ -- Aaron Read <amread.com>  Fri,  3 Nov 2006 16:31:55 -0800
 
 untangle-postgresql-config (0-32) stable; urgency=low
 
@@ -224,7 +224,7 @@ untangle-postgresql-config (0-13) stable; urgency=low
 
   * auto build
 
- -- Dirk Morris <dmorris@butters>  Fri,  9 Sep 2005 11:05:01 -0700
+ -- Dirk Morris <dmorris@untangle.com>  Fri,  9 Sep 2005 11:05:01 -0700
 
 untangle-postgresql-config (0-12) stable; urgency=low
 
@@ -254,5 +254,5 @@ untangle-postgresql-config (0-8) stable; urgency=low
 
   * auto build
 
- -- Dirk Morris <dmorris@bebe.metavise.com>  Tue,  8 Feb 2005 20:21:25 -0800
+ -- Dirk Morris <dmorris.com.metavise.com>  Tue,  8 Feb 2005 20:21:25 -0800
 

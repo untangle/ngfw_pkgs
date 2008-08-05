@@ -31,7 +31,6 @@ build: configure
 	mkdir -p ./debian/tmp
 	dh_installdirs -A -v
 	for i in `cat debian/untangle-clamav-config.dirs` ; do mkdir -p debian/tmp/$$i ; done
-	cp ./update_sanesecurity.sh ./debian/tmp/etc/cron.hourly
 	find ./debian/tmp -name ".svn" | xargs rm -rf 
 
 clean:
@@ -47,7 +46,7 @@ binary-indep: build
 	dh_movefiles 
 #	dh_installdebconf   
 	dh_shlibdeps  
-	dh_installdocs   
+	dh_installdocs -n   
 #	dh_installexamples   
 #	dh_installmenu   
 #	dh_installlogrotate   

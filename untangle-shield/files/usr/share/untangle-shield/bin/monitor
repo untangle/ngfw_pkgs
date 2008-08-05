@@ -15,6 +15,7 @@ load_defaults()
     SHIELD_QUEUE_NUM="3001"
     
     SHIELD_CONF_FILE="/etc/shield.conf"
+    SHIELD_USER_FILE="/var/run/shield-users.conf"
     
     SHIELD_MONITOR_DELAY="10"
 
@@ -53,7 +54,6 @@ start_shield()
     killall ${NAME} > /dev/null 2>&1
 
     load_defaults
-
     
     local t_args="${SHIELD_ARGS} -d "
     local t
@@ -61,6 +61,7 @@ start_shield()
     test -n "${SHIELD_BIND_PORT}" && t_args="${t_args} -p ${SHIELD_BIND_PORT}"
     test -n "${SHIELD_QUEUE_NUM}" && t_args="${t_args} -q ${SHIELD_QUEUE_NUM}"
     test -n "${SHIELD_CONF_FILE}" && t_args="${t_args} -c ${SHIELD_CONF_FILE}"
+    test -n "${SHIELD_USER_FILE}" && t_args="${t_args} -b ${SHIELD_USER_FILE}"
     test -n "${SHIELD_LOG_OUT}" && t_args="${t_args} -o ${SHIELD_LOG_OUT}"
     test -n "${SHIELD_LOG_ERR}" && t_args="${t_args} -e ${SHIELD_LOG_ERR}"
     

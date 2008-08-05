@@ -546,3 +546,45 @@ div.list-table-container.qosstats div.overlimits
 { 
   width: 8em;
 }
+
+
+/* ------------------- Single NIC -------------------- */
+div.list-table-container.arp-eater-networks div.description
+{ 
+    width: 10em;
+}
+
+div.list-table-container.arp-eater-networks div.network
+{ 
+    width: 10em;
+}
+
+div.list-table-container.arp-eater-networks div.gateway
+{ 
+    width: 8em;
+}
+
+div.list-table-container.arp-eater-networks div.spoof, div.list-table-container.arp-eater-networks div.opportunistic
+{
+    width: 4em;
+    text-align: center;
+    text-indent: 0;
+}
+
+div.list-table-container.arp-eater-active-hosts div.address
+{ 
+    width: 8em;
+}
+
+div.list-table-container.arp-eater-active-hosts div.gateway
+{ 
+    width: 8em;
+}
+
+div.list-table-container.arp-eater-active-hosts div.opportunistic
+{
+    width: 4em;
+    text-align: center;
+    text-indent: 0;
+}
+

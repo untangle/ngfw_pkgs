@@ -24,5 +24,9 @@ class Alpaca::Components::DdclientComponent < Alpaca::Component
   def wizard_insert_closers( builder )
     ## builder.insert_piece( Alpaca::Wizard::Closer.new( 1200 ) { save } )
   end
+
+  def pre_save_configuration( config, settings_hash )
+    DdclientSettings.destroy_all
+  end
 end
   

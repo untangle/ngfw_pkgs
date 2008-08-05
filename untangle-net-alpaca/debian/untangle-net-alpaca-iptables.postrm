@@ -1,5 +1,12 @@
-#!/bin/sh
+#!/bin/bash
 
-#DEBHELPER#
+SERVICE=untangle-net-alpaca-iptables
+
+case $1 in
+  purge)
+    rm -f /etc/init.d/$SERVICE
+    update-rc.d untangle-net-alpaca-iptables remove >/dev/null # lintian...
+    ;;
+esac
 
 exit 0

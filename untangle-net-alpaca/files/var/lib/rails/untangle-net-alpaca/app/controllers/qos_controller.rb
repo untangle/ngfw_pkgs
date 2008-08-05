@@ -54,7 +54,6 @@ class QosController < ApplicationController
   end
 
   def save
-    ## Review : Internationalization
     return redirect_to( :action => "manage" ) if ( params[:commit] != "Save".t )
 
     qos_settings = QosSettings.find( :first )

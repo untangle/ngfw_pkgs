@@ -22,4 +22,9 @@ class Alpaca::Components::QosComponent < Alpaca::Component
   
   def wizard_insert_closers( builder )
   end
+
+  def pre_save_configuration( config, settings_hash )
+    QosSettings.destroy_all
+    QosRule.destroy_all
+  end
 end

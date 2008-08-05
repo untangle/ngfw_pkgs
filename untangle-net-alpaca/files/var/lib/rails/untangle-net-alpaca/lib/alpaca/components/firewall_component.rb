@@ -30,6 +30,10 @@ class Alpaca::Components::FirewallComponent < Alpaca::Component
     builder.insert_piece( Alpaca::Wizard::Closer.new( 1100 ) { save } )
   end
 
+  def pre_save_configuration( config, settings_hash )
+    Firewall.destroy_all( "system_id IS NULL" );
+  end
+
   private
 
   def validate

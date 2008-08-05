@@ -2,11 +2,12 @@ Source: untangle-cli-client
 Section: admin
 Priority: optional
 Maintainer: Ken Hilton <ken@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
-Standards-Version: 3.7.2
+Standards-Version: 3.8.0
 
 Package: untangle-cli-client
 Architecture: all
 Depends: ruby, untangle-cli-server
-Description: The Untangle CLI Client
- The Untangle CLI Client.
+Description: The Untangle CLI client
+ The Untangle Command-Line-Interface client.

@@ -17,10 +17,10 @@
 #
 class UvmApi < ActionWebService::API::Base
   inflect_names false
-  
+
   ## Restart the iptables rules
   api_method :generate_rules, :expects => [], :returns => []
-  
+
   ## Commit all of the iptables rules, run this at start to ensure that the uvm scripts are
   ## in /etc/untangle-net-alpaca/iptables-rules.d
   api_method :write_files, :expects => [], :returns => []
@@ -44,7 +44,7 @@ class UvmApi < ActionWebService::API::Base
   # @param default_gateway
   # @param dns_1
   # @param dns_2
-  api_method( :wizard_external_interface_static, :expects => [:string, :string, :string, :string, :string], 
+  api_method( :wizard_external_interface_static, :expects => [:string, :string, :string, :string, :string],
               :returns => [] )
 
   ## save external interface for Dynamic
@@ -61,10 +61,11 @@ class UvmApi < ActionWebService::API::Base
   ## setup the internal interface for NAT.
   # @param ip
   # @param netmask
-  api_method( :wizard_internal_interface_nat, :expects => [:string, :string], 
+  api_method( :wizard_internal_interface_nat, :expects => [:string, :string],
               :returns => [] )
 
-  
   ## Remap the interfaces
   api_method( :remap_interfaces, :expects => [[:string],[:string]], :returns => [] )
+  ## Determine if the box is still alive.
+  api_method( :hello_world, :expects => [], :returns => [:boolean])
 end

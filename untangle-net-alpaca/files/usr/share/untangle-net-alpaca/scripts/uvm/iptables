@@ -23,6 +23,31 @@ UVM_BIND_ADDRESS="192.0.2.42"
 ## UDP Session timeout
 UDP_SESSION_TIMEOUT=70
 
+uvm_shield_traffic()
+{
+    SHIELD_QUEUE_NUM=3001
+
+    if [ -f /etc/default/untangle-shield ]; then 
+        . /etc/default/untangle-shield
+    fi
+
+    local t_queue_pid=`awk -v queue=${SHIELD_QUEUE_NUM} '{ if ( $1 == queue ) print $2 }' /proc/net/netfilter/nfnetlink_queue`
+
+    if [ -z "${t_queue_pid}" ]; then 
+        echo "[`date`] Shield is not running, ignoring queue rules."
+        return
+    fi
+
+    ## Queue any TCP that is not antisubscribed
+    ${IPTABLES} -t mangle -I FORWARD 1 -p tcp -m mark --mark 0/${MARK_ANTISUB} \
+        -m conntrack --ctstate NEW \
+        -j NFQUEUE --queue-num ${SHIELD_QUEUE_NUM}
+    
+    ${IPTABLES} -t mangle -I FORWARD 1 -p udp -m mark --mark 0/${MARK_ANTISUB} \
+        -m addrtype --dst-type unicast -m conntrack --ctstate NEW \
+        -j NFQUEUE --queue-num ${SHIELD_QUEUE_NUM}
+}
+
 queue_owner()
 {
     if [ "${UVM_PID}x" != "invalidx" ]; then return ; fi
@@ -266,29 +291,3 @@ uvm_packet_filter_secure_public()
     ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} \
         --destination-ports ${HTTPS_PUBLIC_PORT} -j RETURN
 }
-
-uvm_shield_traffic()
-{
-    SHIELD_QUEUE_NUM=3001
-
-    if [ -f /etc/default/untangle-shield ]; then 
-        . /etc/default/untangle-shield
-    fi
-
-    local t_queue_pid=`awk -v queue=${SHIELD_QUEUE_NUM} '{ if ( $1 == queue ) print $2 }' /proc/net/netfilter/nfnetlink_queue`
-
-    if [ -z "${t_queue_pid}" ]; then 
-        echo "[`date`] Shield is not running, ignoring queue rules."
-        return
-    fi
-
-    ## Queue any TCP that is not antisubscribed
-    ${IPTABLES} -t mangle -I FORWARD 1 -p tcp -m mark --mark 0/${MARK_ANTISUB} \
-        -m conntrack --ctstate NEW \
-        -j NFQUEUE --queue-num ${SHIELD_QUEUE_NUM}
-    
-    ${IPTABLES} -t mangle -I FORWARD 1 -p udp -m mark --mark 0/${MARK_ANTISUB} \
-        -m addrtype --dst-type unicast -m conntrack --ctstate NEW \
-        -j NFQUEUE --queue-num ${SHIELD_QUEUE_NUM}
-}
-

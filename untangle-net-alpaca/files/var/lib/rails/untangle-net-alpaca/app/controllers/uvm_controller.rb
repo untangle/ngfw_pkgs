@@ -28,7 +28,7 @@ class UvmController < ApplicationController
 
     render :action => 'manage'
   end
-
+  
   alias :index :manage
 
   def create_subscription
@@ -63,7 +63,6 @@ class UvmController < ApplicationController
     uvm_settings = UvmSettings.new if uvm_settings.nil?
     uvm_settings.update_attributes( params[:uvm_settings] )
     uvm_settings.save
-
     
     save_user_rules
     
@@ -293,8 +292,14 @@ class UvmController < ApplicationController
     end    
   end
 
+  def hello_world
+    ## Just access the database to make sure another process doesn't have it locked.
+    Interface.find( :first )
+    true
+  end
+
   def scripts
-    RuleHelper::Scripts + [ "subscription_manager" ]
+    RuleHelper::Scripts + []
   end
 
   private

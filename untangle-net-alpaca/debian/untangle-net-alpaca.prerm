@@ -1,0 +1,25 @@
+#! /bin/bash
+
+ourInit() {
+if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
+  invoke-rc.d $1 $2
+else
+  /etc/init.d/$1 $2
+fi
+}
+
+SERVICE=untangle-net-alpaca
+
+case "$1" in
+    remove|deconfigure)
+      ourInit $SERVICE stop
+      ;;
+    failed-upgrade)
+        ;;
+    *)
+        echo "prerm called with unknown argument \`$1'" >&2
+        exit 0
+    ;;
+esac
+
+exit 0

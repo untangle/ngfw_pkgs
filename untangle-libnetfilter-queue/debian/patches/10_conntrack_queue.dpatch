@@ -1,8 +1,8 @@
 #! /bin/bash /usr/share/dpatch/dpatch-run
-## 10_conntrack_queue.dpatch by  <rbscott@rbscott-eg>
+## 10_conntrack_queue.dpatch by  <rbscott@untangle.com>
 ##
 ## All lines beginning with `## DP:' are a description of the patch.
-## DP: No description.
+## DP: Untangle-specific conntrack changes.
 
 @DPATCH@
 diff -urNad untangle-libnetfilter-queue/include/libnetfilter_queue/libnetfilter_queue.h /tmp/dpep.HDI7bo/untangle-libnetfilter-queue/include/libnetfilter_queue/libnetfilter_queue.h

@@ -2,15 +2,16 @@ Source: untangle-spamassassin-update
 Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
-Standards-Version: 3.7.2
+Standards-Version: 3.8.0
 
 Package: untangle-spamassassin-update
 Architecture: all
-Depends: spamassassin (>= 3.1.7), libnet-dns-perl, libmailtools-perl, libhtml-format-perl, libwww-perl, libarchive-tar-perl, libio-zlib-perl, libmail-spf-perl | libmail-spf-query-perl, libnet-ident-perl, razor, libsys-hostname-long-perl, libhtml-parser-perl, libdigest-sha1-perl, re2c, untangle-fuzzyocr | fuzzyocr
+Depends: spamassassin (>= 3.1.7), libnet-dns-perl, libmailtools-perl, libhtml-format-perl, libwww-perl, libarchive-tar-perl, libio-zlib-perl, libmail-spf-perl | libmail-spf-query-perl, libnet-ident-perl, razor, libsys-hostname-long-perl, libhtml-parser-perl, libdigest-sha1-perl, re2c, untangle-fuzzyocr | fuzzyocr, adduser
 Recommends: libsys-syslog-perl, libmail-dkim-perl
 Conflicts: spamc-mv
 Provides: spamc-mv
 Replaces: spamc-mv
 Description: The Untangle Spamassassin update utilities
- The Untangle Spamassassin update utilities.
+ The Untangle Spamassassin update utilities maintain up-to-date spam signatures.

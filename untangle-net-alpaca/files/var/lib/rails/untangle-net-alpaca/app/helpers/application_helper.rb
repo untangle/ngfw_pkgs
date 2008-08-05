@@ -53,8 +53,10 @@ module ApplicationHelper
     "&nbsp;"
   end
 
-  def table_checkbox( row_id, name, enabled )
-    check_box( name, row_id, { :checked => enabled }, true, false )
+  def table_checkbox( row_id, name, enabled, readonly = false )
+    options = { :checked => enabled }
+    options[:disabled] = true if readonly
+    check_box( name, row_id, options, true, false )
   end
 
   def mac_address_link( address, title="" )
