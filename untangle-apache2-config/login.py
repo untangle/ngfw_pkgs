@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import md5
+import uvmlogin
 
 from mod_python import apache, Session, util
 from psycopg import connect
@@ -37,17 +38,7 @@ def handler(req):
 
         if valid_login(req, realm, username, password):
             sess = Session.Session(req)
-
-            if sess.has_key('apache_realms'):
-                apache_realms = sess['apache_realms']
-            else:
-                sess['apache_realms'] = apache_realms = {}
-
-            realm_record = {}
-            realm_record['username'] = username
-            apache_realms[realm] = realm_record
-
-            sess.save()
+            uvmlogin.save_session_user(sess, realm, username)
 
             apache.log_error('redirect to %s' % orig_url)
             util.redirect(req, orig_url)
