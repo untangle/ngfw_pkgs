@@ -1,0 +1,98 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 10_untangle.dpatch by Sebastien Delafond <seb@untangle.com>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: This should be split into several dpatches :\
+
+@DPATCH@
+diff -urNad untangle-python-jsonrpc~/jsonrpc/__init__.py untangle-python-jsonrpc/jsonrpc/__init__.py
+--- untangle-python-jsonrpc~/jsonrpc/__init__.py	2008-08-08 12:40:03.000000000 -0700
++++ untangle-python-jsonrpc/jsonrpc/__init__.py	2008-08-08 12:45:42.000000000 -0700
+@@ -21,6 +21,3 @@
+ 
+ from jsonrpc.json import loads, dumps, JSONEncodeException, JSONDecodeException
+ from jsonrpc.proxy import ServiceProxy, JSONRPCException
+-from jsonrpc.serviceHandler import ServiceMethod, ServiceHandler, ServiceMethodNotFound, ServiceException
+-from jsonrpc.cgiwrapper import handleCGI
+-from jsonrpc.modpywrapper import handler
+\ No newline at end of file
+diff -urNad untangle-python-jsonrpc~/jsonrpc/proxy.py untangle-python-jsonrpc/jsonrpc/proxy.py
+--- untangle-python-jsonrpc~/jsonrpc/proxy.py	2008-08-08 12:40:03.000000000 -0700
++++ untangle-python-jsonrpc/jsonrpc/proxy.py	2008-08-08 12:45:42.000000000 -0700
+@@ -11,7 +11,7 @@
+ 
+   This software is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
+ 
+   You should have received a copy of the GNU Lesser General Public License
+@@ -19,31 +19,56 @@
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ """
+ 
+-import urllib
++import urllib2
++import types
++
+ from jsonrpc.json import dumps, loads
+ 
+ class JSONRPCException(Exception):
+     def __init__(self, rpcError):
+         Exception.__init__(self)
+         self.error = rpcError
++
++"""
++Extend or redefine this class if you want to use a different mechanism
++to make the request.  EG. In python 2.4, urllib2 for instance doesn't
++support persistent connections, could use pycurl instead.
++"""
++class RequestHandler(object):
++    def __init__(self):
++        self.__opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
++
++    def make_request(self, url, postdata):
++        request = urllib2.Request( url, postdata, headers = { "Content-type" : "text/plain" } )
++        return self.__opener.open( request ).read()
+         
+ class ServiceProxy(object):
+-    def __init__(self, serviceURL, serviceName=None):
++    __request_id = 1
++
++    def __init__(self, serviceURL, serviceName=None, handler=None):
+         self.__serviceURL = serviceURL
+         self.__serviceName = serviceName
++        self.__handler = handler
++        if ( self.__handler == None ):
++            self.__handler = RequestHandler()
+ 
+     def __getattr__(self, name):
+         if self.__serviceName != None:
+             name = "%s.%s" % (self.__serviceName, name)
+-        return ServiceProxy(self.__serviceURL, name)
++        return ServiceProxy(self.__serviceURL, name, self.__handler)
+ 
+     def __call__(self, *args):
+-         postdata = dumps({"method": self.__serviceName, 'params': args, 'id':'jsonrpc'})
+-         respdata = urllib.urlopen(self.__serviceURL, postdata).read()
+-         resp = loads(respdata)
+-         if resp['error'] != None:
+-             raise JSONRPCException(resp['error'])
+-         else:
+-             return resp['result']
+-         
++        ServiceProxy.__request_id += 1
++        postdata = dumps({"method": self.__serviceName, 'params': args, 'id': ServiceProxy.__request_id })
++        respdata = self.__handler.make_request( self.__serviceURL, postdata )
++        resp = loads(respdata)
++        if resp.has_key( 'error' ) and resp['error'] != None:
++            print "A little error: ", resp['error']
++            raise JSONRPCException(resp['error'])
++        result = resp['result']
++        if ( type( result ) is types.DictType ) and result.has_key( 'JSONRPCType' ) and ( result['JSONRPCType'] == "CallableReference" ) and result.has_key( 'objectID' ):
++            return ServiceProxy(self.__serviceURL, ".obj#%s" % result['objectID'], self.__handler)
++        return result
++
+ 
++ 
