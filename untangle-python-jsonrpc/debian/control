@@ -2,7 +2,7 @@ Source: untangle-python-jsonrpc
 Section: python
 Priority: extra
 Maintainer: Sebastien Delafond <seb@untangle.com>
-Build-Depends-Indep: python-all-dev, python (>= 2.3.5-7)
+Build-Depends-Indep: python-all-dev | python2.4-dev, python (>= 2.3.5-7)
 Build-Depends: cdbs (>= 0.4.41), dpatch, debhelper, python-central (>= 0.5)
 Standards-Version: 3.8.0
 XS-Python-Version: all
