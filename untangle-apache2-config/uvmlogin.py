@@ -1,4 +1,5 @@
 import base64
+import os
 import urllib
 
 from mod_python import apache, Session, util
@@ -28,6 +29,10 @@ def headerparserhandler(req):
 
     username = session_user(sess, realm)
 
+    if None == username and Realm == 'SetupWizard' and is_not_setup():
+        username = 'setupwizard'
+        save_session_user(sess, realm, username)
+
     if None == username and is_root(req):
         username = 'localadmin'
         save_session_user(sess, realm, username)
@@ -48,6 +53,9 @@ def session_user(sess, realm):
             return realm_record['username']
 
     return None
+
+def is_not_setup():
+    return os.path.exists('/usr/share/untangle/.regdone')
 
 def is_root(req):
     (remote_ip, remote_port) = req.connection.remote_addr
