@@ -2,3 +2,5 @@ etc/apache2
 etc/apache2/sites-available
 usr/lib/python2.3/
 usr/share/untangle/mod_python/login
+usr/share/untangle/apache2/unrestricted
+usr/share/untangle/apache2/internal

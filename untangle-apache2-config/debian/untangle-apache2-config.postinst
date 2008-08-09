@@ -22,6 +22,14 @@ EOF
 EOF
 fi
 
+if [ ! -e /etc/apache2/untangle-unrestricted ]; then
+    echo "Include /usr/share/untangle/apache2/unrestricted/*.conf" >/etc/apache2/untangle-unrestricted
+fi
+
+if [ ! -e /etc/apache2/untangle-internal ]; then
+    echo "Include /usr/share/untangle/apache2/internal/*.conf" >/etc/apache2/untangle-internal
+fi
+
 if [ ! -e /etc/apache2/ssl/apache.pem ]; then
     mkdir -p /etc/apache2/ssl
     export RANDFILE=/dev/random
