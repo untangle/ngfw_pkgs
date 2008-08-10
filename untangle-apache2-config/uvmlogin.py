@@ -69,17 +69,19 @@ def is_root(req):
         hexaddr = "%08X" % n
         hexport = "%04X" % remote_port
 
-        infile = open('/proc/net/tcp', 'r')
-        for l in infile:
-            a = l.split()
-            if len(a) > 2:
-                p = a[1].split(':')
-                if len(p) == 2 and p[0] == hexaddr and p[1] == hexport:
-                    uid = a[7]
-                    if uid == '0':
-                        result = True
-                        break
-        infile.close()
+        try:
+            infile = open('/proc/net/tcp', 'r')
+            for l in infile:
+                a = l.split()
+                if len(a) > 2:
+                    p = a[1].split(':')
+                    if len(p) == 2 and p[0] == hexaddr and p[1] == hexport:
+                        uid = a[7]
+                        if uid == '0':
+                            result = True
+                            break
+        finally:
+            infile.close()
 
     return result
 
