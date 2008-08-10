@@ -36,9 +36,24 @@ class Alpaca::Migration < ActiveRecord::Migration
 
   def self.add_sample_rule( klazz, attributes )
     @@positions = {} if @@positions.nil?
-    @@positions[klazz] = 0 unless @@positions.include?( klazz )
-    ## Set the position and make sure to disable all of these rules
-    attributes[:position] = @@positions[klazz] += 1
+    
+    ## Automatically append the new entries at the end.
+    unless @@positions.include?( klazz )
+      p = klazz.maximum :position
+      p = 0 if p.nil?
+      @@positions[klazz] = p
+    end
+
+    ## Set the position
+    insert_first = attributes.delete( :insert_first )
+    if insert_first.nil? || ( insert_first != true )
+      attributes[:position] = ( @@positions[klazz] += 1 )
+    else
+      @@positions[klazz] += 1
+      klazz.update_all( "position = position + 1 " )
+      attributes[:position] = 1
+    end
+
     attributes[:system_id] = nil if klazz.method_defined?( "system_id=" )
     klazz.new( attributes ).save
   end

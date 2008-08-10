@@ -18,7 +18,7 @@
 class Falcon < Alpaca::Migration
   def self.up
     create_table :arp_eater_settings do |table|
-      table.column :enabled, :boolean
+      table.column :enabled, :boolean, :default => 0
       table.column :gateway, :string
       table.column :timeout_ms, :int
       table.column :rate_ms, :int
@@ -29,7 +29,7 @@ class Falcon < Alpaca::Migration
     end
 
     create_table :arp_eater_networks do |table|
-      table.column :enabled, :boolean
+      table.column :enabled, :boolean, :default => 0
       table.column :description, :string
       table.column :spoof, :boolean
       table.column :opportunistic, :boolean
@@ -39,10 +39,17 @@ class Falcon < Alpaca::Migration
       table.column :timeout_ms, :int
       table.column :rate_ms, :int
     end
+
+    add_column :alpaca_settings, :send_icmp_redirects, :boolean, :default => 1
+
+    add_file_override( :enabled => true, :writable => true, :description => "sysctl configuration",
+                       :path => "/etc/untangle-net-alpaca/sysctl", :insert_first => true )
   end
 
   def self.down
     drop_table :arp_eater_settings
     drop_table :arp_eater_networks
+    
+    remove_column :alpaca_settings, :send_icmp_redirects
   end
 end

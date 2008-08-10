@@ -38,19 +38,19 @@ fi
 /etc/cron.hourly/rebuild-nonce
 
 sanitycheck() {
-  [ -f ${MONGREL_PID_FILE} ] && [ ! -d /proc/`cat ${MONGREL_PID_FILE}` ] && rm -f ${MONGREL_PID_FILE}
+  [ -f "${MONGREL_PID_FILE}" ] && [ ! -d /proc/`cat "${MONGREL_PID_FILE}"` ] && rm -f "${MONGREL_PID_FILE}"
 }
 
 start()
 {
-    cd ${BASE_DIR} || {
-        log_failure_msg "${NAME} could not change into the directory ${BASE_DIR}" 
+    cd "${BASE_DIR}" || {
+        log_failure_msg "${NAME} could not change into the directory '${BASE_DIR}'" 
         exit -1
     }
 
     ## Load the latest version of the schema
     rake -s alpaca:init -s RAILS_ENV=${MONGREL_ENV} >> ${MONGREL_LOG_FILE} 2>&1 || { 
-        log_failure_msg "${NAME} could not load database schema ${BASE_DIR}"
+        log_failure_msg "${NAME} could not load database schema '${BASE_DIR}'"
         exit -2
     }
 
@@ -61,18 +61,18 @@ start()
     
     ## The root handler is used to automatically redirect requests to /.
     ${MONGREL_RAILS} start -S ${BASE_DIR}/root-handler.conf -c ${BASE_DIR} -e ${MONGREL_ENV} \
-        ${MONGREL_ARGS} --prefix "/alpaca" -d -l ${MONGREL_LOG_FILE} --pid ${MONGREL_PID_FILE}
+        ${MONGREL_ARGS} --prefix "/alpaca" -d -l "${MONGREL_LOG_FILE}" --pid "${MONGREL_PID_FILE}"
 }
 
 stop()
 {
     ## Check if the PID file exists, mongrel_rails doesn't handle this case well if it doesn't exist
-    [ -f ${MONGREL_PID_FILE} ] && ${MONGREL_RAILS} stop -w 5 -c ${BASE_DIR} --pid ${MONGREL_PID_FILE}
+    [ -f "${MONGREL_PID_FILE}" ] && ${MONGREL_RAILS} stop -w 5 -c "${BASE_DIR}" --pid "${MONGREL_PID_FILE}"
 
     pkill mongrel > /dev/null 2>&1
     pkill -9 mongrel > /dev/null 2>&1
     ## Remove the pid file.
-    rm -f ${MONGREL_PID_FILE}
+    rm -f "${MONGREL_PID_FILE}"
 }
 
 case "$1" in
