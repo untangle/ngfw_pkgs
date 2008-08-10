@@ -89,8 +89,15 @@ def login_redirect(req, realm):
     url = urllib.quote(req.unparsed_uri)
     realm_str = urllib.quote(realm)
 
-    redirect_url = '/login/login.py?url=%s&realm=%s' % (url, realm_str)
+    redirect_url = '/auth/login?url=%s&realm=%s' % (url, realm_str)
     util.redirect(req, redirect_url)
+
+def delete_session_user(sess, realm):
+    if sess.has_key('apache_realms'):
+        apache_realms = sess['apache_realms']
+        if realm in apache_realms:
+            del apache_realms[realm]
+            sess.save()
 
 def save_session_user(sess, realm, username):
     if sess.has_key('apache_realms'):
