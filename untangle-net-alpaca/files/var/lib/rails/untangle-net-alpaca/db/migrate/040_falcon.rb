@@ -32,7 +32,7 @@ class Falcon < Alpaca::Migration
       table.column :enabled, :boolean, :default => 0
       table.column :description, :string
       table.column :spoof, :boolean
-      table.column :passive, :boolean
+      table.column :passive, :boolean, :default => 1
       table.column :ip, :string
       table.column :netmask, :string
       table.column :gateway, :string
