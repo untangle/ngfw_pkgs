@@ -1,63 +1,47 @@
-#!/usr/bin/python
-
 import md5
 import uvmlogin
 
 from mod_python import apache, Session, util
 from psycopg import connect
 
-def handler(req):
+# pages --------------------------------------------------------------------------
+
+def login(req, url='/', realm='Administrator'):
     args = util.parse_qs(req.args or '')
 
-    if args.has_key('realm'):
-        realms = args['realm']
-        if 0 < len(realms):
-            realm = realms[0]
-        else:
-            apache.log_error('no realm, assuming Administrator')
-            realm = 'Administrator'
-    else:
-        apache.log_error('no realm, assuming Administrator')
-        realm = 'Administrator'
+    if req.form.has_key('username') and req.form.has_key('password'):
+        username = req.form['username']
+        password = req.form['password']
 
-    if args.has_key('url'):
-        urls = args['url']
-        if 0 < len(urls):
-            orig_url = urls[0]
-        else:
-            apache.log_error('no orig_url, assuming /')
-            orig_url = '/'
-    else:
-        apache.log_error('no orig_url, assuming /')
-        orig_url = '/'
-
-    form = util.FieldStorage(req)
-    if form.has_key('username') and form.has_key('password'):
-        username = form['username']
-        password = form['password']
-
-        if valid_login(req, realm, username, password):
+        if _valid_login(req, realm, username, password):
             sess = Session.Session(req)
             uvmlogin.save_session_user(sess, realm, username)
 
-            apache.log_error('redirect to %s' % orig_url)
-            util.redirect(req, orig_url)
+            apache.log_error('redirect to %s' % url)
+            util.redirect(req, url)
 
     company_name = "Untangle"
     title = "%s Login" % company_name
     host = req.hostname
-    write_login_form(req, title, host)
+    _write_login_form(req, title, host)
 
     return apache.OK
 
-def valid_login(req, realm, username, password):
+def logout(req, url='/', realm='Administrator'):
+    sess = Session.Session(req)
+    uvmlogin.delete_session_user(sess, realm)
+    util.redirect(req, url)
+
+# internal methods ---------------------------------------------------------------
+
+def _valid_login(req, realm, username, password):
     if realm == 'Administrator':
-        return admin_valid_login(req, username, password)
+        return _admin_valid_login(req, username, password)
     else:
         apache.log_error('unknown realm: %s' % realm)
         return False
 
-def admin_valid_login(req, username, password):
+def _admin_valid_login(req, username, password):
     conn = connect("dbname=uvm user=postgres")
     curs = conn.cursor()
     curs.execute('SELECT password FROM settings.u_user WHERE login = %s',
@@ -72,7 +56,7 @@ def admin_valid_login(req, username, password):
         salt = pw_hash[len(pw_hash) - 8:]
         return raw_pw == md5.new(password + salt).digest()
 
-def write_login_form(req, title, host):
+def _write_login_form(req, title, host):
     login_url = req.unparsed_uri
     req.content_type = "text/html"
     req.send_http_header()
