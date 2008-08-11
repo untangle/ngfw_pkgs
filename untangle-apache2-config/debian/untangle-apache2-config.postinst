@@ -12,13 +12,31 @@ JkLogLevel error
 
 </IfModule>
 EOF
+fi
+
+if [ ! -e /etc/apache2/workers.properties ]; then
+    secret=$(dd if=/dev/random count=10 bs=1 2>/dev/null | hexdump | cut -d \  -f 2-| head -n 1 | tr -d " ")
+    cat >/etc/apache2/workers.properties <<EOF
+worker.list=uvmWorker
+
+worker.uvmWorker.type=ajp13
+worker.uvmWorker.host=localhost
+worker.uvmWorker.port=8009
+worker.uvmWorker.secret=$secret
 EOF
 fi
+
+if ! grep worker.uvmWorker.secret /etc/apache2/workers.properties >/dev/null 2>&1; then
+    secret=$(dd if=/dev/random count=10 bs=1 2>/dev/null | hexdump | cut -d \  -f 2-| head -n 1 | tr -d " ")
+    echo "worker.uvmWorker.secret=$secret" >>/etc/apache2/workers.properties
+fi
+
+chown www-data:www-data /etc/apache2/workers.properties
+chmod 600 /etc/apache2/workers.properties
 
 if [ ! -e /etc/apache2/untangle-homepage ]; then
     cat >/etc/apache2/untangle-homepage <<EOF
 RedirectMatch 302 /index.html /webui
-EOF
 EOF
 fi
 
