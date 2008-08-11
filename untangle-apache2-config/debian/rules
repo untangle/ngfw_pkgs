@@ -33,6 +33,7 @@ build: configure
 	cp ./uvm.config ./debian/untangle-apache2-config/etc/apache2/sites-available/uvm
 	cp ./workers.properties ./debian/untangle-apache2-config/etc/apache2/
 	cp ./adminindex.py ./debian/untangle-apache2-config/usr/share/untangle/mod_python/auth/index.py
+	cp ./errorindex.py ./debian/untangle-apache2-config/usr/share/untangle/mod_python/error/index.py
 	cp ./uvmlogin.py ./debian/untangle-apache2-config/usr/lib/python2.3/
 	tar c -C ./files --exclude .svn . | tar x -C ./debian/untangle-apache2-config
 	find ./debian/untangle-apache2-config/tmp -name ".svn" | xargs rm -rf
