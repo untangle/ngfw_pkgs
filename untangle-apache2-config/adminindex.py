@@ -1,8 +1,13 @@
+import gettext
 import md5
 import uvmlogin
 
 from mod_python import apache, Session, util
 from psycopg import connect
+
+gettext.bindtextdomain('untangle-apache2-config')
+gettext.textdomain('untangle-apache2-config')
+_ = gettext.gettext
 
 # pages --------------------------------------------------------------------------
 
@@ -21,11 +26,10 @@ def login(req, url='/', realm='Administrator'):
             util.redirect(req, url)
 
     company_name = "Untangle"
-    title = "%s Login" % company_name
+    title = _("%s Login") % company_name
     host = req.hostname
-    _write_login_form(req, title, host)
 
-    return apache.OK
+    _write_login_form(req, title, host)
 
 def logout(req, url='/', realm='Administrator'):
     sess = Session.Session(req)
@@ -90,12 +94,12 @@ def _write_login_form(req, title, host):
 
         <form method="post" action="%s">
           <table><tbody>
-            <tr><td style="text-align:right">Server:</td><td><em>&nbsp;%s</em></td></tr>
-            <tr><td style="text-align:right">Username:</td><td><input id="username" type="text" name="username" /></td></tr>
-            <tr><td style="text-align:right">Password:</td><td><input id="password" type="password" name="password" /></td></tr>
+            <tr><td style="text-align:right">%s</td><td><em>&nbsp;%s</em></td></tr>
+            <tr><td style="text-align:right">%s</td><td><input id="username" type="text" name="username" /></td></tr>
+            <tr><td style="text-align:right">%s</td><td><input id="password" type="password" name="password" /></td></tr>
           </tbody></table>
           <br />
-          <div style="text-align: center;"><button value="login" type="submit">Login</button></div>
+          <div style="text-align: center;"><button value="login" type="submit">%s</button></div>
         </form>
 
         <script type="text/javascript">document.getElementById('username').focus();</script>
@@ -109,5 +113,4 @@ def _write_login_form(req, title, host):
  <!-- Box End -->
 </div>
 </body>
-</html>
-""" % (title, title, login_url, host))
+</html>""" % (title, title, login_url, _("Server:"), host, _("Username:"), _("Password:"), _("Login")))
