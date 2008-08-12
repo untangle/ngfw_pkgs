@@ -40,12 +40,8 @@ RedirectMatch 302 /index.html /webui
 EOF
 fi
 
-if [ ! -e /etc/apache2/untangle-unrestricted ]; then
-    echo "Include /usr/share/untangle/apache2/unrestricted/*.conf" >/etc/apache2/untangle-unrestricted
-fi
-
-if [ ! -e /etc/apache2/untangle-internal ]; then
-    echo "Include /usr/share/untangle/apache2/internal/*.conf" >/etc/apache2/untangle-internal
+if [ ! -e /etc/apache2/untangle-conf.d ]; then
+    echo "Include /usr/share/untangle/apache2/conf.d/*.conf" >/etc/apache2/untangle-conf.d
 fi
 
 if [ ! -e /etc/apache2/ssl/apache.pem ]; then
