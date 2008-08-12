@@ -12,39 +12,93 @@
 
 . /lib/lsb/init-functions
 
-DESC="Service for starting an untangle shield"
+DESC="Untangle Shield"
 
 DAEMON_NAME="shield"
 
-MONITOR="monitor"
+MONITOR="monitor.shield"
 MONITOR_SCRIPT=/usr/share/untangle-shield/bin/${MONITOR}
 
 PID_FILE="/var/run/untangle-shield.pid"
 
+load_defaults()
+{
+    SHIELD_BIND_PORT="3001"
+    SHIELD_QUEUE_NUM="3001"
+    
+    SHIELD_CONF_FILE="/etc/untangle-shield.conf"
+    SHIELD_USER_FILE="/var/run/shield-users.conf"
+    
+    SHIELD_MONITOR_DELAY="10"
+
+    SHIELD_LOG_OUT="/var/log/untangle-shield/debug.log"
+    SHIELD_LOG_ERR="/var/log/untangle-shield/error.log"
+    
+    if [ -f /etc/default/untangle-shield ] ; then
+        . /etc/default/untangle-shield
+    fi
+}
+
+is_running()
+{
+    load_defaults
+
+    ## First just validate that the queue is bound
+    if [ ! -f /proc/net/netfilter/nfnetlink_queue ] ; then return 1 ; fi
+
+    local t_queue_pid=`awk -v queue=${SHIELD_QUEUE_NUM} '{ if ( $1 == queue ) print $2 }' /proc/net/netfilter/nfnetlink_queue`
+    if [ -z "${t_queue_pid}" ]; then return 1 ; fi
+
+    ## Perform a simple curl call to make sure the server is running.
+    curl -sf -F 'json_request=@-' -m 10 "http://localhost:${SHIELD_BIND_PORT}"  > /dev/null 2>&1 <<EOF
+{ "function" : "hello_world" }
+EOF
+}
+
 start()
 {
-    killall ${MONITOR} > /dev/null  2>&1
-    killall ${DAEMON_NAME} > /dev/null  2>&1
-    rm -f ${PID_FILE}
+    log_daemon_msg "Starting $DESC"
 
-    sleep 2
+    if [ -f ${PID_FILE} ] ; then
+      ps -p `cat ${PID_FILE}` > /dev/null 2>&1
+      if [ $? -eq 0 ] ; then
+          echo "Already Running."
+          log_end_msg 1
+          exit 1
+      fi	
+      echo "Removing Stale pid file"
+      rm -f ${PID_FILE}
+    fi
 
+    log_progress_msg "untangle-shield"    
     start-stop-daemon -m --pidfile ${PID_FILE} --name ${MONITOR} --start --background \
         --startas ${MONITOR_SCRIPT}
+    RET=$?
+    if [ $RET -ne 0 ] ; then
+        log_end_msg $RET
+        exit $RET
+    fi
+
+    # check to verify its running
+    RET=1
+    for t in `seq 1 10`; do
+        sleep 1
+        is_running && RET=0 && break
+    done
+
+    log_end_msg $RET
 }
 
 stop()
 {
-    start-stop-daemon --pidfile ${PID_FILE} --name ${MONITOR} --stop
+    log_daemon_msg "Stopping $DESC"
 
-    sleep 2
-    killall ${MONITOR} > /dev/null  2>&1
-    killall ${DAEMON_NAME} > /dev/null  2>&1
+    log_progress_msg "untangle-shield"    
+    start-stop-daemon --pidfile ${PID_FILE} --stop --retry INT/4/INT/4/INT/2/TERM/1/KILL/1
+    RET=$?
+    log_end_msg $RET
+
     rm -f ${PID_FILE}
-
-    ## Wait for the queue to be closed.
-    sleep 1
-    /etc/init.d/untangle-net-alpaca-iptables restart
 }
 
 case "$1" in
