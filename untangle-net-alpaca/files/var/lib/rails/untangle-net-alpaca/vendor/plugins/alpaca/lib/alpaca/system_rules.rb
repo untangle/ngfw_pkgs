@@ -188,6 +188,12 @@ module Alpaca::SystemRules
                         :filter => "d-port::4569&&protocol::udp",
                         :subscribe => false )
 
+    rm.add_bypass_rule( :description => "Bypass isnic Traffic",
+                        :enabled => true,
+                        :system_id => "bypass-internal-single-nic-traffic-10bd7d18",
+                        :is_custom => true,
+                        :subscribe => false )
+
     ## Always call this last
     rm.save_rules
   end

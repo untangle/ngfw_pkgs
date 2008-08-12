@@ -71,12 +71,17 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
   ## A helper function for the packet filter manager.
   def handle_custom_rule( rule )
     case rule.system_id
-      when "accept-internal-uvm-ede0af7d"
-        raise "mismatch type" unless rule.is_a? 
-      when "accept-internal-uvm-ede0af7d"
-      else return nil
+    when "bypass-internal-single-nic-traffic-10bd7d18"
+      return nil if ArpEaterSettings.find( :first, [ "enabled=?", true ] ).nil?
+       
+      return <<EOF
+netstat -rn | awk '/^[0-9]/ { if ( $1 != "0.0.0.0" && $2 == "0.0.0.0" && index( "dummy", $8 ) == 0 ) print $1 "/" $3 }' | sort | uniq | while read t_network ; do
+  #{IPTablesCommand} #{Chain::BypassRules.args} -s ${t_network} -d ${t_network} -g #{Chain::BypassMark}
+done
+EOF
+    else return nil
     end
-
+    
     return nil
   end
 
@@ -293,7 +298,7 @@ EOF
     
     rules.each do |rule|
       begin
-        next if rule.is_custom
+        next text << handle_custom_rule( rule ) if rule.is_custom
 
         filters, chain = OSLibrary::Debian::Filter::Factory.instance.filter( rule.filter )
         
