@@ -88,7 +88,7 @@ start_shield()
     export PID=$!
 
     ## Give it some time to grab the queue so iptables knows that it is still running
-    for t in `seq 1 10`; do
+    for t in '1 2 3 4 5 6 7 8 9 10'; do
         sleep 1
         is_running && break
     done
