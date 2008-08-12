@@ -13,4 +13,4 @@ keytool -export -alias $ALIAS -keystore $KEYSTORE -storepass $PASSWORD -file $de
 openssl x509 -in $der -inform der -out $PEM -outform pem
 rm -f $der
 
-java -classpath `dirname $0` ExportPriv $KEYSTORE $ALIAS $PASSWORD >> $PEM
+java -classpath `dirname $0`/java ExportPriv $KEYSTORE $ALIAS $PASSWORD >> $PEM
