@@ -529,7 +529,7 @@ EOF
 
 get_mac_address()
 {
-  awk -v ip_address="$1" '{ if ( $1 == ip_address ) print $4 }' /proc/net/arp
+  awk -v ip_address="$1" '{ if (( $1 == ip_address ) && ( $3 != "0x0" ) && ( $4 != "00:00:00:00:00:00" )) print $4 }' /proc/net/arp
 }
 
 defaults_gateways="#{gateways.join( " " )} `ip route show | awk '/^default/ { print $3 }'`"
