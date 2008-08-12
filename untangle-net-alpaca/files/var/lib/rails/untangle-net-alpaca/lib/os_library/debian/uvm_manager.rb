@@ -75,7 +75,7 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
       return nil if ArpEaterSettings.find( :first, [ "enabled=?", true ] ).nil?
        
       return <<EOF
-netstat -rn | awk '/^[0-9]/ { if ( $1 != "0.0.0.0" && $2 == "0.0.0.0" && index( "dummy", $8 ) == 0 ) print $1 "/" $3 }' | sort | uniq | while read t_network ; do
+netstat -rn | awk '/^[0-9]/ { if ( $1 != "0.0.0.0" && $2 == "0.0.0.0" && ( index( $8, "dummy" ) == 0 ) && ( index( $8, "utun" ) == 0 )) print $1 "/" $3 }' | sort | uniq | while read t_network ; do
   #{IPTablesCommand} #{Chain::BypassRules.args} -s ${t_network} -d ${t_network} -g #{Chain::BypassMark}
 done
 EOF

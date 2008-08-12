@@ -22,7 +22,7 @@ class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
   ConfigFile = "/etc/untangle-net-alpaca/routes"
 
   def get_active
-    `netstat -rn | awk '/^[0-9]/ { if ( index( "dummy", $8 ) == 0 ) print $1 "," $3 "," $2 "," $8 }'`.split( "\n" ).map do |entry|
+    `netstat -rn | awk '/^[0-9]/ { if (( index( $8, "dummy" ) == 0 ) && ( index( $8, "utun" ) == 0 )) print $1 "," $3 "," $2 "," $8 }'`.split( "\n" ).map do |entry|
       g = ActiveRoute.new 
       
       g.target, g.netmask, g.gateway, g.interface = entry.split( "," )
