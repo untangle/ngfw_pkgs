@@ -34,12 +34,6 @@ fi
 chown www-data:www-data /etc/apache2/workers.properties
 chmod 600 /etc/apache2/workers.properties
 
-if [ ! -e /etc/apache2/untangle-homepage ]; then
-    cat >/etc/apache2/untangle-homepage <<EOF
-RedirectMatch 302 /index.html /webui
-EOF
-fi
-
 if [ ! -e /etc/apache2/untangle-conf.d ]; then
     echo "Include /usr/share/untangle/apache2/conf.d/*.conf" >/etc/apache2/untangle-conf.d
 fi
