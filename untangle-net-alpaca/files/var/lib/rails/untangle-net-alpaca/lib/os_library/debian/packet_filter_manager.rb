@@ -65,6 +65,8 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
     os["network_manager"].register_hook( 100, "packet_filter_manager", "write_files", :hook_write_files )
 
     os["dns_server_manager"].register_hook( 100, "packet_filter_manager", "commit", :hook_commit )
+
+    os["arp_eater_manager"].register_hook( 100, "packet_filter_manager", "commit", :hook_commit )
     
     ## Run whenever the address is updated.
     ## REVIEW : This may just be moved into a script
