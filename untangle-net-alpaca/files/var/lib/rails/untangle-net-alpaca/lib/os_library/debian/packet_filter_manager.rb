@@ -528,8 +528,8 @@ EOF
 #{IPTablesCommand} #{Chain::SingleNIC.args} -m mark --mark 0x0/0xFF -j RETURN
 
 netstat -rn | awk '/^[0-9]/ { if ( $1 != "0.0.0.0" && $2 == "0.0.0.0" && ( index( $8, "dummy" ) == 0 ) && ( index( $8, "utun" ) == 0 )) print $1 "/" $3 }' | sort | uniq | while read t_network ; do
-  #{IPTablesCommand} #{Chain::SingleNIC.args} -s ${t_network} -d ${t_network} -j MARK --and-mark 0xFFFFFF00
-  #{IPTablesCommand} #{Chain::SingleNIC.args} -s ${t_network} -d ${t_network} -j MARK --or-mark 0x02
+  #{IPTablesCommand} #{Chain::SingleNIC.args} -s ${t_network} -j MARK --and-mark 0xFFFFFF00
+  #{IPTablesCommand} #{Chain::SingleNIC.args} -s ${t_network} -j MARK --or-mark 0x02
 done
 EOF
 
