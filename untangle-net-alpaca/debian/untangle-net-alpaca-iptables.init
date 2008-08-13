@@ -73,7 +73,10 @@ case "$1" in
 
                 # timeout
                 count=$(($count+1))
-                if [ $count -gt 100 ] ; then rm -f "$LOCK_FILE" ; fi
+                if [ $count -gt 100 ] ; then 
+                    rm -f "$LOCK_FILE" 
+                    log_progress_msg "removing stale lock"
+                fi
             fi 
         done
         ;;
@@ -99,7 +102,10 @@ case "$1" in
 
                 # timeout
                 count=$(($count+1))
-                if [ $count -gt 100 ] ; then rm -f "$LOCK_FILE" ; fi
+                if [ $count -gt 100 ] ; then 
+                    rm -f "$LOCK_FILE" 
+                    log_progress_msg "removing stale lock"
+                fi
             fi 
         done
         ;;        
