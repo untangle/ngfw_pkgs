@@ -527,20 +527,10 @@ EOF
 ## Ignore packets that did not come from the external interface.
 #{IPTablesCommand} #{Chain::SingleNIC.args} -m mark --mark 0x0/0xFF -j RETURN
 
-get_mac_address()
-{
-  awk -v ip_address="$1" '{ if (( $1 == ip_address ) && ( $3 != "0x0" ) && ( $4 != "00:00:00:00:00:00" )) print $4 }' /proc/net/arp
-}
-
-defaults_gateways="#{gateways.join( " " )} `ip route show | awk '/^default/ { print $3 }'`"
- for t_host in ${defaults_gateways}  ; do
-    mac_address=`get_mac_address "${t_host}"`
-    [ -z "${mac_address}" ] && continue
-    #{IPTablesCommand} #{Chain::SingleNIC.args} -m mac --mac-source ${mac_address} -j RETURN
+netstat -rn | awk '/^[0-9]/ { if ( $1 != "0.0.0.0" && $2 == "0.0.0.0" && ( index( $8, "dummy" ) == 0 ) && ( index( $8, "utun" ) == 0 )) print $1 "/" $3 }' | sort | uniq | while read t_network ; do
+  #{IPTablesCommand} #{Chain::SingleNIC.args} -s ${t_network} -d ${t_network} -j MARK --and-mark 0xFFFFFF00
+  #{IPTablesCommand} #{Chain::SingleNIC.args} -s ${t_network} -d ${t_network} -j MARK --or-mark 0x02
 done
-
-#{IPTablesCommand} #{Chain::SingleNIC.args} -j MARK --and-mark 0xFFFFFF00
-#{IPTablesCommand} #{Chain::SingleNIC.args} -j MARK --or-mark 0x02
 EOF
 
     os["override_manager"].write_file( SingleNICConfigFile, text, "\n" )
