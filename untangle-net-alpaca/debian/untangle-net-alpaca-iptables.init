@@ -55,6 +55,7 @@ case "$1" in
     start|reload|restart|force-reload)
         log_daemon_msg "Loading $DESC"
 
+        count=0
         while true ; do
             if ( set -o noclobber; echo "$$" > "$LOCK_FILE" ) 2> /dev/null; then
                 trap 'rm -f "$LOCK_FILE"; exit $?' INT TERM EXIT
@@ -69,6 +70,10 @@ case "$1" in
             else
                 log_progress_msg "."
                 sleep .2
+
+                # timeout
+                count=$(($count+1))
+                if [ $count -gt 100 ] ; then rm -f "$LOCK_FILE" ; fi
             fi 
         done
         ;;
@@ -76,6 +81,7 @@ case "$1" in
     stop)
         log_daemon_msg "Revoing $DESC"
 
+        count=0
         while true ; do
             if ( set -o noclobber; echo "$$" > "$LOCK_FILE" ) 2> /dev/null; then
                 trap 'rm -f "$LOCK_FILE"; exit $?' INT TERM EXIT
@@ -90,6 +96,10 @@ case "$1" in
             else
                 log_progress_msg "."
                 sleep .2
+
+                # timeout
+                count=$(($count+1))
+                if [ $count -gt 100 ] ; then rm -f "$LOCK_FILE" ; fi
             fi 
         done
         ;;        
