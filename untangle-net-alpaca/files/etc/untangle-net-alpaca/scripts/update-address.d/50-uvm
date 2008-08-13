@@ -27,36 +27,6 @@ bunnicula_home()
         awk '/^-Dbunnicula.home=/ { gsub( "-Dbunnicula.home=", "" ) ; print }'
 }
 
-update_guest_address()
-{
-    local t_external_interface
-    UVM_VMWARE_IP=${UVM_VMWARE_IP:-/mnt/hgfs/untangle/guest_address}
-    
-    [ -d `dirname ${UVM_VMWARE_IP}` ] || return
-    
-    ## Determine the external interface
-    ## First use try the default gateway.
-    t_external_interface=`ip route show | awk '/^default/ { print $5 ; exit 0 }'`
-    
-    ## Next try the interfaces.properties file.
-    [ -z "${t_external_interface}" ] && [ -f /etc/untangle-net-alpaca/interface.properties ] && {
-        t_external_interface=`sed  -e '/^com.untangle.interface-order/!d' -e 's|^.*External:\([^:]*\):\?.*$|\1|' /etc/untangle-net-alpaca/interface.properties`
-        
-        [ -z "${t_external_interface}" ] && return
-        
-        [ -L "/sys/class/net/${t_external_interface}/brport/bridge" ] && {
-            t_external_interface=$( basename `readlink /sys/class/net/eth0/brport/bridge` )
-        }
-    }
-    
-    [ -n "${t_external_interface}" ] && {
-        ip -f inet addr show ${t_external_interface} 2>|/dev/null | awk '/inet/ { ip = $2 ; sub( /\/.*$/, "", ip ) ; print ip ; exit 0  }' > ${UVM_VMWARE_IP}
-    }
-}
-
-## Run this script regardless of whether or not the UVM is running.
-update_guest_address
-
 BUNNICULA_HOME=`bunnicula_home`
 
 if [ -z "${BUNNICULA_HOME}" ]; then
