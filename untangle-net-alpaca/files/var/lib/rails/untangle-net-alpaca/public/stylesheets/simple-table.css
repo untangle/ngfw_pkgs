@@ -564,7 +564,7 @@ div.list-table-container.arp-eater-networks div.gateway
     width: 8em;
 }
 
-div.list-table-container.arp-eater-networks div.spoof, div.list-table-container.arp-eater-networks div.opportunistic
+div.list-table-container.arp-eater-networks div.spoof, div.list-table-container.arp-eater-networks div.passive
 {
     width: 4em;
     text-align: center;
@@ -581,7 +581,7 @@ div.list-table-container.arp-eater-active-hosts div.gateway
     width: 8em;
 }
 
-div.list-table-container.arp-eater-active-hosts div.opportunistic
+div.list-table-container.arp-eater-active-hosts div.passive
 {
     width: 4em;
     text-align: center;

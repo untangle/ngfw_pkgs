@@ -1,4 +1,4 @@
-/var/log/shield/*.log {
+/var/log/untangle-shield/*.log {
 rotate 2
 size 500k
 compress

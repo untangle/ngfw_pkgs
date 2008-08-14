@@ -18,6 +18,8 @@
 class OverrideController < ApplicationController  
   def manage
     @fileOverrideList = FileOverride.ordered_find( :all )
+    @alpaca_settings = AlpacaSettings.find( :first )
+    @alpaca_settings = AlpacaSettings.new if @alpaca_settings.nil?
     render :action => 'manage'
   end
 
@@ -70,6 +72,17 @@ class OverrideController < ApplicationController
     
     ## Save all of the new ones
     fileOverrideList.each { |fo| fo.save }
+
+    alpaca_settings = AlpacaSettings.find( :first )
+    alpaca_settings = AlpacaSettings.new( :send_icmp_redirects => true ) if @alpaca_settings.nil? 
+    
+    s = params[:alpaca_settings]
+    unless s.nil? || s[:send_icmp_redirects].nil?
+      alpaca_settings.send_icmp_redirects = s[:send_icmp_redirects]
+      alpaca_settings.save
+    end
+
+    os["override_manager"].commit
 
     ## Review : should have some indication that is saved.
     return redirect_to( :action => "manage" )

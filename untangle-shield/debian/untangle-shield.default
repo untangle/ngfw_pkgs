@@ -1,3 +1,8 @@
 ## Uncomment to change the default configuration file.
-# SHIELD_CONFIG_FILE=/etc/shield.conf
+# SHIELD_CONFIG_FILE=/etc/untangle-shield.conf
 
+# Command to insert shield iptables hooks
+SHIELD_IPTABLES_INSERT_CMD="/etc/init.d/untangle-net-alpaca restart"
+
+# Command to remove shield iptables hooks
+SHIELD_IPTABLES_REMOVE_CMD="/etc/init.d/untangle-net-alpaca restart"

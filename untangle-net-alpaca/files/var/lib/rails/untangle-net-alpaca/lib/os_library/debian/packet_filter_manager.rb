@@ -38,6 +38,7 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   ## This will block any traffic trying to penetrate NAT.
   NatFirewallConfigFile = "#{ConfigDirectory}/700-nat-firewall"
   RedirectConfigFile   = "#{ConfigDirectory}/600-redirect"
+  SingleNICConfigFile  = "#{ConfigDirectory}/900-single-nic"
 
   ## Mark to indicate that the packet shouldn't be caught by the UVM.
   MarkBypass   = 0x01000000
@@ -64,6 +65,8 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
     os["network_manager"].register_hook( 100, "packet_filter_manager", "write_files", :hook_write_files )
 
     os["dns_server_manager"].register_hook( 100, "packet_filter_manager", "commit", :hook_commit )
+
+    os["arp_eater_manager"].register_hook( 100, "packet_filter_manager", "commit", :hook_commit )
     
     ## Run whenever the address is updated.
     ## REVIEW : This may just be moved into a script
@@ -101,6 +104,7 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
 ## Clear out all of the bits for the interface mark
 #{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFF0000
 EOF
+
     ## Chain Used for natting in the prerouting table.
     PostNat = Chain.new( "alpaca-post-nat", "nat", "POSTROUTING", <<'EOF' )
 ## Do not NAT packets destined to local host.
@@ -181,11 +185,14 @@ EOF
 #{IPTablesCommand} #{args} -m connmark --mark #{MarkBypass}/#{MarkBypass} -g #{Chain::BypassMark}
 EOF
 
+    ## Chain used for Single NIC mode.
+    SingleNIC = Chain.new( "alpaca-snic", "mangle", "PREROUTING" )
+
     ## Review : Should the Firewall Rules go before the redirects?
     Order = [ MarkInterface, PostNat, 
               FirewallBlock, FirewallMarkReject, FirewallMarkDrop, 
               FirewallMarkInputReject, FirewallMarkInputDrop,
-              FirewallRules,              
+              FirewallRules, SingleNIC,
               BypassRules, BypassMark, Redirect ]
   end
   
@@ -212,6 +219,9 @@ EOF
     
     # Script to initialize all of the redirect rules
     write_redirect
+    
+    # Write the script to mark files for single NIC.
+    single_nic_marks
   end
 
   def hook_run_services
@@ -250,6 +260,19 @@ EOF
 
 echo > /dev/null
 EOF
+
+    ## This is designed to get all of the gateways into the ARP cache for a
+    ## some single NIC code that runs later.
+    arp_eater_settings = ArpEaterSettings.find( :first )
+    if !arp_eater_settings.nil? && arp_eater_settings.enabled 
+      gateways = get_arp_eater_gateways
+      
+      text += <<EOF
+ for t_host in #{gateways.join( " " )} `ip route show | awk '/^default/ { print $3 }'` ; do
+    echo "0" | nc  -u -q 0 ${t_host} 53
+done
+EOF
+    end
     
     os["override_manager"].write_file( FlushConfigFile, text, "\n" )
   end
@@ -486,6 +509,35 @@ EOF
     rules.join( "\n" )
   end
   
+  def single_nic_marks
+    arp_eater_settings = ArpEaterSettings.find( :first )
+    text = <<EOF
+IPTABLES=${IPTABLES:-/sbin/iptables}
+
+#{IPTablesCommand} -t #{Chain::SingleNIC.table} -F #{Chain::SingleNIC}
+EOF
+    
+    if arp_eater_settings.nil? || !arp_eater_settings.enabled
+      os["override_manager"].write_file( SingleNICConfigFile, text, "\n" )
+      return
+    end
+    
+    gateways = get_arp_eater_gateways
+    text << <<EOF
+#{IPTablesCommand} #{Chain::MarkInterface.args} -g #{Chain::SingleNIC}
+
+## Ignore packets that did not come from the external interface.
+#{IPTablesCommand} #{Chain::SingleNIC.args} -m mark --mark 0x0/0xFF -j RETURN
+
+netstat -rn | awk '/^[0-9]/ { if ( $1 != "0.0.0.0" && $2 == "0.0.0.0" && ( index( $8, "dummy" ) == 0 ) && ( index( $8, "utun" ) == 0 )) print $1 "/" $3 }' | sort | uniq | while read t_network ; do
+  #{IPTablesCommand} #{Chain::SingleNIC.args} -s ${t_network} -j MARK --and-mark 0xFFFFFF00
+  #{IPTablesCommand} #{Chain::SingleNIC.args} -s ${t_network} -j MARK --or-mark 0x02
+done
+EOF
+
+    os["override_manager"].write_file( SingleNICConfigFile, text, "\n" )
+  end
+  
   def filtering( interface )
     
   end
@@ -596,5 +648,15 @@ EOF
       return "#{IPTablesCommand} -t filter -I INPUT 1 -p udp -m multiport --destination-ports 68 -j RETURN\n"
     else return ""
     end
+  end
+
+  def get_arp_eater_gateways
+    return []
+    
+    ## Multiple gateways isn't really supported because of source routing won't work none.
+    networks = ArpEaterNetworks.find_all( [ "enabled=?" ], true )
+    gateways = networks.map do |i| 
+        ArpEaterNetworks.is_gatway_auto( i.gateway ) ? nil : i.gateway
+    end.delete_if { |i| i.nil? }
   end
 end

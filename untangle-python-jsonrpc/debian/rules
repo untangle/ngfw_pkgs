@@ -1,0 +1,22 @@
+#!/usr/bin/make -f
+
+DEB_PYTHON_SYSTEM=pycentral
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/dpatch/dpatch.make
+
+STAGING_DIR           := $(CURDIR)/debian/untangle-python-jsonrpc
+DEB_COMPRESS_EXCLUDE  := .py
+
+install/untangle-python-jsonrpc:: patch
+	mkdir -pm755 $(STAGING_DIR)
+
+	python setup.py install --root=$(STAGING_DIR)
+
+	dh_pycentral
+	dh_python
+	rm -fr $(CURDIR)/build
+	rm -fr $(STAGING_DIR)/usr/lib
+
+cleanbuilddir/untangle-python-jsonrpc:: unpatch
+	rm -f $(wildcard jsonrpc/*.pyc)

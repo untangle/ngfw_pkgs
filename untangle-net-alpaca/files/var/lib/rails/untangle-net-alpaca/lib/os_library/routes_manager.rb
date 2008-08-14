@@ -22,26 +22,17 @@ class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
   ConfigFile = "/etc/untangle-net-alpaca/routes"
 
   def get_active
-    results = []
-    netstat = `netstat -rn | grep -v dummy0`.split( "\n" )
-    number_of_heading_lines = 2
-    netstat = netstat.slice( number_of_heading_lines, netstat.length )
-    netstat.each do |entry|
-      items = entry.split
-      g = ActiveRoute.new
-      g.target = items[0]
-      if OSLibrary::NetworkManager::NETMASK_TO_CIDR.key?( items[2] )
-        g.netmask = OSLibrary::NetworkManager::NETMASK_TO_CIDR[items[2]] + " (" + items[2] + ")"
-      else
-        g.netmask = items[2]
-      end
+    `netstat -rn | awk '/^[0-9]/ { if (( index( $8, "dummy" ) == 0 ) && ( index( $8, "utun" ) == 0 )) print $1 "," $3 "," $2 "," $8 }'`.split( "\n" ).map do |entry|
+      g = ActiveRoute.new 
       
-      g.gateway = items[1]
-      g.description = ""
-      g.interface = items[7]
-      results << g
+      g.target, g.netmask, g.gateway, g.interface = entry.split( "," )
+      
+      if OSLibrary::NetworkManager::NETMASK_TO_CIDR.key?( g.netmask )
+        g.netmask = OSLibrary::NetworkManager::NETMASK_TO_CIDR[g.netmask] + " (" + g.netmask + ")"
+      end
+
+      g
     end
-    return results
   end
 
   def register_hooks

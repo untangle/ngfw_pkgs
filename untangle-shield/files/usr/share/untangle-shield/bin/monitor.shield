@@ -1,0 +1,123 @@
+#!/bin/dash
+
+mkdir -p /var/log/untangle-shield
+exec >> /var/log/untangle-shield/monitor.log 2>&1
+
+NAME="shield"
+SHIELD_PID_FILE="/var/run/${NAME}.pid"
+
+load_defaults()
+{
+    SHIELD_BIND_PORT="3001"
+    SHIELD_QUEUE_NUM="3001"
+    
+    SHIELD_CONF_FILE="/etc/untangle-shield.conf"
+    SHIELD_USER_FILE="/var/run/shield-users.conf"
+    
+    SHIELD_LOG_OUT="/var/log/untangle-shield/debug.log"
+    SHIELD_LOG_ERR="/var/log/untangle-shield/error.log"
+    
+    SHIELD_IPTABLES_INSERT_CMD="/etc/init.d/untangle-net-alpaca restart"
+    SHIELD_IPTABLES_REMOVE_CMD="/etc/init.d/untangle-net-alpaca restart"
+
+    if [ -f /etc/default/untangle-shield ] ; then
+        . /etc/default/untangle-shield
+    fi
+}
+
+remove_iptables()
+{
+    if [ ! -z "$SHIELD_IPTABLES_REMOVE_CMD" ] ; then
+        $SHIELD_IPTABLES_REMOVE_CMD
+    fi
+}
+
+insert_iptables()
+{
+    if [ ! -z "$SHIELD_IPTABLES_INSERT_CMD" ] ; then
+        $SHIELD_IPTABLES_INSERT_CMD
+    fi
+}
+
+reap_child_hardest()
+{
+  reap_child 9
+}
+
+reap_child_harder()
+{
+  reap_child 15
+  trap reap_child_hardest 2
+}
+
+reap_child_easy()
+{
+  reap_child 2
+  trap reap_child_harder 2
+}
+
+reap_child()
+{
+    echo "[`date`] Retrieved signal to stop daemon. (signal: $1)"
+
+    if [ ! -z "$PID" ] ; then
+        echo "[`date`] Sending kill signal to shield."
+        kill -$1 ${PID}
+        wait $PID
+        remove_iptables
+    fi
+
+    exit 0
+}
+
+start_shield()
+{
+    load_defaults
+    
+    local t_args="${SHIELD_ARGS}"
+    local t
+    
+    test -n "${SHIELD_BIND_PORT}" && t_args="${t_args} -p ${SHIELD_BIND_PORT}"
+    test -n "${SHIELD_QUEUE_NUM}" && t_args="${t_args} -q ${SHIELD_QUEUE_NUM}"
+    test -n "${SHIELD_CONF_FILE}" && t_args="${t_args} -c ${SHIELD_CONF_FILE}"
+    test -n "${SHIELD_USER_FILE}" && t_args="${t_args} -b ${SHIELD_USER_FILE}"
+    test -n "${SHIELD_LOG_OUT}" && t_args="${t_args} -o ${SHIELD_LOG_OUT}"
+    test -n "${SHIELD_LOG_ERR}" && t_args="${t_args} -e ${SHIELD_LOG_ERR}"
+    
+    /usr/bin/${NAME} ${t_args} &
+    export PID=$!
+
+    ## Give it some time to grab the queue so iptables knows that it is still running
+    for t in '1 2 3 4 5 6 7 8 9 10'; do
+        sleep 1
+        is_running && break
+    done
+    insert_iptables
+}
+
+is_running()
+{
+    ## First just validate that the queue is bound
+    if [ ! -f /proc/net/netfilter/nfnetlink_queue ] ; then return 1 ; fi
+
+    local t_queue_pid=`awk -v queue=${SHIELD_QUEUE_NUM} '{ if ( $1 == queue ) print $2 }' /proc/net/netfilter/nfnetlink_queue`
+    if [ -z "${t_queue_pid}" ]; then return 1 ; fi
+
+    ## Perform a simple curl call to make sure the server is running.
+    curl -sf -F 'json_request=@-' -m 10 "http://localhost:${SHIELD_BIND_PORT}"  > /dev/null 2>&1 <<EOF
+{ "function" : "hello_world" }
+EOF
+}
+
+trap reap_child_easy 2
+trap reap_child_easy 15
+
+while ( true ) ;  do
+    echo "[`date`] Starting Shield"
+
+    start_shield
+    wait $PID
+
+    echo "[`date`] Shield stopped, restarting daemon"
+    sleep 2
+done

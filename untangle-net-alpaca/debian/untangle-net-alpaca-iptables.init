@@ -12,7 +12,7 @@
 
 . /lib/lsb/init-functions
 
-DESC="Service for creating and removing the iptables rules"
+DESC="Untangle Net-Alpaca iptables rules"
 
 IPTABLES_RULES=/etc/untangle-net-alpaca/scripts/iptables
 HELPER_MODULES=/etc/untangle-net-alpaca/scripts/modules
@@ -20,30 +20,96 @@ HELPER_MODULES=/etc/untangle-net-alpaca/scripts/modules
 ## This should be a file containing all of the iptables tables
 IPTABLES_NAMES=/proc/net/ip_tables_names
 
+# Lock file
+LOCK_FILE=/tmp/untangle-net-alpaca-iptables.lock
+
+insert_rules()
+{
+    # make sure privileges don't persist across reboots
+    if [ -f ${IPTABLES_RULES} ]; then
+        sh ${IPTABLES_RULES}
+    else
+        /bin/echo "The file '${IPTABLES_RULES}' does not exist"
+    fi
+    if [ -f ${HELPER_MODULES} ]; then
+        sh ${HELPER_MODULES}
+    else
+        /bin/echo "The file '${HELPER_MODULES}' does not exist"
+    fi
+}
+
+remove_rules()
+{
+    if [ -f ${IPTABLES_NAMES} ]; then
+        for t_table in `cat ${IPTABLES_NAMES}` ; do 
+            /sbin/iptables -t ${t_table} -F && true
+        done
+    else
+        /bin/echo "The file '${IPTABLES_NAMES}' does not exist, unable to flush the iptables rules"
+    fi
+}
+
 case "$1" in
-    ## start is atomic, it automatically integrates stop.
-    reload|restart|force-reload|start)
-        # make sure privileges don't persist across reboots
-        if [ -f ${IPTABLES_RULES} ]; then
-            sh ${IPTABLES_RULES}
-        else
-            /bin/echo "The file '${IPTABLES_RULES}' does not exist"
-        fi
-        if [ -f ${HELPER_MODULES} ]; then
-            sh ${HELPER_MODULES}
-        else
-            /bin/echo "The file '${HELPER_MODULES}' does not exist"
-        fi
+
+    ## start script includes stop/flush
+    start|reload|restart|force-reload)
+        log_daemon_msg "Loading $DESC"
+
+        count=0
+        while true ; do
+            if ( set -o noclobber; echo "$$" > "$LOCK_FILE" ) 2> /dev/null; then
+                trap 'rm -f "$LOCK_FILE"; exit $?' INT TERM EXIT
+            
+                # critical section
+                insert_rules
+            
+                rm -f "$LOCK_FILE"
+                trap - INT TERM EXIT
+                log_end_msg 0
+                break
+            else
+                log_progress_msg "."
+                sleep .2
+
+                # timeout
+                count=$(($count+1))
+                if [ $count -gt 100 ] ; then 
+                    rm -f "$LOCK_FILE" 
+                    log_progress_msg "removing stale lock"
+                fi
+            fi 
+        done
         ;;
+
     stop)
-        if [ -f ${IPTABLES_NAMES} ]; then
-            for t_table in `cat ${IPTABLES_NAMES}` ; do 
-                /sbin/iptables -t ${t_table} -F && true
-            done
-        else
-            /bin/echo "The file '${IPTABLES_NAMES}' does not exist, unable to flush the iptables rules"
-        fi
+        log_daemon_msg "Revoing $DESC"
+
+        count=0
+        while true ; do
+            if ( set -o noclobber; echo "$$" > "$LOCK_FILE" ) 2> /dev/null; then
+                trap 'rm -f "$LOCK_FILE"; exit $?' INT TERM EXIT
+            
+                # critical section
+                remove_rules
+            
+                rm -f "$LOCK_FILE"
+                trap - INT TERM EXIT
+                log_end_msg 0
+                break
+            else
+                log_progress_msg "."
+                sleep .2
+
+                # timeout
+                count=$(($count+1))
+                if [ $count -gt 100 ] ; then 
+                    rm -f "$LOCK_FILE" 
+                    log_progress_msg "removing stale lock"
+                fi
+            fi 
+        done
         ;;        
+
     *)
         /bin/echo "Usage: $0 {start|stop|restart|force-reload}" >&2
         exit 1

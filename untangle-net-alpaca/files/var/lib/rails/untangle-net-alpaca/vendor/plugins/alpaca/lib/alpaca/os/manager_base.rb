@@ -56,6 +56,11 @@ class Alpaca::OS::ManagerBase
       t = Thread.new do 
         p = IO.popen( command )
         pid, status = Process.wait2( p.pid )
+        lines = p.readlines
+        unless lines.nil? || lines.empty?
+          logger.debug( "Received the following output")
+          logger.debug( lines )
+        end
         status = status.exitstatus
       end
       
