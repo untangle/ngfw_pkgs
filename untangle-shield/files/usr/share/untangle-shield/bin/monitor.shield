@@ -116,8 +116,8 @@ while ( true ) ;  do
     echo "[`date`] Starting Shield"
 
     start_shield
+    sleep 2
     wait $PID
 
     echo "[`date`] Shield stopped, restarting daemon"
-    sleep 2
 done
