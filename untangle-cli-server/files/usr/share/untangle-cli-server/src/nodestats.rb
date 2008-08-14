@@ -44,8 +44,19 @@ class NodeStats
     #keys.each() {|k| puts k };
     #metrics.values().each() {|v| puts v.getCount() };
     
+    real_last_activity_date = false;
     (7..9).each do |i|
-      @counters[i] = metrics.get(snmp_stat_map[i]).getCount() unless snmp_stat_map[i].nil?
+      if !snmp_stat_map[i].nil?
+      	metric = metrics.get(snmp_stat_map[i]);
+      	@counters[i] = metric.getCount() 
+        # set last activity date to be the most RECENT date for any stat monitored for this node.
+	if !real_last_activity_date
+	  @lastActivityDate = metric.getLastActivityDate();
+	  real_last_activity_date = true;
+	elsif @lastActivityDate.compareTo(metric.getLastActivityDate()) < 0
+	  @lastActivityDate = metric.getLastActivityDate();
+	end
+      end
     end
     
   end
