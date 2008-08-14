@@ -1,7 +1,7 @@
 auto_start_client()
 {
-    [ -x ${UVM_AUTO_SCRIPT} && -f ${UVM_AUTO_CONFIG} ] && {
-        ${UVM_AUTO_SCRIPT} ${UVM_AUTO_CONFIG} ||
+    [ -x ${UVM_AUTO_SCRIPT} ] && [ -f ${UVM_AUTO_CONFIG} ] && {
+        ${UVM_AUTO_SCRIPT} ${UVM_AUTO_CONFIG}
     } || {
         /usr/bin/untangle-client &
     }
