@@ -1,10 +1,10 @@
 auto_start_client()
 {
-    [ -f ${UVM_AUTO_SCRIPT} ] && [ -f ${UVM_AUTO_CONFIG} ] && {
+    if [ -f ${UVM_AUTO_SCRIPT} -a -f ${UVM_AUTO_CONFIG} ]; then
         sudo ${UVM_AUTO_SCRIPT} ${UVM_AUTO_CONFIG}
-    } || {
+    else
         /usr/bin/untangle-client &
-    }
+    fi
 }
 
 # screensaver is off by default

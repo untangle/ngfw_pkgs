@@ -51,7 +51,6 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
 
   ## Flag to specify the localdomain
   FlagDnsLocalDomain = "domain"
-  FlagDhcpLocalDomain = "domain-suffix"
 
   ## Flag to specify to expand hosts
   FlagDnsExpandHosts = "expand-hosts"
@@ -238,7 +237,6 @@ EOF
 
     ## set the domain name suffix
     settings << "#{FlagDnsLocalDomain}=#{domain_name_suffix}"
-    settings << "#{FlagDhcpLocalDomain}=#{domain_name_suffix}"
     settings.join( "\n" )
   end
 
