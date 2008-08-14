@@ -40,6 +40,12 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
   MaxLeaseDuration = 60 * 60 * 24 * 7
   DefaultDuration = 60 * 60 * 4
 
+  ## Maximum number of leases dns masq will hand out.
+  FlagMaxLeases="dhcp-lease-max"
+  DefaultLeaseCount = 500
+  MinLeaseCount = 20
+  MaxLeaseCount = 2000
+
   ## Flag to localize queries
   FlagDnsLocalize = "localise-queries"
 
@@ -293,6 +299,11 @@ EOF
     duration = MinLeaseDuration if duration < MinLeaseDuration
     duration = MaxLeaseDuration if duration > MaxLeaseDuration
 
+    max_leases = dhcp_server_settings.max_leases
+    max_leases = DefaultLeaseCount if max_leases.nil? || max_leases <= 0
+    max_leases = MinLeaseCount if max_leases < MinLeaseCount
+    max_leases = MaxLeaseCount if max_leases > MaxLeaseCount
+
     settings = []
     
     ## Setup the range
@@ -315,6 +326,8 @@ EOF
       next unless validator.is_mac_address?( dse.mac_address )
       settings << "#{FlagDhcpHost}=#{dse.mac_address},#{dse.ip_address},24h"
     end
+
+    settings << "#{FlagMaxLeases}=#{max_leases}"
 
     return settings.join( "\n" )
   end

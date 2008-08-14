@@ -20,8 +20,8 @@ class Falcon < Alpaca::Migration
     create_table :arp_eater_settings do |table|
       table.column :enabled, :boolean, :default => 0
       table.column :gateway, :string
-      table.column :timeout_ms, :int
-      table.column :rate_ms, :int
+      table.column :timeout_ms, :integer
+      table.column :rate_ms, :integer
       table.column :broadcast, :boolean
 
       ## This is presently unused.
@@ -36,11 +36,13 @@ class Falcon < Alpaca::Migration
       table.column :ip, :string
       table.column :netmask, :string
       table.column :gateway, :string
-      table.column :timeout_ms, :int
-      table.column :rate_ms, :int
+      table.column :timeout_ms, :integer
+      table.column :rate_ms, :integer
     end
 
     add_column :alpaca_settings, :send_icmp_redirects, :boolean, :default => 1
+
+    add_column :dhcp_server_settings, :max_leases, :integer, :default => 500
 
     add_file_override( :enabled => true, :writable => true, :description => "sysctl configuration",
                        :path => "/etc/untangle-net-alpaca/sysctl", :insert_first => true )
@@ -49,7 +51,7 @@ class Falcon < Alpaca::Migration
   def self.down
     drop_table :arp_eater_settings
     drop_table :arp_eater_networks
-    
     remove_column :alpaca_settings, :send_icmp_redirects
+    remove_column :dhcp_server_settings, :max_leases
   end
 end
