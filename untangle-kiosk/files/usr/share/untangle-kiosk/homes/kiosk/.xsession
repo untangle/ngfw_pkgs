@@ -1,7 +1,8 @@
 auto_start_client()
 {
     if [ -f ${UVM_AUTO_SCRIPT} -a -f ${UVM_AUTO_CONFIG} ]; then
-        sudo ${UVM_AUTO_SCRIPT} ${UVM_AUTO_CONFIG}
+        sudo mkdir -p /var/log/uvm/
+        sudo ${UVM_AUTO_SCRIPT} ${UVM_AUTO_CONFIG} >> /var/log/uvm/auto_config.log 2>&1
     else
         /usr/bin/untangle-client &
     fi
@@ -31,8 +32,7 @@ if [ -f /etc/default/untangle-vm ] ; then
 
     ## Remove this after it is executed to guarantee it never runs again.
     UVM_PRE_UVM_SCRIPT=${UVM_PRE_UVM_SCRIPT:-/var/lib/untangle-windows-installer/pre_uvm.rb}
-    rm -f ${UVM_PRE_UVM_SCRIPT}
-
+    sudo rm -f ${UVM_PRE_UVM_SCRIPT}
 fi
 
 # Here's where we launch the window manager. When this finishes we reboot!
