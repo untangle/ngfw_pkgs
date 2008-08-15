@@ -8,6 +8,8 @@ else
 fi
 }
 
+mkdir -p /var/log/untangle-shield || true
+
 # untangle-shield is started by the node.
 #if [ -x "/etc/init.d/untangle-shield" ]; then
 #    update-rc.d untangle-shield defaults >/dev/null
