@@ -115,7 +115,7 @@ def save_session_user(sess, realm, username):
 
 def setup_gettext():
     lang = get_uvm_language()
-    trans = gettext.translation('untangle-apache2-config', languages=[lang],
+    trans = gettext.translation('untangle-apache2-config', languages=['es'],
                                 fallback=True)
     trans.install()
 
