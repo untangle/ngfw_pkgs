@@ -28,6 +28,11 @@ if [ -f /etc/default/untangle-vm ] ; then
 
     ## Remove this afterwards to guarantee this stuff never runs again.
     sudo rm -f ${UVM_AUTO_SCRIPT} ${UVM_AUTO_CONFIG}
+
+    ## Remove this after it is executed to guarantee it never runs again.
+    UVM_PRE_UVM_SCRIPT=${UVM_PRE_UVM_SCRIPT:-/var/lib/untangle-windows-installer/pre_uvm.rb}
+    rm -f ${UVM_PRE_UVM_SCRIPT}
+
 fi
 
 # Here's where we launch the window manager. When this finishes we reboot!
