@@ -1,10 +1,10 @@
 auto_start_client()
 {
-    [ -x ${UVM_AUTO_SCRIPT} && -f ${UVM_AUTO_CONFIG} ] && {
-        ${UVM_AUTO_SCRIPT} ${UVM_AUTO_CONFIG} ||
-    } || {
+    if [ -f ${UVM_AUTO_SCRIPT} -a -f ${UVM_AUTO_CONFIG} ]; then
+        sudo ${UVM_AUTO_SCRIPT} ${UVM_AUTO_CONFIG}
+    else
         /usr/bin/untangle-client &
-    }
+    fi
 }
 
 # screensaver is off by default
@@ -27,7 +27,7 @@ if [ -f /etc/default/untangle-vm ] ; then
     [ ! -f $ACTIVATION_KEY_FILE ] && auto_start_client
 
     ## Remove this afterwards to guarantee this stuff never runs again.
-    rm -f ${UVM_AUTO_SCRIPT} ${UVM_AUTO_CONFIG}
+    sudo rm -f ${UVM_AUTO_SCRIPT} ${UVM_AUTO_CONFIG}
 fi
 
 # Here's where we launch the window manager. When this finishes we reboot!

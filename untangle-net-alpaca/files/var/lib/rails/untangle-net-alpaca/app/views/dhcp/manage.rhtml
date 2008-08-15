@@ -35,6 +35,11 @@
             <label for="dhcp_server_settings_netmask"><%= "Netmask:".t %></label>
             <%= text_field( "dhcp_server_settings", "netmask" ) %>
           </li>
+
+          <li>
+            <label for="dhcp_server_settings_max_leases"><%= "Lease Limit:".t %></label>
+            <%= text_field( "dhcp_server_settings", "max_leases" ) %>
+          </li>
         <% end %>
       </ul>
     </fieldset>

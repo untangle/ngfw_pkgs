@@ -66,7 +66,10 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
 
     os["dns_server_manager"].register_hook( 100, "packet_filter_manager", "commit", :hook_commit )
 
-    os["arp_eater_manager"].register_hook( 100, "packet_filter_manager", "commit", :hook_commit )
+    begin
+      os["arp_eater_manager"].register_hook( 100, "packet_filter_manager", "commit", :hook_commit )
+    rescue LoadError
+    end
     
     ## Run whenever the address is updated.
     ## REVIEW : This may just be moved into a script
@@ -261,19 +264,6 @@ EOF
 echo > /dev/null
 EOF
 
-    ## This is designed to get all of the gateways into the ARP cache for a
-    ## some single NIC code that runs later.
-    arp_eater_settings = ArpEaterSettings.find( :first )
-    if !arp_eater_settings.nil? && arp_eater_settings.enabled 
-      gateways = get_arp_eater_gateways
-      
-      text += <<EOF
- for t_host in #{gateways.join( " " )} `ip route show | awk '/^default/ { print $3 }'` ; do
-    echo "0" | nc  -u -q 0 ${t_host} 53
-done
-EOF
-    end
-    
     os["override_manager"].write_file( FlushConfigFile, text, "\n" )
   end
 
@@ -522,7 +512,6 @@ EOF
       return
     end
     
-    gateways = get_arp_eater_gateways
     text << <<EOF
 #{IPTablesCommand} #{Chain::MarkInterface.args} -g #{Chain::SingleNIC}
 
@@ -648,15 +637,5 @@ EOF
       return "#{IPTablesCommand} -t filter -I INPUT 1 -p udp -m multiport --destination-ports 68 -j RETURN\n"
     else return ""
     end
-  end
-
-  def get_arp_eater_gateways
-    return []
-    
-    ## Multiple gateways isn't really supported because of source routing won't work none.
-    networks = ArpEaterNetworks.find_all( [ "enabled=?" ], true )
-    gateways = networks.map do |i| 
-        ArpEaterNetworks.is_gatway_auto( i.gateway ) ? nil : i.gateway
-    end.delete_if { |i| i.nil? }
   end
 end

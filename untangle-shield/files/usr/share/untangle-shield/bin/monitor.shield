@@ -46,14 +46,16 @@ reap_child_hardest()
 
 reap_child_harder()
 {
-  reap_child 15
   trap reap_child_hardest 2
+  trap reap_child_hardest 15
+  reap_child 15
 }
 
 reap_child_easy()
 {
-  reap_child 2
   trap reap_child_harder 2
+  trap reap_child_harder 15
+  reap_child 2
 }
 
 reap_child()
@@ -116,8 +118,8 @@ while ( true ) ;  do
     echo "[`date`] Starting Shield"
 
     start_shield
+    sleep 2
     wait $PID
 
     echo "[`date`] Shield stopped, restarting daemon"
-    sleep 2
 done
