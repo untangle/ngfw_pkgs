@@ -9,75 +9,99 @@ _ = gettext.gettext
 # pages --------------------------------------------------------------------------
 
 def status400(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Bad Request"))
 
 def status401(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Unauthorized"))
 
 def status402(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Payment Required"))
 
 def status403(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Forbidden"))
 
 def status404(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Not Found"))
 
 def status405(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Method Not Allowed"))
 
 def status406(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Not Acceptable"))
 
 def status407(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Proxy Authentication Required"))
 
 def status408(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Request Timeout"))
 
 def status409(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Conflict"))
 
 def status410(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Gone"))
 
 def status411(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Length Required"))
 
 def status412(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Precondition Failed"))
 
 def status413(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Request Entity Too Large"))
 
 def status414(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Request-URI Too Long"))
 
 def status415(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Unsupported Media Type"))
 
 def status416(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Requested Range Not Satisfiable"))
 
 def status417(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Expectation Failed"))
 
 def status500(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Internal Server Error"))
 
 def status501(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Not Implemented"))
 
 def status502(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Bad Gateway"))
 
 def status503(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Service Unavailable"))
 
 def status504(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("Gateway Timeout"))
 
 def status505(req):
+    uvmlogin.setup_gettext()
     _write_report(req, _("HTTP Version Not Supported"))
 
 # internal methods ---------------------------------------------------------------

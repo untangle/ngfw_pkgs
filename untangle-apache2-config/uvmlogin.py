@@ -1,8 +1,10 @@
 import base64
+import gettext
 import os
 import urllib
 
 from mod_python import apache, Session, util
+from psycopg import connect
 
 def authenhandler(req):
     if req.notes.has_key('authorized') and req.notes['authorized'] == 'true':
@@ -110,3 +112,20 @@ def save_session_user(sess, realm, username):
     apache_realms[realm] = realm_record
 
     sess.save()
+
+def setup_gettext():
+    lang = get_uvm_language()
+    trans = gettext.translation('untangle-apache2-config', languages=[lang],
+                                fallback=True)
+    trans.install()
+
+
+def get_uvm_language():
+    conn = connect("dbname=uvm user=postgres")
+    curs = conn.cursor()
+    curs.execute('SELECT language FROM settings.u_language_settings')
+    r = curs.fetchone()
+    if r == None:
+        return "us"
+    else:
+        return r[0]

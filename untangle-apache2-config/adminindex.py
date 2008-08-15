@@ -1,17 +1,14 @@
-import gettext
 import md5
 import uvmlogin
 
 from mod_python import apache, Session, util
 from psycopg import connect
 
-gettext.bindtextdomain('untangle-apache2-config')
-gettext.textdomain('untangle-apache2-config')
-_ = gettext.gettext
-
 # pages --------------------------------------------------------------------------
 
 def login(req, url='/', realm='Administrator'):
+    uvmlogin.setup_gettext()
+
     args = util.parse_qs(req.args or '')
 
     if req.form.has_key('username') and req.form.has_key('password'):
@@ -52,7 +49,7 @@ def _admin_valid_login(req, username, password):
                  (username,))
     r = curs.fetchone()
 
-    if (r == None):
+    if r == None:
         return False
     else:
         pw_hash = r[0]
