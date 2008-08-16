@@ -1,13 +1,3 @@
-auto_start_client()
-{
-    if [ -f ${UVM_AUTO_SCRIPT} -a -f ${UVM_AUTO_CONFIG} ]; then
-        sudo mkdir -p /var/log/uvm/
-        sudo ${UVM_AUTO_SCRIPT} ${UVM_AUTO_CONFIG} >> /var/log/uvm/auto_config.log 2>&1
-    else
-        /usr/bin/untangle-client &
-    fi
-}
-
 # screensaver is off by default
 xset s off
 xset -dpms
@@ -25,7 +15,10 @@ if [ -f /etc/default/untangle-vm ] ; then
     UVM_AUTO_SCRIPT=${UVM_AUTO_SCRIPT:-/var/lib/untangle-windows-installer/init_uvm.rb}
     UVM_AUTO_CONFIG=${UVM_AUTO_CONFIG:-/mnt/hgfs/untangle/config.js}
 
-    [ ! -f $ACTIVATION_KEY_FILE ] && auto_start_client
+    if [ -f ${UVM_AUTO_SCRIPT} -a -f ${UVM_AUTO_CONFIG} ]; then
+        sudo mkdir -p /var/log/uvm/
+        sudo sh -c "${UVM_AUTO_SCRIPT} ${UVM_AUTO_CONFIG} >> /var/log/uvm/auto_config.log 2>&1"
+    fi
 
     ## Remove this afterwards to guarantee this stuff never runs again.
     sudo rm -f ${UVM_AUTO_SCRIPT} ${UVM_AUTO_CONFIG}
@@ -33,6 +26,8 @@ if [ -f /etc/default/untangle-vm ] ; then
     ## Remove this after it is executed to guarantee it never runs again.
     UVM_PRE_UVM_SCRIPT=${UVM_PRE_UVM_SCRIPT:-/var/lib/untangle-windows-installer/pre_uvm.rb}
     sudo rm -f ${UVM_PRE_UVM_SCRIPT}
+
+    [ ! -f $ACTIVATION_KEY_FILE ] && /usr/bin/untangle-client &
 fi
 
 # Here's where we launch the window manager. When this finishes we reboot!
