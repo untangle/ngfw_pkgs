@@ -28,6 +28,10 @@ if [ -f /etc/default/untangle-vm ] ; then
     sudo rm -f ${UVM_PRE_UVM_SCRIPT}
 
     [ ! -f $ACTIVATION_KEY_FILE ] && /usr/bin/untangle-client &
+
+    ## This will wait for the shutdown command for vmware.
+    WIN_ACTION_HANDLER=${WIN_ACTION_HANDLER:-/var/lib/untangle-windows-installer/action_handler.rb}
+    [ -x ${WIN_ACTION_HANDLER} ] && sudo -b ${WIN_ACTION_HANDLER} 
 fi
 
 # Here's where we launch the window manager. When this finishes we reboot!
