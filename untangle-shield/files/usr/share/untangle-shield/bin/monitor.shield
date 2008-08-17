@@ -4,7 +4,6 @@ mkdir -p /var/log/untangle-shield
 exec >> /var/log/untangle-shield/monitor.log 2>&1
 
 NAME="shield"
-SHIELD_PID_FILE="/var/run/${NAME}.pid"
 
 load_defaults()
 {
@@ -46,26 +45,25 @@ reap_child_hardest()
 
 reap_child_harder()
 {
-  trap reap_child_hardest 2
-  trap reap_child_hardest 15
-  reap_child 15
+    trap reap_child_hardest INT TERM USR1 USR2 QUIT
+    reap_child 15
 }
 
 reap_child_easy()
 {
-  trap reap_child_harder 2
-  trap reap_child_harder 15
-  reap_child 2
+    trap reap_child_harder INT TERM USR1 USR2 QUIT
+    reap_child 2
 }
 
 reap_child()
 {
-    echo "[`date`] Retrieved signal to stop daemon. (signal: $1)"
+    echo "[`date`] Received Signal      (monitor: $$) (shield: $SHIELD_PID) (sending signal: $1) "
 
-    if [ ! -z "$PID" ] ; then
-        echo "[`date`] Sending kill signal to shield."
-        kill -$1 ${PID}
-        wait $PID
+    if [ ! -z "$SHIELD_PID" ] ; then
+        echo "[`date`] Sending signal $1 to Shield ($SHIELD_PID)."
+        kill -$1 ${SHIELD_PID}
+        wait $SHIELD_PID
+        echo "[`date`] Shield Stopped       (monitor: $$) (shield: $SHIELD_PID)"
         remove_iptables
     fi
 
@@ -87,7 +85,7 @@ start_shield()
     test -n "${SHIELD_LOG_ERR}" && t_args="${t_args} -e ${SHIELD_LOG_ERR}"
     
     /usr/bin/${NAME} ${t_args} &
-    export PID=$!
+    SHIELD_PID=$!
 
     ## Give it some time to grab the queue so iptables knows that it is still running
     for t in '1 2 3 4 5 6 7 8 9 10'; do
@@ -111,15 +109,15 @@ is_running()
 EOF
 }
 
-trap reap_child_easy 2
-trap reap_child_easy 15
+trap reap_child_easy INT TERM USR1 USR2 QUIT
 
 while ( true ) ;  do
     echo "[`date`] Starting Shield"
 
     start_shield
     sleep 2
-    wait $PID
+    echo "[`date`] Monitoring Shield   (monitor: $$) (shield: $SHIELD_PID)"
+    wait $SHIELD_PID
 
-    echo "[`date`] Shield stopped, restarting daemon"
+    echo "[`date`] Shield Died!        (monitor: $$) (shield: $SHIELD_PID)"
 done
