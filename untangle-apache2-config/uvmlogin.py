@@ -88,6 +88,8 @@ def is_root(req):
     return result
 
 def login_redirect(req, realm):
+    apache.log_error("%s %s" % req.connection.local_addr)
+
     url = urllib.quote(req.unparsed_uri)
     realm_str = urllib.quote(realm)
 
