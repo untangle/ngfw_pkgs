@@ -18,7 +18,7 @@ msgstr ""
 #: adminindex.py:29
 #, python-format
 msgid "%s Login"
-msgstr "%s Entrada"
+msgstr "Entrada %s"
 
 #: adminindex.py:116
 msgid "Server:"
