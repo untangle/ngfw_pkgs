@@ -88,12 +88,20 @@ def is_root(req):
     return result
 
 def login_redirect(req, realm):
-    apache.log_error("%s %s" % req.connection.local_addr)
+    (ip, port) = req.connection.local_addr
+    if port == 80:
+        proto = 'http'
+    else:
+        proto = 'https'
 
-    url = urllib.quote(req.unparsed_uri)
+    host = req.hostname
+    if host == None:
+        host = ip
+
+    url = urllib.quote("%s://%s%s" % (proto, host, req.unparsed_uri))
     realm_str = urllib.quote(realm)
 
-    redirect_url = '/auth/login?url=%s&realm=%s' % (url, realm_str)
+    redirect_url = 'https://%s/auth/login?url=%s&realm=%s' % (host, url, realm_str)
     util.redirect(req, redirect_url)
 
 def delete_session_user(sess, realm):
