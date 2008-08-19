@@ -30,7 +30,7 @@ if [ -f /etc/default/untangle-vm ] ; then
     [ ! -f $ACTIVATION_KEY_FILE ] && /usr/bin/untangle-client &
 
     ## This will wait for the shutdown command for vmware.
-    WIN_ACTION_HANDLER=${WIN_ACTION_HANDLER:-/var/lib/untangle-windows-installer/action_handler.rb}
+    WIN_ACTION_HANDLER=${WIN_ACTION_HANDLER:-/usr/share/untangle-windows-installer/bin/action_handler.rb}
     [ -x ${WIN_ACTION_HANDLER} ] && sudo -b ${WIN_ACTION_HANDLER} 
 fi
 
