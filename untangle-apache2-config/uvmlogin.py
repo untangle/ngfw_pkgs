@@ -88,20 +88,10 @@ def is_root(req):
     return result
 
 def login_redirect(req, realm):
-    (ip, port) = req.connection.local_addr
-    if port == 80:
-        proto = 'http'
-    else:
-        proto = 'https'
-
-    host = req.hostname
-    if host == None:
-        host = ip
-
-    url = urllib.quote("%s://%s%s" % (proto, host, req.unparsed_uri))
+    url = urllib.quote(req.unparsed_uri)
     realm_str = urllib.quote(realm)
 
-    redirect_url = 'https://%s/auth/login?url=%s&realm=%s' % (host, url, realm_str)
+    redirect_url = '/auth/login?url=%s&realm=%s' % (url, realm_str)
     util.redirect(req, redirect_url)
 
 def delete_session_user(sess, realm):
@@ -129,7 +119,6 @@ def setup_gettext():
                                 languages=[lang],
                                 fallback=True)
     trans.install()
-
 
 def get_uvm_language():
     conn = connect("dbname=uvm user=postgres")
