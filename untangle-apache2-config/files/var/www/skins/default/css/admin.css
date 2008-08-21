@@ -342,6 +342,11 @@ div.iconLogoutRow {
     width: 100%;
     cursor: pointer;
 }
+div.iconDetailRow {
+    background:transparent url(../images/admin/icon_detail_row.gif) no-repeat center center;
+    width: 100%;
+    cursor: pointer;
+}
 div.iconDrag {
     background:transparent url(../images/admin/icon_drag.gif) no-repeat center center;
     width: 100%;
