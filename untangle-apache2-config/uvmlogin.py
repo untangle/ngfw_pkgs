@@ -57,7 +57,7 @@ def session_user(sess, realm):
     return None
 
 def is_not_setup():
-    return os.path.exists('/usr/share/untangle/.regdone')
+    return not os.path.exists('/usr/share/untangle/.regdone')
 
 def is_root(req):
     (remote_ip, remote_port) = req.connection.remote_addr
