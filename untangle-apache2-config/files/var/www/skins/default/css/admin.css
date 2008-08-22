@@ -522,30 +522,6 @@ div.iconArrowDown {
   padding:5px 5px 0px 5px;
  }
 
-
-.wizard-steps .completed
-{ 
-  color: #0000CC;  
- }
-
-.wizard-steps .incomplete
-{ 
-  color: #C0C0C0;
- }
-
-.wizard-steps .current
-{ 
-  color: #00CC00;
-  font-weight: bold;
- }
-
-.wizard-steps .step
-{
-  font-size: 11px;
-  line-height: 14px; /* works out to 14px */
-  font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,sans-serif;
-}
-
 div.systemStats {
 	position:absolute;
 	width: 300px;
@@ -788,3 +764,205 @@ div.buttonColumn {
     padding-left: 1px;
     overflow: hidden;
 }
+
+/* Wizard */
+.largeOption{
+	font-size:14px;
+	font-weight:bold;
+}
+.wizardlabelmargin1{
+	margin-left:18px;
+	margin-bottom:10px;
+	width:350px;
+}
+.spacingMargin1{
+	margin-top:7px;
+}
+.wizardlabelmargin2, .wizardlabelmargin3{
+	position:absolute;
+	right:15px;
+	border:1px #ccc solid;
+	padding:5px;
+}
+.wizardlabelmargin2{
+	margin-top:-40px;
+}
+.tallMargin{
+	margin-top:100px;
+}
+.indented-field-1{
+	margin-top:10px;
+}
+.wizardlabelmargin3{
+	margin-top:-40px;
+}
+.wizardlabelmargin4{
+	margin-left:106px;
+}
+
+.noborder{
+           border:0px solid;
+           background-image:none;
+           font-family:tahoma,arial,helvetica,sans-serif;
+           font-size:12px;
+           font-size-adjust:none;
+           font-style:normal;
+           font-variant:normal;
+           font-weight:normal;
+           line-height:normal;	
+}
+
+
+body.wizard{
+	font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,sans-serif;
+}
+.networkCardFormMargin{
+	margin-top:1em;
+	padding-top:1em;
+}
+.networkCardFormMargin div div form fieldset{
+	border:0px;
+	border-top:1px #CCC solid;
+}
+.testConnectivity{
+	position:relative;
+	left:280px;
+	top:-22px;
+}
+.testConnectivity2{
+	position:relative;
+	left:204px;
+}
+.rightAlign{
+	margin-left:214px;
+}
+.smallTopMargin{
+	margin-top:1em;
+}
+.smallBottomMargin{
+	margin-bottom:1em;
+}
+
+#container{
+	margin:10px auto;
+	position:relative;
+}
+
+.logo-container{
+	position:absolute;
+	top:10px;
+	left:25px;
+}
+.wizard-steps{
+	padding-top:120px;
+	background-color:#e8e8e8;	
+}
+.empty-background{
+	background-color:none;
+}
+
+.wizard-steps .completed
+{ 
+  color: #000;  
+ }
+
+.wizard-steps .incomplete
+{ 
+  color: #444;
+ }
+
+.wizard-steps .current
+{ 
+  color: #333;
+  font-weight: bold;
+ }
+
+.wizard-steps .step
+{
+  font-size: 12px;
+  line-height: 23px;
+  font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,sans-serif;
+  margin:3px 0px 3px 25px;
+546a619,659
+  padding:0px 0px 0px 0px;
+ }
+
+.nostep{
+         padding:0px 0px 0px 22px;
+}
+.current div, .incomplete div, .completed div
+{
+  padding:0px 0px 0px 5px;
+  }
+
+.current div{
+	width:200px;
+ }
+
+.incomplete div
+{
+  background-color:#E8e8e8;
+  }
+
+.completed div
+{
+  background-color:#e8e8e8;
+  }
+
+.incomplete div div .count{
+	background:url(../images/admin/wizard/step-incomplete.jpg) no-repeat left center !important;
+	margin:0px 4px 0px 0px;
+	color:#444444;
+	font-size:11px;
+	margin:0px 4px 0px 0px;
+	padding:2px 6px 2px 5px;	
+}
+
+.current div div .count
+{
+  background: url(../images/admin/wizard/step-current.jpg) no-repeat left center !important;
+  margin:0px 4px 0px 0px;
+  color:#444444;
+  font-size:11px;
+  margin:0px 4px 0px 0px;
+  padding:2px 6px 2px 5px;
+}
+
+.completed div div .count
+{
+  background: url(../images/admin/wizard/step-completed.jpg) no-repeat left center !important;
+  margin:0px 4px 0px 0px;
+  color:#FFF;
+  font-size:11px;
+  margin:0px 4px 0px 0px;
+  padding:2px 6px 2px 5px;	
+}
+.wizard .x-form-item label
+{ 
+  text-align: right;
+ }
+.wizardTitle{
+	margin-bottom:1.8em;
+	padding-top:5px;
+	color:#333;
+	font-size:18px;
+	font-weight:bold;
+    font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,sans-serif;
+ }
+ .smallbottommargin{
+	margin-bottom:1em;
+ }
+ .requiredInfo{
+	text-align:right;
+	margin-bottom:1em;
+	display:block;
+ }
+ .requiredstar{
+	color:#FF2222;
+	font-weight:bold;
+ }
+.wizardLabel{
+	color:#333;
+	font-size:12px;
+}
+
