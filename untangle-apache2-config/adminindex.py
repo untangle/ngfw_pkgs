@@ -4,9 +4,9 @@ import uvmlogin
 from mod_python import apache, Session, util
 from psycopg import connect
 
-# pages --------------------------------------------------------------------------
+# pages -----------------------------------------------------------------------
 
-def login(req, url='/', realm='Administrator'):
+def login(req, url=None, realm='Administrator'):
     uvmlogin.setup_gettext()
 
     args = util.parse_qs(req.args or '')
@@ -19,8 +19,10 @@ def login(req, url='/', realm='Administrator'):
             sess = Session.Session(req)
             uvmlogin.save_session_user(sess, realm, username)
 
-            apache.log_error('redirect to %s' % url)
-            util.redirect(req, url)
+            if url == None:
+                return apache.OK
+            else:
+                util.redirect(req, url)
 
     company_name = "Untangle"
     title = _("%s Login") % company_name
@@ -28,12 +30,15 @@ def login(req, url='/', realm='Administrator'):
 
     _write_login_form(req, title, host)
 
-def logout(req, url='/', realm='Administrator'):
+def logout(req, url=None, realm='Administrator'):
     sess = Session.Session(req)
     uvmlogin.delete_session_user(sess, realm)
-    util.redirect(req, url)
+    if url == None:
+        return apache.OK
+    else:
+        util.redirect(req, url)
 
-# internal methods ---------------------------------------------------------------
+# internal methods ------------------------------------------------------------
 
 def _valid_login(req, realm, username, password):
     if realm == 'Administrator':
