@@ -11,6 +11,11 @@ def login(req, url=None, realm='Administrator'):
 
     args = util.parse_qs(req.args or '')
 
+    if req.form.has_key('username') or req.form.has_key('password'):
+        is_error = True
+    else:
+        is_error = False
+
     if req.form.has_key('username') and req.form.has_key('password'):
         username = req.form['username']
         password = req.form['password']
@@ -28,7 +33,7 @@ def login(req, url=None, realm='Administrator'):
     title = _("%s Login") % company_name
     host = req.hostname
 
-    _write_login_form(req, title, host)
+    _write_login_form(req, title, host, is_error)
 
 def logout(req, url=None, realm='Administrator'):
     sess = Session.Session(req)
@@ -62,10 +67,15 @@ def _admin_valid_login(req, username, password):
         salt = pw_hash[len(pw_hash) - 8:]
         return raw_pw == md5.new(password + salt).digest()
 
-def _write_login_form(req, title, host):
+def _write_login_form(req, title, host, is_error):
     login_url = req.unparsed_uri
     req.content_type = "text/html"
     req.send_http_header()
+
+    if is_error:
+        error_msg = '<b style="color:#f00">%s</b><br/><br/>' % _('Error: Username and Password do not match')
+    else:
+        error_msg = ''
 
     req.write("""\
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -92,6 +102,8 @@ def _write_login_form(req, title, host):
 
         <b>%s</b><br/>
 
+        %s
+
         <div style="margin: 0 auto; width: 250px; padding: 40px 0 5px;">
 
         <form method="post" action="%s">
@@ -115,4 +127,4 @@ def _write_login_form(req, title, host):
  <!-- Box End -->
 </div>
 </body>
-</html>""" % (title, title, login_url, _("Server:"), host, _("Username:"), _("Password:"), _("Login")))
+</html>""" % (title, error_msg, title, login_url, _("Server:"), host, _("Username:"), _("Password:"), _("Login")))
