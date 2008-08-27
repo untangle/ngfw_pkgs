@@ -94,7 +94,7 @@ stop()
     log_daemon_msg "Stopping $DESC"
 
     log_progress_msg "untangle-shield"    
-    start-stop-daemon --pidfile ${PID_FILE} --stop --retry INT/4/INT/4/INT/2/TERM/1/KILL/1
+    start-stop-daemon --pidfile ${PID_FILE} --stop --retry USR1/4/USR1/4/USR1/2/INT/1/TERM/1/KILL/1
     RET=$?
     log_end_msg $RET
 
