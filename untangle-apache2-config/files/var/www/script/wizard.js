@@ -119,7 +119,7 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
 		var validationPassed = true;
 
 		if(validationPassed === true){
-	        if ( this.currentPage < index ) {
+	        if ( this.currentPage <= index ) {
 				if(this.cards[this.currentPage].onValidate){
 					validationPassed = this.cards[this.currentPage].onValidate();
 				}			
