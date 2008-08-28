@@ -39,6 +39,7 @@ Ung.I18N = Ext.extend(Ext.Component, {
         return this._(s);
     },
     // replaces arguments with values, for a string with arguments
+    // DEPRECATED - use String.format instead
     sprintf : function(s) {
         var bits = s.split('%');
         var out = bits[0];

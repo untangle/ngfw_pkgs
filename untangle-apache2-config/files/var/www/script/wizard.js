@@ -82,7 +82,7 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
 			}
             var title = '<span class="text'+addnlclass+'">' + card.title + '</span>';
             if (( c > 0 ) && ( c < ( length - 1 ))) {
-                title = i18n.sprintf( i18n._( '<span class="count">%d</span> '), c  ) + title;
+                title = String.format( i18n._( '<span class="count">{0}</span> '), c  ) + title;
             }
             var id = this.getStepId( c );
             items.push({ 
@@ -217,8 +217,8 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
         if ( title == null ) title = card.title;
 
         if (( index > 0 ) && ( index < ( this.cards.length - 1 ))) {
-            if ( title == null ) title = i18n.sprintf( i18n._( 'Step %d'), index );
-            else title = i18n.sprintf( i18n._( 'Step %d - '), index ) + title;
+            if ( title == null ) title = String.format( i18n._( 'Step {0}'), index );
+            else title = String.format( i18n._( 'Step {0} - '), index ) + title;
         }
         
         return title;
