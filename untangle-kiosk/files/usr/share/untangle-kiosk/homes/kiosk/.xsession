@@ -5,9 +5,6 @@ xset -dpms
 # disable the middle button through a 3rd party app
 xbindkeys &
 
-# start fbpanel
-fbpanel &
-
 # automatically start the setup wizard if the license file isn't present
 if [ -f /etc/default/untangle-vm ] ; then
     . /etc/default/untangle-vm
@@ -33,6 +30,9 @@ if [ -f /etc/default/untangle-vm ] ; then
     WIN_ACTION_HANDLER=${WIN_ACTION_HANDLER:-/usr/share/untangle-windows-installer/bin/action_handler.rb}
     [ -x ${WIN_ACTION_HANDLER} ] && sudo -b ${WIN_ACTION_HANDLER} 
 fi
+
+# start fbpanel
+fbpanel &
 
 # Here's where we launch the window manager. When this finishes we reboot!
 x-session-manager
