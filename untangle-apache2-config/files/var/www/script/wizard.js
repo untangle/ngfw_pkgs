@@ -30,13 +30,13 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
 
         this.previousButton = new Ext.Button({
             id : 'card-prev',
-            text : i18n._( '&laquo; Previous' ),
+            text : String.format(i18n._( '{0} Previous' ),'&laquo;'),
             handler : this.goPrevious.createDelegate( this )
         });
 
         this.nextButton = new Ext.Button({
             id : 'card-next',
-            text : i18n._( 'Next &raquo;' ),
+            text : String.format(i18n._( '{Next {0}' ),'&raquo;'),
             handler : this.goNext.createDelegate( this ),
 			cls:'x-btn-over',
 			overCls :'x-btn-'
@@ -82,7 +82,7 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
 			}
             var title = '<span class="text'+addnlclass+'">' + card.title + '</span>';
             if (( c > 0 ) && ( c < ( length - 1 ))) {
-                title = String.format( i18n._( '<span class="count">{0}</span> '), c  ) + title;
+                title = String.format( '<span class="count">{0}</span> ', c  ) + title;
             }
             var id = this.getStepId( c );
             items.push({ 
@@ -217,8 +217,8 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
         if ( title == null ) title = card.title;
 
         if (( index > 0 ) && ( index < ( this.cards.length - 1 ))) {
-            if ( title == null ) title = String.format( i18n._( 'Step {0}'), index );
-            else title = String.format( i18n._( 'Step {0} - '), index ) + title;
+            if ( title == null ) title = String.format( i18n._('Step {0}'), index );
+            else title = String.format( i18n._('Step {0}'), index + ' - ' + title) ;
         }
         
         return title;
