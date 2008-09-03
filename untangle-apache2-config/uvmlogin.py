@@ -31,6 +31,9 @@ def headerparserhandler(req):
 
     username = session_user(sess, realm)
 
+    if None == username and realm == 'SetupWizard':
+        username = session_user(sess, 'Administrator')
+
     if None == username and realm == 'SetupWizard' and is_not_setup():
         username = 'setupwizard'
         save_session_user(sess, realm, username)
@@ -89,6 +92,10 @@ def is_root(req):
 
 def login_redirect(req, realm):
     url = urllib.quote(req.unparsed_uri)
+
+    if realm == "SetupWizard":
+        realm = "Administrator"
+
     realm_str = urllib.quote(realm)
 
     redirect_url = '/auth/login?url=%s&realm=%s' % (url, realm_str)
