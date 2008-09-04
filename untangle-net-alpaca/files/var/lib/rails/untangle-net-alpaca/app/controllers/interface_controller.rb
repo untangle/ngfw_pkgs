@@ -409,7 +409,7 @@ class InterfaceController < ApplicationController
     if results[0]
       flash[:notice] = "Successfully connected to the Internet."
     else
-      flash[:notice] = "Failed to connect to the Internet. #{results[1]} failed."
+      flash[:warning] = "Failed to connect to the Internet. #{results[1]} failed."
     end
     index
   end

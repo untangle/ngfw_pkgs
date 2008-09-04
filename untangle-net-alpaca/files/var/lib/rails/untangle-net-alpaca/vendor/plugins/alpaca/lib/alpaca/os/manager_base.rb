@@ -49,18 +49,15 @@ class Alpaca::OS::ManagerBase
 
 
   ## Run a comamnd and returns its exit status
-  def run_command( command, timeout = 30 )
+  def run_command( command, timeout = 60 )
     p = nil
     begin
       status = 127
       t = Thread.new do 
         p = IO.popen( command )
+        logger.debug( "running the command: #{command}" )
+        p.each_line { |line| logger.debug( line ) }
         pid, status = Process.wait2( p.pid )
-        lines = p.readlines
-        unless lines.nil? || lines.empty?
-          logger.debug( "Received the following output")
-          logger.debug( lines )
-        end
         status = status.exitstatus
       end
       
