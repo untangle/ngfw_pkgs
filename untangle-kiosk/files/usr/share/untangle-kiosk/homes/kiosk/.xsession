@@ -10,7 +10,7 @@ update_status()
     local t_status=$1
 
     if [ -d `dirname ${UVM_STATUS_FILE}` ] ; then
-        sudo sh -c 'echo "${t_status}" > ${UVM_STATUS_FILE}'
+        sudo sh -c "echo \"${t_status}\" > ${UVM_STATUS_FILE}"
     fi
 }
 
