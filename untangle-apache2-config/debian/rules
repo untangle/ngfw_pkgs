@@ -38,10 +38,12 @@ build: configure
 	tar c -C ./files --exclude .svn . | tar x -C ./debian/untangle-apache2-config
 	find ./debian/untangle-apache2-config/tmp -name ".svn" | xargs rm -rf
 
-	for f in ./po/*po; do \
-	  d="./debian/untangle-apache2-config/usr/share/locale/`basename $$f .po`/LC_MESSAGES"; \
+	for f in $$(find ./po -name '*.po'); do \
+	  l=$$(echo $$f | cut -d/ -f 3); \
+	  d="./debian/untangle-apache2-config/usr/share/locale/$$l/LC_MESSAGES"; \
 	  mkdir -p $$d; \
 	  msgfmt -o $$d/untangle-apache2-config.mo $$f; \
+	  echo msgfmt -o $$d/untangle-apache2-config.mo $$f; \
 	done
 
 clean:
