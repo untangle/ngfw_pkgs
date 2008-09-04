@@ -314,12 +314,12 @@ div.toolboxButton {
 	margin-right: auto;
 	margin-bottom: 5px;
 }
-div.ungButton {
+.ungButton {
 	cursor: pointer;
 	background-color: #E9E9E9;
 	border: 1px solid #9B9B9B;
 }
-div.ungButtonHover {
+.ungButtonHover {
 	border-color:#366dba;
 	color:#366dba;
 	background-color:#f1f6fc;
