@@ -36,7 +36,7 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
 
         this.nextButton = new Ext.Button({
             id : 'card-next',
-            text : String.format(i18n._( '{Next {0}' ),'&raquo;'),
+            text : String.format(i18n._( 'Next {0}' ),'&raquo;'),
             handler : this.goNext.createDelegate( this ),
 			cls:'x-btn-over',
 			overCls :'x-btn-'
