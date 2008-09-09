@@ -14,7 +14,6 @@ Replaces: restore-mv
 Depends: untangle-vm, untangle-ldap-server
 XB-Display-Name: Recovery Utilities
 XB-Untangle-Type: library
-XB-Is-Service: true
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9Y
  MgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAATkSURBVHja
  1JhrKG1bFMftg1semyghESVKSClSSilSinyQV5S8SoqUV5RIKSJFREJuiigRpZQS

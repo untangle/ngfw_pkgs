@@ -1,0 +1,76 @@
+#!/bin/bash
+
+KEYSTORE=/usr/share/untangle/conf/keystore
+PEM=/etc/apache2/ssl/apache.pem
+ALIAS=$(hostname -f)
+
+sed -e 's/NO_START=1/NO_START=0/' -i /etc/default/apache2
+
+if [ ! -e /etc/apache2/mods-available/jk.conf ]; then
+    cat >/etc/apache2/mods-available/jk.conf <<EOF
+<IfModule mod_jk.c>
+
+JkWorkersFile /etc/apache2/workers.properties
+JkLogFile     /var/log/apache2/mod_jk.log
+JkLogLevel error
+
+</IfModule>
+EOF
+fi
+
+if [ ! -e /etc/apache2/workers.properties ]; then
+    secret=$(dd if=/dev/random count=10 bs=1 2>/dev/null | hexdump | cut -d \  -f 2-| head -n 1 | tr -d " ")
+    cat >/etc/apache2/workers.properties <<EOF
+worker.list=uvmWorker
+
+worker.uvmWorker.type=ajp13
+worker.uvmWorker.host=localhost
+worker.uvmWorker.port=8009
+worker.uvmWorker.secret=$secret
+EOF
+fi
+
+if ! grep worker.uvmWorker.secret /etc/apache2/workers.properties >/dev/null 2>&1; then
+    secret=$(dd if=/dev/random count=10 bs=1 2>/dev/null | hexdump | cut -d \  -f 2-| head -n 1 | tr -d " ")
+    echo "worker.uvmWorker.secret=$secret" >>/etc/apache2/workers.properties
+fi
+
+chown www-data:www-data /etc/apache2/workers.properties
+chmod 600 /etc/apache2/workers.properties
+
+if [ ! -e /etc/apache2/untangle-conf.d ]; then
+    echo "Include /usr/share/untangle/apache2/conf.d/*.conf" >/etc/apache2/untangle-conf.d
+fi
+
+if [ ! -e $PEM -a -e $KEYSTORE ]; then
+    echo 'moving cert from java keystore'
+    /usr/share/untangle-apache2-config/keystore2pem.sh $KEYSTORE $PEM $ALIAS
+fi
+
+if [ ! -e $PEM ]; then
+    echo 'generating self-signed cert'
+    mkdir -p /etc/apache2/ssl
+    export RANDFILE=/dev/random
+    openssl req -batch -subj "/CN=$ALIAS" -new -x509 -nodes -out $PEM \
+        -keyout $PEM
+    chmod 600 $PEM
+    ln -sf $PEM \
+        /etc/apache2/ssl/`/usr/bin/openssl x509 -noout -hash < $PEM`.0
+fi
+
+if ! grep "Listen 443" /etc/apache2/ports.conf >/dev/null; then
+    echo "Listen 443" >>/etc/apache2/ports.conf
+fi
+
+if ! grep "Listen 64157" /etc/apache2/ports.conf >/dev/null; then
+    echo "Listen 64157" >>/etc/apache2/ports.conf
+fi
+
+/usr/sbin/a2dismod jk
+/usr/sbin/a2enmod jk
+/usr/sbin/a2enmod ssl
+/usr/sbin/a2enmod mod_python
+/usr/sbin/a2dissite default
+/usr/sbin/a2ensite uvm
+
+/etc/init.d/apache2 reload

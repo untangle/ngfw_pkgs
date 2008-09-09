@@ -17,6 +17,7 @@
 #
 
 require 'remoteapp'
+require 'nodestats'
 
 class UVMFilterNode < UVMRemoteApp
 
@@ -85,6 +86,10 @@ class UVMFilterNode < UVMRemoteApp
         end
 
     protected
+        def get_snmp_stat_map()
+          raise NoMethodError, "Derived class of UVMFilterNode does not implement required method 'get_snmp_stat_map'"
+        end
+    protected
         def get_help_text()
             raise NoMethodError, "Derived class of UVMFilterNode does not implement required method 'get_help_text()'"
         end
@@ -93,7 +98,7 @@ class UVMFilterNode < UVMRemoteApp
         def get_filternode_tids(node_name)
             return @@uvmRemoteContext.nodeManager.nodeInstances(node_name).sort # return tids in sorted order so snmpwalks don't fail.
         end
-    
+        
     protected
         # Given a filter node command request in the standard format, e.g., filternode [#X|Y] command
         # return a 2 element array composed of the effective tid and command, and strip these items
@@ -191,8 +196,10 @@ class UVMFilterNode < UVMRemoteApp
                                 @@diag.if_level(3) { p tid }
                                 if (tid != "0")
                                     # We're reporting stats of a specific FN element
-                                    node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
-                                    node_stats = hash_node_stats(node_ctx.getStats())
+                                    msg_mgr = @@uvmRemoteContext.messageManager();
+                                    new_stats = msg_mgr.getStats(tid);
+                                    stats = map_new_stats_to_snmp_stats(new_stats)
+                                    node_stats = hash_node_stats(stats)
                                 else
                                     # We're reporting stats of the aggregation of all FN's of the effective type.
                                     node_stats = accumulate_node_stats(mib_root)
@@ -258,8 +265,11 @@ class UVMFilterNode < UVMRemoteApp
                     stats = "#{oid}\n#{type}\n#{stat}"
                 else
                     return "Error: a node ID [#X|TID] must be specified in order to retrieve " unless tid
-                    node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
-                    node_stats = hash_node_stats(node_ctx.getStats())
+                    msg_mgr = @@uvmRemoteContext.messageManager();
+                    new_stats = msg_mgr.getStats(tid);
+                    stats = map_new_stats_to_snmp_stats(new_stats);
+                    node_stats = hash_node_stats(stats);  
+                    
                     tcpsc  = node_stats[:tcp_session_count]
                     tcpst  = node_stats[:tcp_session_total]
                     tcpsrt = node_stats[:tcp_session_request_total]
@@ -280,6 +290,7 @@ class UVMFilterNode < UVMRemoteApp
                     counters = []
                     (0...NUM_STAT_COUNTERS).each { |i| counters[i] = node_stats["counter#{i}".to_sym] }
                     # formant stats for human readability
+                    stats = "";
                     stats << "TCP Sessions (count, total, requests): #{tcpsc}, #{tcpst}, #{tcpsrt}\n"
                     stats << "UDP Sessions (count, total, requests): #{udpsc}, #{udpst}, #{udpsrt}\n"
                     stats << "Client to Node (bytes, chunks): #{c2tb}, #{c2tc}\n"
@@ -451,8 +462,9 @@ class UVMFilterNode < UVMRemoteApp
             tids.each { |tid|
                 # get stats for this tid.
 		begin
-                    node_ctx = @@uvmRemoteContext.nodeManager.nodeContext(tid)
-                    nodeStats = node_ctx.getStats()
+                    msg_mgr = @@uvmRemoteContext.messageManager();
+                    new_stats = msg_mgr.getStats(tid);
+                    nodeStats = map_new_stats_to_snmp_stats(new_stats);
 		rescue Exception => ex
 		    # if for any reason we can't get this node's stats then just skip it.
             	    @@diag.if_level(2) { puts! "Unable to get stats for TID #{tid} - exception caught: " + ex }
@@ -499,6 +511,7 @@ class UVMFilterNode < UVMRemoteApp
         end
             
     protected
+    
         def list_filternodes(tids = get_filternode_tids(get_uvm_node_name()))
           # List/enumerate protofilter nodes
           @@diag.if_level(3) { puts! "#{get_uvm_node_name()}: listing nodes..." }
@@ -511,6 +524,10 @@ class UVMFilterNode < UVMRemoteApp
           return ret
         end
 
+        def map_new_stats_to_snmp_stats(new_stats)
+          return NodeStats.new(new_stats, get_snmp_stat_map());
+        end
+        
     protected
         ERROR_NO_fILTER_NODES = "No filter nodes of the requested type are installed on the effective UVM."
 

@@ -1,6 +1,6 @@
 #
 # $HeadURL:$
-# Copyright (c) 2003-2007 Untangle, Inc. 
+# Copyright (c) 2003-2007 Untangle, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License, version 2,
@@ -35,23 +35,23 @@ class UVMRemoteApp
     protected
 
         DEFAULT_TIMEOUT = 60000000
-        
+
         # @@filternode_lock guards @@factory AND @@uvmReoteContext
         @@filternode_lock = Mutex.new
         @@factory = nil
         @@uvmRemoteContext = nil
 
-        @@last_subclass = nil 
+        @@last_subclass = nil
 
         @@diag = Diag.new(DEFAULT_DIAG_LEVEL)
- 
-    protected 
-	def retryLogin
-	    retried = false
-	    begin
+
+    protected
+    def retryLogin
+        retried = false
+        begin
                 yield
             rescue com.untangle.uvm.client.LoginExpiredException
-		raise if retried
+        raise if retried
                 @@filternode_lock.synchronize { login }
                 retry
             end
@@ -60,7 +60,7 @@ class UVMRemoteApp
     public
         def initialize
             @@diag.if_level(2) { puts! "Initializing UVMRemoteApp..." }
-            
+
             begin
                 if @@factory.nil?
                     @@filternode_lock.synchronize {
@@ -74,10 +74,10 @@ class UVMRemoteApp
                 puts! "Error: unable to connect to Remote UVM Context Factory; UVM server may not be running -- " + ex
                 raise
             end
-            
+
             ## This just guarantees that all of the connections are terminated.
             at_exit { @@filternode_lock.synchronize { disconnect } }
-    
+
             @@diag.if_level(2) { puts! "Done initializing UVMRemoteApp..." }
         end
 
@@ -93,13 +93,6 @@ class UVMRemoteApp
     protected
         # Caller MUST have obtained @@filternode_lock before calling this method.
         def connect
-          ## Just in case
-          begin
-            @@factory.logout 
-          rescue
-            ## ignore errors
-          end
-
           # TODO: Add exception handling.
           login
 
@@ -111,18 +104,13 @@ class UVMRemoteApp
     protected
         # Caller MUST have obtained @@filternode_lock before calling this method.
         def login
-            @@uvmRemoteContext = @@factory.systemLogin( DEFAULT_TIMEOUT )
+            @@uvmRemoteContext = @@factory.uvmContext()
         end
-        
+
     protected
         # Caller MUST have obtained @@filternode_lock before calling this method.
         def disconnect
           return if @@uvmRemoteContext.nil?
-          begin
-            @@factory.logout
-          rescue
-            ## ignore errors
-          end
           @@uvmRemoteContext = nil
           true
         end

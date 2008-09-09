@@ -1,0 +1,141 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-09-01 14:19+0300\n"
+"PO-Revision-Date: 2008-08-15 16:35-0800\n"
+"Last-Translator: Aaron Read <amread@untangle.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../adminindex.py:33
+#, python-format
+msgid "%s Login"
+msgstr "Entrada %s"
+
+#: ../adminindex.py:76
+msgid "Error: Username and Password do not match"
+msgstr ""
+
+#: ../adminindex.py:130
+msgid "Server:"
+msgstr ""
+
+#: ../adminindex.py:130
+msgid "Username:"
+msgstr ""
+
+#: ../adminindex.py:130
+msgid "Password:"
+msgstr ""
+
+#: ../adminindex.py:130
+msgid "Login"
+msgstr ""
+
+#: ../errorindex.py:13
+msgid "Bad Request"
+msgstr ""
+
+#: ../errorindex.py:17
+msgid "Unauthorized"
+msgstr ""
+
+#: ../errorindex.py:21
+msgid "Payment Required"
+msgstr ""
+
+#: ../errorindex.py:25
+msgid "Forbidden"
+msgstr ""
+
+#: ../errorindex.py:29
+msgid "Not Found"
+msgstr ""
+
+#: ../errorindex.py:33
+msgid "Method Not Allowed"
+msgstr ""
+
+#: ../errorindex.py:37
+msgid "Not Acceptable"
+msgstr ""
+
+#: ../errorindex.py:41
+msgid "Proxy Authentication Required"
+msgstr ""
+
+#: ../errorindex.py:45
+msgid "Request Timeout"
+msgstr ""
+
+#: ../errorindex.py:49
+msgid "Conflict"
+msgstr ""
+
+#: ../errorindex.py:53
+msgid "Gone"
+msgstr ""
+
+#: ../errorindex.py:57
+msgid "Length Required"
+msgstr ""
+
+#: ../errorindex.py:61
+msgid "Precondition Failed"
+msgstr ""
+
+#: ../errorindex.py:65
+msgid "Request Entity Too Large"
+msgstr ""
+
+#: ../errorindex.py:69
+msgid "Request-URI Too Long"
+msgstr ""
+
+#: ../errorindex.py:73
+msgid "Unsupported Media Type"
+msgstr ""
+
+#: ../errorindex.py:77
+msgid "Requested Range Not Satisfiable"
+msgstr ""
+
+#: ../errorindex.py:81
+msgid "Expectation Failed"
+msgstr ""
+
+#: ../errorindex.py:85
+msgid "Internal Server Error"
+msgstr ""
+
+#: ../errorindex.py:89
+msgid "Not Implemented"
+msgstr ""
+
+#: ../errorindex.py:93
+msgid "Bad Gateway"
+msgstr ""
+
+#: ../errorindex.py:97
+msgid "Service Unavailable"
+msgstr ""
+
+#: ../errorindex.py:101
+msgid "Gateway Timeout"
+msgstr ""
+
+#: ../errorindex.py:105
+msgid "HTTP Version Not Supported"
+msgstr ""
+
+#: ../errorindex.py:113
+msgid "Untangle Server"
+msgstr ""

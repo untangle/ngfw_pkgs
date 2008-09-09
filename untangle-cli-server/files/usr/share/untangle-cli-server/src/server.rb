@@ -1,4 +1,4 @@
-#! /usr/bin/jruby1.0
+#!/usr/bin/jruby
 #
 # $HeadURL:$
 # Copyright (c) 2003-2007 Untangle, Inc. 
@@ -61,7 +61,7 @@ class NUCLIServer
         @loaded_elements = []
 
 	# Logging
-	@logging = false
+	@logging = false;
 	log_file = "#{ENV['UVM_ROOT']}/var/log/uvm/nucliserver.log"
 	STDOUT.reopen(File.open(log_file, "a")) if @logging
 

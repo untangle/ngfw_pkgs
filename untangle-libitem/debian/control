@@ -55,7 +55,7 @@ Description: Untangle Total Security Bundle
 Package: untangle-libitem-shield
 Architecture: all
 Depends: untangle-node-shield
-XB-View-Position: 1010
+XB-View-Position: 1020
 XB-Display-Name: Attack Blocker
 XB-Untangle-Type: lib_item
 XB-Is-Core: true
@@ -641,7 +641,7 @@ Description: Untangle Identity Theft Blocker
 Package: untangle-libitem-openvpn
 Architecture: all
 Depends: untangle-node-openvpn
-XB-View-Position: 1003
+XB-View-Position: 1019
 XB-Display-Name: OpenVPN
 XB-Untangle-Type: lib_item
 XB-Is-Core: true
@@ -781,7 +781,7 @@ Description: Untangle Intrusion Prevention
 Package: untangle-libitem-reporting
 Architecture: all
 Depends: untangle-node-reporting
-XB-View-Position: 1020
+XB-View-Position: 1022
 XB-Display-Name: Untangle Reports
 XB-Untangle-Type: lib_item
 XB-Is-Core: true
