@@ -1,6 +1,7 @@
 Ext.namespace('Ung');
 
 Ung.CountryData = [
+[ "US", "United States" ],
 [ "AF", "Afghanistan" ],
 [ "AL", "Albania" ],
 [ "DZ", "Algeria" ],
@@ -224,7 +225,6 @@ Ung.CountryData = [
 [ "UA", "Ukraine" ],
 [ "AE", "United Arab Emirates" ],
 [ "GB", "United Kingdom" ],
-[ "US", "United States" ],
 [ "UM", "United States Minor Outlying Islands" ],
 [ "UY", "Uruguay" ],
 [ "UZ", "Uzbekistan" ],
