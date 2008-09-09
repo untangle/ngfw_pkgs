@@ -1,3 +1,5 @@
+Ext.namespace('Ung');
+
 Ung.TimeZoneData = [
     ["GMT-12:00", "International Dateline West", "Etc/GMT-12"],
     ["GMT-11:00", "Midway Island, Samoa", "Pacific/Midway"],
