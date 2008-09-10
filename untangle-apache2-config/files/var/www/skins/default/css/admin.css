@@ -848,10 +848,12 @@ body.wizard{
 	position:relative;
 }
 
+/* Z-Index required on some browsers. */
 .logo-container{
 	position:absolute;
 	top:10px;
 	left:25px;
+        z-index : 2;
 }
 .wizard-steps{
 	padding-top:120px;
