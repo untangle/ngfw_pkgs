@@ -60,7 +60,7 @@ start()
     log_daemon_msg "Starting $DESC"
 
     if [ -f ${PID_FILE} ] ; then
-      ps -p `cat ${PID_FILE}` > /dev/null 2>&1
+      ps -p `cat ${PID_FILE}` > /dev/null 2>&1 && grep $MONITOR /proc/`cat ${PID_FILE}`/cmdline > /dev/null 2>&1
       if [ $? -eq 0 ] ; then
           echo "Already Running."
           log_end_msg 1
