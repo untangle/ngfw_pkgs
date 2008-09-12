@@ -271,10 +271,10 @@ class Alpaca::UvmDataLoader
 
     query  = "SELECT  enabled, provider, login, password FROM u_ddns_settings LIMIT 1"
 
-    ddclient_provider_map = { "www.dyndns.com" => "members.dyndns.org",
-                              "www.dyndns.org" => "members.dyndns.org",
-                              "www.easydns.com" => "members.easydns.com",
-                              "www.zoneedit.com" => "www.zoneedit.com"
+    ddclient_provider_map = { "www.dyndns.com" => "DynDNS",
+                              "www.dyndns.org" => "DynDNS",
+                              "www.easydns.com" => "EasyDNS",
+                              "www.zoneedit.com" => "ZoneEdit"
                               }
     @dbh.execute( query ) do |result|
       d = result.fetch
