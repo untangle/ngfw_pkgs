@@ -75,8 +75,16 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
       wanInterface = Interface.find( :first, :conditions => conditions )
       #logger.debug("settings.service is: " + settings.service)
 
-      protocol = ConfigService[settings.service][0]
-      server = ConfigService[settings.service][1]
+      ## Guard against the NULL Pointer exception
+      service = ConfigService[settings.service]
+
+      if service.nil?
+        logger.warn( "The service: #{settings.service} is not valid." )
+        return
+      end
+
+      protocol = service[0]
+      server = service[1]
       key = os["uvm_manager"].activation_key()
       use = "web, web=www.untangle.com/ddclient/ip.php?activation=#{key}, web-skip=''"
       if server.include?( 'dyndns.org' )
