@@ -8,6 +8,6 @@ Standards-Version: 3.8.0
 
 Package: untangle-kiosk
 Architecture: all
-Depends: fbpanel, feh, xbindkeys, iceweasel | firefox, rsync, artwiz-cursor, adduser
+Depends: fbpanel, feh, xbindkeys, iceweasel | firefox, rsync, adduser
 Description: The Untangle kiosk utils
  The Untangle kiosk mode utilities.
