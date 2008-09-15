@@ -1,5 +1,7 @@
 import gettext
 
+import uvmlogin
+
 from mod_python import apache
 
 gettext.bindtextdomain('untangle-apache2-config')
