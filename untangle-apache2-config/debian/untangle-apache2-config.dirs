@@ -1,6 +1,7 @@
 etc/apache2
 etc/apache2/sites-available
 usr/lib/python2.3/
+usr/lib/python2.5/
 usr/share/untangle/mod_python/auth
 usr/share/untangle/mod_python/error
 usr/share/untangle/apache2/conf.d
