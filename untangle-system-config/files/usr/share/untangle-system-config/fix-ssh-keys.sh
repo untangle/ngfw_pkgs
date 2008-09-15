@@ -21,7 +21,7 @@ create_keys() {
 }
 
 blacklisted() {
-  grep -q `md5sum "$1" | awk '{print $1}'` "$2"
+  [ -f "$1" ] && grep -q `md5sum "$1" | awk '{print $1}'` "$2"
 }
 
 if blacklisted ${DSA_PUBKEY} ${DSA_BLACKLIST} || \
