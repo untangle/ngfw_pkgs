@@ -448,6 +448,9 @@ div.appItem div.text {
 	font-size: 12px;
 	font-weight: bold;
 }
+div.appItem div.textCenter {
+	top: 15px;
+}
 div.appItem div.action {
     position: absolute;
     right: 5px;
@@ -550,26 +553,26 @@ div.systemStats div.network div.tx {
     position: absolute;
     top: 2px;
     left:0px;
-    width:70px;
+    width:77px;
     height:15px;
-    padding-left:25px;
+    padding-left:20px;
     color:#55BA47;
-    background: transparent url(../images/admin/icon_network_tx.png) no-repeat scroll 7px 1px !important;
+    background: transparent url(../images/admin/icon_network_tx.png) no-repeat scroll 5px 1px !important;
 }
 div.systemStats div.network div.tx_idle {
-    background: transparent url(../images/admin/icon_network_tx_idle.png) no-repeat scroll 7px 1px !important;
+    background: transparent url(../images/admin/icon_network_tx_idle.png) no-repeat scroll 5px 1px !important;
 }
 div.systemStats div.network div.rx {
     position: absolute;
     bottom:0px;
-    width:70px;
+    width:77px;
     height:15px;
-    padding-left:25px;
+    padding-left:20px;
     color:#AC2322;
-    background: transparent url(../images/admin/icon_network_rx.png) no-repeat scroll 7px 1px !important;
+    background: transparent url(../images/admin/icon_network_rx.png) no-repeat scroll 5px 1px !important;
 }
 div.systemStats div.network div.rx_idle {
-    background: transparent url(../images/admin/icon_network_rx_idle.png) no-repeat scroll 7px 1px !important;
+    background: transparent url(../images/admin/icon_network_rx_idle.png) no-repeat scroll 5px 1px !important;
 }
 
 div.systemStats div.network div.rx div.rx_value {
