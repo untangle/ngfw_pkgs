@@ -2,9 +2,12 @@ Ext.namespace('Ung');
 // The location of the blank pixel image
 Ung.Wizard = Ext.extend(Ext.Panel, {
     currentPage : 0,
-    constructor : function( config )
+    hidePreviousOnLastPage: false,
+    hasCancel: false,
+    modalFinish: false, //can't go back or cancel on finish step
+    finished: false,
+    initComponent : function()
     {
-        this.cards = config.cards;
 		var logo_container = Ext.get('extraDiv1');
 		logo_container.addClass( 'logo-container');
         var logo = document.createElement('img');
@@ -27,7 +30,16 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
 
         var length = this.cards.length;
         for ( c = 0 ;c < length ; c++ ) panels.push(this.cards[c].panel );
-
+        if(this.hasCancel) {
+            this.cancelButton = new Ext.Button({
+                id : 'cancel',
+                text : i18n._( 'Cancel' ),
+                handler : function() {
+                    this.cancelAction();
+                }.createDelegate(this)
+            });
+        	
+        }
         this.previousButton = new Ext.Button({
             id : 'card-prev',
             text : String.format(i18n._( '{0} Previous' ),'&laquo;'),
@@ -42,13 +54,15 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
 			overCls :'x-btn-'
         });
         
-        this.cardDefaults = config.cardDefaults;
         if ( this.cardDefaults == null ) this.cardDefaults = {};
         
         /* Append some necessary defaults */
         this.cardDefaults.autoHeight = true;
         this.cardDefaults.border = false;
-
+        var bbarArr=[ '->', this.previousButton, this.nextButton ];
+        if(this.hasCancel) {
+        	bbarArr.unshift(this.cancelButton);
+        };
         /* Build a card to hold the wizard */
         this.contentPanel = new Ext.Panel({
             layout : "card",
@@ -58,15 +72,15 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
             title : "&nbsp;",
 			header:false,
             defaults : this.cardDefaults, 
-            bbar : [ '->', this.previousButton, this.nextButton ],
+            bbar : bbarArr,
 			border:false
         });
 
-        config.layout = "border";
+        this.layout = "border";
 
-        config.items = [ this.headerPanel, this.contentPanel ];
+        this.items = [ this.headerPanel, this.contentPanel ];
 
-        Ung.Wizard.superclass.constructor.apply(this, arguments);
+        Ung.Wizard.superclass.initComponent.apply(this);
     },
     
     buildHeaders : function( cards )
@@ -148,7 +162,8 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
             this.afterChangeHandler( index, hasChanged );
         }
     },
-
+    cancelAction: function () {
+    },
     /* This function must be called once the the onPrevious or onNext handler completes,
      * broken into its own function so the handler can run asynchronously */
     afterChangeHandler : function( index, hasChanged )
@@ -197,16 +212,21 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
             }
         }
         
-        if ( this.currentPage == 0 ) {
+        if ( this.currentPage == 0 || (this.modalFinish && this.currentPage == ( length - 1 ))) {
             this.previousButton.hide();
         } else {
             this.previousButton.show();
         }
 
         if ( this.currentPage == ( length - 1 )) {
-            this.nextButton.setText( "Finish" );
+            this.nextButton.setText( i18n._('Finish') );
+            if(this.modalFinish) {
+            	this.cancelButton.hide();
+            	this.finished=true;
+            }
         } else {
-            this.nextButton.setText( "Next &raquo;" );
+            this.nextButton.setText( String.format(i18n._('Next {0}'),"&raquo;"));
+            this.cancelButton.show();
         }
 
     },

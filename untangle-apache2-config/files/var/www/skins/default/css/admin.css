@@ -969,4 +969,6 @@ body.wizard{
 	color:#333;
 	font-size:12px;
 }
-
+.warning {
+    color: #FF0000;
+}
