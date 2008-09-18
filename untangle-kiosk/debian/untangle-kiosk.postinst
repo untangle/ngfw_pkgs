@@ -2,9 +2,12 @@
 
 rm -fr /etc/xdg/xfce4
 
-# rsync -Ha /usr/share/untangle-kiosk/x-startup/etc/ /etc/
-# rsync -Ha /usr/share/untangle-kiosk/homes/root/ /root/
+rsync -Ha /usr/share/untangle-kiosk/x-startup/etc/ /etc/
+#perl -i -pe 's|^1:.+|1:2345:respawn:/sbin/rungetty tty1 --autologin kiosk|' /etc/inittab
+rsync -Ha /usr/share/untangle-kiosk/homes/root/ /root/
 
+rsync -Ha /usr/share/untangle-kiosk/x-startup/etc/ /etc/
+rsync -Ha /usr/share/untangle-kiosk/homes/root/ /root/
 rsync -Ha /usr/share/untangle-kiosk/homes/kiosk/ /home/kiosk/
 chown -R kiosk:kiosk /home/kiosk
 
@@ -18,6 +21,8 @@ cp -f /usr/share/untangle-kiosk/bookmarks.html /etc/firefox/profile/bookmarks.ht
 find /root/.zsh -type f | xargs chmod 640
 find /root/.zsh -type d | xargs chmod 750
 
-#ln -sf /usr/share/untangle-kiosk/desktop_background-please_wait-1024x768.png /usr/local/lib/knoppix.jpg
+#rm -fr /etc/xdg/xfce4-session/xfce4-session.rc
+
+ln -sf /usr/share/untangle-kiosk/desktop_background-please_wait-1024x768.png /usr/local/lib/knoppix.jpg
 
 exit 0
