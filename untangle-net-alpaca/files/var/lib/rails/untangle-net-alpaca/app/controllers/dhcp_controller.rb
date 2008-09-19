@@ -140,12 +140,4 @@ class DhcpController < ApplicationController
     @dynamic_entries = os["dhcp_server_manager"].dynamic_entries 
     @dynamic_entries = @dynamic_entries.sort_by { |a| IPAddr.new(a.ip_address).to_i }   
   end
-
-  def stylesheets
-    [] ## [ "dhcp/static-entry", "dhcp/dynamic-entry", "borax/list-table" ]
-  end
-
-  def scripts
-    [] ## [ "dhcp_server_manager" ] 
-  end
 end

@@ -87,8 +87,4 @@ class OverrideController < ApplicationController
     ## Review : should have some indication that is saved.
     return redirect_to( :action => "manage" )
   end
-
-  def stylesheets
-    [ "borax/list-table", "borax-file-override" ]
-  end
 end

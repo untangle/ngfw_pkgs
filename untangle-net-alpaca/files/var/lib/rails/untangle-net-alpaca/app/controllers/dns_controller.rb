@@ -77,13 +77,4 @@ class DnsController < ApplicationController
     @dynamic_entries = os["dns_server_manager"].dynamic_entries
     @dynamic_entries = @dynamic_entries.sort_by { |a| IPAddr.parse(a.ip_address).to_i }
   end
-
-  def stylesheets
-    [] # [ "dns/static-entry", "dns/dynamic-entry", "borax/list-table" ]
-  end
-
-  def scripts
-    [] # [ "dns_server_manager" ] 
-  end
-
 end
