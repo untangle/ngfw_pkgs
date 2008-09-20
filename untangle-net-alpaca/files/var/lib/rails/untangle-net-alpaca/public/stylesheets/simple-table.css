@@ -379,6 +379,17 @@ div.list-table-container.dns-dynamic-entry div.list-table-column span
   padding-left: 10px; 
 }
 
+/* ------------------ Style the DNS Upstream Servers ---------------- */
+div.list-table-container.dns-upstream-servers div.server-ip
+{ 
+    width: 9.34em;
+}
+
+div.list-table-container.dns-upstream-servers div.domain-list
+{ 
+    width: 34.0em;
+}
+
 /* ------------------- Packet Filter Panel -------------------- */
 
 div.list-table-container.firewalls div.target

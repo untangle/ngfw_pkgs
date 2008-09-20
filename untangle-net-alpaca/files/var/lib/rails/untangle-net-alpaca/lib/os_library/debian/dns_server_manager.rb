@@ -61,6 +61,8 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
 
   FlagDnsServer = "server"
 
+  FlagDnsUpstreamServer = "local"
+
   ## Flag to specify a DHCP host entry.
   FlagDhcpHost = "dhcp-host"
 
@@ -234,6 +236,28 @@ EOF
 
     settings << "#{FlagDnsHostFile}=#{DnsMasqHostFile}"
     settings << "#{FlagNoDnsHost}"
+
+    ## Check for the Upstream DNS servers.
+    DnsUpstreamServers.find( :all ).each do |upstream_server|
+      next unless upstream_server.enabled
+
+      ## Validate the domain name list and hostnames( comma or space separated list.)
+      domain_name_list = upstream_server.domain_name_list
+      next if domain_name_list.nil?
+      
+      domain_name_list = domain_name_list.sub( ",", "" ).split
+
+      next if domain_name_list.empty?
+
+      is_valid = true
+      domain_name_list.each { |domain_name| is_valid = false unless validator.is_hostname?( domain_name ) }
+      next unless is_valid
+
+      server_ip = upstream_server.server_ip
+      next unless validator.is_ip_address?( server_ip )
+
+      settings << "#{FlagDnsUpstreamServer}=/#{domain_name_list.join( '/' )}/#{server_ip}"
+    end
 
     ## set the domain name suffix
     settings << "#{FlagDnsLocalDomain}=#{domain_name_suffix}"

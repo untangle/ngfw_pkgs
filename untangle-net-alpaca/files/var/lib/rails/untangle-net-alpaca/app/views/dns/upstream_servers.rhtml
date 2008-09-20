@@ -1,0 +1,10 @@
+<% form_tag( :action => 'save_upstream_servers' ) do -%>
+  <div id="title"><h1><%= "Upstream DNS Servers".t %></h1></div>
+
+  <div id="main-content-body">
+    <div class="wrapper">
+      <%= build_table( Alpaca::Table::Data.new( "upstream-server-list", @upstream_servers ), upstream_servers_table_model) %> 
+    </div>
+  </div>
+  <%= build_footer %>
+<% end %>

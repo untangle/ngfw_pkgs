@@ -69,4 +69,10 @@ class Alpaca::Validator
   def self.rv( return_code, error_string )
     return error_string ? return_code : return_code == true
   end
+
+  def self.is_ip_address?( value, e = false )
+    return rv( "Invalid IP Address", e ) if IPAddr.parse( value ).nil?
+    return true
+  end
+
 end

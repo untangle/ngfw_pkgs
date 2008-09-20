@@ -18,6 +18,10 @@
 class Alpaca::Components::DnsComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
     menu_organizer.register_item( "/main/dns_server", menu_item( 500, "DNS Server", :action => "manage" ))
+
+    if ( config_level >= AlpacaSettings::Level::Advanced ) 
+      menu_organizer.register_item( "/main/advanced/dns_upstream_servers", menu_item( 600, "Upstream DNS", :action => "upstream_servers" ))
+    end
   end
   
   def wizard_insert_closers( builder )
@@ -35,6 +39,7 @@ class Alpaca::Components::DnsComponent < Alpaca::Component
     
     ## Review : Perhaps this should do something less harsh
     DnsStaticEntry.destroy_all
+    DnsUpstreamServers.destroy_all
 
     ## Save the settings
     settings_hash[self.class].save
@@ -56,6 +61,8 @@ class Alpaca::Components::DnsComponent < Alpaca::Component
     
     ## Review : Perhaps this should do something less harsh
     DnsStaticEntry.destroy_all
+
+    DnsUpstreamServers.destroy_all
 
     ## Save the settings
     dns_server_settings.save

@@ -30,6 +30,10 @@ class DnsController < ApplicationController
 
   alias :index :manage
 
+  def upstream_servers
+    @upstream_servers = DnsUpstreamServers.find( :all )
+  end
+
   def save
     ## Review : Internationalization
     return redirect_to( :action => "manage" ) if ( params[:commit] != "Save".t )
@@ -68,8 +72,37 @@ class DnsController < ApplicationController
     return redirect_to( :action => "manage" )
   end
 
+  def save_upstream_servers
+    return redirect_to( :action => "manage" ) if ( params[:commit] != "Save".t )
+
+    ## Assuming enabled for now.
+    upstream_server_list = []
+    indices = params[:upstream_servers]
+    server_ips = params[:server_ip]
+    domain_name_lists = params[:domain_name_lists]
+
+    unless indices.nil?
+      indices.each do |key,value|
+        dus = DnsUpstreamServers.new
+        dus.server_ip, dus.domain_name_list, dus.enabled = server_ips[key], domain_name_lists[key], true
+        upstream_server_list << dus
+      end
+    end    
+    
+    DnsUpstreamServers.destroy_all
+    upstream_server_list.each { |dus| dus.save }
+    os["dns_server_manager"].commit
+
+    ## Review : should have some indication that is saved.
+    return redirect_to( :action => "upstream_servers" )
+  end
+
   def create_static_entry
     @static_entry = DnsStaticEntry.new
+  end
+
+  def create_upstream_server
+    @upstream_server = DnsUpstreamServers.new
   end
 
   def refresh_dynamic_entries

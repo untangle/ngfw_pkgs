@@ -168,6 +168,7 @@ class Alpaca::ConfigurationLoader
     DhcpServerSettings.destroy_all
     DnsServerSettings.destroy_all
     DhcpStaticEntry.destroy_all
+    DnsUpstreamServers.destroy_all
     DnsStaticEntry.destroy_all
 
     DnsServerSettings.new( :suffix => suffix, :enabled => true ).save

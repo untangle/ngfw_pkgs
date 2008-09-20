@@ -300,6 +300,7 @@ class Alpaca::UvmDataLoader
     DhcpServerSettings.destroy_all
     DnsServerSettings.destroy_all
     DhcpStaticEntry.destroy_all
+    DnsUpstreamServers.destroy_all
     DnsStaticEntry.destroy_all
 
     settings_id = -1

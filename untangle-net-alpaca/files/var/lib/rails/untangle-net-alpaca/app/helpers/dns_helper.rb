@@ -94,5 +94,45 @@ EOF
   def dynamic_entry_table_model
     DynamicEntryTableModel.instance
   end
+
+  class UpstreamServersTableModel < Alpaca::Table::TableModel
+    include Singleton
+
+    def initialize
+      columns = []
+      columns << Alpaca::Table::Column.new( "server-ip", "Server Address" ) do |entry,options|
+        row_id = options[:row_id]
+        view = options[:view]
+<<EOF
+        #{view.hidden_field_tag( "upstream_servers[]", row_id )}
+        #{view.text_field( "server_ip", row_id, { :value => entry.server_ip } )}
+EOF
+      end
+
+      columns << Alpaca::Table::Column.new( "domain-list fill", "Domain List" ) do |entry,options| 
+        options[:view].text_field( "domain_name_lists", options[:row_id], { :value => entry.domain_name_list } )
+      end
+
+      columns << Alpaca::Table::DeleteColumn.new
+      
+      super(  "Upstream DNS Servers", "dns-upstream-servers", "", "dns-upstream-server-entry", columns )
+    end
+
+    def row_id( row )
+      "row-#{rand( 0x100000000 )}"
+    end
+
+    def action( table_data, view )
+      <<EOF
+<div onclick="#{view.remote_function( :url => { :action => :create_upstream_server } )}" class="add-button">
+  #{"Add".t}
+</div>
+EOF
+    end
+  end
+
+  def upstream_servers_table_model
+    UpstreamServersTableModel.instance
+  end
 end
 
