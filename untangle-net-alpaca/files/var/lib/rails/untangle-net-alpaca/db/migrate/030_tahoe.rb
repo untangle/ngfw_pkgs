@@ -41,9 +41,9 @@ class Tahoe < Alpaca::Migration
     end
 
     add_qos_rule( :enabled => true, :description => "VoIP (SIP) Traffic", :filter => "d-port::5060", :priority => 10, :position => 0 )
-    add_qos_rule( :enabled => true, :description => "VoIP (IAX) Traffic", :filter => "d-port::4569", :priority => 10, :position => 1 )
+    add_qos_rule( :enabled => true, :description => "VoIP (IAX2) Traffic", :filter => "d-port::4569", :priority => 10, :position => 1 )
     add_qos_rule( :enabled => true, :description => "DNS Traffic", :filter => "d-port::53", :priority => 10, :position => 2 )
-    add_qos_rule( :enabled => false, :description => "SSH Traffic", :filter => "d-port::22", :priority => 10, :position => 3 )
+    add_qos_rule( :enabled => false, :description => "SSH Traffic", :filter => "d-port::22&&protocol::tcp", :priority => 10, :position => 3 )
 
   end
 

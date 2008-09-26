@@ -175,14 +175,14 @@ module Alpaca::SystemRules
                         :filter => "d-port::1723&&protocol::tcp",
                         :subscribe => false )
 
-    ## Add a bypass rule to allow VOIP traffic on IAX and SIP.
+    ## Add a bypass rule to allow VOIP traffic on IAX2 and SIP.
     rm.add_bypass_rule( :description => "Bypass  VOIP Traffic (SIP)",
                         :enabled => true,
                         :system_id => "bypass-voip-sip-traffic-2df1273f",
                         :filter => "d-port::5060&&protocol::tcp,udp",
                         :subscribe => false )
 
-    rm.add_bypass_rule( :description => "Bypass  VOIP Traffic (IAX)",
+    rm.add_bypass_rule( :description => "Bypass  VOIP Traffic (IAX2)",
                         :enabled => true,
                         :system_id => "bypass-voip-iax--traffic-8e97ab87",
                         :filter => "d-port::4569&&protocol::udp",
