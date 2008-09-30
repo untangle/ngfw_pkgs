@@ -4,7 +4,7 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
     currentPage : 0,
     hidePreviousOnLastPage: false,
     hasCancel: false,
-    modalFinish: false, //can't go back or cancel on finish step
+    modalFinish: false, //can not go back or cancel on finish step
     finished: false,
     initComponent : function()
     {

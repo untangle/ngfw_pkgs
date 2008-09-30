@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-01 14:19+0300\n"
+"POT-Creation-Date: 2008-09-30 16:54+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,102 +42,102 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
-#: ../errorindex.py:13
+#: ../errorindex.py:15
 msgid "Bad Request"
 msgstr ""
 
-#: ../errorindex.py:17
+#: ../errorindex.py:19
 msgid "Unauthorized"
 msgstr ""
 
-#: ../errorindex.py:21
+#: ../errorindex.py:23
 msgid "Payment Required"
 msgstr ""
 
-#: ../errorindex.py:25
+#: ../errorindex.py:27
 msgid "Forbidden"
 msgstr ""
 
-#: ../errorindex.py:29
+#: ../errorindex.py:31
 msgid "Not Found"
 msgstr ""
 
-#: ../errorindex.py:33
+#: ../errorindex.py:35
 msgid "Method Not Allowed"
 msgstr ""
 
-#: ../errorindex.py:37
+#: ../errorindex.py:39
 msgid "Not Acceptable"
 msgstr ""
 
-#: ../errorindex.py:41
+#: ../errorindex.py:43
 msgid "Proxy Authentication Required"
 msgstr ""
 
-#: ../errorindex.py:45
+#: ../errorindex.py:47
 msgid "Request Timeout"
 msgstr ""
 
-#: ../errorindex.py:49
+#: ../errorindex.py:51
 msgid "Conflict"
 msgstr ""
 
-#: ../errorindex.py:53
+#: ../errorindex.py:55
 msgid "Gone"
 msgstr ""
 
-#: ../errorindex.py:57
+#: ../errorindex.py:59
 msgid "Length Required"
 msgstr ""
 
-#: ../errorindex.py:61
+#: ../errorindex.py:63
 msgid "Precondition Failed"
 msgstr ""
 
-#: ../errorindex.py:65
+#: ../errorindex.py:67
 msgid "Request Entity Too Large"
 msgstr ""
 
-#: ../errorindex.py:69
+#: ../errorindex.py:71
 msgid "Request-URI Too Long"
 msgstr ""
 
-#: ../errorindex.py:73
+#: ../errorindex.py:75
 msgid "Unsupported Media Type"
 msgstr ""
 
-#: ../errorindex.py:77
+#: ../errorindex.py:79
 msgid "Requested Range Not Satisfiable"
 msgstr ""
 
-#: ../errorindex.py:81
+#: ../errorindex.py:83
 msgid "Expectation Failed"
 msgstr ""
 
-#: ../errorindex.py:85
+#: ../errorindex.py:87
 msgid "Internal Server Error"
 msgstr ""
 
-#: ../errorindex.py:89
+#: ../errorindex.py:91
 msgid "Not Implemented"
 msgstr ""
 
-#: ../errorindex.py:93
+#: ../errorindex.py:95
 msgid "Bad Gateway"
 msgstr ""
 
-#: ../errorindex.py:97
+#: ../errorindex.py:99
 msgid "Service Unavailable"
 msgstr ""
 
-#: ../errorindex.py:101
+#: ../errorindex.py:103
 msgid "Gateway Timeout"
 msgstr ""
 
-#: ../errorindex.py:105
+#: ../errorindex.py:107
 msgid "HTTP Version Not Supported"
 msgstr ""
 
-#: ../errorindex.py:113
+#: ../errorindex.py:115
 msgid "Untangle Server"
 msgstr ""
