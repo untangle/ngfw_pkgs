@@ -202,12 +202,7 @@ button.detailIcon {
 	background:transparent url(../images/admin/icon_detail.png) no-repeat center left !important; 
 }
 div.windowContent {
-	position:relative;
-	margin-top:10px;
-	margin-left:10px;
-	margin-right:10px;
-	margin-bottom: 0px;
-
+	padding: 0px 0px 0px 0px;
 }
 div.nodeBlingers {
 	position:absolute;
@@ -357,18 +352,6 @@ div.iconDrag {
 }
 button.iconRefresh {
     background: transparent url(../images/admin/icon_refresh.png) no-repeat center left !important;
-}
-
-div.buttonsLeftPos {
-	position:absolute;
-	left:10px;
-	bottom:10px;
-}
-div.buttonsRightPos {
-	position: absolute;
-	right: 10px;
-	bottom: 10px;
-	white-space: nowrap;
 }
 .grid-row-deleted {
 	background-color: #FF5151;
@@ -971,4 +954,7 @@ body.wizard{
 }
 .warning {
     color: #FF0000;
+}
+.fixedPos{
+    position: fixed;
 }
