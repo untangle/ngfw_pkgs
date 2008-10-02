@@ -201,9 +201,6 @@ button.releaseIcon {
 button.detailIcon {
 	background:transparent url(../images/admin/icon_detail.png) no-repeat center left !important; 
 }
-div.windowContent {
-	padding: 0px 0px 0px 0px;
-}
 div.nodeBlingers {
 	position:absolute;
 	bottom: 6px;
