@@ -123,11 +123,17 @@ EOF
     if qos_settings.enabled
       qos_enabled = "YES"
     end
-    settings = header
-    settings << "QOS_ENABLED=#{qos_enabled}\nDOWNLINK=#{qos_settings.download*qos_settings.download_percentage/100}\nUPLINK=#{qos_settings.upload*qos_settings.upload_percentage/100}\nDEV=#{Interface.external.os_name}\n\n"
-    
 
     dev = Interface.external.os_name
+    #when using pppoe the actual interface is ppp0 not the external eth card.
+    if Interface.external.current_config == IntfPppoe
+        dev = "ppp0"
+    end
+
+    settings = header
+    settings << "QOS_ENABLED=#{qos_enabled}\nDOWNLINK=#{qos_settings.download*qos_settings.download_percentage/100}\nUPLINK=#{qos_settings.upload*qos_settings.upload_percentage/100}\nDEV=#{dev}\n\n"
+    
+
 
     if ! qos_settings.prioritize_ping.nil? and qos_settings.prioritize_ping > 0
       tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ping} u32 match ip protocol 1 0xff flowid 1:#{qos_settings.prioritize_ping}\n"
