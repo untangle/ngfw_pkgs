@@ -17,6 +17,7 @@
  */
 
 #include <pthread.h>
+#include <netinet/in.h>
 #include <linux/netfilter.h>
 #include <net/if.h>
 #include <netinet/ip.h>

@@ -20,6 +20,7 @@
 #include <unistd.h>
 #include <sys/epoll.h>
 
+#include <netinet/in.h>
 #include <linux/netfilter.h>
 
 #include <mvutil/debug.h>
