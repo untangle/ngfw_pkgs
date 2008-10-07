@@ -59,8 +59,8 @@ binary-arch: install
 #	dh_perl     
 	if [ -f debian/version ] ; then dh_gencontrol -a -- -v"`cat debian/version`" ; else dh_gencontrol -a ; fi
 	dh_md5sums     
+	dh_builddeb -a
 
 binary: binary-indep binary-arch
-	dh_builddeb 
 
 .PHONY: clean binary-indep binary build configure
