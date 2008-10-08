@@ -219,12 +219,16 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
         }
 
         if ( this.currentPage == ( length - 1 )) {
-            this.nextButton.setText( i18n._('Finish') );
+            
             if(this.modalFinish) {
+            	this.nextButton.setText( i18n._('Close') );
             	if(this.hasCancel) {
             	   this.cancelButton.hide();
             	}
             	this.finished=true;
+            } else {
+            	this.nextButton.setText( i18n._('Finish') );
+            	
             }
         } else {
             this.nextButton.setText( String.format(i18n._('Next {0}'),"&raquo;"));
