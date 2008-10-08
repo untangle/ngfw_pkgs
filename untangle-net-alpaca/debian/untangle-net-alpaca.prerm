@@ -14,7 +14,7 @@ case "$1" in
     remove|deconfigure)
       ourInit $SERVICE stop
       ;;
-    failed-upgrade)
+    upgrade|failed-upgrade)
         ;;
     *)
         echo "prerm called with unknown argument \`$1'" >&2
