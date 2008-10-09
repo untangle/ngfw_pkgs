@@ -119,7 +119,7 @@ def _write_report(req, msg):
 <html xmlns=\"http://www.w3.org/1999/xhtml\">
 <head>
 <title>%s</title>
-<meta http-equiv=\"Content-Type\" content=\"text/html;charset=iso-8859-1\" />
+<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />
 <style type=\"text/css\">
 /* <![CDATA[ */
 @import url(/images/base.css);
