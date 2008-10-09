@@ -1,0 +1,20 @@
+<% form_tag( :action => 'save_custom_field' ) do -%>
+  <div id="title"><h1><%= "DHCP Custom Configuration".t %></h1></div>
+  <%= handle_flash_messages %>
+  <div id="main-content-body"><div class="wrapper">
+    <fieldset>
+      <ul class="text-fields">
+        <li>
+          <label for="dhcp_server_settings[is_custom_field_enabled]"><%= "Enabled:".t %></label>
+          <%= check_box( "dhcp_server_settings", "is_custom_field_enabled" ) %>
+        </li>
+
+        <li>
+          <label for="dhcp_server_settings[custom_field]"><%= "Custom Field:".t %></label>
+          <%= text_area( "dhcp_server_settings", "custom_field", { :class => "secret-field" }) %>
+        </li>
+      </ul>
+    </fieldset>
+  </div></div>
+  <%= build_footer %>
+<% end -%>

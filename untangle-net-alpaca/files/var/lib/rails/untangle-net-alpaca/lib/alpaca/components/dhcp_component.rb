@@ -19,8 +19,10 @@ class Alpaca::Components::DhcpComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
     menu_organizer.register_item( "/main/dhcp_server",
                                   menu_item( 400, "DHCP Server", :action => "manage" ))
-    menu_organizer.register_item( "/main/dhcp_server/entries",
-                                  menu_item( 1, "Static Entries", :action => "manage_entries" ))
+
+    if ( config_level >= AlpacaSettings::Level::Advanced ) 
+      menu_organizer.register_item( "/main/advanced/dhcp_custom_field", menu_item( 600, "DNSMasq", :action => "custom_field" ))
+    end
   end
 
   def wizard_insert_closers( builder )

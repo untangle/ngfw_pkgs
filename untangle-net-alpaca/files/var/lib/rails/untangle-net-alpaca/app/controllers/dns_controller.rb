@@ -87,7 +87,7 @@ class DnsController < ApplicationController
         dus.server_ip, dus.domain_name_list, dus.enabled = server_ips[key], domain_name_lists[key], true
         upstream_server_list << dus
       end
-    end    
+    end
     
     DnsUpstreamServers.destroy_all
     upstream_server_list.each { |dus| dus.save }

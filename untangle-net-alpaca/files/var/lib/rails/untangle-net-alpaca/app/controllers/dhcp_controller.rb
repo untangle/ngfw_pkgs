@@ -85,6 +85,35 @@ class DhcpController < ApplicationController
     return redirect_to( :action => "manage" )
   end
 
+  def custom_field
+    @dhcp_server_settings = DhcpServerSettings.find( :first )
+    
+    if @dhcp_server_settings.nil?
+      flash[:warning] = "Save DHCP settings before configuring custom field."
+
+      ## Review : should have some indication that is saved.
+      return redirect_to( :action => "manage" )
+    end
+  end
+
+  def save_custom_field
+    dhcp_server_settings = DhcpServerSettings.find( :first )
+    
+    if dhcp_server_settings.nil?
+      flash[:warning] = "Save DHCP settings before configuring custom field."
+
+      ## Review : should have some indication that is saved.
+      return redirect_to( :action => "manage" )
+    end
+
+    dhcp_server_settings.update_attributes( params[:dhcp_server_settings] )
+    dhcp_server_settings.save
+
+    os["dhcp_server_manager"].commit
+
+    return redirect_to( :action => "custom_field" )
+  end
+
   def save_entries
     static_entry_list = []
     indices = params[:static_entries]

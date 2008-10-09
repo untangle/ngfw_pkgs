@@ -72,6 +72,9 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
   OptionNetmask = "1"
   OptionNameservers = "6"
 
+  ## Flag to specify that the server is authoritative
+  FlagIsAuthoritative = "dhcp-authoritative"
+
   ## Update hostname script, used to update the files /etc/untangle-net-alpaca/dnsmasq-hosts
   UpdateHostNameScript = "/etc/untangle-net-alpaca/scripts/update-address.d/11-dnsmasq-hosts"
 
@@ -205,6 +208,12 @@ EOF
        
     dm_file << dhcp_config( dhcp_server_settings, dns_server_settings )
     dm_file << dns_config( dhcp_server_settings, dns_server_settings )
+
+    custom_field = dhcp_server_settings.custom_field
+    
+    if ( dhcp_server_settings.is_custom_field_enabled && !ApplicationHelper.null?( custom_field ))
+      dm_file << custom_field
+    end
 
     os["override_manager"].write_file( DnsMasqConfFile, dm_file.join( "\n" ), "\n" )
   end
@@ -350,6 +359,8 @@ EOF
     end
 
     settings << "#{FlagMaxLeases}=#{max_leases}"
+
+    settings << "#{FlagIsAuthoritative}" if dhcp_server_settings.is_authoritative
 
     return settings.join( "\n" )
   end
