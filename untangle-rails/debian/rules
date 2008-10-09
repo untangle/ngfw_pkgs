@@ -60,6 +60,8 @@ install: build
 	install -o root -g root -m 0755 rails debian/untangle-rails/usr/bin
 	install -o root -g root -m 0644 debian/lintian.overrides debian/untangle-rails/usr/share/lintian/overrides/untangle-rails
 	ln -s ../../rails/railties/configs debian/untangle-rails/usr/share/doc/untangle-rails/configs
+	find debian/untangle-rails -name "\.svn" | xargs rm -rf
+
 
 # Build architecture-independent files here.
 binary-indep: build install
