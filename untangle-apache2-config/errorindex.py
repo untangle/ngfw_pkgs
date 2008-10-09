@@ -1,6 +1,6 @@
 import gettext
-
 import uvmlogin
+import cgi
 
 from mod_python import apache
 
@@ -138,4 +138,4 @@ def _write_report(req, msg):
 </div>
 </body>
 </html>
-""" % (us, us, msg))
+""" % (us, us, cgi.escape(msg)))

@@ -1,5 +1,6 @@
 import md5
 import uvmlogin
+import cgi
 
 from mod_python import apache, Session, util
 from psycopg import connect
@@ -7,6 +8,8 @@ from psycopg import connect
 # pages -----------------------------------------------------------------------
 
 def login(req, url=None, realm='Administrator'):
+    req
+
     uvmlogin.setup_gettext()
 
     args = util.parse_qs(req.args or '')
@@ -30,8 +33,8 @@ def login(req, url=None, realm='Administrator'):
                 util.redirect(req, url)
 
     company_name = "Untangle"
-    title = _("%s Login") % company_name
-    host = req.hostname
+    title = cgi.escape(_("%s Login") % company_name)
+    host = cgi.escape(req.hostname)
 
     _write_login_form(req, title, host, is_error)
 
@@ -68,12 +71,12 @@ def _admin_valid_login(req, username, password):
         return raw_pw == md5.new(password + salt).digest()
 
 def _write_login_form(req, title, host, is_error):
-    login_url = req.unparsed_uri
-    req.content_type = "text/html"
+    login_url = cgi.escape(req.unparsed_uri)
+    req.content_type = "text/html; charset=utf-8"
     req.send_http_header()
 
     if is_error:
-        error_msg = '<b style="color:#f00">%s</b><br/><br/>' % _('Error: Username and Password do not match')
+        error_msg = '<b style="color:#f00">%s</b><br/><br/>' % cgi.escape(_('Error: Username and Password do not match'))
     else:
         error_msg = ''
 
@@ -127,4 +130,4 @@ def _write_login_form(req, title, host, is_error):
  <!-- Box End -->
 </div>
 </body>
-</html>""" % (title, error_msg, title, login_url, _("Server:"), host, _("Username:"), _("Password:"), _("Login")))
+</html>""" % (title, error_msg, title, login_url, cgi.escape(_("Server:")), host, cgi.escape(_("Username:")), cgi.escape(_("Password:")), cgi.escape(_("Login"))))
