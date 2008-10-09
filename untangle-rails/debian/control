@@ -7,7 +7,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-rails
 Architecture: all
-Depends: ${misc:Depends}, ruby, ruby1.8 (>=1.8.2-3), rake (>>0.7.0), rdoc (>>1.8.2), libpgsql-ruby1.8 | libmysql-ruby1.8 | libdbi-ruby1.8, libredcloth-ruby1.8, liberb-ruby
+Depends: ${misc:Depends}, ruby, ruby1.8 (>=1.8.2-3), rake (>>0.7.0), rdoc (>>1.8.2), libsqlite3-ruby1.8 | libpgsql-ruby1.8 | libmysql-ruby1.8 | libdbi-ruby1.8, libredcloth-ruby1.8, liberb-ruby, libmocha-ruby1.8
 Recommends: irb (>>1.8)
 Conflicts: libdevel-logger-ruby1.8, rails
 Provides: rails

@@ -1,0 +1,10 @@
+Document: rails
+Title: Ruby on Rails Refrence Manual
+Author: 
+Abstract: Reference Manual of Ruby On Rails, an MVC ruby based 
+ framework geared for web application development.
+Section: Apps/Programming
+
+Format: HTML
+Index: /usr/share/doc/rails/html/index.html
+Files: /usr/share/doc/rails/html/*.html

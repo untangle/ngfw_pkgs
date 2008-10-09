@@ -1,0 +1,41 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## upstream changeset 6893 (CVE-2007-3227)
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: [CVE-2007-3227] escape <'s and >'s in JSON strings
+## DP: Modified version of the revision 6893 patch
+
+@DPATCH@
+
+diff -ur rails-1.2.3.orig/activesupport/lib/active_support/json/encoders/core.rb rails-1.2.3/activesupport/lib/active_support/json/encoders/core.rb
+--- rails-1.2.3.orig/activesupport/lib/active_support/json/encoders/core.rb	2007-03-19 13:32:46.000000000 -0500
++++ rails-1.2.3/activesupport/lib/active_support/json/encoders/core.rb	2007-10-08 10:11:17.000000000 -0500
+@@ -24,11 +24,14 @@
+         "\r" =>    '\r',
+         "\t" =>    '\t',
+         '"' =>     '\"',
+-        '\\' =>    '\\\\'
++        '\\' =>    '\\\\',
++        '\\' =>    '\\\\',
++        ">" =>     '\076',
++        '<' =>     '\074'
+       }
+       
+       define_encoder String do |string|
+-        '"' + string.gsub(/[\010\f\n\r\t"\\]/) { |s|
++        '"' + string.gsub(/[\010\f\n\r\t"\\><]/) { |s|
+           ESCAPED_CHARS[s]
+         }.gsub(/([\xC0-\xDF][\x80-\xBF]|
+                  [\xE0-\xEF][\x80-\xBF]{2}|
+diff -ur rails-1.2.3.orig/activesupport/test/json.rb rails-1.2.3/activesupport/test/json.rb
+--- rails-1.2.3.orig/activesupport/test/json.rb	2007-03-19 13:32:43.000000000 -0500
++++ rails-1.2.3/activesupport/test/json.rb	2007-10-08 10:15:14.000000000 -0500
+@@ -13,7 +13,7 @@
+   NumericTests  = [[ 1,     %(1)     ],
+                    [ 2.5,   %(2.5)   ]]
+ 
+-  StringTests   = [[ 'this is the string',     %("this is the string")         ],
++  StringTests   = [[ 'this is the <string>',     %("this is the \\074string\\076")],
+                    [ 'a "string" with quotes', %("a \\"string\\" with quotes") ]]
+ 
+   ArrayTests    = [[ ['a', 'b', 'c'],          %([\"a\", \"b\", \"c\"])          ],

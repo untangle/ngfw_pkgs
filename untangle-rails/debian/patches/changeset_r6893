@@ -1,0 +1,41 @@
+Index: /trunk/activesupport/test/json/encoding_test.rb
+===================================================================
+--- trunk/activesupport/test/json/encoding_test.rb (revision 6822)
++++ trunk/activesupport/test/json/encoding_test.rb (revision 6893)
+@@ -14,5 +14,5 @@
+                    [ 2.5,   %(2.5)   ]]
+ 
+-  StringTests   = [[ 'this is the string',     %("this is the string")         ],
++  StringTests   = [[ 'this is the <string>',     %("this is the \\074string\\076")],
+                    [ 'a "string" with quotes', %("a \\"string\\" with quotes") ]]
+ 
+Index: /trunk/activesupport/lib/active_support/json/encoders/string.rb
+===================================================================
+--- trunk/activesupport/lib/active_support/json/encoders/string.rb (revision 6443)
++++ trunk/activesupport/lib/active_support/json/encoders/string.rb (revision 6893)
+@@ -9,5 +9,7 @@
+         "\t" =>    '\t',
+         '"' =>     '\"',
+-        '\\' =>    '\\\\'
++        '\\' =>    '\\\\',
++        ">" =>     '\076',
++        '<' =>     '\074'
+       }
+     end
+@@ -17,5 +19,5 @@
+ class String
+   def to_json #:nodoc:
+-    '"' + gsub(/[\010\f\n\r\t"\\]/) { |s|
++    '"' + gsub(/[\010\f\n\r\t"\\><]/) { |s|
+       ActiveSupport::JSON::Encoding::ESCAPED_CHARS[s]
+     }.gsub(/([\xC0-\xDF][\x80-\xBF]|
+Index: /trunk/activesupport/CHANGELOG
+===================================================================
+--- trunk/activesupport/CHANGELOG (revision 6886)
++++ trunk/activesupport/CHANGELOG (revision 6893)
+@@ -1,3 +1,5 @@
+ *SVN*
++
++* escape <'s and >'s in JSON strings. #8371 [Rick]
+ 
+ * Inflections: MatrixTest -> MatrixTests instead of MatricesTest.  #8496 [jbwiv]

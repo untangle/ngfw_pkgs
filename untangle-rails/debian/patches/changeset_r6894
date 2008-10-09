@@ -1,0 +1,95 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## upstream changeset 6894 patch [CVE-2007-3227]
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: [CVE-2007-3227] fix test cases to match new json output.
+
+@DPATCH@
+
+Index: /trunk/actionpack/test/template/prototype_helper_test.rb
+===================================================================
+--- a/actionpack/test/template/prototype_helper_test.rb (revision 6775)
++++ a/actionpack/test/template/prototype_helper_test.rb (revision 6894)
+@@ -233,21 +233,21 @@
+   
+   def test_insert_html_with_string
+-    assert_equal 'new Insertion.Top("element", "<p>This is a test</p>");',
++    assert_equal 'new Insertion.Top("element", "\\074p\\076This is a test\\074/p\\076");',
+       @generator.insert_html(:top, 'element', '<p>This is a test</p>')
+-    assert_equal 'new Insertion.Bottom("element", "<p>This is a test</p>");',
++    assert_equal 'new Insertion.Bottom("element", "\\074p\076This is a test\\074/p\076");',
+       @generator.insert_html(:bottom, 'element', '<p>This is a test</p>')
+-    assert_equal 'new Insertion.Before("element", "<p>This is a test</p>");',
++    assert_equal 'new Insertion.Before("element", "\\074p\076This is a test\\074/p\076");',
+       @generator.insert_html(:before, 'element', '<p>This is a test</p>')
+-    assert_equal 'new Insertion.After("element", "<p>This is a test</p>");',
++    assert_equal 'new Insertion.After("element", "\\074p\076This is a test\\074/p\076");',
+       @generator.insert_html(:after, 'element', '<p>This is a test</p>')
+   end
+   
+   def test_replace_html_with_string
+-    assert_equal 'Element.update("element", "<p>This is a test</p>");',
++    assert_equal 'Element.update("element", "\\074p\\076This is a test\\074/p\\076");',
+       @generator.replace_html('element', '<p>This is a test</p>')
+   end
+   
+   def test_replace_element_with_string
+-    assert_equal 'Element.replace("element", "<div id=\"element\"><p>This is a test</p></div>");',
++    assert_equal 'Element.replace("element", "\\074div id=\"element\"\\076\\074p\\076This is a test\\074/p\\076\\074/div\\076");',
+       @generator.replace('element', '<div id="element"><p>This is a test</p></div>')
+   end
+@@ -305,8 +305,8 @@
+     
+     assert_equal <<-EOS.chomp, @generator.to_s
+-new Insertion.Top("element", "<p>This is a test</p>");
+-new Insertion.Bottom("element", "<p>This is a test</p>");
++new Insertion.Top("element", "\\074p\\076This is a test\\074/p\\076");
++new Insertion.Bottom("element", "\\074p\\076This is a test\\074/p\\076");
+ ["foo", "bar"].each(Element.remove);
+-Element.update("baz", "<p>This is a test</p>");
++Element.update("baz", "\\074p\\076This is a test\\074/p\\076");
+     EOS
+   end
+Index: /trunk/actionpack/test/template/javascript_helper_test.rb
+===================================================================
+--- trunk/actionpack/test/template/javascript_helper_test.rb (revision 6057)
++++ trunk/actionpack/test/template/javascript_helper_test.rb (revision 6894)
+@@ -37,5 +37,5 @@
+       page.replace_html 'header', "<h1>Greetings</h1>"
+     end
+-    assert_dom_equal %(<a href="#" onclick="Element.update(&quot;header&quot;, &quot;&lt;h1&gt;Greetings&lt;/h1&gt;&quot;);; return false;">Greet me!</a>), html
++    assert_dom_equal %(<a href="#" onclick="Element.update(&quot;header&quot;, &quot;\\074h1\\076Greetings\\074/h1\\076&quot;);; return false;">Greet me!</a>), html
+   end
+ 
+@@ -44,5 +44,5 @@
+       page.replace_html 'header', "<h1>Greetings</h1>"
+     end
+-    assert_dom_equal %(<a href="#" class="updater" onclick="Element.update(&quot;header&quot;, &quot;&lt;h1&gt;Greetings&lt;/h1&gt;&quot;);; return false;">Greet me!</a>), html
++    assert_dom_equal %(<a href="#" class="updater" onclick="Element.update(&quot;header&quot;, &quot;\\074h1\\076Greetings\\074/h1\\076&quot;);; return false;">Greet me!</a>), html
+   end
+ 
+@@ -56,5 +56,5 @@
+       page.replace_html 'header', "<h1>Greetings</h1>"
+     end
+-    assert_dom_equal %(<input type="button" onclick="Element.update(&quot;header&quot;, &quot;&lt;h1&gt;Greetings&lt;/h1&gt;&quot;);;" value="Greet me!" />), html
++    assert_dom_equal %(<input type="button" onclick="Element.update(&quot;header&quot;, &quot;\\074h1\\076Greetings\\074/h1\\076&quot;);;" value="Greet me!" />), html
+   end
+ 
+@@ -63,5 +63,5 @@
+       page.replace_html 'header', "<h1>Greetings</h1>"
+     end
+-    assert_dom_equal %(<input type="button" class="greeter" onclick="Element.update(&quot;header&quot;, &quot;&lt;h1&gt;Greetings&lt;/h1&gt;&quot;);;" value="Greet me!" />), html
++    assert_dom_equal %(<input type="button" class="greeter" onclick="Element.update(&quot;header&quot;, &quot;\\074h1\\076Greetings\\074/h1\\076&quot;);;" value="Greet me!" />), html
+   end
+ end
+Index: /trunk/actionpack/lib/action_controller/assertions/selector_assertions.rb
+===================================================================
+--- trunk/actionpack/lib/action_controller/assertions/selector_assertions.rb (revision 6861)
++++ trunk/actionpack/lib/action_controller/assertions/selector_assertions.rb (revision 6894)
+@@ -587,4 +587,6 @@
+           unescaped= rjs_string.gsub('\"', '"')
+           unescaped.gsub!('\n', "\n")
++          unescaped.gsub!('\076', '>')
++          unescaped.gsub!('\074', '<')
+           # RJS encodes non-ascii characters.
+           unescaped.gsub!(RJS_PATTERN_UNICODE_ESCAPED_CHAR) {|u| [$1.hex].pack('U*')}
