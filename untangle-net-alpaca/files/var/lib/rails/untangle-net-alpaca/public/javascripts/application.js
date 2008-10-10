@@ -491,16 +491,20 @@ var initTableRow = function(thisId) {
 var enableSaveObservers = function() {
     var inputs = $$('input');
     var selects = $$('select');
+    var textareas = $$('textarea');
     for (var i=0; i<inputs.length; i++) {
-	inputs[i].observe('change', enableSave);
-	inputs[i].observe('keypress', enableSave);
-	if (inputs[i].type == 'checkbox') {
-  	    inputs[i].observe('click', enableSave);
-        }
+        inputs[i].observe('change', enableSave);
+        inputs[i].observe('keypress', enableSave);
+        if (inputs[i].type == 'checkbox') inputs[i].observe('click', enableSave);
+    }
+
+    for (var i=0; i<textareas.length; i++) {
+        textareas[i].observe('change', enableSave);
+        textareas[i].observe('keypress', enableSave);
     }
     for (var i=0; i<selects.length; i++) {
-	selects[i].observe('change', enableSave);
-	selects[i].observe('keypress', enableSave);
+        selects[i].observe('change', enableSave);
+        selects[i].observe('keypress', enableSave);
     }
 }
 
