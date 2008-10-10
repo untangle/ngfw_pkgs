@@ -127,12 +127,33 @@ def setup_gettext():
                                 fallback=True)
     trans.install()
 
-def get_uvm_language():
+def get_company_name():
+    company = 'Untangle'
+
     conn = connect("dbname=uvm user=postgres")
-    curs = conn.cursor()
-    curs.execute('SELECT language FROM settings.u_language_settings')
-    r = curs.fetchone()
-    if r == None:
-        return "us"
-    else:
-        return r[0]
+    try:
+        curs = conn.cursor()
+
+        curs.execute('SELECT company_name FROM settings.uvm_branding_settings')
+        r = curs.fetchone()
+        if r != None:
+            company = r[0]
+    finally:
+        conn.close()
+
+    return company
+
+def get_uvm_language():
+    lang = 'us'
+
+    conn = connect("dbname=uvm user=postgres")
+    try:
+        curs = conn.cursor()
+        curs.execute('SELECT language FROM settings.u_language_settings')
+        r = curs.fetchone()
+        if r != None:
+            lang = r[0]
+    finally:
+        conn.close()
+
+    return lang

@@ -112,7 +112,7 @@ def _write_report(req, msg):
     req.content_type = "text/html"
     req.send_http_header()
 
-    us = _("Untangle Server")
+    us = _("%s Server") % uvmlogin.get_company_name()
 
     req.write("""\
 <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">

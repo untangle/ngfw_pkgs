@@ -32,7 +32,7 @@ def login(req, url=None, realm='Administrator'):
             else:
                 util.redirect(req, url)
 
-    company_name = "Untangle"
+    company_name = uvmlogin.get_company_name()
     title = cgi.escape(_("%s Login") % company_name)
     host = cgi.escape(req.hostname)
 
