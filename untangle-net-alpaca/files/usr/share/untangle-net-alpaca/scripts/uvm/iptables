@@ -291,3 +291,36 @@ uvm_packet_filter_secure_public()
     ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} \
         --destination-ports ${HTTPS_PUBLIC_PORT} -j RETURN
 }
+
+## You should only run this if openvpn is running, these rules will only apply to 
+## packets that are bridged.
+
+## Reroute all Bridge traffic destined to the VPN through the VPN.
+uvm_openvpn_ebtables_rules()
+{
+    local t_network_list
+    local t_network
+    local t_bridge_list
+    local t_bridge
+    
+    t_network_list=`ip route show dev tun0 scope global | awk '{ print $1}'`
+
+    ## Nothing to do if there is no VPN traffic.
+    test -z "${t_network_list}" && return
+
+    t_bridge_list=`find /sys/class/net/*/bridge -name 'bridge_id' 2>/dev/null | sed -e 's|/sys/class/net/\([^/]*\)/.*|\1|'`
+    
+    test -z "${t_bridge_list}" && return
+    
+    ${EBTABLES} -t broute -N untangle-openvpn || true
+
+    ## Add rules to go to the VPN table on all of the bridges.
+    for t_bridge in ${t_bridge_list} ; do
+        ${EBTABLES} -t broute -A BROUTING --logical-in ${t_bridge} -j untangle-openvpn
+    done
+
+    ## Redirect all VPN traffic locally
+    for t_network in ${t_network_list}; do
+        ${EBTABLES} -t broute -A untangle-openvpn -p ipv4 --ip-destination ${t_network} -j redirect
+    done
+}

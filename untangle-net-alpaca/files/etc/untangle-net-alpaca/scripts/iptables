@@ -25,6 +25,15 @@ IPTABLES=/sbin/iptables
 
 IPTABLES=iptables_debug_onerror
 
+ebtables_debug()
+{
+    echo /sbin/ebtables $*
+    /sbin/ebtables $*
+}
+
+EBTABLES=/sbin/ebtables
+# EBTABLES=ebtables_debug
+
 get_ip_addresses()
 {
     local t_intf=$1

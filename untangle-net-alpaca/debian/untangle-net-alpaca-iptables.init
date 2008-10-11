@@ -40,12 +40,21 @@ insert_rules()
 
 remove_rules()
 {
+    local t_table
+
     if [ -f ${IPTABLES_NAMES} ]; then
         for t_table in `cat ${IPTABLES_NAMES}` ; do 
-            /sbin/iptables -t ${t_table} -F && true
-        done
+            /sbin/iptables -t ${t_table} -F || true
+        done        
     else
         /bin/echo "The file '${IPTABLES_NAMES}' does not exist, unable to flush the iptables rules"
+    fi
+
+    ## Flushing the ebtables rules.
+    if [ -x /sbin/ebtables ]; then
+        for t_table in filter nat broute ; do 
+            /sbin/ebtables -t ${t_table} --init-table || true
+        done
     fi
 }
 

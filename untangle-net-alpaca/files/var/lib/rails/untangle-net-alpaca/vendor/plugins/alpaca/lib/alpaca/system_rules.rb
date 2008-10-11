@@ -151,9 +151,14 @@ module Alpaca::SystemRules
 
     ## This is a custom rule designed to allow the main site to access the clients at VPN clients.
     rm.add_firewall_rule( :description => "Accept incoming VPN traffic when running as a VPN client.",
-                          :filter => "d-local::true&&s-intf::8",
-                          :target => "pass", :is_custom => false,
+                          :target => "pass", :is_custom => true,
                           :system_id => "accept-client-vpn-8a762ae9" )
+
+    ## This is a custom rule designed to route Bridge VPN traffic, see
+    rm.add_firewall_rule( :description => "Route VPN traffic that would go through the Bridge.",
+                          :target => "pass", :is_custom => true,
+                          :enabled => false,
+                          :system_id => "route-bridge-vpn-37ce4160" )
 
     ## Bypass Rules
     rm.add_bypass_rule( :description => "Bypass DHCP Traffic",
