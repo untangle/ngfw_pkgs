@@ -74,3 +74,13 @@ fi
 /usr/sbin/a2ensite uvm
 
 /etc/init.d/apache2 reload
+
+if [ ! -f /var/www/images/BrandingLogo.gif ]; then
+    if [ -f /usr/share/untangle/web/ROOT/images/BrandingLogo.gif ]; then
+        cp /usr/share/untangle/web/ROOT/images/BrandingLogo.gif /var/www/images/BrandingLogo.gif
+    else
+        cp /var/www/images/Logo150x96.gif /var/www/images/BrandingLogo.gif
+    fi
+fi
+
+true
