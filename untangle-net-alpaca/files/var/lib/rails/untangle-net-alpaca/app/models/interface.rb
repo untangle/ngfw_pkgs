@@ -89,7 +89,7 @@ class Interface < ActiveRecord::Base
   def is_bridge?
     ## If the config is in bridge mode, then just return true if the bridged
     ## interface is non-nil
-    return !intf_bridge.bridge_interface.nil? if self.config_type == InterfaceHelper::ConfigType::BRIDGE
+    return (!intf_bridge.nil? and !intf_bridge.bridge_interface.nil?) if self.config_type == InterfaceHelper::ConfigType::BRIDGE
 
     ## Check if this is in a configuration that is bridgeable.
     return false unless InterfaceHelper::BRIDGEABLE_CONFIGTYPES.include?( self.config_type )
