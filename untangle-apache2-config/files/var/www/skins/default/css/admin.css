@@ -44,7 +44,7 @@ div.racksWithoutSeparator {
 }
 #help {
 	position:relative;
-	width:60px;
+	width:65px;
 	margin-left: auto;
 	margin-right: auto;
 	margin-bottom: 10px;
@@ -161,15 +161,16 @@ div.node div.nodePower {
 }
 
 div.node div.nodeSettingsButton {
-	position:absolute;
+    position:absolute;
 	top:61px;
 	left:50px;
+	width: 1px;
 }
 div.node div.nodeHelpButton {
-	position:absolute;
+    position:absolute;
 	top:61px;
-	left:182px;
-	width:120px;
+	left:220px;
+	width:1px;
 }
 button.nodeSettingsIcon {
 	background:transparent url(../images/admin/icon_settings.png) no-repeat center left !important;  
