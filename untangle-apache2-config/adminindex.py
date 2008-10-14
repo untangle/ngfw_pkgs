@@ -24,7 +24,7 @@ def login(req, url=None, realm='Administrator'):
         password = req.form['password']
 
         if _valid_login(req, realm, username, password):
-            sess = Session.Session(req)
+            sess = Session.Session(req, timeout = uvmlogin.SESSION_TIMEOUT)
             uvmlogin.save_session_user(sess, realm, username)
 
             if url == None:
@@ -39,7 +39,7 @@ def login(req, url=None, realm='Administrator'):
     _write_login_form(req, title, host, is_error)
 
 def logout(req, url=None, realm='Administrator'):
-    sess = Session.Session(req)
+    sess = Session.Session(req, timeout = uvmlogin.SESSION_TIMEOUT)
     uvmlogin.delete_session_user(sess, realm)
     if url == None:
         return apache.OK

@@ -6,6 +6,8 @@ import urllib
 from mod_python import apache, Session, util
 from psycopg import connect
 
+SESSION_TIMEOUT = 1800
+
 def authenhandler(req):
     if req.notes.has_key('authorized') and req.notes['authorized'] == 'true':
         return apache.OK
@@ -26,7 +28,7 @@ def headerparserhandler(req):
         apache.log_error('no realm specified')
         return apache.DECLINED
 
-    sess = Session.Session(req)
+    sess = Session.Session(req, timeout = SESSION_TIMEOUT)
     sess.save()
 
     username = session_user(sess, realm)
