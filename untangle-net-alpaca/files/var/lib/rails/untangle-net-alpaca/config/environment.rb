@@ -86,6 +86,6 @@ LOCALES = {
   'es-ES', 'Spanish'
 }
 
-UNTANGLE_VERSION="5.4"
+UNTANGLE_VERSION="6.0"
 HELP_URL="http://www.untangle.com/docs/get.php"
 HELP_NAMESPACE="alpaca"
