@@ -6,10 +6,6 @@ mkdir -p $LOCAL_DUMP
 tmpfile=$(tempfile)
 backtitle="Untangle Platform"
 
-MOUNT_POINT=/mnt/usb-mv-mount
-
-mkdir -p ${MOUNT_POINT}
-
 confirm_exit()
 {
     dialog --backtitle "$backtitle" --title "Cancel" \
@@ -29,49 +25,6 @@ confirm()
 {
     dialog --backtitle "$backtitle" --title "Confirm" \
         --yesno "$1" 6 52
-}
-
-lookup_usb_device()
-{
-    udevinfo --export | awk '/^N:/ { device="/dev/"$2 ; is_usb=0 ; is_disk=0; is_partition=0 }
-/ID_BUS=usb/ { is_usb=1  }
-/ID_TYPE=disk/ { is_disk=1 }
-/ID_FS_USAGE=filesystem/ { is_partition=1 }
-/^$/ { if ( is_usb == 1 && is_disk == 1 ) { print device ; is_usb=0 ; is_disk=0 ; if ( is_partition == 1 ) exit }}
-' | tail -n 1
-}
-
-usb_mount()
-{
-    local t_usb_dev
-    local t_success=false
-
-    dialog --backtitle "$backtitle" --title "Insert USB Key" \
-        --yes-label "OK" --no-label "Cancel" \
-        --yesno "Please click OK after inserting USB key." 6 52
-    retval=$?
-
-    case $retval in
-        0) # OK
-            t_usb_dev=`lookup_usb_device`
-            if [ -n "${t_usb_dev}" ]; then
-                umount ${MOUNT_POINT} || true
-                mount ${t_usb_dev} ${MOUNT_POINT} && t_success=true
-            fi
-            ;;
-        1) # Cancel
-            return 1
-            ;;
-    esac
-
-    if [ "${t_success}x" = "truex" ]; then
-        return 0
-    else
-        dialog --backtitle "$backtitle" \
-            --title "USB Key Mount error" \
-            --msgbox "Please check that the USB key is inserted properly and properly formatted." 6 52
-        return -1
-    fi
 }
 
 restore()
@@ -128,7 +81,6 @@ restore_menu()
     dialog --backtitle "$backtitle" --title "Restore Method" \
         --menu "restore method" 10 61 2 \
         "Local Hard Drive" "" \
-        "USB Key" "" \
         2>$tmpfile
     retval=$?
 
@@ -138,9 +90,6 @@ restore_menu()
             case $choice in
                 "Local Hard Drive")
                     state=RESTORE_LOCAL
-                    ;;
-                "USB Key")
-                    state=RESTORE_USB_MOUNT
                     ;;
             esac
             ;;
@@ -155,7 +104,6 @@ backup_menu()
     dialog --backtitle "$backtitle" --title "Backup Method" \
         --menu "backup method" 10 61 2 \
         "Local Hard Drive" "" \
-        "USB Key" "" \
         2>$tmpfile
     retval=$?
 
@@ -163,9 +111,6 @@ backup_menu()
     case $retval in
         0) # OK
             case $choice in
-                "USB Key")
-                    state=BACKUP_USB_MOUNT
-                    ;;
                 "Local Hard Drive")
                     state=BACKUP_LOCAL
                     ;;
@@ -215,27 +160,6 @@ while true; do
         BACKUP_MENU)
             backup_menu
             ;;
-        BACKUP_USB_MOUNT)
-            if usb_mount; then
-                state=BACKUP_USB
-            else
-                state=BACKUP_MENU
-            fi
-            ;;
-        BACKUP_USB)
-            if backup ${MOUNT_POINT}; then
-        dialog --backtitle "$backtitle" --title "Backup Successful" \
-                    --msgbox "Settings backed up successfully." 6 52
-
-                state=END_STATE
-            else
-                dialog --backtitle "$backtitle" --title "Backup Unsuccessful" \
-                    --msgbox "Error backing up settings." 6 52
-
-                state=BACKUP_MENU
-            fi
-            umount ${MOUNT_POINT}
-            ;;
         BACKUP_LOCAL)
             if backup $LOCAL_DUMP; then
                 dialog --backtitle "$backtitle" --title "Backup Successful" \
@@ -251,38 +175,6 @@ while true; do
             ;;
         RESTORE_MENU)
             restore_menu
-            ;;
-        RESTORE_USB_MOUNT)
-            usb_mount
-            case $? in
-                0) # success
-                    state=RESTORE_USB
-                    ;;
-                1) # cancel
-                    state=RESTORE_MENU
-                    ;;
-            esac
-            ;;
-        RESTORE_USB)
-            restore ${MOUNT_POINT}
-            RET=$?
-
-            echo "---" $RET
-
-            if [ $RET -eq 0 ]; then
-                dialog --backtitle "$backtitle" --title "Restore Successful" \
-                    --msgbox "Settings restored successfully." 6 52
-
-                state=END_STATE
-            else
-                # 100 means ignore error
-                if [ ! $RET -eq 100 ] ; then
-                    dialog --backtitle "$backtitle" --title "Restore Unsuccessful" \
-                        --msgbox "Error restoring settings." 6 52
-                fi
-                state=RESTORE_MENU
-            fi
-            umount ${MOUNT_POINT}
             ;;
         RESTORE_LOCAL)
             restore $LOCAL_DUMP
