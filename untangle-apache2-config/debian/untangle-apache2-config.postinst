@@ -70,7 +70,6 @@ fi
 /usr/sbin/a2enmod jk
 /usr/sbin/a2enmod ssl
 /usr/sbin/a2enmod mod_python
-/usr/sbin/a2enmod deflate
 /usr/sbin/a2dissite default
 /usr/sbin/a2ensite uvm
 
