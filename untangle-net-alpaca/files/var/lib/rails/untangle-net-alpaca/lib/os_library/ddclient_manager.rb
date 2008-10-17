@@ -32,7 +32,7 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
   ConfigDaemonInterval = "300"
 
   ConfigService = {
-    "ZoneEdit" => [ "zoneedit1", "www.zoneedit.com" ],
+    "ZoneEdit" => [ "zoneedit1", "dynamic.zoneedit.com" ],
     "EasyDNS" => [ "easydns", "members.easydns.com" ],
     "DSL-Reports" => [ "dslreports1", "www.dslreports.com" ],
     "DNSPark" => [ "dnspark", "www.dnspark.com" ],
