@@ -1,6 +1,6 @@
 Source: untangle-linux-config
 Section: admin
-Priority: important
+Priority: optional
 Maintainer: John Irwin <jdi@untangle.com>
 Uploaders: Untangle Buildbot <buildbot@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
@@ -11,7 +11,7 @@ Architecture: all
 Conflicts: untangle-linux-2.6.22-config, untangle-linux-2.6.16-ck11-config, dmraid, linux-image-2.6.22-14-untangle, linux-image-2.6.22-14-virtual-untangle
 Replaces: untangle-linux-2.6.22-config, untangle-linux-2.6.16-ck11-config
 Provides: untangle-linux-2.6.22-config, untangle-linux-2.6.16-ck11-config
-Depends: linux-untangle (>= 2.6.22.15) | linux-virtual-untangle (>= 2.6.22.15), untangle-bootsplash, grub, initramfs-tools, udev, e2fsprogs (>= 1.37), bash (>= 3.1)
+Depends: linux-image-2.6.26-1-untangle-686 | linux-untangle (>= 2.6.22.15) | linux-virtual-untangle (>= 2.6.22.15), untangle-bootsplash, grub, initramfs-tools, udev, e2fsprogs (>= 1.37), bash (>= 3.1)
 Description: The Untangle kernel config
  The Untangle Linux kernel config package. Provides
  bootsplash support and grub auto-configuration.

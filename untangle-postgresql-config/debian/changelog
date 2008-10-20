@@ -1,3 +1,9 @@
+untangle-postgresql-config (6.0.0~svn20080804r18025trunk+seb20081003T101308-1lenny) seb; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@debian.org>  Fri, 03 Oct 2008 10:13:08 -0700
+
 untangle-postgresql-config (5.0.1-1) mustang-1; urgency=low
 
   * auto build

@@ -1,4 +1,10 @@
-#!/bin/sh
+#!/bin/sh -x
+
+if [ "$1" = "configure" ] ; then
+  # oldVersion will be non-empty if untangle-linux-config has been
+  # configured before
+  oldVersion="$2" 
+fi
 
 ourInit() {
 if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
@@ -8,9 +14,23 @@ else
 fi
 }
 
-# One of the main purposes of this package is to reboot the Untangle Server when a new
-# kernel is installed.  Thus this package should only be revved when you want a reboot.
-if [ -x /etc/init.d/untangle-vm ]; then
+# One of the main purposes of this package is to reboot the Untangle
+# Server when a new kernel is installed.  Thus this package should
+# only be revved when you want a reboot.  Starting with 5.4, we're
+# making an exception to this rule: we know for a fact that our kernel
+# hasn't changed from 5.3 to 5.4, so we will reboot only those people
+# that were running something lesser than 5.3~; that way 5\.[34]\.\d.*
+# installs won't be rebooted:
+#   $ dpkg --compare-versions 5.4.0~svn le 5.3~ && echo reboot
+#   $ dpkg --compare-versions 5.3.0~svn le 5.3~ && echo reboot
+#   $ dpkg --compare-versions 5.3.3~svn le 5.3~ && echo reboot
+#   $ dpkg --compare-versions 5.2.0~svn le 5.3~ && echo reboot
+#   reboot
+#   $ dpkg --compare-versions 5.2.0 le 5.3~ && echo reboot
+#   reboot
+#   $ dpkg --compare-versions 5.2 le 5.3~ && echo reboot
+#   reboot
+if [ -x /etc/init.d/untangle-vm ] && dpkg --compare-versions "$oldVersion" le 5.3~ ; then
     uvm-restart reboot
 fi
 
@@ -60,6 +80,7 @@ if [ -n "$root" ]; then
     else
         echo "Installing Untangle /boot/grub/menu.lst."
         [ -f /boot/grub/menu.lst-pre-untangle ] || cp /boot/grub/menu.lst /boot/grub/menu.lst-pre-untangle
+	mkdir -p /boot/grub
         sed -e "s/@ROOTDEV@/$rootdev/" /usr/share/untangle-linux-config/menu.lst > /boot/grub/menu.lst
         # Must set grub default before updating to avoid bug in grub's updatedefaultentry
         /usr/sbin/grub-set-default 0

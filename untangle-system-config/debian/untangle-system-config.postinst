@@ -98,4 +98,7 @@ fi
 # fix problem about duplicate SSH keys
 /usr/share/untangle-system-config/fix-ssh-keys.sh
 
+# remove official debian sources
+perl -i -pe 's|^.*debian.org.*$||' /etc/apt/sources.list
+
 exit 0
