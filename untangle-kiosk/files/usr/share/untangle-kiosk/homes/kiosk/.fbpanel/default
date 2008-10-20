@@ -36,7 +36,7 @@ Plugin {
         button {
             image = /usr/share/untangle-kiosk/panel/LaunchGUI.png
             tooltip = Launch Untangle Client
-            action = /usr/bin/iceweasel http://localhost
+            action = /usr/bin/untangle-client
         }
     }
 }

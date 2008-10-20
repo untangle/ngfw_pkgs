@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-client-local
 Architecture: all
-Depends: untangle-client, xfce4 | x-window-manager, x11-common | xfree86-common, xserver-xorg | xserver-xfree86, x11-utils | xbase-clients, xutils-dev | xutils, xterm | x-terminal-emulator, gdm | kdm | xdm | wdm | slim | x-display-manager | untangle-kiosk
+Depends: untangle-client, xfce4 | x-window-manager, x11-common | xfree86-common, xserver-xorg | xserver-xfree86, x11-utils | xbase-clients, xutils-dev | xutils, xterm | x-terminal-emulator, slim | gdm | untangle-fakekdm | x-display-manager
 Recommends: xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable
 Description: The Untangle client, local on appliance version
  Contains dependencies needed for a basic desktop (the untangle-kiosk
