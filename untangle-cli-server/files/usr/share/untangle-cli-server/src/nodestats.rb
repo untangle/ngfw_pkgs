@@ -45,7 +45,7 @@ class NodeStats
     #metrics.values().each() {|v| puts v.getCount() };
     
     real_last_activity_date = false;
-    (7..9).each do |i|
+    (7..11).each do |i|
       if !snmp_stat_map[i].nil?
       	metric = metrics.get(snmp_stat_map[i]);
       	@counters[i] = metric.getCount() 
