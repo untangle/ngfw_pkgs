@@ -91,7 +91,7 @@ case "$1" in
         ;;
 
     stop)
-        log_daemon_msg "Revoing $DESC"
+        log_daemon_msg "Removing $DESC"
 
         count=0
         while true ; do
