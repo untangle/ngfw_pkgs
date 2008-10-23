@@ -3,7 +3,7 @@ xset s off
 xset -dpms
 
 # disable the middle button through a 3rd party app
-xbindkeys &
+# xbindkeys &
 
 update_status()
 {
@@ -14,7 +14,7 @@ update_status()
     fi
 }
 
-# automatically start the setup wizard if the license file isn't present
+# automatically start the setup wizard if the registration file isn't present
 if [ -f /etc/default/untangle-vm ] ; then
     . /etc/default/untangle-vm
 
@@ -36,7 +36,7 @@ if [ -f /etc/default/untangle-vm ] ; then
     UVM_PRE_UVM_SCRIPT=${UVM_PRE_UVM_SCRIPT:-/var/lib/untangle-windows-installer/pre_uvm.rb}
     sudo rm -f ${UVM_PRE_UVM_SCRIPT}
 
-    [ ! -f $ACTIVATION_KEY_FILE ] && /usr/bin/untangle-client &
+    [ ! -f $REGISTRATION_INFO_FILE ] && /usr/bin/untangle-client &
 
     ## This will wait for the shutdown command for vmware.
     WIN_ACTION_HANDLER=${WIN_ACTION_HANDLER:-/usr/share/untangle-windows-installer/bin/action_handler.rb}
