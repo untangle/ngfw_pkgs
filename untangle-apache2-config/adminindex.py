@@ -114,14 +114,14 @@ def _write_login_form(req, title, host, is_error):
         <form method="post" action="%s">
           <table><tbody>
             <tr><td style="text-align:right">%s</td><td><em>&nbsp;%s</em></td></tr>
-            <tr><td style="text-align:right">%s</td><td><input id="username" type="text" name="username" /></td></tr>
+            <tr><td style="text-align:right">%s</td><td><input id="username" type="text" name="username" value="admin"/></td></tr>
             <tr><td style="text-align:right">%s</td><td><input id="password" type="password" name="password" /></td></tr>
           </tbody></table>
           <br />
           <div style="text-align: center;"><button value="login" type="submit">%s</button></div>
         </form>
 
-        <script type="text/javascript">document.getElementById('username').focus();</script>
+        <script type="text/javascript">document.getElementById('password').focus();</script>
 
         </div>
       </center>
