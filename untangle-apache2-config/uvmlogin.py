@@ -2,6 +2,7 @@ import base64
 import gettext
 import os
 import urllib
+import cgi
 
 from mod_python import apache, Session, util
 from psycopg import connect
@@ -9,10 +10,11 @@ from psycopg import connect
 SESSION_TIMEOUT = 1800
 
 def authenhandler(req):
-    if req.notes.has_key('authorized') and req.notes['authorized'] == 'true':
+    if req.notes.get('authorized', 'false') == 'true':
         return apache.OK
     else:
         options = req.get_options()
+
         if options.has_key('Realm'):
             realm = options['Realm']
             login_redirect(req, realm)
@@ -22,6 +24,7 @@ def authenhandler(req):
 
 def headerparserhandler(req):
     options = req.get_options()
+
     if options.has_key('Realm'):
         realm = options['Realm']
     else:
@@ -51,6 +54,17 @@ def headerparserhandler(req):
         req.notes['authorized'] = 'true'
         return apache.OK
     else:
+        # we only do this as to not present a login screen when access
+        # is restricted. a tomcat valve enforces this setting.
+        if options.get('UseRemoteAccessSettings', 'no') == 'yes':
+            (allow_insecure, allow_outside_admin) = get_access_settings()
+            (addr, port) = req.connection.local_addr
+
+            if 80 == port and not allow_insecure:
+                return apache.HTTP_FORBIDDEN
+            elif 443 == port and not allow_outside_admin:
+                return apache.HTTP_FORBIDDEN
+
         login_redirect(req, realm)
 
 def session_user(sess, realm):
@@ -160,3 +174,46 @@ def get_uvm_language():
         conn.close()
 
     return lang
+
+def get_access_settings():
+        conn = connect("dbname=uvm user=postgres")
+        curs = conn.cursor()
+        curs.execute('select allow_insecure, allow_outside_admin from settings.u_access_settings')
+        r = curs.fetchone()
+
+        if None == r:
+            return (False, False)
+        else:
+            return r
+
+def write_error_page(req, msg):
+    req.content_type = "text/html; charset=utf-8"
+    req.send_http_header()
+
+    us = _("%s Server") % get_company_name()
+
+    req.write("""\
+<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
+<html xmlns=\"http://www.w3.org/1999/xhtml\">
+<head>
+<title>%s</title>
+<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />
+<style type=\"text/css\">
+/* <![CDATA[ */
+@import url(/images/base.css);
+/* ]]> */
+</style>
+</head>
+<body>
+<div id=\"main\" style=\"width:500px;margin:50px auto 0 auto;\">
+<div class=\"main-top-left\"></div><div class=\"main-top-right\"></div><div class=\"main-mid-left\"><div class=\"main-mid-right\"><div class=\"main-mid\">
+<center>
+<img alt=\"\" src=\"/images/BrandingLogo.gif\" /><br /><br />
+<b>%s</b><br /><br />
+<em>%s</em>
+</center><br /><br />
+</div></div></div><div class=\"main-bot-left\"></div><div class=\"main-bot-right\"></div>
+</div>
+</body>
+</html>
+""" % (us, us, cgi.escape(msg)))

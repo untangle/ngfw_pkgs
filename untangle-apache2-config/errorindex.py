@@ -12,107 +12,107 @@ _ = gettext.gettext
 
 def status400(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Bad Request"))
+    _write_error_page(req, _("Bad Request"))
 
 def status401(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Unauthorized"))
+    _write_error_page(req, _("Unauthorized"))
 
 def status402(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Payment Required"))
+    _write_error_page(req, _("Payment Required"))
 
 def status403(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Forbidden"))
+    _write_error_page(req, _("Forbidden"))
 
 def status404(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Not Found"))
+    _write_error_page(req, _("Not Found"))
 
 def status405(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Method Not Allowed"))
+    _write_error_page(req, _("Method Not Allowed"))
 
 def status406(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Not Acceptable"))
+    _write_error_page(req, _("Not Acceptable"))
 
 def status407(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Proxy Authentication Required"))
+    _write_error_page(req, _("Proxy Authentication Required"))
 
 def status408(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Request Timeout"))
+    _write_error_page(req, _("Request Timeout"))
 
 def status409(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Conflict"))
+    _write_error_page(req, _("Conflict"))
 
 def status410(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Gone"))
+    _write_error_page(req, _("Gone"))
 
 def status411(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Length Required"))
+    _write_error_page(req, _("Length Required"))
 
 def status412(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Precondition Failed"))
+    _write_error_page(req, _("Precondition Failed"))
 
 def status413(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Request Entity Too Large"))
+    _write_error_page(req, _("Request Entity Too Large"))
 
 def status414(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Request-URI Too Long"))
+    _write_error_page(req, _("Request-URI Too Long"))
 
 def status415(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Unsupported Media Type"))
+    _write_error_page(req, _("Unsupported Media Type"))
 
 def status416(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Requested Range Not Satisfiable"))
+    _write_error_page(req, _("Requested Range Not Satisfiable"))
 
 def status417(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Expectation Failed"))
+    _write_error_page(req, _("Expectation Failed"))
 
 def status500(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Internal Server Error"))
+    _write_error_page(req, _("Internal Server Error"))
 
 def status501(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Not Implemented"))
+    _write_error_page(req, _("Not Implemented"))
 
 def status502(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Bad Gateway"))
+    _write_error_page(req, _("Bad Gateway"))
 
 def status503(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Service Unavailable"))
+    _write_error_page(req, _("Service Unavailable"))
 
 def status504(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("Gateway Timeout"))
+    _write_error_page(req, _("Gateway Timeout"))
 
 def status505(req):
     uvmlogin.setup_gettext()
-    _write_report(req, _("HTTP Version Not Supported"))
+    _write_error_page(req, _("HTTP Version Not Supported"))
 
-# internal methods ---------------------------------------------------------------
+# private methods --------------------------------------------------------------
 
-def _write_report(req, msg):
-    req.content_type = "text/html"
+def _write_error_page(req, msg):
+    req.content_type = "text/html; charset=utf-8"
     req.send_http_header()
 
-    us = _("%s Server") % uvmlogin.get_company_name()
+    us = _("%s Server") % get_company_name()
 
     req.write("""\
 <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">

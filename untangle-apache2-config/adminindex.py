@@ -8,9 +8,9 @@ from psycopg import connect
 # pages -----------------------------------------------------------------------
 
 def login(req, url=None, realm='Administrator'):
-    req
-
     uvmlogin.setup_gettext()
+
+    options = req.get_options()
 
     args = util.parse_qs(req.args or '')
 
