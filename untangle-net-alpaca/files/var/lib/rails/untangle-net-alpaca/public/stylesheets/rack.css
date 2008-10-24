@@ -19,7 +19,7 @@ html, body {
     background-color: #F6F6F6; 
 }
 /*** begin erik stuff ***/
-body{font-family: arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,sans-serif;}
+body{font-family: tahoma,arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,sans-serif;}
 h1{font-size: 108%;}
 
 ul.text-fields {
@@ -487,7 +487,7 @@ div#main-content-body
 div#main-content-footer {
     position: fixed;
     bottom: 0; 
-      height: 50px;
+      height: 32px;
       width: 100%;
       background-color: #e4e4e4;
       border-top: 1px solid #f1f1f1;
@@ -687,16 +687,16 @@ ul#extranav li#advanced-menu ul#advanced-dropdown li a, #advanced-menu #advanced
 
 div#help-footer
 { 
-  margin-top: 10px;
+  margin-top: 0px;
   float: left;
 }
 div#action-footer
 {  
-  margin-top: 10px;
+  margin-top: 0px;
   float: right;
 }
 div#footer-buttons {
-    width: 677px; 
+    width: 99%;
 }
 .interface-buttons
 {
