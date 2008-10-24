@@ -783,8 +783,20 @@ div.buttonColumn {
 .wizardlabelmargin3{
 	margin-top:-40px;
 }
-.wizardlabelmargin4{
-	margin-left:106px;
+
+.wizardlabelmargin4
+{ 
+  margin-left : 10px;
+ }
+
+.wizardlabelmargin5
+{ 
+  margin-left : 20px;
+ }
+
+.wizardlabelmargin6
+{
+  margin-left: 50px;
 }
 
 .noborder{
@@ -829,6 +841,25 @@ body.wizard{
 .smallBottomMargin{
 	margin-bottom:1em;
 }
+
+
+table.email-tester
+{ 
+  margin-left: 100px;
+ }
+
+button.email-tester
+{ 
+  background:transparent url(../images/admin/icon_test.png) no-repeat center left !important; 
+  width : 125px;
+ }
+
+label.optional-email-tester
+{ 
+  padding: 10px 230px 0px 0px;
+  float: right;
+  font-style: italic;
+  }
 
 #container{
 	margin:10px auto;
@@ -940,11 +971,14 @@ body.wizard{
  .smallbottommargin{
 	margin-bottom:1em;
  }
- .requiredInfo{
-	text-align:right;
-	margin-bottom:1em;
-	display:block;
- }
+ .requiredInfo
+{
+  text-align:right;
+  margin-bottom:1em;
+  display:block;
+  font-style: italic;
+  }
+
  .requiredstar{
 	color:#FF2222;
 	font-weight:bold;
