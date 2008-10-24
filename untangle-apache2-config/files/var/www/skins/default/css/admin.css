@@ -959,3 +959,11 @@ body.wizard{
 .fixedPos{
     position: fixed;
 }
+
+.draggable-interface
+{ 
+    background:transparent url(../images/admin/icon_drag.gif) no-repeat center left;
+    width: 100%;
+    cursor: move;
+  padding: 2px 0px 2px 24px;
+ }
