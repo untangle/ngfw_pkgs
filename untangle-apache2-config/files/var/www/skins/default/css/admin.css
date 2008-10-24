@@ -816,20 +816,8 @@ div.buttonColumn {
 .wizardlabelmargin3{
 	margin-top:-40px;
 }
-
-.wizardlabelmargin4
-{ 
-  margin-left : 10px;
- }
-
-.wizardlabelmargin5
-{ 
-  margin-left : 20px;
- }
-
-.wizardlabelmargin6
-{
-  margin-left: 50px;
+.wizardlabelmargin4{
+	margin-left:106px;
 }
 
 .noborder{
@@ -874,25 +862,6 @@ body.wizard{
 .smallBottomMargin{
 	margin-bottom:1em;
 }
-
-
-table.email-tester
-{ 
-  margin-left: 100px;
- }
-
-button.email-tester
-{ 
-  background:transparent url(../images/admin/icon_test.png) no-repeat center left !important; 
-  width : 125px;
- }
-
-label.optional-email-tester
-{ 
-  padding: 10px 230px 0px 0px;
-  float: right;
-  font-style: italic;
-  }
 
 #container{
 	margin:10px auto;
@@ -1004,14 +973,11 @@ label.optional-email-tester
  .smallbottommargin{
 	margin-bottom:1em;
  }
- .requiredInfo
-{
-  text-align:right;
-  margin-bottom:1em;
-  display:block;
-  font-style: italic;
-  }
-
+ .requiredInfo{
+	text-align:right;
+	margin-bottom:1em;
+	display:block;
+ }
  .requiredstar{
 	color:#FF2222;
 	font-weight:bold;
@@ -1027,10 +993,30 @@ label.optional-email-tester
     position: fixed;
 }
 
-.draggable-interface
-{ 
-    background:transparent url(../images/admin/icon_drag.gif) no-repeat center left;
-    width: 100%;
-    cursor: move;
-  padding: 2px 0px 2px 24px;
- }
+/* Ext Js Overrides - across the board */
+.x-grid3-hd-inner{
+	text-transform:capitalize;
+}
+.x-fieldset{
+	padding:5px 10px 10px 20px;
+	border:none;
+}
+.x-fieldset-bwrap{
+	padding-bottom:5px;
+	border-bottom:1px #d0d0d0 dotted;
+}
+.x-fieldset legend{
+	margin-left:-15px;
+	color:#111;
+	font-size:12px;
+}
+/* Specific Overrides*/
+#external_administration_fieldset{
+	margin-top:10px;
+}
+.administration_network,.left-indent-1{
+	margin-left:17px;
+}
+.left-indent-2{
+	margin-left:34px;
+}
