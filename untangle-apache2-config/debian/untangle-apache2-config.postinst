@@ -10,6 +10,12 @@ ALIAS=$(hostname -f)
 #TODO take out this debugging
 echo ALIAS = $ALIAS
 
+if [ -z "$ALIAS" ] ; then
+    echo ALIAS was null setting to a default value of localhost
+    ALIAS=localhost
+fi
+
+
 sed -e 's/NO_START=1/NO_START=0/' -i /etc/default/apache2
 
 if [ ! -e /etc/apache2/mods-available/jk.conf ]; then
