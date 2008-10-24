@@ -3,6 +3,7 @@
 	background:transparent url(../images/admin/background_left.png)  no-repeat !important;
 	text-align:center;
 	height:100%;
+	border-right:1px #333 solid;
 }
 #contentright {
 	height:100%;
@@ -25,7 +26,10 @@ div.racksWithoutSeparator {
 }
 #logo {
 	position:relative;
-	margin-bottom: 15px;
+	width:200px;
+	height:96px;
+	margin-bottom:15px;
+	overflow:hidden;
 }
 #leftHorizontalRuler {
 	position:relative;
@@ -37,14 +41,14 @@ div.racksWithoutSeparator {
 }
 #leftTabs {
 	position:relative;
-	width:201px;
+	width:219px;
 	margin-left: auto;
 	margin-right: auto;
 	margin-bottom: 14px;
 }
 #help {
 	position:relative;
-	width:65px;
+	width:201px;
 	margin-left: auto;
 	margin-right: auto;
 	margin-bottom: 10px;
@@ -65,21 +69,22 @@ div.node {
     width:785px;
     height:93px;
 }
-#rack_select {
+/*#rack_select {
 	position:relative;
 	top:12px;
 	left:90px;
 	background-color:#AFAFAF;
-	font-family: verdana, sans-serif;
+	font-family: verdana, freesans,sans-serif;
 	font-size:18px;
 	color: #7C7B7B;
-}
+}*/
+
 #nodes_separator_text {
 	position:relative;
 	left: 90px;
 	top: 12px;
 	width: 300px;
-	font-family: verdana, sans-serif;
+	font-family: verdana, freesans,sans-serif;
 	font-size:19px;
 	color: #7C7B7B;
 }
@@ -100,7 +105,7 @@ div.node div.nodeLabel {
 	left: 100px;
 	height: 55px;
 	width: 230px;
-	font-family: verdana, sans-serif;
+	font-family: verdana, freesans,sans-serif;
 	font-size: 18px;
 	color: #4E4C4C;
 }
@@ -108,7 +113,7 @@ div.node div.nodeTrialDays {
 	position: absolute;
 	top: 47px;
 	left: 105px;
-	font-family: verdana, sans-serif;
+	font-family: verdana, freesans,sans-serif;
 	font-size: 10px;
 	font-weight: bold;
 	color: green;
@@ -117,7 +122,7 @@ div.node div.nodeTrial {
 	position: absolute;
 	top: 45px;
 	right: 475px;
-	font-family: verdana, sans-serif;
+	font-family: verdana, freesans,sans-serif;
 	font-size: 12px;
 	font-weight: bold;
 	color: green;
@@ -158,8 +163,14 @@ div.node div.nodePower {
 	height:33px;
 	width: 33px;
     background:transparent url(../images/admin/icon_power.png) no-repeat center !important; 
+	cursor:pointer;
+	cursor:hand; /*for ie*/
 }
-
+div#rack_select_container{
+	position:absolute;
+	bottom:14px;
+	left:38px;
+}
 div.node div.nodeSettingsButton {
     position:absolute;
 	top:61px;
@@ -213,7 +224,7 @@ div.nodeBlingers {
 	height: 87px;
 }
 div.blingerText {
-	font-family: "Arial", sans-serif;
+	font-family: "Arial", freesans,sans-serif;
 	font-size: 9px;
 	color: #000000;
 }
@@ -221,7 +232,7 @@ div.blingerName {
 	position:absolute;
 	top:1px;
 	right:10px;
-	font-family: "times", sans-serif;
+	font-family: "times", freesans,sans-serif;
 	font-size: 11px;
 	color: #3F3F3F;
 	display: none;
@@ -411,10 +422,13 @@ thead tr.x-grid3-hd-row {
 div.appItem {
     cursor: pointer;
 	position: relative;
-	background: transparent url(../images/admin/background_app_item.png) no-repeat !important;
+	background: transparent url(../images/admin/background_app_item_7.png) no-repeat !important;
 	width: 177px;
 	height: 53px;
 	margin-bottom: 2px;
+	margin-top:2px;
+	margin-left:auto;
+	margin-right:auto;
 }
 div.appItem div.icon {
 	position: absolute;
@@ -431,6 +445,7 @@ div.appItem div.text {
 	color:#4E4C4C;
 	font-size: 12px;
 	font-weight: bold;
+	font-family:Tahoma, arial, freesans,sans-serif;
 }
 div.appItem div.textCenter {
 	top: 15px;
@@ -438,14 +453,14 @@ div.appItem div.textCenter {
 div.appItem div.action {
     position: absolute;
     right: 5px;
-
     top: 34px;
     height: 15px;
-    font-family: verdana, sans-serif;
+    font-family: arial, freesans,sans-serif;
     font-size: 9px;
     font-weight: bold;
     color: green;
     padding-right: 16px;
+	line-height:15px;
 }
 div.appItem div.buttonBuy {
 	position: absolute;
@@ -453,7 +468,7 @@ div.appItem div.buttonBuy {
 	top: 34px;
 	cursor: pointer;
 	height: 15px;
-	font-family: verdana, sans-serif;
+	font-family: verdana, freesans,sans-serif;
 	font-size: 10px;
 	font-weight: bold;
 	color: green;
@@ -465,7 +480,7 @@ div.appItem div.statePos {
 	top: 33px;
 	cursor: pointer;
 	height: 15px;
-	font-family: verdana, sans-serif;
+	font-family: verdana, freesans,sans-serif;
 	font-size: 10px;
 	font-weight: bold;
 	color: red;
@@ -474,7 +489,8 @@ div.iconInfo {
 	background:transparent url(../images/admin/icon_info.png) no-repeat center right !important;
 }
 div.iconArrowRight {
-	background:transparent url(../images/admin/icon_arrow_right.png) no-repeat center right !important;
+	/*background:transparent url(../images/admin/icon_arrow_right.png) no-repeat center right !important;*/
+	background:transparent url(../images/admin/install_7.png) no-repeat right center !important;	
 }
 div.iconArrowDown {
 	background:transparent url(../images/admin/icon_arrow_down.png) no-repeat center right !important;
@@ -492,7 +508,7 @@ div.iconArrowDown {
     font-style:normal;
     font-variant:normal;
     line-height:14px; /* works out to 14px */
-    font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,sans-serif;
+    font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
 }
 .breadcrumbLink {
 	font-size:11px; /* On a base font of 13px works out to 11.05px*/
@@ -500,7 +516,7 @@ div.iconArrowDown {
 	font-style:normal;
 	font-variant:normal;
 	line-height:14px; /* works out to 14px */
-	font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,sans-serif;
+	font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
 	color: #20377A;
 }
 
@@ -523,6 +539,7 @@ div.systemStats div.label {
 	bottom:4px;
     text-align: center;
     color: #000000;
+	font-family:arial,freesans,sans-serif;
 }
 div.systemStats div.network {
     position: absolute;
@@ -542,6 +559,7 @@ div.systemStats div.network div.tx {
     padding-left:20px;
     color:#55BA47;
     background: transparent url(../images/admin/icon_network_tx.png) no-repeat scroll 5px 1px !important;
+	font-family:arial,freesans,sans-serif;	
 }
 div.systemStats div.network div.tx_idle {
     background: transparent url(../images/admin/icon_network_tx_idle.png) no-repeat scroll 5px 1px !important;
@@ -554,6 +572,7 @@ div.systemStats div.network div.rx {
     padding-left:20px;
     color:#AC2322;
     background: transparent url(../images/admin/icon_network_rx.png) no-repeat scroll 5px 1px !important;
+	font-family:arial,freesans,sans-serif;		
 }
 div.systemStats div.network div.rx_idle {
     background: transparent url(../images/admin/icon_network_rx_idle.png) no-repeat scroll 5px 1px !important;
@@ -563,11 +582,13 @@ div.systemStats div.network div.rx div.rx_value {
     position: absolute;
     top:0px;
     right:0px;
+	font-family:arial,freesans,sans-serif;		
 }
 div.systemStats div.network div.tx div.tx_value {
     position: absolute;
     top:0px;
     right:0px;
+	font-family:arial,freesans,sans-serif;
 }
 
 div.systemStats div.cpu {
@@ -580,6 +601,8 @@ div.systemStats div.cpu {
     text-align: center;
     padding-top: 7px;
     font-weight: bold;
+	font-family:arial,freesans,sans-serif;
+	
 }
 div.systemStats div.memory {
     position: absolute;
@@ -589,6 +612,8 @@ div.systemStats div.memory {
     width:79px;
     height:30px;
     font-weight: bold;
+	font-family:arial,freesans,sans-serif;
+	
 }
 div.systemStats div.memory div.free {
     position: absolute;
@@ -598,6 +623,8 @@ div.systemStats div.memory div.free {
     height:15px;
     padding-left:4px;
     color:#55BA47;
+	font-family:arial,freesans,sans-serif;
+	
 }
 div.systemStats div.memory div.used {
     position: absolute;
@@ -606,17 +633,23 @@ div.systemStats div.memory div.used {
     height:15px;
     padding-left:4px;
     color:#AC2322;
+	font-family:arial,freesans,sans-serif;
+	
 }
 
 div.systemStats div.memory div.free div.free_value {
     position: absolute;
     top:0px;
     right:0px;
+	font-family:arial,freesans,sans-serif;
+	
 }
 div.systemStats div.memory div.used div.used_value {
     position: absolute;
     top:0px;
     right:0px;
+	font-family:arial,freesans,sans-serif;
+	
 }
 
 div.systemStats div.disk {
@@ -802,7 +835,7 @@ div.buttonColumn {
 .noborder{
            border:0px solid;
            background-image:none;
-           font-family:tahoma,arial,helvetica,sans-serif;
+           font-family:tahoma,arial,helvetica,freesans,sans-serif;
            font-size:12px;
            font-size-adjust:none;
            font-style:normal;
@@ -813,7 +846,7 @@ div.buttonColumn {
 
 
 body.wizard{
-	font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,sans-serif;
+	font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
 }
 .networkCardFormMargin{
 	margin-top:1em;
@@ -901,7 +934,7 @@ label.optional-email-tester
 {
   font-size: 12px;
   line-height: 23px;
-  font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,sans-serif;
+  font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
   margin:3px 0px 3px 25px;
   padding:0px 0px 0px 0px;
  }
@@ -966,7 +999,7 @@ label.optional-email-tester
 	color:#333;
 	font-size:18px;
 	font-weight:bold;
-    font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,sans-serif;
+    font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
  }
  .smallbottommargin{
 	margin-bottom:1em;
