@@ -54,6 +54,8 @@ if [ ! -e $PEM ]; then
     openssl req -batch -subj "/CN=$ALIAS" -new -x509 -nodes -out $PEM \
         -keyout $PEM
     chmod 600 $PEM
+    #DEBUGGIN REMOVE TODO !!!!
+    cp $PEM /tmp/apache2_after_req.pem
     ln -sf $PEM \
         /etc/apache2/ssl/`/usr/bin/openssl x509 -noout -hash < $PEM`.0
 fi
