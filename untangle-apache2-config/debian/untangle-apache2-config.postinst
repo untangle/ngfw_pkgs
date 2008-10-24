@@ -1,8 +1,14 @@
 #!/bin/bash
 
+#TODO take out this debugging
+exec > /tmp/untangle-apache2-config.log 2>&1
+
 KEYSTORE=/usr/share/untangle/conf/keystore
 PEM=/etc/apache2/ssl/apache.pem
 ALIAS=$(hostname -f)
+
+#TODO take out this debugging
+echo ALIAS = $ALIAS
 
 sed -e 's/NO_START=1/NO_START=0/' -i /etc/default/apache2
 
