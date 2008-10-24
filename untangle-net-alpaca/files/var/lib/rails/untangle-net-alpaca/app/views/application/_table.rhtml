@@ -6,7 +6,7 @@ options = { :view => self }
 
 <% if table_model.has_label && !table_only %>
   <div align="right" class="table-label <%= table_model.css_class %>">
-    <div class="table-title"><%= table_model.table_name.t %><!-- : <%= data.rows.length %> total --></div>
+    <div class="table-title"><%= table_model.table_name( data, self ) %><!-- : <%= data.rows.length %> total --></div>
     <% if table_model.has_action %>
       <%= table_model.action( data, self ) %>
     <% else %>

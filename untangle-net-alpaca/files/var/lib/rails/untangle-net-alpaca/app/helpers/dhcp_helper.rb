@@ -114,6 +114,21 @@ EOF
 </div>
 EOF
     end
+
+    def table_name( table_data, view )
+      num_entries = table_data.rows.length
+      "Current DHCP Entries (<span id='dhcp-current-num-entries'>#{num_entries_string( num_entries )}</span>)"
+    end
+
+    def num_entries_string( num_entries )
+      case num_entries
+      when 0 then num_entries = "no leases"
+      when 1 then num_entries = "1 lease"
+      else num_entries = "#{num_entries} leases"
+      end
+      
+      num_entries
+    end
   end
 
   def dynamic_entry_table_model

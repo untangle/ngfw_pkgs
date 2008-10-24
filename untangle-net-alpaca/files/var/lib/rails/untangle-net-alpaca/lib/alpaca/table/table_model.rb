@@ -37,6 +37,9 @@ class Alpaca::Table::TableModel
     true
   end
 
+  def table_name( table_data, view )
+    @table_name
+  end
 
-  attr_reader :table_name, :css_class, :header_css_class, :row_css_class, :columns
+  attr_reader :css_class, :header_css_class, :row_css_class, :columns
 end
