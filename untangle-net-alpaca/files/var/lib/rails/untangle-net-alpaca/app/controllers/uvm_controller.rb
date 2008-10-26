@@ -270,7 +270,7 @@ class UvmController < ApplicationController
     end
   end
     
-  def wizard_internal_interface_nat( ip, netmask )
+  def wizard_internal_interface_nat( ip, netmask, is_dhcp_enabled )
     if netmask.include?( "255." )
       netmask = OSLibrary::NetworkManager::CIDR.index( netmask )
     end
@@ -282,13 +282,14 @@ class UvmController < ApplicationController
       internal_interface.intf_static = static
       internal_interface.config_type = InterfaceHelper::ConfigType::STATIC
 
-      ## Enable DHCP and DNS
+      ## Conditionally Enable DHCP and DNS
       DhcpServerSettings.destroy_all
       dhcp_server_settings = DhcpServerSettings.new
-      wizard_calculate_dhcp_range( ip, netmask, dhcp_server_settings )
+      
+      wizard_calculate_dhcp_range( ip, netmask, dhcp_server_settings, is_dhcp_enabled )
       dhcp_server_settings.save
-
       update_dns_server_settings( :enabled => true )
+
     end    
   end
 
@@ -361,7 +362,7 @@ class UvmController < ApplicationController
     nil
   end
   
-  def wizard_calculate_dhcp_range( ip, netmask, dhcp_server_settings )
+  def wizard_calculate_dhcp_range( ip, netmask, dhcp_server_settings, is_dhcp_enabled )
     ip = IPAddr.parse_ip( ip )
     netmask = IPAddr.parse_netmask( netmask )
 
@@ -386,7 +387,7 @@ class UvmController < ApplicationController
       end
             
       unless ( start_address.nil? || end_address.nil? )
-        dhcp_server_settings.enabled = true
+        dhcp_server_settings.enabled = is_dhcp_enabled
         dhcp_server_settings.start_address = start_address.to_s
         dhcp_server_settings.end_address = end_address.to_s
       end

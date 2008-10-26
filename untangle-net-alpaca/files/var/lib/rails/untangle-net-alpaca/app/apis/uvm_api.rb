@@ -61,7 +61,7 @@ class UvmApi < ActionWebService::API::Base
   ## setup the internal interface for NAT.
   # @param ip
   # @param netmask
-  api_method( :wizard_internal_interface_nat, :expects => [:string, :string],
+  api_method( :wizard_internal_interface_nat, :expects => [:string, :string, :boolean],
               :returns => [] )
 
   ## Remap the interfaces

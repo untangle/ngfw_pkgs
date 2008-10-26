@@ -786,39 +786,55 @@ div.buttonColumn {
 }
 
 /* Wizard */
-.largeOption{
-	font-size:14px;
-	font-weight:bold;
+.largeOption
+{
+  font-size:14px;
+  font-weight:bold;
 }
-.wizardlabelmargin1{
-	margin-left:18px;
-	margin-bottom:10px;
-	width:350px;
+.spacingMargin1
+{
+  margin-top:7px;
 }
-.spacingMargin1{
-	margin-top:7px;
-}
-.wizardlabelmargin2, .wizardlabelmargin3{
-	position:absolute;
-	right:15px;
-	border:1px #ccc solid;
-	padding:5px;
-}
-.wizardlabelmargin2{
-	margin-top:-40px;
-}
-.tallMargin{
-	margin-top:100px;
-}
-.indented-field-1{
-	margin-top:10px;
-}
-.wizardlabelmargin3{
-	margin-top:-40px;
-}
-.wizardlabelmargin4{
-	margin-left:106px;
-}
+
+fieldset.wizard-internal-network
+{ 
+  padding-top : 50px;
+ }
+
+div.wizard-network-image-description
+{ 
+  margin-left : 18px;
+  width : 320px;
+  }
+
+.wizard-network-image img
+{ 
+  border : 1px #ccc solid;
+  padding : 4px;
+  margin-top : -90px;
+  position : absolute;
+  right : 20px;
+  }
+
+.wizard-internal-network-address
+{ 
+  margin-left : 10px;
+ }
+
+.wizardlabelmargin4
+{ 
+  margin-left : 10px;
+  }
+
+.wizardlabelmargin5
+{ 
+  margin-left : 20px;
+  }
+
+.wizardlabelmargin6
+{
+  margin-left: 50px;
+  }
 
 .noborder{
            border:0px solid;
@@ -832,6 +848,24 @@ div.buttonColumn {
            line-height:normal;	
 }
 
+
+table.email-tester
+{ 
+  margin-left: 100px;
+  }
+
+button.email-tester
+{ 
+  background:transparent url(../images/admin/icon_test.png) no-repeat center left !important; 
+  width : 125px;
+  }
+
+label.optional-email-tester
+{ 
+  padding: 10px 230px 0px 0px;
+  float: right;
+  font-style: italic;
+  }
 
 body.wizard{
 	font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
@@ -970,17 +1004,24 @@ body.wizard{
 	font-weight:bold;
     font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
  }
- .smallbottommargin{
-	margin-bottom:1em;
+
+.smallbottommargin
+{
+  margin-bottom:1em;
+  }
+
+.requiredInfo
+{
+  text-align : right;
+  margin-bottom : 1em;
+  display : block;
+  font-style : italic;
  }
- .requiredInfo{
-	text-align:right;
-	margin-bottom:1em;
-	display:block;
- }
- .requiredstar{
-	color:#FF2222;
-	font-weight:bold;
+
+.requiredstar
+{
+  color:#FF2222;
+  font-weight:bold;
  }
 .wizardLabel{
 	color:#333;
@@ -992,6 +1033,22 @@ body.wizard{
 .fixedPos{
     position: fixed;
 }
+
+.draggable-enabled-interface
+{ 
+  background:transparent url(../images/admin/icon_drag_enabled.png) no-repeat center left;
+  width: 100%;
+  cursor: move;
+  padding: 2px 0px 2px 24px;
+  }
+
+.draggable-disabled-interface
+{ 
+  background:transparent url(../images/admin/icon_drag_disabled.png) no-repeat center left;
+  width: 100%;
+  cursor: move;
+  padding: 2px 0px 2px 24px;
+  }
 
 /* Ext Js Overrides - across the board */
 .x-grid3-hd-inner{
