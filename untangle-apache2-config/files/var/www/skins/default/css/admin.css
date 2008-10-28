@@ -405,11 +405,17 @@ div.iconConfigSupport {
 	width:36px;
 	height:36px;
 }
-div.iconConfigUpgrade {
-	background: transparent url(../images/admin/config/icon_config_upgrade.png) no-repeat !important; 
-	width:36px;
-	height:36px;
+div.iconConfigUpgradeAvailable {
+    background: transparent url(../images/admin/config/icon_config_upgrade_available.png) no-repeat !important; 
+    width:36px;
+    height:36px;
 }
+div.iconConfigUpgrade {
+    background: transparent url(../images/admin/config/icon_config_upgrade.png) no-repeat !important; 
+    width:36px;
+    height:36px;
+}
+
 div.iconConfigSetup {
 	background: transparent url(../images/admin/config/icon_config_setup.png) no-repeat !important; 
 	width:36px;
