@@ -867,9 +867,23 @@ label.optional-email-tester
   font-style: italic;
   }
 
-body.wizard{
-	font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
-}
+body.wizard label.info-detail
+{
+  padding-left: 205px;
+  font-size : 80%;
+  font-style: italic;
+  }
+
+body.wizard
+{
+  font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
+  }
+
+body.wizard .ext-el-mask
+{ 
+  background-color: #CCCCCC;
+ }
+
 .networkCardFormMargin{
 	margin-top:1em;
 	padding-top:1em;
@@ -1012,10 +1026,10 @@ body.wizard{
 
 .requiredInfo
 {
-  text-align : right;
-  margin-bottom : 1em;
+  padding-left : 20px;
   display : block;
   font-style : italic;
+  font-size : 80%;
  }
 
 .requiredstar
