@@ -171,17 +171,11 @@ div#rack_select_container{
 	bottom:14px;
 	left:38px;
 }
-div.node div.nodeSettingsButton {
+div.node div.nodeButtons {
     position:absolute;
-	top:61px;
-	left:50px;
-	width: 1px;
-}
-div.node div.nodeHelpButton {
-    position:absolute;
-	top:61px;
-	left:220px;
-	width:1px;
+    top:55px;
+    left:40px;
+    width: 1px;
 }
 button.nodeSettingsIcon {
 	background:transparent url(../images/admin/icon_settings.png) no-repeat center left !important;  
