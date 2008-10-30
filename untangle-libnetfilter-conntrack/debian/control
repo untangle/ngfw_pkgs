@@ -3,12 +3,12 @@ Section: libs
 Priority: optional
 Maintainer: Robert Scott <rbscott@untangle.com>
 Uploaders: Untangle Buildbot <buildbot@untangle.com>
-Build-Depends: debhelper (>= 4.2), untangle-libnfnetlink-dev (>= 0.0.30), gcc (>= 3.4), automake1.7, linux-libc-dev (>= 2.6.22), pkg-config, libtool
+Build-Depends: debhelper (>= 4.2), libnfnetlink-dev (>= 0.0.30) | untangle-libnfnetlink-dev (>= 0.0.30), gcc (>= 3.4), automake1.7, linux-libc-dev (>= 2.6.22), pkg-config, libtool
 Standards-Version: 3.8.0
 
 Package: untangle-libnetfilter-conntrack1
 Architecture: i386 amd64
-Depends: libc6 (>= 2.3.2.ds1-21), untangle-libnfnetlink0 (>= 0.0.30)
+Depends: libc6 (>= 2.3.2.ds1-21), libnfnetlink0 (>= 0.0.30) | untangle-libnfnetlink0 (>= 0.0.30)
 Conflicts: libnetfilter-conntrack1
 Provides: libnetfilter-conntrack1
 Replaces: libnetfilter-conntrack1
@@ -19,7 +19,7 @@ Description: Netfilter netlink-conntrack library
 Package: untangle-libnetfilter-conntrack-dev
 Section: libdevel
 Architecture: i386 amd64
-Depends: libc6 (>= 2.3.2.ds1-21), untangle-libnfnetlink0 (>= 0.0.30), pkg-config, untangle-libnetfilter-conntrack1 (>= 0.0.81), untangle-libnfnetlink-dev (>= 0.0.30)
+Depends: libc6 (>= 2.3.2.ds1-21), libnfnetlink0 (>= 0.0.30) | untangle-libnfnetlink0 (>= 0.0.30), pkg-config, untangle-libnetfilter-conntrack1 (>= 0.0.81), libnfnetlink-dev (>= 0.0.30) | untangle-libnfnetlink-dev (>= 0.0.30)
 Description: Development files for untangle-libnetfilter-conntrack1
  libnetfilter_conntrack is a userspace library providing a programming
  interface (API) to the in-kernel connection tracking state table.
