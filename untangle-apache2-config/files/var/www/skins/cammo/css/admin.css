@@ -992,7 +992,19 @@ body.wizard{
 .fixedPos{
     position: fixed;
 }
-
+.description {
+    font-family:tahoma,arial,helvetica,sans-serif;
+    font-size:12px;
+    font-size-adjust:none;
+    font-style:normal;
+    font-variant:normal;
+    font-weight:normal;
+    line-height:normal;
+    padding: 0px 0px 5px 0px;
+}
+.ungPanel {
+    padding:5px 5px 0px 5px;
+}
 /* Ext Js Overrides - across the board */
 .x-grid3-hd-inner{
 	text-transform:capitalize;
