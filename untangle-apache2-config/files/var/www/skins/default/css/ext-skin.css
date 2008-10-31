@@ -416,3 +416,7 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
     border-width:0;
     border-bottom:1px solid #d0d0d0;
 }
+.x-grid3-row td, .x-grid3-summary-row td, .x-grid3-cell-text, .x-grid3-hd-text, .x-grid3-hd, .x-grid3-row {
+    -moz-user-select:inherit;
+    -khtml-user-select:text;
+}
