@@ -7,7 +7,7 @@ KEYSTORE=/usr/share/untangle/conf/keystore
 PEM=/etc/apache2/ssl/apache.pem
 ALIAS=$(hostname -f)
 
-if [ -z "$ALIAS" || "$ALIAS" -eq "Knoppix.metaloft.com" ] ; then
+if [ -z "$ALIAS" ] || [ "$ALIAS" -eq "Knoppix.metaloft.com" ] ; then
     echo setting ALIAS to default value
     ALIAS=ung.example.com
 fi
