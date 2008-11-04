@@ -101,33 +101,47 @@ div.node {
 }
 div.node div.nodeLabel {
 	position: absolute;
-	top: 17px;
+	top: 8px;
 	left: 100px;
 	height: 55px;
 	width: 230px;
-	font-family: verdana, freesans,sans-serif;
+	font-family: tahoma,arial, freesans,sans-serif;
 	font-size: 18px;
 	color: #4E4C4C;
 }
 div.node div.nodeTrialDays {
 	position: absolute;
-	top: 47px;
-	left: 105px;
-	font-family: verdana, freesans,sans-serif;
-	font-size: 10px;
+	top: 35px;
+	left: 100px;
+	font-family: arial, freesans,sans-serif;
+	font-size: 16px;
 	font-weight: bold;
-	color: green;
+	color: #F58220;
 }
 div.node div.nodeTrial {
 	position: absolute;
 	top: 45px;
 	right: 475px;
-	font-family: verdana, freesans,sans-serif;
+	font-family: tahoma,arial, freesans,sans-serif;
 	font-size: 12px;
 	font-weight: bold;
 	color: green;
 }
-
+.buy-button-text .x-btn-text-icon{
+    margin-left:20px;
+}
+.buy-button-text .x-btn-text-icon .x-btn-center .x-btn-text {
+    color:green;
+    font-weight:bold;
+}
+button.iconBuy {
+	background:transparent url(../images/admin/icon_buy.png) no-repeat center left !important; 
+}
+div.iconBuy {
+	background:transparent url(../images/admin/icon_buy.png) no-repeat !important;
+	height:15px;
+	width:15px;
+}
 button.iconHelp {
 	background:transparent url(../images/admin/icon_help.png) no-repeat center left !important; 
 }
