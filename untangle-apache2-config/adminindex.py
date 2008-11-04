@@ -72,6 +72,10 @@ def _admin_valid_login(req, username, password):
         salt = pw_hash[len(pw_hash) - 8:]
         return raw_pw == md5.new(password + salt).digest()
 
+def log_login():
+    'INSERT INTO events.u_login_evt (event_id, client_addr, login, local, succeeded, reason, time_stamp)'
+
+
 def _write_login_form(req, title, host, is_error):
     login_url = cgi.escape(req.unparsed_uri)
     req.content_type = "text/html; charset=utf-8"
