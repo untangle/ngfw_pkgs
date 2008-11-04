@@ -1,6 +1,6 @@
-#contentleft {
-	padding-top:25px;
-	background:transparent url(../images/admin/background_left.png)  no-repeat !important;
+.contentleft {
+	width: 250px;
+	background:#F9F9FA url(../images/admin/background_left.png)  repeat-x !important;
 	text-align:center;
 	height:100%;
 	border-right:1px #333 solid;
@@ -24,34 +24,18 @@ div.racksWithSeparator {
 div.racksWithoutSeparator {
 	background:scroll 0px 50px;
 }
-#logo {
+div.logo {
 	position:relative;
-	width:220px;
 	height:100px;
+	margin-top:20px;
+    margin-left: auto;
+    margin-right: auto;
 	margin-bottom:15px;
 	overflow:hidden;
 }
-#leftHorizontalRuler {
-	position:relative;
-	background: transparent url(../images/admin/background_left_hruler.png) no-repeat center center;
-	width: 200px;
-	height: 1px;
-	left: 10px;
-	margin-bottom: 15px;
-}
-#leftTabs {
-	position:relative;
-	width:219px;
-	margin-left: auto;
-	margin-right: auto;
-	margin-bottom: 14px;
-}
-#help {
-	position:relative;
-	width:201px;
-	margin-left: auto;
-	margin-right: auto;
-	margin-bottom: 10px;
+.leftTabs {
+    background-color: transparent;
+    padding:0px 3px 0px 3px;
 }
 #rack_list {
 	position:relative;
@@ -109,7 +93,7 @@ div.node div.nodeLabel {
 	font-size: 18px;
 	color: #4E4C4C;
 }
-div.node div.nodeTrialDays {
+div.node div.nodeTrialInfo {
 	position: absolute;
 	top: 35px;
 	left: 100px;
@@ -117,15 +101,6 @@ div.node div.nodeTrialDays {
 	font-size: 16px;
 	font-weight: bold;
 	color: #F58220;
-}
-div.node div.nodeTrial {
-	position: absolute;
-	top: 45px;
-	right: 475px;
-	font-family: tahoma,arial, freesans,sans-serif;
-	font-size: 12px;
-	font-weight: bold;
-	color: green;
 }
 .buy-button-text .x-btn-text-icon{
     margin-left:20px;
