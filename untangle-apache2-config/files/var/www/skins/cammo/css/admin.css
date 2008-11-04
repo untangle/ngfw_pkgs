@@ -420,20 +420,31 @@ thead tr.x-grid3-hd-row {
 div.appItem {
     cursor: pointer;
 	position: relative;
-	background: transparent url(../images/admin/background_app_item_7.png) no-repeat !important;
-	width: 177px;
 	height: 53px;
 	margin-bottom: 2px;
 	margin-top:2px;
 	margin-left:auto;
 	margin-right:auto;
 }
-div.appItem div.icon {
+td.appItemLeft {
+    background: transparent url(../images/admin/background_app_item_left.png) no-repeat !important;
+    width: 2px;
+}
+td.appItemCenter {
+    background: transparent url(../images/admin/background_app_item_center.png) repeat-x !important;
+    width: 100%;
+}
+td.appItemRight {
+    background: transparent url(../images/admin/background_app_item_right.png) no-repeat !important;
+    width: 2px;
+}
+
+td.appItemCenter div.icon {
 	position: absolute;
 	top: 5px;
 	left: 5px;
 }
-div.appItem div.text {
+td.appItemCenter div.text {
 	position: absolute;
 	top: 5px;
 	left: 53px;
@@ -445,10 +456,10 @@ div.appItem div.text {
 	font-weight: bold;
 	font-family:Tahoma, arial, freesans,sans-serif;
 }
-div.appItem div.textCenter {
+td.appItemCenter div.textCenter {
 	top: 15px;
 }
-div.appItem div.action {
+td.appItemCenter div.action {
     position: absolute;
     right: 5px;
     top: 34px;
@@ -460,7 +471,7 @@ div.appItem div.action {
     padding-right: 16px;
 	line-height:15px;
 }
-div.appItem div.buttonBuy {
+td.appItemCenter div.buttonBuy {
 	position: absolute;
 	left: 53px;
 	top: 34px;
@@ -472,7 +483,7 @@ div.appItem div.buttonBuy {
 	color: green;
 	padding-right: 16px;
 }
-div.appItem div.statePos {
+td.appItemCenter div.statePos {
 	position: absolute;
 	left: 52px;
 	top: 33px;
