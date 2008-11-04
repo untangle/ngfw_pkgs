@@ -127,7 +127,21 @@ div.node div.nodeTrial {
 	font-weight: bold;
 	color: green;
 }
-
+.buy-button-text .x-btn-text-icon{
+    margin-left:20px;
+}
+.buy-button-text .x-btn-text-icon .x-btn-center .x-btn-text {
+    color:green;
+    font-weight:bold;
+}
+button.iconBuy {
+	background:transparent url(../images/admin/icon_buy.png) no-repeat center left !important; 
+}
+div.iconBuy {
+	background:transparent url(../images/admin/icon_buy.png) no-repeat !important;
+	height:15px;
+	width:15px;
+}
 button.iconHelp {
 	background:transparent url(../images/admin/icon_help.png) no-repeat center left !important; 
 }
