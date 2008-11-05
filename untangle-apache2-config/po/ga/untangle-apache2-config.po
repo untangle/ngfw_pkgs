@@ -1,0 +1,144 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-04 11:30-0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=0; null;\n"
+
+#: ../adminindex.py:37
+#, python-format
+msgid "%s Login"
+msgstr "%s nigoL"
+
+#: ../adminindex.py:85
+msgid "Error: Username and Password do not match"
+msgstr ":rorrE emanresU dna drowssaP od ton hctam"
+
+#: ../adminindex.py:139
+msgid "Server:"
+msgstr ":revreS"
+
+#: ../adminindex.py:139
+msgid "Username:"
+msgstr ":emanresU"
+
+#: ../adminindex.py:139
+msgid "Password:"
+msgstr ":drowssaP"
+
+#: ../adminindex.py:139
+msgid "Login"
+msgstr "nigoL"
+
+#: ../errorindex.py:15
+msgid "Bad Request"
+msgstr "daB tseuqeR"
+
+#: ../errorindex.py:19
+msgid "Unauthorized"
+msgstr "dezirohtuanU"
+
+#: ../errorindex.py:23
+msgid "Payment Required"
+msgstr "tnemyaP deriuqeR"
+
+#: ../errorindex.py:27
+msgid "Forbidden"
+msgstr "neddibroF"
+
+#: ../errorindex.py:31
+msgid "Not Found"
+msgstr "toN dnuoF"
+
+#: ../errorindex.py:35
+msgid "Method Not Allowed"
+msgstr "dohteM toN dewollA"
+
+#: ../errorindex.py:39
+msgid "Not Acceptable"
+msgstr "toN elbatpeccA"
+
+#: ../errorindex.py:43
+msgid "Proxy Authentication Required"
+msgstr "yxorP noitacitnehtuA deriuqeR"
+
+#: ../errorindex.py:47
+msgid "Request Timeout"
+msgstr "tseuqeR tuoemiT"
+
+#: ../errorindex.py:51
+msgid "Conflict"
+msgstr "tcilfnoC"
+
+#: ../errorindex.py:55
+msgid "Gone"
+msgstr "enoG"
+
+#: ../errorindex.py:59
+msgid "Length Required"
+msgstr "htgneL deriuqeR"
+
+#: ../errorindex.py:63
+msgid "Precondition Failed"
+msgstr "noitidnocerP deliaF"
+
+#: ../errorindex.py:67
+msgid "Request Entity Too Large"
+msgstr "tseuqeR ytitnE ooT egraL"
+
+#: ../errorindex.py:71
+msgid "Request-URI Too Long"
+msgstr "IRU-tseuqeR ooT gnoL"
+
+#: ../errorindex.py:75
+msgid "Unsupported Media Type"
+msgstr "detroppusnU aideM epyT"
+
+#: ../errorindex.py:79
+msgid "Requested Range Not Satisfiable"
+msgstr "detseuqeR egnaR toN elbaifsitaS"
+
+#: ../errorindex.py:83
+msgid "Expectation Failed"
+msgstr "noitatcepxE deliaF"
+
+#: ../errorindex.py:87
+msgid "Internal Server Error"
+msgstr "lanretnI revreS rorrE"
+
+#: ../errorindex.py:91
+msgid "Not Implemented"
+msgstr "toN detnemelpmI"
+
+#: ../errorindex.py:95
+msgid "Bad Gateway"
+msgstr "daB yawetaG"
+
+#: ../errorindex.py:99
+msgid "Service Unavailable"
+msgstr "ecivreS elbaliavanU"
+
+#: ../errorindex.py:103
+msgid "Gateway Timeout"
+msgstr "yawetaG tuoemiT"
+
+#: ../errorindex.py:107
+msgid "HTTP Version Not Supported"
+msgstr "PTTH noisreV toN detroppuS"
+
+#: ../errorindex.py:115 ../uvmlogin.py:193
+#, python-format
+msgid "%s Server"
+msgstr "%s revreS"
