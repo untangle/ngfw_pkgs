@@ -155,6 +155,16 @@ div.node div.nodePower {
 	cursor:pointer;
 	cursor:hand; /*for ie*/
 }
+div.node div.nodePowerExpired {
+    position:absolute;
+    top:15px;
+    right:54px;
+    height:33px;
+    width: 33px;
+    background:transparent url(../images/admin/icon_power_expired.png) no-repeat center !important; 
+    cursor:pointer;
+    cursor:hand; /*for ie*/
+}
 div#rack_select_container{
 	position:absolute;
 	bottom:14px;
