@@ -805,7 +805,10 @@ div.buttonColumn {
 {
   margin-top:7px;
 }
-
+.spacingMargin1
+{
+  margin-top:11px;
+}
 fieldset.wizard-internal-network
 { 
   padding-top : 50px;
@@ -845,7 +848,18 @@ div.wizard-network-image-description
 {
   margin-left: 50px;
   }
-
+.wizardlabelmargin7
+{
+  margin-left: 17em;
+  }
+  .wizardlabelmargin8
+{
+  margin-left: 6.7em;
+  }
+ .wizardlabelmargin9
+{
+  margin-left: 11.3em;
+  } 
 .noborder{
            border:0px solid;
            background-image:none;
@@ -861,7 +875,7 @@ div.wizard-network-image-description
 
 table.email-tester
 { 
-  margin-left: 100px;
+  /*margin-left: 100px;*/
   }
 
 button.email-tester
@@ -872,16 +886,19 @@ button.email-tester
 
 label.optional-email-tester
 { 
-  padding: 10px 230px 0px 0px;
+  padding: 10px 0px 0px 0px;
   float: right;
+  margin-right:28em;
   font-style: italic;
   }
 
 body.wizard label.info-detail
 {
-  padding-left: 205px;
-  font-size : 80%;
-  font-style: italic;
+	float:left;
+	font-size:80%;
+	font-style:italic;
+	margin-top:-20px;
+	padding-left:270px;
   }
 
 body.wizard
