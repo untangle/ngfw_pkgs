@@ -1,11 +1,10 @@
-﻿html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0;}img,body,html{border:0;}
+html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0;}img,body,html{border:0;}
 body{
 	font-family:Tahoma, Arial, Helvetica, sans-serif;
 }  
 
 body.quarantine {
-    background: transparent url(../images/user/background_content.png) repeat-x !important;
-    margin:0 auto;
+    /*background: transparent url(../images/user/background_content.png) repeat-x !important;*/
 }
 
 #content
@@ -18,7 +17,17 @@ body.blockpage
   text-align: center;
   background-color: #808080;
  }
-
+body.quarantine #content {
+	width:75%;
+    background: transparent url(../images/user/background_content.png) repeat-x !important;
+	border:1px solid #CCC;
+    margin:0 auto;
+	margin-top:50px;
+	
+}
+.service-error-height{
+	height:400px;
+}
 body.blockpage #content
 {
   width : 627px;
@@ -67,12 +76,12 @@ body.quarantine #header
 body.quarantine #header .title
 {
   position: absolute;
-  top: 10px;
+  top: 30px;
   font-weight:bold;
   right: 1px;
   text-align: right;
   color:#333;
-  font-size:10pt;
+  font-size:14pt;
 }
 
 .title-block-page {
@@ -86,12 +95,16 @@ body.quarantine #header .title
     background:transparent url(../images/user/icon_block.png) no-repeat center center;
     height: 130px;
 }
-.message {
+.message,.message-2 {
     padding: 5px 5px 5px 28px;
     border: 1px solid #60BB3F;
     font-size: 8pt;
     background: #FEFEDD url(../images/user/icon_message.png) no-repeat scroll 7px center !important;
     color:#333;
+}
+.message-2{
+	display:block;
+	margin-bottom:10px;
 }
 .message-container{
 	 padding:2px;
@@ -99,6 +112,9 @@ body.quarantine #header .title
 .white-background{
 	background-color:#FFF;
 	background-image:none;
+}
+.quarantine-left-indented-2{
+	margin-left:8.8em;
 }
 .quarantine-left-indented{
 	margin-left:20px;
@@ -218,3 +234,33 @@ body.blockpage #footer
   text-align:center;
   font-weight:bold;
  }
+ /* Button icons*/
+ button.iconMoveMails {
+    background: transparent url(../images/user/icon_email_move.png) no-repeat center left !important;
+}
+button.iconAddRow {
+    background: transparent url(../images/admin/icon_add_row.gif) no-repeat center left !important;
+}
+ button.iconSafeList{
+    background: transparent url(../images/user/icon_safelist.png) no-repeat center left !important;
+}
+button.iconDeleteRow{
+	background:transparent url(../images/user/icon_remove.png) no-repeat center left !important;
+}
+ /* Ext Js Overrides - across the board */
+.x-grid3-hd-inner{
+	text-transform:capitalize;
+}
+.x-fieldset{
+	padding:5px 10px 10px 20px;
+	border:none;
+}
+.x-fieldset-bwrap{
+	padding-bottom:5px;
+	border-bottom:1px #d0d0d0 dotted;
+}
+.x-fieldset legend{
+	margin-left:-15px;
+	color:#111;
+	font-size:12px;
+}
