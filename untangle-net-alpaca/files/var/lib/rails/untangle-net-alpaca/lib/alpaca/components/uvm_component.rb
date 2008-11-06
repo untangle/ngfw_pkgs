@@ -33,6 +33,8 @@ class Alpaca::Components::UvmComponent < Alpaca::Component
     ## Update the settings
     intf_order = uvm_settings.interface_order
 
+    intf_order = UvmHelper::DefaultOrder if intf_order.nil?
+
     puts "Interface order: #{intf_order}"
     puts "Interface list: #{interface_list.map{ |i| i.index }.join( ",")}"
 
