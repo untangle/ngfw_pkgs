@@ -179,17 +179,19 @@ body.blockpage #header .title
   color: #67686B;
  }
 
-.info-list {
-	margin-top: 10px;
-	margin-bottom: 20px;
-    width:340px;
-    margin-left:auto;
-    margin-right:auto;
-    text-align: left;
-    background-color: #FFFFFF;
+.info-list 
+{
+  margin-top: 10px;
+  margin-bottom: 20px;
+  width:340px;
+  margin-left:auto;
+  margin-right:auto;
+  text-align: left;
+  background-color: #FFFFFF;
 }
-.info-list div{
-    padding:5px 5px 5px 5px;
+.info-list div
+{
+  padding:5px 5px 5px 5px;
 }
 
 body.blockpage #footer
