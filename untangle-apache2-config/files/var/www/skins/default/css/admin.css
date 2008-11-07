@@ -1,5 +1,5 @@
 .contentleft {
-	width: 250px;
+	width: 214px;
 	background:#F9F9FA url(../images/admin/background_left.png)  repeat-x !important;
 	text-align:center;
 	height:100%;
@@ -124,6 +124,9 @@ div.iconHelp {
 	background:transparent url(../images/admin/icon_help.png) no-repeat !important;
 	height:15px;
 	width:15px;
+}
+button.iconLogout {
+    background:transparent url(../images/admin/icon_logout_row.gif) no-repeat center left !important; 
 }
 div.node div.nodeState {
 	z-index: 200;
