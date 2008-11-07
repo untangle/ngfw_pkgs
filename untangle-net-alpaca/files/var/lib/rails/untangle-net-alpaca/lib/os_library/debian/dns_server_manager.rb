@@ -209,10 +209,12 @@ EOF
     dm_file << dhcp_config( dhcp_server_settings, dns_server_settings )
     dm_file << dns_config( dhcp_server_settings, dns_server_settings )
 
-    custom_field = dhcp_server_settings.custom_field
-    
-    if ( dhcp_server_settings.is_custom_field_enabled && !ApplicationHelper.null?( custom_field ))
-      dm_file << custom_field
+    unless dhcp_server_settings.nil?
+      custom_field = dhcp_server_settings.custom_field
+      
+      if ( dhcp_server_settings.is_custom_field_enabled && !ApplicationHelper.null?( custom_field ))
+        dm_file << custom_field
+      end
     end
 
     os["override_manager"].write_file( DnsMasqConfFile, dm_file.join( "\n" ), "\n" )
