@@ -471,11 +471,11 @@ td.appItemCenter div.action {
     right: 5px;
     top: 34px;
     height: 15px;
-    font-family: arial, freesans,sans-serif;
+    font-family: tahoma,arial, freesans,sans-serif;
     font-size: 9px;
     font-weight: bold;
     color: green;
-    padding-right: 16px;
+    padding-right: 19px;
 	line-height:15px;
 }
 td.appItemCenter div.buttonBuy {
@@ -484,11 +484,11 @@ td.appItemCenter div.buttonBuy {
 	top: 34px;
 	cursor: pointer;
 	height: 15px;
-	font-family: verdana, freesans,sans-serif;
+    font-family: tahoma,arial, freesans,sans-serif;
 	font-size: 10px;
 	font-weight: bold;
 	color: green;
-	padding-right: 16px;
+	padding-right: 19px;
 }
 td.appItemCenter div.statePos {
 	position: absolute;
@@ -506,7 +506,7 @@ div.iconInfo {
 }
 div.iconArrowRight {
 	/*background:transparent url(../images/admin/icon_arrow_right.png) no-repeat center right !important;*/
-	background:transparent url(../images/admin/install_7.png) no-repeat right center !important;	
+	background:transparent url(../images/admin/icon_buy.png) no-repeat right center !important;	
 }
 div.iconArrowDown {
 	background:transparent url(../images/admin/icon_arrow_down.png) no-repeat center right !important;
