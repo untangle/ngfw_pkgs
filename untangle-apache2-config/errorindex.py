@@ -8,7 +8,7 @@ gettext.bindtextdomain('untangle-apache2-config')
 gettext.textdomain('untangle-apache2-config')
 _ = gettext.gettext
 
-# pages --------------------------------------------------------------------------
+# pages -----------------------------------------------------------------------
 
 def status400(req):
     uvmlogin.setup_gettext()
@@ -112,7 +112,7 @@ def _write_error_page(req, msg):
     req.content_type = "text/html; charset=utf-8"
     req.send_http_header()
 
-    us = _("%s Server") % get_company_name()
+    us = _("%s Server") % uvmlogin.get_company_name()
 
     req.write("""\
 <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">

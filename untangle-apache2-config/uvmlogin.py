@@ -46,6 +46,7 @@ def headerparserhandler(req):
 
     if None == username and is_root(req):
         username = 'localadmin'
+        log_login(req, username, True, True, None)
         save_session_user(sess, realm, username)
 
     if None != username:
@@ -185,6 +186,15 @@ def get_access_settings():
             return (False, False)
         else:
             return r
+
+def log_login(req, login, local, succeeded, reason):
+    (client_addr, client_port) = req.connection.remote_addr
+
+    conn = connect("dbname=uvm user=postgres")
+    curs = conn.cursor()
+    curs.execute("INSERT INTO events.u_login_evt (event_id, client_addr, login, local, succeeded, reason, time_stamp) VALUES (nextval('hibernate_sequence'), %s, %s, %s, %s, %s, now())",
+                 (client_addr, login, local, succeeded, reason));
+    conn.commit()
 
 def write_error_page(req, msg):
     req.content_type = "text/html; charset=utf-8"
