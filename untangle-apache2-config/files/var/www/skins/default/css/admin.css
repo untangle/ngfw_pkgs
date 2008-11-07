@@ -100,7 +100,7 @@ div.node div.nodeTrialInfo {
 	font-family: arial, freesans,sans-serif;
 	font-size: 16px;
 	font-weight: bold;
-	color: #F58220;
+	color: #DE2020;
 }
 .buy-button-text .x-btn-text-icon{
     margin-left:20px;
@@ -119,6 +119,9 @@ div.iconBuy {
 }
 button.iconHelp {
 	background:transparent url(../images/admin/icon_help.png) no-repeat center left !important; 
+}
+button.iconLogout {
+	background:transparent url(../images/admin/icon_logout_row.gif) no-repeat center left !important; 
 }
 div.iconHelp {
 	background:transparent url(../images/admin/icon_help.png) no-repeat !important;
@@ -1138,4 +1141,8 @@ body.wizard .ext-el-mask
 }
 .left-indent-2{
 	margin-left:34px;
+}
+/* firewall stuff */
+.firewall-top-margin-1{
+    margin-top:10px;
 }

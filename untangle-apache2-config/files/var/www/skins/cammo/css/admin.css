@@ -85,22 +85,24 @@ div.node {
 }
 div.node div.nodeLabel {
 	position: absolute;
-	top: 17px;
+	top: 8px;
 	left: 100px;
 	height: 55px;
 	width: 230px;
 	font-family: verdana, freesans,sans-serif;
 	font-size: 18px;
-	color: #EEE;
+	color: #FFF;
 }
 div.node div.nodeTrialInfo {
-	position: absolute;
-	top: 47px;
-	left: 105px;
-	font-family: verdana, freesans,sans-serif;
-	font-size: 10px;
-	font-weight: bold;
-	color: green;
+    color:#DE2020;
+    background-color:#C0C0C0;
+    font-family:arial,freesans,sans-serif;
+    font-size:16px;
+    font-weight:bold;
+    left:100px;
+    padding:0px 2px;
+    position:absolute;
+    top:35px;
 }
 div.node div.nodeTrial {
 	position: absolute;
@@ -115,7 +117,7 @@ div.node div.nodeTrial {
     margin-left:20px;
 }
 .buy-button-text .x-btn-text-icon .x-btn-center .x-btn-text {
-    color:green;
+    color:#20FF20;
     font-weight:bold;
 }
 button.iconBuy {
@@ -1053,4 +1055,8 @@ body.wizard{
 }
 .left-indent-2{
 	margin-left:34px;
+}
+/* firewall stuff */
+.firewall-top-margin-1{
+    margin-top:10px;
 }
