@@ -770,7 +770,7 @@ Package: untangle-libitem-reporting
 Architecture: all
 Depends: untangle-node-reporting
 XB-View-Position: 1022
-XB-Display-Name: Untangle Reports
+XB-Display-Name: Reports
 XB-Untangle-Type: lib_item
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAgkSURBVHjazFlJb5vHGX5mvo2k
@@ -813,5 +813,5 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  WwQ0GApTDRXBYDC023HOZtKqibu2sozMdlB1LaRE+9F05hSRpEQlyMjQIQzRdKfG6kArlTJF
  Gwe/++1vGj/fcKBvrfF6FVHvq8rfvQzlN83+/j9Ov3D2DdYAKX9oYI1fKPoxJMDBwSCGhg9j
  9KkxvPWjn6ofxP4nwAB2T5Rklk6b3gAAAABJRU5ErkJggg==
-Description: Untangle Reports
- Untangle Reports Library Item.
+Description: Reports
+ Reports Library Item.
