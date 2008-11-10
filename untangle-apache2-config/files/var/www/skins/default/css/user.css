@@ -167,7 +167,7 @@ body.blockpage #main
   z-index: 100;
 }
 
-body.blockpage #extraDiv1
+body.blockpage #extra-div-1
 { 
   position : absolute;
   left: 15px;
@@ -177,7 +177,7 @@ body.blockpage #extraDiv1
   background: transparent url(../images/user/blockpage_border.gif) no-repeat;
  }
 
-body.blockpage #extraDiv2
+body.blockpage #extra-div-2
 { 
   position : absolute;
   left: 15px;
@@ -235,16 +235,16 @@ body.blockpage #footer
   font-weight:bold;
  }
  /* Button icons*/
- button.iconMoveMails {
+ button.icon-move-mails {
     background: transparent url(../images/user/icon_email_move.png) no-repeat center left !important;
 }
-button.iconAddRow {
+button.icon-add-row {
     background: transparent url(../images/admin/icon_add_row.gif) no-repeat center left !important;
 }
- button.iconSafeList{
+ button.icon-safe-list{
     background: transparent url(../images/user/icon_safelist.png) no-repeat center left !important;
 }
-button.iconDeleteRow{
+button.icon-delete-row{
 	background:transparent url(../images/user/icon_remove.png) no-repeat center left !important;
 }
  /* Ext Js Overrides - across the board */

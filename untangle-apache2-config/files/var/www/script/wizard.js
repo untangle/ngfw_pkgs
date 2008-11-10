@@ -8,7 +8,7 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
     finished: false,
     initComponent : function()
     {
-		var logo_container = Ext.get('extraDiv1');
+		var logo_container = Ext.get('extra-div-1');
 		logo_container.addClass( 'logo-container');
         var logo = document.createElement('img');
 		logo.src= '../images/BrandingLogo.gif';		

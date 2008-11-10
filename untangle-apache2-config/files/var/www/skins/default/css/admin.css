@@ -1,14 +1,14 @@
-.contentleft {
+.content-left {
 	width: 214px;
 	background:#F9F9FA url(../images/admin/background_left.png)  repeat-x !important;
 	text-align:center;
 	height:100%;
 	border-right:1px #333 solid;
 }
-#contentright {
+#content-right {
 	height:100%;
 }
-div.centerRegion {
+div.center-region {
 	background: transparent url(../images/admin/background_right.png) repeat !important;
 }
 #racks {
@@ -18,10 +18,10 @@ div.centerRegion {
 	width:785px;
 	height:100%;
 }
-div.racksWithSeparator {
+div.racks-with-separator {
 	background:scroll 0px 100px;
 }
-div.racksWithoutSeparator {
+div.racks-without-separator {
 	background:scroll 0px 50px;
 }
 div.logo {
@@ -33,17 +33,17 @@ div.logo {
 	margin-bottom:15px;
 	overflow:hidden;
 }
-.leftTabs {
+.left-tabs {
     background-color: transparent;
     padding:0px 3px 0px 3px;
 }
-#rack_list {
+#rack-list {
 	position:relative;
-	background:transparent url(../images/admin/background_rack_list.png) no-repeat;
+	background:transparent url(../images/admin/background_rack-list.png) no-repeat;
 	width:785px;
 	height:50px;
 }
-#rack_nodes {
+#rack-nodes {
 	position:relative;
 	width:785px;
 }
@@ -53,7 +53,7 @@ div.node {
     width:785px;
     height:93px;
 }
-/*#rack_select {
+/*#rack-select {
 	position:relative;
 	top:12px;
 	left:90px;
@@ -63,7 +63,7 @@ div.node {
 	color: #7C7B7B;
 }*/
 
-#nodes_separator_text {
+#nodes-separator-text {
 	position:relative;
 	left: 90px;
 	top: 12px;
@@ -72,18 +72,18 @@ div.node {
 	font-size:19px;
 	color: #7C7B7B;
 }
-#nodes_separator {
+#nodes-separator {
 	position:relative;
 	background: transparent url(../images/admin/background_separator.png) no-repeat;
 	width:785px;
 	height:50px;
 }
-.nodeImage {
+.node-image {
 	position:absolute;
 	top:12px;
 	left:50px;
 }
-div.node div.nodeLabel {
+div.node div.node-label {
 	position: absolute;
 	top: 8px;
 	left: 100px;
@@ -93,7 +93,7 @@ div.node div.nodeLabel {
 	font-size: 18px;
 	color: #4E4C4C;
 }
-div.node div.nodeTrialInfo {
+div.node div.node-trial-info {
 	position: absolute;
 	top: 35px;
 	left: 100px;
@@ -109,29 +109,29 @@ div.node div.nodeTrialInfo {
     color:green;
     font-weight:bold;
 }
-button.iconBuy {
+button.icon-buy {
 	background:transparent url(../images/admin/icon_buy.png) no-repeat center left !important; 
 }
-div.iconBuy {
+div.icon-buy {
 	background:transparent url(../images/admin/icon_buy.png) no-repeat !important;
 	height:15px;
 	width:15px;
 }
-button.iconHelp {
+button.icon-help {
 	background:transparent url(../images/admin/icon_help.png) no-repeat center left !important; 
 }
-button.iconLogout {
+button.icon-logout {
 	background:transparent url(../images/admin/icon_logout_row.gif) no-repeat center left !important; 
 }
-div.iconHelp {
+div.icon-help {
 	background:transparent url(../images/admin/icon_help.png) no-repeat !important;
 	height:15px;
 	width:15px;
 }
-button.iconLogout {
+button.icon-logout {
     background:transparent url(../images/admin/icon_logout_row.gif) no-repeat center left !important; 
 }
-div.node div.nodeState {
+div.node div.node-state {
 	z-index: 200;
 	position:absolute;
 	top:50px;
@@ -139,19 +139,19 @@ div.node div.nodeState {
 	height:33px;
 	width: 33px
 }
-div.iconStateOn {
+div.icon-state-on {
 	background:transparent url(../images/admin/icon_state_on.png) no-repeat center !important; 
 }
-div.iconStateOff {
+div.icon-state-off {
 	background:transparent url(../images/admin/icon_state_off.png) no-repeat center !important; 
 }
-div.iconStateAttention {
+div.icon-state-attention {
 	background:transparent url(../images/admin/icon_state_attention.png) no-repeat center !important; 
 }
-div.iconStateError {
+div.icon-state-error {
 	background:transparent url(../images/admin/icon_state_error.png) no-repeat center !important; 
 }
-div.node div.nodePower {
+div.node div.node-power {
 	position:absolute;
 	top:15px;
 	right:54px;
@@ -161,7 +161,7 @@ div.node div.nodePower {
 	cursor:pointer;
 	cursor:hand; /*for ie*/
 }
-div.node div.nodePowerExpired {
+div.node div.node-power-expired {
     position:absolute;
     top:15px;
     right:54px;
@@ -171,63 +171,63 @@ div.node div.nodePowerExpired {
     cursor:pointer;
     cursor:hand; /*for ie*/
 }
-div#rack_select_container{
+div#rack-select-container{
 	position:absolute;
 	bottom:14px;
 	left:38px;
 }
-div.node div.nodeButtons {
+div.node div.node-buttons {
     position:absolute;
 	top:55px;
 	left:40px;
 	width: 1px;
 }
-button.nodeSettingsIcon {
+button.node-settings-icon {
 	background:transparent url(../images/admin/icon_settings.png) no-repeat center left !important;  
 }
-div.windowBackground {
+div.window-background {
 	background: transparent url(../images/admin/background_grey.png) repeat;
 }
-button.nodeRemoveIcon {
+button.node-remove-icon {
 	background:transparent url(../images/admin/icon_remove.png) no-repeat center left !important; 
 }
-button.cancelIcon {
+button.cancel-icon {
 	background:transparent url(../images/admin/icon_cancel.png) no-repeat center left !important; 
 }
-button.saveIcon {
+button.save-icon {
 	background:transparent url(../images/admin/icon_save.png) no-repeat center left !important; 
 }
-button.testIcon {
+button.test-icon {
 	background:transparent url(../images/admin/icon_test.png) no-repeat center left !important; 
 }
-button.actionIcon {
+button.action-icon {
     background:transparent url(../images/admin/icon_action.gif) no-repeat center left !important; 
 }
-button.purgeIcon {
+button.purge-icon {
 	background:transparent url(../images/admin/icon_purge.png) no-repeat center left !important; 
 }
-button.releaseIcon {
+button.release-icon {
     background:transparent url(../images/admin/icon_release.png) no-repeat center left !important; 
 }
-button.detailIcon {
+button.detail-icon {
 	background:transparent url(../images/admin/icon_detail.png) no-repeat center left !important; 
 }
-button.rebootIcon {
+button.reboot-icon {
     background:transparent url(../images/admin/icon_reboot.png) no-repeat center left !important; 
 }
-div.nodeBlingers {
+div.node-blingers {
 	position:absolute;
 	bottom: 6px;
 	right: 100px;
 	width: 355px;
 	height: 87px;
 }
-div.blingerText {
+div.blinger-text {
 	font-family: "Arial", freesans,sans-serif;
 	font-size: 9px;
 	color: #000000;
 }
-div.blingerName {
+div.blinger-name {
 	position:absolute;
 	top:1px;
 	right:10px;
@@ -236,7 +236,7 @@ div.blingerName {
 	color: #3F3F3F;
 	display: none;
 }
-div.activityBlinger {
+div.activity-blinger {
 	position: absolute;
 	top: 0px;
 	left: 0px;
@@ -245,7 +245,7 @@ div.activityBlinger {
 	background: transparent url(../images/admin/background_activity_blinger_border.png) no-repeat scroll 0px 7px !important;
 }
 
-div.activityBlingerBox {
+div.activity-blinger-box {
 	position: relative;
 	top: 15px;
 	left: 9px;
@@ -253,21 +253,21 @@ div.activityBlingerBox {
 	width:100px;
 	background: transparent url(../images/admin/background_activity_blinger.png) no-repeat !important;
 }
-div.activityBlingerText {
+div.activity-blinger-text {
 	position:absolute;
 	right:3px;
 	text-align: right;
 	color: #FFFFFF;
 	z-index: 15;
 }
-div.activityBlingerBar {
+div.activity-blinger-bar {
 	position: absolute;
 	background: transparent url(../images/admin/background_activity_blinger_bar.png) repeat-x;
 	left:0px;
 	height:10px;
 	z-index: 14;
 }
-div.systemBlinger {
+div.system-blinger {
 	position:absolute;
 	top: 0px;
 	right: 0px;
@@ -275,14 +275,14 @@ div.systemBlinger {
 	height: 87px;
 	background: transparent url(../images/admin/background_system_blinger_border.png) no-repeat scroll 0px 7px !important;
 }
-div.systemBlingerBox {
+div.system-blinger-box {
 	position: relative;
 	top:15px;
 	left:5px;
 	width: 209px;
 	height:60px;
 }
-div.systemBlingerLabel {
+div.system-blinger-label {
 	position:absolute;
 	left:0px;
 	text-align: left;
@@ -291,7 +291,7 @@ div.systemBlingerLabel {
 	overflow: hidden;
 	white-space : nowrap;
 }
-div.systemBlingerValue {
+div.system-blinger-value {
 	position:absolute;
 	right:0px;
 	text-align: right;
@@ -302,7 +302,7 @@ div.systemBlingerValue {
 	height: 14px;
 	background: transparent url(../images/admin/background_system_blinger_value.png) no-repeat right !important;
 }
-div.systemBlingerSettings {
+div.system-blinger-settings {
 	position: absolute;
 	right: 10px;
 	bottom: 0px;
@@ -315,53 +315,53 @@ div.pixel {
 	width:1px;
 	height:1px;
 }
-div.toolboxButton {
+div.toolbox-button {
 	margin-left: auto;
 	margin-right: auto;
 	margin-bottom: 5px;
 }
-.ungButton {
+.ung-button {
 	cursor: pointer;
 	background-color: #E9E9E9;
 	border: 1px solid #9B9B9B;
 }
-.ungButtonHover {
+.ung-button-hover {
 	border-color:#366dba;
 	color:#366dba;
 	background-color:#f1f6fc;
 }
-div.ungButtonInvalid {
+div.ung-button-invalid {
 	border: 1px solid green;
 }
-button.iconAddRow {
+button.icon-add-row {
     background: transparent url(../images/admin/icon_add_row.gif) no-repeat center left !important;
 }
-div.iconEditRow {
+div.icon-edit-row {
 	background:transparent url(../images/admin/icon_edit_row.gif) no-repeat center center;
 	width: 100%;
 	cursor: pointer;
 }
-div.iconDeleteRow {
+div.icon-delete-row {
 	background:transparent url(../images/admin/icon_delete_row.gif) no-repeat center center;
 	width: 100%;
 	cursor: pointer;
 }
-div.iconLogoutRow {
+div.icon-logout-row {
     background:transparent url(../images/admin/icon_logout_row.gif) no-repeat center center;
     width: 100%;
     cursor: pointer;
 }
-div.iconDetailRow {
+div.icon-detail-row {
     background:transparent url(../images/admin/icon_detail_row.gif) no-repeat center center;
     width: 100%;
     cursor: pointer;
 }
-div.iconDrag {
+div.icon-drag {
     background:transparent url(../images/admin/icon_drag.gif) no-repeat center center;
     width: 100%;
     cursor: move;
 }
-button.iconRefresh {
+button.icon-refresh {
     background: transparent url(../images/admin/icon_refresh.png) no-repeat center left !important;
 }
 .grid-row-deleted {
@@ -374,48 +374,48 @@ button.iconRefresh {
 	background-color: #FFB364;
 }
 
-div.iconConfigNetwork {
+div.icon-config-network {
 	background: transparent url(../images/admin/config/icon_config_network.png) no-repeat !important; 
 	width:36px;
 	height:36px;
 }
-div.iconConfigAdmin {
+div.icon-config-admin {
 	background: transparent url(../images/admin/config/icon_config_admin.png) no-repeat !important; 
 	width:36px;
 	height:36px;
 }
-div.iconConfigEmail {
+div.icon-config-email {
 	background: transparent url(../images/admin/config/icon_config_email.png) no-repeat !important; 
 	width:36px;
 	height:36px;
 }
-div.iconConfigDirectory {
+div.icon-config-directory {
 	background: transparent url(../images/admin/config/icon_config_directory.png) no-repeat !important; 
 	width:36px;
 	height:36px;
 }
-div.iconConfigBackup {
+div.icon-config-backup {
 	background: transparent url(../images/admin/config/icon_config_backup.png) no-repeat !important; 
 	width:36px;
 	height:36px;
 }
-div.iconConfigSupport {
+div.icon-config-support {
 	background: transparent url(../images/admin/config/icon_config_support.png) no-repeat !important; 
 	width:36px;
 	height:36px;
 }
-div.iconConfigUpgradeAvailable {
+div.icon-config-upgrade-available {
     background: transparent url(../images/admin/config/icon_config_upgrade_available.png) no-repeat !important; 
     width:36px;
     height:36px;
 }
-div.iconConfigUpgrade {
+div.icon-config-upgrade {
     background: transparent url(../images/admin/config/icon_config_upgrade.png) no-repeat !important; 
     width:36px;
     height:36px;
 }
 
-div.iconConfigSetup {
+div.icon-config-setup {
 	background: transparent url(../images/admin/config/icon_config_setup.png) no-repeat !important; 
 	width:36px;
 	height:36px;
@@ -424,7 +424,7 @@ thead tr.x-grid3-hd-row {
 	text-align: center;
 }
 
-div.appItem {
+div.app-item {
     cursor: pointer;
 	position: relative;
 	height: 53px;
@@ -433,25 +433,25 @@ div.appItem {
 	margin-left:auto;
 	margin-right:auto;
 }
-td.appItemLeft {
+td.app-item-left {
     background: transparent url(../images/admin/background_app_item_left.png) no-repeat !important;
     width: 2px;
 }
-td.appItemCenter {
+td.app-item-center {
     background: transparent url(../images/admin/background_app_item_center.png) repeat-x !important;
     width: 100%;
 }
-td.appItemRight {
+td.app-item-right {
     background: transparent url(../images/admin/background_app_item_right.png) no-repeat !important;
     width: 2px;
 }
 
-td.appItemCenter div.icon {
+td.app-item-center div.icon {
 	position: absolute;
 	top: 5px;
 	left: 5px;
 }
-td.appItemCenter div.text {
+td.app-item-center div.text {
 	position: absolute;
 	top: 5px;
 	left: 53px;
@@ -463,10 +463,10 @@ td.appItemCenter div.text {
 	font-weight: bold;
 	font-family:Tahoma, arial, freesans,sans-serif;
 }
-td.appItemCenter div.textCenter {
+td.app-item-center div.text-center {
 	top: 15px;
 }
-td.appItemCenter div.action {
+td.app-item-center div.action {
     position: absolute;
     right: 5px;
     top: 34px;
@@ -478,7 +478,7 @@ td.appItemCenter div.action {
     padding-right: 19px;
 	line-height:15px;
 }
-td.appItemCenter div.buttonBuy {
+td.app-item-center div.button-buy {
 	position: absolute;
 	left: 53px;
 	top: 34px;
@@ -490,7 +490,7 @@ td.appItemCenter div.buttonBuy {
 	color: green;
 	padding-right: 19px;
 }
-td.appItemCenter div.statePos {
+td.app-item-center div.state-pos {
 	position: absolute;
 	left: 52px;
 	top: 33px;
@@ -501,24 +501,24 @@ td.appItemCenter div.statePos {
 	font-weight: bold;
 	color: red;
 }
-div.iconInfo {
+div.icon-info {
 	background:transparent url(../images/admin/icon_info.png) no-repeat center right !important;
 }
-div.iconArrowRight {
+div.icon-arrow-right {
 	/*background:transparent url(../images/admin/icon_arrow_right.png) no-repeat center right !important;*/
 	background:transparent url(../images/admin/icon_buy.png) no-repeat right center !important;	
 }
-div.iconArrowDown {
+div.icon-arrow-down {
 	background:transparent url(../images/admin/icon_arrow_down.png) no-repeat center right !important;
 }
 
-.iconBreadcrumbsSeparator {
+.icon-breadcrumbs-separator {
     background:transparent url(../images/admin/icon_breadcrumbs_separator.gif) no-repeat center center !important;
     width:13px;
     height:12px;
 }
 
-.breadcrumbText {
+.breadcrumb-text {
     font-size:11px; /* On a base font of 13px works out to 11.05px*/
     font-size-adjust:none;
     font-style:normal;
@@ -526,7 +526,7 @@ div.iconArrowDown {
     line-height:14px; /* works out to 14px */
     font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
 }
-.breadcrumbLink {
+.breadcrumb-link {
 	font-size:11px; /* On a base font of 13px works out to 11.05px*/
 	font-size-adjust:none;
 	font-style:normal;
@@ -541,7 +541,7 @@ div.iconArrowDown {
   padding:5px 5px 0px 5px;
  }
 
-div.systemStats {
+div.system-stats {
 	position:absolute;
 	width: 300px;
 	height: 50px;
@@ -550,14 +550,14 @@ div.systemStats {
     color: #FFFFFF;
     font-size: 10px;
 }
-div.systemStats div.label {
+div.system-stats div.label {
 	position:absolute;
 	bottom:4px;
     text-align: center;
     color: #000000;
 	font-family:arial,freesans,sans-serif;
 }
-div.systemStats div.network {
+div.system-stats div.network {
     position: absolute;
     top: 4px;
     left:0px;
@@ -566,7 +566,7 @@ div.systemStats div.network {
     height:30px;
     font-weight: bold;
 }
-div.systemStats div.network div.tx {
+div.system-stats div.network div.tx {
     position: absolute;
     top: 2px;
     left:0px;
@@ -577,10 +577,10 @@ div.systemStats div.network div.tx {
     background: transparent url(../images/admin/icon_network_tx.png) no-repeat scroll 5px 1px !important;
 	font-family:arial,freesans,sans-serif;	
 }
-div.systemStats div.network div.tx_idle {
-    background: transparent url(../images/admin/icon_network_tx_idle.png) no-repeat scroll 5px 1px !important;
+div.system-stats div.network div.tx-idle {
+    background: transparent url(../images/admin/icon_network_tx-idle.png) no-repeat scroll 5px 1px !important;
 }
-div.systemStats div.network div.rx {
+div.system-stats div.network div.rx {
     position: absolute;
     bottom:0px;
     width:77px;
@@ -590,24 +590,24 @@ div.systemStats div.network div.rx {
     background: transparent url(../images/admin/icon_network_rx.png) no-repeat scroll 5px 1px !important;
 	font-family:arial,freesans,sans-serif;		
 }
-div.systemStats div.network div.rx_idle {
-    background: transparent url(../images/admin/icon_network_rx_idle.png) no-repeat scroll 5px 1px !important;
+div.system-stats div.network div.rx-idle {
+    background: transparent url(../images/admin/icon_network_rx-idle.png) no-repeat scroll 5px 1px !important;
 }
 
-div.systemStats div.network div.rx div.rx_value {
+div.system-stats div.network div.rx div.rx-value {
     position: absolute;
     top:0px;
     right:0px;
 	font-family:arial,freesans,sans-serif;		
 }
-div.systemStats div.network div.tx div.tx_value {
+div.system-stats div.network div.tx div.tx-value {
     position: absolute;
     top:0px;
     right:0px;
 	font-family:arial,freesans,sans-serif;
 }
 
-div.systemStats div.cpu {
+div.system-stats div.cpu {
     position: absolute;
     top: 4px;
     left:113px;
@@ -620,7 +620,7 @@ div.systemStats div.cpu {
 	font-family:arial,freesans,sans-serif;
 	
 }
-div.systemStats div.memory {
+div.system-stats div.memory {
     position: absolute;
     top: 4px;
     left:177px;
@@ -631,7 +631,7 @@ div.systemStats div.memory {
 	font-family:arial,freesans,sans-serif;
 	
 }
-div.systemStats div.memory div.free {
+div.system-stats div.memory div.free {
     position: absolute;
     top: 2px;
     left:0px;
@@ -642,7 +642,7 @@ div.systemStats div.memory div.free {
 	font-family:arial,freesans,sans-serif;
 	
 }
-div.systemStats div.memory div.used {
+div.system-stats div.memory div.used {
     position: absolute;
     bottom:0px;
     width:70px;
@@ -653,14 +653,14 @@ div.systemStats div.memory div.used {
 	
 }
 
-div.systemStats div.memory div.free div.free_value {
+div.system-stats div.memory div.free div.free-value {
     position: absolute;
     top:0px;
     right:0px;
 	font-family:arial,freesans,sans-serif;
 	
 }
-div.systemStats div.memory div.used div.used_value {
+div.system-stats div.memory div.used div.used-value {
     position: absolute;
     top:0px;
     right:0px;
@@ -668,7 +668,7 @@ div.systemStats div.memory div.used div.used_value {
 	
 }
 
-div.systemStats div.disk {
+div.system-stats div.disk {
     position: absolute;
     top: 4px;
     right:0px;
@@ -676,125 +676,125 @@ div.systemStats div.disk {
     width:30px;
     height:30px;
 }
-div.systemStats div.disk div.disk0 {
+div.system-stats div.disk div.disk0 {
 	width:30px;
     height:30px;
     background: transparent url(../images/admin/disk/icon_disk0.png) no-repeat center center;
 }
-div.systemStats div.disk div.disk5 {
+div.system-stats div.disk div.disk5 {
     width:30px;
     height:30px;
 	background: transparent url(../images/admin/disk/icon_disk5.png) no-repeat center center;
 }
-div.systemStats div.disk div.disk10 {
+div.system-stats div.disk div.disk10 {
     width:30px;
     height:30px;
     background: transparent url(../images/admin/disk/icon_disk10.png) no-repeat center center;
 }
-div.systemStats div.disk div.disk15 {
+div.system-stats div.disk div.disk15 {
     width:30px;
     height:30px;
 	background: transparent url(../images/admin/disk/icon_disk15.png) no-repeat center center;
 }
-div.systemStats div.disk div.disk20 {
+div.system-stats div.disk div.disk20 {
     width:30px;
     height:30px;
     background: transparent url(../images/admin/disk/icon_disk20.png) no-repeat center center;
 }
-div.systemStats div.disk div.disk25 {
+div.system-stats div.disk div.disk25 {
     width:30px;
     height:30px;
     background: transparent url(../images/admin/disk/icon_disk25.png) no-repeat center center;
 }
-div.systemStats div.disk div.disk30 {
+div.system-stats div.disk div.disk30 {
     width:30px;
     height:30px;
     background: transparent url(../images/admin/disk/icon_disk30.png) no-repeat center center;
 }
-div.systemStats div.disk div.disk35 {
+div.system-stats div.disk div.disk35 {
     width:30px;
     height:30px;
     background: transparent url(../images/admin/disk/icon_disk35.png) no-repeat center center;
 }
-div.systemStats div.disk div.disk40 {
+div.system-stats div.disk div.disk40 {
     width:30px;
     height:30px;
     background: transparent url(../images/admin/disk/icon_disk40.png) no-repeat center center;
 }
-div.systemStats div.disk div.disk45 {
+div.system-stats div.disk div.disk45 {
     width:30px;
     height:30px;
     background: transparent url(../images/admin/disk/icon_disk45.png) no-repeat center center;
 }
-div.systemStats div.disk div.disk50 {
+div.system-stats div.disk div.disk50 {
     width:30px;
     height:30px;
     background: transparent url(../images/admin/disk/icon_disk50.png) no-repeat center center;
 }
-div.systemStats div.disk div.disk55 {
+div.system-stats div.disk div.disk55 {
     width:30px;
     height:30px;
     background: transparent url(../images/admin/disk/icon_disk55.png) no-repeat center center;
 }
-div.systemStats div.disk div.disk60 {
+div.system-stats div.disk div.disk60 {
     width:30px;
     height:30px;
     background: transparent url(../images/admin/disk/icon_disk60.png) no-repeat center center;
 }
-div.systemStats div.disk div.disk65 {
+div.system-stats div.disk div.disk65 {
     width:30px;
     height:30px;
     background: transparent url(../images/admin/disk/icon_disk65.png) no-repeat center center;
 }
-div.systemStats div.disk div.disk70 {
+div.system-stats div.disk div.disk70 {
     width:30px;
     height:30px;
     background: transparent url(../images/admin/disk/icon_disk70.png) no-repeat center center;
 }
-div.systemStats div.disk div.disk75 {
+div.system-stats div.disk div.disk75 {
     width:30px;
     height:30px;
     background: transparent url(../images/admin/disk/icon_disk75.png) no-repeat center center;
 }
-div.systemStats div.disk div.disk80 {
+div.system-stats div.disk div.disk80 {
     width:30px;
     height:30px;
     background: transparent url(../images/admin/disk/icon_disk80.png) no-repeat center center;
 }
-div.systemStats div.disk div.disk85 {
+div.system-stats div.disk div.disk85 {
     width:30px;
     height:30px;
     background: transparent url(../images/admin/disk/icon_disk85.png) no-repeat center center;
 }
-div.systemStats div.disk div.disk90 {
+div.system-stats div.disk div.disk90 {
     width:30px;
     height:30px;
     background: transparent url(../images/admin/disk/icon_disk90.png) no-repeat center center;
 }
-div.systemStats div.disk div.disk95 {
+div.system-stats div.disk div.disk95 {
     width:30px;
     height:30px;
     background: transparent url(../images/admin/disk/icon_disk95.png) no-repeat center center;
 }
-div.systemStats div.disk div.disk100 {
+div.system-stats div.disk div.disk100 {
     width:30px;
     height:30px;
     background: transparent url(../images/admin/disk/icon_disk100.png) no-repeat center center;
 }
-div.extendedStats {
+div.extended-stats {
     font-size: 11px;
 }
-div.extendedStats div.title{
+div.extended-stats div.title{
     padding-left: 5px;
     font-weight: bold;
 }
-div.extendedStats div.values{
+div.extended-stats div.values{
     padding-left: 30px;
 }
-button.iconUpgrade {
+button.icon-upgrade {
     background: transparent url(../images/admin/icon_upgrade.png) no-repeat center left !important;
 }
-div.buttonColumn {
+div.button-column {
     width:99%;
     height:16px;
     padding-left: 1px;
@@ -802,20 +802,20 @@ div.buttonColumn {
 }
 
 /* Wizard */
-.largeOption
+.large-option
 {
   font-size:14px;
   font-weight:bold;
 }
-.spacingMargin1
+.spacing-margin-1
 {
   margin-top:7px;
 }
-.spacingMargin2
+.spacing-margin-2
 {
   margin-top:11px;
 }
-.spacingMarginSpl1{
+.spacing-margin-spl-1{
     margin-top:11px;
     border-bottom:none;
 }
@@ -844,29 +844,29 @@ div.wizard-network-image-description
   margin-left : 10px;
  }
 
-.wizardlabelmargin4
+.wizard-label-margin-4
 { 
   margin-left : 10px;
   }
 
-.wizardlabelmargin5
+.wizard-label-margin-5
 { 
   margin-left : 20px;
   }
 
-.wizardlabelmargin6
+.wizard-label-margin-6
 {
   margin-left: 50px;
   }
-.wizardlabelmargin7
+.wizard-label-margin-7
 {
   margin-left: 17em;
   }
-  .wizardlabelmargin8
+  .wizard-label-margin-8
 {
   margin-left: 6.7em;
   }
- .wizardlabelmargin9
+ .wizard-label-margin-9
 {
   margin-left: 11.3em;
   } 
@@ -923,30 +923,30 @@ body.wizard .ext-el-mask
   background-color: #CCCCCC;
  }
 
-.networkCardFormMargin{
+.network-card-form-margin{
 	margin-top:1em;
 	padding-top:1em;
 }
-.networkCardFormMargin div div form fieldset{
+.network-card-form-margin div div form fieldset{
 	border:0px;
 	border-top:1px #CCC solid;
 }
-.testConnectivity{
+.test-connectivity{
 	position:relative;
 	left:280px;
 	top:-22px;
 }
-.testConnectivity2{
+.test-connectivity-2{
 	position:relative;
 	left:204px;
 }
-.rightAlign{
+.right-align{
 	margin-left:214px;
 }
-.smallTopMargin{
+.small-top-margin{
 	margin-top:1em;
 }
-.smallBottomMargin{
+.small-bottom-margin{
 	margin-bottom:1em;
 }
 
@@ -1049,7 +1049,7 @@ body.wizard .ext-el-mask
 { 
   text-align: right;
  }
-.wizardTitle{
+.wizard-title{
 	margin-bottom:1.8em;
 	padding-top:5px;
 	color:#333;
@@ -1058,12 +1058,7 @@ body.wizard .ext-el-mask
     font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
  }
 
-.smallbottommargin
-{
-  margin-bottom:1em;
-  }
-
-.requiredInfo
+.required-info
 {
   padding-left : 20px;
   display : block;
@@ -1071,19 +1066,19 @@ body.wizard .ext-el-mask
   font-size : 80%;
  }
 
-.requiredstar
+.required-star
 {
   color:#FF2222;
   font-weight:bold;
  }
-.wizardLabel{
+.wizard-label{
 	color:#333;
 	font-size:12px;
 }
 .warning {
     color: #FF0000;
 }
-.fixedPos{
+.fixed-pos{
     position: fixed;
 }
 
@@ -1112,7 +1107,7 @@ body.wizard .ext-el-mask
     line-height:normal;
     padding: 0px 0px 5px 0px;
 }
-.ungPanel {
+.ung-panel {
     padding:5px 5px 0px 5px;
 }
 /* Ext Js Overrides - across the board */

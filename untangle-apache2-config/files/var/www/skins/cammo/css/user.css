@@ -144,7 +144,7 @@ body.blockpage #main
   z-index: 100;
 }
 
-body.blockpage #extraDiv1
+body.blockpage #extra-div-1
 { 
   position : absolute;
   left: 15px;
@@ -154,7 +154,7 @@ body.blockpage #extraDiv1
   background: transparent url(../images/user/blockpage_border.gif) no-repeat;
  }
 
-body.blockpage #extraDiv2
+body.blockpage #extra-div-2
 { 
   position : absolute;
   left: 15px;
