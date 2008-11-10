@@ -898,6 +898,9 @@ body.wizard{
 	top:10px;
 	left:25px;
         z-index : 2;
+    width:220px;
+    height:100px;
+    overflow:hidden;
 }
 .wizard-steps{
 	padding-top:120px;
