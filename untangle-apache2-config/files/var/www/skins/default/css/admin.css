@@ -543,7 +543,7 @@ div.icon-arrow-down {
 
 div.system-stats {
 	position:absolute;
-	width: 300px;
+	width: 320px;
 	height: 50px;
     top:0px;
     right:40px;
@@ -624,8 +624,8 @@ div.system-stats div.memory {
     position: absolute;
     top: 4px;
     left:177px;
-    background: transparent url(../images/admin/background_memory.png) no-repeat;
-    width:79px;
+    background: transparent url(../images/admin/background_network.png) no-repeat;/*../images/admin/background_memory.png) no-repeat;*/
+    width:99px;
     height:30px;
     font-weight: bold;
 	font-family:arial,freesans,sans-serif;
@@ -635,7 +635,7 @@ div.system-stats div.memory div.free {
     position: absolute;
     top: 2px;
     left:0px;
-    width:70px;
+    width:90px;
     height:15px;
     padding-left:4px;
     color:#55BA47;
@@ -645,7 +645,7 @@ div.system-stats div.memory div.free {
 div.system-stats div.memory div.used {
     position: absolute;
     bottom:0px;
-    width:70px;
+    width:90px;
     height:15px;
     padding-left:4px;
     color:#AC2322;
