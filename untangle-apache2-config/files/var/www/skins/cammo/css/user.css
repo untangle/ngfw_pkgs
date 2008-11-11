@@ -174,7 +174,7 @@ body.blockpage #header .title
 { 
   position : absolute;
   left : 180px;
-  bottom : 0px;
+  top : 57px;
   font: bold 36px arial, tahoma, helvetica, sans-serif;
   color: #67686B;
  }
