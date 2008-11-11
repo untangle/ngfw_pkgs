@@ -98,6 +98,8 @@ public class ISO_Portaled extends ISO {
 
             if (Options.cookie_header != null)
                 sb.append(COOKIE_HEADER).append(": ").append("$Version=0; JSESSIONIDSSO=").append(Options.cookie_header).append("\r\n");
+            if (Options.pysid_cookie_header != null)
+                sb.append(COOKIE_HEADER).append(": ").append("$Version=0; pysid=").append(Options.pysid_cookie_header).append("\r\n");
             sb.append("\r\n");
             sockOut.write(sb.toString().getBytes());
             sockOut.flush();

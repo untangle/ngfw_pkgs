@@ -112,6 +112,7 @@ public class Options {
 
     public static String target_header = null;
     public static String cookie_header = null;
+    public static String pysid_cookie_header = null;
 	
     public static boolean append_target = false;
 }
