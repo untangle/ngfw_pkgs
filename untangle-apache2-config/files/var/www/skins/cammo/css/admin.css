@@ -512,6 +512,13 @@ td.app-item-center div.state-pos {
 div.icon-info {
 	background:transparent url(../images/admin/icon_info.png) no-repeat center right !important;
 }
+div.icon-arrow-install{
+	background:transparent url(../images/admin/icon_install.png) no-repeat right center !important;	
+}
+div.icon-arrow-buy {
+	/*background:transparent url(../images/admin/icon_arrow_right.png) no-repeat center right !important;*/
+	background:transparent url(../images/admin/icon_buy.png) no-repeat right center !important;	
+}
 div.icon-arrow-right {
 	/*background:transparent url(../images/admin/icon_arrow_right.png) no-repeat center right !important;*/
 	background:transparent url(../images/admin/icon_buy.png) no-repeat right center !important;	
@@ -898,7 +905,7 @@ body.wizard{
 	top:10px;
 	left:25px;
         z-index : 2;
-    width:220px;
+    width:166px;
     height:100px;
     overflow:hidden;
 }
