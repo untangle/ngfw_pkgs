@@ -16,8 +16,8 @@ load_defaults()
     SHIELD_LOG_OUT="/var/log/untangle-shield/debug.log"
     SHIELD_LOG_ERR="/var/log/untangle-shield/error.log"
     
-    SHIELD_IPTABLES_INSERT_CMD="/etc/init.d/untangle-net-alpaca restart"
-    SHIELD_IPTABLES_REMOVE_CMD="/etc/init.d/untangle-net-alpaca restart"
+    SHIELD_IPTABLES_INSERT_CMD="/etc/init.d/untangle-net-alpaca-iptables restart"
+    SHIELD_IPTABLES_REMOVE_CMD="/etc/init.d/untangle-net-alpaca-iptables restart"
 
     if [ -f /etc/default/untangle-shield ] ; then
         . /etc/default/untangle-shield

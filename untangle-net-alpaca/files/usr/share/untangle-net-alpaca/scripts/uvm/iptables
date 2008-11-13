@@ -38,6 +38,8 @@ uvm_shield_traffic()
         return
     fi
 
+    echo "[`date`] Shield is running, inserting queue rules."
+
     ## Queue any TCP that is not antisubscribed
     ${IPTABLES} -t mangle -I FORWARD 1 -p tcp -m mark --mark 0/${MARK_ANTISUB} \
         -m conntrack --ctstate NEW \
