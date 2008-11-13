@@ -1,0 +1,146 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-09-01 14:19+0300\n"
+"PO-Revision-Date: 2008-10-16 01:36-0500\n"
+"Last-Translator: Jie(Jack) Zhu <J.Zhu@Impactek.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Poedit-Language: Chinese\n"
+"X-Poedit-Country: CHINA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: ../adminindex.py:33
+#, python-format
+msgid "%s Login"
+msgstr "%s登录"
+
+#: ../adminindex.py:76
+msgid "Error: Username and Password do not match"
+msgstr "错误：用户名和密码不匹配"
+
+#: ../adminindex.py:130
+msgid "Server:"
+msgstr "服务器："
+
+#: ../adminindex.py:130
+msgid "Username:"
+msgstr "用户名："
+
+#: ../adminindex.py:130
+msgid "Password:"
+msgstr "密码："
+
+#: ../adminindex.py:130
+msgid "Login"
+msgstr "登录"
+
+#: ../errorindex.py:13
+msgid "Bad Request"
+msgstr "请求错误"
+
+#: ../errorindex.py:17
+msgid "Unauthorized"
+msgstr "未授权的"
+
+#: ../errorindex.py:21
+msgid "Payment Required"
+msgstr "需要付费"
+
+#: ../errorindex.py:25
+msgid "Forbidden"
+msgstr "禁止的"
+
+#: ../errorindex.py:29
+msgid "Not Found"
+msgstr "未找到"
+
+#: ../errorindex.py:33
+msgid "Method Not Allowed"
+msgstr "不允许的方式"
+
+#: ../errorindex.py:37
+msgid "Not Acceptable"
+msgstr "不可接受"
+
+#: ../errorindex.py:41
+msgid "Proxy Authentication Required"
+msgstr "需要代理认证"
+
+#: ../errorindex.py:45
+msgid "Request Timeout"
+msgstr "请求超时"
+
+#: ../errorindex.py:49
+msgid "Conflict"
+msgstr "冲突"
+
+#: ../errorindex.py:53
+msgid "Gone"
+msgstr "消失"
+
+#: ../errorindex.py:57
+msgid "Length Required"
+msgstr "要求长度"
+
+#: ../errorindex.py:61
+msgid "Precondition Failed"
+msgstr "预处理失败"
+
+#: ../errorindex.py:65
+msgid "Request Entity Too Large"
+msgstr "所请求实体太大"
+
+#: ../errorindex.py:69
+msgid "Request-URI Too Long"
+msgstr "所请求URI太长"
+
+#: ../errorindex.py:73
+msgid "Unsupported Media Type"
+msgstr "不支持的媒体类型"
+
+#: ../errorindex.py:77
+msgid "Requested Range Not Satisfiable"
+msgstr "所请求的范围不能满足"
+
+#: ../errorindex.py:81
+msgid "Expectation Failed"
+msgstr "期望失败"
+
+#: ../errorindex.py:85
+msgid "Internal Server Error"
+msgstr "内部服务器错误"
+
+#: ../errorindex.py:89
+msgid "Not Implemented"
+msgstr "未实施"
+
+#: ../errorindex.py:93
+msgid "Bad Gateway"
+msgstr "网关错误"
+
+#: ../errorindex.py:97
+msgid "Service Unavailable"
+msgstr "服务不可用"
+
+#: ../errorindex.py:101
+msgid "Gateway Timeout"
+msgstr "网关超时"
+
+#: ../errorindex.py:105
+msgid "HTTP Version Not Supported"
+msgstr "不支持该HTTP版本"
+
+#: ../errorindex.py:113
+msgid "Untangle Server"
+msgstr "Untangle服务器"
+
