@@ -601,7 +601,7 @@ div.system-stats div.network div.rx {
     width:77px;
     height:15px;
     padding-left:20px;
-    color:#AC2322;
+    color:orange;/*#AC2322;*/
     background: transparent url(../images/admin/icon_network_rx.png) no-repeat scroll 5px 1px !important;
 	font-family:arial,freesans,sans-serif;		
 }
@@ -663,7 +663,7 @@ div.system-stats div.memory div.used {
     width:90px;
     height:15px;
     padding-left:4px;
-    color:#AC2322;
+    color:orange;/*#AC2322;*/
 	font-family:arial,freesans,sans-serif;
 	
 }
