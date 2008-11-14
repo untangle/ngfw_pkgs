@@ -40,6 +40,30 @@ class NodeStats
     @counters = Array.new(16, 0);
     
     metrics = new_stats.getMetrics();
+
+    # These may not exist, for transforms that are off or have no MPipe
+    # metric = metrics.get("tcpLiveSessionCounter");
+    # @tcpSessionCount = metric.nil? ? 0 : metric.getCount();
+    metric = metrics.get("tcpTotalSessionCounter");
+    @tcpSessionTotal = metric.nil? ? 0 : metric.getCount();
+    metric = metrics.get("tcpTotalSessionRequestCounter");
+    @tcpSessionRequestTotal = metric.nil? ? 0 : metric.getCount();
+    # metric = metrics.get("udpLiveSessionCounter");
+    # @udpSessionCount = metric.nil? ? 0 : metric.getCount();
+    metric = metrics.get("udpTotalSessionCounter");
+    @udpSessionTotal = metric.nil? ? 0 : metric.getCount();
+    metric = metrics.get("udpTotalSessionRequestCounter");
+    @udpSessionRequestTotal = metric.nil? ? 0 : metric.getCount();
+
+    # These always exist.
+    @c2tBytes = metrics.get("c2nBytes").getCount();
+    @c2tChunks = metrics.get("c2nChunks").getCount();
+    @t2sBytes = metrics.get("n2sBytes").getCount();
+    @t2sChunks = metrics.get("n2sChunks").getCount();
+    @s2tBytes = metrics.get("s2nBytes").getCount();
+    @s2tChunks = metrics.get("s2nChunks").getCount();
+    @t2cBytes = metrics.get("n2cBytes").getCount();
+    @t2cChunks = metrics.get("n2cChunks").getCount();
     #keys = metrics.keySet();
     #keys.each() {|k| puts k };
     #metrics.values().each() {|v| puts v.getCount() };

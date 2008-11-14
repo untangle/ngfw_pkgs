@@ -139,6 +139,7 @@ class NUCLIClient
             ["backup", false, "backup #{BRAND} server settings -- backup [to_disk|to_usb|to_file <filename>]", nil],
             ["restore", false, "restore #{BRAND} server settings from local file -- restore <filename.backup>]", nil],
             ["webfilter", true, "send command to Web Filter -- enter 'webfilter help' for details.", nil],
+            ["sitefilter", true, "send command to eSoft Site Filter -- enter 'sitefilter help' for details.", nil],
             ["firewall", true, "send command to Firewall -- enter 'firewall help' for details.", nil],
             ["attack", true, "send command to Attack Blocker -- enter 'attack help' for details.", nil],
             ["protofilter", true, "send command to Protocol Filter -- enter 'protofilter help' for details.", nil],

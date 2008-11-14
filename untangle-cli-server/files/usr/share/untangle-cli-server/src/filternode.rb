@@ -197,7 +197,7 @@ class UVMFilterNode < UVMRemoteApp
                                 if (tid != "0")
                                     # We're reporting stats of a specific FN element
                                     msg_mgr = @@uvmRemoteContext.messageManager();
-                                    new_stats = msg_mgr.getStats(tid);
+                                    new_stats = msg_mgr.getAllStats(tid);
                                     stats = map_new_stats_to_snmp_stats(new_stats)
                                     node_stats = hash_node_stats(stats)
                                 else
@@ -266,7 +266,7 @@ class UVMFilterNode < UVMRemoteApp
                 else
                     return "Error: a node ID [#X|TID] must be specified in order to retrieve " unless tid
                     msg_mgr = @@uvmRemoteContext.messageManager();
-                    new_stats = msg_mgr.getStats(tid);
+                    new_stats = msg_mgr.getAllStats(tid);
                     stats = map_new_stats_to_snmp_stats(new_stats);
                     node_stats = hash_node_stats(stats);  
                     
@@ -463,7 +463,7 @@ class UVMFilterNode < UVMRemoteApp
                 # get stats for this tid.
 		begin
                     msg_mgr = @@uvmRemoteContext.messageManager();
-                    new_stats = msg_mgr.getStats(tid);
+                    new_stats = msg_mgr.getAllStats(tid);
                     nodeStats = map_new_stats_to_snmp_stats(new_stats);
 		rescue Exception => ex
 		    # if for any reason we can't get this node's stats then just skip it.
