@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ -f /etc/apache2/untangle-conf.d ]; then
+    t=$(mktemp)
+    mv /etc/apache2/untangle-conf.d $t
+    mkdir -p /etc/apache2/untangle-conf.d
+    mv $t /etc/apache2/untangle-conf.d/uvm.conf
+fi
+
+true

@@ -68,6 +68,27 @@ def headerparserhandler(req):
 
         login_redirect(req, realm)
 
+# This handler is for the proxy
+def accesshandler(req):
+    nonce = req.headers_in.get('X-Nonce', None);
+    authorized = False
+
+    if None != nonce:
+        conn = connect("dbname=uvm user=postgres")
+        try:
+            curs = conn.cursor()
+            curs.execute("SELECT 1 FROM settings.n_proxy_nonce WHERE nonce = %s AND create_time >= now() - '1 hour'::interval", (nonce,))
+            authorized = 0 < curs.rowcount
+            curs.execute("DELETE FROM settings.n_proxy_nonce WHERE nonce = %s OR create_time < now() - '1 hour'::interval", (nonce,))
+            conn.commit()
+        finally:
+            conn.close()
+
+    if authorized:
+        return apache.OK
+    else:
+        return apache.HTTP_FORBIDDEN
+
 def session_user(sess, realm):
     if sess.has_key('apache_realms') and sess['apache_realms'].has_key(realm):
         realm_record = sess['apache_realms'][realm]
@@ -178,23 +199,29 @@ def get_uvm_language():
 
 def get_access_settings():
         conn = connect("dbname=uvm user=postgres")
-        curs = conn.cursor()
-        curs.execute('select allow_insecure, allow_outside_admin from settings.u_access_settings')
-        r = curs.fetchone()
+        try:
+            curs = conn.cursor()
+            curs.execute('select allow_insecure, allow_outside_admin from settings.u_access_settings')
+            r = curs.fetchone()
+        finally:
+            conn.close()
 
-        if None == r:
-            return (False, False)
-        else:
-            return r
+            if None == r:
+                return (False, False)
+            else:
+                return r
 
 def log_login(req, login, local, succeeded, reason):
     (client_addr, client_port) = req.connection.remote_addr
 
     conn = connect("dbname=uvm user=postgres")
-    curs = conn.cursor()
-    curs.execute("INSERT INTO events.u_login_evt (event_id, client_addr, login, local, succeeded, reason, time_stamp) VALUES (nextval('hibernate_sequence'), %s, %s, %s, %s, %s, now())",
-                 (client_addr, login, local, succeeded, reason));
-    conn.commit()
+    try:
+        curs = conn.cursor()
+        curs.execute("INSERT INTO events.u_login_evt (event_id, client_addr, login, local, succeeded, reason, time_stamp) VALUES (nextval('hibernate_sequence'), %s, %s, %s, %s, %s, now())",
+                     (client_addr, login, local, succeeded, reason));
+        conn.commit()
+    finally:
+        conn.close()
 
 def write_error_page(req, msg):
     req.content_type = "text/html; charset=utf-8"

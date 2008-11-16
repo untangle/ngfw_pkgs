@@ -47,8 +47,8 @@ fi
 chown www-data:www-data /etc/apache2/workers.properties
 chmod 600 /etc/apache2/workers.properties
 
-if [ ! -e /etc/apache2/untangle-conf.d ]; then
-    echo "Include /usr/share/untangle/apache2/conf.d/*.conf" >/etc/apache2/untangle-conf.d
+if [ ! -e /etc/apache2/untangle-conf.d/uvm.conf ]; then
+    echo "Include /usr/share/untangle/apache2/conf.d/*.conf" >/etc/apache2/untangle-conf.d/uvm.conf
 fi
 
 if [ ! -e $PEM -a -e $KEYSTORE ]; then
@@ -81,6 +81,8 @@ fi
 /usr/sbin/a2enmod jk
 /usr/sbin/a2enmod ssl
 /usr/sbin/a2enmod mod_python
+/usr/sbin/a2enmod proxy
+/usr/sbin/a2enmod proxy_connect
 /usr/sbin/a2dissite default
 /usr/sbin/a2ensite uvm
 
