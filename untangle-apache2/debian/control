@@ -7,6 +7,9 @@ Build-Conflicts: libgdbm-dev
 Standards-Version: 3.6.1.0
 
 Package: untangle-apache2-common
+Provides: apache2-common
+Replaces: apache2-common
+Conflicts: apache2-common
 Architecture: any
 Depends: ${shlibs:Depends}, debconf, debianutils (>= 1.6), mime-support, openssl, net-tools, ssl-cert (>= 1.0-7), libmagic1, libgcc1 (>= 1:3.3.5), untangle-apache2-utils (= ${Source-Version})
 Suggests: untangle-apache2-doc, lynx | www-browser
@@ -24,9 +27,9 @@ Description: next generation, scalable, extendable web server
 
 Package: untangle-apache2-utils
 Architecture: any
-Replaces: untangle-apache2-common (<< 2.0.53), apache-utils (<< 1.3.33-4)
-Provides: apache-utils
-Conflicts: apache-common (<< 1.3.28.0.1-1)
+Replaces: apache2-utils, untangle-apache2-common (<< 2.0.53), apache-utils (<< 1.3.33-4)
+Provides: apache2-utils, apache-utils
+Conflicts: apache2-utils, apache-common (<< 1.3.28.0.1-1)
 Depends: ${shlibs:Depends}
 Description: utility programs for webservers
  Provides some add-on programs useful for any webserver.  These include:
@@ -44,9 +47,9 @@ Description: utility programs for webservers
 Package: untangle-apache2-mpm-worker
 Architecture: any
 Depends: ${shlibs:Depends}, untangle-apache2-common (= ${Source-Version})
-Provides: untangle-apache2-modules, untangle-apache2, httpd, httpd-cgi
-Replaces: untangle-apache2-mpm-threadpool (<< 2.0.53)
-Conflicts: untangle-apache2-mpm-prefork, untangle-apache2-mpm-perchild
+Provides: apache2-mpm-worker, untangle-apache2-modules, untangle-apache2, httpd, httpd-cgi
+Replaces: apache2-mpm-worker, untangle-apache2-mpm-threadpool (<< 2.0.53)
+Conflicts: apache2-mpm-worker, untangle-apache2-mpm-prefork, untangle-apache2-mpm-perchild
 Description: high speed threaded model for Apache2
  The worker MPM provides a threaded implementation for Apache2. It is
  considerably faster than the traditional model, and is the recommended MPM.
@@ -55,6 +58,9 @@ Description: high speed threaded model for Apache2
  has a smaller memory footprint than the prefork MPM.
 
 Package: untangle-apache2-mpm-threadpool
+Provides: apache2-mpm-threadpool
+Replaces: apache2-mpm-threadpool
+Conflicts: apache2-mpm-threadpool
 Architecture: all
 Depends: untangle-apache2-mpm-worker (= ${Source-Version})
 Description: experimental high speed model for Apache2 (transitional package)
@@ -67,8 +73,9 @@ Description: experimental high speed model for Apache2 (transitional package)
 Package: untangle-apache2-mpm-perchild
 Architecture: any
 Depends: ${shlibs:Depends}, untangle-apache2-common (= ${Source-Version})
-Provides: untangle-apache2-modules, untangle-apache2, httpd, httpd-cgi
-Conflicts: untangle-apache2-mpm-worker, untangle-apache2-mpm-prefork, untangle-apache2-mpm-threadpool
+Provides: apache2-mpm-perchild, untangle-apache2-modules, untangle-apache2, httpd, httpd-cgi
+Conflicts: apache2-mpm-perchild, untangle-apache2-mpm-worker, untangle-apache2-mpm-prefork, untangle-apache2-mpm-threadpool
+Replaces: apache2-mpm-perchild
 Description: experimental high speed perchild threaded model for Apache2
  Perchild is the grown up, mac daddy version of suexec for untangle-apache2. Rather than
  execute a cgi script as a given user, perchild forks a process for each vhost,
@@ -83,8 +90,9 @@ Description: experimental high speed perchild threaded model for Apache2
 Package: untangle-apache2-mpm-prefork
 Architecture: any
 Depends: ${shlibs:Depends}, untangle-apache2-common (= ${Source-Version})
-Provides: untangle-apache2-modules, untangle-apache2, httpd, httpd-cgi
-Conflicts: untangle-apache2-mpm-worker, untangle-apache2-mpm-threadpool, untangle-apache2-mpm-perchild
+Provides: apache2-mpm-prefork, untangle-apache2-modules, untangle-apache2, httpd, httpd-cgi
+Conflicts: apache2-mpm-prefork, untangle-apache2-mpm-worker, untangle-apache2-mpm-threadpool, untangle-apache2-mpm-perchild
+Replaces: apache2-mpm-prefork
 Description: traditional model for Apache2
  This Multi-Processing Module (MPM) implements a non-threaded,
  pre-forking web server that handles requests in a manner similar to
@@ -97,6 +105,9 @@ Description: traditional model for Apache2
  
 Package: untangle-apache2-doc
 Section: doc
+Provides: apache2-doc
+Replaces: apache2-doc
+Conflicts: apache2-doc
 Architecture: all
 Description: documentation for untangle-apache2
  This is the documentation for untangle-apache2, see the untangle-apache2 package description
@@ -106,7 +117,9 @@ Package: untangle-apache2-prefork-dev
 Section: devel
 Architecture: any
 Depends: untangle-apache2-common (= ${Source-Version}), untangle-libapr0-dev (= ${Source-Version}), libssl-dev, openssl, bzip2, autoconf, autotools-dev, libtool, libdb4.2-dev, zlib1g-dev, libpcre3-dev
-Conflicts: untangle-apache2-mpm-worker (<< 2.0.42-1), untangle-apache2-mpm-prefork (<< 2.0.42-1), untangle-apache2-mpm-perchild (<< 2.0.42-1), untangle-apache2-mpm-threadpool (<< 2.0.42-1), untangle-apache2-dev
+Conflicts: apache2-prefork-dev, untangle-apache2-mpm-worker (<< 2.0.42-1), untangle-apache2-mpm-prefork (<< 2.0.42-1), untangle-apache2-mpm-perchild (<< 2.0.42-1), untangle-apache2-mpm-threadpool (<< 2.0.42-1), untangle-apache2-dev
+Provides: apache2-prefork-dev
+Replaces: apache2-prefork-dev
 Description: development headers for untangle-apache2
  This package provides the development headers for non-threaded untangle-apache2, 
  see the untangle-apache2 package description for more details.
@@ -118,18 +131,19 @@ Package: untangle-apache2-threaded-dev
 Section: devel
 Architecture: any
 Depends: untangle-apache2-common (= ${Source-Version}), untangle-libapr0-dev (= ${Source-Version}), libssl-dev, openssl, bzip2, autoconf, autotools-dev, libtool, libdb4.2-dev, zlib1g-dev, libpcre3-dev
-Conflicts: untangle-apache2-mpm-worker (<< 2.0.42-1), untangle-apache2-mpm-prefork (<< 2.0.42-1), untangle-apache2-mpm-perchild (<< 2.0.42-1), untangle-apache2-mpm-threadpool (<< 2.0.42-1), untangle-apache2-prefork-dev
-Provides: untangle-apache2-dev
+Conflicts: untangle-apache2-mpm-worker (<< 2.0.42-1), untangle-apache2-mpm-prefork (<< 2.0.42-1), untangle-apache2-mpm-perchild (<< 2.0.42-1), untangle-apache2-mpm-threadpool (<< 2.0.42-1), untangle-apache2-prefork-dev, apache2-threaded-dev
+Provides: untangle-apache2-dev, apache2-threaded-dev
+Replaces: apache2-threaded-dev
 Description: development headers for untangle-apache2
  This package provides the development headers for threaded versions of
  untangle-apache2, see the untangle-apache2 package description for more details.
 
 Package: untangle-libapr0
-Architecture: any
-Conflicts: untangle-libapr
-Replaces: untangle-libapr
-Provides: untangle-libapr
 Section: net
+Architecture: any
+Conflicts: untangle-libapr, libapr0
+Replaces: untangle-libapr, libapr0
+Provides: untangle-libapr, libapr0
 Depends: ${shlibs:Depends}, libpcre3, libdb4.2, libexpat1
 Description: the Apache Portable Runtime
  APR is Apache's Portable Runtime Library, designed to be a support library to
@@ -139,8 +153,9 @@ Description: the Apache Portable Runtime
  It is currently used by Apache2, Subversion, and Samba-TNG, among others.
 
 Package: untangle-libapr0-dev
-Provides: untangle-libapr-dev
-Conflicts: untangle-libapr-dev, untangle-apache2-dev (<= 2.0.39+cvs.1028741220-1)
+Replaces: libapr0-dev
+Provides: libapr0-dev, untangle-libapr-dev
+Conflicts: libapr0-dev, untangle-libapr-dev, untangle-apache2-dev (<= 2.0.39+cvs.1028741220-1)
 Architecture: any
 Depends: untangle-libapr0 (= ${Source-Version}), libdb4.2-dev, libpcre3-dev, libldap2-dev, libexpat1-dev, libtool
 Section: libdevel
@@ -152,6 +167,9 @@ Description: development headers for untangle-libapr
  on software that requires untangle-libapr.
 
 Package: untangle-apache2
+Provides: apache2
+Replaces: apache2
+Conflicts: apache2
 Architecture: any
 Depends: untangle-apache2-mpm-worker (= ${Source-Version}) | untangle-apache2-mpm-prefork (= ${Source-Version}) | untangle-apache2-mpm-perchild (= ${Source-Version})
 Section: web
