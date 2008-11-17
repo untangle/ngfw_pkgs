@@ -20,7 +20,7 @@ class Alpaca::Components::DnsComponent < Alpaca::Component
     menu_organizer.register_item( "/main/dns_server", menu_item( 500, "DNS Server", :action => "manage" ))
 
     if ( config_level >= AlpacaSettings::Level::Advanced ) 
-      menu_organizer.register_item( "/main/advanced/dns_upstream_servers", menu_item( 600, "Upstream DNS", :action => "upstream_servers" ))
+      menu_organizer.register_item( "/main/advanced/dns_upstream_servers", menu_item( 590, "Local DNS", :action => "upstream_servers" ))
     end
   end
   

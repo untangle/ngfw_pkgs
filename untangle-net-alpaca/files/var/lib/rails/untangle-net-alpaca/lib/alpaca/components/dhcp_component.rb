@@ -21,7 +21,7 @@ class Alpaca::Components::DhcpComponent < Alpaca::Component
                                   menu_item( 400, "DHCP Server", :action => "manage" ))
 
     if ( config_level >= AlpacaSettings::Level::Advanced ) 
-      menu_organizer.register_item( "/main/advanced/dhcp_custom_field", menu_item( 600, "DNSMasq", :action => "custom_field" ))
+      menu_organizer.register_item( "/main/advanced/dhcp_custom_field", menu_item( 600, "DHCP & DNS", :action => "custom_field" ))
     end
   end
 

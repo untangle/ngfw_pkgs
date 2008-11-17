@@ -115,7 +115,7 @@ EOF
 
       columns << Alpaca::Table::DeleteColumn.new
       
-      super(  "Upstream DNS Servers", "dns-upstream-servers", "", "dns-upstream-server-entry", columns )
+      super(  "Local DNS Servers", "dns-upstream-servers", "", "dns-upstream-server-entry", columns )
     end
 
     def row_id( row )
