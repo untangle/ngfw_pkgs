@@ -1,0 +1,31 @@
+#!/usr/bin/perl
+
+use Debian::Vhosts;
+
+$hostname = shift;
+$default = (vb_config_get("apache2", "default", "/var/lib/vhost-base/$hostname/conf/apache2.conf"))[0];
+
+dbmopen(%sites, "/etc/apache2/sites", 0644);
+if ($default eq "true") { 
+	print(STDERR "Disabling default site: $hostname.\n");
+	delete $sites{'default'};
+}
+
+
+unlink </etc/apache2/sites-enabled/*> || true;
+if ($sites{'default'}) {
+	foreach $i (</etc/apache2/sites-available/{$sites{'default'}}*>) {
+		$i =~ s#/etc/apache2/sites-available/##;
+		symlink("/etc/apache2/sites-available/$i", "/etc/apache2/sites-enabled/00-$i") || die "Failed to make symlink sites-available/$i -> site-enabled/$i\: $!";
+	}
+}
+
+foreach $i (@{$sites{'nondefault'}}) {
+	foreach $j (</etc/apache2/sites-available/$i*>) {
+		$j =~ s#/etc/apache2/sites-available/##;
+		symlink("/etc/apache2/sites-available/$j", "/etc/apache2/sites-enabled/01-$j") || die "Failed to make symlink sites-available/$j -> sites-enabled/$j\: $!";
+	}
+}
+
+dbmclose(%sites);
+exit(0);

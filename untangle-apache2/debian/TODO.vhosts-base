@@ -1,0 +1,6 @@
+<Md> anyway, the default sites created by the vhost thing are broken, logs MUST go to
++/var/log/something
+[21:36:35] (Private)  <Md> the rationale is that I cannot afford to backup logs, but I must backup the web
++root
+[21:36:40] (Private)  <Md> this is not an uncommon situation
+

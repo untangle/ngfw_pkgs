@@ -1,0 +1,12 @@
+#!/bin/sh
+set -e
+
+#make a symlink for libapr.so.0
+[ ! -f /usr/lib/libapr.so.0 ] && ln -s /usr/lib/libapr-0.so.0 /usr/lib/libapr.so.0
+
+#make a symlink for libaprutil.so.0
+[ ! -f /usr/lib/libaprutil.so.0 ] && ln -s /usr/lib/libaprutil-0.so.0 /usr/lib/libaprutil.so.0
+
+#DEBHELPER#
+
+exit 0

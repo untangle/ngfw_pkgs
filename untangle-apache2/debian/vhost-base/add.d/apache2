@@ -1,0 +1,87 @@
+#!/usr/bin/perl -w
+
+# Get vhost-base stuff.
+use Debian::Vhosts;
+use File::Copy;
+
+$vhostname = shift;
+my $ports;
+
+open(PORTS, "/etc/apache2/ports.conf") || die "Couldn't open port config: $!";
+while (<PORTS>) { 
+       if ($ports == "") { /Listen (\d+)/; $ports = $1; }
+       else { /Listen (\d+)/; $ports = $ports . ", " . $1; }
+}
+close(PORTS);
+
+open(OLDTEMPLATES, "/etc/vhosts/templates.d/apache2.in") || die "Couldn't open old templates: $!";
+open(NEWTEMPLATES, ">/etc/vhosts/templates.d/apache2") || die "Couldn't open new templates: $!";
+while (<OLDTEMPLATES>) { s/::PORTS::/$ports/; print NEWTEMPLATES; }
+close(OLDTEMPLATES);
+close(NEWTEMPLATES);
+
+vb_input("critical", "apache2/servername");
+vb_input("critical", "apache2/aliases");
+vb_input("critical", "apache2/serveradmin");
+vb_input("critical", "apache2/ssl");
+vb_input("critical", "apache2/port");
+vb_input("critical", "apache2/default");
+
+my @ret = vb_go();
+
+if (!(($ret[0] == 0) || ($ret[0] == 10))) {
+	print(STDERR "db_go failed! Return code: @ret\n");
+}
+
+my $servername = vb_get("apache2/servername");
+if ($servername eq "") { $servername = `hostname -f`; }
+my $aliases = vb_get("apache2/aliases");
+my $admin = vb_get("apache2/serveradmin");
+my $ssl = vb_get("apache2/ssl");
+my $port = vb_get("apache2/port");
+my $default = vb_get("apache2/default");
+
+vb_fset("apache2/servername", "seen", "false");
+vb_fset("apache2/aliases", "seen", "false");
+vb_fset("apache2/serveradmin", "seen", "false");
+vb_fset("apache2/ssl", "seen", "false");
+vb_fset("apache2/port", "seen", "false");
+vb_fset("apache2/default", "seen", "false");
+
+open(CONFIG, ">/var/lib/vhost-base/$vhostname/conf/apache2.conf") || die "Couldn't open vhost config: $!";
+print(CONFIG "[apache2]\n  server=$servername\n  aliases=$aliases\n");
+print(CONFIG "  admin=$admin\n  ssl=$ssl\n  port=$port\n  default=$default\n");
+
+open(DEFSITE, "/usr/share/apache2/config/default") || die "Couldn't open default config; $!";
+open(NEWCONF, ">/etc/apache2/sites-available/$vhostname-$port") || die "Couldn't open new config: $!";
+while (<DEFSITE>) {
+	s/::SERVERADMIN::/$admin/;
+	s/::SERVERNAME::/$servername/;
+	s/::PORT::/$port/;
+	s/::VHOSTNAME::/$vhostname/;
+	print NEWCONF;
+}
+close(DEFSITE);
+close(NEWCONF);
+
+if($ssl eq "true") {
+	open(DEFSITESSL, "/usr/share/apache2/config/default-443") || die "Couldn't open default SSL config: $!";
+	open(NEWCONFSSL, ">/etc/apache2/sites-available/$vhostname-443") || die "Couldn't open new SSL config: $!";
+	while (<DEFSITESSL>) {
+		s/::SERVERADMIN::/$admin/;
+		s/::SERVERNAME::/$servername/;
+		s/::PORT::/$port/;
+		s/::VHOSTNAME::/$vhostname/;
+		print NEWCONFSSL;
+	}
+	close(DEFSITESSL);
+	close(NEWCONFSSL);
+}
+
+if (!(-d "/var/lib/vhost-base/$vhostname/logs")) { mkdir("/var/lib/vhost-base/$vhostname/logs"); }
+system("cp -R /usr/share/apache2/default-site/* /var/lib/vhost-base/$vhostname");
+move("/var/lib/vhost-base/$vhostname/htdocs", "/var/lib/vhost-base/$vhostname/htdocs-$port");
+
+if ($ssl eq "true") { system("cp -R /var/lib/vhost-base/$vhostname/htdocs-$port /var/lib/vhost-base/$vhostname/htdocs-443"); }
+
+unlink("/etc/vhosts/templates.d/apache2") || die "Couldn't remove new templates: $!";

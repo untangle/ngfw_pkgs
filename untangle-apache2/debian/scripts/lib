@@ -1,0 +1,44 @@
+#!/bin/bash
+lib_START=foo
+fetchmsg() {
+	local msg
+	msg=$1;shift
+	eval echo $(sed -ne "s/^$(BASENAME):$msg://p" debian/scripts/messages)
+}
+START() {
+	echo -n "$(fetchmsg START "$@") "
+}
+OK() {
+	fetchmsg OK "$@"
+}
+FAILED() {
+	fetchmsg FAILED "$@"
+}
+ALREADY_DONE() {
+	fetchmsg ALREADY_DONE "$@"
+}
+
+BASENAME() {
+	local base
+	base=${0##*/}
+	if [ x$base = x ];then
+		echo "Danger, Will Robinson, Danger!" 1>&2
+		echo "Bash is very confused." 1>&2
+		exit 1
+	fi
+	if [ x$base = xlib ];then
+		echo "You can't call this directly." 1>&2
+		echo "This is a library that should be sourced." 1>&2
+		exit 1
+	fi
+	echo $base
+}
+file2cat() {
+	case "$f" in
+		*.gz|*.Z)	cmd=zcat;;
+		*.bz)		cmd=bzcat;;
+		*.bz2)		cmd=bz2cat;;
+		*)		cmd=cat;;
+	esac
+	$cmd $f
+}

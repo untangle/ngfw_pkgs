@@ -1,0 +1,2 @@
+version=2
+http://archive.apache.org/dist/httpd/ httpd-(2\.0\..*)\.tar\.gz

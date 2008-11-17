@@ -1,0 +1,3 @@
+needs to be able to update/remove modules, and enable/disable them
+should take a similar form to update-rc.d/update-alternatives
+needs to be able to specify a "priority" for the module loading sequence

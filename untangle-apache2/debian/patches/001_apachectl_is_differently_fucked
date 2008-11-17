@@ -1,0 +1,14 @@
+diff -ruN -x Makefile.in -x configure -x '*~' -x build-tree.orig -x '*.rej' build-tree.orig/apache2/support/apachectl.in build-tree/apache2/support/apachectl.in
+--- build-tree/apache2/support/apachectl.in	2003-05-07 13:18:19.000000000 +0100
++++ build-tree/apache2/support/apachectl.in	2003-05-07 13:17:37.000000000 +0100
+@@ -31,8 +31,8 @@
+ HTTPD='@exp_sbindir@/@progname@'
+ #
+ # pick up any necessary environment variables
+-if test -f @exp_sbindir@/envvars; then
+-  . @exp_sbindir@/envvars
++if test -f @exp_sysconfdir@/envvars; then
++  . @exp_sysconfdir@/envvars
+ fi
+ #
+ # a command that outputs a formatted text version of the HTML at the

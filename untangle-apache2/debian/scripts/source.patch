@@ -1,0 +1,21 @@
+#!/bin/bash
+. debian/scripts/vars
+. debian/scripts/lib
+[ ! -d upstream/patches ] && exit
+mkdir -p $STAMP_DIR/upstream/patches/ $SOURCE_TREE
+for f in `find upstream/patches -type f|sort`;do
+	stampfile=$STAMP_DIR/upstream/patches/`basename $f`
+	if [ ! -e $stampfile ];then
+		START $f
+		if file2cat $f | (cd $SOURCE_DIR/$TAR_DIR;patch -p0) > $stampfile.log;then
+			OK
+			touch $stampfile
+		else
+			FAILED
+			exit 1
+		fi
+	else
+		ALREADY_DONE $f
+	fi
+done
+

@@ -1,0 +1,47 @@
+diff -ruN -x Makefile.in -x configure -x '*~' -x build-tree.orig -x '*.rej' build-tree.orig/apache2/srclib/apr/apr-config.in build-tree/apache2/srclib/apr/apr-config.in
+--- build-tree.orig/apache2/srclib/apr/apr-config.in	2003-04-21 15:21:59.000000000 +0100
++++ build-tree/apache2/srclib/apr/apr-config.in	2003-05-29 15:01:17.000000000 +0100
+@@ -59,12 +59,12 @@
+ APR_DOTTED_VERSION="@APR_DOTTED_VERSION@"
+ 
+ prefix="@prefix@"
+-exec_prefix="@exec_prefix@"
+-bindir="@bindir@"
+-libdir="@libdir@"
+-datadir="@datadir@"
+-installbuilddir="@installbuilddir@"
+-includedir="@includedir@"
++exec_prefix="/usr"
++bindir="/usr/bin"
++libdir="/usr/lib"
++datadir="/usr/share/apache2"
++installbuilddir="/usr/share/apache2/build"
++includedir="/usr/include/apr-0"
+ 
+ CC="@CC@"
+ CPP="@CPP@"
+@@ -221,7 +221,7 @@
+     ;;
+     --apr-libtool)
+     if test "$location" = "installed"; then
+-        echo "${installbuilddir}/libtool"
++        echo "/usr/bin/libtool"
+     else
+         echo "$APR_BUILD_DIR/libtool"
+     fi
+diff -ruN -x Makefile.in -x configure -x '*~' -x build-tree.orig -x '*.rej' build-tree.orig/apache2/srclib/apr-util/apu-config.in build-tree/apache2/srclib/apr-util/apu-config.in
+--- build-tree.orig/apache2/srclib/apr-util/apu-config.in	2003-03-23 03:32:57.000000000 +0000
++++ build-tree/apache2/srclib/apr-util/apu-config.in	2003-05-29 15:03:05.000000000 +0100
+@@ -60,9 +60,9 @@
+ 
+ prefix="@prefix@"
+ exec_prefix="@exec_prefix@"
+-bindir="@bindir@"
+-libdir="@libdir@"
+-includedir="@includedir@"
++bindir="/usr/bin"
++libdir="/usr/lib"
++includedir="/usr/include/apr-0"
+ 
+ LIBS="@APRUTIL_EXPORT_LIBS@"
+ INCLUDES="@APRUTIL_INCLUDES@"

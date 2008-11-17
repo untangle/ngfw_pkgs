@@ -1,0 +1,21 @@
+#! /bin/bash
+
+set -e
+
+if [ "$1" = "purge" ]
+then
+    rm -rf /var/cache/apache2
+    rm -rf /var/lib/apache2
+    rm -rf /var/log/apache2
+    rm -rf /var/lock/apache2
+    rm -rf /var/run/apache2
+    # /etc mess
+    rm -f /etc/default/apache2
+    rm -f /etc/apache2/ports.conf
+    rm -f /etc/apache2/httpd.conf
+    for i in `find /etc/apache2 -type l`; do
+        rm -f "$i"
+    done
+fi
+
+#DEBHELPER#

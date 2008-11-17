@@ -1,0 +1,121 @@
+--- build-tree/apache2/srclib/apr/include/apr.h.in	2004-02-28 11:41:32.000000000 -0700
++++ build-tree/apache2/srclib/apr/include/apr.h.in	2004-08-15 05:45:44.000000000 -0600
+@@ -217,7 +217,7 @@
+ #define APR_HAS_UNICODE_FS        0
+ #define APR_HAS_PROC_INVOKED      0
+ #define APR_HAS_USER              1
+-#define APR_HAS_LARGE_FILES       0
++#define APR_HAS_LARGE_FILES       1
+ #define APR_HAS_XTHREAD_FILES     0
+ #define APR_HAS_OS_UUID           0
+ 
+--- build-tree/apache2/srclib/apr/include/arch/unix/apr_arch_networkio.h	2004-02-13 02:33:47.000000000 -0700
++++ build-tree/apache2/srclib/apr/include/arch/unix/apr_arch_networkio.h	2004-08-15 06:58:51.000000000 -0600
+@@ -73,7 +73,11 @@
+ #include <fcntl.h>
+ #endif
+ #if APR_HAVE_SYS_SENDFILE_H
++# ifdef __USE_FILE_OFFSET64
++#include "apr_sendfile_wrapper.h"
++# else
+ #include <sys/sendfile.h>
++# endif
+ #endif
+ #if APR_HAVE_SYS_IOCTL_H
+ #include <sys/ioctl.h>
+
+--- build-tree/apache2/srclib/apr/network_io/unix/sendrecv.c	2004-08-15 06:55:45.000000000 -0600
++++ build-tree/apache2/srclib/apr/network_io/unix/sendrecv.c	2004-08-15 07:01:57.000000000 -0600
+@@ -19,6 +19,25 @@
+ #if APR_HAS_SENDFILE
+ /* This file is needed to allow us access to the apr_file_t internals. */
+ #include "apr_arch_file_io.h"
++
++#ifdef __USE_FILE_OFFSET64
++ssize_t apr_sendfile_real (int __out_fd, int __in_fd, __off64_t *__offset, size_t __count)
++{
++        apr_off_t off = *__offset;
++	ssize_t result;
++	
++        result = sendfile64 (__out_fd, __in_fd, &off, __count);
++        if ( errno == ENOSYS )
++        {
++		long off = *__offset;
++		result = sendfile (__out_fd, __in_fd, &off, __count);
++        }
++        return result;
++}
++#else
++#define apr_sendfile_real sendfile
++#endif /* __USE_FILE_OFFSET64 */
++
+ #endif /* APR_HAS_SENDFILE */
+ 
+ /* sys/sysctl.h is only needed on FreeBSD for include_hdrs_in_length() */
+@@ -293,7 +312,7 @@
+     }
+ 
+     do {
+-        rv = sendfile(sock->socketdes,    /* socket */
++        rv = apr_sendfile_real(sock->socketdes,    /* socket */
+                       file->filedes, /* open file descriptor of the file to be sent */
+                       &off,    /* where in the file to start */
+                       *len);   /* number of bytes to send */
+@@ -310,7 +329,7 @@
+         }
+         else {
+             do {
+-                rv = sendfile(sock->socketdes,    /* socket */
++                rv = apr_sendfile_real(sock->socketdes,    /* socket */
+                               file->filedes, /* open file descriptor of the file to be sent */
+                               &off,    /* where in the file to start */
+                               *len);    /* number of bytes to send */
+
+--- build-tree/apache2/srclib/apr/include/arch/unix/apr_sendfile_wrapper.h	1969-12-31 17:00:00.000000000 -0700
++++ ../build-tree/apache2/srclib/apr/include/arch/unix/apr_sendfile_wrapper.h	2004-08-15 06:59:53.000000000 -0600
+@@ -0,0 +1,45 @@
++/* sendfile -- copy data directly from one file descriptor to another
++   Copyright (C) 1998,99,01,2002 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++#warning Including custom sendfile.h for LFS64 builds only!
++
++#ifndef _SYS_SENDFILE_H
++#define _SYS_SENDFILE_H	1
++
++#include <features.h>
++#include <sys/types.h>
++
++__BEGIN_DECLS
++
++/* Send up to COUNT bytes from file associated with IN_FD starting at
++   *OFFSET to descriptor OUT_FD.  Set *OFFSET to the IN_FD's file position
++   following the read bytes.  If OFFSET is a null pointer, use the normal
++   file position instead.  Return the number of written bytes, or -1 in
++   case of error.  */
++extern ssize_t sendfile (int __out_fd, int __in_fd, long *__offset,
++			 size_t __count) __THROW;
++
++#ifdef __USE_LARGEFILE64
++extern ssize_t sendfile64 (int __out_fd, int __in_fd, __off64_t *__offset,
++			   size_t __count) __THROW;
++#endif
++
++__END_DECLS
++
++#endif	/* sys/sendfile.h */

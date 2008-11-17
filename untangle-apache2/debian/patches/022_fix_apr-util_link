@@ -1,0 +1,50 @@
+diff -ruN -x configure -x '*~' -x build-tree.orig -x '*.rej' build-tree.orig/apache2/srclib/apr-util/build/apu-conf.m4 build-tree/apache2/srclib/apr-util/build/apu-conf.m4
+--- build-tree.orig/apache2/srclib/apr-util/build/apu-conf.m4	2003-08-28 18:29:07.000000000 +0100
++++ build-tree/apache2/srclib/apr-util/build/apu-conf.m4	2004-07-29 16:38:38.000000000 +0100
+@@ -23,6 +23,7 @@
+   APR_LIBS="`$apr_config --link-libtool --libs`"
+   APR_SO_EXT="`$apr_config --apr-so-ext`"
+   APR_LIB_TARGET="`$apr_config --apr-lib-target`"
++  apr_ld_flags="`$apr_config --link-ld`"
+ 
+   AC_SUBST(APR_INCLUDES)
+   AC_SUBST(APR_LIBS)
+@@ -31,6 +32,7 @@
+   APR_SOURCE_DIR="`$apr_config --srcdir`"
+   AC_SUBST(APR_BUILD_DIR)
+   AC_SUBST(APR_SOURCE_DIR)
++  APR_ADDTO(APRUTILL_LDFLAGS,[$apr_ld_flags])
+ ])
+ 
+ 
+diff -ruN -x configure -x '*~' -x build-tree.orig -x '*.rej' build-tree.orig/apache2/srclib/apr-util/Makefile.in build-tree/apache2/srclib/apr-util/Makefile.in
+--- build-tree.orig/apache2/srclib/apr-util/Makefile.in	2004-08-02 17:14:25.278232168 +0100
++++ build-tree/apache2/srclib/apr-util/Makefile.in	2004-08-02 17:13:39.577179784 +0100
+@@ -12,6 +12,7 @@
+ 
+ INCLUDES = @APRUTIL_PRIV_INCLUDES@ @APR_INCLUDES@ @APRUTIL_INCLUDES@
+ APRUTIL_LDFLAGS = @APRUTIL_LDFLAGS@
++APRUTILL_LDFLAGS = @APRUTILL_LDFLAGS@
+ APRUTIL_LIBS = @APRUTIL_LIBS@
+ 
+ TARGET_LIB = lib@APRUTIL_LIBNAME@.la
+@@ -83,7 +84,7 @@
+ 
+ $(TARGET_LIB):
+ 	@objects="`find $(SUBDIRS) -name expat -prune -o -name 'gen_uri_delims.@so_ext@' -prune -o -name '*.@so_ext@' -print`"; \
+-	    tmpcmd="$(LINK) @lib_target@ @EXTRA_OS_LINK@"; \
++	    tmpcmd="$(LINK) $(APRUTILL_LDFLAGS) @lib_target@ @EXTRA_OS_LINK@ "; \
+ 	    echo $$tmpcmd; \
+ 	    $$tmpcmd && touch $@
+ 
+diff -ruN -x configure -x '*~' -x build-tree.orig -x '*.rej' build-tree.orig/apache2/srclib/apr-util/configure.in build-tree/apache2/srclib/apr-util/configure.in
+--- build-tree.orig/apache2/srclib/apr-util/configure.in	2003-12-07 09:59:54.000000000 +0000
++++ build-tree/apache2/srclib/apr-util/configure.in	2004-08-02 18:03:13.000000000 +0100
+@@ -149,6 +149,7 @@
+ AC_SUBST(APRUTIL_PRIV_INCLUDES)
+ AC_SUBST(APRUTIL_INCLUDES)
+ AC_SUBST(APRUTIL_LDFLAGS)
++AC_SUBST(APRUTILL_LDFLAGS)
+ AC_SUBST(APRUTIL_LIBS)
+ AC_SUBST(LDFLAGS)
+ 

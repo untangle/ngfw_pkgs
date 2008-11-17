@@ -1,0 +1,48 @@
+<VirtualHost *>
+	ServerAdmin ::SERVERADMIN::
+	ServerName ::SERVERNAME::
+	
+	DocumentRoot /var/www/::VHOSTNAME::/htdocs-::PORT::
+	<Directory />
+		Options FollowSymLinks
+		AllowOverride None
+	</Directory>
+	<Directory /var/www/::VHOSTNAME::/htdocs-::PORT::>
+		Options Indexes FollowSymLinks
+		AllowOverride None
+		Order allow,deny
+		allow from all
+	</Directory>
+
+	ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/::VHOSTNAME::-::PORT::
+	<Directory "/usr/lib/cgi-bin/::VHOSTNAME::-::PORT::">
+		AllowOverride None
+		Options None
+		Order allow,deny
+		Allow from all
+	</Directory>
+	<Directory "/usr/lib/cgi-bin">
+		AllowOverride None
+		Options FollowSymLinks ExecCGI
+		Order allow,deny
+		Allow from all
+	</Directory>
+
+	ErrorLog /var/log/apache2/::VHOSTNAME::/logs/error.log-::PORT::
+
+	# Possible values include: debug, info, notice, warn, error, crit,
+	# alert, emerg.
+	LogLevel warn
+
+	CustomLog /var/log/apache2/::VHOSTNAME::/logs/access.log-::PORT:: combined
+	ServerSignature On
+	
+	Alias /icons/ "/usr/share/apache2/icons/"
+	Alias /manual/ "/usr/share/doc/apache2-doc/manual/"
+	<Directory "/usr/share/apache2/icons">
+	    Options Indexes MultiViews
+	    AllowOverride None
+	    Order allow,deny
+	    Allow from all
+	</Directory>
+</VirtualHost>

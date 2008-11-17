@@ -1,0 +1,20 @@
+diff -ruN -x Makefile.in -x configure -x '*~' -x build-tree.orig -x '*.rej' build-tree.orig/apache2/support/apxs.in build-tree/apache2/support/apxs.in
+--- build-tree.orig/apache2/support/apxs.in	2003-07-04 15:16:21.000000000 +0100
++++ build-tree/apache2/support/apxs.in	2003-07-04 15:16:15.000000000 +0100
+@@ -331,6 +331,7 @@
+     $data =~ s|%TARGET%|$CFG_TARGET|sg;
+     $data =~ s|%PREFIX%|$prefix|sg;
+     $data =~ s|%INSTALLBUILDDIR%|$installbuilddir|sg;
++    $data =~ s|%DATADIR%|$datadir|sg;
+ 
+     my ($mkf, $mods, $src) = ($data =~ m|^(.+)-=#=-\n(.+)-=#=-\n(.+)|s);
+ 
+@@ -694,7 +695,7 @@
+ 
+ builddir=.
+ top_srcdir=%PREFIX%
+-top_builddir=%PREFIX%
++top_builddir=%DATADIR%
+ include %INSTALLBUILDDIR%/special.mk
+ 
+ #   the used tools

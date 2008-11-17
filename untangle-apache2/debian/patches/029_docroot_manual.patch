@@ -1,0 +1,360 @@
+diff -ur build-tree/apache2/docs/docroot.old/index.html.ca build-tree/apache2/docs/docroot/index.html.ca
+--- build-tree/apache2/docs/docroot.old/index.html.ca	2002-05-20 15:31:08.000000000 -0600
++++ build-tree/apache2/docs/docroot/index.html.ca	2004-08-30 01:16:58.000000000 -0600
+@@ -26,7 +26,7 @@
+ seu manteniment i no pot ajudar-vos a resoldre els problemes de configuraci&oacute;.</p>
+ 
+ <hr width="50%" size="8" />
+-<p>Aquesta distribuci&oacute; inclou la <a href="manual/">documentaci&oacute;</a>
++<p>Aquesta distribuci&oacute; inclou la <a href="/manual/">documentaci&oacute;</a>
+ d'Apache.</p>
+ 
+ <p>Podeu fer servir lliurement la imatge que surt a sota en un servidor web
+diff -ur build-tree/apache2/docs/docroot.old/index.html.cz.iso8859-2 build-tree/apache2/docs/docroot/index.html.cz.iso8859-2
+--- build-tree/apache2/docs/docroot.old/index.html.cz.iso8859-2	2001-09-28 10:55:49.000000000 -0600
++++ build-tree/apache2/docs/docroot/index.html.cz.iso8859-2	2004-08-30 01:16:58.000000000 -0600
+@@ -36,7 +36,7 @@
+   <P>
+   Zde najdete
+   <A
+-   HREF="manual/"
++   HREF="/manual/"
+   >dokumentaci</A>
+   Apache (anglicky) obsa¾enou v této distribuci.
+   </P>
+diff -ur build-tree/apache2/docs/docroot.old/index.html.de build-tree/apache2/docs/docroot/index.html.de
+--- build-tree/apache2/docs/docroot.old/index.html.de	2002-02-14 07:38:15.000000000 -0700
++++ build-tree/apache2/docs/docroot/index.html.de	2004-08-30 01:16:58.000000000 -0600
+@@ -44,7 +44,7 @@
+   <HR>
+   <P>
+    Die englische <A
+-   HREF="manual/">Online-Dokumentation</A> f&uuml;r die
++   HREF="/manual/">Online-Dokumentation</A> f&uuml;r die
+    Apache-Webserver-Software ist Bestandteil dieser
+    Software-Distribution.
+   </P>
+diff -ur build-tree/apache2/docs/docroot.old/index.html.dk build-tree/apache2/docs/docroot/index.html.dk
+--- build-tree/apache2/docs/docroot.old/index.html.dk	2001-01-19 12:44:34.000000000 -0700
++++ build-tree/apache2/docs/docroot/index.html.dk	2004-08-30 01:16:58.000000000 -0600
+@@ -32,7 +32,7 @@
+   <P>
+   Apache-
+   <A
+-   HREF="manual/index.html"
++   HREF="/manual/index.html"
+   >documentationen</A>
+   er inkluderet med denne distribution.
+   </P>
+diff -ur build-tree/apache2/docs/docroot.old/index.html.ee build-tree/apache2/docs/docroot/index.html.ee
+--- build-tree/apache2/docs/docroot.old/index.html.ee	2001-01-19 12:44:35.000000000 -0700
++++ build-tree/apache2/docs/docroot/index.html.ee	2004-08-30 01:16:58.000000000 -0600
+@@ -38,7 +38,7 @@
+   <P>
+   Ka Apache
+   <A
+-   HREF="manual/index.html"
++   HREF="/manual/index.html"
+   >dokumentatsioon</A>
+   on selles distributsioonis olemas.
+   </P>
+diff -ur build-tree/apache2/docs/docroot.old/index.html.el build-tree/apache2/docs/docroot/index.html.el
+--- build-tree/apache2/docs/docroot.old/index.html.el	2001-01-19 12:44:35.000000000 -0700
++++ build-tree/apache2/docs/docroot/index.html.el	2004-08-30 01:16:58.000000000 -0600
+@@ -27,7 +27,7 @@
+ 
+ 
+ <P>
+-Ç <A HREF="manual/">ôåêìçñßùóç</A> ôïõ Apache İ÷åé óõìğåñéëçöèåß óå áõôŞ ôç äéáíïìŞ.
++Ç <A HREF="/manual/">ôåêìçñßùóç</A> ôïõ Apache İ÷åé óõìğåñéëçöèåß óå áõôŞ ôç äéáíïìŞ.
+ 
+ <P>
+ Åßóôå åëåıèåñïò/ç íá ÷ñçóéìïğïéŞóåôå ôçí ğáñáêÜôù åéêüíá óå İíáí åîõğçñåôçôŞ ôïõ WWW ğïõ âáóßæåôáé óå Apache.  Åõ÷áñéóôïıìå ğïõ ÷ñçóéìïğïéåßôå ôïí Apache!
+diff -ur build-tree/apache2/docs/docroot.old/index.html.en build-tree/apache2/docs/docroot/index.html.en
+--- build-tree/apache2/docs/docroot.old/index.html.en	2001-05-03 18:01:18.000000000 -0600
++++ build-tree/apache2/docs/docroot/index.html.en	2004-08-30 01:16:58.000000000 -0600
+@@ -26,7 +26,7 @@
+ issues.</p>
+ 
+ <hr width="50%" size="8" />
+-<p>The Apache <a href="manual/">documentation</a> has been included
++<p>The Apache <a href="/manual/">documentation</a> has been included
+ with this distribution.</p>
+ 
+ <p>You are free to use the image below on an Apache-powered web
+diff -ur build-tree/apache2/docs/docroot.old/index.html.es build-tree/apache2/docs/docroot/index.html.es
+--- build-tree/apache2/docs/docroot.old/index.html.es	2001-01-19 12:44:36.000000000 -0700
++++ build-tree/apache2/docs/docroot/index.html.es	2004-08-30 01:16:58.000000000 -0600
+@@ -35,7 +35,7 @@
+   <P>
+   La
+   <A
+-   HREF="manual/index.html"
++   HREF="/manual/index.html"
+   >documentaci&oacute;n</A>
+   de Apache ha sido incluida en esta distribuci&oacute;n.
+   </P>
+diff -ur build-tree/apache2/docs/docroot.old/index.html.et build-tree/apache2/docs/docroot/index.html.et
+--- build-tree/apache2/docs/docroot.old/index.html.et	2000-11-14 18:28:40.000000000 -0700
++++ build-tree/apache2/docs/docroot/index.html.et	2004-08-30 01:16:58.000000000 -0600
+@@ -38,7 +38,7 @@
+   <P>
+   Ka Apache
+   <A
+-   HREF="manual/index.html"
++   HREF="/manual/index.html"
+   >dokumentatsioon</A>
+   on selles distributsioonis olemas.
+   </P>
+diff -ur build-tree/apache2/docs/docroot.old/index.html.fr build-tree/apache2/docs/docroot/index.html.fr
+--- build-tree/apache2/docs/docroot.old/index.html.fr	2001-09-28 10:55:49.000000000 -0600
++++ build-tree/apache2/docs/docroot/index.html.fr	2004-08-30 01:16:58.000000000 -0600
+@@ -35,7 +35,7 @@
+ 
+ <HR WIDTH="50%" SIZE="8">
+ 
+-<p>La <A HREF="manual/">documentation</A> Apache est incluse dans cette
++<p>La <A HREF="/manual/">documentation</A> Apache est incluse dans cette
+ distribution.</p>
+ 
+ <p>Le webmaster de ce site peut librement utiliser l'image ci-dessous sur un
+diff -ur build-tree/apache2/docs/docroot.old/index.html.he.iso8859-8 build-tree/apache2/docs/docroot/index.html.he.iso8859-8
+--- build-tree/apache2/docs/docroot.old/index.html.he.iso8859-8	2001-01-20 15:43:08.000000000 -0700
++++ build-tree/apache2/docs/docroot/index.html.he.iso8859-8	2004-08-30 01:16:58.000000000 -0600
+@@ -38,7 +38,7 @@
+ <P><HR WIDTH="50%" SIZE="8">                                                    
+ 
+                                                                              <P>
+-              <BR> êåúá íéòöîğ <A HREF="manual/index.html">äéöèğîå÷åãä éëîñî</A>
++              <BR> êåúá íéòöîğ <A HREF="/manual/index.html">äéöèğîå÷åãä éëîñî</A>
+                                                                .úøùä úğëåú úìéáç
+                                                                                 
+                                                                                 
+diff -ur build-tree/apache2/docs/docroot.old/index.html.hr.iso8859-2 build-tree/apache2/docs/docroot/index.html.hr.iso8859-2
+--- build-tree/apache2/docs/docroot.old/index.html.hr.iso8859-2	2001-10-01 07:27:06.000000000 -0600
++++ build-tree/apache2/docs/docroot/index.html.hr.iso8859-2	2004-08-30 01:16:58.000000000 -0600
+@@ -23,7 +23,7 @@
+ sva pitanja obratite <strong>administratoru ili osobi odgovornoj za odrzavanje ovog poslu¾itelja.</strong></p>
+ 
+ <hr width="50%" size="8" />
+-<p>Ovdje se nalazi <a href="manual/">Dokumentacija</a> o Apache web poslu¾itelju
++<p>Ovdje se nalazi <a href="/manual/">Dokumentacija</a> o Apache web poslu¾itelju
+ (engleski).</p>
+ 
+ <p>Donju slièicu mo¾ete slobodno koristiti na stranicama ovog veb poslu¾itelja.
+diff -ur build-tree/apache2/docs/docroot.old/index.html.it build-tree/apache2/docs/docroot/index.html.it
+--- build-tree/apache2/docs/docroot.old/index.html.it	2001-11-07 08:40:51.000000000 -0700
++++ build-tree/apache2/docs/docroot/index.html.it	2004-08-30 01:16:58.000000000 -0600
+@@ -28,7 +28,7 @@
+ <b><font size="+1">ignorato</font></b>.</blockquote>
+ 
+ <hr>
+-<br>La <a href="manual/">documentazione</a> relativa di Apache
++<br>La <a href="/manual/">documentazione</a> relativa di Apache
+ &egrave; inclusa nella distribuzione.
+ <p>Il Webmaster di questo sito &egrave; libero di utilizzare l'immagine qui sotto
+ su qualsiasi Web server potenziato con Apache. Grazie per aver scelto Apache!
+diff -ur build-tree/apache2/docs/docroot.old/index.html.ja.iso2022-jp build-tree/apache2/docs/docroot/index.html.ja.iso2022-jp
+--- build-tree/apache2/docs/docroot.old/index.html.ja.iso2022-jp	2001-09-28 10:55:49.000000000 -0600
++++ build-tree/apache2/docs/docroot/index.html.ja.iso2022-jp	2004-08-30 01:16:58.000000000 -0600
+@@ -30,7 +30,7 @@
+ 
+ 
+ <p>
+-Apache $B$K4X$9$k(B<A HREF="manual/">$BJ8=q(B</A> $B$O!"$3$N(B web $B%5!<%PG[I[J*$NCf$K4^$^$l$F$$$^$9!#(B
++Apache $B$K4X$9$k(B<A HREF="/manual/">$BJ8=q(B</A> $B$O!"$3$N(B web $B%5!<%PG[I[J*$NCf$K4^$^$l$F$$$^$9!#(B
+ </p>
+ <p>
+ $B0J2<$N2hA|$O!"(BApache $B$rMxMQ$7$F$$$k(B web $B%5!<%P$G<+M3$K;H$&$3$H$,$G$-$^$9!#(BApache $B$r$4MxMQ$$$?$@$-!"$"$j$,$H$&$4$6$$$^$9(B!
+diff -ur build-tree/apache2/docs/docroot.old/index.html.ko.euc-kr build-tree/apache2/docs/docroot/index.html.ko.euc-kr
+--- build-tree/apache2/docs/docroot.old/index.html.ko.euc-kr	2002-06-10 18:19:17.000000000 -0600
++++ build-tree/apache2/docs/docroot/index.html.ko.euc-kr	2004-08-30 01:16:58.000000000 -0600
+@@ -26,7 +26,7 @@
+ ¼³Á¤¹®Á¦¿¡ °üÇÑ µµ¿òÀ» µå¸± ¼ö ¾ø½À´Ï´Ù.</p>
+ 
+ <hr width="50%" size="8" />
+-<p>¾ÆÆÄÄ¡ <a href="manual/">¹®¼­</a>´Â ÀÌ ¹èÆ÷ÆÇ¿¡ Æ÷ÇÔµÇ¾î ÀÖ½À´Ï´Ù.</p>
++<p>¾ÆÆÄÄ¡ <a href="/manual/">¹®¼­</a>´Â ÀÌ ¹èÆ÷ÆÇ¿¡ Æ÷ÇÔµÇ¾î ÀÖ½À´Ï´Ù.</p>
+ 
+ <p>¾ÆÆÄÄ¡¸¦ »ç¿ëÇÏ´Â À¥¼­¹ö¿¡¼­ ¾Æ·¡ ÀÌ¹ÌÁö¸¦ »ç¿ëÇÏ´Â°Ç ¿©·¯ºĞÀÇ
+ ÀÚÀ¯ÀÔ´Ï´Ù. ¾ÆÆÄÄ¡¸¦ »ç¿ëÇØ ÁÖ¼Å¼­ °¨»çÇÕ´Ï´Ù!</p>
+diff -ur build-tree/apache2/docs/docroot.old/index.html.lb.utf8 build-tree/apache2/docs/docroot/index.html.lb.utf8
+--- build-tree/apache2/docs/docroot.old/index.html.lb.utf8	2002-05-20 23:58:51.000000000 -0600
++++ build-tree/apache2/docs/docroot/index.html.lb.utf8	2004-08-30 01:16:58.000000000 -0600
+@@ -27,7 +27,7 @@
+ Autoren. Falls Dir d&euml;st awer macht, get &auml;ren message&nbsp; <b><font size="+2">ignoreiert.</font></b></blockquote>
+ 
+ <hr>
+-<p>D'Apache <a href="manual/">documentation</a> ass d&euml;ser Ausgab
++<p>D'Apache <a href="/manual/">documentation</a> ass d&euml;ser Ausgab
+ beigef&uuml;cht.
+ <p>Dem Webmaster vun dem heitenen site steht et zou dest Bild ob engem
+ Apache-powered Web server ze presenteieren. Merci dat Dir Apache benotzt!
+diff -ur build-tree/apache2/docs/docroot.old/index.html.nl build-tree/apache2/docs/docroot/index.html.nl
+--- build-tree/apache2/docs/docroot.old/index.html.nl	2001-01-19 12:44:40.000000000 -0700
++++ build-tree/apache2/docs/docroot/index.html.nl	2004-08-30 01:16:58.000000000 -0600
+@@ -39,7 +39,7 @@
+   <HR>
+   <P>
+   De 
+-  <A HREF="manual/index.html" >handleiding</A> voor de apache web
++  <A HREF="/manual/index.html" >handleiding</A> voor de apache web
+   server software maakt deel uit van deze distributie.
+   </P>
+   <P>
+diff -ur build-tree/apache2/docs/docroot.old/index.html.nn build-tree/apache2/docs/docroot/index.html.nn
+--- build-tree/apache2/docs/docroot.old/index.html.nn	2001-09-06 12:27:56.000000000 -0600
++++ build-tree/apache2/docs/docroot/index.html.nn	2004-08-30 01:16:58.000000000 -0600
+@@ -33,7 +33,7 @@
+   <HR>
+   <P>
+   <A
+-   HREF="manual/index.html"
++   HREF="/manual/index.html"
+   >Dokumentasjon</A>
+   for Apache er inkludert i denne pakka.
+   </P>
+diff -ur build-tree/apache2/docs/docroot.old/index.html.no build-tree/apache2/docs/docroot/index.html.no
+--- build-tree/apache2/docs/docroot.old/index.html.no	2001-01-19 12:44:41.000000000 -0700
++++ build-tree/apache2/docs/docroot/index.html.no	2004-08-30 01:16:58.000000000 -0600
+@@ -33,7 +33,7 @@
+   <HR>
+   <P>
+   <A
+-   HREF="manual/index.html"
++   HREF="/manual/index.html"
+   >Dokumentasjon</A>
+   for Apache er inkludert i denne pakken.
+   </P>
+diff -ur build-tree/apache2/docs/docroot.old/index.html.po.iso8859-2 build-tree/apache2/docs/docroot/index.html.po.iso8859-2
+--- build-tree/apache2/docs/docroot.old/index.html.po.iso8859-2	2001-09-28 10:55:49.000000000 -0600
++++ build-tree/apache2/docs/docroot/index.html.po.iso8859-2	2004-08-30 01:16:58.000000000 -0600
+@@ -30,7 +30,7 @@
+ 
+ 
+ <P>
+-Do niniejszej dystrybucji serwera Apache do³±czono anglojêzyczn± <A HREF="manual/index.html">dokumentacjê</A>.
++Do niniejszej dystrybucji serwera Apache do³±czono anglojêzyczn± <A HREF="/manual/index.html">dokumentacjê</A>.
+ 
+ <P>
+ Poni¿sze logo, "Powered by Apache", mo¿na stosowaæ bez ograniczeñ. Dziêkujemy za wybranie Apache'a!
+diff -ur build-tree/apache2/docs/docroot.old/index.html.pt build-tree/apache2/docs/docroot/index.html.pt
+--- build-tree/apache2/docs/docroot.old/index.html.pt	2001-01-19 12:44:42.000000000 -0700
++++ build-tree/apache2/docs/docroot/index.html.pt	2004-08-30 01:16:58.000000000 -0600
+@@ -33,7 +33,7 @@
+ <P><HR WIDTH="50%" SIZE="8">
+ 
+ 
+-<P> A <A HREF="manual/">documenta&ccedil;&atilde;o</A> foi inclu&iacute;da 
++<P> A <A HREF="/manual/">documenta&ccedil;&atilde;o</A> foi inclu&iacute;da 
+   juntamente com esta distribui&ccedil;&atilde;o. 
+ <P> A imagem abaixo pode ser usada livremente em qualquer site presente num servidor 
+   com o Apache Web Server instalado. Obrigado por usar o Apache Web Server! 
+diff -ur build-tree/apache2/docs/docroot.old/index.html.pt-br build-tree/apache2/docs/docroot/index.html.pt-br
+--- build-tree/apache2/docs/docroot.old/index.html.pt-br	2003-02-12 09:18:48.000000000 -0700
++++ build-tree/apache2/docs/docroot/index.html.pt-br	2004-08-30 01:16:58.000000000 -0600
+@@ -36,7 +36,7 @@
+ configura&ccedil;&atilde;o.</blockquote>
+ 
+ <hr>
+-<p>A  <a href="manual/index.html">documenta&ccedil;&atilde;o</a> do Apache foi inclu&iacute;da
++<p>A  <a href="/manual/index.html">documenta&ccedil;&atilde;o</a> do Apache foi inclu&iacute;da
+ com esta distribui&ccedil;&atilde;o.
+ <p>O Webmaster deste site &eacute; livre para utilizar a imagem abaixo num web
+ server utilizando o Apache.
+diff -ur build-tree/apache2/docs/docroot.old/index.html.ru.cp-1251 build-tree/apache2/docs/docroot/index.html.ru.cp-1251
+--- build-tree/apache2/docs/docroot.old/index.html.ru.cp-1251	2001-01-19 12:44:43.000000000 -0700
++++ build-tree/apache2/docs/docroot/index.html.ru.cp-1251	2004-08-30 01:16:58.000000000 -0600
+@@ -24,7 +24,7 @@
+ ğàçğåøèòü ïğîáëåìû êîíôèãóğàöèè.
+ <p>
+ <hr WIDTH="50%" SIZE="8">
+-<p><a href="manual/">Äîêóìåíòàöèÿ</a> ïî âåá-ñåğâåğó Apache ïğèëàãàåòñÿ
++<p><a href="/manual/">Äîêóìåíòàöèÿ</a> ïî âåá-ñåğâåğó Apache ïğèëàãàåòñÿ
+ ê êîìïëåêòó ÏÎ.
+ <p>Âû ìîæåòå ñâîáîäíî èñïîëüçîâàòü ïèêòîãğàììó, íàõîäÿùóşñÿ íèæå, íà âåá-ñåğâåğå,
+ èñïîëüçóşùèì ÏÎ Apache. Ñïàñèáî çà èñïîëüçîâàíèå Apache!
+diff -ur build-tree/apache2/docs/docroot.old/index.html.ru.cp866 build-tree/apache2/docs/docroot/index.html.ru.cp866
+--- build-tree/apache2/docs/docroot.old/index.html.ru.cp866	2001-09-28 10:55:49.000000000 -0600
++++ build-tree/apache2/docs/docroot/index.html.ru.cp866	2004-08-30 01:16:58.000000000 -0600
+@@ -24,7 +24,7 @@
+ à §à¥è¨âì ¯à®¡«¥¬ë ª®­ä¨£ãà æ¨¨.
+ <p>
+ <hr WIDTH="50%" SIZE="8">
+-<p><a href="manual/">„®ªã¬¥­â æ¨ï</a> ¯® ¢¥¡-á¥à¢¥àã Apache ¯à¨« £ ¥âáï
++<p><a href="/manual/">„®ªã¬¥­â æ¨ï</a> ¯® ¢¥¡-á¥à¢¥àã Apache ¯à¨« £ ¥âáï
+ ª ª®¬¯«¥ªâã .
+ <p>‚ë ¬®¦¥â¥ á¢®¡®¤­® ¨á¯®«ì§®¢ âì ¯¨ªâ®£à ¬¬ã, ­ å®¤ïéãîáï ­¨¦¥, ­  ¢¥¡-á¥à¢¥à¥,
+ ¨á¯®«ì§ãîé¨¬  Apache. ‘¯ á¨¡® §  ¨á¯®«ì§®¢ ­¨¥ Apache!
+diff -ur build-tree/apache2/docs/docroot.old/index.html.ru.iso-ru build-tree/apache2/docs/docroot/index.html.ru.iso-ru
+--- build-tree/apache2/docs/docroot.old/index.html.ru.iso-ru	2001-01-19 12:44:43.000000000 -0700
++++ build-tree/apache2/docs/docroot/index.html.ru.iso-ru	2004-08-30 01:16:58.000000000 -0600
+@@ -24,7 +24,7 @@
+ àĞ×àÕèØâì ßàŞÑÛÕÜë ÚŞİäØÓãàĞæØØ.
+ <p>
+ <hr WIDTH="50%" SIZE="8">
+-<p><a href="manual/">´ŞÚãÜÕİâĞæØï</a> ßŞ ÒÕÑ-áÕàÒÕàã Apache ßàØÛĞÓĞÕâáï
++<p><a href="/manual/">´ŞÚãÜÕİâĞæØï</a> ßŞ ÒÕÑ-áÕàÒÕàã Apache ßàØÛĞÓĞÕâáï
+ Ú ÚŞÜßÛÕÚâã ¿¾.
+ <p>²ë ÜŞÖÕâÕ áÒŞÑŞÔİŞ ØáßŞÛì×ŞÒĞâì ßØÚâŞÓàĞÜÜã, İĞåŞÔïéãîáï İØÖÕ, İĞ ÒÕÑ-áÕàÒÕàÕ,
+ ØáßŞÛì×ãîéØÜ ¿¾ Apache. ÁßĞáØÑŞ ×Ğ ØáßŞÛì×ŞÒĞİØÕ Apache!
+diff -ur build-tree/apache2/docs/docroot.old/index.html.ru.koi8-r build-tree/apache2/docs/docroot/index.html.ru.koi8-r
+--- build-tree/apache2/docs/docroot.old/index.html.ru.koi8-r	2001-01-19 12:44:44.000000000 -0700
++++ build-tree/apache2/docs/docroot/index.html.ru.koi8-r	2004-08-30 01:16:58.000000000 -0600
+@@ -24,7 +24,7 @@
+ ÒÁÚÒÅÛÉÔØ ĞÒÏÂÌÅÍÙ ËÏÎÆÉÇÕÒÁÃÉÉ.
+ <p>
+ <hr WIDTH="50%" SIZE="8">
+-<p><a href="manual/">äÏËÕÍÅÎÔÁÃÉÑ</a> ĞÏ ×ÅÂ-ÓÅÒ×ÅÒÕ Apache ĞÒÉÌÁÇÁÅÔÓÑ
++<p><a href="/manual/">äÏËÕÍÅÎÔÁÃÉÑ</a> ĞÏ ×ÅÂ-ÓÅÒ×ÅÒÕ Apache ĞÒÉÌÁÇÁÅÔÓÑ
+ Ë ËÏÍĞÌÅËÔÕ ğï.
+ <p>÷Ù ÍÏÖÅÔÅ Ó×ÏÂÏÄÎÏ ÉÓĞÏÌØÚÏ×ÁÔØ ĞÉËÔÏÇÒÁÍÍÕ, ÎÁÈÏÄÑİÕÀÓÑ ÎÉÖÅ, ÎÁ ×ÅÂ-ÓÅÒ×ÅÒÅ,
+ ÉÓĞÏÌØÚÕÀİÉÍ ğï Apache. óĞÁÓÉÂÏ ÚÁ ÉÓĞÏÌØÚÏ×ÁÎÉÅ Apache!
+diff -ur build-tree/apache2/docs/docroot.old/index.html.ru.utf8 build-tree/apache2/docs/docroot/index.html.ru.utf8
+--- build-tree/apache2/docs/docroot.old/index.html.ru.utf8	2001-01-19 12:44:44.000000000 -0700
++++ build-tree/apache2/docs/docroot/index.html.ru.utf8	2004-08-30 01:16:58.000000000 -0600
+@@ -24,7 +24,7 @@
+ Ñ€Ğ°Ğ·Ñ€ĞµÑˆĞ¸Ñ‚ÑŒ Ğ¿Ñ€Ğ¾Ğ±Ğ»ĞµĞ¼Ñ‹ ĞºĞ¾Ğ½Ñ„Ğ¸Ğ³ÑƒÑ€Ğ°Ñ†Ğ¸Ğ¸.
+ <p>
+ <hr WIDTH="50%" SIZE="8">
+-<p><a href="manual/">Ğ”Ğ¾ĞºÑƒĞ¼ĞµĞ½Ñ‚Ğ°Ñ†Ğ¸Ñ</a> Ğ¿Ğ¾ Ğ²ĞµĞ±-ÑĞµÑ€Ğ²ĞµÑ€Ñƒ Apache Ğ¿Ñ€Ğ¸Ğ»Ğ°Ğ³Ğ°ĞµÑ‚ÑÑ
++<p><a href="/manual/">Ğ”Ğ¾ĞºÑƒĞ¼ĞµĞ½Ñ‚Ğ°Ñ†Ğ¸Ñ</a> Ğ¿Ğ¾ Ğ²ĞµĞ±-ÑĞµÑ€Ğ²ĞµÑ€Ñƒ Apache Ğ¿Ñ€Ğ¸Ğ»Ğ°Ğ³Ğ°ĞµÑ‚ÑÑ
+ Ğº ĞºĞ¾Ğ¼Ğ¿Ğ»ĞµĞºÑ‚Ñƒ ĞŸĞ.
+ <p>Ğ’Ñ‹ Ğ¼Ğ¾Ğ¶ĞµÑ‚Ğµ ÑĞ²Ğ¾Ğ±Ğ¾Ğ´Ğ½Ğ¾ Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ÑŒ Ğ¿Ğ¸ĞºÑ‚Ğ¾Ğ³Ñ€Ğ°Ğ¼Ğ¼Ñƒ, Ğ½Ğ°Ñ…Ğ¾Ğ´ÑÑ‰ÑƒÑÑÑ Ğ½Ğ¸Ğ¶Ğµ, Ğ½Ğ° Ğ²ĞµĞ±-ÑĞµÑ€Ğ²ĞµÑ€Ğµ,
+ Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·ÑƒÑÑ‰Ğ¸Ğ¼ ĞŸĞ Apache. Ğ¡Ğ¿Ğ°ÑĞ¸Ğ±Ğ¾ Ğ·Ğ° Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ Apache!
+diff -ur build-tree/apache2/docs/docroot.old/index.html.sv build-tree/apache2/docs/docroot/index.html.sv
+--- build-tree/apache2/docs/docroot.old/index.html.sv	2003-03-07 13:30:39.000000000 -0700
++++ build-tree/apache2/docs/docroot/index.html.sv	2004-08-30 01:16:58.000000000 -0600
+@@ -30,7 +30,7 @@
+   </blockquote>
+   <hr>
+   <p>
+-  Apache-<a href="manual/">dokumentationen</a> &auml;r inkluderad i denna distribution.
++  Apache-<a href="/manual/">dokumentationen</a> &auml;r inkluderad i denna distribution.
+   </p>
+   <p>
+   Administrat&ouml;ren av denna webbplats f&aring;r g&auml;rna anv&auml;nda f&ouml;ljande bild till en webbplats som anv&auml;nder Apache.<br>
+diff -ur build-tree/apache2/docs/docroot.old/index.html.zh-cn.gb2312 build-tree/apache2/docs/docroot/index.html.zh-cn.gb2312
+--- build-tree/apache2/docs/docroot.old/index.html.zh-cn.gb2312	2003-05-28 14:45:16.000000000 -0600
++++ build-tree/apache2/docs/docroot/index.html.zh-cn.gb2312	2004-08-30 01:16:58.000000000 -0600
+@@ -20,7 +20,7 @@
+ ²»¸ºÔğ´ËÕ¾µãµÄÎ¬»¤¹¤×÷£¬Ò²ÎŞ·¨ÎªÄú½â¾öÉèÖÃÉÏµÄÎÊÌâ¡£</p>
+ 
+ <hr width="50%" size="8" />
+-<p>Apache <a href="../manual/">ÎÄµµ</a>ÒÑ¾­°üº¬ÔÚ´Ë·¢ĞĞ°æÖĞ¡£</p>
++<p>Apache <a href="/manual/">ÎÄµµ</a>ÒÑ¾­°üº¬ÔÚ´Ë·¢ĞĞ°æÖĞ¡£</p>
+ 
+ <p>Äú¿ÉÒÔÔÚÊ¹ÓÃApacheµÄÍøÕ¾·şÎñÆ÷ÉÏ£¬×ÔÓÉµØÊ¹ÓÃÏÂÃæµÄÍ¼Æ¬¡£¸ĞĞ»Ê¹ÓÃApache£¡</p>
+ 
+diff -ur build-tree/apache2/docs/docroot.old/index.html.zh-tw.big5 build-tree/apache2/docs/docroot/index.html.zh-tw.big5
+--- build-tree/apache2/docs/docroot.old/index.html.zh-tw.big5	2003-05-13 16:17:46.000000000 -0600
++++ build-tree/apache2/docs/docroot/index.html.zh-tw.big5	2004-08-30 01:16:58.000000000 -0600
+@@ -33,7 +33,7 @@
+ 
+ <P>
+ Apache ªº
+-<A HREF="manual/">¤å¥ó</A>
++<A HREF="/manual/">¤å¥ó</A>
+ ¤w¸g¥]§t¦b¸Óª©¥»¤¤¡C
+ 
+ <P>

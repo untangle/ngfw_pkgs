@@ -1,0 +1,19 @@
+#!/bin/bash
+. debian/scripts/vars
+. debian/scripts/lib
+mkdir -p $STAMP_DIR/upstream/fixpatch upstream
+for f in `find debian/fixpatch -type f 2> /dev/null|sort`;do
+	stampfile=$STAMP_DIR/upstream/fixpatch/`basename $f`
+	if [ -e $stampfile ];then
+		START $f
+		if file2cat $f | (cd upstream;patch -p1 -R ) > $stampfile.log;then
+			OK
+			rm $stampfile
+		else
+			FAILED
+			exit 1
+		fi
+	else
+		ALREADY_DONE $f
+	fi
+done

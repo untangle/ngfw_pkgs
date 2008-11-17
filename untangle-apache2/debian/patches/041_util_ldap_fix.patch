@@ -1,0 +1,90 @@
+--- build-tree/apache2/modules/experimental/util_ldap.c	2005-04-11 09:49:57.000000000 -0600
++++ build-tree/apache2/modules/experimental/util_ldap.c	2005-02-04 13:21:18.000000000 -0700
+@@ -1055,7 +1055,6 @@
+ 				    const_cast(filter), attrs, 0, 
+ 				    NULL, NULL, NULL, -1, &res)) == LDAP_SERVER_DOWN) {
+         ldc->reason = "ldap_search_ext_s() for user failed with server down";
+-        util_ldap_connection_unbind(ldc);
+         goto start_over;
+     }
+ 
+@@ -1331,30 +1330,6 @@
+     return(NULL);
+ }
+ 
+-static const char *util_ldap_set_connection_timeout(cmd_parms *cmd, void *dummy, const char *ttl)
+-{
+-    util_ldap_state_t *st = 
+-        (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
+-						  &ldap_module);
+-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+-
+-    if (err != NULL) {
+-        return err;
+-    }
+-
+-#ifdef LDAP_OPT_NETWORK_TIMEOUT
+-    st->connectionTimeout = atol(ttl);
+-
+-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
+-                      "[%d] ldap connection: Setting connection timeout to %ld seconds.", 
+-                      getpid(), st->connectionTimeout);
+-#else
+-    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, cmd->server,
+-                     "LDAP: Connection timout option not supported by the LDAP SDK in use." );
+-#endif
+-
+-    return NULL;
+-}
+ 
+ void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
+ {
+@@ -1372,7 +1347,6 @@
+     st->cert_auth_file = NULL;
+     st->cert_file_type = LDAP_CA_TYPE_UNKNOWN;
+     st->ssl_support = 0;
+-    st->connectionTimeout = 10;
+ 
+     return st;
+ }
+@@ -1405,7 +1379,6 @@
+ 
+     void *data;
+     const char *userdata_key = "util_ldap_init";
+-    struct timeval timeOut = {10,0};    /* 10 second connection timeout */
+ 
+     /* util_ldap_post_config() will be called twice. Don't bother
+      * going through all of the initialization on the first call
+@@ -1630,20 +1603,6 @@
+                          "LDAP: SSL support unavailable" );
+     }
+     
+-#ifdef LDAP_OPT_NETWORK_TIMEOUT
+-    if (st->connectionTimeout > 0) {
+-        timeOut.tv_sec = st->connectionTimeout;
+-    }
+-
+-    if (st->connectionTimeout >= 0) {
+-        rc = ldap_set_option(NULL, LDAP_OPT_NETWORK_TIMEOUT, (void *)&timeOut);
+-        if (APR_SUCCESS != rc) {
+-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+-                             "LDAP: Could not set the connection timeout" );
+-        }
+-    }
+-#endif
+-
+     return(OK);
+ }
+ 
+@@ -1708,11 +1667,6 @@
+                  "    DER_FILE      - file in binary DER format "
+                  "    BASE64_FILE   - file in Base64 format "
+                  "    CERT7_DB_PATH - Netscape certificate database file "),
+-
+-    AP_INIT_TAKE1("LDAPConnectionTimeout", util_ldap_set_connection_timeout, NULL, RSRC_CONF,
+-                  "Specifies the LDAP socket connection timeout in seconds. "
+-                  "Default is 10 seconds. "),
+-
+     {NULL}
+ };
+ 

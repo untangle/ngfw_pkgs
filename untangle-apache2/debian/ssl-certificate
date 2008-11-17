@@ -1,0 +1,31 @@
+#!/bin/sh -e
+
+if [ "$1" != "--force" -a -f /etc/apache2/ssl/apache.pem ]; then
+  echo "/etc/apache2/ssl/apache.pem exists!  Use \"$0 --force.\""
+  exit 0
+fi
+
+if [ "$1" = "--force" ]; then
+  shift
+fi     
+
+echo
+echo creating selfsigned certificate
+echo "replace it with one signed by a certification authority (CA)"
+echo
+echo enter your ServerName at the Common Name prompt
+echo
+echo If you want your certificate to expire after x days call this programm 
+echo with "-days x" 
+
+# use special .cnf, because with normal one no valid selfsigned
+# certificate is created
+
+export RANDFILE=/dev/random
+openssl req $@ -config /usr/share/apache2/ssleay.cnf \
+  -new -x509 -nodes -out /etc/apache2/ssl/apache.pem \
+  -keyout /etc/apache2/ssl/apache.pem
+chmod 600 /etc/apache2/ssl/apache.pem
+ln -sf /etc/apache2/ssl/apache.pem \
+  /etc/apache2/ssl/`/usr/bin/openssl \
+  x509 -noout -hash < /etc/apache2/ssl/apache.pem`.0

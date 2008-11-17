@@ -1,0 +1,114 @@
+diff -urN build-tree.old/apache2/acinclude.m4 build-tree/apache2/acinclude.m4
+--- build-tree.old/apache2/acinclude.m4	2005-02-25 00:46:23.000000000 -0700
++++ build-tree/apache2/acinclude.m4	2005-02-25 00:42:20.000000000 -0700
+@@ -501,6 +501,58 @@
+ ])
+ 
+ dnl
++dnl APACHE_CHECK_PCRE
++dnl Apache includes it's own version of PCRE; however, if PCRE exists
++dnl on the build system, we link against that instead of building
++dnl Apache's own PCRE.
++dnl
++AC_DEFUN(APACHE_CHECK_PCRE, [
++  AC_MSG_CHECKING(for external PCRE library)
++  ap_pcre_base=""
++  ap_test_pcre=1
++  AP_EXTERN_PCRE=0
++
++  AC_ARG_WITH([pcre], AS_HELP_STRING([--with-external-pcre],
++      [use external libpcre (versus apache-supplied pcre)]), [
++    if test "x$withval" = "xno"; then
++      ap_test_pcre=0;
++    elif test "x$withval" != "xyes" -a "x$withval" != "x"; then
++      ap_pcre_base="$withval"
++    fi
++  ])
++
++  if test "$ap_test_pcre" != "0"; then
++    ap_pcre_conf="pcre-config"
++    if test -f "$ap_pcre_base"; then
++      ap_pcre_conf="$ap_pcre_base";
++    elif test -f "$ap_pcre_base/pcre-config"; then
++      ap_pcre_conf="$ap_pcre_base/pcre-config";
++    elif test -f "$ap_pcre_base/bin/pcre-config"; then
++      ap_pcre_conf="$ap_pcre_base/bin/pcre-config";
++    fi
++
++    ap_save_CFLAGS="$CFLAGS"
++    ap_save_LIBS="$LIBS"
++    CFLAGS="$CFLAGS `$ap_pcre_conf --cflags 2>/dev/null`"
++    LIBS="$LIBS `$ap_pcre_conf --libs 2>/dev/null`"
++    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <pcre.h>]],
++        [[char *foo = pcre_version();]])], [
++      AP_EXTERN_PCRE=1
++    ], [
++      CFLAGS="$ap_save_CFLAGS"
++      LIBS="$ap_save_LIBS"
++    ])
++  fi
++
++  if test "$AP_EXTERN_PCRE" = "1"; then
++    AC_MSG_RESULT(yes)
++  else
++    AC_MSG_RESULT(no)
++  fi
++  AC_SUBST(AP_EXTERN_PCRE)
++])
++
++dnl
+ dnl APACHE_EXPORT_ARGUMENTS
+ dnl Export (via APACHE_SUBST) the various path-related variables that
+ dnl apache will use while generating scripts like autoconf and apxs and
+diff -urN build-tree.old/apache2/configure.in build-tree/apache2/configure.in
+--- build-tree.old/apache2/configure.in	2005-02-25 00:46:23.000000000 -0700
++++ build-tree/apache2/configure.in	2005-02-25 00:46:51.000000000 -0700
+@@ -4,7 +4,7 @@
+ dnl     Use ./buildconf to produce a configure script
+ dnl
+ 
+-AC_PREREQ(2.13)
++AC_PREREQ(2.50)
+ AC_INIT(ABOUT_APACHE)
+ 
+ AC_CONFIG_HEADER(include/ap_config_auto.h)
+@@ -114,10 +114,14 @@
+ AC_PROG_CC
+ AC_PROG_CPP
+ 
+-echo $ac_n "${nl}Configuring PCRE regular expression library ...${nl}"
+-
+-APR_SUBDIR_CONFIG(srclib/pcre,
+-                  [--prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --includedir=$includedir --bindir=$bindir])
++APACHE_CHECK_PCRE
++if test "$AP_EXTERN_PCRE" = "0"; then
++  echo $ac_n "${nl}Configuring PCRE regular expression library ...${nl}"
++  APR_SUBDIR_CONFIG(srclib/pcre,
++      [--prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --includedir=$includedir --bindir=$bindir])
++  AP_BUILD_SRCLIB_DIRS="$AP_BUILD_SRCLIB_DIRS pcre"
++  AP_CLEAN_SRCLIB_DIRS="pcre $AP_CLEAN_SRCLIB_DIRS"
++fi
+ 
+ echo $ac_n "${nl}Configuring Apache httpd ...${nl}"
+ 
+@@ -474,10 +478,6 @@
+ APACHE_HELP_STRING(--with-suexec-umask,umask for suexec'd process),[
+   AC_DEFINE_UNQUOTED(AP_SUEXEC_UMASK, 0$withval, [umask for suexec'd process] ) ] )
+ 
+-dnl AP_LIBS specifies the actual libraries. note we have some required libs.
+-AP_LIBS="$abs_builddir/srclib/pcre/libpcre.la $AP_LIBS"
+-APR_ADDTO(CPPFLAGS, [-I$abs_builddir/srclib/pcre])
+-
+ dnl APR should go after the other libs, so the right symbols can be picked up
+ AP_LIBS="$AP_LIBS `$apu_config --link-libtool --libs` `$apr_config --link-libtool --libs`"
+ APACHE_SUBST(AP_LIBS)
+diff -urN build-tree.old/apache2/srclib/Makefile.in build-tree/apache2/srclib/Makefile.in
+--- build-tree.old/apache2/srclib/Makefile.in	2005-02-25 00:46:23.000000000 -0700
++++ build-tree/apache2/srclib/Makefile.in	2005-02-25 00:42:20.000000000 -0700
+@@ -1,5 +1,5 @@
+ 
+-SUBDIRS = pcre
++SUBDIRS = 
+ BUILD_SUBDIRS = $(AP_BUILD_SRCLIB_DIRS)
+ CLEAN_SUBDIRS = $(AP_CLEAN_SRCLIB_DIRS)
+ 
