@@ -1,7 +1,7 @@
 #!/bin/bash
 . debian/scripts/vars
 mkdir -p $STAMP_DIR/upstream/tarballs/ $SOURCE_DIR
-AP2_VERSION=`dpkg-parsechangelog | sed -n 's/^Version: //p;' | sed -e 's/-.*//;'`
+AP2_VERSION=`dpkg-parsechangelog | sed -n 's/^Version: //p;' | perl -pe 's/\+.*//;'`
 for f in `find upstream/tarballs -type f -maxdepth 1|sort`;do
 	stampfile=$STAMP_DIR/upstream/tarballs/`basename $f`
 	if [ ! -e $stampfile ];then

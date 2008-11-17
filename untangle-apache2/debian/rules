@@ -18,7 +18,7 @@ export DEB_BUILD_OPTIONS
 version=0.9.1
 major=0
 
-AP2_VERSION := $(shell dpkg-parsechangelog | sed -n 's/^Version: //p;' | sed -e 's/-.*//;')
+AP2_VERSION := $(shell dpkg-parsechangelog | sed -n 's/^Version: //p;' | perl -pe 's/\+.*//')
 
 export DH_COMPAT=4
 export DH_OPTIONS
