@@ -1,4 +1,4 @@
-﻿html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0;}img,body,html{border:0;}
+html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0;}img,body,html{border:0;}
 body{
 	font-family:Tahoma, Arial, Helvetica, sans-serif;
 }  
@@ -27,7 +27,7 @@ body.blockpage #content
   margin-left: auto;
   margin-right: auto;
   text-align: left;
-  border : 1px solid #FFFFFF;
+  border : 1px solid #666;
   margin-top: 30px;
   margin-bottom: 30px;
   background: transparent url(../images/user/background_content.png) repeat-x !important;
@@ -43,6 +43,7 @@ body.blockpage
 body.blockpage .description
 { 
   margin-bottom: 30px;
+  color:#ccc;
  }
 
 
@@ -52,6 +53,7 @@ body.blockpage p.contact
   bottom: 15px;
   left: 20px;
   font-size: 8pt;
+  color:#ccc;
  }
 
 #header {
@@ -176,7 +178,7 @@ body.blockpage #header .title
   left : 180px;
   top : 57px;
   font: bold 36px arial, tahoma, helvetica, sans-serif;
-  color: #67686B;
+  color: #669900;
  }
 
 .info-list 
@@ -188,6 +190,7 @@ body.blockpage #header .title
   margin-right:auto;
   text-align: left;
   background-color: #FFFFFF;
+  -moz-border-radius:5px 10px 10px 5px;
 }
 .info-list div
 {
