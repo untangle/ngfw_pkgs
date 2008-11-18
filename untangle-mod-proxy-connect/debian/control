@@ -1,0 +1,12 @@
+Source: untangle-mod-proxy-connect
+Section: web
+Priority: optional
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Build-Depends: debhelper (>= 4.0.0), apache2-threaded-dev, dpatch
+Standards-Version: 3.8.0
+
+Package: untangle-libapache2-mod-proxy-connect
+Architecture: any
+Depends: ${shlibs:Depends}, apache2, apache2-common | apache2.2-common
+Description: apache2's mod-proxy with support for SSL connect
+ apache2's mod-proxy with support for SSL connect.

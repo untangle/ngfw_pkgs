@@ -1,8 +1,0 @@
-apache2-common: copyright-should-refer-to-common-license-file-for-gpl
-apache2-common: setuid-binary usr/lib/apache2/suexec2 4755 root/root
-apache2-common: python-script-but-no-python-dep ./usr/sbin/update-apache2-modules
-apache2-common: python-script-but-no-python-dep ./usr/sbin/modhandler.py
-apache2-common: binary-without-manpage apache2-ssl-certificate
-apache2-common: binary-without-manpage htdbm
-apache2-common: binary-without-manpage modhandler.py
-apache2-common: binary-without-manpage update-apache2-modules

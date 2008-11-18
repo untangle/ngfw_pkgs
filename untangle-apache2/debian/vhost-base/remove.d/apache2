@@ -1,9 +1,0 @@
-#!/usr/bin/perl
-
-use Debian::Vhosts;
-
-$hostname = shift;
-$vhostname = (vb_config_get("apache2", "server", "/var/lib/vhost-base/$hostname/conf/apache2.conf"))[0];
-
-unlink </etc/apache2/sites-enabled/$vhostname> || true;
-unlink </var/lib/vhost-base/$hostname/conf/apache2.conf> || true;

@@ -1,8 +1,0 @@
---- apache2-2.0.25+cvs-20010908/apache2/docs/cgi-examples/printenv.orig	Fri Sep 21 17:31:24 2001
-+++ apache2-2.0.25+cvs-20010908/apache2/docs/cgi-examples/printenv	Fri Sep 21 17:31:29 2001
-@@ -1,4 +1,4 @@
--#!/usr/local/bin/perl
-+#!/usr/bin/perl
- ##
- ##  printenv -- demo CGI program which just prints its environment
- ##

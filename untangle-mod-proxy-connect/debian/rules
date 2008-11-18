@@ -1,0 +1,43 @@
+#!/usr/bin/make -f
+
+include /usr/share/dpatch/dpatch.make
+
+build: build-stamp
+
+build-stamp: patch
+	dh_testdir
+	apxs2 -c mod_proxy_connect_untangle.c
+	touch build-stamp
+
+clean: unpatch
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp mod_proxy_connect_untangle.{la,lo,o,slo}
+	rm -rf .libs
+	dh_clean 
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k 
+	dh_installdirs
+	dh_install
+
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs 
+	dh_installdocs
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_makeshlibs
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-arch
+.PHONY: build clean binary-arch binary install patch unpatch
