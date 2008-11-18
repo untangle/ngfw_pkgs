@@ -23,6 +23,8 @@
   <target name="generate-product-version" depends="init-common">
     <javac srcdir="${src.dir}"
            includes="**/Version.java"
+           target="1.5"
+           source="1.5"
            destdir="${build.dir}"/>
     <java classpath="${build.dir}"
           classname="net.propero.rdp.Version">
@@ -34,6 +36,8 @@
     <javac srcdir="${src.dir}:${src.dir}${java.version}"
            destdir="${build.dir}"
            classpathref="build.classpath"
+           source="1.5"
+           target="1.5"
            fork="true">
     </javac>
   </target>
