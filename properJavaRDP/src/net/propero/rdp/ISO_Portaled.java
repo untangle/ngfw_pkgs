@@ -22,6 +22,7 @@ import java.io.*;
 import java.net.*;
 import java.security.cert.X509Certificate;
 import java.util.StringTokenizer;
+import javax.jnlp.*;
 import javax.net.SocketFactory;
 import javax.net.ssl.*;
 
@@ -81,13 +82,15 @@ public class ISO_Portaled extends ISO {
             DataInputStream din = new DataInputStream(sockIn);
             StringBuilder sb = new StringBuilder();
 
+            String nonce_header = getNonce(Options.cookie_header,
+                                           Options.pysid_cookie_header);
+
             sb.append("CONNECT ").append(Options.target_header).append(" HTTP/1.0\r\n");
 
             sb.append("Host: ").append(host.getHostName()).append("\r\n");
-            sb.append(NONCE_HEADER).append(": ").append(Options.cookie_header).append("\r\n");
+            sb.append(NONCE_HEADER).append(": ").append(nonce_header).append("\r\n");
 
             sb.append("\r\n");
-
 
             sockOut.write(sb.toString().getBytes());
             sockOut.flush();
@@ -151,5 +154,44 @@ public class ISO_Portaled extends ISO {
                 rdpsock.close();
             } catch (IOException x) { }
         rdpsock = null;
+    }
+
+    private String getNonce(String javaCookie, String pythonCookie)
+    {
+        String nonce = null;
+
+        try {
+            BasicService bs = (BasicService)ServiceManager.lookup("javax.jnlp.BasicService");
+            URL cb = bs.getCodeBase();
+            URL nu = new URL(cb, "nonce");
+            URLConnection nc = nu.openConnection();
+
+            if (null != pythonCookie) {
+                nc.setRequestProperty("Cookie", "pysid=" + pythonCookie);
+            }
+
+            if (null != javaCookie) {
+                nc.setRequestProperty("Cookie", "JSESSIONIDSSO="
+                                      + javaCookie);
+            }
+
+            InputStream is = null;
+            try {
+                is = nc.getInputStream();
+                Reader isr = new InputStreamReader(is);
+                BufferedReader br = new BufferedReader(isr);
+                nonce = br.readLine().trim();
+            } finally {
+                if (null != is) {
+                    is.close();
+                }
+            }
+        } catch (IOException exn) {
+            System.err.println("could not get nonce: " + exn);
+        } catch (UnavailableServiceException exn) {
+            System.err.println("could not get nonce: " + exn);
+        }
+
+        return nonce;
     }
 }

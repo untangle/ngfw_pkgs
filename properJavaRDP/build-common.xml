@@ -6,14 +6,15 @@
   <path id="build.classpath">
     <fileset dir="." includes="${jar.log4j.java11}"/>
     <fileset dir="." includes="${jar.gnugetopt}"/>
+    <fileset dir="../../src/downloads" includes="jnlp.jar"/>
   </path>
-  
+
   <target name="init-common">
     <mkdir dir="${build.dir}"/>
     <mkdir dir="${dist.dir}" />
-     
+
     <mkdir dir="${build.dir}/keymaps"/>
-    
+
     <copy todir="${build.dir}/keymaps">
         <fileset dir="${basedir}/keymaps" />
     </copy>
@@ -26,7 +27,7 @@
     <java classpath="${build.dir}"
           classname="net.propero.rdp.Version">
       <arg value="${build.dir}/product.version"/>
-    </java>  
+    </java>
   </target>
 
   <target name="build-common-version">
@@ -36,7 +37,7 @@
            fork="true">
     </javac>
   </target>
-  
+
   <target name="build-common">
     <!-- Build each version of the code in turn.
          Note this will be replaced by an antCall element when we can
@@ -48,19 +49,19 @@
 
     <ant antfile="${commonxml}" target="generate-product-version"/>
     <property file="${build.dir}/product.version"/>
-  
+
   </target>
-  
+
   <target name="jar-common">
-	<copy toDir="${build.dir}/keymaps"
+    <copy toDir="${build.dir}/keymaps"
           filtering="true">
       <fileset dir="${basedir}/keymaps"/>
     </copy>
     <jar jarfile="${dist.dir}/${jar.path}" basedir="${build.dir}/"/>
   </target>
-  
+
   <target name="clean-common">
-    <delete dir="${build.dir}" />  
+    <delete dir="${build.dir}" />
     <delete dir="${dist.dir}" />
   </target>
 </project>

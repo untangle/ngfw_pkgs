@@ -23,7 +23,7 @@
     <ant antfile="${commonxml}" target="build-common"/>
     <property file="${build.dir}/product.version"/>
   </target>
-          
+
   <target name="jar" depends="build">
     <property name="jar.path" value="${jar.name}-${product.version}.jar" />
     <property name="jar.path.14" value="${jar.name}14-${product.version}.jar" />
@@ -36,7 +36,7 @@
 
   <target name="dist" depends="jar">
   </target>
-	
+
   <target name="standalone" depends="init">
     <uptodate targetfile="${ant.file}" property="build.changed">
       <srcfiles dir="${src.dir}" includes="**/*.java"/>
@@ -62,7 +62,7 @@
       <zipfileset src="${jar.gnugetopt}" excludes="META-INF/*"/>
     </jar>
   </target>
- 
+
   <target name="run" depends="build">
     <java classname="${runclass}">
       <arg value="m6.propero.int"/>
@@ -74,10 +74,10 @@
       </classpath>
     </java>
   </target>
-  
+
   <target name="clean">
     <ant antfile="${commonxml}" target="clean-common"/>
-    <delete dir="${rpm.dir}" />     
+    <delete dir="${rpm.dir}" />
   </target>
-</project>     
-  
+</project>
+
