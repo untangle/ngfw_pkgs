@@ -480,8 +480,7 @@ td.app-item-center div.action {
     top: 34px;
     height: 15px;
     font-family: tahoma,arial, freesans,sans-serif;
-    font-size: 10px;
-    font-weight: bold;
+    font-size: 11px;
     color: green;
     padding-right: 19px;
 	line-height:15px;
@@ -493,8 +492,7 @@ td.app-item-center div.button-buy {
 	cursor: pointer;
 	height: 15px;
 	font-family:  tahoma,arial, freesans,sans-serif;
-	font-size: 10px;
-	font-weight: bold;
+    font-size: 11px;
 	color: green;
 	padding-right: 19px;
 }
@@ -579,7 +577,6 @@ div.system-stats div.network {
     background: transparent url(../images/admin/background_network.png) no-repeat;
     width:99px;
     height:30px;
-    font-weight: bold;
 }
 div.system-stats div.network div.tx {
     position: absolute;
