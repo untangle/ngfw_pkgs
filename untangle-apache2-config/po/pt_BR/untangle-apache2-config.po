@@ -1,0 +1,145 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-07 17:07+0200\n"
+"PO-Revision-Date: 2008-11-11 10:21-0800\n"
+"Last-Translator: Claudia\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../adminindex.py:37
+#, python-format
+msgid "%s Login"
+msgstr "Login %s"
+
+#: ../adminindex.py:88
+msgid "Error: Username and Password do not match"
+msgstr "Erro: Nome de usuário e senha não correspondem"
+
+#: ../adminindex.py:142
+msgid "Server:"
+msgstr "Servidor:"
+
+#: ../adminindex.py:142
+msgid "Username:"
+msgstr "Nome de usuário:"
+
+#: ../adminindex.py:142
+msgid "Password:"
+msgstr "Senha:"
+
+#: ../adminindex.py:142
+msgid "Login"
+msgstr "Login"
+
+#: ../errorindex.py:15
+msgid "Bad Request"
+msgstr "Solicitação ruim"
+
+#: ../errorindex.py:19
+msgid "Unauthorized"
+msgstr "Não autorizado"
+
+#: ../errorindex.py:23
+msgid "Payment Required"
+msgstr "Pagamento necessário"
+
+#: ../errorindex.py:27
+msgid "Forbidden"
+msgstr "Proibido"
+
+#: ../errorindex.py:31
+msgid "Not Found"
+msgstr "Não encontrado"
+
+#: ../errorindex.py:35
+msgid "Method Not Allowed"
+msgstr "Método não permitido"
+
+#: ../errorindex.py:39
+msgid "Not Acceptable"
+msgstr "Não aceitável"
+
+#: ../errorindex.py:43
+msgid "Proxy Authentication Required"
+msgstr "Autenticação proxy necessária"
+
+#: ../errorindex.py:47
+msgid "Request Timeout"
+msgstr "Tempo esgotado para a solicitação"
+
+#: ../errorindex.py:51
+msgid "Conflict"
+msgstr "Conflito"
+
+#: ../errorindex.py:55
+msgid "Gone"
+msgstr "Acabado"
+
+#: ../errorindex.py:59
+msgid "Length Required"
+msgstr "Extensão necessária"
+
+#: ../errorindex.py:63
+msgid "Precondition Failed"
+msgstr "Falha de pré-condição"
+
+#: ../errorindex.py:67
+msgid "Request Entity Too Large"
+msgstr "Entidade de solicitação muito grande"
+
+#: ../errorindex.py:71
+msgid "Request-URI Too Long"
+msgstr "URI de solicitação muito longo"
+
+#: ../errorindex.py:75
+msgid "Unsupported Media Type"
+msgstr "Tipo de mídia não suportada"
+
+#: ../errorindex.py:79
+msgid "Requested Range Not Satisfiable"
+msgstr "Faixa solicitada não satisfatória"
+
+#: ../errorindex.py:83
+msgid "Expectation Failed"
+msgstr "Falha de expectativa"
+
+#: ../errorindex.py:87
+msgid "Internal Server Error"
+msgstr "Erro de servidor interno"
+
+#: ../errorindex.py:91
+msgid "Not Implemented"
+msgstr "Não implementado"
+
+#: ../errorindex.py:95
+msgid "Bad Gateway"
+msgstr "Gateway ruim"
+
+#: ../errorindex.py:99
+msgid "Service Unavailable"
+msgstr "Serviço indisponível"
+
+#: ../errorindex.py:103
+msgid "Gateway Timeout"
+msgstr "Tempo esgotado do gateway"
+
+#: ../errorindex.py:107
+msgid "HTTP Version Not Supported"
+msgstr "Versão HTTP não suportada"
+
+#: ../errorindex.py:115
+#: ../uvmlogin.py:203
+#, python-format
+msgid "%s Server"
+msgstr "Servidor %s"
+
