@@ -75,7 +75,7 @@ public class ISO_Portaled extends ISO {
             rdpsock = sslFactory.createSocket();
             InetSocketAddress isa = new InetSocketAddress(host, port);
             rdpsock.connect(isa, 5000);
-            // rdpsock.setTcpNoDelay(Options.low_latency);
+            rdpsock.setTcpNoDelay(Options.low_latency);
             // this.in = new InputStreamReader(rdpsock.getInputStream());
             OutputStream sockOut = rdpsock.getOutputStream();
             InputStream sockIn = rdpsock.getInputStream();
