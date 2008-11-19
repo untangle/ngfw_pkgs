@@ -8,5 +8,5 @@ Standards-Version: 3.8.0
 Package: untangle-libapache2-mod-proxy-connect
 Architecture: any
 Depends: ${shlibs:Depends}, apache2, apache2-common | apache2.2-common
-Description: apache2's mod-proxy with support for SSL connect
- apache2's mod-proxy with support for SSL connect.
+Description: mod-proxy with support CONNECT over SSL
+ apache2's mod-proxy with patches for support of CONNECT over SSL.

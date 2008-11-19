@@ -2,17 +2,19 @@
 
 include /usr/share/dpatch/dpatch.make
 
+MODULE_NAME := mod_proxy_connect_untangle
+
 build: build-stamp
 
 build-stamp: patch
 	dh_testdir
-	apxs2 -c mod_proxy_connect_untangle.c
+	apxs2 -c $(MODULE_NAME).c
 	touch build-stamp
 
 clean: unpatch
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp mod_proxy_connect_untangle.{la,lo,o,slo}
+	rm -f build-stamp $(MODULE_NAME).{la,lo,o,slo}
 	rm -rf .libs
 	dh_clean 
 
@@ -27,7 +29,6 @@ binary-arch: build install
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs 
-	dh_installdocs
 	dh_link
 	dh_strip
 	dh_compress
