@@ -115,7 +115,9 @@ public abstract class RdesktopFrame extends Frame {
         Common.frame = this;
         this.canvas = new RdesktopCanvas_Localised(Options.width, Options.height);
 
-        java.awt.Panel p = new java.awt.Panel();
+        Panel p = new Panel();
+        FlowLayout l = new FlowLayout(FlowLayout.CENTER, 0, 0);
+        p.setLayout(l);
         p.add(this.canvas);
         add(p);
 
