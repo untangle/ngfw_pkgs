@@ -22,6 +22,9 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
+/* including those here, since recent libmicrohttpd-dev in sid doesn't do
+   it on its own. -- Seb, Wed, 19 Nov 2008 15:10:30 -0800 */
+#include <sys/socket.h>
 #include <microhttpd.h>
 
 #include <pthread.h>
