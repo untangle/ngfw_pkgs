@@ -1,2 +1,0 @@
-debian/conf/proxy_connect_untangle.load /etc/apache2/mods-available/
-.libs/mod_proxy_connect_untangle.so /usr/lib/apache2/modules/
