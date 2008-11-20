@@ -426,7 +426,9 @@ ul.x-tab-strip-bottom{
 }
 
 /* Window */
-
+.x-window{
+	z-index:21000 !important; /* bug 5379 */
+}
 .x-window-proxy {
     background:#e0e0e0;
     border-color:#b0b0b0;
