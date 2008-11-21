@@ -7,11 +7,8 @@
  */
 
 .ext-el-mask {
-    background-color: #000;
-   z-index:9000;
-}
-.ext-el-mask-msg{
-   z-index:9001;
+  background-color: #000;
+  z-index:9000;
 }
 .ext-el-mask-msg{
    z-index:9001;
