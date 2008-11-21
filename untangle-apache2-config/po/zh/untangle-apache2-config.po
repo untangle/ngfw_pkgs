@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-07 17:07+0200\n"
+"POT-Creation-Date: 2008-11-21 14:15-0800\n"
 "PO-Revision-Date: 2008-10-16 01:36-0500\n"
 "Last-Translator: Jie(Jack) Zhu <J.Zhu@Impactek.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,28 +19,28 @@ msgstr ""
 "X-Poedit-Country: CHINA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: ../adminindex.py:37
+#: ../adminindex.py:39
 #, python-format
 msgid "%s Login"
 msgstr "%s登录"
 
-#: ../adminindex.py:88
+#: ../adminindex.py:93
 msgid "Error: Username and Password do not match"
 msgstr "错误：用户名和密码不匹配"
 
-#: ../adminindex.py:142
+#: ../adminindex.py:147
 msgid "Server:"
 msgstr "服务器："
 
-#: ../adminindex.py:142
+#: ../adminindex.py:147
 msgid "Username:"
 msgstr "用户名："
 
-#: ../adminindex.py:142
+#: ../adminindex.py:147
 msgid "Password:"
 msgstr "密码："
 
-#: ../adminindex.py:142
+#: ../adminindex.py:147
 msgid "Login"
 msgstr "登录"
 
@@ -140,7 +140,7 @@ msgstr "网关超时"
 msgid "HTTP Version Not Supported"
 msgstr "不支持该HTTP版本"
 
-#: ../errorindex.py:115 ../uvmlogin.py:203
+#: ../errorindex.py:115 ../uvmlogin.py:229
 #, fuzzy, python-format
 msgid "%s Server"
 msgstr "服务器："
