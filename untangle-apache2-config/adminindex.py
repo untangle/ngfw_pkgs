@@ -27,6 +27,8 @@ def login(req, url=None, realm='Administrator'):
             sess = Session.Session(req)
             sess.set_timeout(uvmlogin.SESSION_TIMEOUT)
             uvmlogin.save_session_user(sess, realm, username)
+            sess.save()
+            sess.unlock()
 
             if url == None:
                 return apache.OK
@@ -43,6 +45,9 @@ def logout(req, url=None, realm='Administrator'):
     sess = Session.Session(req)
     sess.set_timeout(uvmlogin.SESSION_TIMEOUT)
     uvmlogin.delete_session_user(sess, realm)
+    sess.save()
+    sess.unlock()
+
     if url == None:
         return apache.OK
     else:

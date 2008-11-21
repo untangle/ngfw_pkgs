@@ -33,7 +33,6 @@ def headerparserhandler(req):
 
     sess = Session.Session(req)
     sess.set_timeout(SESSION_TIMEOUT)
-    sess.save()
 
     username = session_user(sess, realm)
 
@@ -48,6 +47,9 @@ def headerparserhandler(req):
         username = 'localadmin'
         log_login(req, username, True, True, None)
         save_session_user(sess, realm, username)
+
+    sess.save()
+    sess.unlock()
 
     if None != username:
         pw = base64.encodestring('%s' % username).strip()
@@ -145,7 +147,6 @@ def delete_session_user(sess, realm):
         apache_realms = sess['apache_realms']
         if realm in apache_realms:
             del apache_realms[realm]
-            sess.save()
 
 def save_session_user(sess, realm, username):
     if sess.has_key('apache_realms'):
@@ -156,8 +157,6 @@ def save_session_user(sess, realm, username):
     realm_record = {}
     realm_record['username'] = username
     apache_realms[realm] = realm_record
-
-    sess.save()
 
 def setup_gettext():
     lang = get_uvm_language()
