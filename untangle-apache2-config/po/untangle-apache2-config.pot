@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-07 17:07+0200\n"
+"POT-Creation-Date: 2008-11-21 14:15-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,28 +17,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=0; null;\n"
 
-#: ../adminindex.py:37
+#: ../adminindex.py:39
 #, python-format
 msgid "%s Login"
 msgstr ""
 
-#: ../adminindex.py:88
+#: ../adminindex.py:93
 msgid "Error: Username and Password do not match"
 msgstr ""
 
-#: ../adminindex.py:142
+#: ../adminindex.py:147
 msgid "Server:"
 msgstr ""
 
-#: ../adminindex.py:142
+#: ../adminindex.py:147
 msgid "Username:"
 msgstr ""
 
-#: ../adminindex.py:142
+#: ../adminindex.py:147
 msgid "Password:"
 msgstr ""
 
-#: ../adminindex.py:142
+#: ../adminindex.py:147
 msgid "Login"
 msgstr ""
 
@@ -138,7 +138,7 @@ msgstr ""
 msgid "HTTP Version Not Supported"
 msgstr ""
 
-#: ../errorindex.py:115 ../uvmlogin.py:203
+#: ../errorindex.py:115 ../uvmlogin.py:229
 #, python-format
 msgid "%s Server"
 msgstr ""
