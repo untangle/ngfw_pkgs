@@ -72,7 +72,8 @@ class NodeStats
     (7..11).each do |i|
       if !snmp_stat_map[i].nil?
       	metric = metrics.get(snmp_stat_map[i]);
-      	@counters[i] = metric.getCount() 
+	# Bug 4504 -- count index is zero based, not one based
+      	@counters[i - 1] = metric.getCount() 
         # set last activity date to be the most RECENT date for any stat monitored for this node.
 	if !real_last_activity_date
 	  @lastActivityDate = metric.getLastActivityDate();
