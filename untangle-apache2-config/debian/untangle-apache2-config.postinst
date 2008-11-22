@@ -9,7 +9,7 @@ ALIAS=$(hostname -f)
 
 if [ -z "$ALIAS" ] || [ "$ALIAS" = "Knoppix.metaloft.com" ] ; then
     echo setting ALIAS to default value
-    ALIAS=ung.example.com
+    ALIAS=untangle.example.com
 fi
 
 
