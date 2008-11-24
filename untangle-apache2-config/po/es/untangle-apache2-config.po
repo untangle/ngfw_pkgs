@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Untangle\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-11-07 17:07+0200\n"
-"PO-Revision-Date: 2008-11-20 05:39-0700\n"
+"PO-Revision-Date: 2008-11-23 06:06-0700\n"
 "Last-Translator: David Russi <dprussi@qwest.net>\n"
 "Language-Team: Spanish <dprussi@qwest.net>\n"
 "MIME-Version: 1.0\n"
@@ -40,7 +40,7 @@ msgstr "Contraseña:"
 
 #: ../adminindex.py:142
 msgid "Login"
-msgstr "Inicio de sesión"
+msgstr "Iniciar sesión"
 
 #: ../errorindex.py:15
 msgid "Bad Request"
