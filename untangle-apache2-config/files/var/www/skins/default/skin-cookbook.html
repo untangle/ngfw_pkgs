@@ -1,0 +1,69 @@
+<html>
+<head>
+<title>Skins cookbook</title>
+</head>
+<body>
+<h1>Skins cookbook</h1>
+<p>The administration client and user facing pages can be skinned.</p>
+<p>The skin has a folder structure described below. This must be zipped in a single file.To use the skin it must be uploaded on the server.</p>
+<p>To upload a skin in the server open the administration client, go to Config tab and open Administration window.
+In Administration go to Skins tab and the section "Upload an new skin" browse for the zipped skin file and press Upload.
+The skin will be uploaded and it will become available.</p>
+
+<h2>Selecting administration client skin</h2>
+<p>Go to Config tab and open Administration window. 
+Go to skin tab and form Administration skin section choose the desired skin and press save.
+The client gui will be displayed using the selected skin</p>
+
+<h2>User pages skin</h2>
+<p>User pages skin can be selected  when Branding Manager commercial Add-on is enabled</p>
+<p>When Branding Manager is enabled a tab called Branding is displayed in Administration window. 
+To change the user pages skin go to Branding tab and form Block Page Skin desired skin and press save.
+The user facing pages will be displayed using the selected skin</p>
+ 
+<h2>Skin Structure:</h2>
+The folder structure of a skin is: 
+<pre>
+skin.xml - skin information file 
+css/admin.css - administration client styles
+   /user.css  - user pages styles
+   /ext-skin.css - ExtJs skin styles
+<br>
+images/admin/* - administration client images
+      /user/*  - user pages images
+      /&lt;extJs-images-folder&gt; - the folder containing images used by ExtJs skin
+</pre>
+
+
+<h3>skin.xml file</h3>
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;skin&gt;
+  &lt;name&gt;skinName&lt;/name&gt;
+  &lt;displayName&gt;Skin Display Name&lt;/displayName&gt;
+  &lt;adminSkin&gt;true&lt;/adminSkin&gt;
+  &lt;userFacingSkin&gt;true&lt;/userFacingSkin&gt;
+&lt;/skin&gt;
+</pre>
+
+<p>name is skinName<br>
+displayName will be displayed in the skin chooser select box in Administration<br>
+adminSkin - true/false - is an administration client skin<br>
+userFacingSkin - true/false - is an user pages skin</p>
+<h3>ExtJs skin</h3>
+<p>ExtJs v2.2 framework is used in adminstration client for most components: windows, panels, tabs, buttons, tables.<br>
+ExtJs has a themes mechanism. It has some built in themes and alse you can find user themes can be defined: See <a href="http://extjs.com/learn/Ext_Extensions#User_Themes">http://extjs.com/learn/Ext_Extensions#User_Themes</a><br>
+The Ext Js themes file must be named ext-skin.css. 
+</p>
+<h3>Administration client skin</h3>
+<p>The css/admin.css file contains the styles and images/admin/ contains the images.<br>
+To see a list of images and where they are used  <a href="admin-images.html">click here</a><br>
+To see how css styles are used click: <a href="admin-styles1.png">admin-styles1.png</a>, <a href="admin-styles2.png">admin-styles1.png</a></p>
+
+<h3>User pages skin</h3>
+<p>The css/user.css file contains the styles and images/user/ contains the images.<br>
+To see a list of images and where they are used  <a href="user-images.html">click here</a><br>
+To see how css styles are used click: <a href="user-styles1.png">user-styles1.png</a>, <a href="user-styles2.png">user-styles1.png</a></p>
+
+</body>
+</html>
