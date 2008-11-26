@@ -2,21 +2,22 @@ html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,bloc
 body{
 	font-family:Tahoma, Arial, Helvetica, sans-serif;
 }  
-
+/* quarantine page body */
 body.quarantine {
     /*background: transparent url(../images/user/background_content.png) repeat-x !important;*/
 }
-
+/* user pages content container */
 #content
 {
   padding: 17px 12px 12px 12px;
 }
-
+/* blockpage body*/
 body.blockpage
 { 
   text-align: center;
   background-color: #808080;
- }
+}
+/* quarantine content */
 body.quarantine #content {
 	width:75%;
     background: transparent url(../images/user/background_content.png) repeat-x !important;
@@ -28,6 +29,7 @@ body.quarantine #content {
 .service-error-height{
 	height:400px;
 }
+/* blockpage content */
 body.blockpage #content
 {
   width : 627px;
@@ -41,38 +43,38 @@ body.blockpage #content
   margin-bottom: 30px;
   background: transparent url(../images/user/background_content.png) repeat-x !important;
 }
-
+/* blockpage body*/
 body.blockpage
 { 
   font-family: arial, tahoma, helvetica, sans-serif;
   font-size: 10pt;
  }
 
-
+/* blockpage description text*/
 body.blockpage .description
 { 
   margin-bottom: 30px;
- }
+}
 
-
+/* blockpage contact text*/
 body.blockpage p.contact
 { 
   position: absolute;
   bottom: 15px;
   left: 20px;
   font-size: 8pt;
- }
-
+}
+/* header container */
 #header {
 	margin-bottom: 0px;
 }
-
+/* quarantine header container */
 body.quarantine #header
 { 
   width: 100%;
   margin-bottom:10px;
   }
-
+/* quarantine page title */
 body.quarantine #header .title
 {
   position: absolute;
@@ -83,7 +85,7 @@ body.quarantine #header .title
   color:#333;
   font-size:14pt;
 }
-
+/* block page title */
 .title-block-page {
 	padding-left: 30px;
 	vertical-align: bottom;
@@ -91,10 +93,12 @@ body.quarantine #header .title
 	font: bold 36px arial, tahoma, helvetica, sans-serif;
 	color: #67686B;
 }
+/* blocked page icon*/
 .icon-block {
     background:transparent url(../images/user/icon_block.png) no-repeat center center;
     height: 130px;
 }
+/* quarantined messages toolbar message*/
 .message,.message-2 {
     padding: 5px 5px 5px 28px;
     border: 1px solid #60BB3F;
@@ -123,6 +127,7 @@ body.quarantine #header .title
 	margin:7px 0px 0px 20px;
 	width:500px;
 }
+/* safelist grid */
 .safelist-grid{
 	width:50%;
 }
@@ -154,7 +159,7 @@ body.quarantine #header .title
 .description {
     font-size: larger;
 }
-
+/* block page main container */
 body.blockpage #main
 {
   position : absolute;
@@ -175,7 +180,7 @@ body.blockpage #extra-div-1
   width: 620px;
   height: 380px;
   background: transparent url(../images/user/blockpage_border.gif) no-repeat;
- }
+}
 
 body.blockpage #extra-div-2
 { 
@@ -185,14 +190,14 @@ body.blockpage #extra-div-2
   width: 620px;
   height: 12px;
   background: transparent url(../images/user/blockpage_border_bottom.gif) no-repeat;
- }
+}
 
 
 #header
 { 
   position : relative;
- }
-
+}
+/* block page title */
 body.blockpage #header .title
 { 
   position : absolute;
@@ -200,8 +205,8 @@ body.blockpage #header .title
   bottom : 0px;
   font: bold 36px arial, tahoma, helvetica, sans-serif;
   color: #67686B;
- }
-
+}
+/* block page information list container*/
 .info-list {
 	margin-top: 10px;
 	margin-bottom: 20px;
@@ -211,10 +216,11 @@ body.blockpage #header .title
     text-align: left;
     background-color: #FFFFFF;
 }
+/* block page information list element */
 .info-list div{
     padding:5px 5px 5px 5px;
 }
-
+/* block page footer */
 body.blockpage #footer
 {
   font-size: small;
