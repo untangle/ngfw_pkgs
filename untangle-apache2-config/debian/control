@@ -8,6 +8,6 @@ Standards-Version: 3.8.0
 Package: untangle-apache2-config
 Architecture: all
 Depends: apache2, libapache2-mod-jk, libapache2-mod-python, python-psycopg
-Pre-Depends: sun-java6-jre
+Pre-Depends: sun-java6-bin
 Description: The Untangle Apache2 config
  The Untangle Apache2 config.

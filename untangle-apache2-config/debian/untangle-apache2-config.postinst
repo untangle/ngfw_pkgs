@@ -5,7 +5,7 @@ exec > /tmp/untangle-apache2-config.log 2>&1
 
 KEYSTORE=/usr/share/untangle/conf/keystore
 PEM=/etc/apache2/ssl/apache.pem
-ALIAS=$(hostname -f)
+ALIAS=$(hostname)
 
 if [ -z "$ALIAS" ] || [ "$ALIAS" = "Knoppix.metaloft.com" ] ; then
     echo setting ALIAS to default value
@@ -54,6 +54,10 @@ fi
 if [ ! -e $PEM -a -e $KEYSTORE ]; then
     echo 'moving cert from java keystore'
     /usr/share/untangle-apache2-config/keystore2pem.sh $KEYSTORE $PEM $ALIAS
+    if [ $? -ne 0 ]; then
+    	echo "failed, removing"
+	rm $PEM
+    fi
 fi
 
 if [ ! -e $PEM ]; then
