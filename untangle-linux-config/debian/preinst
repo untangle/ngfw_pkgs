@@ -22,6 +22,8 @@ oldVersion=$2
 #   $ dpkg --compare-versions "" le 5.3~ && echo reboot
 #   reboot
 if [ -x /etc/init.d/untangle-vm ] && dpkg --compare-versions "$oldVersion" le 5.3~ ; then
+    # Bug 5554 -- hotfix the init.d script so it doesn't kill the upgrade
+    sed -i -e "s/ grep java | grep uvm/ fgrep java | fgrep com.untangle.uvm.engine.Main/" /etc/init.d/untangle-vm
     uvm-restart reboot
 fi
 
