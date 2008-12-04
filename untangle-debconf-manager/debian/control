@@ -1,0 +1,12 @@
+Source: untangle-debconf-manager
+Section: admin
+Priority: important
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.8.0
+
+Package: untangle-debconf-manager
+Architecture: all
+Pre-Depends: python
+Description: The Untangle Debconf Manager
+ The Untangle Manager for the debconf database.
