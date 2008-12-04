@@ -2,24 +2,36 @@
 
 import re, shutil, sys
 
-debconf     = "/var/cache/debconf/config.dat"
-debconfCopy = debconf + ".bak"
-splitObject = re.compile('^\n', re.MULTILINE)
-dljTemplate = "accepted-sun-dlj-v1-1"
-dljAccepted = """
-Name: shared/accepted-sun-dlj-v1-1
+debconf          = "/var/cache/debconf/config.dat"
+debconfCopy      = debconf + ".bak"
+splitObject      = re.compile('^\n', re.MULTILINE)
+dljEntryName     = "accepted-sun-dlj-v1-1"
+# this is the only entry we will add if we find out the DLJ has not been
+# accepted; when the value of 'accepted-sun-dlj-v1-1' is true, the 'Seen:'
+# state of 'present-sun-dlj-v1-1' does not matter, so we don't touch it
+dljEntryAccepted = \
+"""Name: shared/accepted-sun-dlj-v1-1
 Template: shared/accepted-sun-dlj-v1-1
 Value: true
 Owners: sun-java5-bin, sun-java5-jdk, sun-java5-jre, sun-java6-bin, sun-java6-jdk, sun-java6-jre
 Flags: seen
+
 """
 
-print "Making a copy of debconf.dat in " + debconfCopy
-shutil.copyfile(debconf, debconf + ".bak")
+entries      = splitObject.split(open(debconf).read())
+otherEntries = [] # will leave those untouched
 
-print "Accepting DLJ"
-entries = splitObject.split(open(debconf).read())
-otherEntries = [ entry for entry in entries if entry.count(dljTemplate) == 0 ]
-open(debconf, "w").write("\n".join(otherEntries) + dljAccepted)
+for entry in entries:
+  if entry.count(dljEntryName) == 0:
+    otherEntries.append(entry)
+  elif entry.count("\nValue: true\n") > 0:
+    print "DLJ was already accepted, doing nothing."
+    sys.exit(0)
 
-sys.exit(0)
+# if we made it here...
+print "DLJ was not accepted:"
+print "  --> making a copy of debconf.dat in " + debconfCopy
+shutil.copyfile(debconf, debconfCopy)
+print "  --> accepting DLJ"
+open(debconf, "w").write("\n".join(otherEntries) + dljEntryAccepted)
+print "  --> all done"
