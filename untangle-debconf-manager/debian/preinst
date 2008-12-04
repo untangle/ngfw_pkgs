@@ -1,0 +1,25 @@
+#! /usr/bin/env python
+
+import re, shutil, sys
+
+debconf     = "/var/cache/debconf/config.dat"
+debconfCopy = debconf + ".bak"
+splitObject = re.compile('^\n', re.MULTILINE)
+dljTemplate = "accepted-sun-dlj-v1-1"
+dljAccepted = """
+Name: shared/accepted-sun-dlj-v1-1
+Template: shared/accepted-sun-dlj-v1-1
+Value: true
+Owners: sun-java5-bin, sun-java5-jdk, sun-java5-jre, sun-java6-bin, sun-java6-jdk, sun-java6-jre
+Flags: seen
+"""
+
+print "Making a copy of debconf.dat in " + debconfCopy
+shutil.copyfile(debconf, debconf + ".bak")
+
+print "Accepting DLJ"
+entries = splitObject.split(open(debconf).read())
+otherEntries = [ entry for entry in entries if entry.count(dljTemplate) == 0 ]
+open(debconf, "w").write("\n".join(otherEntries) + dljAccepted)
+
+sys.exit(0)

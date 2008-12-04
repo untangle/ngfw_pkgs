@@ -1,0 +1,42 @@
+#!/usr/bin/make -f
+
+PACKAGE=$(shell dh_listpackages)
+DESTDIR=$(CURDIR)/debian/$(PACKAGE)
+
+clean:
+	dh_testdir
+	dh_testroot
+
+	rm -f build-stamp install-stamp
+	dh_clean
+
+build: build-stamp
+build-stamp:
+
+install: install-stamp
+install-stamp: build-stamp
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+
+	/usr/bin/find $(DESTDIR) -depth -name .svn -exec rm -fr "{}" \;
+
+	touch install-stamp
+
+binary-arch:
+
+binary-indep: install
+	dh_testdir
+	dh_testroot
+	dh_installdocs -n
+	dh_installchangelogs
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	if [ -f debian/version ] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: clean binary-indep binary-arch binary install

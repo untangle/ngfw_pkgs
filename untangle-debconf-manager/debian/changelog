@@ -1,0 +1,5 @@
+untangle-debconf-manager (0.1-1) stable; urgency=low
+
+  * Initial release.
+
+ -- Sebastien Delafond <seb@untangle.com>  Wed, 03 Dec 2008 16:13:04 -0800
