@@ -1,0 +1,45 @@
+Package: arj
+Pin: version 3.10.22-6
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: clamav
+Pin: version 0.94.dfsg-1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: clamav-base
+Pin: version 0.94.dfsg-1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: clamav-daemon
+Pin: version 0.94.dfsg-1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: clamav-freshclam
+Pin: version 0.94.dfsg-1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: lha
+Pin: version 1.14i-10.3
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: libclamav5
+Pin: version 0.94.dfsg-1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: unrar
+Pin: version 1:3.8.2-1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: zoo
+Pin: version 2.10-21
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+

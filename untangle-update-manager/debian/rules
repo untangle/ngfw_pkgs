@@ -1,0 +1,75 @@
+#!/usr/bin/make -f
+# Sample debian/rules that uses debhelper. 
+# GNU copyright 1997 by Joey Hess.
+#
+# This version is for a hypothetical package that builds an
+# architecture-dependant package, as well as an architecture-independent
+# package.
+
+# Uncomment this to turn on verbose mode. 
+# export DH_VERBOSE=1
+
+DESTDIR := debian/$(shell dh_listpackages)
+
+ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -g
+endif
+ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+	INSTALL_PROGRAM += -s
+endif
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	touch configure-stamp
+
+build: configure
+	dh_testdir
+	rm -rf ./$(DESTDIR)
+	mkdir -p ./$(DESTDIR)
+	cp -r ./files/* $(DESTDIR)
+#	ruby versions.rb files/usr/share/untangle-update-manager/apt-preferences.d/*untangle-*
+	find ./$(DESTDIR) -name ".svn" | xargs rm -rf 
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-arch-stamp build-indep-stamp configure-stamp
+	rm -rf $(DESTDIR) debian/untangle-update-manager sav-install
+	dh_clean
+
+binary-indep: build
+	dh_testdir  
+	dh_testroot   
+#	dh_movefiles
+#	dh_installdebconf   
+	dh_shlibdeps  
+	dh_installdocs -n   
+#	dh_installexamples   
+#	dh_installmenu   
+#	dh_installlogrotate   
+#	dh_installemacsen   
+#	dh_installpam   
+#	dh_installmime   
+#	dh_installinit
+#	dh_installcron   
+#	dh_installman   
+#	dh_installinfo   
+#	dh_undocumented   
+	dh_installchangelogs    
+#	dh_strip  
+#	dh_link   
+	dh_compress   
+#	dh_fixperms   
+	dh_installdeb  
+#	dh_perl     
+	if [ -f debian/version ] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
+	dh_md5sums     
+
+binary-arch: build 
+# nothing to do
+
+binary: binary-indep binary-arch
+	dh_builddeb 
+
+.PHONY: build clean binary-indep binary install configure

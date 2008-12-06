@@ -1,1 +1,7 @@
+deb http://ftp.debian.org/debian lenny main contrib non-free
 
+deb http://security.debian.org lenny/updates main contrib non-free
+
+deb http://volatile.debian.org/debian-volatile lenny/volatile main contrib non-free
+
+#deb http://www.backports.org/debian lenny-backports main contrib non-free

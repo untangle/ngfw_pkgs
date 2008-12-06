@@ -1,0 +1,5 @@
+Package: nmap
+Pin: version 4.62-1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+

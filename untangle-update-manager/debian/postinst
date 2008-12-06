@@ -1,0 +1,12 @@
+#! /bin/bash
+
+PARTS_DIR=/usr/share/untangle-update-manager/apt-preferences.d
+APT_PREFERENCES=/etc/apt/preferences
+
+rm -f $APT_PREFERENCES
+
+for part in $PARTS_DIR/*.conf ; do
+  echo "Explanation: `basename $part`" >> $APT_PREFERENCES
+  cat $part >> $APT_PREFERENCES
+  echo -e "\n\n\n" >> $APT_PREFERENCES
+done

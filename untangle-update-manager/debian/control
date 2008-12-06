@@ -1,0 +1,14 @@
+Source: untangle-update-manager
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: debhelper (>> 3.0.0), ruby
+Standards-Version: 3.8.0
+
+Package: untangle-update-manager
+Architecture: all
+Description: The Untangle update manager.
+ Allows Untangle to use the Debian mirrors directly, and also
+ selectively unblock only those Debian updates that have been tested
+ to work with our software.

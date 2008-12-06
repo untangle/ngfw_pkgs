@@ -1,3 +1,9 @@
+untangle-system-config (6.0.0~svn20080915r18855trunk+seb20081003T101049-1lenny) seb; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@debian.org>  Fri, 03 Oct 2008 10:10:49 -0700
+
 untangle-system-config (0-0) stable; urgency=low
 
   * First release

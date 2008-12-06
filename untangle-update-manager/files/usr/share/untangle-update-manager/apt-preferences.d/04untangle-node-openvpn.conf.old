@@ -1,0 +1,14 @@
+Package: libpkcs11-helper1
+Pin: version 1.05-1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: openvpn
+Pin: version 2.1~rc11-1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: openvpn-blacklist
+Pin: version 0.3
+Pin: release a=testing, o=Debian
+Pin-Priority: 999

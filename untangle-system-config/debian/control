@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-system-config
 Architecture: all
-Depends: untangle-vm, untangle-linux-config (>= 5.1.1~svn20080311)
+Depends: debconf, untangle-vm, untangle-linux-config (>= 5.1.1~svn20080311)
 Description: The Untangle system config
  The Untangle system configurator.  Top level configurations not belonging in
  a more specific configurator are here.  Also if this package is present at

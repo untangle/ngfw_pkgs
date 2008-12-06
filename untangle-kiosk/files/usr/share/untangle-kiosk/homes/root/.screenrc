@@ -4,23 +4,22 @@ bell_msg 	"Beep in window %"
 startup_message	off
 
 vbell 		off
-#vbell_msg 	"   Wuff  ----  Wuff!!  "
 
 defscrollback	2000
-msgwait		2
+msgwait		0.1
 
 #caption 	always 	"%{yK}   -=%H=- | $LOGNAME | %{yK}%c |  %{yK}%-Lw%{yK}%50>%{Ky}%n%f* %t%{-}%+Lw%<%{- Wk}"
 #caption 	always 	"%c Flags:%f hardstatus:%h %H Load:%l %w"
 #caption 	always 	"%-Lw%{= BW}%50>%n%f* %t%{-}%+Lw%<"
 #caption 	always	"%?%F%{.R.}%?%3n %t%? [%h]%?"
-caption 	always	"%?%F%{= kw}%{= MW}%?%3n%f %t %? [%h]%?%-=|%{= rW} %H (%l) |%{= yK} %D %d %M %Y %c|%{-}"
+caption 	always	"%?%F%{= RW}%:%{= dw}%?%3n%f %t %? [%h]%?"
 
 #hardstatus 	string "%h%? users: %u%?"
 #hardstatus 	alwayslastline "%{wk}%?%-Lw%?%{bw}%n*%f %t%?(%u)%?%{wk}%?%+Lw%= %{mk} <at>  %H %{ck}%Y%{wk}-%{ck}%m%{wk}-%{ck}%d %{yk}%D %{gk}%c"
 #hardstatus	alwayslastline "%-Lw%{= BW}%50>%n%f* %t%{-}%+Lw%<"
 #hardstatus	alwayslastline "%{= wk}%-Lw%{= BW}%n%f %t%{-}%{= wk} %+Lw${= wk}%="
 #hardstatus	alwayslastline "%{= dw}%-Lw%{= BW}%n%f %t%{-}%{= dw} %+Lw${= dw}%="
-hardstatus	alwayslastline "%{= wk}%-Lw%{= BW}%n%f %t%{-}%{= wk}%+Lw%{-}%{= dw} %="
+hardstatus	alwayslastline "%{= wK}%-Lw%{= RW}%n%f %t%{-}%{= wK}%+Lw%{-} %= %-=|%{= yK} %H (%l) |%{= mW} %D %d %M %Y %c|%{-}"
 
 shell		-$SHELL
 
@@ -43,6 +42,7 @@ bind 	- 	resize -1
 bind 	_ 	silence
 bind 	j 	focus down
 bind 	k 	focus up
+bind	o	focus
 bind 	K 	kill
 
 ###########################################################################
@@ -56,7 +56,8 @@ termcapinfo	xterm*|linux*|rxvt*|Eterm* OP
 # those terminals use screen scrollback buffer
 termcapinfo 	xterm|xterms|xs|rxvt|Eterm ti@:te@
 
-#term 		Eterm
+term 		"screen-256color"
 termcapinfo 	xterm 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
+termcapinfo 	rxvt* 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
 #termcapinfo 	Eterm 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
 

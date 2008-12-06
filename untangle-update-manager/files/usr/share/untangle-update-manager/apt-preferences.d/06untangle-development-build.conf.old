@@ -1,0 +1,255 @@
+Package: autoconf
+Pin: version 2.61-8
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: binutils
+Pin: version 2.18.1~cvs20080103-7
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: bzip2
+Pin: version 1.0.5-1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: cowdancer
+Pin: version 0.47
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: debhelper
+Pin: version 7.0.15
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: debootstrap
+Pin: version 1.0.10
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: devscripts
+Pin: version 2.10.35
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: diffstat
+Pin: version 1.45-2
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: docbook-xsl
+Pin: version 1.73.2.dfsg.1-4
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: dpatch
+Pin: version 2.0.30
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: dpkg-dev
+Pin: version 1.14.22
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: dput
+Pin: version 0.9.2.32
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: fakeroot
+Pin: version 1.10.1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: g++
+Pin: version 4:4.2.4-5
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: g++-4.3
+Pin: version 4.3.2-1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: gcc
+Pin: version 4:4.2.4-5
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: gcc-4.3
+Pin: version 4.3.2-1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: html2text
+Pin: version 1.3.2a-5
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: intltool-debian
+Pin: version 0.35.0+20060710.1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: libc6-dev
+Pin: version 2.7-14
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: libclass-accessor-perl
+Pin: version 0.31-2
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: libgettext-ruby-util
+Pin: version 1.91.0-1.1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: libio-string-perl
+Pin: version 1.08-2
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: libncurses5-dev
+Pin: version 5.6+20080830-1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: libneon27-gnutls
+Pin: version 0.28.2-5
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: libnetpbm10-dev
+Pin: version 2:10.0-12
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: libosp5
+Pin: version 1.5.2-6
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: libparse-debianchangelog-perl
+Pin: version 1.1.1-2
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: libserf-0-0
+Pin: version 0.2.0-1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: libssl-dev
+Pin: version 0.9.8g-13
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: libstdc++6-4.3-dev
+Pin: version 4.3.2-1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: libsvn1
+Pin: version 1.5.1dfsg1-1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: libsysfs-dev
+Pin: version 2.1.0-5
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: libxml2-dev
+Pin: version 2.6.32.dfsg-4
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: lintian
+Pin: version 1.24.2.1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: linux-libc-dev
+Pin: version 2.6.26-8
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: linuxdoc-tools
+Pin: version 0.9.56
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: m4
+Pin: version 1.4.11-1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: make
+Pin: version 3.81-5
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: module-assistant
+Pin: version 0.10.11.0
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: opensp
+Pin: version 1.5.2-6
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: patch
+Pin: version 2.5.9-5
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: pbuilder
+Pin: version 0.181
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: pkg-config
+Pin: version 0.22-1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: po-debconf
+Pin: version 1.0.15
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: sgml-base
+Pin: version 1.26
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: sgml-data
+Pin: version 2.0.3
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: subversion
+Pin: version 1.5.1dfsg1-1
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: unzip
+Pin: version 5.52-12
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: xml-core
+Pin: version 0.11
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
+Package: zlib1g-dev
+Pin: version 1:1.2.3.3.dfsg-12
+Pin: release a=testing, o=Debian
+Pin-Priority: 999
+
