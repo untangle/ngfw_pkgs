@@ -11,6 +11,6 @@ Architecture: all
 Provides: untangle-ntpdate-config
 Replaces: untangle-ntpdate-config
 Conflicts: untangle-ntpdate-config
-Depends: ntpdate, ntp-server
+Depends: ntpdate, ntp
 Description: The Untangle ntp config
  The Untangle autoconfigurator for ntp.
