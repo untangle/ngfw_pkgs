@@ -1,6 +1,6 @@
 Source: untangle-debconf-manager
 Section: admin
-Priority: important
+Priority: standard
 Maintainer: Sebastien Delafond <seb@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.8.0
