@@ -34,7 +34,7 @@ class Alpaca::OS::OSUtils
         when /8\.04.*/   then "ubuntu_hardy"
         when "hardy"     then "ubuntu_hardy"
         else
-          logger.warn( "Unable to determine OS, assuming sarge" )
+          puts( "Unable to determine OS, assuming sarge" )
           "debian_sarge"
         end
     }
