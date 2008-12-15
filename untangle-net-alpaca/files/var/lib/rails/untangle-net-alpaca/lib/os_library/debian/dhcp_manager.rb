@@ -112,6 +112,8 @@ class OSLibrary::Debian::DhcpManager < OSLibrary::DhcpManager
        [ OverrideGateway, gateway ],
        [ OverrideDnsServer, dns ]].each do |var,val|
         next if ( ApplicationHelper.null?( val ))
+        ### Total fail XXXXXX if address is two DNS servers.
+
         next if ( IPAddr.parse_ip( val ).nil? )
         
         cfg << "#{var}=\"#{val}\""

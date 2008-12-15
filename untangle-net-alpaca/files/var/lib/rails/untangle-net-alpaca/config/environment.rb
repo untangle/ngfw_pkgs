@@ -59,6 +59,7 @@ Rails::Initializer.run do |config|
   # config.active_record.default_timezone = :utc
   
   # See Rails::Configuration for more options
+
 end
 
 # Add new inflection rules using the following format 
@@ -89,3 +90,9 @@ LOCALES = {
 UNTANGLE_VERSION="6.1"
 HELP_URL="http://www.untangle.com/docs/get.php"
 HELP_NAMESPACE="alpaca"
+
+## This isn't supported in newer versions
+if ( ActiveSupport::JSON.method_defined?( :unquote_hash_key_identifiers= ))
+  ActiveSupport::JSON.unquote_hash_key_identifiers = false 
+end
+
