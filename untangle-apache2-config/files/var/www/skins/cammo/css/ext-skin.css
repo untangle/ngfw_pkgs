@@ -131,7 +131,6 @@ td.x-grid3-hd-over .x-grid3-hd-inner, td.sort-desc .x-grid3-hd-inner, td.sort-as
 	background-image:url(../images/darkgray/grid/grid3-special-col-sel-bg.gif);
 }
 .x-grid3-row-selected {
-    color: #eeeeee;
 	background: #555759;
 	border:1px dotted #111111;
 }
