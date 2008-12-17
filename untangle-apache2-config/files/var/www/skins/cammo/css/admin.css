@@ -372,6 +372,9 @@ div.icon-drag {
 button.icon-refresh {
     background: transparent url(../images/admin/icon_refresh.png) no-repeat center left !important;
 }
+button.icon-autorefresh {
+    background: transparent url(../images/admin/icon_autorefresh.png) no-repeat center left !important;
+}
 .grid-row-deleted {
 	background-color: #FF5151;
 }
