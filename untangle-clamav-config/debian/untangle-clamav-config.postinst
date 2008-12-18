@@ -47,6 +47,6 @@ ourInit clamav-daemon start
 sleep 2
 
 # fetch unofficial clam phishing signatures.
-nohup /etc/cron.hourly/update_sanesecurity --sleep 1 >/dev/null 2>&1 &
+nohup /etc/cron.daily/update_sanesecurity --sleep 1 >/dev/null 2>&1 &
 
 exit 0
