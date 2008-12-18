@@ -105,9 +105,17 @@ class ApplicationController < ActionController::Base
     @stylesheets = ( self.respond_to?( "stylesheets" )) ? stylesheets : [ ]
     @stylesheets << "rack.css"
     @stylesheets << "simple-table.css"
+
+    @skin_stylesheets = [ "/ext/resources/css/ext-all.css", 
+                          "/skins/default/css/ext-skin.css", "/skins/default/css/user.css" ]
   end
   
   def setScripts
+    @extjs_scripts = [ "/ext/source/core/Ext.js", "/ext/source/adapter/ext-base.js",
+                       "/ext/ext-all-debug.js" ]
+
+    @alpaca_scripts = [ "e/application", "e/util", "e/page_panel" ]
+
     @javascripts = []
     @javascripts = [ self.scripts ].flatten if self.respond_to?( "scripts" )
 
@@ -207,5 +215,25 @@ class ApplicationController < ActionController::Base
     #    else
     #      super( options, *parameters_for_method_reference )
     #    end
+  end
+  
+  def json_params
+    a = params[controller_name]
+    return  ( a.length == 1 and a[0].is_a?( ::Hash )) ? a[0] : a
+  end
+
+  def json_result( *values )
+    values = values[0] if ( values.length == 1 and values[0].is_a?( ::Hash ))
+
+    response = { "status" => "success" }
+    response["result"] = values unless values.empty?
+
+    render :json =>  response.to_json
+  end
+
+  def json_error( message, *values )
+    values = values[0] if ( values.length == 1 and values[0].is_a?( ::Hash ))
+    
+    render :json => { "error" => message, "result" => values }.to_json
   end
 end

@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <% main_menu = menu_organizer.get_node( "/main" ) %>
+  <head>
+    <title>
+      <%= (( @title.nil? ) ? ApplicationController::DefaultTitle : @title ).t %>
+    </title>
+    
+    <% @skin_stylesheets.each do |stylesheet| %>
+      <%= stylesheet_link_tag stylesheet %>
+    <% end %>
+
+    <% @extjs_scripts.each do |script| %>
+      <%= javascript_include_tag script %>
+    <% end %>
+    
+    <% @alpaca_scripts.each do |script| %>
+      <%= javascript_include_tag script %>
+    <% end %>
+
+    <%= yield %>
+
+  </head>
+  <body>
+    <div id="base"/>
+  </body>
+</html>
