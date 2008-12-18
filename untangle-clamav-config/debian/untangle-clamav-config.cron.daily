@@ -149,13 +149,13 @@ export PATH="$PATH":/bin:/usr/bin:/usr/local/bin
 
 # The file names and URLs of the scam and phish signature files from SaneSecurity
 SCAM_SIGS="scam.ndb"
-SCAM_SIGS_URL="http://www.untangle.com/clamav/scamsigs/scam.ndb.gz"
+SCAM_SIGS_URL="http://phishupdate.untangle.com/clamav/scamsigs/scam.ndb.gz"
 PHISH_SIGS="phish.ndb"
-PHISH_SIGS_URL="http://www.untangle.com/clamav/phishsigs/phish.ndb.gz"
+PHISH_SIGS_URL="http://phishupdate.untangle.com/clamav/phishsigs/phish.ndb.gz"
 JUNK_SIGS="junk.ndb"
-JUNK_SIGS_URL="http://www.untangle.com/clamav/junksigs/junk.ndb.gz"
+JUNK_SIGS_URL="http://phishupdate.untangle.com/clamav/junksigs/junk.ndb.gz"
 ROGUE_SIGS="rogue.hdb"
-ROGUE_SIGS_URL="http://www.untangle.com/clamav/roguesigs/rogue.hdb.gz"
+ROGUE_SIGS_URL="http://phishupdate.untangle.com/clamav/roguesigs/rogue.hdb.gz"
 
 # The URLs of the spam and image-spam signature files from MSRBL
 MSRBL_SPAM_SIGS="MSRBL-SPAM.ndb"
@@ -178,7 +178,7 @@ syslog_facility=mail
 # The extra padding keeps the servers from being hammered all at once.
 # These are the minimum and maximum sleep times in seconds.
 min_sleep_time=30
-max_sleep_time=600
+max_sleep_time=80000
 
 # Should the script reload the clamd service
 # (Should not be necessary if you have "SelfCheck" enabled in clamd.conf
@@ -695,6 +695,13 @@ random_sleep()
 	sleep $sleep_time
 }
 
+random_small_sleep()
+{
+	local sleep_time
+	sleep_time=$(($RANDOM * 30 / 32767 + 1))
+        sleep $sleep_time
+}
+
 # Find the ClamAV db dir and set the $clam_db_dir global variable
 #
 # Usage: find_clam_db_dir
@@ -837,10 +844,15 @@ declare sigfile_updated=0
 if [ "$unprivileged_child" -ne 0 -o $(id -u) -ne 0 ]; then
 	# Update/download the signature files
 	update_sigfile_with_curl "$SCAM_SIGS_URL" "$SCAM_SIGS" && sigfile_updated=1
+        random_small_sleep
 	update_sigfile_with_curl "$PHISH_SIGS_URL" "$PHISH_SIGS" && sigfile_updated=1
+        random_small_sleep
 	update_sigfile_with_curl "$JUNK_SIGS_URL" "$JUNK_SIGS" && sigfile_updated=1
+        random_small_sleep
 	update_sigfile_with_curl "$ROGUE_SIGS_URL" "$ROGUE_SIGS" && sigfile_updated=1
+        random_small_sleep
 	update_sigfile_with_rsync "$MSRBL_SPAM_SIGS_URL" "$MSRBL_SPAM_SIGS" && sigfile_updated=1
+        random_small_sleep
 	update_sigfile_with_rsync "$MSRBL_IMAGE_SIGS_URL" "$MSRBL_IMAGE_SIGS" && sigfile_updated=1
 else
 	# Re-execute the script as the unprivileged user to do the download/check/install part.
