@@ -21,11 +21,13 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         }]);
 
         this.servicesReader = new Ext.data.ArrayReader({}, record );
+
+        this.servicesData = [];
         
-        this.servicesStore = new Ext.data.SimpleStore({
+        this.servicesStore = new Ext.data.Store({
             fields : [ "serviceName" ],
-            data : [[]],
-            reader : this.servicesReader
+            reader : this.servicesReader,
+            proxy : new Ext.data.MemoryProxy(this.servicesData)
         });
 
         Ext.apply( this, {
@@ -58,7 +60,6 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 },{
                     xtype : "combo",
                     fieldLabel : "Service",
-                    mode : "local",
                     displayField : "serviceName",
                     name : "ddclient_settings.service",
                     editable : false,
@@ -75,6 +76,10 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     fieldLabel : "Hostname(s)",
                     name : "ddclient_settings.hostname"
                 }]
+            },{
+                xtype : "button",
+                text : "Save Settings",
+                handler : this.saveSettings.createDelegate( this )
             }]
         });
         
@@ -89,9 +94,40 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
     populateForm : function( settings )
     {
         /* Create the store for the ddclient services */
-        this.servicesStore.loadData( settings["ddclient_services"] )
+        this.servicesData.splice( 0 );
+        
+        var ddclientServices = settings["ddclient_services"];
+        for ( var c = 0 ; c < ddclientServices.length ; c++ ) {
+            this.servicesData.push( ddclientServices[c] );
+        }
+        this.servicesStore.load();
         
         Ung.Alpaca.Pages.Hostname.Index.superclass.populateForm.apply( this, arguments );
+    },
+
+    saveSettings : function()
+    {
+        Ext.MessageBox.wait("Saving...", "Please wait");
+
+        this.updateSettings( this.settings );
+
+        Ung.Alpaca.Util.executeRemoteFunction( "/hostname/set_settings", 
+                                               this.completeSaveSettings.createDelegate( this ), 
+                                               null,
+                                               this.settings );
+    },
+
+    completeSaveSettings : function()
+    {
+        Ext.MessageBox.show({  
+            title : 'Saved Settings',
+            msg : 'Settings have been saved successfuly',
+            buttons : Ext.MessageBox.OK,
+            icon : Ext.MessageBox.INFO
+        });
+
+        /* Reload the page in the background */
+        Ung.Alpaca.Application.reloadCurrentPath();
     }
 });
 

@@ -55,8 +55,8 @@ Ung.Alpaca.Util = {
     {
         var args = [];
         var argumentCount = arguments.length;
-        for ( var c = 2 ; c < argumentCount ; c++ ) {
-            args[c-2] = arguments[c];
+        for ( var c = 3 ; c < argumentCount ; c++ ) {
+            args[c-3] = arguments[c];
         }
 
         path = "/alpaca" + path;

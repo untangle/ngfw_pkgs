@@ -19,6 +19,8 @@ Ung.Alpaca.PagePanel = Ext.extend( Ext.Panel, {
 
     completeLoadSettings : function( settings, response, options )
     {
+        this.settings = settings;
+
         this.populateForm( settings );
     },
 
@@ -26,7 +28,6 @@ Ung.Alpaca.PagePanel = Ext.extend( Ext.Panel, {
     {
         /* Iterate the panel and line up fields with their values. */
         this.items.each( this.populateFieldValue.createDelegate( this, [ settings ], true ));
-        
     },
     
     /* Fill in the value for a field */
@@ -87,5 +88,59 @@ Ung.Alpaca.PagePanel = Ext.extend( Ext.Panel, {
         }
 
         return value;
+    },
+
+    updateSettings : function( settings )
+    {
+        /* Iterate the panel and line up fields with their values. */
+        this.items.each( this.updateFieldValue.createDelegate( this, [ settings ], true ));
+    },
+    
+    /* Update the settings with the values from the fields. */
+    updateFieldValue : function( item, index, length, settings )
+    {
+        if ( item.getName ) {
+            var value = null;
+
+            switch ( item.xtype ) {
+            case "textfield":
+            case "checkbox":
+            case "combo":
+                value = item.getValue();
+                break;                
+            }
+            
+            if ( value != null ) {
+                this.setSettingsValue( settings, item.getName(), value );
+            }
+        }
+
+        /* Recurse to children */
+        if ( item.items ) {
+            item.items.each( this.updateFieldValue.createDelegate( this, [ settings ], true ));
+        }
+    },
+
+    setSettingsValue : function( settings, name, value )
+    {
+        if ( /^[a-zA-Z_][-a-zA-Z0-9_\.]+$/( name ) == null ) {
+            return null;
+        }
+
+        var path = name.split( "." );
+        
+        var end = path.length - 1;
+
+        var c = 0;
+        var hash = settings;
+        
+        for ( c = 0 ; c < end ; c++ ) {
+            hash = hash[path[c]];
+            if ( value == null ) {
+                return;
+            }
+        }
+
+        hash[path[c]] = value;
     }
 });

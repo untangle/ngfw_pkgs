@@ -6,6 +6,8 @@ Ext.ns('Ung.Alpaca');
 
 Ung.Alpaca.Application = {
     pages : {},
+
+    pageDiv : "base",
     
     /* This parses the path of the URL to determine the current page.
      * The URL looks like "/alpaca/<controller>/<page>"
@@ -46,7 +48,18 @@ Ung.Alpaca.Application = {
         
         panel.loadSettings();
         
-        panel.render( "base" );
+        /* First clear out any children. */
+        var base = Ext.get( this.pageDiv );
+        base.update( "" );
+        panel.render( base );
+
+        this.currentPanel = panel;
+        this.currentPath = newPage;
+    },
+
+    reloadCurrentPath : function()
+    {        
+        this.completeLoadPage( {}, {}, this.currentPath );
     },
 
     getPageRenderer : function( controller, page )
@@ -57,6 +70,16 @@ Ung.Alpaca.Application = {
     buildPageKey : function( controller, page )
     {
         return  "/" + controller + "/" + page;
+    },
+
+    getCurrentPanel : function()
+    {
+        return this.currentPanel;
+    },
+
+    getCurrentPath : function()
+    {
+        return this.currentPath;
     }
 }
  
