@@ -149,13 +149,13 @@ export PATH="$PATH":/bin:/usr/bin:/usr/local/bin
 
 # The file names and URLs of the scam and phish signature files from SaneSecurity
 SCAM_SIGS="scam.ndb"
-SCAM_SIGS_URL="http://www.sanesecurity.com/clamav/scamsigs/scam.ndb.gz"
+SCAM_SIGS_URL="http://www.untangle.com/clamav/scamsigs/scam.ndb.gz"
 PHISH_SIGS="phish.ndb"
-PHISH_SIGS_URL="http://www.sanesecurity.com/clamav/phishsigs/phish.ndb.gz"
+PHISH_SIGS_URL="http://www.untangle.com/clamav/phishsigs/phish.ndb.gz"
 JUNK_SIGS="junk.ndb"
-JUNK_SIGS_URL="http://www.sanesecurity.com/clamav/junksigs/junk.ndb.gz"
+JUNK_SIGS_URL="http://www.untangle.com/clamav/junksigs/junk.ndb.gz"
 ROGUE_SIGS="rogue.hdb"
-ROGUE_SIGS_URL="http://www.sanesecurity.com/clamav/roguesigs/rogue.hdb.gz"
+ROGUE_SIGS_URL="http://www.untangle.com/clamav/roguesigs/rogue.hdb.gz"
 
 # The URLs of the spam and image-spam signature files from MSRBL
 MSRBL_SPAM_SIGS="MSRBL-SPAM.ndb"
