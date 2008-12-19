@@ -10,62 +10,6 @@ if ( Ung.Alpaca.Application.hasPageRenderer( "dhcp", "index" )) {
 Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
     initComponent : function()
     {
-//         this.staticRecord = Ext.data.Record.create([
-//             { name : "mac_address", mapping : "mac_address" },
-//             { name : "ip_address", mapping : "ip_address" },
-//             { name : "id", mapping : "id" },
-//             { name : "description", mapping : "description" }
-//         ]);
-
-//         this.staticGrid = new Ext.grid.EditorGridPanel({
-//             sm : new Ext.grid.RowSelectionModel({singleSelect:true}),
-//             width : 620,
-//             height : 220,
-//             frame: false,
-//             iconCls : 'icon-grid',
-//             clicksToEdit : 1,
-//             viewConfig: {
-//                 forceFit : true
-//             },
-
-//             tbar : [{
-//                 text : "Add",
-//                 handler : this.addStaticEntry.createDelegate( this )
-//             }],
-
-//             store : new Ext.data.Store({
-//                 proxy : new Ext.data.MemoryProxy( this.settings["dhcp_static_entries"] ),
-//                 reader : new Ext.data.ArrayReader({ id : "id" }, this.staticRecord )
-//             }),
-//             columns : [{
-//                 header : "MAC Address",
-//                 width: 200,
-//                 sortable: true,
-//                 dataIndex : "mac_address",
-//                 editor : new Ext.form.TextField({
-//                     allowBlank : false 
-//                 })
-//             },{
-//                 header : "IP Address",
-//                 width: 200,
-//                 sortable: true,
-//                 dataIndex : "ip_address",
-//                 editor : new Ext.form.TextField({
-//                     allowBlank : false 
-//                 })
-//             },{
-//                 header : "Description",
-//                 width: 200,
-//                 sortable: true,
-//                 dataIndex : "description",
-//                 editor : new Ext.form.TextField({
-//                     allowBlank : false 
-//                 })
-//             }]
-//         });
-
-        
-
         this.staticGrid = new Ung.Alpaca.EditorGridPanel({
             recordFields : [ "mac_address", "ip_address", "id", "description" ],
 
