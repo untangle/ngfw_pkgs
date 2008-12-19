@@ -103,5 +103,19 @@ Ung.Alpaca.Util = {
     getPageSrc : function( page )
     {
         return "/alpaca/javascripts/pages/" + page["controller"] + "/" + page["page"] + ".js";
+    },
+
+    updateDefaults : function( config, defaults )
+    {
+        for ( key in defaults ) {
+            if ( config[key] == null ) {
+                var value = defaults[key];
+                if (( typeof value ) == "function" ) {
+                    config[key] = defaults[key]();
+                } else {
+                    config[key] = defaults[key];
+                }
+            }
+        }
     }
 };

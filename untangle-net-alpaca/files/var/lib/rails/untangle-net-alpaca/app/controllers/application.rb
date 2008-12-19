@@ -114,7 +114,7 @@ class ApplicationController < ActionController::Base
     @extjs_scripts = [ "/ext/source/core/Ext.js", "/ext/source/adapter/ext-base.js",
                        "/ext/ext-all-debug.js" ]
 
-    @alpaca_scripts = [ "e/application", "e/util", "e/page_panel", "e/dynamic_memory_store" ]
+    @alpaca_scripts = [ "e/application", "e/util", "e/page_panel", "e/editor_grid_panel" ]
 
     @javascripts = []
     @javascripts = [ self.scripts ].flatten if self.respond_to?( "scripts" )

@@ -18,9 +18,35 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 class DhcpController < ApplicationController
+  def get_settings
+    warnings = []
+    settings = { "warnings" => warnings }
+
+    dhcp_server_settings = DhcpServerSettings.find( :first )
+    dhcp_server_settings = DhcpServerSettings.new if dhcp_server_settings.nil?
+    manage_entries
+    if dhcp_server_settings.enabled == true and \
+        ( dhcp_server_settings.start_address.nil? \
+          or dhcp_server_settings.end_address.nil? \
+          or dhcp_server_settings.start_address.length == 0 \
+          or dhcp_server_settings.end_address.length == 0 )
+      warnings << "DHCP::StartAndEndRequired"
+    elsif ! Interface.valid_dhcp_server?
+      warnings << "DHCP::IncorrectSubnet"
+    end
+
+    settings["dhcp_server_settings"] = dhcp_server_settings
+
+    settings["dhcp_static_entries"] = DhcpStaticEntry.find( :all )
+
+    dynamic_entries= os["dhcp_server_manager"].dynamic_entries
+    settings["dhcp_dynamic_entries"] = dynamic_entries.sort_by { |a| IPAddr.new(a.ip_address).to_i }
+
+    json_result( settings )
+  end
+  
   def index
-    manage
-    render :action => 'manage'
+    render :template => "application/page", :layout => "extjs"
   end
 
   def create_static_entry
