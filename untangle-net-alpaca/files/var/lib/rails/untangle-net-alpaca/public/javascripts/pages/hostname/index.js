@@ -15,6 +15,7 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
     initComponent : function()
     {
+        /*
         var record = Ext.data.Record.create([{
             name : "serviceName",
             mapping : 0
@@ -28,6 +29,11 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             fields : [ "serviceName" ],
             reader : this.servicesReader,
             proxy : new Ext.data.MemoryProxy(this.servicesData)
+        });
+        */
+
+        this.servicesStore = new Ung.Alpaca.DynamicMemoryStore({
+            fields : [ "serviceName" ]
         });
 
         Ext.apply( this, {
@@ -60,10 +66,11 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 },{
                     xtype : "combo",
                     fieldLabel : "Service",
-                    displayField : "serviceName",
                     name : "ddclient_settings.service",
+                    mode : "local",
+                    triggerAction : "all",
                     editable : false,
-                    store : this.servicesStore
+                    store : this.settings["ddclient_services"]
                 },{
                     fieldLabel : "Login",
                     name : "ddclient_settings.login"
@@ -91,20 +98,6 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         Ung.Alpaca.Pages.Hostname.Index.superclass.onRender.apply( this, arguments );
     },
 
-    populateForm : function( settings )
-    {
-        /* Create the store for the ddclient services */
-        this.servicesData.splice( 0 );
-        
-        var ddclientServices = settings["ddclient_services"];
-        for ( var c = 0 ; c < ddclientServices.length ; c++ ) {
-            this.servicesData.push( ddclientServices[c] );
-        }
-        this.servicesStore.load();
-        
-        Ung.Alpaca.Pages.Hostname.Index.superclass.populateForm.apply( this, arguments );
-    },
-
     saveSettings : function()
     {
         Ext.MessageBox.wait("Saving...", "Please wait");
@@ -128,7 +121,17 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
         /* Reload the page in the background */
         Ung.Alpaca.Application.reloadCurrentPath();
+    },
+
+    
+    populateDdclientServices : function()
+    {
+        alert( "populate settings" + this.settings );
+        if ( this.settings && this.settings["ddclient_services"] ) {
+            this.servicesStore.updateData( this.settings["ddclient_services"] );
+        }
     }
 });
 
+Ung.Alpaca.Pages.Hostname.Index.settingsMethod = "/hostname/get_settings";
 Ung.Alpaca.Application.registerPageRenderer( "hostname", "index", Ung.Alpaca.Pages.Hostname.Index );

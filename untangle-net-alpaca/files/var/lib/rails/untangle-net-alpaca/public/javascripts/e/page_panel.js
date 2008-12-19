@@ -1,33 +1,29 @@
 Ext.ns('Ung');
 Ext.ns('Ung.Alpaca');
 
+/**
+ * @class Ung.Alpaca.PagePanel
+ * @extends Ext.Panel
+ * A PagePanel is the base for rendering a page on the alpaca.
+ * 
+ */
 Ung.Alpaca.PagePanel = Ext.extend( Ext.Panel, {
     border : false,
 
     layout : "form",
+
+    constructor : function( config ) {
+        this.settings = config.settings;
+        Ung.Alpaca.PagePanel.superclass.constructor.apply( this, arguments );
+    },
     
-    loadSettings : function()
-    {
-        /* First check to see if settings method is defined. */
-        if ( this.settingsMethod != null ) {
-            Ung.Alpaca.Util.executeRemoteFunction( this.settingsMethod, 
-                                                   this.completeLoadSettings.createDelegate( this ));
-        } else {
-            this.completeLoadSettings( [] );
-        }
-    },
-
-    completeLoadSettings : function( settings, response, options )
-    {
-        this.settings = settings;
-
-        this.populateForm( settings );
-    },
-
-    populateForm : function( settings )
+    // Populate the fields with the 
+    // values from the settings objects.  This uses the name
+    // to automatically determine which values belong in the fields.
+    populateForm : function()
     {
         /* Iterate the panel and line up fields with their values. */
-        this.items.each( this.populateFieldValue.createDelegate( this, [ settings ], true ));
+        this.items.each( this.populateFieldValue.createDelegate( this, [ this.settings ], true ));
     },
     
     /* Fill in the value for a field */

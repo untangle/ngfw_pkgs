@@ -28,7 +28,7 @@ class HostnameController < ApplicationController
     settings["ddclient_settings"] = ddclient_settings
 
     ## Need the possible values for the combobox.
-    settings["ddclient_services"] = OSLibrary::DdclientManager::ConfigService.map { |k,v| [ k ] }
+    settings["ddclient_services"] = OSLibrary::DdclientManager::ConfigService.map { |k,v| k }
     
     ## Dns server settings used to load the search domain.
     dns_server_settings = DnsServerSettings.find( :first )
