@@ -300,6 +300,9 @@ color: #eee;
 .x-form-select-one {
     border: 1px solid #a5a5a5;
 }
+.x-item-disabled *{
+    color:#BBBBBB !important;
+}
 .x-item-disabled .x-form-trigger-over{
     border-bottom: 1px solid #a5a5a5;
 }

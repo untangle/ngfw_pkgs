@@ -216,3 +216,33 @@ body.blockpage #footer
   text-align:center;
   font-weight:bold;
  }
+ /* Button icons*/
+ button.icon-move-mails {
+    background: transparent url(../images/user/icon_email_move.png) no-repeat center left !important;
+}
+button.icon-add-row {
+    background: transparent url(../images/admin/icon_add_row.gif) no-repeat center left !important;
+}
+ button.icon-safe-list{
+    background: transparent url(../images/user/icon_safelist.png) no-repeat center left !important;
+}
+button.icon-delete-row{
+	background:transparent url(../images/user/icon_remove.png) no-repeat center left !important;
+}
+ /* Ext Js Overrides - across the board */
+.x-grid3-hd-inner{
+	text-transform:capitalize;
+}
+.x-fieldset{
+	padding:5px 10px 10px 20px;
+	border:none;
+}
+.x-fieldset-bwrap{
+	padding-bottom:5px;
+	border-bottom:1px #d0d0d0 dotted;
+}
+.x-fieldset legend{
+	margin-left:-15px;
+	color:#111;
+	font-size:12px;
+ }
