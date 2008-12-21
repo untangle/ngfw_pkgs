@@ -76,7 +76,8 @@ Ung.Alpaca.Application = {
     },
 
     // private : This is a handler called after a page has been loaded.
-    completeLoadPage : function( response, options, newPage )
+    // param targetPanel The panel that the new page is going to be rendered into.
+    completeLoadPage : function( response, options, newPage, targetPanel )
     {
         var controller = newPage["controller"];
         var page = newPage["page"];
@@ -84,7 +85,8 @@ Ung.Alpaca.Application = {
 
         var panelClass = Ung.Alpaca.Application.getPageRenderer( controller, page );
         
-        var handler = this.completeLoadSettings.createDelegate( this, [ newPage, panelClass ], true );
+        var handler = this.completeLoadSettings.createDelegate( this, [ newPage, panelClass, targetPanel ], 
+                                                                true );
 
         if ( panelClass.loadSettings != null ) {
             panelClass.loadSettings( newPage, handler );
@@ -100,14 +102,22 @@ Ung.Alpaca.Application = {
     },
 
     // private : This is a handler that is called after the settings have been loaded.
-    completeLoadSettings : function( settings, response, options, newPage, panelClass )
+    completeLoadSettings : function( settings, response, options, newPage, panelClass, targetPanel )
     {
         var panel = new panelClass({ settings : settings });
                 
         /* First clear out any children. */
-        var base = Ext.get( this.pageDiv );
-        base.update( "" );
-        panel.render( base );
+        var el = null;
+        if (( typeof targetPanel ) == "string" ) {
+            el = Ext.get( targetPanel );
+        } else {
+            el = targetPanel.getEl();
+        }
+
+        if ( el != null ) {
+            el.update( "" );
+        }
+        panel.render( el);
 
         /* Have to call this after rendering */
         panel.populateForm();
@@ -123,12 +133,18 @@ Ung.Alpaca.Application = {
     }
 }
  
+var main = null;
 // application main entry point
 Ext.onReady(function() {
     Ext.QuickTips.init();
 
+    /*
     var newPage = Ung.Alpaca.Application.getRequestedPage();
 
     Ung.Alpaca.Util.loadScript( newPage, Ung.Alpaca.Application.completeLoadPage.createDelegate(  Ung.Alpaca.Application, [newPage], true ));
+*/
+
+    main = new Ung.Alpaca.Main();
+    main.render( "base" );
 });
 
