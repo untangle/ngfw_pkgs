@@ -17,9 +17,8 @@ Ung.Alpaca.Application = {
      * If <page> is not set, then it defaults to index.
      * If <controller> is not sett, the it defaults to network.
      */
-    getRequestedPage : function()
+    convertPathToPage : function( path )
     {
-        var path = document.location.pathname;
         path = path.replace( /\/+/g, "/" )
         var a = path.split( "/" );
         var controller = a[2];
@@ -76,7 +75,8 @@ Ung.Alpaca.Application = {
     },
 
     // private : This is a handler called after a page has been loaded.
-    // param targetPanel The panel that the new page is going to be rendered into.
+    // param targetPanel The panel that the new page is going to be rendered into.  If this is null,
+    // this will use the current active panel in the menu.
     completeLoadPage : function( response, options, newPage, targetPanel )
     {
         var controller = newPage["controller"];
@@ -102,10 +102,16 @@ Ung.Alpaca.Application = {
     },
 
     // private : This is a handler that is called after the settings have been loaded.
+    // param targetPanel The panel that the new page is going to be rendered into.  If this is null,
+    // this will use the current active panel in the menu.
     completeLoadSettings : function( settings, response, options, newPage, panelClass, targetPanel )
     {
         var panel = new panelClass({ settings : settings });
                 
+        if ( targetPanel == null ) {
+            targetPanel = main.getActiveTab();
+        }
+
         /* First clear out any children. */
         var el = null;
         if (( typeof targetPanel ) == "string" ) {
@@ -117,7 +123,12 @@ Ung.Alpaca.Application = {
         if ( el != null ) {
             el.update( "" );
         }
-        panel.render( el);
+        
+        main.configureActions( panel, panel.saveSettings );
+
+        panel.render( el );
+        
+        main.clearLastTab();
 
         /* Have to call this after rendering */
         panel.populateForm();
@@ -138,13 +149,11 @@ var main = null;
 Ext.onReady(function() {
     Ext.QuickTips.init();
 
-    /*
-    var newPage = Ung.Alpaca.Application.getRequestedPage();
-
-    Ung.Alpaca.Util.loadScript( newPage, Ung.Alpaca.Application.completeLoadPage.createDelegate(  Ung.Alpaca.Application, [newPage], true ));
-*/
-
     main = new Ung.Alpaca.Main();
     main.render( "base" );
+
+    var page = document.location.pathname;
+
+    main.switchToPage( document.location.pathname );
 });
 

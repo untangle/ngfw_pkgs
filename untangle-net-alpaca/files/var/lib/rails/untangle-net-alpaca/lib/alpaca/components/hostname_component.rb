@@ -28,6 +28,8 @@ class Alpaca::Components::HostnameComponent < Alpaca::Component
   ## Register all of the menu items.
   def register_menu_items( menu_organizer, config_level )
     menu_organizer.register_item( "/main/hostname", menu_item( 300, "Hostname", :action => "manage" ))
+
+    menu_organizer.register_item( "/extjs/hostname", menu_item( 300, "Hostname", :action => "index" ))
   end
 
   def wizard_generate_review( review )

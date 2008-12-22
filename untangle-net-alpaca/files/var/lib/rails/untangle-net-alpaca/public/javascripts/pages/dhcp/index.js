@@ -89,11 +89,7 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             },{
                 xtype : "label",
                 html : "Static DHCP Entries"
-            }, this.staticGrid, {
-                xtype : "button",
-                text : "Save Settings",
-                handler : this.saveSettings.createDelegate( this )
-            }]
+            }, this.staticGrid ]
         });
         
         Ung.Alpaca.Pages.Dhcp.Index.superclass.initComponent.apply( this, arguments );
