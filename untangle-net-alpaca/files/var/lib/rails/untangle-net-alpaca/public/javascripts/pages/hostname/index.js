@@ -56,10 +56,6 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     fieldLabel : "Hostname(s)",
                     name : "ddclient_settings.hostname"
                 }]
-            },{
-                xtype : "button",
-                text : "Save Settings",
-                handler : this.saveSettings.createDelegate( this )
             }]
         });
         

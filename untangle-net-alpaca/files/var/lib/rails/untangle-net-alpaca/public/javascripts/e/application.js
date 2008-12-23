@@ -8,9 +8,6 @@ Ung.Alpaca.Application = {
     // Map of all of the currently loaded pages.  Indexed with
     // buildPageKey( controller, page ) -> page renderer.
     pages : {},
-
-    // The DIV where the main page should be rendered.
-    pageDiv : "base",
     
     /* This parses the path of the URL to determine the current page.
      * The URL looks like "/alpaca/<controller>/<page>"

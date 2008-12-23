@@ -27,8 +27,7 @@ Ung.Alpaca.Main = Ext.extend( Ext.TabPanel, {
         
         Ext.apply( this, {
             bbar : [{
-                text : "Help",
-                name : "help"
+                text : "Help"
             }, '->', this.cancelButton, this.saveButton ],
             items : menuItems
         });

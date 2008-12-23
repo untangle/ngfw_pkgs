@@ -27,6 +27,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
             frame : false,
             iconCls : "icon-grid",
             clicksToEdit : 1,
+            stripeRows : true,
             viewConfig : { 
                 forceFit : true
             }
