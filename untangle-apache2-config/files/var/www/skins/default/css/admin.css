@@ -888,8 +888,7 @@ div.button-column {
 }
 
 /* Wizard */
-.large-option
-{
+.large-option {
   font-size:14px;
   font-weight:bold;
 }
@@ -1148,18 +1147,16 @@ body.wizard .ext-el-mask
     font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
  }
 /* required info text */
-.required-info
-{
-  padding-left : 20px;
-  display : block;
-  font-style : italic;
-  font-size : 80%;
- }
+.required-info {
+    padding-left : 20px;
+    display : block;
+    font-style : italic;
+    font-size : 80%;
+}
 /* required info star*/
-.required-star
-{
-  color:#FF2222;
-  font-weight:bold;
+.required-star {
+    color:#FF2222;
+    font-weight:bold;
  }
 .wizard-label{
 	color:#333;

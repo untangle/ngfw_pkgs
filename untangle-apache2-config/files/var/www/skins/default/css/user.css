@@ -4,7 +4,6 @@ body{
 }  
 /* quarantine page body */
 body.quarantine {
-    /*background: transparent url(../images/user/background_content.png) repeat-x !important;*/
 }
 /* user pages content container */
 #content
@@ -82,8 +81,8 @@ body.quarantine #header .title
   font-weight:bold;
   right: 1px;
   text-align: right;
-  color:#333;
   font-size:14pt;
+  color:#333;
 }
 /* block page title */
 .title-block-page {

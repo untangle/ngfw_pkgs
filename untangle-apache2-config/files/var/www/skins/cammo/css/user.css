@@ -1,24 +1,34 @@
 html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0;}img,body,html{border:0;}
 body{
-	font-family:Tahoma, Arial, Helvetica, sans-serif;
+    font-family:Tahoma, Arial, Helvetica, sans-serif;
 }  
-
+/* quarantine page body */
 body.quarantine {
-    background: transparent url(../images/user/background_content.png) repeat-x !important;
-    margin:0 auto;
+	background-color: #808080;
 }
-
+/* user pages content container */
 #content
 {
   padding: 17px 12px 12px 12px;
 }
-
+/* blockpage body*/
 body.blockpage
 { 
   text-align: center;
   background-color: #808080;
  }
-
+/* quarantine content */
+body.quarantine #content {
+    width:75%;
+    background: transparent url(../images/user/background_content.png) repeat !important;
+	border : 1px solid #666;    
+    margin:0 auto;
+    margin-top:50px;
+}
+.service-error-height{
+    height:400px;
+}
+/* blockpage content */
 body.blockpage #content
 {
   width : 627px;
@@ -32,21 +42,21 @@ body.blockpage #content
   margin-bottom: 30px;
   background: transparent url(../images/user/background_content.png) repeat-x !important;
 }
-
+/* blockpage body*/
 body.blockpage
 { 
   font-family: arial, tahoma, helvetica, sans-serif;
   font-size: 10pt;
  }
 
-
+/* blockpage description text*/
 body.blockpage .description
 { 
   margin-bottom: 30px;
   color:#ccc;
  }
 
-
+/* blockpage contact text*/
 body.blockpage p.contact
 { 
   position: absolute;
@@ -55,85 +65,102 @@ body.blockpage p.contact
   font-size: 8pt;
   color:#ccc;
  }
-
+/* header container */
 #header {
-	margin-bottom: 0px;
+    margin-bottom: 0px;
 }
-
+/* quarantine header container */
 body.quarantine #header
 { 
   width: 100%;
   margin-bottom:10px;
   }
-
+/* quarantine page title */
 body.quarantine #header .title
 {
   position: absolute;
-  top: 10px;
+  top: 30px;
   font-weight:bold;
   right: 1px;
   text-align: right;
-  color:#333;
-  font-size:10pt;
+  font-size:14pt;
+  color: #669900;
 }
-
+/* block page title */
 .title-block-page {
-	padding-left: 30px;
-	vertical-align: bottom;
-	text-align: left;
-	font: bold 36px arial, tahoma, helvetica, sans-serif;
-	color: #67686B;
+    padding-left: 30px;
+    vertical-align: bottom;
+    text-align: left;
+    font: bold 36px arial, tahoma, helvetica, sans-serif;
+    color: #67686B;
 }
+/* blocked page icon*/
 .icon-block {
     background:transparent url(../images/user/icon_block.png) no-repeat center center;
     height: 130px;
 }
-.message {
+/* quarantined messages toolbar message*/
+.message,.message-2 {
     padding: 5px 5px 5px 28px;
     border: 1px solid #60BB3F;
     font-size: 8pt;
     background: #FEFEDD url(../images/user/icon_message.png) no-repeat scroll 7px center !important;
     color:#333;
 }
+.message-2{
+    display:block;
+    margin-bottom:10px;
+}
 .message-container{
-	 padding:2px;
+     padding:2px;
 }
 .white-background{
-	background-color:#FFF;
-	background-image:none;
+    background-color:#FFF;
+    background-image:none;
+}
+.quarantine-left-indented-2{
+    margin-left:8.8em;
 }
 .quarantine-left-indented{
-	margin-left:20px;
+    margin-left:20px;
 }
 .quarantine-received-messages-grid{
-	margin:7px 0px 0px 20px;
-	width:500px;
+    margin:7px 0px 0px 20px;
+    width:500px;
 }
+/* safelist grid */
 .safelist-grid{
-	width:50%;
+    width:50%;
 }
 /*
 .safelist-grid, .quarantine-grid{
-	margin-top:20px;
+    margin-top:20px;
 }
 */
 .quarantine-label{
-	font-size:9pt;
-	margin:20px 0px 0px 10px;
+    font-size:9pt;
+    margin:20px 0px 0px 10px;
 }
 .quarantine-received-messages{
-	margin-top:50px;
+    margin-top:50px;
 }
-.quarantine-change-address{	
-	display:inline;
-	margin:0px 0px 0px 10px;
-	position:relative;
-	top:7px;
+.quarantine-change-address{ 
+    display:inline;
+    margin:0px 0px 0px 10px;
+    position:relative;
+    top:7px;
 }
+
+.quarantine-attachment-header
+{ 
+  background: transparent url(../images/user/icon_attach.png) no-repeat center center;
+  height : 16px;
+  }
+
 .description {
     font-size: larger;
 }
-
+/* block page main container */
 body.blockpage #main
 {
   position : absolute;
@@ -171,7 +198,7 @@ body.blockpage #extra-div-2
 { 
   position : relative;
  }
-
+/* block page title */
 body.blockpage #header .title
 { 
   position : absolute;
@@ -180,9 +207,8 @@ body.blockpage #header .title
   font: bold 36px arial, tahoma, helvetica, sans-serif;
   color: #669900;
  }
-
-.info-list 
-{
+/* block page information list container*/
+.info-list {
   margin-top: 10px;
   margin-bottom: 20px;
   width:340px;
@@ -192,11 +218,11 @@ body.blockpage #header .title
   background-color: #FFFFFF;
   -moz-border-radius:5px 10px 10px 5px;
 }
-.info-list div
-{
+/* block page information list element */
+.info-list div{
   padding:5px 5px 5px 5px;
 }
-
+/* block page footer */
 body.blockpage #footer
 {
   font-size: small;
@@ -215,4 +241,34 @@ body.blockpage #footer
   left:40%;
   text-align:center;
   font-weight:bold;
+ }
+ /* Button icons*/
+ button.icon-move-mails {
+    background: transparent url(../images/user/icon_email_move.png) no-repeat center left !important;
+}
+button.icon-add-row {
+    background: transparent url(../images/admin/icon_add_row.gif) no-repeat center left !important;
+}
+ button.icon-safe-list{
+    background: transparent url(../images/user/icon_safelist.png) no-repeat center left !important;
+}
+button.icon-delete-row{
+    background:transparent url(../images/user/icon_remove.png) no-repeat center left !important;
+}
+ /* Ext Js Overrides - across the board */
+.x-grid3-hd-inner{
+    text-transform:capitalize;
+}
+.x-fieldset{
+    padding:5px 10px 10px 20px;
+    border:none;
+}
+.x-fieldset-bwrap{
+    padding-bottom:5px;
+    border-bottom:1px #d0d0d0 dotted;
+}
+.x-fieldset legend{
+    margin-left:-15px;
+    color:#111;
+    font-size:12px;
  }
