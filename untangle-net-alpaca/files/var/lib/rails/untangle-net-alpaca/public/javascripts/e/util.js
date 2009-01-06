@@ -4,9 +4,9 @@ Ext.ns('Ung.Alpaca');
 Ung.Alpaca.Util = {
     stopLoadingObject  : {},
 
-    loadScript : function( page, handler, failure )
+    loadScript : function( queryPath, handler, failure )
     {
-        var src = this.getPageSrc( page );
+        var src = this.getQueryPathScript( queryPath );
 
         /* Now build the query */
         return Ext.Ajax.request({
@@ -69,7 +69,7 @@ Ung.Alpaca.Util = {
             jsonData : args
         });
     },
-
+    
     remoteFunctionSuccess : function( response, options, handler, failure )
     {
         var json = Ext.util.JSON.decode( response.responseText );
@@ -100,9 +100,9 @@ Ung.Alpaca.Util = {
         throw this.stopLoadingObject;
     },
 
-    getPageSrc : function( page )
+    getQueryPathScript : function( queryPath )
     {
-        return "/alpaca/javascripts/pages/" + page["controller"] + "/" + page["page"] + ".js";
+        return "/alpaca/javascripts/pages/" + queryPath["controller"] + "/" + queryPath["page"] + ".js";
     },
 
     updateDefaults : function( config, defaults )

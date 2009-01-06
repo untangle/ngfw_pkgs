@@ -1,92 +1,62 @@
 //The location of the blank pixel image
-Ext.BLANK_IMAGE_URL = '/alpaca/ext/resources/images/default/s.gif';
+Ext.BLANK_IMAGE_URL = '/ext/resources/images/default/s.gif';
 
 Ext.ns('Ung');
 Ext.ns('Ung.Alpaca');
 
-Ung.Alpaca.Application = {
-    // Map of all of the currently loaded pages.  Indexed with
-    // buildPageKey( controller, page ) -> page renderer.
-    pages : {},
-    
-    /* This parses the path of the URL to determine the current page.
-     * The URL looks like "/alpaca/<controller>/<page>"
-     * If <page> is not set, then it defaults to index.
-     * If <controller> is not sett, the it defaults to network.
-     */
-    convertPathToPage : function( path )
+Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
+    constructor : function()
     {
-        path = path.replace( /\/+/g, "/" )
-        var a = path.split( "/" );
-        var controller = a[2];
-        var page = a[3];
-        var pageID = parseInt( a[4] );
+        this.saveButton = new Ext.Toolbar.Button({
+            text : "Save",
+            handler : this.onSave,
+            scope : this
+        });
+
+        this.cancelButton = new Ext.Toolbar.Button({
+            text : "Cancel",
+            handler : this.onCancel,
+            scope : this
+        });
+
+        this.helpButton = new Ext.Toolbar.Button({
+            text : "Help",
+            handler : this.onHelp,
+            scope : this
+        });
         
-        if (( page == null ) || ( page.length == 0 )) page = "index";
-        if (( controller == null ) || ( controller.length == 0 )) controller = "network";
-
-        var requestedPage = { "controller" : controller, "page" : page };
-        if ( pageID ) {
-            requestedPage["pageID"] = pageID;
-        }
+        this.toolbar = new Ung.Alpaca.Toolbar();
         
-        return requestedPage;
-    },
+        Ext.apply( this, {
+            layout : 'card',
+            tbar : this.toolbar,
+            bbar : [
+                this.helpButton,
+                '->',
+                this.cancelButton,
+                this.saveButton
+            ]
+        });
 
-    // Return true if this page already has a registered renderer.
-    hasPageRenderer : function( controller, page )
-    {
-        return ( this.pages[this.buildPageKey( controller, page )] != null );
-    },
-
-    // Register a page renderer for a page.
-    registerPageRenderer : function( controller, page, renderer )
-    {
-        this.pages[this.buildPageKey( controller, page )] = renderer;
-    },
-
-    // Get the page renderer for a page.
-    getPageRenderer : function( controller, page )
-    {
-        return this.pages[this.buildPageKey( controller, page )];
-    },
-
-    // Recreate the current panel, and reload its settings.
-    reloadCurrentPath : function()
-    {        
-        this.completeLoadPage( {}, {}, this.currentPath );
-    },
-
-    // Get the currently rendered panel.
-    getCurrentPanel : function()
-    {
-        return this.currentPanel;
-    },
-
-    /*
-     *  Get the current path, eg /hostname/index/1
-     */
-    getCurrentPath : function()
-    {
-        return this.currentPath;
+        Ung.Alpaca.Application.superclass.constructor.apply( this, arguments );
     },
 
     // private : This is a handler called after a page has been loaded.
     // param targetPanel The panel that the new page is going to be rendered into.  If this is null,
     // this will use the current active panel in the menu.
-    completeLoadPage : function( response, options, newPage, targetPanel )
+    completeLoadPage : function( response, options, queryPath )
     {
-        var controller = newPage["controller"];
-        var page = newPage["page"];
-        var pageID = newPage["pageID"];
+        queryPath = Ung.Alpaca.Glue.buildQueryPath( queryPath );
 
-        var panelClass = Ung.Alpaca.Application.getPageRenderer( controller, page );
+        var controller = queryPath["controller"];
+        var page = queryPath["page"];
+        var pageID = queryPath["pageID"];
+        var panelClass = Ung.Alpaca.Glue.getPageRenderer( controller, page );
         
-        var handler = this.completeLoadSettings.createDelegate( this, [ newPage, panelClass, targetPanel ], 
-                                                                true );
+        var handler = this.completeLoadSettings.createDelegate( this, [ queryPath, panelClass ], true );
 
         if ( panelClass.loadSettings != null ) {
-            panelClass.loadSettings( newPage, handler );
+            panelClass.loadSettings( queryPath, handler );
         } else if ( panelClass.settingsMethod != null ) {
             var m = panelClass.settingsMethod;
             if ( pageID ) {
@@ -95,62 +65,81 @@ Ung.Alpaca.Application = {
             Ung.Alpaca.Util.executeRemoteFunction( m, handler );
         } else {
             handler( null, null, null );
-        }        
+        }
     },
 
     // private : This is a handler that is called after the settings have been loaded.
     // param targetPanel The panel that the new page is going to be rendered into.  If this is null,
     // this will use the current active panel in the menu.
-    completeLoadSettings : function( settings, response, options, newPage, panelClass, targetPanel )
+    completeLoadSettings : function( settings, response, options, queryPath, panelClass  )
     {
         var panel = new panelClass({ settings : settings });
-                
-        if ( targetPanel == null ) {
-            targetPanel = main.getActiveTab();
-        }
 
-        /* First clear out any children. */
-        var el = null;
-        if (( typeof targetPanel ) == "string" ) {
-            el = Ext.get( targetPanel );
-        } else {
-            el = targetPanel.getEl();
-        }
+        this.configureActions( panel.saveSettings );
 
-        if ( el != null ) {
-            el.update( "" );
+        var currentPanel = this.layout.activeItem;
+        
+        /* Keep only the current panel and the new panel that is going to be added. */
+        var c = this.items.length;
+        var z = 0;
+        for ( ; --c > 0 ; ) {
+            if ( currentPanel == this.items[z] ) {
+                z++;
+            }
+            this.remove( z );
         }
         
-        main.configureActions( panel, panel.saveSettings );
-
-        panel.render( el );
+        this.add( panel );
+        this.layout.setActiveItem( panel );
+        this.render();
         
-        main.clearLastTab();
-
         /* Have to call this after rendering */
         panel.populateForm();
 
-        this.currentPanel = panel;
-        this.currentPath = newPage;        
+        this.currentQueryPath = queryPath;        
     },
 
-    // private : Get the key used to uniquely identify a controller, page combination
-    buildPageKey : function( controller, page )
+    switchToQueryPath : function( queryPath )
     {
-        return  "/" + controller + "/" + page;
+        queryPath = Ung.Alpaca.Glue.buildQueryPath( queryPath );
+
+        var delegate = this.completeLoadPage.createDelegate( this, [ queryPath ], true );
+        Ung.Alpaca.Util.loadScript( queryPath, delegate );
+    },
+
+    configureActions : function( saveHandler )
+    {
+        var toolbar = this.getBottomToolbar();
+
+        if ( saveHandler != null ) {
+            this.saveButton.setHandler( this.onSave, this );
+            this.saveButton.enable();
+            this.cancelButton.enable();
+        } else {
+            this.saveButton.setHandler( null );
+            this.saveButton.disable();
+            this.cancelButton.disable();
+        }
     }
-}
- 
+});
+                                     
 var main = null;
+
+var application = null;
 // application main entry point
 Ext.onReady(function() {
     Ext.QuickTips.init();
 
-    main = new Ung.Alpaca.Main();
-    main.render( "base" );
+    application = new Ung.Alpaca.Application();
 
-    var page = document.location.pathname;
+    application.render( "base" );
 
-    main.switchToPage( document.location.pathname );
+    var path = document.location.pathname;
+    var search = document.location.search;
+    if ( search != null && search.length > 0 ) {
+        path += "?" + search;
+    }
+
+    application.switchToQueryPath( path );
 });
 

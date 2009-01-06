@@ -106,15 +106,15 @@ class ApplicationController < ActionController::Base
     @stylesheets << "rack.css"
     @stylesheets << "simple-table.css"
 
-    @skin_stylesheets = [ "/ext/resources/css/ext-all.css", 
-                          "/skins/default/css/ext-skin.css", "/skins/default/css/user.css" ]
+    @skin_stylesheets = [ "/../ext/resources/css/ext-all.css", 
+                          "/../skins/default/css/ext-skin.css", "/../skins/default/css/user.css" ]
   end
   
   def setScripts
-    @extjs_scripts = [ "/ext/source/core/Ext.js", "/ext/source/adapter/ext-base.js",
-                       "/ext/ext-all-debug.js" ]
+    @extjs_scripts = [ "/../ext/source/core/Ext.js", "/../ext/source/adapter/ext-base.js",
+                       "/../ext/ext-all-debug.js" ]
 
-    @alpaca_scripts = [ "e/application", "e/util", "e/page_panel", "e/editor_grid_panel", "e/main" ]
+    @alpaca_scripts = [ "e/application", "e/util", "e/page_panel", "e/editor_grid_panel", "e/glue", "e/toolbar" ]
 
     @javascripts = []
     @javascripts = [ self.scripts ].flatten if self.respond_to?( "scripts" )

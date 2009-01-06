@@ -3,12 +3,12 @@ Ext.ns('Ung.Alpaca');
 Ext.ns('Ung.Alpaca.Pages');
 Ext.ns('Ung.Alpaca.Pages.Dhcp');
 
-if ( Ung.Alpaca.Application.hasPageRenderer( "dhcp", "index" )) {
+if ( Ung.Alpaca.Glue.hasPageRenderer( "dhcp", "index" )) {
     Ung.Alpaca.Util.stopLoading();
 }
 
 Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
-    initComponent : function()
+    constructor : function( config )
     {
         this.staticGrid = new Ung.Alpaca.EditorGridPanel({
             recordFields : [ "mac_address", "ip_address", "id", "description" ],
@@ -18,7 +18,7 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                  handler : this.addStaticEntry.createDelegate( this )
              }],
             
-            entries : this.settings["dhcp_static_entries"],
+            entries : config.settings["dhcp_static_entries"],
 
             columns : [{
                 header : "MAC Address",
@@ -92,7 +92,7 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             }, this.staticGrid ]
         });
         
-        Ung.Alpaca.Pages.Dhcp.Index.superclass.initComponent.apply( this, arguments );
+        Ung.Alpaca.Pages.Dhcp.Index.superclass.constructor.apply( this, arguments );
     },
 
     onRender : function()
@@ -122,7 +122,7 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         });
 
         /* Reload the page in the background */
-        Ung.Alpaca.Application.reloadCurrentPath();
+        Ung.Alpaca.Glue.reloadCurrentPath();
     },
 
     addStaticEntry : function()
@@ -140,5 +140,5 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 });
 
 Ung.Alpaca.Pages.Dhcp.Index.settingsMethod = "/dhcp/get_settings";
-Ung.Alpaca.Application.registerPageRenderer( "dhcp", "index", Ung.Alpaca.Pages.Dhcp.Index );
+Ung.Alpaca.Glue.registerPageRenderer( "dhcp", "index", Ung.Alpaca.Pages.Dhcp.Index );
 

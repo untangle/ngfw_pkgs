@@ -2,12 +2,12 @@ Ext.ns('Ung');
 Ext.ns('Ung.Alpaca.Pages');
 Ext.ns('Ung.Alpaca.Pages.Hostname');
 
-if ( Ung.Alpaca.Application.hasPageRenderer( "hostname", "index" )) {
+if ( Ung.Alpaca.Glue.hasPageRenderer( "hostname", "index" )) {
     Ung.Alpaca.Util.stopLoading();
 }
 
 Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
-    initComponent : function()
+    constructor : function( config )
     {
         Ext.apply( this, {
             defaults : {
@@ -16,7 +16,7 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             },
             items : [{
                 defaults : {
-                    xtype : "textfield",
+                    xtype : "textfield"
                 },
                 items : [{
                     fieldLabel : "Hostname",
@@ -43,7 +43,7 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     mode : "local",
                     triggerAction : "all",
                     editable : false,
-                    store : this.settings["ddclient_services"]
+                    store : config.settings["ddclient_services"]
                 },{
                     fieldLabel : "Login",
                     name : "ddclient_settings.login"
@@ -59,7 +59,7 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             }]
         });
         
-        Ung.Alpaca.Pages.Hostname.Index.superclass.initComponent.apply( this, arguments );
+        Ung.Alpaca.Pages.Hostname.Index.superclass.constructor.apply( this, arguments );
     },
 
     onRender : function()
@@ -89,9 +89,9 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         });
 
         /* Reload the page in the background */
-        Ung.Alpaca.Application.reloadCurrentPath();
+        Ung.Alpaca.Glue.reloadCurrentPath();
     }    
 });
 
 Ung.Alpaca.Pages.Hostname.Index.settingsMethod = "/hostname/get_settings";
-Ung.Alpaca.Application.registerPageRenderer( "hostname", "index", Ung.Alpaca.Pages.Hostname.Index );
+Ung.Alpaca.Glue.registerPageRenderer( "hostname", "index", Ung.Alpaca.Pages.Hostname.Index );

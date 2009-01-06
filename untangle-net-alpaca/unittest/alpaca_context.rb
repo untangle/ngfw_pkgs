@@ -100,6 +100,6 @@ module Untangle
     end
   end
 
-  $alpaca_context = ServiceProxy.new( "http://localhost/alpaca/" )
+  $alpaca_context = ServiceProxy.new( "http://localhost:3000/alpaca/" )
 end
 

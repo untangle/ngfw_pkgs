@@ -58,7 +58,7 @@ class Alpaca::Menu::Item
   def to_json( *args )
     { "children" => @children_array, 
       "name" => @name, 
-      "page" => @action }.to_json
+      "queryPath" => @action }.to_json
   end
 
   def <=>( other )
