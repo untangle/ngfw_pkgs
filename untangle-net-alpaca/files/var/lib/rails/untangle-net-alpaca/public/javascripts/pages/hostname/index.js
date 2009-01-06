@@ -67,17 +67,7 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         Ung.Alpaca.Pages.Hostname.Index.superclass.onRender.apply( this, arguments );
     },
 
-    saveSettings : function()
-    {
-        Ext.MessageBox.wait("Saving...", "Please wait");
-
-        this.updateSettings( this.settings );
-
-        Ung.Alpaca.Util.executeRemoteFunction( "/hostname/set_settings", 
-                                               this.completeSaveSettings.createDelegate( this ), 
-                                               null,
-                                               this.settings );
-    },
+    saveMethod : "/hostname/set_settings",
 
     completeSaveSettings : function()
     {

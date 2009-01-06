@@ -41,6 +41,12 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
         Ung.Alpaca.Application.superclass.constructor.apply( this, arguments );
     },
 
+    // Recreate the current panel, and reload its settings.
+    reloadCurrentQueryPath : function()
+    {        
+        this.completeLoadPage( {}, {}, this.currentQueryPath );
+    },
+
     // private : This is a handler called after a page has been loaded.
     // param targetPanel The panel that the new page is going to be rendered into.  If this is null,
     // this will use the current active panel in the menu.
@@ -75,7 +81,7 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
     {
         var panel = new panelClass({ settings : settings });
 
-        this.configureActions( panel.saveSettings );
+        this.configureActions( panel.saveSettings || panel.saveMethod );
 
         var currentPanel = this.layout.activeItem;
         
@@ -107,11 +113,11 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
         Ung.Alpaca.Util.loadScript( queryPath, delegate );
     },
 
-    configureActions : function( saveHandler )
+    configureActions : function( hasSaveHandler )
     {
         var toolbar = this.getBottomToolbar();
 
-        if ( saveHandler != null ) {
+        if ( hasSaveHandler != null ) {
             this.saveButton.setHandler( this.onSave, this );
             this.saveButton.enable();
             this.cancelButton.enable();
@@ -120,6 +126,16 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
             this.saveButton.disable();
             this.cancelButton.disable();
         }
+    },
+
+    onSave : function()
+    {
+        Ung.Alpaca.Glue.saveSettings( this.layout.activeItem );
+    },
+
+    onCancel : function()
+    {
+        Ung.Alpaca.Glue.cancel();
     }
 });
                                      

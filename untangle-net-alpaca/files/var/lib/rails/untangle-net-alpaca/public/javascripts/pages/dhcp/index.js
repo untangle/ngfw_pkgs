@@ -95,35 +95,7 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         Ung.Alpaca.Pages.Dhcp.Index.superclass.constructor.apply( this, arguments );
     },
 
-    onRender : function()
-    {
-        Ung.Alpaca.Pages.Dhcp.Index.superclass.onRender.apply( this, arguments );
-    },
-
-    saveSettings : function()
-    {
-        Ext.MessageBox.wait("Saving...", "Please wait");
-
-        this.updateSettings( this.settings );
-
-        Ung.Alpaca.Util.executeRemoteFunction( "/dhcp/set_settings", 
-                                               this.completeSaveSettings.createDelegate( this ), 
-                                               null,
-                                               this.settings );
-    },
-
-    completeSaveSettings : function()
-    {
-        Ext.MessageBox.show({  
-            title : 'Saved Settings',
-            msg : 'Settings have been saved successfuly',
-            buttons : Ext.MessageBox.OK,
-            icon : Ext.MessageBox.INFO
-        });
-
-        /* Reload the page in the background */
-        Ung.Alpaca.Glue.reloadCurrentPath();
-    },
+    saveMethod : "/dhcp/set_settings",
 
     addStaticEntry : function()
     {

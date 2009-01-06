@@ -56,92 +56,58 @@ Ung.Alpaca.Glue = {
         return this.pages[this.buildPageKey( controller, page )];
     },
 
-    // Recreate the current panel, and reload its settings.
-    reloadCurrentPath : function()
-    {        
-        this.completeLoadPage( {}, {}, this.currentPath );
-    },
-
-    // Get the currently rendered panel.
-    getCurrentPanel : function()
+    saveSettings : function( panel )
     {
-        return this.currentPanel;
-    },
+        /* Confirm settings save, if necessary */
 
-    /*
-     *  Get the current path, eg /hostname/index/1
-     */
-    getCurrentPath : function()
-    {
-        return this.currentPath;
-    },
+        /* Validate */
 
-    // private : This is a handler called after a page has been loaded.
-    // param targetPanel The panel that the new page is going to be rendered into.  If this is null,
-    // this will use the current active panel in the menu.
-    completeLoadPage : function( response, options, newPage, targetPanel )
-    {
-        var controller = newPage["controller"];
-        var action = newPage["action"];
-        var pageID = newPage["pageID"];
-        var params = newPage["params"];
-
-        var panelClass = this.getPageRenderer( controller, action );
+        Ext.MessageBox.wait( "Saving...", "Please wait" );
         
-        var handler = this.completeLoadSettings.createDelegate( this, [ newPage, panelClass, targetPanel ], 
-                                                                true );
+        var handler = this.completeSaveSettings.createDelegate( this );
+        var errorHandler = this.errorSaveSettings.createDelegate( this );
 
-        if ( panelClass.loadSettings != null ) {
-            panelClass.loadSettings( newPage, handler );
-        } else if ( panelClass.settingsMethod != null ) {
-            var m = panelClass.settingsMethod;
-            if ( pageID ) {
-                m += "/" + pageID;
-            }
-            if ( params ) {
-                m += "?" + params;
-            }
-            Ung.Alpaca.Util.executeRemoteFunction( m, handler );
+        if ( panel.saveSettings != null ) {
+            panel.saveSettings( handler, errorHandler );
+        } else if ( panel.saveMethod != null ) {
+            panel.updateSettings( panel.settings );
+            Ung.Alpaca.Util.executeRemoteFunction( panel.saveMethod,
+                                                   handler,
+                                                   errorHandler,
+                                                   panel.settings );
         } else {
-            handler( null, null, null );
-        }        
+            this.errorSaveSettings();
+        }
     },
 
-    // private : This is a handler that is called after the settings have been loaded.
-    // param targetPanel The panel that the new page is going to be rendered into.  If this is null,
-    // this will use the current active panel in the menu.
-    completeLoadSettings : function( settings, response, options, newPage, panelClass, targetPanel )
+    completeSaveSettings : function()
     {
-        application.renderPanel( panelClass, settings )
-        var panel = new panelClass({ settings : settings });
-                
-        if ( targetPanel == null ) {
-            targetPanel = main.getActiveTab();
-        }
+        Ext.MessageBox.show({  
+            title : 'Saved Settings',
+            msg : 'Settings have been saved successfuly',
+            buttons : Ext.MessageBox.OK,
+            icon : Ext.MessageBox.INFO
+        });
 
-        /* First clear out any children. */
-        var el = null;
-        if (( typeof targetPanel ) == "string" ) {
-            el = Ext.get( targetPanel );
-        } else {
-            el = targetPanel.getEl();
-        }
+        /* Reload the page in the background */
+        application.reloadCurrentQueryPath();
+    },
 
-        if ( el != null ) {
-            el.update( "" );
-        }
-        
-        main.configureActions( panel, panel.saveSettings );
+    errorSaveSettings : function()
+    {
+        Ext.MessageBox.show({  
+            title : 'Internal Error',
+            msg : 'Unable to save settings',
+            buttons : Ext.MessageBox.OK,
+            icon : Ext.MessageBox.ERROR
+        });
+    },
 
-        panel.render( el );
-        
-        main.clearLastTab();
-
-        /* Have to call this after rendering */
-        panel.populateForm();
-
-        this.currentPanel = panel;
-        this.currentPath = newPage;        
+    cancel : function()
+    {
+        /* Confirm settings save, if necessary */
+        /* Reload the page in the background */
+        application.reloadCurrentQueryPath();
     },
 
     // private : Get the key used to uniquely identify a controller, page combination
