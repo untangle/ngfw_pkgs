@@ -17,4 +17,4 @@ if [ ! -z `sudo su -c 'grep '^root:$1$3kRMklXp$W/hDwKvL8GFi5Vdo3jtKC.:' /etc/sha
     sudo su root -c "xterm -T 'Please choose a password' -e '/usr/bin/passwd'"
 fi
     
-xterm -T xterm -e su root
+xterm -T xterm -e bash -c 'true && su root' &
