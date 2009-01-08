@@ -55,35 +55,34 @@ class InterfaceController < ApplicationController
   end
 
   def get_settings
+    result = {}
+
     interface_id = params[:id]
     raise "Invalid interface id #{interface_id}" if interface_id.nil?
     interface = Interface.find( interface_id )
     raise "Unknown interface id #{interface_id}" if interface.nil?
+
+    result["interface"] = interface
     
     static_settings = interface.intf_static
     static_settings = IntfStatic.new if static_settings.nil?
+    result["static"] = static_settings
     
     ## Retrieve the dynamic configuration, creating a new one if necessary.
     dynamic_settings = interface.intf_dynamic
-    # dynamic_settings = IntfDynamic.new if dynamic_settings.nil?
-    interface.intf_dynamic = IntfDynamic.new
+    dynamic_settings = IntfDynamic.new if dynamic_settings.nil?
+    result["dynamic"] = dynamic_settings
     
     ## Retrieve the dynamic configuration, creating a new one if necessary.
     pppoe_settings = interface.intf_pppoe
     pppoe_settings = IntfPppoe.new if pppoe_settings.nil?
+    result["pppoe"] = pppoe_settings
 
     ## Retrieve the bridge configuration, creating a new one if necessary.
     bridge_settings = interface.intf_bridge
     bridge_settings = IntfBridge.new if bridge_settings.nil?
-    
-    bridge_interface_id = nil
-    unless bridge_settings.bridge_interface.nil?
-      bridge_interface_id = bridge_settings.bridge_interface.id
-    end
-    
-    result = { "interface" => interface, "static" => static_settings, "dynamic" => dynamic_settings,
-      "bridge" => bridge_settings, "bridged_interface" => bridge_interface_id }      
-
+    result["bridge"] = bridge_settings
+        
     result["dhcp_status"] = os["dhcp_manager"].get_dhcp_status( interface )
 
     cond = [ "config_type IN (?) AND id != ?" ]
@@ -93,13 +92,22 @@ class InterfaceController < ApplicationController
     ## Create a selection map
     result["bridgeable_interfaces"] = Interface.find( :all, :conditions => cond ).collect do |interface|
       ## XXX config_type and name will need internationalization
-      [ "#{interface.name} (#{interface.config_type})", interface.id ]
+      [ interface.id, "#{interface.name} (#{interface.config_type})" ]
     end
     
     result["static_aliases"] = static_settings.ip_networks
     result["dynamic_aliases"] = dynamic_settings.ip_networks
     result["pppoe_aliases"] = pppoe_settings.ip_networks
     result["config_types"] = InterfaceHelper::CONFIGTYPES
+
+    result["media_types"] = InterfaceHelper::ETHERNET_MEDIA_ORDER.map do |m|
+      [ m, InterfaceHelper::ETHERNET_MEDIA[m][:name]]
+    end
+
+    media = "#{interface.speed}#{interface.duplex}"
+    media = InterfaceHelper::ETHERNET_MEDIA_ORDER[0] if InterfaceHelper::ETHERNET_MEDIA[media].nil?
+
+    result["media"] = media
     
     json_result( result )
   end

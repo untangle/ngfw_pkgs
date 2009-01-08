@@ -18,7 +18,9 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             },
             items : [
                 this.staticPanel( config.settings ),
-                this.dynamicPanel( config.settings )
+                this.dynamicPanel( config.settings ),
+                this.bridgePanel( config.settings ),
+                this.pppoePanel( config.settings )
             ]
         });
 
@@ -52,6 +54,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
     staticPanel : function( settings )
     {        
         return new Ext.Panel({
+            layout : 'form',
             defaults : {
                 xtype : "fieldset"
             },
@@ -64,7 +67,16 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                     fieldLabel : "Primary IP Address and Netmask",
                     name : "static.primary_address"
                 }]
-            }, this.buildAliasGrid( settings, "static_aliases" ) ]
+            }, this.buildAliasGrid( settings, "static_aliases" ), {
+                autoHeight : true,
+                defaults : {
+                    xtype : "textfield",
+                },
+                items : [{
+                    fieldLabel : "MTU",
+                    name : "static.mtu"
+                }, this.buildEthernetMediaCombo( settings )]
+            }]
         });
     },
 
@@ -99,6 +111,9 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                 },{
                     fieldLabel : "MTU",
                     name : "dynamic.mtu"
+                }, this.buildEthernetMediaCombo( settings ), {
+                    xtype : "button",
+                    text : "Renew Lease",
                 }]
             }, this.buildAliasGrid( settings, "dynamic_aliases" )]
         });
@@ -107,12 +122,69 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
 
     bridgePanel : function( settings )
     {
-        
+        return new Ext.Panel({
+            layout : 'form',
+            defaults : {
+                xtype : "fieldset"
+            },
+            items : [{
+                autoHeight : true,
+                defaults : {
+                    xtype : "textfield"
+                },
+                items : [{
+                    fieldLabel : "Bridge To",
+                    xtype : "combo",
+                    name : "bridge.bridge_interface_id",
+                    mode : "local",
+                    triggerAction : "all",
+                    editable : false,
+                    listWidth : 160,
+                    store :  settings["bridgeable_interfaces"]
+                }, this.buildEthernetMediaCombo( settings )]
+            }]
+        });                
     },
 
     pppoePanel : function( settings )
     {
-
+        return new Ext.Panel({
+            layout : 'form',
+            defaults : {
+                xtype : "fieldset"
+            },
+            items : [{
+                autoHeight : true,
+                defaults : {
+                    xtype : "textfield"
+                },
+                items : [{
+                    fieldLabel : "Username",
+                    name : "pppoe.username"
+                },{
+                    inputType : "password",
+                    fieldLabel : "Password",
+                    name : "pppoe.password"
+                },{
+                    xtype : "checkbox",
+                    fieldLabel : "Use peer DNS",
+                    name : "pppoe.use_peer_dns"
+                }, this.buildEthernetMediaCombo( settings ),{
+                    xtype : "button",
+                    text : "Renew Lease",
+                }]
+            }, this.buildAliasGrid( settings, "pppoe_aliases" ), {
+                autoHeight : true,
+                defaults : {
+                    xtype : "textfield"
+                },
+                items : [{
+                    xtype : "textarea",
+                    fieldLabel : "Secret Field",
+                    name : "pppoe.secret_field"                    
+                }]
+            }]
+        });
     },
 
     buildAliasGrid : function( settings, entriesField )
@@ -142,6 +214,19 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
         aliases.store.load();
 
         return aliases;
+    },
+
+    buildEthernetMediaCombo : function( settings )
+    {
+        return new Ext.form.ComboBox({
+            fieldLabel : "Ethernet Media",
+            name : "media",
+            mode : "local",
+            triggerAction : "all",
+            editable : false,
+            listWidth : 160,
+            store :  settings["media_types"]
+        });
     },
     
     onSelectConfigType : function( __, record, index )
