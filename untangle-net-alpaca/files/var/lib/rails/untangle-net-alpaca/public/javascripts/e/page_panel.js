@@ -12,6 +12,8 @@ Ung.Alpaca.PagePanel = Ext.extend( Ext.Panel, {
 
     layout : "form",
 
+    autoScroll : true,
+
     constructor : function( config ) {
         this.settings = config.settings;
         Ung.Alpaca.PagePanel.superclass.constructor.apply( this, arguments );

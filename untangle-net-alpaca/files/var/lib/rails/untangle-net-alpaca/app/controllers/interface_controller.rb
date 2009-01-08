@@ -50,6 +50,60 @@ class InterfaceController < ApplicationController
     session[:last_controller_before_refresh] = "interface"
   end
 
+  def e_config
+    render :template => "application/page", :layout => "extjs"
+  end
+
+  def get_settings
+    interface_id = params[:id]
+    raise "Invalid interface id #{interface_id}" if interface_id.nil?
+    interface = Interface.find( interface_id )
+    raise "Unknown interface id #{interface_id}" if interface.nil?
+    
+    static_settings = interface.intf_static
+    static_settings = IntfStatic.new if static_settings.nil?
+    
+    ## Retrieve the dynamic configuration, creating a new one if necessary.
+    dynamic_settings = interface.intf_dynamic
+    # dynamic_settings = IntfDynamic.new if dynamic_settings.nil?
+    interface.intf_dynamic = IntfDynamic.new
+    
+    ## Retrieve the dynamic configuration, creating a new one if necessary.
+    pppoe_settings = interface.intf_pppoe
+    pppoe_settings = IntfPppoe.new if pppoe_settings.nil?
+
+    ## Retrieve the bridge configuration, creating a new one if necessary.
+    bridge_settings = interface.intf_bridge
+    bridge_settings = IntfBridge.new if bridge_settings.nil?
+    
+    bridge_interface_id = nil
+    unless bridge_settings.bridge_interface.nil?
+      bridge_interface_id = bridge_settings.bridge_interface.id
+    end
+    
+    result = { "interface" => interface, "static" => static_settings, "dynamic" => dynamic_settings,
+      "bridge" => bridge_settings, "bridged_interface" => bridge_interface_id }      
+
+    result["dhcp_status"] = os["dhcp_manager"].get_dhcp_status( interface )
+
+    cond = [ "config_type IN (?) AND id != ?" ]
+    cond << InterfaceHelper::BRIDGEABLE_CONFIGTYPES
+    cond << interface.id
+    
+    ## Create a selection map
+    result["bridgeable_interfaces"] = Interface.find( :all, :conditions => cond ).collect do |interface|
+      ## XXX config_type and name will need internationalization
+      [ "#{interface.name} (#{interface.config_type})", interface.id ]
+    end
+    
+    result["static_aliases"] = static_settings.ip_networks
+    result["dynamic_aliases"] = dynamic_settings.ip_networks
+    result["pppoe_aliases"] = pppoe_settings.ip_networks
+    result["config_types"] = InterfaceHelper::CONFIGTYPES
+    
+    json_result( result )
+  end
+
   def config
     load_config do
       @title = "Interface Configuration"
@@ -465,7 +519,7 @@ class InterfaceController < ApplicationController
     interface_id = params[:id]
     return redirect_to( :action => 'list' ) if interface_id.nil?
     @interface = Interface.find( interface_id )
-    return redirect_to( :action => 'list' ) if interface_id.nil?
+    return redirect_to( :action => 'list' ) if @interface.nil?
 
     yield
   end

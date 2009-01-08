@@ -29,6 +29,7 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
         
         Ext.apply( this, {
             layout : 'card',
+            region : 'center',
             tbar : this.toolbar,
             bbar : [
                 this.helpButton,
@@ -97,7 +98,7 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
         
         this.add( panel );
         this.layout.setActiveItem( panel );
-        this.render();
+        viewport.render();
         
         /* Have to call this after rendering */
         panel.populateForm();
@@ -138,17 +139,23 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
         Ung.Alpaca.Glue.cancel();
     }
 });
-                                     
+
 var main = null;
 
 var application = null;
+
+var viewport = null;
+
 // application main entry point
 Ext.onReady(function() {
     Ext.QuickTips.init();
 
     application = new Ung.Alpaca.Application();
 
-    application.render( "base" );
+    viewport = new Ext.Viewport({
+        layout : 'border',
+        items : application
+    });
 
     var path = document.location.pathname;
     var search = document.location.search;

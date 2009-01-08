@@ -62,25 +62,7 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         Ung.Alpaca.Pages.Hostname.Index.superclass.constructor.apply( this, arguments );
     },
 
-    onRender : function()
-    {
-        Ung.Alpaca.Pages.Hostname.Index.superclass.onRender.apply( this, arguments );
-    },
-
-    saveMethod : "/hostname/set_settings",
-
-    completeSaveSettings : function()
-    {
-        Ext.MessageBox.show({  
-            title : 'Saved Settings',
-            msg : 'Settings have been saved successfuly',
-            buttons : Ext.MessageBox.OK,
-            icon : Ext.MessageBox.INFO
-        });
-
-        /* Reload the page in the background */
-        Ung.Alpaca.Glue.reloadCurrentPath();
-    }    
+    saveMethod : "/hostname/set_settings"
 });
 
 Ung.Alpaca.Pages.Hostname.Index.settingsMethod = "/hostname/get_settings";
