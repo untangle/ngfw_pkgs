@@ -3,6 +3,9 @@ import gettext
 import os
 import urllib
 import cgi
+import pwd
+import grp
+import sets
 
 from mod_python import apache, Session, util
 from psycopg import connect
@@ -109,6 +112,8 @@ def is_root(req):
     result = False;
 
     if remote_ip == "127.0.0.1":
+        uids = get_uvmlogin_uids()
+
         q = remote_ip.split(".")
         q.reverse()
         n = reduce(lambda a, b: long(a) * 256 + long(b), q)
@@ -122,14 +127,33 @@ def is_root(req):
                 if len(a) > 2:
                     p = a[1].split(':')
                     if len(p) == 2 and p[0] == hexaddr and p[1] == hexport:
-                        uid = a[7]
-                        if uid == '0':
-                            result = True
-                            break
+                        try:
+                            uid = int(a[7])
+
+                            if uid in uids:
+                                result = True
+                                break
+                        except:
+                            apache.log_error('bad uid: %s' % a[7])
         finally:
             infile.close()
 
     return result
+
+def get_uvmlogin_uids():
+    s = sets.Set([0])
+
+    try:
+        for username in grp.getgrnam('uvmlogin')[3]:
+            try:
+                s.add(pwd.getpwnam(username)[2])
+            except:
+                apache.log_error('bad user %s' % username)
+    except:
+        apache.log_error('could not get group info')
+
+    return s
+
 
 def login_redirect(req, realm):
     url = urllib.quote(req.unparsed_uri)
