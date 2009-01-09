@@ -26,9 +26,12 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
 
         Ext.apply( this, {
             items : [{
+                xtype :"label",
+                html : "Design Number"
+            },{
                 autoHeight : true,
                 xtype : "fieldset",
-                items : {
+                items : [{
                     fieldLabel : "Config Type",
                     xtype : "combo",
                     name : "interface.config_type",
@@ -42,7 +45,11 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                             scope : this
                         }
                     }
-                }
+                },{
+                    xtype : "checkbox",
+                    fieldLabel : "Is WAN Interface",
+                    name : "interface.wan"
+                }]
             }, this.switchBlade ]
         });
 

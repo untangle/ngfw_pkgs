@@ -18,6 +18,8 @@
 require "ipaddr"
 
 module InterfaceHelper
+  include GetText
+
   ExternalIndex = 1
   InternalIndex = 2
   DmzIndex = 3
@@ -54,14 +56,43 @@ module InterfaceHelper
   BRIDGEABLE_CONFIGTYPES = [ ConfigType::STATIC, ConfigType::DYNAMIC, ConfigType::PPPOE ].freeze
 
   ## A hash of all of the various ethernet medias
-  ETHERNET_MEDIA = { "autoauto" => { :name => "Auto", :speed => "auto", :duplex => "auto" },
-    "1000full" => { :name => "1000 Mbps, Full Duplex", :speed => "1000", :duplex => "full" },
-    "100full" => { :name => "100 Mbps, Full Duplex", :speed => "100", :duplex => "full" },
-    "100half" => { :name => "100 Mbps, Half Duplex", :speed => "100", :duplex => "half" },
-    "10full" => { :name => "10 Mbps, Full Duplex", :speed => "10", :duplex => "full" },
-    "10half" => { :name => "10 Mbps, Half Duplex", :speed => "10", :duplex => "half" } }.freeze
+  class EthernetMedia
+    @@order = []
+    @@key_hash = {}
 
-  ETHERNET_MEDIA_ORDER = [ "autoauto", "1000full", "100full", "100half", "10full", "10half" ]
+    def initialize( name, speed, duplex )
+      @name, @speed, @duplex = name, speed, duplex
+      
+      @@order << self
+      @@key_hash[key] = self
+    end
+    
+    def key
+      "#{@speed}#{@duplex}"
+    end
+
+    def self.get_value( value )
+      @@key_hash[value]
+    end
+
+    def self.order
+      @@order
+    end
+
+    def self.get_default()
+      @@order[0]
+    end
+    
+    attr_reader :name, :speed, :duplex
+  end
+    
+  [[ _( "Auto" ), "auto", "auto" ],
+   [ _( "1000 Mbps, Full Duplex" ),"1000","full" ],
+   [ _( "100 Mbps, Full Duplex" ),"100","full" ],
+   [ _( "100 Mbps, Half Duplex" ),"100","half" ],
+   [ _( "10 Mbps, Full Duplex" ),"10","full" ],
+   [ _( "10 Mbps, Half Duplex" ),"10","half" ]].each { |args| EthernetMedia.new( *args ) }
+
 
   ## Load the new interfaces and return two arrays.
   ## first the array of new interfaces to delete.
@@ -286,18 +317,17 @@ EOF
 
   def ethernet_media_select( interface )
     media = "#{interface.speed}#{interface.duplex}"
-    media = "autoauto" if ETHERNET_MEDIA[media].nil?
+    media = "autoauto" if EthernetMedia.get_value(media).nil?
 
-    ## this is to enforce order, yes it is kind of shady.
-    options = ETHERNET_MEDIA_ORDER.map { |m| [ ETHERNET_MEDIA[m][:name], m ] }
+    options = EthernetMedia.order.map { |m| [ m.name, m.key ] }
 
     select_tag( "ethernet_media", options_for_select( options, media ), :id => "ethernet_media_select")
   end
 
   ## Given a ethernet media string, this will return the speed and duplex setting
   def self.get_speed_duplex( media )
-    v = ETHERNET_MEDIA[media]
-    v = ETHERNET_MEDIA["autoauto"] if v.nil?
+    v = EthernetMedia.get_value( media )
+    v = EthernetMedia.order[0] if v.nil?
     [ v[:speed], v[:duplex]]
   end
 

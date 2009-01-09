@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <% main_menu = menu_organizer.get_node( "/extjs" ) %>
   <% advanced_menu = menu_organizer.get_node( "/advanced" ) %>
+  <% language_map = {} %>
   <head>
     <title>
       <%= (( @title.nil? ) ? ApplicationController::DefaultTitle : @title ).t %>
@@ -21,6 +22,7 @@
 
     <%= javascript_tag "Ung.Alpaca.BasicMenuData = #{main_menu.children.to_json};" %>
     <%= javascript_tag "Ung.Alpaca.AdvancedMenuData = #{advanced_menu.children.to_json};" %>
+    <%= javascript_tag "Ung.Alpaca.i18n = #{language_map.to_json};" %>
 
     <%= yield %>
 

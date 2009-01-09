@@ -66,9 +66,11 @@ module Untangle
   class ServiceProxy
     @@request_id = 1
 
-    def initialize( service_url, controller = nil, handler = nil )
+    def initialize( service_url, controller = nil, handler = nil, query_string = nil )
       @service_url, @controller,  @handler  = service_url, controller, handler
       @handler = RequestHandler.new if @handler.nil?
+      @query_string = query_string
+      @query_string = "" if query_string.nil?
     end
 
     def method_missing( method_id, *args )
@@ -77,8 +79,12 @@ module Untangle
       r( method_id, *args )
     end
 
+    def []( key )
+      return ServiceProxy.new( @service_url, @controller, @handler, "/#{key}" )
+    end
+
     def to_s
-      "#{@service_url} : #{@controller}"
+      "#{@service_url} : #{@controller}#{@query_string}"
     end
 
     alias :inspect :to_s
@@ -87,19 +93,22 @@ module Untangle
     def r( method_id, *args )
       postdata = args.to_json
 
-      $logger.debug( "#{@service_url}/#{@controller}/#{method_id}" )
-      respdata = @handler.make_request( "#{@service_url}/#{@controller}/#{method_id}", postdata )
+      request_url = "#{@service_url}/#{@controller}/#{method_id}#{@query_string}"
+      $logger.debug( request_url )
+      respdata = @handler.make_request( request_url, postdata )
 
       $logger.debug( "#{respdata}" )
       response = JSON::parse( respdata )
 
       error = response["error"]
-      raise "Unable to execute method #{@controller}.#{method_id}, #{error}" unless ( error.nil?  )
+      unless ( error.nil?  )
+        raise "Unable to execute method #{@controller}.#{method_id}#{query_string}, #{error}"
+      end
 
       return response["result"]
     end
   end
 
-  $alpaca_context = ServiceProxy.new( "http://localhost:3000/alpaca/" )
+  $alpaca_context = ServiceProxy.new( "http://localhost/alpaca/" )
 end
 

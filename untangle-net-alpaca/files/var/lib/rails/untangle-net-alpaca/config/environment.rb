@@ -80,13 +80,6 @@ end
 # include Globalize
 # Locale.set_base_language('en-US')
 
-# These are the available locales a user can selected from
-## Review : Country should be separated from the language.
-LOCALES = { 
-  'en-US', 'English',
-  'es-ES', 'Spanish'
-}
-
 UNTANGLE_VERSION="6.1"
 HELP_URL="http://www.untangle.com/docs/get.php"
 HELP_NAMESPACE="alpaca"
@@ -96,3 +89,4 @@ if ( ActiveSupport::JSON.method_defined?( :unquote_hash_key_identifiers= ))
   ActiveSupport::JSON.unquote_hash_key_identifiers = false 
 end
 
+require "gettext/rails"

@@ -7,20 +7,23 @@ Ext.ns('Ung.Alpaca');
 Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
     constructor : function()
     {
+        this.i18n = new Ung.I18N({ map : Ung.Alpaca.i18n });
+        this._ = this.i18n._.createDelegate( this.i18n );
+
         this.saveButton = new Ext.Toolbar.Button({
-            text : "Save",
+            text : this._( "Save" ),
             handler : this.onSave,
             scope : this
         });
 
         this.cancelButton = new Ext.Toolbar.Button({
-            text : "Cancel",
+            text : this._( "Cancel" ),
             handler : this.onCancel,
             scope : this
         });
 
         this.helpButton = new Ext.Toolbar.Button({
-            text : "Help",
+            text : this._( "Help" ),
             handler : this.onHelp,
             scope : this
         });

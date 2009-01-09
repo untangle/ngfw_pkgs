@@ -60,10 +60,12 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
     
     interfaces.each do |i|
       mi = menu_item( i.index, i.name, :action => "config", :id => i.id )
-      menu_organizer.register_item( "/main/interfaces/#{i.os_name}", mi )      
+      menu_organizer.register_item( "/main/interfaces/#{i.os_name}", mi )
     end
 
-    menu_organizer.register_item( "/extjs/interface", menu_item( 50, "Interface", :action => "e_config", :id => "1" ))
+    5.times do |i|
+      menu_organizer.register_item( "/extjs/interface_#{i}", menu_item( 50 + i, "Interface (#{i})", :action => "e_config_#{i}", :id => "1" ))
+    end
   end
 
   ## Insert the desired stages for the wizard.

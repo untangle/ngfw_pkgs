@@ -112,7 +112,7 @@ class ApplicationController < ActionController::Base
   
   def setScripts
     @extjs_scripts = [ "/../ext/source/core/Ext.js", "/../ext/source/adapter/ext-base.js",
-                       "/../ext/ext-all-debug.js" ]
+                       "/../ext/ext-all-debug.js", "/../script/i18n.js" ]
 
     @alpaca_scripts = [ "e/application", "e/util", "e/page_panel", "e/editor_grid_panel", "e/glue", "e/toolbar" ]
 
@@ -223,10 +223,18 @@ class ApplicationController < ActionController::Base
   end
 
   def json_result( *values )
+    options = nil
+    options = values[0].delete(:options) if values[0].is_a?( ::Hash )
+    options = {} if options.nil?
+
     values = values[0] if ( values.length == 1 and values[0].is_a?( ::Hash ))
 
     response = { "status" => "success" }
     response["result"] = values unless values.empty?
+
+    unless options[:no_i18n_map]
+      response["i18n_map"] = {}
+    end
 
     render :json =>  response.to_json
   end

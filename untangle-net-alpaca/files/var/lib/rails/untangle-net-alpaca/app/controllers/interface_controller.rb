@@ -54,6 +54,12 @@ class InterfaceController < ApplicationController
     render :template => "application/page", :layout => "extjs"
   end
 
+  alias_method :e_config_1, :e_config
+  alias_method :e_config_2, :e_config
+  alias_method :e_config_3, :e_config
+  alias_method :e_config_4, :e_config
+  alias_method :e_config_5, :e_config
+
   def get_settings
     result = {}
 
@@ -100,12 +106,12 @@ class InterfaceController < ApplicationController
     result["pppoe_aliases"] = pppoe_settings.ip_networks
     result["config_types"] = InterfaceHelper::CONFIGTYPES
 
-    result["media_types"] = InterfaceHelper::ETHERNET_MEDIA_ORDER.map do |m|
-      [ m, InterfaceHelper::ETHERNET_MEDIA[m][:name]]
-    end
+    result["media_types"] = InterfaceHelper::EthernetMedia.order.map { |m| [ m.key, m.name ] }
 
     media = "#{interface.speed}#{interface.duplex}"
-    media = InterfaceHelper::ETHERNET_MEDIA_ORDER[0] if InterfaceHelper::ETHERNET_MEDIA[media].nil?
+    if InterfaceHelper::EthernetMedia.get_value( media ).nil?
+      media = InterfaceHelper::EthernetMedia.get_default() 
+    end
 
     result["media"] = media
     
