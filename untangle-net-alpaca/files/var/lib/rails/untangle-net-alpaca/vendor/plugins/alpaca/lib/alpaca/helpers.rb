@@ -165,6 +165,11 @@ module ActionView
         orig_sortable_element( element_id, options )
       end
 
+      ## This don't work none in rails 2.1, get rid of this code once
+      ## they are no longer used.
+      def sortable_element( element_id, options = {} )
+        puts "This don't work none in rails 2.1, get rid of this code once sortable_elements are not used."
+      end
     end
 
   end

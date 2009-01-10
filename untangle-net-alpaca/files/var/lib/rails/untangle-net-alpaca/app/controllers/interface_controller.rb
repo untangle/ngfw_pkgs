@@ -18,7 +18,7 @@
 class InterfaceController < ApplicationController
 
   ## Implement the reload interfaces web api.
-  web_service_api InterfaceApi
+  ## web_service_api InterfaceApi
   
   def index
     list
@@ -51,14 +51,8 @@ class InterfaceController < ApplicationController
   end
 
   def e_config
-    render :template => "application/page", :layout => "extjs"
+    render( :template => "application/page", :layout => "extjs" )
   end
-
-  alias_method :e_config_1, :e_config
-  alias_method :e_config_2, :e_config
-  alias_method :e_config_3, :e_config
-  alias_method :e_config_4, :e_config
-  alias_method :e_config_5, :e_config
 
   def get_settings
     result = {}

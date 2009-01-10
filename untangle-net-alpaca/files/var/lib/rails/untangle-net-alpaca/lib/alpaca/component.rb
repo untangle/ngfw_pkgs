@@ -18,6 +18,9 @@
 class Alpaca::Component
   include Alpaca::OS::OSExtensions  
   include ActionView::Helpers::UrlHelper
+  include ActionView::Helpers::TagHelper
+
+
   include ERB::Util
 
   def initialize( controller, params, session, request, name = nil )

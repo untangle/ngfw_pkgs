@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
   filter_parameter_logging "argyle"
   
   # Pick a unique cookie name to distinguish our session data from others'
-  session :session_key => '_untangle-net-alpaca_session_id'
+  session :session_key => '_untangle-net-alpaca_session_id', :secret => "guess what everyone is going to share the same secret."
 
   ## Disable all calls to the API, these are RPC calls.
   session :off, :if => Proc.new { |req| req.path_parameters[:action] == "api" }
@@ -201,21 +201,24 @@ class ApplicationController < ActionController::Base
     true
   end
 
-  def redirect_to( options = {}, *parameters_for_method_reference )
-    #   case options
-    #   when String
-    logger.debug( "redirecting to url_for: " + url_for( options ) )
-    url = url_for( options ).split( request.host_with_port )[1]
-    if url.nil? or url.length == 0
-      return super( options, *parameters_for_method_reference )
-    end
-    response.redirect( url )
-    response.redirected_to = url
-    @performed_redirect = true
-    #    else
-    #      super( options, *parameters_for_method_reference )
-    #    end
-  end
+
+#   unless defined? redirect_to
+#     def redirect_to( options = {}, *parameters_for_method_reference )
+#       #   case options
+#       #   when String
+#       logger.debug( "redirecting to url_for: " + url_for( options ) )
+#       url = url_for( options ).split( request.host_with_port )[1]
+#       if url.nil? or url.length == 0
+#         return super( options, *parameters_for_method_reference )
+#       end
+#       response.redirect( url )
+#       response.redirected_to = url
+#       @performed_redirect = true
+#       #    else
+#       #      super( options, *parameters_for_method_reference )
+#       #    end
+#     end
+#   end
   
   def json_params
     a = params[controller_name]
