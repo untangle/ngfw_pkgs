@@ -11,14 +11,18 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
     constructor : function( config )
     {
         this.staticGrid = new Ung.Alpaca.EditorGridPanel({
-            recordFields : [ "mac_address", "ip_address", "id", "description" ],
+            settings : config.settings,
 
-             tbar : [{
-                 text : "Add",
-                 handler : this.addStaticEntry.createDelegate( this )
-             }],
+            recordFields : [ "mac_address", "ip_address", "id", "description" ],
+            editable : true,
             
-            entries : config.settings["dhcp_static_entries"],
+            name : "dhcp_static_entries",
+
+            recordDefaults : {
+                mac_address : "00:11:22:33:44:66",
+                ip_address : "1.2.3.4",
+                description : "[Sample Entry]"
+            },
 
             columns : [{
                 header : "MAC Address",
@@ -48,6 +52,40 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         });
 
         this.staticGrid.store.load();
+
+        this.currentLeasesGrid = new Ung.Alpaca.EditorGridPanel({
+            settings : config.settings,
+
+            recordFields : [ "mac_address", "ip_address", "hostname", "client_id", "expiration" ],
+            editable : false,
+            
+            name : "dhcp_dynamic_entries",
+
+            tbar : [{
+                text : "Refresh",
+                handler : this.refreshCurrentLeases,
+                scope : this
+            }],
+
+            columns : [{
+                header : "MAC Address",
+                width: 200,
+                sortable: true,
+                dataIndex : "mac_address"
+            },{
+                header : "IP Address",
+                width: 200,
+                sortable: true,
+                dataIndex : "ip_address"
+            },{
+                header : "Hostname",
+                width: 200,
+                sortable: true,
+                dataIndex : "hostname"
+            }]
+        });
+
+        this.currentLeasesGrid.store.load();
         
         Ext.apply( this, {
             defaults : {
@@ -89,7 +127,10 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             },{
                 xtype : "label",
                 html : "Static DHCP Entries"
-            }, this.staticGrid ]
+            }, this.staticGrid, {
+                xtype : "label",
+                html : "Current DHCP Entries"                
+            }, this.currentLeasesGrid ]
         });
         
         Ung.Alpaca.Pages.Dhcp.Index.superclass.constructor.apply( this, arguments );
@@ -97,17 +138,17 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
     saveMethod : "/dhcp/set_settings",
 
-    addStaticEntry : function()
+    refreshCurrentLeases : function()
     {
-        var staticEntry = new this.staticRecord({
-            mac_address : "00:11:22:33:44:66",
-            ip_address : "1.2.3.4",
-            description : "[Sample Entry]"
-        });
-        
-        this.staticGrid.stopEditing();
-        this.staticGrid.store.insert( 0, staticEntry );
-        this.staticGrid.startEditing( 0, 0 );
+        var handler = this.completeRefreshCurrentLeases.createDelegate( this );
+        Ung.Alpaca.Util.executeRemoteFunction( "/dhcp/get_leases", handler );
+    },
+
+    completeRefreshCurrentLeases : function( leases, response, options )
+    {
+        if ( !leases ) return;
+
+        this.currentLeasesGrid.store.loadData( leases );
     }
 });
 

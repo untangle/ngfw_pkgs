@@ -237,7 +237,7 @@ class ApplicationController < ActionController::Base
     values = values[0] if ( values.length == 1 and ( values[0].is_a?( ::Hash ) or values[0].is_a?( ::Array )))
 
     response = { "status" => "success" }
-    response["result"] = values unless values.empty?
+    response["result"] = values
 
     unless options[:no_i18n_map]
       response["i18n_map"] = {}

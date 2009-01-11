@@ -39,15 +39,48 @@ class DhcpController < ApplicationController
 
     settings["dhcp_static_entries"] = DhcpStaticEntry.find( :all )
 
-    dynamic_entries= os["dhcp_server_manager"].dynamic_entries
-    settings["dhcp_dynamic_entries"] = dynamic_entries.sort_by { |a| IPAddr.new(a.ip_address).to_i }
+    settings["dhcp_dynamic_entries"] = os["dhcp_server_manager"].dynamic_entries
 
     json_result( settings )
   end
   
-  def index
-    render :template => "application/page", :layout => "extjs"
+  def set_settings
+    s = json_params
+    
+    ## Check for duplicate MAC Addresses
+    mac_addresses = {}
+    ip_addresses = {}
+    static_entries = s["dhcp_static_entries"]
+    unless static_entries.nil?
+      static_entries.each do |se|
+        ma, ip = se["mac_address"], se["ip_address"]
+        return json_error( "Duplicate MAC Address '%s'" % (ma)) unless mac_addresses[ma].nil?
+        return json_error( "Duplicate IP Address '%s'" % (ip)) unless ip_addresses[ip].nil?
+        mac_addresses[ma] = 0
+        ip_addresses[ip] = 0
+      end
+
+      DhcpStaticEntry.destroy_all
+      static_entries.each { |entry| DhcpStaticEntry.new( entry ).save }
+    end
+    
+    dhcp_server_settings = DhcpServerSettings.find( :first )
+    dhcp_server_settings = DhcpServerSettings.new if dhcp_server_settings.nil?
+    dhcp_server_settings.update_attributes( s["dhcp_server_settings"] )
+    dhcp_server_settings.save
+
+    os["dhcp_server_manager"].commit
+    
+    json_result
   end
+
+  def get_leases
+    dynamic_entries = os["dhcp_server_manager"].dynamic_entries
+    dynamic_entries = [] if dynamic_entries.nil?
+    json_result( dynamic_entries )
+  end
+  
+  alias_method :index, :extjs
 
   def create_static_entry
     @static_entry = DhcpStaticEntry.new
@@ -104,9 +137,10 @@ class DhcpController < ApplicationController
     dhcp_server_settings.update_attributes( params[:dhcp_server_settings] )
     dhcp_server_settings.save
     
+    save_entries
+
     os["dhcp_server_manager"].commit
 
-    save_entries
     ## Review : should have some indication that is saved.
     return redirect_to( :action => "manage" )
   end

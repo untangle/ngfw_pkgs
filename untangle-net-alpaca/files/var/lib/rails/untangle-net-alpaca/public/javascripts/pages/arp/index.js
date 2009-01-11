@@ -89,22 +89,13 @@ Ung.Alpaca.Pages.Arp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
     saveMethod : "/arp/set_settings",
 
-    addStaticEntry : function()
-    {
-        var staticEntry = new this.staticGrid.record();
-        
-        this.staticGrid.stopEditing();
-        this.staticGrid.store.insert( 0, staticEntry );
-        this.staticGrid.startEditing( 0, 0 );
-    },
-
     refreshActiveEntries : function()
     {
-        var handler = this.completeRefresh.createDelegate( this );
+        var handler = this.completeRefreshActiveEntries.createDelegate( this );
         Ung.Alpaca.Util.executeRemoteFunction( "/arp/get_active", handler );
     },
 
-    completeRefresh : function( activeArps, response, options )
+    completeRefreshActiveEntries : function( activeArps, response, options )
     {
         if ( !activeArps ) return;
 
