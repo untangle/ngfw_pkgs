@@ -97,7 +97,9 @@ Ung.Alpaca.PagePanel = Ext.extend( Ext.Panel, {
     /* Update the settings with the values from the fields. */
     updateFieldValue : function( item, index, length, settings )
     {
-        if ( item.getName ) {
+        if ( item.updateFieldValue ) {
+            item.updateFieldValue( settings );
+        } else if ( item.getName ) {
             var value = null;
 
             switch ( item.xtype ) {

@@ -17,10 +17,34 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 class ArpController < ApplicationController
-  def index
-    manage
-    render :action => 'manage'
+  def get_settings
+    settings = {}
+    settings["active_arps"] = StaticArp.get_active( os )
+    settings["static_arps"] = StaticArp.find( :all )
+    json_result( settings )
   end
+
+  def get_active
+    json_result( StaticArp.get_active( os ))
+  end
+  
+  def set_settings
+    s = json_params
+
+    StaticArp.destroy_all
+
+    static_arps = s["static_arps"]
+    
+    unless static_arps.nil?
+      static_arps.each { |entry| StaticArp.new( entry ).save }
+    end
+
+    os["arps_manager"].commit
+
+    json_result
+  end
+
+  alias_method :index, :extjs
 
   def manage
     @active_arps = StaticArp.get_active( os )

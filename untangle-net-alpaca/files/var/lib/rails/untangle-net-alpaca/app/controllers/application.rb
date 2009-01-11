@@ -202,6 +202,10 @@ class ApplicationController < ActionController::Base
   end
 
 
+  def extjs
+    render :template => "application/page", :layout => "extjs"
+  end
+  
 #   unless defined? redirect_to
 #     def redirect_to( options = {}, *parameters_for_method_reference )
 #       #   case options
@@ -230,7 +234,7 @@ class ApplicationController < ActionController::Base
     options = values[0].delete(:options) if values[0].is_a?( ::Hash )
     options = {} if options.nil?
 
-    values = values[0] if ( values.length == 1 and values[0].is_a?( ::Hash ))
+    values = values[0] if ( values.length == 1 and ( values[0].is_a?( ::Hash ) or values[0].is_a?( ::Array )))
 
     response = { "status" => "success" }
     response["result"] = values unless values.empty?

@@ -21,7 +21,6 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
     constructor : function( config )
     {
         Ung.Alpaca.Util.updateDefaults( config, {
-            sm : function() { return new Ext.grid.RowSelectionModel({singleSelect:true}) },
             width : 620,
             height : 220,
             frame : false,
@@ -32,6 +31,15 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
                 forceFit : true
             }
         });
+
+        /* Append the selection model to the table */
+        if ( config.editable == true ) {
+            var sm = new Ext.grid.CheckboxSelectionModel();
+            config.columns = [sm].concat( config.columns );
+            config.sm = sm;
+
+            this.buildToolbar( config );
+        }
 
         /* Build a record. */
         if ( config.record == null && Ext.isArray( config.recordFields )) {
@@ -48,6 +56,9 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
 
         /* Now build a store */
         if (( config.store == null ) && ( this.record != null )) {
+            if ( !config.entries ) {
+                config.entries = config.settings[config.name];
+            }
             config.store = new Ext.data.Store({
                 proxy : new Ext.data.MemoryProxy( config.entries ),
                 reader : new Ext.data.ArrayReader( {}, this.record )
@@ -55,6 +66,70 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
         }
 
         Ung.Alpaca.EditorGridPanel.superclass.constructor.apply( this, arguments );
-    }
+    },
+
+    buildToolbar : function( config )
+    {
+        if ( config.tbar ) {
+            for ( var c = 0; c < config.tbar.length ; c++ ) {
+                if ( config.tbar[c] == Ung.Alpaca.EditorGridPanel.AddButtonMarker ) {
+                    config.tbar[c] = this.addButton();
+                } else if ( config.tbar[c] == Ung.Alpaca.EditorGridPanel.DeleteButtonMarker ) {
+                    config.tbar[c] = this.deleteButton();
+                }
+            }
+        } else  {
+            config.tbar = [ this.addButton(), this.deleteButton() ];
+        }
+    },
     
+    addButton : function( config )
+    {
+        return {
+            text : "Add",
+            handler : this.addEntry,
+            scope : this
+        };
+    },
+    
+    deleteButton : function( config )
+    {
+        return {
+            text : "Delete",
+            handler : this.deleteSelectedEntries,
+            scope : this
+        };
+    },
+    
+    addEntry : function()
+    {
+        var entry = new this.record( this.recordDefaults );
+        this.stopEditing();
+        this.store.insert( 0, entry );
+        this.startEditing( 0, 0 );
+    },
+
+    updateFieldValue : function( settings )
+    {
+        if ( this.name == null || !this.editable ) {
+            return;
+        }
+
+        var data = [];
+        var entries = this.store.getRange();
+        
+        for ( var c = 0 ; c < entries.length ; c++ ) {
+            data[c] = entries[c].data;
+        }
+
+        settings[this.name] = data;
+    },
+    
+    deleteSelectedEntries : function()
+    {
+        Ung.Alpaca.Util.implementMe( "Deleting entries." );
+    }
 });
+
+Ung.Alpaca.EditorGridPanel.AddButtonMarker = {};
+Ung.Alpaca.EditorGridPanel.DeleteButtonMarker = {};

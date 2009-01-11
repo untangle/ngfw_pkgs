@@ -105,6 +105,8 @@ Ung.Alpaca.Util = {
         return "/alpaca/javascripts/pages/" + queryPath["controller"] + "/" + queryPath["page"] + ".js";
     },
 
+    /* Only update config if a value doesn't exist, extjs already has this
+     * in ApplyIf. */
     updateDefaults : function( config, defaults )
     {
         for ( key in defaults ) {
@@ -117,5 +119,15 @@ Ung.Alpaca.Util = {
                 }
             }
         }
+    },
+
+    implementMe : function( feature )
+    {
+        Ext.MessageBox.show({
+            title : 'Implement Me',
+            msg : feature,
+            buttons : Ext.MessageBox.OK,
+            icon : Ext.MessageBox.INFO
+        });
     }
 };

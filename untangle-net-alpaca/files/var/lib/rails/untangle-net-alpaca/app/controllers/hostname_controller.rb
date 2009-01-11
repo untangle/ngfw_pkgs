@@ -71,10 +71,8 @@ class HostnameController < ApplicationController
 
     json_result
   end
-
-  def index
-    render :template => "application/page", :layout => "extjs"
-  end
+  
+  alias_method :index, :extjs
 
   def manage
     @hostname_settings = HostnameSettings.find( :first )
