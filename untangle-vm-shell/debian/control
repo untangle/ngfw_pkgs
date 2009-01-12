@@ -8,6 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-vm-shell
 Architecture: all
-Depends: untangle-vm, ruby1.8, dash
+Depends: ruby1.8, dash
+Suggests: untangle-vm
 Description: The Untangle VM shell
  The command-line interface to the Untangle VM machine.
