@@ -42,7 +42,7 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     name : "ddclient_settings.service",
                     mode : "local",
                     triggerAction : "all",
-                    editable : false,
+                    selectable : false,
                     store : config.settings["ddclient_services"]
                 },{
                     fieldLabel : "Login",

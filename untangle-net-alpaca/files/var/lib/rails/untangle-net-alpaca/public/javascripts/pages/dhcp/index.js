@@ -14,7 +14,7 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             settings : config.settings,
 
             recordFields : [ "mac_address", "ip_address", "id", "description" ],
-            editable : true,
+            selectable : true,
             
             name : "dhcp_static_entries",
 
@@ -57,7 +57,7 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             settings : config.settings,
 
             recordFields : [ "mac_address", "ip_address", "hostname", "client_id", "expiration" ],
-            editable : false,
+            selectable : false,
             
             name : "dhcp_dynamic_entries",
 

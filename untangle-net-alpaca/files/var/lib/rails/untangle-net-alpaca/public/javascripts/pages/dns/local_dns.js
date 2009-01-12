@@ -12,7 +12,7 @@ Ung.Alpaca.Pages.Dns.LocalDns = Ext.extend( Ung.Alpaca.PagePanel, {
         this.localDnsGrid = new Ung.Alpaca.EditorGridPanel({
             settings : config.settings,
             recordFields : [ "server_ip", "domain_name_list", "enabled" ],
-            editable : true,
+            selectable : true,
 
             /* Name must set in order to get and set the settings */
             name : "upstream_servers",

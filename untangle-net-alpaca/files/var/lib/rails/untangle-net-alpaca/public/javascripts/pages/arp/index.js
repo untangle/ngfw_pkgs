@@ -12,7 +12,7 @@ Ung.Alpaca.Pages.Arp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         this.staticGrid = new Ung.Alpaca.EditorGridPanel({
             settings : config.settings,
             recordFields : [ "hostname", "hw_addr", "id" ],
-            editable : true,
+            selectable : true,
 
             /* Name must set in order to get and set the settings */
             name : "static_arps",

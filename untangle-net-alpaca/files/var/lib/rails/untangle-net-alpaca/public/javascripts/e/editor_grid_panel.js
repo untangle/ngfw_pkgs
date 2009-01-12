@@ -33,13 +33,13 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
         });
 
         /* Append the selection model to the table */
-        if ( config.editable == true ) {
+        if ( config.selectable == true ) {
             var sm = new Ext.grid.CheckboxSelectionModel();
             config.columns = [sm].concat( config.columns );
             config.sm = sm;
-
-            this.buildToolbar( config );
         }
+
+        this.buildToolbar( config );
 
         /* Build a record. */
         if ( config.record == null && Ext.isArray( config.recordFields )) {

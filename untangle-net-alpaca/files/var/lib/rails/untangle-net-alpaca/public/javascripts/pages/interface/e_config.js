@@ -37,7 +37,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                     name : "interface.config_type",
                     mode : "local",
                     triggerAction : "all",
-                    editable : false,
+                    selectable : false,
                     store :  config.settings["config_types"],
                     listeners : {
                         "select" : {
@@ -145,7 +145,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                     name : "bridge.bridge_interface_id",
                     mode : "local",
                     triggerAction : "all",
-                    editable : false,
+                    selectable : false,
                     listWidth : 160,
                     store :  settings["bridgeable_interfaces"]
                 }, this.buildEthernetMediaCombo( settings )]
@@ -230,7 +230,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             name : "media",
             mode : "local",
             triggerAction : "all",
-            editable : false,
+            selectable : false,
             listWidth : 160,
             store :  settings["media_types"]
         });

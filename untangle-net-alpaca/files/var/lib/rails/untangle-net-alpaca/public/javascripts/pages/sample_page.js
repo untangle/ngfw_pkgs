@@ -47,7 +47,7 @@ Ung.Alpaca.Pages.Sample.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     fieldLabel : "Service",
                     displayField : "serviceName",
                     name : "ddclient_settings.service",
-                    editable : false,
+                    selectable : false,
                     store : this.servicesStore
                 },{
                     fieldLabel : "Login",
