@@ -1,0 +1,5 @@
+untangle-vm-shell (6.0.0-1) nightly; urgency=low
+
+  * Initial release
+
+ -- Sebastien Delafond <seb@untangle.com>  Mon, 12 Jan 2009 09:15:04 -0800
