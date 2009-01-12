@@ -15,7 +15,61 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-class DnsController < ApplicationController  
+class DnsController < ApplicationController
+  def get_settings
+    settings = {}
+
+    dns_server_settings = DnsServerSettings.find( :first )
+    dns_server_settings = DnsServerSettings.create_default if dns_server_settings.nil?
+    
+    settings["dns_server_settings"] = dns_server_settings
+
+    settings["dns_static_entries"]
+    settings["dns_static_entries"] = DnsStaticEntry.find( :all )
+
+    ## Retrieve all of the dynamic entries from the DHCP server manager
+    settings["dns_dynamic_entries"] = os["dns_server_manager"].dynamic_entries
+
+    ## Retrieve all of the local dns servers (can reuse this method for local dns)
+    settings["upstream_servers"] = DnsUpstreamServers.find( :all )
+        
+    json_result( settings )
+  end
+
+  def set_settings
+    s = json_params
+    
+    dns_server_settings = DnsServerSettings.find( :first )
+    dns_server_settings = DnsServerSettings.create_default if dns_server_settings.nil?
+    dns_server_settings.update_attributes( s["dns_server_settings"] )
+    
+    unless validator.is_hostname?( dns_server_settings.suffix )
+      return json_error( "Invalid Domain Name Suffix '%s'" % ( dns_server_settings["suffix"] ))
+    end
+
+    dns_server_settings.save
+
+    ## Save all of the static entries
+    DnsStaticEntry.destroy_all
+    s["dns_static_entries"].each { |entry| DnsStaticEntry.new( entry ).save }
+
+    ## Save all of the upstream servers
+    DnsUpstreamServers.destroy_all
+    s["upstream_servers"].each { |entry| DnsUpstreamServers.new( entry ).save }
+    
+    os["dns_server_manager"].commit
+
+    json_result
+  end
+  
+  def get_leases
+    json_result(os["dns_server_manager"].dynamic_entries)
+  end
+  
+  alias_method :index, :extjs
+
+  alias_method :local_dns, :extjs
+    
   def manage
     @dns_server_settings = DnsServerSettings.find( :first )
     @dns_server_settings = DnsServerSettings.create_default if @dns_server_settings.nil?
@@ -27,8 +81,6 @@ class DnsController < ApplicationController
     ## this allows this method to be aliased.
     render :action => 'manage'
   end
-
-  alias :index :manage
 
   def upstream_servers
     @upstream_servers = DnsUpstreamServers.find( :all )

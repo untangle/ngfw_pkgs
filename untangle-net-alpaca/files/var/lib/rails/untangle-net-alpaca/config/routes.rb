@@ -32,7 +32,7 @@ ActionController::Routing::Routes.draw do |map|
 
 
   # renames
-  map.connect 'packetfilter/:action/:id', :controller => "firewall"
+  # map.connect 'packetfilter/:action/:id', :controller => "firewall"
 
 
   # Allow downloading Web Service WSDL as a file with an extension

@@ -24,7 +24,7 @@ class DhcpController < ApplicationController
 
     dhcp_server_settings = DhcpServerSettings.find( :first )
     dhcp_server_settings = DhcpServerSettings.new if dhcp_server_settings.nil?
-    manage_entries
+
     if dhcp_server_settings.enabled == true and \
         ( dhcp_server_settings.start_address.nil? \
           or dhcp_server_settings.end_address.nil? \
@@ -75,12 +75,12 @@ class DhcpController < ApplicationController
   end
 
   def get_leases
-    dynamic_entries = os["dhcp_server_manager"].dynamic_entries
-    dynamic_entries = [] if dynamic_entries.nil?
-    json_result( dynamic_entries )
+    json_result(os["dhcp_server_manager"].dynamic_entries )
   end
   
   alias_method :index, :extjs
+
+  alias_method :secret_field, :extjs
 
   def create_static_entry
     @static_entry = DhcpStaticEntry.new

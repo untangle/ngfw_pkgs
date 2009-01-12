@@ -21,7 +21,7 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             recordDefaults : {
                 mac_address : "00:11:22:33:44:66",
                 ip_address : "1.2.3.4",
-                description : "[Sample Entry]"
+                description : "[New Entry]"
             },
 
             columns : [{
