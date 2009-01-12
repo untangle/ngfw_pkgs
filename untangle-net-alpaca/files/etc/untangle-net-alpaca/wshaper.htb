@@ -45,6 +45,17 @@ fi
 tc qdisc del dev $DEV root    2> /dev/null > /dev/null
 tc qdisc del dev $DEV ingress 2> /dev/null > /dev/null
 
+
+#make sure we clean everything by iterating over the lists of devices
+# that have a queueing discipline
+#but utun has rules on it without QoS so leave those alone
+for i in `tc qdisc show | awk '{ print $5; }' ` ; do
+    if [ "$i" != "utun" ] ;  then
+        tc qdisc del dev "$i" root    2> /dev/null > /dev/null
+        tc qdisc del dev "$i" ingress 2> /dev/null > /dev/null
+    fi
+done
+
 if [ "$1" = "stop" ] 
 then 
     exit
