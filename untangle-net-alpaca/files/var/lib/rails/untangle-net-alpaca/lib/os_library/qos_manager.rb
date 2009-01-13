@@ -15,7 +15,23 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 class OSLibrary::QosManager < Alpaca::OS::ManagerBase
-   NETMASK32 = { 
+  class BandwithEstimate
+    def initialize( download, upload )
+      @download, @upload = download, upload
+    end
+
+    attr_reader :download, :upload
+  end
+
+  class QosStatus
+    def initialize( priority, rate, burst, sent, tokens, ctokens )
+      @priority, @rate, @burst, @sent, @tokens, @ctokens = priority, rate, burst, sent, tokens, ctokens
+    end
+    
+    attr_reader :priority, :rate, :burst, :sent, :tokens, :ctokens
+  end
+
+  NETMASK32 = { 
       "0" => "0x00000000",
       "1" => "0x80000000",
       "2" => "0xC0000000",
@@ -111,8 +127,16 @@ class OSLibrary::QosManager < Alpaca::OS::ManagerBase
      return [download, upload]
   end
 
+  def estimate_bandwith_v2
+    return BandwithStatus.new( "Unknown", "Unknown" )
+  end
+
   def status
     "None"
+  end
+
+  def status_v2
+    return []
   end
 
   def start_time

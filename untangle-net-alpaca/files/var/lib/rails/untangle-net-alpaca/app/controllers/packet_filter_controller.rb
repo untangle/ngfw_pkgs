@@ -24,6 +24,7 @@ class PacketFilterController < ApplicationController
     json_result( settings )
   end
 
+
   alias_method :index, :extjs
   
   def manage

@@ -55,11 +55,12 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
         this.currentLeasesGrid = new Ung.Alpaca.EditorGridPanel({
             settings : config.settings,
-
+            
             recordFields : [ "mac_address", "ip_address", "hostname", "client_id", "expiration" ],
             selectable : false,
             
             name : "dhcp_dynamic_entries",
+            saveData : false,
 
             tbar : [{
                 text : "Refresh",

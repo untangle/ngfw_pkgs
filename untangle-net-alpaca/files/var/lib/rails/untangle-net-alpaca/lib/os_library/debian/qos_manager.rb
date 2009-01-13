@@ -70,6 +70,27 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
      return results
   end
 
+  def status_v2
+    results = []
+    lines = `#{Service} status`
+    pieces = lines.split( Regexp.new( 'qdisc|class', Regexp::MULTILINE ) )
+    pieces.each do |piece|
+      next unless piece.include?( "htb" ) and piece.include?( "leaf" )
+      stats = piece.split( Regexp.new( ' ', Regexp::MULTILINE ) )
+      
+      next unless PriorityQueueToName.has_key?( stats[6] )
+      token_stats = piece.split( Regexp.new( 'c?tokens: ', Regexp::MULTILINE ) )
+      results << QosStatus.new( PriorityQueueToName[stats[6]],
+                                stats[10],
+                                stats[14],
+                                stats[19] + stats[20],
+                                token_stats[1],
+                                token_stats[2].strip )
+    end
+
+    return results
+  end
+  
   def start_time
     begin
       return File.mtime( QoSStartLog )
@@ -95,6 +116,25 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
        # default to unkown
      end
      return [download, upload]
+  end
+
+  def estimate_bandwidth_v2
+     download = "Unknown"
+     upload = "Unknown"
+     begin
+       download = `rrdtool fetch #{QoSRRDLog} MAX | cut -d " " -f 2 | sort -n | tail -1`.to_f.round
+       f = File.new( AptLog, "r" )
+       f.each_line do |line|
+         downloadMatchData = line.match( /Fetched.*\(([0-9]+)kB\/s\)/ )
+         if ! downloadMatchData.nil? and downloadMatchData.length >= 2
+            download = downloadMatchData[1] 
+         end
+       end
+       upload = `rrdtool fetch #{QoSRRDLog} MAX | cut -d " " -f 3 | sort -n | tail -1`.to_f.round
+     rescue
+       # default to unkown
+     end
+     return BandwithEstimate.new( download, upload )
   end
 
   def header

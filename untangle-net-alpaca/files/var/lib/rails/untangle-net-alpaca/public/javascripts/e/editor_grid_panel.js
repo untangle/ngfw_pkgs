@@ -9,6 +9,9 @@ Ext.ns('Ung.Alpaca');
  * @param {Object} config Configuration options
  */
 Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
+    /* Set this to false for grids that do not need to saved */
+    saveData : true,
+
     /**
      * @cfg {Array} recordFields An array of strings containing the fields to create the default 
      * record.  Otherwise, you can define your own record.
@@ -81,6 +84,10 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
         } else  {
             config.tbar = [ this.addButton(), this.deleteButton() ];
         }
+
+        if ( config.tbar.length == 0 ) {
+            config.tbar = null;
+        }
     },
     
     addButton : function( config )
@@ -111,7 +118,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
 
     updateFieldValue : function( settings )
     {
-        if ( this.name == null || !this.editable ) {
+        if ( this.name == null || this.saveData == false ) {
             return;
         }
 

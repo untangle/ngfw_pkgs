@@ -20,7 +20,7 @@ Ung.Alpaca.Pages.Dns.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             recordDefaults : {
                 ip_address : "1.2.3.4",
                 hostname : "sample.example.com",
-                description : "[sample dns entry]"
+                description : "[New Dns Entry]"
             },
 
             columns : [{
@@ -62,6 +62,7 @@ Ung.Alpaca.Pages.Dns.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             }],
             
             entries : config.settings["dns_dynamic_entries"],
+            saveData : false,
             
             columns : [{
                 header : "IP Address",

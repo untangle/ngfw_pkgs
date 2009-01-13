@@ -17,7 +17,10 @@
 #
 class Alpaca::Components::QosComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
-    menu_organizer.register_item( "/main/qos", menu_item( 600, "QoS", :action => "index" ))
+    menu_organizer.register_item( "/main/qos", menu_item( 600, "QoS", :action => "manage" ))
+
+    menu_organizer.register_item( "/extjs/qos", menu_item( 600, "QoS", :action => "index" ))
+
   end
   
   def wizard_insert_closers( builder )

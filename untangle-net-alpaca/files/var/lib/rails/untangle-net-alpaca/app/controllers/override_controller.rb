@@ -16,14 +16,45 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 class OverrideController < ApplicationController  
+  def get_settings
+    settings = {}
+    settings["file_overrides"] = FileOverride.ordered_find( :all )
+    alpaca_settings = AlpacaSettings.find( :first )
+    alpaca_settings = AlpacaSettings.new if alpaca_settings.nil?
+    settings["alpaca_settings"] = alpaca_settings
+
+    json_result( settings )
+  end
+
+  def set_settings
+    s = json_params
+
+    alpaca_settings = AlpacaSettings.find( :first )
+    alpaca_settings = AlpacaSettings.new( :send_icmp_redirects => true ) if @alpaca_settings.nil? 
+    alpaca_settings.update_attributes( s["alpaca_settings"] )
+    
+    FileOverride.destroy_all
+    position = 0
+    s["file_overrides"].each do |entry| 
+      file_override = FileOverride.new( entry )
+      file_override.position = position
+      position += 1
+      file_override.save
+    end
+
+    os["override_manager"].commit
+
+    json_result
+  end
+
+  alias_method :index, :extjs
+  
   def manage
     @fileOverrideList = FileOverride.ordered_find( :all )
     @alpaca_settings = AlpacaSettings.find( :first )
     @alpaca_settings = AlpacaSettings.new if @alpaca_settings.nil?
     render :action => 'manage'
   end
-
-  alias :index :manage
 
   def create_file_override
     @file_override = FileOverride.new

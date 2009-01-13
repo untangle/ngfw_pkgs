@@ -53,6 +53,7 @@ Ung.Alpaca.Pages.Arp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             }],
             
             entries : config.settings["active_arps"],
+            saveData : false,
             
             columns : [{
                 header : "IP Address",

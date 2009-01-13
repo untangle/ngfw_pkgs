@@ -10,12 +10,6 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "dhcp", "index" )) {
 Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
     constructor : function( config )
     {
-        var enabledColumn = new Ext.grid.CheckColumn({
-            header : "On",
-            dataIndex : "enabled",
-            width : 55
-        });
-
         this.userRulesGrid = new Ung.Alpaca.EditorGridPanel({
             settings : config.settings,
 
@@ -33,7 +27,7 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 is_custom : false
             },
 
-            columns : [ enabledColumn, {
+            columns : [{
                 header : "Action",
                 width: 200,
                 sortable: true,
