@@ -3,7 +3,7 @@ Ext.ns('Ung.Alpaca');
 Ext.ns('Ung.Alpaca.Pages');
 Ext.ns('Ung.Alpaca.Pages.PacketFilter');
 
-if ( Ung.Alpaca.Glue.hasPageRenderer( "dhcp", "index" )) {
+if ( Ung.Alpaca.Glue.hasPageRenderer( "packet_filter", "index" )) {
     Ung.Alpaca.Util.stopLoading();
 }
 
@@ -52,7 +52,7 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             settings : config.settings,
 
             recordFields : [ "enabled", "system_id", "target", "filter", "description", "is_custom" ],
-            selectable : true,
+            selectable : false,
             
             name : "system_rules",
 
@@ -63,17 +63,14 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 width: 200,
                 sortable: true,
                 dataIndex : "enabled",
-                editor : new Ext.form.Checkbox({
+                editor : new Ext.form.TextField({
                     allowBlank : false 
                 })
             },{
                 header : "Description",
                 width: 200,
                 sortable: true,
-                dataIndex : "description",
-                editor : new Ext.form.TextField({
-                    allowBlank : false 
-                })
+                dataIndex : "description"
             }]
         });
 

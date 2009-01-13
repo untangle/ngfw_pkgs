@@ -3,7 +3,7 @@ Ext.ns('Ung.Alpaca');
 Ext.ns('Ung.Alpaca.Pages');
 Ext.ns('Ung.Alpaca.Pages.Override');
 
-if ( Ung.Alpaca.Glue.hasPageRenderer( "dhcp", "index" )) {
+if ( Ung.Alpaca.Glue.hasPageRenderer( "override", "index" )) {
     Ung.Alpaca.Util.stopLoading();
 }
 

@@ -18,6 +18,53 @@
 class UvmController < ApplicationController  
   DnsServerSettingsDefaults = { :suffix => "example.com", :enabled => true }
 
+  def get_settings
+    settings = {}
+
+    settings["user_subscriptions"] = Subscription.find( :all, :conditions => [ "system_id IS NULL" ] )
+    settings["system_subscriptions"] = Subscription.find( :all, :conditions => [ "system_id IS NOT NULL" ] )
+    
+    uvm_settings = UvmSettings.find( :first )
+    uvm_settings = UvmSettings.new if uvm_settings.nil?
+    settings["uvm"] = uvm_settings
+
+    json_result( settings )
+  end
+
+  def set_settings
+    s = json_params
+    
+    ## Commit all of the packet filter rules.
+    os["packet_filter_manager"].commit
+
+    uvm_settings = UvmSettings.find( :first )
+    uvm_settings = UvmSettings.new if uvm_settings.nil?
+    uvm_settings.update_attributes( s["uvm"] )
+    uvm_settings.save
+
+    ## Destroy all of the user rules
+    Subscription.destroy_all( "system_id IS NULL" )
+    position = 0
+    s["user_subscriptions"].each do |entry|
+      rule = Subscription.new( entry )
+      rule.position = position
+      rule.save
+      position += position
+    end
+    
+    s["system_subscriptions"].each do |entry|
+      rule = Subscription.find( :first, :conditions => [ "system_id = ?", entry["system_id"]] )
+      next if rule.nil?
+      rule.enabled = entry["enabled"]
+      rule.save
+    end
+    
+    json_result
+  end
+
+  alias_method :index, :extjs
+
+
   def manage
     @subscriptions = Subscription.find( :all, :conditions => [ "system_id IS NULL" ] )
     @system_subscription_list = Subscription.find( :all, :conditions => [ "system_id IS NOT NULL" ] )
@@ -28,8 +75,6 @@ class UvmController < ApplicationController
 
     render :action => 'manage'
   end
-  
-  alias :index :manage
 
   def create_subscription
     ## Reasonable defaults

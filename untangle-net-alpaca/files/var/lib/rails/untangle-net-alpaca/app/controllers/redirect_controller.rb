@@ -16,14 +16,50 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 class RedirectController < ApplicationController  
+  def get_settings
+    settings = {}
+    settings["user_redirects"] = Redirect.find( :all, :conditions => [ "system_id IS NULL" ] )
+
+    ## We do not use system redirects.
+    settings["system_redirects"] = Redirect.find( :all, :conditions => [ "system_id IS NOT NULL" ] )
+
+    json_result( settings )
+  end
+
+  def set_settings
+    s = json_params
+
+    ## Destroy all of the user rules
+    Redirect.destroy_all( "system_id IS NULL" )
+    position = 0
+    s["user_redirects"].each do |entry|
+      rule = Redirect.new( entry )
+      rule.position = position
+      rule.save
+      position += position
+    end
+    
+    s["system_redirects"].each do |entry|
+      rule = Redirect.find( :first, :conditions => [ "system_id = ?", entry["system_id"]] )
+      next if rule.nil?
+      rule.enabled = entry["enabled"]
+      rule.save
+    end
+
+    ## Commit all of the packet filter rules.
+    os["packet_filter_manager"].commit
+    
+    json_result    
+  end
+
+  alias_method :index, :extjs
+
   def manage
     @redirects = Redirect.find( :all, :conditions => [ "system_id IS NULL" ] )
     @system_redirect_list = Redirect.find( :all, :conditions => [ "system_id IS NOT NULL" ] )
 
     render :action => 'manage'
   end
-
-  alias :index :manage
 
   def create_redirect
     ## Reasonable defaults

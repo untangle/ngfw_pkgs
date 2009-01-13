@@ -19,7 +19,8 @@ class Alpaca::Components::RouteComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
     
     if ( config_level >= AlpacaSettings::Level::Advanced ) 
-      menu_organizer.register_item( "/main/advanced/route", menu_item( 400, "Routes", {} ))
+      menu_organizer.register_item( "/main/advanced/route", menu_item( 400, "Routes", :action => "manage" ))
+      menu_organizer.register_item( "/advanced/route", menu_item( 400, "Routes", :action => "index" ))
     end
   end
   

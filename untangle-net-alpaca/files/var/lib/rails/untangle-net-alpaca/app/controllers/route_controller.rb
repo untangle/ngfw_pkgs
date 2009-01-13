@@ -17,20 +17,38 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 class RouteController < ApplicationController
-  def index
-    manage
-    render :action => 'manage'
+  def get_settings
+    settings = {}
+    settings["active_routes"] = NetworkRoute.get_active( os )
+    settings["static_routes"] = NetworkRoute.find( :all )
+    json_result( settings )
   end
 
+  def set_settings
+    s = json_params
+
+    network_routes = s["static_routes"].map do |entry| 
+      entry["netmask"] = OSLibrary::NetworkManager::parseNetmask( entry["netmask"] )
+      NetworkRoute.new( entry )
+    end
+    
+    NetworkRoute.destroy_all
+    network_routes.each { |route| route.save }
+
+    os["routes_manager"].commit
+
+    json_result
+  end
+  
+  alias_method :index, :extjs
+
   def manage
-    #@current_routes = `/bin/netstat -rn | grep -v dummy0`
     @current_routes = NetworkRoute.get_active( os )
     @network_routes = NetworkRoute.find( :all )
     @network_routes = [] if @network_routes.nil?
   end
 
   def save
-    ## Review : Internationalization
     return redirect_to( :action => "manage" ) if ( params[:commit] != "Save".t )
 
     NetworkRoute.destroy_all

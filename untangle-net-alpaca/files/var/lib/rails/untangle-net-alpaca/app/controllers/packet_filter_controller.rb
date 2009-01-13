@@ -24,6 +24,31 @@ class PacketFilterController < ApplicationController
     json_result( settings )
   end
 
+  def set_settings
+    s = json_params
+
+    ## Destroy all of the user rules
+    Firewall.destroy_all( "system_id IS NULL" )
+    position = 0
+    s["user_rules"].each do |entry|
+      rule = Firewall.new( entry )
+      rule.position = position
+      rule.save
+      position += position
+    end
+    
+    s["system_rules"].each do |entry|
+      rule = Firewall.find( :first, :conditions => [ "system_id = ?", entry["system_id"]] )
+      next if rule.nil?
+      rule.enabled = entry["enabled"]
+      rule.save
+    end
+
+    ## Commit all of the packet filter rules.
+    os["packet_filter_manager"].commit
+    
+    json_result
+  end
 
   alias_method :index, :extjs
   
