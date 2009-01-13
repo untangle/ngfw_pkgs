@@ -109,7 +109,10 @@ class UvmController < ApplicationController
     end
       
     ## Nothing to do if the interfaces are not modified.
-    return logger.debug( "Interfaces are not modified" ) unless is_modified
+    unless is_modified
+      logger.debug( "Interfaces are not modified" ) 
+      return json_result
+    end
 
     user_names.each do |name|
       data = physical_data[name]
