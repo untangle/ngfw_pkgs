@@ -76,15 +76,17 @@ class UvmController < ApplicationController
     redirect_to( :action => "manage" )
   end
 
-  ## XMLRPC calls.
   def generate_rules
     ## Execute all of the packet filter rules.
     os["packet_filter_manager"].run_services
-    nil
+    json_result
   end
 
   ## Remap the interfaces
-  def remap_interfaces( os_names, user_names )
+  def remap_interfaces
+    s = json_params
+    os_names, user_names = s["os_names"], s["user_names"]
+
     raise "os and user array must be the same size" if ( os_names.length != user_names.length ) 
     
     interface_array = Interface.find( :all )
@@ -124,6 +126,7 @@ class UvmController < ApplicationController
     end
 
     ## Don't call the network manager here, it is called in the next step.
+    json_result
   end
   
   def write_files
@@ -137,23 +140,34 @@ class UvmController < ApplicationController
     ## This also causes the uvm manager to write a few files.
     os["packet_filter_manager"].write_files
 
-    nil
+    json_result
   end
 
-  def session_redirect_create( filter, new_ip, new_port )
+  def session_redirect_create()
+    s = json_params
+    filter, new_ip, new_port = s["filter"], s["new_ip"], s["new_port"]
+
     logger.debug( "Creating a new session redirect: #{filter} #{new_ip} #{new_port}" )
     
     os["packet_filter_manager"].session_redirect_create( filter, new_ip, new_port )
-    true
+
+    json_result
   end
 
-  def session_redirect_delete( filter, new_ip, new_port )
+  def session_redirect_delete
+    s = json_params
+    filter, new_ip, new_port = s["filter"], s["new_ip"], s["new_port"]
+
     logger.debug( "Deleting a new session redirect: #{filter} #{new_ip} #{new_port}" )
     os["packet_filter_manager"].session_redirect_delete( filter, new_ip, new_port )
-    true
+    
+    json_result
   end
 
-  def save_hostname( hostname, save_suffix = false )
+  def save_hostname
+    s = json_params
+    hostname, save_suffix = s["hostname"], s["suffix"]
+
     logger.debug( "Saving the hostname: '#{hostname}'" )
 
     hostname_settings = HostnameSettings.find( :first )
@@ -169,7 +183,8 @@ class UvmController < ApplicationController
     end
     
     os["hostname_manager"].commit
-    true
+
+    json_result
   end
 
   ## Set the settings up as if this was for the wizard (UVM wizard not the alpaca wizard)
@@ -222,10 +237,13 @@ class UvmController < ApplicationController
 
     os["network_manager"].commit
 
-    nil
+    json_result
   end
 
-  def wizard_external_interface_static( ip, netmask, default_gateway, dns_1, dns_2 )
+  def wizard_external_interface_static
+    s = json_params
+    ip, netmask, default_gateway, dns_1, dns_2 = s["ip"], s["netmask"], s["default_gateway"], s["dns_1"], s["dns_2"]
+
     if netmask.include?( "255." )
       netmask = OSLibrary::NetworkManager::CIDR.index( netmask )
     end
@@ -236,6 +254,8 @@ class UvmController < ApplicationController
       external_interface.intf_static = static
       external_interface.config_type = InterfaceHelper::ConfigType::STATIC
     end
+
+    json_result
   end
 
   def wizard_external_interface_dynamic
@@ -243,13 +263,20 @@ class UvmController < ApplicationController
       external_interface.intf_dynamic = IntfDynamic.new
       external_interface.config_type = InterfaceHelper::ConfigType::DYNAMIC
     end
+
+    json_result
   end
 
   def wizard_external_interface_pppoe( username, password )
+    s = json_params
+    username, password = s["username"], s["password"]
+
     wizard_manage_interface( InterfaceHelper::ExternalIndex ) do |external_interface|
       external_interface.intf_pppoe = IntfPppoe.new( :username => username, :password => password )
       external_interface.config_type = InterfaceHelper::ConfigType::PPPOE
     end
+
+    json_result
   end
 
   def wizard_internal_interface_bridge
@@ -268,9 +295,14 @@ class UvmController < ApplicationController
 
       update_dns_server_settings( :enabled => false )
     end
+
+    json_result
   end
     
-  def wizard_internal_interface_nat( ip, netmask, is_dhcp_enabled )
+  def wizard_internal_interface_nat
+    s = json_params
+    ip, netmask, is_dhcp_enabled = s["ip"], s["netmask"], s["is_dhcp_enabled"]
+
     if netmask.include?( "255." )
       netmask = OSLibrary::NetworkManager::CIDR.index( netmask )
     end
@@ -289,18 +321,15 @@ class UvmController < ApplicationController
       wizard_calculate_dhcp_range( ip, netmask, dhcp_server_settings, is_dhcp_enabled )
       dhcp_server_settings.save
       update_dns_server_settings( :enabled => true )
+    end
 
-    end    
+    json_result
   end
 
   def hello_world
     ## Just access the database to make sure another process doesn't have it locked.
     Interface.find( :first )
-    true
-  end
-
-  def scripts
-    RuleHelper::Scripts + []
+    json_result
   end
 
   private

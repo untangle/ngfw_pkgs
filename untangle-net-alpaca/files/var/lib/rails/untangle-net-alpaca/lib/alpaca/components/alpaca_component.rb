@@ -17,9 +17,8 @@
 #
 class Alpaca::Components::AlpacaComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
-    ## REVIEW : This should be declared in the status controller.
-    #menu_organizer.register_item( "/main/status", menu_item( 50, "Status", :action => "status" ))
     menu_organizer.register_item( "/main/advanced", menu_item( 900, "Advanced", :action => "manage" ))
+    menu_organizer.register_item( "/advanced/status", menu_item( 900, "Advanced", :action => "status" ))    
   end
 
   def wizard_insert_closers( builder )
