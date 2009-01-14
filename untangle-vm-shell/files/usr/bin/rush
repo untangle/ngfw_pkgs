@@ -8,14 +8,15 @@ parse_args()
 {
     local t_num_opts
 
-    ## The option strings are taken from the ruby and irb man pages (long opts are futile.)
+    ## The option strings are taken from the ruby and irb man pages
+    ## (long opts are futile.)
     while getopts :fmdSacdlnpswvy0:C:F:I:K:T:e:i:r:x: f ; do
         case $f in
             e) HAS_COMMAND="true" ;;
             *)  ;;
         esac
     done
-    
+
     t_num_opts=$(( ${OPTIND} - 1 ))
 
     [ ${t_num_opts} -lt $# ] && HAS_COMMAND="true"
@@ -23,13 +24,13 @@ parse_args()
 
 use_tty()
 {
-    ## First check if the -e option was passed, this essentially overrides
-    ## if this is a terminal
-    if [ "${HAS_COMMAND}x" = "truex" ]; then 
+    ## First check if the -e option was passed, this essentially
+    ## overrides if this is a terminal
+    if [ "${HAS_COMMAND}x" = "truex" ]; then
         echo "false"
         return
     fi
-    
+
     if `tty -s` ; then
         echo "true"
     else

@@ -35,6 +35,7 @@ chown -R $SPAM_USER:$SPAM_GROUP /home/$SPAM_USER
 # enable in /etc/default/spamassassin
 sed -i "s/^ENABLED=.*/ENABLED=1/" /etc/default/spamassassin
 sed -i "s/^OPTIONS=.*/OPTIONS=\"--create-prefs --max-children $MAX_CHILDREN --max-spare $MAX_SPARE --helper-home-dir\"/" /etc/default/spamassassin
+sed -i "s/^CRON=.*/CRON=1/" /etc/default/spamassassin
 
 # XXX moved /etc/spamassassin/local.cf overwrites to database settings schema
 ## turn off stuff in local.cf
