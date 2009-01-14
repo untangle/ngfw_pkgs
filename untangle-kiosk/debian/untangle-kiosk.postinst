@@ -22,4 +22,6 @@ find /root/.zsh -type d | xargs chmod 750
 
 #ln -sf /usr/share/untangle-kiosk/desktop_background-please_wait-1024x768.png /usr/local/lib/knoppix.jpg
 
+echo >| /etc/motd.tail
+
 exit 0
