@@ -56,7 +56,7 @@ EOF
 if dpkg -l untangle-spamassassin | grep -q ii ; then
   sa=untangle-spamassassin
 else
- sa=spamassassin
+  sa=spamassassin
 fi
 saVersion=$(dpkg-query --showformat='${Version}\n' -W $sa)
 
