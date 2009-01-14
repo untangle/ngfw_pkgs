@@ -1,1 +1,9 @@
-XTerm.VT100*metaSendsEscape: true
+URxvt.background: black
+URxvt.foreground: lightgrey
+URxvt.font: xft:Bitstream Vera Sans Mono:pixelsize=13
+URxvt.saveLines: 10000
+URxvt.fading: 40
+URxvt.fadeColor: blue 
+URxvt.tintColor: pink
+URxvt.shading: 10
+URxvt.transparent: true
