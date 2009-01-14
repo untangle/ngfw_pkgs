@@ -36,6 +36,7 @@ chown -R $SPAM_USER:$SPAM_GROUP /home/$SPAM_USER
 sed -i "s/^ENABLED=.*/ENABLED=1/" /etc/default/spamassassin
 sed -i "s/^OPTIONS=.*/OPTIONS=\"--create-prefs --max-children $MAX_CHILDREN --max-spare $MAX_SPARE --helper-home-dir\"/" /etc/default/spamassassin
 sed -i "s/^CRON=.*/CRON=1/" /etc/default/spamassassin
+sed -i "s/^#.*loadplugin Mail::SpamAssassin::Plugin::Rule2XSBody/loadplugin Mail::SpamAssassin::Plugin::Rule2XSBody/" /etc/spamassassin/v320.pre
 
 # XXX moved /etc/spamassassin/local.cf overwrites to database settings schema
 ## turn off stuff in local.cf
@@ -55,7 +56,7 @@ EOF
 if dpkg -l untangle-spamassassin | grep -q ii ; then
   sa=untangle-spamassassin
 else
-  sa=spamassassin
+ sa=spamassassin
 fi
 saVersion=$(dpkg-query --showformat='${Version}\n' -W $sa)
 
