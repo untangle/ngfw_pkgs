@@ -36,4 +36,4 @@ fi
 feh --bg-scale /usr/share/untangle-kiosk/desktop_background-1024x768.png
 
 # Here's where we launch the window manager. When this finishes we reboot!
-x-session-manager
+x-window-manager
