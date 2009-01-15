@@ -128,7 +128,11 @@ esac
 ## routes to be deleted, may need a hook in dhclient-exit-hooks.d to
 ## rebuild routes.
 new_ip_address=${DHCP_IP_ADDRESS:-${new_ip_address}}
-new_subnet_mask=${DHCP_IP_NETMASK:-${new_subnet_mask}}
+if [ -n "${DHCP_IP_NETMASK}" ] ; then
+    new_subnet_mask=${DHCP_IP_NETMASK}
+    new_subnet_arg="netmask ${DHCP_IP_NETMASK}"
+fi
+
 new_routers=${DHCP_GATEWAY:-${new_routers}}
 
 new_domain_name_servers=${DHCP_DNS_SERVERS:-${new_domain_name_servers}}

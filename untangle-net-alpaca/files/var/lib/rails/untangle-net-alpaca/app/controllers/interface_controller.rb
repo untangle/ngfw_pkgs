@@ -15,11 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-class InterfaceController < ApplicationController
-
-  ## Implement the reload interfaces web api.
-  ## web_service_api InterfaceApi
-  
+class InterfaceController < ApplicationController  
   def index
     list
     render :action => 'list'
@@ -50,17 +46,15 @@ class InterfaceController < ApplicationController
     session[:last_controller_before_refresh] = "interface"
   end
 
-  def e_config
-    render( :template => "application/page", :layout => "extjs" )
-  end
+  alias_method :e_config, :extjs
 
   def get_settings
     result = {}
 
     interface_id = params[:id]
-    raise "Invalid interface id #{interface_id}" if interface_id.nil?
+    return json_error( "Invalid interface id '%s'" % ( interface_id )) if interface_id.nil?
     interface = Interface.find( interface_id )
-    raise "Unknown interface id #{interface_id}" if interface.nil?
+    return json_error( "Unknown interface '%s'" % ( interface_id )) if interface.nil?
 
     result["interface"] = interface
     
@@ -110,6 +104,54 @@ class InterfaceController < ApplicationController
     result["media"] = media
     
     json_result( result )
+  end
+
+  def set_settings
+    s = json_params
+
+    interface_id = params[:id]
+    return json_error( "Invalid interface id '%s'" % ( interface_id )) if interface_id.nil?
+    interface = Interface.find( interface_id )
+    return json_error( "Unknown interface '%s'" % ( interface_id )) if interface.nil?
+    
+    interface.update_attributes( s["interface"] )
+    
+    static_settings = interface.intf_static
+    static_settings = IntfStatic.new if static_settings.nil?
+    static_settings.update_attributes( s["static"] )
+    
+    ## Retrieve the dynamic configuration, creating a new one if necessary.
+    dynamic_settings = interface.intf_dynamic
+    dynamic_settings = IntfDynamic.new if dynamic_settings.nil?
+    dynamic_settings.update_attributes( s["dynamic"] )    
+    
+    ## Retrieve the dynamic configuration, creating a new one if necessary.
+    pppoe_settings = interface.intf_pppoe
+    pppoe_settings = IntfPppoe.new if pppoe_settings.nil?
+    pppoe_settings.update_attributes( s["pppoe"] )
+
+    ## Retrieve the bridge configuration, creating a new one if necessary.
+    bridge_settings = interface.intf_bridge
+    bridge_settings = IntfBridge.new if bridge_settings.nil?
+    bridge_settings.update_attributes( s["bridge"] )
+            
+    static_settings.ip_networks = create_ip_networks( s["static_aliases"] )
+    dynamic_settings.ip_networks = create_ip_networks( s["dynamic_aliases"] )
+    pppoe_settings.ip_networks = create_ip_networks( s["pppoe_aliases"] )
+
+    static_settings.save
+    dynamic_settings.save
+    pppoe_settings.save
+
+    interface.intf_static = static_settings
+    interface.intf_dynamic = dynamic_settings
+    interface.intf_pppoe = pppoe_settings
+    
+    interface.save
+
+    spawn { networkManager.commit }
+    
+    json_result
   end
 
   def config
@@ -549,6 +591,17 @@ class InterfaceController < ApplicationController
     logger.debug( "Unable to save settings" ) unless success
     
     redirect_to( :action => 'list' )
+  end
+
+  def create_ip_networks( networks )
+    position = 0
+    return [] if networks.nil?
+    networks.map do |entry|
+      network = IpNetwork.new({ "ip" => entry["ip"], "netmask" => entry["netmask"] })
+      network.position = position
+      position += 1
+      network
+    end
   end
 
   def networkManager

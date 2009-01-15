@@ -93,31 +93,33 @@ class OSLibrary::Debian::DhcpManager < OSLibrary::DhcpManager
 
       gateway, dns = "ignore", "ignore"
       if interface.wan
-        ## Only set the DNS and Gateway for WAN interfaces.
+        ## Only set the Gateway for WAN interfaces.
         gateway = config.default_gateway
-        dns = [ config.dns_1, config.dns_2 ].join( " " ).strip 
       end
 
       overrideManager = os["override_manager"]
-
-      ## Review : should this ignore the entry, because it isn't actually under the control
-      ## of the net-alpaca.
-      unless overrideManager.writable?( OSLibrary::Debian::DnsServerManager::ResolvConfFile )
-        ## Always ignore the DNS update if resolv.conf shouldn't be updated.
-        dns = "ignore"
-      end
       
       [[ OverrideIPAddress, config.ip ],
        [ OverrideNetmask, IPAddr.parse_netmask( config.netmask ).to_s ], 
-       [ OverrideGateway, gateway ],
-       [ OverrideDnsServer, dns ]].each do |var,val|
+       [ OverrideGateway, gateway ]].each do |var,val|
         next if ( ApplicationHelper.null?( val ))
-        ### Total fail XXXXXX if address is two DNS servers.
-
         next if ( IPAddr.parse_ip( val ).nil? )
         
         cfg << "#{var}=\"#{val}\""
       end
+
+      ## Review : should this ignore the entry, because it isn't actually under the control
+      ## of the net-alpaca.
+      ## Only set the dns override for WAN interfaces.
+      if ( overrideManager.writable?( OSLibrary::Debian::DnsServerManager::ResolvConfFile ) and interface.wan )
+        ## Always ignore the DNS update if resolv.conf shouldn't be updated.
+        dns = []
+        dns << config.dns_1 unless ( ApplicationHelper.null?( config.dns_1 ) or IPAddr.parse_ip( config.dns_1 ).nil? )
+        dns << config.dns_2 unless ( ApplicationHelper.null?( config.dns_2 ) or IPAddr.parse_ip( config.dns_2 ).nil? )
+        dns = ( dns.empty? ) ? "ignore" : dns.join( " " )
+      end
+
+      cfg << "#{OverrideDnsServer}=\"#{dns}\""      
       
       next if cfg.size == 0
       
