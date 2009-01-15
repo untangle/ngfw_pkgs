@@ -17,10 +17,8 @@ if [ $1 = "configure" ] && [ -z "$2" ] ; then
   # load factory defaults
   bash /usr/share/untangle/bin/factory-defaults
 
-  # extract ISO brand
+  # prepare for extraction of the ISO brand
   mkdir -p /usr/share/untangle/tmp
-  db_get untangle-system-stats/iso-brand
-  echo $RET >| /usr/share/untangle/tmp/brand
 
   rm /etc/resolv.conf
 fi
