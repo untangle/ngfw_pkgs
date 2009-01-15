@@ -16,6 +16,15 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 class LocaleController < ApplicationController
+  def set_language
+    s = json_params
+    language_settings = LanguageSettings.find( :first )
+    language_settings = LanguageSettings.new if language_settings.nil?
+    language_settings.update_attributes( s["language_settings"] )
+    language_settings.save
+    json_result
+  end
+
   def index
     manage
     render :action => 'manage'

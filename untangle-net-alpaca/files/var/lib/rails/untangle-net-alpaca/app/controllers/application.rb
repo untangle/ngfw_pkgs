@@ -107,7 +107,7 @@ class ApplicationController < ActionController::Base
     @stylesheets << "simple-table.css"
 
     @skin_stylesheets = [ "/../ext/resources/css/ext-all.css", 
-                          "/../skins/default/css/ext-skin.css", "/../skins/default/css/user.css" ]
+                          "/../skins/default/css/ext-skin.css", "/../skins/default/css/admin.css" ]
   end
   
   def setScripts
