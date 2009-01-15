@@ -18,4 +18,7 @@
 class OSLibrary::Null::DhcpServerManager < OSLibrary::DhcpServerManager
   include Singleton
 
+  def dynamic_entries
+    [DynamicEntry.new( 1234, "00:11:22:33:44:55", "1.2.3.4", "fake_entry", "foo" )]
+  end
 end

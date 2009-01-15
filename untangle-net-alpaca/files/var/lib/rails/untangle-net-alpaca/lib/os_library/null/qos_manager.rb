@@ -16,7 +16,30 @@
 #
 class OSLibrary::Null::QosManager < OSLibrary::QosManager
   include Singleton
+  Service = "/etc/untangle-net-alpaca/wshaper.htb"
 
+  def status
+     results = []
+     lines = `#{Service} status`
+     pieces = lines.split( Regexp.new( 'qdisc|class', Regexp::MULTILINE ) )
+     pieces.each do |piece|
+       if piece.include?( "htb" ) and piece.include?( "leaf" )
+         stats = piece.split( Regexp.new( ' ', Regexp::MULTILINE ) )
+         
+         if PriorityQueueToName.has_key?( stats[6] )
+           token_stats = piece.split( Regexp.new( 'c?tokens: ', Regexp::MULTILINE ) )
+           results << [ PriorityQueueToName[stats[6]],
+                        stats[10],
+                        stats[14],
+                        stats[19] + stats[20],
+                        token_stats[1],
+                        token_stats[2]
+                      ]
+         end
+       end
+     end
+     return results
+  end
 
   def status_v2
     results = []
