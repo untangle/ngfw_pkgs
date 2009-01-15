@@ -1175,7 +1175,7 @@ body.wizard .ext-el-mask
   background:transparent url(../images/admin/icon_drag_enabled.png) no-repeat center left;
   width: 100%;
   cursor: move;
-  padding: 2px 0px 2px 2px;
+  padding: 2px 0px 2px 24px;
   }
 
 .draggable-disabled-interface
@@ -1183,7 +1183,7 @@ body.wizard .ext-el-mask
   background:transparent url(../images/admin/icon_drag_disabled.png) no-repeat center left;
   width: 100%;
   cursor: move;
-  padding: 2px 0px 2px 2px;
+  padding: 2px 0px 2px 24px;
   }
 .description {
     font-family:tahoma,arial,helvetica,sans-serif;
