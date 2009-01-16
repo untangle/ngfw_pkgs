@@ -619,3 +619,20 @@ td.x-date-mp-month a:hover,td.x-date-mp-year a:hover {
     -khtml-user-select:text;
 }
 
+
+.x-form-textfield-label {
+    width:'auto' !important;
+    float:none !important;
+    clear:none !important;
+    display:inline !important;
+    margin-left:4px;
+}
+
+.x-form-combo-label {
+    width:'auto' !important;
+    float:none !important;
+    clear:none !important;
+    display:inline !important;
+    margin-left:20px;
+}
+

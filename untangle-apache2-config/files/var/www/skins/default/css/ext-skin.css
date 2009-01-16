@@ -426,3 +426,20 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
     -moz-user-select:inherit;
     -khtml-user-select:text;
 }
+
+.x-form-textfield-label {
+    width:'auto' !important;
+    float:none !important;
+    clear:none !important;
+    display:inline !important;
+    margin-left:4px;
+}
+
+.x-form-combo-label {
+    width:'auto' !important;
+    float:none !important;
+    clear:none !important;
+    display:inline !important;
+    margin-left:20px;
+}
+

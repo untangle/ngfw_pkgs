@@ -32,6 +32,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 },{
                     fieldLabel : "Internet Download Bandwidth",
                     name : "qos_settings.download",
+                    boxLabel : "kbps"
                 },{
                     xtype : "combo",
                     fieldLabel : "Limit Download To",
@@ -51,6 +52,8 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 items : [{
                     fieldLabel : "Internet Upload Bandwidth",
                     name : "qos_settings.upload",
+                    
+                    boxLabel : "kbps"
                 },{
                     xtype : "combo",
                     fieldLabel : "Limit Upload To",
@@ -80,6 +83,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 },{
                     xtype : "combo",
                     fieldLabel : "ACK Priority",
+                    boxLabel : "A High ACK Priority speeds up downloads while uploading",
                     name : "qos_settings.prioritize_ack",
                     mode : "local",
                     triggerAction : "all",

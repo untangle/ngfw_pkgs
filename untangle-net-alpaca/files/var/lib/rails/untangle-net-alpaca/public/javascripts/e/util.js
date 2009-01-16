@@ -131,3 +131,44 @@ Ung.Alpaca.Util = {
         });
     }
 };
+
+Ung.Alpaca.TextField = Ext.extend( Ext.form.TextField, {
+    onRender : function(ct, position)
+    {
+        Ung.Alpaca.TextField.superclass.onRender.call(this, ct, position);
+        
+        var parent = this.el.parent()
+        
+        if( this.boxLabel ) {
+            this.labelEl = parent.createChild({
+                tag: 'label',
+                htmlFor: this.el.id,
+                cls: 'x-form-textfield-label',
+                html: this.boxLabel
+            });
+        }
+    }
+});
+
+/* override the default text field so that all of the text fields can add a box label */
+Ext.reg('textfield', Ung.Alpaca.TextField);
+
+Ung.Alpaca.ComboBox = Ext.extend( Ext.form.ComboBox, {
+    onRender : function(ct, position)
+    {
+        Ung.Alpaca.ComboBox.superclass.onRender.call(this, ct, position);
+
+        if( this.boxLabel ) {
+            this.labelEl = this.wrap.createChild({
+                tag: 'label',
+                htmlFor: this.el.id,
+                cls : 'x-form-combo-label',
+                html : this.boxLabel
+            });
+        }
+    }
+});
+
+/* override the default Combo box so that all of the comboboxes can add a box label */
+Ext.reg('combo',  Ung.Alpaca.ComboBox);
+
