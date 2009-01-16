@@ -1,4 +1,5 @@
 if [ `tty` = "/dev/tty1" ]; then
-  startx &
-  exit
+  while true ; do
+    startx
+  done
 fi
