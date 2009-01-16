@@ -102,6 +102,10 @@ Ung.Alpaca.Pages.Uvm.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     xtype : "checkbox",
                     name : "uvm.override_redirects",
                     fieldLabel : "Untangle Administration overrides Port Forwards"
+                },{
+                    xtype : "checkbox",
+                    name : "enable_sip_helper",
+                    fieldLabel : "Enable SIP NAT Helper"
                 }]
             },{
                 xtype : "label",

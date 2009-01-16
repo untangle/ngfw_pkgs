@@ -15,7 +15,7 @@
 DESC="Untangle Net-Alpaca iptables rules"
 
 IPTABLES_RULES=/etc/untangle-net-alpaca/scripts/iptables
-HELPER_MODULES=/etc/untangle-net-alpaca/scripts/modules
+HELPER_MODULES=/usr/share/untangle-net-alpaca/scripts/load-modules
 
 ## This should be a file containing all of the iptables tables
 IPTABLES_NAMES=/proc/net/ip_tables_names
@@ -31,8 +31,8 @@ insert_rules()
     else
         /bin/echo "The file '${IPTABLES_RULES}' does not exist"
     fi
-    if [ -f ${HELPER_MODULES} ]; then
-        sh ${HELPER_MODULES}
+    if [ -x ${HELPER_MODULES} ]; then
+        ./${HELPER_MODULES}
     else
         /bin/echo "The file '${HELPER_MODULES}' does not exist"
     fi

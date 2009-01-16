@@ -40,6 +40,8 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   RedirectConfigFile   = "#{ConfigDirectory}/600-redirect"
   SingleNICConfigFile  = "#{ConfigDirectory}/900-single-nic"
 
+  ModuleConfigFile = "/etc/untangle-net-alpaca/modules.conf"
+
   ## Mark to indicate that the packet shouldn't be caught by the UVM.
   MarkBypass   = 0x01000000
   
@@ -225,6 +227,9 @@ EOF
     
     # Write the script to mark files for single NIC.
     single_nic_marks
+
+    # Write the configuration script for the modules.
+    write_module_script
   end
 
   def hook_run_services
@@ -525,6 +530,27 @@ done
 EOF
 
     os["override_manager"].write_file( SingleNICConfigFile, text, "\n" )
+  end
+
+  def write_module_script
+    alpaca_settings = AlpacaSettings.find( :first )
+    alpaca_settings = AlpacaSettings.new if alpaca_settings.nil?
+
+    text = [ header ]
+    modules_enabled = alpaca_settings.modules_enabled 
+    unless ApplicationHelper.null?( modules_enabled )
+      text << "ENABLED_MODULES='#{modules_enabled}'"
+    end
+
+    modules_disabled = alpaca_settings.modules_disabled 
+    unless ApplicationHelper.null?( modules_disabled )
+      text << "DISABLED_MODULES='#{modules_disabled}'"
+      modules_disabled.split.each do |m|
+        text << "DISABLE_MODULE_#{m}='true'"
+      end
+    end
+
+    os["override_manager"].write_file( "#{ModuleConfigFile}", text.join( "\n" ), "\n" )
   end
   
   def filtering( interface )

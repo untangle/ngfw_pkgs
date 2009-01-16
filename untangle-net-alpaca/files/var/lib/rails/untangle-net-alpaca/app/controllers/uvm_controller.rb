@@ -26,17 +26,21 @@ class UvmController < ApplicationController
     
     uvm_settings = UvmSettings.find( :first )
     uvm_settings = UvmSettings.new if uvm_settings.nil?
+
     settings["uvm"] = uvm_settings
 
+    alpaca_settings = AlpacaSettings.find( :first )
+    alpaca_settings = AlpacaSettings.new if alpaca_settings.nil?
+    modules_disabled = alpaca_settings.modules_disabled
+    modules_disabled = "" if modules_disabled.nil?
+    settings["enable_sip_helper"] = !modules_disabled.include?( "nf_nat_sip" )
+    
     json_result( settings )
   end
 
   def set_settings
     s = json_params
     
-    ## Commit all of the packet filter rules.
-    os["packet_filter_manager"].commit
-
     uvm_settings = UvmSettings.find( :first )
     uvm_settings = UvmSettings.new if uvm_settings.nil?
     uvm_settings.update_attributes( s["uvm"] )
@@ -58,6 +62,23 @@ class UvmController < ApplicationController
       rule.enabled = entry["enabled"]
       rule.save
     end
+    
+    ## This is kind of wrong since it is O/S specific.
+    alpaca_settings = AlpacaSettings.find( :first )
+    alpaca_settings = AlpacaSettings.new if alpaca_settings.nil?
+    modules_disabled = alpaca_settings.modules_disabled
+    modules_disabled = "" if modules_disabled.nil?
+    modules_disabled = modules_disabled.sub( "nf_nat_sip", "" )
+    modules_disabled = modules_disabled.sub( "nf_conntrack_sip", "" )
+    puts "SIP HELPER: #{s["enable_sip_helper"]}"
+    unless ( s["enable_sip_helper"] )
+      modules_disabled += " nf_nat_sip nf_conntrack_sip "
+    end
+    alpaca_settings.modules_disabled = modules_disabled.strip
+    alpaca_settings.save
+
+    ## Commit all of the packet filter rules.
+    os["packet_filter_manager"].commit
     
     json_result
   end

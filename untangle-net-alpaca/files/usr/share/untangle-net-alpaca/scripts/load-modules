@@ -1,0 +1,60 @@
+#!/bin/dash
+
+exec >> /var/log/untangle-net-alpaca/modprobe.log 2>&1
+
+test -f /etc/untangle-net-alpaca/modules.conf && . /etc/untangle-net-alpaca/modules.conf
+
+DEFAULT_MODULES="nf_conntrack \
+         nf_conntrack_h323      nf_conntrack_netbios_ns \
+         nf_conntrack_proto_gre nf_conntrack_tftp\
+         nf_conntrack_amanda    nf_conntrack_ipv4\
+         nf_conntrack_netlink   nf_conntrack_proto_sctp\
+         nf_conntrack_ftp       nf_conntrack_irc\
+         nf_conntrack_pptp      nf_conntrack_sip
+         nf_nat                 nf_nat_ftp\
+         nf_nat_irc             nf_nat_proto_gre\
+         nf_nat_snmp_basic      nf_nat_amanda\
+         nf_nat_h323            nf_nat_pptp\
+         nf_nat_sip             nf_nat_tftp"
+
+is_load_disabled() {
+    local t_module_name
+    local t_module_flag
+    t_module_name=$1
+    
+    t_module_flag="\${DISABLE_MODULE_${t_module_name}}"
+    eval "echo ${t_module_flag}"
+}
+
+remove_modules() {
+    local t_module
+    local t_module_list
+    local t_
+
+    for t_module in $* ; do
+        modprobe -qr ${t_module} || true
+    done
+}
+
+for module in $DEFAULT_MODULES ; do 
+    if [ -n "`is_load_disabled ${module} `" ]; then
+        echo "The module $module is disabled"
+        continue
+    fi
+
+    modprobe $module
+    if [ "$?" -gt 0 ]; then echo "ERROR loading module $module";  fi
+done
+
+## Now remove the modules, do it twice, the first time it will remove dependendencies,
+## second time it will remove anything that depended on another module
+remove_modules ${DISABLED_MODULES}
+remove_modules ${DISABLED_MODULES}
+
+for module in $ENABLED_MODULES ; do
+    modprobe $module
+    if [ "$?" -gt 0 ]; then echo "ERROR loading module $module";  fi
+done
+
+exit 0
+
