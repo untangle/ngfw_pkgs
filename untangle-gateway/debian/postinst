@@ -1,7 +1,9 @@
 #! /bin/sh
 
-# do not start sshd by default
-update-rc.d -f ssh remove
-/etc/init.d/ssh stop
+# do not start sshd by default if this is the first install
+if [ "$1" = "upgrade" ] ; then
+  update-rc.d -f ssh remove
+  /etc/init.d/ssh stop
+fi
 
 exit 0
