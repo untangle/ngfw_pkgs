@@ -1,0 +1,7 @@
+#! /bin/sh
+
+# do not start sshd by default
+update-rc.d -f ssh remove
+/etc/init.d/ssh stop
+
+exit 0
