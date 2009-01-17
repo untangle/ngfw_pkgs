@@ -102,12 +102,19 @@ class ApplicationController < ActionController::Base
   
 
   def setStylesheets
+    alpaca_settings = AlpacaSettings.find( :first )
+    alpaca_settings = AlpacaSettings.new if alpaca_settings.nil?
+
     @stylesheets = ( self.respond_to?( "stylesheets" )) ? stylesheets : [ ]
     @stylesheets << "rack.css"
     @stylesheets << "simple-table.css"
 
+    skin = alpaca_settings.skin
+    skin = "default" if ApplicationHelper.null?( skin )
+    skin = "default" unless File.exists?( "/var/www/skins/#{skin}/css/ext-skin.css" )
+
     @skin_stylesheets = [ "/../ext/resources/css/ext-all.css", 
-                          "/../skins/default/css/ext-skin.css", "/../skins/default/css/admin.css" ]
+                          "/../skins/#{skin}/css/ext-skin.css", "/../skins/#{skin}/css/admin.css" ]
   end
   
   def setScripts

@@ -9,7 +9,7 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
     {
         this.i18n = new Ung.I18N({ map : Ung.Alpaca.i18n });
         this._ = this.i18n._.createDelegate( this.i18n );
-
+        
         this.saveButton = new Ext.Toolbar.Button({
             text : this._( "Save" ),
             handler : this.onSave,

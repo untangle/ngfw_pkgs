@@ -401,6 +401,16 @@ class UvmController < ApplicationController
     json_result
   end
 
+  def set_uvm_settings
+    s = json_params
+    alpaca_settings = AlpacaSettings.find( :first )
+    alpaca_settings = AlpacaSettings.new if alpaca_settings.nil?
+    alpaca_settings.language = s["language"]
+    alpaca_settings.skin = s["skin"]
+    alpaca_settings.save
+    json_result
+  end
+
   private
   def save_user_rules
     sub_list = []
