@@ -26,6 +26,9 @@ Ung.Alpaca.PagePanel = Ext.extend( Ext.Panel, {
     {
         /* Iterate the panel and line up fields with their values. */
         this.items.each( this.populateFieldValue.createDelegate( this, [ this.settings ], true ));
+
+        /* Register the event handler with every field. */
+        this.items.each( this.addEnableSaveHandler.createDelegate( this ));
     },
     
     /* Fill in the value for a field */
@@ -60,6 +63,36 @@ Ung.Alpaca.PagePanel = Ext.extend( Ext.Panel, {
         /* Recurse to children */
         if ( item.items ) {
             item.items.each( this.populateFieldValue.createDelegate( this, [ settings ], true ));
+        }
+    },
+    
+    addEnableSaveHandler : function( item, index )
+    {
+        if ( item.addListener && item.xtype ) {
+            var event = "change";
+            
+            switch ( item.xtype ) {
+            case "checkbox":
+                event = "check"
+                break;
+
+                /* No point registering events on labels. */
+            case "label":
+                event = null;
+            default:
+            }
+
+            if ( item.editorGridPanel == true ) {
+                event = "afteredit"
+            }
+            
+            if ( event != null ) {
+                item.addListener( event, application.onFieldChange, application );
+            }
+        }
+
+        if ( item.items ) {
+            item.items.each( this.addEnableSaveHandler.createDelegate( this ));
         }
     },
 

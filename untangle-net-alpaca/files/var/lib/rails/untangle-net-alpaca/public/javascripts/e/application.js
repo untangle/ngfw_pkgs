@@ -9,9 +9,12 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
     {
         this.i18n = new Ung.I18N({ map : Ung.Alpaca.i18n });
         this._ = this.i18n._.createDelegate( this.i18n );
+
+        this.hasSaveHandler = false;
         
         this.saveButton = new Ext.Toolbar.Button({
             text : this._( "Save" ),
+            disabled : true,
             handler : this.onSave,
             scope : this
         });
@@ -111,24 +114,54 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
 
     switchToQueryPath : function( queryPath )
     {
-        queryPath = Ung.Alpaca.Glue.buildQueryPath( queryPath );
+        var handler = this.completeSwitchToQueryPath.createDelegate( this, [ queryPath ], true );
 
-        var delegate = this.completeLoadPage.createDelegate( this, [ queryPath ], true );
-        Ung.Alpaca.Util.loadScript( queryPath, delegate );
+        if ( this.hasSaveHandler && !this.saveButton.disabled ) {
+            Ext.MessageBox.show({
+                title: this._( "Warning" ),
+                msg: "<p>Leaving this page will lose unsaved changes.</p><p>Click 'Continue' to proceed and lose changes,<br/> or 'Cancel' to stay on this page.</p>",
+                width:300,
+                buttons : {
+                    ok : "Continue",
+                    cancel : "Cancel"
+                },
+                fn : handler,
+                icon : Ext.MessageBox.WARNING
+            });
+        } else {
+            handler( "ok", "" );
+        }
+    },
+    
+    completeSwitchToQueryPath : function( buttonId, __unused__, queryPath )
+    {
+        if ( buttonId == "ok" ) {
+            queryPath = Ung.Alpaca.Glue.buildQueryPath( queryPath );
+            var delegate = this.completeLoadPage.createDelegate( this, [ queryPath ], true );
+            Ung.Alpaca.Util.loadScript( queryPath, delegate );
+        }
     },
 
     configureActions : function( hasSaveHandler )
     {
         var toolbar = this.getBottomToolbar();
 
+        this.hasSaveHandler = ( hasSaveHandler != null );
         if ( hasSaveHandler != null ) {
             this.saveButton.setHandler( this.onSave, this );
-            this.saveButton.enable();
+            this.saveButton.disable();
             this.cancelButton.enable();
         } else {
             this.saveButton.setHandler( null );
             this.saveButton.disable();
             this.cancelButton.disable();
+        }
+    },
+
+    enableSaveButton : function()
+    {
+        if ( this.hasSaveHandler ) {
+            this.saveButton.enable();
         }
     },
 
@@ -140,6 +173,11 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
     onCancel : function()
     {
         Ung.Alpaca.Glue.cancel();
+    },
+
+    onFieldChange : function()
+    {
+        this.enableSaveButton();
     }
 });
 

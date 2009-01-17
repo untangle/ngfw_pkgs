@@ -69,6 +69,9 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
         }
 
         Ung.Alpaca.EditorGridPanel.superclass.constructor.apply( this, arguments );
+
+        /* Untangle Alapca Grid type. */
+        this.editorGridPanel = true;
     },
 
     buildToolbar : function( config )
@@ -114,6 +117,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
         this.stopEditing();
         this.store.insert( 0, entry );
         this.startEditing( 0, 0 );
+        application.onFieldChange();
     },
 
     updateFieldValue : function( settings )
@@ -134,6 +138,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
     
     deleteSelectedEntries : function()
     {
+        application.onFieldChange();
         Ung.Alpaca.Util.implementMe( "Deleting entries." );
     }
 });
