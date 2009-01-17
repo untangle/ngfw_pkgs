@@ -1,3 +1,3 @@
 etc/untangle-net-alpaca/scripts/iptables
-etc/untangle-net-alpaca/scripts/modules
+usr/share/untangle-net-alpaca/scripts/load-modules
 etc/untangle-net-alpaca/scripts/update-address.d/99-packet-filter
