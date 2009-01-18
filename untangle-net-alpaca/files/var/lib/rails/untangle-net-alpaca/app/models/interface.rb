@@ -185,6 +185,11 @@ class Interface < ActiveRecord::Base
     return `/usr/share/untangle-net-alpaca/scripts/get-interface-status #{self.os_name}`
   end
 
+  def interface_status_v2
+    i = `/usr/share/untangle-net-alpaca/scripts/get-interface-status #{self.os_name}`.strip.split( /:? +/ )
+    { "name" => i[0], "connected" => i[1], "speed" => i[2], "duplex" => i[3] }
+  end
+
   ## REVIEW : This should be inside of the network_manager since it may be os dependent.
   def current_mtu
     mtu_file = "/sys/class/net/#{self.os_name}/mtu"

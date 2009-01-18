@@ -46,64 +46,130 @@ class InterfaceController < ApplicationController
     session[:last_controller_before_refresh] = "interface"
   end
 
-  alias_method :e_config, :extjs
+  def get_interface_list
+    settings = {}
+    
+    new_interfaces = []
+    deleted_interfaces = []
+
+    interfaces = Interface.find( :all )
+    
+    if ( interfaces.nil? || interfaces.empty? )
+      interfaces = InterfaceHelper.loadInterfaces
+      ## Save all of the new interfaces
+      interfaces.each { |interface| interface.save }
+    else
+      new_interfaces, deleted_interfaces = InterfaceHelper.load_new_interfaces
+    end
+
+    ## Add the current interface status to all of the interfaces
+    interfaces.sort { |a,b| a.index <=> b.index }
+
+    settings["new_interfaces"] = new_interfaces
+    settings["deleted_interfaces"] = deleted_interfaces
+
+    ## xxx so not legit, anti-legit
+    settings["interfaces"] = ActiveSupport::JSON.decode( interfaces.to_json( :methods => :interface_status_v2 ))
+
+    json_result( settings )
+  end
+
+  def set_interface_list
+     s = json_params
+
+    interface_list = s["interfaces"]
+    
+    interfaces = Interface.find( :all )
+
+    ids = interfaces.collect { |i| i.id }.sort
+    new_ids =interface_list.collect { |n| n["id"] }.sort
+    puts "IDS: #{ids.join}"
+    puts "NDS: #{new_ids.join}"
+    return json_error( "Invalid interface List" ) if ( ids != new_ids )
+
+    interface_map = {}
+    interface_list.each do |n| 
+      interface_map[n["id"].to_s] = [ n["os_name"], n["mac_address"], n["bus"], n["vendor"]]
+    end
+    
+    interfaces.each do |i|
+      n = interface_map[i.id.to_s]
+      i.os_name, i.mac_address, i.bus, i.vendor = n
+
+      ## Delete all non-critical unmapped interfaces.
+      unless ( InterfaceHelper.is_critical_interface( i ) || i.is_mapped? )
+        i.destroy
+      else
+        i.save
+      end
+    end
+
+    ## Actually commit the changes
+    spawn do
+      networkManager.commit
+    end
+    
+    json_result
+  end
+
+  alias_method :e_list, :extjs
 
   def get_settings
-    result = {}
+    settings = {}
 
     interface_id = params[:id]
     return json_error( "Invalid interface id '%s'" % ( interface_id )) if interface_id.nil?
     interface = Interface.find( interface_id )
     return json_error( "Unknown interface '%s'" % ( interface_id )) if interface.nil?
 
-    result["interface"] = interface
+    settings["interface"] = interface
     
     static_settings = interface.intf_static
     static_settings = IntfStatic.new if static_settings.nil?
-    result["static"] = static_settings
+    settings["static"] = static_settings
     
     ## Retrieve the dynamic configuration, creating a new one if necessary.
     dynamic_settings = interface.intf_dynamic
     dynamic_settings = IntfDynamic.new if dynamic_settings.nil?
-    result["dynamic"] = dynamic_settings
+    settings["dynamic"] = dynamic_settings
     
     ## Retrieve the dynamic configuration, creating a new one if necessary.
     pppoe_settings = interface.intf_pppoe
     pppoe_settings = IntfPppoe.new if pppoe_settings.nil?
-    result["pppoe"] = pppoe_settings
+    settings["pppoe"] = pppoe_settings
 
     ## Retrieve the bridge configuration, creating a new one if necessary.
     bridge_settings = interface.intf_bridge
     bridge_settings = IntfBridge.new if bridge_settings.nil?
-    result["bridge"] = bridge_settings
+    settings["bridge"] = bridge_settings
         
-    result["dhcp_status"] = os["dhcp_manager"].get_dhcp_status( interface )
+    settings["dhcp_status"] = os["dhcp_manager"].get_dhcp_status( interface )
 
     cond = [ "config_type IN (?) AND id != ?" ]
     cond << InterfaceHelper::BRIDGEABLE_CONFIGTYPES
     cond << interface.id
     
     ## Create a selection map
-    result["bridgeable_interfaces"] = Interface.find( :all, :conditions => cond ).collect do |interface|
+    settings["bridgeable_interfaces"] = Interface.find( :all, :conditions => cond ).collect do |interface|
       ## XXX config_type and name will need internationalization
       [ interface.id, "#{interface.name} (#{interface.config_type})" ]
     end
     
-    result["static_aliases"] = static_settings.ip_networks
-    result["dynamic_aliases"] = dynamic_settings.ip_networks
-    result["pppoe_aliases"] = pppoe_settings.ip_networks
-    result["config_types"] = InterfaceHelper::CONFIGTYPES
+    settings["static_aliases"] = static_settings.ip_networks
+    settings["dynamic_aliases"] = dynamic_settings.ip_networks
+    settings["pppoe_aliases"] = pppoe_settings.ip_networks
+    settings["config_types"] = InterfaceHelper::CONFIGTYPES
 
-    result["media_types"] = InterfaceHelper::EthernetMedia.order.map { |m| [ m.key, m.name ] }
+    settings["media_types"] = InterfaceHelper::EthernetMedia.order.map { |m| [ m.key, m.name ] }
 
     media = "#{interface.speed}#{interface.duplex}"
     if InterfaceHelper::EthernetMedia.get_value( media ).nil?
       media = InterfaceHelper::EthernetMedia.get_default() 
     end
 
-    result["media"] = media
+    settings["media"] = media
     
-    json_result( result )
+    json_result( settings )
   end
 
   def set_settings
@@ -153,6 +219,8 @@ class InterfaceController < ApplicationController
     
     json_result
   end
+
+  alias_method :e_config, :extjs
 
   def config
     load_config do
