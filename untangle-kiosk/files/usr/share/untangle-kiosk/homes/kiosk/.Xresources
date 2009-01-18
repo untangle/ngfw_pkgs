@@ -1,6 +1,8 @@
 URxvt.background: black
 URxvt.foreground: lightgrey
 URxvt.font: xft:Bitstream Vera Sans Mono:pixelsize=13
+URxvt.italicFont: xft:Bitstream Vera Sans Mono:style=italic:pixelsize=13
+URxvt.boldFont: xft:Bitstream Vera Sans Mono:style=bold:pixelsize=13
 URxvt.saveLines: 10000
 URxvt.fading: 40
 URxvt.fadeColor: blue 
