@@ -17,8 +17,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
+require "gettext"
 
 class ApplicationController < ActionController::Base
+    include GetText
+  
   @components = nil
 
   #layout "main"
@@ -46,8 +49,7 @@ class ApplicationController < ActionController::Base
 
   ## Perhaps this should be disabled in Production mode
   before_filter :reload_managers
-  ## This is disabled until we switch to ruby gettext.
-  ## before_filter :setLocale
+  before_filter :setLocale
   before_filter :setStylesheets
   
   before_filter :setScripts
@@ -87,12 +89,16 @@ class ApplicationController < ActionController::Base
     @config_level = @alpaca_settings.get_config_level
   end
 
-  ## This is disabled until we switch to ruby gettext.
   def setLocale
-    settings = LocaleSetting.find( :first )
+#    settings = LocaleSetting.find( :first )
+#    
+#    ## Do nothing if the value doesn't exist, this way it will go to the default setting
+#    Locale.set( settings.key ) unless settings.nil?
     
-    ## Do nothing if the value doesn't exist, this way it will go to the default setting
-    Locale.set( settings.key ) unless settings.nil?
+    language = @alpaca_settings.language
+    language = "en" if ApplicationHelper.null?( language )    
+    module_name = "untangle-net-alpaca"
+    @i18n_map = bindtextdomain(module_name, {:locale => language}).textdomains[module_name].current_mo
   end
   
   def instantiate_controller_and_action_names

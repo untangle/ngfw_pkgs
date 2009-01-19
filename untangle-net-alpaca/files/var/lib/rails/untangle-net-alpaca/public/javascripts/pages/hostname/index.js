@@ -21,15 +21,15 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 items : [{
                     fieldLabel : this._("Hostname"),
                     name : "hostname_settings.hostname",
-                    boxLabel : "(eg: gateway.example.com)"
+                    boxLabel : this._("(eg: gateway.example.com)")
                 },{
-                    fieldLabel : "Domain Name Suffix",
+                    fieldLabel : this._("Domain Name Suffix"),
                     name : "dns_server_settings.suffix",
-                    boxLabel : "(eg: example.com)"
+                    boxLabel : this._("(eg: example.com)")
                 }]
             },{
                 xtype : "label",
-                html : "Dynamic DNS Client Configuration"
+                html : this._("Dynamic DNS Client Configuration")
             },{
                 defaults : {
                     xtype : "textfield"
@@ -37,25 +37,25 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 items : [{
                     xtype : "checkbox",
                     name : "ddclient_settings.enabled",
-                    fieldLabel : "Enabled"
+                    fieldLabel : this._("Enabled")
                 },{
                     xtype : "combo",
-                    fieldLabel : "Service",
+                    fieldLabel : this._("Service"),
                     name : "ddclient_settings.service",
                     mode : "local",
                     triggerAction : "all",
                     editable : false,
                     store : this.settings["ddclient_services"]
                 },{
-                    fieldLabel : "Login",
+                    fieldLabel : this._("Login"),
                     name : "ddclient_settings.login"
                 },{
                     xtype : "textfield",
-                    fieldLabel : "Password",
+                    fieldLabel : this._("Password"),
                     inputType : "password",
                     name : "ddclient_settings.password"
                 },{
-                    fieldLabel : "Hostname(s)",
+                    fieldLabel : this._("Hostname(s)"),
                     name : "ddclient_settings.hostname"
                 }]
             }]
