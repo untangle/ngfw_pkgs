@@ -271,10 +271,22 @@ Ung.Alpaca.grid.CheckColumn = Ext.extend(Object, {
             e.stopEvent();
             var index = this.grid.getView().findRowIndex(t);
             var record = this.grid.store.getAt(index);
+            var value = record.get( this.dataIndex );
             this.changeRecord(record);
+
+            /* Everything is legit except for the column index. */
+            this.grid.fireEvent( "afteredit", {
+                grid : this.grid,
+                record : record,
+                field : this.name,
+                value : value,
+                originalValue : !value,
+                row : index,
+                column : -1
+            });
         }
     },
-
+        
     renderer : function(value, metadata, record) {
         metadata.css += ' x-grid3-check-col-td';
         return '<div class="x-grid3-check-col' + ((this.invert?!value:value) ? '-on' : '') + ' x-grid3-cc-' + this.id + '">&#160;</div>';
