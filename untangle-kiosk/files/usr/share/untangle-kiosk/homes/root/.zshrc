@@ -120,8 +120,8 @@ WATCHFMT="[%D %T] %n has %a %l from %M"
 WORDCHARS=
 
 # misc
-EDITOR_ZSH=(emacs -nw)
-export EDITOR="emacs -nw"
+# EDITOR_ZSH=(emacs -nw)
+# export EDITOR="emacs -nw"
 if which less > /dev/null ; then
   export PAGER=less
 #  export LESS='--RAW-CONTROL-CHARS --tabs=8 -r'
