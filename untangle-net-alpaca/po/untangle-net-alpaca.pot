@@ -1,0 +1,58 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-01-19 07:49-0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=0; null;\n"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:22
+msgid "Hostname"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:24
+msgid "(eg: gateway.example.com)"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:26
+msgid "Domain Name Suffix"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:28
+msgid "(eg: example.com)"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:32
+msgid "Dynamic DNS Client Configuration"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:40
+msgid "Enabled"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:43
+msgid "Service"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:50
+msgid "Login"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:54
+msgid "Password"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:58
+msgid "Hostname(s)"
+msgstr ""
