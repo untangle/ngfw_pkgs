@@ -7,7 +7,7 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "hostname", "index" )) {
 }
 
 Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
-    constructor : function( config )
+    initComponent : function(  )
     {
         Ext.apply( this, {
             defaults : {
@@ -19,7 +19,7 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     xtype : "textfield"
                 },
                 items : [{
-                    fieldLabel : "Hostname",
+                    fieldLabel : this._("Hostname"),
                     name : "hostname_settings.hostname",
                     boxLabel : "(eg: gateway.example.com)"
                 },{
@@ -32,7 +32,7 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 html : "Dynamic DNS Client Configuration"
             },{
                 defaults : {
-                    xtype : "textfield",
+                    xtype : "textfield"
                 },
                 items : [{
                     xtype : "checkbox",
@@ -45,7 +45,7 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     mode : "local",
                     triggerAction : "all",
                     editable : false,
-                    store : config.settings["ddclient_services"]
+                    store : this.settings["ddclient_services"]
                 },{
                     fieldLabel : "Login",
                     name : "ddclient_settings.login"
@@ -61,7 +61,7 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             }]
         });
         
-        Ung.Alpaca.Pages.Hostname.Index.superclass.constructor.apply( this, arguments );
+        Ung.Alpaca.Pages.Hostname.Index.superclass.initComponent.apply( this, arguments );
     },
 
     saveMethod : "/hostname/set_settings"

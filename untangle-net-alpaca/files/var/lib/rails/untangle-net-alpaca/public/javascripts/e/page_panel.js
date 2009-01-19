@@ -15,7 +15,12 @@ Ung.Alpaca.PagePanel = Ext.extend( Ext.Panel, {
     autoScroll : true,
 
     constructor : function( config ) {
-        this.settings = config.settings;
+        //this.settings = config.settings;
+        this.i18n = new Ung.ModuleI18N({ "map" : Ung.Alpaca.i18n,
+                                   "moduleMap" : config.settings.i18n_map});
+        this._ = this.i18n._.createDelegate( this.i18n );
+        
+        
         Ung.Alpaca.PagePanel.superclass.constructor.apply( this, arguments );
     },
     

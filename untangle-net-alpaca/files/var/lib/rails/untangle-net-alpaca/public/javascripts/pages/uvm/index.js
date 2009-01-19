@@ -8,10 +8,10 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "uvm", "index" )) {
 }
 
 Ung.Alpaca.Pages.Uvm.Index = Ext.extend( Ung.Alpaca.PagePanel, {
-    constructor : function( config )
+    initComponent : function()
     {
         this.userRulesGrid = new Ung.Alpaca.EditorGridPanel({
-            settings : config.settings,
+            settings : this.settings,
 
             recordFields : [ "enabled", "filter", "description", "subscribe", "system_id", "is_custom" ],
             selectable : true,
@@ -62,7 +62,7 @@ Ung.Alpaca.Pages.Uvm.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         this.userRulesGrid.store.load();
 
         this.systemRulesGrid = new Ung.Alpaca.EditorGridPanel({
-            settings : config.settings,
+            settings : this.settings,
 
             recordFields : [ "enabled", "filter", "description", "subscribe", "system_id", "is_custom" ],
             selectable : false,
@@ -116,10 +116,10 @@ Ung.Alpaca.Pages.Uvm.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             }, this.systemRulesGrid ]
         });
         
-        Ung.Alpaca.Pages.Uvm.Index.superclass.constructor.apply( this, arguments );
+        Ung.Alpaca.Pages.Uvm.Index.superclass.initComponent.apply( this, arguments );
     },
 
-    saveMethod : "/uvm/set_settings",
+    saveMethod : "/uvm/set_settings"
 });
 
 Ung.Alpaca.Pages.Uvm.Index.settingsMethod = "/uvm/get_settings";

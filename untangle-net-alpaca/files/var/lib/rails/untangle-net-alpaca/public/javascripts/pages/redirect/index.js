@@ -8,10 +8,10 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "redirect", "index" )) {
 }
 
 Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
-    constructor : function( config )
+    initComponent : function()
     {
         this.userRulesGrid = new Ung.Alpaca.EditorGridPanel({
-            settings : config.settings,
+            settings : this.settings,
 
             recordFields : [ "enabled", "system_id", "new_ip", "new_enc_id", "filter", "description", "is_custom" ],
             selectable : true,
@@ -64,10 +64,10 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             }, this.userRulesGrid ]
         });
         
-        Ung.Alpaca.Pages.Redirect.Index.superclass.constructor.apply( this, arguments );
+        Ung.Alpaca.Pages.Redirect.Index.superclass.initComponent.apply( this, arguments );
     },
 
-    saveMethod : "/redirect/set_settings",
+    saveMethod : "/redirect/set_settings"
 });
 
 Ung.Alpaca.Pages.Redirect.Index.settingsMethod = "/redirect/get_settings";

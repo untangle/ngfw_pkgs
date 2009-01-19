@@ -7,10 +7,10 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "arp", "index" )) {
 }
 
 Ung.Alpaca.Pages.Arp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
-    constructor : function( config )
+    initComponent : function()
     {
         this.staticGrid = new Ung.Alpaca.EditorGridPanel({
-            settings : config.settings,
+            settings : this.settings,
             recordFields : [ "hostname", "hw_addr", "id" ],
             selectable : true,
 
@@ -52,7 +52,7 @@ Ung.Alpaca.Pages.Arp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 scope : this
             }],
             
-            entries : config.settings["active_arps"],
+            entries : this.settings["active_arps"],
             saveData : false,
             
             columns : [{
@@ -85,7 +85,7 @@ Ung.Alpaca.Pages.Arp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             }, this.activeGrid ]
         });
         
-        Ung.Alpaca.Pages.Arp.Index.superclass.constructor.apply( this, arguments );
+        Ung.Alpaca.Pages.Arp.Index.superclass.initComponent.apply( this, arguments );
     },
 
     saveMethod : "/arp/set_settings",

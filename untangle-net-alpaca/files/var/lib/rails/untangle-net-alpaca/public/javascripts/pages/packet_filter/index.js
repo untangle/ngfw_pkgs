@@ -8,10 +8,10 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "packet_filter", "index" )) {
 }
 
 Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
-    constructor : function( config )
+    initComponent : function()
     {
         this.userRulesGrid = new Ung.Alpaca.EditorGridPanel({
-            settings : config.settings,
+            settings : this.settings,
 
             recordFields : [ "enabled", "system_id", "target", "filter", "description", "is_custom" ],
             selectable : true,
@@ -49,7 +49,7 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         this.userRulesGrid.store.load();
 
         this.systemRulesGrid = new Ung.Alpaca.EditorGridPanel({
-            settings : config.settings,
+            settings : this.settings,
 
             recordFields : [ "enabled", "system_id", "target", "filter", "description", "is_custom" ],
             selectable : false,
@@ -89,10 +89,10 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             }, this.systemRulesGrid ]
         });
         
-        Ung.Alpaca.Pages.PacketFilter.Index.superclass.constructor.apply( this, arguments );
+        Ung.Alpaca.Pages.PacketFilter.Index.superclass.initComponent.apply( this, arguments );
     },
 
-    saveMethod : "/packet_filter/set_settings",
+    saveMethod : "/packet_filter/set_settings"
 });
 
 Ung.Alpaca.Pages.PacketFilter.Index.settingsMethod = "/packet_filter/get_settings";

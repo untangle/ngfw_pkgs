@@ -8,7 +8,7 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "dhcp", "secret_field" )) {
 }
 
 Ung.Alpaca.Pages.Dhcp.SecretField = Ext.extend( Ung.Alpaca.PagePanel, {
-    constructor : function( config )
+    initComponent : function()
     {
         Ext.apply( this, {
             defaults : {
@@ -18,7 +18,7 @@ Ung.Alpaca.Pages.Dhcp.SecretField = Ext.extend( Ung.Alpaca.PagePanel, {
                 /* Not in the default in order to accomodate grids. */
                 autoHeight : true,
                 defaults : {
-                    xtype : "textfield",
+                    xtype : "textfield"
                 },
                 items : [{
                     xtype : "checkbox",
@@ -32,7 +32,7 @@ Ung.Alpaca.Pages.Dhcp.SecretField = Ext.extend( Ung.Alpaca.PagePanel, {
             }]
         });
         
-        Ung.Alpaca.Pages.Dhcp.SecretField.superclass.constructor.apply( this, arguments );
+        Ung.Alpaca.Pages.Dhcp.SecretField.superclass.initComponent.apply( this, arguments );
     },
 
     saveMethod : "/dhcp/set_settings"

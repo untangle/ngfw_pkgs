@@ -8,10 +8,10 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "route", "index" )) {
 }
 
 Ung.Alpaca.Pages.Route.Index = Ext.extend( Ung.Alpaca.PagePanel, {
-    constructor : function( config )
+    initComponent : function()
     {
         this.staticRoutesGrid = new Ung.Alpaca.EditorGridPanel({
-            settings : config.settings,
+            settings : this.settings,
 
             recordFields : [ "rule_id", "target", "netmask", "gateway", "name", "category", 
                              "description", "live", "alert", "log", "settings_id" ],
@@ -71,7 +71,7 @@ Ung.Alpaca.Pages.Route.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         this.staticRoutesGrid.store.load();
 
         this.activeRoutesGrid = new Ung.Alpaca.EditorGridPanel({
-            settings : config.settings,
+            settings : this.settings,
 
             recordFields : [ "target", "netmask", "gateway" ],
             
@@ -113,10 +113,10 @@ Ung.Alpaca.Pages.Route.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             }, this.activeRoutesGrid ]
         });
         
-        Ung.Alpaca.Pages.Route.Index.superclass.constructor.apply( this, arguments );
+        Ung.Alpaca.Pages.Route.Index.superclass.initComponent.apply( this, arguments );
     },
 
-    saveMethod : "/route/set_settings",
+    saveMethod : "/route/set_settings"
 });
 
 Ung.Alpaca.Pages.Route.Index.settingsMethod = "/route/get_settings";

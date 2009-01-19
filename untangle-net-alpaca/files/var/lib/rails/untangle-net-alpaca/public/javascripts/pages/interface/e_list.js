@@ -9,7 +9,7 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "interface", "e_list" )) {
 Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
     isDragAndDropInitialized : false,
 
-    constructor : function( config )
+    initComponent : function()
     {
         var columns = [];
         if ( Ung.Alpaca.isAdvanced ) {
@@ -75,7 +75,7 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
 
 
         this.interfaceGrid = new Ung.Alpaca.EditorGridPanel({
-            settings : config.settings,
+            settings : this.settings,
 
             recordFields : [ "name", "duplex", "config_type", "os_name", "mac_address", "speed", 
                              "duplex", "index", "id", "interface_status_v2" ],
@@ -114,7 +114,7 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
             }, this.interfaceGrid ]
         });
                 
-        Ung.Alpaca.Pages.Interface.List.superclass.constructor.apply( this, arguments );
+        Ung.Alpaca.Pages.Interface.List.superclass.initComponent.apply( this, arguments );
     },
 
     /* Overload populate form */

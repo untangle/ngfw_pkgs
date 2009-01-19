@@ -8,10 +8,10 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "qos", "index" )) {
 }
 
 Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
-    constructor : function( config )
+    initComponent : function()
     {
-        this.qosGrid = this.buildQosGrid( config );
-        this.statisticsGrid = this.buildStatisticsGrid( config );
+        this.qosGrid = this.buildQosGrid();
+        this.statisticsGrid = this.buildStatisticsGrid();
         
         var percentageStore = this.buildPercentageStore();
         var priorityStore = this.buildPriorityStore();
@@ -111,7 +111,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             }, this.statisticsGrid ]
         });
         
-        Ung.Alpaca.Pages.Qos.Index.superclass.constructor.apply( this, arguments );
+        Ung.Alpaca.Pages.Qos.Index.superclass.initComponent.apply( this, arguments );
     },
 
     buildPercentageStore : function()
@@ -133,10 +133,10 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         return [[ 10, "High" ], [ 20, "Normal" ], [ 30, "Low" ]];
     },
 
-    buildQosGrid : function( config )
+    buildQosGrid : function()
     {
         var qosGrid = new Ung.Alpaca.EditorGridPanel({
-            settings : config.settings,
+            settings : this.settings,
 
             recordFields : [ "enabled", "description", "filter", "priority" ],
             selectable : true,
@@ -148,7 +148,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 enabled : true,
                 priority : 20,
                 filter : "",
-                description : "[New Entry]",
+                description : "[New Entry]"
             },
 
             columns : [{
@@ -183,10 +183,10 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         return qosGrid;
     },
 
-    buildStatisticsGrid : function( config )
+    buildStatisticsGrid : function()
     {
         var statisticsGrid = new Ung.Alpaca.EditorGridPanel({
-            settings : config.settings,
+            settings : this.settings,
 
             recordFields : [ "priority", "rate", "burst", "sent", "tokens", "ctokens" ],
             selectable : false,
@@ -205,7 +205,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 header : "Priority",
                 width: 55,
                 sortable: true,
-                dataIndex : "priority",
+                dataIndex : "priority"
             },{
                 header : "Rate",
                 width: 75,

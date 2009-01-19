@@ -7,10 +7,10 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "dns", "local_dns" )) {
 }
 
 Ung.Alpaca.Pages.Dns.LocalDns = Ext.extend( Ung.Alpaca.PagePanel, {
-    constructor : function( config )
+    initComponent : function()
     {
         this.localDnsGrid = new Ung.Alpaca.EditorGridPanel({
-            settings : config.settings,
+            settings : this.settings,
             recordFields : [ "server_ip", "domain_name_list", "enabled" ],
             selectable : true,
 
@@ -54,7 +54,7 @@ Ung.Alpaca.Pages.Dns.LocalDns = Ext.extend( Ung.Alpaca.PagePanel, {
             }, this.localDnsGrid ]
         });
         
-        Ung.Alpaca.Pages.Dns.LocalDns.superclass.constructor.apply( this, arguments );
+        Ung.Alpaca.Pages.Dns.LocalDns.superclass.initComponent.apply( this, arguments );
     },
 
     saveMethod : "/dns/set_settings"

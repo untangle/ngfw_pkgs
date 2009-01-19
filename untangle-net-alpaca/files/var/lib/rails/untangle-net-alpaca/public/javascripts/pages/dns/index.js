@@ -7,10 +7,10 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "dns", "index" )) {
 }
 
 Ung.Alpaca.Pages.Dns.Index = Ext.extend( Ung.Alpaca.PagePanel, {
-    constructor : function( config )
+    initComponent : function()
     {
         this.staticDnsGrid = new Ung.Alpaca.EditorGridPanel({
-            settings : config.settings,
+            settings : this.settings,
             recordFields : [ "hostname", "ip_address", "description" ],
             selectable : true,
 
@@ -61,7 +61,7 @@ Ung.Alpaca.Pages.Dns.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 scope : this
             }],
             
-            entries : config.settings["dns_dynamic_entries"],
+            entries : this.settings["dns_dynamic_entries"],
             saveData : false,
             
             columns : [{
@@ -105,7 +105,7 @@ Ung.Alpaca.Pages.Dns.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             }, this.automaticDnsGrid ]
         });
         
-        Ung.Alpaca.Pages.Dns.Index.superclass.constructor.apply( this, arguments );
+        Ung.Alpaca.Pages.Dns.Index.superclass.initComponent.apply( this, arguments );
     },
 
     saveMethod : "/dns/set_settings",

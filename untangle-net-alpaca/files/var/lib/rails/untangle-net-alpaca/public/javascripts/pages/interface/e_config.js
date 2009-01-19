@@ -7,7 +7,7 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "interface", "e_config" )) {
 }
 
 Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
-    constructor : function( config )
+    initComponent : function()
     {
         this.switchBlade = new Ext.Panel({
             layout : 'card',
@@ -17,10 +17,10 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                 border : false
             },
             items : [
-                this.staticPanel( config.settings ),
-                this.dynamicPanel( config.settings ),
-                this.bridgePanel( config.settings ),
-                this.pppoePanel( config.settings )
+                this.staticPanel( this.settings ),
+                this.dynamicPanel( this.settings ),
+                this.bridgePanel( this.settings ),
+                this.pppoePanel( this.settings )
             ]
         });
 
@@ -38,7 +38,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                     mode : "local",
                     triggerAction : "all",
                     selectable : false,
-                    store :  config.settings["config_types"],
+                    store :  this.settings["config_types"],
                     listeners : {
                         "select" : {
                             fn : this.onSelectConfigType,
@@ -53,7 +53,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             }, this.switchBlade ]
         });
 
-        Ung.Alpaca.Pages.Interface.Config.superclass.constructor.apply( this, arguments );
+        Ung.Alpaca.Pages.Interface.Config.superclass.initComponent.apply( this, arguments );
     },
 
     saveMethod : "/interface/set_settings",
@@ -77,7 +77,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             }, this.buildAliasGrid( settings, "static_aliases" ), {
                 autoHeight : true,
                 defaults : {
-                    xtype : "textfield",
+                    xtype : "textfield"
                 },
                 items : [{
                     fieldLabel : "MTU",
@@ -120,7 +120,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                     name : "dynamic.mtu"
                 }, this.buildEthernetMediaCombo( settings ), {
                     xtype : "button",
-                    text : "Renew Lease",
+                    text : "Renew Lease"
                 }]
             }, this.buildAliasGrid( settings, "dynamic_aliases" )]
         });
@@ -178,7 +178,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                     name : "pppoe.use_peer_dns"
                 }, this.buildEthernetMediaCombo( settings ),{
                     xtype : "button",
-                    text : "Renew Lease",
+                    text : "Renew Lease"
                 }]
             }, this.buildAliasGrid( settings, "pppoe_aliases" ), {
                 autoHeight : true,

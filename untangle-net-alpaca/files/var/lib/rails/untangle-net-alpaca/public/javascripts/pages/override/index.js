@@ -8,10 +8,10 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "override", "index" )) {
 }
 
 Ung.Alpaca.Pages.Override.Index = Ext.extend( Ung.Alpaca.PagePanel, {
-    constructor : function( config )
+    initComponent : function( )
     {
         this.overrideGrid = new Ung.Alpaca.EditorGridPanel({
-            settings : config.settings,
+            settings : this.settings,
 
             recordFields : [ "enabled", "writable", "path", "description" ],
             selectable : true,
@@ -23,7 +23,7 @@ Ung.Alpaca.Pages.Override.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 enabled : false,
                 writable : true,
                 path : "",
-                description : "[New Entry]",
+                description : "[New Entry]"
             },
 
             columns : [{
@@ -73,10 +73,10 @@ Ung.Alpaca.Pages.Override.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             }, this.overrideGrid ]
         });
         
-        Ung.Alpaca.Pages.Override.Index.superclass.constructor.apply( this, arguments );
+        Ung.Alpaca.Pages.Override.Index.superclass.initComponent.apply( this, arguments );
     },
 
-    saveMethod : "/override/set_settings",
+    saveMethod : "/override/set_settings"
 });
 
 Ung.Alpaca.Pages.Override.Index.settingsMethod = "/override/get_settings";

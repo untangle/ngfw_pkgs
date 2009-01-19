@@ -8,10 +8,10 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "dhcp", "index" )) {
 }
 
 Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
-    constructor : function( config )
+    initComponent : function()
     {
         this.staticGrid = new Ung.Alpaca.EditorGridPanel({
-            settings : config.settings,
+            settings : this.settings,
 
             recordFields : [ "mac_address", "ip_address", "id", "description" ],
             selectable : true,
@@ -54,7 +54,7 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         this.staticGrid.store.load();
 
         this.currentLeasesGrid = new Ung.Alpaca.EditorGridPanel({
-            settings : config.settings,
+            settings : this.settings,
             
             recordFields : [ "mac_address", "ip_address", "hostname", "client_id", "expiration" ],
             selectable : false,
@@ -96,7 +96,7 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 /* Not in the default in order to accomodate grids. */
                 autoHeight : true,
                 defaults : {
-                    xtype : "textfield",
+                    xtype : "textfield"
                 },
                 items : [{
                     xtype : "checkbox",
@@ -134,7 +134,7 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             }, this.currentLeasesGrid ]
         });
         
-        Ung.Alpaca.Pages.Dhcp.Index.superclass.constructor.apply( this, arguments );
+        Ung.Alpaca.Pages.Dhcp.Index.superclass.initComponent.apply( this, arguments );
     },
 
     saveMethod : "/dhcp/set_settings",
