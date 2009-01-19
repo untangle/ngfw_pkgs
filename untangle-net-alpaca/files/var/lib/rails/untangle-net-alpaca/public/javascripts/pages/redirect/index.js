@@ -10,10 +10,17 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "redirect", "index" )) {
 Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
     initComponent : function()
     {
+        var enabledColumn = new Ung.Alpaca.grid.CheckColumn({
+            //invert: true,
+            header : "On",
+            dataIndex : 'enabled',
+            sortable: false,
+            fixed : true
+        });
         this.userRulesGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
 
-            recordFields : [ "enabled", "system_id", "new_ip", "new_enc_id", "filter", "description", "is_custom" ],
+            recordFields : ["id", "enabled", "system_id", "new_ip", "new_enc_id", "filter", "description", "is_custom" ],
             selectable : true,
             sortable : false,
             
@@ -35,13 +42,8 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 description : "[New Entry]",
                 is_custom : false
             },
-
-            columns : [{
-                header : "On",
-                width: 55,
-                sortable: false,
-                dataIndex : "enabled"
-            },{
+            plugins: [enabledColumn],
+            columns : [enabledColumn, {
                 header : "Description",
                 width: 200,
                 sortable: false,

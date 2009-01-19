@@ -131,6 +131,14 @@ Ung.Alpaca.Util = {
             buttons : Ext.MessageBox.OK,
             icon : Ext.MessageBox.INFO
         });
+    },
+    hasData : function(obj) {
+        var hasData = false;
+        for (id in obj) {
+            hasData = true;
+            break;
+        }
+        return hasData;
     }
 };
 
