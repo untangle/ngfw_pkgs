@@ -258,9 +258,9 @@ class ApplicationController < ActionController::Base
     else
       i18n_map = options[:i18n_map]      
     end
-    response["result"]["i18n_map"] = i18n_map
+    response["i18n_map"] = i18n_map
     
-    render :json =>  response.to_json
+    render :json => response.to_json
   end
 
   def json_error( message, *values )

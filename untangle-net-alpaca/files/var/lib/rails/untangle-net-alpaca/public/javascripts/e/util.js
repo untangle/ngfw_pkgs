@@ -74,6 +74,8 @@ Ung.Alpaca.Util = {
     {
         var json = Ext.util.JSON.decode( response.responseText );
 
+        /* Append this in case another handler wants to reuse some other part of the JSON data. */
+        response.jsonData = json;
         if ( json["status"] != "success" ) {
             return this.remoteFunctionFailure( response, options, failure );
         }

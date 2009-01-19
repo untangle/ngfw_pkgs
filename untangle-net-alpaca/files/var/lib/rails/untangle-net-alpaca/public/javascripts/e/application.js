@@ -86,7 +86,12 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
     // this will use the current active panel in the menu.
     completeLoadSettings : function( settings, response, options, queryPath, panelClass  )
     {
-        var panel = new panelClass({ settings : settings });
+        var i18nMap = response.jsonData["i18n_map"];
+        if ( i18nMap == null ) {
+            i18nMap = {};
+        }
+
+        var panel = new panelClass({ settings : settings, i18nMap : i18nMap });
 
         this.configureActions( panel.saveSettings || panel.saveMethod );
 
