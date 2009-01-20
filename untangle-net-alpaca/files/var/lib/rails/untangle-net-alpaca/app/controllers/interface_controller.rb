@@ -235,6 +235,10 @@ class InterfaceController < ApplicationController
 
   alias_method :e_config, :extjs
 
+  def e_index
+    return redirect_to( :action => 'e_list' )
+  end
+
   def config
     load_config do
       @title = "Interface Configuration"

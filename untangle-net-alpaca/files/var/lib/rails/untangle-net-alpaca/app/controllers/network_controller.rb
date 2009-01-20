@@ -17,6 +17,7 @@
 #
 class NetworkController < ApplicationController
   UpdateInterfaces = "update_interfaces"
+
   def index
     ## Cannot use this panel in advanced mode.
     if ( @config_level > AlpacaSettings::Level::Basic )
@@ -26,6 +27,11 @@ class NetworkController < ApplicationController
     manage
     render :action => 'manage'
   end
+
+  def e_index
+    return redirect_to( :controller => "interface", :action => 'e_list' )
+  end
+
 
   ## Basic mode networking configuration
   def manage
