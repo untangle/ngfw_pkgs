@@ -26,10 +26,10 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
      *   will be created automatically, if one is not specified.
      * @cfg {Array} entries Data to place into the automatically created {@link #store}.
      */
-    constructor : function( config )
+    initComponent : function()
     {
         this.changedData = {};
-        Ung.Alpaca.Util.updateDefaults( config, {
+        Ung.Alpaca.Util.updateDefaults( this, {
             width : 620,
             height : 220,
             frame : false,
@@ -42,34 +42,53 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
         });
 
         /* Append the selection model to the table */
-        if ( config.selectable == true ) {
-            var sm = new Ext.grid.CheckboxSelectionModel();
-            config.columns = [sm].concat( config.columns );
-            config.sm = sm;
+        if ( this.selectable == true ) {
+            var sm = new Ext.grid.CheckboxSelectionModel({
+                 listeners : {
+                    "selectionchange" : {
+                        fn :function(sm) {
+                            var deleteButton=Ext.getCmp("delete_button_"+this.getId());
+                            if(deleteButton) {
+                                sm.getCount()>0?deleteButton.enable():deleteButton.disable()
+                            }
+                        }.createDelegate(this)
+                    }
+                 }
+             });
+            this.columns = [sm].concat( this.columns );
+            this.sm = sm;
         }
 
-        this.buildToolbar( config );
+        this.buildToolbar( this );
+        if (this.hasEdit) {
+            var editColumn = new Ung.Alpaca.grid.EditColumn({});
+            if (!this.plugins) {
+                this.plugins = [];
+            }
+            this.plugins.push(editColumn);
+            this.columns.push(editColumn);
+        }
 
         /* Build a record. */
-        if ( config.record == null && Ext.isArray( config.recordFields )) {
+        if ( this.record == null && Ext.isArray( this.recordFields )) {
             var fields = [];
-            for ( var c = 0 ; c < config.recordFields.length ; c++ ) {
-                var field = config.recordFields[c];
+            for ( var c = 0 ; c < this.recordFields.length ; c++ ) {
+                var field = this.recordFields[c];
                 fields[c] = { name : field, mapping : field };
             }
 
             this.record = Ext.data.Record.create( fields );
         } else {
-            this.record = config.record;
+            this.record = this.record;
         }
 
         /* Now build a store */
-        if (( config.store == null ) && ( this.record != null )) {
-            if ( !config.entries ) {
-                config.entries = config.settings[config.name];
+        if (( this.store == null ) && ( this.record != null )) {
+            if ( !this.entries ) {
+                this.entries = this.settings[this.name];
             }
-            config.store = new Ext.data.Store({
-                proxy : new Ext.data.MemoryProxy( config.entries ),
+            this.store = new Ext.data.Store({
+                proxy : new Ext.data.MemoryProxy( this.entries ),
                 reader : new Ext.data.ArrayReader( {}, this.record ),
                 listeners : {
                     "update" : {
@@ -81,7 +100,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
             });
         }
 
-        Ung.Alpaca.EditorGridPanel.superclass.constructor.apply( this, arguments );
+        Ung.Alpaca.EditorGridPanel.superclass.initComponent.apply( this, arguments );
 
         /* Untangle Alapca Grid type. */
         this.editorGridPanel = true;
@@ -90,7 +109,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
         Ung.Alpaca.EditorGridPanel.superclass.afterRender.call(this);
         this.getView().getRowClass = function(record, index, rowParams, store) {
             var id = record.get("id");
-            if (id == null || id < 0) {
+            if (id < 0) {
                 return "grid-row-added";
             } else {
                 var d = this.grid.changedData[id];
@@ -125,7 +144,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
         }
     },
     
-    addButton : function( config )
+    addButton : function()
     {
         return {
             text : "Add",
@@ -134,11 +153,13 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
         };
     },
     
-    deleteButton : function( config )
+    deleteButton : function( )
     {
         return {
+            id: "delete_button_"+this.getId(),
             text : "Delete",
             handler : this.deleteSelectedEntries,
+            disabled: true,
             scope : this
         };
     },
@@ -168,7 +189,10 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
         var entries = this.store.getRange();
         
         for ( var c = 0 ; c < entries.length ; c++ ) {
-            data[c] = entries[c].data;
+            var cd=this.changedData[entries[c].get("id")];
+            if(cd==null || "deleted" != cd.op) {
+                data[c] = entries[c].data;
+            }
         }
 
         settings[this.name] = data;
@@ -188,6 +212,9 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
         if ( Ext.fly(this.getView().getHeaderCell(0)).first().hasClass('x-grid3-hd-checker-on')){
             Ext.fly(this.getView().getHeaderCell(0)).first().removeClass('x-grid3-hd-checker-on');
         }         
+    },
+    editEntry: function(entry) {
+        
     },
     isDirty : function() {
         // Test if there are changed data
@@ -290,5 +317,63 @@ Ung.Alpaca.grid.CheckColumn = Ext.extend(Object, {
     renderer : function(value, metadata, record) {
         metadata.css += ' x-grid3-check-col-td';
         return '<div class="x-grid3-check-col' + ((this.invert?!value:value) ? '-on' : '') + ' x-grid3-cc-' + this.id + '">&#160;</div>';
+    }
+});
+
+Ung.Alpaca.grid.IconColumn = Ext.extend(Object, {
+    constructor : function(config) {
+        Ext.apply(this, config);
+        if (!this.id) {
+            this.id = Ext.id();
+        }
+        if (!this.width) {
+            this.width = 50;
+        }
+        if (this.fixed == null) {
+            this.fixed = true;
+        }
+        if (this.sortable == null) {
+            this.sortable = false;
+        }
+        if (!this.dataIndex) {
+            this.dataIndex = null;
+        }
+        this.renderer = this.renderer.createDelegate(this);
+    },
+    init : function(grid) {
+        this.grid = grid;
+        this.grid.on('render', function() {
+            var view = this.grid.getView();
+            view.mainBody.on('mousedown', this.onMouseDown, this);
+        }, this);
+    },
+
+    onMouseDown : function(e, t) {
+        if (t.className && t.className.indexOf(this.iconClass) != -1) {
+            e.stopEvent();
+            var index = this.grid.getView().findRowIndex(t);
+            var record = this.grid.store.getAt(index);
+            this.handle(record, index)
+        }
+    },
+
+    renderer : function(value, metadata, record) {
+        return '<div class="'+this.iconClass+'">&nbsp;</div>';
+    }
+});
+// Grid edit column
+Ung.Alpaca.grid.EditColumn=Ext.extend(Ung.Alpaca.grid.IconColumn, {
+    constructor : function(config) {
+        if (!config.header) {
+            config.header = "Edit";
+        }
+        if (!config.width) {
+            config.width = 50;
+        }
+        Ung.Alpaca.grid.EditColumn.superclass.constructor.call(this,config);
+    },
+    iconClass: 'icon-edit-row',
+    handle : function(record) {
+        this.grid.editEntry(record);
     }
 });

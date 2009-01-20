@@ -23,15 +23,12 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             recordFields : ["id", "enabled", "system_id", "new_ip", "new_enc_id", "filter", "description", "is_custom" ],
             selectable : true,
             sortable : false,
+            hasEdit:true,
             
             name : "user_redirects",
 
             tbar : [ Ung.Alpaca.EditorGridPanel.AddButtonMarker,
-                     Ung.Alpaca.EditorGridPanel.DeleteButtonMarker, {
-                         text : "Edit",
-                         handler : this.editEntry,
-                         scope : this
-                     }],
+                     Ung.Alpaca.EditorGridPanel.DeleteButtonMarker],
 
             recordDefaults : {
                 enabled : true,
