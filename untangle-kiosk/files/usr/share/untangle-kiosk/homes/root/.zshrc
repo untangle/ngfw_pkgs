@@ -89,19 +89,39 @@ is4 && setopt share_history
 ###################################
 # Environment
 ###################################
+literal="RRR"
 typeset -xA extensions # this dictionary is also used by the lst() function
 extensions=()
-extensions[docs]="doc dvi html odf pdf pps ppt ps rtf tex txt xls xml"
-extensions[archives]="ace arj bin bz2 cdr deb dmg ear exe gz iso jar lzh pgdump rar rpm tar taz tgz udf war xpi z zip"
-extensions[movies]="asf avi divx m1v m2v mov mp2 mp4 mpe mpeg mpg ram rm wmv xvid yuv"
+extensions[backup]="${literal}~ ${literal}# bak"
+extensions[docs]="calendar doc dvi emacs html ics odf odt pdf pps ppt ps reg rtf srt tex txt todo xls xml"
+extensions[archives]="ace arj bin bz2 cdr deb dmg ear exe gz iso jar lzh pgdump rar rpm tar taz tgz udeb udf war xpi z zip"
+extensions[video]="3gp asf avi divx flv ifo m1v m2v mkv mov mp2 mp4 mpe mpeg mpg ram rm wmv xvid yuv"
 extensions[audio]="au mp3 ogg wav wma"
-extensions[pics]="bmp gif jpg pbm png ppm tga tif xbm xcf xpm"
-extensions[code]="a bash c c++ class cpp elz jacl java ko jy o out pl pm py pyc pyo sh so sql tcl zsh"
+extensions[pics]="bmp gif jpeg jpg pbm png ppm tga tif xbm xcf xpm"
+extensions[code]="${literal}Makefile a bash c c++ class cpp diff el elz jacl java js jy ko lua o out patch pl pm py pyc pyo rb sh so sql tcl zsh"
 
 # add the uppercase extensions too
 for key in ${(k)extensions[@]} ; do
   extensions[$key]="$extensions[$key] ${(U)extensions[$key]}"
 done
+
+local -A colors
+colors=()
+colors[backup]="02;90"
+colors[docs]="02;37"
+colors[archives]="01;31"
+colors[video]="01;33"
+colors[audio]="00;36"
+colors[pics]="00;32"
+colors[code]="01;35"
+
+LS_COLORS='ex=01;35:no=00:fi=00;37:di=01;36:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=04;31'
+for key in ${(k)extensions[@]} ; do
+  color=${colors[$key]}
+  # join on '=${color}:*.', and prepend to LS_COLORS
+  LS_COLORS='*.'${(ej,=${color}:*.,)${=${extensions[$key]}}}=${color}:$LS_COLORS
+done
+export LS_COLORS=${LS_COLORS//\*.${literal}/\*}
 
 # history
 HISTSIZE=1000000
