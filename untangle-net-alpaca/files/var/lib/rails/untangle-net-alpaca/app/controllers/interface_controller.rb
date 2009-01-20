@@ -169,10 +169,10 @@ class InterfaceController < ApplicationController
 
     media = "#{interface.speed}#{interface.duplex}"
     if InterfaceHelper::EthernetMedia.get_value( media ).nil?
-      media = InterfaceHelper::EthernetMedia.get_default() 
+      media = InterfaceHelper::EthernetMedia.get_default().key
     end
-
-    settings["media"] = media.key
+    
+    settings["media"] = media
     
     json_result( settings )
   end
@@ -205,7 +205,8 @@ class InterfaceController < ApplicationController
     bridge_settings = interface.intf_bridge
     bridge_settings = IntfBridge.new if bridge_settings.nil?
     bridge_settings.update_attributes( s["bridge"] )
-    bridge_interface = Interface.find( s["bridge"]["bridge_interface_id"] )
+    bridge_id = s["bridge"]["bridge_interface_id"]
+    bridge_interface = Interface.find( :first, :conditions => [ "id = ?", bridge_id ] )
 
     if ( s["interface"]["config_type"] == "bridge" )
       if bridge_interface.nil?

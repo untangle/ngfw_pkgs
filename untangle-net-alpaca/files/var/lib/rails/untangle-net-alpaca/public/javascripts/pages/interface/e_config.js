@@ -16,7 +16,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
         var config_types = this.settings["config_types"];
         
         if ( this.settings["interface"]["wan"] ) {
-            items.concat( this.pppoePanel );
+            items.push( this.pppoePanel( this.settings ));
         } else {
             config_types.remove( "pppoe" );
         }
