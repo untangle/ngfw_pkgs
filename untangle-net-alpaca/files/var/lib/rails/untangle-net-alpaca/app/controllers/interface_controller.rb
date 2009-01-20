@@ -222,8 +222,8 @@ class InterfaceController < ApplicationController
     interface.intf_dynamic = dynamic_settings
     interface.intf_pppoe = pppoe_settings
 
-    media = EthernetMedia.get_value( settings["media"] )
-    media = EthernetMedia.get_default if media.nil?
+    media = InterfaceHelper::EthernetMedia.get_value( s["media"] )
+    media = InterfaceHelper::EthernetMedia.get_default if media.nil?
     interface.speed, interface.duplex = media.speed, media.duplex
     
     interface.save

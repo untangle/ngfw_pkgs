@@ -26,12 +26,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             defaults : {
                 border : false
             },
-            items : [
-                this.staticPanel( this.settings ),
-                this.dynamicPanel( this.settings ),
-                this.bridgePanel( this.settings ),
-                this.pppoePanel( this.settings )
-            ]
+            items : items
         });
 
         Ext.apply( this, {
@@ -56,10 +51,12 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             }, this.switchBlade ]
         });
 
+        this.saveMethod = "/interface/set_settings/" + this.settings["interface"]["id"];
+
         Ung.Alpaca.Pages.Interface.Config.superclass.initComponent.apply( this, arguments );
     },
 
-    saveMethod : "/interface/set_settings",
+    saveMethod : "/interface/set_settings/",
 
     staticPanel : function( settings )
     {
@@ -68,9 +65,11 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
         var primaryAddress = staticAliases.splice( 0, 1 )[0];
 
         if ( primaryAddress == null ) {
-            primaryAddress = { network_string : "" }
+            primaryAddress = "";
+        } else {
+            primaryAddress = primaryAddress["ip"] + " / " + primaryAddress["netmask"];
         }
-        settings["static"]["primary_address"] = primaryAddress["network_string"];
+        settings["static"]["primary_address"] = primaryAddress;
         
         var items = [{
                 autoHeight : true,
@@ -274,20 +273,19 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
         this.fixAliases( settings, entriesField );
 
         var aliases = new Ung.Alpaca.EditorGridPanel({
-            recordFields : [ "network_string", "new_source" ],
+            recordFields : [ "network_string" ],
             selectable : true,
             settings : settings,
             name : entriesField,
             recordDefaults : {
                 network_string : "1.2.3.4 / 24",
-                new_source : "auto"
             },
             
             columns : [{
                 header : "Address and Netmask",
                 width: 200,
                 sortable: true,
-                dataIndex : "new_source",
+                dataIndex : "network_string",
                 editor : new Ext.form.TextField({
                     allowBlank : false
                 })
@@ -377,6 +375,49 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             boxLabel : String.format( this._( "(current : {0})" ), mtu ),
             name : field,
         };
+    },
+
+    /* Override update settings to properly serialize nat policies and aliases. */
+    updateSettings : function( settings )
+    {
+        Ung.Alpaca.Pages.Interface.Config.superclass.updateSettings.apply( this, arguments );
+
+        /* Append the primary address to the top of the static aliases. */
+        settings["static_aliases"].splice( 0, 0, { 
+            network_string : settings["static"]["primary_address"] 
+        });
+        delete( settings["static"]["primary_address"]  );
+        this.updateNetworks( settings, "static_aliases" );
+        this.updateNetworks( settings, "static_nat_policies" );
+        this.updateNetworks( settings, "dynamic_aliases" );
+        this.updateNetworks( settings, "pppoe_aliases" );
+
+        settings["media"] = this.switchBlade.layout.activeItem.find( "name", "media" )[0].getValue()
+    },
+
+    updateNetworks : function( settings, entryName )
+    {
+        var aliases = settings[entryName];
+
+        if ( aliases == null ) {
+            return;
+        }
+
+        for ( var c = 0; c < aliases.length ; c++ ){
+            var a = aliases[c];
+            var network_string = a["network_string"];
+            delete( a["network_string"] );
+            if ( network_string == null ) {
+                network_string = "";
+            }
+            network_string = network_string.split( / *\/ */ )
+            a["ip"] = network_string[0];
+            a["netmask"] = "32";
+            if ( network_string.length > 1 ) {
+                a["netmask"] = network_string[1];
+            }
+        }
+
     }
 });
 
