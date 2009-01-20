@@ -7,4 +7,4 @@ if sudo grep -qE '^root:(\*|YKN4WuGxhHpIw|$1$3kRMklXp$W/hDwKvL8GFi5Vdo3jtKC\.|CH
   sudo su root -c "${XTERM} -T 'Please choose a password' -e '/usr/bin/passwd'"
 fi
 
-${XTERM} -T ${XTERM} -e bash -c 'su - root' &
+${XTERM} -T ${XTERM} su root &
