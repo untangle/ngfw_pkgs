@@ -13,15 +13,28 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                       this.dynamicPanel( this.settings ),
                       this.bridgePanel( this.settings ) ];
 
+        var config_types = this.settings["config_types"];
+        
         if ( this.settings["interface"]["wan"] ) {
             items.concat( this.pppoePanel );
         } else {
-            this.settings["config_types"].remove( "pppoe" );
+            config_types.remove( "pppoe" );
+        }
+
+        var index = 0;
+        var config_type = this.settings["interface"]["config_type"];
+
+        /* Select the correct panel */
+        for ( c = 0 ; c < config_types.length ; c++ ) {
+            if ( config_types[c] == config_type ) {
+                index = c;
+                break;
+            }
         }
         
         this.switchBlade = new Ext.Panel({
             layout : 'card',
-            activeItem : 0,
+            activeItem : index,
             border : false,
             defaults : {
                 border : false
@@ -40,7 +53,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                     mode : "local",
                     triggerAction : "all",
                     editable : false,
-                    store :  this.settings["config_types"],
+                    store :  config_types,
                     listeners : {
                         "select" : {
                             fn : this.onSelectConfigType,

@@ -16,11 +16,6 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 class InterfaceController < ApplicationController  
-  def index
-    list
-    render :action => 'list'
-  end
-
   def list
     @title = "Interface List"
     @description = "List of all of the available interfaces."
@@ -119,6 +114,7 @@ class InterfaceController < ApplicationController
   end
 
   alias_method :e_list, :extjs
+  alias_method :index, :extjs
 
   def get_settings
     settings = {}
