@@ -38,7 +38,7 @@ class NatPolicy < ActiveRecord::Base
     ## All of the strings have to be internationalized.
     errors.add( "Invalid IP Address '#{ip}'" ) if IPAddr.parse_ip( ip ).nil?
 
-    errors.add( "Invalid Netmask '#{netmask}'" ) if IPAddr.parse_netmask( ip ).nil?
+    errors.add( "Invalid Netmask '#{netmask}'" ) if IPAddr.parse_netmask( netmask ).nil?
 
     ## Check the new source address.
     errors.add( "Invalid Source Address '#{new_source}'" ) if ( new_source.nil? || new_source.empty? )

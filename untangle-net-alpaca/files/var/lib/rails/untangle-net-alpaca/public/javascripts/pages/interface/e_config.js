@@ -320,7 +320,8 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             settings : settings,
             name : entriesField,
             recordDefaults : {
-                network_string : "1.2.3.4 / 24"
+                network_string : "0.0.0.0 / 0",
+                new_source : "auto"
             },
             
             columns : [{
@@ -419,7 +420,6 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
         for ( var c = 0; c < aliases.length ; c++ ){
             var a = aliases[c];
             var network_string = a["network_string"];
-            delete( a["network_string"] );
             if ( network_string == null ) {
                 network_string = "";
             }

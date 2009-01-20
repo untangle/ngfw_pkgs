@@ -160,6 +160,7 @@ class InterfaceController < ApplicationController
     settings["static_aliases"] = static_settings.ip_networks
     settings["dynamic_aliases"] = dynamic_settings.ip_networks
     settings["pppoe_aliases"] = pppoe_settings.ip_networks
+
     settings["config_types"] = InterfaceHelper::CONFIGTYPES
 
     settings["media_types"] = InterfaceHelper::EthernetMedia.order.map { |m| [ m.key, m.name ] }
@@ -185,7 +186,16 @@ class InterfaceController < ApplicationController
     interface = Interface.find( interface_id )
     return json_error( "Unknown interface '%s'" % ( interface_id )) if interface.nil?
     
-    interface.update_attributes( s["interface"] )
+    interface_attributes = s["interface"] 
+    interface_attributes.delete( "wan" )
+    interface_attributes.delete( "name" )
+    interface_attributes.delete( "bus" )
+    interface_attributes.delete( "os_name" )
+    interface_attributes.delete( "mac_address" )
+    interface_attributes.delete( "index" )
+    interface_attributes.delete( "vendor" )
+    
+    interface.update_attributes( interface_attributes )
     
     static_settings = interface.intf_static
     static_settings = IntfStatic.new if static_settings.nil?
@@ -222,6 +232,21 @@ class InterfaceController < ApplicationController
     static_settings.ip_networks = create_ip_networks( s["static_aliases"] )
     dynamic_settings.ip_networks = create_ip_networks( s["dynamic_aliases"] )
     pppoe_settings.ip_networks = create_ip_networks( s["pppoe_aliases"] )
+
+    ## Add in the nat policies
+    ## Delete all of the nat policies
+    static_settings.nat_policies = []
+      
+    position = 1
+    nat_policies = s["static_nat_policies"]
+    unless nat_policies.nil?
+      static_settings.nat_policies = nat_policies.map do |np|
+        nat_policy = NatPolicy.new({ "ip" => np["ip"], "netmask" => np["netmask"], 
+                                     "new_source" => np["new_source"], "position" => position })
+        position += 1
+        nat_policy
+      end
+    end
 
     static_settings.save
     dynamic_settings.save
