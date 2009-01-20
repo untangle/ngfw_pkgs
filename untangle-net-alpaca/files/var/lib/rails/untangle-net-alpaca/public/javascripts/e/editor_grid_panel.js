@@ -26,10 +26,8 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
      *   will be created automatically, if one is not specified.
      * @cfg {Array} entries Data to place into the automatically created {@link #store}.
      */
-    initComponent : function()
-    {
-        this.changedData = {};
-        Ung.Alpaca.Util.updateDefaults( this, {
+    constructor : function (config) {
+        Ung.Alpaca.Util.updateDefaults( config, {
             width : 620,
             height : 220,
             frame : false,
@@ -40,6 +38,11 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
                 forceFit : true
             }
         });
+        Ung.Alpaca.EditorGridPanel.superclass.constructor.apply( this, arguments );
+    },
+    initComponent : function()
+    {
+        this.changedData = {};
 
         /* Append the selection model to the table */
         if ( this.selectable == true ) {
@@ -214,7 +217,12 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
         }         
     },
     editEntry: function(entry) {
-        
+        this.stopEditing();
+        /*
+        // populate row editor
+        this.rowEditor.populate(entry);
+        this.rowEditor.show();
+        */
     },
     isDirty : function() {
         // Test if there are changed data
