@@ -63,6 +63,14 @@ class OSLibrary::NetworkManager < Alpaca::OS::ManagerBase
 
   TEST_CONNECTIVITY_TIMEOUT = 20
 
+  class ConnectivityStatus
+    def initialize( success, tcp_status, dns_status )
+      @success, @tcp_status, @dns_status = success, tcp_status, dns_status
+    end
+
+    attr_reader :success, :tcp_status, :dns_status
+  end
+
   ## Parse a netmask and convert to a netmask string.
   ## 24 -> 255.255.255.0
   ## 255.255.255.0 -> 255.255.255.0
@@ -98,7 +106,7 @@ class OSLibrary::NetworkManager < Alpaca::OS::ManagerBase
     t = Thread.new do
       begin
         address = Resolv.getaddress( host )
-        s = TCPSocket.new( host, "http" )
+        s = TCPSocket.new( address, "http" )
         s.close
         result = [true, "TCP"]
       rescue Errno::ECONNREFUSED
@@ -112,6 +120,14 @@ class OSLibrary::NetworkManager < Alpaca::OS::ManagerBase
     sleep 0.1
     t.join(TEST_CONNECTIVITY_TIMEOUT)
     return result
+  end
+
+  def internet_connectivity_v2?( host="updates.untangle.com" )
+    result = internet_connectivity?( host )
+    success = result[0]
+    tcp_status = success
+    dns_status = ( result[1] != "DNS" )
+    ConnectivityStatus.new( success, tcp_status, dns_status )
   end
 
   ## This should commit and update all of the network related settings.

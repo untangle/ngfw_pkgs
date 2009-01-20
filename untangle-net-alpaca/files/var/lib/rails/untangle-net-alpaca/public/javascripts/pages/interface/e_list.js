@@ -95,7 +95,7 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
                 scope : this
             },{
                 text : "Refresh",
-                handler : this.refreshInterfaceList,
+                handler : this.refreshInterfaces,
                 scope : this
             }],
 
@@ -230,6 +230,93 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
         return true;
     },
 
+    testConnectivity : function()
+    {
+        Ext.MessageBox.wait( this._( "Testing Internet Connectivity", "Please wait" ));
+        
+        var handler = this.completeTestConnectivity.createDelegate( this );
+        Ung.Alpaca.Util.executeRemoteFunction( "/interface/test_internet_connectivity_v2", handler );
+    },
+
+    completeTestConnectivity : function( result, response, options )
+    {
+        icon = Ext.MessageBox.INFO;
+        message = this._( "Successfully connected to the Internet." );
+
+        result = result[0];
+
+        if ( result["success"] != true ) {
+            icon = Ext.MessageBox.ERROR;
+            if ( result["dns_status"] == false ) {
+                message = this._( "Failed to connect to the Internet, DNS failed." );
+            } else {
+                message = this._( "Failed to connect to the Internet, TCP failed." );
+            }
+        }
+        
+        Ext.MessageBox.show({
+            title : this._( "Connection Status" ),
+            msg : message,
+            buttons : Ext.MessageBox.OK,
+            icon : icon
+        });
+    },
+
+    refreshInterfaces : function()
+    {
+        Ext.MessageBox.wait( this._( "Refreshing Physical Interfaces", "Please wait" ));
+        
+        var handler = this.completeRefreshInterfaces.createDelegate( this );
+        Ung.Alpaca.Util.executeRemoteFunction( "/interface/get_interface_list", handler );
+    },
+
+    completeRefreshInterfaces : function( result, response, options )
+    {
+        icon = Ext.MessageBox.INFO;
+        message = this._( "No new physical interfaces were detected." );
+
+        var newInterfaces = result["new_interfaces"];
+        var deletedInterfaces = result["deleted_interfaces"];
+        
+        if ( newInterfaces == null ) {
+            newInterfaces = [] 
+        }
+
+        if ( deletedInterfaces == null ) {
+            deletedInterfaces = [] 
+        }
+        
+        if (( deletedInterfaces.length + newInterfaces.length ) > 0 ) {
+            icon = Ext.MessageBox.INFO;
+            message = [];
+            var l = deletedInterfaces.length;
+            if ( l > 0 ) {
+                message.push( String.format( this.i18n.pluralise( this._( "One interface was removed." ),
+                                                                  this._( "{0} interfaces were removed." ),
+                                                                  l ),
+                                             l ));
+            }
+            
+            var l = newInterfaces.length;
+            if ( l > 0 ) {
+                message.push( String.format( this.i18n.pluralise( this._( "One interface was added." ),
+                                                                  this._( "{0} interfaces were added." ),
+                                                                  l ),
+                                             l ));
+            }
+            
+            message = message.join( "<br/>" );
+        }
+        
+        Ext.MessageBox.show({
+            title : this._( "Interface Status" ),
+            msg : message,
+            buttons : Ext.MessageBox.OK,
+            icon : icon
+        });
+        
+        this.interfaceGrid.store.loadData( result["interfaces"] );
+    },
 
     saveMethod : "/interface/set_interface_list"
 });

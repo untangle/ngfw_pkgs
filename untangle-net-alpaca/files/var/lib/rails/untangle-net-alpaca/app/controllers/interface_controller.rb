@@ -68,10 +68,17 @@ class InterfaceController < ApplicationController
     settings["new_interfaces"] = new_interfaces
     settings["deleted_interfaces"] = deleted_interfaces
 
-    ## xxx so not legit, anti-legit
-    settings["interfaces"] = ActiveSupport::JSON.decode( interfaces.to_json( :methods => :interface_status_v2 ))
+    settings["interfaces"] = interfaces.map do |interface|
+      interface_hash = interface.attributes
+      interface_hash["interface_status_v2"] = interface.interface_status_v2
+      interface_hash
+    end
 
     json_result( settings )
+  end
+
+  def test_internet_connectivity_v2
+    json_result( networkManager.internet_connectivity_v2? )
   end
 
   def set_interface_list
@@ -83,8 +90,7 @@ class InterfaceController < ApplicationController
 
     ids = interfaces.collect { |i| i.id }.sort
     new_ids =interface_list.collect { |n| n["id"] }.sort
-    puts "IDS: #{ids.join}"
-    puts "NDS: #{new_ids.join}"
+
     return json_error( "Invalid interface List" ) if ( ids != new_ids )
 
     interface_map = {}
@@ -161,17 +167,20 @@ class InterfaceController < ApplicationController
     settings["config_types"] = InterfaceHelper::CONFIGTYPES
 
     settings["media_types"] = InterfaceHelper::EthernetMedia.order.map { |m| [ m.key, m.name ] }
+    settings["current_mtu"] = interface.current_mtu.strip
+    
+    settings["static_nat_policies"] = static_settings.nat_policies
 
     media = "#{interface.speed}#{interface.duplex}"
     if InterfaceHelper::EthernetMedia.get_value( media ).nil?
       media = InterfaceHelper::EthernetMedia.get_default() 
     end
 
-    settings["media"] = media
+    settings["media"] = media.key
     
     json_result( settings )
   end
-
+      
   def set_settings
     s = json_params
 
@@ -212,6 +221,10 @@ class InterfaceController < ApplicationController
     interface.intf_static = static_settings
     interface.intf_dynamic = dynamic_settings
     interface.intf_pppoe = pppoe_settings
+
+    media = EthernetMedia.get_value( settings["media"] )
+    media = EthernetMedia.get_default if media.nil?
+    interface.speed, interface.duplex = media.speed, media.duplex
     
     interface.save
 
