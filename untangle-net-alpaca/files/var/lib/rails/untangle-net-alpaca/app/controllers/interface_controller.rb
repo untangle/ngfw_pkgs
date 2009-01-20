@@ -205,7 +205,19 @@ class InterfaceController < ApplicationController
     bridge_settings = interface.intf_bridge
     bridge_settings = IntfBridge.new if bridge_settings.nil?
     bridge_settings.update_attributes( s["bridge"] )
-            
+    bridge_interface = Interface.find( s["bridge"]["bridge_interface_id"] )
+
+    if ( s["interface"]["config_type"] == "bridge" )
+      if bridge_interface.nil?
+        return json_error( "Bridge Interface cannot be null" )
+      end
+    end
+
+    unless bridge_interface.nil?
+      bridge_settings.bridge_interface = bridge_interface
+      bridge_interface.bridged_interfaces << bridge_settings
+    end
+      
     static_settings.ip_networks = create_ip_networks( s["static_aliases"] )
     dynamic_settings.ip_networks = create_ip_networks( s["dynamic_aliases"] )
     pppoe_settings.ip_networks = create_ip_networks( s["pppoe_aliases"] )
@@ -213,10 +225,12 @@ class InterfaceController < ApplicationController
     static_settings.save
     dynamic_settings.save
     pppoe_settings.save
+    bridge_settings.save
 
     interface.intf_static = static_settings
     interface.intf_dynamic = dynamic_settings
     interface.intf_pppoe = pppoe_settings
+    interface.intf_bridge = bridge_settings
 
     media = InterfaceHelper::EthernetMedia.get_value( s["media"] )
     media = InterfaceHelper::EthernetMedia.get_default if media.nil?
