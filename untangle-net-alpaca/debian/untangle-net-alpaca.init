@@ -2,10 +2,11 @@
 
 ### BEGIN INIT INFO
 # Provides:          untangle-net-alpaca
-# Required-Start:    $local_fs $remote_fs
-# Required-Stop:
+# Required-Start:    $local_fs $network $syslog
+# Required-Stop:     $local_fs $network $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
+# Short-Description: Untangle Network Alpaca
 ### END INIT INFO
 
 # Author: Robert Scott <rbscott@untangle.com>
