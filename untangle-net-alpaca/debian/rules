@@ -25,6 +25,14 @@ build: configure
 	find $(DESTDIR) -path '*/vendor/rails' -type l | xargs rm -f 
 	find $(DESTDIR) -name "\.svn" | xargs rm -rf
 	find $(DESTDIR) -name "LICENSE" | xargs rm -rf
+## Generate mo files
+    for f in $$(find ./po -name '*.po'); do \
+      l=$$(echo $$f | cut -d/ -f 3); \
+      d="$(DESTDIR)/usr/share/locale/$$l/LC_MESSAGES"; \
+      mkdir -p $$d; \
+      msgfmt -o $$d/untangle-net-alpaca.mo $$f; \
+      echo msgfmt -o $$d/untangle-net-alpaca.mo $$f; \
+    done
 
 clean:
 	dh_testdir
