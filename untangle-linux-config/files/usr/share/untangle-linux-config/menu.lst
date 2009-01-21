@@ -52,7 +52,7 @@ splashimage=(hd0,0)/boot/grub/mvsplash.xpm.gz
 ## e.g. kopt=root=/dev/hda1 ro
 ##      kopt_2_6_8=root=/dev/hdc1 ro
 ##      kopt_2_6_8_2_686=root=/dev/hdc2 ro
-# kopt=root=@ROOTDEV@ ro ramdisk_size=100000 vga=791 panic=5
+# kopt=root=@ROOTDEV@ ro ramdisk_size=100000 lang=us apm=power-off screen=1024x768 nomce vga=791 nodhcp nofstab panic=5
 
 ## default grub root device
 ## e.g. groot=(hd0,0)
@@ -71,7 +71,7 @@ splashimage=(hd0,0)/boot/grub/mvsplash.xpm.gz
 ## additional options to use with the default boot option, but not with the
 ## alternatives
 ## e.g. defoptions=vga=791 resume=/dev/hda5
-# defoptions=vga=791 quiet splash
+# defoptions=quiet splash
 
 ## should update-grub lock old automagic boot options
 ## e.g. lockold=false
