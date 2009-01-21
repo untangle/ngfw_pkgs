@@ -116,10 +116,15 @@ class OSLibrary::Debian::DhcpManager < OSLibrary::DhcpManager
         dns = []
         dns << config.dns_1 unless ( ApplicationHelper.null?( config.dns_1 ) or IPAddr.parse_ip( config.dns_1 ).nil? )
         dns << config.dns_2 unless ( ApplicationHelper.null?( config.dns_2 ) or IPAddr.parse_ip( config.dns_2 ).nil? )
-        dns = ( dns.empty? ) ? "ignore" : dns.join( " " )
+        unless dns.empty?
+          cfg << "#{OverrideDnsServer}=\"#{dns.join( " " )}\""
+        end
       end
-
-      cfg << "#{OverrideDnsServer}=\"#{dns}\""      
+      
+      ## If the user never wants to modify the dnsmasq file, set it to ignore the server
+      unless overrideManager.writable?( OSLibrary::Debian::DnsServerManager::ResolvConfFile )
+        cfg << "#{OverrideDnsServer}=\"ignore\""
+      end
       
       next if cfg.size == 0
       
