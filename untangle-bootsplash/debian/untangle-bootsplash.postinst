@@ -1,0 +1,7 @@
+#! /bin/sh
+
+splashy_config -s untangle
+
+update-initramfs -u
+
+exit 0
