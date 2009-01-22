@@ -63,6 +63,21 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
         }
 
         this.buildToolbar( this );
+        if (this.hasReorder) {
+            this.enableDragDrop = true;
+            this.selModel= new Ext.grid.RowSelectionModel();
+            this.dropConfig= {
+                appendOnly:true
+            };
+
+            var reorderColumn = new Ung.Alpaca.grid.ReorderColumn(this.configReorder);
+            if (!this.plugins) {
+                this.plugins = [];
+            }
+            this.plugins.push(reorderColumn);
+            this.columns.push(reorderColumn);
+        }
+        
         if (this.hasEdit) {
             var editColumn = new Ung.Alpaca.grid.EditColumn({});
             if (!this.plugins) {
@@ -110,6 +125,31 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
     },
     afterRender : function() {
         Ung.Alpaca.EditorGridPanel.superclass.afterRender.call(this);
+        if(this.hasReorder) {
+            var ddrowTarget = new Ext.dd.DropTarget(this.container, {
+                ddGroup: "GridDD",
+                notifyDrop : function(dd, e, data){
+                    var sm = this.getSelectionModel();
+                    var rows = sm.getSelections();
+                    var cindex = dd.getDragData(e).rowIndex;
+
+                    var dsGrid = this.getStore();
+
+                    for(i = 0; i < rows.length; i++) {
+                        rowData = dsGrid.getById(rows[i].id);
+                        dsGrid.remove(dsGrid.getById(rows[i].id));
+                        dsGrid.insert(cindex, rowData);
+                    };
+
+                    this.getView().refresh();
+
+                    // put the cursor focus on the row of the gridRules which we
+                    // just draged
+                    this.getSelectionModel().selectRow(cindex);
+                }.createDelegate(this)
+            });
+        }
+
         this.getView().getRowClass = function(record, index, rowParams, store) {
             var id = record.get("id");
             if (id < 0) {
@@ -126,6 +166,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
             }
             return "";
         }
+        
     },
 
     buildToolbar : function( config )
@@ -218,11 +259,15 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
     },
     editEntry: function(entry) {
         this.stopEditing();
-        /*
-        // populate row editor
-        this.rowEditor.populate(entry);
-        this.rowEditor.show();
-        */
+        if(this.rowEditor) {
+            if(!this.rowEditor.rendered) {
+                this.rowEditor.show();
+            }
+            // populate row editor
+            this.rowEditor.populate(entry);
+            this.rowEditor.show();
+            
+        }
     },
     isDirty : function() {
         // Test if there are changed data
@@ -383,5 +428,37 @@ Ung.Alpaca.grid.EditColumn=Ext.extend(Ung.Alpaca.grid.IconColumn, {
     iconClass: 'icon-edit-row',
     handle : function(record) {
         this.grid.editEntry(record);
+    }
+});
+// Grid reorder column
+Ung.Alpaca.grid.ReorderColumn = Ext.extend(Object, {
+    constructor : function(config) {
+        Ext.apply(this, config);
+        if (!this.id) {
+            this.id = Ext.id();
+        }
+        if (!this.header) {
+            this.header = "Reorder";
+        }
+        if (!this.width) {
+            this.width = 55;
+        }
+        if (this.fixed == null) {
+            this.fixed = true;
+        }
+        if (this.sortable == null) {
+            this.sortable = false;
+        }
+        if (!this.dataIndex) {
+            this.dataIndex = null;
+        }
+        this.renderer = this.renderer.createDelegate(this);
+    },
+    init : function(grid) {
+        this.grid = grid;
+    },
+
+    renderer : function(value, metadata, record) {
+        return '<div class="icon-drag">&nbsp;</div>';
     }
 });

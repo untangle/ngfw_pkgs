@@ -24,7 +24,44 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             selectable : true,
             sortable : false,
             hasEdit:true,
+            hasReorder: true,
             
+            rowEditor : new Ung.Alpaca.RowEditor({
+                panelItems: [{
+                    xtype : "fieldset",
+                    autoHeight : true,
+                    items:[{
+                        xtype: "checkbox",
+                        fieldLabel: "Enabled",
+                        dataIndex: "enabled"
+                    }, {
+                        xtype: "textfield",
+                        fieldLabel: "Description",
+                        dataIndex: "description",
+                        width: 360
+                    }]
+                }, {
+                    xtype : "fieldset",
+                    autoHeight : true,
+                    title: "If all of the following conditions are met:"
+                }, {
+                    xtype : "fieldset",
+                    autoHeight : true,
+                    title: "Forward traffic to the following location",
+                    items:[{
+                        xtype: "textfield",
+                        fieldLabel: "New Destination",
+                        dataIndex: "new_ip",
+                        width: 150
+                    }, {
+                        xtype: "textfield",
+                        fieldLabel: "New Port (optional)",
+                        dataIndex: "new_enc_id",
+                        width: 150
+                        
+                    }]
+                }]
+            }),
             name : "user_redirects",
 
             tbar : [ Ung.Alpaca.EditorGridPanel.AddButtonMarker,
