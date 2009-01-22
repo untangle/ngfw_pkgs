@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <% main_menu = menu_organizer.get_node( "/extjs" ) %>
   <% advanced_menu = menu_organizer.get_node( "/advanced" ) %>
+  <% query_path = "/alpaca/#{controller.controller_name}/#{controller.action_name}" %>
   <head>
     <title>
       <%= (( @title.nil? ) ? ApplicationController::DefaultTitle : @title ).t %>
@@ -19,10 +20,13 @@
       <%= javascript_include_tag script %>
     <% end %>
 
-    <%= javascript_tag "Ung.Alpaca.BasicMenuData = #{main_menu.children.to_json};" %>
-    <%= javascript_tag "Ung.Alpaca.AdvancedMenuData = #{advanced_menu.children.to_json};" %>
-    <%= javascript_tag "Ung.Alpaca.isAdvanced = #{@config_level  > AlpacaSettings::Level::Basic};" %>
-    <%= javascript_tag "Ung.Alpaca.i18n = #{@i18n_map.to_json};" %>
+    <% javascript_tag do -%>
+       Ung.Alpaca.BasicMenuData = <%= main_menu.children.to_json %>;
+       Ung.Alpaca.AdvancedMenuData = <%= advanced_menu.children.to_json %>;
+       Ung.Alpaca.isAdvanced = <%= @config_level  > AlpacaSettings::Level::Basic %>;
+       Ung.Alpaca.i18n = <%= @i18n_map.to_json %>;
+       Ung.Alpaca.queryPath = '<%= query_path %>';
+    <% end %>
 
     <%= yield %>
 

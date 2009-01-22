@@ -205,10 +205,13 @@ Ext.onReady(function() {
         items : application
     });
 
-    var path = document.location.pathname;
-    var search = document.location.search;
-    if ( search != null && search.length > 0 ) {
-        path += "?" + search;
+    path = Ung.Alpaca.queryPath;
+    if( path == null ) {
+        path = document.location.pathname;
+        var search = document.location.search;
+        if ( search != null && search.length > 0 ) {
+            path += "?" + search;
+        }
     }
 
     application.switchToQueryPath( path );
