@@ -22,6 +22,7 @@ module NetworkHelper
     def initialize( interface, static, bridge, bridgeable_interfaces, pppoe )
       @interface, @static, @bridge = interface, static, bridge
       @bridgeable_interfaces = bridgeable_interfaces
+      @bridgeable_interfaces_v2 = bridgeable_interfaces.map { |a,b| [b,a] }
       @pppoe = pppoe
     end
 
@@ -41,7 +42,7 @@ module NetworkHelper
       config_types.map { |type| [ type, type ] }
     end
     
-    attr_reader :interface, :static, :bridge, :bridgeable_interfaces, :pppoe
+    attr_reader :interface, :static, :bridge, :bridgeable_interfaces, :bridgeable_interfaces_v2, :pppoe
   end
 
   class StaticConfig

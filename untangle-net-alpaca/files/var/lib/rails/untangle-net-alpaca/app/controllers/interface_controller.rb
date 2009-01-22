@@ -715,7 +715,7 @@ class InterfaceController < ApplicationController
   end
 
   def create_ip_networks( networks )
-    position = 0
+    position = 1
     return [] if networks.nil?
     networks.map do |entry|
       network = IpNetwork.new({ "ip" => entry["ip"], "netmask" => entry["netmask"] })
