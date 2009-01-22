@@ -134,9 +134,12 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             }]
         };
 
+        var configTypes = [ "static", "dynamic", "pppoe" ];
+        var configType = this.settings.config_list[i]["interface"]["config_type"];
+
         var switchBlade = new Ext.Panel({
             layout : "card",
-            activeItem : 0,
+            activeItem : this.getActiveItem( configType, configTypes ),
             border : false,
             defaults : {
                 border : false,
@@ -159,7 +162,7 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     xtype : "combo",
                     name : this.generateName( "config_list", i, "interface.config_type" ),
                     fieldLabel : "Config Type",
-                    store : [ 'static', 'dynamic', 'pppoe' ],
+                    store : configTypes,
                     switchBlade : switchBlade,
                     triggerAction : "all",
                     mode : "local",
