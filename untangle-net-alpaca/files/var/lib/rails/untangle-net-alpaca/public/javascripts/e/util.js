@@ -141,6 +141,131 @@ Ung.Alpaca.Util = {
         return hasData;
     },
     
+    // Add the additional 'advanced' VTypes
+    initExtVTypes: function(i18n){
+    	
+        Ext.apply(Ext.form.VTypes, {
+          ipAddress: function(val, field) {
+            var ipAddrMaskRe = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+            return ipAddrMaskRe.test(val);
+          },
+          ipAddressText: i18n._('Invalid IP Address.'),
+          
+          // #{ip_address} [/#{netmask}]
+          networkAddress: function(val, field) {
+            var tokens = val.split('/');
+            if (tokens.length < 1 && tokens.length > 2) {
+            	return false;
+            }
+            // validate ip_address
+            if (!this.ipAddress(tokens[0], field)) {
+                return false;
+            }
+            //validate netmask
+            if (tokens.length == 2) {
+            	var netmask = tokens[1];
+            	if (netmask.indexOf(".") < 0 ) {
+            		// short format
+            		var netmaskNum = parseInt(netmask);
+            		return (!isNaN(netmaskNum) && netmaskNum >=0 && netmaskNum <= 32);
+            	} else {
+            		// long format
+            		var netmaskTokens = netmask.split('.');
+            		if (netmaskTokens.length != 4) {
+            			return false;
+            		} else {
+            			var validNetmaskTokens = new Array(0, 128, 192, 224, 240, 248, 252, 254, 255)
+            			for (var i=0, subnetSection = true; i<4; i++) {
+            				if (subnetSection) {
+                                if (netmaskTokens[i] != 255 ) {
+                                	subnetSection = false;
+                                }
+                                var isCurrentTokenValid = false;
+            					for ( var j=0; j< validNetmaskTokens.length; j++) {
+            						if (netmaskTokens[i] == validNetmaskTokens[j]) {
+            							isCurrentTokenValid = true;
+            							break;
+            						}
+            					}
+            					if (!isCurrentTokenValid) {
+            						return false;
+            					}
+            				} else {
+            					if (netmaskTokens[i] != 0) {
+            						return false;
+            					}
+            				}
+            			}
+            		}
+            	}
+            }
+            return true;
+          },
+          networkAddressText: i18n._('Invalid Network Address.'),
+          
+         //From rfc1034 the PREFERRED name syntax:
+         //<domain> ::= <subdomain> | " "
+         //<subdomain> ::= <label> | <subdomain> "." <label>
+         //<label> ::= <letter> [ [ <ldh-str> ] <let-dig> ]
+         //<ldh-str> ::= <let-dig-hyp> | <let-dig-hyp> <ldh-str>
+         //<let-dig-hyp> ::= <let-dig> | "-"
+         //<let-dig> ::= <letter> | <digit>
+         //<letter> ::= any one of the 52 alphabetic characters A through Z in
+         //upper case and a through z in lower case
+         //<digit> ::= any one of the ten digits 0 through 9
+          hostname: function(val, field) {
+            var hostnameMaskRe = /^(((([a-zA-Z](([a-zA-Z0-9\-]+)?[a-zA-Z0-9])?)+\.)*([a-zA-Z](([a-zA-Z0-9\-]+)?[a-zA-Z0-9])?)+)|\s)$/;
+            return hostnameMaskRe.test(val);
+          },
+          hostnameText: i18n._('Invalid Hostname.'),
+         
+          //A list of hostnames separated by spaces. 
+          hostnameList : function (val, field) {
+          	var hostnames = val.split(/\s/)
+          	for (var i=0; i < hostnames.length; i++) {
+          		if (!this.hostname(hostnames[i], field)) {
+          			return false;
+          		}
+          	}
+          	return true;
+          },
+          hostnameListText: i18n._('Invalid Hostname List.'),
+          
+          domainNameSuffix: function(val, field) {
+          	return this.hostname(val, field)
+          },
+          domainNameSuffixText: i18n._('Invalid Domain Name Suffix.'),
+          
+          domainNameList: function(val, field) {
+            return this.hostnameList(val, field)
+          },
+          domainNameListText: i18n._('Invalid Domain Name List.'),
+          
+          //MAC address in 00:00:00:00:00:00 or the 00-00-00-00-00-00 notation
+          macAddress: function(val, field) {
+            var macAddressMaskRe = /^([0-9a-f]{2}([:-]|$)){6}$/i;
+            return macAddressMaskRe.test(val);
+          },
+          macAddressText: i18n._('Invalid MAC Address.'),
+          
+          port: function(val, field) {
+            var minValue = 1;
+            var maxValue = 65535;
+            return minValue <= val && val <= maxValue;
+          },
+          portText: String.format(i18n._("The port must be an integer number between {0} and {1}."), 1, 65535),
+
+          password: function(val, field) {
+            if (field.initialPassField) {
+              var pwd = Ext.getCmp(field.initialPassField);
+              return (val == pwd.getValue());
+            }
+            return true;
+          },
+          passwordText: i18n._('Passwords do not match')
+        });
+    },
+    
     cidrData : [
         [ "8",  "8   : 255.0.0.0"],
         [ "9",  "9   : 255.128.0.0"],

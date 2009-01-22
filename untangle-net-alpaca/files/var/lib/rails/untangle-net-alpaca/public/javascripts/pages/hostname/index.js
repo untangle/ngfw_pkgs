@@ -21,7 +21,8 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 items : [{
                     fieldLabel : this._("Hostname"),
                     name : "hostname_settings.hostname",
-                    boxLabel : this._("(eg: gateway.example.com)")
+                    boxLabel : this._("(eg: gateway.example.com)"),
+                    vtype: 'hostname'
                 },{
                     fieldLabel : this._("Domain Name Suffix"),
                     name : "dns_server_settings.suffix",

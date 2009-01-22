@@ -197,6 +197,8 @@ Ext.onReady(function() {
     Ext.QuickTips.init();
 
     application = new Ung.Alpaca.Application();
+    
+    Ung.Alpaca.Util.initExtVTypes(application.i18n);
 
     viewport = new Ext.Viewport({
         layout : 'border',
