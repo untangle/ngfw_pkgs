@@ -41,7 +41,7 @@ class DhcpController < ApplicationController
 
     settings["dhcp_dynamic_entries"] = os["dhcp_server_manager"].dynamic_entries
 
-    json_result( settings )
+    json_result( :values => settings )
   end
   
   def set_settings
@@ -75,7 +75,7 @@ class DhcpController < ApplicationController
   end
 
   def get_leases
-    json_result(os["dhcp_server_manager"].dynamic_entries )
+    json_result( :values =>os["dhcp_server_manager"].dynamic_entries )
   end
   
   alias_method :index, :extjs

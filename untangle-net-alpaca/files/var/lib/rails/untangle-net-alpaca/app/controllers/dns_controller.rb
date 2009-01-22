@@ -33,7 +33,7 @@ class DnsController < ApplicationController
     ## Retrieve all of the local dns servers (can reuse this method for local dns)
     settings["upstream_servers"] = DnsUpstreamServers.find( :all )
         
-    json_result( settings )
+    json_result( :values => settings )
   end
 
   def set_settings
@@ -63,7 +63,7 @@ class DnsController < ApplicationController
   end
   
   def get_leases
-    json_result(os["dns_server_manager"].dynamic_entries)
+    json_result( :values =>os["dns_server_manager"].dynamic_entries)
   end
   
   alias_method :index, :extjs

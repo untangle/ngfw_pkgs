@@ -35,7 +35,7 @@ class HostnameController < ApplicationController
     dns_server_settings = DnsServerSettings.create_default if dns_server_settings.nil?
     settings["dns_server_settings"] = dns_server_settings
     
-    json_result( settings )
+    json_result( :values => settings )
   end
   
   def set_settings

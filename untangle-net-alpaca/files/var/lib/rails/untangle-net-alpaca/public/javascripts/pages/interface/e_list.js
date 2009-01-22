@@ -243,8 +243,6 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
         icon = Ext.MessageBox.INFO;
         message = this._( "Successfully connected to the Internet." );
 
-        result = result[0];
-
         if ( result["success"] != true ) {
             icon = Ext.MessageBox.ERROR;
             if ( result["dns_status"] == false ) {

@@ -21,7 +21,7 @@ class RouteController < ApplicationController
     settings = {}
     settings["active_routes"] = NetworkRoute.get_active( os )
     settings["static_routes"] = NetworkRoute.find( :all )
-    json_result( settings )
+    json_result( :values => settings )
   end
 
   def set_settings

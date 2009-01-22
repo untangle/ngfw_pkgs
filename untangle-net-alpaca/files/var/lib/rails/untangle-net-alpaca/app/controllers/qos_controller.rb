@@ -27,11 +27,11 @@ class QosController < ApplicationController
     settings["status"] = os["qos_manager"].status_v2
     settings["start_time"] = os["qos_manager"].start_time
 
-    json_result( settings )
+    json_result( :values => settings )
   end
 
   def get_statistics
-    json_result( os["qos_manager"].status_v2 )
+    json_result( :values => os["qos_manager"].status_v2 )
   end
   
   def set_settings

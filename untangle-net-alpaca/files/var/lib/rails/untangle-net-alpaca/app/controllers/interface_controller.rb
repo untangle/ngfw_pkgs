@@ -69,11 +69,11 @@ class InterfaceController < ApplicationController
       interface_hash
     end
 
-    json_result( settings )
+    json_result( :values => settings )
   end
 
   def test_internet_connectivity_v2
-    json_result( networkManager.internet_connectivity_v2? )
+    json_result( :values => networkManager.internet_connectivity_v2? )
   end
 
   def set_interface_list
@@ -175,7 +175,7 @@ class InterfaceController < ApplicationController
     
     settings["media"] = media
     
-    json_result( settings )
+    json_result( :values => settings )
   end
       
   def set_settings

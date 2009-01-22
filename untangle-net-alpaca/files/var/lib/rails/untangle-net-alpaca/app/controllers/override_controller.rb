@@ -23,7 +23,7 @@ class OverrideController < ApplicationController
     alpaca_settings = AlpacaSettings.new if alpaca_settings.nil?
     settings["alpaca_settings"] = alpaca_settings
 
-    json_result( settings )
+    json_result( :values => settings )
   end
 
   def set_settings

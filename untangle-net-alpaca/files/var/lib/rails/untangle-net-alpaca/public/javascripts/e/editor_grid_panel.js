@@ -142,6 +142,9 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
                     };
 
                     this.getView().refresh();
+                    
+                    /* Enable the save button */
+                    application.onFieldChange();
 
                     // put the cursor focus on the row of the gridRules which we
                     // just draged

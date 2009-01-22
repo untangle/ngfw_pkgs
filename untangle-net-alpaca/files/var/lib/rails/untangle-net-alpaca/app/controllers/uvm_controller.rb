@@ -35,7 +35,7 @@ class UvmController < ApplicationController
     modules_disabled = "" if modules_disabled.nil?
     settings["enable_sip_helper"] = !modules_disabled.include?( "nf_nat_sip" )
     
-    json_result( settings )
+    json_result( :values => settings )
   end
 
   def set_settings

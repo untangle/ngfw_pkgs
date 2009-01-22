@@ -21,7 +21,7 @@ class PacketFilterController < ApplicationController
     settings["user_rules"] = Firewall.find( :all, :conditions => [ "system_id IS NULL" ] )
     settings["system_rules"] = Firewall.find( :all, :conditions => [ "system_id IS NOT NULL" ] )
 
-    json_result( settings )
+    json_result( :values => settings )
   end
 
   def set_settings

@@ -23,7 +23,7 @@ class RedirectController < ApplicationController
     ## We do not use system redirects.
     settings["system_redirects"] = Redirect.find( :all, :conditions => [ "system_id IS NOT NULL" ] )
 
-    json_result( settings )
+    json_result( :values => settings )
   end
 
   def set_settings

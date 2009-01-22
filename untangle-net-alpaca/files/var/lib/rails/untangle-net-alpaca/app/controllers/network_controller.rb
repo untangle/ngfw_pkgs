@@ -48,7 +48,7 @@ class NetworkController < ApplicationController
       NetworkHelper.build_interface_config( interface, interface_list, d )
     end
 
-    json_result( settings )
+    json_result( :values => settings )
   end
 
   def set_settings
@@ -120,7 +120,7 @@ class NetworkController < ApplicationController
     external_aliases = [] if external_aliases.nil?
     external_aliases = external_aliases.map { |ea| { "network_string" => "#{ea.ip} / #{ea.netmask}" }}
     
-    json_result( { "external_aliases" => external_aliases })
+    json_result( :values => { "external_aliases" => external_aliases })
   end
 
   def set_aliases
