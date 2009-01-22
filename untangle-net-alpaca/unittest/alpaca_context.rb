@@ -102,7 +102,7 @@ module Untangle
 
       error = response["error"]
       unless ( error.nil?  )
-        raise "Unable to execute method #{@controller}.#{method_id}#{query_string}, #{error}"
+        raise "Unable to execute method #{@controller}.#{method_id}#{@query_string}, #{error}"
       end
 
       return response["result"]

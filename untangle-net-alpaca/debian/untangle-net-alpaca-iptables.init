@@ -33,7 +33,7 @@ insert_rules()
         /bin/echo "The file '${IPTABLES_RULES}' does not exist"
     fi
     if [ -x ${HELPER_MODULES} ]; then
-        ./${HELPER_MODULES}
+        ${HELPER_MODULES}
     else
         /bin/echo "The file '${HELPER_MODULES}' does not exist"
     fi
