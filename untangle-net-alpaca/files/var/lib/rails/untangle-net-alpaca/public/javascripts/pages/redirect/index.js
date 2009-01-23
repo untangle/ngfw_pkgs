@@ -43,7 +43,13 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 }, {
                     xtype : "fieldset",
                     autoHeight : true,
-                    title: "If all of the following conditions are met:"
+                    title: "If all of the following conditions are met:",
+                    items:[{
+                        xtype: "textfield",
+                        fieldLabel: "RuldeBulder-TODO",
+                        dataIndex: "filter",
+                        width: 360
+                    }]
                 }, {
                     xtype : "fieldset",
                     autoHeight : true,

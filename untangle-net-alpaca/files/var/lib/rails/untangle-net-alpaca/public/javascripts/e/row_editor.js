@@ -161,13 +161,40 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
         if (this.isFormValid()) {
             if (this.record !== null) {
                 //TODO
-                
+                this.items.each( this.updateFieldValue.createDelegate( this, [ this.record ], true ))
             }
             this.hide();
         } else {
             Ext.MessageBox.alert('Warning', "The form is not valid!");
         }
     },
+    
+    /* Update the settings with the values from the fields. */
+    updateFieldValue : function( item, index, length, record )
+    {
+        if ( item.updateFieldValue ) {
+            item.updateFieldValue( record );
+        } else if ( item.getName ) {
+            var value = null;
+
+            switch ( item.xtype ) {
+            case "textfield":
+            case "checkbox":
+            case "combo":
+                value = item.getValue();
+                break;                
+            }
+            if ( value != null && item.dataIndex!=null) {
+                record.set(item.dataIndex, value);
+            }
+        }
+
+        /* Recurse to children */
+        if ( item.items ) {
+            item.items.each( this.updateFieldValue.createDelegate( this, [ record ], true ));
+        }
+    },
+    
     // to override if needed
     isDirty : function() {
         return false;
