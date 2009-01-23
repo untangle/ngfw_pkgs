@@ -41,11 +41,20 @@ Ung.Alpaca.Toolbar = Ext.extend( Ext.Toolbar, {
         } else {
             var menuItems = [];
             for ( var c = 0 ; c < Ung.Alpaca.AdvancedMenuData.length ; c++ ) {
-                menuItems[c] = this.buildButton( Ung.Alpaca.AdvancedMenuData[c] );
+                /* Skip the first button, it is if the action to go back to basic */
+                if ( c == 0 ) {
+                    continue;
+                }
+                menuItems.push( this.buildButton( Ung.Alpaca.AdvancedMenuData[c] ));
             }
+
+            var menuData = Ung.Alpaca.AdvancedMenuData[0];
             
             buttons.push( new Ext.Toolbar.MenuButton({
-                text : "Advanced",
+                text : menuData.name,
+                queryPath : menuData.queryPath,
+                handler : this.onChangeQueryPath,
+                scope : this,
                 menu : { items : menuItems }
             }));
         }

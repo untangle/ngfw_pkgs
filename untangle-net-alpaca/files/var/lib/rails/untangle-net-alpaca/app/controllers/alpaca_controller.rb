@@ -16,15 +16,24 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 class AlpacaController < ApplicationController
-  def index
-    manage
-    render :action => 'manage'
+  def get_settings
+    json_result( :values => { "alpaca_settings" => @alpaca_settings, "config_level" => @config_level })
   end
+
+  def set_to_advanced
+    ## Change the level to advanced
+    @alpaca_settings.config_level = AlpacaSettings::Level::Advanced.level
+    @alpaca_settings.save
+    
+    json_result
+  end
+
+  alias_method :index, :extjs
 
   def manage
     ## AlpacaSettings are loaded by the application manager.
   end
-  
+
   def to_advanced
     ## Change the level to advanced
     @alpaca_settings.config_level = AlpacaSettings::Level::Advanced.level

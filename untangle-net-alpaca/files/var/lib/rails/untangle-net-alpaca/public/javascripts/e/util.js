@@ -274,7 +274,8 @@ Ung.Alpaca.Util = {
 
     tip : new Ext.Tip({
         cls : 'warning-messages',
-        layout : 'form'
+        layout : 'form',
+        closable : true
     }),
 
     /* Here because there are two places that need this. */

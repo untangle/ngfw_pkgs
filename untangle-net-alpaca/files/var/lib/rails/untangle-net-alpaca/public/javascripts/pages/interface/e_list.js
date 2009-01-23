@@ -104,14 +104,22 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
 
         this.interfaceGrid.store.load();
 
+        var items = [];
+
+        this.addInterfaceStatus( items );
+
+        items.push({
+            xtype : "label",
+            html : "Interface List"
+        });
+
+        items.push( this.interfaceGrid );
+
         Ext.apply( this, {
             defaults : {
                 xtype : "fieldset"
             },
-            items : [{
-                xtype : "label",
-                html : "Interface List"
-            }, this.interfaceGrid ]
+            items : items
         });
                 
         Ung.Alpaca.Pages.Interface.List.superclass.initComponent.apply( this, arguments );
@@ -122,6 +130,23 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
     {
         Ung.Alpaca.Pages.Interface.List.superclass.populateForm.apply( this, arguments );
         this.initializeDragAndDrop();
+    },
+
+    addInterfaceStatus : function( items )
+    {
+        var newInterfaces = this.settings["new_interfaces"];
+        var deletedInterfaces = this.settings["deleted_interfaces"];
+        newInterfaces = ( newInterfaces ) ? newInterfaces : [];
+        deletedInterfaces = ( deletedInterfaces ) ? deletedInterfaces : [];
+
+        /* If necessary, show a little message indicating that the interfaces have changed. */
+        if (( newInterfaces.length + deletedInterfaces.length ) > 0 ) {
+            items.push( new Ext.form.Label({
+                html : String.format( this._( "{0}Click {1}here{2} to configure the interfaces changes.{3}" ),
+                                      "<p class=\"ua-message-warning\">", this.updateInterfacesUrl, 
+                                      "</a>", "</p>" )
+            }));
+        }
     },
 
     renderInterfaceStatus : function( value, metadata, record )
@@ -270,6 +295,9 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
     {
         this.interfaceGrid.store.loadData( result["interfaces"] );
     },
+
+    /* This is the request used to configure new or removed interfaces. */
+    updateInterfacesUrl : "<a href='javascript:application.switchToQueryPath( \"/alpaca/interface/refresh\")'>",
 
     saveMethod : "/interface/set_interface_order"
 });
