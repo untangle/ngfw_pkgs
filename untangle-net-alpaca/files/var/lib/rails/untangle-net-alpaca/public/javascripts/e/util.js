@@ -221,7 +221,7 @@ Ung.Alpaca.Util = {
          
           //A list of hostnames separated by spaces. 
           hostnameList : function (val, field) {
-          	var hostnames = val.split(/\s/)
+          	var hostnames = val.split(/\s+/)
           	for (var i=0; i < hostnames.length; i++) {
           		if (!this.hostname(hostnames[i], field)) {
           			return false;
@@ -237,7 +237,13 @@ Ung.Alpaca.Util = {
           domainNameSuffixText: i18n._('Invalid Domain Name Suffix.'),
           
           domainNameList: function(val, field) {
-            return this.hostnameList(val, field)
+            var domains = val.split(/[\s,]+/)
+            for (var i=0; i < domains.length; i++) {
+                if (!this.domainNameSuffix(domains[i], field)) {
+                    return false;
+                }
+            }
+            return true;
           },
           domainNameListText: i18n._('Invalid Domain Name List.'),
           
