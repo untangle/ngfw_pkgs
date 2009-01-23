@@ -22,9 +22,9 @@
         set the amount of red, green, blue and alpha channel. 
         Remember that the max value is 255 and the minumun value is 0-->
         <color>
-            <red>115</red>
-            <green>212</green>
-            <blue>92</blue>
+            <red>103</red>
+            <green>189</green>
+            <blue>73</blue>
             <alpha>255</alpha>
         </color>
         <!-- whether or not you want a border around the progressbar. default: no -->
