@@ -10,6 +10,8 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
         this.i18n = new Ung.I18N({ map : Ung.Alpaca.i18n });
         this._ = this.i18n._.createDelegate( this.i18n );
 
+        Ung.Alpaca.Util._ = this._;
+
         this.hasSaveHandler = false;
         
         this.saveButton = new Ext.Toolbar.Button({
@@ -94,6 +96,11 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
         var panel = new panelClass({ settings : settings, i18nMap : i18nMap });
 
         this.configureActions( panel.saveSettings || panel.saveMethod );
+
+        /* An override if the panel doesn't require a change for the save button be enabled */
+        if ( panel.enableSave ) {
+            this.enableSaveButton();
+        }
 
         var currentPanel = this.layout.activeItem;
         

@@ -22,7 +22,7 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
                 align : "center",
                 renderer : function( value, metadata, record )
                 {
-                    var url = "<a href='/alpaca/interface/e_config/" + value + "'>";
+                    var url = "<a href='javascript:application.switchToQueryPath( \"/alpaca/interface/e_config/" + value + "\")'>";
                     return String.format( "{0}edit{1}", url, "</a>" );
                 }
             });
@@ -94,7 +94,7 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
                 handler : this.testConnectivity,
                 scope : this
             },{
-                text : "Refresh",
+                text : this._( "Refresh Interfaces" ),
                 handler : this.refreshInterfaces,
                 scope : this
             }],
@@ -260,63 +260,18 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
         });
     },
 
-    refreshInterfaces : function()
+    refreshInterfaces : function( buttonId, input )
     {
-        Ext.MessageBox.wait( this._( "Refreshing Physical Interfaces", "Please wait" ));
-        
-        var handler = this.completeRefreshInterfaces.createDelegate( this );
-        Ung.Alpaca.Util.executeRemoteFunction( "/interface/get_interface_list", handler );
+        Ung.Alpaca.Util.refreshInterfaces( buttonId, input,
+                                           this.completeRefreshInterfaces.createDelegate( this ));
     },
-
-    completeRefreshInterfaces : function( result, response, options )
+    
+    completeRefreshInterfaces : function( result )
     {
-        icon = Ext.MessageBox.INFO;
-        message = this._( "No new physical interfaces were detected." );
-
-        var newInterfaces = result["new_interfaces"];
-        var deletedInterfaces = result["deleted_interfaces"];
-        
-        if ( newInterfaces == null ) {
-            newInterfaces = [] 
-        }
-
-        if ( deletedInterfaces == null ) {
-            deletedInterfaces = [] 
-        }
-        
-        if (( deletedInterfaces.length + newInterfaces.length ) > 0 ) {
-            icon = Ext.MessageBox.INFO;
-            message = [];
-            var l = deletedInterfaces.length;
-            if ( l > 0 ) {
-                message.push( String.format( this.i18n.pluralise( this._( "One interface was removed." ),
-                                                                  this._( "{0} interfaces were removed." ),
-                                                                  l ),
-                                             l ));
-            }
-            
-            var l = newInterfaces.length;
-            if ( l > 0 ) {
-                message.push( String.format( this.i18n.pluralise( this._( "One interface was added." ),
-                                                                  this._( "{0} interfaces were added." ),
-                                                                  l ),
-                                             l ));
-            }
-            
-            message = message.join( "<br/>" );
-        }
-        
-        Ext.MessageBox.show({
-            title : this._( "Interface Status" ),
-            msg : message,
-            buttons : Ext.MessageBox.OK,
-            icon : icon
-        });
-        
         this.interfaceGrid.store.loadData( result["interfaces"] );
     },
 
-    saveMethod : "/interface/set_interface_list"
+    saveMethod : "/interface/set_interface_order"
 });
 
 Ung.Alpaca.Pages.Interface.List.settingsMethod = "/interface/get_interface_list";

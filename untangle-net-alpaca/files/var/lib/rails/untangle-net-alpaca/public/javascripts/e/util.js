@@ -265,6 +265,93 @@ Ung.Alpaca.Util = {
           passwordText: i18n._('Passwords do not match')
         });
     },
+
+    tip : new Ext.Tip({
+        cls : 'warning-messages',
+        layout : 'form'
+    }),
+
+    /* Here because there are two places that need this. */
+    refreshInterfaces : function( buttonId, input, callback )
+    {
+        Ext.MessageBox.wait( this._( "Refreshing Physical Interfaces", "Please wait" ));
+        
+        var handler = this.completeRefreshInterfaces.createDelegate( this, [ callback ], true );
+        Ung.Alpaca.Util.executeRemoteFunction( "/interface/get_interface_list", handler );
+    },
+
+    completeRefreshInterfaces : function( result, response, options, callback )
+    {
+        var icon = Ext.MessageBox.INFO;
+        var buttons = Ext.MessageBox.OK;
+
+        var message = this._( "No new physical interfaces were detected." );
+        var handler = null;
+
+        var newInterfaces = result["new_interfaces"];
+        var deletedInterfaces = result["deleted_interfaces"];
+        
+        if ( newInterfaces == null ) {
+            newInterfaces = [] 
+        }
+
+        if ( deletedInterfaces == null ) {
+            deletedInterfaces = [] 
+        }
+        
+        if (( deletedInterfaces.length + newInterfaces.length ) > 0 ) {
+            icon = Ext.MessageBox.INFO;
+            message = [];
+            var m = "";
+            var l = deletedInterfaces.length;
+            if ( l > 0 ) {
+                m = this.i18n.pluralise( this._( "One interface was removed." ),
+                                         this._( "{0} interfaces were removed." ),
+                                         l );
+                message.push( String.format( m, l ));
+            }
+            
+            l = newInterfaces.length;
+            if ( l > 0 ) {
+                m = this.i18n.pluralise( this._( "One interface was added." ),
+                                         this._( "{0} interfaces were added." ),
+                                         l );
+                message.push( String.format( m, l ));
+            }
+
+            message.push( this._( "Click 'Continue' to configure changes to your interfaces." ));
+            message.push( this._( "Click 'Cancel' to ignore the changes." ));
+            
+            message = message.join( "<br/>" );
+
+            buttons = {
+                ok : this._( "Continue" ),
+                cancel : this._( "Cancel" )
+            };
+
+            handler = this.configureInterfaceChanges;
+        }
+        
+        Ext.MessageBox.show({
+            title : this._( "Interface Status" ),
+            msg : message,
+            buttons : buttons,
+            icon : icon,
+            fn : handler,
+            scope : this
+        });
+        
+        if ( callback ) {
+            callback( result );
+        }
+    },
+
+    configureInterfaceChanges : function( buttonId )
+    {
+        if ( buttonId == "ok" ) {
+            application.switchToQueryPath( "/alpaca/interface/refresh" );
+        }
+    },
     
     cidrData : [
         [ "8",  "8   : 255.0.0.0"],

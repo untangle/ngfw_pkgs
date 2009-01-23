@@ -3,6 +3,8 @@
   <% main_menu = menu_organizer.get_node( "/extjs" ) %>
   <% advanced_menu = menu_organizer.get_node( "/advanced" ) %>
   <% query_path = "/alpaca/#{controller.controller_name}/#{controller.action_name}" %>
+  <% query_path += "/#{params["id"]}" unless params["id"].nil? %>
+
   <head>
     <title>
       <%= (( @title.nil? ) ? ApplicationController::DefaultTitle : @title ).t %>

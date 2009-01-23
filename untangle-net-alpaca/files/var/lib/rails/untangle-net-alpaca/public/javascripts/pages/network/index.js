@@ -15,7 +15,8 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         items.push({
             xtype : 'button',
             text : this._( "Refresh Interfaces" ),
-            handler : this.refreshInterfaces.createDelegate( this )
+            handler : Ung.Alpaca.Util.refreshInterfaces,
+            scope : Ung.Alpaca.Util
         });
 
         items.push({
@@ -262,60 +263,6 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         });
 
         return panel;
-    },
-
-    refreshInterfaces : function()
-    {
-        Ext.MessageBox.wait( this._( "Refreshing Physical Interfaces", "Please wait" ));
-        
-        var handler = this.completeRefreshInterfaces.createDelegate( this );
-        Ung.Alpaca.Util.executeRemoteFunction( "/interface/get_interface_list", handler );        
-    },
-
-    completeRefreshInterfaces : function( result, response, options )
-    {
-        icon = Ext.MessageBox.INFO;
-        message = this._( "No new physical interfaces were detected." );
-
-        var newInterfaces = result["new_interfaces"];
-        var deletedInterfaces = result["deleted_interfaces"];
-        
-        if ( newInterfaces == null ) {
-            newInterfaces = [] 
-        }
-
-        if ( deletedInterfaces == null ) {
-            deletedInterfaces = [] 
-        }
-        
-        if (( deletedInterfaces.length + newInterfaces.length ) > 0 ) {
-            icon = Ext.MessageBox.INFO;
-            message = [];
-            var l = deletedInterfaces.length;
-            if ( l > 0 ) {
-                message.push( String.format( this.i18n.pluralise( this._( "One interface was removed." ),
-                                                                  this._( "{0} interfaces were removed." ),
-                                                                  l ),
-                                             l ));
-            }
-            
-            var l = newInterfaces.length;
-            if ( l > 0 ) {
-                message.push( String.format( this.i18n.pluralise( this._( "One interface was added." ),
-                                                                  this._( "{0} interfaces were added." ),
-                                                                  l ),
-                                             l ));
-            }
-            
-            message = message.join( "<br/>" );
-        }
-        
-        Ext.MessageBox.show({
-            title : this._( "Interface Status" ),
-            msg : message,
-            buttons : Ext.MessageBox.OK,
-            icon : icon
-        });
     },
 
     externalAliases : function()

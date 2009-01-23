@@ -16,6 +16,8 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 class InterfaceController < ApplicationController  
+  UpdateInterfaces = "update_interfaces"
+
   def list
     @title = "Interface List"
     @description = "List of all of the available interfaces."
@@ -76,7 +78,7 @@ class InterfaceController < ApplicationController
     json_result( :values => networkManager.internet_connectivity_v2? )
   end
 
-  def set_interface_list
+  def set_interface_order
      s = json_params
 
     interface_list = s["interfaces"]
@@ -114,7 +116,80 @@ class InterfaceController < ApplicationController
   end
 
   alias_method :e_list, :extjs
-  alias_method :index, :extjs
+  
+  ## Add and remove new physical interfaces
+  def set_interface_list
+    s = json_params
+        
+    new_interfaces, deleted_interfaces = InterfaceHelper.load_new_interfaces
+
+    new_interface_list = s["new_interfaces"]
+    deleted_interface_list = s["deleted_interfaces"]
+
+    new_interface_list = [] if new_interface_list.nil?
+    deleted_interface_list = [] if deleted_interface_list.nil?
+
+    if ( new_interface_list.size != new_interfaces.size || 
+         deleted_interface_list.size != deleted_interfaces.size )
+      return json_error( "There has been a change in the interfaces, please refresh the interfaces page and try again." )
+    end
+
+    if (( new_interfaces.size + deleted_interfaces.size ) == 0 ) 
+      return json_result
+    end
+
+    ## Verify that the new and deleted interfaces line up.
+    ma_1 = new_interface_list.map { |i| i["mac_address"] }.sort
+    ma_2 = new_interfaces.map { |i| i.mac_address }.sort
+    unless ( ma_1 == ma_2 )
+      return json_error( "There has been a change in the interfaces, please refresh the interfaces page and try again." )
+    end
+
+    ma_1 = deleted_interface_list.map { |i| i["mac_address"] }.sort
+    ma_2 = deleted_interfaces.map { |i| i.mac_address }.sort
+    unless ( ma_1 == ma_2 )
+      return json_error( "There has been a change in the interfaces, please refresh the interfaces page and try again." )
+    end
+    
+    ## Destroy the interfaces to be deleted.
+    deleted_interfaces.each do |i| 
+      if ( InterfaceHelper.is_critical_interface( i ))
+        ## Critical interfaces are not deleted, they are just set to the no-interface
+        i.os_name, i.mac_address, i.bus, i.vendor = Interface::Unmapped, "", "", "n/a"
+        i.save
+      else
+        i.destroy
+      end
+    end
+
+    ## This is the array of critical interfaces that haven't been assigned to a phyiscal interface
+    conditions =  [ "os_name = ?", Interface::Unmapped ]
+    unmapped_interfaces = Interface.find( :all, :conditions => conditions )
+    
+    ## Create the new interfaces
+    new_interfaces.each do |i|
+      unless unmapped_interfaces.empty?
+        ## Map the first unmapped interface
+        ui = unmapped_interfaces.delete_at( 0 )
+        ui.os_name, ui.mac_address, ui.bus, ui.vendor = i.os_name, i.mac_address, i.bus, i.vendor
+        ui.save
+      else
+        ## Otherwise just create a new interface.
+        i.save
+      end
+    end
+    
+    ## Iterate all of the helpers telling them about the new interfaces
+    iterate_components do |component|
+      next unless component.respond_to?( UpdateInterfaces )
+      component.send( UpdateInterfaces, Interface.find( :all ))
+    end
+
+    ## Redirect them to the manage page.
+    json_result
+  end
+  
+  alias_method :refresh, :extjs
 
   def get_settings
     settings = {}
