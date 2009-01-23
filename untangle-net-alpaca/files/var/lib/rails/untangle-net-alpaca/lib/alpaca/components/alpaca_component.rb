@@ -38,3 +38,4 @@ class Alpaca::Components::AlpacaComponent < Alpaca::Component
     settings.save
   end  
 end
+

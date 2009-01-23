@@ -132,7 +132,7 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
             Ext.MessageBox.show({
                 title: this._( "Warning" ),
                 msg: "<p>Leaving this page will lose unsaved changes.</p><p>Click 'Continue' to proceed and lose changes,<br/> or 'Cancel' to stay on this page.</p>",
-                width:300,
+                width : 300,
                 buttons : {
                     ok : "Continue",
                     cancel : "Cancel"
@@ -174,6 +174,23 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
     {
         if ( this.hasSaveHandler ) {
             this.saveButton.enable();
+        }
+    },
+
+    onHelp : function()
+    {
+        var url = Ung.Alpaca.Glue.buildHelpUrl( this.currentQueryPath );
+        var w = window.open( url, "_blank", "height=600,width=775,scrollbars=1,toolbar=1,status=1,location=1,menubar=1,resizeable=1" );
+
+        if ( w == null ) {
+            var m = String.format( this._( "{0}Unable to open a new window, click {1}here{2} to try again.{3}" ), "<p>", "<a href=\"" + url + "\" target=\"_blank\">", "</a>", "</p>" );
+            Ext.MessageBox.show({
+                title: this._( "Popup Blocker" ),
+                msg: m,
+                buttons : Ext.MessageBox.OK,
+                icon : Ext.MessageBox.INFO,
+                width : 300
+            });
         }
     },
 

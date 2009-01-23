@@ -2,6 +2,10 @@ Ext.ns('Ung');
 Ext.ns('Ung.Alpaca');
 
 Ung.Alpaca.Glue = {
+    HELP_URL : "http://www.untangle.com/docs/get.php",
+    
+    HELP_NAMESPACE : "alpaca",
+    
     // Map of all of the currently loaded pages.  Indexed with
     // buildPageKey( controller, page ) -> Ung.Alpaca.PagePanel child class.
     pages : {},
@@ -108,6 +112,16 @@ Ung.Alpaca.Glue = {
         /* Confirm settings save, if necessary */
         /* Reload the page in the background */
         application.reloadCurrentQueryPath();
+    },
+
+    // Build a help url
+    buildHelpUrl : function( queryPath )
+    {
+        queryPath = this.buildQueryPath( queryPath );
+        var controller = queryPath["controller"];
+        var page = queryPath["page"];
+
+        return this.HELP_URL + "?version=" + Ung.Alpaca.version + "&source=" + this.HELP_NAMESPACE + "_" + controller + "_" + page;
     },
 
     // private : Get the key used to uniquely identify a controller, page combination

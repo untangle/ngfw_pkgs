@@ -28,6 +28,7 @@
        Ung.Alpaca.isAdvanced = <%= @config_level  > AlpacaSettings::Level::Basic %>;
        Ung.Alpaca.i18n = <%= @i18n_map.to_json %>;
        Ung.Alpaca.queryPath = '<%= query_path %>';
+       Ung.Alpaca.version = '<%= UNTANGLE_VERSION %>';
     <% end %>
 
     <%= yield %>
