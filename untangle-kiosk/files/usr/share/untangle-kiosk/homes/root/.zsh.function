@@ -36,6 +36,10 @@ beep() {
  fi
 }
 
+burn() {
+  mkisofs -JR -f "$@" | s cdrecord -v -v driveropts=burnfree gracetime=2 -overburn -eject -
+}
+
 calc() {
   awk 'BEGIN { OFMT="%f"; print '"$*"'}'
 }
@@ -44,22 +48,12 @@ cdc() {
   mkdir -p "$1" && cd "$1"
 }
 
-conv() {
-  case $1 in
-    f2c) echo "${2}°F is `round $((5*(${2}-32)/9))`°C" ;;
-    c2f) echo "${2}°C is `round $((32+9*${2}/5.))`°F" ;;
-    p2k) echo "${2}lbs is `round $((${2}*0.454))`kgs" ;;
-    k2p) echo "${2}kgs is `round $((${2}/0.454))`lbs" ;;
-    cm2i) echo "Not implemented..." ;;
-    i2cm) echo "Not implemented..." ;;
-  esac
-}
-
 connect() { # pops an ssh windows if under x, or simple ssh if not
   local host=$1 && shift
+  update-gpg-agent-tty
   [[ -n "$1" ]] && local port="-p $1" && shift
   if [[ -z "$@" ]] ; then
-    xpop "ssh -Y $port $host" "$host" -g 150x54
+    xpop "ssh -Y $port $host" "$host" -g 161x54
   else
     xpop "ssh -Y $port $host" "$host" "$@"
   fi      
@@ -71,6 +65,10 @@ cp-other() {
 
 debian-doc() {
   zmore /usr/share/doc/$1/$2
+}
+
+debuild() {
+  command debuild -i $@ --lintian-opts -viI
 }
 
 disable-command() {
@@ -85,8 +83,8 @@ disable-command() {
   }
 }
 
-e() {
-  emacs $@ &
+dus() {
+  du -s "$@" | sort -n
 }
 
 e-clean() {
@@ -97,17 +95,8 @@ e-clean() {
 }
 
 eas() { # Edit And Source
-  ${EDITOR_ZSH} $@ && source $@
+  ${EDITOR_ZSH} $@ && zreload
 }
-
-#evaluate-command() {
-#  local command=$1
-#  if what $command | grep -q "function" ; then
-#    echo "$command is a shell function, aborting..."
-#  else
-#    echo `whence $command`
-#  fi
-#}
 
 evaluate-command() { 
   # If param is a function, returns the array:
@@ -130,62 +119,57 @@ evaluate-command() {
   fi
 }
 
-g() {
- elinks "www.google.com/?q=$@"
-}
-
-gg() {
-  # googlegrep
-  #
-  # gg [-c] foo bar
-  # 
-  # greps for foo in all pages that google found for bar 
-  
-  local cache="|cache"
-  if [ "$1" == "-c" ] ; then
-    cache=""
-    shift
-  fi
-  lynx -dump http://www.google.com/search?q="$2" | \
-  egrep "http.*" | egrep -iv "google$cache" | nth 2 | \
-  while read f ; do
-    echo -n "."
-    curl -s --connect-timeout 10 "$f" | grep -iq "$1" && echo -e "\n$f matches"
-  done
-}
+# find() { # filter out .svn
+#   dir=${1:-.}
+#   [ $# -gt 0 ] && shift
+#   local printArg
+#   [[ "$@" == *-print* ]] || printArg="-print" 
+#   command find "$dir" -path '*/.svn' -prune -o $@ $printArg
+# }
 
 grepz() {
-  grep -H "$@" $ZSH_CONFIG_FILES
+  grep -H "$@" $ZSH_CONFIG_FILES .svn-*/.zsh_*(N)
 }
 
 have() {
   whence $1 > /dev/null
 }
 
-haveNetwork() {
-  case $OSTYPE in
-    solaris*|darwin*|*bsd*) # FIXME!
-      return 0 ;;
-    linux*)
-      ifconfig | grep -A 1 -E '^(eth|tun)' | grep -q 'inet' ;;
-#      return $? ;;
-  esac
+keychain-init-real() {
+#  setopt localoptions xtrace
+  # cleanup
+  for e in GPG_AGENT_INFO SSH_AUTH_SOCK ; do
+    rm -fr `echo $e`
+    unset $e
+  done
+  unset SSH_AGENT_PID GPG_TTY
+  pkill keychain
+  pkill -9 keychain
+  rm -fr ~/.keychain/${HOST}-*
+  # start
+  keychain --agents gpg --nogui --quiet --nocolor `gpg --list-secret-keys | awk '/^sec/ { gsub(/.+\//, "", $2) ; print $2 }'`
+  rename -f "s|/S.gpg|/${HOST}-S.gpg|" ~/.gnupg/S*(=)
+  perl -i -pe "s|/S.gpg|/${HOST}-S.gpg|" "$HOME/.keychain/${HOST}-sh-gpg"
 }
 
-i() { # install package $1
-  case $OSTYPE in
-    openbsd*)
-      s pkg_add -v $@ ;;
-    linux-gnu)
-      s apt-get install $@ ;;
-    *)
-      echo "Platform $OSTYPE not supported" ;;
-  esac
-  rehash
-}
+keychain-init() {
+#  setopt localoptions xtrace
+  local SH_FILE="$HOME/.keychain/${HOST}-sh-gpg"
+  if [ -f $SH_FILE ] &&  then
+    source $SH_FILE
+    if [ -z "$SSH_AGENT_PID" ] || [ ! -d /proc/$SSH_AGENT_PID ] ; then
+      keychain-init-real
+    fi
+  else
+    keychain-init-real
+  fi
+  source $SH_FILE
 
-ip() { # prints current IP (linux only)
-  ifconfig ${1:-eth0} | perl -nle 'print $1 if (m/inet addr:(.*?)\s/)'
+  export GPG_TTY=`tty`
+  local key
+  for key in ~/.ssh/*.[dr]sa(DN) ; do
+    ssh-add -l | G $key DN || ssh-add $key
+  done
 }
 
 lsd() {
@@ -206,12 +190,8 @@ lst() { # list files by type
     p="$argv[-1]"
     argv=$argv[1,-2]
   fi
-  local matches="`echo "$p"/*.${(s, ,)${extensions[$type]}}(DN)`"
+  local matches="`echo \"$p\"/*.${(s, ,)${extensions[$type]}}(DN)`"
   [[ -n "$matches" ]] && ls $argv "$p"/*.${(s, ,)${extensions[$type]}}(DN)
-}
-
-mf() {
-  firefox "$1" &
 }
 
 mvc() {
@@ -219,12 +199,9 @@ mvc() {
 }
 
 nth () {
-  awk "{print \$${1}}"
-}
-
-pydoc-html() {
-  local html=/usr/share/doc/python2.3-doc/html/lib/module-MODULE.html
-  links ${html/MODULE/$1}
+  local number=$1
+  local pattern=${2:-.}
+  awk "/${pattern}/ {print \$${number}}"
 }
 
 psc() {
@@ -240,44 +217,20 @@ psm() {
 }
 
 psg() {
-  psall | grep -v "grep -i $1" | grep -i "$1"
+  psall | grep -v "grep -iE $1" | grep -iE "$1"
 }
 
-rgrep() { 
-  # recursive grep, bash-compatible (in zsh, a simple grep $1 $2/**/* does it)
-  local pattern=$1
-  local -a dirs ; dirs=$argv[2,-1]
-  [ -z $dirs ] && dirs=.
-  local -a grep_opts ; grep_opts=(-i)
-  # define rgrepLocal if not already defined
-  whence rgrepLocal > /dev/null || case $OSTYPE in
-    solaris*) # retarded :\
-      rgrepLocal() {
-        for f in `find $d2 -type f` ; do
-	  grep $grep_opts -q "$1" "$f" && echo ${f}: `grep $grep_opts "$1" "$f"`
-        done
-      } ;;
-    openbsd*)
-      rgrepLocal() {
-        local -a grep_opts ; grep_opts=($grep_opts -I -o)
-        grep -R $grep_opts "$1" "$2"
-      } ;;
-    *) # assume GNU grep
-      rgrepLocal() {
-        local -a grep_opts ; grep_opts=($grep_opts -I -H)
-        grep -r $grep_opts "$1" "$2"
-      } ;;
-  esac
-
-  for dir in $dirs ; do
-    echo $dir
-    rgrepLocal "$pattern" "$dir" | grep -v .svn
-  done
+removeHost() { 
+  perl -i.bak -ne 'print unless m/(ssh|connect|run) '"$1"'( |$)/' ~/.zsh_history
 }
 
-rmmod() {
-  lsmod | grep -E "$1" | awk '{print $1}' | xargs rmmod
+rmdeb() {
+  \rm -f ${1:-.}/*.{changes,deb,orig.tar.gz,upload,dsc,build,diff.gz}(DN)
 }
+
+# rmmod() {
+#   lsmod | grep -E "$1" | awk '{print $1}' | xargs rmmod
+# }
 
 round() {
   echo "scale=${2:-2};${1}/1" | bc
@@ -305,8 +258,7 @@ run() { # remotely run
 }
 
 s() { # smarter sudo
-  local debug=off
-  [[ $1 = -d ]] && local debug=on && shift
+  [[ $1 = -d ]] && setopt localoptions xtrace && shift
 
   opts=()
   if [[ $1 = -* ]] ; then
@@ -329,12 +281,28 @@ s() { # smarter sudo
   set -A expandedCommand $reply $args
   unset reply
 #  set -A expandedCommand $~command # expansion on an array
-  [[ $debug = on ]] && print -l -- "$expandedCommand[@]" && print =================
-  sudo $opts zsh -c "$expandedCommand"
+
+  local -a ksuArgs
+  ksuArgs=("-q" "-e")
+
+  if [[ $OSTYPE != *bsd* ]] && grep -q krb /etc/pam.d/common-auth && klist -5 -s ADN ; then
+# && ksu $ksuArgs /bin/true ADN ; then
+    ksu $ksuArgs $SHELL -c "$expandedCommand"
+  else
+    sudo $opts $SHELL -c "$expandedCommand"
+  fi
 }
 
 se() {
-  s /etc/init.d/$1 $2 $3
+  service=$1
+  shift
+  s /etc/init.d/$service $@
+}
+
+setcpufreq() {
+  local f=${1}Ghz
+  s cpufreq-set -f $f
+  s cpufreq-set -c 1 -f $f
 }
 
 setlocale() {
@@ -347,11 +315,28 @@ setlocale() {
   fi
 }
 
-xpop() { # my precious :)
+ssh-authorize-key() {
+  [[ ${#argv} -lt 1 ]] && echo "$0 <host> [key>]" && return 1
+  if [[ -z "$2" ]] ; then
+    [[ -f ~/.ssh/new-mv.rsa.pub ]] && pubKey=~/.ssh/new-mv.rsa.pub || pubKey=~/.ssh/home.rsa.pub
+  else
+    pubKey=$2
+  fi
+  cat $pubKey | ssh $1 "(mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys)"
+}
+
+ssh-remove-key() {
+#  setopt localoptions xtrace
+  ssh -o StrictHostKeyChecking=yes $1 echo |& awk '/^Offending key/ { gsub(/.*:/, "") ; print }' | while read line ; do
+    perl -i -pe 's/^.*\n// if ($. == '"$line"')' ~/.ssh/known_hosts
+  done
+}
+
+xpop() {
   set -A commandAndArgs ${=1} # split $1 as if SH_WORD_SPLIT was set
   shift
 
-  local c=$commandAndArgs[0]
+  local c=$commandAndArgs[1]
   shift 1 commandAndArgs
 
   evaluate-command $c # result is returned in $reply
@@ -367,8 +352,13 @@ xpop() { # my precious :)
   shift
 
   if [ -n "${DISPLAY}" ] ; then
-    ${=XTERM/&/} $@ -n "$name" -T "$name" -e zsh -c "$expandedCommand" &
+    ${=XTERM/&/} $@ -T "$name" -e zsh -c "$expandedCommand" &
   else
     zsh -c "$expandedCommand"
   fi
+}
+
+zbootstrap() {
+  [[ ! ${#argv} -eq 1 ]] && echo "$0 <host>" && return 1
+  scp -r .screenrc $ZSH_CONFIG_FILES $1:
 }
