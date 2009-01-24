@@ -998,6 +998,16 @@ body.wizard label.info-detail
 	padding-left:270px;
   }
 
+.x-form-textfield-detail
+{ 
+  font-size:80%;
+  font-style:italic;  
+  clear:none !important;
+  display:inline !important;
+  float:none !important;
+  margin-left:4px;
+  }
+
 body.wizard
 {
   font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
