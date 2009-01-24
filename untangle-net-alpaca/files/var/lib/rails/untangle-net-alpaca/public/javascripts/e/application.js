@@ -11,6 +11,14 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
         this._ = this.i18n._.createDelegate( this.i18n );
 
         Ung.Alpaca.Util._ = this._;
+        Ung.Alpaca.Glue._ = this._;
+
+        Ext.MessageBox.buttonText = {
+            ok : this._( "OK" ),
+            yes : this._( "Yes" ),
+            no : this._( "No" ),
+            cancel : this._( "Cancel" )
+        };
 
         this.hasSaveHandler = false;
         

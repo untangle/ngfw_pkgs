@@ -62,10 +62,34 @@ Ung.Alpaca.Glue = {
 
     saveSettings : function( panel )
     {
+        var handler = this.confirmedSaveSettings.createDelegate( this, [panel], true );
+
         /* Confirm settings save, if necessary */
+        if ( panel.confirmMessage )
+        {
+            message = [];
+            message.push( panel.confirmMessage );
+            message.push( this._( "Would you like to proceed?" ));
+
+            Ext.MessageBox.show({
+                title : this._( "Save Confirmation" ),
+                msg : message.join( "\n" ),
+                buttons : Ext.MessageBox.YESNO,
+                icon : Ext.MessageBox.INFO,
+                fn : handler
+            });
+        } else {
+            handler( "yes", "" );
+        }
+    },
+
+    confirmedSaveSettings : function( buttonId, text, panel )
+    {
+        if ( buttonId != "yes" ) {
+            return;
+        }
 
         /* Validate */
-
         Ext.MessageBox.wait( "Saving...", "Please wait" );
         
         var handler = this.completeSaveSettings.createDelegate( this );

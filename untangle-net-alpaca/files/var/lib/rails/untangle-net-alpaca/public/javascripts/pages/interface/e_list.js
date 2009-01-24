@@ -121,6 +121,8 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
             },
             items : items
         });
+
+        this.confirmMessage = this._( "These settings are critical to proper network operation and you should be sure these are the settings you want. Your Untangle Client may be logged out." );
                 
         Ung.Alpaca.Pages.Interface.List.superclass.initComponent.apply( this, arguments );
     },
