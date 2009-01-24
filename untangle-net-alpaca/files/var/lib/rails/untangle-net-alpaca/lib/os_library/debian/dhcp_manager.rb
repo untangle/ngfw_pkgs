@@ -27,6 +27,8 @@ class OSLibrary::Debian::DhcpManager < OSLibrary::DhcpManager
   OverrideDnsServer = "DHCP_DNS_SERVERS"
   OverrideDomainName = "DHCP_DOMAIN_NAME"
 
+  OverrideMTU = "DHCP_MTU"
+
   def register_hooks
     os["network_manager"].register_hook( -100, "dhcp_manager", "write_files", :hook_commit )
   end
@@ -122,8 +124,15 @@ class OSLibrary::Debian::DhcpManager < OSLibrary::DhcpManager
       end
       
       ## If the user never wants to modify the dnsmasq file, set it to ignore the server
-      unless overrideManager.writable?( OSLibrary::Debian::DnsServerManager::ResolvConfFile )
+      if !overrideManager.writable?( OSLibrary::Debian::DnsServerManager::ResolvConfFile ) or !interface.wan
         cfg << "#{OverrideDnsServer}=\"ignore\""
+      end
+
+      mtu = config.mtu
+      mtu = -1 if mtu.nil?
+      mtu = mtu.to_i
+      if ( mtu > 575 )
+        cfg << "#{OverrideMTU}=#{mtu}"
       end
       
       next if cfg.size == 0

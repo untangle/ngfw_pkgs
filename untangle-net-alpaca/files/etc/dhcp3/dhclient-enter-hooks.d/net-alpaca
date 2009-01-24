@@ -133,6 +133,10 @@ if [ -n "${DHCP_IP_NETMASK}" ] ; then
     new_subnet_arg="netmask ${DHCP_IP_NETMASK}"
 fi
 
+if [ -n "${DHCP_MTU}" ] && [ ${DHCP_MTU} -ge 575 ]; then
+    mtu_arg="mtu ${DHCP_MTU}"
+fi
+
 new_routers=${DHCP_GATEWAY:-${new_routers}}
 
 new_domain_name_servers=${DHCP_DNS_SERVERS:-${new_domain_name_servers}}

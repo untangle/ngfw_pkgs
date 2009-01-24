@@ -397,9 +397,18 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
         Ung.Alpaca.Pages.Interface.Config.superclass.updateSettings.apply( this, arguments );
 
         /* Append the primary address to the top of the static aliases. */
-        settings["static_aliases"].splice( 0, 0, { 
-            network_string : settings["static"]["primary_address"] 
-        });
+        pa = settings["static"]["primary_address"];
+        if ( pa == null ) {
+            pa = "";
+        }
+
+        pa = pa.trim();
+        if ( pa.length > 0 ) {
+            settings["static_aliases"].splice( 0, 0, { 
+                network_string : settings["static"]["primary_address"] 
+            });
+        }
+
         delete( settings["static"]["primary_address"]  );
         this.updateNetworks( settings, "static_aliases" );
         this.updateNetworks( settings, "static_nat_policies" );
