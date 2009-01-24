@@ -23,7 +23,7 @@ default     saved
 timeout     5
 
 # Use the Untangle splash for the grub menu
-splashimage=(hd0,0)/boot/grub/mvsplash.xpm.gz
+splashimage=(hd0,0)/boot/grub/utsplash.xpm.gz
 
 ## password ['--md5'] passwd
 # If used in the first section of a menu file, disable all interactive editing
