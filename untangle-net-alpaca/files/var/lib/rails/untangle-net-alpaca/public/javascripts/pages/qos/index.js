@@ -10,11 +10,17 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "qos", "index" )) {
 Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
     initComponent : function()
     {
+        this.priorityStore = [];
+        this.priorityMap = {};
+
+        this.addPriority( 10 , this._( "High" ));
+        this.addPriority( 20 , this._( "Normal" ));
+        this.addPriority( 30 , this._( "Low" ));
+
         this.qosGrid = this.buildQosGrid();
         this.statisticsGrid = this.buildStatisticsGrid();
-        
+                
         var percentageStore = this.buildPercentageStore();
-        var priorityStore = this.buildPriorityStore();
 
         Ext.apply( this, {
             defaults : {
@@ -79,7 +85,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     editable : false,
                     width : 70,
                     listWidth : 60,
-                    store : priorityStore
+                    store : this.priorityStore
                 },{
                     xtype : "combo",
                     fieldLabel : "ACK Priority",
@@ -90,7 +96,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     editable : false,
                     width : 70,
                     listWidth : 60,
-                    store : priorityStore
+                    store : this.priorityStore
                 },{
                     xtype : "combo",
                     fieldLabel : "Gaming Priority",
@@ -100,7 +106,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     editable : false,
                     width : 70,
                     listWidth : 60,
-                    store : priorityStore
+                    store : this.priorityStore
                 }]
             },{
                 xtype : "label",
@@ -127,20 +133,23 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
         return percentageStore;
     },
-    
-    buildPriorityStore : function()
-    {
-        return [[ 10, "High" ], [ 20, "Normal" ], [ 30, "Low" ]];
-    },
 
     buildQosGrid : function()
     {
+        var enabledColumn = new Ung.Alpaca.grid.CheckColumn({
+            header : "On",
+            dataIndex : 'enabled',
+            sortable: false,
+            fixed : true
+        });
+
         var qosGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
 
             recordFields : [ "enabled", "description", "filter", "priority" ],
             selectable : true,
             sortable : false,
+            hasReorder: true,
             
             name : "qos_rules",
 
@@ -150,27 +159,31 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 filter : "",
                 description : "[New Entry]"
             },
+            
+            plugins : [ enabledColumn ],
 
-            columns : [{
-                header : "On",
-                width: 55,
-                sortable: true,
-                dataIndex : "enabled",
-                editor : new Ext.form.TextField({
-                    allowBlank : false 
-                })
-            },{
+            columns : [ enabledColumn, {
                 header : "Priority",
-                width: 75,
-                sortable: true,
+                width: 60,
+                sortable: false,
+                fixed : true,
                 dataIndex : "priority",
-                editor : new Ext.form.TextField({
-                    allowBlank : false 
+                renderer : function( value, metadata, record )
+                {
+                    return this.priorityMap[value];
+                }.createDelegate( this ),
+                editor : new Ext.form.ComboBox({
+                    store : this.priorityStore,
+                    listWidth : 60,
+                    width : 60,
+                    triggerAction : "all",
+                    mode : "local",
+                    editable : false
                 })
             },{
                 header : "Description",
                 width: 200,
-                sortable: true,
+                sortable: false,
                 dataIndex : "description",
                 editor : new Ext.form.TextField({
                     allowBlank : false 
@@ -251,6 +264,12 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         if ( !statistics ) return;
 
         this.statisticsGrid.store.loadData( statistics );
+    },
+    
+    addPriority : function( v, name )
+    {
+        this.priorityMap[v] = name;
+        this.priorityStore.push([v,name]);
     }
 
 });
