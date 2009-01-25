@@ -91,7 +91,8 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                 },
                 items : [{
                     fieldLabel : "Primary IP Address and Netmask",
-                    name : "static.primary_address"
+                    name : "static.primary_address",
+                    vtype : "networkAddress"
                 }]
             },{
                 xtype : "label",
@@ -106,13 +107,17 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                 },
                 items : [{
                     fieldLabel : this._( "Default Gateway" ),
-                    name : "static.default_gateway"
+                    name : "static.default_gateway",
+                    vtype : "ipAddress"
                 },{
                     fieldLabel : this._( "Primary DNS Server" ),
-                    name : "static.dns_1"
+                    name : "static.dns_1",
+                    vtype : "ipAddress"
                 },{
                     fieldLabel : this._( "Secondary DNS Server" ),
-                    name : "static.dns_2"
+                    name : "static.dns_2",
+                    vtype : "ipAddress",
+                    allowBlank : true
                 }, this.currentMtu( settings, "static.mtu" ),
                          this.buildEthernetMediaCombo( settings )]
             }]);
@@ -148,26 +153,36 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
         var items = [{
             fieldLabel : this._( "IP Address" ),
             name : "dynamic.ip",
-            boxLabel : d["ip"]
+            boxLabel : d["ip"],
+            allowBlank : true,
+            vtype : 'ipAddress'
         },{
             fieldLabel : this._( "Netmask" ),
             name : "dynamic.netmask",
-            boxLabel : d["netmask"]
+            boxLabel : d["netmask"],
+            allowBlank : true,
+            vtype : 'ipAddress'
         }];
 
         if ( this.settings["interface"]["wan"] ) {
             items = items.concat([{
                 fieldLabel : this._( "Default Gateway" ),
                 name : "dynamic.default_gateway",
-                boxLabel : d["default_gateway"]
+                boxLabel : d["default_gateway"],
+                allowBlank : true,
+                vtype : 'ipAddress'
             },{
                 fieldLabel : this._( "Primary DNS Server" ),
                 name : "dynamic.dns_1",
-                boxLabel : d["dns_1"]
+                boxLabel : d["dns_1"],
+                allowBlank : true,
+                vtype : 'ipAddress'
             },{
                 fieldLabel : this._( "Secondary DNS Server" ),
                 name : "dynamic.dns_2",
-                boxLabel : d["dns_2"]
+                boxLabel : d["dns_2"],
+                allowBlank : true,
+                vtype : 'ipAddress'
             }]);
         }
         
@@ -243,10 +258,14 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                 name : "pppoe.use_peer_dns"
             },{
                 fieldLabel : this._( "Primary DNS Server" ),
-                name : "pppoe.dns_1"
+                name : "pppoe.dns_1",
+                allowBlank : true,
+                vtype : 'ipAddress'
             },{
                 fieldLabel : this._( "Secondary DNS Server" ),
-                name : "pppoe.dns_2"
+                name : "pppoe.dns_2",
+                allowBlank : true,
+                vtype : 'ipAddress'
             }]);
         }
 
@@ -300,7 +319,8 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                 sortable: true,
                 dataIndex : "network_string",
                 editor : new Ext.form.TextField({
-                    allowBlank : false
+                    allowBlank : false,
+                    vtype : 'networkAddress'
                 })
             }]
         });
@@ -385,6 +405,8 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
         }
         
         return {
+            xtype : 'numberfield',
+            width : 60,
             fieldLabel : this._( "MTU" ),
             boxLabel : String.format( this._( "(current : {0})" ), mtu ),
             name : field,

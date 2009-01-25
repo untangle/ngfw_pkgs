@@ -145,15 +145,21 @@ Ung.Alpaca.Util = {
     initExtVTypes: function(i18n){
     	
         Ext.apply(Ext.form.VTypes, {
+            ipAddressMask : /[ 0-9\.]/,
+
             ipAddress: function(val, field) {
+                val = val.trim();
                 var ipAddrMaskRe = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
                 return ipAddrMaskRe.test(val);
             },
             ipAddressText: i18n._('Invalid IP Address.'),
             
+            networkAddressMask : /[ 0-9\.\/]/,
+
             // #{ip_address} [/#{netmask}]
             networkAddress: function(val, field) {
-                var tokens = val.split('/');
+                val = val.trim();
+                var tokens = val.split(/ *\/ */);
                 if (tokens.length < 1 && tokens.length > 2) {
             	    return false;
                 }
@@ -213,14 +219,20 @@ Ung.Alpaca.Util = {
             //<letter> ::= any one of the 52 alphabetic characters A through Z in
             //upper case and a through z in lower case
             //<digit> ::= any one of the ten digits 0 through 9
+            hostnameMask : /[A-Za-z\-\.]/,
+
             hostname: function(val, field) {
+                val = val.trim();
                 var hostnameMaskRe = /^(((([a-zA-Z](([a-zA-Z0-9\-]+)?[a-zA-Z0-9])?)+\.)*([a-zA-Z](([a-zA-Z0-9\-]+)?[a-zA-Z0-9])?)+)|\s)$/;
                 return hostnameMaskRe.test(val);
             },
             hostnameText: i18n._('Invalid Hostname.'),
             
+            hostnameListMask : /[A-Za-z\-\. ,]/,
+            
             //A list of hostnames separated by spaces. 
             hostnameList : function (val, field) {
+                val = val.trim();
           	var hostnames = val.split(/\s+/)
           	for (var i=0; i < hostnames.length; i++) {
           	    if (!this.hostname(hostnames[i], field)) {
@@ -231,12 +243,18 @@ Ung.Alpaca.Util = {
             },
             hostnameListText: i18n._('Invalid Hostname List.'),
             
+            domainNameSuffixMask : /[A-Za-z\-\.]/,
+
             domainNameSuffix: function(val, field) {
+                val = val.trim();
           	return this.hostname(val, field)
             },
             domainNameSuffixText: i18n._('Invalid Domain Name Suffix.'),
             
+            domainNameListMask : /[A-Za-z\-\. ,]/,
+
             domainNameList: function(val, field) {
+                val = val.trim();
                 var domains = val.split(/[\s,]+/)
                 for (var i=0; i < domains.length; i++) {
                     if (!this.domainNameSuffix(domains[i], field)) {
@@ -247,8 +265,11 @@ Ung.Alpaca.Util = {
             },
             domainNameListText: i18n._('Invalid Domain Name List.'),
             
+            macAddressMask : /[0-9a-fA-F:\-]/,
+
             //MAC address in 00:00:00:00:00:00 or the 00-00-00-00-00-00 notation
             macAddress: function(val, field) {
+                val = val.trim();
                 var macAddressMaskRe = /^([0-9a-f]{2}([:-]|$)){6}$/i;
                 return macAddressMaskRe.test(val);
             },
@@ -409,6 +430,27 @@ Ung.Alpaca.TextField = Ext.extend( Ext.form.TextField, {
 
 /* override the default text field so that all of the text fields can add a box label */
 Ext.reg('textfield', Ung.Alpaca.TextField);
+
+Ung.Alpaca.NumberField = Ext.extend( Ext.form.NumberField, {
+    onRender : function(ct, position)
+    {
+        Ung.Alpaca.NumberField.superclass.onRender.call(this, ct, position);
+        
+        var parent = this.el.parent()
+        
+        if( this.boxLabel ) {
+            this.labelEl = parent.createChild({
+                tag: 'label',
+                htmlFor: this.el.id,
+                cls: 'x-form-textfield-detail',
+                html: this.boxLabel
+            });
+        }
+    }
+});
+
+/* override the default text field so that all of the text fields can add a box label */
+Ext.reg('numberfield', Ung.Alpaca.NumberField);
 
 Ung.Alpaca.ComboBox = Ext.extend( Ext.form.ComboBox, {
     onRender : function(ct, position)
