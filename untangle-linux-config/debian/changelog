@@ -1,3 +1,9 @@
+untangle-linux-config (6.1.0~svn20090123r21556trunk-1lenny) chaos; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@untangle.com>  Fri, 23 Jan 2009 17:48:07 -0800
+
 untangle-linux-config (0-1) stable; urgency=low
 
   * initial release
