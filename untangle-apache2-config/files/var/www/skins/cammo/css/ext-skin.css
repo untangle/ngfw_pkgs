@@ -640,11 +640,11 @@ td.x-date-mp-month a:hover,td.x-date-mp-year a:hover {
     overflow:hidden;
 }
 .x-progress-bar {
-    height:19px;
+    height:18px;
     float:left;
     width:0;
-    background:#9CBFEE url( ../images/darkgray/progress-bar/progress-bg-green-5.png ) repeat-x left center;
-    border-bottom:1px solid #7Ec22B;    
+    background:#9CBFEE url( ../images/darkgray/progess-bar/progress-bg-green-5.png ) repeat-x left center;
+    border-top:1px solid #7ED22B;    
     border-bottom:1px solid #7Ec22B;
     border-right:1px solid #7Ec22B;
 
