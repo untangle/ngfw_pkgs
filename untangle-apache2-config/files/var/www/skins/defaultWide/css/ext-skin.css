@@ -442,4 +442,17 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
     display:inline !important;
     margin-left:20px;
 }
+.x-progress-wrap {
+    border:1px solid #6AB024;
+    overflow:hidden;
+}
+.x-progress-bar {
+    height:19px;
+    float:left;
+    width:0;
+    background:#9CBFEE url( ../images/gray/progress-bar/progress-bg-green-5.png ) repeat-x left center;
+    border-bottom:1px solid #7Ec22B;    
+    border-bottom:1px solid #7Ec22B;
+    border-right:1px solid #7Ec22B;
 
+}

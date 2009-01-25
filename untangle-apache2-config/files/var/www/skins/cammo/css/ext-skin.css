@@ -635,4 +635,17 @@ td.x-date-mp-month a:hover,td.x-date-mp-year a:hover {
     display:inline !important;
     margin-left:20px;
 }
+.x-progress-wrap {
+    border:1px solid #6AB024;
+    overflow:hidden;
+}
+.x-progress-bar {
+    height:19px;
+    float:left;
+    width:0;
+    background:#9CBFEE url( ../images/darkgray/progress-bar/progress-bg-green-5.png ) repeat-x left center;
+    border-bottom:1px solid #7Ec22B;    
+    border-bottom:1px solid #7Ec22B;
+    border-right:1px solid #7Ec22B;
 
+}
