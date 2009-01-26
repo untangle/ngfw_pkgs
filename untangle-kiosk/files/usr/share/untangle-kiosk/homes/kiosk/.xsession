@@ -2,6 +2,10 @@
 xset s off
 xset -dpms
 
+if grep -q VMWARE /var/log/Xorg.0.log ; then
+  xrandr -s $(xrandr | head -1 | perl -pe 's/.* maximum (\d+) x (\d+)/$1x$2/')
+fi
+
 # start fbpanel
 fbpanel &
 
