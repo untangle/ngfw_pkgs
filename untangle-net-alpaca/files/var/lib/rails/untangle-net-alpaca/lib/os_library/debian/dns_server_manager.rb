@@ -222,8 +222,8 @@ EOF
 
   def dns_config( dhcp_server_settings, dns_server_settings )
     if dns_server_settings.nil?
-      logger.warn( "no dns settings, not writing the file" );
-      return ""
+      logger.warn( "no dns settings, just appending name servers." );
+      return dns_config_name_servers
     end
     
     settings = []

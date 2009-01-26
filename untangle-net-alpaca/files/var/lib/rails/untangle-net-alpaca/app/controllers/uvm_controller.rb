@@ -324,6 +324,8 @@ class UvmController < ApplicationController
       external_interface.config_type = InterfaceHelper::ConfigType::STATIC
     end
 
+    update_dns_server_settings()
+
     json_result
   end
 
@@ -332,6 +334,8 @@ class UvmController < ApplicationController
       external_interface.intf_dynamic = IntfDynamic.new
       external_interface.config_type = InterfaceHelper::ConfigType::DYNAMIC
     end
+
+    update_dns_server_settings()
 
     json_result
   end
@@ -344,6 +348,8 @@ class UvmController < ApplicationController
       external_interface.intf_pppoe = IntfPppoe.new( :username => username, :password => password )
       external_interface.config_type = InterfaceHelper::ConfigType::PPPOE
     end
+
+    update_dns_server_settings()
 
     json_result
   end
@@ -505,7 +511,9 @@ class UvmController < ApplicationController
   def update_dns_server_settings( params )
     dns_server_settings = DnsServerSettings.find( :first )
     dns_server_settings = DnsServerSettings.new( DnsServerSettingsDefaults ) if dns_server_settings.nil?
-    dns_server_settings.update_attributes( params )
-    dns_server_settings.save
+    unless params.nil?
+      dns_server_settings.update_attributes( params )
+      dns_server_settings.save
+    end
   end
 end
