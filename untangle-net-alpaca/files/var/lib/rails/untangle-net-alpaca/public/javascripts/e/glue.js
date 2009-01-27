@@ -90,7 +90,7 @@ Ung.Alpaca.Glue = {
         }
 
         /* Validate */
-        Ext.MessageBox.wait( "Saving...", "Please wait" );
+        Ext.MessageBox.wait( this._( "Saving..." ), this._( "Please wait" ));
         
         var handler = this.completeSaveSettings.createDelegate( this );
         var errorHandler = this.errorSaveSettings.createDelegate( this );
@@ -111,8 +111,8 @@ Ung.Alpaca.Glue = {
     completeSaveSettings : function()
     {
         Ext.MessageBox.show({  
-            title : 'Saved Settings',
-            msg : 'Settings have been saved successfuly',
+            title : this._( 'Saved Settings' ),
+            msg : this._( 'Settings have been saved successfuly' ),
             buttons : Ext.MessageBox.OK,
             icon : Ext.MessageBox.INFO
         });
@@ -124,8 +124,8 @@ Ung.Alpaca.Glue = {
     errorSaveSettings : function()
     {
         Ext.MessageBox.show({  
-            title : 'Internal Error',
-            msg : 'Unable to save settings',
+            title : this._( 'Internal Error' ),
+            msg : this._( 'Unable to save settings' ),
             buttons : Ext.MessageBox.OK,
             icon : Ext.MessageBox.ERROR
         });

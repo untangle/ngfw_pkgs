@@ -23,12 +23,13 @@ Ung.Alpaca.Pages.Network.Aliases = Ext.extend( Ung.Alpaca.PagePanel, {
             },
 
             columns : [{
-                header : "Address and Netmask",
+                header : this._( "Address and Netmask" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "network_string",
                 editor : new Ext.form.TextField({
-                    allowBlank : false 
+                    allowBlank : false,
+                    vtype : "networkAddress"
                 })
             }]
         });

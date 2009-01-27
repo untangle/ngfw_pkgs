@@ -21,27 +21,29 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             recordDefaults : {
                 mac_address : "00:11:22:33:44:66",
                 ip_address : "1.2.3.4",
-                description : "[New Entry]"
+                description : this._( "[New Entry]" )
             },
 
             columns : [{
-                header : "MAC Address",
+                header : this._( "MAC Address" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "mac_address",
                 editor : new Ext.form.TextField({
-                    allowBlank : false 
+                    allowBlank : false,
+                    vtype : "macAddress"
                 })
             },{
-                header : "IP Address",
+                header : this._( "IP Address" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "ip_address",
                 editor : new Ext.form.TextField({
-                    allowBlank : false 
+                    allowBlank : false,
+                    vtype : "ipAddress"
                 })
             },{
-                header : "Description",
+                header : this._( "Description" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "description",
@@ -63,23 +65,23 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             saveData : false,
 
             tbar : [{
-                text : "Refresh",
+                text : this._( "Refresh" ),
                 handler : this.refreshCurrentLeases,
                 scope : this
             }],
 
             columns : [{
-                header : "MAC Address",
+                header : this._( "MAC Address" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "mac_address"
             },{
-                header : "IP Address",
+                header : this._( "IP Address" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "ip_address"
             },{
-                header : "Hostname",
+                header : this._( "Hostname" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "hostname"
@@ -100,37 +102,43 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 },
                 items : [{
                     xtype : "checkbox",
-                    fieldLabel : "Enabled",
+                    fieldLabel : this._( "Enabled" ),
                     name : "dhcp_server_settings.enabled"
                 },{
-                    fieldLabel : "Start",
-                    name : "dhcp_server_settings.start_address"
+                    fieldLabel : this._( "Start" ),
+                    name : "dhcp_server_settings.start_address",
+                    vtype : "ipAddress"
                 },{
-                    fieldLabel : "End",
-                    name : "dhcp_server_settings.end_address"
+                    fieldLabel : this._( "End" ),
+                    name : "dhcp_server_settings.end_address",
+                    vtype : "ipAddress"
                 },{
-                    fieldLabel : "Lease Duration (seconds)",
+                    xtype : "numberfield",
+                    fieldLabel : this._( "Lease Duration (seconds)" ),
                     name : "dhcp_server_settings.lease_duration"
                 },{
-                    fieldLabel : "Gateway",
-                    name : "dhcp_server_settings.gateway"
+                    fieldLabel : this._( "Gateway" ),
+                    name : "dhcp_server_settings.gateway",
+                    vtype : "ipAddress"
                 },{
-                    fieldLabel : "Netmask",
-                    name : "dhcp_server_settings.netmask"
+                    fieldLabel : this._( "Netmask" ),
+                    name : "dhcp_server_settings.netmask",
+                    vtype : "ipAddress"
                 },{
-                    fieldLabel : "Lease Limit",
+                    xtype : "numberfield",
+                    fieldLabel : this._( "Lease Limit" ),
                     name : "dhcp_server_settings.max_leases"
                 },{
                     xtype : "checkbox",
-                    fieldLabel : "Authoritative",
+                    fieldLabel : this._( "Authoritative" ),
                     name : "dhcp_server_settings.is_authoritative"
                 }]
             },{
                 xtype : "label",
-                html : "Static DHCP Entries"
+                html : this._( "Static DHCP Entries" )
             }, this.staticGrid, {
                 xtype : "label",
-                html : "Current DHCP Entries"                
+                html : this._( "Current DHCP Entries" )       
             }, this.currentLeasesGrid ]
         });
         

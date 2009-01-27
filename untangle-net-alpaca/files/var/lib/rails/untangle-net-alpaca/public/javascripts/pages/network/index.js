@@ -62,11 +62,12 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     xtype : 'textfield'
                 },
                 items : [{
-                    fieldLabel : "Address",
-                    name : this.generateName( "config_list", i, "static.ip" )
+                    fieldLabel : this._( "Address" ),
+                    name : this.generateName( "config_list", i, "static.ip" ),
+                    vtype : "ipAddress"
                 },{
                     xtype : "combo",
-                    fieldLabel : "Netmask",
+                    fieldLabel : this._( "Netmask" ),
                     name : this.generateName( "config_list", i, "static.netmask" ),
                     store : Ung.Alpaca.Util.cidrData,
                     listWidth : 140,
@@ -75,14 +76,19 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     mode : "local",
                     editable : false
                 },{
-                    fieldLabel : "Default Gateway",
-                    name : this.generateName( "config_list", i, "static.default_gateway" )
+                    fieldLabel : this._( "Default Gateway" ),
+                    name : this.generateName( "config_list", i, "static.default_gateway" ),
+                    allowBlank : false,
+                    vtype : "ipAddress"
                 },{
-                    fieldLabel : "Primary DNS Server",
-                    name : this.generateName( "config_list", i, "static.dns_1" )
+                    fieldLabel : this._( "Primary DNS Server" ),
+                    name : this.generateName( "config_list", i, "static.dns_1" ),
+                    allowBlank : false,
+                    vtype : "ipAddress"
                 },{
-                    fieldLabel : "Secondary DNS Server",
-                    name : this.generateName( "config_list", i, "static.dns_2" )
+                    fieldLabel : this._( "Secondary DNS Server" ),
+                    name : this.generateName( "config_list", i, "static.dns_2" ),
+                    allowBlank : true
                 }]
             }]
         };
@@ -94,19 +100,19 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     readOnly : true
                 },
                 items : [{
-                    fieldLabel : "Address",
+                    fieldLabel : this._( "Address" ),
                     name : "dhcp_status.ip"
                 },{
-                    fieldLabel : "Netmask",
+                    fieldLabel : this._( "Netmask" ),
                     name : "dhcp_status.netmask"
                 },{
-                    fieldLabel : "Default Gateway",
+                    fieldLabel : this._( "Default Gateway" ),
                     name : "dhcp_status.default_gateway"
                 },{
-                    fieldLabel : "Primary DNS Server",
+                    fieldLabel : this._( "Primary DNS Server" ),
                     name : "dhcp_status.dns_1"
                 },{
-                    fieldLabel : "Secondary DNS Server",
+                    fieldLabel : this._( "Secondary DNS Server" ),
                     name :  "dhcp_status.dns_2"
                 }]
             }]
@@ -118,21 +124,25 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     xtype : 'textfield'
                 },
                 items : [{
-                    fieldLabel : "Username",
+                    fieldLabel : this._( "Username" ),
                     name : this.generateName( "config_list", i, "pppoe.username" )
                 },{
-                    fieldLabel : "Password",
+                    fieldLabel : this._( "Password" ),
                     name : this.generateName( "config_list", i, "pppoe.password" )
                 },{
                     xtype : "checkbox",
-                    fieldLabel : "User peer DNS",
+                    fieldLabel : this._( "User peer DNS" ),
                     name : this.generateName( "config_list", i, "pppoe.use_peer_dns" )
                 },{
-                    fieldLabel : "Primary DNS Server",
-                    name : this.generateName( "config_list", i, "pppoe.dns_1" )
+                    fieldLabel : this._( "Primary DNS Server" ),
+                    name : this.generateName( "config_list", i, "pppoe.dns_1" ),
+                    vtype : "ipAddress",
+                    allowBlank : true
                 },{
-                    fieldLabel : "Secondary DNS Server",
-                    name : this.generateName( "config_list", i, "pppoe.dns_2" )
+                    fieldLabel : this._( "Secondary DNS Server" ),
+                    name : this.generateName( "config_list", i, "pppoe.dns_2" ),
+                    vtype : "ipAddress",
+                    allowBlank : true
                 }]
             }]
         };
@@ -164,7 +174,7 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 items : [{
                     xtype : "combo",
                     name : this.generateName( "config_list", i, "interface.config_type" ),
-                    fieldLabel : "Config Type",
+                    fieldLabel : this._( "Config Type" ),
                     store : configTypes,
                     switchBlade : switchBlade,
                     triggerAction : "all",
@@ -191,11 +201,13 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     xtype : 'textfield'
                 },
                 items : [{
-                    fieldLabel : "Address",
-                    name : this.generateName( "config_list", i, "static.ip" )
+                    fieldLabel : this._( "Address" ),
+                    name : this.generateName( "config_list", i, "static.ip" ),
+                    vtype : "ipAddress",
+                    allowBlank : false
                 },{
                     xtype : "combo",
-                    fieldLabel : "Netmask",
+                    fieldLabel : this._( "Netmask" ),
                     name : this.generateName( "config_list", i, "static.netmask" ),
                     store : Ung.Alpaca.Util.cidrData,
                     listWidth : 140,
@@ -210,7 +222,7 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         var bridgePanel = {
             items : [{
                 items : [{
-                    fieldLabel : "Bridge To",
+                    fieldLabel : this._( "Bridge To" ),
                     xtype : "combo",
                     mode : "local",
                     triggerAction : "all",
@@ -249,7 +261,7 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 items : [{
                     xtype : "combo",
                     name : this.generateName( "config_list", i, "interface.config_type" ),
-                    fieldLabel : "Config Type",
+                    fieldLabel : this._( "Config Type" ),
                     store : configTypes,
                     switchBlade : switchBlade,
                     triggerAction : "all",

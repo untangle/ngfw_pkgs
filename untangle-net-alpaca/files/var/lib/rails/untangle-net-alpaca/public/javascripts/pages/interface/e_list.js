@@ -23,13 +23,13 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
                 renderer : function( value, metadata, record )
                 {
                     var url = "<a href='javascript:application.switchToQueryPath( \"/alpaca/interface/e_config/" + value + "\")'>";
-                    return String.format( "{0}edit{1}", url, "</a>" );
+                    return String.format( Ung.Alpaca.Util._( "{0}edit{1}" ), url, "</a>" );
                 }
             });
         }
 
         columns.push({
-            header : "Name",
+            header : this._( "Name" ),
             width: 80,
             sortable: false,
             fixed : true,
@@ -38,7 +38,7 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
         });
 
         columns.push({
-            header : "Config Type",
+            header : this._( "Config Type" ),
             width: 80,
             fixed : true,
             align : "center",
@@ -57,7 +57,7 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
             }
         });
         columns.push({
-            header : "Physical Interface",
+            header : this._( "Physical Interface" ),
             width: 200,
             sortable: false,
             dataIndex : "interface_status_v2",
@@ -65,7 +65,7 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
         });
 
         columns.push({
-            header : "MAC Address",
+            header : this._( "MAC Address" ),
             width: 120,
             sortable: false,
             fixed : true,
@@ -90,7 +90,7 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
             name : "interfaces",
 
             tbar : [{
-                text : "Test Connectivity",
+                text : this._( "Test Connectivity" ),
                 handler : this.testConnectivity,
                 scope : this
             },{
@@ -110,7 +110,7 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
 
         items.push({
             xtype : "label",
-            html : "Interface List"
+            html : this._( "Interface List" )
         });
 
         items.push( this.interfaceGrid );
@@ -259,7 +259,7 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
 
     testConnectivity : function()
     {
-        Ext.MessageBox.wait( this._( "Testing Internet Connectivity", "Please wait" ));
+        Ext.MessageBox.wait( this._( "Testing Internet Connectivity" ), this._( "Please wait" ));
         
         var handler = this.completeTestConnectivity.createDelegate( this );
         Ung.Alpaca.Util.executeRemoteFunction( "/interface/test_internet_connectivity_v2", handler );

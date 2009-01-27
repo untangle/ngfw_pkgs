@@ -34,31 +34,34 @@ Ung.Alpaca.Pages.Route.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             },
 
             columns : [{
-                header : "Target",
+                header : this._( "Target" ),
                 width: 200,
                 sortable: false,
                 dataIndex : "target",
                 editor : new Ext.form.TextField({
-                    allowBlank : false 
+                    allowBlank : false,
+                    vtype : 'networkAddress'
                 })
             },{
-                header : "Netmask",
+                header : this._( "Netmask" ),
                 width: 200,
                 sortable: false,
                 dataIndex : "netmask",
                 editor : new Ext.form.TextField({
-                    allowBlank : false 
+                    allowBlank : false,
+                    vtype : 'ipAddress'
                 })
             },{
-                header : "Gateway",
+                header : this._( "Gateway" ),
                 width: 200,
                 sortable: false,
                 dataIndex : "gateway",
                 editor : new Ext.form.TextField({
-                    allowBlank : false 
+                    allowBlank : false,
+                    vtype : 'ipAddress'
                 })
             },{
-                header : "Description",
+                header : this._( "Description" ),
                 width: 200,
                 sortable: false,
                 dataIndex : "name",
@@ -81,17 +84,17 @@ Ung.Alpaca.Pages.Route.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             tbar : [],
 
             columns : [{
-                header : "Target",
+                header : this._( "Target" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "target"
             },{
-                header : "Netmask",
+                header : this._( "Netmask" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "netmask"
             },{
-                header : "Gateway",
+                header : this._( "Gateway" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "gateway"
@@ -106,10 +109,10 @@ Ung.Alpaca.Pages.Route.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             },
             items : [{
                 xtype : "label",
-                html : "Static Routes"
+                html : this._( "Static Routes" )
             }, this.staticRoutesGrid, {
                 xtype : "label",
-                html : "Active Routes"
+                html : this._( "Active Routes" )
             }, this.activeRoutesGrid ]
         });
         

@@ -23,11 +23,11 @@ Ung.Alpaca.Pages.Override.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 enabled : false,
                 writable : true,
                 path : "",
-                description : "[New Entry]"
+                description : this._( "[New Entry]" )
             },
 
             columns : [{
-                header : "On",
+                header : this._( "On" ),
                 width: 55,
                 sortable: true,
                 dataIndex : "enabled",
@@ -35,7 +35,7 @@ Ung.Alpaca.Pages.Override.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     allowBlank : false 
                 })
             },{
-                header : "Writable",
+                header : this._( "Writable" ),
                 width: 55,
                 sortable: true,
                 dataIndex : "writable",
@@ -43,7 +43,7 @@ Ung.Alpaca.Pages.Override.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     allowBlank : false 
                 })
             },{
-                header : "File Path",
+                header : this._( "File Path" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "path",
@@ -63,13 +63,13 @@ Ung.Alpaca.Pages.Override.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 autoHeight : true,
                 items : [{
                     xtype : "checkbox",
-                    fieldLabel : "Send ICMP Redirects",
+                    fieldLabel : this._( "Send ICMP Redirects" ),
                     name : "alpaca_settings.send_icmp_redirects"
                     
                 }]
             },{
                 xtype : "label",
-                html : "File Overrides"
+                html : this._( "File Overrides" )
             }, this.overrideGrid ]
         });
         

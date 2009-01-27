@@ -33,15 +33,16 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 },
                 items : [{
                     xtype : "checkbox",
-                    fieldLabel : "Enabled",
+                    fieldLabel : this._( "Enabled" ),
                     name : "qos_settings.enabled"
                 },{
-                    fieldLabel : "Internet Download Bandwidth",
+                    xtype : "numberfield",
+                    fieldLabel : this._( "Internet Download Bandwidth" ),
                     name : "qos_settings.download",
-                    boxLabel : "kbps"
+                    boxLabel : this._( "kbps" )
                 },{
                     xtype : "combo",
-                    fieldLabel : "Limit Download To",
+                    fieldLabel : this._( "Limit Download To" ),
                     name : "qos_settings.download_percentage",
                     mode : "local",
                     triggerAction : "all",
@@ -56,13 +57,13 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     xtype : "textfield"
                 },
                 items : [{
-                    fieldLabel : "Internet Upload Bandwidth",
-                    name : "qos_settings.upload",
-                    
-                    boxLabel : "kbps"
+                    xtype : "numberfield",
+                    fieldLabel : this._( "Internet Upload Bandwidth" ),
+                    name : "qos_settings.upload",                    
+                    boxLabel : this._( "kbps" )
                 },{
                     xtype : "combo",
-                    fieldLabel : "Limit Upload To",
+                    fieldLabel : this._( "Limit Upload To" ),
                     name : "qos_settings.upload_percentage",
                     mode : "local",
                     triggerAction : "all",
@@ -78,7 +79,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 },
                 items : [{
                     xtype : "combo",
-                    fieldLabel : "Ping Priority",
+                    fieldLabel : this._( "Ping Priority" ),
                     name : "qos_settings.prioritize_ping",
                     mode : "local",
                     triggerAction : "all",
@@ -88,8 +89,8 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     store : this.priorityStore
                 },{
                     xtype : "combo",
-                    fieldLabel : "ACK Priority",
-                    boxLabel : "A High ACK Priority speeds up downloads while uploading",
+                    fieldLabel : this._( "ACK Priority" ),
+                    boxLabel : this._( "A High ACK Priority speeds up downloads while uploading" ),
                     name : "qos_settings.prioritize_ack",
                     mode : "local",
                     triggerAction : "all",
@@ -99,7 +100,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     store : this.priorityStore
                 },{
                     xtype : "combo",
-                    fieldLabel : "Gaming Priority",
+                    fieldLabel : this._( "Gaming Priority" ),
                     name : "qos_settings.prioritize_gaming",
                     mode : "local",
                     triggerAction : "all",
@@ -110,10 +111,10 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 }]
             },{
                 xtype : "label",
-                html : "QoS Rules"
+                html : this._( "QoS Rules" )
             }, this.qosGrid, {
                 xtype : "label",
-                html : "QoS Statistics"
+                html : this._( "QoS Statistics" )
             }, this.statisticsGrid ]
         });
         
@@ -137,7 +138,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
     buildQosGrid : function()
     {
         var enabledColumn = new Ung.Alpaca.grid.CheckColumn({
-            header : "On",
+            header : this._( "On" ),
             dataIndex : 'enabled',
             sortable: false,
             fixed : true
@@ -157,13 +158,13 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 enabled : true,
                 priority : 20,
                 filter : "",
-                description : "[New Entry]"
+                description : this._( "[New Entry]" )
             },
             
             plugins : [ enabledColumn ],
 
             columns : [ enabledColumn, {
-                header : "Priority",
+                header : this._( "Priority" ),
                 width: 60,
                 sortable: false,
                 fixed : true,
@@ -181,7 +182,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     editable : false
                 })
             },{
-                header : "Description",
+                header : this._( "Description" ),
                 width: 200,
                 sortable: false,
                 dataIndex : "description",
@@ -215,32 +216,32 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             }],
 
             columns : [{
-                header : "Priority",
+                header : this._( "Priority" ),
                 width: 55,
                 sortable: true,
                 dataIndex : "priority"
             },{
-                header : "Rate",
+                header : this._( "Rate" ),
                 width: 75,
                 sortable: true,
                 dataIndex : "rate"
             },{
-                header : "Burst",
+                header : this._( "Burst" ),
                 width: 75,
                 sortable: true,
                 dataIndex : "burst"
             },{
-                header : "Sent",
+                header : this._( "Sent" ),
                 width: 75,
                 sortable: true,
                 dataIndex : "sent"
             },{
-                header : "Tokens",
+                header : this._( "Tokens" ),
                 width: 75,
                 sortable: true,
                 dataIndex : "tokens"
             },{
-                header : "CTokens",
+                header : this._( "CTokens" ),
                 width: 75,
                 sortable: true,
                 dataIndex : "ctokens"

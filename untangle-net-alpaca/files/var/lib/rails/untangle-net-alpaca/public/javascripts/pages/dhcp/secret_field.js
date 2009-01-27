@@ -22,10 +22,10 @@ Ung.Alpaca.Pages.Dhcp.SecretField = Ext.extend( Ung.Alpaca.PagePanel, {
                 },
                 items : [{
                     xtype : "checkbox",
-                    fieldLabel : "Enabled",
+                    fieldLabel : this._( "Enabled" ),
                     name : "dhcp_server_settings.is_custom_field_enabled"
                 },{
-                    fieldLabel : "Custom Field",
+                    fieldLabel : this._( "Custom Field" ),
                     xtype : "textarea",
                     name : "dhcp_server_settings.custom_field"
                 }]

@@ -12,7 +12,7 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
     {
         var enabledColumn = new Ung.Alpaca.grid.CheckColumn({
             //invert: true,
-            header : "On",
+            header : this._( "On" ),
             dataIndex : 'enabled',
             sortable: false,
             fixed : true
@@ -32,11 +32,11 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     autoHeight : true,
                     items:[{
                         xtype: "checkbox",
-                        fieldLabel: "Enabled",
+                        fieldLabel : this._( "Enabled" ),
                         dataIndex: "enabled"
                     }, {
                         xtype: "textfield",
-                        fieldLabel: "Description",
+                        fieldLabel : this._( "Description" ),
                         dataIndex: "description",
                         width: 360
                     }]
@@ -46,7 +46,7 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     title: "If all of the following conditions are met:",
                     items:[{
                         xtype: "textfield",
-                        fieldLabel: "RuldeBulder-TODO",
+                        fieldLabel : this._( "RuldeBulder-TODO" ),
                         dataIndex: "filter",
                         width: 360
                     }]
@@ -56,12 +56,14 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     title: "Forward traffic to the following location",
                     items:[{
                         xtype: "textfield",
-                        fieldLabel: "New Destination",
+                        fieldLabel : this._( "New Destination" ),
                         dataIndex: "new_ip",
+                        vtype : "ipAddress",
                         width: 150
                     }, {
-                        xtype: "textfield",
-                        fieldLabel: "New Port (optional)",
+                        xtype: "numberfield",
+                        vtype : "port",
+                        fieldLabel : this._( "New Port (optional)" ),
                         dataIndex: "new_enc_id",
                         width: 150
                         
@@ -84,7 +86,7 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             },
             plugins: [enabledColumn],
             columns : [enabledColumn, {
-                header : "Description",
+                header : this._( "Description" ),
                 width: 200,
                 sortable: false,
                 dataIndex : "description",
@@ -102,7 +104,7 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             },
             items : [{
                 xtype : "label",
-                html : "Port Forwards"
+                html : this._( "Port Forwards" )
             }, this.userRulesGrid ]
         });
         

@@ -302,7 +302,7 @@ Ung.Alpaca.Util = {
     /* Here because there are two places that need this. */
     refreshInterfaces : function( buttonId, input, callback )
     {
-        Ext.MessageBox.wait( this._( "Refreshing Physical Interfaces", "Please wait" ));
+        Ext.MessageBox.wait( this._( "Refreshing Physical Interfaces"), this._( "Please wait" ));
         
         var handler = this.completeRefreshInterfaces.createDelegate( this, [ callback ], true );
         Ung.Alpaca.Util.executeRemoteFunction( "/interface/get_interface_list", handler );

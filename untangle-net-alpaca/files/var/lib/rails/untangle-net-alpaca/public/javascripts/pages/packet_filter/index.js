@@ -28,7 +28,7 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             },
 
             columns : [{
-                header : "Action",
+                header : this._( "Action" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "target",
@@ -36,7 +36,7 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     allowBlank : false 
                 })
             },{
-                header : "Description",
+                header : this._( "Description" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "description",
@@ -59,7 +59,7 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             tbar : [],
 
             columns : [{
-                header : "On",
+                header : this._( "On" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "enabled",
@@ -67,7 +67,7 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     allowBlank : false 
                 })
             },{
-                header : "Description",
+                header : this._( "Description" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "description"
@@ -82,10 +82,10 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             },
             items : [{
                 xtype : "label",
-                html : "User Packet Filter Rules"
+                html : this._( "User Packet Filter Rules" )
             }, this.userRulesGrid, {
                 xtype : "label",
-                html : "System Packet Filter Rules"
+                html : this._( "System Packet Filter Rules" )
             }, this.systemRulesGrid ]
         });
         

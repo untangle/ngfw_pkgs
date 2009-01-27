@@ -137,9 +137,10 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
         var handler = this.completeSwitchToQueryPath.createDelegate( this, [ queryPath ], true );
 
         if ( this.hasSaveHandler && !this.saveButton.disabled ) {
+            var m = String.format( this._( "{0}Leaving this page will lose unsaved changes.{1}{0}Click 'Continue' to proceed and lose changes,{1}{0}or 'Cancel' to stay on this page.{1}" ), "<p>", "</p>" );
             Ext.MessageBox.show({
                 title: this._( "Warning" ),
-                msg: "<p>Leaving this page will lose unsaved changes.</p><p>Click 'Continue' to proceed and lose changes,<br/> or 'Cancel' to stay on this page.</p>",
+                msg: m,
                 width : 300,
                 buttons : {
                     ok : "Continue",

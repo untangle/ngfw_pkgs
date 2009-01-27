@@ -194,7 +194,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
     addButton : function()
     {
         return {
-            text : "Add",
+            text : Ung.Alpaca.Util._( "Add" ),
             handler : this.addEntry,
             scope : this
         };
@@ -204,7 +204,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
     {
         return {
             id: "delete_button_"+this.getId(),
-            text : "Delete",
+            text : Ung.Alpaca.Util._( "Delete" ),
             handler : this.deleteSelectedEntries,
             disabled: true,
             scope : this
@@ -441,7 +441,7 @@ Ung.Alpaca.grid.ReorderColumn = Ext.extend(Object, {
             this.id = Ext.id();
         }
         if (!this.header) {
-            this.header = "Reorder";
+            this.header = Ung.Alpaca.Util._( "Reorder" );
         }
         if (!this.width) {
             this.width = 55;

@@ -46,6 +46,7 @@ Ung.Alpaca.PagePanel = Ext.extend( Ext.Panel, {
             }
 
             switch ( item.xtype ) {
+            case "numberfield":
             case "textfield":
                 value = ( value == null ) ? "" : value;
                 item.setValue( value );
@@ -141,6 +142,7 @@ Ung.Alpaca.PagePanel = Ext.extend( Ext.Panel, {
 
             switch ( item.xtype ) {
             case "textfield":
+            case "numberfield":
             case "checkbox":
             case "combo":
                 value = item.getValue();

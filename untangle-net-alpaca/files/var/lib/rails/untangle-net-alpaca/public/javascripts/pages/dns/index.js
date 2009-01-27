@@ -24,23 +24,25 @@ Ung.Alpaca.Pages.Dns.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             },
 
             columns : [{
-                header : "IP Address",
+                header : this._( "IP Address" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "ip_address",
                 editor : new Ext.form.TextField({
-                    allowBlank : false 
+                    allowBlank : false,
+                    vtype : "ipAddress"
                 })
             },{
-                header : "Hostname(s)",
+                header : this._( "Hostname(s)" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "hostname",
                 editor : new Ext.form.TextField({
-                    allowBlank : false 
+                    allowBlank : false,
+                    vtype : "hostname"
                 })
             },{
-                header : "Description",
+                header : this._( "Description" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "description",
@@ -65,12 +67,12 @@ Ung.Alpaca.Pages.Dns.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             saveData : false,
             
             columns : [{
-                header : "IP Address",
+                header : this._( "IP Address" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "ip_address"
             },{
-                header : "Hostname",
+                header : this._( "Hostname" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "hostname"
@@ -91,17 +93,18 @@ Ung.Alpaca.Pages.Dns.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 items : [{
                     xtype : "checkbox",
                     name : "dns_server_settings.enabled",
-                    fieldLabel : "Enabled"
+                    fieldLabel : this._( "Enabled" )
                 },{
-                    fieldLabel : "Domain Name Suffix",
-                    name : "dns_server_settings.suffix"
+                    fieldLabel : this._( "Domain Name Suffix" ),
+                    name : "dns_server_settings.suffix",
+                    vtype: 'domainNameSuffix'
                 }]
             },{
                 xtype : "label",
-                html : "Static DNS Entries"
+                html : this._( "Static DNS Entries" )
             }, this.staticDnsGrid, {
                 xtype : "label",
-                html : "Automatic DNS Entries"
+                html : this._( "Automatic DNS Entries" )
             }, this.automaticDnsGrid ]
         });
         

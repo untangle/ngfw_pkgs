@@ -22,17 +22,17 @@ Ung.Alpaca.Pages.Interface.Refresh = Ext.extend( Ung.Alpaca.PagePanel, {
                 tbar : [],
                 
                 columns : [{
-                    header : "Name",
+                    header : this._( "Name" ),
                     width: 80,
                     sortable: true,
                     dataIndex : "os_name"
                 },{
-                    header : "Vendor",
+                    header : this._( "Vendor" ),
                     width: 200,
                     sortable: true,
                     dataIndex : "vendor"
                 },{
-                    header : "MAC Address",
+                    header : this._( "MAC Address" ),
                     width: 100,
                     sortable: true,
                     dataIndex : "mac_address"
@@ -61,17 +61,17 @@ Ung.Alpaca.Pages.Interface.Refresh = Ext.extend( Ung.Alpaca.PagePanel, {
                 tbar : [],
                 
                 columns : [{
-                    header : "Name",
+                    header : this._( "Name" ),
                     width: 80,
                     sortable: true,
                     dataIndex : "os_name"
                 },{
-                    header : "Vendor",
+                    header : this._( "Vendor" ),
                     width: 200,
                     sortable: true,
                     dataIndex : "vendor"
                 },{
-                    header : "MAC Address",
+                    header : this._( "MAC Address" ),
                     width: 100,
                     sortable: true,
                     dataIndex : "mac_address"
@@ -93,7 +93,7 @@ Ung.Alpaca.Pages.Interface.Refresh = Ext.extend( Ung.Alpaca.PagePanel, {
             items.push({
                 xtype : "label",
                 html : this._( "Unable to detect any removed or installed network interfaces." )
-            });   
+            });
         } else {
             items = [{
                 xtype : "label",

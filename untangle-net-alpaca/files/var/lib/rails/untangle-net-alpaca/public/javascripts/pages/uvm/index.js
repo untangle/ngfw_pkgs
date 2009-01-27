@@ -36,7 +36,7 @@ Ung.Alpaca.Pages.Uvm.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             },
 
             columns : [{
-                header : "On",
+                header : this._( "On" ),
                 width: 55,
                 sortable: false,
                 dataIndex : "enabled",
@@ -44,7 +44,7 @@ Ung.Alpaca.Pages.Uvm.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     allowBlank : false 
                 })
             },{
-                header : "Bypass",
+                header : this._( "Bypass" ),
                 width: 55,
                 sortable: false,
                 dataIndex : "subscribe",
@@ -52,7 +52,7 @@ Ung.Alpaca.Pages.Uvm.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     allowBlank : false 
                 })
             },{
-                header : "Description",
+                header : this._( "Description" ),
                 width: 200,
                 sortable: false,
                 dataIndex : "description"
@@ -72,7 +72,7 @@ Ung.Alpaca.Pages.Uvm.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             tbar : [],
 
             columns : [{
-                header : "On",
+                header : this._( "On" ),
                 width: 55,
                 sortable: false,
                 dataIndex : "enabled",
@@ -80,7 +80,7 @@ Ung.Alpaca.Pages.Uvm.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     allowBlank : false 
                 })
             },{
-                header : "Description",
+                header : this._( "Description" ),
                 width: 200,
                 sortable: false,
                 dataIndex : "description",
@@ -101,18 +101,18 @@ Ung.Alpaca.Pages.Uvm.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 items : [{
                     xtype : "checkbox",
                     name : "uvm.override_redirects",
-                    fieldLabel : "Untangle Administration overrides Port Forwards"
+                    fieldLabel : this._( "Untangle Administration overrides Port Forwards" )
                 },{
                     xtype : "checkbox",
                     name : "enable_sip_helper",
-                    fieldLabel : "Enable SIP NAT Helper"
+                    fieldLabel : this._( "Enable SIP NAT Helper" )
                 }]
             },{
                 xtype : "label",
-                html : "Bypass Rules"
+                html : this._( "Bypass Rules" )
             }, this.userRulesGrid, {
                 xtype : "label",
-                html : "System Bypass Rules"
+                html : this._( "System Bypass Rules" )
             }, this.systemRulesGrid ]
         });
         

@@ -20,7 +20,7 @@ Ung.Alpaca.Pages.Alpaca.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         if ( Ung.Alpaca.isAdvanced ) {
             items.push({
                 xtype : 'label',
-                html : String.format( this._( "You are currently in Advanced mode, in order to return to Basic mode, you must rerun the wizard which will reset your settings." ),
+                html : String.format( this._( "{0}You are currently in Advanced mode, in order to return to Basic mode, you must rerun the wizard which will reset your settings.{1}" ),
                                       "<p>", "</p>" )
             },{
                 xtype : 'button',

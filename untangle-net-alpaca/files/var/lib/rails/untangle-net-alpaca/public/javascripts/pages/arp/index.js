@@ -23,20 +23,22 @@ Ung.Alpaca.Pages.Arp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             },
 
             columns : [{
-                header : "IP Address",
+                header : this._( "IP Address" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "hostname",
                 editor : new Ext.form.TextField({
-                    allowBlank : false 
+                    allowBlank : false,
+                    vtype : "ipAddress"
                 })
             },{
-                header : "MAC Address",
+                header : this._( "MAC Address" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "hw_addr",
                 editor : new Ext.form.TextField({
-                    allowBlank : false 
+                    allowBlank : false,
+                    vtype : "macAddress"
                 })
             }]
         });
@@ -47,7 +49,7 @@ Ung.Alpaca.Pages.Arp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             recordFields : [ "ip_address", "mac_address", "id", "interface" ],
             
             tbar : [{
-                text : "Refresh",
+                text : this._( "Refresh" ),
                 handler : this.refreshActiveEntries,
                 scope : this
             }],
@@ -56,17 +58,17 @@ Ung.Alpaca.Pages.Arp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             saveData : false,
             
             columns : [{
-                header : "IP Address",
+                header : this._( "IP Address" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "ip_address"
             },{
-                header : "MAC Address",
+                header : this._( "MAC Address" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "mac_address"
             },{
-                header : "Interface",
+                header : this._( "Interface" ),
                 width: 50,
                 sortable: true,
                 dataIndex : "interface"
@@ -78,10 +80,10 @@ Ung.Alpaca.Pages.Arp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         Ext.apply( this, {
             items : [{
                 xtype : "label",
-                html : "Static ARP Entries"
+                html : this._( "Static ARP Entries" )
             }, this.staticGrid, {
                 xtype : "label",
-                html : "Active ARP Entries"
+                html : this._( "Active ARP Entries" )
             }, this.activeGrid ]
         });
         

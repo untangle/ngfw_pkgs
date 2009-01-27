@@ -90,7 +90,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                     xtype : "textfield"
                 },
                 items : [{
-                    fieldLabel : "Primary IP Address and Netmask",
+                    fieldLabel : this._( "Primary IP Address and Netmask" ),
                     name : "static.primary_address",
                     vtype : "networkAddress"
                 }]
@@ -190,7 +190,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
         items.push( this.buildEthernetMediaCombo( settings ));
         items.push({
             xtype : "button",
-            text : "Renew Lease"
+            text : this._( "Renew Lease" )
         });
 
         return new Ext.Panel({
@@ -227,7 +227,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                     xtype : "textfield"
                 },
                 items : [{
-                    fieldLabel : "Bridge To",
+                    fieldLabel : this._( "Bridge To" ),
                     xtype : "combo",
                     name : "bridge.bridge_interface_id",
                     mode : "local",
@@ -243,11 +243,11 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
     pppoePanel : function( settings )
     {
         items = [{
-            fieldLabel : "Username",
+            fieldLabel : this._( "Username" ),
             name : "pppoe.username"
         },{
             inputType : "password",
-            fieldLabel : "Password",
+            fieldLabel : this._( "Password" ),
             name : "pppoe.password"
         }];
         
@@ -272,7 +272,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
         items.push(this.buildEthernetMediaCombo( settings ));
         items.push({
             xtype : "button",
-            text : "Renew Lease"
+            text : this._( "Renew Lease") 
         });
         
         return new Ext.Panel({
@@ -293,7 +293,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                 },
                 items : [{
                     xtype : "textarea",
-                    fieldLabel : "Secret Field",
+                    fieldLabel : this._( "Secret Field" ),
                     name : "pppoe.secret_field"
                 }]
             }]
@@ -314,7 +314,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             },
             
             columns : [{
-                header : "Address and Netmask",
+                header : this._( "Address and Netmask" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "network_string",
@@ -345,7 +345,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             },
             
             columns : [{
-                header : "Address and Netmask",
+                header : this._( "Address and Netmask" ),
                 width: 200,
                 sortable: true,
                 dataIndex : "network_string",
@@ -353,7 +353,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                     allowBlank : false
                 })
             },{
-                header : "Source Address",
+                header : this._( "Source Address" ),
                 width: 100,
                 sortable: true,
                 dataIndex : "new_source",
@@ -371,7 +371,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
     buildEthernetMediaCombo : function( settings )
     {
         return new Ext.form.ComboBox({
-            fieldLabel : "Ethernet Media",
+            fieldLabel : this._( "Ethernet Media" ),
             name : "media",
             mode : "local",
             triggerAction : "all",
