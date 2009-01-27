@@ -508,7 +508,7 @@ class UvmController < ApplicationController
     end
   end
   
-  def update_dns_server_settings( params )
+  def update_dns_server_settings( params = {} )
     dns_server_settings = DnsServerSettings.find( :first )
     dns_server_settings = DnsServerSettings.new( DnsServerSettingsDefaults ) if dns_server_settings.nil?
     unless params.nil?
