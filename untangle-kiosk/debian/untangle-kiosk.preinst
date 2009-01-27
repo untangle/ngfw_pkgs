@@ -4,5 +4,10 @@
 adduser --gecos "" --shell /bin/bash --firstuid 10000 --disabled-password kiosk 2>/dev/null
 chown -R kiosk:kiosk /home/kiosk 
 grep -q kiosk /etc/sudoers || echo "kiosk ALL=NOPASSWD: ALL" >> /etc/sudoers
+if grep -qE '^root' /etc/sudoers ; then
+  perl -i -pe 's/^root.+/root ALL=NOPASSWD: ALL/' /etc/sudoers
+else
+  echo "root ALL=NOPASSWD: ALL" >> /etc/sudoers
+fi
 
 exit 0
