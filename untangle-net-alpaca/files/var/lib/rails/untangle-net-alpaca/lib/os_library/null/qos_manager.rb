@@ -18,6 +18,25 @@ class OSLibrary::Null::QosManager < OSLibrary::QosManager
   include Singleton
   Service = "/etc/untangle-net-alpaca/wshaper.htb"
 
+  def estimate_bandwidth_v2
+     download = "Unknown"
+     upload = "Unknown"
+     begin
+       download = `rrdtool fetch #{QoSRRDLog} MAX | cut -d " " -f 2 | sort -n | tail -1`.to_f.round
+       f = File.new( AptLog, "r" )
+       f.each_line do |line|
+         downloadMatchData = line.match( /Fetched.*\(([0-9]+)kB\/s\)/ )
+         if ! downloadMatchData.nil? and downloadMatchData.length >= 2
+            download = downloadMatchData[1] 
+         end
+       end
+       upload = `rrdtool fetch #{QoSRRDLog} MAX | cut -d " " -f 3 | sort -n | tail -1`.to_f.round
+     rescue
+       # default to unkown
+     end
+     return BandwithEstimate.new( download, upload )
+  end
+
   def status
      results = []
      lines = `#{Service} status`
