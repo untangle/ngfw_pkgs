@@ -80,12 +80,20 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             defaults : {
                 xtype : "fieldset"
             },
-            items : [{
+            items : [
+            {
                 xtype : "label",
-                html : this._( "User Packet Filter Rules" )
+                html : this._( "Packet Filters" ),
+                cls: 'page-header-text'                
+            }, 
+            {
+                xtype : "label",
+                html : this._( "User Packet Filter Rules" ),
+                cls: 'label-section-heading-2'                
             }, this.userRulesGrid, {
                 xtype : "label",
-                html : this._( "System Packet Filter Rules" )
+                html : this._( "System Packet Filter Rules" ),
+                cls: 'label-section-heading-2'                
             }, this.systemRulesGrid ]
         });
         

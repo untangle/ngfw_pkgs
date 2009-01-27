@@ -94,9 +94,12 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             defaults : {
                 xtype : "fieldset"
             },
-            items : [{
+            
+            items : [
+                {
                 /* Not in the default in order to accomodate grids. */
                 autoHeight : true,
+                title : this.i18n._('DHCP Server'),                            
                 defaults : {
                     xtype : "textfield"
                 },
@@ -135,9 +138,11 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 }]
             },{
                 xtype : "label",
+                cls:'label-section-heading',
                 html : this._( "Static DHCP Entries" )
             }, this.staticGrid, {
                 xtype : "label",
+                cls:'label-section-heading',
                 html : this._( "Current DHCP Entries" )       
             }, this.currentLeasesGrid ]
         });

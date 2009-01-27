@@ -110,6 +110,7 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
 
         items.push({
             xtype : "label",
+            cls : 'page-header-text',
             html : this._( "Interface List" )
         });
 

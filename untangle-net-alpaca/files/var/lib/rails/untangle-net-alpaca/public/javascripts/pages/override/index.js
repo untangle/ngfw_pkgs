@@ -59,16 +59,20 @@ Ung.Alpaca.Pages.Override.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             defaults : {
                 xtype : "fieldset"
             },
-            items : [{
+            items : [
+            {
                 autoHeight : true,
+                title: this._('Overrides'),
                 items : [{
                     xtype : "checkbox",
                     fieldLabel : this._( "Send ICMP Redirects" ),
-                    name : "alpaca_settings.send_icmp_redirects"
+                    name : "alpaca_settings.send_icmp_redirects",
+                    itemCls:'label-width-2'
                     
                 }]
             },{
                 xtype : "label",
+                cls: 'label-section-heading-2',
                 html : this._( "File Overrides" )
             }, this.overrideGrid ]
         });

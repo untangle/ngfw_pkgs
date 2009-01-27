@@ -78,12 +78,18 @@ Ung.Alpaca.Pages.Arp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         this.activeGrid.store.load();
         
         Ext.apply( this, {
-            items : [{
+            items : [ {
                 xtype : "label",
-                html : this._( "Static ARP Entries" )
+                html : this._( "ARP" ),
+                cls: 'page-header-text'                
+            },{
+                xtype : "label",
+                html : this._( "Static ARP Entries" ),
+                cls: 'label-section-heading-2'                                
             }, this.staticGrid, {
                 xtype : "label",
-                html : this._( "Active ARP Entries" )
+                html : this._( "Active ARP Entries" ),
+                cls: 'label-section-heading-2'                                
             }, this.activeGrid ]
         });
         

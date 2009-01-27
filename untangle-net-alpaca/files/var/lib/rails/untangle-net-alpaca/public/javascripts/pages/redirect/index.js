@@ -104,6 +104,7 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             },
             items : [{
                 xtype : "label",
+                cls : 'page-header-text',                    
                 html : this._( "Port Forwards" )
             }, this.userRulesGrid ]
         });

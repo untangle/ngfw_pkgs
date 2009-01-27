@@ -21,6 +21,11 @@ Ung.Alpaca.Pages.Dhcp.SecretField = Ext.extend( Ung.Alpaca.PagePanel, {
                     xtype : "textfield"
                 },
                 items : [{
+                xtype : "label",
+                cls: 'page-header-text',
+                html : this._( "DHCP & DNS" )
+                },
+                {
                     xtype : "checkbox",
                     fieldLabel : this._( "Enabled" ),
                     name : "dhcp_server_settings.is_custom_field_enabled"

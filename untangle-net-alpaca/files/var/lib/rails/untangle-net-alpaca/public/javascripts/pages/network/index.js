@@ -30,6 +30,7 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             var interfaceConfig = config["interface"];
             items.push({
                 xtype : "label",
+                cls : 'label-section-heading-2',
                 html : String.format( this._( "{0} Interface" ), interfaceConfig["name"] )
             });
 
@@ -59,12 +60,13 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         var staticPanel = {
             items : [{
                 defaults : {
-                    xtype : 'textfield'
+                    xtype : 'textfield',
                 },
                 items : [{
                     fieldLabel : this._( "Address" ),
                     name : this.generateName( "config_list", i, "static.ip" ),
-                    vtype : "ipAddress"
+                    vtype : "ipAddress",
+                    cls:'left-indent-2'                    
                 },{
                     xtype : "combo",
                     fieldLabel : this._( "Netmask" ),
@@ -74,7 +76,7 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     width : 40,
                     triggerAction : "all",
                     mode : "local",
-                    editable : false
+                    editable : false                                        
                 },{
                     fieldLabel : this._( "Default Gateway" ),
                     name : this.generateName( "config_list", i, "static.default_gateway" ),

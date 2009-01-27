@@ -109,10 +109,16 @@ Ung.Alpaca.Pages.Route.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             },
             items : [{
                 xtype : "label",
-                html : this._( "Static Routes" )
+                html : this._( "Routes" ),
+                cls: 'page-header-text'                
+            },{
+                xtype : "label",
+                html : this._( "Static Routes" ),
+                cls: 'label-section-heading-2' 
             }, this.staticRoutesGrid, {
                 xtype : "label",
-                html : this._( "Active Routes" )
+                html : this._( "Active Routes" ),
+                cls: 'label-section-heading-2' 
             }, this.activeRoutesGrid ]
         });
         

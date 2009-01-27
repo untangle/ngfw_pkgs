@@ -15,8 +15,11 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 xtype : "fieldset"
             },
             items : [{
+                xtype:"fieldset",
+                title : this.i18n._('Hostname'),                                            
                 defaults : {
-                    xtype : "textfield"
+                    xtype : "textfield",
+                    itemCls : 'label-width-1'                                            
                 },
                 items : [{
                     fieldLabel : this._("Hostname"),
@@ -29,11 +32,12 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     boxLabel : this._("(eg: example.com)")
                 }]
             },{
-                xtype : "label",
-                html : this._("Dynamic DNS Client Configuration")
-            },{
+                xtype:"fieldset",
+                title : this.i18n._('Dynamic DNS Client Configuration'),                                                
+               
                 defaults : {
-                    xtype : "textfield"
+                    xtype : "textfield",
+                    itemCls : 'label-width-1'                        
                 },
                 items : [{
                     xtype : "checkbox",

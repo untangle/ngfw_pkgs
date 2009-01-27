@@ -52,6 +52,7 @@ Ung.Alpaca.Pages.Dns.LocalDns = Ext.extend( Ung.Alpaca.PagePanel, {
             },
             items : [{
                 xtype : "label",
+                cls: 'page-header-text',
                 html : this._( "Local DNS Servers" )
             }, this.localDnsGrid ]
         });

@@ -83,7 +83,8 @@ Ung.Alpaca.Pages.Dns.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         
         Ext.apply( this, {
             defaults : {
-                xtype : "fieldset"
+                xtype : "fieldset",
+                title : this._("DNS Server")
             },
             items : [{
                 autoHeight : true,
@@ -97,13 +98,16 @@ Ung.Alpaca.Pages.Dns.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 },{
                     fieldLabel : this._( "Domain Name Suffix" ),
                     name : "dns_server_settings.suffix",
-                    vtype: 'domainNameSuffix'
+                    vtype: 'domainNameSuffix',
+                    cls: 'label-width-1'
                 }]
             },{
                 xtype : "label",
+                cls: 'label-section-heading-2',
                 html : this._( "Static DNS Entries" )
             }, this.staticDnsGrid, {
                 xtype : "label",
+                cls: 'label-section-heading-2',
                 html : this._( "Automatic DNS Entries" )
             }, this.automaticDnsGrid ]
         });
