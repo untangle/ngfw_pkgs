@@ -9,6 +9,9 @@ fi
 # start fbpanel
 fbpanel &
 
+# do not recover a (potentially saved) previous session
+find .mozilla -name sessionstore.js -exec /bin/rm {} \;
+
 # automatically start the setup wizard if the registration file isn't present
 if [ -f /etc/default/untangle-vm ] ; then
     . /etc/default/untangle-vm
