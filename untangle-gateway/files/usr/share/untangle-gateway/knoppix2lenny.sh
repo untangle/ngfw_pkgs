@@ -2,7 +2,9 @@
 
 set -e
 
-exec > >(tee -a /var/log/uvm/knoppix-upgrade.log) 2>&1
+LOG_FILE=/var/tmp/upgrade61.sh
+
+exec > >(tee -a $LOG_FILE) 2>&1
 
 DEBIAN_MIRROR_HOST="10.0.11.16" # debian
 DEBIAN_MIRROR="http://${DEBIAN_MIRROR_HOST}/debian"
@@ -20,6 +22,28 @@ usage() {
   echo "$0 [-i]"
   echo " -i : interactive mode"
   exit 1
+}
+
+fail() {
+    echo "upgrade failed - leaving divert in place, retrying"
+    # Try again
+    exec /usr/bin/uvm.sh
+    exit 1
+}
+
+undo_divert() {
+    target=/usr/bin/uvm.sh
+    div=$(dpkg-divert --list $target)
+    if [ -n "$div" ] && [ -z "${div%%*by untangle-appliance-int}" ]; then
+        rm -f $target
+	dpkg-divert --remove --rename --package untangle-appliance-int --divert $target.distrib $target
+    fi
+    target=/usr/bin/uvm-restart
+    div=$(dpkg-divert --list $target)
+    if [ -n "$div" ] && [ -z "${div%%*by untangle-appliance-int}" ]; then
+        rm -f $target
+	dpkg-divert --remove --rename --package untangle-appliance-int --divert $target.distrib $target
+    fi
 }
 
 aptgetyes() {
@@ -49,6 +73,17 @@ stepName() {
 ## various steps to run during the upgrade
 stepSetup() {
   stepName "stepSetup"
+
+  wall <<EOF
+
+Untangle 6.1 upgrade beginning.  Progress may be monitored with:
+  # tail -f $LOG_FILE
+
+Once the upgrade has completed, the Untangle Server will reboot automatically.
+EOF
+
+  echo "Sleeping 120 seconds.  This is your chance to adjust sources.list (if necessary)"
+  sleep 120
 
   # set debconf to critical/noninteractive
   echo debconfig debconf/priority select critical | debconf-set-selections
