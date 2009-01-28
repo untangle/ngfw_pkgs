@@ -373,6 +373,10 @@ div.ung-button-invalid {
 button.icon-add-row {
     background: transparent url(../images/admin/icon_add_row.gif) no-repeat center left !important;
 }
+/* delete row button icon */
+button.icon-delete-row {
+    background:transparent url(../images/user/icon_remove.png) no-repeat center left !important;
+}
 /* edit row icon */
 div.icon-edit-row {
 	background:transparent url(../images/admin/icon_edit_row.gif) no-repeat center center;
@@ -998,6 +1002,16 @@ body.wizard label.info-detail
 	padding-left:270px;
   }
 
+.x-form-textfield-detail
+{ 
+  font-size:80%;
+  font-style:italic;  
+  clear:none !important;
+  display:inline !important;
+  float:none !important;
+  margin-left:4px;
+  }
+
 body.wizard
 {
   font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
@@ -1277,3 +1291,48 @@ body.wizard .ext-el-mask
 
 
 
+.alpaca-panel{
+ padding:10px;
+}
+
+.alpaca-panel .page-header-text{
+	font-family:Tahoma, arial, freesans,sans-serif;
+    font-weight:bold;
+    font-size:13px;
+    margin-bottom:5px;
+    display:block;
+}
+.label-section-heading, .label-section-heading-2{
+	font-family:Tahoma, arial, freesans,sans-serif;
+    font-weight:bold;
+    font-size:12px;
+    display:block;
+    margin-bottom:5px;
+}
+.label-section-heading-2{
+margin-top:10px;
+}
+.label-width-1 label.x-form-item-label{
+width:120px !important;
+}
+.label-width-1 label.x-form-textfield-detail{
+width:180px !important;
+}
+.label-width-1 div.x-form-element{
+padding-left:125px !important;
+}
+
+select.rule_builder_type {
+    font-family:Tahoma, arial, freesans,sans-serif;
+    font-size:12px;
+}
+input.rule_builder_value {
+    width: 95%;
+    height:16px;
+    padding-top:1px;
+}
+input.rule_builder_checkbox {
+    display:inline;
+    float:left;
+    margin:0;
+}
