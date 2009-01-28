@@ -2,7 +2,7 @@
 
 # Special version of untangle-gateway used to upgrade 6.0 to 6.1
 
-target=/usr/bin/uvm.sh
+target=/usr/bin/uvm
 upgrade=/usr/share/untangle-gateway/knoppix2lenny.sh
 div=$(dpkg-divert --list $target)
 if [ -z "$dev" ]; then

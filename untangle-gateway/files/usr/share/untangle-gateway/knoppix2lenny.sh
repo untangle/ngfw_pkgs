@@ -27,12 +27,12 @@ usage() {
 fail() {
     echo "upgrade failed - leaving divert in place, retrying"
     # Try again
-    exec /usr/bin/uvm.sh
+    exec /usr/bin/uvm
     exit 1
 }
 
 undo_divert() {
-    target=/usr/bin/uvm.sh
+    target=/usr/bin/uvm
     div=$(dpkg-divert --list $target)
     if [ -n "$div" ] && [ -z "${div%%*by untangle-appliance-int}" ]; then
         rm -f $target
