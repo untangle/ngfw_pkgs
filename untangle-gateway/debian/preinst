@@ -2,8 +2,8 @@
 
 # do not start sshd by default if this is the first install
 if [ "$1" = "install" ] ; then
-  update-rc.d -f ssh remove
-  /etc/init.d/ssh stop
+  mkdir -p /etc/ssh
+  touch /etc/ssh/sshd_not_to_be_run
 fi
 
 exit 0
