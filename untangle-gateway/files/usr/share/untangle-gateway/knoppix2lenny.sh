@@ -203,8 +203,9 @@ stepFinish() {
 ## main
 date -Iseconds
 
-while getopts "ih" opt ; do
+while getopts "iDh" opt ; do
   case "$opt" in
+    D) echo "### Packaged upgrade" ;;
     i) INTERACTIVE="true"
        echo "### Interactive mode ###"
        echo "### *foo*   --> step foo was run once."
