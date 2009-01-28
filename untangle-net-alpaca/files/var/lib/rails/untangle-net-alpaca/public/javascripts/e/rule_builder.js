@@ -2,13 +2,13 @@ Ext.ns('Ung');
 Ext.ns('Ung.Alpaca');
 Ext.ns('Ung.Alpaca.grid');
 
-Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.GridPanel, {
+Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.EditorGridPanel, {
     enableHdMenu : false,
     enableColumnMove: false,
     clicksToEdit:1,
     initComponent: function() {
         if (!this.height) {
-            this.height=320;
+            this.height=220;
         }
         if (!this.width) {
             this.width=600;
@@ -47,7 +47,7 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.GridPanel, {
             dataIndex : "name",
             renderer: function(value, metadata, record, rowIndex, colIndex, store) {
                 var out=[];
-                out.push('<select style="font-family:tahoma;font-size:12px;" onchange="Ext.getCmp(\''+this.getId()+'\').changeRowType(\''+record.id+'\',this)">');
+                out.push('<select class="rule_builder_type" onchange="Ext.getCmp(\''+this.getId()+'\').changeRowType(\''+record.id+'\',this)">');
                 for (var i = 0; i < this.rules.length; i++) {
                     var seleStr=(this.rules[i].name == value)?"selected":"";
                     out.push('<option value="' + this.rules[i].name + '" ' + seleStr + '>' + this.rules[i].displayName + '</option>');
@@ -74,7 +74,7 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.GridPanel, {
                 var res="";
                 switch(rule.type) {
                     case "text":
-                        res='<input type="text" size="20" class="x-form-text x-form-field" style="width: 95%;height:16px;padding-top:1px;" onchange="Ext.getCmp(\''+this.getId()+'\').changeRowValue(\''+record.id+'\',this)" value="'+value+'"/>';
+                        res='<input type="text" size="20" class="x-form-text x-form-field rule_builder_value" onchange="Ext.getCmp(\''+this.getId()+'\').changeRowValue(\''+record.id+'\',this)" value="'+value+'"/>';
                         break;
                     case "boolean":
                         res="<div>&nbsp;</div>";
@@ -93,7 +93,7 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.GridPanel, {
                                 }
                             }
                             out.push('<div class="checkbox" style="width:100px; float: left; padding:3px 0;">');
-                            out.push('<input id="'+rule_value+'[]" class="checkbox" '+checked_str+' onchange="Ext.getCmp(\''+this.getId()+'\').changeRowValue(\''+record.id+'\',this)" style="display:inline; float:left;margin:0;" name="'+rule_label+'" value="'+rule_value+'" type="checkbox">');
+                            out.push('<input id="'+rule_value+'[]" class="rule_builder_checkbox" '+checked_str+' onchange="Ext.getCmp(\''+this.getId()+'\').changeRowValue(\''+record.id+'\',this)" style="display:inline; float:left;margin:0;" name="'+rule_label+'" value="'+rule_value+'" type="checkbox">');
                             out.push('<label for="'+rule_value+'[]" style="display:inline;float:left;margin:0 0 0 0.6em;padding:0;text-align:left;width:50%;">'+rule_label+'</label>')
                             out.push('</div>')
                         }
@@ -123,6 +123,7 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.GridPanel, {
         }
         record.data.value=newValue;
         record.set("name",newName);
+        this.fireEvent("afteredit");
     },
     changeRowValue: function(recordId,valObj) {
         var record=this.store.getById(recordId);
@@ -151,13 +152,16 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.GridPanel, {
                 record.data.value=new_value;
                 break;
         }
+        this.fireEvent("afteredit");
     },
     addHandler: function() {
         var record=new Ext.data.Record(Ext.decode(Ext.encode(this.recordDefaults)));
         this.getStore().insert(0, [record]);
+        this.fireEvent("afteredit");
     },
     deleteHandler: function (record) {
         this.store.remove(record);
+        this.fireEvent("afteredit");
     },
     setValue: function(value) {
         var arr=(value!=null && value.length>0)?value.split("&&"):[];

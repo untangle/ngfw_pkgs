@@ -41,7 +41,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
                 iconCls : 'icon-help',
                 text : Ung.Alpaca.Util._('Help'),
                 handler : function() {
-                    this.cancelAction();
+                    this.onHelp();
                 }.createDelegate(this)
             },'->',{
                 name : Ung.Alpaca.Util._('Cancel'),
@@ -52,6 +52,8 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
                     this.cancelAction();
                 }.createDelegate(this)
             },'-',{
+                id: "update_"+this.getId(),
+                disabled : true,
                 iconCls : 'save-icon',
                 text : Ung.Alpaca.Util._('Update'),
                 handler : function() {
@@ -79,6 +81,12 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
         //this.inputLines=this.items.items.getRange();
         Ung.Alpaca.RowEditor.superclass.initComponent.call(this);
     },
+    onRender : function(container, position) {
+        Ung.Alpaca.RowEditor.superclass.onRender.call(this, container, position);
+
+        /* Register the event handler with every field. */
+        this.items.each( this.addEnableUpdateHandler.createDelegate( this ));
+    },
     show : function() {
         Ung.Alpaca.RowEditor.superclass.show.call(this);
         this.center();
@@ -90,8 +98,10 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
         /* Iterate the panel and line up fields with their values. */
         this.items.each( this.populateFieldValue.createDelegate( this, [ this.record ], true ));
 
-        /* Register the event handler with every field. */
-        //this.items.each( this.addEnableSaveHandler.createDelegate( this ));
+        var updateButton=Ext.getCmp("update_"+this.getId());
+        if(updateButton) {
+            updateButton.disable();
+        }
     },
     
     /* Fill in the value for a field */
@@ -131,7 +141,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
         }
     },
     
-    addEnableSaveHandler : function( item, index )
+    addEnableUpdateHandler : function( item, index )
     {
         if ( item.addListener && item.xtype ) {
             var event = "change";
@@ -140,7 +150,9 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
             case "checkbox":
                 event = "check"
                 break;
-
+            case "rulebuilder" :
+                event = "afteredit"
+                break;
                 /* No point registering events on labels. */
             case "label":
                 event = null;
@@ -152,12 +164,26 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
             }
             
             if ( event != null ) {
-                item.addListener( event, application.onFieldChange, application );
+                item.addListener( event, this.onFieldChange, this );
             }
         }
 
         if ( item.items ) {
-            item.items.each( this.addEnableSaveHandler.createDelegate( this ));
+            item.items.each( this.addEnableUpdateHandler.createDelegate( this ));
+        }
+    },
+    onHelp : function () {
+        Ung.Alpaca.Util.implementMe("Help on Row Editor");
+    },
+    onFieldChange : function()
+    {
+        this.enableUpdateButton();
+    },
+    enableUpdateButton : function()
+    {
+        var updateButton=Ext.getCmp("update_"+this.getId());
+        if(updateButton) {
+            updateButton.enable();
         }
     },
     
@@ -206,18 +232,25 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
         }
     },
     
-    // to override if needed
-    isDirty : function() {
-        return false;
-    },
     cancelAction : function() {
-        if (this.isDirty()) {
-            Ext.MessageBox.confirm('Warning', 'There are unsaved settings which will be lost. Do you want to continue?', 
-                function(btn) {
-                    if (btn == 'yes') {
+        var updateButton=Ext.getCmp("update_"+this.getId());
+        if (updateButton && !updateButton.disabled ) {
+            var m = String.format( Ung.Alpaca.Util._( "{0}Leaving this page will lose unsaved changes.{1}{0}Click 'Continue' to proceed and lose changes,{1}{0}or 'Cancel' to stay on this page.{1}" ), "<p>", "</p>" );
+            Ext.MessageBox.show({
+                title: Ung.Alpaca.Util._( "Warning" ),
+                msg: m,
+                width : 300,
+                buttons : {
+                    ok : Ung.Alpaca.Util._("Continue"),
+                    cancel : Ung.Alpaca.Util._("Cancel")
+                },
+                fn : function(buttonId) {
+                    if ( buttonId == "ok" ) {
                         this.closeWindow();
                     }
-                }.createDelegate(this));
+                }.createDelegate(this),
+                icon : Ext.MessageBox.WARNING
+            });
         } else {
             this.closeWindow();
         }
