@@ -152,6 +152,9 @@ stepDistUpgradeToEtch() {
   aptgetyes install postgresql-7.4 postgresql-common postgresql postgresql-client-7.4 python-psycopg python libapache2-mod-python python-pycurl
 
   aptgetyes dist-upgrade
+
+  # free up some space
+  apt-get clean
 }
 
 stepDistUpgradeToLenny() {
@@ -180,6 +183,9 @@ stepReinstallUntanglePackages() {
 
   # dist-upgrade again
   aptgetyes dist-upgrade
+
+  # free up some space
+  apt-get clean
 }
 
 stepFinish() {
@@ -190,6 +196,8 @@ stepFinish() {
 
   echo "#########################################"
   echo "All done."
+
+  reboot
 }
 
 ## main
