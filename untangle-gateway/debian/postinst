@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# Special version of untangle-gateway used to upgrade 6.0 to 6.1
+
+target=/usr/bin/uvm.sh
+upgrade=/usr/share/untangle-gateway/knoppix2lenny.sh
+div=$(dpkg-divert --list $target)
+if [ -z "$dev" ]; then
+    dpkg-divert --add --rename --package untangle-appliance-int --divert $target.distrib $target
+    cp -p $upgrade $target
+fi
+
+target=/usr/bin/uvm-restart
+div=$(dpkg-divert --list $target)
+if [ -z "$dev" ]; then
+    dpkg-divert --add --rename --package untangle-appliance-int --divert $target.distrib $target
+    cp -p /bin/echo $target
+fi
+
+# Never stop the running uvm, but start the upgrade script when apt has finished.
+rm /var/run/uvm.pid
+nohup /usr/bin/uvm-restart-wait restart >> /var/log/restart-uvm.log 2>&1 &
+exit 0
