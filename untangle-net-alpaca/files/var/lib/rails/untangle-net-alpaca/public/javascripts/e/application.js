@@ -26,18 +26,21 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
             text : this._( "Save" ),
             disabled : true,
             handler : this.onSave,
+            iconCls : 'save-icon',
             scope : this
         });
 
         this.cancelButton = new Ext.Toolbar.Button({
             text : this._( "Cancel" ),
             handler : this.onCancel,
+            iconCls : 'cancel-icon',            
             scope : this
         });
 
         this.helpButton = new Ext.Toolbar.Button({
             text : this._( "Help" ),
             handler : this.onHelp,
+            iconCls : 'icon-help',
             scope : this
         });
         

@@ -15,12 +15,20 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
     record : null,
     // initial record data
     initialRecordData : null,
+    layout : 'anchor',
+    draggable : false,
+    resizable : false,
+    defaults: {
+        anchor: '100% 100%',
+        autoScroll: true,
+        autoWidth : true
+    },    
     initComponent : function() {
         if (!this.height) {
-            this.height=400;
+            this.height=500;
         }
         if (!this.width) {
-            this.width=600;
+            this.width=700;
         }
         if (this.title == null) {
             this.title = 'Edit';
@@ -29,18 +37,23 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
             this.panelLabelWidth = 150;
         }
         if(this.bbar==null) {
-            this.bbar=['->',{
-                name : 'Cancel',
+            this.bbar=[{
+                iconCls : 'icon-help',
+                text : Ung.Alpaca.Util._('Help'),
+                handler : function() {
+                    this.cancelAction();
+                }.createDelegate(this)
+            },'->',{
+                name : Ung.Alpaca.Util._('Cancel'),
                 id: "cancel_"+this.getId(),
                 iconCls : 'cancel-icon',
-                text : 'Cancel',
+                text : Ung.Alpaca.Util._('Cancel'),
                 handler : function() {
                     this.cancelAction();
                 }.createDelegate(this)
             },'-',{
-                name : 'Update',
                 iconCls : 'save-icon',
-                text : 'Update',
+                text : Ung.Alpaca.Util._('Update'),
                 handler : function() {
                     this.updateAction();
                 }.createDelegate(this)
@@ -48,6 +61,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
         }
         this.items = new Ext.Panel({
             anchor: "100% 100%",
+            autoScroll: true,                
             layout:"form",
             buttonAlign : 'right',
             border : false,
@@ -55,7 +69,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
             autoScroll: true,
             defaults : {
                 xtype : "fieldset",
-                autoHeight : true,                
+                autoHeight : true,   
                 selectOnFocus : true,
                 msgTarget : 'side',
                 labelWidth : this.panelLabelWidth
@@ -94,7 +108,10 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
                 value = ( value == null ) ? "" : value;
                 item.setValue( value );
                 break;
-                
+            case "rulebuilder":
+                value = ( value == null ) ? "" : value;
+                item.setValue( value );
+                break;
             case "checkbox":
                 value =  ( value == null ) ? "" : value;
                 item.setValue( value );
@@ -147,23 +164,16 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
     // check if the form is valid;
     // this is the default functionality which can be overwritten
     isFormValid : function() {
-        /*
-        for (var i = 0; i < this.inputLines.length; i++) {
-            var inputLine = this.inputLines[i];
-            if (!inputLine.isValid()) {
-                return false;
-            }
-        }*/
         return true;
     },
     // updateAction is called to update the record after the edit
     updateAction : function() {
         if (this.isFormValid()) {
             if (this.record !== null) {
-                //TODO
                 this.items.each( this.updateFieldValue.createDelegate( this, [ this.record ], true ))
             }
             this.hide();
+            application.onFieldChange();
         } else {
             Ext.MessageBox.alert('Warning', "The form is not valid!");
         }
@@ -181,6 +191,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
             case "textfield":
             case "checkbox":
             case "combo":
+            case "rulebuilder":
                 value = item.getValue();
                 break;                
             }

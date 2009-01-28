@@ -169,7 +169,6 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
             }
             return "";
         }
-        
     },
 
     buildToolbar : function( config )
@@ -195,6 +194,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
     {
         return {
             text : Ung.Alpaca.Util._( "Add" ),
+            iconCls : 'icon-add-row',
             handler : this.addEntry,
             scope : this
         };
@@ -205,6 +205,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
         return {
             id: "delete_button_"+this.getId(),
             text : Ung.Alpaca.Util._( "Delete" ),
+            iconCls:'icon-delete-row',          
             handler : this.deleteSelectedEntries,
             disabled: true,
             scope : this
@@ -319,7 +320,6 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
                 }
             }
         }
-
     }
 });
 
@@ -421,7 +421,7 @@ Ung.Alpaca.grid.IconColumn = Ext.extend(Object, {
 Ung.Alpaca.grid.EditColumn=Ext.extend(Ung.Alpaca.grid.IconColumn, {
     constructor : function(config) {
         if (!config.header) {
-            config.header = "Edit";
+            config.header = Ung.Alpaca.Util._("Edit");
         }
         if (!config.width) {
             config.width = 50;
@@ -433,6 +433,22 @@ Ung.Alpaca.grid.EditColumn=Ext.extend(Ung.Alpaca.grid.IconColumn, {
         this.grid.editEntry(record);
     }
 });
+// Grid edit column
+Ung.Alpaca.grid.DeleteColumn=Ext.extend(Ung.Alpaca.grid.IconColumn, {
+    constructor : function(config) {
+        if (!config.header) {
+            config.header =Ung.Alpaca.Util._("Delete");
+        }
+        if (!config.width) {
+            config.width = 55;
+        }
+        Ung.Alpaca.grid.DeleteColumn.superclass.constructor.call(this,config);
+    },
+    iconClass: 'icon-delete-row',
+    handle : function(record) {
+        this.grid.deleteHandler(record);
+    }
+});
 // Grid reorder column
 Ung.Alpaca.grid.ReorderColumn = Ext.extend(Object, {
     constructor : function(config) {
@@ -441,7 +457,7 @@ Ung.Alpaca.grid.ReorderColumn = Ext.extend(Object, {
             this.id = Ext.id();
         }
         if (!this.header) {
-            this.header = Ung.Alpaca.Util._( "Reorder" );
+            this.header = Ung.Alpaca.Util._("Reorder");
         }
         if (!this.width) {
             this.width = 55;

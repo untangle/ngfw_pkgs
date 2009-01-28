@@ -42,14 +42,24 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     }]
                 }, {
                     xtype : "fieldset",
+                    autoWidth : true,
+                    autoScroll: true,
                     autoHeight : true,
                     title: "If all of the following conditions are met:",
-                    items:[{
-                        xtype: "textfield",
-                        fieldLabel : this._( "RuldeBulder-TODO" ),
+                    items:[ new Ung.Alpaca.RuleBuilder({
+                        anchor:"98%",
                         dataIndex: "filter",
-                        width: 360
-                    }]
+                        rules: [
+                            {name:"s-addr",displayName: Ung.Alpaca.Util._("Source Address"), type: "text",vtype:"address"},
+                            {name:"d-local",displayName: Ung.Alpaca.Util._("Destined Local"), type: "boolean"},
+                            {name:"d-addr",displayName: Ung.Alpaca.Util._("Destination Address"), type: "text",vtype:"address"},
+                            {name:"d-port",displayName: Ung.Alpaca.Util._("Destination Port"), type: "text",vtype:"port"},
+                            {name:"s-intf",displayName: Ung.Alpaca.Util._("Source Interface"), type: "checkgroup",
+                                    values:[[1,Ung.Alpaca.Util._("External")],[2,Ung.Alpaca.Util._("Internal")],[8,Ung.Alpaca.Util._("VPN")]]},
+                            {name:"protocol",displayName: Ung.Alpaca.Util._("Protocol"), type: "checkgroup", 
+                                    values:[["tcp","tcp"],["udp","udp"],["icmp","icmp"],["gre","gre"],["esp","esp"],["ah","ah"],["sctp","sctp"]]}
+                        ]
+                    })]
                 }, {
                     xtype : "fieldset",
                     autoHeight : true,
