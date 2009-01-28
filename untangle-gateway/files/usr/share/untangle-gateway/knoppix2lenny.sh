@@ -1,10 +1,8 @@
 #! /bin/bash
 
-set -e
-
 LOG_FILE=/var/tmp/upgrade61.sh
 
-exec > >(tee -a $LOG_FILE) 2>&1
+exec >> $LOG_FILE 2>&1
 
 DEBIAN_MIRROR_HOST="10.0.11.16" # debian
 DEBIAN_MIRROR="http://${DEBIAN_MIRROR_HOST}/debian"
