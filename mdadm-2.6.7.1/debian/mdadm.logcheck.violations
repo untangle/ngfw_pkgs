@@ -1,3 +1,0 @@
-^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kernel: md: kicking non-fresh [[:alnum:]]+ from array!$
-^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kernel: raid[[:digit:]]+: Disk failure on [[:alnum:]]+, disabling device\.$
-^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kernel:[[:space:]]+Operation continuing on [[:digit:]]+ devices?$

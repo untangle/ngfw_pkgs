@@ -1,9 +1,0 @@
-Document: mdadm
-Title: Convert Root System to Bootable Software RAID1 (Debian)
-Author: Lucas Albers
-Abstract: How to convert a Debian system to bootable Software RAID 1 with a second hard drive, 'mdadm' and a few standard UNIX tools
-Section: System/Administration
-
-Format: HTML
-Index: /usr/share/doc/mdadm/rootraiddoc.97.html
-Files: /usr/share/doc/mdadm/rootraiddoc.97.html
