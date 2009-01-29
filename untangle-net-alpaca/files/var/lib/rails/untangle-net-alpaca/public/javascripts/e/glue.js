@@ -88,12 +88,27 @@ Ung.Alpaca.Glue = {
         if ( buttonId != "yes" ) {
             return;
         }
+        
+        var saveConfig = null;
+        if ( panel != null ) {
+            saveConfig = panel.saveConfig;
+        }
+
+        var title;
+        var message;
+
+        if ( saveConfig != null ) {
+            title = saveConfig.waitTitle;
+            message = saveConfig.waitMessage;
+        }
+        if ( title == null ) title = this._( "Saving..." );
+        if ( message == null ) message = this._( "Please wait" );
 
         /* Validate */
-        Ext.MessageBox.wait( this._( "Saving..." ), this._( "Please wait" ));
+        Ext.MessageBox.wait( title, message );
         
-        var handler = this.completeSaveSettings.createDelegate( this );
-        var errorHandler = this.errorSaveSettings.createDelegate( this );
+        var handler = this.completeSaveSettings.createDelegate( this, [ panel ], true );
+        var errorHandler = this.errorSaveSettings.createDelegate( this, [ panel ], true );
 
         if ( panel.saveSettings != null ) {
             panel.saveSettings( handler, errorHandler );
@@ -108,11 +123,24 @@ Ung.Alpaca.Glue = {
         }
     },
 
-    completeSaveSettings : function()
+    completeSaveSettings : function( result, response, options, panel )
     {
+        var title;
+        var message;
+        var saveConfig = null;
+        if ( panel != null ) {
+            saveConfig = panel.saveConfig;
+        }
+        if ( saveConfig != null ) {
+            title = saveConfig.successTitle;
+            message = saveConfig.successMessage;
+        }
+        if ( title == null ) title = this._( 'Saved Settings' );
+        if ( message == null ) message = this._( 'Settings have been saved successfuly' );
+
         Ext.MessageBox.show({  
-            title : this._( 'Saved Settings' ),
-            msg : this._( 'Settings have been saved successfuly' ),
+            title : title,
+            msg : message,
             buttons : Ext.MessageBox.OK,
             icon : Ext.MessageBox.INFO
         });
@@ -121,11 +149,25 @@ Ung.Alpaca.Glue = {
         application.reloadCurrentQueryPath();
     },
 
-    errorSaveSettings : function()
+    errorSaveSettings : function( result, options, panel )
     {
+        var title;
+        var message;
+        var saveConfig = null;
+        if ( panel != null ) {
+            panel.saveConfig;
+        }
+
+        if ( saveConfig != null ) {
+            title = saveConfig.errorTitle;
+            message = saveConfig.errorMessage;
+        }
+        if ( title == null ) title = this._( 'Internal Error' );
+        if ( message == null ) message = this._( 'Unable to save settings.  Please try again.' );
+
         Ext.MessageBox.show({  
-            title : this._( 'Internal Error' ),
-            msg : this._( 'Unable to save settings' ),
+            title : title,
+            msg : message,
             buttons : Ext.MessageBox.OK,
             icon : Ext.MessageBox.ERROR
         });

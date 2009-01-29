@@ -102,6 +102,11 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     readOnly : true
                 },
                 items : [{
+                    xtype : 'button',
+                    text : this._( "Renew Lease" ),
+                    handler : this.onRenewLease,
+                    scope : this
+                },{
                     fieldLabel : this._( "Address" ),
                     name : "dhcp_status.ip"
                 },{
@@ -126,6 +131,11 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     xtype : 'textfield'
                 },
                 items : [{
+                    xtype : 'button',
+                    text : this._( "Renew Lease" ),
+                    handler : this.onRenewLease,
+                    scope : this
+                },{
                     fieldLabel : this._( "Username" ),
                     name : this.generateName( "config_list", i, "pppoe.username" )
                 },{
@@ -303,6 +313,24 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         }
 
         return 0;
+    },
+
+    onRenewLease : function()
+    {
+        /* Refresh just saves settings, doesn't warn the user though, because that looks bad */
+        this.confirmMessage = null;
+        
+        /* Update all of the save messages so it looks normal. */
+        this.saveConfig = {
+            waitTitle : this._( "Please Wait" ),
+            waitMessage : this._( "Renewing Lease" ),
+            successTitle : this._( "Lease Updated" ),
+            successMessage : this._( "Attempt to update lease has been completed." ),
+            errorTitle : this._( "Internal Error" ),
+            errorMessage : this._( "Unable to renew lease" )
+
+        };
+        application.onSave();
     }
 });
 

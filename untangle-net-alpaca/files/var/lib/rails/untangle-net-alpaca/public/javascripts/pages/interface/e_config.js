@@ -190,7 +190,9 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
         items.push( this.buildEthernetMediaCombo( settings ));
         items.push({
             xtype : "button",
-            text : this._( "Renew Lease" )
+            text : this._( "Renew Lease" ),
+            handler : this.onRenewLease,
+            scope : this
         });
 
         return new Ext.Panel({
@@ -272,7 +274,9 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
         items.push(this.buildEthernetMediaCombo( settings ));
         items.push({
             xtype : "button",
-            text : this._( "Renew Lease") 
+            text : this._( "Renew Lease"),
+            handler : this.onRenewLease,
+            scope : this
         });
         
         return new Ext.Panel({
@@ -462,6 +466,24 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             }
         }
 
+    },
+
+    onRenewLease : function()
+    {
+        /* Refresh just saves settings, doesn't warn the user though, because that looks bad */
+        this.confirmMessage = null;
+        
+        /* Update all of the save messages so it looks normal. */
+        this.saveConfig = {
+            waitTitle : this._( "Please Wait" ),
+            waitMessage : this._( "Renewing Lease" ),
+            successTitle : this._( "Lease Updated" ),
+            successMessage : this._( "Attempt to update lease has been completed." ),
+            errorTitle : this._( "Internal Error" ),
+            errorMessage : this._( "Unable to renew lease" )
+
+        };
+        application.onSave();
     }
 });
 
