@@ -38,7 +38,7 @@ class AuthController < ApplicationController
     end
 
     path = session[:return_to]
-    path = DefaultPage if path.nil?
+    path = "/alpaca/network" if path.nil?
     
     json_result( :values => { "path" => path })
   end

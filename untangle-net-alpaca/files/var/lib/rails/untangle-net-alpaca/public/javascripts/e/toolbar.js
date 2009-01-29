@@ -31,6 +31,17 @@ Ung.Alpaca.Toolbar = Ext.extend( Ext.Toolbar, {
         }
         
         buttons.push( "->" );
+
+        var username = Ung.Alpaca.username;
+        
+        if (( username != null ) && ( username.length != 0 ) && ( username != 'nonce-authenticated' )) {
+            buttons.push( this.buildButton({
+                name : Ung.Alpaca.Util._( "Logout" ), 
+                queryPath : "/alpaca/auth/logout"
+            },{
+                xtype : "tbbutton"
+            }));
+        }
         
         if ( Ung.Alpaca.AdvancedMenuData.length == 1 ) {
             var menuData = Ung.Alpaca.AdvancedMenuData[0];

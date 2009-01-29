@@ -26,6 +26,12 @@ Ung.Alpaca.Util = {
             }
         } catch ( e ) {
             if ( e != this.stopLoadingObject ) {
+                /* Check if the UVM session is expired */
+                if ( Ung.Alpaca.Glue.isUvmSessionExpired( response )) {
+                    this.showSessionExpired();
+                    return;
+                }
+                
                 throw e;
             }
         }
@@ -83,6 +89,28 @@ Ung.Alpaca.Util = {
     
     remoteFunctionFailure : function( response, options, handler )
     {
+        var isSessionExpired = false;
+
+        /* Check if the alpaca session is expired */
+        try {
+            var json = Ext.util.JSON.decode( response.responseText );
+            
+            isSessionExpired = (  json["error"] == "Session has expired." );
+        } catch ( e ) {
+        }
+
+        /* Check if the UVM session is expired */
+        if ( !isSessionExpired ) {
+            if ( Ung.Alpaca.Glue.isUvmSessionExpired( response )) {
+                isSessionExpired = true;
+            }
+        }
+
+        if ( isSessionExpired ) {
+            this.showSessionExpired();
+            return;
+        }
+            
         if ( handler ) {
             return handler( response, options );
         }
@@ -377,6 +405,16 @@ Ung.Alpaca.Util = {
         if ( buttonId == "ok" ) {
             application.switchToQueryPath( "/alpaca/interface/refresh" );
         }
+    },
+
+    showSessionExpired : function()
+    {
+        Ext.MessageBox.show({
+            title : this._( "Session Expired" ),
+            msg : this._( "Your session has expired, please refresh the page and try again." ),
+            buttons : Ext.MessageBox.OK,
+            icon : Ext.MessageBox.INFO
+        });
     },
     
     cidrData : [

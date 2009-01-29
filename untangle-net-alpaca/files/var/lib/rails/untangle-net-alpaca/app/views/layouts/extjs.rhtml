@@ -29,6 +29,7 @@
        Ung.Alpaca.i18n = <%= @i18n_map.to_json %>;
        Ung.Alpaca.queryPath = '<%= query_path %>';
        Ung.Alpaca.version = '<%= UNTANGLE_VERSION %>';
+       Ung.Alpaca.username = '<%= session[:username] %>';
     <% end %>
 
     <%= yield %>

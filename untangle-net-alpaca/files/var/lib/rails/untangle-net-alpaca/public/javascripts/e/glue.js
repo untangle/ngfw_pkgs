@@ -152,5 +152,20 @@ Ung.Alpaca.Glue = {
     buildPageKey : function( controller, page )
     {
         return  "/" + controller + "/" + page;
+    },
+
+    isUvmSessionExpired : function( response )
+    {
+        if ( response.getResponseHeader["Content-Type"] != "text/html; charset=utf-8" ) {
+            return false;
+        }
+        
+        var match = new RegExp( "method=\"post\" action=\"\/auth\/login" ); 
+       
+        if ( response.responseText.search( match ) > 0 ) {
+            return true;
+        }
+        
+        return false;
     }
 }

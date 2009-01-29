@@ -21,7 +21,7 @@ class NetworkController < ApplicationController
   def get_settings
     ## Cannot use this panel in advanced mode.
     if ( @config_level > AlpacaSettings::Level::Basic )
-      return json_error( "Current in advanced mode." )
+      return json_error( "Currently in advanced mode." )
     end
     
     interface_list = Interface.find( :all )
@@ -101,7 +101,13 @@ class NetworkController < ApplicationController
     json_result
   end
   
-  alias_method :index, :extjs
+  def index
+    if ( @config_level > AlpacaSettings::Level::Basic )
+      return redirect_to( :controller => 'interface', :action => 'e_list' )
+    end
+
+    extjs
+  end
   
   def get_aliases
     ## Index is a reserved word, so the column name must be quoted.

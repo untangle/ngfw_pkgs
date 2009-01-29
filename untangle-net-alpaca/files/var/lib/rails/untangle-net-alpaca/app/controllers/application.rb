@@ -200,8 +200,14 @@ class ApplicationController < ActionController::Base
     end
 
     if session[:username].nil?
-      session[:return_to] = request.request_uri
-      if request.xhr?
+      ## Don't want to track JSON requests.
+      if ( json_params.nil? )
+        session[:return_to] = request.request_uri
+      end
+
+      if ( !json_params.nil? )
+        return json_error( "Session has expired." )
+      elsif request.xhr?
         render :template => "auth/login", :layout => "ajax"
       else
         redirect_to :controller => "auth"
@@ -253,6 +259,7 @@ class ApplicationController < ActionController::Base
   
   def json_params
     a = params[controller_name]
+    return nil if a.nil?
     return  ( a.length == 1 and a[0].is_a?( ::Hash )) ? a[0] : a
   end
 
