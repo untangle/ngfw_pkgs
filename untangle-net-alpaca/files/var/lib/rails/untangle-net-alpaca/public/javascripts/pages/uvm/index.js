@@ -10,12 +10,28 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "uvm", "index" )) {
 Ung.Alpaca.Pages.Uvm.Index = Ext.extend( Ung.Alpaca.PagePanel, {
     initComponent : function()
     {
+        var enabledColumn = new Ung.Alpaca.grid.CheckColumn({
+            header : this._( "On" ),
+            dataIndex : 'enabled',
+            sortable: false,
+            fixed : true
+        });
+
+        var bypassColumn = new Ung.Alpaca.grid.CheckColumn({
+            invert: true,
+            header : this._( "Bypass" ),
+            dataIndex : 'subscribe',
+            sortable: false,
+            fixed : true
+        });
+
         this.userRulesGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
 
             recordFields : [ "enabled", "filter", "description", "subscribe", "system_id", "is_custom" ],
             selectable : true,
             sortable : false,
+            hasReorder: true,
             
             name : "user_subscriptions",
 
@@ -35,23 +51,9 @@ Ung.Alpaca.Pages.Uvm.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 is_custom : false
             },
 
-            columns : [{
-                header : this._( "On" ),
-                width: 55,
-                sortable: false,
-                dataIndex : "enabled",
-                editor : new Ext.form.TextField({
-                    allowBlank : false 
-                })
-            },{
-                header : this._( "Bypass" ),
-                width: 55,
-                sortable: false,
-                dataIndex : "subscribe",
-                editor : new Ext.form.TextField({
-                    allowBlank : false 
-                })
-            },{
+            plugins : [ enabledColumn, bypassColumn ],
+
+            columns : [enabledColumn, bypassColumn, {
                 header : this._( "Description" ),
                 width: 200,
                 sortable: false,
@@ -60,6 +62,13 @@ Ung.Alpaca.Pages.Uvm.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         });
 
         this.userRulesGrid.store.load();
+
+        enabledColumn = new Ung.Alpaca.grid.CheckColumn({
+            header : this._( "On" ),
+            dataIndex : 'enabled',
+            sortable: false,
+            fixed : true
+        });
 
         this.systemRulesGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
@@ -71,15 +80,9 @@ Ung.Alpaca.Pages.Uvm.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
             tbar : [],
 
-            columns : [{
-                header : this._( "On" ),
-                width: 55,
-                sortable: false,
-                dataIndex : "enabled",
-                editor : new Ext.form.TextField({
-                    allowBlank : false 
-                })
-            },{
+            plugins : [enabledColumn],
+
+            columns : [enabledColumn, {
                 header : this._( "Description" ),
                 width: 200,
                 sortable: false,

@@ -10,11 +10,25 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "packet_filter", "index" )) {
 Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
     initComponent : function()
     {
+        this.actionStore = [];
+        this.actionMap = {};
+        this.addAction( "pass", this._( "Pass" ));
+        this.addAction( "drop", this._( "Drop" ));
+        this.addAction( "reject", this._( "Reject" ));
+
+        var enabledColumn = new Ung.Alpaca.grid.CheckColumn({
+            header : this._( "On" ),
+            dataIndex : 'enabled',
+            sortable: false,
+            fixed : true
+        });
+
         this.userRulesGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
 
             recordFields : [ "enabled", "system_id", "target", "filter", "description", "is_custom" ],
             selectable : true,
+            hasReorder : true,
             
             name : "user_rules",
 
@@ -27,18 +41,30 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 is_custom : false
             },
 
-            columns : [{
+            plugins : [ enabledColumn ],
+
+            columns : [enabledColumn, {
                 header : this._( "Action" ),
-                width: 200,
-                sortable: true,
+                width: 80,
+                fixed : true,
+                sortable: false,
                 dataIndex : "target",
-                editor : new Ext.form.TextField({
-                    allowBlank : false 
+                renderer : function( value, metadata, record )
+                {
+                    return this.actionMap[value];
+                }.createDelegate( this ),
+                editor : new Ext.form.ComboBox({
+                    store : this.actionStore,
+                    listWidth : 60,
+                    width : 60,
+                    triggerAction : "all",
+                    mode : "local",
+                    editable : false
                 })
             },{
                 header : this._( "Description" ),
                 width: 200,
-                sortable: true,
+                sortable: false,
                 dataIndex : "description",
                 editor : new Ext.form.TextField({
                     allowBlank : false 
@@ -47,6 +73,13 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         });
 
         this.userRulesGrid.store.load();
+
+        enabledColumn = new Ung.Alpaca.grid.CheckColumn({
+            header : this._( "On" ),
+            dataIndex : 'enabled',
+            sortable: false,
+            fixed : true
+        });
 
         this.systemRulesGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
@@ -57,16 +90,10 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             name : "system_rules",
 
             tbar : [],
+            
+            plugins : [ enabledColumn ],
 
-            columns : [{
-                header : this._( "On" ),
-                width: 200,
-                sortable: true,
-                dataIndex : "enabled",
-                editor : new Ext.form.TextField({
-                    allowBlank : false 
-                })
-            },{
+            columns : [enabledColumn,{
                 header : this._( "Description" ),
                 width: 200,
                 sortable: true,
@@ -98,6 +125,12 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         });
         
         Ung.Alpaca.Pages.PacketFilter.Index.superclass.initComponent.apply( this, arguments );
+    },
+
+    addAction : function( v, name )
+    {
+        this.actionMap[v] = name;
+        this.actionStore.push([v,name]);
     },
 
     saveMethod : "/packet_filter/set_settings"

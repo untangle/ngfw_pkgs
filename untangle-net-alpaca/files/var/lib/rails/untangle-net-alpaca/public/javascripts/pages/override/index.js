@@ -10,12 +10,27 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "override", "index" )) {
 Ung.Alpaca.Pages.Override.Index = Ext.extend( Ung.Alpaca.PagePanel, {
     initComponent : function( )
     {
+        var enabledColumn = new Ung.Alpaca.grid.CheckColumn({
+            header : this._( "On" ),
+            dataIndex : 'enabled',
+            sortable: false,
+            fixed : true
+        });
+
+        var writableColumn = new Ung.Alpaca.grid.CheckColumn({
+            header : this._( "Writable" ),
+            dataIndex : 'writable',
+            sortable: false,
+            fixed : true
+        });
+
         this.overrideGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
 
             recordFields : [ "enabled", "writable", "path", "description" ],
             selectable : true,
             sortable : false,
+            hasReorder : true,
             
             name : "file_overrides",
 
@@ -26,23 +41,9 @@ Ung.Alpaca.Pages.Override.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 description : this._( "[New Entry]" )
             },
 
-            columns : [{
-                header : this._( "On" ),
-                width: 55,
-                sortable: true,
-                dataIndex : "enabled",
-                editor : new Ext.form.TextField({
-                    allowBlank : false 
-                })
-            },{
-                header : this._( "Writable" ),
-                width: 55,
-                sortable: true,
-                dataIndex : "writable",
-                editor : new Ext.form.TextField({
-                    allowBlank : false 
-                })
-            },{
+            plugins : [ enabledColumn, writableColumn ],
+
+            columns : [enabledColumn, writableColumn, {
                 header : this._( "File Path" ),
                 width: 200,
                 sortable: true,
