@@ -1,0 +1,1333 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+	<html>
+	<head>
+ 	<title>Convert Root System to Bootable Software RAID1 (Debian)</title>
+ 	<style type="text/css">
+body	{
+	color: black;
+	background-color: #ffffcc;
+	margin: 0% 6% 6%;
+	}
+h1	{
+	color: green;
+	margin: 3% 0% 2% -3%;
+	}
+h2	{
+	margin: 4% 0% 1% -3%;
+	font-weight: normal;
+	}
+.toc	{
+	padding: 0% 6% 6%;
+	border: solid #cccccc 1px;
+	}
+div.up	{
+	cursor: pointer;
+	cursor: hand;
+	margin: 6% 0% 0% 0%;
+	padding: 4% 0% 0%;
+	border-bottom: solid #cccccc 1px;
+	}
+a.up	{
+	color: #cccccc;
+	text-decoration: none;
+	}
+.reboot	{
+	color: red;
+	background-color: white;
+	}
+.code	{
+	font-family: monospace;
+	margin: 0% 1% 2% 2%;
+	}
+.todo	{
+	color: green;
+	background-color: yellow;
+	padding: 1%;
+	}
+.note	{
+	border: dashed gray 1px;
+	padding: 1%;
+	margin: 0% 0% 2% 0%;
+	}
+p	{
+	margin: 1% 0%;
+	}
+ 	</style>
+	</head>
+	<body>
+
+
+
+
+
+
+	<!-- Header -->
+
+	<div style="background-color: #ffffcc; color: green; padding: 1%; border: double #66cc99 4px; margin: 2% 0%;">
+	<h1 style="margin: 1% 0%;">
+Convert Root System to Bootable Software RAID1 (Debian)</h1>
+	<p>
+How to convert a Debian system to bootable Software RAID 1 with a second hard drive, 'mdadm' and a few standard UNIX tools</p>
+	</div>
+
+	<p style="font-size: 80%">
+Version 0.97 (2004-06-03) Lucas Albers -- admin At cs DOT montana dot edu and Roger Chrisman <br />
+Home of most recent version: <a href="http://alioth.debian.org/projects/rootraiddoc" target="_blank">
+http://alioth.debian.org/projects/rootraiddoc</a><br />
+Thanks to: Alvin Olga, Era Eriksson, Yazz D. Atlas, James Bromberger, Timothy F Nagy, and alioth.debian.org<br />
+	<p><b>
+WARNING: No warranty of any kind. Proceed at your own risk.</b> A typo, especially in lilo.conf, can leave your system unbootable. <b>Back-up data and make a boot floppy <i>before starting this procedure</i>.</b></p>
+	</div> 
+
+	<!-- Table of Contents -->
+	<div id="TOC" class="toc">
+
+	<h1>Table of Contents</h1>
+
+	<h3><a href="#summary">
+Summary</a></h3>
+      
+	<h3><a href="#1">
+Procedure</a></h3>
+
+      <ol>
+        <li style="margin: 1% 0%;"><a href="#1">
+Install Debian</a><br />
+on your Primary Master disk -- hda. Or if you already have Debian installed, go to step 2.</li>
+        <li style="margin: 1% 0%;"><a href="#2">
+Upgrade to RAID savvy Kernel</a><br />
+and install 'mdadm'.</li>
+        <li style="margin: 1% 0%;"><a href="#3">
+Setup RAID 1</a><br />
+declaring disk-one 'missing' and disk-two hdc.</li>
+        <li style="margin: 1% 0%;"><a href="#4">
+Copy your Debian system</a><br />
+from hda to /dev/md0 ('missing' + 'hdc').</li>
+        <li style="margin: 1% 0%;"><a href="#5">
+Reboot to RAID device.</a><br /></li>
+        <li style="margin: 1% 0%;"><a href="#6">
+Reformat hda as 'fd' and declare it as disk-one of your RAID,</a><br />
+and watch the booted RAID system automatically mirror itself onto the new drive. Done.</li>
+	</ol>
+
+<h3>Alternate grub/initrd procedure</h3>
+<ol>
+        <li style="margin: 1% 0%;"><a href="#7">
+Part II. RAID using initrd and grub</a><br /> </li>
+</ol>
+
+	<h3><a href="#I">
+Appendix</a></h3>
+
+	<ol style="list-style-type: upper-roman;">
+       	<li><a href="#I">
+RAID Introduction</a></li>
+       	<li><a href="#II">
+Drive designators (hda, hdb, hdc, hdd), jumpers and cables</a></li>
+       	<li><a href="#III">
+Setting up software RAID for multiple partitions</a></li>
+       	<li><a href="#IV">
+Lilo</a></li>
+       	<li><a href="#V">
+Copying Data</a></li>
+       	<li><a href="#VI">
+Rebooting</a></li>
+       	<li><a href="#VII">
+Initrd</a></li>
+		<li><a href="#VIII">
+Verify that system will boot even with one disk off-line</a></li>
+		<li><a href="#IX">
+Setting up a RAID 1 Swap device</a></li>
+ 		<li><a href="#X">
+Performance Optimizations</a></li>
+ 		<li><a href="#XI">
+Disaster Recovery</a></li>
+		<li><a href="#XII">
+Quick Reference</a></li>
+ 		</a></li>
+		<li><a href="#XIII">
+Troubleshooting </a></li>
+		<li><a href="#XIIII">
+Raid Disk Maintenance </a></li>
+	</ol>
+
+	<h3><a href="#references">
+References</a></h3>
+
+	</div>
+
+	<!-- Summary -->
+
+	<div id="summary" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')? location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+	<h1>
+Summary</h1>
+	<p>
+We begin with Debian installed on the Primary Master drive, hda (<a href="#1">step 1</a>). We need RAID support in our Kernel (<a href="#2">step 2</a>). We add another disk as Secondary Master, hdc, set it up for RAID (<a href="#3">step 3</a>), and copy Debian to it (<a href="#4">step 4</a>). Now we can reboot to the RAID device (<a href="#5">step 5</a>) and declare hda part of the RAID and it automatically syncs with hdc to complete our RAID 1 device (<a href="#6">step 6</a>).</p>
+	<p>
+If all goes well</p>
+	<ul>
+	 <li>You do not need a rescue disk or to boot off anything except the hard drive.</li>
+	 <li>You can do this operation completely remotely.</li>
+	 <li>And you will not lose any data.</li>
+	</ul>
+	<p style:"font-weight: bold; font-style: italic;">
+Use this HowTo at your own risk. We are not responsible for what happens!</p>
+	<p>
+First things first</p>
+      <ul>
+        <li>Backup your data.</li>
+        <li>Create a boot floppy.</li>
+      </ul>
+	<p>
+Whenever you change your partitions, you need to reboot! (If you know what you are 
+doing, ignore this advice.)</p>
+	<p>
+I assume you will mess up a step so wherever possible, we include verification.</p>
+	<p>
+I use 'mdadm' because it is easier than 'raidtools' or 'raidtools2'.</p>
+	<p>
+<br>We now have grub and lilo directions, grub directions are still in beta form. 
+<br>Read the grub directions, and comment on them.</p>
+
+
+
+
+	<!-- Procedure -->
+     
+
+	<div id="1" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')? location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+	<h1 style="padding-bottom: 6%;">
+Procedure</h1>
+
+
+	<h1>
+1. Install Debian</h1>
+	<p>
+Do a fresh install the normal way on your first drive, hda (the Primary  Master drive in your computer).
+Or, if you already have a running Debian system that you want to use on hda; skip ahead to step 2. 
+If you need Debian installation instructions, see:</p>
+	<p>
+<a href="http://www.debian.org/releases/stable/installmanual" target="_blank">
+Debian Installation HowTo</a> &raquo;  http://www.debian.org/releases/stable/installmanual</p>
+        <p>
+<a href="http://d-i.alioth.debian.org/manual/" target="_blank">
+Sarge Debian Installation HowTo</a> &raquo;  http://d-i.alioth.debian.org/manual/</p>
+      
+	<div id="2" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')? location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+	<h1>
+2. Upgrade to a RAID savvy Kernel</h1>	
+
+
+	<h2>
+2.1 Compile and install a RAID savvy Kernel.</h2> 
+	<p>
+RAID must be <i>compiled</i> into the Kernel, not added as a module, for you to boot from the RAID device (unless you use a RAID savvy initrd kernel or boot from a non-RAID boot drive. (I now cover initrd methods!). You need RAID 1 but I usually include RAID 5, too. For step by step Kernel compile and install instructions, see:</p>
+	<p><a href="http://newbiedoc.sourceforge.net/system/kernel-pkg.html" target="_blank">
+Creating custom Kernels with Debian's kernel-package system</a> &raquo; http://newbiedoc.sourceforge.net/system/kernel-pkg.html</p>	
+
+<br>
+
+	<h2>
+2.2 Verify your RAID savvy Kernel.</h2> 
+	<p class="code">
+cat /proc/mdstat</p>
+	<p>
+(You should see the RAID "personalities" your Kernel supports.)</p>
+Something like this:
+	
+<p class="code">
+Personalities : [linear] [raid0] [raid1] [raid5] 
+read_ahead 1024 sectors
+md4 : active raid5 hdh4[3] hdg4[2] hdf4[1] hde4[0]
+      356958720 blocks level 5, 64k chunk, algorithm 2 [4/4] [UUUU]
+      
+unused devices: <none>
+	<p>
+
+<p class="code">
+YOU MUST VERIFY you have raid support via /proc/mdstat.
+This is the most important item to verify before going any farther.
+So the kernel has to support it or you have to load the modules in initrd.
+<p>
+
+
+(This will show you if raid is compiled into kernel, or detected as a module from initrd.)
+/etc/modules will not list RAID if Kernel has RAID compiled in instead of loaded as modules. 
+	<br>
+	Use lsmod to list currently loaded modules, this will show raid modules loaded.
+	<p class="code">
+	reiserfs <br>
+raid1 <br>
+ext2 <br>
+ide-disk <br>
+raid5 <br>
+ext3 <br>
+	<p>
+cat /etc/modules</p>
+	<p>
+(IF YOU SEE ANY RAID LISTED IN /etc/modules, then you probably have your Kernel loading RAID via modules. That will prevent you from booting from your RAID device, unless you use initrd. To boot from your RAID device, unless you use a RAID savvy initrd, you need RAID <i>compiled into</i> Kernel, not added <i>as a module.</i>)</p>
+	<h2>
+
+
+<h2> 2.3 Install 'mdadm':</h2>	
+	<p class="code">
+apt-get install mdadm</p>
+2.4 List what IDE devices you have:</h2>
+<p class="code">
+ls /proc/ide</p>
+     
+	<div id="3" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')? location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+	<h1>
+3. Setup RAID 1</h1> 
+	<p>
+Setup RAID 1 and declare disk-one of your RAID to be 'missing' and disk-two of your RAID to be 'hdc'.</p>
+
+
+	<h2>
+3.1 Create RAID (fd) partition on hdc</h2>
+	<p>
+Warning: ALWAYS give the partition when editing with cfdisk. By default cfdisk will select the first disk in the system. I accidentally wiped the wrong partition with cfdisk, once.</p>
+	<p>
+Do A or B, either way will work:</p>
+	<p>
+A. Create partitions on new disk.</p>
+	<p class="code">
+cfdisk /dev/hdc</p>
+
+	<p>or</p>
+
+	<p>B. copy existing partitions to new disk with sfdisk.</p>
+	<p class="code">
+sfdisk -d /dev/hda | sfdisk /dev/hdc</p>
+
+<br>NOTE: On some disks you cannot copy over the partitions correctly using this method 
+<br>It will detect the new partition as 0 size or a strange size.
+<br>You will need to manually create the partitions, making them the same size with cfdisk.
+<br>
+<h2>
+3.2 Create correct partition type signatures on new partition.</h2>
+	<p class="code">
+cfdisk /dev/hdc</p>
+
+      <ul>
+        <li>Select Type, then hit enter, then type 'fd' (this means RAID type partition).</li>
+        <li>Select Write</li>
+        <li>Select Quit.</li>
+      </ul>
+
+	<p class="code">
+<span class="reboot">reboot</span></p>
+	<p>
+(To verify that everything is working ok.)
+
+
+	<h2>
+3.3 Create RAID device</h2>
+	<p>
+that has two members and one of the members does not exist yet. md0 is the RAID partition we are creating, /dev/hdc1 is the initial partition. We will be adding /dev/hda1 back into the /dev/md0</p>
+	<p>
+RAID set after we boot into /dev/md0.</p>
+	<p class="code">
+mdadm --create /dev/md0 --level=1 --raid-disks=2 missing /dev/hdc1</p>
+	<p>
+If this gives errors then you need to zero the super block, see useful mdadm commands.</p>
+
+
+	<h2>
+3.4 Format RAID device </h2>
+	<p>
+You can use reiserfs or ext3 for this, both work, I use reiserfs for larger devices. Go with what you trust.</p>
+	<p class="code">
+mkfs.ext3 /dev/md0</p>
+	<p>
+or</p>
+	<p class="code">
+mkfs -t reiserfs /dev/md0</p>
+
+
+	<div id="4" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')? location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+	<h1>
+4. Copy your Debian system</h1>
+	<p>
+Copy your Debian system from hda to /dev/md0 ('missing' + 'hdc'). Then, check to 
+make sure that the new RAID device is still setup right and can be mounted 
+correctly. We do this with an entry in hda's /etc/fstab and a reboot. Note that 
+by editing hda's /etc/fstab after the copy, instead of before, we leave the copy 
+on md0 unaltered and only are editing hda's /etc/fstab. </p>
+      
+
+	<p>
+<b>NB: THIS IS A BRANCH IN OUR SYSTEM CONFIGURATION (eg temporary!)</b>, but it 
+will overwritten later by the md0 version of /etc/fstab by the sync in step 6.</p>
+      
+
+	<h2>
+4.1 Create a mount point. </h2>
+	<p class="code">
+mkdir /mnt/md0</p>
+
+
+	<h2>
+4.2 Mount your RAID device. </h2>
+	<p class="code">
+mount /dev/md0 /mnt/md0</p>
+
+
+	<h2>
+4.3 Copy your Debian system to RAID device. </h2>
+	<p class="code">
+cp -axu / /mnt/md0</p>
+Please refer to the Copying data section to verify you copied the data correctly.
+<br>See <a href="#V">Copying Data</a>
+	<p>
+You don't need the -u switch; it just tells cp not to copy the files again if they exist. If you are running the command a second time it will run faster with the -u switch.</p>
+
+
+	<h2>
+4.4 Edit /etc/fstab so that you mount your new RAID partition on boot up.</h2>
+<p>
+This verifies that you have the correct partition signatures on the partition and that your partition is correct. Sample Line in <span class="code">/etc/fstab</span>:</p>
+	<p class="code">
+/dev/md0 /mnt/md0 ext3 defaults 0 0</p>
+	<p>
+Then</p>
+	<p class="code">
+<span class="reboot">reboot</span></p>
+	<p>
+And see if the RAID partition comes up.</p>
+	<p class="code">
+mount</p>
+	<p>
+Should show /dev/md0 mounted on /mnt/md0.</p>
+
+
+	<div id="5" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')? location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+	<h1>
+5. Reboot to RAID device</h1>
+	<p>
+For step 5 reboot, we will tell Lilo that
+<ul>
+<li>as before, /boot and MBR are still on hda,<br />
+<li>and now we want root (/) to mount on md0.<br />
+</ul></p>
+	<p>
+We will, as before, be using hda's MBR (Master Boot Record is the first 512 bytes on a disk and is what the BIOS reads first in determining how to boot up a system) and hda's /boot dir (the kernel-image and some other stuff live here), but instead of mounting root (/) from hda, we will mount md0's root (/) (the root of our RAID device, currently running off of only hdc because we declared the first disk 'missing').
+
+
+	<h2>
+5.1 Configure Lilo to boot to the RAID device </h2>
+	<p>
+(Later we will configure Lilo to write the boot sector to the RAID boot device also, so we can still boot even if either disk fails.)</p>
+	<p>
+Add a stanza labeled 'RAID' to /etc/lilo.conf on hda1 so that we can boot with /dev/md0, our RAID device, as root (/):</p>
+	<p class="code">
+#the same boot drive as before.<br />
+boot=/dev/hda<br />
+image=/vmlinuz<br />
+label=RAID<br />
+read-only<br />
+#our new root partition.<br />
+root=/dev/md0</p>
+	<p>
+That makes an entry labeled 'RAID' specific to the RAID device, so you can still boot to /dev/hda if /dev/md0 does not work.</p>
+sample complete lilo.conf file:</p>
+	<p class="code">
+#sample working lilo.conf for raid.<br />
+#hda1,hdc1 are boot, hda2,hdc2 are swap<br />
+#hda3,hdc3 are the partition used by array<br />
+#root partition is /dev/md3 on / type reiserfs (rw)<br />
+#I named the raid volumes the same as the partition numbers<br />
+#this is the final lilo.conf file of a system completely finished,<br />
+#and booted into raid.<br />
+<br />
+<br />
+lba32<br />
+boot=/dev/md1<br />
+root=/dev/hda3<br />
+install=/boot/boot-menu.b<br />
+map=/boot/map<br />
+ prompt<br />
+ delay=50<br />
+ timeout=50<br />
+ vga=normal<br />
+ raid-extra-boot=/dev/hda,/dev/hdd<br />
+ default=RAID<br />
+ image=/boot/vmlinuz-RAID<br />
+ label=RAID<br />
+ read-only<br />
+ root=/dev/md3<br />
+ alias=1<br />
+ 
+ image=/vmlinuz<br />
+ label=Linux<br />
+ read-only<br />
+ alias=2<br />
+ <br />
+ image=/vmlinuz.old<br />
+ label=LinuxOLD<br />
+ read-only<br />
+ optional</p>
+
+
+	<h2>
+5.2 Test our new lilo.conf </h2>
+	<p class="code">
+lilo -t -v</p>
+	<p>
+(With a RAID installation, always run<span class="code"> lilo -t </span>first just to have Lilo tell you what it is about to do; use the<span class="code"> -v </span>flag, too, for verbose output.)</p>
+
+
+	<h2>
+5.3 Run Lilo </h2>
+	<p>
+Configure a one time Lilo boot via the<span class="code"> -R </span>flag and with a reboot with Kernel panic</p>
+	<p>
+The<span class="code"> -R &lt;boot-parameters-here&gt;</span> tells Lilo to only use the specified image for the next boot. So once you reboot it will revert to your old Kernel. </p>
+	<p>
+From 'man lilo':<br /><b>
+-R command line</b><br /> 
+This option sets the default command for the boot loader the next time it executes. The boot loader will then erase this line:  this  is  a once-only command. It is typically used in reboot scripts, just before calling `shutdown -r'.  Used without any arguments, it will cancel a lock-ed or fallback command line.</p>
+	<p> Before you can do the 'lilo -v -R RAID' command, you must first do a 'lilo' command to update the Lilo boot record with the contents of your new lilo.conf. Otherwise Lilo does not know what you mean by 'RAID' and you just get a 'Fatal: No image "RAID" is defined' error message when you do 'lilo -v -R RAID'. So,</p>
+	<p class="code">
+lilo<br />
+lilo -v -R RAID</p>
+
+
+	<h2>
+5.4 Edit /mnt/md0/etc/fstab and reboot</h2>
+	<p>
+to have /dev/md0 mount as root (/), when Lilo boots from our RAID device, /dev/md0.</p>
+	<p>
+Previous root (/) in fstab was:</p>
+	<p class="code">
+/dev/hda1 / reiserfs defaults 0 0</p>
+	<p>
+Edit it to:</p>
+	<p class="code">
+/dev/md0 / ext3 defaults 0 0</p>
+	<p>
+Note: edit /mnt/md0/etc/fstab, not /etc/fstab, because at the moment we are booted with hda1 as root (/) but we want to change the /etc/fstab that we currently have mounted on /mnt/md0/etc/fstab, our RAID device.</p>
+	<p>
+Reboot to check if system boots our RAID device, /dev/md0, as root (/). If it does not, just reboot again and you will come up with your previous boot partition courtesy of the<span class="code"> -R </span>flag in step 5.3 above.</p>
+	<p class="code">
+<span class="reboot">reboot</span></p>
+	<p>
+Verify /dev/md0 is mounted as root (/)</p>
+	<p class="code">
+mount</p>
+	<p>
+should show:</p>
+       	
+	<p class="code">
+/dev/md0 on / type reiserfs (rw)<br />
+proc on /proc type proc (rw)<br />
+devpts on /dev/pts type devpts (rw,gid=5,mode=620)</p>
+	<p>
+'type reiserfs' is just my example; you will see whatever your file system type is.</p>
+	<p>
+Now we are booted into the new RAID device -- md0 as root (/). Our RAID device only has one disk in it at the moment because we earlier declared the other disk as 'missing'. That was because we needed that other disk, hda, to install Debian on or because it was our pre-existing Debian system.</p>
+
+
+	<div id="6" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')? location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+	<h1>
+6. Reformat hda as 'fd' and declare it as disk-one of your RAID</h1>
+
+	<p>
+For step 6 reboots, we tell Lilo that
+<ul>
+<li>as in step 5 above, our root (/) is now on md0.</li>
+<li>and now, /boot is also on md0,</li>
+<li>and MBR is on both hda and hdc.</li>
+</ul></p>
+	<p>
+Here we not only use md0's root (/) as in step 5, but also md0's /boot (it contains an identical kernel-image to the one on hda because we copied it here from hda in step 4, but we will be overwriting everything on hda in step 6 and can't continue relying on the stuff on hda) and MBR from either hda or hdc, whichever the BIOS can find (they will be identical MBRs and the BIOS will still find hda's MBR but in case the hda disk were to fail down the road we would want the BIOS to look on hdc as a fail over so that it could still boot up the system).</p>
+
+
+	<h2>
+6.1 Change the signature on /dev/hda to software RAID</h2>
+	<p class="code">
+cfdisk /dev/hda</p>
+	<ul>
+        <li>Select "/dev/hda1" </li>
+        <li>Then select "[Type]" </li>
+        <li>Then hit "enter". </li>
+        <li>Then type "FD". </li>
+	<li>We are setting partition to "Software RAID" </li>
+        <li>Should already be set. </li>
+        <li>Then Select "Boot" if not set, so that you can boot
+off the device. </li>
+	<li>All the boot partitions that are members of your bootable RAID device (hda1 and hdc1) should have the bootable flag set. If one is not set, set it here now</li>
+	<li>Then select "Write" and enter 'yes'. </li>
+	<li>Then select "Quite". </li>
+	</ul>
+	<p>
+My two hard disks are from different manufacturers and as it happens, while both are roughly 40G, they have different architectures in terms of sectors and precise size. So cfdisk was unable to make the partitions precisely the same size and I had hda1 29,997.60MB and hdc1 30,000MB. This didn't work when I get to the 'mdadm --add /dev/md0 /dev/hda1' step. I got a, "failed: no space left on device!" error. So I ran cfdisk again and made hda1 slightly larger than hdc1, since I could not make them both exactly the same size. Now hda1 is 30,005.83MB and the 'mdadm -add /dev/md0 /dev/hda1' step works :-). (The remaining 10,000MB on each disk I am using for other purposes, including a md1 of 1,000MB composed of hda2 and hdc2.)</p>
+
+
+	<h2>
+6.2 Add the first-disk to our existing RAID device</h2>
+	<p>
+And watch the booted RAID system automatically mirror itself onto the new drive. We are currently booted from MBR and /boot device on /dev/hdc1, with /dev/md0 as root (/).</p>
+	<p class="code">
+mdadm --add /dev/md0 /dev/hda1</p>
+	<p>
+Note: We are adding /dev/hda1 into our existing RAID device. See if it is syncing.</p>
+	<p class="code">
+cat /proc/mdstat</p>
+	<p>
+should show that it is syncing.</p>
+
+
+	<h2>
+6.3 Write new /etc/lilo.conf settings</h2>
+	<p>
+these are from when we are booted onto RAID.</p>
+	<p class="code">
+boot=/dev/md0<br />
+root=/dev/md0<br />
+#this writes the boot signatures to either disk.<br />
+raid-extra-boot=/dev/hda,/dev/hdc<br />
+image=/vmlinuz<br />
+label=RAID<br />
+read-only</p>
+	<p>
+YOU NEED THE raid-extra-boot to have it write the boot loader to all the disks.</p>
+	<p>
+YOU ARE OVERWRITING THE BOOT LOADER ON BOTH /dev/hda and /dev/hdc.</p>
+	<p>
+You can keep your old boot option to boot /dev/hda so you can boot RAID and /dev/hda.</p>
+	<p>
+But remember you don't want to boot into a RAID device in non RAID as it will hurt the synchronization. If you make changes on one disk and not the other.</p>
+
+
+	<h2>
+6.4 Run Lilo with -R option and reboot</h2>
+	<p>
+(we are currently booted into RAID)</p>
+	<p class="code">
+lilo -t -v</p>
+	<p class="code">
+lilo -R RAID</p>
+	<p>
+The -R option tells Lilo it to use the new Lilo setting only for the next reboot, and then revert back to previous setting.</p>
+	<p>
+	<div class="note">
+<b>Note 1:</b> Step 6.4 returned an error, "Fatal: Trying to map files from unnamed device 0x0000 (NFS/RAID mirror down ?)."</p>
+	<p>
+So I waited for the synchronization, started in Step 6.2, to finish (checking it with 'cat /proc/mdstat'). Once it was done, did 'lilo -t -v' again. No "Fatal" error; Lilo seems happy now (no "Fatal" message).</p>
+
+<b>Note 1a:</b> The synchronization however took two hours! I checked with 'hdparm' and it seems I have <b>DMA</b> turned off. Perhaps the synchronization would go faster with DMA turned on. Some examination of my system revealed that I did not have my computer's PCI chipset support compiled into my custom kernel. I recompiled the kernel (kernel 2.6.4) and selected the correct PCI chipset support for my computer and now DMA works correctly :-) and by default. For DMA to be default is also configurable in the PCI area of 'make menuconfig' during kernel compile configuration, and I chose it.</p>
+	<p>
+So I can now do Lilo with '-R <boot-parameter-here>' switch and reboot.</p>
+	<p>
+<b>Note 2:</b> another error, "Fatal: No image "RAID" is defined."</p>
+	<p>
+As in Step 5.3 above, I need to do 'lilo' first so that Lilo reads my new /etc/lilo.conf, otherwise Lilo does not know about my stanza labeled "RAID" which is new in my lilo.conf. (Yes I told Lilo about it on hda1 in step 5.3, but that was after I had copied the hda1 root (/) system to here, md0, which branched my system into two separate system configurations. So it needs to be done here, too. Then I can do 'lilo -R RAID'.</p>
+	<p>
+<b>Note 2a:</b> However, the '-R' switch is pointless here unless the lilo.conf stanza labeled "RAID" is *not* the first kernel-image stanza in my lilo.conf. Because if it *is* the first stanza, then it is the default stanza anyway, with or without the '-R'.</p>
+	<p>
+	</div>
+Then</p>
+	<p class="code"><span class="reboot">
+reboot</span></p>
+	<p>
+and check</p>
+	<p class="code">
+cat /proc/mdstat
+	<p>
+and check</p>
+	<p class="code">
+mount</p>
+	<p>
+to be sure all is as expected.</p>
+
+
+	<h2>
+6.5 Now run Lilo normally (without -R) and reboot</h2>
+	<p>
+See what Lilo will do.</p>
+	<p class="code">
+lilo -t -v</p>
+	<p>
+If it looks okay, do it:</p>
+	<p class="code">
+lilo</p>
+	<p class="code"><span class="reboot">
+reboot</span></p>
+	<p>
+and check</p>
+	<p class="code">
+cat /proc/mdstat</p>
+	<p>
+and check</p>
+	<p class="code">
+mount</p> 
+	<p>
+as a final system check.</p>
+      
+	<h2>
+Done.</h2>
+
+
+
+	<!-- Grub+initrd -->
+
+	<div id="7" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')? location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">^</a></div>
+
+<h1>Part II. RAID using initrd and grub</h1><font size -3>- Ferdy Nagy</font>
+<p>I used the following procedure with stock Debian 2.6.5, which has an initrd with all the modules ready to boot 
+into RAID. The procedure also covers using grub as the boot loader.  I built this from a bare install of Sarge 
+using the new installer with grub as the boot loader, but most of this document is distro independent.  My file system
+throughout is ext3 and it shouldn't take too much to use reiserfs.</p>
+<p>These steps reference back to the procedure sections outlined above and indicate where things differ due to initrd or 
+grub, so you will have to read/do/be familiar with the above steps.  Also, make sure you currently use grub
+as your boot loader, if you are using LILO, install grub and make sure it works before proceeding!</p>
+
+
+<h2>Section - 2. Upgrade to a RAID savvy kernel</h2>
+
+<a href="#2">Section 2</a>
+<p>When using initrd the kernel does not need to have the RAID compiled in, they will be loaded as modules.  Make sure
+the kernel loads the RAID modules.</p>
+
+<p>Edit <span class="code">/etc/modules</span> and add</p>
+<p class="code">md<br/>
+raid1</p>
+
+
+<h2>Section - 3. Setup RAID 1</h2>
+Follow <a href="#3">section 3</a> to setup the RAID 1.
+
+
+<h2>Section - 4. Copy your Debian system</h2>
+Follow <a href="#4">section 4</a> to copy the debian system.
+
+
+<h2>Section - 5. Reboot to RAID device</h2>
+
+<p>Instead of section 5 using LILO, grub is used as the boot loader, and initrd used to load the kernel.  A new kernel 
+entry in the grub menu is created that refers to an initrd that is created which will start the md [raid] device.  
+The original kernel entry will remain and can be reverted to if something goes wrong until RAID is running. This will 
+still use grub loaded installed on the /dev/hda MBR.</p>
+
+<h3>5.1 Build a new RAID initrd</h3>
+
+<p>A) Make sure the initrd has the modules it needs, by editing <span class="code">/etc/mkinitrd/modules</span>.  Add the 
+following [you can see what modules are available by mounting the initrd and looking in the lib/modules - see section 8.]:</p>
+<p class="code">
+	md<br/>
+	raid1</p>
+
+<p>B) Update the initrd so that the root device loaded is the raid device, not probed.  Edit the <span class="code">/etc/mkinitrd/mkinitrd.conf</span>, and update the ROOT line<br/>
+<span class="code">ROOT=/dev/md0</span></p>
+
+<p>C) Create the new initrd and a link to it.</p>
+<p class="code">mkinitrd -o /boot/initrd.img-2.6.5-raid</p>
+
+
+<h3>5.2 Update the grub boot menu</h3>
+
+<p>edit <span class="code">/boot/grub/menu.lst</span> </p>
+<p>1. Add the following entry</p>
+<p class="code">
+<pre>
+title           Debian GNU/Linux, kernel 2.6.5-1-686 RAID
+root            (hd0,0)
+kernel          /boot/vmlinuz-2.6.5-1-686 root=/dev/md0 ro
+initrd          /boot/initrd.img-2.6.5-1-686-raid
+savedefault
+boot
+</pre>
+</p>
+<p>2. Update the following kernel root option in the file.  <b>Note:</b> the grub known issues, so 
+this option will not be used anyway.</p>
+<p class="code"># kopt=root=/dev/md0 ro<br/>
+
+
+<h3>5.3 Do the above 5.4 Edit /mnt/md0/etc/fstab and reboot</h3>
+
+<p>[Copied from Part I 5.4 above]</p>
+<p>to have /dev/md0 mount as root (/), when grub boots from our RAID device, /dev/md0:</p>
+<p>Previous root (/) in fstab was:</p>
+<p class="code">/dev/hda1 / ext3 defaults 0 0</p>
+<p>Edit it to:</p>
+<p class="code">/dev/md0 / ext3 defaults 0 0</p>
+<p>Note: edit /mnt/md0/etc/fstab, not /etc/fstab, because at the moment we are booted with hda1 as root (/) but we 
+want to change the /etc/fstab that we currently have mounted on /mnt/md0/etc/fstab, our RAID device.</p>
+<p>Reboot and choose the RAID kernel to check if system boots our RAID device, /dev/md0, as root (/). If it does not, just reboot again and choose the
+original pre-read kernel image</p>
+<p class="code"><span class="reboot">reboot</span></p>
+<p>Verify /dev/md0 is mounted as root (/)</p>
+<p class="code">mount</p>
+<p>should show something similar to:</p>
+       	
+<p class="code">/dev/md0 on / type ext3 (rw)<br />
+proc on /proc type proc (rw)<br />
+devpts on /dev/pts type devpts (rw,gid=5,mode=620)</p>
+
+<p>Now we are booted into the new RAID device -- md0 as root (/). Our RAID device only has one disk in it at the 
+moment because we earlier declared the other disk as 'missing'. That was because we needed that other disk, hda, to 
+install Debian on or because it was our pre-existing Debian system.</p>
+
+<span class="code">cat /proc/mdstat</span> shows the [degraded] array is up and running, note the [_U] - second disk is up.</p>
+
+
+<h2>Section - 6. Reformat hda as fd and declare it as disk-one of your raid</h2>
+
+<h3>6.1/2 Setup hda and add to array</h3>
+<p>Follow <a href="#6">steps 6.1, and 6.2</a>.  <b>Wait</b> and make sure the drives are fully synced before proceeding.
+
+<h3>6.3 re-run mkinitrd again, and reboot.</h3>
+
+<p>This is needed to make sure that mkinitrd starts the newly built array with all drives.  mkinitrd uses mdadm -D to 
+discover what drives to assemble in the array during startup, this is contained in a script in the initrd image.  If this 
+step is not done the next time you reboot the array will be degraded.</p>
+
+<p> Do the following</p>
+<p class="code">mkinitrd -o /boot/initrd-2.6.5-raid.img</p>
+
+<p><span class="reboot">reboot</span></p>
+
+<p>and check the array is fully up, look for the [UU]</p>
+
+<p class="code">cat /proc/mdstat</p>
+
+<p>and check /dev/md0 is mounted</p>
+
+<p class="code">mount</p>
+
+
+<h2>7. Put grub into the MBR of the second disk</h2>
+
+<p>grub refers to the boot(ed) device as hd0, so if the primary hard drive (/dev/hda) fails the system will look for 
+the next bootable device (/dev/hdc) and loads it's MBR, which grub will still refer to as hd0.  So, the grub
+configuration can still use hd0 even when the primary device fails.</p>
+
+<h3>7.1 Put grub into the MBR</h3>
+
+<p>These steps temporarily tell grub the second device is hd0 and then loads the MBR.</p>
+
+<p>start the grub command line, then run the load commands.  <b>Note:</b> grub partition references
+are offset by 1, so in the following with a partition of /dev/hdc1, the root is (hd0,0) [previous line tells 
+grub to set hdc as hd0].  If the partition was /dev/hdc2, the root would be (hd0,1)!</p>
+<p class="code">grub<br/>
+grub> device (hd0) /dev/hdc<br/>
+grub> root (hd0,0)<br/>
+grub> setup (hd0)<br/>
+</p>
+
+<h3>7.2 Testing</h3>
+
+<p>reboot, verify the /proc/mdstat devices always start.  Follow <a href="VIII">section VIII</a> and verify the 
+system boots with one disk off line.</p>
+
+
+<h2>8. Known Issues</h2>
+
+<h3>grub</h3>
+<p>grub will already be installed on hda, and you will manually force grub to be installed on hdc so the MBRs are
+ok; however, <span class="code">install-grub</span> and <span class="code">update-grub</span> will fail because 
+grub does not understand the md0 device.  This is not a problem with install-grub as it will not be executed again 
+after it has been installed, but update-grub is executed after an updated kernel is apt'd, causing an error to be
+reported by apt.  The update-grub error is ok, the kernel gets installed and the initrd is created with all
+the md array information, provided the array was not degraded during the kernel upgrade.  <b>But</b> you will have
+to <b>manually</b> update the grub menu.lst and add the new kernel information before you reboot, or the new
+kernel will not appear in the grub menu.</p>
+
+<h3>mkinitrd</h3>
+<p>When using mdadm, mkinitrd will only detect disks in the array that are running at the time of execution. You should
+not install a new kernel while the array is degraded, otherwise, even if you do an mdadm --add, the next reboot will
+still be degraded!  The array is started at boot time by <span class="code">script</span>.  You can see what 
+is in the script of the initrd by mounting it, e.g.</p>
+<p class="code">mount /boot/initrd.img-<b>X.X.X</b> /mnt -o loop<br/> 
+cat /mnt/script</p>
+<p>And look for the array start line similar to</p>
+<p class="code">mdadm -A /devfs/md/0 -R -u 23d8dd00:bc834589:0dab55b1:7bfcc1ec /dev/hda1 /dev/hdc1</p>
+
+	<!-- Appendix -->
+
+	<div id="I" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')? location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+	<h1>
+Appendix</h1>
+
+
+	<h2>
+I. RAID 1 Introduction</h2>
+	<p>
+Redundant Array of Inexpensive Disks (RAID) refers to putting more than one hard disk to work together in various advantageous ways. Hardware RAID relies on special hardware controllers to do this and we do not covered in this HowTo. Software RAID, this HowTo, uses software plus the ordinary controllers on your computer's motherboard and works excellently.</p>
+	<p>
+RAID 1 is where you use two hard drives as if they were one by mirroring them onto each other. Advantages of RAID 1 are (a) faster data reads because one part of the data can be read from one of the disks while simultaneously another part of the data is read from the other disk, and (b) a measure of fail over stability -- if one of the disks in the RAID 1 fails, the system will usually stay online using the remaining drive while you find time to replace the failed drive.</p>
+	<p>
+To achieve the speed gain, the two disks that comprise your RAID 1 device must be on separate controllers (in other words, on separate drive cables). The first part of the data is read from one disk while simultaneously the second part of data is read from the other disk. Writing data to a RAID 1 device takes twice as long apparently. However, under most system use data is more often read from disk than written to disk. So RAID 1 almost doubles the effective speed of your drives. Nice.</p>
+	<p>
+RAID is not a substitute for regular data back ups. Many things can happen that destroy both your drives at the same time.</p>
+
+
+	<div id="II" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')? location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+	<h2>
+II. Drive designators (hda, hdb, hdc, hdd), jumpers and cables</h2>
+	<p>
+<b>Drive designators.</b></p>
+	<p>
+Drives on IDE 1 -- Primary Controller</p>
+	<ul>
+	 <li>
+hda, Primary Master drive</li> 
+	 <li>
+hdb, Primary Slave drive</li> 
+	</ul>
+	<p>
+Drives on IDE 2 -- Secondary Controller</p>
+	<ul>
+	 <li>
+hdc, Secondary Master drive</li> 
+	 <li>
+hdd, Secondary Slave drive</li> 
+	</ul>
+	<p><b>
+Jumpers.</b> When moving drives around in your computer, be sure to set the jumpers on your drives correctly. They are the little clips that connect two of various pins on your drive to set it to Cable Select, Master, or Slave. IDE drives usually have a diagram right on their case that shows where to set the clip for what setting. Different brands sometimes use different pin configurations.
+	<p><b>
+Cables.</b> Use 80 wire 40 pin IDE drive cables, not 40 wire 40 pin or you will slow down your hard drive access. For best results, cables should be no longer than the standard 18". If your cable has a blue end, that's the end to attach to the mother board (I don't know why). I don't think it matters which of the two drive connectors on the cable you plug your drive into, the middle or end one, unless you use Cable Select in which case I believe the sable's end plug is Master and its middle plug is Slave.</p>
+
+
+	<div id="III" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')? location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+	<h2>
+III. Setting up software RAID for multiple partitions.</h2>
+	<p>
+You can have a multi-partition RAID system if you prefer. You just need to create multiple RAID devices.</p>
+	<p>
+I have found it useful when setting software RAID on multiple partitions to set the RAID device to the same name as the disk partition.</p>
+	<p>
+If you have 3 partitions on /dev/hda and I want to add /dev/hdc for software RAID, then boot /dev/hdc and add /dev/hda back into the device, exactly what I did earlier, but with 3 partitions which are: hda1=/boot, hda2=/, hda3=/var</p>
+	<p class="code">
+sfdisk -d /dev/hda | sfdisk /dev/hdc;<br />
+reboot<br />
+mdadm --zero-superblock /dev/hda1<br />
+mdadm --zero-superblock /dev/hda2<br />
+mdadm --zero-superblock /dev/hda3<br />
+mdadm --create /dev/md1 --level=1 --raid-disks=2 missing /dev/hdc1<br />
+mdadm --create /dev/md2 --level=1 --raid-disks=2 missing /dev/hdc2<br />
+mdadm --create /dev/md3 --level=1 --raid-disks=2 missing /dev/hdc3<br />
+mkfs.reiserfs /dev/md1;mkfs.reiserfs /dev/md2; mkfs /dev/md3;<br />
+mkdir /mnt/md1 /mnt/md2 /mnt/md3;<br />
+cp -ax /boot /mnt/md1;cp -ax / /mnt/md2; cp -ax /var /mnt/md3;</p>
+	<p>
+add entry in current fstab for all 3 and REBOOT.</p>
+	<p>
+Sync data again, only copying changed stuff.
+	<p class="code">
+cp -aux /boot /mnt/md1;cp -aux / /mnt/md2; cp -aux /var /mnt/md3;</p>
+	<p>
+edit lilo.conf entry in this case:
+	<p class="code">
+boot=/dev/md1<br />
+root=/dev/md2</p>
+	<p>
+Edit /mnt/md2/etc/fstab to have / set to /dev/md2.</p>
+	<p>
+REBOOT into RAID.</p>
+	<p>
+Add devices in:
+	<p class="code">
+mdadm --add /dev/md1 /dev/hda1<br />
+mdadm --add /dev/md2 /dev/hda2</p>
+	<p>
+Wait for sync, write Lilo permanently, and REBOOT into your setup.</p>
+	<p>
+It is not harder to include more devices in a software RAID device.</p>
+
+ 
+	<div id="IV" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')? location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+	<h2>
+IV. Lilo</h2>
+	<p>
+You need special entries to use Lilo as your boot loader, I couldn't get grub to work, but nothing prevents you from using grub.  Just standard Lilo/grub entries WILL NOT WORK FOR RAID.</p>
+	<p>
+Entries in /etc/lilo.conf:
+	<p class="code">
+raid-extra-boot=&lt;option&gt;</p>
+	<p>
+That option only has meaning for RAID 1 installations. The &lt;option&gt; may be specified as none, auto, mbr-only, or a comma-separated list of devices; e.g., "/dev/hda,/dev/hdc6".</p>
+	<p><span class="code">
+panic='' </span>line in lilo.conf tells Lilo to automatically boot back to the old install if something goes wrong with the new Kernel.</p>
+      
+ 
+	<div id="V" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')? location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+	<h2>
+V. Copying data</h2>
+	<p>
+Use "cp -aux" to just copy updated items. if you are copying a partition that is not root you need to copy the subdirectories and not the mount point, otherwise it will just copy the directory over. To copy boot which is a separately mounted partition to /mnt/md1 which is our new software RAID partition we copy as thus:  "cp -aux /boot/* /mnt/md1" NOTE THE DIFFERENCE when copying mount points and not just /.  If you just do cp -aux /boot /mnt/md1 it will just copy over boot as a subdirectory of /mnt/md1.</p>
+	<p>
+Or, alternatively, you could copy the root system with 'find' piped to 'cpio', like this:</p>
+	<p><p class="code">
+cd /<br />
+find . -xdev -print | cpio -dvpm /mnt/md0</p>
+
+
+
+	<div id="VI" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')? location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+	<h2>
+VI. Rebooting</h2>
+	<p>
+You should always reboot if you have changed your partitions, otherwise the Kernel will not see the new partitions correctly.  I have changed partitions and not rebooted, and it caused problems.  I would rather have the simpler longer less potentially troublesome approach.  Just because it appears to work, does not mean it does work.  You really only need to reboot if you are CHANGING or rebooting a new Lilo configuration.  Don't email me if you hose yourself because you did not feel the urge to reboot. Trust me.</p>
+
+ 
+	<div id="VII" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')? location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+	<h2>
+VII. initrd</h2>
+	<p>
+initrd: Use RAID as initrd modules. </p>	
+	<p>
+The Kernel that is installed when you first build a system does not use an initrd.img. 
+However the default kernel uses initrd. So you can use a stock kernel for with 
+software raid.</p>
+	<p> 
+The new Kernel by default won't contain the right modules for creating a RAID savvy initrd, but they can be added.</p>
+	<p> 
+&nbsp;<p> 
+(Per James Bromberger)<p> 
+Now we need to prepare for running a RAID setup. Our packages need an update. 
+Use apt, because it rocks, and install the following: <br>
+<p class="code">
+DevFSd <br>
+kernel-image-2.4.x (whatever suits you) <br>
+reiserfsprogs <br>
+less <br>
+screen <br>
+vim <br>
+<p>
+...Anything else you need and can't live without for the next 10 minutes <br>
+<br>
+You might already have some of these modules in the kernel, eg ext2.
+Edit /etc/modules and add the following modules: <br>
+<p class="code">
+reiserfs <br>
+md <br>
+raid1 <br>
+ext2 <br>
+ide-disk (might not need this one.)<br>
+raid5 <br>
+ext3 <br>
+ide-probe-mod (might not need this one.)<br>
+ide-mod (might not need this one.) <br>
+<p>
+<br>
+Edit /etc/mkinitrd/modules, and add the same modules to this list. Your initrd 
+image needs to be able to read and write to your RAID array, before your 
+filesystem is mounted. Initrd is the trick here. You probably also want to see 
+if you need to edit /etc/mkinitrd/mkinitrd.cfg and set the variable ROOT=probe 
+to be ROOT=/dev/md0, or possibly, if using DevFS, ROOT=/dev/md/0. <br>
+<br>
+Regenerate your initrd image for your new kernel with 
+<p class="code">
+
+mkinitrd -o /tmp/initrd-new /lib/modules/2.4.x-... .
+
+<p> If all is good, move this to /boot/initrd-2.4.x-... and 
+edit your /etc/lilo.conf to add initrd=/boot/initrd against the &quot;Linux&quot; kernel 
+entry. Run lilo, and you should see an asterisk next to the boot image &quot;Linux&quot;.<p> 
+With those modules you should be able to install the new kernel-image package. The install will add those modules to the initrd.img that. Now you can do for example (I actually only tested with kernel-image-2.4.24-1-686-smp on a machine using testing and unstable listed in the /etc/apt/source.list)
+	<p class="code"> 
+apt-get install kernel-image-2.4.24-1-686-smp</p>
+	<p> 
+You will need to modify /etc/lilo.conf to include the right stuff. Otherwise the post install scripts for the package will likely fail.
+	<p class="code"> 
+image=/vmlinuz<br />
+label=Linux<br />
+initrd=/initrd.img</p>
+	<p>
+(The above is all one line)</p>
+	<p> 
+Run Lilo and REBOOT.</p>
+	<p> 
+You should now have the modules loaded. Check with:<span class="code"> cat /proc/mdstat </span></p>
+
+
+	<div id="VIII" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')? location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+	<h2>
+VIII. Verify that system will boot even with one disk off-line</h2>
+	<p>
+Roger did it this way.</p>
+     <ol>
+	<li>Shutdown and power-off your computer.</li>
+	<li>Open up computer and unplug the power to Primary Master disk (/dev/hda).</li>
+	<li>Start up your computer. It should boot up from the other disk.</li>
+	<li>Now look at<br />
+	<span class="code">cat /proc/mdstat</span><br />
+	you should see that one of the disks in your md0 has "failed".</li>
+	<li>Shutdown and then unplug the power to you computer, again.</li>
+	<li>Reconnect the power to Primary Master disk.</li>
+	<li>Start up your computer, again. It should boot up from the other disk still. It wont try to access the disk that it now has on record as "failed" until you re-add it to your RAID. Look again at<br />
+	<span class="code">cat /proc/mdstat</span><br />
+	you should still see one of the disks in your md0 listed as "failed". If this were not a simulation it probably would be failed and you would want to replace it with a new one. But for the simulation we just un-plug and later re-plug the power connector to the disk.</li>
+	<li>Now that you have re-connected the power to the disk (or replaced it with a new one were it really was a failed disk) bring it back online with mdadm,<br />
+	<span class="code">mdadm --add /dev/md0 /dev/hda1</span><br />
+	and check its status with,
+	<span class="code">cat /proc/mdstat</span><br />
+	you should see that it is being synchronized the the other disk in your RAID 1.</li>
+	<li><b>WAIT until the synchronization has completed.</b> Then you can try the above again but unplugging the other disk in your RAID 1. <b>WARNING</b> if you do not wait for synchronization to fully complete (check with '/proc/mdstat') you will have a <b>real problem</b> because your system is only partially rebuild on the "new" disk until synchronization has finished.</li> 
+    </ol>
+	<p class="note">
+NB: I (Roger) had to disconnect power to my CD-ROM drive (because my CD-ROM was on /dev/hdd -- Secondary Slave) in order to boot with my Secondary Master disconnected. Otherwise my BIOS refused to boot the machine because my CD-ROM was then a Slave on a cable without any Master. Your mileage may vary. :-) So I decided to leave my CD-ROM disconnected, as this is a server and I need it to boot even with a failed drive more than I need the convenience of keeping the CD-ROM connected. I can of course connect the CD-ROM when I need it as long as I have a working Master drive on its cable with it or set it to Master.</p>
+
+
+        <div id="IX" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')?  location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+        <h2>
+IX. Setting up a RAID 1 Swap device</h2>
+	<p>
+I created a swap RAID device as follows:</p>
+	<p>
+(I have a 1000MB hda2 and a 1000MB hdc2, both as type 'fd' created with 'cfdisk', that I will use as md1 for swap.)</p>
+	<p>
+	(Or you can just create the swap parttions on the actual disk, don't put swap on raid.
+	Just put a swap partition on each disk in your raid set on an empty partition.)
+
+	<p class="code">
+
+	<p>
+Add a Swap entry in /etc/fstab, just after root (/) partition line. Example line to add to /etc/fstab:
+	<p class="code">
+/dev/md1        none            swap    sw                      0       0</P>
+	<p>
+Reboot and the boot sequence should start up the Swap when it reads /etc/fstab.</p>
+	<p class="code"><span class="reboot">
+reboot</span></p>
+	<p class="todo">
+	You can argue whether swap should be on raid. A large colo admin mentions that he does not use swap on 	raid. Keep it as simple as possible. You decide.</p> 
+	
+
+        <div id="X" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')?  location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+        <h2>
+X. Performance Optimizations </h2>
+        For every ide drive turn on hdparm.
+	<br>
+	<p class="code">&nbsp;<p class="code">hdparm -d1 -c3 /dev/hda /dev/hdc<p>
+	<br>You need to use bonnie++ to measure software raid performance 
+    <br>You want all your devices to be as masters. As your limited to total bandwidth on that chain of
+    <br>hard drives.
+    <br> I just stick as many hard drives in the system as possible, 
+    <br> I have not encountered problems where having disks on the same master
+    <br> slave channel caused a slowdown. 
+    
+      <div id="XI" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')?  location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+    <h2>
+XI. Disaster Recovery
+	</h2>
+
+    <h2>
+    <p class="todo">
+(These directions are untested, I need to adopt them to mdadm instead of raid2 --luke)</p></h2>
+
+	<P>So what to do if you can't get your root RAID1 filesystem to boot? Here is a 
+straightforward way to get to your md0:</P>
+<UL>
+<br>Find the 2.4 kernel install media from $DEBIAN/dists/unstable/main/disks-i386, 
+<br> and download the <STRONG>bf2.4</STRONG> set of disks.
+<br> You only need the rescue and root images. 
+<br>Find the corresponding kernel-image-2.4.18-bf2.4_2.4.18-4_i386.deb or 
+<br>similar; and unpack this somewhere with 
+<p class="code"> &nbsp;</p>
+<p class="code"> dpkg-deb -x kernel-image-2.4.yy-bf45.deb temp/ </p>
+<br>In the temp directory, find the md.o and raid1.o modules. 
+<br>Copy them to a new floppy in /floppy/boot. 
+<br>Copy /sbin/raid* to the root of the floppy disk (/floppy). You'll notice 
+<br>that all the raid programs are symlinks to the same binary; doesn't matter, 
+<br>since you probably have a vfat disk that doesn't know about symlinks. Just make 
+<br>multiple copies. (Or be smart here and use an ext2 disk). 
+<br>Boot with the rescue, then with the root disk 
+<br>After choosing a language and keyboard from the installer, choose to preload 
+<br>some modules. Grab that third disk you just put those modules and binaries on, 
+<br>and put it in the floppy drive. 
+<br>Load up md.o first, and then raid1.o. 
+<br>Press Alt-F2 to get a text console. 
+<p class="code">
+<br>mount /floppy 
+<br>cp /etc/raid* /sbin  
+<p class="code">
+# (Ie: copy to the ramfs /sbin) 
+<br>mkdir /etc/raid<p class="code">
+cp /floppy/raidtab /etc/raid  
+<p class="code">
+ln -s /etc/raid/raidtab /etc/raidtab  
+<p class="code">
+raidstart /dev/md0<p class="code">
+mount -t reiserfs /dev/md0 /target </UL>
+</p>
+
+	<div id="XII" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')? location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+	<h2>
+XII. Quick Reference</h2>
+	<p><b>
+DON'T JUST LOOK AT THIS QUICK REFERENCE. Understand the rest of the document.</b></p>
+	<h3 style="font-style: italic; margin: 3% 1% 2% -2%;">
+Quick Reference -- setting up bootable system on /dev/md0 using /dev/hda and /dev/hdc as RAID 1 component disks</h3>
+	<p>
+Verify RAID savvy Kernel. (1) You should see the RAID "personalities" your Kernel supports:</p>
+	<p class="code">
+cat /proc/mdstat</p>
+	<p class="code">
+	dmsg|grep -i RAID
+	<p>
+(This will show you if raid is compiled into kernel, or detected as a module from initrd.)
+/etc/modules will not list RAID if Kernel has RAID compiled in instead of loaded as modules.
+Use lsmod to list currently loaded modules this will show raid modules loaded.	
+	<p>
+(2) You should NOT see any RAID modules in /etc/modules (If you do, review step 2 of Procedure):</p>
+	<p class="code">
+cat /etc/modules</p>
+	<p>
+Copy partitions hda to hdc:
+	<p class="code">
+sfdisk -d /dev/hda | sfdisk /dev/hdc </p>
+	<p>
+Create array:
+	<p class="code">
+mdadm --create /dev/md0 --level=1 --raid-disks=2 missing /dev/hdc1 </p>
+	<p>
+Copy data:
+	<p class="code">
+cp -ax  / /mnt/md0 </p>
+	<p>
+Example /etc/lilo.conf entry for 1 disk RAID device:
+	<p class="code">
+boot=/dev/hda<br />
+image=/vmlinuz<br />
+label=RAID<br />
+read-only<br />
+#our new root partition.<br />
+root=/dev/md0</p>
+	<p>
+Add second disk to array:
+	<p class="code">
+mdadm --add /dev/md0 /dev/hdc1 </p>
+	<p>
+Example final /etc/lilo.conf entry:
+	<p class="code">
+boot=/dev/md0<br />
+root=/dev/md0<br />
+#this writes the boot signatures to either disk.<br />
+raid-extra-boot=/dev/hda,/dev/hdc<br />
+image=/vmlinuz<br />	
+label=RAID<br /> 	
+read-only</p>
+     
+
+	<h3 style="font-style: italic; margin: 3% 1% 2% -2%;">
+Useful 'mdadm' commands</h3>
+	<p> 
+Always zero the superblock of a device before adding it to a RAID device. Why? Because the disks decide what array they are in based on the disk-id information written on them. Zero the superblock first in case the disk was part of a previous RAID device. Also, if a partition was part of a previous RAID device, it appears to store the size of it's previous partition in the signature. Zeroing the superblock before adding it to a new RAID device takes care of cleaning up that, too.</p>
+	<p>
+Erase the MD superblock from a device:
+	<p class="code">
+mdadm --zero-superblock /dev/hdx</p>
+	<p>
+Remove disk from array:</p>
+	<p class="code">
+mdadm --set-faulty /dev/md1 /dev/hda1 <br />
+mdadm --remove /dev/md1 /dev/hda1</p>
+	<p>
+Replace failed disk or add disk to array:
+	<p class="code">
+mdadm --add /dev/md1 /dev/hda1</p>
+	<p>
+(that will format the disk and copy the data from the existing disk to the new disk.)</p>
+	<p>
+Create mdadm config file:
+	<p class="code">
+echo "DEVICE /dev/hda /dev/hdc" &gt; /etc/mdadm/mdadm.conf<br /> 
+mdadm --brief --detail --verbose /dev/md0 &gt;&gt; /etc/mdadm/mdadm.conf<br />
+mdadm --brief --detail --verbose /dev/md1 &gt;&gt; /etc/mdadm/mdadm.conf</p>
+	<p>
+To stop the array completely:
+	<p class="code">
+mdadm -S /dev/md0</p>
+
+
+	<div id="XIII" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')? location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+	<h2>
+XIII. Troubleshooting </h2>
+	<br>The main problems people encounter is:</br>
+	<br>Kernel must have support for raid compiled in or loaded correctly in initrd.</br>
+	<br>You will actually have 2 configurations of raid. You boot to the failed raid volume,</br> 
+	<br>then add in the original disk, then boot the final raid configuration.</br>
+
+	<br>Performance is too slow:</br>
+	<br>See <a href="#X"> Performance Optimizations</a>
+	
+	<div id="XIIII" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')? location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+	<h2>
+XIIII. Raid Disk Maintenance. </h2>
+<br>You need to configure raid to monitor for errors. </br>
+<br>It will email you when it detects and error </br>
+<br>Once a failed disk is detected, remove it and then add it back in.</br>
+<br>Create an mdadm.conf file <br>
+<br>See <a href="#XII"> mdadm commands</a>
+<br>You can also configure hot spare, that will come online if a disk fails. </br>
+<br><configure smart monitoring of disk diagnostics to detect pre-failing disks </br>
+<p class="todo">
+	Finish directions on smart monitoring and mdadm configuration to monitor disks,and hot spares.
+<p>
+
+	<!-- References -->
+
+	<div id="references" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')? location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+	<h1>
+References</h1>
+	<p>
+RAID 1 Root HowTo PA-RISC<br /><a href="http://www.parisc-linux.org/faq/raidboot-howto.html" target="_blank">
+http://www.pa-RISC-linux.org/faq/RAIDboot-howto.html</a></p>
+	<p>
+Lilo RAID Configuration:<br /><a href="http://lists.debian.org/debian-user/2003/debian-user-200309/msg04821.html" target="_blank">
+http://lists.debian.org/debian-user/2003/debian-user-200309/msg04821.html</a></p>
+	<p>
+Grub RAID Howto<br /><a href="http://www.linuxsa.org.au/mailing-list/2003-07/1270.html" target="_blank">
+http://www.linuxsa.org.au/mailing-list/2003-07/1270.html</a></p>
+	<p>
+Building a Software RAID System in Slackware 8.0<br /><a href="http://slacksite.com/slackware/raid.html" target="_blank">
+http://slacksite.com/slackware/RAID.html</a></p>
+	<p>
+Root-on-LVM-on-RAID HowTo<br /><a href="http://www.midhgard.it/docs/lvm/html/install.disks.html" target="_blank">
+http://www.midhgard.it/docs/lvm/html/install.disks.html</a></p>
+	<p>
+Software RAID HowTo<br /><a href="http://unthought.net/Software-RAID.HOWTO/Software-RAID.HOWTO.txt" target="_blank">
+http://unthought.net/Software-RAID.HOWTO/Software-RAID.HOWTO.txt</a></p>
+	<p>
+HowTo - Install Debian Onto a Remote Linux System<br /><a href="http://trilldev.sourceforge.net/files/remotedeb.html" target="_blank">
+http://trilldev.sourceforge.net/files/remotedeb.html</a></p>
+	<p>
+Kernel Compilation Information and good getting started info for Debian<br /><a href="http://newbiedoc.sourceforge.net/" target="_blank">
+http://newbiedoc.sourceforge.net</a></p>
+	<p>
+Initrd information and Raid Disaster Recovery, </p>
+	<p>
+<a href="http://www.james.rcpt.to/programs/debian/raid1/">
+http://www.james.rcpt.to/programs/debian/raid1/</a></p>
+
+	<div id="bottom" class="up" onMouseOver="status='^ up to Table of Contents';" onMouseOut="status=''" onClick="(location.hash == '#TOC')? location.reload(): location.hash = 'TOC'; return false;"><a class="up" href="#TOC">
+^</a></div>
+
+
+</body>
+</html>

@@ -1,0 +1,1 @@
+mdadm: virtual-package-depends-without-real-package-depends recommends: mail-transport-agent

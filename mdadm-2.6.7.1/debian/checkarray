@@ -1,0 +1,174 @@
+#!/bin/sh
+#
+# checkarray -- initiates a check run of an MD array's redundancy information.
+#
+# Copyright © martin f. krafft <madduck@debian.org>
+# distributed under the terms of the Artistic Licence 2.0
+#
+set -eu
+
+PROGNAME=${0##*/}
+
+about()
+{
+  echo "$PROGNAME -- MD array (RAID) redundancy checker tool"
+  echo '$Id$'
+  echo "Copyright © martin f. krafft <madduck@debian.org>"
+  echo "Released under the terms of the Artistic Licence 2.0"
+}
+
+usage()
+{
+  about
+  echo
+  echo "Usage: $PROGNAME [options] [arrays]"
+  echo
+  echo "Valid options are:"
+  cat <<-_eof | column -s\& -t
+	-a|--all & check all assembled arrays (check /proc/mdstat).
+	-c|--cron & honour AUTOCHECK setting in /etc/default/mdadm.
+	-s|--status & print redundancy check status of devices.
+	-x|--cancel & queue a request to cancel a running redundancy check.
+	-q|--quiet & suppress informational messages.
+	-Q|--real-quiet & suppress all output messages, including warnings and errors.
+	-h|--help & show this output.
+	-V|--version & show version information.
+	_eof
+  echo
+  echo "Examples:"
+  echo "  $PROGNAME --all"
+  echo "  $PROGNAME --quiet /dev/md[123]"
+  echo "  $PROGNAME -sa"
+  echo "  $PROGNAME -x --all"
+  echo
+  echo "Devices can be specified in almost any format. The following are"
+  echo "all equivalent:"
+  echo "  /dev/md0, md0, /dev/md/0, /sys/block/md0"
+  echo
+  echo "The --all option overrides all arrays passed to the script."
+  echo
+  echo "You can also control the status of a check with /proc/mdstat ."
+}
+
+SHORTOPTS=achVqQsx
+LONGOPTS=all,cron,help,version,quiet,real-quiet,status,cancel
+
+eval set -- $(getopt -o $SHORTOPTS -l $LONGOPTS -n $PROGNAME -- "$@")
+
+arrays=''
+cron=0
+all=0
+quiet=0
+status=0
+action=check
+
+for opt in $@; do
+  case "$opt" in
+    -a|--all) all=1;;
+    -c|--cron) cron=1;;
+    -s|--status) action=status;;
+    -x|--cancel) action=idle;;
+    -h|--help) usage; exit 0;;
+    -q|--quiet) quiet=1;;
+    -Q|--real-quiet) quiet=2;;
+    -V|--version) about; exit 0;;
+    /dev/md/*|md/*) arrays="${arrays:+$arrays }md${opt#*md/}";;
+    /dev/md*|md*) arrays="${arrays:+$arrays }${opt#/dev/}";;
+    /sys/block/md*) arrays="${arrays:+$arrays }${opt#/sys/block/}";;
+    --) :;;
+    *) echo "$PROGNAME: E: invalid option: $opt" >&2; usage >&2; exit 0;;
+  esac
+done
+
+is_true()
+{
+  case "${1:-}" in
+    [Yy]es|[Yy]|1|[Tt]rue|[Tt]) return 0;;
+    *) return 1;
+  esac
+}
+
+DEBIANCONFIG=/etc/default/mdadm
+[ -r $DEBIANCONFIG ] && . $DEBIANCONFIG
+if [ $cron = 1 ] && ! is_true ${AUTOCHECK:-false}; then
+  [ $quiet -lt 1 ] && echo "$PROGNAME: I: disabled in $DEBIANCONFIG ." >&2
+  exit 0
+fi
+
+if [ ! -f /proc/mdstat ]; then
+  [ $quiet -lt 2 ] && echo "$PROGNAME: E: MD subsystem not loaded, or /proc unavailable." >&2
+  exit 2
+fi
+
+if [ ! -d /sys/block ]; then
+  [ $quiet -lt 2 ] && echo "$PROGNAME: E: /sys filesystem not available." >&2
+  exit 7
+fi
+
+if [ -z "$(ls /sys/block/md* 2>/dev/null)" ]; then
+  if [ $quiet -lt 2 ] && [ $cron != 1 ]; then
+    echo "$PROGNAME: W: no active MD arrays found." >&2
+    echo "$PROGNAME: W: (maybe uninstall the mdadm package?)" >&2
+  fi
+  exit 5
+fi
+
+if [ -z "$(ls /sys/block/md*/md/level 2>/dev/null)" ]; then
+  [ $quiet -lt 2 ] && echo "$PROGNAME: E: kernel too old, no support for redundancy checks." >&2
+  exit 6
+fi
+
+if ! egrep -q '^raid([1456]|10)$' /sys/block/md*/md/level 2>/dev/null; then
+  [ $quiet -lt 1 ] && echo "$PROGNAME: I: no redundant arrays present; skipping checks..." >&2
+  exit 0
+fi
+
+if [ -z "$(ls /sys/block/md*/md/sync_action 2>/dev/null)" ]; then
+  [ $quiet -lt 2 ] && echo "$PROGNAME: E: no kernel support for redundancy checks." >&2
+  exit 3
+fi
+
+[ $all = 1 ] && arrays="$(ls -d1 /sys/block/md* | cut -d/ -f4)"
+
+for array in $arrays; do
+  SYNC_ACTION_CTL=/sys/block/$array/md/sync_action
+
+  if [ ! -e $SYNC_ACTION_CTL ]; then
+    [ $quiet -lt 1 ] && echo "$PROGNAME: I: skipping non-redundant array $array." >&2
+    continue
+  fi
+
+  cur_status="$(cat $SYNC_ACTION_CTL)"
+
+  if [ $action = status ]; then
+    echo "$array: $cur_status"
+    continue
+  fi
+
+  if [ ! -w $SYNC_ACTION_CTL ]; then
+    [ $quiet -lt 2 ] && echo "$PROGNAME: E: $SYNC_ACTION_CTL not writeable." >&2
+    exit 4
+  fi
+
+  case "$action" in
+    idle)
+      echo $action > $SYNC_ACTION_CTL
+      [ $quiet -lt 1 ] && echo "$PROGNAME: I: cancel request queued for array $array." >&2
+      ;;
+
+    check)
+      if [ "$cur_status" != idle ]; then
+        [ $quiet -lt 2 ] && echo "$PROGNAME: W: array $array not idle, skipping..." >&2
+        continue
+      fi
+
+      # queue request for the array. The kernel will make sure that these requests
+      # are properly queued so as to not kill one of the array.
+      echo $action > $SYNC_ACTION_CTL
+      [ $quiet -lt 1 ] && echo "$PROGNAME: I: check queued for array $array." >&2
+      ;;
+  esac
+
+done
+
+exit 0
