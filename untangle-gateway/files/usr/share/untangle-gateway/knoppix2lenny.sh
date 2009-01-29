@@ -80,9 +80,6 @@ Untangle 6.1 upgrade beginning.  Progress may be monitored with:
 Once the upgrade has completed, the Untangle Server will reboot automatically.
 EOF
 
-  echo "Sleeping 120 seconds.  This is your chance to adjust sources.list (if necessary)"
-  sleep 120
-
   # set debconf to critical/noninteractive
   echo debconfig debconf/priority select critical | debconf-set-selections
   echo debconfig debconf/frontend select Noninteractive | debconf-set-selections
