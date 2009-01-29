@@ -1,7 +1,0 @@
-page.insert_html( :top, "qos-list", :partial => "application/table_row", :object => @qos, :locals => { :table_model => qos_table_model, :data => Alpaca::Table::Data.new( "qos-list", [ @qos ] ) } )
-page.sortable( "qos-list", {:scroll => "'qos-list-list-table'", :constraint => "vertical", :onChange => "function(){enableSave(); TableManager.updateRowStyles( 'override-list' );}" } )
-page << "TableManager.updateRowStyles( 'qos-list' );"
-page << "initTableRow('qos-list');"
-page << "enableSave();"
-page << "setTimeout(\"RuleBuilder.edit( '" + @row_id + "', 'qos-list', true )\", 500);"
-page << "replaceSelectBoxes();"

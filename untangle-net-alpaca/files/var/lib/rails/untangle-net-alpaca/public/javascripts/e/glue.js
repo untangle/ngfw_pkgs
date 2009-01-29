@@ -32,7 +32,7 @@ Ung.Alpaca.Glue = {
         var pageID = parseInt( a[4] );
         
         if (( page == null ) || ( page.length == 0 )) page = "index";
-        if (( controller == null ) || ( controller.length == 0 )) controller = "interface";
+        if (( controller == null ) || ( controller.length == 0 )) controller = "network";
 
         var requestedPage = { "controller" : controller, "page" : page };
         if ( pageID ) {

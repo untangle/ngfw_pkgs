@@ -1,2 +1,0 @@
-page.insert_html( :top, @list_id, :partial => "parameter", :locals => { :filter_types => @filter_types } )
-page << "RuleBuilder.updateRowStyles( 'rule-builder' );"

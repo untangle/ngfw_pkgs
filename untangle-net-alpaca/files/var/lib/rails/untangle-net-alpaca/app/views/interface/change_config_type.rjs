@@ -1,2 +1,0 @@
-page.hide( *@hide_types )
-page.show( *@config_type )

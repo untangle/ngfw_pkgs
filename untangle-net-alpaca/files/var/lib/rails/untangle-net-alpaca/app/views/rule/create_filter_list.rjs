@@ -1,2 +1,0 @@
-page.replace_html( "rule-dialog", :partial => "filter_list" )
-page << "enableSave();"

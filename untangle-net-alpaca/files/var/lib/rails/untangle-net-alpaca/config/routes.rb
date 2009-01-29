@@ -28,7 +28,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # You can have the root of your site routed by hooking up '' 
   # -- just remember to delete public/index.html.
-  map.connect '', :controller => "interface", :action => "e_index"
+  map.connect '', :controller => "network", :action => "index"
 
 
   # renames

@@ -1,9 +1,0 @@
-<fieldset>
-<ul class="text-fields">
-  <li>
-    <label for="<%= "#{config_id}_interface" %>"><%= "Bridge To:".t %></label>
-    <%= select_tag( "#{config_id}_interface", 
-                    options_for_select( config.bridgeable_interfaces, config.bridge )) %>
-  </li>
-</ul>
-</fieldset>

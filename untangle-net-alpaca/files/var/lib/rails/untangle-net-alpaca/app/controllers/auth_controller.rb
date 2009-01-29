@@ -64,37 +64,6 @@ class AuthController < ApplicationController
     extjs
   end
     
-  ## Check a users credentials and then log them in
-  def check_credentials
-    ## Clear out the existing username
-    session[:username] = nil
-
-    credentials = params[:credentials]
-    if ( credentials.nil? )
-      credentials = {}
-    end
-    username = credentials[:username]
-    password = credentials[:password]
-
-    v = verify_account( username, password )
-    unless ( v == true )
-      return request_login v
-    end
-
-    logger.debug "Returning to default " + url_for( DefaultPage ) if ApplicationHelper.null?( return_to )
-
-    return redirect_to( url_for( DefaultPage ) ) if ApplicationHelper.null?( return_to )
-
-    logger.debug "Returning to: #{return_to}"
-    redirect_to( return_to )
-  end
-
-  def end_session
-    session[:username] = nil
-    
-    redirect_to( url_for( DefaultPage ) )
-  end
-
   private
 
   def verify_account( username, password )
@@ -119,12 +88,5 @@ class AuthController < ApplicationController
     session[:username] = username
 
     return true
-  end
-
-  def request_login( msg = nil )
-    logger.debug msg
-    flash[:warning] = "<li><strong>Error:</strong> "+msg+"</li>"  unless msg.nil?
-    login
-    render :action => 'login'
-  end
+  end  
 end

@@ -1,8 +1,0 @@
-page.insert_html( :top, "firewall-list", :partial => "application/table_row", :object => @firewall, :locals => { :table_model => firewall_table_model, :data => Alpaca::Table::Data.new( "firewall-list", [ @firewall ] ) } )
-page.sortable( "firewall-list", {:scroll => "'firewall-list-list-table'", :constraint => "vertical", :onChange => "function(){enableSave(); TableManager.updateRowStyles( 'override-list' );}" } )
-page << "TableManager.updateRowStyles( 'firewall-list' );"
-page << "initTableRow('firewall-list');"
-page << "enableSave();"
-page << "setTimeout(\"RuleBuilder.edit( '" + @row_id + "', 'firewall-list', true )\", 1000);"
-page << "replaceSelectBoxes();"
-#page << "setTimeout(\"replaceSelectBoxes()\", 1100);"

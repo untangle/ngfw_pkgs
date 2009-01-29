@@ -1,2 +1,0 @@
-page.replace_html( "rule-dialog", :partial => "edit", :object => @firewall )
-page << "RuleBuilder.updateRowStyles( 'rule-builder' );"

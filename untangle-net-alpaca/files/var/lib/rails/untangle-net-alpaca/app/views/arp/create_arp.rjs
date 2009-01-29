@@ -1,5 +1,0 @@
-page.insert_html( :top, "static_arps", :partial => "application/table_row", :object => @static_arp, :locals => { :table_model => arp_table_model, :data => Alpaca::Table::Data.new( "static_arps", [ @static_arp ] ) } )
-
-page << "TableManager.updateRowStyles( 'static_arps' );"
-page << "initTableRow('static_arps');"
-page << "enableSave();"

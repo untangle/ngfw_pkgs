@@ -1,5 +1,0 @@
-page.insert_html( :top, "upstream-server-list", :partial => "application/table_row", :object => @upstream_server, :locals => { :table_model => upstream_servers_table_model, :data => Alpaca::Table::Data.new( "upstream-server-list", [ @upstream_server ] ) } )
-
-page << "TableManager.updateRowStyles( 'upstream-server-list' );"
-page << "initTableRow('upstream-server-list');"
-page << "enableSave();"

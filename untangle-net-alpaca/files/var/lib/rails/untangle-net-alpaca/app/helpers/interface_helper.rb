@@ -275,46 +275,6 @@ EOF
     IPNetworkTableModel.new(table_name)
   end
 
-  class NatTableModel < Alpaca::Table::TableModel
-    include Singleton
-
-    def initialize
-      columns = []
-      columns << Alpaca::Table::Column.new( "ip-address", "Address and Netmask".t ) do |nat,options|
-        row_id = options[:row_id]
-        view = options[:view]
-<<EOF
-        #{view.hidden_field_tag( "natIndices[]", row_id )}
-        #{view.text_field( "natNetworks", options[:row_id], { :value => "#{nat.ip} / #{nat.netmask}" } )}
-EOF
-      end
-      
-      columns << Alpaca::Table::Column.new( "new-source", "Source Address".t ) do |nat,options| 
-        options[:view].text_field( "natNewSources", options[:row_id], { :value => "#{nat.new_source}" } )
-      end
-
-      columns << Alpaca::Table::DeleteColumn.new
-      
-      super(  "NAT Policies", "nats", "", "nat", columns )
-    end
-
-    def row_id( row )
-      "row-#{rand( 0x100000000 )}"
-    end
-
-    def action( table_data, view )
-      <<EOF
-<div onclick="#{view.remote_function( :url => { :action => :create_nat_policy, :list_id => table_data.css_id } )}" class="add-button">
-  #{"Add".t}
-</div>
-EOF
-    end
-  end
-
-  def nat_table_model
-    NatTableModel.instance
-  end
-
   def ethernet_media_select( interface )
     media = "#{interface.speed}#{interface.duplex}"
     media = "autoauto" if EthernetMedia.get_value(media).nil?

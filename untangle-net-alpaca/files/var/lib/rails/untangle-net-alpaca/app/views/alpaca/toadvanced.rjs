@@ -1,2 +1,0 @@
-page.replace_html( "rule-dialog", :partial => "toadvanced", :object => @redirect )
-

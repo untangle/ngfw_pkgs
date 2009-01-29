@@ -45,46 +45,4 @@ class ArpController < ApplicationController
   end
 
   alias_method :index, :extjs
-
-  def manage
-    @active_arps = StaticArp.get_active( os )
-    @active_arps = @active_arps.sort_by do |a| 
-      address = IPAddr.parse(a.ip_address)
-      next 0 if address.nil?
-      address.to_i
-    end
-
-    @active_arps = @active_arps.sort_by { |a| a.interface }
-    @static_arps = StaticArp.find( :all )
-    @static_arps = [StaticArp.new] if @static_arps.nil?
-  end
-
-  def save
-    ## Review : Internationalization
-    return redirect_to( :action => "manage" ) if ( params[:commit] != "Save".t )
-
-    StaticArp.destroy_all
-    
-    if ! params[:static_arp].nil?
-      params[:static_arp].each do |static_arp_row| 
-        if (!(params[:hw_addr][static_arp_row].nil?) \
-            && params[:hw_addr][static_arp_row].length > 0\
-            && !(params[:hostname][static_arp_row].nil?)\
-            && params[:hostname][static_arp_row].length > 0)
-          
-          static_arp_obj = StaticArp.new
-          static_arp_obj.update_attributes( :hw_addr => params[:hw_addr][static_arp_row], :hostname => params[:hostname][static_arp_row] )
-          static_arp_obj.save
-        end
-      end
-    end
-    
-    os["arps_manager"].commit
-
-    ## Review : should have some indication that is saved.
-    return redirect_to( :action => "manage" )
-  end
-  def create_arp
-    @static_arp = StaticArp.new
-  end
 end
