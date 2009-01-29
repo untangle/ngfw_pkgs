@@ -1,6 +1,6 @@
 #! /bin/bash
 
-LOG_FILE=/var/tmp/upgrade61.sh
+LOG_FILE=/var/tmp/upgrade61.log
 
 exec >> $LOG_FILE 2>&1
 
