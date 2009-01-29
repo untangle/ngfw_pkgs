@@ -8,7 +8,7 @@ DEBIAN_MIRROR_HOST="10.0.11.16" # debian
 DEBIAN_MIRROR="http://${DEBIAN_MIRROR_HOST}/debian"
 UNTANGLE_MIRROR_HOST="10.0.0.105" # mephisto
 UNTANGLE_MIRROR="http://${UNTANGLE_MIRROR_HOST}/public/lenny"
-UNTANGLE_61_DISTRIBUTION="mclaren"
+UNTANGLE_61_DISTRIBUTIONS="mclaren nightly"
 
 APT_GET="/usr/bin/apt-get"
 APT_GET_OPTIONS="-o DPkg::Options::=--force-confnew --yes --force-yes"
@@ -33,15 +33,15 @@ fail() {
 undo_divert() {
     target=/usr/bin/uvm
     div=$(dpkg-divert --list $target)
-    if [ -n "$div" ] && [ -z "${div%%*by untangle-appliance-int}" ]; then
+    if [ -n "$div" ] && [ -z "${div%%*by untangle-gateway}" ]; then
         rm -f $target
-	dpkg-divert --remove --rename --package untangle-appliance-int --divert $target.distrib $target
+	dpkg-divert --remove --rename --package untangle-gateway --divert $target.distrib $target
     fi
     target=/usr/bin/uvm-restart
     div=$(dpkg-divert --list $target)
-    if [ -n "$div" ] && [ -z "${div%%*by untangle-appliance-int}" ]; then
+    if [ -n "$div" ] && [ -z "${div%%*by untangle-gateway}" ]; then
         rm -f $target
-	dpkg-divert --remove --rename --package untangle-appliance-int --divert $target.distrib $target
+	dpkg-divert --remove --rename --package untangle-gateway --divert $target.distrib $target
     fi
 }
 
@@ -156,18 +156,38 @@ stepDistUpgradeToEtch() {
 stepDistUpgradeToLenny() {
   stepName "stepDistUpgradeToLenny"
 
-  # vanilla one will be installed in a minute
-  rm /etc/kernel-img.conf
+  # vanilla kernel-img.conf
+  cat <<EOF >| /etc/kernel-img.conf
+do_symlinks = yes
+relative_links = yes
+do_bootloader = no
+do_bootfloppy = no
+do_initrd = yes
+link_in_boot = no
+postinst_hook = update-grub
+postrm_hook   = update-grub
+EOF
 
   # exim4
   echo "dc_localdelivery='mail_spool'" >> /etc/exim4/update-exim4.conf.conf
 
   # dist-upgrade to lenny
   echo >| /etc/apt/sources.list
-  echo "deb $UNTANGLE_MIRROR $UNTANGLE_61_DISTRIBUTION main premium upstream" >| /etc/apt/sources.list.d/untangle.list
-  echo "deb $UNTANGLE_MIRROR stable main premium upstream" >> /etc/apt/sources.list.d/untangle.list
+  for distro in $UNTANGLE_61_DISTRIBUTIONS ; do
+    echo "deb $UNTANGLE_MIRROR $distro main premium upstream" >| /etc/apt/sources.list.d/untangle.list
+  done
   aptgetupdate
-  aptgetyes dist-upgrade
+
+  # /usr/bin/rush is now in untangle-vm-shell, but used to be in
+  # untangle-vm, which now depends on untangle-vm-shell...
+  target=/usr/bin/rush
+  upgrade=/usr/share/untangle-gateway/knoppix2lenny.sh
+  div=$(dpkg-divert --list $target)
+  if [ -z "$div" ]; then
+    dpkg-divert --add --rename --package untangle-vm-shell --divert $target.distrib $target
+  fi
+
+  aptgetyes dist-upgrade || fail
 }
 
 stepReinstallUntanglePackages() {
@@ -180,7 +200,7 @@ stepReinstallUntanglePackages() {
   [ "$START_SSHD" = 0 ] && update-rc.d ssh defaults
 
   # dist-upgrade again
-  aptgetyes dist-upgrade
+  aptgetyes dist-upgrade || fail
 
   # free up some space
   apt-get clean
@@ -189,13 +209,22 @@ stepReinstallUntanglePackages() {
 stepFinish() {
   stepName "stepFinish"
 
+  target=/usr/bin/rush
+  div=$(dpkg-divert --list $target)
+  if [ -n "$div" ] && [ -z "${div%%*by untangle-vm-shell}" ]; then
+    rm -f $target
+    dpkg-divert --remove --rename --package untangle-vm-shell --divert $target.distrib $target
+  fi
+
   # motd
   ln -sf /var/run/motd /etc/motd
+
+  undo_divert
 
   echo "#########################################"
   echo "All done."
 
-  reboot
+#  reboot
 }
 
 ## main
