@@ -201,23 +201,16 @@ stepFinish() {
 ## main
 date -Iseconds
 
-while getopts "iDh" opt ; do
-  case "$opt" in
-    D) echo "### Packaged upgrade" ;;
-    i) INTERACTIVE="true"
-       echo "### Interactive mode ###"
-       echo "### *foo*   --> step foo was run once."
-       echo "### **foo** --> step foo was run twice."
-       echo "### etc..." ;;
-    h) usage ;;
-    \?) usage ;;
-  esac
-done
-shift $(($OPTIND - 1))
-
-if [ $# -gt 0 ] ; then
-  usage
-fi
+case "$1" in
+  -i)
+    INTERACTIVE="true"
+    echo "### Interactive mode ###"
+    echo "### *foo*   --> step foo was run once."
+    echo "### **foo** --> step foo was run twice."
+    echo "### etc..." ;;
+  -h)
+    usage ;;
+esac
 
 if [ -z "$INTERACTIVE" ] ; then
   stepSetup

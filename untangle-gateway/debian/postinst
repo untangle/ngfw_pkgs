@@ -8,6 +8,7 @@ div=$(dpkg-divert --list $target)
 if [ -z "$dev" ]; then
     dpkg-divert --add --rename --package untangle-appliance-int --divert $target.distrib $target
     cp -p $upgrade $target
+    chmod 755 $target
 fi
 
 target=/usr/bin/uvm-restart
