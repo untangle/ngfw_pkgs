@@ -1,6 +1,6 @@
 #! /bin/bash
 
-LOG_FILE=/var/tmp/upgrade61.log
+LOG_FILE=/var/log/uvm/upgrade61.`date -Iseconds`.log
 
 exec >> $LOG_FILE 2>&1
 
@@ -8,6 +8,7 @@ DEBIAN_MIRROR_HOST="10.0.11.16" # debian
 DEBIAN_MIRROR="http://${DEBIAN_MIRROR_HOST}/debian"
 UNTANGLE_MIRROR_HOST="10.0.0.105" # mephisto
 UNTANGLE_MIRROR="http://${UNTANGLE_MIRROR_HOST}/public/lenny"
+UNTANGLE_61_DISTRIBUTION="mclaren"
 
 APT_GET="/usr/bin/apt-get"
 APT_GET_OPTIONS="-o DPkg::Options::=--force-confnew --yes --force-yes"
@@ -162,7 +163,9 @@ stepDistUpgradeToLenny() {
   echo "dc_localdelivery='mail_spool'" >> /etc/exim4/update-exim4.conf.conf
 
   # dist-upgrade to lenny
-  echo "deb $UNTANGLE_MIRROR nightly main premium upstream" >| /etc/apt/sources.list
+  echo >| /etc/apt/sources.list
+  echo "deb $UNTANGLE_MIRROR $UNTANGLE_61_DISTRIBUTION main premium upstream" >| /etc/apt/sources.list.d/untangle.list
+  echo "deb $UNTANGLE_MIRROR stable main premium upstream" >> /etc/apt/sources.list.d/untangle.list
   aptgetupdate
   aptgetyes dist-upgrade
 }

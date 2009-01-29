@@ -1,3 +1,9 @@
+untangle-gateway (6.0.3~svn20090128r21669release6.0+seb20090128T165445-1sarge) seb; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@untangle.com>  Wed, 28 Jan 2009 16:54:46 -0800
+
 untangle-gateway (0-0) stable; urgency=low
 
   * auto build
