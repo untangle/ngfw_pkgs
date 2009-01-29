@@ -40,7 +40,7 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                         dataIndex: "description",
                         width: 360
                     }]
-                }, {
+                },{
                     xtype : "fieldset",
                     autoWidth : true,
                     autoScroll: true,
@@ -54,13 +54,13 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                             {name:"d-local",displayName: Ung.Alpaca.Util._("Destined Local"), type: "boolean"},
                             {name:"d-addr",displayName: Ung.Alpaca.Util._("Destination Address"), type: "text",vtype:"address"},
                             {name:"d-port",displayName: Ung.Alpaca.Util._("Destination Port"), type: "text",vtype:"port"},
-                            {name:"s-intf",displayName: Ung.Alpaca.Util._("Source Interface"), type: "checkgroup",
-                                    values:[[1,Ung.Alpaca.Util._("External")],[2,Ung.Alpaca.Util._("Internal")],[8,Ung.Alpaca.Util._("VPN")]]},
+                            { name:"s-intf",displayName: Ung.Alpaca.Util._("Source Interface"), type: "checkgroup",
+                              values:this.settings["interface_enum"] },
                             {name:"protocol",displayName: Ung.Alpaca.Util._("Protocol"), type: "checkgroup", 
-                                    values:[["tcp","tcp"],["udp","udp"],["icmp","icmp"],["gre","gre"],["esp","esp"],["ah","ah"],["sctp","sctp"]]}
+                             values:[["tcp","tcp"],["udp","udp"],["icmp","icmp"],["gre","gre"],["esp","esp"],["ah","ah"],["sctp","sctp"]]}
                         ]
                     })]
-                }, {
+                },{
                     xtype : "fieldset",
                     autoHeight : true,
                     title: "Forward traffic to the following location",
@@ -90,7 +90,7 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 system_id : null,
                 new_ip : "1.2.3.4",
                 new_enc_id : 0,
-                filter : "",
+                filter : "d-port::&&d-local::true&&protocol::tcp",
                 description : "[New Entry]",
                 is_custom : false
             },

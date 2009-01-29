@@ -175,10 +175,14 @@ Ung.Alpaca.PagePanel = Ext.extend( Ext.Panel, {
         var hash = settings;
         
         for ( c = 0 ; c < end ; c++ ) {
-            hash = hash[path[c]];
-            if ( value == null ) {
+            if ( hash == null ) {
                 return;
             }
+            hash = hash[path[c]];
+        }
+
+        if ( hash == null ) {
+            return;
         }
 
         hash[path[c]] = value;

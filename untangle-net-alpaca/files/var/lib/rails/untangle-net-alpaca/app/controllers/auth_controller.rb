@@ -29,21 +29,41 @@ class AuthController < ApplicationController
     false
   end
 
-  def index
-    login
-    render( :action => 'login' )
-  end
+  def do_login
+    s = json_params
+    
+    v = verify_account( s["username"], s["password"] )
+    unless ( v == true )
+      return json_error( v )
+    end
 
-  def login
+    path = session[:return_to]
+    path = DefaultPage if path.nil?
+    
+    json_result( :values => { "path" => path })
   end
   
+  alias_method :login, :extjs
+  def index
+    redirect_to( :action => "login" )
+  end
+  
+  def do_logout
+    session[:username] = nil
+    session[:return_to] = nil
+
+    json_result
+  end
+
   def logout
     if session[:username].nil?
       session[:return_to] = nil
-      return request_login 
+      return redirect_to( :action => "login" )
     end
+    
+    extjs
   end
-  
+    
   ## Check a users credentials and then log them in
   def check_credentials
     ## Clear out the existing username
@@ -56,27 +76,10 @@ class AuthController < ApplicationController
     username = credentials[:username]
     password = credentials[:password]
 
-    if ( ApplicationHelper.null?( username  )|| ApplicationHelper.null?( password ))
-      return request_login( "Specify a username and password" ) 
+    v = verify_account( username, password )
+    unless ( v == true )
+      return request_login v
     end
-
-    unless PamAuth.new( "rails" ).authenticate( username, password )
-      return request_login( "Invalid username or password" )
-    end
-
-    ## Validate that the user is in the correct group.
-    groups = AlpacaGroups
-    groups = [ "root" ] if ( groups.nil? || groups.empty? )
-    # Compatibility with <6.0 and >6.0 coreutils:
-    membergroups = `groups #{username}`.sub(/.*:/, "").split;
-    if (groups & membergroups).empty?
-      ## Review: Should we send this message?
-      return request_login( "'#{username}' is not allowed to administer the box." )
-    end
-      
-    session[:username] = username
-    return_to = session[:return_to] 
-    session[:return_to] = nil
 
     logger.debug "Returning to default " + url_for( DefaultPage ) if ApplicationHelper.null?( return_to )
 
@@ -93,6 +96,30 @@ class AuthController < ApplicationController
   end
 
   private
+
+  def verify_account( username, password )
+    if ( ApplicationHelper.null?( username  )|| ApplicationHelper.null?( password ))
+      return "Specify a username and password"
+    end
+    
+    unless PamAuth.new( "rails" ).authenticate( username, password )
+      return "Invalid username or password"
+    end
+
+    ## Validate that the user is in the correct group.
+    groups = AlpacaGroups
+    groups = [ "root" ] if ( groups.nil? || groups.empty? )
+    # Compatibility with <6.0 and >6.0 coreutils:
+    membergroups = `groups #{username}`.sub(/.*:/, "").split;
+    if (groups & membergroups).empty?
+      ## Review: Should we send this message?
+      return "'#{username}' is not allowed to administer the box."
+    end
+      
+    session[:username] = username
+
+    return true
+  end
 
   def request_login( msg = nil )
     logger.debug msg

@@ -18,8 +18,6 @@ Ung.Alpaca.Util = {
 
     loadScriptSuccess : function( response, options, handler )
     {
-        var error = null;
-
         try {
             if( window.execScript) {
                 window.execScript(response.responseText);
@@ -470,4 +468,5 @@ Ung.Alpaca.ComboBox = Ext.extend( Ext.form.ComboBox, {
 
 /* override the default Combo box so that all of the comboboxes can add a box label */
 Ext.reg('combo',  Ung.Alpaca.ComboBox);
+
 

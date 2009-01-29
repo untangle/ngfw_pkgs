@@ -31,6 +31,7 @@ class ApplicationController < ActionController::Base
   
   RegisterMenuMethod = "register_menu_items"
 
+  filter_parameter_logging "_json"
   filter_parameter_logging "password"
   filter_parameter_logging "ddclient_settings"
   filter_parameter_logging "credentials"
@@ -214,6 +215,19 @@ class ApplicationController < ActionController::Base
     true
   end
 
+  ## Optionally take an interface list so it doesn't 
+  ## have to be queried again.
+  def build_interface_enum( interfaces = nil )
+    if interfaces.nil?
+      interfaces = Interface.find( :all )
+    end
+
+    interfaces = interfaces.sort{ |a,b| a.index <=> b.index }
+
+    interfaces << Interface.new({ :index => 8, :name => _( "VPN" )})
+    interfaces.map { |i| [ i.index, i.name ] }
+  end
+
 
   def extjs
     render :template => "application/page", :layout => "extjs"
@@ -261,5 +275,14 @@ class ApplicationController < ActionController::Base
     values = values[0] if ( values.length == 1 and values[0].is_a?( ::Hash ))
     
     render :json => { "error" => message, "result" => values }.to_json
+  end
+
+  def log_processing
+    if logger && logger.info?
+      logger.info "\n\nProcessing #{controller_class_name}\##{action_name} (for #{request_origin}) [#{request.method.to_s.upcase}]"
+      logger.info "  Session ID: #{@_session.session_id}" if @_session and @_session.respond_to?(:session_id)
+      ## No longer logging parameters
+      ## logger.info "  Parameters: #{respond_to?(:filter_parameters) ? filter_parameters(params).inspect : params.inspect}"
+    end
   end
 end

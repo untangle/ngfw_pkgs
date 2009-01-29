@@ -90,7 +90,7 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
             }
             Ung.Alpaca.Util.executeRemoteFunction( m, handler );
         } else {
-            handler( null, null, null );
+            handler( {}, { jsonData : {}}, null );
         }
     },
 
