@@ -54,7 +54,7 @@ if [ -n "$root" ]; then
 
     # Replace menu.lst
     # if [ ! -f /boot/grub/menu.lst ] || [ `grep title /boot/grub/menu.lst | wc -l` != 2 ] ; then
-    if grep -q "untangle-linux-config" /boot/grub/menu.lst; then
+    if grep -q "untangle-linux-config" /boot/grub/menu.lst && grep -q "kopt_2_6_26" ; then
         # need to run update?
         echo "Untangle /boot/grub/menu.lst already installed."
     else
