@@ -117,7 +117,9 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
                 }                
             });
         }
-
+        if(this.rowEditorConfig) {
+            this.rowEditor=Ext.ComponentMgr.create(this.rowEditorConfig, "roweditor");
+        }
         Ung.Alpaca.EditorGridPanel.superclass.initComponent.apply( this, arguments );
 
         /* Untangle Alapca Grid type. */

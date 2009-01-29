@@ -26,7 +26,8 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             hasEdit:true,
             hasReorder: true,
             
-            rowEditor : new Ung.Alpaca.RowEditor({
+            rowEditorConfig: {
+                xtype: "roweditor",
                 panelItems: [{
                     xtype : "fieldset",
                     autoHeight : true,
@@ -46,20 +47,12 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     autoScroll: true,
                     autoHeight : true,
                     title: "If all of the following conditions are met:",
-                    items:[ new Ung.Alpaca.RuleBuilder({
+                    items:[{
+                        xtype:"rulebuilder",
                         anchor:"98%",
                         dataIndex: "filter",
-                        rules: [
-                            {name:"s-addr",displayName: Ung.Alpaca.Util._("Source Address"), type: "text",vtype:"address"},
-                            {name:"d-local",displayName: Ung.Alpaca.Util._("Destined Local"), type: "boolean"},
-                            {name:"d-addr",displayName: Ung.Alpaca.Util._("Destination Address"), type: "text",vtype:"address"},
-                            {name:"d-port",displayName: Ung.Alpaca.Util._("Destination Port"), type: "text",vtype:"port"},
-                            { name:"s-intf",displayName: Ung.Alpaca.Util._("Source Interface"), type: "checkgroup",
-                              values:this.settings["interface_enum"] },
-                            {name:"protocol",displayName: Ung.Alpaca.Util._("Protocol"), type: "checkgroup", 
-                             values:[["tcp","tcp"],["udp","udp"],["icmp","icmp"],["gre","gre"],["esp","esp"],["ah","ah"],["sctp","sctp"]]}
-                        ]
-                    })]
+                        ruleInterfaceValues:this.settings["interface_enum"]
+                    }]
                 },{
                     xtype : "fieldset",
                     autoHeight : true,
@@ -79,7 +72,7 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                         
                     }]
                 }]
-            }),
+            },
             name : "user_redirects",
 
             tbar : [ Ung.Alpaca.EditorGridPanel.AddButtonMarker,

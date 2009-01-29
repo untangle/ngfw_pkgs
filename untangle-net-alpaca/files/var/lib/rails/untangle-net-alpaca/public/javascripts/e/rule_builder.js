@@ -7,19 +7,35 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.EditorGridPanel, {
     enableColumnMove: false,
     clicksToEdit:1,
     initComponent: function() {
-        if (!this.height) {
-            this.height=220;
-        }
-        if (!this.width) {
-            this.width=600;
-        }
+        Ext.applyIf(this,{
+            height:220,
+            width:600,
+            anchor:"98%"
+        });
         this.xtype="rulebuilder";
         this.tbar = [{
             iconCls : 'icon-add-row',
             text : Ung.Alpaca.Util._("Add"),
             handler : this.addHandler,
             scope : this
-        }]
+        }];
+        
+        if(!this.rules) {
+            if(!this.ruleInterfaceValues) {
+                this.ruleInterfaceValues=[];
+            }
+            if(!this.ruleProtocolValues) {
+                this.ruleProtocolValues=[["tcp","TCP"],["udp","UDP"],["icmp","ICMP"],["gre","GRE"],["esp","ESP"],["ah","AH"],["sctp","SCTP"]]
+            }
+            this.rules= [
+                {name:"s-addr",displayName: Ung.Alpaca.Util._("Source Address"), type: "text",vtype:"address"},
+                {name:"d-local",displayName: Ung.Alpaca.Util._("Destined Local"), type: "boolean"},
+                {name:"d-addr",displayName: Ung.Alpaca.Util._("Destination Address"), type: "text",vtype:"address"},
+                {name:"d-port",displayName: Ung.Alpaca.Util._("Destination Port"), type: "text",vtype:"port"},
+                {name:"s-intf",displayName: Ung.Alpaca.Util._("Source Interface"), type: "checkgroup", values:this.ruleInterfaceValues },
+                {name:"protocol",displayName: Ung.Alpaca.Util._("Protocol"), type: "checkgroup", values: this.ruleProtocolValues}
+            ];            
+        }
         this.store = new Ext.data.SimpleStore({
             fields: [
                {name: 'name'},
@@ -186,36 +202,3 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.EditorGridPanel, {
     
 });
 Ext.reg('rulebuilder', Ung.Alpaca.RuleBuilder);
-/*
-Ung.Alpaca.grid.RuleBuilderValueColumn = Ext.extend(Object, {
-    constructor : function(config) {
-        Ext.apply(this, config);
-        if (!this.id) {
-            this.id = Ext.id();
-        }
-        if (!this.header) {
-            this.header = Ung.Alpaca.Util._("Reorder");
-        }
-        if (!this.width) {
-            this.width = 55;
-        }
-        if (this.fixed == null) {
-            this.fixed = true;
-        }
-        if (this.sortable == null) {
-            this.sortable = false;
-        }
-        if (!this.dataIndex) {
-            this.dataIndex = null;
-        }
-        this.renderer = this.renderer.createDelegate(this);
-    },
-    init : function(grid) {
-        this.grid = grid;
-    },
-
-    renderer : function(value, metadata, record) {
-        return '<div class="icon-drag">&nbsp;</div>';
-    }
-});
-*/

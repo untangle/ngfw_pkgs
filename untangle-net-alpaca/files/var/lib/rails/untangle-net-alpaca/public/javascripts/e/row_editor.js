@@ -261,3 +261,4 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
         this.hide();
     }
 });
+Ext.reg('roweditor', Ung.Alpaca.RowEditor);
