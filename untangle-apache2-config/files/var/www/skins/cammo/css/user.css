@@ -20,7 +20,7 @@ body.blockpage
 /* quarantine content */
 body.quarantine #content {
     width:75%;
-    background: transparent url(../images/user/background_content.png) repeat !important;
+    background: transparent url(../images/user/background_content_seamless.png) repeat !important;    
 	border : 1px solid #666;    
     margin:0 auto;
     margin-top:50px;
