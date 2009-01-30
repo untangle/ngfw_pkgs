@@ -15,8 +15,12 @@ Ung.Alpaca.Pages.Hostname.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 xtype : "fieldset"
             },
             items : [{
+                    xtype:"label",
+                    html : this.i18n._('Hostname'),
+                    cls : "page-header-text"
+                },
+                {
                 xtype:"fieldset",
-                title : this.i18n._('Hostname'),                                            
                 defaults : {
                     xtype : "textfield",
                     itemCls : 'label-width-1'                                            

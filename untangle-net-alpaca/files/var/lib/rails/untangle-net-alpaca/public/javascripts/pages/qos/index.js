@@ -27,9 +27,15 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 xtype : "fieldset"
             },
             items : [{
-                autoHeight : true,
-                defaults : {
-                    xtype : "textfield"
+                    html : this._("QoS"),                
+                    xtype : "label",
+                    cls : "page-header-text"
+                },
+                {
+                    autoHeight : true,
+                    defaults : {
+                    xtype : "textfield",
+                    itemCls : 'label-width-2'                         
                 },
                 items : [{
                     xtype : "checkbox",
@@ -39,7 +45,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     xtype : "numberfield",
                     fieldLabel : this._( "Internet Download Bandwidth" ),
                     name : "qos_settings.download",
-                    boxLabel : this._( "kbps" )
+                    boxLabel : this._( "kbps" ),
                 },{
                     xtype : "combo",
                     fieldLabel : this._( "Limit Download To" ),
@@ -111,10 +117,12 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 }]
             },{
                 xtype : "label",
-                html : this._( "QoS Rules" )
+                html : this._( "QoS Rules" ),
+                cls: 'label-section-heading-2'                                
             }, this.qosGrid, {
                 xtype : "label",
-                html : this._( "QoS Statistics" )
+                html : this._( "QoS Statistics" ),
+                cls: 'label-section-heading-2'                                                
             }, this.statisticsGrid ]
         });
         

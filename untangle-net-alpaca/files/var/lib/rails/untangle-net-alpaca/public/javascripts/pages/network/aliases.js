@@ -42,7 +42,8 @@ Ung.Alpaca.Pages.Network.Aliases = Ext.extend( Ung.Alpaca.PagePanel, {
             },
             items : [{
                 xtype : "label",
-                html : this._( "IP Address and Aliases" )
+                html : this._( "IP Address and Aliases" ),
+                cls:'page-header-text'
             }, this.aliasGrid ]
         });
         

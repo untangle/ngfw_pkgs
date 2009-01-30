@@ -15,16 +15,16 @@ Ung.Alpaca.Pages.Dhcp.SecretField = Ext.extend( Ung.Alpaca.PagePanel, {
                 xtype : "fieldset"
             },
             items : [{
+                xtype : "label",
+                cls: 'page-header-text',
+                html : this._( "DHCP & DNS" )
+                },{
                 /* Not in the default in order to accomodate grids. */
                 autoHeight : true,
                 defaults : {
                     xtype : "textfield"
                 },
-                items : [{
-                xtype : "label",
-                cls: 'page-header-text',
-                html : this._( "DHCP & DNS" )
-                },
+                items : [
                 {
                     xtype : "checkbox",
                     fieldLabel : this._( "Enabled" ),

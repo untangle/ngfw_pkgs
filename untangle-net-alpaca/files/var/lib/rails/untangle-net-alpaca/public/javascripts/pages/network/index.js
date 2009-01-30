@@ -10,20 +10,24 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "network", "index" )) {
 Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
     initComponent : function()
     {
-        var items = [];
-
-        items.push({
+        var items = [{
+            xtype : "label",
+            cls: 'page-header-text',
+            html : this._( "Overrides" )
+        },{
             xtype : 'button',
             text : this._( "Refresh Interfaces" ),
             handler : Ung.Alpaca.Util.refreshInterfaces,
+            cls: 'float-button-1',            
             scope : Ung.Alpaca.Util
-        });
-
-        items.push({
+        },{
             xtype : 'button',
             text : this._( "External Aliases" ),
+            cls: 'float-button-2',
             handler : this.externalAliases.createDelegate( this )
-        });
+        },{
+            html:'<br/>'
+        }]
 
         for ( var c = 0 ; c < this.settings.config_list.length ; c++ ) {
             var config = this.settings.config_list[c];
@@ -58,15 +62,17 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
     buildWanPanel : function( i )
     {
         var staticPanel = {
+            cls:'left-indent-3',                                                    
             items : [{
                 defaults : {
                     xtype : 'textfield',
+                    itemCls:'label-width-1'
+                        
                 },
                 items : [{
                     fieldLabel : this._( "Address" ),
                     name : this.generateName( "config_list", i, "static.ip" ),
                     vtype : "ipAddress",
-                    cls:'left-indent-2'                    
                 },{
                     xtype : "combo",
                     fieldLabel : this._( "Netmask" ),
@@ -96,6 +102,7 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         };
 
         var dynamicPanel = {
+            cls:'left-indent-3',                                    
             items : [{
                 defaults : {
                     xtype : 'textfield',
@@ -126,6 +133,7 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         };
 
         var pppoePanel = {
+            cls:'left-indent-3',                                    
             items : [{
                 defaults : {
                     xtype : 'textfield'
@@ -232,6 +240,7 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         };
 
         var bridgePanel = {
+            cls:'left-indent-3',                                    
             items : [{
                 items : [{
                     fieldLabel : this._( "Bridge To" ),

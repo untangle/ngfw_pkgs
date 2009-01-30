@@ -144,9 +144,13 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             },
             
             items : [{
+                xtype : "label",
+                cls : 'page-header-text',
+                html : this._( "DHCP Server" )
+            },
+            {
                 /* Not in the default in order to accomodate grids. */
                 autoHeight : true,
-                title : this.i18n._('DHCP Server'),                            
                 defaults : {
                     xtype : "textfield"
                 },
