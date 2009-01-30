@@ -173,8 +173,9 @@ EOF
 
   # dist-upgrade to lenny
   echo >| /etc/apt/sources.list
+  touch /etc/apt/sources.list.d/untangle.list
   for distro in $UNTANGLE_61_DISTRIBUTIONS ; do
-    echo "deb $UNTANGLE_MIRROR $distro main premium upstream" >| /etc/apt/sources.list.d/untangle.list
+    echo "deb $UNTANGLE_MIRROR $distro main premium upstream" >> /etc/apt/sources.list.d/untangle.list
   done
   aptgetupdate
 
@@ -194,7 +195,7 @@ stepReinstallUntanglePackages() {
   stepName "stepReinstallUntanglePackages"
 
   # untangle packages from lenny
-  [ -n "$UNTANGLE_PACKAGES" ] && aptgetyes install $UNTANGLE_PACKAGES libnfnetlink0
+  [ -n "$UNTANGLE_PACKAGES" ] && aptgetyes install $UNTANGLE_PACKAGES libnfnetlink0 || fail
 
   # restore ssh state
   [ "$START_SSHD" = 0 ] && update-rc.d ssh defaults
