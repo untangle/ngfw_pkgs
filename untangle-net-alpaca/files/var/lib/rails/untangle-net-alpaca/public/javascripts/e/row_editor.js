@@ -123,7 +123,8 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
                 item.setValue( value );
                 break;
             case "checkbox":
-                value =  ( value == null ) ? "" : value;
+                value =  ( value == null ) ? false : value;
+                if ( item.invert == true ) value = !value;
                 item.setValue( value );
                 break;
 
@@ -215,11 +216,16 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
 
             switch ( item.xtype ) {
             case "textfield":
-            case "checkbox":
             case "combo":
             case "rulebuilder":
                 value = item.getValue();
                 break;                
+
+            case "checkbox":
+                value = item.getValue();
+                if ( item.invert ) {
+                    value = !value;
+                }
             }
             if ( value != null && item.dataIndex!=null) {
                 record.set(item.dataIndex, value);

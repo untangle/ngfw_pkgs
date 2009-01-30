@@ -55,6 +55,13 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
         this.staticGrid.store.load();
 
+        var addStaticColumn = new Ung.Alpaca.grid.IconColumn({
+                header : this._( "Add Static" ),
+                width : 70,
+                handle : this.addStatic.createDelegate( this ),
+                iconClass : 'icon-add-row'
+        });
+
         this.currentLeasesGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
             
@@ -69,6 +76,8 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 handler : this.refreshCurrentLeases,
                 scope : this
             }],
+
+            plugins : addStaticColumn,
 
             columns : [{
                 header : this._( "MAC Address" ),
@@ -85,7 +94,7 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 width: 200,
                 sortable: true,
                 dataIndex : "hostname"
-            }]
+            }, addStaticColumn ]
         });
 
         this.currentLeasesGrid.store.load();
@@ -169,6 +178,21 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         if ( !leases ) return;
 
         this.currentLeasesGrid.store.loadData( leases );
+    },
+
+    addStatic : function( record, index )
+    {
+        var d = record.data;
+        var entry = new this.staticGrid.record({
+            mac_address : d.mac_address,
+            ip_address : d.ip_address,
+            description : d.hostname
+        });
+
+        this.staticGrid.stopEditing();
+        this.staticGrid.store.insert( 0, entry );
+        application.onFieldChange();
+        this.staticGrid.updateChangedData( entry, "added" );
     }
 });
 

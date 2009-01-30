@@ -2,7 +2,7 @@ Ext.ns('Ung');
 Ext.ns('Ung.Alpaca.Pages');
 Ext.ns('Ung.Alpaca.Pages.Interface');
 
-if ( Ung.Alpaca.Glue.hasPageRenderer( "interface", "e_list" )) {
+if ( Ung.Alpaca.Glue.hasPageRenderer( "interface", "list" )) {
     Ung.Alpaca.Util.stopLoading();
 }
 
@@ -22,7 +22,7 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
                 align : "center",
                 renderer : function( value, metadata, record )
                 {
-                    var url = "<a href='javascript:application.switchToQueryPath( \"/alpaca/interface/e_config/" + value + "\")'>";
+                    var url = "<a href='javascript:application.switchToQueryPath( \"/alpaca/interface/config/" + value + "\")'>";
                     return String.format( Ung.Alpaca.Util._( "{0}edit{1}" ), url, "</a>" );
                 }
             });
@@ -306,4 +306,4 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
 });
 
 Ung.Alpaca.Pages.Interface.List.settingsMethod = "/interface/get_interface_list";
-Ung.Alpaca.Glue.registerPageRenderer( "interface", "e_list", Ung.Alpaca.Pages.Interface.List );
+Ung.Alpaca.Glue.registerPageRenderer( "interface", "list", Ung.Alpaca.Pages.Interface.List );

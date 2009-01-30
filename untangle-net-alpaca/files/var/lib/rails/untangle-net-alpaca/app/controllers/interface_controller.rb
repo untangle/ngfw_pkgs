@@ -115,7 +115,7 @@ class InterfaceController < ApplicationController
     json_result
   end
 
-  alias_method :e_list, :extjs
+  alias_method :list, :extjs
   
   ## Add and remove new physical interfaces
   def set_interface_list
@@ -344,10 +344,10 @@ class InterfaceController < ApplicationController
     json_result
   end
 
-  alias_method :e_config, :extjs
+  alias_method :config, :extjs
 
-  def e_index
-    return redirect_to( :action => 'e_list' )
+  def index
+    return redirect_to( :action => 'list' )
   end
 
   def commit

@@ -293,7 +293,7 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
     externalAliases : function()
     {
-        application.switchToQueryPath( "/alpaca/network/e_aliases" );
+        application.switchToQueryPath( "/alpaca/network/aliases" );
     },
 
     generateName : function( prefix, i, suffix )

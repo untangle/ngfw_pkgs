@@ -25,6 +25,41 @@ Ung.Alpaca.Pages.Uvm.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             fixed : true
         });
 
+        var rowEditorConfig = {
+            xtype: "roweditor",
+            panelItems: [{
+                xtype : "fieldset",
+                autoHeight : true,
+                items:[{
+                    xtype: "checkbox",
+                    fieldLabel : this._( "Enabled" ),
+                    dataIndex: "enabled"
+                },{
+                    xtype: "textfield",
+                    fieldLabel : this._( "Description" ),
+                    dataIndex: "description",
+                    width: 360
+                },{
+                    xtype : "checkbox",
+                    fieldLabel : this._( "Bypass" ),
+                    dataIndex : "subscribe",
+                    invert : true
+                }]
+            },{
+                xtype : "fieldset",
+                autoWidth : true,
+                autoScroll: true,
+                autoHeight : true,
+                title: "If all of the following conditions are met:",
+                items:[{
+                    xtype:"rulebuilder",
+                    anchor:"98%",
+                    dataIndex: "filter",
+                    ruleInterfaceValues : this.settings["interface_enum"]
+                }]
+            }]
+        };
+
         this.userRulesGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
 
@@ -32,15 +67,10 @@ Ung.Alpaca.Pages.Uvm.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             selectable : true,
             sortable : false,
             hasReorder: true,
+            hasEdit : true,
+            rowEditorConfig : rowEditorConfig,
             
             name : "user_subscriptions",
-
-            tbar : [ Ung.Alpaca.EditorGridPanel.AddButtonMarker,
-                     Ung.Alpaca.EditorGridPanel.DeleteButtonMarker, {
-                         text : "Edit",
-                         handler : this.editEntry,
-                         scope : this
-                     }],
 
             recordDefaults : {
                 enabled : true,

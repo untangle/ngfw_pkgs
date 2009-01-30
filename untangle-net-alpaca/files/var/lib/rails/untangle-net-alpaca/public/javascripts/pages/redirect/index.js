@@ -23,7 +23,7 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             recordFields : ["id", "enabled", "system_id", "new_ip", "new_enc_id", "filter", "description", "is_custom" ],
             selectable : true,
             sortable : false,
-            hasEdit:true,
+            hasEdit : true,
             hasReorder: true,
             
             rowEditorConfig: {

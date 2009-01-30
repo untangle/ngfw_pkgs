@@ -3,7 +3,7 @@ Ext.ns('Ung.Alpaca');
 Ext.ns('Ung.Alpaca.Pages');
 Ext.ns('Ung.Alpaca.Pages.Network');
 
-if ( Ung.Alpaca.Glue.hasPageRenderer( "network", "e_aliases" )) {
+if ( Ung.Alpaca.Glue.hasPageRenderer( "network", "aliases" )) {
     Ung.Alpaca.Util.stopLoading();
 }
 
@@ -53,5 +53,5 @@ Ung.Alpaca.Pages.Network.Aliases = Ext.extend( Ung.Alpaca.PagePanel, {
 });
 
 Ung.Alpaca.Pages.Network.Aliases.settingsMethod = "/network/get_aliases";
-Ung.Alpaca.Glue.registerPageRenderer( "network", "e_aliases", Ung.Alpaca.Pages.Network.Aliases );
+Ung.Alpaca.Glue.registerPageRenderer( "network", "aliases", Ung.Alpaca.Pages.Network.Aliases );
 

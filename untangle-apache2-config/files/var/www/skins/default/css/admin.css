@@ -383,6 +383,12 @@ div.icon-edit-row {
 	width: 100%;
 	cursor: pointer;
 }
+/* add row icon */
+div.icon-add-row {
+	background:transparent url(../images/admin/icon_add_row.gif) no-repeat center center;
+	width: 100%;
+	cursor: pointer;
+}
 /* delete row icon */
 div.icon-delete-row {
 	background:transparent url(../images/admin/icon_delete_row.gif) no-repeat center center;

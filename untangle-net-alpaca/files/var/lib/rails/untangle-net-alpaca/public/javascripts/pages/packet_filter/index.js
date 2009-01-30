@@ -16,6 +16,46 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         this.addAction( "drop", this._( "Drop" ));
         this.addAction( "reject", this._( "Reject" ));
 
+        var rowEditorConfig = {
+            xtype: "roweditor",
+            panelItems: [{
+                xtype : "fieldset",
+                autoHeight : true,
+                items:[{
+                    xtype: "checkbox",
+                    fieldLabel : this._( "Enabled" ),
+                    dataIndex: "enabled"
+                },{
+                    xtype: "textfield",
+                    fieldLabel : this._( "Description" ),
+                    dataIndex: "description",
+                    width: 360
+                },{
+                    xtype : "combo",
+                    fieldLabel : this._( "Action" ),
+                    store : this.actionStore,
+                    listWidth : 60,
+                    width : 70,
+                    dataIndex : "target",
+                    triggerAction : "all",
+                    mode : "local",
+                    editable : false
+                }]
+            },{
+                xtype : "fieldset",
+                autoWidth : true,
+                autoScroll: true,
+                autoHeight : true,
+                title: "If all of the following conditions are met:",
+                items:[{
+                    xtype:"rulebuilder",
+                    anchor:"98%",
+                    dataIndex: "filter",
+                    ruleInterfaceValues : this.settings["interface_enum"]
+                }]
+            }]
+        };
+
         var enabledColumn = new Ung.Alpaca.grid.CheckColumn({
             header : this._( "On" ),
             dataIndex : 'enabled',
@@ -29,14 +69,16 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             recordFields : [ "enabled", "system_id", "target", "filter", "description", "is_custom" ],
             selectable : true,
             hasReorder : true,
-            
+            hasEdit : true,
             name : "user_rules",
+
+            rowEditorConfig : rowEditorConfig,
 
             recordDefaults : {
                 enabled : true,
                 system_id : null,
                 target : "reject",
-                filter : "",
+                filter : "s-addr::",
                 description : "[New Entry]",
                 is_custom : false
             },
@@ -56,7 +98,7 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 editor : new Ext.form.ComboBox({
                     store : this.actionStore,
                     listWidth : 60,
-                    width : 60,
+                    width : 70,
                     triggerAction : "all",
                     mode : "local",
                     editable : false

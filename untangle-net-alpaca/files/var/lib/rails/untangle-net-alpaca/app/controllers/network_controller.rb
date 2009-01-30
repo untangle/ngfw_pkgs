@@ -103,7 +103,7 @@ class NetworkController < ApplicationController
   
   def index
     if ( @config_level > AlpacaSettings::Level::Basic )
-      return redirect_to( :controller => 'interface', :action => 'e_list' )
+      return redirect_to( :controller => 'interface', :action => 'list' )
     end
 
     extjs
@@ -178,7 +178,7 @@ class NetworkController < ApplicationController
     json_result
   end
 
-  alias_method :e_aliases, :extjs
+  alias_method :aliases, :extjs
 
   def commit
     spawn do

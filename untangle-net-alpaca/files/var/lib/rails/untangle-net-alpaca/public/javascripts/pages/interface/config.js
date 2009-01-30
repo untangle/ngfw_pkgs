@@ -2,7 +2,7 @@ Ext.ns('Ung');
 Ext.ns('Ung.Alpaca.Pages');
 Ext.ns('Ung.Alpaca.Pages.Interface');
 
-if ( Ung.Alpaca.Glue.hasPageRenderer( "interface", "e_config" )) {
+if ( Ung.Alpaca.Glue.hasPageRenderer( "interface", "config" )) {
     Ung.Alpaca.Util.stopLoading();
 }
 
@@ -488,5 +488,5 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
 });
 
 Ung.Alpaca.Pages.Interface.Config.settingsMethod = "/interface/get_settings";
-Ung.Alpaca.Glue.registerPageRenderer( "interface", "e_config", Ung.Alpaca.Pages.Interface.Config );
+Ung.Alpaca.Glue.registerPageRenderer( "interface", "config", Ung.Alpaca.Pages.Interface.Config );
 

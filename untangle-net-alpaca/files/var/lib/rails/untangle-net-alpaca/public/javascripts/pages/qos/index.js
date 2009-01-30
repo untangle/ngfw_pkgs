@@ -144,6 +144,46 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             fixed : true
         });
 
+        var rowEditorConfig = {
+            xtype: "roweditor",
+            panelItems: [{
+                xtype : "fieldset",
+                autoHeight : true,
+                items:[{
+                    xtype: "checkbox",
+                    fieldLabel : this._( "Enabled" ),
+                    dataIndex: "enabled"
+                },{
+                    xtype: "textfield",
+                    fieldLabel : this._( "Description" ),
+                    dataIndex: "description",
+                    width: 360
+                },{
+                    xtype : "combo",
+                    fieldLabel : this._( "Priority" ),
+                    dataIndex : "priority",
+                    listWidth : 60,
+                    editable : false,
+                    width : 70,
+                    triggerAction : "all",
+                    mode : "local",
+                    store : this.priorityStore
+                }]
+            },{
+                xtype : "fieldset",
+                autoWidth : true,
+                autoScroll: true,
+                autoHeight : true,
+                title: "If all of the following conditions are met:",
+                items:[{
+                    xtype:"rulebuilder",
+                    anchor:"98%",
+                    dataIndex: "filter",
+                    ruleInterfaceValues : this.settings["interface_enum"]
+                }]
+            }]
+        };
+
         var qosGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
 
@@ -151,13 +191,15 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             selectable : true,
             sortable : false,
             hasReorder: true,
+            hasEdit : true,
+            rowEditorConfig : rowEditorConfig,
             
             name : "qos_rules",
 
             recordDefaults : {
                 enabled : true,
                 priority : 20,
-                filter : "",
+                filter : "s-addr::",
                 description : this._( "[New Entry]" )
             },
             
@@ -165,7 +207,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
             columns : [ enabledColumn, {
                 header : this._( "Priority" ),
-                width: 60,
+                width: 70,
                 sortable: false,
                 fixed : true,
                 dataIndex : "priority",
@@ -176,7 +218,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 editor : new Ext.form.ComboBox({
                     store : this.priorityStore,
                     listWidth : 60,
-                    width : 60,
+                    width : 70,
                     triggerAction : "all",
                     mode : "local",
                     editable : false
