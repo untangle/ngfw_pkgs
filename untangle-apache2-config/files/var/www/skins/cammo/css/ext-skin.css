@@ -649,3 +649,6 @@ td.x-date-mp-month a:hover,td.x-date-mp-year a:hover {
     border-right:1px solid #7Ec22B;
 
 }
+.x-form fieldset {
+    border:none;
+}

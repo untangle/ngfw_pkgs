@@ -376,19 +376,9 @@ div.ung-button-invalid {
 button.icon-add-row {
     background: transparent url(../images/admin/icon_add_row.gif) no-repeat center left !important;
 }
-/* delete row button icon */
-button.icon-delete-row {
-    background:transparent url(../images/user/icon_remove.png) no-repeat center left !important;
-}
 /* edit row icon */
 div.icon-edit-row {
 	background:transparent url(../images/admin/icon_edit_row.gif) no-repeat center center;
-	width: 100%;
-	cursor: pointer;
-}
-/* add row icon */
-div.icon-add-row {
-	background:transparent url(../images/admin/icon_add_row.gif) no-repeat center center;
 	width: 100%;
 	cursor: pointer;
 }
@@ -1004,17 +994,7 @@ label.optional-email-tester
   margin-right:28em;
   font-style: italic;
 }
-
-body.wizard label.info-detail
-{
-	float:left;
-	font-size:80%;
-	font-style:italic;
-	margin-top:-20px;
-	padding-left:270px;
-  }
-
-.x-form-textfield-detail
+.x-form-textfield-detail, .x-form-combo-detail
 { 
   font-size:80%;
   font-style:italic;  
@@ -1022,6 +1002,14 @@ body.wizard label.info-detail
   display:inline !important;
   float:none !important;
   margin-left:4px;
+  }
+body.wizard label.info-detail
+{
+	float:left;
+	font-size:80%;
+	font-style:italic;
+	margin-top:-20px;
+	padding-left:270px;
   }
 
 body.wizard
@@ -1311,6 +1299,9 @@ body.wizard .ext-el-mask
     margin-bottom:5px;
     display:block;
 }
+.x-form-combo-detail{
+  margin-left:22px;
+}
 .label-section-heading, .label-section-heading-2{
 	font-family:Tahoma, arial, freesans,sans-serif;
     font-weight:bold;
@@ -1330,18 +1321,22 @@ width:180px !important;
 .label-width-1 div.x-form-element{
 padding-left:125px !important;
 }
-
-select.rule_builder_type {
-    font-family:Tahoma, arial, freesans,sans-serif;
-    font-size:12px;
+.label-width-2 label.x-form-item-label{
+width:190px !important;
 }
-input.rule_builder_value {
-    width: 95%;
-    height:16px;
-    padding-top:1px;
+.label-width-2 label.x-form-textfield-detail{
+width:240px !important;
 }
-input.rule_builder_checkbox {
-    display:inline;
-    float:left;
-    margin:0;
+.label-width-2 div.x-form-element{
+padding-left:200px !important;
+}
+.float-button-1, .float-button-2{
+float:left;
+}
+.float-button-2{
+    clear:right;
+    margin-left:10px;
+}
+.left-indent-3{
+    margin-left:6.4em;
 }
