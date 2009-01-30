@@ -49,20 +49,20 @@ aptgetyes() {
   if [ "$1" = "--trust-me" ] ; then
     shift
     yes="echo Yes, do as I say!"
-    $yes | $APT_GET $APT_GET_OPTIONS $@
+    $yes | $APT_GET $APT_GET_OPTIONS $@ || fail
   else
-    $APT_GET $APT_GET_OPTIONS $@
+    $APT_GET $APT_GET_OPTIONS $@ || fail
   fi
 }
 
 aptgetupdate() {
   $APT_GET update
   aptgetyes install untangle-keyring
-  $APT_GET update
+  $APT_GET update || fail
 }
 
 removePackages() {
-  COLUMNS=200 dpkg -l | awk '/^ii.+'"$1"'/ {print $2}' | xargs $APT_GET $APT_GET_OPTIONS remove --purge
+  COLUMNS=200 dpkg -l | awk '/^ii.+'"$1"'/ {print $2}' | xargs $APT_GET $APT_GET_OPTIONS remove --purge || fail
 }
 
 stepName() {
@@ -93,7 +93,7 @@ EOF
   START_SSHD=$?
 
   # unhold dpkg
-  echo dpkg install | dpkg --set-selections
+  echo dpkg install | dpkg --set-selections || fail
 
   # keep track of the untangle packages that are already installed,
   # as some of the stepCleanUp will remove them
@@ -188,14 +188,14 @@ EOF
     dpkg-divert --add --rename --package untangle-vm-shell --divert $target.distrib $target
   fi
 
-  aptgetyes dist-upgrade || fail
+  aptgetyes dist-upgrade
 }
 
 stepReinstallUntanglePackages() {
   stepName "stepReinstallUntanglePackages"
 
   # untangle packages from lenny
-  [ -n "$UNTANGLE_PACKAGES" ] && aptgetyes install $UNTANGLE_PACKAGES libnfnetlink0 || fail
+  [ -n "$UNTANGLE_PACKAGES" ] && aptgetyes install $UNTANGLE_PACKAGES libnfnetlink0
 
   # restore ssh state
   [ "$START_SSHD" = 0 ] && update-rc.d ssh defaults
@@ -225,7 +225,7 @@ stepFinish() {
   echo "#########################################"
   echo "All done."
 
-  reboot
+#  reboot
 }
 
 ## main

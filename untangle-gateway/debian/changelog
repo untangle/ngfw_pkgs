@@ -1,3 +1,9 @@
+untangle-gateway (6.0.3~svn20090128r21685release6.0-1sarge) chaos-release60; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <seb@untangle.com>  Thu, 29 Jan 2009 10:46:07 -0800
+
 untangle-gateway (6.0.3~svn20090128r21669release6.0+seb20090128T165445-1sarge) seb; urgency=low
 
   * auto build
