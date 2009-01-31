@@ -235,6 +235,11 @@ stepFinish() {
   # motd
   ln -sf /var/run/motd /etc/motd
 
+  # locale settings
+  perl -i -pe 's/.*en_US\.UTF-8/en_US.UTF-8/' /etc/locale.gen # uncomment it
+  locale-gen # build it
+  echo LANG="en_US.UTF-8" >> /etc/environment # make it the default
+
   undo_divert
 
   echo "#########################################"
