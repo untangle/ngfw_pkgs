@@ -10,6 +10,8 @@ UNTANGLE_MIRROR_HOST="10.0.0.105" # mephisto
 UNTANGLE_MIRROR="http://${UNTANGLE_MIRROR_HOST}/public/lenny"
 UNTANGLE_61_DISTRIBUTIONS="mclaren nightly"
 
+UNTANGLE_PACKAGES_FILE="/var/log/uvm/upgrade61.packages"
+
 APT_GET="/usr/bin/apt-get"
 APT_GET_OPTIONS="-o DPkg::Options::=--force-confnew --yes --force-yes"
 
@@ -103,9 +105,22 @@ EOF
   esac
   UNTANGLE_PACKAGES="linux-image-2.6.26-1-untangle-${ARCH}"
 
-  for p in untangle-gateway-light untangle-gateway untangle-client-local ; do
-    dpkg -l $p | grep -qE '^ii' && UNTANGLE_PACKAGES="$UNTANGLE_PACKAGES $p"
-  done
+  # either read the untangle packages to reinstall:
+  #   - from dpkg itself
+  #   - from a previously saved list
+  if [ ! -f $UNTANGLE_PACKAGES_FILE ] ; then
+    touch $UNTANGLE_PACKAGES_FILE
+    for p in untangle-gateway-light untangle-gateway untangle-client-local ; do
+      if dpkg -l $p | grep -qE '^ii' ; then
+	UNTANGLE_PACKAGES="$UNTANGLE_PACKAGES $p"
+	echo $p >> $UNTANGLE_PACKAGES_FILE
+      fi
+    done
+  else
+    while read $p ; do
+      UNTANGLE_PACKAGES="$UNTANGLE_PACKAGES $p"
+    done < $UNTANGLE_PACKAGES_FILE
+  fi
 }
 
 stepSysVInit() {
