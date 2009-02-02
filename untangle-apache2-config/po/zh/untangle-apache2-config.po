@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Untangle\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-21 14:15-0800\n"
+"POT-Creation-Date: 2009-02-02 14:20-0800\n"
 "PO-Revision-Date: 2008-11-27 23:56-0500\n"
 "Last-Translator: Jie Zhu <j.zhu@impactek.com>\n"
 "Language-Team: Chinese <j.zhu@impactek.com>\n"
@@ -140,12 +140,10 @@ msgstr "网关超时"
 msgid "HTTP Version Not Supported"
 msgstr "不支持该HTTP版本"
 
-#: ../errorindex.py:115
-#: ../uvmlogin.py:229
+#: ../errorindex.py:115 ../uvmlogin.py:253
 #, python-format
 msgid "%s Server"
 msgstr "%s服务器"
 
 #~ msgid "Untangle Server"
 #~ msgstr "Untangle服务器"
-

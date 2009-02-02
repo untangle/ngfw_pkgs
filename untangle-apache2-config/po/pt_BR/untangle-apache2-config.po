@@ -7,38 +7,38 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Untangle\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-07 17:07+0200\n"
+"POT-Creation-Date: 2009-02-02 14:20-0800\n"
 "PO-Revision-Date: 2008-11-11 10:21-0800\n"
 "Last-Translator: Claudia\n"
 "Language-Team: Portuguese <claudia@englishtoportuguese.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-Language: Portuguese\n"
 
-#: ../adminindex.py:37
+#: ../adminindex.py:39
 #, python-format
 msgid "%s Login"
 msgstr "Login %s"
 
-#: ../adminindex.py:88
+#: ../adminindex.py:93
 msgid "Error: Username and Password do not match"
 msgstr "Erro: Nome de usuário e senha não correspondem"
 
-#: ../adminindex.py:142
+#: ../adminindex.py:147
 msgid "Server:"
 msgstr "Servidor:"
 
-#: ../adminindex.py:142
+#: ../adminindex.py:147
 msgid "Username:"
 msgstr "Nome de usuário:"
 
-#: ../adminindex.py:142
+#: ../adminindex.py:147
 msgid "Password:"
 msgstr "Senha:"
 
-#: ../adminindex.py:142
+#: ../adminindex.py:147
 msgid "Login"
 msgstr "Login"
 
@@ -138,9 +138,7 @@ msgstr "Tempo esgotado do gateway"
 msgid "HTTP Version Not Supported"
 msgstr "Versão HTTP não suportada"
 
-#: ../errorindex.py:115
-#: ../uvmlogin.py:203
+#: ../errorindex.py:115 ../uvmlogin.py:253
 #, python-format
 msgid "%s Server"
 msgstr "Servidor %s"
-

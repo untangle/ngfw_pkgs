@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Untangle\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-07 17:07+0200\n"
+"POT-Creation-Date: 2009-02-02 14:20-0800\n"
 "PO-Revision-Date: 2008-11-23 06:06-0700\n"
 "Last-Translator: David Russi <dprussi@qwest.net>\n"
 "Language-Team: Spanish <dprussi@qwest.net>\n"
@@ -17,28 +17,28 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-Language: Spanish\n"
 
-#: ../adminindex.py:37
+#: ../adminindex.py:39
 #, python-format
 msgid "%s Login"
 msgstr "Inicio de sesión %s"
 
-#: ../adminindex.py:88
+#: ../adminindex.py:93
 msgid "Error: Username and Password do not match"
 msgstr "Error: el nombre de usuario y la contraseña no coinciden"
 
-#: ../adminindex.py:142
+#: ../adminindex.py:147
 msgid "Server:"
 msgstr "Servidor:"
 
-#: ../adminindex.py:142
+#: ../adminindex.py:147
 msgid "Username:"
 msgstr "Nombre de usuario:"
 
-#: ../adminindex.py:142
+#: ../adminindex.py:147
 msgid "Password:"
 msgstr "Contraseña:"
 
-#: ../adminindex.py:142
+#: ../adminindex.py:147
 msgid "Login"
 msgstr "Iniciar sesión"
 
@@ -138,9 +138,7 @@ msgstr "Tiempo de espera de la pasarela agotado"
 msgid "HTTP Version Not Supported"
 msgstr "Versión de HTTP no soportada"
 
-#: ../errorindex.py:115
-#: ../uvmlogin.py:203
+#: ../errorindex.py:115 ../uvmlogin.py:253
 #, python-format
 msgid "%s Server"
 msgstr "Servidor %s"
-
