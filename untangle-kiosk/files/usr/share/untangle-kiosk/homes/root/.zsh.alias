@@ -33,9 +33,10 @@ add Control = Control_L
 keycode 113 = BackSpace
 EOF
 ; xset r 113'
-alias top='top -s 1' # for non-linux
+alias top='top -d 1' # for non-linux
 alias wget-mirror='wget -r -nv -nH --no-parent'
 alias wai='who am i'
 alias what="whence -f"
+alias xterm="urxvt"
 alias zman='run-help'
 alias zmore='zless'
