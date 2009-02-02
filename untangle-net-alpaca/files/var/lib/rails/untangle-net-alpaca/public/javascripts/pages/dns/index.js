@@ -39,7 +39,7 @@ Ung.Alpaca.Pages.Dns.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 dataIndex : "hostname",
                 editor : new Ext.form.TextField({
                     allowBlank : false,
-                    vtype : "hostname"
+                    vtype : "hostnameList"
                 })
             },{
                 header : this._( "Description" ),

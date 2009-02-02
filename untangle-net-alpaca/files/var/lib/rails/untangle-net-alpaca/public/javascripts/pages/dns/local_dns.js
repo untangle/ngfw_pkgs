@@ -25,12 +25,13 @@ Ung.Alpaca.Pages.Dns.LocalDns = Ext.extend( Ung.Alpaca.PagePanel, {
 
             columns : [{
                 header : this._( "Server Address" ),
-                width: 200,
+                width: 120,
+                fixed : true,
                 sortable: true,
                 dataIndex : "server_ip",
                 editor : new Ext.form.TextField({
                     allowBlank : false,
-                    vType : "ipAddress"
+                    vtype : "ipAddress"
                 })
             },{
                 header : this._( "Domain List" ),
@@ -39,7 +40,7 @@ Ung.Alpaca.Pages.Dns.LocalDns = Ext.extend( Ung.Alpaca.PagePanel, {
                 dataIndex : "domain_name_list",
                 editor : new Ext.form.TextField({
                     allowBlank : false,
-                    vType : "domainNameList"
+                    vtype : "domainNameList"
                 })
             }]
         });

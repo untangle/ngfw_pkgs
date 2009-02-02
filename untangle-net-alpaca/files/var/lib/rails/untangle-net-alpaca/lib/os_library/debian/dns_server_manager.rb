@@ -176,7 +176,7 @@ EOF
         v = []
 
         logger.debug "Found the hostname #{h}"
-        h.split( " " ).each do |hostname| 
+        h.sub( ",", " " ).split.each do |hostname| 
           next unless validator.is_hostname?( hostname )
 
           v << hostname
@@ -256,7 +256,7 @@ EOF
       domain_name_list = upstream_server.domain_name_list
       next if domain_name_list.nil?
       
-      domain_name_list = domain_name_list.sub( ",", "" ).split
+      domain_name_list = domain_name_list.sub( ",", " " ).split
 
       next if domain_name_list.empty?
 

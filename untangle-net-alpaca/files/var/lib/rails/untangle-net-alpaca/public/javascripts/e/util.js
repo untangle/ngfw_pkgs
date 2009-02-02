@@ -245,21 +245,22 @@ Ung.Alpaca.Util = {
             //<letter> ::= any one of the 52 alphabetic characters A through Z in
             //upper case and a through z in lower case
             //<digit> ::= any one of the ten digits 0 through 9
-            hostnameMask : /[A-Za-z\-\.]/,
+            hostnameMask : /[A-Za-z0-9\-\.]/,
 
             hostname: function(val, field) {
                 val = val.trim();
-                var hostnameMaskRe = /^(((([a-zA-Z](([a-zA-Z0-9\-]+)?[a-zA-Z0-9])?)+\.)*([a-zA-Z](([a-zA-Z0-9\-]+)?[a-zA-Z0-9])?)+)|\s)$/;
+                var hostnameMaskRe = /^[0-9a-z]([-0-9a-z]*[0-9a-z])?(\.[0-9a-z]([-0-9a-z]*[0-9a-z])?)*$/i
+                // var hostnameMaskRe = /^(((([a-zA-Z](([a-zA-Z0-9\-]+)?[a-zA-Z0-9])?)+\.)*([a-zA-Z](([a-zA-Z0-9\-]+)?[a-zA-Z0-9])?)+)|\s)$/;
                 return hostnameMaskRe.test(val);
             },
             hostnameText: i18n._('Invalid Hostname.'),
             
-            hostnameListMask : /[A-Za-z\-\. ,]/,
+            hostnameListMask : /[A-Za-z0-9\-\. ,]/,
             
             //A list of hostnames separated by spaces. 
             hostnameList : function (val, field) {
                 val = val.trim();
-          	var hostnames = val.split(/\s+/)
+          	var hostnames = val.split(/[\s,]+/)
           	for (var i=0; i < hostnames.length; i++) {
           	    if (!this.hostname(hostnames[i], field)) {
           		return false;
@@ -267,9 +268,9 @@ Ung.Alpaca.Util = {
           	}
           	return true;
             },
-            hostnameListText: i18n._('Invalid Hostname List.'),
+            hostnameListText: i18n._('Invalid List of Hostnames.'),
             
-            domainNameSuffixMask : /[A-Za-z\-\.]/,
+            domainNameSuffixMask : /[A-Za-z0-9\-\.]/,
 
             domainNameSuffix: function(val, field) {
                 val = val.trim();
@@ -277,7 +278,7 @@ Ung.Alpaca.Util = {
             },
             domainNameSuffixText: i18n._('Invalid Domain Name Suffix.'),
             
-            domainNameListMask : /[A-Za-z\-\. ,]/,
+            domainNameListMask : /[A-Za-z0-9\-\. ,]/,
 
             domainNameList: function(val, field) {
                 val = val.trim();
