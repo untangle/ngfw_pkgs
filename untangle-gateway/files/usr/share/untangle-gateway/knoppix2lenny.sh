@@ -247,7 +247,7 @@ stepFinish() {
   echo "#########################################"
   echo "All done."
 
-#  reboot
+  reboot
 }
 
 ## main
