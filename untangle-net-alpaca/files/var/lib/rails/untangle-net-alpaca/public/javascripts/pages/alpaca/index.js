@@ -13,6 +13,7 @@ Ung.Alpaca.Pages.Alpaca.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
         items.push({
             xtype : 'label',
+            cls: 'page-header-text',
             html : String.format( this._( "{0}Currently in {1} mode.{2}" ),
                                   "<p>", this.settings.config_level.name, "</p>" )
         });
@@ -20,22 +21,24 @@ Ung.Alpaca.Pages.Alpaca.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         if ( Ung.Alpaca.isAdvanced ) {
             items.push({
                 xtype : 'label',
+                cls:'label-text',
                 html : String.format( this._( "{0}You are currently in Advanced mode, in order to return to Basic mode, you must rerun the wizard which will reset your settings.{1}" ),
                                       "<p>", "</p>" )
             },{
                 xtype : 'button',
-                text : this._( 'Run Wizard.' ),
+                text : this._( 'Run Wizard' ),
                 handler : this.toBasic,
                 scope : this
             });
         } else {
             items.push({
                 xtype : 'label',
+                cls:'label-text',                    
                 html : String.format( this._( "{0}Click the following button to switch into advanced mode.  Since Advanced mode contains settings that are unavailable in basic mode, you must rerun the wizard and reset all of your settings in order to return to basic mode.{1}" ),
                                       "<p>", "</p>" )
             },{
                 xtype : 'button',
-                text : this._( 'Switch to Advanced Mode.' ),
+                text : this._( 'Switch to Advanced Mode' ),
                 handler : this.toAdvanced,
                 scope : this
             });    

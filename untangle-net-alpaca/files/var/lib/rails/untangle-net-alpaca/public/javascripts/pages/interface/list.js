@@ -145,7 +145,7 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
         /* If necessary, show a little message indicating that the interfaces have changed. */
         if (( newInterfaces.length + deletedInterfaces.length ) > 0 ) {
             items.push( new Ext.form.Label({
-                html : String.format( this._( "{0}Click {1}here{2} to configure the interfaces changes.{3}" ),
+                html : String.format( this._( "{0}Untangle detected interfaces changes.{1}Configure them{2}.{3}" ),
                                       "<p class=\"ua-message-warning\">", this.updateInterfacesUrl, 
                                       "</a>", "</p>" )
             }));

@@ -43,6 +43,7 @@ Ung.Alpaca.Pages.Interface.Refresh = Ext.extend( Ung.Alpaca.PagePanel, {
 
             items.push({
                 xtype : 'label',
+                cls : 'label-section-heading',
                 html : String.format( this._( "{0}The following interfaces have been added.{1}" ),
                                       "<p>", "</p>" )
             });
@@ -82,6 +83,7 @@ Ung.Alpaca.Pages.Interface.Refresh = Ext.extend( Ung.Alpaca.PagePanel, {
 
             items.push({
                 xtype : 'label',
+                cls : 'label-section-heading',
                 html : String.format( this._( "{0}The following interfaces have been removed.{1}" ),
                                       "<p>", "</p>" )
             });
@@ -92,12 +94,14 @@ Ung.Alpaca.Pages.Interface.Refresh = Ext.extend( Ung.Alpaca.PagePanel, {
         if ( items.length == 0 ) {
             items.push({
                 xtype : "label",
+                cls : 'label-section-heading',                    
                 html : this._( "Unable to detect any removed or installed network interfaces." )
             });
         } else {
             items = [{
                 xtype : "label",
-                html : String.format( this._( "{0}A change in your physical interfaces has been detected, Click 'Save' to commit the changes.{1}" ), "<p>", "</p>" )
+                cls : 'ua-message-warning',                    
+                html : String.format( this._( "{0}A change in your physical interfaces has been detected, Click {1}Save{2} to commit the changes.{3}" ), "<p>","<b>","</b>","</p>" )
             }].concat( items );
 
             this.enableSave = true;

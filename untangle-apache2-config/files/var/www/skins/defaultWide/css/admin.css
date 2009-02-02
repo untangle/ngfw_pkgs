@@ -1308,12 +1308,15 @@ body.wizard .ext-el-mask
     margin-bottom:5px;
     display:block;
 }
-.label-section-heading, .label-section-heading-2{
+.label-section-heading, .label-section-heading-2,.label-text{
 	font-family:Tahoma, arial, freesans,sans-serif;
     font-weight:bold;
     font-size:12px;
     display:block;
     margin-bottom:5px;
+}
+.label-text{
+    font-weight:normal;
 }
 .label-section-heading-2{
 margin-top:10px;
@@ -1326,6 +1329,38 @@ width:180px !important;
 }
 .label-width-1 div.x-form-element{
 padding-left:125px !important;
+}
+.label-width-2 label.x-form-item-label{
+width:190px !important;
+}
+.label-width-2 label.x-form-textfield-detail{
+width:240px !important;
+}
+.label-width-2 div.x-form-element{
+padding-left:200px !important;
+}
+.float-button-1, .float-button-2{
+float:left;
+}
+.float-button-2{
+    clear:right;
+    margin-left:10px;
+}
+.left-indent-3{
+    margin-left:6.4em;
+}
+.ua-message-warning {
+    padding: 5px 5px 5px 28px;
+    border: 1px solid #60BB3F;
+    background: #FEFEDD url(../images/user/icon_message.png) no-repeat scroll 7px center !important;
+    color:#333;
+    font-size:11px;
+	font-family:Tahoma, arial, freesans,sans-serif;
+}
+.ua-message-warning{
+    display:block;
+    margin-bottom:10px;
+}
 }
 
 select.rule_builder_type {

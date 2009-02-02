@@ -44,6 +44,11 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
 
         Ext.apply( this, {
             items : [{
+                    xtype:"label",
+                    html:this._("Configure Interface"),
+                    cls : 'page-header-text',
+                },
+                {
                 autoHeight : true,
                 xtype : "fieldset",
                 items : [{
@@ -209,6 +214,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                 items : items
             },{
                 xtype : 'label',
+                cls : 'label-section-heading',
                 html : this._( "IP Address Aliases" )
             }, this.buildAliasGrid( settings, "dynamic_aliases" )]
                      
