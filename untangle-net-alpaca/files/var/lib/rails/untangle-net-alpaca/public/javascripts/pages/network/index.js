@@ -13,7 +13,7 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         var items = [{
             xtype : "label",
             cls: 'page-header-text',
-            html : this._( "Overrides" )
+            html : this._( "Network" )
         },{
             xtype : 'button',
             text : this._( "Refresh Interfaces" ),
