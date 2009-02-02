@@ -238,7 +238,9 @@ stepFinish() {
   # locale settings
   perl -i -pe 's/.*en_US\.UTF-8/en_US.UTF-8/' /etc/locale.gen # uncomment it
   locale-gen # build it
+  perl -i -pe 's/^(LC|LANG)/# $1/' /etc/environment
   echo LANG="en_US.UTF-8" >> /etc/environment # make it the default
+  echo LC_ALL="en_US.UTF-8" >> /etc/environment # make it the default
 
   undo_divert
 
