@@ -476,7 +476,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
 
     onRenewLease : function()
     {
-        /* Refresh just saves settings, doesn't warn the user though, because that looks bad */
+        /* Refresh just saves settings, does not warn the user though, because that looks bad */
         this.confirmMessage = null;
         
         /* Update all of the save messages so it looks normal. */
