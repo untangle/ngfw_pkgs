@@ -1,0 +1,60 @@
+                   Secondary mirrors of the Debian archive
+                   ---------------------------------------
+
+HOST NAME                       FTP                             HTTP                            ARCHITECTURES
+---------                       ---                             ----                            -------------
+
+AR Argentina
+------------
+debian.logiclinux.com                                           /debian/                        amd64 i386
+
+BR Brazil
+---------
+ftp.br.debian.org                                               /debian/                        alpha amd64 arm armel hppa hurd-i386 i386 ia64 m68k mips mipsel powerpc s390 sparc
+
+CL Chile
+--------
+ftp.cl.debian.org                                               /debian/                        alpha amd64 arm armel hppa hurd-i386 i386 ia64 m68k mips mipsel powerpc s390 sparc
+
+CN China
+--------
+mirrors.geekbone.org                                            /debian/                        alpha amd64 hppa hurd-i386 i386 ia64 m68k mips mipsel powerpc s390 sparc
+
+DE Germany
+----------
+ftp.de.debian.org                                               /debian/                        alpha amd64 arm armel hppa hurd-i386 i386 ia64 m68k mips mipsel powerpc s390 sparc
+
+FR France
+---------
+ftp.fr.debian.org                                               /debian/                        alpha amd64 arm armel hppa hurd-i386 i386 ia64 m68k mips mipsel powerpc s390 sparc
+
+HK Hong Kong
+------------
+ftp.hk.debian.org                                               /debian/                        alpha amd64 arm armel i386 ia64 powerpc sparc
+
+JP Japan
+--------
+ftp2.jp.debian.org                                              /debian/                        alpha amd64 arm armel hppa hurd-i386 i386 ia64 m68k mips mipsel powerpc s390 sparc
+
+KR Korea
+--------
+ftp.kr.debian.org                                               /debian/                        alpha amd64 arm armel hppa hurd-i386 i386 ia64 m68k mips mipsel powerpc s390 sparc
+
+RU Russia
+---------
+ftp.ru.debian.org                                               /debian/                        alpha amd64 arm armel hppa hurd-i386 i386 ia64 m68k mips mipsel powerpc s390 sparc
+
+TR Turkey
+---------
+ftp.tr.debian.org                                               /debian/                        alpha amd64 arm hppa hurd-i386 i386 ia64 m68k mips mipsel powerpc s390 sparc
+
+US United States
+----------------
+ftp.us.debian.org                                               /debian/                        alpha amd64 arm armel hppa hurd-i386 i386 ia64 m68k mips mipsel powerpc s390 sparc
+
+ZA South Africa
+---------------
+ftp.sun.ac.za                                                   /ftp/debian/                    amd64 i386
+
+-------------------------------------------------------------------------------
+Last modified: Tue Apr 29 19:52:14 2008             Number of sites listed: 409

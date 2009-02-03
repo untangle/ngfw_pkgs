@@ -5,10 +5,13 @@ LOG_FILE=/var/log/uvm/upgrade61.`date -Iseconds`.log
 exec >> $LOG_FILE 2>&1
 
 DEBIAN_MIRROR_HOST="10.0.11.16" # debian
+#DEBIAN_MIRROR_HOST="10.0.11.16" # http.us.debian.org; FIXME: uncomment before releasing
 DEBIAN_MIRROR="http://${DEBIAN_MIRROR_HOST}/debian"
 UNTANGLE_MIRROR_HOST="10.0.0.105" # mephisto
+#UNTANGLE_MIRROR_HOST="10.0.0.105" # updates.untangle.com; FIXME: uncomment before releasing
 UNTANGLE_MIRROR="http://${UNTANGLE_MIRROR_HOST}/public/lenny"
 UNTANGLE_61_DISTRIBUTIONS="mclaren nightly"
+#UNTANGLE_61_DISTRIBUTIONS="mclaren" # FIXME: uncomment before releasing
 
 UNTANGLE_PACKAGES_FILE="/var/log/uvm/upgrade61.packages"
 
@@ -27,6 +30,8 @@ usage() {
 
 fail() {
     echo "upgrade failed - leaving divert in place, retrying"
+    echo "The output for the upcoming retry will be in a new log file,"
+    echo "so you should 'tail -f /var/log/uvm/upgrade61*log' again to see it."
     # Try again
     exec /usr/bin/uvm
     exit 1
@@ -139,7 +144,7 @@ EOF
   # get the etch sysvinit
   echo "deb $DEBIAN_MIRROR etch main contrib non-free" >| /etc/apt/sources.list
   aptgetupdate
-  aptgetyes --trust-me install sysvinit sysv-rc
+  aptgetyes --trust-me install sysvinit sysv-rc apt-spy
 }
 
 stepRemoveUnwantedPackaged() {
@@ -158,9 +163,14 @@ stepRemoveUnwantedPackaged() {
 stepDistUpgradeToEtch() {
   stepName "stepDistUpgradeToEtch"
 
+#   # find the fastest etch source from a predefined set of mirrors
+#   apt-spy -t 7 -m /usr/share/untangle-gateway/debian-mirrors.txt -o /etc/apt/sources.list -d etch -s ar,br,cl,cn,de,fr,hk,jp,kr,ru,tr,us,za
+#   aptgetupdate
+
   # install the newer postgres 7.4 from etch, as it follows the naming
   # convention in /etc/
   aptgetyes install postgresql-7.4 postgresql-common postgresql postgresql-client-7.4 python-psycopg python libapache2-mod-python python-pycurl
+  perl -i -pe 's/^port.+/port = 5432/' /etc/postgresql/7.4/main/postgresql.conf # force 5432
 
   aptgetyes dist-upgrade
 
