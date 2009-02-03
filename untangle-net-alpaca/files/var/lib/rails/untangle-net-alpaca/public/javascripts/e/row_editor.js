@@ -239,6 +239,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
     },
     
     cancelAction : function() {
+        /*
         var updateButton=Ext.getCmp("update_"+this.getId());
         if (updateButton && !updateButton.disabled ) {
             var m = String.format( Ung.Alpaca.Util._( "{0}Leaving this page will lose unsaved changes.{1}{0}Click 'Continue' to proceed and lose changes,{1}{0}or 'Cancel' to stay on this page.{1}" ), "<p>", "</p>" );
@@ -258,8 +259,12 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
                 icon : Ext.MessageBox.WARNING
             });
         } else {
-            this.closeWindow();
-        }
+        */
+        
+        this.closeWindow();
+        
+        /*
+        } */
     },
     // the close window action
     // to override

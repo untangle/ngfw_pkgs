@@ -27,6 +27,9 @@ class QosController < ApplicationController
     settings["status"] = os["qos_manager"].status_v2
     settings["start_time"] = os["qos_manager"].start_time
 
+    ## Interface enumeration
+    settings["interface_enum"] = build_interface_enum()
+
     json_result( :values => settings )
   end
 

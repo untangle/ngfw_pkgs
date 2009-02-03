@@ -21,6 +21,9 @@ class PacketFilterController < ApplicationController
     settings["user_rules"] = Firewall.find( :all, :conditions => [ "system_id IS NULL" ] )
     settings["system_rules"] = Firewall.find( :all, :conditions => [ "system_id IS NOT NULL" ] )
 
+    ## Interface enumeration
+    settings["interface_enum"] = build_interface_enum()
+
     json_result( :values => settings )
   end
 

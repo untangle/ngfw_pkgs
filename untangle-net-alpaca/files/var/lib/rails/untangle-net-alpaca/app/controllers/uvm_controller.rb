@@ -34,6 +34,9 @@ class UvmController < ApplicationController
     modules_disabled = alpaca_settings.modules_disabled
     modules_disabled = "" if modules_disabled.nil?
     settings["enable_sip_helper"] = !modules_disabled.include?( "nf_nat_sip" )
+
+    ## Interface enumeration
+    settings["interface_enum"] = build_interface_enum()
     
     json_result( :values => settings )
   end
