@@ -114,7 +114,9 @@ Ung.Alpaca.Pages.Interface.Refresh = Ext.extend( Ung.Alpaca.PagePanel, {
         Ung.Alpaca.Pages.Interface.Refresh.superclass.initComponent.apply( this, arguments );
     },
         
-    saveMethod : "/interface/set_interface_list"
+    saveMethod : "/interface/set_interface_list",
+
+    nextPage : "/alpaca/network/index"
 });
 
 Ung.Alpaca.Pages.Interface.Refresh.settingsMethod = "/interface/get_interface_list";

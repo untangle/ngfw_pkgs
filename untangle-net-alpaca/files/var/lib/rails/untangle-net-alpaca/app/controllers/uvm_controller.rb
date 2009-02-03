@@ -245,7 +245,7 @@ class UvmController < ApplicationController
     end
     
     DhcpServerSettings.destroy_all
-    DhcpServerSettings.new( :enabled => true, :start_address => "192.168.2.100", :end_address => "192.168.2.200" ).save
+    DhcpServerSettings.new( :enabled => false, :start_address => "192.168.2.100", :end_address => "192.168.2.200" ).save
 
     os["network_manager"].commit
 

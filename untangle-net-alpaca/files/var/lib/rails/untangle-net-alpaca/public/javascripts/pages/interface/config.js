@@ -487,10 +487,16 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             successMessage : this._( "Attempt to update lease has been completed." ),
             errorTitle : this._( "Internal Error" ),
             errorMessage : this._( "Unable to renew lease" )
-
         };
+
+        /* Don't go to the interface list when renewing the lease */
+        this.nextPage = null;
+
         application.onSave();
-    }
+    },
+
+    /* This is the page that it should return to on cancel or after saving settings. */
+    nextPage : "/alpaca/interface/list"
 });
 
 Ung.Alpaca.Pages.Interface.Config.settingsMethod = "/interface/get_settings";

@@ -18,11 +18,12 @@
       <%= javascript_include_tag script %>
     <% end %>
     
-    <% @alpaca_scripts.each do |script| %>
-      <%= javascript_include_tag script %>
-    <% end %>
-
+    
+    <%# IE Is lame and wants this before including the scripts. %>
     <% javascript_tag do -%>
+       Ext.ns('Ung');
+       Ext.ns('Ung.Alpaca');
+
        Ung.Alpaca.BasicMenuData = <%= main_menu.children.to_json %>;
        Ung.Alpaca.AdvancedMenuData = <%= advanced_menu.children.to_json %>;
        Ung.Alpaca.isAdvanced = <%= @config_level  > AlpacaSettings::Level::Basic %>;
@@ -30,6 +31,10 @@
        Ung.Alpaca.queryPath = '<%= query_path %>';
        Ung.Alpaca.version = '<%= UNTANGLE_VERSION %>';
        Ung.Alpaca.username = '<%= session[:username] %>';
+    <% end %>
+    
+    <% @alpaca_scripts.each do |script| %>
+      <%= javascript_include_tag script %>
     <% end %>
 
     <%= yield %>

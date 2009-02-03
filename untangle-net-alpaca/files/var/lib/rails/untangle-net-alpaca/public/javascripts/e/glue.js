@@ -128,8 +128,10 @@ Ung.Alpaca.Glue = {
         var title;
         var message;
         var saveConfig = null;
+        var nextPage = null;
         if ( panel != null ) {
             saveConfig = panel.saveConfig;
+            nextPage = panel.nextPage;
         }
         if ( saveConfig != null ) {
             title = saveConfig.successTitle;
@@ -146,7 +148,11 @@ Ung.Alpaca.Glue = {
         });
 
         /* Reload the page in the background */
-        application.reloadCurrentQueryPath();
+        if ( nextPage == null ) {
+            application.reloadCurrentQueryPath();
+        } else {
+            application.switchToQueryPath( nextPage );
+        }
     },
 
     errorSaveSettings : function( result, options, panel )
@@ -175,9 +181,19 @@ Ung.Alpaca.Glue = {
 
     cancel : function()
     {
-        /* Confirm settings save, if necessary */
-        /* Reload the page in the background */
-        application.reloadCurrentQueryPath();
+        var panel = application.layout.activeItem;
+
+        var nextPage = null;
+
+        if ( panel != null ) {
+            nextPage = panel.nextPage;
+        }
+
+        if ( nextPage == null ) {
+            application.reloadCurrentQueryPath();
+        } else {
+            application.switchToQueryPath( nextPage );            
+        }
     },
 
     // Build a help url

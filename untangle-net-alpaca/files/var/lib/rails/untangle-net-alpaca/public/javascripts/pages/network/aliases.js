@@ -50,7 +50,10 @@ Ung.Alpaca.Pages.Network.Aliases = Ext.extend( Ung.Alpaca.PagePanel, {
         Ung.Alpaca.Pages.Network.Aliases.superclass.initComponent.apply( this, arguments );
     },
 
-    saveMethod : "/network/set_aliases"
+    saveMethod : "/network/set_aliases",
+
+    /* This is the page that it should return to on cancel or after saving settings. */
+    nextPage : "/alpaca/network/index"
 });
 
 Ung.Alpaca.Pages.Network.Aliases.settingsMethod = "/network/get_aliases";
