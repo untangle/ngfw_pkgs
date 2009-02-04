@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE xfdesktop-menu [
-    <!ENTITY menu2 SYSTEM "menu2.xml">
-    <!ENTITY debian SYSTEM "menudefs.hook">
-]>
-<xfdesktop-menu>
-</xfdesktop-menu>
