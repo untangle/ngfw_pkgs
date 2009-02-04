@@ -2,13 +2,6 @@
 xset s off
 xset -dpms
 
-if grep -q VMWARE /var/log/Xorg.0.log ; then
-  xrandr -s $(xrandr | head -1 | perl -pe 's/.* maximum (\d+) x (\d+)/$1x$2/')
-fi
-
-# start fbpanel
-fbpanel &
-
 # do not recover a (potentially saved) previous session
 find .mozilla -name sessionstore.js -exec /bin/rm {} \;
 
@@ -40,7 +33,17 @@ if [ -f /etc/default/untangle-vm ] ; then
     [ -x ${WIN_ACTION_HANDLER} ] && sudo -b ${WIN_ACTION_HANDLER} 
 fi
 
+# Here's where we launch the window manager
+xfwm4 --daemon
+
+# resize screen on vmware
+if grep -q VMWARE /var/log/Xorg.0.log ; then
+  xrandr -s $(xrandr | head -1 | perl -pe 's/.* maximum (\d+) x (\d+)/$1x$2/')
+fi
+
+# background
 feh --bg-scale /usr/share/untangle-kiosk/desktop_background-1024x768.png
 
-# Here's where we launch the window manager. When this finishes we reboot!
-x-window-manager
+# fbpanel; when this exits, X stops, but it will restart automatically
+# anyway, so it does not matter.
+fbpanel
