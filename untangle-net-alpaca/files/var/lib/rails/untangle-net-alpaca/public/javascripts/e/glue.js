@@ -151,6 +151,7 @@ Ung.Alpaca.Glue = {
         if ( nextPage == null ) {
             application.reloadCurrentQueryPath();
         } else {
+            application.saveButton.disable();
             application.switchToQueryPath( nextPage );
         }
     },
