@@ -20,18 +20,22 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.EditorGridPanel, {
             scope : this
         }];
         
+
+        if(!this.ruleInterfaceValues) {
+            this.ruleInterfaceValues=[];
+        }
+        
+        if(!this.ruleProtocolValues) {
+            this.ruleProtocolValues=Ung.Alpaca.RuleBuilder.DEFAULT_PROTOCOL_VALUES;
+        }
+        
         if(!this.rules) {
-            if(!this.ruleInterfaceValues) {
-                this.ruleInterfaceValues=[];
-            }
-            if(!this.ruleProtocolValues) {
-                this.ruleProtocolValues=[["tcp","TCP"],["udp","UDP"],["icmp","ICMP"],["gre","GRE"],["esp","ESP"],["ah","AH"],["sctp","SCTP"]]
-            }
             this.rules= [
                 {name:"s-addr",displayName: Ung.Alpaca.Util._("Source Address"), type: "text",vtype:"address"},
                 {name:"d-local",displayName: Ung.Alpaca.Util._("Destined Local"), type: "boolean"},
                 {name:"d-addr",displayName: Ung.Alpaca.Util._("Destination Address"), type: "text",vtype:"address"},
                 {name:"d-port",displayName: Ung.Alpaca.Util._("Destination Port"), type: "text",vtype:"port"},
+                {name:"s-port",displayName: Ung.Alpaca.Util._("Source Port"), type: "text",vtype:"port"},
                 {name:"s-intf",displayName: Ung.Alpaca.Util._("Source Interface"), type: "checkgroup", values:this.ruleInterfaceValues },
                 {name:"protocol",displayName: Ung.Alpaca.Util._("Protocol"), type: "checkgroup", values: this.ruleProtocolValues}
             ];            
@@ -198,7 +202,9 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.EditorGridPanel, {
     getName: function() {
         return "rulebuilder";
     }
-
-    
 });
+
+Ung.Alpaca.RuleBuilder.DEFAULT_PROTOCOL_VALUES = [["tcp","TCP"],["udp","UDP"],["icmp","ICMP"],["gre","GRE"],
+                                                  ["esp","ESP"],["ah","AH"],["sctp","SCTP"]];
+
 Ext.reg('rulebuilder', Ung.Alpaca.RuleBuilder);

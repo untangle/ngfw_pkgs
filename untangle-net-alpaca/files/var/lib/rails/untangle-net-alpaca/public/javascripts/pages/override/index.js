@@ -27,7 +27,7 @@ Ung.Alpaca.Pages.Override.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         this.overrideGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
 
-            recordFields : [ "enabled", "writable", "path", "description" ],
+            recordFields : [ "id", "enabled", "writable", "path", "description" ],
             selectable : true,
             sortable : false,
             hasReorder : true,

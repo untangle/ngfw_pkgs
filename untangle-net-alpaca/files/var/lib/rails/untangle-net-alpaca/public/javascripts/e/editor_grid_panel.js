@@ -160,7 +160,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
             if (id < 0) {
                 return "grid-row-added";
             } else {
-                var d = this.grid.changedData[id];
+                var d = this.grid.changedData[record.id];
                 if (d) {
                     if (d.op == "deleted") {
                         return "grid-row-deleted";
@@ -239,9 +239,10 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
         var entries = this.store.getRange();
         
         for ( var c = 0 ; c < entries.length ; c++ ) {
-            var cd=this.changedData[entries[c].get("id")];
+            var entry = entries[c];
+            var cd = this.changedData[entry.id];
             if(cd==null || "deleted" != cd.op) {
-                data[c] = entries[c].data;
+                data.push( entry.data );
             }
         }
 
@@ -287,7 +288,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
                 cmConfig[i].sortable = false;
             }
         }
-        var id = record.get("id");
+        var id = record.id;
         var cd = this.changedData[id];
         if (cd == null) {
             this.changedData[id] = {
