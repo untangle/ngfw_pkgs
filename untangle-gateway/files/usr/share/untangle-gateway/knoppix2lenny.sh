@@ -21,6 +21,12 @@ APT_GET_OPTIONS="-o DPkg::Options::=--force-confnew --yes --force-yes"
 STEPS="(setup|sysvinit|remove|etch|lenny|untangle|finish)"
 LAST_STEP=""
 
+APACHE_STATIC_PAGE="upgrade.html"
+APACHE_UPGRADE_CONFIG="RedirectMatch 301 ^/webui.* /$APACHE_STATIC_PAGE"
+APACHE_UPGRADE_CONFIG_FILE="/etc/apache2/conf.d/upgrade61"
+APACHE_UPGRADE_HTML_FILE="/var/www/$APACHE_STATIC_PAGE"
+APACHE_UPGRADE_HTML_MESSAGE="The system is being upgraded to 6.1 right now, please try again later."
+
 ## helper functions
 usage() {
   echo "$0 [-i]"
@@ -50,6 +56,7 @@ undo_divert() {
         rm -f $target
 	dpkg-divert --remove --rename --package untangle-gateway --divert $target.distrib $target
     fi
+    rm -f $APACHE_UPGRADE_HTML_FILE $APACHE_UPGRADE_CONFIG_FILE
 }
 
 aptgetyes() {
@@ -87,6 +94,11 @@ Untangle 6.1 upgrade beginning.  Progress may be monitored with:
 
 Once the upgrade has completed, the Untangle Server will reboot automatically.
 EOF
+
+  # the webui can't be accessed while we're upgrading
+  echo $APACHE_UPGRADE_HTML_MESSAGE >| $APACHE_UPGRADE_HTML_FILE
+  echo $APACHE_UPGRADE_CONFIG >| $APACHE_UPGRADE_CONFIG_FILE
+  /etc/init.d/apache2 reload
 
   # set debconf to critical/noninteractive
   echo debconfig debconf/priority select critical | debconf-set-selections
@@ -255,7 +267,7 @@ stepFinish() {
   undo_divert
 
   echo "#########################################"
-  echo "All done."
+  echo "All done, rebooting..."
 
   reboot
 }
