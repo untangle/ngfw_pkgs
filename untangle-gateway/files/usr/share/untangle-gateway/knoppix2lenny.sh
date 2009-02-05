@@ -5,10 +5,10 @@ LOG_FILE=/var/log/uvm/upgrade61.`date -Iseconds`.log
 exec >> $LOG_FILE 2>&1
 
 #DEBIAN_MIRROR_HOST="10.0.11.16" # debian
-DEBIAN_MIRROR_HOST="10.0.11.16" # http.us.debian.org; FIXME: uncomment before releasing
+DEBIAN_MIRROR_HOST="http.us.debian.org" # http.us.debian.org; FIXME: uncomment before releasing
 DEBIAN_MIRROR="http://${DEBIAN_MIRROR_HOST}/debian"
 #UNTANGLE_MIRROR_HOST="10.0.0.105" # mephisto
-UNTANGLE_MIRROR_HOST="10.0.0.105" # updates.untangle.com; FIXME: uncomment before releasing
+UNTANGLE_MIRROR_HOST="updates.untangle.com" # updates.untangle.com; FIXME: uncomment before releasing
 UNTANGLE_MIRROR="http://${UNTANGLE_MIRROR_HOST}/public/lenny"
 #UNTANGLE_61_DISTRIBUTIONS="mclaren nightly"
 UNTANGLE_61_DISTRIBUTIONS="mclaren" # FIXME: uncomment before releasing
@@ -177,6 +177,7 @@ stepDistUpgradeToEtch() {
 
   # find the fastest etch source from a predefined set of mirrors
   apt-spy -t 7 -m /usr/share/untangle-gateway/debian-mirrors.txt -o /etc/apt/sources.list -d etch -s ar,br,cl,cn,de,fr,hk,jp,kr,ru,tr,us,za
+  cat /etc/apt/sources.list
   aptgetupdate
 
   # install the newer postgres 7.4 from etch, as it follows the naming
