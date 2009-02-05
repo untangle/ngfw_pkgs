@@ -13,7 +13,7 @@ Ung.Alpaca.Pages.Route.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         this.staticRoutesGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
 
-            recordFields : [ "rule_id", "target", "netmask", "gateway", "name", "category", 
+            recordFields : [ "id", "rule_id", "target", "netmask", "gateway", "name", "category", 
                              "description", "live", "alert", "log", "settings_id" ],
             selectable : true,
             

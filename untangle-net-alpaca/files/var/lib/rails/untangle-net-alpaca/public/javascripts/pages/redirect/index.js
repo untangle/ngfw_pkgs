@@ -51,7 +51,37 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                         xtype:"rulebuilder",
                         anchor:"98%",
                         dataIndex: "filter",
-                        ruleInterfaceValues:this.settings["interface_enum"]
+                        ruleInterfaceValues : this.settings["interface_enum"],
+                        rules : [{
+                            name : "s-addr",
+                            displayName : Ung.Alpaca.Util._("Source Address"),
+                            type: "text",
+                            vtype : "address"
+                        },{
+                            name : "d-local",
+                            displayName : Ung.Alpaca.Util._("Destined Local"),
+                            type: "boolean"
+                        },{
+                            name : "d-addr",
+                            displayName : Ung.Alpaca.Util._("Destination Address"),
+                            type: "text",
+                            vtype:"address"
+                        },{
+                            name : "d-port",
+                            displayName : Ung.Alpaca.Util._("Destination Port"),
+                            type: "text",
+                            vtype : "port"
+                        },{
+                            name:"s-intf",
+                            displayName : Ung.Alpaca.Util._("Source Interface"),
+                            type: "checkgroup",
+                            values : this.settings["interface_enum"]
+                        },{
+                            name : "protocol",
+                            displayName : Ung.Alpaca.Util._("Protocol"),
+                            type: "checkgroup",
+                            values: Ung.Alpaca.RuleBuilder.DEFAULT_PROTOCOL_VALUES
+                        }]
                     }]
                 },{
                     xtype : "fieldset",

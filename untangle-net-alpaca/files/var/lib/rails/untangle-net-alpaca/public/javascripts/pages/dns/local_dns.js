@@ -11,7 +11,7 @@ Ung.Alpaca.Pages.Dns.LocalDns = Ext.extend( Ung.Alpaca.PagePanel, {
     {
         this.localDnsGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
-            recordFields : [ "server_ip", "domain_name_list", "enabled" ],
+            recordFields : [ "id", "server_ip", "domain_name_list", "enabled" ],
             selectable : true,
 
             /* Name must set in order to get and set the settings */

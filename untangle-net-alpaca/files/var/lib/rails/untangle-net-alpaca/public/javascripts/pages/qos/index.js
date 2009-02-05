@@ -195,7 +195,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         var qosGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
 
-            recordFields : [ "enabled", "description", "filter", "priority" ],
+            recordFields : [ "id", "enabled", "description", "filter", "priority" ],
             selectable : true,
             sortable : false,
             hasReorder: true,
