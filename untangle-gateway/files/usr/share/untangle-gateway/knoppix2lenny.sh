@@ -87,6 +87,8 @@ stepName() {
 stepSetup() {
   stepName "stepSetup"
 
+  feh --bg-scale /usr/share/untangle-gateway/desktop_background_upgrade-1024x768.png
+
   wall <<EOF
 
 Untangle 6.1 upgrade beginning.  Progress may be monitored with:
