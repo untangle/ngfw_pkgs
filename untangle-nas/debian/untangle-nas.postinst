@@ -189,6 +189,8 @@ chown -R ${NAS_USER}:${NAS_GROUP} ${NAS_HOME}
 /etc/init.d/untangle-net-alpaca-iptables reload
 /etc/init.d/apache2 reload
 
+#DEBHELPER#
+
 exit 0
 
 

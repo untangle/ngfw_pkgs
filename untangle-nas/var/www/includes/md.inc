@@ -195,7 +195,7 @@ function update_mdadm_conf()
 	$md = get_md();
 
 
-	$mdadm_fp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=/etc/mdadm.conf", "w");
+	$mdadm_fp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=/etc/mdadm/mdadm.conf", "w");
 
 	fputs($mdadm_fp, "\n");
 	fputs($mdadm_fp, "#\n");
@@ -227,9 +227,7 @@ function update_mdadm_conf()
 	fputs($mdadm_fp, "PROGRAM /opt/nas/bin/mdalert \n");
 	
 	pclose($mdadm_fp);
-	exec("export LANG=C; /usr/bin/sudo /etc/init.d/mdmonitor restart 2>&1");
-
-	
+	exec("export LANG=C; /usr/bin/sudo /etc/init.d/mdadm restart 2>&1");
 }
 
 ?>

@@ -9,7 +9,7 @@ Standards-Version: 3.7.2
 Package: untangle-nas
 Architecture: all
 #In Debian
-Depends: untangle-vm, untangle-apache2-config, untangle-net-alpaca, untangle-ldap-server, parted (= 1.8.8.git.2008.03.24-11.1untangle1), mdadm (= 2.6.7.1-1untangle1lenny), lvm2 (= 2.02.39-6untangle1lenny), quota (= 3.16-7untangle1lenny), apache2 (>= 2.0.46), samba (>= 3.0.7), php5-auth-pam (>= 0.4), libapache2-mod-suphp, php5-gmp, php5 (>= 4.3.2), php5-cli, at (>= 3.1.8), acl (>= 2.2.3), initscripts, sysvinit (>= 2.85), sysv-rc, perl, coreutils (>= 4.5.3), mount (>= 2.11y), sudo (>= 1.6), nfs-common (>= 1.0.6), nfs-kernel-server, ntp (>= 4.1.2), util-linux (>= 2.11y),  passwd (>= 0.68), libpam-ldap, libnss-ldapd, xfsprogs, scsitools, proftpd-basic, iscsitarget, open-iscsi, winbind, krb5-user, e2fsprogs
+Depends: untangle-vm, untangle-apache2-config, untangle-net-alpaca, untangle-ldap-server, parted (= 1.8.8.git.2008.03.24-11.1+untangle1lenny), mdadm (= 2.6.7.1-1+untangle1lenny), lvm2 (= 2.02.39-6+untangle1lenny), quota (= 3.16-7+untangle1lenny), apache2 (>= 2.0.46), samba (>= 3.0.7), php5-auth-pam (>= 0.4), libapache2-mod-suphp, php5-gmp, php5 (>= 4.3.2), php5-cli, at (>= 3.1.8), acl (>= 2.2.3), initscripts, sysvinit (>= 2.85), sysv-rc, perl, coreutils (>= 4.5.3), mount (>= 2.11y), sudo (>= 1.6), nfs-common (>= 1.0.6), nfs-kernel-server, ntp (>= 4.1.2), util-linux (>= 2.11y),  passwd (>= 0.68), libpam-ldap, libnss-ldapd, xfsprogs, scsitools, proftpd-basic, iscsitarget, open-iscsi, winbind, krb5-user, e2fsprogs
 # Need for ewbdav:
 # libapache2-mod-auth-pam (>= 1.1.1)
 #Still need?:
