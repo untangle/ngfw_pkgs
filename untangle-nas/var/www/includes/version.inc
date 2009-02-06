@@ -29,7 +29,7 @@
  *  
  */
 
-function getOpenfilerVersion($versionQuery) {
+function getUntangleNASVersion($versionQuery) {
 
 	
 	if ($versionQuery == "distro") {
@@ -44,7 +44,7 @@ function getOpenfilerVersion($versionQuery) {
     else if ($versionQuery == "gui") {
 	
 	
-        $nas_versionp = popen('/usr/bin/dpkg -s untangle-openfiler | /bin/grep "^Version:" | /usr/bin/cut -d ":" -f2', 'r');
+        $nas_versionp = popen('/usr/bin/dpkg -s untangle-nas | /bin/grep "^Version:" | /usr/bin/cut -d ":" -f2', 'r');
         $nas_info_version = trim(fread($nas_versionp, 1024));
         pclose($nas_versionp);
         return $nas_info_version;
