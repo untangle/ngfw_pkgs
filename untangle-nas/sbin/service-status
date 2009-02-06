@@ -1,0 +1,51 @@
+#!/bin/bash
+#
+# Debian "replacement" for 'service foo status'.  Only works for services known
+# to be used in NAS.
+#
+
+if [ $# -ne 1 ]; then
+    echo "usage: service-status servicename"
+    exit 1
+fi
+
+daemonname=
+
+case "$1" in
+    winbind)
+	daemonname=winbindd
+	;;
+    samba)
+	daemonname=smbd
+	;;
+    nfs-kernel-server)
+	daemonname=nfsd
+	;;
+    nfs-kernel-server)
+	daemonname=nfsd
+	;;
+    proftpd)
+	daemonname=proftpd
+	;;
+    iscsitarget)
+	daemonname=ietd
+	;;
+    rsync)
+	daemonname=rsyncd
+	;;
+    httpd)
+	# XXX
+	daemonname=apache2
+	;;
+    *)
+	echo "service $1 not found"
+	exit 2
+esac
+
+if pidof $daemonname > /dev/null; then
+    echo "$daemonname is running"
+else
+    echo "$daemonname is stopped"
+fi
+
+exit 0

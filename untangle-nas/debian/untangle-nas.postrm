@@ -1,0 +1,64 @@
+#!/bin/bash
+
+NAS_USER=nas
+# NAS_PASSWD=password
+NAS_GROUP=nas
+NAS_HOME=/opt/nas
+NAS_GUEST_USER=nasguest
+NAS_GUEST_GROUP=nasguest
+SLAPD_CONFIG=/etc/untangle-ldap/slapd.conf
+
+MODIFIED_FILES="/etc/nsswitch.conf /etc/default/rsync /etc/suphp/suphp.conf /etc/samba/smb.conf /etc/pam.d/samba /etc/exports $SLAPD_CONFIG"
+
+case $1 in
+  purge)
+#	service nas stop
+#	service smb stop
+#	service nfs stop
+#	service nfslock stop
+#	service httpd stop
+
+	rm -rf ${NAS_HOME}/var/lib/dav
+	rm -rf ${NAS_HOME}/var/oflocks
+	rm -rf ${NAS_HOME}/var/lock/subsys
+
+	rm -rf /etc/skel.samba
+
+#	chkconfig smb off
+#	chkconfig nfs off
+##	chkconfig atalk off
+#	chkconfig portmap off
+#	chkconfig nas off
+	
+	# Turn off init.d rc script
+#	chkconfig --del nas
+
+	# Remove admin account from ftpusers
+#	grep -v "^${NAS_USER}" /etc/ftpusers > /tmp/ftpusers
+#	cp -f /tmp/ftpusers /etc/ftpusers
+#	rm -f /tmp/ftpusers
+
+	# Remove of user from /etc/sudoers and cleanup
+	grep -v "^${NAS_USER}" /etc/sudoers > /tmp/sudoers
+	cp -f /tmp/sudoers /etc/sudoers
+	rm -f /tmp/sudoers
+
+	# Remove ofconfig from /etc/shells
+#	grep -v "ofconfig" /etc/shells > /tmp/shells
+#	cp -f /tmp/shells /etc/shells
+#	rm -f /tmp/shells
+	
+	# Restore orig system files
+	for i in ${MODIFIED_FILES}; do
+		mv -f $i.nas-orig-backup $i
+	done
+
+	# Delete admin user and group accounts
+	deluser ${NAS_USER}
+	deluser ${NAS_GUEST_USER}
+	delgroup ${NAS_GROUP}
+	delgroup ${NAS_GUEST_GROUP}
+	;;
+esac
+
+exit 0

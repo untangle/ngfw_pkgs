@@ -1,0 +1,2 @@
+MAILTO=""
+0 * * * * nas /usr/bin/php5 -d include_path=/opt/nas/var/www/includes -d max_execution_time=6000 -q /opt/nas/sbin/snapshotter.php

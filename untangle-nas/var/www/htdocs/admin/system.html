@@ -1,0 +1,138 @@
+<?php
+
+/*
+ *
+ *
+ * --------------------------------------------------------------------
+ * Copyright (c) 2001 - 2008 Openfiler Project.
+ * --------------------------------------------------------------------
+ *
+ * Openfiler is an Open Source SAN/NAS Appliance Software Distribution
+ *
+ * This file is part of Openfiler.
+ *
+ * Openfiler is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Openfiler is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Openfiler.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * --------------------------------------------------------------------
+ *
+ *
+ */
+
+    require("pre.inc");
+    require_once("network.inc");
+    require_once("ups.inc");
+    include("authenticated.inc");
+
+    generic_header(array("title" => _("System : Network Setup")));
+
+    single_begin(array());
+
+?>
+<script src="utility.js" type="text/javascript" language="JavaScript"></script>
+<script src="popup.js" type="text/javascript" language="JavaScript"></script>
+
+<p>&nbsp;</p>
+<?php
+        nested_tab_begin("C_GENERAL");
+	$net = new Network();
+	$acl = new NetworkAccessList();
+	if ($action == "setnetworks")
+	{
+		$ups = new UPS();
+
+		if ((strlen(trim($network)) > 0) && (strlen(trim($netmask)) > 0) && (strlen(trim($name)) > 0))
+			$acl->AddItem($name, $network, $netmask, $ntype);
+
+		// check network entries for possible deletions
+		foreach($acl->ListItems() as $item)
+			if (${(sha1($item["name"]) . "delete")} == "on")
+				$acl->RemoveItem($item["name"]);
+
+		// find all ups network entries with type ups
+		foreach($acl->ListItems() as $item)
+			if ($item["type"] == "ups")
+				$ups->AddEntry($item["name"], $item["network"], $item["netmask"]);
+
+		$ups->Save();
+		$acl->Save();
+	}
+
+	if ((!$step) || ($cancel)){   // Default Page
+
+		print("<h3 align=\"center\">Network Access Configuration</h3>\n");
+
+		print("<form action=\"system.html\" method=\"post\">\n");
+		print("<input type=\"hidden\" name=\"action\" value=\"setnetworks\" />\n");
+
+		print("<div align=\"center\">\n");
+		print("<table cellpadding=\"8\" cellspacing=\"2\" border=\"0\">\n");
+	?>
+		<tr>
+			<td bgcolor="<?php print($GLOBALS["color_table_heading"]); ?>" align="center"><strong>Delete</strong></td>
+			<td bgcolor="<?php print($GLOBALS["color_table_heading"]); ?>"><strong>Name</strong></td>
+			<td bgcolor="<?php print($GLOBALS["color_table_heading"]); ?>"><strong>Network/Host</strong></td>
+			<td bgcolor="<?php print($GLOBALS["color_table_heading"]); ?>"><strong>Netmask</strong></td>
+			<td bgcolor="<?php print($GLOBALS["color_table_heading"]); ?>"><strong>Type</strong></td>
+		</tr>
+<?php
+
+		$dcolor = 0;
+
+		foreach ($acl->ListItems() as $item)
+		{
+			if ($dcolor++ % 2)
+				$dvalue = $GLOBALS["color_table_row2"];
+			else
+				$dvalue = $GLOBALS["color_table_row1"];
+
+			print("<tr>\n");
+
+			print("\t<td bgcolor=\"" . $dvalue . "\" align=\"center\"><input type=\"checkbox\" name=\"" . sha1($item["name"]) . "delete\" /></td>\n");
+			print("\t<td bgcolor=\"" . $dvalue . "\">" . $item["name"] . "</td>\n");
+			print("\t<td bgcolor=\"" . $dvalue . "\">" . $item["network"] . "</td>\n");
+			print("\t<td bgcolor=\"" . $dvalue . "\">" . $item["netmask"] . "</td>\n");
+			print("\t<td bgcolor=\"" . $dvalue . "\">" . (($item[type] == "share") ? "Share" : "UPS") . "</td>\n");
+			print("</tr>\n");
+		}
+
+		$dvalue = $GLOBALS["color_table_heading"];
+
+		print("<tr>\n");
+		print("\t<td bgcolor=\"" . $dvalue . "\" align=\"center\">New</td>\n");
+		print("\t<td bgcolor=\"" . $dvalue . "\"><input type=\"text\" name=\"name\" size=\"10\" /></td>\n");
+		print("\t<td bgcolor=\"" . $dvalue . "\"><input type=\"text\" name=\"network\" size=\"10\" /></td>\n");
+		print("\t<td bgcolor=\"" . $dvalue . "\">\n");
+		print("\t\t<select name=\"netmask\">\n");
+
+		foreach ($net->GenerateNetmasks() as $mask){
+			print("\t\t\t<option>" . $mask . "</option>\n");
+		}
+
+		print("\t\t</select>\n");
+		print("\t</td>\n");
+		print("\t<td bgcolor=\"" . $dvalue . "\"><select name=\"ntype\"><option value=\"share\">Share</option><option value=\"ups\">UPS</option></select></td>\n");
+		print("</tr>\n");
+
+		print("</table>\n");
+		print("</div>\n");
+
+		print("<p align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Update\" /></p>\n");
+		print("</form>\n");
+
+	}
+	nested_tab_end();
+
+	single_end(array());
+	generic_footer(array());
+?>

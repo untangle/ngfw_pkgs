@@ -1,0 +1,194 @@
+#! /bin/bash
+
+NAS_USER=nas
+# NAS_PASSWD=password
+NAS_GROUP=nas
+NAS_UID=94
+NAS_GID=94
+NAS_HOME=/opt/nas
+NAS_ETC=/opt/nas/etc
+NAS_ETC_DEFAULTS=/opt/nas/etc/defaults
+NAS_GUEST_USER=nasguest
+NAS_GUEST_PASSWD=password
+NAS_GUEST_GROUP=nasguest
+NAS_GUEST_UID=96
+NAS_GUEST_GID=96
+NAS_GUEST_HOME=/mnt/nas
+SLAPD_CONFIG=/etc/untangle-ldap/slapd.conf
+
+MODIFIED_FILES="/etc/nsswitch.conf /etc/default/rsync /etc/suphp/suphp.conf /etc/samba/smb.conf /etc/pam.d/samba /etc/exports $SLAPD_CONFIG"
+
+# admin group and user account
+grep -q "^${NAS_GROUP}" /etc/group || addgroup --gid ${NAS_GID} ${NAS_GROUP}
+
+grep -q "^${NAS_USER}" /etc/passwd || adduser --uid ${NAS_UID} --gid ${NAS_GID} --home ${NAS_HOME} --no-create-home --shell "${NAS_HOME}/bin/ofconfig" --gecos "NAS Administrator" --disabled-password ${NAS_USER}
+
+# guest group and user account
+grep -q "^${NAS_GUEST_GROUP}" /etc/group || addgroup --gid ${NAS_GUEST_GID} ${NAS_GUEST_GROUP}
+
+grep -q "^${NAS_GUEST_USER}" /etc/passwd || adduser --uid ${NAS_GUEST_UID} --gid ${NAS_GUEST_GID} --home ${NAS_GUEST_HOME} --no-create-home --gecos "NAS Guest User" --disabled-login ${NAS_GUEST_USER}
+
+# backups of files to be restored on uninstall
+for i in ${MODIFIED_FILES}; do
+    [ -e $i -a ! -e $i.nas-orig-backup ] && cp -f $i $i.nas-orig-backup
+done
+
+#chgrp %{of_group} %{_sysconfdir}/shadow
+#chmod g+r %{_sysconfdir}/shadow
+
+# Append OF account to 'ftpusers' to deny ftp connections
+# if [ -e %{_sysconfdir}/ftpusers ]
+# then
+# 	grep -v "^%{of_user}" %{_sysconfdir}/ftpusers > /tmp/ftpusers
+# 	echo "%{of_user}" >> /tmp/ftpusers
+# 	cp -f /tmp/ftpusers %{_sysconfdir}/ftpusers
+# 	rm -f /tmp/ftpusers
+# else
+# 	echo "%{of_user}" >> %{_sysconfdir}/ftpusers
+# fi
+
+# Add account's shell to /etc/shells
+# if [ -e %{_sysconfdir}/shells ]
+# then
+# 	grep -v "%{of_home}/bin/ofconfig" %{_sysconfdir}/shells > /tmp/shells
+# 	echo "%{of_home}/bin/ofconfig" >> /tmp/shells
+# 	cp /tmp/shells %{_sysconfdir}/shells
+# 	rm /tmp/shells
+# else
+# 	echo "%{of_home}/bin/ofconfig" >> %{_sysconfdir}/shells
+# fi
+
+grep -q "^${NAS_USER}" /etc/sudoers || echo "${NAS_USER} ALL=NOPASSWD: ALL" >> /etc/sudoers
+
+# # Turn off network filesystem services by default
+# chkconfig smb off
+# chkconfig nfs off
+# chkconfig httpd off
+# chkconfig proftpd off
+# chkconfig rsync off
+
+# # Turn off nscd as it doesn't work well with Winbind for a start (this this is
+# # ok with libnss-ldapd
+# chkconfig nscd off
+
+# # Turn on the port mapper, nfslock, atd and nas
+# chkconfig portmap on
+# chkconfig nfslock on
+# chkconfig atd on
+# chkconfig mdmonitor on
+# chkconfig nas on
+
+# Turn on rsync in /etc/default so that we can control availability with /etc/init.d script
+if grep -q RSYNC_ENABLE=false /etc/default/rsync; then
+    sed -i -e "s/^RSYNC_ENABLE=false/RSYNC_ENABLE=true/" /etc/default/rsync
+#    update-rc.d -f rsync remove
+    [ -e /etc/rsyncd.conf ] || cp $NAS_ETC_DEFAULTS/rsyncd.conf.default /etc/rsyncd.conf
+fi
+
+# Configure suphp
+sed -i -e "s/^min_uid=.*/min_uid=${NAS_UID}/" /etc/suphp/suphp.conf
+sed -i -e "s/^min_gid=.*/min_gid=${NAS_GID}/" /etc/suphp/suphp.conf
+sed -i -e "s/^check_vhost_docroot=.*/check_vhost_docroot=false/" /etc/suphp/suphp.conf
+sed -i -e "s:^docroot=.*:docroot=${NAS_HOME}/var/www:" /etc/suphp/suphp.conf
+
+# Create default files if they don't exist
+
+for def in services_description.xml specialpaths.xml info.xml networks.xml volumes.xml smb_settings.xml cluster.xml snapshots.xml rsync.xml gplaccept.xml rsync_settings.xml ftp_settings.xml homespath.xml rsync.motd ldap.xml; do
+    [ -e $NAS_ETC/$def ] || cp $NAS_ETC_DEFAULTS/${def}.default $NAS_ETC/$def
+done
+
+[ -e /usr/share/untangle/apache2/conf.d/nas-shares.conf ] || cp $NAS_ETC_DEFAULTS/nas-shares.conf.default /usr/share/untangle/apache2/conf.d/nas-shares.conf
+
+[ -e /etc/proftpd/nas-shares.conf ] || cp $NAS_ETC_DEFAULTS/nas-shares.conf.default /etc/proftpd/nas-shares.conf
+
+mkdir -p $NAS_ETC/iscsi/transforms
+[ -e $NAS_ETC/iscsi/transforms/iscsi_settings.xsl ] || cp $NAS_ETC_DEFAULTS/iscsi_settings.xsl.default $NAS_ETC/iscsi/transforms/iscsi_settings.xsl
+
+mkdir -p $NAS_ETC/iscsi/targets
+[ -e $NAS_ETC/iscsi/targets/iscsi_settings.xml ] || cp $NAS_ETC_DEFAULTS/iscsi_settings.xml.default $NAS_ETC/iscsi/targets/iscsi_settings.xml
+
+mkdir -p ${NAS_HOME}/var/cache
+for ext in dir pag sem; do
+    [ -e $NAS_HOME/var/cache/scache.$ext ] || cp $NAS_ETC_DEFAULTS/scache.${ext}.default $NAS_HOME/var/cache/scache.$ext
+done
+
+mkdir -p ${NAS_HOME}/var/lock/subsys
+mkdir -p ${NAS_HOME}/var/oflocks
+mkdir -p ${NAS_HOME}/var/lib/dav
+
+# Replace system files
+
+mkdir -p /etc/skel.samba
+
+grep -iq winbind /etc/pam.d/samba || cp $NAS_ETC_DEFAULTS/pam.d.samba.default /etc/pam.d/samba
+
+grep -iq untangle /etc/samba/smb.conf || cp $NAS_ETC_DEFAULTS/smb.conf.default /etc/samba/smb.conf
+
+# LDAP Setup
+if ! grep -q untangle-nas $SLAPD_CONFIG; then
+    cat >> $SLAPD_CONFIG <<EOF
+##################################################
+# Section added by untangle-nas
+#
+include		/etc/ldap/schema/samba.schema
+
+access to attr=sambaPasswordHistory
+	by dn="cn=admin,dc=nodomain" write
+	by anonymous auth
+	by self write
+	by * none
+
+access to attr=sambaLMPassword
+	by dn="cn=admin,dc=nodomain" write
+	by anonymous auth
+	by self write
+	by * none
+
+access to attr=sambaNTPassword
+	by dn="cn=admin,dc=nodomain" write
+	by anonymous auth
+	by self write
+	by * none
+
+access to attr=userPassword
+	by dn="cn=admin,dc=nodomain" write
+	by anonymous auth
+	by self write
+	by * none
+
+access to attr=shadowLastChange
+	by dn="cn=admin,dc=nodomain" write
+	by anonymous auth
+	by self write
+	by * none
+EOF
+    /etc/init.d/untangle-slapd restart
+fi
+
+# # Blank /etc/exports
+# echo "" > /etc/exports
+# # Update NFS exports
+# exportfs -r
+
+# ups related
+mkdir -p ${NAS_HOME}/etc/plugins/ups
+mkdir -p ${NAS_HOME}/etc/plugins/ups/configs
+mkdir -p ${NAS_HOME}/etc/plugins/ups/devices
+mkdir -p ${NAS_HOME}/etc/plugins/ups/transforms
+mkdir -p ${NAS_HOME}/etc/plugins/ups/xml
+
+# Set ownership and permissions on various paths
+chown -R ${NAS_USER}:${NAS_GROUP} ${NAS_HOME}
+
+# /usr/sbin/a2enmod php5 2>/dev/null
+/usr/sbin/a2enmod cgi 2>/dev/null
+/usr/sbin/a2enmod dav 2>/dev/null
+/usr/sbin/a2enmod dav_fs 2>/dev/null
+/usr/sbin/a2enmod dav_lock 2>/dev/null
+
+/etc/init.d/untangle-net-alpaca-iptables reload
+/etc/init.d/apache2 reload
+
+exit 0
+
+

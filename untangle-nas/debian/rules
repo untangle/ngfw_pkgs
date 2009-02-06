@@ -1,0 +1,64 @@
+#!/usr/bin/make -f
+
+DESTDIR := debian/tmp
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	touch configure-stamp
+
+build: configure
+	dh_testdir
+	rm -rf $(DESTDIR)
+	mkdir -p $(DESTDIR)
+	dh_installdirs -A -v
+	for i in `cat debian/untangle-nas.dirs` ; do mkdir -p $(DESTDIR)/$$i ; done
+#	tar --exclude=.svn -cf - -C files `find files/ -name '.svn' -prune -o -mindepth 1 -maxdepth 1 -printf "%P " 2>/dev/null`  | tar -xf - -C $(DESTDIR)
+	cp -a bin etc sbin var $(DESTDIR)/opt/nas
+# get rid of extra cruft XXX
+	rm -rf $(DESTDIR)/opt/nas/etc/httpd
+	cp -a files/* $(DESTDIR)
+	find $(DESTDIR) -name "\.svn" | xargs rm -rf
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-arch-stamp build-indep-stamp configure-stamp
+	rm -rf $(DESTDIR)
+	dh_clean
+
+binary-indep: build
+	dh_testdir
+	dh_testroot
+	dh_movefiles
+#	dh_installdebconf
+	dh_shlibdeps
+	dh_installdocs -n
+#	dh_installexamples
+#	dh_installmenu
+#	dh_installlogrotate
+#	dh_installemacsen
+#	dh_installpam
+#	dh_installmime
+#	dh_installinit
+#	dh_installcron
+#	dh_installman
+#	dh_installinfo
+#	dh_undocumented
+	dh_installchangelogs
+#	dh_strip
+#	dh_link
+	dh_compress
+#	dh_fixperms
+	dh_installdeb
+#	dh_perl
+	if [ -f debian/version ] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
+	dh_md5sums
+
+binary-arch: build 
+# nothing to do
+
+binary: binary-indep binary-arch
+	dh_builddeb 
+
+.PHONY: build clean binary-indep binary install configure
