@@ -33,6 +33,8 @@
 	require_once("file.inc");
         include("authenticated.inc");
 
+	generic_header(array("title" => _("System : Authentication")));
+
 	$serverstring = "";
 	$netbiosname = "";
 	$winsserver = "";
@@ -372,7 +374,6 @@ if ($error)
 	setcookie("error", "", time() - 3600); //remove cookie
 
 
-	generic_header(array("title" => _("Accounts : Authentication")));
 	single_begin(array());
 
 ?>
@@ -451,7 +452,7 @@ function krb_realm_onchange()
 <p>&nbsp;</p>
 
 <?php
-        nested_tab_begin("C_ACCOUNTS");
+        nested_tab_begin("C_GENERAL_AUTHENTICATION");
 	$authp = popen("/usr/bin/sudo /opt/nas/sbin/authconfig --openfiler --kickstart", "r");
 	$i = 0;
 	while (!feof($authp))
