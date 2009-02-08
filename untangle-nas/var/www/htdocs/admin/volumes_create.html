@@ -275,7 +275,7 @@
 						array_push($volumes_mountpoint, "");
 					}
 
-					$volumesp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=/opt/nas/etc/volumes.xml", "w");
+					$volumesp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee /opt/nas/etc/volumes.xml >/dev/null", "w");
 					fputs($volumesp, "<?xml version=\"1.0\" ?>\n");
 					fputs($volumesp, "<volumes>\n");
 					for ($i = 0; $i < count($volumes_id); $i++)
@@ -288,7 +288,7 @@
 					{
 						if ($fstype != "iscsi")
 						{
-							$fstabp = popen("export LANG=C; /usr/bin/sudo /bin/dd conv=notrunc oflag=append of=/etc/fstab", "w");
+							$fstabp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee -a /etc/fstab >/dev/null", "w");
 							fputs($fstabp, "/dev/" . $vgname . "/" . $volumename . " " . $mountpath . " " . $fs_info[$fs]["type"] . " " . $fs_info[$fs]["mount_options"] . " 0 0\n");
 							pclose($fstabp);
 						}
@@ -303,7 +303,7 @@
                                                 $service_rsync = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status rsync"), "running") ? 1 : 0);
                                                 $service_iscsi = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status iscsitarget"), "running") ? 1 : 0);
 
-						$clusterp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=/etc/ha.d/haresources", "w");
+						$clusterp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee /etc/ha.d/haresources >/dev/null", "w");
 
 						$cluster_resource_str = "";
 

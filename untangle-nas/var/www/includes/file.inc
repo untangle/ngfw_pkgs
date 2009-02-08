@@ -65,7 +65,7 @@ Class File {
 	}
 
 	function Save() {
-		$fp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=" . $this->filename, "w");
+		$fp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee " . $this->filename . " >/dev/null", "w");
 		foreach ($this->contents as $line){
 			fwrite($fp, $line . "\n");
 		}

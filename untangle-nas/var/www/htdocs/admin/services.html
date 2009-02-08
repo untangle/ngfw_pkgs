@@ -244,7 +244,7 @@
                 $service_acpid = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status acpid"), "running") ? 1 : 0);
                 $service_open_iscsi = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status open-iscsi"), "running") ? 1 : 0);
 
-                $clusterp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=/etc/ha.d/haresources", "w");
+                $clusterp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee /etc/ha.d/haresources >/dev/null", "w");
 
                 $cluster_resource_str = "";
 
@@ -436,7 +436,7 @@
                     $service_acpid = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status acpid"), "running") ? 1 : 0);
                     $open_iscsi = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status open-iscsi"), "running") ? 1 : 0);
 
-                    $clusterp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=/etc/ha.d/haresources", "w");
+                    $clusterp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee /etc/ha.d/haresources >/dev/null", "w");
 
                     $cluster_resource_str = "";
 

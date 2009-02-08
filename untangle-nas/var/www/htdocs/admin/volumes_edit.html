@@ -212,7 +212,7 @@
 
 		$volume = strtolower($volume);
 
-		$volumesp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=/opt/nas/etc/volumes.xml", "w");
+		$volumesp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee /opt/nas/etc/volumes.xml >/dev/null", "w");
 		fputs($volumesp, "<?xml version=\"1.0\" ?>\n");
 		fputs($volumesp, "<volumes>\n");
 

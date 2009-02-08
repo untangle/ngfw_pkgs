@@ -104,7 +104,7 @@
                     {
                             exec("export LANG=C; /usr/bin/sudo /bin/mkdir " . escapeshellarg($sourcepath . $newfolderid));
 
-                            $fp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=" . escapeshellarg($sourcepath . $newfolderid . ".info.xml"), "w");
+                            $fp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee " . escapeshellarg($sourcepath . $newfolderid . ".info.xml >/dev/null"), "w");
 
                             fputs($fp, "<?xml version=\"1.0\" ?>\n");
                             fputs($fp, "<info>\n");
@@ -118,7 +118,7 @@
 
                             if ((strlen($prevpath) > 0) && (strlen($prevfolder) > 0) && is_file($prevpath . $prevfolder . ".info.xml"))
                             {
-                                    $fp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=" . escapeshellarg($prevpath . $prevfolder . ".info.xml"), "w");
+                                    $fp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee " . escapeshellarg($prevpath . $prevfolder . ".info.xml >/dev/null"), "w");
                                     fputs($fp, "<?xml version=\"1.0\" ?>\n");
                                     fputs($fp, "<info>\n");
                                     fputs($fp, "\t<key name=\"dirtype\" value=\"closed\" />\n");
@@ -194,7 +194,7 @@
                                             if ($parent_dir_count == 0)
                                                     $parent_dir_type = "leaf";
 
-                                            $fp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=" . escapeshellarg($parent_dir . "/" . $child_dir . ".info.xml"), "w");
+                                            $fp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee " . escapeshellarg($parent_dir . "/" . $child_dir . ".info.xml >/dev/null"), "w");
                                             fputs($fp, "<?xml version=\"1.0\" ?>\n");
                                             fputs($fp, "<info>\n");
                                             fputs($fp, "\t<key name=\"dirtype\" value=\"" . $parent_dir_type . "\" />\n");
@@ -227,7 +227,7 @@
                     exec("export LANG=C; /usr/bin/sudo /bin/mv -f " . escapeshellarg($folderpath . $foldername) . " " . escapeshellarg($folderpath . $newfoldername));
                     exec("export LANG=C; /usr/bin/sudo /bin/rm -f " . escapeshellarg($folderpath . $foldername . ".info.xml"));
 
-                    $fp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=" . escapeshellarg($folderpath . $newfoldername . ".info.xml"), "w");
+                    $fp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee " . escapeshellarg($folderpath . $newfoldername . ".info.xml >/dev/null"), "w");
                     fputs($fp, "<?xml version=\"1.0\" ?>\n");
                     fputs($fp, "<info>\n");
                     fputs($fp, "\t<key name=\"dircount\" value=\"" . $dircount . "\" />\n");
@@ -246,7 +246,7 @@
             if (is_valid_foldername($foldername))
                     if (is_dir($folderpath . $foldername) && is_file($folderpath . $foldername . ".info.xml"))
                     {
-                            $fp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=" . escapeshellarg($folderpath . $foldername . ".info.xml"), "w");
+                            $fp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee " . escapeshellarg($folderpath . $foldername . ".info.xml >/dev/null"), "w");
 
                             fputs($fp, "<?xml version=\"1.0\" ?>\n");
                             fputs($fp, "<info>\n");
@@ -268,7 +268,7 @@
             if (is_valid_foldername($foldername) && ($dirtype == "leaf"))
                     if (is_dir($folderpath . $foldername) && is_file($folderpath . $foldername . ".info.xml"))
                     {
-                            $fp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=" . escapeshellarg($folderpath . $foldername . ".info.xml"), "w");
+                            $fp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee " . escapeshellarg($folderpath . $foldername . ".info.xml >/dev/null"), "w");
 
                             fputs($fp, "<?xml version=\"1.0\" ?>\n");
                             fputs($fp, "<info>\n");
@@ -298,7 +298,7 @@
 
                             exec("export LANG=C; /usr/bin/sudo /bin/chmod go+w " . escapeshellarg($folderpath . $foldername));
 
-                            $fp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=" . escapeshellarg($folderpath . $foldername . ".info.xml"), "w");
+                            $fp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee " . escapeshellarg($folderpath . $foldername . ".info.xml >/dev/null"), "w");
 
                             fputs($fp, "<?xml version=\"1.0\" ?>\n");
                             fputs($fp, "<info>\n");

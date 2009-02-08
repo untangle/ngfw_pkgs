@@ -299,13 +299,13 @@
 
 
 				if ($spare_count > 0)
-					exec("export LANG=C; /usr/bin/sudo /sbin/mdadm --create --auto=md /dev/md" . $i . " --level=" . intval($level) . " --raid-devices=" . $member_count . " --spare-devices=" . $spare_count . " --chunk=". $chunk_size . " " . $member_devices . $spare_devices  ." > /tmp/out1 2> /tmp/out2");
+					exec("export LANG=C; /usr/bin/sudo /sbin/mdadm --create --run --auto=md /dev/md" . $i . " --level=" . intval($level) . " --raid-devices=" . $member_count . " --spare-devices=" . $spare_count . " --chunk=". $chunk_size . " " . $member_devices . $spare_devices  ." > /tmp/out1 2> /tmp/out2");
 				else
-					exec("export LANG=C; /usr/bin/sudo /sbin/mdadm --create --auto=md /dev/md" . $i . " --level=" . intval($level). " --chunk=". $chunk_size . " " . " --raid-devices=" . $member_count . " " . $member_devices . " > /tmp/out1 2> /tmp/out2" );
+					exec("export LANG=C; /usr/bin/sudo /sbin/mdadm --create --run --auto=md /dev/md" . $i . " --level=" . intval($level). " --chunk=". $chunk_size . " " . " --raid-devices=" . $member_count . " " . $member_devices . " > /tmp/out1 2> /tmp/out2" );
 
 				sleep(2);	// Give a couple of seconds for the RAID device to become active
 
-				exec("export LANG=C; /usr/bin/sudo " . $GLOBALS["lvm_command_prefix"] . "pvcreate /dev/md" . $i . " > /tmp/out1 2> /tmp/out2");
+				exec("export LANG=C; /usr/bin/sudo " . $GLOBALS["lvm_command_prefix"] . "pvcreate /dev/md" . $i . " > /tmp/out3 2> /tmp/out4");
 
 				update_mdadm_conf();
 			}

@@ -296,7 +296,7 @@
 				array_push($snapshots_rotateid, 0);
 				array_push($snapshots_timestamp, gmdate("Y-m-d H:i:s") . " GMT");
 
-				$snapshotsp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=/opt/nas/etc/snapshots.xml", "w");
+				$snapshotsp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee /opt/nas/etc/snapshots.xml >/dev/null", "w");
 				fputs($snapshotsp, "<?xml version=\"1.0\" ?>\n");
 				fputs($snapshotsp, "<snapshots>\n");
 
@@ -332,7 +332,7 @@
 				{
 					if ($fstype != "iscsi")
 					{
-						$fstabp = popen("export LANG=C; /usr/bin/sudo /bin/dd conv=notrunc oflag=append of=/etc/fstab", "w");
+						$fstabp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee -a /etc/fstab >/dev/null", "w");
 						fputs($fstabp, "/dev/" . $vgname . "/of.snapshot." . $volume . "." . $snapname . " " . $mountpath . " " . $fs_info[$fs]["type"] . " " . $fs_info[$fs]["snapshot_mount_options"] . " 0 0\n");
 						pclose($fstabp);
 					}
@@ -348,7 +348,7 @@
 					$service_iscsi = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status iscsitarget"), "running") ? 1 : 0);
 
 
-					$clusterp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=/etc/ha.d/haresources", "w");
+					$clusterp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee /etc/ha.d/haresources >/dev/null", "w");
 
 					$cluster_resource_str = "";
 
@@ -478,7 +478,7 @@
 						exec("export LANG=C; /usr/bin/sudo " . $GLOBALS["lvm_command_prefix"] . "lvextend -L " . escapeshellarg($new_snapshot_size) . " /dev/" . $snapshots_vgname[$i] . "/of.snapshot." . $snapshots_lvname[$i] . "." . $snapshots_id[$i]);
 				}
 
-				$snapshotsp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=/opt/nas/etc/snapshots.xml", "w");
+				$snapshotsp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee /opt/nas/etc/snapshots.xml >/dev/null", "w");
 				fputs($snapshotsp, "<?xml version=\"1.0\" ?>\n");
 				fputs($snapshotsp, "<snapshots>\n");
 
@@ -547,7 +547,7 @@
 		array_push($schedule_lvname, $volume);
 		array_push($schedule_vgname, $vgname);
 
-		$snapshotsp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=/opt/nas/etc/snapshots.xml", "w");
+		$snapshotsp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee /opt/nas/etc/snapshots.xml >/dev/null", "w");
 		fputs($snapshotsp, "<?xml version=\"1.0\" ?>\n");
 		fputs($snapshotsp, "<snapshots>\n");
 
@@ -591,7 +591,7 @@
 			exit;
 		}
 
-		$snapshotsp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=/opt/nas/etc/snapshots.xml", "w");
+		$snapshotsp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee /opt/nas/etc/snapshots.xml >/dev/null", "w");
 		fputs($snapshotsp, "<?xml version=\"1.0\" ?>\n");
 		fputs($snapshotsp, "<snapshots>\n");
 
@@ -625,7 +625,7 @@
 		{
 			if ($fstype != "iscsi")
 			{
-				$fstabp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=/etc/fstab", "w");
+				$fstabp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee /etc/fstab >/dev/null", "w");
 
 				for ($i = 0; $i < $fstabcount; $i++)
 				{
@@ -657,7 +657,7 @@
                         $service_rsync = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status rsync"), "running") ? 1 : 0);
 			$service_iscsi = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status iscsitarget"), "running") ? 1 : 0);
 
-			$clusterp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=/etc/ha.d/haresources", "w");
+			$clusterp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee /etc/ha.d/haresources >/dev/null", "w");
 
 			$cluster_resource_str = "";
 
@@ -874,7 +874,7 @@
 			}
 		}
 
-		$snapshotsp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=/opt/nas/etc/snapshots.xml", "w");
+		$snapshotsp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee /opt/nas/etc/snapshots.xml >/dev/null", "w");
 		fputs($snapshotsp, "<?xml version=\"1.0\" ?>\n");
 		fputs($snapshotsp, "<snapshots>\n");
 
@@ -908,7 +908,7 @@
 		{
 			if ($fstype != "iscsi")
 			{
-				$fstabp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=/etc/fstab", "w");
+				$fstabp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee /etc/fstab >/dev/null", "w");
 
 				for ($i = 0; $i < $fstabcount; $i++)
 				{
@@ -945,7 +945,7 @@
 			$service_iscsi = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status iscsitarget"), "running") ? 1 : 0);
 
 
-			$clusterp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=/etc/ha.d/haresources", "w");
+			$clusterp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee /etc/ha.d/haresources >/dev/null", "w");
 
 			$cluster_resource_str = "";
 

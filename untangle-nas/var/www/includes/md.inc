@@ -195,7 +195,7 @@ function update_mdadm_conf()
 	$md = get_md();
 
 
-	$mdadm_fp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=/etc/mdadm/mdadm.conf", "w");
+	$mdadm_fp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee /etc/mdadm/mdadm.conf >/dev/null", "w");
 
 	fputs($mdadm_fp, "\n");
 	fputs($mdadm_fp, "#\n");

@@ -92,7 +92,7 @@
 			if ($alarm_interval < 10 )
 				$alarm_interval=10;
 
-		$fp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=/opt/nas/etc/info.xml", "w");
+		$fp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee /opt/nas/etc/info.xml >/dev/null", "w");
 
 		fputs($fp, "<?xml version=\"1.0\" ?>\n\n");
 		fputs($fp, "<info>\n");

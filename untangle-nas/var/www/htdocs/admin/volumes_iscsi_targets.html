@@ -371,7 +371,7 @@
     if ($action == "setnacl") {
         exec("export LANG=C; export LANG=C; /usr/bin/sudo /bin/mkdir -p /opt/nas/etc/iscsi/" . escapeshellarg($targetnacl) . "/");
 
-        $fp = popen("export LANG=C; export LANG=C; /usr/bin/sudo /bin/dd of=/opt/nas/etc/iscsi/" . escapeshellarg($targetnacl) . "/" . escapeshellarg($targetnacl) . ".xml", "w");
+        $fp = popen("export LANG=C; export LANG=C; /usr/bin/sudo /usr/bin/tee /opt/nas/etc/iscsi/" . escapeshellarg($targetnacl) . "/" . escapeshellarg($targetnacl) . ".xml >/dev/null", "w");
 
         fputs($fp, "<?xml version=\"1.0\" ?>\n");
         fputs($fp, "<iscsi-acl>\n");

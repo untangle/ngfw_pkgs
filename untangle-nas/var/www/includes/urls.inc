@@ -63,11 +63,13 @@
     $C_STATUS_ISCSI = array("title"=>"iSCSI Targets", "url"=>"/nas/admin/status_iscsi.html");
 
     $C_GENERAL = array("li_class"=>"system_network","title"=>"Network Setup", "url"=>"/nas/admin/system.html");
+    $C_GENERAL_AUTHENTICATION = array("li_class"=>"system_authentication","title"=>"Authentication", "url"=>"/nas/admin/index.html");
     $C_GENERAL_UPS = array("li_class"=>"system_ups","title"=>"UPS Management", "url"=>"/nas/admin/system_ups.html");
     $C_GENERAL_SHUTDOWN = array("li_class"=>"system_shutdown","title"=>"Shutdown/Reboot", "url"=>"/nas/admin/system_shutdown.html");
     $C_GENERAL_NOTIFICATION = array("li_class"=>"system_notification","title"=>"Notification", "url"=>"/nas/admin/system_info.html");
 
     $P_GENERAL_CHILDREN = array("C_GENERAL"=>$C_GENERAL, 
+                                "C_GENERAL_AUTHENTICATION"=>$C_GENERAL_AUTHENTICATION, 
                                 "C_GENERAL_UPS"=>$C_GENERAL_UPS, 
                                 "C_GENERAL_SHUTDOWN"=>$C_GENERAL_SHUTDOWN, 
                                 "C_GENERAL_NOTIFICATION"=>$C_GENERAL_NOTIFICATION);
@@ -93,10 +95,6 @@
     
 
 
-    $P_ACCOUNTS_CHILDREN = array("C_ACCOUNTS"=>$C_ACCOUNTS, 
-                                 "C_ACCOUNTS_USERS"=>$C_ACCOUNTS_USERS,                                     
-                                 "C_ACCOUNTS_GROUPS"=>$C_ACCOUNTS_GROUPS);
-
     $P_VOLUMES_CHILDREN = array("C_VOLUME_EXISTING"=>$C_VOLUME_EXISTING,
                                 "C_VOLUME_GROUP_MANAGEMENT"=>$C_VOLUME_GROUP_MANAGEMENT, 
                                 "C_VOLUME_PHYSICAL_MANAGEMENT"=>$C_VOLUME_PHYSICAL_MANAGEMENT, 
@@ -106,7 +104,6 @@
 
 
     $P_VOLUMES = array("li_class"=>"volumes", "title"=>"Volumes","url"=>"/nas/admin/volumes.html","children"=>$P_VOLUMES_CHILDREN);
-    $P_ACCOUNTS = array("li_class"=>"accounts","title"=>"Accounts","url"=>"/nas/admin/index.html", "children"=>$P_ACCOUNTS_CHILDREN);
     $P_QUOTA = array("li_class"=>"quota","title"=>"Quota","url"=>"/nas/admin/quota.html", "children"=>$P_QUOTA_CHILDREN);
     $P_SHARES = array("li_class"=>"shares","title"=>"Shares","url"=>"/nas/admin/shares.html", "children"=>$P_SHARES_CHILDREN);
     $P_SERVICES = array("li_class"=>"services","title"=>"Services","url"=>"/nas/admin/services.html", "children"=>$P_SERVICES_CHILDREN); 

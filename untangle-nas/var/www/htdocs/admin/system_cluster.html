@@ -72,7 +72,7 @@
 
 	if ($action == "setclusterresources")
 	{
-		$fp = popen("export LANG=C; /usr/bin/sudo /bin/dd of=/opt/nas/etc/cluster.xml", "w");
+		$fp = popen("export LANG=C; /usr/bin/sudo /usr/bin/tee /opt/nas/etc/cluster.xml >/dev/null", "w");
 
 		fputs($fp, "<?xml version=\"1.0\" ?>\n");
 		fputs($fp, "<cluster>\n");
