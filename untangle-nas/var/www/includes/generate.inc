@@ -2100,7 +2100,7 @@ function apply_configuration($params = array()) {
 	}
 	else if ($params["winbindreload"] == true) {
 		if ($ac_winbind)
-			exec("export LANG=C; /usr/bin/sudo /etc/init.d/winbind reload");
+			exec("export LANG=C; /usr/bin/sudo /etc/init.d/winbind force-reload");
 	}
 
 
