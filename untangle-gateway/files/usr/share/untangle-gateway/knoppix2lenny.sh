@@ -15,6 +15,9 @@ UNTANGLE_61_DISTRIBUTIONS="mclaren" # FIXME: uncomment before releasing
 
 UNTANGLE_PACKAGES_FILE="/var/log/uvm/upgrade61.packages"
 
+MIRRORS_LIST_ORIG="/usr/share/untangle-gateway/debian-mirrors.txt"
+MIRRORS_LIST="/var/log/uvm/debian-mirrors.txt"
+
 APT_GET="/usr/bin/apt-get"
 APT_GET_OPTIONS="-o DPkg::Options::=--force-confnew --yes --force-yes"
 
@@ -102,6 +105,8 @@ EOF
   echo $APACHE_UPGRADE_CONFIG >| $APACHE_UPGRADE_CONFIG_FILE
   /etc/init.d/apache2 reload
 
+  [ -f ${MIRRORS_LIST} ] || cp -f ${MIRRORS_LIST_ORIG} ${MIRRORS_LIST}
+
   # set debconf to critical/noninteractive
   echo debconfig debconf/priority select critical | debconf-set-selections
   echo debconfig debconf/frontend select Noninteractive | debconf-set-selections
@@ -178,7 +183,7 @@ stepDistUpgradeToEtch() {
   stepName "stepDistUpgradeToEtch"
 
   # find the fastest etch source from a predefined set of mirrors
-  apt-spy -t 7 -m /usr/share/untangle-gateway/debian-mirrors.txt -o /etc/apt/sources.list -d etch -s ar,br,cl,cn,de,fr,hk,jp,kr,ru,tr,us,za
+  apt-spy -t 7 -m ${MIRRORS_LIST} -o /etc/apt/sources.list -d etch -s ar,br,cl,cn,de,fr,hk,jp,kr,ru,tr,us,za
   cat /etc/apt/sources.list
   aptgetupdate
 
