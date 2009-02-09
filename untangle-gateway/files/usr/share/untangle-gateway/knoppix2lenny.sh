@@ -70,6 +70,11 @@ aptgetyes() {
   else
     $APT_GET $APT_GET_OPTIONS $@ || fail
   fi
+
+  # restore old dnsmasq.conf after a dist-upgrade
+  case "$@" in
+    *dist-upgrade*) cp -f /etc/dnsmasq.conf.dpkg-old /etc/dnsmasq.conf ;;
+  esac
 }
 
 aptgetupdate() {
