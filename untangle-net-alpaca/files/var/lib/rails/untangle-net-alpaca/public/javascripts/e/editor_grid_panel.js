@@ -87,12 +87,43 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
             this.columns.push(editColumn);
         }
 
+        /* Iterate the columns and search for the ones that haven't been added */
+        for ( var c = 0 ; c < this.columns.length ; c++ ) {
+            var column = this.columns[c];
+            
+            if ( column.addPlugin != true ) {
+                continue;
+            }
+
+            if ( !this.plugins ) {
+                this.plugins = [];
+            }
+
+            if ( this.plugins.indexOf( column ) >= 0 ) {
+                continue;
+            }
+            
+            this.plugins.push( column );
+        }
+
         /* Build a record. */
         if ( this.record == null && Ext.isArray( this.recordFields )) {
             var fields = [];
             for ( var c = 0 ; c < this.recordFields.length ; c++ ) {
                 var field = this.recordFields[c];
-                fields[c] = { name : field, mapping : field };
+                var f = { name : field, mapping : field };
+                
+                var fieldType = null;
+
+                if ( this.recordTypes ) {
+                    fieldType= this.recordTypes[field];
+                }
+
+                if ( fieldType != null ) {
+                    f.type = fieldType;
+                }
+
+                fields[c] = f;
             }
 
             this.record = Ext.data.Record.create( fields );
@@ -273,7 +304,9 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
             // populate row editor
             this.rowEditor.populate(entry);
             this.rowEditor.show();
-            
+            if ( this.rowEditor.onShowRowEditorConfig ) {
+                this.rowEditor.onShowRowEditorConfig( this.rowEditor);
+            }
         }
     },
     isDirty : function() {
@@ -418,7 +451,9 @@ Ung.Alpaca.grid.IconColumn = Ext.extend(Object, {
 
     renderer : function(value, metadata, record) {
         return '<div class="'+this.iconClass+'">&nbsp;</div>';
-    }
+    },
+
+    addPlugin : true
 });
 // Grid edit column
 Ung.Alpaca.grid.EditColumn=Ext.extend(Ung.Alpaca.grid.IconColumn, {
@@ -450,7 +485,9 @@ Ung.Alpaca.grid.DeleteColumn=Ext.extend(Ung.Alpaca.grid.IconColumn, {
     iconClass: 'icon-delete-row',
     handle : function(record) {
         this.grid.deleteHandler(record);
-    }
+    },
+
+    addPlugin : true
 });
 // Grid reorder column
 Ung.Alpaca.grid.ReorderColumn = Ext.extend(Object, {

@@ -110,10 +110,11 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
         if ( item.getName ) {
             var value = null;
             if(item.dataIndex!=null) {
-                value=record.get(item.dataIndex);
+                var value = Ung.Alpaca.Util.getSettingsValue( record.data, item.dataIndex );
             }
 
             switch ( item.xtype ) {
+            case "numberfield":
             case "textfield":
                 value = ( value == null ) ? "" : value;
                 item.setValue( value );
@@ -216,6 +217,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
 
             switch ( item.xtype ) {
             case "textfield":
+            case "numberfield":
             case "combo":
             case "rulebuilder":
                 value = item.getValue();
@@ -228,7 +230,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
                 }
             }
             if ( value != null && item.dataIndex!=null) {
-                record.set(item.dataIndex, value);
+                this.setRecordValue( record, item.dataIndex, value );
             }
         }
 
@@ -270,6 +272,36 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
     // to override
     closeWindow : function() {
         this.hide();
+    },
+
+    setRecordValue : function(record, name, value )
+    {
+        if ( name == null || name.length == 0 ) {
+            return;
+        }
+
+        if ( /^[a-zA-Z_][-a-zA-Z0-9_\.]+$/( name ) == null ) {
+            return;
+        }
+
+        var d = name.indexOf( "." );
+        if (  d < 0 ) {
+            record.set(name, value);
+            return;
+        }
+        
+        var key = name.substring( 0, d );
+        var path = name.substring( d + 1 );
+
+        var data = record.get( key );
+
+        if ( data == null ) {
+            return;
+        }
+
+        Ung.Alpaca.Util.setSettingsValue( data, path, value );
+
+        record.set( key, data );
     }
 });
 Ext.reg('roweditor', Ung.Alpaca.RowEditor);

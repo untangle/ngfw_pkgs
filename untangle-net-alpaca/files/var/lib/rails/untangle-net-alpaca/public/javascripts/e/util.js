@@ -417,6 +417,62 @@ Ung.Alpaca.Util = {
             icon : Ext.MessageBox.INFO
         });
     },
+
+    /**
+     * All of the fields should have a name like "<key1>.<key2>.<key3>"
+     * this way if the settings = { "key1" : { "key2" : { "key3" : "value" }}} 
+     * it is easy to compute the field value is settings["key1"]["key2"]["key3"]
+     */
+    getSettingsValue : function( settings, name )
+    {
+        if ( /^[a-zA-Z_][-a-zA-Z0-9_\.]+$/( name ) == null ) {
+            return null;
+        }
+
+        var path = name.split( "." );
+        
+        var value = settings;
+        
+        for ( var c = 0 ; c < path.length ; c++ ) {
+            value = value[path[c]];
+            if ( value == null ) {
+                return null;
+            }
+        }
+
+        return value;
+    },
+
+    setSettingsValue : function( settings, name, value )
+    {
+        if ( name == null || name.length == 0 ) {
+            return;
+        }
+
+        if ( /^[a-zA-Z_][-a-zA-Z0-9_\.]+$/( name ) == null ) {
+            return;
+        }
+
+        var path = name.split( "." );
+        
+        var end = path.length - 1;
+
+        var c = 0;
+        var hash = settings;
+        
+        for ( c = 0 ; c < end ; c++ ) {
+            if ( hash == null ) {
+                return;
+            }
+            hash = hash[path[c]];
+        }
+
+        if ( hash == null ) {
+            return;
+        }
+
+        hash[path[c]] = value;
+    },
     
     cidrData : [
         [ "8",  "8   : 255.0.0.0"],

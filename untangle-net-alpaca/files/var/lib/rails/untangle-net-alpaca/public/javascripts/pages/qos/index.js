@@ -27,13 +27,12 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 xtype : "fieldset"
             },
             items : [{
-                    html : this._("QoS"),                
-                    xtype : "label",
-                    cls : "page-header-text"
-                },
-                {
-                    autoHeight : true,
-                    defaults : {
+                html : this._("QoS"),                
+                xtype : "label",
+                cls : "page-header-text"
+            },{
+                autoHeight : true,
+                defaults : {
                     xtype : "textfield",
                     itemCls : 'label-width-2'                         
                 },
