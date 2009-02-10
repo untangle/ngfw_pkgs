@@ -1,6 +1,6 @@
 #! /bin/bash
 
-LOG_FILE=/var/log/uvm/upgrade61.`date -Iseconds`.log
+LOG_FILE=/var/log/uvm/upgrade61.log
 
 exec >> $LOG_FILE 2>&1
 
@@ -73,7 +73,9 @@ aptgetyes() {
 
   # restore old dnsmasq.conf after a dist-upgrade
   case "$@" in
-    *dist-upgrade*) cp -f /etc/dnsmasq.conf.dpkg-old /etc/dnsmasq.conf ;;
+    *dist-upgrade*) 
+      cp -f /etc/dnsmasq.conf.dpkg-old /etc/dnsmasq.conf
+      /etc/init.d/dnsmasq restart ;;
   esac
 }
 
@@ -95,7 +97,7 @@ stepName() {
 stepSetup() {
   stepName "stepSetup"
 
-  feh --bg-scale /usr/share/untangle-gateway/desktop_background_upgrade-1024x768.png
+  DISPLAY=:0 feh --bg-scale /usr/share/untangle-gateway/desktop_background_upgrade-1024x768.png
 
   wall <<EOF
 
@@ -154,21 +156,23 @@ EOF
 
 stepSysVInit() {
   stepName "stepSysVInit"
+  
+  if [ -z "$(dpkg -l sysvinit | grep 2.84-188)" ] ; then
+    # remove the knoppix epoch'ed sysvinit
+    aptgetyes --trust-me remove sysvinit
 
-  # remove the knoppix epoch'ed sysvinit
-  aptgetyes --trust-me remove sysvinit
-
-  # create a dummy update-rc.d
-  cat >> /usr/sbin/update-rc.d <<EOF
+    # create a dummy update-rc.d
+    cat >> /usr/sbin/update-rc.d <<EOF
 #! /bin/sh
 exit 0
 EOF
-  chmod 755 /usr/sbin/update-rc.d
+    chmod 755 /usr/sbin/update-rc.d
 
-  # get the etch sysvinit
-  echo "deb $DEBIAN_MIRROR etch main contrib non-free" >| /etc/apt/sources.list
-  aptgetupdate
-  aptgetyes --trust-me install sysvinit sysv-rc apt-spy
+    # get the etch sysvinit
+    echo "deb $DEBIAN_MIRROR etch main contrib non-free" >| /etc/apt/sources.list
+    aptgetupdate
+    aptgetyes --trust-me install sysvinit sysv-rc apt-spy
+  fi
 }
 
 stepRemoveUnwantedPackaged() {
