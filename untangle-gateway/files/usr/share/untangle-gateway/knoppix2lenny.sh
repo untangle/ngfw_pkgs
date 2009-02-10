@@ -157,7 +157,7 @@ EOF
 stepSysVInit() {
   stepName "stepSysVInit"
   
-  if [ -z "$(dpkg -l sysvinit | grep 2.84-188)" ] ; then
+  if [ -n "$(dpkg -l sysvinit | grep 2.84-188)" ] ; then
     # remove the knoppix epoch'ed sysvinit
     aptgetyes --trust-me remove sysvinit
 
