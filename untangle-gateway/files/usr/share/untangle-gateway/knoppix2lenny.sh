@@ -13,6 +13,7 @@ UNTANGLE_MIRROR="http://${UNTANGLE_MIRROR_HOST}/public/lenny"
 #UNTANGLE_61_DISTRIBUTIONS="mclaren nightly"
 UNTANGLE_61_DISTRIBUTIONS="mclaren" # FIXME: uncomment before releasing
 
+UNTANGLE_CREDENTIALS_FILE="/var/log/uvm/upgrade61.credentials"
 UNTANGLE_PACKAGES_FILE="/var/log/uvm/upgrade61.packages"
 
 MIRRORS_LIST_ORIG="/usr/share/untangle-gateway/debian-mirrors.txt"
@@ -113,6 +114,7 @@ EOF
   /etc/init.d/apache2 reload
 
   [ -f ${MIRRORS_LIST} ] || cp -f ${MIRRORS_LIST_ORIG} ${MIRRORS_LIST}
+  [ -f ${UNTANGLE_CREDENTIALS_FILE} ] || perl -ne 'if (m|//(.*?)\@updates\.untangle\.com|) { print $1 . "\n" ; exit  }' /etc/apt/sources.list >| ${UNTANGLE_CREDENTIALS_FILE}
 
   # set debconf to critical/noninteractive
   echo debconfig debconf/priority select critical | debconf-set-selections
@@ -229,7 +231,7 @@ EOF
   echo >| /etc/apt/sources.list
   touch /etc/apt/sources.list.d/untangle.list
   for distro in $UNTANGLE_61_DISTRIBUTIONS ; do
-    echo "deb $UNTANGLE_MIRROR $distro main premium upstream" >> /etc/apt/sources.list.d/untangle.list
+    echo "deb http://$(cat ${UNTANGLE_CREDENTIALS_FILE})@${UNTANGLE_MIRROR} $distro main premium upstream" >> /etc/apt/sources.list.d/untangle.list
   done
   aptgetupdate
 
