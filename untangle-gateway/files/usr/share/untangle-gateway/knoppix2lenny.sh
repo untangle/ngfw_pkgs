@@ -6,10 +6,10 @@ exec >> $LOG_FILE 2>&1
 
 #DEBIAN_MIRROR_HOST="10.0.11.16" # debian
 DEBIAN_MIRROR_HOST="http.us.debian.org" # http.us.debian.org; FIXME: uncomment before releasing
-DEBIAN_MIRROR="http://${DEBIAN_MIRROR_HOST}/debian"
+DEBIAN_MIRROR="${DEBIAN_MIRROR_HOST}/debian"
 #UNTANGLE_MIRROR_HOST="10.0.0.105" # mephisto
 UNTANGLE_MIRROR_HOST="updates.untangle.com" # updates.untangle.com; FIXME: uncomment before releasing
-UNTANGLE_MIRROR="http://${UNTANGLE_MIRROR_HOST}/public/lenny"
+UNTANGLE_MIRROR="${UNTANGLE_MIRROR_HOST}/public/lenny"
 #UNTANGLE_61_DISTRIBUTIONS="mclaren nightly"
 UNTANGLE_61_DISTRIBUTIONS="mclaren" # FIXME: uncomment before releasing
 
@@ -171,7 +171,7 @@ EOF
     chmod 755 /usr/sbin/update-rc.d
 
     # get the etch sysvinit
-    echo "deb $DEBIAN_MIRROR etch main contrib non-free" >| /etc/apt/sources.list
+    echo "deb http://$DEBIAN_MIRROR etch main contrib non-free" >| /etc/apt/sources.list
     aptgetupdate
     aptgetyes --trust-me install sysvinit sysv-rc apt-spy
   fi
