@@ -23,7 +23,7 @@ echo ""
 # hesiod rhs 4
 echo ""
 
-# enable ldap
+# enable ldap XXX
 echo "YES"
 
 # enable ldaps XX (applies locally or both?) 6
@@ -53,16 +53,16 @@ echo "YES"
 # enable md5 14
 echo "YES"
 
-# enable kerberos XXX
+# enable kerberos == use kerberos for system auth (like kerberos at untangle!, not ad)
 echo "NO"
 
-# kerberos realm XXX 16
+# kerberos realm  16
 echo "EXAMPLE.COM"
 
-# kerberos kdc XXX
+# kerberos kdc
 echo ""
 
-# kerberos admin server XXX 18
+# kerberos admin server 18
 echo ""
 
 # enable ldap auth
@@ -77,31 +77,31 @@ echo "localhost:3899"
 # ldap base dn (again) 22
 echo "dc=nodomain"
 
-# enable smb (auth) XXX ???
+# enable smb (auth) Unused XX
 echo "NO"
 
 # smb workgroup XXX 24
 echo "untangle"
 
 # smb servers XXX (winbindcontrollers)
-echo "email.untangle.com"
+echo "10.0.0.41"
 
-# enable compat XXX unused??? 26
+# enable compat Unused XX 26
 echo "NO"
 
-# enable db XXX ???
+# enable db Unused XX
 echo "NO"
 
 # enable nis3 28
 echo "NO"
 
-# enable winbind
-echo "YES" XXX
+# enable winbind XXX
+echo "YES"
 
 # enable wins 30
 echo "NO"
 
-# kerberos kdc via dns  XXX ???
+# kerberos kdc via dns Unused XX
 echo "NO"
 
 # smb realm XXX 32
@@ -119,10 +119,10 @@ echo "16777216-33554431"
 # winbind template shell 36
 echo "/sbin/nologin"
 
-# ldap bind dn XXX ??
+# ldap bind dn XX (authenticated bind dn)??
 echo ""
 
-# ldap bind pw XXX ?? 38
+# ldap bind pw XX (authenticated bind pw)?? 38
 echo ""
 
 # ldap root bind dn

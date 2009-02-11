@@ -27,15 +27,27 @@ case "$1" in
     proftpd)
 	daemonname=proftpd
 	;;
+    open-iscsi)
+	daemonname=iscsid
+	;;
     iscsitarget)
 	daemonname=ietd
 	;;
     rsync)
-	daemonname=rsyncd
+        # Needs special handling since client and server have same name.
+	if ps ax | fgrep rsync | fgrep -q -e --daemon; then
+	    echo "rsync is running"
+	else
+	    echo "rsync is stopped"
+	fi
+	exit 0
+	;;
+    acpid)
+	daemonname=acpid
 	;;
     httpd)
 	# XXX
-	daemonname=apache2
+	daemonname=webdav
 	;;
     *)
 	echo "service $1 not found"

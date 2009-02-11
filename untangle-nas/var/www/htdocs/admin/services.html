@@ -597,15 +597,15 @@
 	print("</tr>\n");
 
 	print("<tr>\n");
-	print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\">iSCSI target server</td>\n");
-	print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">" . (($iscsi != 0) ? "Enabled" : "Disabled") . "</td>\n");
-	print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\"><a href=\"services.html?service=iscsi&amp;action=" . (($iscsi != 0) ? "disable" : "enable") . "\">" . (($iscsi != 0) ? "Disable" : "Enable") . "</a></td>\n");
-	print("</tr>\n");
-
-	print("<tr>\n");
 	print("\t<td bgcolor=\"" . $GLOBALS["color_table_row2"] . "\">Rsync server</td>\n");
 	print("\t<td bgcolor=\"" . $GLOBALS["color_table_row2"] . "\" align=\"center\">" . (($rsync != 0) ? "Enabled" : "Disabled") . "</td>\n");
 	print("\t<td bgcolor=\"" . $GLOBALS["color_table_row2"] . "\" align=\"center\"><a href=\"services.html?service=rsync&amp;action=" . (($rsync != 0) ? "disable" : "enable") . "\">" . (($rsync != 0) ? "Disable" : "Enable") . "</a></td>\n");
+	print("</tr>\n");
+
+	print("<tr>\n");
+	print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\">iSCSI target server</td>\n");
+	print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">" . (($iscsi != 0) ? "Enabled" : "Disabled") . "</td>\n");
+	print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\"><a href=\"services.html?service=iscsi&amp;action=" . (($iscsi != 0) ? "disable" : "enable") . "\">" . (($iscsi != 0) ? "Disable" : "Enable") . "</a></td>\n");
 	print("</tr>\n");
 
 	print("<tr>\n");
