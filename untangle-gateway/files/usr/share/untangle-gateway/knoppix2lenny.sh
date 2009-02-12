@@ -186,8 +186,8 @@ stepRemoveUnwantedPackaged() {
 
   # this "remove X 3.3 packages" (and some untangle-* packages, see above)
   removePackages "3\.3\.6"
-  # xfce4, as we only want xfwm4 later on
-  removePackages "libxfcegui"
+#   # xfce4, as we only want xfwm4 later on
+#   removePackages "libxfcegui"
 }
 
 stepDistUpgradeToEtch() {
