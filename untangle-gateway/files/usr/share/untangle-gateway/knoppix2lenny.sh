@@ -4,14 +4,14 @@ LOG_FILE=/var/log/uvm/upgrade61.log
 
 exec >> $LOG_FILE 2>&1
 
-#DEBIAN_MIRROR_HOST="10.0.11.16" # debian
-DEBIAN_MIRROR_HOST="http.us.debian.org" # http.us.debian.org; FIXME: uncomment before releasing
+DEBIAN_MIRROR_HOST="10.0.11.16" # debian
+#DEBIAN_MIRROR_HOST="http.us.debian.org" # http.us.debian.org; FIXME: uncomment before releasing
 DEBIAN_MIRROR="${DEBIAN_MIRROR_HOST}/debian"
-#UNTANGLE_MIRROR_HOST="10.0.0.105" # mephisto
-UNTANGLE_MIRROR_HOST="updates.untangle.com" # updates.untangle.com; FIXME: uncomment before releasing
+UNTANGLE_MIRROR_HOST="10.0.0.105" # mephisto
+#UNTANGLE_MIRROR_HOST="updates.untangle.com" # updates.untangle.com; FIXME: uncomment before releasing
 UNTANGLE_MIRROR="${UNTANGLE_MIRROR_HOST}/public/lenny"
-#UNTANGLE_61_DISTRIBUTIONS="mclaren nightly"
-UNTANGLE_61_DISTRIBUTIONS="mclaren" # FIXME: uncomment before releasing
+UNTANGLE_61_DISTRIBUTIONS="mclaren nightly"
+#UNTANGLE_61_DISTRIBUTIONS="mclaren" # FIXME: uncomment before releasing
 
 UNTANGLE_CREDENTIALS_FILE="/var/log/uvm/upgrade61.credentials"
 UNTANGLE_PACKAGES_FILE="/var/log/uvm/upgrade61.packages"
@@ -193,10 +193,10 @@ stepRemoveUnwantedPackaged() {
 stepDistUpgradeToEtch() {
   stepName "stepDistUpgradeToEtch"
 
-  # find the fastest etch source from a predefined set of mirrors
-  apt-spy -t 7 -m ${MIRRORS_LIST} -o /etc/apt/sources.list -d etch -s ar,br,cl,cn,de,fr,hk,jp,kr,ru,tr,us,za
-  cat /etc/apt/sources.list
-  aptgetupdate
+#   # find the fastest etch source from a predefined set of mirrors
+#   apt-spy -t 7 -m ${MIRRORS_LIST} -o /etc/apt/sources.list -d etch -s ar,br,cl,cn,de,fr,hk,jp,kr,ru,tr,us,za
+#   cat /etc/apt/sources.list
+#   aptgetupdate
 
   # install the newer postgres 7.4 from etch, as it follows the naming
   # convention in /etc/
@@ -229,7 +229,7 @@ EOF
 
   # dist-upgrade to lenny
   echo >| /etc/apt/sources.list
-  touch /etc/apt/sources.list.d/untangle.list
+  echo >| /etc/apt/sources.list.d/untangle.list
   for distro in $UNTANGLE_61_DISTRIBUTIONS ; do
     echo "deb http://$(cat ${UNTANGLE_CREDENTIALS_FILE})@${UNTANGLE_MIRROR} $distro main premium upstream" >> /etc/apt/sources.list.d/untangle.list
   done
