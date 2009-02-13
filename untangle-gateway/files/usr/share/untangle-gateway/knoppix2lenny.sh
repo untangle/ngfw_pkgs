@@ -203,6 +203,10 @@ stepDistUpgradeToEtch() {
   aptgetyes install postgresql-7.4 postgresql-common postgresql postgresql-client-7.4 python-psycopg python libapache2-mod-python python-pycurl
   perl -i -pe 's/^port.+/port = 5432/' /etc/postgresql/7.4/main/postgresql.conf # force 5432
 
+  # make sure this is disabled, so apache can continue working during
+  # the rest of the upgrade
+  rm -f /etc/apache2/mods-enabled/proxy_connect_untangle.load
+
   aptgetyes dist-upgrade
 
   # free up some space
