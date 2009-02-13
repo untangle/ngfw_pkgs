@@ -1,6 +1,8 @@
 #! /bin/bash
 
-LOG_FILE=/var/log/uvm/upgrade61.log
+BASENAME="upgrade61"
+
+LOG_FILE=/var/log/uvm/${BASENAME}.log
 
 exec >> $LOG_FILE 2>&1
 
@@ -13,10 +15,12 @@ UNTANGLE_MIRROR="${UNTANGLE_MIRROR_HOST}/public/lenny"
 #UNTANGLE_61_DISTRIBUTIONS="mclaren nightly"
 UNTANGLE_61_DISTRIBUTIONS="mclaren" # FIXME: uncomment before releasing
 
-UNTANGLE_CREDENTIALS_FILE="/var/log/uvm/upgrade61.credentials"
-UNTANGLE_PACKAGES_FILE="/var/log/uvm/upgrade61.packages"
+UNTANGLE_CREDENTIALS_FILE="/var/log/uvm/${BASENAME}.credentials"
+UNTANGLE_PACKAGES_FILE="/var/log/uvm/${BASENAME}.packages"
 
-MIRRORS_LIST_ORIG="/usr/share/untangle-gateway/debian-mirrors.txt"
+SHARE="/usr/share/untangle-gateway"
+
+MIRRORS_LIST_ORIG="${SHARE}/debian-mirrors.txt"
 MIRRORS_LIST="/var/log/uvm/debian-mirrors.txt"
 
 APT_GET="/usr/bin/apt-get"
@@ -25,11 +29,13 @@ APT_GET_OPTIONS="-o DPkg::Options::=--force-confnew --yes --force-yes"
 STEPS="(setup|sysvinit|remove|etch|lenny|untangle|finish)"
 LAST_STEP=""
 
-APACHE_STATIC_PAGE="upgrade.html"
-APACHE_UPGRADE_CONFIG="RedirectMatch 301 ^/webui.* /$APACHE_STATIC_PAGE"
-APACHE_UPGRADE_CONFIG_FILE="/etc/apache2/conf.d/upgrade61"
-APACHE_UPGRADE_HTML_FILE="/var/www/$APACHE_STATIC_PAGE"
-APACHE_UPGRADE_HTML_MESSAGE="The system is being upgraded to 6.1 right now, please try again later."
+APACHE_HTML_PAGE="${SHARE}/${BASENAME}.html"
+APACHE_JS_PAGE="${SHARE}/${BASENAME}.js"
+APACHE_UPGRADE_HTML_DIR="/var/www"
+APACHE_UPGRADE_HTML_PAGE="${APACHE_UPGRADE_HTML_DIR}/${BASENAME}.html"
+APACHE_UPGRADE_JS_PAGE="${APACHE_UPGRADE_HTML_DIR}/${BASENAME}.js"
+APACHE_UPGRADE_CONFIG="RedirectMatch 301 ^/webui.* /$(basename $APACHE_HTML_PAGE)"
+APACHE_UPGRADE_CONFIG_FILE="/etc/apache2/conf.d/${BASENAME}"
 
 ## helper functions
 usage() {
@@ -41,7 +47,7 @@ usage() {
 fail() {
     echo "upgrade failed - leaving divert in place, retrying"
     echo "The output for the upcoming retry will be in a new log file,"
-    echo "so you should 'tail -f /var/log/uvm/upgrade61*log' again to see it."
+    echo "so you should 'tail -f /var/log/uvm/${BASENAME}.log' again to see it."
     # Try again
     exec /usr/bin/uvm
     exit 1
@@ -60,7 +66,7 @@ undo_divert() {
         rm -f $target
 	dpkg-divert --remove --rename --package untangle-gateway --divert $target.distrib $target
     fi
-    rm -f $APACHE_UPGRADE_HTML_FILE $APACHE_UPGRADE_CONFIG_FILE
+    rm -f $APACHE_UPGRADE_HTML_PAGE $APACHE_UPGRADE_JS_PAGE $APACHE_UPGRADE_CONFIG_FILE
 }
 
 aptgetyes() {
@@ -98,20 +104,26 @@ stepName() {
 stepSetup() {
   stepName "stepSetup"
 
-  DISPLAY=:0 feh --bg-scale /usr/share/untangle-gateway/desktop_background_upgrade-1024x768.png
+  DISPLAY=:0 feh --bg-scale ${SHARE}/desktop_background_upgrade-1024x768.png
 
   wall <<EOF
 
 Untangle 6.1 upgrade beginning.  Progress may be monitored with:
+
   # tail -f $LOG_FILE
+
+Or by visiting http://localhost/${BASENAME}.html
 
 Once the upgrade has completed, the Untangle Server will reboot automatically.
 EOF
 
   # the webui can't be accessed while we're upgrading
-  echo $APACHE_UPGRADE_HTML_MESSAGE >| $APACHE_UPGRADE_HTML_FILE
+  cp -f $APACHE_HTML_PAGE $APACHE_UPGRADE_HTML_PAGE
+  cp -f $APACHE_JS_PAGE $APACHE_UPGRADE_JS_PAGE
+  ln -sf $LOG_FILE ${APACHE_UPGRADE_HTML_DIR}/
   echo $APACHE_UPGRADE_CONFIG >| $APACHE_UPGRADE_CONFIG_FILE
-  /etc/init.d/apache2 reload
+  a2ensite default
+  /etc/init.d/apache2 restart
 
   [ -f ${MIRRORS_LIST} ] || cp -f ${MIRRORS_LIST_ORIG} ${MIRRORS_LIST}
   [ -f ${UNTANGLE_CREDENTIALS_FILE} ] || perl -ne 'if (m|//(.*?)\@updates\.untangle\.com|) { print $1 . "\n" ; exit  }' /etc/apt/sources.list >| ${UNTANGLE_CREDENTIALS_FILE}
@@ -198,14 +210,14 @@ stepDistUpgradeToEtch() {
   cat /etc/apt/sources.list
   aptgetupdate
 
+  # make sure this is disabled, so apache can continue working during
+  # the rest of the upgrade
+  rm -f /etc/apache2/sites-enabled/uvm /etc/apache2/mods-enabled/proxy_connect_untangle.load /usr/share/untangle/apache2/conf.d/*
+
   # install the newer postgres 7.4 from etch, as it follows the naming
   # convention in /etc/
   aptgetyes install postgresql-7.4 postgresql-common postgresql postgresql-client-7.4 python-psycopg python libapache2-mod-python python-pycurl
   perl -i -pe 's/^port.+/port = 5432/' /etc/postgresql/7.4/main/postgresql.conf # force 5432
-
-  # make sure this is disabled, so apache can continue working during
-  # the rest of the upgrade
-  rm -f /etc/apache2/mods-enabled/proxy_connect_untangle.load
 
   aptgetyes dist-upgrade
 
@@ -242,7 +254,7 @@ EOF
   # /usr/bin/rush is now in untangle-vm-shell, but used to be in
   # untangle-vm, which now depends on untangle-vm-shell...
   target=/usr/bin/rush
-  upgrade=/usr/share/untangle-gateway/knoppix2lenny.sh
+  upgrade=${SHARE}/knoppix2lenny.sh
   div=$(dpkg-divert --list $target)
   if [ -z "$div" ]; then
     dpkg-divert --add --rename --package untangle-vm-shell --divert $target.distrib $target
