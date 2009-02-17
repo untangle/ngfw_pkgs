@@ -30,7 +30,7 @@ case "$1" in
 	
 	for num in 0 1 2 3 4 5 6 7 8 9; do
 	    if [ -f "${LOOPBACKFILEDIR}/${LOOPBACKFILEPREFIX}$num" ]; then
-		if losetup /dev/loop$num "${LOOPBACKFILEDIR}/${LOOPBACKFILEPREFIX}$num"; then
+		if /sbin/losetup /dev/loop$num "${LOOPBACKFILEDIR}/${LOOPBACKFILEPREFIX}$num"; then
 		    log_progress_msg "loop$num"
 		else
 		    log_progress_msg "FAIL(loop$num)"
@@ -45,8 +45,8 @@ case "$1" in
 	log_daemon_msg "Remove NAS loopback devices..."
 	
 	for num in 0 1 2 3 4 5 6 7 8 9; do
-	    if losetup /dev/loop$num >&/dev/null; then
-		if losetup -d /dev/loop$num; then
+	    if /sbin/losetup /dev/loop$num >&/dev/null; then
+		if /sbin/losetup -d /dev/loop$num; then
 		    log_progress_msg "loop$num"
 		else
 		    log_progress_msg "FAIL(loop$num)"

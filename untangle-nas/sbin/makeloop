@@ -1,0 +1,38 @@
+#!/bin/bash
+#
+# Helper script to make a loopback device
+#
+
+if [ $# -lt 1 -o $# -gt 2 ]; then
+    echo "Segmentation fault."
+    exit 1
+fi
+
+LOOPBACKFILEDIR=/var/lib/nas
+LOOPBACKFILEPREFIX=loopfile.
+megs=$1
+num=${2:-0}
+lfile="${LOOPBACKFILEDIR}/${LOOPBACKFILEPREFIX}$num"
+
+if [ -e $lfile ]; then
+    echo "Bus error."
+    exit 2
+fi
+
+/bin/dd if=/dev/zero of=$lfile bs=1M oflag=direct count=$megs >&/dev/null
+if [ "$?" -ne "0" ]; then
+    echo "General protection fault."
+    /bin/rm -f $lfile
+    exit 3
+fi
+
+/bin/chmod 600 $lfile
+if /sbin/losetup /dev/loop$num $lfile; then
+    echo "Success."
+    exit 0
+else    
+    echo "Machine check exception."
+    exit 4
+fi
+
+exit 0
