@@ -233,7 +233,7 @@ function apply_configuration($params = array()) {
 	}
 	
 
-	$ac_authp = popen("export LANG=C; /usr/bin/sudo /opt/nas/sbin/authconfig --openfiler --kickstart", "r");
+	$ac_authp = popen("export LANG=C; /usr/bin/sudo /usr/bin/rush /opt/nas/sbin/authconfig.rb --get", "r");
 	$i = 0;
 	while (!feof($ac_authp))
 		$ac_aresult[$i++] = trim(fgets($ac_authp, 4096));

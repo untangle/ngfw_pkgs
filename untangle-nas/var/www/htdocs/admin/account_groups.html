@@ -98,7 +98,7 @@
 	if ($list_end > $list_n)
 		$list_end = $list_n;
 
-	$authp = popen("/usr/bin/sudo /opt/nas/sbin/authconfig --openfiler --kickstart", "r");
+	$authp = popen("/usr/bin/sudo /usr/bin/rush /opt/nas/sbin/authconfig.rb --get", "r");
 	$i = 0;
 	while (!feof($authp))
 		$aresult[$i++] = trim(fgets($authp, 4096));

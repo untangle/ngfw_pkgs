@@ -113,7 +113,7 @@
     }
 
 
-    $authp = popen("export LANG=C; /usr/bin/sudo /opt/nas/sbin/authconfig --openfiler --kickstart", "r");
+    $authp = popen("export LANG=C; /usr/bin/sudo /usr/bin/rush /opt/nas/sbin/authconfig.rb --get", "r");
     $i = 0;
     while (!feof($authp))
             $aresult[$i++] = trim(fgets($authp, 4096));
