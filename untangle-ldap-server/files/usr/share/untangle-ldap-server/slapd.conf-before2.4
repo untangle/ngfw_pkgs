@@ -15,7 +15,7 @@ include         /etc/ldap/schema/inetorgperson.schema
 
 # Schema check allows for forcing entries to
 # match schemas for their objectClasses's
-schemacheck     on
+#schemacheck     on
 
 # Where the pid file is put. The init.d script
 # will not stop the server if you change this.
@@ -36,7 +36,7 @@ moduleload	back_bdb
 # Backend specific directives apply to this backend until another
 # 'backend' directive occurs
 backend		bdb
-checkpoint 512 30
+#checkpoint 512 30
 
 #######################################################################
 # Specific Backend Directives for 'other':
