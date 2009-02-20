@@ -19,6 +19,8 @@ ldapAdmin() {
 }
 
 if [ -f $SLAPD_CONFIG ] ; then
+  sed -i -e "s/^schemacheck/#schemacheck/" $SLAPD_CONFIG
+  sed -i -e "s/^checkpoint/#checkpoint/" $SLAPD_CONFIG
   theirAdminAccount=`slapcat -f $SLAPD_CONFIG | ldapAdmin`
 else
   theirAdminAccount=""
