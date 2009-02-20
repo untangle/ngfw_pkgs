@@ -229,8 +229,8 @@ var application = null;
 var viewport = null;
 
 // application main entry point
-Ext.onReady(function() {
-    Ext.QuickTips.init();
+function alpacaOnReady() {
+    Ext.QuickTips.init( false );
 
     application = new Ung.Alpaca.Application();
     
@@ -242,6 +242,7 @@ Ext.onReady(function() {
     });
 
     path = Ung.Alpaca.queryPath;
+
     if( path == null ) {
         path = document.location.pathname;
         var search = document.location.search;
@@ -251,5 +252,5 @@ Ext.onReady(function() {
     }
 
     application.switchToQueryPath( path );
-});
+};
 
