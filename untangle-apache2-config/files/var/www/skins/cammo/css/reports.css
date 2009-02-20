@@ -1,0 +1,82 @@
+/*
+ * Ext JS Library 2.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
+ * licensing@extjs.com
+ * 
+ * http://extjs.com/license
+ */
+html {
+    margin:0 auto;
+}
+body{
+	margin:0 auto;
+	width:960px;
+}
+.base-container {
+    margin-top:15px;
+}
+.base-container img {
+	vertical-align:middle;
+	margin-bottom:0.2em;
+}
+.base-container h1 {
+	display:inline;
+	margin-left:0.4em;
+	font-size:2.3em;
+	color:#444;
+}
+.export-excel {
+    background: transparent url('../images/reports/icon_export.jpg') no-repeat center left !important;
+}
+.export-printer {
+    background: transparent url('../images/reports/icon_printer.gif') no-repeat center left !important;
+}
+.breadcrumbs {
+    color: #555555;
+    font-weight: normal;
+}
+.icon-breadcrumbs-separator {
+    background:transparent url(../images/admin/icon_breadcrumbs_separator.gif) no-repeat center center !important;
+    width:13px;
+    height:12px;
+}
+/* icons */
+.untangle-node-spamassassin{
+    background-image: url(../images/reports/nodes/spamblocker.png) !important;
+}
+.untangle-node-shield {
+    background-image: url(../images/reports/nodes/attackblocker.png) !important;
+}
+.untangle-node-phish {
+    background-image: url(../images/reports/nodes/phishblocker.png) !important;
+}
+.untangle-node-clam {
+    background-image: url(../images/reports/nodes/virusblocker.png) !important;
+}
+.untangle-node-webfilter {
+    background-image: url(../images/reports/nodes/webfilter.png) !important;
+}
+.untangle-node-spyware {
+    background-image: url(../images/reports/nodes/spywareblocker.png) !important;
+}
+.untangle-node-kav {
+    background-image: url(../images/reports/nodes/kav.png) !important;
+}
+.untangle-node-openvpn {
+    background-image: url(../images/reports/nodes/openvpn.png) !important;
+}
+.untangle-node-ips {
+    background-image: url(../images/reports/nodes/intrusionprevention.png) !important;
+}
+.untangle-node-firewall{
+    background-image: url(../images/reports/nodes/firewall.png) !important;
+}
+.untangle-node-adconnector {
+    background-image: url(../images/reports/nodes/adconnector.png) !important;
+}
+.untangle-node-protofilter {
+    background-image: url(../images/reports/nodes/protocolcontrol.png) !important;
+}
+.untangle-node-remoteaccessportal {
+    background-image: url(../images/reports/nodes/remoteaccessportal.png) !important;
+}
