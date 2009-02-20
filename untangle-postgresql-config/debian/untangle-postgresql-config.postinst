@@ -12,6 +12,7 @@ PG_CONF="`/usr/bin/find /etc/postgresql -name 'postgresql.conf' -type f`"
 PG_MAST="`/usr/bin/find /etc/postgresql -name 'postmaster.conf' -type f`"
 PG_HBA="`/usr/bin/find /etc/postgresql -name 'pg_hba.conf' -type f`"
 PG_INIT="`/usr/bin/find /etc/init.d/ -name 'postgres*' -type f`"
+UNTANGLE_SYSCTL="/etc/sysctl.d/60-untangle.conf"
 DATE="`date '+%Y%m%d%H%M%S'`"
 
 echo $PG_CONF
@@ -50,10 +51,10 @@ if [ $MEM -gt 1900000 ] ; then
     EFFECTIVE_CACHE_SIZE=40000
     # Also in this case we need to adjust the shmmax in the kernel
     MAXLINE="kernel.shmmax=134217728"
-    if grep -q kernel.shmmax /etc/sysctl.conf ; then
-        sed -i -e "s|^.*kernel.shmmax.*|${MAXLINE}|" /etc/sysctl.conf
+    if [ -f ${UNTANGLE_SYSCTL} ] grep -q kernel.shmmax ${UNTANGLE_SYSCTL} ; then
+        sed -i -e "s|^.*kernel.shmmax.*|${MAXLINE}|" ${UNTANGLE_SYSCTL}
     else
-        echo $MAXLINE >> /etc/sysctl.conf
+        echo $MAXLINE >> ${UNTANGLE_SYSCTL}
     fi
     /sbin/sysctl -w $MAXLINE
 elif [ $MEM -gt 900000 ] ; then
