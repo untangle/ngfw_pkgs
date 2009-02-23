@@ -62,7 +62,7 @@ Ung.Alpaca.Util = {
         for ( var c = 3 ; c < argumentCount ; c++ ) {
             args[c-3] = arguments[c];
         }
-
+        
         path = "/alpaca" + path;
 
         /* Now build the query */
@@ -473,6 +473,16 @@ Ung.Alpaca.Util = {
 
         hash[path[c]] = value;
     },
+
+    setIsVisible : function( component, isVisible )
+    {
+        if ( component.setContainerVisible ) {
+            component.setContainerVisible( isVisible );
+        } else {
+            component.setVisible( isVisible );
+        }
+    },
+
     
     cidrData : [
         [ "8",  "8   : 255.0.0.0"],
@@ -563,5 +573,32 @@ Ung.Alpaca.ComboBox = Ext.extend( Ext.form.ComboBox, {
 
 /* override the default Combo box so that all of the comboboxes can add a box label */
 Ext.reg('combo',  Ung.Alpaca.ComboBox);
+
+Ext.override( Ext.form.Field, {
+    showContainer : function()
+    {
+        this.show();
+        this.enable();
+        /* show entire container and children (including label if applicable) */
+        this.getEl().up('.x-form-item').setDisplayed( true );
+    },
+    
+    hideContainer : function()
+    {
+        this.disable();
+        this.hide();
+        this.getEl().up('.x-form-item').setDisplayed( false );
+    },
+    
+    setContainerVisible: function(visible) {
+        if (visible) {
+            this.showContainer();
+        } else {
+            this.hideContainer();
+        }
+        return this;
+    }
+});
+
 
 

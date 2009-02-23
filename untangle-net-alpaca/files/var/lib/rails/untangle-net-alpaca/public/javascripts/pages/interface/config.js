@@ -11,16 +11,11 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
     {
         var items = [ this.staticPanel( this.settings ),
                       this.dynamicPanel( this.settings ),
-                      this.bridgePanel( this.settings ) ];
+                      this.bridgePanel( this.settings ),
+                      this.pppoePanel( this.settings )];
 
         var config_types = this.settings["config_types"];
         
-        if ( this.settings["interface"]["wan"] ) {
-            items.push( this.pppoePanel( this.settings ));
-        } else {
-            config_types.remove( "pppoe" );
-        }
-
         var index = 0;
         var config_type = this.settings["interface"]["config_type"];
 
@@ -31,6 +26,18 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                 break;
             }
         }
+
+        this.isWanCheckbox = new Ext.form.Checkbox({
+            xtype : "checkbox",
+            fieldLabel : "Is WAN Interface",
+            name : "interface.wan",
+            listeners : {
+                "check" : {
+                    fn : this.onCheckWan,
+                    scope : this
+                }
+            }
+        });
         
         this.switchBlade = new Ext.Panel({
             layout : 'card',
@@ -44,11 +51,10 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
 
         Ext.apply( this, {
             items : [{
-                    xtype:"label",
-                    html:this._("Configure Interface"),
+                    xtype : "label",
+                    html : this._("Configure Interface"),
                     cls : 'page-header-text',
-                },
-                {
+            },{
                 autoHeight : true,
                 xtype : "fieldset",
                 items : [{
@@ -65,6 +71,26 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                             scope : this
                         }
                     }
+                }, this.isWanCheckbox ]
+            },{
+                autoHeight : true,
+                wanToggle : true,
+                xtype : "fieldset",
+                items : [{
+                    xtype : "numberfield",
+                    fieldLabel : this._( "Internet Download Bandwidth" ),
+                    name : "interface.download_bandwidth",
+                    boxLabel : this._( "kbps") 
+                },{
+                    xtype : "numberfield",
+                    fieldLabel : this._( "Internet Upload Bandwidth" ),
+                    name : "interface.upload_bandwidth",
+                    boxLabel : this._( "kbps") 
+                },{
+                    xtype : "button",
+                    text : this._( "Estimate Link Speed" ),
+                    handler : this.onEstimateLinkSpeed,
+                    scope : this
                 }]
             }, this.switchBlade ]
         });
@@ -72,6 +98,16 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
         this.saveMethod = "/interface/set_settings/" + this.settings["interface"]["id"];
 
         Ung.Alpaca.Pages.Interface.Config.superclass.initComponent.apply( this, arguments );
+    },
+
+    populateForm : function()
+    {
+        Ung.Alpaca.Pages.Interface.Config.superclass.populateForm.apply( this, arguments );
+        
+        var hasWan = this.switchBlade.layout.activeItem.hasWan;
+        this.isWanCheckbox.setContainerVisible( hasWan );
+        
+        this.onCheckWan( this.isWanCheckox, hasWan && this.isWanCheckbox.getValue());
     },
 
     saveMethod : "/interface/set_settings/",
@@ -101,11 +137,10 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                 }]
             },{
                 xtype : "label",
+                cls : 'page-header-text',
                 html : this._( "IP Addresses" )
-            }, this.buildAliasGrid( settings, "static_aliases" )];
-
-        if ( settings["interface"]["wan"] ) {
-            items = items.concat( [{
+            }, this.buildAliasGrid( settings, "static_aliases" ),{
+                wanToggle : true,
                 autoHeight : true,
                 defaults : {
                     xtype : "textfield"
@@ -123,12 +158,11 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                     name : "static.dns_2",
                     vtype : "ipAddress",
                     allowBlank : true
-                }, this.currentMtu( settings, "static.mtu" ),
-                         this.buildEthernetMediaCombo( settings )]
-            }]);
-        } else {
-            items = items.concat([{
+                }]
+            },{
+                wanToggle : false,
                 xtype : "label",
+                cls : 'page-header-text',
                 html : this._( "Nat Policies" )
             }, this.buildNatPolicyGrid( settings, "static_nat_policies" ), {
                 autoHeight : true,
@@ -139,14 +173,14 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                     this.currentMtu( settings, "static.mtu" ),
                     this.buildEthernetMediaCombo( settings )
                 ]
-            }]);
-        }
-        
+            }];
+    
         return new Ext.Panel({
             layout : 'form',
             defaults : {
                 xtype : "fieldset"
             },
+            hasWan : true,
             items : items
         });
     },
@@ -167,41 +201,37 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             boxLabel : d["netmask"],
             allowBlank : true,
             vtype : 'ipAddress'
-        }];
-
-        if ( this.settings["interface"]["wan"] ) {
-            items = items.concat([{
-                fieldLabel : this._( "Default Gateway" ),
-                name : "dynamic.default_gateway",
-                boxLabel : d["default_gateway"],
-                allowBlank : true,
-                vtype : 'ipAddress'
-            },{
-                fieldLabel : this._( "Primary DNS Server" ),
-                name : "dynamic.dns_1",
-                boxLabel : d["dns_1"],
-                allowBlank : true,
-                vtype : 'ipAddress'
-            },{
-                fieldLabel : this._( "Secondary DNS Server" ),
-                name : "dynamic.dns_2",
-                boxLabel : d["dns_2"],
-                allowBlank : true,
-                vtype : 'ipAddress'
-            }]);
-        }
-        
-        items.push( this.currentMtu( settings, "dynamic.mtu" ));
-        items.push( this.buildEthernetMediaCombo( settings ));
-        items.push({
+        },{
+            wanToggle : true,
+            fieldLabel : this._( "Default Gateway" ),
+            name : "dynamic.default_gateway",
+            boxLabel : d["default_gateway"],
+            allowBlank : true,
+            vtype : 'ipAddress'
+        },{
+            wanToggle : true,
+            fieldLabel : this._( "Primary DNS Server" ),
+            name : "dynamic.dns_1",
+            boxLabel : d["dns_1"],
+            allowBlank : true,
+            vtype : 'ipAddress'
+        },{
+            wanToggle : true,
+            fieldLabel : this._( "Secondary DNS Server" ),
+            name : "dynamic.dns_2",
+            boxLabel : d["dns_2"],
+            allowBlank : true,
+            vtype : 'ipAddress'
+        }, this.currentMtu( settings, "dynamic.mtu" ), this.buildEthernetMediaCombo( settings ), {
             xtype : "button",
             text : this._( "Renew Lease" ),
             handler : this.onRenewLease,
             scope : this
-        });
+        }];
 
         return new Ext.Panel({
             layout : 'form',
+            hasWan : true,
             autoHeight : true,
             defaults : {
                 xtype : "fieldset"
@@ -226,6 +256,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
     {
         return new Ext.Panel({
             layout : 'form',
+            hasWan : false,
             defaults : {
                 xtype : "fieldset"
             },
@@ -257,36 +288,33 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             inputType : "password",
             fieldLabel : this._( "Password" ),
             name : "pppoe.password"
-        }];
-        
-        if ( settings["interface"]["wan"] ) {
-            items = items.concat([{
-                xtype : "checkbox",
-                fieldLabel : "Use peer DNS",
-                name : "pppoe.use_peer_dns"
-            },{
-                fieldLabel : this._( "Primary DNS Server" ),
-                name : "pppoe.dns_1",
-                allowBlank : true,
-                vtype : 'ipAddress'
-            },{
-                fieldLabel : this._( "Secondary DNS Server" ),
-                name : "pppoe.dns_2",
-                allowBlank : true,
-                vtype : 'ipAddress'
-            }]);
-        }
-
-        items.push(this.buildEthernetMediaCombo( settings ));
-        items.push({
+        },{
+            wanToggle : true,
+            xtype : "checkbox",
+            fieldLabel : "Use peer DNS",
+            name : "pppoe.use_peer_dns"
+        },{
+            wanToggle : true,
+            fieldLabel : this._( "Primary DNS Server" ),
+            name : "pppoe.dns_1",
+            allowBlank : true,
+            vtype : 'ipAddress'
+        },{
+            wanToggle : true,
+            fieldLabel : this._( "Secondary DNS Server" ),
+            name : "pppoe.dns_2",
+            allowBlank : true,
+            vtype : 'ipAddress'
+        }, this.buildEthernetMediaCombo( settings ),{
             xtype : "button",
             text : this._( "Renew Lease"),
             handler : this.onRenewLease,
             scope : this
-        });
+        }];
         
         return new Ext.Panel({
             layout : 'form',
+            hasWan : true,
             defaults : {
                 xtype : "fieldset"
             },
@@ -296,6 +324,10 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                     xtype : "textfield"
                 },
                 items : items,
+            },{
+                xtype : "label",
+                cls : 'page-header-text',
+                html : this._( "IP Addresses" )
             }, this.buildAliasGrid( settings, "pppoe_aliases" ), {
                 autoHeight : true,
                 defaults : {
@@ -304,7 +336,9 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                 items : [{
                     xtype : "textarea",
                     fieldLabel : this._( "Secret Field" ),
-                    name : "pppoe.secret_field"
+                    name : "pppoe.secret_field",
+                    width : 494,
+                    height : 140
                 }]
             }]
         });
@@ -346,6 +380,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
 
         var aliases = new Ung.Alpaca.EditorGridPanel({
             recordFields : [ "network_string", "new_source" ],
+            wanToggle : false,
             selectable : true,
             settings : settings,
             name : entriesField,
@@ -393,7 +428,25 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
     
     onSelectConfigType : function( __, record, index )
     {
-        this.switchBlade.layout.setActiveItem( index );
+        var layout = this.switchBlade.layout;
+        layout.setActiveItem( index );
+
+        /* Hide the WAN checkbox if necessary. */
+        var hasWan = layout.activeItem.hasWan;
+        this.isWanCheckbox.setContainerVisible( hasWan );
+
+        this.onCheckWan( this.isWanCheckox, hasWan && this.isWanCheckbox.getValue());
+    },
+
+    onCheckWan : function( component, isWanChecked )
+    {
+        Ext.each( this.find( "wanToggle", isWanChecked ), function( item ) { 
+            Ung.Alpaca.Util.setIsVisible( item, true ) 
+        });
+
+        Ext.each( this.find( "wanToggle", !isWanChecked ), function( item ) {
+            Ung.Alpaca.Util.setIsVisible( item, false );
+        });
     },
     
     fixAliases : function( settings, name )

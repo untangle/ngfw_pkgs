@@ -26,6 +26,7 @@ Ung.Alpaca.Pages.MultiWan.Failover = Ext.extend( Ung.Alpaca.PagePanel, {
 
         this.addToStore( "ping", this._( "Ping" ), this.typeMap, this.typeStore );
         this.addToStore( "arp", this._( "ARP" ), this.typeMap, this.typeStore );
+        this.addToStore( "dns", this._( "DNS" ), this.typeMap, this.typeStore );
         this.addToStore( "http", this._( "HTTP" ), this.typeMap, this.typeStore );
         this.addToStore( "custom", this._( "Custom" ), this.typeMap, this.typeStore );
 
@@ -108,6 +109,7 @@ Ung.Alpaca.Pages.MultiWan.Failover = Ext.extend( Ung.Alpaca.PagePanel, {
         var items = [ 
             this.pingPanel( settings ),
             this.arpPanel( settings ),
+            this.dnsPanel( settings ),
             this.httpPanel( settings ),
             this.customPanel( settings )
         ];
@@ -291,6 +293,21 @@ Ung.Alpaca.Pages.MultiWan.Failover = Ext.extend( Ung.Alpaca.PagePanel, {
             items : [{
                 xtype : 'label',
                 html : this._( "ARP the default gateway for this interface." )
+            }]
+        });        
+    },
+
+    dnsPanel : function()
+    {
+        return new Ext.Panel({
+            layout : 'form',
+            defaults : {
+                xtype : "fieldset",
+                autoHeight : true
+            },
+            items : [{
+                xtype : 'label',
+                html : this._( "Generate DNS requests to your upstream DNS servers." )
             }]
         });        
     },

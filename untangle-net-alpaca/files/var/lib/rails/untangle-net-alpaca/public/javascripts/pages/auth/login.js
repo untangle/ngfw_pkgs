@@ -9,29 +9,34 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "auth", "login" )) {
 
 Ung.Alpaca.Pages.Auth.Login = Ext.extend( Ung.Alpaca.PagePanel, {
     initComponent : function()
-    {        
-        Ext.apply( this, {
-            defaults : {
-                xtype : "fieldset"
-            },
-            items : [{
-                autoHeight : true,
+    {
+        var p = 
+        Ext.apply( this,  {
+            items : new Ext.form.FormPanel({
+                defaults : {
+                    xtype : "fieldset"
+                },
+                border : false,
                 items : [{
-                    xtype : "textfield",
-                    name : "username",
-                    fieldLabel : this._( "Username" )
-                },{
-                    xtype : "textfield",
-                    name : "password",
-                    inputType : "password",
-                    fieldLabel : this._( "Password" )
-                },{
-                    xtype : "button",
-                    text : this._( "Login" ),
-                    handler : this.login,
-                    scope : this
+                    autoHeight : true,
+                    items : [{
+                        xtype : "textfield",
+                        name : "username",
+                        fieldLabel : this._( "Username" )
+                    },{
+                        xtype : "textfield",
+                        name : "password",
+                        inputType : "password",
+                        fieldLabel : this._( "Password" )
+                    },{
+                        xtype : "button",
+                        text : this._( "Login" ),
+                        type : "submit",
+                        handler : this.login,
+                        scope : this
+                    }]
                 }]
-            }]
+            })
         });
         
         Ung.Alpaca.Pages.Auth.Login.superclass.initComponent.apply( this, arguments );

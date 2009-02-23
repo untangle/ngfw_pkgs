@@ -99,6 +99,10 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
                 this.plugins = [];
             }
 
+            if ( !Ext.isArray( this.plugins )) {
+                this.plugins = [ this.plugins ];
+            }
+
             if ( this.plugins.indexOf( column ) >= 0 ) {
                 continue;
             }
