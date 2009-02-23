@@ -299,6 +299,11 @@ stepFinish() {
   echo LANG="en_US.UTF-8" >> /etc/environment # make it the default
   echo LC_ALL="en_US.UTF-8" >> /etc/environment # make it the default
 
+  # not sure why this happened on dogfood, and nowhere else. Possibly
+  # dogfood came from an earlier version of knoppix.
+  update-rc.d -f knoppix-autoconfig remove
+  rm -f /etc/init.d/knoppix-autoconfig
+
   undo_divert
 
   echo "#########################################"
