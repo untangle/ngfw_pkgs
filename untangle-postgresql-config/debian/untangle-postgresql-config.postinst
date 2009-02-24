@@ -87,7 +87,7 @@ for file in $PG_CONF ; do
     # Search both settings and events schemas by default
     sed -i -e "s/.*search_path.*=.*/search_path = 'public,settings,events'/" $file
     # disable autovacuuming
-    sed -i -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" $file
+#     sed -i -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" $file
     perl -pe 's/^(?!#)/#/' /etc/cron.d/postgresql-common
 done
 
