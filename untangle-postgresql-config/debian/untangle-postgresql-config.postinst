@@ -9,7 +9,6 @@ fi
 }
 
 PG_CONF="`/usr/bin/find /etc/postgresql -name 'postgresql.conf' -type f`"
-PG_MAST="`/usr/bin/find /etc/postgresql -name 'postmaster.conf' -type f`"
 PG_HBA="`/usr/bin/find /etc/postgresql -name 'pg_hba.conf' -type f`"
 PG_INIT="`/usr/bin/find /etc/init.d/ -name 'postgres*' -type f`"
 UNTANGLE_SYSCTL="/etc/sysctl.d/60-untangle.conf"
@@ -27,9 +26,6 @@ if [ -z "$PG_HBA" ] ; then
 fi
 
 for i in $PG_CONF ; do
-    cp -f $i $i.$DATE
-done
-for i in $PG_MAST ; do
     cp -f $i $i.$DATE
 done
 for i in $PG_HBA ; do
@@ -91,14 +87,13 @@ for file in $PG_CONF ; do
     sed -i -e "s/[# ]*checkpoint_segments *=.*/checkpoint_segments = 12/" $file
     # Search both settings and events schemas by default
     sed -i -e "s/.*search_path.*=.*/search_path = 'public,settings,events'/" $file
-done
-
-for file in $PG_MAST; do
+    # disable autovacuuming
     sed -i -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" $file
+    perl -pe 's/^(?!#)/#/' /etc/cron.d/postgresql-common
 done
 
-if [ -z "$PG_MAST" ] ; then 
-    echo "WARNING: postmaster.conf not found (failed to disable autovacuum)"
+if [ -z "$PG_CONF" ] ; then 
+    echo "WARNING: postgresql.conf not found (failed to disable autovacuum)"
 fi
 
 if [ ! -z "$PG_INIT" ] ; then
