@@ -185,15 +185,19 @@ EOF
     # get the etch sysvinit
     echo "deb http://$DEBIAN_MIRROR etch main contrib non-free" >| /etc/apt/sources.list
     aptgetupdate
-    aptgetyes --trust-me install sysvinit sysv-rc apt-spy
+    aptgetyes --trust-me install --purge sysvinit sysv-rc apt-spy
   fi
 }
 
 stepRemoveUnwantedPackaged() {
   stepName "stepRemoveUnwantedPackaged"
 
-  # knoppix
-  removePackages "k(noppi)?x"
+  ## knoppix
+  removePackages "kn(oppi)?x"
+  # even though we purge all the knoppix packages, we want to make
+  # extra sure there are no knoppix remnants
+  find /etc -name "*knoppix*" -exec rm -fr "{}" \;
+
   removePackages "(lilo|pppconfig|cloop-utils)"
 
   # this "remove X 3.3 packages" (and some untangle-* packages, see above)
@@ -216,7 +220,7 @@ stepDistUpgradeToEtch() {
 
   # install the newer postgres 7.4 from etch, as it follows the naming
   # convention in /etc/
-  aptgetyes install postgresql-7.4 postgresql-common postgresql postgresql-client-7.4 python-psycopg python libapache2-mod-python python-pycurl
+  aptgetyes install --purge postgresql-7.4 postgresql-common postgresql postgresql-client-7.4 python-psycopg python libapache2-mod-python python-pycurl
   perl -i -pe 's/^port.+/port = 5432/' /etc/postgresql/7.4/main/postgresql.conf # force 5432
 
   aptgetyes dist-upgrade
@@ -298,11 +302,6 @@ stepFinish() {
   perl -i -pe 's/^(LC|LANG)/# $1/' /etc/environment
   echo LANG="en_US.UTF-8" >> /etc/environment # make it the default
   echo LC_ALL="en_US.UTF-8" >> /etc/environment # make it the default
-
-  # not sure why this happened on dogfood, and nowhere else. Possibly
-  # dogfood came from an earlier version of knoppix.
-  update-rc.d -f knoppix-autoconfig remove
-  rm -f /etc/init.d/knoppix-autoconfig
 
   undo_divert
 
