@@ -37,6 +37,8 @@ APACHE_UPGRADE_JS_PAGE="${APACHE_UPGRADE_HTML_DIR}/${BASENAME}.js"
 APACHE_UPGRADE_CONFIG="RedirectMatch 301 ^/webui.* /$(basename $APACHE_HTML_PAGE)"
 APACHE_UPGRADE_CONFIG_FILE="/etc/apache2/conf.d/${BASENAME}"
 
+SLAPD_BACKUP=/var/backups/untangle-ldap-`date -Iseconds`.ldif
+
 ## helper functions
 usage() {
   echo "$0 [-i]"
@@ -166,6 +168,9 @@ EOF
       UNTANGLE_PACKAGES="$UNTANGLE_PACKAGES $p"
     done < $UNTANGLE_PACKAGES_FILE
   fi
+
+  # backup our LDAP database
+  slapcat -f /etc/untangle-ldap/slapd.conf -l ${SLAPD_BACKUP}
 }
 
 stepSysVInit() {
@@ -278,6 +283,10 @@ stepReinstallUntanglePackages() {
 
   # dist-upgrade again
   aptgetyes dist-upgrade || fail
+
+  # restore our LDAP database
+  /etc/init.d/untangle-slapd stop
+  slapadd -c -f /etc/untangle-ldap/slapd.conf -l ${SLAPD_BACKUP}
 
   # free up some space
   apt-get clean
