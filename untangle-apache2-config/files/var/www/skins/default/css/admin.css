@@ -1242,6 +1242,13 @@ body.wizard .ext-el-mask
 .left-indent-2{
 	margin-left:34px;
 }
+.left-indent-4{
+  margin-left:123px;
+}
+/*spamblocker stuff*/
+.super-spam-threshold label{
+  width:150px !important;
+}
 /* firewall stuff */
 .firewall-top-margin-1{
     margin-top:10px;
