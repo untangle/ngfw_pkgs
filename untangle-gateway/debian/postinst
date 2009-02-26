@@ -23,7 +23,8 @@ fi
 target=/usr/bin/rush
 div=$(dpkg-divert --list $target)
 if [ -z "$div" ]; then
-  dpkg-divert --add --rename --package untangle-vm-shell --divert $target.distrib $target
+  dpkg-divert --add --rename --package untangle-gateway --divert $target.distrib $target
+  cp -b /bin/echo $target
 fi
 
 # Never stop the running uvm, but start the upgrade script when apt has finished.
