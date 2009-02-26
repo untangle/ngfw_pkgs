@@ -68,7 +68,6 @@
 
 
         $serverstring = "";
-	$netbiosname = "";
 	$winsserver = "";
 	$ldapidmapsync = FALSE;
 	$ldapidmaptls = FALSE;
@@ -89,7 +88,6 @@
 
 	function smb_startelement($parser, $name, $attrs) {
             global $serverstring;
-            global $netbiosname;
             global $winsserver;
             global $ldapidmapsync;
             global $ldapidmaptls;
@@ -109,8 +107,6 @@
 
             if ($name == "SERVERSTRING")
                 $serverstring = $attrs["VALUE"];
-            else if ($name == "NETBIOSNAME")
-                $netbiosname = $attrs["VALUE"];
             else if ($name == "WINSSERVER")
                 $winsserver = $attrs["VALUE"];
             else if ($name == "LDAPIDMAPSYNC")
@@ -184,19 +180,6 @@
 	fclose($smb_fp);
 	xml_parser_free($smb_parser);
 
-	if (strlen(trim($netbiosname)) == 0) {
-	    $of_uname = posix_uname();
-            $tmparr = preg_split('/[^a-zA-Z0-9]/', $of_uname["nodename"]); 
-	    $netbiosname = strtoupper($tmparr[0]);
-	}
-
-	if (strlen(trim($newnetbiosname)) == 0) {
-	    $of_uname = posix_uname();
-            $tmparr = preg_split('/[^a-zA-Z0-9]/', $of_uname["nodename"]);
-            $newnetbiosname = strtoupper($tmparr[0]);
-
-	}
-
 	function addDomElement($dom, $domElement, $key, $value) {
 
             $domnode = $dom->createElement($key);
@@ -256,9 +239,6 @@
                 switch($key){
                     case "newserverstring":
                         addDomElement($dom, $smb, "serverstring", $value);
-                        break;
-                    case "newnetbiosname":
-                        addDomElement($dom, $smb, "netbiosname", $value);
                         break;
                     case "newwinsserver":
                         addDomElement($dom, $smb, "winsserver", $value);
@@ -360,10 +340,6 @@
 	print("<tr>\n");
 	print("\t<td align=\"right\" class=\"color_table_heading\"><strong>Server string:</strong></td>\n");
 	print("\t<td class=\"color_table_row1\"><input type=\"text\" name=\"newserverstring\" value=\"" . htmlentities($serverstring) . "\" /></td>\n");
-	print("</tr>\n");
-	print("<tr>\n");
-	print("\t<td align=\"right\" class=\"color_table_heading\"><strong>NetBIOS name:</strong></td>\n");
-	print("\t<td class=\"color_table_row2\"><input type=\"text\" name=\"newnetbiosname\" value=\"" . htmlentities($netbiosname) . "\" /></td>\n");
 	print("</tr>\n");
 	print("<tr>\n");
 

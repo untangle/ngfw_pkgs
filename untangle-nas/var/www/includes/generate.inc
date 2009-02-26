@@ -141,7 +141,6 @@ function apply_configuration($params = array()) {
 			
 			
 	$ac_serverstring = "";
-	$ac_netbiosname = "";
 	$ac_winsserver = "";
 	$ac_ldapidmapsync = FALSE;
 	$ac_ldapidmaptls = FALSE;
@@ -392,10 +391,6 @@ function apply_configuration($params = array()) {
 	if ($smbXmlDom = new XmlHandler(SETTING_XML_SMB)) {
 		if ($node = $smbXmlDom->getElementsByTagName("serverstring")->item(0)) {
 			$ac_serverstring = $node->getAttribute("value"); 
-		}
-		
-		if ($node = $smbXmlDom->getElementsByTagName("netbiosname")->item(0)) {
-			$ac_netbiosname = $node->getAttribute("value"); 
 		}
 		
 		if ($node = $smbXmlDom->getElementsByTagName("winsserver")->item(0)) {
@@ -1758,11 +1753,9 @@ function apply_configuration($params = array()) {
 	$ac_smb_fp->AddLine( "server string = " . $ac_serverstring);
 	
 	$of_uname = posix_uname();
-	if (strlen($ac_netbiosname) > 0)
-		$ac_smb_fp->AddLine( "netbios name = " . strtoupper(substr($ac_netbiosname, 0, 15)));
-	else
-		$tmparr = preg_split('/[^a-zA-Z0-9]/', $of_uname["nodename"]); 
-		$ac_smb_fp->AddLine( "netbios name = " . strtoupper(substr($tmparr[0], 0, 15)));
+
+	$ac_netbiosname = $ac_aresult[41];
+	$ac_smb_fp->AddLine( "netbios name = " . strtoupper(substr($ac_netbiosname, 0, 15)));
 
 	if (strlen($ac_winsserver) > 0)
 		$ac_smb_fp->AddLine( "wins server = " . $ac_winsserver);

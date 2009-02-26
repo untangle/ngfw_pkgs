@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <smb>
-        <serverstring value="Openfiler NAS" />
+        <serverstring value="Untangle NAS" />
         <encryptedpasswords value="on" />
         <winbindpolicy value="on" />
         <doscharset value="CP850" />

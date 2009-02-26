@@ -197,6 +197,10 @@ def get()
 
   # ldap root bind pw 40
   puts "nimda11lacol"
+
+##### After here is stuff added by Untangle
+  # netbios name 41
+  puts @netbios_name
 end
 
 ###############################################################################
