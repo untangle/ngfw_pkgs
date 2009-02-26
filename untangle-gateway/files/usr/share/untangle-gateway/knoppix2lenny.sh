@@ -71,9 +71,9 @@ undo_divert() {
     fi
     target=/usr/bin/rush
     div=$(dpkg-divert --list $target)
-    if [ -n "$div" ] && [ -z "${div%%*by untangle-vm-shell}" ]; then
+    if [ -n "$div" ] && [ -z "${div%%*by untangle-gateway}" ]; then
       rm -f $target
-      dpkg-divert --remove --rename --package untangle-vm-shell --divert $target.distrib $target
+      dpkg-divert --remove --rename --package untangle-gateway --divert $target.distrib $target
     fi
 
     rm -f $APACHE_UPGRADE_HTML_PAGE $APACHE_UPGRADE_JS_PAGE $APACHE_UPGRADE_CONFIG_FILE
