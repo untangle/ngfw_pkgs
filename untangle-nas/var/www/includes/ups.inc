@@ -34,7 +34,7 @@ define('FILE_UPSDCONF', "/opt/nas/etc/plugins/ups/xml/upsdconf.xml");
 
 class UPS {
 
-	var $nodes;
+    var $nodes = array();
 
 	function UPS()
 	{

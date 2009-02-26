@@ -35,7 +35,41 @@ end
 ###############################################################################
 
 def set()
-  puts "implement me"
+  # /etc/nsswitch.conf
+  if @use_ad && @use_ldap then
+    nsline = "compat winbind ldap"
+  elsif @use_ad then
+    nsline = "compat winbind"
+  elsif @use_ldap then
+    nsline = "compat ldap"
+  else
+    nsline = "compat"
+  end
+  `sed -i -e "s/^\(passwd\|group\|shadow\):.*/\1:	#{nsline}/" /tmp/nsswitch.conf`
+
+  # /etc/nss-ldap.conf
+  `sed -i -e "s/^base .*/base dc=nodomain/" -e "s-^uri .*-uri ldap://localhost:3899-" /tmp/nss-ldap.conf`
+
+  # /etc/krb5.conf
+  if @use_ad then
+    File.open("/tmp/krb5.conf", "w") do |f|
+      f.puts <<EOF
+[libdefaults]
+        default_realm = #{@ad_realm}
+        forwardable = true
+
+[realms]
+        #{@ad_realm} = {
+                kdc = #{@ad_master}
+                admin_server = #{@ad_master}
+                default_domain = #{@ad_realm.downcase()}
+        }
+
+[domain_realm]
+.#{@ad_realm.downcase()} = #{@ad_realm}
+EOF
+    end
+  end
 end
 
 ###############################################################################
@@ -159,7 +193,7 @@ def get()
   puts ""
 
   # ldap root bind dn
-  puts "cn=admin"
+  puts "cn=admin,dc=nodomain"
 
   # ldap root bind pw 40
   puts "nimda11lacol"

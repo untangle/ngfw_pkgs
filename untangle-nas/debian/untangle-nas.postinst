@@ -16,7 +16,7 @@ NAS_GUEST_GID=96
 NAS_GUEST_HOME=/mnt/nas
 SLAPD_CONFIG=/etc/untangle-ldap/slapd.conf
 
-MODIFIED_FILES="/etc/nsswitch.conf /etc/default/rsync /etc/suphp/suphp.conf /etc/samba/smb.conf /etc/pam.d/samba /etc/exports $SLAPD_CONFIG"
+MODIFIED_FILES="/etc/nsswitch.conf /etc/nss-ldap.conf /etc/krb5.conf /etc/default/rsync /etc/suphp/suphp.conf /etc/samba/smb.conf /etc/pam.d/samba /etc/exports $SLAPD_CONFIG"
 
 # admin group and user account
 grep -q "^${NAS_GROUP}" /etc/group || addgroup --gid ${NAS_GID} ${NAS_GROUP}
@@ -137,31 +137,31 @@ if ! grep -q untangle-nas $SLAPD_CONFIG; then
 #
 include		/etc/ldap/schema/samba.schema
 
-access to attr=sambaPasswordHistory
+access to attrs=sambaPasswordHistory
 	by dn="cn=admin,dc=nodomain" write
 	by anonymous auth
 	by self write
 	by * none
 
-access to attr=sambaLMPassword
+access to attrs=sambaLMPassword
 	by dn="cn=admin,dc=nodomain" write
 	by anonymous auth
 	by self write
 	by * none
 
-access to attr=sambaNTPassword
+access to attrs=sambaNTPassword
 	by dn="cn=admin,dc=nodomain" write
 	by anonymous auth
 	by self write
 	by * none
 
-access to attr=userPassword
+access to attrs=userPassword
 	by dn="cn=admin,dc=nodomain" write
 	by anonymous auth
 	by self write
 	by * none
 
-access to attr=shadowLastChange
+access to attrs=shadowLastChange
 	by dn="cn=admin,dc=nodomain" write
 	by anonymous auth
 	by self write

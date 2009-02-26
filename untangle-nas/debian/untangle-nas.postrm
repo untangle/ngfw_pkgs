@@ -8,7 +8,7 @@ NAS_GUEST_USER=nasguest
 NAS_GUEST_GROUP=nasguest
 SLAPD_CONFIG=/etc/untangle-ldap/slapd.conf
 
-MODIFIED_FILES="/etc/nsswitch.conf /etc/default/rsync /etc/suphp/suphp.conf /etc/samba/smb.conf /etc/pam.d/samba /etc/exports $SLAPD_CONFIG"
+MODIFIED_FILES="/etc/nsswitch.conf /etc/nss-ldap.conf /etc/krb5.conf /etc/default/rsync /etc/suphp/suphp.conf /etc/samba/smb.conf /etc/pam.d/samba /etc/exports $SLAPD_CONFIG"
 
 case $1 in
   purge)
