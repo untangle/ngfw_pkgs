@@ -38,6 +38,7 @@ APACHE_UPGRADE_CONFIG="RedirectMatch 301 ^/webui.* /$(basename $APACHE_HTML_PAGE
 APACHE_UPGRADE_CONFIG_FILE="/etc/apache2/conf.d/${BASENAME}"
 
 SLAPD_BACKUP=/var/backups/untangle-ldap-`date -Iseconds`.ldif
+SNMP_BACKUP=/var/backups/untangle-snmp-`date -Iseconds`.ldif
 
 ## helper functions
 usage() {
@@ -171,6 +172,9 @@ EOF
 
   # backup our LDAP database
   slapcat -f /etc/untangle-ldap/slapd.conf -l ${SLAPD_BACKUP}
+
+  # backup snmp settings
+  cp -f /etc/snmp/snmpd.conf ${SNMP_BACKUP}
 }
 
 stepSysVInit() {
@@ -283,6 +287,9 @@ stepReinstallUntanglePackages() {
 
   # dist-upgrade again
   aptgetyes dist-upgrade || fail
+
+  # restore SNMP settings
+  cp -f ${SNMP_BACKUP} /etc/snmp/snmpd.conf
 
   # restore our LDAP database
   /etc/init.d/untangle-slapd stop
