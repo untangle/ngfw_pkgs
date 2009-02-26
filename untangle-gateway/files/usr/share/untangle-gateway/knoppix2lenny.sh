@@ -286,7 +286,10 @@ stepReinstallUntanglePackages() {
 
   # restore our LDAP database
   /etc/init.d/untangle-slapd stop
+  rm -fr /var/lib/ldap
+  mkdir /var/lib/ldap
   slapadd -c -f /etc/untangle-ldap/slapd.conf -l ${SLAPD_BACKUP}
+  chown -R openldap:openldap /var/lib/ldap
 
   # free up some space
   apt-get clean
