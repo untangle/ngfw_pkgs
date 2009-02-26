@@ -92,6 +92,9 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.EditorGridPanel, {
                     }
                 }
                 var res="";
+                if ( rule == null ) {
+                    return;
+                }
                 switch(rule.type) {
                     case "text":
                         res='<input type="text" size="20" class="x-form-text x-form-field rule_builder_value" onchange="Ext.getCmp(\''+this.getId()+'\').changeRowValue(\''+record.id+'\',this)" value="'+value+'"/>';

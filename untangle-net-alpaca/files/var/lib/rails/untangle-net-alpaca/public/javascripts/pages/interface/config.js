@@ -31,6 +31,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             xtype : "checkbox",
             fieldLabel : "Is WAN Interface",
             name : "interface.wan",
+            itemCls : 'label-width-2',
             listeners : {
                 "check" : {
                     fn : this.onCheckWan,
@@ -65,6 +66,9 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                     triggerAction : "all",
                     editable : false,
                     store :  config_types,
+                    width : 80,
+                    listWidth : 70,
+                    itemCls : 'label-width-2',
                     listeners : {
                         "select" : {
                             fn : this.onSelectConfigType,
@@ -75,6 +79,9 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             },{
                 autoHeight : true,
                 wanToggle : true,
+                defaults : {
+                    itemCls : 'label-width-2'
+                },
                 xtype : "fieldset",
                 items : [{
                     xtype : "numberfield",
@@ -128,7 +135,8 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
         var items = [{
                 autoHeight : true,
                 defaults : {
-                    xtype : "textfield"
+                    xtype : "textfield",
+                    itemCls : 'label-width-2'
                 },
                 items : [{
                     fieldLabel : this._( "Primary IP Address and Netmask" ),
@@ -143,7 +151,8 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                 wanToggle : true,
                 autoHeight : true,
                 defaults : {
-                    xtype : "textfield"
+                    xtype : "textfield",
+                    itemCls : 'label-width-2'
                 },
                 items : [{
                     fieldLabel : this._( "Default Gateway" ),
@@ -167,7 +176,8 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             }, this.buildNatPolicyGrid( settings, "static_nat_policies" ), {
                 autoHeight : true,
                 defaults : {
-                    xtype : "textfield"
+                    xtype : "textfield",
+                    itemCls : 'label-width-2'
                 },
                 items : [
                     this.currentMtu( settings, "static.mtu" ),
@@ -239,7 +249,8 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             items : [{
                 autoHeight : true,
                 defaults : {
-                    xtype : "textfield"
+                    xtype : "textfield",
+                    itemCls : 'label-width-2'
                 },
                 items : items
             },{
@@ -263,7 +274,8 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             items : [{
                 autoHeight : true,
                 defaults : {
-                    xtype : "textfield"
+                    xtype : "textfield",
+                    itemCls : 'label-width-2'
                 },
                 items : [{
                     fieldLabel : this._( "Bridge To" ),
@@ -272,7 +284,8 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                     mode : "local",
                     triggerAction : "all",
                     editable : false,
-                    listWidth : 160,
+                    width : 160,
+                    listWidth : 150,
                     store :  settings["bridgeable_interfaces"]
                 }, this.buildEthernetMediaCombo( settings )]
             }]
@@ -321,7 +334,8 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             items : [{
                 autoHeight : true,
                 defaults : {
-                    xtype : "textfield"
+                    xtype : "textfield",
+                    itemCls : 'label-width-2'
                 },
                 items : items,
             },{
@@ -331,13 +345,14 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             }, this.buildAliasGrid( settings, "pppoe_aliases" ), {
                 autoHeight : true,
                 defaults : {
-                    xtype : "textfield"
+                    xtype : "textfield",
+                    itemCls : 'label-width-2'
                 },
                 items : [{
                     xtype : "textarea",
                     fieldLabel : this._( "Secret Field" ),
                     name : "pppoe.secret_field",
-                    width : 494,
+                    width : 397,
                     height : 140
                 }]
             }]
@@ -421,7 +436,9 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             mode : "local",
             triggerAction : "all",
             editable : false,
-            listWidth : 160,
+            listWidth : 150,
+            width : 160,
+            itemCls : 'label-width-2',
             store :  settings["media_types"]
         });
     },
@@ -472,7 +489,8 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             width : 60,
             fieldLabel : this._( "MTU" ),
             boxLabel : String.format( this._( "(current : {0})" ), mtu ),
-            name : field,
+            itemCls : 'label-width-2',
+            name : field
         };
     },
 

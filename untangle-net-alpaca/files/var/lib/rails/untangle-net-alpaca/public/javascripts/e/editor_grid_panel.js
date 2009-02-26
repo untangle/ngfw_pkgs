@@ -149,7 +149,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
                             this.updateChangedData(record, "modified");
                         }.createDelegate(this)
                     }
-                }                
+                }
             });
         }
         if(this.rowEditorConfig) {

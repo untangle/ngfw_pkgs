@@ -39,11 +39,12 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
 
         columns.push({
             header : this._( "Config Type" ),
-            width: 80,
+            width: 84,
             fixed : true,
             align : "center",
             sortable: false,
-            dataIndex : "config_type"
+            dataIndex : "config_type",
+            renderer : this.renderConfigType.createDelegate( this )
         });
 
         columns.push({
@@ -78,7 +79,7 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
             settings : this.settings,
 
             recordFields : [ "name", "duplex", "config_type", "os_name", "mac_address", "speed", 
-                             "duplex", "index", "id", "interface_status_v2" ],
+                             "index", "id", "interface_status_v2", "wan" ],
             selectable : false,
             selModel : new Ext.grid.RowSelectionModel({
                 singleSelect : true
@@ -168,6 +169,19 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
         status += " " + value.speed +  " " + value.duplex;
         
         return "<div class='" + divClass + "'>" + record.data.os_name + " : " + status + "</div>";
+    },
+
+    renderConfigType : function( value, metadata, record )
+    {
+        if ( !Ung.Alpaca.isAdvanced ) {
+            return value;
+        }
+
+        if ( record.data.wan && ( record.data.config_type != "bridge" )) {
+            return value + this._( " (wan)" );
+        }
+
+        return value;
     },
 
     renderMacAddress : function( value, metadata, record )
