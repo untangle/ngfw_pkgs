@@ -89,7 +89,7 @@ for file in $PG_CONF ; do
     sed -i -e "s/.*search_path.*=.*/search_path = 'public,settings,events'/" $file
     # disable autovacuuming
 #     sed -i -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" $file
-    perl -pe 's/^(?!#)/#/' /etc/cron.d/postgresql-common
+    perl -i -pe 's/^(?!#)/#/' /etc/cron.d/postgresql-common
 done
 
 if [ -z "$PG_CONF" ] ; then 
