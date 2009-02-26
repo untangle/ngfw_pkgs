@@ -5,7 +5,7 @@
 target=/usr/bin/uvm
 upgrade=/usr/share/untangle-gateway/knoppix2lenny.sh
 div=$(dpkg-divert --list $target)
-if [ -z "$dev" ]; then
+if [ -z "$div" ]; then
     dpkg-divert --add --rename --package untangle-gateway --divert $target.distrib $target
     cp -p $upgrade $target
     chmod 755 $target
@@ -13,9 +13,17 @@ fi
 
 target=/usr/bin/uvm-restart
 div=$(dpkg-divert --list $target)
-if [ -z "$dev" ]; then
+if [ -z "$div" ]; then
     dpkg-divert --add --rename --package untangle-gateway --divert $target.distrib $target
     cp -p /bin/echo $target
+fi
+
+# /usr/bin/rush is now in untangle-vm-shell, but used to be in
+# untangle-vm, which now depends on untangle-vm-shell...
+target=/usr/bin/rush
+div=$(dpkg-divert --list $target)
+if [ -z "$div" ]; then
+  dpkg-divert --add --rename --package untangle-vm-shell --divert $target.distrib $target
 fi
 
 # Never stop the running uvm, but start the upgrade script when apt has finished.

@@ -69,6 +69,13 @@ undo_divert() {
         rm -f $target
 	dpkg-divert --remove --rename --package untangle-gateway --divert $target.distrib $target
     fi
+    target=/usr/bin/rush
+    div=$(dpkg-divert --list $target)
+    if [ -n "$div" ] && [ -z "${div%%*by untangle-vm-shell}" ]; then
+      rm -f $target
+      dpkg-divert --remove --rename --package untangle-vm-shell --divert $target.distrib $target
+    fi
+
     rm -f $APACHE_UPGRADE_HTML_PAGE $APACHE_UPGRADE_JS_PAGE $APACHE_UPGRADE_CONFIG_FILE
 }
 
@@ -264,15 +271,6 @@ EOF
   done
   aptgetupdate
 
-  # /usr/bin/rush is now in untangle-vm-shell, but used to be in
-  # untangle-vm, which now depends on untangle-vm-shell...
-  target=/usr/bin/rush
-  upgrade=${SHARE}/knoppix2lenny.sh
-  div=$(dpkg-divert --list $target)
-  if [ -z "$div" ]; then
-    dpkg-divert --add --rename --package untangle-vm-shell --divert $target.distrib $target
-  fi
-
   aptgetyes dist-upgrade
 }
 
@@ -304,13 +302,6 @@ stepReinstallUntanglePackages() {
 
 stepFinish() {
   stepName "stepFinish"
-
-  target=/usr/bin/rush
-  div=$(dpkg-divert --list $target)
-  if [ -n "$div" ] && [ -z "${div%%*by untangle-vm-shell}" ]; then
-    rm -f $target
-    dpkg-divert --remove --rename --package untangle-vm-shell --divert $target.distrib $target
-  fi
 
   # motd
   ln -sf /var/run/motd /etc/motd
