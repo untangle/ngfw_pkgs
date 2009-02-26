@@ -115,6 +115,8 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
 
             switch ( item.xtype ) {
             case "textfield":
+            case "textarea":
+            case "numberfield":
                 value = ( value == null ) ? "" : value;
                 item.setValue( value );
                 break;
@@ -216,6 +218,8 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
 
             switch ( item.xtype ) {
             case "textfield":
+            case "textarea":
+            case "numberfield":
             case "combo":
             case "rulebuilder":
                 value = item.getValue();
