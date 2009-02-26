@@ -1,11 +1,12 @@
 import base64
-import gettext
-import os
-import urllib
 import cgi
-import pwd
+import gettext
 import grp
+import os
+import pwd
+import re
 import sets
+import urllib
 
 from mod_python import apache, Session, util
 from psycopg import connect
@@ -64,12 +65,16 @@ def headerparserhandler(req):
         # is restricted. a tomcat valve enforces this setting.
         if options.get('UseRemoteAccessSettings', 'no') == 'yes':
             (allow_insecure, allow_outside_admin) = get_access_settings()
-            (addr, port) = req.connection.local_addr
 
-            if 80 == port and not allow_insecure:
-                return apache.HTTP_FORBIDDEN
-            elif 443 == port and not allow_outside_admin:
-                return apache.HTTP_FORBIDDEN
+            connection = req.connection
+
+            (addr, port) = connection.local_addr
+
+            if not re.match('127\.', connection.remote_ip):
+                if 80 == port and not allow_insecure:
+                    return apache.HTTP_FORBIDDEN
+                elif 443 == port and not allow_outside_admin:
+                    return apache.HTTP_FORBIDDEN
 
         login_redirect(req, realm)
 
