@@ -7,15 +7,17 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "qos", "index" )) {
     Ung.Alpaca.Util.stopLoading();
 }
 
+// throw "you got fail.";
+
 Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
     initComponent : function()
     {
         this.priorityStore = [];
         this.priorityMap = {};
 
-        this.addPriority( 10 , this._( "High" ));
-        this.addPriority( 20 , this._( "Normal" ));
-        this.addPriority( 30 , this._( "Low" ));
+        this.addPriority( 10, this._( "High" ));
+        this.addPriority( 20, this._( "Normal" ));
+        this.addPriority( 30, this._( "Low" ));
 
         this.qosGrid = this.buildQosGrid();
 
@@ -44,7 +46,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 xtype : "numberfield",
                 fieldLabel : this._( "Download Bandwidth" ),
                 name : "bandwidth.0.download_bandwidth",
-                boxLabel : this._( "kbps" ),
+                boxLabel : this._( "kbps" )
             }]);
         }
         
@@ -345,22 +347,29 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         var store = new Ext.data.GroupingStore({
             proxy : new Ext.data.MemoryProxy( this.settings["status"] ),
             reader : new Ext.data.ArrayReader( {}, [{
-                name :  "interface_name", mapping : "interface_name",
+                name :  "interface_name",
+                mapping : "interface_name"
             },{
-                name :  "priority", mapping : "priority",
+                name :  "priority",
+                mapping : "priority"
             },{
-                name : "rate", mapping : "rate",
+                name : "rate",
+                mapping : "rate"
             },{
-                name : "burst", mapping : "burst",
+                name : "burst",
+                mapping : "burst"
             },{
-                name : "sent", mapping : "sent",
+                name : "sent",
+                mapping : "sent"
             },{
-                name : "tokens", mapping : "tokens",
+                name : "tokens",
+                mapping : "tokens"
             },{
-                name : "ctokens", mapping : "ctokens"
+                name : "ctokens",
+                mapping : "ctokens"
             }]),
             groupField : "interface_name",
-            sortInfo : { field : "priority", direction : "ASC" },
+            sortInfo : { field : "priority", direction : "ASC" }
         });
 
         var view = new Ext.grid.GroupingView({
