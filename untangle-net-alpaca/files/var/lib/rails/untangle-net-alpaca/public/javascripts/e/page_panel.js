@@ -112,8 +112,7 @@ Ung.Alpaca.PagePanel = Ext.extend( Ext.Panel, {
      */
     getSettingsValue : function( settings, name )
     {
-        var re = /^[a-zA-Z_][-a-zA-Z0-9_\.]+$/;
-        if ( name.match( re ) == null ) {
+        if ( name.match( Ung.Alpaca.PagePanel.validFieldNameRegex ) == null ) {
             return null;
         }
 
@@ -173,7 +172,7 @@ Ung.Alpaca.PagePanel = Ext.extend( Ext.Panel, {
 
     setSettingsValue : function( settings, name, value )
     {
-        if ( /^[a-zA-Z_][-a-zA-Z0-9_\.]+$/( name ) == null ) {
+        if ( name.match( Ung.Alpaca.PagePanel.validFieldNameRegex ) == null ) {
             return null;
         }
 
@@ -198,3 +197,6 @@ Ung.Alpaca.PagePanel = Ext.extend( Ext.Panel, {
         hash[path[c]] = value;
     }
 });
+
+/* Regular expression indicating that matches a field name that can be automatically updated */
+Ung.Alpaca.PagePanel.validFieldNameRegex = /^[a-zA-Z_][-a-zA-Z0-9_\.]+$/;
