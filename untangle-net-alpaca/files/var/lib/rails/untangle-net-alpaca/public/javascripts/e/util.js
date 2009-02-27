@@ -4,6 +4,8 @@ Ext.ns('Ung.Alpaca');
 Ung.Alpaca.Util = {
     stopLoadingObject  : {},
 
+    loadException : {},
+
     loadScript : function( queryPath, handler, failure )
     {
         var src = this.getQueryPathScript( queryPath );
@@ -18,22 +20,29 @@ Ung.Alpaca.Util = {
 
     loadScriptSuccess : function( response, options, handler )
     {
-        try {
-            if( window.execScript) {
-                window.execScript(response.responseText);
-            } else {
-                window.eval(response.responseText);
+        var key = Math.random();
+        Ung.Alpaca.Util.loadException[key] = null;
+        var script = "try {\n";
+        script += response.responseText;
+        script += "\n} catch ( e ) {\nUng.Alpaca.Util.loadException[" + key + "] = e;\n}\n"
+        
+        if( window.execScript) {
+            window.execScript(script);
+        } else {
+            window.eval(script);
+        }
+
+        var exn = Ung.Alpaca.Util.loadException[key];
+        delete Ung.Alpaca.Util.loadException[key];
+
+        if (( exn != null ) && ( exn != this.stopLoadingObject )) {
+            /* Check if the UVM session is expired */
+            if ( Ung.Alpaca.Glue.isUvmSessionExpired( response )) {
+                this.showSessionExpired();
+                return;
             }
-        } catch ( e ) {
-            if ( e != this.stopLoadingObject ) {
-                /* Check if the UVM session is expired */
-                if ( Ung.Alpaca.Glue.isUvmSessionExpired( response )) {
-                    this.showSessionExpired();
-                    return;
-                }
-                
-                throw e;
-            }
+            
+            throw exn;
         }
         
         handler( response, options );
