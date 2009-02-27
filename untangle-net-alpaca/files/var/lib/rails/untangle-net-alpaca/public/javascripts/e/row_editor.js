@@ -282,7 +282,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
             return;
         }
 
-        if ( /^[a-zA-Z_][-a-zA-Z0-9_\.]+$/( name ) == null ) {
+        if ( name.match( Ung.Alpaca.Util.validFieldNameRegex ) == null ) {
             return;
         }
 

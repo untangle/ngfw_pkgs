@@ -40,7 +40,7 @@ Ung.Alpaca.PagePanel = Ext.extend( Ext.Panel, {
     populateFieldValue : function( item, index, length, settings )
     {
         if ( item.getName ) {
-            var value = this.getSettingsValue( settings, item.getName());
+            var value = Ung.Alpaca.Util.getSettingsValue( settings, item.getName());
 
             if ( value == null ) {
                 value = item.defaultValue;
@@ -105,32 +105,6 @@ Ung.Alpaca.PagePanel = Ext.extend( Ext.Panel, {
         }
     },
 
-    /**
-     * All of the fields should have a name like "<key1>.<key2>.<key3>"
-     * this way if the settings = { "key1" : { "key2" : { "key3" : "value" }}} 
-     * it is easy to compute the field value is settings["key1"]["key2"]["key3"]
-     */
-    getSettingsValue : function( settings, name )
-    {
-        var re = /^[a-zA-Z_][-a-zA-Z0-9_\.]+$/;
-        if ( name.match( re ) == null ) {
-            return null;
-        }
-
-        var path = name.split( "." );
-        
-        var value = settings;
-        
-        for ( var c = 0 ; c < path.length ; c++ ) {
-            value = value[path[c]];
-            if ( value == null ) {
-                return null;
-            }
-        }
-
-        return value;
-    },
-
     updateSettings : function( settings )
     {
         /* Iterate the panel and line up fields with their values. */
@@ -161,7 +135,7 @@ Ung.Alpaca.PagePanel = Ext.extend( Ext.Panel, {
             }
             
             if ( value != null ) {
-                this.setSettingsValue( settings, item.getName(), value );
+                Ung.Alpaca.Util.setSettingsValue( settings, item.getName(), value );
             }
         }
 
@@ -169,32 +143,5 @@ Ung.Alpaca.PagePanel = Ext.extend( Ext.Panel, {
         if ( item.items ) {
             item.items.each( this.updateFieldValue.createDelegate( this, [ settings ], true ));
         }
-    },
-
-    setSettingsValue : function( settings, name, value )
-    {
-        if ( /^[a-zA-Z_][-a-zA-Z0-9_\.]+$/( name ) == null ) {
-            return null;
-        }
-
-        var path = name.split( "." );
-        
-        var end = path.length - 1;
-
-        var c = 0;
-        var hash = settings;
-        
-        for ( c = 0 ; c < end ; c++ ) {
-            if ( hash == null ) {
-                return;
-            }
-            hash = hash[path[c]];
-        }
-
-        if ( hash == null ) {
-            return;
-        }
-
-        hash[path[c]] = value;
     }
 });

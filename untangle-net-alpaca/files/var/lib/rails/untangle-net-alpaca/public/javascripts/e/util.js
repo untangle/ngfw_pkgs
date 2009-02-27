@@ -4,6 +4,8 @@ Ext.ns('Ung.Alpaca');
 Ung.Alpaca.Util = {
     stopLoadingObject  : {},
 
+    validFieldNameRegex : /^[a-zA-Z_][-a-zA-Z0-9_\.]+$/,
+
     loadScript : function( queryPath, handler, failure )
     {
         var src = this.getQueryPathScript( queryPath );
@@ -425,7 +427,7 @@ Ung.Alpaca.Util = {
      */
     getSettingsValue : function( settings, name )
     {
-        if ( /^[a-zA-Z_][-a-zA-Z0-9_\.]+$/( name ) == null ) {
+        if ( name.match( Ung.Alpaca.Util.validFieldNameRegex ) == null ) {
             return null;
         }
 
@@ -449,7 +451,7 @@ Ung.Alpaca.Util = {
             return;
         }
 
-        if ( /^[a-zA-Z_][-a-zA-Z0-9_\.]+$/( name ) == null ) {
+        if ( name.match( Ung.Alpaca.Util.validFieldNameRegex ) == null ) {
             return;
         }
 
