@@ -112,7 +112,8 @@ Ung.Alpaca.PagePanel = Ext.extend( Ext.Panel, {
      */
     getSettingsValue : function( settings, name )
     {
-        if ( /^[a-zA-Z_][-a-zA-Z0-9_\.]+$/( name ) == null ) {
+        var re = /^[a-zA-Z_][-a-zA-Z0-9_\.]+$/;
+        if ( name.match( re ) == null ) {
             return null;
         }
 

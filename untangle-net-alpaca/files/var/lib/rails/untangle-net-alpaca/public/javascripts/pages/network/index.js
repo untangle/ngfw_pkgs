@@ -72,7 +72,7 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 items : [{
                     fieldLabel : this._( "Address" ),
                     name : this.generateName( "config_list", i, "static.ip" ),
-                    vtype : "ipAddress",
+                    vtype : "ipAddress"
                 },{
                     xtype : "combo",
                     fieldLabel : this._( "Netmask" ),
@@ -206,7 +206,7 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                             scope : this
                         }
                     }
-                }],
+                }]
             }, switchBlade ]
         });
 
@@ -293,7 +293,7 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                             scope : this
                         }
                     }
-                }],
+                }]
             }, switchBlade ]
         });
 
