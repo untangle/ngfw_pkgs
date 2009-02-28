@@ -45,7 +45,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     xtype : "numberfield",
                     fieldLabel : this._( "Internet Download Bandwidth" ),
                     name : "qos_settings.download",
-                    boxLabel : this._( "kbps" ),
+                    boxLabel : this._( "kbps" )
                 },{
                     xtype : "combo",
                     fieldLabel : this._( "Limit Download To" ),

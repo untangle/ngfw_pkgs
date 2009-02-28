@@ -46,8 +46,8 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             items : [{
                     xtype:"label",
                     html:this._("Configure Interface"),
-                    cls : 'page-header-text',
-                },
+                    cls : 'page-header-text'
+            },
                 {
                 autoHeight : true,
                 xtype : "fieldset",
@@ -295,7 +295,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                 defaults : {
                     xtype : "textfield"
                 },
-                items : items,
+                items : items
             }, this.buildAliasGrid( settings, "pppoe_aliases" ), {
                 autoHeight : true,
                 defaults : {
@@ -320,7 +320,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             settings : settings,
             name : entriesField,
             recordDefaults : {
-                network_string : "1.2.3.4 / 24",
+                network_string : "1.2.3.4 / 24"
             },
             
             columns : [{
@@ -419,7 +419,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             width : 60,
             fieldLabel : this._( "MTU" ),
             boxLabel : String.format( this._( "(current : {0})" ), mtu ),
-            name : field,
+            name : field
         };
     },
 
