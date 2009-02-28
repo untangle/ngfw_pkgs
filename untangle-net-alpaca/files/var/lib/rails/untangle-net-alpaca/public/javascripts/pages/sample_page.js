@@ -22,7 +22,7 @@ Ung.Alpaca.Pages.Sample.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             },
             items : [{
                 defaults : {
-                    xtype : "textfield",
+                    xtype : "textfield"
                 },
                 items : [{
                     fieldLabel : "Setting",

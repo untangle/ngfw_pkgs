@@ -54,7 +54,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             items : [{
                     xtype : "label",
                     html : this._("Configure Interface"),
-                    cls : 'page-header-text',
+                    cls : 'page-header-text'
             },{
                 autoHeight : true,
                 xtype : "fieldset",
@@ -337,7 +337,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                     xtype : "textfield",
                     itemCls : 'label-width-2'
                 },
-                items : items,
+                items : items
             },{
                 xtype : "label",
                 cls : 'page-header-text',
@@ -369,7 +369,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             settings : settings,
             name : entriesField,
             recordDefaults : {
-                network_string : "1.2.3.4 / 24",
+                network_string : "1.2.3.4 / 24"
             },
             
             columns : [{
