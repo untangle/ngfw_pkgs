@@ -56,6 +56,7 @@
 	function smb_startelement($parser, $name, $attrs)
 	{
             global $serverstring;
+            global $netbiosname;
             global $winsserver;
             global $ldapidmapsync;
             global $ldapidmaptls;
@@ -76,6 +77,8 @@
 
             if ($name == "SERVERSTRING")
                     $serverstring = $attrs["VALUE"];
+            else if ($name == "NETBIOSNAME")
+                    $netbiosname = $attrs["VALUE"];
             else if ($name == "WINSSERVER")
                     $winsserver = $attrs["VALUE"];
             else if ($name == "LDAPIDMAPSYNC")
@@ -220,15 +223,117 @@ if (count($_POST) > 0)
     $file->Save();
 
 
-    $authconfigcommand = "/usr/bin/sudo /usr/bin/rush /opt/nas/sbin/authconfig.rb --set";
+    $authconfigcommand = "/usr/bin/sudo /usr/sbin/authconfig --kickstart --disablecache";
+
+    if (strlen($_POST["usenis"]) > 0)
+    {
+            if (strcasecmp($_POST["usenis"], "on") == 0)
+                    $authconfigcommand .= " --enablenis --nisdomain=\"" . $_POST["nisdomain"] . "\" --nisserver=\"" . $_POST["nisserver"] . "\"";
+    }
+    else
+            $authconfigcommand .= " --disablenis";
+
+    if (strlen($_POST["useldap"]) > 0)
+    {
+            if (strcasecmp($_POST["useldap"], "on") == 0)
+                    $authconfigcommand .= " --enableldap --ldapserver=\"" . $_POST["ldapserver"] . "\" --ldapbasedn=\"" . $_POST["ldapbasedn"] . "\" --ldapbinddn=\"" . $_POST["ldapbinddn"] . "\" --ldapbindpw='" . $_POST["ldapbindpw"] . "' --ldaprootbinddn=\"" . $_POST["ldaprootbinddn"] . "\" --ldaprootbindpw='" . $_POST["ldaprootbindpw"] . "'";
+    }
+    else
+    {
+            $authconfigcommand .= " --disableldap --ldapserver=\"" . $_POST["ldapserver"] . "\" --ldapbasedn=\"" . $_POST["ldapbasedn"] . "\" --ldapbinddn=\"" . $_POST["ldapbinddn"] . "\" --ldapbindpw='" . $_POST["ldapbindpw"] . "' --ldaprootbinddn=\"" . $_POST["ldaprootbinddn"] . "\" --ldaprootbindpw='" . $_POST["ldaprootbindpw"] . "'";
+    }
+
+    if (strlen($_POST["ldaptls"]) > 0)
+    {
+            if (strcasecmp($_POST["ldaptls"], "on") == 0)
+                    $authconfigcommand .= " --enableldaptls";
+    }
+    else
+            $authconfigcommand .= " --disableldaptls";
+
+    if (strlen($_POST["useldapauth"]) > 0)
+    {
+            if (strcasecmp($_POST["useldapauth"], "on") == 0)
+                    $authconfigcommand .= " --enableldapauth";
+    }
+    else
+            $authconfigcommand .= " --disableldapauth";
+
+    if (strlen($_POST["usehesiod"]) > 0)
+    {
+            if (strcasecmp($_POST["usehesiod"], "on") == 0)
+                    $authconfigcommand .= " --enablehesiod --hesiodlhs=\"" . $_POST["hesiodlhs"] . "\" --hesiodrhs=\"" . $_POST["hesiodrhs"] . "\"";
+    }
+    else
+            $authconfigcommand .= " --disablehesiod";
+
+    if (strlen($_POST["winbinddomain"]) > 0)
+    {
+            $authconfigcommand .= " --smbworkgroup=\"" . $_POST["winbinddomain"] . "\"";
+    }
+
+    if (strlen($_POST["usewinbind"]) > 0)
+    {
+            if (strcasecmp($_POST["usewinbind"], "on") == 0)
+                    $authconfigcommand .= " --enablewinbind --winbindseparator=+ --winbindtemplateshell=/sbin/nologin --smbsecurity=" . $_POST["winbindtype"] . " --smbservers=\"" . $_POST["winbindcontrollers"] . "\" --smbrealm=\"" . $_POST["winbindrealm"] . "\" --smbidmapuid=\"" . $_POST["winbinduidrange"] . "\" --smbidmapgid=\"" . $_POST["winbindgidrange"] . "\"";
+    }
+    else
+            $authconfigcommand .= " --disablewinbind";
+
+    if (strlen($_POST["useshadow"]) > 0)
+    {
+            if (strcasecmp($_POST["useshadow"], "on") == 0)
+                    $authconfigcommand .= " --enableshadow";
+    }
+    else
+            $authconfigcommand .= " --disableshadow";
+
+    if (strlen($_POST["usemd5"]) > 0)
+    {
+            if (strcasecmp($_POST["usemd5"], "on") == 0)
+                    $authconfigcommand .= " --enablemd5";
+    }
+    else
+            $authconfigcommand .= " --disablemd5";
+
+    if (strlen($_POST["usekerberos"]) > 0)
+    {
+            if (strcasecmp($_POST["usekerberos"], "on") == 0)
+                    $authconfigcommand .= " --enablekrb5 --krb5realm=\"" . $_POST["krbrealm"] . "\" --krb5kdc=\"" . $_POST["krbkdc"] . "\" --krb5adminserver=\"" . $_POST["krbadminserver"] . "\"";
+    }
+    else
+            $authconfigcommand .= " --disablekrb5";
+
+    if (strlen($_POST["usesmb"]) > 0)
+    {
+            if (strcasecmp($_POST["usesmb"], "on") == 0)
+                    $authconfigcommand .= " --enablesmbauth --smbworkgroup=\"" . $_POST["smbworkgroup"] . "\" --smbservers=\"" . $_POST["smbservers"] . "\"";
+    }
+    else
+            $authconfigcommand .= " --disablesmbauth";
 
     exec($authconfigcommand);
 //	print($authconfigcommand);
 //	exit;
 
-    // smb_login always true in Untangle
-    if (strlen($_POST["useldap"]) > 0 && strcasecmp($_POST["useldap"], "on") == 0) {
-	exec("/usr/bin/sudo /usr/bin/smbpasswd -w " . escapeshellarg($_POST["ldaprootbindpw"]));
+    if ($localldap == "on"){
+            if (!$ldapbasedn || !$ldaprootbinddn || !$ldaprootbindpw)
+                    $error[] = "Local LDAP server requires the following: Base DN, Root bind DN, Root bind password";
+
+            $ldap = new LDAPServer($ldapbasedn, $ldaprootbinddn, $ldaprootbindpw);
+            $ldap->Create($error);
+
+    }
+    else{
+            //turn the local ldap server off
+            $ldap = new LDAPServer();
+            $ldap->Stop();
+    }
+
+    if ((isset($_POST["usewinbind"]) && (strcasecmp($_POST["usewinbind"], "on") == 0) && (strcasecmp($_POST["winbindjoin"], "on") == 0) && ($newldapidmapsync == "on"))
+            || (isset($_POST["smb_login"]) && (strcasecmp($_POST["smb_login"], "on") == 0)))
+    {
+            exec("/usr/bin/sudo /usr/bin/smbpasswd -w " . escapeshellarg($_POST["ldaprootbindpw"]));
     }
 
     if (strlen($_POST["usewinbind"]) > 0)
@@ -250,7 +355,12 @@ if (count($_POST) > 0)
             exec("/usr/bin/sudo /bin/rm -f /var/cache/winbindd_idmap.tdb");
     }
 
+
     apply_configuration(array("services" => "restart", "winbindrestart" => true, "chmod" => "yes", "chmod_path" => ""));
+
+    $fp = popen("/usr/bin/sudo /usr/bin/at now + 1 minutes", "w");
+    fputs($fp, "/etc/init.d/openfiler restart 2>/dev/null > /dev/null \n");
+    pclose($fp);
 
     if ($error)
             setcookie("error", implode("\n",$error));
@@ -343,12 +453,10 @@ function krb_realm_onchange()
 
 <?php
         nested_tab_begin("C_GENERAL_AUTHENTICATION");
-	$authp = popen("/usr/bin/sudo /usr/bin/rush /opt/nas/sbin/authconfig.rb --get", "r");
+	$authp = popen("/usr/bin/sudo /opt/nas/sbin/authconfig --openfiler --kickstart", "r");
 	$i = 0;
 	while (!feof($authp))
 		$aresult[$i++] = trim(fgets($authp, 4096));
-        $netbiosname = $aresult[41];
-
 	pclose($authp);
 	if ($error){
 		print("<p align=\"center\"><strong><font color=\"red\">");
@@ -678,6 +786,10 @@ function krb_realm_onchange()
 
 		</table>
 	</div>
+
+	<?php printMessageBlock("info", "<p>When you make changes and submit, the changes will be applied,
+	but please give the Untangle NAS service about 1 minute to restart for the changes to take effect.
+	You may then verify these changes in the <a href=\"account_groups.html\">list of groups section</a>.</p>");?>
 
 	<p align="center"><input type="submit" value="Submit" /> &nbsp; <input type="reset" value="Reset" /></p>
 
