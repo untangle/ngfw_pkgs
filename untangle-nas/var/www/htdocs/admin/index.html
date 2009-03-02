@@ -316,19 +316,19 @@ if (count($_POST) > 0)
 //	print($authconfigcommand);
 //	exit;
 
-    if ($localldap == "on"){
-            if (!$ldapbasedn || !$ldaprootbinddn || !$ldaprootbindpw)
-                    $error[] = "Local LDAP server requires the following: Base DN, Root bind DN, Root bind password";
-
-            $ldap = new LDAPServer($ldapbasedn, $ldaprootbinddn, $ldaprootbindpw);
-            $ldap->Create($error);
-
-    }
-    else{
-            //turn the local ldap server off
-            $ldap = new LDAPServer();
-            $ldap->Stop();
-    }
+    //if ($localldap == "on"){
+            //if (!$ldapbasedn || !$ldaprootbinddn || !$ldaprootbindpw)
+                    //$error[] = "Local LDAP server requires the following: Base DN, Root bind DN, Root bind password";
+//
+            //$ldap = new LDAPServer($ldapbasedn, $ldaprootbinddn, $ldaprootbindpw);
+            //$ldap->Create($error);
+//
+    //}
+    //else{
+            ////turn the local ldap server off
+            //$ldap = new LDAPServer();
+            //$ldap->Stop();
+    //}
 
     if ((isset($_POST["usewinbind"]) && (strcasecmp($_POST["usewinbind"], "on") == 0) && (strcasecmp($_POST["winbindjoin"], "on") == 0) && ($newldapidmapsync == "on"))
             || (isset($_POST["smb_login"]) && (strcasecmp($_POST["smb_login"], "on") == 0)))
