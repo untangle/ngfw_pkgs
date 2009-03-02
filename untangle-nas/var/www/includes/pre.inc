@@ -333,7 +333,7 @@ function generic_header($params = array()) {
     
     print("\n");
     
-    print(($isRootIndex != "/index.html" ? "<div id=\"logodiv\" class=\"nas-logo\">
+    print((false && $isRootIndex != "/index.html" ? "<div id=\"logodiv\" class=\"nas-logo\">
            <div id=\"globalButtons\">
             <ul>
                 <li class=\"logout\"><a href=\"/nas/account/logout.html\">Log Out</a></li>

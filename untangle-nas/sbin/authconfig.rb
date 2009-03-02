@@ -2,33 +2,38 @@
 # rush script to connect to UVM to answer the authconfig questions
 #
 
-nm = Untangle::RemoteUvmContext.nodeManager()
-tid = nm.nodeInstances( 'untangle-node-nas' ).first()
-nas = nm.nodeContext( tid ).node()
+begin
+  nm = Untangle::RemoteUvmContext.nodeManager()
+  tid = nm.nodeInstances( 'untangle-node-nas' ).first()
+  nas = nm.nodeContext( tid ).node()
 
-settings = nas.getNasSettings()
+  settings = nas.getNasSettings()
 
-@smb_workgroup = settings['smbWorkgroup']
-@netbios_name = settings['netbiosName']
-@use_ldap = settings['useLdap']
-@use_ad = settings['useAD']
+  @smb_workgroup = settings['smbWorkgroup']
+  @netbios_name = settings['netbiosName']
+  @use_ldap = settings['useLdap']
+  @use_ad = settings['useAD']
 
-if @use_ad
-  addrbook = Untangle::RemoteUvmContext.appAddressBook()
-  ab_settings = addrbook.getAddressBookSettings()
-  ab_conf = ab_settings.getAddressBookConfiguration()
-  if ab_conf.getKey() != ?B
-    # ab configuration doesn't match setting of use_ad!
-    @use_ad = false
-  else
-    repo_settings = ab_settings.getADRepositorySettings()
-    @ad_realm = repo_settings.getDomain()
-    @ad_master = repo_settings.getLDAPHost().upcase()
+  if @use_ad
+    addrbook = Untangle::RemoteUvmContext.appAddressBook()
+    ab_settings = addrbook.getAddressBookSettings()
+    ab_conf = ab_settings['addressBookConfiguration']
+    if ab_conf != 'AD_AND_LOCAL'
+      # ab configuration doesn't match setting of use_ad!
+      @use_ad = false
+    else
+      repo_settings = ab_settings['ADRepositorySettings']
+      @ad_realm = repo_settings['domain'].upcase()
+      @ad_master = repo_settings['LDAPHost']
+    end
   end
+rescue
+  $stderr.puts "Unable to read settings from UVM: " + $!
+  exit -1
 end
 
 def usage()
-  puts "usage: authconfig.rb --get | --set"
+  $stderr.puts "usage: authconfig.rb --get | --set"
   exit -2
 end
 
@@ -45,18 +50,20 @@ def set()
   else
     nsline = "compat"
   end
-  `sed -i -e "s/^\(passwd\|group\|shadow\):.*/\1:	#{nsline}/" /tmp/nsswitch.conf`
+  `sed -i -e "s/^\\(passwd\\|group\\|shadow\\):.*/\\1:	#{nsline}/" /etc/nsswitch.conf`
 
-  # /etc/nss-ldap.conf
-  `sed -i -e "s/^base .*/base dc=nodomain/" -e "s-^uri .*-uri ldap://localhost:3899-" /tmp/nss-ldap.conf`
+  # /etc/nss-ldapd.conf
+  `sed -i -e "s/^base .*/base dc=nodomain/" -e "s-^uri .*-uri ldap://localhost:3899-" /etc/nss-ldapd.conf`
 
   # /etc/krb5.conf
   if @use_ad then
-    File.open("/tmp/krb5.conf", "w") do |f|
+    File.open("/etc/krb5.conf", "w") do |f|
       f.puts <<EOF
 [libdefaults]
         default_realm = #{@ad_realm}
         forwardable = true
+#	dns_lookup_realm = false
+#	dns_lookup_kdc = false
 
 [realms]
         #{@ad_realm} = {
@@ -163,7 +170,7 @@ def get()
   puts "NO"
 
   # enable winbind
-  puts @use_ad ? "YES" : "NO";
+  puts @use_ad ? "YES" : "NO"
 
   # enable wins 30
   puts "NO"
