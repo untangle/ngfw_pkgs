@@ -26,7 +26,7 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             cls: 'float-button-2',
             handler : this.externalAliases.createDelegate( this )
         },{
-            html:'<br/>'
+            html : '<br/>'
         }]
 
         for ( var c = 0 ; c < this.settings.config_list.length ; c++ ) {
@@ -39,9 +39,9 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             });
 
             if ( interfaceConfig["wan"] ) {
-                items.push( this.buildWanPanel( c ));
+                this.buildWanPanel( c, items );
             } else {
-                items.push( this.buildStandardPanel( c ));
+                this.buildStandardPanel( c, items );
             }
         }
 
@@ -59,15 +59,16 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
     saveMethod : "/network/set_settings",
     
-    buildWanPanel : function( i )
+    buildWanPanel : function( i, items )
     {
         var staticPanel = {
-            cls:'left-indent-3',                                                    
             items : [{
+                xtype : "fieldset",
+                autoHeight : true,
                 defaults : {
                     xtype : 'textfield',
                     itemCls:'label-width-1'
-                        
+                    
                 },
                 items : [{
                     fieldLabel : this._( "Address" ),
@@ -102,8 +103,9 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         };
 
         var dynamicPanel = {
-            cls:'left-indent-3',                                    
             items : [{
+                xtype : "fieldset",
+                autoHeight : true,
                 defaults : {
                     xtype : 'textfield',
                     readOnly : true
@@ -133,8 +135,9 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         };
 
         var pppoePanel = {
-            cls:'left-indent-3',                                    
             items : [{
+                xtype : "fieldset",
+                autoHeight : true,
                 defaults : {
                     xtype : 'textfield'
                 },
@@ -175,48 +178,40 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             activeItem : this.getActiveItem( configType, configTypes ),
             border : false,
             defaults : {
+                xtype : "panel",
+                layout : "form",
                 border : false,
-                layout : 'form',
-                xtype : 'panel',
-                defaults : {
-                    autoHeight : true,
-                    xtype : 'fieldset'
-                }
+                autoHeight : true,
+                cls : 'left-indent-3'
             },
             items : [ staticPanel, dynamicPanel, pppoePanel ]
         });
 
-        var panel = new Ext.FormPanel({
-            border : false,
-            items : [{
-                xtype : "fieldset",
-                autoHeight : true,
-                items : [{
-                    xtype : "combo",
-                    name : this.generateName( "config_list", i, "interface.config_type" ),
-                    fieldLabel : this._( "Config Type" ),
-                    store : configTypes,
-                    switchBlade : switchBlade,
-                    triggerAction : "all",
-                    mode : "local",
-                    editable : false,
-                    listeners : {
-                        "select" : {
-                            fn : this.onSelectConfigType,
-                            scope : this
-                        }
-                    }
-                }]
-            }, switchBlade ]
+        items.push({
+            xtype : "combo",
+            name : this.generateName( "config_list", i, "interface.config_type" ),
+            fieldLabel : this._( "Config Type" ),
+            store : configTypes,
+            switchBlade : switchBlade,
+            triggerAction : "all",
+            mode : "local",
+            editable : false,
+            listeners : {
+                "select" : {
+                    fn : this.onSelectConfigType,
+                    scope : this
+                }
+            }
         });
-
-        return panel;
+        items.push( switchBlade );
     },
 
-    buildStandardPanel : function( i )
+    buildStandardPanel : function( i, items )
     {
         var staticPanel = {
             items : [{
+                xtype : "fieldset",
+                autoHeight : true,
                 defaults : {
                     xtype : 'textfield'
                 },
@@ -240,8 +235,9 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         };
 
         var bridgePanel = {
-            cls:'left-indent-3',                                    
             items : [{
+                autoHeight : true,
+                xtype : "fieldset",
                 items : [{
                     fieldLabel : this._( "Bridge To" ),
                     xtype : "combo",
@@ -263,41 +259,30 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             activeItem : this.getActiveItem( configType, configTypes ),
             border : false,
             defaults : {
+                xtype : "panel",
+                layout : "form",
                 border : false,
-                layout : 'form',
-                xtype : 'panel',
-                defaults : {
-                    autoHeight : true,
-                    xtype : 'fieldset'
-                }
+                autoHeight : true,
+                cls : 'left-indent-3'
             },
             items : [ staticPanel, bridgePanel ]
         });
 
-        var panel = new Ext.FormPanel({
-            border : false,
-            items : [{
-                xtype : "fieldset",
-                autoHeight : true,
-                items : [{
-                    xtype : "combo",
-                    name : this.generateName( "config_list", i, "interface.config_type" ),
-                    fieldLabel : this._( "Config Type" ),
-                    store : configTypes,
-                    switchBlade : switchBlade,
-                    triggerAction : "all",
-                    editable : false,
-                    listeners : {
-                        "select" : {
-                            fn : this.onSelectConfigType,
-                            scope : this
-                        }
-                    }
-                }]
-            }, switchBlade ]
-        });
-
-        return panel;
+        items.push({
+            xtype : "combo",
+            name : this.generateName( "config_list", i, "interface.config_type" ),
+            fieldLabel : this._( "Config Type" ),
+            store : configTypes,
+            switchBlade : switchBlade,
+            triggerAction : "all",
+            editable : false,
+            listeners : {
+                "select" : {
+                    fn : this.onSelectConfigType,
+                    scope : this
+                }
+            }
+        }, switchBlade );
     },
 
     externalAliases : function()
