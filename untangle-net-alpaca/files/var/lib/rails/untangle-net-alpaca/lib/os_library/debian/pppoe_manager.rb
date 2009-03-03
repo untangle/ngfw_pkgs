@@ -16,4 +16,11 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 class OSLibrary::Debian::PppoeManager < OSLibrary::PppoeManager
+  def self.get_pppoe_name( interface )
+    "ppp.#{interface.os_name}"
+  end
+
+  def self.get_provider_name( interface )
+    "connection.#{interface.os_name}"
+  end
 end

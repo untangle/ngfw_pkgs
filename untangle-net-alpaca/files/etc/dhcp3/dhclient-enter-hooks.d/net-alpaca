@@ -71,10 +71,10 @@ make_resolv_conf() {
         
         if [ -n "$new_domain_name_servers" ]; then
             for nameserver in $new_domain_name_servers ; do
-                /bin/echo -e "#new_name_server=${nameserver}" >> /etc/dnsmasq.conf
+                /bin/echo -e "#new_name_server=${nameserver} # uplink.${DHCP_UPLINK_INDEX}" >> /etc/dnsmasq.conf
             done
-
-            sed -i -e '/^server=/d' -e 's/^#new_name_server=/server=/' /etc/dnsmasq.conf
+            
+            sed -i -e "/^#*\s*server=.*uplink.${DHCP_UPLINK_INDEX}/d" -e 's/^#new_name_server=/server=/' /etc/dnsmasq.conf
         fi
 
         local t_new_hash="`md5sum /etc/dnsmasq.conf`"
@@ -137,7 +137,9 @@ if [ -n "${DHCP_MTU}" ] && [ ${DHCP_MTU} -ge 575 ]; then
     mtu_arg="mtu ${DHCP_MTU}"
 fi
 
-new_routers=${DHCP_GATEWAY:-${new_routers}}
+## No longer rely on dhclient script to update the default gateway.
+alpaca_new_routers=${DHCP_GATEWAY:-${new_routers}}
+new_routers=""
 
 new_domain_name_servers=${DHCP_DNS_SERVERS:-${new_domain_name_servers}}
 new_domain_name=${DHCP_DOMAIN_NAME:-${new_domain_name}}

@@ -17,6 +17,16 @@
 class OSLibrary::Debian::QosManager < OSLibrary::QosManager
   include Singleton
 
+  ProtocolMap = {
+    "tcp" => 6,
+    "udp" => 17,
+    "icmp" => 1,
+    "gre" => 47,
+    "esp" => 50,
+    "ah" => 51,
+    "sctp" => 132
+  }
+
   QoSStartLog = "/var/log/untangle-net-alpaca/qosstart.log"
   QoSRRDLog = "/var/log/untangle-net-alpaca/qosrrd.log"
 
@@ -70,25 +80,39 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
      return results
   end
 
-  def status_v2
+  def status_v2( wan_interfaces = nil )
+    lines = `#{Service} alpaca_status`
+    pieces = lines.split( Regexp.new( 'interface: ', Regexp::MULTILINE ) )
+
     results = []
-    lines = `#{Service} status`
-    pieces = lines.split( Regexp.new( 'qdisc|class', Regexp::MULTILINE ) )
-    pieces.each do |piece|
-      next unless piece.include?( "htb" ) and piece.include?( "leaf" )
-      stats = piece.split( Regexp.new( ' ', Regexp::MULTILINE ) )
-      
-      next unless PriorityQueueToName.has_key?( stats[6] )
-      token_stats = piece.split( Regexp.new( 'c?tokens: ', Regexp::MULTILINE ) )
-      results << QosStatus.new( PriorityQueueToName[stats[6]],
-                                stats[10],
-                                stats[14],
-                                stats[19] + stats[20],
-                                token_stats[1],
-                                token_stats[2].strip )
+
+    if ( wan_interfaces.nil? )
+      wan_interfaces = Interface.wan_interfaces
     end
 
-    return results
+    interface_name_map = {}
+    wan_interfaces.each { |i| interface_name_map[i.os_name] = i.name }
+      
+    pieces.each do |piece|
+      next unless piece.include?( "htb" ) and piece.include?( "leaf" )
+      piece = piece.strip
+      stats = piece.split( Regexp.new( '\s+', Regexp::MULTILINE ) )
+      
+      queue_name = PriorityQueueToName[stats[7]]
+      next if queue_name.nil?
+      
+      interface_name = interface_name_map[stats[0]]
+      interface_name = stats[0] if interface_name.nil?
+
+      results << QosStatus.new( interface_name, queue_name,
+                                stats[11],
+                                stats[15],
+                                stats[19] + " " + stats[20],
+                                stats[44],
+                                stats[46] )
+    end
+
+    results
   end
   
   def start_time
@@ -150,7 +174,6 @@ EOF
   end
 
   def hook_write_files
-
     tc_rules_files = {}
 
     PriorityFiles.each_pair do |key, filename|
@@ -164,75 +187,29 @@ EOF
       qos_enabled = "YES"
     end
 
-    dev = Interface.external.os_name
-    #when using pppoe the actual interface is ppp0 not the external eth card.
-    if Interface.external.current_config == IntfPppoe
-        dev = "ppp0"
-    end
+    wan_interfaces = Interface.wan_interfaces
 
     settings = header
-    settings << "QOS_ENABLED=#{qos_enabled}\nDOWNLINK=#{qos_settings.download*qos_settings.download_percentage/100}\nUPLINK=#{qos_settings.upload*qos_settings.upload_percentage/100}\nDEV=#{dev}\n\n"
-    
+    settings << <<EOF
+QOS_ENABLED=#{qos_enabled}
+UPLINKS="#{wan_interfaces.map { |i| i.os_name }.join( " " )}"
+EOF
 
-
-    if ! qos_settings.prioritize_ping.nil? and qos_settings.prioritize_ping > 0
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ping} u32 match ip protocol 1 0xff flowid 1:#{qos_settings.prioritize_ping}\n"
-    end
-    if ! qos_settings.prioritize_ack.nil? and qos_settings.prioritize_ack > 0
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ack} u32 match ip protocol 6 0xff match u8 0x05 0x0f at 0 match u16 0x0000 0xffc0 at 2 match u8 0x10 0xff at 33 flowid 1:#{qos_settings.prioritize_ack}\n"
+    wan_interfaces.each do |i|
+      build_interface_config( i, qos_settings, settings, tc_rules_files )
     end
 
-    # use tc rules for what we can
     rules = QosRule.find( :all, :conditions => [ "enabled='t'" ] )
+
     rules.each do |rule|
-      begin
-        if ! rule.filter.include?( "s-" ) && ! rule.filter.include?( "d-local" ) && rule.filter.include?( "d-" )
-            priority = PriorityMap[rule.priority]
-            filter = ""
-            protocol_filter = []
-            conditions = rule.filter.split( "&&" )
-            conditions.each do |condition|
-               type, value = condition.split( "::" )
-               case type
-               when "d-port"
-                 filter << " match ip dport #{value} 0xffff "
-               when "d-addr"
-                 if ! value.include?( "/" )
-                   value << "/32"
-                 end
-                 filter << " match ip dst #{value} "
-               when "protocol"
-                 value.split( "," ).each do |protocol|
-                   case protocol
-                   when "udp"
-                     protocol_filter << "  match ip protocol 17 0xff "
-                   when "tcp"
-                     protocol_filter << " match ip protocol 6 0xff "
-                   end
-                 end
-               end
-            end
-            if protocol_filter.length == 0
-              protocol_filter = [ "" ]
-            end
-            protocol_filter.each do |protocol_filter|
-              tc_rules_files[priority] << "tc filter add dev #{dev} parent 1: protocol ip prio #{rule.priority} u32 #{protocol_filter} #{filter} flowid 1:#{rule.priority}\n"
-            end
-        end
-
-      rescue
-        logger.warn( "The filter '#{rule.filter}' could not be parsed: #{$!}" )
-      end
+      build_qos_rule( wan_interfaces, rule, tc_rules_files )
     end
-
 
     tc_rules_files.each_pair do |key, file_contents|
-      os["override_manager"].write_file( PriorityFiles[key], file_contents, "\n" )
-      run_command( "chmod a+x #{PriorityFiles[key]}" )
+      os["override_manager"].write_executable( PriorityFiles[key], file_contents, "\n" )
     end
-    os["override_manager"].write_file( QoSConfig, settings, "\n" )
 
-    rules = QosRule.find( :all, :conditions => [ "enabled='t'" ] )
+    os["override_manager"].write_file( QoSConfig, settings, "\n" )
     
     text = header + "\n"
     text << <<EOF
@@ -350,15 +327,15 @@ EOF
   end
 
   def hook_run_services
-    logger.warn "Unable to reconfigure network settings." unless run_command( "#{Service} stop" ) == 0
-    logger.warn "Unable to reconfigure network settings." unless run_command( "#{Service} start" ) == 0
+    logger.warn "Unable to stop #{Service}." unless run_command( "#{Service} stop" ) == 0
+    logger.warn "Unable to start #{Service}" unless run_command( "#{Service} start" ) == 0
   end
 
   def commit
     write_files
     run_services
   end
-
+  
   def register_hooks
     os["packet_filter_manager"].register_hook( 100, "qos_manager", "write_files", :hook_write_files )
     os["network_manager"].register_hook( 100, "qos_manager", "write_files", :hook_write_files )
@@ -366,5 +343,77 @@ EOF
     os["network_manager"].register_hook( 1000, "qos_manager", "run_services", :hook_run_services )
   end
 
+  private
+  def build_interface_config( interface, qos_settings, text, tc_rules_files )
+    dev = interface.os_name
+
+    #when using pppoe the actual interface is named ppp.#{os_name}
+    if interface.current_config == IntfPppoe
+        dev = OSLibrary::Debian::PppoEManager.get_pppoe_name( interface )
+    end
+
+    text << <<EOF
+#{dev}_DOWNLOAD=#{interface.download_bandwidth * qos_settings.download_percentage/100}
+#{dev}_UPLOAD=#{interface.upload_bandwidth * qos_settings.upload_percentage/100}
+EOF
+
+    if ! qos_settings.prioritize_ping.nil? and qos_settings.prioritize_ping > 0
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ping} u32 match ip protocol 1 0xff flowid 1:#{qos_settings.prioritize_ping}\n"
+    end
+
+    if ! qos_settings.prioritize_ack.nil? and qos_settings.prioritize_ack > 0
+      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ack} u32 match ip protocol 6 0xff match u8 0x05 0x0f at 0 match u16 0x0000 0xffc0 at 2 match u8 0x10 0xff at 33 flowid 1:#{qos_settings.prioritize_ack}\n"
+    end
+  end
+
+  def build_qos_rule( wan_interfaces, rule, tc_rules_files )
+    begin
+
+      ## The rules that don't match this criteria must be handled in iptables.
+      return if rule.filter.include?( "s-" )
+      return if rule.filter.include?( "d-local" )
+      return unless rule.filter.include?( "d-" )
+
+      priority = PriorityMap[rule.priority]
+      filter = ""
+      protocol_filter = []
+      conditions = rule.filter.split( "&&" )
+
+      conditions.each do |condition|
+        type, value = condition.split( "::" )
+        case type
+        when "d-port"
+          filter << " match ip dport #{value} 0xffff "
+        when "d-addr"
+          if ! value.include?( "/" )
+            value << "/32"
+          end
+          filter << " match ip dst #{value} "
+        when "protocol"
+          value.split( "," ).each do |protocol|
+            protocol = protocol.strip
+            protocol_id = ProtocolMap[protocol]
+            next if protocol_id.nil?
+            protocol_filter << "  match ip protocol #{protocol_id} 0xff "
+          end
+        end
+      end
+
+      if protocol_filter.length == 0
+        protocol_filter = [ "" ]
+      end
+
+      wan_interfaces.each do |interface|
+        os_name = interface.os_name
+
+        protocol_filter.each do |protocol_filter|
+          tc_rules_files[priority] << "tc filter add dev #{os_name} parent 1: protocol ip prio #{rule.priority} u32 #{protocol_filter} #{filter} flowid 1:#{rule.priority}\n"
+        end
+      end
+
+      rescue
+      logger.warn( "The filter '#{rule.filter}' could not be parsed: #{$!}" )
+    end
+  end
 end
 

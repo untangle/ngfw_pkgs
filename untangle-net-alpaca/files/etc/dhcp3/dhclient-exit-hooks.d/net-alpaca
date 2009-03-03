@@ -1,8 +1,68 @@
 #! /bin/bash
 
+ADD_UPLINK_SCRIPT="/localhome/rbscott/work/pkgs/untangle-net-alpaca/files/usr/share/untangle-net-alpaca/scripts/add-uplink"
+
 mkdir -p /var/log/untangle-net-alpaca/
 
 exec >> /var/log/untangle-net-alpaca/dhcp.log 2>&1
+
+# Execute the operation
+case "$reason" in
+    MEDIUM|ARPCHECK|ARPSEND)
+        # Do nothing
+        ;;
+    PREINIT)
+        # Do nothing
+        ;;
+    BOUND|RENEW|REBIND|REBOOT)
+        if [ -z "$old_ip_address" -o "$old_ip_address" != "$new_ip_address" -o \
+            "$reason" = "BOUND" -o "$reason" = "REBOOT" ]; then
+
+	    # point to point
+	    if [ "$new_subnet_mask" == "255.255.255.255" ]; then
+	    	for router in $alpaca_new_routers; do
+	    	    route add -host $router dev $interface
+	    	done
+	    fi
+            
+            for router in $alpaca_new_routers; do
+                ## It is safe to use replace to update a route that doesn't exist.
+                [ -x "${ADD_UPLINK_SCRIPT}" ] && {
+                    ${ADD_UPLINK_SCRIPT} ${interface} ${new_ip_address} ${router} \
+                        "uplink.${DHCP_UPLINK_INDEX}"
+                }
+            done
+        fi
+        ;;
+
+    EXPIRE|FAIL|RELEASE|STOP)
+        # Do nothing.
+        ;;
+    TIMEOUT)
+        set -- $alpaca_new_routers
+        first_router="$1"
+
+        if [ -z "$first_router" ] || ping -q -c 1 $first_router; then
+            if [ "$new_ip_address" != "$alias_ip_address" -a -n "$alias_ip_address" ]; then
+                ifconfig $interface:0 inet $alias_ip_address $alias_subnet_arg
+                route add -host $alias_ip_address dev $interface:0
+            fi
+	    
+            for router in $alpaca_new_routers; do
+                ## It is safe to use replace to update a route that doesn't exist.
+                
+                ip route replace table "uplink.${DHCP_UPLINK_INDEX}" $metric_arg default via $router 
+            done
+
+            make_resolv_conf
+        else
+            # Changed from 'ifconfig $interface inet 0 down' - see Debian bug #144666
+            ifconfig $interface inet 0
+            exit_with_hooks 2 "$@"
+        fi
+
+        ;;
+esac
 
 run-parts /etc/untangle-net-alpaca/scripts/update-address.d
 

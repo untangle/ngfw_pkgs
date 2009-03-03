@@ -71,10 +71,6 @@ class OSLibrary::Null::DdclientManager < OSLibrary::DdclientManager
     defaults = []
     
     if ( settings.enabled )
-      conditions = [ "wan=?", true ]
-      wanInterface = Interface.find( :first, :conditions => conditions )
-      #logger.debug("settings.service is: " + settings.service)
-
       ## Guard against the NULL Pointer exception
       service = ConfigService[settings.service]
 

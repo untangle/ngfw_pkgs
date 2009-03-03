@@ -24,8 +24,8 @@ class McLaren < Alpaca::Migration
   end
 
   def self.down
-    remove_column :alpaca_settings, :modules_enabled, :string
-    remove_column :alpaca_settings, :modules_disabled, :string
+    remove_column :alpaca_settings, :modules_enabled
+    remove_column :alpaca_settings, :modules_disabled
     remove_column :alpaca_settings, :skin
     remove_column :alpaca_settings, :language
   end

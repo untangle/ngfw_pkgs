@@ -37,13 +37,9 @@ class Interface < ActiveRecord::Base
   ## Link for all of the interfaces that are bridged with this interface.
   has_many( :bridged_interfaces, :class_name => "IntfBridge", :foreign_key => "bridge_interface_id" )
 
-  def Interface.external
-    interfaces = Interface.find( :all, :conditions => [ "wan = ?", true ] )
-    interfaces.each do |interface|
-      if interface.wan
-        return interface
-      end
-    end
+  def self.wan_interfaces
+    conditions = [ "wan = ? AND config_type != ?", true, InterfaceHelper::ConfigType::BRIDGE ]
+    self.find( :all, :conditions => conditions )
   end
 
   def Interface.valid_dhcp_server?

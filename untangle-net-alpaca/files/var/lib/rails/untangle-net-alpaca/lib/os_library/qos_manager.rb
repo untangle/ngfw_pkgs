@@ -24,11 +24,11 @@ class OSLibrary::QosManager < Alpaca::OS::ManagerBase
   end
 
   class QosStatus
-    def initialize( priority, rate, burst, sent, tokens, ctokens )
-      @priority, @rate, @burst, @sent, @tokens, @ctokens = priority, rate, burst, sent, tokens, ctokens
+    def initialize( interface_name, priority, rate, burst, sent, tokens, ctokens )
+      @interface_name, @priority, @rate, @burst, @sent, @tokens, @ctokens = interface_name, priority, rate, burst, sent, tokens, ctokens
     end
     
-    attr_reader :priority, :rate, :burst, :sent, :tokens, :ctokens
+    attr_reader :interface_name, :priority, :rate, :burst, :sent, :tokens, :ctokens
   end
 
   NETMASK32 = { 
@@ -135,7 +135,7 @@ class OSLibrary::QosManager < Alpaca::OS::ManagerBase
     "None"
   end
 
-  def status_v2
+  def status_v2( wan_interfaces = nil )
     return []
   end
 

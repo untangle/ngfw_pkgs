@@ -21,10 +21,12 @@ class QosController < ApplicationController
     qos_settings = QosSettings.find( :first )
     qos_settings = QosSettings.new if qos_settings.nil?
     settings["qos_settings"] = qos_settings
+
+    wan_interfaces = Interface.wan_interfaces
+    settings["bandwidth"] = wan_interfaces
     
     settings["qos_rules"] = QosRule.find( :all )
-    settings["bandwidth"] = os["qos_manager"].estimate_bandwidth_v2
-    settings["status"] = os["qos_manager"].status_v2
+    settings["status"] = os["qos_manager"].status_v2( wan_interfaces )
     settings["start_time"] = os["qos_manager"].start_time
 
     ## Interface enumeration

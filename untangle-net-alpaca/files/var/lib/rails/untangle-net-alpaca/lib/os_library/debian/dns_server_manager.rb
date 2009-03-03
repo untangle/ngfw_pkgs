@@ -276,38 +276,55 @@ EOF
   end
 
   def dns_config_name_servers
-    name_servers.map { |ns| "#{FlagDnsServer}=#{ns}" }.join( "\n" )
+    name_servers.map { |ns| "#{FlagDnsServer}=#{ns[:server]} # uplink.#{ns[:index]}" }.join( "\n" )
   end
   
   def name_servers
     ns = []
     conditions = [ "wan=? and ( config_type=? or config_type=? )", true, InterfaceHelper::ConfigType::STATIC, InterfaceHelper::ConfigType::PPPOE ]
-    i = Interface.find( :first, :conditions => conditions )
+    wan_interfaces = Interface.find( :all, :conditions => conditions )
 
     ## Check for PPPoE
-    unless i.nil?
+    if wan_interfaces.nil? || wan_interfaces.empty?
+      return current_name_servers
+    end
+    
+    wan_interfaces.each do |i|
       config = i.current_config
+
+      next if config.nil?
 
       ## Do not update the dns servers if it is configured to use peer dns.
-      i = nil if config.is_a?( IntfPppoe ) && ( config.use_peer_dns == true )
+      next if config.is_a?( IntfPppoe ) && ( config.use_peer_dns == true )
+
+      ns << { :index => i.index, :server=> config.dns_1 }
+      ns << { :index => i.index, :server=> config.dns_2 }
     end
-
-    ## zero them out
-    dns_1, dns_2 = []
-    if i.nil?
-      ## Use the current nameserves if the WAN interface isn't set to static
-      ns = `awk '/^server=/ { sub( "server=", "" ); print }' /etc/dnsmasq.conf`.strip.split
-    else
-      config = i.current_config
-
-      unless config.nil?
-        ns << config.dns_1
-        ns << config.dns_2
-      end
-    end
-
+    
+    
     ## Delete all of the empty name servers, and fix the lines.
-    ns = ns.delete_if { |n| n.nil? || n.empty? || IPAddr.parse_ip( n ).nil? }
+    ns = ns.delete_if do |n| 
+      s = n[:server]
+      s.nil? || s.empty? || IPAddr.parse_ip( s ).nil?
+    end
+    
+    ## Last attempt to get nameservers
+    return current_name_servers if ns.empty?
+
+    ns
+  end
+
+  def current_name_servers
+    l = `awk '/^server=/ { sub( "server=", "" ); sub( "#[ ]*uplink\\\\.", "" ) ; sub( "#.*", "" ); print }' /etc/dnsmasq.conf`.strip
+    
+    l = l.split( "\n" )
+    l.map do |n|
+      ## If this has been updated, it will have something like server=x.y.w.z # uplink.n
+      ## Otherwise, just default it to the external interface
+      n = n.split
+      n[1] = 1 if n.length == 1
+      { :index => n[1], :server => n[0] }
+    end
   end
 
   def dhcp_config( dhcp_server_settings, dns_server_settings )
@@ -350,7 +367,8 @@ EOF
     settings << "#{FlagOption}=#{OptionNetmask},#{netmask}" unless netmask.nil?
 
     if dns_server_settings.nil? || !dns_server_settings.enabled
-      settings << "#{FlagOption}=#{OptionNameservers},#{name_servers.join( "," )}"
+      ns_string = name_servers.map { |ns| ns[:server] }.join( "," )
+      settings << "#{FlagOption}=#{OptionNameservers},#{ns_string.join( "," )}"
     end
 
     ## Static entries

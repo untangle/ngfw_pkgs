@@ -323,13 +323,20 @@ EOF
     nat_automatic_target = "MASQUERADE"
     
     conditions = [ "wan=? and config_type=?", true, InterfaceHelper::ConfigType::PPPOE ]
-    i = Interface.find( :first, :conditions => conditions )
-
+    pppoe_interfaces = Interface.find( :all, :conditions => conditions )
+    
     ## if the WAN interface is configured for PPPoE, automatically NAT to the first alias.
-    unless i.nil? || i.intf_pppoe.nil?
+    unless pppoe_interfaces.nil? || pppoe_interfaces.empty?
       ## If one exists, NAT to the first user defined IP Network
-      ip_network = i.intf_pppoe.ip_networks[0]
-      nat_automatic_target = "SNAT --to-source #{ip_network.ip}" unless ip_network.nil? || ip_network.ip.nil?
+      pppoe_interfaces.each do |interface|
+        pppoe_config = interface.intf_pppoe
+        next if pppoe_config.nil?
+        ip_network = pppoe_config.ip_networks[0]
+        next if ip_network.nil? || ip_network.ip.nil?
+        
+        nat_automatic_target = [] unless nat_automatic_target.is_a?( Array )
+        nat_automatic_target << "SNAT --to-source #{ip_network.ip} -o #{OSLibrary::Debian::PppoeManager.get_pppoe_name( interface )} " 
+      end
     end
     
     Interface.find( :all ).each do |interface|
@@ -475,9 +482,11 @@ EOF
     ## This is the name used to retrieve the ip addresses.
     name = interface.os_name
 
-    ## use ppp0 if this is a PPPoE interface.
+    pppoe_name = OSLibrary::Debian::PppoeManager.get_pppoe_name( interface )
+
+    ## use the pppoe name if this is a PPPoE interface.
     if ( interface.config_type == InterfaceHelper::ConfigType::PPPOE )
-      match = "-i ppp0"
+      match = "-i #{pppoe_name}"
     elsif interface.is_bridge?
       match = "-m physdev --physdev-in #{interface.os_name}" if interface.is_bridge?
     end
@@ -496,9 +505,9 @@ EOF
       rules << "mark_local_ip #{name} #{index}"
     end
     
-    ## Append a mark for the ppp0 local addresses.
+    ## Append a mark for the ppp local addresses.
     if ( interface.config_type == InterfaceHelper::ConfigType::PPPOE )
-      rules << "mark_local_ip ppp0 #{index}"
+      rules << "mark_local_ip #{pppoe_name} #{index}"
     end
 
     rules.join( "\n" )
@@ -560,6 +569,12 @@ EOF
   ## REVIEW This doesn't support discontiguous netmasks (like 255.0.255.0) (but neither does ifconfig, so who cares)
   ## REVIEW should put 0.0.0.0/0 at the bottom.
   ## REVIEW how should auto work, right now it just uses MASQUERADE.
+
+  ## When the nat_automatic_target is not MASQUERAGE, then this adds
+  ## two NAT rules.  One for SNAT if it is destined out this interface
+  ## and one for MASQUERADE if it isn't.  This is a special case where
+  ## the user has an alias.  You can't always SNAT it because then it
+  ## couldn't load balance at all.
   def nat( interface, nat_automatic_target )
     ## static is the only config type that supports NATing
     config = interface.current_config
@@ -571,36 +586,47 @@ EOF
     return nil if ( nat_policies.nil? || nat_policies.empty? )
 
     ## Determine the name of the interface
-    name = interface.os_name
-    name = OSLibrary::Debian::NetworkManager.bridge_name( interface ) if interface.is_bridge?
-    
     rules = []
     fw_rules = []    
 
-    nat_policies.each do |policy|
-      ## REVIEW : Need to handle the proper ports.
-      ## REVIEW : Need to use the correct interface marks, but that needs a bridge mark
-      if ( policy.new_source == NatPolicy::Automatic )
-        target = nat_automatic_target
-      else
-        target = "SNAT --to-source #{policy.new_source}"
-      end
-      
+    nat_policies.each do |policy|      
       ## Global netmask, use the addresses for the interface
       if ( policy.netmask == "0" || policy.netmask == "0.0.0.0" )
         config.ip_networks.each do |ip_network|
-          network = "#{ip_network.ip}/#{OSLibrary::NetworkManager.parseNetmask( ip_network.netmask )}"
-          rules << "#{IPTablesCommand} #{Chain::PostNat.args} -m conntrack ! --ctorigdst #{network} -s #{network} -j #{target}"
-          fw_rules << "#{IPTablesCommand} #{Chain::FirewallRules.args} -i ! #{name} -d #{network} -j DROP"
+          add_nat_rule( rules, fw_rules, interface, policy, nat_automatic_target, ip_network.ip, ip_network.netmask )
         end
       else
-        network = "#{policy.ip}/#{OSLibrary::NetworkManager.parseNetmask( policy.netmask )}"
-        rules << "#{IPTablesCommand} #{Chain::PostNat.args}  -m conntrack ! --ctorigdst #{network} -s #{network} -j #{target}"
-        fw_rules << "#{IPTablesCommand} #{Chain::FirewallRules.args} -i ! #{name} -d #{network} -j DROP"
+        add_nat_rule( rules, fw_rules, interface, policy, nat_automatic_target, policy.ip, policy.netmask )
       end
     end
 
     [ rules.join( "\n" ), fw_rules.join( "\n" ) ]
+  end
+
+  def add_nat_rule( rules, fw_rules, interface, policy, nat_automatic_target, network, netmask )
+    os_name = interface.os_name
+    os_name = OSLibrary::Debian::NetworkManager.bridge_name( interface ) if interface.is_bridge?
+    
+
+    ## REVIEW : Need to handle the proper ports.
+    ## REVIEW : Need to use the correct interface marks, but that needs a bridge mark
+    network = "#{network}/#{OSLibrary::NetworkManager.parseNetmask( netmask )}"
+
+    if ( policy.new_source == NatPolicy::Automatic )
+      pppoe_name = OSLibrary::Debian::PppoeManager.get_pppoe_name( interface )
+
+      if nat_automatic_target != "MASQUERADE"
+        nat_automatic_target.each do |target|
+          rules << "#{IPTablesCommand} #{Chain::PostNat.args} -m conntrack ! --ctorigdst #{network} -s #{network} -j #{target}"
+        end
+      end
+      
+      rules << "#{IPTablesCommand} #{Chain::PostNat.args} -m conntrack ! --ctorigdst #{network} -s #{network} -j MASQUERADE"
+    else
+      rules << "#{IPTablesCommand} #{Chain::PostNat.args} -m conntrack ! --ctorigdst #{network} -s #{network} -j SNAT --to-source #{policy.new_source}"
+    end
+
+    fw_rules << "#{IPTablesCommand} #{Chain::FirewallRules.args} -i ! #{os_name} -d #{network} -j DROP"
   end
 
   def header

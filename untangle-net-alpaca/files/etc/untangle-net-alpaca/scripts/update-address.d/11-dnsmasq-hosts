@@ -49,10 +49,10 @@ pppoe_interface()
 
 ## This gets just the address that is used to contact the default
 ## route.  This is probably the address the user is interested in.
-## Creating an IP with all of the addresses has a few side effects
-## with sessions that are redirected back inside.  Overriding the
-## previous function so it is available if we ever want to use
-## the new behavior.
+## Creating an hostname entry with all of the addresses has a few side
+## effects with sessions that are redirected back inside.  Overriding
+## the previous function so it is available if we ever want to use the
+## new behavior.
 get_addresses()
 {
     local t_interface="`pppoe_interface`"

@@ -262,7 +262,6 @@ class InterfaceController < ApplicationController
     return json_error( "Unknown interface '%s'" % ( interface_id )) if interface.nil?
     
     interface_attributes = s["interface"] 
-    interface_attributes.delete( "wan" )
     interface_attributes.delete( "name" )
     interface_attributes.delete( "bus" )
     interface_attributes.delete( "os_name" )

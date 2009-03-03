@@ -1,0 +1,303 @@
+#! /bin/bash
+
+## Variables
+
+ETHERNET_MEDIA_CONF="/etc/untangle-net-alpaca/ethernet_media"
+SET_LINK_MEDIA_SCRIPT="/usr/share/untangle-net-alpaca/scripts/set-link-media"
+
+ADD_UPLINK_SCRIPT="/localhome/rbscott/work/pkgs/untangle-net-alpaca/files/usr/share/untangle-net-alpaca/scripts/add-uplink"
+
+## It is very dangerous to change this once a revision has been released.
+TABLE_PREFIX="uplink."
+
+## All of the untangle rules MUST fall in this priority.  This makes it easy to
+## flush all of the rules.
+UNTANGLE_PRIORITY_BASE="36"
+
+## Priority of the default ip route rule.
+
+## Change this whenever you want to guarantee that the route tables are recreated.
+## this was used to generate the value (openssl rand -base64 -out /dev/stdout 10)
+IP_ROUTE_TABLE_MARKER="8VECFOtCUZxObA=="
+
+IP_RT_TABLES="/etc/iproute2/rt_tables"
+IP_RT_TABLE_BASE=64
+
+## Functions
+
+debug()
+{
+    /bin/echo -e "[DEBUG: `date`] ${*}"
+}
+
+debug_ip()
+{
+    debug ip $*
+    ip $*
+}
+
+## Return the expected/desired state of the bridge interfaces
+bridge_expected()
+{
+    awk '
+      /^iface.*inet/ { interface = $2  }
+      /alpaca_bridge_ports/ { print interface "[]"
+                              gsub( "^[ \t]*alpaca_bridge_ports[ \t]*", "")
+                              split( $0, intf_array )
+                              for ( i in intf_array ) print interface "[" intf_array[i] "]" }' \
+                                  /etc/network/interfaces | sort | md5sum | awk '{ print $1}'
+}
+
+## Return the current state of the bridge interfaces
+## REVIEW : This doesn't include empty bridges.
+bridge_current()
+{
+    find /sys/class/net/*/brif* 2>/dev/null | \
+        sed -e 's|/sys/class/net/\([^/]*\)/brif/\?\(.*\)|\1[\2]|' | \
+        sort | md5sum | awk '{ print $1}'
+}
+
+bridge_configured()
+{
+    local l_expected=`bridge_expected`
+    local l_current=`bridge_current`
+    
+    $DEBUG "EXPECTED(${l_expected}) CURRENT(${l_current})"
+
+    test "${l_expected}" = "${l_current}"
+}
+
+## Return a list of all of the bridges
+bridge_list()
+{
+    find /sys/class/net/*/bridge -name 'bridge_id' 2>/dev/null | sed -e 's|/sys/class/net/\([^/]*\)/.*|\1|'
+}
+
+## Return a list of interfaces that are in bridge. 
+bridge_port_list()
+{
+    local l_bridge=$1
+    
+    test -n "${l_bridge}" && {
+        find /sys/class/net/${l_bridge}/brif/ -maxdepth 1 -mindepth 1 -exec basename {} \; 2>/dev/null
+    }
+}
+
+## Deconfigure all of the active bridges
+bridge_delete_all()
+{
+    local l_bridge
+    local l_port
+    for l_bridge in `bridge_list` ; do
+        $DEBUG "Deleting all of the interfaces in the bridge '${l_bridge}'."
+        for l_port in `bridge_port_list ${l_bridge}` ; do
+            $DEBUG "Deleting the interface '${l_port}' from the bridge '${l_bridge}'."
+            brctl delif ${l_bridge} ${l_port}
+            ifconfig ${l_port} 0.0.0.0
+            ifconfig ${l_port} down
+        done
+        ifconfig ${l_bridge} down
+        brctl delbr ${l_bridge}
+    done
+}
+
+set_ethernet_media()
+{
+    local t_nic
+    local t_media
+
+    test -f "${ETHERNET_MEDIA_CONF}" || { 
+        echo "[WARN: `date`] '${ETHERNET_MEDIA_CONF}' doesn't exist" 
+        return 0
+    }
+
+    test -x "${SET_LINK_MEDIA_SCRIPT}" || { 
+        echo "[WARN: `date`] '${SET_LINK_MEDIA_SCRIPT}' doesn't exist" 
+        return 0
+    }
+    
+    cat "${ETHERNET_MEDIA_CONF}" | awk '/^[a-z][^#]*$/ { print }' | while read t_nic t_media ; do 
+        $DEBUG "${t_nic}, ${t_media}"
+        ${SET_LINK_MEDIA_SCRIPT} ${t_nic} ${t_media}
+    done
+}
+
+## Delete all of the rules thare are on one of the uplink tables.
+flush_uplink_tables()
+{
+    local t_route
+    ip route show table all | grep  "${TABLE_PREFIX}" | while read t_route ; do
+        ${IP} route delete ${t_route}
+    done
+}
+
+## Remove all of the rules
+flush_uplink_rules()
+{
+    local t_priority
+    
+    for t_priority in `ip rule show | awk "/^${UNTANGLE_PRIORITY_BASE}[0-9][0-9][0-9]:/ { sub( \":\", \"\", \\$1 ) ; print \\$1 }"` ; do
+        ${IP} rule delete priority ${t_priority}
+    done    
+}
+
+insert_uplink_tables()
+{
+    local t_temp
+    local t_index
+
+    grep -q "${IP_ROUTE_TABLE_MARKER}" ${IP_RT_TABLES} && return
+    
+    t_temp=`mktemp`
+    
+    echo "# ${IP_ROUTE_TABLE_MARKER} MultiWAN uplink tables" >> ${t_temp}
+
+    for t_index in `seq 1 8`; do
+        echo -e "$((${IP_RT_TABLE_BASE} + ${t_index}))\t${TABLE_PREFIX}${t_index}" >> ${t_temp}
+    done
+    
+    sed -i -e '/uplink/d'  -e "/MultiWAN uplink tables/d" ${IP_RT_TABLES}
+    cat ${t_temp} >> ${IP_RT_TABLES}
+    
+    rm -f ${t_temp}
+}
+
+flush_uplinks()
+{
+    flush_uplink_tables
+    flush_uplink_rules
+    ## Make sure that all of the tables exist.
+    insert_uplink_tables
+}
+
+cleanup()
+{
+    test "$IFACE" != "cleanup" && {
+        $DEBUG "Ignoring cleanup for interface ${IFACE}"
+        return
+    }
+
+    $DEBUG "Stopping all dhcp daemons"
+    ## If there are any processes, wait a little, then make sure they are gone.
+    pkill -QUIT '(dhclient3|pump|dhclient)' && { sleep 1 ; pkill '(dhclient3|pump|dhclient)'; }
+    
+    $DEBUG "Cleaning up the interface state."
+    
+    ## REVIEW : Possibly add a label for dynamically configured 
+    ## interfaces.
+    ## REVIEW : Down all interfaces that are not supposed to be
+    ## configured, eg ifconfig down <intf> for everything that is not
+    ## used.
+    $DEBUG "Flushing interface addresses."
+    ip addr flush scope global 2>/dev/null
+    
+    $DEBUG "Flush all uplink routes."
+    flush_uplinks
+    
+    $DEBUG "Configuring network media."
+    set_ethernet_media
+    
+    $DEBUG "Stopping all active PPP Connections."
+    poff -a
+    
+    bridge_configured || {
+    # Determine which bridges need to be removed
+        $DEBUG "Destroying all of the bridges."
+        bridge_delete_all
+    }
+}
+
+bridge_address()
+{
+    if [ ! -x /usr/sbin/brctl ]
+    then
+        $DEBUG "Bridge utilities are not installed."
+        return 0
+    fi
+    
+    case "$IF_ALPACA_BRIDGE_PORTS" in
+        "")
+	    return 0
+	    ;;
+        none)
+            $DEBUG "'none' is not supported by the untangle-net-alpaca"
+	    return 0
+	    ;;
+        all)
+            $DEBUG "'all' is not supported by the untangle-net-alpaca"
+            return 0
+	    ;;
+        *)
+	    INTERFACES="$IF_ALPACA_BRIDGE_PORTS"
+	    ;;
+    esac
+    
+    if [ -n "${IF_ADDRESS}" ] && [ -n "${IF_NETMASK}" ]; then
+        ifconfig $IFACE ${IF_ADDRESS} netmask ${IF_NETMASK} up
+    fi
+    
+    if [ -n "${IF_GATEWAY}" ]; then
+        ip route replace default via ${IF_GATEWAY}
+    fi
+    
+    return 0
+}
+
+update_address()
+{
+    [ "$IFACE" != "update" ] && {
+        return 0
+    }
+    
+    run-parts /etc/untangle-net-alpaca/scripts/update-address.d
+}
+
+uplink_routes()
+{
+    local t_rt_table
+    local t_priority
+
+    [ -z "$IF_ALPACA_GATEWAY" ] && {
+        $DEBUG "skipping uplink for ${IFACE}"
+        return 0
+    }
+
+    [ -z "$IF_ADDRESS" ] && {
+        $DEBUG "skipping uplink for ${IFACE}"
+        return 0
+    }
+
+    [ -x "${ADD_UPLINK_SCRIPT}" ] || {
+        $DEBUG "Missing the script '${ADD_UPLINK_SCRIPT}'."
+        return 0        
+    }
+
+    [ -z "$IF_ALPACA_INTERFACE_INDEX" ] && {
+        $DEBUG "Interface ${IFACE} is missing the interface index."
+        return 0
+    }
+    
+    t_rt_table="${TABLE_PREFIX}${IF_ALPACA_INTERFACE_INDEX}"
+    ${ADD_UPLINK_SCRIPT} ${IFACE} ${IF_ADDRESS} ${IF_ALPACA_GATEWAY} ${t_rt_table}
+}
+
+## Start of script
+
+IP="ip"
+DEBUG=/bin/true
+
+test "${IF_ALPACA_DEBUG}" = "true" && {
+    DEBUG="debug"
+    IP="debug_ip"
+}
+
+cleanup
+
+bridge_address
+
+update_address
+
+uplink_routes
+
+## always exit 0
+exit 0

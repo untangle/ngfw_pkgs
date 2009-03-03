@@ -1,0 +1,90 @@
+#!/bin/dash
+
+## All of the untangle rules MUST fall in this priority.  This makes it easy to
+## flush all of the rules.
+UNTANGLE_PRIORITY_BASE="36"
+UNTANGLE_PRIORITY_DEFAULT="${UNTANGLE_PRIORITY_BASE}900"
+
+## Functions
+debug()
+{
+    /bin/echo -e "[DEBUG: `date`] ${*}"
+}
+
+
+debug_ip()
+{
+    debug ip $*
+    ip $*
+}
+
+usage()
+{
+    echo "$0 <interface> <address> <gateway> <rt_table>"
+    exit 254
+}
+
+## Generates an awk script that determines:
+## 1. next highest priority.
+## 2. Whether or not the uplink rule exists.
+## 3. Whether or not the default route has already been defined.
+ip_rule_awk_script()
+{
+    cat <<EOF
+BEGIN { 
+  has_default="false"
+  has_rule="false"
+  priority=${UNTANGLE_PRIORITY_BASE}500
+}
+/^${UNTANGLE_PRIORITY_BASE}5/ { 
+  rule_priority=\$1
+  sub( ":", "", rule_priority )
+  if ( priority == rule_priority ) priority=rule_priority + 1
+  if ( priority < rule_priority ) priority=rule_priority
+}
+/^.*${UNTANGLE_PRIORITY_BASE}5.*from ${ADDRESS}.*lookup ${RT_TABLE}/ { 
+  has_rule="true"
+}
+/^${UNTANGLE_PRIORITY_DEFAULT}/ {
+  has_default="true"
+}
+END {
+  print priority " " has_rule " " has_default " "
+}
+EOF
+}
+
+## Start of script
+IFACE=$1
+ADDRESS=$2
+GATEWAY=$3
+RT_TABLE=$4
+
+DEBUG=/bin/true
+IP="ip"
+
+[ -n "${DEBUG_MODE}" ] && {
+    DEBUG="debug"
+    IP="debug_ip"
+}
+
+[ -z "${IFACE}" ] && usage
+[ -z "${ADDRESS}" ] && usage
+[ -z "${GATEWAY}" ] && usage
+[ -z "${RT_TABLE}" ] && usage
+
+## Dash subshell won't put read variables into the main shell variable space.
+ip rule show | awk "`ip_rule_awk_script`" | while read priority has_rule has_default_rule ; do
+    $DEBUG "Adding uplink for[${IFACE}] ${ADDRESS}: -> ${GATEWAY} to ${RT_TABLE}"
+    [ "${has_rule}x" = "falsex" ] && {
+        ${IP} rule add priority ${priority} from ${ADDRESS} lookup ${RT_TABLE}
+    }
+    ${IP} route replace table ${RT_TABLE} default via ${GATEWAY}
+    
+## If necessary add the default uplink rule
+    [ "${has_default_rule}x" = "falsex" ] && {
+        $DEBUG "Adding default uplink rule for ${RT_TABLE}"
+        ip rule add priority ${UNTANGLE_PRIORITY_DEFAULT} lookup ${RT_TABLE}
+    }
+done
+    

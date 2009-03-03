@@ -59,7 +59,7 @@ run_iptables_scripts()
     ## or the iptables_debug function.
 
     ## Do not run any of the dpkg backup files.
-    for t_script in `find ${IPTABLES_DIRECTORY} -name '*dpkg*' -prune -o -type f -print | sort` ; do
+    for t_script in `run-parts --list --lsbsysinit ${IPTABLES_DIRECTORY} | sort` ; do
         . ${t_script}
         t_ran_script="true"
     done

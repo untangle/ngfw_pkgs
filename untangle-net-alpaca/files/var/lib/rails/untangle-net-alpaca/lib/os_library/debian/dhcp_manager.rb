@@ -26,6 +26,7 @@ class OSLibrary::Debian::DhcpManager < OSLibrary::DhcpManager
   OverrideGateway = "DHCP_GATEWAY"
   OverrideDnsServer = "DHCP_DNS_SERVERS"
   OverrideDomainName = "DHCP_DOMAIN_NAME"
+  OverrideUplinkIndex = "DHCP_UPLINK_INDEX"
 
   OverrideMTU = "DHCP_MTU"
 
@@ -50,10 +51,11 @@ class OSLibrary::Debian::DhcpManager < OSLibrary::DhcpManager
     return DhcpStatus.new( address, netmask ) unless interface.wan
 
     ## Grab the default gateway
-    default_gateway = `ip route show | awk ' /^default via.*#{name}/ { print $3 } '`.strip
+    default_gateway = `ip route show table uplink.#{interface.index} | awk ' /^default via.*#{name}/ { print $3 } '`.strip
 
-    ## DNS Servers are only stored in the 
-    dns_1, dns_2 = `awk '/^server=/ { sub( "server=", "" ); print }' /etc/dnsmasq.conf`.strip.split
+    ## DNS Servers are only stored in the dnsmasq.conf file.
+    ## Each uplink is tagged with a comment that includes uplink.
+    dns_1, dns_2 = `awk '/^#*\s*server=.*uplink.#{interface.index}/ { sub( "#*\s*server=", "" ); sub ( "#.*", "" ); print }' /etc/dnsmasq.conf`.strip.split
     
     DhcpStatus.new( address, netmask, default_gateway, dns_1, dns_2 )
   end
@@ -135,6 +137,8 @@ class OSLibrary::Debian::DhcpManager < OSLibrary::DhcpManager
         cfg << "#{OverrideMTU}=#{mtu}"
       end
       
+      cfg << "#{OverrideUplinkIndex}=#{interface.index}"
+
       next if cfg.size == 0
       
       file_name = "#{ConfigDir}/#{ConfigFileBase}#{name}"
