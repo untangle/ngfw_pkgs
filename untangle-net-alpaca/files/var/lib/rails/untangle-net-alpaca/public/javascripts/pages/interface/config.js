@@ -144,6 +144,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
         
         return new Ext.Panel({
             layout : 'form',
+            autoHeight : true,
             defaults : {
                 xtype : "fieldset"
             },
@@ -226,6 +227,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
     {
         return new Ext.Panel({
             layout : 'form',
+            autoHeight : true,
             defaults : {
                 xtype : "fieldset"
             },
@@ -287,6 +289,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
         
         return new Ext.Panel({
             layout : 'form',
+            autoHeight : true,
             defaults : {
                 xtype : "fieldset"
             },
