@@ -26,10 +26,8 @@ case "$reason" in
 	    fi
             
             for router in $alpaca_new_routers; do
-                ## It is safe to use replace to update a route that doesn't exist.
                 [ -x "${ADD_UPLINK_SCRIPT}" ] && {
-                    ${ADD_UPLINK_SCRIPT} ${interface} ${new_ip_address} ${router} \
-                        "uplink.${DHCP_UPLINK_INDEX}"
+                    ${ADD_UPLINK_SCRIPT} ${interface} ${router} "uplink.${DHCP_UPLINK_INDEX}"
                 }
             done
         fi
@@ -49,9 +47,9 @@ case "$reason" in
             fi
 	    
             for router in $alpaca_new_routers; do
-                ## It is safe to use replace to update a route that doesn't exist.
-                
-                ip route replace table "uplink.${DHCP_UPLINK_INDEX}" $metric_arg default via $router 
+                [ -x "${ADD_UPLINK_SCRIPT}" ] && {
+                    ${ADD_UPLINK_SCRIPT} ${interface} ${router} "uplink.${DHCP_UPLINK_INDEX}"
+                }
             done
 
             make_resolv_conf

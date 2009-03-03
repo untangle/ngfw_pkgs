@@ -278,7 +278,7 @@ uplink_routes()
     }
     
     t_rt_table="${TABLE_PREFIX}${IF_ALPACA_INTERFACE_INDEX}"
-    ${ADD_UPLINK_SCRIPT} ${IFACE} ${IF_ADDRESS} ${IF_ALPACA_GATEWAY} ${t_rt_table}
+    ${ADD_UPLINK_SCRIPT} ${IFACE} ${IF_ALPACA_GATEWAY} ${t_rt_table}
 }
 
 ## Start of script

@@ -24,5 +24,16 @@ if [ -x "/etc/init.d/untangle-net-alpaca" ]; then
     update-rc.d untangle-net-alpaca defaults >/dev/null
     ourInit untangle-net-alpaca restart >> ${LOG_FILE} 2>&1 || exit 0
 fi
+
+## It no longer needs these config files
+for t_config_file in "alpaca-bridge-address alpaca-cleanup alpaca-update-address" ; do 
+    t_config_file="/etc/network/if-up.d/${t_config_file}"
+
+    if [ -f ${t_config_file} ] ; then
+        chmod -x ${t_config_file}
+        rename 's/$/.dpkg-old/' ${t_config_file}
+    fi
+done
     
 exit 0
+
