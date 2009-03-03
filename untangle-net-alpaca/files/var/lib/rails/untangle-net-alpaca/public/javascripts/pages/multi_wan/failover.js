@@ -16,7 +16,7 @@ Ung.Alpaca.Pages.MultiWan.Failover = Ext.extend( Ung.Alpaca.PagePanel, {
 
         for ( var c = 0 ;c < this.settings["interfaces"].length ; c++ ) {
             var i = this.settings["interfaces"][c];
-            this.addToStore( i.index, i.name, this.interfaceMap, this.interfaceStore )
+            Ung.Alpaca.Util.addToStoreMap( i.index, i.name, this.interfaceStore, this.interfaceMap )
         }
 
         this.interfaceMap[-1] = this._( "Total" );
@@ -24,11 +24,11 @@ Ung.Alpaca.Pages.MultiWan.Failover = Ext.extend( Ung.Alpaca.PagePanel, {
         this.typeMap = {};
         this.typeStore = [];
 
-        this.addToStore( "ping", this._( "Ping" ), this.typeMap, this.typeStore );
-        this.addToStore( "arp", this._( "ARP" ), this.typeMap, this.typeStore );
-        this.addToStore( "dns", this._( "DNS" ), this.typeMap, this.typeStore );
-        this.addToStore( "http", this._( "HTTP" ), this.typeMap, this.typeStore );
-        this.addToStore( "custom", this._( "Custom" ), this.typeMap, this.typeStore );
+        Ung.Alpaca.Util.addToStoreMap( "ping", this._( "Ping" ), this.typeStore, this.typeMap );
+        Ung.Alpaca.Util.addToStoreMap( "arp", this._( "ARP" ), this.typeStore, this.typeMap  );
+        Ung.Alpaca.Util.addToStoreMap( "dns", this._( "DNS" ), this.typeStore, this.typeMap );
+        Ung.Alpaca.Util.addToStoreMap( "http", this._( "HTTP" ), this.typeStore, this.typeMap );
+        Ung.Alpaca.Util.addToStoreMap( "custom", this._( "Custom" ), this.typeStore, this.typeMap );
 
         var grid = this.testGrid( this.settings );
 
@@ -413,12 +413,6 @@ Ung.Alpaca.Pages.MultiWan.Failover = Ext.extend( Ung.Alpaca.PagePanel, {
     {
         this.interfaceMap[v] = name;
         this.interfaceStore.push([v,name]);
-    },
-
-    addToStore : function( v, name, map, store )
-    {
-        map[v] = name;
-        store.push([v,name]);
     },
 
     onShowRowEditorConfig : function( component )

@@ -22,13 +22,23 @@ class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
   ConfigFile = "/etc/untangle-net-alpaca/routes"
 
   def get_active
-    `netstat -rn | awk '/^[0-9]/ { if (( index( $8, "dummy" ) == 0 ) && ( index( $8, "utun" ) == 0 )) print $1 "," $3 "," $2 "," $8 }'`.split( "\n" ).map do |entry|
-      g = ActiveRoute.new 
+    `ip route show table all type unicast | sed -e 's| *scope link *| |' -e 's| *proto kernel *| |' -e 's| *src *[0-9\.]* *| |' -e '/dummy/d' -e '/utun/d'`.split( "\n" ).map do |entry|
+      target, ___, gateway = entry.split( " " )
+
+      g = ActiveRoute.new
+      g.target, netmask = target.split( "/" )
       
-      g.target, g.netmask, g.gateway, g.interface = entry.split( "," )
-      
-      if OSLibrary::NetworkManager::NETMASK_TO_CIDR.key?( g.netmask )
-        g.netmask = OSLibrary::NetworkManager::NETMASK_TO_CIDR[g.netmask] + " (" + g.netmask + ")"
+      if OSLibrary::NetworkManager::CIDR.key?( netmask )
+        netmask = "#{netmask} (#{OSLibrary::NetworkManager::CIDR[netmask]})"
+      end
+      g.netmask = netmask
+
+      if ( IPAddr.parse_ip( gateway ))
+        g.gateway = gateway
+        g.interface = ""
+      else
+        g.gateway = "0.0.0.0"
+        g.interface = gateway
       end
 
       g
@@ -47,7 +57,8 @@ class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
   def hook_write_files
     ## Retrieve all of the routes that are defined in interfaces by
     ## bogus addresses that end in .0
-    network_routes = get_interface_routes
+    os_map = {}
+    network_routes = get_interface_routes( os_map )
     
     network_routes += [ NetworkRoute.find( :all ) ].flatten
     
@@ -57,6 +68,16 @@ class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
       target = network_route.target
       netmask = network_route.netmask
       gateway = network_route.gateway
+
+      ## If this was a custom route that used the interface,
+      ## Convert it to an interface route.
+      if ( gateway.to_i.to_s == gateway )
+        os_name = os_map[gateway.to_i]
+        next if os_name.nil?
+        network_route = InterfaceRoute.new( IpNetwork.new({ "ip" => target, "netmask" => netmask }), 
+                                            os_name )
+        gateway = os_name
+      end
 
       next if IPAddr.parse_ip( target ).nil?
       netmask = IPAddr.parse_netmask( netmask )
@@ -91,10 +112,10 @@ class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
 EOF
   end
 
-  def get_interface_routes
+  def get_interface_routes( os_map )
     interface_routes = []
     interfaces = Interface.find( :all )
-    route_visitor = InterfaceRouteVisitor.new
+    route_visitor = InterfaceRouteVisitor.new( os_map )
 
     interfaces.each do |interface|
       if ! interface.nil? and ! interface.current_config.nil?
@@ -106,13 +127,17 @@ EOF
   end
   
   class InterfaceRouteVisitor < Interface::ConfigVisitor
+    def initialize( os_map )
+      @os_map = os_map
+    end
+
     def intf_static( interface, config )
       ## Create a copy of the array.
-      interface_routes( interface, config.ip_networks )
+      interface_routes( interface, config.ip_networks, @os_map )
     end
 
     def intf_dynamic( interface, config )
-      interface_routes( interface, config.ip_networks )
+      interface_routes( interface, config.ip_networks, @os_map )
     end
 
     def intf_bridge( interface, config )
@@ -120,15 +145,17 @@ EOF
     end
 
     def intf_pppoe( interface, config )
-      interface_routes( interface, config.ip_networks )
+      interface_routes( interface, config.ip_networks, @os_map )
     end
 
     ## This should be moved into a central place as something close is
     ## used in the network manager.
-    def interface_routes( interface, ip_networks )
+    def interface_routes( interface, ip_networks, os_map )
       bridged_interfaces = interface.bridged_interface_array
       os_name = interface.os_name
       os_name = "br.#{os_name}" if ( !bridged_interfaces.nil? && !bridged_interfaces.empty? )
+
+      @os_map[interface.index] = os_name
 
       ## Copy the array of ip_networks
       ip_networks = [ ip_networks  ].flatten

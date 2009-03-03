@@ -21,6 +21,8 @@ class RouteController < ApplicationController
     settings = {}
     settings["active_routes"] = NetworkRoute.get_active( os )
     settings["static_routes"] = NetworkRoute.find( :all )
+    settings["interface_enum"] = build_interface_enum().delete_if { |i| i[0] == 8 }
+
     json_result( :values => settings )
   end
 

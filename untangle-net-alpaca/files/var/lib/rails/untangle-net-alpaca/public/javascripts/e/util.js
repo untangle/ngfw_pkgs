@@ -494,6 +494,18 @@ Ung.Alpaca.Util = {
         }
     },
 
+    /**
+     * It is pretty common to have a store and a map used in comboboxes.
+     * The store is used to fill in the combobox, the map is used to lookup
+     * the current name.  This function will append the value to the store
+     * and update the map at the same time.
+     */
+    addToStoreMap : function( v, name, store, map )
+    {
+        map[v] = name;
+        store.push([v,name]);
+    },
+
     
     cidrData : [
         [ "8",  "8   : 255.0.0.0"],

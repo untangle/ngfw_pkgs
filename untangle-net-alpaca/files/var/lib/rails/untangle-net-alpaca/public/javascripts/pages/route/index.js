@@ -10,6 +10,16 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "route", "index" )) {
 Ung.Alpaca.Pages.Route.Index = Ext.extend( Ung.Alpaca.PagePanel, {
     initComponent : function()
     {
+        this.gatewayStore = [];
+        this.gatewayMap = {};
+
+        this.gatewayStore.push(["1.2.3.4", "1.2.3.4"]);
+        var ie = this.settings["interface_enum"];
+        for ( var c = 0; c < ie.length ; c++ ) {
+            var i = ie[c];
+            Ung.Alpaca.Util.addToStoreMap( i[0], i[1], this.gatewayStore, this.gatewayMap );
+        }
+
         this.staticRoutesGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
 
@@ -56,9 +66,18 @@ Ung.Alpaca.Pages.Route.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 width: 200,
                 sortable: false,
                 dataIndex : "gateway",
-                editor : new Ext.form.TextField({
-                    allowBlank : false,
-                    vtype : 'ipAddress'
+                renderer : function( value, metadata, record )
+                {
+                    var name = this.gatewayMap[value];
+                    return ( name == null ) ? value : name;
+                }.createDelegate( this ),
+                editor : new Ext.form.ComboBox({
+                    store : this.gatewayStore,
+                    listWidth : 60,
+                    width : 70,
+                    triggerAction : "all",
+                    mode : "local",
+                    editable : true
                 })
             },{
                 header : this._( "Description" ),
@@ -76,7 +95,7 @@ Ung.Alpaca.Pages.Route.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         this.activeRoutesGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
 
-            recordFields : [ "target", "netmask", "gateway" ],
+            recordFields : [ "target", "netmask", "gateway", "interface" ],
             
             saveData : false,
             name : "active_routes",
@@ -87,7 +106,8 @@ Ung.Alpaca.Pages.Route.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 header : this._( "Target" ),
                 width: 200,
                 sortable: true,
-                dataIndex : "target"
+                dataIndex : "target",
+                renderer : this.renderActiveTarget.createDelegate( this )
             },{
                 header : this._( "Netmask" ),
                 width: 200,
@@ -97,7 +117,8 @@ Ung.Alpaca.Pages.Route.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 header : this._( "Gateway" ),
                 width: 200,
                 sortable: true,
-                dataIndex : "gateway"
+                dataIndex : "gateway",
+                renderer : this.renderActiveGateway.createDelegate( this )
             }]
         });
 
@@ -123,6 +144,24 @@ Ung.Alpaca.Pages.Route.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         });
         
         Ung.Alpaca.Pages.Route.Index.superclass.initComponent.apply( this, arguments );
+    },
+
+    renderActiveTarget : function( value, metadata, record )
+    {
+        if ( value == "default" ) {
+            return this._( "default" );
+        }
+
+        return value;
+    },
+
+    renderActiveGateway : function( value, metadata, record )
+    {
+        if ( value == "0.0.0.0" ) {
+            return record.data["interface"];
+        }
+
+        return value;
     },
 
     saveMethod : "/route/set_settings"

@@ -7,17 +7,15 @@ if ( Ung.Alpaca.Glue.hasPageRenderer( "qos", "index" )) {
     Ung.Alpaca.Util.stopLoading();
 }
 
-// throw "you got fail.";
-
 Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
     initComponent : function()
     {
         this.priorityStore = [];
         this.priorityMap = {};
 
-        this.addPriority( 10, this._( "High" ));
-        this.addPriority( 20, this._( "Normal" ));
-        this.addPriority( 30, this._( "Low" ));
+        Ung.Alpaca.Util.addToStoreMap( 10, this._( "High" ), this.priorityStore, this.priorityMap );
+        Ung.Alpaca.Util.addToStoreMap( 20, this._( "Normal" ), this.priorityStore, this.priorityMap );
+        Ung.Alpaca.Util.addToStoreMap( 30, this._( "Low" ), this.priorityStore, this.priorityMap );
 
         this.qosGrid = this.buildQosGrid();
 
@@ -467,14 +465,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         var message = String.format( this._( "Uplink Bandwidth ({0} kbps download, {1} kbps upload)" ),
                                      u, d );
         this.bandwidthLabel.setText( message );
-    },
-    
-    addPriority : function( v, name )
-    {
-        this.priorityMap[v] = name;
-        this.priorityStore.push([v,name]);
     }
-
 });
 
 Ung.Alpaca.Pages.Qos.Index.settingsMethod = "/qos/get_settings";

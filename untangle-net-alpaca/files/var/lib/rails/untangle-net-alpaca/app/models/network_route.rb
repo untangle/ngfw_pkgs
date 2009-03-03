@@ -25,7 +25,15 @@ class NetworkRoute < ActiveRecord::Base
       errors.add( :netmask, "is missing or invalid" )
     end
 
-    unless gateway && ApplicationHelper.ip_address?( gateway )
+    if gateway.nil? or ApplicationHelper.null?( gateway )
+      errors.add( :gateway, "is missing or invalid" )
+    elsif ( gateway.to_i.to_s == gateway.to_s )
+      interface_id = gateway.to_i
+      ## Wonderful magic numbers
+      if ( interface_id < 0 || interface_id > 8 )
+        errors.add( :gateway, "is not a valid interface." )
+      end
+    elsif ( !ApplicationHelper.ip_address?( gateway ))
       errors.add( :gateway, "is missing or invalid" )
     end
 

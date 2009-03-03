@@ -12,9 +12,9 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
     {
         this.actionStore = [];
         this.actionMap = {};
-        this.addAction( "pass", this._( "Pass" ));
-        this.addAction( "drop", this._( "Drop" ));
-        this.addAction( "reject", this._( "Reject" ));
+        Ung.Alpaca.Util.addToStoreMap( "pass", this._( "Pass" ), this.actionStore, this.actionMap );
+        Ung.Alpaca.Util.addToStoreMap( "drop", this._( "Drop" ), this.actionStore, this.actionMap );
+        Ung.Alpaca.Util.addToStoreMap( "reject", this._( "Reject" ), this.actionStore, this.actionMap );
 
         var rowEditorConfig = {
             xtype: "roweditor",
@@ -167,12 +167,6 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         });
         
         Ung.Alpaca.Pages.PacketFilter.Index.superclass.initComponent.apply( this, arguments );
-    },
-
-    addAction : function( v, name )
-    {
-        this.actionMap[v] = name;
-        this.actionStore.push([v,name]);
     },
 
     saveMethod : "/packet_filter/set_settings"
