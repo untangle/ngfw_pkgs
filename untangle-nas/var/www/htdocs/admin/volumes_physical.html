@@ -4,7 +4,6 @@
     require("pre.inc");
     require("md.inc");
     include("authenticated.inc");
-
     /* rescan scsi bus before doing anything else */
     $cmd = "export LANG=C; /usr/bin/sudo /sbin/rescan-scsi-bus.sh 2>&1";
     exec($cmd, $output, $ret);
@@ -22,7 +21,6 @@
     pclose($disksp);
 
     $of_disks = array();
-
     if ($dresult[0] == "OPENFILER")
     {
             $i = 1;
@@ -41,7 +39,6 @@
                                     array_push($parts, array("device" => $dresult[$i + 1], "type" => $dresult[$i + 2], "number" => $dresult[$i + 3], "start" => $dresult[$i + 4], "end" => $dresult[$i + 5], "blocks" => $dresult[$i + 6], "extended" => $dresult[$i + 7]));
                                     $i = $i + 8;
                             }
-
                             array_push($of_disks,
                                     array("label" => substr($dresult[$p], 5, strlen($dresult[$p]) - 5),
                                             "device" => $dresult[$p + 1],
@@ -65,11 +62,17 @@
     {
             for ($j = 0; $j < count($of_disks[$i]["partitions"]); $j++)
             {
+                    /* karthik adding this here cuz there is no other way to get this stuff later for the installer*/
+                    $tmpH = popen('export LANG=C; /usr/bin/sudo /sbin/blockdev --getsize64 2>&1 ' . $of_disks[$i]["partitions"][$j]["device"] , 'r');
+                    $part_size = trim(fread($tmpH, 2096));
+                    pclose($tmpH);            
+                    $of_disks[$i]["partitions"][$j]["size"] = $part_size;
+                    /*end adding partition size */
                     $ptype = $of_disks[$i]["partitions"][$j]["type"];
                     $pv_device = $of_disks[$i]["partitions"][$j]["device"];
 
                     $in_use[$pv_device] = false;
-                    $used_in_string[$pv_device] = "<em>Unknown / unused</em>";
+                    $used_in_string[$pv_device] = "Unknown / unused";
 
                     if ($ptype == "8e")
                     {
@@ -88,7 +91,7 @@
                                     if (($pvinfo[0] == $pv_device) && (strlen($pvinfo[1]) > 0))
                                     {
                                             $in_use[$pv_device] = true;
-                                            $used_in_string[$pv_device] = "<tt>" . $pvinfo[1] . "</tt> VG";
+                                            $used_in_string[$pv_device] =  $pvinfo[1];// . "</tt> VG";
                                     }
                             }
                     }
@@ -101,7 +104,7 @@
                                             if ($md[$ii]["members"][$k]["device"] == $pv_device)
                                             {
                                                     $in_use[$pv_device] = true;
-                                                    $used_in_string[$pv_device] = "<tt>" . $md[$ii]["device"] . "</tt>";
+                                                    $used_in_string[$pv_device] =  $md[$ii]["device"];// . "</tt>";
                                                     break;
                                             }
                                     }
@@ -110,13 +113,22 @@
                                             break;
                             }
                     }
+                    $of_disks[$i]["partitions"][$j]["inuse"] = $in_use[$pv_device];
+                    $of_disks[$i]["partitions"][$j]["usedin"]  = $used_in_string[$pv_device];
             }
     }
 
+    if($_REQUEST['responseType']=='json'){
+        if($_REQUEST['callback']){
+            echo wrapAround($_REQUEST['callback'],'{rows:'.json_encode($of_disks).'}');
+        }else{
+            echo json_encode($of_disks);
+        }
+        return;
+    } 
     generic_header(array("title" => _("Volumes : Block Devices")));
     single_begin(array());
 ?>
-
 <script src="utility.js" type="text/javascript" language="JavaScript">
 </script>
 <script src="popup.js" type="text/javascript" language="JavaScript">
@@ -172,6 +184,24 @@
 				case "5":
 				case "0f":
 				case "f":	$ptype_str = "Extended Partition (<tt>0x" . $ptype . "</tt>)"; break;
+
+				case "86":
+				case "87":
+				case "07":
+				case "7":	$ptype_str = "Windows NTFS (<tt>0x" . $ptype . "</tt>)"; break;
+
+				case "04":
+				case "4":
+				case "06":
+				case "6":
+				case "0f":
+				case "f":
+				case "0e":
+				case "e":
+				case "0c":
+				case "c":
+				case "0b":
+				case "b":	$ptype_str = "Windows FAT (<tt>0x" . $ptype . "</tt>)"; break;
 
 				default:	$ptype_str = "Unknown Partition Type (<tt>0x" . $ptype . "</tt>)"; break;
 			}
