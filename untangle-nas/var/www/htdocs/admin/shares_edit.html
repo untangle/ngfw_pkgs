@@ -644,8 +644,12 @@
         $file->Save();
 
         apply_configuration(array("services" => "reload", "chmod" => "yes", "chmod_path" => ($share_parent . "/" . $share_name)));
-
-        header("Location: ./shares_edit.html?sort=" . $sortorder . "&sharepath=" . urlencode($sharepath));
+        $attachment = getAttachment();
+        if($attachment==''){
+           header("Location: ./shares_edit.html?sort=" . $sortorder . "&sharepath=" . urlencode($sharepath));         
+        }else{
+          header("Location: ./shares.html".$attachment);    
+        }
         exit;
     }
 
@@ -1007,7 +1011,12 @@
 
         apply_configuration(array("services" => "reload", "chmod" => "yes", "chmod_path" => ($share_parent . "/" . $share_name)));
 
-        header("Location: ./shares_edit.html?sort=" . $sortorder . "&sharepath=" . urlencode($sharepath));
+        $attachment = getAttachment();
+        if($attachment==''){
+           header("Location: ./shares_edit.html?sort=" . $sortorder . "&sharepath=" . urlencode($sharepath));         
+        }else{
+           header("Location: ./shares.html".$attachment);    
+        }
         exit;
 
     }

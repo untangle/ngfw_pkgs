@@ -160,9 +160,16 @@
 
 	fclose($cluster_fp);
 	xml_parser_free($cluster_parser);
-
+  $_services = null;
+  if(isset($services)){
+    $_services = $services;
+  }else{
+    $_services = array($service);      
+  }
 	if ($action == "disable")
 	{
+     for($i=0;$i<count($_services);$i++){
+            $service = $_services[$i];	
             if ($service == "smb")
             {
                     exec("export LANG=C; /usr/bin/sudo /etc/init.d/samba stop");
@@ -177,7 +184,7 @@
             }
             else if ($service == "http")
             {
-		    print("XXX -- Can't disable http via daemon");
+		          print("XXX -- Can't disable http via daemon");
             }
 
             else if ($service == "ftp")
@@ -203,7 +210,7 @@
 
             else if ($service == "ldap")
             {
-		    print("XXX -- Can't disable ldap via daemon");
+		          print("XXX -- Can't disable ldap via daemon");
             }
             else if ($service == "ups")
             {
@@ -225,7 +232,7 @@
                 if(!$cluster_enabled)
                     exec("export LANG=C; /usr/bin/sudo /usr/sbin/update-rc.d -f open-iscsi remove");
             }
-
+      }
 
 
 
@@ -346,82 +353,84 @@
 			apply_configuration(array("services" => "keep", "chmod" => "no", "chmod_path" => ""));
 		}
 
-		header("Location: ./services.html");
+		header("Location: ./services.html".getAttachment());
 		exit;
 	}
 	else if ($action == "enable")
 	{
-		if ($service == "smb")
-		{
-			exec("export LANG=C; /usr/bin/sudo /etc/init.d/samba start");
-			if (!$cluster_enabled)
-				exec("export LANG=C; /usr/bin/sudo /usr/sbin/update-rc.d smb defaults");
-		}
-		else if ($service == "nfsv3")
-		{
-			exec("export LANG=C; /usr/bin/sudo /etc/init.d/nfs-kernel-server start");
-			if (!$cluster_enabled)
-				exec("export LANG=C; /usr/bin/sudo /usr/sbin/update-rc.d nfs defaults");
-		}
-		else if ($service == "http")
-		{
-			print("XXX -- Can't enable http via daemon");
-		}
-
-		else if ($service == "ftp")
-		{
-			exec("export LANG=C; /usr/bin/sudo /etc/init.d/proftpd start");
-			if (!$cluster_enabled)
-				exec("export LANG=C; /usr/bin/sudo /usr/sbin/update-rc.d proftpd defaults");
-		}
-
-		else if ($service == "iscsi")
-		{
-			exec("export LANG=C; /usr/bin/sudo /etc/init.d/iscsitarget start");
-			if (!$cluster_enabled)
-				exec("export LANG=C; /usr/bin/sudo /usr/sbin/update-rc.d iscsitarget defaults");
-		}
-
-		else if ($service == "rsync")
-		{
-			exec("export LANG=C; /usr/bin/sudo /etc/init.d/rsync start");
-			if (!$cluster_enabled)
-				exec("export LANG=C; /usr/bin/sudo /usr/sbin/update-rc.d rsync defaults");
-		}
-
-		else if ($service == "ldap")
-		{
-			print("XXX -- Can't enable ldap via daemon");
-		}
-
-        else if ($service == "acpid")
-        {
-            exec("export LANG=C; /usr/bin/sudo /etc/init.d/acpid start");
-            if (!$cluster_enabled)
-                exec("export LANG=C; /usr/bin/sudo /usr/sbin/update-rc.d acpid defaults");
-        }
-
-        else if ($service == "open-iscsi")
-        {
-            exec("export LANG=C; /usr/bin/sudo /etc/init.d/open-iscsi start");
-            if (!$cluster_enabled)
-                exec("export LANG=C; /usr/bin/sudo /usr/sbin/update-rc.d open-iscsi defaults");
-        }
-
-		else if ($service == "ups")
-		{
-                    exec("export LANG=C; /usr/bin/sudo " . "/bin/cp /opt/nas/etc/plugins/ups/configs/generated_ups_conf.conf /etc/ups/ups.conf");
-                    exec("export LANG=C; /usr/bin/sudo " . "/bin/cp /opt/nas/etc/plugins/ups/configs/generated_upsd_conf.conf /etc/ups/upsd.conf");
-                    exec("export LANG=C; /usr/bin/sudo " . "/bin/cp /opt/nas/etc/plugins/ups/configs/generated_upsd_users_conf.conf /etc/ups/upsd.users");
-                    exec("export LANG=C; /usr/bin/sudo " . "/bin/cp /opt/nas/etc/plugins/ups/configs/generated_upsmon_conf.conf /etc/ups/upsmon.conf");
-                    exec("export LANG=C; /usr/bin/sudo " . "/bin/cp /opt/nas/etc/plugins/ups/configs/generated_sysconfig_ups.conf /etc/sysconfig/ups");
-
-                    exec("export LANG=C; /usr/bin/sudo /etc/init.d/upsd start");
-                    if(!$cluster_enabled)
-                            exec("export LANG=C; /usr/bin/sudo /usr/sbin/update-rc.d upsd defaults");
-
-		}
-
+     for($i=0;$i<count($_services);$i++){
+      $service = $_services[$i];	
+    	if ($service == "smb")
+    	{
+    		exec("export LANG=C; /usr/bin/sudo /etc/init.d/samba start");
+    		if (!$cluster_enabled)
+    			exec("export LANG=C; /usr/bin/sudo /usr/sbin/update-rc.d smb defaults");
+    	}
+    	else if ($service == "nfsv3")
+    	{
+    		exec("export LANG=C; /usr/bin/sudo /etc/init.d/nfs-kernel-server start");
+    		if (!$cluster_enabled)
+    			exec("export LANG=C; /usr/bin/sudo /usr/sbin/update-rc.d nfs defaults");
+    	}
+    	else if ($service == "http")
+    	{
+    		print("XXX -- Can't enable http via daemon");
+    	}
+    
+    	else if ($service == "ftp")
+    	{
+    		exec("export LANG=C; /usr/bin/sudo /etc/init.d/proftpd start");
+    		if (!$cluster_enabled)
+    			exec("export LANG=C; /usr/bin/sudo /usr/sbin/update-rc.d proftpd defaults");
+    	}
+    
+    	else if ($service == "iscsi")
+    	{
+    		exec("export LANG=C; /usr/bin/sudo /etc/init.d/iscsitarget start");
+    		if (!$cluster_enabled)
+    			exec("export LANG=C; /usr/bin/sudo /usr/sbin/update-rc.d iscsitarget defaults");
+    	}
+    
+    	else if ($service == "rsync")
+    	{
+    		exec("export LANG=C; /usr/bin/sudo /etc/init.d/rsync start");
+    		if (!$cluster_enabled)
+    			exec("export LANG=C; /usr/bin/sudo /usr/sbin/update-rc.d rsync defaults");
+    	}
+    
+    	else if ($service == "ldap")
+    	{
+    		print("XXX -- Can't enable ldap via daemon");
+    	}
+    
+          else if ($service == "acpid")
+          {
+              exec("export LANG=C; /usr/bin/sudo /etc/init.d/acpid start");
+              if (!$cluster_enabled)
+                  exec("export LANG=C; /usr/bin/sudo /usr/sbin/update-rc.d acpid defaults");
+          }
+    
+          else if ($service == "open-iscsi")
+          {
+              exec("export LANG=C; /usr/bin/sudo /etc/init.d/open-iscsi start");
+              if (!$cluster_enabled)
+                  exec("export LANG=C; /usr/bin/sudo /usr/sbin/update-rc.d open-iscsi defaults");
+          }
+    
+    	else if ($service == "ups")
+    	{
+                      exec("export LANG=C; /usr/bin/sudo " . "/bin/cp /opt/nas/etc/plugins/ups/configs/generated_ups_conf.conf /etc/ups/ups.conf");
+                      exec("export LANG=C; /usr/bin/sudo " . "/bin/cp /opt/nas/etc/plugins/ups/configs/generated_upsd_conf.conf /etc/ups/upsd.conf");
+                      exec("export LANG=C; /usr/bin/sudo " . "/bin/cp /opt/nas/etc/plugins/ups/configs/generated_upsd_users_conf.conf /etc/ups/upsd.users");
+                      exec("export LANG=C; /usr/bin/sudo " . "/bin/cp /opt/nas/etc/plugins/ups/configs/generated_upsmon_conf.conf /etc/ups/upsmon.conf");
+                      exec("export LANG=C; /usr/bin/sudo " . "/bin/cp /opt/nas/etc/plugins/ups/configs/generated_sysconfig_ups.conf /etc/sysconfig/ups");
+    
+                      exec("export LANG=C; /usr/bin/sudo /etc/init.d/upsd start");
+                      if(!$cluster_enabled)
+                              exec("export LANG=C; /usr/bin/sudo /usr/sbin/update-rc.d upsd defaults");
+    
+    	}
+    }
 		if ($cluster_enabled)
 		{
                     $service_winbind = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status winbind"), "running") ? 1 : 0);
@@ -536,7 +545,7 @@
 			apply_configuration(array("services" => "keep", "chmod" => "no", "chmod_path" => ""));
 		}
 
-		header("Location: ./services.html");
+		header("Location: ./services.html".getAttachment());
 		exit;
 	}
 
@@ -549,9 +558,16 @@
 	$iscsi = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status iscsitarget"), "running") ? 1 : 0);
 	$rsync = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status rsync"), "running") ? 1 : 0);
 	$acpid = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status acpid"), "running") ? 1 : 0);
-    $open_iscsi = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status open-iscsi"), "running") ? 1 : 0);
-
-
+  $open_iscsi = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status open-iscsi"), "running") ? 1 : 0);
+  $services_array = array(array("service"=>"smb","status"=>$smb),array("service"=>"nfsv3","status"=>$nfsv3),array("service"=>"http","status"=>$http),array("service"=>"ftp","status"=>$ftp));
+  if($_REQUEST['responseType']=='json'){
+      if($_REQUEST['callback']){
+          echo wrapAround($_REQUEST['callback'],'{rows:'.json_encode($services_array).'}');
+      }else{
+          echo json_encode($services_array);
+      }
+      return;
+  }
 	generic_header(array("title" => _("Services Section")));
 	single_begin(array());
 

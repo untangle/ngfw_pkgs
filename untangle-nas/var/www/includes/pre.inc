@@ -638,5 +638,20 @@ function showGplAcceptForm() {
 
 if (isset($usercookie) && isset($passcookie))
 	check_authenticated($usercookie, $passcookie);
-
+	
+//wrap around a function object if a callback parameter is passed 
+function wrapAround($functionname,$arguments){
+    return $functionname.'('.$arguments.')';
+}
+//helper function to pass in any json specific response parameters
+function getAttachment(){
+  $attachment = "";
+  if($_REQUEST['responseType']=='json'){
+    $attachment = "?responseType=json";
+  }             
+  if($_REQUEST['callback']){
+      $attachment .= "&callback=".$_REQUEST['callback'];
+  }    
+  return $attachment;
+}
 ?>

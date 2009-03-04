@@ -103,7 +103,8 @@
 
     $extended_partitions_exist = false;
     $in_use = array();
-
+    $used_in_string = array();   
+    
     for ($j = 0; $j < count($of_disks[$disk_index]["partitions"]); $j++)
     {
             $ptype = $of_disks[$disk_index]["partitions"][$j]["type"];
@@ -113,7 +114,7 @@
                     $extended_partitions_exist = true;
 
             $in_use[$j] = FALSE;
-
+            $used_in_string[$pv_device] = "Unknown / unused";
             if ($ptype == "8e")
             {
                     $pvp = popen("export LANG=C; /usr/bin/sudo " . $GLOBALS["lvm_command_prefix"] . "pvdisplay " . $pv_device, "r");
@@ -128,8 +129,10 @@
 
                             $pvinfo = explode(":", trim($pvstr, " "));
 
-                            if (($pvinfo[0] == $pv_device) && (strlen($pvinfo[1]) > 0))
+                            if (($pvinfo[0] == $pv_device) && (strlen($pvinfo[1]) > 0)){
                                     $in_use[$j] = true;
+                                    $used_in_string[$pv_device] = $pvinfo[1] ;//. "</tt> VG";                                                                        
+                            }
                     }
             }
             else if ($ptype == "fd")
@@ -141,6 +144,7 @@
                                     if ($md[$ii]["members"][$i]["device"] == $pv_device)
                                     {
                                             $in_use[$j] = true;
+                                            $used_in_string[$pv_device] =  $md[$ii]["device"] ;
                                             break;
                                     }
                             }
@@ -149,6 +153,8 @@
                                     break;
                     }
             }
+            $of_disks[$i]["partitions"][$j]["inuse"] = $in_use[$j];
+            $of_disks[$i]["partitions"][$j]["usedin"]  = $used_in_string[$pv_device];                       
     }
 
     if ($action == "deletepartition")
@@ -170,7 +176,18 @@
                     }
             }
 
-            header("Location: ./volumes_editpartitions.html?dev=" . urlencode($dev));
+            $attachment = "";
+            if($_REQUEST['responseType']=='json'){
+              $attachment = "?responseType=json";
+            }             
+            if($_REQUEST['callback']){
+                $attachment .= "&callback=".$_REQUEST['callback'];
+            }    
+            if($attachment != ''){
+              header("Location: ./volumes_physical.html".$attachment);            
+            }else{
+              header("Location: ./volumes_editpartitions.html?dev=" . urlencode($dev));           
+            }
             exit;
     }
 
@@ -325,10 +342,28 @@
                     }
             }
 
-            header("Location: ./volumes_editpartitions.html?dev=" . urlencode($dev));
+             $attachment = "";
+            if($_REQUEST['responseType']=='json'){
+              $attachment = "?responseType=json";
+            }             
+            if($_REQUEST['callback']){
+                $attachment .= "&callback=".$_REQUEST['callback'];
+            }    
+            if($attachment != ''){
+              header("Location: ./volumes_physical.html".$attachment);            
+            }else{
+              header("Location: ./volumes_editpartitions.html?dev=" . urlencode($dev));           
+            }
             exit;
     }
-
+    if($_REQUEST['responseType']=='json'){
+        if($_REQUEST['callback']){
+            echo wrapAround($_REQUEST['callback'],'{rows:'.json_encode($of_disks).'}');
+        }else{
+            echo json_encode($of_disks);
+        }
+        return;
+    }
     generic_header(array("title" => _("Volumes : Block Devices : Edit Partitions")));
     single_begin(array());
 ?>

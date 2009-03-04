@@ -493,7 +493,34 @@
 		header("Location: ./volumes.html");
 		exit;
 	}
-
+  if($_REQUEST['responseType']=='json'){
+      $response = '{volumes_vg:'.json_encode($volumes_vg).                         
+               ',volumes_id:'.json_encode($volumes_id).          
+               ',volumes_name:'.json_encode($volumes_name).
+               ',volumes_fstype:'.json_encode($volumes_fstype).
+               ',volumes_mountpoint:'.json_encode($volumes_mountpoint).
+               ',df:'.json_encode($df). 
+               ',snapshots_id:'.json_encode($snapshots_id). 
+               ',snapshots_lvname:'.json_encode($snapshots_lvname). 
+               ',snapshots_vgname:'.json_encode($snapshots_vgname). 
+               ',snapshots_shared:'.json_encode($snapshots_shared).
+               ',snapshots_rotateid:'.json_encode($snapshots_rotateid). 
+               ',schedule_size:'.json_encode($schedule_size). 
+               ',schedule_share:'.json_encode($schedule_share). 
+               ',schedule_timecounter:'.json_encode($schedule_timecounter). 
+               ',schedule_timemax:'.json_encode($schedule_timemax).
+               ',schedule_rotatecounter:'.json_encode($schedule_rotatecounter). 
+               ',schedule_rotatemax:'.json_encode($schedule_rotatemax). 
+               ',schedule_lvname:'.json_encode($schedule_lvname).
+               ',schedule_vgname:'.json_encode($schedule_vgname).                                                                                                                                            
+               '}';
+      if($_REQUEST['callback']){
+          echo wrapAround($_REQUEST['callback'],$response);
+      }else{
+          echo $response;
+      }
+      return;
+  } 
 	generic_header(array("title" => _("Volumes : Manage Volumes")));
 	single_begin(array());
 

@@ -192,7 +192,7 @@
                     $pv_device = $of_disks[$i]["partitions"][$j]["device"];
 
                     $in_use[$pv_device] = false;
-
+                    $vg_used_in = '';
                     if ($ptype == "8e")
                     {
                             $pvp = popen("export LANG=C; /usr/bin/sudo " . $GLOBALS["lvm_command_prefix"] . "pvdisplay " . $pv_device . " | grep \"Physical volume\" ", "r");
@@ -213,6 +213,9 @@
                                             $pvs_exist = true;
                             }
                     }
+                      $of_disks[$i]["partitions"][$j]["inuse"] = $in_use[$pv_device];
+                      $of_disks[$i]["partitions"][$j]["volume_group"] = $vg_used_in; 
+                      $of_disks[$i]["partitions"][$j]["sha1"] = sha1($pv_device);                       
             }
     }
 
@@ -223,7 +226,7 @@
             $pvp = popen("export LANG=C; /usr/bin/sudo " . $GLOBALS["lvm_command_prefix"] . "pvdisplay " . $pv_device . " | grep \"Physical volume\" ", "r");
             $pvstr = trim(fgets($pvp, 4096));
             pclose($pvp);
-
+            $vg_used_in = '';
 
 
             if ((strcmp($pvstr, "--- Physical volume ---") == 0) || (strcmp($pvstr, "--- NEW Physical volume ---") == 0))
@@ -238,6 +241,7 @@
                             $in_use[$pv_device] = true;
                     else
                             $pvs_exist = true;
+                    $vg_used_in = $pvinfo[1];                            
 
             }
 
@@ -247,6 +251,9 @@
             {
                     $in_use[$pv_device] = true;
             }
+            $md[$i]["inuse"] = $in_use[$pv_device];
+            $md[$i]["volume_group"] = $vg_used_in;
+            $md[$i]["sha1"] = sha1($pv_device);             
 
     }
 
@@ -334,7 +341,7 @@
             if ((!$vg_found) && (is_valid_foldername($vgname)))
                     exec("export LANG=C; /usr/bin/sudo ". $GLOBALS["lvm_command_prefix"] . "vgcreate -s 32M " . escapeshellarg(strtolower($vgname)) . $pvs);
 
-            header("Location: ./volumes_vgmanage.html");
+            header("Location: ./volumes_vgmanage.html".getAttachment()); 
             exit;
     }
     else if (isset($action) && ($action == "deletevg"))
@@ -355,10 +362,17 @@
 
                     }
 
-            header("Location: ./volumes_vgmanage.html");
+            header("Location: ./volumes_vgmanage.html".getAttachment());    
             exit;
     }
-
+    if($_REQUEST['responseType']=='json'){
+        if($_REQUEST['callback']){
+            echo wrapAround($_REQUEST['callback'],'{vgds:'.json_encode($vgds).',volumes:'.json_encode($volumes_vg).',disks:'.json_encode($of_disks).',raidsets:'.json_encode($md).'}');
+        }else{
+            echo '{vgds:'.json_encode($vgds).',volumes:'.json_encode($volumes_vg).',disks:'.json_encode($of_disks).',raidsets:'.json_encode($md).'}';
+        }
+        return;
+    }
     generic_header(array("title" => _("Volumes : Volume Groups")));
     single_begin(array());
 

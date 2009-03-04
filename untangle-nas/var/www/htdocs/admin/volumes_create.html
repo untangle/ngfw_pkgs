@@ -190,7 +190,7 @@
 	xml_parser_free($cluster_parser);
 
 
-	if ($_POST["action"] == "Create")
+	if ($_REQUEST["action"] == "Create")
 	{
 		if ((!is_valid_foldername($volumename)) || (substr($volumename, 0, 12) == "of.snapshot."))
 		{
@@ -198,7 +198,7 @@
 			exit;
 		}
 
-		if (strlen($_POST["volumedescription"]) <= 0)
+		if (strlen($_REQUEST["volumedescription"]) <= 0)
 			$volumedescription = $volumename;
 
 		$volumename = strtolower($volumename);
@@ -424,7 +424,14 @@
 			apply_configuration(array("services" => "reload", "chmod" => "no", "chmod_path" => ""));
 		}
 
-		header("Location: ./volumes.html");
+    $attachment = "";
+    if($_REQUEST['responseType']=='json'){
+      $attachment = "?responseType=json";
+    }             
+    if($_REQUEST['callback']){
+        $attachment .= "&callback=".$_REQUEST['callback'];
+    }    		
+		header("Location: ./volumes.html".$attachment);
 		exit;
 	}
 

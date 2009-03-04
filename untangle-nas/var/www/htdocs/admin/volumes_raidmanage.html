@@ -171,7 +171,7 @@
 			}
 		}
 
-		header("Location: ./volumes_raidmanage.html");
+		header("Location: ./volumes_raidmanage.html").getAttachment();
 		exit;
 	}
 	else if (isset($action) && ($action == "adddevices"))
@@ -198,7 +198,7 @@
 			}
 		}
 
-		header("Location: ./volumes_raidmanage.html");
+		header("Location: ./volumes_raidmanage.html").getAttachment();
 		exit;
 	}
 	else if (isset($action) && ($action == "deletearray"))
@@ -223,7 +223,7 @@
 			}
 		}
 
-		header("Location: ./volumes_raidmanage.html");
+		header("Location: ./volumes_raidmanage.html").getAttachment();
 		exit;
 	}
 	else if (isset($action) && ($action == "createarray"))
@@ -311,10 +311,17 @@
 			}
 		}
 
-		header("Location: ./volumes_raidmanage.html");
+		header("Location: ./volumes_raidmanage.html").getAttachment();
 		exit;
 	}
-
+  if($_REQUEST['responseType']=='json'){
+    if($_REQUEST['callback']){
+        echo wrapAround($_REQUEST['callback'],'{raidsets:'.json_encode($md).',disks:'.json_encode($of_disks).'}');
+    }else{
+        echo '{raidsets:'.json_encode($md).',disks:'.json_encode($of_disks).'}';
+    }
+    return;
+  } 
 	generic_header(array("title" => _("Volumes : RAID Management")));
 	single_begin(array());
 

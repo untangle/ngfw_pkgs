@@ -2,7 +2,7 @@
 
 
 define('VOLUMES_XML', "/opt/nas/etc/volumes.xml");
-
+require_once("xml2json.php"); /* To convert xml to json*/
 class SharesManager extends XmlHandler {
 
     public $volumes = array(); // names=>path of non-iscsi/non-FC volumes
@@ -65,7 +65,25 @@ class Shares extends SharesManager {
         parent::__construct();
         $this->findShareConfigs();
         $this->sharesPathCount = count($this->shareConfigs); 
-
+        foreach($this->shareConfigs as $shareConfigFile){
+          //open the file and read it
+          if(file_exists($shareConfigFile)){
+              $xmlStringContents = file_get_contents($shareConfigFile);
+              $sharesArray = xml2json::transformXmlStringToArray($xmlStringContents,3);
+              $dirNames = split("/",$shareConfigFile);
+              $volumeGroupName = $dirNames[2];
+              $volumeName = $dirNames[3];
+              $shareName = split("\.info\.xml",$dirNames[4]);
+              if(!isset($this->shares[$volumeGroupName])){
+                //no volume group condition
+                $this->shares[$volumeGroupName] = array($volumeName=>array());
+              }else if(!isset($this->shares[$volumeGroupName][$volumeName])){
+                //no volume condition
+                $this->shares[$volumeGroupName][$volumeName] = array();
+              }
+              $this->shares[$volumeGroupName][$volumeName][$shareName[0]] = $sharesArray;
+          }
+        }
         //TODO: open *.info.xml and getShares[NFS,CIFS...]
 
     }

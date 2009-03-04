@@ -130,7 +130,7 @@
                             }
                     }
 
-            header("Location: ./shares.html");
+            header("Location: ./shares.html".getAttachment());
             exit;
     }
     else if ($action == "deletefolder")
@@ -281,7 +281,12 @@
                             pclose($fp);
                     }
 
-            header("Location: ./shares_edit.html?sharepath=" . urlencode($folderpath . $foldername . "/"));
+            $attachment = getAttachment();
+            if($attachment==''){
+                header("Location: ./shares_edit.html?sharepath=" . urlencode($folderpath . $foldername . "/"));
+            }else{
+                header("Location: ./shares.html".$attachment);           
+            }
             exit;
     }
 
@@ -321,7 +326,14 @@
 
     $shares = new Shares();
     $numVolumes = $shares->volumesPathCount;
-
+    if($_REQUEST['responseType']=='json'){
+      if($_REQUEST['callback']){
+          echo wrapAround($_REQUEST['callback'],'{rows:'.json_encode($shares).'}');
+      }else{
+          echo json_encode($shares);
+      }
+      return;
+    } 
     generic_header(array("title" => _("Shares Section")));
     single_begin(array());
 
