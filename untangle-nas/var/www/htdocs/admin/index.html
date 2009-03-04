@@ -191,7 +191,6 @@ if (count($_POST) > 0)
     $file->AddLine("<?xml version=\"1.0\" ?>");
     $file->AddLine("<smb>");
     $file->AddLine("\t<serverstring value=\"" . htmlentities($serverstring) . "\" />");
-    $file->AddLine("\t<netbiosname value=\"" . htmlentities($netbiosname) . "\" />");
     $file->AddLine("\t<winsserver value=\"" . htmlentities($winsserver) . "\" />");
     $file->AddLine("\t<ldapidmapsync value=\"" . (($newldapidmapsync == "on") ? "on" : "off") . "\" />");
     $file->AddLine("\t<ldapidmaptls value=\"" . (($newldapidmaptls == "on") ? "on" : "off") . "\" />");
@@ -225,22 +224,6 @@ if (count($_POST) > 0)
     exec($authconfigcommand);
 //	print($authconfigcommand);
 //	exit;
-
-    // smb_login always true in Untangle
-    if (strlen($_POST["useldap"]) > 0 && strcasecmp($_POST["useldap"], "on") == 0) {
-	exec("/usr/bin/sudo /usr/bin/smbpasswd -w " . escapeshellarg($_POST["ldaprootbindpw"]));
-    }
-
-    if (strlen($_POST["usewinbind"]) > 0)
-    {
-            if ((strcasecmp($_POST["usewinbind"], "on") == 0) && (strcasecmp($_POST["winbindjoin"], "on") == 0))
-            {
-                    if (strncasecmp($_POST["winbindtype"], "ads", 3) == 0)
-                            exec("/usr/bin/sudo /usr/bin/net ads join -w " . escapeshellarg($_POST["winbinddomain"]) . " -U " . escapeshellarg($_POST["winbindadminusername"]) . "%" . escapeshellarg($_POST["winbindadminpassword"]));
-                    else
-                            exec("/usr/bin/sudo /usr/bin/net rpc join " . escapeshellarg($_POST["winbinddomain"]) . " -U " . escapeshellarg($_POST["winbindadminusername"]) . "%" . escapeshellarg($_POST["winbindadminpassword"]));
-            }
-    }
 
     if ($newldapidmapsync == "on")
     {

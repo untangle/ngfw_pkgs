@@ -41,8 +41,6 @@
 
 
     $C_ACCOUNTS = array("li_class"=>"accounts_accounts","title"=>"Authentication", "url"=>"/nas/admin/");
-    $C_ACCOUNTS_GROUPS = array("li_class"=>"accounts_groups","title"=>"Group List", "url"=>"/nas/admin/account_groups.html");
-    $C_ACCOUNTS_USERS = array("li_class"=>"accounts_users","title"=>"User List", "url"=>"/nas/admin/account_users.html");
 
     $C_QUOTA = array("li_class"=>"quota_group","title"=>"Group Quota", "url"=>"/nas/admin/quota.html");
     $C_QUOTA_USER = array("li_class"=>"quota_user","title"=>"User Quota", "url"=>"/nas/admin/quota_user.html");

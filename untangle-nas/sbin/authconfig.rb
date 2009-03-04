@@ -79,6 +79,16 @@ EOF
   end
 end
 
+def join()
+  begin
+    addrbook = Untangle::RemoteUvmContext.appAddressBook()
+    addrbook.joinDomain(@smb_workgroup)
+  rescue
+    $stderr.puts "Unable to join domain in UVM: " + $!
+    exit -3
+  end
+end
+  
 ###############################################################################
 
 def get()
@@ -202,8 +212,8 @@ def get()
   # ldap root bind dn
   puts "cn=admin,dc=nodomain"
 
-  # ldap root bind pw 40
-  puts "nimda11lacol"
+  # ldap root bind pw (no longer used in php) 40
+  puts ""
 
 ##### After here is stuff added by Untangle
   # netbios name 41
@@ -219,6 +229,7 @@ if ARGV[0] == "--get" then
   get()
 elsif ARGV[0] == "--set" then
   set()
+  join()
 end
 exit 0
 

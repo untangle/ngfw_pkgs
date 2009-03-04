@@ -94,8 +94,8 @@ $sectionTitle;
 
 // define minimum uid/gid values
 
-$global_min_uid = 150; 
-$global_min_gid = 150; 
+$global_min_uid = 20000; 
+$global_min_gid = 20000; 
 
 // define user filter (1 == ON, 0 == OFF)
 
