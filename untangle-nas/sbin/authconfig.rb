@@ -50,7 +50,7 @@ def set()
   else
     nsline = "compat"
   end
-  `sed -i -e "s/^\\(passwd\\|group\\|shadow\\):.*/\\1:	#{nsline}/" /etc/nsswitch.conf`
+  `sed -i -e "s/^\\(passwd\\|group\\|shadow\\):.*/\\1:  #{nsline}/" /etc/nsswitch.conf`
 
   # /etc/nss-ldapd.conf
   `sed -i -e "s/^base .*/base dc=nodomain/" -e "s-^uri .*-uri ldap://localhost:3899-" /etc/nss-ldapd.conf`
@@ -62,8 +62,8 @@ def set()
 [libdefaults]
         default_realm = #{@ad_realm}
         forwardable = true
-#	dns_lookup_realm = false
-#	dns_lookup_kdc = false
+#       dns_lookup_realm = false
+#       dns_lookup_kdc = false
 
 [realms]
         #{@ad_realm} = {
@@ -82,7 +82,12 @@ end
 def join()
   begin
     addrbook = Untangle::RemoteUvmContext.appAddressBook()
-    addrbook.joinDomain(@smb_workgroup)
+    ab_settings = addrbook.getAddressBookSettings()
+    #addrbook.joinDomain(@smb_workgroup)
+    repo_settings = ab_settings['ADRepositorySettings']
+    superuser = repo_settings['superuser'].split('@')[0]
+    print repo_settings
+    `net ads join -w #{repo_settings['LDAPHost']} -U #{superuser}%#{repo_settings['superuserPass']}`
   rescue
     $stderr.puts "Unable to join domain in UVM: " + $!
     exit -3
