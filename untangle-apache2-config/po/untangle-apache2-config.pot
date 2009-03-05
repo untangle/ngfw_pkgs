@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-02 14:20-0800\n"
+"POT-Creation-Date: 2009-03-04 13:57-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -138,7 +138,7 @@ msgstr ""
 msgid "HTTP Version Not Supported"
 msgstr ""
 
-#: ../errorindex.py:115 ../uvmlogin.py:253
+#: ../errorindex.py:115 ../uvmlogin.py:258
 #, python-format
 msgid "%s Server"
 msgstr ""

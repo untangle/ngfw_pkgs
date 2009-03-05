@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Untangle\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-02 14:20-0800\n"
+"POT-Creation-Date: 2009-03-04 13:57-0800\n"
 "PO-Revision-Date: 2008-11-11 10:21-0800\n"
 "Last-Translator: Claudia\n"
 "Language-Team: Portuguese <claudia@englishtoportuguese.com>\n"
@@ -138,7 +138,7 @@ msgstr "Tempo esgotado do gateway"
 msgid "HTTP Version Not Supported"
 msgstr "Versão HTTP não suportada"
 
-#: ../errorindex.py:115 ../uvmlogin.py:253
+#: ../errorindex.py:115 ../uvmlogin.py:258
 #, python-format
 msgid "%s Server"
 msgstr "Servidor %s"
