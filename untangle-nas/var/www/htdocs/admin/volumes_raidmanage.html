@@ -63,7 +63,7 @@
 
 				while (($dresult[$i] == "PARTITION") && ($i < count($dresult)))
 				{
-					array_push($parts, array("device" => $dresult[$i + 1], "type" => $dresult[$i + 2], "number" => $dresult[$i + 3], "start" => $dresult[$i + 4], "end" => $dresult[$i + 5], "blocks" => $dresult[$i + 6], "extended" => $dresult[$i + 7]));
+					array_push($parts, array("device" => $dresult[$i + 1], "sha1" => sha1($dresult[$i + 1]),"type" => $dresult[$i + 2], "number" => $dresult[$i + 3], "start" => $dresult[$i + 4], "end" => $dresult[$i + 5], "blocks" => $dresult[$i + 6], "extended" => $dresult[$i + 7]));
 					$i = $i + 8;
 				}
 
@@ -90,7 +90,7 @@
 		$pv_device = $md[$i]["device"];
 
 		$in_use[$pv_device] = false;
-		$used_in_string[$pv_device] = "<em>Unknown / unused</em>";
+		$used_in_string[$pv_device] = "Unknown / unused";
 
 		$pvp = popen("export LANG=C; /usr/bin/sudo " . $GLOBALS["lvm_command_prefix"] . "pvdisplay " . $pv_device, "r");
 		$pvstr = trim(fgets($pvp, 4096));
@@ -107,7 +107,7 @@
 			if (($pvinfo[0] == $pv_device) && (strlen($pvinfo[1]) > 0))
 			{
 				$in_use[$pv_device] = true;
-				$used_in_string[$pv_device] = "<tt>" . $pvinfo[1] . "</tt> VG";
+				$used_in_string[$pv_device] = $pvinfo[1]." VG";
 			}
 		}
 	}
@@ -171,7 +171,7 @@
 			}
 		}
 
-		header("Location: ./volumes_raidmanage.html").getAttachment();
+		header("Location: ./volumes_raidmanage.html".getAttachment());
 		exit;
 	}
 	else if (isset($action) && ($action == "adddevices"))
@@ -198,7 +198,7 @@
 			}
 		}
 
-		header("Location: ./volumes_raidmanage.html").getAttachment();
+		header("Location: ./volumes_raidmanage.html".getAttachment());
 		exit;
 	}
 	else if (isset($action) && ($action == "deletearray"))
@@ -223,7 +223,7 @@
 			}
 		}
 
-		header("Location: ./volumes_raidmanage.html").getAttachment();
+		header("Location: ./volumes_raidmanage.html".getAttachment());
 		exit;
 	}
 	else if (isset($action) && ($action == "createarray"))
@@ -311,14 +311,14 @@
 			}
 		}
 
-		header("Location: ./volumes_raidmanage.html").getAttachment();
+		header("Location: ./volumes_raidmanage.html".getAttachment());
 		exit;
 	}
   if($_REQUEST['responseType']=='json'){
     if($_REQUEST['callback']){
-        echo wrapAround($_REQUEST['callback'],'{raidsets:'.json_encode($md).',disks:'.json_encode($of_disks).'}');
+        echo wrapAround($_REQUEST['callback'],'{raidsets:'.json_encode($md).',usedin:'.json_encode($used_in_string).',inusedisks:'.json_encode($raid_partition_in_use).',disks:'.json_encode($of_disks).'}');
     }else{
-        echo '{raidsets:'.json_encode($md).',disks:'.json_encode($of_disks).'}';
+        echo '{raidsets:'.json_encode($md).',usedin:'.json_encode($used_in_string).',inusedisks:'.json_encode($raid_partition_in_use).',disks:'.json_encode($of_disks).'}';
     }
     return;
   } 
