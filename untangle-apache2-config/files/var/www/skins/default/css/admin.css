@@ -68,7 +68,7 @@ div.node {
 	left: 90px;
 	top: 12px;
 	width: 300px;
-	font-family: verdana, freesans,sans-serif;
+	font-family: verdana, helvetica,freesans,sans-serif;
 	font-size:19px;
 	color: #7C7B7B;
 }
@@ -92,7 +92,7 @@ div.node div.node-label {
 	left: 100px;
 	height: 55px;
 	width: 230px;
-	font-family: tahoma,arial, freesans,sans-serif;
+	font-family: tahoma,arial, helvetica,freesans,sans-serif;
 	font-size: 18px;
 	color: #4E4C4C;
 }
@@ -101,7 +101,7 @@ div.node div.node-trial-info {
 	position: absolute;
 	top: 35px;
 	left: 100px;
-	font-family: arial, freesans,sans-serif;
+	font-family: arial, helvetica,freesans,sans-serif;
 	font-size: 16px;
 	font-weight: bold;
 	color: #DE2020;
@@ -251,7 +251,7 @@ div.node-blingers {
 }
 /* blinger text */
 div.blinger-text {
-	font-family: "Arial", freesans,sans-serif;
+	font-family: "Arial", helvetica,freesans,sans-serif;
 	font-size: 9px;
 	color: #000000;
 }
@@ -260,7 +260,7 @@ div.blinger-name {
 	position:absolute;
 	top:1px;
 	right:10px;
-	font-family: "times", freesans,sans-serif;
+	font-family: "times", helvetica,freesans,sans-serif;
 	font-size: 11px;
 	color: #3F3F3F;
 	display: none;
@@ -525,7 +525,7 @@ td.app-item-center div.text {
 	color:#4E4C4C;
 	font-size: 12px;
 	font-weight: bold;
-	font-family:Tahoma, arial, freesans,sans-serif;
+	font-family:Tahoma, arial,  helvetica,freesans,sans-serif;
 }
 /* app item config display name text */
 td.app-item-center div.text-center {
@@ -537,7 +537,7 @@ td.app-item-center div.action {
     right: 5px;
     top: 34px;
     height: 15px;
-    font-family: tahoma,arial, freesans,sans-serif;
+    font-family: tahoma,arial,  helvetica,freesans,sans-serif;
     font-size: 11px;
     color: green;
     padding-right: 19px;
@@ -550,7 +550,7 @@ td.app-item-center div.button-buy {
 	top: 34px;
 	cursor: pointer;
 	height: 15px;
-    font-family: tahoma,arial, freesans,sans-serif;
+    font-family: tahoma,arial,  helvetica,freesans,sans-serif;
 	font-size: 11px;
 	color: green;
 	padding-right: 19px;
@@ -562,7 +562,7 @@ td.app-item-center div.state-pos {
 	top: 33px;
 	cursor: pointer;
 	height: 15px;
-	font-family: verdana, freesans,sans-serif;
+	font-family: verdana,  helvetica,freesans,sans-serif;
 	font-size: 10px;
 	font-weight: bold;
 	color: red;
@@ -601,7 +601,7 @@ div.icon-arrow-down {
     font-style:normal;
     font-variant:normal;
     line-height:14px; /* works out to 14px */
-    font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
+    font-family:arial,"helvetica,freesans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,helvetica,freesans,sans-serif;
 }
 /* breadcrumb link */
 .breadcrumb-link {
@@ -610,7 +610,7 @@ div.icon-arrow-down {
 	font-style:normal;
 	font-variant:normal;
 	line-height:14px; /* works out to 14px */
-	font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
+	font-family:arial,"helvetica,freesans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,helvetica,freesans,sans-serif;
 	color: #20377A;
 }
 .untangle-form-panel
@@ -633,7 +633,7 @@ div.system-stats div.label {
 	bottom:4px;
     text-align: center;
     color: #000000;
-	font-family:arial,freesans,sans-serif;
+	font-family:arial,helvetica,freesans,sans-serif;
 }
 /* system stats network*/
 div.system-stats div.network {
@@ -655,7 +655,7 @@ div.system-stats div.network div.tx {
     padding-left:20px;
     color:#55BA47;
     background: transparent url(../images/admin/icon_network_tx.png) no-repeat scroll 5px 1px !important;
-	font-family:arial,freesans,sans-serif;	
+	font-family:arial,helvetica,freesans,sans-serif;	
 }
 div.system-stats div.network div.tx-idle {
     background: transparent url(../images/admin/icon_network_tx-idle.png) no-repeat scroll 5px 1px !important;
@@ -669,7 +669,7 @@ div.system-stats div.network div.rx {
     padding-left:20px;
     color:orange;/*#AC2322;*/
     background: transparent url(../images/admin/icon_network_rx.png) no-repeat scroll 5px 1px !important;
-	font-family:arial,freesans,sans-serif;		
+	font-family:arial,helvetica,freesans,sans-serif;		
 }
 div.system-stats div.network div.rx-idle {
     background: transparent url(../images/admin/icon_network_rx-idle.png) no-repeat scroll 5px 1px !important;
@@ -679,14 +679,14 @@ div.system-stats div.network div.rx div.rx-value {
     position: absolute;
     top:0px;
     right:0px;
-	font-family:arial,freesans,sans-serif;		
+	font-family:arial,helvetica,freesans,sans-serif;		
 }
 /* system stats network tx value */
 div.system-stats div.network div.tx div.tx-value {
     position: absolute;
     top:0px;
     right:0px;
-	font-family:arial,freesans,sans-serif;
+	font-family:arial, helvetica,freesans,sans-serif;
 }
 /* system stats cpu */
 div.system-stats div.cpu {
@@ -699,7 +699,7 @@ div.system-stats div.cpu {
     text-align: center;
     padding-top: 7px;
     font-weight: bold;
-	font-family:arial,freesans,sans-serif;
+	font-family:arial, helvetica,freesans,sans-serif;
 	
 }
 /* system stats memory */
@@ -711,7 +711,7 @@ div.system-stats div.memory {
     width:99px;
     height:30px;
     font-weight: bold;
-	font-family:arial,freesans,sans-serif;
+	font-family:arial, helvetica,freesans,sans-serif;
 	
 }
 /* system stats free memory */
@@ -723,7 +723,7 @@ div.system-stats div.memory div.free {
     height:15px;
     padding-left:4px;
     color:#55BA47;
-	font-family:arial,freesans,sans-serif;
+	font-family:arial, helvetica,freesans,sans-serif;
 	
 }
 /* system stats used memory */
@@ -734,14 +734,14 @@ div.system-stats div.memory div.used {
     height:15px;
     padding-left:4px;
     color:orange;/*#AC2322;*/
-	font-family:arial,freesans,sans-serif;
+	font-family:arial, helvetica,freesans,sans-serif;
 }
 /* system stats free memory value */
 div.system-stats div.memory div.free div.free-value {
     position: absolute;
     top:0px;
     right:0px;
-	font-family:arial,freesans,sans-serif;
+	font-family:arial, helvetica,freesans,sans-serif;
 	
 }
 /* system stats used memory value */
@@ -749,7 +749,7 @@ div.system-stats div.memory div.used div.used-value {
     position: absolute;
     top:0px;
     right:0px;
-	font-family:arial,freesans,sans-serif;
+	font-family:arial, helvetica,freesans,sans-serif;
 	
 }
 /* system stats disk */
@@ -1016,7 +1016,7 @@ body.wizard label.info-detail
 }
 body.wizard
 {
-  font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
+  font-family:arial,"helvetica,freesans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,helvetica,freesans,sans-serif;
   }
 
 body.wizard .ext-el-mask
@@ -1094,7 +1094,7 @@ body.wizard .ext-el-mask
 {
   font-size: 12px;
   line-height: 23px;
-  font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
+  font-family:tahoma,arial,helvetica,freesans,sans-serif;
   margin:3px 0px 3px 25px;
   padding:0px 0px 0px 0px;
  }
@@ -1160,7 +1160,7 @@ body.wizard .ext-el-mask
 	color:#333;
 	font-size:18px;
 	font-weight:bold;
-    font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
+    font-family:tahoma,arial,helvetica,freesans,sans-serif;
  }
 /* required info text */
 .required-info {
@@ -1305,14 +1305,14 @@ body.wizard .ext-el-mask
 }
 
 .alpaca-panel .page-header-text{
-	font-family:Tahoma, arial, freesans,sans-serif;
+	font-family:Tahoma, arial, helvetica,freesans,sans-serif;
     font-weight:bold;
     font-size:13px;
     margin-bottom:5px;
     display:block;
 }
 .label-section-heading, .label-section-heading-2,.label-text{
-	font-family:Tahoma, arial, freesans,sans-serif;
+	font-family:Tahoma, arial, helvetica,freesans,sans-serif;
     font-weight:bold;
     font-size:12px;
     display:block;
@@ -1358,7 +1358,7 @@ float:left;
     background: #FEFEDD url(../images/user/icon_message.png) no-repeat scroll 7px center !important;
     color:#333;
     font-size:11px;
-	font-family:Tahoma, arial, freesans,sans-serif;
+	font-family:Tahoma, arial, helvetica,freesans,sans-serif;
 }
 .ua-message-warning{
     display:block;
