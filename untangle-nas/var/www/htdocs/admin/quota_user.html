@@ -199,14 +199,14 @@
                             if (startsWith($filteron, $user_info["pw_name"])) {
                                     array_push($users_uid, $user_info["pw_uid"]);
                                     array_push($users_name, $user_info["pw_name"]);
-                                    array_push($users_properties, "Unknown");
+                                    array_push($users_properties, $user_info["pw_repo"]);
                                 }
                         }
 
                         else {
                             array_push($users_uid, $user_info["pw_uid"]);
                             array_push($users_name, $user_info["pw_name"]);
-                            array_push($users_properties, "Unknown");
+			    array_push($users_properties, $user_info["pw_repo"]);
                         }
                 }
 	}

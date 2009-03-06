@@ -122,7 +122,14 @@ function get_users() {
                 if ($user_line[0]) {
                         if ($global_user_filter && ereg('[$]', $user_line[0]))
                                 continue;
-                        $user_array[] = array("pw_name" => $user_line[0], "pw_passwd" => $user_line[1], "pw_uid" => $user_line[2], "pw_gid" => $user_line[3], "pw_gecos" => $user_line[4], "pw_dir" => $user_line[5], "pw_shell" => $user_line[6]);
+			if ($user_line[0] == "nobody")
+			  continue;
+			$uid = $user_line[2];
+			if ($uid > 65535)
+			  $repo = "Active Directory";
+			else
+			  $repo = "Local Directory";
+                        $user_array[] = array("pw_name" => $user_line[0], "pw_passwd" => $user_line[1], "pw_uid" => $uid, "pw_repo" => $repo, "pw_gid" => $user_line[3], "pw_gecos" => $user_line[4], "pw_dir" => $user_line[5], "pw_shell" => $user_line[6]);
                 }
         }
         pclose($userp);
@@ -139,7 +146,15 @@ function get_groups() {
                 if ($group_line[0]) {
                         if ($global_group_filter && ereg('[$]', $group_line[0]))
                                 continue;
-                        $group_array[] = array("gr_name" => $group_line[0], "gr_passwd" => $group_line[1], "gr_gid" => $group_line[2], "gr_mem" => $group_line[3]);
+			if ($group_line[0] == "nogroup")
+			  continue;
+			$gid = $group_line[2];
+			
+			if ($gid > 65535)
+			  $repo = "Active Directory";
+			else
+			  $repo = "Local Directory";
+                        $group_array[] = array("gr_name" => $group_line[0], "gr_passwd" => $group_line[1], "gr_gid" => $gid, "gr_repo" => $repo, "gr_mem" => $group_line[3]);
                 }
         }
         pclose($groupp);

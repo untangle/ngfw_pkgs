@@ -199,7 +199,7 @@
                             if (startsWith($filteron, $group_info["gr_name"] )) {
                                 array_push($groups_gid, $group_info["gr_gid"]);
                                 array_push($groups_name, $group_info["gr_name"]);
-                                array_push($groups_properties, "Unknown");
+				array_push($groups_properties, $group_info["gr_repo"]);
                             }
                         }
 
@@ -207,7 +207,7 @@
 
                             array_push($groups_gid, $group_info["gr_gid"]);
                             array_push($groups_name, $group_info["gr_name"]);
-                            array_push($groups_properties, "Unknown");
+			    array_push($groups_properties, $group_info["gr_repo"]);
 
                         }
                 }

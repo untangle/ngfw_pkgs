@@ -388,12 +388,13 @@
 
     foreach (get_groups() as $group_info)
     {
-            if  (($group_info["gr_gid"] >= $global_min_gid))
+	    $gid = $group_info["gr_gid"];
+            if  ($gid >= $global_min_gid)
             {
                     array_push($groups_gid, $group_info["gr_gid"]);
                     array_push($groups_name, $group_info["gr_name"]);
                     array_push($groups_members, $group_info["gr_mem"]);
-                    array_push($groups_properties, "Unknown");
+		    array_push($groups_properties, $group_info["gr_repo"]);
             }
     }
 
