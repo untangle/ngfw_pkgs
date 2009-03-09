@@ -19,7 +19,8 @@ if [ -e $lfile ]; then
     exit 2
 fi
 
-/bin/dd if=/dev/zero of=$lfile bs=1M oflag=direct count=$megs >&/dev/null
+/bin/dd if=/dev/zero of=$lfile bs=1M oflag=direct seek=$megs count=1 >&/dev/null
+/bin/dd if=/dev/zero of=$lfile bs=1M oflag=direct conv=notrunc count=1 >&/dev/null
 if [ "$?" -ne "0" ]; then
     echo "General protection fault."
     /bin/rm -f $lfile
@@ -27,7 +28,8 @@ if [ "$?" -ne "0" ]; then
 fi
 
 /bin/chmod 600 $lfile
-if /sbin/losetup /dev/loop$num $lfile; then
+/sbin/losetup /dev/loop$num $lfile
+if [ "$?" -eq "0" ] || [ "$?" -eq "2" ] ; then
     echo "Success."
     exit 0
 else    
