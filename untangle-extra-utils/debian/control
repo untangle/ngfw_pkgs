@@ -1,0 +1,15 @@
+Source: untangle-extra-utils
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.8.0
+
+Package: untangle-extra-utils
+Architecture: all
+Depends: apt-spy, atop, attr, binutils, bzip2, dctrl-tools, dialog, wireshark, wireshark-common, lftp, hping2, httptunnel, iptraf, jnettop, latencytop, less, lsof, mailx, memtester, nmap, patch, procinfo, screen, strace, sysstat, sysutils, tcpdump, telnet-ssl, timeout, traceroute, whois
+Description: Extra utilities for Untangle
+ This packages depends on a list of utilities that are, although
+ non-essential to the functioning of the Untangle server itself, are
+ convenient to have handy.
