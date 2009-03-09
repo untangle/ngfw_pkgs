@@ -40,7 +40,7 @@ APACHE_UPGRADE_CONFIG_FILE="/etc/apache2/conf.d/${BASENAME}"
 SLAPD_BACKUP=/var/backups/untangle-ldap-`date -Iseconds`.ldif
 SNMP_BACKUP=/var/backups/untangle-snmp-`date -Iseconds`.ldif
 
-PACKAGES_TO_REMOVE="apache-utils arpwatch cloop-module cloop-utils cpp-3.3 gcc-3.3-base cramfsprogs fdisk-udeb gamin gawk gcc-4.1-base glibc-doc hotplug-utils hunt hwsetup ipx k3b-defaults klogd sysklogd modconf mouseconfig mousepad ndiswrapper netcat netcat6 ntp-simple nvi openbsd-inetd orinoco parted-bf powermgmt-base pppconfig prism54 prism54-nonfree python2.4 python2.4-minimal shellutils untangle-fakekdm untangle-libitem-router untangle-libmocha-ruby1.8 update xterm"
+PACKAGES_TO_REMOVE="(apache-utils|arpwatch|cloop-module|cloop-utils|cpp-3.3|gcc-3.3-base|cramfsprogs|fdisk-udeb|gamin|gawk|gcc-4.1-base|glibc-doc|hotplug-utils|hunt|hwsetup|ipx|k3b-defaults|klogd|sysklogd|modconf|mouseconfig|mousepad|ndiswrapper|netcat|netcat6|ntp-simple|nvi|openbsd-inetd|orinoco|parted-bf|powermgmt-base|pppconfig|prism54|prism54-nonfree|python2.4|python2.4-minimal|shellutils|untangle-fakekdm|untangle-libitem-router|untangle-libmocha-ruby1.8|update|xterm)"
 PACKAGES_TO_INSTALL="acpid console-common console-data console-tools ed gcc-4.2-base groff-base info rsyslog libdaemons-ruby libdaemons-ruby1.8 libnetfilter-conntrack1 man-db manpages nano netcat-traditional vim-common vim-tiny"
 
 ## helper functions
