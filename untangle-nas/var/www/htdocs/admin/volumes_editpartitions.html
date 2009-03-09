@@ -203,7 +203,7 @@
     else if ($action == "createpartition")
     {
         if ($type == "loopback") {
-            exec ("/opt/nas/sbin/makeloop 10000 0");
+            exec ("sudo /opt/nas/sbin/makeloop 10000 0");
         } else {
             $start_cyl = "" . ($start - 1) . "c";
             $end_cyl = "" . $end . "c";
