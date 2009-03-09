@@ -202,6 +202,9 @@
 
     else if ($action == "createpartition")
     {
+        if ($type == "loopback") {
+            exec ("/opt/nas/sbin/makeloop 10000 0");
+        } else {
             $start_cyl = "" . ($start - 1) . "c";
             $end_cyl = "" . $end . "c";
 
@@ -341,7 +344,7 @@
                             }
                     }
             }
-
+       }
              $attachment = "";
             if($_REQUEST['responseType']=='json'){
               $attachment = "?responseType=json";
@@ -377,32 +380,32 @@
 
 <?php
         nested_tab_begin("C_VOLUME_PHYSICAL_MANAGEMENT");
-	print("<h3 align=\"center\">Edit partitions in " . $of_disks[$disk_index]["device"] . " (" . ($of_disks[$disk_index]["cylinders"]) . " cylinders with \"" . $of_disks[$disk_index]["label"] . "\" label)</h3>\n");
+        print("<h3 align=\"center\">Edit partitions in " . $of_disks[$disk_index]["device"] . " (" . ($of_disks[$disk_index]["cylinders"]) . " cylinders with \"" . $of_disks[$disk_index]["label"] . "\" label)</h3>\n");
 
-	print("<p align=\"center\">&nbsp;</p>\n");
+        print("<p align=\"center\">&nbsp;</p>\n");
 
-	print("<div align=\"center\">\n");
-	print("<table cellpadding=\"8\" cellspacing=\"2\" border=\"0\">\n");
-	print("<tr>\n");
-	print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Device</strong></td>\n");
-	print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"left\"><strong>Type</strong></td>\n");
-	print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Number</strong></td>\n");
-	print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Start cyl</strong></td>\n");
-	print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>End cyl</strong></td>\n");
-	print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Blocks</strong></td>\n");
-	print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Size</strong></td>\n");
-	print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Type</strong></td>\n");
-	print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Delete</strong></td>\n");
-	print("</tr>\n");
+        print("<div align=\"center\">\n");
+        print("<table cellpadding=\"8\" cellspacing=\"2\" border=\"0\">\n");
+        print("<tr>\n");
+        print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Device</strong></td>\n");
+        print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"left\"><strong>Type</strong></td>\n");
+        print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Number</strong></td>\n");
+        print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Start cyl</strong></td>\n");
+        print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>End cyl</strong></td>\n");
+        print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Blocks</strong></td>\n");
+        print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Size</strong></td>\n");
+        print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Type</strong></td>\n");
+        print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Delete</strong></td>\n");
+        print("</tr>\n");
 
-	$primaries = 0;
-	$primary_cylinder_count = 0;
-	$extended_cylinder_count = 0;
-	$extended_partition_index = -1;
-	$primary_start_array = array();
-	$primary_end_array = array();
-	$extended_start_array = array();
-	$extended_end_array = array();
+        $primaries = 0;
+        $primary_cylinder_count = 0;
+        $extended_cylinder_count = 0;
+        $extended_partition_index = -1;
+        $primary_start_array = array();
+        $primary_end_array = array();
+        $extended_start_array = array();
+        $extended_end_array = array();
 
         $jsondata_size = array();
         $jsondata_label = array();
@@ -411,56 +414,56 @@
                            floatval($of_disks[$disk_index]["heads"]) * floatval($of_disks[$disk_index]["blocksize"]) / 2;
 
 
-	for ($j = 0; $j < count($of_disks[$disk_index]["partitions"]); $j++)
-	{
+        for ($j = 0; $j < count($of_disks[$disk_index]["partitions"]); $j++)
+        {
 
 
-		if ($dcolor == 0)
-		{
-			$dcolor = 1;
-			$dvalue = $GLOBALS["color_table_row1"];
-		}
-		else
-		{
-			$dcolor = 0;
-			$dvalue = $GLOBALS["color_table_row2"];
-		}
+                if ($dcolor == 0)
+                {
+                        $dcolor = 1;
+                        $dvalue = $GLOBALS["color_table_row1"];
+                }
+                else
+                {
+                        $dcolor = 0;
+                        $dvalue = $GLOBALS["color_table_row2"];
+                }
 
-		$ptype = $of_disks[$disk_index]["partitions"][$j]["type"] . "";
+                $ptype = $of_disks[$disk_index]["partitions"][$j]["type"] . "";
 
-		if (($of_disks[$disk_index]["label"] != "gpt") && (($ptype == "05") || ($ptype == "5") || ($ptype == "0f") || ($ptype == "f")))
-			$extended_partition_index = $j;
+                if (($of_disks[$disk_index]["label"] != "gpt") && (($ptype == "05") || ($ptype == "5") || ($ptype == "0f") || ($ptype == "f")))
+                        $extended_partition_index = $j;
 
-		if (($of_disks[$disk_index]["label"] == "gpt") || ($of_disks[$disk_index]["partitions"][$j]["number"] <= 4))
-		{
-			array_push($primary_start_array, $of_disks[$disk_index]["partitions"][$j]["start"]);
-			array_push($primary_end_array, $of_disks[$disk_index]["partitions"][$j]["end"]);
-			$primary_cylinder_count = $primary_cylinder_count + ($of_disks[$disk_index]["partitions"][$j]["end"] - $of_disks[$disk_index]["partitions"][$j]["start"] + 1);
-			$primaries += (1 << (floatval($of_disks[$disk_index]["partitions"][$j]["number"]) - 1));
-		}
-		else
-		{
-			array_push($extended_start_array, $of_disks[$disk_index]["partitions"][$j]["start"]);
-			array_push($extended_end_array, $of_disks[$disk_index]["partitions"][$j]["end"]);
-			$extended_cylinder_count = $extended_cylinder_count + ($of_disks[$disk_index]["partitions"][$j]["end"] - $of_disks[$disk_index]["partitions"][$j]["start"] + 1);
-		}
+                if (($of_disks[$disk_index]["label"] == "gpt") || ($of_disks[$disk_index]["partitions"][$j]["number"] <= 4))
+                {
+                        array_push($primary_start_array, $of_disks[$disk_index]["partitions"][$j]["start"]);
+                        array_push($primary_end_array, $of_disks[$disk_index]["partitions"][$j]["end"]);
+                        $primary_cylinder_count = $primary_cylinder_count + ($of_disks[$disk_index]["partitions"][$j]["end"] - $of_disks[$disk_index]["partitions"][$j]["start"] + 1);
+                        $primaries += (1 << (floatval($of_disks[$disk_index]["partitions"][$j]["number"]) - 1));
+                }
+                else
+                {
+                        array_push($extended_start_array, $of_disks[$disk_index]["partitions"][$j]["start"]);
+                        array_push($extended_end_array, $of_disks[$disk_index]["partitions"][$j]["end"]);
+                        $extended_cylinder_count = $extended_cylinder_count + ($of_disks[$disk_index]["partitions"][$j]["end"] - $of_disks[$disk_index]["partitions"][$j]["start"] + 1);
+                }
 
-		switch ($ptype)
-		{
-			case "83":	$ptype_str = "Linux Filesystem (<tt>0x" . $ptype . "</tt>)"; break;
-			case "82":	$ptype_str = "Linux Swap (<tt>0x" . $ptype . "</tt>)"; break;
-			case "8e":	$ptype_str = "Linux Physical Volume (<tt>0x" . $ptype . "</tt>)"; break;
-			case "fd":	$ptype_str = "Linux RAID Array Member (<tt>0x" . $ptype . "</tt>)"; break;
+                switch ($ptype)
+                {
+                        case "83":      $ptype_str = "Linux Filesystem (<tt>0x" . $ptype . "</tt>)"; break;
+                        case "82":      $ptype_str = "Linux Swap (<tt>0x" . $ptype . "</tt>)"; break;
+                        case "8e":      $ptype_str = "Linux Physical Volume (<tt>0x" . $ptype . "</tt>)"; break;
+                        case "fd":      $ptype_str = "Linux RAID Array Member (<tt>0x" . $ptype . "</tt>)"; break;
 
-			case "05":
-			case "5":
-			case "0f":
-			case "f":	$ptype_str = "Extended Partition (<tt>0x" . $ptype . "</tt>)"; break;
+                        case "05":
+                        case "5":
+                        case "0f":
+                        case "f":       $ptype_str = "Extended Partition (<tt>0x" . $ptype . "</tt>)"; break;
 
-			default:	$ptype_str = "Unknown Partition Type (<tt>0x" . $ptype . "</tt>)"; break;
-		}
+                        default:        $ptype_str = "Unknown Partition Type (<tt>0x" . $ptype . "</tt>)"; break;
+                }
 
-	    
+            
                 $tmpH = popen('export LANG=C; /usr/bin/sudo /sbin/blockdev --getsize64 2>&1 ' . $of_disks[$disk_index]["partitions"][$j]["device"] , 'r');
                 $part_size = trim(fread($tmpH, 2096));
                 pclose($tmpH);
@@ -470,49 +473,49 @@
                 $sumpartsize += $part_size;
 
                 if ($part_size > (1024 * 1024 * 1024 * 1024))
-			$part_size_string = sprintf("%.02f TB", ($part_size / (1024 * 1024 * 1024 * 1024.0)));
-		else if ($part_size > (1024 * 1024 * 1024))
-			$part_size_string = sprintf("%.02f GB", ($part_size / (1024 * 1024 * 1024.0)));
-		else if ($part_size > (1024 * 1024))
-			$part_size_string = sprintf("%.02f MB", ($part_size / (1024 * 1024.0)));
-		else if ($part_size > (1024))
-			$part_size_string = sprintf("%.02f KB", ($part_size / (1024.0)));
-		else
-			$part_size_string = $part_size . " bytes";
+                        $part_size_string = sprintf("%.02f TB", ($part_size / (1024 * 1024 * 1024 * 1024.0)));
+                else if ($part_size > (1024 * 1024 * 1024))
+                        $part_size_string = sprintf("%.02f GB", ($part_size / (1024 * 1024 * 1024.0)));
+                else if ($part_size > (1024 * 1024))
+                        $part_size_string = sprintf("%.02f MB", ($part_size / (1024 * 1024.0)));
+                else if ($part_size > (1024))
+                        $part_size_string = sprintf("%.02f KB", ($part_size / (1024.0)));
+                else
+                        $part_size_string = $part_size . " bytes";
 
                 array_push($jsondata_size, gmp_intval($part_size));
                 $part_label_string = $of_disks[$disk_index]["partitions"][$j]["device"];
                 array_push($jsondata_label, substr($part_label_string, 5 , strlen($part_label_string)));
 
 
-		print("<tr>\n");
-		print("\t<td bgcolor=\"" . $dvalue . "\" align=\"center\">" . $of_disks[$disk_index]["partitions"][$j]["device"] . "</td>\n");
-		print("\t<td bgcolor=\"" . $dvalue . "\" align=\"left\">" . $ptype_str . "</td>\n");
-		print("\t<td bgcolor=\"" . $dvalue . "\" align=\"center\">" . $of_disks[$disk_index]["partitions"][$j]["number"] . "</td>\n");
-		print("\t<td bgcolor=\"" . $dvalue . "\" align=\"center\">" . $of_disks[$disk_index]["partitions"][$j]["start"] . "</td>\n");
-		print("\t<td bgcolor=\"" . $dvalue . "\" align=\"center\">" . $of_disks[$disk_index]["partitions"][$j]["end"] . "</td>\n");
-		print("\t<td bgcolor=\"" . $dvalue . "\" align=\"center\">" . $of_disks[$disk_index]["partitions"][$j]["blocks"] . "</td>\n");
-		print("\t<td bgcolor=\"" . $dvalue . "\" align=\"center\">" . $part_size_string . "</td>\n");
-		print("\t<td bgcolor=\"" . $dvalue . "\" align=\"center\">" . ((($of_disks[$disk_index]["label"] == "gpt") || ($of_disks[$disk_index]["partitions"][$j]["number"] <= 4)) ? "Primary" : "Logical") . "</td>\n");
+                print("<tr>\n");
+                print("\t<td bgcolor=\"" . $dvalue . "\" align=\"center\">" . $of_disks[$disk_index]["partitions"][$j]["device"] . "</td>\n");
+                print("\t<td bgcolor=\"" . $dvalue . "\" align=\"left\">" . $ptype_str . "</td>\n");
+                print("\t<td bgcolor=\"" . $dvalue . "\" align=\"center\">" . $of_disks[$disk_index]["partitions"][$j]["number"] . "</td>\n");
+                print("\t<td bgcolor=\"" . $dvalue . "\" align=\"center\">" . $of_disks[$disk_index]["partitions"][$j]["start"] . "</td>\n");
+                print("\t<td bgcolor=\"" . $dvalue . "\" align=\"center\">" . $of_disks[$disk_index]["partitions"][$j]["end"] . "</td>\n");
+                print("\t<td bgcolor=\"" . $dvalue . "\" align=\"center\">" . $of_disks[$disk_index]["partitions"][$j]["blocks"] . "</td>\n");
+                print("\t<td bgcolor=\"" . $dvalue . "\" align=\"center\">" . $part_size_string . "</td>\n");
+                print("\t<td bgcolor=\"" . $dvalue . "\" align=\"center\">" . ((($of_disks[$disk_index]["label"] == "gpt") || ($of_disks[$disk_index]["partitions"][$j]["number"] <= 4)) ? "Primary" : "Logical") . "</td>\n");
 
-		print("\t<td bgcolor=\"" . $dvalue . "\" align=\"center\">");
+                print("\t<td bgcolor=\"" . $dvalue . "\" align=\"center\">");
 
-		if ((($ptype != "8e") && ($ptype != "fd") && ($ptype != "05") && ($ptype != "5") && ($ptype != "0f") && ($ptype != "f")))
-			print("-");
-		else if ((($ptype == "05") || ($ptype == "5") || ($ptype == "0f") || ($ptype == "f")) && ($extended_partitions_exist))
-			print("<em>Extended partitions exist</em>");
-		else if ($in_use[$j])
-			print("<em>In use</em>");
-		else
-			print("<a href=\"./volumes_editpartitions.html?dev=" . htmlentities($dev) . "&amp;action=deletepartition&amp;device=" . $of_disks[$disk_index]["partitions"][$j]["device"] . "\">Delete</a>\n");
+                if ((($ptype != "8e") && ($ptype != "fd") && ($ptype != "05") && ($ptype != "5") && ($ptype != "0f") && ($ptype != "f")))
+                        print("-");
+                else if ((($ptype == "05") || ($ptype == "5") || ($ptype == "0f") || ($ptype == "f")) && ($extended_partitions_exist))
+                        print("<em>Extended partitions exist</em>");
+                else if ($in_use[$j])
+                        print("<em>In use</em>");
+                else
+                        print("<a href=\"./volumes_editpartitions.html?dev=" . htmlentities($dev) . "&amp;action=deletepartition&amp;device=" . $of_disks[$disk_index]["partitions"][$j]["device"] . "\">Delete</a>\n");
 
-		print("</td>\n");
+                print("</td>\n");
 
-		print("</tr>\n");
-	}
+                print("</tr>\n");
+        }
 
-	print("</table>\n");
-	print("</div>\n");
+        print("</table>\n");
+        print("</div>\n");
 
         $diskfree = $disksize - $sumpartsize;
         array_push($jsondata_size, (floatval($diskfree) > 4931584) ? $diskfree : 0); // is free space greater than 2MB?
@@ -531,165 +534,165 @@
 
 
 
-	print("<p align=\"center\">&nbsp;</p>\n");
+        print("<p align=\"center\">&nbsp;</p>\n");
 
-	print("<p align=\"center\"><a href=\"volumes_physical.html\">Back to the list of physical storage devices</a></p>\n");
+        print("<p align=\"center\"><a href=\"volumes_physical.html\">Back to the list of physical storage devices</a></p>\n");
 
-	print("<p align=\"center\">&nbsp;</p>\n");
+        print("<p align=\"center\">&nbsp;</p>\n");
 
-	print("<hr />\n");
+        print("<hr />\n");
 
-	print("<h3 align=\"center\">Create a partition in " . $of_disks[$disk_index]["device"] . "</h3>\n");
+        print("<h3 align=\"center\">Create a partition in " . $of_disks[$disk_index]["device"] . "</h3>\n");
 
-	if ((($of_disks[$disk_index]["label"] == "gpt") && ($primaries < 32767) &&
-			($primary_cylinder_count < $of_disks[$disk_index]["cylinders"])) ||
-		(($primaries < 15) && ($primary_cylinder_count < $of_disks[$disk_index]["cylinders"])) ||
-		(($extended_partition_index > -1) &&
-		($extended_cylinder_count < ($of_disks[$disk_index]["partitions"][$extended_partition_index]["end"]
-		- $of_disks[$disk_index]["partitions"][$extended_partition_index]["start"] + 1))))
+        if ((($of_disks[$disk_index]["label"] == "gpt") && ($primaries < 32767) &&
+                        ($primary_cylinder_count < $of_disks[$disk_index]["cylinders"])) ||
+                (($primaries < 15) && ($primary_cylinder_count < $of_disks[$disk_index]["cylinders"])) ||
+                (($extended_partition_index > -1) &&
+                ($extended_cylinder_count < ($of_disks[$disk_index]["partitions"][$extended_partition_index]["end"]
+                - $of_disks[$disk_index]["partitions"][$extended_partition_index]["start"] + 1))))
 
-	{
-		printMessageBlock("info","<p>You can use ranges within the following extents:</p>\n");
+        {
+                printMessageBlock("info","<p>You can use ranges within the following extents:</p>\n");
 
-		array_multisort($primary_start_array, $primary_end_array);
-		array_multisort($extended_start_array, $extended_end_array);
+                array_multisort($primary_start_array, $primary_end_array);
+                array_multisort($extended_start_array, $extended_end_array);
 
-		$primary_free_start_array = array();
-		$primary_free_end_array = array();
-		$extended_free_start_array = array();
-		$extended_free_end_array = array();
+                $primary_free_start_array = array();
+                $primary_free_end_array = array();
+                $extended_free_start_array = array();
+                $extended_free_end_array = array();
 
-		print("<div align=\"center\">\n");
-		print("<table cellpadding=\"8\" cellspacing=\"2\" border=\"0\">\n");
+                print("<div align=\"center\">\n");
+                print("<table cellpadding=\"8\" cellspacing=\"2\" border=\"0\">\n");
 
-		print("<tr>\n");
-		print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Mode</strong></td>\n");
-		print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Starting cylinder</strong></td>\n");
-		print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Ending cylinder</strong></td>\n");
-		print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Space</strong></td>\n");
-		print("</tr>\n");
+                print("<tr>\n");
+                print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Mode</strong></td>\n");
+                print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Starting cylinder</strong></td>\n");
+                print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Ending cylinder</strong></td>\n");
+                print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Space</strong></td>\n");
+                print("</tr>\n");
 
-		if (((($of_disks[$disk_index]["label"] == "gpt") && ($primaries < 32767))
-			|| ($primaries < 15)) && ($primary_cylinder_count < $of_disks[$disk_index]["cylinders"]))
-		{
-			$t = 1;
+                if (((($of_disks[$disk_index]["label"] == "gpt") && ($primaries < 32767))
+                        || ($primaries < 15)) && ($primary_cylinder_count < $of_disks[$disk_index]["cylinders"]))
+                {
+                        $t = 1;
 
-			for ($i = 0; $i < count($primary_start_array); $i++)
-			{
-				if ($primary_start_array[$i] > $t)
-				{
-					array_push($primary_free_start_array, $t);
-					array_push($primary_free_end_array, ($primary_start_array[$i] - 1));
+                        for ($i = 0; $i < count($primary_start_array); $i++)
+                        {
+                                if ($primary_start_array[$i] > $t)
+                                {
+                                        array_push($primary_free_start_array, $t);
+                                        array_push($primary_free_end_array, ($primary_start_array[$i] - 1));
 
-					$extent_size = (($of_disks[$disk_index]["blocksize"] / 2) * ((($primary_start_array[$i] - 1) - $t + 1) * $of_disks[$disk_index]["sectors"] * $of_disks[$disk_index]["heads"]));
+                                        $extent_size = (($of_disks[$disk_index]["blocksize"] / 2) * ((($primary_start_array[$i] - 1) - $t + 1) * $of_disks[$disk_index]["sectors"] * $of_disks[$disk_index]["heads"]));
 
-					if ($extent_size > (1024 * 1024 * 1024))
-						$extent_size_string = sprintf("%.02f GB", ($extent_size / (1024 * 1024 * 1024.0)));
-					else if ($extent_size > (1024 * 1024))
-						$extent_size_string = sprintf("%.02f MB", ($extent_size / (1024 * 1024.0)));
-					else if ($extent_size > (1024))
-						$extent_size_string = sprintf("%.02f KB", ($extent_size / (1024.0)));
-					else
-						$extent_size_string = $extent_size . " bytes";
+                                        if ($extent_size > (1024 * 1024 * 1024))
+                                                $extent_size_string = sprintf("%.02f GB", ($extent_size / (1024 * 1024 * 1024.0)));
+                                        else if ($extent_size > (1024 * 1024))
+                                                $extent_size_string = sprintf("%.02f MB", ($extent_size / (1024 * 1024.0)));
+                                        else if ($extent_size > (1024))
+                                                $extent_size_string = sprintf("%.02f KB", ($extent_size / (1024.0)));
+                                        else
+                                                $extent_size_string = $extent_size . " bytes";
 
-					print("<tr>\n");
-					print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">Primary</td>\n");
-					print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">" . $t . "</td>\n");
-					print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">" . ($primary_start_array[$i] - 1) . "</td>\n");
-					print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">" . $extent_size_string . "</td>\n");
-					print("</tr>\n");
-				}
+                                        print("<tr>\n");
+                                        print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">Primary</td>\n");
+                                        print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">" . $t . "</td>\n");
+                                        print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">" . ($primary_start_array[$i] - 1) . "</td>\n");
+                                        print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">" . $extent_size_string . "</td>\n");
+                                        print("</tr>\n");
+                                }
 
-				$t = $primary_end_array[$i] + 1;
-			}
+                                $t = $primary_end_array[$i] + 1;
+                        }
 
-			if ($t < $of_disks[$disk_index]["cylinders"])
-			{
-				array_push($primary_free_start_array, $t);
-				array_push($primary_free_end_array, $of_disks[$disk_index]["cylinders"]);
+                        if ($t < $of_disks[$disk_index]["cylinders"])
+                        {
+                                array_push($primary_free_start_array, $t);
+                                array_push($primary_free_end_array, $of_disks[$disk_index]["cylinders"]);
 
-				$extent_size = (($of_disks[$disk_index]["blocksize"] / 2) * (($of_disks[$disk_index]["cylinders"] - $t + 1) * $of_disks[$disk_index]["sectors"] * $of_disks[$disk_index]["heads"]));
+                                $extent_size = (($of_disks[$disk_index]["blocksize"] / 2) * (($of_disks[$disk_index]["cylinders"] - $t + 1) * $of_disks[$disk_index]["sectors"] * $of_disks[$disk_index]["heads"]));
 
-				if ($extent_size > (1024 * 1024 * 1024))
-					$extent_size_string = sprintf("%.02f GB", ($extent_size / (1024 * 1024 * 1024.0)));
-				else if ($extent_size > (1024 * 1024))
-					$extent_size_string = sprintf("%.02f MB", ($extent_size / (1024 * 1024.0)));
-				else if ($extent_size > (1024))
-					$extent_size_string = sprintf("%.02f KB", ($extent_size / (1024.0)));
-				else
-					$extent_size_string = $extent_size . " bytes";
+                                if ($extent_size > (1024 * 1024 * 1024))
+                                        $extent_size_string = sprintf("%.02f GB", ($extent_size / (1024 * 1024 * 1024.0)));
+                                else if ($extent_size > (1024 * 1024))
+                                        $extent_size_string = sprintf("%.02f MB", ($extent_size / (1024 * 1024.0)));
+                                else if ($extent_size > (1024))
+                                        $extent_size_string = sprintf("%.02f KB", ($extent_size / (1024.0)));
+                                else
+                                        $extent_size_string = $extent_size . " bytes";
 
-				print("<tr>\n");
-				print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">Primary</td>\n");
-				print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">" . $t . "</td>\n");
-				print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">" . $of_disks[$disk_index]["cylinders"] . "</td>\n");
-				print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">" . $extent_size_string . "</td>\n");
-				print("</tr>\n");
-			}
-		}
+                                print("<tr>\n");
+                                print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">Primary</td>\n");
+                                print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">" . $t . "</td>\n");
+                                print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">" . $of_disks[$disk_index]["cylinders"] . "</td>\n");
+                                print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">" . $extent_size_string . "</td>\n");
+                                print("</tr>\n");
+                        }
+                }
 
-		if ((($extended_partition_index > -1) &&
-			($extended_cylinder_count < ($of_disks[$disk_index]["partitions"][$extended_partition_index]["end"]
-			- $of_disks[$disk_index]["partitions"][$extended_partition_index]["start"] + 1))))
-		{
-			$t = $of_disks[$disk_index]["partitions"][$extended_partition_index]["start"];
+                if ((($extended_partition_index > -1) &&
+                        ($extended_cylinder_count < ($of_disks[$disk_index]["partitions"][$extended_partition_index]["end"]
+                        - $of_disks[$disk_index]["partitions"][$extended_partition_index]["start"] + 1))))
+                {
+                        $t = $of_disks[$disk_index]["partitions"][$extended_partition_index]["start"];
 
-			for ($i = 0; $i < count($extended_start_array); $i++)
-			{
-				if ($extended_start_array[$i] > $t)
-				{
-					array_push($extended_free_start_array, $t);
-					array_push($extended_free_end_array, ($extended_start_array[$i] - 1));
+                        for ($i = 0; $i < count($extended_start_array); $i++)
+                        {
+                                if ($extended_start_array[$i] > $t)
+                                {
+                                        array_push($extended_free_start_array, $t);
+                                        array_push($extended_free_end_array, ($extended_start_array[$i] - 1));
 
-					$extent_size = (($of_disks[$disk_index]["blocksize"] / 2) * ((($extended_start_array[$i] - 1) - $t + 1) * $of_disks[$disk_index]["sectors"] * $of_disks[$disk_index]["heads"]));
+                                        $extent_size = (($of_disks[$disk_index]["blocksize"] / 2) * ((($extended_start_array[$i] - 1) - $t + 1) * $of_disks[$disk_index]["sectors"] * $of_disks[$disk_index]["heads"]));
 
-					if ($extent_size > (1024 * 1024 * 1024))
-						$extent_size_string = sprintf("%.02f GB", ($extent_size / (1024 * 1024 * 1024.0)));
-					else if ($extent_size > (1024 * 1024))
-						$extent_size_string = sprintf("%.02f MB", ($extent_size / (1024 * 1024.0)));
-					else if ($extent_size > (1024))
-						$extent_size_string = sprintf("%.02f KB", ($extent_size / (1024.0)));
-					else
-						$extent_size_string = $extent_size . " bytes";
+                                        if ($extent_size > (1024 * 1024 * 1024))
+                                                $extent_size_string = sprintf("%.02f GB", ($extent_size / (1024 * 1024 * 1024.0)));
+                                        else if ($extent_size > (1024 * 1024))
+                                                $extent_size_string = sprintf("%.02f MB", ($extent_size / (1024 * 1024.0)));
+                                        else if ($extent_size > (1024))
+                                                $extent_size_string = sprintf("%.02f KB", ($extent_size / (1024.0)));
+                                        else
+                                                $extent_size_string = $extent_size . " bytes";
 
-					print("<tr>\n");
-					print("\t<td bgcolor=\"" . $GLOBALS["color_table_row2"] . "\" align=\"center\">Logical</td>\n");
-					print("\t<td bgcolor=\"" . $GLOBALS["color_table_row2"] . "\" align=\"center\">" . $t . "</td>\n");
-					print("\t<td bgcolor=\"" . $GLOBALS["color_table_row2"] . "\" align=\"center\">" . ($extended_start_array[$i] - 1) . "</td>\n");
-					print("\t<td bgcolor=\"" . $GLOBALS["color_table_row2"] . "\" align=\"center\">" . $extent_size_string . "</td>\n");
-					print("</tr>\n");
-				}
+                                        print("<tr>\n");
+                                        print("\t<td bgcolor=\"" . $GLOBALS["color_table_row2"] . "\" align=\"center\">Logical</td>\n");
+                                        print("\t<td bgcolor=\"" . $GLOBALS["color_table_row2"] . "\" align=\"center\">" . $t . "</td>\n");
+                                        print("\t<td bgcolor=\"" . $GLOBALS["color_table_row2"] . "\" align=\"center\">" . ($extended_start_array[$i] - 1) . "</td>\n");
+                                        print("\t<td bgcolor=\"" . $GLOBALS["color_table_row2"] . "\" align=\"center\">" . $extent_size_string . "</td>\n");
+                                        print("</tr>\n");
+                                }
 
-				$t = $extended_end_array[$i] + 1;
-			}
+                                $t = $extended_end_array[$i] + 1;
+                        }
 
-			if ($t < $of_disks[$disk_index]["partitions"][$extended_partition_index]["end"])
-			{
-				array_push($extended_free_start_array, $t);
-				array_push($extended_free_end_array, $of_disks[$disk_index]["partitions"][$extended_partition_index]["end"]);
+                        if ($t < $of_disks[$disk_index]["partitions"][$extended_partition_index]["end"])
+                        {
+                                array_push($extended_free_start_array, $t);
+                                array_push($extended_free_end_array, $of_disks[$disk_index]["partitions"][$extended_partition_index]["end"]);
 
-				$extent_size = (($of_disks[$disk_index]["blocksize"] / 2) * (($of_disks[$disk_index]["partitions"][$extended_partition_index]["end"] - $t + 1) * $of_disks[$disk_index]["sectors"] * $of_disks[$disk_index]["heads"]));
+                                $extent_size = (($of_disks[$disk_index]["blocksize"] / 2) * (($of_disks[$disk_index]["partitions"][$extended_partition_index]["end"] - $t + 1) * $of_disks[$disk_index]["sectors"] * $of_disks[$disk_index]["heads"]));
 
-				if ($extent_size > (1024 * 1024 * 1024))
-					$extent_size_string = sprintf("%.02f GB", ($extent_size / (1024 * 1024 * 1024.0)));
-				else if ($extent_size > (1024 * 1024))
-					$extent_size_string = sprintf("%.02f MB", ($extent_size / (1024 * 1024.0)));
-				else if ($extent_size > (1024))
-					$extent_size_string = sprintf("%.02f KB", ($extent_size / (1024.0)));
-				else
-					$extent_size_string = $extent_size . " bytes";
+                                if ($extent_size > (1024 * 1024 * 1024))
+                                        $extent_size_string = sprintf("%.02f GB", ($extent_size / (1024 * 1024 * 1024.0)));
+                                else if ($extent_size > (1024 * 1024))
+                                        $extent_size_string = sprintf("%.02f MB", ($extent_size / (1024 * 1024.0)));
+                                else if ($extent_size > (1024))
+                                        $extent_size_string = sprintf("%.02f KB", ($extent_size / (1024.0)));
+                                else
+                                        $extent_size_string = $extent_size . " bytes";
 
-				print("<tr>\n");
-				print("\t<td bgcolor=\"" . $GLOBALS["color_table_row2"] . "\" align=\"center\">Logical</td>\n");
-				print("\t<td bgcolor=\"" . $GLOBALS["color_table_row2"] . "\" align=\"center\">" . $t . "</td>\n");
-				print("\t<td bgcolor=\"" . $GLOBALS["color_table_row2"] . "\" align=\"center\">" . $of_disks[$disk_index]["partitions"][$extended_partition_index]["end"] . "</td>\n");
-				print("\t<td bgcolor=\"" . $GLOBALS["color_table_row2"] . "\" align=\"center\">" . $extent_size_string . "</td>\n");
-				print("</tr>\n");
-			}
-		}
+                                print("<tr>\n");
+                                print("\t<td bgcolor=\"" . $GLOBALS["color_table_row2"] . "\" align=\"center\">Logical</td>\n");
+                                print("\t<td bgcolor=\"" . $GLOBALS["color_table_row2"] . "\" align=\"center\">" . $t . "</td>\n");
+                                print("\t<td bgcolor=\"" . $GLOBALS["color_table_row2"] . "\" align=\"center\">" . $of_disks[$disk_index]["partitions"][$extended_partition_index]["end"] . "</td>\n");
+                                print("\t<td bgcolor=\"" . $GLOBALS["color_table_row2"] . "\" align=\"center\">" . $extent_size_string . "</td>\n");
+                                print("</tr>\n");
+                        }
+                }
 
-		print("</table>\n");
-		print("</div>\n");
+                print("</table>\n");
+                print("</div>\n");
 ?>
 
 <script language="JavaScript" type="text/javascript">
@@ -702,220 +705,220 @@ var extended_free_end_array = new Array();
 var size_multiplier = <?php print(($of_disks[$disk_index]["blocksize"] / 2) * $of_disks[$disk_index]["sectors"] * $of_disks[$disk_index]["heads"]); ?>;
 
 <?php
-	for ($i = 0; $i < count($primary_free_start_array); $i++)
-	{
-		print("primary_free_start_array[" . $i . "] = " . $primary_free_start_array[$i] . ";\n");
-		print("primary_free_end_array[" . $i . "] = " . $primary_free_end_array[$i] . ";\n");
-	}
+        for ($i = 0; $i < count($primary_free_start_array); $i++)
+        {
+                print("primary_free_start_array[" . $i . "] = " . $primary_free_start_array[$i] . ";\n");
+                print("primary_free_end_array[" . $i . "] = " . $primary_free_end_array[$i] . ";\n");
+        }
 
-	print("\n");
+        print("\n");
 
-	for ($i = 0; $i < count($extended_free_start_array); $i++)
-	{
-		print("extended_free_start_array[" . $i . "] = " . $extended_free_start_array[$i] . ";\n");
-		print("extended_free_end_array[" . $i . "] = " . $extended_free_end_array[$i] . ";\n");
-	}
+        for ($i = 0; $i < count($extended_free_start_array); $i++)
+        {
+                print("extended_free_start_array[" . $i . "] = " . $extended_free_start_array[$i] . ";\n");
+                print("extended_free_end_array[" . $i . "] = " . $extended_free_end_array[$i] . ";\n");
+        }
 
-	print("\n");
+        print("\n");
 
 ?>
 
 function update_size()
 {
 
-	extent_size = (document.createpartitionform.end.value - document.createpartitionform.start.value + 1) * size_multiplier;
+        extent_size = (document.createpartitionform.end.value - document.createpartitionform.start.value + 1) * size_multiplier;
 
-	if (extent_size > (1024 * 1024 * 1024))
-		extent_size_string = (Math.round((extent_size / (1024 * 1024 * 1024.0)) * 100) / 100) + " GB";
-	else if (extent_size > (1024 * 1024))
-		extent_size_string = (Math.round((extent_size / (1024 * 1024.0)) * 100) / 100) + " MB";
-	else if (extent_size > (1024))
-		extent_size_string = (Math.round((extent_size / (1024.0)) * 100) / 100) + " KB";
-	else
-		extent_size_string = extent_size + " bytes";
+        if (extent_size > (1024 * 1024 * 1024))
+                extent_size_string = (Math.round((extent_size / (1024 * 1024 * 1024.0)) * 100) / 100) + " GB";
+        else if (extent_size > (1024 * 1024))
+                extent_size_string = (Math.round((extent_size / (1024 * 1024.0)) * 100) / 100) + " MB";
+        else if (extent_size > (1024))
+                extent_size_string = (Math.round((extent_size / (1024.0)) * 100) / 100) + " KB";
+        else
+                extent_size_string = extent_size + " bytes";
 
-	document.createpartitionform.size.value = extent_size_string;
+        document.createpartitionform.size.value = extent_size_string;
 
-	if (extent_size < (32 * 1024 * 1024))
-		document.createpartitionform.submit.disabled = true;
-	else
-		document.createpartitionform.submit.disabled = false;
+        if (extent_size < (32 * 1024 * 1024))
+                document.createpartitionform.submit.disabled = true;
+        else
+                document.createpartitionform.submit.disabled = false;
 }
 
 function changed_mode()
 {
-	if (document.createpartitionform.mode.value == "logical")
-	{
-		document.createpartitionform.start.value = extended_free_start_array[0];
-		document.createpartitionform.end.value = extended_free_end_array[0];
-	}
-	else
-	{
-		document.createpartitionform.start.value = primary_free_start_array[0];
-		document.createpartitionform.end.value = primary_free_end_array[0];
-	}
+        if (document.createpartitionform.mode.value == "logical")
+        {
+                document.createpartitionform.start.value = extended_free_start_array[0];
+                document.createpartitionform.end.value = extended_free_end_array[0];
+        }
+        else
+        {
+                document.createpartitionform.start.value = primary_free_start_array[0];
+                document.createpartitionform.end.value = primary_free_end_array[0];
+        }
 
-	update_size();
+        update_size();
 }
 
 function changed_start()
 {
-	var i, found;
+        var i, found;
 
-	if (document.createpartitionform.mode.value == "logical")
-	{
-		found = false;
+        if (document.createpartitionform.mode.value == "logical")
+        {
+                found = false;
 
-		for (i = 0; i < extended_free_start_array.length; i++)
-		{
-			if ((extended_free_start_array[i] <= parseInt(document.createpartitionform.start.value)) &&
-				(extended_free_end_array[i] >= parseInt(document.createpartitionform.start.value)))
-			{
-				found = true;
-				break;
-			}
-		}
+                for (i = 0; i < extended_free_start_array.length; i++)
+                {
+                        if ((extended_free_start_array[i] <= parseInt(document.createpartitionform.start.value)) &&
+                                (extended_free_end_array[i] >= parseInt(document.createpartitionform.start.value)))
+                        {
+                                found = true;
+                                break;
+                        }
+                }
 
-		if (!found)
-		{
-			changed_mode();
-			return;
-		}
+                if (!found)
+                {
+                        changed_mode();
+                        return;
+                }
 
-		if ((parseInt(document.createpartitionform.start.value) > parseInt(document.createpartitionform.end.value)) ||
-			(extended_free_end_array[i] < parseInt(document.createpartitionform.end.value)))
-		{
-			document.createpartitionform.end.value = extended_free_end_array[i];
-		}
-	}
-	else
-	{
-		found = false;
+                if ((parseInt(document.createpartitionform.start.value) > parseInt(document.createpartitionform.end.value)) ||
+                        (extended_free_end_array[i] < parseInt(document.createpartitionform.end.value)))
+                {
+                        document.createpartitionform.end.value = extended_free_end_array[i];
+                }
+        }
+        else
+        {
+                found = false;
 
-		for (i = 0; i < primary_free_start_array.length; i++)
-		{
-			if ((primary_free_start_array[i] <= parseInt(document.createpartitionform.start.value)) &&
-				(primary_free_end_array[i] >= parseInt(document.createpartitionform.start.value)))
-			{
-				found = true;
-				break;
-			}
-		}
+                for (i = 0; i < primary_free_start_array.length; i++)
+                {
+                        if ((primary_free_start_array[i] <= parseInt(document.createpartitionform.start.value)) &&
+                                (primary_free_end_array[i] >= parseInt(document.createpartitionform.start.value)))
+                        {
+                                found = true;
+                                break;
+                        }
+                }
 
-		if (!found)
-		{
-			changed_mode();
-			return;
-		}
+                if (!found)
+                {
+                        changed_mode();
+                        return;
+                }
 
-		if ((parseInt(document.createpartitionform.start.value) > parseInt(document.createpartitionform.end.value)) ||
-			(primary_free_end_array[i] < parseInt(document.createpartitionform.end.value)))
-		{
-			document.createpartitionform.end.value = primary_free_end_array[i];
-		}
-	}
+                if ((parseInt(document.createpartitionform.start.value) > parseInt(document.createpartitionform.end.value)) ||
+                        (primary_free_end_array[i] < parseInt(document.createpartitionform.end.value)))
+                {
+                        document.createpartitionform.end.value = primary_free_end_array[i];
+                }
+        }
 
-	update_size();
+        update_size();
 }
 
 function changed_end()
 {
-	changed_start();
+        changed_start();
 }
 
 // -->
 </script>
 
 <?php
-		print("<p align=\"center\">&nbsp;</p>\n");
+                print("<p align=\"center\">&nbsp;</p>\n");
 
-		print("<form name=\"createpartitionform\" method=\"post\" action=\"volumes_editpartitions.html\">\n");
-		print("<input type=\"hidden\" name=\"action\" value=\"createpartition\" />\n");
-		print("<input type=\"hidden\" name=\"dev\" value=\"" . $of_disks[$disk_index]["device"] . "\" />\n");
+                print("<form name=\"createpartitionform\" method=\"post\" action=\"volumes_editpartitions.html\">\n");
+                print("<input type=\"hidden\" name=\"action\" value=\"createpartition\" />\n");
+                print("<input type=\"hidden\" name=\"dev\" value=\"" . $of_disks[$disk_index]["device"] . "\" />\n");
 
-		print("<div align=\"center\">\n");
-		print("<table cellpadding=\"8\" cellspacing=\"2\" border=\"0\">\n");
+                print("<div align=\"center\">\n");
+                print("<table cellpadding=\"8\" cellspacing=\"2\" border=\"0\">\n");
 
-		print("<tr>\n");
-		print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Mode</strong></td>\n");
-		print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Partition Type</strong></td>\n");
-		print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Starting cylinder</strong></td>\n");
-		print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Ending cylinder</strong></td>\n");
-		print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Size</strong></td>\n");
-		print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Create</strong></td>\n");
-		print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Reset</strong></td>\n");
-		print("</tr>\n");
+                print("<tr>\n");
+                print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Mode</strong></td>\n");
+                print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Partition Type</strong></td>\n");
+                print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Starting cylinder</strong></td>\n");
+                print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Ending cylinder</strong></td>\n");
+                print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Size</strong></td>\n");
+                print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Create</strong></td>\n");
+                print("\t<td bgcolor=\"" . $GLOBALS["color_table_heading"] . "\" align=\"center\"><strong>Reset</strong></td>\n");
+                print("</tr>\n");
 
-		print("<tr>\n");
+                print("<tr>\n");
 
-		print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">\n");
-		print("\t<select name=\"mode\" onchange=\"changed_mode()\">\n");
+                print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">\n");
+                print("\t<select name=\"mode\" onchange=\"changed_mode()\">\n");
 
-		if (((($of_disks[$disk_index]["label"] == "gpt") && ($primaries < 32767))
-				|| ($primaries < 15)) && ($primary_cylinder_count < $of_disks[$disk_index]["cylinders"]))
-			print("\t\t<option value=\"primary\">Primary</option>\n");
+                if (((($of_disks[$disk_index]["label"] == "gpt") && ($primaries < 32767))
+                                || ($primaries < 15)) && ($primary_cylinder_count < $of_disks[$disk_index]["cylinders"]))
+                        print("\t\t<option value=\"primary\">Primary</option>\n");
 
-		if ((($extended_partition_index > -1) &&
-			($extended_cylinder_count < ($of_disks[$disk_index]["partitions"][$extended_partition_index]["end"]
-			- $of_disks[$disk_index]["partitions"][$extended_partition_index]["start"] + 1))))
-			print("\t\t<option value=\"logical\">Logical</option>\n");
+                if ((($extended_partition_index > -1) &&
+                        ($extended_cylinder_count < ($of_disks[$disk_index]["partitions"][$extended_partition_index]["end"]
+                        - $of_disks[$disk_index]["partitions"][$extended_partition_index]["start"] + 1))))
+                        print("\t\t<option value=\"logical\">Logical</option>\n");
 
-		print("\t</select>\n");
-		print("\t</td>\n");
+                print("\t</select>\n");
+                print("\t</td>\n");
 
-		print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">\n");
-		print("\t<select name=\"type\">\n");
+                print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">\n");
+                print("\t<select name=\"type\">\n");
 
-		if (($of_disks[$disk_index]["label"] != "gpt") && ((($primaries < 15) && ($primary_cylinder_count < $of_disks[$disk_index]["cylinders"]))) && ($extended_partition_index < 0))
-			print("\t\t<option value=\"extended\">Extended partition</option>\n");
+                if (($of_disks[$disk_index]["label"] != "gpt") && ((($primaries < 15) && ($primary_cylinder_count < $of_disks[$disk_index]["cylinders"]))) && ($extended_partition_index < 0))
+                        print("\t\t<option value=\"extended\">Extended partition</option>\n");
 
-		print("\t\t<option value=\"pv\">Physical volume</option>\n");
-		print("\t\t<option value=\"md\">RAID array member</option>\n");
-		print("\t</select>\n");
-		print("\t</td>\n");
+                print("\t\t<option value=\"pv\">Physical volume</option>\n");
+                print("\t\t<option value=\"md\">RAID array member</option>\n");
+                print("\t</select>\n");
+                print("\t</td>\n");
 
-		print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\"><input type=\"text\" name=\"start\" onchange=\"changed_start()\" size=\"10\" /></td>\n");
-		print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\"><input type=\"text\" name=\"end\" onchange=\"changed_end()\" size=\"10\" /></td>\n");
-		print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\"><input type=\"text\" name=\"size\" size=\"10\" disabled=\"disabled\" /></td>\n");
-		print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Create\" /></td>\n");
+                print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\"><input type=\"text\" name=\"start\" onchange=\"changed_start()\" size=\"10\" /></td>\n");
+                print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\"><input type=\"text\" name=\"end\" onchange=\"changed_end()\" size=\"10\" /></td>\n");
+                print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\"><input type=\"text\" name=\"size\" size=\"10\" disabled=\"disabled\" /></td>\n");
+                print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Create\" /></td>\n");
 
-		//print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\"<a href=\"./volumes_editpartitions.html?dev=" . htmlentities($dev) . "&amp;action=resetpartitions\">Reset</a></td>\n");
+                //print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\"<a href=\"./volumes_editpartitions.html?dev=" . htmlentities($dev) . "&amp;action=resetpartitions\">Reset</a></td>\n");
 
-		$rand_id = sha1($dev . rand());
-		print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">\n");
-		print("\t\t<div id=\"popup-" . $rand_id . "\" onclick=\"event.cancelBubble = true;\" onmousedown=\"dragpopup(this, event)\" class=\"sharespopup\">\n");
-		print("\t\t\t<p align=\"center\"><strong>Are you sure you want to reset<br />disk partitions from \"" . htmlentities($dev) . "\"?</strong></p>\n");
-		print("\t\t\t<p align=\"center\">[&nbsp;<a href=\"./volumes_editpartitions.html?dev=" . htmlentities($dev) . "&amp;action=resetpartitions\">Yes</a> / <a href=\"#\" onclick=\"hideCurrentPopup(); return false;\">NO DON'T RESET</a>&nbsp;]</p>\n");
-		print("\t\t</div>\n");
-		if (count($in_use) > 0)
-			print("\t\t<em>In Use</em>");
-		else
-			print("\t\t<a href=\"#\" onclick=\"return !showPopup('popup-" . $rand_id . "', event);\">Reset</a>\n");
-		print("\t</td>\n");
+                $rand_id = sha1($dev . rand());
+                print("\t<td bgcolor=\"" . $GLOBALS["color_table_row1"] . "\" align=\"center\">\n");
+                print("\t\t<div id=\"popup-" . $rand_id . "\" onclick=\"event.cancelBubble = true;\" onmousedown=\"dragpopup(this, event)\" class=\"sharespopup\">\n");
+                print("\t\t\t<p align=\"center\"><strong>Are you sure you want to reset<br />disk partitions from \"" . htmlentities($dev) . "\"?</strong></p>\n");
+                print("\t\t\t<p align=\"center\">[&nbsp;<a href=\"./volumes_editpartitions.html?dev=" . htmlentities($dev) . "&amp;action=resetpartitions\">Yes</a> / <a href=\"#\" onclick=\"hideCurrentPopup(); return false;\">NO DON'T RESET</a>&nbsp;]</p>\n");
+                print("\t\t</div>\n");
+                if (count($in_use) > 0)
+                        print("\t\t<em>In Use</em>");
+                else
+                        print("\t\t<a href=\"#\" onclick=\"return !showPopup('popup-" . $rand_id . "', event);\">Reset</a>\n");
+                print("\t</td>\n");
 
-		print("</tr>\n");
+                print("</tr>\n");
 
-		print("</table>\n");
-		print("</div>\n");
+                print("</table>\n");
+                print("</div>\n");
 
-		print("</form>\n");
+                print("</form>\n");
 ?>
 
 <script language="JavaScript" type="text/javascript">
 <!--
-	changed_mode();
+        changed_mode();
 // -->
 </script>
 
 <?php
-	}
-	else
-	    printMessageBlock("warning", "<p align=\"center\"><em>Can't create any more partitions.</em></p>\n");
+        }
+        else
+            printMessageBlock("warning", "<p align=\"center\"><em>Can't create any more partitions.</em></p>\n");
 
-	print("<p align=\"center\">&nbsp;</p>\n");
+        print("<p align=\"center\">&nbsp;</p>\n");
 
-	nested_tab_end();
+        nested_tab_end();
 
-	single_end(array());
-	generic_footer(array());
+        single_end(array());
+        generic_footer(array());
 ?>
