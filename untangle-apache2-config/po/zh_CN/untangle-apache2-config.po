@@ -7,138 +7,143 @@ msgstr ""
 "Project-Id-Version: Untangle\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-03-04 13:57-0800\n"
-"PO-Revision-Date: 2008-11-23 06:06-0700\n"
-"Last-Translator: David Russi <dprussi@qwest.net>\n"
-"Language-Team: Spanish <dprussi@qwest.net>\n"
+"PO-Revision-Date: 2008-11-27 23:56-0500\n"
+"Last-Translator: Jie Zhu <j.zhu@impactek.com>\n"
+"Language-Team: Chinese <j.zhu@impactek.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Translate Toolkit 1.1.1\n"
-"X-Poedit-Language: Spanish\n"
+"X-Poedit-Language: Chinese\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Country: CHINA\n"
 
 #: ../adminindex.py:39
 #, python-format
 msgid "%s Login"
-msgstr "Inicio de sesión %s"
+msgstr "%s登录"
 
 #: ../adminindex.py:93
 msgid "Error: Username and Password do not match"
-msgstr "Error: el nombre de usuario y la contraseña no coinciden"
+msgstr "错误：用户名和密码不匹配"
 
 #: ../adminindex.py:147
 msgid "Server:"
-msgstr "Servidor:"
+msgstr "服务器："
 
 #: ../adminindex.py:147
 msgid "Username:"
-msgstr "Nombre de usuario:"
+msgstr "用户名："
 
 #: ../adminindex.py:147
 msgid "Password:"
-msgstr "Contraseña:"
+msgstr "密码："
 
 #: ../adminindex.py:147
 msgid "Login"
-msgstr "Iniciar sesión"
+msgstr "登录"
 
 #: ../errorindex.py:15
 msgid "Bad Request"
-msgstr "Solicitud incorrecta"
+msgstr "请求错误"
 
 #: ../errorindex.py:19
 msgid "Unauthorized"
-msgstr "No autorizado"
+msgstr "未授权的"
 
 #: ../errorindex.py:23
 msgid "Payment Required"
-msgstr "Requiere un pago"
+msgstr "需要付费"
 
 #: ../errorindex.py:27
 msgid "Forbidden"
-msgstr "Prohibido"
+msgstr "禁止的"
 
 #: ../errorindex.py:31
 msgid "Not Found"
-msgstr "No se encuentra"
+msgstr "未找到"
 
 #: ../errorindex.py:35
 msgid "Method Not Allowed"
-msgstr "Método no permitido"
+msgstr "不允许的方式"
 
 #: ../errorindex.py:39
 msgid "Not Acceptable"
-msgstr "Inaceptable"
+msgstr "不可接受"
 
 #: ../errorindex.py:43
 msgid "Proxy Authentication Required"
-msgstr "Requiere autenticación de proxy"
+msgstr "需要代理认证"
 
 #: ../errorindex.py:47
 msgid "Request Timeout"
-msgstr "Tiempo de solicitud agotado"
+msgstr "请求超时"
 
 #: ../errorindex.py:51
 msgid "Conflict"
-msgstr "Conflicto"
+msgstr "冲突"
 
 #: ../errorindex.py:55
 msgid "Gone"
-msgstr "Desaparecido"
+msgstr "消失"
 
 #: ../errorindex.py:59
 msgid "Length Required"
-msgstr "Requiere la longitud"
+msgstr "要求长度"
 
 #: ../errorindex.py:63
 msgid "Precondition Failed"
-msgstr "Error de condición previa"
+msgstr "预处理失败"
 
 #: ../errorindex.py:67
 msgid "Request Entity Too Large"
-msgstr "Entidad solicitada demasiado grande"
+msgstr "所请求实体太大"
 
 #: ../errorindex.py:71
 msgid "Request-URI Too Long"
-msgstr "Dirección solicitada demasiado larga"
+msgstr "所请求URI太长"
 
 #: ../errorindex.py:75
 msgid "Unsupported Media Type"
-msgstr "Tipo de medio no apoyado"
+msgstr "不支持的媒体类型"
 
 #: ../errorindex.py:79
 msgid "Requested Range Not Satisfiable"
-msgstr "No se puede satisfacer el rango solicitado"
+msgstr "所请求的范围不能满足"
 
 #: ../errorindex.py:83
 msgid "Expectation Failed"
-msgstr "Error de expectativa"
+msgstr "期望失败"
 
 #: ../errorindex.py:87
 msgid "Internal Server Error"
-msgstr "Error interno del servidor"
+msgstr "内部服务器错误"
 
 #: ../errorindex.py:91
 msgid "Not Implemented"
-msgstr "No implementado"
+msgstr "未实施"
 
 #: ../errorindex.py:95
 msgid "Bad Gateway"
-msgstr "Pasarela incorrecta"
+msgstr "网关错误"
 
 #: ../errorindex.py:99
 msgid "Service Unavailable"
-msgstr "Servicio no disponible"
+msgstr "服务不可用"
 
 #: ../errorindex.py:103
 msgid "Gateway Timeout"
-msgstr "Tiempo de espera de la pasarela agotado"
+msgstr "网关超时"
 
 #: ../errorindex.py:107
 msgid "HTTP Version Not Supported"
-msgstr "Versión de HTTP no soportada"
+msgstr "不支持该HTTP版本"
 
 #: ../errorindex.py:115 ../uvmlogin.py:258
 #, python-format
 msgid "%s Server"
-msgstr "Servidor %s"
+msgstr "%s服务器"
+
+#~ msgid "Untangle Server"
+#~ msgstr "Untangle服务器"

@@ -2,143 +2,142 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Untangle\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-03-04 13:57-0800\n"
-"PO-Revision-Date: 2008-11-23 06:06-0700\n"
-"Last-Translator: David Russi <dprussi@qwest.net>\n"
-"Language-Team: Spanish <dprussi@qwest.net>\n"
+"PO-Revision-Date: 2009-02-12 03:30-0800\n"
+"Last-Translator: Thierry D'AMBROSIO <thierry@dambrosio.fr>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Translate Toolkit 1.1.1\n"
-"X-Poedit-Language: Spanish\n"
+"X-Generator: Pootle 1.1.0\n"
 
 #: ../adminindex.py:39
 #, python-format
 msgid "%s Login"
-msgstr "Inicio de sesión %s"
+msgstr "%s Connexion"
 
 #: ../adminindex.py:93
 msgid "Error: Username and Password do not match"
-msgstr "Error: el nombre de usuario y la contraseña no coinciden"
+msgstr "Erreur: Le nom d'utilisateur et le mot de passe ne correspondent pas"
 
 #: ../adminindex.py:147
 msgid "Server:"
-msgstr "Servidor:"
+msgstr "Serveur:"
 
 #: ../adminindex.py:147
 msgid "Username:"
-msgstr "Nombre de usuario:"
+msgstr "Nom d'utilisateur:"
 
 #: ../adminindex.py:147
 msgid "Password:"
-msgstr "Contraseña:"
+msgstr "Mot de passe:"
 
 #: ../adminindex.py:147
 msgid "Login"
-msgstr "Iniciar sesión"
+msgstr "Connexion"
 
 #: ../errorindex.py:15
 msgid "Bad Request"
-msgstr "Solicitud incorrecta"
+msgstr "Mauvaise requête"
 
 #: ../errorindex.py:19
 msgid "Unauthorized"
-msgstr "No autorizado"
+msgstr "Non autorisé"
 
 #: ../errorindex.py:23
 msgid "Payment Required"
-msgstr "Requiere un pago"
+msgstr "Paiement requis"
 
 #: ../errorindex.py:27
 msgid "Forbidden"
-msgstr "Prohibido"
+msgstr "Interdit"
 
 #: ../errorindex.py:31
 msgid "Not Found"
-msgstr "No se encuentra"
+msgstr "Non trouvé"
 
 #: ../errorindex.py:35
 msgid "Method Not Allowed"
-msgstr "Método no permitido"
+msgstr "Méthode non autorisée"
 
 #: ../errorindex.py:39
 msgid "Not Acceptable"
-msgstr "Inaceptable"
+msgstr "Non acceptable"
 
 #: ../errorindex.py:43
 msgid "Proxy Authentication Required"
-msgstr "Requiere autenticación de proxy"
+msgstr "Authentification du proxy requise"
 
 #: ../errorindex.py:47
 msgid "Request Timeout"
-msgstr "Tiempo de solicitud agotado"
+msgstr "Requête hors délai"
 
 #: ../errorindex.py:51
 msgid "Conflict"
-msgstr "Conflicto"
+msgstr "Conflit"
 
 #: ../errorindex.py:55
 msgid "Gone"
-msgstr "Desaparecido"
+msgstr "Parti"
 
 #: ../errorindex.py:59
 msgid "Length Required"
-msgstr "Requiere la longitud"
+msgstr "Longueur requise"
 
 #: ../errorindex.py:63
 msgid "Precondition Failed"
-msgstr "Error de condición previa"
+msgstr "Échec des conditions préalables"
 
 #: ../errorindex.py:67
 msgid "Request Entity Too Large"
-msgstr "Entidad solicitada demasiado grande"
+msgstr "Entité requise trop volumineuse"
 
 #: ../errorindex.py:71
 msgid "Request-URI Too Long"
-msgstr "Dirección solicitada demasiado larga"
+msgstr "URI requise trop longue"
 
 #: ../errorindex.py:75
 msgid "Unsupported Media Type"
-msgstr "Tipo de medio no apoyado"
+msgstr "Type de média non supporté"
 
 #: ../errorindex.py:79
 msgid "Requested Range Not Satisfiable"
-msgstr "No se puede satisfacer el rango solicitado"
+msgstr "La plage requise n'est pas correcte"
 
 #: ../errorindex.py:83
 msgid "Expectation Failed"
-msgstr "Error de expectativa"
+msgstr "Echec de l'attente"
 
 #: ../errorindex.py:87
 msgid "Internal Server Error"
-msgstr "Error interno del servidor"
+msgstr "Erreur interne du serveur"
 
 #: ../errorindex.py:91
 msgid "Not Implemented"
-msgstr "No implementado"
+msgstr "Non implémenté"
 
 #: ../errorindex.py:95
 msgid "Bad Gateway"
-msgstr "Pasarela incorrecta"
+msgstr "Mauvaise passerelle"
 
 #: ../errorindex.py:99
 msgid "Service Unavailable"
-msgstr "Servicio no disponible"
+msgstr "Service indisponible"
 
 #: ../errorindex.py:103
 msgid "Gateway Timeout"
-msgstr "Tiempo de espera de la pasarela agotado"
+msgstr "Passerelle hors délai"
 
 #: ../errorindex.py:107
 msgid "HTTP Version Not Supported"
-msgstr "Versión de HTTP no soportada"
+msgstr "Version HTTP non supportée"
 
 #: ../errorindex.py:115 ../uvmlogin.py:258
 #, python-format
 msgid "%s Server"
-msgstr "Servidor %s"
+msgstr "%s Serveur"
