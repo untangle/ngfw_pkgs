@@ -7,138 +7,138 @@ msgstr ""
 "Project-Id-Version: Untangle\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-03-04 13:57-0800\n"
-"PO-Revision-Date: 2008-11-23 06:06-0700\n"
-"Last-Translator: David Russi <dprussi@qwest.net>\n"
-"Language-Team: Spanish <dprussi@qwest.net>\n"
+"PO-Revision-Date: 2008-12-06 13:55+0100\n"
+"Last-Translator: Koen Claeys <koen.claeys@gmail.com>\n"
+"Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Translate Toolkit 1.1.1\n"
-"X-Poedit-Language: Spanish\n"
+"X-Poedit-Language: Dutch\n"
 
 #: ../adminindex.py:39
 #, python-format
 msgid "%s Login"
-msgstr "Inicio de sesión %s"
+msgstr "%s Login"
 
 #: ../adminindex.py:93
 msgid "Error: Username and Password do not match"
-msgstr "Error: el nombre de usuario y la contraseña no coinciden"
+msgstr "Fout: Gebruikersnaam en paswoord komen niet overeen"
 
 #: ../adminindex.py:147
 msgid "Server:"
-msgstr "Servidor:"
+msgstr "Server:"
 
 #: ../adminindex.py:147
 msgid "Username:"
-msgstr "Nombre de usuario:"
+msgstr "Gebruikersnaam:"
 
 #: ../adminindex.py:147
 msgid "Password:"
-msgstr "Contraseña:"
+msgstr "Paswoord:"
 
 #: ../adminindex.py:147
 msgid "Login"
-msgstr "Iniciar sesión"
+msgstr "Login:"
 
 #: ../errorindex.py:15
 msgid "Bad Request"
-msgstr "Solicitud incorrecta"
+msgstr "Slechte aanvraag"
 
 #: ../errorindex.py:19
 msgid "Unauthorized"
-msgstr "No autorizado"
+msgstr "Niet gemachtigd"
 
 #: ../errorindex.py:23
 msgid "Payment Required"
-msgstr "Requiere un pago"
+msgstr "Betaling vereist"
 
 #: ../errorindex.py:27
 msgid "Forbidden"
-msgstr "Prohibido"
+msgstr "Verboden"
 
 #: ../errorindex.py:31
 msgid "Not Found"
-msgstr "No se encuentra"
+msgstr "Niet gevonden"
 
 #: ../errorindex.py:35
 msgid "Method Not Allowed"
-msgstr "Método no permitido"
+msgstr "Methode niet toegelaten"
 
 #: ../errorindex.py:39
 msgid "Not Acceptable"
-msgstr "Inaceptable"
+msgstr "Niet aanvaardbaar"
 
 #: ../errorindex.py:43
 msgid "Proxy Authentication Required"
-msgstr "Requiere autenticación de proxy"
+msgstr "Proxy authenticatie vereist"
 
 #: ../errorindex.py:47
 msgid "Request Timeout"
-msgstr "Tiempo de solicitud agotado"
+msgstr "Aanvraag Timeout"
 
 #: ../errorindex.py:51
 msgid "Conflict"
-msgstr "Conflicto"
+msgstr "Conflict"
 
 #: ../errorindex.py:55
 msgid "Gone"
-msgstr "Desaparecido"
+msgstr "Weg"
 
 #: ../errorindex.py:59
 msgid "Length Required"
-msgstr "Requiere la longitud"
+msgstr "Lengte vereist"
 
 #: ../errorindex.py:63
 msgid "Precondition Failed"
-msgstr "Error de condición previa"
+msgstr "Voorconditie mislukt"
 
 #: ../errorindex.py:67
 msgid "Request Entity Too Large"
-msgstr "Entidad solicitada demasiado grande"
+msgstr "Aanvraagentiteit te lang"
 
 #: ../errorindex.py:71
 msgid "Request-URI Too Long"
-msgstr "Dirección solicitada demasiado larga"
+msgstr "Aanvraag-URI te lang"
 
 #: ../errorindex.py:75
 msgid "Unsupported Media Type"
-msgstr "Tipo de medio no apoyado"
+msgstr "Niet-ondersteund media type"
 
 #: ../errorindex.py:79
 msgid "Requested Range Not Satisfiable"
-msgstr "No se puede satisfacer el rango solicitado"
+msgstr "Aanvraagbereik niet voldoende"
 
 #: ../errorindex.py:83
 msgid "Expectation Failed"
-msgstr "Error de expectativa"
+msgstr "Verwachting mislukt"
 
 #: ../errorindex.py:87
 msgid "Internal Server Error"
-msgstr "Error interno del servidor"
+msgstr "Interne serverfout"
 
 #: ../errorindex.py:91
 msgid "Not Implemented"
-msgstr "No implementado"
+msgstr "Niet geïmplementeerd"
 
 #: ../errorindex.py:95
 msgid "Bad Gateway"
-msgstr "Pasarela incorrecta"
+msgstr "Slechte gateway"
 
 #: ../errorindex.py:99
 msgid "Service Unavailable"
-msgstr "Servicio no disponible"
+msgstr "Service niet beschikbaar"
 
 #: ../errorindex.py:103
 msgid "Gateway Timeout"
-msgstr "Tiempo de espera de la pasarela agotado"
+msgstr "Gateway timeout"
 
 #: ../errorindex.py:107
 msgid "HTTP Version Not Supported"
-msgstr "Versión de HTTP no soportada"
+msgstr "HTTP versie niet ondersteund"
 
 #: ../errorindex.py:115 ../uvmlogin.py:258
 #, python-format
 msgid "%s Server"
-msgstr "Servidor %s"
+msgstr "%s Server"
