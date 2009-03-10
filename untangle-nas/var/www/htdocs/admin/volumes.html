@@ -290,7 +290,7 @@
 		{
 			if (($snapshots_lvname[$i] == $volume) && ($snapshots_vgname[$i] == $volume_vg))
 			{
-				header("Location: ./volumes.html");
+				header("Location: ./volumes.html".getAttachment());
 				exit;
 			}
 		}
@@ -490,7 +490,7 @@
 			if (($volumes_id[$i] == $volume) && ($volumes_vg[$i] == $volume_vg))
 				exec("export LANG=C; /usr/bin/sudo /bin/rmdir --ignore-fail-on-non-empty " . escapeshellarg($volumes_mountpoint[$i]));
 
-		header("Location: ./volumes.html");
+		header("Location: ./volumes.html".getAttachment());
 		exit;
 	}
   if($_REQUEST['responseType']=='json'){
