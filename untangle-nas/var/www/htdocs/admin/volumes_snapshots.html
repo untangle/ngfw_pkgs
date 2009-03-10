@@ -239,7 +239,7 @@
 		pclose($fstabp);
 	}
 
-	if ($_POST["snapaction"] == "takesnapshot")
+	if ($_REQUEST["snapaction"] == "takesnapshot")
 	{
 		if ((!is_valid_foldername($snapname)) || (substr(strtolower($snapname), 0, 5) == "sched") || (!is_numeric($snapsize)))
 		{
@@ -449,7 +449,7 @@
 		header("Location: ./volumes_snapshots.html?volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
 		exit;
 	}
-	else if ($_POST["snapaction"] == "changesize")
+	else if ($_REQUEST["snapaction"] == "changesize")
 	{
 		for ($i = 0; $i < count($snapshots_lvname); $i++)
 			if ((${"changesize-" . $snapshots_vgname[$i] . "-" . $snapshots_lvname[$i] . "-" . $snapshots_id[$i]} == "Save") && (substr(strtolower($snapshots_lvname[$i]), 0, 5) != "sched"))
@@ -525,16 +525,16 @@
 
 		apply_configuration(array("services" => "reload", "chmod" => "no", "chmod_path" => ""));
 
-		header("Location: ./volumes_snapshots.html?volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+		header("Location: ./volumes_snapshots.html".getAttachment()."&volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
 		exit;
 	}
-	else if ($_POST["snapaction"] == "schedulesnapshot")
+	else if ($_REQUEST["snapaction"] == "schedulesnapshot")
 	{
 		if ((!is_numeric($snapsize)) || (!is_numeric($snapinterval)) || (!is_numeric($snaprotatecount)) || ($snaprotatecount < 1) || ($snapinterval < 1))
 		{
 			flock($flockp, LOCK_UN | LOCK_NB);
 			fclose($flockp);
-			header("Location: ./volumes_snapshots.html?volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+			header("Location: ./volumes_snapshots.html".getAttachment()."&volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
 			exit;
 		}
 
@@ -587,7 +587,7 @@
 		{
 			flock($flockp, LOCK_UN | LOCK_NB);
 			fclose($flockp);
-			header("Location: ./volumes_snapshots.html?volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+			header("Location: ./volumes_snapshots.html".getAttachment()."&volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
 			exit;
 		}
 
@@ -757,7 +757,7 @@
 
 		flock($flockp, LOCK_UN | LOCK_NB);
 		fclose($flockp);
-		header("Location: ./volumes_snapshots.html?volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+		header("Location: ./volumes_snapshots.html".getAttachment()."&volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
 		exit;
 	}
 	else if ($_GET["snapaction"] == "deletesnapshotschedule")
@@ -820,7 +820,7 @@
 
 							flock($flockp, LOCK_UN | LOCK_NB);
 							fclose($flockp);
-							header("Location: ./volumes_snapshots.html?volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+							header("Location: ./volumes_snapshots.html".getAttachment()."&volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
 							exit;
 						}
 					}
@@ -1054,7 +1054,7 @@
 
 		flock($flockp, LOCK_UN | LOCK_NB);
 		fclose($flockp);
-		header("Location: ./volumes_snapshots.html?volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+		header("Location: ./volumes_snapshots.html".getAttachment()."&volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
 		exit;
 	}
 
@@ -1079,7 +1079,36 @@
 		header("Location: ./volumes.html");
 		exit;
 	}
+  if($_REQUEST['responseType']=='json'){
+    $snapshots_info = array();
+		for ($i = 0; $i < count($snapshots_lvname); $i++){
+			if (($snapshots_lvname[$i] == $volume) && ($snapshots_vgname[$i] == $vgname))
+			{
+				if ($GLOBALS["lvm_version"] == 1)
+					$snapshot_dev = "/dev/" . $snapshots_vgname[$i] . "/of.snapshot." . $snapshots_lvname[$i] . "." . $snapshots_id[$i];
+				else
+					$snapshot_dev = "/dev/mapper/" . $snapshots_vgname[$i] . "-of.snapshot." . $snapshots_lvname[$i] . "." . $snapshots_id[$i];
 
+				$snapshot_symlink_dev = "/dev/" . $snapshots_vgname[$i] . "/of.snapshot." . $snapshots_lvname[$i] . "." . $snapshots_id[$i];
+
+				if (!file_exists($snapshot_dev))
+					continue;
+
+				$lvp = popen("export LANG=C; /usr/bin/sudo " . $GLOBALS["lvm_command_prefix"] . "lvdisplay -c " . $snapshot_symlink_dev, "r");
+				$j = 0;
+				while (!feof($lvp))
+					$lvs[$j++] = fgets($lvp, 4096);
+				pclose($lvp);
+        $snapshots_info[$i] = explode(":", trim($lvs[0], " "));
+      }
+    } 
+    if($_REQUEST['callback']){
+        echo wrapAround($_REQUEST['callback'],'{snapshots_lvname:'.json_encode($snapshots_lvname).',snapshots_vgname:'.json_encode($snapshots_vgname).',info:'.json_encode($snapshots_info).',id:'.json_encode($snapshots_id).',timestamps:'.json_encode($snapshots_timestamp).'}');
+    }else{
+        echo '{snapshots_lvname:'.json_encode($snapshots_lvname).',snapshots_vgname:'.json_encode($snapshots_vgname).',info:'.json_encode($snapshots_info).',id:'.json_encode($snapshots_id).',timestamps:'.json_encode($snapshots_timestamp).'}';
+    }
+    return;
+  }
 	generic_header(array("title" => _("Volumes : Manage Volumes : Snapshots")));
 	single_begin(array());
 
