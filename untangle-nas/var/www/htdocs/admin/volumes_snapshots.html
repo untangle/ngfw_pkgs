@@ -245,7 +245,12 @@
 		{
 			flock($flockp, LOCK_UN | LOCK_NB);
 			fclose($flockp);
-			header("Location: ./volumes_snapshots.html?volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+			$attach = getAttachment();
+			if($attach == ''){
+        header("Location: ./volumes_snapshots.html?volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+      }else{
+			 header("Location: ./volumes_snapshots.html".getAttachment()."&volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+			}
 			exit;
 		}
         
@@ -446,7 +451,12 @@
 
 		flock($flockp, LOCK_UN | LOCK_NB);
 		fclose($flockp);
-		header("Location: ./volumes_snapshots.html?volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+		$attach = getAttachment();
+		if($attach == ''){
+      header("Location: ./volumes_snapshots.html?volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+    }else{
+		 header("Location: ./volumes_snapshots.html".getAttachment()."&volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+		}
 		exit;
 	}
 	else if ($_REQUEST["snapaction"] == "changesize")
@@ -525,7 +535,12 @@
 
 		apply_configuration(array("services" => "reload", "chmod" => "no", "chmod_path" => ""));
 
-		header("Location: ./volumes_snapshots.html".getAttachment()."&volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+		$attach = getAttachment();
+		if($attach == ''){
+      header("Location: ./volumes_snapshots.html?volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+    }else{
+		 header("Location: ./volumes_snapshots.html".getAttachment()."&volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+		}
 		exit;
 	}
 	else if ($_REQUEST["snapaction"] == "schedulesnapshot")
@@ -578,7 +593,12 @@
 
 		flock($flockp, LOCK_UN | LOCK_NB);
 		fclose($flockp);
-		header("Location: ./volumes_snapshots.html?volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+		$attach = getAttachment();
+		if($attach == ''){
+      header("Location: ./volumes_snapshots.html?volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+    }else{
+		 header("Location: ./volumes_snapshots.html".getAttachment()."&volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+		}
 		exit;
 	}
 	else if ($_GET["snapaction"] == "deletesnapshot")
@@ -587,7 +607,12 @@
 		{
 			flock($flockp, LOCK_UN | LOCK_NB);
 			fclose($flockp);
-			header("Location: ./volumes_snapshots.html".getAttachment()."&volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+			$attach = getAttachment();
+			if($attach == ''){
+        header("Location: ./volumes_snapshots.html?volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+      }else{
+			 header("Location: ./volumes_snapshots.html".getAttachment()."&volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+			}
 			exit;
 		}
 
@@ -757,7 +782,12 @@
 
 		flock($flockp, LOCK_UN | LOCK_NB);
 		fclose($flockp);
-		header("Location: ./volumes_snapshots.html".getAttachment()."&volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+		$attach = getAttachment();
+		if($attach == ''){
+      header("Location: ./volumes_snapshots.html?volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+    }else{
+		 header("Location: ./volumes_snapshots.html".getAttachment()."&volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+		}
 		exit;
 	}
 	else if ($_GET["snapaction"] == "deletesnapshotschedule")
@@ -820,7 +850,12 @@
 
 							flock($flockp, LOCK_UN | LOCK_NB);
 							fclose($flockp);
-							header("Location: ./volumes_snapshots.html".getAttachment()."&volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+        			$attach = getAttachment();
+        			if($attach == ''){
+                header("Location: ./volumes_snapshots.html?volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+              }else{
+        			 header("Location: ./volumes_snapshots.html".getAttachment()."&volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+        			}
 							exit;
 						}
 					}
@@ -1054,7 +1089,12 @@
 
 		flock($flockp, LOCK_UN | LOCK_NB);
 		fclose($flockp);
-		header("Location: ./volumes_snapshots.html".getAttachment()."&volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+			$attach = getAttachment();
+			if($attach == ''){
+        header("Location: ./volumes_snapshots.html?volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+      }else{
+			 header("Location: ./volumes_snapshots.html".getAttachment()."&volume=" . urlencode($volume) . "&vgname=" . urlencode($vgname));
+			}
 		exit;
 	}
 
