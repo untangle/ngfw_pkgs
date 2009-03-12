@@ -170,6 +170,9 @@ EOF
     /etc/init.d/untangle-slapd restart
 fi
 
+#set the password to access our ldap server with
+smbpasswd -w nimda11lacol
+
 # # Blank /etc/exports
 # echo "" > /etc/exports
 # # Update NFS exports
