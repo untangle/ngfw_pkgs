@@ -30,6 +30,7 @@ fi
 /bin/chmod 600 $lfile
 /sbin/losetup /dev/loop$num $lfile
 if [ "$?" -eq "0" ] || [ "$?" -eq "2" ] ; then
+    pvcreate /dev/loop$num
     echo "Success."
     exit 0
 else    
