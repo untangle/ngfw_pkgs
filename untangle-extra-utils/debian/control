@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-extra-utils
 Architecture: all
-Depends: apt-spy, atop, attr, binutils, bzip2, dctrl-tools, dialog, hdparm, hping2, httptunnel, iptraf, jnettop, latencytop, lftp, less, lsof, mailx, memtester, nmap, patch, procinfo, screen, strace, sysstat, tcpdump, telnet-ssl, timeout, traceroute, wireshark, wireshark-common, whois
+Depends: apt-spy, atop, attr, binutils, bzip2, dctrl-tools, dialog, hdparm, hping2, httptunnel, iptraf, jnettop, latencytop, lftp, less, lsof, mailx, memtester, nmap, patch, procinfo, screen, strace, stunnel, sysstat, tcpdump, telnet-ssl, timeout, traceroute, wireshark, wireshark-common, whois
 Description: Extra utilities for Untangle
  This packages depends on a list of utilities that are, although
  non-essential to the functioning of the Untangle server itself, are
