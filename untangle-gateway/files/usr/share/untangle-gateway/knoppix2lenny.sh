@@ -237,6 +237,7 @@ stepDistUpgradeToEtch() {
 
   # find the fastest etch source from a predefined set of mirrors
   apt-spy -t 7 -m ${MIRRORS_LIST} -o /etc/apt/sources.list -d etch -s ar,br,cl,cn,de,fr,hk,jp,kr,ru,tr,us,za
+  grep -q deb /etc/apt/sources.list || echo "deb http://$DEBIAN_MIRROR etch main contrib non-free" >| /etc/apt/sources.list
   cat /etc/apt/sources.list
   aptgetupdate
 
