@@ -6,6 +6,8 @@ LOG_FILE=/var/log/uvm/${BASENAME}.log
 
 exec >> $LOG_FILE 2>&1
 
+DELAY=60
+
 #DEBIAN_MIRROR_HOST="10.0.11.16" # debian
 DEBIAN_MIRROR_HOST="http.us.debian.org" # http.us.debian.org; FIXME: uncomment before releasing
 DEBIAN_MIRROR="${DEBIAN_MIRROR_HOST}/debian"
@@ -51,10 +53,11 @@ usage() {
 }
 
 fail() {
-    echo "upgrade failed - leaving divert in place, retrying"
+    echo "upgrade failed - leaving divert in place, retrying in $DELAY seconds"
     echo "The output for the upcoming retry will be in a new log file,"
     echo "so you should 'tail -f /var/log/uvm/${BASENAME}.log' again to see it."
     # Try again
+    sleep $DELAY
     exec /usr/bin/uvm
     exit 1
 }
