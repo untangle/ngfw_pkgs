@@ -671,16 +671,28 @@
                 if ($ret != 0)
                     return $output;
 
-            header("Location: ./shares_edit.html?sort=" . $sortorder . "&sharepath=" .
-                    urlencode($share_parent . "/" . $newsharename . "/"));
+            $attachment = getAttachment();  
+            echo $attachment;                  
+            if($attachment==''){
+                header("Location: ./shares_edit.html?sort=" . $sortorder . "&sharepath=" .
+                        urlencode($share_parent . "/" . $newsharename . "/"));          
+            }else{
+             header("Location: ./shares.html".$attachment);    
+            
+            }
                 exit;
 
         }
 
         apply_configuration(array("services" => "reload", "chmod" => "no", "chmod_path" => ""));
 
-        header("Location: ./shares_edit.html?sort=" . $sortorder . "&sharepath=" .
+        $attachment = getAttachment();
+        if($attachment==''){
+          header("Location: ./shares_edit.html?sort=" . $sortorder . "&sharepath=" .
                 urlencode($share_parent . "/" . $share_name . "/"));
+        }else{
+           header("Location: ./shares.html".$attachment);            
+        }
 	    exit;
     }
 
@@ -974,8 +986,12 @@
             
         
         
-
-        header("Location: ./shares_edit.html?sort=" . $sortorder . "&sharepath=" . urlencode($sharepath));
+        $attachment = getAttachment();
+        if($attachment==''){
+           header("Location: ./shares_edit.html?sort=" . $sortorder . "&sharepath=" . urlencode($sharepath));         
+        }else{
+           header("Location: ./shares.html".$attachment);    
+        } 
         exit;
 
 

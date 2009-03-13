@@ -215,7 +215,8 @@
                                     apply_configuration(array("services" => "reload", "chmod" => "no", "chmod_path" => ""));
                     }
 
-            header("Location: ./shares.html");
+            $attachment = getAttachment();
+            header("Location: ./shares.html".$attachment);    
             exit;
     }
     else if ($action == "renamefolder")
@@ -326,11 +327,21 @@
 
     $shares = new Shares();
     $numVolumes = $shares->volumesPathCount;
+
+        
+    //get network access meta data 
+    
+    $networkListObj = new NetworkAccessList();
+    $networkAccessList = $networkListObj->ListItems();
+    for($i=0;$i<count($networkAccessList);$i++){
+      $networkAccessList[$i]["sha1"] = sha1($networkAccessList[$i]['name'] . $networkAccessList[$i]['network']);
+    }
+        
     if($_REQUEST['responseType']=='json'){
       if($_REQUEST['callback']){
-          echo wrapAround($_REQUEST['callback'],'{rows:'.json_encode($shares).'}');
+          echo wrapAround($_REQUEST['callback'],'{rows:'.json_encode($shares).',networklist:'.json_encode($networkAccessList).'}');
       }else{
-          echo json_encode($shares);
+          echo '{rows:'.json_encode($shares).',networklist:'.json_encode($networkAccessList).'}';
       }
       return;
     } 
