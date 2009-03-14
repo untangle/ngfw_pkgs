@@ -228,6 +228,9 @@ stepRemoveUnwantedPackaged() {
 
   # this "remove X 3.3 packages" (and some untangle-* packages, see above)
   removePackagesRegex "3\.3\.6"
+
+  removePackages "xfce4-mixer-lib-alsa"
+
 #   # xfce4, as we only want xfwm4 later on
 #   removePackagesRegex "libxfcegui"
 }
