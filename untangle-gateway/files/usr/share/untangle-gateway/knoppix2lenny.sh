@@ -192,6 +192,9 @@ EOF
 
   # backup snmp settings
   cp -f /etc/snmp/snmpd.conf ${SNMP_BACKUP}
+
+  # blank out Untangle sources
+  rm -f /etc/apt/sources.list.d/untangle.list
 }
 
 stepSysVInit() {
