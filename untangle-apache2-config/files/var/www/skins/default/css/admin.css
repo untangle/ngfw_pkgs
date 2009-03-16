@@ -118,6 +118,11 @@ div.node div.node-trial-info {
 button.icon-buy {
 	background:transparent url(../images/admin/icon_buy.png) no-repeat center left !important; 
 }
+/* In Wizard Download Button icon*/
+button.icon-download {
+	background:transparent url(../images/admin/icon_download.png) no-repeat center left !important;
+  padding-left:17px !important;
+}
 /* Application Item buy button icon */
 div.icon-buy {
 	background:transparent url(../images/admin/icon_buy.png) no-repeat !important;
@@ -1006,6 +1011,10 @@ div.wizard-network-image-description
   marign-top:-21px;
   margin-left: 5px;
 }
+#explain-install-ended img{
+  vertical-align:middle;
+  margin-right:5px;
+}
 .share-folder{
   background-image:url(../images/admin/disk/share.png) !important;
 }
@@ -1018,7 +1027,24 @@ div.wizard-network-image-description
 .select-volume{
   width: 220px;
 }
-
+.explain-share-create{
+  background-image:url(../images/admin/back.png) !important;
+  background-repeat:no-repeat;
+  height:200px;
+  margin-top:70px;
+  padding-left:140px;
+  padding-top:22px;
+}
+.share-illustration{
+  background-image:url(../images/admin/disk/share.png) !important;
+  background-repeat:no-repeat;
+  padding:0 0 5px 18px;
+}
+.volume-illustration{
+  background-image:url(../images/admin/disk/volume.png) !important;
+  background-repeat:no-repeat;
+  padding-left:18px;
+}
 table.email-tester
 { 
 
