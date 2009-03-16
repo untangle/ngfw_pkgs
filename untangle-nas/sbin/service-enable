@@ -1,0 +1,14 @@
+#!/bin/bash
+#
+# Helper script used to enable a service (and start it)
+#
+
+if [ $# -ne 1 ]; then
+    echo "usage: service-enable servicename"
+    exit 1
+fi
+
+/etc/init.d/$1 start
+/usr/sbin/update-rc.d $1 defaults
+
+exit 0

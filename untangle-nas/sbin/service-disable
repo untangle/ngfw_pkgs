@@ -1,0 +1,14 @@
+#!/bin/bash
+#
+# Helper script used to disable a service (and start it)
+#
+
+if [ $# -ne 1 ]; then
+    echo "usage: service-disable servicename"
+    exit 1
+fi
+
+/etc/init.d/$1 stop
+/usr/sbin/update-rc.d -f $1 remove
+
+exit 0
