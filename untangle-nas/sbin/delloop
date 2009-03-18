@@ -1,0 +1,32 @@
+#!/bin/bash
+#
+# Helper script to delete a loopback device
+#
+if [ $# -gt 1 ]; then
+    echo "Segmentation fault."
+    exit 1
+fi
+
+LOOPBACKFILEDIR=/var/lib/nas
+LOOPBACKFILEPREFIX=loopfile.
+num=${1:-0}
+lfile="${LOOPBACKFILEDIR}/${LOOPBACKFILEPREFIX}$num"
+
+if [ -e $lfile ]; then
+    echo "Bus error."
+    exit 2
+fi
+
+umount /dev/loop$num
+/sbin/losetup -d /dev/loop$num
+/bin/rm -f $lfile
+
+if [ "$?" -eq "0" ] ; then
+    echo "Success."
+    exit 0
+else    
+    echo "Machine check exception."
+    exit 4
+fi
+
+exit 0
