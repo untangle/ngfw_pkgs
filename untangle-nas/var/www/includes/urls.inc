@@ -67,8 +67,8 @@
     $C_GENERAL_NOTIFICATION = array("li_class"=>"system_notification","title"=>"Notification", "url"=>"/nas/admin/system_info.html");
 
     $P_GENERAL_CHILDREN = array("C_GENERAL"=>$C_GENERAL, 
-                                "C_GENERAL_AUTHENTICATION"=>$C_GENERAL_AUTHENTICATION, 
-                                "C_GENERAL_UPS"=>$C_GENERAL_UPS, 
+#                                "C_GENERAL_AUTHENTICATION"=>$C_GENERAL_AUTHENTICATION, 
+#                                "C_GENERAL_UPS"=>$C_GENERAL_UPS, 
                                 "C_GENERAL_SHUTDOWN"=>$C_GENERAL_SHUTDOWN, 
                                 "C_GENERAL_NOTIFICATION"=>$C_GENERAL_NOTIFICATION);
 
@@ -113,8 +113,7 @@
                     "P_GENERAL"=>$P_GENERAL, 
                     "P_VOLUMES"=>$P_VOLUMES, 
                     "P_QUOTA"=>$P_QUOTA, 
-                    "P_SHARES"=>$P_SHARES, 
-                    "P_SERVICES"=>$P_SERVICES);
+                    "P_SHARES"=>$P_SHARES);
     
 
     function getParentTab($childKey) {

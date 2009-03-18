@@ -191,7 +191,6 @@ chown -R ${NAS_USER}:${NAS_GROUP} ${NAS_HOME}
 /usr/sbin/a2enmod dav_fs 2>/dev/null
 /usr/sbin/a2enmod dav_lock 2>/dev/null
 
-/etc/init.d/untangle-net-alpaca-iptables reload
 /etc/init.d/apache2 reload
 
 #DEBHELPER#

@@ -35,8 +35,6 @@
 
 	generic_header(array("title" => _("System : Authentication")));
 
-	$serverstring = "";
-	$netbiosname = "";
 	$winsserver = "";
 	$ldapidmapsync = FALSE;
 	$ldapidmaptls = FALSE;
@@ -55,7 +53,6 @@
 
 	function smb_startelement($parser, $name, $attrs)
 	{
-            global $serverstring;
             global $winsserver;
             global $ldapidmapsync;
             global $ldapidmaptls;
@@ -74,9 +71,7 @@
             global $defaultdomain;
             global $winbindseparator;
 
-            if ($name == "SERVERSTRING")
-                    $serverstring = $attrs["VALUE"];
-            else if ($name == "WINSSERVER")
+	    if ($name == "WINSSERVER")
                     $winsserver = $attrs["VALUE"];
             else if ($name == "LDAPIDMAPSYNC")
                     $ldapidmapsync = ($attrs["VALUE"] == "on") ? TRUE : FALSE;
@@ -190,7 +185,6 @@ if (count($_POST) > 0)
 
     $file->AddLine("<?xml version=\"1.0\" ?>");
     $file->AddLine("<smb>");
-    $file->AddLine("\t<serverstring value=\"" . htmlentities($serverstring) . "\" />");
     $file->AddLine("\t<winsserver value=\"" . htmlentities($winsserver) . "\" />");
     $file->AddLine("\t<ldapidmapsync value=\"" . (($newldapidmapsync == "on") ? "on" : "off") . "\" />");
     $file->AddLine("\t<ldapidmaptls value=\"" . (($newldapidmaptls == "on") ? "on" : "off") . "\" />");
@@ -330,7 +324,6 @@ function krb_realm_onchange()
 	$i = 0;
 	while (!feof($authp))
 		$aresult[$i++] = trim(fgets($authp, 4096));
-        $netbiosname = $aresult[41];
 
 	pclose($authp);
 	if ($error){

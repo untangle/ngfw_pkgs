@@ -140,7 +140,6 @@ function apply_configuration($params = array()) {
         $ac_winbindseparator;
 			
 			
-	$ac_serverstring = "";
 	$ac_winsserver = "";
 	$ac_ldapidmapsync = FALSE;
 	$ac_ldapidmaptls = FALSE;
@@ -389,10 +388,6 @@ function apply_configuration($params = array()) {
 	}
 	
 	if ($smbXmlDom = new XmlHandler(SETTING_XML_SMB)) {
-		if ($node = $smbXmlDom->getElementsByTagName("serverstring")->item(0)) {
-			$ac_serverstring = $node->getAttribute("value"); 
-		}
-		
 		if ($node = $smbXmlDom->getElementsByTagName("winsserver")->item(0)) {
 			$ac_winsserver = $node->getAttribute("value"); 
 		}
@@ -1746,6 +1741,8 @@ function apply_configuration($params = array()) {
 	/*  begin smb.conf global section */
 	
 	
+	$ac_netbiosname = $ac_aresult[41];
+	$ac_serverstring = $ac_aresult[42];
 	
 	$ac_smb_fp->AddLine( "# Global settings");
 	$ac_smb_fp->AddLine( "[global]\n");
@@ -1754,7 +1751,6 @@ function apply_configuration($params = array()) {
 	
 	$of_uname = posix_uname();
 
-	$ac_netbiosname = $ac_aresult[41];
 	$ac_smb_fp->AddLine( "netbios name = " . strtoupper(substr($ac_netbiosname, 0, 15)));
 
 	if (strlen($ac_winsserver) > 0)

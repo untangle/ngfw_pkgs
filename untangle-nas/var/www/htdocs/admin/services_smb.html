@@ -67,7 +67,6 @@
 
 
 
-        $serverstring = "";
 	$winsserver = "";
 	$ldapidmapsync = FALSE;
 	$ldapidmaptls = FALSE;
@@ -87,7 +86,6 @@
 
 
 	function smb_startelement($parser, $name, $attrs) {
-            global $serverstring;
             global $winsserver;
             global $ldapidmapsync;
             global $ldapidmaptls;
@@ -105,9 +103,7 @@
             global $displaycharset;
             global $doscharset;
 
-            if ($name == "SERVERSTRING")
-                $serverstring = $attrs["VALUE"];
-            else if ($name == "WINSSERVER")
+	    if ($name == "WINSSERVER")
                 $winsserver = $attrs["VALUE"];
             else if ($name == "LDAPIDMAPSYNC")
                 $ldapidmapsync = ($attrs["VALUE"] == "on") ? TRUE : FALSE;
@@ -237,9 +233,6 @@
             $smb = $dom->createElement('smb');
             foreach ($applysettings as $key => $value) {
                 switch($key){
-                    case "newserverstring":
-                        addDomElement($dom, $smb, "serverstring", $value);
-                        break;
                     case "newwinsserver":
                         addDomElement($dom, $smb, "winsserver", $value);
                         break;
@@ -337,10 +330,6 @@
 	print("<div align=\"center\">\n");
 	print("<form action=\"services_smb.html\" method=\"post\">\n");
 	print("<table cellpadding=\"8\" cellspacing=\"2\" border=\"0\">\n");
-	print("<tr>\n");
-	print("\t<td align=\"right\" class=\"color_table_heading\"><strong>Server string:</strong></td>\n");
-	print("\t<td class=\"color_table_row1\"><input type=\"text\" name=\"newserverstring\" value=\"" . htmlentities($serverstring) . "\" /></td>\n");
-	print("</tr>\n");
 	print("<tr>\n");
 
 	print("\t<td align=\"right\" class=\"color_table_heading\"><strong>WINS server:</strong></td>\n");

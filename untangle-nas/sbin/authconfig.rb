@@ -11,8 +11,10 @@ begin
 
   @smb_workgroup = settings['smbWorkgroup']
   @netbios_name = settings['netbiosName']
+  @server_string = settings['serverDescription']
   @use_ldap = settings['useLdap']
   @use_ad = settings['useAD']
+  @webdav_enabled = settings['serviceSettings']
 
   if @use_ad
     addrbook = Untangle::RemoteUvmContext.appAddressBook()
@@ -218,6 +220,13 @@ def get()
 ##### After here is stuff added by Untangle
   # netbios name 41
   puts @netbios_name
+
+  # server string  42
+  puts @server_string
+
+  # is WebDAV enabled? 43
+  puts @webdav_enabled
+
 end
 
 ###############################################################################

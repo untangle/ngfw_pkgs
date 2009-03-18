@@ -1,5 +1,0 @@
-#!/bin/dash
-
-# Enable Samba
-${IPTABLES} -t mangle -I firewall-rules  -p tcp -m multiport  --destination-ports 135,139,445 -m mark --mark 2048/2048 -j RETURN
-${IPTABLES} -t mangle -I firewall-rules  -p udp -m multiport  --destination-ports 137,138 -m mark --mark 2048/2048 -j RETURN
