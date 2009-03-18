@@ -297,6 +297,13 @@ stepReinstallUntanglePackages() {
   # untangle packages from lenny
   [ -n "$UNTANGLE_PACKAGES" ] && aptgetyes install $UNTANGLE_PACKAGES libnfnetlink0
 
+  # try to foce packages that are held back
+  untangle_held_back=$(apt-get dist-upgrade -s | grep -A 1 -E '^The following packages have been kept back:$' | tail -1 | perl -pe 's/\s+/\n/g' | grep untangle | xargs)
+  aptgetyes install $untangle_held_back
+
+  held_back=$(apt-get dist-upgrade -s | grep -A 1 -E '^The following packages have been kept back:$' | tail -1 | perl -pe 's/\s+/\n/g' | xargs)
+  aptgetyes install $held_back
+
   # restore ssh state
   [ "$START_SSHD" = 0 ] && update-rc.d ssh defaults
 
