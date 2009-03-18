@@ -309,7 +309,8 @@ foreach $d (@devs) {
 	
 
 	
-	open(FDISK, "parted $d print-fdisk 2>/dev/null |");
+	#open(FDISK, "parted $d print-fdisk 2>/dev/null |");
+	open(FDISK, "fdisk -l $d 2>/dev/null |");
 	while(<FDISK>) {
 		if (/Disk\s+([^ :]+):\s+(\d+)\s+\S+\s+(\d+)\s+\S+\s+(\d+)/ ||
 		    ($m2 = ($_ =~ /Disk\s+([^ :]+):\s+(.*)\s+bytes/))) {
