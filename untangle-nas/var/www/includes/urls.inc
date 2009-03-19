@@ -72,8 +72,9 @@
                                 "C_GENERAL_SHUTDOWN"=>$C_GENERAL_SHUTDOWN, 
                                 "C_GENERAL_NOTIFICATION"=>$C_GENERAL_NOTIFICATION);
 
-    $P_STATUS_CHILDREN = array("C_STATUS"=>$C_STATUS, 
-                               "C_STATUS_ISCSI"=>$C_STATUS_ISCSI);
+    $P_STATUS_CHILDREN = array("C_STATUS"=>$C_STATUS
+# , "C_STATUS_ISCSI"=>$C_STATUS_ISCSI
+			       );
 
   
     $P_SERVICES_CHILDREN = array("C_SERVICES"=>$C_SERVICES,
@@ -97,7 +98,7 @@
                                 "C_VOLUME_GROUP_MANAGEMENT"=>$C_VOLUME_GROUP_MANAGEMENT, 
                                 "C_VOLUME_PHYSICAL_MANAGEMENT"=>$C_VOLUME_PHYSICAL_MANAGEMENT, 
                                 "C_VOLUME_CREATE"=>$C_VOLUME_CREATE,
-                                "C_VOLUME_ISCSI_TARGETS"=>$C_VOLUME_ISCSI_TARGETS,
+#                                "C_VOLUME_ISCSI_TARGETS"=>$C_VOLUME_ISCSI_TARGETS,
                                 "C_VOLUME_RAID_MANAGE"=>$C_VOLUME_RAID_MANAGE);
 
 
