@@ -370,7 +370,6 @@ function generic_footer($params = array()) {
 	if ((!isset($params["nofooter"])) || ($params["nofooter"] != 0)) {
 		print("<p " .  ($isRootIndex == "/index.html" ? "class=\"footer\"" : "") . " align=\"center\">\n");
 		print("&copy; 2001 - 2008 <a href=\"http://www.openfiler.com/\">" . _("Openfiler") . "</a>. " . _("All rights reserved.") . "<br />\n");
-		print("<a href=\"/nas/\">" . _("Home") . "</a> &middot; <a href=\"http://www.openfiler.com/buy/administrator-guide\">" . _("Documentation") . "</a> &middot; <a href=\"http://www.openfiler.com/support/\">" . _("Support") . "</a> &middot; <a href=\"http://www.openfiler.com/\">" . _("Website") . "</a> &middot; <a href=\"http://www.openfiler.com/about/license\">" . _("License") . "</a>");
 
 		if ($GLOBALS["authenticated"] == 1)
 			print(" &middot; <a href=\"/nas/account/logout.html\">" . _("Log Out") . "</a>");
@@ -573,30 +572,6 @@ function nested_tab_end() {
 
 
                         <!-- global links -->
-                        
-                        <div class="shadow">
-			<div class="shadow_tr">
-				<div class="shadow_bl">
-					<div class="shadow_tl">
-						<div style="padding-bottom: 10px;  padding-left: 5px; padding-right: 5px; padding-top: 5px; min-height: 1%;">
-			<?php
-                                
-                                
-                                print("<div id=\"support_nav\"><div class=\"sub_nav_title\">Support resources</div><ul>");
-                        
-                                print("<li class=\"support_bug\"><a href=\"javascript:popupPage('/admin/support.html?page=support_report');\">Report bug</a></li>");
-                                print("<li class=\"support_get\"><a href=\"javascript:popupPage('/admin/support.html?page=support_get');\">Get support</a></li>");
-                                print("<li class=\"support_forums\"><a href=\"javascript:popupPage('/admin/support.html?page=support_forums');\">Forums</a></li>"); 
-                                print("<li class=\"support_admin_guide\"><a href=\"javascript:popupPage('/admin/support.html?page=support_admin_guide');\">Admin Guide</a></li>"); 
-			
-				print ("</ul></div>"); 
-				
-			?>
-			</div>
-			</div>
-			</div>
-			</div>
-			</div>
                         
                         <!-- end global links --> 
 
