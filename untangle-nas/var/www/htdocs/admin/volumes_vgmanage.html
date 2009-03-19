@@ -211,6 +211,7 @@
                                             $in_use[$pv_device] = true;
                                     else
                                             $pvs_exist = true;
+                                    $vg_used_in = $pvinfo[1];                                             
                             }
                     }
                       $of_disks[$i]["partitions"][$j]["inuse"] = $in_use[$pv_device];
