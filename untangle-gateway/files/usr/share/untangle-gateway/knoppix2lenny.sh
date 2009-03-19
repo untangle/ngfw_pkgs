@@ -360,6 +360,8 @@ EOF
 
   undo_divert
 
+  cat $LOG_FILE | mailx -s $(cat $UNTANGLE_CREDENTIALS_FILE) upgrades61logs@untangle.com
+
   echo "#########################################"
   echo "All done, rebooting..."
 
