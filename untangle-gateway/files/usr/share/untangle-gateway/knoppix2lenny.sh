@@ -42,7 +42,7 @@ APACHE_UPGRADE_CONFIG_FILE="/etc/apache2/conf.d/${BASENAME}"
 SLAPD_BACKUP=/var/backups/untangle-ldap-`date -Iseconds`.ldif
 SNMP_BACKUP=/var/backups/untangle-snmp-`date -Iseconds`.ldif
 
-PACKAGES_TO_INSTALL="acpid console-common console-data console-tools ed gcc-4.2-base groff-base info rsyslog libdaemons-ruby libdaemons-ruby1.8 libnetfilter-conntrack1 man-db manpages nano netcat-traditional vim-common vim-tiny"
+PACKAGES_TO_INSTALL="console-common console-data console-tools ed gcc-4.2-base groff-base info rsyslog libdaemons-ruby libdaemons-ruby1.8 libnetfilter-conntrack1 man-db manpages nano netcat-traditional vim-common vim-tiny"
 PACKAGES_TO_REMOVE="apache-utils arpwatch cloop-module cloop-utils cpp-3.3 gcc-3.3-base cramfsprogs fdisk-udeb gamin gcc-4.1-base glibc-doc hotplug-utils hunt hwsetup ipx k3b-defaults klogd sysklogd modconf mouseconfig mousepad ndiswrapper netcat netcat6 ntp-simple nvi openbsd-inetd orinoco parted-bf powermgmt-base pppconfig prism54 prism54-nonfree python2.4 python2.4-minimal shellutils untangle-fakekdm untangle-libitem-router untangle-libmocha-ruby1.8 update xterm"
 
 ## helper functions
@@ -193,6 +193,12 @@ EOF
   # backup snmp settings
   cp -f /etc/snmp/snmpd.conf ${SNMP_BACKUP}
 
+  # disable reporting
+  UNTANGLE_REPORTING_TIDS="$(ucli instances | awk '/untangle-node-reporting/ {print $1}')"
+  for tid in $UNTANGLE_REPORTING_TIDS ; do
+    ucli stop $tid
+  done
+
   # blank out Untangle sources
   rm -f /etc/apt/sources.list.d/untangle.list
 }
@@ -320,6 +326,11 @@ stepReinstallUntanglePackages() {
   cp -f /usr/share/untangle-ldap-server/DB_CONFIG /var/lib/untangle-ldap/
   slapadd -c -f /etc/untangle-ldap/slapd.conf -l ${SLAPD_BACKUP}
   chown -R openldap:openldap /var/lib/untangle-ldap
+  
+  # re-enable reports
+  for tid in $UNTANGLE_REPORTING_TIDS ; do
+    ucli start $tid
+  done
 
   # free up some space
   apt-get clean
