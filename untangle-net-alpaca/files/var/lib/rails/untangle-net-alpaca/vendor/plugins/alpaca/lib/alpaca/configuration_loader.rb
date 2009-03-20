@@ -16,7 +16,6 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 require "logger"
-require "json"
 
 ## The ConfigurationLoader loads settings from the current state of
 ## the box.  This is useful in situations when there are no default
@@ -52,7 +51,7 @@ class Alpaca::ConfigurationLoader
 
     config = ""
     File.open( config_file,  "r" ) { |f| f.each_line { |l| config << l }}
-    config = ::JSON.parse( config )
+    config = ActiveSupport::JSON.decode( config )
 
     settings_hash = {}
     

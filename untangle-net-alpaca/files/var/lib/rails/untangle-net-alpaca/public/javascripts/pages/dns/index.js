@@ -89,8 +89,7 @@ Ung.Alpaca.Pages.Dns.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 xtype : "label",
                 cls : 'page-header-text',
                 html : this._( "DNS Server" )
-                },
-                {
+            },{
                 autoHeight : true,
                 defaults : {
                     xtype : "textfield"

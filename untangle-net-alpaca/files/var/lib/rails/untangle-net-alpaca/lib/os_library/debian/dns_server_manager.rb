@@ -368,7 +368,7 @@ EOF
 
     if dns_server_settings.nil? || !dns_server_settings.enabled
       ns_string = name_servers.map { |ns| ns[:server] }.join( "," )
-      settings << "#{FlagOption}=#{OptionNameservers},#{ns_string.join( "," )}"
+      settings << "#{FlagOption}=#{OptionNameservers},#{ns_string}"
     end
 
     ## Static entries

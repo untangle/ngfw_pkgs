@@ -31,6 +31,7 @@ class OSLibrary::RoutesManager < Alpaca::OS::ManagerBase
       if OSLibrary::NetworkManager::CIDR.key?( netmask )
         netmask = "#{netmask} (#{OSLibrary::NetworkManager::CIDR[netmask]})"
       end
+      netmask = "32 (255.255.255.255)" if ( g.target != "default" && netmask.nil? )
       g.netmask = netmask
 
       if ( IPAddr.parse_ip( gateway ))

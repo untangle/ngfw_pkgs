@@ -40,6 +40,7 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
   ## UVM interface properties file
   UvmInterfaceProperties = "/etc/untangle-net-alpaca/interface.properties"
   UvmInterfaceOrderProperty = "com.untangle.interface-order"
+  UvmWanInterfaceProperty = "com.untangle.wan-interfaces"
   
   ## Function that contains all of the subscription / bypass rules
   BypassRules = "bypass_rules"
@@ -273,6 +274,8 @@ EOF
     intf_order = intf_order.split( "," ).map { |idx| idx.to_i }.delete_if { |idx| idx == 0 }
     
     values = []
+    wan_interfaces = []
+
     ## Go through and delete the interfaces that are in the map.
     intf_order.each do |idx|
       next values << "VPN:tun0:#{idx}" if idx == UvmHelper::VpnIndex
@@ -285,6 +288,7 @@ EOF
       
       ## Append the index
       values << interface_property( interface )
+      wan_interfaces << idx if ( interface.wan == true )
     end
 
     ## Append the remaining values ordered by their index.
@@ -296,6 +300,7 @@ EOF
 # If you modify this file manually, your changes
 # may be overriden
 #{UvmInterfaceOrderProperty}=#{values.join( "," )}
+#{UvmWanInterfaceProperty}=#{wan_interfaces.join( "," )}
 EOF
   end
 

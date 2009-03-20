@@ -20,6 +20,18 @@ Ung.Alpaca.Pages.Route.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             Ung.Alpaca.Util.addToStoreMap( i[0], i[1], this.gatewayStore, this.gatewayMap );
         }
 
+        this.combobox = new Ext.form.ComboBox({
+            name : "foo-happy-combobox",
+            store : this.gatewayStore,
+            listWidth : 60,
+            width : 70,
+            triggerAction : "all",
+            mode : "local",
+            editable : true
+        });
+
+        this.combobox.getValue = this.combobox.getRawValue;
+
         this.staticRoutesGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
 
@@ -71,14 +83,7 @@ Ung.Alpaca.Pages.Route.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     var name = this.gatewayMap[value];
                     return ( name == null ) ? value : name;
                 }.createDelegate( this ),
-                editor : new Ext.form.ComboBox({
-                    store : this.gatewayStore,
-                    listWidth : 60,
-                    width : 70,
-                    triggerAction : "all",
-                    mode : "local",
-                    editable : true
-                })
+                editor : this.combobox
             },{
                 header : this._( "Description" ),
                 width: 200,
