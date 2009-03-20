@@ -12,11 +12,6 @@ LOOPBACKFILEPREFIX=loopfile.
 num=${1:-0}
 lfile="${LOOPBACKFILEDIR}/${LOOPBACKFILEPREFIX}$num"
 
-if [ -e $lfile ]; then
-    echo "Bus error."
-    exit 2
-fi
-
 umount /dev/loop$num
 /sbin/losetup -d /dev/loop$num
 /bin/rm -f $lfile
