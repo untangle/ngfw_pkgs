@@ -239,7 +239,7 @@ class InterfaceController < ApplicationController
     settings["config_types"] = InterfaceHelper::CONFIGTYPES
 
     settings["media_types"] = InterfaceHelper::EthernetMedia.order.map { |m| [ m.key, m.name ] }
-    settings["current_mtu"] = interface.current_mtu.strip
+    settings["current_mtu"] = interface.current_mtu.to_s.strip
     
     settings["static_nat_policies"] = static_settings.nat_policies
 
