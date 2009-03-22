@@ -159,6 +159,7 @@
 
     if ($action == "deletepartition")
     {
+            
             for ($j = 0; $j < count($of_disks[$disk_index]["partitions"]); $j++)
             {
                     if ($of_disks[$disk_index]["partitions"][$j]["device"] == $device)
@@ -171,11 +172,17 @@
                                     continue;
                             else if ($in_use[$j])
                                     continue;
-                            exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($dev) . " rm " . escapeshellarg($of_disks[$disk_index]["partitions"][$j]["number"]));
-                            //exec("export LANG=C; /usr/bin/sudo /usr/sbin/partprobe 2>&1");
+                            if(stristr($device,"loop")){
+                              $pattern = "/loop(\d+)$/";
+                              preg_match($pattern,$device,$matches);  
+                              $arg = $matches[1];
+                              exec("sudo /opt/nas/sbin/delloop  " . escapeshellarg($arg));
+                            }else{
+                              exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($dev) . " rm " . escapeshellarg($of_disks[$disk_index]["partitions"][$j]["number"]));
+                              //exec("export LANG=C; /usr/bin/sudo /usr/sbin/partprobe 2>&1");                            
+                            }                                    
                     }
             }
-
             $attachment = "";
             if($_REQUEST['responseType']=='json'){
               $attachment = "?responseType=json";
@@ -202,7 +209,7 @@
 
     else if ($action == "createpartition")
     {
-        if ($type == "loopback") {
+        if ($mode == "loopback") {
             $loopbacksize = $_REQUEST['loopbacksize'];
             if ($loopbacksize <=1) { $loopbacksize = 10000; }
             exec ("sudo /opt/nas/sbin/makeloop " . escapeshellarg($loopbacksize) . " 0 & > /dev/null 2>&1");
