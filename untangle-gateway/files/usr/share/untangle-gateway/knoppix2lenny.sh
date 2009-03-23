@@ -56,10 +56,19 @@ fail() {
     echo "upgrade failed - leaving divert in place, retrying in $DELAY seconds"
     echo "The output for the upcoming retry will be in a new log file,"
     echo "so you should 'tail -f /var/log/uvm/${BASENAME}.log' again to see it."
+    
+    # email out
+    email "fail"
+
     # Try again
     sleep $DELAY
     exec /usr/bin/uvm
     exit 1
+}
+
+email() {
+  subject="$(cat $UNTANGLE_CREDENTIALS_FILE | perl -pe 's/^(.{4}).+/$1/'): $1"
+  cat $LOG_FILE | mailx -s "$subject" upgrades61logs@untangle.com
 }
 
 undo_divert() {
@@ -86,6 +95,14 @@ undo_divert() {
 }
 
 aptgetyes() {
+  # try in download mode 5 times before dist-upgrade'ing
+  case "$@" in
+    *dist-upgrade*)
+      for i in $(seq 5) ; do
+	$APT_GET -d $APT_GET_OPTIONS $@
+      done ;;
+  esac
+
   if [ "$1" = "--trust-me" ] ; then
     shift
     yes="echo Yes, do as I say!"
@@ -371,7 +388,7 @@ EOF
 
   undo_divert
 
-  cat $LOG_FILE | mailx -s $(cat $UNTANGLE_CREDENTIALS_FILE) upgrades61logs@untangle.com
+  email "success"
 
   echo "#########################################"
   echo "All done, rebooting..."
