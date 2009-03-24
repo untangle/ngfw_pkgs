@@ -273,9 +273,10 @@ stepDistUpgradeToEtch() {
   cat /etc/apt/sources.list
   aptgetupdate
 
-  # make sure this is disabled, so apache can continue working during
-  # the rest of the upgrade
-  rm -f /etc/apache2/sites-enabled/uvm /etc/apache2/mods-enabled/proxy_connect_untangle.load /usr/share/untangle/apache2/conf.d/*
+  # make sure this is disabled (only if we didn't reach the
+  # dist-upgrade-to-lenny step in a previous iteration), so apache can
+  # continue working during the rest of the upgrade
+  dpkg -l untangle-apache2-config | grep '^ii.*6\.1\.' || rm -f /etc/apache2/sites-enabled/uvm /etc/apache2/mods-enabled/proxy_connect_untangle.load /usr/share/untangle/apache2/conf.d/*
 
   # install the newer postgres 7.4 from etch, as it follows the naming
   # convention in /etc/
@@ -390,6 +391,12 @@ EOF
   echo LC_ALL="en_US.UTF-8" >> /etc/environment # make it the default
 
   undo_divert
+
+  echo >| /etc/apt/sources.list.d/untangle.list
+  for distro in stable $UNTANGLE_61_DISTRIBUTIONS ; do
+    echo "deb http://$(cat ${UNTANGLE_CREDENTIALS_FILE})@${UNTANGLE_MIRROR} $distro main premium upstream" >> /etc/apt/sources.list.d/untangle.list
+  done
+  aptgetupdate
 
   email "success"
 
