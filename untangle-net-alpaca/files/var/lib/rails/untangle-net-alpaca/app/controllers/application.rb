@@ -292,4 +292,16 @@ class ApplicationController < ActionController::Base
       ## logger.info "  Parameters: #{respond_to?(:filter_parameters) ? filter_parameters(params).inspect : params.inspect}"
     end
   end
+
+  private
+  ## For some reason JSON request thought it would be a good idea to singularize the name
+  ## of the controller, epic fail dns -> dn
+  def rename_json_params(name = nil) #:nodoc:
+    if data = params.delete(:_json)
+      name ||= controller_name
+      ## no please on the next line
+      ##name = name.to_s.singularize unless data.is_a?(Array)
+      params.update(name=>data)
+    end
+  end
 end
