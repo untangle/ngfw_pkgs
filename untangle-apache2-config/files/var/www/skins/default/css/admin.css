@@ -1018,6 +1018,9 @@ div.wizard-network-image-description
 .share-folder{
   background-image:url(../images/admin/disk/share.png) !important;
 }
+.share-home-folder{
+  background-image:url(../images/admin/disk/share-home.png) !important;
+}
 .volume-group{
   background-image:url(../images/admin/disk/volume-group.png) !important;
 }
