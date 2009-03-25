@@ -318,8 +318,12 @@
                             fputs($fp, "\n");
                             pclose($fp);
                     }
-
-            header("Location: ./shares_edit.html?sharepath=" . urlencode($folderpath . $foldername . "/"));
+            $attachment = getAttachment();
+            if($attachment==''){
+                header("Location: ./shares_edit.html?sharepath=" . urlencode($folderpath . $foldername . "/"));
+            }else{
+                header("Location: ./shares.html".$attachment);           
+            }
             exit;
     }
 

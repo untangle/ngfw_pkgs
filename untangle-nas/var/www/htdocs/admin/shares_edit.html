@@ -751,7 +751,12 @@
 
         apply_configuration(array("services" => "reload", "chmod" => "no", "chmod_path" => ""));
 
-        header("Location: ./shares_edit.html?sort=" . $sortorder . "&sharepath=" . urlencode($sharepath));
+        $attachment = getAttachment();
+        if($attachment==''){
+           header("Location: ./shares_edit.html?sort=" . $sortorder . "&sharepath=" . urlencode($sharepath));         
+        }else{
+           header("Location: ./shares.html".$attachment);    
+        } 
         exit;
 
     }
