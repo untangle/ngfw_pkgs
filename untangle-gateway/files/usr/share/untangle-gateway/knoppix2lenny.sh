@@ -113,8 +113,8 @@ aptgetyes() {
 
   # restore old dnsmasq.conf after a dist-upgrade
   case "$@" in
-    *dist-upgrade*) 
-      cp -f /etc/dnsmasq.conf.dpkg-old /etc/dnsmasq.conf
+    *dist-upgrade*)
+      cp -f /etc/dnsmasq.conf.untangle /etc/dnsmasq.conf
       /etc/init.d/dnsmasq restart ;;
   esac
 }
@@ -218,9 +218,17 @@ EOF
 
   # fix dnsmasq.conf syntax
   sed -i '/^domain-suffix/d' /etc/dnsmasq.conf /etc/dnsmasq.conf.dpkg-old || true
-
+  if [ -f /etc/dnsmasq.conf.untangle ] ; then
+    cp -f /etc/dnsmasq.conf.untangle /etc/dnsmasq.conf
+  else
+    cp -f /etc/dnsmasq.conf /etc/dnsmasq.conf.untangle
+  fi
+  
   # blank out Untangle sources
   rm -f /etc/apt/sources.list.d/untangle.list
+
+  # stop atop
+  /etc/init.d/atop stop
 }
 
 stepSysVInit() {
@@ -269,7 +277,7 @@ stepDistUpgradeToEtch() {
 
   # find the fastest etch source from a predefined set of mirrors
   apt-spy -t 7 -m ${MIRRORS_LIST} -o /etc/apt/sources.list -d etch -s ar,br,cl,cn,de,fr,hk,jp,kr,ru,tr,us,za
-  grep -q "deb http" /etc/apt/sources.list || echo "deb http://$DEBIAN_MIRROR etch main contrib non-free" >| /etc/apt/sources.list
+  grep -qE '^deb http' /etc/apt/sources.list || echo "deb http://$DEBIAN_MIRROR etch main contrib non-free" >| /etc/apt/sources.list
   cat /etc/apt/sources.list
   aptgetupdate
 
