@@ -392,6 +392,9 @@ EOF
   # motd
   ln -sf /var/run/motd /etc/motd
 
+  # disable "tail -f upgrade"
+  a2dissite default
+
   # locale settings
   perl -i -pe 's/.*en_US\.UTF-8/en_US.UTF-8/' /etc/locale.gen # uncomment it
   locale-gen # build it
