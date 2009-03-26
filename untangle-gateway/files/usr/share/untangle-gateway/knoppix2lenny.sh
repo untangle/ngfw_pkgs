@@ -223,7 +223,8 @@ EOF
   else
     cp -f /etc/dnsmasq.conf /etc/dnsmasq.conf.untangle
   fi
-  
+  /etc/init.d/dnsmasq restart
+
   # blank out Untangle sources
   rm -f /etc/apt/sources.list.d/untangle.list
 
