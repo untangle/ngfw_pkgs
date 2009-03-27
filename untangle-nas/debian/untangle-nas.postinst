@@ -81,7 +81,8 @@ grep -q "^${NAS_USER}" /etc/sudoers || echo "${NAS_USER} ALL=NOPASSWD: ALL" >> /
 # Turn on rsync in /etc/default so that we can control availability with /etc/init.d script
 if grep -q RSYNC_ENABLE=false /etc/default/rsync; then
     sed -i -e "s/^RSYNC_ENABLE=false/RSYNC_ENABLE=true/" /etc/default/rsync
-#    update-rc.d -f rsync remove
+    # But it is disabled by default
+    update-rc.d -f rsync remove
     [ -e /etc/rsyncd.conf ] || cp $NAS_ETC_DEFAULTS/rsyncd.conf.default /etc/rsyncd.conf
 fi
 
