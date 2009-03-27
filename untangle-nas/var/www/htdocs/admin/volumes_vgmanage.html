@@ -732,7 +732,10 @@
 	print("<h3 align=\"center\">Create a new volume group</h3>\n");
 
 
-	if ($pvs_exist)
+        $macksp = popen("export LANG=C; /usr/bin/sudo /usr/bin/rush -e 'nm = Untangle::RemoteUvmContext.nodeManager(); tid = nm.nodeInstances( \"untangle-node-nas\" ).first(); nas = nm.nodeContext( tid ).node(); puts nas.getMack() ? 1 : 0'", "r");
+        $mack = (! (bool)(trim(fgets($macksp, 128))));
+        pclose($macksp);
+	if ($pvs_exist && $mack)
 	{
             printMessageBlock("info","<p>Valid characters for volume group name: <b>A-Z a-z 0-9 _ + -</b></p>");
 		print("<form method=\"post\" action=\"volumes_vgmanage.html\">\n");
