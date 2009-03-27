@@ -19,6 +19,5 @@ passwd program = /usr/bin/passwd %u
 passwd chat = *New*password* %n\n *Retype*new*password* %n\n *passwd:*all*authentication*tokens*updated*successfully*
 pam password change = yes
 obey pam restrictions = yes
-socket options = TCP_NODELAY SO_RCVBUF=8192 SO_SNDBUF=8192
 load printers = no
 
