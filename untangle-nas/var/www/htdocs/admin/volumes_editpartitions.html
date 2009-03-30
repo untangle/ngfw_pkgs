@@ -470,6 +470,15 @@
                         case "0f":
                         case "f":       $ptype_str = "Extended Partition (<tt>0x" . $ptype . "</tt>)"; break;
 
+                        case "0b":
+                        case "b":
+                        case "0c":
+                        case "c":       $ptype_str = "Windows/DOS FAT (<tt>0x" . $ptype . "</tt>)"; break;
+
+                        case "07":
+                        case "7":       $ptype_str = "Wndows NTFS (<tt>0x" . $ptype . "</tt>)"; break;
+
+
                         default:        $ptype_str = "Unknown Partition Type (<tt>0x" . $ptype . "</tt>)"; break;
                 }
 
@@ -510,9 +519,7 @@
 
                 print("\t<td bgcolor=\"" . $dvalue . "\" align=\"center\">");
 
-                if ((($ptype != "8e") && ($ptype != "fd") && ($ptype != "05") && ($ptype != "5") && ($ptype != "0f") && ($ptype != "f")))
-                        print("-");
-                else if ((($ptype == "05") || ($ptype == "5") || ($ptype == "0f") || ($ptype == "f")) && ($extended_partitions_exist))
+                if ((($ptype == "05") || ($ptype == "5") || ($ptype == "0f") || ($ptype == "f")) && ($extended_partitions_exist))
                         print("<em>Extended partitions exist</em>");
                 else if ($in_use[$j])
                         print("<em>In use</em>");
