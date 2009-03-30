@@ -19,6 +19,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with JSON-RPC PHP; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+This file was modified by Untangle, Inc. in 2009.
+These changes are Copyright (c) 2009 Untangle, Inc.
+
 */
 
 /**
