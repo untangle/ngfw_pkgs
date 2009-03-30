@@ -166,9 +166,7 @@
                     {
                             $ptype = $of_disks[$disk_index]["partitions"][$j]["type"] . "";
 
-                            if ((($ptype != "8e") && ($ptype != "fd") && ($ptype != "05") && ($ptype != "0f") && ($ptype != "5") && ($ptype != "f")))
-                                    continue;
-                            else if ((($ptype == "05") || ($ptype == "0f") || ($ptype == "5") || ($ptype == "f")) && ($extended_partitions_exist))
+                            if ((($ptype == "05") || ($ptype == "0f") || ($ptype == "5") || ($ptype == "f")) && ($extended_partitions_exist))
                                     continue;
                             else if ($in_use[$j])
                                     continue;
@@ -556,12 +554,12 @@
         $macksp = popen("export LANG=C; /usr/bin/sudo /usr/bin/rush -e 'nm = Untangle::RemoteUvmContext.nodeManager(); tid = nm.nodeInstances( \"untangle-node-nas\" ).first(); nas = nm.nodeContext( tid ).node(); puts nas.getMack() ? 1 : 0'", "r");
         $mack = (! (bool)(trim(fgets($macksp, 128))));
         pclose($macksp);
-	if ($mack && ((($of_disks[$disk_index]["label"] == "gpt") && ($primaries < 32767) &&
+        if ($mack && ((($of_disks[$disk_index]["label"] == "gpt") && ($primaries < 32767) &&
                         ($primary_cylinder_count < $of_disks[$disk_index]["cylinders"])) ||
                 (($primaries < 15) && ($primary_cylinder_count < $of_disks[$disk_index]["cylinders"])) ||
                 (($extended_partition_index > -1) &&
                 ($extended_cylinder_count < ($of_disks[$disk_index]["partitions"][$extended_partition_index]["end"]
-					     - $of_disks[$disk_index]["partitions"][$extended_partition_index]["start"] + 1)))))
+                                             - $of_disks[$disk_index]["partitions"][$extended_partition_index]["start"] + 1)))))
         {
 
                 printMessageBlock("info","<p>You can use ranges within the following extents:</p>\n");
@@ -924,7 +922,7 @@ function changed_end()
 
 <?php
         }
-	 else
+         else
             printMessageBlock("warning", "<p align=\"center\"><em>Can't create any more partitions.</em></p>\n");
 
         print("<p align=\"center\">&nbsp;</p>\n");
