@@ -25,6 +25,9 @@
  * You should have received a copy of the GNU General Public License
  * along with Openfiler.  If not, see <http://www.gnu.org/licenses/>.
  * 
+ * This file was modified by Untangle, Inc. in 2009.
+ * These changes are Copyright (c) 2009 Untangle, Inc.
+ *
  * --------------------------------------------------------------------
  *
  *  
