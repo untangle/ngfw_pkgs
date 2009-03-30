@@ -1,0 +1,19 @@
+#!/bin/dash
+
+BACKUP_FILE=$1
+
+DESCRIPTION="$2"
+
+if [ -z "${BACKUP_FILE}" ] || [ "${BACKUP_FILE%.uab}x" = "${BACKUP_FILE}x" ]; then
+    echo "USAGE: $0 <file-name> [<description>]"
+    echo "\t<file-name>: Backup file to create."
+    echo "\t<description>: Description of the backup file."
+    exit 0
+fi
+
+DESCRIPTION=${DESCRIPTION:-"Automatic backup"}
+
+grep /mnt/ /etc/fstab > /opt/nas/etc/fstab_mnt
+tar -cPpf $BACKUP_FILE /opt/nas/etc/
+rm /opt/nas/etc/fstab_mnt
+

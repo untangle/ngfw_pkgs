@@ -2,4 +2,5 @@
 /etc/init.d
 /var/lib/nas
 /usr/share/untangle/apache2/conf.d
+/usr/share/untangle-nas/scripts
 /etc/untangle-net-alpaca/iptables-rules.d

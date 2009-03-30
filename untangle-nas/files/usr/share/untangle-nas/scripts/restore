@@ -1,0 +1,25 @@
+#!/bin/dash
+
+BACKUP_FILE=$1
+RESTORE_DIRECTORY=`mktemp -d`
+
+## Create a temporary directory to place everything
+tar -xPpf ${BACKUP_FILE}
+
+if [ ! -f /etc/fstab_backup ]; then
+   cp /etc/fstab /etc/fstab_backup;
+fi
+
+TMPFSTAB="$RESTORE_DIRECTORY/tmp_fstab";
+
+grep -v /mnt /etc/fstab > "$TMPFSTAB"
+cat /opt/nas/etc/fstab_mnt >> "$TMPFSTAB"
+mv -v "$TMPFSTAB" /etc/fstab
+for i in `cat /opt/nas/etc/fstab_mnt | cut -d ' ' -f2`; do
+    mkdir -pv $i
+    mount $i
+done
+
+## Remove all of the temporary files
+rm /opt/nas/etc/fstab_mnt
+rm -rf ${RESTORE_DIRECTORY}
