@@ -9,9 +9,7 @@ Standards-Version: 3.7.2
 Package: untangle-nas
 Architecture: all
 #In Debian
-Depends: untangle-vm, untangle-apache2-config, untangle-net-alpaca, untangle-ldap-server, parted (> 6.1), mdadm (> 6.1), lvm2 (> 6.1), quota (> 6.1), apache2 (>= 2.0.46), samba (> 6.1), php5-auth-pam (>= 0.4), libapache2-mod-suphp, php5-gmp, php5 (>= 4.3.2), php5-cli, at (>= 3.1.8), acl (>= 2.2.3), initscripts, sysvinit (>= 2.85), sysv-rc, perl, coreutils (>= 4.5.3), mount (>= 2.11y), sudo (>= 1.6), nfs-common (>= 1.0.6), nfs-kernel-server, ntp (>= 4.1.2), util-linux (>= 2.11y), passwd (>= 0.68), libpam-ldap, libnss-ldapd, xfsprogs, scsitools, proftpd-basic, winbind, krb5-user, e2fsprogs, libapache2-mod-auth-pam (>= 1.1.1), libapache2-mod-auth-sys-group
-#Not yet supported:
-# iscsitarget, open-iscsi, uuid-runtime
+Depends: untangle-vm, untangle-apache2-config, untangle-net-alpaca, untangle-ldap-server, parted (> 6.1), mdadm (> 6.1), lvm2 (> 6.1), quota (> 6.1), apache2 (>= 2.0.46), samba (> 6.1), php5-auth-pam (>= 0.4), libapache2-mod-suphp, php5-gmp, php5 (>= 4.3.2), php5-cli, at (>= 3.1.8), acl (>= 2.2.3), initscripts, sysvinit (>= 2.85), sysv-rc, perl, coreutils (>= 4.5.3), mount (>= 2.11y), sudo (>= 1.6), nfs-common (>= 1.0.6), nfs-kernel-server, ntp (>= 4.1.2), util-linux (>= 2.11y), passwd (>= 0.68), libpam-ldap, libnss-ldapd, xfsprogs, scsitools, proftpd-basic, winbind, krb5-user, e2fsprogs, libapache2-mod-auth-pam (>= 1.1.1), libapache2-mod-auth-sys-group, open-iscsi, iscsitarget, uuid-runtime
 #Still need?:
 # libpam-krb5
 #Deprecated:

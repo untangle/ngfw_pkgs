@@ -14,7 +14,7 @@ begin
   @server_string = settings['serverDescription']
   @use_ldap = settings['useLdap']
   @use_ad = settings['useAD']
-  @webdav_enabled = settings['serviceSettings']
+  @webdav_enabled = nas.isDavEnabled()
 
   if @use_ad
     addrbook = Untangle::RemoteUvmContext.appAddressBook()
@@ -85,6 +85,7 @@ def join()
   begin
     addrbook = Untangle::RemoteUvmContext.appAddressBook()
     addrbook.joinDomain(@smb_workgroup)
+    `[ -x /etc/init.d/winbind ] && /etc/init.d/winbind restart`
   rescue
     $stderr.puts "Unable to join domain in UVM: " + $!
     exit -3

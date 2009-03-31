@@ -735,7 +735,7 @@
 	print("<h3 align=\"center\">Create a new volume group</h3>\n");
 
 
-        $macksp = popen("export LANG=C; /usr/bin/sudo /usr/bin/rush -e 'nm = Untangle::RemoteUvmContext.nodeManager(); tid = nm.nodeInstances( \"untangle-node-nas\" ).first(); nas = nm.nodeContext( tid ).node(); puts nas.getMack() ? 1 : 0'", "r");
+        $macksp = popen("export LANG=C; /usr/bin/sudo /usr/bin/rush -e 'nm = Untangle::RemoteUvmContext.nodeManager(); tid = nm.nodeInstances( \"untangle-node-nas\" ).first(); nas = nm.nodeContext( tid ).node(); puts nas.getMack()'", "r");
         $mack = (! (bool)(trim(fgets($macksp, 128))));
         pclose($macksp);
 	if ($pvs_exist && $mack)

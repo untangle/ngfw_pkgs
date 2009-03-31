@@ -89,7 +89,12 @@ fi
 # Turn on iscsitarget in /etc/default so that we can control availability with /etc/init.d script
 if grep -q ISCSITARGET_ENABLE=false /etc/default/iscsitarget; then
     sed -i -e "s/^ISCSITARGET_ENABLE=false/ISCSITARGET_ENABLE=true/" /etc/default/iscsitarget
+    # But it is disabled by default
+    update-rc.d -f iscsitarget remove
 fi
+
+# disabled by default
+update-rc.d -f open-iscsi remove
 
 # Configure suphp
 sed -i -e "s/^min_uid=.*/min_uid=${NAS_UID}/" /etc/suphp/suphp.conf

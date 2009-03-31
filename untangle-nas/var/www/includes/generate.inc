@@ -928,7 +928,7 @@ function apply_configuration($params = array()) {
 							
 						$do_samba = 0;
 						$do_afp = 0;
-						$do_http = 0;
+						$do_http = $ac_aresult[43];
 						$http_readonly_networks = false;
 						$do_ftp = 0;
 						$do_rsync = 0; 
@@ -1019,8 +1019,8 @@ function apply_configuration($params = array()) {
 							if (substr($ac_networks_access[$i], 3, 1) == "y")
 								$do_afp = 1;
 							
-							if (substr($ac_networks_access[$i], 5, 1) != " ")
-								$do_http = 1;
+							if (substr($ac_networks_access[$i], 5, 1) == " ")
+								$do_http = 0;
 		
 							if (substr($ac_networks_access[$i], 5, 1) == "o")
 								$http_readonly_networks = true;
@@ -1333,7 +1333,7 @@ function apply_configuration($params = array()) {
 		
 						$do_samba = 0;
 						$do_afp = 0;
-						$do_http = 0;
+						$do_http = $ac_aresult[43];
 						$http_readonly_networks = false;
 						$do_ftp = 0;
 						$ftp_readonly_networks = false;
@@ -1442,8 +1442,8 @@ function apply_configuration($params = array()) {
 							if (substr($ac_networks_access[$i], 3, 1) == "y")
 								$do_afp = 1;
 		
-							if (substr($ac_networks_access[$i], 5, 1) != " ")
-								$do_http = 1;
+							if (substr($ac_networks_access[$i], 5, 1) == " ")
+								$do_http = 0;
 		
 							if (substr($ac_networks_access[$i], 5, 1) == "o")
 								$http_readonly_networks = true;
