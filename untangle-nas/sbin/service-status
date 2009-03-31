@@ -46,8 +46,10 @@ case "$1" in
 	daemonname=acpid
 	;;
     httpd)
-	# XXX
-	daemonname=webdav
+	# This is easier than querying the UVM.  We might restart apache without needing
+	# to, but that has little effect.  XXX
+	echo "httpd is running"
+	exit 0
 	;;
     *)
 	echo "service $1 not found"

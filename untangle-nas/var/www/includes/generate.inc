@@ -2081,7 +2081,7 @@ function apply_configuration($params = array()) {
 	$ac_nfsv3 = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status nfs-kernel-server"), "running") ? 1 : 0);
 	$ac_rsync = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status rsync"), "running") ? 1 : 0);
 	$ac_ftp = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status proftpd"), "running") ? 1 : 0);
-	$ac_http = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status httpd"), "running") ? 1 : 0);
+	$ac_http = $ac_aresult[43];
 	$ac_winbind = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status winbind"), "running") ? 1 : 0);
 
 	// first restart winbind
@@ -2111,7 +2111,7 @@ function apply_configuration($params = array()) {
 		if ($ac_ftp)
 			exec("export LANG=C; /usr/bin/sudo /etc/init.d/proftpd reload");
 		if ($ac_http)
-			exec("export LANG=C; /usr/bin/sudo /etc/init.d/httpd reload");
+			exec("export LANG=C; /usr/bin/sudo /etc/init.d/apache2 reload");
 		if ($ac_rsync)
 			exec("export LANG=C; /usr/bin/sudo /etc/init.d/rsync reload");
 	}
@@ -2126,7 +2126,7 @@ function apply_configuration($params = array()) {
 			exec("export LANG=C; /usr/bin/sudo /etc/init.d/proftpd restart");
 
 		if ($ac_http)
-			exec("export LANG=C; /usr/bin/sudo /etc/init.d/httpd restart");
+			exec("export LANG=C; /usr/bin/sudo /etc/init.d/apache2 restart");
 		
 		if ($ac_rsync)
 			exec("export LANG=C; /usr/bin/sudo /etc/init.d/rsync restart"); 

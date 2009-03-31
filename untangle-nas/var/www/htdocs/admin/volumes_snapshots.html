@@ -806,8 +806,9 @@
 			exec("export LANG=C; /usr/bin/sudo /etc/init.d/samba stop");
 		if ($nfsv3)
 			exec("export LANG=C; /usr/bin/sudo /etc/init.d/nfs-kernel-server stop");
-		if ($httpd)
-			exec("export LANG=C; /usr/bin/sudo /etc/init.d/httpd stop");
+		// Too disruptive to actually *stop* apache
+		// if ($httpd)
+		// exec("export LANG=C; /usr/bin/sudo /etc/init.d/apache2 stop");
 		if ($ftp)
 			exec("export LANG=C; /usr/bin/sudo /etc/init.d/proftpd stop");
                 if ($rsync)
@@ -838,8 +839,8 @@
 							if ($nfsv3)
 								exec("export LANG=C; /usr/bin/sudo /etc/init.d/nfs-kernel-server restart");
 
-							if ($http)
-								exec("export LANG=C; /usr/bin/sudo /etc/init.d/httpd restart");
+							if ($httpd)
+								exec("export LANG=C; /usr/bin/sudo /etc/init.d/apache2 restart");
 
 							if ($ftp)
 								exec("export LANG=C; /usr/bin/sudo /etc/init.d/proftpd restart");
@@ -1081,7 +1082,7 @@
 			exec("export LANG=C; /usr/bin/sudo /etc/init.d/nfs-kernel-server restart");
 
 		if ($http)
-			exec("export LANG=C; /usr/bin/sudo /etc/init.d/httpd restart");
+			exec("export LANG=C; /usr/bin/sudo /etc/init.d/apache2 restart");
 
 		if ($ftp)
 			exec("export LANG=C; /usr/bin/sudo /etc/init.d/proftpd restart");
