@@ -230,6 +230,11 @@ EOF
 
   # stop atop
   /etc/init.d/atop stop
+
+  # make sure dpkg is happy
+  aptgetupdate
+  aptgetyes --trust-me -f install
+  dpkg --configure -a
 }
 
 stepSysVInit() {
