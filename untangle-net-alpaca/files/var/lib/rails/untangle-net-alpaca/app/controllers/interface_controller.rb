@@ -43,6 +43,13 @@ class InterfaceController < ApplicationController
     session[:last_controller_before_refresh] = "interface"
   end
 
+  def mwan_list
+    ## Change the level to advanced
+    @alpaca_settings.config_level = AlpacaSettings::Level::Advanced.level
+    @alpaca_settings.save
+    return redirect_to( :action => 'list' )
+  end
+
   def get_interface_list
     settings = {}
     
