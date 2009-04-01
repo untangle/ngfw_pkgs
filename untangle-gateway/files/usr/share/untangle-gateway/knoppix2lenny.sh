@@ -18,6 +18,7 @@ UNTANGLE_MIRROR="${UNTANGLE_MIRROR_HOST}/public/lenny"
 UNTANGLE_61_DISTRIBUTIONS="mclaren" # FIXME: uncomment before releasing
 
 UNTANGLE_CREDENTIALS_FILE="/var/log/uvm/${BASENAME}.credentials"
+UNTANGLE_PACKAGES_TO_REINSTALL="untangle-gateway-light untangle-gateway untangle-client-local untangle-libitem-adconnector untangle-libitem-boxbackup untangle-libitem-branding untangle-libitem-clam untangle-libitem-commtouch untangle-libitem-firewall untangle-libitem-ips untangle-libitem-kav untangle-libitem-opensource-package untangle-libitem-openvpn untangle-libitem-pcremote untangle-libitem-phish untangle-libitem-policy untangle-libitem-portal untangle-libitem-premium untangle-libitem-professional-package untangle-libitem-protofilter untangle-libitem-reporting untangle-libitem-shield untangle-libitem-sitefilter untangle-libitem-spamassassin untangle-libitem-spyware untangle-libitem-support untangle-libitem-test untangle-libitem-trial14-adconnector untangle-libitem-trial14-boxbackup untangle-libitem-trial14-commtouch untangle-libitem-trial14-kav untangle-libitem-trial14-pcremote untangle-libitem-trial14-policy untangle-libitem-trial14-portal untangle-libitem-trial14-professional-package untangle-libitem-trial14-sitefilter untangle-libitem-trial14-support untangle-libitem-trial30-boxbackup untangle-libitem-trial30-kav untangle-libitem-trial30-portal untangle-libitem-trial30-professional-package untangle-libitem-update-service untangle-libitem-webfilter"
 UNTANGLE_PACKAGES_FILE="/var/log/uvm/${BASENAME}.packages"
 
 SHARE="/usr/share/untangle-gateway"
@@ -192,7 +193,7 @@ EOF
   #   - from a previously saved list
   if [ ! -f $UNTANGLE_PACKAGES_FILE ] ; then
     touch $UNTANGLE_PACKAGES_FILE
-    for p in untangle-gateway-light untangle-gateway untangle-client-local ; do
+    for p in $UNTANGLE_PACKAGES_TO_REINSTALL ; do
       if dpkg -l $p | grep -qE '^ii' ; then
 	UNTANGLE_PACKAGES="$UNTANGLE_PACKAGES $p"
 	echo $p >> $UNTANGLE_PACKAGES_FILE
