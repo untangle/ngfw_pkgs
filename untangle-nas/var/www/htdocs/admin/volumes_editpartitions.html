@@ -48,6 +48,8 @@
         exec("export LANG=C; /usr/bin/sudo /sbin/parted " . escapeshellarg($target) . " mklabel gpt");
         exec("export LANG=C; /usr/bin/sudo fdisk -l " . escapeshellarg($target) . " | grep cylinders | cut -f 5 -d ' ' | head -1", $cylindersize);
         exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($target) . " mkpart extended 1 " . escapeshellarg($cylindersize[0]));
+        include('volumes_physical.html');
+        exit(0);
     }
 
     $disksp = popen("export LANG=C; /usr/bin/sudo /opt/nas/sbin/list-disks.pl", "r");
