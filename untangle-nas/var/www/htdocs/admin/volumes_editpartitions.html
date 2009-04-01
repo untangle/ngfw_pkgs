@@ -38,6 +38,17 @@
 
     $md = get_md();
 
+    if ($action == "initializedisk" && strlen($_REQUEST['target']) > 0) {
+        if (strpos($_REQUEST['target'], '/dev/sda') !== false) {
+          exit(0);
+        }
+        $target = trim($_REQUEST['target'],'0123456789');
+        exec('export LANG=C; /usr/bin/sudo dd if=/dev/zero of=' . escapeshellarg($target)  . ' count=1 bs=2048');
+        exec('export LANG=C; /usr/bin/sudo sync');
+        exec("export LANG=C; /usr/bin/sudo /sbin/parted " . escapeshellarg($target) . " mklabel gpt");
+        exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($target) . " mkpart extended 0 " . escapeshellarg($end_cyl));
+    }
+
     $disksp = popen("export LANG=C; /usr/bin/sudo /opt/nas/sbin/list-disks.pl", "r");
     $i = 0;
     while (!feof($disksp))
