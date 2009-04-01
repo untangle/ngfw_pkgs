@@ -46,7 +46,8 @@
         exec('export LANG=C; /usr/bin/sudo dd if=/dev/zero of=' . escapeshellarg($target)  . ' count=1 bs=2048');
         exec('export LANG=C; /usr/bin/sudo sync');
         exec("export LANG=C; /usr/bin/sudo /sbin/parted " . escapeshellarg($target) . " mklabel gpt");
-        exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($target) . " mkpart extended 0 " . escapeshellarg($end_cyl));
+        exec("export LANG=C; /usr/bin/sudo fdisk -l " . escapeshellarg($target) . " | grep cylinders | cut -f 5 -d ' ' | head -1", $cylindersize);
+        exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($target) . " mkpart extended 1 " . escapeshellarg($cylindersize[0]));
     }
 
     $disksp = popen("export LANG=C; /usr/bin/sudo /opt/nas/sbin/list-disks.pl", "r");
