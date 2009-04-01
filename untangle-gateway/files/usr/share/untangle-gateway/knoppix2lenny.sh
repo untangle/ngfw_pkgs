@@ -289,7 +289,7 @@ stepDistUpgradeToEtch() {
   # make sure this is disabled (only if we didn't reach the
   # dist-upgrade-to-lenny step in a previous iteration), so apache can
   # continue working during the rest of the upgrade
-  dpkg -l untangle-apache2-config | grep '^ii.*6\.1\.' || rm -f /etc/apache2/sites-enabled/uvm /etc/apache2/mods-enabled/proxy_connect_untangle.load /usr/share/untangle/apache2/conf.d/*
+  dpkg -l untangle-apache2-config untangle-libuvm | grep '^ii.*6\.1\.' || rm -f /etc/apache2/sites-enabled/uvm /etc/apache2/mods-enabled/proxy_connect_untangle.load /usr/share/untangle/apache2/conf.d/*
 
   # install the newer postgres 7.4 from etch, as it follows the naming
   # convention in /etc/
