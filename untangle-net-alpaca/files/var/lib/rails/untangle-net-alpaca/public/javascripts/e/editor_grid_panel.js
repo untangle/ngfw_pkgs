@@ -18,9 +18,9 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
     addedId : 0,
 
     /**
-     * @cfg {Array} recordFields An array of strings containing the fields to create the default 
+     * @cfg {Array} recordFields An array of strings containing the fields to create the default
      * record.  Otherwise, you can define your own record.
-     * @cfg {Ext.data.Record} record The record to use for each row.  
+     * @cfg {Ext.data.Record} record The record to use for each row.
      *   This will be created using {@link #recordFields} if one is not specified.
      * @cfg {Ext.data.Store} store to use the read out the data.  This
      *   will be created automatically, if one is not specified.
@@ -34,7 +34,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
             iconCls : "icon-grid",
             clicksToEdit : 1,
             stripeRows : true,
-            viewConfig : { 
+            viewConfig : {
                 forceFit : true
             }
         });
@@ -77,7 +77,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
             this.plugins.push(reorderColumn);
             this.columns.push(reorderColumn);
         }
-        
+
         if (this.hasEdit) {
             var editColumn = new Ung.Alpaca.grid.EditColumn({});
             if (!this.plugins) {
@@ -90,7 +90,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
         /* Iterate the columns and search for the ones that haven't been added */
         for ( var c = 0 ; c < this.columns.length ; c++ ) {
             var column = this.columns[c];
-            
+
             if ( column.addPlugin != true ) {
                 continue;
             }
@@ -106,7 +106,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
             if ( this.plugins.indexOf( column ) >= 0 ) {
                 continue;
             }
-            
+
             this.plugins.push( column );
         }
 
@@ -116,7 +116,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
             for ( var c = 0 ; c < this.recordFields.length ; c++ ) {
                 var field = this.recordFields[c];
                 var f = { name : field, mapping : field };
-                
+
                 var fieldType = null;
 
                 if ( this.recordTypes ) {
@@ -153,7 +153,8 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
             });
         }
         if(this.rowEditorConfig) {
-            this.rowEditor=Ext.ComponentMgr.create(this.rowEditorConfig, "roweditor");
+          this.rowEditor=Ext.ComponentMgr.create(this.rowEditorConfig, "roweditor");
+          this.rowEditor.name = this.name;
         }
         Ung.Alpaca.EditorGridPanel.superclass.initComponent.apply( this, arguments );
 
@@ -179,7 +180,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
                     };
 
                     this.getView().refresh();
-                    
+
                     /* Enable the save button */
                     application.onFieldChange();
 
@@ -226,7 +227,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
             config.tbar = null;
         }
     },
-    
+
     addButton : function()
     {
         return {
@@ -236,19 +237,19 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
             scope : this
         };
     },
-    
+
     deleteButton : function( )
     {
         return {
             id: "delete_button_"+this.getId(),
             text : Ung.Alpaca.Util._( "Delete" ),
-            iconCls:'icon-delete-row',          
+            iconCls:'icon-delete-row',
             handler : this.deleteSelectedEntries,
             disabled: true,
             scope : this
         };
     },
-    
+
     addEntry : function()
     {
         var entry = new this.record( Ext.decode(Ext.encode(this.recordDefaults)) );
@@ -272,7 +273,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
 
         var data = [];
         var entries = this.store.getRange();
-        
+
         for ( var c = 0 ; c < entries.length ; c++ ) {
             var entry = entries[c];
             var cd = this.changedData[entry.id];
@@ -283,7 +284,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
 
         settings[this.name] = data;
     },
-    
+
     deleteSelectedEntries : function()
     {
         this.stopEditing();
@@ -297,7 +298,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
         sm.clearSelections();
         if ( Ext.fly(this.getView().getHeaderCell(0)).first().hasClass('x-grid3-hd-checker-on')){
             Ext.fly(this.getView().getHeaderCell(0)).first().removeClass('x-grid3-hd-checker-on');
-        }         
+        }
     },
     editEntry: function(entry) {
         this.stopEditing();
@@ -409,7 +410,7 @@ Ung.Alpaca.grid.CheckColumn = Ext.extend(Object, {
             });
         }
     },
-        
+
     renderer : function(value, metadata, record) {
         metadata.css += ' x-grid3-check-col-td';
         return '<div class="x-grid3-check-col' + ((this.invert?!value:value) ? '-on' : '') + ' x-grid3-cc-' + this.id + '">&#160;</div>';

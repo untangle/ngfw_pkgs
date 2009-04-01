@@ -3,7 +3,7 @@ Ext.ns('Ung.Alpaca');
 
 Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
     // the editor grid
-    modal : true,    
+    modal : true,
     grid : null,
     // function called by close action
     closeAction : 'cancelAction',
@@ -22,7 +22,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
         anchor: '100% 100%',
         autoScroll: true,
         autoWidth : true
-    },    
+    },
     initComponent : function() {
         if (!this.height) {
             this.height=500;
@@ -63,7 +63,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
         }
         this.items = new Ext.Panel({
             anchor: "100% 100%",
-            autoScroll: true,                
+            autoScroll: true,
             layout:"form",
             buttonAlign : 'right',
             border : false,
@@ -71,7 +71,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
             autoScroll: true,
             defaults : {
                 xtype : "fieldset",
-                autoHeight : true,   
+                autoHeight : true,
                 selectOnFocus : true,
                 msgTarget : 'side',
                 labelWidth : this.panelLabelWidth
@@ -103,7 +103,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
             updateButton.disable();
         }
     },
-    
+
     /* Fill in the value for a field */
     populateFieldValue : function( item, index, length, record )
     {
@@ -134,7 +134,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
                 if ( value != null ) {
                     item.setValue( value );
                 }
-                break;                
+                break;
             }
         }
 
@@ -143,12 +143,12 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
             item.items.each( this.populateFieldValue.createDelegate( this, [ record ], true ));
         }
     },
-    
+
     addEnableUpdateHandler : function( item, index )
     {
         if ( item.addListener && item.xtype ) {
             var event = "change";
-            
+
             switch ( item.xtype ) {
             case "checkbox":
                 event = "check"
@@ -165,7 +165,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
             if ( item.editorGridPanel == true ) {
                 event = "afteredit"
             }
-            
+
             if ( event != null ) {
                 item.addListener( event, this.onFieldChange, this );
             }
@@ -176,7 +176,12 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
         }
     },
     onHelp : function () {
-        Ung.Alpaca.Util.implementMe("Help on Row Editor");
+      if(! this.name) {
+        this.name = "row_editor";
+      }
+
+      var url = "http://www.untangle.com/docs/get.php?version=6.2&source="+this.name+"&lang=en";
+      window.open(url);
     },
     onFieldChange : function()
     {
@@ -189,7 +194,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
             updateButton.enable();
         }
     },
-    
+
     // check if the form is valid;
     // this is the default functionality which can be overwritten
     isFormValid : function() {
@@ -207,7 +212,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
             Ext.MessageBox.alert('Warning', "The form is not valid!");
         }
     },
-    
+
     /* Update the settings with the values from the fields. */
     updateFieldValue : function( item, index, length, record )
     {
@@ -223,7 +228,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
             case "combo":
             case "rulebuilder":
                 value = item.getValue();
-                break;                
+                break;
 
             case "checkbox":
                 value = item.getValue();
@@ -241,7 +246,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
             item.items.each( this.updateFieldValue.createDelegate( this, [ record ], true ));
         }
     },
-    
+
     cancelAction : function() {
         /*
         var updateButton=Ext.getCmp("update_"+this.getId());
@@ -264,9 +269,9 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
             });
         } else {
         */
-        
+
         this.closeWindow();
-        
+
         /*
         } */
     },
@@ -291,7 +296,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
             record.set(name, value);
             return;
         }
-        
+
         var key = name.substring( 0, d );
         var path = name.substring( d + 1 );
 
