@@ -45,10 +45,10 @@
         $target = trim($_REQUEST['target'],'0123456789');
         exec('export LANG=C; /usr/bin/sudo dd if=/dev/zero of=' . escapeshellarg($target)  . ' count=1 bs=2048');
         exec('export LANG=C; /usr/bin/sudo sync');
-        exec("export LANG=C; /usr/bin/sudo /sbin/parted " . escapeshellarg($target) . " mklabel gpt");
-        exec("export LANG=C; /usr/bin/sudo fdisk -l " . escapeshellarg($target) . " | grep cylinders | cut -f 5 -d ' ' | head -1", $cylindersize);
-        exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($target) . " mkpart extended 1 " . escapeshellarg($cylindersize[0]));
-        include('volumes_physical.html');
+        exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($target) . " mklabel msdos");
+        exec("export LANG=C; /usr/bin/sudo fdisk -l " . escapeshellarg($target) . " | grep cylinders | cut -f 5 -d ' ' | head -1", $cylinders);
+        exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($target) . " mkpart extended 1 " . escapeshellarg($cylinders[0]));
+        header("Location: ./volumes_physical.html".getAttachment());         
         exit(0);
     }
 
