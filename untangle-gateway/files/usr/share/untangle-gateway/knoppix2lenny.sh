@@ -269,8 +269,8 @@ stepRemoveUnwantedPackaged() {
 
   removePackagesRegex "(lilo|pppconfig|cloop-utils)"
 
-  # this "remove X 3.3 packages" (and some untangle-* packages, see above)
-  removePackagesRegex "xserver.*3\.3\.6"
+  # this removes X 3.3 packages (and some untangle-* packages, see above)
+  removePackagesRegex "(xserver|xbase-clients).*3\.3\.6"
 
   removePackages "xfce4-mixer-lib-alsa"
 
