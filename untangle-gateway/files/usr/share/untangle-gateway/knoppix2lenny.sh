@@ -142,6 +142,8 @@ stepName() {
 stepSetup() {
   stepName "stepSetup"
 
+  ifconfig
+
   DISPLAY=:0 feh --bg-scale ${SHARE}/desktop_background_upgrade-1024x768.png
 
   wall <<EOF
@@ -271,6 +273,7 @@ stepRemoveUnwantedPackaged() {
 
   # this removes X 3.3 packages (and some untangle-* packages, see above)
   removePackagesRegex "(xserver|xbase-clients).*3\.3\.6"
+  rm -fr /usr/X11R6/bin/*
 
   removePackages "xfce4-mixer-lib-alsa"
 
