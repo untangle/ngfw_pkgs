@@ -273,7 +273,9 @@ stepRemoveUnwantedPackaged() {
 
   # this removes X 3.3 packages (and some untangle-* packages, see above)
   removePackagesRegex "(xserver|xbase-clients).*3\.3\.6"
-  rm -fr /usr/X11R6/bin/*
+  if [ ! -L /usr/X11R6/bin ] ; then 
+    rm -fr /usr/X11R6/bin/*
+  fi
 
   removePackages "xfce4-mixer-lib-alsa"
 
