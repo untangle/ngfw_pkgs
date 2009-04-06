@@ -1302,7 +1302,23 @@ body.wizard .ext-el-mask
   padding: 0px 0px 0px 0px;
   }
 
+.ua-cell-enabled
+{ 
+  background: transparent url(../images/admin/icon_interface_enabled.png) no-repeat center center;
+  width: 100%;
+  height : 16px;
+  cursor: move;
+  padding: 0px 0px 0px 0px;
+  }
 
+.ua-cell-disabled
+{ 
+  background: transparent url(../images/admin/icon_interface_disabled.png) no-repeat center center;
+  width: 100%;
+  height : 16px;
+  cursor: move;
+  padding: 0px 0px 0px 0px;
+  }
 
 .alpaca-panel{
  padding:10px;
@@ -1384,3 +1400,40 @@ input.rule_builder_checkbox {
     float:left;
     margin:0;
 }
+
+table.failover-refresh
+{ 
+  float : left;
+  margin-top : -2.2em;
+  margin-left : 22em;
+  position : absolute;
+  }
+
+table.failover-run-test
+{ 
+  float : left;
+  margin-top : -2.1em;
+  margin-left : 23em;
+  position : absolute;
+  }
+
+table.failover-ping-suggestions
+{ 
+  float : left;
+  margin-top : -2.1em;
+  margin-left : 23em;
+  position : absolute;
+  }
+
+
+fieldset.failover-test-type
+{ 
+  border-bottom: none;
+  padding-bottom: 0px;
+ }
+
+fieldset.failover-test-type div.x-fieldset-bwrap
+{ 
+  border-bottom: none;
+  padding-bottom: 0px;
+ }
