@@ -46,7 +46,7 @@
         exec('export LANG=C; /usr/bin/sudo dd if=/dev/zero of=' . escapeshellarg($target)  . ' count=1 bs=2048');
         exec('export LANG=C; /usr/bin/sudo sync');
         exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($target) . " mklabel msdos");
-        exec("export LANG=C; /usr/bin/sudo fdisk -l " . escapeshellarg($target) . " | grep cylinders | cut -f 5 -d ' ' | head -1", $cylinders);
+        exec("export LANG=C; /usr/bin/sudo fdisk -l " . escapeshellarg($target) . " 2>/dev/null | grep cylinders | cut -f 5 -d ' ' | head -1", $cylinders);
         exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($target) . " mkpart extended 0c " . escapeshellarg(($cylinders[0]-1).'c'));
         header("Location: ./volumes_physical.html".getAttachment());         
         exit(0);
