@@ -58,8 +58,8 @@ fail() {
     echo "The output for the upcoming retry will be in a new log file,"
     echo "so you should 'tail -f /var/log/uvm/${BASENAME}.log' again to see it."
     
-    # email out
-    email "fail"
+#     # email out
+#     email "fail"
 
     # Try again
     sleep $DELAY
@@ -420,7 +420,7 @@ EOF
   done
   aptgetupdate
 
-  email "success"
+#  email "success"
 
   echo "#########################################"
   echo "All done, rebooting..."
