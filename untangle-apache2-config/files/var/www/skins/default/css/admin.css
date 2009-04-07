@@ -988,6 +988,9 @@ div.wizard-network-image-description
            margin:4px 0px;
            display:block;
 }
+.untangle-form-panel .x-form{
+ border:none
+}
 .warning-row{
            background-image:url('../../../ext/resources/images/default/shared/warning.gif');
           background-position:left center;
