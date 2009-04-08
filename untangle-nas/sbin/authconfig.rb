@@ -13,7 +13,7 @@ begin
   @netbios_name = settings['netbiosName']
   @server_string = settings['serverDescription']
   @use_ldap = settings['useLdap']
-  @use_ad = settings['useAD']
+  @use_ad = true #settings['useAD']
   @webdav_enabled = nas.isDavEnabled()
 
   if @use_ad
