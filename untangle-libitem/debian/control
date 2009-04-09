@@ -50,8 +50,8 @@ XB-Desc-Icon:  R0lGODlhKgAqAPcAAAAAAKx9ALS0tFhYWERHZZJqANDHGjQ2TcXFx2ttiH9eFrev
  16zfGThyA2GEJ2B4Wpskvngbu6idGQ4exBDD5GpVzsIVz7Biy+ZpLQIKKGMdcMBQ
  VelFCBqoD+6BIa33MEMhQvExxO/ABy/88MMTQAAHi4wFzfI9uH7AXdBHL/300ws1
  REytL3/AYjNQ7/330F/AB0wtZWLR+eif39BAC7XvfkINBQQAOw==
-Description: Untangle Total Security Bundle
- The Untangle Total Security Bundle Library Item.
+Description: Open Source Package
+ The Open Source Package Library Item.
 
 Package: untangle-libitem-shield
 Architecture: all
@@ -114,8 +114,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAJmklEQVRYhcWZWYwb
  gkHC0QSaFqK+fm4q5XI5dF3n9vRVojE/Xt+DbxP+l6YGgmiBGOVSiXiyH5r/2DQz
  vP7azx4a3Gbzer3rvz5XUeHYN7/l5HLd99IPy2KxGNGYn0hsnOMnX+D5E08L/wGb
  wTyTRTkfugAAAABJRU5ErkJggg==
-Description: Untangle Attack Blocker
- The Untangle Attack Blocker Library Item.
+Description: Attack Blocker
+ The Attack Blocker Library Item.
 
 Package: untangle-libitem-spyware
 Architecture: all
@@ -167,8 +167,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  IgWqMjYrOOHvOAJkMSxsqyn4gHedmazBrqiqgfBwxU6jaj76SDWsX69qOa2q2FilgoNVcVaW+Y9k
  73LcRSZkLGKH/REnyfG0lONnPR/5uuRksvDJPrb/abw/B5zrN+guuOXxZRNDd9Zq1QnYEOXj71ey
  +PfGcHg3h7iLr16RWb+Q1R/2aQ8mqjheqF8wvO3WUPf+R4ABACEcfkAFMtTiAAAAAElFTkSuQmCC
-Description: Untangle Spyware Blocker
- The Untangle Spyware Blocker Library Item.
+Description: Spyware Blocker
+ The Spyware Blocker Library Item.
 
 Package: untangle-libitem-webfilter
 Architecture: all
@@ -233,8 +233,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  hv5ibZAOJB+Ky44vFgGhHLnryrk0ZtNIVGdIWXk5HptioXw44eddESL+/vgzcoWKcn5hoPbA
  +1nH0ufnBbLGWduFUqXpn6ZVni9WNfB/TqKdLXQoddk5/ipGzKowLKETWaMN5ivbxR/E/ifA
  ACBNCbEqfhTsAAAAAElFTkSuQmCC
-Description: Untangle Web Content Control
- The Untangle Web Content Control Library Item.
+Description: Web Filter
+ The Web Filter Library Item.
 
 Package: untangle-libitem-clam
 Architecture: all
@@ -269,8 +269,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  bo4dB1m4/4mJCZqZmTkOure3Rw3Moe3tbdrf36epqamhgXK/DDo/P08LCws0NzfXelcoFJTJ
  t7a2iKH5xJlHJgYQTXoFZcjFxUUlDK3e8ZE4m35tbY0cx1GAw4BMUgKhGBh4DPkrH9WzEs1O
  4vuVlZXPTaVhwzLg7OwsLS0t0fLyMq2vryvO/wQYAP5qirM6mBOTAAAAAElFTkSuQmCC
-Description: Untangle Clam Virus Blocker
- The Untangle Clam Virus Blocker Library Item.
+Description: Virus Blocker
+ The Virus Blocker Library Item.
 
 Package: untangle-libitem-protofilter
 Architecture: all
@@ -356,8 +356,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  9r+JrLqHcb1/5G+RYmXTPJWlGb3b6BYmf2bKnUk5+TGE7vzZn3kmWHTz5s1//icarfhpzE82
  2tifbwr1VLtn9G935xN+znHG/arjXPYPRVt53HzZvynJzzTaKFBpwLTxwIsWGlcGHRei85f/
  /qR+EPs/AQYALpz0b9lClG4AAAAASUVORK5CYII=
-Description: Untangle Protocol Control
- The Untangle Protocol Control Library Item.
+Description: Protocol Control
+ The Protocol Control Library Item.
 
 Package: untangle-libitem-firewall
 Architecture: all
@@ -409,8 +409,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  m7e0hNP8YP8oT741ya5ry/na+jRz3Z2MjOZ5vs3n+dY803LhsPu+z/DwMEEQUFpaOr/IBTDN
  zc2FabY4d/MK1zzQlDRpVyz53X379hnAfCLf07SOhrSOXtye9ILVeHNzM//v50Axw74c1xjD
  fwYAMCLoUqhkh6IAAAAASUVORK5CYII=
-Description: Untangle Firewall
- The Untangle Firewall Library Item.
+Description: Firewall
+ The Firewall Library Item.
 
 Package: untangle-libitem-spamassassin
 Architecture: all
@@ -490,8 +490,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  BKrSAH7zsCoUU01hotVpyZBWzBOosKrYaJBp4U5Si82nbJpKvekm4RPXjyQ/EqKRY1dQLbrv
  7ecbjiWKg52kQksZPHS58yyBNmiZiJP+/Re/svPTyfv0y81tv46IkqxIuSdiaPf5D4YGWh7D
  zpbjLtD367cmAc5kRUrTokJw339vj/xB7P8FGACNK2N4xeErDQAAAABJRU5ErkJggg==
-Description: Untangle Spam Blocker
- The Untangle Spam Blocker Library Item.
+Description: Spam Blocker
+ The Spam Blocker Library Item.
 
 Package: untangle-libitem-phish
 Architecture: all
@@ -585,8 +585,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  DeWOUVGQk46vEDn3QiJzP5Tv3KHYlomQGTTF/tsucwQoIgfY0ME3uUu7PogA9qxsZpUgB1QR
  k2CFwI0uw5UGmqYjhJgEO3kPJb3c0CFdxgf60NxeIoGxv9v3NzTIj0BpAdTEYcMHgTVS/M8A
  nY2oOxX/HXgAAAAASUVORK5CYII=
-Description: Untangle Identity Theft Blocker
- The Untangle Identity Theft Blocker Library Item.
+Description: Phish Blocker
+ The Phish Blocker Library Item.
 
 Package: untangle-libitem-openvpn
 Architecture: all
@@ -727,8 +727,8 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEw
  gsfHQOjn+g6B3IjyCiLKankOYogxYlRxroN4C9+u6Nol3m0Ivh3SMIYO77MjbVPK5v9f/vAv
  dt1hz+oW0X4R2L/+xQ72f/+aKQFxz7/f+fpfFP00yKQAP7JF/ft5GLHDLCq9/aj7R7+mbO3J
  3QCjv/Lrm/0vGAYPf3Cgs7LEXqJSDBdeyxQVZw9vy/8MAIKemQqNP8+BAAAAAElFTkSuQmCC
-Description: Untangle Intrusion Prevention
- The Untangle Intrusion Prevention Library Item.
+Description: Intrusion Prevention
+ The Intrusion Prevention Library Item.
 
 Package: untangle-libitem-reporting
 Architecture: all
@@ -781,3 +781,96 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  9KkxvPWjn6ofxP4nwAB2T5Rklk6b3gAAAABJRU5ErkJggg==
 Description: Reports
  Reports Library Item.
+
+Package: untangle-libitem-adblocker
+Architecture: all
+Depends: untangle-node-adblocker
+XB-View-Position: 90
+XB-Display-Name: Ad Blocker
+XB-Untangle-Type: lib_item
+XB-Is-Security: true
+XB-Untangle-Pkg-Type: lib_item
+XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAACXBIWXMAAAsTAAALEwEAmpwYAAAK
+ T2lDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVNnVFPpFj333vRCS4iAlEtvUhUIIFJCi4AU
+ kSYqIQkQSoghodkVUcERRUUEG8igiAOOjoCMFVEsDIoK2AfkIaKOg6OIisr74Xuja9a89+bN/rXX
+ Pues852zzwfACAyWSDNRNYAMqUIeEeCDx8TG4eQuQIEKJHAAEAizZCFz/SMBAPh+PDwrIsAHvgAB
+ eNMLCADATZvAMByH/w/qQplcAYCEAcB0kThLCIAUAEB6jkKmAEBGAYCdmCZTAKAEAGDLY2LjAFAt
+ AGAnf+bTAICd+Jl7AQBblCEVAaCRACATZYhEAGg7AKzPVopFAFgwABRmS8Q5ANgtADBJV2ZIALC3
+ AMDOEAuyAAgMADBRiIUpAAR7AGDIIyN4AISZABRG8lc88SuuEOcqAAB4mbI8uSQ5RYFbCC1xB1dX
+ Lh4ozkkXKxQ2YQJhmkAuwnmZGTKBNA/g88wAAKCRFRHgg/P9eM4Ors7ONo62Dl8t6r8G/yJiYuP+
+ 5c+rcEAAAOF0ftH+LC+zGoA7BoBt/qIl7gRoXgugdfeLZrIPQLUAoOnaV/Nw+H48PEWhkLnZ2eXk
+ 5NhKxEJbYcpXff5nwl/AV/1s+X48/Pf14L7iJIEyXYFHBPjgwsz0TKUcz5IJhGLc5o9H/LcL//wd
+ 0yLESWK5WCoU41EScY5EmozzMqUiiUKSKcUl0v9k4t8s+wM+3zUAsGo+AXuRLahdYwP2SycQWHTA
+ 4vcAAPK7b8HUKAgDgGiD4c93/+8//UegJQCAZkmScQAAXkQkLlTKsz/HCAAARKCBKrBBG/TBGCzA
+ BhzBBdzBC/xgNoRCJMTCQhBCCmSAHHJgKayCQiiGzbAdKmAv1EAdNMBRaIaTcA4uwlW4Dj1wD/ph
+ CJ7BKLyBCQRByAgTYSHaiAFiilgjjggXmYX4IcFIBBKLJCDJiBRRIkuRNUgxUopUIFVIHfI9cgI5
+ h1xGupE7yAAygvyGvEcxlIGyUT3UDLVDuag3GoRGogvQZHQxmo8WoJvQcrQaPYw2oefQq2gP2o8+
+ Q8cwwOgYBzPEbDAuxsNCsTgsCZNjy7EirAyrxhqwVqwDu4n1Y8+xdwQSgUXACTYEd0IgYR5BSFhM
+ WE7YSKggHCQ0EdoJNwkDhFHCJyKTqEu0JroR+cQYYjIxh1hILCPWEo8TLxB7iEPENyQSiUMyJ7mQ
+ AkmxpFTSEtJG0m5SI+ksqZs0SBojk8naZGuyBzmULCAryIXkneTD5DPkG+Qh8lsKnWJAcaT4U+Io
+ UspqShnlEOU05QZlmDJBVaOaUt2ooVQRNY9aQq2htlKvUYeoEzR1mjnNgxZJS6WtopXTGmgXaPdp
+ r+h0uhHdlR5Ol9BX0svpR+iX6AP0dwwNhhWDx4hnKBmbGAcYZxl3GK+YTKYZ04sZx1QwNzHrmOeZ
+ D5lvVVgqtip8FZHKCpVKlSaVGyovVKmqpqreqgtV81XLVI+pXlN9rkZVM1PjqQnUlqtVqp1Q61Mb
+ U2epO6iHqmeob1Q/pH5Z/YkGWcNMw09DpFGgsV/jvMYgC2MZs3gsIWsNq4Z1gTXEJrHN2Xx2KruY
+ /R27iz2qqaE5QzNKM1ezUvOUZj8H45hx+Jx0TgnnKKeX836K3hTvKeIpG6Y0TLkxZVxrqpaXllir
+ SKtRq0frvTau7aedpr1Fu1n7gQ5Bx0onXCdHZ4/OBZ3nU9lT3acKpxZNPTr1ri6qa6UbobtEd79u
+ p+6Ynr5egJ5Mb6feeb3n+hx9L/1U/W36p/VHDFgGswwkBtsMzhg8xTVxbzwdL8fb8VFDXcNAQ6Vh
+ lWGX4YSRudE8o9VGjUYPjGnGXOMk423GbcajJgYmISZLTepN7ppSTbmmKaY7TDtMx83MzaLN1pk1
+ mz0x1zLnm+eb15vft2BaeFostqi2uGVJsuRaplnutrxuhVo5WaVYVVpds0atna0l1rutu6cRp7lO
+ k06rntZnw7Dxtsm2qbcZsOXYBtuutm22fWFnYhdnt8Wuw+6TvZN9un2N/T0HDYfZDqsdWh1+c7Ry
+ FDpWOt6azpzuP33F9JbpL2dYzxDP2DPjthPLKcRpnVOb00dnF2e5c4PziIuJS4LLLpc+Lpsbxt3I
+ veRKdPVxXeF60vWdm7Obwu2o26/uNu5p7ofcn8w0nymeWTNz0MPIQ+BR5dE/C5+VMGvfrH5PQ0+B
+ Z7XnIy9jL5FXrdewt6V3qvdh7xc+9j5yn+M+4zw33jLeWV/MN8C3yLfLT8Nvnl+F30N/I/9k/3r/
+ 0QCngCUBZwOJgUGBWwL7+Hp8Ib+OPzrbZfay2e1BjKC5QRVBj4KtguXBrSFoyOyQrSH355jOkc5p
+ DoVQfujW0Adh5mGLw34MJ4WHhVeGP45wiFga0TGXNXfR3ENz30T6RJZE3ptnMU85ry1KNSo+qi5q
+ PNo3ujS6P8YuZlnM1VidWElsSxw5LiquNm5svt/87fOH4p3iC+N7F5gvyF1weaHOwvSFpxapLhIs
+ OpZATIhOOJTwQRAqqBaMJfITdyWOCnnCHcJnIi/RNtGI2ENcKh5O8kgqTXqS7JG8NXkkxTOlLOW5
+ hCepkLxMDUzdmzqeFpp2IG0yPTq9MYOSkZBxQqohTZO2Z+pn5mZ2y6xlhbL+xW6Lty8elQfJa7OQ
+ rAVZLQq2QqboVFoo1yoHsmdlV2a/zYnKOZarnivN7cyzytuQN5zvn//tEsIS4ZK2pYZLVy0dWOa9
+ rGo5sjxxedsK4xUFK4ZWBqw8uIq2Km3VT6vtV5eufr0mek1rgV7ByoLBtQFr6wtVCuWFfevc1+1d
+ T1gvWd+1YfqGnRs+FYmKrhTbF5cVf9go3HjlG4dvyr+Z3JS0qavEuWTPZtJm6ebeLZ5bDpaql+aX
+ Dm4N2dq0Dd9WtO319kXbL5fNKNu7g7ZDuaO/PLi8ZafJzs07P1SkVPRU+lQ27tLdtWHX+G7R7ht7
+ vPY07NXbW7z3/T7JvttVAVVN1WbVZftJ+7P3P66Jqun4lvttXa1ObXHtxwPSA/0HIw6217nU1R3S
+ PVRSj9Yr60cOxx++/p3vdy0NNg1VjZzG4iNwRHnk6fcJ3/ceDTradox7rOEH0x92HWcdL2pCmvKa
+ RptTmvtbYlu6T8w+0dbq3nr8R9sfD5w0PFl5SvNUyWna6YLTk2fyz4ydlZ19fi753GDborZ752PO
+ 32oPb++6EHTh0kX/i+c7vDvOXPK4dPKy2+UTV7hXmq86X23qdOo8/pPTT8e7nLuarrlca7nuer21
+ e2b36RueN87d9L158Rb/1tWeOT3dvfN6b/fF9/XfFt1+cif9zsu72Xcn7q28T7xf9EDtQdlD3YfV
+ P1v+3Njv3H9qwHeg89HcR/cGhYPP/pH1jw9DBY+Zj8uGDYbrnjg+OTniP3L96fynQ89kzyaeF/6i
+ /suuFxYvfvjV69fO0ZjRoZfyl5O/bXyl/erA6xmv28bCxh6+yXgzMV70VvvtwXfcdx3vo98PT+R8
+ IH8o/2j5sfVT0Kf7kxmTk/8EA5jz/GMzLdsAAAAEZ0FNQQAAsY58+1GTAAAAIGNIUk0AAHolAACA
+ gwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAc0SURBVHjaxFhdjF1VGV3ft/c55947M739
+ G+p0emckMQVhOlhREWoh1kQhxAd9MSHExEQ0JVFjIEGKCSFBiwZCIBEjPhhj1GcNsVT8qRabtLw0
+ FEOn/52hWDpU5v/ec87e3/LhzthO7RQujHAe7z53r7PW97PXt2XvP/Zv/86Do2Nn8P4+A43+nz61
+ U4Y+se2RHzyKD+J5+KHv+zbvR578XZqmWdKVppWkmiSS+Ir3CopbFiQR8d4nXhLvapW0mZd3bu0f
+ HTvj28uxzANMndegLgqcI0nochFVgYg4lSxxq+uVVpG2f5+HNwtFk9AWKWHOWj74QiWKiCwLvFOR
+ 1CVwPavr3ZUKyUXwoEEZjRqjsUAZVBWAgMtDX1SazLIsy7OSXWUrLmYfA0R9iEwEJBijxWXPNVXN
+ 58pmqyzDYngyCswUnhHi/0+pTjKE0GyVIdol8EQwJMZ0yWgPtM7ePnvy6lUVV+sSJxfp6lrQJrGm
+ kp2u9+2ayI6czy+7gxEmIS+jLYT0QuypAG2pD++fOvXVk7tuSCB+UIoM3l0Mr6JBI1zPdT0rb762
+ /1t7zo3Plpejb0ZYDIQsho8AQCck/5d9/8zYncdeqLsw4bLus+foKKqLirqdp1mlWWBVT88Dn1r3
+ +Evnzs6Ulw8BLiC8fZg3/fvwbSf/OJBId+qqUYGSRiwO0byWrVZ+/Igk6fDQ8BO39j20b/zURP42
+ yXjl5Y+OH/zc0Rcaiaun1bplDozCRdEURqEJAZK0mZni1UNTB/f3jr+2c0vvNb21dw/f/9aRLSf2
+ rOzGVa7SDYiQCohQhABBiAmYGNIIQaTGiFDOToeRo1MHD9THTz1285ob+7uvALGk+APnX/n8yb0f
+ ybTus1oU0ggI4PlfwdWQOFIYDVTzQgYlQczO2tGjrRC7N+O7Hxt8HHLwzHQH7FeMH958ZHdfWtaz
+ pB5ELJIMYKEoFUEQBKVYqU0wF7J0ftYnMEmMQguwIp/LTx1/6+D+NVNnn9zW3xn7/NQBU73KVVeI
+ iDICQLvUxVEAE4gCYgkFUcWRAoq4JGoCFi6YSCia7uSJ0LchrF3bWeyLkHvKighnZmBQULD6nnuv
+ e3X0mpHTa76+3WgbfvGbjSNjG4+MXf2nF5MN/bKiuv6Xvxo8frpvz97slm0uqI+RrTmbnrJW2Wnq
+ CRVBYSqAKEEgaQwAKMdGs6FhLNTu+OM7k8ZAzx1fXP2Vu2u3bJ360c60MbjmG98MzkyEooQE0Y5T
+ j4Qj1GgiBJRIF+DTxqAu4OevHAIgQLtd5Y7nnvghJqacSXQUUoCcHbKn8yQjaAIDDYzCbGi4GBst
+ x0azoU0XyTTfdqaf/4NNTvbev6Pn01tnnv+9KSkgBKLVpS3TErIITASiCnEQD3EUt6IexkbD6GkA
+ 2dAmLmp4aL126vSX75je9Vx1y9Z1Tz3rojqb740JYofiG82MNAMiQEHt+uE2ajsDfGNgHn2B/dp7
+ tq+7b8ebd9+VbRjsuuUz0RkFJI20pT3LEux9GiERKhAPSSi+vhJA65VDc/teBJA1Btuxr16/CYAD
+ vDkA3DyElXUA2m6QgILoWHyfgRQayAgWwmxoGEBz397pXc+1ZWi/uPb+B+Pk5NyL+2Z/++vmvr29
+ 9+1w9frrDz9gAjURKgEjOxNf5ybOxOKsWk28CpWYePaZiZ/9pJ1oI9cMAOqNzkCx4CyKRGHza3cJ
+ oWRwtlAZqYtwRd4Z+9h3/eGWHZrJz+chRjMyCgmQoNFgQUpD2fTFrBezxEe4hXWIdRUKCebNpY7N
+ udmxf3XGXho3xsnXd42PFNDbpLIqowgyiimVEIhQAKRmpOSO7RNIIBQWIjERxyqSGrw13zj3lN/Y
+ Yea7lMNfmhl9afeRv0CKLa72IeeoEIAqAjjAFAYFzLcdF9sFK4kpVEM10RRTrD3Tu+XlYmXn570o
+ Bm9qNj6+ezL/23TrTBkD35nndz5U0yqUTXmm79aXserdnPfz33DtF1pdq3eP/DkA27qq6xN1onIZ
+ O0gKAdCppKlL5I1YfXr91sNYfeX934Glb3wyqP/rP5/34E3dlYZzTjA/fLUdCAERR6WIeKeIb9qK
+ JzZsO4Get937nU0U628oi7ndx/a0DNdV0prjJbOfEA5SI1YWbqZrzc8HP7sUNkuSF/7uLzpm5Ap5
+ wKu3hErP/mN/P51bTQSLja5QqbpKsarWu+fDt0+ga0mL7RemmkVTjrJd1FfSoG94pm/42HuasszM
+ YoyXsicpIMMyzbNY6iBDCKEscjG3GD5E0lANFgtEwM1PL8sFLCDFwWIoWq08dXpJ7MWMoZybpUVB
+ IuJE2nbyvd8sQEzoRFUhCnpMzXjvL5nvixhK0EKcU5eKS0SW62pDRSjiRJ3QWZoyjYZkEbxz1XY2
+ ijiISqQI4GV5Ik4FSDOF0mLML1g/P9DoB/DjR+99/y/WBhr9snffge3f/t4Hc6349GP/GQD8+7VT
+ 6rBtdwAAAABJRU5ErkJggg==
+Description: Ad Blocker
+ The Ad Blocker Library Item.
