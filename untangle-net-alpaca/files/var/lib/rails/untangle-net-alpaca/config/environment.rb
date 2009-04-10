@@ -80,7 +80,13 @@ end
 # include Globalize
 # Locale.set_base_language('en-US')
 
-UNTANGLE_VERSION="6.1"
+version_file=File.join( File.dirname(__FILE__), "..", "version", "PUBVERSION" )
+if File.exists?( version_file )
+  UNTANGLE_VERSION=File.read( version_file ).strip
+else
+  UNTANGLE_VERSION="6.0"
+end
+
 HELP_URL="http://www.untangle.com/docs/get.php"
 HELP_NAMESPACE="alpaca"
 

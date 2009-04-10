@@ -76,29 +76,6 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                         }
                     }
                 }, this.isWanCheckbox ]
-            },{
-                autoHeight : true,
-                wanToggle : true,
-                defaults : {
-                    itemCls : 'label-width-2'
-                },
-                xtype : "fieldset",
-                items : [{
-                    xtype : "numberfield",
-                    fieldLabel : this._( "Internet Download Bandwidth" ),
-                    name : "interface.download_bandwidth",
-                    boxLabel : this._( "kbps") 
-                },{
-                    xtype : "numberfield",
-                    fieldLabel : this._( "Internet Upload Bandwidth" ),
-                    name : "interface.upload_bandwidth",
-                    boxLabel : this._( "kbps") 
-                },{
-                    xtype : "button",
-                    text : this._( "Estimate Link Speed" ),
-                    handler : this.onEstimateLinkSpeed,
-                    scope : this
-                }]
             }, this.switchBlade ]
         });
 
@@ -146,7 +123,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             },{
                 xtype : "label",
                 cls : 'page-header-text',
-                html : this._( "IP Addresses" )
+                html : this._( "IP Address Aliases" )
             }, this.buildAliasGrid( settings, "static_aliases" ),{
                 wanToggle : true,
                 autoHeight : true,
@@ -344,7 +321,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             },{
                 xtype : "label",
                 cls : 'page-header-text',
-                html : this._( "IP Addresses" )
+                html : this._( "IP Address Aliases" )
             }, this.buildAliasGrid( settings, "pppoe_aliases" ), {
                 autoHeight : true,
                 defaults : {
