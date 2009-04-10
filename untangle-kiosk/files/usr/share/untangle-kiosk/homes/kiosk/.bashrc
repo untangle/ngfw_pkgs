@@ -1,6 +1,6 @@
 XORG_CONF_VESA=xorg-untangle-vesa.conf
 
-cat >| /etc/X11/$XORG_CONF_VESA <<EOF
+sudo tee /etc/X11/$XORG_CONF_VESA <<EOF
 Section "Device"
 Identifier "Configured Video Device"
 Driver "vesa"
