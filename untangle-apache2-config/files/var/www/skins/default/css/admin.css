@@ -988,6 +988,22 @@ div.wizard-network-image-description
            margin:4px 0px;
            display:block;
 }
+.nas-status-percentage-wrapper{
+  border-bottom:1px solid #7EC22B;
+  border-right:1px solid #7EC22B;
+  border-top:1px solid #7ED22B;
+  height:14px;
+  margin-right:5px;
+  float:left;
+  width:140px;  
+  background-color:#FFFFFF;  
+}
+.nas-status-percentage{
+  background:#7EC22B url(../images/gray/progess-bar/progress-bg-green-5.png) repeat-x scroll left center;
+  height:14px;
+  float:left;
+  width:0;  
+}
 .untangle-form-panel .x-form{
  border:none
 }
@@ -1545,6 +1561,18 @@ fieldset.failover-test-type div.x-fieldset-bwrap
 .x-fieldset-nas-share-override {
   border:none;
   padding-left:2px;
+}
+.nas-welcome-image {
+   background-image:url(../images/admin/nas-welcome-image-flattened.png);
+  float:left;
+  height:187px;
+  width:243px; 
+}
+.nas-welcome-next-text{
+  float:left;
+  width:100%;
+  clear:both;
+  margin-top:2em;
 }
 .nas-override{
   margin-bottom:1em;
