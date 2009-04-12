@@ -562,7 +562,7 @@
 	$rsync = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status rsync"), "running") ? 1 : 0);
 	$acpid = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status acpid"), "running") ? 1 : 0);
   $open_iscsi = (strstr(exec("export LANG=C; /opt/nas/sbin/service-status open-iscsi"), "running") ? 1 : 0);
-  $services_array = array(array("service"=>"smb","status"=>$smb),array("service"=>"nfsv3","status"=>$nfsv3),array("service"=>"http","status"=>$http),array("service"=>"ftp","status"=>$ftp));
+  $services_array = array(array("service"=>"smb","status"=>$smb,"display"=>"Samba /CIFS (Windows File Sharing)"),array("service"=>"nfsv3","status"=>$nfsv3,"display"=>"NFSv3 (Network File System Version 3)"),array("service"=>"http","status"=>$http,"display"=>"Http / Web DAV (Modify Files Over the Web)"),array("service"=>"ftp","status"=>$ftp,"display"=>"FTP (File Transfer Protocol)"));
   if($_REQUEST['responseType']=='json'){
       if($_REQUEST['callback']){
           echo wrapAround($_REQUEST['callback'],'{rows:'.json_encode($services_array).'}');

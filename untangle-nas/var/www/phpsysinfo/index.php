@@ -91,7 +91,7 @@ if ($template == 'random') {
   $template = $buf[array_rand($buf, 1)];
 }
 
-if ($template != 'xml' && $template != 'wml') {
+if ($template != 'xml' && $template != 'wml' && $template != 'json') {
   // figure out if the template exists
   $template = basename($template);
   if (!file_exists(APP_ROOT . "/templates/" . $template)) {
@@ -166,6 +166,7 @@ require_once(APP_ROOT . '/includes/xml/memory.php');
 require_once(APP_ROOT . '/includes/xml/filesystems.php');
 require_once(APP_ROOT . '/includes/xml/mbinfo.php');
 require_once(APP_ROOT . '/includes/xml/hddtemp.php');
+require_once("../../includes/xml2json.php"); /* To convert xml to json*/
 
 // build the xml
 $xml = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n";
@@ -237,7 +238,15 @@ if (TEMPLATE_SET == 'xml') {
     echo "<card id=\"temp\" title=\"" . $text['temperature'] . "\">" . $temp . "</card>";
   echo "</wml>\n";
 
-} else {
+} elseif (TEMPLATE_SET == 'json'){
+  if($_REQUEST['responseType']=='json'){
+    if($_REQUEST['callback']){
+        echo wrapAround($_REQUEST['callback'],json_encode(xml2json::transformXmlStringToArray(xml_filesystems(),3)));
+    }else{
+        echo json_encode(xml2json::transformXmlStringToArray(xml_filesystems(),3));
+    }
+  }
+}else {
   $image_height = get_gif_image_height(APP_ROOT . '/templates/' . TEMPLATE_SET . '/images/bar_middle.gif');
   define('BAR_HEIGHT', $image_height);
 

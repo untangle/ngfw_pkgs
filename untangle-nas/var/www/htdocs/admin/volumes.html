@@ -53,7 +53,20 @@
 	$volumes_mountpoint = array();
 	$volumes_vg = array();
 	$volumes_fstype = array();
+	$snapshots_id = array();
+	$snapshots_lvname = array();
+	$snapshots_vgname = array();
+	$snapshots_shared = array();
+	$snapshots_rotateid = array();
 
+	$schedule_size = array();
+	$schedule_share = array();
+	$schedule_timecounter = array();
+	$schedule_timemax = array();
+	$schedule_rotatecounter = array();
+	$schedule_rotatemax = array();
+	$schedule_lvname = array();
+	$schedule_vgname = array();
 	function volumes_startelement($parser, $name, $attrs)
 	{
 		global $volumes_id, $volumes_name, $volumes_mountpoint, $volumes_vg, $volumes_fstype;
@@ -90,7 +103,36 @@
 
 	if (($i == 0) || (($i == 1) && (strlen($vgds[0]) == 0)))
 	{
-		header("Location: ./volumes_vgmanage.html");
+      if($_REQUEST['responseType']=='json'){
+          $response = '{volumes_vg:'.json_encode($volumes_vg).                         
+                   ',volumes_id:'.json_encode($volumes_id).          
+                   ',volumes_name:'.json_encode($volumes_name).
+                   ',volumes_fstype:'.json_encode($volumes_fstype).
+                   ',volumes_mountpoint:'.json_encode($volumes_mountpoint).
+                   ',df:'.json_encode($df). 
+                   ',snapshots_id:'.json_encode($snapshots_id). 
+                   ',snapshots_lvname:'.json_encode($snapshots_lvname). 
+                   ',snapshots_vgname:'.json_encode($snapshots_vgname). 
+                   ',snapshots_shared:'.json_encode($snapshots_shared).
+                   ',snapshots_rotateid:'.json_encode($snapshots_rotateid). 
+                   ',schedule_size:'.json_encode($schedule_size). 
+                   ',schedule_share:'.json_encode($schedule_share). 
+                   ',schedule_timecounter:'.json_encode($schedule_timecounter). 
+                   ',schedule_timemax:'.json_encode($schedule_timemax).
+                   ',schedule_rotatecounter:'.json_encode($schedule_rotatecounter). 
+                   ',schedule_rotatemax:'.json_encode($schedule_rotatemax). 
+                   ',schedule_lvname:'.json_encode($schedule_lvname).
+                   ',schedule_vgname:'.json_encode($schedule_vgname).                                                                                                                                            
+                   '}';
+          if($_REQUEST['callback']){
+              echo wrapAround($_REQUEST['callback'],$response);
+          }else{
+              echo $response;
+          }
+          return;
+      }else{
+    		header("Location: ./volumes_vgmanage.html");      
+      } 	
 		exit;
 	}
 
@@ -100,20 +142,6 @@
 		$vgname = $vginfo[0];
 	}
 
-	$snapshots_id = array();
-	$snapshots_lvname = array();
-	$snapshots_vgname = array();
-	$snapshots_shared = array();
-	$snapshots_rotateid = array();
-
-	$schedule_size = array();
-	$schedule_share = array();
-	$schedule_timecounter = array();
-	$schedule_timemax = array();
-	$schedule_rotatecounter = array();
-	$schedule_rotatemax = array();
-	$schedule_lvname = array();
-	$schedule_vgname = array();
 
 	function snapshots_startelement($parser, $name, $attrs)
 	{

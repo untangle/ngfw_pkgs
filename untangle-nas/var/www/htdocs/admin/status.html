@@ -31,12 +31,15 @@
 	require("pre.inc");
 	require("md.inc");
     include("authenticated.inc");
-
-	generic_header(array("title" => _("Status : System Status")));
-	single_begin(array());
-
+  if($_GET['template'] == 'json'){
+    include '../../phpsysinfo/index.php';  
+    return;
+  }else{
+  	generic_header(array("title" => _("Status : System Status")));
+  	single_begin(array());  
+  }
 ?>
-
+<?php if($_GET['template']!='json') : ?>
 <p>&nbsp;</p>
 <?php
         nested_tab_begin("C_STATUS");
@@ -48,3 +51,4 @@ print("</div>\n");
 	single_end(array());
 	generic_footer(array());
 ?>
+<?php endif; ?>
