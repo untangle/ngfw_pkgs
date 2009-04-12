@@ -1278,7 +1278,7 @@ body.wizard .ext-el-mask
 }
 /* wizard title*/ 
 .wizard-title{
-	margin-bottom:1.8em;
+	margin-bottom:0.8em;
 	padding-top:5px;
 	color:#333;
 	font-size:18px;
