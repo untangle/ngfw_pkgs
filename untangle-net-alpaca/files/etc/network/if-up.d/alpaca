@@ -5,7 +5,7 @@
 ETHERNET_MEDIA_CONF="/etc/untangle-net-alpaca/ethernet_media"
 SET_LINK_MEDIA_SCRIPT="/usr/share/untangle-net-alpaca/scripts/set-link-media"
 
-ADD_UPLINK_SCRIPT="/localhome/rbscott/work/pkgs/untangle-net-alpaca/files/usr/share/untangle-net-alpaca/scripts/add-uplink"
+ADD_UPLINK_SCRIPT="/usr/share/untangle-net-alpaca/scripts/add-uplink"
 
 ## It is very dangerous to change this once a revision has been released.
 TABLE_PREFIX="uplink."

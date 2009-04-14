@@ -1,6 +1,6 @@
 #! /bin/bash
 
-ADD_UPLINK_SCRIPT="/localhome/rbscott/work/pkgs/untangle-net-alpaca/files/usr/share/untangle-net-alpaca/scripts/add-uplink"
+ADD_UPLINK_SCRIPT="/usr/share/untangle-net-alpaca/scripts/add-uplink"
 
 mkdir -p /var/log/untangle-net-alpaca/
 
