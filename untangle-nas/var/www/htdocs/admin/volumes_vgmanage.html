@@ -359,7 +359,7 @@
                     if (!$volume_group_in_use)
                     {
                             exec("export LANG=C; /usr/bin/sudo " . $GLOBALS["lvm_command_prefix"] . "vgchange -a n " . escapeshellarg($vg));
-                            exec("export LANG=C; /usr/bin/sudo " . $GLOBALS["lvm_command_prefix"] . "vgremove " . escapeshellarg($vg));
+                            exec("export LANG=C; /usr/bin/sudo " . $GLOBALS["lvm_command_prefix"] . "vgremove -f " . escapeshellarg($vg));
 
                             if (is_dir("/mnt/" . $vg))
                                     exec("export LANG=C; /usr/bin/sudo /bin/rmdir /mnt/" . escapeshellarg($vg));
