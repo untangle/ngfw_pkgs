@@ -1,4 +1,4 @@
-Ext.ns('Ung');
+ Ext.ns('Ung');
 Ext.ns('Ung.Alpaca');
 
 Ung.Alpaca.Util = {
@@ -101,7 +101,7 @@ Ung.Alpaca.Util = {
     remoteFunctionFailure : function( response, options, handler )
     {
         var isSessionExpired = false;
-
+        
         /* Check if the alpaca session is expired */
         try {
             var json = Ext.util.JSON.decode( response.responseText );
@@ -125,8 +125,11 @@ Ung.Alpaca.Util = {
         if ( handler ) {
             return handler( response, options );
         }
+        try{
+            this.handleConnectionError( response, options );
+        }catch(e){
         
-        this.handleConnectionError( response, options );
+        }
     },
 
     handleConnectionError : function( response, options )
