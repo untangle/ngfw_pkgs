@@ -71,9 +71,8 @@ class UvmController < ApplicationController
     alpaca_settings = AlpacaSettings.new if alpaca_settings.nil?
     modules_disabled = alpaca_settings.modules_disabled
     modules_disabled = "" if modules_disabled.nil?
-    modules_disabled = modules_disabled.sub( "nf_nat_sip", "" )
-    modules_disabled = modules_disabled.sub( "nf_conntrack_sip", "" )
-    puts "SIP HELPER: #{s["enable_sip_helper"]}"
+    modules_disabled = modules_disabled.gsub( "nf_nat_sip", "" )
+    modules_disabled = modules_disabled.gsub( "nf_conntrack_sip", "" )
     unless ( s["enable_sip_helper"] )
       modules_disabled += " nf_nat_sip nf_conntrack_sip "
     end

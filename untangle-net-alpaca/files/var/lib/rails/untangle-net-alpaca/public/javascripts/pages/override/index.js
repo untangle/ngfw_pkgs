@@ -72,7 +72,6 @@ Ung.Alpaca.Pages.Override.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     fieldLabel : this._( "Send ICMP Redirects" ),
                     name : "alpaca_settings.send_icmp_redirects",
                     itemCls:'label-width-2'
-                    
                 }]
             },{
                 xtype : "label",

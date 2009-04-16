@@ -179,6 +179,45 @@ class NetworkController < ApplicationController
   end
 
   alias_method :aliases, :extjs
+  
+  def get_general_settings
+    settings = {}
+
+    alpaca_settings = AlpacaSettings.find( :first )
+    alpaca_settings = AlpacaSettings.new if alpaca_settings.nil?
+    modules_disabled = alpaca_settings.modules_disabled
+    modules_disabled = "" if modules_disabled.nil?
+    settings["enable_sip_helper"] = !modules_disabled.include?( "nf_nat_sip" )
+    settings["send_icmp_redirects"] = alpaca_settings.send_icmp_redirects
+
+    json_result( :values => settings )
+  end
+
+  def set_general_settings
+    s = json_params
+
+    alpaca_settings = AlpacaSettings.find( :first )
+    alpaca_settings = AlpacaSettings.new( :send_icmp_redirects => true ) if @alpaca_settings.nil? 
+    alpaca_settings.send_icmp_redirects = s["send_icmp_redirects"]
+    
+    modules_disabled = alpaca_settings.modules_disabled
+    modules_disabled = "" if modules_disabled.nil?
+    modules_disabled = modules_disabled.gsub( "nf_nat_sip", "" )
+    modules_disabled = modules_disabled.gsub( "nf_conntrack_sip", "" )
+    unless ( s["enable_sip_helper"] )
+      modules_disabled += " nf_nat_sip nf_conntrack_sip "
+    end
+    alpaca_settings.modules_disabled = modules_disabled.strip
+    alpaca_settings.save
+
+    spawn do
+      os["network_manager"].commit
+    end
+    
+    json_result
+  end
+
+  alias_method :general, :extjs
 
   def commit
     spawn do
@@ -186,7 +225,6 @@ class NetworkController < ApplicationController
     end
     return redirect_to( :action => 'manage' )
   end
-
 
   def create_ip_network
     @list_id = params[:list_id]

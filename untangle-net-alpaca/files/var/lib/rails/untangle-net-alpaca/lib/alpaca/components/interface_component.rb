@@ -52,17 +52,6 @@ class Alpaca::Components::InterfaceComponent < Alpaca::Component
 
   ## Register all of the menu items.
   def register_menu_items( menu_organizer, config_level )
-    menu_organizer.register_item( "/main/interfaces", menu_item( 100, "Interfaces", :action => "list" ))
-    
-    ## Retrieve all of the interfaces
-    interfaces = Interface.find(:all)
-    interfaces.sort! { |a,b| a.index <=> b.index }
-    
-    interfaces.each do |i|
-      mi = menu_item( i.index, i.name, :action => "config", :id => i.id )
-      menu_organizer.register_item( "/main/interfaces/#{i.os_name}", mi )
-    end
-
     menu_organizer.register_item( "/extjs/interfaces", menu_item( 100, "Interfaces", :action => "list" ))
   end
 
