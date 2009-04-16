@@ -28,10 +28,6 @@ class OverrideController < ApplicationController
 
   def set_settings
     s = json_params
-
-    alpaca_settings = AlpacaSettings.find( :first )
-    alpaca_settings = AlpacaSettings.new( :send_icmp_redirects => true ) if @alpaca_settings.nil? 
-    alpaca_settings.update_attributes( s["alpaca_settings"] )
     
     FileOverride.destroy_all
     position = 0

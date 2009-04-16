@@ -66,19 +66,6 @@ class UvmController < ApplicationController
       rule.save
     end
     
-    ## This is kind of wrong since it is O/S specific.
-    alpaca_settings = AlpacaSettings.find( :first )
-    alpaca_settings = AlpacaSettings.new if alpaca_settings.nil?
-    modules_disabled = alpaca_settings.modules_disabled
-    modules_disabled = "" if modules_disabled.nil?
-    modules_disabled = modules_disabled.gsub( "nf_nat_sip", "" )
-    modules_disabled = modules_disabled.gsub( "nf_conntrack_sip", "" )
-    unless ( s["enable_sip_helper"] )
-      modules_disabled += " nf_nat_sip nf_conntrack_sip "
-    end
-    alpaca_settings.modules_disabled = modules_disabled.strip
-    alpaca_settings.save
-
     ## Commit all of the packet filter rules.
     os["packet_filter_manager"].commit
     

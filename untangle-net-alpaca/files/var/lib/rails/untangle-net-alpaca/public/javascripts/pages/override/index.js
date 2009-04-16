@@ -64,15 +64,6 @@ Ung.Alpaca.Pages.Override.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 xtype : "label",
                 cls: 'page-header-text',
                 html : this._( "Overrides" )
-            },
-            {
-                autoHeight : true,                
-                items : [{
-                    xtype : "checkbox",
-                    fieldLabel : this._( "Send ICMP Redirects" ),
-                    name : "alpaca_settings.send_icmp_redirects",
-                    itemCls:'label-width-2'
-                }]
             },{
                 xtype : "label",
                 cls: 'label-section-heading-2',
