@@ -38,6 +38,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
                 forceFit : true
             }
         });
+        config.xtype = "alpaca_editor_grid_panel";
         Ung.Alpaca.EditorGridPanel.superclass.constructor.apply( this, arguments );
     },
     initComponent : function()
