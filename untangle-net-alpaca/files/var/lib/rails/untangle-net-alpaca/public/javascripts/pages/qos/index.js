@@ -388,6 +388,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
             tbar : [{
                 text : "Refresh",
+                iconCls : 'icon-autorefresh',
                 handler : this.refreshStatistics,
                 scope : this
             }],

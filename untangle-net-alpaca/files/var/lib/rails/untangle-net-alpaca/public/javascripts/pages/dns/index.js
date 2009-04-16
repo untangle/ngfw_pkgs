@@ -59,6 +59,7 @@ Ung.Alpaca.Pages.Dns.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             
             tbar : [{
                 text : "Refresh",
+                iconCls : 'icon-autorefresh',
                 handler : this.refreshAutomaticEntries,
                 scope : this
             }],

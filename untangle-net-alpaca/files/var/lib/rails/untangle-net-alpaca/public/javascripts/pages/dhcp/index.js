@@ -73,6 +73,7 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
             tbar : [{
                 text : this._( "Refresh" ),
+                iconCls : 'icon-autorefresh',
                 handler : this.refreshCurrentLeases,
                 scope : this
             }],

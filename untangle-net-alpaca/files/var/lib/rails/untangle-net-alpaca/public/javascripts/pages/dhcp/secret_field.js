@@ -32,6 +32,8 @@ Ung.Alpaca.Pages.Dhcp.SecretField = Ext.extend( Ung.Alpaca.PagePanel, {
                 },{
                     fieldLabel : this._( "Custom Field" ),
                     xtype : "textarea",
+                    width : 397,
+                    height : 140,                    
                     name : "dhcp_server_settings.custom_field"
                 }]
             }]

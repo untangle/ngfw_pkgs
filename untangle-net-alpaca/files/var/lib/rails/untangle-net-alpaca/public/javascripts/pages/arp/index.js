@@ -50,6 +50,7 @@ Ung.Alpaca.Pages.Arp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             
             tbar : [{
                 text : this._( "Refresh" ),
+                iconCls : 'icon-autorefresh',
                 handler : this.refreshActiveEntries,
                 scope : this
             }],
