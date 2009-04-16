@@ -24,11 +24,6 @@ class UvmController < ApplicationController
     settings["user_subscriptions"] = Subscription.find( :all, :conditions => [ "system_id IS NULL" ] )
     settings["system_subscriptions"] = Subscription.find( :all, :conditions => [ "system_id IS NOT NULL" ] )
     
-    uvm_settings = UvmSettings.find( :first )
-    uvm_settings = UvmSettings.new if uvm_settings.nil?
-
-    settings["uvm"] = uvm_settings
-
     alpaca_settings = AlpacaSettings.find( :first )
     alpaca_settings = AlpacaSettings.new if alpaca_settings.nil?
     modules_disabled = alpaca_settings.modules_disabled

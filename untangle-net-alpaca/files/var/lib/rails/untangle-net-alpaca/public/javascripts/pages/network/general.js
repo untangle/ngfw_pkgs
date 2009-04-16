@@ -32,8 +32,11 @@ Ung.Alpaca.Pages.Network.General = Ext.extend( Ung.Alpaca.PagePanel, {
                     fieldLabel : this._( "Enable SIP Helper" ),
                     name : "enable_sip_helper"
                 },{
+                    name : "uvm.override_redirects",
+                    fieldLabel : this._( "Untangle Administration overrides Port Forwards" )
+                },{
                     fieldLabel : this._( "Only NAT WAN traffic" ),
-                    name : "class_nat_mode"
+                    name : "classy_nat_mode"
                 }]
             }]
         });

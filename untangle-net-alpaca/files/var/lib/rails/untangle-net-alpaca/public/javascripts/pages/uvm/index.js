@@ -132,21 +132,6 @@ Ung.Alpaca.Pages.Uvm.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 xtype : "fieldset"
             },
             items : [{
-                    xtype : "label",
-                    html : this._( "Settings" ),
-                    cls: 'page-header-text'                
-                },{
-                autoHeight : true,
-                defaults:{
-                    itemCls:'label-width-2'
-                },
-                items : [
-                {
-                    xtype : "checkbox",
-                    name : "uvm.override_redirects",
-                    fieldLabel : this._( "Untangle Administration overrides Port Forwards" )
-                }]
-            },{
                 xtype : "label",
                 cls: 'label-section-heading-2',                    
                 html : this._( "Bypass Rules" )

@@ -63,6 +63,9 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   MarkFwInput  = 0x40000000
   MarkClearFwInput = ( 0xFFFFFFFF ^ MarkFwInput )
 
+  MarkFwPass = 0x80000000
+  MarkClearFwPass = ( 0xFFFFFFFF ^ MarkFwPass )
+
   def register_hooks
     os["network_manager"].register_hook( 100, "packet_filter_manager", "write_files", :hook_write_files )
 
@@ -140,9 +143,14 @@ EOF
 ## Reject all other traffic with ICMP port unreachable
 #{IPTablesCommand} #{args} -m mark --mark #{MarkFwReject}/#{MarkFwReject} -j REJECT
 EOF
+
+    FirewallNat = Chain.new( "alpaca-nat-firewall", "filter", nil, <<'EOF' )
+EOF
     
     ## Chain where all of the firewalls rules should go
     FirewallRules = Chain.new( "firewall-rules", "mangle", "PREROUTING", <<'EOF' )
+## mark all sessions with the firewall pass tag
+#{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwPass}
 ## Ignore any traffic that is related to an existing session
 #{IPTablesCommand} #{args} -i lo -j RETURN
 #{IPTablesCommand} #{args} -m state --state ESTABLISHED -j RETURN
@@ -153,6 +161,7 @@ EOF
     FirewallMarkReject = Chain.new( "alpaca-pf-reject", "mangle", nil, <<'EOF' )
 ## Clear the INPUT mark
 #{IPTablesCommand} #{args} -j MARK --and-mark #{MarkClearFwInput}
+#{IPTablesCommand} #{args} -j MARK --and-mark #{MarkClearFwPass}
 ## Mark the packets
 #{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwReject}
 EOF
@@ -160,6 +169,7 @@ EOF
     FirewallMarkDrop = Chain.new( "alpaca-pf-drop", "mangle", nil, <<'EOF' )
 ## Clear the INPUT mark
 #{IPTablesCommand} #{args} -j MARK --and-mark #{MarkClearFwInput}
+#{IPTablesCommand} #{args} -j MARK --and-mark #{MarkClearFwPass}
 ## Mark the packets
 #{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwDrop}
 EOF
@@ -190,13 +200,17 @@ EOF
 #{IPTablesCommand} #{args} -m connmark --mark #{MarkBypass}/#{MarkBypass} -g #{Chain::BypassMark}
 EOF
 
+    ## These are only used in classy NAT mode.
+    SNatRules = Chain.new( "snat-rules", "nat", nil, <<'EOF' )
+EOF
+
     ## Chain used for Single NIC mode.
     SingleNIC = Chain.new( "alpaca-snic", "mangle", "PREROUTING" )
 
     ## Review : Should the Firewall Rules go before the redirects?
-    Order = [ MarkInterface, PostNat, 
+    Order = [ MarkInterface, PostNat, SNatRules,
               FirewallBlock, FirewallMarkReject, FirewallMarkDrop, 
-              FirewallMarkInputReject, FirewallMarkInputDrop,
+              FirewallMarkInputReject, FirewallMarkInputDrop, FirewallNat,
               FirewallRules, SingleNIC,
               BypassRules, BypassMark, Redirect ]
   end
@@ -318,6 +332,9 @@ mark_local_ip()
    done
 }
 EOF
+
+    alpaca_settings = AlpacaSettings.find( :first )
+    alpaca_settings = AlpacaSettings.new if alpaca_settings.nil?
     
     ## This is used to automatically NAT to a different address when using PPPoE.
     nat_automatic_target = "MASQUERADE"
@@ -338,8 +355,54 @@ EOF
         nat_automatic_target << "SNAT --to-source #{ip_network.ip} -o #{OSLibrary::Debian::PppoeManager.get_pppoe_name( interface )} " 
       end
     end
+
+    interface_list = Interface.find( :all )
     
-    Interface.find( :all ).each do |interface|
+    wan_interfaces = []
+
+    interface_list.each do |interface|
+      if interface.wan and ( interface.config_type != InterfaceHelper::ConfigType::BRIDGE )
+        wan_interfaces << interface
+      end
+    end
+
+    ## Find all of the interfaces that are bridged to wan interfaces
+    wan_interfaces.each do |interface|
+      wan_interfaces += interface.bridged_interface_array
+    end
+
+    ## Remove all of the duplicates
+    wan_interfaces = wan_interfaces.uniq
+    non_wan_interfaces = interface_list - wan_interfaces
+
+    if ( alpaca_settings.classy_nat_mode )
+      ## This is all of the traffic that will hit the NAT rules.  The NAT rules
+      ## Determine if the sessions originated from an IP that needs to be NATd
+      ## So sessions may hit the NAT rules, and not be NATed.
+      
+      ## NAT Sessions that are DNATd.
+      text << "#{IPTablesCommand} #{Chain::PostNat.args} -m conntrack --ctstate DNAT -j #{Chain::SNatRules}"
+      
+      ## NAT Sessions that are going out WAN Interface
+      wan_interfaces.each do |wan_interface|
+        text << "#{IPTablesCommand} #{Chain::PostNat.args} -o #{wan_interface.os_name} -j #{Chain::SNatRules}"
+
+        ## Firewall NAT rules apply to all of the traffic from WAN interfaces
+        fw_text << "#{IPTablesCommand} -t filter -A FORWARD -i #{wan_interface.os_name} -g #{Chain::FirewallNat}"
+      end
+
+      ## Ignore DNATd traffic
+      fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -m conntrack --ctstate DNAT -j RETURN"
+      ## Ignore traffic with the passed mark
+      fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -m mark --mark #{MarkFwPass}/#{MarkFwPass} -j RETURN"
+
+      non_wan_interfaces.each do |interface|
+        ## Drop all WAN traffic that is going to a non-wan interface
+        fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -o #{interface.os_name} -j DROP"        
+      end
+    end
+    
+    interface_list.each do |interface|
       ## labelling
       text << marking( interface )
       
@@ -347,9 +410,13 @@ EOF
       text << filtering( interface )
       
       ## Insert the commands to handle NAT
-      a, b = nat( interface, nat_automatic_target )
+      if ( alpaca_settings.classy_nat_mode )
+        a, b = classy_nat( wan_interfaces, interface, nat_automatic_target )
+      else
+        a, b = nat( wan_interfaces, interface, nat_automatic_target )
+      end
       text << a
-      fw_text << b
+      fw_text << b 
     end
 
     block_all = Firewall.find( :first, :conditions => [ "system_id = ?", "block-all-local-04a98864"] )
@@ -367,6 +434,8 @@ EOF
     ## should always be redirected to the dummy interface (unless it came in over lo.)
     ## which is ignored above.
     fw_text << "#{IPTablesCommand} #{Chain::FirewallRules.args} -d 192.0.2.42 -j DROP"
+    ## Clear the FwPass mark at the end
+    fw_text << "#{IPTablesCommand} #{Chain::FirewallRules.args} -j MARK --and-mark #{MarkClearFwPass}"
 
     ## Delete all empty or nil parts
     text = text.delete_if { |p| p.nil? || p.empty? }
@@ -575,7 +644,7 @@ EOF
   ## and one for MASQUERADE if it isn't.  This is a special case where
   ## the user has an alias.  You can't always SNAT it because then it
   ## couldn't load balance at all.
-  def nat( interface, nat_automatic_target )
+  def nat( wan_interfaces, interface, nat_automatic_target )
     ## static is the only config type that supports NATing
     config = interface.current_config
 
@@ -587,7 +656,7 @@ EOF
 
     ## Determine the name of the interface
     rules = []
-    fw_rules = []    
+    fw_rules = []
 
     nat_policies.each do |policy|      
       ## Global netmask, use the addresses for the interface
@@ -605,16 +674,13 @@ EOF
 
   def add_nat_rule( rules, fw_rules, interface, policy, nat_automatic_target, network, netmask )
     os_name = interface.os_name
-    os_name = OSLibrary::Debian::NetworkManager.bridge_name( interface ) if interface.is_bridge?
-    
+    os_name = OSLibrary::Debian::NetworkManager.bridge_name( interface ) if interface.is_bridge?    
 
     ## REVIEW : Need to handle the proper ports.
     ## REVIEW : Need to use the correct interface marks, but that needs a bridge mark
     network = "#{network}/#{OSLibrary::NetworkManager.parseNetmask( netmask )}"
 
     if ( policy.new_source == NatPolicy::Automatic )
-      pppoe_name = OSLibrary::Debian::PppoeManager.get_pppoe_name( interface )
-
       if nat_automatic_target != "MASQUERADE"
         nat_automatic_target.each do |target|
           rules << "#{IPTablesCommand} #{Chain::PostNat.args} -m conntrack ! --ctorigdst #{network} -s #{network} -j #{target}"
@@ -627,6 +693,53 @@ EOF
     end
 
     fw_rules << "#{IPTablesCommand} #{Chain::FirewallRules.args} -i ! #{os_name} -d #{network} -j DROP"
+  end
+  
+  def classy_nat( wan_interfaces, interface, nat_automatic_target )
+    ## static is the only config type that supports NATing
+    config = interface.current_config
+
+    return nil if ( config.nil? || !config.is_a?( IntfStatic ))
+    
+    ## Nothing to nat if there are no NAT policies
+    nat_policies = config.nat_policies
+    return nil if ( nat_policies.nil? || nat_policies.empty? )
+
+    ## Determine the name of the interface
+    rules = []
+    fw_rules = []
+
+    nat_policies.each do |policy|      
+      ## Global netmask, use the addresses for the interface
+      if ( policy.netmask == "0" || policy.netmask == "0.0.0.0" )
+        config.ip_networks.each do |ip_network|
+          add_classy_nat_rule( rules, fw_rules, interface, policy, nat_automatic_target, ip_network.ip, ip_network.netmask )
+        end
+      else
+        add_classy_nat_rule( rules, fw_rules, interface, policy, nat_automatic_target, policy.ip, policy.netmask )
+      end
+    end
+
+    [ rules.join( "\n" ), fw_rules.join( "\n" ) ]    
+  end
+
+  def add_classy_nat_rule( rules, fw_rules, interface, policy, nat_automatic_target, network, netmask )
+    os_name = interface.os_name
+    os_name = OSLibrary::Debian::NetworkManager.bridge_name( interface ) if interface.is_bridge?    
+
+    network = "#{network}/#{OSLibrary::NetworkManager.parseNetmask( netmask )}"
+
+    if ( policy.new_source == NatPolicy::Automatic )
+      if nat_automatic_target != "MASQUERADE"
+        nat_automatic_target.each do |target|
+          rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -s #{network} -j #{target}"
+        end
+      end
+      
+      rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -s #{network} -j MASQUERADE"
+    else
+      rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -s #{network} -j SNAT --to-source #{policy.new_source}"
+    end
   end
 
   def header

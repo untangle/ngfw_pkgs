@@ -190,6 +190,12 @@ class NetworkController < ApplicationController
     settings["enable_sip_helper"] = !modules_disabled.include?( "nf_nat_sip" )
     settings["send_icmp_redirects"] = alpaca_settings.send_icmp_redirects
 
+    settings["classy_nat_mode"] = alpaca_settings.classy_nat_mode
+
+    uvm_settings = UvmSettings.find( :first )
+    uvm_settings = UvmSettings.new if uvm_settings.nil?
+    settings["uvm"] = uvm_settings
+
     json_result( :values => settings )
   end
 
@@ -199,6 +205,7 @@ class NetworkController < ApplicationController
     alpaca_settings = AlpacaSettings.find( :first )
     alpaca_settings = AlpacaSettings.new( :send_icmp_redirects => true ) if @alpaca_settings.nil? 
     alpaca_settings.send_icmp_redirects = s["send_icmp_redirects"]
+    alpaca_settings.classy_nat_mode = s["classy_nat_mode"]
     
     modules_disabled = alpaca_settings.modules_disabled
     modules_disabled = "" if modules_disabled.nil?
@@ -209,6 +216,11 @@ class NetworkController < ApplicationController
     end
     alpaca_settings.modules_disabled = modules_disabled.strip
     alpaca_settings.save
+
+    uvm_settings = UvmSettings.find( :first )
+    uvm_settings = UvmSettings.new if uvm_settings.nil?
+    uvm_settings.update_attributes( s["uvm"] )
+    uvm_settings.save
 
     spawn do
       os["network_manager"].commit
