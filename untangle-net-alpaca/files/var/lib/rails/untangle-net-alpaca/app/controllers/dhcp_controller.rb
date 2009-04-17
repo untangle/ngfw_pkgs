@@ -39,7 +39,11 @@ class DhcpController < ApplicationController
 
     settings["dhcp_static_entries"] = DhcpStaticEntry.find( :all )
 
-    settings["dhcp_dynamic_entries"] = os["dhcp_server_manager"].dynamic_entries
+    if ( dhcp_server_settings.enabled )
+      settings["dhcp_dynamic_entries"] = os["dhcp_server_manager"].dynamic_entries
+    else
+      settings["dhcp_dynamic_entries"] = []
+    end
 
     json_result( :values => settings )
   end

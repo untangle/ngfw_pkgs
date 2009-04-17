@@ -27,8 +27,16 @@ class DnsController < ApplicationController
     settings["dns_static_entries"]
     settings["dns_static_entries"] = DnsStaticEntry.find( :all )
 
+    dhcp_server_settings = DhcpServerSettings.find( :first )
+    dhcp_server_settings = DhcpServerSettings.new if dhcp_server_settings.nil?
+    settings["dhcp_server_settings"] = dhcp_server_settings
+
     ## Retrieve all of the dynamic entries from the DHCP server manager
-    settings["dns_dynamic_entries"] = os["dns_server_manager"].dynamic_entries
+    if ( dns_server_settings.enabled and dhcp_server_settings.enabled )
+      settings["dns_dynamic_entries"] = os["dns_server_manager"].dynamic_entries
+    else
+      settings["dns_dynamic_entries"] = []
+    end
 
     ## Retrieve all of the local dns servers (can reuse this method for local dns)
     settings["upstream_servers"] = DnsUpstreamServers.find( :all )
@@ -63,7 +71,7 @@ class DnsController < ApplicationController
   end
   
   def get_leases
-    json_result( :values =>os["dns_server_manager"].dynamic_entries)
+    json_result( :values => os["dns_server_manager"].dynamic_entries )
   end
   
   alias_method :index, :extjs
