@@ -58,6 +58,7 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
         
         /* Append some necessary defaults */
         this.cardDefaults.autoHeight = true;
+        this.cardDefaults.autoScroll = true;
         this.cardDefaults.border = false;
         var bbarArr=[ '->', this.previousButton, this.nextButton ];
         if(this.hasCancel) {
@@ -71,6 +72,7 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
             region : "center",
             title : "&nbsp;",
 			header:false,
+			//autoScroll : true,
             defaults : this.cardDefaults, 
             bbar : bbarArr,
 			border:false
