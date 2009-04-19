@@ -398,8 +398,11 @@ EOF
 
       non_wan_interfaces.each do |interface|
         ## Drop all WAN traffic that is going to a non-wan interface
-        fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -o #{interface.os_name} -j DROP"        
+        fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -o #{interface.os_name} -j DROP"
       end
+      
+      ## Drop traffic going to the VPN interface that is not allowed.
+      fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -o tun0 -j DROP"
     end
     
     interface_list.each do |interface|
