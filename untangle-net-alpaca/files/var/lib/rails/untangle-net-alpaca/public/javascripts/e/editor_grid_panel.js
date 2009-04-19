@@ -257,9 +257,15 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
         entry.set("id", this.genAddedId());
         this.stopEditing();
         this.store.insert( 0, entry );
-        this.startEditing( 0, 0 );
+
         application.onFieldChange();
         this.updateChangedData(entry, "added");
+
+        if ( this.hasEdit ) {
+            this.editEntry( entry );
+        } else {
+            this.startEditing( 0, 0 );            
+        }
     },
     genAddedId : function() {
         this.addedId--;

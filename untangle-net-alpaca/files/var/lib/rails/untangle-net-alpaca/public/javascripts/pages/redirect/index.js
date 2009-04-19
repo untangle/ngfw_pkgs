@@ -112,7 +112,7 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 enabled : true,
                 system_id : null,
                 new_ip : "1.2.3.4",
-                new_enc_id : 0,
+                new_enc_id : "",
                 filter : "d-port::&&d-local::true&&protocol::tcp",
                 description : "[New Entry]",
                 is_custom : false
