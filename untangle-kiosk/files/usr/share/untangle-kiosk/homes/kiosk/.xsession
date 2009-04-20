@@ -2,6 +2,33 @@
 xset s off
 xset -dpms
 
+currentResolution=$(xrandr | head -1 | perl -pe 's/.*current (\d+) x (\d+).*/$1x$2/')
+
+# resize screen on vmware by forcing it to 1024x768, since the default
+# 800x600 is a bit ridiculous (we don't set it to what xrandr reports
+# as the maximum available size anymore, since we now offer a way for
+# the user to change his desktop resolution)
+if grep -qE '^\(II\) VMWARE\(0\)' /var/log/Xorg.0.log && [ "$currentResolution" = 800x600 ] ; then
+  xrandr -s 1024x768
+fi
+
+# resize screen on VESA by forcing it to 1024x768
+if grep -qE '^\(II\) VESA\(0\)' /var/log/Xorg.0.log ; then
+  xrandr -s 1024x768
+fi
+
+# restore user-set resolution if it's present
+[ -f /home/kiosk/.ut-resolution ] && xrandr -s $(cat /home/kiosk/.ut-resolution)
+
+# set a reasonable DPI value if the current one is grossly wrong (this
+# does not seem to work on VMWare, but the issue we're fixing doesn't
+# show up on VMWare anyway)
+currentDPI=$(xdpyinfo | awk '/resolution/ { gsub(/x.+/, "", $2) ; print $2}')
+[ "$currentDPI" -gt 400 ] && xrand --dpi 96
+
+# set background picture, and start panel
+/home/kiosk/utils/ut-desktop.sh
+
 # do not recover a (potentially saved) previous session
 find .mozilla -name sessionstore.js -exec /bin/rm {} \;
 
@@ -33,17 +60,6 @@ if [ -f /etc/default/untangle-vm ] ; then
     [ -x ${WIN_ACTION_HANDLER} ] && sudo -b ${WIN_ACTION_HANDLER} 
 fi
 
-# Here's where we launch the window manager
-xfwm4 --daemon
-
-# resize screen on vmware
-if grep -q VMWARE /var/log/Xorg.0.log ; then
-  xrandr -s $(xrandr | head -1 | perl -pe 's/.* maximum (\d+) x (\d+)/$1x$2/')
-fi
-
-# background
-feh --bg-scale /usr/share/untangle-kiosk/desktop_background-1024x768.png
-
-# fbpanel; when this exits, X stops, but it will restart automatically
-# anyway, so it does not matter.
-fbpanel
+# the window manager; when this exits, X stops, but it will restart
+# automatically anyway, so it does not matter.
+xfwm4

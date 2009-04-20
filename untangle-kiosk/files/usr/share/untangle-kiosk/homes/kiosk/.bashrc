@@ -5,6 +5,14 @@ Section "Device"
 Identifier "Configured Video Device"
 Driver "vesa"
 EndSection
+
+Section "Screen" 
+Identifier "Default Screen"
+SubSection "Display"
+Depth 24
+Modes "1024x768" "800x600"
+EndSubSection
+EndSection
 EOF
 
 if [ `tty` = "/dev/tty1" ] ; then
