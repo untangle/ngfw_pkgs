@@ -652,3 +652,24 @@ td.x-date-mp-month a:hover,td.x-date-mp-year a:hover {
 .x-form fieldset {
     border:none;
 }
+.x-toolbar .x-btn-always-over .x-btn-left{
+	background: url(../images/darkgray/toolbar/tb-btn-sprite.gif) no-repeat 0 0;
+}
+.x-toolbar .x-btn-always-over .x-btn-right{
+	background: url(../images/darkgray/toolbar/tb-btn-sprite.gif) no-repeat 0 -21px;
+}
+.x-toolbar .x-btn-always-over .x-btn-center{
+	background: url(../images/darkgray/toolbar/tb-btn-sprite.gif) repeat-x 0 -42px;
+}
+.x-toolbar .x-btn-over .x-btn-left{
+	background: url(../images/darkgray/toolbar/tb-btn-sprite.gif) no-repeat 0 -63px;
+}
+.x-toolbar .x-btn-over .x-btn-right{
+	background: url(../images/darkgray/toolbar/tb-btn-sprite.gif) no-repeat 0 -84px;
+}
+.x-toolbar .x-btn-over .x-btn-center{
+	background: url(../images/darkgray/toolbar/tb-btn-sprite.gif) repeat-x 0 -105px;
+}
+.small-right-margin{
+  margin-right:5px;
+}

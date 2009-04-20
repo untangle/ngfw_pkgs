@@ -456,3 +456,27 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
     border-right:1px solid #7Ec22B;
 
 }
+.x-form fieldset {
+    border:none;
+}
+.x-toolbar .x-btn-always-over .x-btn-left{
+	background: url(../../../ext/resources/images/gray/toolbar/tb-btn-sprite.gif) no-repeat 0 0;
+}
+.x-toolbar .x-btn-always-over .x-btn-right{
+	background: url(../../../ext/resources/images/gray/toolbar/tb-btn-sprite.gif) no-repeat 0 -21px;
+}
+.x-toolbar .x-btn-always-over .x-btn-center{
+	background: url(../../../ext/resources/images/gray/toolbar/tb-btn-sprite.gif) repeat-x 0 -42px;
+}
+.x-toolbar .x-btn-over .x-btn-left{
+	background: url(../../../ext/resources/images/default/toolbar/tb-btn-sprite.gif) no-repeat 0 0;
+}
+.x-toolbar .x-btn-over .x-btn-right{
+	background: url(../../../ext/resources/images/default/toolbar/tb-btn-sprite.gif) no-repeat 0 -21px;
+}
+.x-toolbar .x-btn-over .x-btn-center{
+	background: url(../../../ext/resources/images/default/toolbar/tb-btn-sprite.gif) repeat-x 0 -42px;
+}
+.small-right-margin{
+  margin-right:5px;
+}

@@ -92,7 +92,7 @@ div.node div.node-label {
 	left: 100px;
 	height: 55px;
 	width: 230px;
-	font-family: verdana, helvetica, freesans,sans-serif;
+	font-family: tahoma,arial, helvetica, freesans,sans-serif;
 	font-size: 18px;
 	color: #FFF;
 }
@@ -120,6 +120,11 @@ div.node div.node-trial-info {
 /* Trial node buy button icon */
 button.icon-buy {
 	background:transparent url(../images/admin/icon_buy.png) no-repeat center left !important; 
+}
+/* In Wizard Download Button icon*/
+button.icon-download {
+	background:transparent url(../images/admin/icon_download.png) no-repeat center left !important;
+  padding-left:17px !important;
 }
 /* Application Item buy button icon */
 div.icon-buy {
@@ -263,7 +268,7 @@ div.blinger-name {
 	position:absolute;
 	top:1px;
 	right:10px;
-	font-family: "times",helvetica,  freesans,sans-serif;
+	font-family: "times", helvetica, freesans,sans-serif;
 	font-size: 11px;
 	color: #3F3F3F;
 	display: none;
@@ -528,7 +533,7 @@ td.app-item-center div.text {
 	color:#4E4C4C;
 	font-size: 12px;
 	font-weight: bold;
-	font-family:Tahoma, arial,helvetica,  freesans,sans-serif;
+	font-family:Tahoma, arial, freesans,sans-serif;
 }
 /* app item config display name text */
 td.app-item-center div.text-center {
@@ -540,7 +545,7 @@ td.app-item-center div.action {
     right: 5px;
     top: 34px;
     height: 15px;
-    font-family: tahoma,arial, helvetica, freesans,sans-serif;
+    font-family: tahoma,arial,helvetica,  freesans,sans-serif;
     font-size: 11px;
     color: green;
     padding-right: 19px;
@@ -553,7 +558,7 @@ td.app-item-center div.button-buy {
 	top: 34px;
 	cursor: pointer;
 	height: 15px;
-	font-family:  tahoma,arial,helvetica,  freesans,sans-serif;
+    font-family: tahoma,arial, helvetica, freesans,sans-serif;
     font-size: 11px;
 	color: green;
 	padding-right: 19px;
@@ -659,7 +664,7 @@ div.system-stats div.network div.tx {
     padding-left:20px;
     color:#55BA47;
     background: transparent url(../images/admin/icon_network_tx.png) no-repeat scroll 5px 1px !important;
-	font-family:arial,freesans,sans-serif;	
+	font-family:arial,helvetica,freesans,sans-serif;	
 }
 div.system-stats div.network div.tx-idle {
     background: transparent url(../images/admin/icon_network_tx-idle.png) no-repeat scroll 5px 1px !important;
@@ -673,7 +678,7 @@ div.system-stats div.network div.rx {
     padding-left:20px;
     color:orange;/*#AC2322;*/
     background: transparent url(../images/admin/icon_network_rx.png) no-repeat scroll 5px 1px !important;
-	font-family:arial,helvetica, freesans,sans-serif;		
+	font-family:arial,helvetica,freesans,sans-serif;		
 }
 div.system-stats div.network div.rx-idle {
     background: transparent url(../images/admin/icon_network_rx-idle.png) no-repeat scroll 5px 1px !important;
@@ -683,14 +688,14 @@ div.system-stats div.network div.rx div.rx-value {
     position: absolute;
     top:0px;
     right:0px;
-	font-family:arial,freesans,sans-serif;		
+	font-family:arial,helvetica,freesans,sans-serif;		
 }
 /* system stats network tx value */
 div.system-stats div.network div.tx div.tx-value {
     position: absolute;
     top:0px;
     right:0px;
-	font-family:arial,helvetica, freesans,sans-serif;
+	font-family:arial,helvetica,freesans,sans-serif;
 }
 /* system stats cpu */
 div.system-stats div.cpu {
@@ -976,8 +981,134 @@ div.wizard-network-image-description
            font-weight:normal;
            line-height:normal;	
 }
+.noborder-nas{
+           border:0px solid;
+           background-image:none;
+           font-family:tahoma,arial,helvetica,helvetica,freesans,sans-serif;
+           font-size:12px;
+           font-size-adjust:none;
+           font-style:normal;
+           font-variant:normal;
+           font-weight:normal;
+           line-height:normal;	
+           margin:4px 0px;
+           display:block;
+}
+.nas-status-percentage-wrapper{
+  border-bottom:1px solid #7EC22B;
+  border-right:1px solid #7EC22B;
+  border-top:1px solid #7ED22B;
+  height:14px;
+  margin-right:5px;
+  float:left;
+  width:140px;  
+  background-color:#FFFFFF;  
+}
+.nas-status-percentage{
+  background:#7EC22B url(../images/gray/progess-bar/progress-bg-green-5.png) repeat-x scroll left center;
+  height:14px;
+  float:left;
+  width:0;  
+}
+.untangle-form-panel .x-form{
+ border:none
+}
+.warning-row{
+           background-image:url('../../../ext/resources/images/default/shared/warning.gif');
+          background-position:left center;
+          background-repeat:no-repeat;
+          padding-left:18px;
+}
+#disk-unusable{
+  display:none;
+}
 
-
+.select-volume-container{
+  border: 1px #CCC solid;
+  float:left;
+  width:225px;
+}
+.manage-share-container{
+  border: 1px #CCC solid !important;
+  float: left;
+  height: 350px;
+  width: 460px;  
+}
+.external-link{
+  background-image:url(../images/admin/external.png);
+  background-position:right center;
+  background-repeat:no-repeat;
+  padding:0px 15px 0px 0px;
+  margin-top:1em;
+}
+#shares-edit, #shares-update, #shares-delete, #shares-update-cancel, #shares-create {
+  float:left !important;
+  margin-top:10px;
+}
+.checkmark-header {
+  font-weight:bold;
+}
+.checkmark-container-plain{
+  margin-bottom:4em;
+}
+.checkmark-container{
+  margin-bottom:4em;
+  background-color:#EFEFEF;
+  border: 1px #009900 solid;
+  padding: 2px;
+}
+.checkmark{
+  background-image:url(../images/admin/checkmark-production-3.png);
+  background-repeat:no-repeat;
+  margin-left:1em;
+  margin-top:0.5em;
+  padding-left:17px;
+}
+#shares-delete{
+  marign-top:-21px;
+  margin-left: 5px;
+}
+#shares-update-cancel{
+  marign-top:-21px;
+  margin-left: 5px;
+}
+#explain-install-ended img{
+  vertical-align:middle;
+  margin-right:5px;
+}
+.share-folder{
+  background-image:url(../images/admin/disk/share.png) !important;
+}
+.share-home-folder{
+  background-image:url(../images/admin/disk/share-home.png) !important;
+}
+.volume-group{
+  background-image:url(../images/admin/disk/volume-group.png) !important;
+}
+.volume{
+  background-image:url(../images/admin/disk/volume.png) !important;
+}
+.select-volume{
+  width: 220px;
+}
+.explain-share-create{
+  background-image:url(../images/admin/back.png) !important;
+  background-repeat:no-repeat;
+  height:200px;
+  margin-top:70px;
+  padding-left:140px;
+  padding-top:22px;
+}
+.share-illustration{
+  background-image:url(../images/admin/disk/share.png) !important;
+  background-repeat:no-repeat;
+  padding:0 0 5px 18px;
+}
+.volume-illustration{
+  background-image:url(../images/admin/disk/volume.png) !important;
+  background-repeat:no-repeat;
+  padding-left:18px;
+}
 table.email-tester
 { 
 
@@ -1051,7 +1182,15 @@ body.wizard .ext-el-mask
 .small-bottom-margin{
 	margin-bottom:1em;
 }
-
+.small-bottom-margin-nas{
+  display:block;
+  margin-bottom:1em;
+}
+.small-top-margin-nas{
+  display:block;
+  margin-top:1em;
+  font-size:12px;
+}
 #container{
 	margin:10px auto;
 	position:relative;
@@ -1243,6 +1382,9 @@ body.wizard .ext-el-mask
 .left-indent-2{
 	margin-left:34px;
 }
+.left-indent-3{
+    margin-left:5.5em;
+}
 .left-indent-4{
   margin-left:123px;
 }
@@ -1369,9 +1511,6 @@ float:left;
     clear:right;
     margin-left:10px;
 }
-.left-indent-3{
-    margin-left:6.4em;
-}
 .ua-message-warning {
     padding: 5px 5px 5px 28px;
     border: 1px solid #60BB3F;
@@ -1421,3 +1560,22 @@ fieldset.failover-test-type div.x-fieldset-bwrap
   border-bottom: none;
   padding-bottom: 0px;
  }
+.x-fieldset-nas-share-override {
+  border:none;
+  padding-left:2px;
+}
+.nas-welcome-image {
+   background-image:url(../images/admin/nas-welcome-image-flattened.png);
+  float:left;
+  height:187px;
+  width:243px; 
+}
+.nas-welcome-next-text{
+  float:left;
+  width:100%;
+  clear:both;
+  margin-top:2em;
+}
+.nas-override{
+  margin-bottom:1em;
+}
