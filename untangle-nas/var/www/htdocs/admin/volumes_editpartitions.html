@@ -38,19 +38,7 @@
 
     $md = get_md();
 
-    if ($action == "initializedisk" && strlen($_REQUEST['target']) > 0) {
-        if (strpos($_REQUEST['target'], '/dev/sda') !== false) {
-          exit(0);
-        }
-        $target = trim($_REQUEST['target'],'0123456789');
-        exec('export LANG=C; /usr/bin/sudo dd if=/dev/zero of=' . escapeshellarg($target)  . ' count=1 bs=2048');
-        exec('export LANG=C; /usr/bin/sudo sync');
-        exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($target) . " mklabel msdos");
-        exec("export LANG=C; /usr/bin/sudo fdisk -l " . escapeshellarg($target) . " 2>/dev/null | grep cylinders | cut -f 5 -d ' ' | head -1", $cylinders);
-        exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($target) . " mkpart extended 0c " . escapeshellarg(($cylinders[0]-1).'c'));
-        header("Location: ./volumes_physical.html".getAttachment());         
-        exit(0);
-    }
+
 
     $disksp = popen("export LANG=C; /usr/bin/sudo /opt/nas/sbin/list-disks.pl", "r");
     $i = 0;
@@ -101,7 +89,9 @@
 
     $found = false;
     $disk_index = -1;
-
+    if($action == "initializedisk"){
+      $dev = $target;
+    }
     for ($i = 0; $i < count($of_disks); $i++)
     {
             if ($of_disks[$i]["device"] == $dev)
@@ -111,7 +101,6 @@
                     break;
             }
     }
-
     if (!$found)
     {
             header("Location: ./volumes_physical.html");
@@ -174,6 +163,27 @@
             $of_disks[$i]["partitions"][$j]["usedin"]  = $used_in_string[$pv_device];                       
     }
 
+    if ($action == "initializedisk" && strlen($_REQUEST['target']) > 0) {
+        if (strpos($_REQUEST['target'], '/dev/sda') !== false) {
+          exit(0);
+        }
+                
+        $target = trim($_REQUEST['target'],'0123456789');
+        exec('export LANG=C; /usr/bin/sudo dd if=/dev/zero of=' . escapeshellarg($target)  . ' count=1 bs=2048');
+        exec('export LANG=C; /usr/bin/sudo sync');
+        exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($target) . " mklabel msdos");
+        exec("export LANG=C; /usr/bin/sudo fdisk -l " . escapeshellarg($target) . " 2>/dev/null | grep cylinders | cut -f 5 -d ' ' | head -1", $cylinders);
+        $start = 1;
+        $end =($cylinders[0]-1);
+        $start_cyl = "" . ($start - 1) . "c";
+        $end_cyl = "" . $end . "c";         
+        $start_mb = floatval((($start - 1) * ($of_disks[$disk_index]["blocksize"] / 2) * $of_disks[$disk_index]["sectors"] * $of_disks[$disk_index]["heads"]) / (1024 * 1024.0));
+        $end_mb = floatval((($end) * ($of_disks[$disk_index]["blocksize"] / 2) * $of_disks[$disk_index]["sectors"] * $of_disks[$disk_index]["heads"]) / (1024 * 1024.0)) - 1;
+        exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($dev) . " mkpart extended " . escapeshellarg($start_mb) . " " . escapeshellarg($end_mb));
+        //exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($target) . " mkpart extended 0c " . escapeshellarg(($cylinders[0]-1).'c'));
+        header("Location: ./volumes_physical.html".getAttachment());         
+        exit(0);
+    }
     if ($action == "deletepartition")
     {
             
@@ -231,6 +241,8 @@
         } else {
             $start_cyl = "" . ($start - 1) . "c";
             $end_cyl = "" . $end . "c";
+            $start_mb = floatval((($start - 1) * ($of_disks[$disk_index]["blocksize"] / 2) * $of_disks[$disk_index]["sectors"] * $of_disks[$disk_index]["heads"]) / (1024 * 1024.0));
+            $end_mb = floatval((($end) * ($of_disks[$disk_index]["blocksize"] / 2) * $of_disks[$disk_index]["sectors"] * $of_disks[$disk_index]["heads"]) / (1024 * 1024.0)) - 1;
 
             $parttablep = popen("export LANG=C; /usr/bin/sudo /sbin/parted " . escapeshellarg($dev) . " print", "r");
             $i = 0;
@@ -243,18 +255,23 @@
 
             if (strstr($ptresult[0], "unrecognised disk label"))
             {
+                    error_log("export LANG=C; /usr/bin/sudo /sbin/parted " . escapeshellarg($dev) . " mklabel gpt");
                     exec("export LANG=C; /usr/bin/sudo /sbin/parted " . escapeshellarg($dev) . " mklabel gpt");
                    // exec("export LANG=C; /usr/bin/sudo /usr/sbin/partprobe 2>&1");
             }
 
             if (($mode == "primary") && ($type == "extended"))
             {
-                    exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($dev) . " mkpart extended " . escapeshellarg($start_cyl) . " " . escapeshellarg($end_cyl));
+                    exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($dev) . " mkpart extended " . escapeshellarg($start_mb) . " " . escapeshellarg($end_mb));
+                    //error_log("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($dev) . " mkpart extended " . escapeshellarg($start_cyl) . " " . escapeshellarg($end_cyl));
+                    //exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($dev) . " mkpart extended " . escapeshellarg($start_cyl) . " " . escapeshellarg($end_cyl));
                    // exec("export LANG=C; /usr/bin/sudo /usr/sbin/partprobe 2>&1");
             }
             else if ($type != "extended")
             {
-                    exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($dev) . " mkpart " . escapeshellarg($mode) . " " . escapeshellarg($start_cyl) . " " . escapeshellarg($end_cyl));
+                    //error_log("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($dev) . " mkpart " . escapeshellarg($mode) . " " . escapeshellarg($start_cyl) . " " . escapeshellarg($end_cyl));
+                    exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($dev) . " mkpart " . escapeshellarg($mode) . " " . escapeshellarg($start_mb) . " " . escapeshellarg($end_mb));                    
+                    //exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($dev) . " mkpart " . escapeshellarg($mode) . " " . escapeshellarg($start_cyl) . " " . escapeshellarg($end_cyl));
                    // exec("export LANG=C; /usr/bin/sudo /usr/sbin/partprobe 2>&1");
 
                     $disksp = popen("export LANG=C; /usr/bin/sudo /opt/nas/sbin/list-disks.pl", "r");
