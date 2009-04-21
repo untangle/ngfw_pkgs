@@ -35,8 +35,10 @@ def headerparserhandler(req):
         apache.log_error('no realm specified')
         return apache.DECLINED
 
-    sess = Session.Session(req)
+    sess = Session.Session(req, lock=0)
     sess.set_timeout(SESSION_TIMEOUT)
+
+    sess.lock()
 
     username = session_user(sess, realm)
 
