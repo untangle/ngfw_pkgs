@@ -271,8 +271,8 @@
             else if ($type != "extended")
             {
                     //error_log("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($dev) . " mkpart " . escapeshellarg($mode) . " " . escapeshellarg($start_cyl) . " " . escapeshellarg($end_cyl));
-                    exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($dev) . " mkpart " . escapeshellarg($mode) . " " . escapeshellarg($start_mb) . " " . escapeshellarg($end_mb));                    
-                    //exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($dev) . " mkpart " . escapeshellarg($mode) . " " . escapeshellarg($start_cyl) . " " . escapeshellarg($end_cyl));
+                    //exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($dev) . " mkpart " . escapeshellarg($mode) . " " . escapeshellarg($start_mb) . " " . escapeshellarg($end_mb));                    
+                    exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($dev) . " mkpart " . escapeshellarg($mode) . " " . escapeshellarg($start_cyl) . " " . escapeshellarg($end_cyl));
                    // exec("export LANG=C; /usr/bin/sudo /usr/sbin/partprobe 2>&1");
 
                     $disksp = popen("export LANG=C; /usr/bin/sudo /opt/nas/sbin/list-disks.pl", "r");
