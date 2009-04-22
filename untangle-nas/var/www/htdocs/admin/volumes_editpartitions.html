@@ -179,9 +179,9 @@
         $end_cyl = "" . $end . "c";         
         $start_mb = floatval((($start - 1) * ($of_disks[$disk_index]["blocksize"] / 2) * $of_disks[$disk_index]["sectors"] * $of_disks[$disk_index]["heads"]) / (1024 * 1024.0));
         $end_mb = floatval((($end) * ($of_disks[$disk_index]["blocksize"] / 2) * $of_disks[$disk_index]["sectors"] * $of_disks[$disk_index]["heads"]) / (1024 * 1024.0)) - 1;
-        exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($dev) . " mkpart extended " . escapeshellarg($start_mb) . " " . escapeshellarg($end_mb));
-        exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($dev) . " mkpart logical 8e " . escapeshellarg($start_mb) . " " . escapeshellarg($end_mb));
-        //exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($target) . " mkpart extended 0c " . escapeshellarg(($cylinders[0]-1).'c'));
+        //exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($dev) . " mkpart extended " . escapeshellarg($start_mb) . " " . escapeshellarg($end_mb));
+        exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($target) . " mkpart extended 0c " . escapeshellarg(($cylinders[0]-1).'c'));
+        exec("export LANG=C; /usr/bin/sudo /sbin/parted -s " . escapeshellarg($dev) . " mkpart logical 8e 0c ". escapeshellarg(($cylinders[0]-1).'c'));
         header("Location: ./volumes_physical.html".getAttachment());         
         exit(0);
     }
