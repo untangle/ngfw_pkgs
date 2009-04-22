@@ -135,6 +135,9 @@ grep -iq winbind /etc/pam.d/samba || cp $NAS_ETC_DEFAULTS/pam.d.samba.default /e
 
 grep -iq untangle /etc/samba/smb.conf || cp $NAS_ETC_DEFAULTS/smb.conf.default /etc/samba/smb.conf
 
+#set the password for samba to use our local directory. 
+smbpasswd -w nimda11lacol
+
 # LDAP Setup
 if ! grep -q untangle-nas $SLAPD_CONFIG; then
     cat >> $SLAPD_CONFIG <<EOF
