@@ -190,8 +190,8 @@ class Interface < ActiveRecord::Base
   def current_mtu
     mtu_file = "/sys/class/net/#{self.os_name}/mtu"
     
-    mtu = `cat #{mtu_file}` if ( File.exists?( mtu_file ))
-    mtu = 1500 if ( mtu.nil? || mtu.empty? )
+    mtu = `cat #{mtu_file}`.strip if ( File.exists?( mtu_file ))
+    mtu = "1500" if ( mtu.nil? || mtu.empty? )
     return mtu
   end
 

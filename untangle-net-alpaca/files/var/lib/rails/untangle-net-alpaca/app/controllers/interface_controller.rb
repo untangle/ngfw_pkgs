@@ -234,9 +234,9 @@ class InterfaceController < ApplicationController
     cond << interface.id
     
     ## Create a selection map
-    settings["bridgeable_interfaces"] = Interface.find( :all, :conditions => cond ).collect do |interface|
+    settings["bridgeable_interfaces"] = Interface.find( :all, :conditions => cond ).collect do |i|
       ## XXX config_type and name will need internationalization
-      [ interface.id, "#{interface.name} (#{interface.config_type})" ]
+      [ i.id, "#{i.name} (#{i.config_type})" ]
     end
     
     settings["static_aliases"] = static_settings.ip_networks
