@@ -9,12 +9,18 @@ fi
 }
 
 FDIR=/usr/share/untangle-fuzzyocr
+LOGFILE=/var/log/FuzzyOcr.log
+LIBDIR=/var/lib/fuzzyocr
+USER=spamc
 
 # copy in config files
 cp -p $FDIR/FuzzyOcr.cf /etc/mail/spamassassin
 cp -p $FDIR/FuzzyOcr.pm /usr/share/perl5/Mail/SpamAssassin/Plugin/
 
 # setting of pre314 var moved to spamc-mv.postinst
+touch $LOGFILE
+mkdir -p $LIBDIR
+chown -R $USER $LOGFILE $LIBDIR
 
 # reload SA
 ourInit spamassassin reload
