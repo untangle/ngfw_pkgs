@@ -56,7 +56,7 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   MarkFirstAlias = 0x10000000
 
   ## Mark that indicates a  packet is destined to one of the machines IP addresses
-  MarkInput    = 0x00000800
+  MarkInput    = 0x00000100
 
   ## Mark that the packet filter used to indicate that this packet should only be filter
   ## if it is destined to the local box.
@@ -320,7 +320,7 @@ mark_local_ip()
    test -z "${t_index}" && return 0
 
    local t_first_alias="true"
-   t_mark=$(( #{MarkInput} | ( ${t_index} << 8 )))
+   t_mark=$(( #{MarkInput} ))
       
    for t_ip in `get_ip_addresses ${t_intf}` ; do
      #{IPTablesCommand} #{Chain::MarkInterface.args} -d ${t_ip} -j MARK --or-mark ${t_mark}
