@@ -17,6 +17,11 @@ if grep -qE '^\(II\) VESA\(0\)' /var/log/Xorg.0.log ; then
   xrandr -s 1024x768
 fi
 
+# always force 1024x768, *before* trying to restore a previously-saved
+# resolution if any; this is to work around xorg erroneously trying to
+# use resolutions that the monitor does not support
+xrandr -s 1024x768
+
 # restore user-set resolution if it's present
 [ -f /home/kiosk/.ut-resolution ] && xrandr -s $(cat /home/kiosk/.ut-resolution)
 
