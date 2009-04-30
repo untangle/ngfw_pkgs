@@ -395,7 +395,7 @@ EOF
 
         i_name = wan_interface.os_name
         if ( wan_interface.is_bridge? )
-          i_name = OSLibrary::Debian::NetworkManager.bridge_name( interface )
+          i_name = OSLibrary::Debian::NetworkManager.bridge_name( wan_interface )
         end
 
         text << "#{IPTablesCommand} #{Chain::PostNat.args} -o #{i_name} -j #{Chain::SNatRules}"        
