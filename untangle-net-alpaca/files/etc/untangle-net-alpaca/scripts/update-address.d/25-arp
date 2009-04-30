@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/dash
 
 ##Add static arp rules
 if [ -e /etc/untangle-net-alpaca/arps ] ; then

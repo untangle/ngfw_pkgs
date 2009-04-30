@@ -66,6 +66,9 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   MarkFwPass = 0x80000000
   MarkClearFwPass = ( 0xFFFFFFFF ^ MarkFwPass )
 
+  MultiWanMask  = 0x00000E00
+  MultiWanShift = 9
+
   def register_hooks
     os["network_manager"].register_hook( 100, "packet_filter_manager", "write_files", :hook_write_files )
 
@@ -111,6 +114,7 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
     MarkInterface = Chain.new( "markintf", "mangle", "PREROUTING", <<'EOF' )
 ## Clear out all of the bits for the interface mark
 #{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFF0000
+#{IPTablesCommand} #{args} -j CONNMARK --restore-mark --mask #{MultiWanMask}
 EOF
 
     ## Chain Used for natting in the prerouting table.
@@ -385,10 +389,19 @@ EOF
       
       ## NAT Sessions that are going out WAN Interface
       wan_interfaces.each do |wan_interface|
-        text << "#{IPTablesCommand} #{Chain::PostNat.args} -o #{wan_interface.os_name} -j #{Chain::SNatRules}"
+        if ( wan_interface.config_type == InterfaceHelper::ConfigType::BRIDGE )
+          next
+        end
+
+        i_name = wan_interface.os_name
+        if ( wan_interface.is_bridge? )
+          i_name = OSLibrary::Debian::NetworkManager.bridge_name( interface )
+        end
+
+        text << "#{IPTablesCommand} #{Chain::PostNat.args} -o #{i_name} -j #{Chain::SNatRules}"        
 
         ## Firewall NAT rules apply to all of the traffic from WAN interfaces
-        fw_text << "#{IPTablesCommand} -t filter -A FORWARD -i #{wan_interface.os_name} -g #{Chain::FirewallNat}"
+        fw_text << "#{IPTablesCommand} -t filter -A FORWARD -i #{i_name} -g #{Chain::FirewallNat}"
       end
 
       ## Ignore DNATd traffic
@@ -405,6 +418,8 @@ EOF
       fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -o tun0 -j DROP"
     end
     
+    text << "#{IPTablesCommand} -t mangle -I OUTPUT 1 -j CONNMARK --restore-mark --mask #{MultiWanMask}"
+
     interface_list.each do |interface|
       ## labelling
       text << marking( interface )
@@ -560,18 +575,22 @@ EOF
     if ( interface.config_type == InterfaceHelper::ConfigType::PPPOE )
       match = "-i #{pppoe_name}"
     elsif interface.is_bridge?
-      match = "-m physdev --physdev-in #{interface.os_name}" if interface.is_bridge?
+      match = "-m physdev --physdev-in #{interface.os_name}"
     end
     
     ## This is the name that is used to retrieve the local addresses.
     if interface.is_bridge?
-      name = OSLibrary::Debian::NetworkManager.bridge_name( interface ) if interface.is_bridge?
+      name = OSLibrary::Debian::NetworkManager.bridge_name( interface )
     end
     
     index = interface.index
     mask = 1 << ( index - 1 )
 
     rules = [ "#{IPTablesCommand} #{Chain::MarkInterface.args} #{match} -j MARK --or-mark #{mask}" ]
+
+    if interface.wan
+      rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} #{match} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << MultiWanShift}/#{MultiWanMask}"
+    end
     
     if ( interface.config_type != InterfaceHelper::ConfigType::BRIDGE )
       rules << "mark_local_ip #{name} #{index}"

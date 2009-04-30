@@ -10,6 +10,7 @@ MARK_ANTISUB=$((0x01000000))
 MARK_NOTRACK=$((0x02000000))
 MARK_FIRST_ALIAS=$((0x10000000))
 MARK_DUPE=$((0x20000000))
+MARK_LOCAL=$((0x0100))
 
 ## Always set this just in case.
 TCP_REDIRECT_PORTS="9500-9627"
@@ -208,7 +209,7 @@ uvm_packet_filter_standard_internal()
 {
     if [ "${UVM_ALLOW_IN_HTTP}x" != "truex" ]; then return ; fi
 
-    local t_mark=$(( 0x802 | ${MARK_FIRST_ALIAS} ))
+    local t_mark=$(( ${MARK_LOCAL} | 0x2 | ${MARK_FIRST_ALIAS} ))
     ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 80 \
         -m mark --mark ${t_mark}/${t_mark} -j DNAT --to-destination ${UVM_BIND_ADDRESS}
     ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 80 \
@@ -219,7 +220,7 @@ uvm_packet_filter_standard_internal()
 ## Allow internal access to port.
 uvm_packet_filter_secure_internal()
 {
-    local t_mark=$(( 0x802 | ${MARK_FIRST_ALIAS} ))
+    local t_mark=$(( ${MARK_LOCAL} | 0x2 | ${MARK_FIRST_ALIAS} ))
     
     ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 443 \
         -m mark --mark ${t_mark}/${t_mark} \
@@ -227,7 +228,7 @@ uvm_packet_filter_secure_internal()
     ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 443 \
         -m mark --mark ${t_mark}/${t_mark} -j RETURN
 
-    t_mark=$(( 0x880 | ${MARK_FIRST_ALIAS} ))
+    t_mark=$(( ${MARK_LOCAL} | 0x80 | ${MARK_FIRST_ALIAS} ))
     
     ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 443 \
         -m mark --mark ${t_mark}/${t_mark} \
@@ -264,15 +265,16 @@ uvm_restrict_access_string()
 uvm_packet_filter_secure_external()
 {
     local t_restrict
+
     if [ "${UVM_ALLOW_OUT_HTTPS}x" != "truex" ] ; then return ; fi
 
-    t_restrict=`uvm_restrict_access_string`
+    t_restrict=`uvm_restrict_access_string`    
     
     ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports ${HTTPS_EXTERNAL_PORT} \
-        ${t_restrict} -m mark --mark 2048/2048 -j DNAT --to-destination ${UVM_BIND_ADDRESS}:443
+        ${t_restrict} -m mark --mark ${MARK_LOCAL}/${MARK_LOCAL} -j DNAT --to-destination ${UVM_BIND_ADDRESS}:443
     
     ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports ${HTTPS_EXTERNAL_PORT} \
-        ${t_restrict} -m mark --mark 2048/2048 -j RETURN
+        ${t_restrict} -m mark --mark ${MARK_LOCAL}/${MARK_LOCAL} -j RETURN
 }
 
 uvm_packet_filter_secure_public()

@@ -1,8 +1,64 @@
-#!/bin/bash
+#!/bin/dash
+
+UNTANGLE_PRIORITY_BASE="36"
+UNTANGLE_PRIORITY_MULTIWAN="366"
+
+UNTANGLE_MULTIWAN_SHIFT=9
+UNTANGLE_MULTIWAN_MASK=0xE00
+
+debug()
+{
+    echo "[DEBUG:`date`] $*"
+}
+
+flush_multiwan_ip_rules()
+{
+    local t_priority
+
+    for t_priority in `ip rule show | awk "/^${UNTANGLE_PRIORITY_MULTIWAN}[0-9][0-9]:/ { sub( \":\", \"\", \\$1 ) ; print \\$1 }"`; do
+        ip rule del priority ${t_priority}
+    done
+}
+
+expected_multiwan_ip_rules()
+{
+    local t_index
+    for t_index in `seq 1 7` ; do
+        printf "${UNTANGLE_PRIORITY_MULTIWAN}%02d:\tfrom all fwmark %#x/%#x lookup uplink.%d \n" ${t_index} \
+            $(( ${t_index} << ${UNTANGLE_MULTIWAN_SHIFT} )) ${UNTANGLE_MULTIWAN_MASK} \
+            ${t_index}
+    done
+}
+
+current_multiwan_ip_rules()
+{
+    ip rule show | awk "/^${UNTANGLE_PRIORITY_MULTIWAN}[0-9][0-9]:/ { print }" 
+}
+
+## This script updates the state of the system so that MULTIWAN can
+## route traffic through the different interfaces.
+insert_multiwan_ip_rules()
+{
+    local t_index
+    local t_priority
+    for t_index in `seq 1 7` ; do
+        t_priority=`printf "${UNTANGLE_PRIORITY_MULTIWAN}%02d" ${t_index}`
+        ip rule add priority  ${t_priority} \
+            fwmark $(( ${t_index} << ${UNTANGLE_MULTIWAN_SHIFT} ))/${UNTANGLE_MULTIWAN_MASK} \
+            lookup uplink.${t_index} 
+    done
+}
 
 ##Add static routes rules
 if [ -e /etc/untangle-net-alpaca/routes ] ; then 
     . /etc/untangle-net-alpaca/routes
+fi
+
+if [ "`expected_multiwan_ip_rules | md5sum`" = "`current_multiwan_ip_rules  | md5sum`" ]; then
+    debug "ip rules are up to date."
+else
+    flush_multiwan_ip_rules
+    insert_multiwan_ip_rules
 fi
 
 exit 0
