@@ -506,22 +506,8 @@ EOF
 
   def write_redirect
     rules = Redirect.find( :all, :conditions => [ "system_id IS NULL AND enabled='t'" ] )
-
-    ## man this is filthy.
-    conditions = [ "system_id = ? AND enabled='t'", "accept-openvpn-4ebba2eb" ] 
-    unless Firewall.find( :first, :conditions => conditions ).nil?
-      ## Create a new redirect rule to send openvpn traffic to the openvpn server.
-      ## openvpn doesn't handle multi-homed addresses very well, this is fixed
-      ## in 2.1, but until we make the switch, we have to deal with this redirect.
-      rules << Redirect.new( :enabled => true, :filter => "d-local::true&&d-port::1194&&protocol::udp",
-                             :is_custom => false, :system_id => "accept-openvpn-4ebba2eb",
-                             :new_ip => "192.0.2.42", :new_enc_id => "1194" )
-    end
-
     rules += Redirect.find( :all, :conditions => [ "system_id IS NOT NULL AND enabled='t'" ] )
 
-
-    
     text = header
     rules.each do |rule|
       begin
