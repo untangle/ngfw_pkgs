@@ -73,7 +73,7 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
   def handle_custom_rule( rule )
     case rule.system_id
     when "bypass-internal-single-nic-traffic-10bd7d18"
-      return nil if ArpEaterSettings.find( :first, [ "enabled=?", true ] ).nil?
+      return "" if ArpEaterSettings.find( :first, [ "enabled=?", true ] ).nil?
        
       return <<EOF
 netstat -rn | awk '/^[0-9]/ { if ( $1 != "0.0.0.0" && $2 == "0.0.0.0" && ( index( $8, "dummy" ) == 0 ) && ( index( $8, "utun" ) == 0 )) print $1 "/" $3 }' | sort | uniq | while read t_network ; do
@@ -329,7 +329,7 @@ EOF
         end
         
       rescue
-        logger.warn( "The filter '#{rule.filter}' could not be parsed: #{$!}" )
+        logger.warn( "The filter '#{rule.id}' '#{rule.filter}' could not be parsed: #{$!}" )
       end
     end
     
