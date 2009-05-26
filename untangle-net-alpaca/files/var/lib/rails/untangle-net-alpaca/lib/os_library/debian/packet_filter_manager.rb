@@ -17,9 +17,9 @@
 #
 class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   include Singleton
-
+  
   IPTablesCommand = "${IPTABLES}"
-
+  
   Service = "/etc/init.d/untangle-net-alpaca-iptables"
 
   ConfigDirectory = "/etc/untangle-net-alpaca/iptables-rules.d"
@@ -54,7 +54,7 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   ## Mark that causes the firewall to drop a packet.
   MarkFwDrop   =   0x08000000
   MarkFirstAlias = 0x10000000
-
+  
   ## Mark that indicates a  packet is destined to one of the machines IP addresses
   MarkInput    = 0x00000100
 
@@ -160,7 +160,7 @@ EOF
 #{IPTablesCommand} #{args} -m state --state ESTABLISHED -j RETURN
 #{IPTablesCommand} #{args} -m state --state RELATED -j RETURN
 EOF
-
+    
     ## Goto chains used to indicate that a packet should be rejected or dropped.
     FirewallMarkReject = Chain.new( "alpaca-pf-reject", "mangle", nil, <<'EOF' )
 ## Clear the INPUT mark
@@ -188,7 +188,7 @@ EOF
 ## Mark the packets
 #{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwDrop | MarkFwInput}
 EOF
-
+    
     ## Chain where traffic should go to be marked for bypass.
     BypassMark = Chain.new( "bypass-mark", "mangle", nil, <<'EOF' )
 ## Mark the packets
@@ -300,17 +300,17 @@ EOF
 #{chain.init}
 EOF
     end.join( "\n" )
-
+    
     os["override_manager"].write_file( ChainsConfigFile, text, "\n" )
   end
-
+  
   def write_networking
     text = []
     fw_text = []
     
     text << header
     fw_text << header
-
+    
     ## A little function for marking an interface.
     text << <<EOF
 mark_local_ip()
@@ -335,8 +335,19 @@ mark_local_ip()
      t_first_alias="false"
    done
 }
-EOF
 
+get_pppoe_name()
+{
+   local t_script
+   t_script=/usr/share/untangle-net-alpaca/scripts/get_pppoe_name
+   if [ -x "${t_script}" ]; then
+     ${t_script} $1
+   else
+     echo "ppp0"
+   fi
+}
+EOF
+    
     alpaca_settings = AlpacaSettings.find( :first )
     alpaca_settings = AlpacaSettings.new if alpaca_settings.nil?
     
@@ -352,14 +363,18 @@ EOF
       pppoe_interfaces.each do |interface|
         pppoe_config = interface.intf_pppoe
         next if pppoe_config.nil?
+        
+        pppoe_name = pppoe_variable_name( interface )
+        text << "#{pppoe_name}=`get_pppoe_name #{interface.os_name}`"
+
         ip_network = pppoe_config.ip_networks[0]
         next if ip_network.nil? || ip_network.ip.nil?
-        
+
         nat_automatic_target = [] unless nat_automatic_target.is_a?( Array )
-        nat_automatic_target << "SNAT --to-source #{ip_network.ip} -o #{OSLibrary::Debian::PppoeManager.get_pppoe_name( interface )} " 
+        nat_automatic_target << "SNAT --to-source #{ip_network.ip} -o  ${#{pppoe_name}}" 
       end
     end
-
+    
     interface_list = Interface.find( :all )
     
     wan_interfaces = []
@@ -398,7 +413,11 @@ EOF
           i_name = OSLibrary::Debian::NetworkManager.bridge_name( wan_interface )
         end
 
-        text << "#{IPTablesCommand} #{Chain::PostNat.args} -o #{i_name} -j #{Chain::SNatRules}"        
+        if ( wan_interface.config_type == InterfaceHelper::ConfigType::PPPOE )
+          i_name = "${#{pppoe_variable_name(wan_interface)}}"
+        end
+
+        text << "#{IPTablesCommand} #{Chain::PostNat.args} -o #{i_name} -j #{Chain::SNatRules}"
 
         ## Firewall NAT rules apply to all of the traffic from WAN interfaces
         fw_text << "#{IPTablesCommand} -t filter -A FORWARD -i #{i_name} -g #{Chain::FirewallNat}"
@@ -421,6 +440,7 @@ EOF
     text << "#{IPTablesCommand} -t mangle -I OUTPUT 1 -j CONNMARK --restore-mark --mask #{MultiWanMask}"
 
     interface_list.each do |interface|
+
       ## labelling
       text << marking( interface )
       
@@ -555,11 +575,13 @@ EOF
     ## This is the name used to retrieve the ip addresses.
     name = interface.os_name
 
-    pppoe_name = OSLibrary::Debian::PppoeManager.get_pppoe_name( interface )
+    pppoe_name = pppoe_variable_name( interface )
+
+    rules = []
 
     ## use the pppoe name if this is a PPPoE interface.
     if ( interface.config_type == InterfaceHelper::ConfigType::PPPOE )
-      match = "-i #{pppoe_name}"
+      match = "-i ${#{pppoe_name}}"
     elsif interface.is_bridge?
       match = "-m physdev --physdev-in #{interface.os_name}"
     end
@@ -572,7 +594,7 @@ EOF
     index = interface.index
     mask = 1 << ( index - 1 )
 
-    rules = [ "#{IPTablesCommand} #{Chain::MarkInterface.args} #{match} -j MARK --or-mark #{mask}" ]
+    rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} #{match} -j MARK --or-mark #{mask}"
 
     if interface.wan
       rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} #{match} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << MultiWanShift}/#{MultiWanMask}"
@@ -584,7 +606,7 @@ EOF
     
     ## Append a mark for the ppp local addresses.
     if ( interface.config_type == InterfaceHelper::ConfigType::PPPOE )
-      rules << "mark_local_ip #{pppoe_name} #{index}"
+      rules << "mark_local_ip ${#{pppoe_name}} #{index}"
     end
 
     rules.join( "\n" )
@@ -748,6 +770,10 @@ EOF
     else
       rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -s #{network} -j SNAT --to-source #{policy.new_source}"
     end
+  end
+
+  def pppoe_variable_name( interface )
+    return "PPPOE_INTERFACE_#{interface.os_name.upcase}"
   end
 
   def header

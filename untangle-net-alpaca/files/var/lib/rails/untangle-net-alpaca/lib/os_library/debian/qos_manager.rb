@@ -193,6 +193,17 @@ EOF
     settings << <<EOF
 QOS_ENABLED=#{qos_enabled}
 UPLINKS="#{wan_interfaces.map { |i| i.os_name }.join( " " )}"
+
+get_pppoe_name()
+{
+   local t_script
+   t_script=/usr/share/untangle-net-alpaca/scripts/get_pppoe_name
+   if [ -x "${t_script}" ]; then
+     ${t_script} $1
+   else
+     echo "ppp0"
+   fi
+}
 EOF
 
     wan_interfaces.each do |i|
@@ -347,9 +358,11 @@ EOF
   def build_interface_config( interface, qos_settings, text, tc_rules_files )
     dev = interface.os_name
 
-    #when using pppoe the actual interface is named ppp.#{os_name}
+    ## For PPPoE the interface name must be calculated dynamically.
     if interface.current_config == IntfPppoe
-        dev = OSLibrary::Debian::PppoEManager.get_pppoe_name( interface )
+      pppoe_name="PPPOE_INTERFACE_#{interface.os_name.upcase}"
+      text << "#{pppoe_name}=`get_pppoe_name #{interface.os_name}`"
+      dev = "${#{pppoe_name}}"
     end
 
     text << <<EOF

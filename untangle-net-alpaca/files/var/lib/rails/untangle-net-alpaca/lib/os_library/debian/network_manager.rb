@@ -326,6 +326,7 @@ iface #{pppoe_name} inet ppp
 \talpaca_interface_index #{interface.index}
 \tpre-up ifconfig #{interface.os_name} up
 \tprovider #{provider_name}
+\talpaca_gateway ppp
 
 EOF
   end
@@ -351,6 +352,7 @@ EOF
 
       base += mtu_string + "\n" unless mtu_string.nil?
       base += handle_default_gateway( ip_network, default_gateway )
+
       mtu_string = nil
       
       base.strip + "\n"

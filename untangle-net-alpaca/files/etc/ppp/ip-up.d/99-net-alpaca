@@ -12,6 +12,8 @@ mkdir -p /var/log/untangle-net-alpaca/
 
 exec >> /var/log/untangle-net-alpaca/pppoe.log 2>&1
 
+ADD_UPLINK_SCRIPT="/usr/share/untangle-net-alpaca/scripts/add-uplink"
+
 ## This is borrowed from etc/dhcp3/dhclient-enter-hooks.d/net-alpaca.
 make_resolv_conf() { 
     ## This guarantees that ${t_new_domain_name_servers} will just be " "
@@ -25,13 +27,16 @@ make_resolv_conf() {
     ## only update the dns server when instructed to.
     if [ -n "${t_new_domain_name_servers}" ] && [ "${USEPEERDNS}x" = "1x" ]; then
         local t_hash="`md5sum /etc/dnsmasq.conf`"
+        ## if [ -n "$new_domain_name" ]; then
+            ## echo search $new_domain_name >>$new_resolv_conf
+        ## fi
         
-        if [ -n "{$t_new_domain_name_servers}" ]; then
-            for nameserver in ${t_new_domain_name_servers} ; do
-                /bin/echo -e "#new_name_server=${nameserver}" >> /etc/dnsmasq.conf
+        if [ -n "$t_new_domain_name_servers" ]; then
+            for nameserver in $t_new_domain_name_servers ; do
+                /bin/echo -e "#new_name_server=${nameserver} # uplink.${PPPOE_UPLINK_INDEX}" >> /etc/dnsmasq.conf
             done
-
-            sed -i -e '/^server=/d' -e 's/^#new_name_server=/server=/' /etc/dnsmasq.conf
+            
+            sed -i -e "/^#*\s*server=.*uplink.${PPPOE_UPLINK_INDEX}/d" -e 's/^#new_name_server=/server=/' /etc/dnsmasq.conf
         fi
 
         local t_new_hash="`md5sum /etc/dnsmasq.conf`"
@@ -49,7 +54,7 @@ make_resolv_conf() {
     local t_suffix
     
     if [ -f /etc/dnsmasq.conf ]; then
-        t_suffix=`awk '/^domain-suffix=/ { sub( "domain-suffix=", "" ) ; print }' /etc/dnsmasq.conf`
+        t_suffix=`awk '/^domain=/ { sub( "domain=", "" ) ; print }' /etc/dnsmasq.conf`
     fi
     
     t_suffix=${t_suffix:-"example.com"}
@@ -68,7 +73,26 @@ EOF
     return 0
 }
 
+INTERFACE_PROPERTIES=/etc/untangle-net-alpaca/interface.properties
+CONNECTION_FILE=`cat /var/run/${PPP_IFACE}.pid`
+CONNECTION_FILE=`awk -v RS='\0' '/^connection./ { print }' "/proc/${CONNECTION_FILE}/cmdline"`
+
+if [ -n "${CONNECTION_FILE}" ] && [ -f "/etc/ppp/peers/${CONNECTION_FILE}" ]; then
+    PPPOE_UPLINK_INDEX=`awk '/# *PPPOE_UPLINK_INDEX=/ { sub( "# *PPPOE_UPLINK_INDEX=", "" ); print ; exit }' \
+        "/etc/ppp/peers/${CONNECTION_FILE}"`
+
+    FOUND_INDEX=true
+fi
+
+if [ -z "${PPPOE_UPLINK_INDEX}" ]; then
+    PPPOE_UPLINK_INDEX=1
+fi
+
 make_resolv_conf
+
+[ -x "${ADD_UPLINK_SCRIPT}" ] && {
+    ${ADD_UPLINK_SCRIPT} ${PPP_IFACE} ppp "uplink.${PPPOE_UPLINK_INDEX}"
+}
 
 run-parts /etc/untangle-net-alpaca/scripts/update-address.d
 

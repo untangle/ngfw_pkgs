@@ -267,7 +267,7 @@ class UvmController < ApplicationController
     json_result
   end
 
-  def wizard_external_interface_pppoe( username, password )
+  def wizard_external_interface_pppoe
     s = json_params
     username, password = s["username"], s["password"]
 
