@@ -43,7 +43,11 @@ class OSLibrary::PppoeManager < Alpaca::OS::ManagerBase
     end
     
     secrets = secrets.map { |u,p| "\"#{u}\" * \"#{p}\"" }
-    os["override_manager"].write_file( PapSecretsFile, header, "\n", secrets.join( "\n" ), "\n" )
+    override_manager = os["override_manager"]
+    override_manager.write_file( PapSecretsFile, header, "\n", secrets.join( "\n" ), "\n" )
+    if ( File.exists?( PapSecretsFile ) and override_manager.writable?( PapSecretsFile ))
+         File.chmod( 0600, PapSecretsFile )
+    end
   end
 
   private
@@ -65,12 +69,13 @@ persist
 maxfail 0
 EOF
 
-    cfg << "defaultroute"
-    cfg << "replacedefaultroute"
+    
     cfg << "usepeerdns" if ( settings.use_peer_dns )
 
     ## Use the PPPoE daemon and the current interface.
     cfg << "plugin rp-pppoe.so #{pppoe_interface.os_name}"
+    
+    cfg << "# PPPOE_UPLINK_INDEX=#{pppoe_interface.index}"
 
     ## Create a comment containing the list of "bridged" interfaces for the UVM and
     ## the name of the bridge, makes reloading the networking configuration easy.

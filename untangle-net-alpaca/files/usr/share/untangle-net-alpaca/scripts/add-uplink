@@ -42,11 +42,27 @@ ip_route_get_aliases()
 {
     local t_interface
     local t_gateway
+    local t_pppoe_interface
     
     t_interface=$1
     t_gateway=$2
     aliases=`ip addr show ${t_interface} | awk '/inet.*scope global/ { print  $2 }'`
+    
+    if [ "${t_interface#ppp}" != "${t_interface}" ]; then
+        echo ${aliases}
+        
+        if [ -f "/var/run/${t_interface}.pid" ]; then
+            t_pppoe_interface=`cat /var/run/${t_interface}.pid`
+            t_pppoe_interface=`awk -v RS='\0' '/^connection./ { sub( "connection.", "" ) ; print }' \
+                /proc/${t_pppoe_interface}/cmdline`
+            
+            if [ -n "${t_pppoe_interface}" ] ; then
+                ip addr show ${t_pppoe_interface} | awk '/inet.*scope global/ { sub("/.*","") ; print   $2 }'
+            fi
+        fi
 
+        return
+    fi
     
     ## This is a simple script designed to determine which aliases
     ## can route to the gateway
@@ -54,7 +70,12 @@ ip_route_get_aliases()
 require "ipaddr"
 args=[ARGV].flatten
 gateway = args.shift
-args.each { |network| puts network.sub( /\/.*/, "" ) if ( n = IPAddr.new( network )).include?( gateway ) }
+args.each do |network|
+  address = network.sub( /\/.*/, "" )
+  if ( gateway == "ppp" ) or ( n = IPAddr.new( network )).include?( gateway )
+    puts address
+  end
+end
 EOF
 }
 
@@ -115,7 +136,11 @@ IP="ip"
 $DEBUG "Adding uplink for[${IFACE}] ${ADDRESS}: -> ${GATEWAY} to ${RT_TABLE}"
 ip_rule_update_source_routes ${IFACE} ${GATEWAY} ${RT_TABLE}
 
-${IP} route replace table ${RT_TABLE} default via ${GATEWAY}
+if [ "${GATEWAY}" = "ppp" ]; then
+    ${IP} route replace table ${RT_TABLE} default dev ${IFACE}
+else
+    ${IP} route replace table ${RT_TABLE} default via ${GATEWAY}
+fi
 
 ## If necessary add the default uplink rule
 ip rule show | grep -q ${UNTANGLE_PRIORITY_DEFAULT} || {

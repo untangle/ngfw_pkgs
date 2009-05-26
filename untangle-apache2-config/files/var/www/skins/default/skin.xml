@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <skin>
-  <name>default</name>
-  <displayName>Default</displayName>
+  <name>trunk</name>
+  <displayName>Trunk</displayName>
   <adminSkin>true</adminSkin>
   <adminSkinVersion>2</adminSkinVersion>
   <userFacingSkin>true</userFacingSkin>
