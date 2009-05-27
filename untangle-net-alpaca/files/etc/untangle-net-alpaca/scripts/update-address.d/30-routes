@@ -49,6 +49,35 @@ insert_multiwan_ip_rules()
     done
 }
 
+insert_uplink_tables()
+{
+    local t_temp
+    local t_index
+
+    grep -q "${IP_ROUTE_TABLE_MARKER}" ${IP_RT_TABLES} && return
+    
+    t_temp=`mktemp`
+    
+    echo "# ${IP_ROUTE_TABLE_MARKER} MultiWAN uplink tables" >> ${t_temp}
+
+    for t_index in `seq 1 8`; do
+        echo -e "$((${IP_RT_TABLE_BASE} + ${t_index}))\t${TABLE_PREFIX}${t_index}" >> ${t_temp}
+    done
+    
+    sed -i -e '/uplink/d'  -e "/MultiWAN uplink tables/d" ${IP_RT_TABLES}
+    cat ${t_temp} >> ${IP_RT_TABLES}
+    
+    rm -f ${t_temp}
+}
+
+## Start of script
+## It is very dangerous to change this once a revision has been released.
+TABLE_PREFIX="uplink."
+IP_ROUTE_TABLE_MARKER="8VECFOtCUZxObA=="
+IP_RT_TABLES="/etc/iproute2/rt_tables"
+IP_RT_TABLE_BASE=64
+insert_uplink_tables
+
 ##Add static routes rules
 if [ -e /etc/untangle-net-alpaca/routes ] ; then 
     . /etc/untangle-net-alpaca/routes

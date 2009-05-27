@@ -91,13 +91,10 @@ make_resolv_conf() {
     return 0
 }
 
-test -f "${OVERRIDE_VARIABLES}" || { 
-    ${DEBUG} "No override file for the interface: '${interface}'"
-    return 0
+test -f "${OVERRIDE_VARIABLES}" && { 
+    . ${OVERRIDE_VARIABLES}
 }
 
-# This one always runs, just in case.
-. ${OVERRIDE_VARIABLES}
 
 if [ "${DHCP_DNS_SERVERS}" = "ignore" ]; then
     ## Set here so the code below works cleanly
