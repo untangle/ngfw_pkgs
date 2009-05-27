@@ -37,7 +37,7 @@ update_pppoe()
 
     t_sub=""
     for t_pid in /var/run/ppp*.pid ; do
-        [ -f ${t_pid} ] || continue
+        [ -f "${t_pid}" ] || continue
 
         t_intf_name=`echo ${t_pid} | sed -e 's|/var/run/\([^\.]\+\)\.pid|\1|'`
         [ "${t_intf_name}" = "${t_pid}" ] && continue
