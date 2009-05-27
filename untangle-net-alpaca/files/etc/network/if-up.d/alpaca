@@ -153,7 +153,7 @@ insert_uplink_tables()
     echo "# ${IP_ROUTE_TABLE_MARKER} MultiWAN uplink tables" >> ${t_temp}
 
     for t_index in `seq 1 8`; do
-        echo -e "$((${IP_RT_TABLE_BASE} + ${t_index}))\t${TABLE_PREFIX}${t_index}" >> ${t_temp}
+        /bin/echo -e "$((${IP_RT_TABLE_BASE} + ${t_index}))\t${TABLE_PREFIX}${t_index}" >> ${t_temp}
     done
     
     sed -i -e '/uplink/d'  -e "/MultiWAN uplink tables/d" ${IP_RT_TABLES}
