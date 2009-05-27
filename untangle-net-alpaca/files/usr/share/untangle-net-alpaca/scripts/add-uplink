@@ -53,8 +53,8 @@ ip_route_get_aliases()
         
         if [ -f "/var/run/${t_interface}.pid" ]; then
             t_pppoe_interface=`cat /var/run/${t_interface}.pid`
-            t_pppoe_interface=`awk -v RS='\0' '/^connection./ { sub( "connection.", "" ) ; print }' \
-                /proc/${t_pppoe_interface}/cmdline`
+            t_pppoe_interface=`cat "/proc/${t_pppoe_interface}/cmdline" | tr '\000' '\001' | \
+                awk -v RS='\001' '/^connection./ { sub( "connection.", "" ) ; print }'`
             
             if [ -n "${t_pppoe_interface}" ] ; then
                 ip addr show ${t_pppoe_interface} | awk '/inet.*scope global/ { sub("/.*","") ; print   $2 }'
