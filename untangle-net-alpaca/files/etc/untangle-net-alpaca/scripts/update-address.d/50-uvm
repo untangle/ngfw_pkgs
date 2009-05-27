@@ -37,13 +37,15 @@ update_pppoe()
 
     t_sub=""
     for t_pid in /var/run/ppp*.pid ; do
+        [ -f "${t_pid}" ] || continue
+
         t_intf_name=`echo ${t_pid} | sed -e 's|/var/run/\([^\.]\+\)\.pid|\1|'`
         [ "${t_intf_name}" = "${t_pid}" ] && continue
         
         t_pid=`cat ${t_pid}`
         
         [  -f /proc/${t_pid}/cmdline ]  || continue
-        t_connection_file=`awk -v RS='\0' '/^connection./ { print }' "/proc/${t_pid}/cmdline"`
+        t_connection_file=`cat "/proc/${t_pid}/cmdline" | tr '\000' '\001' | awk -v RS='\001' '/^connection./ { print }'`
         t_connection_file="/etc/ppp/peers/${t_connection_file}"
         [ -f ${t_connection_file} ] || continue
         

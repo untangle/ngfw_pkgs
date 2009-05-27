@@ -151,7 +151,8 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     name : this.generateName( "config_list", i, "pppoe.username" )
                 },{
                     fieldLabel : this._( "Password" ),
-                    name : this.generateName( "config_list", i, "pppoe.password" )
+                    name : this.generateName( "config_list", i, "pppoe.password" ),
+                    inputType : "password"
                 },{
                     xtype : "checkbox",
                     fieldLabel : this._( "User peer DNS" ),
