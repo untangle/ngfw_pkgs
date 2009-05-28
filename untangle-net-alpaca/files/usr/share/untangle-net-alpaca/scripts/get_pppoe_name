@@ -6,12 +6,19 @@ get_pppoe_name()
    local t_intf_name
    local t_pid_file
    local t_pid
+   local t_connection_file
    
    t_intf_name=$1
    
    for t_pid_file in /var/run/ppp*.pid ; do 
      t_pid=`head -n 1 $t_pid_file`
-     grep -q "connection.${t_intf_name}" /proc/${t_pid}/cmdline 2>/dev/null  > /dev/null
+
+     t_connection_file=`cat "/proc/${t_pid}/cmdline" | tr '\000' '\001' | awk -v RS='\001' '/^connection./ { print ; exit }'`
+     
+     t_connection_file="/etc/ppp/peers/${t_connection_file}"
+     [ -f ${t_connection_file} ] || continue
+
+     grep -q "plugin.*${t_intf_name}" ${t_connection_file} > /dev/null 2>&1
      if [ "$?" != 0 ]; then
        continue
      fi

@@ -43,21 +43,29 @@ ip_route_get_aliases()
     local t_interface
     local t_gateway
     local t_pppoe_interface
+    local t_connection_file
     
     t_interface=$1
     t_gateway=$2
-    aliases=`ip addr show ${t_interface} | awk '/inet.*scope global/ { print  $2 }'`
+    aliases="`ip addr show ${t_interface} | awk '/inet.*scope global/ { print  $2 }'`"
     
     if [ "${t_interface#ppp}" != "${t_interface}" ]; then
         echo ${aliases}
         
         if [ -f "/var/run/${t_interface}.pid" ]; then
             t_pppoe_interface=`cat /var/run/${t_interface}.pid`
-            t_pppoe_interface=`cat "/proc/${t_pppoe_interface}/cmdline" | tr '\000' '\001' | \
-                awk -v RS='\001' '/^connection./ { sub( "connection.", "" ) ; print }'`
+            t_connection_file=`cat "/proc/${t_pppoe_interface}/cmdline" | tr '\000' '\001' | \
+                awk -v RS='\001' '/^connection./ { print ; exit }'`
+            
+            t_connection_file="/etc/ppp/peers/${t_connection_file}"
+            if [ -f ${t_connection_file} ] ; then
+                t_pppoe_interface=`awk '/^plugin rp-pppoe.so/ { print $3 ; exit }' ${t_connection_file}`
+            else
+                t_pppoe_interface=""
+            fi
             
             if [ -n "${t_pppoe_interface}" ] ; then
-                ip addr show ${t_pppoe_interface} | awk '/inet.*scope global/ { sub("/.*","") ; print   $2 }'
+                ip addr show ${t_pppoe_interface} | awk '/inet.*scope global/ { sub("/.*","") ; print $2 }'
             fi
         fi
 

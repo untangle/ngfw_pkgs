@@ -75,7 +75,7 @@ EOF
 
 INTERFACE_PROPERTIES=/etc/untangle-net-alpaca/interface.properties
 CONNECTION_FILE=`cat /var/run/${PPP_IFACE}.pid`
-CONNECTION_FILE=`cat "/proc/${CONNECTION_FILE}/cmdline" | tr '\000' '\001' | awk -v RS='\001' '/^connection./ { print }'`
+CONNECTION_FILE=`cat "/proc/${CONNECTION_FILE}/cmdline" | tr '\000' '\001' | awk -v RS='\001' '/^connection./ { print ; exit }'`
 
 if [ -n "${CONNECTION_FILE}" ] && [ -f "/etc/ppp/peers/${CONNECTION_FILE}" ]; then
     PPPOE_UPLINK_INDEX=`awk '/# *PPPOE_UPLINK_INDEX=/ { sub( "# *PPPOE_UPLINK_INDEX=", "" ); print ; exit }' \
