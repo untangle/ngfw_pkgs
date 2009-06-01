@@ -197,9 +197,16 @@ UPLINKS="#{wan_interfaces.map { |i| i.os_name }.join( " " )}"
 get_pppoe_name()
 {
    local t_script
+   local t_pppoe_name
+
    t_script=/usr/share/untangle-net-alpaca/scripts/get_pppoe_name
    if [ -x "${t_script}" ]; then
-     ${t_script} $1
+     t_pppoe_name=`${t_script} $1`
+     if [ "${t_pppoe_name}" = "ppp.${1}" ] ; then
+       t_pppoe_name=$1
+     fi
+     
+     echo $t_pppoe_name
    else
      echo "ppp0"
    fi
@@ -356,18 +363,26 @@ EOF
 
   private
   def build_interface_config( interface, qos_settings, text, tc_rules_files )
-    dev = interface.os_name
+    os_name = interface.os_name
+    dev = os_name
 
     ## For PPPoE the interface name must be calculated dynamically.
-    if interface.current_config == IntfPppoe
-      pppoe_name="PPPOE_INTERFACE_#{interface.os_name.upcase}"
-      text << "#{pppoe_name}=`get_pppoe_name #{interface.os_name}`"
+    if interface.current_config.is_a?( IntfPppoe )
+      pppoe_name="PPPOE_INTERFACE_#{interface.os_name.downcase}"
+      text << <<EOF
+#{pppoe_name}=`get_pppoe_name #{interface.os_name}`
+export #{pppoe_name}
+EOF
+      
       dev = "${#{pppoe_name}}"
     end
 
     text << <<EOF
-#{dev}_DOWNLOAD=#{interface.download_bandwidth * qos_settings.download_percentage/100}
-#{dev}_UPLOAD=#{interface.upload_bandwidth * qos_settings.upload_percentage/100}
+#{os_name}_DOWNLOAD=#{interface.download_bandwidth * qos_settings.download_percentage/100}
+#{os_name}_UPLOAD=#{interface.upload_bandwidth * qos_settings.upload_percentage/100}
+
+export #{os_name}_DOWNLOAD
+export #{os_name}_UPLOAD
 EOF
 
     if ! qos_settings.prioritize_ping.nil? and qos_settings.prioritize_ping > 0
@@ -412,19 +427,27 @@ EOF
         end
       end
 
+      ## If the protocol is not specified, apply this QoS rule to all protocols.
       if protocol_filter.length == 0
         protocol_filter = [ "" ]
       end
 
+      
+
+      ## Apply this QoS rule to all of the WAN interfaces
       wan_interfaces.each do |interface|
         os_name = interface.os_name
+
+        if interface.current_config.is_a?( IntfPppoe )
+          os_name="${PPPOE_INTERFACE_#{interface.os_name.downcase}}"
+        end
 
         protocol_filter.each do |protocol_filter|
           tc_rules_files[priority] << "tc filter add dev #{os_name} parent 1: protocol ip prio #{rule.priority} u32 #{protocol_filter} #{filter} flowid 1:#{rule.priority}\n"
         end
       end
 
-      rescue
+    rescue
       logger.warn( "The filter '#{rule.filter}' could not be parsed: #{$!}" )
     end
   end

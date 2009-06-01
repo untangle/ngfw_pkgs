@@ -464,7 +464,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         }
 
         var message = String.format( this._( "Uplink Bandwidth ({0} kbps download, {1} kbps upload)" ),
-                                     u, d );
+                                     d, u );
         this.bandwidthLabel.setText( message );
     }
 });
