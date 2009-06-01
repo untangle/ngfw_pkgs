@@ -80,12 +80,20 @@ pre_tc_rules()
     local t_dev
     local t_upload
 
+    local t_pppoe_dev
+
     t_dev=$1
     t_upload=`eval echo "\\$${t_dev}_UPLOAD"`
 
     if [ -z "${t_dev}" ] || [ -z "${t_upload}" ]; then
         echo "The upload speed is not specified for '${t_dev}'"
         return
+    fi
+    
+    t_pppoe_dev=`eval echo "\\$PPPOE_INTERFACE_${t_dev}"`
+    
+    if [ -n "${t_pppoe_dev}" ]; then
+        t_dev=${t_pppoe_dev}
     fi
     
     ###### uplink
@@ -129,6 +137,12 @@ post_tc_rules()
     if [ -z "${t_dev}" ] || [ -z "${t_download}" ]; then
         echo "The download is not specified for '${t_dev}'"
         return
+    fi
+
+    t_pppoe_dev=`eval echo "\\$PPPOE_INTERFACE_${t_dev}"`
+    
+    if [ -n "${t_pppoe_dev}" ]; then
+        t_dev=${t_pppoe_dev}
     fi
 
     # rest ends up in 1:20

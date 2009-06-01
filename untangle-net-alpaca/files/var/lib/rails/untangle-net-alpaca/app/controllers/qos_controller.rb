@@ -41,7 +41,23 @@ class QosController < ApplicationController
   
   def set_settings
     s = json_params
-    
+        
+    wan_interfaces = s["bandwidth"]
+    wan_interfaces.each do |w|
+      conditions = [ "os_name = ? AND name = ? AND mac_address = ? AND wan = ? AND id = ?", 
+                     w["os_name"], w["name"], w["mac_address"], true, w["id"]]
+      wan_interface = Interface.find( :all, :conditions => conditions )
+      if ( wan_interface.length != 1 )
+        logger.warn "Unable to find WAN interface for #{w.inspect}"
+        next
+      end
+
+      wan_interface = wan_interface[0]
+      wan_interface.upload_bandwidth = w["upload_bandwidth"]
+      wan_interface.download_bandwidth = w["download_bandwidth"]
+      wan_interface.save
+    end
+
     qos_settings = QosSettings.find( :first )
     qos_settings = QosSettings.new if qos_settings.nil?
     qos_settings.update_attributes( s["qos_settings"] )
