@@ -51,7 +51,7 @@ class UvmController < ApplicationController
       rule = Subscription.new( entry )
       rule.position = position
       rule.save
-      position += position
+      position += 1
     end
     
     s["system_subscriptions"].each do |entry|

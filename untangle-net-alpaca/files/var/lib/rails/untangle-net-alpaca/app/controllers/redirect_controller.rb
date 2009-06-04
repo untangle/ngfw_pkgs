@@ -39,7 +39,7 @@ class RedirectController < ApplicationController
       rule = Redirect.new( entry )
       rule.position = position
       rule.save
-      position += position
+      position += 1
     end
     
     s["system_redirects"].each do |entry|

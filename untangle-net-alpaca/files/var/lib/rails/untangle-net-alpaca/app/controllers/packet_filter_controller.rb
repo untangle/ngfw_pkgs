@@ -37,7 +37,7 @@ class PacketFilterController < ApplicationController
       rule = Firewall.new( entry )
       rule.position = position
       rule.save
-      position += position
+      position += 1
     end
     
     s["system_rules"].each do |entry|
