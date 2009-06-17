@@ -1,3 +1,9 @@
+untangle-postgresql-config (6.3.0~svn20090504r23185mylittlepony-1lenny) chaos-release62; urgency=low
+
+  * auto build
+
+ -- root <seb@untangle.com>  Tue, 12 May 2009 01:27:53 -0700
+
 untangle-postgresql-config (6.0.0~svn20080804r18025trunk+seb20081003T101308-1lenny) seb; urgency=low
 
   * auto build

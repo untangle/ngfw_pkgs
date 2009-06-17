@@ -470,7 +470,15 @@ JSONRpcClient.Exception.prototype.toString = function (code, msg)
 
 JSONRpcClient.default_ex_handler = function (e)
 {
-  alert(e);
+   message = e.toString();
+  if (e.lineNumber && e.fileName) {
+      message = message + " " + i18n._("on line")+" "+e.lineNumber +" "+ i18n._("in file")+" "+e.fileName;
+   }
+   if (e.stack) {
+    message = message + " " + e.stack;
+   }
+ 
+   alert(message);
 };
 
 

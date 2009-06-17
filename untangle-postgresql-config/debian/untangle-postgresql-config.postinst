@@ -16,11 +16,11 @@ DATE="`date '+%Y%m%d%H%M%S'`"
 
 echo $PG_CONF
 
-if [ -z "$PG_CONF" ] ; then 
+if [ -z "$PG_CONF" ] ; then
     echo "ERROR: Can't locate postgresql.conf"
     exit 0
 fi
-if [ -z "$PG_HBA" ] ; then 
+if [ -z "$PG_HBA" ] ; then
     echo "ERROR: Can't locate pg_hba.conf"
     exit 0
 fi
@@ -32,8 +32,8 @@ for i in $PG_HBA ; do
     cp -f $i  $i.$DATE
 done
 
-# XXX 
-# This should be pulled out into a seperate script 
+# XXX
+# This should be pulled out into a seperate script
 # so it can be called whenever something changes
 
 echo "Customizing postgres settings..."
@@ -74,7 +74,7 @@ for file in $PG_HBA ; do
     sed -i -e 's/\(local.*all.*all.*\)\(ident.*sameuser\)/\1trust/'  $file
     sed -i -e 's/\(host.*all.*all.*127.0.0.1\(\/32\|[ \t]\).*\)\(md5\)/\1trust/'  $file
     sed -i -e 's/\(host.*all.*all.*::1\(\/128\|[ \t]\).*\)\(md5\)/\1trust/'  $file
-done                                                                       
+done
 
 for file in $PG_CONF ; do
     sed -i -e "s/.*virtual_host.*=.*/virtual_host='127.0.0.1'/" $file
@@ -87,12 +87,14 @@ for file in $PG_CONF ; do
     sed -i -e "s/[# ]*checkpoint_segments *=.*/checkpoint_segments = 12/" $file
     # Search both settings and events schemas by default
     sed -i -e "s/.*search_path.*=.*/search_path = 'public,settings,events'/" $file
+    # constraint exclusion for partitioned tables
+    sed -i -e "s/[# ]*constraint_exclusion *=.*/constraint_exclusion = on/" $file
     # disable autovacuuming
 #     sed -i -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" $file
     perl -i -pe 's/^(?!#)/#/' /etc/cron.d/postgresql-common
 done
 
-if [ -z "$PG_CONF" ] ; then 
+if [ -z "$PG_CONF" ] ; then
     echo "WARNING: postgresql.conf not found (failed to disable autovacuum)"
 fi
 
