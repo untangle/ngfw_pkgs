@@ -23,7 +23,7 @@ class OSLibrary::Debian::Filter::Factory
   def initialize
     @handlers = {}
 
-    [ IPHandler, PortHandler, IntfHandler, LocalHandler, ProtocolHandler ].each do |handler|
+    [ IPHandler, PortHandler, IntfHandler, LocalHandler, ProtocolHandler, MacHandler ].each do |handler|
       handler = handler.instance
       handler.parameters.each { |t| @handlers[t] = handler }
     end
