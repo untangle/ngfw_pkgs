@@ -14,6 +14,7 @@ XB-Display-Name: Open Source Package
 XB-Untangle-Type: lib_item
 XB-Is-Bundle: true
 XB-Untangle-Pkg-Type: lib_item
+XB-Untangle-Hide-On: u4w
 XB-Desc-Icon:  R0lGODlhKgAqAPcAAAAAAKx9ALS0tFhYWERHZZJqANDHGjQ2TcXFx2ttiH9eFrev
  NMTEQmhrZP//6JSSSDMzM2lgUbCLEc7IXOzdpWhaRBYXITw/W3Z4ka6vUJGTppJ5
  Lk1RctLS0lpce8mrEa6qO/Hx99bWetPEIeXl78ebAIB/UnFaL1JMWXp6fKaFGuLi
@@ -596,6 +597,7 @@ XB-Display-Name: OpenVPN
 XB-Untangle-Type: lib_item
 XB-Is-Core: true
 XB-Untangle-Pkg-Type: lib_item
+XB-Untangle-Hide-On: u4w
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
  AAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAA
  F2+SX8VGAAAL2ElEQVR42syYWWxc132Hv7vMypnhkJwZigpD2iRNOaSsxdqAWo3jGk7qJXYB
