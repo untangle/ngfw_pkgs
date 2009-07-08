@@ -1,0 +1,13 @@
+Source: untangle-hardware-config
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.8.0
+
+Package: untangle-hardware-config
+Architecture: all
+Description: The Untangle hardware config
+ Provides the mechanism for other packages to register startup
+ actions, to load hardware-related settings at boot time.

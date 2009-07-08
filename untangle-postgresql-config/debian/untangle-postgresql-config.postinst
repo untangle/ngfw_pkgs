@@ -32,41 +32,6 @@ for i in $PG_HBA ; do
     cp -f $i  $i.$DATE
 done
 
-# XXX
-# This should be pulled out into a seperate script
-# so it can be called whenever something changes
-
-echo "Customizing postgres settings..."
-
-MEM=$(awk '/MemTotal/ { print $2 }' < /proc/meminfo)
-if [ $MEM -gt 1900000 ] ; then
-    echo "Using settings for 2 gigabytes of memory"
-    SHARED_BUFFERS=10000
-    SORT_MEM=32768
-    VACUUM_MEM=131072
-    EFFECTIVE_CACHE_SIZE=40000
-    # Also in this case we need to adjust the shmmax in the kernel
-    MAXLINE="kernel.shmmax=134217728"
-    if [ -f ${UNTANGLE_SYSCTL} ] && grep -q kernel.shmmax ${UNTANGLE_SYSCTL} ; then
-        sed -i -e "s|^.*kernel.shmmax.*|${MAXLINE}|" ${UNTANGLE_SYSCTL}
-    else
-        echo $MAXLINE >> ${UNTANGLE_SYSCTL}
-    fi
-    /sbin/sysctl -w $MAXLINE
-elif [ $MEM -gt 900000 ] ; then
-    echo "Using settings for 1 gigabyte of memory"
-    SHARED_BUFFERS=3000
-    SORT_MEM=16384
-    VACUUM_MEM=65536
-    EFFECTIVE_CACHE_SIZE=9000
-else
-    echo "Using settings for 512 megabytes of memory"
-    SHARED_BUFFERS=2000
-    SORT_MEM=4096
-    VACUUM_MEM=32768
-    EFFECTIVE_CACHE_SIZE=3000
-fi
-
 for file in $PG_HBA ; do
     sed -i -e "s/\#\(local.*all.*all.*trust\)/\1/" $file
     sed -i -e "s/\#\(host.*all.*all.*127.0.0.1.*255.255.255.255.*trust\)/\1/" $file
@@ -79,12 +44,6 @@ done
 for file in $PG_CONF ; do
     sed -i -e "s/.*virtual_host.*=.*/virtual_host='127.0.0.1'/" $file
     sed -i -e "s/.*tcpip_socket.*=.*/tcpip_socket = true/" $file
-    # Tune memory usage & query optimizer
-    sed -i -e "s/[# ]*shared_buffers *=.*/shared_buffers = ${SHARED_BUFFERS}/" $file
-    sed -i -e "s/[# ]*sort_mem *=.*/sort_mem = ${SORT_MEM}/" $file
-    sed -i -e "s/[# ]*vacuum_mem *=.*/vacuum_mem = ${VACUUM_MEM}/" $file
-    sed -i -e "s/[# ]*effective_cache_size *=.*/effective_cache_size = ${EFFECTIVE_CACHE_SIZE}/" $file
-    sed -i -e "s/[# ]*checkpoint_segments *=.*/checkpoint_segments = 12/" $file
     # Search both settings and events schemas by default
     sed -i -e "s/.*search_path.*=.*/search_path = 'public,settings,events'/" $file
     # constraint exclusion for partitioned tables
