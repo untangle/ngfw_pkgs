@@ -5,11 +5,11 @@ PG_HBA="`/usr/bin/find /etc/postgresql -name 'pg_hba.conf' -type f`"
 PG_INIT="`/usr/bin/find /etc/init.d/ -name 'postgres*' -type f`"
 UNTANGLE_SYSCTL="/etc/sysctl.d/60-untangle.conf"
 
-echo "Customizing postgres settings..."
+echo "  Customizing HW settings for postgres"
 
 MEM=$(awk '/MemTotal/ { print $2 }' < /proc/meminfo)
 if [ $MEM -gt 1900000 ] ; then
-    echo "Using settings for 2 gigabytes of memory"
+    echo "    Using settings for 2 gigabytes of memory"
     SHARED_BUFFERS=10000
     SORT_MEM=32768
     VACUUM_MEM=131072
@@ -23,13 +23,13 @@ if [ $MEM -gt 1900000 ] ; then
     fi
     /sbin/sysctl -w $MAXLINE
 elif [ $MEM -gt 900000 ] ; then
-    echo "Using settings for 1 gigabyte of memory"
+    echo "    Using settings for 1 gigabyte of memory"
     SHARED_BUFFERS=3000
     SORT_MEM=16384
     VACUUM_MEM=65536
     EFFECTIVE_CACHE_SIZE=9000
 else
-    echo "Using settings for 512 megabytes of memory"
+    echo "    Using settings for 512 megabytes of memory"
     SHARED_BUFFERS=2000
     SORT_MEM=4096
     VACUUM_MEM=32768

@@ -1,17 +1,21 @@
 #! /bin/sh
 
-# The tuning depends on the memory available.  We have settings for >= 2Gig, >= 1Gig,
-# and < 1Gig.
+MAX_SPARE=1
+
+# The tuning depends on the memory available. We have settings for >=
+# 2Gig, >= 1Gig, and < 1Gig.
+
+echo "  Customizing HW-related settings for spamassassin"
+
 MEM=$(awk '/MemTotal/ { print $2 }' < /proc/meminfo)
 if [ $MEM -gt 1900000 ] ; then
     MAX_CHILDREN=8
-    MAX_SPARE=1
 elif [ $MEM -gt 900000 ] ; then
     MAX_CHILDREN=5
-    MAX_SPARE=1
 else
     MAX_CHILDREN=3
-    MAX_SPARE=1
 fi
+
+echo "    $MAX_CHILDREN children"
 
 sed -i "s/^OPTIONS=.*/OPTIONS=\"--create-prefs --max-children $MAX_CHILDREN --max-spare $MAX_SPARE --helper-home-dir\"/" /etc/default/spamassassin
