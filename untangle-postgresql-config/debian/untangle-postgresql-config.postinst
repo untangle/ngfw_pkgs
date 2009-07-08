@@ -53,6 +53,8 @@ for file in $PG_CONF ; do
     perl -i -pe 's/^(?!#)/#/' /etc/cron.d/postgresql-common
 done
 
+/etc/untangle/startup.d/10postgres
+
 if [ -z "$PG_CONF" ] ; then
     echo "WARNING: postgresql.conf not found (failed to disable autovacuum)"
 fi

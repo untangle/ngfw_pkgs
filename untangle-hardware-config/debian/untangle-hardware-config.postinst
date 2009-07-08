@@ -9,7 +9,7 @@ fi
 }
 
 if [ -x "/etc/init.d/untangle-hardware-config" ]; then
-  update-rc.d untangle-hardware-config 10 >/dev/null # early on
+  update-rc.d untangle-hardware-config defaults 10 >/dev/null # early on
   ourInit untangle-hardware-config restart
 fi
     

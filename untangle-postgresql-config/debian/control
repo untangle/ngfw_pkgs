@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-postgresql-config
 Architecture: all
-Depends: procps (>= 3.2.7-2~bpo.1), postgresql-client-8.3, postgresql-8.3
+Depends: procps (>= 3.2.7-2~bpo.1), untangle-hardware-config, postgresql-client-8.3, postgresql-8.3
 Conflicts: procps (<< 3.2.7-2~bpo.1)
 Description: Untangle Postgres wrapper package
  The Untangle Postgres config for Postgres 8.3
