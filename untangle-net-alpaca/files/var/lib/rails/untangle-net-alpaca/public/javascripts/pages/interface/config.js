@@ -29,7 +29,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
 
         this.isWanCheckbox = new Ext.form.Checkbox({
             xtype : "checkbox",
-            fieldLabel : "Is WAN Interface",
+            fieldLabel : this._( "Is WAN Interface" ),
             name : "interface.wan",
             itemCls : 'label-width-2',
             listeners : {
