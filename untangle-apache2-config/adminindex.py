@@ -36,7 +36,7 @@ def login(req, url=None, realm='Administrator'):
                 util.redirect(req, url)
 
     company_name = uvmlogin.get_company_name()
-    title = cgi.escape(_("%s Login") % company_name)
+    title = cgi.escape(_("%s Administrator Login") % company_name)
     host = cgi.escape(req.hostname)
 
     _write_login_form(req, title, host, is_error)
@@ -119,9 +119,9 @@ def _write_login_form(req, title, host, is_error):
 
         <b>%s</b><br/>
 
-        %s
+        <font size="4"><b>%s</b></font>
 
-        <div style="margin: 0 auto; width: 250px; padding: 40px 0 5px;">
+        <div style="margin: 0 auto; width: 250px; padding: 20px 0 5px;">
 
         <form method="post" action="%s">
           <table><tbody>
