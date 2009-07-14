@@ -23,5 +23,4 @@ module UvmHelper
   ## 8 -> VPN
   ## 2 -> internal
   DefaultOrder = "1,3,#{VpnIndex},2"
-
 end

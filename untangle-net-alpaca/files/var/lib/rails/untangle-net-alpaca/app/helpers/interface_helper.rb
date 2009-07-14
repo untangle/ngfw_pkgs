@@ -238,43 +238,6 @@ module InterfaceHelper
     CriticalInterfaces.include?( interface.index )
   end
 
-  class IPNetworkTableModel < Alpaca::Table::TableModel
-    def initialize( table_name="IP Addresses" )
-      if table_name.nil?
-        table_name = "IP Addresses"
-      end
-      columns = []
-      columns << Alpaca::Table::Column.new( "ip-network", "Address and Netmask".t ) do |ip_network,options|
-        row_id = options[:row_id]
-        view = options[:view]
-<<EOF
-        #{view.hidden_field_tag( "networkIndices[]", row_id )}
-        #{view.text_field( "networks", options[:row_id], { :value => "#{ip_network.ip} / #{ip_network.netmask}" } )}
-EOF
-      end
-
-      columns << Alpaca::Table::DeleteColumn.new
-      
-      super(  table_name, "ip_networks", "", "ip_network", columns )
-    end
-
-    def row_id( row )
-      "row-#{rand( 0x100000000 )}"
-    end
-
-    def action( table_data, view )
-      <<EOF
-<div onclick="#{view.remote_function( :url => { :action => :create_ip_network, :list_id => table_data.css_id } )}" class="add-button">
-  #{"Add".t}
-</div>
-EOF
-    end
-  end
-
-  def ip_network_table_model(table_name="IP Addresses")
-    IPNetworkTableModel.new(table_name)
-  end
-
   def ethernet_media_select( interface )
     media = "#{interface.speed}#{interface.duplex}"
     media = "autoauto" if EthernetMedia.get_value(media).nil?
