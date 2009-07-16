@@ -1,0 +1,10 @@
+#!/bin/dash
+
+QOS_SCRIPT=/etc/untangle-net-alpaca/wshaper.htb
+
+if [ -x ${QOS_SCRIPT} ]; then
+    ${QOS_SCRIPT} stop
+    ${QOS_SCRIPT} start
+fi
+
+exit 0
