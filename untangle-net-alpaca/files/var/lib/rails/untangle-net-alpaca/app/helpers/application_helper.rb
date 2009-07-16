@@ -17,6 +17,9 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 module ApplicationHelper
+  ## Send this instead of sending out a password stored in the database
+  PASSWORD_STRING = "-[![N \"]"
+
   # return true if a field is nil or null.
   def ApplicationHelper.null?( field )
     return true if field.nil?

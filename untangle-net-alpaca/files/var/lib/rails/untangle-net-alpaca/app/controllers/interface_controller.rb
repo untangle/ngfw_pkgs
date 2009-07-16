@@ -220,6 +220,7 @@ class InterfaceController < ApplicationController
     ## Retrieve the dynamic configuration, creating a new one if necessary.
     pppoe_settings = interface.intf_pppoe
     pppoe_settings = IntfPppoe.new if pppoe_settings.nil?
+    pppoe_settings["password"] = ApplicationHelper::PASSWORD_STRING
     settings["pppoe"] = pppoe_settings
 
     ## Retrieve the bridge configuration, creating a new one if necessary.
@@ -290,6 +291,9 @@ class InterfaceController < ApplicationController
     ## Retrieve the dynamic configuration, creating a new one if necessary.
     pppoe_settings = interface.intf_pppoe
     pppoe_settings = IntfPppoe.new if pppoe_settings.nil?
+    if ( s["pppoe"]["password"] == ApplicationHelper::PASSWORD_STRING )
+      s["pppoe"].delete( "password" )
+    end
     pppoe_settings.update_attributes( s["pppoe"] )
 
     ## Retrieve the bridge configuration, creating a new one if necessary.

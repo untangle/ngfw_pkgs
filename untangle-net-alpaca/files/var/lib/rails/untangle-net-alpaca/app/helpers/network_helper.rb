@@ -95,6 +95,8 @@ module NetworkHelper
     pppoe = interface.intf_pppoe
     pppoe = IntfPppoe.new if pppoe.nil?
 
+    pppoe["password"] = ApplicationHelper::PASSWORD_STRING
+
 
     ## Return the new interface config.
     InterfaceConfig.new( interface, static, bridge, bridgeable_interfaces, pppoe )

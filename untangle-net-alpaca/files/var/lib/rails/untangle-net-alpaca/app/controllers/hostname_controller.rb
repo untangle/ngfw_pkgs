@@ -25,6 +25,7 @@ class HostnameController < ApplicationController
 
     ddclient_settings = DdclientSettings.find( :first )
     ddclient_settings = DdclientSettings.new if ddclient_settings.nil?
+    ddclient_settings["password"] = ApplicationHelper::PASSWORD_STRING
     settings["ddclient_settings"] = ddclient_settings
 
     ## Need the possible values for the combobox.
@@ -50,6 +51,10 @@ class HostnameController < ApplicationController
 
     ddclient_settings = DdclientSettings.find( :first )
     ddclient_settings = DdclientSettings.new if ddclient_settings.nil?
+    if ( s["ddclient_settings"]["password"] == ApplicationHelper::PASSWORD_STRING )
+      s["ddclient_settings"].delete( "password" )
+    end
+        
     ddclient_settings.attributes = s["ddclient_settings"]
     if ( ddclient_settings.hostname.nil?() ||
          ( ddclient_settings.hostname.length() == 0 ))

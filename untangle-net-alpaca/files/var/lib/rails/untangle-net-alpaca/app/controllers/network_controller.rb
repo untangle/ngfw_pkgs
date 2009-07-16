@@ -408,7 +408,9 @@ class NetworkController < ApplicationController
     pppoe = interface.intf_pppoe
     pppoe = IntfPppoe.new if pppoe.nil?
     pppoe.username = pppoe_config["username"]
-    pppoe.password = pppoe_config["password"]
+    if ( pppoe_config["password"] != ApplicationHelper::PASSWORD_STRING )
+      pppoe.password = pppoe_config["password"]
+    end
     pppoe.use_peer_dns = pppoe_config["use_peer_dns"]
     pppoe.dns_1 = pppoe_config["dns_1"]
     pppoe.dns_2 = pppoe_config["dns_2"]
