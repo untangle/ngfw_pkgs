@@ -19,13 +19,13 @@
 class ArpController < ApplicationController
   def get_settings
     settings = {}
-    settings["active_arps"] = StaticArp.get_active( os )
+    settings["active_arps"] = os["arps_manager"].get_active
     settings["static_arps"] = StaticArp.find( :all )
     json_result( :values => settings )
   end
 
   def get_active
-    json_result( :values => StaticArp.get_active( os ))
+    json_result( :values => os["arps_manager"].get_active )
   end
   
   def set_settings

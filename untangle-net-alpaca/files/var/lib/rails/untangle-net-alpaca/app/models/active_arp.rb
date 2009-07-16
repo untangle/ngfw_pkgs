@@ -16,5 +16,11 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 class ActiveArp
+  def initialize( ip_address = nil, mac_address = nil, interface = nil )
+    @ip_address = ip_address
+    @mac_address = mac_address
+    @interface = interface
+  end
+
   attr_accessor( :ip_address, :mac_address, :interface )
 end
