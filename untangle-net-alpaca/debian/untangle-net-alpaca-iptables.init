@@ -59,65 +59,53 @@ remove_rules()
     fi
 }
 
-case "$1" in
+run_function_lock()
+{
+    local t_function
+    local t_count
 
+    t_function=$1
+    t_count=0
+
+    while true ; do
+        if ( set -o noclobber; echo "$$" > "$LOCK_FILE" ) 2> /dev/null; then
+            trap 'rm -f "$LOCK_FILE"; exit $?' INT TERM EXIT
+            
+            # critical section
+            ${t_function}
+            
+            rm -f "$LOCK_FILE"
+            trap - INT TERM EXIT
+            log_end_msg 0
+            break
+        else
+            log_progress_msg "."
+            sleep .2
+            
+            # timeout
+            t_count=$(($t_count+1))
+            if [ $t_count -gt 100 ] ; then 
+                rm -f "$LOCK_FILE" 
+                log_progress_msg "Removing stale lock"
+                log_progress_msg "Forcing function to run"
+                ${t_function}
+                break
+            fi
+        fi 
+    done
+}
+
+case "$1" in
     ## start script includes stop/flush
     start|reload|restart|force-reload)
         log_daemon_msg "Loading $DESC"
-
-        count=0
-        while true ; do
-            if ( set -o noclobber; echo "$$" > "$LOCK_FILE" ) 2> /dev/null; then
-                trap 'rm -f "$LOCK_FILE"; exit $?' INT TERM EXIT
-            
-                # critical section
-                insert_rules
-            
-                rm -f "$LOCK_FILE"
-                trap - INT TERM EXIT
-                log_end_msg 0
-                break
-            else
-                log_progress_msg "."
-                sleep .2
-
-                # timeout
-                count=$(($count+1))
-                if [ $count -gt 100 ] ; then 
-                    rm -f "$LOCK_FILE" 
-                    log_progress_msg "removing stale lock"
-                fi
-            fi 
-        done
+        run_function_lock insert_rules
         ;;
 
     stop)
         log_daemon_msg "Removing $DESC"
 
-        count=0
-        while true ; do
-            if ( set -o noclobber; echo "$$" > "$LOCK_FILE" ) 2> /dev/null; then
-                trap 'rm -f "$LOCK_FILE"; exit $?' INT TERM EXIT
-            
-                # critical section
-                remove_rules
-            
-                rm -f "$LOCK_FILE"
-                trap - INT TERM EXIT
-                log_end_msg 0
-                break
-            else
-                log_progress_msg "."
-                sleep .2
-
-                # timeout
-                count=$(($count+1))
-                if [ $count -gt 100 ] ; then 
-                    rm -f "$LOCK_FILE" 
-                    log_progress_msg "removing stale lock"
-                fi
-            fi 
-        done
+        run_function_lock remove_rules
         ;;        
 
     *)
