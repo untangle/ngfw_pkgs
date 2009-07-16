@@ -270,22 +270,26 @@ class InterfaceController < ApplicationController
     return json_error( "Unknown interface '%s'" % ( interface_id )) if interface.nil?
     
     interface_attributes = s["interface"] 
+
     interface_attributes.delete( "name" )
     interface_attributes.delete( "bus" )
     interface_attributes.delete( "os_name" )
     interface_attributes.delete( "mac_address" )
     interface_attributes.delete( "index" )
     interface_attributes.delete( "vendor" )
+    interface_attributes.delete( "id" )
     
     interface.update_attributes( interface_attributes )
     
     static_settings = interface.intf_static
     static_settings = IntfStatic.new if static_settings.nil?
+    s["static"].delete( "id" )
     static_settings.update_attributes( s["static"] )
     
     ## Retrieve the dynamic configuration, creating a new one if necessary.
     dynamic_settings = interface.intf_dynamic
     dynamic_settings = IntfDynamic.new if dynamic_settings.nil?
+    s["dynamic"].delete( "id" )
     dynamic_settings.update_attributes( s["dynamic"] )    
     
     ## Retrieve the dynamic configuration, creating a new one if necessary.
@@ -294,26 +298,28 @@ class InterfaceController < ApplicationController
     if ( s["pppoe"]["password"] == ApplicationHelper::PASSWORD_STRING )
       s["pppoe"].delete( "password" )
     end
+    s["pppoe"].delete( "id" )
     pppoe_settings.update_attributes( s["pppoe"] )
 
     ## Retrieve the bridge configuration, creating a new one if necessary.
     bridge_settings = interface.intf_bridge
     bridge_settings = IntfBridge.new if bridge_settings.nil?
+    s["bridge"].delete( "id" )
     bridge_settings.update_attributes( s["bridge"] )
     bridge_id = s["bridge"]["bridge_interface_id"]
     bridge_interface = Interface.find( :first, :conditions => [ "id = ?", bridge_id ] )
-
+    
     if ( s["interface"]["config_type"] == "bridge" )
       if bridge_interface.nil?
         return json_error( "Bridge Interface cannot be null" )
       end
     end
-
+    
     unless bridge_interface.nil?
       bridge_settings.bridge_interface = bridge_interface
       bridge_interface.bridged_interfaces << bridge_settings
     end
-      
+  
     static_settings.ip_networks = create_ip_networks( s["static_aliases"] )
     dynamic_settings.ip_networks = create_ip_networks( s["dynamic_aliases"] )
     pppoe_settings.ip_networks = create_ip_networks( s["pppoe_aliases"] )
@@ -333,11 +339,11 @@ class InterfaceController < ApplicationController
       end
     end
 
-    static_settings.save
-    dynamic_settings.save
-    pppoe_settings.save
-    bridge_settings.save
-
+    static_settings.save( false )
+    dynamic_settings.save( false )
+    pppoe_settings.save( false )
+    bridge_settings.save( false )
+    
     interface.intf_static = static_settings
     interface.intf_dynamic = dynamic_settings
     interface.intf_pppoe = pppoe_settings
@@ -347,8 +353,8 @@ class InterfaceController < ApplicationController
     media = InterfaceHelper::EthernetMedia.get_default if media.nil?
     interface.speed, interface.duplex = media.speed, media.duplex
     
-    interface.save
-
+    interface.save(false)
+    
     spawn { networkManager.commit }
     
     json_result

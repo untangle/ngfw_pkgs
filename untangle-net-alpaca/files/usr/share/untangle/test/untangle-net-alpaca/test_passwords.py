@@ -97,14 +97,14 @@ class TestPasswords(AlpacaSetup):
         assert current_password == new_password
 
     def test_interface_pppoe(self):
-        self.run_sql_command( "UPDATE alapca_settings SET config_level=2000" )
+        self.run_sql_command( "UPDATE alpaca_settings SET config_level=2000" )
         settings = self.handler.make_request( "interface/get_settings/1" )
         assert settings["pppoe"]["password"] == PASSWORD_STRING 
 
     def test_interface_pppoe_set(self):
         new_password = "simple string"
         
-        self.run_sql_command( "UPDATE alapca_settings SET config_level=2000" )
+        self.run_sql_command( "UPDATE alpaca_settings SET config_level=2000" )
         
         settings = self.handler.make_request( "interface/get_settings/1" )
         
@@ -127,7 +127,7 @@ class TestPasswords(AlpacaSetup):
     def test_interface_pppoe_unchanged(self):
         new_password = "simple string"
         
-        self.run_sql_command( "UPDATE alapca_settings SET config_level=2000" )
+        self.run_sql_command( "UPDATE alpaca_settings SET config_level=2000" )
         settings = self.handler.make_request( "interface/get_settings/1" )
         settings["pppoe"]["username"] = "foo"
         settings["pppoe"]["password"] = new_password
