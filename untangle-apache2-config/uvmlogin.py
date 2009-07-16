@@ -29,6 +29,19 @@ def authenhandler(req):
 def headerparserhandler(req):
     options = req.get_options()
 
+    connection = req.connection
+    (addr, port) = connection.local_addr
+
+    if port == 64156:
+        if options.get('OpenEverywhere', 'no') != 'yes':
+            return apache.HTTP_FORBIDDEN
+        else:
+            username = 'guest'
+            pw = base64.encodestring('%s' % username).strip()
+            req.headers_in['Authorization'] = "BASIC % s" % pw
+            req.notes['authorized'] = 'true'
+            return apache.OK
+
     if options.has_key('Realm'):
         realm = options['Realm']
     else:
@@ -67,10 +80,6 @@ def headerparserhandler(req):
         # is restricted. a tomcat valve enforces this setting.
         if options.get('UseRemoteAccessSettings', 'no') == 'yes':
             (allow_insecure, allow_outside_admin) = get_access_settings()
-
-            connection = req.connection
-
-            (addr, port) = connection.local_addr
 
             if not re.match('127\.', connection.remote_ip):
                 if 80 == port and not allow_insecure:
