@@ -12,8 +12,12 @@ MARK_FIRST_ALIAS=$((0x10000000))
 MARK_DUPE=$((0x20000000))
 MARK_LOCAL=$((0x0100))
 
+MASK_WAN=${MASK_WAN:-$((0x01))}
+MASK_NON_WAN=${MASK_NON_WAN:$(( ${MASK_WAN} ^ 0xFF ))}
+
 ## Always set this just in case.
 TCP_REDIRECT_PORTS="9500-9627"
+HTTP_INTERNAL_REDIRECT_PORT="64156"
 HTTPS_INTERNAL_REDIRECT_PORT="64157"
 ## This is the port the UVM is serving HTTPs on the external interface.
 HTTPS_EXTERNAL_PORT="443"
@@ -207,13 +211,22 @@ uvm_iptables_rules()
 ## Create the rules to allow internal access to port 80.
 uvm_packet_filter_standard_internal()
 {
-    if [ "${UVM_ALLOW_IN_HTTP}x" != "truex" ]; then return ; fi
-
     local t_mark=$(( ${MARK_LOCAL} | 0x2 | ${MARK_FIRST_ALIAS} ))
+    local t_mask
     ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 80 \
-        -m mark --mark ${t_mark}/${t_mark} -j DNAT --to-destination ${UVM_BIND_ADDRESS}
+        -m mark --mark ${t_mark}/${t_mark} -j REDIRECT
     ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 80 \
         -m mark --mark ${t_mark}/${t_mark} -j RETURN
+
+    
+    ## If all of the marks for the WAN interfaces are not set, then this came in on a
+    ## non-wan interface.
+    t_mask=$(( ${MARK_LOCAL} | ${MARK_FIRST_ALIAS} | ${MASK_WAN} ))
+    t_mark=$(( ${MARK_LOCAL} | ${MARK_FIRST_ALIAS} ))
+    ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 80 \
+        -m mark --mark ${t_mark}/${t_mask} -j REDIRECT --to-ports ${HTTP_INTERNAL_REDIRECT_PORT}
+    ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 80 \
+        -m mark --mark ${t_mark}/${t_mask} -j RETURN    
 }
 
 

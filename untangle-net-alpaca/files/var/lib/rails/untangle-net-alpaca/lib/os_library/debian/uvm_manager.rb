@@ -62,11 +62,12 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
   def hook_write_files
     ## These are all of the rules that are used to vector traffic to the UVM.
     write_subscription_script
+    wan_mask = write_interface_order
+
     ## These are all of the rules to filter / accept traffic to the various services
     ## the UVM provides (80, 443, etc)
-    write_packet_filter_script
+    write_packet_filter_script( wan_mask )
     write_openvpn_script
-    write_interface_order
   end
 
   ## A helper function for the packet filter manager.
@@ -139,7 +140,7 @@ EOF
     os["override_manager"].write_file( UvmSubscriptionFile, text, "\n" )    
   end
 
-  def write_packet_filter_script
+  def write_packet_filter_script( wan_mask )
     text = header
     
     text += <<EOF
@@ -149,6 +150,9 @@ if [ ! -f ${HELPER_SCRIPT} ]; then
   echo "[`date`] The script ${HELPER_SCRIPT} is not available"
   return 0
 fi
+
+MASK_WAN=#{wan_mask}
+MASK_NON_WAN=#{wan_mask ^ 0xFF}
 
 . ${HELPER_SCRIPT}
 
@@ -302,6 +306,10 @@ EOF
 #{UvmInterfaceOrderProperty}=#{values.join( "," )}
 #{UvmWanInterfaceProperty}=#{wan_interfaces.join( "," )}
 EOF
+
+    wan_mask=0
+    wan_interfaces.each { |idx| wan_mask = 1 << ( idx - 1 ) }
+    return wan_mask
   end
 
   def subscription_rules

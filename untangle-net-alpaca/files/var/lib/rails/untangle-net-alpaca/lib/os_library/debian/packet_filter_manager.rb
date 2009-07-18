@@ -462,7 +462,7 @@ EOF
     if !block_all.nil? && block_all.enabled
       ##A little rule to block all local traffic, done here so that custom items can
       ## insert rules in between.
-      fw_text << "#{IPTablesCommand} #{Chain::FirewallRules.args} -m mark --mark #{MarkInput}/#{MarkInput} -j #{Chain::FirewallMarkInputDrop.name}"
+      fw_text << "#{IPTablesCommand} #{Chain::FirewallRules.args} -j #{Chain::FirewallMarkInputDrop.name}"
     end
 
     ## Allow traffic to the test IP, this is useful for people who don't know their IP.
