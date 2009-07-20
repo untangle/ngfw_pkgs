@@ -52,6 +52,6 @@ rm /etc/cron.hourly/update_sanesecurity > /dev/null 2>&1
 rm /etc/cron.hourly/untangle-clamav-config > /dev/null 2>&1
 nohup /etc/cron.daily/untangle-clamav-config --no-sleep 1 >/dev/null 2>&1 &
 
-touch /etc/untangle/monit.d/monit-to-restart
+touch /etc/untanglemonit-to-restart
     
 exit 0
