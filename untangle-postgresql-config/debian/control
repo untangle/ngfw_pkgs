@@ -3,12 +3,12 @@ Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
 Uploaders: Untangle Buildbot <buildbot@untangle.com>
-Build-Depends: debhelper (>> 3.0.0)
+Build-Depends: untangle-monit-config, debhelper (>> 3.0.0)
 Standards-Version: 3.8.0
 
 Package: untangle-postgresql-config
 Architecture: all
-Depends: procps (>= 3.2.7-2~bpo.1), untangle-hardware-config, postgresql-client-8.3, postgresql-8.3
+Depends: untangle-monit-config, procps (>= 3.2.7-2~bpo.1), untangle-hardware-config, postgresql-client-8.3, postgresql-8.3
 Conflicts: procps (<< 3.2.7-2~bpo.1)
 Description: Untangle Postgres wrapper package
  The Untangle Postgres config for Postgres 8.3

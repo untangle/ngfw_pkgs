@@ -1,3 +1,9 @@
+untangle-ldap-server (6.3.0~svn20090220r22103trunk+seb20090717T063210-1lenny) seb; urgency=low
+
+  * auto build
+
+ -- root <seb@untangle.com>  Fri, 17 Jul 2009 06:32:10 -0700
+
 untangle-ldap-server (5.0.1-1) mustang-1; urgency=low
 
   * auto build

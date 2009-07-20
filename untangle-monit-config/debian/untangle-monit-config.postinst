@@ -1,0 +1,13 @@
+#! /bin/bash
+
+INITTAB=/etc/inittab
+CONF_FILE=/etc/untangle/monit.conf
+
+echo 'INCLUDE "/etc/untangle/monit.d/*_all.conf"' >| $CONFIG_FILE
+echo 'INCLUDE "/etc/untangle/monit.d/*_'$(dpkg-architecture -qDEB_BUILD_ARCH)'.conf"' >> $CONFIG_FILE
+chmod 600 $CONF_FILE
+
+if ! grep -q monit $INITTAB ; then
+  echo "mo:2345:respawn:/usr/share/untangle/bin/monit-wrapper.sh" >> $INITTAB
+  telinit q
+fi

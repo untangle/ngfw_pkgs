@@ -3,12 +3,12 @@ Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
 Uploaders: Untangle Buildbot <buildbot@untangle.com>
-Build-Depends: debhelper (>> 3.0.0)
+Build-Depends: untangle-monit-config, debhelper (>> 3.0.0)
 Standards-Version: 3.8.0
 
 Package: untangle-clamav-config
 Architecture: all
-Depends: clamav (>= 0.93~dfsg), clamav-daemon (>= 0.93~dfsg), clamav-freshclam (>= 0.93~dfsg), unrar, lha, arj, unzoo | zoo
+Depends: untangle-monit-config, clamav (>= 0.93~dfsg), clamav-daemon (>= 0.93~dfsg), clamav-freshclam (>= 0.93~dfsg), unrar, lha, arj, unzoo | zoo
 Provides: clamav-mv
 Conflicts: clamav-mv
 Replaces: clamav-mv

@@ -3,13 +3,13 @@ Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
 Uploaders: Untangle Buildbot <buildbot@untangle.com>
-Build-Depends: debhelper (>> 3.0.0)
+Build-Depends: untangle-monit-config, debhelper (>> 3.0.0)
 Standards-Version: 3.8.0
 
 Package: untangle-ldap-server
 Architecture: all
-Pre-Depends: debconf (>= 0.5)
-Depends: slapd (>= 2.2.23), ldap-utils
+Pre-Depends: untangle-monit-config, debconf (>= 0.5)
+Depends: untangle-monit-config, slapd (>= 2.2.23), ldap-utils
 Conflicts: untangle-slapd, untangle-ldap-utils, untangle-libldap-2.2-7
 Description: Untangle Slapd config package
  The Untangle slapd config for slapd 2.2.23

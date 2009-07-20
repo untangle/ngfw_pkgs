@@ -58,4 +58,6 @@ fi
 # restart spamassassin
 ourInit spamassassin restart &> /dev/null &
 
+touch /etc/untangle/monit.d/monit-to-restart
+
 exit 0

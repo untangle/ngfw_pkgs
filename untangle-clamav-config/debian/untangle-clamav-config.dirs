@@ -1,3 +1,4 @@
 /etc
+/etc/untangle/monit.d
 /etc/cron.daily
 /usr/share/untangle/bin

@@ -65,4 +65,6 @@ if [ ! -z "$PG_INIT" ] ; then
     done
 fi
 
+touch /etc/untangle/monit.d/monit-to-restart
+    
 exit 0

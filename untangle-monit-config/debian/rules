@@ -27,26 +27,25 @@ configure-stamp:
 
 build: configure
 	dh_testdir
-	rm -rf ./debian/tmp
 	mkdir -p ./debian/tmp
 	dh_installdirs -A -v
-	for i in `cat debian/untangle-clamav-config.dirs` ; do mkdir -p debian/tmp/$$i ; done
+	for i in `cat debian/untangle-ats-utilities.dirs` ; do mkdir -p debian/tmp/$$i ; done
 	cp -r ./files/* ./debian/tmp/
-	find ./debian/tmp -name ".svn" | xargs rm -rf 
+	find ./debian/tmp -name "\.svn" | xargs rm -rf
 
 clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-arch-stamp build-indep-stamp configure-stamp
-	rm -rf debian/tmp debian/untangle-clamav-config sav-install
+	rm -rf debian/tmp debian/untangle-monit-config
 	dh_clean
 
 binary-indep: build
 	dh_testdir  
 	dh_testroot   
-	dh_movefiles 
+	dh_movefiles  
 #	dh_installdebconf   
-	dh_shlibdeps  
+#	dh_shlibdeps   # FIXME - had to remove
 	dh_installdocs -n   
 #	dh_installexamples   
 #	dh_installmenu   
@@ -55,7 +54,7 @@ binary-indep: build
 #	dh_installpam   
 #	dh_installmime   
 #	dh_installinit
-	dh_installcron   
+#	dh_installcron   
 #	dh_installman   
 #	dh_installinfo   
 #	dh_undocumented   

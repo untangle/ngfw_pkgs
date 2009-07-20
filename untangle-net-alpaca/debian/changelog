@@ -1,3 +1,9 @@
+untangle-net-alpaca (6.3.0~svn20090716r23952trunk+seb20090717T084927-1lenny) seb; urgency=low
+
+  * auto build
+
+ -- root <seb@untangle.com>  Fri, 17 Jul 2009 08:49:27 -0700
+
 untangle-net-alpaca (5.4.0~svn20080616r16742trunk-1sarge) chaos; urgency=low
 
   * auto build

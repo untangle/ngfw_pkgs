@@ -34,6 +34,8 @@ for t_config_file in alpaca-bridge-address alpaca-cleanup alpaca-update-address 
         rename 's/$/.dpkg-old/' ${t_config_file}
     fi
 done
+
+touch /etc/untangle/monit.d/monit-to-restart
     
 exit 0
 
