@@ -1,5 +1,5 @@
 check process mongrel with pidfile /var/run/untangle-net-alpaca/mongrel.pid every 2 cycles
    start program = "/etc/init.d/untangle-net-alpaca start"
    stop  program = "/etc/init.d/untangle-net-alpaca stop"
-   if totalmem > 250 MB then restart
-#   if failed url http://localhost:3000/alpaca/dns?argyle=`head -n 1 /etc/untangle-net-alpaca/nonce` then restart
+   if totalmem > 125 MB then restart
+   if failed url http://localhost:3000/alpaca/dns?argyle=`head -n 1 /etc/untangle-net-alpaca/nonce` then restart
