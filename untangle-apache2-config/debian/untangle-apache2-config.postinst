@@ -52,6 +52,10 @@ if [ ! -e /etc/apache2/untangle-conf.d/uvm.conf ]; then
     echo "Include /usr/share/untangle/apache2/conf.d/*.conf" >/etc/apache2/untangle-conf.d/uvm.conf
 fi
 
+if [ ! -e /etc/apache2/untangle-unrestricted-conf.d/uvm.conf ]; then
+    echo "Include /usr/share/untangle/apache2/unrestricted-conf.d/*.conf" >/etc/apache2/untangle-unrestricted-conf.d/uvm.conf
+fi
+
 if [ ! -e $PEM -a -e $KEYSTORE ]; then
     echo 'moving cert from java keystore'
     /usr/share/untangle-apache2-config/keystore2pem.sh $KEYSTORE $PEM $ALIAS
@@ -74,12 +78,12 @@ if ! grep "Listen 443" /etc/apache2/ports.conf >/dev/null; then
     echo "Listen 443" >>/etc/apache2/ports.conf
 fi
 
-if ! grep "Listen 64157" /etc/apache2/ports.conf >/dev/null; then
-    echo "Listen 64157" >>/etc/apache2/ports.conf
-fi
-
 if ! grep "Listen 64156" /etc/apache2/ports.conf >/dev/null; then
     echo "Listen 64156" >>/etc/apache2/ports.conf
+fi
+
+if ! grep "Listen 64157" /etc/apache2/ports.conf >/dev/null; then
+    echo "Listen 64157" >>/etc/apache2/ports.conf
 fi
 
 /usr/sbin/a2dismod jk

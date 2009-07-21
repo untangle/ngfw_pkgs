@@ -32,16 +32,6 @@ def headerparserhandler(req):
     connection = req.connection
     (addr, port) = connection.local_addr
 
-    if port == 64156:
-        if options.get('OpenEverywhere', 'no') != 'yes':
-            return apache.HTTP_FORBIDDEN
-        else:
-            username = 'guest'
-            pw = base64.encodestring('%s' % username).strip()
-            req.headers_in['Authorization'] = "BASIC % s" % pw
-            req.notes['authorized'] = 'true'
-            return apache.OK
-
     if options.has_key('Realm'):
         realm = options['Realm']
     else:
