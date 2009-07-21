@@ -79,7 +79,8 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
   UpdateHostNameScript = "/etc/untangle-net-alpaca/scripts/update-address.d/11-dnsmasq-hosts"
 
   def register_hooks
-    os["network_manager"].register_hook( -200, "dns_server_manager", "write_files", :hook_write_files )
+    os["network_manager"].register_hook( -200, "dns_server_manager", "write_files", 
+                                         :hook_write_files_network )
     os["network_manager"].register_hook( 200, "dns_server_manager", "run_services", :hook_run_services )
 
     ## Register with the hostname manager to update when there are
@@ -91,6 +92,14 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
     write_files
     
     run_services
+  end
+
+  ## When writing the files for networking, clear out the DNS servers
+  ## first, if they are still valid, they should be reloaded when the
+  ## interfaces are brought up.
+  def hook_write_files_network
+    clear_name_servers
+    hook_write_files
   end
 
   def hook_write_files
@@ -325,6 +334,10 @@ EOF
       n[1] = 1 if n.length == 1
       { :index => n[1], :server => n[0] }
     end
+  end
+
+  def clear_name_servers
+    `sed -i '/^[# ]*server=/d' /etc/dnsmasq.conf`
   end
 
   def dhcp_config( dhcp_server_settings, dns_server_settings )
