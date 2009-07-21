@@ -22,5 +22,5 @@ module UvmHelper
   ## 3 -> DMZ
   ## 8 -> VPN
   ## 2 -> internal
-  DefaultOrder = "1,3,#{VpnIndex},2"
+  DefaultOrder = "1,3,4,5,6,7,#{VpnIndex},2"
 end
