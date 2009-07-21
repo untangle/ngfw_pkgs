@@ -90,7 +90,7 @@ splashimage=(hd0,0)/boot/grub/utsplash.xpm.gz
 ## e.g. altoptions=(extra menu suffix) extra boot options
 ##      altoptions=(single-user) single
 # altoptions=(hardware workaround) acpi=off noapic
-# altoptions=(video workaround) ut-video
+# altoptions=(video safe mode) ut-video
 # altoptions=(recovery mode) ut-restore
 
 ## controls how many kernels should be put into the menu.lst
