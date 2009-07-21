@@ -213,11 +213,13 @@ uvm_packet_filter_standard_internal()
 {
     local t_mark=$(( ${MARK_LOCAL} | 0x2 | ${MARK_FIRST_ALIAS} ))
     local t_mask
-    ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 80 \
-        -m mark --mark ${t_mark}/${t_mark} -j REDIRECT
-    ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 80 \
-        -m mark --mark ${t_mark}/${t_mark} -j RETURN
 
+    if [ "${UVM_ALLOW_IN_HTTP}x" = "truex" ]; then 
+        ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 80 \
+            -m mark --mark ${t_mark}/${t_mark} -j REDIRECT
+        ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 80 \
+            -m mark --mark ${t_mark}/${t_mark} -j RETURN
+    fi
     
     ## If all of the marks for the WAN interfaces are not set, then this came in on a
     ## non-wan interface.
