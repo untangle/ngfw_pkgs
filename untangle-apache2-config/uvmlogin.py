@@ -1,3 +1,21 @@
+# $HeadURL: svn://chef/work/src/spyware/impl/com/untangle/node/spyware/SpywareImpl.java $
+# Copyright (c) 2003-2009 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# Aaron Read <amread@untangle.com>
+
 import base64
 import cgi
 import gettext
@@ -28,9 +46,6 @@ def authenhandler(req):
 
 def headerparserhandler(req):
     options = req.get_options()
-
-    connection = req.connection
-    (addr, port) = connection.local_addr
 
     if options.has_key('Realm'):
         realm = options['Realm']
@@ -64,6 +79,7 @@ def headerparserhandler(req):
         pw = base64.encodestring('%s' % username).strip()
         req.headers_in['Authorization'] = "BASIC % s" % pw
         req.notes['authorized'] = 'true'
+        apache.log_error('return at 1')
         return apache.OK
     else:
         # we only do this as to not present a login screen when access
@@ -71,10 +87,16 @@ def headerparserhandler(req):
         if options.get('UseRemoteAccessSettings', 'no') == 'yes':
             (allow_insecure, allow_outside_admin) = get_access_settings()
 
+            connection = req.connection
+
+            (addr, port) = connection.local_addr
+
             if not re.match('127\.', connection.remote_ip):
                 if 80 == port and not allow_insecure:
+                    apache.log_error('return at 2')
                     return apache.HTTP_FORBIDDEN
                 elif 443 == port and not allow_outside_admin:
+                    apache.log_error('return at 3')
                     return apache.HTTP_FORBIDDEN
 
         login_redirect(req, realm)
