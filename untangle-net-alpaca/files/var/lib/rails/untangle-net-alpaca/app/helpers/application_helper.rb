@@ -67,29 +67,43 @@ module ApplicationHelper
     link_to( address, "http://standards.ieee.org/cgi-bin/ouisearch?" + address.slice(0,8).gsub(/:/,''),  :title => title, :popup => [ 'new_window', 'height=450,width=650,scrollbars=1,toolbar=1,status=1,location=1,menubar=1,resizeable=1' ] )
   end
 
+  def ApplicationHelper.get_user_command_output( session_id, key, stdout_offset = 0, stderr_offset = 0 )
+    values = { "stdout" => "", "stderr" => "" }
 
-  def handle_flash_messages
-    css_class = false
-    body = ""
-    if !flash[:notice].nil? and flash[:notice].length > 0
-      css_class = "notice"
-      body << "<li>"+flash[:notice]+"</li>"
-      flash.delete(:notice)
+    command_directory = Alpaca::OS::ManagerBase::UserCommandDirectory
+    output_key = "#{session_id}-#{key}"
+    stdout = "#{command_directory}/command-#{output_key}.out"
+    stderr = "#{command_directory}/command-#{output_key}.err"
+    ret = "#{command_directory}/command-#{output_key}.ret"
+    
+    File.open( stdout ) do |f|
+      f.seek( stdout_offset, IO::SEEK_SET )
+      begin
+        f.read( 1024, values["stdout"] )
+      rescue
+      end
+      values["stdout_offset"] = f.pos
     end
-    if !flash[:warning].nil? and flash[:warning].length > 0
-      css_class = "warning"
-      body << "<li>"+flash[:warning]+"</li>"
-      flash.delete(:warning)
+
+    File.open( stderr ) do |f|
+      f.seek( stderr_offset, IO::SEEK_SET )
+      begin
+        f.read( 1024, values["stderr"] )
+      rescue
+      end
+      values["stderr_offset"] = f.pos
     end
-    if !flash[:error].nil? and flash[:error].length > 0
-      css_class = "error"
-      body << "<li>"+flash[:error]+"</li>"
-      flash.delete(:error)
+    
+    if File.exists?( ret )
+      File.open( ret ) do |f|
+        ## If it is more than
+        values["return_code"] = f.read( 256 )
+      end
+    else
+      values["return_code"] = -1
     end
-    if css_class != false
-      return "<div class=\"#{css_class}\"><ul>#{body}</ul></div>"
-    end
-    return ""
+
+    return values
   end
 
   #Needs work for better validation

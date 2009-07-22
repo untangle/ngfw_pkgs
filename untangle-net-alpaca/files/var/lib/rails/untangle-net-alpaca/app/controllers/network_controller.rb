@@ -231,6 +231,42 @@ class NetworkController < ApplicationController
 
   alias_method :general, :extjs
 
+  def start_ping_test
+    s = json_params
+
+    destination = s["destination"]
+    count = s["count"]
+    count = 5 if count.nil?
+    count = count.to_i
+    count = 5 if ( count < 1 or count > 200 )
+
+    raise "Missing Destination" if destination.nil?
+    
+    session_id = get_user_command_session_id
+
+    result = {}
+    result["key"] = os["network_manager"].start_user_command( session_id, "date ; ping -c #{count} #{destination}; echo" )
+
+    json_result( :values => result )
+  end
+
+  def continue_ping_test
+    s = json_params
+
+    key = s["key"]
+    raise "Missing command key" if key.nil?
+    
+    stdout_offset = s["stdout_offset"]
+    stdout_offset = 0 if stdout_offset.nil?
+    stderr_offset = s["stderr_offset"]
+    stderr_offset = 0 if stderr_offset.nil?
+
+    session_id = get_user_command_session_id
+    result = ApplicationHelper.get_user_command_output( session_id, key, stdout_offset, stderr_offset )
+    
+    json_result( :values => result )
+  end
+
   def commit
     spawn do
       os["network_manager"].commit

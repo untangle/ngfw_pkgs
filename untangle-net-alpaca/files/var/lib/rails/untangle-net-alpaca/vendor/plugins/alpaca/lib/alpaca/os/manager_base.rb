@@ -15,9 +15,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
+
+require "fileutils"
+require "open3"
+
 class Alpaca::OS::ManagerBase
   include Alpaca::OS::Logging
 
+  UserCommandDirectory = "/tmp/alpaca"
   MethodPrefixRegex = /^hook_/
 
   class MethodHandler
@@ -32,6 +37,12 @@ class Alpaca::OS::ManagerBase
     end
 
     attr_reader :index, :manager, :method_id
+  end
+  
+  ## Spawn needs a class (it is a module), but Spawn
+  ## shouldn't be defined for all modules.
+  class SpawnClass
+    include Spawn
   end
     
   ## Override at your own risk
@@ -69,6 +80,37 @@ class Alpaca::OS::ManagerBase
     ensure
       p.close unless p.nil?
     end
+  end
+
+  def start_user_command( session_id, command )
+    FileUtils.mkdir_p( UserCommandDirectory )
+
+    key = "%08x" % rand( 0x80000000 )
+    output_key = "#{session_id}-#{key}"
+    stdout = "#{UserCommandDirectory}/command-#{output_key}.out"
+    stderr = "#{UserCommandDirectory}/command-#{output_key}.err"
+    ret = "#{UserCommandDirectory}/command-#{output_key}.ret"
+    
+    ## Spawn a new process for the process to run in.
+    SpawnClass.new.spawn do
+      temp = nil
+      begin
+        temp = Tempfile.new( "command-", tmpdir= UserCommandDirectory )
+        ## This way it is save to easily redirect output without having to worry about
+        ## multiple commands
+        temp.puts <<EOF
+#!/bin/dash
+#{command}
+
+echo $? > #{ret}
+EOF
+        temp.close( false )
+        File.chmod( 0755, temp.path )
+        Kernel.system( "#{temp.path} > #{stdout} 2> #{stderr}" )
+      end
+    end
+
+    return key
   end
 
   ## Override this method in order to register hooks.

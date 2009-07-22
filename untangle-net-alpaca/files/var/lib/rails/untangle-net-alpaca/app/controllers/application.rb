@@ -19,6 +19,8 @@
 #
 require "gettext"
 
+require "digest/md5"
+
 class ApplicationController < ActionController::Base
     include GetText
   
@@ -291,6 +293,14 @@ class ApplicationController < ActionController::Base
       ## No longer logging parameters
       ## logger.info "  Parameters: #{respond_to?(:filter_parameters) ? filter_parameters(params).inspect : params.inspect}"
     end
+  end
+
+  def get_user_command_session_id
+    if ( session[:user_command_id].nil? )
+      session[:user_command_id] = Digest::MD5.hexdigest( "#{@_session.session_id}" )[0,12]
+    end
+    
+    return session[:user_command_id]
   end
 
   private

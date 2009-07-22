@@ -91,12 +91,16 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
             name : "interfaces",
 
             tbar : [{
+                text : this._( "Refresh Interfaces" ),
+                handler : this.refreshInterfaces,
+                scope : this
+            },{
                 text : this._( "Test Connectivity" ),
                 handler : this.testConnectivity,
                 scope : this
             },{
-                text : this._( "Refresh Interfaces" ),
-                handler : this.refreshInterfaces,
+                text : this._( "Ping Test" ),
+                handler : this.openPingTest,
                 scope : this
             }],
 
@@ -315,6 +319,21 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
 
     /* This is the request used to configure new or removed interfaces. */
     updateInterfacesUrl : "<a href='javascript:application.switchToQueryPath( \"/alpaca/interface/refresh\")'>",
+
+    openPingTest : function()
+    {
+        var queryPath = ({ "controller" : "interface", "page" : "ping_test" });
+        Ung.Alpaca.Util.loadScript( queryPath, this.completeOpenPingTest.createDelegate( this ));
+    },
+
+    completeOpenPingTest : function()
+    {
+        if ( this.pingTest == null ) {
+            this.pingTest = new Ung.Alpaca.PingTest();
+        }
+        
+        this.pingTest.show();
+    },
 
     saveMethod : "/interface/set_interface_order"
 });
