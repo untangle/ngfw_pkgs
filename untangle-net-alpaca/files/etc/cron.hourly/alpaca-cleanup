@@ -16,6 +16,6 @@ ruby /usr/share/untangle-net-alpaca/scripts/cleanup.rb ${BASE_DIR}
 ## Clean out the temporary files
 USER_COMMAND_DIRECTORY="/tmp/alpaca"
 if [ -d "${USER_COMMAND_DIRECTORY}" ]; then
-    find "${USER_COMMAND_DIRECTORY}" -maxdepth 1 -type -f -name "command-*" -atime +1 -print0 | xargs -0 rm -f  
+    find "${USER_COMMAND_DIRECTORY}" -maxdepth 1 -type f -name "command-*" -atime +1 -print0 | xargs -0 rm -f  
 fi
 exit 0
