@@ -125,6 +125,7 @@ Ung.Alpaca.PingTest = Ext.extend(Ext.Window, {
         
         /* Disable the run test button */
         this.runTest.disable();
+        this.destination.disable();
         this.currentCommandKey = 0;
         this.stdoutOffset = null;
         this.stderrOffset = null;
@@ -140,6 +141,7 @@ Ung.Alpaca.PingTest = Ext.extend(Ext.Window, {
         this.currentCommandKey = key["key"];
         this.stdoutOffset = null;
         this.stderrOffset = null;
+        this.pollCount = 0;
         
         window.setTimeout( this.continuePingTest.createDelegate( this ), 1000 );
     },
@@ -156,7 +158,9 @@ Ung.Alpaca.PingTest = Ext.extend(Ext.Window, {
         this.currentCommandKey = null;
         this.stdoutOffset = null;
         this.stderrOffset = null;
+        this.pollCount = 0;
         this.runTest.enable();
+        this.destination.enable();
     },
 
     continuePingTest : function()
@@ -188,12 +192,24 @@ Ung.Alpaca.PingTest = Ext.extend(Ext.Window, {
         this.stdoutOffset = output["stdout_offset"];
         this.stderrOffset = output["stderr_offset"];
 
+        if ( this.pollCount == null ) {
+            this.pollCount = 0;
+        }
+
+        this.pollCount++;
+
+        if ( this.pollCount > 20 ) {
+            this.failureStartPingTest();
+            return;
+        }
+
         if ( output["return_code"] < 0 ) {
             window.setTimeout( this.continuePingTest.createDelegate( this ), 1000 );
         } else {
             this.currentCommandKey = null;
             this.stdoutOffset = null;
             this.stderrOffset = null;
+            this.destination.enable();
             this.runTest.enable();
         }
     },
