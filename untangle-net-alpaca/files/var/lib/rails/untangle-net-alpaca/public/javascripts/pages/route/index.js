@@ -12,16 +12,18 @@ Ung.Alpaca.Pages.Route.Index = Ext.extend( Ung.Alpaca.PagePanel, {
     {
         this.gatewayStore = [];
         this.gatewayMap = {};
+        this.gatewayNameToIDMap = {};
 
         this.gatewayStore.push(["1.2.3.4", "1.2.3.4"]);
         var ie = this.settings["interface_enum"];
         for ( var c = 0; c < ie.length ; c++ ) {
             var i = ie[c];
             Ung.Alpaca.Util.addToStoreMap( i[0], i[1], this.gatewayStore, this.gatewayMap );
+            this.gatewayNameToIDMap[i[1]] = i[0];
         }
 
         this.combobox = new Ext.form.ComboBox({
-            name : "foo-happy-combobox",
+            name : "combobox-gateway",
             store : this.gatewayStore,
             listWidth : 60,
             width : 70,
@@ -167,6 +169,19 @@ Ung.Alpaca.Pages.Route.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         }
 
         return value;
+    },
+    
+    updateSettings : function( settings )
+    {
+        Ung.Alpaca.Pages.Route.Index.superclass.updateSettings.apply( this, arguments );
+
+        /* Update all of the interface routes */
+        var c = 0, staticRoutes = settings["static_routes"];
+        for ( c = 0 ; c < staticRoutes.length ; c++ ) {
+            var staticRoute = staticRoutes[c];
+            var gateway = this.gatewayNameToIDMap[staticRoute["gateway"]];
+            if ( gateway != null ) staticRoute["gateway"] = gateway;
+        }
     },
 
     saveMethod : "/route/set_settings"

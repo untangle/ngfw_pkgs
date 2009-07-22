@@ -37,7 +37,9 @@ class RouteController < ApplicationController
     NetworkRoute.destroy_all
     network_routes.each { |route| route.save }
 
-    os["routes_manager"].commit
+    spawn do
+      os["routes_manager"].commit
+    end
 
     json_result
   end
