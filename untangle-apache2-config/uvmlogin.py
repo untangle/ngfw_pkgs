@@ -79,7 +79,6 @@ def headerparserhandler(req):
         pw = base64.encodestring('%s' % username).strip()
         req.headers_in['Authorization'] = "BASIC % s" % pw
         req.notes['authorized'] = 'true'
-        apache.log_error('return at 1')
         return apache.OK
     else:
         # we only do this as to not present a login screen when access
@@ -93,10 +92,8 @@ def headerparserhandler(req):
 
             if not re.match('127\.', connection.remote_ip):
                 if 80 == port and not allow_insecure:
-                    apache.log_error('return at 2')
                     return apache.HTTP_FORBIDDEN
                 elif 443 == port and not allow_outside_admin:
-                    apache.log_error('return at 3')
                     return apache.HTTP_FORBIDDEN
 
         login_redirect(req, realm)
