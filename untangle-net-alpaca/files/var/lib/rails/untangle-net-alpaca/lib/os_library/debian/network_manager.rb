@@ -25,34 +25,6 @@ class OSLibrary::Debian::NetworkManager < OSLibrary::NetworkManager
   MediaConfigurationFile = "/etc/untangle-net-alpaca/ethernet_media"
   NetClassDir = "/sys/class/net"
 
-  ## A little object used to append the default gateway to the
-  ## necessary aliases.
-  class DefaultGateway
-    def initialize( gateway = nil )
-      @address = gateway
-      @networks = {}
-    end
-    
-    def add_network( network )
-      @networks[network] = true
-    end
-
-    def has_network( network )
-      @networks[network] == true
-    end
-
-    def empty?
-      @address.nil?
-    end
-
-    ## Returns true if the gateway has already been printed.
-    def printed?
-      !@networks.empty?
-    end
-
-    attr_reader :address
-  end
-
   def get_interfaces_status_file
     return InterfacesStatusFile
   end
@@ -166,18 +138,12 @@ EOF
     end
 
     gw = static.default_gateway
-    
-    ## Convert gw to a one element array, this way the helper functions bridgeSettings and
-    ## append_ip_networks can modify it.
-    if ( interface.wan and !gw.nil? and !gw.empty?  and !IPAddr.parse( gw ).nil? )
-      ## Parse the gateway verifying that it is a valid IP address.
-      gw = DefaultGateway.new( gw )
-    else
-      gw = DefaultGateway.new
+    if ( !interface.wan or gw.nil? or gw.empty?  or IPAddr.parse( gw ).nil? )
+      gw = nil
     end
 
     ## This will automatically remove the first ip_network if it is assigned to the bridge.
-    bridge = bridgeSettings( interface, static.mtu, "manual", true, ip_networks, gw )
+    bridge = bridgeSettings( interface, static.mtu, "manual", true, ip_networks )
 
     is_bridge = bridge.empty?
     bridge = bridge.strip
@@ -189,11 +155,11 @@ EOF
     name, mtu = OSLibrary::Debian::NetworkManager.bridge_name( interface ), nil unless is_bridge
     
     ## Configure each IP and then join it all together with some newlines.
-    bridge += "\n\n" + append_ip_networks( interface, ip_networks, name, mtu, !is_bridge, gw )
+    bridge += "\n\n" + append_ip_networks( interface, ip_networks, name, mtu, !is_bridge )
 
     ## Append the gateway if none of the values matched it(if one took
     ## it, or this isn't WAN, gw is an empty array.
-    "\n" + bridge.strip + "\n" + (( gw.empty? or gw.printed? ) ? "" : "\talpaca_gateway #{gw.address}" )
+    "\n" + bridge.strip + "\n" + (( gw.nil? ) ? "" : "\talpaca_gateway #{gw}\n" )
   end
 
   def dynamic( interface, dynamic )
@@ -231,7 +197,7 @@ iface #{name} inet dhcp
 #{mtuSetting( dynamic.mtu )}
 EOF
     end
-
+    
     ## never set the mtu, and always start with an alias.
     ip_networks = clean_ip_networks( dynamic.ip_networks )
     base_string + "\n" + append_ip_networks( interface, ip_networks, name, nil, true )
@@ -241,15 +207,12 @@ EOF
     logger.debug( "Nothing needed for a bridge interface" )
     ""
   end
-
+  
   ## These are the settings that should be appended to the first
   ## interface index that is inside of the interface (if this is in fact a bridge)
   ## @param bridge_self Should be set to true unless the interface
-  ## @default_gateway Object which can be used to append the default gateway if it lines up
-  ## with this ip network.  If it is used, then the address is automatically removed from the array.
   ## shouldn't be bridged with itself
-  def bridgeSettings( interface, mtu, config_method, bridge_self, ip_networks = [], 
-                      default_gateway = DefaultGateway.new )
+  def bridgeSettings( interface, mtu, config_method, bridge_self, ip_networks = [] )
     bridged_interfaces = interface.bridged_interface_array
     ## If this is nil or empty, it is not a bridge.    
     return "" if ( bridged_interfaces.nil? || bridged_interfaces.empty? )
@@ -280,9 +243,6 @@ EOF
 \taddress #{primary_network.ip}
 \tnetmask #{OSLibrary::NetworkManager.parseNetmask( primary_network.netmask)}
 EOF
-      
-      ## Check to append the default gateway
-      configuration += handle_default_gateway( primary_network, default_gateway )
     end
 
     return configuration
@@ -331,9 +291,7 @@ iface #{pppoe_name} inet ppp
 EOF
   end
 
-
-  def append_ip_networks( interface, ip_networks, name, mtu_string, start_with_alias,
-                          default_gateway = DefaultGateway.new )
+  def append_ip_networks( interface, ip_networks, name, mtu_string, start_with_alias )
     ## this determines whether the indexing should start with an alias.
     ## mtu never applies to an alias.
     i, mtu_string = ( start_with_alias ) ? [ 0, nil ] : [ nil, mtu_string ]
@@ -351,7 +309,6 @@ iface #{ip_network_name} inet static
 EOF
 
       base += mtu_string + "\n" unless mtu_string.nil?
-      base += handle_default_gateway( ip_network, default_gateway )
 
       mtu_string = nil
       
@@ -454,22 +411,5 @@ EOF
     return false if /\.255$/.match( ip_network.ip )
 
     true
-  end
-
-  ## Return the configuration string for the gateway if it falls into the
-  ## range for this ip network.  This also removes the default gateway
-  ## from the array so it cannot be used by subsequent aliaes.
-  def handle_default_gateway( ip_network, default_gateway )
-    if default_gateway.empty? or default_gateway.has_network( ip_network )
-      return ""
-    end
-
-    ipn = IPAddr.parse( "#{ip_network.ip}/#{ip_network.netmask}" )
-    if ( ipn.include?( IPAddr.parse( default_gateway.address )))
-      default_gateway.add_network( ip_network )
-      return "\talpaca_gateway #{default_gateway.address}"
-    end
-
-    ""
   end
 end

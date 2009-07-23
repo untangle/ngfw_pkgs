@@ -47,10 +47,12 @@ ip_route_get_aliases()
     
     t_interface=$1
     t_gateway=$2
-    aliases="`ip addr show ${t_interface} | awk '/inet.*scope global/ { print  $2 }'`"
     
+    ## Print out all of the aliases
+    ip -f inet addr show ${t_interface} scope global | \
+        awk '/inet/ { sub ( "/.*", "", $2 ) ; print  $2 }'
+            
     if [ "${t_interface#ppp}" != "${t_interface}" ]; then
-        echo ${aliases}
         
         if [ -f "/var/run/${t_interface}.pid" ]; then
             t_pppoe_interface=`cat /var/run/${t_interface}.pid`
@@ -65,26 +67,11 @@ ip_route_get_aliases()
             fi
             
             if [ -n "${t_pppoe_interface}" ] ; then
-                ip addr show ${t_pppoe_interface} | awk '/inet.*scope global/ { sub("/.*","") ; print $2 }'
+                ip -f inet addr show ${t_pppoe_interface} scope global | \
+                    awk '/inet/ { sub("/.*","") ; print $2 }'
             fi
         fi
-
-        return
-    fi
-    
-    ## This is a simple script designed to determine which aliases
-    ## can route to the gateway
-    cat<<EOF | ruby - ${t_gateway} ${aliases}
-require "ipaddr"
-args=[ARGV].flatten
-gateway = args.shift
-args.each do |network|
-  address = network.sub( /\/.*/, "" )
-  if ( gateway == "ppp" ) or ( n = IPAddr.new( network )).include?( gateway )
-    puts address
-  end
-end
-EOF
+    fi    
 }
 
 ## Determine if the rules are up to date.

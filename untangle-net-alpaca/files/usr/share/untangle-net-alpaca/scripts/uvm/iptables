@@ -11,6 +11,7 @@ MARK_NOTRACK=$((0x02000000))
 MARK_FIRST_ALIAS=$((0x10000000))
 MARK_DUPE=$((0x20000000))
 MARK_LOCAL=$((0x0100))
+LOCAL_UVM_REDIRECT="uvm-tcp-redirect"
 
 MASK_WAN=${MASK_WAN:-$((0x01))}
 MASK_NON_WAN=${MASK_NON_WAN:$(( ${MASK_WAN} ^ 0xFF ))}
@@ -141,6 +142,9 @@ update_tcp_window_scaling()
 
 uvm_iptables_rules()
 {    
+    local t_address
+    local t_tcp_port_range
+
     # Update the flag for TCP Window scaling.
     update_tcp_window_scaling
 
@@ -173,8 +177,27 @@ uvm_iptables_rules()
     ${IPTABLES} -A PREROUTING -t mangle -p icmp                          -j NFQUEUE
 
     #redirect  anthing re-injected packets from the TUN interface to us
-    ${IPTABLES} -I PREROUTING 1 -t nat -i ${TUN_DEV} -t nat -p tcp \
-        -j DNAT --to-destination ${UVM_BIND_ADDRESS}:${TCP_REDIRECT_PORTS}
+    ## Add a redirect rule for each address,
+    ${IPTABLES} -t nat -N "${LOCAL_UVM_REDIRECT}"
+    ${IPTABLES} -t nat -F "${LOCAL_UVM_REDIRECT}"
+    ${IPTABLES} -I PREROUTING 1 -t nat -i ${TUN_DEV} -p tcp -g "${LOCAL_UVM_REDIRECT}"
+    for t_address in `ip -f inet addr show | awk '/^ *inet/ { sub( "/.*", "", $2 ) ; print $2 }'` ; do
+        if [ "${t_address}" = "127.0.0.1" ]; then continue ; fi
+        if [ "${t_address}" = "192.0.2.42" ]; then continue ; fi
+        if [ "${t_address}" = "192.0.2.43" ]; then continue ; fi
+
+        ${IPTABLES} -A "${LOCAL_UVM_REDIRECT}"  -t nat -i ${TUN_DEV} -t nat -p tcp \
+            --destination ${t_address}  -j DNAT --to-destination ${t_address}:${TCP_REDIRECT_PORTS}
+    done
+    
+    ${IPTABLES} -A "${LOCAL_UVM_REDIRECT}"  -t nat -i ${TUN_DEV} -t nat -p tcp \
+        -j REDIRECT --to-ports ${TCP_REDIRECT_PORTS}
+
+    ## Guard the ports (this part uses : not -)
+    
+    t_tcp_port_range=`echo ${TCP_REDIRECT_PORTS} | sed 's|-|:|'`
+    ${IPTABLES} -t filter -I INPUT 1 ! -i utun -p tcp --destination-port ${t_tcp_port_range} \
+        -m conntrack --ctstate NEW,INVALID -j DROP
 
     # when packets are released from the queue they restart at the top of the table.
     # we set this mark on them before releasing and catch conmark them so we wont catch the rest of the session 
