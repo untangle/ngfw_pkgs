@@ -8,3 +8,4 @@ usr/share/untangle/mod_python/auth
 usr/share/untangle/mod_python/error
 usr/share/untangle/mod_python/forward
 usr/share/untangle/apache2/conf.d
+usr/share/untangle/apache2/unrestricted-conf.d
