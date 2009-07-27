@@ -330,7 +330,7 @@ mark_local_ip()
      #{IPTablesCommand} #{Chain::MarkInterface.args} -d ${t_ip} -j MARK --or-mark ${t_mark}
 
      if [ "${t_first_alias}x" = "truex" ]; then
-       #{IPTablesCommand} #{Chain::MarkInterface.args} -i ${t_intf} -d ${t_ip} -j MARK --or-mark $(( #{MarkFirstAlias} ))
+       #{IPTablesCommand} #{Chain::MarkInterface.args} -d ${t_ip} -j MARK --or-mark $(( #{MarkFirstAlias} ))
      fi
      t_first_alias="false"
    done

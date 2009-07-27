@@ -308,7 +308,7 @@ EOF
 EOF
 
     wan_mask=0
-    wan_interfaces.each { |idx| wan_mask = 1 << ( idx - 1 ) }
+    wan_interfaces.each { |idx| wan_mask |= 1 << ( idx - 1 ) }
     return wan_mask
   end
 

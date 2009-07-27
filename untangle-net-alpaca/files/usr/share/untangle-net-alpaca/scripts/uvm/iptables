@@ -258,22 +258,14 @@ uvm_packet_filter_standard_internal()
 ## Allow internal access to port.
 uvm_packet_filter_secure_internal()
 {
-    local t_mark=$(( ${MARK_LOCAL} | 0x2 | ${MARK_FIRST_ALIAS} ))
-    
-    ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 443 \
-        -m mark --mark ${t_mark}/${t_mark} \
-        -j DNAT --to-destination ${UVM_BIND_ADDRESS}:${HTTPS_INTERNAL_REDIRECT_PORT}
-    ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 443 \
-        -m mark --mark ${t_mark}/${t_mark} -j RETURN
+    local t_mark=$(( ${MARK_LOCAL} | ${MARK_FIRST_ALIAS} ))
+    local t_mask=$(( ${MARK_LOCAL} | ${MASK_WAN} | ${MARK_FIRST_ALIAS} ))
 
-    t_mark=$(( ${MARK_LOCAL} | 0x80 | ${MARK_FIRST_ALIAS} ))
-    
     ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 443 \
-        -m mark --mark ${t_mark}/${t_mark} \
-        -j DNAT --to-destination ${UVM_BIND_ADDRESS}:${HTTPS_INTERNAL_REDIRECT_PORT}
+        -m mark --mark ${t_mark}/${t_mask} \
+        -j REDIRECT --to-ports ${HTTPS_INTERNAL_REDIRECT_PORT}
     ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 443 \
-        -m mark --mark ${t_mark}/${t_mark} -j RETURN
-
+        -m mark --mark ${t_mark}/${t_mask} -j RETURN
 
     if [ "${HTTPS_PUBLIC_PORT}x" = "x" ] ; then return ; fi
 
@@ -281,7 +273,7 @@ uvm_packet_filter_secure_internal()
 
     ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} \
         -m mark --mark 2/2 --destination-ports ${HTTPS_PUBLIC_PORT} \
-        -j DNAT --to-destination ${UVM_BIND_ADDRESS}:${HTTPS_INTERNAL_REDIRECT_PORT}
+        -j REDIRECT --to-ports ${HTTPS_INTERNAL_REDIRECT_PORT}
     
     ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} \
         -m mark --mark 2/2 --destination-ports ${HTTPS_PUBLIC_PORT} -j RETURN
@@ -303,16 +295,19 @@ uvm_restrict_access_string()
 uvm_packet_filter_secure_external()
 {
     local t_restrict
+    local t_mark
 
     if [ "${UVM_ALLOW_OUT_HTTPS}x" != "truex" ] ; then return ; fi
 
-    t_restrict=`uvm_restrict_access_string`    
+    t_restrict=`uvm_restrict_access_string`
+    
+    t_mark=$(( ${MARK_LOCAL} | ${MARK_FIRST_ALIAS} ))
     
     ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports ${HTTPS_EXTERNAL_PORT} \
-        ${t_restrict} -m mark --mark ${MARK_LOCAL}/${MARK_LOCAL} -j DNAT --to-destination ${UVM_BIND_ADDRESS}:443
+        ${t_restrict} -m mark --mark ${t_mark}/${t_mark} -j REDIRECT --to-ports 443
     
     ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports ${HTTPS_EXTERNAL_PORT} \
-        ${t_restrict} -m mark --mark ${MARK_LOCAL}/${MARK_LOCAL} -j RETURN
+        ${t_restrict} -m mark --mark ${t_mark}/${t_mark} -j RETURN
 }
 
 uvm_packet_filter_secure_public()
@@ -328,7 +323,7 @@ uvm_packet_filter_secure_public()
     ## router is doing the restrictions.
 
     ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} \
-        --destination-ports ${HTTPS_PUBLIC_PORT} -j DNAT --to-destination ${UVM_BIND_ADDRESS}:443
+        --destination-ports ${HTTPS_PUBLIC_PORT} -j REDIRECT --to-ports 443
     
     ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} \
         --destination-ports ${HTTPS_PUBLIC_PORT} -j RETURN
