@@ -330,7 +330,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                 },
                 items : [{
                     xtype : "textarea",
-                    fieldLabel : this._( "Secret Field" ),
+                    fieldLabel : this._( "PPPoE Optional Parameters" ),
                     name : "pppoe.secret_field",
                     width : 397,
                     height : 140
