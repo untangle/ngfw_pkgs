@@ -6,139 +6,142 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Untangle\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-04 13:57-0800\n"
+"POT-Creation-Date: 2009-07-27 17:42-0700\n"
 "PO-Revision-Date: 2008-11-11 10:21-0800\n"
 "Last-Translator: Claudia\n"
 "Language-Team: Portuguese <claudia@englishtoportuguese.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Translate Toolkit 1.1.1\n"
 "X-Poedit-Language: Portuguese\n"
 
-#: ../adminindex.py:39
+#: ../adminindex.py:57
 #, python-format
-msgid "%s Login"
-msgstr "Login %s"
+msgid "%s Administrator Login"
+msgstr ""
 
-#: ../adminindex.py:93
+#: ../adminindex.py:111
 msgid "Error: Username and Password do not match"
 msgstr "Erro: Nome de usuário e senha não correspondem"
 
-#: ../adminindex.py:147
+#: ../adminindex.py:165
 msgid "Server:"
 msgstr "Servidor:"
 
-#: ../adminindex.py:147
+#: ../adminindex.py:165
 msgid "Username:"
 msgstr "Nome de usuário:"
 
-#: ../adminindex.py:147
+#: ../adminindex.py:165
 msgid "Password:"
 msgstr "Senha:"
 
-#: ../adminindex.py:147
+#: ../adminindex.py:165
 msgid "Login"
 msgstr "Login"
 
-#: ../errorindex.py:15
+#: ../errorindex.py:33
 msgid "Bad Request"
 msgstr "Solicitação ruim"
 
-#: ../errorindex.py:19
+#: ../errorindex.py:37
 msgid "Unauthorized"
 msgstr "Não autorizado"
 
-#: ../errorindex.py:23
+#: ../errorindex.py:41
 msgid "Payment Required"
 msgstr "Pagamento necessário"
 
-#: ../errorindex.py:27
+#: ../errorindex.py:45
 msgid "Forbidden"
 msgstr "Proibido"
 
-#: ../errorindex.py:31
+#: ../errorindex.py:49
 msgid "Not Found"
 msgstr "Não encontrado"
 
-#: ../errorindex.py:35
+#: ../errorindex.py:53
 msgid "Method Not Allowed"
 msgstr "Método não permitido"
 
-#: ../errorindex.py:39
+#: ../errorindex.py:57
 msgid "Not Acceptable"
 msgstr "Não aceitável"
 
-#: ../errorindex.py:43
+#: ../errorindex.py:61
 msgid "Proxy Authentication Required"
 msgstr "Autenticação proxy necessária"
 
-#: ../errorindex.py:47
+#: ../errorindex.py:65
 msgid "Request Timeout"
 msgstr "Tempo esgotado para a solicitação"
 
-#: ../errorindex.py:51
+#: ../errorindex.py:69
 msgid "Conflict"
 msgstr "Conflito"
 
-#: ../errorindex.py:55
+#: ../errorindex.py:73
 msgid "Gone"
 msgstr "Acabado"
 
-#: ../errorindex.py:59
+#: ../errorindex.py:77
 msgid "Length Required"
 msgstr "Extensão necessária"
 
-#: ../errorindex.py:63
+#: ../errorindex.py:81
 msgid "Precondition Failed"
 msgstr "Falha de pré-condição"
 
-#: ../errorindex.py:67
+#: ../errorindex.py:85
 msgid "Request Entity Too Large"
 msgstr "Entidade de solicitação muito grande"
 
-#: ../errorindex.py:71
+#: ../errorindex.py:89
 msgid "Request-URI Too Long"
 msgstr "URI de solicitação muito longo"
 
-#: ../errorindex.py:75
+#: ../errorindex.py:93
 msgid "Unsupported Media Type"
 msgstr "Tipo de mídia não suportada"
 
-#: ../errorindex.py:79
+#: ../errorindex.py:97
 msgid "Requested Range Not Satisfiable"
 msgstr "Faixa solicitada não satisfatória"
 
-#: ../errorindex.py:83
+#: ../errorindex.py:101
 msgid "Expectation Failed"
 msgstr "Falha de expectativa"
 
-#: ../errorindex.py:87
+#: ../errorindex.py:105
 msgid "Internal Server Error"
 msgstr "Erro de servidor interno"
 
-#: ../errorindex.py:91
+#: ../errorindex.py:109
 msgid "Not Implemented"
 msgstr "Não implementado"
 
-#: ../errorindex.py:95
+#: ../errorindex.py:113
 msgid "Bad Gateway"
 msgstr "Gateway ruim"
 
-#: ../errorindex.py:99
+#: ../errorindex.py:117
 msgid "Service Unavailable"
 msgstr "Serviço indisponível"
 
-#: ../errorindex.py:103
+#: ../errorindex.py:121
 msgid "Gateway Timeout"
 msgstr "Tempo esgotado do gateway"
 
-#: ../errorindex.py:107
+#: ../errorindex.py:125
 msgid "HTTP Version Not Supported"
 msgstr "Versão HTTP não suportada"
 
-#: ../errorindex.py:115 ../uvmlogin.py:258
+#: ../errorindex.py:133 ../uvmlogin.py:278
 #, python-format
 msgid "%s Server"
 msgstr "Servidor %s"
+
+#~ msgid "%s Login"
+#~ msgstr "Login %s"
