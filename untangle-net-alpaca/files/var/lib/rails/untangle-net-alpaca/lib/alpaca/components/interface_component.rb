@@ -18,7 +18,7 @@
 class Alpaca::Components::InterfaceComponent < Alpaca::Component
   class InterfaceTestStage < Alpaca::Wizard::Stage
     def initialize( interface_list )
-      super( "interface-test", "Detection".t, 200 )
+      super( "interface-test", _("Detection"), 200 )
       @interface_list = interface_list
     end
 

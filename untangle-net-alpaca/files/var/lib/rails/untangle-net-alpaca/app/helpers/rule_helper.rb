@@ -15,36 +15,41 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
+
+require "gettext"
+
 module RuleHelper
+  include GetText
+
   ## Not using a hash because hashes are not sorted
-  FilterTypes = [[ "Source Address".t, "s-addr" ], 
-                 [ "Destined Local".t, "d-local" ], [ "Destination Address".t, "d-addr" ],
-                 [ "Source Port".t, "s-port" ], [ "Destination Port".t, "d-port" ],
-                 [ "Source Interface".t, "s-intf" ],
+  FilterTypes = [[ _("Source Address"), "s-addr" ], 
+                 [ _("Destined Local"), "d-local" ], [ _("Destination Address"), "d-addr" ],
+                 [ _("Source Port"), "s-port" ], [ _("Destination Port"), "d-port" ],
+                 [ _("Source Interface"), "s-intf" ],
                  ## Destination interface is too tricky to handle, and
                  ## it doesn't provide a lot of benefit.
-                 ## [ "Destination Interface".t, "d-intf" ],
+                 ## [ _("Destination Interface"), "d-intf" ],
                  ## Time is presently not supported.
-                 ## [ "Time".t, "time" ], [ "Day of Week".t, "day-of-week" ],
-                 [ "Protocol".t, "protocol" ]]
+                 ## [ _("Time"), "time" ], [ _("Day of Week"), "day-of-week" ],
+                 [ _("Protocol"), "protocol" ]]
   
-  DayOfWeek = [[ "sunday", "Sunday".t ],
-               [ "monday", "Monday".t ],
-               [ "tuesday", "Tuesday".t ],
-               [ "wednesday", "Wednesday".t ],
-               [ "thursday", "Thursday".t ],
-               [ "friday", "Friday".t ],
-               [ "saturday", "Saturday".t ]]
+  DayOfWeek = [[ "sunday", _("Sunday") ],
+               [ "monday", _("Monday") ],
+               [ "tuesday", _("Tuesday") ],
+               [ "wednesday", _("Wednesday") ],
+               [ "thursday", _("Thursday") ],
+               [ "friday", _("Friday") ],
+               [ "saturday", _("Saturday") ]]
 
   DayOfWeekJavascript = DayOfWeek.map { |d| "new Array( '#{d[0]}', '#{d[1]}' )" }.join( ", " )
   
-  ProtocolList = [[ "tcp", "tcp".t ],
-                  [ "udp", "udp".t ],
-                  [ "icmp", "icmp".t ],
-                  [ "gre", "gre".t ],
-                  [ "esp", "esp".t ],
-                  [ "ah", "ah".t ],
-                  [ "sctp", "sctp".t ]]
+  ProtocolList = [[ "tcp", _("tcp") ],
+                  [ "udp", _("udp") ],
+                  [ "icmp", _("icmp") ],
+                  [ "gre", _("gre") ],
+                  [ "esp", _("esp") ],
+                  [ "ah", _("ah") ],
+                  [ "sctp", _("sctp") ]]
 
   ProtocolListJavascript = ProtocolList.map { |d| "new Array( '#{d[0]}', '#{d[1]}' )" }.join( ", " )
 
@@ -56,38 +61,6 @@ module RuleHelper
   ## This is used to separate the type from the parameter
   TypeSeparator = "::"
   
-
-  # Returns a list of interfaces and an array of
-  def self.get_edit_fields( params )
-    interfaces = Interface.find( :all )
-    interfaces.sort! { |a,b| a.index <=> b.index }
-
-    ## REVIEW.
-    ## (UVM dependent) VPN Special case
-    interfaces << Interface.new( :index => 8, :name => "VPN" )
-    
-    ## This is a javascript array of the interfaces
-    interfaces = interfaces.map { |i| "new Array( '#{i.index}', '#{i.name.t}' )" }
-
-    filters = params[:filters]
-
-    unless ApplicationHelper.null?( filters )
-      parameter_list = filters.split( Separator ).map do |f| 
-        rule = Rule.new
-        rule.parameter, rule.value = f.split( TypeSeparator )
-        rule
-      end
-    end
-
-    if ( parameter_list.nil? || parameter_list.empty? )
-      r = Rule.new
-      r.parameter, r.value = FilterTypes[0][1], ""
-      parameter_list = [r]
-    end
-
-    [ interfaces, parameter_list ]
-  end
-
   def self.is_valid_port?( port_str )
     port = port_str.to_i
     return false if ( port.to_s != port_str )

@@ -159,19 +159,19 @@ class Interface < ActiveRecord::Base
 
 
   def carrier
-    carrier = "Unknown".t
+    carrier = _("Unknown")
     begin
       f = "/sys/class/net/" + self.os_name + "/carrier"
       sysfs = File.new( f, "r" )
       c = sysfs.readchar
       if c == 49 #ascii for 1
-        carrier = "Connected".t
+        carrier = _("Connected")
       else
-        carrier = "Disconnected".t
+        carrier = _("Disconnected")
       end
     rescue Exception => exception
       logger.error "Error reading carrier status: " + exception.to_s
-      carrier = "Unknown".t
+      carrier = _("Unknown")
     end
     return carrier
   end
@@ -197,12 +197,12 @@ class Interface < ActiveRecord::Base
 
   ## REVIEW : This should be inside of the network_manager since it may be os dependent.
   def hardware_address
-    address = "Unknown".t
+    address = _("Unknown")
     begin
       sysfs = File.new( "/sys/class/net/" + self.os_name + "/address", "r" )
       address = sysfs.readline
     rescue Exception => exception
-      address = "Unknown".t
+      address = _("Unknown")
     end
     return address
   end

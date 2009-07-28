@@ -2,27 +2,27 @@
 netmask_options =  options_for_select( @cidr_options, "24" ).gsub( /&amp;nbsp;/, "&nbsp;" )
 %>
 <div id="<%= config_id %>">
-  <p><%= "Enter the IP Configuration for the interface.".t %></p>
+  <p><%= _("Enter the IP Configuration for the interface.") %></p>
   <ul class="text-fields">
     <li>
-      <label><%= "Address:".t %></label>
+      <label><%= _("Address:") %></label>
       <%= text_field_tag( "#{config_id}.address", "", :size => 16 ) %> /
       <%= select_tag( "#{config_id}.netmask", netmask_options, :class => "netmask" ) %>
     </li>
 
     <% if wan %>
       <li>
-        <label for="default_gateway"><%= "Default Gateway:".t %></label>
+        <label for="default_gateway"><%= _("Default Gateway:") %></label>
         <%= text_field_tag( "#{config_id}.default_gateway", "", :size => 16 ) %>
       </li>
 
       <li>
-        <label for="dns_1"><%= "Primary DNS Server:".t %></label>
+        <label for="dns_1"><%= _("Primary DNS Server:") %></label>
         <%= text_field_tag( "#{config_id}.dns_1", "", :size => 16 ) %>
       </li>
     
       <li>
-        <label for="dns_1"><%= "Secondary DNS Server:".t %></label>
+        <label for="dns_1"><%= _("Secondary DNS Server:") %></label>
         <%= text_field_tag( "#{config_id}.dns_2", "", :size => 16 ) %>
       </li>
     <% end %>

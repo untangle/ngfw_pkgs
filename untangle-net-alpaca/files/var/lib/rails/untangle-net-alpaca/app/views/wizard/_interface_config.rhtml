@@ -1,8 +1,8 @@
 <%
 intf = stage.interface
-config_options = [[ "Static".t, "static"]]
-config_options << [ "Dynamic (dhcp)".t, "dynamic" ] if stage.wan
-config_options << [ "Bridge".t, "bridge" ] unless stage.wan
+config_options = [[ _("Static"), "static"]]
+config_options << [ _("Dynamic (dhcp)"), "dynamic" ] if stage.wan
+config_options << [ _("Bridge"), "bridge" ] unless stage.wan
 %>
 <%= hidden_field_tag( "interfaceList[]", stage.id ) %>
 <%= hidden_field_tag( "#{stage.id}.os_name", intf.os_name ) %>
@@ -12,7 +12,7 @@ config_options << [ "Bridge".t, "bridge" ] unless stage.wan
   
   <ul class="text-fields">
     <li>
-      <label for="config-type"><%= "Configuration Type:".t %></label>
+      <label for="config-type"><%= _("Configuration Type:") %></label>
       <%= select_tag( "#{stage.id}.type", options_for_select( config_options, config_options[0][0] )) %>
       <%= observe_field( "#{stage.id}.type", { :function => "setConfigType( '#{stage.id}' )" } ) %>
     </li>

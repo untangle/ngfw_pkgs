@@ -1,10 +1,10 @@
 <%# Must hide each page, if you do it in the global style then hide and show don't work. %>
 <div id="<%= stage.id %>" class="wizard-stage" style="display: none">
-  <h1><%= "Detected interfaces".t %></h1>
+  <h1><%= _("Detected interfaces") %></h1>
 
   <%= render( :partial => "interfaces",
               :object => stage.interface_list,
               :locals => { :list_id => "wizard-interface-list" } ) %>
       
-  <%= "If any interfaces are missing, refresh the page to reload all available interfaces.".t %>
+  <%= _("If any interfaces are missing, refresh the page to reload all available interfaces.") %>
 </div>

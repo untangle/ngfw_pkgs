@@ -17,8 +17,7 @@
 #
 class Alpaca::Components::AlpacaComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
-    menu_organizer.register_item( "/main/advanced", menu_item( 900, "Advanced", :action => "manage" ))
-    menu_organizer.register_item( "/advanced/status", menu_item( 0, "Advanced", :action => "index" ))
+    menu_organizer.register_item( "/advanced/status", menu_item( 0, _("Advanced"), :action => "index" ))
   end
 
   def wizard_insert_closers( builder )

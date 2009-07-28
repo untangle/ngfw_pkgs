@@ -17,14 +17,11 @@
 #
 class Alpaca::Components::DnsComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
-    menu_organizer.register_item( "/main/dns_server", menu_item( 500, "DNS Server", :action => "manage" ))
-
-    menu_organizer.register_item( "/extjs/dns_server", menu_item( 500, "DNS Server", :action => "index" ))
+    menu_organizer.register_item( "/extjs/dns_server", menu_item( 500, _("DNS Server"), :action => "index" ))
 
     if ( config_level >= AlpacaSettings::Level::Advanced ) 
-      menu_organizer.register_item( "/main/advanced/dns_upstream_servers", menu_item( 590, "Local DNS", :action => "upstream_servers" ))
-
-      menu_organizer.register_item( "/advanced/dns_upstream_servers", menu_item( 590, "Local DNS", :action => "local_dns" ))
+      menu_organizer.register_item( "/advanced/dns_upstream_servers", 
+                                    menu_item( 590, _("Local DNS"), :action => "local_dns" ))
     end
   end
   

@@ -1,9 +1,9 @@
 <div class="interfaces">
   <ul class="interface-list" id="<%= list_id %>">
     <li class="i-header">
-      <div class="i-header-1"><%= "Name".t %></div>
-      <div class="i-header-2"><%= "Vendor".t %></div>
-      <div class="i-header-3"><%= "MAC Address".t %></div>
+      <div class="i-header-1"><%= _("Name") %></div>
+      <div class="i-header-2"><%= _("Vendor") %></div>
+      <div class="i-header-3"><%= _("MAC Address") %></div>
     </li>
     
     <%= render( :partial => "interface" , :collection => interfaces ) %>

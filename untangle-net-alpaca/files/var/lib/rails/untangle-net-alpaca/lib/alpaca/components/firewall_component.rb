@@ -16,12 +16,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 class Alpaca::Components::FirewallComponent < Alpaca::Component
-  def register_menu_items( menu_organizer, config_level )
-    
-    if ( config_level >= AlpacaSettings::Level::Advanced ) 
-      menu_organizer.register_item( "/main/advanced/packetfilter",
-                                    menu_item( 200, "Packet Filter", :action => "manage" ))
-    end
+  def register_menu_items( menu_organizer, config_level )    
   end
   
   def wizard_insert_closers( builder )

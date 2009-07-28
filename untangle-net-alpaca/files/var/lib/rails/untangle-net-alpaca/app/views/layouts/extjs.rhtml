@@ -7,7 +7,7 @@
 
   <head>
     <title>
-      <%= (( @title.nil? ) ? ApplicationController::DefaultTitle : @title ).t %>
+      <%= _(( @title.nil? ) ? ApplicationController::DefaultTitle : @title ) %>
     </title>
     
     <% @skin_stylesheets.each do |stylesheet| %>

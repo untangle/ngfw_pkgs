@@ -17,12 +17,12 @@
 #
 class Alpaca::Components::NetworkComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
-    if ( config_level == AlpacaSettings::Level::Basic )    
-      menu_organizer.register_item( "/extjs/network", menu_item( 200, "Network", :action => "index" ))
+    if ( config_level == AlpacaSettings::Level::Basic )
+       menu_organizer.register_item( "/extjs/network", menu_item( 200, _("Network"), :action => "index" ))
     end
 
-    if ( config_level == AlpacaSettings::Level::Advanced )    
-      menu_organizer.register_item( "/advanced/general", menu_item( 200, "General", :action => "general" ))
+    if ( config_level == AlpacaSettings::Level::Advanced )
+      menu_organizer.register_item( "/advanced/general", menu_item( 200, _("General"), :action => "general" ))
     end
   end
 
