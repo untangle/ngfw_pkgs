@@ -64,22 +64,23 @@ Ung.Alpaca.PingTest = Ext.extend(Ext.Window, {
                     emptyText : Ung.Alpaca.Util._( "IP Address or Hostname" )
                 }),this.runTest = new Ext.Toolbar.Button({
                     text : Ung.Alpaca.Util._("Run Test"),
+                    iconCls : "icon-test-run",
                     handler : this.onRunTest,
                     scope : this
                 }),"->",this.clearOutput = new Ext.Toolbar.Button({
                     text : Ung.Alpaca.Util._("Clear Output"),
+                    iconCls : "icon-clear-output",
                     handler : this.onClearOutput,
                     scope : this
                 })],
-                items : [{
-                    xtype : "textarea",
+                items : [this.output = new Ext.form.TextArea({
                     name : "output",
                     emptyText : Ung.Alpaca.Util._("Ping Test Output"),
                     hideLabel : true,
                     readOnly : true,
                     anchor : "100% 100%",
                     style : "padding: 8px"
-                }]
+                })]
             }]
         }];
         
@@ -124,6 +125,8 @@ Ung.Alpaca.PingTest = Ext.extend(Ext.Window, {
         }
         
         /* Disable the run test button */
+        this.runTest.setIconClass( "icon-test-running" );
+        this.output.focus();
         this.runTest.disable();
         this.destination.disable();
         this.currentCommandKey = 0;
@@ -159,6 +162,7 @@ Ung.Alpaca.PingTest = Ext.extend(Ext.Window, {
         this.stdoutOffset = null;
         this.stderrOffset = null;
         this.pollCount = 0;
+        this.runTest.setIconClass( "icon-test-run" );
         this.runTest.enable();
         this.destination.enable();
     },
@@ -186,9 +190,10 @@ Ung.Alpaca.PingTest = Ext.extend(Ext.Window, {
 
     completeContinuePingTest : function( output, response, options )
     {
-        var field = this.find( "name", "output" )[0];
-        field.setValue( field.getValue() + output["stdout"]);
-
+        var element = this.output.getEl();
+        this.output.setValue( this.output.getValue() + output["stdout"]);
+        element.scroll( "b", 1000 );
+        
         this.stdoutOffset = output["stdout_offset"];
         this.stderrOffset = output["stderr_offset"];
 
@@ -209,6 +214,7 @@ Ung.Alpaca.PingTest = Ext.extend(Ext.Window, {
             this.currentCommandKey = null;
             this.stdoutOffset = null;
             this.stderrOffset = null;
+            this.runTest.setIconClass( "icon-test-run" );
             this.destination.enable();
             this.runTest.enable();
         }
@@ -216,7 +222,7 @@ Ung.Alpaca.PingTest = Ext.extend(Ext.Window, {
 
     onClearOutput : function()
     {
-        this.find( "name", "output" )[0].setValue( "" );
+        this.output.setValue( "" );
     },
     
     closeWindow : function()

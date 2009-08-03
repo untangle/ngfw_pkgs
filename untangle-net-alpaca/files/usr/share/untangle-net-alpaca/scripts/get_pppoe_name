@@ -10,7 +10,7 @@ get_pppoe_name()
    
    t_intf_name=$1
    
-   for t_pid_file in /var/run/ppp*.pid ; do 
+   for t_pid_file in `find /var/run/ -maxdepth 1 -name 'ppp*.pid'` ; do 
      t_pid=`head -n 1 $t_pid_file`
 
      t_connection_file=`cat "/proc/${t_pid}/cmdline" | tr '\000' '\001' | awk -v RS='\001' '/^connection./ { print ; exit }'`

@@ -435,9 +435,40 @@ EOF
       
       ## Drop traffic going to the VPN interface that is not allowed.
       fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -o tun0 -j DROP"
+
+      text.push <<EOF
+
+add_destination_nat_rule()
+{
+  local t_network=$1
+  local t_new_source=$2
+
+  local t_intf=`ip -f inet addr show to ${t_new_source} | awk '/^[0-9]/ { sub( ":","",$2 ); print $2 ; exit}'`
+  local t_pppoe
+  
+  if [ -z "${t_intf}" ]; then
+    #{IPTablesCommand} #{Chain::SNatRules.args} -s ${t_network} -j SNAT --to-source ${t_new_source}
+    return
+  fi
+
+  #{IPTablesCommand} #{Chain::SNatRules.args} -o ${t_intf} -s ${t_network} -j SNAT --to-source ${t_new_source}
+
+  [ "${t_intf#ppp}" != "${t_intf}" ] && return
+
+  t_pppoe=`/usr/share/untangle-net-alpaca/scripts/get_pppoe_name ${t_intf}`
+  [ -z "${t_pppoe}" ] && return
+  [ "${t_pppoe}" = "ppp.${t_intf}" ] && return
+  
+  #{IPTablesCommand} #{Chain::SNatRules.args} -o ${t_pppoe} -s ${t_network} -j SNAT --to-source ${t_new_source}
+}
+
+EOF
+
     end
     
     text << "#{IPTablesCommand} -t mangle -I OUTPUT 1 -j CONNMARK --restore-mark --mask #{MultiWanMask}"
+
+    
 
     interface_list.each do |interface|
 
@@ -738,8 +769,14 @@ EOF
     ## Determine the name of the interface
     rules = []
     fw_rules = []
+    
+    nat_policies.each do |policy|
+      if ( policy.new_source == NatPolicy::Automatic )
+        
+      else
+        
+      end
 
-    nat_policies.each do |policy|      
       ## Global netmask, use the addresses for the interface
       if ( policy.netmask == "0" || policy.netmask == "0.0.0.0" )
         config.ip_networks.each do |ip_network|
@@ -768,7 +805,7 @@ EOF
       
       rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -s #{network} -j MASQUERADE"
     else
-      rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -s #{network} -j SNAT --to-source #{policy.new_source}"
+      rules << "add_destination_nat_rule #{network} #{policy.new_source}"
     end
   end
 

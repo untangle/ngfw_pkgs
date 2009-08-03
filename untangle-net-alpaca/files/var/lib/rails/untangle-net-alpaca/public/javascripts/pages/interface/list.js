@@ -93,13 +93,16 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
             tbar : [{
                 text : this._( "Refresh Interfaces" ),
                 handler : this.refreshInterfaces,
+                iconCls : "icon-autorefresh",
                 scope : this
             },{
                 text : this._( "Test Connectivity" ),
                 handler : this.testConnectivity,
+                iconCls : "icon-test-connectivity",
                 scope : this
             },{
                 text : this._( "Ping Test" ),
+                iconCls : "icon-test-ping",
                 handler : this.openPingTest,
                 scope : this
             }],

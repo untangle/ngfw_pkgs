@@ -1603,3 +1603,28 @@ fieldset.failover-test-type div.x-fieldset-bwrap
 .nas-override{
   margin-bottom:1em;
 }
+
+button.icon-test-run
+{
+    background: transparent url(../images/admin/icon_test_run.png) no-repeat center left !important;
+}
+
+button.icon-test-running
+{
+    background: transparent url(../images/admin/icon_test_running.gif) no-repeat center left !important;
+}
+
+button.icon-clear-output
+{
+    background: transparent url(../images/admin/icon_clear_output.png) no-repeat center left !important;
+}
+
+button.icon-test-ping
+{
+    background: transparent url(../images/admin/icon_test_ping.png) no-repeat center left !important;
+}
+
+button.icon-test-connectivity
+{
+    background: transparent url(../images/admin/icon_test_connectivity.png) no-repeat center left !important;
+}
