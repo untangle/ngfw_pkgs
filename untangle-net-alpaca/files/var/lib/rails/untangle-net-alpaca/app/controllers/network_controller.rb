@@ -241,6 +241,8 @@ class NetworkController < ApplicationController
     count = 5 if ( count < 1 or count > 200 )
 
     raise "Missing Destination" if destination.nil?
+    destination = destination.strip
+    raise "Invalid Destination" unless ApplicationHelper.safe_characters?( destination )
     
     session_id = get_user_command_session_id
 
