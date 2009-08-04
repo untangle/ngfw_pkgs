@@ -6,6 +6,10 @@ RESTART_FILE=/etc/untangle/monit-to-restart
 TEMPLATE_EXTENSION=".template"
 pid=foo
 
+echo 'INCLUDE "/etc/untangle/monit.d/*_all.conf"' >| $CONFIG_FILE
+echo 'INCLUDE "/etc/untangle/monit.d/*_'$(dpkg-architecture -qDEB_BUILD_ARCH)'.conf"' >> $CONFIG_FILE
+chmod 600 $CONFIG_FILE
+
 while true ; do
 
   for file in $CONFIG_PARTS_DIR/*$TEMPLATE_EXTENSION ; do
