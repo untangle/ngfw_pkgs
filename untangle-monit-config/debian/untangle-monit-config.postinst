@@ -6,3 +6,5 @@ if ! grep -q monit $INITTAB ; then
   echo "mo:2345:respawn:/usr/share/untangle/bin/monit-wrapper.sh" >> $INITTAB
   [ -f /dev/initctl ] && telinit q
 fi
+
+exit 0
