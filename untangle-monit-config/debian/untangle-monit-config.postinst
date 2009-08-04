@@ -9,5 +9,5 @@ chmod 600 $CONFIG_FILE
 
 if ! grep -q monit $INITTAB ; then
   echo "mo:2345:respawn:/usr/share/untangle/bin/monit-wrapper.sh" >> $INITTAB
-  telinit q
+  [ -f /dev/initctl ] && telinit q
 fi
