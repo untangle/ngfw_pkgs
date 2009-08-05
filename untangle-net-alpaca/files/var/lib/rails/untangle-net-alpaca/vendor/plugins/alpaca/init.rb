@@ -51,3 +51,8 @@ require "alpaca/menu/organizer"
 require "alpaca/menu/extensions"
 
 require "alpaca/system_rules"
+
+## GetText
+require "gettext"
+ActionView::Base.send :include, GetText
+
