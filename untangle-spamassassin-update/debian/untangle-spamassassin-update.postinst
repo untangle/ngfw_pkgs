@@ -51,12 +51,13 @@ else
   perl -i -npe 's/.*focr_pre314.*/#focr_pre314 1/' /etc/mail/spamassassin/FuzzyOcr.cf
 fi
 
-/usr/share/untangle-spamassassin-update/sa-fetch-keys.sh
-
 /etc/untangle/startup.d/20spamassassin
 
 # restart spamassassin
 ourInit spamassassin restart &> /dev/null &
+
+#update
+/etc/cron.daily/untangle-spamassassin-update
 
 touch /etc/untanglemonit-to-restart
 
