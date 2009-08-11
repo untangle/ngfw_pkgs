@@ -69,7 +69,7 @@ class Alpaca::Components::UvmComponent < Alpaca::Component
 
   def pre_save_configuration( config, settings_hash )
     ## This is used as a key for future updates to know which rules are safe to remove
-    HOST_IP_MARKER="[**** Host Machine ****]"
+    host_ip_marker="[**** Host Machine ****]"
 
     Subscription.destroy_all( "system_id IS NULL" )
 
@@ -81,7 +81,7 @@ class Alpaca::Components::UvmComponent < Alpaca::Component
         puts "pre_save_configuration: inserting the mac address: #{mac_address}"
         subscription = Subscription.new
         subscription.update_attributes({ "filter" => "s-mac-addr::#{mac_address}", "enabled" => true,
-                                         "subscribe" => false, "description" => HOST_IP_MARKER })
+                                         "subscribe" => false, "description" => host_ip_marker })
         subscription.save
       end
     end
