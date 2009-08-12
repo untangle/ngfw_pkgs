@@ -247,7 +247,7 @@ class NetworkController < ApplicationController
     session_id = get_user_command_session_id
 
     result = {}
-    result["key"] = os["network_manager"].start_user_command( session_id, "date ; ping -c #{count} #{destination}; echo" )
+    result["key"] = os["network_manager"].start_user_command( session_id, "ping -c #{count} #{destination}" )
 
     json_result( :values => result )
   end

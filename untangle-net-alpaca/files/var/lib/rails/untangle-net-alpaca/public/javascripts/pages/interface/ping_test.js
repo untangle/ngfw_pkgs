@@ -191,7 +191,10 @@ Ung.Alpaca.PingTest = Ext.extend(Ext.Window, {
     completeContinuePingTest : function( output, response, options )
     {
         var element = this.output.getEl();
-        this.output.setValue( this.output.getValue() + output["stdout"]);
+        if ( this.stdoutOffset == null || this.stdoutOffset == 0 ) {
+            this.output.setValue( this.output.getValue() + "" + new Date() + "\n");
+        }
+        this.output.setValue( this.output.getValue() + output["stderr"] + output["stdout"] );
         element.scroll( "b", 1000 );
         
         this.stdoutOffset = output["stdout_offset"];
@@ -217,6 +220,7 @@ Ung.Alpaca.PingTest = Ext.extend(Ext.Window, {
             this.runTest.setIconClass( "icon-test-run" );
             this.destination.enable();
             this.runTest.enable();
+            this.output.setValue( this.output.getValue() + "\n" );
         }
     },
 
