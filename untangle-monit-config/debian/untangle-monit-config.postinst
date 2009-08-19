@@ -7,4 +7,6 @@ if ! grep -q monit $INITTAB ; then
   [ -f /dev/initctl ] && telinit q
 fi
 
+touch /etc/untanglemonit-to-restart
+
 exit 0
