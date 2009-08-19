@@ -1,3 +1,6 @@
+# Xorg starts with "-nolisten tcp" so this is a decent fix for #6670
+xhost +
+
 # screensaver is off by default
 xset s off
 xset -dpms
