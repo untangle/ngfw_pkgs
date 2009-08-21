@@ -1,0 +1,7 @@
+/var/log/uvm/monit.log {
+rotate 9
+size 500k
+compress
+notifempty
+copytruncate
+}
