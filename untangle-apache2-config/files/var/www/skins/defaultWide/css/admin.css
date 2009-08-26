@@ -378,6 +378,12 @@ div.ung-button-invalid {
 button.icon-add-row {
     background: transparent url(../images/admin/icon_add_row.gif) no-repeat center left !important;
 }
+/* row add icon */
+div.icon-add-row {
+	background:transparent url(../images/admin/icon_row_add.png) no-repeat center center;
+	width: 100%;
+	cursor: pointer;
+}
 /* delete row button icon */
 button.icon-delete-row {
     background:transparent url(../images/user/icon_remove.png) no-repeat center left !important;
@@ -385,12 +391,6 @@ button.icon-delete-row {
 /* edit row icon */
 div.icon-edit-row {
 	background:transparent url(../images/admin/icon_edit_row.gif) no-repeat center center;
-	width: 100%;
-	cursor: pointer;
-}
-/* add row icon */
-div.icon-add-row {
-	background:transparent url(../images/admin/icon_add_row.gif) no-repeat center center;
 	width: 100%;
 	cursor: pointer;
 }

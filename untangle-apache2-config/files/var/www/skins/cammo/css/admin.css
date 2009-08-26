@@ -381,6 +381,12 @@ div.ung-button-invalid {
 button.icon-add-row {
     background: transparent url(../images/admin/icon_add_row.gif) no-repeat center left !important;
 }
+/* row add icon */
+div.icon-add-row {
+	background:transparent url(../images/admin/icon_row_add.png) no-repeat center center;
+	width: 100%;
+	cursor: pointer;
+}
 /* edit row icon */
 div.icon-edit-row {
 	background:transparent url(../images/admin/icon_edit_row.gif) no-repeat center center;
