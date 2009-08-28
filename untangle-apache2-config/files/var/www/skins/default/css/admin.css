@@ -428,7 +428,7 @@ button.icon-autorefresh {
 }
 /* color of a deleted row in grid */
 .grid-row-deleted {
-	background-color: #FF5151;
+	background-color: #FF5151 !important;
 }
 /* color of an added row in grid */
 .grid-row-added {
