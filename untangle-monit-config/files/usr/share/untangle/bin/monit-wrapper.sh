@@ -16,7 +16,7 @@ while true ; do
     perl -pe 's/`(.+)`/chop($foo = `$1`) ; $foo/e' $file >| ${file/$TEMPLATE_EXTENSION}
   done
 
-  if ! ps -p $1 > /dev/null ; then
+  if ! ps -p $pid > /dev/null ; then
     monit -c $CONFIG_FILE &
     pid=$!
   fi
