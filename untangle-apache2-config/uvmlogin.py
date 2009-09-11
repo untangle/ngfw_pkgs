@@ -209,10 +209,15 @@ def save_session_user(sess, realm, username):
 
 def setup_gettext():
     lang = get_uvm_language()
-    trans = gettext.translation('untangle-apache2-config',
-                                languages=[lang],
-                                fallback=True)
-    trans.install()
+    try:
+        trans = gettext.translation('untangle-apache2-config',
+                                    languages=[lang],
+                                    fallback=True)
+        trans.install()
+    except Exception, e:
+        apache.log_error('could not install language: %s lang. %s' % (lang, e))
+        import __builtin__
+        __builtin__.__dict__['_'] = unicode
 
 def get_company_name():
     company = 'Untangle'
