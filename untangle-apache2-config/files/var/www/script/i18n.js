@@ -90,6 +90,20 @@ Ung.I18N = Ext.extend(Ext.Component, {
         var date = new Date();
         date.setTime(v.time);
         return Ext.util.Format.date(date, this.map['timestamp_fmt']);
+    },
+    //date long version format
+    dateLongFormat : function (date,format){
+        var re = /([a-z])/i,
+        tokens  = [],
+        i = 0;
+        tokens = format.split("");
+        for(i=0;i<tokens.length;i++){
+            if(re.test(tokens[i])){
+                tokens[i] = this._(date.format(tokens[i]));
+            }
+        }
+        return tokens.join("");
+        
     }
 
 });
