@@ -18,7 +18,7 @@
 class Corvette < Alpaca::Migration
   def self.up
     create_table :dns_upstream_servers do |table|
-      table.column :enabled, :boolean, :default => 0
+      table.column :enabled, :boolean, :default => false
       table.column :domain_name_list, :string
       table.column :server_ip, :string
     end

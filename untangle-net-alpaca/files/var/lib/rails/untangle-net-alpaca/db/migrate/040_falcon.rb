@@ -18,7 +18,7 @@
 class Falcon < Alpaca::Migration
   def self.up
     create_table :arp_eater_settings do |table|
-      table.column :enabled, :boolean, :default => 0
+      table.column :enabled, :boolean, :default => false
       table.column :gateway, :string
       table.column :timeout_ms, :integer
       table.column :rate_ms, :integer
@@ -29,10 +29,10 @@ class Falcon < Alpaca::Migration
     end
 
     create_table :arp_eater_networks do |table|
-      table.column :enabled, :boolean, :default => 0
+      table.column :enabled, :boolean, :default => false
       table.column :description, :string
       table.column :spoof, :boolean
-      table.column :passive, :boolean, :default => 1
+      table.column :passive, :boolean, :default => true
       table.column :ip, :string
       table.column :netmask, :string
       table.column :gateway, :string
@@ -40,7 +40,7 @@ class Falcon < Alpaca::Migration
       table.column :rate_ms, :integer
     end
 
-    add_column :alpaca_settings, :send_icmp_redirects, :boolean, :default => 1
+    add_column :alpaca_settings, :send_icmp_redirects, :boolean, :default => true
 
     add_column :dhcp_server_settings, :max_leases, :integer, :default => 500
 

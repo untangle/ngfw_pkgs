@@ -17,7 +17,7 @@
 #
 class Durango < Alpaca::Migration
   def self.up
-    add_column :uvm_settings, :override_redirects, :boolean, :default => 1
+    add_column :uvm_settings, :override_redirects, :boolean, :default => true
   end
 
   def self.down

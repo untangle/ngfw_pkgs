@@ -17,8 +17,8 @@
 #
 class CorvetteA < Alpaca::Migration
   def self.up
-    add_column :dhcp_server_settings, :is_authoritative, :boolean, :default => 0
-    add_column :dhcp_server_settings, :is_custom_field_enabled, :boolean, :default => 0
+    add_column :dhcp_server_settings, :is_authoritative, :boolean, :default => false
+    add_column :dhcp_server_settings, :is_custom_field_enabled, :boolean, :default => false
     add_column :dhcp_server_settings, :custom_field, :string, :default => ""
   end
   
