@@ -252,23 +252,6 @@ class NetworkController < ApplicationController
     json_result( :values => result )
   end
 
-  def continue_ping_test
-    s = json_params
-
-    key = s["key"]
-    raise "Missing command key" if key.nil?
-    
-    stdout_offset = s["stdout_offset"]
-    stdout_offset = 0 if stdout_offset.nil?
-    stderr_offset = s["stderr_offset"]
-    stderr_offset = 0 if stderr_offset.nil?
-
-    session_id = get_user_command_session_id
-    result = ApplicationHelper.get_user_command_output( session_id, key, stdout_offset, stderr_offset )
-    
-    json_result( :values => result )
-  end
-
   def commit
     spawn do
       os["network_manager"].commit

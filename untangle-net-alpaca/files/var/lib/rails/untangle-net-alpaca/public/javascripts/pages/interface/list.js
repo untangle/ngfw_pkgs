@@ -330,7 +330,7 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
             return;
         }
 
-        var queryPath = ({ "controller" : "interface", "page" : "ping_test" });
+        var queryPath = ({ "controller" : "network", "page" : "ping_test" });
         Ung.Alpaca.Util.loadScript( queryPath, this.completeOpenPingTest.createDelegate( this ));
     },
 

@@ -1,19 +1,13 @@
 Ext.ns('Ung');
 Ext.ns('Ung.Alpaca');
 
-if ( Ung.Alpaca.PingTest != null ) {
-    Ung.Alpaca.Util.stopLoading();
-}
-
-Ung.Alpaca.PingTest = Ext.extend(Ext.Window, {
+Ung.Alpaca.NetworkUtility = Ext.extend( Ext.Window, {
     modal : true,
     width : 700,
     height : 500,
     draggable : false,
     resizable : false,                
     layout : "anchor",
-    
-    title : Ung.Alpaca.Util._( "Ping Test" ),
 
     defaults: {
         anchor: '100% 100%',
@@ -23,6 +17,10 @@ Ung.Alpaca.PingTest = Ext.extend(Ext.Window, {
 
     initComponent : function()
     {
+        Ext.applyIf( this, {
+            testErrorMessage : Ung.Alpaca.Util._( "Unable to run this Network Utility." )
+        });
+
         this.closeAction = "closeWindow";
 
         this.bbar = [{
@@ -52,30 +50,17 @@ Ung.Alpaca.PingTest = Ext.extend(Ext.Window, {
             
             items : [{
                 xtype : "label",
-                html : Ung.Alpaca.Util._("The <b>Ping Test</b> can be used to test that a particular host or client can be contacted from Untangle"),
+                html : this.testDescription,
                 style : "padding-bottom: 10px;"
             },{
                 xtype : "panel",
                 style : "margin: 10px 0px 0px 0px",
                 layout : "anchor",
                 height : 392,
-                tbar :[this.destination = new Ext.form.TextField({
-                    xtype : "textfield",
-                    emptyText : Ung.Alpaca.Util._( "IP Address or Hostname" )
-                }),this.runTest = new Ext.Toolbar.Button({
-                    text : Ung.Alpaca.Util._("Run Test"),
-                    iconCls : "icon-test-run",
-                    handler : this.onRunTest,
-                    scope : this
-                }),"->",this.clearOutput = new Ext.Toolbar.Button({
-                    text : Ung.Alpaca.Util._("Clear Output"),
-                    iconCls : "icon-clear-output",
-                    handler : this.onClearOutput,
-                    scope : this
-                })],
+                tbar : this.testTopToolbar,
                 items : [this.output = new Ext.form.TextArea({
                     name : "output",
-                    emptyText : Ung.Alpaca.Util._("Ping Test Output"),
+                    emptyText : this.testEmptyText,
                     hideLabel : true,
                     readOnly : true,
                     anchor : "100% 100%",
@@ -84,44 +69,30 @@ Ung.Alpaca.PingTest = Ext.extend(Ext.Window, {
             }]
         }];
         
-        Ung.Alpaca.PingTest.superclass.initComponent.apply( this, arguments );
+        Ung.Alpaca.NetworkUtility.superclass.initComponent.apply( this, arguments );
     },
 
     show : function() {
-        Ung.Alpaca.PingTest.superclass.show.call(this);
+        Ung.Alpaca.NetworkUtility.superclass.show.call(this);
         this.center();
     },
 
-
-    onHelp : function () 
-    {            
-        var url = "http://www.untangle.com/docs/get.php?version=6.2&source=ping_test&lang=en";
-        window.open(url);
-    },
-    
     onRunTest : function()
     {
         if ( this.currentCommandKey != null ) {
             Ext.MessageBox.show({
                 title : Ung.Alpaca.Util._( "Warning" ),
-                msg : Ung.Alpaca.Util._( "A ping test is already running." ),
+                msg : Ung.Alpaca.Util._( "A network utility is already running." ),
                 icon : Ext.MessageBox.WARNING,
                 buttons : Ext.MessageBox.OK
             });
             return;
         }
 
-        var destination = this.destination.getValue();
-        if ( destination == null || 
-             ( !Ext.form.VTypes.ipAddress( destination, this.destination ) && 
-               !Ext.form.VTypes.hostname( destination, this.destination ))) {
-            Ext.MessageBox.show({
-                title : Ung.Alpaca.Util._( "Warning" ),
-                msg : Ung.Alpaca.Util._( "Please enter a valid IP Address or hostname" ),
-                icon : Ext.MessageBox.WARNING,
-                buttons : Ext.MessageBox.OK
-            });
-            return;
+        if ( this.isValid != null ) {
+            if ( !this.isValid()) {
+                return;
+            }
         }
         
         /* Disable the run test button */
@@ -133,27 +104,24 @@ Ung.Alpaca.PingTest = Ext.extend(Ext.Window, {
         this.stdoutOffset = null;
         this.stderrOffset = null;
         
-        Ung.Alpaca.Util.executeRemoteFunction( "/network/start_ping_test",
-                                               this.completeStartPingTest.createDelegate( this ),
-                                               this.failureStartPingTest.createDelegate( this ),
-                                               { "destination" : destination });        
+        this.startNetworkUtility();
     },
 
-    completeStartPingTest : function( key, response, options )
+    completeStartNetworkUtility : function( key, response, options )
     {
         this.currentCommandKey = key["key"];
         this.stdoutOffset = null;
         this.stderrOffset = null;
         this.pollCount = 0;
         
-        window.setTimeout( this.continuePingTest.createDelegate( this ), 1000 );
+        window.setTimeout( this.continueNetworkUtility.createDelegate( this ), 1000 );
     },
 
-    failureStartPingTest : function( response, options )
+    failureStartNetworkUtility : function( response, options )
     {
         Ext.MessageBox.show({
             title : Ung.Alpaca.Util._( "Warning" ),
-            msg : Ung.Alpaca.Util._( "Unable to complete the ping test." ),
+            msg : this.testErrorMessage,
             icon : Ext.MessageBox.WARNING,
             buttons : Ext.MessageBox.OK
         });
@@ -167,10 +135,10 @@ Ung.Alpaca.PingTest = Ext.extend(Ext.Window, {
         this.destination.enable();
     },
 
-    continuePingTest : function()
+    continueNetworkUtility : function()
     {
         if ( this.currentCommandKey == null || this.currentCommandKey == 0 ) {
-            this.failureStartPingTest();
+            this.failureStartNetworkUtility();
             return;
         }
         
@@ -182,13 +150,13 @@ Ung.Alpaca.PingTest = Ext.extend(Ext.Window, {
         if ( this.stderrOffset != null ) {
             message["stderr_offset"] = this.stderrOffset;
         }
-        Ung.Alpaca.Util.executeRemoteFunction( "/network/continue_ping_test",
-                                               this.completeContinuePingTest.createDelegate( this ),
-                                               this.failureStartPingTest.createDelegate( this ),
+        Ung.Alpaca.Util.executeRemoteFunction( "/alpaca/continue_background_command",
+                                               this.completeContinueNetworkUtility.createDelegate( this ),
+                                               this.failureStartNetworkUtility.createDelegate( this ),
                                                message );
     },
 
-    completeContinuePingTest : function( output, response, options )
+    completeContinueNetworkUtility : function( output, response, options )
     {
         var element = this.output.getEl();
         if ( this.stdoutOffset == null || this.stdoutOffset == 0 ) {
@@ -206,13 +174,13 @@ Ung.Alpaca.PingTest = Ext.extend(Ext.Window, {
 
         this.pollCount++;
 
-        if ( this.pollCount > 20 ) {
-            this.failureStartPingTest();
+        if ( this.pollCount > 180 ) {
+            this.failureStartNetworkUtility();
             return;
         }
 
         if ( output["return_code"] < 0 ) {
-            window.setTimeout( this.continuePingTest.createDelegate( this ), 1000 );
+            window.setTimeout( this.continueNetworkUtility.createDelegate( this ), 1000 );
         } else {
             this.currentCommandKey = null;
             this.stdoutOffset = null;
@@ -234,5 +202,4 @@ Ung.Alpaca.PingTest = Ext.extend(Ext.Window, {
         this.hide();
     }
 
-    
 });
