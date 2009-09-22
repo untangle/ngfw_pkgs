@@ -59,6 +59,6 @@ ourInit spamassassin restart &> /dev/null &
 #update
 /etc/cron.daily/untangle-spamassassin-update
 
-touch /etc/untanglemonit-to-restart
+touch /etc/untangle/monit-to-restart
 
 exit 0

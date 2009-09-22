@@ -35,7 +35,7 @@ for t_config_file in alpaca-bridge-address alpaca-cleanup alpaca-update-address 
     fi
 done
 
-touch /etc/untanglemonit-to-restart
+touch /etc/untangle/monit-to-restart
     
 exit 0
 
