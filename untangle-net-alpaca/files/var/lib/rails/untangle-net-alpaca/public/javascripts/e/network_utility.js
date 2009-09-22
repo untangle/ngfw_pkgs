@@ -141,6 +141,28 @@ Ung.Alpaca.NetworkUtility = Ext.extend( Ext.Window, {
             this.failureStartNetworkUtility();
             return;
         }
+
+        if ( this.hidden ) {
+            try {
+                var commandKey = this.currentCommandKey;
+                this.currentCommandKey = null;
+                Ung.Alpaca.Util.executeRemoteFunction( "/alpaca/stop_background_command",
+                                                       function() {}, function() {},
+                                                       { "key" : commandKey });
+            } catch ( e ) {
+                /* ignored */
+            }
+
+            this.currentCommandKey = null;
+            this.stdoutOffset = null;
+            this.stderrOffset = null;
+            this.pollCount = 0;
+            this.runTest.setIconClass( "icon-test-run" );
+            this.runTest.enable();
+            this.destination.enable();
+
+            return;
+        }
         
         var message = { key : this.currentCommandKey };
 

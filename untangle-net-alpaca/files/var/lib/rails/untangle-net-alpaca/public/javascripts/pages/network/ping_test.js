@@ -64,7 +64,7 @@ Ung.Alpaca.PingTest = Ext.extend( Ung.Alpaca.NetworkUtility, {
 
     onHelp : function () 
     {
-        var url = "http://www.untangle.com/docs/get.php?version=6.2&source=ping_test&lang=en";
+        var url = Ung.Alpaca.Glue.buildHelpUrl( { controller : "network", page : "ping_test" });
         window.open(url);
     }    
 });

@@ -45,6 +45,19 @@ class AlpacaController < ApplicationController
     json_result( :values => result )
   end
 
+  def stop_background_command
+    s = json_params
+    key = s["key"]
+    raise "Missing command key" if key.nil?
+    session_id = get_user_command_session_id
+    stdout_path = "#{Alpaca::OS::ManagerBase::UserCommandDirectory}/command-#{session_id}-#{key}.out"
+    
+    ## Kill anything that has this standard out open that is not mongrel rails.
+    `lsof -n #{stdout_path} | awk '/^mongrel_r/ { next } ; /^COMMAND/ { next } ; { system( "kill " $2 ) }'`
+
+    json_result
+  end
+
   alias_method :index, :extjs
 
   def status
