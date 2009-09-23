@@ -14,7 +14,7 @@ MARK_LOCAL=$((0x0100))
 LOCAL_UVM_REDIRECT="uvm-tcp-redirect"
 
 MASK_WAN=${MASK_WAN:-$((0x01))}
-MASK_NON_WAN=${MASK_NON_WAN:$(( ${MASK_WAN} ^ 0xFF ))}
+MASK_NON_WAN=${MASK_NON_WAN:-$(( ${MASK_WAN} ^ 0xFF ))}
 
 ## Always set this just in case.
 TCP_REDIRECT_PORTS="9500-9627"
