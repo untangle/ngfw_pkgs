@@ -80,6 +80,8 @@ class UvmController < ApplicationController
     s = json_params
     os_names, user_names = s["os_names"], s["user_names"]
 
+    os_names = os_names.map { |i| i.sub( "ppp.", "" )}
+
     raise "os and user array must be the same size" if ( os_names.length != user_names.length ) 
     
     interface_array = Interface.find( :all )
