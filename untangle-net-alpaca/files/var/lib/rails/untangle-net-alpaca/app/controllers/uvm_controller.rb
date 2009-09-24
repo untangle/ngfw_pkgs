@@ -253,16 +253,21 @@ class UvmController < ApplicationController
 
     update_dns_server_settings()
 
+    wizard_single_nic( s["single_nic_mode"] )
+
     json_result
   end
 
   def wizard_external_interface_dynamic
+    s = json_params
+
     wizard_manage_interface( InterfaceHelper::ExternalIndex ) do |external_interface|
       external_interface.intf_dynamic = IntfDynamic.new
       external_interface.config_type = InterfaceHelper::ConfigType::DYNAMIC
     end
 
     update_dns_server_settings()
+    wizard_single_nic( s["single_nic_mode"] )
 
     json_result
   end
@@ -277,6 +282,7 @@ class UvmController < ApplicationController
     end
 
     update_dns_server_settings()
+    wizard_single_nic( false )
 
     json_result
   end
@@ -326,6 +332,26 @@ class UvmController < ApplicationController
     end
 
     json_result
+  end
+
+  def wizard_single_nic( is_enabled )
+    settings = ArpEaterSettings.new( :enabled => false, :gateway => "auto", :broadcast => false ) 
+    network = ArpEaterNetworks.new( :enabled => false, :spoof => false, :ip => "0.0.0.0", :netmask => "0",
+                                    :passive => true, :gateway => "auto", 
+                                    :description => "Local network" )
+
+    if ( is_enabled )
+      settings.enabled = true
+      settings.broadcast = true
+      network.enabled = true
+      network.spoof = true
+    end
+
+    ArpEaterSettings.destroy_all
+    ArpEaterNetworks.destroy_all
+
+    settings.save
+    network.save
   end
 
   def hello_world
