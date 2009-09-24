@@ -181,12 +181,16 @@ Ung.Alpaca.NetworkUtility = Ext.extend( Ext.Window, {
     completeContinueNetworkUtility : function( output, response, options )
     {
         var element = this.output.getEl();
-        if ( this.stdoutOffset == null || this.stdoutOffset == 0 ) {
-            this.output.setValue( this.output.getValue() + "" + new Date() + "\n");
+        var text = [];
+
+        text.push( this.output.getValue());
+
+        if ( this.stdoutOffset == null ) {
+            text.push( "" + new Date() + "\n" );
         }
-        this.output.setValue( this.output.getValue() + output["stderr"] + output["stdout"] );
-        element.scroll( "b", 1000 );
-        
+        text.push( output["stderr"] );
+        text.push( output["stdout"] );
+                
         this.stdoutOffset = output["stdout_offset"];
         this.stderrOffset = output["stderr_offset"];
 
@@ -197,6 +201,8 @@ Ung.Alpaca.NetworkUtility = Ext.extend( Ext.Window, {
         this.pollCount++;
 
         if ( this.pollCount > 180 ) {
+            this.output.setValue( text.join( "" ));
+            element.scroll( "b", 10000 );
             this.failureStartNetworkUtility();
             return;
         }
@@ -210,8 +216,11 @@ Ung.Alpaca.NetworkUtility = Ext.extend( Ext.Window, {
             this.runTest.setIconClass( "icon-test-run" );
             this.destination.enable();
             this.runTest.enable();
-            this.output.setValue( this.output.getValue() + "\n" );
+            text.push( "\n" );
         }
+
+        this.output.setValue( text.join( "" ));
+        element.scroll( "b", 10000 );
     },
 
     onClearOutput : function()
