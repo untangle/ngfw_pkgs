@@ -62,6 +62,18 @@ Ung.Alpaca.Glue = {
 
     saveSettings : function( panel )
     {
+        var handler = this.completePreSaveSettings.createDelegate( this, [panel], true );
+        
+        if ( panel.preSaveSettings ) {
+            panel.preSaveSettings( handler );
+            return;
+        }
+        
+        handler();
+    },
+        
+    completePreSaveSettings : function( panel )
+    {
         var handler = this.confirmedSaveSettings.createDelegate( this, [panel], true );
 
         /* Confirm settings save, if necessary */

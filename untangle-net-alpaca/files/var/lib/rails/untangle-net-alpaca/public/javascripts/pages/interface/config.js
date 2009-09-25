@@ -546,6 +546,23 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
         application.onSave();
     },
 
+    preSaveSettings : function( handler )
+    {
+        var configType = this.find( "name", "interface.config_type" )[0], bridgeInterface;
+
+        if ( configType.getValue() == "bridge" ) {
+            bridgeInterface = this.find( "name", "bridge.bridge_interface_id" )[0].getValue();
+            if ( bridgeInterface == null || bridgeInterface == "" ) {
+                Ext.MessageBox.alert( this._( "Unable to Save Settings" ), 
+                                      this._( "Please select a value for 'Bridge To'" ));
+
+                return;
+            }
+        }
+
+        handler();
+    },
+
     /* This is the page that it should return to on cancel or after saving settings. */
     nextPage : "/alpaca/interface/list"
 });

@@ -1,0 +1,26 @@
+#!/bin/dash
+
+interface_name=$1
+database_path=$2
+
+if [ $# != 2 ]; then
+    echo "USAGE: $0 <interface_name> <database_path>"
+    exit 1
+fi
+
+if [ ! -f ${database_path} ]; then
+    echo "USAGE: $0 <interface_name> <database_path>"
+    exit 1
+fi
+
+interface_id=`echo "SELECT interfaces.id FROM interfaces WHERE name='${interface_name}';" | sqlite3 ${database_path}`
+
+if [ -z "${interface_id}" ]; then
+    echo "The interface name '${interface_name}' doesn't exist"
+    exit 2
+fi
+
+echo "DELETE FROM intf_bridges WHERE interface_id=${interface_id};" | sqlite3 ${database_path}`sqlite3 ${database_path}`
+
+
+

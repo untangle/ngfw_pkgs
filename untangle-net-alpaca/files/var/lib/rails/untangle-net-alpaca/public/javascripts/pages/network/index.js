@@ -206,7 +206,7 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         });
         items.push( switchBlade );
     },
-
+    
     buildStandardPanel : function( i, items )
     {
         var staticPanel = {
@@ -241,6 +241,7 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 xtype : "fieldset",
                 items : [{
                     fieldLabel : this._( "Bridge To" ),
+                    bridgeField : true,
                     xtype : "combo",
                     mode : "local",
                     triggerAction : "all",
@@ -308,6 +309,42 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         }
 
         return 0;
+    },
+
+    preSaveSettings : function( handler )
+    {
+        var c = 0, configType, bridgeInterface;
+        for ( c = 0 ; c < this.settings.config_list.length ; c++ ) {
+            configType = this.find( "name", this.generateName( "config_list", c, "interface.config_type" ));
+            if ( configType == null ) {
+                continue;
+            }
+            if ( configType.length == 0 ) {
+                continue;
+            }
+
+            if ( configType[0].getValue() != "bridge" ) {
+                continue;
+            }
+
+            bridgeInterface = this.find( "name", this.generateName( "config_list", c, "bridge" ));
+            if ( bridgeInterface == null ) {
+                continue;
+            }
+            if ( bridgeInterface.length == 0 ) {
+                continue;
+            }
+
+            bridgeInterface = bridgeInterface[0].getValue();
+            if ( bridgeInterface == null || bridgeInterface == "" ) {
+                Ext.MessageBox.alert( this._( "Unable to Save Settings" ), 
+                                      this._( "Please select a value for 'Bridge To' for all bridged interfaces." ));
+
+                return;
+            }
+        }
+
+        handler();
     },
 
     onRenewLease : function()
