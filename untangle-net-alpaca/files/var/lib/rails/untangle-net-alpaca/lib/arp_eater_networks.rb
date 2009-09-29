@@ -1,3 +1,7 @@
+## This is in lib, instead of model, because this was originally
+## inside of the untangle-arp-eater package, but now it has to be in
+## the main area.
+
 class ArpEaterNetworks < ActiveRecord::Base
   AutoStrings = [ "auto", "automatic", "*" ]
 
