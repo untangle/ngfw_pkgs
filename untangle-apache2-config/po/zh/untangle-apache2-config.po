@@ -1,0 +1,125 @@
+#: ../adminindex.py:57
+#, python-format
+msgid "%s Administrator Login"
+msgstr ""
+
+#: ../adminindex.py:111
+msgid "Error: Username and Password do not match"
+msgstr ""
+
+#: ../adminindex.py:165
+msgid "Server:"
+msgstr ""
+
+#: ../adminindex.py:165
+msgid "Username:"
+msgstr ""
+
+#: ../adminindex.py:165
+msgid "Password:"
+msgstr ""
+
+#: ../adminindex.py:165
+msgid "Login"
+msgstr ""
+
+#: ../errorindex.py:33
+msgid "Bad Request"
+msgstr ""
+
+#: ../errorindex.py:37
+msgid "Unauthorized"
+msgstr ""
+
+#: ../errorindex.py:41
+msgid "Payment Required"
+msgstr ""
+
+#: ../errorindex.py:45
+msgid "Forbidden"
+msgstr ""
+
+#: ../errorindex.py:49
+msgid "Not Found"
+msgstr ""
+
+#: ../errorindex.py:53
+msgid "Method Not Allowed"
+msgstr ""
+
+#: ../errorindex.py:57
+msgid "Not Acceptable"
+msgstr ""
+
+#: ../errorindex.py:61
+msgid "Proxy Authentication Required"
+msgstr ""
+
+#: ../errorindex.py:65
+msgid "Request Timeout"
+msgstr ""
+
+#: ../errorindex.py:69
+msgid "Conflict"
+msgstr ""
+
+#: ../errorindex.py:73
+msgid "Gone"
+msgstr ""
+
+#: ../errorindex.py:77
+msgid "Length Required"
+msgstr ""
+
+#: ../errorindex.py:81
+msgid "Precondition Failed"
+msgstr ""
+
+#: ../errorindex.py:85
+msgid "Request Entity Too Large"
+msgstr ""
+
+#: ../errorindex.py:89
+msgid "Request-URI Too Long"
+msgstr ""
+
+#: ../errorindex.py:93
+msgid "Unsupported Media Type"
+msgstr ""
+
+#: ../errorindex.py:97
+msgid "Requested Range Not Satisfiable"
+msgstr ""
+
+#: ../errorindex.py:101
+msgid "Expectation Failed"
+msgstr ""
+
+#: ../errorindex.py:105
+msgid "Internal Server Error"
+msgstr ""
+
+#: ../errorindex.py:109
+msgid "Not Implemented"
+msgstr ""
+
+#: ../errorindex.py:113
+msgid "Bad Gateway"
+msgstr ""
+
+#: ../errorindex.py:117
+msgid "Service Unavailable"
+msgstr ""
+
+#: ../errorindex.py:121
+msgid "Gateway Timeout"
+msgstr ""
+
+#: ../errorindex.py:125
+msgid "HTTP Version Not Supported"
+msgstr ""
+
+#: ../errorindex.py:133 ../uvmlogin.py:283
+#, python-format
+msgid "%s Server"
+msgstr ""
