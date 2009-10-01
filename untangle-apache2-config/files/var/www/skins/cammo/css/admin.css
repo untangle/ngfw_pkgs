@@ -1616,3 +1616,39 @@ button.icon-test-connectivity
 {
     background: transparent url(../images/admin/icon_test_connectivity.png) no-repeat center left !important;
 }
+
+div.ua-cell-test
+{ 
+  padding-left: 20px;
+  line-height: 18px;
+  }
+
+div.ua-cell-test-connectivity
+{ 
+  background: transparent url(../images/admin/icon_test_connectivity.png) no-repeat center left !important;
+  }
+
+div.ua-cell-test-ping
+{ 
+  background: transparent url(../images/admin/icon_test_ping.png) no-repeat center left !important;
+  }
+
+div.ua-cell-test-dns
+{ 
+  background: transparent url(../images/admin/icon_test_dns.png) no-repeat center left !important;
+  }
+
+div.ua-cell-test-tcp
+{ 
+  background: transparent url(../images/admin/icon_test_tcp.png) no-repeat center left !important;
+  }
+
+div.ua-cell-test-traceroute
+{ 
+  background: transparent url(../images/admin/icon_test_traceroute.png) no-repeat center left !important;
+  }
+
+div.ua-cell-test-packet
+{ 
+  background: transparent url(../images/admin/icon_test_packet.png) no-repeat center left !important;
+  }
