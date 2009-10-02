@@ -140,6 +140,10 @@ button.icon-help {
 button.icon-logout {
 	background:transparent url(../images/admin/icon_logout_row.gif) no-repeat center left !important; 
 }
+/* myaccount button icon */
+button.icon-myaccount {
+	background:transparent url(../images/admin/icon_myaccount.png) no-repeat center left !important; 
+}
 /* help button icon */
 div.icon-help {
 	background:transparent url(../images/admin/icon_help.png) no-repeat !important;
