@@ -15,13 +15,16 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-class Dart < Alpaca::Migration
+class Galaxie < Alpaca::Migration
   def self.up
     ## Column for storing whether or not hosts in this network should spoof the host.
     add_column :arp_eater_networks, :is_spoof_host_enabled, :boolean, :default => true
     
     ## Column for a list of IP Networks / IP Addresses to apply the special NAT rule to.
     add_column :arp_eater_settings, :nat_hosts, :string, :default => ""
+
+    add_file_override( :enabled => true, :writable => true, :description => "CHAP Secrets",
+                       :path => "/etc/ppp/chap-secrets", :insert_first => true )
   end
   
   def self.down

@@ -22,7 +22,7 @@ class OSLibrary::PppoeManager < Alpaca::OS::ManagerBase
   ProviderName = "connection0"
   PeersFileBase = "/etc/ppp/peers/"
   PapSecretsFile = "/etc/ppp/pap-secrets"
-
+  ChapSecretsFile = "/etc/ppp/chap-secrets"
 
   def register_hooks
     os["network_manager"].register_hook( -100, "pppoe_manager", "write_files", :hook_write_files )
@@ -42,12 +42,21 @@ class OSLibrary::PppoeManager < Alpaca::OS::ManagerBase
       write_pppoe_interface( pppoe_interface, secrets )
     end
     
-    secrets = secrets.map { |u,p| "\"#{u}\" * \"#{p}\"" }
+    ## Update the pap file
+    secrets_text = secrets.map { |u,p| "\"#{u}\" * \"#{p}\"" }
     override_manager = os["override_manager"]
-    override_manager.write_file( PapSecretsFile, header, "\n", secrets.join( "\n" ), "\n" )
+    override_manager.write_file( PapSecretsFile, header, "\n", secrets_text.join( "\n" ), "\n" )
     if ( File.exists?( PapSecretsFile ) and override_manager.writable?( PapSecretsFile ))
          File.chmod( 0600, PapSecretsFile )
     end
+
+    ## Update the chap file
+    secrets_text = secrets.map { |u,p| "\"#{u}\" * \"#{p}\" *" }
+    override_manager.write_file( ChapSecretsFile, header, "\n", secrets_text.join( "\n" ), "\n" )
+    if ( File.exists?( ChapSecretsFile ) and override_manager.writable?( ChapSecretsFile ))
+         File.chmod( 0600, ChapSecretsFile )
+    end
+
   end
 
   private
