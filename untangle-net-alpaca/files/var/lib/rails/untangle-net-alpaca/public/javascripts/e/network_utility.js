@@ -33,7 +33,7 @@ Ung.Alpaca.NetworkUtility = Ext.extend( Ext.Window, {
             text : Ung.Alpaca.Util._('Close'),
             handler : this.closeWindow,
             scope : this
-        }],
+        }];
         
         this.items = [{
             xtype : "panel",
@@ -64,6 +64,7 @@ Ung.Alpaca.NetworkUtility = Ext.extend( Ext.Window, {
                     hideLabel : true,
                     readOnly : true,
                     anchor : "100% 100%",
+                    cls : "ua-test-output",
                     style : "padding: 8px"
                 })]
             }]
@@ -99,7 +100,7 @@ Ung.Alpaca.NetworkUtility = Ext.extend( Ext.Window, {
         this.runTest.setIconClass( "icon-test-running" );
         this.output.focus();
         this.runTest.disable();
-        this.destination.disable();
+        this.enableParameters( false );
         this.currentCommandKey = 0;
         this.stdoutOffset = null;
         this.stderrOffset = null;
@@ -132,7 +133,7 @@ Ung.Alpaca.NetworkUtility = Ext.extend( Ext.Window, {
         this.pollCount = 0;
         this.runTest.setIconClass( "icon-test-run" );
         this.runTest.enable();
-        this.destination.enable();
+        this.enableParameters( true );
     },
 
     continueNetworkUtility : function()
@@ -159,7 +160,7 @@ Ung.Alpaca.NetworkUtility = Ext.extend( Ext.Window, {
             this.pollCount = 0;
             this.runTest.setIconClass( "icon-test-run" );
             this.runTest.enable();
-            this.destination.enable();
+            this.enableParameters( true );
 
             return;
         }
@@ -188,8 +189,8 @@ Ung.Alpaca.NetworkUtility = Ext.extend( Ext.Window, {
         if ( this.stdoutOffset == null ) {
             text.push( "" + new Date() + "\n" );
         }
-        text.push( output["stderr"] );
         text.push( output["stdout"] );
+        text.push( output["stderr"] );
                 
         this.stdoutOffset = output["stdout_offset"];
         this.stderrOffset = output["stderr_offset"];
@@ -214,7 +215,7 @@ Ung.Alpaca.NetworkUtility = Ext.extend( Ext.Window, {
             this.stdoutOffset = null;
             this.stderrOffset = null;
             this.runTest.setIconClass( "icon-test-run" );
-            this.destination.enable();
+            this.enableParameters( true );
             this.runTest.enable();
             text.push( "\n" );
         }
@@ -231,6 +232,10 @@ Ung.Alpaca.NetworkUtility = Ext.extend( Ext.Window, {
     closeWindow : function()
     {
         this.hide();
+    },
+    
+    enableParameters : function( isEnabled )
+    {
     }
 
 });

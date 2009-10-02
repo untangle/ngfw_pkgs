@@ -1,18 +1,20 @@
 Ext.ns('Ung');
 Ext.ns('Ung.Alpaca');
 
-if ( Ung.Alpaca.PingTest != null ) {
+if ( Ung.Alpaca.TracerouteTest != null ) {
     Ung.Alpaca.Util.stopLoading();
 }
 
-Ung.Alpaca.PingTest = Ext.extend( Ung.Alpaca.NetworkUtility, {    
-    title : Ung.Alpaca.Util._( "Ping Test" ),
+Ung.Alpaca.TracerouteTest = Ext.extend( Ung.Alpaca.NetworkUtility, {    
+    title : Ung.Alpaca.Util._( "Traceroute Test" ),
 
-    testErrorMessage : Ung.Alpaca.Util._( "Unable to complete ping test." ),
+    width : 800,
+
+    testErrorMessage : Ung.Alpaca.Util._( "Unable to complete Traceroute." ),
     
     initComponent : function()
     {
-        this.testDescription = Ung.Alpaca.Util._("The <b>Ping Test</b> can be used to test that a particular host or client can be contacted from Untangle");
+        this.testDescription = Ung.Alpaca.Util._("The <b>Traceroute Test</b> traces the route from Untangle to a give host or client.");
 
         this.testTopToolbar = [this.destination = new Ext.form.TextField({
             xtype : "textfield",
@@ -29,9 +31,9 @@ Ung.Alpaca.PingTest = Ext.extend( Ung.Alpaca.NetworkUtility, {
             scope : this
         })];
 
-        this.testEmptyText = Ung.Alpaca.Util._("Ping Test Output");
+        this.testEmptyText = Ung.Alpaca.Util._("Traceroute Output");
 
-        Ung.Alpaca.PingTest.superclass.initComponent.apply( this, arguments );
+        Ung.Alpaca.TracerouteTest.superclass.initComponent.apply( this, arguments );
     },
 
     isValid : function()
@@ -42,7 +44,7 @@ Ung.Alpaca.PingTest = Ext.extend( Ung.Alpaca.NetworkUtility, {
                !Ext.form.VTypes.hostname( destination, this.destination ))) {
             Ext.MessageBox.show({
                 title : Ung.Alpaca.Util._( "Warning" ),
-                msg : Ung.Alpaca.Util._( "Please enter a valid IP Address or hostname" ),
+                msg : Ung.Alpaca.Util._( "Please enter a valid IP Address or Hostname" ),
                 icon : Ext.MessageBox.WARNING,
                 buttons : Ext.MessageBox.OK
             });
@@ -56,21 +58,21 @@ Ung.Alpaca.PingTest = Ext.extend( Ung.Alpaca.NetworkUtility, {
     {
         var destination = this.destination.getValue();
 
-        Ung.Alpaca.Util.executeRemoteFunction( "/network/start_ping_test",
+        Ung.Alpaca.Util.executeRemoteFunction( "/network/start_traceroute_test",
                                                this.completeStartNetworkUtility.createDelegate( this ),
                                                this.failureStartNetworkUtility.createDelegate( this ),
-                                               { "destination" : destination });        
+                                               { "destination" : destination });
     },
 
     onHelp : function () 
     {
-        var url = Ung.Alpaca.Glue.buildHelpUrl( { controller : "network", page : "ping_test" });
+        var url = Ung.Alpaca.Glue.buildHelpUrl( { controller : "network", page : "traceroute_test" });
         window.open(url);
     },
 
     enableParameters : function( isEnabled )
     {
-        Ung.Alpaca.PingTest.superclass.enableParameters.apply( this, arguments );
+        Ung.Alpaca.TracerouteTest.superclass.enableParameters.apply( this, arguments );
 
         if ( isEnabled ) {
             this.destination.enable();

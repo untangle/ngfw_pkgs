@@ -179,6 +179,17 @@ class NetworkController < ApplicationController
   end
 
   alias_method :aliases, :extjs
+
+  alias_method :troubleshoot, :extjs
+
+  def get_troubleshoot_settings
+    settings = {}
+
+    ## Interface enumeration
+    settings["interface_enum"] = build_interface_enum()
+
+    json_result( :values => settings )
+  end
   
   def get_general_settings
     settings = {}
@@ -248,6 +259,193 @@ class NetworkController < ApplicationController
 
     result = {}
     result["key"] = os["network_manager"].start_user_command( session_id, "ping -c #{count} #{destination}" )
+
+    json_result( :values => result )
+  end
+
+  def start_connectivity_test
+    s = json_params
+    
+    session_id = get_user_command_session_id
+    result = {}
+    result["key"] = os["network_manager"].start_user_command( session_id, <<EOF )
+echo -n "Testing DNS ... "
+success="Successful"
+dig updates.untangle.com > /dev/null 2>&1 
+if [ "$?" = "0" ]; then
+  echo "OK"
+else
+  echo "FAILED"
+  success="Failure"
+fi
+
+echo -n "Testing TCP Connectivity ... "
+echo "GET /" | nc -q 0 -w 15 updates.untangle.com 80 > /dev/null 2>&1
+if [ "$?" = "0" ]; then
+  echo "OK"
+else
+  echo "FAILED"
+  success="Failure"
+fi
+
+echo "`date` - Test ${success}!"
+
+EOF
+
+    json_result( :values => result )
+  end
+
+  def start_dns_test
+    s = json_params
+
+    hostname = s["hostname"]
+    
+    raise "Missing hostname" if hostname.nil?
+    hostname = hostname.strip
+    raise "Invalid hostname" unless ApplicationHelper.safe_characters?( hostname )
+    
+    session_id = get_user_command_session_id
+    result = {}
+    result["key"] = os["network_manager"].start_user_command( session_id, <<EOF )
+success="Successful"
+
+host #{hostname}
+if [ "$?" != "0" ]; then
+  success="Failure"
+fi
+
+echo "`date` - Test ${success}!"
+
+EOF
+
+    json_result( :values => result )
+  end
+
+  def start_tcp_test
+    s = json_params
+
+    destination = s["destination"]
+    port = s["port"]
+
+    
+    raise "Missing destination" if destination.nil?
+    raise "Missing port" if port.nil?
+    destination = destination.strip
+    raise "Invalid destination" unless ApplicationHelper.safe_characters?( destination )
+
+    raise "invalid port" unless port.to_i.to_s == port.to_s
+    port = port.to_i
+    raise "invalid port" if ( port <= 0 || port > 0xFFFF )
+    
+    session_id = get_user_command_session_id
+    result = {}
+    result["key"] = os["network_manager"].start_user_command( session_id, <<EOF )
+success="Successful"
+
+echo 1 | nc -q 0 -v -w 15 #{destination} #{port}
+if [ "$?" != "0" ]; then
+  success="Failure"
+fi
+
+echo "`date` - Test ${success}!"
+
+EOF
+
+    json_result( :values => result )
+  end
+
+  def start_traceroute_test
+    s = json_params
+
+    destination = s["destination"]
+    
+    raise "Missing destination" if destination.nil?
+    destination = destination.strip
+    raise "Invalid destination" unless ApplicationHelper.safe_characters?( destination )
+    
+    session_id = get_user_command_session_id
+    result = {}
+    result["key"] = os["network_manager"].start_user_command( session_id, <<EOF )
+traceroute #{destination}
+if [ "$?" != "0" ]; then
+  success="Failure"
+fi
+
+echo "`date` - Test Complete!"
+
+EOF
+
+    json_result( :values => result )
+  end
+
+  def start_packet_test
+    s = json_params
+
+    destination = s["destination"]
+    port = s["port"]
+    timeout = s["timeout"]
+    intf = s["interface"]
+        
+    
+    if ( destination.nil? or destination == "" or destination.downcase == "any" )
+      destination = ""
+    else
+      destination = destination.strip
+      raise "Invalid destination" unless ApplicationHelper.safe_characters?( destination )
+      destination = "host #{destination}"
+    end
+
+    if ( port.nil? or port == "" )
+      port = ""
+    else
+      raise "invalid port" unless port.to_i.to_s == port.to_s
+      port = port.to_i
+      raise "invalid port" if ( port <= 0 || port > 0xFFFF )
+      port = "port #{port}"
+    end
+
+    raise "Invalid timeout" unless ( timeout.to_i.to_s == timeout.to_s )
+    timeout = timeout.to_i
+    raise "Invalid timeout" unless ( timeout > 2 and timeout < 121 )
+
+    ## Get the interface
+    if ( intf == 8 )
+      intf = "tun0"
+    else
+      conditions = [ "\"index\" = ?", intf ]
+      intf = Interface.find( :first, :conditions => conditions )
+      raise "Invalid Interface" if intf.nil?
+      intf = intf.os_name
+    end
+    
+    if ( destination != "" and port != "" )
+      port = " and #{port}"
+    end
+    
+    session_id = get_user_command_session_id
+    result = {}
+    result["key"] = os["network_manager"].start_user_command( session_id, <<EOF )
+intf_name=#{intf}
+pppoe_name=`/usr/share/untangle-net-alpaca/scripts/get_pppoe_name ${intf_name}`
+
+if [ "${pppoe_name}" != "ppp.${intf_name}" ]; then
+  intf_name=${pppoe_name}
+fi
+
+tcpdump -i ${intf_name} -l -q -c 1024 -n #{destination} #{port} 2>&1 &
+for t in `seq 1 #{timeout}`; do
+  sleep 1
+  ps aux | grep -q " $! .*[t]cpdump -i"
+  if [ "$?" != "0" ]; then
+    break
+  fi
+done
+ps aux | grep -q " $! .*[t]cpdump -i" && kill -INT $!
+ps aux | grep -q " $! .*[t]cpdump -i" && wait $!
+
+echo "`date` - Test Complete!"
+
+EOF
 
     json_result( :values => result )
   end

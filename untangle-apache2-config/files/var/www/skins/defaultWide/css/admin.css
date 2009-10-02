@@ -1664,3 +1664,7 @@ div.ua-cell-test-packet
 { 
   background: transparent url(../images/admin/icon_test_packet.png) no-repeat center left !important;
   }
+textarea.ua-test-output
+{ 
+  font-family: courier, monospace;
+ }

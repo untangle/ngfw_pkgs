@@ -79,7 +79,7 @@ module ApplicationHelper
     File.open( stdout ) do |f|
       f.seek( stdout_offset, IO::SEEK_SET )
       begin
-        f.read( 1024, values["stdout"] )
+        f.read( 16 * 1024, values["stdout"] )
       rescue
       end
       values["stdout_offset"] = f.pos
@@ -88,7 +88,7 @@ module ApplicationHelper
     File.open( stderr ) do |f|
       f.seek( stderr_offset, IO::SEEK_SET )
       begin
-        f.read( 1024, values["stderr"] )
+        f.read( 16 * 1024, values["stderr"] )
       rescue
       end
       values["stderr_offset"] = f.pos

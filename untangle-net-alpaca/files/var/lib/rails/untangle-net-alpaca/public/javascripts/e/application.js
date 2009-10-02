@@ -2,7 +2,7 @@
 Ext.BLANK_IMAGE_URL = '/ext/resources/images/default/s.gif';
 
 Ext.ns('Ung');
-Ext.ns('Ung.Alpaca');
+Ext.ns('Ung.Alpaca');    
 
 Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
     constructor : function()
@@ -57,8 +57,15 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
                 this.saveButton
             ]
         });
-
+        
         Ung.Alpaca.Application.superclass.constructor.apply( this, arguments );
+    },
+
+    initComponent : function()
+    {
+        Ung.Alpaca.Application.superclass.initComponent.apply( this, arguments );
+        
+        this.addEvents( "fieldchanged" );
     },
 
     // Recreate the current panel, and reload its settings.
@@ -72,6 +79,14 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
     // this will use the current active panel in the menu.
     completeLoadPage : function( response, options, queryPath )
     {
+        /* Clear all of the listeners for fieldChange events (this event should be reregistered on
+         * each page. */
+        var fieldchanged = this.events["fieldchanged"];
+        if (( fieldchanged != null ) && ( typeof( fieldchange ) == "object" ) &&
+            fieldchanged.clearListeners) {
+            this.events["fieldchanged"].clearListeners();
+        }
+
         queryPath = Ung.Alpaca.Glue.buildQueryPath( queryPath );
 
         var controller = queryPath["controller"];
@@ -219,6 +234,13 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
     onFieldChange : function()
     {
         this.enableSaveButton();
+
+        this.fieldChanged();
+    },
+
+    fieldChanged : function()
+    {
+        this.fireEvent( "fieldchanged", this );
     }
 });
 
