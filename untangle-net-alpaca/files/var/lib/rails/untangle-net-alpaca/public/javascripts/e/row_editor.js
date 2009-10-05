@@ -91,7 +91,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
         Ung.Alpaca.RowEditor.superclass.show.call(this);
         this.center();
     },
-    // populate is called whent a record is edited, tot populate the edit window
+    // populate is called whent a record is edited, to populate the edit window
     populate : function(record) {
         this.record = record;
         this.initialRecordData = Ext.encode(record.data);
@@ -110,7 +110,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
         if ( item.getName ) {
             var value = null;
             if(item.dataIndex!=null) {
-                var value = Ung.Alpaca.Util.getSettingsValue( record.data, item.dataIndex );
+                value = Ung.Alpaca.Util.getSettingsValue( record.data, item.dataIndex );
             }
 
             switch ( item.xtype ) {
@@ -126,7 +126,9 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
                 break;
             case "checkbox":
                 value =  ( value == null ) ? false : value;
-                if ( item.invert == true ) value = !value;
+                if ( item.invert == true ) {
+                    value = !value;
+                }
                 item.setValue( value );
                 break;
 
@@ -151,19 +153,21 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
 
             switch ( item.xtype ) {
             case "checkbox":
-                event = "check"
+                event = "check";
                 break;
             case "rulebuilder" :
-                event = "afteredit"
+                event = "afteredit";
                 break;
+
                 /* No point registering events on labels. */
             case "label":
                 event = null;
+                break;
             default:
             }
 
             if ( item.editorGridPanel == true ) {
-                event = "afteredit"
+                event = "afteredit";
             }
 
             if ( event != null ) {
@@ -204,7 +208,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
     updateAction : function() {
         if (this.isFormValid()) {
             if (this.record !== null) {
-                this.items.each( this.updateFieldValue.createDelegate( this, [ this.record ], true ))
+                this.items.each( this.updateFieldValue.createDelegate( this, [ this.record ], true ));
             }
             this.hide();
             application.onFieldChange();

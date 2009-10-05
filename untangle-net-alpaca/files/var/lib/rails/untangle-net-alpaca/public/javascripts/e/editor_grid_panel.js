@@ -53,7 +53,11 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
                         fn :function(sm) {
                             var deleteButton=Ext.getCmp("delete_button_"+this.getId());
                             if(deleteButton) {
-                                sm.getCount()>0?deleteButton.enable():deleteButton.disable()
+                                if ( sm.getCount() > 0 ) {
+                                    deleteButton.enable();
+                                } else {
+                                    deleteButton.disable();
+                                }
                             }
                         }.createDelegate(this)
                     }
@@ -89,7 +93,8 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
         }
 
         /* Iterate the columns and search for the ones that haven't been added */
-        for ( var c = 0 ; c < this.columns.length ; c++ ) {
+        var c;
+        for ( c = 0 ; c < this.columns.length ; c++ ) {
             var column = this.columns[c];
 
             if ( column.addPlugin != true ) {
@@ -114,7 +119,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
         /* Build a record. */
         if ( this.record == null && Ext.isArray( this.recordFields )) {
             var fields = [];
-            for ( var c = 0 ; c < this.recordFields.length ; c++ ) {
+            for ( c = 0 ; c < this.recordFields.length ; c++ ) {
                 var field = this.recordFields[c];
                 var f = { name : field, mapping : field };
 
@@ -173,12 +178,13 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
                     var cindex = dd.getDragData(e).rowIndex;
 
                     var dsGrid = this.getStore();
+                    var i, rowData;
 
-                    for(i = 0; i < rows.length; i++) {
+                    for( i = 0; i < rows.length; i++) {
                         rowData = dsGrid.getById(rows[i].id);
                         dsGrid.remove(dsGrid.getById(rows[i].id));
                         dsGrid.insert(cindex, rowData);
-                    };
+                    }
 
                     this.getView().refresh();
 
@@ -207,7 +213,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
                 }
             }
             return "";
-        }
+        };
     },
 
     buildToolbar : function( config )
@@ -329,6 +335,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
     updateChangedData : function(record, currentOp) {
         if (!this.isDirty()) {
             var cmConfig = this.getColumnModel().config;
+            var i;
             for (i in cmConfig) {
                 cmConfig[i].sortable = false;
             }
@@ -457,7 +464,7 @@ Ung.Alpaca.grid.IconColumn = Ext.extend(Object, {
             e.stopEvent();
             var index = this.grid.getView().findRowIndex(t);
             var record = this.grid.store.getAt(index);
-            this.handle(record, index)
+            this.handle(record, index);
         }
     },
 
@@ -501,6 +508,7 @@ Ung.Alpaca.grid.DeleteColumn=Ext.extend(Ung.Alpaca.grid.IconColumn, {
 
     addPlugin : true
 });
+
 // Grid reorder column
 Ung.Alpaca.grid.ReorderColumn = Ext.extend(Object, {
     constructor : function(config) {

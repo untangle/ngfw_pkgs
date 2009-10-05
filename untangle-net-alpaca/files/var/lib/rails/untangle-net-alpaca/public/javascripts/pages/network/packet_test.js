@@ -33,8 +33,7 @@ Ung.Alpaca.PacketTest = Ext.extend( Ung.Alpaca.NetworkUtility, {
             width : 50
         }),this.intf = new Ext.form.ComboBox({
             editable : false,
-            xtype : "combobox",
-            boxLabel : Ung.Alpaca.Util._("Interface" ),
+            xtype : "combo",
             style : "margin-left: 10px",
             width : 100,
             value : this.interfaceStore[0][0],
@@ -49,7 +48,7 @@ Ung.Alpaca.PacketTest = Ext.extend( Ung.Alpaca.NetworkUtility, {
             style : "margin-left: 2px",
             value : timeouts[0][0],
             editable : false,
-            xtype : "combobox",
+            xtype : "combo",
             width : 100,
             store : timeouts,
             triggerAction : "all",

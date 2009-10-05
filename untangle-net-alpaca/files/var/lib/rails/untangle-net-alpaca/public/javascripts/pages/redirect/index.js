@@ -25,6 +25,21 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             disabled : true
         });
 
+        this.protocolStore = [[ "tcp,udp", this._( "TCP & UDP" ) ],
+                              [ "tcp", this._( "TCP" ) ],
+                              [ "udp", this._( "UDP" ) ]];
+
+        this.portStore = [[ 21, "FTP (21)" ],
+                          [ 22, "FTP (22)" ],
+                          [ 25, "SMTP (25)" ],
+                          [ 53, "DNS (53)" ],
+                          [ 80, "HTTP (80)" ],
+                          [ 110, "POP3 (110)" ],
+                          [ 143, "IMAP (143)" ],
+                          [ 443, "HTTPS (443)" ],
+                          [ 1723, "PPTP (1723)" ],
+                          [ -1, "Other" ]];
+
         this.userRulesGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
 
@@ -34,83 +49,14 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             hasEdit : true,
             hasReorder: true,
             
-            rowEditorConfig: {
-                xtype: "roweditor",
-                panelItems: [{
-                    xtype : "fieldset",
-                    autoHeight : true,
-                    items:[{
-                        xtype: "checkbox",
-                        fieldLabel : this._( "Enabled" ),
-                        dataIndex: "enabled"
-                    }, {
-                        xtype: "textfield",
-                        fieldLabel : this._( "Description" ),
-                        dataIndex: "description",
-                        width: 360
-                    }]
-                },{
-                    xtype : "fieldset",
-                    autoWidth : true,
-                    autoScroll: true,
-                    autoHeight : true,
-                    title: "If all of the following conditions are met:",
-                    items:[{
-                        xtype:"rulebuilder",
-                        anchor:"98%",
-                        dataIndex: "filter",
-                        ruleInterfaceValues : this.settings["interface_enum"],
-                        rules : [{
-                            name : "s-addr",
-                            displayName : Ung.Alpaca.Util._("Source Address"),
-                            type: "text",
-                            vtype : "address"
-                        },{
-                            name : "d-local",
-                            displayName : Ung.Alpaca.Util._("Destined Local"),
-                            type: "boolean"
-                        },{
-                            name : "d-addr",
-                            displayName : Ung.Alpaca.Util._("Destination Address"),
-                            type: "text",
-                            vtype:"address"
-                        },{
-                            name : "d-port",
-                            displayName : Ung.Alpaca.Util._("Destination Port"),
-                            type: "text",
-                            vtype : "port"
-                        },{
-                            name:"s-intf",
-                            displayName : Ung.Alpaca.Util._("Source Interface"),
-                            type: "checkgroup",
-                            values : this.settings["interface_enum"]
-                        },{
-                            name : "protocol",
-                            displayName : Ung.Alpaca.Util._("Protocol"),
-                            type: "checkgroup",
-                            values: Ung.Alpaca.RuleBuilder.DEFAULT_PROTOCOL_VALUES
-                        }]
-                    }]
-                },{
-                    xtype : "fieldset",
-                    autoHeight : true,
-                    title: "Forward traffic to the following location",
-                    items:[{
-                        xtype: "textfield",
-                        fieldLabel : this._( "New Destination" ),
-                        dataIndex: "new_ip",
-                        vtype : "ipAddress",
-                        width: 150
-                    }, {
-                        xtype: "numberfield",
-                        vtype : "port",
-                        fieldLabel : this._( "New Port (optional)" ),
-                        dataIndex: "new_enc_id",
-                        width: 150
-                        
-                    }]
-                }]
-            },
+            rowEditor : this.rowEditor = new Ung.Alpaca.Pages.Redirect.RowEditor({
+                i18n : this.i18n,
+                portStore : this.portStore,
+                protocolStore : this.protocolStore,
+                name : "user_redirects",
+                settings : this.settings
+            }),
+
             name : "user_redirects",
 
             tbar : [ Ung.Alpaca.EditorGridPanel.AddButtonMarker,
@@ -122,7 +68,7 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 system_id : null,
                 new_ip : "1.2.3.4",
                 new_enc_id : "",
-                filter : "d-port::&&d-local::true&&protocol::tcp",
+                filter : "simple::true&&d-port::80&&d-local::true&&protocol::tcp",
                 description : "[New Entry]",
                 is_custom : false
             },
@@ -137,6 +83,8 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 })
             }]
         });
+
+        this.rowEditor.grid = this.userRulesGrid;
 
         this.userRulesGrid.store.load();
 
@@ -196,7 +144,9 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         }
 
         if ( this.troubleShootWindow == null ) {
-            this.troubleShootWindow = new Ung.Alpaca.Pages.Redirect.TroubleShoot();
+            this.troubleShootWindow = new Ung.Alpaca.Pages.Redirect.TroubleShoot({ 
+                settings : this.settings
+            });
         }
 
         record = record[0];
@@ -206,6 +156,280 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
     },
 
     saveMethod : "/redirect/set_settings"
+});
+
+Ung.Alpaca.Pages.Redirect.RowEditor = Ext.extend( Ung.Alpaca.RowEditor, {
+    constructor : function( config ) {
+        this.i18n = config.i18n;
+        this._ = this.i18n._.createDelegate( this.i18n );
+
+        this.portStore = config.portStore;
+        this.protocolStore = config.protocolStore;
+        
+        Ung.Alpaca.Pages.Redirect.RowEditor.superclass.constructor.apply( this, arguments );
+    },
+    
+    xtype: "roweditor",
+    
+    initComponent : function()
+    {
+        this.panelItems = [{
+            xtype : "fieldset",
+            autoHeight : true,
+            items:[{
+                xtype: "checkbox",
+                fieldLabel : this._( "Enabled" ),
+                dataIndex: "enabled"
+            }, {
+                xtype: "textfield",
+                fieldLabel : this._( "Description" ),
+                dataIndex: "description",
+                width: 360
+            }]
+        },{
+            xtype : "fieldset",
+            simpleMode : true,
+            autoHeight : true,
+            title : this._( "Forward the following traffic:" ),
+            items : [{
+                editable : false,
+                xtype : "combo",
+                fieldLabel : this._("Protocol" ),
+                width : 100,
+                name : "simple_protocol",
+                value : this.protocolStore[0][0],
+                store : this.protocolStore,
+                triggerAction : "all",
+                mode : "local"
+            },{
+                editable : false,
+                xtype : "combo",
+                fieldLabel : this._("Port" ),
+                width : 100,
+                name : "simple_basic_port",
+                value : this.portStore[0][0],
+                store : this.portStore,
+                triggerAction : "all",
+                mode : "local",
+                listeners : {
+                    "select" : {
+                        fn : this.onBasicPortSelect,
+                        scope : this
+                    }
+                }
+            },{
+                xtype : "numberfield",
+                fieldLabel : this._("Port Number" ),
+                name : "simple_destination_port",
+                minValue : 1,
+                maxValue : 0xFFFF,
+                width : 100
+            }]
+        },{
+            xtype : "fieldset",
+            autoHeight : true,
+            simpleMode : true,
+            title : this._( "To the following location:" ),
+            items : [{
+                xtype : "textfield",
+                fieldLabel : this._("Local IP" ),
+                name : "simple_new_ip",
+                width : 100
+            }]
+        },{
+            xtype : "button",
+            simpleMode : true,
+            text : this._( "Switch to Advanced" ),
+            style : "padding: 10px;",
+            handler : this.onToAdvancedMode,
+            scope : this
+        },{
+            xtype : "fieldset",
+            autoWidth : true,
+            autoScroll: true,
+            autoHeight : true,
+            simpleMode : false,
+            title: "If all of the following conditions are met:",
+            items:[{
+                xtype:"rulebuilder",
+                anchor:"98%",
+                dataIndex: "filter",
+                ruleInterfaceValues : this.settings["interface_enum"],
+                rules : [{
+                    name : "s-addr",
+                    displayName : this._("Source Address"),
+                    type: "text",
+                    vtype : "address"
+                },{
+                    name : "d-local",
+                    displayName : this._("Destined Local"),
+                    type: "boolean"
+                },{
+                    name : "d-addr",
+                    displayName : this._("Destination Address"),
+                    type: "text",
+                    vtype:"address"
+                },{
+                    name : "d-port",
+                    displayName : this._("Destination Port"),
+                    type: "text",
+                    vtype : "port"
+                },{
+                    name:"s-intf",
+                    displayName : this._("Source Interface"),
+                    type: "checkgroup",
+                    values : this.settings["interface_enum"]
+                },{
+                    name : "protocol",
+                    displayName : this._("Protocol"),
+                    type: "checkgroup",
+                    values: Ung.Alpaca.RuleBuilder.DEFAULT_PROTOCOL_VALUES
+                }]
+            }]
+        },{
+            xtype : "fieldset",
+            autoHeight : true,
+            simpleMode : false,
+            title: "Forward traffic to the following location",
+            items:[{
+                xtype: "textfield",
+                fieldLabel : this._( "New Destination" ),
+                dataIndex: "new_ip",
+                vtype : "ipAddress",
+                width: 150
+            }, {
+                xtype: "numberfield",
+                vtype : "port",
+                fieldLabel : this._( "New Port (optional)" ),
+                dataIndex: "new_enc_id",
+                width: 150
+                
+            }]
+        }];
+        
+        Ung.Alpaca.Pages.Redirect.RowEditor.superclass.initComponent.apply(this, arguments);
+    },
+
+    populate : function(record)
+    {
+        Ung.Alpaca.Pages.Redirect.RowEditor.superclass.populate.apply(this, arguments);
+
+        var simpleItems = this.find( "simpleMode", true );
+        var advancedItems = this.find( "simpleMode", false );
+        var c, filter, field;
+
+        filter = record.data.filter;
+        if ( filter == null ) {
+            filter = "";
+        }
+
+        if ( filter.indexOf( "simple::true" ) >= 0 ) {
+            this.simpleMode = true;
+            for ( c = 0 ; c < simpleItems.length ; c++ ) {
+                simpleItems[c].setVisible( true );
+            }
+            for ( c = 0 ; c < advancedItems.length ; c++ ) {
+                advancedItems[c].setVisible( false );
+            }
+            
+            var values = record.data.filter.split("&&");
+            for ( c = 0 ; c < values.length ; c++ ) {
+                var value = values[c].split("::");
+                switch (value[0]) {
+                case "d-port":
+                    value[1] = parseInt( value[1] );
+                    var isOther = true;
+                    for ( var d = 0 ; d < this.portStore.length ; d++ ) {
+                        if ( this.portStore[d][0] == value[1] ) {
+                            this.find( "name", "simple_basic_port" )[0].setValue( value[1] );
+                            this.find( "name", "simple_destination_port" )[0].setContainerVisible( false );
+                            isOther = false;
+                            break;
+                        }
+                    }
+                    
+                    this.find( "name", "simple_destination_port" )[0].setValue( value[1] );
+                    if ( isOther ) {
+                        this.find( "name", "simple_destination_port" )[0].setContainerVisible( true );
+                        this.find( "name", "simple_basic_port" )[0].setValue( -1 );
+                    }
+                    break;
+                    
+                case "protocol":
+                    this.find( "name", "simple_protocol" )[0].setValue( value[1] );
+                    break;
+                }
+            }
+
+            this.find( "name", "simple_new_ip" )[0].setValue( record.data.new_ip );
+        } else {
+            this.simpleMode = false;
+            
+            for ( c = 0 ; c < simpleItems.length ; c++ ) {
+                simpleItems[c].setVisible( false );
+            }
+            for ( c = 0 ; c < advancedItems.length ; c++ ) {
+                advancedItems[c].setVisible( true );
+            }
+        }
+    },
+    
+    updateFieldValue : function( item, index, length, record )
+    {
+        Ung.Alpaca.Pages.Redirect.RowEditor.superclass.updateFieldValue.apply(this, arguments);
+
+        if ( this.simpleMode ) {
+            record.set( "is_custom", false );
+            record.set( "new_ip", this.find( "name", "simple_new_ip" )[0].getValue());
+            var filter = "simple::true&&d-local::true";
+            
+            filter += "&&protocol::" + this.find( "name", "simple_protocol" )[0].getValue();
+            var port = this.find( "name", "simple_basic_port" )[0].getValue();
+            if ( port == -1 ) {
+                port = this.find( "name", "simple_destination_port" )[0].getValue();
+            }
+            filter += "&&d-port::" + port;
+            record.set( "new_enc_id", port );
+            record.set( "filter", filter );
+        }
+    },
+
+    onBasicPortSelect : function( field, record, index )
+    {
+        var isVisible = record.data.value == -1;
+        var port = this.find( "name", "simple_destination_port" )[0];
+
+        port.setContainerVisible( isVisible );
+        if ( !isVisible ) {
+            port.setValue( record.data.value );
+        }
+    },
+
+    onToAdvancedMode : function()
+    {
+        
+        Ext.MessageBox.show({
+            title : this._( "Warning" ),
+            msg : this._( "Advanced port forwards can not be viewed in simple mode. To switch back to simple view, delete this rule and create a new one." ),
+            buttons : {
+                ok : this._( "Continue" ),
+                cancel : this._( "Cancel" )
+            },
+            fn : this.confirmToAdvancedMode,
+            scope : this,
+            icon : Ext.MessageBox.WARNING
+        });
+    },
+
+    confirmToAdvancedMode : function( buttonId ) {
+        if ( buttonId != "ok" ) {
+            return;
+        }
+
+        this.updateAction();
+        this.record.data.filter = this.record.data.filter.replace( "simple::true", "" );
+        this.grid.editEntry( this.record );
+    }
 });
 
 Ung.Alpaca.Pages.Redirect.TroubleShoot = Ext.extend( Ext.Window, {
@@ -258,10 +482,10 @@ Ung.Alpaca.Pages.Redirect.TroubleShoot = Ext.extend( Ext.Window, {
             items : [{
                 xtype : "label",
                 cls : 'page-header-text',                    
-                html : Ung.Alpaca.Util._( "Troubleshooting Port Forwards" ),
+                html : Ung.Alpaca.Util._( "Troubleshooting Port Forwards" )
             },{
                 xtype : "label",
-                html : Ung.Alpaca.Util._( "Test 1: Verify Untangle can ping the <b>new destination</b>" ),
+                html : Ung.Alpaca.Util._( "Test 1: Verify Untangle can ping the <b>new destination</b>" )
             },{
                 xtype : "button",
                 text : Ung.Alpaca.Util._( "Ping Test" ),
