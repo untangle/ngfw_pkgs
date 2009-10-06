@@ -195,7 +195,7 @@ module InterfaceHelper
 
     ## Sort the interface array by index.
     interfaceArray.sort! { |a,b| a.index <=> b.index }
-
+    
     ## Append empty interfaces for the ones that don't exists.
     CriticalInterfaces.each do |index|
       next unless interface_hash[index].nil?
@@ -226,6 +226,9 @@ module InterfaceHelper
 
     ## Sort the interface array by index.
     interfaceArray.sort! { |a,b| a.index <=> b.index }
+
+    ## Truncate the array down to 7 items
+    interfaceArray = interfaceArray.slice( 0, 7 )
 
     interfaceArray
   end
