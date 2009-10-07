@@ -76,7 +76,9 @@ class OSLibrary::NetworkManager < Alpaca::OS::ManagerBase
   ## 255.255.255.0 -> 255.255.255.0
   ## Raises an exception if the netmask is not valid
   def self.parseNetmask( netmask )
-    IPAddr.new( "255.255.255.255/#{netmask.strip}" ).to_s
+    n = IPAddr.parse_netmask( netmask )
+    raise "Invalid netmask #{n}" if n.nil?
+    return n.to_s
   end
 
   ## Just a little helper used to convey interfaces

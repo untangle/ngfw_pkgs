@@ -24,17 +24,22 @@ class OSLibrary::Debian::Filter::IPHandler
     if ( value.include?( "-" ))
       range_start, range_end, extra = value.split( "-" )
       raise "invalid range #{value}" unless extra.nil?
-      range_start = IPAddr.new( "#{range_start}/32" )
-      range_end = IPAddr.new( "#{range_end}/32" )
+      range_start = IPAddr.parse( "#{range_start}/32" )
+      range_end = IPAddr.parse( "#{range_end}/32" )
+      raise "invalid range #{value}" if range_start.nil?
+      raise "invalid range #{value}" if range_end.nil?
+
       filters[parameter] = "-m iprange --#{is_src ? "src" : "dst"}-range #{range_start}-#{range_end}"
     elsif ( value.include?( "," ))
       ## This will be significantly improved by using IPset.
       filters[parameter] = value.split( "," ).uniq.map do |ip|
-        IPAddr.new( ip )
+        raise "invalid address #{value}(#{ip})" if IPAddr.parse( ip ).nil?
+        
         ## Review ( support - )
         filters[parameter] = "--#{is_src ? "source" : "destination"} #{ip}"
       end
     else
+      raise "invalid address #{value}" if IPAddr.parse( value ).nil?
       ## just verify that it parses
       IPAddr.new( value )
       filters[parameter] = "--#{is_src ? "source" : "destination"} #{value}"

@@ -30,9 +30,27 @@ class ::IPAddr
       return nil if val.empty?
       
       return nil if ( val.count( "/" ) > 1 )
+
+      ip_address, netmask = val.split( "/" )
       
-      addr = self.new( val )
-      return nil unless addr.ipv4?
+      if ( self.validate_ip_string( ip_address ).nil? )
+        return nil
+      end
+            
+      unless netmask.nil?
+        if ( netmask.to_i.to_s != netmask )
+          if ( self.validate_ip_string( netmask ).nil? )
+            return nil
+          end
+        else
+          netmask = netmask.to_i
+          if ( netmask < 0 || netmask > 32 ) 
+            return nil
+          end
+        end
+      end
+      
+      addr = self.new( val, family = Socket::AF_INET )
 
       return addr
     rescue
@@ -56,5 +74,31 @@ class ::IPAddr
     return nil if val.empty?
 
     return self.parse( "255.255.255.255/#{val}" )
+  end
+
+  def self.validate_ip_string( ip_string )
+    ## IPAddr will do a DNS Lookup on addresses that do not look like
+    ## ip addresses.  This causes the system to hang if DNS doesn't work
+    ## and it tries to parse a hostname.  This is obviously less then
+    ## desirable.  To work around this, we verify the IP address 
+    ## is a valid IP Address before sending it to the IPAddr constructor.
+    ip_pieces = ip_string.split( "." )
+    if ( ip_pieces.length != 4 ) 
+      return nil
+    end
+    ip_pieces.each do |piece|
+      n = piece.to_i
+      ## One of the pieces is not a number
+      if ( n.to_s != piece )
+        return nil
+      end
+      
+      ## One piece is out of the range
+      if ( n < 0 || n > 255 )
+        return nil
+      end
+    end
+    
+    return true
   end
 end

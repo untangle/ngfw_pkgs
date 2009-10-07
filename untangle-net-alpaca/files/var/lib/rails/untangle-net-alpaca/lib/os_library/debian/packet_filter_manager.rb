@@ -575,7 +575,7 @@ EOF
         next if ApplicationHelper.null?( destination )
         
         ## Try to parse the new ip
-        IPAddr.new( "#{destination}/32" )
+        raise "unable to parse the destination #{destination}" if IPAddr.parse( "#{destination}/32" ).nil?
         
         unless ApplicationHelper.null?( new_enc_id )
           raise "Invalid port redirect '#{new_enc_id}'" unless RuleHelper.is_valid_port?( new_enc_id )
