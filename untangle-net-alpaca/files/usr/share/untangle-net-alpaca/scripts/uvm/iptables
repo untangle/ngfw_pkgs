@@ -236,6 +236,7 @@ uvm_packet_filter_standard_internal()
 {
     local t_mark=$(( ${MARK_LOCAL} | 0x2 | ${MARK_FIRST_ALIAS} ))
     local t_mask
+    local t_block_page_port=${UVM_BLOCK_PAGE_PORT:-80}
 
     if [ "${UVM_ALLOW_IN_HTTP}x" = "truex" ]; then 
         ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 80 \
@@ -248,9 +249,9 @@ uvm_packet_filter_standard_internal()
     ## non-wan interface.
     t_mask=$(( ${MARK_LOCAL} | ${MARK_FIRST_ALIAS} | ${MASK_WAN} ))
     t_mark=$(( ${MARK_LOCAL} | ${MARK_FIRST_ALIAS} ))
-    ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 80 \
+    ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports ${t_block_page_port} \
         -m mark --mark ${t_mark}/${t_mask} -j REDIRECT --to-ports ${HTTP_INTERNAL_REDIRECT_PORT}
-    ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 80 \
+    ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports ${t_block_page_port} \
         -m mark --mark ${t_mark}/${t_mask} -j RETURN    
 }
 
