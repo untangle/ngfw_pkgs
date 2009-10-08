@@ -19,6 +19,9 @@ while true ; do
   if ! ps -p $pid > /dev/null ; then
     monit -c $CONFIG_FILE &
     pid=$!
+    # monit remembers if it was in "unmonitor" mode the last time, so
+    # force it back into "monitor" mode
+    monit -c $CONFIG_FILE monitor all
   fi
 
   sleep 30
