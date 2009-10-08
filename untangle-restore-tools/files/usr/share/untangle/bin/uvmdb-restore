@@ -62,6 +62,10 @@ restore()
 
             # untangle-restore-tools might restart UVM, stop it
             /etc/init.d/untangle-vm stop
+            
+            if [ -x /etc/init.d/untangle-reports ]; then
+                /etc/init.d/untangle-reports stop
+            fi
 
             return $?
             ;;

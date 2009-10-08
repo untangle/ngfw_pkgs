@@ -2,10 +2,10 @@
 
 if [ $# -gt 0 ] ; then
     # this is for started from init.d
-    FLAG=1 # reboot after quit
+    REBOOT_ON_EXIT=1 # reboot after quit
 else
     # this is for started from X
-    FLAG=0 # start uvm after quit
+    REBOOT_ON_EXIT=0 # start uvm after quit
 fi
 
 reboot() {
@@ -15,13 +15,30 @@ reboot() {
 
 quit() {
     echo Quit
+    
     if [ -x /etc/init.d/untangle-vm ] ; then
         /etc/init.d/untangle-vm start
     fi
+
+    if [ -x /etc/init.d/untangle-reports ]; then
+        /etc/init.d/untangle-reports start
+    fi
+
     exit
 }
 
-if [ $FLAG -eq 1 ] ; then
+stop_services()
+{
+    if [ -x /etc/init.d/untangle-vm ]; then
+        /etc/init.d/untangle-vm stop
+    fi
+    
+    if [ -x /etc/init.d/untangle-reports ]; then
+        /etc/init.d/untangle-reports stop
+    fi
+}
+
+if [ $REBOOT_ON_EXIT -eq 1 ] ; then
     trap reboot 6
     trap reboot 15
     trap reboot 2
@@ -68,7 +85,7 @@ success_splash()
 
 factory_success_splash()
 {
-    FLAG=1
+    REBOOT_ON_EXIT=1
     dialog --backtitle "$backtitle" --title "Complete" \
         --msgbox "Factory settings restored. The Untangle Server will now reboot." 10 61
 
@@ -124,7 +141,7 @@ upgrade_menu()
             case $choice in
                 "Upgrade Untangle Platform")
                     apt-get dist-upgrade $UPGD_OPTS
-                    /etc/init.d/untangle-vm stop
+                    stop_services
                     state=SUCCESS_SPLASH
                     ;;
                 "Resume Halted Upgrade")
@@ -172,8 +189,12 @@ main_menu()
                     ;;
                 "Return to Factory Defaults")
                     if confirm "Return all settings to factory defaults?"; then
-                        /usr/share/untangle/bin/factory-defaults  > /var/log/uvm/factory-defaults.log 2>&1
-                        state=FACTORY_SUCCESS_SPLASH
+                        /usr/share/untangle/bin/factory-defaults  >> /var/log/uvm/factory-defaults.log 2>&1
+                        if [ $? -eq 0 ]; then
+                            state=FACTORY_SUCCESS_SPLASH
+                        else
+                            state=FACTORY_FAIL_SPLASH
+                        fi
                     else
                         state=MAIN_MENU
                     fi
@@ -204,9 +225,7 @@ EOF
 }
 
 # Stop the uvm
-if [ -x /etc/init.d/untangle-vm ] ; then
-    /etc/init.d/untangle-vm stop
-fi
+stop_services
 
 state=MAIN_MENU
 while true; do
@@ -234,7 +253,7 @@ while true; do
             confirm_exit
             ;;
         END_STATE)
-            if [ $FLAG -eq 1 ] ; then
+            if [ $REBOOT_ON_EXIT -eq 1 ] ; then
                 reboot
                 exit
             else
