@@ -92,6 +92,14 @@ factory_success_splash()
     state=END_STATE
 }
 
+factory_fail_splash()
+{
+    dialog --backtitle "$backtitle" --title "Warning" \
+        --msgbox "Unable to return to Factory Defaults, Please try again." 10 61
+
+    state=MAIN_MENU
+}
+
 support_menu()
 {
     dialog --backtitle "$backtitle" --title "Untangle Platform Support" \
@@ -244,6 +252,9 @@ while true; do
 # Messages
         FACTORY_SUCCESS_SPLASH)
             factory_success_splash
+            ;;
+        FACTORY_FAIL_SPLASH)
+	    factory_fail_splash
             ;;
         SUCCESS_SPLASH)
             success_splash

@@ -5,10 +5,10 @@ NAT_CACHE_DEB="/var/lib/uvm/untangle-node-router.deb"
 . /etc/default/untangle-vm
 
 # Drop that UVM database, and exit if it is unable to create it.
-psql -U postgres -c "DROP DATABASE IF EXISTS uvm" || echo exit 1
+psql -U postgres -c "DROP DATABASE IF EXISTS uvm" || exit 1
 
 createuser -U postgres -dSR untangle 2>/dev/null
-createdb -O postgres -U postgres uvm || echo exit 2
+createdb -O postgres -U postgres uvm || exit 2
 /usr/share/untangle/bin/update-schema settings uvm
 /usr/share/untangle/bin/update-schema events uvm
 /usr/share/untangle/bin/update-schema settings untangle-node-router
