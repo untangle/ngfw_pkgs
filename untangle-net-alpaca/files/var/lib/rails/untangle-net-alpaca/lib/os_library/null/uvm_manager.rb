@@ -22,4 +22,8 @@ class OSLibrary::Null::UvmManager < OSLibrary::UvmManager
   def commit
     puts "ignoring commit for null manager"
   end
+
+  def write_files
+    puts "ignoring write files for null manager"
+  end
 end
