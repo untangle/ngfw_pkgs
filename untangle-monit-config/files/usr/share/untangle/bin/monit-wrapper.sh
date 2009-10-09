@@ -47,7 +47,12 @@ while true ; do
 
     # monit remembers if it was in "unmonitor" mode the last time, so
     # force it back into "monitor" mode
-    monit -c $CONFIG_FILE monitor all
+
+    ## rbscott. Oct 09, 2009
+    # This is forced back into monitor mode inside of the UVM wrapper
+    # script.  In the off change the UVM script isn't running but it
+    # is supposed to be, let them restart.
+    ## monit -c $CONFIG_FILE monitor all
   fi
 
   sleep 30
