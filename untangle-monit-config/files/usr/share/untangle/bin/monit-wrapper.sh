@@ -4,11 +4,30 @@ CONFIG_PARTS_DIR=/etc/untangle/monit.d
 CONFIG_FILE=/etc/untangle/monit.conf
 RESTART_FILE=/etc/untangle/monit-to-restart
 TEMPLATE_EXTENSION=".template"
-pid=foo
 
 echo 'INCLUDE "/etc/untangle/monit.d/*_all.conf"' >| $CONFIG_FILE
 echo 'INCLUDE "/etc/untangle/monit.d/*_'$(dpkg-architecture -qDEB_BUILD_ARCH)'.conf"' >> $CONFIG_FILE
 chmod 600 $CONFIG_FILE
+
+is_monit_running()
+{
+   local t_pid_file="/var/run/monit.pid"
+   local t_pid
+   if [ ! -f "${t_pid_file}" ]; then
+     return 1
+   fi
+
+   t_pid=`cat "${t_pid_file}"`
+
+   if [ ! -f "/proc/${t_pid}/cmdline" ]; then
+    return 2
+   fi
+ 
+   grep -q "^monit.-c.${CONFIG_FILE}.\$" "/proc/${t_pid}/cmdline" || return 3
+
+   echo "true"
+   return 0
+}
 
 while true ; do
 
@@ -16,9 +35,16 @@ while true ; do
     perl -pe 's/`(.+)`/chop($foo = `$1`) ; $foo/e' $file >| ${file/$TEMPLATE_EXTENSION}
   done
 
-  if ! ps -p $pid > /dev/null ; then
-    monit -c $CONFIG_FILE &
-    pid=$!
+  if ! is_monit_running ; then
+    pkill '^monit$'
+
+    sleep 2
+
+    ## This is going to daemonize into another process, it doesn't need to background.
+    monit -c $CONFIG_FILE
+  
+    sleep 2
+
     # monit remembers if it was in "unmonitor" mode the last time, so
     # force it back into "monitor" mode
     monit -c $CONFIG_FILE monitor all
@@ -27,7 +53,7 @@ while true ; do
   sleep 30
   if [ -f $RESTART_FILE ] ; then
     rm -f $RESTART_FILE
-    pkill monit
+    pkill '^monit$'
     exit 0
   fi
 done
