@@ -4,11 +4,11 @@ NAT_CACHE_DEB="/var/lib/uvm/untangle-node-router.deb"
 
 . /etc/default/untangle-vm
 
-# restore database
-dropdb -U postgres uvm
+# Drop that UVM database, and exit if it is unable to create it.
+psql -U postgres -c "DROP DATABASE IF EXISTS uvm" || exit 1
 
 createuser -U postgres -dSR untangle 2>/dev/null
-createdb -O postgres -U postgres uvm
+createdb -O postgres -U postgres uvm || exit 2
 /usr/share/untangle/bin/update-schema settings uvm
 /usr/share/untangle/bin/update-schema events uvm
 /usr/share/untangle/bin/update-schema settings untangle-node-router
@@ -70,3 +70,5 @@ tar -C / -zvxf /usr/share/untangle/conf/canonical.tar.gz
 if [ -f ${NAT_CACHE_DEB} ]; then
     dpkg -l untangle-node-router | grep '^ii' > /dev/null || dpkg -i ${NAT_CACHE_DEB}
 fi
+
+exit 0
