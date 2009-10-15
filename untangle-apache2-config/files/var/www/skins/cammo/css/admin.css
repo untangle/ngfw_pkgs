@@ -939,7 +939,20 @@ div.wizard-network-image-description
   width : 320px;
   }
 
-.wizard-network-image img
+div.wizard-network-rerouter
+{ 
+  height: 90px;
+  margin-top: 20px;
+ }
+
+div.wizard-network-rerouter span
+{ 
+  float: left;
+  width: 340px;
+  margin-left : 18px;
+  }
+
+.wizard-network-image img, img.wizard-network-image
 { 
   border : 1px #ccc solid;
   padding : 4px;
