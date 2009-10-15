@@ -39,10 +39,13 @@ class UvmController < ApplicationController
   def set_settings
     s = json_params
     
-    uvm_settings = UvmSettings.find( :first )
-    uvm_settings = UvmSettings.new if uvm_settings.nil?
-    uvm_settings.update_attributes( s["uvm"] )
-    uvm_settings.save
+    ## Only update if these changes are inserted.
+    unless ( s["uvm"].nil? )
+      uvm_settings = UvmSettings.find( :first )
+      uvm_settings = UvmSettings.new if uvm_settings.nil?
+      uvm_settings.update_attributes( s["uvm"] )
+      uvm_settings.save
+    end
 
     ## Destroy all of the user rules
     Subscription.destroy_all( "system_id IS NULL" )
