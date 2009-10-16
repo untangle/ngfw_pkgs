@@ -81,7 +81,7 @@ tar -C ${BASE_DIR} -xf ${RESTORE_DIRECTORY}/backup/database.tar
 CURRENT_DIR=`pwd`
 
 cd ${BASE_DIR} && {
-    rake alpaca:restore
+    rake alpaca:restore RAILS_ENV=production
 } || {
     echo "Unable to change into '${BASE_DIR}', cannot call restore."
 }
