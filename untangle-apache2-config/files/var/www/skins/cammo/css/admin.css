@@ -229,6 +229,10 @@ button.cancel-icon {
 button.save-icon {
 	background:transparent url(../images/admin/icon_save.png) no-repeat center left !important; 
 }
+/* apply button icon */
+button.apply-icon {
+	background:transparent url(../images/admin/icon_floppy.png) no-repeat center left !important; 
+}
 /* test button icon */
 button.test-icon {
 	background:transparent url(../images/admin/icon_test.png) no-repeat center left !important; 
