@@ -1,0 +1,24 @@
+#!/bin/dash
+
+## This script is designed to force a cleanup of the clam database if 
+## the database is corrupted.  Since clam reports various error 
+## messages while the database is being reinitialized, we must 
+## wait an hour before retrying, otherwise, we will cleanup the databaes
+## while we are downloading the new files.
+LAST_FORCED_UPDATE="/var/run/clamav/last_forced_update"
+
+if [ -n "`find /var/run/clamav/last_forced_update -mmin -60`" ]; then
+    echo "[`date`] Last forced update started less than an hour ago."
+    exit 0
+fi
+
+## Just in case it doesn't exist
+mkdir -p `dirname ${LAST_FORCED_UPDATE}`
+chown clamav:clamav `dirname ${LAST_FORCED_UPDATE}`
+
+touch ${LAST_FORCED_UPDATE}
+chown clamav:clamav ${LAST_FORCED_UPDATE}
+
+echo "[`date`] Forcing the removal of all corrupted clam signature files."
+rm -fr /var/lib/clamav/*
+
