@@ -74,17 +74,24 @@ def logout(req, url=None, realm='Administrator'):
 # internal methods ------------------------------------------------------------
 
 def _valid_login(req, realm, username, password):
-    if realm == 'Administrator':
-        return _admin_valid_login(req, username, password)
+    if realm == 'Administrator' or realm == 'Reports':
+        return _admin_valid_login(req, realm, username, password)
     else:
         apache.log_error('unknown realm: %s' % realm)
         return False
 
-def _admin_valid_login(req, username, password):
+def _admin_valid_login(req, realm, username, password):
     conn = connect("dbname=uvm user=postgres")
     curs = conn.cursor()
-    curs.execute('SELECT password FROM settings.u_user WHERE login = %s',
-                 (username,))
+
+    if realm == 'Administrator':
+        q = """
+SELECT password FROM settings.u_user WHERE login = %s AND write_access"""
+    elif realm == 'Reports':
+        q = """
+SELECT password FROM settings.u_user WHERE login = %s AND reports_access"""
+
+    curs.execute(q, (username,))
     r = curs.fetchone()
 
     if r == None:
@@ -100,7 +107,6 @@ def _admin_valid_login(req, username, password):
         else:
             uvmlogin.log_login(req, username, False, False, 'P')
             return False
-
 
 def _write_login_form(req, title, host, is_error):
     login_url = cgi.escape(req.unparsed_uri)
