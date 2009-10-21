@@ -7,6 +7,9 @@ if ! grep -q monit $INITTAB ; then
   [ -p /dev/initctl ] && telinit q
 fi
 
+# in case we changed the wrapper
+pkill 'bin/sh /usr/share/untangle/bin/monit-wrapper.sh'
+
 touch /etc/untangle/monit-to-restart
 
 exit 0
