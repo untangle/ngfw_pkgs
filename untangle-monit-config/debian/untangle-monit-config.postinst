@@ -8,7 +8,7 @@ if ! grep -q monit $INITTAB ; then
 fi
 
 # in case we changed the wrapper
-pkill 'bin/sh /usr/share/untangle/bin/monit-wrapper.sh'
+pkill -f /usr/share/untangle/bin/monit-wrapper.sh
 
 touch /etc/untangle/monit-to-restart
 
