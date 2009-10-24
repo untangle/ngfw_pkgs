@@ -62,6 +62,16 @@ div.node {
     width:785px;
     height:93px;
 }
+div.node-cap {
+    background-color:#666666;
+    height:98%;
+    left:38px;
+    opacity:0.7;
+    filter:alpha(opacity=70);
+    position:absolute;
+    width:708px;
+    z-index:1000;
+}
 /* Service separator text */
 #nodes-separator-text {
 	position:relative;
@@ -137,10 +147,6 @@ button.icon-help {
 button.icon-logout {
 	background:transparent url(../images/admin/icon_logout_row.gif) no-repeat center left !important; 
 }
-/* myaccount button icon */
-button.icon-myaccount {
-	background:transparent url(../images/admin/icon_myaccount.png) no-repeat center left !important; 
-}
 /* help button icon */
 div.icon-help {
 	background:transparent url(../images/admin/icon_help.png) no-repeat !important;
@@ -196,9 +202,22 @@ div.node div.node-power-expired {
 }
 /* node power expired button icon */
 div#rack-select-container{
-	position:absolute;
-	bottom:14px;
-	left:38px;
+    float:left;
+    margin-left:38px;
+    margin-top:14px;
+}
+div#parent-rack-container{
+    background-color:#333333;
+    color:#FFFFFF;
+    float:left;
+    font-family:Tahoma;
+    font-size:11px;
+    height:20px;
+    line-height:16px;
+    margin-left:10px;
+    margin-top:14px;
+    overflow:hidden;
+    padding:0 10px;
 }
 /* node buttons panel container */
 div.node div.node-buttons {
@@ -225,10 +244,6 @@ button.cancel-icon {
 /* save button icon */
 button.save-icon {
 	background:transparent url(../images/admin/icon_save.png) no-repeat center left !important; 
-}
-/* apply button icon */
-button.apply-icon {
-	background:transparent url(../images/admin/icon_floppy.png) no-repeat center left !important; 
 }
 /* test button icon */
 button.test-icon {
@@ -938,20 +953,7 @@ div.wizard-network-image-description
   width : 320px;
   }
 
-div.wizard-network-rerouter
-{ 
-  height: 90px;
-  margin-top: 20px;
- }
-
-div.wizard-network-rerouter span
-{ 
-  float: left;
-  width: 340px;
-  margin-left : 18px;
-  }
-
-.wizard-network-image img, img.wizard-network-image
+.wizard-network-image img
 { 
   border : 1px #ccc solid;
   padding : 4px;
@@ -1649,43 +1651,3 @@ button.icon-test-connectivity
 {
     background: transparent url(../images/admin/icon_test_connectivity.png) no-repeat center left !important;
 }
-
-div.ua-cell-test
-{ 
-  padding-left: 20px;
-  line-height: 18px;
-  }
-
-div.ua-cell-test-connectivity
-{ 
-  background: transparent url(../images/admin/icon_test_connectivity.png) no-repeat center left !important;
-  }
-
-div.ua-cell-test-ping
-{ 
-  background: transparent url(../images/admin/icon_test_ping.png) no-repeat center left !important;
-  }
-
-div.ua-cell-test-dns
-{ 
-  background: transparent url(../images/admin/icon_test_dns.png) no-repeat center left !important;
-  }
-
-div.ua-cell-test-tcp
-{ 
-  background: transparent url(../images/admin/icon_test_tcp.png) no-repeat center left !important;
-  }
-
-div.ua-cell-test-traceroute
-{ 
-  background: transparent url(../images/admin/icon_test_traceroute.png) no-repeat center left !important;
-  }
-
-div.ua-cell-test-packet
-{ 
-  background: transparent url(../images/admin/icon_test_packet.png) no-repeat center left !important;
-  }
-textarea.ua-test-output
-{ 
-  font-family: courier, monospace;
- }
