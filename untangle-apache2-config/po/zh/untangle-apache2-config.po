@@ -3,23 +3,23 @@
 msgid "%s Administrator Login"
 msgstr ""
 
-#: ../adminindex.py:111
+#: ../adminindex.py:117
 msgid "Error: Username and Password do not match"
 msgstr ""
 
-#: ../adminindex.py:165
+#: ../adminindex.py:171
 msgid "Server:"
 msgstr ""
 
-#: ../adminindex.py:165
+#: ../adminindex.py:171
 msgid "Username:"
 msgstr ""
 
-#: ../adminindex.py:165
+#: ../adminindex.py:171
 msgid "Password:"
 msgstr ""
 
-#: ../adminindex.py:165
+#: ../adminindex.py:171
 msgid "Login"
 msgstr ""
 
