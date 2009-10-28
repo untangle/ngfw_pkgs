@@ -651,7 +651,7 @@ IPTABLES=${IPTABLES:-/sbin/iptables}
 #{IPTablesCommand} -t #{Chain::SingleNIC.table} -F #{Chain::SingleNIC}
 EOF
     
-    if arp_eater_settings.nil? || !arp_eater_settings.enabled
+    if ( arp_eater_settings.nil? || !arp_eater_settings.enabled )
       os["override_manager"].write_file( SingleNICConfigFile, text, "\n" )
       return
     end
