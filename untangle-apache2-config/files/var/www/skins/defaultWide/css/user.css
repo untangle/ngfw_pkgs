@@ -269,3 +269,26 @@ button.icon-delete-row{
 	color:#111;
 	font-size:12px;
 }
+/* block page */
+.u-form-item{
+    margin:5px auto 0px;
+    text-align:left;
+    width:340px;
+}
+.u-form-item-label{
+    margin-right:5px;
+    float:left;
+    font-weight:bold;
+    text-align:left;
+}
+#unblockNowButton{
+    margin-left:0px;
+    font-size:11px;
+
+    font-family:Tahoma,Helvetica,Arial,sans-serif;
+}
+#unblockGlobalButton{
+    margin-left:5px;
+    font-size:11px;
+    font-family:Tahoma,Helvetica,Arial,sans-serif;
+}
