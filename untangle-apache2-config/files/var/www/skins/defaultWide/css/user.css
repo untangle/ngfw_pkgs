@@ -292,3 +292,6 @@ button.icon-delete-row{
     font-size:11px;
     font-family:Tahoma,Helvetica,Arial,sans-serif;
 }
+#invalid-password{
+    color:#FF0000;
+}

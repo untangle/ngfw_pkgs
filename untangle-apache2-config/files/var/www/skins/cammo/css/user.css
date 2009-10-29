@@ -277,6 +277,7 @@ button.icon-delete-row{
     margin:5px auto 0px;
     text-align:left;
     width:340px;
+    color:#CCC;
 }
 .u-form-item-label{
     margin-right:5px;
@@ -294,4 +295,7 @@ button.icon-delete-row{
     margin-left:5px;
     font-size:11px;
     font-family:Tahoma,Helvetica,Arial,sans-serif;
+}
+#invalid-password{
+    color:#FF0000;
 }
