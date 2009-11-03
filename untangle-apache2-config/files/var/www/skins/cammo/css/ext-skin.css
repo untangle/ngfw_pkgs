@@ -673,3 +673,6 @@ td.x-date-mp-month a:hover,td.x-date-mp-year a:hover {
 .small-right-margin{
   margin-right:5px;
 }
+.x-window-bbar{
+    position:relative;
+}
