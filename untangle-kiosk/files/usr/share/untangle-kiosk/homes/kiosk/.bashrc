@@ -22,6 +22,17 @@ EndSubSection
 EndSection
 EOF
 
+abort() {
+ echo <<EOF
+Untangle has failed to properly detect the video & monitor settings for
+this server. 
+
+Try restarting the server and selecting "Video Safe Mode" from the
+boot menu, or go to http://wiki.untangle.com/index.php/Video_Issues to
+read about other options.
+EOF
+}
+
 if [ `tty` = "/dev/tty1" ] ; then
   while true ; do
     ps aux | awk '/^(xinit|X|startx)/ { print $2 }' | xargs kill -9 2> /dev/null
@@ -33,7 +44,7 @@ if [ `tty` = "/dev/tty1" ] ; then
       export XORGCONFIG=$XORG_CONF_VESA
       startx
       failures=$(($failures + 1))
-      [ $failures -gt 5 ] && exit
+      [ $failures -gt 5 ] && abort && exit
     fi
   done
 fi
