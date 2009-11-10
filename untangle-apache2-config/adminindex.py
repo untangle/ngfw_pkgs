@@ -74,15 +74,9 @@ def logout(req, url=None, realm='Administrator'):
 # internal methods ------------------------------------------------------------
 
 def _valid_login(req, realm, username, password):
-    if realm == 'Reports':
-        if _admin_valid_login(req, 'Administrator', username, password):
-            return True
-        else:
-            return _admin_valid_login(req, 'Reports', username, password)
-    elif realm == 'Administrator':
+    if realm == 'Administrator' or realm == 'Reports':
         return _admin_valid_login(req, realm, username, password)
     else:
-        apache.log_error('unknown realm: %s' % realm)
         return False
 
 def _admin_valid_login(req, realm, username, password):

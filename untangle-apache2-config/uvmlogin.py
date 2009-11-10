@@ -60,6 +60,9 @@ def headerparserhandler(req):
 
     username = session_user(sess, realm)
 
+    if None == username and realm == 'Reports':
+        username = session_user(sess, 'Administrator')
+
     if None == username and realm == 'SetupWizard':
         username = session_user(sess, 'Administrator')
 
