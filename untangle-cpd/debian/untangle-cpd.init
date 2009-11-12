@@ -1,0 +1,83 @@
+#! /bin/dash
+
+### BEGIN INIT INFO
+# Provides:          untangle-faild
+# Required-Start:    $local_fs $remote_fs
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+### END INIT INFO
+
+# Author: Robert Scott <rbscott@untangle.com>
+
+. /lib/lsb/init-functions
+
+DESC="Untangle FailD"
+
+DAEMON_NAME="faild"
+
+MONITOR="monitor.faild"
+MONITOR_SCRIPT=/usr/share/untangle-faild/bin/${MONITOR}
+
+PID_FILE="/var/run/untangle-faild.pid"
+
+test -f /etc/default/untangle-faild && . /etc/default/untangle-faild
+
+## For safety
+chown -R faild:nogroup /var/log/untangle-faild
+
+start()
+{
+    log_daemon_msg "Starting $DESC"
+
+    if [ -f ${PID_FILE} ] ; then
+      ps -p `cat ${PID_FILE}` > /dev/null 2>&1 && grep $MONITOR /proc/`cat ${PID_FILE}`/cmdline > /dev/null 2>&1
+      if [ $? -eq 0 ] ; then
+          echo "Already Running."
+          log_end_msg 1
+          exit 1
+      fi	
+      echo "Removing Stale pid file"
+      rm -f ${PID_FILE}
+    fi
+
+    RUN_AS_USER=""
+    [ -n "${FAILD_USER}" ] && RUN_AS_USER="--chuid ${FAILD_USER}"
+    
+    log_progress_msg "untangle-faild"
+    start-stop-daemon -m --pidfile ${PID_FILE} --name ${MONITOR} --start --background \
+        ${RUN_AS_USER}  --startas ${MONITOR_SCRIPT}
+
+    log_end_msg 0	
+}
+
+stop()
+{
+    log_daemon_msg "Stopping $DESC"
+
+    log_progress_msg "untangle-faild"    
+    start-stop-daemon --pidfile ${PID_FILE} --stop --retry USR1/4/USR1/2/USR1/2/INT/1/TERM/1/KILL/1
+    RET=$?
+    log_end_msg $RET
+
+    rm -f ${PID_FILE}
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    reload|restart|force-reload)
+        stop
+        start
+        ;;
+    *)
+        /bin/echo "Usage: $0 {start|stop|restart|force-reload}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0

@@ -1,0 +1,85 @@
+#!/bin/sh
+
+SUDOERS_CONF_FILE=/etc/sudoers
+
+ourInit() {
+    if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
+        invoke-rc.d $1 $2
+    else
+        /etc/init.d/$1 $2
+    fi
+}
+
+sudoers_awk_script()
+{
+    ## Grant privileges to faild.
+    cat <<'EOF'
+/# untangle-faild.postinst$/ { next }
+{ print }
+END { 
+  print "# Start of Untangle FailD elevated privileges # untangle-faild.postinst";
+  print "Defaults:faild     env_keep+=\"FAILD_*\"                      # untangle-faild.postinst";
+  print "faild              ALL = NOPASSWD: /usr/sbin/arping         # untangle-faild.postinst";
+  print "faild              ALL = NOPASSWD: /usr/share/untangle-faild/bin/set-uplink # untangle-faild.postinst";
+  print "# End of Untangle FailD elevated privileges # untangle-faild.postinst";
+  }
+EOF
+}
+
+update_sudoers_file()
+{
+    local t_temp
+
+    if [ ! -f "${SUDOERS_CONF_FILE}" ]; then
+        echo "Missing sudoers file (${SUDOERS_CONF_FILE})."
+        return 1
+    fi
+    
+    t_temp=`mktemp` || {
+        echo "Unable to create temp file, sudoers will not be updated."
+        return 2
+    }
+
+    awk "`sudoers_awk_script`" ${SUDOERS_CONF_FILE} >  ${t_temp} || {
+        echo "Unable to modify sudoers file, aborting."
+        return 3
+    }
+
+    mv ${t_temp} ${SUDOERS_CONF_FILE}
+
+    chmod 0440  ${SUDOERS_CONF_FILE}
+}
+
+FAILD_CONFIG_FILE="/etc/untangle-faild.conf"
+FAILD_DEFAULT_CONFIG="/usr/share/untangle-faild/sample-config/default.js"
+
+LOG_FILE=/var/log/untangle-faild/debug.log
+
+mkdir -p `dirname ${LOG_FILE}`
+
+echo "[`date`] DEBUG debian upgrade." >> ${LOG_FILE}
+
+if [ ! -f ${FAILD_CONFIG_FILE} ]; then
+    echo "Copying in ${FAILD_DEFAULT_CONFIG} to ${FAILD_CONFIG_FILE}"
+    cp ${FAILD_DEFAULT_CONFIG} ${FAILD_CONFIG_FILE}
+fi
+
+adduser --no-create-home --home /var/log/untangle-faild --system --gecos "" --shell /bin/false --disabled-password faild > /dev/null 2>&1
+
+
+chown -R faild:nogroup /var/log/untangle-faild
+
+update_sudoers_file
+
+if [ -x "/etc/init.d/untangle-faild" ]; then
+    ## Moving the startup from its defaults to start later and stop earlier.
+    update-rc.d -f untangle-faild remove >/dev/null
+    
+    ## Start failry late, and stop fairly early.
+    update-rc.d untangle-faild defaults 96 4 >/dev/null
+    
+    ourInit untangle-faild stop > /dev/null 2>&1 || exit 0
+    ourInit untangle-faild start || exit 0
+fi
+
+

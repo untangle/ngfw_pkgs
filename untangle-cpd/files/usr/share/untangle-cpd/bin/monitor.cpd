@@ -1,0 +1,90 @@
+#!/bin/dash
+
+load_defaults()
+{
+    CPD_BIND_PORT="3005"
+    CPD_CONF_FILE="/etc/untangle-cpd.conf"
+    CPD_LOG_OUT="/var/log/untangle-cpd/debug.log"
+    CPD_LOG_ERR="/var/log/untangle-cpd/error.log"
+    CPD_LOG_MONITOR="/var/log/untangle-cpd/monitor.log"
+    CPD_BIN=/usr/bin/cpd
+
+    CPD_DEFAULTS_SCRIPT=${CPD_DEFAULTS_SCRIPT:-/etc/default/untangle-cpd}
+    
+    if [ -f ${CPD_DEFAULTS_SCRIPT} ] ; then
+        . ${CPD_DEFAULTS_SCRIPT}
+    fi
+}
+
+reap_child_hardest()
+{
+    reap_child 9
+}
+
+reap_child_harder()
+{
+    trap reap_child_hardest INT TERM USR1 USR2 QUIT
+    reap_child 15
+}
+
+reap_child_easy()
+{
+    trap reap_child_harder INT TERM USR1 USR2 QUIT
+    reap_child 2
+}
+
+reap_child()
+{
+    echo "[`date`] Received Signal      (monitor: $$) (cpd: $CPD_PID) (sending signal: $1) "
+
+    if [ ! -z "$CPD_PID" ] ; then
+        echo "[`date`] Sending signal $1 to cpd ($CPD_PID)."
+        kill -$1 ${CPD_PID}
+        wait ${CPD_PID}
+        echo "[`date`] Cpd Stopped    (monitor: $$) (cpd: $CPD_PID)"
+    fi
+
+    exit 0
+}
+
+start_cpd()
+{
+    load_defaults
+    
+    local t_args
+    t_args="${CPD_ARGS}"
+    
+    test -n "${CPD_BIND_PORT}" && t_args="${t_args} -p ${CPD_BIND_PORT}"
+    test -n "${CPD_CONF_FILE}" && t_args="${t_args} -c ${CPD_CONF_FILE}"
+    test -n "${CPD_LOG_OUT}" && t_args="${t_args} -o ${CPD_LOG_OUT}"
+    test -n "${CPD_LOG_ERR}" && t_args="${t_args} -e ${CPD_LOG_ERR}"
+    test -n "${CPD_DEBUG_LEVEL}" && t_args="${t_args} -l ${CPD_DEBUG_LEVEL}"
+    
+    ${CPD_BIN} ${t_args} &
+    CPD_PID=$!
+    echo "[`date`] Started Cpd    (monitor: $$) (cpd: $CPD_PID)"
+}
+
+## Start of script
+load_defaults
+mkdir -p `dirname ${CPD_LOG_MONITOR}`
+exec >> ${CPD_LOG_MONITOR}  2>&1
+
+trap reap_child_easy INT TERM USR1 USR2 QUIT
+
+while ( true ) ;  do
+    echo "[`date`] Starting CPD"
+
+    start_cpd
+    sleep 2
+    echo "[`date`] Monitoring CPD (monitor: $$) (cpd: $CPD_PID)"
+    while ( true ) ; do
+        wait $CPD_PID
+        
+        ## Check if the proc directory is still around
+        [ -d /proc/${CPD_PID} ] || break
+        sleep 0.5
+    done
+    
+    echo "[`date`] CPD Died!      (monitor: $$) (cpd: $CPD_PID)"
+done

@@ -1,0 +1,25 @@
+#!/bin/dash
+
+CPD_BIND_PORT=${CPD_BIND_PORT:-3005}
+
+if [ $# != 1  ]; then
+    echo "USAGE: $0 <config file name>"
+    exit
+fi
+
+if [ -f /etc/default/untangle-cpd ]; then
+    . /etc/default/untangle-cpd
+fi
+
+set_config() {
+    curl -s -F 'json_request=@-' -m 10 "http://localhost:${CPD_BIND_PORT}" <<EOF || echo "Unable to connect to host"
+{ "function" : "set_config",
+"config" : 
+`cat $1`
+ }
+EOF
+}
+
+set_config $1 | sed -e 's|,|,\n|g' -e 's|}$|}\n|'
+
+true

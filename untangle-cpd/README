@@ -1,0 +1,29 @@
+Fail daemon
+Automatic failure detection daemon.
+
+Building ... make.
+
+Running.
+
+faild requires a number of environment variables to run.  When
+installing from pacakges, the defaults all work and should be fine.
+When running in a development environment you will probably have to
+change a few things.
+
+faild defaults file.  Normally, when faild runs from packages, the
+monitor loads the defaults file from /etc/default/untangle-faild
+first, and then begins running.  The defaults file setups a number of
+configuration parameters.  To ease development, there is a sample 
+defaults file which should allow you to run by simply building the
+binary and then running
+FAILD_DEFAULTS_SCRIPT=./untangle-faild ./files/usr/share/untangle-faild/bin/monitor.faild
+
+
+For more information about all of the environment variables, you
+should read over the defaults file untangle-faild.
+
+## FAILD user
+faild is designed to run as an unprivileged user.  You
+should grant sudo access to any of the operations that may fail when
+running as faild.  Everything that currently falls into that bucket is
+automatically granted if you install the untangle-faild package.

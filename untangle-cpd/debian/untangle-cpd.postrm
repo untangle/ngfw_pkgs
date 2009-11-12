@@ -1,0 +1,24 @@
+#!/bin/sh
+
+
+sudoers_awk_script()
+{
+    ## Remove the privileges granted to faild.
+    cat <<'EOF'
+/# untangle-faild.postinst$/ { next }
+{ print }
+EOF
+}
+
+case $1 in
+  purge)
+        ## Remove the granted sudo privileges
+        sed -i '/# untangle-faild.postinst$/d' /etc/sudoers
+        ## Remove the faild user
+        deluser faild
+        rm -f /etc/init.d/$SERVICE
+        update-rc.d untangle-faild remove >/dev/null # lintian...
+    ;;
+esac
+
+exit 0
