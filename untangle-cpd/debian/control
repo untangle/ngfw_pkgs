@@ -2,11 +2,11 @@ Source: untangle-faild
 Section: premium/admin
 Priority: optional
 Maintainer: Robert Scott <rbscott@untangle.com>
-Build-Depends: debhelper (>> 3.0.0), libc6 (>= 2.3.2), libjson-dev, libjson0, libmicrohttpd-dev (< 0.4), libmicrohttpd4 (< 0.4), ruby, libjson-ruby, curl, gcc, make, fakeroot, libsysfs-dev
+Build-Depends: debhelper (>> 3.0.0), libc6 (>= 2.3.2), libjson-dev, libjson0, libmicrohttpd-dev (< 0.4), libmicrohttpd4 (< 0.4), ruby, libjson-ruby, curl, gcc, make, fakeroot, libsysfs-dev, liblua5.1-0-dev
 Standards-Version: 3.7.2
 
 Package: untangle-faild
 Architecture: any
-Depends: ${shlibs:Depends}, dash, libjson-ruby, arping, dnsutils, iputils-ping, wget, sudo
-Description: The Untangle ARP Eater
- The Untangle ARP Eater.  A utility for network monitoring.
+Depends: ${shlibs:Depends}, dash, libjson-ruby, arping, dnsutils, iputils-ping, wget, sudo, liblua5.1-0, liblua5.1-md5-0, liblua5.1-sql-sqlite3-2
+Description: The Untangle Captive Portal
+ The Untangle Capitve Portal.  A utility for capturing and tracking who is logged in where.

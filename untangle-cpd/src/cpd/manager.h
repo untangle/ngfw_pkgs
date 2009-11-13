@@ -58,7 +58,8 @@ int cpd_manager_get_config( cpd_config_t* config );
 int cpd_manager_get_status( cpd_status_t* status );
 
 int cpd_manager_replace_host( cpd_host_database_username_t* username, 
-                              struct ether_addr* hw_addr, struct in_addr* addr );
+                              struct ether_addr* hw_addr, struct in_addr* addr, 
+                              int update_session_start );
 
 int cpd_manager_remove_ipv4_addr( struct in_addr* ipv4_addr );
 

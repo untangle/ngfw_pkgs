@@ -92,6 +92,10 @@ int cpd_manager_init( cpd_config_t* config, char* sqlite_file, char* lua_script 
     
     luaL_openlibs( _globals.lua_state );
 
+    if ( cpd_manager_set_config( config ) < 0 ) {
+        return errlog( ERR_CRITICAL, "cpd_manager_set_config\n" );
+    }
+
     if ( _update_lua_script() < 0 ) {
         return errlog( ERR_CRITICAL, "_update_lua_script\n" );
     }
@@ -101,10 +105,6 @@ int cpd_manager_init( cpd_config_t* config, char* sqlite_file, char* lua_script 
     }
 
     _globals.init = 1;
-
-    if ( cpd_manager_set_config( config ) < 0 ) {
-        return errlog( ERR_CRITICAL, "cpd_manager_set_config\n" );
-    }
     
     clock_gettime( CLOCK_MONOTONIC, &_globals.next_update );
 
@@ -215,7 +215,8 @@ int cpd_manager_get_status( cpd_status_t* status )
  * Replace a Host / MAC Address
  */
 int cpd_manager_replace_host( cpd_host_database_username_t* username, 
-                              struct ether_addr* hw_addr, struct in_addr* ipv4_addr )
+                              struct ether_addr* hw_addr, struct in_addr* ipv4_addr,
+                              int update_session_start )
 {
     if ( username == NULL ) {
         return errlogargs();
@@ -246,8 +247,9 @@ int cpd_manager_replace_host( cpd_host_database_username_t* username,
             lua_pushstring( _globals.lua_state, ether_ntoa_r( hw_addr, hw_addr_str ));
         }
         lua_pushstring( _globals.lua_state, unet_next_inet_ntoa( ipv4_addr->s_addr ));
+        lua_pushboolean( _globals.lua_state, update_session_start );
 
-        if ( lua_pcall( _globals.lua_state, 3, 1, 0 ) != 0 ) {
+        if ( lua_pcall( _globals.lua_state, 4, 1, 0 ) != 0 ) {
             return errlog( ERR_CRITICAL, "lua_pcall %s\n", lua_tostring( _globals.lua_state, -1 ));
         }
 

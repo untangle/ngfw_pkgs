@@ -290,7 +290,8 @@ static struct json_object *_replace_host( struct json_object* request )
         struct ether_addr hw_addr;
         char *ipv4_addr_str;
         struct in_addr ipv4_addr;
-
+        int update_session_start = 0;
+        struct json_object* temp;
         
         if (( username_str = json_object_utils_get_string( request, "username" )) == NULL ) {
             strncpy( message, "Missing username", message_size );
@@ -317,7 +318,11 @@ static struct json_object *_replace_host( struct json_object* request )
             return 0;
         }
 
-        if ( cpd_manager_replace_host( &username, hw_addr_str == NULL ? NULL : &hw_addr, &ipv4_addr ) < 0 ) {
+        if (( temp = json_object_object_get( request, "update_session_start" )) != NULL ) {
+            update_session_start = json_object_get_boolean( temp );
+        }
+
+        if ( cpd_manager_replace_host( &username, hw_addr_str == NULL ? NULL : &hw_addr, &ipv4_addr, update_session_start ) < 0 ) {
             return errlog( ERR_CRITICAL, "cpd_manager_replace_host\n" );
         }
         
