@@ -43,6 +43,16 @@ static struct json_object *_set_config( struct json_object* request );
 
 static struct json_object *_set_debug_level( struct json_object* request );
 
+static struct json_object *_replace_host( struct json_object* request );
+
+static struct json_object *_remove_ipv4_addr( struct json_object* request );
+
+static struct json_object *_remove_hw_addr( struct json_object* request );
+
+static struct json_object *_get_ipv4_addr( struct json_object* request );
+
+static struct json_object *_get_hw_addr( struct json_object* request );
+
 static struct json_object *_list_functions( struct json_object* request );
 
 static struct json_object *_get_status( struct json_object* request );
@@ -74,6 +84,9 @@ static struct
         { .name = "get_config", .function = _get_config },
         { .name = "set_config", .function = _set_config },
         { .name = "set_debug_level", .function = _set_debug_level },
+        { .name = "replace_host", .function = _replace_host },
+        { .name = "remove_ipv4_addr", .function = _remove_ipv4_addr },
+        { .name = "remove_hw_addr", .function = _remove_hw_addr },
         { .name = "list_functions", .function = _list_functions },
         { .name = "get_status", .function = _get_status },        
         { .name = "shutdown", .function = _shutdown },
@@ -265,6 +278,171 @@ static struct json_object *_set_debug_level( struct json_object* request )
     return response;
 }
 
+static struct json_object *_replace_host( struct json_object* request )
+{
+    int status = STATUS_ERR;
+
+    int _critical_section( char* message, int message_size )
+    {
+        char *username_str;
+        cpd_host_database_username_t username;
+        char *hw_addr_str;
+        struct ether_addr hw_addr;
+        char *ipv4_addr_str;
+        struct in_addr ipv4_addr;
+
+        
+        if (( username_str = json_object_utils_get_string( request, "username" )) == NULL ) {
+            strncpy( message, "Missing username", message_size );
+            return 0;
+        }
+        strncpy( username.u, username_str, sizeof( username.u ));
+
+        /* Doesn't matter if it is null */
+        hw_addr_str = json_object_utils_get_string( request, "hw_addr" );
+        
+        /* Try to parse it */
+        if (( hw_addr_str != NULL ) && ( ether_aton_r( hw_addr_str, &hw_addr ) == NULL )) {
+            snprintf( message, message_size, "Invalid ethernet address: '%s'", hw_addr_str );
+            return 0;
+        }
+
+        if (( ipv4_addr_str = json_object_utils_get_string( request, "ipv4_addr" )) == NULL ) {
+            strncpy( message, "Missing ipv4 address", message_size );
+            return 0;
+        }
+        
+        if ( inet_aton( ipv4_addr_str, &ipv4_addr ) == 0 ) {
+            snprintf( message, message_size, "Invalid IPv4 address: '%s'", ipv4_addr_str );
+            return 0;
+        }
+
+        if ( cpd_manager_replace_host( &username, hw_addr_str == NULL ? NULL : &hw_addr, &ipv4_addr ) < 0 ) {
+            return errlog( ERR_CRITICAL, "cpd_manager_replace_host\n" );
+        }
+        
+        snprintf( message, message_size, "Successfully replaced host %s -> (%s,%s).", 
+                  username.u, hw_addr_str == NULL ? "no hw addr" : hw_addr_str, ipv4_addr_str );
+
+        status = STATUS_OK;
+
+        return 0;
+    }
+
+    char response_message[128] = "An unexpected error occurred.";
+
+    if ( _critical_section( response_message, sizeof( response_message )) < 0 ) {
+        return errlog_null( ERR_CRITICAL, "_critical_section\n" );
+    }
+
+    struct json_object* response = NULL;
+
+    if (( response = json_server_build_response( status, 0, response_message )) == NULL ) {
+        return errlog_null( ERR_CRITICAL, "json_server_build_response\n" );
+    }
+
+    return response;
+}
+
+static struct json_object *_remove_ipv4_addr( struct json_object* request )
+{
+    int status = STATUS_ERR;
+
+    int _critical_section( char* message, int message_size )
+    {
+        char *ipv4_addr_str;
+        struct in_addr ipv4_addr;
+
+        if (( ipv4_addr_str = json_object_utils_get_string( request, "ipv4_addr" )) == NULL ) {
+            strncpy( message, "Missing ipv4 address", message_size );
+            return 0;
+        }
+        
+        if ( inet_aton( ipv4_addr_str, &ipv4_addr ) == 0 ) {
+            snprintf( message, message_size, "Invalid IPv4 address: '%s'", ipv4_addr_str );
+            return 0;
+        }
+
+        if ( cpd_manager_remove_ipv4_addr( &ipv4_addr ) < 0 ) {
+            return errlog( ERR_CRITICAL, "cpd_manager_remove_ipv4_addr\n" );
+        }
+        
+        snprintf( message, message_size, "Successfully removed host %s", ipv4_addr_str );
+        status = STATUS_OK;
+
+        return 0;
+    }
+
+    char response_message[128] = "An unexpected error occurred.";
+
+    if ( _critical_section( response_message, sizeof( response_message )) < 0 ) {
+        return errlog_null( ERR_CRITICAL, "_critical_section\n" );
+    }
+
+    struct json_object* response = NULL;
+
+    if (( response = json_server_build_response( status, 0, response_message )) == NULL ) {
+        return errlog_null( ERR_CRITICAL, "json_server_build_response\n" );
+    }
+
+    return response;    
+}
+
+static struct json_object *_remove_hw_addr( struct json_object* request )
+{
+    int status = STATUS_ERR;
+
+    int _critical_section( char* message, int message_size )
+    {
+        char *hw_addr_str;
+        struct ether_addr hw_addr;
+
+        /* Doesn't matter if it is null */
+        if (( hw_addr_str = json_object_utils_get_string( request, "hw_addr" )) == NULL ) {
+            strncpy( message, "Missing hw_addr", message_size );
+            return 0;
+        }
+
+        /* Try to parse it */
+        if (( hw_addr_str != NULL ) && ( ether_aton_r( hw_addr_str, &hw_addr ) == NULL )) {
+            snprintf( message, message_size, "Invalid ethernet address: '%s'", hw_addr_str );
+            return 0;
+        }
+        
+
+        if ( cpd_manager_remove_hw_addr( &hw_addr ) < 0 ) {
+            return errlog( ERR_CRITICAL, "cpd_manager_remove_hw_addr\n" );
+        }
+        
+        snprintf( message, message_size, "Successfully removed hw address %s", hw_addr_str );
+        status = STATUS_OK;
+
+        return 0;
+    }
+
+    char response_message[128] = "An unexpected error occurred.";
+
+    if ( _critical_section( response_message, sizeof( response_message )) < 0 ) {
+        return errlog_null( ERR_CRITICAL, "_critical_section\n" );
+    }
+
+    struct json_object* response = NULL;
+
+    if (( response = json_server_build_response( status, 0, response_message )) == NULL ) {
+        return errlog_null( ERR_CRITICAL, "json_server_build_response\n" );
+    }
+
+    return response;    
+}
+
+static struct json_object *_get_ipv4_addr( struct json_object* request )
+{
+}
+
+static struct json_object *_get_hw_addr( struct json_object* request )
+{
+}
+
 static struct json_object *_list_functions( struct json_object* request )
 {
     struct json_object* response= NULL;
@@ -327,7 +505,7 @@ static struct json_object *_get_status( struct json_object* request )
             clear_last_fail = json_object_get_boolean( temp );
         }
         
-        if ( cpd_manager_get_status( &status, clear_last_fail ) < 0 ) {
+        if ( cpd_manager_get_status( &status ) < 0 ) {
             return errlog( ERR_CRITICAL, "cpd_manager_get_status\n" );
         }
         

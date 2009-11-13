@@ -37,6 +37,9 @@
 #include "cpd/manager.h"
 
 #define DEFAULT_CONFIG_FILE  "/etc/untangle-cpd/config.js"
+#define DEFAULT_SQLITE_FILE  "/etc/untangle-cpd/host_database.db"
+#define DEFAULT_LUA_SCRIPT   "/etc/untangle-cpd/untangle-cpd.lua"
+
 #define DEFAULT_DEBUG_LEVEL  1
 #define DEFAULT_BIND_PORT 3005
 
@@ -45,6 +48,8 @@
 static struct
 {
     char *config_file;
+    char *sqlite_file;
+    char *lua_script;
     char *std_out_filename;
     int std_out;
     char *std_err_filename;
@@ -58,6 +63,8 @@ static struct
 } _globals = {
     .daemon = NULL,
     .config_file = NULL,
+    .sqlite_file = NULL,
+    .lua_script = NULL,
     .port = DEFAULT_BIND_PORT,
     .daemonize = 0,
     .std_err_filename = NULL,
@@ -172,7 +179,7 @@ static int _parse_args( int argc, char** argv )
 {
     int c = 0;
     
-    while (( c = getopt( argc, argv, "dhp:c:o:e:l:s:t:" ))  != -1 ) {
+    while (( c = getopt( argc, argv, "dhp:c:o:e:l:s:t:x:" ))  != -1 ) {
         switch( c ) {
         case 'd':
             _globals.daemonize = 1;
@@ -187,6 +194,20 @@ static int _parse_args( int argc, char** argv )
             
         case 'c':
             _globals.config_file = optarg;
+            break;
+
+        case 's':
+            if (( _globals.sqlite_file = strndup( optarg, FILENAME_MAX )) == NULL ) {
+                fprintf( stderr, "Unable to allocate memory\n" );
+                return -1;
+            }
+            break;
+            
+        case 'x':
+            if (( _globals.lua_script = strndup( optarg, FILENAME_MAX )) == NULL ) {
+                fprintf( stderr, "Unable to allocate memory\n" );
+                return -1;
+            }
             break;
             
         case 'o':
@@ -206,7 +227,21 @@ static int _parse_args( int argc, char** argv )
         }
     }
     
-     return 0;
+    if ( _globals.sqlite_file == NULL ) {
+        if (( _globals.sqlite_file = strndup( DEFAULT_SQLITE_FILE, FILENAME_MAX )) == NULL ) {
+            fprintf( stderr, "Unable to allocate memory\n" );
+            return -1;
+        }
+    }
+
+    if ( _globals.lua_script == NULL ) {
+        if (( _globals.lua_script = strndup( DEFAULT_LUA_SCRIPT, FILENAME_MAX )) == NULL ) {
+            fprintf( stderr, "Unable to allocate memory\n" );
+            return -1;
+        }
+    }
+    
+    return 0;
 }
 
 static int _usage( char *name )
@@ -215,7 +250,9 @@ static int _usage( char *name )
     fprintf( stderr, "\t-d: daemonize.  Immediately fork on startup.\n" );
     fprintf( stderr, "\t-p <json-port>: The port to bind to for the JSON interface.\n" );
     fprintf( stderr, "\t-c <config-file>: Config file to use.\n" );
-    fprintf( stderr, "\t\tThe config-file can be modified through the JSON interface.\n" );
+    fprintf( stderr, "\t\t The config-file can be modified through the JSON interface.\n" );
+    fprintf( stderr, "\t-s <sqlite3-path> The backend SQLite database to use.\n" );
+    fprintf( stderr, "\t-x <lua-script-path> The lua extensions for adding, removing and querying hosts.\n" );
     fprintf( stderr, "\t-o <log-file>: File to place standard output(more useful with -d).\n" );
     fprintf( stderr, "\t-e <log-file>: File to place standard error(more useful with -d).\n" );
     fprintf( stderr, "\t-l <debug-level>: Debugging level.\n" );
@@ -250,7 +287,7 @@ static int _init( int argc, char** argv )
     cpd_config_t config;
     if ( cpd_config_init( &config ) < 0 ) return errlog( ERR_CRITICAL, "cpd_config_init\n" );
 
-    if ( cpd_manager_init( &config ) < 0 ) {
+    if ( cpd_manager_init( &config, _globals.sqlite_file, _globals.lua_script ) < 0 ) {
         return errlog( ERR_CRITICAL, "cpd_manager_init\n" );
     }
 
@@ -327,6 +364,17 @@ static void _destroy( void )
         if ( sem_destroy( sem ) < 0 ) perrlog( "sem_destroy" );
         free( sem );
     }
+
+    if ( _globals.lua_script != NULL ) {
+        free( _globals.lua_script );
+    }
+    _globals.lua_script = NULL;
+
+    if ( _globals.sqlite_file != NULL ) {
+        free( _globals.sqlite_file );
+    }
+    _globals.sqlite_file = NULL;
+
 }
 
 static int _setup_output( void )

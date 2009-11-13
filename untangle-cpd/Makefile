@@ -10,7 +10,7 @@ INC           = ${build_dir}/include src
 INC_FLAGS     = $(patsubst %,-I%,$(INC))
 LDDIR         = lib $(build_lib_path)  
 LDDIR_FLAGS   = $(patsubst %,-L%,$(LDDIR))
-LIBS          = json microhttpd dl rt m sysfs
+LIBS          = json microhttpd dl rt m sysfs lua5.1
 #LIBS          += efence
 LIBS_FLAGS    = -pthread $(patsubst %,-l%,$(LIBS)) --warn-common
 FLAGS        += -rdynamic -std=c99

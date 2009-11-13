@@ -14,7 +14,10 @@
 
 #include <netinet/ip.h>
 #include <netinet/ether.h>
-#include <cpd.h>
+
+
+#include "cpd.h"
+#include "cpd/host_database.h"
 
 
 typedef struct
@@ -35,7 +38,7 @@ typedef struct
     struct timespec session_start_time;
 } cpd_manager_host_entry_t;
 
-int cpd_manager_init( cpd_config_t* config );
+int cpd_manager_init( cpd_config_t* config, char* sqlite_file, char* lua_script );
 
 void cpd_manager_destroy( void );
 
@@ -48,5 +51,18 @@ int cpd_manager_set_config( cpd_config_t* config );
  * Gets the config
  */
 int cpd_manager_get_config( cpd_config_t* config );
+
+/**
+ * Retrieve the status of the CPD daemon
+ */
+int cpd_manager_get_status( cpd_status_t* status );
+
+int cpd_manager_replace_host( cpd_host_database_username_t* username, 
+                              struct ether_addr* hw_addr, struct in_addr* addr );
+
+int cpd_manager_remove_ipv4_addr( struct in_addr* ipv4_addr );
+
+int cpd_manager_remove_hw_addr( struct ether_addr* hw_addr );
+
 
 #endif // #ifndef __CPD_MANAGER_H_

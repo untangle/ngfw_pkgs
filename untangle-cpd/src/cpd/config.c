@@ -59,8 +59,6 @@ static json_serializer_t _config_serializer = {
         }, JSON_SERIALIZER_FIELD_TERM}
 };
 
-static int _test_id = 1;
-
 cpd_config_t* cpd_config_malloc( void )
 {
     cpd_config_t* config = NULL;

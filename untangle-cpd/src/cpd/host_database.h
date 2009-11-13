@@ -17,7 +17,7 @@
 
 #include <mvutil/hash.h>
 
-#include <cpd.h>
+#include "cpd.h"
 
 
 typedef struct
@@ -71,8 +71,8 @@ void cpd_host_database_free( cpd_host_database_t* host_database );
 void cpd_host_database_destroy( cpd_host_database_t* host_database );
 void cpd_host_database_raze( cpd_host_database_t* host_database );
 
-int cpd_host_database_add( cpd_host_database_t* host_database, cpd_host_database_username_t* username,
-                           struct ether_addr* hw_addr, struct in_addr* ipv4_addr );
+int cpd_host_database_replace( cpd_host_database_t* host_database, cpd_host_database_username_t* username,
+                               struct ether_addr* hw_addr, struct in_addr* ipv4_addr );
 
 
 /* This returns a copy of the host entry with the list node set to null. */
@@ -88,5 +88,6 @@ int cpd_host_database_get_hw_addr( cpd_host_database_t* host_database,
 
 int cpd_host_database_remove_hw_addr( cpd_host_database_t* host_database, 
                                       struct ether_addr* hw_addr, cpd_host_database_entry_t* entry );
+
 
 #endif // #ifndef __CPD_HOST_DATABASE_H_
