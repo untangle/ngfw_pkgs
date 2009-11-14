@@ -65,5 +65,11 @@ int cpd_manager_remove_ipv4_addr( struct in_addr* ipv4_addr );
 
 int cpd_manager_remove_hw_addr( struct ether_addr* hw_addr );
 
+/**
+ * Remove all of the entries in the host database.
+ * @return The number of entries that were removed.
+ */
+int cpd_manager_clear_host_database( void );
+
 
 #endif // #ifndef __CPD_MANAGER_H_

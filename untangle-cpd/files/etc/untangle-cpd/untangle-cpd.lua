@@ -79,7 +79,23 @@ function cpd_replace_host( username, hw_addr, ipv4_addr, update_session_start )
 end
 
 function cpd_get_ipv4_addr_username( ipv4_addr )
-   
+end
+
+function cpd_remove_ipv4_addr( ipv4_addr )
+   return assert( db:execute( string.format( "DELETE FROM host_database WHERE ipv4_addr='%s'", ipv4_addr )))
+end
+
+function cpd_remove_hw_addr( hw_addr )
+   if ( hw_addr == nil ) then
+      return assert( db:execute( "DELETE FROM host_database WHERE hw_addr IS NULL" ))
+   else
+      return assert( db:execute( string.format( "DELETE FROM host_database WHERE hw_addr='%s'",
+                                                hw_addr )))
+   end
+end
+
+function cpd_clear_host_database( )
+   return assert( db:execute( "DELETE FROM host_database WHERE 1" ))
 end
 
 -- Start of initialization

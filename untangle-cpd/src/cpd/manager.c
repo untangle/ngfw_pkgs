@@ -273,23 +273,40 @@ int cpd_manager_replace_host( cpd_host_database_username_t* username,
 }
 
 /**
- * Remove IPv4 host (will remove corresponding MAC if it exists)
+ * Remove IPv4 host.
+ * Returns the number of entries that were removed (one or zero)
  */
 int cpd_manager_remove_ipv4_addr( struct in_addr* ipv4_addr )
-{    
+{
     if ( ipv4_addr == NULL ) {
         return errlogargs();
     }
 
     int _critical_section()
     {
-        cpd_host_database_entry_t entry;
-
-        if ( cpd_host_database_remove_ipv4_addr( &_globals.host_database, ipv4_addr, &entry ) < 0 ) {
-            return errlog( ERR_CRITICAL, "cpd_host_database_remove_ipv4_addr\n" );
+        /* If necessary reload the lua script */
+        if ( _update_lua_script() < 0 ) {
+            return errlog( ERR_CRITICAL, "_update_lua_script\n" );
         }
 
-        return 0;
+        lua_getglobal( _globals.lua_state, "cpd_remove_ipv4_addr" );
+        if ( !lua_isfunction( _globals.lua_state, -1 )) {
+            lua_pop( _globals.lua_state, 1 );
+            return errlog( ERR_CRITICAL, "cpd_remove_ipv4_addr is not a function.\n" );
+        }
+        lua_pushstring( _globals.lua_state, unet_next_inet_ntoa( ipv4_addr->s_addr ));
+        if ( lua_pcall( _globals.lua_state, 1, 1, 0 ) != 0 ) {
+            return errlog( ERR_CRITICAL, "lua_pcall %s\n", lua_tostring( _globals.lua_state, -1 ));
+        }
+
+        if ( !lua_isnumber( _globals.lua_state, -1 )) {
+            lua_pop( _globals.lua_state, 1 );
+            return errlog( ERR_CRITICAL, "cpd_remove_ipv4_addr did not return a number\n" );
+        }
+        
+        int num_entries = lua_tointeger( _globals.lua_state, -1 );
+        lua_pop( _globals.lua_state, -1 );
+        return num_entries;
     }
 
     if ( pthread_mutex_lock( &_globals.mutex ) != 0 ) return perrlog( "pthread_mutex_lock" );
@@ -298,28 +315,51 @@ int cpd_manager_remove_ipv4_addr( struct in_addr* ipv4_addr )
 
     if ( ret < 0 ) return errlog( ERR_CRITICAL, "_critical_section\n" );
 
-    return 0;    
+    return ret;
 }
 
 
 /**
- * Remove Hardware Address (will remove corresponding IPv4 if it exists)
+ * Remove Hardware Address (will remove all corresponding IPv4 if it exists)
+ * @param hw_addr The hardware address to remove.  If this is NULL, this remove will all
+ *                of the entries that don't have a MAC Address.
+ * Returns the number of entries that were removed.
  */
 int cpd_manager_remove_hw_addr( struct ether_addr* hw_addr )
 {    
-    if ( hw_addr == NULL ) {
-        return errlogargs();
-    }
-
     int _critical_section()
     {
-        cpd_host_database_entry_t entry;
+        char hw_addr_str[24];
 
-        if ( cpd_host_database_remove_hw_addr( &_globals.host_database, hw_addr, &entry ) < 0 ) {
-            return errlog( ERR_CRITICAL, "cpd_host_database_remove_hw_addr\n" );
+        /* If necessary reload the lua script */
+        if ( _update_lua_script() < 0 ) {
+            return errlog( ERR_CRITICAL, "_update_lua_script\n" );
         }
 
-        return 0;
+        lua_getglobal( _globals.lua_state, "cpd_remove_hw_addr" );
+        if ( !lua_isfunction( _globals.lua_state, -1 )) {
+            lua_pop( _globals.lua_state, 1 );
+            return errlog( ERR_CRITICAL, "cpd_remove_hw_addr is not a function.\n" );
+        }
+        
+        if ( hw_addr == NULL ) {
+            lua_pushnil(_globals.lua_state);
+        } else {
+            lua_pushstring( _globals.lua_state, ether_ntoa_r( hw_addr, hw_addr_str ));
+        }
+        
+        if ( lua_pcall( _globals.lua_state, 1, 1, 0 ) != 0 ) {
+            return errlog( ERR_CRITICAL, "lua_pcall %s\n", lua_tostring( _globals.lua_state, -1 ));
+        }
+
+        if ( !lua_isnumber( _globals.lua_state, -1 )) {
+            lua_pop( _globals.lua_state, 1 );
+            return errlog( ERR_CRITICAL, "cpd_remove_hw_addr did not return a number\n" );
+        }
+        
+        int num_entries = lua_tointeger( _globals.lua_state, -1 );
+        lua_pop( _globals.lua_state, -1 );
+        return num_entries;
     }
 
     if ( pthread_mutex_lock( &_globals.mutex ) != 0 ) return perrlog( "pthread_mutex_lock" );
@@ -328,8 +368,51 @@ int cpd_manager_remove_hw_addr( struct ether_addr* hw_addr )
 
     if ( ret < 0 ) return errlog( ERR_CRITICAL, "_critical_section\n" );
 
-    return 0;    
+    return ret;
 }
+
+/**
+ * Remove all of the entries in the host database.
+ * @return The number of entries that were removed.
+ */
+int cpd_manager_clear_host_database( void )
+{
+    int _critical_section()
+    {
+        /* If necessary reload the lua script */
+        if ( _update_lua_script() < 0 ) {
+            return errlog( ERR_CRITICAL, "_update_lua_script\n" );
+        }
+
+        lua_getglobal( _globals.lua_state, "cpd_clear_host_database" );
+        if ( !lua_isfunction( _globals.lua_state, -1 )) {
+            lua_pop( _globals.lua_state, 1 );
+            return errlog( ERR_CRITICAL, "cpd_clear_host_database is not a function.\n" );
+        }
+                
+        if ( lua_pcall( _globals.lua_state, 0, 1, 0 ) != 0 ) {
+            return errlog( ERR_CRITICAL, "lua_pcall %s\n", lua_tostring( _globals.lua_state, -1 ));
+        }
+
+        if ( !lua_isnumber( _globals.lua_state, -1 )) {
+            lua_pop( _globals.lua_state, 1 );
+            return errlog( ERR_CRITICAL, "cpd_clear_host_database did not return a number\n" );
+        }
+        
+        int num_entries = lua_tointeger( _globals.lua_state, -1 );
+        lua_pop( _globals.lua_state, -1 );
+        return num_entries;
+    }
+
+    if ( pthread_mutex_lock( &_globals.mutex ) != 0 ) return perrlog( "pthread_mutex_lock" );
+    int ret = _critical_section();
+    if ( pthread_mutex_unlock( &_globals.mutex ) != 0 ) return perrlog( "pthread_mutex_unlock" );
+
+    if ( ret < 0 ) return errlog( ERR_CRITICAL, "_critical_section\n" );
+
+    return ret;
+}
+
 
 static int _update_lua_script( void )
 {
