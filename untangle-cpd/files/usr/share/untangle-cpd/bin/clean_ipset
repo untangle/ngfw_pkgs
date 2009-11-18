@@ -1,0 +1,30 @@
+#!/bin/dash
+
+## This script will clear all of the empty IPSets which may accumulate over time.
+
+awk_script()
+{
+    cat <<'EOF'
+/^Name:/ { ipset_name="" }
+## Only search for ip_sets that start with the prefixes for captive portal
+/^Name: basic-/ { ipset_name=$2 ; num_members=0 }
+/^Name: hw-addr-/ { ipset_name=$2 ; num_members=0 }
+
+/^Bindings:/ { 
+  count_member="false"
+  if ( ipset_name != "" && num_members == 0 ) { 
+    print "Deleting: " ipset_name 
+
+## Have to delete all iptables rules pointing to this set.
+    system( "ipset -X " ipset_name) 
+  }
+}
+
+{ if ( count_member == "true" ) num_members = num_members +1 }
+
+/^Members:/ { count_member="true" }
+EOF
+}
+
+ipset -L | awk "`awk_script`"
+

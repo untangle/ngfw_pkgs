@@ -1,0 +1,25 @@
+#!/bin/dash
+
+## This script will clear all of the IPSets.
+awk_script()
+{
+    cat <<'EOF'
+/^Name:/ { ipset_name="" }
+## Only search for ip_sets that start with the prefixes for captive portal
+/^Name: basic-/ { ipset_name=$2 ; num_members=0 }
+/^Name: hw-addr-/ { ipset_name=$2 ; num_members=0 }
+
+/^Bindings:/ { 
+  if ( ipset_name != "" ) { 
+    print "Flushing: " ipset_name 
+
+## Have to delete all iptables rules pointing to this set.
+    system( "ipset -X " ipset_name) 
+  }
+}
+
+EOF
+}
+
+ipset -L | awk "`awk_script`"
+

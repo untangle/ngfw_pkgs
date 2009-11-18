@@ -1,5 +1,7 @@
 require "luasql.sqlite3"
 require "md5"
+require "logging"
+require "logging.console"
 
 local function create_table( table_name, statement )
    local query
@@ -11,7 +13,7 @@ local function create_table( table_name, statement )
    is_updated = not( curs:fetch() == nil )
    curs:close()
    if ( is_updated ) then
-      print( string.format( "The table '%s' is up to date", table_name ))
+      logger:info( string.format( "The table '%s' is up to date", table_name ))
       return
    end
 
@@ -37,15 +39,69 @@ local function init_database()
                           ipv4_addr TEXT,
                           username TEXT,
                           last_session TIMESTAMP,
-                          session_start_time TIMESTAMP
+                          session_start TIMESTAMP
                        );
                  ]] )
+end
+
+
+-- This creates a new entry into the IPSet.
+-- If Necessary, this will 
+
+-- XXX This may be better done in one shell script run run with sudo.
+local function add_ipset_entry( hw_addr, ipv4_addr )
+   -- Get the network prefix (this is used to indicate which set to put it in
+   local network_prefix = string.match( ipv4_addr, "^%d+%.%d+" )
+   local set_name
+
+   -- Have to delete the entry from any existing sets.
+   if ( hw_addr == nil ) then
+      set_name = "basic-" .. network_prefix
+      os.execute( string.format( "ipset -N %s ipmap --from %s.0.0 --to %s.255.255", set_name, network_prefix, network_prefix))
+
+      -- Just add it, this is faster than testing first.
+      os.execute( string.format( "ipset -A %s %s", set_name, ipv4_addr ))
+
+      -- Delete if from the MAC IP MAP in case it is in there.
+      os.execute( string.format( "ipset -D hw-addr-%s %s", network_prefix, ipv4_addr ))
+   else
+      -- Get rid of the single digit characters (ipset does not like)
+      hw_addr = hw_addr .. " "
+      hw_addr = string.gsub( hw_addr, "(%d%d)", "%1_")
+      hw_addr = string.gsub( hw_addr, "(%d[^_%d])", "0%1" )
+      hw_addr = string.gsub( hw_addr, "_", "" )
+
+      set_name = "hw-addr-" .. network_prefix
+      os.execute( string.format( "ipset -N %s macipmap --from %s.0.0 --to %s.255.255", set_name, network_prefix, network_prefix))
+
+      -- If this is not in the IPSet, add it to the set (have to remove it first, only one MAC per IP)
+      if ( not ( os.execute( string.format( "ipset -T %s %s:%s", set_name, ipv4_addr, hw_addr )) == 0 )) then
+         os.execute( string.format( "ipset -D %s %s", set_name, ipv4_addr ))
+         os.execute( string.format( "ipset -A %s %s:%s", set_name, ipv4_addr, hw_addr ))
+      end
+      -- Delete if from basic IP Map in case it is in there.
+      os.execute( string.format( "ipset -D basic-%s %s", network_prefix, ipv4_addr ))
+   end
+end
+
+local function remove_ipset_entry( ipv4_addr )
+   -- Get the network prefix (this is used to indicate which set to put it in
+   local network_prefix = string.match( ipv4_addr, "^%d+%.%d+" )
+
+   logger:info( string.format( "Removing the ip address '%s'", ipv4_addr ))
+   
+   -- Try to delete from the basic set
+   os.execute( string.format( "ipset -D basic-%s %s", network_prefix, ipv4_addr ))
+   -- Try to delete from the MAC IP map.
+   os.execute( string.format( "ipset -D hw-addr-%s %s", network_prefix, ipv4_addr ))
 end
 
 function cpd_replace_host( username, hw_addr, ipv4_addr, update_session_start )
    local query, num_rows, hw_addr_str
 
-   update_session_start = update_session_start or false
+   if ( update_session_start == nil ) then
+      update_session_start = false
+   end
    
    if ( hw_addr == nil ) then
       hw_addr_str = "NULL"
@@ -53,8 +109,10 @@ function cpd_replace_host( username, hw_addr, ipv4_addr, update_session_start )
       hw_addr_str = "'" .. hw_addr .. "'"
    end
 
+   add_ipset_entry( hw_addr, ipv4_addr )
+
    if ( update_session_start ) then
-      query = string.format( "UPDATE host_database SET username='%s', hw_addr=%s, session_start_time=datetime('now'), last_session=datetime('now') WHERE ipv4_addr='%s'", username, hw_addr_str, ipv4_addr )
+      query = string.format( "UPDATE host_database SET username='%s', hw_addr=%s, session_start=datetime('now'), last_session=datetime('now') WHERE ipv4_addr='%s'", username, hw_addr_str, ipv4_addr )
    else
       query = string.format( "UPDATE host_database SET username='%s', hw_addr=%s, last_session=datetime('now') WHERE ipv4_addr='%s'", username, hw_addr_str, ipv4_addr )
    end
@@ -62,16 +120,16 @@ function cpd_replace_host( username, hw_addr, ipv4_addr, update_session_start )
    num_rows = assert( db:execute( query ))
    
    if ( num_rows > 1 ) then
-      print( string.format( "Database is corrupt for address '%s' / '%s', clearing entries", ipv4_addr, hw_addr or "empty" ))
+      logger:warn( string.format( "Database is corrupt for address '%s' / '%s', clearing entries", ipv4_addr, hw_addr or "empty" ))
       assert( db:execute( string.format( "DELETE FROM host_database WHERE ipv4_adddr='%s'", ipv4_addr )))
    elseif ( num_rows == 1 ) then
-      print( string.format( "Updated username (%s) for address '%s' / '%s'", username, ipv4_addr, hw_addr or "empty" ))
+      logger:info( string.format( "Updated username (%s) for address '%s' / '%s'", username, ipv4_addr, hw_addr or "empty" ))
       return true
    else
-      print( string.format( "Creating new entry for '%s' / '%s'", ipv4_addr, hw_addr or "empty" ))
+      logger:info( string.format( "Creating new entry for '%s' / '%s'", ipv4_addr, hw_addr or "empty" ))
    end
    
-   query = string.format( "INSERT INTO host_database ( username, ipv4_addr, hw_addr, session_start_time, last_session ) VALUES ( '%s', '%s', %s, datetime('now'), datetime('now') )",  username, ipv4_addr, hw_addr_str )
+   query = string.format( "INSERT INTO host_database ( username, ipv4_addr, hw_addr, session_start, last_session ) VALUES ( '%s', '%s', %s, datetime('now'), datetime('now') )",  username, ipv4_addr, hw_addr_str )
    
    num_rows = assert( db:execute( query ))
    assert( num_rows == 1, "INSERT didn't create a new row." )
@@ -82,20 +140,62 @@ function cpd_get_ipv4_addr_username( ipv4_addr )
 end
 
 function cpd_remove_ipv4_addr( ipv4_addr )
+   remove_ipset_entry( ipv4_addr )
    return assert( db:execute( string.format( "DELETE FROM host_database WHERE ipv4_addr='%s'", ipv4_addr )))
 end
 
 function cpd_remove_hw_addr( hw_addr )
+   local curs, where_clause
+   local row = {}
+
    if ( hw_addr == nil ) then
-      return assert( db:execute( "DELETE FROM host_database WHERE hw_addr IS NULL" ))
+      where_clause = "hw_addr IS NULL"
    else
-      return assert( db:execute( string.format( "DELETE FROM host_database WHERE hw_addr='%s'",
-                                                hw_addr )))
+      where_clause = string.format( "hw_addr='%s'", hw_addr )
    end
+
+   curs = assert( db:execute( "SELECT ipv4_addr FROM host_database WHERE " .. where_clause ))
+   
+   row = curs:fetch( row,  "n" )
+   while row do
+      remove_ipset_entry( row[1] )
+      row = curs:fetch( row,  "n" )
+   end
+   curs:close()
+
+   return assert( db:execute( "DELETE FROM host_database WHERE " .. where_clause ))
 end
 
 function cpd_clear_host_database( )
+   logger:info( "Clearing the host database." )
    return assert( db:execute( "DELETE FROM host_database WHERE 1" ))
+end
+
+-- Clear out any hosts that have been around too long.
+function cpd_expire_session()
+   local idle_timeout, max_session_length, row = cpd_config.idle_timeout, cpd_config.max_session_length, {}
+   local curs, where_clause
+   curs = assert( db:execute( string.format( "SELECT date('now', '-%d seconds'), date('now', '-%d seconds')",
+                                             idle_timeout, max_session_length )))
+   row = curs:fetch( row, "n" )
+   curs:close()
+
+   where_clause = string.format( "last_session < '%s'", row[1] )
+   if ( max_session_length > 0 ) then
+      where_clause = where_clause .. string.format( " OR idle_timeout < '%s'", row[2] )
+   end
+
+   -- Delete all of the expired sessions.
+   curs = assert( db:execute( "SELECT ipv4_addr FROM host_database WHERE " .. where_clause ))
+   
+   row = curs:fetch( row,  "n" )
+   while row do
+      remove_ipset_entry( row[1] )
+      row = curs:fetch( row,  "n" )
+   end
+   curs:close()
+
+   return assert( db:execute( "DELETE FROM host_database WHERE " .. where_clause ))
 end
 
 -- Start of initialization
@@ -108,6 +208,11 @@ if ( sqlite3 ) then
    sqlite3:close()
    sqlite3 = nil
 end
+
+logger = logging.console()
+
+logger:setLevel(logging.DEBUG)
+
  
 sqlite3 = assert( luasql.sqlite3())
 

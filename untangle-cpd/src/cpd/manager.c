@@ -66,6 +66,7 @@ static struct
 
 static int _update_lua_script( void );
 static int _update_lua_config( cpd_config_t* config, char* sqlite_file );
+static char* _ether_ntoa_r(const struct ether_addr *addr, char* buffer, int buffer_len );
 
 int cpd_manager_init( cpd_config_t* config, char* sqlite_file, char* lua_script )
 {
@@ -229,6 +230,7 @@ int cpd_manager_replace_host( cpd_host_database_username_t* username,
     int _critical_section()
     {
         char hw_addr_str[24];
+        hw_addr_str[0] = '\0';
 
         /* If necessary reload the lua script */
         if ( _update_lua_script() < 0 ) {
@@ -244,7 +246,8 @@ int cpd_manager_replace_host( cpd_host_database_username_t* username,
         if ( hw_addr == NULL ) {
             lua_pushnil( _globals.lua_state );
         } else {
-            lua_pushstring( _globals.lua_state, ether_ntoa_r( hw_addr, hw_addr_str ));
+            _ether_ntoa_r( hw_addr, hw_addr_str, sizeof( hw_addr_str ));
+            lua_pushstring( _globals.lua_state, hw_addr_str );
         }
         lua_pushstring( _globals.lua_state, unet_next_inet_ntoa( ipv4_addr->s_addr ));
         lua_pushboolean( _globals.lua_state, update_session_start );
@@ -330,6 +333,7 @@ int cpd_manager_remove_hw_addr( struct ether_addr* hw_addr )
     int _critical_section()
     {
         char hw_addr_str[24];
+        hw_addr_str[0] = '\0';
 
         /* If necessary reload the lua script */
         if ( _update_lua_script() < 0 ) {
@@ -345,7 +349,8 @@ int cpd_manager_remove_hw_addr( struct ether_addr* hw_addr )
         if ( hw_addr == NULL ) {
             lua_pushnil(_globals.lua_state);
         } else {
-            lua_pushstring( _globals.lua_state, ether_ntoa_r( hw_addr, hw_addr_str ));
+            _ether_ntoa_r( hw_addr, hw_addr_str, sizeof( hw_addr_str ));
+            lua_pushstring( _globals.lua_state, hw_addr_str );
         }
         
         if ( lua_pcall( _globals.lua_state, 1, 1, 0 ) != 0 ) {
@@ -433,7 +438,7 @@ static int _update_lua_script( void )
 
     if ( luaL_loadfile( _globals.lua_state, _globals.lua_script ) || 
          lua_pcall( _globals.lua_state, 0, 0, 0 )) {
-        return errlog( ERR_CRITICAL, "Cannot load lua script %s\n", 
+        return errlog( ERR_CRITICAL, "Cannot load lua script '%s'\n", 
                        lua_tostring( _globals.lua_state, -1 ));
     }
 
@@ -464,4 +469,26 @@ static int _update_lua_config( cpd_config_t* config, char* sqlite_file )
     lua_setglobal( _globals.lua_state, "cpd_config" );
 
     return 0;
+}
+
+static char* _ether_ntoa_r(const struct ether_addr *addr, char* buffer, int buffer_len )
+{
+    if ( addr == NULL ) {
+        return errlogargs_null();
+    }
+
+    if ( buffer == NULL ) {
+        return errlogargs_null();
+    }
+    
+    if ( buffer_len < 24 ) {
+        return errlog_null( ERR_CRITICAL, "Buffer is less than %d characters\n", 24 );
+    }
+
+    uint8_t* o = (uint8_t*)addr->ether_addr_octet;
+
+    snprintf( buffer, buffer_len, "%02x:%02x:%02x:%02x:%02x:%02x",
+              o[0], o[1], o[2], o[3], o[4], o[5] );
+
+    return buffer;
 }
