@@ -254,11 +254,11 @@ class UvmController < ApplicationController
       static.default_gateway, static.dns_1, static.dns_2 = default_gateway, dns_1, dns_2
       external_interface.intf_static = static
       external_interface.config_type = InterfaceHelper::ConfigType::STATIC
+
+      update_dns_server_settings()
+      
+      wizard_single_nic( s["single_nic_mode"] )
     end
-
-    update_dns_server_settings()
-
-    wizard_single_nic( s["single_nic_mode"] )
 
     json_result
   end
@@ -269,10 +269,10 @@ class UvmController < ApplicationController
     wizard_manage_interface( InterfaceHelper::ExternalIndex ) do |external_interface|
       external_interface.intf_dynamic = IntfDynamic.new
       external_interface.config_type = InterfaceHelper::ConfigType::DYNAMIC
-    end
 
-    update_dns_server_settings()
-    wizard_single_nic( s["single_nic_mode"] )
+      update_dns_server_settings()
+      wizard_single_nic( s["single_nic_mode"] )
+    end
 
     json_result
   end
@@ -284,10 +284,10 @@ class UvmController < ApplicationController
     wizard_manage_interface( InterfaceHelper::ExternalIndex ) do |external_interface|
       external_interface.intf_pppoe = IntfPppoe.new( :username => username, :password => password )
       external_interface.config_type = InterfaceHelper::ConfigType::PPPOE
-    end
 
-    update_dns_server_settings()
-    wizard_single_nic( false )
+      update_dns_server_settings()
+      wizard_single_nic( false )
+    end
 
     json_result
   end
