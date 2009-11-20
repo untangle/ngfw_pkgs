@@ -88,6 +88,12 @@ body{
 }
 #report-day-menu{
     float:right;
+    cursor:pointer;
+    cursor:hand;
+    color:blue;
+    text-decoration:underline;
+    font-size:11px;
+    font-family:Tahoma,Helvetica,sans-serif;    
 }
 #report-date-range{
     display:block;
