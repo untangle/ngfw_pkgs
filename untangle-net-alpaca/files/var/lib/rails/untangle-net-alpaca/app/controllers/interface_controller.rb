@@ -18,31 +18,6 @@
 class InterfaceController < ApplicationController  
   UpdateInterfaces = "update_interfaces"
 
-  def list
-    @title = "Interface List"
-    @description = "List of all of the available interfaces."
-
-    @new_interfaces = []
-    @deleted_interfaces = []
-    
-    @interfaces = Interface.find(:all)
-
-    if ( @interfaces.nil? || @interfaces.empty? )
-      @interfaces = InterfaceHelper.loadInterfaces
-      ## Save all of the new interfaces
-      @interfaces.each { |interface| interface.save }
-    else
-      @new_interfaces, @deleted_interfaces = InterfaceHelper.load_new_interfaces
-    end
-
-    @interfaces.sort! { |a,b| a.index <=> b.index }
-
-    if ! Interface.valid_dhcp_server?
-      flash[:warning] = "DHCP Server is configured on a subnet that is not on any configured interfaces."
-    end
-    session[:last_controller_before_refresh] = "interface"
-  end
-
   def mwan_list
     ## Change the level to advanced
     @alpaca_settings.config_level = AlpacaSettings::Level::Advanced.level
