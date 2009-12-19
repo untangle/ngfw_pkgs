@@ -159,7 +159,7 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
             Ext.MessageBox.show({
                 title: this._( "Warning" ),
                 msg: m,
-                width : 300,
+                width : 400,
                 buttons : {
                     ok : "Continue",
                     cancel : "Cancel"

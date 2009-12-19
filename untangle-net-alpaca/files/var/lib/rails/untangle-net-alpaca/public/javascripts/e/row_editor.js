@@ -259,7 +259,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
             Ext.MessageBox.show({
                 title: Ung.Alpaca.Util._( "Warning" ),
                 msg: m,
-                width : 300,
+                width : 400,
                 buttons : {
                     ok : Ung.Alpaca.Util._("Continue"),
                     cancel : Ung.Alpaca.Util._("Cancel")
