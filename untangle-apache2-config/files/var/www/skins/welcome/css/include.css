@@ -1,0 +1,49 @@
+   .no-bottom-margin{
+        margin-bottom:0;
+    }
+    .height-1{
+        height:100px;
+    }
+    .logo{
+        background-repeat: no-repeat;
+        background-position:middle center;
+        width:213px;
+        height:100px;        
+
+    }
+    .red{
+        color:#FF0000;
+    }
+    .right{
+        float:right;
+    }
+    .box{
+        border-bottom:1px #CCC solid;
+    }
+    .bottom{
+        position:absolute;
+        bottom:3px;
+        right:8px;
+    }
+    .full{
+        width:100%;
+    }
+    .no-padding{
+        padding:0;
+    }
+    .full-width-1{
+        display:block;
+        margin-left:195px;
+    }
+    .full-width-2{
+        display:block;
+    }
+    .push-05{
+        margin-left:20px;
+    }
+    .bold{
+        font-weight:bold;
+    }
+    .link{
+        color:#0000FF !important;
+    }
