@@ -1,5 +1,5 @@
 # Commented by Untangle: 
-#deb http://debian/debian lenny main contrib non-free
+#deb http://ftp.debian.org/debian lenny main contrib non-free
 
 # Commented by Untangle: 
 #deb http://security.debian.org lenny/updates main contrib non-free
