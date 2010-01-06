@@ -105,3 +105,16 @@ body{
     font-weight:bold;
     font-family:Tahoma,Helvetica,sans-serif;
 }
+.highlight{
+    margin:1em 0 1em 1em;
+}
+.highlight p{
+    padding:1em 1em 1em 55px ;
+    background-color:#CCC;
+    font-family:Tahoma,Helvetica,sans-serif;
+    background-repeat:no-repeat;
+    background-position:5px 5px;    
+}
+.highlight p strong{
+    font-weight:bold;
+}
