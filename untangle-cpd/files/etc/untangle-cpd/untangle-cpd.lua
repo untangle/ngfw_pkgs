@@ -20,7 +20,10 @@ local function create_table( table_name, statement )
    assert( db:execute( string.format( "DROP TABLE IF EXISTS %s;", table_name )))
    assert( db:execute( statement ))
 
-   query = string.format( "INSERT INTO db_version (table_name,version_id) VALUES ('%s', '%s' );", table_name, hash )
+   query = string.format( "DELETE FROM db_version WHERE table_name='%s'", table_name )
+   assert( db:execute( query ))
+   query= string.format( "INSERT INTO db_version (table_name,version_id) VALUES ('%s', '%s' )", 
+                         table_name, hash )                   
    assert( db:execute( query ))
 end
 
@@ -34,7 +37,9 @@ local function init_database()
    local curs, is_updated
    
    create_table( "host_database", [[
-                       CREATE TABLE  IF NOT EXISTS host_database (
+                       CREATE TABLE IF NOT EXISTS host_database (
+                          session_id TEXT,
+                          php_session_data TEXT,
                           hw_addr TEXT,
                           ipv4_addr TEXT,
                           username TEXT,
@@ -52,12 +57,19 @@ end
 local function add_ipset_entry( hw_addr, ipv4_addr )
    -- Get the network prefix (this is used to indicate which set to put it in
    local network_prefix = string.match( ipv4_addr, "^%d+%.%d+" )
-   local set_name
+   local set_name, result
 
    -- Have to delete the entry from any existing sets.
    if ( hw_addr == nil ) then
       set_name = "basic-" .. network_prefix
-      os.execute( string.format( "ipset -N %s ipmap --from %s.0.0 --to %s.255.255", set_name, network_prefix, network_prefix))
+      command = [[
+            ipset -N %s ipmap --from %s.0.0 --to %s.255.255 || ipset -nL %s | awk 'BEGIN { exit_status=1 };  /References: 0/ { exit_status=0 } ; END { exit exit_status }'
+      ]]
+      result = os.execute( string.format( command,  set_name, set_name, network_prefix, network_prefix, set_name ))
+
+      if ( result == 0 ) then
+         os.execute( cpd_home .. "/usr/share/untangle-cpd/bin/refresh_iptables.lua" )
+      end
 
       -- Just add it, this is faster than testing first.
       os.execute( string.format( "ipset -A %s %s", set_name, ipv4_addr ))
@@ -70,10 +82,14 @@ local function add_ipset_entry( hw_addr, ipv4_addr )
       hw_addr = string.gsub( hw_addr, "(%d%d)", "%1_")
       hw_addr = string.gsub( hw_addr, "(%d[^_%d])", "0%1" )
       hw_addr = string.gsub( hw_addr, "_", "" )
-
+      
       set_name = "hw-addr-" .. network_prefix
-      os.execute( string.format( "ipset -N %s macipmap --from %s.0.0 --to %s.255.255", set_name, network_prefix, network_prefix))
+      result = os.execute( string.format( "ipset -N %s macipmap --from %s.0.0 --to %s.255.255", set_name, network_prefix, network_prefix))
 
+      if ( result == 0 ) then
+         os.execute( cpd_home .. "/usr/share/untangle-cpd/bin/refresh_iptables.lua" )
+      end
+      
       -- If this is not in the IPSet, add it to the set (have to remove it first, only one MAC per IP)
       if ( not ( os.execute( string.format( "ipset -T %s %s:%s", set_name, ipv4_addr, hw_addr )) == 0 )) then
          os.execute( string.format( "ipset -D %s %s", set_name, ipv4_addr ))
@@ -110,7 +126,7 @@ function cpd_replace_host( username, hw_addr, ipv4_addr, update_session_start )
    end
 
    add_ipset_entry( hw_addr, ipv4_addr )
-
+   
    if ( update_session_start ) then
       query = string.format( "UPDATE host_database SET username='%s', hw_addr=%s, session_start=datetime('now'), last_session=datetime('now') WHERE ipv4_addr='%s'", username, hw_addr_str, ipv4_addr )
    else
@@ -168,34 +184,34 @@ end
 
 function cpd_clear_host_database( )
    logger:info( "Clearing the host database." )
-   return assert( db:execute( "DELETE FROM host_database WHERE 1" ))
+   num_results = assert( db:execute( "DELETE FROM host_database WHERE 1" ))
+   os.execute( cpd_home .. "/usr/share/untangle-cpd/bin/sync_ipsets" )
+   return num_results
 end
 
 -- Clear out any hosts that have been around too long.
-function cpd_expire_session()
-   local idle_timeout, max_session_length, row = cpd_config.idle_timeout, cpd_config.max_session_length, {}
+function cpd_expire_sessions( sync_ipset )
+   local idle_timeout, max_session_length, row = cpd_config.idle_timeout_s, cpd_config.max_session_length_s, {}
    local curs, where_clause
-   curs = assert( db:execute( string.format( "SELECT date('now', '-%d seconds'), date('now', '-%d seconds')",
+   
+   curs = assert( db:execute( string.format( "SELECT datetime('now', '-%d seconds'), datetime('now', '-%d seconds')",
                                              idle_timeout, max_session_length )))
    row = curs:fetch( row, "n" )
    curs:close()
 
    where_clause = string.format( "last_session < '%s'", row[1] )
    if ( max_session_length > 0 ) then
-      where_clause = where_clause .. string.format( " OR idle_timeout < '%s'", row[2] )
+      where_clause = where_clause .. string.format( " OR session_start < '%s'", row[2] )
    end
 
    -- Delete all of the expired sessions.
-   curs = assert( db:execute( "SELECT ipv4_addr FROM host_database WHERE " .. where_clause ))
+   num_rows = assert( db:execute( "DELETE FROM host_database WHERE " .. where_clause ))
    
-   row = curs:fetch( row,  "n" )
-   while row do
-      remove_ipset_entry( row[1] )
-      row = curs:fetch( row,  "n" )
+   if (( num_rows > 0 ) or sync_ipset ) then
+      os.execute( cpd_home .. "/usr/share/untangle-cpd/bin/sync_ipsets" )
    end
-   curs:close()
 
-   return assert( db:execute( "DELETE FROM host_database WHERE " .. where_clause ))
+   return num_rows
 end
 
 -- Start of initialization
@@ -212,10 +228,11 @@ end
 logger = logging.console()
 
 logger:setLevel(logging.DEBUG)
-
  
 sqlite3 = assert( luasql.sqlite3())
 
 db = assert(sqlite3:connect(cpd_config.sqlite_file))
+
+cpd_home = os.getenv( "CPD_HOME" ) or ""
 
 init_database()

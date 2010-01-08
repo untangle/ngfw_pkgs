@@ -228,10 +228,21 @@ static int _parse_args( int argc, char** argv )
     }
     
     if ( _globals.sqlite_file == NULL ) {
+        char* sqlite_file_env = getenv( "CPD_SQLITE_FILE" );
+        if ( sqlite_file_env == NULL ) {
+            sqlite_file_env = DEFAULT_SQLITE_FILE;
+        }
+
         if (( _globals.sqlite_file = strndup( DEFAULT_SQLITE_FILE, FILENAME_MAX )) == NULL ) {
             fprintf( stderr, "Unable to allocate memory\n" );
             return -1;
         }
+    }
+
+    /* Update the environment to reflect the name of the SQLITE FILE */
+    if ( setenv( "CPD_SQLITE_FILE", _globals.sqlite_file, 1 ) < 0 ) {
+        fprintf( stderr, "setenv %s\n", strerror( errno ));
+        return -1;
     }
 
     if ( _globals.lua_script == NULL ) {
@@ -320,7 +331,7 @@ static int _init( int argc, char** argv )
                     errlog( ERR_CRITICAL, "barfight_functions_load_config\n" );
                 }
             }
-        }        
+        }
     }
 
     if ( config_file_json != NULL ) json_object_put( config_file_json );

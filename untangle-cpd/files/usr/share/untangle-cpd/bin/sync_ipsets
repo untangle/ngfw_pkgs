@@ -1,0 +1,96 @@
+#!/bin/dash
+
+## This doesn't actually do anything.
+CPD_HOME=${CPD_HOME:-""}
+
+CPD_SQLITE_FILE=${CPD_SQLITE_FILE:-/etc/untangle-cpd/host_database.db}
+
+awk_script()
+{
+    cat <<'EOF'
+/^Name:/ { ipset_name="" }
+## Only search for ip_sets that start with the prefixes for captive portal
+/^Name: basic-/ { ipset_name=$2 ; num_members=0 }
+/^Name: hw-addr-/ { ipset_name=$2 ; num_members=0 }
+
+/^Bindings:/ { 
+  count_member="false"
+}
+
+{ if ( count_member == "true" ) print }
+
+/^Members:/ { if ( ipset_name != "" ) count_member="true" }
+EOF
+}
+
+get_host_entries()
+{
+    sqlite3 ${CPD_SQLITE_FILE} "SELECT ipv4_addr,hw_addr FROM host_database" | sed -e "s/|$//" -e "s/|/:/" | sort
+}
+
+get_ipset_entries()
+{
+    ipset -nL | awk "`awk_script`" | sort
+}
+
+fix_entries_script()
+{
+    cat <<'EOF'
+BEGIN { added_ipv4=0 ; added_hw_addr=0 ; deleted_ipv4=0 ; deleted_hw_addr=0 }
+/^> *[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/ { 
+  ipv4_addr=$2
+  set_name=$2
+  gsub( "\\.[0-9]+\\.[0-9]+$", "", set_name )
+  system( "ipset -N basic-" set_name " ipmap --from " set_name ".0.0 --to " set_name ".255.255" )
+  system( "ipset -A basic-" set_name " " ipv4_addr )
+  added_ipv4++
+  next
+}
+/^> *[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+$/ { 
+  ipv4_addr=$2
+  set_name=$2
+  gsub( "\\.[0-9]+\\.[0-9]+:.*$", "", set_name )
+  system( "ipset -N hw-addr-" set_name " macipmap --from " set_name ".0.0 --to " set_name ".255.255" )
+  system( "ipset -A hw-addr-" set_name " " ipv4_addr )
+  added_hw_addr++
+  next
+}
+/^< *[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/ { 
+  ipv4_addr=$2
+  set_name=$2
+  gsub( "\\.[0-9]+\\.[0-9]+$", "", set_name )
+  system( "ipset -D basic-" set_name " " ipv4_addr )
+  deleted_ipv4++
+  next
+}
+/^< *[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+$/ { 
+  ipv4_addr=$2
+  set_name=$2
+  gsub( "\\.[0-9]+\\.[0-9]+:.*$", "", set_name )
+  system( "ipset -D hw-addr-" set_name " " ipv4_addr )
+  deleted_hw_addr++
+  next
+}
+END { print strftime() " Added " added_ipv4 "," added_hw_addr " Deleted " deleted_ipv4 "," deleted_hw_addr }
+EOF
+}
+
+if [ ! -f "${CPD_SQLITE_FILE}" ]; then
+    echo "The SQLite database '${CPD_SQLITE_FILE}' does not exist."
+    exit 1
+fi
+
+ipset_entries=`mktemp`
+host_entries=`mktemp`
+
+get_ipset_entries > ${ipset_entries}
+
+get_host_entries > ${host_entries}
+
+diff ${ipset_entries} ${host_entries} | awk "`fix_entries_script`"
+
+rm -f ${ipset_entries}
+rm -f ${host_entries}
+
+
+

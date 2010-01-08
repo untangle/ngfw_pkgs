@@ -43,21 +43,44 @@ static json_serializer_t _config_serializer = {
             .to_json = json_serializer_to_json_boolean,
             .arg = (void*)offsetof( cpd_config_t, concurrent_logins )
         },{
-            .name = "idle_timeout",
+            .name = "idle_timeout_s",
             .fetch_arg = 1,
             .if_empty = JSON_SERIALIZER_FIELD_EMPTY_ERROR,
             .to_c = json_serializer_to_c_int,
             .to_json = json_serializer_to_json_int,
-            .arg = (void*)offsetof( cpd_config_t, idle_timeout )
+            .arg = (void*)offsetof( cpd_config_t, idle_timeout_s )
         },{
-            .name = "max_session_length",
+            .name = "max_session_length_s",
             .fetch_arg = 1,
             .if_empty = JSON_SERIALIZER_FIELD_EMPTY_ERROR,
             .to_c = json_serializer_to_c_int,
             .to_json = json_serializer_to_json_int,
-            .arg = (void*)offsetof( cpd_config_t, max_session_length )
+            .arg = (void*)offsetof( cpd_config_t, max_session_length_s )
+        },{
+            .name = "expiration_frequency_s",
+            .fetch_arg = 1,
+            .if_empty = JSON_SERIALIZER_FIELD_EMPTY_ERROR,
+            .to_c = json_serializer_to_c_int,
+            .to_json = json_serializer_to_json_int,
+            .arg = (void*)offsetof( cpd_config_t, expiration_frequency_s )
         }, JSON_SERIALIZER_FIELD_TERM}
 };
+
+static cpd_config_t _default_config = 
+{
+    .is_enabled = 0,
+
+    .concurrent_logins = 1,
+    /* 10 minute timeout by default */
+    .idle_timeout_s = 10 * 60,
+
+    /* 60 minute session timeout by default */
+    .max_session_length_s = 60 * 60,
+
+    /* Expire sessions once a minute */
+    .expiration_frequency_s = 60
+};
+
 
 cpd_config_t* cpd_config_malloc( void )
 {
@@ -97,7 +120,7 @@ int cpd_config_load_json( cpd_config_t* config, struct json_object* json_config 
     if ( config == NULL ) return errlogargs();
     if ( json_config == NULL ) return errlogargs();
 
-    bzero( config, sizeof( cpd_config_t ));
+    memcpy( config, &_default_config, sizeof( _default_config ));
 
     if ( json_serializer_to_c( &_config_serializer, json_config, config ) < 0 ) {
         return errlog( ERR_CRITICAL, "json_serializer_to_c\n" );

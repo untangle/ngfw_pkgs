@@ -71,5 +71,12 @@ int cpd_manager_remove_hw_addr( struct ether_addr* hw_addr );
  */
 int cpd_manager_clear_host_database( void );
 
+/**
+ * Remove all of the expired entries.
+ * @return The number of entries that were removed.
+ */
+int cpd_manager_expire_sessions( void );
+
+
 
 #endif // #ifndef __CPD_MANAGER_H_

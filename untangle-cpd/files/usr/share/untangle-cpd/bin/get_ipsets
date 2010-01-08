@@ -1,0 +1,29 @@
+#!/bin/dash
+
+awk_script()
+{
+    cat <<'EOF'
+/^Name:/ { ipset_name="" }
+## Only search for ip_sets that start with the prefixes for captive portal
+/^Name: basic-/ { ipset_name=$2 ; num_members=0 }
+/^Name: hw-addr-/ { ipset_name=$2 ; num_members=0 }
+
+/^Bindings:/ { 
+  count_member="false"
+  if ( ipset_name != "" ) {
+    if ( search_type == "all" ) print ipset_name
+    if ( search_type == "nonempty" && num_members > 0 ) print ipset_name
+    if ( search_type == "empty" && num_members == 0 ) print ipset_name
+  }
+}
+
+{ if ( count_member == "true" ) num_members = num_members +1 }
+
+/^Members:/ { count_member="true" }
+EOF
+}
+
+SEARCH_TYPE=${1:-nonempty}
+
+ipset -nL | awk -v search_type=${SEARCH_TYPE} "`awk_script`"
+

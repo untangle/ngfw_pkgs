@@ -1,30 +1,15 @@
 #!/bin/dash
 
+## This doesn't actually do anything.
+CPD_HOME=${CPD_HOME:-""}
+
 ## This script will clear all of the empty IPSets which may accumulate over time.
+${CPD_HOME}/usr/share/untangle-cpd/bin/refresh_iptables.lua
 
-awk_script()
-{
-    cat <<'EOF'
-/^Name:/ { ipset_name="" }
-## Only search for ip_sets that start with the prefixes for captive portal
-/^Name: basic-/ { ipset_name=$2 ; num_members=0 }
-/^Name: hw-addr-/ { ipset_name=$2 ; num_members=0 }
+for t_table in `${CPD_HOME}/usr/share/untangle-cpd/bin/get_ipsets empty` ; do
+    ipset -X ${t_table}
+done
 
-/^Bindings:/ { 
-  count_member="false"
-  if ( ipset_name != "" && num_members == 0 ) { 
-    print "Deleting: " ipset_name 
 
-## Have to delete all iptables rules pointing to this set.
-    system( "ipset -X " ipset_name) 
-  }
-}
 
-{ if ( count_member == "true" ) num_members = num_members +1 }
-
-/^Members:/ { count_member="true" }
-EOF
-}
-
-ipset -L | awk "`awk_script`"
 

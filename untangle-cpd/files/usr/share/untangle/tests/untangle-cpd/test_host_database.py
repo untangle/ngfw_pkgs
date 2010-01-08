@@ -187,6 +187,90 @@ class TestHostDatabase():
         assert results[0]["username"] == user
         assert results[0]["hw_addr"] == hw_addr
 
+    def test_remove_ipv4_entry_1( self ):
+        ipv4_addr = "1.2.3.4"
+        user = "test_user"
+
+        self.handler.make_request( "replace_host", { "ipv4_addr" : ipv4_addr, "username" : user })
+        results = self.get_entries( ipv4_addr )
+        assert len(results) == 1
+        self.handler.make_request( "remove_ipv4_addr", { "ipv4_addr" : ipv4_addr })
+        results = self.get_entries( ipv4_addr )
+        assert len(results) == 0
+
+    def test_remove_ipv4_entry_2( self ):
+        ipv4_addr = "1.2.3.4"
+        user = "test_user"
+
+        self.handler.make_request( "replace_host", { "ipv4_addr" : ipv4_addr, "username" : user })
+        self.handler.make_request( "replace_host", { "ipv4_addr" : "1.2.3.5", "username" : user })
+
+        results = self.get_entries()
+        assert len(results) == 2
+        self.handler.make_request( "remove_ipv4_addr", { "ipv4_addr" : ipv4_addr })
+        results = self.get_entries()
+        assert len(results) == 1
+        assert results[0]["ipv4_addr"] == "1.2.3.5"
+
+    def test_remove_hw_addr_entry_1( self ):
+        ipv4_addr = "1.2.3.4"
+        user = "test_user"
+        hw_addr = "00:11:22:33:44:55"
+
+        self.handler.make_request( "replace_host", { "ipv4_addr" : ipv4_addr, "username" : user, "hw_addr" : hw_addr })
+
+        results = self.get_entries()
+        assert len(results) == 1
+        self.handler.make_request( "remove_hw_addr", { "hw_addr" : hw_addr })
+        results = self.get_entries()
+        assert len(results) == 0
+
+    def test_remove_hw_addr_entry_2( self ):
+        ipv4_addr = "1.2.3.4"
+        user = "test_user"
+        hw_addr = "00:11:22:33:44:55"
+
+        self.handler.make_request( "replace_host", { "ipv4_addr" : ipv4_addr, "username" : user, "hw_addr" : hw_addr })
+        self.handler.make_request( "replace_host", { "ipv4_addr" : "1.2.3.5", "username" : user, "hw_addr" : "00:11:22:33:44:66" })
+
+
+        results = self.get_entries()
+        assert len(results) == 2
+        self.handler.make_request( "remove_hw_addr", { "hw_addr" : hw_addr })
+        results = self.get_entries()
+        assert len(results) == 1
+        assert results[0]["ipv4_addr"] == "1.2.3.5"
+
+    def test_remove_hw_addr_entry_3( self ):
+        ipv4_addr = "1.2.3.4"
+        user = "test_user"
+        hw_addr = "00:11:22:33:44:55"
+
+        self.handler.make_request( "replace_host", { "ipv4_addr" : ipv4_addr, "username" : user, "hw_addr" : hw_addr })
+        self.handler.make_request( "replace_host", { "ipv4_addr" : "1.2.3.5", "username" : user, "hw_addr" : hw_addr })
+
+
+        results = self.get_entries()
+        assert len(results) == 2
+        self.handler.make_request( "remove_hw_addr", { "hw_addr" : hw_addr })
+        results = self.get_entries()
+        assert len(results) == 0
+
+    def test_remove_hw_addr_entry_4( self ):
+        ipv4_addr = "1.2.3.4"
+        user = "test_user"
+        hw_addr = "00:11:22:33:44:55"
+
+        self.handler.make_request( "replace_host", { "ipv4_addr" : ipv4_addr, "username" : user })
+        self.handler.make_request( "replace_host", { "ipv4_addr" : "1.2.3.5", "username" : user, "hw_addr" : hw_addr })
+
+        results = self.get_entries()
+        assert len(results) == 2
+        self.handler.make_request( "remove_hw_addr", { "hw_addr" : None })
+        results = self.get_entries()
+        assert len(results) == 1
+        assert results[0]["ipv4_addr"] == "1.2.3.5"
+
     def get_entries(self, ipv4_addr = None, username = None, hw_addr=None ):
         params = []
         query = 'SELECT * FROM host_database WHERE 1 '

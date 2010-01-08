@@ -32,11 +32,14 @@ typedef struct
     int concurrent_logins;
 
     /* IDLE Timeout (after this many seconds without traffic an IP / MAC combination is removed */
-    int idle_timeout;
+    int idle_timeout_s;
 
     /* Maximum Session length.  After this many seconds, the IP / MAC combination is removed,
      * regardless of whether or not it has been idle. */
-    int max_session_length;
+    int max_session_length_s;
+
+    /* How often to expire old sessions in seconds. */
+    int expiration_frequency_s;
 } cpd_config_t;
 
 typedef struct

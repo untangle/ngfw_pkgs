@@ -46,6 +46,9 @@ static struct
     int init;
 
     pthread_mutex_t mutex;
+    
+    pthread_t cleanup_thread;
+
     cpd_config_t config;
     cpd_host_database_t host_database;
     
@@ -59,6 +62,7 @@ static struct
     struct timespec next_update;
 } _globals = {
     .init = 0,
+    .cleanup_thread = 0,
     .lua_script = NULL,
     .script_mtime = 0,
     .mutex = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP,
@@ -67,6 +71,11 @@ static struct
 static int _update_lua_script( void );
 static int _update_lua_config( cpd_config_t* config, char* sqlite_file );
 static char* _ether_ntoa_r(const struct ether_addr *addr, char* buffer, int buffer_len );
+
+static int _start_cleanup_thread( void );
+static int _stop_cleanup_thread( void );
+
+static void* _cleanup_thread( void* arg );
 
 int cpd_manager_init( cpd_config_t* config, char* sqlite_file, char* lua_script )
 {
@@ -105,6 +114,10 @@ int cpd_manager_init( cpd_config_t* config, char* sqlite_file, char* lua_script 
         return errlog( ERR_CRITICAL, "cpd_host_database_init\n" );
     }
 
+    if ( _start_cleanup_thread() < 0 ) {
+        return errlog( ERR_CRITICAL, "start_cleanup_thread\n" );
+    }
+
     _globals.init = 1;
     
     clock_gettime( CLOCK_MONOTONIC, &_globals.next_update );
@@ -116,6 +129,8 @@ int cpd_manager_init( cpd_config_t* config, char* sqlite_file, char* lua_script 
 
 void cpd_manager_destroy( void )
 {
+    _stop_cleanup_thread();
+
     cpd_host_database_destroy( &_globals.host_database );
 
     if ( _globals.lua_state != NULL ) {
@@ -133,7 +148,6 @@ void cpd_manager_destroy( void )
     }
     _globals.sqlite_file = NULL;
 
-
     _globals.init = -1;
 }
 
@@ -149,11 +163,11 @@ int cpd_manager_set_config( cpd_config_t* config )
     int _critical_section() {
         debug( 9, "Loading new config\n" );
                 
+        memcpy( &_globals.config, config, sizeof( _globals.config ));
+
         if ( _update_lua_config( config, _globals.sqlite_file ) < 0 ) {
             return errlog( ERR_CRITICAL, "_update_lua_config\n" );
         }
-
-        memcpy( &_globals.config, config, sizeof( _globals.config ));
         
         return 0;
     }
@@ -418,6 +432,47 @@ int cpd_manager_clear_host_database( void )
     return ret;
 }
 
+/**
+ * Remove all of the entries that have expired.
+ * @return the number of hosts that were removed.
+ */
+int cpd_manager_expire_sessions( void )
+{
+    int _critical_section()
+    {
+        /* If necessary reload the lua script */
+        if ( _update_lua_script() < 0 ) {
+            return errlog( ERR_CRITICAL, "_update_lua_script\n" );
+        }
+
+        lua_getglobal( _globals.lua_state, "cpd_expire_sessions" );
+        if ( !lua_isfunction( _globals.lua_state, -1 )) {
+            lua_pop( _globals.lua_state, 1 );
+            return errlog( ERR_CRITICAL, "cpd_expire_sessions is not a function.\n" );
+        }
+                
+        if ( lua_pcall( _globals.lua_state, 0, 1, 0 ) != 0 ) {
+            return errlog( ERR_CRITICAL, "lua_pcall %s\n", lua_tostring( _globals.lua_state, -1 ));
+        }
+
+        if ( !lua_isnumber( _globals.lua_state, -1 )) {
+            lua_pop( _globals.lua_state, 1 );
+            return errlog( ERR_CRITICAL, "cpd_expire_sessions did not return a number\n" );
+        }
+        
+        int num_entries = lua_tointeger( _globals.lua_state, -1 );
+        lua_pop( _globals.lua_state, -1 );
+        return num_entries;
+    }
+
+    if ( pthread_mutex_lock( &_globals.mutex ) != 0 ) return perrlog( "pthread_mutex_lock" );
+    int ret = _critical_section();
+    if ( pthread_mutex_unlock( &_globals.mutex ) != 0 ) return perrlog( "pthread_mutex_unlock" );
+
+    if ( ret < 0 ) return errlog( ERR_CRITICAL, "_critical_section\n" );
+
+    return ret;
+}
 
 static int _update_lua_script( void )
 {
@@ -457,11 +512,11 @@ static int _update_lua_config( cpd_config_t* config, char* sqlite_file )
     lua_pushboolean( _globals.lua_state, _globals.config.concurrent_logins );
     lua_setfield( _globals.lua_state, -2, "concurrent_logins" );
 
-    lua_pushnumber( _globals.lua_state, _globals.config.idle_timeout );
-    lua_setfield( _globals.lua_state, -2, "idle_timeout" );
+    lua_pushnumber( _globals.lua_state, _globals.config.idle_timeout_s );
+    lua_setfield( _globals.lua_state, -2, "idle_timeout_s" );
 
-    lua_pushnumber( _globals.lua_state, _globals.config.max_session_length );
-    lua_setfield( _globals.lua_state, -2, "max_session_length" );
+    lua_pushnumber( _globals.lua_state, _globals.config.max_session_length_s );
+    lua_setfield( _globals.lua_state, -2, "max_session_length_s" );
 
     lua_pushstring( _globals.lua_state, sqlite_file );
     lua_setfield( _globals.lua_state, -2, "sqlite_file" );
@@ -492,3 +547,67 @@ static char* _ether_ntoa_r(const struct ether_addr *addr, char* buffer, int buff
 
     return buffer;
 }
+
+static int _start_cleanup_thread( void )
+{
+    if ( _globals.cleanup_thread != 0 ) {
+        return errlog( ERR_CRITICAL, "_globals.cleanup_thread is non-zero\n" );
+    }
+    
+    if ( pthread_create( &_globals.cleanup_thread, NULL, _cleanup_thread, NULL ) < 0 ) {
+        return perrlog( "pthread_create" );
+    }
+
+    
+    if ( _globals.cleanup_thread == 0 ) {
+        return errlog( ERR_CRITICAL, "cleanup_thread is zero, coding error.\n" );
+    }
+
+    return 0;
+}
+
+static int _stop_cleanup_thread( void )
+{
+    pthread_t thread = _globals.cleanup_thread;
+    
+    _globals.cleanup_thread = 0;
+
+    if ( thread == 0 ) {
+        return 0;
+    }
+    
+    pthread_kill( thread, SIGUSR1 );
+    
+    return 0;
+}
+
+
+
+static void* _cleanup_thread( void* arg )
+{
+    int time_left = 0;
+
+    while ( pthread_self() == _globals.cleanup_thread ) {
+        if ( time_left == 0 ) {
+             time_left = _globals.config.expiration_frequency_s;
+            
+            if ( time_left <= 0 ) {
+                time_left = 60;
+            }
+        }
+
+        if (( time_left = sleep( time_left )) != 0 ) {
+            perrlog( "sleep" );
+            continue;
+        }
+
+        if ( cpd_manager_expire_sessions() < 0 ) {
+            errlog( ERR_CRITICAL, "cpd_manager_expire_sessions\n" );
+        }
+    }
+
+    return NULL;
+}
+
+
+

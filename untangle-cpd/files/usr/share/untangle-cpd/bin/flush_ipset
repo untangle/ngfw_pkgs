@@ -21,5 +21,5 @@ awk_script()
 EOF
 }
 
-ipset -L | awk "`awk_script`"
+ipset -nL | awk "`awk_script`"
 

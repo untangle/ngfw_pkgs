@@ -1,12 +1,11 @@
-/**
- * This is a sample designed to disable all of the scanning. 
- */
 {
     "enabled" : true,
 
-    "interface_min" : 10000,
+    "concurrent_logins" : true,
     
-    "interfaces" : [],
+    "idle_timeout_s" : 30,
 
-    "tests" : []
+    "max_session_length_s" : 3600,
+
+    "expiration_frequency_s" : 10
 }
