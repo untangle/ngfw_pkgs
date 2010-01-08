@@ -1,7 +1,7 @@
 #! /bin/dash
 
 ### BEGIN INIT INFO
-# Provides:          untangle-faild
+# Provides:          untangle-cpd
 # Required-Start:    $local_fs $remote_fs
 # Required-Stop:
 # Default-Start:     2 3 4 5
@@ -12,19 +12,16 @@
 
 . /lib/lsb/init-functions
 
-DESC="Untangle FailD"
+DESC="Untangle Captive Portal Daemon"
 
-DAEMON_NAME="faild"
+DAEMON_NAME="cpd"
 
-MONITOR="monitor.faild"
-MONITOR_SCRIPT=/usr/share/untangle-faild/bin/${MONITOR}
+MONITOR="monitor.cpd"
+MONITOR_SCRIPT=/usr/share/untangle-cpd/bin/${MONITOR}
 
-PID_FILE="/var/run/untangle-faild.pid"
+PID_FILE="/var/run/untangle-cpd.pid"
 
-test -f /etc/default/untangle-faild && . /etc/default/untangle-faild
-
-## For safety
-chown -R faild:nogroup /var/log/untangle-faild
+test -f /etc/default/untangle-cpd && . /etc/default/untangle-cpd
 
 start()
 {
@@ -42,9 +39,9 @@ start()
     fi
 
     RUN_AS_USER=""
-    [ -n "${FAILD_USER}" ] && RUN_AS_USER="--chuid ${FAILD_USER}"
+    [ -n "${CPD_USER}" ] && RUN_AS_USER="--chuid ${CPD_USER}"
     
-    log_progress_msg "untangle-faild"
+    log_progress_msg "untangle-cpd"
     start-stop-daemon -m --pidfile ${PID_FILE} --name ${MONITOR} --start --background \
         ${RUN_AS_USER}  --startas ${MONITOR_SCRIPT}
 
@@ -55,7 +52,7 @@ stop()
 {
     log_daemon_msg "Stopping $DESC"
 
-    log_progress_msg "untangle-faild"    
+    log_progress_msg "untangle-cpd"    
     start-stop-daemon --pidfile ${PID_FILE} --stop --retry USR1/4/USR1/2/USR1/2/INT/1/TERM/1/KILL/1
     RET=$?
     log_end_msg $RET
