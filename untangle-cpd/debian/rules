@@ -18,10 +18,8 @@ install: build
 	mkdir -p $(DESTDIR)
 	tar --exclude=.svn -cf - -C files `find files/ -name '.svn' -prune -o -mindepth 1 -maxdepth 1 -printf "%P " 2>/dev/null`  | tar -xf - -C $(DESTDIR)
 	mkdir -p $(DESTDIR)/usr/bin
-	cp -a faild $(DESTDIR)/usr/bin
+	cp -a cpd $(DESTDIR)/usr/bin
 	find $(DESTDIR) -name "\.svn" | xargs rm -rf
-	mkdir -p $(DESTDIR)/usr/lib/untangle-faild
-	find build/libs/ -name '*.so' | xargs cp -t $(DESTDIR)/usr/lib/untangle-faild
 
 clean:
 	dh_testdir
