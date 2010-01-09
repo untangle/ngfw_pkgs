@@ -38,13 +38,8 @@ start()
       rm -f ${PID_FILE}
     fi
 
-    RUN_AS_USER=""
-    [ -n "${CPD_USER}" ] && RUN_AS_USER="--chuid ${CPD_USER}"
-    
     log_progress_msg "untangle-cpd"
-    start-stop-daemon -m --pidfile ${PID_FILE} --name ${MONITOR} --start --background \
-        ${RUN_AS_USER}  --startas ${MONITOR_SCRIPT}
-
+    start-stop-daemon -m --pidfile ${PID_FILE} --name ${MONITOR} --start --background --startas ${MONITOR_SCRIPT}
     log_end_msg 0	
 }
 
