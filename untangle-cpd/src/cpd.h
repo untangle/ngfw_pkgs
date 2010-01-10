@@ -22,6 +22,28 @@
 #include <netinet/ether.h>
 
 #define CPD_MAX_USERNAME_LENGTH  255
+#define CPD_MAX_CAPTURE_RULES 64
+
+typedef struct
+{
+    /* Non-zero if this capture rule is enabled. */
+    int is_enabled;
+    
+    int capture;
+
+    char client_address[64];
+    char server_address[64];
+    
+    /* -1 for any interface, 0 - 7 otherwise */
+    int client_interface;
+    
+    /* each day is 3 characters */
+    char days[40];
+
+    /* hh:mm */
+    char start_time[10];
+    char end_time[10];
+} cpd_capture_rule_t;
 
 typedef struct
 {
@@ -40,6 +62,10 @@ typedef struct
 
     /* How often to expire old sessions in seconds. */
     int expiration_frequency_s;
+
+    int capture_rules_length;
+
+    cpd_capture_rule_t capture_rules[CPD_MAX_CAPTURE_RULES];
 } cpd_config_t;
 
 typedef struct

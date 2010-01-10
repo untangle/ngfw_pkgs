@@ -1,5 +1,5 @@
 {
-    "enabled" : true,
+    "enabled" : false,
 
     "concurrent_logins" : true,
     
@@ -7,5 +7,7 @@
 
     "max_session_length_s" : 3600,
 
-    "expiration_frequency_s" : 10
+    "expiration_frequency_s" : 10,
+
+    "capture_rules" :  []
 }

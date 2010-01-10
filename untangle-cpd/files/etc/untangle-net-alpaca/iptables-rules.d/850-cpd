@@ -1,0 +1,7 @@
+#!/bin/dash
+
+if [ -x /usr/share/untangle-cpd/bin/refresh_iptables.lua ]; then
+    /usr/share/untangle-cpd/bin/refresh_iptables.lua
+fi
+
+echo 0

@@ -1,4 +1,54 @@
-#!/usr/bin/lua
+#!/usr/bin/lua5.1
+
+local http = require( "socket.http" )
+local json = require( "json" )
+local ltn12 = require( "ltn12" )
+local cgilua = {}
+cgilua.urlcode = require( "cgilua.urlcode" )
+
+local function run_command( command, args, options)
+   args = args or {}
+   options = options or {}
+
+   host = options["host"] or "127.0.0.1"
+   port = options["port"] or 3005
+   path = options["path"] or "/"
+
+   url = "http://" .. host .. ":" .. port .. "/"
+   
+   command_hash = { ["function"] = command }
+   
+   for k, v in pairs( args ) do
+      if ( v == "true" ) then 
+         v = "true" 
+      end
+   
+      command_hash[k] = v
+   end
+
+   post = cgilua.urlcode.encodetable( {json_request = json.encode(command_hash)})
+
+   output = {}
+   status, return_code = http.request{
+      url = url,
+      source = ltn12.source.string(post),
+      sink = ltn12.sink.table(output),
+      method = "POST",
+
+      headers = {
+         Accept = "*/*",
+         ["Content-Type"] =  "application/x-www-form-urlencoded",
+         ["Content-Length"] = #post,
+         ["Host"] = host .. ":" .. port
+      }
+   }
+   
+   if ( status == nil ) then
+      return nil, "error connecting to host."
+   end
+   
+   return json.decode( table.concat( output ))
+end
 
 function os.capture_command( cmd, strip_output )
    local f = assert( io.popen( cmd, "r" ))
@@ -28,8 +78,11 @@ local function handle_ipv4_param( type, param )
 end
 
 local function handle_intf_param( type, param )
-   assert( param > 0, "param must be greater then zero" )
-   assert( param <= 8, "param must be less then or equal to 8" )
+   if ( param < 0 ) then
+      return ""
+   end
+
+   assert( param < 8, "param must be less then 8" )
 
    return string.format( " -m mark --mark $((1 << ( %d - 1 )))/$((1 << ( %d - 1 )))", param, param )
 end
@@ -49,6 +102,7 @@ local day_table = {
 
    thursday = "Thu",
    thur = "Thu",
+   thu = "Thu",
    thr = "Thu",
    th = "Thu",
 
@@ -65,20 +119,13 @@ local day_table = {
    su = "Sun"
 }
 
-local function handle_time_param( type, param )
-   local start_time, end_time, days = param["start_time"], param["end_time"], param["days"]
-   
-   assert( string.find( start_time, "^%d%d?:%d%d?:%d%d?$" ), "Invalid start time format expecting hh:mm:ss" )
-   assert( string.find( end_time, "^%d%d?:%d%d?:%d%d?$" ), "Invalid start time format expecting hh:mm:ss" )
-   
+local function get_days_param( days )
    if ( days == nil ) then
-      return  string.format( " -m time --timestart %s --timestop %s ", start_time, end_time )
+      return ""
    end
-   
-   local day_string, day_set, day = nil, {}
-   
-   days = days .. ","
-   
+
+   local day_string, day_set, day, num_days = nil, {}, nil, 0
+
    for day in string.gmatch( days, "(%a+)%s*," ) do
       day = string.lower( day )
       assert( day_table[day], "Invalid day: '" .. day .. "'" )
@@ -87,36 +134,72 @@ local function handle_time_param( type, param )
       if ( day_set[day] == nil ) then
          day_string = ( day_string == nil ) and day or day_string .. "," .. day
          day_set[day] = true
+         num_days = num_days + 1
       end
    end
+   
+   if ( num_days == 7 ) then
+      return ""
+   end
 
-   return  string.format( " -m time --timestart %s --timestop %s --weekdays %s ", start_time, end_time, day_string )
+   return string.format( " --weekdays %s ", day_string )
 end
 
-local function handle_capture_param( type, param )
-   -- This is just a field to indicate whether or not the rule captures traffic or not.
+local function get_time_param( start_time, end_time )
+   assert( string.find( start_time, "^%d%d?:%d%d?$" ), "Invalid start time format expecting hh:mm" )
+   assert( string.find( end_time, "^%d%d?:%d%d?$" ), "Invalid end time format expecting hh:mm" )
+   
+   if ( start_time == "00:00" and end_time == "23:59" ) then
+      return ""
+   end
+
+   return  string.format( " --timestart %s --timestop %s ", start_time, end_time )
+end
+
+local function handle_time( rule )
+   local days, time = get_days_param( rule["days"] ), get_time_param( rule["start_time"], rule["end_time"] )
+   if ( days == "" and time == "" ) then
+      return ""
+   end
+   
+   return  " -m time " .. days .. time
+end
+
+local function handle_ignore_param( type, param )
+   -- This is just a field to indicate whether or not the rule capture or enable values.
    return ""
 end
    
 local command_handler = {
    client_address = handle_ipv4_param,
    server_address = handle_ipv4_param,
-   interface = handle_intf_param,
+   client_interface = handle_intf_param,
    time = handle_time_param,
-   capture = handle_capture_param
+   capture = handle_ignore_param,
+   enabled = handle_ignore_param,
+   start_time = handle_ignore_param,
+   end_time = handle_ignore_param,
+   days = handle_ignore_param
 }
 
 -- @param rule The rule to add.
 local function build_rule( rule, target )
    local iptables_command, type, param = "iptables -t mangle -A untangle-cpd "
+
+   if ( not ( rule["enabled"] == true )) then
+      return
+   end
    
    -- Verify there is at least one parameter.
    assert( not ( next( rule ) == nil ))
    
    for type, param in pairs( rule ) do
-      one_param = true
+      print(type)
       iptables_command = iptables_command .. command_handler[type]( type, param )
    end
+
+   -- Add in the time parameter
+   iptables_command = iptables_command .. handle_time( rule )
    
    iptables_command = iptables_command .. "  " .. target
    
@@ -145,16 +228,39 @@ local function add_capture_rules( commands )
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd-capture -j MARK --set-mark  0x00100000/0x08100000"
 end
 
+-- Insert a rule that should be removed first in case there is one that already exists.
+local function replace_rule( commands, table, chain, rule, rule_index, add_rule )
+   -- Run it twice for safety.
+   commands[#commands+1] = "iptables -t " .. table .. "  -D " .. chain .. " " .. rule .. " > /dev/null 2>&1"
+   commands[#commands+1] = "iptables -t " .. table .. "  -D " .. chain .. " " .. rule .. " > /dev/null 2>&1"
+
+   -- Default add_rule to true
+   if ( add_rule == nil ) then
+      add_rule = true
+   end
+
+   rule_index = rule_index or ""
+   
+   if ( add_rule ) then
+      commands[#commands+1] = "iptables -t " .. table .. "  -I " .. chain .. " " .. rule_index .. " " .. rule .. "> /dev/null 2>&1"
+   end
+end
+
 
 -- start of script
 cpd_home = os.getenv( "CPD_HOME" ) or ""
 
-iptables_conf = os.getenv( "CPD_IPTABLES_CONF" ) or "/etc/untangle-cpd/iptables_conf.lua"
-
-dofile( iptables_conf )
+cpd_config = run_command( "get_config" ) or {}
+cpd_config = cpd_config["config"] or {}
 
 capture_rules = cpd_config["capture_rules"] or {}
 accept_https = cpd_config["accept_https"]
+
+-- Force is_enabled to be true or false
+is_enabled = cpd_config["enabled"]
+if ( is_enabled == nil ) then
+   is_enabled = false
+end
 
 commands = {}
 
@@ -165,36 +271,33 @@ commands[#commands+1] = "iptables -t mangle -N untangle-cpd-capture > /dev/null 
 commands[#commands+1] = "iptables -t mangle -F untangle-cpd-capture"
 
 -- Return all of the "special" traffic
-commands[#commands+1] = "iptables -t mangle -A untangle-cpd -i utun -j RETURN"
-commands[#commands+1] = "iptables -t mangle -A untangle-cpd -i lo -j RETURN"
-commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m pkttype ! --pkt-type UNICAST -j RETURN"
+if ( cpd_config["enabled"] == true ) then
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd -i utun -j RETURN"
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd -i lo -j RETURN"
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m pkttype ! --pkt-type UNICAST -j RETURN"
 
--- Return all local traffic
-commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m mark --mark 0x100/0x100 -j RETURN"
-commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m state --state ESTABLISHED,RELATED -j RETURN"
+   -- Return all local traffic
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m mark --mark 0x100/0x100 -j RETURN"
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m state --state ESTABLISHED,RELATED -j RETURN"
+   
+   -- Update the capture rules.
+   add_capture_rules(commands)
 
--- Update the capture rules.
-add_capture_rules(commands)
+   -- Return all of the IP Addresses that are in one of the sets.
+   add_ipset_rules(commands)
 
--- Return all of the IP Addresses that are in one of the sets.
-add_ipset_rules(commands)
-
-for _, rule in ipairs( capture_rules ) do 
-   if ( rule["capture"] ) then
-      -- Clear the firewall drop mark, and set the captive portal mark.
-      commands[#commands +1] = build_rule( rule, "-g untangle-cpd-capture" )
-   else
-      commands[#commands +1] = build_rule( rule, "-j RETURN" )
+   for _, rule in ipairs( capture_rules ) do 
+      if ( rule["capture"] ) then
+         -- Clear the firewall drop mark, and set the captive portal mark.
+         commands[#commands +1] = build_rule( rule, "-g untangle-cpd-capture" )
+      else
+         commands[#commands +1] = build_rule( rule, "-j RETURN" )
+      end
    end
 end
 
--- This won't be necessary once this is tied into running the other iptables rules.
-commands[#commands+1] = "iptables -t nat -D PREROUTING -m mark --mark 0x00100000/0x00100000 -p tcp --destination-port 80 -j REDIRECT --to-ports 64158"
-commands[#commands+1] = "iptables -t nat -I PREROUTING 1 -m mark --mark 0x00100000/0x00100000 -p tcp --destination-port 80 -j REDIRECT --to-ports 64158"
+replace_rule( commands, "nat", "PREROUTING", "-m mark --mark 0x00100000/0x00100000 -p tcp --destination-port 80 -j REDIRECT --to-ports 64158", 1, is_enabled )
 
-if ( accept_https ) then
-   commands[#commands+1] = "iptables -t nat -D PREROUTING -m mark --mark 0x00100000/0x00100000 -p tcp --destination-port 443 -j REDIRECT --to-ports 64159"
-   commands[#commands+1] = "iptables -t nat -I PREROUTING -m mark --mark 0x00100000/0x00100000 -p tcp --destination-port 443 -j REDIRECT --to-ports 64159"
-end
+replace_rule( commands, "nat", "PREROUTING", "-m mark --mark 0x00100000/0x00100000 -p tcp --destination-port 443 -j REDIRECT --to-ports 64159", 1, is_enabled and accept_https )
 
 table.foreach( commands, function( a, b ) os.execute( b ) end )

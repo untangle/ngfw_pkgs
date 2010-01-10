@@ -8,7 +8,7 @@ ourInit() {
     fi
 }
 
-CPD_CONFIG_FILE="/etc/untangle-cpd.conf"
+CPD_CONFIG_FILE="/etc/untangle-cpd/config.js"
 CPD_DEFAULT_CONFIG="/usr/share/untangle-cpd/sample-config/default.js"
 
 LOG_FILE=/var/log/untangle-cpd/debug.log

@@ -3,7 +3,7 @@
 load_defaults()
 {
     CPD_BIND_PORT="3005"
-    CPD_CONF_FILE="/etc/untangle-cpd.conf"
+    CPD_CONF_FILE="/etc/untangle-cpd/config.js"
     CPD_LOG_OUT="/var/log/untangle-cpd/debug.log"
     CPD_LOG_ERR="/var/log/untangle-cpd/error.log"
     CPD_LOG_MONITOR="/var/log/untangle-cpd/monitor.log"
