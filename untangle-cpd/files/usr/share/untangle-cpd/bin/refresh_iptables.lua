@@ -64,6 +64,9 @@ end
 
 local function handle_ipv4_param( type, param )
    local is_client = type == "client_address"
+   if ( param == "any" ) then
+      return ""
+   end
 
    range_start, range_end = string.match( param, "(%d+%.%d+%.%d+%.%d+)%s*-%s*(%d+%.%d+%.%d+%.%d+)%s*")
    if ( not ( range_start == nil )) then
@@ -84,7 +87,7 @@ local function handle_intf_param( type, param )
 
    assert( param < 8, "param must be less then 8" )
 
-   return string.format( " -m mark --mark $((1 << ( %d - 1 )))/$((1 << ( %d - 1 )))", param, param )
+   return string.format( " -m mark --mark $((1 << %d ))/$((1 << %d ))", param, param )
 end
 
 local day_table = {
@@ -126,7 +129,7 @@ local function get_days_param( days )
 
    local day_string, day_set, day, num_days = nil, {}, nil, 0
 
-   for day in string.gmatch( days, "(%a+)%s*," ) do
+   for day in string.gmatch( days, "(%a+)%s*,?" ) do
       day = string.lower( day )
       assert( day_table[day], "Invalid day: '" .. day .. "'" )
       day = day_table[day]
@@ -300,4 +303,4 @@ replace_rule( commands, "nat", "PREROUTING", "-m mark --mark 0x00100000/0x001000
 
 replace_rule( commands, "nat", "PREROUTING", "-m mark --mark 0x00100000/0x00100000 -p tcp --destination-port 443 -j REDIRECT --to-ports 64159", 1, is_enabled and accept_https )
 
-table.foreach( commands, function( a, b ) os.execute( b ) end )
+table.foreach( commands, function( a, b ) print( b ) ; os.execute( b ) end )
