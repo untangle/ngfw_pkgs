@@ -11,25 +11,25 @@ body.quarantine {
   padding: 17px 12px 12px 12px;
 }
 /* blockpage body*/
-body.blockpage
+body.blockpage, body.captive-portal
 { 
   text-align: center;
   background-color: #808080;
 }
 /* quarantine content */
-body.quarantine #content {
-	width:75%;
-    background: transparent url(../images/user/background_content.png) repeat-x !important;
-	border:1px solid #CCC;
-    margin:0 auto;
-	margin-top:50px;
-	
+body.quarantine #content
+{
+  width:75%;
+  background: transparent url(../images/user/background_content.png) repeat-x !important;
+  border:1px solid #CCC;
+  margin:0 auto;
+  margin-top:50px;
 }
 .service-error-height{
 	height:400px;
 }
 /* blockpage content */
-body.blockpage #content
+body.blockpage #content, 
 {
   width : 627px;
   height: 505px;
@@ -42,21 +42,39 @@ body.blockpage #content
   margin-bottom: 30px;
   background: transparent url(../images/user/background_content.png) repeat-x !important;
 }
+
+body.captive-portal #content
+{
+  width : 650px;
+  height: 605px;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+  border : 1px solid #FFFFFF;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  background: transparent url(../images/user/background_content.png) repeat-x !important;
+  }
+
 /* blockpage body*/
-body.blockpage
+body.blockpage,
+body.captive-portal
 { 
   font-family: arial, tahoma, helvetica, sans-serif;
   font-size: 10pt;
  }
 
 /* blockpage description text*/
-body.blockpage .description
+body.blockpage .description, 
+body.captive-portal .description
 { 
   margin-bottom: 30px;
 }
 
 /* blockpage contact text*/
-body.blockpage p.contact
+body.blockpage p.contact,
+body.captive-portal p.contact
 { 
   position: absolute;
   bottom: 15px;
@@ -97,8 +115,14 @@ body.quarantine #header .title
     background:transparent url(../images/user/icon_block.png) no-repeat center center;
     height: 130px;
 }
+/* blocked page icon*/
+.icon-captive-portal {
+    background:transparent url(../images/user/icon_captive_portal.png) no-repeat center center;
+    height: 130px;
+}
+
 /* quarantined messages toolbar message*/
-.message,.message-2 {
+.message, .message-2 {
     padding: 5px 5px 5px 28px;
     border: 1px solid #60BB3F;
     font-size: 8pt;
@@ -159,7 +183,7 @@ body.quarantine #header .title
     font-size: larger;
 }
 /* block page main container */
-body.blockpage #main
+body.blockpage #main, 
 {
   position : absolute;
   left: 15px;
@@ -171,7 +195,20 @@ body.blockpage #main
   z-index: 100;
 }
 
-body.blockpage #extra-div-1
+body.captive-portal #main
+{
+  position : absolute;
+  left: 15px;
+  top: 130px;
+  width: 620px;
+  height: 500px;
+  text-align: center;
+  /* This is to place this above the border */
+  z-index: 100;
+}
+
+body.blockpage #extra-div-1, 
+body.captive-portal #extra-div-1
 { 
   position : absolute;
   left: 15px;
@@ -181,7 +218,8 @@ body.blockpage #extra-div-1
   background: transparent url(../images/user/blockpage_border.gif) no-repeat;
 }
 
-body.blockpage #extra-div-2
+body.blockpage #extra-div-2,
+body.captive-portal #extra-div-2
 { 
   position : absolute;
   left: 15px;
@@ -197,7 +235,8 @@ body.blockpage #extra-div-2
   position : relative;
 }
 /* block page title */
-body.blockpage #header .title
+body.blockpage #header .title,
+body.captive-portal #header .title
 { 
   position : absolute;
   left : 180px;
@@ -206,21 +245,23 @@ body.blockpage #header .title
   color: #67686B;
 }
 /* block page information list container*/
-.info-list {
-	margin-top: 10px;
-	margin-bottom: 20px;
-    width:340px;
-    margin-left:auto;
-    margin-right:auto;
-    text-align: left;
-    background-color: #FFFFFF;
+.info-list
+{
+  margin-top: 10px;
+  margin-bottom: 20px;
+  width:340px;
+  margin-left:auto;
+  margin-right:auto;
+  text-align: left;
+  background-color: #FFFFFF;
 }
 /* block page information list element */
 .info-list div{
     padding:5px 5px 5px 5px;
 }
 /* block page footer */
-body.blockpage #footer
+body.blockpage #footer,
+body.captive-portal #footer
 {
   font-size: small;
   text-align: right;
@@ -295,3 +336,16 @@ button.icon-delete-row{
 #invalid-password{
     color:#FF0000;
 }
+
+body.captive-portal #basic-message-text
+{ 
+  height: 170px;
+  width: 340px;
+  overflow: auto;
+  border: 1px solid #666;
+  background-color: #FFF;
+  padding: 8px;
+  margin-left:auto;
+  margin-right:auto;
+  text-align : left
+ }
