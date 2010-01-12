@@ -106,15 +106,24 @@ body{
     font-family:Tahoma,Helvetica,sans-serif;
 }
 .highlight{
-    margin:1em 0 1em 1em;
+    margin:0em 0 0em 1em;
 }
 .highlight p{
-    padding:1em 1em 1em 55px ;
+    padding:0em 1em 0em 55px ;
+    line-height:53px;
     background-color:#CCC;
     font-family:Tahoma,Helvetica,sans-serif;
+    font-size:12px;
     background-repeat:no-repeat;
-    background-position:5px 5px;    
+    background-position:5px 5px;  
+    margin-right:25px;  
+}
+.odd p{
+    background-color:#EFEFEF;
 }
 .highlight p strong{
     font-weight:bold;
+}
+.first{
+    margin-top:1em;
 }
