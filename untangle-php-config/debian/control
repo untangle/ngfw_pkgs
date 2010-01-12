@@ -1,0 +1,12 @@
+Source: untangle-php-config
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.7.2
+
+Package: untangle-php-config
+Architecture: all
+Depends: php5-cgi, php5-radius, php5-ldap, apache2-mpm-worker
+Description: The Untangle PHP config
+ The Untangle PHP config.
