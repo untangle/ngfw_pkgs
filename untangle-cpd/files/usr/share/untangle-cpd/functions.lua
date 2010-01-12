@@ -3,6 +3,8 @@ require "md5"
 require "logging"
 require "logging.console"
 
+
+
 local function create_table( table_name, statement )
    local query
    local hash = md5.sumhexa(statement)
@@ -38,8 +40,6 @@ local function init_database()
    
    create_table( "host_database", [[
                        CREATE TABLE IF NOT EXISTS host_database (
-                          session_id TEXT,
-                          php_session_data TEXT,
                           hw_addr TEXT,
                           ipv4_addr TEXT,
                           username TEXT,
@@ -55,61 +55,17 @@ end
 
 -- XXX This may be better done in one shell script run run with sudo.
 local function add_ipset_entry( hw_addr, ipv4_addr )
-   -- Get the network prefix (this is used to indicate which set to put it in
-   local network_prefix = string.match( ipv4_addr, "^%d+%.%d+" )
-   local set_name, result
-
-   -- Have to delete the entry from any existing sets.
-   if ( hw_addr == nil ) then
-      set_name = "basic-" .. network_prefix
-      command = [[
-            ipset -N %s ipmap --from %s.0.0 --to %s.255.255 || ipset -nL %s | awk 'BEGIN { exit_status=1 };  /References: 0/ { exit_status=0 } ; END { exit exit_status }'
-      ]]
-      result = os.execute( string.format( command,  set_name, set_name, network_prefix, network_prefix, set_name ))
-
-      if ( result == 0 ) then
-         os.execute( cpd_home .. "/usr/share/untangle-cpd/bin/refresh_iptables.lua" )
-      end
-
-      -- Just add it, this is faster than testing first.
-      os.execute( string.format( "ipset -A %s %s", set_name, ipv4_addr ))
-
-      -- Delete if from the MAC IP MAP in case it is in there.
-      os.execute( string.format( "ipset -D hw-addr-%s %s", network_prefix, ipv4_addr ))
-   else
-      -- Get rid of the single digit characters (ipset does not like)
-      hw_addr = hw_addr .. " "
-      hw_addr = string.gsub( hw_addr, "(%d%d)", "%1_")
-      hw_addr = string.gsub( hw_addr, "(%d[^_%d])", "0%1" )
-      hw_addr = string.gsub( hw_addr, "_", "" )
-      
-      set_name = "hw-addr-" .. network_prefix
-      result = os.execute( string.format( "ipset -N %s macipmap --from %s.0.0 --to %s.255.255", set_name, network_prefix, network_prefix))
-
-      if ( result == 0 ) then
-         os.execute( cpd_home .. "/usr/share/untangle-cpd/bin/refresh_iptables.lua" )
-      end
-      
-      -- If this is not in the IPSet, add it to the set (have to remove it first, only one MAC per IP)
-      if ( not ( os.execute( string.format( "ipset -T %s %s:%s", set_name, ipv4_addr, hw_addr )) == 0 )) then
-         os.execute( string.format( "ipset -D %s %s", set_name, ipv4_addr ))
-         os.execute( string.format( "ipset -A %s %s:%s", set_name, ipv4_addr, hw_addr ))
-      end
-      -- Delete if from basic IP Map in case it is in there.
-      os.execute( string.format( "ipset -D basic-%s %s", network_prefix, ipv4_addr ))
+   if ( not ( hw_addr == nil )) then
+      logger:info( "hw_addr is current not supported and is ignored." )
    end
+   
+   -- Insert an entry into the main ipset.
+   os.execute( string.format( "ipset -A %s %s", authenticated_ipset, ipv4_addr ))
 end
 
 local function remove_ipset_entry( ipv4_addr )
-   -- Get the network prefix (this is used to indicate which set to put it in
-   local network_prefix = string.match( ipv4_addr, "^%d+%.%d+" )
-
-   logger:info( string.format( "Removing the ip address '%s'", ipv4_addr ))
-   
-   -- Try to delete from the basic set
-   os.execute( string.format( "ipset -D basic-%s %s", network_prefix, ipv4_addr ))
-   -- Try to delete from the MAC IP map.
-   os.execute( string.format( "ipset -D hw-addr-%s %s", network_prefix, ipv4_addr ))
+-- Insert an entry into the main ipset.
+   os.execute( string.format( "ipset -D %s %s", authenticated_ipset, ipv4_addr ))
 end
 
 function cpd_replace_host( username, hw_addr, ipv4_addr, update_session_start )
@@ -234,5 +190,7 @@ sqlite3 = assert( luasql.sqlite3())
 db = assert(sqlite3:connect(cpd_config.sqlite_file))
 
 cpd_home = os.getenv( "CPD_HOME" ) or ""
+
+authenticated_ipset = "cpd-ipv4-authenticated"
 
 init_database()

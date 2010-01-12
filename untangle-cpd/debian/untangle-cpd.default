@@ -24,3 +24,9 @@ CPD_LOG_DIR="/var/log/untangle-cpd"
 
 ## Change to use a different error logging file.
 ## CPD_LOG_ERR="${CPD_LOG_DIR}/error.log"
+
+## Change to use a different script file.
+## CPD_SCRIPT_FILE="/usr/share/untangle-cpd/functions.lua"
+
+## Change to use a different host database.
+## CPD_SQLITE_FILE="/etc/untangle-cpd/host_database.db"

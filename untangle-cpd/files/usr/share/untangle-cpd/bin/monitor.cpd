@@ -7,6 +7,9 @@ load_defaults()
     CPD_LOG_OUT="/var/log/untangle-cpd/debug.log"
     CPD_LOG_ERR="/var/log/untangle-cpd/error.log"
     CPD_LOG_MONITOR="/var/log/untangle-cpd/monitor.log"
+    CPD_SCRIPT_FILE="/usr/share/untangle-cpd/functions.lua"
+    CPD_SQLITE_FILE="/etc/untangle-cpd/host_database.db"
+    
     CPD_BIN=/usr/bin/cpd
 
     CPD_DEFAULTS_SCRIPT=${CPD_DEFAULTS_SCRIPT:-/etc/default/untangle-cpd}
@@ -59,6 +62,8 @@ start_cpd()
     test -n "${CPD_LOG_OUT}" && t_args="${t_args} -o ${CPD_LOG_OUT}"
     test -n "${CPD_LOG_ERR}" && t_args="${t_args} -e ${CPD_LOG_ERR}"
     test -n "${CPD_DEBUG_LEVEL}" && t_args="${t_args} -l ${CPD_DEBUG_LEVEL}"
+    test -n "${CPD_SCRIPT_FILE}" && t_args="${t_args} -x ${CPD_SCRIPT_FILE}"
+    test -n "${CPD_SQLITE_FILE}" && t_args="${t_args} -s ${CPD_SQLITE_FILE}"
     
     ${CPD_BIN} ${t_args} &
     CPD_PID=$!

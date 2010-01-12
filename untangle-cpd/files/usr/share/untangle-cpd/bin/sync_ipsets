@@ -9,66 +9,56 @@ awk_script()
 {
     cat <<'EOF'
 /^Name:/ { ipset_name="" }
-## Only search for ip_sets that start with the prefixes for captive portal
-/^Name: basic-/ { ipset_name=$2 ; num_members=0 }
-/^Name: hw-addr-/ { ipset_name=$2 ; num_members=0 }
+## Only search for ip_sets that are in the correct ipset.
+/^Name: cpd-ipv4-authenticated/ { ipset_name=$2 ; num_members=0 }
 
+## By default do not count members.
 /^Bindings:/ { 
   count_member="false"
 }
 
+## Print all of the items that are in between Members and Bindings
 { if ( count_member == "true" ) print }
 
 /^Members:/ { if ( ipset_name != "" ) count_member="true" }
 EOF
 }
 
+## Get from the databse the entries that should be in the ipset.
 get_host_entries()
 {
     sqlite3 ${CPD_SQLITE_FILE} "SELECT ipv4_addr,hw_addr FROM host_database" | sed -e "s/|$//" -e "s/|/:/" | sort
 }
 
+## Get the actual entries from the IPSet
 get_ipset_entries()
 {
     ipset -nL | awk "`awk_script`" | sort
 }
 
+
 fix_entries_script()
 {
     cat <<'EOF'
 BEGIN { added_ipv4=0 ; added_hw_addr=0 ; deleted_ipv4=0 ; deleted_hw_addr=0 }
-/^> *[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/ { 
+/^> *[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/ {
   ipv4_addr=$2
-  set_name=$2
-  gsub( "\\.[0-9]+\\.[0-9]+$", "", set_name )
-  system( "ipset -N basic-" set_name " ipmap --from " set_name ".0.0 --to " set_name ".255.255" )
-  system( "ipset -A basic-" set_name " " ipv4_addr )
+  system( "ipset -A cpd-ipv4-authenticated " ipv4_addr )
   added_ipv4++
   next
 }
 /^> *[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+$/ { 
-  ipv4_addr=$2
-  set_name=$2
-  gsub( "\\.[0-9]+\\.[0-9]+:.*$", "", set_name )
-  system( "ipset -N hw-addr-" set_name " macipmap --from " set_name ".0.0 --to " set_name ".255.255" )
-  system( "ipset -A hw-addr-" set_name " " ipv4_addr )
-  added_hw_addr++
+  print( "ADDING HW ADDR IS NOT SUPPORTED." )
   next
 }
 /^< *[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/ { 
   ipv4_addr=$2
-  set_name=$2
-  gsub( "\\.[0-9]+\\.[0-9]+$", "", set_name )
-  system( "ipset -D basic-" set_name " " ipv4_addr )
+  system( "ipset -D cpd-ipv4-authenticated " ipv4_addr )
   deleted_ipv4++
   next
 }
 /^< *[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+$/ { 
-  ipv4_addr=$2
-  set_name=$2
-  gsub( "\\.[0-9]+\\.[0-9]+:.*$", "", set_name )
-  system( "ipset -D hw-addr-" set_name " " ipv4_addr )
-  deleted_hw_addr++
+  print( "REMOVING HW ADDR IS NOT SUPPORTED." )
   next
 }
 END { print strftime() " Added " added_ipv4 "," added_hw_addr " Deleted " deleted_ipv4 "," deleted_hw_addr }
@@ -79,6 +69,9 @@ if [ ! -f "${CPD_SQLITE_FILE}" ]; then
     echo "The SQLite database '${CPD_SQLITE_FILE}' does not exist."
     exit 1
 fi
+
+## Hash sure this exists.
+ipset -N cpd-ipv4-authenticated iphash > /dev/null 2>&1 || true
 
 ipset_entries=`mktemp`
 host_entries=`mktemp`
@@ -91,6 +84,3 @@ diff ${ipset_entries} ${host_entries} | awk "`fix_entries_script`"
 
 rm -f ${ipset_entries}
 rm -f ${host_entries}
-
-
-

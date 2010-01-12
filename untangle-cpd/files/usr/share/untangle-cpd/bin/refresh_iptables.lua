@@ -197,7 +197,6 @@ local function build_rule( rule, target )
    assert( not ( next( rule ) == nil ))
    
    for type, param in pairs( rule ) do
-      print(type)
       iptables_command = iptables_command .. command_handler[type]( type, param )
    end
 
@@ -209,14 +208,11 @@ local function build_rule( rule, target )
    return iptables_command
 end
 
--- Add rules to escape hosts that are in the ipsets.
+-- Add rules to escape hosts that are in the ipset.
 local function add_ipset_rules( commands )
-   local output, i = os.capture_command( cpd_home .. "/usr/share/untangle-cpd/bin/get_ipsets nonempty", true )
-   
-   local base_command = "iptables -t mangle -A untangle-cpd -m set --set %s src -j RETURN"
-   for i in string.gmatch( output, "%S+" ) do
-      commands[#commands+1] = string.format( base_command, i )
-   end
+   -- Return any users in the set named ipv4-cpd-authenticated.
+   commands[#commands+1] = "ipset -N cpd-ipv4-authenticated iphash"
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m set --set cpd-ipv4-authenticated src -j RETURN"
 end
 
 -- These are the rules that run if the traffic should be captured.
@@ -245,7 +241,7 @@ local function replace_rule( commands, table, chain, rule, rule_index, add_rule 
    rule_index = rule_index or ""
    
    if ( add_rule ) then
-      commands[#commands+1] = "iptables -t " .. table .. "  -I " .. chain .. " " .. rule_index .. " " .. rule .. "> /dev/null 2>&1"
+      commands[#commands+1] = "iptables -t " .. table .. "  -I " .. chain .. " " .. rule_index .. " " .. rule .. " > /dev/null 2>&1"
    end
 end
 

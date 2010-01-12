@@ -38,7 +38,7 @@
 
 #define DEFAULT_CONFIG_FILE  "/etc/untangle-cpd/config.js"
 #define DEFAULT_SQLITE_FILE  "/etc/untangle-cpd/host_database.db"
-#define DEFAULT_LUA_SCRIPT   "/etc/untangle-cpd/untangle-cpd.lua"
+#define DEFAULT_LUA_SCRIPT   "/usr/share/untangle-cpd/functions.lua"
 
 #define DEFAULT_DEBUG_LEVEL  1
 #define DEFAULT_BIND_PORT 3005
