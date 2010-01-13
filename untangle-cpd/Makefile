@@ -11,7 +11,6 @@ INC_FLAGS     = $(patsubst %,-I%,$(INC))
 LDDIR         = lib $(build_lib_path)  
 LDDIR_FLAGS   = $(patsubst %,-L%,$(LDDIR))
 LIBS          = json microhttpd dl rt m sysfs lua5.1
-#LIBS          += efence
 LIBS_FLAGS    = -pthread $(patsubst %,-l%,$(LIBS)) --warn-common
 FLAGS        += -rdynamic -std=c99
 CFLAGS        =  $(FLAGS) $(DEFINES) $(WARNINGS) $(OPTIMIZATIONS) $(INC_FLAGS) $(LDDIR_FLAGS)
@@ -39,14 +38,14 @@ mvutil_source=libmvutil/src/debug.c libmvutil/src/errlog.c libmvutil/src/hash.c 
 cpd_source=src/json/server.c src/json/object_utils.c \
 	src/json/serializer.c src/main.c src/functions.c \
 	src/cpd/config.c src/cpd/manager.c src/cpd/status.c \
-	${mvutil_source}
+	src/cpd/reader.c ${mvutil_source} libipulog/libipulog.c
 
 cpd_objects=$(patsubst %.c,${object_dir}/%.o, ${cpd_source})
 cpd_binary=cpd
 
-default: ${object_dir} mvutil_includes ${cpd_binary}
+default: ${object_dir} mvutil_includes libipulog_includes ${cpd_binary}
 
-${cpd_binary}: ${cpd_objects} ${mvutil_source}
+${cpd_binary}: ${cpd_objects}
 	@echo "==> gcc ${cpd_objects} -> $@"
 	@${CC} ${CFLAGS} ${LIBS_FLAGS} ${cpd_objects} -o $@
 
@@ -62,6 +61,10 @@ ${object_dir}:
 mvutil_includes:
 	@echo "==> cp -a libmvutil/include/ ${build_dir}/include"
 	@tar --exclude=.svn -cf - -C libmvutil include | tar -xf - -C ${build_dir}
+
+libipulog_includes:
+	@echo "==> cp -a libipulog/include/ ${build_dir}/include"
+	@tar --exclude=.svn -cf - -C libipulog include | tar -xf - -C ${build_dir}
 
 clean:
 	@echo "==> Removing object files in ${object_dir}"

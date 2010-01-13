@@ -15,7 +15,6 @@
 #include <netinet/ip.h>
 #include <netinet/ether.h>
 
-
 #include "cpd.h"
 
 typedef struct

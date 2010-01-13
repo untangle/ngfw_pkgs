@@ -35,6 +35,7 @@
 #include "json/server.h"
 
 #include "cpd/manager.h"
+#include "cpd/reader.h"
 
 #define DEFAULT_CONFIG_FILE  "/etc/untangle-cpd/config.js"
 #define DEFAULT_SQLITE_FILE  "/etc/untangle-cpd/host_database.db"
@@ -44,6 +45,8 @@
 #define DEFAULT_BIND_PORT 3005
 
 #define FLAG_ALIVE      0x543F00D
+
+#define DEFAULT_ULOG_GROUP_NUMBER 1
 
 static struct
 {
@@ -57,7 +60,9 @@ static struct
     int port;
     int debug_level;
     int daemonize;
+    int ulog_group_number;
     json_server_t json_server;
+    cpd_reader_t* reader;
     struct MHD_Daemon *daemon;
     sem_t* quit_sem;
 } _globals = {
@@ -66,6 +71,7 @@ static struct
     .sqlite_file = NULL,
     .lua_script = NULL,
     .port = DEFAULT_BIND_PORT,
+    .ulog_group_number = DEFAULT_ULOG_GROUP_NUMBER,
     .daemonize = 0,
     .std_err_filename = NULL,
     .std_err = -1,
@@ -179,7 +185,7 @@ static int _parse_args( int argc, char** argv )
 {
     int c = 0;
     
-    while (( c = getopt( argc, argv, "dhp:c:o:e:l:s:t:x:" ))  != -1 ) {
+    while (( c = getopt( argc, argv, "dhp:c:o:e:l:s:t:x:g:" ))  != -1 ) {
         switch( c ) {
         case 'd':
             _globals.daemonize = 1;
@@ -221,6 +227,11 @@ static int _parse_args( int argc, char** argv )
         case 'l':
             _globals.debug_level = atoi( optarg );
             break;
+
+        case 'g':
+            _globals.ulog_group_number = atoi( optarg );
+            break;
+
 
         case '?':
             return -1;
@@ -266,6 +277,7 @@ static int _usage( char *name )
     fprintf( stderr, "\t-x <lua-script-path> The lua extensions for adding, removing and querying hosts.\n" );
     fprintf( stderr, "\t-o <log-file>: File to place standard output(more useful with -d).\n" );
     fprintf( stderr, "\t-e <log-file>: File to place standard error(more useful with -d).\n" );
+    fprintf( stderr, "\t-g <ulog-group>: Group number to use for ULOG\n" );
     fprintf( stderr, "\t-l <debug-level>: Debugging level.\n" );
     fprintf( stderr, "\t-h: Halp (show this message)\n" );
     return -1;
@@ -302,6 +314,11 @@ static int _init( int argc, char** argv )
         return errlog( ERR_CRITICAL, "cpd_manager_init\n" );
     }
 
+    /* Initialize the reader */
+    if (( _globals.reader = cpd_reader_create( _globals.ulog_group_number )) == NULL ) {
+        return errlog( ERR_CRITICAL, "cpd_reader_create\n" );
+    }
+
     /* Create a JSON server */
     if ( cpd_functions_init( _globals.config_file ) < 0 ) {
         return errlog( ERR_CRITICAL, "cpd_functions_init\n" );
@@ -335,6 +352,13 @@ static int _init( int argc, char** argv )
     }
 
     if ( config_file_json != NULL ) json_object_put( config_file_json );
+    
+    /* Start the reader */
+    pthread_t thread;                            
+    if ( pthread_create( &thread, &uthread_attr.other.medium,
+                         cpd_reader_donate_thread, _globals.reader )) {
+        return perrlog( "pthread_create" );
+    }
 
     _globals.daemon = MHD_start_daemon( MHD_USE_THREAD_PER_CONNECTION | MHD_USE_DEBUG,
                                         _globals.port, NULL, NULL, _globals.json_server.handler, 
@@ -351,6 +375,15 @@ static void _destroy( void )
     if ( _globals.quit_sem != NULL ) {
         sem = _globals.quit_sem;
         _globals.quit_sem = NULL;
+    }
+
+    cpd_reader_exit( _globals.reader, 5 );
+    
+    if ( _globals.reader->is_running == 0 ) {
+        cpd_reader_raze( _globals.reader );
+        _globals.reader = NULL;
+    } else {
+        errlog( ERR_CRITICAL, "Unable to stop the reader\n" );
     }
 
     /* XXX can hang indefinitely */
@@ -402,28 +435,28 @@ static int _setup_output( void )
 
      if (( _globals.std_out_filename != NULL ) &&
         ( _globals.std_out = open( _globals.std_out_filename, O_WRONLY | O_APPEND | O_CREAT,  00660 )) < 0 ) {
-    syslog( LOG_DAEMON | LOG_ERR, "open(%s): %s\n", _globals.std_out_filename, errstr );
+         syslog( LOG_DAEMON | LOG_ERR, "open(%s): %s\n", _globals.std_out_filename, errstr );
          return -1;
-    }
-    
+     }
+     
      if (( err_fd < 0 ) && ( _globals.std_out > 0 )) err_fd = _globals.std_out;
-    
+     
      if ( err_fd >= 0 ) {
-    close( STDERR_FILENO );
+         close( STDERR_FILENO );
          if ( dup2( err_fd, STDERR_FILENO ) < 0 ) {
-    syslog( LOG_DAEMON | LOG_ERR, "dup2: %s\n", errstr );
+             syslog( LOG_DAEMON | LOG_ERR, "dup2: %s\n", errstr );
              return -7;
-        }
-    }
-
+         }
+     }
+     
      if ( _globals.std_out > 0 ) {
-    close( STDOUT_FILENO );
+         close( STDOUT_FILENO );
          if ( dup2( _globals.std_out, STDOUT_FILENO ) < 0 ) {
-    syslog( LOG_DAEMON | LOG_ERR, "dup2: %s\n", errstr );
+             syslog( LOG_DAEMON | LOG_ERR, "dup2: %s\n", errstr );
              return -7;
-        }
-    }
-    
+         }
+     }
+     
      return 0;
 }
 
