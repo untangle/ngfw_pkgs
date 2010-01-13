@@ -17,8 +17,6 @@
 
 
 #include "cpd.h"
-#include "cpd/host_database.h"
-
 
 typedef struct
 {

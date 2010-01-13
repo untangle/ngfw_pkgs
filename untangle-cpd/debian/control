@@ -2,11 +2,11 @@ Source: untangle-cpd
 Section: premium/admin
 Priority: optional
 Maintainer: Robert Scott <rbscott@untangle.com>
-Build-Depends: debhelper (>> 3.0.0), libc6 (>= 2.3.2), libjson-dev, libjson0, libmicrohttpd-dev (< 0.4), libmicrohttpd4 (< 0.4), ruby, libjson-ruby, curl, gcc, make, fakeroot, libsysfs-dev, liblua5.1-0-dev
+Build-Depends: debhelper (>> 3.0.0), libc6 (>= 2.3.2), libjson-dev, libjson0, libmicrohttpd-dev (< 0.4), libmicrohttpd4 (< 0.4), ruby, libjson-ruby, curl, gcc, make, fakeroot, libsysfs-dev, liblua5.1-0-dev, libnetfilter-log-dev
 Standards-Version: 3.7.2
 
 Package: untangle-cpd
 Architecture: any
-Depends: ${shlibs:Depends}, dash, libjson-ruby, arping, dnsutils, iputils-ping, wget, sudo, liblua5.1-0, liblua5.1-md5-0, liblua5.1-sql-sqlite3-2, python-pysqlite2, php5-sqlite, php5-curl, liblua5.1-socket2, liblua5.1-cgi0, liblua5.1-logging, untangle-php-config
+Depends: ${shlibs:Depends}, dash, libjson-ruby, arping, dnsutils, iputils-ping, wget, sudo, liblua5.1-0, liblua5.1-md5-0, liblua5.1-sql-sqlite3-2, python-pysqlite2, php5-sqlite, php5-curl, liblua5.1-socket2, liblua5.1-cgi0, liblua5.1-logging, untangle-php-config, libnetfilter-log1
 Description: The Untangle Captive Portal
  The Untangle Captive Portal.  A utility for capturing and tracking who is logged in where.

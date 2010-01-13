@@ -39,7 +39,7 @@ mvutil_source=libmvutil/src/debug.c libmvutil/src/errlog.c libmvutil/src/hash.c 
 cpd_source=src/json/server.c src/json/object_utils.c \
 	src/json/serializer.c src/main.c src/functions.c \
 	src/cpd/config.c src/cpd/manager.c src/cpd/status.c \
-	src/cpd/host_database.c ${mvutil_source}
+	${mvutil_source}
 
 cpd_objects=$(patsubst %.c,${object_dir}/%.o, ${cpd_source})
 cpd_binary=cpd

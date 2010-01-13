@@ -31,7 +31,6 @@
 
 #include "cpd.h"
 #include "cpd/manager.h"
-#include "cpd/host_database.h"
 #include "status.h"
 
 #define _MAX_SHUTDOWN_TIMEOUT     10
@@ -50,7 +49,6 @@ static struct
     pthread_t cleanup_thread;
 
     cpd_config_t config;
-    cpd_host_database_t host_database;
     
     lua_State *lua_state;
 
@@ -110,10 +108,6 @@ int cpd_manager_init( cpd_config_t* config, char* sqlite_file, char* lua_script 
         return errlog( ERR_CRITICAL, "_update_lua_script\n" );
     }
 
-    if ( cpd_host_database_init( &_globals.host_database ) < 0 ) {
-        return errlog( ERR_CRITICAL, "cpd_host_database_init\n" );
-    }
-
     if ( _start_cleanup_thread() < 0 ) {
         return errlog( ERR_CRITICAL, "start_cleanup_thread\n" );
     }
@@ -130,8 +124,6 @@ int cpd_manager_init( cpd_config_t* config, char* sqlite_file, char* lua_script 
 void cpd_manager_destroy( void )
 {
     _stop_cleanup_thread();
-
-    cpd_host_database_destroy( &_globals.host_database );
 
     if ( _globals.lua_state != NULL ) {
         lua_close(_globals.lua_state);

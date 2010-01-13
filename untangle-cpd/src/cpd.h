@@ -77,6 +77,12 @@ typedef struct
     int num_hosts;
 } cpd_status_t;
 
+
+typedef struct
+{
+    char u[CPD_MAX_USERNAME_LENGTH];
+} cpd_host_database_username_t;
+
 /* Initialize a configuration object */
 cpd_config_t* cpd_config_malloc( void );
 int cpd_config_init( cpd_config_t* config );

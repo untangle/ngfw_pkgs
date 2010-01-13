@@ -2,8 +2,7 @@ require "luasql.sqlite3"
 require "md5"
 require "logging"
 require "logging.console"
-
-
+require "untangle"
 
 local function create_table( table_name, statement )
    local query
@@ -47,6 +46,19 @@ local function init_database()
                           session_start TIMESTAMP
                        );
                  ]] )
+end
+
+cpd_node = nil
+
+local function run_node_function( function_name, ... )
+   if (  cpd_node == nil ) then
+      local node_manager, tid, node = untangle.remote_uvm_context.nodeManager()
+      tid = node_manager.nodeInstances( "untangle-node-cpd" )[1]
+      cpd_node = node_manager.nodeContext( tid ).node()
+   end
+
+   -- Run the function.
+   return cpd_node[function_name]( unpack( args ))
 end
 
 
@@ -168,6 +180,10 @@ function cpd_expire_sessions( sync_ipset )
    end
 
    return num_rows
+end
+
+function cpd_log_block_event( event )
+   run_node_function( "incrementCount", "BLOCK" )
 end
 
 -- Start of initialization
