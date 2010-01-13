@@ -186,6 +186,11 @@ function cpd_log_block_event( event )
    run_node_function( "incrementCount", "BLOCK" )
 end
 
+function cpd_handle_packet( prefix, packet )
+   print( prefix )
+   table.foreach( packet, print )
+end
+
 -- Start of initialization
 if ( db ) then
    db:close(true)

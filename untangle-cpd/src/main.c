@@ -377,13 +377,15 @@ static void _destroy( void )
         _globals.quit_sem = NULL;
     }
 
-    cpd_reader_exit( _globals.reader, 5 );
-    
-    if ( _globals.reader->is_running == 0 ) {
-        cpd_reader_raze( _globals.reader );
-        _globals.reader = NULL;
-    } else {
-        errlog( ERR_CRITICAL, "Unable to stop the reader\n" );
+    if ( _globals.reader != NULL ) {
+        cpd_reader_exit( _globals.reader, 5 );
+        
+        if ( _globals.reader->is_running == 0 ) {
+            cpd_reader_raze( _globals.reader );
+            _globals.reader = NULL;
+        } else {
+            errlog( ERR_CRITICAL, "Unable to stop the reader\n" );
+        }
     }
 
     /* XXX can hang indefinitely */

@@ -75,6 +75,8 @@ static int _stop_cleanup_thread( void );
 
 static void* _cleanup_thread( void* arg );
 
+static void _push_ip_header( u_int nfmark, struct iphdr* ip_header );
+
 int cpd_manager_init( cpd_config_t* config, char* sqlite_file, char* lua_script )
 {
     if ( _globals.init != 0 ) {
@@ -382,6 +384,74 @@ int cpd_manager_remove_hw_addr( struct ether_addr* hw_addr )
     return ret;
 }
 
+int cpd_manager_handle_tcp_packet( char* prefix, u_int nfmark, 
+                                   struct iphdr* ip_header, struct tcphdr* tcp_header )
+{
+    if ( prefix == NULL ) {
+        return errlogargs();
+    }
+    
+    if ( ip_header == NULL ) {
+        return errlogargs();
+    }
+
+    if ( tcp_header == NULL ) {
+        return errlogargs();
+    }
+
+    int _critical_section()
+    {
+        /* If necessary reload the lua script */
+        if ( _update_lua_script() < 0 ) {
+            return errlog( ERR_CRITICAL, "_update_lua_script\n" );
+        }
+
+        lua_getglobal( _globals.lua_state, "cpd_handle_packet" );
+        if ( !lua_isfunction( _globals.lua_state, -1 )) {
+            lua_pop( _globals.lua_state, 1 );
+            return errlog( ERR_CRITICAL, "cpd_handle_packet is not a function.\n" );
+        }
+        
+        lua_pushstring( _globals.lua_state, prefix );
+
+        lua_newtable( _globals.lua_state );
+        _push_ip_header( nfmark, ip_header );
+        
+        lua_pushnumber( _globals.lua_state, ntohs( tcp_header->source ));
+        lua_setfield( _globals.lua_state, -2, "source_port" );
+
+        lua_pushnumber( _globals.lua_state, ntohs( tcp_header->dest ));
+        lua_setfield( _globals.lua_state, -2, "destination_port" );
+        
+        if ( lua_pcall( _globals.lua_state, 2, 0, 0 ) != 0 ) {
+            return errlog( ERR_CRITICAL, "lua_pcall %s\n", lua_tostring( _globals.lua_state, -1 ));
+        }
+
+        return 0;
+    }
+
+    if ( pthread_mutex_lock( &_globals.mutex ) != 0 ) return perrlog( "pthread_mutex_lock" );
+    int ret = _critical_section();
+    if ( pthread_mutex_unlock( &_globals.mutex ) != 0 ) return perrlog( "pthread_mutex_unlock" );
+
+    if ( ret < 0 ) return errlog( ERR_CRITICAL, "_critical_section\n" );
+
+    return ret;
+}
+
+int cpd_manager_handle_udp_packet( char* prefix, u_int nfmark, 
+                                   struct iphdr* ip_header, struct udphdr* udp_header )
+{
+}
+
+int cpd_manager_handle_ip_packet( char* prefix, u_int nfmark, 
+                                  struct iphdr* ip_header )
+{
+    
+}
+
+
+
 /**
  * Remove all of the entries in the host database.
  * @return The number of entries that were removed.
@@ -600,6 +670,28 @@ static void* _cleanup_thread( void* arg )
 
     return NULL;
 }
+
+static void _push_ip_header( u_int nfmark, struct iphdr* ip_header )
+{
+    lua_pushstring( _globals.lua_state, unet_next_inet_ntoa( ip_header->saddr ));
+    lua_setfield( _globals.lua_state, -2, "source_address" );
+
+    lua_pushstring( _globals.lua_state, unet_next_inet_ntoa( ip_header->daddr ));
+    lua_setfield( _globals.lua_state, -2, "destination_address" );
+
+    lua_pushnumber( _globals.lua_state, ip_header->ttl );
+    lua_setfield( _globals.lua_state, -2, "ttl" );
+
+    lua_pushnumber( _globals.lua_state, ip_header->tos );
+    lua_setfield( _globals.lua_state, -2, "tos" );
+
+    lua_pushnumber( _globals.lua_state, ip_header->protocol );
+    lua_setfield( _globals.lua_state, -2, "protocol" );
+
+    lua_pushnumber( _globals.lua_state, nfmark );
+    lua_setfield( _globals.lua_state, -2, "nfmark" );
+}
+
 
 
 

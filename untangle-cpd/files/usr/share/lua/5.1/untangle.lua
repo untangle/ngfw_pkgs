@@ -8,7 +8,9 @@ package.loaded[modname] = M
 local http = require( "socket.http" )
 local json = require( "json" )
 local ltn12 = require( "ltn12" )
-local table = require( "table" )
+local table = table
+
+local setmetatable = setmetatable
 
 setfenv(1,M)
 

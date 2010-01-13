@@ -13,6 +13,9 @@
 #define __CPD_MANAGER_H_
 
 #include <netinet/ip.h>
+#include <netinet/tcp.h>
+#include <netinet/udp.h>
+
 #include <netinet/ether.h>
 
 #include "cpd.h"
@@ -73,6 +76,23 @@ int cpd_manager_clear_host_database( void );
  * @return The number of entries that were removed.
  */
 int cpd_manager_expire_sessions( void );
+
+/**
+ * Process a TCP Packet that has been logged.
+ */
+int cpd_manager_handle_tcp_packet( char* prefix, u_int nfmark, struct iphdr* ip_header, struct tcphdr* tcp_header );
+
+/**
+ * Process a UDP Packet that has been logged.
+ */
+int cpd_manager_handle_udp_packet( char* prefix, u_int nfmark, struct iphdr* ip_header, struct udphdr* udp_header );
+
+/**
+ * Process a packet that has been logged. (Another protocol)
+ */
+int cpd_manager_handle_ip_packet( char* prefix, u_int nfmark, 
+                                  struct iphdr* ip_header );
+
 
 
 

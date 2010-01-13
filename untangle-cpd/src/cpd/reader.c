@@ -13,10 +13,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <libipulog/libipulog.h>
+#include <netinet/ip.h>
+#include <netinet/tcp.h>
+#include <netinet/udp.h>
 
 #include <mvutil/errlog.h>
 #include <mvutil/debug.h>
 
+#include "cpd/manager.h"
 #include "cpd/reader.h"
 
 #define DEFAULT_RCVBUF_SIZE 131071
@@ -212,14 +216,45 @@ int cpd_reader_exit( cpd_reader_t* reader, int timeout )
 static int _handle_read_event( cpd_reader_t* reader, unsigned char* buffer, ssize_t buffer_size )
 {
     int read_size = 0;
-    ulog_packet_msg_t *packet_msg = NULL;
+    ulog_packet_msg_t *p_msg = NULL;
+
+    struct iphdr* ip_header = NULL;    
+
 
     if (( read_size = ipulog_read( reader->handle, buffer, 150000, 1 )) <= 0 ) {
         return errlog( ERR_CRITICAL, "ipulog_read\n" );
     }
 
-    while (( packet_msg = ipulog_get_packet( reader->handle, buffer, read_size )) != NULL ) {
-        debug( 10, "Read a packet. %#010x\n", packet_msg->timestamp_sec );
+    while (( p_msg = ipulog_get_packet( reader->handle, buffer, read_size )) != NULL ) {
+        ip_header = (struct iphdr*)p_msg->payload;
+
+        if ( ip_header->ihl < 5 ) {
+            errlog( ERR_WARNING, "Skipping packet of invalid header length\n" );
+            continue;
+        }
+
+        if ( p_msg->data_len < ( sizeof( struct iphdr ) + ( 4 * ip_header->ihl ))) {
+            errlog( ERR_WARNING, "Skipping packet, didn't log enough data\n" );
+            continue;
+        }
+        
+        if ( ip_header->protocol == IPPROTO_TCP ) {
+            struct tcphdr* tcp_header = (struct tcphdr*) ( p_msg->payload + ( 4 * ip_header->ihl ));
+            if ( cpd_manager_handle_tcp_packet( p_msg->prefix, p_msg->mark, ip_header, tcp_header ) < 0 ) {
+                errlog( ERR_WARNING, "cpd_manager_handle_tcp_packet\n" );
+            }
+        } else if ( ip_header->protocol == IPPROTO_UDP ) {
+            struct udphdr* udp_header = (struct udphdr*) ( p_msg->payload + ( 4 * ip_header->ihl ));
+            if ( cpd_manager_handle_udp_packet( p_msg->prefix, p_msg->mark, ip_header, udp_header ) < 0 ) {
+                errlog( ERR_WARNING, "cpd_manager_handle_udp_packet\n" );
+            }
+        } else {
+            if ( cpd_manager_handle_ip_packet( p_msg->prefix, p_msg->mark, ip_header ) < 0 ) {
+                errlog( ERR_WARNING, "cpd_manager_handle_ip_packet\n" );
+            }
+        }
+
+        debug( 10, "Read a packet. %#010x %#010x\n", p_msg->timestamp_sec, p_msg->data_len );
     }
 
     return 0;
