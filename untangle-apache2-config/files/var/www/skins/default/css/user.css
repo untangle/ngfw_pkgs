@@ -24,12 +24,13 @@ body.quarantine #content
   border:1px solid #CCC;
   margin:0 auto;
   margin-top:50px;
+
 }
 .service-error-height{
 	height:400px;
 }
 /* blockpage content */
-body.blockpage #content, 
+body.blockpage #content 
 {
   width : 627px;
   height: 505px;
@@ -183,7 +184,7 @@ body.quarantine #header .title
     font-size: larger;
 }
 /* block page main container */
-body.blockpage #main, 
+body.blockpage #main 
 {
   position : absolute;
   left: 15px;
@@ -215,7 +216,7 @@ body.captive-portal #extra-div-1
   top: 130px;
   width: 620px;
   height: 380px;
-  background: transparent url(../images/user/blockpage_border.gif) no-repeat;
+  background: transparent ;
 }
 
 body.blockpage #extra-div-2,
@@ -226,7 +227,7 @@ body.captive-portal #extra-div-2
   bottom: 20px;
   width: 620px;
   height: 12px;
-  background: transparent url(../images/user/blockpage_border_bottom.gif) no-repeat;
+  background: transparent ;
 }
 
 
