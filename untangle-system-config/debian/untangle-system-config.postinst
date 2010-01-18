@@ -116,4 +116,52 @@ fi
 # fix problem about duplicate SSH keys
 /usr/share/untangle-system-config/fix-ssh-keys.sh
 
+# Fix problems with different /etc/hosts.allow and /etc/hosts.deny
+if [ `md5sum /etc/hosts.deny | awk '{ print $1 }'` =  "688ab5a561c1a01a8e5b533aca29442c" ]; then
+    cat<<EOF > /etc/hosts.deny
+# /etc/hosts.deny: list of hosts that are _not_ allowed to access the system.
+#                  See the manual pages hosts_access(5) and hosts_options(5).
+#
+# Example:    ALL: some.host.name, .some.domain
+#             ALL EXCEPT in.fingerd: other.host.name, .other.domain
+#
+# If you're going to protect the portmapper use the name "portmap" for the
+# daemon name. Remember that you can only use the keyword "ALL" and IP
+# addresses (NOT host or domain names) for the portmapper, as well as for
+# rpc.mountd (the NFS mount daemon). See portmap(8) and rpc.mountd(8)
+# for further information.
+#
+# The PARANOID wildcard matches any host whose name does not match its
+# address.
+
+# You may wish to enable this to ensure any programs that don't
+# validate looked up hostnames still leave understandable logs. In past
+# versions of Debian this has been the default.
+# ALL: PARANOID
+EOF
+
+    chmod 0644 /etc/hosts.deny
+    chown root:root /etc/hosts.deny
+fi
+
+if [ `md5sum /etc/hosts.allow | awk '{ print $1 }'` = "bf2b68cb7f76a83859ae52e0149a85cb" ]; then
+    cat <<EOF > /etc/hosts.allow
+# /etc/hosts.allow: list of hosts that are allowed to access the system.
+#                   See the manual pages hosts_access(5) and hosts_options(5).
+#
+# Example:    ALL: LOCAL @some_netgroup
+#             ALL: .foobar.edu EXCEPT terminalserver.foobar.edu
+#
+# If you're going to protect the portmapper use the name "portmap" for the
+# daemon name. Remember that you can only use the keyword "ALL" and IP
+# addresses (NOT host or domain names) for the portmapper, as well as for
+# rpc.mountd (the NFS mount daemon). See portmap(8) and rpc.mountd(8)
+# for further information.
+#
+EOF
+
+    chmod 0644 /etc/hosts.allow
+    chown root:root /etc/hosts.allow
+fi
+
 exit 0
