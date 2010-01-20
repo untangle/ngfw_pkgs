@@ -217,6 +217,7 @@ end
 
 -- These are the rules that run if the traffic should be captured.
 local function add_capture_rules( commands )
+   commands[#commands+1] = "iptables -t mangle -I untangle-cpd-capture 1 -j ULOG --ulog-nlgroup 1 --ulog-cprange 80 --ulog-prefix cpd-block"
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd-capture ! -p tcp -j DROP"
    
    if ( accept_https ) then

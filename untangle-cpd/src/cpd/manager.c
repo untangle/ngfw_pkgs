@@ -69,6 +69,7 @@ static struct
 static int _update_lua_script( void );
 static int _update_lua_config( cpd_config_t* config, char* sqlite_file );
 static char* _ether_ntoa_r(const struct ether_addr *addr, char* buffer, int buffer_len );
+static int _lua_clock_gettime( lua_State *L );
 
 static int _start_cleanup_thread( void );
 static int _stop_cleanup_thread( void );
@@ -101,6 +102,8 @@ int cpd_manager_init( cpd_config_t* config, char* sqlite_file, char* lua_script 
     }
     
     luaL_openlibs( _globals.lua_state );
+    
+    lua_register( _globals.lua_state, "clock_gettime", _lua_clock_gettime );
 
     if ( cpd_manager_set_config( config ) < 0 ) {
         return errlog( ERR_CRITICAL, "cpd_manager_set_config\n" );
@@ -117,8 +120,6 @@ int cpd_manager_init( cpd_config_t* config, char* sqlite_file, char* lua_script 
     _globals.init = 1;
     
     clock_gettime( CLOCK_MONOTONIC, &_globals.next_update );
-
-    
 
     return 0;
 }
@@ -442,12 +443,107 @@ int cpd_manager_handle_tcp_packet( char* prefix, u_int nfmark,
 int cpd_manager_handle_udp_packet( char* prefix, u_int nfmark, 
                                    struct iphdr* ip_header, struct udphdr* udp_header )
 {
+    if ( prefix == NULL ) {
+        return errlogargs();
+    }
+    
+    if ( ip_header == NULL ) {
+        return errlogargs();
+    }
+
+    if ( udp_header == NULL ) {
+        return errlogargs();
+    }
+
+    int _critical_section()
+    {
+        /* If necessary reload the lua script */
+        if ( _update_lua_script() < 0 ) {
+            return errlog( ERR_CRITICAL, "_update_lua_script\n" );
+        }
+
+        lua_getglobal( _globals.lua_state, "cpd_handle_packet" );
+        if ( !lua_isfunction( _globals.lua_state, -1 )) {
+            lua_pop( _globals.lua_state, 1 );
+            return errlog( ERR_CRITICAL, "cpd_handle_packet is not a function.\n" );
+        }
+        
+        lua_pushstring( _globals.lua_state, prefix );
+
+        lua_newtable( _globals.lua_state );
+        _push_ip_header( nfmark, ip_header );
+        
+        lua_pushnumber( _globals.lua_state, ntohs( udp_header->source ));
+        lua_setfield( _globals.lua_state, -2, "source_port" );
+
+        lua_pushnumber( _globals.lua_state, ntohs( udp_header->dest ));
+        lua_setfield( _globals.lua_state, -2, "destination_port" );
+        
+        if ( lua_pcall( _globals.lua_state, 2, 0, 0 ) != 0 ) {
+            return errlog( ERR_CRITICAL, "lua_pcall %s\n", lua_tostring( _globals.lua_state, -1 ));
+        }
+
+        return 0;
+    }
+
+    if ( pthread_mutex_lock( &_globals.mutex ) != 0 ) return perrlog( "pthread_mutex_lock" );
+    int ret = _critical_section();
+    if ( pthread_mutex_unlock( &_globals.mutex ) != 0 ) return perrlog( "pthread_mutex_unlock" );
+
+    if ( ret < 0 ) return errlog( ERR_CRITICAL, "_critical_section\n" );
+
+    return ret;
 }
 
 int cpd_manager_handle_ip_packet( char* prefix, u_int nfmark, 
                                   struct iphdr* ip_header )
 {
+    if ( prefix == NULL ) {
+        return errlogargs();
+    }
     
+    if ( ip_header == NULL ) {
+        return errlogargs();
+    }
+
+    int _critical_section()
+    {
+        /* If necessary reload the lua script */
+        if ( _update_lua_script() < 0 ) {
+            return errlog( ERR_CRITICAL, "_update_lua_script\n" );
+        }
+
+        lua_getglobal( _globals.lua_state, "cpd_handle_packet" );
+        if ( !lua_isfunction( _globals.lua_state, -1 )) {
+            lua_pop( _globals.lua_state, 1 );
+            return errlog( ERR_CRITICAL, "cpd_handle_packet is not a function.\n" );
+        }
+        
+        lua_pushstring( _globals.lua_state, prefix );
+
+        lua_newtable( _globals.lua_state );
+        _push_ip_header( nfmark, ip_header );
+        
+        lua_pushnumber( _globals.lua_state, ntohs( 0 ));
+        lua_setfield( _globals.lua_state, -2, "source_port" );
+
+        lua_pushnumber( _globals.lua_state, ntohs( 0 ));
+        lua_setfield( _globals.lua_state, -2, "destination_port" );
+        
+        if ( lua_pcall( _globals.lua_state, 2, 0, 0 ) != 0 ) {
+            return errlog( ERR_CRITICAL, "lua_pcall %s\n", lua_tostring( _globals.lua_state, -1 ));
+        }
+
+        return 0;
+    }
+
+    if ( pthread_mutex_lock( &_globals.mutex ) != 0 ) return perrlog( "pthread_mutex_lock" );
+    int ret = _critical_section();
+    if ( pthread_mutex_unlock( &_globals.mutex ) != 0 ) return perrlog( "pthread_mutex_unlock" );
+
+    if ( ret < 0 ) return errlog( ERR_CRITICAL, "_critical_section\n" );
+
+    return ret;    
 }
 
 
@@ -538,7 +634,7 @@ int cpd_manager_expire_sessions( void )
 
 static int _update_lua_script( void )
 {
-    debug( 9, "Checking if the LUA script has been updated.\n" );
+    debug( 10, "Checking if the LUA script has been updated.\n" );
     struct stat script_stat;
     if ( stat( _globals.lua_script, &script_stat ) < 0 ) {
         return perrlog( "stat" );
@@ -547,7 +643,7 @@ static int _update_lua_script( void )
     /* Uses == instead of <= so that time shifting back and forwards
      * will not affect this. */
     if (( _globals.script_mtime != 0 ) && ( script_stat.st_mtime == _globals.script_mtime )) {
-        debug( 9, "Script is up to date, not reloading.\n" );
+        debug( 10, "Script is up to date, not reloading.\n" );
         return 0;
     }
     
@@ -609,6 +705,40 @@ static char* _ether_ntoa_r(const struct ether_addr *addr, char* buffer, int buff
 
     return buffer;
 }
+
+static int _lua_clock_gettime( lua_State *L )
+{
+    if ( !lua_isnumber( L, 1 )) {
+        lua_pushstring( L, "'clk_id' should be a number" );
+        lua_error(L);
+    }
+    
+    clockid_t clk_id = (clockid_t)lua_tonumber( L, 1 );
+
+    switch ( clk_id ) {
+    case CLOCK_REALTIME:
+    case CLOCK_MONOTONIC:
+    case CLOCK_PROCESS_CPUTIME_ID:
+    case CLOCK_THREAD_CPUTIME_ID:
+        break;
+    default:
+        lua_pushstring( L, "'clk_id' is invalid" );
+        lua_error(L);
+    }
+
+    struct timespec ts;
+    if ( clock_gettime( clk_id, &ts ) < -1 ) {
+        perrlog( "clock_gettime" );
+        lua_pushstring( L, "'Unable to fetch time" );
+        lua_error( L );
+    }
+
+    lua_pushnumber( L, ts.tv_sec );
+    lua_pushnumber( L, ts.tv_nsec );
+
+    return 2;
+}
+
 
 static int _start_cleanup_thread( void )
 {
@@ -690,6 +820,44 @@ static void _push_ip_header( u_int nfmark, struct iphdr* ip_header )
 
     lua_pushnumber( _globals.lua_state, nfmark );
     lua_setfield( _globals.lua_state, -2, "nfmark" );
+
+    int client_intf = -1;
+
+    switch ( nfmark & 0xF ) {
+    case ( 1 << 0):
+        client_intf = 0;
+        break;
+    case ( 1 << 1 ):
+        client_intf = 1;
+        break;
+    case ( 1 << 2 ):
+        client_intf = 2;
+        break;
+    case ( 1 << 3 ):
+        client_intf = 3;
+        break;
+    case ( 1 << 4):
+        client_intf = 4;
+        break;
+    case ( 1 << 5 ):
+        client_intf = 5;
+        break;
+    case ( 1 << 6 ):
+        client_intf = 6;
+        break;
+    case ( 1 << 7 ):
+        client_intf = 7;
+        break;
+    }
+
+    if ( client_intf == -1 ) {
+        debug( 3, "Invalid nfmark %#010x, using interface interface.\n", nfmark );
+        client_intf = 1;
+    }
+
+    lua_pushnumber( _globals.lua_state, client_intf );
+    lua_setfield( _globals.lua_state, -2, "client_intf" );
+
 }
 
 

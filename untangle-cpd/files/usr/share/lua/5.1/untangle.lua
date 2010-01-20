@@ -11,6 +11,11 @@ local ltn12 = require( "ltn12" )
 local table = table
 
 local setmetatable = setmetatable
+local unpack = unpack
+local pairs = pairs
+local string = string
+local type = type
+local assert = assert
 
 setfenv(1,M)
 
@@ -79,7 +84,7 @@ end
 
 -- Call a method
 local function call_remote_method( t, ... )
-   return t:r( t.service_name, unpack( arg )) 
+   return t:r( t.service_name, ... ) 
 end
 
 function ServiceProxy:new( host, port, service_url, service_name, handler )
@@ -126,7 +131,7 @@ function ServiceProxy:r( method_id, ... )
    end
 
    result = response["result"]
-   if (( type( result ) == "table" ) and ( result['JSONRPCType'] == "CallableReference" )) then
+   if (( type( result ) == "table" ) and ( result["JSONRPCType"] == "CallableReference" )) then
       object_id = result["objectID"]
       assert( not ( object_id  == nil ), "Object ID must not be nil for a callable reference." )
       
