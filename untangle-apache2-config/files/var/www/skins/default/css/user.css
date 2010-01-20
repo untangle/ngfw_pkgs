@@ -67,11 +67,11 @@ body.captive-portal
  }
 
 /* blockpage description text*/
-body.blockpage .description, 
-body.captive-portal .description
+body.blockpage .description
 { 
   margin-bottom: 30px;
 }
+
 
 /* blockpage contact text*/
 body.blockpage p.contact,
@@ -198,18 +198,15 @@ body.blockpage #main
 
 body.captive-portal #main
 {
-  position : absolute;
+
   left: 15px;
   top: 130px;
-  width: 620px;
   height: 500px;
-  text-align: center;
   /* This is to place this above the border */
   z-index: 100;
 }
 
 body.blockpage #extra-div-1, 
-body.captive-portal #extra-div-1
 { 
   position : absolute;
   left: 15px;
@@ -217,6 +214,9 @@ body.captive-portal #extra-div-1
   width: 620px;
   height: 380px;
   background: transparent ;
+}
+body.captive-portal #extra-div-1{
+    display:none;
 }
 
 body.blockpage #extra-div-2,
@@ -255,6 +255,11 @@ body.captive-portal #header .title
   margin-right:auto;
   text-align: left;
   background-color: #FFFFFF;
+}
+.info-list-captive-portal{
+    margin:10px 0px 20px 0px;
+    background-color:#FFF;
+    position: relative;
 }
 /* block page information list element */
 .info-list div{
@@ -337,16 +342,104 @@ button.icon-delete-row{
 #invalid-password{
     color:#FF0000;
 }
+/* Captive portal */
+body.captive-portal .description
+{ 
+  margin-bottom: 10px;
+}
+
+.info-list-captive-portal .u-form-item{
+    margin:5px 0px 2px 10px;    
+}
+.info-list-captive-portal .u-form-item .u-form-item-label
+{
+    font-size:16px;
+    color:#333;
+    line-height:26px;
+    display:block;
+    margin-bottom:5px;
+    margin-right:0px;
+    float:none;
+    
+}
+.info-list-captive-portal  .message-text{
+    border-left:1px solid #CCCCCC;
+    color:#333333;
+    font-size:12px;
+    height:90%;
+    margin:10px 10px 10px 345px;
+    overflow:auto;
+    padding-left:10px;
+    padding-right:10px;
+    position:absolute;
+    top:0;
+    width:268px;
+    
+}
+.info-list-captive-portal .text-field{
+    margin-left:5px;
+}
+.info-list-captive-portal .u-form-item  .u-form-text {
+    padding:2px 0px;
+    margin-right:5px;
+    display:block;
+}
+.info-list-captive-portal .u-form-item a.img-background{	
+	background-image:url(../images/user/green-button-background-3.gif);
+	background-position:center center;
+	background-repeat:repeat-x;
+	color:#FFF;
+	font-family:tahoma,arial,helvetica,sans-serif;
+	font-size:20px;
+	line-height:35px;
+	border:1px #5b9400 solid;
+	padding:0px 10px;
+	text-decoration:none;
+	display:inline-block;
+	margin:10px 0px;	
+}
+.info-list-captive-portal .u-form-item a.img-background:hover{
+	background-image:url(../images/user/green-button-background-3_f2.gif);
+	
+}
 
 body.captive-portal #basic-message-text
 { 
-  height: 170px;
-  width: 340px;
-  overflow: auto;
-  border: 1px solid #666;
-  background-color: #FFF;
-  padding: 8px;
-  margin-left:auto;
-  margin-right:auto;
-  text-align : left
+    background-color:#FFFFFF;
+    border:1px solid #666666;
+    height:170px;
+    margin:5px;
+    overflow:auto;
+    padding:10px;
+    position:relative;
+    text-align:left;
+    top:5px;
+    width:auto;
  }
+body.captive-portal .agree-checkbox{
+    margin-left:5px;
+    margin-top:15px;
+}
+body.captive-portal .continue-message{
+    margin-left:5px;
+}
+p.error{
+    background:#FFE3DF url(../images/user/message_error.png) no-repeat scroll 4px center;
+    border:1px solid #F08A73;
+    color:#525252;
+    display:none;
+    line-height:40px;
+    padding-left:40px;
+    font-weight:bold;
+        
+}
+p.success{
+    background:#E9FAD0 url(../images/user/message_success.png) no-repeat scroll 4px center;
+    border:1px solid #AEE756;
+    color:#525252;
+    line-height:40px;
+    padding-left:40px;
+    font-weight:bold; 
+    margin-bottom:10px;
+    display:none;   
+}
