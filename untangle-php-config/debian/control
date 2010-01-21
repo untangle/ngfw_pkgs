@@ -7,6 +7,6 @@ Standards-Version: 3.7.2
 
 Package: untangle-php-config
 Architecture: all
-Depends: php5-cgi, php5-radius, php5-ldap, apache2-mpm-worker
+Depends: php5-cgi, php5-radius, php5-ldap, apache2-mpm-worker, libapache2-mod-fcgid
 Description: The Untangle PHP config
  The Untangle PHP config.

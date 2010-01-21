@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+    configure)
+        
+        test   ! -e /etc/apache2/mods-enabled/untangle-php.conf \
+            -a ! -e /etc/apache2/mods-enabled/untangle-php.load \
+          && /usr/sbin/a2enmod untangle-php
+    ;;
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+#DEBHELPER#
+
+exit 0
