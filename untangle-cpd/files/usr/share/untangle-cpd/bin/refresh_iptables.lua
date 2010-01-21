@@ -274,6 +274,12 @@ commands[#commands+1] = "iptables -t mangle -F untangle-cpd-capture"
 if ( cpd_config["enabled"] == true ) then
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd -i utun -j RETURN"
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd -i lo -j RETURN"
+   
+   -- Defaulting capture_bypassed to false.
+   if ( not cpd_config["capture_bypassed_traffic"] ) then
+      commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m mark --mark 0x1000000/0x1000000 -j RETURN"
+   end
+   
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m pkttype ! --pkt-type UNICAST -j RETURN"
 
    -- Return all local traffic

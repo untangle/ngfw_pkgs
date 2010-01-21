@@ -63,6 +63,9 @@ typedef struct
     /* How often to expire old sessions in seconds. */
     int expiration_frequency_s;
 
+    /* Capture Bypassed traffic */
+    int capture_bypassed;
+
     int capture_rules_length;
 
     cpd_capture_rule_t capture_rules[CPD_MAX_CAPTURE_RULES];

@@ -38,13 +38,13 @@ reap_child_easy()
 
 reap_child()
 {
-    echo "[`date`] Received Signal      (monitor: $$) (cpd: $CPD_PID) (sending signal: $1) "
+    logger -t untangle-cpd "Received signal      (monitor: $$) (CPD: $CPD_PID) (sending signal: $1) "
 
     if [ ! -z "$CPD_PID" ] ; then
-        echo "[`date`] Sending signal $1 to cpd ($CPD_PID)."
+        logger -t untangle-cpd "Sending signal $1 to CPD ($CPD_PID)."
         kill -$1 ${CPD_PID}
         wait ${CPD_PID}
-        echo "[`date`] Cpd Stopped    (monitor: $$) (cpd: $CPD_PID)"
+        logger -t untangle-cpd "CPD Stopped    (monitor: $$) (CPD: $CPD_PID)"
     fi
 
     exit 0
@@ -67,7 +67,16 @@ start_cpd()
     
     ${CPD_BIN} ${t_args} &
     CPD_PID=$!
-    echo "[`date`] Started Cpd    (monitor: $$) (cpd: $CPD_PID)"
+    logger -t untangle-cpd "[`date`] Started CPD    (monitor: $$) (CPD: $CPD_PID)"
+}
+
+refresh_iptables()
+{
+    if [ -x /usr/share/untangle-cpd/bin/refresh_iptables.lua ]; then
+        /usr/share/untangle-cpd/bin/refresh_iptables.lua
+    else
+        logger -t untangle-cpd "[`date`] Missing refresh iptables script."
+    fi
 }
 
 ## Start of script
@@ -78,11 +87,14 @@ exec >> ${CPD_LOG_MONITOR}  2>&1
 trap reap_child_easy INT TERM USR1 USR2 QUIT
 
 while ( true ) ;  do
-    echo "[`date`] Starting CPD"
+    logger -t untangle-cpd "[`date`] Starting CPD"
 
     start_cpd
+    
+    refresh_iptables
+
     sleep 2
-    echo "[`date`] Monitoring CPD (monitor: $$) (cpd: $CPD_PID)"
+    logger -t untangle-cpd "[`date`] Monitoring CPD (monitor: $$) (CPD: $CPD_PID)"
     while ( true ) ; do
         wait $CPD_PID
         
@@ -91,5 +103,5 @@ while ( true ) ;  do
         sleep 0.5
     done
     
-    echo "[`date`] CPD Died!      (monitor: $$) (cpd: $CPD_PID)"
+    logger -t untangle-cpd "CPD Died!      (monitor: $$) (cpd: $CPD_PID)"
 done

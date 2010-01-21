@@ -29,12 +29,13 @@ start()
 
     if [ -f ${PID_FILE} ] ; then
       ps -p `cat ${PID_FILE}` > /dev/null 2>&1 && grep $MONITOR /proc/`cat ${PID_FILE}`/cmdline > /dev/null 2>&1
+
       if [ $? -eq 0 ] ; then
-          echo "Already Running."
+          logger -t untangle-cpd "Already running."
           log_end_msg 1
           exit 1
       fi	
-      echo "Removing Stale pid file"
+      logger -t untangle-cpd "Removing stale pid file"
       rm -f ${PID_FILE}
     fi
 
@@ -51,6 +52,11 @@ stop()
     start-stop-daemon --pidfile ${PID_FILE} --stop --retry USR1/4/USR1/2/USR1/2/INT/1/TERM/1/KILL/1
     RET=$?
     log_end_msg $RET
+    
+    ## Refresh the iptables rules
+    if [ -x /usr/share/untangle-cpd/bin/refresh_iptables.lua ]; then
+        /usr/share/untangle-cpd/bin/refresh_iptables.lua
+    fi
 
     rm -f ${PID_FILE}
 }

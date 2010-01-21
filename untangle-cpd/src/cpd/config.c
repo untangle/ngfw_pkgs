@@ -145,6 +145,13 @@ static json_serializer_t _config_serializer = {
             .to_json = json_serializer_to_json_boolean,
             .arg = (void*)offsetof( cpd_config_t, concurrent_logins )
         },{
+            .name = "capture_bypassed_traffic",
+            .fetch_arg = 1,
+            .if_empty = JSON_SERIALIZER_FIELD_EMPTY_ERROR,
+            .to_c = json_serializer_to_c_boolean,
+            .to_json = json_serializer_to_json_boolean,
+            .arg = (void*)offsetof( cpd_config_t, capture_bypassed )
+        },{
             .name = "idle_timeout_s",
             .fetch_arg = 1,
             .if_empty = JSON_SERIALIZER_FIELD_EMPTY_ERROR,

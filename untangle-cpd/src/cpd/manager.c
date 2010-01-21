@@ -670,6 +670,9 @@ static int _update_lua_config( cpd_config_t* config, char* sqlite_file )
     lua_pushboolean( _globals.lua_state, _globals.config.concurrent_logins );
     lua_setfield( _globals.lua_state, -2, "concurrent_logins" );
 
+    lua_pushboolean( _globals.lua_state, _globals.config.capture_bypassed );
+    lua_setfield( _globals.lua_state, -2, "capture_bypassed_traffic" );
+
     lua_pushnumber( _globals.lua_state, _globals.config.idle_timeout_s );
     lua_setfield( _globals.lua_state, -2, "idle_timeout_s" );
 
@@ -680,7 +683,7 @@ static int _update_lua_config( cpd_config_t* config, char* sqlite_file )
     lua_setfield( _globals.lua_state, -2, "sqlite_file" );
 
     lua_setglobal( _globals.lua_state, "cpd_config" );
-
+    
     return 0;
 }
 

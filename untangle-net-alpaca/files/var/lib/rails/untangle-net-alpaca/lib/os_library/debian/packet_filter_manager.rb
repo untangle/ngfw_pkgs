@@ -66,6 +66,9 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   MarkFwPass = 0x80000000
   MarkClearFwPass = ( 0xFFFFFFFF ^ MarkFwPass )
 
+  ## Mark that indicates that the packet should be 
+  MarkCaptivePortal = 0x100000
+
   MultiWanMask  = 0x00000E00
   MultiWanShift = 9
 
@@ -214,11 +217,17 @@ EOF
     ## Chain used for Single NIC mode.
     SingleNIC = Chain.new( "alpaca-snic", "mangle", "PREROUTING" )
 
+    ## Chain used for captive portal
+    CaptivePortal = Chain.new( "untangle-cpd", "mangle", "PREROUTING" )
+
+    ## Chain used to capture / drop traffic for the captive portal.
+    CaptivePortalCapture = Chain.new( "untangle-cpd-capture", "mangle", nil )
+
     ## Review : Should the Firewall Rules go before the redirects?
     Order = [ MarkInterface, PostNat, SNatRules,
               FirewallBlock, FirewallMarkReject, FirewallMarkDrop, 
               FirewallMarkInputReject, FirewallMarkInputDrop, FirewallNat,
-              FirewallRules, SingleNIC,
+              FirewallRules, CaptivePortal, CaptivePortalCapture, SingleNIC,
               BypassRules, BypassMark, Redirect ]
   end
   
