@@ -256,15 +256,6 @@ Ung.Alpaca.Pages.Redirect.RowEditor = Ext.extend( Ung.Alpaca.RowEditor, {
                 dataIndex: "filter",
                 ruleInterfaceValues : this.settings["interface_enum"],
                 rules : [{
-                    name : "s-addr",
-                    displayName : this._("Source Address"),
-                    type: "text",
-                    vtype : "address"
-                },{
-                    name : "d-local",
-                    displayName : this._("Destined Local"),
-                    type: "boolean"
-                },{
                     name : "d-addr",
                     displayName : this._("Destination Address"),
                     type: "text",
@@ -275,15 +266,24 @@ Ung.Alpaca.Pages.Redirect.RowEditor = Ext.extend( Ung.Alpaca.RowEditor, {
                     type: "text",
                     vtype : "port"
                 },{
-                    name:"s-intf",
-                    displayName : this._("Source Interface"),
-                    type: "checkgroup",
-                    values : this.settings["interface_enum"]
+                    name : "d-local",
+                    displayName : this._("Destined Local"),
+                    type: "boolean"
                 },{
                     name : "protocol",
                     displayName : this._("Protocol"),
                     type: "checkgroup",
                     values: Ung.Alpaca.RuleBuilder.DEFAULT_PROTOCOL_VALUES
+                },{
+                    name:"s-intf",
+                    displayName : this._("Source Interface"),
+                    type: "checkgroup",
+                    values : this.settings["interface_enum"]
+                },{
+                    name : "s-addr",
+                    displayName : this._("Source Address"),
+                    type: "text",
+                    vtype : "address"
                 }]
             }]
         },{
