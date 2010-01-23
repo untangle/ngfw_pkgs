@@ -65,29 +65,36 @@ end
 local function handle_ipv4_param( type, param )
    local is_client = type == "client_address"
    if ( param == "any" ) then
-      return ""
+      return { "" }
    end
 
    range_start, range_end = string.match( param, "(%d+%.%d+%.%d+%.%d+)%s*-%s*(%d+%.%d+%.%d+%.%d+)%s*")
    if ( not ( range_start == nil )) then
       is_client = ( is_client ) and "src" or "dst"
 
-      return string.format( " -m iprange --%s-range %s-%s", is_client, range_start, range_end )
+      return { string.format( " -m iprange --%s-range %s-%s", is_client, range_start, range_end ) }
    end
    
    is_client = ( is_client ) and "source" or "destination"
+   
+   local address, address_array = nil, {}
 
-   return string.format( " --%s %s", is_client, param )
+   -- This should eventually be changed to an ipset.
+   for address in string.gmatch( param, "%s*([%d%.]+)%s*,?" ) do
+      address_array[#address_array+1] = string.format( " --%s %s", is_client, address )
+   end
+
+   return address_array
 end
 
 local function handle_intf_param( type, param )
    if ( param < 0 ) then
-      return ""
+      return { "" }
    end
 
    assert( param < 8, "param must be less then 8" )
 
-   return string.format( " -m mark --mark $((1 << %d ))/$((1 << %d ))", param, param )
+   return { string.format( " -m mark --mark $((1 << %d ))/$((1 << %d ))", param, param ) }
 end
 
 local day_table = {
@@ -162,22 +169,21 @@ end
 local function handle_time( rule )
    local days, time = get_days_param( rule["days"] ), get_time_param( rule["start_time"], rule["end_time"] )
    if ( days == "" and time == "" ) then
-      return ""
+      return { "" }
    end
    
-   return  " -m time " .. days .. time
+   return  { " -m time " .. days .. time }
 end
 
 local function handle_ignore_param( type, param )
    -- This is just a field to indicate whether or not the rule capture or enable values.
-   return ""
+   return { "" }
 end
    
 local command_handler = {
    client_address = handle_ipv4_param,
    server_address = handle_ipv4_param,
    client_interface = handle_intf_param,
-   time = handle_time_param,
    capture = handle_ignore_param,
    enabled = handle_ignore_param,
    start_time = handle_ignore_param,
@@ -185,9 +191,13 @@ local command_handler = {
    days = handle_ignore_param
 }
 
+
+-- @param command_array array of rules that these rules should be appeneded to.
 -- @param rule The rule to add.
-local function build_rule( rule, target )
-   local iptables_command, type, param = "iptables -t mangle -A untangle-cpd "
+-- @param target The target that the complete command should go to.
+-- @return void
+local function add_rules( command_array, rule, target )
+   local commands, command, type, param, filter, filter_array = {}
 
    if ( not ( rule["enabled"] == true )) then
       return
@@ -196,16 +206,51 @@ local function build_rule( rule, target )
    -- Verify there is at least one parameter.
    assert( not ( next( rule ) == nil ))
    
+   -- Add in the commands
+   commands[#commands+1] = { "iptables -t mangle -A untangle-cpd" }
+
    for type, param in pairs( rule ) do
-      iptables_command = iptables_command .. command_handler[type]( type, param )
+      commands[#commands +1] = command_handler[type]( type, param )
    end
 
    -- Add in the time parameter
-   iptables_command = iptables_command .. handle_time( rule )
-   
-   iptables_command = iptables_command .. "  " .. target
-   
-   return iptables_command
+   commands[#commands+1] = handle_time( rule )
+
+   -- Add in the target parameter
+   commands[#commands+1] = { target }
+
+   output = { "" }
+
+   local next_output
+
+   -- Expand all of the combinations of the rules
+   for i, filter_array in ipairs( commands ) do
+      -- simulate a continue loop
+      repeat
+         -- If filter array is empty then the values are not expanded.
+         if ( #filter_array == 0 ) then
+            break
+         end
+         
+         next_output = {}
+         
+         for _, command in ipairs( output ) do
+            -- Iterate each combination of the filter array, and add it to the array of commands
+            for _, filter in ipairs( filter_array ) do
+               print( "command: '" .. command .. "'" )
+               next_output[#next_output + 1] = command .. " " .. filter
+            end
+         end
+         print( "post" )
+         table.foreach( next_output, print )
+      
+         output = next_output
+      until true
+   end
+
+   for _, command in ipairs( output ) do
+      command_array[#command_array+1] = command
+   end
 end
 
 -- Add rules to escape hosts that are in the ipset.
@@ -284,6 +329,10 @@ if ( cpd_config["enabled"] == true ) then
 
    -- Return all local traffic
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m mark --mark 0x100/0x100 -j RETURN"
+
+   -- Return all traffic that doesn't have an interface mark.
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m mark --mark 0x00/0xFF -j RETURN"
+
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m state --state ESTABLISHED,RELATED -j RETURN"
    
    -- Update the capture rules.
@@ -295,9 +344,9 @@ if ( cpd_config["enabled"] == true ) then
    for _, rule in ipairs( capture_rules ) do 
       if ( rule["capture"] ) then
          -- Clear the firewall drop mark, and set the captive portal mark.
-         commands[#commands +1] = build_rule( rule, "-g untangle-cpd-capture" )
+         add_rules( commands, rule, "-g untangle-cpd-capture" )
       else
-         commands[#commands +1] = build_rule( rule, "-j RETURN" )
+         add_rules( commands, rule, "-j RETURN" )
       end
    end
 end
