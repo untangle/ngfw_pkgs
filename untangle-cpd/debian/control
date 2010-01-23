@@ -7,6 +7,6 @@ Standards-Version: 3.7.2
 
 Package: untangle-cpd
 Architecture: any
-Depends: ${shlibs:Depends}, dash, libjson-ruby, arping, dnsutils, iputils-ping, wget, sudo, liblua5.1-0, liblua5.1-md5-0, liblua5.1-sql-sqlite3-2, liblua5.1-sql-postgres-2, python-pysqlite2, php5-sqlite, php5-curl, liblua5.1-socket2, liblua5.1-cgi0, liblua5.1-logging, untangle-php-config, libnetfilter-log1
+Depends: ${shlibs:Depends}, dash, libjson-ruby, arping, dnsutils, iputils-ping, wget, sudo, liblua5.1-0, liblua5.1-md5-0, liblua5.1-sql-sqlite3-2, liblua5.1-sql-postgres-2, liblua5.1-socket2, liblua5.1-cgi0, liblua5.1-logging, libnetfilter-log1
 Description: The Untangle Captive Portal
  The Untangle Captive Portal.  A utility for capturing and tracking who is logged in where.
