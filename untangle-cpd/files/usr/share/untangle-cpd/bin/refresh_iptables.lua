@@ -237,12 +237,9 @@ local function add_rules( command_array, rule, target )
          for _, command in ipairs( output ) do
             -- Iterate each combination of the filter array, and add it to the array of commands
             for _, filter in ipairs( filter_array ) do
-               print( "command: '" .. command .. "'" )
                next_output[#next_output + 1] = command .. " " .. filter
             end
          end
-         print( "post" )
-         table.foreach( next_output, print )
       
          output = next_output
       until true
