@@ -11,6 +11,7 @@ MEM=$(awk '/MemTotal/ { print $2 }' < /proc/meminfo)
 if [ $MEM -gt 1900000 ] ; then
     echo "    Using settings for 2 gigabytes of memory"
     SHARED_BUFFERS=10000
+    MAX_FSM_PAGES=2000000
     SORT_MEM=32768
     VACUUM_MEM=131072
     EFFECTIVE_CACHE_SIZE=40000
@@ -25,12 +26,14 @@ if [ $MEM -gt 1900000 ] ; then
 elif [ $MEM -gt 900000 ] ; then
     echo "    Using settings for 1 gigabyte of memory"
     SHARED_BUFFERS=3000
+    MAX_FSM_PAGES=500000
     SORT_MEM=16384
     VACUUM_MEM=65536
     EFFECTIVE_CACHE_SIZE=9000
 else
     echo "    Using settings for 512 megabytes of memory"
     SHARED_BUFFERS=2000
+    MAX_FSM_PAGES=200000
     SORT_MEM=4096
     VACUUM_MEM=32768
     EFFECTIVE_CACHE_SIZE=3000
@@ -39,6 +42,7 @@ fi
 for file in $PG_CONF ; do
     # Tune memory usage & query optimizer
     sed -i -e "s/[# ]*shared_buffers *=.*/shared_buffers = ${SHARED_BUFFERS}/" $file
+    sed -i -e "s/[# ]*max_fsm_pages *=.*/max_fsm_pages = ${MAX_FSM_PAGES}/" $file
     sed -i -e "s/[# ]*sort_mem *=.*/sort_mem = ${SORT_MEM}/" $file
     sed -i -e "s/[# ]*vacuum_mem *=.*/vacuum_mem = ${VACUUM_MEM}/" $file
     sed -i -e "s/[# ]*effective_cache_size *=.*/effective_cache_size = ${EFFECTIVE_CACHE_SIZE}/" $file

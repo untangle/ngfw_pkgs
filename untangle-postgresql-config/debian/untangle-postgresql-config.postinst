@@ -48,8 +48,10 @@ for file in $PG_CONF ; do
     sed -i -e "s/.*search_path.*=.*/search_path = 'public,settings,events'/" $file
     # constraint exclusion for partitioned tables
     sed -i -e "s/[# ]*constraint_exclusion *=.*/constraint_exclusion = on/" $file
+
     # disable autovacuuming
-#     sed -i -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" $file
+    # sed -i -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" $file
+    # disable postgres common cron job
     perl -i -pe 's/^(?!#)/#/' /etc/cron.d/postgresql-common
 done
 
