@@ -118,12 +118,39 @@ body{
     background-position:5px 5px;  
     margin-right:25px;  
 }
+.highlight-2 p{
+    padding:0em 1em 0em 35px ;
+    line-height:25px;
+    background-color:#CCC;
+    font-family:Tahoma,Helvetica,sans-serif;
+    font-size:12px;
+    background-repeat:no-repeat;
+    background-position:5px 5px;  
+    margin-right:25px;  
+}
+.highlight-2{
+    margin:0em 0 0em 1em;
+}
+
 .odd p{
     background-color:#EFEFEF;
 }
-.highlight p strong{
+.highlight p strong, .highlight-2 p strong{
     font-weight:bold;
 }
 .first{
     margin-top:1em;
+}
+.summary-header{
+    height:51px;
+    margin:0.5em 0 0 1em;
+}
+.summary-header img{
+    margin-right:1em;
+}
+
+.summary-header strong{
+    font-weight:bold;
+    font-family:Tahoma,helvetica,sans-serif;
+    font-size:14px;
 }
