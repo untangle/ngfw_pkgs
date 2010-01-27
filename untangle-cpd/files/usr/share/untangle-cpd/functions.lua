@@ -1,4 +1,3 @@
-require "luasql.sqlite3"
 require "luasql.postgres"
 require "md5"
 require "logging"
@@ -8,54 +7,8 @@ require "logging.console"
 require "socket"
 require "untangle"
 
-
-local function create_table( table_name, statement )
-   local query
-   local hash = md5.sumhexa(statement)
-      
-   query = string.format( "SELECT * FROM db_version WHERE table_name='%s' AND version_id='%s'", table_name, hash )
-
-   curs = assert( db:execute( query ))
-   is_updated = not( curs:fetch() == nil )
-   curs:close()
-   if ( is_updated ) then
-      logger:info( string.format( "The table '%s' is up to date", table_name ))
-      return
-   end
-
-   assert( db:execute( string.format( "DROP TABLE IF EXISTS %s;", table_name )))
-   assert( db:execute( statement ))
-
-   query = string.format( "DELETE FROM db_version WHERE table_name='%s'", table_name )
-   assert( db:execute( query ))
-   query= string.format( "INSERT INTO db_version (table_name,version_id) VALUES ('%s', '%s' )", 
-                         table_name, hash )                   
-   assert( db:execute( query ))
-end
-
-local function init_database()
-   assert( db:execute([[
-                            CREATE TABLE IF NOT EXISTS db_version (
-                               table_name TEXT,
-                               version_id TEXT
-                            );
-                      ]]))
-   local curs, is_updated
-   
-   create_table( "host_database", [[
-                       CREATE TABLE IF NOT EXISTS host_database (
-                          hw_addr TEXT,
-                          ipv4_addr TEXT,
-                          username TEXT,
-                          last_session TIMESTAMP,
-                          session_start TIMESTAMP
-                       );
-                 ]] )
-end
-
-cpd_node = nil
 postgres = nil
-
+uvm_db = nil
 local function uvm_db_execute( query )
    if ( postgres == nil ) then
       postgres = assert( luasql.postgres())
@@ -68,6 +21,70 @@ local function uvm_db_execute( query )
    return uvm_db:execute( query )
 end
 
+local function create_table( table_name, ... )
+   local statements, query  =  { ... }
+   -- Get the hash of all of the individual queries
+   local hash = md5.sumhexa(table.concat( statements, "" ))
+      
+   query = string.format( "SELECT * FROM settings.n_cpd_db_version WHERE table_name='%s' AND version_id='%s'", table_name, hash )
+
+   curs = assert( uvm_db_execute( query ))
+   is_updated = not( curs:fetch() == nil )
+   curs:close()
+   if ( is_updated ) then
+      logger:info( string.format( "The table '%s' is up to date", table_name ))
+      return
+   end
+
+   assert( uvm_db_execute( string.format( "DROP TABLE IF EXISTS %s CASCADE;", table_name )))
+
+   for _, query in ipairs( statements ) do
+      assert( uvm_db_execute( query ))
+   end
+
+   query = string.format( "DELETE FROM settings.n_cpd_db_version WHERE table_name='%s'", table_name )
+   assert( uvm_db_execute( query ))
+   query= string.format( "INSERT INTO settings.n_cpd_db_version (table_name,version_id) VALUES ('%s', '%s' )", 
+                         table_name, hash )
+   assert( uvm_db_execute( query ))
+end
+
+local function init_database()
+   uvm_db_execute([[
+                    CREATE TABLE settings.n_cpd_db_version (
+                       table_name TEXT,
+                       version_id TEXT
+                    );
+              ]])
+   local curs, is_updated
+   
+   create_table( "n_adconnector_host_database_entry", [[
+CREATE TABLE events.n_adconnector_host_database_entry (
+    entry_id        INT8 NOT NULL,
+    hw_addr         TEXT,
+    ipv4_addr       INET,
+    username        TEXT,
+    last_session    TIMESTAMP,
+    session_start   TIMESTAMP,
+    expiration_date TIMESTAMP,
+   PRIMARY KEY     (entry_id));
+]],[[
+CREATE INDEX n_adconnector_host_database_last_session_idx ON 
+       events.n_adconnector_host_database_entry(last_session);
+ ]],[[
+-- For querying on sessions that are expired
+CREATE INDEX n_adconnector_host_database_expiration_date_idx ON
+       events.n_adconnector_host_database_entry(expiration_date);
+ ]],[[
+CREATE INDEX n_adconnector_host_database_username_idx ON
+       events.n_adconnector_host_database_entry(username);
+ ]],[[
+CREATE INDEX n_adconnector_host_database_ipv4_addr_idx ON
+       events.n_adconnector_host_database_entry(ipv4_addr);
+ ]])
+end
+
+cpd_node = nil
 
 local function _run_node_function( function_name, ... )
    if ( remote_uvm_context == nil ) then
@@ -137,16 +154,16 @@ local function run_node_function( function_name, ... )
     add_ipset_entry( hw_addr, ipv4_addr )
 
     if ( update_session_start ) then
-       query = string.format( "UPDATE host_database SET username='%s', hw_addr=%s, session_start=datetime('now'), last_session=datetime('now') WHERE ipv4_addr='%s'", username, hw_addr_str, ipv4_addr )
+       query = string.format( "UPDATE %s SET username='%s', hw_addr=%s, session_start=now(), last_session=now(), expiration_date=now() + interval '%d seconds' WHERE ipv4_addr='%s'", host_database_table, username, hw_addr_str, cpd_config.max_session_length_s, ipv4_addr )
     else
-       query = string.format( "UPDATE host_database SET username='%s', hw_addr=%s, last_session=datetime('now') WHERE ipv4_addr='%s'", username, hw_addr_str, ipv4_addr )
+       query = string.format( "UPDATE %s SET username='%s', hw_addr=%s, last_session=now() WHERE ipv4_addr='%s'", host_database_table, username, hw_addr_str, ipv4_addr )
     end
 
-    num_rows = assert( db:execute( query ))
+    num_rows = assert( uvm_db_execute( query ))
 
     if ( num_rows > 1 ) then
-       logger:warn( string.format( "Database is corrupt for address '%s' / '%s', clearing entries", ipv4_addr, hw_addr or "empty" ))
-       assert( db:execute( string.format( "DELETE FROM host_database WHERE ipv4_adddr='%s'", ipv4_addr )))
+       logger:warn( string.format( "Database corrupt for address '%s' / '%s', clearing entries", ipv4_addr, hw_addr or "empty" ))
+       assert( uvm_db_execute( string.format( "DELETE FROM %s WHERE ipv4_adddr='%s'", host_database_table, ipv4_addr )))
     elseif ( num_rows == 1 ) then
        logger:info( string.format( "Updated username (%s) for address '%s' / '%s'", username, ipv4_addr, hw_addr or "empty" ))
        return true
@@ -154,9 +171,9 @@ local function run_node_function( function_name, ... )
        logger:info( string.format( "Creating new entry for '%s' / '%s'", ipv4_addr, hw_addr or "empty" ))
     end
 
-    query = string.format( "INSERT INTO host_database ( username, ipv4_addr, hw_addr, session_start, last_session ) VALUES ( '%s', '%s', %s, datetime('now'), datetime('now') )",  username, ipv4_addr, hw_addr_str )
+    query = string.format( "INSERT INTO %s ( entry_id, username, ipv4_addr, hw_addr, session_start, last_session , expiration_date ) VALUES ( nextval( 'hibernate_sequence' ), '%s', '%s', %s, now(), now(), now() + interval '%d seconds' )",  host_database_table, username, ipv4_addr, hw_addr_str, cpd_config.max_session_length_s )
 
-    num_rows = assert( db:execute( query ))
+    num_rows = assert( uvm_db_execute( query ))
     assert( num_rows == 1, "INSERT didn't create a new row." )
     return false
  end
@@ -166,11 +183,11 @@ local function run_node_function( function_name, ... )
 
  function cpd_remove_ipv4_addr( ipv4_addr )
     remove_ipset_entry( ipv4_addr )
-    return assert( db:execute( string.format( "DELETE FROM host_database WHERE ipv4_addr='%s'", ipv4_addr )))
+    return assert( uvm_db_execute( string.format( "DELETE FROM %s WHERE ipv4_addr='%s'", host_database_table, ipv4_addr )))
  end
 
  function cpd_remove_hw_addr( hw_addr )
-    local curs, where_clause
+    local curs, where_clause, query
     local row = {}
 
     if ( hw_addr == nil ) then
@@ -179,7 +196,9 @@ local function run_node_function( function_name, ... )
        where_clause = string.format( "hw_addr='%s'", hw_addr )
     end
 
-    curs = assert( db:execute( "SELECT ipv4_addr FROM host_database WHERE " .. where_clause ))
+    query = string.format( "SELECT ipv4_addr FROM %s WHERE %s", host_database_table, where_clause )
+    
+    curs = assert( uvm_db_execute( query ))
 
     row = curs:fetch( row,  "n" )
     while row do
@@ -188,12 +207,14 @@ local function run_node_function( function_name, ... )
     end
     curs:close()
 
-    return assert( db:execute( "DELETE FROM host_database WHERE " .. where_clause ))
+    query = string.format( "DELETE FROM %s WHERE %s", host_database_table, where_clause )
+    return assert( uvm_db_execute( query ))
  end
 
  function cpd_clear_host_database( )
     logger:info( "Clearing the host database." )
-    num_results = assert( db:execute( "DELETE FROM host_database WHERE 1" ))
+    query = string.format( "DELETE FROM %s WHERE 1", host_database_table )
+    num_results = assert( uvm_db_execute( query ))
     os.execute( cpd_home .. "/usr/share/untangle-cpd/bin/sync_ipsets" )
     return num_results
  end
@@ -201,10 +222,10 @@ local function run_node_function( function_name, ... )
  -- Clear out any hosts that have been around too long.
  function cpd_expire_sessions( sync_ipset )
     local idle_timeout, max_session_length, row = cpd_config.idle_timeout_s, cpd_config.max_session_length_s, {}
-    local curs, where_clause
+    local curs, where_clause, query
 
-    curs = assert( db:execute( string.format( "SELECT datetime('now', '-%d seconds'), datetime('now', '-%d seconds')",
-                                              idle_timeout, max_session_length )))
+    curs = assert( uvm_db_execute( string.format( "SELECT now() - interval '%d seconds', now() - interval '%d seconds'",
+                                                  idle_timeout, max_session_length )))
     row = curs:fetch( row, "n" )
     curs:close()
 
@@ -214,7 +235,8 @@ local function run_node_function( function_name, ... )
     end
 
     -- Delete all of the expired sessions.
-    num_rows = assert( db:execute( "DELETE FROM host_database WHERE " .. where_clause ))
+    query = string.format( "DELETE FROM %s WHERE  %s", host_database_table, where_clause )
+    num_rows = assert( uvm_db_execute( query ))
 
     if (( num_rows > 0 ) or sync_ipset ) then
        os.execute( cpd_home .. "/usr/share/untangle-cpd/bin/sync_ipsets" )
@@ -303,6 +325,7 @@ local function run_node_function( function_name, ... )
 
     now_sec, now_nsec = clock_gettime( 1 )
     log_events.next_log = log_events.next_log or ( now_sec + LOG_INTERVAL_SEC )
+
     if ( log_events.next_log < now_sec ) then
        -- Flush all of the buffer data.
        buffer = log_events
@@ -325,16 +348,6 @@ function cpd_handle_packet( prefix, packet )
 end
 
 -- Start of initialization
-if ( db ) then
-   db:close(true)
-   db = nil
-end
-
-if ( sqlite3 ) then
-   sqlite3:close()
-   sqlite3 = nil
-end
-
 
 -- Each host gets to log 20 entries per interval.
 HOST_LOG_BUFFER_MAX = 20
@@ -349,16 +362,14 @@ logger = logging.console()
 
 logger:setLevel(logging.DEBUG)
  
-sqlite3 = assert( luasql.sqlite3())
-
-db = assert(sqlite3:connect(cpd_config.sqlite_file))
-
 cpd_home = os.getenv( "CPD_HOME" ) or ""
 
 cpd_node = nil
 remote_uvm_context = nil
 
 authenticated_ipset = "cpd-ipv4-authenticated"
+
+host_database_table = "events.n_adconnector_host_database_entry"
 
 if ( not ( log_events  )) then
   log_events = init_log_events()

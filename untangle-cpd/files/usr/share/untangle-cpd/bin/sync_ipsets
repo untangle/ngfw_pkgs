@@ -24,10 +24,12 @@ awk_script()
 EOF
 }
 
-## Get from the databse the entries that should be in the ipset.
+## Get from the databse the entries that should be in the ipset.  Each
+## line should be in the form 1.2.3.4:00:11:22:33:44:55 or if there is
+## no MAC Address, 1.2.3.4
 get_host_entries()
 {
-    sqlite3 ${CPD_SQLITE_FILE} "SELECT ipv4_addr,hw_addr FROM host_database" | sed -e "s/|$//" -e "s/|/:/" | sort
+    psql -U postgres uvm -t -c "SELECT ipv4_addr,hw_addr FROM events.n_adconnector_host_database_entry" | sed -e 's| ||g' -e 's/|$//' -e 's/|/:/' -e '/^$/ d'
 }
 
 ## Get the actual entries from the IPSet
@@ -35,7 +37,6 @@ get_ipset_entries()
 {
     ipset -nL | awk "`awk_script`" | sort
 }
-
 
 fix_entries_script()
 {
