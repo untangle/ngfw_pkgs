@@ -7,9 +7,18 @@ require "logging.console"
 require "socket"
 require "untangle"
 
+
 postgres = nil
 uvm_db = nil
-local function uvm_db_execute( query )
+
+-- If ignore_errors is false, then an error will cause the current database
+-- connection to be destroyed.  This assumes that all queries are valid and that
+-- and invalid query is probably a database disconnect.
+-- Things like a create_table that already exists doesn't fall into this category.
+local function uvm_db_execute( query, ignore_errors )
+   -- Change nil to false.
+   ignore_errors = ignore_errors or false
+
    if ( postgres == nil ) then
       postgres = assert( luasql.postgres())
    end
@@ -20,7 +29,13 @@ local function uvm_db_execute( query )
 
    logger:debug( string.format( "Running the query\n'%s'", query ))
 
-   return uvm_db:execute( query )
+   result, message = uvm_db:execute( query )
+   if ( not result and not ignore_errors ) then
+      logger:warn( "execute returned the message, clearing database: " .. message )
+      uvm_db = nil
+   end
+
+   return result, message
 end
 
 local function create_table( table_name, ... )
@@ -57,7 +72,7 @@ local function init_database()
                        table_name TEXT,
                        version_id TEXT
                     );
-              ]])
+              ]], true )
    local curs, is_updated
    
    create_table( "n_adconnector_host_database_entry", [[
