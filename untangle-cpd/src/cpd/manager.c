@@ -47,6 +47,7 @@ static struct
     pthread_mutex_t mutex;
     
     pthread_t cleanup_thread;
+    pthread_t log_thread;
 
     cpd_config_t config;
     
@@ -61,6 +62,7 @@ static struct
 } _globals = {
     .init = 0,
     .cleanup_thread = 0,
+    .log_thread = 0,
     .lua_script = NULL,
     .script_mtime = 0,
     .mutex = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP,
@@ -73,8 +75,13 @@ static int _lua_clock_gettime( lua_State *L );
 
 static int _start_cleanup_thread( void );
 static int _stop_cleanup_thread( void );
-
 static void* _cleanup_thread( void* arg );
+
+
+static int _start_log_thread( void );
+static int _stop_log_thread( void );
+static void* _log_thread( void* arg );
+
 
 static void _push_ip_header( u_int nfmark, struct iphdr* ip_header );
 
@@ -117,6 +124,10 @@ int cpd_manager_init( cpd_config_t* config, char* sqlite_file, char* lua_script 
         return errlog( ERR_CRITICAL, "start_cleanup_thread\n" );
     }
 
+    if ( _start_log_thread() < 0 ) {
+        return errlog( ERR_CRITICAL, "start_log_thread\n" );
+    }
+
     _globals.init = 1;
     
     clock_gettime( CLOCK_MONOTONIC, &_globals.next_update );
@@ -127,6 +138,8 @@ int cpd_manager_init( cpd_config_t* config, char* sqlite_file, char* lua_script 
 void cpd_manager_destroy( void )
 {
     _stop_cleanup_thread();
+
+    _stop_log_thread();
 
     if ( _globals.lua_state != NULL ) {
         lua_close(_globals.lua_state);
@@ -632,6 +645,48 @@ int cpd_manager_expire_sessions( void )
     return ret;
 }
 
+/**
+ * Flush out any log entries (logged packets) and update all of the timeouts.
+ */
+int cpd_manager_log_sessions( void )
+{
+    int _critical_section()
+    {
+        /* If necessary reload the lua script */
+        if ( _update_lua_script() < 0 ) {
+            return errlog( ERR_CRITICAL, "_update_lua_script\n" );
+        }
+
+        lua_getglobal( _globals.lua_state, "cpd_log_sessions" );
+        if ( !lua_isfunction( _globals.lua_state, -1 )) {
+            lua_pop( _globals.lua_state, 1 );
+            return errlog( ERR_CRITICAL, "cpd_log_sessions is not a function.\n" );
+        }
+                
+        if ( lua_pcall( _globals.lua_state, 0, 1, 0 ) != 0 ) {
+            return errlog( ERR_CRITICAL, "lua_pcall %s\n", lua_tostring( _globals.lua_state, -1 ));
+        }
+
+        if ( !lua_isnumber( _globals.lua_state, -1 )) {
+            lua_pop( _globals.lua_state, 1 );
+            return errlog( ERR_CRITICAL, "cpd_log_sessions did not return a number\n" );
+        }
+        
+        int num_entries = lua_tointeger( _globals.lua_state, -1 );
+        lua_pop( _globals.lua_state, -1 );
+        return num_entries;
+    }
+
+    if ( pthread_mutex_lock( &_globals.mutex ) != 0 ) return perrlog( "pthread_mutex_lock" );
+    int ret = _critical_section();
+    if ( pthread_mutex_unlock( &_globals.mutex ) != 0 ) return perrlog( "pthread_mutex_unlock" );
+
+    if ( ret < 0 ) return errlog( ERR_CRITICAL, "_critical_section\n" );
+
+    return ret;
+}
+
+
 static int _update_lua_script( void )
 {
     debug( 10, "Checking if the LUA script has been updated.\n" );
@@ -784,7 +839,7 @@ static void* _cleanup_thread( void* arg )
 
     while ( pthread_self() == _globals.cleanup_thread ) {
         if ( time_left == 0 ) {
-             time_left = _globals.config.expiration_frequency_s;
+            time_left = _globals.config.expiration_frequency_s;
             
             if ( time_left <= 0 ) {
                 time_left = 60;
@@ -803,6 +858,65 @@ static void* _cleanup_thread( void* arg )
 
     return NULL;
 }
+
+static int _start_log_thread( void )
+{
+    if ( _globals.log_thread != 0 ) {
+        return errlog( ERR_CRITICAL, "_globals.log_thread is non-zero\n" );
+    }
+    
+    if ( pthread_create( &_globals.log_thread, NULL, _log_thread, NULL ) < 0 ) {
+        return perrlog( "pthread_create" );
+    }
+
+    
+    if ( _globals.log_thread == 0 ) {
+        return errlog( ERR_CRITICAL, "log_thread is zero, coding error.\n" );
+    }
+
+    return 0;
+}
+
+static int _stop_log_thread( void )
+{
+    pthread_t thread = _globals.log_thread;
+    
+    _globals.log_thread = 0;
+
+    if ( thread == 0 ) {
+        return 0;
+    }
+    
+    pthread_kill( thread, SIGUSR1 );
+    
+    return 0;
+}
+
+
+
+static void* _log_thread( void* arg )
+{
+    int time_left = 0;
+
+    while ( pthread_self() == _globals.log_thread ) {
+        if ( time_left <= 0 ) {
+            time_left = 10;
+            
+        }
+
+        if (( time_left = sleep( time_left )) != 0 ) {
+            perrlog( "sleep" );
+            continue;
+        }
+
+        if ( cpd_manager_log_sessions() < 0 ) {
+            errlog( ERR_CRITICAL, "cpd_manager_log_sessions\n" );
+        }
+    }
+
+    return NULL;
+}
+
 
 static void _push_ip_header( u_int nfmark, struct iphdr* ip_header )
 {

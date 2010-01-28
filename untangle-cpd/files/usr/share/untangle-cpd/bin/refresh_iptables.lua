@@ -254,7 +254,7 @@ end
 local function add_ipset_rules( commands )
    -- Return any users in the set named ipv4-cpd-authenticated.
    commands[#commands+1] = "ipset -N cpd-ipv4-authenticated iphash"
-   commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m set --set cpd-ipv4-authenticated src -j RETURN"
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m set --set cpd-ipv4-authenticated src -g untangle-cpd-authorize"
 end
 
 -- These are the rules that run if the traffic should be captured.
@@ -268,6 +268,10 @@ local function add_capture_rules( commands )
       commands[#commands+1] = "iptables -t mangle -A untangle-cpd-capture -p tcp -m multiport ! --destination-ports 80 -j DROP"
    end
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd-capture -j MARK --set-mark  0x00100000/0x08100000"
+end
+
+local function add_authorize_rules( commands )
+   commands[#commands+1] = "iptables -t mangle -I untangle-cpd-authorize 1 -j ULOG --ulog-nlgroup 1 --ulog-cprange 80 --ulog-prefix cpd-authorized"
 end
 
 -- Insert a rule that should be removed first in case there is one that already exists.
@@ -306,11 +310,12 @@ end
 
 commands = {}
 
--- these shouldn't be necessary, as they are created in the alpaca.
 commands[#commands+1] = "iptables -t mangle -N untangle-cpd > /dev/null 2>&1"
 commands[#commands+1] = "iptables -t mangle -F untangle-cpd"
 commands[#commands+1] = "iptables -t mangle -N untangle-cpd-capture > /dev/null 2>&1"
 commands[#commands+1] = "iptables -t mangle -F untangle-cpd-capture"
+commands[#commands+1] = "iptables -t mangle -N untangle-cpd-authorize > /dev/null 2>&1"
+commands[#commands+1] = "iptables -t mangle -F untangle-cpd-authorize"
 
 -- Return all of the "special" traffic
 if ( cpd_config["enabled"] == true ) then
@@ -334,6 +339,9 @@ if ( cpd_config["enabled"] == true ) then
    
    -- Update the capture rules.
    add_capture_rules(commands)
+
+   -- Update all of the authorize rules
+   add_authorize_rules(commands)
 
    -- Return all of the IP Addresses that are in one of the sets.
    add_ipset_rules(commands)
