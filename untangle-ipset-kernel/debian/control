@@ -8,10 +8,6 @@ Standards-Version: 3.8.0
 
 Package: untangle-ipset-kernel
 Architecture: all
-Provides: untangle-appliance-int
-Conflicts: untangle-appliance-int
-Replaces: untangle-appliance-int
-Depends: untangle-vm, untangle-ipset-kernel-light, untangle-kiosk, untangle-ntp-config, untangle-client-windows-jre, untangle-bootsplash, untangle-restore-tools, untangle-exim4-config, untangle-linux-config, untangle-system-config, untangle-update-manager, ssh, untangle-extra-utils
-Pre-Depends: untangle-debconf-manager
-Description: The Untangle appliance internal
- The Untangle appliance internal-to-untangle mode.
+Depends: untangle-linux-config
+Description: IPSet Module for the untangle kernel.
+  This package contains the ipset modules for the untangle kernel.

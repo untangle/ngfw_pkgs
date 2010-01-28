@@ -4,5 +4,6 @@ set -e
 
 version=$(uname -r)
 
-cp -f /usr/share/untangle-iptest-kernel/ipset_$version.ko /lib/modules/$version/kernel/net/ipset.ko
+mkdir -p /lib/modules/$version/extra/
+cp -f /usr/share/untangle-ipset-kernel/$version/*.ko /lib/modules/$version/extra/
 depmod -a
