@@ -50,6 +50,33 @@ reap_child()
     exit 0
 }
 
+wait_for_cpd()
+{
+    local t_delay=1
+    local t_times=10
+
+    while true ; do
+        curl -sf -F 'json_request=@-' -m 10 "http://localhost:${CPD_BIND_PORT}" > /dev/null 2>&1 <<EOF 
+{ "function" : "get_config" }
+EOF
+
+        if [ "${?}" = "0" ]; then
+            break
+        fi
+
+        t_times=$(( ${t_times} - 1 ))
+
+        if [ ${t_times} -le 0 ]; then
+            logger -t untangle-cpd "CPD didn't start. (monitor: $$)"
+            return 1
+        fi
+        
+        sleep ${t_delay}
+    done
+    
+    return 0
+}
+
 start_cpd()
 {
     load_defaults
@@ -64,10 +91,18 @@ start_cpd()
     test -n "${CPD_DEBUG_LEVEL}" && t_args="${t_args} -l ${CPD_DEBUG_LEVEL}"
     test -n "${CPD_SCRIPT_FILE}" && t_args="${t_args} -x ${CPD_SCRIPT_FILE}"
     test -n "${CPD_SQLITE_FILE}" && t_args="${t_args} -s ${CPD_SQLITE_FILE}"
+
+    
     
     ${CPD_BIN} ${t_args} &
     CPD_PID=$!
-    logger -t untangle-cpd "[`date`] Started CPD    (monitor: $$) (CPD: $CPD_PID)"
+    
+    wait_for_cpd || {
+        logger -t untangle-cpd "Unable to start CPD"
+        return
+    }
+
+    logger -t untangle-cpd "Started CPD    (monitor: $$) (CPD: $CPD_PID)"
 }
 
 refresh_iptables()
@@ -75,7 +110,7 @@ refresh_iptables()
     if [ -x /usr/share/untangle-cpd/bin/refresh_iptables.lua ]; then
         /usr/share/untangle-cpd/bin/refresh_iptables.lua
     else
-        logger -t untangle-cpd "[`date`] Missing refresh iptables script."
+        logger -t untangle-cpd "Missing refresh iptables script."
     fi
 }
 
@@ -87,14 +122,14 @@ exec >> ${CPD_LOG_MONITOR}  2>&1
 trap reap_child_easy INT TERM USR1 USR2 QUIT
 
 while ( true ) ;  do
-    logger -t untangle-cpd "[`date`] Starting CPD"
+    logger -t untangle-cpd "Starting CPD"
 
     start_cpd
     
     refresh_iptables
 
     sleep 2
-    logger -t untangle-cpd "[`date`] Monitoring CPD (monitor: $$) (CPD: $CPD_PID)"
+    logger -t untangle-cpd "Monitoring CPD (monitor: $$) (CPD: $CPD_PID)"
     while ( true ) ; do
         wait $CPD_PID
         
