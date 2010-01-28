@@ -16,6 +16,10 @@ reboot() {
 quit() {
     echo Quit
     
+    if [ -x /etc/init.d/apache2 ]; then
+        /etc/init.d/apache2 restart
+    fi
+
     if [ -x /etc/init.d/untangle-vm ] ; then
         /etc/init.d/untangle-vm start
     fi
@@ -35,6 +39,14 @@ stop_services()
     
     if [ -x /etc/init.d/untangle-reports ]; then
         /etc/init.d/untangle-reports stop
+    fi
+
+    if [ -x /etc/init.d/untangle-cpd ]; then
+        /etc/init.d/untangle-cpd stop
+    fi
+
+    if [ -x /etc/init.d/apache2 ]; then
+        /etc/init.d/apache2 stop
     fi
 }
 
