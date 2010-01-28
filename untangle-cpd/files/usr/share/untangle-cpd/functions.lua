@@ -18,6 +18,8 @@ local function uvm_db_execute( query )
       uvm_db = assert( postgres:connect("dbname=uvm user=postgres" ))
    end
 
+   logger:debug( string.format( "Running the query\n'%s'", query ))
+
    return uvm_db:execute( query )
 end
 
@@ -138,9 +140,44 @@ local function run_node_function( function_name, ... )
     os.execute( string.format( "ipset -D %s %s", authenticated_ipset, ipv4_addr ))
  end
 
- function cpd_replace_host( username, hw_addr, ipv4_addr, update_session_start )
-    local query, num_rows, hw_addr_str
+ local function get_expiration_sql( update_session_start, idle_timeout, timeout )
+    local expiration
 
+    if ( idle_timeout == 0 ) then
+       if ( update_session_start ) then
+          expiration = string.format( "now() + interval '%d seconds'", timeout )
+       else
+          expiration = string.format( "session_start + interval '%d seconds'", timeout )
+       end
+    else
+       -- With a timeout, then you take the min of the idle timeout and the min
+       -- of the session timeout, whichever happens first is the expiration date.
+       if ( update_session_start ) then
+          expiration = 
+             string.format([[
+                                 CASE WHEN now() + interval '%d seconds' <  now() + interval '%d seconds' 
+                                 THEN now() + interval '%d seconds'
+                                 ELSE now() + interval '%d seconds'
+                                 END
+                           ]], idle_timeout, timeout, idle_timeout, timeout )
+       else
+          expiration = 
+             string.format([[
+                                 CASE WHEN now() + interval '%d seconds' <  session_start + interval '%d seconds' 
+                                 THEN now() + interval '%d seconds'
+                                 ELSE session_start + interval '%d seconds'
+                                 END
+                           ]], idle_timeout, timeout, idle_timeout, timeout )
+       end       
+    end    
+
+    return expiration
+ end
+       
+ function cpd_replace_host( username, hw_addr, ipv4_addr, update_session_start )
+    local idle_timeout, timeout = cpd_config.idle_timeout_s, cpd_config.max_session_length_s
+    local query, num_rows, hw_addr_str, expiration
+    
     if ( update_session_start == nil ) then
        update_session_start = false
     end
@@ -153,10 +190,12 @@ local function run_node_function( function_name, ... )
 
     add_ipset_entry( hw_addr, ipv4_addr )
 
+    expiration = get_expiration_sql( update_session_start, idle_timeout, timeout )
+
     if ( update_session_start ) then
-       query = string.format( "UPDATE %s SET username='%s', hw_addr=%s, session_start=now(), last_session=now(), expiration_date=now() + interval '%d seconds' WHERE ipv4_addr='%s'", host_database_table, username, hw_addr_str, cpd_config.max_session_length_s, ipv4_addr )
+       query = string.format( "UPDATE %s SET username='%s', hw_addr=%s, session_start=now(), last_session=now(), expiration_date=%s WHERE ipv4_addr='%s'", host_database_table, username, hw_addr_str, expiration, ipv4_addr )
     else
-       query = string.format( "UPDATE %s SET username='%s', hw_addr=%s, last_session=now() WHERE ipv4_addr='%s'", host_database_table, username, hw_addr_str, ipv4_addr )
+       query = string.format( "UPDATE %s SET username='%s', hw_addr=%s, last_session=now(), expiration_date=%s WHERE ipv4_addr='%s'", host_database_table, username, hw_addr_str, expiration, ipv4_addr )
     end
 
     num_rows = assert( uvm_db_execute( query ))
@@ -171,7 +210,8 @@ local function run_node_function( function_name, ... )
        logger:info( string.format( "Creating new entry for '%s' / '%s'", ipv4_addr, hw_addr or "empty" ))
     end
 
-    query = string.format( "INSERT INTO %s ( entry_id, username, ipv4_addr, hw_addr, session_start, last_session , expiration_date ) VALUES ( nextval( 'hibernate_sequence' ), '%s', '%s', %s, now(), now(), now() + interval '%d seconds' )",  host_database_table, username, ipv4_addr, hw_addr_str, cpd_config.max_session_length_s )
+    expiration = get_expiration_sql( true, idle_timeout, timeout )
+    query = string.format( "INSERT INTO %s ( entry_id, username, ipv4_addr, hw_addr, session_start, last_session , expiration_date ) VALUES ( nextval( 'hibernate_sequence' ), '%s', '%s', %s, now(), now(), %s )",  host_database_table, username, ipv4_addr, hw_addr_str, expiration )
 
     num_rows = assert( uvm_db_execute( query ))
     assert( num_rows == 1, "INSERT didn't create a new row." )
@@ -221,21 +261,10 @@ local function run_node_function( function_name, ... )
 
  -- Clear out any hosts that have been around too long.
  function cpd_expire_sessions( sync_ipset )
-    local idle_timeout, max_session_length, row = cpd_config.idle_timeout_s, cpd_config.max_session_length_s, {}
-    local curs, where_clause, query
-
-    curs = assert( uvm_db_execute( string.format( "SELECT now() - interval '%d seconds', now() - interval '%d seconds'",
-                                                  idle_timeout, max_session_length )))
-    row = curs:fetch( row, "n" )
-    curs:close()
-
-    where_clause = string.format( "last_session < '%s'", row[1] )
-    if ( max_session_length > 0 ) then
-       where_clause = where_clause .. string.format( " OR session_start < '%s'", row[2] )
-    end
-
+    local query
+    
     -- Delete all of the expired sessions.
-    query = string.format( "DELETE FROM %s WHERE  %s", host_database_table, where_clause )
+    query = string.format( "DELETE FROM %s WHERE expiration_date < now()", host_database_table )
     num_rows = assert( uvm_db_execute( query ))
 
     if (( num_rows > 0 ) or sync_ipset ) then
