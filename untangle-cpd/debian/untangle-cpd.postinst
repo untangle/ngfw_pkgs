@@ -19,6 +19,7 @@ echo "[`date`] DEBUG debian upgrade." >> ${LOG_FILE}
 
 if [ ! -f ${CPD_CONFIG_FILE} ]; then
     echo "Copying in ${CPD_DEFAULT_CONFIG} to ${CPD_CONFIG_FILE}"
+    mkdir -p `dirname ${CPD_CONFIG_FILE}`
     cp ${CPD_DEFAULT_CONFIG} ${CPD_CONFIG_FILE}
 fi
 
