@@ -1,0 +1,82 @@
+#!/bin/dash
+
+## This script is designed to clean up the ipset entries that are in
+## the expired hosts.  The expired hosts are only important until
+## there are no more sessions for that host.  This will clean up any
+## expired hosts that don't have any sessions on the box.
+
+awk_script()
+{
+    cat <<'EOF'
+/^Name:/ { ipset_name="" }
+## Only search for ip_sets that are in the correct ipset.
+/^Name: cpd-ipv4-expired/ { ipset_name=$2 ; num_members=0 }
+
+## By default do not count members.
+/^Bindings:/ { 
+  count_member="false"
+}
+
+## Print all of the items that are in between Members and Bindings
+{ if ( count_member == "true" ) print }
+
+/^Members:/ { if ( ipset_name != "" ) count_member="true" }
+EOF
+}
+
+ip_conntrack_awk_script()
+{
+    cat <<'EOF'
+/ESTABLISHED/ { 
+  mark=$0 ; sub( ".* mark=", "", mark ); sub( " .*" , "", mark ) 
+  src=$0 ; sub( "^.*ESTABLISHED src=", "", src ); sub( " .*" , "", src )
+  if ( and( mark, 0x100000 )) { print src }
+}
+EOF
+}
+
+fix_entries_script()
+{
+    cat <<'EOF'
+BEGIN { deleted_ipv4=0 }
+/^< *[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/ {
+  ipv4_addr=$2
+  system( "ipset -D cpd-ipv4-expired " ipv4_addr )
+  deleted_ipv4++
+  next
+}
+END { print strftime() " Deleted " deleted_ipv4 }
+EOF
+}
+
+
+## Get the actual entries from the IPSet
+get_expired_ipset_entries()
+{
+    ipset -nL | awk "`awk_script`" | sort
+}
+
+get_conntrack_entries()
+{
+    cat /proc/net/ip_conntrack | awk "`ip_conntrack_awk_script`" | sort | uniq
+}
+
+## Hash sure this exists.
+ipset -N cpd-ipv4-expired iphash > /dev/null 2>&1 || true
+
+ipset_entries=`mktemp`
+host_entries=`mktemp`
+
+## Get a list of entries that are in the expired hosts.
+get_expired_ipset_entries > ${ipset_entries}
+
+## Get a list of hosts that haves sessions that need to be expired.
+get_conntrack_entries > ${host_entries}
+
+# Using the differences, remove any hosts that don't have any sessions
+# that can be expired, but have an entry in the expired host set.
+diff ${ipset_entries} ${host_entries} | awk "`fix_entries_script`"
+
+rm -f ${ipset_entries}
+rm -f ${host_entries}
+

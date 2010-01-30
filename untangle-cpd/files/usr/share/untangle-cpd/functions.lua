@@ -428,6 +428,15 @@ function cpd_log_sessions()
       uvm_db = nil
    end
 
+   -- Clean out the expired hosts.
+   if ( clean_expire_sessions < 1 ) then
+      logger:debug( "Cleaning the expired sessions set" )
+      os.execute( cpd_home .. "/usr/share/untangle-cpd/bin/clean_expired_hosts" )
+      clean_expire_sessions = CLEAN_EXPIRE_FREQUENCY
+   end
+
+   clean_expire_sessions = clean_expire_sessions - 1
+
    return 1
 end
 
@@ -438,6 +447,9 @@ HOST_LOG_BUFFER_MAX = 20
 
 -- Total system can log 100 entries per interval
 SYSTEM_LOG_BUFFER_MAX = 100
+
+-- Number of times before cleaning the expired sessions
+CLEAN_EXPIRE_FREQUENCY = 360 -- Once an hour
 
 logger = logging.console()
 
@@ -453,6 +465,8 @@ authenticated_ipset = "cpd-ipv4-authenticated"
 expired_ipset = "cpd-ipv4-expired"
 
 host_database_table = "events.n_adconnector_host_database_entry"
+
+clean_expire_sessions = 0
 
 if ( not ( log_events  )) then
   log_events = init_log_events()

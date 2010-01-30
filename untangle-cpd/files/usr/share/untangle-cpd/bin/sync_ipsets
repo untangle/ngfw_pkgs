@@ -27,7 +27,7 @@ EOF
 ## no MAC Address, 1.2.3.4
 get_host_entries()
 {
-    psql -U postgres uvm -t -c "SELECT ipv4_addr,hw_addr FROM events.n_adconnector_host_database_entry" | sed -e 's| ||g' -e 's/|$//' -e 's/|/:/' -e '/^$/ d'
+    psql -U postgres uvm -t -c "SELECT ipv4_addr,hw_addr FROM events.n_adconnector_host_database_entry ORDER BY ipv4_addr" | sed -e 's| ||g' -e 's/|$//' -e 's/|/:/' -e '/^$/ d' | uniq
 }
 
 ## Get the actual entries from the IPSet
@@ -43,6 +43,7 @@ BEGIN { added_ipv4=0 ; added_hw_addr=0 ; deleted_ipv4=0 ; deleted_hw_addr=0 }
 /^> *[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/ {
   ipv4_addr=$2
   system( "ipset -A cpd-ipv4-authenticated " ipv4_addr )
+  system( "ipset -D cpd-ipv4-expired " ipv4_addr )
   added_ipv4++
   next
 }
@@ -67,6 +68,7 @@ EOF
 
 ## Hash sure this exists.
 ipset -N cpd-ipv4-authenticated iphash > /dev/null 2>&1 || true
+ipset -N cpd-ipv4-expired iphash > /dev/null 2>&1 || true
 
 ipset_entries=`mktemp`
 host_entries=`mktemp`
