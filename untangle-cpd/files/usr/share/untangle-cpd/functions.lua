@@ -141,18 +141,23 @@ local function run_node_function( function_name, ... )
 -- If Necessary, this will 
 
 -- XXX This may be better done in one shell script run run with sudo.
-local function add_ipset_entry( hw_addr, ipv4_addr )
+function add_ipset_entry( hw_addr, ipv4_addr )
    if ( not ( hw_addr == nil )) then
       logger:info( "hw_addr is current not supported and is ignored." )
    end
    
+   -- Remove any entries from the expired set.   
+   os.execute( string.format( "ipset -D %s %s > /dev/null 2>&1", expired_ipset, ipv4_addr ))
    -- Insert an entry into the main ipset.
    os.execute( string.format( "ipset -A %s %s", authenticated_ipset, ipv4_addr ))
 end
 
-local function remove_ipset_entry( ipv4_addr )
-   -- Insert an entry into the main ipset.
-   os.execute( string.format( "ipset -D %s %s", authenticated_ipset, ipv4_addr ))
+function remove_ipset_entry( ipv4_addr )
+-- Insert an entry into the main ipset.
+   os.execute( string.format( "ipset -D %s %s > /dev/null 2>&1", authenticated_ipset, ipv4_addr ))
+
+   -- Insert an into into the expired set.   
+   os.execute( string.format( "ipset -A %s %s", expired_ipset, ipv4_addr ))
 end
 
 local function get_expiration_sql( update_session_start, idle_timeout, timeout )
@@ -444,6 +449,8 @@ cpd_node = nil
 remote_uvm_context = nil
 
 authenticated_ipset = "cpd-ipv4-authenticated"
+
+expired_ipset = "cpd-ipv4-expired"
 
 host_database_table = "events.n_adconnector_host_database_entry"
 

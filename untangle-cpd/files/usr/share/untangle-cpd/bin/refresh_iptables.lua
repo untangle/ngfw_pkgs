@@ -255,6 +255,9 @@ local function add_ipset_rules( commands )
    -- Return any users in the set named ipv4-cpd-authenticated.
    commands[#commands+1] = "ipset -N cpd-ipv4-authenticated iphash"
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m set --set cpd-ipv4-authenticated src -g untangle-cpd-authorize"
+
+   -- REJECT any sessions that have the captive portal connmark that are in the expired set.
+   commands[#commands+1] = "ipset -N cpd-ipv4-expired iphash"
 end
 
 -- These are the rules that run if the traffic should be captured.
@@ -271,7 +274,9 @@ local function add_capture_rules( commands )
 end
 
 local function add_authorize_rules( commands )
-   commands[#commands+1] = "iptables -t mangle -I untangle-cpd-authorize 1 -j ULOG --ulog-nlgroup 1 --ulog-cprange 80 --ulog-prefix cpd-authorized"
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd-authorize -m connmark --mark 0x00100000/0x00100000-j RETURN"
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd-authorize -j CONNMARK --set-xmark 0x00100000/0x00100000"
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd-authorize -m conntrack --ctdir ORIGINAL -j ULOG --ulog-nlgroup 1 --ulog-cprange 80 --ulog-prefix cpd-authorized"
 end
 
 -- Insert a rule that should be removed first in case there is one that already exists.
@@ -288,7 +293,7 @@ local function replace_rule( commands, table, chain, rule, rule_index, add_rule 
    rule_index = rule_index or ""
    
    if ( add_rule ) then
-      commands[#commands+1] = "iptables -t " .. table .. "  -I " .. chain .. " " .. rule_index .. " " .. rule .. " > /dev/null 2>&1"
+      commands[#commands+1] = "iptables -t " .. table .. "  -I " .. chain .. " " .. rule_index .. " " .. rule .. ""
    end
 end
 
@@ -334,17 +339,15 @@ if ( cpd_config["enabled"] == true ) then
 
    -- Return all traffic that doesn't have an interface mark.
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m mark --mark 0x00/0xFF -j RETURN"
-
-   commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m state --state ESTABLISHED,RELATED -j RETURN"
    
    -- Update the capture rules.
    add_capture_rules(commands)
 
-   -- Update all of the authorize rules
-   add_authorize_rules(commands)
-
    -- Return all of the IP Addresses that are in one of the sets.
    add_ipset_rules(commands)
+
+   -- Return traffic that is related to a session
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m state --state ESTABLISHED,RELATED -j RETURN"
 
    for _, rule in ipairs( capture_rules ) do 
       if ( rule["capture"] ) then
@@ -354,10 +357,18 @@ if ( cpd_config["enabled"] == true ) then
          add_rules( commands, rule, "-j RETURN" )
       end
    end
+
+   -- Update all of the authorize rules
+   add_authorize_rules(commands)
 end
 
 replace_rule( commands, "nat", "PREROUTING", "-m mark --mark 0x00100000/0x00100000 -p tcp --destination-port 80 -j REDIRECT --to-ports 64158", 1, is_enabled )
 
 replace_rule( commands, "nat", "PREROUTING", "-m mark --mark 0x00100000/0x00100000 -p tcp --destination-port 443 -j REDIRECT --to-ports 64159", 1, is_enabled and accept_https )
 
+replace_rule( commands, "filter", "INPUT", "-m connmark --mark 0x100000/0x100000 -m set --set cpd-ipv4-expired src -m comment --comment 'cpd reset expired session 8571.cd03.d396' -j REJECT" )
+
+replace_rule( commands, "filter", "FORWARD", "-m connmark --mark 0x100000/0x100000 -m set --set cpd-ipv4-expired src -m comment --comment 'cpd reset expired session 752c.fd28.7f23' -j REJECT" )
+
 table.foreach( commands, function( a, b ) print( b ) ; os.execute( b ) end )
+

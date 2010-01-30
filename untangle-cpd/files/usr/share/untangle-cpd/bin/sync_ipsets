@@ -3,8 +3,6 @@
 ## This doesn't actually do anything.
 CPD_HOME=${CPD_HOME:-""}
 
-CPD_SQLITE_FILE=${CPD_SQLITE_FILE:-/etc/untangle-cpd/host_database.db}
-
 awk_script()
 {
     cat <<'EOF'
@@ -54,6 +52,7 @@ BEGIN { added_ipv4=0 ; added_hw_addr=0 ; deleted_ipv4=0 ; deleted_hw_addr=0 }
 }
 /^< *[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/ { 
   ipv4_addr=$2
+  system( "ipset -A cpd-ipv4-expired " ipv4_addr )
   system( "ipset -D cpd-ipv4-authenticated " ipv4_addr )
   deleted_ipv4++
   next
@@ -65,11 +64,6 @@ BEGIN { added_ipv4=0 ; added_hw_addr=0 ; deleted_ipv4=0 ; deleted_hw_addr=0 }
 END { print strftime() " Added " added_ipv4 "," added_hw_addr " Deleted " deleted_ipv4 "," deleted_hw_addr }
 EOF
 }
-
-if [ ! -f "${CPD_SQLITE_FILE}" ]; then
-    echo "The SQLite database '${CPD_SQLITE_FILE}' does not exist."
-    exit 1
-fi
 
 ## Hash sure this exists.
 ipset -N cpd-ipv4-authenticated iphash > /dev/null 2>&1 || true
