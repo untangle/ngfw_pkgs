@@ -45,7 +45,7 @@ BEGIN { deleted_ipv4=0 }
   deleted_ipv4++
   next
 }
-END { print strftime() " Deleted " deleted_ipv4 }
+END { print current_time ": Deleted " deleted_ipv4 }
 EOF
 }
 
@@ -75,7 +75,7 @@ get_conntrack_entries > ${host_entries}
 
 # Using the differences, remove any hosts that don't have any sessions
 # that can be expired, but have an entry in the expired host set.
-diff ${ipset_entries} ${host_entries} | awk "`fix_entries_script`"
+diff ${ipset_entries} ${host_entries} | awk -v current_time="`date`" "`fix_entries_script`"
 
 rm -f ${ipset_entries}
 rm -f ${host_entries}

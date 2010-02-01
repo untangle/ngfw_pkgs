@@ -62,7 +62,7 @@ BEGIN { added_ipv4=0 ; added_hw_addr=0 ; deleted_ipv4=0 ; deleted_hw_addr=0 }
   print( "REMOVING HW ADDR IS NOT SUPPORTED." )
   next
 }
-END { print strftime() " Added " added_ipv4 "," added_hw_addr " Deleted " deleted_ipv4 "," deleted_hw_addr }
+END { print current_time ": Added " added_ipv4 "," added_hw_addr " Deleted " deleted_ipv4 "," deleted_hw_addr }
 EOF
 }
 
@@ -77,7 +77,7 @@ get_ipset_entries > ${ipset_entries}
 
 get_host_entries > ${host_entries}
 
-diff ${ipset_entries} ${host_entries} | awk "`fix_entries_script`"
+diff ${ipset_entries} ${host_entries} | awk -v current_time="`date`" "`fix_entries_script`"
 
 rm -f ${ipset_entries}
 rm -f ${host_entries}
