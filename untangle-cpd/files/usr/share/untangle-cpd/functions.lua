@@ -273,7 +273,7 @@ end
 
 function cpd_clear_host_database( )
     logger:info( "Clearing the host database." )
-    query = string.format( "DELETE FROM %s WHERE 1", host_database_table )
+    query = string.format( "DELETE FROM %s WHERE TRUE", host_database_table )
     num_results = assert( uvm_db_execute( query ))
     os.execute( cpd_home .. "/usr/share/untangle-cpd/bin/sync_ipsets" )
     return num_results
