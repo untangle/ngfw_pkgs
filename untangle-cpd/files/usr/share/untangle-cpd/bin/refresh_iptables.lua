@@ -253,16 +253,20 @@ end
 -- Add rules to escape hosts that are in the ipset.
 local function add_ipset_rules( commands )
    -- Return any users in the set named ipv4-cpd-authenticated.
-   commands[#commands+1] = "ipset -N cpd-ipv4-authenticated iphash"
-   commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m set --set cpd-ipv4-authenticated src -g untangle-cpd-authorize"
+   commands[#commands+1] = "ipset -N cpd-ipv4-authenticated iphash > /dev/null 2>&1"
 
    -- REJECT any sessions that have the captive portal connmark that are in the expired set.
-   commands[#commands+1] = "ipset -N cpd-ipv4-expired iphash"
+   commands[#commands+1] = "ipset -N cpd-ipv4-expired iphash > /dev/null 2>&1"
 end
 
 -- These are the rules that run if the traffic should be captured.
 local function add_capture_rules( commands )
-   commands[#commands+1] = "iptables -t mangle -I untangle-cpd-capture 1 -j ULOG --ulog-nlgroup 1 --ulog-cprange 80 --ulog-prefix cpd-block"
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd-capture -m set --set cpd-ipv4-authenticated src -g untangle-cpd-authorize"
+
+   -- Return traffic that is related to a session
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd-capture -m state --state ESTABLISHED,RELATED -j RETURN"
+      
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd-capture -j ULOG --ulog-nlgroup 1 --ulog-cprange 80 --ulog-prefix cpd-block"
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd-capture ! -p tcp -j DROP"
    
    if ( accept_https ) then
@@ -274,9 +278,9 @@ local function add_capture_rules( commands )
 end
 
 local function add_authorize_rules( commands )
-   commands[#commands+1] = "iptables -t mangle -A untangle-cpd-authorize -m connmark --mark 0x00100000/0x00100000-j RETURN"
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd-authorize -m connmark --mark 0x00100000/0x00100000 -j RETURN"
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd-authorize -j CONNMARK --set-xmark 0x00100000/0x00100000"
-   commands[#commands+1] = "iptables -t mangle -A untangle-cpd-authorize -m conntrack --ctdir ORIGINAL -j ULOG --ulog-nlgroup 1 --ulog-cprange 80 --ulog-prefix cpd-authorized"
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd-authorize -j ULOG --ulog-nlgroup 1 --ulog-cprange 80 -m conntrack --ctstate NEW --ulog-prefix cpd-authorized"
 end
 
 -- Insert a rule that should be removed first in case there is one that already exists.
@@ -331,7 +335,11 @@ if ( cpd_config["enabled"] == true ) then
    if ( not cpd_config["capture_bypassed_traffic"] ) then
       commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m mark --mark 0x1000000/0x1000000 -j RETURN"
    end
-   
+
+   -- Ignore Traffic that is going to be blocked in the forward chain (it will get dealt with anyway)
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m mark --mark 0x04000000/0x44000000 -j RETURN"
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m mark --mark 0x08000000/0x48000000 -j RETURN"
+
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m pkttype ! --pkt-type UNICAST -j RETURN"
 
    -- Return all local traffic
@@ -345,9 +353,6 @@ if ( cpd_config["enabled"] == true ) then
 
    -- Return all of the IP Addresses that are in one of the sets.
    add_ipset_rules(commands)
-
-   -- Return traffic that is related to a session
-   commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m state --state ESTABLISHED,RELATED -j RETURN"
 
    for _, rule in ipairs( capture_rules ) do 
       if ( rule["capture"] ) then
@@ -370,5 +375,5 @@ replace_rule( commands, "filter", "INPUT", "-m connmark --mark 0x100000/0x100000
 
 replace_rule( commands, "filter", "FORWARD", "-m connmark --mark 0x100000/0x100000 -m set --set cpd-ipv4-expired src -m comment --comment 'cpd reset expired session 752c.fd28.7f23' -j REJECT" )
 
-table.foreach( commands, function( a, b ) print( b ) ; os.execute( b ) end )
+table.foreach( commands, function( a, b ) os.execute( b ) end )
 
