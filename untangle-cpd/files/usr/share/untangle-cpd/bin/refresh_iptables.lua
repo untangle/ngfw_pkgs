@@ -371,9 +371,17 @@ replace_rule( commands, "nat", "PREROUTING", "-m mark --mark 0x00100000/0x001000
 
 replace_rule( commands, "nat", "PREROUTING", "-m mark --mark 0x00100000/0x00100000 -p tcp --destination-port 443 -j REDIRECT --to-ports 64159", 1, is_enabled and accept_https )
 
-replace_rule( commands, "filter", "INPUT", "-m connmark --mark 0x100000/0x100000 -m set --set cpd-ipv4-expired src -m comment --comment 'cpd reset expired session 8571.cd03.d396' -j REJECT" )
+-- The following 4 rules are used to drop packets for non-tcp sessions
+-- that exist on expired logins.  Two rules are used to reset TCP
+-- sessions that exist on expired logins.
+replace_rule( commands, "filter", "INPUT", "-m connmark --mark 0x100000/0x100000 -m set --set cpd-ipv4-expired src -m comment --comment 'cpd reset expired session 8571.cd03.d396' -j DROP" )
 
-replace_rule( commands, "filter", "FORWARD", "-m connmark --mark 0x100000/0x100000 -m set --set cpd-ipv4-expired src -m comment --comment 'cpd reset expired session 752c.fd28.7f23' -j REJECT" )
+replace_rule( commands, "filter", "INPUT", "-m connmark --mark 0x100000/0x100000 -m set --set cpd-ipv4-expired src -p tcp --tcp-flags FIN,RST NONE -m comment --comment 'cpd reset expired session bf36.ac38.61ee' -j REJECT --reject-with tcp-reset" )
+
+replace_rule( commands, "filter", "FORWARD", "-m connmark --mark 0x100000/0x100000 -m set --set cpd-ipv4-expired src -m comment --comment 'cpd reset expired session 752c.fd28.7f23' -j DROP" )
+
+replace_rule( commands, "filter", "FORWARD", "-m connmark --mark 0x100000/0x100000 -m set --set cpd-ipv4-expired src -p tcp --tcp-flags FIN,RST NONE -m comment --comment 'cpd reset expired session 6bbd.ade2.1ea1' -j REJECT" )
+
 
 table.foreach( commands, function( a, b ) os.execute( b ) end )
 
