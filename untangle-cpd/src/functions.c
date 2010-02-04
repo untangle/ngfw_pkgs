@@ -31,6 +31,12 @@
 
 /* ten-4 */
 #define STATUS_OK 104
+
+/* This is a request that would succeed, but it has invalid
+ * parameters, like trying to login a user twice when concurrent
+ * logins are disabled. */
+#define STATUS_INVALID_REQUEST 105
+
 #define STATUS_ERR 99
 
 #define _ADD_ACTIVE_HOST_MAX 256
@@ -329,14 +335,21 @@ static struct json_object *_replace_host( struct json_object* request )
             update_session_start = json_object_get_boolean( temp );
         }
 
-        if ( cpd_manager_replace_host( &username, hw_addr_ptr, &ipv4_addr, update_session_start ) < 0 ) {
+        int success = cpd_manager_replace_host( &username, hw_addr_ptr, &ipv4_addr, update_session_start );
+        
+        if ( success < 0 ) {
             return errlog( ERR_CRITICAL, "cpd_manager_replace_host\n" );
         }
-        
-        snprintf( message, message_size, "Successfully replaced host %s -> (%s,%s).", 
-                  username.u, hw_addr_str == NULL ? "no hw addr" : hw_addr_str, ipv4_addr_str );
 
-        status = STATUS_OK;
+        if ( success == 0 ) {
+            snprintf( message, message_size, "Unable to add host %s -> (%s,%s).", 
+                      username.u, hw_addr_str == NULL ? "no hw addr" : hw_addr_str, ipv4_addr_str );
+            status = STATUS_INVALID_REQUEST;
+        } else {
+            snprintf( message, message_size, "Successfully replaced host %s -> (%s,%s).", 
+                      username.u, hw_addr_str == NULL ? "no hw addr" : hw_addr_str, ipv4_addr_str );
+            status = STATUS_OK;
+        }
 
         return 0;
     }

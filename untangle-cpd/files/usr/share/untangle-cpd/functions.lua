@@ -207,11 +207,33 @@ function cpd_replace_host( username, hw_addr, ipv4_addr, update_session_start )
    else
       hw_addr_str = "'" .. hw_addr .. "'"
    end
-   
-   add_ipset_entry( hw_addr, ipv4_addr )
-   
+      
    expiration = get_expiration_sql( update_session_start, idle_timeout, timeout )
-   
+
+   if ( not cpd_config.concurrent_logins ) then
+      query = string.format( "SELECT ipv4_addr= '%s' AS y,count(*) FROM %s WHERE username='%s' GROUP BY y", 
+                             ipv4_addr, host_database_table, username )
+      curs = assert( uvm_db_execute( query ))
+
+      a, b = {}, {}
+      a = curs:fetch(a)
+      b = curs:fetch(b)
+      
+      -- If both a and b are not nil, then there are too many concurrent entries.
+      -- Clean up the database and let this user in.
+      if (  a and b ) then
+         logger:debug( "too many concurrent entries." )
+         query = string.format( "DELETE FROM %s WHERE username='%s'", host_database_table, username )
+         num_rows = assert( uvm_db_execute( query ))
+         os.execute( cpd_home .. "/usr/share/untangle-cpd/bin/sync_ipsets" )
+      elseif ( a and ( a[1] == 'f' )) then
+         -- The only row counts users that are logged in from
+         -- another IP, this IP is not allowed to log in.
+         logger:debug( string.format( "The user '%s' is already logged in elsewhere", ipv4_addr ))
+         return false
+      end
+   end
+      
    if ( update_session_start ) then
       query = string.format( "UPDATE %s SET username='%s', hw_addr=%s, session_start=now(), last_session=now(), expiration_date=%s WHERE ipv4_addr='%s'", host_database_table, username, hw_addr_str, expiration, ipv4_addr )
    else
@@ -225,6 +247,7 @@ function cpd_replace_host( username, hw_addr, ipv4_addr, update_session_start )
       assert( uvm_db_execute( string.format( "DELETE FROM %s WHERE ipv4_adddr='%s'", host_database_table, ipv4_addr )))
    elseif ( num_rows == 1 ) then
       logger:info( string.format( "Updated username (%s) for address '%s' / '%s'", username, ipv4_addr, hw_addr or "empty" ))
+      add_ipset_entry( hw_addr, ipv4_addr )
       return true
    else
       logger:info( string.format( "Creating new entry for '%s' / '%s'", ipv4_addr, hw_addr or "empty" ))
@@ -235,7 +258,8 @@ function cpd_replace_host( username, hw_addr, ipv4_addr, update_session_start )
    
    num_rows = assert( uvm_db_execute( query ))
    assert( num_rows == 1, "INSERT didn't create a new row." )
-   return false
+   add_ipset_entry( hw_addr, ipv4_addr )
+   return true
 end
 
 function cpd_get_ipv4_addr_username( ipv4_addr )

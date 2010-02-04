@@ -283,9 +283,9 @@ int cpd_manager_replace_host( cpd_host_database_username_t* username,
             return errlog( ERR_CRITICAL, "cpd_replace_host did not return a boolean\n" );
         }
         
-        int is_new_entry = lua_toboolean( _globals.lua_state, -1 );
+        int success = lua_toboolean( _globals.lua_state, -1 );
         lua_pop( _globals.lua_state, -1 );
-        return is_new_entry;
+        return success;
     }
 
     if ( pthread_mutex_lock( &_globals.mutex ) != 0 ) return perrlog( "pthread_mutex_lock" );
@@ -294,7 +294,7 @@ int cpd_manager_replace_host( cpd_host_database_username_t* username,
 
     if ( ret < 0 ) return errlog( ERR_CRITICAL, "_critical_section\n" );
 
-    return 0;    
+    return ret;
 }
 
 /**
