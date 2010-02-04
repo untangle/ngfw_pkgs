@@ -154,3 +154,8 @@ body{
     font-family:Tahoma,helvetica,sans-serif;
     font-size:14px;
 }
+#window-container{
+    top:15px !important;
+    margin: 0 auto !important;
+    left: auto !important;
+}
