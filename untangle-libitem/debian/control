@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-libitem-opensource-package
 Architecture: all
-Depends: untangle-libitem-shield,untangle-libitem-spyware,untangle-libitem-webfilter,untangle-libitem-clam,untangle-libitem-protofilter,untangle-libitem-firewall,untangle-libitem-spamassassin,untangle-libitem-phish,untangle-libitem-openvpn,untangle-libitem-ips,untangle-libitem-reporting
+Depends: untangle-libitem-shield,untangle-libitem-spyware,untangle-libitem-webfilter,untangle-libitem-clam,untangle-libitem-protofilter,untangle-libitem-firewall,untangle-libitem-spamassassin,untangle-libitem-phish,untangle-libitem-openvpn,untangle-libitem-ips,untangle-libitem-reporting, untangle-libitem-cpd
 XB-View-Position: 10
 XB-Display-Name: Open Source Package
 XB-Untangle-Type: lib_item
