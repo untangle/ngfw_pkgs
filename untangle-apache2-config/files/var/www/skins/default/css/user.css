@@ -74,8 +74,7 @@ body.blockpage .description
 
 
 /* blockpage contact text*/
-body.blockpage p.contact,
-body.captive-portal p.contact
+body.blockpage p.contact
 { 
   position: absolute;
   bottom: 15px;
@@ -443,3 +442,23 @@ p.success{
     margin-bottom:10px;
     display:none;   
 }
+#please-wait{
+	background-image:url(../images/user/please-wait.gif);
+	background-position:left  center;
+	background-repeat:no-repeat;
+	font-family:tahoma,arial,helvetica,sans-serif;
+	font-size:20px;
+	line-height:35px;
+	padding:0px 10px 0px 20px;
+	text-decoration:none;
+	display:inline-block;
+	margin:10px 0px;
+
+}
+body.captive-portal p.contact
+{ 
+  position: absolute;
+  bottom: 0px;
+  left: 20px;
+  font-size: 8pt;
+} 
