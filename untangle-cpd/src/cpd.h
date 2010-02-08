@@ -66,6 +66,12 @@ typedef struct
     /* Capture Bypassed traffic */
     int capture_bypassed;
 
+    /* Redirect https traffic */
+    int redirect_https_enabled;
+
+    /* Send them to the HTTPS page.*/
+    int use_https_page;
+
     int capture_rules_length;
 
     cpd_capture_rule_t capture_rules[CPD_MAX_CAPTURE_RULES];

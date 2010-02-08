@@ -734,6 +734,12 @@ static int _update_lua_config( cpd_config_t* config, char* sqlite_file )
     lua_pushnumber( _globals.lua_state, _globals.config.max_session_length_s );
     lua_setfield( _globals.lua_state, -2, "max_session_length_s" );
 
+    lua_pushboolean( _globals.lua_state, _globals.config.redirect_https_enabled );
+    lua_setfield( _globals.lua_state, -2, "redirect_https_enabled" );    
+
+    lua_pushboolean( _globals.lua_state, _globals.config.use_https_page );
+    lua_setfield( _globals.lua_state, -2, "use_https_page" );
+
     lua_pushstring( _globals.lua_state, sqlite_file );
     lua_setfield( _globals.lua_state, -2, "sqlite_file" );
 
