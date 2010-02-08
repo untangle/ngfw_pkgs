@@ -328,6 +328,9 @@ commands[#commands+1] = "iptables -t mangle -F untangle-cpd-authorize"
 
 -- Return all of the "special" traffic
 if ( cpd_config["enabled"] == true ) then
+   -- Return all of the IP Addresses that are in one of the sets.
+   add_ipset_rules(commands)
+
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd -i utun -j RETURN"
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd -i lo -j RETURN"
    
@@ -350,9 +353,6 @@ if ( cpd_config["enabled"] == true ) then
    
    -- Update the capture rules.
    add_capture_rules(commands, redirect_https_enabled )
-
-   -- Return all of the IP Addresses that are in one of the sets.
-   add_ipset_rules(commands)
 
    for _, rule in ipairs( capture_rules ) do 
       if ( rule["capture"] ) then

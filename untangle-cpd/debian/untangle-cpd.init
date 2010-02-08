@@ -25,7 +25,16 @@ test -f /etc/default/untangle-cpd && . /etc/default/untangle-cpd
 
 start()
 {
+    local t_module
+
     log_daemon_msg "Starting $DESC"
+
+    for t_module in ip_set ip_set_iphash ipt_set ; do
+        modprobe ${t_module} || {
+            log_daemon_msg "Error starting $DESC: Unable to load ip set modules"
+            exit 1
+        }
+    done
 
     if [ -f ${PID_FILE} ] ; then
       ps -p `cat ${PID_FILE}` > /dev/null 2>&1 && grep $MONITOR /proc/`cat ${PID_FILE}`/cmdline > /dev/null 2>&1
