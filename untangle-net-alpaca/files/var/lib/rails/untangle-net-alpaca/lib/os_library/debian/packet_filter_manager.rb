@@ -227,8 +227,8 @@ EOF
     Order = [ MarkInterface, PostNat, SNatRules,
               FirewallBlock, FirewallMarkReject, FirewallMarkDrop, 
               FirewallMarkInputReject, FirewallMarkInputDrop, FirewallNat,
-              FirewallRules, CaptivePortal, CaptivePortalCapture, SingleNIC,
-              BypassRules, BypassMark, Redirect ]
+              FirewallRules, SingleNIC,
+              BypassRules, BypassMark, CaptivePortal, CaptivePortalCapture, Redirect ]
   end
   
   def hook_commit

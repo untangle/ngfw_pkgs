@@ -70,8 +70,19 @@ class DnsController < ApplicationController
     json_result
   end
   
-  def get_leases
-    json_result( :values => os["dns_server_manager"].dynamic_entries )
+  def get_leasese
+    dns_server_settings = DnsServerSettings.find( :first )
+    dns_server_settings = DnsServerSettings.create_default if dns_server_settings.nil?
+    
+    dhcp_server_settings = DhcpServerSettings.find( :first )
+    dhcp_server_settings = DhcpServerSettings.new if dhcp_server_settings.nil?
+    
+    leases = []
+    if ( dns_server_settings.enabled and dhcp_server_settings.enabled )
+      leases = os["dns_server_manager"].dynamic_entries
+    end
+    
+    json_result( :values => leases )
   end
   
   alias_method :index, :extjs
