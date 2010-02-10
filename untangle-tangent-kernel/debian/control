@@ -1,0 +1,13 @@
+Source: untangle-tangent-kernel
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.8.0
+
+Package: untangle-tangent-kernel
+Architecture: all
+Depends: untangle-linux-config
+Description: Tangent-related modules for the untangle kernel.
+  This package contains the Tangent-related modules for the untangle kernel.
