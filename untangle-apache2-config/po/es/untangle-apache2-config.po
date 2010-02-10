@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Untangle\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-26 09:42-0700\n"
+"POT-Creation-Date: 2010-02-09 16:23-0800\n"
 "PO-Revision-Date: 2008-11-23 06:06-0700\n"
 "Last-Translator: David Russi <dprussi@qwest.net>\n"
 "Language-Team: Spanish <dprussi@qwest.net>\n"
@@ -22,23 +22,23 @@ msgstr ""
 msgid "%s Administrator Login"
 msgstr ""
 
-#: ../adminindex.py:117
+#: ../adminindex.py:116
 msgid "Error: Username and Password do not match"
 msgstr "Error: el nombre de usuario y la contraseña no coinciden"
 
-#: ../adminindex.py:171
+#: ../adminindex.py:170
 msgid "Server:"
 msgstr "Servidor:"
 
-#: ../adminindex.py:171
+#: ../adminindex.py:170
 msgid "Username:"
 msgstr "Nombre de usuario:"
 
-#: ../adminindex.py:171
+#: ../adminindex.py:170
 msgid "Password:"
 msgstr "Contraseña:"
 
-#: ../adminindex.py:171
+#: ../adminindex.py:170
 msgid "Login"
 msgstr "Iniciar sesión"
 
@@ -138,7 +138,7 @@ msgstr "Tiempo de espera de la pasarela agotado"
 msgid "HTTP Version Not Supported"
 msgstr "Versión de HTTP no soportada"
 
-#: ../errorindex.py:133 ../uvmlogin.py:283
+#: ../errorindex.py:133 ../uvmlogin.py:286
 #, python-format
 msgid "%s Server"
 msgstr "Servidor %s"

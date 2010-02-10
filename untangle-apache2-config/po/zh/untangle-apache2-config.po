@@ -3,23 +3,23 @@
 msgid "%s Administrator Login"
 msgstr ""
 
-#: ../adminindex.py:117
+#: ../adminindex.py:116
 msgid "Error: Username and Password do not match"
 msgstr ""
 
-#: ../adminindex.py:171
+#: ../adminindex.py:170
 msgid "Server:"
 msgstr ""
 
-#: ../adminindex.py:171
+#: ../adminindex.py:170
 msgid "Username:"
 msgstr ""
 
-#: ../adminindex.py:171
+#: ../adminindex.py:170
 msgid "Password:"
 msgstr ""
 
-#: ../adminindex.py:171
+#: ../adminindex.py:170
 msgid "Login"
 msgstr ""
 
@@ -119,7 +119,7 @@ msgstr ""
 msgid "HTTP Version Not Supported"
 msgstr ""
 
-#: ../errorindex.py:133 ../uvmlogin.py:283
+#: ../errorindex.py:133 ../uvmlogin.py:286
 #, python-format
 msgid "%s Server"
 msgstr ""
