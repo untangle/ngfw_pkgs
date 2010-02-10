@@ -383,5 +383,5 @@ replace_rule( commands, "filter", "FORWARD", "-m connmark --mark 0x100000/0x1000
 replace_rule( commands, "filter", "FORWARD", "-m connmark --mark 0x100000/0x100000 -m set --set cpd-ipv4-expired src -p tcp --tcp-flags FIN,RST NONE -m comment --comment 'cpd reset expired session 6bbd.ade2.1ea1' -j REJECT", 1, is_enabled )
 
 
-table.foreach( commands, function( a, b ) print( b ); os.execute( b ) end )
+table.foreach( commands, function( a, b ) os.execute( b ) end )
 
