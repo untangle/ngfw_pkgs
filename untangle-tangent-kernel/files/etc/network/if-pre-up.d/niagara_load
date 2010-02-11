@@ -10,6 +10,9 @@ fi
 util="/usr/bin/n22xxed_util_$arch"
 mode="664"
 
+modprobe igb
+modprobe $module
+
 # Group: since distributions do it differently, look for wheel or use staff
 if grep '^staff:' /etc/group > /dev/null; then
     group="staff"
