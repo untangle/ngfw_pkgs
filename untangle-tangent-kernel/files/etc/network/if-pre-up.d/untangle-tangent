@@ -1,7 +1,0 @@
-#! /bin/sh
-
-#modprobe FOO
-
-#/usr/bin/tangent-binary arg1 arg2
-
-exit 0

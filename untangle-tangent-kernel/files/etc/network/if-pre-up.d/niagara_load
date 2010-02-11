@@ -1,0 +1,42 @@
+#!/bin/sh
+module="n22xxed"
+device="n22xxed"
+if uname -r | grep amd64 -q
+then
+   arch="amd64"
+else
+   arch="i386"
+fi
+util="/usr/bin/n22xxed_util_$arch"
+mode="664"
+
+# Group: since distributions do it differently, look for wheel or use staff
+if grep '^staff:' /etc/group > /dev/null; then
+    group="staff"
+else
+    group="wheel"
+fi
+
+# remove stale nodes
+rm -f /dev/${device}? 
+
+# invoke insmod with all arguments we got
+# and use a pathname, as newer modutils don't look in . by default
+
+if uname -r | grep 2.4 -q 
+then
+	/sbin/insmod -f ./$module.o $* || exit 1
+else
+	/sbin/insmod -f ./$module.ko $* || exit 1
+fi
+
+major=`cat /proc/devices | awk "\\$2==\"$module\" {print \\$1}"`
+
+mknod /dev/${device}0 c $major 0
+ln -sf ${device}0  /dev/${device}
+
+# give appropriate group/permissions
+chgrp $group /dev/${device}0
+chmod $mode  /dev/${device}0
+# the utility to force active mode until we go down.
+$util -a
