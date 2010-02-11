@@ -4,6 +4,27 @@ set -e
 
 version=$(uname -r)
 
+if $version | grep amd64 -q
+then
+   arch="amd64"
+else
+   arch="i386"
+fi
+
+util="/usr/bin/n22xxed_util_$arch"
+
+# unload existing module if it is loaded
+if lsmod | grep igb -q
+then
+  rmmod igb
+fi
+
+# delete the old igb kernel module
+if [ -f /lib/modules/$version/kernel/drivers/net/igb/igb.ko ]
+  then
+  rm /lib/modules/$vesion/kernel/drivers/net/igb/igb.ko
+fi
+
 mkdir -p /lib/modules/$version/extra/
 cp -f /usr/share/untangle-tangent-kernel/$version/*.ko /lib/modules/$version/extra/
 depmod -a

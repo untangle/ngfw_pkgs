@@ -1,16 +1,24 @@
 #!/bin/sh
 module="n22xxed"
 device="n22xxed"
+prog=$(basename $0)
+logger="logger -t $prog"
+
 if uname -r | grep amd64 -q
 then
    arch="amd64"
+   $logger "amd64 detected"
 else
    arch="i386"
+   $logger "i386 detected"
 fi
 util="/usr/bin/n22xxed_util_$arch"
 mode="664"
 
+$logger "loading intel NIC driver kernel module"
 modprobe igb
+$logger "loading niagara kernel module"
+modprobe $module
 
 # Group: since distributions do it differently, look for wheel or use staff
 if grep '^staff:' /etc/group > /dev/null; then
@@ -20,17 +28,8 @@ else
 fi
 
 # remove stale nodes
+$logger "Creating /dev/$device entry"
 rm -f /dev/${device}? 
-
-# invoke insmod with all arguments we got
-# and use a pathname, as newer modutils don't look in . by default
-
-if uname -r | grep 2.4 -q 
-then
-	/sbin/insmod -f $module.o $* || exit 1
-else
-	/sbin/insmod -f $module.ko $* || exit 1
-fi
 
 major=`cat /proc/devices | awk "\\$2==\"$module\" {print \\$1}"`
 
@@ -41,4 +40,5 @@ ln -sf ${device}0  /dev/${device}
 chgrp $group /dev/${device}0
 chmod $mode  /dev/${device}0
 # the utility to force active mode until we go down.
-$util -a
+$logger "Switching Card to active mode"
+$util -a | $logger
