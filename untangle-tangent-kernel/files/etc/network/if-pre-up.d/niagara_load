@@ -11,7 +11,6 @@ util="/usr/bin/n22xxed_util_$arch"
 mode="664"
 
 modprobe igb
-modprobe $module
 
 # Group: since distributions do it differently, look for wheel or use staff
 if grep '^staff:' /etc/group > /dev/null; then
@@ -28,9 +27,9 @@ rm -f /dev/${device}?
 
 if uname -r | grep 2.4 -q 
 then
-	/sbin/insmod -f ./$module.o $* || exit 1
+	/sbin/insmod -f $module.o $* || exit 1
 else
-	/sbin/insmod -f ./$module.ko $* || exit 1
+	/sbin/insmod -f $module.ko $* || exit 1
 fi
 
 major=`cat /proc/devices | awk "\\$2==\"$module\" {print \\$1}"`
