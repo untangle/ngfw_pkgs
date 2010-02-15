@@ -21,6 +21,7 @@ cp -p $FDIR/FuzzyOcr.pm /usr/share/perl5/Mail/SpamAssassin/Plugin/
 touch $LOGFILE
 mkdir -p $LIBDIR
 chown -R $USER $LOGFILE $LIBDIR
+chmod 644 $LOGFILE
 
 # reload SA
 ourInit spamassassin reload
