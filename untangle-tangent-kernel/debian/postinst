@@ -4,14 +4,6 @@ set -e
 
 version=$(uname -r)
 
-if $(echo $version | grep -q amd64) ; then
-   arch="amd64"
-else
-   arch="i386"
-fi
-
-util="/usr/bin/n22xxed_util_$arch"
-
 # unload existing module if it is loaded
 if lsmod | grep -q igb ; then
   rmmod igb
