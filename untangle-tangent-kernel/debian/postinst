@@ -1,13 +1,13 @@
 #! /bin/sh
 
-set -e
+#set -e
 
 version=$(uname -r)
 
 # unload existing module if it is loaded
-if lsmod | grep -q igb ; then
-  rmmod igb
-fi
+#if lsmod | grep -q igb ; then
+#  rmmod igb
+#fi
 
 # delete the old igb kernel module
 rm -f /lib/modules/$version/kernel/drivers/net/igb/igb.ko
