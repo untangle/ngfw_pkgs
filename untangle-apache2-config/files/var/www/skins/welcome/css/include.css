@@ -11,6 +11,9 @@
         height:100px;        
 
     }
+    .logo-container{
+        width: 180px;
+    }    
     .red{
         color:#FF0000;
     }
@@ -47,3 +50,9 @@
     .link{
         color:#0000FF !important;
     }
+    h1{
+        font-size:2.5em;
+    }
+    h2 {
+        font-size:1.8em;
+    }    
