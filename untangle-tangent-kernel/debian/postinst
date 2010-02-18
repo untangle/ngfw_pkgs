@@ -43,11 +43,12 @@ install_kernel_module()
 #  rmmod igb
 #fi
 
-# delete the old igb kernel module
-
 ## Iterate all of the kernels and copy them in.
 for t in /usr/share/untangle-tangent-kernel/* ; do
     kernel_version="`basename $t`"
+
+    ## Remove the old igb kernel module
+    rm -f /lib/modules/${kernel_version}/kernel/drivers/net/igb/igb.ko
     
     install_kernel_module ${kernel_version}
 done
