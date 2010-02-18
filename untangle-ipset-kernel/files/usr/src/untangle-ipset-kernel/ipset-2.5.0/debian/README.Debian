@@ -1,0 +1,15 @@
+ipset for Debian
+----------------
+
+ipset(8) is a control utility for the ipset kernel modules from the
+netfilter patch-o-matic project.
+
+The patch-o-matic release corresponding to this release of ipset can be
+downloaded here:
+
+    http://ipset.netfilter.org/install.html
+
+Alternatively, the netfilter-extensions-source Debian package can be
+used to build the ipset kernel modules out-of-tree.
+
+ -- Robert S. Edmonds <edmonds@debian.org>

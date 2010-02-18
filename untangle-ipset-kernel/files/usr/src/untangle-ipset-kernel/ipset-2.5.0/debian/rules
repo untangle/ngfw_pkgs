@@ -1,0 +1,71 @@
+#!/usr/bin/make -f
+
+psource := ipset-source
+sname := ipset
+
+CFLAGS = -Wall -g
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O2
+endif
+
+build:
+	dh_testdir
+	$(MAKE) binaries
+
+clean:
+	dh_testdir
+	dh_testroot
+	dh_clean 
+
+	$(MAKE) clean_binaries
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k 
+	dh_installdirs
+
+	$(MAKE) DESTDIR=$(CURDIR)/debian/ipset binaries_install
+
+	install -m 0644 -D $(CURDIR)/debian/ipset.lintian.override \
+		$(CURDIR)/debian/ipset/usr/share/lintian/overrides/ipset
+	
+	# Create the directories to install the source into
+	dh_installdirs -p$(psource) usr/src/modules/$(sname)/debian
+
+	# Copy only the kernel module source to the proper location
+	cp -r kernel/* debian/$(psource)/usr/src/modules/$(sname)
+
+	# Copy the needed debian/ pieces to the proper location
+	install -m 0755 debian/rules.modules \
+		debian/$(psource)/usr/src/modules/$(sname)/debian/rules
+	cp debian/*modules.in* \
+		debian/$(psource)/usr/src/modules/$(sname)/debian
+	cp debian/changelog debian/copyright \
+		debian/compat debian/$(psource)/usr/src/modules/$(sname)/debian/
+	cd debian/$(psource)/usr/src && tar c modules | bzip2 -9 > $(sname).tar.bz2 && rm -rf modules
+
+	dh_install
+
+binary-indep: build install
+
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs ChangeLog
+	dh_installdocs
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install
