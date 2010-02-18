@@ -1,6 +1,6 @@
 #! /usr/bin/make -f
 
-DESTDIR := debian/untangle-tangent-kernel
+DESTDIR := debian/untangle-nic-kernel
 
 build:
 	dh_testdir
@@ -13,7 +13,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-arch-stamp build-indep-stamp configure-stamp
-	rm -rf debian/tmp debian/untangle-tangent-kernel sav-install
+	rm -rf debian/tmp debian/untangle-nic-kernel sav-install
 	dh_clean
 
 binary-indep: build

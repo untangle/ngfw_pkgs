@@ -18,13 +18,13 @@ install_kernel_module()
         return 0
     fi
 
-    if [ -z "`find /usr/share/untangle-tangent-kernel/$t_version -name '*.ko' -type f`" ]; then
+    if [ -z "`find /usr/share/untangle-nic-kernel/$t_version -name '*.ko' -type f`" ]; then
         echo "There are no modules for this kernel."
         return 0
     fi
         
     mkdir -p /lib/modules/${t_version}/extra
-    cp -f /usr/share/untangle-tangent-kernel/${t_version}/*.ko /lib/modules/${t_version}/extra
+    cp -f /usr/share/untangle-nic-kernel/${t_version}/*.ko /lib/modules/${t_version}/extra
     
     ## Running depmod for this kernel.  During the install, the kernel that is running
     ## is different then the kernel that gets installed.
@@ -44,7 +44,7 @@ install_kernel_module()
 #fi
 
 ## Iterate all of the kernels and copy them in.
-for t in /usr/share/untangle-tangent-kernel/* ; do
+for t in /usr/share/untangle-nic-kernel/* ; do
     kernel_version="`basename $t`"
 
     ## Remove the old igb kernel module
