@@ -9,5 +9,8 @@ Standards-Version: 3.8.0
 Package: untangle-nic-kernel
 Architecture: all
 Depends: untangle-linux-config
+Provides: untangle-tangent-kernel
+Replaces: untangle-tangent-kernel
+Conflicts: untangle-tangent-kernel
 Description: Tangent-related modules for the untangle kernel.
   This package contains the Tangent-related modules for the untangle kernel.
