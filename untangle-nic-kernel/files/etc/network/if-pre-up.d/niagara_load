@@ -3,6 +3,7 @@ module="n22xxed"
 device="n22xxed"
 prog=$(basename $0)
 logger="logger -t $prog"
+kernel=`uname -r`
 
 if uname -r | grep amd64 -q
 then
@@ -15,8 +16,21 @@ fi
 util="/usr/bin/n22xxed_util_$arch"
 mode="664"
 
-$logger "loading intel NIC driver kernel module"
-modprobe igb
+# If the old driver exists, remove it before starting up new driver
+if -f /lib/modules/$kernel/drivers/net/igb/igb.ko; then
+  rmmod igb
+  rm -f /lib/modules/$kernel/drivers/net/igb/igb.ko
+  depmod -a
+  modprobe igb
+fi
+
+#Check and see if igb is already loaded, if not, load it!
+lsmod | grep igb -q
+if [ $? -ne 0 ]; then
+  $logger "loading intel NIC driver kernel module"
+  modprobe igb
+fi
+
 $logger "loading niagara kernel module"
 modprobe $module
 
@@ -39,6 +53,7 @@ ln -sf ${device}0  /dev/${device}
 # give appropriate group/permissions
 chgrp $group /dev/${device}0
 chmod $mode  /dev/${device}0
-# the utility to force active mode until we go down.
+
+# run the utility to force active mode until we go down.
 $logger "Switching Card to active mode"
 $util -a | $logger
