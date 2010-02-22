@@ -1,0 +1,24 @@
+TARGET	:= n22xxed
+#WARN	:= -W -Wall -Wstrict-prototypes -Wmissing-prototypes
+WARN	:= -Wall -Wstrict-prototypes 
+
+ifndef KERNELDIR
+	KERNELDIR = /usr/src/linux-$(shell uname -r)
+#	KERNELDIR = /usr/src/linux-2.4.18-3
+endif
+
+INCLUDEDIR = $(KERNELDIR)/include
+CFLAGS  := -O2 -DMODULE -D__KERNEL__ ${WARN} -I$(INCLUDEDIR)
+CC	:= gcc
+
+all: ${TARGET}.o util
+
+${TARGET}.o: n22xxed.c
+
+.PHONY: clean
+
+util:
+	gcc -Wall -o n22xxed_util n22xxed_util.c
+
+clean:
+	rm -f *o *ko *.mod.c n22xxed_util 

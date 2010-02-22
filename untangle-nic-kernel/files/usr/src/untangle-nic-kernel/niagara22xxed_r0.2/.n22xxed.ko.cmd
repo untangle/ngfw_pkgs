@@ -1,0 +1,1 @@
+cmd_/drivers/n22xxed/niagara22xxed_r0.2/n22xxed.ko := ld -m elf_i386 -r -o /drivers/n22xxed/niagara22xxed_r0.2/n22xxed.ko /drivers/n22xxed/niagara22xxed_r0.2/n22xxed.o /drivers/n22xxed/niagara22xxed_r0.2/n22xxed.mod.o
