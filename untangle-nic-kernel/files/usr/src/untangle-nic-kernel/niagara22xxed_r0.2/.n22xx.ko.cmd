@@ -1,0 +1,1 @@
+cmd_/home/frankw/n2265/n22xx-r6a5.5c_1/n22xx.ko := ld -m elf_i386 -m elf_i386 -r -o /home/frankw/n2265/n22xx-r6a5.5c_1/n22xx.ko /home/frankw/n2265/n22xx-r6a5.5c_1/n22xx.o /home/frankw/n2265/n22xx-r6a5.5c_1/n22xx.mod.o

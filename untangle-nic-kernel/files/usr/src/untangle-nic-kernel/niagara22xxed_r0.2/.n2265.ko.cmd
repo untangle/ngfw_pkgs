@@ -1,0 +1,1 @@
+cmd_/drivers/n4pe-76-2/niagara4pe-76-2t_r0.02/n2265.ko := ld -m elf_i386 -r -o /drivers/n4pe-76-2/niagara4pe-76-2t_r0.02/n2265.ko /drivers/n4pe-76-2/niagara4pe-76-2t_r0.02/n2265.o /drivers/n4pe-76-2/niagara4pe-76-2t_r0.02/n2265.mod.o
