@@ -77,8 +77,8 @@ Ung.Alpaca.PacketTest = Ext.extend( Ung.Alpaca.NetworkUtility, {
         if ( destination != null &&
              destination != "" &&
              destination != "any" &&
-             ( !Ext.form.VTypes.ipAddress( hostname, this.destination ) && 
-               !Ext.form.VTypes.hostname( hostname, this.destination ))) {
+             ( !Ext.form.VTypes.ipAddress( destination, this.destination ) && 
+               !Ext.form.VTypes.hostname( destination, this.destination ))) {
             Ext.MessageBox.show({
                 title : Ung.Alpaca.Util._( "Warning" ),
                 msg : Ung.Alpaca.Util._( "Please enter a valid IP Address, Hostname or 'any'" ),
