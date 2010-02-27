@@ -12,7 +12,7 @@ Ung.Alpaca.ConnectivityTest = Ext.extend( Ung.Alpaca.NetworkUtility, {
     
     initComponent : function()
     {
-        this.testDescription = Ung.Alpaca.Util._("The <b>Connectivity Test</b> verifies that Untangle has a working connection to the Internet.");
+        this.testDescription = Ung.Alpaca.Util._("The <b>Connectivity Test</b> verifies a working connection to the Internet.");
 
         this.testTopToolbar = [this.runTest = new Ext.Toolbar.Button({
             text : Ung.Alpaca.Util._("Run Test"),

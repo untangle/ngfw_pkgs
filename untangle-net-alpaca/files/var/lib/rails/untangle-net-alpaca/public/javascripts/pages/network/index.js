@@ -52,7 +52,7 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             items : items
         });
 
-        this.confirmMessage = this._( "These settings are critical to proper network operation and you should be sure these are the settings you want. Your Untangle Client may be logged out." );
+        this.confirmMessage = this._( "These settings are critical to proper network operation and you should be sure these are the settings you want. You may be logged out." );
         
         Ung.Alpaca.Pages.Network.Index.superclass.initComponent.apply( this, arguments );
     },

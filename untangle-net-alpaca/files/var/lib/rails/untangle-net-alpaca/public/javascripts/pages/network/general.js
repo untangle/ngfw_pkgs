@@ -33,7 +33,7 @@ Ung.Alpaca.Pages.Network.General = Ext.extend( Ung.Alpaca.PagePanel, {
                     name : "enable_sip_helper"
                 },{
                     name : "uvm.override_redirects",
-                    fieldLabel : this._( "Untangle Administration overrides Port Forwards" )
+                    fieldLabel : this._( "Administration overrides Port Forwards" )
                 },{
                     fieldLabel : this._( "Only NAT WAN traffic" ),
                     name : "classy_nat_mode"
@@ -41,7 +41,7 @@ Ung.Alpaca.Pages.Network.General = Ext.extend( Ung.Alpaca.PagePanel, {
             }]
         });
 
-        this.confirmMessage = this._( "These settings are critical to proper network operation and you should be sure these are the settings you want. Your Untangle Client may be logged out." );
+        this.confirmMessage = this._( "These settings are critical to proper network operation and you should be sure these are the settings you want. You may be logged out." );
         
         Ung.Alpaca.Pages.Network.General.superclass.initComponent.apply( this, arguments );
     },

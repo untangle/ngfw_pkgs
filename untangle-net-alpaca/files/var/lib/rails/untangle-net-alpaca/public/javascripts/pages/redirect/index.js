@@ -485,7 +485,7 @@ Ung.Alpaca.Pages.Redirect.TroubleShoot = Ext.extend( Ext.Window, {
                 html : Ung.Alpaca.Util._( "Troubleshooting Port Forwards" )
             },{
                 xtype : "label",
-                html : Ung.Alpaca.Util._( "Test 1: Verify Untangle can ping the <b>new destination</b>" )
+                html : Ung.Alpaca.Util._( "Test 1: Verify pinging the <b>new destination</b>" )
             },{
                 xtype : "button",
                 text : Ung.Alpaca.Util._( "Ping Test" ),
@@ -494,7 +494,7 @@ Ung.Alpaca.Pages.Redirect.TroubleShoot = Ext.extend( Ext.Window, {
                 scope : this
             },{
                 xtype : "label",
-                html : Ung.Alpaca.Util._( "Test 2: Verify Untangle can connect to the new destination<br/><i>This test applies only to TCP port forwards.</i>" )
+                html : Ung.Alpaca.Util._( "Test 2: Verify connecting to the new destination<br/><i>This test applies only to TCP port forwards.</i>" )
             },this.tcpTestButton = new Ext.Button({
                 xtype : "button",
                 text : Ung.Alpaca.Util._( "Connect Test" ),

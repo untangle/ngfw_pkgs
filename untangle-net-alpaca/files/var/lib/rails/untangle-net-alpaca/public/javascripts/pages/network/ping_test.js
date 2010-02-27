@@ -12,7 +12,7 @@ Ung.Alpaca.PingTest = Ext.extend( Ung.Alpaca.NetworkUtility, {
     
     initComponent : function()
     {
-        this.testDescription = Ung.Alpaca.Util._("The <b>Ping Test</b> can be used to test that a particular host or client can be contacted from Untangle");
+        this.testDescription = Ung.Alpaca.Util._("The <b>Ping Test</b> can be used to test that a particular host or client can be pinged");
 
         this.testTopToolbar = [this.destination = new Ext.form.TextField({
             xtype : "textfield",

@@ -131,7 +131,7 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
             items : items
         });
 
-        this.confirmMessage = this._( "These settings are critical to proper network operation and you should be sure these are the settings you want. Your Untangle Client may be logged out." );
+        this.confirmMessage = this._( "These settings are critical to proper network operation and you should be sure these are the settings you want. You may be logged out." );
                 
         Ung.Alpaca.Pages.Interface.List.superclass.initComponent.apply( this, arguments );
     },
@@ -153,7 +153,7 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
         /* If necessary, show a little message indicating that the interfaces have changed. */
         if (( newInterfaces.length + deletedInterfaces.length ) > 0 ) {
             items.push( new Ext.form.Label({
-                html : String.format( this._( "{0}Untangle detected interfaces changes.{1}Configure them{2}.{3}" ),
+                html : String.format( this._( "{0} Interfaces changes detected.{1}Configure them{2}.{3}" ),
                                       "<p class=\"ua-message-warning\">", this.updateInterfacesUrl, 
                                       "</a>", "</p>" )
             }));

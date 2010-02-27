@@ -12,7 +12,7 @@ Ung.Alpaca.DnsTest = Ext.extend( Ung.Alpaca.NetworkUtility, {
     
     initComponent : function()
     {
-        this.testDescription = Ung.Alpaca.Util._("The <b>DNS Test</b> can be used to test Untangle can successfully perform DNS lookups");
+        this.testDescription = Ung.Alpaca.Util._("The <b>DNS Test</b> can be used to test DNS lookups");
 
         this.testTopToolbar = [this.hostname = new Ext.form.TextField({
             xtype : "textfield",

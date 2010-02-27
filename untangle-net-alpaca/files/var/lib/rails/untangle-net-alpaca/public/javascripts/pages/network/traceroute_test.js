@@ -14,7 +14,7 @@ Ung.Alpaca.TracerouteTest = Ext.extend( Ung.Alpaca.NetworkUtility, {
     
     initComponent : function()
     {
-        this.testDescription = Ung.Alpaca.Util._("The <b>Traceroute Test</b> traces the route from Untangle to a give host or client.");
+        this.testDescription = Ung.Alpaca.Util._("The <b>Traceroute Test</b> traces the route to a given host or client.");
 
         this.testTopToolbar = [this.destination = new Ext.form.TextField({
             xtype : "textfield",
