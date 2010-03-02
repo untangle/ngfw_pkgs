@@ -12,5 +12,5 @@ Depends: untangle-linux-config, firmware-bnx2, firmware-bnx2x
 Provides: untangle-tangent-kernel
 Replaces: untangle-tangent-kernel
 Conflicts: untangle-tangent-kernel
-Description: Tangent-related modules for the untangle kernel.
-  This package contains the Tangent-related modules for the untangle kernel.
+Description: nic-related modules for the untangle kernel.
+  This package contains the nic-related modules for the untangle kernel.
