@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-nic-kernel
 Architecture: all
-Depends: untangle-linux-config
+Depends: untangle-linux-config, firmware-bnx2, firmware-bnx2x
 Provides: untangle-tangent-kernel
 Replaces: untangle-tangent-kernel
 Conflicts: untangle-tangent-kernel
