@@ -22,6 +22,9 @@ if [ -x /usr/bin/sa-update ]; then
     [ $? = 0 ] && needToRestart="true"
 fi
 
+# set date for having checked for update
+touch /tmp/update-sa-update.ran
+
 # restart spamassassin if needed
 [ $needToRestart = "true" ] && /etc/init.d/spamassassin restart &> /dev/null &
 
