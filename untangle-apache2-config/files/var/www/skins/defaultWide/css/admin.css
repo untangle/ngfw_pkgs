@@ -147,6 +147,10 @@ button.icon-help {
 button.icon-logout {
 	background:transparent url(../images/admin/icon_logout_row.gif) no-repeat center left !important; 
 }
+/* myaccount button icon */
+button.icon-myaccount {
+	background:transparent url(../images/admin/icon_myaccount.png) no-repeat center left !important; 
+}
 /* help button icon */
 div.icon-help {
 	background:transparent url(../images/admin/icon_help.png) no-repeat !important;
@@ -244,6 +248,10 @@ button.cancel-icon {
 /* save button icon */
 button.save-icon {
 	background:transparent url(../images/admin/icon_save.png) no-repeat center left !important; 
+}
+/* apply button icon */
+button.apply-icon {
+	background:transparent url(../images/admin/icon_floppy.png) no-repeat center left !important; 
 }
 /* test button icon */
 button.test-icon {
