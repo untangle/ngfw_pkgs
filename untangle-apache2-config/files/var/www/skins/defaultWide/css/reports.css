@@ -83,11 +83,33 @@ body{
 .dateRange{
     left:456px !important;
 }
+.dateRange .x-panel-body{
+    height:60px !important;
+}
+#rangeFieldSet{
+    padding-bottom:0px;
+    margin-bottom:0px;
+    padding-top:0px;
+}
 .dateContainer .x-fieldset-body{
-   height:50px !important;
+   height:60px !important;
+}
+#logout-link{
+    float:right;
+    clear:both;
+    text-align:right;
+    margin-bottom:10px;
+    cursor:pointer;
+    cursor:hand;
+    color:blue;
+    text-decoration:underline;
+    font-size:11px;
+    font-family:Tahoma,Helvetica,sans-serif; 
 }
 #report-day-menu{
     float:right;
+        clear:both;
+    text-align:right;
     cursor:pointer;
     cursor:hand;
     color:blue;
@@ -96,9 +118,9 @@ body{
     font-family:Tahoma,Helvetica,sans-serif;    
 }
 #report-date-range{
-    display:block;
-    height:20px;
-    margin-top:23px;
+    float:right;
+        clear:both;    
+    height:16px;
     text-align:right;
     font-style: normal;
     font-size:11px;
