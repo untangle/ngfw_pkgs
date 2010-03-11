@@ -180,3 +180,6 @@ body{
     margin: 0 auto !important;
     left: auto !important;
 }
+.top-align{
+    vertical-align:top;
+}
