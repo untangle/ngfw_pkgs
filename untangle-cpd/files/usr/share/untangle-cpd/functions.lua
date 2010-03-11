@@ -75,8 +75,8 @@ local function init_database()
               ]], true )
    local curs, is_updated
    
-   create_table( "n_adconnector_host_database_entry", [[
-CREATE TABLE events.n_adconnector_host_database_entry (
+   create_table( "n_cpd_host_database_entry", [[
+CREATE TABLE events.n_cpd_host_database_entry (
     entry_id        INT8 NOT NULL,
     hw_addr         TEXT,
     ipv4_addr       INET,
@@ -86,18 +86,18 @@ CREATE TABLE events.n_adconnector_host_database_entry (
     expiration_date TIMESTAMP,
    PRIMARY KEY     (entry_id));
 ]],[[
-CREATE INDEX n_adconnector_host_database_last_session_idx ON 
-       events.n_adconnector_host_database_entry(last_session);
+CREATE INDEX n_cpd_host_database_last_session_idx ON 
+       events.n_cpd_host_database_entry(last_session);
  ]],[[
 -- For querying on sessions that are expired
-CREATE INDEX n_adconnector_host_database_expiration_date_idx ON
-       events.n_adconnector_host_database_entry(expiration_date);
+CREATE INDEX n_cpd_host_database_expiration_date_idx ON
+       events.n_cpd_host_database_entry(expiration_date);
  ]],[[
-CREATE INDEX n_adconnector_host_database_username_idx ON
-       events.n_adconnector_host_database_entry(username);
+CREATE INDEX n_cpd_host_database_username_idx ON
+       events.n_cpd_host_database_entry(username);
  ]],[[
-CREATE INDEX n_adconnector_host_database_ipv4_addr_idx ON
-       events.n_adconnector_host_database_entry(ipv4_addr);
+CREATE INDEX n_cpd_host_database_ipv4_addr_idx ON
+       events.n_cpd_host_database_entry(ipv4_addr);
  ]])
 end
 
@@ -488,7 +488,7 @@ authenticated_ipset = "cpd-ipv4-authenticated"
 
 expired_ipset = "cpd-ipv4-expired"
 
-host_database_table = "events.n_adconnector_host_database_entry"
+host_database_table = "events.n_cpd_host_database_entry"
 
 clean_expire_sessions = 0
 
