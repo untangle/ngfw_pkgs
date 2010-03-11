@@ -175,39 +175,41 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
 
     dynamicPanel : function( settings )
     {
-        d = settings["dhcp_status"];
+        d = settings["dhcp_status"],
+        current_text = this._("Current:")+ " ",
+        none_text = this._("None");
         
         var items = [{
-            fieldLabel : this._( "IP Address" ),
+            fieldLabel : this._( "Override IP Address" ),
             name : "dynamic.ip",
-            boxLabel : d["ip"],
+            boxLabel : current_text+ (d["ip"]==null ? none_text : d["ip"]),
             allowBlank : true,
             vtype : 'ipAddress'
         },{
-            fieldLabel : this._( "Netmask" ),
+            fieldLabel : this._( "Override Netmask" ),
             name : "dynamic.netmask",
-            boxLabel : d["netmask"],
+            boxLabel : current_text+ (d["netmask"]==null ? none_text : d["netmask"]),
             allowBlank : true,
             vtype : 'ipAddress'
         },{
             wanToggle : true,
-            fieldLabel : this._( "Default Gateway" ),
+            fieldLabel : this._( "Override Default Gateway" ),
             name : "dynamic.default_gateway",
-            boxLabel : d["default_gateway"],
+            boxLabel : current_text+(d["default_gateway"]==null ? none_text : d["default_gateway"]),
             allowBlank : true,
             vtype : 'ipAddress'
         },{
             wanToggle : true,
-            fieldLabel : this._( "Primary DNS Server" ),
+            fieldLabel : this._( "Override Primary DNS Server" ),
             name : "dynamic.dns_1",
-            boxLabel : d["dns_1"],
+            boxLabel : current_text + (d["dns_1"] == null ? none_text :d["dns_1"]) ,
             allowBlank : true,
             vtype : 'ipAddress'
         },{
             wanToggle : true,
-            fieldLabel : this._( "Secondary DNS Server" ),
+            fieldLabel : this._( "Override Secondary DNS Server" ),
             name : "dynamic.dns_2",
-            boxLabel : d["dns_2"],
+            boxLabel : current_text + (d["dns_2"] == null ? none_text : d["dns_2"]),
             allowBlank : true,
             vtype : 'ipAddress'
         }, this.currentMtu( settings, "dynamic.mtu" ), this.buildEthernetMediaCombo( settings ), {

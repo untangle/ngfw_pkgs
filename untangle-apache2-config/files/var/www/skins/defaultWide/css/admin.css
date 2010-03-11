@@ -1002,28 +1002,31 @@ div.wizard-network-image-description
   margin-left: 11.3em;
   } 
 .noborder{
-           border:0px solid;
-           background-image:none;
-           font-family:tahoma,arial,helvetica,freesans,sans-serif;
-           font-size:12px;
-           font-size-adjust:none;
-           font-style:normal;
-           font-variant:normal;
-           font-weight:normal;
-           line-height:normal;	
+    border:0px solid;
+    background-image:none;
+    font-family:tahoma,arial,helvetica,freesans,sans-serif;
+    font-size:12px;
+    font-size-adjust:none;
+    font-style:normal;
+    font-variant:normal;
+    font-weight:normal;
+    line-height:normal;	
+}
+.italics{
+    font-style:italic;        
 }
 .noborder-nas{
-           border:0px solid;
-           background-image:none;
-           font-family:tahoma,arial,helvetica,helvetica,freesans,sans-serif;
-           font-size:12px;
-           font-size-adjust:none;
-           font-style:normal;
-           font-variant:normal;
-           font-weight:normal;
-           line-height:normal;	
-           margin:4px 0px;
-           display:block;
+    border:0px solid;
+    background-image:none;
+    font-family:tahoma,arial,helvetica,helvetica,freesans,sans-serif;
+    font-size:12px;
+    font-size-adjust:none;
+    font-style:normal;
+    font-variant:normal;
+    font-weight:normal;
+    line-height:normal;	
+    margin:4px 0px;
+    display:block;
 }
 .nas-status-percentage-wrapper{
   border-bottom:1px solid #7EC22B;

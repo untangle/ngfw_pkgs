@@ -67,37 +67,38 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 autoHeight : true,
                 defaults : {
                     xtype : 'textfield',
-                    itemCls:'label-width-1'
+                    itemCls:'label-width-2'
                     
                 },
                 items : [{
                     fieldLabel : this._( "Address" ),
                     name : this.generateName( "config_list", i, "static.ip" ),
-                    vtype : "ipAddress"
+                    vtype : "ipAddress"                  
                 },{
                     xtype : "combo",
                     fieldLabel : this._( "Netmask" ),
                     name : this.generateName( "config_list", i, "static.netmask" ),
                     store : Ung.Alpaca.Util.cidrData,
                     listWidth : 140,
-                    width : 40,
+                    width : 140,
                     triggerAction : "all",
                     mode : "local",
-                    editable : false                                        
+                    editable : false                                                            
                 },{
                     fieldLabel : this._( "Default Gateway" ),
                     name : this.generateName( "config_list", i, "static.default_gateway" ),
                     allowBlank : false,
-                    vtype : "ipAddress"
+                    vtype : "ipAddress"                    
                 },{
                     fieldLabel : this._( "Primary DNS Server" ),
                     name : this.generateName( "config_list", i, "static.dns_1" ),
                     allowBlank : false,
-                    vtype : "ipAddress"
+                    vtype : "ipAddress"                    
                 },{
                     fieldLabel : this._( "Secondary DNS Server" ),
                     name : this.generateName( "config_list", i, "static.dns_2" ),
-                    allowBlank : true
+                    allowBlank : true,
+                    fieldClass : "noborder"                    
                 }]
             }]
         };
@@ -108,6 +109,7 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 autoHeight : true,
                 defaults : {
                     xtype : 'textfield',
+                    itemCls:'label-width-2 left-indent-1',                    
                     readOnly : true
                 },
                 items : [{
@@ -116,20 +118,31 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     handler : this.onRenewLease,
                     scope : this
                 },{
+                    xtype : 'label',
+                    cls: 'x-form-item',
+                    style : 'font-weight:bold;margin-top:5px',
+                    text : this._('Current Status')
+                
+                },{
                     fieldLabel : this._( "Address" ),
-                    name : "dhcp_status.ip"
+                    name : "dhcp_status.ip",
+                    fieldClass : "noborder italics"                    
                 },{
                     fieldLabel : this._( "Netmask" ),
-                    name : "dhcp_status.netmask"
+                    name : "dhcp_status.netmask",
+                    fieldClass : "noborder italics"                       
                 },{
                     fieldLabel : this._( "Default Gateway" ),
-                    name : "dhcp_status.default_gateway"
+                    name : "dhcp_status.default_gateway",
+                    fieldClass : "noborder italics"                       
                 },{
                     fieldLabel : this._( "Primary DNS Server" ),
-                    name : "dhcp_status.dns_1"
+                    name : "dhcp_status.dns_1",
+                    fieldClass : "noborder italics"                       
                 },{
                     fieldLabel : this._( "Secondary DNS Server" ),
-                    name :  "dhcp_status.dns_2"
+                    name :  "dhcp_status.dns_2",
+                    fieldClass : "noborder italics"                       
                 }]
             }]
         };
@@ -139,7 +152,8 @@ Ung.Alpaca.Pages.Network.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 xtype : "fieldset",
                 autoHeight : true,
                 defaults : {
-                    xtype : 'textfield'
+                    xtype : 'textfield',
+                    itemCls:'label-width-2'                    
                 },
                 items : [{
                     xtype : 'button',
