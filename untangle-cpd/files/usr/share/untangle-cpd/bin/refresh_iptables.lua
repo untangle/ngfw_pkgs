@@ -267,6 +267,9 @@ local function add_capture_rules( commands, accept_https )
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd-capture -m state --state ESTABLISHED,RELATED -j RETURN"
       
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd-capture -j ULOG --ulog-nlgroup 1 --ulog-cprange 80 --ulog-prefix cpd-block"
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd-capture -j MARK --set-mark  0x00100000/0x08100000"
+
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd-capture -p udp --destination-port 53 -j RETURN"
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd-capture ! -p tcp -j DROP"
    
    if ( accept_https ) then
@@ -274,7 +277,7 @@ local function add_capture_rules( commands, accept_https )
    else
       commands[#commands+1] = "iptables -t mangle -A untangle-cpd-capture -p tcp -m multiport ! --destination-ports 80 -j DROP"
    end
-   commands[#commands+1] = "iptables -t mangle -A untangle-cpd-capture -j MARK --set-mark  0x00100000/0x08100000"
+
 end
 
 local function add_authorize_rules( commands )
@@ -366,6 +369,8 @@ if ( cpd_config["enabled"] == true ) then
    -- Update all of the authorize rules
    add_authorize_rules(commands)
 end
+
+replace_rule( commands, "nat", "PREROUTING", "-m mark --mark 0x00100000/0x00100000 -p udp --destination-port 53 -j REDIRECT --to-ports 53", 1, is_enabled )
 
 replace_rule( commands, "nat", "PREROUTING", "-m mark --mark 0x00100000/0x00100000 -p tcp --destination-port 80 -j REDIRECT --to-ports 64158", 1, is_enabled )
 
