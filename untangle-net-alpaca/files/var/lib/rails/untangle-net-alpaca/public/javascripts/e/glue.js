@@ -60,9 +60,9 @@ Ung.Alpaca.Glue = {
         return this.pages[this.buildPageKey( controller, page )];
     },
 
-    saveSettings : function( panel )
+    saveSettings : function( panel, closeWindow )
     {
-        var handler = this.completePreSaveSettings.createDelegate( this, [panel], true );
+        var handler = this.completePreSaveSettings.createDelegate( this, [panel, closeWindow], true );
         
         if ( panel.preSaveSettings ) {
             panel.preSaveSettings( handler );
@@ -72,9 +72,9 @@ Ung.Alpaca.Glue = {
         handler();
     },
         
-    completePreSaveSettings : function( panel )
+    completePreSaveSettings : function( panel, closeWindow )
     {
-        var handler = this.confirmedSaveSettings.createDelegate( this, [panel], true );
+        var handler = this.confirmedSaveSettings.createDelegate( this, [panel, closeWindow], true );
 
         /* Confirm settings save, if necessary */
         if ( panel.confirmMessage )
@@ -95,7 +95,7 @@ Ung.Alpaca.Glue = {
         }
     },
 
-    confirmedSaveSettings : function( buttonId, text, panel )
+    confirmedSaveSettings : function( buttonId, text, panel, closeWindow )
     {
         if ( buttonId != "yes" ) {
             return;
@@ -119,7 +119,7 @@ Ung.Alpaca.Glue = {
         /* Validate */
         Ext.MessageBox.wait( title, message );
         
-        var handler = this.completeSaveSettings.createDelegate( this, [ panel ], true );
+        var handler = this.completeSaveSettings.createDelegate( this, [ panel, closeWindow ], true );
         var errorHandler = this.errorSaveSettings.createDelegate( this, [ panel ], true );
 
         if ( panel.saveSettings != null ) {
@@ -135,7 +135,7 @@ Ung.Alpaca.Glue = {
         }
     },
 
-    completeSaveSettings : function( result, response, options, panel )
+    completeSaveSettings : function( result, response, options, panel, closeWindow )
     {
         var title;
         var message;
@@ -152,19 +152,43 @@ Ung.Alpaca.Glue = {
         if ( title == null ) title = this._( 'Saved Settings' );
         if ( message == null ) message = this._( 'Settings have been saved successfuly' );
 
+        var handler = null;
+
+        /* If requested, try to close the window */
+        if ( closeWindow ) {
+            var main = null;
+            if ( window.parent !== null ) {
+                main = window.parent.main;
+            }
+
+            if ( main === null && window.opener !== null ) {
+                main = window.opener.main;
+            }
+            
+            if (( main !== null ) && ( main.hideWelcomeScreen !== null )) {
+                handler = function() {
+                    main.hideWelcomeScreen();
+                    return;
+                }
+            }
+        }
+
         Ext.MessageBox.show({  
             title : title,
             msg : message,
             buttons : Ext.MessageBox.OK,
-            icon : Ext.MessageBox.INFO
+            icon : Ext.MessageBox.INFO,
+            fn : handler
         });
 
         /* Reload the page in the background */
-        if ( nextPage == null ) {
-            application.reloadCurrentQueryPath();
-        } else {
-            application.saveButton.disable();
-            application.switchToQueryPath( nextPage );
+        if ( handler === null ) {
+            if ( nextPage == null ) {
+                application.reloadCurrentQueryPath();
+            } else {
+                application.saveButton.disable();
+                application.switchToQueryPath( nextPage );
+            }
         }
     },
 
@@ -200,6 +224,20 @@ Ung.Alpaca.Glue = {
 
         if ( panel != null ) {
             nextPage = panel.nextPage;
+        }
+
+        var main = null;
+        if ( window.parent !== null ) {
+            main = window.parent.main;
+        }
+        
+        if ( main === null && window.opener !== null ) {
+            main = window.opener.main;
+        }
+        
+        if (( main !== null ) && ( main.hideWelcomeScreen !== null )) {
+            main.hideWelcomeScreen();
+            return;
         }
 
         if ( nextPage == null ) {

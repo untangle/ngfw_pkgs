@@ -22,8 +22,16 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
 
         this.hasSaveHandler = false;
         
+        this.applyButton = new Ext.Toolbar.Button({
+            text : this._( "Apply" ),
+            disabled : true,
+            handler : this.onApply,
+            iconCls : 'apply-icon',
+            scope : this
+        });
+
         this.saveButton = new Ext.Toolbar.Button({
-            text : this._( "Save" ),
+            text : this._( "OK" ),
             disabled : true,
             handler : this.onSave,
             iconCls : 'save-icon',
@@ -53,8 +61,9 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
             bbar : [
                 this.helpButton,
                 '->',
+                this.saveButton,
                 this.cancelButton,
-                this.saveButton
+                this.applyButton
             ]
         });
         
@@ -189,10 +198,14 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
         if ( hasSaveHandler != null ) {
             this.saveButton.setHandler( this.onSave, this );
             this.saveButton.disable();
+            this.applyButton.setHandler( this.onApply, this );
+            this.applyButton.disable();
             this.cancelButton.enable();
         } else {
             this.saveButton.setHandler( null );
             this.saveButton.disable();
+            this.applyButton.setHandler( null );
+            this.applyButton.disable();
             this.cancelButton.disable();
         }
     },
@@ -201,6 +214,7 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
     {
         if ( this.hasSaveHandler ) {
             this.saveButton.enable();
+            this.applyButton.enable();
         }
     },
 
@@ -221,9 +235,14 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
         }
     },
 
+    onApply : function()
+    {
+        Ung.Alpaca.Glue.saveSettings( this.layout.activeItem, false );
+    },
+    
     onSave : function()
     {
-        Ung.Alpaca.Glue.saveSettings( this.layout.activeItem );
+        Ung.Alpaca.Glue.saveSettings( this.layout.activeItem, true );
     },
 
     onCancel : function()
