@@ -12,7 +12,7 @@ from StringIO import StringIO
 from untangle.jsonrpc.json import dumps, loads
 
 import tempfile
-import sqlite3
+import psycopg
 
 ## This is for simple JSON applications, things like the shield or cpd.
 class UntangleJSONRequestHandler(object):
@@ -65,8 +65,7 @@ class TestHostDatabase():
         if ( "CPD_HOST_DATABASE" in os.environ ):
             cls.database_path = os.environ["CPD_HOST_DATABASE"]
 
-        cls.database_conn = sqlite3.connect( cls.database_path )
-        cls.database_conn.row_factory = sqlite3.Row
+        cls.database_conn = psycopg.connect("dbname=uvm user=postgres")
 
     def setup_method(self, method):
         ## Flush out all of the entries to start with a clean slate.
@@ -272,16 +271,13 @@ class TestHostDatabase():
         assert results[0]["ipv4_addr"] == "1.2.3.5"
 
     def get_entries(self, ipv4_addr = None, username = None, hw_addr=None ):
-        params = []
-        query = 'SELECT * FROM host_database WHERE 1 '
+        query = 'SELECT * FROM n_adconnector_host_database_entry WHERE TRUE '
 
         if ( ipv4_addr != None ):
-            query = query + " AND ipv4_addr=?"
-            params.append( ipv4_addr )
+            query = query + " AND ipv4_addr='%s'" % ipv4_addr
 
         if ( username != None ):
-            query = query + " AND username=?"
-            params.append( username )
+            query = query + " AND username='%s'" % username
 
         if ( hw_addr != None ):
             query = query + " AND hw_addr=?"
