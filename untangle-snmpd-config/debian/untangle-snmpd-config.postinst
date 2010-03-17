@@ -19,4 +19,6 @@ if [ -z "$2" ] && ! grep -q "UDP" $DEFAULT_FILE ; then
    sed -i "s/^TRAPDRUN=.*/TRAPDRUN=no/" $DEFAULT_FILE
 fi
 
+touch /etc/untangle/monit-to-restart
+    
 exit 0

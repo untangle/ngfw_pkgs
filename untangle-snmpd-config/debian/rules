@@ -29,6 +29,8 @@ build: configure
 	dh_testdir
 	mkdir -p ./debian/tmp
 	dh_installdirs -A -v
+	cp -r ./files/* ./debian/tmp/
+	find ./debian/tmp -name ".svn" | xargs rm -rf 
 
 clean:
 	dh_testdir
