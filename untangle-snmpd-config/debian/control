@@ -8,6 +8,6 @@ Standards-Version: 3.8.0
 
 Package: untangle-snmpd-config
 Architecture: all
-Depends: snmpd, snmp, untangle-cli-client
+Depends: snmpd, snmp
 Description: Untangle snmpd wrapper package
  The Untangle snmpd autoconfigurator

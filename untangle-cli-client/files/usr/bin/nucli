@@ -1,8 +1,0 @@
-#! /bin/bash
-if [ ${#UVM_ROOT} != 0 ] ; then
-    NUCLI_ROOT=${UVM_ROOT}/../../pkgs/untangle-cli-client/files
-else
-    NUCLI_ROOT=""
-fi
-
-ruby -X ${NUCLI_ROOT}/usr/share/untangle-cli-client/src -- ./client.rb "$@"
