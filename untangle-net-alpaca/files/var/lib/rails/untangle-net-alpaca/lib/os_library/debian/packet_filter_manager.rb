@@ -117,13 +117,13 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
     MarkInterface = Chain.new( "markintf", "mangle", "PREROUTING", <<'EOF' )
 ## Clear out all of the bits for the interface mark
 #{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFF0000
-#{IPTablesCommand} #{args} -j CONNMARK --restore-mark --mask #{MultiWanMask}
+#{IPTablesCommand} #{args} -j CONNMARK --restore-mark --nfmask #{MultiWanMask}
 EOF
 
     ## Chain Used for natting in the prerouting table.
     PostNat = Chain.new( "alpaca-post-nat", "nat", "POSTROUTING", <<'EOF' )
 ## Save the state for bypassed traffic
-#{IPTablesCommand} -t mangle -A POSTROUTING -m conntrack --ctstate NEW -m connmark --mark 0/#{MultiWanMask} -j CONNMARK --save-mark --nfmask 0xe00
+#{IPTablesCommand} -t mangle -A POSTROUTING -m conntrack --ctstate NEW -m connmark --mark 0/#{MultiWanMask} -j CONNMARK --save-mark --mask 0xe00
 
 ## Do not NAT packets destined to local host.
 #{IPTablesCommand} #{args} -o lo -j RETURN
