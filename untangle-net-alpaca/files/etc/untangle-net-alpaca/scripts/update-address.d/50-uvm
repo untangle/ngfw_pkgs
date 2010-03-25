@@ -17,25 +17,25 @@ queue_owner()
     UVM_PID=${t_queue_pid}  
 }
 
-bunnicula_home()
+uvm_home()
 {
     queue_owner
     
     if [ ! -f /proc/${UVM_PID}/cmdline ]; then return ; fi
 
     perl -pe 's/[^0-9=a-zA-Z\/\-\+\*\.]/\n/g' /proc/${UVM_PID}/cmdline 2>| /dev/null | \
-        awk '/^-Dbunnicula.home=/ { gsub( "-Dbunnicula.home=", "" ) ; print }'
+        awk '/^-Duvm.home=/ { gsub( "-Duvm.home=", "" ) ; print }'
 }
 
-BUNNICULA_HOME=`bunnicula_home`
+UVM_HOME=`uvm_home`
 
-if [ -z "${BUNNICULA_HOME}" ]; then
+if [ -z "${UVM_HOME}" ]; then
     echo "[`date`] UVM is not running"
     exit 0
 fi
 
-## Bunnicula home points to <root>/usr/share/untangle/
-UCLI=${BUNNICULA_HOME}/../../bin/ucli
+## UVM home points to <root>/usr/share/untangle/
+UCLI=${UVM_HOME}/../../bin/ucli
 
 if [ ! -f "${UCLI}" ]; then
     echo "[`date`] ${UCLI} does not exist."

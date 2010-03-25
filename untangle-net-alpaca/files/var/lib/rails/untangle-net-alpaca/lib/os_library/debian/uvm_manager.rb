@@ -242,7 +242,7 @@ insert_vpn_export()
 }
 
 ## Now insert all exports
-EXPORTS_FILE=`bunnicula_home`/conf/openvpn/packet-filter-rules
+EXPORTS_FILE=`uvm_home`/conf/openvpn/packet-filter-rules
 
 if [ -f ${EXPORTS_FILE} ]; then 
   . ${EXPORTS_FILE}

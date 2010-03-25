@@ -12,15 +12,15 @@ fi
 
 . ${HELPER_SCRIPT}
 
-BUNNICULA_HOME=`bunnicula_home`
+UVM_HOME=`uvm_home`
 
-if [ -z "${BUNNICULA_HOME}" ]; then
+if [ -z "${UVM_HOME}" ]; then
     echo "[`date`] UVM is not running"
     exit 0
 fi
 
-## Bunnicula home points to <root>/usr/share/untangle/
-UCLI=${BUNNICULA_HOME}/../../bin/ucli
+## UVM home points to <root>/usr/share/untangle/
+UCLI=${UVM_HOME}/../../bin/ucli
 
 if [ ! -f "${UCLI}" ]; then
     echo "[`date`] ${UCLI} does not exist."
