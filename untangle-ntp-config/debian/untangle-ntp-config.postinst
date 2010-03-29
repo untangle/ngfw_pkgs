@@ -9,7 +9,7 @@ fi
 }
 
 NTPDATE_CONF_FILE=/etc/default/ntpdate
-NTP_SERVERS="64.2.3.4"
+NTP_SERVERS="74.123.28.4"
 
 NTP_SERVICE=/etc/init.d/ntp-server
 [ -f "$NTP_SERVICE" ] || NTP_SERVICE=/etc/init.d/ntp
