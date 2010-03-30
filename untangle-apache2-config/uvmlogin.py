@@ -25,6 +25,8 @@ import pwd
 import re
 import sets
 import urllib
+import os.path
+import sys
 
 from mod_python import apache, Session, util
 from psycopg import connect
@@ -225,11 +227,16 @@ def setup_gettext():
 def get_company_name():
     company = 'Untangle'
 
+    if (os.path.isfile("/etc/untangle/oem/oem.py")):
+        sys.path.append("/etc/untangle/oem")
+        import oem
+        company = oem.oemName()
+
     conn = connect("dbname=uvm user=postgres")
     try:
         curs = conn.cursor()
 
-        curs.execute('SELECT company_name FROM settings.uvm_branding_settings')
+        curs.execute('SELECT company_name FROM settings.n_branding_settings')
         r = curs.fetchone()
         if r != None:
             company = r[0]
