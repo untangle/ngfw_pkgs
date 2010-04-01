@@ -237,7 +237,6 @@ def get_company_name():
         curs = conn.cursor()
 
         curs.execute('SELECT company_name FROM settings.n_branding_settings')
-        if 
         r = curs.fetchone()
         if r != None:
             company = r[0]
