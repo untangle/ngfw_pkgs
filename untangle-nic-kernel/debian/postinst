@@ -47,10 +47,14 @@ install_kernel_module()
 for t in /usr/share/untangle-nic-kernel/* ; do
     kernel_version="`basename $t`"
 
-    ## Remove the old igb kernel module
-    rm -f /lib/modules/${kernel_version}/kernel/drivers/net/igb/igb.ko
-    
     install_kernel_module ${kernel_version}
 done
+
+## Remove the old kernel modules
+rm -f /lib/modules/${kernel_version}/kernel/drivers/net/igb/igb.ko
+rm -f /lib/modules/${kernel_version}/kernel/drivers/net/e1000/e1000.ko
+rm -f /lib/modules/${kernel_version}/kernel/drivers/net/e1000e/e1000e.ko
+rm -f /lib/modules/${kernel_version}/kernel/drivers/net/bnx2.ko
+    
 
 exit 0
