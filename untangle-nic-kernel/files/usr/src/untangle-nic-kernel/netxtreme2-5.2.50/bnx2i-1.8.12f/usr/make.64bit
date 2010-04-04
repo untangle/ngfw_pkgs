@@ -1,0 +1,10 @@
+OSNAME=$(shell uname -s)
+OPTFLAGS ?= -O2 -g
+WARNFLAGS ?= -Wall -Wstrict-prototypes
+CFLAGS += $(OPTFLAGS) -m64 $(WARNFLAGS) -I../include -D$(OSNAME) -D_GNU_SOURCE
+PROGRAMS = bnx2id
+
+all: clean ${PROGRAMS}
+
+clean:
+	@rm ${PROGRAMS}
