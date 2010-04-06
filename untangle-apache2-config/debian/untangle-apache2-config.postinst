@@ -104,4 +104,7 @@ if [ ! -f /var/www/images/BrandingLogo.gif ]; then
     fi
 fi
 
-true
+apply_oem="/usr/share/untangle/bin/apply-oem.sh"
+[ -f $apply_oem ] && $apply_oem
+
+exit 0

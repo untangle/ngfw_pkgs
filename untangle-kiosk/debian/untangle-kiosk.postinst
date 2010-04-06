@@ -24,4 +24,7 @@ find /root/.zsh -type d | xargs chmod 750
 
 echo >| /etc/motd.tail
 
+apply_oem="/usr/share/untangle/bin/apply-oem.sh"
+[ -f $apply_oem ] && $apply_oem
+
 exit 0
