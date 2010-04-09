@@ -1,10 +1,16 @@
 #! /bin/bash
 
+OEM_NAME="Untangle"
+
+if [ -f /etc/untangle/oem/oem.sh ] ; then
+    source /etc/untangle/oem/oem.sh
+fi
+
 LOCAL_DUMP=/usr/share/untangle/dump
 mkdir -p $LOCAL_DUMP
 
 tmpfile=$(tempfile)
-backtitle="Untangle Platform"
+backtitle="$OEM_NAME"
 
 confirm_exit()
 {
