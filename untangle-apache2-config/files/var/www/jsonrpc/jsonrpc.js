@@ -486,7 +486,7 @@ JSONRpcClient.default_ex_handler = function (e)
 
 JSONRpcClient.toplevel_ex_handler = JSONRpcClient.default_ex_handler;
 JSONRpcClient.profile_async = false;
-JSONRpcClient.max_req_active = 1;
+JSONRpcClient.max_req_active = 2;
 JSONRpcClient.requestId = 1;
 
 // if this is true, circular references in the object graph are fixed up
