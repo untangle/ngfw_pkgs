@@ -55,6 +55,6 @@ rm -f /lib/modules/${kernel_version}/kernel/drivers/net/igb/igb.ko
 rm -f /lib/modules/${kernel_version}/kernel/drivers/net/e1000/e1000.ko
 rm -f /lib/modules/${kernel_version}/kernel/drivers/net/e1000e/e1000e.ko
 rm -f /lib/modules/${kernel_version}/kernel/drivers/net/bnx2.ko
-    
+depmod -a ${kernel_version}
 
 exit 0
