@@ -42,6 +42,7 @@ class UntangleJSONRequestHandler(object):
 
         self.__curl.setopt( pycurl.VERBOSE, False )
         self.__curl.setopt( pycurl.WRITEFUNCTION, response.write )
+
         self.__curl.perform()
 
         if ( self.__curl.getinfo( pycurl.HTTP_CODE ) != 200 ):
@@ -272,7 +273,8 @@ class TestHostDatabase():
 
     def get_entries(self, ipv4_addr = None, username = None, hw_addr=None ):
         query = 'SELECT * FROM n_adconnector_host_database_entry WHERE TRUE '
-
+        params = []
+        
         if ( ipv4_addr != None ):
             query = query + " AND ipv4_addr='%s'" % ipv4_addr
 
