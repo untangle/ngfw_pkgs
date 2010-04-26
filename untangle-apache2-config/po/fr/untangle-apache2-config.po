@@ -7,137 +7,141 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-04 13:57-0800\n"
-"PO-Revision-Date: 2009-02-12 03:30-0800\n"
-"Last-Translator: Thierry D'AMBROSIO <thierry@dambrosio.fr>\n"
+"POT-Creation-Date: 2010-02-09 16:23-0800\n"
+"PO-Revision-Date: 2009-10-28 16:55-0700\n"
+"Last-Translator: David MALHERBE <david@easeo.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Pootle 1.1.0\n"
 
-#: ../adminindex.py:39
+#: ../adminindex.py:57
 #, python-format
-msgid "%s Login"
-msgstr "%s Connexion"
+msgid "%s Administrator Login"
+msgstr "%s Connexion Administrateur"
 
-#: ../adminindex.py:93
+#: ../adminindex.py:116
 msgid "Error: Username and Password do not match"
 msgstr "Erreur: Le nom d'utilisateur et le mot de passe ne correspondent pas"
 
-#: ../adminindex.py:147
+#: ../adminindex.py:170
 msgid "Server:"
 msgstr "Serveur:"
 
-#: ../adminindex.py:147
+#: ../adminindex.py:170
 msgid "Username:"
 msgstr "Nom d'utilisateur:"
 
-#: ../adminindex.py:147
+#: ../adminindex.py:170
 msgid "Password:"
 msgstr "Mot de passe:"
 
-#: ../adminindex.py:147
+#: ../adminindex.py:170
 msgid "Login"
 msgstr "Connexion"
 
-#: ../errorindex.py:15
+#: ../errorindex.py:33
 msgid "Bad Request"
 msgstr "Mauvaise requête"
 
-#: ../errorindex.py:19
+#: ../errorindex.py:37
 msgid "Unauthorized"
 msgstr "Non autorisé"
 
-#: ../errorindex.py:23
+#: ../errorindex.py:41
 msgid "Payment Required"
 msgstr "Paiement requis"
 
-#: ../errorindex.py:27
+#: ../errorindex.py:45
 msgid "Forbidden"
 msgstr "Interdit"
 
-#: ../errorindex.py:31
+#: ../errorindex.py:49
 msgid "Not Found"
 msgstr "Non trouvé"
 
-#: ../errorindex.py:35
+#: ../errorindex.py:53
 msgid "Method Not Allowed"
 msgstr "Méthode non autorisée"
 
-#: ../errorindex.py:39
+#: ../errorindex.py:57
 msgid "Not Acceptable"
 msgstr "Non acceptable"
 
-#: ../errorindex.py:43
+#: ../errorindex.py:61
 msgid "Proxy Authentication Required"
 msgstr "Authentification du proxy requise"
 
-#: ../errorindex.py:47
+#: ../errorindex.py:65
 msgid "Request Timeout"
 msgstr "Requête hors délai"
 
-#: ../errorindex.py:51
+#: ../errorindex.py:69
 msgid "Conflict"
 msgstr "Conflit"
 
-#: ../errorindex.py:55
+#: ../errorindex.py:73
 msgid "Gone"
 msgstr "Parti"
 
-#: ../errorindex.py:59
+#: ../errorindex.py:77
 msgid "Length Required"
 msgstr "Longueur requise"
 
-#: ../errorindex.py:63
+#: ../errorindex.py:81
 msgid "Precondition Failed"
 msgstr "Échec des conditions préalables"
 
-#: ../errorindex.py:67
+#: ../errorindex.py:85
 msgid "Request Entity Too Large"
 msgstr "Entité requise trop volumineuse"
 
-#: ../errorindex.py:71
+#: ../errorindex.py:89
 msgid "Request-URI Too Long"
 msgstr "URI requise trop longue"
 
-#: ../errorindex.py:75
+#: ../errorindex.py:93
 msgid "Unsupported Media Type"
 msgstr "Type de média non supporté"
 
-#: ../errorindex.py:79
+#: ../errorindex.py:97
 msgid "Requested Range Not Satisfiable"
 msgstr "La plage requise n'est pas correcte"
 
-#: ../errorindex.py:83
+#: ../errorindex.py:101
 msgid "Expectation Failed"
 msgstr "Echec de l'attente"
 
-#: ../errorindex.py:87
+#: ../errorindex.py:105
 msgid "Internal Server Error"
 msgstr "Erreur interne du serveur"
 
-#: ../errorindex.py:91
+#: ../errorindex.py:109
 msgid "Not Implemented"
 msgstr "Non implémenté"
 
-#: ../errorindex.py:95
+#: ../errorindex.py:113
 msgid "Bad Gateway"
 msgstr "Mauvaise passerelle"
 
-#: ../errorindex.py:99
+#: ../errorindex.py:117
 msgid "Service Unavailable"
 msgstr "Service indisponible"
 
-#: ../errorindex.py:103
+#: ../errorindex.py:121
 msgid "Gateway Timeout"
 msgstr "Passerelle hors délai"
 
-#: ../errorindex.py:107
+#: ../errorindex.py:125
 msgid "HTTP Version Not Supported"
 msgstr "Version HTTP non supportée"
 
-#: ../errorindex.py:115 ../uvmlogin.py:258
+#: ../errorindex.py:133 ../uvmlogin.py:286
 #, python-format
 msgid "%s Server"
 msgstr "%s Serveur"
+
+#, python-format
+#~ msgid "%s Login"
+#~ msgstr "%s Connexion"

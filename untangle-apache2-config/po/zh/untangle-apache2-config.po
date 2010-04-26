@@ -1,3 +1,24 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: Untangle\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-02-09 16:23-0800\n"
+"PO-Revision-Date: 2008-11-27 23:56-0500\n"
+"Last-Translator: Jie Zhu <j.zhu@impactek.com>\n"
+"Language-Team: Chinese <j.zhu@impactek.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Translate Toolkit 1.1.1\n"
+"X-Poedit-Language: Chinese\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Country: CHINA\n"
+
 #: ../adminindex.py:57
 #, python-format
 msgid "%s Administrator Login"
@@ -5,121 +26,128 @@ msgstr ""
 
 #: ../adminindex.py:116
 msgid "Error: Username and Password do not match"
-msgstr ""
+msgstr "错误：用户名和密码不匹配"
 
 #: ../adminindex.py:170
 msgid "Server:"
-msgstr ""
+msgstr "服务器："
 
 #: ../adminindex.py:170
 msgid "Username:"
-msgstr ""
+msgstr "用户名："
 
 #: ../adminindex.py:170
 msgid "Password:"
-msgstr ""
+msgstr "密码："
 
 #: ../adminindex.py:170
 msgid "Login"
-msgstr ""
+msgstr "登录"
 
 #: ../errorindex.py:33
 msgid "Bad Request"
-msgstr ""
+msgstr "请求错误"
 
 #: ../errorindex.py:37
 msgid "Unauthorized"
-msgstr ""
+msgstr "未授权的"
 
 #: ../errorindex.py:41
 msgid "Payment Required"
-msgstr ""
+msgstr "需要付费"
 
 #: ../errorindex.py:45
 msgid "Forbidden"
-msgstr ""
+msgstr "禁止的"
 
 #: ../errorindex.py:49
 msgid "Not Found"
-msgstr ""
+msgstr "未找到"
 
 #: ../errorindex.py:53
 msgid "Method Not Allowed"
-msgstr ""
+msgstr "不允许的方式"
 
 #: ../errorindex.py:57
 msgid "Not Acceptable"
-msgstr ""
+msgstr "不可接受"
 
 #: ../errorindex.py:61
 msgid "Proxy Authentication Required"
-msgstr ""
+msgstr "需要代理认证"
 
 #: ../errorindex.py:65
 msgid "Request Timeout"
-msgstr ""
+msgstr "请求超时"
 
 #: ../errorindex.py:69
 msgid "Conflict"
-msgstr ""
+msgstr "冲突"
 
 #: ../errorindex.py:73
 msgid "Gone"
-msgstr ""
+msgstr "消失"
 
 #: ../errorindex.py:77
 msgid "Length Required"
-msgstr ""
+msgstr "要求长度"
 
 #: ../errorindex.py:81
 msgid "Precondition Failed"
-msgstr ""
+msgstr "预处理失败"
 
 #: ../errorindex.py:85
 msgid "Request Entity Too Large"
-msgstr ""
+msgstr "所请求实体太大"
 
 #: ../errorindex.py:89
 msgid "Request-URI Too Long"
-msgstr ""
+msgstr "所请求URI太长"
 
 #: ../errorindex.py:93
 msgid "Unsupported Media Type"
-msgstr ""
+msgstr "不支持的媒体类型"
 
 #: ../errorindex.py:97
 msgid "Requested Range Not Satisfiable"
-msgstr ""
+msgstr "所请求的范围不能满足"
 
 #: ../errorindex.py:101
 msgid "Expectation Failed"
-msgstr ""
+msgstr "期望失败"
 
 #: ../errorindex.py:105
 msgid "Internal Server Error"
-msgstr ""
+msgstr "内部服务器错误"
 
 #: ../errorindex.py:109
 msgid "Not Implemented"
-msgstr ""
+msgstr "未实施"
 
 #: ../errorindex.py:113
 msgid "Bad Gateway"
-msgstr ""
+msgstr "网关错误"
 
 #: ../errorindex.py:117
 msgid "Service Unavailable"
-msgstr ""
+msgstr "服务不可用"
 
 #: ../errorindex.py:121
 msgid "Gateway Timeout"
-msgstr ""
+msgstr "网关超时"
 
 #: ../errorindex.py:125
 msgid "HTTP Version Not Supported"
-msgstr ""
+msgstr "不支持该HTTP版本"
 
 #: ../errorindex.py:133 ../uvmlogin.py:286
 #, python-format
 msgid "%s Server"
-msgstr ""
+msgstr "%s服务器"
+
+#, python-format
+#~ msgid "%s Login"
+#~ msgstr "%s登录"
+
+#~ msgid "Untangle Server"
+#~ msgstr "Untangle服务器"
