@@ -6,139 +6,143 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Untangle\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-04 13:57-0800\n"
-"PO-Revision-Date: 2009-01-22 11:37+0100\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2010-02-09 16:23-0800\n"
+"PO-Revision-Date: 2010-03-03 14:33-0800\n"
+"Last-Translator: Marcus Lumpp <ml@m2lp-consult.de>\n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Translate Toolkit 1.1.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 1.1.0\n"
 "X-Poedit-Language: German\n"
 
-#: ../adminindex.py:39
+#: ../adminindex.py:57
 #, python-format
-msgid "%s Login"
-msgstr "%s Login"
+msgid "%s Administrator Login"
+msgstr "%s Administrator Login"
 
-#: ../adminindex.py:93
+#: ../adminindex.py:116
 msgid "Error: Username and Password do not match"
 msgstr "Fehler: Benutzername und Kennwort passen nicht"
 
-#: ../adminindex.py:147
+#: ../adminindex.py:170
 msgid "Server:"
 msgstr "Server:"
 
-#: ../adminindex.py:147
+#: ../adminindex.py:170
 msgid "Username:"
 msgstr "Benutzername:"
 
-#: ../adminindex.py:147
+#: ../adminindex.py:170
 msgid "Password:"
 msgstr "Kennwort:"
 
-#: ../adminindex.py:147
+#: ../adminindex.py:170
 msgid "Login"
 msgstr "Login"
 
-#: ../errorindex.py:15
+#: ../errorindex.py:33
 msgid "Bad Request"
 msgstr "Bad Request"
 
-#: ../errorindex.py:19
+#: ../errorindex.py:37
 msgid "Unauthorized"
 msgstr "Unberechtigt"
 
-#: ../errorindex.py:23
+#: ../errorindex.py:41
 msgid "Payment Required"
 msgstr "Bezahlung erforderlich"
 
-#: ../errorindex.py:27
+#: ../errorindex.py:45
 msgid "Forbidden"
 msgstr "Zugriff verweigert"
 
-#: ../errorindex.py:31
+#: ../errorindex.py:49
 msgid "Not Found"
 msgstr "Nicht gefunden"
 
-#: ../errorindex.py:35
+#: ../errorindex.py:53
 msgid "Method Not Allowed"
 msgstr "Maßnahme nicht erlaubt"
 
-#: ../errorindex.py:39
+#: ../errorindex.py:57
 msgid "Not Acceptable"
 msgstr "Nicht zulässig"
 
-#: ../errorindex.py:43
+#: ../errorindex.py:61
 msgid "Proxy Authentication Required"
 msgstr "Proxy Authentifizierung erforderlich"
 
-#: ../errorindex.py:47
+#: ../errorindex.py:65
 msgid "Request Timeout"
 msgstr "Zeitüberschreitung der Anforderung"
 
-#: ../errorindex.py:51
+#: ../errorindex.py:69
 msgid "Conflict"
 msgstr "Konflikt"
 
-#: ../errorindex.py:55
+#: ../errorindex.py:73
 msgid "Gone"
 msgstr "Daten wurden verschoben"
 
-#: ../errorindex.py:59
+#: ../errorindex.py:77
 msgid "Length Required"
 msgstr "Längenangabe erforderlich"
 
-#: ../errorindex.py:63
+#: ../errorindex.py:81
 msgid "Precondition Failed"
 msgstr "Vorbedingung nicht erfüllt"
 
-#: ../errorindex.py:67
+#: ../errorindex.py:85
 msgid "Request Entity Too Large"
 msgstr "Anfrage zur Bearbeitung zu lang"
 
-#: ../errorindex.py:71
+#: ../errorindex.py:89
 msgid "Request-URI Too Long"
 msgstr "Adresse des Dokuments zur Bearbeitung zu lang"
 
-#: ../errorindex.py:75
+#: ../errorindex.py:93
 msgid "Unsupported Media Type"
 msgstr "Nicht unterstützter Medientyp"
 
-#: ../errorindex.py:79
+#: ../errorindex.py:97
 msgid "Requested Range Not Satisfiable"
 msgstr "Angegebener Bereich ist falsch"
 
-#: ../errorindex.py:83
+#: ../errorindex.py:101
 msgid "Expectation Failed"
 msgstr "Vorgegebene Voraussetzungen nicht erfüllt"
 
-#: ../errorindex.py:87
+#: ../errorindex.py:105
 msgid "Internal Server Error"
 msgstr "Interner Server Fehler"
 
-#: ../errorindex.py:91
+#: ../errorindex.py:109
 msgid "Not Implemented"
 msgstr "Nicht implementierte Anfrage"
 
-#: ../errorindex.py:95
+#: ../errorindex.py:113
 msgid "Bad Gateway"
 msgstr "Gatewayfehler"
 
-#: ../errorindex.py:99
+#: ../errorindex.py:117
 msgid "Service Unavailable"
 msgstr "Service nicht verfügbar"
 
-#: ../errorindex.py:103
+#: ../errorindex.py:121
 msgid "Gateway Timeout"
 msgstr "Zeitüberschreitung Gateway"
 
-#: ../errorindex.py:107
+#: ../errorindex.py:125
 msgid "HTTP Version Not Supported"
 msgstr "Nicht unterstützte HTTP Version"
 
-#: ../errorindex.py:115 ../uvmlogin.py:258
+#: ../errorindex.py:133 ../uvmlogin.py:286
 #, python-format
 msgid "%s Server"
 msgstr "%s Server"
+
+#, python-format
+#~ msgid "%s Login"
+#~ msgstr "%s Login"
