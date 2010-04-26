@@ -11,7 +11,7 @@ addgroup uvmlogin 2>/dev/null
 
 if [ -z "$ALIAS" ] || [ "$ALIAS" = "Knoppix.metaloft.com" ] ; then
     echo setting ALIAS to default value
-    ALIAS=untangle.example.com
+    ALIAS=router.example.com
 fi
 
 sed -e 's/NO_START=1/NO_START=0/' -i /etc/default/apache2
