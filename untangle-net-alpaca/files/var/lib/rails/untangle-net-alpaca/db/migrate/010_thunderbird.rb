@@ -332,9 +332,9 @@ class Thunderbird < Alpaca::Migration
     add_file_override( :enabled => true, :writable => true, 
                       :description => "Caching DNS / DHCP server.",
                       :path => "/etc/dnsmasq.conf" )
-    add_file_override( :enabled => true, :writable => true, 
-                      :description => "Caching DNS / DHCP server.",
-                      :path => "/etc/untangle-net-alpaca/dnsmasq-hosts" )
+#    add_file_override( :enabled => true, :writable => true, 
+#                      :description => "Caching DNS / DHCP server.",
+#                      :path => "/etc/untangle-net-alpaca/dnsmasq-hosts" )
     add_file_override( :enabled => true, :writable => true, 
                       :description => "Dynamic DNS Configuration",
                       :path => "/etc/ddclient.conf" )
@@ -344,15 +344,15 @@ class Thunderbird < Alpaca::Migration
     add_file_override( :enabled => true, :writable => true,
                       :description => "PPP Passwords",
                       :path => "/etc/ppp/pap-secrets" )
-    add_file_override( :enabled => true, :writable => true, 
-                      :description => "ARP Table",
-                      :path => "/etc/untangle-net-alpaca/arps" )
-    add_file_override( :enabled => true, :writable => true, 
-                      :description => "Routing Table",
-                      :path => "/etc/untangle-net-alpaca/routes" )
-    add_file_override( :enabled => true, :writable => true, 
-                      :description => "IPTables Rules",
-                      :path => "/etc/untangle-net-alpaca/iptables-rules.d/.*" )
+#    add_file_override( :enabled => true, :writable => true, 
+#                      :description => "ARP Table",
+#                      :path => "/etc/untangle-net-alpaca/arps" )
+#    add_file_override( :enabled => true, :writable => true, 
+#                      :description => "Routing Table",
+#                      :path => "/etc/untangle-net-alpaca/routes" )
+#    add_file_override( :enabled => true, :writable => true, 
+#                      :description => "IPTables Rules",
+#                      :path => "/etc/untangle-net-alpaca/iptables-rules.d/.*" )
     add_file_override( :enabled => true, :writable => true, 
                       :description => "Network state (caution).",
                       :path => "/etc/network/run/ifstate" )
