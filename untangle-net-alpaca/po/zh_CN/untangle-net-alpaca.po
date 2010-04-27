@@ -3,394 +3,479 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-04 13:57-0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-03-03 16:41-0800\n"
+"PO-Revision-Date: 2009-09-17 00:30-0700\n"
+"Last-Translator: 张德锋 <feng_0779@sina.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Translate Toolkit 1.1.1\n"
+"X-Generator: Pootle 1.1.0\n"
 
-#: ../files/var/lib/rails/untangle-net-alpaca/app/controllers/application.rb:233
+#: ../files/var/lib/rails/untangle-net-alpaca/app/controllers/application.rb:235
 msgid "VPN"
-msgstr ""
+msgstr "VPN"
 
 #: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/interface_helper.rb:89
 msgid "Auto"
-msgstr ""
+msgstr "自动"
 
 #: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/interface_helper.rb:90
 msgid "1000 Mbps, Full Duplex"
-msgstr ""
+msgstr "千兆全双工"
 
 #: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/interface_helper.rb:91
 msgid "100 Mbps, Full Duplex"
-msgstr ""
+msgstr "百兆全双工"
 
 #: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/interface_helper.rb:92
 msgid "100 Mbps, Half Duplex"
-msgstr ""
+msgstr "百兆半双工"
 
 #: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/interface_helper.rb:93
 msgid "10 Mbps, Full Duplex"
-msgstr ""
+msgstr "10兆全双工"
 
 #: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/interface_helper.rb:94
 msgid "10 Mbps, Half Duplex"
+msgstr "10兆半双工"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/rule_helper.rb:25
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:396
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:284
+msgid "Source Address"
+msgstr "源地址"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/rule_helper.rb:26
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:270
+msgid "Destined Local"
 msgstr ""
 
+#: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/rule_helper.rb:26
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:260
+msgid "Destination Address"
+msgstr "目的地址"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/rule_helper.rb:27
+msgid "Source Port"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/rule_helper.rb:27
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:265
+msgid "Destination Port"
+msgstr "目标端口"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/rule_helper.rb:28
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:279
+msgid "Source Interface"
+msgstr "源接口"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/rule_helper.rb:34
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:197
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:274
+msgid "Protocol"
+msgstr "协议"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/rule_helper.rb:36
+msgid "Sunday"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/rule_helper.rb:37
+msgid "Monday"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/rule_helper.rb:38
+msgid "Tuesday"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/rule_helper.rb:39
+msgid "Wednesday"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/rule_helper.rb:40
+msgid "Thursday"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/rule_helper.rb:41
+msgid "Friday"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/rule_helper.rb:42
+msgid "Saturday"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/rule_helper.rb:46
+msgid "tcp"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/rule_helper.rb:47
+msgid "udp"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/rule_helper.rb:48
+msgid "icmp"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/rule_helper.rb:49
+msgid "gre"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/rule_helper.rb:50
+msgid "esp"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/rule_helper.rb:51
+msgid "ah"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/helpers/rule_helper.rb:52
+msgid "sctp"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/models/interface.rb:162
+#: ../files/var/lib/rails/untangle-net-alpaca/app/models/interface.rb:174
+#: ../files/var/lib/rails/untangle-net-alpaca/app/models/interface.rb:200
+#: ../files/var/lib/rails/untangle-net-alpaca/app/models/interface.rb:205
+#, fuzzy
+msgid "Unknown"
+msgstr "未知"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/models/interface.rb:168
+msgid "Connected"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/app/models/interface.rb:170
+msgid "Disconnected"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/override/index.js:14
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:15
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:183
 #: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/uvm/index.js:14
 #: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/uvm/index.js:98
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:15
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:149
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/override/index.js:14
 #: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/packet_filter/index.js:60
 #: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/packet_filter/index.js:120
+#, fuzzy
 msgid "On"
+msgstr "启动"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/override/index.js:21
+msgid "Writable"
 msgstr ""
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/uvm/index.js:22
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/uvm/index.js:44
-msgid "Bypass"
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/override/index.js:41
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:245
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:24
+msgid "[New Entry]"
 msgstr ""
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/uvm/index.js:35
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:36
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/index.js:101
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:50
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:42
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:162
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/secret_field.js:30
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:104
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/packet_filter/index.js:26
-msgid "Enabled"
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/override/index.js:47
+msgid "File Path"
 msgstr ""
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/uvm/index.js:39
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/uvm/index.js:88
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/uvm/index.js:118
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/route/index.js:64
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:40
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:122
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/index.js:45
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:166
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:235
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:46
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/packet_filter/index.js:30
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/packet_filter/index.js:107
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/packet_filter/index.js:139
-msgid "Description"
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/override/index.js:66
+msgid "Overrides"
 msgstr ""
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/uvm/index.js:136
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/uvm/index.js:156
-msgid "Bypass Rules"
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/override/index.js:70
+msgid "File Overrides"
 msgstr ""
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/uvm/index.js:147
-msgid "Untangle Administration overrides Port Forwards"
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:32
+msgid "Is WAN Interface"
 msgstr ""
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/uvm/index.js:151
-msgid "Enable SIP NAT Helper"
-msgstr ""
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:56
+msgid "Configure Interface"
+msgstr "配置接口"
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/uvm/index.js:160
-msgid "System Bypass Rules"
-msgstr ""
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:62
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:41
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:307
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:194
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:276
+msgid "Config Type"
+msgstr "配置类型"
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/route/index.js:37
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/route/index.js:87
-msgid "Target"
-msgstr ""
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:119
+msgid "Primary IP Address and Netmask"
+msgstr "主IP地址和子网掩码"
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/route/index.js:46
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/route/index.js:92
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:126
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:237
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:324
+msgid "IP Address Aliases"
+msgstr "IP地址别名"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:135
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:194
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:88
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:125
+msgid "Default Gateway"
+msgstr "默认网关"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:139
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:201
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:290
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:93
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:128
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:161
+msgid "Primary DNS Server"
+msgstr "主DNS服务器"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:143
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:208
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:296
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:98
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:131
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:166
+msgid "Secondary DNS Server"
+msgstr "辅助DNS服务器"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:152
+msgid "Nat Policies"
+msgstr "NAT策略"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:181
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/arp/index.js:26
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/arp/index.js:62
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/index.js:27
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/index.js:72
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:37
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:90
+msgid "IP Address"
+msgstr "IP 地址"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:187
 #: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:79
 #: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:122
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:225
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:166
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:127
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:226
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:129
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/route/index.js:70
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/route/index.js:119
 msgid "Netmask"
+msgstr "子网掩码"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:215
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:302
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:115
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:146
+#, fuzzy
+msgid "Renew Lease"
+msgstr "重新释放"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:260
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:243
+msgid "Bridge To"
 msgstr ""
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/route/index.js:55
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/route/index.js:97
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:123
-msgid "Gateway"
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:277
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/auth/login.js:25
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:150
+msgid "Username"
+msgstr "用户名"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:281
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/auth/login.js:30
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:153
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:64
+msgid "Password"
+msgstr "密码"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:333
+msgid "PPPoE Optional Parameters"
 msgstr ""
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/route/index.js:112
-msgid "Routes"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/route/index.js:116
-msgid "Static Routes"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/route/index.js:120
-msgid "Active Routes"
-msgstr ""
-
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:356
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:388
 #: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/aliases.js:26
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:330
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:361
 msgid "Address and Netmask"
+msgstr "地址和子网掩码"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:414
+msgid "Ethernet Media"
+msgstr "介质类型"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:464
+msgid "unknown"
+msgstr "未知"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:470
+msgid "MTU"
+msgstr "最大传输单元"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:471
+msgid "(current : {0})"
+msgstr "(当前：{0})"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:535
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:357
+msgid "Please Wait"
+msgstr "请稍候"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:536
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:358
+#, fuzzy
+msgid "Renewing Lease"
+msgstr "重新释放"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:537
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:359
+msgid "Lease Updated"
+msgstr "更新"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:538
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:360
+msgid "Attempt to update lease has been completed."
+msgstr "尝试更新租约完成"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:539
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:361
+msgid "Internal Error"
+msgstr "内部错误"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:540
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:362
+msgid "Unable to renew lease"
+msgstr "无法更新租约"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:556
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:340
+msgid "Unable to Save Settings"
 msgstr ""
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/aliases.js:45
-msgid "IP Address and Aliases"
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:557
+msgid "Please select a value for 'Bridge To'"
 msgstr ""
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:16
-msgid "Network"
-msgstr ""
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:26
+msgid "{0}edit{1}"
+msgstr "{0}编辑{1}"
 
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:32
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/refresh.js:25
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/refresh.js:65
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:300
+msgid "Name"
+msgstr "名称"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:61
+msgid "Physical Interface"
+msgstr "物理接口"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:69
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/refresh.js:35
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/refresh.js:75
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/arp/index.js:35
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/arp/index.js:67
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:28
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:85
+msgid "MAC Address"
+msgstr "物理地址"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:94
 #: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:19
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:97
 msgid "Refresh Interfaces"
+msgstr "刷新接口"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:99
+msgid "Test Connectivity"
+msgstr "测试连通性"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:104
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:491
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/ping_test.js:9
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/troubleshoot.js:19
+msgid "Ping Test"
 msgstr ""
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:25
-msgid "External Aliases"
-msgstr ""
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:122
+msgid "Interface List"
+msgstr "接口列表"
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:38
-msgid "{0} Interface"
-msgstr ""
-
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:134
 #: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:55
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:126
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/general.js:44
 msgid ""
 "These settings are critical to proper network operation and you should be "
 "sure these are the settings you want. Your Untangle Client may be logged out."
 msgstr ""
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:74
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:119
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:219
-msgid "Address"
-msgstr ""
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:156
+msgid "{0}Untangle detected interfaces changes.{1}Configure them{2}.{3}"
+msgstr "{0}Untangle检测到接口改变.{1}配置它们{2}.{3}"
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:88
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:125
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:114
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:175
-msgid "Default Gateway"
-msgstr ""
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:188
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:313
+msgid " (wan)"
+msgstr "(WAN)"
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:93
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:128
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:160
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:118
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:181
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:270
-msgid "Primary DNS Server"
-msgstr ""
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:284
+msgid "Testing Internet Connectivity"
+msgstr "测试连通互联网"
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:98
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:131
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:165
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:122
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:187
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:275
-msgid "Secondary DNS Server"
-msgstr ""
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:284
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/auth/logout.js:40
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/auth/login.js:51
+msgid "Please wait"
+msgstr "请稍候"
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:115
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:146
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:199
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:285
-msgid "Renew Lease"
-msgstr ""
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:293
+msgid "Successfully connected to the Internet."
+msgstr "成功连接到互联网"
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:150
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:256
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/auth/login.js:22
-msgid "Username"
-msgstr ""
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:298
+msgid "Failed to connect to the Internet, DNS failed."
+msgstr "连接互联网失败，DNS解析失败！"
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:153
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:64
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:260
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/auth/login.js:27
-msgid "Password"
-msgstr ""
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:300
+msgid "Failed to connect to the Internet, TCP failed."
+msgstr "连接互联网失败，TCP连接失败！"
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:157
-msgid "User peer DNS"
-msgstr ""
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:305
+msgid "Connection Status"
+msgstr "连接状态"
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:193
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:274
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:41
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:55
-msgid "Config Type"
-msgstr ""
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/refresh.js:30
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/refresh.js:70
+msgid "Vendor"
+msgstr "厂商"
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:242
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:240
-msgid "Bridge To"
-msgstr ""
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/refresh.js:47
+msgid "{0}The following interfaces have been added.{1}"
+msgstr "{0}如下接口已经被添加{1}"
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:319
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:487
-msgid "Please Wait"
-msgstr ""
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/refresh.js:87
+msgid "{0}The following interfaces have been removed.{1}"
+msgstr "{0}如下接口已经被删除{1}"
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:320
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:488
-msgid "Renewing Lease"
-msgstr ""
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/refresh.js:98
+msgid "Unable to detect any removed or installed network interfaces."
+msgstr "无法检测到任何已删除或安装的网卡"
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:321
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:489
-msgid "Lease Updated"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:322
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:490
-msgid "Attempt to update lease has been completed."
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:323
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:491
-msgid "Internal Error"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:324
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:492
-msgid "Unable to renew lease"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:57
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:369
-msgid "Source Address"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:62
-msgid "Destined Local"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:66
-msgid "Destination Address"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:71
-msgid "Destination Port"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:76
-msgid "Source Interface"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:81
-msgid "Protocol"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:92
-msgid "New Destination"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:99
-msgid "New Port (optional)"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:141
-msgid "Port Forwards"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/local_dns.js:27
-msgid "Server Address"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/local_dns.js:37
-msgid "Domain List"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/local_dns.js:57
-msgid "Local DNS Servers"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/index.js:27
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/index.js:70
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:160
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:37
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:88
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/arp/index.js:26
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/arp/index.js:61
-msgid "IP Address"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/index.js:36
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:68
-msgid "Hostname(s)"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/index.js:75
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:19
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:29
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:93
-msgid "Hostname"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/index.js:91
-msgid "DNS Server"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/index.js:103
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:34
-msgid "Domain Name Suffix"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/index.js:111
-msgid "Static DNS Entries"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/index.js:115
-msgid "Automatic DNS Entries"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:31
-msgid "(eg: gateway.example.com)"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:36
-msgid "(eg: example.com)"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:41
-msgid "Dynamic DNS Client Configuration"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:53
-msgid "Service"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:60
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/auth/login.js:30
-msgid "Login"
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/refresh.js:104
+msgid ""
+"{0}A change in your physical interfaces has been detected, Click {1}Save{2} "
+"to commit the changes.{3}"
 msgstr ""
 
 #: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/alpaca/index.js:17
 msgid "{0}Currently in {1} mode.{2}"
-msgstr ""
+msgstr "{0}当前处于{1}模式.{2}"
 
 #: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/alpaca/index.js:25
 msgid ""
 "{0}You are currently in Advanced mode, in order to return to Basic mode, you "
 "must rerun the wizard which will reset your settings.{1}"
-msgstr ""
+msgstr "{0}您当前处于高级模式。如果需要返回基本模式，您必须运行向导来重置您的设定。{1}"
 
 #: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/alpaca/index.js:29
 msgid "Run Wizard"
-msgstr ""
+msgstr "运行向导"
 
 #: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/alpaca/index.js:37
 msgid ""
@@ -402,298 +487,7 @@ msgstr ""
 
 #: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/alpaca/index.js:41
 msgid "Switch to Advanced Mode"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:26
-msgid "{0}edit{1}"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:32
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/refresh.js:25
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/refresh.js:65
-msgid "Name"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:60
-msgid "Physical Interface"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:68
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/refresh.js:35
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/refresh.js:75
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:28
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:83
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/arp/index.js:35
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/arp/index.js:66
-msgid "MAC Address"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:93
-msgid "Test Connectivity"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:114
-msgid "Interface List"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:148
-msgid "{0}Untangle detected interfaces changes.{1}Configure them{2}.{3}"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:263
-msgid "Testing Internet Connectivity"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:263
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/auth/logout.js:40
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/auth/login.js:46
-msgid "Please wait"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:272
-msgid "Successfully connected to the Internet."
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:277
-msgid "Failed to connect to the Internet, DNS failed."
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:279
-msgid "Failed to connect to the Internet, TCP failed."
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/list.js:284
-msgid "Connection Status"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:48
-msgid "Configure Interface"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:98
-msgid "Primary IP Address and Netmask"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:104
-msgid "IP Addresses"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:132
-msgid "Nat Policies"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:219
-msgid "IP Address Aliases"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:309
-msgid "Secret Field"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:387
-msgid "Ethernet Media"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:417
-msgid "unknown"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:423
-msgid "MTU"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/config.js:424
-msgid "(current : {0})"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/refresh.js:30
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/refresh.js:70
-msgid "Vendor"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/refresh.js:47
-msgid "{0}The following interfaces have been added.{1}"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/refresh.js:87
-msgid "{0}The following interfaces have been removed.{1}"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/refresh.js:98
-msgid "Unable to detect any removed or installed network interfaces."
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/interface/refresh.js:104
-msgid ""
-"{0}A change in your physical interfaces has been detected, Click {1}Save{2} "
-"to commit the changes.{3}"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:16
-msgid "High"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:17
-msgid "Normal"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:18
-msgid "Low"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:30
-msgid "QoS"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:46
-msgid "Internet Download Bandwidth"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:48
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:69
-msgid "kbps"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:51
-msgid "Limit Download To"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:67
-msgid "Internet Upload Bandwidth"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:72
-msgid "Limit Upload To"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:88
-msgid "Ping Priority"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:98
-msgid "ACK Priority"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:99
-msgid "A High ACK Priority speeds up downloads while uploading"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:109
-msgid "Gaming Priority"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:120
-msgid "QoS Rules"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:124
-msgid "QoS Statistics"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:171
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:217
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:269
-msgid "Priority"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:211
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/override/index.js:41
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:24
-msgid "[New Entry]"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:274
-msgid "Rate"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:279
-msgid "Burst"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:284
-msgid "Sent"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:289
-msgid "Tokens"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:294
-msgid "CTokens"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/override/index.js:21
-msgid "Writable"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/override/index.js:47
-msgid "File Path"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/override/index.js:66
-msgid "Overrides"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/override/index.js:72
-msgid "Send ICMP Redirects"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/override/index.js:80
-msgid "File Overrides"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/secret_field.js:20
-msgid "DHCP & DNS"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/secret_field.js:33
-msgid "Custom Field"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:59
-msgid "Add Static"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:75
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/arp/index.js:52
-msgid "Refresh"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:107
-msgid "Start"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:111
-msgid "End"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:119
-msgid "Lease Duration"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:120
-msgid "(seconds)"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:132
-msgid "Lease Limit"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:136
-msgid "Authoritative"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:149
-msgid "DHCP Server"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:161
-msgid "Static DHCP Entries"
-msgstr ""
-
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:165
-msgid "Current DHCP Entries"
-msgstr ""
+msgstr "切换到高级模式"
 
 #: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/auth/logout.js:21
 msgid "Are you sure you want to logout?"
@@ -712,32 +506,583 @@ msgid "Error Logging out"
 msgstr ""
 
 #: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/auth/logout.js:57
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/auth/login.js:68
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/auth/login.js:73
 msgid "Please try again"
 msgstr ""
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/auth/login.js:46
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/auth/login.js:33
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:60
+msgid "Login"
+msgstr "登陆"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/auth/login.js:51
 msgid "Logging In"
 msgstr ""
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/auth/login.js:67
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/auth/login.js:72
 msgid "Error Logging in"
 msgstr ""
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/arp/index.js:71
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:22
+msgid "Troubleshooting"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:28
+msgid "TCP & UDP"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:29
+msgid "TCP"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:30
+msgid "UDP"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:77
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:185
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:200
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:269
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/index.js:45
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/uvm/index.js:39
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/uvm/index.js:88
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/uvm/index.js:118
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/packet_filter/index.js:30
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/packet_filter/index.js:107
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/packet_filter/index.js:139
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:46
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/route/index.js:90
+msgid "Description"
+msgstr "描述"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:115
+msgid "Port Forwards"
+msgstr "端口指向"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:181
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:38
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:196
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/index.js:102
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/uvm/index.js:35
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/packet_filter/index.js:26
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:106
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/secret_field.js:30
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:50
+msgid "Enabled"
+msgstr "启用/使能"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:193
+msgid "Forward the following traffic:"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:207
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/packet_test.js:31
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/tcp_test.js:24
+msgid "Port"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:222
+msgid "Port Number"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:232
+msgid "To the following location:"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:235
+msgid "Local IP"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:242
+#, fuzzy
+msgid "Switch to Advanced"
+msgstr "切换到高级模式"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:296
+#, fuzzy
+msgid "New Destination"
+msgstr "新的目标"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:303
+msgid "New Port (optional)"
+msgstr "新端口(可选项)"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:412
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/packet_test.js:83
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/packet_test.js:94
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/tcp_test.js:51
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/tcp_test.js:62
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/ping_test.js:44
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/traceroute_test.js:46
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/dns_test.js:44
+msgid "Warning"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:413
+msgid ""
+"Advanced port forwards can not be viewed in simple mode. To switch back to "
+"simple view, delete this rule and create a new one."
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:415
+msgid "Continue"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:416
+msgid "Cancel"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:443
+msgid "Port Forward Troubleshooter"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:457
+msgid "Help"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:462
+msgid "Close"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:467
+msgid ""
+"For more help troubleshooting port forwards view the<br/>{0}Port Forward "
+"Troubleshooting Guide{1}"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:485
+msgid "Troubleshooting Port Forwards"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:488
+msgid "Test 1: Verify Untangle can ping the <b>new destination</b>"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:497
+msgid ""
+"Test 2: Verify Untangle can connect to the new destination<br/><i>This test "
+"applies only to TCP port forwards.</i>"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:500
+msgid "Connect Test"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:506
+msgid "Test 3: Watch traffic using the Packet Test"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/redirect/index.js:509
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/packet_test.js:9
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/troubleshoot.js:35
+msgid "Packet Test"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/arp/index.js:52
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:75
+msgid "Refresh"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/arp/index.js:72
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:397
 msgid "Interface"
-msgstr ""
+msgstr "接口"
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/arp/index.js:83
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/arp/index.js:84
 msgid "ARP"
-msgstr ""
+msgstr "ARP"
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/arp/index.js:87
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/arp/index.js:88
+#, fuzzy
 msgid "Static ARP Entries"
+msgstr "静态域名入口"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/arp/index.js:92
+msgid "Active ARP Entries"
 msgstr ""
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/arp/index.js:91
-msgid "Active ARP Entries"
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:16
+msgid "High"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:17
+msgid "Normal"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:18
+msgid "Low"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:25
+msgid "Uplink Bandwidth"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:45
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:315
+msgid "Download Bandwidth"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:47
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:68
+msgid "kbps"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:53
+msgid "Limit Download To"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:66
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:323
+msgid "Upload Bandwidth"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:74
+msgid "Limit Upload To"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:85
+msgid "QoS"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:105
+msgid "Ping Priority"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:115
+msgid "ACK Priority"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:116
+msgid "A High ACK Priority speeds up downloads while uploading"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:126
+msgid "Gaming Priority"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:146
+msgid "QoS Rules"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:152
+msgid "QoS Statistics"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:205
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:251
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:404
+msgid "Priority"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:321
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:329
+msgid " kbps"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:409
+msgid "Rate"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:414
+msgid "Burst"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:419
+msgid "Sent"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:424
+msgid "Tokens"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:429
+msgid "CTokens"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/qos/index.js:466
+msgid "Uplink Bandwidth ({0} kbps download, {1} kbps upload)"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/local_dns.js:27
+msgid "Server Address"
+msgstr "服务器地址"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/local_dns.js:37
+msgid "Domain List"
+msgstr "域名列表"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/local_dns.js:57
+msgid "Local DNS Servers"
+msgstr "本地DNS服务器"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/index.js:36
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:68
+msgid "Hostname(s)"
+msgstr "主机名"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/index.js:77
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/dns_test.js:19
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:95
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:19
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:29
+msgid "Hostname"
+msgstr "主机名"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/index.js:93
+msgid "DNS Server"
+msgstr "DNS服务器"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/index.js:104
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:34
+msgid "Domain Name Suffix"
+msgstr "域名后缀"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/index.js:112
+msgid "Static DNS Entries"
+msgstr "静态域名入口"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dns/index.js:116
+msgid "Automatic DNS Entries"
+msgstr "动态DNS入口"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/uvm/index.js:22
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/uvm/index.js:44
+msgid "Bypass"
+msgstr "通过"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/uvm/index.js:137
+#, fuzzy
+msgid "Bypass Rules"
+msgstr "通过规则"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/uvm/index.js:141
+msgid "System Bypass Rules"
+msgstr "系统通过规则"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/packet_test.js:11
+msgid "Unable to complete the Packet Test."
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/packet_test.js:17
+msgid ""
+"The <b>Packet Test</b> can be used to view packets on the network wire for "
+"troubleshooting."
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/packet_test.js:19
+msgid "5 seconds"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/packet_test.js:20
+msgid "30 seconds"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/packet_test.js:21
+msgid "120 seconds"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/packet_test.js:26
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/tcp_test.js:19
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/ping_test.js:19
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/traceroute_test.js:21
+msgid "IP Address or Hostname"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/packet_test.js:45
+#, fuzzy
+msgid "Timeout:"
+msgstr "超时"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/packet_test.js:57
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/tcp_test.js:28
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/ping_test.js:21
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/traceroute_test.js:23
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/connectivity_test.js:18
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/dns_test.js:21
+msgid "Run Test"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/packet_test.js:63
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/tcp_test.js:33
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/ping_test.js:26
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/traceroute_test.js:28
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/connectivity_test.js:23
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/dns_test.js:26
+msgid "Clear Output"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/packet_test.js:69
+msgid "Packet Test Output"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/packet_test.js:84
+msgid "Please enter a valid IP Address, Hostname or 'any'"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/packet_test.js:95
+msgid ""
+"Please enter a port between 1 and 65535.  Leave the port blank to capture "
+"all traffic."
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/tcp_test.js:9
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/troubleshoot.js:27
+msgid "Connection Test"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/tcp_test.js:11
+msgid "Unable to complete Connection Test."
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/tcp_test.js:15
+msgid ""
+"The <b>Connection Test</b> verifies that Untangle can open a TCP connection "
+"to a port on the given host or client."
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/tcp_test.js:39
+msgid "Connection Test Output"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/tcp_test.js:52
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/traceroute_test.js:47
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/dns_test.js:45
+msgid "Please enter a valid IP Address or Hostname"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/tcp_test.js:63
+msgid "Please enter a port between 1 and 65535"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/ping_test.js:11
+msgid "Unable to complete ping test."
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/ping_test.js:15
+msgid ""
+"The <b>Ping Test</b> can be used to test that a particular host or client "
+"can be contacted from Untangle"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/ping_test.js:32
+msgid "Ping Test Output"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/ping_test.js:45
+msgid "Please enter a valid IP Address or hostname"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:16
+msgid "Network"
+msgstr "网络"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:25
+msgid "External Aliases"
+msgstr "外部接口别名"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:38
+#, fuzzy
+msgid "{0} Interface"
+msgstr "{0}接口"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:74
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:119
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:220
+msgid "Address"
+msgstr "地址"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:158
+msgid "User peer DNS"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/index.js:341
+msgid "Please select a value for 'Bridge To' for all bridged interfaces."
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/traceroute_test.js:9
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/troubleshoot.js:31
+msgid "Traceroute Test"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/traceroute_test.js:13
+msgid "Unable to complete Traceroute."
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/traceroute_test.js:17
+msgid ""
+"The <b>Traceroute Test</b> traces the route from Untangle to a give host or "
+"client."
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/traceroute_test.js:34
+msgid "Traceroute Output"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/troubleshoot.js:15
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/connectivity_test.js:9
+msgid "Connectivity Test"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/troubleshoot.js:23
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/dns_test.js:9
+msgid "DNS Test"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/troubleshoot.js:49
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/troubleshoot.js:62
+msgid "Network Tests"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/connectivity_test.js:11
+msgid "Unable to complete the Connectivity Test."
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/connectivity_test.js:15
+msgid ""
+"The <b>Connectivity Test</b> verifies that Untangle has a working connection "
+"to the Internet."
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/connectivity_test.js:29
+msgid "Connectivity Test Output"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/general.js:20
+msgid "General Settings"
+msgstr "常规设置"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/general.js:29
+msgid "Send ICMP Redirects"
+msgstr "发送ICMP重定向"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/general.js:32
+msgid "Enable SIP Helper"
+msgstr "使能SIP帮助"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/general.js:36
+msgid "Untangle Administration overrides Port Forwards"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/general.js:38
+msgid "Only NAT WAN traffic"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/aliases.js:45
+msgid "IP Address and Aliases"
+msgstr "IP地址和别名"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/dns_test.js:11
+msgid "Unable to complete DNS test."
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/dns_test.js:15
+msgid ""
+"The <b>DNS Test</b> can be used to test Untangle can successfully perform "
+"DNS lookups"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/dns_test.js:32
+msgid "DNS Test Output"
 msgstr ""
 
 #: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/packet_filter/index.js:15
@@ -768,3 +1113,158 @@ msgstr ""
 #: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/packet_filter/index.js:164
 msgid "System Packet Filter Rules"
 msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:59
+msgid "Add Static"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:109
+msgid "Start"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:113
+msgid "End"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:121
+msgid "Lease Duration"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:122
+msgid "(seconds)"
+msgstr "(秒)"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:125
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/route/index.js:79
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/route/index.js:124
+msgid "Gateway"
+msgstr "网关"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:134
+msgid "Lease Limit"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:138
+msgid "Authoritative"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:151
+msgid "DHCP Server"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:163
+#, fuzzy
+msgid "Static DHCP Entries"
+msgstr "静态域名入口"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/index.js:167
+msgid "Current DHCP Entries"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/secret_field.js:20
+msgid "DHCP & DNS"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/dhcp/secret_field.js:33
+msgid "Custom Field"
+msgstr ""
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:31
+msgid "(eg: gateway.example.com)"
+msgstr "(例如：gateway.example.com)"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:36
+msgid "(eg: example.com)"
+msgstr "(例如：example.com)"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:41
+msgid "Dynamic DNS Client Configuration"
+msgstr "动态域名客户端配置"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/hostname/index.js:53
+msgid "Service"
+msgstr "服务"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/route/index.js:61
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/route/index.js:113
+msgid "Target"
+msgstr "对象"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/route/index.js:140
+msgid "Routes"
+msgstr "路由"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/route/index.js:144
+msgid "Static Routes"
+msgstr "静态路由"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/route/index.js:148
+msgid "Active Routes"
+msgstr "动态路由"
+
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/route/index.js:159
+msgid "default"
+msgstr "默认"
+
+#~ msgid "Total"
+#~ msgstr "总共"
+
+#~ msgid "Ping"
+#~ msgstr "Ping"
+
+#~ msgid "DNS"
+#~ msgstr "域名系统"
+
+#~ msgid "HTTP"
+#~ msgstr "http协议"
+
+#~ msgid "Custom"
+#~ msgstr "自定义"
+
+#~ msgid "Failover"
+#~ msgstr "失败"
+
+#~ msgid "Failover Detection Rules"
+#~ msgstr "检测规则失败"
+
+#~ msgid "Interface Uptimes"
+#~ msgstr "接口更新时间"
+
+#~ msgid "There is no data available for the WAN interfaces."
+#~ msgstr "WAN接口上没有任何数据"
+
+#~ msgid "Failover Detection Logs"
+#~ msgstr "检测日志失败"
+
+#~ msgid "Delay"
+#~ msgstr "延迟"
+
+#~ msgid "Consecutive Failures"
+#~ msgstr "持续错误"
+
+#~ msgid "Test Type"
+#~ msgstr "测试类型"
+
+#~ msgid "Type"
+#~ msgstr "类型"
+
+#~ msgid "Generate Suggestions"
+#~ msgstr "常规建议"
+
+#~ msgid "URL"
+#~ msgstr "URL"
+
+#~ msgid "Script"
+#~ msgstr "脚本"
+
+#~ msgid "Start Time"
+#~ msgstr "开始时间"
+
+#~ msgid "End Time"
+#~ msgstr "结束时间"
+
+#~ msgid "Online"
+#~ msgstr "在线"
+
+#~ msgid "Secret Field"
+#~ msgstr "安全域"
