@@ -188,7 +188,7 @@ upgrade_menu()
 
 main_menu()
 {
-    dialog --backtitle "$backtitle" --title "Untangle Recovery" \
+    dialog --backtitle "$backtitle" --title "$OEM_NAME Recovery" \
         --cancel-label "Exit" \
         --menu "Choose operation:" 10 61 3 \
         "Backup & Restore" "" \
