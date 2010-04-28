@@ -10,7 +10,7 @@ Package: untangle-libitem-opensource-package
 Architecture: all
 Depends: untangle-libitem-shield,untangle-libitem-spyware,untangle-libitem-webfilter,untangle-libitem-clam,untangle-libitem-protofilter,untangle-libitem-firewall,untangle-libitem-spamassassin,untangle-libitem-phish,untangle-libitem-openvpn,untangle-libitem-ips,untangle-libitem-reporting, untangle-libitem-cpd
 XB-View-Position: 10
-XB-Display-Name: Open Source Package
+XB-Display-Name: Lite Package
 XB-Untangle-Type: lib_item
 XB-Is-Bundle: true
 XB-Untangle-Pkg-Type: lib_item
@@ -51,8 +51,8 @@ XB-Desc-Icon:  R0lGODlhKgAqAPcAAAAAAKx9ALS0tFhYWERHZZJqANDHGjQ2TcXFx2ttiH9eFrev
  16zfGThyA2GEJ2B4Wpskvngbu6idGQ4exBDD5GpVzsIVz7Biy+ZpLQIKKGMdcMBQ
  VelFCBqoD+6BIa33MEMhQvExxO/ABy/88MMTQAAHi4wFzfI9uH7AXdBHL/300ws1
  REytL3/AYjNQ7/330F/AB0wtZWLR+eif39BAC7XvfkINBQQAOw==
-Description: Open Source Package
- The Open Source Package Library Item.
+Description: Lite Package
+ The Lite Package Library Item.
 
 Package: untangle-libitem-shield
 Architecture: all
