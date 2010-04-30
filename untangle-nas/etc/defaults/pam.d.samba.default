@@ -1,8 +1,0 @@
-auth	sufficient	pam_winbind.so
-auth	required	pam_unix.so nullok_secure
-
-account	sufficient	pam_winbind.so
-account	required	pam_unix.so
-
-session	required	pam_unix.so
-session required        pam_mkhomedir.so skel=/etc/skel.samba umask=0077
