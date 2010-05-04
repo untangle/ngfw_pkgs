@@ -1,0 +1,20 @@
+#! /bin/sh
+
+DEFAULT_FILE="/etc/default/snmpd"
+
+MONIT_CONF_FILE="/etc/untangle/monit.conf"
+MONIT_SNMPD_SERVICE="snmpd"
+
+isEnabled() {
+  grep -q "SNMPDRUN=yes" $DEFAULT_FILE
+}
+
+# guaranteed to do the right thing, per the setting above
+/etc/init.d/snmpd restart
+
+# tell monit what to do
+if isEnabled ; then
+  monit -c $MONIT_CONF_FILE monitor $MONIT_SNMPD_SERVICE
+else
+  monit -c $MONIT_CONF_FILE unmonitor $MONIT_SNMPD_SERVICE
+fi
