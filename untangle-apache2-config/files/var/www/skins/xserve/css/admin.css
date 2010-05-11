@@ -1118,7 +1118,7 @@ body.wizard .ext-el-mask
 }
 .wizard-steps{
 	padding-top:120px;
-	background-color:#e8e8e8;	
+	background-color:#818181;	
 }
 .empty-background{
 	background-color:none;
@@ -1163,12 +1163,12 @@ body.wizard .ext-el-mask
 
 .incomplete div
 {
-  background-color:#E8e8e8;
+  background-color:#818181;
   }
 
 .completed div
 {
-  background-color:#e8e8e8;
+  background-color:#818181;
 }
 /* incomplete step marker */
 .incomplete div div .count{
@@ -1177,7 +1177,7 @@ body.wizard .ext-el-mask
 	color:#444444;
 	font-size:11px;
 	margin:0px 4px 0px 0px;
-	padding:2px 6px 2px 5px;	
+	padding:1px 6px 2px 5px;	
 }
 /* current step marker */
 .current div div .count
@@ -1197,7 +1197,7 @@ body.wizard .ext-el-mask
   color:#FFF;
   font-size:11px;
   margin:0px 4px 0px 0px;
-  padding:2px 6px 2px 5px;	
+  padding:1px 6px 2px 5px;	
 }
 .wizard .x-form-item label
 { 
