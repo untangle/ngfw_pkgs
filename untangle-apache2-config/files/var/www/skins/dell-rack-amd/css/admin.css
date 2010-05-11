@@ -398,6 +398,12 @@ div.ung-button-invalid {
 button.icon-add-row {
     background: transparent url(../images/admin/icon_add_row.gif) no-repeat center left !important;
 }
+/* row add icon */
+div.icon-add-row {
+	background:transparent url(../images/admin/icon_row_add.png) no-repeat center center;
+	width: 100%;
+	cursor: pointer;
+}
 /* edit row icon */
 div.icon-edit-row {
 	background:transparent url(../images/admin/icon_edit_row.gif) no-repeat center center;
@@ -442,7 +448,7 @@ button.icon-autorefresh {
 }
 /* color of a deleted row in grid */
 .grid-row-deleted {
-	background-color: #FF5151;
+	background-color: #FF5151 !important;
 }
 /* color of an added row in grid */
 .grid-row-added {
@@ -944,7 +950,20 @@ div.wizard-network-image-description
   width : 320px;
   }
 
-.wizard-network-image img
+div.wizard-network-rerouter
+{ 
+  height: 90px;
+  margin-top: 20px;
+ }
+
+div.wizard-network-rerouter span
+{ 
+  float: left;
+  width: 340px;
+  margin-left : 18px;
+  }
+
+.wizard-network-image img, img.wizard-network-image
 { 
   border : 1px #ccc solid;
   padding : 4px;
@@ -1267,10 +1286,21 @@ body.wizard .ext-el-mask
 .left-indent-2{
 	margin-left:34px;
 }
+.left-indent-3{
+    margin-left:5.5em;
+}
+.left-indent-34{
+  margin-left:85px;
+}
+.left-indent-35{
+  margin-left:105px;
+}
 .left-indent-4{
   margin-left:123px;
 }
-/*spamblocker stuff*/
+.left-indent-5{
+  margin-left:205px;
+}/*spamblocker stuff*/
 .super-spam-threshold label{
   width:150px !important;
 }
@@ -1323,7 +1353,23 @@ body.wizard .ext-el-mask
   padding: 0px 0px 0px 0px;
   }
 
+.ua-cell-enabled
+{ 
+  background: transparent url(../images/admin/icon_interface_enabled.png) no-repeat center center;
+  width: 100%;
+  height : 16px;
+  cursor: move;
+  padding: 0px 0px 0px 0px;
+  }
 
+.ua-cell-disabled
+{ 
+  background: transparent url(../images/admin/icon_interface_disabled.png) no-repeat center center;
+  width: 100%;
+  height : 16px;
+  cursor: move;
+  padding: 0px 0px 0px 0px;
+  }
 
 .alpaca-panel{
  padding:10px;
@@ -1335,6 +1381,9 @@ body.wizard .ext-el-mask
     font-size:13px;
     margin-bottom:5px;
     display:block;
+}
+.x-form-combo-detail{
+  margin-left:22px;
 }
 .label-section-heading, .label-section-heading-2,.label-text{
 	font-family:Tahoma, arial, helvetica,freesans,sans-serif;
@@ -1373,9 +1422,6 @@ float:left;
 .float-button-2{
     clear:right;
     margin-left:10px;
-}
-.left-indent-3{
-    margin-left:6.4em;
 }
 .ua-message-warning {
     padding: 5px 5px 5px 28px;

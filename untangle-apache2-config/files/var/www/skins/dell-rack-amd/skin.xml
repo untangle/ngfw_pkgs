@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <skin>
-  <name>dell-rack-amd</name>
-  <displayName>Dell Rack - AMD (By MikeTrike)</displayName>
+  <name>Dell-rack-amd</name>
+  <displayName>Dell Rack - AMD</displayName>
   <adminSkin>true</adminSkin>
   <adminSkinVersion>2</adminSkinVersion>
   <userFacingSkin>true</userFacingSkin>
