@@ -66,6 +66,14 @@ rm -f /var/lib/rails/untangle-net-alpaca/database/production.db
 # restore canonical files
 tar -C / -zvxf /usr/share/untangle/conf/canonical.tar.gz
 
+# restore logo
+cp -f /var/www/images/Logo150x96.gif /var/www/images/BrandingLogo.gif
+
+# restore OEM settings if they exist
+if [ -f /usr/share/untangle/bin/oem-apply.sh ] ; then
+    /usr/share/untangle/bin/oem-apply.sh
+fi
+
 ## restore the NAT transform if necessary
 if [ -f ${NAT_CACHE_DEB} ]; then
     dpkg -l untangle-node-router | grep '^ii' > /dev/null || dpkg -i ${NAT_CACHE_DEB}
