@@ -25,7 +25,6 @@ is_monit_running()
  
    grep -q '^monit.-c.${CONFIG_FILE}' "/proc/${t_pid}/cmdline" || return 3
 
-   echo "true"
    return 0
 }
 
