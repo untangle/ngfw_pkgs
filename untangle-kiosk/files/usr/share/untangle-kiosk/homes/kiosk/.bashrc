@@ -7,16 +7,16 @@ EndSection
 
 Section "Monitor"
 Identifier "Monitor"
-Option "PreferredMode" "1024x768"
 EndSection
 
 Section "Screen" 
 Identifier "Default Screen"
+Monitor "Configured Monitor"
+Device "Configured Video Device"
 DefaultDepth 24
 SubSection "Display"
 Depth 24
-Modes "1024x768" "800x600"
-Virtual 1024 768
+Modes "1024x768" 
 EndSubSection
 EndSection
 EOF
@@ -30,16 +30,16 @@ EndSection
 
 Section "Monitor"
 Identifier "Monitor"
-Option "PreferredMode" "1280x800"
 EndSection
 
 Section "Screen" 
 Identifier "Default Screen"
+Monitor "Configured Monitor"
+Device "Configured Video Device"
 DefaultDepth 24
 SubSection "Display"
 Depth 24
 Modes "1280x800"
-Virtual 1280 800
 EndSubSection
 EndSection
 EOF
