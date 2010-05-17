@@ -53,7 +53,7 @@ splashimage=(hd0,0)/boot/grub/utsplash.xpm.gz
 ##      kopt_2_6_8=root=/dev/hdc1 ro
 ##      kopt_2_6_8_2_686=root=/dev/hdc2 ro
 # kopt=root=@ROOTDEV@ ro ramdisk_size=100000 lang=us apm=power-off screen=1024x768 nomce nodhcp nofstab panic=5
-# kopt_2_6_26=root=@ROOTDEV@ ro ramdisk_size=100000 panic=5
+# kopt_2_6_26=root=@ROOTDEV@ ro ramdisk_size=100000 panic=5 hpet=disable
 
 ## default grub root device
 ## e.g. groot=(hd0,0)
@@ -89,8 +89,9 @@ splashimage=(hd0,0)/boot/grub/utsplash.xpm.gz
 ## multiple altoptions lines are allowed
 ## e.g. altoptions=(extra menu suffix) extra boot options
 ##      altoptions=(single-user) single
-# altoptions=(hardware workaround) acpi=off noapic
-# altoptions=(video safe mode) ut-video
+# altoptions=(video safe mode) quiet splash ut-video-stnd
+# altoptions=(video safe mode widescreen) quiet splash ut-video-wide
+# altoptions=(hardware safe mode) acpi=off noapic
 # altoptions=(recovery mode) ut-restore
 
 ## controls how many kernels should be put into the menu.lst
