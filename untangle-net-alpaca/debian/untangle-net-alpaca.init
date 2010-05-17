@@ -13,9 +13,14 @@
 
 . /lib/lsb/init-functions
 
-DESC="Untangle Net-Alpaca"
+if [ -f @PREFIX@/etc/untangle/oem/oem.sh ] ; then
+    source @PREFIX@/etc/untangle/oem/oem.sh
+else
+    OEM_NAME="Untangle"
+fi
 
 NAME="untangle-net-alpaca"
+DESC="${OEM_NAME} Net-Alpaca"
 
 MONGREL_RAILS="/usr/bin/mongrel_rails"
 BASE_DIR="/var/lib/rails/untangle-net-alpaca"
