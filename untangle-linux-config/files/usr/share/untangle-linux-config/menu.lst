@@ -89,8 +89,8 @@ splashimage=(hd0,0)/boot/grub/utsplash.xpm.gz
 ## multiple altoptions lines are allowed
 ## e.g. altoptions=(extra menu suffix) extra boot options
 ##      altoptions=(single-user) single
-# altoptions=(video safe mode) quiet splash ut-video-stnd
-# altoptions=(video safe mode widescreen) quiet splash ut-video-wide
+# altoptions=(video safe mode) vga=791 quiet splash ut-video-stnd
+# altoptions=(video safe mode widescreen) vga=791 quiet splash ut-video-wide
 # altoptions=(hardware safe mode) acpi=off noapic
 # altoptions=(recovery mode) ut-restore
 
