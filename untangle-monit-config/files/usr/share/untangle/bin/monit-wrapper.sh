@@ -23,7 +23,7 @@ is_monit_running()
     return 2
    fi
  
-   grep -q "^monit.-c.${CONFIG_FILE}.-v.\$" "/proc/${t_pid}/cmdline" || return 3
+   grep -q '^monit.-c.${CONFIG_FILE}' "/proc/${t_pid}/cmdline" || return 3
 
    return 0
 }
@@ -39,8 +39,8 @@ while true ; do
 
     sleep 2
 
-    ## This is going to daemonize into another process, it doesn't need to background.
-    monit -c $CONFIG_FILE -v
+    ## This is going to daemonize into another process, it doesn't need to backgrounded
+    monit -c $CONFIG_FILE
   
     sleep 2
 
