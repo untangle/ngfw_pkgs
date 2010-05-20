@@ -5,8 +5,9 @@ Identifier "Configured Video Device"
 Driver "vesa"
 EndSection
 
-Section "Monitor"
+Section "Configured Monitor"
 Identifier "Monitor"
+  VertRefresh  60
 EndSection
 
 Section "Screen" 
