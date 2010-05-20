@@ -1,13 +1,13 @@
 XORG_CONF_VESA=xorg-untangle-vesa.conf
-
 sudo tee /etc/X11/$XORG_CONF_VESA <<EOF
 Section "Device"
 Identifier "Configured Video Device"
 Driver "vesa"
 EndSection
 
-Section "Monitor"
+Section "Configured Monitor"
 Identifier "Monitor"
+  VertRefresh  60
 EndSection
 
 Section "Screen" 
