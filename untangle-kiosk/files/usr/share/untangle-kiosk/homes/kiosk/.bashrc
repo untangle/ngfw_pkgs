@@ -24,12 +24,10 @@ EOF
 
 abort() {
 echo <<EOF
-Untangle has failed to properly detect the video & monitor settings for
-this server. 
+The server has failed to properly detect the video & monitor settings. 
 
-Try restarting the server and selecting "Video Safe Mode" from the
-boot menu, or go to http://wiki.untangle.com/index.php/Video_Issues to
-read about other options.
+Try restarting the server and selecting "Video Safe Mode" from the boot menu.
+
 EOF
 }
 
