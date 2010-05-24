@@ -1,19 +1,26 @@
 #! /bin/bash
 
-NAT_CACHE_DEB="/var/lib/uvm/untangle-node-router.deb"
-
 . /etc/default/untangle-vm
+
+/etc/init.d/untangle-vm stop
+/etc/init.d/untangle-reports stop
+
+# touch factory-defaults file to tell system to start in wizard mode
+touch /usr/share/untangle/conf/factory-defaults
+
+echo "Restoring Database settings..."
 
 # Drop that UVM database, and exit if it is unable to create it.
 psql -U postgres -c "DROP DATABASE IF EXISTS uvm" || exit 1
 
 createuser -U postgres -dSR untangle 2>/dev/null
 createdb -O postgres -U postgres uvm || exit 2
+
 /usr/share/untangle/bin/update-schema settings uvm
 /usr/share/untangle/bin/update-schema events uvm
 /usr/share/untangle/bin/update-schema settings untangle-node-router
 /usr/share/untangle/bin/update-schema events untangle-node-router
-psql -X -U postgres uvm <<EOF
+psql -X -U postgres uvm &> /dev/null <<EOF
 INSERT INTO u_tid VALUES (1);
 INSERT INTO u_node_manager_state VALUES (nextval('hibernate_sequence'), 2);
 INSERT INTO u_node_persistent_state VALUES (nextval('hibernate_sequence'), 'untangle-node-router', 1, '\\\\001\\\\000', 'running');
@@ -21,8 +28,9 @@ INSERT INTO u_node_preferences VALUES (nextval('hibernate_sequence'), 1, 255, 17
 INSERT INTO u_tid VALUES (2);
 INSERT INTO u_node_persistent_state VALUES (nextval('hibernate_sequence'), 'untangle-casing-ftp', 2, '\\\\002\\\\000', 'running');
 INSERT INTO u_node_preferences VALUES (nextval('hibernate_sequence'), 2, 255, 175, 175, 255);
-INSERT INTO n_router_settings VALUES (nextval('hibernate_sequence'), 1, 0, true, null, null, false, null, true, null, null, 0, true, null, false);
 EOF
+
+echo "Restoring Database settings... done"
 
 # remove files
 rm -f /usr/share/untangle/conf/networking.sh
@@ -35,33 +43,43 @@ rm -fr /usr/share/untangle/registration.info
 rm -rf /usr/share/untangle/conf/openvpn
 rm -rf /usr/share/untangle/quarantine
 rm -rf /etc/openvpn
+rm -rf /usr/share/untangle/web/reports/data/*
 
-# remove old generated reports.  (only good for next 992 years). bug3535
-rm -rf /usr/share/untangle/web/reports/2*
-rm /usr/share/untangle/web/reports/current
+echo "Restoring Local Directory..."
 
 SLAPD_CONFIG=/etc/untangle-ldap/slapd.conf
 SLAPD_LIB_DIR=/var/lib/untangle-ldap
 UNTANGLE_SLAPD_CONFIG_DIR=/usr/share/untangle-ldap-server
 if [ -f $SLAPD_CONFIG ]; then
     # restore initial LDAP db
-    /etc/init.d/untangle-slapd stop
+    /etc/init.d/untangle-slapd stop &> /dev/null
     rm -rf ${SLAPD_LIB_DIR}
     mkdir -p ${SLAPD_LIB_DIR}
     cp ${UNTANGLE_SLAPD_CONFIG_DIR}/DB_CONFIG ${SLAPD_LIB_DIR}/DB_CONFIG
     slapadd -f $SLAPD_CONFIG -l ${UNTANGLE_SLAPD_CONFIG_DIR}/initial.ldif
     slapindex -f $SLAPD_CONFIG
-    /etc/init.d/untangle-slapd start
+    /etc/init.d/untangle-slapd start &> /dev/null
 fi
 
+echo "Restoring Local Directory... done"
+
+echo "Restoring Network Settings..."
+
 ## Backup the current networking settings
-[ -x  /usr/share/untangle-net-alpaca/scripts/backup ] && /usr/share/untangle-net-alpaca/scripts/backup /usr/share/untangle/conf/alpaca-backup.uab "Return to Factory Defaults."
+# [ -x  /usr/share/untangle-net-alpaca/scripts/backup ] && /usr/share/untangle-net-alpaca/scripts/backup /usr/share/untangle/conf/alpaca-backup.uab "Return to Factory Defaults."
 
 ## Stop the network manager
-/etc/init.d/untangle-net-alpaca stop
+/etc/init.d/untangle-net-alpaca stop &> /dev/null
 
 ## Remove the database file (an empty file is also in canonical just in case)
 rm -f /var/lib/rails/untangle-net-alpaca/database/production.db
+
+## Start the network manager
+/etc/init.d/untangle-net-alpaca start &> /dev/null
+
+echo "Restoring Network Settings... done"
+
+echo "Restoring File System State..."
 
 # restore canonical files
 tar -C / -zvxf /usr/share/untangle/conf/canonical.tar.gz
@@ -74,9 +92,6 @@ if [ -f /usr/share/untangle/bin/oem-apply.sh ] ; then
     /usr/share/untangle/bin/oem-apply.sh
 fi
 
-## restore the NAT transform if necessary
-if [ -f ${NAT_CACHE_DEB} ]; then
-    dpkg -l untangle-node-router | grep '^ii' > /dev/null || dpkg -i ${NAT_CACHE_DEB}
-fi
+echo "Restoring File System State... done"
 
 exit 0
