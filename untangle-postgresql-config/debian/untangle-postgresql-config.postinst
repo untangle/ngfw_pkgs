@@ -69,4 +69,9 @@ fi
 
 touch /etc/untangle/monit-to-restart
     
+# create a "root" database so monit won't complain (bug #7492)
+createuser -U postgres -DSR root &>/dev/null
+createdb -O root -U postgres root &> /dev/null
+
+
 exit 0
