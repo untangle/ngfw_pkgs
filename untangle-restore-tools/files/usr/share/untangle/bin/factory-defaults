@@ -74,12 +74,12 @@ echo "Restoring Network Settings..."
 ## Remove the database file (an empty file is also in canonical just in case)
 rm -f /var/lib/rails/untangle-net-alpaca/database/production.db
 
-## Start the network manager
-/etc/init.d/untangle-net-alpaca start &> /dev/null
+# ## Start the network manager
+# /etc/init.d/untangle-net-alpaca start &> /dev/null
+#
+#echo "Restoring Network Settings... done"
 
-echo "Restoring Network Settings... done"
-
-echo "Restoring File System State..."
+echo -n "Restoring File System State..."
 
 # restore canonical files
 tar -C / -zxf /usr/share/untangle/conf/canonical.tar.gz
@@ -92,6 +92,6 @@ if [ -f /usr/share/untangle/bin/oem-apply.sh ] ; then
     /usr/share/untangle/bin/oem-apply.sh
 fi
 
-echo "Restoring File System State... done"
+echo " done"
 
 exit 0
