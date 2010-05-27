@@ -1,0 +1,15 @@
+Build instructions
+
+You will need the complete linux source to build this:
+
+On your dev box, copy /boot/config-<kernel ver> to /usr/src/linux/.config
+
+cd /usr/src/linux
+make oldconfig
+make prepare
+make modules
+cd <where ipset source is>
+make
+cp kernel/*.ko to appropriate directory.
+
+
