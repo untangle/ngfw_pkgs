@@ -55,7 +55,7 @@ class Alpaca::Components::HostnameComponent < Alpaca::Component
     settings = HostnameSettings.new
     
     hostname = config["hostname"]
-    hostname = "untangle.example.com" unless validator.is_hostname?( hostname )
+    hostname = "hostname.example.com" unless validator.is_hostname?( hostname )
     settings.hostname = hostname
 
     settings_hash[self.class] = settings
