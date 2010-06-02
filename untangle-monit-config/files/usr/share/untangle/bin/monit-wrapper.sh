@@ -23,7 +23,7 @@ is_monit_running()
     return 2
    fi
  
-   grep -q '^monit.-c.${CONFIG_FILE}' "/proc/${t_pid}/cmdline" || return 3
+   grep -q '^monit.-c.'${CONFIG_FILE} "/proc/${t_pid}/cmdline" || return 3
 
    return 0
 }
