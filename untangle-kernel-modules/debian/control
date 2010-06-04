@@ -1,0 +1,36 @@
+Source: untangle-kernel-modules
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.8.0
+
+Package: untangle-kernel-modules
+Architecture: all
+Provides: untangle-appliance-int
+Conflicts: untangle-appliance-int
+Replaces: untangle-appliance-int
+Depends: e1000-kernel-2.6.26-1-untangle-486, e1000-kernel-2.6.26-1-untangle-686, \
+         e1000-kernel-2.6.26-1-untangle-amd64, \
+         e1000-kernel-2.6.26-2-untangle-486, e1000-kernel-2.6.26-2-untangle-686, \
+         e1000-kernel-2.6.26-2-untangle-amd64, \
+         e1000e-kernel-2.6.26-1-untangle-486, e1000e-kernel-2.6.26-1-untangle-686, \
+         e1000e-kernel-2.6.26-1-untangle-amd64, \
+         e1000e-kernel-2.6.26-2-untangle-486, e1000e-kernel-2.6.26-2-untangle-686, \
+         e1000e-kernel-2.6.26-2-untangle-amd64, \
+         igb-kernel-2.6.26-1-untangle-486, igb-kernel-2.6.26-1-untangle-686, \
+         igb-kernel-2.6.26-1-untangle-amd64, \
+         igb-kernel-2.6.26-2-untangle-486, igb-kernel-2.6.26-2-untangle-686, \
+         igb-kernel-2.6.26-2-untangle-amd64, \
+         ipset-kernel-2.6.26-1-untangle-486, ipset-kernel-2.6.26-1-untangle-686, \
+         ipset-kernel-2.6.26-1-untangle-amd64, \
+         ipset-kernel-2.6.26-2-untangle-486, ipset-kernel-2.6.26-2-untangle-686, \
+         ipset-kernel-2.6.26-2-untangle-amd64, \
+         niagara22xxed-kernel-2.6.26-1-untangle-486, niagara22xxed-kernel-2.6.26-1-untangle-686, \
+         niagara22xxed-kernel-2.6.26-1-untangle-amd64, \
+         niagara22xxed-kernel-2.6.26-2-untangle-486, niagara22xxed-kernel-2.6.26-2-untangle-686, \
+         niagara22xxed-kernel-2.6.26-2-untangle-amd64
+Pre-Depends: untangle-debconf-manager
+Description: The Untangle appliance internal
+ The Untangle appliance internal-to-untangle mode.
