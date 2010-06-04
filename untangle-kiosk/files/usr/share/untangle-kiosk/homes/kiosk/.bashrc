@@ -6,7 +6,7 @@ Driver "vesa"
 EndSection
 
 Section "Monitor"
-Identifier "Configure Monitor"
+Identifier "Configured Monitor"
   VertRefresh  60
 EndSection
 
