@@ -68,7 +68,7 @@ binary-arch: build
 	if [ -f debian/version ] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
 	dh_md5sums     
 
-binary-indep: build 
+binary-indep:
 # nothing to do
 
 binary: binary-indep binary-arch
