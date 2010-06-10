@@ -2,12 +2,12 @@ Source: untangle-rails
 Section: web
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
-Build-Depends: debhelper (>= 4.0.0), dpatch, rake (>>0.7.0), rdoc (>>1.8.2), liberb-ruby
+Build-Depends: debhelper (>= 4.0.0), dpatch, rake (>>0.7.0), rdoc (>>1.8.2) | rdoc1.9.1, liberb-ruby
 Standards-Version: 3.8.0
 
 Package: untangle-rails
 Architecture: all
-Depends: ${misc:Depends}, ruby, ruby1.8 (>=1.8.2-3), rake (>>0.7.0), rdoc (>>1.8.2), libsqlite3-ruby1.8 | libpgsql-ruby1.8 | libmysql-ruby1.8 | libdbi-ruby1.8, libredcloth-ruby1.8, liberb-ruby, libmocha-ruby1.8
+Depends: ${misc:Depends}, ruby, ruby1.8 (>=1.8.2-3), rake (>>0.7.0), rdoc (>>1.8.2) | rdoc1.9.1, libsqlite3-ruby1.8 | libpgsql-ruby1.8 | libmysql-ruby1.8 | libdbi-ruby1.8, libredcloth-ruby1.8, liberb-ruby, libmocha-ruby1.8
 Recommends: irb (>>1.8)
 Conflicts: libdevel-logger-ruby1.8, rails
 Provides: rails
