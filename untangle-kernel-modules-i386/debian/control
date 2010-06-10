@@ -11,16 +11,7 @@ Architecture: i386
 Provides: untangle-appliance-int
 Conflicts: untangle-appliance-int
 Replaces: untangle-appliance-int
-Depends: e1000-module-2.6.26-1-untangle-486, e1000-module-2.6.26-1-untangle-686, \
-         e1000-module-2.6.26-2-untangle-486, e1000-module-2.6.26-2-untangle-686, \
-         e1000e-module-2.6.26-1-untangle-486, e1000e-module-2.6.26-1-untangle-686, \
-         e1000e-module-2.6.26-2-untangle-486, e1000e-module-2.6.26-2-untangle-686, \
-         igb-module-2.6.26-1-untangle-486, igb-module-2.6.26-1-untangle-686, \
-         igb-module-2.6.26-2-untangle-486, igb-module-2.6.26-2-untangle-686, \
-         ipset-modules-2.6.26-1-untangle-486, ipset-modules-2.6.26-1-untangle-686, \
-         ipset-modules-2.6.26-2-untangle-486, ipset-modules-2.6.26-2-untangle-686, \
-         niagara22xxed-module-2.6.26-1-untangle-486, niagara22xxed-module-2.6.26-1-untangle-686, \
-         niagara22xxed-module-2.6.26-2-untangle-486, niagara22xxed-module-2.6.26-2-untangle-686
+Depends: e1000-module-2.6.26-1-untangle-486, e1000-module-2.6.26-1-untangle-686, e1000-module-2.6.26-2-untangle-486, e1000-module-2.6.26-2-untangle-686, e1000e-module-2.6.26-1-untangle-486, e1000e-module-2.6.26-1-untangle-686, e1000e-module-2.6.26-2-untangle-486, e1000e-module-2.6.26-2-untangle-686, igb-module-2.6.26-1-untangle-486, igb-module-2.6.26-1-untangle-686, igb-module-2.6.26-2-untangle-486, igb-module-2.6.26-2-untangle-686, ipset-modules-2.6.26-1-untangle-486, ipset-modules-2.6.26-1-untangle-686, ipset-modules-2.6.26-2-untangle-486, ipset-modules-2.6.26-2-untangle-686, niagara22xxed-module-2.6.26-1-untangle-486, niagara22xxed-module-2.6.26-1-untangle-686, niagara22xxed-module-2.6.26-2-untangle-486, niagara22xxed-module-2.6.26-2-untangle-686
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle appliance internal
  The Untangle appliance internal-to-untangle mode.
