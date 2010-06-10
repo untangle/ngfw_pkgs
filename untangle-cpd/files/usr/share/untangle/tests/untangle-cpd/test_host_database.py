@@ -272,7 +272,7 @@ class TestHostDatabase():
         assert results[0]["ipv4_addr"] == "1.2.3.5"
 
     def get_entries(self, ipv4_addr = None, username = None, hw_addr=None ):
-        query = 'SELECT * FROM n_adconnector_host_database_entry WHERE TRUE '
+        query = 'SELECT * FROM n_cpd_host_database_entry WHERE TRUE '
         params = []
         
         if ( ipv4_addr != None ):
