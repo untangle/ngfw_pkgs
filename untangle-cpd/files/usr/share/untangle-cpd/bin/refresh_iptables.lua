@@ -71,10 +71,15 @@ local function handle_ipv4_param( type, param )
    range_start, range_end = string.match( param, "(%d+%.%d+%.%d+%.%d+)%s*-%s*(%d+%.%d+%.%d+%.%d+)%s*")
    if ( not ( range_start == nil )) then
       is_client = ( is_client ) and "src" or "dst"
-
       return { string.format( " -m iprange --%s-range %s-%s", is_client, range_start, range_end ) }
    end
-   
+
+   net_addr, net_size = string.match( param, "(%d+%.%d+%.%d+%.%d+)%s*/%s*(%d+)%s*" )
+   if ( not ( net_addr == nill )) then
+      is_client = ( is_client ) and "source" or "destination"
+      return { string.format( " --%s %s/%d", is_client, net_addr, net_size ) }
+   end
+
    is_client = ( is_client ) and "source" or "destination"
    
    local address, address_array = nil, {}
