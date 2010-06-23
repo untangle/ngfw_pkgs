@@ -12,6 +12,14 @@ body{
 	margin:0 auto;
 	width:960px;
 }
+/* for printing */
+.full-height{
+    height: auto !important;
+}
+.full-height .x-panel-body, .full-height .x-tab-panel-body{
+    height : auto !important;
+}
+/* end for printing */
 .base-container {
     margin-top:15px;
 }
