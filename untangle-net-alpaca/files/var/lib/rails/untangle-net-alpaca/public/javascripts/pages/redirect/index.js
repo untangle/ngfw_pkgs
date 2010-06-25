@@ -70,6 +70,7 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 new_enc_id : "",
                 filter : "simple::true&&d-port::80&&d-local::true&&protocol::tcp",
                 description : "[New Entry]",
+                warning : "By default the server uses HTTPS port 443 for remote administration.  When forwarding port 443 to one of your local servers, remember to configure the External HTTPS port on the Administration page to a different value.",
                 is_custom : false
             },
             plugins: [enabledColumn],
@@ -224,6 +225,18 @@ Ung.Alpaca.Pages.Redirect.RowEditor = Ext.extend( Ung.Alpaca.RowEditor, {
                 minValue : 1,
                 maxValue : 0xFFFF,
                 width : 100
+            },{
+                xtype: "textarea",
+                hidden: true,
+                readOnly: true,
+                disabled: true,
+                editable : false,
+                preventScrollbars : true,
+                fieldLabel: this._("WARNING"),
+                name: "port_warning_message",
+                style: "background-color:yellow; background-image: none;",
+                dataIndex : "warning",
+                width: 360
             }]
         },{
             xtype : "fieldset",
@@ -332,7 +345,8 @@ Ung.Alpaca.Pages.Redirect.RowEditor = Ext.extend( Ung.Alpaca.RowEditor, {
                 advancedItems[c].setVisible( false );
             }
             
-            var values = record.data.filter.split("&&");
+        var values = record.data.filter.split("&&");
+
             for ( c = 0 ; c < values.length ; c++ ) {
                 var value = values[c].split("::");
                 switch (value[0]) {
@@ -398,6 +412,10 @@ Ung.Alpaca.Pages.Redirect.RowEditor = Ext.extend( Ung.Alpaca.RowEditor, {
     {
         var isVisible = record.data.value == -1;
         var port = this.find( "name", "simple_destination_port" )[0];
+
+        var warnflag = false;
+        if (record.data.value === 443) warnflag = true;
+        this.find( "name", "port_warning_message" )[0].setContainerVisible( warnflag );
 
         port.setContainerVisible( isVisible );
         if ( !isVisible ) {
@@ -617,3 +635,4 @@ Ung.Alpaca.Pages.Redirect.TroubleShoot = Ext.extend( Ext.Window, {
 
 Ung.Alpaca.Pages.Redirect.Index.settingsMethod = "/redirect/get_settings";
 Ung.Alpaca.Glue.registerPageRenderer( "redirect", "index", Ung.Alpaca.Pages.Redirect.Index );
+
