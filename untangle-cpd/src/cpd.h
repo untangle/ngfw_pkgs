@@ -22,7 +22,7 @@
 #include <netinet/ether.h>
 
 #define CPD_MAX_USERNAME_LENGTH  255
-#define CPD_MAX_CAPTURE_RULES 64
+#define CPD_MAX_CAPTURE_RULES 2048
 
 typedef struct
 {
