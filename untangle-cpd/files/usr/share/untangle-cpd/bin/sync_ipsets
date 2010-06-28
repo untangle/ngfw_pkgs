@@ -27,13 +27,13 @@ EOF
 ## no MAC Address, 1.2.3.4
 get_host_entries()
 {
-    psql -U postgres uvm -t -c "SELECT ipv4_addr,hw_addr FROM events.n_cpd_host_database_entry ORDER BY ipv4_addr" | sed -e 's| ||g' -e 's/|$//' -e 's/|/:/' -e '/^$/ d' | uniq
+    psql -U postgres uvm -t -c "SELECT ipv4_addr,hw_addr FROM events.n_cpd_host_database_entry ORDER BY ipv4_addr" | sed -e 's| ||g' -e 's/|$//' -e 's/|/:/' -e '/^$/ d' | uniq | sort
 }
 
 ## Get the actual entries from the IPSet
 get_ipset_entries()
 {
-    ipset -nL | awk "`awk_script`" | sort
+    ipset -nL | awk "`awk_script`" | uniq | sort
 }
 
 fix_entries_script()
