@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-kernel-modules-amd64
 Architecture: amd64
-Depends: e1000-module-2.6.26-1-untangle-amd64, e1000-module-2.6.26-2-untangle-amd64, e1000e-module-2.6.26-1-untangle-amd64, e1000e-module-2.6.26-2-untangle-amd64, igb-module-2.6.26-1-untangle-amd64, igb-module-2.6.26-2-untangle-amd64, ipset-modules-2.6.26-1-untangle-amd64, ipset-modules-2.6.26-2-untangle-amd64, niagara22xxed-module-2.6.26-1-untangle-amd64, niagara22xxed-module-2.6.26-2-untangle-amd64, tg3-module-2.6.26-1-untangle-amd64, tg3-module-2.6.26-2-untangle-amd64
+Depends: e1000-module-2.6.26-1-untangle-amd64, e1000-module-2.6.26-2-untangle-amd64, e1000e-module-2.6.26-1-untangle-amd64, e1000e-module-2.6.26-2-untangle-amd64, igb-module-2.6.26-1-untangle-amd64, igb-module-2.6.26-2-untangle-amd64, ipset-modules-2.6.26-1-untangle-amd64, ipset-modules-2.6.26-2-untangle-amd64, niagara22xxed-module-2.6.26-1-untangle-amd64, niagara22xxed-module-2.6.26-2-untangle-amd64, tg3-module-2.6.26-1-untangle-amd64, tg3-module-2.6.26-2-untangle-amd64, bnx2-module-2.6.26-1-untangle-amd64, bnx2-module-2.6.26-2-untangle-amd64
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle appliance internal
  The Untangle appliance internal-to-untangle mode.
