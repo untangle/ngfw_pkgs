@@ -3,6 +3,8 @@ Ext.ns('Ung.Alpaca');
 Ext.ns('Ung.Alpaca.Pages');
 Ext.ns('Ung.Alpaca.Pages.Redirect');
 
+var warnMessage = "By default the server uses HTTPS port 443 for remote administration.  When forwarding port 443 to one of your local servers, remember to configure the External HTTPS port on the Administration page to a different value.";
+
 if ( Ung.Alpaca.Glue.hasPageRenderer( "redirect", "index" )) {
     Ung.Alpaca.Util.stopLoading();
 }
@@ -70,7 +72,6 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 new_enc_id : "",
                 filter : "simple::true&&d-port::80&&d-local::true&&protocol::tcp",
                 description : "[New Entry]",
-                warning : "By default the server uses HTTPS port 443 for remote administration.  When forwarding port 443 to one of your local servers, remember to configure the External HTTPS port on the Administration page to a different value.",
                 is_custom : false
             },
             plugins: [enabledColumn],
@@ -225,18 +226,6 @@ Ung.Alpaca.Pages.Redirect.RowEditor = Ext.extend( Ung.Alpaca.RowEditor, {
                 minValue : 1,
                 maxValue : 0xFFFF,
                 width : 100
-            },{
-                xtype: "textarea",
-                hidden: true,
-                readOnly: true,
-                disabled: true,
-                editable : false,
-                preventScrollbars : true,
-                fieldLabel: this._("WARNING"),
-                name: "port_warning_message",
-                style: "background-color:yellow; background-image: none;",
-                dataIndex : "warning",
-                width: 360
             }]
         },{
             xtype : "fieldset",
@@ -413,13 +402,13 @@ Ung.Alpaca.Pages.Redirect.RowEditor = Ext.extend( Ung.Alpaca.RowEditor, {
         var isVisible = record.data.value == -1;
         var port = this.find( "name", "simple_destination_port" )[0];
 
-        var warnflag = false;
-        if (record.data.value === 443) warnflag = true;
-        this.find( "name", "port_warning_message" )[0].setContainerVisible( warnflag );
-
         port.setContainerVisible( isVisible );
         if ( !isVisible ) {
             port.setValue( record.data.value );
+        }
+
+        if (record.data.value === 443) {
+            Ext.Msg.alert( "Warning" , this._( warnMessage ) );
         }
     },
 
