@@ -150,7 +150,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                 xtype : "label",
                 cls : 'page-header-text',
                 html : this._( "Nat Policies" )
-            }, this.buildNatPolicyGrid( settings, "static_nat_policies" ), {
+            }, nat_grid = this.buildNatPolicyGrid( settings, "static_nat_policies" ), {
                 autoHeight : true,
                 defaults : {
                     xtype : "textfield",
@@ -433,6 +433,18 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
         /* Hide the WAN checkbox if necessary. */
         var hasWan = layout.activeItem.hasWan;
         this.isWanCheckbox.setContainerVisible( hasWan );
+
+        // When changing the type to static, clear the wan checkbox and
+        // add a default nat policy but only if the nat list is empty
+
+        var config_types = this.settings["config_types"];
+
+            if ( config_types[index] == "static" ) {
+                if (nat_grid.store.data.length == 0) {
+                    nat_grid.addEntry();
+                    this.isWanCheckbox.setValue( false );
+                }
+            }
 
         this.onCheckWan( this.isWanCheckox, hasWan && this.isWanCheckbox.getValue());
     },
