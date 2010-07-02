@@ -434,7 +434,7 @@ Ung.Alpaca.Pages.Redirect.RowEditor = Ext.extend( Ung.Alpaca.RowEditor, {
         }
 
         this.updateAction();
-        this.record.data.filter = this.record.data.filter.replace( "simple::true", "" );
+        this.record.data.filter = this.record.data.filter.replace( "simple::true&&", "" );
         this.grid.editEntry( this.record );
     }
 });
