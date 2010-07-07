@@ -26,7 +26,7 @@ abort() {
 echo <<EOF
 The server has failed to properly detect the video & monitor settings. 
 
-Try restarting the server and selecting "Video Safe Mode" from the boot menu.
+Try restarting the server and selecting a differnt video-mode boot option from the boot menu.
 
 EOF
 }
