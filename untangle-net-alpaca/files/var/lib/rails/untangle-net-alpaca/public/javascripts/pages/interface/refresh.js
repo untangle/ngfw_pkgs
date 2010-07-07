@@ -101,7 +101,7 @@ Ung.Alpaca.Pages.Interface.Refresh = Ext.extend( Ung.Alpaca.PagePanel, {
             items = [{
                 xtype : "label",
                 cls : 'ua-message-warning',                    
-                html : String.format( this._( "{0}A change in your physical interfaces has been detected, Click {1}Apply{2} to commit the changes.{3}" ), "<p>","<b>","</b>","</p>" )
+                html : String.format( this._( "{0}A change in your physical interfaces has been detected, Click {1}OK{2} to save the changes.{3}" ), "<p>","<b>","</b>","</p>" )
             }].concat( items );
 
             this.enableSave = true;
