@@ -12,5 +12,5 @@ Depends: dhcp3-client, untangle-net-alpaca
 Conflicts: pump, pump-mv
 Provides: pump-mv
 Replaces: pump-mv
-Description: The Untangle pump config
- The Untangle pump custom config.
+Description: The Untangle DHCP Config
+ The Untangle DHCP Configurator.
