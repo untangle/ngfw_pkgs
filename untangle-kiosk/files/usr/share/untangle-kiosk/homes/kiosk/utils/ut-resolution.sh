@@ -1,5 +1,8 @@
 #! /bin/sh
 
+# Force English US locale for GTK bug
+LANG="en_US"
+
 # choose new resolution from an ordered list, and bail out if
 # something somehow went wrong
 if ! gvidm -r $(xrandr | awk '/^ / {print $1}' | sort -rn) ; then
