@@ -1,7 +1,7 @@
 #! /bin/bash
 
 #Force US English Locale due to Xdialog/GTK font bug.
-LANG="us_EN"
+LANG="en_US"
 XTERM="urxvt"
 DIALOG="Xdialog"
 COMMON_OPTS="--left"
