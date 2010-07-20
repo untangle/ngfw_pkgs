@@ -164,4 +164,7 @@ EOF
     chown root:root /etc/hosts.allow
 fi
 
+# enable bootlogd
+perl -i -pe 's/^BOOTLOGD_ENABLE=.*/BOOTLOGD_ENABLE=Yes/' /etc/default/bootlogd
+
 exit 0
