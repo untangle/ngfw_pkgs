@@ -26,7 +26,10 @@ fi
 touch /tmp/update-sa-update.ran
 
 # restart spamassassin if needed
-[ $needToRestart = "true" ] && /etc/init.d/spamassassin restart &> /dev/null &
+if [ $needToRestart = "true" ] ; then
+  /etc/init.d/spamassassin restart &> /dev/null &
+  sa-compile
+fi
 
 # sa-update exits with a status to tell us if an update happened.
 # don't pass this up to cron.
