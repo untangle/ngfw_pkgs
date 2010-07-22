@@ -15,12 +15,12 @@ if sudo grep -qE '^root:(\*|YKN4WuGxhHpIw|$1$3kRMklXp$W/hDwKvL8GFi5Vdo3jtKC\.|CH
   tempfile=`tempfile 2>/dev/null` || tempfile=/tmp/test$$
   trap "rm -f $tempfile" 0 1 2 5 15  
   # set the password for the first time
-  $DIALOG $COMMON_OPTS --password --password --title "Set a password" --2inputsbox "Since this is the first time you are logging into the terminal, you will
-need to set a password for the super-user (root) account.\n\n
-You need to enter the same password twice to set the new password.\n
+  $DIALOG $COMMON_OPTS --stdout --password --password --title "Set a password" --2inputsbox "This is the first time accessing the terminal on this system. A password
+needs to be set for the super-user (root) account.\n\n
+Enter the same password twice to set the new password.\n
 \n
 Please choose a password that is not easily guessed, especially if you\n
-have already, or plan on enabling ssh access to the system.\n" 0 0 "New Password" "" "Confirm Password" "" 2> $tempfile
+plan on enabling ssh access to the system.\n" 0 0 "New Password" "" "Confirm Password" "" > $tempfile
   case $? in
     0)
       #Ok pressed
@@ -56,7 +56,7 @@ have already, or plan on enabling ssh access to the system.\n" 0 0 "New Password
     $DIALOG $COMMON_OPTS --title "Password set failed" --msgbox "You did not enter the same password twice." 0 0
     exit
   else
-    sudo usermod -p `echo $password1 | openssl passwd -crypt -stdin -salt '$1'` root
+    sudo usermod -p `echo $password1 | openssl passwd -1 -stdin` root
   fi
 fi
 $DIALOG $COMMON_OPTS --title "Shell Use Warning" --msgbox "You will be prompted to enter the super-user password to proceed.\n
