@@ -489,12 +489,15 @@ EOF
       
       ## Insert the commands to filter traffic
       text << filtering( interface )
-      
-      ## Insert the commands to handle NAT
-      if ( alpaca_settings.classy_nat_mode )
-        a, b = classy_nat( wan_interfaces, interface, nat_automatic_target )
-      else
-        a, b = nat( wan_interfaces, interface, nat_automatic_target )
+
+      ## If the interface is not a WAN itself (WAN interfaces don't have NAT policies)
+      if ( !interface.wan ) 
+        ## Insert the commands to handle NAT
+          if ( alpaca_settings.classy_nat_mode )
+            a, b = classy_nat( wan_interfaces, interface, nat_automatic_target )
+          else
+            a, b = nat( wan_interfaces, interface, nat_automatic_target )
+          end
       end
       text << a
       fw_text << b 
