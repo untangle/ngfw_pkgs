@@ -34,6 +34,10 @@ class Alpaca::Migration < ActiveRecord::Migration
     add_sample_rule( QosRule, attributes )
   end
 
+  def self.add_qos_class( attributes = {} )
+    QosClass.new(attributes).save
+  end
+
   def self.add_sample_rule( klazz, attributes )
     @@positions = {} if @@positions.nil?
     

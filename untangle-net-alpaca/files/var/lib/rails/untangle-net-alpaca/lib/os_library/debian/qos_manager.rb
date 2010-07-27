@@ -30,14 +30,14 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
   QoSStartLog = "/var/log/untangle-net-alpaca/qosstart.log"
   QoSRRDLog = "/var/log/untangle-net-alpaca/qosrrd.log"
 
-  QoSConfig = "/etc/untangle-net-alpaca/untangle-qos"
+  QoSConfig = "/etc/untangle-net-alpaca/qos-config"
   QoSRules = "/etc/untangle-net-alpaca/tc-rules.d"
   PriorityMap = { 10 => "HIGHPRIO", 20 => "MIDPRIO", 30 => "LOWPRIO" }
   PriorityFiles = { "SYSTEM" => QoSRules + "/900-system-priority",
                     "HIGHPRIO" => QoSRules + "/100-high-priority",
                     "MIDPRIO"  => QoSRules + "/200-mid-priority",
                     "LOWPRIO"  => QoSRules + "/300-low-priority" }
-  Service = "/etc/untangle-net-alpaca/wshaper.htb"
+  Service = "/etc/untangle-net-alpaca/qos-service"
   AptLog = "/var/log/uvm/apt.log"
   PriorityQueueToName = { "30:" => "Low", "20:" => "Normal", "10:" => "High", "1:" => "Root" }
 
@@ -50,11 +50,16 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
   #packet filter iptables integration
   QoSPacketFilterFile = "#{OSLibrary::Debian::PacketFilterManager::ConfigDirectory}/800-qos"
   ## Mark QoS priority buckets
-  MarkQoSHigh  = 0x00C00000
-  MarkQoSNormal= 0x00400000
-  MarkQoSLow   = 0x00200000
-  MarkQoSMask  = 0x00E00000
-  MarkQoSInverseMask  = 0xFF1FFFFF
+  MarkQoSClass   = [0x00000000,
+                    0x00100000,
+                    0x00200000,
+                    0x00300000,
+                    0x00400000,
+                    0x00500000,
+                    0x00600000,
+                    0x00700000]
+  MarkQoSMask  = 0x00700000
+  MarkQoSInverseMask  = 0xFF8FFFFF
 
 
   def status
@@ -189,32 +194,25 @@ EOF
 
     wan_interfaces = Interface.wan_interfaces
 
+    qos_classes = QosClass.find( :all )
+
     settings = header
     settings << <<EOF
+
+# global parameters
 QOS_ENABLED=#{qos_enabled}
 UPLINKS="#{wan_interfaces.map { |i| i.os_name }.join( " " )}"
-
-get_pppoe_name()
-{
-   local t_script
-   local t_pppoe_name
-
-   t_script=/usr/share/untangle-net-alpaca/scripts/get_pppoe_name
-   if [ -x "${t_script}" ]; then
-     t_pppoe_name=`${t_script} $1`
-     if [ "${t_pppoe_name}" = "ppp.${1}" ] ; then
-       t_pppoe_name=$1
-     fi
-     
-     echo $t_pppoe_name
-   else
-     echo "ppp0"
-   fi
-}
+DEFAULT_CLASS=#{qos_settings.default_class}
 EOF
 
-    wan_interfaces.each do |i|
-      build_interface_config( i, qos_settings, settings, tc_rules_files )
+    wan_interfaces.each do |intf|
+      build_interface_config( intf, qos_settings, settings, tc_rules_files )
+    end
+
+    wan_interfaces.each do |intf|
+      qos_classes.each do |clazz|
+        build_class_config( clazz, intf, qos_settings, settings, tc_rules_files )
+      end
     end
 
     rules = QosRule.find( :all, :conditions => [ "enabled='t'" ] )
@@ -362,27 +360,42 @@ EOF
   end
 
   private
+  def build_class_config( clazz, interface, qos_settings, text, tc_rules_files )
+    os_name = interface.os_name
+
+    download_limit = (clazz.download_limit/100.0 * interface.download_bandwidth * qos_settings.scaling_factor/100.0).round
+    upload_limit = (clazz.upload_limit/100.0 * interface.upload_bandwidth * qos_settings.scaling_factor/100.0).round
+    upload_reserved = (clazz.upload_reserved/100.0 * interface.upload_bandwidth  * qos_settings.scaling_factor/100.0).round
+
+    # 0 has special meaning (means "no limit" or "no reservation")
+    download_limit = "none" if clazz.download_limit == 0
+    upload_limit = "none" if clazz.upload_limit == 0
+    upload_reserved = "none" if clazz.upload_reserved == 0
+
+    if clazz.class_id == 0 then
+      text << "\n# class/priority parameters\n"
+    end
+
+    text << <<EOF
+#{os_name}_CLASS#{clazz.class_id}_DOWNLOAD_LIMIT=#{download_limit}
+#{os_name}_CLASS#{clazz.class_id}_UPLOAD_LIMIT=#{upload_limit}
+#{os_name}_CLASS#{clazz.class_id}_UPLOAD_RESERVED=#{upload_reserved}
+EOF
+  end
+
+  private
   def build_interface_config( interface, qos_settings, text, tc_rules_files )
     os_name = interface.os_name
     dev = os_name
 
-    ## For PPPoE the interface name must be calculated dynamically.
-    if interface.current_config.is_a?( IntfPppoe )
-      pppoe_name="PPPOE_INTERFACE_#{interface.os_name.downcase}"
-      text << <<EOF
-#{pppoe_name}=`get_pppoe_name #{interface.os_name}`
-export #{pppoe_name}
-EOF
-      
-      dev = "${#{pppoe_name}}"
-    end
+    # FIXME
+    # handle PPPoE
 
     text << <<EOF
-#{os_name}_DOWNLOAD=#{interface.download_bandwidth * qos_settings.download_percentage/100}
-#{os_name}_UPLOAD=#{interface.upload_bandwidth * qos_settings.upload_percentage/100}
 
-export #{os_name}_DOWNLOAD
-export #{os_name}_UPLOAD
+# ${os_name} parameters
+## #{os_name}_DOWNLOAD_BANDWIDTH=#{interface.download_bandwidth}
+## #{os_name}_UPLOAD_BANDWIDTH=#{interface.upload_bandwidth}
 EOF
 
     if ! qos_settings.prioritize_ping.nil? and qos_settings.prioritize_ping > 0
@@ -438,9 +451,9 @@ EOF
       wan_interfaces.each do |interface|
         os_name = interface.os_name
 
-        if interface.current_config.is_a?( IntfPppoe )
-          os_name="${PPPOE_INTERFACE_#{interface.os_name.downcase}}"
-        end
+        #if interface.current_config.is_a?( IntfPppoe )
+        #  os_name="${PPPOE_INTERFACE_#{interface.os_name.downcase}}"
+        #end
 
         protocol_filter.each do |protocol_filter|
           tc_rules_files[priority] << "tc filter add dev #{os_name} parent 1: protocol ip prio #{rule.priority} u32 #{protocol_filter} #{filter} flowid 1:#{rule.priority}\n"

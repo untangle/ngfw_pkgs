@@ -13,21 +13,26 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         this.priorityStore = [];
         this.priorityMap = {};
 
-        Ung.Alpaca.Util.addToStoreMap( 10, this._( "High" ), this.priorityStore, this.priorityMap );
-        Ung.Alpaca.Util.addToStoreMap( 20, this._( "Normal" ), this.priorityStore, this.priorityMap );
-        Ung.Alpaca.Util.addToStoreMap( 30, this._( "Low" ), this.priorityStore, this.priorityMap );
+        Ung.Alpaca.Util.addToStoreMap( 0, this._( "Very High" ), this.priorityStore, this.priorityMap );
+        Ung.Alpaca.Util.addToStoreMap( 1, this._( "High" ), this.priorityStore, this.priorityMap );
+        Ung.Alpaca.Util.addToStoreMap( 2, this._( "Medium" ), this.priorityStore, this.priorityMap );
+        Ung.Alpaca.Util.addToStoreMap( 3, this._( "Low" ), this.priorityStore, this.priorityMap );
+        Ung.Alpaca.Util.addToStoreMap( 4, this._( "Very Low" ), this.priorityStore, this.priorityMap );
+        Ung.Alpaca.Util.addToStoreMap( 5, this._( "Limited" ), this.priorityStore, this.priorityMap );
+        Ung.Alpaca.Util.addToStoreMap( 6, this._( "Limited More" ), this.priorityStore, this.priorityMap );
+        Ung.Alpaca.Util.addToStoreMap( 7, this._( "Limited Severely" ), this.priorityStore, this.priorityMap );
 
-        this.qosGrid = this.buildQosGrid();
+        this.ruleGrid = this.buildRuleGrid();
 
-        if ( Ung.Alpaca.isAdvanced ) {
-            this.bandwidthLabel = new Ext.form.Label({
+        this.classGrid = this.buildClassGrid();
+
+        this.bandwidthLabel = new Ext.form.Label({
                 xtype : "label",
-                html : this._( "Uplink Bandwidth" ),
+                html : this._( "WAN Bandwidth" ),
                 cls: 'label-section-heading-2'                
             });
 
-            this.bandwidthGrid = this.buildBandwidthGrid();
-        }
+        this.bandwidthGrid = this.buildBandwidthGrid();
 
         this.statisticsGrid = this.buildStatisticsGrid();
                 
@@ -39,40 +44,23 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             name : "qos_settings.enabled"
         }]
 
-        if ( !Ung.Alpaca.isAdvanced ) {
-            fieldsetItems = fieldsetItems.concat([{
-                xtype : "numberfield",
-                fieldLabel : this._( "Download Bandwidth" ),
-                name : "bandwidth.0.download_bandwidth",
-                boxLabel : this._( "kbps" )
-            }]);
-        }
-        
         fieldsetItems = fieldsetItems.concat([{
             xtype : "combo",
-            fieldLabel : this._( "Limit Download To" ),
-            name : "qos_settings.download_percentage",
+            fieldLabel : this._( "Default Priority" ),
+            name : "qos_settings.default_class",
             mode : "local",
             triggerAction : "all",
             editable : false,
-            width : 60,
-            listWidth : 50,
-            store : percentageStore
+            width : 140,
+            listWidth : 110,
+            store : this.priorityStore,
         }]);
 
-        if ( !Ung.Alpaca.isAdvanced ) {
-            fieldsetItems = fieldsetItems.concat([{
-                xtype : "numberfield",
-                fieldLabel : this._( "Upload Bandwidth" ),
-                name : "bandwidth.0.upload_bandwidth",
-                boxLabel : this._( "kbps" )
-            }]);
-        }
-        
         fieldsetItems = fieldsetItems.concat([{
             xtype : "combo",
-            fieldLabel : this._( "Limit Upload To" ),
-            name : "qos_settings.upload_percentage",
+            fieldLabel : this._( "Scaling Factor" ),
+	    boxLabel : this._( "What is this? Click Help for more information." ),
+            name : "qos_settings.scaling_factor",
             mode : "local",
             triggerAction : "all",
             editable : false,
@@ -93,59 +81,64 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             },
             items : fieldsetItems
         }];
-        
-        items = items.concat([{
-            autoHeight : true,
-            defaults : {
-                xtype : "textfield",
-                itemCls : 'label-width-2'
-            },
-            items : [{
-                xtype : "combo",
-                fieldLabel : this._( "Ping Priority" ),
-                name : "qos_settings.prioritize_ping",
-                mode : "local",
-                triggerAction : "all",
-                editable : false,
-                width : 70,
-                listWidth : 60,
-                store : this.priorityStore
-            },{
-                xtype : "combo",
-                fieldLabel : this._( "ACK Priority" ),
-                boxLabel : this._( "A High ACK Priority speeds up downloads while uploading" ),
-                name : "qos_settings.prioritize_ack",
-                mode : "local",
-                triggerAction : "all",
-                editable : false,
-                width : 70,
-                listWidth : 60,
-                store : this.priorityStore
-            },{
-                xtype : "combo",
-                fieldLabel : this._( "Gaming Priority" ),
-                name : "qos_settings.prioritize_gaming",
-                mode : "local",
-                triggerAction : "all",
-                editable : false,
-                width : 70,
-                listWidth : 60,
-                store : this.priorityStore
-            }]
-        }]);
 
-        if ( Ung.Alpaca.isAdvanced ) {                                                  
-            items = items.concat([
-                this.bandwidthLabel, 
-                this.bandwidthGrid 
-            ]);
-        }
+        items = items.concat([
+            this.bandwidthLabel, 
+            this.bandwidthGrid ,
+        ]);
         
         items = items.concat([{
             xtype : "label",
             html : this._( "QoS Rules" ),
             cls: 'label-section-heading-2'                                
-        }, this.qosGrid ]);
+        },{
+	    xtype : "combo",
+	    fieldLabel : this._( "Ping Priority" ),
+	    name : "qos_settings.prioritize_ping",
+	    mode : "local",
+	    triggerAction : "all",
+	    editable : false,
+	    width : 140,
+	    listWidth : 110,
+	    store : this.priorityStore
+	},{
+	    xtype : "combo",
+	    fieldLabel : this._( "ACK Priority" ),
+	    boxLabel : this._( "A High ACK Priority speeds up downloads while uploading" ),
+	    name : "qos_settings.prioritize_ack",
+	    mode : "local",
+	    triggerAction : "all",
+	    editable : false,
+	    width : 140,
+	    listWidth : 110,
+	    store : this.priorityStore
+	},{
+	    xtype : "combo",
+	    fieldLabel : this._( "Gaming Priority" ),
+	    boxLabel : this._( "Priority for Wii,Xbox,Playstation,etc traffic" ),
+	    name : "qos_settings.prioritize_gaming",
+	    mode : "local",
+	    triggerAction : "all",
+	    editable : false,
+	    width : 140,
+	    listWidth : 110,
+	    store : this.priorityStore
+	},{
+            xtype : "label",
+            html : this._( "QoS Custom Rules" ),
+            cls: 'label-section-heading-2'                                
+        },{
+            xtype : "label",
+            html : this._( "<font color=\"red\">Note</font>: Custom Rules only match <b>Bypassed</b> traffic." ),
+            cls: 'label-text'                                
+        }, this.ruleGrid]);
+
+        items = items.concat([{
+            xtype : "label",
+            html : this._( "QoS Priorities" ),
+            cls: 'label-section-heading-2'                                
+        }, this.classGrid ]);
+
                 
         items = items.concat([{
             xtype : "label",
@@ -168,16 +161,19 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         var percentageStore = [];
         percentageStore.push([ 100, "100%"]);
         percentageStore.push([ 95, "95%"]);
-
-        for ( var c = 0 ; c < 9 ; c++ ) {
-            var v = 100 - ( 10 * ( c + 1 ));
-            percentageStore[c+2] = [ v, v + "%"  ];
-        }
+        percentageStore.push([ 90, "90%"]);
+        percentageStore.push([ 85, "85%"]);
+        percentageStore.push([ 80, "80%"]);
+        percentageStore.push([ 75, "75%"]);
+        //for ( var c = 0 ; c < 9 ; c++ ) {
+        //    var v = 100 - ( 10 * ( c + 1 ));
+        //    percentageStore[c+2] = [ v, v + "%"  ];
+        //}
 
         return percentageStore;
     },
 
-    buildQosGrid : function()
+    buildRuleGrid : function()
     {
         var enabledColumn = new Ung.Alpaca.grid.CheckColumn({
             header : this._( "On" ),
@@ -226,7 +222,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             }]
         };
 
-        var qosGrid = new Ung.Alpaca.EditorGridPanel({
+        var ruleGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
 
             recordFields : [ "id", "enabled", "description", "filter", "priority" ],
@@ -276,9 +272,9 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             }]
         });
 
-        qosGrid.store.load();
+        ruleGrid.store.load();
         
-        return qosGrid;
+        return ruleGrid;
     },
 
     buildBandwidthGrid : function()
@@ -286,8 +282,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         var bandwidthGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
             height : 100,
-            recordFields : [ "name", "config_type", "os_name", "mac_address",
-                             "index", "id", "upload_bandwidth", "download_bandwidth" ],
+            recordFields : [ "name", "config_type", "os_name", "mac_address", "index", "id", "upload_bandwidth", "download_bandwidth" ],
             selectable : false,
             sortable : false,
             hasReorder: false,
@@ -297,7 +292,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             name : "bandwidth",
                         
             columns : [{
-                header : this._( "Name" ),
+                header : this._( "WAN" ),
                 width: 80,
                 sortable: false,
                 fixed : true,
@@ -339,6 +334,77 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
         return bandwidthGrid;
     },
+
+    buildClassGrid : function()
+    {
+        var classGrid = new Ung.Alpaca.EditorGridPanel({
+            settings : this.settings,
+            height : 200,
+            recordFields : [ "class_id", "upload_reserved", "upload_limit", "download_limit" ],
+            selectable : false,
+            sortable : false,
+            hasReorder: false,
+            hasEdit : false,
+            tbar : [],
+            
+            name : "qos_classes",
+            
+            columns : [{
+                header : this._( "Priority" ),
+                width: 200,
+                sortable: false,
+                fixed : true,
+                dataIndex : "class_id",
+                renderer : function( value, metadata, record )
+                {
+                    return this.priorityMap[value];
+                }.createDelegate( this ),
+            },{
+                header : this._( "Upload Reservation" ),
+                width: 40,
+                dataIndex : "upload_reserved",
+                editor : new Ext.form.NumberField({
+                    allowBlank : false 
+                }),
+                renderer : function( value, metadata, record ) { 
+		    if (value == 0) 
+			return this._("No reservation"); 
+		    else 
+			return value + "%";
+		}.createDelegate( this )
+            },{
+                header : this._( "Upload Limit" ),
+                width: 40,
+                dataIndex : "upload_limit",
+                editor : new Ext.form.NumberField({
+                    allowBlank : false 
+                }),
+                renderer : function( value, metadata, record ) { 
+		    if (value == 0) 
+			return this._("No limit"); 
+		    else 
+			return value + "%";
+		}.createDelegate( this )
+            },{
+                header : this._( "Download Limit" ),
+                width: 40,
+                dataIndex : "download_limit",
+                editor : new Ext.form.NumberField({
+                    allowBlank : false 
+                }),
+                renderer : function( value, metadata, record ) { 
+		    if (value == 0) 
+			return this._("No limit"); 
+		    else 
+			return value + "%";
+		}.createDelegate( this )
+            }]
+        });
+
+        classGrid.store.load();
+        
+        return classGrid;
+     },
 
     buildStatisticsGrid : function()
     {
@@ -463,9 +529,12 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             d += items[c].data.download_bandwidth;
         }
 
-        var message = String.format( this._( "Uplink Bandwidth ({0} kbps download, {1} kbps upload)" ),
-                                     d, u );
-        this.bandwidthLabel.setText( message );
+	var d_Mbit = d/1000;
+	var u_Mbit = u/1000;
+
+        var message = String.format( this._( "WAN Bandwidth &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Total: {0} kbps ({1} Mbit) download, {2} kbps ({3} Mbit) upload</i>" ), d, d_Mbit, u, u_Mbit );
+	this.bandwidthLabel.html = message;
+        //this.bandwidthLabel.setText( message );
     }
 });
 

@@ -26,6 +26,20 @@ class QosController < ApplicationController
     settings["bandwidth"] = wan_interfaces
     
     settings["qos_rules"] = QosRule.find( :all )
+
+    qos_classes = QosClass.find( :first )
+    if qos_classes.nil?
+      QosClass.new( :class_id => 0, :upload_reserved => 80, :upload_limit => 100, :download_limit =>   0 ).save
+      QosClass.new( :class_id => 1, :upload_reserved => 10, :upload_limit => 100, :download_limit => 100 ).save
+      QosClass.new( :class_id => 2, :upload_reserved =>  5, :upload_limit => 100, :download_limit => 100 ).save
+      QosClass.new( :class_id => 3, :upload_reserved =>  1, :upload_limit => 100, :download_limit => 100 ).save
+      QosClass.new( :class_id => 4, :upload_reserved =>  1, :upload_limit => 100, :download_limit => 100 ).save
+      QosClass.new( :class_id => 5, :upload_reserved =>  1, :upload_limit =>  75, :download_limit =>  75 ).save
+      QosClass.new( :class_id => 6, :upload_reserved =>  1, :upload_limit =>  50, :download_limit =>  50 ).save
+      QosClass.new( :class_id => 7, :upload_reserved =>  1, :upload_limit =>  10, :download_limit =>  10 ).save
+    end
+    settings["qos_classes"] = QosClass.find( :all )
+
     settings["status"] = os["qos_manager"].status_v2( wan_interfaces )
     settings["start_time"] = os["qos_manager"].start_time
 
@@ -70,6 +84,11 @@ class QosController < ApplicationController
       qos_rule.position = position
       position += 1
       qos_rule.save
+    end
+
+    QosClass.destroy_all
+    s["qos_classes"].each do |entry| 
+      QosClass.new( entry ).save
     end
 
     os["packet_filter_manager"].commit

@@ -66,9 +66,14 @@ class OSLibrary::Null::QosManager < OSLibrary::QosManager
     ## Just a bunch of random data
     Interface.wan_interfaces.map do |i|
       interface_name = i.name
+      results << QosStatus.new( interface_name, "very high", rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ))
       results << QosStatus.new( interface_name, "high", rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ))
       results << QosStatus.new( interface_name, "medium", rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ))
       results << QosStatus.new( interface_name, "low", rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ))
+      results << QosStatus.new( interface_name, "very low", rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ))
+      results << QosStatus.new( interface_name, "limited", rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ))
+      results << QosStatus.new( interface_name, "limited more", rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ))
+      results << QosStatus.new( interface_name, "limited severely", rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ), rand( 0xFFFF ))
     end
 
     results

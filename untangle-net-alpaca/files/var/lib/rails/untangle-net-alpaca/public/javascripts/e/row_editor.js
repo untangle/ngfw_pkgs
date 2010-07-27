@@ -184,7 +184,7 @@ Ung.Alpaca.RowEditor = Ext.extend(Ext.Window, {
         this.name = "row_editor";
       }
 
-      var url = "http://www.untangle.com/docs/get.php?version=6.2&source="+this.name+"&lang=en";
+      var url = "http://www.untangle.com/docs/get.php?source="+this.name+"&lang=en";
       window.open(url);
     },
     onFieldChange : function()
