@@ -272,7 +272,7 @@ local function add_capture_rules( commands, accept_https )
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd-capture -m state --state ESTABLISHED,RELATED -j RETURN"
       
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd-capture -j ULOG --ulog-nlgroup 1 --ulog-cprange 80 --ulog-prefix cpd-block"
-   commands[#commands+1] = "iptables -t mangle -A untangle-cpd-capture -j MARK --set-mark  0x00100000/0x08100000"
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd-capture -j MARK --set-mark  0x00800000/0x08800000"
 
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd-capture -p udp --destination-port 53 -j RETURN"
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd-capture ! -p tcp -j DROP"
@@ -286,8 +286,8 @@ local function add_capture_rules( commands, accept_https )
 end
 
 local function add_authorize_rules( commands )
-   commands[#commands+1] = "iptables -t mangle -A untangle-cpd-authorize -m connmark --mark 0x00100000/0x00100000 -j RETURN"
-   commands[#commands+1] = "iptables -t mangle -A untangle-cpd-authorize -j CONNMARK --set-xmark 0x00100000/0x00100000"
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd-authorize -m connmark --mark 0x00800000/0x00800000 -j RETURN"
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd-authorize -j CONNMARK --set-xmark 0x00800000/0x00800000"
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd-authorize -j ULOG --ulog-nlgroup 1 --ulog-cprange 80 -m conntrack --ctstate NEW --ulog-prefix cpd-authorized"
 end
 
@@ -344,7 +344,7 @@ if ( cpd_config["enabled"] == true ) then
    
    -- Defaulting capture_bypassed to false.
    if ( not cpd_config["capture_bypassed_traffic"] ) then
-      commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m mark --mark 0x1000000/0x1000000 -j RETURN"
+      commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m mark --mark 0x8000000/0x8000000 -j RETURN"
    end
 
    -- Ignore Traffic that is going to be blocked in the forward chain (it will get dealt with anyway)
@@ -375,22 +375,22 @@ if ( cpd_config["enabled"] == true ) then
    add_authorize_rules(commands)
 end
 
-replace_rule( commands, "nat", "PREROUTING", "-m mark --mark 0x00100000/0x00100000 -p udp --destination-port 53 -j REDIRECT --to-ports 53", 1, is_enabled )
+replace_rule( commands, "nat", "PREROUTING", "-m mark --mark 0x00800000/0x00800000 -p udp --destination-port 53 -j REDIRECT --to-ports 53", 1, is_enabled )
 
-replace_rule( commands, "nat", "PREROUTING", "-m mark --mark 0x00100000/0x00100000 -p tcp --destination-port 80 -j REDIRECT --to-ports 64158", 1, is_enabled )
+replace_rule( commands, "nat", "PREROUTING", "-m mark --mark 0x00800000/0x00800000 -p tcp --destination-port 80 -j REDIRECT --to-ports 64158", 1, is_enabled )
 
-replace_rule( commands, "nat", "PREROUTING", "-m mark --mark 0x00100000/0x00100000 -p tcp --destination-port 443 -j REDIRECT --to-ports 64159", 1, is_enabled and redirect_https_enabled )
+replace_rule( commands, "nat", "PREROUTING", "-m mark --mark 0x00800000/0x00800000 -p tcp --destination-port 443 -j REDIRECT --to-ports 64159", 1, is_enabled and redirect_https_enabled )
 
 -- The following 4 rules are used to drop packets for non-tcp sessions
 -- that exist on expired logins.  Two rules are used to reset TCP
 -- sessions that exist on expired logins.
-replace_rule( commands, "filter", "INPUT", "-m connmark --mark 0x100000/0x100000 -m set --set cpd-ipv4-expired src -m comment --comment 'cpd reset expired session 8571.cd03.d396' -j DROP", 1, is_enabled )
+replace_rule( commands, "filter", "INPUT", "-m connmark --mark 0x800000/0x800000 -m set --set cpd-ipv4-expired src -m comment --comment 'cpd reset expired session 8571.cd03.d396' -j DROP", 1, is_enabled )
 
-replace_rule( commands, "filter", "INPUT", "-m connmark --mark 0x100000/0x100000 -m set --set cpd-ipv4-expired src -p tcp --tcp-flags FIN,RST NONE -m comment --comment 'cpd reset expired session bf36.ac38.61ee' -j REJECT --reject-with tcp-reset", 1, is_enabled )
+replace_rule( commands, "filter", "INPUT", "-m connmark --mark 0x800000/0x800000 -m set --set cpd-ipv4-expired src -p tcp --tcp-flags FIN,RST NONE -m comment --comment 'cpd reset expired session bf36.ac38.61ee' -j REJECT --reject-with tcp-reset", 1, is_enabled )
 
-replace_rule( commands, "filter", "FORWARD", "-m connmark --mark 0x100000/0x100000 -m set --set cpd-ipv4-expired src -m comment --comment 'cpd reset expired session 752c.fd28.7f23' -j DROP", 1, is_enabled )
+replace_rule( commands, "filter", "FORWARD", "-m connmark --mark 0x800000/0x800000 -m set --set cpd-ipv4-expired src -m comment --comment 'cpd reset expired session 752c.fd28.7f23' -j DROP", 1, is_enabled )
 
-replace_rule( commands, "filter", "FORWARD", "-m connmark --mark 0x100000/0x100000 -m set --set cpd-ipv4-expired src -p tcp --tcp-flags FIN,RST NONE -m comment --comment 'cpd reset expired session 6bbd.ade2.1ea1' -j REJECT", 1, is_enabled )
+replace_rule( commands, "filter", "FORWARD", "-m connmark --mark 0x800000/0x800000 -m set --set cpd-ipv4-expired src -p tcp --tcp-flags FIN,RST NONE -m comment --comment 'cpd reset expired session 6bbd.ade2.1ea1' -j REJECT", 1, is_enabled )
 
 
 table.foreach( commands, function( a, b ) os.execute( b ) end )

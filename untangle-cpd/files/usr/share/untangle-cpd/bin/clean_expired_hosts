@@ -30,7 +30,7 @@ ip_conntrack_awk_script()
 /ESTABLISHED/ { 
   mark=$0 ; sub( ".* mark=", "", mark ); sub( " .*" , "", mark ) 
   src=$0 ; sub( "^.*ESTABLISHED src=", "", src ); sub( " .*" , "", src )
-  if ( and( mark, 0x100000 )) { print src }
+  if ( and( mark, 0x800000 )) { print src }
 }
 EOF
 }

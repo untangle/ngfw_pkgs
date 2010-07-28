@@ -13,14 +13,25 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         this.priorityStore = [];
         this.priorityMap = {};
 
-        Ung.Alpaca.Util.addToStoreMap( 0, this._( "Very High" ), this.priorityStore, this.priorityMap );
-        Ung.Alpaca.Util.addToStoreMap( 1, this._( "High" ), this.priorityStore, this.priorityMap );
-        Ung.Alpaca.Util.addToStoreMap( 2, this._( "Medium" ), this.priorityStore, this.priorityMap );
-        Ung.Alpaca.Util.addToStoreMap( 3, this._( "Low" ), this.priorityStore, this.priorityMap );
-        Ung.Alpaca.Util.addToStoreMap( 4, this._( "Very Low" ), this.priorityStore, this.priorityMap );
+        this.priorityNoDefaultStore = [];
+        this.priorityNoDefaultMap = {};
+
+        Ung.Alpaca.Util.addToStoreMap( 0, this._( "Default" ), this.priorityStore, this.priorityMap );
+        Ung.Alpaca.Util.addToStoreMap( 1, this._( "Very High" ), this.priorityStore, this.priorityMap );
+        Ung.Alpaca.Util.addToStoreMap( 2, this._( "High" ), this.priorityStore, this.priorityMap );
+        Ung.Alpaca.Util.addToStoreMap( 3, this._( "Medium" ), this.priorityStore, this.priorityMap );
+        Ung.Alpaca.Util.addToStoreMap( 4, this._( "Low" ), this.priorityStore, this.priorityMap );
         Ung.Alpaca.Util.addToStoreMap( 5, this._( "Limited" ), this.priorityStore, this.priorityMap );
         Ung.Alpaca.Util.addToStoreMap( 6, this._( "Limited More" ), this.priorityStore, this.priorityMap );
         Ung.Alpaca.Util.addToStoreMap( 7, this._( "Limited Severely" ), this.priorityStore, this.priorityMap );
+
+        Ung.Alpaca.Util.addToStoreMap( 1, this._( "Very High" ), this.priorityNoDefaultStore, this.priorityNoDefaultMap );
+        Ung.Alpaca.Util.addToStoreMap( 2, this._( "High" ), this.priorityNoDefaultStore, this.priorityNoDefaultMap );
+        Ung.Alpaca.Util.addToStoreMap( 3, this._( "Medium" ), this.priorityNoDefaultStore, this.priorityNoDefaultMap );
+        Ung.Alpaca.Util.addToStoreMap( 4, this._( "Low" ), this.priorityNoDefaultStore, this.priorityNoDefaultMap );
+        Ung.Alpaca.Util.addToStoreMap( 5, this._( "Limited" ), this.priorityNoDefaultStore, this.priorityNoDefaultMap );
+        Ung.Alpaca.Util.addToStoreMap( 6, this._( "Limited More" ), this.priorityNoDefaultStore, this.priorityNoDefaultMap );
+        Ung.Alpaca.Util.addToStoreMap( 7, this._( "Limited Severely" ), this.priorityNoDefaultStore, this.priorityNoDefaultMap );
 
         this.ruleGrid = this.buildRuleGrid();
 
@@ -53,7 +64,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             editable : false,
             width : 140,
             listWidth : 110,
-            store : this.priorityStore,
+            store : this.priorityNoDefaultStore,
         }]);
 
         fieldsetItems = fieldsetItems.concat([{
@@ -114,8 +125,18 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 	    store : this.priorityStore
 	},{
 	    xtype : "combo",
+	    fieldLabel : this._( "SSH Priority" ),
+	    name : "qos_settings.prioritize_ssh",
+	    mode : "local",
+	    triggerAction : "all",
+	    editable : false,
+	    width : 140,
+	    listWidth : 110,
+	    store : this.priorityStore
+        },{
+	    xtype : "combo",
 	    fieldLabel : this._( "Gaming Priority" ),
-	    boxLabel : this._( "Priority for Wii,Xbox,Playstation,etc traffic" ),
+	    boxLabel : this._( "Priority for Wii, Xbox, Playstation, and Others" ),
 	    name : "qos_settings.prioritize_gaming",
 	    mode : "local",
 	    triggerAction : "all",
@@ -251,10 +272,10 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 dataIndex : "priority",
                 renderer : function( value, metadata, record )
                 {
-                    return this.priorityMap[value];
+                    return this.priorityNoDefaultMap[value];
                 }.createDelegate( this ),
                 editor : new Ext.form.ComboBox({
-                    store : this.priorityStore,
+                    store : this.priorityNoDefaultStore,
                     listWidth : 60,
                     width : 70,
                     triggerAction : "all",

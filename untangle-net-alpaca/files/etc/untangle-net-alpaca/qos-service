@@ -1,0 +1,221 @@
+#!/bin/bash 
+# Licenced under the GPL - see 'COPYING'
+#
+# Modified by Untangle, Inc. 2010
+# Copyright (c) 2008 Untangle, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2,
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
+# NONINFRINGEMENT.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+
+# read configuration file
+if [ -e /etc/untangle-net-alpaca/qos-config ] ; then
+    . /etc/untangle-net-alpaca/qos-config
+else
+    exit 2
+fi
+
+IPTABLES="iptables"
+
+imq_dev()
+{
+    echo $1 | sed 's/eth/imq/'
+}
+    
+
+flush_htb_rules()
+{
+    local wan_dev
+    local imq_dev
+
+    echo "### Flush HTB ###"
+
+    for wan_dev in $UPLINKS ; do
+        imq_dev=$(imq_dev $wan_dev)
+        # clean existing down- and uplink qdiscs, hide errors
+        echo "tc qdisc del dev $wan_dev root    2> /dev/null > /dev/null"
+        echo "tc qdisc del dev $wan_dev ingress 2> /dev/null > /dev/null"
+        echo "tc qdisc del dev $imq_dev root    2> /dev/null > /dev/null"
+        echo "tc qdisc del dev $imq_dev ingress 2> /dev/null > /dev/null"
+    done
+    
+    #make sure we clean everything by iterating over the lists of devices
+    #that have a queueing discipline but utun has rules on it without QoS so leave those alone
+    for wan_dev in `tc qdisc show | awk '{ print $5; }' ` ; do
+        if [ "$wan_dev" != "utun" ] ;  then
+            echo "tc qdisc del dev $wan_dev root    2> /dev/null > /dev/null"
+            echo "tc qdisc del dev $wan_dev ingress 2> /dev/null > /dev/null"
+        fi
+    done
+}
+
+
+add_htb_rules()
+{
+    if [ -z $1 ] ; then
+        echo "add_rules requires argument"
+        exit 1
+    fi
+
+    echo "### Add HTB ###"
+
+    wan_interface=$1
+    imq_interface=$(imq_dev $1)
+
+    add_qdisc="tc qdisc add dev " 
+    add_class="tc class add dev " 
+    add_filtr="tc filter add dev " 
+    SFQ="sfq perturb 10"
+    
+    #
+    # egress filtering
+    #
+ 	echo $add_qdisc $wan_interface root handle 1: htb default 1$DEFAULT_CLASS
+ 	echo $add_class $wan_interface parent 1: classid 1:1 htb rate 800kbit ceil 800kbit 
+ 	echo $add_filtr $wan_interface parent 1: prio 20 1:1${DEFAULT_CLASS}
+
+    for i in 1 2 3 4 5 6 7 ; do 
+        UPLOAD_RESERVED=$(eval echo "$"${wan_interface}_CLASS${i}_UPLOAD_RESERVED)
+        UPLOAD_LIMIT=$(eval echo "$"${wan_interface}_CLASS${i}_UPLOAD_LIMIT)
+
+        if [ $UPLOAD_RESERVED = "none" ] && [ $UPLOAD_LIMIT = "none" ] ; then
+            #echo "none - skipping $i"
+            continue
+        fi
+
+        if [ $UPLOAD_RESERVED = "none" ] ; then
+            # Can't provide no reservation
+            # TC says '"rate" is required'
+            RESERVED=" rate 1kbit "
+        else
+            RESERVED=" rate ${UPLOAD_RESERVED}kbit "
+        fi
+
+        if [ $UPLOAD_LIMIT = "none" ] ; then
+            LIMITED=""
+        else
+            LIMITED=" ceil ${UPLOAD_LIMIT}kbit "
+        fi
+
+
+        # egress outbound hierarchical token bucket for class $i - need quantum or prio?
+ 	    echo $add_class $wan_interface parent 1:1 classid 1:1${i} htb $RESERVED $LIMITED 
+        echo $add_qdisc $wan_interface parent 1:1$i handle 1$i: $SFQ
+ 	    echo $add_filtr $wan_interface parent 1: prio 1$i protocol ip handle 1 fw flowid 1:1${i}
+        echo $add_filtr $wan_interface parent 1: prio 1$i protocol ip u32 match mark 0x0${i}00000 0x0700000 flowid 1:1$i
+        # example:
+        #$add_class $dev parent 1:1 classid 1:11 htb rate 80kbit ceil 800kbit   #prio 2 quantum 1500
+  	    #$add_qdisc $dev parent 1:11 handle 11: $SFQ
+   	    #$add_filtr $dev parent 1: prio 11 protocol ip handle 2 fw flowid 1:11
+        #$add_filtr $dev parent 1: prio 11 protocol ip u32 match mark 0x0100000 0x0700000 flowid 1:11
+
+    done
+
+    #
+    # ingress filtering
+    # ingress filtering is done via the IMQ interface
+    #
+ 	echo $add_qdisc $imq_interface root handle 1: htb default 1$DEFAULT_CLASS
+ 	echo $add_class $imq_interface parent 1: classid 1:1 htb rate 800kbit ceil 800kbit 
+ 	echo $add_filtr $imq_interface parent 1: prio 20 1:1${DEFAULT_CLASS}
+    for i in 1 2 3 4 5 6 7 ; do 
+        DOWNLOAD_LIMIT=$(eval echo "$"${wan_interface}_CLASS${i}_DOWNLOAD_LIMIT)
+
+        # ingress policing $i
+        if [ $DOWNLOAD_LIMIT = "none" ] ; then
+            #echo "none - skipping $i"
+            DOWNLOAD_LIMIT="999999999"
+        fi
+
+        LIMITED=" ceil ${DOWNLOAD_LIMIT}kbit "
+
+        # ingress inbound hierarchical token bucket for class $i - need quantum or prio?
+ 	    echo $add_class $imq_interface parent 1:1 classid 1:1${i} htb $LIMITED 
+        echo $add_qdisc $imq_interface parent 1:1$i handle 1$i: $SFQ
+ 	    echo $add_filtr $imq_interface parent 1: prio 1$i protocol ip handle 1 fw flowid 1:1${i}
+        echo $add_filtr $imq_interface parent 1: prio 1$i protocol ip u32 match mark 0x00${i}00000 0x00700000 flowid 1:1$i
+
+    done
+}
+
+
+add_iptables_rules()
+{
+    echo "### Add IPTables Rules ###"
+
+    for i in 1 2 3 4 5 6 7 ; do 
+        echo "${IPTABLES} -t mangle -A alpaca-qos -m connmark --mark 0x00${i}00000 0x00700000 -g qos-class${i}"
+    done
+
+    for i in 1 2 3 4 5 6 7 ; do 
+        echo "${IPTABLES} -t mangle -N qos-class${i} 2> /dev/null"
+        echo "${IPTABLES} -t mangle -F qos-class${i}"
+        echo "${IPTABLES} -t mangle -A qos-class${i} -j MARK --or-mark 0x00${i}00000"
+        echo "${IPTABLES} -t mangle -A qos-class${i} -j CONNMARK --set-mark 0x00${i}00000/0x00700000"
+    done
+}
+
+flush_iptables_rules()
+{
+    echo "### Flush IPTables Rules ###"
+    echo "${IPTABLES} -t mangle -F alpaca-qos"
+
+    for i in 1 2 3 4 5 6 7 ; do 
+        echo "${IPTABLES} -t mangle -F qos-class${i}"
+    done
+}
+
+stop()
+{
+    flush_htb_rules
+    flush_iptables_rules
+
+    exit
+}
+
+start()
+{
+    flush_htb_rules
+
+    if [ "${QOS_ENABLED}x" != "YESx" ]; then
+        exit
+    fi
+
+    for i in $(echo $UPLINKS) ; do
+        add_htb_rules $i
+    done
+
+    add_iptables_rules
+
+    exit
+}
+
+if [ $# -lt 1 ] ; then
+    echo "Usage $0 {start|stop|status}"
+    exit 1
+fi
+
+case "$1" in
+    stop)
+        stop
+        ;;
+    start)
+        start
+        ;;
+    *)
+        echo "unknown argument: ${1}"
+        exit 1
+esac
+
+
+exit
+

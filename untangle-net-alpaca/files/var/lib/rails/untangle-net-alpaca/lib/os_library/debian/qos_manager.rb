@@ -32,14 +32,14 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
 
   QoSConfig = "/etc/untangle-net-alpaca/qos-config"
   QoSRules = "/etc/untangle-net-alpaca/tc-rules.d"
-  PriorityMap = { 10 => "HIGHPRIO", 20 => "MIDPRIO", 30 => "LOWPRIO" }
-  PriorityFiles = { "SYSTEM" => QoSRules + "/900-system-priority",
-                    "HIGHPRIO" => QoSRules + "/100-high-priority",
-                    "MIDPRIO"  => QoSRules + "/200-mid-priority",
-                    "LOWPRIO"  => QoSRules + "/300-low-priority" }
+#   PriorityMap = { 10 => "HIGHPRIO", 20 => "MIDPRIO", 30 => "LOWPRIO" }
+#   PriorityFiles = { "SYSTEM" => QoSRules + "/900-system-priority",
+#                     "HIGHPRIO" => QoSRules + "/100-high-priority",
+#                     "MIDPRIO"  => QoSRules + "/200-mid-priority",
+#                     "LOWPRIO"  => QoSRules + "/300-low-priority" }
   Service = "/etc/untangle-net-alpaca/qos-service"
   AptLog = "/var/log/uvm/apt.log"
-  PriorityQueueToName = { "30:" => "Low", "20:" => "Normal", "10:" => "High", "1:" => "Root" }
+  PriorityQueueToName = { "10:" => "Class0", "11:" => "Class1", "12:" => "Class2", "13:" => "Class3", "14:" => "Class4", "15:" => "Class5", "16:" => "Class6", "17:" => "Class7" }
 
   IPTablesCommand = OSLibrary::Debian::PacketFilterManager::IPTablesCommand
   
@@ -61,7 +61,7 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
   MarkQoSMask  = 0x00700000
   MarkQoSInverseMask  = 0xFF8FFFFF
 
-
+  # FIXME
   def status
      results = []
      lines = `#{Service} status`
@@ -85,6 +85,7 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
      return results
   end
 
+  # FIXME
   def status_v2( wan_interfaces = nil )
     lines = `#{Service} alpaca_status`
     pieces = lines.split( Regexp.new( 'interface: ', Regexp::MULTILINE ) )
@@ -128,6 +129,7 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
     ""
   end
 
+  # FIXME
   def estimate_bandwidth
      download = "Unknown"
      upload = "Unknown"
@@ -147,6 +149,7 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
      return [download, upload]
   end
 
+  # FIXME
   def estimate_bandwidth_v2
      download = "Unknown"
      upload = "Unknown"
@@ -181,9 +184,9 @@ EOF
   def hook_write_files
     tc_rules_files = {}
 
-    PriorityFiles.each_pair do |key, filename|
-      tc_rules_files[key] = header 
-    end
+#     PriorityFiles.each_pair do |key, filename|
+#       tc_rules_files[key] = header 
+#     end
 
     qos_settings = QosSettings.find( :first )
     qos_settings = QosSettings.new if qos_settings.nil?
@@ -215,131 +218,114 @@ EOF
       end
     end
 
-    rules = QosRule.find( :all, :conditions => [ "enabled='t'" ] )
-
-    rules.each do |rule|
-      build_qos_rule( wan_interfaces, rule, tc_rules_files )
-    end
-
-    tc_rules_files.each_pair do |key, file_contents|
-      os["override_manager"].write_executable( PriorityFiles[key], file_contents, "\n" )
-    end
+    custom_rules = QosRule.find( :all, :conditions => [ "enabled='t'" ] )
 
     os["override_manager"].write_file( QoSConfig, settings, "\n" )
+
+# XXX
+# XXX
+# XXX
+#    rules.each do |rule|
+#      build_qos_rule( wan_interfaces, rule, tc_rules_files )
+#    end
+
+#     tc_rules_files.each_pair do |key, file_contents|
+#       os["override_manager"].write_executable( PriorityFiles[key], file_contents, "\n" )
+#     end
+
     
-    text = header + "\n"
-    text << <<EOF
+    iptables_rules = header + "\n"
+    iptables_rules << <<EOF
+### Initialize QoS Table ###
 #{IPTablesCommand} -t #{QoSMark.table} -N #{QoSMark.name} 2> /dev/null
 #{IPTablesCommand} -t #{QoSMark.table} -F #{QoSMark.name}
 #{QoSMark.init}
-
-${IPTABLES} -t mangle -A #{QoSMark.name} -m connmark --mark #{MarkQoSHigh}/#{MarkQoSMask} -g qos-high-mark
-${IPTABLES} -t mangle -A #{QoSMark.name} -m connmark --mark #{MarkQoSNormal}/#{MarkQoSMask} -g qos-normal-mark
-${IPTABLES} -t mangle -A #{QoSMark.name} -m connmark --mark #{MarkQoSLow}/#{MarkQoSMask} -g qos-low-mark
-${IPTABLES} -t mangle -N qos-high-mark 2> /dev/null
-${IPTABLES} -t mangle -F qos-high-mark
-${IPTABLES} -t mangle -A qos-high-mark -j MARK --or-mark #{MarkQoSHigh}
-${IPTABLES} -t mangle -A qos-high-mark -j CONNMARK --set-mark #{MarkQoSHigh}/#{MarkQoSMask}
-${IPTABLES} -t mangle -N qos-normal-mark 2> /dev/null
-${IPTABLES} -t mangle -F qos-normal-mark
-${IPTABLES} -t mangle -A qos-normal-mark -j MARK --or-mark #{MarkQoSNormal}
-${IPTABLES} -t mangle -A qos-normal-mark -j CONNMARK --set-mark #{MarkQoSNormal}/#{MarkQoSMask}
-${IPTABLES} -t mangle -N qos-low-mark 2> /dev/null
-${IPTABLES} -t mangle -F qos-low-mark
-${IPTABLES} -t mangle -A qos-low-mark -j MARK --or-mark #{MarkQoSLow}
-${IPTABLES} -t mangle -A qos-low-mark -j CONNMARK --set-mark #{MarkQoSLow}/#{MarkQoSMask}
-
 EOF
 
-    if ! qos_settings.prioritize_ack.nil? and qos_settings.prioritize_gaming > 0 and qos_settings.prioritize_gaming != 20
-      case qos_settings.prioritize_gaming
-      when 10
-         target = " -g qos-high-mark "
-      when 30
-         target = " -g qos-low-mark "
-      end
-      #XBOX Live
-      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 88 -g #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 3074 -g #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 3074 -g #{target} \n"
-      if qos_settings.prioritize_gaming == 10
-          text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 88 -g bypass-mark \n"
-          text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 3074 -g bypass-mark \n"
-          text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 3074 -g bypass-mark \n"
-      end
-      #PS3
-      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 5223 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 3478:3479 #{target} \n"
-      if qos_settings.prioritize_gaming == 10
-          text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 5223 -g bypass-mark \n"
-          text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 3478:3479 -g bypass-mark \n"
-      end
-      #wii
-      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 29900 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 29901 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 28910 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 29920 #{target} \n"
-      if qos_settings.prioritize_gaming == 10
-          text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 29900 -g bypass-mark \n"
-          text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 29901 -g bypass-mark \n"
-          text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 28910 -g bypass-mark \n"
-          text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 29920 -g bypass-mark \n"
-      end
-      # other games
-      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 1200 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 1200 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 4000 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 4000 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 6003 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 6003 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 6073 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 7000 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 7000 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 7002 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 7002 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 8080 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 8080 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 27900 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 27900 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 27910 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 27910 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 2300:2400 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 2300:2400 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 6112:6119 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 6112:6119 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 7777:7783 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 7777:7783 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 6112:6119 #{target} \n"
-      text << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 6112:6119 #{target} \n"
+# FIXME - must be after connmark restore!!
+# FIXME - add SYN rule - http://lartc.org/howto/lartc.cookbook.fullnat.intro.html
+    if qos_settings.prioritize_ack != 0 then 
+      target = " -g qos-class#{qos_settings.prioritize_ack} "
+      iptables_rules << "### Prioritize ACK ###\n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --tcp-flags ACK ACK #{target}\n"
     end
 
-    rules.each do |rule|
+    if qos_settings.prioritize_ping != 0 then 
+      target = " -g qos-class#{qos_settings.prioritize_ping} "
+      iptables_rules << "### Prioritize Ping ###\n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p icmp --icmp-type echo-request #{target}\n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p icmp --icmp-type echo-reply   #{target}\n"
+    end
+
+    if qos_settings.prioritize_ssh != 0 then 
+      target = " -g qos-class#{qos_settings.prioritize_ssh} "
+      iptables_rules << "### Prioritize SSH ###\n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --dport 22 #{target}\n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --sport 22 #{target}\n"
+    end
+
+    if qos_settings.prioritize_gaming != 0 then 
+      iptables_rules << "### Prioritize Gaming ###\n"
+      target = " -g qos-class#{qos_settings.prioritize_gaming} "
+      #XBOX Live
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 88 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 3074 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 3074 #{target} \n"
+      #PS3
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 5223 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 3478:3479 #{target} \n"
+      #wii
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 29900 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 29901 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 28910 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 29920 #{target} \n"
+      # other games
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 1200 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 1200 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 4000 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 4000 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 6003 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 6003 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 6073 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 7000 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 7000 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 7002 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 7002 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 8080 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 8080 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 27900 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 27900 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 27910 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 27910 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 2300:2400 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 2300:2400 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 6112:6119 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 6112:6119 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 7777:7783 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 7777:7783 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp -m multiport --destination-ports 6112:6119 #{target} \n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 6112:6119 #{target} \n"
+    end
+
+    iptables_rules << "### Custom Rules ###\n"
+
+    custom_rules.each do |rule|
       begin
         filters, chain = OSLibrary::Debian::Filter::Factory.instance.filter( rule.filter )
         
-        target = nil
-        case rule.priority
-        when 10
-          target = " -g qos-high-mark "
-        when 20
-          target = " -g qos-normal-mark "
-        when 30
-          target = " -g qos-low-mark "
-        end
-        
-        next if target.nil?
-            
+        target = " -g qos-class#{rule.priority} "
+
         filters.each do |filter|
           ## Nothing to do if the filtering string is empty.
           break if filter.strip.empty?
-          text << "#{IPTablesCommand} #{QoSMark.args} #{filter} #{target}\n"
+          iptables_rules << "#{IPTablesCommand} #{QoSMark.args} #{filter} #{target}\n"
         end
       rescue
         logger.warn( "The filter '#{rule.filter}' could not be parsed: #{$!}" )
       end
     end
 
-    os["override_manager"].write_file( QoSPacketFilterFile, text, "\n" )    
+    os["override_manager"].write_file( QoSPacketFilterFile, iptables_rules, "\n" )    
   end
 
   def hook_run_services
@@ -398,13 +384,13 @@ EOF
 ## #{os_name}_UPLOAD_BANDWIDTH=#{interface.upload_bandwidth}
 EOF
 
-    if ! qos_settings.prioritize_ping.nil? and qos_settings.prioritize_ping > 0
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ping} u32 match ip protocol 1 0xff flowid 1:#{qos_settings.prioritize_ping}\n"
-    end
+#     if ! qos_settings.prioritize_ping.nil? and qos_settings.prioritize_ping > 0
+#       tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ping} u32 match ip protocol 1 0xff flowid 1:#{qos_settings.prioritize_ping}\n"
+#     end
 
-    if ! qos_settings.prioritize_ack.nil? and qos_settings.prioritize_ack > 0
-      tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ack} u32 match ip protocol 6 0xff match u8 0x05 0x0f at 0 match u16 0x0000 0xffc0 at 2 match u8 0x10 0xff at 33 flowid 1:#{qos_settings.prioritize_ack}\n"
-    end
+#     if ! qos_settings.prioritize_ack.nil? and qos_settings.prioritize_ack > 0
+#       tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ack} u32 match ip protocol 6 0xff match u8 0x05 0x0f at 0 match u16 0x0000 0xffc0 at 2 match u8 0x10 0xff at 33 flowid 1:#{qos_settings.prioritize_ack}\n"
+#     end
   end
 
   def build_qos_rule( wan_interfaces, rule, tc_rules_files )

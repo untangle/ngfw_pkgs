@@ -1,5 +1,6 @@
+
 ## Uncomment this line if you want to run the untangle-net-alpaca from a separate directory.
-# BASE_DIR="/home/devel/untangle-net-alpaca/var/lib/rails/untangle-net-alpaca"
+# BASE_DIR="/home/devel/work/pkgs/untangle-net-alpaca/var/lib/rails/untangle-net-alpaca"
 
 ## Uncomment this line to override the some of the arguments to mongrel_rails (Use BIND_ADDRESS below)
 ## To specify which address to bind to.
@@ -10,3 +11,7 @@
 
 ## Uncomment this to not bind to localhost (not recommended) or to bind to another address.
 # BIND_ADDRESS=""
+
+## Uncomment this line to define an "OS" manually
+# ALPACA_OS_NAME="null"
+export ALPACA_OS_NAME

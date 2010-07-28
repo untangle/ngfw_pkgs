@@ -15,10 +15,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-class Lagonda < Alpaca::Migration
+class Viper < Alpaca::Migration
   def self.up
-    add_column :qos_settings, :default_class, :integer, :default => 2
-    add_column :qos_settings, :scaling_factor, :integer, :default => 80
+    add_column :qos_settings, :default_class, :integer, :default => 3
+    add_column :qos_settings, :scaling_factor, :integer, :default => 90
 
     # create new class/priority table
     create_table :qos_classes do |table|
@@ -29,11 +29,11 @@ class Lagonda < Alpaca::Migration
     end
 
     # create default values (8 different classes)
-    add_qos_class( :class_id => 0, :upload_reserved => 80, :upload_limit => 100, :download_limit =>   0 )
-    add_qos_class( :class_id => 1, :upload_reserved => 10, :upload_limit => 100, :download_limit => 100 )
-    add_qos_class( :class_id => 2, :upload_reserved =>  5, :upload_limit => 100, :download_limit => 100 )
-    add_qos_class( :class_id => 3, :upload_reserved =>  2, :upload_limit => 100, :download_limit => 100 )
-    add_qos_class( :class_id => 4, :upload_reserved =>  1, :upload_limit => 100, :download_limit => 100 )
+    # 0 is reserved for default 
+    add_qos_class( :class_id => 1, :upload_reserved => 60, :upload_limit => 100, :download_limit => 0 )
+    add_qos_class( :class_id => 2, :upload_reserved => 20, :upload_limit => 100, :download_limit => 100 )
+    add_qos_class( :class_id => 3, :upload_reserved => 12, :upload_limit => 100, :download_limit => 100 )
+    add_qos_class( :class_id => 4, :upload_reserved =>  6, :upload_limit => 100, :download_limit => 100 )
     add_qos_class( :class_id => 5, :upload_reserved =>  1, :upload_limit =>  75, :download_limit =>  75 )
     add_qos_class( :class_id => 6, :upload_reserved =>  1, :upload_limit =>  50, :download_limit =>  50 )
     add_qos_class( :class_id => 7, :upload_reserved =>  0, :upload_limit =>  10, :download_limit =>  10 )
@@ -45,10 +45,10 @@ class Lagonda < Alpaca::Migration
     remove_column :qos_settings, :upload_percentage
 
     # change default priorities 
-    change_column_default(:qos_settings, :prioritize_ssh, 2)
-    change_column_default(:qos_settings, :prioritize_ping, 2)
-    change_column_default(:qos_settings, :prioritize_ack, 2)
-    change_column_default(:qos_settings, :prioritize_gaming, 2)
+    change_column_default(:qos_settings, :prioritize_ssh, 0)
+    change_column_default(:qos_settings, :prioritize_ping, 0)
+    change_column_default(:qos_settings, :prioritize_ack, 0)
+    change_column_default(:qos_settings, :prioritize_gaming, 0)
 
     # change interfaces default bandwidth
     change_column_default(:interfaces, :download_bandwidth, 10000)
