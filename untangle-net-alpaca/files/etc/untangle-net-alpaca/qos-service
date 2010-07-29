@@ -26,6 +26,12 @@ fi
 
 IPTABLES="iptables"
 
+run ()
+{
+    echo $1
+    /bin/sh -c "$1"
+}
+
 imq_dev()
 {
     echo $1 | sed 's/eth/imq/'
@@ -39,21 +45,21 @@ flush_htb_rules()
 
     echo "### Flush HTB ###"
 
-    for wan_dev in $UPLINKS ; do
+    for wan_dev in $(echo $UPLINKS) ; do
         imq_dev=$(imq_dev $wan_dev)
         # clean existing down- and uplink qdiscs, hide errors
-        echo "tc qdisc del dev $wan_dev root    2> /dev/null > /dev/null"
-        echo "tc qdisc del dev $wan_dev ingress 2> /dev/null > /dev/null"
-        echo "tc qdisc del dev $imq_dev root    2> /dev/null > /dev/null"
-        echo "tc qdisc del dev $imq_dev ingress 2> /dev/null > /dev/null"
+        run "tc qdisc del dev $wan_dev root    2> /dev/null > /dev/null"
+        run "tc qdisc del dev $wan_dev ingress 2> /dev/null > /dev/null"
+        run "tc qdisc del dev $imq_dev root    2> /dev/null > /dev/null"
+        run "tc qdisc del dev $imq_dev ingress 2> /dev/null > /dev/null"
     done
     
     #make sure we clean everything by iterating over the lists of devices
     #that have a queueing discipline but utun has rules on it without QoS so leave those alone
     for wan_dev in `tc qdisc show | awk '{ print $5; }' ` ; do
         if [ "$wan_dev" != "utun" ] ;  then
-            echo "tc qdisc del dev $wan_dev root    2> /dev/null > /dev/null"
-            echo "tc qdisc del dev $wan_dev ingress 2> /dev/null > /dev/null"
+            run "tc qdisc del dev $wan_dev root    2> /dev/null > /dev/null"
+            run "tc qdisc del dev $wan_dev ingress 2> /dev/null > /dev/null"
         fi
     done
 }
@@ -79,10 +85,7 @@ add_htb_rules()
     #
     # egress filtering
     #
- 	echo $add_qdisc $wan_interface root handle 1: htb default 1$DEFAULT_CLASS
- 	echo $add_class $wan_interface parent 1: classid 1:1 htb rate 800kbit ceil 800kbit 
- 	echo $add_filtr $wan_interface parent 1: prio 20 1:1${DEFAULT_CLASS}
-
+ 	run "$add_qdisc $wan_interface root handle 1: htb default 1$DEFAULT_CLASS"
     for i in 1 2 3 4 5 6 7 ; do 
         UPLOAD_RESERVED=$(eval echo "$"${wan_interface}_CLASS${i}_UPLOAD_RESERVED)
         UPLOAD_LIMIT=$(eval echo "$"${wan_interface}_CLASS${i}_UPLOAD_LIMIT)
@@ -108,25 +111,25 @@ add_htb_rules()
 
 
         # egress outbound hierarchical token bucket for class $i - need quantum or prio?
- 	    echo $add_class $wan_interface parent 1:1 classid 1:1${i} htb $RESERVED $LIMITED 
-        echo $add_qdisc $wan_interface parent 1:1$i handle 1$i: $SFQ
- 	    echo $add_filtr $wan_interface parent 1: prio 1$i protocol ip handle 1 fw flowid 1:1${i}
-        echo $add_filtr $wan_interface parent 1: prio 1$i protocol ip u32 match mark 0x0${i}00000 0x0700000 flowid 1:1$i
+ 	    run "$add_class $wan_interface parent 1:1 classid 1:1${i} htb $RESERVED $LIMITED"
+        run "$add_qdisc $wan_interface parent 1:1$i handle 1$i: $SFQ"
+        run "$add_filtr $wan_interface parent 1: prio 1$i protocol ip u32 match mark 0x0${i}00000 0x0700000 flowid 1:1$i"
         # example:
         #$add_class $dev parent 1:1 classid 1:11 htb rate 80kbit ceil 800kbit   #prio 2 quantum 1500
   	    #$add_qdisc $dev parent 1:11 handle 11: $SFQ
    	    #$add_filtr $dev parent 1: prio 11 protocol ip handle 2 fw flowid 1:11
         #$add_filtr $dev parent 1: prio 11 protocol ip u32 match mark 0x0100000 0x0700000 flowid 1:11
-
     done
+    # Default (doesn't work?)
+ 	#echo $add_filtr $wan_interface parent 1: prio 20 flowid 1:1${DEFAULT_CLASS}
+
 
     #
     # ingress filtering
     # ingress filtering is done via the IMQ interface
     #
- 	echo $add_qdisc $imq_interface root handle 1: htb default 1$DEFAULT_CLASS
- 	echo $add_class $imq_interface parent 1: classid 1:1 htb rate 800kbit ceil 800kbit 
- 	echo $add_filtr $imq_interface parent 1: prio 20 1:1${DEFAULT_CLASS}
+ 	run "$add_qdisc $imq_interface root handle 1: htb default 1$DEFAULT_CLASS"
+ 	#echo $add_class $imq_interface parent 1: classid 1:1 htb rate 800kbit ceil 800kbit 
     for i in 1 2 3 4 5 6 7 ; do 
         DOWNLOAD_LIMIT=$(eval echo "$"${wan_interface}_CLASS${i}_DOWNLOAD_LIMIT)
 
@@ -136,48 +139,20 @@ add_htb_rules()
             DOWNLOAD_LIMIT="999999999"
         fi
 
-        LIMITED=" ceil ${DOWNLOAD_LIMIT}kbit "
+        LIMITED=" rate ${DOWNLOAD_LIMIT}kbit "
 
         # ingress inbound hierarchical token bucket for class $i - need quantum or prio?
- 	    echo $add_class $imq_interface parent 1:1 classid 1:1${i} htb $LIMITED 
-        echo $add_qdisc $imq_interface parent 1:1$i handle 1$i: $SFQ
- 	    echo $add_filtr $imq_interface parent 1: prio 1$i protocol ip handle 1 fw flowid 1:1${i}
-        echo $add_filtr $imq_interface parent 1: prio 1$i protocol ip u32 match mark 0x00${i}00000 0x00700000 flowid 1:1$i
-
+ 	    run "$add_class $imq_interface parent 1:1 classid 1:1${i} htb $LIMITED"
+        run "$add_qdisc $imq_interface parent 1:1$i handle 1$i: $SFQ"
+        run "$add_filtr $imq_interface parent 1: prio 1$i protocol ip u32 match mark 0x00${i}00000 0x00700000 flowid 1:1$i"
     done
-}
-
-
-add_iptables_rules()
-{
-    echo "### Add IPTables Rules ###"
-
-    for i in 1 2 3 4 5 6 7 ; do 
-        echo "${IPTABLES} -t mangle -A alpaca-qos -m connmark --mark 0x00${i}00000 0x00700000 -g qos-class${i}"
-    done
-
-    for i in 1 2 3 4 5 6 7 ; do 
-        echo "${IPTABLES} -t mangle -N qos-class${i} 2> /dev/null"
-        echo "${IPTABLES} -t mangle -F qos-class${i}"
-        echo "${IPTABLES} -t mangle -A qos-class${i} -j MARK --or-mark 0x00${i}00000"
-        echo "${IPTABLES} -t mangle -A qos-class${i} -j CONNMARK --set-mark 0x00${i}00000/0x00700000"
-    done
-}
-
-flush_iptables_rules()
-{
-    echo "### Flush IPTables Rules ###"
-    echo "${IPTABLES} -t mangle -F alpaca-qos"
-
-    for i in 1 2 3 4 5 6 7 ; do 
-        echo "${IPTABLES} -t mangle -F qos-class${i}"
-    done
+    # Default (doesn't work?)
+ 	#echo $add_filtr $imq_interface parent 1: prio 20 flowid 1:1${DEFAULT_CLASS}
 }
 
 stop()
 {
     flush_htb_rules
-    flush_iptables_rules
 
     exit
 }
@@ -194,9 +169,19 @@ start()
         add_htb_rules $i
     done
 
-    add_iptables_rules
-
     exit
+}
+
+status()
+{
+    for i in $(echo $UPLINKS) ; do
+        echo "------ Qdisc  ------"
+        tc -s qdisc ls dev $i
+        echo "------ Class  ------"
+        tc -s class ls dev $i
+        echo "------ Filter ------"
+        tc -s filter ls dev $i
+    done
 }
 
 if [ $# -lt 1 ] ; then
@@ -210,6 +195,9 @@ case "$1" in
         ;;
     start)
         start
+        ;;
+    status)
+        status
         ;;
     *)
         echo "unknown argument: ${1}"

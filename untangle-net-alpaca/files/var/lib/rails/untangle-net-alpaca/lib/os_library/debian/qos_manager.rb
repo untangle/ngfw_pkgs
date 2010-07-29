@@ -49,6 +49,7 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
 
   #packet filter iptables integration
   QoSPacketFilterFile = "#{OSLibrary::Debian::PacketFilterManager::ConfigDirectory}/800-qos"
+
   ## Mark QoS priority buckets
   MarkQoSClass   = [0x00000000,
                     0x00100000,
@@ -235,12 +236,60 @@ EOF
 
     
     iptables_rules = header + "\n"
+
+    iptables_rules << <<EOF
+add_iptables_rules()
+{
+    echo "### Add IPTables Rules ###"
+
+    for i in 1 2 3 4 5 6 7 ; do 
+        # these are likely redundant
+        ${IPTABLES} -t mangle -A alpaca-qos -m connmark --mark 0x00${i}00000/0x00700000 -g qos-class${i}
+        ${IPTABLES} -t mangle -A alpaca-qos -m mark --mark 0x00${i}00000/0x00700000 -g qos-class${i}
+    done
+
+    for i in 1 2 3 4 5 6 7 ; do 
+        ${IPTABLES} -t mangle -N qos-class${i} 2> /dev/null
+        ${IPTABLES} -t mangle -F qos-class${i}
+        ${IPTABLES} -t mangle -A qos-class${i} -j MARK --or-mark 0x00${i}00000
+        ${IPTABLES} -t mangle -A qos-class${i} -j CONNMARK --set-mark 0x00${i}00000/0x00700000
+    done
+
+    ${IPTABLES} -t mangle -A POSTROUTING -j alpaca-qos
+}
+
+flush_iptables_rules()
+{
+    echo "### Flush IPTables Rules ###"
+    ${IPTABLES} -t mangle -F alpaca-qos
+
+    for i in 1 2 3 4 5 6 7 ; do 
+       ${IPTABLES} -t mangle -F qos-class${i}
+    done
+
+    ${IPTABLES} -t mangle -D POSTROUTING -j alpaca-qos
+}
+EOF
+
     iptables_rules << <<EOF
 ### Initialize QoS Table ###
 #{IPTablesCommand} -t #{QoSMark.table} -N #{QoSMark.name} 2> /dev/null
 #{IPTablesCommand} -t #{QoSMark.table} -F #{QoSMark.name}
+flush_iptables_rules
+
 #{QoSMark.init}
+
+add_iptables_rules
 EOF
+
+    wan_interfaces.each do |intf|
+      dev_num = intf.os_name.delete "a-z."
+      dev_match = "-i #{intf.os_name}"
+      physdev_match = "-m physdev --physdev-in #{intf.os_name}"
+        
+      iptables_rules << "#{IPTablesCommand} -t mangle -A PREROUTING #{dev_match} -j IMQ --todev #{dev_num}\n"
+      iptables_rules << "#{IPTablesCommand} -t mangle -A PREROUTING #{physdev_match} -j IMQ --todev #{dev_num}\n"
+    end
 
 # FIXME - must be after connmark restore!!
 # FIXME - add SYN rule - http://lartc.org/howto/lartc.cookbook.fullnat.intro.html
@@ -314,11 +363,12 @@ EOF
         filters, chain = OSLibrary::Debian::Filter::Factory.instance.filter( rule.filter )
         
         target = " -g qos-class#{rule.priority} "
+        bypass = " -m mark --mark 0x01000000/0x01000000 "
 
         filters.each do |filter|
           ## Nothing to do if the filtering string is empty.
           break if filter.strip.empty?
-          iptables_rules << "#{IPTablesCommand} #{QoSMark.args} #{filter} #{target}\n"
+          iptables_rules << "#{IPTablesCommand} #{QoSMark.args} #{filter} #{bypass} #{target}\n"
         end
       rescue
         logger.warn( "The filter '#{rule.filter}' could not be parsed: #{$!}" )
