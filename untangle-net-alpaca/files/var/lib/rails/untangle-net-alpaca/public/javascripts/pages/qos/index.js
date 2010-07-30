@@ -221,9 +221,9 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     xtype : "combo",
                     fieldLabel : this._( "Priority" ),
                     dataIndex : "priority",
-                    listWidth : 60,
+                    listWidth : 150,
                     editable : false,
-                    width : 70,
+                    width : 150,
                     triggerAction : "all",
                     mode : "local",
                     store : this.priorityStore
@@ -257,7 +257,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
             recordDefaults : {
                 enabled : true,
-                priority : 20,
+                priority : 3,
                 filter : "s-addr::",
                 description : this._( "[New Entry]" )
             },
@@ -266,7 +266,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
             columns : [ enabledColumn, {
                 header : this._( "Priority" ),
-                width: 70,
+                width: 100,
                 sortable: false,
                 fixed : true,
                 dataIndex : "priority",
@@ -276,8 +276,8 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 }.createDelegate( this ),
                 editor : new Ext.form.ComboBox({
                     store : this.priorityNoDefaultStore,
-                    listWidth : 60,
-                    width : 70,
+                    listWidth : 150,
+                    width : 150,
                     triggerAction : "all",
                     mode : "local",
                     editable : false
@@ -470,6 +470,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             selectable : false,
             sortable : true,
             saveData : false,
+            height : 250,
             
             name : "status",
 
@@ -483,7 +484,6 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             columns : [{
                 header : this._( "Interface" ),
                 width: 55,
-                hidden : true,
                 sortable: true,
                 dataIndex : "interface_name"
             },{
@@ -494,26 +494,30 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 dataIndex : "priority"
             },{
                 header : this._( "Rate" ),
+                hidden : true,
                 width: 75,
                 sortable: true,
                 dataIndex : "rate"
             },{
                 header : this._( "Burst" ),
+                hidden : true,
                 width: 75,
                 sortable: true,
                 dataIndex : "burst"
             },{
-                header : this._( "Sent" ),
+                header : this._( "Data" ),
                 width: 75,
                 sortable: true,
                 dataIndex : "sent"
             },{
                 header : this._( "Tokens" ),
+                hidden : true,
                 width: 75,
                 sortable: true,
                 dataIndex : "tokens"
             },{
                 header : this._( "CTokens" ),
+                hidden : true,
                 width: 75,
                 sortable: true,
                 dataIndex : "ctokens"

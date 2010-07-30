@@ -128,6 +128,7 @@ add_htb_rules()
     # ingress filtering
     # ingress filtering is done via the IMQ interface
     #
+    run "ifconfig $imq_interface up"
  	run "$add_qdisc $imq_interface root handle 1: htb default 1$DEFAULT_CLASS"
  	#echo $add_class $imq_interface parent 1: classid 1:1 htb rate 800kbit ceil 800kbit 
     for i in 1 2 3 4 5 6 7 ; do 
@@ -161,6 +162,8 @@ start()
 {
     flush_htb_rules
 
+    run "modprobe imq"
+
     if [ "${QOS_ENABLED}x" != "YESx" ]; then
         exit
     fi
@@ -174,18 +177,21 @@ start()
 
 status()
 {
-    for i in $(echo $UPLINKS) ; do
-        echo "------ Qdisc  ------"
-        tc -s qdisc ls dev $i
-        echo "------ Class  ------"
-        tc -s class ls dev $i
-        echo "------ Filter ------"
-        tc -s filter ls dev $i
+    for wan_dev in $(echo $UPLINKS) ; do
+        imq_dev=$(imq_dev $wan_dev)
+        tc -s class ls dev $wan_dev | sed "s/\(^class.*\)/interface: ${wan_dev} \1/" 
+        tc -s class ls dev $imq_dev | sed "s/\(^class.*\)/interface: ${imq_dev} \1/" 
     done
+#    echo "------ Qdisc  ------"
+#    tc -s qdisc ls dev $i
+#    echo "------ Class  ------"
+#    tc -s class ls dev $i
+#    echo "------ Filter ------"
+#    tc -s filter ls dev $i
 }
 
 if [ $# -lt 1 ] ; then
-    echo "Usage $0 {start|stop|status}"
+    echo "Usage $0 {start|stop|status|status2}"
     exit 1
 fi
 
@@ -197,6 +203,9 @@ case "$1" in
         start
         ;;
     status)
+        status
+        ;;
+    status2)
         status
         ;;
     *)

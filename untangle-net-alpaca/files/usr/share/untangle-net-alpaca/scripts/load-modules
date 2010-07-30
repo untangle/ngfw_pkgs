@@ -4,10 +4,10 @@ exec >> /var/log/untangle-net-alpaca/modprobe.log 2>&1
 
 test -f /etc/untangle-net-alpaca/modules.conf && . /etc/untangle-net-alpaca/modules.conf
 
-DEFAULT_MODULES="nf_conntrack \
+DEFAULT_MODULES="\
          nf_conntrack_h323      nf_conntrack_netbios_ns \
          nf_conntrack_proto_gre nf_conntrack_tftp\
-         nf_conntrack_amanda    nf_conntrack_ipv4\
+         nf_conntrack_amanda    \
          nf_conntrack_netlink   nf_conntrack_proto_sctp\
          nf_conntrack_ftp       nf_conntrack_irc\
          nf_conntrack_pptp      nf_conntrack_sip
@@ -16,6 +16,7 @@ DEFAULT_MODULES="nf_conntrack \
          nf_nat_snmp_basic      nf_nat_amanda\
          nf_nat_h323            nf_nat_pptp\
          nf_nat_sip             nf_nat_tftp"
+# as of 8.0 nf_conntrack and nf_conntrack_ipv4 are compiled into the kernel
 
 is_load_disabled() {
     local t_module_name

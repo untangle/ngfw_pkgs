@@ -39,7 +39,15 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
 #                     "LOWPRIO"  => QoSRules + "/300-low-priority" }
   Service = "/etc/untangle-net-alpaca/qos-service"
   AptLog = "/var/log/uvm/apt.log"
-  PriorityQueueToName = { "10:" => "Class0", "11:" => "Class1", "12:" => "Class2", "13:" => "Class3", "14:" => "Class4", "15:" => "Class5", "16:" => "Class6", "17:" => "Class7" }
+  PriorityQueueToName = { 
+    "10:" => "0 - None", 
+    "11:" => "1 - Very High", 
+    "12:" => "2 - High", 
+    "13:" => "3 - Medium", 
+    "14:" => "4 - Low",
+    "15:" => "5 - Limited", 
+    "16:" => "6 - Limited More", 
+    "17:" => "7 - Limited Severely" }
 
   IPTablesCommand = OSLibrary::Debian::PacketFilterManager::IPTablesCommand
   
@@ -59,36 +67,11 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
                     0x00500000,
                     0x00600000,
                     0x00700000]
-  MarkQoSMask  = 0x00700000
+  MarkQoSMask     = 0x00700000
   MarkQoSInverseMask  = 0xFF8FFFFF
 
-  # FIXME
-  def status
-     results = []
-     lines = `#{Service} status`
-     pieces = lines.split( Regexp.new( 'qdisc|class', Regexp::MULTILINE ) )
-     pieces.each do |piece|
-       if piece.include?( "htb" ) and piece.include?( "leaf" )
-         stats = piece.split( Regexp.new( ' ', Regexp::MULTILINE ) )
-         
-         if PriorityQueueToName.has_key?( stats[6] )
-           token_stats = piece.split( Regexp.new( 'c?tokens: ', Regexp::MULTILINE ) )
-           results << [ PriorityQueueToName[stats[6]],
-                        stats[10],
-                        stats[14],
-                        stats[19] + stats[20],
-                        token_stats[1],
-                        token_stats[2]
-                      ]
-         end
-       end
-     end
-     return results
-  end
-
-  # FIXME
   def status_v2( wan_interfaces = nil )
-    lines = `#{Service} alpaca_status`
+    lines = `#{Service} status2`
     pieces = lines.split( Regexp.new( 'interface: ', Regexp::MULTILINE ) )
 
     results = []
@@ -105,18 +88,33 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
       piece = piece.strip
       stats = piece.split( Regexp.new( '\s+', Regexp::MULTILINE ) )
       
-      queue_name = PriorityQueueToName[stats[7]]
+      intf = stats[0]
+      que_num = stats[6]
+      rate = stats[10]
+      burst = stats[14]
+      sent = stats[18] + " " + stats[19]
+      tokens = stats[43]
+      ctokens = stats[45]
+      
+      queue_name = PriorityQueueToName[que_num]
       next if queue_name.nil?
       
-      interface_name = interface_name_map[stats[0]]
-      interface_name = stats[0] if interface_name.nil?
+      interface_name = interface_name_map[intf] 
+      interface_name += " Outbound" if !interface_name.nil?
+      if interface_name.nil? then
+        # if imq - try 
+        interface_name = interface_name_map[intf.sub("imq","eth")] 
+        interface_name += " Inbound" if !interface_name.nil?
+      end
+      interface_name = intf if interface_name.nil?
 
+      #( interface_name, priority, rate, burst, sent, tokens, ctokens )
       results << QosStatus.new( interface_name, queue_name,
-                                stats[11],
-                                stats[15],
-                                stats[19] + " " + stats[20],
-                                stats[44],
-                                stats[46] )
+                                rate,
+                                burst,
+                                sent,
+                                tokens,
+                                ctokens )
     end
 
     results
@@ -242,11 +240,19 @@ add_iptables_rules()
 {
     echo "### Add IPTables Rules ###"
 
-    for i in 1 2 3 4 5 6 7 ; do 
+    echo "# Set the default mark on UNTRACKED sessions"
+    ${IPTABLES} -t mangle -A alpaca-qos -m conntrack --ctstate UNTRACKED -j MARK --and-mark 0xff8fffff
+    ${IPTABLES} -t mangle -A alpaca-qos -m conntrack --ctstate UNTRACKED -j MARK --or-mark 0x00${DEFAULT_CLASS}00000
+    ${IPTABLES} -t mangle -A alpaca-qos -m conntrack --ctstate UNTRACKED -j CONNMARK --set-mark 0x00${i}00000/0x00700000
+
+    echo "# Restore the mark for TRACKED sessions"
+    ${IPTABLES} -t mangle -A alpaca-qos -m conntrack ! --ctstate UNTRACKED -j CONNMARK --restore-mark --mask 0x00700000
+
+    # for i in 1 2 3 4 5 6 7 ; do 
         # these are likely redundant
-        ${IPTABLES} -t mangle -A alpaca-qos -m connmark --mark 0x00${i}00000/0x00700000 -g qos-class${i}
-        ${IPTABLES} -t mangle -A alpaca-qos -m mark --mark 0x00${i}00000/0x00700000 -g qos-class${i}
-    done
+        # ${IPTABLES} -t mangle -A alpaca-qos -m connmark --mark 0x00${i}00000/0x00700000 -g qos-class${i}
+        # ${IPTABLES} -t mangle -A alpaca-qos -m mark --mark 0x00${i}00000/0x00700000 -g qos-class${i}
+    # done
 
     for i in 1 2 3 4 5 6 7 ; do 
         ${IPTABLES} -t mangle -N qos-class${i} 2> /dev/null
@@ -261,7 +267,7 @@ add_iptables_rules()
 flush_iptables_rules()
 {
     echo "### Flush IPTables Rules ###"
-    ${IPTABLES} -t mangle -F alpaca-qos
+    ${IPTABLES} -t mangle -F alpaca-qos 2> /dev/null
 
     for i in 1 2 3 4 5 6 7 ; do 
        ${IPTABLES} -t mangle -F qos-class${i}
@@ -294,12 +300,21 @@ EOF
 # FIXME - must be after connmark restore!!
 # FIXME - add SYN rule - http://lartc.org/howto/lartc.cookbook.fullnat.intro.html
     if qos_settings.prioritize_ack != 0 then 
-      target = " -g qos-class#{qos_settings.prioritize_ack} "
+      # only mark packet
+      target = "j MARK --or-mark 0x00#{qos_settings.prioritize_ack}00000"
       iptables_rules << "### Prioritize ACK ###\n"
       iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --tcp-flags ACK ACK #{target}\n"
     end
 
+    if qos_settings.prioritize_syn != 0 then 
+      # only mark packet
+      target = "j MARK --or-mark 0x00#{qos_settings.prioritize_syn}00000"
+      iptables_rules << "### Prioritize SYN ###\n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --tcp-flags SYN SYN #{target}\n"
+    end
+
     if qos_settings.prioritize_ping != 0 then 
+      # mark both packet and session
       target = " -g qos-class#{qos_settings.prioritize_ping} "
       iptables_rules << "### Prioritize Ping ###\n"
       iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p icmp --icmp-type echo-request #{target}\n"
@@ -307,14 +322,15 @@ EOF
     end
 
     if qos_settings.prioritize_ssh != 0 then 
+      # mark both packet and session
       target = " -g qos-class#{qos_settings.prioritize_ssh} "
       iptables_rules << "### Prioritize SSH ###\n"
       iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --dport 22 #{target}\n"
-      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --sport 22 #{target}\n"
     end
 
     if qos_settings.prioritize_gaming != 0 then 
       iptables_rules << "### Prioritize Gaming ###\n"
+      # mark both packet and session
       target = " -g qos-class#{qos_settings.prioritize_gaming} "
       #XBOX Live
       iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp -m multiport --destination-ports 88 #{target} \n"
@@ -363,17 +379,28 @@ EOF
         filters, chain = OSLibrary::Debian::Filter::Factory.instance.filter( rule.filter )
         
         target = " -g qos-class#{rule.priority} "
+        # only match bypassed sessions (but non-local sessions are also marked with this)
         bypass = " -m mark --mark 0x01000000/0x01000000 "
+        # so also only match connections that are not untracked (this avoids matching non-locally bound sessions)
+        untrac = " -m conntrack ! --ctstate UNTRACKED "
 
         filters.each do |filter|
           ## Nothing to do if the filtering string is empty.
           break if filter.strip.empty?
-          iptables_rules << "#{IPTablesCommand} #{QoSMark.args} #{filter} #{bypass} #{target}\n"
+          iptables_rules << "#{IPTablesCommand} #{QoSMark.args} #{filter} #{bypass} #{untrac} #{target}\n"
         end
       rescue
         logger.warn( "The filter '#{rule.filter}' could not be parsed: #{$!}" )
       end
     end
+
+    # add default rules
+    # these don't point to qos-classX because they need to be separate.
+    # It is possible that the packet has been marked but the connection (example: SYN)
+    # If no connmark, save the default connmark
+    # If no mark, save the default mark
+    iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -m connmark --mark 0x00000000/0x00700000 -j CONNMARK --set-mark 0x00#{qos_settings.default_class}00000/0x00700000\n"
+    iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -m mark --mark 0x00000000/0x00700000 -j MARK --or-mark 0x00#{qos_settings.default_class}00000\n"
 
     os["override_manager"].write_file( QoSPacketFilterFile, iptables_rules, "\n" )    
   end

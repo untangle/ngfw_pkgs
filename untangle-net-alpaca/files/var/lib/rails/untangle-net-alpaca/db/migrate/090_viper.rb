@@ -45,10 +45,14 @@ class Viper < Alpaca::Migration
     remove_column :qos_settings, :upload_percentage
 
     # change default priorities 
-    change_column_default(:qos_settings, :prioritize_ssh, 0)
-    change_column_default(:qos_settings, :prioritize_ping, 0)
-    change_column_default(:qos_settings, :prioritize_ack, 0)
+    change_column_default(:qos_settings, :prioritize_ssh, 2)
+    change_column_default(:qos_settings, :prioritize_ping, 2)
+    change_column_default(:qos_settings, :prioritize_ack, 2)
     change_column_default(:qos_settings, :prioritize_gaming, 0)
+
+    # add new priority rules
+    add_column :qos_settings, :prioritize_dns, :integer, :default => 2
+    add_column :qos_settings, :prioritize_syn, :integer, :default => 2
 
     # change interfaces default bandwidth
     change_column_default(:interfaces, :download_bandwidth, 10000)
