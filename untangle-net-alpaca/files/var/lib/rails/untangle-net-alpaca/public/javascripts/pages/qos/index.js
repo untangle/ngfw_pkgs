@@ -140,9 +140,8 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 		store : this.priorityStore
 	    },{
 		xtype : "combo",
-		fieldLabel : this._( "Gaming Priority" ),
-		boxLabel : this._( "Priority for Wii, Xbox, Playstation, and Others" ),
-		name : "qos_settings.prioritize_gaming",
+		fieldLabel : this._( "TCP Control Priority" ),
+		name : "qos_settings.prioritize_tcp_control",
 		mode : "local",
 		triggerAction : "all",
 		editable : false,
@@ -151,8 +150,9 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 		store : this.priorityStore
 	    },{
 		xtype : "combo",
-		fieldLabel : this._( "TCP Control Priority" ),
-		name : "qos_settings.prioritize_tcp_control",
+		fieldLabel : this._( "Gaming Priority" ),
+		boxLabel : this._( "Priority for Wii, Xbox, Playstation, and Others" ),
+		name : "qos_settings.prioritize_gaming",
 		mode : "local",
 		triggerAction : "all",
 		editable : false,
