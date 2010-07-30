@@ -47,6 +47,8 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
         this.statisticsGrid = this.buildStatisticsGrid();
         
+	this.sessionsGrid = this.buildSessionsGrid();
+        
         var percentageStore = this.buildPercentageStore();
         
         var fieldsetItems = [{
@@ -182,6 +184,12 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             html : this._( "QoS Statistics" ),
             cls: 'label-section-heading-2'                                                
         }, this.statisticsGrid ]);
+
+        items = items.concat([{
+            xtype : "label",
+            html : this._( "Current Sessions" ),
+            cls: 'label-section-heading-2'                                                
+        }, this.sessionsGrid ]);
         
         Ext.apply( this, {
             defaults : {
@@ -550,6 +558,103 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         return statisticsGrid;
     },
 
+
+    buildSessionsGrid : function()
+    {
+        var store = new Ext.data.GroupingStore({
+            proxy : new Ext.data.MemoryProxy( this.settings["sessions"] ),
+
+            reader : new Ext.data.ArrayReader( {}, [{
+                name :  "proto",
+                mapping : "proto"
+            },{
+                name :  "state",
+                mapping : "state"
+            },{
+                name : "src",
+                mapping : "src"
+            },{
+                name : "dst",
+                mapping : "dst"
+            },{
+                name : "src_port",
+                mapping : "src_port"
+            },{
+                name : "dst_port",
+                mapping : "dst_port"
+            },{
+                name : "packets",
+                mapping : "packets"
+            },{
+                name : "bytes",
+                mapping : "bytes"
+            },{
+                name : "priority",
+                mapping : "priority"
+            }]),
+            sortInfo : { field : "proto", direction : "ASC" }
+        });
+
+        var sessionsGrid = new Ung.Alpaca.EditorGridPanel({
+            settings : this.settings,
+
+            store : store,
+            selectable : false,
+            sortable : true,
+            saveData : false,
+            height : 250,
+            
+            name : "sessions",
+
+            tbar : [{
+                text : "Refresh",
+                iconCls : 'icon-autorefresh',
+                handler : this.refreshSessions,
+                scope : this
+            }],
+
+            columns : [{
+                header : this._( "Protocol" ),
+                width: 55,
+                sortable: true,
+                dataIndex : "proto"
+            },{
+                header : this._( "Source IP" ),
+                width: 75,
+                sortable: true,
+                dataIndex : "src"
+            },{
+                header : this._( "Destination IP" ),
+                width: 75,
+                sortable: true,
+                dataIndex : "dst"
+            },{
+                header : this._( "Source Port" ),
+                width: 60,
+                sortable: true,
+                dataIndex : "src_port"
+            },{
+                header : this._( "Destination Port" ),
+                width: 60,
+                sortable: true,
+                dataIndex : "dst_port"
+            },{
+                id : "priority",
+                header : this._( "Priority" ),
+                width: 60,
+                sortable: true,
+                dataIndex : "priority",
+                renderer : function( value, metadata, record )
+                {
+                    return this.priorityMap[value];
+                }.createDelegate( this )
+            }]
+        });
+
+        sessionsGrid.store.load();
+        return sessionsGrid;
+    },
+
     saveMethod : "/qos/set_settings",
 
     refreshStatistics : function()
@@ -563,6 +668,19 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         if ( !statistics ) return;
 
         this.statisticsGrid.store.loadData( statistics );
+    },
+
+    refreshSessions : function()
+    {
+        var handler = this.completeRefreshSessions.createDelegate( this );
+        Ung.Alpaca.Util.executeRemoteFunction( "/qos/get_sessions", handler );
+    },
+
+    completeRefreshSessions : function( sessions, response, options )
+    {
+        if ( !sessions ) return;
+
+        this.sessionsGrid.store.loadData( sessions );
     },
 
     updateTotalBandwidth : function( store, record, operation ) {

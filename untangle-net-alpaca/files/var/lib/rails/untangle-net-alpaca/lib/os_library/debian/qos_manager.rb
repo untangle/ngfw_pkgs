@@ -70,8 +70,8 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
   MarkQoSMask     = 0x00700000
   MarkQoSInverseMask  = 0xFF8FFFFF
 
-  def status_v2( wan_interfaces = nil )
-    lines = `#{Service} status2`
+  def status( wan_interfaces = nil )
+    lines = `#{Service} status`
     pieces = lines.split( Regexp.new( 'interface: ', Regexp::MULTILINE ) )
 
     results = []
@@ -117,6 +117,41 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
                                 sent,
                                 tokens,
                                 ctokens )
+    end
+
+    results
+  end
+
+  def sessions( wan_interfaces = nil )
+    lines = `#{Service} sessions`
+
+    results = []
+
+    if ( wan_interfaces.nil? )
+      wan_interfaces = Interface.wan_interfaces
+    end
+
+    interface_name_map = {}
+    wan_interfaces.each { |i| interface_name_map[i.os_name] = i.name }
+      
+    lines.each do |line|
+      stats = line.split( Regexp.new( '\s+' ) )
+
+      print "line: ",line,"\n"
+      proto = stats[1]
+      state = stats[3]
+      src = stats[5]
+      dst = stats[7]
+      src_port = stats[9]
+      dst_port = stats[11]
+      packets = stats[13]
+      bytes = stats[15]
+      priority = stats[17]
+
+      print "stats: ",proto,state,src,dst,src_port,dst_port,packets,bytes,priority,"\n"
+      
+      results << QosSession.new(proto,state,src,dst,src_port,dst_port,packets,bytes,priority)
+
     end
 
     results

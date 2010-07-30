@@ -40,7 +40,8 @@ class QosController < ApplicationController
     end
     settings["qos_classes"] = QosClass.find( :all )
 
-    settings["status"] = os["qos_manager"].status_v2( wan_interfaces )
+    settings["status"] = os["qos_manager"].status( wan_interfaces )
+    settings["sessions"] = os["qos_manager"].sessions
     settings["start_time"] = os["qos_manager"].start_time
 
     ## Interface enumeration
@@ -50,7 +51,11 @@ class QosController < ApplicationController
   end
 
   def get_statistics
-    json_result( :values => os["qos_manager"].status_v2 )
+    json_result( :values => os["qos_manager"].status )
+  end
+
+  def get_sessions
+    json_result( :values => os["qos_manager"].sessions )
   end
   
   def set_settings

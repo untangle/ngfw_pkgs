@@ -23,6 +23,14 @@ class OSLibrary::QosManager < Alpaca::OS::ManagerBase
     attr_reader :download, :upload
   end
 
+  class QosSession
+    def initialize( proto, state, src, dst, src_port, dst_port, packets, bytes, priority )
+      @proto, @state, @src, @dst, @src_port, @dst_port, @packets, @bytes, @priority = proto, state, src, dst, src_port, dst_port, packets, bytes, priority
+    end
+    
+    attr_reader :proto, :state, :src, :dst, :src_port, :dst_port, :packets, :bytes, :priority
+  end
+
   class QosStatus
     def initialize( interface_name, priority, rate, burst, sent, tokens, ctokens )
       @interface_name, @priority, @rate, @burst, @sent, @tokens, @ctokens = interface_name, priority, rate, burst, sent, tokens, ctokens

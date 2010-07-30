@@ -190,8 +190,14 @@ status()
 #    tc -s filter ls dev $i
 }
 
+sessions()
+{
+    cat /proc/net/ip_conntrack | grep -v '127.0.0.1' | grep tcp | sed 's/[a-z]*=//g' | awk '{printf "proto %s state %s src %s dst %s src-port %s dst-port %s packets %s bytes %s priority %x\n", $1, $4, $5, $6, $7, $8, $9, $10, rshift(and($18,0x00700000),20)}'
+    cat /proc/net/ip_conntrack | grep -v '127.0.0.1' | grep udp | sed 's/[a-z]*=//g' | awk '{printf "proto %s state xx src %s dst %s src-port %s dst-port %s packets %s bytes %s priority %x\n", $1, $4, $5, $6, $7, $8, $9, rshift(and($18,0x00700000),20)}'
+}
+
 if [ $# -lt 1 ] ; then
-    echo "Usage $0 {start|stop|status|status2}"
+    echo "Usage $0 {start|stop|status|sessions}"
     exit 1
 fi
 
@@ -205,8 +211,8 @@ case "$1" in
     status)
         status
         ;;
-    status2)
-        status
+    sessions)
+        sessions
         ;;
     *)
         echo "unknown argument: ${1}"
