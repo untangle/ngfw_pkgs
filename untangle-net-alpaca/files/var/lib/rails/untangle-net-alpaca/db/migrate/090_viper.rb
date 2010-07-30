@@ -33,10 +33,10 @@ class Viper < Alpaca::Migration
     add_qos_class( :class_id => 1, :upload_reserved => 60, :upload_limit => 100, :download_limit => 0 )
     add_qos_class( :class_id => 2, :upload_reserved => 20, :upload_limit => 100, :download_limit => 100 )
     add_qos_class( :class_id => 3, :upload_reserved => 12, :upload_limit => 100, :download_limit => 100 )
-    add_qos_class( :class_id => 4, :upload_reserved =>  6, :upload_limit => 100, :download_limit => 100 )
+    add_qos_class( :class_id => 4, :upload_reserved =>  5, :upload_limit => 100, :download_limit => 100 )
     add_qos_class( :class_id => 5, :upload_reserved =>  1, :upload_limit =>  75, :download_limit =>  75 )
     add_qos_class( :class_id => 6, :upload_reserved =>  1, :upload_limit =>  50, :download_limit =>  50 )
-    add_qos_class( :class_id => 7, :upload_reserved =>  0, :upload_limit =>  10, :download_limit =>  10 )
+    add_qos_class( :class_id => 7, :upload_reserved =>  1, :upload_limit =>  10, :download_limit =>  10 )
 
     # remove old columns
     remove_column :qos_settings, :download

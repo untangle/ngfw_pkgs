@@ -96,9 +96,9 @@ add_htb_rules()
         fi
 
         if [ $UPLOAD_RESERVED = "none" ] ; then
-            # Can't provide no reservation
-            # TC says '"rate" is required'
-            RESERVED=" rate 1kbit "
+            # should never happen as UPLOAD_RESERVED must be 1-100
+            # Can't provide no reservation,TC says '"rate" is required'
+            RESERVED=" rate 100kbit "
         else
             RESERVED=" rate ${UPLOAD_RESERVED}kbit "
         fi
@@ -111,7 +111,7 @@ add_htb_rules()
 
 
         # egress outbound hierarchical token bucket for class $i - need quantum or prio?
- 	    run "$add_class $wan_interface parent 1:1 classid 1:1${i} htb $RESERVED $LIMITED"
+ 	    run "$add_class $wan_interface parent 1:1 classid 1:1${i} htb $RESERVED $LIMITED quantum 2000"
         run "$add_qdisc $wan_interface parent 1:1$i handle 1$i: $SFQ"
         run "$add_filtr $wan_interface parent 1: prio 1$i protocol ip u32 match mark 0x0${i}00000 0x0700000 flowid 1:1$i"
         # example:
@@ -143,7 +143,7 @@ add_htb_rules()
         LIMITED=" rate ${DOWNLOAD_LIMIT}kbit "
 
         # ingress inbound hierarchical token bucket for class $i - need quantum or prio?
- 	    run "$add_class $imq_interface parent 1:1 classid 1:1${i} htb $LIMITED"
+ 	    run "$add_class $imq_interface parent 1:1 classid 1:1${i} htb $LIMITED quantum 2000"
         run "$add_qdisc $imq_interface parent 1:1$i handle 1$i: $SFQ"
         run "$add_filtr $imq_interface parent 1: prio 1$i protocol ip u32 match mark 0x00${i}00000 0x00700000 flowid 1:1$i"
     done

@@ -38,15 +38,15 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         this.classGrid = this.buildClassGrid();
 
         this.bandwidthLabel = new Ext.form.Label({
-                xtype : "label",
-                html : this._( "WAN Bandwidth" ),
-                cls: 'label-section-heading-2'                
-            });
+            xtype : "label",
+            html : this._( "WAN Bandwidth" ),
+            cls: 'label-section-heading-2'                
+        });
 
         this.bandwidthGrid = this.buildBandwidthGrid();
 
         this.statisticsGrid = this.buildStatisticsGrid();
-                
+        
         var percentageStore = this.buildPercentageStore();
         
         var fieldsetItems = [{
@@ -176,13 +176,13 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             cls: 'label-section-heading-2'                                
         }, this.classGrid ]);
 
-                
+        
         items = items.concat([{
             xtype : "label",
             html : this._( "QoS Statistics" ),
             cls: 'label-section-heading-2'                                                
         }, this.statisticsGrid ]);
-                     
+        
         Ext.apply( this, {
             defaults : {
                 xtype : "fieldset"
@@ -327,7 +327,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             tbar : [],
             
             name : "bandwidth",
-                        
+            
             columns : [{
                 header : this._( "WAN" ),
                 width: 80,
@@ -401,7 +401,9 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 width: 40,
                 dataIndex : "upload_reserved",
                 editor : new Ext.form.NumberField({
-                    allowBlank : false 
+                    allowBlank : false,
+		    minValue : 1,
+		    maxValue : 100
                 }),
                 renderer : function( value, metadata, record ) { 
 		    if (value == 0) 
@@ -414,7 +416,9 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 width: 40,
                 dataIndex : "upload_limit",
                 editor : new Ext.form.NumberField({
-                    allowBlank : false 
+                    allowBlank : false,
+		    minValue : 0,
+		    maxValue : 100
                 }),
                 renderer : function( value, metadata, record ) { 
 		    if (value == 0) 
@@ -427,7 +431,9 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 width: 40,
                 dataIndex : "download_limit",
                 editor : new Ext.form.NumberField({
-                    allowBlank : false 
+                    allowBlank : false,
+		    minValue : 0,
+		    maxValue : 100
                 }),
                 renderer : function( value, metadata, record ) { 
 		    if (value == 0) 
@@ -441,7 +447,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         classGrid.store.load();
         
         return classGrid;
-     },
+    },
 
     buildStatisticsGrid : function()
     {

@@ -84,10 +84,11 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
     wan_interfaces.each { |i| interface_name_map[i.os_name] = i.name }
       
     pieces.each do |piece|
-      next unless piece.include?( "htb" ) and piece.include?( "leaf" )
+      next unless piece.include?( "class htb" )
       piece = piece.strip
       stats = piece.split( Regexp.new( '\s+', Regexp::MULTILINE ) )
-      
+
+      print "piece: ",piece,"\n"
       intf = stats[0]
       que_num = stats[6]
       rate = stats[10]
@@ -95,6 +96,7 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
       sent = stats[18] + " " + stats[19]
       tokens = stats[43]
       ctokens = stats[45]
+      print "intf: ",intf," que_num: ",que_num,"\n"
       
       queue_name = PriorityQueueToName[que_num]
       next if queue_name.nil?
@@ -275,7 +277,7 @@ flush_iptables_rules()
        ${IPTABLES} -t mangle -F qos-class${i} 2> /dev/null
     done
 
-    ${IPTABLES} -t mangle -D POSTROUTING -j alpaca-qos
+    ${IPTABLES} -t mangle -D POSTROUTING -j alpaca-qos 2> /dev/null
 }
 EOF
 
