@@ -241,12 +241,14 @@ add_iptables_rules()
     echo "### Add IPTables Rules ###"
 
     echo "# Set the default mark on UNTRACKED sessions"
-    ${IPTABLES} -t mangle -A alpaca-qos -m conntrack --ctstate UNTRACKED -j MARK --and-mark 0xff8fffff
-    ${IPTABLES} -t mangle -A alpaca-qos -m conntrack --ctstate UNTRACKED -j MARK --or-mark 0x00${DEFAULT_CLASS}00000
-    ${IPTABLES} -t mangle -A alpaca-qos -m conntrack --ctstate UNTRACKED -j CONNMARK --set-mark 0x00${i}00000/0x00700000
+
+    # You would not think untracked sessions could have Connmark, but I think they actually all share the same connmark
+    # This connmark should not be used anywhere, however we save the default one just in case.
+    # ${IPTABLES} -t mangle -A alpaca-qos -m state --state UNTRACKED -j CONNMARK --set-mark 0x00${DEFAULT_CLASS}00000/0x00700000
 
     echo "# Restore the mark for TRACKED sessions"
-    ${IPTABLES} -t mangle -A alpaca-qos -m conntrack ! --ctstate UNTRACKED -j CONNMARK --restore-mark --mask 0x00700000
+    # Using -m state --state instead of -m conntrack --ctstate ref: http://markmail.org/thread/b7eg6aovfh4agyz7
+    ${IPTABLES} -t mangle -A alpaca-qos -m state ! --state UNTRACKED -j CONNMARK --restore-mark --mask 0x00700000
 
     # for i in 1 2 3 4 5 6 7 ; do 
         # these are likely redundant
@@ -257,7 +259,7 @@ add_iptables_rules()
     for i in 1 2 3 4 5 6 7 ; do 
         ${IPTABLES} -t mangle -N qos-class${i} 2> /dev/null
         ${IPTABLES} -t mangle -F qos-class${i}
-        ${IPTABLES} -t mangle -A qos-class${i} -j MARK --or-mark 0x00${i}00000
+        ${IPTABLES} -t mangle -A qos-class${i} -j MARK --set-mark 0x00${i}00000/0x00700000
         ${IPTABLES} -t mangle -A qos-class${i} -j CONNMARK --set-mark 0x00${i}00000/0x00700000
     done
 
@@ -270,7 +272,7 @@ flush_iptables_rules()
     ${IPTABLES} -t mangle -F alpaca-qos 2> /dev/null
 
     for i in 1 2 3 4 5 6 7 ; do 
-       ${IPTABLES} -t mangle -F qos-class${i}
+       ${IPTABLES} -t mangle -F qos-class${i} 2> /dev/null
     done
 
     ${IPTABLES} -t mangle -D POSTROUTING -j alpaca-qos
@@ -297,22 +299,6 @@ EOF
       iptables_rules << "#{IPTablesCommand} -t mangle -A PREROUTING #{physdev_match} -j IMQ --todev #{dev_num}\n"
     end
 
-# FIXME - must be after connmark restore!!
-# FIXME - add SYN rule - http://lartc.org/howto/lartc.cookbook.fullnat.intro.html
-    if qos_settings.prioritize_ack != 0 then 
-      # only mark packet
-      target = "j MARK --or-mark 0x00#{qos_settings.prioritize_ack}00000"
-      iptables_rules << "### Prioritize ACK ###\n"
-      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --tcp-flags ACK ACK #{target}\n"
-    end
-
-    if qos_settings.prioritize_syn != 0 then 
-      # only mark packet
-      target = "j MARK --or-mark 0x00#{qos_settings.prioritize_syn}00000"
-      iptables_rules << "### Prioritize SYN ###\n"
-      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --tcp-flags SYN SYN #{target}\n"
-    end
-
     if qos_settings.prioritize_ping != 0 then 
       # mark both packet and session
       target = " -g qos-class#{qos_settings.prioritize_ping} "
@@ -326,6 +312,14 @@ EOF
       target = " -g qos-class#{qos_settings.prioritize_ssh} "
       iptables_rules << "### Prioritize SSH ###\n"
       iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --dport 22 #{target}\n"
+    end
+
+    if qos_settings.prioritize_dns != 0 then 
+      # mark both packet and session
+      target = " -g qos-class#{qos_settings.prioritize_dns} "
+      iptables_rules << "### Prioritize DNS ###\n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp --dport 53 #{target}\n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --dport 53 #{target}\n"
     end
 
     if qos_settings.prioritize_gaming != 0 then 
@@ -382,7 +376,7 @@ EOF
         # only match bypassed sessions (but non-local sessions are also marked with this)
         bypass = " -m mark --mark 0x01000000/0x01000000 "
         # so also only match connections that are not untracked (this avoids matching non-locally bound sessions)
-        untrac = " -m conntrack ! --ctstate UNTRACKED "
+        untrac = " -m state ! --state UNTRACKED "
 
         filters.each do |filter|
           ## Nothing to do if the filtering string is empty.
@@ -394,9 +388,26 @@ EOF
       end
     end
 
+    #
+    # These rules only match specific packets (not the entire session)
+    # As such they only mark the packet (not the connmark) and they must be evaluated last
+    #
+    iptables_rules << "### Packet Rules ###\n"
+
+    if qos_settings.prioritize_tcp_control != 0 then 
+      # only mark packet
+      target = "-j MARK --set-mark 0x00#{qos_settings.prioritize_tcp_control}00000/0x00700000"
+      iptables_rules << "### Prioritize TCP control ###\n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --tcp-flags SYN SYN #{target}\n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --tcp-flags RST RST #{target}\n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --tcp-flags FIN FIN #{target}\n"
+    end
+
+
+
     # add default rules
     # these don't point to qos-classX because they need to be separate.
-    # It is possible that the packet has been marked but the connection (example: SYN)
+    # It is possible that the packet has been marked but the connmark has not (example: SYN)
     # If no connmark, save the default connmark
     # If no mark, save the default mark
     iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -m connmark --mark 0x00000000/0x00700000 -j CONNMARK --set-mark 0x00#{qos_settings.default_class}00000/0x00700000\n"

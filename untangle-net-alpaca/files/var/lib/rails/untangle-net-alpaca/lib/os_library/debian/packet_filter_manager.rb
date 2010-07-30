@@ -117,7 +117,7 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
     MarkInterface = Chain.new( "markintf", "mangle", "PREROUTING", <<'EOF' )
 ## Clear out all of the bits for the interface mark
 #{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFF0000
-#{IPTablesCommand} #{args} -j CONNMARK --restore-mark --nfmask #{MultiWanMask}
+#{IPTablesCommand} #{args} -j CONNMARK --restore-mark --mask #{MultiWanMask}
 EOF
 
     ## Chain Used for natting in the prerouting table.

@@ -101,49 +101,65 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         items = items.concat([{
             xtype : "label",
             html : this._( "QoS Rules" ),
-            cls: 'label-section-heading-2'                                
-        },{
-	    xtype : "combo",
-	    fieldLabel : this._( "Ping Priority" ),
-	    name : "qos_settings.prioritize_ping",
-	    mode : "local",
-	    triggerAction : "all",
-	    editable : false,
-	    width : 140,
-	    listWidth : 110,
-	    store : this.priorityStore
+            cls: 'label-section-heading-2'
 	},{
-	    xtype : "combo",
-	    fieldLabel : this._( "ACK Priority" ),
-	    boxLabel : this._( "A High ACK Priority speeds up downloads while uploading" ),
-	    name : "qos_settings.prioritize_ack",
-	    mode : "local",
-	    triggerAction : "all",
-	    editable : false,
-	    width : 140,
-	    listWidth : 110,
-	    store : this.priorityStore
-	},{
-	    xtype : "combo",
-	    fieldLabel : this._( "SSH Priority" ),
-	    name : "qos_settings.prioritize_ssh",
-	    mode : "local",
-	    triggerAction : "all",
-	    editable : false,
-	    width : 140,
-	    listWidth : 110,
-	    store : this.priorityStore
-        },{
-	    xtype : "combo",
-	    fieldLabel : this._( "Gaming Priority" ),
-	    boxLabel : this._( "Priority for Wii, Xbox, Playstation, and Others" ),
-	    name : "qos_settings.prioritize_gaming",
-	    mode : "local",
-	    triggerAction : "all",
-	    editable : false,
-	    width : 140,
-	    listWidth : 110,
-	    store : this.priorityStore
+            autoHeight : true,
+            defaults : {
+                xtype : "textfield",
+                itemCls : 'label-width-2'                         
+            },
+	    items : [{
+		xtype : "combo",
+		fieldLabel : this._( "Ping Priority" ),
+		name : "qos_settings.prioritize_ping",
+		mode : "local",
+		triggerAction : "all",
+		editable : false,
+		width : 140,
+		listWidth : 110,
+		store : this.priorityStore
+	    },{
+		xtype : "combo",
+		fieldLabel : this._( "DNS Priority" ),
+		name : "qos_settings.prioritize_dns",
+		mode : "local",
+		triggerAction : "all",
+		editable : false,
+		width : 140,
+		listWidth : 110,
+		store : this.priorityStore
+	    },{
+		xtype : "combo",
+		fieldLabel : this._( "SSH Priority" ),
+		name : "qos_settings.prioritize_ssh",
+		mode : "local",
+		triggerAction : "all",
+		editable : false,
+		width : 140,
+		listWidth : 110,
+		store : this.priorityStore
+	    },{
+		xtype : "combo",
+		fieldLabel : this._( "Gaming Priority" ),
+		boxLabel : this._( "Priority for Wii, Xbox, Playstation, and Others" ),
+		name : "qos_settings.prioritize_gaming",
+		mode : "local",
+		triggerAction : "all",
+		editable : false,
+		width : 140,
+		listWidth : 110,
+		store : this.priorityStore
+	    },{
+		xtype : "combo",
+		fieldLabel : this._( "TCP Control Priority" ),
+		name : "qos_settings.prioritize_tcp_control",
+		mode : "local",
+		triggerAction : "all",
+		editable : false,
+		width : 140,
+		listWidth : 110,
+		store : this.priorityStore
+	    }]
 	},{
             xtype : "label",
             html : this._( "QoS Custom Rules" ),

@@ -43,16 +43,16 @@ class Viper < Alpaca::Migration
     remove_column :qos_settings, :download_percentage
     remove_column :qos_settings, :upload
     remove_column :qos_settings, :upload_percentage
+    remove_column :qos_settings, :prioritize_ack
 
     # change default priorities 
     change_column_default(:qos_settings, :prioritize_ssh, 2)
     change_column_default(:qos_settings, :prioritize_ping, 2)
-    change_column_default(:qos_settings, :prioritize_ack, 2)
     change_column_default(:qos_settings, :prioritize_gaming, 0)
 
     # add new priority rules
     add_column :qos_settings, :prioritize_dns, :integer, :default => 2
-    add_column :qos_settings, :prioritize_syn, :integer, :default => 2
+    add_column :qos_settings, :prioritize_tcp_control, :integer, :default => 2
 
     # change interfaces default bandwidth
     change_column_default(:interfaces, :download_bandwidth, 10000)
@@ -76,10 +76,6 @@ class Viper < Alpaca::Migration
       qos_settings.prioritize_ping = 1 if qos_settings.prioritize_ping == 10
       qos_settings.prioritize_ping = 2 if qos_settings.prioritize_ping == 20
       qos_settings.prioritize_ping = 3 if qos_settings.prioritize_ping == 30
-
-      qos_settings.prioritize_ack = 1 if qos_settings.prioritize_ack == 10
-      qos_settings.prioritize_ack = 2 if qos_settings.prioritize_ack == 20
-      qos_settings.prioritize_ack = 3 if qos_settings.prioritize_ack == 30
 
       qos_settings.prioritize_gaming = 1 if qos_settings.prioritize_gaming == 10
       qos_settings.prioritize_gaming = 2 if qos_settings.prioritize_gaming == 20
