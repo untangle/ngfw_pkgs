@@ -31,16 +31,10 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
   QoSRRDLog = "/var/log/untangle-net-alpaca/qosrrd.log"
 
   QoSConfig = "/etc/untangle-net-alpaca/qos-config"
-  QoSRules = "/etc/untangle-net-alpaca/tc-rules.d"
-#   PriorityMap = { 10 => "HIGHPRIO", 20 => "MIDPRIO", 30 => "LOWPRIO" }
-#   PriorityFiles = { "SYSTEM" => QoSRules + "/900-system-priority",
-#                     "HIGHPRIO" => QoSRules + "/100-high-priority",
-#                     "MIDPRIO"  => QoSRules + "/200-mid-priority",
-#                     "LOWPRIO"  => QoSRules + "/300-low-priority" }
   Service = "/etc/untangle-net-alpaca/qos-service"
   AptLog = "/var/log/uvm/apt.log"
   PriorityQueueToName = { 
-    "10:" => "0 - None", 
+    "10:" => "0 - Default", 
     "11:" => "1 - Very High", 
     "12:" => "2 - High", 
     "13:" => "3 - Medium", 
@@ -55,20 +49,11 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
   
   QoSMark = Chain.new( "alpaca-qos", "mangle", "PREROUTING", "" )
 
-  #packet filter iptables integration
+  ## packet filter iptables integration
   QoSPacketFilterFile = "#{OSLibrary::Debian::PacketFilterManager::ConfigDirectory}/800-qos"
 
-  ## Mark QoS priority buckets
-  MarkQoSClass   = [0x00000000,
-                    0x00100000,
-                    0x00200000,
-                    0x00300000,
-                    0x00400000,
-                    0x00500000,
-                    0x00600000,
-                    0x00700000]
-  MarkQoSMask     = 0x00700000
-  MarkQoSInverseMask  = 0xFF8FFFFF
+  MarkQoSMask         = "0x00700000"
+  MarkQoSInverseMask  = "0xFF8FFFFF"
 
   def status( wan_interfaces = nil )
     lines = `#{Service} status`
@@ -111,12 +96,7 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
       interface_name = intf if interface_name.nil?
 
       #( interface_name, priority, rate, burst, sent, tokens, ctokens )
-      results << QosStatus.new( interface_name, queue_name,
-                                rate,
-                                burst,
-                                sent,
-                                tokens,
-                                ctokens )
+      results << QosStatus.new( interface_name, queue_name, rate, burst, sent, tokens, ctokens )
     end
 
     results
@@ -218,11 +198,6 @@ EOF
   end
 
   def hook_write_files
-    tc_rules_files = {}
-
-#     PriorityFiles.each_pair do |key, filename|
-#       tc_rules_files[key] = header 
-#     end
 
     qos_settings = QosSettings.find( :first )
     qos_settings = QosSettings.new if qos_settings.nil?
@@ -245,12 +220,12 @@ DEFAULT_CLASS=#{qos_settings.default_class}
 EOF
 
     wan_interfaces.each do |intf|
-      build_interface_config( intf, qos_settings, settings, tc_rules_files )
+      build_interface_config( intf, qos_settings, settings )
     end
 
     wan_interfaces.each do |intf|
       qos_classes.each do |clazz|
-        build_class_config( clazz, intf, qos_settings, settings, tc_rules_files )
+        build_class_config( clazz, intf, qos_settings, settings )
       end
     end
 
@@ -258,18 +233,6 @@ EOF
 
     os["override_manager"].write_file( QoSConfig, settings, "\n" )
 
-# XXX
-# XXX
-# XXX
-#    rules.each do |rule|
-#      build_qos_rule( wan_interfaces, rule, tc_rules_files )
-#    end
-
-#     tc_rules_files.each_pair do |key, file_contents|
-#       os["override_manager"].write_executable( PriorityFiles[key], file_contents, "\n" )
-#     end
-
-    
     iptables_rules = header + "\n"
 
     iptables_rules << <<EOF
@@ -277,27 +240,19 @@ add_iptables_rules()
 {
     echo "### Add IPTables Rules ###"
 
-    echo "# Set the default mark on UNTRACKED sessions"
-
     # You would not think untracked sessions could have Connmark, but I think they actually all share the same connmark
     # This connmark should not be used anywhere, however we save the default one just in case.
-    # ${IPTABLES} -t mangle -A alpaca-qos -m state --state UNTRACKED -j CONNMARK --set-mark 0x00${DEFAULT_CLASS}00000/0x00700000
+    # ${IPTABLES} -t mangle -A alpaca-qos -m state --state UNTRACKED -j CONNMARK --set-mark 0x00${DEFAULT_CLASS}00000/#{MarkQoSMask}
 
-    echo "# Restore the mark for TRACKED sessions"
     # Using -m state --state instead of -m conntrack --ctstate ref: http://markmail.org/thread/b7eg6aovfh4agyz7
-    ${IPTABLES} -t mangle -A alpaca-qos -m state ! --state UNTRACKED -j CONNMARK --restore-mark --mask 0x00700000
+    ${IPTABLES} -t mangle -A alpaca-qos -m state ! --state UNTRACKED -j CONNMARK --restore-mark --mask #{MarkQoSMask}
 
-    # for i in 1 2 3 4 5 6 7 ; do 
-        # these are likely redundant
-        # ${IPTABLES} -t mangle -A alpaca-qos -m connmark --mark 0x00${i}00000/0x00700000 -g qos-class${i}
-        # ${IPTABLES} -t mangle -A alpaca-qos -m mark --mark 0x00${i}00000/0x00700000 -g qos-class${i}
-    # done
-
+    # Create special targets for both marking the current packet and the rest of the session via connmark
     for i in 1 2 3 4 5 6 7 ; do 
         ${IPTABLES} -t mangle -N qos-class${i} 2> /dev/null
         ${IPTABLES} -t mangle -F qos-class${i}
-        ${IPTABLES} -t mangle -A qos-class${i} -j MARK --set-mark 0x00${i}00000/0x00700000
-        ${IPTABLES} -t mangle -A qos-class${i} -j CONNMARK --set-mark 0x00${i}00000/0x00700000
+        ${IPTABLES} -t mangle -A qos-class${i} -j MARK --set-mark 0x00${i}00000/#{MarkQoSMask}
+        ${IPTABLES} -t mangle -A qos-class${i} -j CONNMARK --set-mark 0x00${i}00000/#{MarkQoSMask}
     done
 
     ${IPTABLES} -t mangle -A POSTROUTING -j alpaca-qos
@@ -314,6 +269,7 @@ flush_iptables_rules()
 
     ${IPTABLES} -t mangle -D POSTROUTING -j alpaca-qos 2> /dev/null
 }
+
 EOF
 
     iptables_rules << <<EOF
@@ -433,22 +389,20 @@ EOF
 
     if qos_settings.prioritize_tcp_control != 0 then 
       # only mark packet
-      target = "-j MARK --set-mark 0x00#{qos_settings.prioritize_tcp_control}00000/0x00700000"
+      target = "-j MARK --set-mark 0x00#{qos_settings.prioritize_tcp_control}00000/#{MarkQoSMask}"
       iptables_rules << "### Prioritize TCP control ###\n"
       iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --tcp-flags SYN SYN #{target}\n"
       iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --tcp-flags RST RST #{target}\n"
       iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --tcp-flags FIN FIN #{target}\n"
     end
 
-
-
     # add default rules
     # these don't point to qos-classX because they need to be separate.
     # It is possible that the packet has been marked but the connmark has not (example: SYN)
     # If no connmark, save the default connmark
     # If no mark, save the default mark
-    iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -m connmark --mark 0x00000000/0x00700000 -j CONNMARK --set-mark 0x00#{qos_settings.default_class}00000/0x00700000\n"
-    iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -m mark --mark 0x00000000/0x00700000 -j MARK --or-mark 0x00#{qos_settings.default_class}00000\n"
+    iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -m connmark --mark 0x00000000/#{MarkQoSMask} -j CONNMARK --set-mark 0x00#{qos_settings.default_class}00000/#{MarkQoSMask}\n"
+    iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -m mark --mark 0x00000000/#{MarkQoSMask} -j MARK --or-mark 0x00#{qos_settings.default_class}00000\n"
 
     os["override_manager"].write_file( QoSPacketFilterFile, iptables_rules, "\n" )    
   end
@@ -471,7 +425,7 @@ EOF
   end
 
   private
-  def build_class_config( clazz, interface, qos_settings, text, tc_rules_files )
+  def build_class_config( clazz, interface, qos_settings, text )
     os_name = interface.os_name
 
     download_limit = (clazz.download_limit/100.0 * interface.download_bandwidth * qos_settings.scaling_factor/100.0).round
@@ -495,12 +449,10 @@ EOF
   end
 
   private
-  def build_interface_config( interface, qos_settings, text, tc_rules_files )
+  def build_interface_config( interface, qos_settings, text )
     os_name = interface.os_name
     dev = os_name
 
-    # FIXME
-    # handle PPPoE
 
     text << <<EOF
 
@@ -508,72 +460,7 @@ EOF
 ## #{os_name}_DOWNLOAD_BANDWIDTH=#{interface.download_bandwidth}
 ## #{os_name}_UPLOAD_BANDWIDTH=#{interface.upload_bandwidth}
 EOF
-
-#     if ! qos_settings.prioritize_ping.nil? and qos_settings.prioritize_ping > 0
-#       tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ping} u32 match ip protocol 1 0xff flowid 1:#{qos_settings.prioritize_ping}\n"
-#     end
-
-#     if ! qos_settings.prioritize_ack.nil? and qos_settings.prioritize_ack > 0
-#       tc_rules_files["SYSTEM"] << "tc filter add dev #{dev} parent 1: protocol ip prio #{qos_settings.prioritize_ack} u32 match ip protocol 6 0xff match u8 0x05 0x0f at 0 match u16 0x0000 0xffc0 at 2 match u8 0x10 0xff at 33 flowid 1:#{qos_settings.prioritize_ack}\n"
-#     end
   end
 
-  def build_qos_rule( wan_interfaces, rule, tc_rules_files )
-    begin
-
-      ## The rules that don't match this criteria must be handled in iptables.
-      return if rule.filter.include?( "s-" )
-      return if rule.filter.include?( "d-local" )
-      return unless rule.filter.include?( "d-" )
-
-      priority = PriorityMap[rule.priority]
-      filter = ""
-      protocol_filter = []
-      conditions = rule.filter.split( "&&" )
-
-      conditions.each do |condition|
-        type, value = condition.split( "::" )
-        case type
-        when "d-port"
-          filter << " match ip dport #{value} 0xffff "
-        when "d-addr"
-          if ! value.include?( "/" )
-            value << "/32"
-          end
-          filter << " match ip dst #{value} "
-        when "protocol"
-          value.split( "," ).each do |protocol|
-            protocol = protocol.strip
-            protocol_id = ProtocolMap[protocol]
-            next if protocol_id.nil?
-            protocol_filter << "  match ip protocol #{protocol_id} 0xff "
-          end
-        end
-      end
-
-      ## If the protocol is not specified, apply this QoS rule to all protocols.
-      if protocol_filter.length == 0
-        protocol_filter = [ "" ]
-      end
-
-      
-
-      ## Apply this QoS rule to all of the WAN interfaces
-      wan_interfaces.each do |interface|
-        os_name = interface.os_name
-
-        #if interface.current_config.is_a?( IntfPppoe )
-        #  os_name="${PPPOE_INTERFACE_#{interface.os_name.downcase}}"
-        #end
-
-        protocol_filter.each do |protocol_filter|
-          tc_rules_files[priority] << "tc filter add dev #{os_name} parent 1: protocol ip prio #{rule.priority} u32 #{protocol_filter} #{filter} flowid 1:#{rule.priority}\n"
-        end
-      end
-
-    rescue
-      logger.warn( "The filter '#{rule.filter}' could not be parsed: #{$!}" )
-    end
-  end
 end
 
