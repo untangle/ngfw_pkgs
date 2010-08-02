@@ -69,18 +69,18 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             store : this.priorityNoDefaultStore,
         }]);
 
-        fieldsetItems = fieldsetItems.concat([{
-            xtype : "combo",
-            fieldLabel : this._( "Scaling Factor" ),
-	    boxLabel : this._( "What is this? Click Help for more information." ),
-            name : "qos_settings.scaling_factor",
-            mode : "local",
-            triggerAction : "all",
-            editable : false,
-            width : 60,
-            listWidth : 50,
-            store : percentageStore
-        }]);
+//         fieldsetItems = fieldsetItems.concat([{
+//             xtype : "combo",
+//             fieldLabel : this._( "Scaling Factor" ),
+// 	    boxLabel : this._( "What is this? Click Help for more information." ),
+//             name : "qos_settings.scaling_factor",
+//             mode : "local",
+//             triggerAction : "all",
+//             editable : false,
+//             width : 60,
+//             listWidth : 50,
+//             store : percentageStore
+//         }]);
 
         var items = [{
             html : this._("QoS"),                

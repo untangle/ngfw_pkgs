@@ -86,12 +86,13 @@ add_htb_rules()
     # egress filtering
     #
  	run "$add_qdisc $wan_interface root handle 1: htb default 1$DEFAULT_CLASS"
+    UPLOAD_BANDWIDTH=$(eval echo "$"${wan_interface}_UPLOAD_BANDWIDTH)
     for i in 1 2 3 4 5 6 7 ; do 
         UPLOAD_RESERVED=$(eval echo "$"${wan_interface}_CLASS${i}_UPLOAD_RESERVED)
         UPLOAD_LIMIT=$(eval echo "$"${wan_interface}_CLASS${i}_UPLOAD_LIMIT)
 
         if [ $UPLOAD_RESERVED = "none" ] && [ $UPLOAD_LIMIT = "none" ] ; then
-            #echo "none - skipping $i"
+            # echo - skipping $i
             continue
         fi
 
@@ -99,6 +100,7 @@ add_htb_rules()
             # should never happen as UPLOAD_RESERVED must be 1-100
             # Can't provide no reservation,TC says '"rate" is required'
             RESERVED=" rate 100kbit "
+            UPLOAD_RESERVED=100
         else
             RESERVED=" rate ${UPLOAD_RESERVED}kbit "
         fi
@@ -109,19 +111,21 @@ add_htb_rules()
             LIMITED=" ceil ${UPLOAD_LIMIT}kbit "
         fi
 
+        QUANTUM=`perl -e "print int((($UPLOAD_RESERVED/$UPLOAD_BANDWIDTH)*60000))"`
+        if [ $QUANTUM -lt 2000 ] ; then QUANTUM=2000; fi
 
         # egress outbound hierarchical token bucket for class $i - need quantum or prio?
- 	    run "$add_class $wan_interface parent 1:1 classid 1:1${i} htb $RESERVED $LIMITED quantum 2000"
+ 	    run "$add_class $wan_interface parent 1:1 classid 1:1${i} htb $RESERVED $LIMITED quantum $QUANTUM"
         run "$add_qdisc $wan_interface parent 1:1$i handle 1$i: $SFQ"
         run "$add_filtr $wan_interface parent 1: prio 1$i protocol ip u32 match mark 0x0${i}00000 0x0700000 flowid 1:1$i"
         # example:
-        #$add_class $dev parent 1:1 classid 1:11 htb rate 80kbit ceil 800kbit   #prio 2 quantum 1500
-  	    #$add_qdisc $dev parent 1:11 handle 11: $SFQ
-   	    #$add_filtr $dev parent 1: prio 11 protocol ip handle 2 fw flowid 1:11
-        #$add_filtr $dev parent 1: prio 11 protocol ip u32 match mark 0x0100000 0x0700000 flowid 1:11
+        # $add_class $dev parent 1:1 classid 1:11 htb rate 80kbit ceil 800kbit   #prio 2 quantum 1500
+  	    # $add_qdisc $dev parent 1:11 handle 11: $SFQ
+   	    # $add_filtr $dev parent 1: prio 11 protocol ip handle 2 fw flowid 1:11
+        # $add_filtr $dev parent 1: prio 11 protocol ip u32 match mark 0x0100000 0x0700000 flowid 1:11
     done
     # Default (doesn't work?)
- 	#echo $add_filtr $wan_interface parent 1: prio 20 flowid 1:1${DEFAULT_CLASS}
+ 	# echo $add_filtr $wan_interface parent 1: prio 20 flowid 1:1${DEFAULT_CLASS}
 
 
     #
@@ -130,25 +134,27 @@ add_htb_rules()
     #
     run "ifconfig $imq_interface up"
  	run "$add_qdisc $imq_interface root handle 1: htb default 1$DEFAULT_CLASS"
- 	#echo $add_class $imq_interface parent 1: classid 1:1 htb rate 800kbit ceil 800kbit 
+    DOWNLOAD_BANDWIDTH=$(eval echo "$"${wan_interface}_DOWNLOAD_BANDWIDTH)
     for i in 1 2 3 4 5 6 7 ; do 
         DOWNLOAD_LIMIT=$(eval echo "$"${wan_interface}_CLASS${i}_DOWNLOAD_LIMIT)
 
         # ingress policing $i
         if [ $DOWNLOAD_LIMIT = "none" ] ; then
-            #echo "none - skipping $i"
+            # echo "none - skipping $i"
             DOWNLOAD_LIMIT="999999999"
         fi
 
         LIMITED=" rate ${DOWNLOAD_LIMIT}kbit "
+        # because rate == ceil in the download case - quantum is basically irrelevent
+        QUANTUM=$(((8-$i)*2000))
 
         # ingress inbound hierarchical token bucket for class $i - need quantum or prio?
- 	    run "$add_class $imq_interface parent 1:1 classid 1:1${i} htb $LIMITED quantum 2000"
+ 	    run "$add_class $imq_interface parent 1:1 classid 1:1${i} htb $LIMITED quantum $QUANTUM"
         run "$add_qdisc $imq_interface parent 1:1$i handle 1$i: $SFQ"
         run "$add_filtr $imq_interface parent 1: prio 1$i protocol ip u32 match mark 0x00${i}00000 0x00700000 flowid 1:1$i"
     done
     # Default (doesn't work?)
- 	#echo $add_filtr $imq_interface parent 1: prio 20 flowid 1:1${DEFAULT_CLASS}
+ 	# echo $add_filtr $imq_interface parent 1: prio 20 flowid 1:1${DEFAULT_CLASS}
 }
 
 stop()
@@ -162,11 +168,11 @@ start()
 {
     flush_htb_rules
 
-    run "modprobe imq"
-
     if [ "${QOS_ENABLED}x" != "YESx" ]; then
         exit
     fi
+
+    run "modprobe imq"
 
     for i in $(echo $UPLINKS) ; do
         add_htb_rules $i

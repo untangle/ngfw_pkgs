@@ -18,7 +18,7 @@
 class Viper < Alpaca::Migration
   def self.up
     add_column :qos_settings, :default_class, :integer, :default => 3
-    add_column :qos_settings, :scaling_factor, :integer, :default => 90
+    add_column :qos_settings, :scaling_factor, :integer, :default => 100
 
     # create new class/priority table
     create_table :qos_classes do |table|

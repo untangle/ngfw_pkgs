@@ -457,8 +457,8 @@ EOF
     text << <<EOF
 
 # ${os_name} parameters
-## #{os_name}_DOWNLOAD_BANDWIDTH=#{interface.download_bandwidth}
-## #{os_name}_UPLOAD_BANDWIDTH=#{interface.upload_bandwidth}
+#{os_name}_DOWNLOAD_BANDWIDTH=#{interface.download_bandwidth}
+#{os_name}_UPLOAD_BANDWIDTH=#{interface.upload_bandwidth}
 EOF
   end
 
