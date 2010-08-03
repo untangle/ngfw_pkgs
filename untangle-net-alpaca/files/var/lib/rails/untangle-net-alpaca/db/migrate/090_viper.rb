@@ -25,18 +25,19 @@ class Viper < Alpaca::Migration
       table.column :class_id, :integer
       table.column :upload_reserved, :integer
       table.column :upload_limit, :integer
+      table.column :download_reserved, :integer
       table.column :download_limit, :integer
     end
 
     # create default values (8 different classes)
-    # 0 is reserved for default 
-    add_qos_class( :class_id => 1, :upload_reserved => 60, :upload_limit => 100, :download_limit => 0 )
-    add_qos_class( :class_id => 2, :upload_reserved => 20, :upload_limit => 100, :download_limit => 100 )
-    add_qos_class( :class_id => 3, :upload_reserved => 12, :upload_limit => 100, :download_limit => 100 )
-    add_qos_class( :class_id => 4, :upload_reserved =>  5, :upload_limit => 100, :download_limit => 100 )
-    add_qos_class( :class_id => 5, :upload_reserved =>  1, :upload_limit =>  75, :download_limit =>  75 )
-    add_qos_class( :class_id => 6, :upload_reserved =>  1, :upload_limit =>  50, :download_limit =>  50 )
-    add_qos_class( :class_id => 7, :upload_reserved =>  1, :upload_limit =>  10, :download_limit =>  10 )
+    # class 0 is reserved for default 
+    add_qos_class( :class_id => 1, :upload_reserved => 60, :upload_limit => 100, :download_reserved => 60, :download_limit => 100 )
+    add_qos_class( :class_id => 2, :upload_reserved => 20, :upload_limit => 100, :download_reserved => 20, :download_limit => 100 )
+    add_qos_class( :class_id => 3, :upload_reserved => 12, :upload_limit => 100, :download_reserved => 12, :download_limit => 100 )
+    add_qos_class( :class_id => 4, :upload_reserved =>  5, :upload_limit => 100, :download_reserved => 5, :download_limit => 100 )
+    add_qos_class( :class_id => 5, :upload_reserved =>  1, :upload_limit =>  75, :download_reserved => 1, :download_limit =>  75 )
+    add_qos_class( :class_id => 6, :upload_reserved =>  1, :upload_limit =>  50, :download_reserved => 1, :download_limit =>  50 )
+    add_qos_class( :class_id => 7, :upload_reserved =>  1, :upload_limit =>  10, :download_reserved => 1, :download_limit =>  10 )
 
     # remove old columns
     remove_column :qos_settings, :download

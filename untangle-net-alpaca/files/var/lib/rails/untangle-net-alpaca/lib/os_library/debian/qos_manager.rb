@@ -75,12 +75,12 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
 
       print "piece: ",piece,"\n"
       intf = stats[0]
-      que_num = stats[6]
-      rate = stats[10]
-      burst = stats[14]
-      sent = stats[18] + " " + stats[19]
-      tokens = stats[43]
-      ctokens = stats[45]
+      que_num = stats[7]
+      rate = stats[11]
+      burst = stats[15]
+      sent = stats[19] + " " + stats[20]
+      tokens = stats[44]
+      ctokens = stats[46]
       print "intf: ",intf," que_num: ",que_num,"\n"
       
       queue_name = PriorityQueueToName[que_num]
@@ -117,7 +117,7 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
     lines.each do |line|
       stats = line.split( Regexp.new( '\s+' ) )
 
-      print "line: ",line,"\n"
+      # print "line: ",line,"\n"
       proto = stats[1]
       state = stats[3]
       src = stats[5]
@@ -127,8 +127,7 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
       packets = stats[13]
       bytes = stats[15]
       priority = stats[17]
-
-      print "stats: ",proto,state,src,dst,src_port,dst_port,packets,bytes,priority,"\n"
+      # print "stats: ",proto,state,src,dst,src_port,dst_port,packets,bytes,priority,"\n"
       
       results << QosSession.new(proto,state,src,dst,src_port,dst_port,packets,bytes,priority)
 
@@ -305,6 +304,8 @@ EOF
       target = " -g qos-class#{qos_settings.prioritize_ssh} "
       iptables_rules << "### Prioritize SSH ###\n"
       iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --dport 22 #{target}\n"
+      # must add source port to to catch traffic going back to non-local bound sockets (no connmark)
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --sport 22 #{target}\n"
     end
 
     if qos_settings.prioritize_dns != 0 then 
@@ -313,6 +314,9 @@ EOF
       iptables_rules << "### Prioritize DNS ###\n"
       iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp --dport 53 #{target}\n"
       iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --dport 53 #{target}\n"
+      # must add source port to to catch traffic going back to non-local bound sockets (no connmark)
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp --sport 53 #{target}\n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --sport 53 #{target}\n"
     end
 
     if qos_settings.prioritize_gaming != 0 then 
@@ -428,23 +432,27 @@ EOF
   def build_class_config( clazz, interface, qos_settings, text )
     os_name = interface.os_name
 
+    download_reserved = (clazz.download_reserved/100.0 * interface.download_bandwidth  * qos_settings.scaling_factor/100.0).round
     download_limit = (clazz.download_limit/100.0 * interface.download_bandwidth * qos_settings.scaling_factor/100.0).round
-    upload_limit = (clazz.upload_limit/100.0 * interface.upload_bandwidth * qos_settings.scaling_factor/100.0).round
     upload_reserved = (clazz.upload_reserved/100.0 * interface.upload_bandwidth  * qos_settings.scaling_factor/100.0).round
+    upload_limit = (clazz.upload_limit/100.0 * interface.upload_bandwidth * qos_settings.scaling_factor/100.0).round
 
     # 0 has special meaning (means "no limit" or "no reservation")
     download_limit = "none" if clazz.download_limit == 0
     upload_limit = "none" if clazz.upload_limit == 0
     upload_reserved = "none" if clazz.upload_reserved == 0
+    download_reserved = "none" if clazz.download_reserved == 0
 
     if clazz.class_id == 0 then
       text << "\n# class/priority parameters\n"
     end
 
     text << <<EOF
-#{os_name}_CLASS#{clazz.class_id}_DOWNLOAD_LIMIT=#{download_limit}
-#{os_name}_CLASS#{clazz.class_id}_UPLOAD_LIMIT=#{upload_limit}
+
 #{os_name}_CLASS#{clazz.class_id}_UPLOAD_RESERVED=#{upload_reserved}
+#{os_name}_CLASS#{clazz.class_id}_UPLOAD_LIMIT=#{upload_limit}
+#{os_name}_CLASS#{clazz.class_id}_DOWNLOAD_RESERVED=#{download_reserved}
+#{os_name}_CLASS#{clazz.class_id}_DOWNLOAD_LIMIT=#{download_limit}
 EOF
   end
 

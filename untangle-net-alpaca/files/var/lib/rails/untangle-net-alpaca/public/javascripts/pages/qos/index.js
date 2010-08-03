@@ -385,7 +385,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         var classGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
             height : 200,
-            recordFields : [ "class_id", "upload_reserved", "upload_limit", "download_limit" ],
+            recordFields : [ "class_id", "upload_reserved", "upload_limit", "download_reserved", "download_limit" ],
             selectable : false,
             sortable : false,
             hasReorder: false,
@@ -396,7 +396,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             
             columns : [{
                 header : this._( "Priority" ),
-                width: 200,
+                width: 100,
                 sortable: false,
                 fixed : true,
                 dataIndex : "class_id",
@@ -425,7 +425,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 dataIndex : "upload_limit",
                 editor : new Ext.form.NumberField({
                     allowBlank : false,
-		    minValue : 0,
+		    minValue : 1,
 		    maxValue : 100
                 }),
                 renderer : function( value, metadata, record ) { 
@@ -435,12 +435,27 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 			return value + "%";
 		}.createDelegate( this )
             },{
+                header : this._( "Download Reservation" ),
+                width: 40,
+                dataIndex : "download_reserved",
+                editor : new Ext.form.NumberField({
+                    allowBlank : false,
+		    minValue : 1,
+		    maxValue : 100
+                }),
+                renderer : function( value, metadata, record ) { 
+		    if (value == 0) 
+			return this._("No reservation"); 
+		    else 
+			return value + "%";
+		}.createDelegate( this )
+            },{
                 header : this._( "Download Limit" ),
                 width: 40,
                 dataIndex : "download_limit",
                 editor : new Ext.form.NumberField({
                     allowBlank : false,
-		    minValue : 0,
+		    minValue : 1,
 		    maxValue : 100
                 }),
                 renderer : function( value, metadata, record ) { 
