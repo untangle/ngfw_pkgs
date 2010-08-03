@@ -178,7 +178,6 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             cls: 'label-section-heading-2'                                
         }, this.classGrid ]);
 
-        
         items = items.concat([{
             xtype : "label",
             html : this._( "QoS Statistics" ),
@@ -406,7 +405,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 }.createDelegate( this ),
             },{
                 header : this._( "Upload Reservation" ),
-                width: 40,
+                width: 50,
                 dataIndex : "upload_reserved",
                 editor : new Ext.form.NumberField({
                     allowBlank : false,
@@ -436,7 +435,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 		}.createDelegate( this )
             },{
                 header : this._( "Download Reservation" ),
-                width: 40,
+                width: 50,
                 dataIndex : "download_reserved",
                 editor : new Ext.form.NumberField({
                     allowBlank : false,
