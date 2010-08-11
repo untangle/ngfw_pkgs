@@ -280,7 +280,7 @@ else
 fi
 
 echo -n "Testing TCP Connectivity ... "
-echo "GET /" | nc -q 0 -w 15 updates.untangle.com 80 > /dev/null 2>&1
+echo "GET /" | netcat -q 0 -w 15 updates.untangle.com 80 > /dev/null 2>&1
 if [ "$?" = "0" ]; then
   echo "OK"
 else
@@ -342,7 +342,7 @@ EOF
     result["key"] = os["network_manager"].start_user_command( session_id, <<EOF )
 success="Successful"
 
-echo 1 | nc -q 0 -v -w 15 #{destination} #{port}
+echo 1 | netcat -q 0 -v -w 15 #{destination} #{port}
 if [ "$?" != "0" ]; then
   success="Failure"
 fi
