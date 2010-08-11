@@ -243,6 +243,10 @@ add_iptables_rules()
     # This connmark should not be used anywhere, however we save the default one just in case.
     # ${IPTABLES} -t mangle -A alpaca-qos -m state --state UNTRACKED -j CONNMARK --set-mark 0x00${DEFAULT_CLASS}00000/#{MarkQoSMask}
 
+    # if we see a UDP mark on a packet immediately save it to the conntrack before further processing
+    # We do this because userspace may decide to mark a packet and we need to save it to conntrack
+    ${IPTABLES} -t mangle -I alpaca-qos -p udp -m mark ! --mark 0x00000000/#{MarkQoSMask} -j CONNMARK --save-mark --mask #{MarkQoSMask}
+
     # Using -m state --state instead of -m conntrack --ctstate ref: http://markmail.org/thread/b7eg6aovfh4agyz7
     ${IPTABLES} -t mangle -A alpaca-qos -m state ! --state UNTRACKED -j CONNMARK --restore-mark --mask #{MarkQoSMask}
 

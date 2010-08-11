@@ -20,7 +20,6 @@ class Alpaca::Components::QosComponent < Alpaca::Component
     if ( config_level >= AlpacaSettings::Level::Advanced ) 
       menu_organizer.register_item( "/advanced/qos", menu_item( 350, _("QoS"), :action => "index" ))
     end
-    #menu_organizer.register_item( "/extjs/qos", menu_item( 600, _("QoS"), :action => "index" ))
   end
   
   def wizard_insert_closers( builder )

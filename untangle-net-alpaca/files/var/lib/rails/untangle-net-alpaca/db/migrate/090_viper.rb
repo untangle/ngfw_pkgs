@@ -17,8 +17,12 @@
 #
 class Viper < Alpaca::Migration
   def self.up
+    # add new qos settings
     add_column :qos_settings, :default_class, :integer, :default => 3
     add_column :qos_settings, :scaling_factor, :integer, :default => 100
+    # add new priority rules
+    add_column :qos_settings, :prioritize_dns, :integer, :default => 2
+    add_column :qos_settings, :prioritize_tcp_control, :integer, :default => 2
 
     # create new class/priority table
     create_table :qos_classes do |table|
@@ -50,10 +54,6 @@ class Viper < Alpaca::Migration
     change_column_default(:qos_settings, :prioritize_ssh, 2)
     change_column_default(:qos_settings, :prioritize_ping, 2)
     change_column_default(:qos_settings, :prioritize_gaming, 0)
-
-    # add new priority rules
-    add_column :qos_settings, :prioritize_dns, :integer, :default => 2
-    add_column :qos_settings, :prioritize_tcp_control, :integer, :default => 2
 
     # change interfaces default bandwidth
     change_column_default(:interfaces, :download_bandwidth, 10000)
@@ -87,15 +87,40 @@ class Viper < Alpaca::Migration
   end
   
   def self.down
+    remove_column :qos_settings, :default_class
+    remove_column :qos_settings, :scaling_factor
+    remove_column :qos_settings, :prioritize_dns
+    remove_column :qos_settings, :prioritize_tcp_control
+
     drop_table :qos_class
 
-    remove_column :qos_settings, :default_class
+    add_column :qos_settings, :download, :integer, :default => 1500
+    add_column :qos_settings, :download_percentage, :integer, :default => 80
+    add_column :qos_settings, :upload, :integer, :default => 384
+    add_column :qos_settings, :upload_percentage, :integer, :default => 95
+    add_column :qos_settings, :prioritize_ack, :integer, :default => 10
 
-    # FIXME - re-add download columns etc
+    change_column_default(:qos_settings, :prioritize_ssh, 20)
+    change_column_default(:qos_settings, :prioritize_ping, 20)
+    change_column_default(:qos_settings, :prioritize_gaming, 20)
+    change_column_default(:interfaces, :download_bandwidth, 1500)
+    change_column_default(:interfaces, :upload_bandwidth, 384)
 
-    # FIXME - convert rules back
+    # set back to medium (settings don't convert back 1-1)
+    qos_rules = QosRule.find( :all )
+    if !qos_rules.nil?
+      qos_rules.each do |entry| 
+        entry.priority = 20
+        entry.save
+      end
+    end
 
-    # FIXME - change defaults back
-
+    # set back to medium (settings don't convert back 1-1)
+    qos_settings = QosSettings.find( :first )
+    if !qos_settings.nil?
+      qos_settings.prioritize_ping = 20
+      qos_settings.prioritize_gaming = 20
+      qos_settings.save
+    end
   end
 end
