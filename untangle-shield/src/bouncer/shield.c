@@ -1167,7 +1167,7 @@ static void _debug_reputation_threshold       ( barfight_trie_line_t* line )
             
             /* This prints out all of hte information that is used to
              * calculate the reputation, at each level */
-            debug( 0, "Reputation[%08X,%d,%2d]: r %12lg a %08d r %12lg s %12lg t %12lg u %012lg e %12lg\n",
+            debug( NC_SHIELD_DEBUG_HIGH, "Reputation[%08X,%d,%2d]: r %12lg a %08d r %12lg s %12lg t %12lg u %012lg e %12lg\n",
                    ntohl( reputation->ip.s_addr ), item->depth, children, reputation->score,
                    reputation->active_sessions,   reputation->request_load.load,
                    reputation->session_load.load, reputation->tcp_chk_load.load,
