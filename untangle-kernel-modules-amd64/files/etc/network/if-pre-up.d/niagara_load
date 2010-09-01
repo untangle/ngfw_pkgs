@@ -3,16 +3,7 @@ module="n22xxed"
 device="n22xxed"
 prog=$(basename $0)
 logger="logger -t $prog"
-
-if uname -r | grep amd64 -q
-then
-   arch="amd64"
-   $logger "amd64 detected"
-else
-   arch="i386"
-   $logger "i386 detected"
-fi
-util="/usr/bin/n22xxed_util_$arch"
+util="/usr/sbin/n22xxed_util"
 mode="664"
 
 $logger "loading intel NIC driver kernel module"
