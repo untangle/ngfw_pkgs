@@ -8,10 +8,13 @@
 # touch factory-defaults file to tell system to start in wizard mode
 touch /usr/share/untangle/conf/factory-defaults
 
-echo "Restoring Database settings..."
+echo "Restoring settings..."
 
 # Drop that UVM database, and exit if it is unable to create it.
 psql -U postgres -c "DROP DATABASE IF EXISTS uvm" || exit 1
+
+# Drop all settings
+rm -rf /usr/share/untangle/settings/*
 
 createuser -U postgres -dSR untangle 2>/dev/null
 createdb -O postgres -U postgres uvm || exit 2
