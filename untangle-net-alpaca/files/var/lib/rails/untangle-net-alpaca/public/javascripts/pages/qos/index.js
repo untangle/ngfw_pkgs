@@ -47,15 +47,15 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
         this.statisticsGrid = this.buildStatisticsGrid();
         
-	this.sessionsGrid = this.buildSessionsGrid();
+        this.sessionsGrid = this.buildSessionsGrid();
         
-        var percentageStore = this.buildPercentageStore();
+            var percentageStore = this.buildPercentageStore();
         
-        var fieldsetItems = [{
-            xtype : "checkbox",
-            fieldLabel : this._( "Enabled" ),
-            name : "qos_settings.enabled"
-        }]
+            var fieldsetItems = [{
+                xtype : "checkbox",
+                fieldLabel : this._( "Enabled" ),
+                name : "qos_settings.enabled"
+            }];
 
         fieldsetItems = fieldsetItems.concat([{
             xtype : "combo",
@@ -66,21 +66,21 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             editable : false,
             width : 140,
             listWidth : 110,
-            store : this.priorityNoDefaultStore,
+            store : this.priorityNoDefaultStore
         }]);
 
-//         fieldsetItems = fieldsetItems.concat([{
-//             xtype : "combo",
-//             fieldLabel : this._( "Scaling Factor" ),
-// 	    boxLabel : this._( "What is this? Click Help for more information." ),
-//             name : "qos_settings.scaling_factor",
-//             mode : "local",
-//             triggerAction : "all",
-//             editable : false,
-//             width : 60,
-//             listWidth : 50,
-//             store : percentageStore
-//         }]);
+        //         fieldsetItems = fieldsetItems.concat([{
+        //             xtype : "combo",
+        //             fieldLabel : this._( "Scaling Factor" ),
+        //             boxLabel : this._( "What is this? Click Help for more information." ),
+        //             name : "qos_settings.scaling_factor",
+        //             mode : "local",
+        //             triggerAction : "all",
+        //             editable : false,
+        //             width : 60,
+        //             listWidth : 50,
+        //             store : percentageStore
+        //         }]);
 
         var items = [{
             html : this._("QoS"),                
@@ -97,72 +97,82 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
         items = items.concat([
             this.bandwidthLabel, 
-            this.bandwidthGrid ,
+            this.bandwidthGrid
         ]);
         
         items = items.concat([{
             xtype : "label",
             html : this._( "QoS Rules" ),
             cls: 'label-section-heading-2'
-	},{
+        },{
             autoHeight : true,
             defaults : {
                 xtype : "textfield",
                 itemCls : 'label-width-2'                         
             },
-	    items : [{
-		xtype : "combo",
-		fieldLabel : this._( "Ping Priority" ),
-		name : "qos_settings.prioritize_ping",
-		mode : "local",
-		triggerAction : "all",
-		editable : false,
-		width : 140,
-		listWidth : 110,
-		store : this.priorityStore
-	    },{
-		xtype : "combo",
-		fieldLabel : this._( "DNS Priority" ),
-		name : "qos_settings.prioritize_dns",
-		mode : "local",
-		triggerAction : "all",
-		editable : false,
-		width : 140,
-		listWidth : 110,
-		store : this.priorityStore
-	    },{
-		xtype : "combo",
-		fieldLabel : this._( "SSH Priority" ),
-		name : "qos_settings.prioritize_ssh",
-		mode : "local",
-		triggerAction : "all",
-		editable : false,
-		width : 140,
-		listWidth : 110,
-		store : this.priorityStore
-	    },{
-		xtype : "combo",
-		fieldLabel : this._( "TCP Control Priority" ),
-		name : "qos_settings.prioritize_tcp_control",
-		mode : "local",
-		triggerAction : "all",
-		editable : false,
-		width : 140,
-		listWidth : 110,
-		store : this.priorityStore
-	    },{
-		xtype : "combo",
-		fieldLabel : this._( "Gaming Priority" ),
-		boxLabel : this._( "Priority for Wii, Xbox, Playstation, and Others" ),
-		name : "qos_settings.prioritize_gaming",
-		mode : "local",
-		triggerAction : "all",
-		editable : false,
-		width : 140,
-		listWidth : 110,
-		store : this.priorityStore
-	    }]
-	},{
+            items : [{
+                xtype : "combo",
+                fieldLabel : this._( "Ping Priority" ),
+                name : "qos_settings.prioritize_ping",
+                mode : "local",
+                triggerAction : "all",
+                editable : false,
+                width : 140,
+                listWidth : 110,
+                store : this.priorityStore
+            },{
+                xtype : "combo",
+                fieldLabel : this._( "DNS Priority" ),
+                name : "qos_settings.prioritize_dns",
+                mode : "local",
+                triggerAction : "all",
+                editable : false,
+                width : 140,
+                listWidth : 110,
+                store : this.priorityStore
+            },{
+                xtype : "combo",
+                fieldLabel : this._( "SSH Priority" ),
+                name : "qos_settings.prioritize_ssh",
+                mode : "local",
+                triggerAction : "all",
+                editable : false,
+                width : 140,
+                listWidth : 110,
+                store : this.priorityStore
+            },{
+                xtype : "combo",
+                fieldLabel : this._( "TCP Control Priority" ),
+                name : "qos_settings.prioritize_tcp_control",
+                mode : "local",
+                triggerAction : "all",
+                editable : false,
+                width : 140,
+                listWidth : 110,
+                store : this.priorityStore
+            },{
+                xtype : "combo",
+                fieldLabel : this._( "OpenVPN Priority" ),
+                name : "qos_settings.prioritize_openvpn",
+                mode : "local",
+                triggerAction : "all",
+                editable : false,
+                width : 140,
+                listWidth : 110,
+                store : this.priorityStore
+            },{
+                xtype : "combo",
+                fieldLabel : this._( "Gaming Priority" ),
+                boxLabel : this._( "Priority for Wii, Xbox, Playstation, and Others" ),
+                name : "qos_settings.prioritize_gaming",
+                mode : "local",
+                triggerAction : "all",
+                editable : false,
+                width : 140,
+                listWidth : 110,
+                store : this.priorityStore
+            }]
+        },{
             xtype : "label",
             html : this._( "QoS Custom Rules" ),
             cls: 'label-section-heading-2'                                
@@ -357,7 +367,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 editor : new Ext.form.NumberField({
                     allowBlank : false 
                 }),
-                renderer : function( value, metadata, record ) { return value + this._( " kbps" )}.createDelegate( this )
+                renderer : function( value, metadata, record ) { return value + this._( " kbps" );}.createDelegate( this )
             },{
                 header : this._( "Upload Bandwidth" ),
                 width: 84,
@@ -365,7 +375,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 editor : new Ext.form.NumberField({
                     allowBlank : false 
                 }),
-                renderer : function( value, metadata, record ) { return value + this._( " kbps" )}.createDelegate( this )
+                renderer : function( value, metadata, record ) { return value + this._( " kbps" );}.createDelegate( this )
             }]
         });
 
@@ -402,67 +412,67 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 renderer : function( value, metadata, record )
                 {
                     return this.priorityMap[value];
-                }.createDelegate( this ),
+                }.createDelegate( this )
             },{
                 header : this._( "Upload Reservation" ),
                 width: 50,
                 dataIndex : "upload_reserved",
                 editor : new Ext.form.NumberField({
                     allowBlank : false,
-		    minValue : 1,
-		    maxValue : 100
+                    minValue : 1,
+                    maxValue : 100
                 }),
                 renderer : function( value, metadata, record ) { 
-		    if (value == 0) 
-			return this._("No reservation"); 
-		    else 
-			return value + "%";
-		}.createDelegate( this )
+                    if (value == 0) 
+                        return this._("No reservation"); 
+                    else 
+                        return value + "%";
+                }.createDelegate( this )
             },{
                 header : this._( "Upload Limit" ),
                 width: 40,
                 dataIndex : "upload_limit",
                 editor : new Ext.form.NumberField({
                     allowBlank : false,
-		    minValue : 1,
-		    maxValue : 100
+                    minValue : 1,
+                    maxValue : 100
                 }),
                 renderer : function( value, metadata, record ) { 
-		    if (value == 0) 
-			return this._("No limit"); 
-		    else 
-			return value + "%";
-		}.createDelegate( this )
+                    if (value == 0) 
+                        return this._("No limit"); 
+                    else 
+                        return value + "%";
+                }.createDelegate( this )
             },{
                 header : this._( "Download Reservation" ),
                 width: 50,
                 dataIndex : "download_reserved",
                 editor : new Ext.form.NumberField({
                     allowBlank : false,
-		    minValue : 1,
-		    maxValue : 100
+                    minValue : 1,
+                    maxValue : 100
                 }),
                 renderer : function( value, metadata, record ) { 
-		    if (value == 0) 
-			return this._("No reservation"); 
-		    else 
-			return value + "%";
-		}.createDelegate( this )
+                    if (value == 0) 
+                        return this._("No reservation"); 
+                    else 
+                        return value + "%";
+                }.createDelegate( this )
             },{
                 header : this._( "Download Limit" ),
                 width: 40,
                 dataIndex : "download_limit",
                 editor : new Ext.form.NumberField({
                     allowBlank : false,
-		    minValue : 1,
-		    maxValue : 100
+                    minValue : 1,
+                    maxValue : 100
                 }),
                 renderer : function( value, metadata, record ) { 
-		    if (value == 0) 
-			return this._("No limit"); 
-		    else 
-			return value + "%";
-		}.createDelegate( this )
+                    if (value == 0) 
+                        return this._("No limit"); 
+                    else 
+                        return value + "%";
+                }.createDelegate( this )
             }]
         });
 
@@ -708,11 +718,11 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             d += items[c].data.download_bandwidth;
         }
 
-	var d_Mbit = d/1000;
-	var u_Mbit = u/1000;
+        var d_Mbit = d/1000;
+        var u_Mbit = u/1000;
 
         var message = String.format( this._( "WAN Bandwidth &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Total: {0} kbps ({1} Mbit) download, {2} kbps ({3} Mbit) upload</i>" ), d, d_Mbit, u, u_Mbit );
-	this.bandwidthLabel.html = message;
+        this.bandwidthLabel.html = message;
         //this.bandwidthLabel.setText( message );
     }
 });

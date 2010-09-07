@@ -23,6 +23,7 @@ class Viper < Alpaca::Migration
     # add new priority rules
     add_column :qos_settings, :prioritize_dns, :integer, :default => 2
     add_column :qos_settings, :prioritize_tcp_control, :integer, :default => 2
+    add_column :qos_settings, :prioritize_openvpn, :integer, :default => 0
 
     # create new class/priority table
     create_table :qos_classes do |table|

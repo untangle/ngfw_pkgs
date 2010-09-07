@@ -44,7 +44,7 @@ function updateBridges( stageId )
 
     var selectTag = document.getElementById( select );
     if ( selectTag == null ) {
-	return;
+    return;
     }
     selectTag.options.length = 0;
     for ( var c = 0 ; c< len ; c++ ) {
@@ -64,8 +64,8 @@ function updateBridges( stageId )
         switch ( configType ) {
         case 'static':
         case 'dynamic':
-	    /*            html += "<option value='" + intf.osName + "'>" + intf.name + "</option>";*/
-	    selectTag.options[c] = new Option( intf.name, intf.osName );
+        /*            html += "<option value='" + intf.osName + "'>" + intf.name + "</option>";*/
+        selectTag.options[c] = new Option( intf.name, intf.osName );
             break;
 
         default:

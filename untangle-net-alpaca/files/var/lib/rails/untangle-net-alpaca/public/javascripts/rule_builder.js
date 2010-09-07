@@ -112,7 +112,7 @@ var RuleBuilder =
                 
         try {
             Element.remove( rowId );
-			this.updateRowStyles('rule-builder');
+            this.updateRowStyles('rule-builder');
         } catch ( e ) {
             /* ignoring the error */
         }
@@ -162,19 +162,19 @@ var RuleBuilder =
     {
         var fieldHash = { row_id : rowId };
 
-	this.manager.rowId = rowId
-	this.manager.tableId = tableId;
+    this.manager.rowId = rowId
+    this.manager.tableId = tableId;
 
-	this.manager.deleteOnCancel = deleteOnCancel; 
+    this.manager.deleteOnCancel = deleteOnCancel; 
 
         for ( var c = 0 ; c < this.manager.fields.length ; c++ ) {
             var field = document.getElementById( this.manager.fields[c] + "_" + rowId );
             if ( field == null ) {
-				field = document.getElementById( this.manager.fields[c] + "[" + rowId + "]"); //EXT JS wants to put brackets in the variable name when it makes a select box substitution
-				if (field == null) {
-                	alert( "Missing the field: " + this.manager.fields[c] );
-                	return;
-				}
+                field = document.getElementById( this.manager.fields[c] + "[" + rowId + "]"); //EXT JS wants to put brackets in the variable name when it makes a select box substitution
+                if (field == null) {
+                    alert( "Missing the field: " + this.manager.fields[c] );
+                    return;
+                }
             }
                         
             /* Append this value to the field array */
@@ -201,9 +201,9 @@ var RuleBuilder =
 
     cancel : function()
     {
-	if (this.manager.deleteOnCancel) {
-	    TableManager.remove( this.manager.tableId, this.manager.rowId );
-	}
+    if (this.manager.deleteOnCancel) {
+        TableManager.remove( this.manager.tableId, this.manager.rowId );
+    }
         Element.hide( "overlay" );
         Element.hide( "ie-overlay" );
 
@@ -255,11 +255,11 @@ var RuleBuilder =
             var field = document.getElementById( this.manager.fields[c] + "_" + rowId );
             
             if ( field == null ) {
-				field = document.getElementById( this.manager.fields[c] + "[" + rowId + "]");
-				if (field == null) {
-                	alert( "Missing the field: " + this.manager.fields[c] );
-                	return;
-				}
+                field = document.getElementById( this.manager.fields[c] + "[" + rowId + "]");
+                if (field == null) {
+                    alert( "Missing the field: " + this.manager.fields[c] );
+                    return;
+                }
             }
 
             if ( this.manager.fields[c] == "filters" ) {
@@ -275,15 +275,15 @@ var RuleBuilder =
                     field.checked = newValue.checked;
                 } else {
                     field.value = newValue.value;
-					
-					//hack for IE6 Ext combobox
-					//might be better to use combobox.setValue, if we could construct the combobox
-					if (field.nextSibling) {
+                    
+                    //hack for IE6 Ext combobox
+                    //might be better to use combobox.setValue, if we could construct the combobox
+                    if (field.nextSibling) {
 
-						if ((" "+field.nextSibling.className+" ").indexOf(" combobox ") != -1) {
-								field.nextSibling.value = newValue.value;								
-						}
-					}
+                        if ((" "+field.nextSibling.className+" ").indexOf(" combobox ") != -1) {
+                                field.nextSibling.value = newValue.value;                                
+                        }
+                    }
                 }
             }
         }
@@ -291,10 +291,10 @@ var RuleBuilder =
         enableSave();
     },
 
-  	updateRowStyles : function( tableId)
+      updateRowStyles : function( tableId)
     {
 
-		var table = document.getElementById( tableId );
+        var table = document.getElementById( tableId );
 
         /* Ignore anything that doesn't exist */
         if ( table == null ) return;

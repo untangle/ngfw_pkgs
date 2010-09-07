@@ -323,6 +323,17 @@ EOF
       iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --sport 53 #{target}\n"
     end
 
+    if qos_settings.prioritize_openvpn != 0 then 
+      # mark both packet and session
+      target = " -g qos-class#{qos_settings.prioritize_openvpn} "
+      iptables_rules << "### Prioritize DNS ###\n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp --dport 1194 #{target}\n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --dport 1194 #{target}\n"
+      # must add source port to to catch traffic going back to non-local bound sockets (no connmark)
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p udp --sport 1194 #{target}\n"
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --sport 1194 #{target}\n"
+    end
+
     if qos_settings.prioritize_gaming != 0 then 
       iptables_rules << "### Prioritize Gaming ###\n"
       # mark both packet and session

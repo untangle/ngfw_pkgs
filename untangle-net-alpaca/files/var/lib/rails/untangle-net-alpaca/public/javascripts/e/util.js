@@ -183,7 +183,7 @@ Ung.Alpaca.Util = {
     
     // Add the additional 'advanced' VTypes
     initExtVTypes: function(i18n){
-    	
+        
         Ext.apply(Ext.form.VTypes, {
             ipAddressMask : /[ 0-9\.]/,
 
@@ -201,7 +201,7 @@ Ung.Alpaca.Util = {
                 val = val.trim();
                 var tokens = val.split(/ *\/ */);
                 if (tokens.length < 1 && tokens.length > 2) {
-            	    return false;
+                    return false;
                 }
                 // validate ip_address
                 if (!this.ipAddress(tokens[0], field)) {
@@ -209,41 +209,41 @@ Ung.Alpaca.Util = {
                 }
                 //validate netmask
                 if (tokens.length == 2) {
-            	    var netmask = tokens[1];
-            	    if (netmask.indexOf(".") < 0 ) {
-            		// short format
-            		var netmaskNum = parseInt(netmask);
-            		return (!isNaN(netmaskNum) && netmaskNum >=0 && netmaskNum <= 32);
-            	    } else {
-            		// long format
-            		var netmaskTokens = netmask.split('.');
-            		if (netmaskTokens.length != 4) {
-            		    return false;
-            		} else {
-            		    var validNetmaskTokens = new Array(0, 128, 192, 224, 240, 248, 252, 254, 255)
-            		    for (var i=0, subnetSection = true; i<4; i++) {
-            			if (subnetSection) {
+                    var netmask = tokens[1];
+                    if (netmask.indexOf(".") < 0 ) {
+                    // short format
+                    var netmaskNum = parseInt(netmask);
+                    return (!isNaN(netmaskNum) && netmaskNum >=0 && netmaskNum <= 32);
+                    } else {
+                    // long format
+                    var netmaskTokens = netmask.split('.');
+                    if (netmaskTokens.length != 4) {
+                        return false;
+                    } else {
+                        var validNetmaskTokens = new Array(0, 128, 192, 224, 240, 248, 252, 254, 255)
+                        for (var i=0, subnetSection = true; i<4; i++) {
+                        if (subnetSection) {
                                     if (netmaskTokens[i] != 255 ) {
-                                	subnetSection = false;
+                                    subnetSection = false;
                                     }
                                     var isCurrentTokenValid = false;
-            			    for ( var j=0; j< validNetmaskTokens.length; j++) {
-            				if (netmaskTokens[i] == validNetmaskTokens[j]) {
-            				    isCurrentTokenValid = true;
-            				    break;
-            				}
-            			    }
-            			    if (!isCurrentTokenValid) {
-            				return false;
-            			    }
-            			} else {
-            			    if (netmaskTokens[i] != 0) {
-            				return false;
-            			    }
-            			}
-            		    }
-            		}
-            	    }
+                            for ( var j=0; j< validNetmaskTokens.length; j++) {
+                            if (netmaskTokens[i] == validNetmaskTokens[j]) {
+                                isCurrentTokenValid = true;
+                                break;
+                            }
+                            }
+                            if (!isCurrentTokenValid) {
+                            return false;
+                            }
+                        } else {
+                            if (netmaskTokens[i] != 0) {
+                            return false;
+                            }
+                        }
+                        }
+                    }
+                    }
                 }
                 return true;
             },
@@ -274,13 +274,13 @@ Ung.Alpaca.Util = {
             //A list of hostnames separated by spaces. 
             hostnameList : function (val, field) {
                 val = val.trim();
-          	var hostnames = val.split(/[\s,]+/)
-          	for (var i=0; i < hostnames.length; i++) {
-          	    if (!this.hostname(hostnames[i], field)) {
-          		return false;
-          	    }
-          	}
-          	return true;
+              var hostnames = val.split(/[\s,]+/)
+              for (var i=0; i < hostnames.length; i++) {
+                  if (!this.hostname(hostnames[i], field)) {
+                  return false;
+                  }
+              }
+              return true;
             },
             hostnameListText: i18n._('Invalid List of Hostnames.'),
             
@@ -288,7 +288,7 @@ Ung.Alpaca.Util = {
 
             domainNameSuffix: function(val, field) {
                 val = val.trim();
-          	return this.hostname(val, field)
+              return this.hostname(val, field)
             },
             domainNameSuffixText: i18n._('Invalid Domain Name Suffix.'),
             
