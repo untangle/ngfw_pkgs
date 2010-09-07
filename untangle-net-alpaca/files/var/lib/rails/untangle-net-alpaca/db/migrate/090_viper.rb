@@ -60,6 +60,18 @@ class Viper < Alpaca::Migration
     change_column_default(:interfaces, :download_bandwidth, 10000)
     change_column_default(:interfaces, :upload_bandwidth, 10000)
 
+    # remove SSH rule (now has a built-in)
+    custom_rules = QosRule.find( :all, :conditions => [ "description='SSH Traffic'" ] )
+    custom_rules.each do |rule|
+      rule.destroy
+    end
+
+    # remove DNS rule (now has a built-in)
+    custom_rules = QosRule.find( :all, :conditions => [ "description='DNS Traffic'" ] )
+    custom_rules.each do |rule|
+      rule.destroy
+    end
+
     # convert rules
     qos_rules = QosRule.find( :all )
     if !qos_rules.nil?
