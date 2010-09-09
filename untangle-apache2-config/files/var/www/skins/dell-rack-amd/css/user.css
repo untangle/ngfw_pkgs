@@ -1,6 +1,6 @@
 html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0;}img,body,html{border:0;}
 body{
-	font-family:Tahoma, Arial, Helvetica, sans-serif;
+    font-family:Tahoma, Arial, Helvetica, sans-serif;
 }  
 /* quarantine page body */
 body.quarantine {
@@ -18,15 +18,15 @@ body.blockpage
 }
 /* quarantine content */
 body.quarantine #content {
-	width:75%;
+    width:75%;
     background: transparent url(../images/user/background_content.png) repeat-x !important;
-	border:1px solid #CCC;
+    border:1px solid #CCC;
     margin:0 auto;
-	margin-top:50px;
-	
+    margin-top:50px;
+    
 }
 .service-error-height{
-	height:400px;
+    height:400px;
 }
 /* blockpage content */
 body.blockpage #content
@@ -65,7 +65,7 @@ body.blockpage p.contact
 }
 /* header container */
 #header {
-	margin-bottom: 0px;
+    margin-bottom: 0px;
 }
 /* quarantine header container */
 body.quarantine #header
@@ -86,11 +86,11 @@ body.quarantine #header .title
 }
 /* block page title */
 .title-block-page {
-	padding-left: 30px;
-	vertical-align: bottom;
-	text-align: left;
-	font: bold 36px arial, tahoma, helvetica, sans-serif;
-	color: #67686B;
+    padding-left: 30px;
+    vertical-align: bottom;
+    text-align: left;
+    font: bold 36px arial, tahoma, helvetica, sans-serif;
+    color: #67686B;
 }
 /* blocked page icon*/
 .icon-block {
@@ -106,47 +106,47 @@ body.quarantine #header .title
     color:#333;
 }
 .message-2{
-	display:block;
-	margin-bottom:10px;
+    display:block;
+    margin-bottom:10px;
 }
 .message-container{
-	 padding:2px;
+     padding:2px;
 }
 .white-background{
-	background-color:#FFF;
-	background-image:none;
+    background-color:#FFF;
+    background-image:none;
 }
 .quarantine-left-indented-2{
-	margin-left:8.8em;
+    margin-left:8.8em;
 }
 .quarantine-left-indented{
-	margin-left:20px;
+    margin-left:20px;
 }
 .quarantine-received-messages-grid{
-	margin:7px 0px 0px 20px;
-	width:500px;
+    margin:7px 0px 0px 20px;
+    width:500px;
 }
 /* safelist grid */
 .safelist-grid{
-	width:50%;
+    width:50%;
 }
 /*
 .safelist-grid, .quarantine-grid{
-	margin-top:20px;
+    margin-top:20px;
 }
 */
 .quarantine-label{
-	font-size:9pt;
-	margin:20px 0px 0px 10px;
+    font-size:9pt;
+    margin:20px 0px 0px 10px;
 }
 .quarantine-received-messages{
-	margin-top:50px;
+    margin-top:50px;
 }
-.quarantine-change-address{	
-	display:inline;
-	margin:0px 0px 0px 10px;
-	position:relative;
-	top:7px;
+.quarantine-change-address{    
+    display:inline;
+    margin:0px 0px 0px 10px;
+    position:relative;
+    top:7px;
 }
 
 .quarantine-attachment-header
@@ -207,8 +207,8 @@ body.blockpage #header .title
 }
 /* block page information list container*/
 .info-list {
-	margin-top: 10px;
-	margin-bottom: 20px;
+    margin-top: 10px;
+    margin-bottom: 20px;
     width:340px;
     margin-left:auto;
     margin-right:auto;
@@ -250,22 +250,22 @@ button.icon-add-row {
     background: transparent url(../images/user/icon_safelist.png) no-repeat center left !important;
 }
 button.icon-delete-row{
-	background:transparent url(../images/user/icon_remove.png) no-repeat center left !important;
+    background:transparent url(../images/user/icon_remove.png) no-repeat center left !important;
 }
  /* Ext Js Overrides - across the board */
 .x-grid3-hd-inner{
-	text-transform:capitalize;
+    text-transform:capitalize;
 }
 .x-fieldset{
-	padding:5px 10px 10px 20px;
-	border:none;
+    padding:5px 10px 10px 20px;
+    border:none;
 }
 .x-fieldset-bwrap{
-	padding-bottom:5px;
-	border-bottom:1px #d0d0d0 dotted;
+    padding-bottom:5px;
+    border-bottom:1px #d0d0d0 dotted;
 }
 .x-fieldset legend{
-	margin-left:-15px;
-	color:#111;
-	font-size:12px;
+    margin-left:-15px;
+    color:#111;
+    font-size:12px;
 }

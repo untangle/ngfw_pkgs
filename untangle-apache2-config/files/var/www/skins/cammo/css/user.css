@@ -4,7 +4,7 @@ body{
 }  
 /* quarantine page body */
 body.quarantine {
-	background-color: #808080;
+    background-color: #808080;
 }
 /* user pages content container */
 #content
@@ -21,7 +21,7 @@ body.blockpage, body.captive-portal
 body.quarantine #content {
     width:75%;
     background: transparent url(../images/user/background_content_seamless.png) repeat !important;    
-	border : 1px solid #666;    
+    border : 1px solid #666;    
     margin:0 auto;
     margin-top:50px;
 }
@@ -370,23 +370,23 @@ body.captive-portal .description
     margin-right:5px;
     display:block;
 }
-.info-list-captive-portal .u-form-item a.img-background{	
-	background-image:url(../images/user/green-button-background-3.gif);
-	background-position:center center;
-	background-repeat:repeat-x;
-	color:#FFF;
-	font-family:tahoma,arial,helvetica,sans-serif;
-	font-size:20px;
-	line-height:35px;
-	border:1px #5b9400 solid;
-	padding:0px 10px;
-	text-decoration:none;
-	display:inline-block;
-	margin:10px 0px;	
+.info-list-captive-portal .u-form-item a.img-background{    
+    background-image:url(../images/user/green-button-background-3.gif);
+    background-position:center center;
+    background-repeat:repeat-x;
+    color:#FFF;
+    font-family:tahoma,arial,helvetica,sans-serif;
+    font-size:20px;
+    line-height:35px;
+    border:1px #5b9400 solid;
+    padding:0px 10px;
+    text-decoration:none;
+    display:inline-block;
+    margin:10px 0px;    
 }
 .info-list-captive-portal .u-form-item a.img-background:hover{
-	background-image:url(../images/user/green-button-background-3_f2.gif);
-	
+    background-image:url(../images/user/green-button-background-3_f2.gif);
+    
 }
 
 body.captive-portal #basic-message-text
@@ -430,16 +430,16 @@ p.success{
     display:none;   
 }
 #please-wait{
-	background-image:url(../images/user/please-wait.gif);
-	background-position:left  center;
-	background-repeat:no-repeat;
-	font-family:tahoma,arial,helvetica,sans-serif;
-	font-size:20px;
-	line-height:35px;
-	padding:0px 10px 0px 20px;
-	text-decoration:none;
-	display:inline-block;
-	margin:10px 0px;
+    background-image:url(../images/user/please-wait.gif);
+    background-position:left  center;
+    background-repeat:no-repeat;
+    font-family:tahoma,arial,helvetica,sans-serif;
+    font-size:20px;
+    line-height:35px;
+    padding:0px 10px 0px 20px;
+    text-decoration:none;
+    display:inline-block;
+    margin:10px 0px;
 
 }
 body.captive-portal p.contact

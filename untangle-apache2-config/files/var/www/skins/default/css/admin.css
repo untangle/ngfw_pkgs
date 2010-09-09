@@ -1,42 +1,42 @@
 /* Left side container */
 .content-left {
-	width: 214px;
-	background:#F9F9FA url(../images/admin/background_left.png)  repeat-x !important;
-	text-align:center;
-	height:100%;
-	border-right:1px #333 solid;
+    width: 214px;
+    background:#F9F9FA url(../images/admin/background_left.png)  repeat-x !important;
+    text-align:center;
+    height:100%;
+    border-right:1px #333 solid;
 }
 /* right content container */
 #content-right {
-	height:100%;
+    height:100%;
 }
 /* right content background */
 div.center-region {
-	background: transparent url(../images/admin/background_right.png) repeat !important;
+    background: transparent url(../images/admin/background_right.png) repeat !important;
 }
 /* rack nodes background */
 #racks {
-	position:relative;
-	margin:auto;
-	background: transparent url(../images/admin/background_empty_rack.png) repeat-y;
-	width:785px;
-	height:100%;
+    position:relative;
+    margin:auto;
+    background: transparent url(../images/admin/background_empty_rack.png) repeat-y;
+    width:785px;
+    height:100%;
 }
 div.racks-with-separator {
-	background:scroll 0px 100px;
+    background:scroll 0px 100px;
 }
 div.racks-without-separator {
-	background:scroll 0px 50px;
+    background:scroll 0px 50px;
 }
 /* logo container */
 div.logo {
-	position:relative;
-	height:100px;
-	margin-top:20px;
+    position:relative;
+    height:100px;
+    margin-top:20px;
     margin-left: auto;
     margin-right: auto;
-	margin-bottom:15px;
-	overflow:hidden;
+    margin-bottom:15px;
+    overflow:hidden;
 }
 /* left tabs container */
 .left-tabs {
@@ -45,20 +45,20 @@ div.logo {
 }
 /* top rack list background */
 #rack-list {
-	position:relative;
-	background:transparent url(../images/admin/background_rack_list.png) no-repeat;
-	width:785px;
-	height:50px;
+    position:relative;
+    background:transparent url(../images/admin/background_rack_list.png) no-repeat;
+    width:785px;
+    height:50px;
 }
 /* rack nodes containser */
 #rack-nodes {
-	position:relative;
-	width:785px;
+    position:relative;
+    width:785px;
 }
 /* node background */
 div.node {
-	position:relative;
-	background: transparent url(../images/admin/background_node.png) no-repeat;
+    position:relative;
+    background: transparent url(../images/admin/background_node.png) no-repeat;
     width:785px;
     height:93px;
 }
@@ -74,47 +74,47 @@ div.node-cap {
 }
 /* Service separator text */
 #nodes-separator-text {
-	position:relative;
-	left: 90px;
-	top: 12px;
-	width: 300px;
-	font-family: verdana, helvetica, freesans,sans-serif;
-	font-size:19px;
-	color: #7C7B7B;
+    position:relative;
+    left: 90px;
+    top: 12px;
+    width: 300px;
+    font-family: verdana, helvetica, freesans,sans-serif;
+    font-size:19px;
+    color: #7C7B7B;
 }
 /* Service separator for nodes */
 #nodes-separator {
-	position:relative;
-	background: transparent url(../images/admin/background_separator.png) no-repeat;
-	width:785px;
-	height:50px;
+    position:relative;
+    background: transparent url(../images/admin/background_separator.png) no-repeat;
+    width:785px;
+    height:50px;
 }
 /* Node image container */
 .node-image {
-	position:absolute;
-	top:12px;
-	left:50px;
+    position:absolute;
+    top:12px;
+    left:50px;
 }
 /* node display name text*/
 div.node div.node-label {
-	position: absolute;
-	top: 8px;
-	left: 100px;
-	height: 55px;
-	width: 230px;
-	font-family: tahoma,arial, helvetica, freesans,sans-serif;
-	font-size: 18px;
-	color: #4E4C4C;
+    position: absolute;
+    top: 8px;
+    left: 100px;
+    height: 55px;
+    width: 230px;
+    font-family: tahoma,arial, helvetica, freesans,sans-serif;
+    font-size: 18px;
+    color: #4E4C4C;
 }
 /* node trial info text */
 div.node div.node-trial-info {
-	position: absolute;
-	top: 35px;
-	left: 100px;
-	font-family: tahoma, arial, helvetica, freesans,sans-serif;
-	font-size: 16px;
-	font-weight: bold;
-	color: #DE2020;
+    position: absolute;
+    top: 35px;
+    left: 100px;
+    font-family: tahoma, arial, helvetica, freesans,sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: #DE2020;
 }
 .buy-button-text .x-btn-text-icon{
     margin-left:20px;
@@ -126,72 +126,72 @@ div.node div.node-trial-info {
 }
 /* Trial node buy button icon */
 button.icon-buy {
-	background:transparent url(../images/admin/icon_buy.png) no-repeat center left !important; 
+    background:transparent url(../images/admin/icon_buy.png) no-repeat center left !important; 
 }
 /* In Wizard Download Button icon*/
 button.icon-download {
-	background:transparent url(../images/admin/icon_download.png) no-repeat center left !important;
+    background:transparent url(../images/admin/icon_download.png) no-repeat center left !important;
   padding-left:17px !important;
 }
 /* Application Item buy button icon */
 div.icon-buy {
-	background:transparent url(../images/admin/icon_buy.png) no-repeat !important;
-	height:15px;
-	width:15px;
+    background:transparent url(../images/admin/icon_buy.png) no-repeat !important;
+    height:15px;
+    width:15px;
 }
 /* help button icon */
 button.icon-help {
-	background:transparent url(../images/admin/icon_help.png) no-repeat center left !important; 
+    background:transparent url(../images/admin/icon_help.png) no-repeat center left !important; 
 }
 /* logout button icon */
 button.icon-logout {
-	background:transparent url(../images/admin/icon_logout_row.gif) no-repeat center left !important; 
+    background:transparent url(../images/admin/icon_logout_row.gif) no-repeat center left !important; 
 }
 /* myaccount button icon */
 button.icon-myaccount {
-	background:transparent url(../images/admin/icon_myaccount.png) no-repeat center left !important; 
+    background:transparent url(../images/admin/icon_myaccount.png) no-repeat center left !important; 
 }
 /* help button icon */
 div.icon-help {
-	background:transparent url(../images/admin/icon_help.png) no-repeat !important;
-	height:15px;
-	width:15px;
+    background:transparent url(../images/admin/icon_help.png) no-repeat !important;
+    height:15px;
+    width:15px;
 }
 /* node state container */
 div.node div.node-state {
-	z-index: 200;
-	position:absolute;
-	top:50px;
-	right:54px;
-	height:33px;
-	width: 33px
+    z-index: 200;
+    position:absolute;
+    top:50px;
+    right:54px;
+    height:33px;
+    width: 33px
 }
 /* node state on icon */
 div.icon-state-on {
-	background:transparent url(../images/admin/icon_state_on.png) no-repeat center !important; 
+    background:transparent url(../images/admin/icon_state_on.png) no-repeat center !important; 
 }
 /* node state off icon */
 div.icon-state-off {
-	background:transparent url(../images/admin/icon_state_off.png) no-repeat center !important; 
+    background:transparent url(../images/admin/icon_state_off.png) no-repeat center !important; 
 }
 /* node state attention icon */
 div.icon-state-attention {
-	background:transparent url(../images/admin/icon_state_attention.png) no-repeat center !important; 
+    background:transparent url(../images/admin/icon_state_attention.png) no-repeat center !important; 
 }
 /* node state error icon */
 div.icon-state-error {
-	background:transparent url(../images/admin/icon_state_error.png) no-repeat center !important; 
+    background:transparent url(../images/admin/icon_state_error.png) no-repeat center !important; 
 }
 /* node power button icon */
 div.node div.node-power {
-	position:absolute;
-	top:15px;
-	right:54px;
-	height:33px;
-	width: 33px;
+    position:absolute;
+    top:15px;
+    right:54px;
+    height:33px;
+    width: 33px;
     background:transparent url(../images/admin/icon_power.png) no-repeat center !important; 
-	cursor:pointer;
-	cursor:hand; /*for ie*/
+    cursor:pointer;
+    cursor:hand; /*for ie*/
 }
 /* node power expired button icon */
 div.node div.node-power-expired {
@@ -211,8 +211,8 @@ div#rack-select-container{
     margin-top:14px;
 }
 div#parent-rack-container{
-    background-color:#333333;
-    color:#FFFFFF;
+    /* background-color:#333333; */
+    color:#222222;
     float:left;
     font-family:Tahoma;
     font-size:11px;
@@ -226,36 +226,36 @@ div#parent-rack-container{
 /* node buttons panel container */
 div.node div.node-buttons {
     position:absolute;
-	top:55px;
-	left:40px;
-	width: 1px;
+    top:55px;
+    left:40px;
+    width: 1px;
 }
 /* node settings button icon */
 button.node-settings-icon {
-	background:transparent url(../images/admin/icon_settings.png) no-repeat center left !important;  
+    background:transparent url(../images/admin/icon_settings.png) no-repeat center left !important;  
 }
 div.window-background {
-	background: transparent url(../images/admin/background_grey.png) repeat;
+    background: transparent url(../images/admin/background_grey.png) repeat;
 }
 /* node remove button icon */
 button.node-remove-icon {
-	background:transparent url(../images/admin/icon_remove.png) no-repeat center left !important; 
+    background:transparent url(../images/admin/icon_remove.png) no-repeat center left !important; 
 }
 /* cancel button icon */
 button.cancel-icon {
-	background:transparent url(../images/admin/icon_cancel.png) no-repeat center left !important; 
+    background:transparent url(../images/admin/icon_cancel.png) no-repeat center left !important; 
 }
 /* save button icon */
 button.save-icon {
-	background:transparent url(../images/admin/icon_save.png) no-repeat center left !important; 
+    background:transparent url(../images/admin/icon_save.png) no-repeat center left !important; 
 }
 /* apply button icon */
 button.apply-icon {
-	background:transparent url(../images/admin/icon_floppy.png) no-repeat center left !important; 
+    background:transparent url(../images/admin/icon_floppy.png) no-repeat center left !important; 
 }
 /* test button icon */
 button.test-icon {
-	background:transparent url(../images/admin/icon_test.png) no-repeat center left !important; 
+    background:transparent url(../images/admin/icon_test.png) no-repeat center left !important; 
 }
 /* action button icon */
 button.action-icon {
@@ -263,7 +263,7 @@ button.action-icon {
 }
 /* purge button icon */
 button.purge-icon {
-	background:transparent url(../images/admin/icon_purge.png) no-repeat center left !important; 
+    background:transparent url(../images/admin/icon_purge.png) no-repeat center left !important; 
 }
 /* release button icon */
 button.release-icon {
@@ -271,7 +271,7 @@ button.release-icon {
 }
 /* detail button icon */
 button.detail-icon {
-	background:transparent url(../images/admin/icon_detail.png) no-repeat center left !important; 
+    background:transparent url(../images/admin/icon_detail.png) no-repeat center left !important; 
 }
 /* reboot button icon */
 button.reboot-icon {
@@ -279,131 +279,131 @@ button.reboot-icon {
 }
 /* node blingers container */
 div.node-blingers {
-	position:absolute;
-	bottom: 6px;
-	right: 100px;
-	width: 355px;
-	height: 87px;
+    position:absolute;
+    bottom: 6px;
+    right: 100px;
+    width: 355px;
+    height: 87px;
 }
 /* blinger text */
 div.blinger-text {
-	font-family: "Arial", helvetica, freesans,sans-serif;
-	font-size: 9px;
-	color: #000000;
+    font-family: "Arial", helvetica, freesans,sans-serif;
+    font-size: 9px;
+    color: #000000;
 }
 /* blinger name text */
 div.blinger-name {
-	position:absolute;
-	top:1px;
-	right:10px;
-	font-family: "times", helvetica, freesans,sans-serif;
-	font-size: 11px;
-	color: #3F3F3F;
-	display: none;
+    position:absolute;
+    top:1px;
+    right:10px;
+    font-family: "times", helvetica, freesans,sans-serif;
+    font-size: 11px;
+    color: #3F3F3F;
+    display: none;
 }
 /* activity blinger container */
 div.activity-blinger {
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	width: 118px;
-	height: 82px;
-	background: transparent url(../images/admin/background_activity_blinger_border.png) no-repeat scroll 0px 7px !important;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 118px;
+    height: 82px;
+    background: transparent url(../images/admin/background_activity_blinger_border.png) no-repeat scroll 0px 7px !important;
 }
 /* activity blinger box container */
 div.activity-blinger-box {
-	position: relative;
-	top: 15px;
-	left: 9px;
-	height:60px;
-	width:100px;
-	background: transparent url(../images/admin/background_activity_blinger.png) no-repeat !important;
+    position: relative;
+    top: 15px;
+    left: 9px;
+    height:60px;
+    width:100px;
+    background: transparent url(../images/admin/background_activity_blinger.png) no-repeat !important;
 }
 /* activity blinger text */
 div.activity-blinger-text {
-	position:absolute;
-	right:3px;
-	text-align: right;
-	color: #FFFFFF;
-	z-index: 15;
+    position:absolute;
+    right:3px;
+    text-align: right;
+    color: #FFFFFF;
+    z-index: 15;
 }
 /* activity blinger bar background */
 div.activity-blinger-bar {
-	position: absolute;
-	background: transparent url(../images/admin/background_activity_blinger_bar.png) repeat-x;
-	left:0px;
-	height:10px;
-	z-index: 14;
+    position: absolute;
+    background: transparent url(../images/admin/background_activity_blinger_bar.png) repeat-x;
+    left:0px;
+    height:10px;
+    z-index: 14;
 }
 /* system blinger container */
 div.system-blinger {
-	position:absolute;
-	top: 0px;
-	right: 0px;
-	width: 219px;
-	height: 87px;
-	background: transparent url(../images/admin/background_system_blinger_border.png) no-repeat scroll 0px 7px !important;
+    position:absolute;
+    top: 0px;
+    right: 0px;
+    width: 219px;
+    height: 87px;
+    background: transparent url(../images/admin/background_system_blinger_border.png) no-repeat scroll 0px 7px !important;
 }
 /* system blinger box container */
 div.system-blinger-box {
-	position: relative;
-	top:15px;
-	left:5px;
-	width: 209px;
-	height:60px;
+    position: relative;
+    top:15px;
+    left:5px;
+    width: 209px;
+    height:60px;
 }
 /* system blinger label */
 div.system-blinger-label {
-	position:absolute;
-	left:0px;
-	text-align: left;
-	color: #3F3F3F;
-	width: 125px;
-	overflow: hidden;
-	white-space : nowrap;
+    position:absolute;
+    left:0px;
+    text-align: left;
+    color: #3F3F3F;
+    width: 125px;
+    overflow: hidden;
+    white-space : nowrap;
 }
 /* system blinger value */
 div.system-blinger-value {
-	position:absolute;
-	right:0px;
-	text-align: right;
-	color: #FFFFFF;
-	font-size: 10px;
-	padding-right:4px;
-	width: 100px;
-	height: 14px;
-	background: transparent url(../images/admin/background_system_blinger_value.png) no-repeat right !important;
+    position:absolute;
+    right:0px;
+    text-align: right;
+    color: #FFFFFF;
+    font-size: 10px;
+    padding-right:4px;
+    width: 100px;
+    height: 14px;
+    background: transparent url(../images/admin/background_system_blinger_value.png) no-repeat right !important;
 }
 div.system-blinger-settings {
-	position: absolute;
-	right: 10px;
-	bottom: 0px;
-	width: 11px;
-	height: 11px;
-	background: transparent url(../images/admin/icon_system_blinger_settings.png) no-repeat !important;
+    position: absolute;
+    right: 10px;
+    bottom: 0px;
+    width: 11px;
+    height: 11px;
+    background: transparent url(../images/admin/icon_system_blinger_settings.png) no-repeat !important;
 }
 div.pixel {
-	position:absolute;
-	width:1px;
-	height:1px;
+    position:absolute;
+    width:1px;
+    height:1px;
 }
 div.toolbox-button {
-	margin-left: auto;
-	margin-right: auto;
-	margin-bottom: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 5px;
 }
 .ung-button {
-	cursor: pointer;
-	background-color: #E9E9E9;
-	border: 1px solid #9B9B9B;
+    cursor: pointer;
+    background-color: #E9E9E9;
+    border: 1px solid #9B9B9B;
 }
 .ung-button-hover {
-	border-color:#366dba;
-	color:#366dba;
-	background-color:#f1f6fc;
+    border-color:#366dba;
+    color:#366dba;
+    background-color:#f1f6fc;
 }
 div.ung-button-invalid {
-	border: 1px solid green;
+    border: 1px solid green;
 }
 /* add row button icon */
 button.icon-add-row {
@@ -411,15 +411,15 @@ button.icon-add-row {
 }
 /* row add icon */
 div.icon-add-row {
-	background:transparent url(../images/admin/icon_row_add.png) no-repeat center center;
-	width: 100%;
-	cursor: pointer;
+    background:transparent url(../images/admin/icon_row_add.png) no-repeat center center;
+    width: 100%;
+    cursor: pointer;
 }
 /* edit row icon */
 div.icon-edit-row {
-	background:transparent url(../images/admin/icon_edit_row.gif) no-repeat center center;
-	width: 100%;
-	cursor: pointer;
+    background:transparent url(../images/admin/icon_edit_row.gif) no-repeat center center;
+    width: 100%;
+    cursor: pointer;
 }
 /* delete row button icon */
 button.icon-delete-row {
@@ -427,9 +427,9 @@ button.icon-delete-row {
 }
 /* delete row icon */
 div.icon-delete-row {
-	background:transparent url(../images/admin/icon_delete_row.gif) no-repeat center center;
-	width: 100%;
-	cursor: pointer;
+    background:transparent url(../images/admin/icon_delete_row.gif) no-repeat center center;
+    width: 100%;
+    cursor: pointer;
 }
 /* logout row icon */
 div.icon-logout-row {
@@ -459,50 +459,50 @@ button.icon-autorefresh {
 }
 /* color of a deleted row in grid */
 .grid-row-deleted {
-	background-color: #FF5151 !important;
+    background-color: #FF5151 !important;
 }
 /* color of an added row in grid */
 .grid-row-added {
-	background-color: #21FF3A;
+    background-color: #21FF3A;
 }
 /* color of a modified row in grid */
 .grid-row-modified {
-	background-color: #FFB364;
+    background-color: #FFB364;
 }
 /* Config Network item icon */
 div.icon-config-network {
-	background: transparent url(../images/admin/config/icon_config_network.png) no-repeat !important; 
-	width:36px;
-	height:36px;
+    background: transparent url(../images/admin/config/icon_config_network.png) no-repeat !important; 
+    width:36px;
+    height:36px;
 }
 /* Config Administration item icon */
 div.icon-config-admin {
-	background: transparent url(../images/admin/config/icon_config_admin.png) no-repeat !important; 
-	width:36px;
-	height:36px;
+    background: transparent url(../images/admin/config/icon_config_admin.png) no-repeat !important; 
+    width:36px;
+    height:36px;
 }
 /* Config Email item icon */
 div.icon-config-email {
-	background: transparent url(../images/admin/config/icon_config_email.png) no-repeat !important; 
-	width:36px;
-	height:36px;
+    background: transparent url(../images/admin/config/icon_config_email.png) no-repeat !important; 
+    width:36px;
+    height:36px;
 }
 /* Config Local Directory item icon */
 div.icon-config-directory {
-	background: transparent url(../images/admin/config/icon_config_directory.png) no-repeat !important; 
-	width:36px;
-	height:36px;
+    background: transparent url(../images/admin/config/icon_config_directory.png) no-repeat !important; 
+    width:36px;
+    height:36px;
 }
 div.icon-config-backup {
-	background: transparent url(../images/admin/config/icon_config_backup.png) no-repeat !important; 
-	width:36px;
-	height:36px;
+    background: transparent url(../images/admin/config/icon_config_backup.png) no-repeat !important; 
+    width:36px;
+    height:36px;
 }
 /* Config System Info item icon */
 div.icon-config-support {
-	background: transparent url(../images/admin/config/icon_config_support.png) no-repeat !important; 
-	width:36px;
-	height:36px;
+    background: transparent url(../images/admin/config/icon_config_support.png) no-repeat !important; 
+    width:36px;
+    height:36px;
 }
 /* Config Upgrades Available item icon */
 div.icon-config-upgrade-available {
@@ -518,22 +518,22 @@ div.icon-config-upgrade {
 }
 /* Config System item icon */
 div.icon-config-setup {
-	background: transparent url(../images/admin/config/icon_config_setup.png) no-repeat !important; 
-	width:36px;
-	height:36px;
+    background: transparent url(../images/admin/config/icon_config_setup.png) no-repeat !important; 
+    width:36px;
+    height:36px;
 }
 thead tr.x-grid3-hd-row {
-	text-align: center;
+    text-align: center;
 }
 /* left side app item container */
 div.app-item {
     cursor: pointer;
-	position: relative;
-	height: 53px;
-	margin-bottom: 2px;
-	margin-top:2px;
-	margin-left:auto;
-	margin-right:auto;
+    position: relative;
+    height: 53px;
+    margin-bottom: 2px;
+    margin-top:2px;
+    margin-left:auto;
+    margin-right:auto;
 }
 /* app item left background */
 td.app-item-left {
@@ -552,26 +552,26 @@ td.app-item-right {
 }
 /* app item icon background */
 td.app-item-center div.icon {
-	position: absolute;
-	top: 5px;
-	left: 5px;
+    position: absolute;
+    top: 5px;
+    left: 5px;
 }
 /* app item display name text */
 td.app-item-center div.text {
-	position: absolute;
-	top: 5px;
-	left: 53px;
-	width: 123px;
-	height: 35px;
-	text-align: left;
-	color:#4E4C4C;
-	font-size: 12px;
-	font-weight: bold;
-	font-family:Tahoma, arial, freesans,sans-serif;
+    position: absolute;
+    top: 5px;
+    left: 53px;
+    width: 123px;
+    height: 35px;
+    text-align: left;
+    color:#4E4C4C;
+    font-size: 12px;
+    font-weight: bold;
+    font-family:Tahoma, arial, freesans,sans-serif;
 }
 /* app item config display name text */
 td.app-item-center div.text-center {
-	top: 15px;
+    top: 15px;
 }
 /* app item action text */
 td.app-item-center div.action {
@@ -583,52 +583,52 @@ td.app-item-center div.action {
     font-size: 11px;
     color: green;
     padding-right: 19px;
-	line-height:15px;
+    line-height:15px;
 }
 /* app item buy button */
 td.app-item-center div.button-buy {
-	position: absolute;
-	left: 53px;
-	top: 34px;
-	cursor: pointer;
-	height: 15px;
+    position: absolute;
+    left: 53px;
+    top: 34px;
+    cursor: pointer;
+    height: 15px;
     font-family: tahoma,arial, helvetica, freesans,sans-serif;
-	font-size: 11px;
-	color: green;
-	padding-right: 19px;
+    font-size: 11px;
+    color: green;
+    padding-right: 19px;
 }
 /* app item progress bar container */
 td.app-item-center div.state-pos {
-	position: absolute;
-	left: 52px;
-	top: 33px;
-	cursor: pointer;
-	height: 15px;
-	font-family: verdana, helvetica, freesans,sans-serif;
-	font-size: 10px;
-	font-weight: bold;
-	color: red;
+    position: absolute;
+    left: 52px;
+    top: 33px;
+    cursor: pointer;
+    height: 15px;
+    font-family: verdana, helvetica, freesans,sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+    color: red;
 }
 /* app item info icon */
 div.icon-info {
-	background:transparent url(../images/admin/icon_info.png) no-repeat center right !important;
+    background:transparent url(../images/admin/icon_info.png) no-repeat center right !important;
 }
 /* app item install icon */
 div.icon-arrow-install{
-	background:transparent url(../images/admin/icon_install.png) no-repeat right center !important;	
+    background:transparent url(../images/admin/icon_install.png) no-repeat right center !important;    
 }
 /* app item buy icon */
 div.icon-arrow-buy {
-	/*background:transparent url(../images/admin/icon_arrow_right.png) no-repeat center right !important;*/
-	background:transparent url(../images/admin/icon_buy.png) no-repeat right center !important;	
+    /*background:transparent url(../images/admin/icon_arrow_right.png) no-repeat center right !important;*/
+    background:transparent url(../images/admin/icon_buy.png) no-repeat right center !important;    
 }
 div.icon-arrow-right {
-	/*background:transparent url(../images/admin/icon_arrow_right.png) no-repeat center right !important;*/
-	background:transparent url(../images/admin/icon_buy.png) no-repeat right center !important;	
+    /*background:transparent url(../images/admin/icon_arrow_right.png) no-repeat center right !important;*/
+    background:transparent url(../images/admin/icon_buy.png) no-repeat right center !important;    
 }
 /* app item more info icon */
 div.icon-arrow-down {
-	background:transparent url(../images/admin/icon_arrow_down.png) no-repeat center right !important;
+    background:transparent url(../images/admin/icon_arrow_down.png) no-repeat center right !important;
 }
 /* settings window breadcrumbs separator */
 .icon-breadcrumbs-separator {
@@ -647,13 +647,13 @@ div.icon-arrow-down {
 }
 /* breadcrumb link */
 .breadcrumb-link {
-	font-size:11px; /* On a base font of 13px works out to 11.05px*/
-	font-size-adjust:none;
-	font-style:normal;
-	font-variant:normal;
-	line-height:14px; /* works out to 14px */
-	font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
-	color: #20377A;
+    font-size:11px; /* On a base font of 13px works out to 11.05px*/
+    font-size-adjust:none;
+    font-style:normal;
+    font-variant:normal;
+    line-height:14px; /* works out to 14px */
+    font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
+    color: #20377A;
 }
 .untangle-form-panel
 { 
@@ -661,9 +661,9 @@ div.icon-arrow-down {
 }
 /* rack top system stat container */
 div.system-stats {
-	position:absolute;
-	width: 320px;
-	height: 50px;
+    position:absolute;
+    width: 390px;
+    height: 50px;
     top:0px;
     right:40px;
     color: #FFFFFF;
@@ -671,11 +671,11 @@ div.system-stats {
 }
 /* system stats label */
 div.system-stats div.label {
-	position:absolute;
-	bottom:4px;
+    position:absolute;
+    bottom:4px;
     text-align: center;
     color: #000000;
-	font-family:arial,helvetica,freesans,sans-serif;
+    font-family:arial,helvetica,freesans,sans-serif;
 }
 /* system stats network*/
 div.system-stats div.network {
@@ -697,7 +697,7 @@ div.system-stats div.network div.tx {
     padding-left:20px;
     color:#55BA47;
     background: transparent url(../images/admin/icon_network_tx.png) no-repeat scroll 5px 1px !important;
-	font-family:arial,helvetica,freesans,sans-serif;	
+    font-family:arial,helvetica,freesans,sans-serif;    
 }
 div.system-stats div.network div.tx-idle {
     background: transparent url(../images/admin/icon_network_tx-idle.png) no-repeat scroll 5px 1px !important;
@@ -711,7 +711,7 @@ div.system-stats div.network div.rx {
     padding-left:20px;
     color:orange;/*#AC2322;*/
     background: transparent url(../images/admin/icon_network_rx.png) no-repeat scroll 5px 1px !important;
-	font-family:arial,helvetica,freesans,sans-serif;		
+    font-family:arial,helvetica,freesans,sans-serif;        
 }
 div.system-stats div.network div.rx-idle {
     background: transparent url(../images/admin/icon_network_rx-idle.png) no-repeat scroll 5px 1px !important;
@@ -721,40 +721,54 @@ div.system-stats div.network div.rx div.rx-value {
     position: absolute;
     top:0px;
     right:0px;
-	font-family:arial,helvetica,freesans,sans-serif;		
+    font-family:arial,helvetica,freesans,sans-serif;        
 }
 /* system stats network tx value */
 div.system-stats div.network div.tx div.tx-value {
     position: absolute;
     top:0px;
     right:0px;
-	font-family:arial,helvetica,freesans,sans-serif;
+    font-family:arial,helvetica,freesans,sans-serif;
+}
+/* system stats cpu */
+div.system-stats div.sessions {
+    position: absolute;
+    top: 4px;
+    left:113px;
+    background: transparent url(../images/admin/background_sessions.png) no-repeat;
+    width:50px;
+    height:30px;
+    text-align: center;
+    padding-top: 7px;
+    font-weight: bold;
+    font-family:arial,helvetica, freesans,sans-serif;
+    
 }
 /* system stats cpu */
 div.system-stats div.cpu {
     position: absolute;
     top: 4px;
-    left:113px;
+    left:183px;
     background: transparent url(../images/admin/background_cpu.png) no-repeat;
     width:50px;
     height:30px;
     text-align: center;
     padding-top: 7px;
     font-weight: bold;
-	font-family:arial,helvetica, freesans,sans-serif;
-	
+    font-family:arial,helvetica, freesans,sans-serif;
+    
 }
 /* system stats memory */
 div.system-stats div.memory {
     position: absolute;
     top: 4px;
-    left:177px;
+    left:247px;
     background: transparent url(../images/admin/background_network.png) no-repeat;/*../images/admin/background_memory.png) no-repeat;*/
     width:99px;
     height:30px;
     font-weight: bold;
-	font-family:arial,helvetica, freesans,sans-serif;
-	
+    font-family:arial,helvetica, freesans,sans-serif;
+    
 }
 /* system stats free memory */
 div.system-stats div.memory div.free {
@@ -765,8 +779,8 @@ div.system-stats div.memory div.free {
     height:15px;
     padding-left:4px;
     color:#55BA47;
-	font-family:arial,helvetica, freesans,sans-serif;
-	
+    font-family:arial,helvetica, freesans,sans-serif;
+    
 }
 /* system stats used memory */
 div.system-stats div.memory div.used {
@@ -776,23 +790,23 @@ div.system-stats div.memory div.used {
     height:15px;
     padding-left:4px;
     color:orange;/*#AC2322;*/
-	font-family:arial,helvetica, freesans,sans-serif;
+    font-family:arial,helvetica, freesans,sans-serif;
 }
 /* system stats free memory value */
 div.system-stats div.memory div.free div.free-value {
     position: absolute;
     top:0px;
     right:0px;
-	font-family:arial,helvetica, freesans,sans-serif;
-	
+    font-family:arial,helvetica, freesans,sans-serif;
+    
 }
 /* system stats used memory value */
 div.system-stats div.memory div.used div.used-value {
     position: absolute;
     top:0px;
     right:0px;
-	font-family:arial,helvetica, freesans,sans-serif;
-	
+    font-family:arial,helvetica, freesans,sans-serif;
+    
 }
 /* system stats disk */
 div.system-stats div.disk {
@@ -805,14 +819,14 @@ div.system-stats div.disk {
 }
 /* system stats disk percent range 0,5,10...95,100*/
 div.system-stats div.disk div.disk0 {
-	width:30px;
+    width:30px;
     height:30px;
     background: transparent url(../images/admin/disk/icon_disk0.png) no-repeat center center;
 }
 div.system-stats div.disk div.disk5 {
     width:30px;
     height:30px;
-	background: transparent url(../images/admin/disk/icon_disk5.png) no-repeat center center;
+    background: transparent url(../images/admin/disk/icon_disk5.png) no-repeat center center;
 }
 div.system-stats div.disk div.disk10 {
     width:30px;
@@ -822,7 +836,7 @@ div.system-stats div.disk div.disk10 {
 div.system-stats div.disk div.disk15 {
     width:30px;
     height:30px;
-	background: transparent url(../images/admin/disk/icon_disk15.png) no-repeat center center;
+    background: transparent url(../images/admin/disk/icon_disk15.png) no-repeat center center;
 }
 div.system-stats div.disk div.disk20 {
     width:30px;
@@ -1023,7 +1037,7 @@ div.wizard-network-rerouter span
     font-style:normal;
     font-variant:normal;
     font-weight:normal;
-    line-height:normal;	
+    line-height:normal;    
 }
 .italics{
     font-style:italic;        
@@ -1037,7 +1051,7 @@ div.wizard-network-rerouter span
     font-style:normal;
     font-variant:normal;
     font-weight:normal;
-    line-height:normal;	
+    line-height:normal;    
     margin:4px 0px;
     display:block;
 }
@@ -1179,11 +1193,11 @@ label.optional-email-tester
 
 body.wizard label.info-detail
 {
-	float:left;
-	font-size:80%;
-	font-style:italic;
-	margin-top:-20px;
-	padding-left:270px;
+    float:left;
+    font-size:80%;
+    font-style:italic;
+    margin-top:-20px;
+    padding-left:270px;
   }
 
 .x-form-textfield-detail, .x-form-combo-detail
@@ -1209,30 +1223,30 @@ body.wizard .ext-el-mask
  }
 
 .network-card-form-margin{
-	margin-top:1em;
-	padding-top:1em;
+    margin-top:1em;
+    padding-top:1em;
 }
 .network-card-form-margin div div form fieldset{
-	border:0px;
-	border-top:1px #CCC solid;
+    border:0px;
+    border-top:1px #CCC solid;
 }
 .test-connectivity{
-	position:relative;
-	left:300px;
-	top:-21px;
+    position:relative;
+    left:300px;
+    top:-21px;
 }
 .test-connectivity-2{
-	position:relative;
-	left:204px;
+    position:relative;
+    left:204px;
 }
 .right-align{
-	margin-left:214px;
+    margin-left:214px;
 }
 .small-top-margin{
-	margin-top:1em;
+    margin-top:1em;
 }
 .small-bottom-margin{
-	margin-bottom:1em;
+    margin-bottom:1em;
 }
 .small-bottom-margin-nas{
   display:block;
@@ -1244,26 +1258,26 @@ body.wizard .ext-el-mask
   font-size:12px;
 }
 #container{
-	margin:10px auto;
-	position:relative;
+    margin:10px auto;
+    position:relative;
 }
 
 /* Z-Index required on some browsers. */
 .logo-container{
-	position:absolute;
-	top:10px;
-	left:25px;
+    position:absolute;
+    top:10px;
+    left:25px;
         z-index : 2;
     width:166px;
     height:100px;
     overflow:hidden;
 }
 .wizard-steps{
-	padding-top:120px;
-	background-color:#e8e8e8;	
+    padding-top:120px;
+    background-color:#e8e8e8;    
 }
 .empty-background{
-	background-color:none;
+    background-color:none;
 }
 /* wizard completed step */
 .wizard-steps .completed
@@ -1300,7 +1314,7 @@ body.wizard .ext-el-mask
   }
 
 .current div{
-	width:200px;
+    width:200px;
  }
 
 .incomplete div
@@ -1314,12 +1328,12 @@ body.wizard .ext-el-mask
 }
 /* incomplete step marker */
 .incomplete div div .count{
-	background:url(../images/admin/wizard/step-incomplete.jpg) no-repeat left center !important;
-	margin:0px 4px 0px 0px;
-	color:#444444;
-	font-size:11px;
-	margin:0px 4px 0px 0px;
-	padding:2px 6px 2px 5px;	
+    background:url(../images/admin/wizard/step-incomplete.jpg) no-repeat left center !important;
+    margin:0px 4px 0px 0px;
+    color:#444444;
+    font-size:11px;
+    margin:0px 4px 0px 0px;
+    padding:2px 6px 2px 5px;    
 }
 /* current step marker */
 .current div div .count
@@ -1339,7 +1353,7 @@ body.wizard .ext-el-mask
   color:#FFF;
   font-size:11px;
   margin:0px 4px 0px 0px;
-  padding:2px 6px 2px 5px;	
+  padding:2px 6px 2px 5px;    
 }
 .wizard .x-form-item label
 { 
@@ -1347,11 +1361,11 @@ body.wizard .ext-el-mask
 }
 /* wizard title*/ 
 .wizard-title{
-	margin-bottom:0.8em;
-	padding-top:5px;
-	color:#333;
-	font-size:18px;
-	font-weight:bold;
+    margin-bottom:0.8em;
+    padding-top:5px;
+    color:#333;
+    font-size:18px;
+    font-weight:bold;
     font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
  }
 /* required info text */
@@ -1367,8 +1381,8 @@ body.wizard .ext-el-mask
     font-weight:bold;
  }
 .wizard-label{
-	color:#333;
-	font-size:12px;
+    color:#333;
+    font-size:12px;
 }
 /* warning message text*/
 .warning {
@@ -1409,30 +1423,30 @@ body.wizard .ext-el-mask
 }
 /* Ext Js Overrides - across the board */
 .x-grid3-hd-inner{
-	text-transform:capitalize;
+    text-transform:capitalize;
 }
 .x-fieldset{
-	padding:5px 10px 10px 20px;
-	border:none;
+    padding:5px 10px 10px 20px;
+    border:none;
 }
 .x-fieldset-bwrap{
-	padding-bottom:5px;
-	border-bottom:1px #d0d0d0 dotted;
+    padding-bottom:5px;
+    border-bottom:1px #d0d0d0 dotted;
 }
 .x-fieldset legend{
-	margin-left:-15px;
-	color:#111;
-	font-size:12px;
+    margin-left:-15px;
+    color:#111;
+    font-size:12px;
 }
 /* Specific Overrides*/
 #external_administration_fieldset{
-	margin-top:10px;
+    margin-top:10px;
 }
 .administration_network,.left-indent-1{
-	margin-left:17px;
+    margin-left:17px;
 }
 .left-indent-2{
-	margin-left:34px;
+    margin-left:34px;
 }
 .left-indent-3{
     margin-left:5.5em;
@@ -1525,14 +1539,14 @@ body.wizard .ext-el-mask
 }
 
 .alpaca-panel .page-header-text{
-	font-family:Tahoma, arial, helvetica, freesans,sans-serif;
+    font-family:Tahoma, arial, helvetica, freesans,sans-serif;
     font-weight:bold;
     font-size:13px;
     margin-bottom:5px;
     display:block;
 }
 .label-section-heading, .label-section-heading-2,.label-text{
-	font-family:Tahoma, arial,helvetica,  freesans,sans-serif;
+    font-family:Tahoma, arial,helvetica,  freesans,sans-serif;
     font-weight:bold;
     font-size:12px;
     display:block;
@@ -1575,7 +1589,7 @@ float:left;
     background: #FEFEDD url(../images/user/icon_message.png) no-repeat scroll 7px center !important;
     color:#333;
     font-size:11px;
-	font-family:Tahoma, arial,helvetica, freesans,sans-serif;
+    font-family:Tahoma, arial,helvetica, freesans,sans-serif;
 }
 .ua-message-warning{
     display:block;

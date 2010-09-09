@@ -18,7 +18,7 @@
 }
 .x-panel-header {
     color:#eeeeee;
-	border:1px solid #777777;
+    border:1px solid #777777;
     background-image:url(../images/darkgray/panel/white-top-bottom.gif);
 }
 
@@ -44,23 +44,23 @@
     color:#eeeeee;
 }
 .x-panel-tc {
-	background-image:url(../images/darkgray/panel/top-bottom.gif);
+    background-image:url(../images/darkgray/panel/top-bottom.gif);
 }
 .x-panel-tl {
-	background-image:url(../images/darkgray/panel/corners-sprite.gif);
+    background-image:url(../images/darkgray/panel/corners-sprite.gif);
     border-color:#777777;
 }
 .x-panel-tr {
-	background-image:url(../images/darkgray/panel/corners-sprite.gif);
+    background-image:url(../images/darkgray/panel/corners-sprite.gif);
 }
 .x-panel-bc {
-	background-image:url(../images/darkgray/panel/top-bottom.gif);
+    background-image:url(../images/darkgray/panel/top-bottom.gif);
 }
 .x-panel-bl {
-	background-image:url(../images/darkgray/panel/corners-sprite.gif);
+    background-image:url(../images/darkgray/panel/corners-sprite.gif);
 }
 .x-panel-br {
-	background-image:url(../images/darkgray/panel/corners-sprite.gif);
+    background-image:url(../images/darkgray/panel/corners-sprite.gif);
 }
 .x-panel-mc {
     background:#888888;
@@ -71,10 +71,10 @@
     border: 0 none;
 }
 .x-panel-ml {
-	background-image:url(../images/darkgray/panel/left-right.gif);
+    background-image:url(../images/darkgray/panel/left-right.gif);
 }
 .x-panel-mr {
-	background-image:url(../images/darkgray/panel/left-right.gif);
+    background-image:url(../images/darkgray/panel/left-right.gif);
 }
 
 /* Grid */
@@ -82,11 +82,11 @@
     color:#000000;
 }
 .x-grid3-row-over {
-	border:1px solid #dddddd;
+    border:1px solid #dddddd;
     background-image:url(../images/darkgray/grid/row-over.gif);
 }
 .x-grid3-header{
-	background-image:url(../images/darkgray/grid/grid3-hrow.gif);
+    background-image:url(../images/darkgray/grid/grid3-hrow.gif);
 }
 .x-grid3-header-pop-inner {
     border-left:1px solid #eee;
@@ -101,7 +101,7 @@ td.x-grid3-hd-over .x-grid3-hd-inner, td.sort-desc .x-grid3-hd-inner, td.sort-as
     background-image:url(../images/darkgray/grid/grid3-hrow-over.gif);
 }
 .x-dd-drag-proxy .x-grid3-hd-inner{
-	background-image:url(../images/darkgray/grid/grid3-hrow-over.gif);
+    background-image:url(../images/darkgray/grid/grid3-hrow-over.gif);
 }
 .x-grid3-locked td.x-grid3-row-marker, .x-grid3-locked .x-grid3-row-selected td.x-grid3-row-marker{
     background-image:url(../images/darkgray/grid/grid-hrow.gif);
@@ -110,7 +110,7 @@ td.x-grid3-hd-over .x-grid3-hd-inner, td.sort-desc .x-grid3-hd-inner, td.sort-as
     border-right:1px solid #6fa0df !important;
 }
 .x-props-grid .x-grid3-td-name .x-grid3-cell-inner{
-	background-image:url(../images/darkgray/grid/grid3-special-col-bg.gif);
+    background-image:url(../images/darkgray/grid/grid3-special-col-bg.gif);
     color:black !important;
 }
 .x-grid3-hd-btn {
@@ -128,25 +128,25 @@ td.x-grid3-hd-over .x-grid3-hd-inner, td.sort-desc .x-grid3-hd-inner, td.sort-as
 .x-grid3-body .x-grid3-row-selected .x-grid3-td-numberer,
 .x-grid3-body .x-grid3-row-selected .x-grid3-td-checker,
 .x-grid3-body .x-grid3-row-selected .x-grid3-td-expander {
-	background-image:url(../images/darkgray/grid/grid3-special-col-sel-bg.gif);
+    background-image:url(../images/darkgray/grid/grid3-special-col-sel-bg.gif);
 }
 .x-grid3-row-selected {
-	background: #555759;
-	border:1px dotted #111111;
+    background: #555759;
+    border:1px dotted #111111;
 }
 
 /* Menu */
 .x-menu {
-	border: 1px solid #333333;
-	background-image:url(../images/darkgray/menu/menu.gif);
+    border: 1px solid #333333;
+    background-image:url(../images/darkgray/menu/menu.gif);
 }
 .x-menu-sep {
     background-color:#e6e6e6;
-	border-bottom:1px solid #bfbfbf;
+    border-bottom:1px solid #bfbfbf;
 }
 .x-menu-item-active {
-	background-image:url(../images/darkgray/menu/item-over.gif);
-	border:1px solid #aaaaaa;
+    background-image:url(../images/darkgray/menu/item-over.gif);
+    border:1px solid #aaaaaa;
 }
 
 /* Tools */
@@ -173,13 +173,13 @@ td.x-grid3-hd-over .x-grid3-hd-inner, td.sort-desc .x-grid3-hd-inner, td.sort-as
 color: #eee;
 }
 .x-btn-left{
-	background-image:url(../images/darkgray/button/btn-sprite.gif);
+    background-image:url(../images/darkgray/button/btn-sprite.gif);
 }
 .x-btn-right{
-	background-image:url(../images/darkgray/button/btn-sprite.gif);
+    background-image:url(../images/darkgray/button/btn-sprite.gif);
 }
 .x-btn-center{
-	background-image:url(../images/darkgray/button/btn-sprite.gif);
+    background-image:url(../images/darkgray/button/btn-sprite.gif);
 }
 
 /* Layout classes */
@@ -189,7 +189,7 @@ color: #eee;
 }
 
 .x-accordion-hd {
-	background-image:url(../images/darkgray/panel/light-hd.gif);
+    background-image:url(../images/darkgray/panel/light-hd.gif);
 }
 
 .x-layout-collapsed{
@@ -197,37 +197,37 @@ color: #eee;
     border-color:#555555;
 }
 .x-layout-collapsed-over{
-	 background-color:#888888;
+     background-color:#888888;
 }
 
 
 /* qtips */
 .x-tip .x-tip-close{
-	background-image: url(../images/darkgray/qtip/close.gif);
+    background-image: url(../images/darkgray/qtip/close.gif);
 }
 .x-tip .x-tip-tc {
-	background-image:url(../images/darkgray/qtip/tip-sprite.gif);
+    background-image:url(../images/darkgray/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-tl {
-	background-image:url(../images/darkgray/qtip/tip-sprite.gif);
+    background-image:url(../images/darkgray/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-tr {
-	background-image:url(../images/darkgray/qtip/tip-sprite.gif);
+    background-image:url(../images/darkgray/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-bc {
-	background-image:url(../images/darkgray/qtip/tip-sprite.gif);
+    background-image:url(../images/darkgray/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-bl {
-	background-image:url(../images/darkgray/qtip/tip-sprite.gif);
+    background-image:url(../images/darkgray/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-br {
-	background-image:url(../images/darkgray/qtip/tip-sprite.gif);
+    background-image:url(../images/darkgray/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-ml {
-	background-image:url(../images/darkgray/qtip/tip-sprite.gif);
+    background-image:url(../images/darkgray/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-mr {
-	background-image:url(../images/darkgray/qtip/tip-sprite.gif);
+    background-image:url(../images/darkgray/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-header-text {
     color:#eeeeee;
@@ -238,7 +238,7 @@ color: #eee;
 /* Toolbars */
 
 .x-toolbar{
-	border-color:#777777;
+    border-color:#777777;
     background:#9c9c9c url(../images/darkgray/toolbar/bg.gif) repeat-x top left;
 }
 .x-toolbar button {
@@ -251,29 +251,29 @@ color: #eee;
     background-image:url(../images/darkgray/toolbar/btn-arrow.gif);
 }
 .x-toolbar .x-btn-over .x-btn-left{
-	background-image:url(../images/darkgray/toolbar/tb-btn-sprite.gif);
+    background-image:url(../images/darkgray/toolbar/tb-btn-sprite.gif);
 }
 .x-toolbar .x-btn-over .x-btn-right{
-	background-image:url(../images/darkgray/toolbar/tb-btn-sprite.gif);
+    background-image:url(../images/darkgray/toolbar/tb-btn-sprite.gif);
 }
 .x-toolbar .x-btn-over .x-btn-center{
-	background-image:url(../images/darkgray/toolbar/tb-btn-sprite.gif);
+    background-image:url(../images/darkgray/toolbar/tb-btn-sprite.gif);
 }
 .x-toolbar .x-btn-over button {
     color:#eeeeee;
 }
 .x-toolbar .x-btn-click .x-btn-left, .x-toolbar .x-btn-pressed .x-btn-left, .x-toolbar .x-btn-menu-active .x-btn-left{
-	background-image:url(../images/darkgray/toolbar/tb-btn-sprite.gif);
+    background-image:url(../images/darkgray/toolbar/tb-btn-sprite.gif);
 }
 .x-toolbar .x-btn-click .x-btn-right, .x-toolbar .x-btn-pressed .x-btn-right, .x-toolbar .x-btn-menu-active .x-btn-right{
-	background-image:url(../images/darkgray/toolbar/tb-btn-sprite.gif);
+    background-image:url(../images/darkgray/toolbar/tb-btn-sprite.gif);
 }
 
 .x-toolbar .x-btn-click .x-btn-center, .x-toolbar .x-btn-pressed .x-btn-center, .x-toolbar .x-btn-menu-active .x-btn-center{
-	background-image:url(../images/darkgray/toolbar/tb-btn-sprite.gif);
+    background-image:url(../images/darkgray/toolbar/tb-btn-sprite.gif);
 }
 .x-toolbar .ytb-sep {
-	background-image: url(../images/darkgray/grid/grid-split.gif);
+    background-image: url(../images/darkgray/grid/grid-split.gif);
 }
 .x-paging-info {
     color:#f9f9f9;
@@ -316,82 +316,82 @@ color: #eee;
     border-bottom: 1px solid #929292;
 }
 .x-form-focus, textarea.x-form-focus{
-	border: 1px solid #929292;
+    border: 1px solid #929292;
 }
 /* Tabs */
 
 .x-tab-panel-header, .x-tab-panel-footer {
-	background: #646464;
-	border-color:#777777;
+    background: #646464;
+    border-color:#777777;
 }
 
 
 .x-tab-panel-header {
-	border-color:#777777;
+    border-color:#777777;
 }
 
 .x-tab-panel-footer {
-	border-color:#777777;
+    border-color:#777777;
 }
 
 ul.x-tab-strip-top{
-	background:#7a7a7a url(../images/darkgray/tabs/tab-strip-bg.gif) repeat-x left top;
-	border-color:#777777;
+    background:#7a7a7a url(../images/darkgray/tabs/tab-strip-bg.gif) repeat-x left top;
+    border-color:#777777;
     padding-top: 2px;
 }
 
 ul.x-tab-strip-bottom{
-	background-image:url(../images/darkgray/tabs/tab-strip-btm-bg.gif);
-	border-color:#777777;
+    background-image:url(../images/darkgray/tabs/tab-strip-btm-bg.gif);
+    border-color:#777777;
 }
 
 .x-tab-strip span.x-tab-strip-text {
-	color:#dddddd;
+    color:#dddddd;
 }
 .x-tab-strip-over span.x-tab-strip-text {
-	color:#ffff;
+    color:#ffff;
 }
 
 .x-tab-strip-active span.x-tab-strip-text {
-	color:#eeeeee;
+    color:#eeeeee;
 }
 
 .x-tab-strip-disabled .x-tabs-text {
-	color:#888888;
+    color:#888888;
 }
 
 .x-tab-strip-top .x-tab-right {
-	background-image:url(../images/darkgray/tabs/tabs-sprite.gif);
+    background-image:url(../images/darkgray/tabs/tabs-sprite.gif);
 }
 
 .x-tab-strip-top .x-tab-left {
-	background-image:url(../images/darkgray/tabs/tabs-sprite.gif);
+    background-image:url(../images/darkgray/tabs/tabs-sprite.gif);
 }
 .x-tab-strip-top .x-tab-strip-inner {
-	background-image:url(../images/darkgray/tabs/tabs-sprite.gif);
+    background-image:url(../images/darkgray/tabs/tabs-sprite.gif);
 }
 
 .x-tab-strip-bottom .x-tab-right {
-	background-image:url(../images/darkgray/tabs/tab-btm-inactive-right-bg.gif);
+    background-image:url(../images/darkgray/tabs/tab-btm-inactive-right-bg.gif);
 }
 
 .x-tab-strip-bottom .x-tab-left {
-	background-image:url(../images/darkgray/tabs/tab-btm-inactive-left-bg.gif);
+    background-image:url(../images/darkgray/tabs/tab-btm-inactive-left-bg.gif);
 }
 
 .x-tab-strip-bottom .x-tab-strip-active .x-tab-right {
-	background-image:url(../images/darkgray/tabs/tab-btm-right-bg.gif);
+    background-image:url(../images/darkgray/tabs/tab-btm-right-bg.gif);
 }
 
 .x-tab-strip-bottom .x-tab-strip-active .x-tab-left {
-	background-image:url(../images/darkgray/tabs/tab-btm-left-bg.gif);
+    background-image:url(../images/darkgray/tabs/tab-btm-left-bg.gif);
 }
 
 .x-tab-strip .x-tab-strip-closable a.x-tab-strip-close {
-	background-image:url(../images/darkgray/tabs/tab-close.gif);
+    background-image:url(../images/darkgray/tabs/tab-close.gif);
 }
 .x-tab-strip .x-tab-strip-closable a.x-tab-strip-close:hover{
-	background-image:url(../images/darkgray/tabs/tab-close.gif);
+    background-image:url(../images/darkgray/tabs/tab-close.gif);
 }
 
 .x-tab-panel-body {
@@ -435,7 +435,7 @@ ul.x-tab-strip-bottom{
 
 /* Window */
 .x-window{
-	z-index:21000
+    z-index:21000
 }
 .x-window-proxy {
     background:#e0e0e0;
@@ -446,22 +446,22 @@ ul.x-tab-strip-bottom{
     color:#eeeeee;
 }
 .x-window-tc {
-	background-image:url(../images/darkgray/window/top-bottom.png);
+    background-image:url(../images/darkgray/window/top-bottom.png);
 }
 .x-window-tl {
-	background-image:url(../images/darkgray/window/left-corners.png);
+    background-image:url(../images/darkgray/window/left-corners.png);
 }
 .x-window-tr {
-	background-image:url(../images/darkgray/window/right-corners.png);
+    background-image:url(../images/darkgray/window/right-corners.png);
 }
 .x-window-bc {
-	background-image:url(../images/darkgray/window/top-bottom.png);
+    background-image:url(../images/darkgray/window/top-bottom.png);
 }
 .x-window-bl {
-	background-image:url(../images/darkgray/window/left-corners.png);
+    background-image:url(../images/darkgray/window/left-corners.png);
 }
 .x-window-br {
-	background-image:url(../images/darkgray/window/right-corners.png);
+    background-image:url(../images/darkgray/window/right-corners.png);
 }
 .x-window-mc {
     border:1px solid #555555;
@@ -469,10 +469,10 @@ ul.x-tab-strip-bottom{
 }
 
 .x-window-ml {
-	background-image:url(../images/darkgray/window/left-right.png);
+    background-image:url(../images/darkgray/window/left-right.png);
 }
 .x-window-mr {
-	background-image:url(../images/darkgray/window/left-right.png);
+    background-image:url(../images/darkgray/window/left-right.png);
 }
 .x-panel-ghost .x-window-tl {
     border-color:#555555;
@@ -507,7 +507,7 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
     background:#eeeeee;
 }
 .x-date-middle,.x-date-left,.x-date-right {
-	background-image: url(../images/darkgray/shared/hd-sprite.gif);
+    background-image: url(../images/darkgray/shared/hd-sprite.gif);
 }
 .x-date-middle .x-btn-with-menu  .x-btn-center em {
     background-image:url(../images/darkgray/toolbar/btn-arrow-light.gif);
@@ -516,16 +516,16 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
     background-image: url(../images/darkgray/shared/right-btn.gif);
 }
 .x-date-left a{
-	background-image: url(../images/darkgray/shared/left-btn.gif);
+    background-image: url(../images/darkgray/shared/left-btn.gif);
 }
 .x-date-inner th {
     background-image:url(../images/darkgray/shared/glass-bg.gif);
-	border-bottom: 1px solid #333333;
-	color:#eeeef2;
+    border-bottom: 1px solid #333333;
+    color:#eeeef2;
 }
 .x-date-inner .x-date-selected a{
-	background-image:url(../images/darkgray/shared/glass-bg.gif);
-	border:1px solid #333333;
+    background-image:url(../images/darkgray/shared/glass-bg.gif);
+    border:1px solid #333333;
     color:#eeeef2;
 }
 .x-date-bottom {
@@ -533,27 +533,27 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
     background-image:url(../images/darkgray/shared/glass-bg.gif);
 }
 .x-date-mp-btns {
-	background-image:url(../images/darkgray/shared/glass-bg.gif);
+    background-image:url(../images/darkgray/shared/glass-bg.gif);
 }
 td.x-date-mp-sel a {
-	background-image:url(../images/darkgray/shared/glass-bg.gif);
-	border:1px solid #000000;
-	color: #eeeef2;
+    background-image:url(../images/darkgray/shared/glass-bg.gif);
+    border:1px solid #000000;
+    color: #eeeef2;
 }
 .x-date-mp-ybtn a {
     background-image:url(../images/darkgray/panel/tool-sprites.gif);
 }
 .x-date-mp-btns button {
-	background-image:url(../images/darkgray/shared/glass-bg.gif);
-	border-color: #555555 #000000 #000000 #555555;
+    background-image:url(../images/darkgray/shared/glass-bg.gif);
+    border-color: #555555 #000000 #000000 #555555;
 }
 .x-date-inner a:hover, .x-date-inner .x-date-disabled a:hover{
     color:#eeeef2;
     background: #333333;
 }
 td.x-date-mp-month a:hover,td.x-date-mp-year a:hover {
-	color:#eeeef2;
-	background: #333333;
+    color:#eeeef2;
+    background: #333333;
 }
 
 /* misc */
@@ -589,19 +589,19 @@ td.x-date-mp-month a:hover,td.x-date-mp-year a:hover {
 }
 
 .x-tab-panel-noborder .x-tab-panel-body-noborder {
-	border-width:0;
+    border-width:0;
 }
 
 .x-tab-panel-noborder .x-tab-panel-header-noborder {
-	border-top-width:0;
-	border-left-width:0;
-	border-right-width:0;
+    border-top-width:0;
+    border-left-width:0;
+    border-right-width:0;
 }
 
 .x-tab-panel-noborder .x-tab-panel-footer-noborder {
-	border-bottom-width:0;
-	border-left-width:0;
-	border-right-width:0;
+    border-bottom-width:0;
+    border-left-width:0;
+    border-right-width:0;
 }
 
 
@@ -653,22 +653,22 @@ td.x-date-mp-month a:hover,td.x-date-mp-year a:hover {
     border:none;
 }
 .x-toolbar .x-btn-always-over .x-btn-left{
-	background: url(../images/darkgray/toolbar/tb-btn-sprite.gif) no-repeat 0 0;
+    background: url(../images/darkgray/toolbar/tb-btn-sprite.gif) no-repeat 0 0;
 }
 .x-toolbar .x-btn-always-over .x-btn-right{
-	background: url(../images/darkgray/toolbar/tb-btn-sprite.gif) no-repeat 0 -21px;
+    background: url(../images/darkgray/toolbar/tb-btn-sprite.gif) no-repeat 0 -21px;
 }
 .x-toolbar .x-btn-always-over .x-btn-center{
-	background: url(../images/darkgray/toolbar/tb-btn-sprite.gif) repeat-x 0 -42px;
+    background: url(../images/darkgray/toolbar/tb-btn-sprite.gif) repeat-x 0 -42px;
 }
 .x-toolbar .x-btn-over .x-btn-left{
-	background: url(../images/darkgray/toolbar/tb-btn-sprite.gif) no-repeat 0 -63px;
+    background: url(../images/darkgray/toolbar/tb-btn-sprite.gif) no-repeat 0 -63px;
 }
 .x-toolbar .x-btn-over .x-btn-right{
-	background: url(../images/darkgray/toolbar/tb-btn-sprite.gif) no-repeat 0 -84px;
+    background: url(../images/darkgray/toolbar/tb-btn-sprite.gif) no-repeat 0 -84px;
 }
 .x-toolbar .x-btn-over .x-btn-center{
-	background: url(../images/darkgray/toolbar/tb-btn-sprite.gif) repeat-x 0 -105px;
+    background: url(../images/darkgray/toolbar/tb-btn-sprite.gif) repeat-x 0 -105px;
 }
 .small-right-margin{
   margin-right:5px;
