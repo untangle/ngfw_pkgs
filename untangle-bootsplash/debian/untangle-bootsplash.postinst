@@ -4,4 +4,8 @@ splashy_config -s untangle
 
 update-initramfs -u
 
+KEYMAP_INITD="/etc/init.d/keymap.sh"
+
+grep -q "bug 8039" $KEYMAP_INITD || perl -i -pe 's|(?<=^\. /lib/lsb/init-functions$)|\n\n[ -f /lib/init/rw/splashy/splashy-stopped-keymap ] && exit 0 # bug 8039|' $KEYMAP_INITD
+
 exit 0
