@@ -1,0 +1,8 @@
+Untangle note:
+
+As of 8.0, untangle will use Ext 2.3.0
+
+to save space the following directories have been removed
+docs/
+air/
+examples/
