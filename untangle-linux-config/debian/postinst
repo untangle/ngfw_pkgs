@@ -14,6 +14,12 @@ else
 fi
 }
 
+# attempt to fix bug #7974
+grep'HWCLOCKPARM' /etc/default/rcS > /dev/null 2>&1
+if [ ! $? = 0 ] ; then 
+    echo "HWCLOCKPARS=--directisa" >> /etc/default/rcS
+fi
+ 
 # Clean up stuff left around by old version
 rm -f /boot/vmlinuz-ut
 rm -f /boot/vmlinuz
@@ -63,7 +69,7 @@ if [ -n "$root" ]; then
     else
         echo "Installing Untangle /boot/grub/menu.lst."
         [ -f /boot/grub/menu.lst-pre-untangle ] || cp /boot/grub/menu.lst /boot/grub/menu.lst-pre-untangle
-	mkdir -p /boot/grub
+	    mkdir -p /boot/grub
         sed -e "s/@ROOTDEV@/$rootdev/" /usr/share/untangle-linux-config/menu.lst > /boot/grub/menu.lst
         # Must set grub default before updating to avoid bug in grub's updatedefaultentry
         currentDefault=$(head -1 /boot/grub/default | perl -pe 's/^(\d).*/$1/')
