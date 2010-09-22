@@ -73,7 +73,7 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
       piece = piece.strip
       stats = piece.split( Regexp.new( '\s+', Regexp::MULTILINE ) )
 
-      print "piece: ",piece,"\n"
+      # print "piece: ",piece,"\n"
       intf = stats[0]
       que_num = stats[7]
       rate = stats[11]
@@ -81,7 +81,7 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
       sent = stats[19] + " " + stats[20]
       tokens = stats[44]
       ctokens = stats[46]
-      print "intf: ",intf," que_num: ",que_num,"\n"
+      # print "intf: ",intf," que_num: ",que_num,"\n"
       
       queue_name = PriorityQueueToName[que_num]
       next if queue_name.nil?
