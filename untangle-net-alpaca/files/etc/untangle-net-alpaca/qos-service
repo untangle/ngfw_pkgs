@@ -28,7 +28,7 @@ IPTABLES="iptables"
 
 run ()
 {
-    echo $1
+    # echo $1
     /bin/sh -c "$1"
 }
 
@@ -43,7 +43,7 @@ flush_htb_rules()
     local wan_dev
     local imq_dev
 
-    echo "### Flush HTB ###"
+    run "### Flush HTB ###"
 
     for wan_dev in $(echo $UPLINKS) ; do
         imq_dev=$(imq_dev $wan_dev)
@@ -72,7 +72,7 @@ add_htb_rules()
         exit 1
     fi
 
-    echo "### Add HTB ###"
+    run "### Add HTB ###"
 
     wan_interface=$1
     imq_interface=$(imq_dev $1)
