@@ -188,6 +188,11 @@ class UvmController < ApplicationController
     json_result
   end
 
+  def get_qos_settings
+    qos_settings = QosSettings.find( :first )
+    json_result (:values => qos_settings)
+  end
+
   ## Set the settings up as if this was for the wizard (UVM wizard not the alpaca wizard)
   def wizard_start
     interfaces = InterfaceHelper.loadInterfaces
