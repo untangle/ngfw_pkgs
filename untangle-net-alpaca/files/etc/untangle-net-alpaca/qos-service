@@ -169,7 +169,7 @@ stop()
 {
     flush_htb_rules
 
-    exit
+    exit 0
 }
 
 start()
