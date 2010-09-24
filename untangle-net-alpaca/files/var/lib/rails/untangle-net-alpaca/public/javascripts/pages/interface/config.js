@@ -361,7 +361,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                 dataIndex : "network_string",
                 editor : new Ext.form.TextField({
                     allowBlank : false,
-                    vtype : 'ipAddressAndNetmask'
+                    vtype : 'networkAddress'
                 })
             }]
         });
