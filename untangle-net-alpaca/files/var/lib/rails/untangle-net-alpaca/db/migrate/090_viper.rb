@@ -86,6 +86,8 @@ class Viper < Alpaca::Migration
 
     # convert priorities
     qos_settings = QosSettings.find( :first )
+    # settings should always exists
+    qos_settings = QosSettings.new if qos_settings.nil?
     if !qos_settings.nil?
       qos_settings.prioritize_ping = 1 if qos_settings.prioritize_ping == 10
       qos_settings.prioritize_ping = 2 if qos_settings.prioritize_ping == 20
