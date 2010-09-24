@@ -73,7 +73,7 @@ if [ -n "$root" ]; then
         sed -e "s/@ROOTDEV@/$rootdev/" /usr/share/untangle-linux-config/menu.lst > /boot/grub/menu.lst
         # Must set grub default before updating to avoid bug in grub's updatedefaultentry
         currentDefault=$(head -1 /boot/grub/default | perl -pe 's/^(\d).*/$1/')
-        currentKernelParams="$(grep -E '^kernel' /boot/grub/menu.lst | H -$((1 + $currentDefault)) | tail -1 | perl -pe 's/.+panic=\d+\s//')"
+        currentKernelParams="$(grep -E '^kernel' /boot/grub/menu.lst | head -$((1 + $currentDefault)) | tail -1 | perl -pe 's/.+panic=\d+\s//')"
         case "$currentKernelParams" in
           *splash*) newDefault=1 ;;
           *noapic*) newDefault=2 ;;
