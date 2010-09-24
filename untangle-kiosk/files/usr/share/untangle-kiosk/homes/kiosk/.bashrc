@@ -1,5 +1,5 @@
 XORG_CONF_VESA=xorg-untangle-vesa.conf
-sudo tee /etc/X11/$XORG_CONF_VESA <<EOF
+sudo tee /etc/X11/$XORG_CONF_VESA > /dev/null <<EOF
 Section "Device"
 Identifier "Configured Video Device"
 Driver "vesa"
@@ -24,9 +24,10 @@ EOF
 
 abort() {
 echo <<EOF
-The server has failed to properly detect the video & monitor settings. 
+The server has failed to properly detect the video & monitor settings.
 
-Try restarting the server and selecting a differnt video-mode boot option from the boot menu.
+Try restarting the server and selecting a different video-mode boot
+option from the boot menu.
 
 EOF
 }
