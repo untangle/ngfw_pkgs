@@ -359,7 +359,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 align : "center",
                 sortable: false,
                 dataIndex : "config_type",
-                renderer : function( value, metadata, record ) { return value + this._( " (wan)" )}.createDelegate( this )
+                renderer : function( value, metadata, record ) { return value + this._( " (wan)" );}.createDelegate( this )
             },{
                 header : this._( "Download Bandwidth" ),
                 width: 84,
