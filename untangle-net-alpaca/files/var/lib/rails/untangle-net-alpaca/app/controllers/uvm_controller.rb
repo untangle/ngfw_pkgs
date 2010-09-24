@@ -60,7 +60,7 @@ class UvmController < ApplicationController
     s["system_subscriptions"].each do |entry|
       rule = Subscription.find( :first, :conditions => [ "system_id = ?", entry["system_id"]] )
       next if rule.nil?
-      rule.enabled = entry["enabled"]
+      rule.senabled = entry["enabled"]
       rule.save
     end
     
@@ -188,9 +188,60 @@ class UvmController < ApplicationController
     json_result
   end
 
+  #
+  # Called by NetworkManagerImpl
+  # Used to fetch QoS Settings (for Bandwidth Control)
+  #
   def get_qos_settings
     qos_settings = QosSettings.find( :first )
-    json_result (:values => qos_settings)
+    json_result(:values => qos_settings)
+  end
+
+  def enable_qos
+    qos_settings = QosSettings.find( :first )
+    qos_settings.enabled = true
+    qos_settings.save
+
+    os["qos_manager"].commit
+
+    json_result
+  end
+
+  #
+  # Called by NetworkManagerImpl
+  # Used to fetch interface metadata (like WAN speed for Bandwidth Control)
+  #
+  def get_wan_interfaces
+    wan_interfaces = Interface.wan_interfaces
+    json_result(:values => wan_interfaces)
+  end
+
+  #
+  # Called by NetworkManagerImpl
+  # This is used to the UVM can set the WAN speed (for Bandwidth Control)
+  #
+  def set_wan_speed
+    name = json_params["name"]
+    download_bandwidth = json_params["download_bandwidth"]
+    upload_bandwidth = json_params["upload_bandwidth"]
+    if name.nil?
+      raise "Missing interface name"
+    end
+    intf = Interface.find( :first, :conditions => [ "name = ?", name ] )
+    if intf.nil?
+      raise "Could not find interface: #{name}"
+    end
+    
+    if ! download_bandwidth.nil?
+      intf.download_bandwidth = download_bandwidth
+    end
+    if ! upload_bandwidth.nil?
+      intf.upload_bandwidth = upload_bandwidth
+    end
+
+    intf.save
+
+    json_result
   end
 
   ## Set the settings up as if this was for the wizard (UVM wizard not the alpaca wizard)
