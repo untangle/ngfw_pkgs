@@ -172,6 +172,7 @@ Ung.Alpaca.Util = {
             icon : Ext.MessageBox.INFO
         });
     },
+
     hasData : function(obj) {
         var hasData = false;
         for (id in obj) {
@@ -194,10 +195,7 @@ Ung.Alpaca.Util = {
             },
             ipAddressText: i18n._('Invalid IP Address.'),
             
-            networkAddressMask : /[ 0-9\.\/]/,
-
-            // #{ip_address} [/#{netmask}]
-            networkAddress: function(val, field) {
+            checkIPNetmask: function(val, field, netmaskRequired) {
                 val = val.trim();
                 var tokens = val.split(/ *\/ */);
                 if (tokens.length < 1 && tokens.length > 2) {
@@ -207,47 +205,68 @@ Ung.Alpaca.Util = {
                 if (!this.ipAddress(tokens[0], field)) {
                     return false;
                 }
+                // if netmask is required check that there is one
+                if (netmaskRequired && tokens.length < 2) {
+                    return false;
+                }
                 //validate netmask
                 if (tokens.length == 2) {
                     var netmask = tokens[1];
                     if (netmask.indexOf(".") < 0 ) {
-                    // short format
-                    var netmaskNum = parseInt(netmask);
-                    return (!isNaN(netmaskNum) && netmaskNum >=0 && netmaskNum <= 32);
+                        // short format
+                        var netmaskNum = parseInt(netmask);
+                        return (!isNaN(netmaskNum) && netmaskNum >=0 && netmaskNum <= 32);
                     } else {
-                    // long format
-                    var netmaskTokens = netmask.split('.');
-                    if (netmaskTokens.length != 4) {
-                        return false;
-                    } else {
-                        var validNetmaskTokens = new Array(0, 128, 192, 224, 240, 248, 252, 254, 255)
-                        for (var i=0, subnetSection = true; i<4; i++) {
-                        if (subnetSection) {
+                        // long format
+                        var netmaskTokens = netmask.split('.');
+                        if (netmaskTokens.length != 4) {
+                            return false;
+                        } else {
+                            var validNetmaskTokens = new Array(0, 128, 192, 224, 240, 248, 252, 254, 255);
+                            for (var i=0, subnetSection = true; i<4; i++) {
+                                if (subnetSection) {
                                     if (netmaskTokens[i] != 255 ) {
-                                    subnetSection = false;
+                                        subnetSection = false;
                                     }
                                     var isCurrentTokenValid = false;
-                            for ( var j=0; j< validNetmaskTokens.length; j++) {
-                            if (netmaskTokens[i] == validNetmaskTokens[j]) {
-                                isCurrentTokenValid = true;
-                                break;
-                            }
-                            }
-                            if (!isCurrentTokenValid) {
-                            return false;
-                            }
-                        } else {
-                            if (netmaskTokens[i] != 0) {
-                            return false;
+                                    for ( var j=0; j< validNetmaskTokens.length; j++) {
+                                        if (netmaskTokens[i] == validNetmaskTokens[j]) {
+                                            isCurrentTokenValid = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!isCurrentTokenValid) {
+                                        return false;
+                                    }
+                                } else {
+                                    if (netmaskTokens[i] != 0) {
+                                        return false;
+                                    }
+                                }
                             }
                         }
-                        }
-                    }
                     }
                 }
                 return true;
             },
+
+            networkAddressMask : /[ 0-9\.\/]/,
+
+            // #{ip_address} [/#{netmask}]
+            networkAddress: function(val, field) {
+                return this.checkIPNetmask(val, field, false);
+            },
             networkAddressText: i18n._('Invalid Network Address.'),
+
+
+            ipAddressAndNetmaskMask: /[ 0-9\.\/]/,
+
+            // #{ip_address} [/#{netmask}]
+            ipAddressAndNetmask: function(val, field) {
+                return this.checkIPNetmask(val, field, true);
+            },
+            ipAddressAndNetmaskText: i18n._('Invalid IP Address and Netmask.'),
+            
             
             //From rfc1034 the PREFERRED name syntax:
             //<domain> ::= <subdomain> | " "
@@ -263,7 +282,7 @@ Ung.Alpaca.Util = {
 
             hostname: function(val, field) {
                 val = val.trim();
-                var hostnameMaskRe = /^[0-9a-z]([-0-9a-z]*[0-9a-z])?(\.[0-9a-z]([-0-9a-z]*[0-9a-z])?)*$/i
+                var hostnameMaskRe = /^[0-9a-z]([-0-9a-z]*[0-9a-z])?(\.[0-9a-z]([-0-9a-z]*[0-9a-z])?)*$/i ;
                 // var hostnameMaskRe = /^(((([a-zA-Z](([a-zA-Z0-9\-]+)?[a-zA-Z0-9])?)+\.)*([a-zA-Z](([a-zA-Z0-9\-]+)?[a-zA-Z0-9])?)+)|\s)$/;
                 return hostnameMaskRe.test(val);
             },
@@ -274,7 +293,7 @@ Ung.Alpaca.Util = {
             //A list of hostnames separated by spaces. 
             hostnameList : function (val, field) {
                 val = val.trim();
-              var hostnames = val.split(/[\s,]+/)
+              var hostnames = val.split(/[\s,]+/);
               for (var i=0; i < hostnames.length; i++) {
                   if (!this.hostname(hostnames[i], field)) {
                   return false;

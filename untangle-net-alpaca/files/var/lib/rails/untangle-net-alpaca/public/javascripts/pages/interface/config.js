@@ -118,7 +118,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                 items : [{
                     fieldLabel : this._( "Primary IP Address and Netmask" ),
                     name : "static.primary_address",
-                    vtype : "networkAddress"
+                    vtype : "ipAddressAndNetmask"
                 }]
             },{
                 xtype : "label",
@@ -361,7 +361,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
                 dataIndex : "network_string",
                 editor : new Ext.form.TextField({
                     allowBlank : false,
-                    vtype : 'networkAddress'
+                    vtype : 'ipAddressAndNetmask'
                 })
             }]
         });
@@ -452,7 +452,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
     onCheckWan : function( component, isWanChecked )
     {
         Ext.each( this.find( "wanToggle", isWanChecked ), function( item ) { 
-            Ung.Alpaca.Util.setIsVisible( item, true ) 
+            Ung.Alpaca.Util.setIsVisible( item, true );
         });
 
         Ext.each( this.find( "wanToggle", !isWanChecked ), function( item ) {
@@ -493,7 +493,9 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
     {
         Ung.Alpaca.Pages.Interface.Config.superclass.updateSettings.apply( this, arguments );
 
-        /* Append the primary address to the top of the static aliases. */
+        /**
+         * Append the primary address to the top of the static aliases. 
+         */
         pa = settings["static"]["primary_address"];
         if ( pa == null ) {
             pa = "";
@@ -506,13 +508,17 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             });
         }
 
+        /**
+         * update all address, add /32 if necessary
+         */
         delete( settings["static"]["primary_address"]  );
         this.updateNetworks( settings, "static_aliases" );
         this.updateNetworks( settings, "static_nat_policies" );
         this.updateNetworks( settings, "dynamic_aliases" );
         this.updateNetworks( settings, "pppoe_aliases" );
 
-        settings["media"] = this.switchBlade.layout.activeItem.find( "name", "media" )[0].getValue()
+        
+        settings["media"] = this.switchBlade.layout.activeItem.find( "name", "media" )[0].getValue();
     },
 
     updateNetworks : function( settings, entryName )
@@ -529,7 +535,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
             if ( network_string == null ) {
                 network_string = "";
             }
-            network_string = network_string.split( / *\/ */ )
+            network_string = network_string.split( / *\/ */ );
             a["ip"] = network_string[0];
             a["netmask"] = "32";
             if ( network_string.length > 1 ) {
@@ -567,13 +573,17 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
         if ( configType.getValue() == "bridge" ) {
             bridgeInterface = this.find( "name", "bridge.bridge_interface_id" )[0].getValue();
             if ( bridgeInterface == null || bridgeInterface == "" ) {
-                Ext.MessageBox.alert( this._( "Unable to Save Settings" ), 
-                                      this._( "Please select a value for 'Bridge To'" ));
-
+                Ext.MessageBox.alert( this._( "Unable to Save Settings" ), this._( "Please select a value for 'Bridge To'" ));
                 return;
             }
         }
 
+        var primaryAddress = this.find( "name", "static.primary_address" )[0];
+        if (!primaryAddress.validate()) {
+                Ext.MessageBox.alert( this._( "Unable to Save Settings" ), this._( "Invalid Primary Address" ));
+                return;
+        }
+        
         handler();
     },
 
