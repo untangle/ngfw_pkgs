@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-linux-config
 Architecture: all
-Depends: linux-untangle | untangle-linux-image | linux-virtual-untangle, untangle-bootsplash, grub, initramfs-tools, udev, e2fsprogs (>= 1.37), bash (>= 3.1)
+Depends: linux-untangle | untangle-linux-image | linux-virtual-untangle, untangle-bootsplash, grub, initramfs-tools, udev, e2fsprogs (>= 1.37), bash (>= 3.1), untangle-kernel-modules-i386 | untangle-kernel-modules-amd64
 Description: The Untangle kernel config
  The Untangle Linux kernel config package. Provides
  bootsplash support and grub auto-configuration.
