@@ -411,6 +411,14 @@ div.ung-button-invalid {
 button.icon-add-row {
     background: transparent url(../images/admin/icon_add_row.gif) no-repeat center left !important;
 }
+/* import row button icon */
+button.icon-import {
+    background: transparent url(../images/admin/icon_import.gif) no-repeat center left !important;
+}
+/* export row button icon */
+button.icon-export {
+    background: transparent url(../images/admin/icon_export.gif) no-repeat center left !important;
+}
 /* edit row icon */
 div.icon-edit-row {
     background:transparent url(../images/admin/icon_edit_row.gif) no-repeat center center;
