@@ -91,7 +91,7 @@ Ung.Alpaca.Glue = {
                 fn : handler
             });
         } else {
-            handler( "yes", "" );
+            handler( "yes", "", "" );
         }
     },
 
