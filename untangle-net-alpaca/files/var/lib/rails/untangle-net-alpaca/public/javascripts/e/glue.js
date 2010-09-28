@@ -25,8 +25,8 @@ Ung.Alpaca.Glue = {
         var params = a[1];
         var path = a[0];
 
-        path = path.replace( /\/+/g, "/" )
-         a = path.split( "/" );
+        path = path.replace( /\/+/g, "/" );
+        a = path.split( "/" );
         var controller = a[2];
         var page = a[3];
         var pageID = parseInt( a[4] );
@@ -95,7 +95,7 @@ Ung.Alpaca.Glue = {
         }
     },
 
-    confirmedSaveSettings : function( buttonId, text, panel, closeWindow )
+    confirmedSaveSettings : function( buttonId, text, dialog, panel, closeWindow )
     {
         if ( buttonId != "yes" ) {
             return;
@@ -169,7 +169,7 @@ Ung.Alpaca.Glue = {
                 handler = function() {
                     main.hideWelcomeScreen();
                     return;
-                }
+                };
             }
         }
 
@@ -197,8 +197,8 @@ Ung.Alpaca.Glue = {
         var title;
         var message;
         var saveConfig = null;
-        if ( panel != null ) {
-            panel.saveConfig;
+        if ( panel != null) {
+            saveConfig = panel.saveConfig;
         }
 
         if ( saveConfig != null ) {

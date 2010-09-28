@@ -181,7 +181,7 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
         }
     },
     
-    completeSwitchToQueryPath : function( buttonId, __unused__, queryPath )
+    completeSwitchToQueryPath : function( buttonId, unused_text, unused_dialog, queryPath )
     {
         if ( buttonId == "ok" ) {
             queryPath = Ung.Alpaca.Glue.buildQueryPath( queryPath );

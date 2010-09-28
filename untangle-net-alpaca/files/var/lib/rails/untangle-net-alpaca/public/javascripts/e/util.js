@@ -380,11 +380,11 @@ Ung.Alpaca.Util = {
         var deletedInterfaces = result["deleted_interfaces"];
         
         if ( newInterfaces == null ) {
-            newInterfaces = [] 
+            newInterfaces = [];
         }
 
         if ( deletedInterfaces == null ) {
-            deletedInterfaces = [] 
+            deletedInterfaces = [];
         }
         
         if (( deletedInterfaces.length + newInterfaces.length ) > 0 ) {
