@@ -50,6 +50,8 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             sortable : false,
             hasEdit : true,
             hasReorder: true,
+
+            height: 450,
             
             rowEditor : this.rowEditor = new Ung.Alpaca.Pages.Redirect.RowEditor({
                 i18n : this.i18n,
