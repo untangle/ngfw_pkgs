@@ -177,7 +177,7 @@ Ung.Alpaca.Application = Ext.extend( Ext.Panel, {
                 icon : Ext.MessageBox.WARNING
             });
         } else {
-            handler( "ok", "" );
+            handler( "ok", "", "" );
         }
     },
     
