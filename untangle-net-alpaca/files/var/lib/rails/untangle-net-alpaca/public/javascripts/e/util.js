@@ -563,7 +563,7 @@ Ung.Alpaca.TextField = Ext.extend( Ext.form.TextField, {
     {
         Ung.Alpaca.TextField.superclass.onRender.call(this, ct, position);
         
-        var parent = this.el.parent()
+        var parent = this.el.parent();
         
         if( this.boxLabel ) {
             this.labelEl = parent.createChild({
