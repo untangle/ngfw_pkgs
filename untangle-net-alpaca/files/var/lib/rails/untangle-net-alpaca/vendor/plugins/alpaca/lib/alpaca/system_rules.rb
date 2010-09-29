@@ -103,12 +103,12 @@ module Alpaca::SystemRules
                           :system_id => "accept-dhcp-client-43587bff" )
 
     rm.add_firewall_rule( :description => "Accept DNS traffic from the Internal and VPN interfaces to the local DNS Server.",
-                          :filter => "d-local::true&&s-intf::2,8&&d-port::53&&protocol::udp",
+                          :filter => "d-local::true&&s-intf::2,8&&d-port::53&&protocol::tcp,udp",
                           :target => "pass",
                           :system_id => "accept-dns-internal-cbd25823" )
     
     rm.add_firewall_rule( :description => "Accept DNS traffic to the local DNS Server from all interfaces.",
-                          :filter => "d-local::true&&d-port::53&&protocol::udp",
+                          :filter => "d-local::true&&d-port::53&&protocol::tcp,udp",
                           :target => "pass", :enabled => false,
                           :system_id => "accept-dns-45de53dd" )
 
