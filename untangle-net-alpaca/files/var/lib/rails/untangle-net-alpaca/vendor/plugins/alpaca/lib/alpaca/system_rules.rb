@@ -161,6 +161,15 @@ module Alpaca::SystemRules
                           :system_id => "route-bridge-vpn-37ce4160" )
 
     ## Bypass Rules
+
+    ## bypass DNS
+    rm.add_bypass_rule( :description => "Bypass DNS Traffic",
+                        :enabled => true,
+                        :system_id => "bypass-dns-traffic-0e3fa107",
+                        :filter => "d-port::53&&protocol::tcp,udp",
+                        :subscribe => false )
+
+    ## bypass DHCP
     rm.add_bypass_rule( :description => "Bypass DHCP Traffic",
                         :system_id => DhcpHelper::RuleSystemID,
                         :filter => "s-port::67,68&&d-port::67,68&&protocol::udp",
@@ -193,7 +202,7 @@ module Alpaca::SystemRules
                         :filter => "d-port::4569&&protocol::udp",
                         :subscribe => false )
 
-    rm.add_bypass_rule( :description => "Bypass isnic Traffic",
+    rm.add_bypass_rule( :description => "Bypass Switchback Traffic",
                         :enabled => true,
                         :system_id => "bypass-internal-single-nic-traffic-10bd7d18",
                         :is_custom => true,
