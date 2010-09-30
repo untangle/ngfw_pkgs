@@ -63,26 +63,25 @@ if [ -n "$root" ]; then
 
     # Replace menu.lst
     # if [ ! -f /boot/grub/menu.lst ] || [ `grep title /boot/grub/menu.lst | wc -l` != 2 ] ; then
-    if grep -q "untangle-linux-config" /boot/grub/menu.lst && grep -q "kopt_2_6_26" /boot/grub/menu.lst && grep -qE "safe mode.*ut-video" /boot/grub/menu.lst && grep -qE 'defoptions=.+ut-video' /boot/grub/menu.lst ; then
+    if grep -q "untangle-linux-config" /boot/grub/menu.lst && grep -q "kopt_2_6_26" /boot/grub/menu.lst && grep -qE 'safe mode' /boot/grub/menu.lst && grep -qE 'defoptions=.+ut-video' /boot/grub/menu.lst && grep -qE '2.6.26-2' /boot/grub/menu.lst ; then
         # need to run update?
         echo "Untangle /boot/grub/menu.lst already installed."
     else
         echo "Installing Untangle /boot/grub/menu.lst."
+        # Must set grub default before updating to avoid bug in grub's updatedefaultentry
+        currentDefault=$(head -1 /boot/grub/default | perl -pe 's/^(\d).*/$1/')
+        currentKernelParams="$(grep -E '^kernel' /boot/grub/menu.lst | head -$((1 + $currentDefault)) | tail -1)"
+        case "$currentKernelParams" in
+          *ut-video*) newDefault=0 ;;
+          *noapic*) newDefault=2 ;;
+          *ut-restore*) newDefault=3 ;;
+          *) newDefault=1 ;;
+        esac
         [ -f /boot/grub/menu.lst-pre-untangle ] || cp /boot/grub/menu.lst /boot/grub/menu.lst-pre-untangle
 	    mkdir -p /boot/grub
         sed -e "s/@ROOTDEV@/$rootdev/" /usr/share/untangle-linux-config/menu.lst > /boot/grub/menu.lst
-        # Must set grub default before updating to avoid bug in grub's updatedefaultentry
-        currentDefault=$(head -1 /boot/grub/default | perl -pe 's/^(\d).*/$1/')
-        currentKernelParams="$(grep -E '^kernel' /boot/grub/menu.lst | head -$((1 + $currentDefault)) | tail -1 | perl -pe 's/.+panic=\d+\s//')"
-        case "$currentKernelParams" in
-          *splash*) newDefault=1 ;;
-          *noapic*) newDefault=2 ;;
-          *ut-restore*) newDefault=3 ;;
-          *ut-video*) newDefault=0 ;;
-          *) newDefault=0 ;;
-        esac
-        /usr/sbin/grub-set-default $newDefault
         /usr/sbin/update-grub
+        /usr/sbin/grub-set-default $newDefault
     fi
 fi
 
