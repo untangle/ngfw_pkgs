@@ -60,7 +60,7 @@ class UvmController < ApplicationController
     s["system_subscriptions"].each do |entry|
       rule = Subscription.find( :first, :conditions => [ "system_id = ?", entry["system_id"]] )
       next if rule.nil?
-      rule.senabled = entry["enabled"]
+      rule.enabled = entry["enabled"]
       rule.save
     end
     
