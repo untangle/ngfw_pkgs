@@ -75,9 +75,8 @@ if [ -n "$root" ]; then
     [ -f /boot/grub/menu.lst-pre-untangle ] || cp /boot/grub/menu.lst /boot/grub/menu.lst-pre-untangle
         mkdir -p /boot/grub
     sed -e "s/@ROOTDEV@/$rootdev/" /usr/share/untangle-linux-config/menu.lst > /boot/grub/menu.lst
-    # Must set grub default before updating to avoid bug in grub's updatedefaultentry
-    /usr/sbin/grub-set-default $newDefault
     /usr/sbin/update-grub
+    /usr/sbin/grub-set-default $newDefault
 fi
 
 exit 0
