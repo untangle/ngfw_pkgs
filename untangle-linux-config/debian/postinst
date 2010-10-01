@@ -68,7 +68,6 @@ if [ -n "$root" ]; then
         echo "Untangle /boot/grub/menu.lst already installed."
     else
         echo "Installing Untangle /boot/grub/menu.lst."
-        # Must set grub default before updating to avoid bug in grub's updatedefaultentry
         currentDefault=$(head -1 /boot/grub/default | perl -pe 's/^(\d).*/$1/')
         currentKernelParams="$(grep -E '^kernel' /boot/grub/menu.lst | head -$((1 + $currentDefault)) | tail -1)"
         case "$currentKernelParams" in
@@ -80,8 +79,9 @@ if [ -n "$root" ]; then
         [ -f /boot/grub/menu.lst-pre-untangle ] || cp /boot/grub/menu.lst /boot/grub/menu.lst-pre-untangle
 	    mkdir -p /boot/grub
         sed -e "s/@ROOTDEV@/$rootdev/" /usr/share/untangle-linux-config/menu.lst > /boot/grub/menu.lst
-        /usr/sbin/update-grub
+        # Must set grub default before updating to avoid bug in grub's updatedefaultentry
         /usr/sbin/grub-set-default $newDefault
+        /usr/sbin/update-grub
     fi
 fi
 
