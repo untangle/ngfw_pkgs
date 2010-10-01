@@ -63,8 +63,13 @@ if [ -n "$root" ]; then
 
     # Re-create menu.lst
     echo "Installing Untangle /boot/grub/menu.lst."
+    mkdir -p /boot/grub
     currentDefault=$(head -1 /boot/grub/default | perl -pe 's/^(\d).*/$1/')
-    [ -z "$currentDefault" ] && currentDefault=0
+    if [ -z "$currentDefault" ] || [ "$currentDefault" = "default" ] ; then
+      currentDefault=0
+    fi
+
+    [ -f /boot/grub/menu.lst-pre-untangle ] || cp /boot/grub/menu.lst /boot/grub/menu.lst-pre-untangle
     currentKernelParams="$(grep -E '^kernel' /boot/grub/menu.lst | head -$((1 + $currentDefault)) | tail -1)"
     case "$currentKernelParams" in
       *ut-video*|"") newDefault=0 ;;
@@ -75,8 +80,8 @@ if [ -n "$root" ]; then
     mkdir -p /boot/grub
     [ -f /boot/grub/menu.lst-pre-untangle ] || cp /boot/grub/menu.lst /boot/grub/menu.lst-pre-untangle
     sed -e "s/@ROOTDEV@/$rootdev/" /usr/share/untangle-linux-config/menu.lst > /boot/grub/menu.lst
-    /usr/sbin/update-grub
     /usr/sbin/grub-set-default $newDefault
+    /usr/sbin/update-grub
 fi
 
 exit 0
