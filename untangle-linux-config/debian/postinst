@@ -72,8 +72,8 @@ if [ -n "$root" ]; then
       *ut-restore*) newDefault=3 ;;
       *) newDefault=1 ;;
     esac
+    mkdir -p /boot/grub
     [ -f /boot/grub/menu.lst-pre-untangle ] || cp /boot/grub/menu.lst /boot/grub/menu.lst-pre-untangle
-        mkdir -p /boot/grub
     sed -e "s/@ROOTDEV@/$rootdev/" /usr/share/untangle-linux-config/menu.lst > /boot/grub/menu.lst
     /usr/sbin/update-grub
     /usr/sbin/grub-set-default $newDefault
