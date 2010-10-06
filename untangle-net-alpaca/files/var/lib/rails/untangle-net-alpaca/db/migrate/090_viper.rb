@@ -36,13 +36,13 @@ class Viper < Alpaca::Migration
 
     # create default values (8 different classes)
     # class 0 is reserved for default 
-    add_qos_class( :class_id => 1, :upload_reserved => 60, :upload_limit => 100, :download_reserved => 60, :download_limit => 100 )
-    add_qos_class( :class_id => 2, :upload_reserved => 20, :upload_limit => 100, :download_reserved => 20, :download_limit => 100 )
+    add_qos_class( :class_id => 1, :upload_reserved => 50, :upload_limit => 100, :download_reserved => 60, :download_limit => 100 )
+    add_qos_class( :class_id => 2, :upload_reserved => 25, :upload_limit => 100, :download_reserved => 20, :download_limit => 100 )
     add_qos_class( :class_id => 3, :upload_reserved => 12, :upload_limit => 100, :download_reserved => 12, :download_limit => 100 )
-    add_qos_class( :class_id => 4, :upload_reserved =>  5, :upload_limit => 100, :download_reserved => 5, :download_limit => 100 )
-    add_qos_class( :class_id => 5, :upload_reserved =>  1, :upload_limit =>  75, :download_reserved => 1, :download_limit =>  75 )
-    add_qos_class( :class_id => 6, :upload_reserved =>  1, :upload_limit =>  50, :download_reserved => 1, :download_limit =>  50 )
-    add_qos_class( :class_id => 7, :upload_reserved =>  1, :upload_limit =>  10, :download_reserved => 1, :download_limit =>  10 )
+    add_qos_class( :class_id => 4, :upload_reserved =>  6, :upload_limit => 100, :download_reserved => 5, :download_limit => 100 )
+    add_qos_class( :class_id => 5, :upload_reserved =>  3, :upload_limit =>  75, :download_reserved => 1, :download_limit =>  75 )
+    add_qos_class( :class_id => 6, :upload_reserved =>  2, :upload_limit =>  50, :download_reserved => 1, :download_limit =>  50 )
+    add_qos_class( :class_id => 7, :upload_reserved =>  2, :upload_limit =>  10, :download_reserved => 1, :download_limit =>  10 )
 
     # remove old columns
     remove_column :qos_settings, :download
