@@ -94,6 +94,8 @@ fi
 /usr/sbin/a2dissite default
 /usr/sbin/a2ensite uvm
 
+perl -i -pe 's/^ServerTokens.*/ServerTokens Prod/ ; s/^ServerSignature.*/ServerSignature Off/' /etc/apache2/conf.d/security
+
 /etc/init.d/apache2 reload
 
 if [ ! -f /var/www/images/BrandingLogo.gif ]; then
