@@ -344,7 +344,7 @@ if ( cpd_config["enabled"] == true ) then
    
    -- Defaulting capture_bypassed to false.
    if ( not cpd_config["capture_bypassed_traffic"] ) then
-      commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m mark --mark 0x8000000/0x8000000 -j RETURN"
+      commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m mark --mark 0x1000000/0x1000000 -j RETURN"
    end
 
    -- Ignore Traffic that is going to be blocked in the forward chain (it will get dealt with anyway)
