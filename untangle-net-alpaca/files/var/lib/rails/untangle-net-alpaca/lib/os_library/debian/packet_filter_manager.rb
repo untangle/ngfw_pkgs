@@ -67,7 +67,7 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   MarkClearFwPass = ( 0xFFFFFFFF ^ MarkFwPass )
 
   ## Mark that indicates that the packet should be 
-  MarkCaptivePortal = 0x100000
+  MarkCaptivePortal = 0x800000
 
   MultiWanMask  = 0x00000E00
   MultiWanShift = 9
