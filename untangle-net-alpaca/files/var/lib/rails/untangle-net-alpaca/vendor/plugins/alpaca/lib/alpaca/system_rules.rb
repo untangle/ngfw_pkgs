@@ -164,7 +164,7 @@ module Alpaca::SystemRules
 
     ## bypass DNS
     rm.add_bypass_rule( :description => "Bypass DNS Traffic",
-                        :enabled => true,
+                        :enabled => false,
                         :system_id => "bypass-dns-traffic-0e3fa107",
                         :filter => "d-port::53&&protocol::tcp,udp",
                         :subscribe => false )
