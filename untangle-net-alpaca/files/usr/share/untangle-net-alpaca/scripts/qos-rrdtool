@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# XXX
+# FIXME
+# This script no longer works
+# It needs to be rewritten to support multiple WAN interfaces
+# with a separate RRD log for each WAN interface
+exit 0
+
+
 RRDTOOL=rrdtool
 LOGFILE=/var/log/untangle-net-alpaca/qosrrd.log
 GRAPHFILE=/var/lib/rails/untangle-net-alpaca/public/images/qos/qosrrd
@@ -7,7 +15,7 @@ GRAPHDIR=/var/lib/rails/untangle-net-alpaca/public/images/qos
 NOW=`date -u +%s`
 IFCONFIG=/sbin/ifconfig
 
-. /etc/untangle-net-alpaca/untangle-qos
+. /etc/untangle-net-alpaca/qos-config
 
 UPPER_LIMIT=$[$DOWNLINK*1000/8]
 
