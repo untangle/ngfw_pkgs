@@ -8,6 +8,6 @@ Standards-Version: 3.8.0
 
 Package: untangle-monit-config
 Architecture: all
-Depends: untangle-monit-config, monit
+Depends: monit, gcc-4.3
 Description: Untangle monit wrapper package
  The Untangle monit wrapper package
