@@ -23,13 +23,14 @@ EndSection
 EOF
 
 abort() {
-echo <<EOF
+for i in $(seq 50) ; do echo ; done
+cat <<EOF
 The server has failed to properly detect the video & monitor settings.
 
 Try restarting the server and selecting a different video-mode boot
 option from the boot menu.
-
 EOF
+for i in $(seq 10) ; do echo ; done
 }
 
 if [ `tty` = "/dev/tty1" ] ; then

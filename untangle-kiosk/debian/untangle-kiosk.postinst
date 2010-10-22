@@ -3,7 +3,7 @@
 #rm -fr /etc/xdg/xfce4
 
 #rsync -Ha /usr/share/untangle-kiosk/x-startup/etc/inittab /etc/inittab
-perl -i -pe 's|^1:.+|1:2345:respawn:/sbin/rungetty tty1 --autologin kiosk|' /etc/inittab
+perl -i -pe 's|^1:.+|1:2345:respawn:/sbin/rungetty --noclear --autologin kiosk tty1|' /etc/inittab
 perl -i -pe 's|^[xw]7:5:wait:.+$||' /etc/inittab
 
 rsync -Ha /usr/share/untangle-kiosk/homes/root/ /root/
