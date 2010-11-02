@@ -50,7 +50,7 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
   QoSMark = Chain.new( "alpaca-qos", "mangle", "PREROUTING", "" )
 
   ## packet filter iptables integration
-  QoSPacketFilterFile = "#{OSLibrary::Debian::PacketFilterManager::ConfigDirectory}/800-qos"
+  QosIptablesRuleFile = "#{OSLibrary::Debian::PacketFilterManager::ConfigDirectory}/800-qos"
 
   MarkQoSMask         = "0x00700000"
   MarkQoSInverseMask  = "0xFF8FFFFF"
@@ -246,6 +246,11 @@ add_iptables_rules()
     # if we see a UDP mark on a packet immediately save it to the conntrack before further processing
     # We do this because userspace may decide to mark a packet and we need to save it to conntrack
     ${IPTABLES} -t mangle -I alpaca-qos -p udp -m mark ! --mark 0x00000000/#{MarkQoSMask} -j CONNMARK --save-mark --mask #{MarkQoSMask}
+    
+    # also need to do this in the tune table because that is where UDP packets are QUEUEd
+    # if there is a non-zero mark there we should save it. After the UVM is queue the packet it will release it with NF_REPEAT
+    # and so this rule will save the new QoS mark
+    ${IPTABLES} -t tune -I POSTROUTING -p udp -m mark ! --mark 0x00000000/#{MarkQoSMask} -j CONNMARK --save-mark --mask #{MarkQoSMask}
 
     # Using -m state --state instead of -m conntrack --ctstate ref: http://markmail.org/thread/b7eg6aovfh4agyz7
     ${IPTABLES} -t mangle -A alpaca-qos -m state ! --state UNTRACKED -j CONNMARK --restore-mark --mask #{MarkQoSMask}
@@ -423,7 +428,7 @@ EOF
     iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -m connmark --mark 0x00000000/#{MarkQoSMask} -j CONNMARK --set-mark 0x00#{qos_settings.default_class}00000/#{MarkQoSMask}\n"
     iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -m mark --mark 0x00000000/#{MarkQoSMask} -j MARK --or-mark 0x00#{qos_settings.default_class}00000\n"
 
-    os["override_manager"].write_file( QoSPacketFilterFile, iptables_rules, "\n" )    
+    os["override_manager"].write_file( QosIptablesRuleFile, iptables_rules, "\n" )    
   end
 
   def hook_run_services

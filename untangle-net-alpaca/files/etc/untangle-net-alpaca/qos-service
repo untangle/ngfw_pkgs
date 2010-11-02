@@ -24,8 +24,6 @@ else
     exit 2
 fi
 
-IPTABLES="iptables"
-
 run ()
 {
     # echo $1
