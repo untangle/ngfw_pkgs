@@ -35,7 +35,7 @@ Plugin {
     config {
         button {
             image = /usr/share/untangle-kiosk/panel/LaunchGUI.png
-            tooltip = Launch Untangle Client
+            tooltip = Launch Administration
             action = /usr/bin/untangle-client
         }
     }
@@ -106,7 +106,7 @@ Plugin {
     config {
         button {
             image = /usr/share/untangle-kiosk/panel/RecoveryUtilities.png
-            tooltip = Launch Untangle Recovery Tools
+            tooltip = Launch Recovery Tools
             action = /home/kiosk/utils/ut-restore.sh
         }
     }
