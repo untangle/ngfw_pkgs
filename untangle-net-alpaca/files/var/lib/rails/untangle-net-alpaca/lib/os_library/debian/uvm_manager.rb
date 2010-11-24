@@ -97,10 +97,10 @@ EOF
     run_command( UvmUpdateConfiguration )
   end
 
-  def activation_key()
+  def UID()
     key = "0000-0000-0000-0000"
     begin
-        file = File.new("/usr/share/untangle/activation.key", "r")
+        file = File.new("/usr/share/untangle/conf/uid", "r")
         key = file.gets
         key.strip!
     rescue => err

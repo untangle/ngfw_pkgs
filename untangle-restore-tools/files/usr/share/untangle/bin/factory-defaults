@@ -41,8 +41,8 @@ rm -f /usr/share/untangle/conf/uvm.networking.properties
 rm -f /usr/share/untangle/conf/timezone
 rm -f /usr/share/untangle/conf/keystore
 rm -fr /usr/share/untangle/gpg ; mkdir /usr/share/untangle/gpg
-rm -fr /usr/share/untangle/popid
-rm -fr /usr/share/untangle/registration.info
+rm -fr /usr/share/untangle/conf/uid
+rm -fr /usr/share/untangle/conf/registration.info
 rm -rf /usr/share/untangle/conf/openvpn
 rm -rf /usr/share/untangle/quarantine
 rm -rf /etc/openvpn

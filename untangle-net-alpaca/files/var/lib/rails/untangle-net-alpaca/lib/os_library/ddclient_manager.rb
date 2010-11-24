@@ -81,10 +81,10 @@ class OSLibrary::DdclientManager < Alpaca::OS::ManagerBase
 
       protocol = service[0]
       server = service[1]
-      key = os["uvm_manager"].activation_key()
+      key = os["uvm_manager"].UID()
       use = "web, web=www.untangle.com/ddclient/ip.php?activation=#{key}, web-skip=''"
       if server.include?( 'dyndns.org' )
-	use = "web, web=checkip.dyndns.com/, web-skip='IP Address'"  
+        use = "web, web=checkip.dyndns.com/, web-skip='IP Address'"  
       end
       [ [ ConfigPid, DdclientPidFile ],
         [ ConfigUse, use ],
