@@ -11,7 +11,7 @@ Architecture: amd64
 Conflicts: untangle-nic-kernel
 Provides: untangle-nic-kernel
 Replaces: untangle-nic-kernel
-Depends: linux-image-2.6.26-2-untangle-amd64 (>= 2.6.26-22untangle2), firmware-bnx2, firmware-bnx2x, e1000-module-2.6.26-2-untangle-amd64, e1000e-module-2.6.26-2-untangle-amd64, igb-module-2.6.26-2-untangle-amd64, ipset-modules-2.6.26-2-untangle-amd64, niagara22xxed-module-2.6.26-2-untangle-amd64, tg3-module-2.6.26-2-untangle-amd64, bnx2-module-2.6.26-2-untangle-amd64, ipset, niagara22xxed
+Depends: linux-image-2.6.26-2-untangle-amd64 (>= 2.6.26-22untangle2) | linux-image-2.6.26-2-untangle+xen-amd64, firmware-bnx2, firmware-bnx2x, e1000-kernel, e1000e-kernel, igb-kernel, ipset-kernel, niagara22xxed-kernel, tg3-kernel, bnx2-kernel, ipset, niagara22xxed
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle appliance internal
  The Untangle appliance internal-to-untangle mode.
