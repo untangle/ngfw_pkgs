@@ -109,7 +109,7 @@ div.node div.node-label {
     color: #000000;
 }
 /* node trial info text */
-div.node div.node-trial-info {
+div.node div.node-faceplate-info {
     position: absolute;
     top: 56px;
     left: 330px;
