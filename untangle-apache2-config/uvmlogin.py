@@ -134,7 +134,7 @@ def session_user(sess, realm):
     return None
 
 def is_not_setup():
-    return not os.path.exists('/usr/share/untangle/registration.info')
+    return not os.path.exists('/usr/share/untangle/conf/registration.info')
 
 def is_root(req):
     (remote_ip, remote_port) = req.connection.remote_addr
