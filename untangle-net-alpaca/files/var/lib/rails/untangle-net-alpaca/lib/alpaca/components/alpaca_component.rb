@@ -18,6 +18,9 @@
 class Alpaca::Components::AlpacaComponent < Alpaca::Component
   def register_menu_items( menu_organizer, config_level )
     menu_organizer.register_item( "/advanced/status", menu_item( 0, _("Advanced"), :action => "index" ))
+    if ( config_level >= AlpacaSettings::Level::Advanced ) 
+      menu_organizer.register_item( "/advanced/alpaca", menu_item( 999, _("Basic Mode"), :action => "index" ))
+    end
   end
 
   def wizard_insert_closers( builder )

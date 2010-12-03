@@ -61,11 +61,8 @@ Ung.Alpaca.Toolbar = Ext.extend( Ext.Toolbar, {
 
             var menuData = Ung.Alpaca.AdvancedMenuData[0];
             
-            buttons.push( new Ext.Toolbar.MenuButton({
+            buttons.push( new Ext.Toolbar.Button({
                 text : menuData.name,
-                queryPath : menuData.queryPath,
-                handler : this.onChangeQueryPath,
-                scope : this,
                 menu : { items : menuItems }
             }));
         }
