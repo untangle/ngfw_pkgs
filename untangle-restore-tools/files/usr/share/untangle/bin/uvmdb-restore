@@ -64,7 +64,7 @@ restore()
             instfile=$indir/installed-$choice
 
             # restore choice
-            /usr/share/untangle/bin/untangle-restore $dumpfile $tarfile $instfile
+            /usr/share/untangle/bin/ut-restore $dumpfile $tarfile $instfile
 
             # untangle-restore-tools might restart UVM, stop it
             /etc/init.d/untangle-vm stop
@@ -83,7 +83,7 @@ restore()
 
 backup()
 {
-    /usr/share/untangle/bin/backup-ut $1
+    /usr/share/untangle/bin/ut-backup $1
 }
 
 restore_menu()

@@ -83,7 +83,7 @@ Depends: untangle-libitem-shield,untangle-libitem-spyware,untangle-libitem-webfi
 XB-View-Position: 10
 XB-Display-Name: Open Source Package
 XB-Untangle-Pkg-Type: lib_item
-XB-Untangle-Hide-On: iso
+XB-Untangle-Hide: true
 XB-Desc-Icon:  R0lGODlhKgAqAPcAAAAAAKx9ALS0tFhYWERHZZJqANDHGjQ2TcXFx2ttiH9eFrev
  NMTEQmhrZP//6JSSSDMzM2lgUbCLEc7IXOzdpWhaRBYXITw/W3Z4ka6vUJGTppJ5
  Lk1RctLS0lpce8mrEa6qO/Hx99bWetPEIeXl78ebAIB/UnFaL1JMWXp6fKaFGuLi
