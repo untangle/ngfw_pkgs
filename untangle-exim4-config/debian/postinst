@@ -5,4 +5,6 @@ MAILDIR=/var/mail
 chown root:mail $MAILDIR
 chmod 2775 $MAILDIR
 
+perl -0777 -i -pe 's|ignore_target_hosts.*?no_more|ignore_target_hosts = 0.0.0.0 : 255.255.255.255 : 169.254.0.0/16\n  no_more|s' /etc/exim4/exim4.conf.template /etc/exim4/conf.d/router/200_exim4-config_primary
+
 exit 0
