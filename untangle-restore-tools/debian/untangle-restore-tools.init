@@ -14,7 +14,7 @@ DESC="Service for restoring an Untangle server's settings"
 
 case "$1" in
   start)
-    if grep -q ut-restore-tool /proc/cmdline ; then
+    if grep -q ut-restore /proc/cmdline ; then
       echo "Starting Edgeguard Restore."
       /usr/share/untangle/bin/ut-restore-tool reboot
     fi
