@@ -439,12 +439,19 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
 
         var config_types = this.settings["config_types"];
 
-            if ( config_types[index] == "static" ) {
-                if (nat_grid.store.data.length == 0) {
-                    nat_grid.addEntry();
-                    this.isWanCheckbox.setValue( false );
-                }
+        if ( config_types[index] == "static" ) {
+            if (nat_grid.store.data.length == 0) {
+                nat_grid.addEntry();
+                this.isWanCheckbox.setValue( false );
             }
+        }
+
+        // bridge can not be a WAN
+        // since "is WAN interface" isnt shown on bridge
+        // we must uncheck it
+        if ( config_types[index] == "bridge" ) {
+            this.isWanCheckbox.setValue( false );
+        }
 
         this.onCheckWan( this.isWanCheckox, hasWan && this.isWanCheckbox.getValue());
     },
