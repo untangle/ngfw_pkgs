@@ -14,7 +14,8 @@ Ung.Alpaca.Pages.Network.Aliases = Ext.extend( Ung.Alpaca.PagePanel, {
             settings : this.settings,
             
             recordFields : [ "network_string" ],
-            selectable : true,
+
+            hasDelete : true,
             
             name : "external_aliases",
 

@@ -28,9 +28,9 @@ Ung.Alpaca.Pages.Override.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             settings : this.settings,
 
             recordFields : [ "id", "enabled", "writable", "path", "description" ],
-            selectable : true,
             sortable : false,
             hasReorder : true,
+            hasDelete : true,
             
             name : "file_overrides",
 

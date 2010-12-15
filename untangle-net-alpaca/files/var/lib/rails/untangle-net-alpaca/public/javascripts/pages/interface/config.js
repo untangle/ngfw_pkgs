@@ -347,7 +347,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
 
         var aliases = new Ung.Alpaca.EditorGridPanel({
             recordFields : [ "network_string" ],
-            selectable : true,
+            hasDelete: true,
             settings : settings,
             name : entriesField,
             recordDefaults : {
@@ -378,7 +378,7 @@ Ung.Alpaca.Pages.Interface.Config = Ext.extend( Ung.Alpaca.PagePanel, {
         var aliases = new Ung.Alpaca.EditorGridPanel({
             recordFields : [ "network_string", "new_source" ],
             wanToggle : false,
-            selectable : true,
+            hasDelete : true,
             settings : settings,
             name : entriesField,
             recordDefaults : {

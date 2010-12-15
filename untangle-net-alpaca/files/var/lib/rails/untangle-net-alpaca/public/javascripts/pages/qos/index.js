@@ -280,11 +280,12 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             settings : this.settings,
 
             recordFields : [ "id", "enabled", "description", "filter", "priority" ],
-            selectable : true,
+
             sortable : false,
             hasReorder: true,
             hasEdit : true,
             rowEditorConfig : rowEditorConfig,
+            hasDelete : true,
             
             name : "qos_rules",
 
@@ -337,10 +338,11 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             settings : this.settings,
             height : 100,
             recordFields : [ "name", "config_type", "os_name", "mac_address", "index", "id", "upload_bandwidth", "download_bandwidth" ],
-            selectable : false,
+
             sortable : false,
             hasReorder: false,
             hasEdit : false,
+            hasDelete : false,
             tbar : [],
             
             name : "bandwidth",
@@ -395,10 +397,11 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             settings : this.settings,
             height : 200,
             recordFields : [ "class_id", "upload_reserved", "upload_limit", "download_reserved", "download_limit" ],
-            selectable : false,
+
             sortable : false,
             hasReorder: false,
             hasEdit : false,
+            hasDelete : false,
             tbar : [],
             
             name : "qos_classes",
@@ -521,7 +524,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
             store : store,
             view : view,
-            selectable : false,
+
             sortable : true,
             saveData : false,
             height : 250,
@@ -623,7 +626,7 @@ Ung.Alpaca.Pages.Qos.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             settings : this.settings,
 
             store : store,
-            selectable : false,
+
             sortable : true,
             saveData : false,
             height : 250,

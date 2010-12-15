@@ -67,9 +67,10 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             settings : this.settings,
 
             recordFields : [ "id", "enabled", "system_id", "target", "filter", "description", "is_custom" ],
-            selectable : true,
+
             hasReorder : true,
             hasEdit : true,
+            hasDelete: true,
             name : "user_rules",
 
             rowEditorConfig : rowEditorConfig,
@@ -127,7 +128,6 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             settings : this.settings,
 
             recordFields : [ "id", "enabled", "system_id", "target", "filter", "description", "is_custom" ],
-            selectable : false,
             
             name : "system_rules",
 

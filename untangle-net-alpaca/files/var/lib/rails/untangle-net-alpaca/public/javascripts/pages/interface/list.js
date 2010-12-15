@@ -80,7 +80,7 @@ Ung.Alpaca.Pages.Interface.List = Ext.extend( Ung.Alpaca.PagePanel, {
 
             recordFields : [ "name", "duplex", "config_type", "os_name", "mac_address", "speed", 
                              "index", "id", "interface_status_v2", "wan" ],
-            selectable : false,
+
             selModel : new Ext.grid.RowSelectionModel({
                 singleSelect : true
             }),

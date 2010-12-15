@@ -36,7 +36,7 @@ Ung.Alpaca.Pages.Sample.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 html : "Dynamic DNS Client Configuration"
             },{
                 defaults : {
-                    xtype : "textfield",
+                    xtype : "textfield"
                 },
                 items : [{
                     xtype : "checkbox",
@@ -47,7 +47,6 @@ Ung.Alpaca.Pages.Sample.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                     fieldLabel : "Service",
                     displayField : "serviceName",
                     name : "ddclient_settings.service",
-                    selectable : false,
                     store : this.servicesStore
                 },{
                     fieldLabel : "Login",

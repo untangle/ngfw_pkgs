@@ -63,13 +63,13 @@ Ung.Alpaca.Pages.Uvm.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         this.userRulesGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
 
-            recordFields : [ "id", "enabled", "filter", "description", "subscribe", "system_id", 
-                             "is_custom" ],
-            selectable : true,
+            recordFields : [ "id", "enabled", "filter", "description", "subscribe", "system_id", "is_custom" ],
+
             sortable : false,
             hasReorder: true,
             hasEdit : true,
             rowEditorConfig : rowEditorConfig,
+            hasDelete: true,
             
             name : "user_subscriptions",
 
@@ -104,9 +104,7 @@ Ung.Alpaca.Pages.Uvm.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         this.systemRulesGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
 
-            recordFields : [ "id", "enabled", "filter", "description", "subscribe", "system_id", 
-                             "is_custom" ],
-            selectable : false,
+            recordFields : [ "id", "enabled", "filter", "description", "subscribe", "system_id", "is_custom" ],
             
             name : "system_subscriptions",
 

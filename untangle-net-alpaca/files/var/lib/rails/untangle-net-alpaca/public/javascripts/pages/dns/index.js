@@ -12,7 +12,8 @@ Ung.Alpaca.Pages.Dns.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         this.staticDnsGrid = new Ung.Alpaca.EditorGridPanel({
             settings : this.settings,
             recordFields : [ "hostname", "ip_address", "description" ],
-            selectable : true,
+
+            hasDelete : true,
 
             /* Name must set in order to get and set the settings */
             name : "dns_static_entries",

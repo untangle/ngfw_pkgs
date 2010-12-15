@@ -45,28 +45,6 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
     {
         this.changedData = {};
 
-        /* Append the selection model to the table */
-        if ( this.selectable == true ) {
-            var sm = new Ext.grid.CheckboxSelectionModel({
-                 listeners : {
-                    "selectionchange" : {
-                        fn :function(sm) {
-                            var deleteButton=Ext.getCmp("delete_button_"+this.getId());
-                            if(deleteButton) {
-                                if ( sm.getCount() > 0 ) {
-                                    deleteButton.enable();
-                                } else {
-                                    deleteButton.disable();
-                                }
-                            }
-                        }.createDelegate(this)
-                    }
-                 }
-             });
-            this.columns = [sm].concat( this.columns );
-            this.sm = sm;
-        }
-
         this.buildToolbar( this );
         if (this.hasReorder) {
             this.enableDragDrop = true;
@@ -92,6 +70,25 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
             this.columns.push(editColumn);
         }
 
+        if (this.hasTroubleshoot) {
+            var troubleshootColumn = new Ung.Alpaca.grid.TroubleshootColumn({});
+            if (!this.plugins) {
+                this.plugins = [];
+            }
+            this.plugins.push(troubleshootColumn);
+            this.columns.push(troubleshootColumn);
+        }
+
+        if (this.hasDelete) {
+            var deleteColumn = new Ung.Alpaca.grid.DeleteColumn({});
+            if (!this.plugins) {
+                this.plugins = [];
+            }
+            this.plugins.push(deleteColumn);
+            this.columns.push(deleteColumn);
+        }
+
+        
         /* Iterate the columns and search for the ones that haven't been added */
         var c;
         for ( c = 0 ; c < this.columns.length ; c++ ) {
@@ -222,12 +219,10 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
             for ( var c = 0; c < config.tbar.length ; c++ ) {
                 if ( config.tbar[c] == Ung.Alpaca.EditorGridPanel.AddButtonMarker ) {
                     config.tbar[c] = this.addButton();
-                } else if ( config.tbar[c] == Ung.Alpaca.EditorGridPanel.DeleteButtonMarker ) {
-                    config.tbar[c] = this.deleteButton();
                 }
             }
         } else  {
-            config.tbar = [ this.addButton(), this.deleteButton() ];
+            config.tbar = [ this.addButton() ];
         }
 
         if ( config.tbar.length == 0 ) {
@@ -241,18 +236,6 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
             text : Ung.Alpaca.Util._( "Add" ),
             iconCls : 'icon-add-row',
             handler : this.addEntry,
-            scope : this
-        };
-    },
-
-    deleteButton : function( )
-    {
-        return {
-            id: "delete_button_"+this.getId(),
-            text : Ung.Alpaca.Util._( "Delete" ),
-            iconCls:'icon-delete-row',
-            handler : this.deleteSelectedEntries,
-            disabled: true,
             scope : this
         };
     },
@@ -273,6 +256,7 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
             this.startEditing( 0, 0 );            
         }
     },
+
     genAddedId : function() {
         this.addedId--;
         return this.addedId;
@@ -298,21 +282,6 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
         settings[this.name] = data;
     },
 
-    deleteSelectedEntries : function()
-    {
-        this.stopEditing();
-        application.onFieldChange();
-        var sm=this.getSelectionModel();
-        var selRecs=sm.getSelections();
-        for(var i=selRecs.length-1;i>=0;i--) {
-            //this.store.remove(selRecs[i]);
-            this.updateChangedData(selRecs[i], "deleted");
-        }
-        sm.clearSelections();
-        if ( Ext.fly(this.getView().getHeaderCell(0)).first().hasClass('x-grid3-hd-checker-on')){
-            Ext.fly(this.getView().getHeaderCell(0)).first().removeClass('x-grid3-hd-checker-on');
-        }
-    },
     editEntry: function(entry) {
         this.stopEditing();
         if(this.rowEditor) {
@@ -327,10 +296,19 @@ Ung.Alpaca.EditorGridPanel = Ext.extend( Ext.grid.EditorGridPanel, {
             }
         }
     },
+
+    deleteHandler: function (record) {
+        this.updateChangedData(record, "deleted");
+
+        //this.store.remove(record);
+        this.fireEvent("afteredit");
+    },
+
     isDirty : function() {
         // Test if there are changed data
         return Ung.Alpaca.Util.hasData(this.changedData);
     },
+
     // Update Changed data after an operation (modifyed, deleted, added)
     updateChangedData : function(record, currentOp) {
         if (!this.isDirty()) {
@@ -474,6 +452,7 @@ Ung.Alpaca.grid.IconColumn = Ext.extend(Object, {
 
     addPlugin : true
 });
+
 // Grid edit column
 Ung.Alpaca.grid.EditColumn=Ext.extend(Ung.Alpaca.grid.IconColumn, {
     constructor : function(config) {
@@ -490,7 +469,8 @@ Ung.Alpaca.grid.EditColumn=Ext.extend(Ung.Alpaca.grid.IconColumn, {
         this.grid.editEntry(record);
     }
 });
-// Grid edit column
+
+// Grid delete column
 Ung.Alpaca.grid.DeleteColumn=Ext.extend(Ung.Alpaca.grid.IconColumn, {
     constructor : function(config) {
         if (!config.header) {
@@ -504,6 +484,25 @@ Ung.Alpaca.grid.DeleteColumn=Ext.extend(Ung.Alpaca.grid.IconColumn, {
     iconClass: 'icon-delete-row',
     handle : function(record) {
         this.grid.deleteHandler(record);
+    },
+
+    addPlugin : true
+});
+
+// Grid troubleshoot column
+Ung.Alpaca.grid.TroubleshootColumn=Ext.extend(Ung.Alpaca.grid.IconColumn, {
+    constructor : function(config) {
+        if (!config.header) {
+            config.header =Ung.Alpaca.Util._("Troubleshoot");
+        }
+        if (!config.width) {
+            config.width = 80;
+        }
+        Ung.Alpaca.grid.TroubleshootColumn.superclass.constructor.call(this,config);
+    },
+    iconClass: 'icon-detail-row',
+    handle : function(record) {
+        this.grid.troubleshootHandler(record);
     },
 
     addPlugin : true

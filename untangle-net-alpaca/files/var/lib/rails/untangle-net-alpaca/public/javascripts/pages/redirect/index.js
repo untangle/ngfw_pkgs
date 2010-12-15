@@ -20,13 +20,6 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             fixed : true
         });
 
-        this.troubleShootButton = new Ext.Toolbar.Button({
-            text : this._("Troubleshooting"),
-            handler : this.troubleshoot,
-            scope : this,
-            disabled : true
-        });
-
         this.protocolStore = [[ "tcp,udp", this._( "TCP & UDP" ) ],
                               [ "tcp", this._( "TCP" ) ],
                               [ "udp", this._( "UDP" ) ]];
@@ -46,10 +39,12 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             settings : this.settings,
 
             recordFields : ["id", "enabled", "system_id", "new_ip", "new_enc_id", "filter", "description", "is_custom" ],
-            selectable : true,
+
             sortable : false,
             hasEdit : true,
             hasReorder: true,
+            hasDelete : true,
+            hasTroubleshoot : true,
 
             height: 450,
             
@@ -63,9 +58,7 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
             name : "user_redirects",
 
-            tbar : [ Ung.Alpaca.EditorGridPanel.AddButtonMarker,
-                     Ung.Alpaca.EditorGridPanel.DeleteButtonMarker,
-                     this.troubleShootButton ],
+            tbar : [ Ung.Alpaca.EditorGridPanel.AddButtonMarker ],
         
             recordDefaults : {
                 enabled : true,
@@ -85,20 +78,13 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 editor : new Ext.form.TextField({
                     allowBlank : false 
                 })
-            }]
+            }],
+            troubleshootHandler: this.troubleshootHandler
         });
 
         this.rowEditor.grid = this.userRulesGrid;
 
         this.userRulesGrid.store.load();
-
-        /* Add a listener to enable the troubleshoot button */
-        this.userRulesGrid.getSelectionModel().addListener({
-            "selectionchange" : {
-                fn : this.onSelectItem,
-                scope : this
-            }
-        });
 
         /* Add a field change listener to disable the troubleshoot button as soon
          * as a field changes */
@@ -123,37 +109,19 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
         Ung.Alpaca.Pages.Redirect.Index.superclass.initComponent.apply( this, arguments );
     },
 
-    onSelectItem : function( sm )
-    {
-        if (( application.saveButton.disabled == true ) && ( sm.getCount() == 1 )) {
-            this.troubleShootButton.enable();
-        } else {
-            this.troubleShootButton.disable();
-        }
-    },
-
     onFieldChange : function()
     {
         this.troubleShootButton.disable();
     },
 
-    troubleshoot : function()
+    troubleshootHandler : function(record)
     {
-        var sm=this.userRulesGrid.getSelectionModel();
-        var record=sm.getSelections();
-
-        if ( record.length != 1 ) {
-            this.troubleShootButton.disable();
-            return;
-        }
 
         if ( this.troubleShootWindow == null ) {
             this.troubleShootWindow = new Ung.Alpaca.Pages.Redirect.TroubleShoot({ 
                 settings : this.settings
             });
         }
-
-        record = record[0];
 
         this.troubleShootWindow.updateTestData( record.data.new_ip, record.data.filter, record.data.new_enc_id );
         this.troubleShootWindow.show();
