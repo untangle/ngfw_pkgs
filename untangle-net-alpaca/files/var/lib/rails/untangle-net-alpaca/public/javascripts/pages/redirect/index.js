@@ -111,7 +111,6 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
 
     onFieldChange : function()
     {
-        this.troubleShootButton.disable();
     },
 
     troubleshootHandler : function(record)
