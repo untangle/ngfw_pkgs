@@ -125,32 +125,13 @@ fi
  
 . ${UVM_NETWORKING_CONFIG}
 
-update_tcp_window_scaling()
-{
-    if [ -f /proc/sys/net/ipv4/tcp_window_scaling ] ; then
-        ## If undefined or non-true, disable window scaling
-        val=0
-        
-        if [ "x${TCP_WINDOW_SCALING_EN}" = "xtrue" ]; then
-            echo "[DEBUG:`date`] enabling TCP Window Scaling"
-            val=1
-        fi
-        
-        echo $val > /proc/sys/net/ipv4/tcp_window_scaling
-    fi
-}
-
 uvm_iptables_rules()
 {    
     local t_address
     local t_tcp_port_range
 
-    # Update the flag for TCP Window scaling.
-    update_tcp_window_scaling
-
     # Do not conntrack entries in that have the NOTRACK bit set.
     ${IPTABLES} -A OUTPUT -t raw -m mark --mark ${MARK_NOTRACK}/${MARK_NOTRACK} -j NOTRACK
-
 
     # dont queue ICMP packets released from the queue.
     ${IPTABLES} -A PREROUTING -t mangle -m mark --mark ${MARK_DUPE}/${MARK_DUPE} -j RETURN

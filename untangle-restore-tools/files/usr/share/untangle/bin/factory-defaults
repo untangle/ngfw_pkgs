@@ -37,7 +37,6 @@ echo "Restoring Database settings... done"
 
 # remove files
 rm -f /usr/share/untangle/conf/networking.sh
-rm -f /usr/share/untangle/conf/uvm.networking.properties
 rm -f /usr/share/untangle/conf/timezone
 rm -f /usr/share/untangle/conf/keystore
 rm -fr /usr/share/untangle/gpg ; mkdir /usr/share/untangle/gpg
