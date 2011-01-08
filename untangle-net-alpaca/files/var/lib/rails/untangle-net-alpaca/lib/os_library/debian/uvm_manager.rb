@@ -317,10 +317,9 @@ EOF
     dns_settings = DnsServerSettings.find( :first )
     dhcp_settings = DhcpServerSettings.find( :first )
 
-    netConfigFileText = <<EOF
-{
-    javaClass: "com.untangle.uvm.networking.NetworkSettings",
-EOF
+    netConfigFileText = ""
+    netConfigFileText += "{\n"
+    netConfigFileText += "    javaClass: \"com.untangle.uvm.networking.NetworkSettings\",\n"
     netConfigFileText += "    hostname: \"#{hostname_settings.hostname}\",\n" 
     netConfigFileText += "    dnsServerEnabled: #{dns_settings.enabled},\n" 
     netConfigFileText += "    dnsLocalDomain: \"#{dns_settings.suffix}\",\n" 
@@ -342,13 +341,47 @@ EOF
       netConfigFileText += "            interfaceId: #{interface.index},\n"
       netConfigFileText += "            systemName: \"#{interface.os_name}\",\n"
       netConfigFileText += "            name: \"#{interface.name}\",\n" 
-      netConfigFileText += "            configType: \"#{interface.config_type}\",\n" #XXX is this right?
-      netConfigFileText += "            primaryAddressStr: \"10.0.0.58/8\",\n" #FIXME
-      netConfigFileText += "            gatewayStr: \"10.0.0.1\",\n" #FIXME
-      netConfigFileText += "            dns1Str: \"10.0.0.1\",\n" #FIXME
+      netConfigFileText += "            configType: \"#{interface.config_type}\",\n" 
+
       netConfigFileText += "            WAN: #{interface.wan},\n" 
-      netConfigFileText += "            mtu: 1500,\n" #FIXME
-      netConfigFileText += "            ethernetNegotiation: \"auto\"\n" #FIXME
+
+      if (interface.config_type == "static")
+        intfStatic = IntfStatic.find( :first, :conditions => [ "interface_id = ?", interface.id ] )
+
+        netConfigFileText += "            primaryAddressStr: \"#{intfStatic.ip_networks[0].ip}/#{intfStatic.ip_networks[0].netmask}\",\n"
+
+        if (interface.wan) 
+          netConfigFileText += "            gatewayStr: \"#{intfStatic.default_gateway}\",\n" if !intfStatic.default_gateway.nil?
+          netConfigFileText += "            dns1Str: \"#{intfStatic.dns_1}\",\n" if !intfStatic.dns_1.nil?
+          netConfigFileText += "            dns2Str: \"#{intfStatic.dns_2}\",\n" if !intfStatic.dns_2.nil?
+          netConfigFileText += "            mtu: #{intfStatic.mtu},\n" if !intfStatic.mtu.nil?
+        end
+      end
+
+      if (interface.config_type == "dynamic")
+        intfDynamic = IntfDynamic.find( :first, :conditions => [ "interface_id = ?", interface.id ] )
+
+        netConfigFileText += "            overrideIPAddress: \"#{intfDynamic.ip}\",\n" if !intfDynamic.netmask.nil?
+        netConfigFileText += "            overrideNetmask: \"#{intfDynamic.netmask}\",\n" if !intfDynamic.netmask.nil?
+
+        if (interface.wan) 
+          netConfigFileText += "            overrideGateway: \"#{intfDynamic.default_gateway}\",\n" if !intfDynamic.default_gateway.nil?
+          netConfigFileText += "            overrideDns1: \"#{intfDynamic.dns_1}\",\n" if !intfDynamic.dns_1.nil?
+          netConfigFileText += "            overrideDns2: \"#{intfDynamic.dns_2}\",\n" if !intfDynamic.dns_2.nil?
+        end
+      end
+
+      if (interface.config_type == "bridge")
+        intfBridge = IntfBridge.find( :first, :conditions => [ "interface_id = ?", interface.id ] )
+        bridgeToIntf = Interface.find( :first, :conditions => [ "id = ?", intfBridge.bridge_interface_id ] )
+        netConfigFileText += "            bridgeTo: \"#{bridgeToIntf.name}\",\n" if !bridgeToIntf.name.nil?
+      end
+
+      if (interface.config_type == "pppoe")
+        #pppoe username
+        #pppoe password
+      end
+
       netConfigFileText += "        }\n"
     }
 
