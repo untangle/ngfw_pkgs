@@ -42,7 +42,7 @@ if [ ! -f "${UCLI}" ]; then
     exit 0    
 fi
 
-${UCLI} updateAddress
+${UCLI} refreshNetworkConfig
 
 ## Just in case these settings were lost.
 ifconfig dummy0 192.0.2.42 netmask 255.255.255.0 up

@@ -27,4 +27,4 @@ if [ ! -f "${UCLI}" ]; then
     exit 0    
 fi
 
-${UCLI} updateAddress
+${UCLI} refreshNetworkConfig
