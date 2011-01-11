@@ -10,7 +10,6 @@ class TestWizard(AlpacaSetup):
             "default_gateway" : "1.2.3.1",
             "dns_1" : "1.2.3.1",
             "dns_2" : None,
-            "single_nic_mode" : False
             }
 
         self.handler.make_request( "uvm/wizard_external_interface_static", settings )
@@ -28,8 +27,6 @@ class TestWizard(AlpacaSetup):
         assert settings["static"]["dns_1"] == "1.2.3.1"
         assert settings["static"]["dns_2"] == None
 
-        assert self.run_sql_command( 'SELECT * FROM arp_eater_settings WHERE enabled = "f"') != ""
-        assert self.run_sql_command( 'SELECT * FROM arp_eater_networks WHERE enabled = "f"' ) != ""
 
     def test_external_interface_static_2( self ):
         settings = {
@@ -38,7 +35,6 @@ class TestWizard(AlpacaSetup):
             "default_gateway" : "4.3.2.1",
             "dns_1" : "4.2.2.1",
             "dns_2" : "4.2.2.2",
-            "single_nic_mode" : False
             }
 
         self.handler.make_request( "uvm/wizard_external_interface_static", settings )
@@ -56,8 +52,6 @@ class TestWizard(AlpacaSetup):
         assert settings["static"]["dns_1"] == "4.2.2.1"
         assert settings["static"]["dns_2"] == "4.2.2.2"
 
-        assert self.run_sql_command( 'SELECT * FROM arp_eater_settings WHERE enabled = "f"') != ""
-        assert self.run_sql_command( 'SELECT * FROM arp_eater_networks WHERE enabled = "f"' ) != ""
 
     def test_external_interface_static_3( self ):
         settings = {
@@ -66,7 +60,6 @@ class TestWizard(AlpacaSetup):
             "default_gateway" : "1.2.3.1",
             "dns_1" : "1.2.3.1",
             "dns_2" : None,
-            "single_nic_mode" : True
             }
 
         self.handler.make_request( "uvm/wizard_external_interface_static", settings )
@@ -84,13 +77,9 @@ class TestWizard(AlpacaSetup):
         assert settings["static"]["dns_1"] == "1.2.3.1"
         assert settings["static"]["dns_2"] == None
 
-        assert self.run_sql_command( 'SELECT * FROM arp_eater_settings WHERE enabled = "t"') != ""
-        assert self.run_sql_command( 'SELECT * FROM arp_eater_networks WHERE enabled = "t"' ) != ""
 
     def test_external_interface_dynamic_1( self ):
-        settings = {
-            "single_nic_mode" : False
-            }
+        settings = {}
 
         self.handler.make_request( "uvm/wizard_external_interface_dynamic", settings )
 
@@ -101,13 +90,9 @@ class TestWizard(AlpacaSetup):
 
         assert len( aliases ) == 0
 
-        assert self.run_sql_command( 'SELECT * FROM arp_eater_settings WHERE enabled = "f"') != ""
-        assert self.run_sql_command( 'SELECT * FROM arp_eater_networks WHERE enabled = "f"' ) != ""
 
     def test_external_interface_dynamic_2( self ):
-        settings = {
-            "single_nic_mode" : True
-            }
+        settings = {}
 
         self.handler.make_request( "uvm/wizard_external_interface_dynamic", settings )
 
@@ -118,8 +103,6 @@ class TestWizard(AlpacaSetup):
 
         assert len( aliases ) == 0
 
-        assert self.run_sql_command( 'SELECT * FROM arp_eater_settings WHERE enabled = "t"') != ""
-        assert self.run_sql_command( 'SELECT * FROM arp_eater_networks WHERE enabled = "t"' ) != ""
 
     def test_external_interface_dynamic_3( self ):
         settings = {
@@ -134,16 +117,12 @@ class TestWizard(AlpacaSetup):
 
         assert len( aliases ) == 0
 
-        assert self.run_sql_command( 'SELECT * FROM arp_eater_settings WHERE enabled = "f"') != ""
-        assert self.run_sql_command( 'SELECT * FROM arp_eater_networks WHERE enabled = "f"' ) != ""
-
 
     def test_external_interface_pppoe_1( self ):
         password = random.random()
         settings = {
             "username" : "test_user",
             "password" : password,
-            "single_nic_mode" : False
             }
 
         self.handler.make_request( "uvm/wizard_external_interface_pppoe", settings )
@@ -159,15 +138,12 @@ class TestWizard(AlpacaSetup):
 
         assert self.run_sql_command( 'SELECT * FROM intf_pppoes WHERE password = "%s"' % password ) != ""
 
-        assert self.run_sql_command( 'SELECT * FROM arp_eater_settings WHERE enabled = "f"') != ""
-        assert self.run_sql_command( 'SELECT * FROM arp_eater_networks WHERE enabled = "f"' ) != ""
 
     def test_external_interface_pppoe_2( self ):
         password = random.random()
         settings = {
             "username" : "test_user_2",
             "password" : password,
-            "single_nic_mode" : True
             }
 
         self.handler.make_request( "uvm/wizard_external_interface_pppoe", settings )
@@ -182,8 +158,7 @@ class TestWizard(AlpacaSetup):
         assert settings["pppoe"]["password"] == '-[![N "]'
 
         assert self.run_sql_command( 'SELECT * FROM intf_pppoes WHERE password = "%s"' % password ) != ""
-        assert self.run_sql_command( 'SELECT * FROM arp_eater_settings WHERE enabled = "f"') != ""
-        assert self.run_sql_command( 'SELECT * FROM arp_eater_networks WHERE enabled = "f"' ) != ""
+
 
 
 

@@ -38,7 +38,6 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   ## This will block any traffic trying to penetrate NAT.
   NatFirewallConfigFile = "#{ConfigDirectory}/700-nat-firewall"
   RedirectConfigFile   = "#{ConfigDirectory}/600-redirect"
-  SingleNICConfigFile  = "#{ConfigDirectory}/900-single-nic"
 
   ModuleConfigFile = "/etc/untangle-net-alpaca/modules.conf"
 
@@ -76,11 +75,6 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
     os["network_manager"].register_hook( 100, "packet_filter_manager", "write_files", :hook_write_files )
 
     os["dns_server_manager"].register_hook( 100, "packet_filter_manager", "commit", :hook_commit )
-
-    begin
-      os["arp_eater_manager"].register_hook( 100, "packet_filter_manager", "commit", :hook_commit )
-    rescue LoadError
-    end
     
     ## Run whenever the address is updated.
     ## REVIEW : This may just be moved into a script
@@ -214,9 +208,6 @@ EOF
     SNatRules = Chain.new( "snat-rules", "nat", nil, <<'EOF' )
 EOF
 
-    ## Chain used for Single NIC mode.
-    SingleNIC = Chain.new( "alpaca-snic", "mangle", "PREROUTING" )
-
     ## Chain used for captive portal
     CaptivePortal = Chain.new( "untangle-cpd", "mangle", "PREROUTING" )
 
@@ -227,7 +218,7 @@ EOF
     Order = [ MarkInterface, PostNat, SNatRules,
               FirewallBlock, FirewallMarkReject, FirewallMarkDrop, 
               FirewallMarkInputReject, FirewallMarkInputDrop, FirewallNat,
-              FirewallRules, SingleNIC,
+              FirewallRules, 
               BypassRules, BypassMark, CaptivePortal, CaptivePortalCapture, Redirect ]
   end
   
@@ -255,9 +246,6 @@ EOF
     # Script to initialize all of the redirect rules
     write_redirect
     
-    # Write the script to mark files for single NIC.
-    single_nic_marks
-
     # Write the configuration script for the modules.
     write_module_script
   end
@@ -658,34 +646,6 @@ EOF
     rules.join( "\n" )
   end
   
-  def single_nic_marks
-    arp_eater_settings = ArpEaterSettings.find( :first )
-    text = <<EOF
-IPTABLES=${IPTABLES:-/sbin/iptables}
-
-#{IPTablesCommand} -t #{Chain::SingleNIC.table} -F #{Chain::SingleNIC}
-EOF
-    
-    if ( arp_eater_settings.nil? || !arp_eater_settings.enabled )
-      os["override_manager"].write_file( SingleNICConfigFile, text, "\n" )
-      return
-    end
-    
-    text << <<EOF
-#{IPTablesCommand} #{Chain::MarkInterface.args} -g #{Chain::SingleNIC}
-
-## Ignore packets that did not come from the external interface.
-#{IPTablesCommand} #{Chain::SingleNIC.args} -m mark --mark 0x0/0xFF -j RETURN
-
-netstat -rn | awk '/^[0-9]/ { if ( $1 != "0.0.0.0" && $2 == "0.0.0.0" && ( index( $8, "dummy" ) == 0 ) && ( index( $8, "utun" ) == 0 )) print $1 "/" $3 }' | sort | uniq | while read t_network ; do
-  #{IPTablesCommand} #{Chain::SingleNIC.args} -s ${t_network} -j MARK --and-mark 0xFFFFFF00
-  #{IPTablesCommand} #{Chain::SingleNIC.args} -s ${t_network} -j MARK --or-mark 0x02
-done
-EOF
-
-    os["override_manager"].write_file( SingleNICConfigFile, text, "\n" )
-  end
-
   def write_module_script
     alpaca_settings = AlpacaSettings.find( :first )
     alpaca_settings = AlpacaSettings.new if alpaca_settings.nil?

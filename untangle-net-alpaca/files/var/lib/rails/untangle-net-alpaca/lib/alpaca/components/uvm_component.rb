@@ -74,16 +74,6 @@ class Alpaca::Components::UvmComponent < Alpaca::Component
 
     ## Load all of the additional filter rules.
     mac_address_list = config["mac_addresses"] or ""
-    
-    if ( config["single_nic_mode"] == true )
-      mac_address_list.split( " " ).each do |mac_address|
-        puts "pre_save_configuration: inserting the mac address: #{mac_address}"
-        subscription = Subscription.new
-        subscription.update_attributes({ "filter" => "s-mac-addr::#{mac_address}", "enabled" => true,
-                                         "subscribe" => false, "description" => host_ip_marker })
-        subscription.save
-      end
-    end
   end
 
   private

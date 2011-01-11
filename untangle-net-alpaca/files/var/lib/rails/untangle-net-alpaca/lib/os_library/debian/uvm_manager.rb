@@ -57,10 +57,6 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
     ## changes to the hostname
     os["hostname_manager"].register_hook( 1000, "uvm_manager", "commit", :hook_update_configuration )
     os["dns_server_manager"].register_hook( 1000, "uvm_manager", "commit", :hook_update_configuration )
-    begin
-      os["arp_eater_manager"].register_hook( 1000, "uvm_manager", "commit", :hook_update_configuration )
-    rescue LoadError => load_error
-    end
   end
 
   ## Write out the files to load all of the iptables rules necessary to queue traffic.
@@ -77,18 +73,6 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
 
   ## A helper function for the packet filter manager.
   def handle_custom_rule( rule )
-    case rule.system_id
-    when "bypass-internal-single-nic-traffic-10bd7d18" 
-      return "" if ArpEaterSettings.find( :first, :conditions => [ "enabled=?", true ] ).nil?
-       
-      return <<EOF
-netstat -rn | awk '/^[0-9]/ { if ( $1 != "0.0.0.0" && $2 == "0.0.0.0" && ( index( $8, "dummy" ) == 0 ) && ( index( $8, "utun" ) == 0 )) print $1 "/" $3 }' | sort | uniq | while read t_network ; do
-  #{IPTablesCommand} #{Chain::BypassRules.args} -s ${t_network} -d ${t_network} -g #{Chain::BypassMark}
-done
-EOF
-    else return nil
-    end
-    
     return nil
   end
 

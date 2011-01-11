@@ -51,7 +51,6 @@ class Alpaca::Components::NetworkComponent < Alpaca::Component
           i.intf_static = static
           i.config_type = InterfaceHelper::ConfigType::STATIC 
         end
-        ## Auto installs are presently reserved for single NIC boxes, just disable all other NICs.
         
         raise "Invalid network settings" unless i.valid?
       else

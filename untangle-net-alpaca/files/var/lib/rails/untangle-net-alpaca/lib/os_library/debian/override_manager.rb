@@ -32,21 +32,17 @@ class OSLibrary::Debian::OverrideManager < OSLibrary::OverrideManager
   end
 
   def hook_write_files
-    arp_eater_settings = ArpEaterSettings.find( :first )
-    arp_eater_settings = ArpEaterSettings.new( :enabled => false ) if arp_eater_settings.nil?
     
     alpaca_settings = AlpacaSettings.find( :first )
     alpaca_settings = AlpacaSettings.new( :send_icmp_redirects => true ) if alpaca_settings.nil?
 
     sysctl_text = header
-
-    send_redirects = ( alpaca_settings.send_icmp_redirects && !arp_eater_settings.enabled ) ? 1 : 0
     
     sysctl_text += <<EOF
 sysctl -q -w net.ipv4.ip_forward=1
 
 find /proc/sys/net/ipv4/conf -type f -name 'send_redirects' | while read f ; do
-  echo #{send_redirects} > ${f}
+  echo #{alpaca_settings.send_icmp_redirects} > ${f}
 done
 EOF
 
