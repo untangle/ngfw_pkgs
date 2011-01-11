@@ -357,8 +357,8 @@ EOF
 
       if (interface.config_type == "bridge")
         intfBridge = IntfBridge.find( :first, :conditions => [ "interface_id = ?", interface.id ] )
-        bridgeToIntf = Interface.find( :first, :conditions => [ "id = ?", intfBridge.bridge_interface_id ] )
-        netConfigFileText += "            bridgeTo: \"#{bridgeToIntf.name}\",\n" if !bridgeToIntf.name.nil?
+        bridgedToIntf = Interface.find( :first, :conditions => [ "id = ?", intfBridge.bridge_interface_id ] )
+        netConfigFileText += "            bridgedTo: \"#{bridgedToIntf.name}\",\n" if !bridgedToIntf.name.nil?
       end
 
       if (interface.config_type == "pppoe")
