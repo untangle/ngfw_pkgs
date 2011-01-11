@@ -63,7 +63,7 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
   def hook_write_files
     ## These are all of the rules that are used to vector traffic to the UVM.
     write_subscription_script
-    wan_mask = write_interface_order
+    wan_mask = write_network_configuration_file
 
     ## These are all of the rules to filter / accept traffic to the various services
     ## the UVM provides (80, 443, etc)
@@ -253,7 +253,7 @@ EOF
 
   ## This writes a file that indicates to the UVM the order
   ## of the interfaces
-  def write_interface_order
+  def write_network_configuration_file
     ## Create an interface map
     interfaces = {}
     Interface.find( :all ).each { |interface| interfaces[interface.index] = interface }
@@ -304,10 +304,20 @@ EOF
     netConfigFileText = ""
     netConfigFileText += "{\n"
     netConfigFileText += "    javaClass: \"com.untangle.uvm.networking.NetworkSettings\",\n"
-    netConfigFileText += "    hostname: \"#{hostname_settings.hostname}\",\n" 
-    netConfigFileText += "    dnsServerEnabled: #{dns_settings.enabled},\n" 
-    netConfigFileText += "    dnsLocalDomain: \"#{dns_settings.suffix}\",\n" 
-    netConfigFileText += "    dhcpServerEnabled: #{dhcp_settings.enabled},\n" 
+    if !hostname_settings.nil?
+      netConfigFileText += "    hostname: \"#{hostname_settings.hostname}\",\n" 
+    end
+    if dns_settings.nil?
+      netConfigFileText += "    dnsServerEnabled: false,\n" 
+    else
+      netConfigFileText += "    dnsServerEnabled: #{dns_settings.enabled},\n" 
+      netConfigFileText += "    dnsLocalDomain: \"#{dns_settings.suffix}\",\n" 
+    end
+    if dhcp_settings.nil?
+      netConfigFileText += "    dhcpServerEnabled: false,\n" 
+    else
+      netConfigFileText += "    dhcpServerEnabled: #{dhcp_settings.enabled},\n" 
+    end
 
     netConfigFileText += "    interfaceList: {\n" 
     netConfigFileText += "        javaClass: \"java.util.LinkedList\",\n" 
