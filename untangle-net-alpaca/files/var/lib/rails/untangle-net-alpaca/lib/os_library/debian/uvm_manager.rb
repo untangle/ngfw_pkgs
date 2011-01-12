@@ -303,7 +303,7 @@ EOF
 
     netConfigFileText = ""
     netConfigFileText += "{\n"
-    netConfigFileText += "    javaClass: \"com.untangle.uvm.networking.NetworkSettings\",\n"
+    netConfigFileText += "    javaClass: \"com.untangle.uvm.networking.NetworkConfiguration\",\n"
     if !hostname_settings.nil?
       netConfigFileText += "    hostname: \"#{hostname_settings.hostname}\",\n" 
     end
@@ -331,7 +331,7 @@ EOF
       else
         netConfigFileText += "              ,{\n"
       end
-      netConfigFileText += "            javaClass: \"com.untangle.uvm.networking.InterfaceSettings\",\n" 
+      netConfigFileText += "            javaClass: \"com.untangle.uvm.networking.InterfaceConfiguration\",\n" 
       netConfigFileText += "            interfaceId: #{interface.index},\n"
       netConfigFileText += "            systemName: \"#{interface.os_name}\",\n"
       netConfigFileText += "            name: \"#{interface.name}\",\n" 
