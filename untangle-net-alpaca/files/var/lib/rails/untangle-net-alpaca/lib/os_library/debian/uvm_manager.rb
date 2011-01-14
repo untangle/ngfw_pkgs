@@ -379,6 +379,16 @@ EOF
       netConfigFileText += "        }\n"
     }
 
+    # manually add the VPN interface
+    netConfigFileText += "              ,{\n"
+    netConfigFileText += "            javaClass: \"com.untangle.uvm.networking.InterfaceConfiguration\",\n" 
+    netConfigFileText += "            interfaceId: #{UvmHelper::VpnIndex},\n"
+    netConfigFileText += "            systemName: \"tun0\",\n"
+    netConfigFileText += "            name: \"OpenVPN\",\n" 
+    netConfigFileText += "            WAN: false,\n" 
+    netConfigFileText += "        }\n"
+
+
     netConfigFileText += "         ]\n" 
     netConfigFileText += "    }\n" 
     netConfigFileText += "}\n" 
