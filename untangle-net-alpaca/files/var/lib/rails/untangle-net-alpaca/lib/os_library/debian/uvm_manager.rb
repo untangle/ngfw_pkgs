@@ -37,11 +37,8 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
   ## list of rules for openvpn
   UvmOpenVPNFile = "#{OSLibrary::Debian::PacketFilterManager::ConfigDirectory}/475-openvpn-pf"
 
-  ## UVM interface properties file
-  UvmInterfaceProperties = "/etc/untangle-net-alpaca/interface.properties"
+  ## file to write out the network config
   UvmNetworkConfigFile = "/etc/untangle-net-alpaca/netConfig.js"
-  UvmInterfaceOrderProperty = "com.untangle.interface-order"
-  UvmWanInterfaceProperty = "com.untangle.wan-interfaces"
   
   ## Function that contains all of the subscription / bypass rules
   BypassRules = "bypass_rules"
@@ -263,16 +260,11 @@ EOF
     
     intf_order = settings.interface_order
     intf_order = UvmHelper::DefaultOrder if ApplicationHelper.null?( intf_order )
-
     intf_order = intf_order.split( "," ).map { |idx| idx.to_i }.delete_if { |idx| idx == 0 }
-    
-    values = []
     wan_interfaces = []
 
     ## Go through and delete the interfaces that are in the map.
     intf_order.each do |idx|
-      next values << "VPN:tun0:#{idx}" if idx == UvmHelper::VpnIndex
-      
       interface = interfaces[idx]
       next if interface.nil?
       
@@ -280,22 +272,8 @@ EOF
       interfaces.delete( idx )
       
       ## Append the index
-      values << interface_property( interface )
       wan_interfaces << idx if ( interface.wan == true )
     end
-
-    ## Append the remaining values ordered by their index.
-    values += interfaces.keys.sort.map { |k| interface_property( interfaces[k] ) }
-
-    os["override_manager"].write_file( UvmInterfaceProperties, <<EOF )
-# #{Time.new}
-# 
-# This file is written by untangle-net-alpaca
-# It is read by the untangle-vm and related utilities
-#
-#{UvmInterfaceOrderProperty}=#{values.join( "," )}
-#{UvmWanInterfaceProperty}=#{wan_interfaces.join( "," )}
-EOF
 
     hostname_settings = HostnameSettings.find( :first )
     dns_settings = DnsServerSettings.find( :first )
@@ -446,16 +424,4 @@ EOF
 EOF
   end
 
-  def interface_property( interface )
-    os_name = interface.os_name
-
-    os_name += interface.index.to_s unless interface.is_mapped?
-
-    ## Always register the interface as ppp0 if this is for PPPoE
-    if interface.config_type == InterfaceHelper::ConfigType::PPPOE
-      os_name = OSLibrary::Debian::PppoeManager.get_pppoe_name( interface )
-    end
-
-    "#{interface.name}:#{os_name}:#{interface.index}"
-  end
 end
