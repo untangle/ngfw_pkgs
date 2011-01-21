@@ -55,7 +55,7 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   MarkFirstAlias = 0x10000000
   
   ## Mark that indicates a  packet is destined to one of the machines IP addresses
-  MarkInput    = 0x00000100
+  MarkInput    = 0x00010000
 
   ## Mark that the packet filter used to indicate that this packet should only be filter
   ## if it is destined to the local box.
@@ -68,8 +68,8 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   ## Mark that indicates that the packet should be 
   MarkCaptivePortal = 0x800000
 
-  MultiWanMask  = 0x00000E00
-  MultiWanShift = 9
+  MultiWanMask  = 0x0000FF00
+  MultiWanShift = 8
 
   def register_hooks
     os["network_manager"].register_hook( 100, "packet_filter_manager", "write_files", :hook_write_files )
@@ -626,7 +626,8 @@ EOF
     end
     
     index = interface.index
-    mask = 1 << ( index - 1 )
+    #mask = 1 << ( index - 1 )
+    mask = index
 
     rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} #{match} -j MARK --or-mark #{mask}"
 
@@ -817,12 +818,14 @@ EOF
 
     when "accept-dhcp-internal-e92de349"
       ## Accept traffic to the DHCP server on the Internal interface
-      mark = 1 << ( InterfaceHelper::InternalIndex - 1 )
+      #mark = 1 << ( InterfaceHelper::InternalIndex - 1 )
+      mark = InterfaceHelper::InternalIndex
       return "#{IPTablesCommand} -t filter -I INPUT 1 -p udp -m mark --mark #{mark}/#{mark} -m multiport --destination-ports 67 -j RETURN\n"
 
     when "accept-dhcp-dmz-7a5a003c"
       ## Accept traffic to the DHCP server on the DMZ interface
-      mark = 1 << ( InterfaceHelper::DmzIndex - 1 )
+      #mark = 1 << ( InterfaceHelper::DmzIndex - 1 )
+      mark = InterfaceHelper::DmzIndex
       return "#{IPTablesCommand} -t filter -I INPUT 1 -p udp -m mark --mark #{mark}/#{mark} -m multiport --destination-ports 67 -j RETURN\n"
 
     when "block-dhcp-remaining-58b3326c"

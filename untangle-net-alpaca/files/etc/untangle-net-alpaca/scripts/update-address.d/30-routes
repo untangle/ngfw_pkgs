@@ -3,8 +3,10 @@
 UNTANGLE_PRIORITY_BASE="36"
 UNTANGLE_PRIORITY_MULTIWAN="366"
 
-UNTANGLE_MULTIWAN_SHIFT=9
-UNTANGLE_MULTIWAN_MASK=0xE00
+UNTANGLE_MULTIWAN_SHIFT=8
+UNTANGLE_MULTIWAN_MASK=0xFF00
+
+UNTANGLE_MAX_INTERFACE=255
 
 debug()
 {
@@ -23,7 +25,7 @@ flush_multiwan_ip_rules()
 expected_multiwan_ip_rules()
 {
     local t_index
-    for t_index in `seq 1 7` ; do
+    for t_index in `seq 1 ${UNTANGLE_MAX_INTERFACE}` ; do
         printf "${UNTANGLE_PRIORITY_MULTIWAN}%02d:\tfrom all fwmark %#x/%#x lookup uplink.%d \n" ${t_index} \
             $(( ${t_index} << ${UNTANGLE_MULTIWAN_SHIFT} )) ${UNTANGLE_MULTIWAN_MASK} \
             ${t_index}
@@ -41,7 +43,7 @@ insert_multiwan_ip_rules()
 {
     local t_index
     local t_priority
-    for t_index in `seq 1 7` ; do
+    for t_index in `seq 1 ${UNTANGLE_MAX_INTERFACE}` ; do
         t_priority=`printf "${UNTANGLE_PRIORITY_MULTIWAN}%02d" ${t_index}`
         ip rule add priority  ${t_priority} \
             fwmark $(( ${t_index} << ${UNTANGLE_MULTIWAN_SHIFT} ))/${UNTANGLE_MULTIWAN_MASK} \
