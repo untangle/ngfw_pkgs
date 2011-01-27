@@ -10,7 +10,7 @@ MARK_ANTISUB=$((0x01000000))
 MARK_NOTRACK=$((0x02000000))
 MARK_FIRST_ALIAS=$((0x10000000))
 MARK_DUPE=$((0x20000000))
-MARK_LOCAL=$((0x0100))
+MARK_LOCAL=$((0x10000))
 LOCAL_UVM_REDIRECT="uvm-tcp-redirect"
 
 MASK_WAN=${MASK_WAN:-$((0x01))}
@@ -284,7 +284,7 @@ uvm_packet_filter_secure_external()
     t_restrict=`uvm_restrict_access_string`
     
     t_mark=$(( ${MARK_LOCAL} | ${MARK_FIRST_ALIAS} ))
-    
+
     ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports ${HTTPS_EXTERNAL_PORT} \
         ${t_restrict} -m mark --mark ${t_mark}/${t_mark} -j REDIRECT --to-ports 443
     
@@ -299,7 +299,6 @@ uvm_packet_filter_secure_public()
     if [ "${HTTPS_PUBLIC_PORT}x" = "x" ] ; then return ; fi
 
     if [ "${HTTPS_PUBLIC_ADDR}x" = "x" ] ; then return ; fi
-
 
     ## This doesn't use the restricted address because it assumes the upstream
     ## router is doing the restrictions.
