@@ -27,6 +27,8 @@ LOCK_FILE=/tmp/untangle-net-alpaca-iptables.lock
 insert_rules()
 {
     ## Force untangle-net-alpaca to write network configuration file
+    # Ideally untangle-net-alpaca would do this automatically on startup
+    # short of that I've inserted it here
     curl -s -o /dev/null http://127.0.0.1:3000/alpaca/uvm/write_files?argyle=`head -n1 /etc/untangle-net-alpaca/nonce`
 
     # make sure privileges don't persist across reboots

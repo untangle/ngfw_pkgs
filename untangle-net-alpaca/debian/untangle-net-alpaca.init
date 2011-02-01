@@ -73,6 +73,11 @@ start()
     ${MONGREL_RAILS} start -S ${BASE_DIR}/root-handler.conf -c ${BASE_DIR} -e ${MONGREL_ENV} \
         ${MONGREL_ARGS} --prefix "/alpaca" -d -l "${MONGREL_LOG_FILE}" --pid "${MONGREL_PID_FILE}"
 
+    ## Force untangle-net-alpaca to write network configuration file
+    # Ideally untangle-net-alpaca would do this automatically on startup
+    # short of that I've inserted it here
+    curl -s -o /dev/null http://127.0.0.1:3000/alpaca/uvm/write_files?argyle=`head -n1 /etc/untangle-net-alpaca/nonce`
+
     log_end_msg $?
 }
 
