@@ -49,7 +49,7 @@ class Alpaca::Components::UvmComponent < Alpaca::Component
     ## Find all of the interfaces that exist
     new_intf_order = []
     intf_order.each do |i|
-      next if interfaces[i].nil? && ( i != UvmHelper::VpnIndex )
+      next if interfaces[i].nil? && ( i != UvmHelper::OpenVpnIndex )
       new_intf_order << i
 
       ## Delete the interface from interfaces.

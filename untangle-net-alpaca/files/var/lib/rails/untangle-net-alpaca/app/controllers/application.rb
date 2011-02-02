@@ -232,7 +232,7 @@ class ApplicationController < ActionController::Base
 
     interfaces = interfaces.sort{ |a,b| a.index <=> b.index }
 
-    interfaces << Interface.new({ :index => 8, :name => _( "VPN" )})
+    interfaces << Interface.new({ :index => 255, :name => _( "OpenVPN" )})
     interfaces.map { |i| [ i.index, i.name ] }
   end
 
