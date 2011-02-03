@@ -333,6 +333,11 @@ EOF
       if (interface.config_type == "dynamic")
         intfDynamic = IntfDynamic.find( :first, :conditions => [ "interface_id = ?", interface.id ] )
 
+        dhcp_status = os["dhcp_manager"].get_dhcp_status( interface )
+        if !dhcp_status.nil?
+          netConfigFileText += "            primaryAddressString: \"#{dhcp_status.ip}/#{dhcp_status.netmask}\",\n" if !dhcp_status.nil?
+        end
+
         netConfigFileText += "            overrideIPAddress: \"#{intfDynamic.ip}\",\n" if !intfDynamic.netmask.nil?
         netConfigFileText += "            overrideNetmask: \"#{intfDynamic.netmask}\",\n" if !intfDynamic.netmask.nil?
 

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# This script tells alpaca to rewrite the config files and tell the UVM to refresh config
+
+curl -s -o /dev/null http://127.0.0.1:3000/alpaca/uvm/write_files?argyle=`head -n1 /etc/untangle-net-alpaca/nonce`

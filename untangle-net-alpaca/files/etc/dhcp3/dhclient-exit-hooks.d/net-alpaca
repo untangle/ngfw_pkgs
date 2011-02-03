@@ -15,21 +15,24 @@ case "$reason" in
         # Do nothing
         ;;
     BOUND|RENEW|REBIND|REBOOT)
-        if [ -z "$old_ip_address" -o "$old_ip_address" != "$new_ip_address" -o \
-            "$reason" = "BOUND" -o "$reason" = "REBOOT" ]; then
+        if [ -z "$old_ip_address" -o "$old_ip_address" != "$new_ip_address" -o "$reason" = "BOUND" -o "$reason" = "REBOOT" ]; then
 
-	    # point to point
-	    if [ "$new_subnet_mask" == "255.255.255.255" ]; then
-	    	for router in $alpaca_new_routers; do
-	    	    route add -host $router dev $interface
-	    	done
-	    fi
+     	    # point to point
+	        if [ "$new_subnet_mask" == "255.255.255.255" ]; then
+	    	    for router in $alpaca_new_routers; do
+	    	        route add -host $router dev $interface
+	    	    done
+	        fi
             
             for router in $alpaca_new_routers; do
                 [ -x "${ADD_UPLINK_SCRIPT}" ] && {
                     ${ADD_UPLINK_SCRIPT} ${interface} ${router} "uplink.${DHCP_UPLINK_INDEX}"
                 }
             done
+
+            # write the new config
+            /usr/share/untangle-net-alpaca/scripts/uvm/write-uvm-config		
+
         fi
         ;;
 
