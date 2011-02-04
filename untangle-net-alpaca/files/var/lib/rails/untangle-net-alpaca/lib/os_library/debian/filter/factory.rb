@@ -34,6 +34,10 @@ class OSLibrary::Debian::Filter::Factory
   def filter( rules )
     parameters = {}
 
+    if rules.nil?
+      rules = ""
+    end
+
     ## Remove all of spaces
     rules = rules.gsub( " ", "" );
     
