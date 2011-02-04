@@ -320,18 +320,20 @@ EOF
       if (interface.config_type == "static")
         intfStatic = IntfStatic.find( :first, :conditions => [ "interface_id = ?", interface.id ] )
 
-        if !intfStatic.ip_networks.nil? 
-          intfAddr = !intfStatic.ip_networks[0]
-          if !intfAddr.nil?
-            netConfigFileText += "            primaryAddressStr: \"#{intfStatic.ip_networks[0].ip}/#{intfStatic.ip_networks[0].netmask}\",\n" 
+        if !intfStatic.nil?
+          if !intfStatic.ip_networks.nil? 
+            intfAddr = !intfStatic.ip_networks[0]
+            if !intfAddr.nil?
+              netConfigFileText += "            primaryAddressStr: \"#{intfStatic.ip_networks[0].ip}/#{intfStatic.ip_networks[0].netmask}\",\n" 
+            end
           end
-        end
 
-        if (interface.wan) 
-          netConfigFileText += "            gatewayStr: \"#{intfStatic.default_gateway}\",\n" if !intfStatic.default_gateway.nil?
-          netConfigFileText += "            dns1Str: \"#{intfStatic.dns_1}\",\n" if !intfStatic.dns_1.nil?
-          netConfigFileText += "            dns2Str: \"#{intfStatic.dns_2}\",\n" if !intfStatic.dns_2.nil?
-          netConfigFileText += "            mtu: #{intfStatic.mtu},\n" if !intfStatic.mtu.nil?
+          if (interface.wan) 
+            netConfigFileText += "            gatewayStr: \"#{intfStatic.default_gateway}\",\n" if !intfStatic.default_gateway.nil?
+            netConfigFileText += "            dns1Str: \"#{intfStatic.dns_1}\",\n" if !intfStatic.dns_1.nil?
+            netConfigFileText += "            dns2Str: \"#{intfStatic.dns_2}\",\n" if !intfStatic.dns_2.nil?
+            netConfigFileText += "            mtu: #{intfStatic.mtu},\n" if !intfStatic.mtu.nil?
+          end
         end
       end
 
@@ -343,20 +345,24 @@ EOF
           netConfigFileText += "            primaryAddressString: \"#{dhcp_status.ip}/#{dhcp_status.netmask}\",\n" if !dhcp_status.nil?
         end
 
-        netConfigFileText += "            overrideIPAddress: \"#{intfDynamic.ip}\",\n" if !intfDynamic.netmask.nil?
-        netConfigFileText += "            overrideNetmask: \"#{intfDynamic.netmask}\",\n" if !intfDynamic.netmask.nil?
+        if !intfDynamic.nil?
+          netConfigFileText += "            overrideIPAddress: \"#{intfDynamic.ip}\",\n" if !intfDynamic.netmask.nil?
+          netConfigFileText += "            overrideNetmask: \"#{intfDynamic.netmask}\",\n" if !intfDynamic.netmask.nil?
 
-        if (interface.wan) 
-          netConfigFileText += "            overrideGateway: \"#{intfDynamic.default_gateway}\",\n" if !intfDynamic.default_gateway.nil?
-          netConfigFileText += "            overrideDns1: \"#{intfDynamic.dns_1}\",\n" if !intfDynamic.dns_1.nil?
-          netConfigFileText += "            overrideDns2: \"#{intfDynamic.dns_2}\",\n" if !intfDynamic.dns_2.nil?
+          if (interface.wan) 
+            netConfigFileText += "            overrideGateway: \"#{intfDynamic.default_gateway}\",\n" if !intfDynamic.default_gateway.nil?
+            netConfigFileText += "            overrideDns1: \"#{intfDynamic.dns_1}\",\n" if !intfDynamic.dns_1.nil?
+            netConfigFileText += "            overrideDns2: \"#{intfDynamic.dns_2}\",\n" if !intfDynamic.dns_2.nil?
+          end
         end
       end
 
       if (interface.config_type == "bridge")
         intfBridge = IntfBridge.find( :first, :conditions => [ "interface_id = ?", interface.id ] )
-        bridgedToIntf = Interface.find( :first, :conditions => [ "id = ?", intfBridge.bridge_interface_id ] )
-        netConfigFileText += "            bridgedTo: \"#{bridgedToIntf.name}\",\n" if !bridgedToIntf.name.nil?
+        if !intfBridge.nil?
+          bridgedToIntf = Interface.find( :first, :conditions => [ "id = ?", intfBridge.bridge_interface_id ] )
+          netConfigFileText += "            bridgedTo: \"#{bridgedToIntf.name}\",\n" if !bridgedToIntf.name.nil?
+        end
       end
 
       if (interface.config_type == "pppoe")
