@@ -551,7 +551,7 @@ EOF
           text << "#{IPTablesCommand} #{Chain::FirewallRules.args} #{filter} #{target}\n"
         end
       rescue
-        logger.warn( "The filter '#{rule.id}' '#{rule.filter}' could not be parsed: #{$!}" )
+        logger.warn( "The packet filter rule '#{rule.id}' '#{rule.filter}' could not be parsed: #{$!}" )
       end
     end
 
@@ -591,7 +591,7 @@ EOF
           text << "#{IPTablesCommand} #{Chain::Redirect.args} #{filter} -j DNAT --to-destination #{destination}\n"
         end
       rescue
-        logger.warn( "The filter '#{rule.filter}' could not be parsed: #{$!}" )
+        logger.warn( "The port forward rule '#{rule.filter}' could not be parsed: #{$!}" )
         logger.warn( $!.backtrace.join( "\n" ) )
       end
     end

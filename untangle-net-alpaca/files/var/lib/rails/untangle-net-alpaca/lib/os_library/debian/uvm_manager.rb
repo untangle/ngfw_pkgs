@@ -320,8 +320,11 @@ EOF
       if (interface.config_type == "static")
         intfStatic = IntfStatic.find( :first, :conditions => [ "interface_id = ?", interface.id ] )
 
-        if !intfStatic.ip_networks.nil? and !intfStatic.ip_networks[0].nil?
-          netConfigFileText += "            primaryAddressStr: \"#{intfStatic.ip_networks[0].ip}/#{intfStatic.ip_networks[0].netmask}\",\n" 
+        if !intfStatic.ip_networks.nil? 
+          intfAddr = !intfStatic.ip_networks[0]
+          if !intfAddr.nil?
+            netConfigFileText += "            primaryAddressStr: \"#{intfStatic.ip_networks[0].ip}/#{intfStatic.ip_networks[0].netmask}\",\n" 
+          end
         end
 
         if (interface.wan) 
@@ -411,7 +414,7 @@ EOF
         end
         
       rescue
-        logger.warn( "The filter '#{rule.id}' '#{rule.filter}' could not be parsed: #{$!}" )
+        logger.warn( "The subscription '#{rule.id}' '#{rule.filter}' could not be parsed: #{$!}" )
       end
     end
     

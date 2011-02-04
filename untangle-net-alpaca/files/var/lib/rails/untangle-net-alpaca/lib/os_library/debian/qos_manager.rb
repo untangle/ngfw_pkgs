@@ -401,7 +401,7 @@ EOF
           iptables_rules << "#{IPTablesCommand} #{QoSMark.args} #{filter} #{bypass} #{untrac} #{target}\n"
         end
       rescue
-        logger.warn( "The filter '#{rule.filter}' could not be parsed: #{$!}" )
+        logger.warn( "The qos filter '#{rule.filter}' could not be parsed: #{$!}" )
       end
     end
 
