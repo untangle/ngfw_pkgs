@@ -320,7 +320,7 @@ EOF
       if (interface.config_type == "static")
         intfStatic = IntfStatic.find( :first, :conditions => [ "interface_id = ?", interface.id ] )
 
-        netConfigFileText += "            primaryAddressStr: \"#{intfStatic.ip_networks[0].ip}/#{intfStatic.ip_networks[0].netmask}\",\n"
+        netConfigFileText += "            primaryAddressStr: \"#{intfStatic.ip_networks[0].ip}/#{intfStatic.ip_networks[0].netmask}\",\n" if !intfStatic.ip_networks.nil?
 
         if (interface.wan) 
           netConfigFileText += "            gatewayStr: \"#{intfStatic.default_gateway}\",\n" if !intfStatic.default_gateway.nil?
