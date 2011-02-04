@@ -341,8 +341,8 @@ EOF
         intfDynamic = IntfDynamic.find( :first, :conditions => [ "interface_id = ?", interface.id ] )
 
         dhcp_status = os["dhcp_manager"].get_dhcp_status( interface )
-        if !dhcp_status.nil?
-          netConfigFileText += "            primaryAddressString: \"#{dhcp_status.ip}/#{dhcp_status.netmask}\",\n" if !dhcp_status.nil?
+        if !dhcp_status.nil? and !dhcp_status.ip.nil? and !dhcp_status.netmask.nil?
+          netConfigFileText += "            primaryAddressStr: \"#{dhcp_status.ip}/#{dhcp_status.netmask}\",\n" if !dhcp_status.nil?
         end
 
         if !intfDynamic.nil?
