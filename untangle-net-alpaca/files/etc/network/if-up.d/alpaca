@@ -23,6 +23,8 @@ IP_ROUTE_TABLE_MARKER="8VECFOtCUZxObA=="
 IP_RT_TABLES="/etc/iproute2/rt_tables"
 IP_RT_TABLE_BASE=64
 
+MAX_INTERFACES=255
+
 ## Functions
 
 debug()
@@ -152,7 +154,7 @@ insert_uplink_tables()
     
     echo "# ${IP_ROUTE_TABLE_MARKER} MultiWAN uplink tables" >> ${t_temp}
 
-    for t_index in `seq 1 255`; do
+    for t_index in `seq 1 $MAX_INTERFACES`; do
         /bin/echo -e "$((${IP_RT_TABLE_BASE} + ${t_index}))\t${TABLE_PREFIX}${t_index}" >> ${t_temp}
     done
     
