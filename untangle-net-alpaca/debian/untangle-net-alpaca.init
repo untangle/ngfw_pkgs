@@ -73,13 +73,6 @@ start()
     ${MONGREL_RAILS} start -S ${BASE_DIR}/root-handler.conf -c ${BASE_DIR} -e ${MONGREL_ENV} \
         ${MONGREL_ARGS} --prefix "/alpaca" -d -l "${MONGREL_LOG_FILE}" --pid "${MONGREL_PID_FILE}"
 
-    ## Force write the untangle-vm file
-    # Ideally untangle-net-alpaca would do this automatically on startup
-    # short of that I've inserted it here
-    if [ -x /usr/share/untangle-net-alpaca/scripts/uvm/write-uvm-config ] ; then
-       /usr/share/untangle-net-alpaca/scripts/uvm/write-uvm-config		
-    fi  
-
     log_end_msg $?
 }
 
