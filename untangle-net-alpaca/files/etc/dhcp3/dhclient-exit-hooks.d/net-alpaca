@@ -6,6 +6,8 @@ mkdir -p /var/log/untangle-net-alpaca/
 
 exec >> /var/log/untangle-net-alpaca/dhcp.log 2>&1
 
+echo "dhclient-exit-hooks.d/net-alpaca   reason: $reason   old_ip_address: $old_ip_address   new_ip_address: $new_ip_address"
+
 # Execute the operation
 case "$reason" in
     MEDIUM|ARPCHECK|ARPSEND)
