@@ -30,9 +30,6 @@ case "$reason" in
                 }
             done
 
-            # write the new config
-            /usr/share/untangle-net-alpaca/scripts/uvm/write-uvm-config		
-
         fi
         ;;
 
