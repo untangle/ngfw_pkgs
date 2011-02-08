@@ -86,7 +86,7 @@ module Alpaca::SystemRules
                           :system_id => "accept-dhcp-internal-e92de349" )
 
     ## Disabled by default.
-    rm.add_firewall_rule( :description => "Allow DHCP Requests from the DMZ interface..",
+    rm.add_firewall_rule( :description => "Allow DHCP Requests from the DMZ interface.",
                           :filter => "", :enabled => false, :is_custom => true,
                           :system_id => "accept-dhcp-dmz-7a5a003c" )
     
@@ -94,7 +94,7 @@ module Alpaca::SystemRules
                           :filter => "", :is_custom => true,
                           :system_id => "block-dhcp-remaining-58b3326c" )
 
-    rm.add_firewall_rule( :description => "Prefer Local DHCP Traffic from non-internal interfaces.",
+    rm.add_firewall_rule( :description => "Block DHCP Traffic forwarding to internal interface.",
                           :filter => "", :is_custom => true,
                           :system_id => "control-dhcp-cb848bea" )
 
