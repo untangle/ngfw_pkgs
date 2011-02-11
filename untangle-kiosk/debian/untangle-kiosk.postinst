@@ -20,6 +20,9 @@ chsh -s /bin/zsh root
 find /root/.zsh -type f | xargs chmod 640
 find /root/.zsh -type d | xargs chmod 750
 
+bad_libnet="/usr/lib/jvm/java-6-sun-1.6.0.20/jre/lib/amd64/libnet.so"
+[ -f "$bad_libnet" ] && cp -f /usr/share/untangle-kiosk/libnet-good.so $bad_libnet
+
 #ln -sf /usr/share/untangle-kiosk/desktop_background-please_wait-1024x768.png /usr/local/lib/knoppix.jpg
 
 echo >| /etc/motd.tail
