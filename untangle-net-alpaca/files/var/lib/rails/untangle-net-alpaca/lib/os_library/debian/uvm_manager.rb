@@ -331,7 +331,7 @@ EOF
           if (interface.wan) 
             netConfigFileText += "            gatewayStr: \"#{intfStatic.default_gateway}\",\n" if !intfStatic.default_gateway.nil?
             netConfigFileText += "            dns1Str: \"#{intfStatic.dns_1}\",\n" if !intfStatic.dns_1.nil?
-            netConfigFileText += "            dns2Str: \"#{intfStatic.dns_2}\",\n" if !intfStatic.dns_2.nil?
+            netConfigFileText += "            dns2Str: \"#{intfStatic.dns_2}\",\n" if !intfStatic.dns_2.nil? and intfStatic.dns_2 != ""
             netConfigFileText += "            mtu: #{intfStatic.mtu},\n" if !intfStatic.mtu.nil?
           end
         end
@@ -345,7 +345,7 @@ EOF
           netConfigFileText += "            primaryAddressStr: \"#{dhcp_status.ip}/#{dhcp_status.netmask}\",\n" if !dhcp_status.ip.nil? and !dhcp_status.netmask.nil?
           netConfigFileText += "            gatewayStr: \"#{dhcp_status.default_gateway}\",\n" if !dhcp_status.default_gateway.nil?
           netConfigFileText += "            dns1Str: \"#{dhcp_status.dns_1}\",\n" if !dhcp_status.dns_1.nil?
-          netConfigFileText += "            dns2Str: \"#{dhcp_status.dns_2}\",\n" if !dhcp_status.dns_2.nil?
+          netConfigFileText += "            dns2Str: \"#{dhcp_status.dns_2}\",\n" if !dhcp_status.dns_2.nil? and dhcp_status.dns_2 != ""
         end
 
         if !intfDynamic.nil?
@@ -355,7 +355,7 @@ EOF
           if (interface.wan) 
             netConfigFileText += "            overrideGateway: \"#{intfDynamic.default_gateway}\",\n" if !intfDynamic.default_gateway.nil?
             netConfigFileText += "            overrideDns1: \"#{intfDynamic.dns_1}\",\n" if !intfDynamic.dns_1.nil?
-            netConfigFileText += "            overrideDns2: \"#{intfDynamic.dns_2}\",\n" if !intfDynamic.dns_2.nil?
+            netConfigFileText += "            overrideDns2: \"#{intfDynamic.dns_2}\",\n" if !intfDynamic.dns_2.nil? and intfDynmaic.dns_2 != ""
           end
         end
       end
