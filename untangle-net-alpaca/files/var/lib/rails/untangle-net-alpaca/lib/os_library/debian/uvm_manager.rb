@@ -248,6 +248,19 @@ EOF
     os["override_manager"].write_file( UvmOpenVPNFile, text, "\n" )
   end
 
+
+  def append_attribute( text, attribute_name, value, indention )
+
+    if (value.nil? or value == "")
+      return text;
+    end
+
+    text += ("    "*indention) + "\"" + "#{attribute_name}" + "\"" + ": " + "\"" + "#{value}" "\",\n"
+    return text;
+
+  end
+
+
   ## This writes a file that indicates to the UVM the order
   ## of the interfaces
   def write_network_configuration_file
@@ -281,25 +294,26 @@ EOF
 
     netConfigFileText = ""
     netConfigFileText += "{\n"
-    netConfigFileText += "    javaClass: \"com.untangle.uvm.networking.NetworkConfiguration\",\n"
+    netConfigFileText = append_attribute( netConfigFileText, "javaClass", "com.untangle.uvm.networking.NetworkConfiguration", 1)
+
     if !hostname_settings.nil?
-      netConfigFileText += "    hostname: \"#{hostname_settings.hostname}\",\n" 
+      netConfigFileText = append_attribute( netConfigFileText, "hostname", hostname_settings.hostname, 1)
     end
     if dns_settings.nil?
-      netConfigFileText += "    dnsServerEnabled: false,\n" 
-    else
-      netConfigFileText += "    dnsServerEnabled: #{dns_settings.enabled},\n" 
-      netConfigFileText += "    dnsLocalDomain: \"#{dns_settings.suffix}\",\n" 
+      netConfigFileText = append_attribute( netConfigFileText, "dnsServerEnabled", "false", 1)
+    else 
+      netConfigFileText = append_attribute( netConfigFileText, "dnsServerEnabled", dns_settings.enabled, 1)
+      netConfigFileText = append_attribute( netConfigFileText, "dnsLocalDomain", dns_settings.suffix, 1)
     end
     if dhcp_settings.nil?
-      netConfigFileText += "    dhcpServerEnabled: false,\n" 
+      netConfigFileText = append_attribute( netConfigFileText, "dhcpServerEnabled", "false", 1)
     else
-      netConfigFileText += "    dhcpServerEnabled: #{dhcp_settings.enabled},\n" 
+      netConfigFileText = append_attribute( netConfigFileText, "dhcpServerEnabled", dhcp_settings.enabled, 1)
     end
 
-    netConfigFileText += "    interfaceList: {\n" 
-    netConfigFileText += "        javaClass: \"java.util.LinkedList\",\n" 
-    netConfigFileText += "        list: [\n"
+    netConfigFileText += "    \"interfaceList\": {\n" 
+    netConfigFileText = append_attribute( netConfigFileText, "javaClass", "java.util.LinkedList", 2)
+    netConfigFileText += "        \"list\": [\n"
 
     first = true
     Interface.find( :all ).each { |interface| 
@@ -309,13 +323,12 @@ EOF
       else
         netConfigFileText += "              ,{\n"
       end
-      netConfigFileText += "            javaClass: \"com.untangle.uvm.networking.InterfaceConfiguration\",\n" 
-      netConfigFileText += "            interfaceId: #{interface.index},\n"
-      netConfigFileText += "            systemName: \"#{interface.os_name}\",\n"
-      netConfigFileText += "            name: \"#{interface.name}\",\n" 
-      netConfigFileText += "            configType: \"#{interface.config_type}\",\n" 
-
-      netConfigFileText += "            WAN: #{interface.wan},\n" 
+      netConfigFileText = append_attribute( netConfigFileText, "javaClass", "com.untangle.uvm.networking.InterfaceConfiguration", 3)
+      netConfigFileText = append_attribute( netConfigFileText, "interfaceId", interface.index, 3)
+      netConfigFileText = append_attribute( netConfigFileText, "systemName", interface.os_name, 3)
+      netConfigFileText = append_attribute( netConfigFileText, "name", interface.name, 3)
+      netConfigFileText = append_attribute( netConfigFileText, "configType", interface.config_type, 3)
+      netConfigFileText = append_attribute( netConfigFileText, "WAN", interface.wan, 3)
 
       if (interface.config_type == "static")
         intfStatic = IntfStatic.find( :first, :conditions => [ "interface_id = ?", interface.id ] )
@@ -324,15 +337,15 @@ EOF
           if !intfStatic.ip_networks.nil? 
             intfAddr = !intfStatic.ip_networks[0]
             if !intfAddr.nil?
-              netConfigFileText += "            primaryAddressStr: \"#{intfStatic.ip_networks[0].ip}/#{intfStatic.ip_networks[0].netmask}\",\n" 
+              netConfigFileText = append_attribute( netConfigFileText, "primaryAddressStr", "#{intfStatic.ip_networks[0].ip}/#{intfStatic.ip_networks[0].netmask}", 3)
             end
           end
 
           if (interface.wan) 
-            netConfigFileText += "            gatewayStr: \"#{intfStatic.default_gateway}\",\n" if !intfStatic.default_gateway.nil?
-            netConfigFileText += "            dns1Str: \"#{intfStatic.dns_1}\",\n" if !intfStatic.dns_1.nil?
-            netConfigFileText += "            dns2Str: \"#{intfStatic.dns_2}\",\n" if !intfStatic.dns_2.nil? and intfStatic.dns_2 != ""
-            netConfigFileText += "            mtu: #{intfStatic.mtu},\n" if !intfStatic.mtu.nil?
+            netConfigFileText = append_attribute( netConfigFileText, "gatewayStr", intfStatic.default_gateway, 3)
+            netConfigFileText = append_attribute( netConfigFileText, "dns1Str", intfStatic.dns_1, 3)
+            netConfigFileText = append_attribute( netConfigFileText, "dns2Str", intfStatic.dns_2, 3)
+            netConfigFileText = append_attribute( netConfigFileText, "mtu", intfStatic.mtu, 3)
           end
         end
       end
@@ -342,20 +355,23 @@ EOF
 
         dhcp_status = os["dhcp_manager"].get_dhcp_status( interface )
         if !dhcp_status.nil?
-          netConfigFileText += "            primaryAddressStr: \"#{dhcp_status.ip}/#{dhcp_status.netmask}\",\n" if !dhcp_status.ip.nil? and !dhcp_status.netmask.nil?
-          netConfigFileText += "            gatewayStr: \"#{dhcp_status.default_gateway}\",\n" if !dhcp_status.default_gateway.nil?
-          netConfigFileText += "            dns1Str: \"#{dhcp_status.dns_1}\",\n" if !dhcp_status.dns_1.nil?
-          netConfigFileText += "            dns2Str: \"#{dhcp_status.dns_2}\",\n" if !dhcp_status.dns_2.nil? and dhcp_status.dns_2 != ""
+          if !dhcp_status.ip.nil? and !dhcp_status.netmask.nil?
+            netConfigFileText = append_attribute( netConfigFileText, "primaryAddressStr", "#{dhcp_status.ip}/#{dhcp_status.netmask}", 3)
+          end
+          
+          netConfigFileText = append_attribute( netConfigFileText, "gatewayStr", dhcp_status.default_gateway, 3)
+          netConfigFileText = append_attribute( netConfigFileText, "dns1Str", dhcp_status.dns_1, 3)
+          netConfigFileText = append_attribute( netConfigFileText, "dns2Str", dhcp_status.dns_2, 3)
         end
 
         if !intfDynamic.nil?
-          netConfigFileText += "            overrideIPAddress: \"#{intfDynamic.ip}\",\n" if !intfDynamic.netmask.nil?
-          netConfigFileText += "            overrideNetmask: \"#{intfDynamic.netmask}\",\n" if !intfDynamic.netmask.nil?
+          netConfigFileText = append_attribute( netConfigFileText, "overrideIPAddress" , intfDynamic.ip, 3)
+          netConfigFileText = append_attribute( netConfigFileText, "overrideNetmask" , intfDynamic.netmask, 3)
 
           if (interface.wan) 
-            netConfigFileText += "            overrideGateway: \"#{intfDynamic.default_gateway}\",\n" if !intfDynamic.default_gateway.nil?
-            netConfigFileText += "            overrideDns1: \"#{intfDynamic.dns_1}\",\n" if !intfDynamic.dns_1.nil?
-            netConfigFileText += "            overrideDns2: \"#{intfDynamic.dns_2}\",\n" if !intfDynamic.dns_2.nil? and intfDynmaic.dns_2 != ""
+            netConfigFileText = append_attribute( netConfigFileText, "overrideGateway" , intfDynamic.default_gateway, 3)
+            netConfigFileText = append_attribute( netConfigFileText, "overrideDns1" , intfDynamic.dns_1, 3)
+            netConfigFileText = append_attribute( netConfigFileText, "overrideDns2" , intfDynamic.dns_2, 3)
           end
         end
       end
@@ -364,7 +380,9 @@ EOF
         intfBridge = IntfBridge.find( :first, :conditions => [ "interface_id = ?", interface.id ] )
         if !intfBridge.nil?
           bridgedToIntf = Interface.find( :first, :conditions => [ "id = ?", intfBridge.bridge_interface_id ] )
-          netConfigFileText += "            bridgedTo: \"#{bridgedToIntf.name}\",\n" if !bridgedToIntf.name.nil?
+          if (!bridgedToIntf.nil?)
+            netConfigFileText = append_attribute( netConfigFileText, "bridgedTo" , bridgedToIntf.name, 3)
+          end
         end
       end
 
@@ -378,11 +396,11 @@ EOF
 
     # manually add the VPN interface
     netConfigFileText += "              ,{\n"
-    netConfigFileText += "            javaClass: \"com.untangle.uvm.networking.InterfaceConfiguration\",\n" 
-    netConfigFileText += "            interfaceId: #{UvmHelper::OpenVpnIndex},\n"
-    netConfigFileText += "            systemName: \"tun0\",\n"
-    netConfigFileText += "            name: \"OpenVPN\",\n" 
-    netConfigFileText += "            WAN: false,\n" 
+    netConfigFileText = append_attribute( netConfigFileText, "javaClass", "com.untangle.uvm.networking.InterfaceConfiguration", 3)
+    netConfigFileText = append_attribute( netConfigFileText, "interfaceId", "#{UvmHelper::OpenVpnIndex}", 3)
+    netConfigFileText = append_attribute( netConfigFileText, "systemName", "tun0", 3)
+    netConfigFileText = append_attribute( netConfigFileText, "name", "OpenVPN", 3)
+    netConfigFileText = append_attribute( netConfigFileText, "WAN", "false", 3)
     netConfigFileText += "        }\n"
 
 
