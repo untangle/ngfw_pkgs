@@ -12,4 +12,4 @@ if [ -x "/etc/init.d/untangle-shield" ]; then
     ourInit untangle-shield stop || true
 fi
 
-echo 0
+exit 0
