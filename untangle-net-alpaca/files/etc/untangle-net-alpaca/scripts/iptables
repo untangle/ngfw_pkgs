@@ -13,7 +13,7 @@ iptables_debug_onerror()
 {
     ## Ignore -N errors
     /sbin/iptables $* || {
-        [ "${3}x" != "-Nx" ] && echo /sbin/iptables $*
+        [ "${3}x" != "-Nx" ] && echo "Failed: /sbin/iptables $*"
     }
 
     true
