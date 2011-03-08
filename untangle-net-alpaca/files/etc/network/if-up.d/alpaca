@@ -18,12 +18,12 @@ UNTANGLE_PRIORITY_BASE="36"
 
 ## Change this whenever you want to guarantee that the route tables are recreated.
 ## this was used to generate the value (openssl rand -base64 -out /dev/stdout 10)
-IP_ROUTE_TABLE_MARKER="8VECFOtCUZxObA=="
+IP_ROUTE_TABLE_MARKER="version2"
 
 IP_RT_TABLES="/etc/iproute2/rt_tables"
-IP_RT_TABLE_BASE=64
+IP_RT_TABLE_BASE=0
 
-MAX_INTERFACES=255
+MAX_INTERFACES=250
 
 ## Functions
 
@@ -148,8 +148,9 @@ insert_uplink_tables()
     local t_temp
     local t_index
 
+    # if untangle has written the uplink tables already just return
     grep -q "${IP_ROUTE_TABLE_MARKER}" ${IP_RT_TABLES} && return
-    
+
     t_temp=`mktemp`
     
     echo "# ${IP_ROUTE_TABLE_MARKER} MultiWAN uplink tables" >> ${t_temp}

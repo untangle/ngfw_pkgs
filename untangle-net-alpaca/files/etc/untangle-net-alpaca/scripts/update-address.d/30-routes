@@ -6,7 +6,7 @@ UNTANGLE_PRIORITY_MULTIWAN="366"
 UNTANGLE_MULTIWAN_SHIFT=8
 UNTANGLE_MULTIWAN_MASK=0xFF00
 
-UNTANGLE_MAX_INTERFACE=255
+UNTANGLE_MAX_INTERFACE=250
 
 debug()
 {
@@ -62,7 +62,7 @@ insert_uplink_tables()
     
     echo "# ${IP_ROUTE_TABLE_MARKER} MultiWAN uplink tables" >> ${t_temp}
 
-    for t_index in `seq 1 8`; do
+    for t_index in `seq 1 ${UNTANGLE_MAX_INTERFACE}`; do
         /bin/echo -e "$((${IP_RT_TABLE_BASE} + ${t_index}))\t${TABLE_PREFIX}${t_index}" >> ${t_temp}
     done
     
@@ -75,7 +75,7 @@ insert_uplink_tables()
 ## Start of script
 ## It is very dangerous to change this once a revision has been released.
 TABLE_PREFIX="uplink."
-IP_ROUTE_TABLE_MARKER="8VECFOtCUZxObA=="
+IP_ROUTE_TABLE_MARKER="version2"
 IP_RT_TABLES="/etc/iproute2/rt_tables"
 IP_RT_TABLE_BASE=64
 insert_uplink_tables
