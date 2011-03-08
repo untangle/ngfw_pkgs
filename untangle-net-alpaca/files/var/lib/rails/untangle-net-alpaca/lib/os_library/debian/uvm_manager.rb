@@ -44,7 +44,7 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
   BypassRules = "bypass_rules"
 
   ## Script to tell the UVM that the configuration has changed.
-  UvmUpdateConfiguration = "/usr/share/untangle-net-alpaca/scripts/uvm/update-configuration"
+  UvmUpdateConfiguration = "/usr/share/untangle-net-alpaca/scripts/uvm/uvm-refresh-network-config"
 
   def register_hooks
     os["packet_filter_manager"].register_hook( 100, "uvm_manager", "write_files", :hook_write_files )
