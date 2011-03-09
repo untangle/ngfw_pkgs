@@ -153,10 +153,14 @@ uvm_iptables_rules()
     ${IPTABLES} -A PREROUTING -t mangle -m connmark --mark ${MARK_ANTISUB}/${MARK_ANTISUB} -j MARK --or-mark  ${MARK_ANTISUB}
     ${IPTABLES} -A PREROUTING -t mangle -m mark --mark ${MARK_ANTISUB}/${MARK_ANTISUB}  -j RETURN
 
+    # We no longer (9.0) queue ICMP packets at all
+    # In previous versions the ICMP packet queueing handling wasnt working anyway
+    # and no features rely on this functionality
+    #
     # Queue all of the ICMP packets (except for pings).
-    ${IPTABLES} -A PREROUTING -t mangle -p icmp --icmp-type echo-request -j RETURN
-    ${IPTABLES} -A PREROUTING -t mangle -p icmp --icmp-type echo-reply   -j RETURN
-    ${IPTABLES} -A PREROUTING -t mangle -p icmp                          -j NFQUEUE
+    # ${IPTABLES} -A PREROUTING -t mangle -p icmp --icmp-type echo-request -j RETURN
+    # ${IPTABLES} -A PREROUTING -t mangle -p icmp --icmp-type echo-reply   -j RETURN
+    # ${IPTABLES} -A PREROUTING -t mangle -p icmp                          -j NFQUEUE
 
     #redirect  anthing re-injected packets from the TUN interface to us
     ## Add a redirect rule for each address,
