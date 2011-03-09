@@ -55,7 +55,7 @@ class OSLibrary::Debian::DhcpManager < OSLibrary::DhcpManager
 
     ## DNS Servers are only stored in the dnsmasq.conf file.
     ## Each uplink is tagged with a comment that includes uplink.
-    dns_1, dns_2 = `awk '/^#*\s*server=.*uplink.#{interface.index}/ { sub( "#*\s*server=", "" ); sub ( "#.*", "" ); print }' /etc/dnsmasq.conf`.strip.split
+    dns_1, dns_2 = `awk '/^#*server=.*uplink.#{interface.index}/ { sub( "#*server=", "" ); sub ( "#.*", "" ); print }' /etc/dnsmasq.conf`.strip.split
     
     DhcpStatus.new( address, netmask, default_gateway, dns_1, dns_2 )
   end
