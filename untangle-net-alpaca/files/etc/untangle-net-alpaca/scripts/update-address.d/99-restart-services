@@ -4,11 +4,11 @@ restartService() {
     local t_service=$1
 
     if [ ! -f /etc/init.d/${t_service} ];  then
-        echo "[DEBUG:`date`] missing the service ${t_service}"
         return 0
     fi
 
     # run this non-blocking in the background
+    echo "[DEBUG:`date`] Restarting ${t_service}"
     /etc/init.d/${t_service} restart &
 }
 

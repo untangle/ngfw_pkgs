@@ -37,12 +37,18 @@ class OSLibrary::Debian::OverrideManager < OSLibrary::OverrideManager
     alpaca_settings = AlpacaSettings.new( :send_icmp_redirects => true ) if alpaca_settings.nil?
 
     sysctl_text = header
-    
+
+    if alpaca_settings.send_icmp_redirects == true then
+      send_redirects_str = "1"
+    else
+      send_redirects_str = "0"
+    end
+
     sysctl_text += <<EOF
 sysctl -q -w net.ipv4.ip_forward=1
 
 find /proc/sys/net/ipv4/conf -type f -name 'send_redirects' | while read f ; do
-  echo #{alpaca_settings.send_icmp_redirects} > ${f}
+  echo #{send_redirects_str} > ${f}
 done
 EOF
 
