@@ -360,7 +360,7 @@ EOF
     when "100-half" then return "100-half-duplex"
     end
 
-    logger.warn( "Unknown media #{interface.speed},#{interface.duplex}" ) unless interface.speed == "auto"
+    logger.warn( "Unknown media \"#{interface.speed}\",\"#{interface.duplex}\"" ) unless interface.speed == "auto"
     
     ## default.
     return "auto"
