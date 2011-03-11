@@ -30,4 +30,4 @@ restartService spamassassin
 # remote support is enabled if sshd us running
 pidof sshd && restartService untangle-support-agent
 
-
+exit 0
