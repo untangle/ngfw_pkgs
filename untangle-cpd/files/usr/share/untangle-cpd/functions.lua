@@ -7,7 +7,6 @@ require "logging.console"
 require "socket"
 require "untangle"
 
-
 postgres = nil
 uvm_db = nil
 
@@ -197,7 +196,8 @@ end
 function cpd_replace_host( username, hw_addr, ipv4_addr, update_session_start )
    local idle_timeout, timeout = cpd_config.idle_timeout_s, cpd_config.max_session_length_s
    local query, num_rows, hw_addr_str, expiration
-   
+   username = string.lower(username)   
+
    if ( update_session_start == nil ) then
       update_session_start = false
    end
@@ -211,8 +211,7 @@ function cpd_replace_host( username, hw_addr, ipv4_addr, update_session_start )
    expiration = get_expiration_sql( update_session_start, idle_timeout, timeout )
 
    if ( not cpd_config.concurrent_logins ) then
-      query = string.format( "SELECT ipv4_addr= '%s' AS y,count(*) FROM %s WHERE username='%s' GROUP BY y", 
-                             ipv4_addr, host_database_table, username )
+      query = string.format( "SELECT ipv4_addr= '%s' AS y,count(*) FROM %s WHERE username='%s' GROUP BY y", ipv4_addr, host_database_table, username )
       curs = assert( uvm_db_execute( query ))
 
       a, b = {}, {}
