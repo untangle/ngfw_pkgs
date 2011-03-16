@@ -23,6 +23,7 @@
 
 #define CPD_MAX_USERNAME_LENGTH  255
 #define CPD_MAX_CAPTURE_RULES 2048
+#define CPD_MAX_CLIENT_LENGTH  1024
 
 typedef struct
 {
@@ -31,8 +32,8 @@ typedef struct
     
     int capture;
 
-    char client_address[64];
-    char server_address[64];
+    char client_address[CPD_MAX_CLIENT_LENGTH];
+    char server_address[CPD_MAX_CLIENT_LENGTH];
     
     /* -1 for any interface, 0 - 7 otherwise */
     int client_interface;
