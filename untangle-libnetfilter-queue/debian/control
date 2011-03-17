@@ -3,7 +3,7 @@ Section: libs
 Priority: optional
 Maintainer: Robert Scott <rbscott@untangle.com>
 Uploaders: Untangle Buildbot <buildbot@untangle.com>
-Build-Depends: gcc (>= 3.4), libnfnetlink-dev (= 0.0.39-1) | untangle-libnfnetlink-dev (>= 0.0.30), libtool, pkg-config, linux-libc-dev (>= 2.6.22), dpatch, debhelper (>= 4.2), cdbs (>= 0.4)
+Build-Depends: gcc (>= 3.4), libnfnetlink-dev (>= 0.0.30) | untangle-libnfnetlink-dev (>= 0.0.30), libtool, pkg-config, linux-libc-dev (>= 2.6.22), dpatch, debhelper (>= 4.2), cdbs (>= 0.4)
 Standards-Version: 3.8.0
 
 Package: untangle-libnetfilter-queue0
