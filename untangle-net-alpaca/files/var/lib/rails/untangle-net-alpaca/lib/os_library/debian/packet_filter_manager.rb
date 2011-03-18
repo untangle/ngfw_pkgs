@@ -432,7 +432,7 @@ EOF
       non_wan_interfaces.each do |interface|
         ## Drop all WAN traffic that is going to a non-wan NATed interface
         ## non-wan non-NATd interfaces should have traffic allowed like normal routed traffic
-        if (interface.nat_policies != nil)
+        if (!interface.current_config.nil? and !interface.current_config.nat_policies.nil? and !interface.current_config.nat_policies.empty?)
           fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -o #{interface.os_name} -j DROP"
         end
       end
