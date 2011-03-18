@@ -428,9 +428,13 @@ EOF
       ## Ignore traffic with the passed mark
       fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -m mark --mark #{MarkFwPass}/#{MarkFwPass} -j RETURN"
 
+      ## Added an exception for unNATed interfaces (these should allow traffic just like normal routed interfaces
       non_wan_interfaces.each do |interface|
-        ## Drop all WAN traffic that is going to a non-wan interface
-        fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -o #{interface.os_name} -j DROP"
+        ## Drop all WAN traffic that is going to a non-wan NATed interface
+        ## non-wan non-NATd interfaces should have traffic allowed like normal routed traffic
+        if (interface.nat_policies != nil)
+          fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -o #{interface.os_name} -j DROP"
+        end
       end
       
       ## Drop traffic going to the VPN interface that is not allowed.
