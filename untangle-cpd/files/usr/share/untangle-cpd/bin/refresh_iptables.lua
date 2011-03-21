@@ -97,9 +97,9 @@ local function handle_intf_param( type, param )
       return { "" }
    end
 
-   assert( param < 8, "param must be less then 8" )
+   assert( param < 255, "param must be less then 255" )
 
-   return { string.format( " -m mark --mark $((1 << %d ))/$((1 << %d ))", param, param ) }
+   return { string.format( " -m mark --mark $((%d))/$((%d))", param, param ) }
 end
 
 local day_table = {
