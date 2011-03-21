@@ -354,7 +354,7 @@ if ( cpd_config["enabled"] == true ) then
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m pkttype ! --pkt-type UNICAST -j RETURN"
 
    -- Return all local traffic
-   commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m mark --mark 0x100/0x100 -j RETURN"
+   commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m mark --mark 0x10000/0x10000 -j RETURN"
 
    -- Return all traffic that doesn't have an interface mark.
    commands[#commands+1] = "iptables -t mangle -A untangle-cpd -m mark --mark 0x00/0xFF -j RETURN"
@@ -391,7 +391,6 @@ replace_rule( commands, "filter", "INPUT", "-m connmark --mark 0x800000/0x800000
 replace_rule( commands, "filter", "FORWARD", "-m connmark --mark 0x800000/0x800000 -m set --set cpd-ipv4-expired src -m comment --comment 'cpd reset expired session 752c.fd28.7f23' -j DROP", 1, is_enabled )
 
 replace_rule( commands, "filter", "FORWARD", "-m connmark --mark 0x800000/0x800000 -m set --set cpd-ipv4-expired src -p tcp --tcp-flags FIN,RST NONE -m comment --comment 'cpd reset expired session 6bbd.ade2.1ea1' -j REJECT", 1, is_enabled )
-
 
 table.foreach( commands, function( a, b ) os.execute( b ) end )
 
