@@ -17,6 +17,11 @@ flush_multiwan_ip_rules()
 {
     local t_priority
 
+    # for pre-9.0 rules (this can be removed after 9.0)
+    for t_priority in `ip rule show | awk "/^${UNTANGLE_PRIORITY_MULTIWAN}[0-9][0-9]:/ { sub( \":\", \"\", \\$1 ) ; print \\$1 }"`; do
+        ip rule del priority ${t_priority}
+    done
+
     for t_priority in `ip rule show | awk "/^${UNTANGLE_PRIORITY_MULTIWAN}[0-9][0-9][0-9]:/ { sub( \":\", \"\", \\$1 ) ; print \\$1 }"`; do
         ip rule del priority ${t_priority}
     done

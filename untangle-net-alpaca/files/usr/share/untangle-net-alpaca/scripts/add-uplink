@@ -3,7 +3,7 @@
 ## All of the untangle rules MUST fall in this priority.  This makes it easy to
 ## flush all of the rules.
 UNTANGLE_PRIORITY_BASE="36"
-UNTANGLE_PRIORITY_DEFAULT="${UNTANGLE_PRIORITY_BASE}900"
+UNTANGLE_PRIORITY_DEFAULT="${UNTANGLE_PRIORITY_BASE}6900"
 
 ## Functions
 debug()
