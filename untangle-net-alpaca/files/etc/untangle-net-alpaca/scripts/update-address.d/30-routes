@@ -17,7 +17,7 @@ flush_multiwan_ip_rules()
 {
     local t_priority
 
-    for t_priority in `ip rule show | awk "/^${UNTANGLE_PRIORITY_MULTIWAN}[0-9][0-9]:/ { sub( \":\", \"\", \\$1 ) ; print \\$1 }"`; do
+    for t_priority in `ip rule show | awk "/^${UNTANGLE_PRIORITY_MULTIWAN}[0-9][0-9][0-9]:/ { sub( \":\", \"\", \\$1 ) ; print \\$1 }"`; do
         ip rule del priority ${t_priority}
     done
 }
@@ -44,7 +44,7 @@ insert_multiwan_ip_rules()
     local t_index
     local t_priority
     for t_index in `seq 1 ${UNTANGLE_MAX_INTERFACE}` ; do
-        t_priority=`printf "${UNTANGLE_PRIORITY_MULTIWAN}%02d" ${t_index}`
+        t_priority=`printf "${UNTANGLE_PRIORITY_MULTIWAN}%03d" ${t_index}`
         ip rule add priority  ${t_priority} \
             fwmark $(( ${t_index} << ${UNTANGLE_MULTIWAN_SHIFT} ))/${UNTANGLE_MULTIWAN_MASK} \
             lookup uplink.${t_index} 
