@@ -26,7 +26,7 @@ expected_multiwan_ip_rules()
 {
     local t_index
     for t_index in `seq 1 ${UNTANGLE_MAX_INTERFACE}` ; do
-        printf "${UNTANGLE_PRIORITY_MULTIWAN}%02d:\tfrom all fwmark %#x/%#x lookup uplink.%d \n" ${t_index} \
+        printf "${UNTANGLE_PRIORITY_MULTIWAN}%03d:\tfrom all fwmark %#x/%#x lookup uplink.%d \n" ${t_index} \
             $(( ${t_index} << ${UNTANGLE_MULTIWAN_SHIFT} )) ${UNTANGLE_MULTIWAN_MASK} \
             ${t_index}
     done
