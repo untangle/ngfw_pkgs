@@ -68,8 +68,8 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   ## Mark that indicates that the packet should be 
   MarkCaptivePortal = 0x800000
 
-  MultiWanMask  = 0x0000FF00
-  MultiWanShift = 8
+  MarkIntfOutMask  = 0x0000FF00
+  MarkIntfOutShift = 8
 
   def register_hooks
     os["network_manager"].register_hook( 100, "packet_filter_manager", "write_files", :hook_write_files )
@@ -108,16 +108,21 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
 
     attr_reader :name, :table, :init
 
-    MarkInterface = Chain.new( "markintf", "mangle", "PREROUTING", <<'EOF' )
-## Clear out all of the bits for the interface mark
-#{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFF0000
-#{IPTablesCommand} #{args} -j CONNMARK --restore-mark --mask #{MultiWanMask}
+    MarkInInterface = Chain.new( "mark-in-intf", "mangle", "PREROUTING", <<'EOF' )
+## Clear out all of the bits for the in interface mark
+#{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFFFF00
+EOF
+
+    MarkOutInterface = Chain.new( "mark-out-intf", "mangle", "FORWARD", <<'EOF' )
+## Clear out all of the bits for the out interface mark
+#{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFF00FF
+#{IPTablesCommand} #{args} -j CONNMARK --restore-mark --mask #{MarkIntfOutMask}
 EOF
 
     ## Chain Used for natting in the prerouting table.
     PostNat = Chain.new( "alpaca-post-nat", "nat", "POSTROUTING", <<'EOF' )
 ## Save the state for bypassed traffic
-#{IPTablesCommand} -t mangle -A POSTROUTING -m conntrack --ctstate NEW -m connmark --mark 0/#{MultiWanMask} -j CONNMARK --save-mark --mask #{MultiWanMask}
+#{IPTablesCommand} -t mangle -A POSTROUTING -m conntrack --ctstate NEW -m connmark --mark 0/#{MarkIntfOutMask} -j CONNMARK --save-mark --mask #{MarkIntfOutMask}
 
 ## Do not NAT packets destined to local host.
 #{IPTablesCommand} #{args} -o lo -j RETURN
@@ -214,8 +219,7 @@ EOF
     ## Chain used to capture / drop traffic for the captive portal.
     CaptivePortalCapture = Chain.new( "untangle-cpd-capture", "mangle", nil )
 
-    ## Review : Should the Firewall Rules go before the redirects?
-    Order = [ MarkInterface, PostNat, SNatRules,
+    Order = [ MarkInInterface, MarkOutInterface, PostNat, SNatRules,
               FirewallBlock, FirewallMarkReject, FirewallMarkDrop, 
               FirewallMarkInputReject, FirewallMarkInputDrop, FirewallNat,
               FirewallRules, 
@@ -327,10 +331,10 @@ mark_local_ip()
    t_mark=$(( #{MarkInput} ))
       
    for t_ip in `get_ip_addresses ${t_intf}` ; do
-     #{IPTablesCommand} #{Chain::MarkInterface.args} -d ${t_ip} -j MARK --or-mark ${t_mark}
+     #{IPTablesCommand} #{Chain::MarkInInterface.args} -d ${t_ip} -j MARK --or-mark ${t_mark}
 
      if [ "${t_first_alias}x" = "truex" ]; then
-       #{IPTablesCommand} #{Chain::MarkInterface.args} -i ${t_intf} -d ${t_ip} -j MARK --or-mark $(( #{MarkFirstAlias} ))
+       #{IPTablesCommand} #{Chain::MarkInInterface.args} -i ${t_intf} -d ${t_ip} -j MARK --or-mark $(( #{MarkFirstAlias} ))
      fi
      t_first_alias="false"
    done
@@ -470,7 +474,7 @@ EOF
 
     end
     
-    text << "#{IPTablesCommand} -t mangle -I OUTPUT 1 -j CONNMARK --restore-mark --mask #{MultiWanMask}"
+    text << "#{IPTablesCommand} -t mangle -I OUTPUT 1 -j CONNMARK --restore-mark --mask #{MarkIntfOutMask}"
 
     
 
@@ -608,7 +612,8 @@ EOF
   ## so indexing them is tough.
   ## Interface labelling
   def marking( interface )
-    match = "-i #{interface.os_name}"
+    match_in  = "-i #{interface.os_name}"
+    match_out = "-o #{interface.os_name}"
     
     ## This is the name used to retrieve the ip addresses.
     name = interface.os_name
@@ -619,9 +624,11 @@ EOF
 
     ## use the pppoe name if this is a PPPoE interface.
     if ( interface.config_type == InterfaceHelper::ConfigType::PPPOE )
-      match = "-i ${#{pppoe_name}}"
+      match_in  = "-i ${#{pppoe_name}}"
+      match_out = "-o ${#{pppoe_name}}"
     elsif interface.is_bridge?
-      match = "-m physdev --physdev-in #{interface.os_name}"
+      match_in  = "-m physdev --physdev-in  #{interface.os_name}"
+      match_out = "-m physdev --physdev-out #{interface.os_name}"
     end
     
     ## This is the name that is used to retrieve the local addresses.
@@ -630,14 +637,14 @@ EOF
     end
     
     index = interface.index
-    #mask = 1 << ( index - 1 )
-    mask = index
 
-    rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} #{match} -j MARK --or-mark #{mask}"
+    rules << "#{IPTablesCommand} #{Chain::MarkInInterface.args}  #{match_in}  -j MARK --or-mark #{index}"
+    rules << "#{IPTablesCommand} #{Chain::MarkOutInterface.args} #{match_out} -j MARK --or-mark #{index << MarkIntfOutShift}"
+    rules << "#{IPTablesCommand} #{Chain::MarkOutInterface.args} #{match_out} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << MarkIntfOutShift}/#{MarkIntfOutMask}"
 
-    if interface.wan
-      rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} #{match} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << MultiWanShift}/#{MultiWanMask}"
-    end
+#     if interface.wan
+#       rules << "#{IPTablesCommand} #{Chain::MarkInInterface.args} #{match_in} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << MarkIntfOutShift}/#{MarkIntfOutMask}"
+#     end
     
     if ( interface.config_type != InterfaceHelper::ConfigType::BRIDGE )
       rules << "mark_local_ip #{name} #{index}"
