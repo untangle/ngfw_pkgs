@@ -3,9 +3,8 @@
 # might be empty, but it doesn't matter (see examples below)
 oldVersion=$2
 
-# we need to the new 8.0 kernel to be run right away, as some new apps
-# now require it (the older one won't work)
-if [ -x /etc/init.d/untangle-vm ] && dpkg --compare-versions "$oldVersion" le 8.0~ ; then
+# we need the new 9.0 kernel to be run right away (for IPSEC)
+if [ -x /etc/init.d/untangle-vm ] && dpkg --compare-versions "$oldVersion" le 9.0~ ; then
     # Bug 5554 -- hotfix the init.d script so it doesn't kill the upgrade
     sed -i -e "s/ grep java | grep uvm/ fgrep java | fgrep com.untangle.uvm.engine.Main/" /etc/init.d/untangle-vm
     uvm-restart reboot
