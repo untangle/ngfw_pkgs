@@ -46,11 +46,3 @@ rm -f /etc/untangle-net-alpaca/wshaper.htb
 rm -f /etc/untangle-net-alpaca/single-nic-mode
 rm -f /etc/untangle-net-alpaca/interface.properties
 
-# update to 9.0
-BASE_DIR=/var/lib/rails/untangle-net-alpaca/
-MONGREL_ENV="production"
-cd ${BASE_DIR} && {
-    rake alpaca:update_interface_order RAILS_ENV=${MONGREL_ENV} || echo "Unable to load the network settings from the box."
-} || {
-    echo "Unable to change into the alpaca directory (${BASE_DIR})"
-}
