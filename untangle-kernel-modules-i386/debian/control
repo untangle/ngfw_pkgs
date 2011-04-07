@@ -11,7 +11,7 @@ Architecture: i386
 Conflicts: untangle-nic-kernel
 Provides: untangle-nic-kernel
 Replaces: untangle-nic-kernel
-Depends: linux-image-2.6.26-2-untangle-686 (>= 2.6.26-22untangle2) | linux-image-2.6.26-2-untangle-486 (>= 2.6.26-22untangle2) | linux-image-2.6.26-2-untangle+xen-486 | linux-image-2.6.26-2-untangle+xen-686, firmware-bnx2, firmware-bnx2x, e1000-kernel, e1000e-kernel, igb-kernel, ipset-kernel, niagara22xxed-kernel, tg3-kernel, bnx2-kernel, ipset, niagara22xxed
+Depends: linux-image-2.6.26-2-untangle-686 (>= 2.6.26-22untangle4) | linux-image-2.6.26-2-untangle-486 (>= 2.6.26-22untangle4) | linux-image-2.6.26-2-untangle+xen-486 | linux-image-2.6.26-2-untangle+xen-686, firmware-bnx2, firmware-bnx2x, e1000-kernel, e1000e-kernel, igb-kernel, ipset-kernel, niagara22xxed-kernel, tg3-kernel, bnx2-kernel, ipset, niagara22xxed
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle appliance internal
  The Untangle appliance internal-to-untangle mode.
