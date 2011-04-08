@@ -1,11 +1,12 @@
 
-class Fleetwood < Alpaca::Migration
+class Navistar < Alpaca::Migration
   def self.up
     drop_table :arp_eater_networks
     drop_table :arp_eater_settings
 
     # update to new interface order
     uvm_settings = UvmSettings.find( :first )
+    uvm_settings = UvmSettings.new if uvm_settings.nil?
     if !uvm_settings.nil? and uvm_settings.interface_order == "1,3,8,2"
       uvm_settings.interface_order = UvmHelper::DefaultOrder
       uvm_settings.save
