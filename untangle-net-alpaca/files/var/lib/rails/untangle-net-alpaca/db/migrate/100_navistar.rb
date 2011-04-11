@@ -4,21 +4,7 @@ class Navistar < Alpaca::Migration
     drop_table :arp_eater_networks
     drop_table :arp_eater_settings
 
-    # update to new interface order
-    uvm_settings = UvmSettings.find( :first )
-    uvm_settings = UvmSettings.new if uvm_settings.nil?
-    if !uvm_settings.nil? and uvm_settings.interface_order == "1,3,8,2"
-      uvm_settings.interface_order = UvmHelper::DefaultOrder
-      uvm_settings.save
-    end
-    if !uvm_settings.nil? and uvm_settings.interface_order == "8"
-      uvm_settings.interface_order = UvmHelper::DefaultOrder
-      uvm_settings.save
-    end
-    if !uvm_settings.nil? and uvm_settings.interface_order == "1,3,4,5,6,7,8,2"
-      uvm_settings.interface_order = UvmHelper::DefaultOrder
-      uvm_settings.save
-    end
+    remove_column :qos_settings, :interface_order
   end
   
   def self.down

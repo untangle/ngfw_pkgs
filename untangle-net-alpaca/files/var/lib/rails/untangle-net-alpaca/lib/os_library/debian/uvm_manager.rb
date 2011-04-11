@@ -271,8 +271,7 @@ EOF
     settings = UvmSettings.find( :first )
     settings = UvmSettings.new if settings.nil?
     
-    intf_order = settings.interface_order
-    intf_order = UvmHelper::DefaultOrder if ApplicationHelper.null?( intf_order )
+    intf_order = UvmHelper::DefaultOrder 
     intf_order = intf_order.split( "," ).map { |idx| idx.to_i }.delete_if { |idx| idx == 0 }
     wan_interfaces = []
 
