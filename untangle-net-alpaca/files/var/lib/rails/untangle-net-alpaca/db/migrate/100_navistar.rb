@@ -4,7 +4,7 @@ class Navistar < Alpaca::Migration
     drop_table :arp_eater_networks
     drop_table :arp_eater_settings
 
-    remove_column :qos_settings, :interface_order
+    remove_column :uvm_settings, :interface_order
   end
   
   def self.down

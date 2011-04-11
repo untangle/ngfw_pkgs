@@ -15,11 +15,11 @@ case "$1" in
       ourInit $SERVICE stop
       ;;
     upgrade|failed-upgrade)
-        ;;
+      ;;
     *)
-        echo "prerm called with unknown argument \`$1'" >&2
-        exit 0
-    ;;
+      echo "prerm called with unknown argument \`$1'" >&2
+      exit 0
+      ;;
 esac
 
 exit 0
