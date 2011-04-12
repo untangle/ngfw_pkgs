@@ -32,5 +32,8 @@ class Navistar < Alpaca::Migration
     # later updates (080)
     add_column :arp_eater_networks, :is_spoof_host_enabled, :boolean, :default => true
     add_column :arp_eater_settings, :nat_hosts, :string, :default => ""
+
+    # re-add column
+    add_column :uvm_settings, :interface_order, :string, :default => UvmHelper::DefaultOrder
   end
 end

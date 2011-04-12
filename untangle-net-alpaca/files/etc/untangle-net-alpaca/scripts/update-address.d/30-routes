@@ -90,7 +90,7 @@ insert_uplink_tables()
 TABLE_PREFIX="uplink."
 IP_ROUTE_TABLE_MARKER="version2"
 IP_RT_TABLES="/etc/iproute2/rt_tables"
-IP_RT_TABLE_BASE=64
+IP_RT_TABLE_BASE=0
 insert_uplink_tables
 
 ##Add static routes rules
