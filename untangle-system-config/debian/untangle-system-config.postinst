@@ -15,9 +15,8 @@ ourInit() {
   fi
 }
 
-
 ourInit rsyslog restart
-rm -f /var/log/uvm/[0-9]*log
+rm -f /var/log/uvm/[0-9]*log /var/log/uvm/node[0-9]*log
 
 # only upon first install of this package
 if [ $1 = "configure" ] && [ -z "$2" ] ; then
