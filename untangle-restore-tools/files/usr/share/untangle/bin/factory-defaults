@@ -1,7 +1,5 @@
 #! /bin/bash
 
-. /etc/default/untangle-vm
-
 /etc/init.d/untangle-vm stop
 /etc/init.d/untangle-reports stop
 

@@ -2,9 +2,6 @@
 
 . /usr/share/debconf/confmodule
 
-# Get definitions we need
-. /etc/default/untangle-vm
-
 APT_CACHE_DIR="/var/cache/apt/archives"
 
 ourInit() {
@@ -32,79 +29,6 @@ if [ $1 = "configure" ] && [ -z "$2" ] ; then
   mkdir -p /usr/share/untangle/tmp
 
   rm /etc/resolv.conf
-fi
-
-if [ "$REPOSITORY" = "sarge" ]; then
-    # Restore the timezone if we've ever set it
-    TZFILE=/usr/share/untangle/conf/timezone
-    if [ -f "$TZFILE" ]; then
-        ZONE=`cat $TZFILE`
-        grep -sq lang= /boot/grub/menu.lst && sed -i -e "s|\( tz=[^ ]*\)\? lang=| tz=$ZONE lang=|" /boot/grub/menu.lst
-        cat "$TZFILE" > /etc/timezone
-    fi
-
-    # get rid of bogus cache, as sarge packages have various bugs with it
-    rm /etc/blkid.tab
-    ln -s /dev/null /etc/blkid.tab
-
-    # Turn off the now unneeded knoppix startup scripts that hose udev
-    [ -d /etc/knoppix ] && mv /etc/knoppix /etc/knoppix.orig
-
-# Need to turn this from pre-5.1:
-#- /dev/sda1 / ext3 defaults,errors=panic 0 1
-#- /dev/sda2 none swap defaults 0 0
-# into this:
-#+ # /dev/sda1
-#+ UUID=8ca2c48a-348e-4a9d-bf92-445c7b5fbd86 / ext3 defaults,errors=panic 0 1
-#+ # /dev/sda2
-#+ UUID=8ca2c48a-348e-4a9d-bf92-445c7b5fbd86 none swap defaults 0 0
-    root=
-    if [ -f /etc/mtab ]; then
-        root=`awk '/[ \t]+\/[ \t]+/ {print $1}' /etc/mtab`
-    fi
-    if [ -z "$root" -a -f /etc/fstab ]; then
-        # Special handling for install-time when /etc/mtab isn't valid
-        root=`awk '/[ \t]+\/[ \t]+/ {print $1}' /etc/fstab`
-    fi
-
-    # If we couldn't find a root, don't bother with the rest as we must
-    # be in some fake install time.
-    if [ -n "$root" ]; then
-
-        case "$root" in /dev/*)
-                rootuuid=`/lib/udev/vol_id -u $root`
-                if [ -z "$rootuuid" ]; then
-	            rootuuid=`uuidgen`
-                    # FIXME: Only works for ext2/ext3
-                    echo "No root UUID found, making one"
-	            tune2fs -U "$rootuuid" $root
-                fi
-################
-# NOTE: The whitespace here is VERY IMPORTANT as it keeps Knoppix from
-# screwing us.  Don't "clean up" this script.  You've been warned.
-################
-                sed -r -i -e "s:^${root}[ \t]+/[ \t]+ext3.*:# $root entry by Untangle\nUUID=$rootuuid  /  ext3  defaults,errors=panic 0 1:" /etc/fstab
-                ;;
-        esac
-
-        swaps=`awk '/partition/ {print $1}' /proc/swaps`
-        if [ -n "$swaps" ]; then
-            for swap in `echo $swaps`; do
-                case "$swap" in /dev/*)
-                        swapuuid=`/lib/udev/vol_id -u $swap`
-                        if [ -z "$swapuuid" ]; then
-                            echo "No swap UUID found, making one"
-                            mkswap "$swap"
-                        fi
-                        swapuuid=`/lib/udev/vol_id -u $swap`
-                        if [ -n "$swapuuid" ]; then
-                            sed -r -i -e "s:^${swap}[ \t]+none[ \t]+swap.*:\n# $swap entry by Untangle\nUUID=$swapuuid  none  swap  defaults 0 0:" /etc/fstab
-                        fi
-                        ;;
-                esac
-            done
-        fi
-    fi
 fi
 
 # Have cron.daily run earlier in the day, at a random time between 1:00 and 2:00
