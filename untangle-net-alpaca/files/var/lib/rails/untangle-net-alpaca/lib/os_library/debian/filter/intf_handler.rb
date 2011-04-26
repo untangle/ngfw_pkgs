@@ -26,10 +26,9 @@ class OSLibrary::Debian::Filter::IntfHandler
       n = index.to_i
       raise "invalid index #{index}" if n.to_s != index
       raise "invalid index #{index}" if (( n > 8 ) || ( n < 1 ))
-      mark = ( 1 << ( n - 1 ))
 
-      ## The mask is the mark
-      [ mark, mark ]
+      ## The mask is 0xff
+      [ n, 0xff ]
     end
 
     filters["mark"] = Mark.expand( filters["mark"], intf_marks )
