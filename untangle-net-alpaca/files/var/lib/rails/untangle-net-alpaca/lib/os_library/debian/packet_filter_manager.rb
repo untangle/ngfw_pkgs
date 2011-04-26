@@ -630,7 +630,6 @@ EOF
     end
     
     index = interface.index
-    #mask = 1 << ( index - 1 )
     mask = index
 
     rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} #{match} -j MARK --or-mark #{mask}"
@@ -822,13 +821,11 @@ EOF
 
     when "accept-dhcp-internal-e92de349"
       ## Accept traffic to the DHCP server on the Internal interface
-      #mark = 1 << ( InterfaceHelper::InternalIndex - 1 )
       mark = InterfaceHelper::InternalIndex
       return "#{IPTablesCommand} -t filter -I INPUT 1 -p udp -m mark --mark #{mark}/#{mark} -m multiport --destination-ports 67 -j RETURN\n"
 
     when "accept-dhcp-dmz-7a5a003c"
       ## Accept traffic to the DHCP server on the DMZ interface
-      #mark = 1 << ( InterfaceHelper::DmzIndex - 1 )
       mark = InterfaceHelper::DmzIndex
       return "#{IPTablesCommand} -t filter -I INPUT 1 -p udp -m mark --mark #{mark}/#{mark} -m multiport --destination-ports 67 -j RETURN\n"
 

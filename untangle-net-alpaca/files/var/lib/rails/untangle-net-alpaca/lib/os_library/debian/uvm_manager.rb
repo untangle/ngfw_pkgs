@@ -60,11 +60,11 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
   def hook_write_files
     ## These are all of the rules that are used to vector traffic to the UVM.
     write_subscription_script
-    wan_mask = write_network_configuration_file
+    write_network_configuration_file
 
     ## These are all of the rules to filter / accept traffic to the various services
     ## the UVM provides (80, 443, etc)
-    write_packet_filter_script( wan_mask )
+    write_packet_filter_script
     write_openvpn_script
   end
 
@@ -126,7 +126,7 @@ EOF
     os["override_manager"].write_file( UvmSubscriptionFile, text, "\n" )    
   end
 
-  def write_packet_filter_script( wan_mask )
+  def write_packet_filter_script( )
     text = header
     
     text += <<EOF
@@ -136,9 +136,6 @@ if [ ! -f ${HELPER_SCRIPT} ]; then
   echo "[`date`] The script ${HELPER_SCRIPT} is not available"
   return 0
 fi
-
-MASK_WAN=#{wan_mask}
-MASK_NON_WAN=#{wan_mask ^ 0xFF}
 
 . ${HELPER_SCRIPT}
 
@@ -249,13 +246,18 @@ EOF
   end
 
 
-  def append_attribute( text, attribute_name, value, indention )
+  def append_attribute( text, attribute_name, value, indention, comma=true )
 
     if (value.nil? or value == "")
       return text;
     end
 
-    text += ("    "*indention) + "\"" + "#{attribute_name}" + "\"" + ": " + "\"" + "#{value}" "\",\n"
+    text += ("    "*indention) + "\"" + "#{attribute_name}" + "\"" + ": " + "\"" + "#{value}" + "\""
+    if comma:
+      text += ","
+    end
+    text += "\n"
+
     return text;
 
   end
@@ -322,7 +324,6 @@ EOF
       else
         netConfigFileText += "              ,{\n"
       end
-      netConfigFileText = append_attribute( netConfigFileText, "javaClass", "com.untangle.uvm.networking.InterfaceConfiguration", 3)
       netConfigFileText = append_attribute( netConfigFileText, "interfaceId", interface.index, 3)
       netConfigFileText = append_attribute( netConfigFileText, "systemName", interface.os_name, 3)
       netConfigFileText = append_attribute( netConfigFileText, "name", interface.name, 3)
@@ -390,16 +391,18 @@ EOF
         #pppoe password
       end
 
+      # don't put a comma on the last line
+      netConfigFileText = append_attribute( netConfigFileText, "javaClass", "com.untangle.uvm.networking.InterfaceConfiguration", 3, false)
       netConfigFileText += "        }\n"
     }
 
     # manually add the VPN interface
     netConfigFileText += "              ,{\n"
-    netConfigFileText = append_attribute( netConfigFileText, "javaClass", "com.untangle.uvm.networking.InterfaceConfiguration", 3)
     netConfigFileText = append_attribute( netConfigFileText, "interfaceId", "#{UvmHelper::OpenVpnIndex}", 3)
     netConfigFileText = append_attribute( netConfigFileText, "systemName", "tun0", 3)
     netConfigFileText = append_attribute( netConfigFileText, "name", "OpenVPN", 3)
     netConfigFileText = append_attribute( netConfigFileText, "WAN", "false", 3)
+    netConfigFileText = append_attribute( netConfigFileText, "javaClass", "com.untangle.uvm.networking.InterfaceConfiguration", 3, false)
     netConfigFileText += "        }\n"
 
 
@@ -410,9 +413,7 @@ EOF
 
     os["override_manager"].write_file( UvmNetworkConfigFile, netConfigFileText )
 
-    wan_mask=0
-    wan_interfaces.each { |idx| wan_mask |= 1 << ( idx - 1 ) }
-    return wan_mask
+    return
   end
 
   def subscription_rules

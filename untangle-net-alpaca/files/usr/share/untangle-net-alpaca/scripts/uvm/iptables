@@ -13,9 +13,6 @@ MARK_DUPE=$((0x20000000))
 MARK_LOCAL=$((0x10000))
 LOCAL_UVM_REDIRECT="uvm-tcp-redirect"
 
-MASK_WAN=${MASK_WAN:-$((0x01))}
-MASK_NON_WAN=${MASK_NON_WAN:-$(( ${MASK_WAN} ^ 0xFF ))}
-
 ## Always set this just in case.
 TCP_REDIRECT_PORTS="9500-9627"
 HTTP_INTERNAL_REDIRECT_PORT="64156"
@@ -220,25 +217,27 @@ uvm_iptables_rules()
 ## Create the rules to allow internal access to port 80.
 uvm_packet_filter_standard_internal()
 {
-    local t_mark=$(( ${MARK_LOCAL} | 0x2 | ${MARK_FIRST_ALIAS} ))
-    local t_mask
+    local t_mark=$(( ${MARK_LOCAL} | ${MARK_FIRST_ALIAS} ))
     local t_block_page_port=${UVM_BLOCK_PAGE_PORT:-80}
 
-    if [ "${UVM_ALLOW_IN_HTTP}x" = "truex" ]; then 
-        ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 80 \
-            -m mark --mark ${t_mark}/${t_mark} -j REDIRECT
-        ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 80 \
-            -m mark --mark ${t_mark}/${t_mark} -j RETURN
-    fi
+    # non-WAN HTTP administration rules
+    /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan | while read intf ; do
+        if [ "${UVM_ALLOW_IN_HTTP}x" = "truex" ]; then 
+	        ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 80 -i $intf \
+		        -m mark --mark ${t_mark}/${t_mark} -j REDIRECT
+            ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 80 -i $intf \
+		        -m mark --mark ${t_mark}/${t_mark} -j RETURN
+        fi
+    done	
     
-    ## If all of the marks for the WAN interfaces are not set, then this came in on a
-    ## non-wan interface.
-    t_mask=$(( ${MARK_LOCAL} | ${MARK_FIRST_ALIAS} | ${MASK_WAN} ))
-    t_mark=$(( ${MARK_LOCAL} | ${MARK_FIRST_ALIAS} ))
-    ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports ${t_block_page_port} \
-        -m mark --mark ${t_mark}/${t_mask} -j REDIRECT --to-ports ${HTTP_INTERNAL_REDIRECT_PORT}
-    ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports ${t_block_page_port} \
-        -m mark --mark ${t_mark}/${t_mask} -j RETURN    
+    # non-WAN HTTP blockpage rules
+    /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan | while read intf ; do
+        t_mark=$(( ${MARK_LOCAL} | ${MARK_FIRST_ALIAS} ))
+        ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports ${t_block_page_port} -i $intf \
+            -m mark --mark ${t_mark}/${t_mark} -j REDIRECT --to-ports ${HTTP_INTERNAL_REDIRECT_PORT}
+        ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports ${t_block_page_port} -i $intf \
+            -m mark --mark ${t_mark}/${t_mark} -j RETURN    
+    done
 }
 
 
@@ -246,24 +245,29 @@ uvm_packet_filter_standard_internal()
 uvm_packet_filter_secure_internal()
 {
     local t_mark=$(( ${MARK_LOCAL} | ${MARK_FIRST_ALIAS} ))
-    local t_mask=$(( ${MARK_LOCAL} | ${MASK_WAN} | ${MARK_FIRST_ALIAS} ))
 
-    ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 443 \
-        -m mark --mark ${t_mark}/${t_mask} \
-        -j REDIRECT --to-ports ${HTTPS_INTERNAL_REDIRECT_PORT}
-    ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 443 \
-        -m mark --mark ${t_mark}/${t_mask} -j RETURN
+    # non-WAN HTTPS administration rules
+    /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan | while read intf ; do
+        ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 443 -i $intf \
+            -m mark --mark ${t_mark}/${t_mark} \
+            -j REDIRECT --to-ports ${HTTPS_INTERNAL_REDIRECT_PORT}
+        ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 443 -i $intf \
+            -m mark --mark ${t_mark}/${t_mark} -j RETURN
+    done
 
     if [ "${HTTPS_PUBLIC_PORT}x" = "x" ] ; then return ; fi
 
     if [ "${HTTPS_PUBLIC_ADDR}x" = "x" ] ; then return ; fi
 
-    ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} \
-        -m mark --mark 2/2 --destination-ports ${HTTPS_PUBLIC_PORT} \
-        -j REDIRECT --to-ports ${HTTPS_INTERNAL_REDIRECT_PORT}
+    # WAN HTTPS administration rules
+    /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan | while read intf ; do
+        ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} -i $intf \
+            --destination-ports ${HTTPS_PUBLIC_PORT} \
+            -j REDIRECT --to-ports ${HTTPS_INTERNAL_REDIRECT_PORT}
     
-    ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} \
-        -m mark --mark 2/2 --destination-ports ${HTTPS_PUBLIC_PORT} -j RETURN
+        ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} -i $intf \
+            --destination-ports ${HTTPS_PUBLIC_PORT} -j RETURN
+    done
 }
 
 ## This is a helper function to generate the necessary filter to restrict external access.
@@ -290,6 +294,7 @@ uvm_packet_filter_secure_external()
     
     t_mark=$(( ${MARK_LOCAL} | ${MARK_FIRST_ALIAS} ))
 
+    # all interfaces HTTPS administration rules
     ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports ${HTTPS_EXTERNAL_PORT} \
         ${t_restrict} -m mark --mark ${t_mark}/${t_mark} -j REDIRECT --to-ports 443
     
