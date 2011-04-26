@@ -68,7 +68,7 @@ def headerparserhandler(req):
     if None == username and realm == 'SetupWizard':
         username = session_user(sess, 'Administrator')
 
-    if None == username and realm == 'SetupWizard' and is_not_setup():
+    if None == username and realm == 'SetupWizard' and !is_wizard_complete():
         username = 'setupwizard'
         save_session_user(sess, realm, username)
 
@@ -133,8 +133,8 @@ def session_user(sess, realm):
 
     return None
 
-def is_not_setup():
-    return not os.path.exists('/usr/share/untangle/conf/uid')
+def is_wizard_complete():
+    return os.path.exists('/usr/share/untangle/conf/wizard-complete-flag')
 
 def is_root(req):
     (remote_ip, remote_port) = req.connection.remote_addr
