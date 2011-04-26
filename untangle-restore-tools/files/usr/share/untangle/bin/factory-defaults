@@ -37,6 +37,7 @@ echo "Restoring Database settings... done"
 rm -f /usr/share/untangle/conf/networking.sh
 rm -f /usr/share/untangle/conf/timezone
 rm -f /usr/share/untangle/conf/keystore
+rm -f /usr/share/untangle/conf/wizard-complete-flag
 rm -fr /usr/share/untangle/gpg ; mkdir /usr/share/untangle/gpg
 rm -rf /usr/share/untangle/conf/openvpn
 rm -rf /usr/share/untangle/quarantine
