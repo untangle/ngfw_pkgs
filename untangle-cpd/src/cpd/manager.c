@@ -944,37 +944,10 @@ static void _push_ip_header( u_int nfmark, struct iphdr* ip_header )
     lua_pushnumber( _globals.lua_state, nfmark );
     lua_setfield( _globals.lua_state, -2, "nfmark" );
 
-    int client_intf = -1;
+    int client_intf = nfmark & 0xFF;
 
-    switch ( nfmark & 0xF ) {
-    case ( 1 << 0):
-        client_intf = 0;
-        break;
-    case ( 1 << 1 ):
-        client_intf = 1;
-        break;
-    case ( 1 << 2 ):
-        client_intf = 2;
-        break;
-    case ( 1 << 3 ):
-        client_intf = 3;
-        break;
-    case ( 1 << 4):
-        client_intf = 4;
-        break;
-    case ( 1 << 5 ):
-        client_intf = 5;
-        break;
-    case ( 1 << 6 ):
-        client_intf = 6;
-        break;
-    case ( 1 << 7 ):
-        client_intf = 7;
-        break;
-    }
-
-    if ( client_intf == -1 ) {
-        debug( 3, "Invalid nfmark %#010x, using interface interface.\n", nfmark );
+    if ( client_intf == -1  || client_intf == 0 ) {
+        debug( 3, "Invalid nfmark %#010x, using interface 1.\n", nfmark );
         client_intf = 1;
     }
 
