@@ -68,8 +68,10 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   ## Mark that indicates that the packet should be 
   MarkCaptivePortal = 0x800000
 
-  MultiWanMask  = 0x0000FF00
-  MultiWanShift = 8
+  DestIntfMask  = 0x0000FF00
+  DestIntfShift = 8
+
+  SrcIntfMask  = 0x000000FF
 
   def register_hooks
     os["network_manager"].register_hook( 100, "packet_filter_manager", "write_files", :hook_write_files )
@@ -111,13 +113,13 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
     MarkInterface = Chain.new( "markintf", "mangle", "PREROUTING", <<'EOF' )
 ## Clear out all of the bits for the interface mark
 #{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFF0000
-#{IPTablesCommand} #{args} -j CONNMARK --restore-mark --mask #{MultiWanMask}
+#{IPTablesCommand} #{args} -j CONNMARK --restore-mark --mask #{DestIntfMask}
 EOF
 
     ## Chain Used for natting in the prerouting table.
     PostNat = Chain.new( "alpaca-post-nat", "nat", "POSTROUTING", <<'EOF' )
 ## Save the state for bypassed traffic
-#{IPTablesCommand} -t mangle -A POSTROUTING -m conntrack --ctstate NEW -m connmark --mark 0/#{MultiWanMask} -j CONNMARK --save-mark --mask #{MultiWanMask}
+#{IPTablesCommand} -t mangle -A POSTROUTING -m conntrack --ctstate NEW -m connmark --mark 0/#{DestIntfMask} -j CONNMARK --save-mark --mask #{DestIntfMask}
 
 ## Do not NAT packets destined to local host.
 #{IPTablesCommand} #{args} -o lo -j RETURN
@@ -470,7 +472,7 @@ EOF
 
     end
     
-    text << "#{IPTablesCommand} -t mangle -I OUTPUT 1 -j CONNMARK --restore-mark --mask #{MultiWanMask}"
+    text << "#{IPTablesCommand} -t mangle -I OUTPUT 1 -j CONNMARK --restore-mark --mask #{DestIntfMask}"
 
     
 
@@ -635,7 +637,7 @@ EOF
     rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} #{match} -j MARK --or-mark #{mask}"
 
     if interface.wan
-      rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} #{match} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << MultiWanShift}/#{MultiWanMask}"
+      rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} #{match} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << DestIntfShift}/#{DestIntfMask}"
     end
     
     if ( interface.config_type != InterfaceHelper::ConfigType::BRIDGE )
@@ -822,12 +824,12 @@ EOF
     when "accept-dhcp-internal-e92de349"
       ## Accept traffic to the DHCP server on the Internal interface
       mark = InterfaceHelper::InternalIndex
-      return "#{IPTablesCommand} -t filter -I INPUT 1 -p udp -m mark --mark #{mark}/#{mark} -m multiport --destination-ports 67 -j RETURN\n"
+      return "#{IPTablesCommand} -t filter -I INPUT 1 -p udp -m mark --mark #{mark}/#{SrcIntfMask} -m multiport --destination-ports 67 -j RETURN\n"
 
     when "accept-dhcp-dmz-7a5a003c"
       ## Accept traffic to the DHCP server on the DMZ interface
       mark = InterfaceHelper::DmzIndex
-      return "#{IPTablesCommand} -t filter -I INPUT 1 -p udp -m mark --mark #{mark}/#{mark} -m multiport --destination-ports 67 -j RETURN\n"
+      return "#{IPTablesCommand} -t filter -I INPUT 1 -p udp -m mark --mark #{mark}/#{SrcIntfMask} -m multiport --destination-ports 67 -j RETURN\n"
 
     when "block-dhcp-remaining-58b3326c"
       ## Block remaining DHCP traffic to the server.
