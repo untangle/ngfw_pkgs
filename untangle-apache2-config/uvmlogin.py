@@ -68,7 +68,7 @@ def headerparserhandler(req):
     if None == username and realm == 'SetupWizard':
         username = session_user(sess, 'Administrator')
 
-    if None == username and realm == 'SetupWizard' and !is_wizard_complete():
+    if None == username and realm == 'SetupWizard' and not is_wizard_complete():
         username = 'setupwizard'
         save_session_user(sess, realm, username)
 
