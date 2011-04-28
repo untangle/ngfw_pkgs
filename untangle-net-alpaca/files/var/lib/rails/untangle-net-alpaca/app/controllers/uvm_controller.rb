@@ -290,6 +290,7 @@ class UvmController < ApplicationController
     end
     
     DhcpServerSettings.destroy_all
+    # DHCP is off by default to avoid problems when plugging the interfaces in wrong
     DhcpServerSettings.new( :enabled => false, :start_address => "192.168.2.100", :end_address => "192.168.2.200" ).save
 
     os["network_manager"].commit

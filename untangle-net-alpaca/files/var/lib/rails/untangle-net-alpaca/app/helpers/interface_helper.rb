@@ -23,6 +23,7 @@ module InterfaceHelper
   ExternalIndex = 1
   InternalIndex = 2
   DmzIndex = 3
+  MaxInterfaces = 250
 
   ExternalName = "External"
   InternalName = "Internal"
@@ -139,7 +140,7 @@ module InterfaceHelper
         ## Check if the interfaces index is taken, if so, use a different one
         if ( existing_indices[interface.index] == true )
           ## Serious magic number (7) here
-          ( interface.index .. 7 ).each do |idx| 
+          ( interface.index .. MaxInterfaces ).each do |idx| 
             break interface.index = idx unless existing_indices[idx] == true
           end
 
@@ -226,9 +227,6 @@ module InterfaceHelper
 
     ## Sort the interface array by index.
     interfaceArray.sort! { |a,b| a.index <=> b.index }
-
-    ## Truncate the array down to 7 items
-    interfaceArray = interfaceArray.slice( 0, 7 )
 
     interfaceArray
   end
