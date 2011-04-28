@@ -12,18 +12,6 @@ restartService() {
     /etc/init.d/${t_service} restart &
 }
 
-# Gotta wait a little while for the bridge to reconfigure
-sleep 5
-
-t0=$(date +%s)
-restartService ntpdate
-t1=$(($(date +%s) + 10))
-if [ $t0 -gt $t1 ]; then
-    echo "restarting alpaca because time went back"
-    restartService untangle-net-alpaca
-fi
-
-restartService ntp-server
 
 restartService spamassassin
 
