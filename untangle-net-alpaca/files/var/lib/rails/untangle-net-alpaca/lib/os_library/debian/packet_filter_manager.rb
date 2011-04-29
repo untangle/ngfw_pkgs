@@ -623,7 +623,7 @@ EOF
     if ( interface.config_type == InterfaceHelper::ConfigType::PPPOE )
       match = "-i ${#{pppoe_name}}"
     elsif interface.is_bridge?
-      match = "-m physdev --physdev-in #{interface.os_name}"
+      match = "-m physdev --physdev-is-bridged --physdev-in #{interface.os_name}"
     end
     
     ## This is the name that is used to retrieve the local addresses.

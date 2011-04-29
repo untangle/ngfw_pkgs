@@ -295,7 +295,7 @@ EOF
     wan_interfaces.each do |intf|
       dev_num = intf.os_name.delete "a-z."
       dev_match = "-i #{intf.os_name}"
-      physdev_match = "-m physdev --physdev-in #{intf.os_name}"
+      physdev_match = "-m physdev --physdev-is-bridged --physdev-in #{intf.os_name}"
         
       iptables_rules << "#{IPTablesCommand} -t mangle -A PREROUTING #{dev_match} -j IMQ --todev #{dev_num}\n"
       iptables_rules << "#{IPTablesCommand} -t mangle -A PREROUTING #{physdev_match} -j IMQ --todev #{dev_num}\n"
