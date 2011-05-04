@@ -623,7 +623,7 @@ EOF
     if ( interface.config_type == InterfaceHelper::ConfigType::PPPOE )
       match = "-i ${#{pppoe_name}}"
     elsif interface.is_bridge?
-      match = "-m physdev --physdev-is-bridged --physdev-in #{interface.os_name}"
+      match = "-m physdev --physdev-in #{interface.os_name}"
     end
     
     ## This is the name that is used to retrieve the local addresses.
@@ -847,7 +847,7 @@ EOF
 
       ## Drop dhcp responses from being forwarded to the internal interface.
       return "#{IPTablesCommand} -t mangle -A FORWARD -p udp -m multiport --destination-ports 67,68 -m physdev --physdev-is-bridged --physdev-out #{i.os_name} -j DROP\n" +
-        "#{IPTablesCommand} -t mangle -A FORWARD -p udp -m multiport --destination-ports 67,68 -m physdev --physdev-is-bridged --physdev-in #{i.os_name} -j DROP\n"
+        "#{IPTablesCommand} -t mangle -A FORWARD -p udp -m multiport --destination-ports 67,68 -m physdev --physdev-in #{i.os_name} -j DROP\n"
 
     when "accept-dhcp-client-43587bff"
       ## Accept all traffic to the local DHCP client
