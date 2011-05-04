@@ -218,7 +218,7 @@ uvm_iptables_rules()
 uvm_packet_filter_standard_internal()
 {
     local t_mark=$(( ${MARK_LOCAL} | ${MARK_FIRST_ALIAS} ))
-    local t_block_page_port=${UVM_BLOCK_PAGE_PORT:-80}
+    local t_block_page_port=80 # now hardcoded at 80
 
     # non-WAN HTTP administration rules
     /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan | while read intf ; do
