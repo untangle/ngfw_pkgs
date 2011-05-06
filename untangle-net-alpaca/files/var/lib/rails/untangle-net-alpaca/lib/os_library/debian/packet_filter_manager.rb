@@ -110,9 +110,14 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
 
     attr_reader :name, :table, :init
 
-    MarkInterface = Chain.new( "markintf", "mangle", "PREROUTING", <<'EOF' )
-## Clear out all of the bits for the interface mark
-#{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFF0000
+    MarkSrcInterface = Chain.new( "mark-src-intf", "mangle", "PREROUTING", <<'EOF' )
+## Clear out all of the bits for the in src interface mark
+#{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFFFF00
+EOF
+
+    MarkDstInterface = Chain.new( "mark-dst-intf", "mangle", "FORWARD", <<'EOF' )
+## Clear out all of the bits for the dst interface mark
+#{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFF00FF
 #{IPTablesCommand} #{args} -j CONNMARK --restore-mark --mask #{DestIntfMask}
 EOF
 
@@ -120,6 +125,7 @@ EOF
     PostNat = Chain.new( "alpaca-post-nat", "nat", "POSTROUTING", <<'EOF' )
 ## Save the state for bypassed traffic
 #{IPTablesCommand} -t mangle -A POSTROUTING -m conntrack --ctstate NEW -m connmark --mark 0/#{DestIntfMask} -j CONNMARK --save-mark --mask #{DestIntfMask}
+
 
 ## Do not NAT packets destined to local host.
 #{IPTablesCommand} #{args} -o lo -j RETURN
@@ -216,8 +222,7 @@ EOF
     ## Chain used to capture / drop traffic for the captive portal.
     CaptivePortalCapture = Chain.new( "untangle-cpd-capture", "mangle", nil )
 
-    ## Review : Should the Firewall Rules go before the redirects?
-    Order = [ MarkInterface, PostNat, SNatRules,
+    Order = [ MarkSrcInterface, MarkDstInterface, PostNat, SNatRules,
               FirewallBlock, FirewallMarkReject, FirewallMarkDrop, 
               FirewallMarkInputReject, FirewallMarkInputDrop, FirewallNat,
               FirewallRules, 
@@ -329,10 +334,10 @@ mark_local_ip()
    t_mark=$(( #{MarkInput} ))
       
    for t_ip in `get_ip_addresses ${t_intf}` ; do
-     #{IPTablesCommand} #{Chain::MarkInterface.args} -d ${t_ip} -j MARK --or-mark ${t_mark}
+     #{IPTablesCommand} #{Chain::MarkSrcInterface.args} -d ${t_ip} -j MARK --or-mark ${t_mark}
 
      if [ "${t_first_alias}x" = "truex" ]; then
-       #{IPTablesCommand} #{Chain::MarkInterface.args} -i ${t_intf} -d ${t_ip} -j MARK --or-mark $(( #{MarkFirstAlias} ))
+       #{IPTablesCommand} #{Chain::MarkSrcInterface.args} -i ${t_intf} -d ${t_ip} -j MARK --or-mark $(( #{MarkFirstAlias} ))
      fi
      t_first_alias="false"
    done
@@ -610,7 +615,8 @@ EOF
   ## so indexing them is tough.
   ## Interface labelling
   def marking( interface )
-    match = "-i #{interface.os_name}"
+    match_in  = "-i #{interface.os_name}"
+    match_out = "-o #{interface.os_name}"
     
     ## This is the name used to retrieve the ip addresses.
     name = interface.os_name
@@ -621,9 +627,11 @@ EOF
 
     ## use the pppoe name if this is a PPPoE interface.
     if ( interface.config_type == InterfaceHelper::ConfigType::PPPOE )
-      match = "-i ${#{pppoe_name}}"
+      match_in  = "-i ${#{pppoe_name}}"
+      match_out = "-o ${#{pppoe_name}}"
     elsif interface.is_bridge?
-      match = "-m physdev --physdev-in #{interface.os_name}"
+      match_in  = "-m physdev --physdev-in  #{interface.os_name}"
+      match_out = "-m physdev --physdev-out #{interface.os_name}"
     end
     
     ## This is the name that is used to retrieve the local addresses.
@@ -632,13 +640,11 @@ EOF
     end
     
     index = interface.index
-    mask = index
 
-    rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} #{match} -j MARK --or-mark #{mask}"
-
-    if interface.wan
-      rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} #{match} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << DestIntfShift}/#{DestIntfMask}"
-    end
+    rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in}  -j MARK --or-mark #{index}"
+    rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in}  -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index}/#{SrcIntfMask}"
+    rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out} -j MARK --or-mark #{index << DestIntfShift}"
+    rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << DestIntfShift}/#{DestIntfMask}"
     
     if ( interface.config_type != InterfaceHelper::ConfigType::BRIDGE )
       rules << "mark_local_ip #{name} #{index}"
