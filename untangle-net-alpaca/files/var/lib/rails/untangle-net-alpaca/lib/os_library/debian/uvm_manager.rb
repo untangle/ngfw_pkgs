@@ -207,8 +207,8 @@ if [ "`pidof openvpn`x" = "x" ]; then
   return 0
 fi    
 
-## This is the mark rule
-#{IPTablesCommand} #{Chain::MarkInterface.args} -i tun0 -j MARK --or-mark #{0x80}
+## This is the openvpn mark rule
+#{IPTablesCommand} #{Chain::MarkInterface.args} -i tun0 -j MARK --or-mark #{0xfa << 8}
 
 ## Function designed to insert the necessary filter rule to pass traffic from a
 ## a VPN interface.
