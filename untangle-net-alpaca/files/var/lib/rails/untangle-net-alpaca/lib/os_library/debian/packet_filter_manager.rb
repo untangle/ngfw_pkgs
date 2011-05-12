@@ -112,7 +112,10 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
 
     MarkSrcInterface = Chain.new( "mark-src-intf", "mangle", "PREROUTING", <<'EOF' )
 ## Clear out all of the bits for the in src interface mark
-#{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFFFF00
+# in an effort to support IPsec we no longer clear this mark
+# the ipsec unwrapped packets lose physdev but maintain the mark from the previous encrypted packet
+# so on the second iteration through they won't be identified but will keep the correct mark if we don't clear it.
+# #{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFFFF00
 EOF
 
     MarkDstInterface = Chain.new( "mark-dst-intf", "mangle", "FORWARD", <<'EOF' )
