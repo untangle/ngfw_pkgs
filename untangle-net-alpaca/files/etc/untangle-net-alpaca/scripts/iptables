@@ -60,7 +60,9 @@ run_iptables_scripts()
 
     ## Do not run any of the dpkg backup files.
     for t_script in `run-parts --list --lsbsysinit ${IPTABLES_DIRECTORY} | sort` ; do
+        echo "[`date`] ${t_script} Running ..."
         . ${t_script}
+        echo "[`date`] ${t_script} Complete: $?"
         t_ran_script="true"
     done
     
