@@ -46,5 +46,7 @@ rm -f /etc/untangle-net-alpaca/interface.properties # removed in 9.0
 rm -f /etc/untangle-net-alpaca/scripts/update-address.d/99-packet-filter # replaced with 95-packet-filter in 9.0
 rm -f /etc/untangle-net-alpaca/iptables-rules.d/901-single-nic-nat # removed in 9.0
 rm -f /etc/untangle-net-alpaca/iptables-rules.d/901-single-nic # removed in 9.0
+rm -f /etc/untangle-net-alpaca/iptables-rules.d/900-single-nic-nat # removed in 9.0
+rm -f /etc/untangle-net-alpaca/iptables-rules.d/900-single-nic # removed in 9.0
 
 exit 0
