@@ -223,6 +223,10 @@ uvm_packet_filter_standard_internal()
     # non-WAN HTTP administration rules
     /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan | while read intf ; do
         if [ "${UVM_ALLOW_IN_HTTP}x" = "truex" ]; then 
+	        ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 80 -m physdev --physdev-in $intf \
+		        -m mark --mark ${t_mark}/${t_mark} -j REDIRECT
+            ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 80 -m physdev --physdev-in $intf \
+		        -m mark --mark ${t_mark}/${t_mark} -j RETURN
 	        ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 80 -i $intf \
 		        -m mark --mark ${t_mark}/${t_mark} -j REDIRECT
             ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 80 -i $intf \
@@ -233,6 +237,10 @@ uvm_packet_filter_standard_internal()
     # non-WAN HTTP blockpage rules
     /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan | while read intf ; do
         t_mark=$(( ${MARK_LOCAL} | ${MARK_FIRST_ALIAS} ))
+        ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports ${t_block_page_port} -m physdev --physdev-in $intf \
+            -m mark --mark ${t_mark}/${t_mark} -j REDIRECT --to-ports ${HTTP_INTERNAL_REDIRECT_PORT}
+        ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports ${t_block_page_port} -m physdev --physdev-in $intf \
+            -m mark --mark ${t_mark}/${t_mark} -j RETURN    
         ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports ${t_block_page_port} -i $intf \
             -m mark --mark ${t_mark}/${t_mark} -j REDIRECT --to-ports ${HTTP_INTERNAL_REDIRECT_PORT}
         ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports ${t_block_page_port} -i $intf \
@@ -248,9 +256,12 @@ uvm_packet_filter_secure_internal()
 
     # non-WAN HTTPS administration rules
     /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan | while read intf ; do
+        ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 443 -m physdev --physdev-in $intf \
+            -m mark --mark ${t_mark}/${t_mark} -j REDIRECT --to-ports ${HTTPS_INTERNAL_REDIRECT_PORT}
+        ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 443 -m physdev --physdev-in $intf \
+            -m mark --mark ${t_mark}/${t_mark} -j RETURN
         ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 443 -i $intf \
-            -m mark --mark ${t_mark}/${t_mark} \
-            -j REDIRECT --to-ports ${HTTPS_INTERNAL_REDIRECT_PORT}
+            -m mark --mark ${t_mark}/${t_mark} -j REDIRECT --to-ports ${HTTPS_INTERNAL_REDIRECT_PORT}
         ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 443 -i $intf \
             -m mark --mark ${t_mark}/${t_mark} -j RETURN
     done
@@ -261,10 +272,12 @@ uvm_packet_filter_secure_internal()
 
     # WAN HTTPS administration rules
     /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan | while read intf ; do
+        ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} -m physdev --physdev-in $intf \
+            --destination-ports ${HTTPS_PUBLIC_PORT} -j REDIRECT --to-ports ${HTTPS_INTERNAL_REDIRECT_PORT}
+        ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} -m physdev --physdev-in $intf \
+            --destination-ports ${HTTPS_PUBLIC_PORT} -j RETURN
         ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} -i $intf \
-            --destination-ports ${HTTPS_PUBLIC_PORT} \
-            -j REDIRECT --to-ports ${HTTPS_INTERNAL_REDIRECT_PORT}
-    
+            --destination-ports ${HTTPS_PUBLIC_PORT} -j REDIRECT --to-ports ${HTTPS_INTERNAL_REDIRECT_PORT}
         ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} -i $intf \
             --destination-ports ${HTTPS_PUBLIC_PORT} -j RETURN
     done
