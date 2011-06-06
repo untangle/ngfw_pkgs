@@ -15,7 +15,7 @@
 
 DESC="Untangle Net-Alpaca iptables rules"
 
-IPTABLES_RULES=/etc/untangle-net-alpaca/scripts/iptables
+IPTABLES_RULES=/usr/share/untangle-net-alpaca/scripts/generate-iptables-rules
 HELPER_MODULES=/usr/share/untangle-net-alpaca/scripts/load-modules
 
 ## This should be a file containing all of the iptables tables

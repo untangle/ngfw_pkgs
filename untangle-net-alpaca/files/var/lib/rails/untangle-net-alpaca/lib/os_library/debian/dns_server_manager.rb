@@ -19,7 +19,7 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
   include Singleton
 
   ## This is a script that only restarts DNS masq if absolutely necessary.
-  StartScript = "/etc/untangle-net-alpaca/scripts/dnsmasq"
+  StartScript = "/usr/share/untangle-net-alpaca/scripts/dnsmasq"
   ResolvConfFile = "/etc/resolv.conf"
   DnsMasqLeases = "/var/lib/misc/dnsmasq.leases"
   DnsMasqConfFile = "/etc/dnsmasq.conf"
@@ -76,7 +76,7 @@ class OSLibrary::Debian::DnsServerManager < OSLibrary::DnsServerManager
   FlagIsAuthoritative = "dhcp-authoritative"
 
   ## Update hostname script, used to update the files /etc/untangle-net-alpaca/dnsmasq-hosts
-  UpdateHostNameScript = "/etc/untangle-net-alpaca/scripts/update-address.d/11-dnsmasq-hosts"
+  UpdateHostNameScript = "/etc/untangle-net-alpaca/update-address.d/11-dnsmasq-hosts"
 
   def register_hooks
     os["network_manager"].register_hook( -200, "dns_server_manager", "write_files", 

@@ -31,7 +31,7 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
   QoSRRDLog = "/var/log/untangle-net-alpaca/qosrrd.log"
 
   QoSConfig = "/etc/untangle-net-alpaca/qos-config"
-  Service = "/etc/untangle-net-alpaca/qos-service"
+  Service = "/usr/share/untangle-net-alpaca/scripts/qos-service"
   AptLog = "/var/log/uvm/apt.log"
   PriorityQueueToName = { 
     "10:" => "0 - Default", 

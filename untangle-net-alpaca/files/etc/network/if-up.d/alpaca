@@ -252,7 +252,7 @@ update_address()
         return 0
     }
     
-    run-parts /etc/untangle-net-alpaca/scripts/update-address.d
+    run-parts /etc/untangle-net-alpaca/update-address.d
 }
 
 uplink_routes()

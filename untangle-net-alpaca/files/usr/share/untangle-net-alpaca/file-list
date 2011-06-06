@@ -9,4 +9,5 @@ etc/untangle-net-alpaca/dnsmasq-hosts
 etc/untangle-net-alpaca/arps
 etc/untangle-net-alpaca/routes
 etc/untangle-net-alpaca/iptables-rules.d
+etc/untangle-net-alpaca/update-address.d
 etc/untangle-net-alpaca/netConfig.js

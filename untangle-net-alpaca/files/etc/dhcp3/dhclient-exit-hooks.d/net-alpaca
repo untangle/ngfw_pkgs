@@ -64,7 +64,7 @@ case "$reason" in
         ;;
 esac
 
-run-parts /etc/untangle-net-alpaca/scripts/update-address.d
+run-parts /etc/untangle-net-alpaca/update-address.d
 
 true
 

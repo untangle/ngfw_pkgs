@@ -17,9 +17,6 @@ echo "[`date`] DEBUG debian upgrade." >> ${LOG_FILE}
 ## Create a new group for alapca users
 grep -q alpaca /etc/group || addgroup alpaca
 
-## Make the dnsmasq script executable.
-[ -f "/etc/untangle-net-alpaca/scripts/dnsmasq" ] && chmod +x /etc/untangle-net-alpaca/scripts/dnsmasq
-
 if [ -x "/etc/init.d/untangle-net-alpaca" ]; then
     update-rc.d untangle-net-alpaca defaults >/dev/null
     ourInit untangle-net-alpaca restart >> ${LOG_FILE} 2>&1 || exit 0
@@ -37,18 +34,7 @@ done
 
 touch /etc/untangle/monit-to-restart
     
-# remove obsolete files
-rm -f /etc/untangle-net-alpaca/wshaper.htb # removed in 8.0
-rm -f /etc/untangle-net-alpaca/untangle-qos-rrdtool # removed in 8.0
-rm -f /etc/untangle-net-alpaca/single-nic-mode # removed in 9.0
-rm -f /etc/untangle-net-alpaca/untangle-qos # removed in 9.0
-rm -f /etc/untangle-net-alpaca/interface.properties # removed in 9.0
-rm -f /etc/untangle-net-alpaca/scripts/update-address.d/99-packet-filter # replaced with 95-packet-filter in 9.0
-rm -f /etc/untangle-net-alpaca/iptables-rules.d/901-single-nic-nat # removed in 9.0
-rm -f /etc/untangle-net-alpaca/iptables-rules.d/901-single-nic # removed in 9.0
-rm -f /etc/untangle-net-alpaca/iptables-rules.d/900-single-nic-nat # removed in 9.0
-rm -f /etc/untangle-net-alpaca/iptables-rules.d/900-single-nic # removed in 9.0
-
-
+# remove obsolete files (10.0)
+rm -rf /etc/untangle-net-alpaca/scripts
     
 exit 0

@@ -93,6 +93,6 @@ make_resolv_conf
     ${ADD_UPLINK_SCRIPT} ${PPP_IFACE} ppp "uplink.${PPPOE_UPLINK_INDEX}"
 }
 
-run-parts /etc/untangle-net-alpaca/scripts/update-address.d
+run-parts /etc/untangle-net-alpaca/update-address.d
 
 true

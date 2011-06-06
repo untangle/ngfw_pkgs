@@ -1,11 +1,26 @@
 #!/bin/dash
 
+#
+# This script handles all the iptables rules
+# It runs all the scripts in /etc/untangle-net-alpaca/iptables.rules.d
+# 
+
 mkdir -p /var/log/untangle-net-alpaca
 exec >> /var/log/untangle-net-alpaca/iptables.log 2>&1
 
+IPTABLES_DIRECTORY=/etc/untangle-net-alpaca/iptables-rules.d
+
+IPTABLES=/sbin/iptables
+#IPTABLES="iptables_debug"
+IPTABLES=iptables_debug_onerror
+
+EBTABLES=/sbin/ebtables
+# EBTABLES=ebtables_debug
+
+
 iptables_debug()
 {
-   echo /sbin/iptables $*
+   echo "[`date`] /sbin/iptables $*"
    /sbin/iptables $*
 }
 
@@ -13,26 +28,18 @@ iptables_debug_onerror()
 {
     ## Ignore -N errors
     /sbin/iptables $* || {
-        [ "${3}x" != "-Nx" ] && echo "Failed: /sbin/iptables $*"
+        [ "${3}x" != "-Nx" ] && echo "[`date`] Failed: /sbin/iptables $*"
     }
 
     true
 }
 
-IPTABLES=/sbin/iptables
-
-#IPTABLES="iptables_debug"
-
-IPTABLES=iptables_debug_onerror
 
 ebtables_debug()
 {
-    echo /sbin/ebtables $*
+    echo "[`date`] /sbin/ebtables $*"
     /sbin/ebtables $*
 }
-
-EBTABLES=/sbin/ebtables
-# EBTABLES=ebtables_debug
 
 get_ip_addresses()
 {
@@ -71,8 +78,9 @@ run_iptables_scripts()
     fi
 }
 
-IPTABLES_DIRECTORY=/etc/untangle-net-alpaca/iptables-rules.d
+
+echo "[`date`] Complete" > /dev/null
 
 run_iptables_scripts
 
-echo "" > /dev/null
+echo "[`date`] Complete" > /dev/null

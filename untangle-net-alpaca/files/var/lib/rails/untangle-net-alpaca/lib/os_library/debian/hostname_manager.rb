@@ -23,7 +23,7 @@ class OSLibrary::Debian::HostnameManager < OSLibrary::HostnameManager
   MailNameFile = "/etc/mailname"
 
   ## Update hostname script, used to update the files /etc/hosts
-  UpdateHostNameScript = "/etc/untangle-net-alpaca/scripts/update-address.d/10-hostname"
+  UpdateHostNameScript = "/etc/untangle-net-alpaca/update-address.d/10-hostname"
 
   ## Retrieve the current hostnanme
   def current
