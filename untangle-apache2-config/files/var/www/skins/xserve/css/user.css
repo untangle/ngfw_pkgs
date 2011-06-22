@@ -14,7 +14,7 @@ body.quarantine {
 body.blockpage
 { 
   text-align: center;
-  background-color: #FFFFFF;
+  background-color: #808080;
 }
 /* quarantine content */
 body.quarantine #content {
