@@ -336,9 +336,9 @@ EOF
 
         if !intfStatic.nil?
           if !intfStatic.ip_networks.nil? 
-            intfAddr = !intfStatic.ip_networks[0]
-            if !intfAddr.nil?
-              netConfigFileText = append_attribute( netConfigFileText, "primaryAddressStr", "#{intfStatic.ip_networks[0].ip}/#{intfStatic.ip_networks[0].netmask}", 3)
+            intfAddr = intfStatic.ip_networks[0]
+            if !intfAddr.nil? and !intfAddr.ip.nil? and !intfAddr.netmask.nil?
+              netConfigFileText = append_attribute( netConfigFileText, "primaryAddressStr", "#{intfAddr.ip}/#{intfAddr.netmask}", 3)
             end
           end
 
