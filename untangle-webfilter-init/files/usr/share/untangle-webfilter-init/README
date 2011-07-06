@@ -1,2 +1,0 @@
-Update with a command like:
-for f in *; do curl "http://webupdates.untangle.com/diffserver/update?version=$f:1:1" > $f; done
