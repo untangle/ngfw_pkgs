@@ -68,10 +68,10 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   ## Mark that indicates that the packet should be 
   MarkCaptivePortal = 0x800000
 
-  DestIntfMask  = 0x0000FF00
-  DestIntfShift = 8
-
+  DstIntfMask  = 0x0000FF00
+  DstIntfShift = 8
   SrcIntfMask  = 0x000000FF
+  BothIntfMask = 0x0000FFFF
 
   def register_hooks
     os["network_manager"].register_hook( 100, "packet_filter_manager", "write_files", :hook_write_files )
@@ -110,24 +110,31 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
 
     attr_reader :name, :table, :init
 
+    MarkInterface = Chain.new( "mark-intf", "mangle", "PREROUTING", <<'EOF' )
+## Set the interface marks on packets
+## Note this only sets the marks on the packets AFTER the session is established
+## The connmark stores the src/dest marks for the SESSION
+## This will determine the direction of the packet inside that session
+## If its an ORIGINAL packet, it will simply restore the intf marks from the connmark
+## If its a REPLY packet, it will reverse the intf marks from the connmark
+#{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFF0000
+## This rule says if the packet is in the original direction, just copy the intf marks from the connmark/session mark
+## The rule actually says REPLY and not ORIGINAL and thats because ctdir seems to match backwards
+#{IPTablesCommand} #{args} -m conntrack --ctdir REPLY -j CONNMARK --restore-mark --mask #{BothIntfMask}
+EOF
+
     MarkSrcInterface = Chain.new( "mark-src-intf", "mangle", "PREROUTING", <<'EOF' )
-## Clear out all of the bits for the in src interface mark
-# in an effort to support IPsec we no longer clear this mark
-# the ipsec unwrapped packets lose physdev but maintain the mark from the previous encrypted packet
-# so on the second iteration through they won't be identified but will keep the correct mark if we don't clear it.
-# #{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFFFF00
+## This chain marks the src intf on the packet
 EOF
 
     MarkDstInterface = Chain.new( "mark-dst-intf", "mangle", "FORWARD", <<'EOF' )
-## Clear out all of the bits for the dst interface mark
-#{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFF00FF
-#{IPTablesCommand} #{args} -j CONNMARK --restore-mark --mask #{DestIntfMask}
+## This chain marks the dst intf on the packet
 EOF
 
     ## Chain Used for natting in the prerouting table.
     PostNat = Chain.new( "alpaca-post-nat", "nat", "POSTROUTING", <<'EOF' )
 ## Save the state for bypassed traffic
-#{IPTablesCommand} -t mangle -A POSTROUTING -m conntrack --ctstate NEW -m connmark --mark 0/#{DestIntfMask} -j CONNMARK --save-mark --mask #{DestIntfMask}
+#{IPTablesCommand} -t mangle -A POSTROUTING -m conntrack --ctstate NEW -m connmark --mark 0/#{DstIntfMask} -j CONNMARK --save-mark --mask #{DstIntfMask}
 
 
 ## Do not NAT packets destined to local host.
@@ -225,7 +232,7 @@ EOF
     ## Chain used to capture / drop traffic for the captive portal.
     CaptivePortalCapture = Chain.new( "untangle-cpd-capture", "mangle", nil )
 
-    Order = [ MarkSrcInterface, MarkDstInterface, PostNat, SNatRules,
+    Order = [ MarkInterface, MarkSrcInterface, MarkDstInterface, PostNat, SNatRules,
               FirewallBlock, FirewallMarkReject, FirewallMarkDrop, 
               FirewallMarkInputReject, FirewallMarkInputDrop, FirewallNat,
               FirewallRules, 
@@ -483,9 +490,8 @@ EOF
 
     end
     
-    text << "#{IPTablesCommand} -t mangle -I OUTPUT 1 -j CONNMARK --restore-mark --mask #{DestIntfMask}"
-
-    
+    # XXX what is this?
+    text << "#{IPTablesCommand} -t mangle -I OUTPUT 1 -j CONNMARK --restore-mark --mask #{DstIntfMask}"
 
     interface_list.each do |interface|
 
@@ -647,11 +653,22 @@ EOF
     
     index = interface.index
 
+    # Set the src mark 
     rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in}  -j MARK --or-mark #{index}"
+    # If this is a new connection save the src interface index as the client interface connmark
     rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in}  -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index}/#{SrcIntfMask}"
-    rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out} -j MARK --or-mark #{index << DestIntfShift}"
-    rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << DestIntfShift}/#{DestIntfMask}"
-    
+    # Set the dst mark 
+    rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out} -j MARK --or-mark #{index << DstIntfShift}"
+    # If this is a new connection save the dst interface index as the server interface connmark
+    rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << DstIntfShift}/#{DstIntfMask}"
+    # If this is a "reply" packet, set the client interface index as the dst intf on the packet mark
+    # The rule actually says "ORIGINAL" and not "REPLY" and thats because ctdir seems to match backwards
+    rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} -m conntrack --ctdir ORIGINAL -m connmark --mark #{index}/#{SrcIntfMask} -j MARK --set-mark #{index << DstIntfShift}/#{DstIntfMask}"
+    # If this is a "reply" packet, set the server interface index as the src intf on the packet mark
+    # The rule actually says "ORIGINAL" and not "REPLY" and thats because ctdir seems to match backwards
+    rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} -m conntrack --ctdir ORIGINAL -m connmark --mark #{index << DstIntfShift}/#{DstIntfMask} -j MARK --set-mark #{index}/#{SrcIntfMask}"
+
+
     if ( interface.config_type != InterfaceHelper::ConfigType::BRIDGE )
       rules << "mark_local_ip #{name} #{index}"
     end
