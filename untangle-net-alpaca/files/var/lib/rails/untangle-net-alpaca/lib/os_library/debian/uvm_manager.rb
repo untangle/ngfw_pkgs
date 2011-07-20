@@ -210,6 +210,10 @@ fi
 ## This is the openvpn mark rule
 #{IPTablesCommand} #{Chain::MarkSrcInterface.args} -i tun0 -j MARK --or-mark #{0xfa}
 #{IPTablesCommand} #{Chain::MarkDstInterface.args} -o tun0 -j MARK --or-mark #{0xfa << 8}
+#{IPTablesCommand} #{Chain::MarkSrcInterface.args} -i tun0 -m conntrack --ctstate NEW -j CONNMARK --set-mark #{0xfa}/#{0xff}
+#{IPTablesCommand} #{Chain::MarkDstInterface.args} -o tun0 -m conntrack --ctstate NEW -j CONNMARK --set-mark #{0xfa << 8}/#{0xff00}
+#{IPTablesCommand} #{Chain::MarkInterface.args} -m conntrack --ctdir ORIGINAL -m connmark --mark #{0xfa}/#{0xff} -j MARK --set-mark #{0xfa << 8}/#{0xff00}
+#{IPTablesCommand} #{Chain::MarkInterface.args} -m conntrack --ctdir ORIGINAL -m connmark --mark #{0xfa << 8}/#{0xff00} -j MARK --set-mark #{0xfa}/#{0xff}
 
 ## Function designed to insert the necessary filter rule to pass traffic from a
 ## a VPN interface.
@@ -438,7 +442,7 @@ EOF
 
         filters.each do |filter|
           break if filter.strip.empty?
-          text << "#{IPTablesCommand} #{Chain::BypassRules.args} #{filter} #{target}\n"
+          text << "#{IPTablesCommand} #{Chain::BypassRules.args} -m conntrack --ctstate NEW #{filter} #{target}\n"
         end
         
       rescue
