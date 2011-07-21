@@ -125,10 +125,16 @@ EOF
 
     MarkSrcInterface = Chain.new( "mark-src-intf", "mangle", "PREROUTING", <<'EOF' )
 ## This chain marks the src intf on the packet
+##
+## If the src is already marked, just return
+#{IPTablesCommand} #{args} -m mark ! --mark 0/#{SrcIntfMask} -j RETURN
 EOF
 
     MarkDstInterface = Chain.new( "mark-dst-intf", "mangle", "FORWARD", <<'EOF' )
 ## This chain marks the dst intf on the packet
+##
+## If the src is already marked, just return
+#{IPTablesCommand} #{args} -m mark ! --mark 0/#{DstIntfMask} -j RETURN
 EOF
 
     ## Chain Used for natting in the prerouting table.
