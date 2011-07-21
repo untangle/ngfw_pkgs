@@ -1,0 +1,14 @@
+Source: untangle-google-safebrowsing
+Section: admin
+Priority: standard
+Maintainer: Dirk Morris <dmorris@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.8.0
+
+Package: untangle-google-safebrowsing
+Architecture: all
+Depends: 
+Description: Untangle Google Safe Browsing scripts
+ The Untangle Google Safe Browsing scripts for downloading googles SB database.
+
