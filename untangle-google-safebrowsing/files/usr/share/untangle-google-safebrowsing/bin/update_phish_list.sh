@@ -8,7 +8,7 @@
 #
 
 PHISH_LIST="goog-black-hash"
-API_KEY="ABQIAAAADeGMABJtwtXxRtSCFqAh0hSCR3xUxns-zIMU4EaPNOmpirNj5g"
+API_KEY="ABQIAAAAcF3DrVo7y87-tH8HDXqeYBTJqIcXJiJ1Klr7Vk1tUUBxWLpa4w"
 HOME_DIR="/usr/share/untangle-google-safebrowsing"
 LOCK_FILE="/tmp/$PHISH_LIST.update.pid"
 INITIAL_LOAD_HOUR="24"
