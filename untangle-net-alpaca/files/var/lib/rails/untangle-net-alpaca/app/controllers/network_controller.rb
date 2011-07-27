@@ -196,11 +196,10 @@ class NetworkController < ApplicationController
 
     alpaca_settings = AlpacaSettings.find( :first )
     alpaca_settings = AlpacaSettings.new if alpaca_settings.nil?
-    modules_disabled = alpaca_settings.modules_disabled
-    modules_disabled = "" if modules_disabled.nil?
-    settings["enable_sip_helper"] = !modules_disabled.include?( "nf_nat_sip" )
+    modules_enabled = alpaca_settings.modules_enabled
+    modules_enabled = "" if modules_enabled.nil?
+    settings["enable_sip_helper"] = modules_enabled.include?( "nf_nat_sip" )
     settings["send_icmp_redirects"] = alpaca_settings.send_icmp_redirects
-
     settings["classy_nat_mode"] = alpaca_settings.classy_nat_mode
 
     uvm_settings = UvmSettings.find( :first )
@@ -218,14 +217,12 @@ class NetworkController < ApplicationController
     alpaca_settings.send_icmp_redirects = s["send_icmp_redirects"]
     alpaca_settings.classy_nat_mode = s["classy_nat_mode"]
     
-    modules_disabled = alpaca_settings.modules_disabled
-    modules_disabled = "" if modules_disabled.nil?
-    modules_disabled = modules_disabled.gsub( "nf_nat_sip", "" )
-    modules_disabled = modules_disabled.gsub( "nf_conntrack_sip", "" )
-    unless ( s["enable_sip_helper"] )
-      modules_disabled += " nf_nat_sip nf_conntrack_sip "
+    modules_enabled = alpaca_settings.modules_enabled
+    modules_enabled = "" if modules_enabled.nil?
+    if ( s["enable_sip_helper"] )
+      modules_enabled += " nf_nat_sip nf_conntrack_sip "
     end
-    alpaca_settings.modules_disabled = modules_disabled.strip
+    alpaca_settings.modules_enabled = modules_enabled.strip
     alpaca_settings.save
 
     uvm_settings = UvmSettings.find( :first )
