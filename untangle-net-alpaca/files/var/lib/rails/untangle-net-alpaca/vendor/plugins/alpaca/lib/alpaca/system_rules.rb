@@ -160,6 +160,12 @@ module Alpaca::SystemRules
                           :enabled => false,
                           :system_id => "route-bridge-vpn-37ce4160" )
 
+    ## This is a custom rule designed to route Bridge VPN traffic, see
+    rm.add_firewall_rule( :description => "Route all bridge traffic.",
+                          :target => "pass", :is_custom => true,
+                          :enabled => true,
+                          :system_id => "route-bridge-traffic-bc218f02" )
+
     ## Bypass Rules
 
     ## bypass DNS

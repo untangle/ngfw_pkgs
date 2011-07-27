@@ -19,6 +19,7 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   include Singleton
   
   IPTablesCommand = "${IPTABLES}"
+  EBTablesCommand = "${EBTABLES}"
   
   Service = "/etc/init.d/untangle-net-alpaca-iptables"
 
@@ -307,6 +308,8 @@ EOF
 ## Flush all of the rules.
  for t_table in `cat /proc/net/ip_tables_names` ; do #{IPTablesCommand} -t ${t_table} -F ; done
 
+ #{EBTablesCommand} -t broute -F
+
 echo > /dev/null
 EOF
 
@@ -416,6 +419,14 @@ EOF
     ## Remove all of the duplicates
     wan_interfaces = wan_interfaces.uniq
     non_wan_interfaces = interface_list - wan_interfaces
+    
+    ##
+    ## If this rule is enabled then add the following ebtables rule which forces all traffic going over a bridge
+    ## to actually traverse the routing code instead
+    ##
+    if Firewall.find( :first, :conditions => [ "system_id = ? and enabled='t'", "route-bridge-traffic-bc218f02" ] )
+      text << "#{EBTablesCommand} -t broute -A BROUTING -p ipv4 -j redirect --redirect-target DROP"
+    end
 
     if ( alpaca_settings.classy_nat_mode )
       ## This is all of the traffic that will hit the NAT rules.  The NAT rules
