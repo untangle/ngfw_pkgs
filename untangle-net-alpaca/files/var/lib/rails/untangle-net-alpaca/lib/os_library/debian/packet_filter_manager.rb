@@ -427,8 +427,8 @@ EOF
     if Firewall.find( :first, :conditions => [ "system_id = ? and enabled='t'", "route-bridge-traffic-bc218f02" ] )
       # dont broute DHCP (it gets dropped then because it routes based on IP which we dont have yet)
       text << "## Don't BROUTE DHCP"
-      text << "#{EBTablesCommand} -t broute -I BROUTING -p ipv4 --ip-protocol udp --ip-destination-port 68 -j redirect --redirect-target ACCEPT"
-      text << "#{EBTablesCommand} -t broute -I BROUTING -p ipv4 --ip-protocol udp --ip-source-port 67      -j redirect --redirect-target ACCEPT"
+      text << "#{EBTablesCommand} -t broute -I BROUTING -p ipv4 --ip-protocol udp --ip-dport 67:68 -j ACCEPT"
+      text << "#{EBTablesCommand} -t broute -I BROUTING -p ipv4 --ip-protocol udp --ip-sport 67:68 -j ACCEPT"
       # broute everything else
       text << "## DROP here means to BROUTE the packet - BROUTE all IPv4 "
       text << "#{EBTablesCommand} -t broute -A BROUTING -p ipv4 -j redirect --redirect-target DROP"
