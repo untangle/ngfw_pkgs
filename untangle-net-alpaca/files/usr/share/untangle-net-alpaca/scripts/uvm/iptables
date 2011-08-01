@@ -6,11 +6,12 @@ UVM_PID="invalid"
 
 TUN_DEV=utun
 TUN_ADDR="192.0.2.43"
-MARK_ANTISUB=$((0x01000000))
-MARK_NOTRACK=$((0x02000000))
-MARK_FIRST_ALIAS=$((0x10000000))
-MARK_DUPE=$((0x20000000))
-MARK_LOCAL=$((0x10000))
+MASK_ANTISUB=$((0x01000000))
+MASK_NOTRACK=$((0x02000000))
+MASK_FIRST_ALIAS=$((0x10000000))
+MASK_DUPE=$((0x20000000))
+MASK_LOCAL=$((0x10000))
+MASK_SRC_INTERFACE=$((0xff))
 LOCAL_UVM_REDIRECT="uvm-tcp-redirect"
 
 ## Always set this just in case.
@@ -44,12 +45,12 @@ uvm_shield_traffic()
     echo "[`date`] Shield is running, inserting queue rules."
 
     ## Queue any TCP that is that is now bypassed (SYN packet only)
-    ${IPTABLES} -t mangle -A FORWARD -p tcp -m mark --mark 0/${MARK_ANTISUB} \
+    ${IPTABLES} -t mangle -A FORWARD -p tcp -m mark --mark 0/${MASK_ANTISUB} \
         -m conntrack --ctstate NEW \
         -j NFQUEUE --queue-num ${SHIELD_QUEUE_NUM}
 
     ## Queue all UDP packets that arent bypassed (first packet only)
-    ${IPTABLES} -t mangle -A FORWARD -p udp -m mark --mark 0/${MARK_ANTISUB} \
+    ${IPTABLES} -t mangle -A FORWARD -p udp -m mark --mark 0/${MASK_ANTISUB} \
         -m addrtype --dst-type unicast -m conntrack --ctstate NEW \
         -j NFQUEUE --queue-num ${SHIELD_QUEUE_NUM}
 }
@@ -129,10 +130,10 @@ uvm_iptables_rules()
     local t_tcp_port_range
 
     # Do not conntrack entries in that have the NOTRACK bit set.
-    ${IPTABLES} -A OUTPUT -t raw -m mark --mark ${MARK_NOTRACK}/${MARK_NOTRACK} -j NOTRACK
+    ${IPTABLES} -A OUTPUT -t raw -m mark --mark ${MASK_NOTRACK}/${MASK_NOTRACK} -j NOTRACK
 
     # dont queue ICMP packets released from the queue.
-    ${IPTABLES} -A PREROUTING -t mangle -m mark --mark ${MARK_DUPE}/${MARK_DUPE} -j RETURN
+    ${IPTABLES} -A PREROUTING -t mangle -m mark --mark ${MASK_DUPE}/${MASK_DUPE} -j RETURN
 
     ## Don't mangle resets, for some reason the routing drops them if they
     ## get mangled.
@@ -141,14 +142,14 @@ uvm_iptables_rules()
     #dont queue anthing on output
     # mangling notracked packets from the raw socket causes the packets to
     # be silently dropped in routing.  so we need to let them pass
-    ${IPTABLES} -A OUTPUT -t mangle -j MARK -m mark --mark 0/${MARK_NOTRACK} --or-mark ${MARK_ANTISUB}
+    ${IPTABLES} -A OUTPUT -t mangle -j MARK -m mark --mark 0/${MASK_NOTRACK} --or-mark ${MASK_ANTISUB}
 
     #dont queue anthing from localhost
-    ${IPTABLES} -A PREROUTING -t mangle -i lo -j MARK --or-mark ${MARK_ANTISUB}
+    ${IPTABLES} -A PREROUTING -t mangle -i lo -j MARK --or-mark ${MASK_ANTISUB}
 
     #dont queue anthing that was liberated, or is connmarked antisubscribe
-    ${IPTABLES} -A PREROUTING -t mangle -m connmark --mark ${MARK_ANTISUB}/${MARK_ANTISUB} -j MARK --or-mark  ${MARK_ANTISUB}
-    ${IPTABLES} -A PREROUTING -t mangle -m mark --mark ${MARK_ANTISUB}/${MARK_ANTISUB}  -j RETURN
+    ${IPTABLES} -A PREROUTING -t mangle -m connmark --mark ${MASK_ANTISUB}/${MASK_ANTISUB} -j MARK --or-mark  ${MASK_ANTISUB}
+    ${IPTABLES} -A PREROUTING -t mangle -m mark --mark ${MASK_ANTISUB}/${MASK_ANTISUB}  -j RETURN
 
     # We no longer (9.0) queue ICMP packets at all
     # In previous versions the ICMP packet queueing handling wasnt working anyway
@@ -185,7 +186,7 @@ uvm_iptables_rules()
     # when packets are released from the queue they restart at the top of the table.
     # we set this mark on them before releasing and catch conmark them so we wont catch the rest of the session 
     # or any related sesions from conntrack.
-    ${IPTABLES} -A POSTROUTING -t tune -m mark --mark ${MARK_DUPE}/${MARK_DUPE} -j CONNMARK --set-mark ${MARK_ANTISUB} 
+    ${IPTABLES} -A POSTROUTING -t tune -m mark --mark ${MASK_DUPE}/${MASK_DUPE} -j CONNMARK --set-mark ${MASK_ANTISUB} 
 
     # Ignore traffic that is related to a session we are not watching.
     ${IPTABLES} -A POSTROUTING -t tune -m conntrack --ctstate RELATED  -j RETURN
@@ -194,7 +195,7 @@ uvm_iptables_rules()
     ${IPTABLES} -A POSTROUTING -t tune -m conntrack --ctstate INVALID  -j RETURN
 
     # Ignore traffic that we have antisubscribed to.
-    ${IPTABLES} -A POSTROUTING -t tune -m mark --mark ${MARK_ANTISUB}/${MARK_ANTISUB}  -j RETURN
+    ${IPTABLES} -A POSTROUTING -t tune -m mark --mark ${MASK_ANTISUB}/${MASK_ANTISUB}  -j RETURN
 
     # Queue all of the SYN packets.
     ${IPTABLES} -A POSTROUTING -t tune -p tcp --syn -j NFQUEUE
@@ -217,34 +218,25 @@ uvm_iptables_rules()
 ## Create the rules to allow internal access to port 80.
 uvm_packet_filter_standard_internal()
 {
-    local t_mark=$(( ${MARK_LOCAL} | ${MARK_FIRST_ALIAS} ))
-    local t_block_page_port=80 # now hardcoded at 80
-
     # non-WAN HTTP administration rules
-    /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan | while read intf ; do
+    /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan_idx | while read intfId ; do
+        local t_mark=$(( ${MASK_LOCAL} | ${MASK_FIRST_ALIAS} | $intfId ))
+    	local t_mask=$(( ${MASK_LOCAL} | ${MASK_FIRST_ALIAS} | ${MASK_SRC_INTERFACE} ))
+
         if [ "${UVM_ALLOW_IN_HTTP}x" = "truex" ]; then 
-	        ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 80 -m physdev --physdev-in $intf \
-		        -m mark --mark ${t_mark}/${t_mark} -j REDIRECT
-            ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 80 -m physdev --physdev-in $intf \
-		        -m mark --mark ${t_mark}/${t_mark} -j RETURN
-	        ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 80 -i $intf \
-		        -m mark --mark ${t_mark}/${t_mark} -j REDIRECT
-            ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 80 -i $intf \
-		        -m mark --mark ${t_mark}/${t_mark} -j RETURN
+	    ${IPTABLES} -t nat    -A alpaca-redirect -p tcp -m multiport --destination-ports 80 -m mark --mark ${t_mark}/${t_mask} -j REDIRECT
+            ${IPTABLES} -t mangle -A firewall-rules  -p tcp -m multiport --destination-ports 80 -m mark --mark ${t_mark}/${t_mask} -j RETURN
         fi
     done	
     
     # non-WAN HTTP blockpage rules
-    /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan | while read intf ; do
-        t_mark=$(( ${MARK_LOCAL} | ${MARK_FIRST_ALIAS} ))
-        ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports ${t_block_page_port} -m physdev --physdev-in $intf \
-            -m mark --mark ${t_mark}/${t_mark} -j REDIRECT --to-ports ${HTTP_INTERNAL_REDIRECT_PORT}
-        ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports ${t_block_page_port} -m physdev --physdev-in $intf \
-            -m mark --mark ${t_mark}/${t_mark} -j RETURN    
-        ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports ${t_block_page_port} -i $intf \
-            -m mark --mark ${t_mark}/${t_mark} -j REDIRECT --to-ports ${HTTP_INTERNAL_REDIRECT_PORT}
-        ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports ${t_block_page_port} -i $intf \
-            -m mark --mark ${t_mark}/${t_mark} -j RETURN    
+    /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan | while read intfId ; do
+        local t_block_page_port=80 # now hardcoded at 80
+        local t_mark=$(( ${MASK_LOCAL} | ${MASK_FIRST_ALIAS} | $intfId ))
+    	local t_mask=$(( ${MASK_LOCAL} | ${MASK_FIRST_ALIAS} | ${MASK_SRC_INTERFACE} ))
+
+        ${IPTABLES} -t nat    -A alpaca-redirect -p tcp -m multiport --destination-ports ${t_block_page_port} -m mark --mark ${t_mark}/${t_mask} -j REDIRECT --to-ports ${HTTP_INTERNAL_REDIRECT_PORT}
+        ${IPTABLES} -t mangle -A firewall-rules  -p tcp -m multiport --destination-ports ${t_block_page_port} -m mark --mark ${t_mark}/${t_mask} -j RETURN    
     done
 }
 
@@ -252,18 +244,13 @@ uvm_packet_filter_standard_internal()
 ## Allow internal access to port.
 uvm_packet_filter_secure_internal()
 {
-    local t_mark=$(( ${MARK_LOCAL} | ${MARK_FIRST_ALIAS} ))
-
     # non-WAN HTTPS administration rules
-    /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan | while read intf ; do
-        ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 443 -m physdev --physdev-in $intf \
-            -m mark --mark ${t_mark}/${t_mark} -j REDIRECT --to-ports ${HTTPS_INTERNAL_REDIRECT_PORT}
-        ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 443 -m physdev --physdev-in $intf \
-            -m mark --mark ${t_mark}/${t_mark} -j RETURN
-        ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports 443 -i $intf \
-            -m mark --mark ${t_mark}/${t_mark} -j REDIRECT --to-ports ${HTTPS_INTERNAL_REDIRECT_PORT}
-        ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports 443 -i $intf \
-            -m mark --mark ${t_mark}/${t_mark} -j RETURN
+    /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan_idx | while read intfId ; do
+        local t_mark=$(( ${MASK_LOCAL} | ${MASK_FIRST_ALIAS} | $intfId ))
+        local t_mask=$(( ${MASK_LOCAL} | ${MASK_FIRST_ALIAS} | ${MASK_SRC_INTERFACE} ))
+
+        ${IPTABLES} -t nat    -A alpaca-redirect -p tcp -m multiport --destination-ports 443 -m mark --mark ${t_mark}/${t_mask} -j REDIRECT --to-ports ${HTTPS_INTERNAL_REDIRECT_PORT}
+        ${IPTABLES} -t mangle -A firewall-rules  -p tcp -m multiport --destination-ports 443 -m mark --mark ${t_mark}/${t_mask} -j RETURN
     done
 
     if [ "${HTTPS_PUBLIC_PORT}x" = "x" ] ; then return ; fi
@@ -271,15 +258,12 @@ uvm_packet_filter_secure_internal()
     if [ "${HTTPS_PUBLIC_ADDR}x" = "x" ] ; then return ; fi
 
     # WAN HTTPS administration rules
-    /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan | while read intf ; do
-        ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} -m physdev --physdev-in $intf \
-            --destination-ports ${HTTPS_PUBLIC_PORT} -j REDIRECT --to-ports ${HTTPS_INTERNAL_REDIRECT_PORT}
-        ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} -m physdev --physdev-in $intf \
-            --destination-ports ${HTTPS_PUBLIC_PORT} -j RETURN
-        ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} -i $intf \
-            --destination-ports ${HTTPS_PUBLIC_PORT} -j REDIRECT --to-ports ${HTTPS_INTERNAL_REDIRECT_PORT}
-        ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} -i $intf \
-            --destination-ports ${HTTPS_PUBLIC_PORT} -j RETURN
+    /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan_idx | while read intfId ; do
+        local t_mark=$(( $intfId ))
+        local t_mask=$(( ${MASK_SRC_INTERFACE} ))
+
+        ${IPTABLES} -t nat    -A alpaca-redirect -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} -m mark --mark ${t_mark}/${t_mask} --destination-ports ${HTTPS_PUBLIC_PORT} -j REDIRECT --to-ports ${HTTPS_INTERNAL_REDIRECT_PORT}
+        ${IPTABLES} -t mangle -A firewall-rules  -p tcp -m multiport -d ${HTTPS_PUBLIC_ADDR} -m mark --mark ${t_mark}/${t_mask} --destination-ports ${HTTPS_PUBLIC_PORT} -j RETURN
     done
 }
 
@@ -304,15 +288,11 @@ uvm_packet_filter_secure_external()
     if [ "${UVM_ALLOW_OUT_HTTPS}x" != "truex" ] ; then return ; fi
 
     t_restrict=`uvm_restrict_access_string`
-    
-    t_mark=$(( ${MARK_LOCAL} | ${MARK_FIRST_ALIAS} ))
+    t_mark=$(( ${MASK_LOCAL} | ${MASK_FIRST_ALIAS} ))
 
     # all interfaces HTTPS administration rules
-    ${IPTABLES} -t nat -A alpaca-redirect -p tcp -m multiport --destination-ports ${HTTPS_EXTERNAL_PORT} \
-        ${t_restrict} -m mark --mark ${t_mark}/${t_mark} -j REDIRECT --to-ports 443
-    
-    ${IPTABLES} -t mangle -A firewall-rules -p tcp -m multiport --destination-ports ${HTTPS_EXTERNAL_PORT} \
-        ${t_restrict} -m mark --mark ${t_mark}/${t_mark} -j RETURN
+    ${IPTABLES} -t nat    -A alpaca-redirect -p tcp -m multiport --destination-ports ${HTTPS_EXTERNAL_PORT} ${t_restrict} -m mark --mark ${t_mark}/${t_mark} -j REDIRECT --to-ports 443
+    ${IPTABLES} -t mangle -A firewall-rules  -p tcp -m multiport --destination-ports ${HTTPS_EXTERNAL_PORT} ${t_restrict} -m mark --mark ${t_mark}/${t_mark} -j RETURN
 }
 
 uvm_packet_filter_secure_public()
