@@ -354,7 +354,9 @@ mark_local_ip()
      #{IPTablesCommand} #{Chain::MarkSrcInterface.args} -d ${t_ip} -j MARK --or-mark $(( #{MarkInput} ))
 
      if [ "${t_first_alias}x" = "truex" ]; then
-       #{IPTablesCommand} #{Chain::MarkSrcInterface.args} -d ${t_ip} -m mark --mark ${t_index}/#{SrcIntfMask} -j MARK --or-mark $(( #{MarkFirstAlias} ))
+       #{IPTablesCommand} #{Chain::MarkSrcInterface.args} -d ${t_ip} -j MARK --or-mark $(( #{MarkFirstAlias} ))
+       # #{IPTablesCommand} #{Chain::MarkSrcInterface.args} -d ${t_ip} -m mark --mark ${t_index}/#{SrcIntfMask} -j MARK --or-mark $(( #{MarkFirstAlias} ))
+       # #{IPTablesCommand} #{Chain::MarkSrcInterface.args} -d ${t_ip} -i ${t_intf}                             -j MARK --or-mark $(( #{MarkFirstAlias} ))
      fi
      t_first_alias="false"
    done
@@ -536,6 +538,10 @@ EOF
       fw_text << b 
     end
 
+    interface_list.each do |interface|
+      text << local_rules( interface )
+    end
+
     block_all = Firewall.find( :first, :conditions => [ "system_id = ?", "block-all-local-04a98864"] )
 
     if !block_all.nil? && block_all.enabled
@@ -653,24 +659,19 @@ EOF
     match_out = "-o #{interface.os_name}"
     match_in_alt  = nil
     match_out_alt = nil
+    index = interface.index
     
-    ## This is the name used to retrieve the ip addresses.
-    name = interface.os_name
-
-    pppoe_name = pppoe_variable_name( interface )
-
     rules = []
 
     ## use the pppoe name if this is a PPPoE interface.
     if ( interface.config_type == InterfaceHelper::ConfigType::PPPOE )
+      pppoe_name = pppoe_variable_name( interface )
       match_in_alt  = "-i ${#{pppoe_name}}"
       match_out_alt = "-o ${#{pppoe_name}}"
     elsif interface.is_bridge?
       match_in_alt  = "-m physdev --physdev-in  #{interface.os_name}"
       match_out_alt = "-m physdev --physdev-is-bridged --physdev-out #{interface.os_name}"
     end
-    
-    index = interface.index
 
     # Set the src mark 
     rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in}  -j MARK --or-mark #{index}"
@@ -703,6 +704,16 @@ EOF
     # If this is a "reply" packet, set the server interface index as the src intf on the packet mark
     # The rule actually says "ORIGINAL" and not "REPLY" and thats because ctdir seems to match backwards
     rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} -m conntrack --ctdir ORIGINAL -m connmark --mark #{index << DstIntfShift}/#{DstIntfMask} -j MARK --set-mark #{index}/#{SrcIntfMask}"
+
+    rules.join( "\n" )
+  end
+
+  def local_rules( interface )
+    name = interface.os_name
+    pppoe_name = pppoe_variable_name( interface )
+    index = interface.index
+
+    rules = []
 
     rules << "mark_local_ip #{name} #{index}"
 
