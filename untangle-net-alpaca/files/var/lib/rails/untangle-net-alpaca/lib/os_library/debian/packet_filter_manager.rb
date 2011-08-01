@@ -344,19 +344,17 @@ mark_local_ip()
    local t_ip
    local t_intf=$1
    local t_index=$2
-   local t_mark
-   ## Verify the interface was specified.
+   ## Verify the interface was specified. 
    test -z "${t_intf}" && return 0
    test -z "${t_index}" && return 0
 
    local t_first_alias="true"
-   t_mark=$(( #{MarkInput} ))
       
    for t_ip in `get_ip_addresses ${t_intf}` ; do
-     #{IPTablesCommand} #{Chain::MarkSrcInterface.args} -d ${t_ip} -j MARK --or-mark ${t_mark}
+     #{IPTablesCommand} #{Chain::MarkSrcInterface.args} -d ${t_ip} -j MARK --or-mark $(( #{MarkInput} ))
 
      if [ "${t_first_alias}x" = "truex" ]; then
-       #{IPTablesCommand} #{Chain::MarkSrcInterface.args} -i ${t_intf} -d ${t_ip} -j MARK --or-mark $(( #{MarkFirstAlias} ))
+       #{IPTablesCommand} #{Chain::MarkSrcInterface.args} -d ${t_ip} -m mark --mark ${t_index}/#{SrcIntfMask} -j MARK --or-mark $(( #{MarkFirstAlias} ))
      fi
      t_first_alias="false"
    done
@@ -430,8 +428,9 @@ EOF
       text << "#{EBTablesCommand} -t broute -I BROUTING -p ipv4 --ip-protocol udp --ip-dport 67:68 -j ACCEPT"
       text << "#{EBTablesCommand} -t broute -I BROUTING -p ipv4 --ip-protocol udp --ip-sport 67:68 -j ACCEPT"
       # broute everything else
-      text << "## DROP here means to BROUTE the packet - BROUTE all IPv4 "
-      text << "#{EBTablesCommand} -t broute -A BROUTING -p ipv4 -j redirect --redirect-target DROP"
+      text << "## ACCEPT here means to BROUTE the packet - BROUTE all IPv4 (http://ebtables.sourceforge.net/examples/basic.html#ex_redirect) "
+      text << "#{EBTablesCommand} -t broute -A BROUTING -p ipv4 -j redirect --redirect-target ACCEPT"
+      text << ""
     end
 
     if ( alpaca_settings.classy_nat_mode )
@@ -652,6 +651,8 @@ EOF
   def marking( interface )
     match_in  = "-i #{interface.os_name}"
     match_out = "-o #{interface.os_name}"
+    match_in_alt  = nil
+    match_out_alt = nil
     
     ## This is the name used to retrieve the ip addresses.
     name = interface.os_name
@@ -662,16 +663,11 @@ EOF
 
     ## use the pppoe name if this is a PPPoE interface.
     if ( interface.config_type == InterfaceHelper::ConfigType::PPPOE )
-      match_in  = "-i ${#{pppoe_name}}"
-      match_out = "-o ${#{pppoe_name}}"
+      match_in_alt  = "-i ${#{pppoe_name}}"
+      match_out_alt = "-o ${#{pppoe_name}}"
     elsif interface.is_bridge?
-      match_in  = "-m physdev --physdev-in  #{interface.os_name}"
-      match_out = "-m physdev --physdev-is-bridged --physdev-out #{interface.os_name}"
-    end
-    
-    ## This is the name that is used to retrieve the local addresses.
-    if interface.is_bridge?
-      name = OSLibrary::Debian::NetworkManager.bridge_name( interface )
+      match_in_alt  = "-m physdev --physdev-in  #{interface.os_name}"
+      match_out_alt = "-m physdev --physdev-is-bridged --physdev-out #{interface.os_name}"
     end
     
     index = interface.index
@@ -680,10 +676,27 @@ EOF
     rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in}  -j MARK --or-mark #{index}"
     # If this is a new connection save the src interface index as the client interface connmark
     rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in}  -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index}/#{SrcIntfMask}"
+    # Alternative marking technique (used in some cases like bridge of PPPoE)
+    if !match_in_alt.nil?
+      # Set the src mark 
+      rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in_alt}  -j MARK --or-mark #{index}"
+      # If this is a new connection save the src interface index as the client interface connmark
+      rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in_alt}  -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index}/#{SrcIntfMask}"
+    end
+
     # Set the dst mark 
     rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out} -j MARK --or-mark #{index << DstIntfShift}"
     # If this is a new connection save the dst interface index as the server interface connmark
     rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << DstIntfShift}/#{DstIntfMask}"
+    # Alternative marking technique (used in some cases like bridge of PPPoE)
+    if !match_out_alt.nil?
+      # Set the dst mark 
+      rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out_alt} -j MARK --or-mark #{index << DstIntfShift}"
+      # If this is a new connection save the dst interface index as the server interface connmark
+      rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out_alt} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << DstIntfShift}/#{DstIntfMask}"
+    end
+
+
     # If this is a "reply" packet, set the client interface index as the dst intf on the packet mark
     # The rule actually says "ORIGINAL" and not "REPLY" and thats because ctdir seems to match backwards
     rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} -m conntrack --ctdir ORIGINAL -m connmark --mark #{index}/#{SrcIntfMask} -j MARK --set-mark #{index << DstIntfShift}/#{DstIntfMask}"
@@ -691,9 +704,12 @@ EOF
     # The rule actually says "ORIGINAL" and not "REPLY" and thats because ctdir seems to match backwards
     rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} -m conntrack --ctdir ORIGINAL -m connmark --mark #{index << DstIntfShift}/#{DstIntfMask} -j MARK --set-mark #{index}/#{SrcIntfMask}"
 
+    rules << "mark_local_ip #{name} #{index}"
 
+    # If its not a bridge - something might be bridged to it so insert rules for the bridged name
     if ( interface.config_type != InterfaceHelper::ConfigType::BRIDGE )
-      rules << "mark_local_ip #{name} #{index}"
+      bridge_name = OSLibrary::Debian::NetworkManager.bridge_name( interface )
+      rules << "mark_local_ip #{bridge_name} #{index}"
     end
     
     ## Append a mark for the ppp local addresses.

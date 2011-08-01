@@ -26,7 +26,7 @@ iptables_debug()
 
 iptables_debug_onerror()
 {
-    ## Ignore -N errors
+    # Ignore -N errors
     /sbin/iptables $* || {
         [ "${3}x" != "-Nx" ] && echo "[`date`] Failed: /sbin/iptables $*"
     }
@@ -47,7 +47,6 @@ get_ip_addresses()
 
     if [ -z "${t_intf}" ]; then return; fi
 
-    ## Throw away error data.
     ip -f inet addr show ${t_intf} 2>/dev/null | \
         awk '/inet/ { ip = $2 ; sub( /\/.*$/, "", ip ) ; print ip  }'
 }
@@ -62,10 +61,10 @@ run_iptables_scripts()
         return 0
     fi
     
-    ## Would use run-parts, but that doesn't maintain environment variables 
-    ## or the iptables_debug function.
+    # Would use run-parts, but that doesn't maintain environment variables 
+    # or the iptables_debug function.
 
-    ## Do not run any of the dpkg backup files.
+    # Do not run any of the dpkg backup files.
     for t_script in `run-parts --list --lsbsysinit ${IPTABLES_DIRECTORY} | sort` ; do
         echo "[`date`] ${t_script} Running ..."
         . ${t_script}
