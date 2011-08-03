@@ -469,13 +469,19 @@ EOF
 
       ## Added an exception for unNATed interfaces (these should allow traffic just like normal routed interfaces
       non_wan_interfaces.each do |interface|
-        ## Drop all WAN traffic that is going to a non-wan NATed interface
-        ## non-wan non-NATd interfaces should have traffic allowed like normal routed traffic
-        if (!interface.current_config.nil? and 
-            defined?(interface.current_config.nat_policies) and 
-            !interface.current_config.nat_policies.nil? and 
-            !interface.current_config.nat_policies.empty?)
-          fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -o #{interface.os_name} -j DROP"
+        begin
+          ## Drop all WAN traffic that is going to a non-wan NATed interface
+          ## non-wan non-NATd interfaces should have traffic allowed like normal routed traffic
+          if (!interface.current_config.nil? and 
+              !interface.current_config.nat_policies.nil? and 
+              !interface.current_config.nat_policies.empty?)
+            fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -o #{interface.os_name} -j DROP # block incoming traffic to non-wan #{interface}"
+          else
+            fw_text << "# #{IPTablesCommand} #{Chain::FirewallNat.args} -o #{interface.os_name} -j DROP # commented out to allow incoming traffic to non-wan #{interface} (no nat policies)"
+          end
+        rescue
+          logger.warn( "The interface '#{interface.name}' has bad nat_policies: #{$!}" )
+          logger.warn( $!.backtrace.join( "\n" ) )
         end
       end
       
@@ -601,6 +607,7 @@ EOF
         end
       rescue
         logger.warn( "The packet filter rule '#{rule.id}' '#{rule.filter}' could not be parsed: #{$!}" )
+        logger.warn( $!.backtrace.join( "\n" ) )
       end
     end
 
