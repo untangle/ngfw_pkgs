@@ -344,19 +344,17 @@ mark_local_ip()
    local t_ip
    local t_intf=$1
    local t_index=$2
+   local t_first_alias="true"
+
    ## Verify the interface was specified. 
    test -z "${t_intf}" && return 0
    test -z "${t_index}" && return 0
-
-   local t_first_alias="true"
       
    for t_ip in `get_ip_addresses ${t_intf}` ; do
-     #{IPTablesCommand} #{Chain::MarkSrcInterface.args} -d ${t_ip} -j MARK --or-mark $(( #{MarkInput} ))
+     #{IPTablesCommand} #{Chain::MarkInterface.args} -d ${t_ip} -j MARK --or-mark $(( #{MarkInput} ))
 
      if [ "${t_first_alias}x" = "truex" ]; then
-       #{IPTablesCommand} #{Chain::MarkSrcInterface.args} -d ${t_ip} -j MARK --or-mark $(( #{MarkFirstAlias} ))
-       # #{IPTablesCommand} #{Chain::MarkSrcInterface.args} -d ${t_ip} -m mark --mark ${t_index}/#{SrcIntfMask} -j MARK --or-mark $(( #{MarkFirstAlias} ))
-       # #{IPTablesCommand} #{Chain::MarkSrcInterface.args} -d ${t_ip} -i ${t_intf}                             -j MARK --or-mark $(( #{MarkFirstAlias} ))
+       #{IPTablesCommand} #{Chain::MarkInterface.args} -d ${t_ip} -j MARK --or-mark $(( #{MarkFirstAlias} ))
      fi
      t_first_alias="false"
    done
