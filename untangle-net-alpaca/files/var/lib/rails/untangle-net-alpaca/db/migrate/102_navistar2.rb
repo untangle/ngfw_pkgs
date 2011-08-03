@@ -2,7 +2,7 @@
 class Navistar2 < Alpaca::Migration
 
   def self.up
-    newrule = Firewall.find( :first, :conditions => [ "system_id = ? and enabled='t'", "route-bridge-traffic-bc218f02" ] )
+    newrule = Firewall.find( :first, :conditions => [ "system_id = ?", "route-bridge-traffic-bc218f02" ] )
 
     # If rules already exist this is an upgrade
     # This rule should not be enabled on upgrades
