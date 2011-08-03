@@ -87,8 +87,13 @@ uvm_home()
     if [ ! -f /proc/${UVM_PID}/cmdline ]; then return ; fi
 
     ## Ignore errors
-    perl -pe 's/[^0-9=a-zA-Z\/\-\+\*\.]/\n/g' /proc/${UVM_PID}/cmdline 2>| /dev/null | \
-        awk '/^-Duvm.home=/ { gsub( "-Duvm.home=", "" ) ; print }'
+    HOME="`perl -pe 's/[^0-9=a-zA-Z\/\-\+\*\.]/\n/g' /proc/${UVM_PID}/cmdline 2>| /dev/null | awk '/^-Duvm.home=/ { gsub( "-Duvm.home=", "" ) ; print }'`"
+    
+    if [ -z "$HOME" ] ; then
+       echo "/usr/share/untangle/"
+    else
+       echo $HOME
+    fi     
 }
   
 ## This setting should always be disabled.
