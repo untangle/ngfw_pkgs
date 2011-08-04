@@ -38,6 +38,10 @@ class Alpaca::Migration < ActiveRecord::Migration
     QosClass.new(attributes).save
   end
 
+  def self.add_firewall_rule( attributes = {} )
+    add_sample_rule( Firewall, attributes )
+  end
+
   def self.add_sample_rule( klazz, attributes )
     @@positions = {} if @@positions.nil?
     
