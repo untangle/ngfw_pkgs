@@ -53,13 +53,11 @@ fi
 
 /etc/untangle/startup.d/20spamassassin
 
-# sa-compile
-
 # restart spamassassin
 ourInit spamassassin restart &> /dev/null &
 
-#update
-/etc/cron.daily/untangle-spamassassin-update
+# update (commented out - don't do this on install - takes too long)
+# /etc/cron.daily/untangle-spamassassin-update
 
 touch /etc/untangle/monit-to-restart
 
