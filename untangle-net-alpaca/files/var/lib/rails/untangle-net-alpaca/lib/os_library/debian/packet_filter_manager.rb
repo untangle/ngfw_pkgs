@@ -480,7 +480,7 @@ EOF
             fw_text << "# #{IPTablesCommand} #{Chain::FirewallNat.args} -o #{interface.os_name} -j DROP # commented out to allow incoming traffic to non-wan #{interface} (no nat policies)"
           end
         rescue
-          logger.warn( "The interface '#{interface.name}' has bad nat_policies: #{$!}" )
+          logger.warn( "The interface '#{interface.os_name}' has bad nat_policies: #{$!}" )
           logger.warn( $!.backtrace.join( "\n" ) )
         end
       end
