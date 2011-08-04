@@ -53,7 +53,7 @@ fi
 
 /etc/untangle/startup.d/20spamassassin
 
-sa-compile
+# sa-compile
 
 # restart spamassassin
 ourInit spamassassin restart &> /dev/null &
