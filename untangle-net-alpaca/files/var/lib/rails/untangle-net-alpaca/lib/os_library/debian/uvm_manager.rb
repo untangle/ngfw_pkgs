@@ -442,7 +442,7 @@ EOF
 
         filters.each do |filter|
           break if filter.strip.empty?
-          text << "#{IPTablesCommand} #{Chain::BypassRules.args} -m conntrack --ctstate NEW #{filter} #{target}\n"
+          text << "#{IPTablesCommand} #{Chain::BypassRules.args} #{filter} #{target}\n"
         end
         
       rescue
