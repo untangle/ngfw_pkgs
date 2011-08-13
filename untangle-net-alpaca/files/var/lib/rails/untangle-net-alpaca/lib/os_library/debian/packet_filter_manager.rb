@@ -138,6 +138,11 @@ EOF
 #{IPTablesCommand} #{args} -m mark ! --mark 0/#{DstIntfMask} -j RETURN
 EOF
 
+    MarkLocal = Chain.new( "mark-local", "mangle", "PREROUTING", <<'EOF' )
+## This chain marks the local and first alias marks
+##
+EOF
+
     ## Chain Used for natting in the prerouting table.
     PostNat = Chain.new( "alpaca-post-nat", "nat", "POSTROUTING", <<'EOF' )
 ## Save the state for bypassed traffic
@@ -239,7 +244,7 @@ EOF
     ## Chain used to capture / drop traffic for the captive portal.
     CaptivePortalCapture = Chain.new( "untangle-cpd-capture", "mangle", nil )
 
-    Order = [ MarkInterface, MarkSrcInterface, MarkDstInterface, PostNat, SNatRules,
+    Order = [ MarkInterface, MarkSrcInterface, MarkDstInterface, MarkLocal, PostNat, SNatRules,
               FirewallBlock, FirewallMarkReject, FirewallMarkDrop, 
               FirewallMarkInputReject, FirewallMarkInputDrop, FirewallNat,
               FirewallRules, 
@@ -342,19 +347,23 @@ EOF
 mark_local_ip()
 {
    local t_ip
-   local t_intf=$1
-   local t_index=$2
+   local t_intf_name=$1
+   local t_intf_index=$2
    local t_first_alias="true"
 
    ## Verify the interface was specified. 
-   test -z "${t_intf}" && return 0
-   test -z "${t_index}" && return 0
+   test -z "${t_intf_name}" && return 0
+   test -z "${t_intf_index}" && return 0
       
-   for t_ip in `get_ip_addresses ${t_intf}` ; do
-     #{IPTablesCommand} #{Chain::MarkInterface.args} -d ${t_ip} -j MARK --or-mark $(( #{MarkInput} ))
+   for t_ip in `get_ip_addresses ${t_intf_name}` ; do
+     # Set this mark if the traffic is going to any one of Untangles IPs
+     echo '#{IPTablesCommand} #{Chain::MarkLocal.args} -d ${t_ip} -j MARK --or-mark $(( #{MarkInput} ))'
+     #{IPTablesCommand} #{Chain::MarkLocal.args} -d ${t_ip} -j MARK --or-mark $(( #{MarkInput} ))
 
      if [ "${t_first_alias}x" = "truex" ]; then
-       #{IPTablesCommand} #{Chain::MarkInterface.args} -d ${t_ip} -j MARK --or-mark $(( #{MarkFirstAlias} ))
+       # Set this mark if the traffic is going to the first alias of the interface in question
+       echo '#{IPTablesCommand} #{Chain::MarkLocal.args} -m mark --mark ${t_intf_index}/#{SrcIntfMask} -d ${t_ip} -j MARK --or-mark $(( #{MarkFirstAlias} ))'
+       #{IPTablesCommand} #{Chain::MarkLocal.args} -m mark --mark ${t_intf_index}/#{SrcIntfMask} -d ${t_ip} -j MARK --or-mark $(( #{MarkFirstAlias} ))
      fi
      t_first_alias="false"
    done
