@@ -356,14 +356,18 @@ mark_local_ip()
    test -z "${t_intf_index}" && return 0
       
    for t_ip in `get_ip_addresses ${t_intf_name}` ; do
+
      # Set this mark if the traffic is going to any one of Untangles IPs
-     echo '#{IPTablesCommand} #{Chain::MarkLocal.args} -d ${t_ip} -j MARK --or-mark $(( #{MarkInput} ))'
      #{IPTablesCommand} #{Chain::MarkLocal.args} -d ${t_ip} -j MARK --or-mark $(( #{MarkInput} ))
 
      if [ "${t_first_alias}x" = "truex" ]; then
        # Set this mark if the traffic is going to the first alias of the interface in question
-       echo '#{IPTablesCommand} #{Chain::MarkLocal.args} -m mark --mark ${t_intf_index}/#{SrcIntfMask} -d ${t_ip} -j MARK --or-mark $(( #{MarkFirstAlias} ))'
+
+       # This rule matches on the source interface mark
        #{IPTablesCommand} #{Chain::MarkLocal.args} -m mark --mark ${t_intf_index}/#{SrcIntfMask} -d ${t_ip} -j MARK --or-mark $(( #{MarkFirstAlias} ))
+
+       # This rule matches the interface name (this is so bridged interfaces match their master)
+       #{IPTablesCommand} #{Chain::MarkLocal.args} -i ${t_intf_name} -d ${t_ip} -j MARK --or-mark $(( #{MarkFirstAlias} ))
      fi
      t_first_alias="false"
    done
