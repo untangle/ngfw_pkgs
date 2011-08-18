@@ -14,7 +14,7 @@ user_pref("app.update.lastUpdateTime.addon-background-update-timer", 1177528839)
 user_pref("app.update.lastUpdateTime.background-update-timer", 1177528839);
 user_pref("browser.download.manager.showWhenStarting", false);
 user_pref("browser.search.selectedEngine", "Google");
-user_pref("extensions.lastAppVersion", "1.5");
 user_pref("intl.charsetmenu.browser.cache", "ISO-8859-1");
 user_pref("network.cookie.prefsMigrated", true);
 user_pref("security.warn_submit_insecure", false);
+user_pref("signon.rememberSignons", false);

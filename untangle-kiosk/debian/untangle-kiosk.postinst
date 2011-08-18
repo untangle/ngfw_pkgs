@@ -10,10 +10,19 @@ rsync -Ha /usr/share/untangle-kiosk/homes/root/ /root/
 rsync -Ha /usr/share/untangle-kiosk/homes/kiosk/ /home/kiosk/
 chown -R kiosk:kiosk /home/kiosk
 
-#cp -r /home/kiosk/.config/xfce4 /etc/xdg/
-
-#cp -f /usr/share/untangle-kiosk/prefs.js /etc/firefox/profile/prefs.js
-#cp -f /usr/share/untangle-kiosk/bookmarks.html /etc/firefox/profile/bookmarks.html
+# Setup iceweasel and/or firefox
+if [ -d /etc/iceweasel/profile ] ; then
+    # setup preferences
+    cp -f /usr/share/untangle-kiosk/firefox-profile/prefs.js       /etc/iceweasel/profile/prefs.js
+    # remove the bookmark toolbar
+    cp -f /usr/share/untangle-kiosk/firefox-profile/localstore.rdf /etc/iceweasel/profile/localstore.rdf
+fi
+if [ -d /etc/firefox/profile ] ; then
+    # setup preferences
+    cp -f /usr/share/untangle-kiosk/firefox-profile/prefs.js       /etc/firefox/profile/prefs.js
+    # remove the bookmark toolbar
+    cp -f /usr/share/untangle-kiosk/firefox-profile/localstore.rdf /etc/firefox/profile/localstore.rdf
+fi
 
 # Moved here from untangle-gateway
 chsh -s /bin/zsh root
@@ -25,8 +34,6 @@ if [ -f "$bad_libnet" ] ; then
   mv $bad_libnet ${bad_libnet}.bad
   cp -f /usr/share/untangle-kiosk/libnet-good.so $bad_libnet
 fi
-
-#ln -sf /usr/share/untangle-kiosk/desktop_background-please_wait-1024x768.png /usr/local/lib/knoppix.jpg
 
 echo >| /etc/motd.tail
 
