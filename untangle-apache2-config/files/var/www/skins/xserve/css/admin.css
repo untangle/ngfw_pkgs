@@ -1042,29 +1042,24 @@ div.wizard-network-rerouter span
            font-weight:normal;
            line-height:normal;    
 }
-
-
 table.email-tester
 { 
-
-    margin-bottom:10px;
+    margin-bottom:0px;
     margin-left:7px;
 }
 /* email test button icon */
 button.email-tester
 { 
   background:transparent url(../images/admin/icon_test.png) no-repeat center left !important; 
-  width : 125px;
-  }
-
+  width : 160px;
+}
 label.optional-email-tester
 { 
-  padding: 10px 0px 0px 0px;
-  float: right;
-  margin-right:28em;
-  font-style: italic;
-  }
-
+    padding: 10px 0px 0px 0px;
+    float: right;
+    margin-right:28em;
+    font-style: italic;
+}
 body.wizard label.info-detail
 {
     float:left;
@@ -1072,25 +1067,23 @@ body.wizard label.info-detail
     font-style:italic;
     margin-top:-20px;
     padding-left:270px;
-  }
-
+}
 .x-form-textfield-detail, .x-form-combo-detail
 { 
-  font-size:80%;
-  font-style:italic;  
-  clear:none !important;
-  display:inline !important;
-  float:none !important;
-  margin-left:4px;
-  }
+    font-size:80%;
+    font-style:italic;  
+    clear:none !important;
+    display:inline !important;
+    float:none !important;
+    margin-left:4px;
+}
 .x-form-combo-detail{
-  margin-left:22px;
+    margin-left:22px;
 }
 body.wizard
 {
-  font-family:arial,"helvetica,freesans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,helvetica,freesans,sans-serif;
-  }
-
+    font-family:arial,"helvetica,freesans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,helvetica,freesans,sans-serif;
+}
 body.wizard .ext-el-mask
 { 
   background-color: #CCCCCC;
