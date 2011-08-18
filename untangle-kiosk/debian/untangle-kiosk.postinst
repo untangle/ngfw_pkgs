@@ -12,16 +12,10 @@ chown -R kiosk:kiosk /home/kiosk
 
 # Setup iceweasel and/or firefox
 if [ -d /etc/iceweasel/profile ] ; then
-    # setup preferences
-    cp -f /usr/share/untangle-kiosk/firefox-profile/prefs.js       /etc/iceweasel/profile/prefs.js
-    # remove the bookmark toolbar
-    cp -f /usr/share/untangle-kiosk/firefox-profile/localstore.rdf /etc/iceweasel/profile/localstore.rdf
+    cp -f /usr/share/untangle-kiosk/firefox-profile/* /etc/iceweasel/profile/
 fi
 if [ -d /etc/firefox/profile ] ; then
-    # setup preferences
-    cp -f /usr/share/untangle-kiosk/firefox-profile/prefs.js       /etc/firefox/profile/prefs.js
-    # remove the bookmark toolbar
-    cp -f /usr/share/untangle-kiosk/firefox-profile/localstore.rdf /etc/firefox/profile/localstore.rdf
+    cp -f /usr/share/untangle-kiosk/firefox-profile/* /etc/firefox/profile/
 fi
 
 # Moved here from untangle-gateway
