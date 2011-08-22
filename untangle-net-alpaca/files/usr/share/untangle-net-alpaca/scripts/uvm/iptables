@@ -1,3 +1,4 @@
+
 #!/bin/dash
 
 ## Function to determine the pid of the process that owns the queue
@@ -235,7 +236,7 @@ uvm_packet_filter_standard_internal()
     done	
     
     # non-WAN HTTP blockpage rules
-    /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan | while read intfId ; do
+    /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan_idx | while read intfId ; do
         local t_block_page_port=80 # now hardcoded at 80
         local t_mark=$(( ${MASK_LOCAL} | ${MASK_FIRST_ALIAS} | $intfId ))
     	local t_mask=$(( ${MASK_LOCAL} | ${MASK_FIRST_ALIAS} | ${MASK_SRC_INTERFACE} ))
