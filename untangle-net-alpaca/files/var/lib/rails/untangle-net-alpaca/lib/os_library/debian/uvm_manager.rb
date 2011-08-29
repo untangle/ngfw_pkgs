@@ -334,6 +334,8 @@ EOF
       netConfigFileText = append_attribute( netConfigFileText, "name", interface.name, 3)
       netConfigFileText = append_attribute( netConfigFileText, "configType", interface.config_type, 3)
       netConfigFileText = append_attribute( netConfigFileText, "WAN", interface.wan, 3)
+      netConfigFileText = append_attribute( netConfigFileText, "macAddress", interface.mac_address, 3)
+      netConfigFileText = append_attribute( netConfigFileText, "vendor", interface.vendor, 3)
 
       if (interface.config_type == "static")
         intfStatic = IntfStatic.find( :first, :conditions => [ "interface_id = ?", interface.id ] )

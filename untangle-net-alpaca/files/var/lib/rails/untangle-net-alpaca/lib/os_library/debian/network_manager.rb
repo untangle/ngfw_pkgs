@@ -326,15 +326,11 @@ EOF
 
   def get_vendor( os_name )
     subsystem="#{NetClassDir}/#{os_name}/device/subsystem"
-    if (!File.exists?(subsystem))
-       # 2.6.16 compatibility:
-       subsystem="#{NetClassDir}/#{os_name}/device/bus"
-    end
-
     bus = File.readlink(subsystem).sub(/.*\//, '')
 
     uevent="#{NetClassDir}/#{os_name}/device/uevent"
-    vendor_id = `awk '/(PCI_ID|PRODUCT)/ { sub( /^[^=]*=/, "" );  print $0 }' #{uevent}`.strip
+    vendor_id = `awk '/(PCI_ID|PRODUCT)/ { sub( /^[^=]*=/, "" );  print tolower($0) }' #{uevent}`.strip
+    vendor_id_short = `awk '/(PCI_ID|PRODUCT)/ { sub( /^[^=]*=/, "" ); sub( /:.*/, "" );  print tolower($0) }' #{uevent}`.strip
     
     return "Unknown" if ApplicationHelper.null?( vendor_id ) || ApplicationHelper.null?( bus )
 
@@ -345,7 +341,11 @@ EOF
       vendor = `zcat -f /usr/share/misc/usb.ids | awk '/^#{vendor_id}/ { $1 = "" ; print $0 }'`.strip
     when "pci"
       vendor = `awk '/^#{vendor_id}/ { $1 = "" ; print $0 }' /usr/share/misc/pci.ids`.strip
-    else return "Unknown"
+      if vendor==""
+        vendor = `awk '/^#{vendor_id_short}/ { $1 = "" ; print $0 }' /usr/share/misc/pci.ids`.strip
+      end
+    else 
+      return "Unknown"
     end
     
     return "Unknown" if ApplicationHelper.null?( vendor )
