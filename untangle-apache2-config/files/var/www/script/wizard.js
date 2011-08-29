@@ -150,8 +150,8 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
 	            hasChanged = true;
 	            handler = this.cards[this.currentPage].onPrevious;
 	        }
-		}else{
-			return;
+		} else {
+			return false;
 		}
 
         if ( this.disableNext == true ) handler = null;
@@ -163,7 +163,10 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
 			//where are we going if there is no handler? - karthik
             this.afterChangeHandler( index, hasChanged );
         }
+
+        return true;
     },
+    
     cancelAction: function () {
     },
     /* This function must be called once the the onPrevious or onNext handler completes,
@@ -275,9 +278,9 @@ function _validateinvalidate(items,methodname){
 	return rv;
 }
 function _invalidate(items){
-	return _validateinvalidate(items,'clearInvalid')
+	return _validateinvalidate(items,'clearInvalid');
 }
 function _validate(items){
-	return _validateinvalidate(items,'validate')
+	return _validateinvalidate(items,'validate');
 
 }
