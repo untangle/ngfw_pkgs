@@ -237,7 +237,7 @@ EOF
     iptables_rules << <<EOF
 add_iptables_rules()
 {
-    echo "[`date`] Adding IPTables QoS Rules"
+    # echo "[`date`] Adding IPTables QoS Rules"
 
     # You would not think untracked sessions could have Connmark, but I think they actually all share the same connmark
     # This connmark should not be used anywhere, however we save the default one just in case.
@@ -268,7 +268,7 @@ add_iptables_rules()
 
 flush_iptables_rules()
 {
-    echo "[`date`] Flushing IPTables QoS Rules"
+    # echo "[`date`] Flushing IPTables QoS Rules"
     ${IPTABLES} -t mangle -F alpaca-qos 2> /dev/null
 
     for i in 1 2 3 4 5 6 7 ; do 

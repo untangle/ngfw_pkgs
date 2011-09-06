@@ -108,15 +108,17 @@ fi
 . ${HELPER_SCRIPT}
 
 if [ "`is_uvm_running`x" = "truex" ]; then
-  echo "[`date`] The UVM running, inserting queueing hooks"
+  echo "[`date`] The untangle-vm is running. Inserting queueing hooks and bypass rules..."
   uvm_iptables_rules
   
   ## Ignore any traffic that is on the utun interface
   #{IPTablesCommand} -t #{Chain::FirewallRules.table} -I #{Chain::FirewallRules} 1 -i ${TUN_DEV} -j RETURN
   
   #{BypassRules}
+  echo "[`date`] The untangle-vm is running. Inserting queueing hooks and bypass rules...done"
+
 else
-  echo "[`date`] The UVM is currently not running"
+  echo "[`date`] The untangle-vm is not running. Doing nothing."
 fi
 
 return 0

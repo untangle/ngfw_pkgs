@@ -78,8 +78,8 @@ run_iptables_scripts()
 }
 
 
-echo "[`date`] Complete" > /dev/null
+echo "[`date`] Running ${IPTABLES_DIRECTORY} scripts" 
 
 run_iptables_scripts
 
-echo "[`date`] Complete" > /dev/null
+echo "[`date`] Complete" 
