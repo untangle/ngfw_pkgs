@@ -39,7 +39,7 @@ restart_networking()
 }
 
 
-${DEBUG} "dhclient-exit-hooks.d/net-alpaca [reason: \"$reason\" old_ip_address: \"$old_ip_address\" new_ip_address: \"$new_ip_address\"]"
+${DEBUG} "dhclient-exit-hooks.d/net-alpaca  ENTER [reason: \"$reason\" old_ip_address: \"$old_ip_address\" new_ip_address: \"$new_ip_address\"]"
 
 # Execute the operation
 case "$reason" in
@@ -95,6 +95,8 @@ case "$reason" in
         ;;
 
 esac
+
+${DEBUG} "dhclient-exit-hooks.d/net-alpaca  EXIT  [reason: \"$reason\" old_ip_address: \"$old_ip_address\" new_ip_address: \"$new_ip_address\"]"
 
 true
 

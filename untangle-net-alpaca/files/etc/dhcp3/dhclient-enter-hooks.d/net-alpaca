@@ -58,6 +58,12 @@ wait_for_bridge()
     debug "Waited ${t_count} counts for the bridge(s) before configuring ${interface}"
 }
 
+${DEBUG} "dhclient-enter-hooks.d/net-alpaca ENTER [reason: \"$reason\" old_ip_address: \"$old_ip_address\" new_ip_address: \"$new_ip_address\"]"
+
+${DEBUG} "Overriding make_resolv_conf."
+# override this function to change the behavior
+# dhclient-script later call it to write resolv.conf
+
 make_resolv_conf() 
 { 
     if [ -n "$new_domain_name" -o -n "$new_domain_name_servers" ]; then
@@ -86,8 +92,6 @@ make_resolv_conf()
 
     return 0
 }
-
-${DEBUG} "dhclient-enter-hooks.d/net-alpaca [reason: \"$reason\" old_ip_address: \"$old_ip_address\" new_ip_address: \"$new_ip_address\"]"
 
 ## Wait for the bridge to come up
 wait_for_bridge
@@ -137,6 +141,8 @@ case ${reason} in
         ;;
 esac
 
+
+${DEBUG} "dhclient-enter-hooks.d/net-alpaca EXIT  [reason: \"$reason\" old_ip_address: \"$old_ip_address\" new_ip_address: \"$new_ip_address\"]"
 
 return 0
 
