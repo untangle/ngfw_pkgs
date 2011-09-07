@@ -4,6 +4,20 @@ mkdir -p /var/log/untangle-net-alpaca/
 
 exec >> /var/log/untangle-net-alpaca/dhcp.log 2>&1
 
+## Wait bridge check attempts for the bridge to come up(if this is a bridge)
+BRIDGE_CHECK_ATTEMPTS=15
+
+## This is the time to wait in between checking the bridge status
+BRIDGE_CHECK_INTERVAL=1
+
+## overrides
+OVERRIDE_VARIABLES="/etc/untangle-net-alpaca/dhcp-overrides.${interface}"
+
+## Debug function
+#DEBUG=/bin/true
+DEBUG=debug
+
+
 debug()
 {
     /bin/echo -e "[DEBUG: `date`] ${*}"
@@ -18,12 +32,6 @@ bridge_port_list()
         find /sys/class/net/${l_bridge}/brif/ -maxdepth 1 -mindepth 1 -exec basename {} \; 2>/dev/null
     }
 }
-
-## Wait bridge check attempts for the bridge to come up(if this is a bridge)
-BRIDGE_CHECK_ATTEMPTS=15
-
-## This is the time to wait in between checking the bridge status
-BRIDGE_CHECK_INTERVAL=1
 
 wait_for_bridge()
 {
@@ -50,19 +58,8 @@ wait_for_bridge()
     debug "Waited ${t_count} counts for the bridge(s) before configuring ${interface}"
 }
 
-OVERRIDE_VARIABLES="/etc/untangle-net-alpaca/dhcp-overrides.${interface}"
-
-DEBUG=/bin/true
-
-DEBUG=debug
-
-## Wait for the bridge to come up
-wait_for_bridge
-
-# Always rewrite dnsmasq.conf rather than /etc/resolv.conf
-${DEBUG} "Redefining make_resolv_conf"
-
-make_resolv_conf() { 
+make_resolv_conf() 
+{ 
     if [ -n "$new_domain_name" -o -n "$new_domain_name_servers" ]; then
         local t_hash="`md5sum /etc/dnsmasq.conf`"
         ## if [ -n "$new_domain_name" ]; then
@@ -81,20 +78,24 @@ make_resolv_conf() {
                     
         ## Reststart DNS MASQ if necessary
         if [ "${t_hash}x" != "${t_new_hash}x" ]; then
-            /bin/echo -e "[DEBUG: `date`] Restarting dnsmasq"
+            /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.conf changed. Restarting dnsmasq..."
             /etc/init.d/dnsmasq restart
-        else
-            /bin/echo -e "[DEBUG: `date`] ignore dnsmasq restart"
+            /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.conf changed. Restarting dnsmasq...done"
         fi
     fi
 
     return 0
 }
 
+${DEBUG} "dhclient-enter-hooks.d/net-alpaca [reason: \"$reason\" old_ip_address: \"$old_ip_address\" new_ip_address: \"$new_ip_address\"]"
+
+## Wait for the bridge to come up
+wait_for_bridge
+
 if [ -f "${OVERRIDE_VARIABLES}" ]; then
     . ${OVERRIDE_VARIABLES}
 else
-    /bin/echo -e "[DEBUG: `date`] Missing DHCP Override file, defaulting DHCP_UPLINK_INDEX to 1"
+    ${DEBUG} "Missing DHCP Override file, defaulting DHCP_UPLINK_INDEX to 1"
     DHCP_UPLINK_INDEX=1
 fi
 
@@ -113,36 +114,29 @@ fi
 
 case ${reason} in
     BOUND|RENEW|REBIND|REBOOT)
-        ${DEBUG} "Enabling overrides on dhcp reason ${reason}"
+        ${DEBUG} "Enabling overrides on dhcp reason \"${reason}\""
+
+        new_ip_address=${DHCP_IP_ADDRESS:-${new_ip_address}}
+        if [ -n "${DHCP_IP_NETMASK}" ] ; then
+            new_subnet_mask=${DHCP_IP_NETMASK}
+            new_subnet_arg="netmask ${DHCP_IP_NETMASK}"
+        fi
+
+        if [ -n "${DHCP_MTU}" ] && [ ${DHCP_MTU} -ge 575 ]; then
+            mtu_arg="mtu ${DHCP_MTU}"
+        fi
+
+        alpaca_new_routers=${DHCP_GATEWAY:-${new_routers}}
+        new_routers=""
+
+        new_domain_name_servers=${DHCP_DNS_SERVERS:-${new_domain_name_servers}}
+        new_domain_name=${DHCP_DOMAIN_NAME:-${new_domain_name}}
         ;;
     *)
-        ${DEBUG} "Ignoring overrides for dhcp reason '${reason}'"
-        return 0
+        ${DEBUG} "Ignoring overrides for dhcp reason \"${reason}\""
         ;;
 esac
 
 
-## Review!!! : Check if this causes a delay for bridges because
-## old_ip_address doesn't make new_ip_address Also, this may cause
-## routes to be deleted, may need a hook in dhclient-exit-hooks.d to
-## rebuild routes.
-new_ip_address=${DHCP_IP_ADDRESS:-${new_ip_address}}
-if [ -n "${DHCP_IP_NETMASK}" ] ; then
-    new_subnet_mask=${DHCP_IP_NETMASK}
-    new_subnet_arg="netmask ${DHCP_IP_NETMASK}"
-fi
-
-if [ -n "${DHCP_MTU}" ] && [ ${DHCP_MTU} -ge 575 ]; then
-    mtu_arg="mtu ${DHCP_MTU}"
-fi
-
-## No longer rely on dhclient script to update the default gateway.
-alpaca_new_routers=${DHCP_GATEWAY:-${new_routers}}
-new_routers=""
-
-new_domain_name_servers=${DHCP_DNS_SERVERS:-${new_domain_name_servers}}
-new_domain_name=${DHCP_DOMAIN_NAME:-${new_domain_name}}
-
-## REVIEW: Should this set MTU here.
 return 0
 
