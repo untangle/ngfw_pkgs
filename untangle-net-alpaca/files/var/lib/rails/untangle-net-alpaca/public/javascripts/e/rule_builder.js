@@ -29,18 +29,17 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.EditorGridPanel, {
             this.ruleProtocolValues=Ung.Alpaca.RuleBuilder.DEFAULT_PROTOCOL_VALUES;
         }
         
-        if(!this.rules) {
-            this.rules= [
-                {name:"d-addr",displayName: Ung.Alpaca.Util._("Destination Address"), type: "text",vtype:"address"},
-                {name:"d-port",displayName: Ung.Alpaca.Util._("Destination Port"), type: "text",vtype:"port"},
-                {name:"d-local",displayName: Ung.Alpaca.Util._("Destined Local"), type: "boolean"},
-                {name:"protocol",displayName: Ung.Alpaca.Util._("Protocol"), type: "checkgroup", values: this.ruleProtocolValues},
-                {name:"s-intf",displayName: Ung.Alpaca.Util._("Source Interface"), type: "checkgroup", values:this.ruleInterfaceValues },
-                {name:"s-addr",displayName: Ung.Alpaca.Util._("Source Address"), type: "text",vtype:"address"},
-                {name:"s-port",displayName: Ung.Alpaca.Util._("Source Port"), type: "text",vtype:"port"},
-                {name:"s-mac-addr",displayName: Ung.Alpaca.Util._("Source Mac Address"), type: "text"}
-            ];
-        }
+        this.rules= [
+            {name:"d-addr",displayName: Ung.Alpaca.Util._("Destination Address"), type: "text",vtype:"address", visible: true},
+            {name:"d-port",displayName: Ung.Alpaca.Util._("Destination Port"), type: "text",vtype:"port", visible: true},
+            {name:"d-local",displayName: Ung.Alpaca.Util._("Destined Local"), type: "boolean", visible: true},
+            {name:"protocol",displayName: Ung.Alpaca.Util._("Protocol"), type: "checkgroup", values: this.ruleProtocolValues, visible: true},
+            {name:"s-intf",displayName: Ung.Alpaca.Util._("Source Interface"), type: "checkgroup", values:this.ruleInterfaceValues, visible: true},
+            {name:"s-addr",displayName: Ung.Alpaca.Util._("Source Address"), type: "text",vtype:"address", visible: true},
+            {name:"s-port",displayName: Ung.Alpaca.Util._("Source Port"), type: "text",vtype:"port", visible: false},
+            {name:"s-mac-addr",displayName: Ung.Alpaca.Util._("Source Mac Address"), type: "text", visible: false}
+        ];
+
         this.store = new Ext.data.SimpleStore({
             fields: [
                {name: 'name'},
@@ -70,10 +69,15 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.EditorGridPanel, {
                 var out=[];
                 out.push('<select class="rule_builder_type" onchange="Ext.getCmp(\''+this.getId()+'\').changeRowType(\''+record.id+'\',this)">');
                 for (var i = 0; i < this.rules.length; i++) {
-                    var seleStr=(this.rules[i].name == value)?"selected":"";
+                    var selected = this.rules[i].name == value;
+                    var seleStr=(selected)?"selected":"";
+                    // if this select is invisible and not already selected (dont show it)
+                    // if it is selected and invisible, show it (we dont have a choice)
+                    if (!this.rules[i].visible && !selected)
+                        continue;
                     out.push('<option value="' + this.rules[i].name + '" ' + seleStr + '>' + this.rules[i].displayName + '</option>');
                 }
-                out.push("</select>")
+                out.push("</select>");
                 return out.join("");
             }.createDelegate(this)
         },{
@@ -88,13 +92,13 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.EditorGridPanel, {
                 var rule=null;
                 for (var i = 0; i < this.rules.length; i++) {
                     if (this.rules[i].name == name) {
-                        rule=this.rules[i]
+                        rule=this.rules[i];
                         break;
                     }
                 }
                 var res="";
                 if ( rule == null ) {
-                    return;
+                    return null;
                 }
                 switch(rule.type) {
                     case "text":
@@ -118,8 +122,8 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.EditorGridPanel, {
                             }
                             out.push('<div class="checkbox" style="width:100px; float: left; padding:3px 0;">');
                             out.push('<input id="'+rule_value+'[]" class="rule_builder_checkbox" '+checked_str+' onchange="Ext.getCmp(\''+this.getId()+'\').changeRowValue(\''+record.id+'\',this)" style="display:inline; float:left;margin:0;" name="'+rule_label+'" value="'+rule_value+'" type="checkbox">');
-                            out.push('<label for="'+rule_value+'[]" style="display:inline;float:left;margin:0 0 0 0.6em;padding:0;text-align:left;width:50%;">'+rule_label+'</label>')
-                            out.push('</div>')
+                            out.push('<label for="'+rule_value+'[]" style="display:inline;float:left;margin:0 0 0 0.6em;padding:0;text-align:left;width:50%;">'+rule_label+'</label>');
+                            out.push('</div>');
                         }
                         res=out.join("");
                         break;
@@ -137,7 +141,7 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.EditorGridPanel, {
         var rule=null;
         for (var i = 0; i < this.rules.length; i++) {
             if (this.rules[i].name == newName) {
-                rule=this.rules[i]
+                rule=this.rules[i];
                 break;
             }
         }
@@ -199,7 +203,7 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.EditorGridPanel, {
         var list=[];
         var records=this.store.getRange();
         for(var i=0; i<records.length;i++) {
-            list.push(records[i].get("name")+"::"+records[i].get("value"))
+            list.push(records[i].get("name")+"::"+records[i].get("value"));
         }
         return list.join("&&");
     },
