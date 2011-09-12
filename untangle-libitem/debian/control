@@ -77,56 +77,10 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAABHNCSVQICAgIfAhkiA
 Description: Lite Package
  The Lite Package Library Item.
 
-Package: untangle-libitem-opensource-package
-Architecture: all
-Depends: untangle-libitem-shield,untangle-libitem-spyware,untangle-libitem-webfilter,untangle-libitem-clam,untangle-libitem-protofilter,untangle-libitem-firewall,untangle-libitem-spamassassin,untangle-libitem-phish,untangle-libitem-openvpn,untangle-libitem-ips,untangle-libitem-reporting, untangle-libitem-cpd, untangle-libitem-lite-package
-XB-View-Position: 10
-XB-Display-Name: Open Source Package
-XB-Untangle-Pkg-Type: lib_item
-XB-Untangle-Hide: true
-XB-Desc-Icon:  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
-Description: Open Source Package
- The Open Source Package Library Item.
-
 Package: untangle-libitem-shield
 Architecture: all
 Depends: untangle-node-shield
-XB-View-Position: 1020
+XB-View-Position: 1110
 XB-Display-Name: Attack Blocker
 XB-Untangle-Pkg-Type: lib_item
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAJmklEQVRYhcWZWYwb
@@ -188,7 +142,7 @@ Description: Attack Blocker
 Package: untangle-libitem-spyware
 Architecture: all
 Depends: untangle-node-spyware
-XB-View-Position: 20
+XB-View-Position: 50
 XB-Display-Name: Spyware Blocker
 XB-Untangle-Pkg-Type: lib_item
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMgAAABl0RVh0
@@ -239,7 +193,7 @@ Description: Spyware Blocker
 Package: untangle-libitem-webfilter
 Architecture: all
 Depends: untangle-node-webfilter
-XB-View-Position: 30
+XB-View-Position: 10
 XB-Display-Name: Web Filter Lite
 XB-Untangle-Pkg-Type: lib_item
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA
@@ -308,7 +262,7 @@ Description: Web Filter Lite
 Package: untangle-libitem-clam
 Architecture: all
 Depends: untangle-node-clam
-XB-View-Position: 70
+XB-View-Position: 40
 XB-Display-Name: Virus Blocker Lite
 XB-Untangle-Pkg-Type: lib_item
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
@@ -372,7 +326,7 @@ Description: Virus Blocker Lite
 Package: untangle-libitem-protofilter
 Architecture: all
 Depends: untangle-node-protofilter
-XB-View-Position: 80
+XB-View-Position: 100
 XB-Display-Name: Protocol Control
 XB-Untangle-Pkg-Type: lib_item
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMgAAABl0
@@ -457,7 +411,7 @@ Description: Protocol Control
 Package: untangle-libitem-firewall
 Architecture: all
 Depends: untangle-node-firewall
-XB-View-Position: 90
+XB-View-Position: 110
 XB-Display-Name: Firewall
 XB-Untangle-Pkg-Type: lib_item
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
@@ -508,8 +462,8 @@ Description: Firewall
 Package: untangle-libitem-spamassassin
 Architecture: all
 Depends: untangle-node-spamassassin
-XB-View-Position: 15
-XB-Display-Name: Spam Blocker
+XB-View-Position: 61
+XB-Display-Name: Spam Blocker Lite
 XB-Untangle-Pkg-Type: lib_item
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMgAAABl0
  RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAA5RSURBVHjaxFlrjB3nWX7mzPXM
@@ -581,13 +535,13 @@ XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMg
  BKrSAH7zsCoUU01hotVpyZBWzBOosKrYaJBp4U5Si82nbJpKvekm4RPXjyQ/EqKRY1dQLbrv
  7ecbjiWKg52kQksZPHS58yyBNmiZiJP+/Re/svPTyfv0y81tv46IkqxIuSdiaPf5D4YGWh7D
  zpbjLtD367cmAc5kRUrTokJw339vj/xB7P8FGACNK2N4xeErDQAAAABJRU5ErkJggg==
-Description: Spam Blocker
- The Spam Blocker Library Item.
+Description: Spam Blocker Lite
+ The Spam Blocker Lite Library Item.
 
 Package: untangle-libitem-phish
 Architecture: all
 Depends: untangle-node-phish
-XB-View-Position: 17
+XB-View-Position: 70
 XB-Display-Name: Phish Blocker
 XB-Untangle-Pkg-Type: lib_item
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
@@ -680,7 +634,7 @@ Description: Phish Blocker
 Package: untangle-libitem-openvpn
 Architecture: all
 Depends: untangle-node-openvpn
-XB-View-Position: 1019
+XB-View-Position: 1080
 XB-Display-Name: OpenVPN
 XB-Untangle-Pkg-Type: lib_item
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
@@ -748,7 +702,7 @@ Description: OpenVPN
 Package: untangle-libitem-ips
 Architecture: all
 Depends: untangle-node-ips
-XB-View-Position: 75
+XB-View-Position: 120
 XB-Display-Name: Intrusion Prevention
 XB-Untangle-Pkg-Type: lib_item
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwY
@@ -818,7 +772,7 @@ Description: Intrusion Prevention
 Package: untangle-libitem-reporting
 Architecture: all
 Depends: untangle-node-reporting
-XB-View-Position: 1022
+XB-View-Position: 1010
 XB-Display-Name: Reports
 XB-Untangle-Pkg-Type: lib_item
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABGdBTUEAANbY1E9YMgAAABl0
@@ -868,7 +822,7 @@ Description: Reports
 Package: untangle-libitem-adblocker
 Architecture: all
 Depends: untangle-node-adblocker
-XB-View-Position: 90
+XB-View-Position: 130
 XB-Display-Name: Ad Blocker
 XB-Untangle-Pkg-Type: lib_item
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAACXBIWXMAAAsTAAALEwEAmpwYAAAK
@@ -960,7 +914,7 @@ Description: Ad Blocker
 Package: untangle-libitem-cpd
 Architecture: all
 Depends: untangle-node-cpd
-XB-View-Position: 90
+XB-View-Position: 1060
 XB-Display-Name: Captive Portal
 XB-Untangle-Pkg-Type: lib_item
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAMAAADyHTlpAAAAGXRFWHRTb2Z0d2Fy
