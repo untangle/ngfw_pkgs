@@ -497,14 +497,9 @@ div.icon-config-directory {
     width:36px;
     height:36px;
 }
-div.icon-config-backup {
-    background: transparent url(../images/admin/config/icon_config_backup.png) no-repeat !important; 
-    width:36px;
-    height:36px;
-}
 /* Config System Info item icon */
 div.icon-config-support {
-    background: transparent url(../images/admin/config/icon_config_support.png) no-repeat !important; 
+    background: transparent url(../images/admin/config/icon_config_systeminfo.png) no-repeat !important; 
     width:36px;
     height:36px;
 }
@@ -522,7 +517,7 @@ div.icon-config-upgrade {
 }
 /* Config System item icon */
 div.icon-config-setup {
-    background: transparent url(../images/admin/config/icon_config_setup.png) no-repeat !important; 
+    background: transparent url(../images/admin/config/icon_config_system.png) no-repeat !important; 
     width:36px;
     height:36px;
 }
