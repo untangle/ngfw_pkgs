@@ -9,12 +9,10 @@ Standards-Version: 3.8.0
 Package: untangle-libitem-lite-package
 Architecture: all
 Depends: untangle-libitem-shield,untangle-libitem-spyware,untangle-libitem-webfilter,untangle-libitem-clam,untangle-libitem-protofilter,untangle-libitem-firewall,untangle-libitem-spamassassin,untangle-libitem-phish,untangle-libitem-openvpn,untangle-libitem-ips,untangle-libitem-reporting, untangle-libitem-cpd
-Conflicts: untangle-libitem-opensource-package
-Provides: untangle-libitem-opensource-package
-Replaces: untangle-libitem-opensource-package
 XB-View-Position: 10
 XB-Display-Name: Lite Package
 XB-Untangle-Pkg-Type: lib_item
+XB-Untangle-Hide: untangle-libitem-premium-package, untangle-libitem-standard-package
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
  AAAK8AAACvABQqw0mAAAABx0RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzIENTNAay06AAAAxl
  SURBVFiFrZlbjF3XWcd/31rr7HObM2cunhk7cdzEcZqitGkckri0JIGmUiHlIqgUKFKEVAFSeUNB
@@ -196,6 +194,7 @@ Depends: untangle-node-webfilter
 XB-View-Position: 10
 XB-Display-Name: Web Filter Lite
 XB-Untangle-Pkg-Type: lib_item
+XB-Untangle-Hide: untangle-libitem-sitefilter
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA
  IGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAzKSURBVHjarJl/cBXX
  dcc/d9/q59OTkIUkMAIMCEGQsEE0YMSPTl27xOPaqcm0njjt1JOU2rWb4pTMUDq2AxlMbBlDEkwB
@@ -465,6 +464,7 @@ Depends: untangle-node-spamassassin
 XB-View-Position: 61
 XB-Display-Name: Spam Blocker Lite
 XB-Untangle-Pkg-Type: lib_item
+XB-Untangle-Hide: untangle-libitem-commtouchas
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
  AAALEgAACxIB0t1+/AAAABZ0RVh0Q3JlYXRpb24gVGltZQAwOS8xNC8xMVdbHYMAAAAYdEVYdFNv
  ZnR3YXJlAEFkb2JlIEZpcmV3b3Jrc0+zH04AABDPSURBVFiFrZl7lB1VlcZ/55yqunXv7b7d6Uc6
