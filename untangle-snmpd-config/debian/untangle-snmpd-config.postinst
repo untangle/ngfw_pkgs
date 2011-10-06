@@ -19,6 +19,10 @@ if [ -z "$2" ] && ! grep -q "UDP" $DEFAULT_FILE ; then
    sed -i "s/^TRAPDRUN=.*/TRAPDRUN=no/" $DEFAULT_FILE
 fi
 
+# add snmp to services followed by monit
 touch /etc/untangle/monit-to-restart
+
+# disable monit monitoring for now
+/usr/share/untangle/bin/snmpd-restart
     
 exit 0
