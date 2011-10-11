@@ -9,9 +9,9 @@ ALIAS=$(hostname -f)
 
 addgroup uvmlogin 2>/dev/null
 
-if [ -z "$ALIAS" ] || [ "$ALIAS" = "Knoppix.metaloft.com" ] ; then
+if [ -z "$ALIAS" ] ; then
     echo setting ALIAS to default value
-    ALIAS=router.example.com
+    ALIAS=hostname.example.com
 fi
 
 sed -e 's/NO_START=1/NO_START=0/' -i /etc/default/apache2
