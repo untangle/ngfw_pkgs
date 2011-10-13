@@ -56,9 +56,13 @@ if [ ! "$theirAdminAccount" = "$ourAdminAccount" ] ; then
   slapindex -f $SLAPD_CONFIG
 fi
 
-update-rc.d $SERVICE start 16 2 3 4 5 . stop 84 1 . >/dev/null
-ourInit $SERVICE restart
+# 9.1 slapd is no longer used but we keep it around for the conversion process
+# No longer start the service with update-rc.d or restart the daemon
 
-touch /etc/untangle/monit-to-restart
+#update-rc.d $SERVICE start 16 2 3 4 5 . stop 84 1 . >/dev/null
+#ourInit $SERVICE restart
+
+# remove the monit file if present
+rm -f /etc/untangle-monit/slapd_all.conf
     
 exit 0
