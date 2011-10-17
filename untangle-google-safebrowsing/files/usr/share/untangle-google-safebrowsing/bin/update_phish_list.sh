@@ -21,15 +21,16 @@ if [ -f $LOCK_FILE ] ; then
 else
     echo $$ > $LOCK_FILE
 fi
+echo $#
 # If this is the first time, the version is -1
 if [ ! -f $HOME_DIR/lib/$PHISH_LIST.ver ] ; then
-    if [ `date "+%H"` -eq $INITIAL_LOAD_HOUR ] ; then 
+    if [ $# -gt 0 -o `date "+%H"` -eq $INITIAL_LOAD_HOUR ] ; then 
         echo "Initiliazing..."
     else 
         # Because the load caused by the initial loadout
         # If we detect that this is the first time this has been run we just exit unless 
         # it is the 24th hour of the day
-        echo "Initial load can only be performed at the ${INITIAL_LOAD_HOUR}th hour" 
+        echo "Initial load can only be performed at the ${INITIAL_LOAD_HOUR}th hour (override with -f)" 
         rm -f $LOCK_FILE ; exit 0
     fi 
     echo "-1" > $HOME_DIR/lib/$PHISH_LIST.ver
