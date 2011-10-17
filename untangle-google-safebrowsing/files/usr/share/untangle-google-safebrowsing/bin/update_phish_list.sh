@@ -11,7 +11,7 @@ PHISH_LIST="goog-black-hash"
 API_KEY="ABQIAAAAcF3DrVo7y87-tH8HDXqeYBTJqIcXJiJ1Klr7Vk1tUUBxWLpa4w"
 HOME_DIR="/usr/share/untangle-google-safebrowsing"
 LOCK_FILE="/tmp/$PHISH_LIST.update.pid"
-INITIAL_LOAD_HOUR="24"
+INITIAL_LOAD_HOUR="23"
 
 # Check for another process
 if [ -f $LOCK_FILE ] ; then
