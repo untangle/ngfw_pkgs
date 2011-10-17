@@ -46,7 +46,13 @@ echo "Current Phish   List Version: $PHISH_LIST_VERSION"
 echo "Downloading updates..."
 echo "wget -q \"http://sb.google.com/safebrowsing/update?client=api&apikey=$API_KEY&version=$PHISH_LIST:1:$PHISH_LIST_VERSION\" -O /tmp/$PHISH_LIST.$PHISH_LIST_VERSION"
 wget -q "http://sb.google.com/safebrowsing/update?client=api&apikey=$API_KEY&version=$PHISH_LIST:1:$PHISH_LIST_VERSION" -O /tmp/$PHISH_LIST.$PHISH_LIST_VERSION
-echo "Downloading updates...done"
+if [ $? != 0 ] ; then
+    echo "Downloading updates...failed"
+    echo "wget returned an error"
+    exit 1
+else
+    echo "Downloading updates...done"
+fi
 
 # An empty file means no updates
 if [ ! -s /tmp/$PHISH_LIST.$PHISH_LIST_VERSION ] ; then
