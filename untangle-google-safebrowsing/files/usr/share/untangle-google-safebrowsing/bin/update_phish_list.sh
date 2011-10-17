@@ -8,7 +8,8 @@
 #
 
 PHISH_LIST="goog-black-hash"
-API_KEY="ABQIAAAAcF3DrVo7y87-tH8HDXqeYBTJqIcXJiJ1Klr7Vk1tUUBxWLpa4w"
+#API_KEY="ABQIAAAAcF3DrVo7y87-tH8HDXqeYBTJqIcXJiJ1Klr7Vk1tUUBxWLpa4w"
+API_KEY="ABQIAAAADeGMABJtwtXxRtSCFqAh0hSCR3xUxns-zIMU4EaPNOmpirNj5g"
 HOME_DIR="/usr/share/untangle-google-safebrowsing"
 LOCK_FILE="/tmp/$PHISH_LIST.update.pid"
 INITIAL_LOAD_HOUR="23"
@@ -43,6 +44,7 @@ PHISH_LIST_VERSION="`cat $HOME_DIR/lib/$PHISH_LIST.ver`"
 echo "Current Phish   List Version: $PHISH_LIST_VERSION"
 
 echo "Downloading updates..."
+echo "wget -q \"http://sb.google.com/safebrowsing/update?client=api&apikey=$API_KEY&version=$PHISH_LIST:1:$PHISH_LIST_VERSION\" -O /tmp/$PHISH_LIST.$PHISH_LIST_VERSION"
 wget -q "http://sb.google.com/safebrowsing/update?client=api&apikey=$API_KEY&version=$PHISH_LIST:1:$PHISH_LIST_VERSION" -O /tmp/$PHISH_LIST.$PHISH_LIST_VERSION
 echo "Downloading updates...done"
 
