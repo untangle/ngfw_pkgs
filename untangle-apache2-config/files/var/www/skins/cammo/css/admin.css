@@ -483,44 +483,51 @@ button.icon-autorefresh {
 /* Config Network item icon */
 div.icon-config-network {
     background: transparent url(../images/admin/config/icon_config_network.png) no-repeat !important; 
-    width:36px;
-    height:36px;
+    margin-top:4px;
+    width:34px;
+    height:34px;
 }
 /* Config Administration item icon */
 div.icon-config-admin {
     background: transparent url(../images/admin/config/icon_config_admin.png) no-repeat !important; 
-    width:36px;
-    height:36px;
+    margin-top:4px;
+    width:34px;
+    height:34px;
 }
 /* Config Email item icon */
 div.icon-config-email {
     background: transparent url(../images/admin/config/icon_config_email.png) no-repeat !important; 
-    width:36px;
-    height:36px;
+    margin-top:4px;
+    width:34px;
+    height:34px;
 }
 /* Config Local Directory item icon */
 div.icon-config-directory {
     background: transparent url(../images/admin/config/icon_config_directory.png) no-repeat !important; 
-    width:36px;
-    height:36px;
+    margin-top:4px;
+    width:34px;
+    height:34px;
 }
 /* Config System Info item icon */
 div.icon-config-support {
     background: transparent url(../images/admin/config/icon_config_systeminfo.png) no-repeat !important; 
-    width:36px;
-    height:36px;
+    margin-top:4px;
+    width:34px;
+    height:34px;
 }
 /* Config Upgrades Available item icon */
 div.icon-config-upgrade-available {
     background: transparent url(../images/admin/config/icon_config_upgrade_available.png) no-repeat !important; 
-    width:36px;
-    height:36px;
+    margin-top:4px;
+    width:34px;
+    height:34px;
 }
 /* Config Upgrades unavailable item icon */
 div.icon-config-upgrade {
     background: transparent url(../images/admin/config/icon_config_upgrade.png) no-repeat !important; 
-    width:36px;
-    height:36px;
+    margin-top:4px;
+    width:34px;
+    height:34px;
 }
 /* Config System item icon */
 div.icon-config-setup {
@@ -577,7 +584,7 @@ td.app-item-center div.text {
 }
 /* app item config display name text */
 td.app-item-center div.text-center {
-    top: 15px;
+    top: 18px;
 }
 /* app item action text */
 td.app-item-center div.action {
