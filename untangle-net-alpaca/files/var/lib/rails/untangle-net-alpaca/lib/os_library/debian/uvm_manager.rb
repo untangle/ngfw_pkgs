@@ -76,6 +76,7 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
   ## Tell the UVM that there has been a change in the alpaca settings.  This is only used when something
   ## Changes but doesn't call the network manager.
   def hook_update_configuration
+    write_network_configuration_file
     run_command( UvmUpdateConfiguration )
   end
 
