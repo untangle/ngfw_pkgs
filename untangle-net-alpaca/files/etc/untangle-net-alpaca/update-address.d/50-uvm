@@ -43,7 +43,10 @@ if [ ! -f "${UCLI}" ]; then
 fi
 
 ## Write the new config file and tell the untangle-vm to read it
-/usr/share/untangle-net-alpaca/scripts/uvm/write-uvm-config
+#We can't do this here because it hangs...
+#/usr/share/untangle-net-alpaca/scripts/uvm/write-uvm-config
+
+
 ${UCLI} refreshNetworkConfig
 
 ## Just in case these settings were lost.
