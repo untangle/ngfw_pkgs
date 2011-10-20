@@ -63,7 +63,7 @@ fi
 #ourInit $SERVICE restart
 
 # remove the monit file if present
-rm -f /etc/untangle-monit/slapd_all.conf
+rm -f /etc/untangle/monit.d/slapd_all.conf
 touch /etc/untangle/monit-to-restart
 
 exit 0
