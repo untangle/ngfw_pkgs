@@ -1,2 +1,2 @@
-* * */1 * * root /usr/share/untangle-google-safebrowsing/bin/update_malware_list.sh -f > /dev/null 2>&1
-* * */1 * * root /usr/share/untangle-google-safebrowsing/bin/update_phish_list.sh -f > /dev/null 2>&1
+0 0 * * * root /usr/share/untangle-google-safebrowsing/bin/update_malware_list.sh -f > /dev/null 2>&1
+0 0 * * * root /usr/share/untangle-google-safebrowsing/bin/update_phish_list.sh -f > /dev/null 2>&1
