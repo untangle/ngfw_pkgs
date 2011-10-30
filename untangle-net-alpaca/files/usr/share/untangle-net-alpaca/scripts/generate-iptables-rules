@@ -82,4 +82,5 @@ echo "[`date`] Running ${IPTABLES_DIRECTORY} scripts"
 
 run_iptables_scripts
 
-echo "[`date`] Complete" 
+echo "[`date`] Running ${IPTABLES_DIRECTORY} scripts done." 
+
