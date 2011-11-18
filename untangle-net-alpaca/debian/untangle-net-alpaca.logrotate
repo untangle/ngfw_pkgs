@@ -1,5 +1,6 @@
 /var/log/untangle-net-alpaca/*.log {
 rotate 4
+missingok
 size 500k
 compress
 notifempty
