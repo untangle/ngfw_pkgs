@@ -105,7 +105,7 @@ cpd_node = nil
 local function _run_node_function( function_name, ... )
    if ( remote_uvm_context == nil ) then
       logger:debug( "Need a new UVM context, attempting to create a new instance." )
-      remote_uvm_context = untangle.ServiceProxy:new( "localhost", 80, "http://localhost/webui/JSON-RPC", "RemoteUvmContext" )
+      remote_uvm_context = untangle.ServiceProxy:new( "localhost", 80, "http://localhost/webui/JSON-RPC", "UvmContext" )
    end
 
    if (  cpd_node == nil ) then

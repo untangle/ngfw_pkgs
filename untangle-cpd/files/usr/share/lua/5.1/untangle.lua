@@ -181,4 +181,4 @@ function ServiceProxy:find_object( result, path )
    return object
 end
 
-remote_uvm_context = ServiceProxy:new( "localhost", 80, "http://localhost/webui/JSON-RPC", "RemoteUvmContext" )
+remote_uvm_context = ServiceProxy:new( "localhost", 80, "http://localhost/webui/JSON-RPC", "UvmContext" )
