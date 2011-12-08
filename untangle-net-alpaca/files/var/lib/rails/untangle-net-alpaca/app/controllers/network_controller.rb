@@ -221,6 +221,9 @@ class NetworkController < ApplicationController
     modules_enabled = "" if modules_enabled.nil?
     if ( s["enable_sip_helper"] )
       modules_enabled += " nf_nat_sip nf_conntrack_sip "
+    else
+      modules_enabled = modules_enabled.gsub( "nf_nat_sip", "" )
+      modules_enabled = modules_enabled.gsub( "nf_conntrack_sip", "" )
     end
     alpaca_settings.modules_enabled = modules_enabled.strip
     alpaca_settings.save
