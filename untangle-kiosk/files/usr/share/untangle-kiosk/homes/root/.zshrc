@@ -231,6 +231,3 @@ source ~/.zsh.prompt
 source ~/.zsh.alias
 source ~/.zsh.function
 
-if [ -d /usr/share/untangle/conf ] ; then
-    touch /usr/share/untangle/conf/terminalActivated-flag
-fi
