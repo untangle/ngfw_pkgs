@@ -37,7 +37,7 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.EditorGridPanel, {
             {name:"s-intf",displayName: Ung.Alpaca.Util._("Source Interface"), type: "checkgroup", values:this.ruleInterfaceValues, visible: true},
             {name:"s-addr",displayName: Ung.Alpaca.Util._("Source Address"), type: "text",vtype:"address", visible: true},
             {name:"s-port",displayName: Ung.Alpaca.Util._("Source Port"), type: "text",vtype:"port", visible: false},
-            {name:"s-mac-addr",displayName: Ung.Alpaca.Util._("Source Mac Address"), type: "text", visible: false}
+            {name:"s-mac-addr",displayName: Ung.Alpaca.Util._("Source Mac Address"), type: "text", visible: true}
         ];
 
         this.store = new Ext.data.SimpleStore({
