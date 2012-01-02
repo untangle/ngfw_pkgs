@@ -59,13 +59,18 @@ plan on enabling ssh access to the system.\n" 0 0 "New Password" "" "Confirm Pas
     sudo usermod -p `echo $password1 | openssl passwd -1 -stdin` root
   fi
 fi
-$DIALOG $COMMON_OPTS --title "Shell Use Warning" --msgbox "You will be prompted to enter the super-user password to proceed.\n
+$DIALOG $COMMON_OPTS --title "Terminal Use Warning" --msgbox "You will be prompted to enter the super-user password to proceed.\n
 \n
 Note: this password is not the same as the web interface admin password.\n
 It was set the first time the Terminal button was pressed.\n
 \n
-Additionally, changes made at the command line are not supported by $OEM_NAME and\n
+\n
+WARNING:\n
+Changes made via the command line are NOT supported and can seriouly\n
+interfere with the proper operation of $OEM_NAME.\n
+Changes made via the command line are NOT supported by $OEM_NAME and\n
 can severely limit your support options.\n
+It is recommended to disable upgrades if any changes are made.\n
 \n
 This feature is for advanced users only.\n" 0 0
 
