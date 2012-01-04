@@ -25,7 +25,7 @@ if [ $MEM -gt 3900000 ] ; then
     WORK_MEM=16MB 
     EFFECTIVE_CACHE_SIZE=1024MB
     SHMMAX="134217728"
-if [ $MEM -gt 2900000 ] ; then
+elif [ $MEM -gt 2900000 ] ; then
     echo "    Using settings for 3+ gigabytes of memory"
     MAX_FSM_PAGES=2000000
     WORK_MEM=8MB 
