@@ -10,7 +10,7 @@ Package: untangle-ntp-config
 Architecture: all
 Provides: untangle-ntpdate-config
 Replaces: untangle-ntpdate-config
-Conflicts: untangle-ntpdate-config
-Depends: ntpdate, ntp
+Conflicts: untangle-ntpdate-config, ntpdate
+Depends: ntp
 Description: The Untangle ntp config
  The Untangle autoconfigurator for ntp.
