@@ -8,6 +8,7 @@ Ung.TimeZoneData = [
     ["GMT-08:00", "Pacific Time (US & Canada), Tijuana", "US/Pacific"],
     ["GMT-07:00", "Chihuahua, La Paz, Mazatlan", "America/Chihuahua"],
     ["GMT-07:00", "Mountain Time (US & Canada)", "US/Mountain"],
+    ["GMT-07:00", "Mountain Standard Time (Arizona)", "US/Arizona"],
     ["GMT-06:00", "Central Time (US & Canada & Central America)", "US/Central"],
     ["GMT-06:00", "Guadalajara, Mexico City, Monterrey", "America/Mexico_City"],
     ["GMT-06:00", "Saskatchewan", "Canada/Saskatchewan"],
