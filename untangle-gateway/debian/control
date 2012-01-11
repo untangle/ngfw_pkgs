@@ -8,9 +8,6 @@ Standards-Version: 3.8.0
 
 Package: untangle-gateway
 Architecture: all
-Provides: untangle-appliance-int, untangle-gateway-light, ntpdate
-Conflicts: untangle-appliance-int, untangle-gateway-light, ntpdate
-Replaces: untangle-appliance-int, untangle-gateway-light, ntpdate
 Depends: untangle-vm, untangle-kiosk, untangle-ntp-config, untangle-bootsplash, untangle-restore-tools, untangle-exim4-config, untangle-linux-config, untangle-system-config, untangle-update-manager, ssh, smartmontools, untangle-extra-utils, untangle-kernel-modules-i386 | untangle-kernel-modules-amd64, untangle-client-local, untangle-postgresql-config, untangle-dhclient-config, untangle-ddclient-config, untangle-snmpd-config, iceweasel | firefox | mozilla | opera
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle appliance internal
