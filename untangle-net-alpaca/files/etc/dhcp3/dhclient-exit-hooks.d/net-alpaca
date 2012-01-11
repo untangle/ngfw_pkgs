@@ -48,7 +48,7 @@ case "$reason" in
         # Do nothing
         ;;
 
-    PREINIT)
+    PREINIT|FAIL)
         # Do nothing
         ;;
 
@@ -64,7 +64,7 @@ case "$reason" in
         fi
         ;;
 
-    EXPIRE|FAIL|RELEASE|STOP)
+    EXPIRE|RELEASE|STOP)
         restart_networking
         ;;
 
