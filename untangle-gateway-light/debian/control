@@ -8,7 +8,10 @@ Standards-Version: 3.8.0
 
 Package: untangle-gateway-light
 Architecture: all
-Depends: untangle-gateway
+Provides: untangle-appliance
+Conflicts: untangle-appliance
+Replaces: untangle-appliance
+Depends: untangle-vm, untangle-client-local, untangle-postgresql-config, untangle-dhclient-config, untangle-ddclient-config, untangle-snmpd-config, iceweasel | firefox | mozilla | opera, ntp | ntp-server, ntpdate
 Description: The Untangle gateway light 
  The light version of the Untangle Gateway.
  Contains everything you need to run the Untangle Gateway, minus the kiosk.
