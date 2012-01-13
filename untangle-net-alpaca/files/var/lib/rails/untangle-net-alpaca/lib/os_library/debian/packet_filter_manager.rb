@@ -566,6 +566,9 @@ EOF
     end
     # save the connmark
     text << "#{IPTablesCommand} #{Chain::MarkLocal.args} -j CONNMARK --save-mark --mask #{MaskLocalAndFirstAlias}"
+    # erase the mark in the forward chain - this is we don't want to connmark port forwarded traffic as local
+    text << "#{IPTablesCommand} -t mangle -I FORWARD -j     MARK --set-mark 0/#{MaskLocalAndFirstAlias}"
+    text << "#{IPTablesCommand} -t mangle -I FORWARD -j CONNMARK --set-mark 0/#{MaskLocalAndFirstAlias}"
 
     block_all = Firewall.find( :first, :conditions => [ "system_id = ?", "block-all-local-04a98864"] )
 
