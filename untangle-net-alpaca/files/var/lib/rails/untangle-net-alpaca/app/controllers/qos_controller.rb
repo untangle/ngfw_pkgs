@@ -29,14 +29,13 @@ class QosController < ApplicationController
 
     qos_classes = QosClass.find( :first )
     if qos_classes.nil?
-      QosClass.new( :class_id => 0, :upload_reserved => 80, :upload_limit => 100, :download_reserved => 80, :download_limit => 100 ).save
-      QosClass.new( :class_id => 1, :upload_reserved => 10, :upload_limit => 100, :download_reserved => 10, :download_limit => 100 ).save
-      QosClass.new( :class_id => 2, :upload_reserved =>  5, :upload_limit => 100, :download_reserved =>  5, :download_limit => 100 ).save
-      QosClass.new( :class_id => 3, :upload_reserved =>  1, :upload_limit => 100, :download_reserved =>  1, :download_limit => 100 ).save
-      QosClass.new( :class_id => 4, :upload_reserved =>  1, :upload_limit => 100, :download_reserved =>  1, :download_limit => 100 ).save
-      QosClass.new( :class_id => 5, :upload_reserved =>  1, :upload_limit =>  75, :download_reserved =>  1, :download_limit =>  75 ).save
-      QosClass.new( :class_id => 6, :upload_reserved =>  1, :upload_limit =>  50, :download_reserved =>  1, :download_limit =>  50 ).save
-      QosClass.new( :class_id => 7, :upload_reserved =>  1, :upload_limit =>  10, :download_reserved =>  1, :download_limit =>  10 ).save
+      QosClass.new( :class_id => 1, :upload_reserved => 50, :upload_limit => 100, :download_reserved => 50, :download_limit => 100 ).save
+      QosClass.new( :class_id => 2, :upload_reserved => 25, :upload_limit => 100, :download_reserved => 25, :download_limit => 100 ).save
+      QosClass.new( :class_id => 3, :upload_reserved => 12, :upload_limit => 100, :download_reserved => 12, :download_limit => 100 ).save
+      QosClass.new( :class_id => 4, :upload_reserved =>  6, :upload_limit => 100, :download_reserved =>  6, :download_limit => 100 ).save
+      QosClass.new( :class_id => 5, :upload_reserved =>  3, :upload_limit =>  75, :download_reserved =>  3, :download_limit =>  75 ).save
+      QosClass.new( :class_id => 6, :upload_reserved =>  2, :upload_limit =>  50, :download_reserved =>  2, :download_limit =>  50 ).save
+      QosClass.new( :class_id => 7, :upload_reserved =>  2, :upload_limit =>  10, :download_reserved =>  2, :download_limit =>  10 ).save
     end
     settings["qos_classes"] = QosClass.find( :all )
 
