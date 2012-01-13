@@ -34,7 +34,9 @@ done
 
 touch /etc/untangle/monit-to-restart
     
-# remove obsolete files (10.0)
+# remove obsolete files (9.1)
 rm -rf /etc/untangle-net-alpaca/scripts
-    
+# remove obsolote files (9.2)
+rm -f /etc/untangle-net-alpaca/iptables-rules.d/900-single-nic
+
 exit 0
