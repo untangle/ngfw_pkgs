@@ -56,7 +56,8 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   MarkFirstAlias = 0x10000000
   
   ## Mark that indicates a  packet is destined to one of the machines IP addresses
-  MarkInput    = 0x00010000
+  MarkLocal    = 0x00010000
+  MaskLocalAndFirstAlias = 0x10010000
 
   ## Mark that the packet filter used to indicate that this packet should only be filter
   ## if it is destined to the local box.
@@ -354,11 +355,11 @@ mark_local_ip()
    ## Verify the interface was specified. 
    test -z "${t_intf_name}" && return 0
    test -z "${t_intf_index}" && return 0
-      
+
    for t_ip in `get_ip_addresses ${t_intf_name}` ; do
 
      # Set this mark if the traffic is going to any one of Untangles IPs
-     #{IPTablesCommand} #{Chain::MarkLocal.args} -d ${t_ip} -j MARK --or-mark $(( #{MarkInput} ))
+     #{IPTablesCommand} #{Chain::MarkLocal.args} -d ${t_ip} -j MARK --or-mark $(( #{MarkLocal} ))
 
      if [ "${t_first_alias}x" = "truex" ]; then
        # Set this mark if the traffic is going to the first alias of the interface in question
@@ -555,9 +556,16 @@ EOF
       fw_text << b 
     end
 
+    # Mark the packet using the connmark (both local and first alias).
+    text << "#{IPTablesCommand} #{Chain::MarkLocal.args} -j CONNMARK --restore-mark --mask $(( #{MaskLocalAndFirstAlias} ))"
+    # If the packet is not the first packet in a sesison, return (its already been marked above using the connmark if its local)
+    text << "#{IPTablesCommand} #{Chain::MarkLocal.args} -m conntrack ! --ctstate NEW -j RETURN"
+    # Add the local/first alias marks for each interface
     interface_list.each do |interface|
       text << local_rules( interface )
     end
+    # save the connmark
+    text << "#{IPTablesCommand} #{Chain::MarkLocal.args} -j CONNMARK --save-mark --mask #{MaskLocalAndFirstAlias}"
 
     block_all = Firewall.find( :first, :conditions => [ "system_id = ?", "block-all-local-04a98864"] )
 
@@ -732,6 +740,7 @@ EOF
     index = interface.index
 
     rules = []
+
 
     rules << "mark_local_ip #{name} #{index}"
 

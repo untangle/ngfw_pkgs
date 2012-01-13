@@ -24,7 +24,7 @@ class OSLibrary::Debian::Filter::LocalHandler
     filters["chain"] = "INPUT"
 
     ## Also indicate the mark that should be set
-    m = OSLibrary::Debian::PacketFilterManager::MarkInput
+    m = OSLibrary::Debian::PacketFilterManager::MarkLocal
     filters["mark"] = Mark.expand( filters["mark"], [[ m, m ]] )
   end
 
