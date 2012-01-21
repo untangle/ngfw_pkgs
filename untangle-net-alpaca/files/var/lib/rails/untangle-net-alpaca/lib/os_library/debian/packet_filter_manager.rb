@@ -140,7 +140,12 @@ EOF
 EOF
 
     MarkLocal = Chain.new( "mark-local", "mangle", "PREROUTING", <<'EOF' )
-## This chain marks the local and first alias marks
+## This chain marks the local and first alias marks on the packet and connmark
+##
+EOF
+
+    MarkLocalOutput = Chain.new( "mark-local-output", "mangle", "OUTPUT", <<'EOF' )
+## This chain marks the local and first alias marks on the packet and connmark
 ##
 EOF
 
@@ -245,7 +250,7 @@ EOF
     ## Chain used to capture / drop traffic for the captive portal.
     CaptivePortalCapture = Chain.new( "untangle-cpd-capture", "mangle", nil )
 
-    Order = [ MarkInterface, MarkSrcInterface, MarkDstInterface, MarkLocal, PostNat, SNatRules,
+    Order = [ MarkInterface, MarkSrcInterface, MarkDstInterface, MarkLocal, MarkLocalOutput, PostNat, SNatRules,
               FirewallBlock, FirewallMarkReject, FirewallMarkDrop, 
               FirewallMarkInputReject, FirewallMarkInputDrop, FirewallNat,
               FirewallRules, 
@@ -569,6 +574,14 @@ EOF
     # erase the mark in the forward chain - this is we don't want to connmark port forwarded traffic as local
     text << "#{IPTablesCommand} -t mangle -I FORWARD -j     MARK --set-mark 0/#{MaskLocalAndFirstAlias}"
     text << "#{IPTablesCommand} -t mangle -I FORWARD -j CONNMARK --set-mark 0/#{MaskLocalAndFirstAlias}"
+
+    # Mark the outbound packet using the connmark (both local and first alias).
+    text << "#{IPTablesCommand} #{Chain::MarkLocalOutput.args} -j CONNMARK --restore-mark --mask $(( #{MaskLocalAndFirstAlias} ))"
+    # If the packet is not the first packet in a sesison, return (its already been marked above using the connmark if its local)
+    text << "#{IPTablesCommand} #{Chain::MarkLocalOutput.args} -m conntrack ! --ctstate NEW -j RETURN"
+    # IF the packet reaches this point, it is a new session and since its in the OUTPUT chain we know its a local-initiated session
+    text << "#{IPTablesCommand} #{Chain::MarkLocalOutput.args} -j     MARK --set-mark #{MaskLocalAndFirstAlias}/#{MaskLocalAndFirstAlias}"
+    text << "#{IPTablesCommand} #{Chain::MarkLocalOutput.args} -j CONNMARK --set-mark #{MaskLocalAndFirstAlias}/#{MaskLocalAndFirstAlias}"
 
     block_all = Firewall.find( :first, :conditions => [ "system_id = ?", "block-all-local-04a98864"] )
 
