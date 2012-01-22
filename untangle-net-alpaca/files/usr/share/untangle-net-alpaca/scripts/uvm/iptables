@@ -6,7 +6,7 @@ UVM_PID="invalid"
 
 TUN_DEV=utun
 TUN_ADDR="192.0.2.43"
-MASK_ANTISUB=$((0x01000000))
+MASK_BYPASS=$((0x01000000))
 MASK_NOTRACK=$((0x02000000))
 MASK_FIRST_ALIAS=$((0x10000000))
 MASK_DUPE=$((0x20000000))
@@ -45,12 +45,12 @@ uvm_shield_traffic()
     echo "[`date`] Shield is running, inserting queue rules."
 
     ## Queue any TCP that is that is now bypassed (SYN packet only)
-    ${IPTABLES} -t mangle -A FORWARD -p tcp -m mark --mark 0/${MASK_ANTISUB} \
+    ${IPTABLES} -t mangle -A FORWARD -p tcp -m mark --mark 0/${MASK_BYPASS} \
         -m conntrack --ctstate NEW \
         -j NFQUEUE --queue-num ${SHIELD_QUEUE_NUM}
 
     ## Queue all UDP packets that arent bypassed (first packet only)
-    ${IPTABLES} -t mangle -A FORWARD -p udp -m mark --mark 0/${MASK_ANTISUB} \
+    ${IPTABLES} -t mangle -A FORWARD -p udp -m mark --mark 0/${MASK_BYPASS} \
         -m addrtype --dst-type unicast -m conntrack --ctstate NEW \
         -j NFQUEUE --queue-num ${SHIELD_QUEUE_NUM}
 }
@@ -137,26 +137,20 @@ uvm_iptables_rules()
     # Do not conntrack entries in that have the NOTRACK bit set.
     ${IPTABLES} -A OUTPUT -t raw -m mark --mark ${MASK_NOTRACK}/${MASK_NOTRACK} -j NOTRACK
 
-    # dont queue ICMP packets released from the queue.
+    # Dont queue ICMP packets released from the queue.
     ${IPTABLES} -A PREROUTING -t mangle -m mark --mark ${MASK_DUPE}/${MASK_DUPE} -j RETURN
 
-    ## Don't mangle resets, for some reason the routing drops them if they
-    ## get mangled.
-    ${IPTABLES} -A OUTPUT -t mangle -j RETURN -p tcp --tcp-flags SYN,ACK,RST ACK,RST
+    # Set the bypass bit so that the untangle-vm never re-queues its own output
+    ${IPTABLES} -A OUTPUT -t mangle -j MARK --or-mark ${MASK_BYPASS}
 
-    #dont queue anthing on output
-    # mangling notracked packets from the raw socket causes the packets to
-    # be silently dropped in routing.  so we need to let them pass
-    ${IPTABLES} -A OUTPUT -t mangle -j MARK -m mark --mark 0/${MASK_NOTRACK} --or-mark ${MASK_ANTISUB}
+    # Dont queue anthing from localhost
+    ${IPTABLES} -A PREROUTING -t mangle -i lo -j MARK --or-mark ${MASK_BYPASS}
 
-    #dont queue anthing from localhost
-    ${IPTABLES} -A PREROUTING -t mangle -i lo -j MARK --or-mark ${MASK_ANTISUB}
+    # Dont queue anthing that was liberated, or is bypassed
+    ${IPTABLES} -A PREROUTING -t mangle -m connmark --mark ${MASK_BYPASS}/${MASK_BYPASS} -j MARK --or-mark  ${MASK_BYPASS}
+    ${IPTABLES} -A PREROUTING -t mangle -m mark --mark ${MASK_BYPASS}/${MASK_BYPASS}  -j RETURN
 
-    #dont queue anthing that was liberated, or is connmarked antisubscribe
-    ${IPTABLES} -A PREROUTING -t mangle -m connmark --mark ${MASK_ANTISUB}/${MASK_ANTISUB} -j MARK --or-mark  ${MASK_ANTISUB}
-    ${IPTABLES} -A PREROUTING -t mangle -m mark --mark ${MASK_ANTISUB}/${MASK_ANTISUB}  -j RETURN
-
-    #redirect  anthing re-injected packets from the TUN interface to us
+    # Redirect any re-injected packets from the TUN interface to us
     ## Add a redirect rule for each address,
     ${IPTABLES} -t nat -N "${LOCAL_UVM_REDIRECT}" &> /dev/null
     ${IPTABLES} -t nat -F "${LOCAL_UVM_REDIRECT}"
@@ -170,11 +164,11 @@ uvm_iptables_rules()
             --destination ${t_address}  -j DNAT --to-destination ${t_address}:${TCP_REDIRECT_PORTS}
     done
     
+    # Redirect TCP traffic to the local ports (where the untangle-vm is listening)
     ${IPTABLES} -A "${LOCAL_UVM_REDIRECT}"  -t nat -i ${TUN_DEV} -t nat -p tcp \
         -j REDIRECT --to-ports ${TCP_REDIRECT_PORTS}
 
     ## Guard the ports (this part uses : not -)
-    
     t_tcp_port_range=`echo ${TCP_REDIRECT_PORTS} | sed 's|-|:|'`
     ${IPTABLES} -t filter -I INPUT 1 ! -i utun -p tcp --destination-port ${t_tcp_port_range} \
         -m conntrack --ctstate NEW,INVALID -j DROP
@@ -182,16 +176,17 @@ uvm_iptables_rules()
     # when packets are released from the queue they restart at the top of the table.
     # we set this mark on them before releasing and catch conmark them so we wont catch the rest of the session 
     # or any related sesions from conntrack.
-    ${IPTABLES} -A POSTROUTING -t tune -m mark --mark ${MASK_DUPE}/${MASK_DUPE} -j CONNMARK --set-mark ${MASK_ANTISUB} 
+    ${IPTABLES} -A POSTROUTING -t tune -m mark --mark ${MASK_DUPE}/${MASK_DUPE} -j CONNMARK --set-mark ${MASK_BYPASS} 
 
     # Ignore traffic that is related to a session we are not watching.
+    # If its "related" according to iptables, then original session must have been bypassed
     ${IPTABLES} -A POSTROUTING -t tune -m conntrack --ctstate RELATED  -j RETURN
 
     # Ignore traffic that has no conntrack info because we cant NAT it.
     ${IPTABLES} -A POSTROUTING -t tune -m conntrack --ctstate INVALID  -j RETURN
 
-    # Ignore traffic that we have antisubscribed to.
-    ${IPTABLES} -A POSTROUTING -t tune -m mark --mark ${MASK_ANTISUB}/${MASK_ANTISUB}  -j RETURN
+    # Ignore bypassed traffic.
+    ${IPTABLES} -A POSTROUTING -t tune -m mark --mark ${MASK_BYPASS}/${MASK_BYPASS}  -j RETURN
 
     # Queue all of the SYN packets.
     ${IPTABLES} -A POSTROUTING -t tune -p tcp --syn -j NFQUEUE
