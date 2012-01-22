@@ -54,6 +54,7 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
 
   MarkQoSMask         = "0x00700000"
   MarkQoSInverseMask  = "0xFF8FFFFF"
+  MarkBypass          = "0x01000000"
 
   def status( wan_interfaces = nil )
     lines = `#{Service} status`
@@ -416,8 +417,9 @@ EOF
       # only mark packet
       target = "-j MARK --set-mark 0x00#{qos_settings.prioritize_tcp_control}00000/#{MarkQoSMask}"
       iptables_rules << "### Prioritize TCP control ###\n"
-      # can not mark SYN packets because uvm will set the connmark based on this
-      # iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --tcp-flags SYN SYN #{target}\n"
+      # only mark the SYN packet if its being bypassed
+      # otherwise the UVM will see the SYN's mark and set the connmark for the whole session based on this
+      iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -m mark --mark #{MarkBypass}/#{MarkBypass} -p tcp --tcp-flags SYN SYN #{target}\n"
       iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --tcp-flags RST RST #{target}\n"
       iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --tcp-flags FIN FIN #{target}\n"
     end
