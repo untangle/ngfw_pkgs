@@ -416,7 +416,7 @@ EOF
       # only mark packet
       target = "-j MARK --set-mark 0x00#{qos_settings.prioritize_tcp_control}00000/#{MarkQoSMask}"
       iptables_rules << "### Prioritize TCP control ###\n"
-      # can not mark SYN packets because uvm will set the priority based on this
+      # can not mark SYN packets because uvm will set the connmark based on this
       # iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --tcp-flags SYN SYN #{target}\n"
       iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --tcp-flags RST RST #{target}\n"
       iptables_rules << "#{IPTablesCommand} #{QoSMark.args} -p tcp --tcp-flags FIN FIN #{target}\n"
