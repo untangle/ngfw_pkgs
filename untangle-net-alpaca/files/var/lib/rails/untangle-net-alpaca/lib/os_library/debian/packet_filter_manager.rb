@@ -127,8 +127,8 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
 ## so the connmark is not accurate for interface marks
 ## So to be safe, lets just ignore all traffic that isn't between two unicast addresses
 ## Everything else will be marked using the slower mark-src-intf and mark-dst-intf
-#{IPTablesCommand} #{argss} -m addrtype ! --dst-type unicast  -j RETURN
-#{IPTablesCommand} #{argss} -m addrtype ! --src-type unicast -j RETURN
+#{IPTablesCommand} #{args} -m addrtype ! --dst-type unicast  -j RETURN
+#{IPTablesCommand} #{args} -m addrtype ! --src-type unicast -j RETURN
 
 ## This rule says if the packet is in the original direction, just copy the intf marks from the connmark/session mark
 ## The rule actually says REPLY and not ORIGINAL and thats because ctdir seems to match backwards
