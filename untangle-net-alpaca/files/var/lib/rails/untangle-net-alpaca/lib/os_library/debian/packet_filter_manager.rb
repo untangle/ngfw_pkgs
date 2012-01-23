@@ -120,9 +120,20 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
 ## If its an ORIGINAL packet, it will simply restore the intf marks from the connmark
 ## If its a REPLY packet, it will reverse the intf marks from the connmark
 #{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFF0000
+
+## Don use connmark to mark the src/dst intf of broadcast (especially DHCP) packets
+## All broadcast packets share the same conntrack
+## so DHCP for example all looks like: 0.0.0.0:67 -> 255.255.255.255:68
+## so the connmark is not accurate for interface marks
+## So to be safe, lets just ignore all traffic that isn't between two unicast addresses
+## Everything else will be marked using the slower mark-src-intf and mark-dst-intf
+#{IPTablesCommand} #{argss} -m addrtype ! --dst-type unicast  -j RETURN
+#{IPTablesCommand} #{argss} -m addrtype ! --src-type unicast -j RETURN
+
 ## This rule says if the packet is in the original direction, just copy the intf marks from the connmark/session mark
 ## The rule actually says REPLY and not ORIGINAL and thats because ctdir seems to match backwards
 #{IPTablesCommand} #{args} -m conntrack --ctdir REPLY -j CONNMARK --restore-mark --mask #{BothIntfMask}
+
 EOF
 
     MarkSrcInterface = Chain.new( "mark-src-intf", "mangle", "PREROUTING", <<'EOF' )
