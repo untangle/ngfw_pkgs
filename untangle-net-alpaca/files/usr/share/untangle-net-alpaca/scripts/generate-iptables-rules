@@ -17,6 +17,7 @@ IPTABLES=iptables_debug_onerror
 EBTABLES=/sbin/ebtables
 # EBTABLES=ebtables_debug
 
+LOCK_FILE=/tmp/generate-iptables-rules.lock
 
 iptables_debug()
 {
@@ -77,10 +78,30 @@ run_iptables_scripts()
     fi
 }
 
+while true ; do
+    if ( set -o noclobber; echo "$$" > "$LOCK_FILE" ) 2> /dev/null; then
+      	trap 'rm -f "$LOCK_FILE"; exit $?' INT TERM EXIT
+        
+        # critical section
+        echo "[`date`] Running ${IPTABLES_DIRECTORY} scripts [REASON: $1]" 
+        run_iptables_scripts
+        echo "[`date`] Running ${IPTABLES_DIRECTORY} scripts done." 
+        
+        rm -f "$LOCK_FILE"
+        trap - INT TERM EXIT
+        break
+    else
+        sleep .2
+        
+            # timeout
+        t_count=$(($t_count+1))
+        if [ $t_count -gt 1000 ] ; then 
+            echo "[`date`] ERROR: Failed to acquire lock file after 1000 tries."
+            echo "[`date`] ERROR: Removing \"stale\" lockfile..."
+            rm -f "$LOCK_FILE" 
+            continue;
+        fi
+    fi 
+done
 
-echo "[`date`] Running ${IPTABLES_DIRECTORY} scripts" 
-
-run_iptables_scripts
-
-echo "[`date`] Running ${IPTABLES_DIRECTORY} scripts done." 
 

@@ -28,7 +28,7 @@ insert_rules()
 {
     # make sure privileges don't persist across reboots
     if [ -f ${IPTABLES_RULES} ]; then
-        sh ${IPTABLES_RULES}
+        sh ${IPTABLES_RULES} $1
     else
         /bin/echo "The file '${IPTABLES_RULES}' does not exist"
     fi
@@ -72,7 +72,7 @@ run_function_lock()
             trap 'rm -f "$LOCK_FILE"; exit $?' INT TERM EXIT
             
             # critical section
-            ${t_function}
+            ${t_function} $2
             
             rm -f "$LOCK_FILE"
             trap - INT TERM EXIT
@@ -88,7 +88,7 @@ run_function_lock()
                 rm -f "$LOCK_FILE" 
                 log_progress_msg "Removing stale lock"
                 log_progress_msg "Forcing function to run"
-                ${t_function}
+                ${t_function} $2
                 break
             fi
         fi 
@@ -98,8 +98,8 @@ run_function_lock()
 case "$1" in
     ## start script includes stop/flush
     start|reload|restart|force-reload)
-        log_daemon_msg "Loading $DESC"
-        run_function_lock insert_rules
+        log_daemon_msg "Loading $DESC [reason: $2]"
+        run_function_lock insert_rules $2
         ;;
 
     stop)

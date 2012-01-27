@@ -38,11 +38,11 @@ uvm_shield_traffic()
     local t_queue_pid=`awk -v queue=${SHIELD_QUEUE_NUM} '{ if ( $1 == queue ) print $2 }' /proc/net/netfilter/nfnetlink_queue`
 
     if [ -z "${t_queue_pid}" ]; then 
-        echo "[`date`] Shield is not running, ignoring queue rules."
+        echo "[`date`] The untangle-shield is not running. No rules inserted."
         return
     fi
 
-    echo "[`date`] Shield is running, inserting queue rules."
+    echo "[`date`] The untangle-shield is running. Inserting queue rules."
 
     ## Queue any TCP that is that is now bypassed (SYN packet only)
     ${IPTABLES} -t mangle -A FORWARD -p tcp -m mark --mark 0/${MASK_BYPASS} \
@@ -123,7 +123,8 @@ fi
 UVM_NETWORKING_CONFIG=`uvm_home`/conf/networking.sh
 
 if [ ! -f ${UVM_NETWORKING_CONFIG} ]; then 
-  echo "[`date`] '${UVM_NETWORKING_CONFIG}' does not exist."
+  #echo "[`date`] '${UVM_NETWORKING_CONFIG}' does not exist."
+  echo "[`date`] The untangle-vm is not running. No rules inserted."
   return 0
 fi
  

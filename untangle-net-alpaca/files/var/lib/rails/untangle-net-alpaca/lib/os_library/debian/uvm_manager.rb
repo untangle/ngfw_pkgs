@@ -143,13 +143,13 @@ fi
 . ${HELPER_SCRIPT}
 
 if [ "`is_uvm_running`x" = "truex" ]; then
-  echo "[`date`] The UVM running, service rules."
+  echo "[`date`] The untangle-vm is running, inserting service rules."
   uvm_packet_filter_standard_internal
   uvm_packet_filter_secure_internal
   uvm_packet_filter_secure_external
   uvm_packet_filter_secure_public
 else
-  echo "[`date`] The UVM is currently not running"
+  echo "[`date`] The untangle-vm is currently not running."
 fi
 
 ## Should this be here?  Use type to protect older boxes.
@@ -201,7 +201,7 @@ fi
 . ${HELPER_SCRIPT}
 
 if [ "`is_uvm_running`x" != "truex" ]; then 
-  echo "[`date`] The UVM running, not inserting rules for openvpn"
+  echo "[`date`] The untangle-vm is running, not inserting rules for openvpn"
   return 0
 fi
 

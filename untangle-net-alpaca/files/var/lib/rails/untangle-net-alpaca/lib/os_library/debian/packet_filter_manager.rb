@@ -297,7 +297,7 @@ EOF
   end
 
   def hook_run_services
-    raise "Unable to iptables rules." unless run_command( "#{Service} restart" ) == 0
+    raise "Unable to iptables rules." unless run_command( "#{Service} restart packet-filter-manager" ) == 0
   end
 
   def session_redirect_create( filter, new_ip, new_port )
