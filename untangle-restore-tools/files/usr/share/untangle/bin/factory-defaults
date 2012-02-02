@@ -17,10 +17,10 @@ rm -rf /usr/share/untangle/settings/*
 createuser -U postgres -dSR untangle 2>/dev/null
 createdb -O postgres -U postgres uvm || exit 2
 
-/usr/share/untangle/bin/update-schema settings uvm
-/usr/share/untangle/bin/update-schema events uvm
-/usr/share/untangle/bin/update-schema settings untangle-node-router
-/usr/share/untangle/bin/update-schema events untangle-node-router
+/usr/share/untangle/bin/ut-update-schema settings uvm
+/usr/share/untangle/bin/ut-update-schema events uvm
+/usr/share/untangle/bin/ut-update-schema settings untangle-node-router
+/usr/share/untangle/bin/ut-update-schema events untangle-node-router
 psql -X -U postgres uvm &> /dev/null <<EOF
 INSERT INTO u_tid VALUES (1);
 INSERT INTO u_node_manager_state VALUES (nextval('hibernate_sequence'), 2);
