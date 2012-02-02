@@ -424,20 +424,22 @@ div.icon-add-row {
     cursor: pointer;
 }
 /* edit row icon */
-div.icon-edit-row {
+img.icon-edit-row {
     background:transparent url(../images/admin/icon_edit_row.gif) no-repeat center center;
     width: 100%;
     cursor: pointer;
+    height:16px;
 }
 /* delete row button icon */
 button .icon-delete-row {
     background:transparent url(../images/user/icon_remove.png) no-repeat center left !important;
 }
 /* delete row icon */
-div.icon-delete-row {
+img.icon-delete-row {
     background:transparent url(../images/admin/icon_delete_row.gif) no-repeat center center;
     width: 100%;
     cursor: pointer;
+    height:16px;
 }
 /* logout row icon */
 div.icon-logout-row {
