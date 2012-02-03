@@ -471,13 +471,24 @@ button .icon-autorefresh {
 .grid-row-deleted {
     background-color: #FF5151 !important;
 }
+.grid-row-deleted td{
+    background-color: transparent !important;
+}
+
 /* color of an added row in grid */
 .grid-row-added {
-    background-color: #21FF3A;
+    background-color: #21FF3A !important;
 }
+.grid-row-added td{
+    background-color: transparent !important;
+}
+
 /* color of a modified row in grid */
 .grid-row-modified {
-    background-color: #FFB364;
+    background-color: #FFB364 !important;
+}
+.grid-row-modified td{
+    background-color: transparent !important;
 }
 /* Config Network item icon */
 div.icon-config-network {
