@@ -34,7 +34,7 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.EditorGridPanel, {
             {name:"d-port",displayName: Ung.Alpaca.Util._("Destination Port"), type: "text",vtype:"port", visible: true},
             {name:"d-local",displayName: Ung.Alpaca.Util._("Destined Local"), type: "boolean", visible: true},
             {name:"protocol",displayName: Ung.Alpaca.Util._("Protocol"), type: "checkgroup", values: this.ruleProtocolValues, visible: true},
-            {name:"s-intf",displayName: Ung.Alpaca.Util._("Source Interface"), type: "checkgroup", values:this.ruleInterfaceValues, visible: true},
+            {name:"s-intf",displayName: Ung.Alpaca.Util._("Source Interface"), type: "radio", values:this.ruleInterfaceValues, visible: true},
             {name:"s-addr",displayName: Ung.Alpaca.Util._("Source Address"), type: "text",vtype:"address", visible: true},
             {name:"s-port",displayName: Ung.Alpaca.Util._("Source Port"), type: "text",vtype:"port", visible: false},
             {name:"s-mac-addr",displayName: Ung.Alpaca.Util._("Source Mac Address"), type: "text", visible: true}
@@ -107,6 +107,26 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.EditorGridPanel, {
                     case "boolean":
                         res="<div>&nbsp;</div>";
                         break;
+                    case "radio":
+                        var values_arr=(value!=null && value.length>0)?value.split(","):[];
+                        var out=[];
+                        for(var i=0; i<rule.values.length; i++) {
+                            var rule_value=rule.values[i][0];
+                            var rule_label=rule.values[i][1];
+                            var checked_str="";
+                            for(var j=0;j<values_arr.length; j++) {
+                                if(values_arr[j]==rule_value) {
+                                    checked_str="checked";
+                                    break;
+                                }
+                            }
+                            out.push('<div class="radio" style="width:100px; float: left; padding:3px 0;">');
+                            out.push('<input id="'+rule_value+'" class="rule_builder_radio" '+checked_str+' onchange="Ext.getCmp(\''+this.getId()+'\').changeRowValue(\''+record.id+'\',this)" style="display:inline; float:left;margin:0;" name="'+rule.name+'" value="'+rule_value+'" type="radio">');
+                            out.push('<label for="'+rule_value+'" style="display:inline;float:left;margin:0 0 0 0.6em;padding:0;text-align:left;width:50%;">'+rule_label+'</label>');
+                            out.push('</div>');
+                        }
+                        res=out.join("");
+                        break;
                     case "checkgroup":
                         var values_arr=(value!=null && value.length>0)?value.split(","):[];
                         var out=[];
@@ -156,29 +176,31 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.EditorGridPanel, {
     changeRowValue: function(recordId,valObj) {
         var record=this.store.getById(recordId);
         switch(valObj.type) {
-            case "checkbox":
-                var record_value=record.get("value");
-                var values_arr=(record_value!=null && record_value.length>0)?record_value.split(","):[];
-                if(valObj.checked) {
-                    values_arr.push(valObj.value);
-                } else {
-                    for(var i=0;i<values_arr.length;i++) {
-                        if(values_arr[i]==valObj.value) {
-                            values_arr.splice(i,1);
-                            break;
-                        }
+          case "checkbox":
+            var record_value=record.get("value");
+            var values_arr=(record_value!=null && record_value.length>0)?record_value.split(","):[];
+            if(valObj.checked) {
+                values_arr.push(valObj.value);
+            } else {
+                for(var i=0;i<values_arr.length;i++) {
+                    if(values_arr[i]==valObj.value) {
+                        values_arr.splice(i,1);
+                        break;
                     }
                 }
-                record.data.value=values_arr.join(",");
-                break;
-            case "text":
-                var new_value=valObj.value;
-                if(new_value!=null) {
-                    new_value.replace("::","");
-                    new_value.replace("&&","");
-                }
-                record.data.value=new_value;
-                break;
+            }
+            record.data.value=values_arr.join(",");
+            break;
+          case "radio":
+            //fallthrough
+          case "text":
+            var new_value=valObj.value;
+            if(new_value!=null) {
+                new_value.replace("::","");
+                new_value.replace("&&","");
+            }
+            record.data.value=new_value;
+            break;
         }
         this.fireEvent("afteredit");
     },

@@ -25,7 +25,7 @@ class OSLibrary::Debian::Filter::LocalHandler
 
     ## Also indicate the mark that should be set
     m = OSLibrary::Debian::PacketFilterManager::MarkLocal
-    filters["mark"] = Mark.expand( filters["mark"], [[ m, m ]] )
+    filters[parameter] = "-m mark --mark #{m}/#{m}"
   end
 
   def parameters

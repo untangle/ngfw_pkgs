@@ -21,17 +21,9 @@ class OSLibrary::Debian::Filter::IntfHandler
   include Singleton
   
   def handle( parameter, value, filters )    
-    ## Indicate which marks should be set
-    intf_marks = value.split( "," ).uniq.map do |index|
-      n = index.to_i
-      raise "invalid index #{index}" if n.to_s != index
-      raise "invalid index #{index}" if (( n > 8 ) || ( n < 1 ))
-
-      ## The mask is 0xff
-      [ n, 0xff ]
-    end
-
-    filters["mark"] = Mark.expand( filters["mark"], intf_marks )
+    # can only match one src interface, so if commas are used, just use the first number
+    index = value.split( "," )[0].to_i
+    filters[parameter] = "-m mark --mark #{index}/0xff"
   end
 
   def parameters
