@@ -79,7 +79,7 @@ Ung.Alpaca.Pages.PacketFilter.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                 enabled : true,
                 system_id : null,
                 target : "reject",
-                filter : "s-addr::",
+                filter : "",
                 description : "[New Entry]",
                 is_custom : false
             },

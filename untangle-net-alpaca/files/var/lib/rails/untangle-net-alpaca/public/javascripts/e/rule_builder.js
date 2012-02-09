@@ -47,7 +47,7 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.EditorGridPanel, {
             ]
         });
         
-        this.recordDefaults={name:this.rules[0].name, value:""};
+        this.recordDefaults={name:"", value:""};
         var deleteColumn = new Ung.Alpaca.grid.DeleteColumn({});
         this.autoExpandColumn = 'displayName',
         this.plugins=[deleteColumn];
@@ -68,6 +68,7 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.EditorGridPanel, {
             renderer: function(value, metadata, record, rowIndex, colIndex, store) {
                 var out=[];
                 out.push('<select class="rule_builder_type" onchange="Ext.getCmp(\''+this.getId()+'\').changeRowType(\''+record.id+'\',this)">');
+                out.push('<option value=""></option>');
                 for (var i = 0; i < this.rules.length; i++) {
                     var selected = this.rules[i].name == value;
                     var seleStr=(selected)?"selected":"";
@@ -158,6 +159,22 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.EditorGridPanel, {
     changeRowType: function(recordId,selObj) {
         var record=this.store.getById(recordId);
         var newName=selObj.options[selObj.selectedIndex].value;
+        if (newName == "") {
+            Ext.MessageBox.alert("Warning","A valid type must be selected.");
+            return;
+        }
+        // iterate through and make sure there are no other matchers of this type
+        for (var i = 0; i < this.store.data.length ; i++) {
+            if (this.store.data.items[i].id == recordId)
+                continue;
+            if (this.store.data.items[i].data.name == newName) {
+                Ext.MessageBox.alert("Warning","A matcher of this type already exists in this rule.");
+                record.set("name","");
+                selObj.value = "";
+                return;
+            }
+        }
+        
         var rule=null;
         for (var i = 0; i < this.rules.length; i++) {
             if (this.rules[i].name == newName) {
@@ -231,6 +248,20 @@ Ung.Alpaca.RuleBuilder = Ext.extend(Ext.grid.EditorGridPanel, {
     },
     getName: function() {
         return "rulebuilder";
+    },
+    isValid: function() {
+        // check that all the matchers have a selected type and value
+        for (var i = 0; i < this.store.data.length ; i++) {
+            if (this.store.data.items[i].data.name == null || this.store.data.items[i].data.name == "") {
+                Ext.MessageBox.alert("Warning", "A valid type must be selected for all matchers.");
+                return false;
+            }
+            //if (this.store.data.items[i].data.value == null || this.store.data.items[i].data.value == "") {
+            //    Ext.MessageBox.alert(i18n._("Warning"),i18n._("A valid value must be specified for all matchers."));
+            //    return false;
+            //}
+        }
+        return true;
     }
 });
 
