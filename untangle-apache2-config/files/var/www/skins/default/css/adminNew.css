@@ -454,11 +454,13 @@ div.icon-detail-row {
     cursor: pointer;
 }
 /* drag icon */
-div.icon-drag {
+img.icon-drag {
     background:transparent url(../images/admin/icon_drag.gif) no-repeat center center;
     width: 100%;
     cursor: move;
+    height:16px;
 }
+
 /* refresh button icon */
 button .icon-refresh {
     background: transparent url(../images/admin/icon_refresh.png) no-repeat center left !important;
