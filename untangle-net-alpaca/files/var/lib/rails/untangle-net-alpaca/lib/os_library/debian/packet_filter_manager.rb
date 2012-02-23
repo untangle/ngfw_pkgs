@@ -146,8 +146,12 @@ EOF
     MarkDstInterface = Chain.new( "mark-dst-intf", "mangle", "FORWARD", <<'EOF' )
 ## This chain marks the dst intf on the packet
 ##
-## If the src is already marked, just return
-#{IPTablesCommand} #{args} -m mark ! --mark 0/#{DstIntfMask} -j RETURN
+## If the dst is already marked AND the packet is not a new session, just return
+## Or more simply: Continue to mark the packet if it isn't marked OR if its new session 
+## We will continue to mark new sessions because splitd may have already marked the packet for a specific WAN
+## However, if the packet is not destined for a WAN but a local network, we need to remark it here
+#{IPTablesCommand} #{args} -m mark ! --mark 0/#{DstIntfMask} -m conntrack ! --ctstate NEW -j RETURN
+#{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFF00FF
 EOF
 
     MarkLocal = Chain.new( "mark-local", "mangle", "PREROUTING", <<'EOF' )
