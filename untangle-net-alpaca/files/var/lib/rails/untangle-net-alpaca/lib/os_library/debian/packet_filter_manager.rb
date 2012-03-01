@@ -87,7 +87,7 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   end
   
   class Chain
-    def initialize( name, table, start_chains, init = "" )
+    def initialize( name, table, start_chains, conditions = "", init = "" )
       @name, @table = name, table
       ## This is done as an eval so that functions like args can be used
       ## in the scrpt
@@ -97,7 +97,7 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
       unless start_chains.nil?
         start_chains = [ start_chains ].flatten
         start_chains.each do |chain|
-          @init = "#{IPTablesCommand} -t #{table} -A #{chain} -j #{name}\n" + @init
+          @init = "#{IPTablesCommand} -t #{table} -A #{chain} #{conditions} -j #{name}\n" + @init
         end
       end
     end
@@ -112,7 +112,7 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
 
     attr_reader :name, :table, :init
 
-    MarkInterface = Chain.new( "mark-intf", "mangle", "PREROUTING", <<'EOF' )
+    MarkInterface = Chain.new( "mark-intf", "mangle", "PREROUTING", "-m addrtype --src-type unicast --dst-type unicast", <<'EOF' )
 ## Set the interface marks on packets
 ## Note this only sets the marks on the packets AFTER the session is established
 ## The connmark stores the src/dest marks for the SESSION
@@ -127,8 +127,10 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
 ## so the connmark is not accurate for interface marks
 ## So to be safe, lets just ignore all traffic that isn't between two unicast addresses
 ## Everything else will be marked using the slower mark-src-intf and mark-dst-intf
-#{IPTablesCommand} #{args} -m addrtype ! --dst-type unicast  -j RETURN
-#{IPTablesCommand} #{args} -m addrtype ! --src-type unicast -j RETURN
+# WARNING The invert check in dst-type does not work in 2.6.26 - it always matches
+# So I've commented out these two lines and instead only called this change on unicast packets
+# #{IPTablesCommand} #{args} -m addrtype ! --dst-type unicast  -j RETURN
+# #{IPTablesCommand} #{args} -m addrtype ! --src-type unicast -j RETURN
 
 ## This rule says if the packet is in the original direction, just copy the intf marks from the connmark/session mark
 ## The rule actually says REPLY and not ORIGINAL and thats because ctdir seems to match backwards
@@ -136,14 +138,14 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
 
 EOF
 
-    MarkSrcInterface = Chain.new( "mark-src-intf", "mangle", "PREROUTING", <<'EOF' )
+    MarkSrcInterface = Chain.new( "mark-src-intf", "mangle", "PREROUTING", "", <<'EOF' )
 ## This chain marks the src intf on the packet
 ##
 ## If the src is already marked, just return
 #{IPTablesCommand} #{args} -m mark ! --mark 0/#{SrcIntfMask} -j RETURN
 EOF
 
-    MarkDstInterface = Chain.new( "mark-dst-intf", "mangle", "FORWARD", <<'EOF' )
+    MarkDstInterface = Chain.new( "mark-dst-intf", "mangle", "FORWARD", "", <<'EOF' )
 ## This chain marks the dst intf on the packet
 ##
 ## If the dst is already marked AND the packet is not a new session, just return
@@ -154,18 +156,18 @@ EOF
 #{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFF00FF
 EOF
 
-    MarkLocal = Chain.new( "mark-local", "mangle", "PREROUTING", <<'EOF' )
+    MarkLocal = Chain.new( "mark-local", "mangle", "PREROUTING", "", <<'EOF' )
 ## This chain marks the local and first alias marks on the packet and connmark
 ##
 EOF
 
-    MarkLocalOutput = Chain.new( "mark-local-output", "mangle", "OUTPUT", <<'EOF' )
+    MarkLocalOutput = Chain.new( "mark-local-output", "mangle", "OUTPUT", "", <<'EOF' )
 ## This chain marks the local and first alias marks on the packet and connmark
 ##
 EOF
 
     ## Chain Used for natting in the prerouting table.
-    PostNat = Chain.new( "alpaca-post-nat", "nat", "POSTROUTING", <<'EOF' )
+    PostNat = Chain.new( "alpaca-post-nat", "nat", "POSTROUTING", "", <<'EOF' )
 ## Save the state for bypassed traffic
 #{IPTablesCommand} -t mangle -A POSTROUTING -m conntrack --ctstate NEW -m connmark --mark 0/#{DstIntfMask} -j CONNMARK --save-mark --mask #{DstIntfMask}
 
@@ -177,11 +179,11 @@ EOF
 EOF
 
     ## Chain used to redirect traffic
-    Redirect = Chain.new( "alpaca-redirect", "nat", "PREROUTING", <<'EOF' )
+    Redirect = Chain.new( "alpaca-redirect", "nat", "PREROUTING", "", <<'EOF' )
 EOF
 
     ## Chain used for actually blocking and dropping data
-    FirewallBlock = Chain.new( "alpaca-firewall", "filter", [ "INPUT" ], <<'EOF' )
+    FirewallBlock = Chain.new( "alpaca-firewall", "filter", [ "INPUT" ], "", <<'EOF' )
 ## Do not block traffic that has the INPUT mark set.
 #{IPTablesCommand} -t #{table} -A FORWARD -m mark --mark 0/#{MarkFwInput} -j #{name}
 
@@ -199,11 +201,11 @@ EOF
 #{IPTablesCommand} #{args} -m mark --mark #{MarkFwReject}/#{MarkFwReject} -j REJECT
 EOF
 
-    FirewallNat = Chain.new( "alpaca-nat-firewall", "filter", nil, <<'EOF' )
+    FirewallNat = Chain.new( "alpaca-nat-firewall", "filter", nil, "", <<'EOF' )
 EOF
     
     ## Chain where all of the firewalls rules should go
-    FirewallRules = Chain.new( "firewall-rules", "mangle", "PREROUTING", <<'EOF' )
+    FirewallRules = Chain.new( "firewall-rules", "mangle", "PREROUTING", "", <<'EOF' )
 ## mark all sessions with the firewall pass tag
 #{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwPass}
 ## Ignore any traffic that is related to an existing session
@@ -213,7 +215,7 @@ EOF
 EOF
     
     ## Goto chains used to indicate that a packet should be rejected or dropped.
-    FirewallMarkReject = Chain.new( "alpaca-pf-reject", "mangle", nil, <<'EOF' )
+    FirewallMarkReject = Chain.new( "alpaca-pf-reject", "mangle", nil, "", <<'EOF' )
 ## Clear the INPUT mark
 #{IPTablesCommand} #{args} -j MARK --and-mark #{MarkClearFwInput}
 #{IPTablesCommand} #{args} -j MARK --and-mark #{MarkClearFwPass}
@@ -221,7 +223,7 @@ EOF
 #{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwReject}
 EOF
 
-    FirewallMarkDrop = Chain.new( "alpaca-pf-drop", "mangle", nil, <<'EOF' )
+    FirewallMarkDrop = Chain.new( "alpaca-pf-drop", "mangle", nil, "", <<'EOF' )
 ## Clear the INPUT mark
 #{IPTablesCommand} #{args} -j MARK --and-mark #{MarkClearFwInput}
 #{IPTablesCommand} #{args} -j MARK --and-mark #{MarkClearFwPass}
@@ -230,18 +232,18 @@ EOF
 EOF
 
     ## Jumps chains used to indicate that a packet should be rejected or dropped on the INPUT chain
-    FirewallMarkInputReject = Chain.new( "alpaca-pfi-reject", "mangle", nil, <<'EOF' )
+    FirewallMarkInputReject = Chain.new( "alpaca-pfi-reject", "mangle", nil, "", <<'EOF' )
 ## Mark the packets
 #{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwReject | MarkFwInput}
 EOF
 
-    FirewallMarkInputDrop = Chain.new( "alpaca-pfi-drop", "mangle", nil, <<'EOF' )
+    FirewallMarkInputDrop = Chain.new( "alpaca-pfi-drop", "mangle", nil, "", <<'EOF' )
 ## Mark the packets
 #{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwDrop | MarkFwInput}
 EOF
     
     ## Chain where traffic should go to be marked for bypass.
-    BypassMark = Chain.new( "bypass-mark", "mangle", nil, <<'EOF' )
+    BypassMark = Chain.new( "bypass-mark", "mangle", nil, "", <<'EOF' )
 ## Mark the packets
 #{IPTablesCommand} #{args} -j MARK --or-mark #{MarkBypass}
 ## Connmark the packets
@@ -250,20 +252,20 @@ EOF
 
     ## Chain where all of the Bypass Rules go (This shouldn't be  defined unless
     ## There is a UVM, but it should only be a minor performance hit
-    BypassRules = Chain.new( "bypass-rules", "mangle", "PREROUTING", <<'EOF' )
+    BypassRules = Chain.new( "bypass-rules", "mangle", "PREROUTING", "", <<'EOF' )
 ## Accept any packets that are connmarked with the bypass mark
 #{IPTablesCommand} #{args} -m connmark --mark #{MarkBypass}/#{MarkBypass} -g #{Chain::BypassMark}
 EOF
 
     ## These are only used in classy NAT mode.
-    SNatRules = Chain.new( "snat-rules", "nat", nil, <<'EOF' )
+    SNatRules = Chain.new( "snat-rules", "nat", nil, "", <<'EOF' )
 EOF
 
     ## Chain used for captive portal
-    CaptivePortal = Chain.new( "untangle-cpd", "mangle", "PREROUTING" )
+    CaptivePortal = Chain.new( "untangle-cpd", "mangle", "", "PREROUTING" )
 
     ## Chain used to capture / drop traffic for the captive portal.
-    CaptivePortalCapture = Chain.new( "untangle-cpd-capture", "mangle", nil )
+    CaptivePortalCapture = Chain.new( "untangle-cpd-capture", "mangle", nil, "", "")
 
     Order = [ MarkInterface, MarkSrcInterface, MarkDstInterface, MarkLocal, MarkLocalOutput, PostNat, SNatRules,
               FirewallBlock, FirewallMarkReject, FirewallMarkDrop, 

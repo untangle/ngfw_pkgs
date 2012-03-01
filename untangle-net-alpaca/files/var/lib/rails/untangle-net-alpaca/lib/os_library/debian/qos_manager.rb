@@ -47,7 +47,7 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
   
   Chain = OSLibrary::Debian::PacketFilterManager::Chain
   
-  QoSMark = Chain.new( "alpaca-qos", "mangle", "PREROUTING", "" )
+  QoSMark = Chain.new( "alpaca-qos", "mangle", "PREROUTING", "", "" )
 
   ## packet filter iptables integration
   QosIptablesRuleFile = "#{OSLibrary::Debian::PacketFilterManager::ConfigDirectory}/800-qos"
