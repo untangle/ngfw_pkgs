@@ -4,7 +4,7 @@ body{
 }  
 /* quarantine page body */
 body.quarantine {
-    background-color: #808080;
+	background-color: #808080;
 }
 /* user pages content container */
 #content
@@ -12,7 +12,7 @@ body.quarantine {
   padding: 17px 12px 12px 12px;
 }
 /* blockpage body*/
-body.blockpage, body.captive-portal
+body.blockpage
 { 
   text-align: center;
   background-color: #808080;
@@ -20,8 +20,8 @@ body.blockpage, body.captive-portal
 /* quarantine content */
 body.quarantine #content {
     width:75%;
-    background: transparent url(../images/user/background_content_seamless.png) repeat !important;    
-    border : 1px solid #666;    
+    background: transparent url(../images/user/background_content.png) repeat !important;
+	border : 1px solid #666;    
     margin:0 auto;
     margin-top:50px;
 }
@@ -42,23 +42,8 @@ body.blockpage #content
   margin-bottom: 30px;
   background: transparent url(../images/user/background_content.png) repeat-x !important;
 }
-body.captive-portal #content
-{
-  width : 650px;
-  height: 605px;
-  position: relative;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: left;
-  border : 1px solid #FFFFFF;
-  margin-top: 30px;
-  margin-bottom: 30px;
-  background: transparent url(../images/user/background_content.png) repeat-x !important;
-}
-
 /* blockpage body*/
-body.blockpage,
-body.captive-portal
+body.blockpage
 { 
   font-family: arial, tahoma, helvetica, sans-serif;
   font-size: 10pt;
@@ -187,15 +172,7 @@ body.blockpage #main
   /* This is to place this above the border */
   z-index: 100;
 }
-body.captive-portal #main
-{
 
-  left: 15px;
-  top: 130px;
-  height: 500px;
-  /* This is to place this above the border */
-  z-index: 100;
-}
 body.blockpage #extra-div-1
 { 
   position : absolute;
@@ -203,7 +180,7 @@ body.blockpage #extra-div-1
   top: 130px;
   width: 620px;
   height: 380px;
-  background: transparent ;
+  background: transparent url(../images/user/blockpage_border.gif) no-repeat;
  }
 
 body.blockpage #extra-div-2
@@ -213,7 +190,7 @@ body.blockpage #extra-div-2
   bottom: 20px;
   width: 620px;
   height: 12px;
-  background: transparent ;
+  background: transparent url(../images/user/blockpage_border_bottom.gif) no-repeat;
  }
 
 
@@ -222,8 +199,7 @@ body.blockpage #extra-div-2
   position : relative;
  }
 /* block page title */
-body.blockpage #header .title,
-body.captive-portal #header .title
+body.blockpage #header .title
 { 
   position : absolute;
   left : 180px;
@@ -241,11 +217,6 @@ body.captive-portal #header .title
   text-align: left;
   background-color: #FFFFFF;
   -moz-border-radius:5px 10px 10px 5px;
-}
-.info-list-captive-portal{
-    margin:10px 0px 20px 0px;
-    background-color:#FFF;
-    position: relative;
 }
 /* block page information list element */
 .info-list div{
@@ -301,12 +272,11 @@ button.icon-delete-row{
     color:#111;
     font-size:12px;
  }
- /* block page */
+/* block page */
 .u-form-item{
     margin:5px auto 0px;
     text-align:left;
     width:340px;
-    color:#CCC;
 }
 .u-form-item-label{
     margin-right:5px;
@@ -448,4 +418,4 @@ body.captive-portal p.contact
   bottom: 0px;
   left: 20px;
   font-size: 8pt;
-}
+} 

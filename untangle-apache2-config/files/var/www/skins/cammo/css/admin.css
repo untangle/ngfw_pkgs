@@ -41,7 +41,7 @@ div.logo {
 /* left tabs container */
 .left-tabs {
     background-color: transparent;
-    padding:0px 0px 0px 0px;
+    padding:0px 3px 0px 3px;
 }
 /* top rack list background */
 #rack-list {
@@ -300,7 +300,7 @@ div.blinger-name {
     top:1px;
     right:10px;
     font-family: "times", helvetica, freesans,sans-serif;
-    font-size: 11px;
+    font-size: 5px;
     color: #3F3F3F;
     display: none;
 }
@@ -315,17 +315,17 @@ div.activity-blinger {
 }
 /* activity blinger box container */
 div.activity-blinger-box {
-    position: relative;
+    position: absolute;
     top: 15px;
-    left: 9px;
+    left: 7px;
     height:60px;
-    width:100px;
+    width:104px;
     background: transparent url(../images/admin/background_activity_blinger.png) no-repeat !important;
 }
 /* activity blinger text */
 div.activity-blinger-text {
     position:absolute;
-    right:3px;
+    right:5px;
     text-align: right;
     color: #FFFFFF;
     z-index: 15;
@@ -334,8 +334,8 @@ div.activity-blinger-text {
 div.activity-blinger-bar {
     position: absolute;
     background: transparent url(../images/admin/background_activity_blinger_bar.png) repeat-x;
-    left:0px;
-    height:10px;
+    left:3px;
+    height:11px;
     z-index: 14;
 }
 /* system blinger container */
@@ -483,55 +483,53 @@ button.icon-autorefresh {
 /* Config Network item icon */
 div.icon-config-network {
     background: transparent url(../images/admin/config/icon_config_network.png) no-repeat !important; 
-    margin-top:4px;
-    width:34px;
-    height:34px;
+    width:36px;
+    height:36px;
 }
 /* Config Administration item icon */
 div.icon-config-admin {
     background: transparent url(../images/admin/config/icon_config_admin.png) no-repeat !important; 
-    margin-top:4px;
-    width:34px;
-    height:34px;
+    width:36px;
+    height:36px;
 }
 /* Config Email item icon */
 div.icon-config-email {
     background: transparent url(../images/admin/config/icon_config_email.png) no-repeat !important; 
-    margin-top:4px;
-    width:34px;
-    height:34px;
+    width:36px;
+    height:36px;
 }
 /* Config Local Directory item icon */
 div.icon-config-directory {
     background: transparent url(../images/admin/config/icon_config_directory.png) no-repeat !important; 
-    margin-top:4px;
-    width:34px;
-    height:34px;
+    width:36px;
+    height:36px;
+}
+div.icon-config-backup {
+    background: transparent url(../images/admin/config/icon_config_backup.png) no-repeat !important; 
+    width:36px;
+    height:36px;
 }
 /* Config System Info item icon */
 div.icon-config-support {
-    background: transparent url(../images/admin/config/icon_config_systeminfo.png) no-repeat !important; 
-    margin-top:4px;
-    width:34px;
-    height:34px;
+    background: transparent url(../images/admin/config/icon_config_support.png) no-repeat !important; 
+    width:36px;
+    height:36px;
 }
 /* Config Upgrades Available item icon */
 div.icon-config-upgrade-available {
     background: transparent url(../images/admin/config/icon_config_upgrade_available.png) no-repeat !important; 
-    margin-top:4px;
-    width:34px;
-    height:34px;
+    width:36px;
+    height:36px;
 }
 /* Config Upgrades unavailable item icon */
 div.icon-config-upgrade {
     background: transparent url(../images/admin/config/icon_config_upgrade.png) no-repeat !important; 
-    margin-top:4px;
-    width:34px;
-    height:34px;
+    width:36px;
+    height:36px;
 }
 /* Config System item icon */
 div.icon-config-setup {
-    background: transparent url(../images/admin/config/icon_config_system.png) no-repeat !important; 
+    background: transparent url(../images/admin/config/icon_config_setup.png) no-repeat !important; 
     width:36px;
     height:36px;
 }
@@ -574,17 +572,17 @@ td.app-item-center div.text {
     position: absolute;
     top: 5px;
     left: 53px;
-    width: 135px;
+    width: 123px;
     height: 35px;
     text-align: left;
     color:#4E4C4C;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     font-family:Tahoma, arial, freesans,sans-serif;
 }
 /* app item config display name text */
 td.app-item-center div.text-center {
-    top: 18px;
+    top: 15px;
 }
 /* app item action text */
 td.app-item-center div.action {
@@ -1185,31 +1183,33 @@ div.wizard-network-rerouter span
 }
 table.email-tester
 { 
-    margin-bottom:0px;
+
+    margin-bottom:10px;
     margin-left:7px;
 }
 /* email test button icon */
 button.email-tester
 { 
   background:transparent url(../images/admin/icon_test.png) no-repeat center left !important; 
-  width : 190px;
-}
+  width : 125px;
+  }
+
 label.optional-email-tester
 { 
-    padding: 10px 0px 0px 0px;
-    float: right;
-    margin-right:28em;
-    font-style: italic;
+  padding: 10px 0px 0px 0px;
+  float: right;
+  margin-right:28em;
+  font-style: italic;
 }
 .x-form-textfield-detail, .x-form-combo-detail
 { 
-    font-size:80%;
-    font-style:italic;  
-    clear:none !important;
-    display:inline !important;
-    float:none !important;
-    margin-left:4px;
-}
+  font-size:80%;
+  font-style:italic;  
+  clear:none !important;
+  display:inline !important;
+  float:none !important;
+  margin-left:4px;
+  }
 body.wizard label.info-detail
 {
     float:left;
@@ -1217,14 +1217,16 @@ body.wizard label.info-detail
     font-style:italic;
     margin-top:-20px;
     padding-left:270px;
-}
+  }
+
 body.wizard
 {
     font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
-}
+  }
+
 body.wizard .ext-el-mask
 { 
-    background-color: #CCCCCC;
+  background-color: #CCCCCC;
 }
 .network-card-form-margin{
     margin-top:1em;
@@ -1336,6 +1338,7 @@ body.wizard .ext-el-mask
     margin:0px 4px 0px 0px;
     color:#444444;
     font-size:11px;
+    margin:0px 4px 0px 0px;
     padding:1px 6px 2px 5px;    
 }
 /* current step marker */
@@ -1345,16 +1348,17 @@ body.wizard .ext-el-mask
   margin:0px 4px 0px 0px;
   color:#444444;
   font-size:11px;
+  margin:0px 4px 0px 0px;
   padding:2px 6px 2px 5px;
 }
 /* completed step marker */
 .completed div div .count
-.step_counter
 {
   background: url(../images/admin/wizard/step-completed.jpg) no-repeat left center !important;
   margin:0px 4px 0px 0px;
   color:#FFF;
   font-size:11px;
+  margin:0px 4px 0px 0px;
   padding:1px 6px 2px 5px;    
 }
 .wizard .x-form-item label
@@ -1399,14 +1403,15 @@ body.wizard .ext-el-mask
   background:transparent url(../images/admin/icon_drag_enabled.png) no-repeat center left;
   width: 100%;
   cursor: move;
-  padding: 2px 0px 2px 48px;
-}
+  padding: 2px 0px 2px 2px;
+  }
+
 .draggable-disabled-interface
 { 
   background:transparent url(../images/admin/icon_drag_disabled.png) no-repeat center left;
   width: 100%;
   cursor: move;
-  padding: 2px 0px 2px 48px;
+  padding: 2px 0px 2px 2px;
 }
 .description {
     font-family:tahoma,arial,helvetica,sans-serif;
