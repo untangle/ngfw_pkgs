@@ -84,4 +84,13 @@ if [ -n "$root" ]; then
     /usr/sbin/update-grub
 fi
 
+
+# tell cron not to send emails
+if [ -z "`grep MAILTO /etc/crontab`" ] ; then
+    sed -e '/SHELL/i MAILTO=""' -i /etc/crontab
+else
+    sed -e 's/.*MAILTO=.*/MAILTO=""/' -i /etc/crontab
+fi
+
+
 exit 0
