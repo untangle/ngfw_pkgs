@@ -269,7 +269,6 @@ def log_login(req, login, local, succeeded, reason):
         else:
             sql = "INSERT INTO events.u_login_evt (event_id, client_addr, login, local, succeeded, time_stamp) VALUES (nextval('hibernate_sequence'), '%s', '%s', '%s', '%s', now())" % (client_addr, login, local, succeeded)
         
-        apache.log_error(sql)
         curs.execute(sql);
         conn.commit()
     finally:
