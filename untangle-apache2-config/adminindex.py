@@ -3,7 +3,7 @@ import uvmlogin
 import cgi
 
 from mod_python import apache, Session, util
-from psycopg2 import connect
+from psycopg import connect
 
 # pages -----------------------------------------------------------------------
 
