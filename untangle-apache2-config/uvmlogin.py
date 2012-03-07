@@ -94,9 +94,9 @@ def accesshandler(req):
         conn = connect("dbname=uvm user=postgres")
         try:
             curs = conn.cursor()
-            curs.execute("SELECT 1 FROM settings.n_proxy_nonce WHERE nonce = %s AND create_time >= now() - '1 hour'::interval", (nonce,))
+            curs.execute("SELECT 1 FROM settings.n_proxy_nonce WHERE nonce = '%s' AND create_time >= now() - '1 hour'::interval" % nonce)
             authorized = 0 < curs.rowcount
-            curs.execute("DELETE FROM settings.n_proxy_nonce WHERE nonce = %s OR create_time < now() - '1 hour'::interval", (nonce,))
+            curs.execute("DELETE FROM settings.n_proxy_nonce WHERE nonce = '%s' OR create_time < now() - '1 hour'::interval" % nonce)
             conn.commit()
         finally:
             conn.close()
@@ -264,8 +264,13 @@ def log_login(req, login, local, succeeded, reason):
     conn = connect("dbname=uvm user=postgres")
     try:
         curs = conn.cursor()
-        curs.execute("INSERT INTO events.u_login_evt (event_id, client_addr, login, local, succeeded, reason, time_stamp) VALUES (nextval('hibernate_sequence'), %s, %s, %s, %s, %s, now())",
-                     (client_addr, login, local, succeeded, reason));
+        if (reason != None):
+            sql = "INSERT INTO events.u_login_evt (event_id, client_addr, login, local, succeeded, reason, time_stamp) VALUES (nextval('hibernate_sequence'), '%s', '%s', '%s', '%s', '%s', now())" % (client_addr, login, local, succeeded, reason)
+        else:
+            sql = "INSERT INTO events.u_login_evt (event_id, client_addr, login, local, succeeded, time_stamp) VALUES (nextval('hibernate_sequence'), '%s', '%s', '%s', '%s', now())" % (client_addr, login, local, succeeded)
+        
+        apache.log_error(sql)
+        curs.execute(sql);
         conn.commit()
     finally:
         conn.close()

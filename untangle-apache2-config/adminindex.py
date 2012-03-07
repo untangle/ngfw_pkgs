@@ -3,7 +3,7 @@ import uvmlogin
 import cgi
 
 from mod_python import apache, Session, util
-from psycopg import connect
+from psycopg2 import connect
 
 # pages -----------------------------------------------------------------------
 
@@ -66,13 +66,13 @@ def _admin_valid_login(req, realm, username, password):
     curs = conn.cursor()
 
     if realm == 'Administrator':
-        q = """
-SELECT password FROM settings.u_user WHERE login = %s AND write_access"""
+        q = """ 
+SELECT password FROM settings.u_user WHERE login = '%s' AND write_access""" % username
     elif realm == 'Reports':
         q = """
-SELECT password FROM settings.u_user WHERE login = %s AND reports_access"""
+SELECT password FROM settings.u_user WHERE login = '%s' AND reports_access""" % username
 
-    curs.execute(q, (username,))
+    curs.execute(q)
     r = curs.fetchone()
 
     if r == None:
