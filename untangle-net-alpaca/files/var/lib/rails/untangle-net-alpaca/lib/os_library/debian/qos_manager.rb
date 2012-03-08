@@ -50,7 +50,7 @@ class OSLibrary::Debian::QosManager < OSLibrary::QosManager
   QoSMark = Chain.new( "alpaca-qos", "mangle", "PREROUTING", "", "" )
 
   ## packet filter iptables integration
-  QosIptablesRuleFile = "#{OSLibrary::Debian::PacketFilterManager::ConfigDirectory}/800-qos"
+  QosIptablesRuleFile = "#{OSLibrary::Debian::PacketFilterManager::ConfigDirectory}/790-qos"
 
   MarkQoSMask         = "0x00700000"
   MarkQoSInverseMask  = "0xFF8FFFFF"

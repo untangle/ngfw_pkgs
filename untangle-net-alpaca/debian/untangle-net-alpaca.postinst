@@ -38,5 +38,9 @@ touch /etc/untangle/monit-to-restart
 rm -rf /etc/untangle-net-alpaca/scripts
 # remove obsolote files (9.2)
 rm -f /etc/untangle-net-alpaca/iptables-rules.d/900-single-nic
+# move files to new location (9.3)
+if [ -f /etc/untangle-net-alpaca/iptables-rules.d/800-qos ] ; then
+    mv /etc/untangle-net-alpaca/iptables-rules.d/800-qos /etc/untangle-net-alpaca/iptables-rules.d/790-qos
+fi
 
 exit 0

@@ -27,34 +27,6 @@ UVM_BIND_ADDRESS="192.0.2.42"
 ## UDP Session timeout
 UDP_SESSION_TIMEOUT=70
 
-uvm_shield_traffic()
-{
-    SHIELD_QUEUE_NUM=3001
-
-    if [ -f /etc/default/untangle-shield ]; then 
-        . /etc/default/untangle-shield
-    fi
-
-    local t_queue_pid=`awk -v queue=${SHIELD_QUEUE_NUM} '{ if ( $1 == queue ) print $2 }' /proc/net/netfilter/nfnetlink_queue`
-
-    if [ -z "${t_queue_pid}" ]; then 
-        echo "[`date`] The untangle-shield is not running. No rules inserted."
-        return
-    fi
-
-    echo "[`date`] The untangle-shield is running. Inserting queue rules."
-
-    ## Queue any TCP that is that is now bypassed (SYN packet only)
-    ${IPTABLES} -t mangle -A FORWARD -p tcp -m mark --mark 0/${MASK_BYPASS} \
-        -m conntrack --ctstate NEW \
-        -j NFQUEUE --queue-num ${SHIELD_QUEUE_NUM}
-
-    ## Queue all UDP packets that arent bypassed (first packet only)
-    ${IPTABLES} -t mangle -A FORWARD -p udp -m mark --mark 0/${MASK_BYPASS} \
-        -m addrtype --dst-type unicast -m conntrack --ctstate NEW \
-        -j NFQUEUE --queue-num ${SHIELD_QUEUE_NUM}
-}
-
 queue_owner()
 {
     if [ "${UVM_PID}x" != "invalidx" ]; then return ; fi
