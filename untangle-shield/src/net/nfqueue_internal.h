@@ -19,17 +19,6 @@
 #ifndef __NFQUEUE_INTERNAL_H
 #define __NFQUEUE_INTERNAL_H
 
-
-#if 0
-typedef enum
-{
-    NFQA_CTINFO = NFQA_PAYLOAD +1,
-    NFQA_CT_DIR_ORIGINAL,
-    NFQA_CT_DIR_REPLY
-} _nqueue_untangle_attr_t;
-#endif
-
-
 /* The following is from nf_conntrack_common.h */
 /* Connection state tracking for netfilter.  This is separated from,
    but required by, the NAT layer; it can also be used by an iptables
