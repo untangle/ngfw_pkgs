@@ -17,14 +17,14 @@ Ext.define('Ung.Wizard', {
         /* Build a panel to hold the headers on the left */
         this.headerPanel = Ext.create('Ext.panel.Panel', {
             cls : 'wizard-steps',
-            defaults : { border : false, width : 250 },
+            defaults : { border : false, width : 200 },
             items:this.buildHeaders( this.cards ),
             layout: {
                 type: 'vbox',
                 align: 'right'
             },
             region : "west",
-            width : 250,
+            width : 200,
 			bodyStyle:{background:'none'},
 			border:false
         } );
