@@ -17,17 +17,15 @@ Ext.define('Ung.Wizard', {
         /* Build a panel to hold the headers on the left */
         this.headerPanel = Ext.create('Ext.panel.Panel', {
             cls : 'wizard-steps',
-            items :{xtype:'fieldset',
-                   defaults : { border : false, width:250},
-                   bodyStyle:{background:'none','padding':'20 0 0 0'},
-                   items:this.buildHeaders( this.cards )},
-            defaults : { border : false },
-            layout : 'table',
-            layoutConfig : { columns : 1 },
+            defaults : { border : false, width : 250 },
+            items:this.buildHeaders( this.cards ),
+            layout: {
+                type: 'vbox',
+                align: 'right'
+            },
             region : "west",
             width : 250,
 			bodyStyle:{background:'none'},
-            margins:'20 0 0 0',
 			border:false
         } );
 
@@ -75,13 +73,12 @@ Ext.define('Ung.Wizard', {
             items : panels,
             activeItem : 0,
             region : "center",
-            title : "&nbsp;",
+            //title : "&nbsp;",
 			header:false,
 			//autoScroll : true,
             defaults : this.cardDefaults, 
             bbar : bbarArr,
-			border:false,
-            margins:'20 0 0 0'
+			border:false
         });
 
         this.layout = "border";

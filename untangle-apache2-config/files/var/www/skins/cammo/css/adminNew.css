@@ -1341,7 +1341,7 @@ body.wizard .ext-el-mask
     background-color:#818181;
 }
 /* incomplete step marker */
-.incomplete div div .count{
+.incomplete div .count{
     background:url(../images/admin/wizard/step-incomplete.jpg) no-repeat left center !important;
     margin:0px 4px 0px 0px;
     color:#444444;
@@ -1349,7 +1349,7 @@ body.wizard .ext-el-mask
     padding:1px 6px 2px 5px;    
 }
 /* current step marker */
-.current div div .count
+.current div .count
 {
     background: url(../images/admin/wizard/step-current.jpg) no-repeat left center !important;
     margin:0px 4px 0px 0px;
@@ -1358,7 +1358,7 @@ body.wizard .ext-el-mask
     padding:2px 6px 2px 5px;
 }
 /* completed step marker */
-.completed div div .count
+.completed div .count
 .step_counter
 {
     background: url(../images/admin/wizard/step-completed.jpg) no-repeat left center !important;
