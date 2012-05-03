@@ -62,11 +62,11 @@ fi
 $DIALOG $COMMON_OPTS --title "Terminal Use Warning" --msgbox "You will be prompted to enter the super-user password to proceed.\n
 \n
 Note: this password is not the same as the web interface admin password.\n
-It was set the first time the Terminal button was pressed.\n
+It is set the first time the Terminal is opened.\n
 \n
 \n
 WARNING:\n
-Changes made via the command line are NOT supported and can seriouly\n
+Changes made via the command line are NOT supported and can seriously\n
 interfere with the proper operation of $OEM_NAME.\n
 Changes made via the command line are NOT supported by $OEM_NAME and\n
 can severely limit your support options.\n
