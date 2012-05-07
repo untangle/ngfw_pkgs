@@ -334,7 +334,7 @@ function cpd_clear_host_database( )
        return
     end
 
-    query[#query+1] = "INSERT INTO n_cpd_block_evt ( event_id, time_stamp, proto, client_intf,  client_address, client_port, server_address, server_port ) VALUES ";
+    query[#query+1] = "INSERT INTO reports.n_cpd_block_events ( time_stamp, proto, client_intf,  client_address, client_port, server_address, server_port ) VALUES ";
 
     for _,event in ipairs( block_events ) do
        timestamp = os.date( "%Y-%m-%d %H:%M:%S", event.timestamp )
@@ -345,7 +345,7 @@ function cpd_clear_host_database( )
           query[#query+1] = ","
        end
 
-       query[#query+1] = string.format( "(nextval('hibernate_sequence'), '%s', %d, %d, INET '%s', %d, INET '%s', %d )",
+       query[#query+1] = string.format( "'%s', %d, %d, INET '%s', %d, INET '%s', %d )",
                                         timestamp, event.protocol, event.client_intf,
                                         event.source_address, event.source_port,
                                         event.destination_address, event.destination_port )
