@@ -264,11 +264,7 @@ def log_login(req, login, local, succeeded, reason):
     conn = connect("dbname=uvm user=postgres")
     try:
         curs = conn.cursor()
-        if (reason != None):
-            sql = "INSERT INTO events.u_login_evt (event_id, client_addr, login, local, succeeded, reason, time_stamp) VALUES (nextval('hibernate_sequence'), '%s', '%s', '%s', '%s', '%s', now())" % (client_addr, login, local, succeeded, reason)
-        else:
-            sql = "INSERT INTO events.u_login_evt (event_id, client_addr, login, local, succeeded, time_stamp) VALUES (nextval('hibernate_sequence'), '%s', '%s', '%s', '%s', now())" % (client_addr, login, local, succeeded)
-        
+        sql = "INSERT INTO reports.n_admin_logins (client_addr, login, local, succeeded, time_stamp) VALUES ('%s', '%s', '%s', '%s', now())" % (client_addr, login, local, succeeded)
         curs.execute(sql);
         conn.commit()
     finally:
