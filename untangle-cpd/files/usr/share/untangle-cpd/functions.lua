@@ -345,7 +345,7 @@ function cpd_clear_host_database( )
           query[#query+1] = ","
        end
 
-       query[#query+1] = string.format( "'%s', %d, %d, INET '%s', %d, INET '%s', %d )",
+       query[#query+1] = string.format( "( '%s', %d, %d, INET '%s', %d, INET '%s', %d )",
                                         timestamp, event.protocol, event.client_intf,
                                         event.source_address, event.source_port,
                                         event.destination_address, event.destination_port )
