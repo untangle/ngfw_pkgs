@@ -222,7 +222,7 @@ static int _handle_read_event( cpd_reader_t* reader, unsigned char* buffer, ssiz
 
 
     if (( read_size = ipulog_read( reader->handle, buffer, 150000, 1 )) <= 0 ) {
-        return errlog( ERR_CRITICAL, "ipulog_read\n" );
+        return errlog( ERR_FATAL, "ipulog_read\n" );
     }
 
     while (( p_msg = ipulog_get_packet( reader->handle, buffer, read_size )) != NULL ) {
