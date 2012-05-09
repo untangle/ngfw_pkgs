@@ -267,6 +267,8 @@ def log_login(req, login, local, succeeded, reason):
         sql = "INSERT INTO reports.n_admin_logins (client_addr, login, local, succeeded, time_stamp) VALUES ('%s', '%s', '%s', '%s', now())" % (client_addr, login, local, succeeded)
         curs.execute(sql);
         conn.commit()
+    except Exception, e:
+        pass
     finally:
         conn.close()
 
