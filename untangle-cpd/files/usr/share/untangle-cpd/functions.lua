@@ -41,7 +41,7 @@ local function create_table( table_name, ... )
    local statements, query  =  { ... }
    -- Get the hash of all of the individual queries
    local hash = md5.sumhexa(table.concat( statements, "" ))
-      
+
    query = string.format( "SELECT * FROM settings.n_cpd_db_version WHERE table_name='%s' AND version_id='%s'", table_name, hash )
 
    curs = assert( uvm_db_execute( query ))
@@ -60,7 +60,7 @@ local function create_table( table_name, ... )
 
    query = string.format( "DELETE FROM settings.n_cpd_db_version WHERE table_name='%s'", table_name )
    assert( uvm_db_execute( query ))
-   query= string.format( "INSERT INTO settings.n_cpd_db_version (table_name,version_id) VALUES ('%s', '%s' )", 
+   query= string.format( "INSERT INTO settings.n_cpd_db_version (table_name,version_id) VALUES ('%s', '%s' )",
                          table_name, hash )
    assert( uvm_db_execute( query ))
 end
@@ -73,7 +73,7 @@ local function init_database()
                     );
               ]], true )
    local curs, is_updated
-   
+
    create_table( "n_cpd_host_database_entry", [[
 CREATE TABLE events.n_cpd_host_database_entry (
     entry_id        INT8 NOT NULL,
@@ -85,7 +85,7 @@ CREATE TABLE events.n_cpd_host_database_entry (
     expiration_date TIMESTAMP,
    PRIMARY KEY     (entry_id));
 ]],[[
-CREATE INDEX n_cpd_host_database_last_session_idx ON 
+CREATE INDEX n_cpd_host_database_last_session_idx ON
        events.n_cpd_host_database_entry(last_session);
  ]],[[
 -- For querying on sessions that are expired
@@ -108,17 +108,21 @@ local function _run_node_function( function_name, ... )
       remote_uvm_context = untangle.ServiceProxy:new( "localhost", 80, "http://localhost/webui/JSON-RPC", "UvmContext" )
    end
 
-   if (  cpd_node == nil ) then
+   if ( cpd_node == nil ) then
       logger:debug( "Need a new cpd instance, attempting to create a new instance." )
 
-      local node_manager, tid, node = remote_uvm_context.nodeManager()
-      tid = node_manager.nodeInstances( "untangle-node-cpd" )["list"][1]
-      if ( tid == nil ) then
-         logger:debug( "CPD Is not installed, cancelling call." )
+      local node_manager = remote_uvm_context.nodeManager()
+      if ( node_manager == nil ) then
+         logger:debug( "Unable to locate nodeManager, aborting RPC call." )
          return
       end
-      
-      cpd_node = node_manager.nodeContext( tid ).node()
+
+      cpd_node = node_manager.node("untangle-node-cpd")
+      if (cpd_node == nil) then
+         logger:debug( "Unable to locate untangle-node-cpd, aborting RPC call." )
+	 return
+      end
+
    end
 
    -- Run the function.
@@ -137,15 +141,15 @@ local function run_node_function( function_name, ... )
 
 
 -- This creates a new entry into the IPSet.
--- If Necessary, this will 
+-- If Necessary, this will
 
 -- XXX This may be better done in one shell script run run with sudo.
 function add_ipset_entry( hw_addr, ipv4_addr )
    if ( not ( hw_addr == nil )) then
       logger:info( "hw_addr is current not supported and is ignored." )
    end
-   
-   -- Remove any entries from the expired set.   
+
+   -- Remove any entries from the expired set.
    os.execute( string.format( "ipset -D %s %s > /dev/null 2>&1", expired_ipset, ipv4_addr ))
    -- Insert an entry into the main ipset.
    os.execute( string.format( "ipset -A %s %s", authenticated_ipset, ipv4_addr ))
@@ -155,13 +159,13 @@ function remove_ipset_entry( ipv4_addr )
 -- Insert an entry into the main ipset.
    os.execute( string.format( "ipset -D %s %s > /dev/null 2>&1", authenticated_ipset, ipv4_addr ))
 
-   -- Insert an into into the expired set.   
+   -- Insert an into into the expired set.
    os.execute( string.format( "ipset -A %s %s", expired_ipset, ipv4_addr ))
 end
 
 local function get_expiration_sql( update_session_start, idle_timeout, timeout )
    local expiration
-   
+
    if ( idle_timeout == 0 ) then
       if ( update_session_start ) then
          expiration = string.format( "now() + interval '%d seconds'", timeout )
@@ -172,42 +176,42 @@ local function get_expiration_sql( update_session_start, idle_timeout, timeout )
       -- With a timeout, then you take the min of the idle timeout and the min
       -- of the session timeout, whichever happens first is the expiration date.
       if ( update_session_start ) then
-         expiration = 
+         expiration =
             string.format([[
-                                CASE WHEN now() + interval '%d seconds' <  now() + interval '%d seconds' 
+                                CASE WHEN now() + interval '%d seconds' <  now() + interval '%d seconds'
                                 THEN now() + interval '%d seconds'
                                 ELSE now() + interval '%d seconds'
                                 END
                           ]], idle_timeout, timeout, idle_timeout, timeout )
       else
-         expiration = 
+         expiration =
             string.format([[
-                                CASE WHEN now() + interval '%d seconds' <  session_start + interval '%d seconds' 
+                                CASE WHEN now() + interval '%d seconds' <  session_start + interval '%d seconds'
                                 THEN now() + interval '%d seconds'
                                 ELSE session_start + interval '%d seconds'
                                 END
                           ]], idle_timeout, timeout, idle_timeout, timeout )
-      end       
-   end    
-   
+      end
+   end
+
    return expiration
 end
-       
+
 function cpd_replace_host( username, hw_addr, ipv4_addr, update_session_start )
    local idle_timeout, timeout = cpd_config.idle_timeout_s, cpd_config.max_session_length_s
    local query, num_rows, hw_addr_str, expiration
-   username = string.lower(username)   
+   username = string.lower(username)
 
    if ( update_session_start == nil ) then
       update_session_start = false
    end
-   
+
    if ( hw_addr == nil ) then
       hw_addr_str = "NULL"
    else
       hw_addr_str = "'" .. hw_addr .. "'"
    end
-      
+
    expiration = get_expiration_sql( update_session_start, idle_timeout, timeout )
 
    if ( not cpd_config.concurrent_logins ) then
@@ -217,7 +221,7 @@ function cpd_replace_host( username, hw_addr, ipv4_addr, update_session_start )
       a, b = {}, {}
       a = curs:fetch(a)
       b = curs:fetch(b)
-      
+
       -- If both a and b are not nil, then there are too many concurrent entries.
       -- Clean up the database and let this user in.
       if (  a and b ) then
@@ -232,15 +236,15 @@ function cpd_replace_host( username, hw_addr, ipv4_addr, update_session_start )
          return false
       end
    end
-      
+
    if ( update_session_start ) then
       query = string.format( "UPDATE %s SET username='%s', hw_addr=%s, session_start=now(), last_session=now(), expiration_date=%s WHERE ipv4_addr='%s'", host_database_table, username, hw_addr_str, expiration, ipv4_addr )
    else
       query = string.format( "UPDATE %s SET username='%s', hw_addr=%s, last_session=now(), expiration_date=%s WHERE ipv4_addr='%s'", host_database_table, username, hw_addr_str, expiration, ipv4_addr )
    end
-   
+
    num_rows = assert( uvm_db_execute( query ))
-   
+
    if ( num_rows > 1 ) then
       logger:warn( string.format( "Database corrupt for address '%s' / '%s', clearing entries", ipv4_addr, hw_addr or "empty" ))
       assert( uvm_db_execute( string.format( "DELETE FROM %s WHERE ipv4_adddr='%s'", host_database_table, ipv4_addr )))
@@ -251,10 +255,10 @@ function cpd_replace_host( username, hw_addr, ipv4_addr, update_session_start )
    else
       logger:info( string.format( "Creating new entry for '%s' / '%s'", ipv4_addr, hw_addr or "empty" ))
    end
-   
+
    expiration = get_expiration_sql( true, idle_timeout, timeout )
    query = string.format( "INSERT INTO %s ( entry_id, username, ipv4_addr, hw_addr, session_start, last_session , expiration_date ) VALUES ( nextval( 'hibernate_sequence' ), '%s', '%s', %s, now(), now(), %s )",  host_database_table, username, ipv4_addr, hw_addr_str, expiration )
-   
+
    num_rows = assert( uvm_db_execute( query ))
    assert( num_rows == 1, "INSERT didn't create a new row." )
    add_ipset_entry( hw_addr, ipv4_addr )
@@ -272,24 +276,24 @@ end
 function cpd_remove_hw_addr( hw_addr )
    local curs, where_clause, query
    local row = {}
-   
+
    if ( hw_addr == nil ) then
       where_clause = "hw_addr IS NULL"
    else
       where_clause = string.format( "hw_addr='%s'", hw_addr )
    end
-   
+
    query = string.format( "SELECT ipv4_addr FROM %s WHERE %s", host_database_table, where_clause )
-   
+
    curs = assert( uvm_db_execute( query ))
-   
+
    row = curs:fetch( row,  "n" )
    while row do
       remove_ipset_entry( row[1] )
       row = curs:fetch( row,  "n" )
    end
    curs:close()
-   
+
    query = string.format( "DELETE FROM %s WHERE %s", host_database_table, where_clause )
    return assert( uvm_db_execute( query ))
 end
@@ -305,7 +309,7 @@ function cpd_clear_host_database( )
  -- Clear out any hosts that have been around too long.
  function cpd_expire_sessions( sync_ipset )
     local query
-    
+
     -- Delete all of the expired sessions.
     query = string.format( "DELETE FROM %s WHERE expiration_date < now()", host_database_table )
     num_rows = assert( uvm_db_execute( query ))
@@ -320,7 +324,7 @@ function cpd_clear_host_database( )
  local function init_log_events()
     logger:debug( "Reinitializing log events" )
 
-    return { 
+    return {
        blocks = { event_count = 0 },
        authorized = {}
     }
@@ -356,7 +360,7 @@ function cpd_clear_host_database( )
 
  function update_expiration_date( authorized )
     if ( authorized == nil ) then
-       return 
+       return
     end
 
     if ( next( authorized ) == nil ) then
@@ -373,7 +377,7 @@ function cpd_clear_host_database( )
     query = string.format( "UPDATE %s SET last_session=now(), expiration_date=%s WHERE ipv4_addr IN (%s)",
                            host_database_table, get_expiration_sql( false, idle_timeout, timeout ),
                            table.concat( values, "," ))
-    
+
     -- Erors aren't the end of the world here.
     uvm_db_execute( query )
  end
@@ -477,7 +481,7 @@ CLEAN_EXPIRE_FREQUENCY = 360 -- Once an hour
 logger = logging.console()
 
 logger:setLevel(logging.DEBUG)
- 
+
 cpd_home = os.getenv( "CPD_HOME" ) or ""
 
 cpd_node = nil
@@ -496,3 +500,4 @@ if ( not ( log_events  )) then
 end
 
 init_database()
+
