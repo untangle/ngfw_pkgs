@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 PG_CONF="`/usr/bin/find /etc/postgresql -name 'postgresql.conf' -type f`"
 PG_HBA="`/usr/bin/find /etc/postgresql -name 'pg_hba.conf' -type f`"
