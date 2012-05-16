@@ -288,8 +288,6 @@ button .reboot-icon {
     background:transparent url(../images/admin/icon_reboot.png) no-repeat center left !important; 
 }
 
-
-
 /* node metrics */
 div.node div.node-metrics {
     position:absolute;
@@ -303,8 +301,8 @@ div.node-metrics div.chart {
     position: absolute;
     top: 0px;
     left: 0px;
-    width: 118px;
-    height: 82px;
+    width: 133px;
+    height: 92px;
 }
 /* system metrics container */
 div.node-metrics div.system {
