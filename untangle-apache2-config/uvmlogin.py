@@ -12,6 +12,7 @@ import sys
 
 from mod_python import apache, Session, util
 from psycopg2 import connect
+from uvm.settings.reader import get_node_settings_item
 
 SESSION_TIMEOUT = 1800
 
@@ -214,18 +215,9 @@ def get_company_name():
         import oem
         company = oem.oemName()
 
-    conn = connect("dbname=uvm user=postgres")
-    try:
-        curs = conn.cursor()
-
-        curs.execute('SELECT company_name FROM settings.n_branding_settings')
-        r = curs.fetchone()
-        if r != None:
-            company = r[0]
-    except Exception, e:
-        pass
-    finally:
-        conn.close()
+    brandco = get_node_settings_item('untangle-node-branding','companyName')
+    if (brandco != None):
+        company = brandco
 
     return company
 
