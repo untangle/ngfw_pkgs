@@ -70,32 +70,28 @@ def _reports_valid_login(req, realm, username, password):
     return True # FIXME
 
 def _admin_valid_login(req, realm, username, password):
-    conn = connect("dbname=uvm user=postgres")
-    curs = conn.cursor()
-
-    if realm == 'Administrator':
-        q = """ 
-SELECT password FROM settings.u_user WHERE login = '%s' AND write_access""" % username
-    elif realm == 'Reports':
-        q = """
-SELECT password FROM settings.u_user WHERE login = '%s' AND reports_access""" % username
-
-    curs.execute(q)
-    r = curs.fetchone()
-
-    if r == None:
-        uvmlogin.log_login(req, username, False, False, 'U')
-        return False
-    else:
-        pw_hash = r[0]
-        raw_pw = pw_hash[0:len(pw_hash) - 8]
-        salt = pw_hash[len(pw_hash) - 8:]
-        if raw_pw == md5.new(password + salt).digest():
-            uvmlogin.log_login(req, username, False, True, None)
-            return True
-        else:
-            uvmlogin.log_login(req, username, False, False, 'P')
-            return False
+    return True # FIXME
+    #conn = connect("dbname=uvm user=postgres")
+    #curs = conn.cursor()
+    #if realm == 'Administrator':
+    #    q = """ 
+    #SELECT password FROM settings.u_user WHERE login = '%s' AND write_access""" % username
+    #"""
+    #curs.execute(q)
+    #r = curs.fetchone()
+    #if r == None:
+    #    uvmlogin.log_login(req, username, False, False, 'U')
+    #    return False
+    #else:
+    #    pw_hash = r[0]
+    #    raw_pw = pw_hash[0:len(pw_hash) - 8]
+    #    salt = pw_hash[len(pw_hash) - 8:]
+    #    if raw_pw == md5.new(password + salt).digest():
+    #        uvmlogin.log_login(req, username, False, True, None)
+    #        return True
+    #    else:
+    #        uvmlogin.log_login(req, username, False, False, 'P')
+    #        return False
 
 def _write_login_form(req, title, host, is_error):
     login_url = cgi.escape(req.unparsed_uri)
