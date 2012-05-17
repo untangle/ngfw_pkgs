@@ -231,6 +231,8 @@ def get_uvm_language():
         r = curs.fetchone()
         if r != None:
             lang = r[0]
+    except Exception, e:
+        pass
     finally:
         conn.close()
 
@@ -238,14 +240,17 @@ def get_uvm_language():
 
 def get_access_settings():
         conn = connect("dbname=uvm user=postgres")
+        r = None
         try:
             curs = conn.cursor()
             curs.execute('select allow_insecure, allow_outside_admin from settings.u_access_settings')
             r = curs.fetchone()
+        except Exception, e:
+            pass
         finally:
             conn.close()
 
-            if None == r:
+            if r == None:
                 return (False, False)
             else:
                 return r

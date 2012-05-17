@@ -56,10 +56,18 @@ def logout(req, url=None, realm='Administrator'):
 # internal methods ------------------------------------------------------------
 
 def _valid_login(req, realm, username, password):
-    if realm == 'Administrator' or realm == 'Reports':
+    if realm == 'Administrator': 
         return _admin_valid_login(req, realm, username, password)
+    elif realm == 'Reports':
+        if _admin_valid_login(req, 'Administrator', username, password):
+            return True;
+        else:
+            return _reports_valid_login(req, realm, username, password)
     else:
         return False
+
+def _reports_valid_login(req, realm, username, password):
+    return True # FIXME
 
 def _admin_valid_login(req, realm, username, password):
     conn = connect("dbname=uvm user=postgres")
