@@ -12,7 +12,7 @@ import sys
 
 from mod_python import apache, Session, util
 from psycopg2 import connect
-from uvm.settings.reader import get_node_settings_item
+from uvm.settings_reader import get_node_settings_item
 
 SESSION_TIMEOUT = 1800
 
