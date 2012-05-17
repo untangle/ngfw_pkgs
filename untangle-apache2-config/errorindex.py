@@ -19,6 +19,7 @@
 import gettext
 import uvmlogin
 import cgi
+import os
 
 from mod_python import apache
 
@@ -114,6 +115,13 @@ def status502(req):
 
 def status503(req):
     uvmlogin.setup_gettext()
+    try:
+        ret = os.system("ps aux | grep 'init.d/untangle-vm' | grep -v grep")
+        if ret == 0:
+            _write_error_page(req, _("Server is starting. Please wait."))
+            return
+    except:
+        pass
     _write_error_page(req, _("Service Unavailable"))
 
 def status504(req):
