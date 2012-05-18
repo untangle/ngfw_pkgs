@@ -303,6 +303,7 @@ div.node-metrics div.chart {
     left: 0px;
     width: 133px;
     height: 92px;
+    background: transparent url(../images/admin/background_activity_blinger_border.png) no-repeat scroll 4px 7px !important;
 }
 /* system metrics container */
 div.node-metrics div.system {
