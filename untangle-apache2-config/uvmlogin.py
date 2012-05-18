@@ -12,9 +12,7 @@ import sys
 
 from mod_python import apache, Session, util
 from psycopg2 import connect
-from uvm.settings_reader import get_node_settings_item
 
-SESSION_TIMEOUT = 1800
 
 def authenhandler(req):
     if req.notes.get('authorized', 'false') == 'true':
@@ -28,6 +26,18 @@ def authenhandler(req):
         else:
             apache.log_error('no realm specified')
             return apache.DECLINED
+
+def get_node_settings_item(a,b):
+    return None
+
+try:
+    from uvm.settings_reader import get_node_settings_item
+except ImportError:
+    pass
+    
+print get_node_settings_item
+
+SESSION_TIMEOUT = 1800
 
 def headerparserhandler(req):
     options = req.get_options()
