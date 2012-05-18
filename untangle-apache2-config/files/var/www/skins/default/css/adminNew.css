@@ -687,7 +687,7 @@ div.system-stats div.network div.tx {
     position: absolute;
     top: 2px;
     left:0px;
-    width:77px;
+    width:95px;
     height:15px;
     padding-left:20px;
     color:#55BA47;
@@ -701,7 +701,7 @@ div.system-stats div.network div.tx-idle {
 div.system-stats div.network div.rx {
     position: absolute;
     bottom:0px;
-    width:77px;
+    width:95px;
     height:15px;
     padding-left:20px;
     color:orange;/*#AC2322;*/
@@ -1541,7 +1541,7 @@ body.wizard .ext-el-mask
 }
 .ua-message-warning{
     display:block;
-    margin-bottom:10px;    
+    margin-bottom:10px;
 }
 table.failover-refresh
 { 

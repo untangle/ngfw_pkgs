@@ -211,7 +211,7 @@ div#rack-select-container{
     margin-top:14px;
 }
 div#parent-rack-container{
-    /*background-color:#333333;*/
+    /* background-color:#333333; */
     color:#222222;
     float:left;
     font-family:Tahoma;
@@ -287,66 +287,26 @@ button .detail-icon {
 button .reboot-icon {
     background:transparent url(../images/admin/icon_reboot.png) no-repeat center left !important; 
 }
-/* node blingers container */
-div.node-blingers {
+
+/* node metrics */
+div.node div.node-metrics {
     position:absolute;
     bottom: 6px;
     right: 100px;
     width: 355px;
     height: 87px;
 }
-/* blinger text */
-div.blinger-text {
-    font-family: "Arial", helvetica, freesans,sans-serif;
-    font-size: 9px;
-    color: #000000;
-}
-/* blinger name text */
-div.blinger-name {
-    position:absolute;
-    top:1px;
-    right:10px;
-    font-family: "times", helvetica, freesans,sans-serif;
-    font-size: 11px;
-    color: #3F3F3F;
-    display: none;
-}
-/* activity blinger container */
-div.activity-blinger {
+/* chart container */
+div.node-metrics div.chart {
     position: absolute;
     top: 0px;
     left: 0px;
-    width: 118px;
-    height: 82px;
-    background: transparent url(../images/admin/background_activity_blinger_border.png) no-repeat scroll 0px 7px !important;
+    width: 133px;
+    height: 92px;
+    background: transparent url(../images/admin/background_activity_blinger_border.png) no-repeat scroll 4px 7px !important;
 }
-/* activity blinger box container */
-div.activity-blinger-box {
-    position: relative;
-    top: 15px;
-    left: 9px;
-    height:60px;
-    width:100px;
-    background: transparent url(../images/admin/background_activity_blinger.png) no-repeat !important;
-}
-/* activity blinger text */
-div.activity-blinger-text {
-    position:absolute;
-    right:3px;
-    text-align: right;
-    color: #FFFFFF;
-    z-index: 15;
-}
-/* activity blinger bar background */
-div.activity-blinger-bar {
-    position: absolute;
-    background: transparent url(../images/admin/background_activity_blinger_bar.png) repeat-x;
-    left:0px;
-    height:10px;
-    z-index: 14;
-}
-/* system blinger container */
-div.system-blinger {
+/* system metrics container */
+div.node-metrics div.system {
     position:absolute;
     top: 0px;
     right: 0px;
@@ -354,16 +314,22 @@ div.system-blinger {
     height: 87px;
     background: transparent url(../images/admin/background_system_blinger_border.png) no-repeat scroll 0px 7px !important;
 }
-/* system blinger box container */
-div.system-blinger-box {
+/* system metrics box container */
+div.node-metrics div.system-box {
     position: relative;
     top:15px;
     left:5px;
     width: 209px;
     height:60px;
 }
-/* system blinger label */
-div.system-blinger-label {
+
+div.node-metrics div.system-box div {
+    font-family: "Arial", helvetica, freesans,sans-serif;
+    font-size: 9px;
+}
+
+/* system metrics label */
+div.node-metrics div.system-label {
     position:absolute;
     left:0px;
     text-align: left;
@@ -372,8 +338,8 @@ div.system-blinger-label {
     overflow: hidden;
     white-space : nowrap;
 }
-/* system blinger value */
-div.system-blinger-value {
+/* system metrics value */
+div.node-metrics div.system-value {
     position:absolute;
     right:0px;
     text-align: right;
@@ -384,14 +350,7 @@ div.system-blinger-value {
     height: 14px;
     background: transparent url(../images/admin/background_system_blinger_value.png) no-repeat right !important;
 }
-div.system-blinger-settings {
-    position: absolute;
-    right: 10px;
-    bottom: 0px;
-    width: 11px;
-    height: 11px;
-    background: transparent url(../images/admin/icon_system_blinger_settings.png) no-repeat !important;
-}
+
 div.pixel {
     position:absolute;
     width:1px;
@@ -433,38 +392,24 @@ div.icon-add-row {
     width: 100%;
     cursor: pointer;
 }
-/* delete row button icon */
-button .icon-delete-row {
-    background:transparent url(../images/user/icon_remove.png) no-repeat center left !important;
-}
 /* edit row icon */
-div.icon-edit-row {
-    background:transparent url(../images/admin/icon_edit_row.gif) no-repeat center center;
-    width: 100%;
-    cursor: pointer;
-}
-
 img.icon-edit-row {
     background:transparent url(../images/admin/icon_edit_row.gif) no-repeat center center;
     width: 100%;
     cursor: pointer;
     height:16px;
 }
-
-/* delete row icon */
-div.icon-delete-row {
-    background:transparent url(../images/admin/icon_delete_row.gif) no-repeat center center;
-    width: 100%;
-    cursor: pointer;
+/* delete row button icon */
+button .icon-delete-row {
+    background:transparent url(../images/user/icon_remove.png) no-repeat center left !important;
 }
-
+/* delete row icon */
 img.icon-delete-row {
     background:transparent url(../images/admin/icon_delete_row.gif) no-repeat center center;
     width: 100%;
     cursor: pointer;
     height:16px;
 }
-
 /* logout row icon */
 div.icon-logout-row {
     background:transparent url(../images/admin/icon_logout_row.gif) no-repeat center center;
@@ -478,12 +423,6 @@ div.icon-detail-row {
     cursor: pointer;
 }
 /* drag icon */
-div.icon-drag {
-    background:transparent url(../images/admin/icon_drag.gif) no-repeat center center;
-    width: 100%;
-    cursor: move;
-}
-
 img.icon-drag {
     background:transparent url(../images/admin/icon_drag.gif) no-repeat center center;
     width: 100%;
@@ -503,7 +442,6 @@ button .icon-autorefresh {
 .grid-row-deleted {
     background-color: #FF5151 !important;
 }
-
 .grid-row-deleted td{
     background-color: transparent !important;
 }
@@ -523,7 +461,6 @@ button .icon-autorefresh {
 .grid-row-modified td{
     background-color: transparent !important;
 }
-
 /* Config Network item icon */
 div.icon-config-network {
     background: transparent url(../images/admin/config/icon_config_network.png) no-repeat !important; 
@@ -750,7 +687,7 @@ div.system-stats div.network div.tx {
     position: absolute;
     top: 2px;
     left:0px;
-    width:77px;
+    width:95px;
     height:15px;
     padding-left:20px;
     color:#55BA47;
@@ -764,7 +701,7 @@ div.system-stats div.network div.tx-idle {
 div.system-stats div.network div.rx {
     position: absolute;
     bottom:0px;
-    width:77px;
+    width:95px;
     height:15px;
     padding-left:20px;
     color:orange;/*#AC2322;*/
@@ -786,7 +723,7 @@ div.system-stats div.network div.tx div.tx-value {
     position: absolute;
     top:0px;
     right:0px;
-    font-family:arial,helvetica, freesans,sans-serif;
+    font-family:arial,helvetica,freesans,sans-serif;
 }
 /* system stats cpu */
 div.system-stats div.sessions {
@@ -1033,7 +970,20 @@ div.wizard-network-image-description
     width : 320px;
 }
 
-.wizard-network-image img
+div.wizard-network-rerouter
+{ 
+    height: 90px;
+    margin-top: 20px;
+}
+
+div.wizard-network-rerouter span
+{ 
+    float: left;
+    width: 340px;
+    margin-left : 18px;
+}
+
+.wizard-network-image img, img.wizard-network-image
 { 
     border : 1px #ccc solid;
     padding : 4px;
@@ -1243,7 +1193,7 @@ body.wizard .ext-el-mask
 .test-connectivity{
     position:relative;
     left:300px;
-    top:-22px;
+    top:-21px;
 }
 .test-connectivity-2{
     position:relative;
@@ -1302,7 +1252,7 @@ body.wizard .ext-el-mask
     font-size: 12px;
     line-height: 23px;
     font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
-    margin:3px 0px 3px 25px;
+    margin:3px 0px 3px 15px;
     padding:0px 0px 0px 0px;
 }
 
@@ -1345,7 +1295,7 @@ body.wizard .ext-el-mask
     padding:2px 6px 2px 5px;
 }
 /* completed step marker */
-.completed div .count
+.completed div .count,
 .step_counter
 {
     background: url(../images/admin/wizard/step-completed.jpg) no-repeat left center !important;
@@ -1393,7 +1343,7 @@ body.wizard .ext-el-mask
 
 .draggable-enabled-interface
 { 
-    background:transparent url(../images/admin/icon_drag_enabled.png) no-repeat center left;
+    background:transparent url(../images/admin/icon_drag_enabled.png) no-repeat left center;
     width: 100%;
     cursor: move;
     padding: 2px 0px 2px 48px;
@@ -1513,7 +1463,6 @@ body.wizard .ext-el-mask
     cursor: move;
     padding: 0px 0px 0px 0px;
 }
-
 .ua-cell-enabled
 { 
     background: transparent url(../images/admin/icon_interface_enabled.png) no-repeat center center;
@@ -1531,6 +1480,7 @@ body.wizard .ext-el-mask
     cursor: move;
     padding: 0px 0px 0px 0px;
 }
+
 
 .alpaca-panel{
     padding:10px;
@@ -1587,29 +1537,12 @@ body.wizard .ext-el-mask
     background: #FEFEDD url(../images/user/icon_message.png) no-repeat scroll 7px center !important;
     color:#333;
     font-size:11px;
-    font-family:Tahoma, arial, freesans,sans-serif;
+    font-family:Tahoma, arial,helvetica, freesans,sans-serif;
 }
 .ua-message-warning{
     display:block;
-    margin-bottom:10px;
+    margin-bottom:10px;    
 }
-}
-
-select.rule_builder_type {
-    font-family:Tahoma, arial,helvetica,  freesans,sans-serif;
-    font-size:12px;
-}
-input.rule_builder_value {
-    width: 95%;
-    height:16px;
-    padding-top:1px;
-}
-input.rule_builder_checkbox {
-    display:inline;
-    float:left;
-    margin:0;
-}
-
 table.failover-refresh
 { 
     float : left;
@@ -1670,4 +1603,44 @@ button .icon-test-ping
 button .icon-test-connectivity
 {
     background: transparent url(../images/admin/icon_test_connectivity.png) no-repeat center left !important;
+}
+
+div.ua-cell-test
+{ 
+    padding-left: 20px;
+    line-height: 18px;
+}
+
+div.ua-cell-test-connectivity
+{ 
+    background: transparent url(../images/admin/icon_test_connectivity.png) no-repeat center left !important;
+}
+
+div.ua-cell-test-ping
+{ 
+    background: transparent url(../images/admin/icon_test_ping.png) no-repeat center left !important;
+}
+
+div.ua-cell-test-dns
+{ 
+    background: transparent url(../images/admin/icon_test_dns.png) no-repeat center left !important;
+}
+
+div.ua-cell-test-tcp
+{ 
+    background: transparent url(../images/admin/icon_test_tcp.png) no-repeat center left !important;
+}
+
+div.ua-cell-test-traceroute
+{ 
+    background: transparent url(../images/admin/icon_test_traceroute.png) no-repeat center left !important;
+}
+
+div.ua-cell-test-packet
+{ 
+    background: transparent url(../images/admin/icon_test_packet.png) no-repeat center left !important;
+}
+textarea.ua-test-output
+{ 
+    font-family: courier, monospace;
 }
