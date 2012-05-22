@@ -32,9 +32,10 @@ def get_node_settings_item(a,b):
 
 try:
     from uvm.settings_reader import get_node_settings_item
+    from uvm.settings_reader import get_uvm_settings_item
 except ImportError:
     pass
-    
+
 print get_node_settings_item
 
 SESSION_TIMEOUT = 1800
@@ -234,17 +235,9 @@ def get_company_name():
 def get_uvm_language():
     lang = 'us'
 
-    conn = connect("dbname=uvm user=postgres")
-    try:
-        curs = conn.cursor()
-        curs.execute('SELECT language FROM settings.u_language_settings')
-        r = curs.fetchone()
-        if r != None:
-            lang = r[0]
-    except Exception, e:
-        pass
-    finally:
-        conn.close()
+    setval = get_uvm_settings_item('language-settings','language')
+    if (setval != None):
+        lang = setval
 
     return lang
 
