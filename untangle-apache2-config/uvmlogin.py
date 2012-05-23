@@ -29,14 +29,14 @@ def authenhandler(req):
 
 def get_node_settings_item(a,b):
     return None
+def get_uvm_settings_item(a,b):
+    return None
 
 try:
     from uvm.settings_reader import get_node_settings_item
     from uvm.settings_reader import get_uvm_settings_item
 except ImportError:
     pass
-
-print get_node_settings_item
 
 SESSION_TIMEOUT = 1800
 
