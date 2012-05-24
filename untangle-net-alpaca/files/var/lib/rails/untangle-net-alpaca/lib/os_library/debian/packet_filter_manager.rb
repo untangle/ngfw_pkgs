@@ -891,13 +891,8 @@ EOF
     fw_rules = []
     
     nat_policies.each do |policy|
-      if ( policy.new_source == NatPolicy::Automatic )
-        
-      else
-        
-      end
-
       ## Global netmask, use the addresses for the interface
+      # XXX perhaps we should use -i intf instead of the address for the interface
       if ( policy.netmask == "0" || policy.netmask == "0.0.0.0" )
         config.ip_networks.each do |ip_network|
           add_classy_nat_rule( rules, fw_rules, interface, policy, nat_automatic_target, ip_network.ip, ip_network.netmask )
@@ -905,6 +900,13 @@ EOF
       else
         add_classy_nat_rule( rules, fw_rules, interface, policy, nat_automatic_target, policy.ip, policy.netmask )
       end
+    end
+
+    # add openVPN nat rules
+    wan_interfaces.each do |interface|
+      # 0xfa (250) is the openvpn interface, the -i test does not work here
+      #rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -i tun0 -o #{interface.os_name} -j MASQUERADE"
+      rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -m mark --mark 0xfa/#{SrcIntfMask} -o #{interface.os_name} -j MASQUERADE"
     end
 
     [ rules.join( "\n" ), fw_rules.join( "\n" ) ]    
