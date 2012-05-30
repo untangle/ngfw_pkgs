@@ -417,10 +417,11 @@ div.icon-logout-row {
     cursor: pointer;
 }
 /* detail row icon */
-div.icon-detail-row {
+img.icon-detail-row {
     background:transparent url(../images/admin/icon_detail_row.gif) no-repeat center center;
     width: 100%;
     cursor: pointer;
+    height:16px;
 }
 /* drag icon */
 img.icon-drag {
