@@ -3,7 +3,7 @@
 mkdir -p /var/log/untangle-net-alpaca/
 exec >> /var/log/untangle-net-alpaca/uvm.log 2>&1
 
-HELPER_SCRIPT="/usr/share/untangle-net-alpaca/scripts/uvm/iptables"
+HELPER_SCRIPT="/usr/share/untangle-net-alpaca/scripts/uvm/uvm-helper-script"
 
 if [ ! -f ${HELPER_SCRIPT} ]; then
   echo "[`date`] The script ${HELPER_SCRIPT} is not available"

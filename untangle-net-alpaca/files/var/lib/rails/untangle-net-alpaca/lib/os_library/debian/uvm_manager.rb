@@ -1,20 +1,5 @@
-#
 # $HeadURL$
-# Copyright (c) 2007-2008 Untangle, Inc.
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License, version 2,
-# as published by the Free Software Foundation.
-#
-# This program is distributed in the hope that it will be useful, but
-# AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
-# NONINFRINGEMENT.  See the GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
-#
+
 class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
   ## Review : Many if not all of the generated iptables scripts contain zero variables,
   ## and don't actually need to be generated on the fly.
@@ -99,7 +84,7 @@ class OSLibrary::Debian::UvmManager < OSLibrary::UvmManager
     text += subscription_rules
     
     text += <<EOF
-HELPER_SCRIPT="/usr/share/untangle-net-alpaca/scripts/uvm/iptables"
+HELPER_SCRIPT="/usr/share/untangle-net-alpaca/scripts/uvm/uvm-helper-script"
 
 if [ ! -f ${HELPER_SCRIPT} ]; then
   echo "[`date`] The script ${HELPER_SCRIPT} is not available"
@@ -133,7 +118,7 @@ EOF
     text = header
     
     text += <<EOF
-HELPER_SCRIPT="/usr/share/untangle-net-alpaca/scripts/uvm/iptables"
+HELPER_SCRIPT="/usr/share/untangle-net-alpaca/scripts/uvm/uvm-helper-script"
 
 if [ ! -f ${HELPER_SCRIPT} ]; then
   echo "[`date`] The script ${HELPER_SCRIPT} is not available"
@@ -147,7 +132,6 @@ if [ "`is_uvm_running`x" = "truex" ]; then
   uvm_packet_filter_standard_internal
   uvm_packet_filter_secure_internal
   uvm_packet_filter_secure_external
-  uvm_packet_filter_secure_public
 else
   echo "[`date`] The untangle-vm is currently not running."
 fi
@@ -184,7 +168,7 @@ EOF
     ## REVIEW This presently doesn't mark openvpn traffic as local.
     ## REVIEW 0x80 is a magic number.
     text  += <<EOF
-HELPER_SCRIPT="/usr/share/untangle-net-alpaca/scripts/uvm/iptables"
+HELPER_SCRIPT="/usr/share/untangle-net-alpaca/scripts/uvm/uvm-helper-script"
 
 if [ ! -f ${HELPER_SCRIPT} ]; then
   echo "[`date`] The script ${HELPER_SCRIPT} is not available"
