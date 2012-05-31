@@ -214,7 +214,7 @@ def get_company_name():
 def get_uvm_language():
     lang = 'us'
 
-    setval = get_uvm_settings_item('language-settings','language')
+    setval = get_uvm_settings_item('language_settings','language')
     if (setval != None):
         lang = setval
 
