@@ -180,7 +180,7 @@ uvm_packet_filter_standard_internal()
         local t_mark=$(( ${MASK_LOCAL} | ${MASK_FIRST_ALIAS} | $intfId ))
     	local t_mask=$(( ${MASK_LOCAL} | ${MASK_FIRST_ALIAS} | ${MASK_SRC_INTERFACE} ))
 
-        FLAG_ALLOW_INSIDE_INSECURE="`/usr/share/untangle/bin/ut-settings-reader.py -l uvm system isInsideInsecureEnabled`"
+        FLAG_ALLOW_INSIDE_INSECURE="`/usr/share/untangle/bin/ut-settings-reader.py -l -d true uvm system insideHttpEnabled`"
         if [ "${FLAG_ALLOW_INSIDE_INSECURE}x" = "truex" ]; then 
             echo "[`date`] Enabling HTTP administration on interface $intfId." 
 	        ${IPTABLES} -t nat    -A alpaca-redirect -p tcp -m multiport --destination-ports 80 -m mark --mark ${t_mark}/${t_mask} -j REDIRECT
@@ -204,7 +204,7 @@ uvm_packet_filter_standard_internal()
 ## Allow internal access to port.
 uvm_packet_filter_secure_internal()
 {
-    HTTPS_PORT="`/usr/share/untangle/bin/ut-settings-reader.py -l uvm system httpsPort`"
+    HTTPS_PORT="`/usr/share/untangle/bin/ut-settings-reader.py -l -d 443 uvm system httpsPort`"
     if [ -z "${HTTPS_PORT}" ] ; then
         HTTPS_PORT="443"
     fi
@@ -225,10 +225,10 @@ uvm_packet_filter_secure_external()
 {
     local t_mark
 
-    FLAG_IS_OUTSIDE_HTTPS_ENABLED="`/usr/share/untangle/bin/ut-settings-reader.py -l uvm system isOutsideHttpsEnabled`"
+    FLAG_IS_OUTSIDE_HTTPS_ENABLED="`/usr/share/untangle/bin/ut-settings-reader.py -l uvm system outsideHttpsEnabled`"
     if [ "${FLAG_IS_OUTSIDE_HTTPS_ENABLED}x" != "truex" ] ; then return ; fi
 
-    HTTPS_PORT="`/usr/share/untangle/bin/ut-settings-reader.py -l uvm system httpsPort`"
+    HTTPS_PORT="`/usr/share/untangle/bin/ut-settings-reader.py -l -d 443 uvm system httpsPort`"
     if [ -z "${HTTPS_PORT}" ] ; then
         HTTPS_PORT="443"
     fi
