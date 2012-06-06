@@ -83,16 +83,16 @@ def headerparserhandler(req):
         # we only do this as to not present a login screen when access
         # is restricted. a tomcat valve enforces this setting.
         if options.get('UseRemoteAccessSettings', 'no') == 'yes':
-            (allow_insecure, allow_outside_admin) = get_access_settings()
+            (inside_http_enabled, outside_https_enabled) = get_access_settings()
 
             connection = req.connection
 
             (addr, port) = connection.local_addr
 
             if not re.match('127\.', connection.remote_ip):
-                if 80 == port and not allow_insecure:
+                if 80 == port and not inside_http_enabled:
                     return apache.HTTP_FORBIDDEN
-                elif 443 == port and not allow_outside_admin:
+                elif 443 == port and not outside_https_enabled:
                     return apache.HTTP_FORBIDDEN
 
         login_redirect(req, realm)
@@ -223,6 +223,11 @@ def get_uvm_language():
 def get_access_settings():
     inside_http_enabled = get_uvm_settings_item('system','insideHttpEnabled')
     outside_https_enabled = get_uvm_settings_item('system','outsideHttpsEnabled')
+
+    if inside_http_enabled == None:
+        inside_http_enabled = True
+    if outside_https_enabled == None:
+        outside_https_enabled = True
 
     return (inside_http_enabled, outside_https_enabled)
 
