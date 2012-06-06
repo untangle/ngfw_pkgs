@@ -221,23 +221,10 @@ def get_uvm_language():
     return lang
 
 def get_access_settings():
-    conn = None
-    r = None
-    try:
-        conn = connect("dbname=uvm user=postgres")
-        curs = conn.cursor()
-        curs.execute('select allow_insecure, allow_outside_admin from settings.u_access_settings')
-        r = curs.fetchone()
-    except Exception, e:
-        pass
-    finally:
-        if (conn != None):
-            conn.close()
+    inside_http_enabled = get_uvm_settings_item('system','insideHttpEnabled')
+    outside_https_enabled = get_uvm_settings_item('system','outsideHttpsEnabled')
 
-    if r == None:
-        return (False, False)
-    else:
-        return r
+    return (inside_http_enabled, outside_https_enabled)
 
 def log_login(req, login, local, succeeded, reason):
     (client_addr, client_port) = req.connection.remote_addr
