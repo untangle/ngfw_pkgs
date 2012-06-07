@@ -1644,3 +1644,6 @@ textarea.ua-test-output
 { 
     font-family: courier, monospace;
 }
+div.x-column-header-inner {
+    text-align: center;
+}
