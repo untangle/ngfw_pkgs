@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# if ntp.conf doesn't have 74.123 servers there - add them
+grep -q '74.123' /etc/ntp.conf || echo -e 'server 74.123.28.4 iburst dynamic\nserver 74.123.29.4 iburst dynamic' >> /etc/ntp.conf
