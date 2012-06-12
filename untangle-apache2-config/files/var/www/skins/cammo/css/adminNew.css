@@ -1173,6 +1173,7 @@ body.wizard label.info-detail
     display:inline !important;
     float:none !important;
     margin-left:4px;
+    white-space: nowrap;
 }
 .x-form-combo-detail{
     margin-left:22px;
