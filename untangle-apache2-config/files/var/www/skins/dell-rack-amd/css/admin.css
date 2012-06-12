@@ -125,8 +125,13 @@ div.node div.node-faceplate-info {
     font-weight:bold;
 }
 /* Trial node buy button icon */
-button.icon-buy {
+button .icon-buy {
     background:transparent url(../images/admin/icon_buy.png) no-repeat center left !important; 
+}
+/* In Wizard Download Button icon*/
+button .icon-download {
+    background:transparent url(../images/admin/icon_download.png) no-repeat center left !important;
+    padding-left:17px !important;
 }
 /* Application Item buy button icon */
 div.icon-buy {
@@ -135,15 +140,15 @@ div.icon-buy {
     width:15px;
 }
 /* help button icon */
-button.icon-help {
+button .icon-help {
     background:transparent url(../images/admin/icon_help.png) no-repeat center left !important; 
 }
 /* logout button icon */
-button.icon-logout {
+button .icon-logout {
     background:transparent url(../images/admin/icon_logout_row.gif) no-repeat center left !important; 
 }
 /* myaccount button icon */
-button.icon-myaccount {
+button .icon-myaccount {
     background:transparent url(../images/admin/icon_myaccount.png) no-repeat center left !important; 
 }
 /* help button icon */
@@ -201,7 +206,7 @@ div#rack-select-container{
     margin-top:14px;
 }
 div#parent-rack-container{
-    /*background-color:#333333;*/
+    /* background-color:#333333; */
     color:#222222;
     float:left;
     font-family:Tahoma;
@@ -230,139 +235,105 @@ div.node div.node-buttons {
     width: 1px;
 }
 /* node settings button icon */
-button.node-settings-icon {
+button .node-settings-icon {
     background:transparent url(../images/admin/icon_settings.png) no-repeat center left !important;  
 }
 div.window-background {
     background: transparent url(../images/admin/background_grey.png) repeat;
 }
 /* node remove button icon */
-button.node-remove-icon {
+button .node-remove-icon {
     background:transparent url(../images/admin/icon_remove.png) no-repeat center left !important; 
 }
 /* cancel button icon */
-button.cancel-icon {
+button .cancel-icon {
     background:transparent url(../images/admin/icon_cancel.png) no-repeat center left !important; 
 }
 /* save button icon */
-button.save-icon {
+button .save-icon {
     background:transparent url(../images/admin/icon_save.png) no-repeat center left !important; 
 }
 /* apply button icon */
-button.apply-icon {
+button .apply-icon {
     background:transparent url(../images/admin/icon_floppy.png) no-repeat center left !important; 
 }
 /* test button icon */
-button.test-icon {
+button .test-icon {
     background:transparent url(../images/admin/icon_test.png) no-repeat center left !important; 
 }
 /* action button icon */
-button.action-icon {
+button .action-icon {
     background:transparent url(../images/admin/icon_action.gif) no-repeat center left !important; 
 }
 /* purge button icon */
-button.purge-icon {
+button .purge-icon {
     background:transparent url(../images/admin/icon_purge.png) no-repeat center left !important; 
 }
 /* release button icon */
-button.release-icon {
+button .release-icon {
     background:transparent url(../images/admin/icon_release.png) no-repeat center left !important; 
 }
 /* detail button icon */
-button.detail-icon {
+button .detail-icon {
     background:transparent url(../images/admin/icon_detail.png) no-repeat center left !important; 
 }
 /* reboot button icon */
-button.reboot-icon {
+button .reboot-icon {
     background:transparent url(../images/admin/icon_reboot.png) no-repeat center left !important; 
 }
-/* node blingers container */
-div.node-blingers {
+
+/* node metrics */
+div.node div.node-metrics {
     position:absolute;
     bottom: 6px;
     right: 100px;
     width: 355px;
     height: 87px;
 }
-/* blinger text */
-div.blinger-text {
-    font-family: "Arial", freesans,sans-serif;
-    font-size: 9px;
-    color: #000000;
-}
-/* blinger name text */
-div.blinger-name {
-    position:absolute;
-    top:1px;
-    right:10px;
-    font-family: "times", freesans,sans-serif;
-    font-size: 11px;
-    color: #FFFFFF;
-    display: none;
-}
-/* activity blinger container */
-div.activity-blinger {
+/* chart container */
+div.node-metrics div.chart {
     position: absolute;
-    top: 12px;
-    left: 94px;
-    width: 118px;
-    height: 82px;
+    top: 0px;
+    left: 0px;
+    width: 133px;
+    height: 92px;
+    background: transparent url(../images/admin/background_activity_blinger_border.png) no-repeat scroll 4px 7px !important;
 }
-/* activity blinger box container */
-div.activity-blinger-box {
-    position: relative;
-    top: 15px;
-    left: 9px;
-    height:60px;
-    width:100px;
-}
-/* activity blinger text */
-div.activity-blinger-text {
+/* system metrics container */
+div.node-metrics div.system {
     position:absolute;
-    right:3px;
-    text-align: right;
-    color: #FFFFFF;
-    z-index: 15;
-}
-/* activity blinger bar background */
-div.activity-blinger-bar {
-    position: absolute;
-    background: transparent url(../images/admin/background_activity_blinger_bar.png) repeat-x;
-    left:0px;
-    height:10px;
-    z-index: 14;
-}
-/* system blinger container */
-div.system-blinger {
-    position:absolute;
-    top: 12px;
-    right: -65px;
+    top: 0px;
+    right: 0px;
     width: 219px;
     height: 87px;
+    background: transparent url(../images/admin/background_system_blinger_border.png) no-repeat scroll 0px 7px !important;
 }
-/* system blinger box container */
-div.system-blinger-box {
+/* system metrics box container */
+div.node-metrics div.system-box {
     position: relative;
     top:15px;
     left:5px;
     width: 209px;
     height:60px;
 }
-/* system blinger label */
-div.system-blinger-label {
+
+div.node-metrics div.system-box div {
+    font-family: "Arial", helvetica, freesans,sans-serif;
+    font-size: 9px;
+}
+
+/* system metrics label */
+div.node-metrics div.system-label {
     position:absolute;
     left:0px;
     text-align: left;
-    color: #FFFFFF;
-    width: 100px;
-    height: 14px;
-    padding-left: 4px;
+    color: #3F3F3F;
+    width: 125px;
     overflow: hidden;
     white-space : nowrap;
-    background: transparent url(../images/admin/background_system_blinger_value.png) no-repeat right !important;
 }
-/* system blinger value */
-div.system-blinger-value {
+/* system metrics value */
+div.node-metrics div.system-value {
     position:absolute;
     right:0px;
     text-align: right;
@@ -373,14 +344,7 @@ div.system-blinger-value {
     height: 14px;
     background: transparent url(../images/admin/background_system_blinger_value.png) no-repeat right !important;
 }
-div.system-blinger-settings {
-    position: absolute;
-    right: 10px;
-    bottom: 0px;
-    width: 11px;
-    height: 11px;
-    background: transparent url(../images/admin/icon_system_blinger_settings.png) no-repeat !important;
-}
+
 div.pixel {
     position:absolute;
     width:1px;
@@ -405,15 +369,15 @@ div.ung-button-invalid {
     border: 1px solid green;
 }
 /* add row button icon */
-button.icon-add-row {
+button .icon-add-row {
     background: transparent url(../images/admin/icon_add_row.gif) no-repeat center left !important;
 }
 /* import row button icon */
-button.icon-import {
+button .icon-import {
     background: transparent url(../images/admin/icon_import.gif) no-repeat center left !important;
 }
 /* export row button icon */
-button.icon-export {
+button .icon-export {
     background: transparent url(../images/admin/icon_export.gif) no-repeat center left !important;
 }
 /* row add icon */
@@ -423,20 +387,22 @@ div.icon-add-row {
     cursor: pointer;
 }
 /* edit row icon */
-div.icon-edit-row {
+img.icon-edit-row {
     background:transparent url(../images/admin/icon_edit_row.gif) no-repeat center center;
     width: 100%;
     cursor: pointer;
+    height:16px;
 }
 /* delete row button icon */
-button.icon-delete-row {
+button .icon-delete-row {
     background:transparent url(../images/user/icon_remove.png) no-repeat center left !important;
 }
 /* delete row icon */
-div.icon-delete-row {
+img.icon-delete-row {
     background:transparent url(../images/admin/icon_delete_row.gif) no-repeat center center;
     width: 100%;
     cursor: pointer;
+    height:16px;
 }
 /* logout row icon */
 div.icon-logout-row {
@@ -451,30 +417,43 @@ div.icon-detail-row {
     cursor: pointer;
 }
 /* drag icon */
-div.icon-drag {
+img.icon-drag {
     background:transparent url(../images/admin/icon_drag.gif) no-repeat center center;
     width: 100%;
     cursor: move;
+    height:16px;
 }
+
 /* refresh button icon */
-button.icon-refresh {
+button .icon-refresh {
     background: transparent url(../images/admin/icon_refresh.png) no-repeat center left !important;
 }
 /* autorefresh button icon */
-button.icon-autorefresh {
+button .icon-autorefresh {
     background: transparent url(../images/admin/icon_autorefresh.png) no-repeat center left !important;
 }
 /* color of a deleted row in grid */
 .grid-row-deleted {
     background-color: #FF5151 !important;
 }
+.grid-row-deleted td{
+    background-color: transparent !important;
+}
+
 /* color of an added row in grid */
 .grid-row-added {
-    background-color: #21FF3A;
+    background-color: #21FF3A !important;
 }
+.grid-row-added td{
+    background-color: transparent !important;
+}
+
 /* color of a modified row in grid */
 .grid-row-modified {
-    background-color: #FFB364;
+    background-color: #FFB364 !important;
+}
+.grid-row-modified td{
+    background-color: transparent !important;
 }
 /* Config Network item icon */
 div.icon-config-network {
@@ -601,7 +580,7 @@ td.app-item-center div.button-buy {
     top: 34px;
     cursor: pointer;
     height: 15px;
-    font-family: tahoma,arial,  helvetica,freesans,sans-serif;
+    font-family: tahoma,arial, helvetica, freesans,sans-serif;
     font-size: 11px;
     color: white;
     padding-right: 19px;
@@ -613,7 +592,7 @@ td.app-item-center div.state-pos {
     top: 33px;
     cursor: pointer;
     height: 15px;
-    font-family: verdana,  helvetica,freesans,sans-serif;
+    font-family: verdana, helvetica, freesans,sans-serif;
     font-size: 10px;
     font-weight: bold;
     color: red;
@@ -652,7 +631,7 @@ div.icon-arrow-down {
     font-style:normal;
     font-variant:normal;
     line-height:14px; /* works out to 14px */
-    font-family:arial,"helvetica,freesans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,helvetica,freesans,sans-serif;
+    font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
 }
 /* breadcrumb link */
 .breadcrumb-link {
@@ -661,7 +640,7 @@ div.icon-arrow-down {
     font-style:normal;
     font-variant:normal;
     line-height:14px; /* works out to 14px */
-    font-family:arial,"helvetica,freesans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,helvetica,freesans,sans-serif;
+    font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
     color: #20377A;
 }
 .untangle-form-panel
@@ -701,7 +680,7 @@ div.system-stats div.network div.tx {
     position: absolute;
     top: 2px;
     left:0px;
-    width:77px;
+    width:95px;
     height:15px;
     padding-left:20px;
     color:#55BA47;
@@ -715,7 +694,7 @@ div.system-stats div.network div.tx-idle {
 div.system-stats div.network div.rx {
     position: absolute;
     bottom:0px;
-    width:77px;
+    width:95px;
     height:15px;
     padding-left:20px;
     color:orange;/*#AC2322;*/
@@ -737,7 +716,7 @@ div.system-stats div.network div.tx div.tx-value {
     position: absolute;
     top:0px;
     right:0px;
-    font-family:arial, helvetica,freesans,sans-serif;
+    font-family:arial,helvetica,freesans,sans-serif;
 }
 /* system stats cpu */
 div.system-stats div.sessions {
@@ -764,7 +743,7 @@ div.system-stats div.cpu {
     text-align: center;
     padding-top: 7px;
     font-weight: bold;
-    font-family:arial, helvetica,freesans,sans-serif;
+    font-family:arial,helvetica, freesans,sans-serif;
     
 }
 /* system stats memory */
@@ -776,7 +755,7 @@ div.system-stats div.memory {
     width:99px;
     height:30px;
     font-weight: bold;
-    font-family:arial, helvetica,freesans,sans-serif;
+    font-family:arial,helvetica, freesans,sans-serif;
     
 }
 /* system stats free memory */
@@ -788,7 +767,7 @@ div.system-stats div.memory div.free {
     height:15px;
     padding-left:4px;
     color:#55BA47;
-    font-family:arial, helvetica,freesans,sans-serif;
+    font-family:arial,helvetica, freesans,sans-serif;
     
 }
 /* system stats used memory */
@@ -799,14 +778,14 @@ div.system-stats div.memory div.used {
     height:15px;
     padding-left:4px;
     color:orange;/*#AC2322;*/
-    font-family:arial, helvetica,freesans,sans-serif;
+    font-family:arial,helvetica, freesans,sans-serif;
 }
 /* system stats free memory value */
 div.system-stats div.memory div.free div.free-value {
     position: absolute;
     top:0px;
     right:0px;
-    font-family:arial, helvetica,freesans,sans-serif;
+    font-family:arial,helvetica, freesans,sans-serif;
     
 }
 /* system stats used memory value */
@@ -814,7 +793,7 @@ div.system-stats div.memory div.used div.used-value {
     position: absolute;
     top:0px;
     right:0px;
-    font-family:arial, helvetica,freesans,sans-serif;
+    font-family:arial,helvetica, freesans,sans-serif;
     
 }
 /* system stats disk */
@@ -946,7 +925,7 @@ div.extended-stats div.values{
     padding-left: 30px;
 }
 /* upgrade button icon */
-button.icon-upgrade {
+button .icon-upgrade {
     background: transparent url(../images/admin/icon_upgrade.png) no-repeat center left !important;
 }
 div.button-column {
@@ -1048,21 +1027,119 @@ div.wizard-network-rerouter span
     font-weight:normal;
     line-height:normal;    
 }
+.italics{
+    font-style:italic;        
+}
+.untangle-form-panel .x-form{
+    border:none
+}
+.warning-row{
+    background-image:url('../../../ext/resources/images/default/shared/warning.gif');
+    background-position:left center;
+    background-repeat:no-repeat;
+    padding-left:18px;
+}
+#disk-unusable{
+    display:none;
+}
 
-
+.select-volume-container{
+    border: 1px #CCC solid;
+    float:left;
+    width:225px;
+}
+.manage-share-container{
+    border: 1px #CCC solid !important;
+    float: left;
+    height: 350px;
+    width: 460px;  
+}
+.external-link{
+    background-image:url(../images/admin/external.png);
+    background-position:right center;
+    background-repeat:no-repeat;
+    padding:0px 15px 0px 0px;
+    margin-top:1em;
+}
+#shares-edit, #shares-update, #shares-delete, #shares-update-cancel, #shares-create {
+    float:left !important;
+    margin-top:10px;
+}
+.checkmark-header {
+    font-weight:bold;
+}
+.checkmark-container-plain{
+    margin-bottom:4em;
+}
+.checkmark-container{
+    margin-bottom:4em;
+    background-color:#EFEFEF;
+    border: 1px #009900 solid;
+    padding: 2px;
+}
+.checkmark{
+    background-image:url(../images/admin/checkmark-production-3.png);
+    background-repeat:no-repeat;
+    margin-left:1em;
+    margin-top:0.5em;
+    padding-left:17px;
+}
+#shares-delete{
+    marign-top:-21px;
+    margin-left: 5px;
+}
+#shares-update-cancel{
+    marign-top:-21px;
+    margin-left: 5px;
+}
+#explain-install-ended img{
+    vertical-align:middle;
+    margin-right:5px;
+}
+.share-folder{
+    background-image:url(../images/admin/disk/share.png) !important;
+}
+.share-home-folder{
+    background-image:url(../images/admin/disk/share-home.png) !important;
+}
+.volume-group{
+    background-image:url(../images/admin/disk/volume-group.png) !important;
+}
+.volume{
+    background-image:url(../images/admin/disk/volume.png) !important;
+}
+.select-volume{
+    width: 220px;
+}
+.explain-share-create{
+    background-image:url(../images/admin/back.png) !important;
+    background-repeat:no-repeat;
+    height:200px;
+    margin-top:70px;
+    padding-left:140px;
+    padding-top:22px;
+}
+.share-illustration{
+    background-image:url(../images/admin/disk/share.png) !important;
+    background-repeat:no-repeat;
+    padding:0 0 5px 18px;
+}
+.volume-illustration{
+    background-image:url(../images/admin/disk/volume.png) !important;
+    background-repeat:no-repeat;
+    padding-left:18px;
+}
 table.email-tester
 { 
-
-    margin-bottom:10px;
+    margin-bottom:0px;
     margin-left:7px;
 }
 /* email test button icon */
-button.email-tester
+button .email-tester
 { 
     background:transparent url(../images/admin/icon_test.png) no-repeat center left !important; 
     width : 125px;
 }
-
 label.optional-email-tester
 { 
     padding: 10px 0px 0px 0px;
@@ -1070,7 +1147,6 @@ label.optional-email-tester
     margin-right:28em;
     font-style: italic;
 }
-
 body.wizard label.info-detail
 {
     float:left;
@@ -1079,7 +1155,6 @@ body.wizard label.info-detail
     margin-top:-20px;
     padding-left:270px;
 }
-
 .x-form-textfield-detail, .x-form-combo-detail
 { 
     font-size:80%;
@@ -1088,20 +1163,19 @@ body.wizard label.info-detail
     display:inline !important;
     float:none !important;
     margin-left:4px;
+    white-space: nowrap;
 }
 .x-form-combo-detail{
     margin-left:22px;
 }
 body.wizard
 {
-    font-family:arial,"helvetica,freesans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,helvetica,freesans,sans-serif;
+    font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
 }
-
 body.wizard .ext-el-mask
 { 
     background-color: #CCCCCC;
 }
-
 .network-card-form-margin{
     margin-top:1em;
     padding-top:1em;
@@ -1128,7 +1202,6 @@ body.wizard .ext-el-mask
 .small-bottom-margin{
     margin-bottom:1em;
 }
-
 #container{
     margin:10px auto;
     position:relative;
@@ -1199,7 +1272,7 @@ body.wizard .ext-el-mask
     background-color:#7F7F7F;
 }
 /* incomplete step marker */
-.incomplete div div .count{
+.incomplete div .count{
     background:url(../images/admin/wizard/step-incomplete.jpg) no-repeat left center !important;
     margin:0px 4px 0px 0px;
     color:#444444;
@@ -1207,7 +1280,7 @@ body.wizard .ext-el-mask
     padding:1px 6px 2px 5px;    
 }
 /* current step marker */
-.current div div .count
+.current div .count
 {
     background: url(../images/admin/wizard/step-current.jpg) no-repeat left center !important;
     margin:0px 4px 0px 0px;
@@ -1216,7 +1289,7 @@ body.wizard .ext-el-mask
     padding:1px 6px 2px 5px;
 }
 /* completed step marker */
-.completed div div .count
+.completed div .count
 .step_counter
 {
     background: url(../images/admin/wizard/step-completed.jpg) no-repeat left center !important;
@@ -1236,7 +1309,7 @@ body.wizard .ext-el-mask
     color:#333;
     font-size:18px;
     font-weight:bold;
-    font-family:tahoma,arial,helvetica,freesans,sans-serif;
+    font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
 }
 /* required info text */
 .required-info {
@@ -1264,7 +1337,7 @@ body.wizard .ext-el-mask
 
 .draggable-enabled-interface
 { 
-    background:transparent url(../images/admin/icon_drag_enabled.png) no-repeat center left;
+    background:transparent url(../images/admin/icon_drag_enabled.png) no-repeat left center;
     width: 100%;
     cursor: move;
     padding: 2px 0px 2px 48px;
@@ -1331,7 +1404,8 @@ body.wizard .ext-el-mask
 }
 .left-indent-5{
     margin-left:205px;
-}/*spamblocker stuff*/
+}
+/*spamblocker stuff*/
 .super-spam-threshold label{
     width:150px !important;
 }
@@ -1383,7 +1457,6 @@ body.wizard .ext-el-mask
     cursor: move;
     padding: 0px 0px 0px 0px;
 }
-
 .ua-cell-enabled
 { 
     background: transparent url(../images/admin/icon_interface_enabled.png) no-repeat center center;
@@ -1402,22 +1475,20 @@ body.wizard .ext-el-mask
     padding: 0px 0px 0px 0px;
 }
 
+
 .alpaca-panel{
     padding:10px;
 }
 
 .alpaca-panel .page-header-text{
-    font-family:Tahoma, arial, helvetica,freesans,sans-serif;
+    font-family:Tahoma, arial, helvetica, freesans,sans-serif;
     font-weight:bold;
     font-size:13px;
     margin-bottom:5px;
     display:block;
 }
-.x-form-combo-detail{
-    margin-left:22px;
-}
 .label-section-heading, .label-section-heading-2,.label-text{
-    font-family:Tahoma, arial, helvetica,freesans,sans-serif;
+    font-family:Tahoma, arial,helvetica,  freesans,sans-serif;
     font-weight:bold;
     font-size:12px;
     display:block;
@@ -1460,21 +1531,12 @@ body.wizard .ext-el-mask
     background: #FEFEDD url(../images/user/icon_message.png) no-repeat scroll 7px center !important;
     color:#333;
     font-size:11px;
-    font-family:Tahoma, arial, helvetica,freesans,sans-serif;
+    font-family:Tahoma, arial,helvetica, freesans,sans-serif;
 }
 .ua-message-warning{
     display:block;
-    margin-bottom:10px;
+    margin-bottom:10px;    
 }
-.x-btn-text {
-    color: #ffffff;
-}
-/*.x-panel-btns-ct {
-  padding: 0;
-  position: absolute;
-  top: -17px;
-  left: 10px;
-  }*/
 table.failover-refresh
 { 
     float : left;
@@ -1511,27 +1573,28 @@ fieldset.failover-test-type div.x-fieldset-bwrap
     border-bottom: none;
     padding-bottom: 0px;
 }
-button.icon-test-run
+
+button .icon-test-run
 {
     background: transparent url(../images/admin/icon_test_run.png) no-repeat center left !important;
 }
 
-button.icon-test-running
+button .icon-test-running
 {
     background: transparent url(../images/admin/icon_test_running.gif) no-repeat center left !important;
 }
 
-button.icon-clear-output
+button .icon-clear-output
 {
     background: transparent url(../images/admin/icon_clear_output.png) no-repeat center left !important;
 }
 
-button.icon-test-ping
+button .icon-test-ping
 {
     background: transparent url(../images/admin/icon_test_ping.png) no-repeat center left !important;
 }
 
-button.icon-test-connectivity
+button .icon-test-connectivity
 {
     background: transparent url(../images/admin/icon_test_connectivity.png) no-repeat center left !important;
 }
@@ -1574,4 +1637,7 @@ div.ua-cell-test-packet
 textarea.ua-test-output
 { 
     font-family: courier, monospace;
-} 
+}
+div.x-column-header-inner {
+    text-align: center;
+}

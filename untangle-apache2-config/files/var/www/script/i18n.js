@@ -99,7 +99,7 @@ Ung.I18N = Ext.extend(Ext.Component, {
         tokens = format.split("");
         for(i=0;i<tokens.length;i++){
             if(re.test(tokens[i])){
-                tokens[i] = this._(date.format(tokens[i]));
+                tokens[i] = this._(Ext.Date.format(date,tokens[i]));
             }
         }
         return tokens.join("");

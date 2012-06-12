@@ -1,6 +1,7 @@
 Ext.namespace('Ung');
 // The location of the blank pixel image
-Ung.Wizard = Ext.extend(Ext.Panel, {
+Ext.define('Ung.Wizard', {
+    extend:'Ext.panel.Panel',
     currentPage : 0,
     hidePreviousOnLastPage: false,
     hasCancel: false,
@@ -9,20 +10,22 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
     initComponent : function()
     {
 		var logo_container = Ext.get('extra-div-1');
-		logo_container.addClass( 'logo-container');
+		logo_container.addCls( 'logo-container');
         var logo = document.createElement('img');
 		logo.src= '../images/BrandingLogo.gif';		
 		logo_container.appendChild(logo);		
         /* Build a panel to hold the headers on the left */
-        this.headerPanel = new Ext.Panel( {
+        this.headerPanel = Ext.create('Ext.panel.Panel', {
             cls : 'wizard-steps',
-            items : this.buildHeaders( this.cards ),
-            defaults : { border : false },
-            layout : 'table',
-            layoutConfig : { columns : 1 },
+            defaults : { border : false, width : 200 },
+            items:this.buildHeaders( this.cards ),
+            layout: {
+                type: 'vbox',
+                align: 'right'
+            },
             region : "west",
             width : 200,
-			bodyStyle:{background:'none','padding':'20 0 0 0'},
+			bodyStyle:{background:'none'},
 			border:false
         } );
 
@@ -31,26 +34,26 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
         var length = this.cards.length;
         for ( c = 0 ;c < length ; c++ ) panels.push(this.cards[c].panel );
         if(this.hasCancel) {
-            this.cancelButton = new Ext.Button({
+            this.cancelButton = Ext.create('Ext.button.Button',{
                 id : 'cancel',
                 text : i18n._( 'Cancel' ),
-                handler : function() {
+                handler : Ext.bind(function() {
                     this.cancelAction();
-                }.createDelegate(this)
+                },this)
             });
         	
         }
-        this.previousButton = new Ext.Button({
+        this.previousButton = Ext.create('Ext.button.Button', {
             id : 'card-prev',
-            text : String.format(i18n._( '{0} Previous' ),'&laquo;'),
-            handler : this.goPrevious.createDelegate( this ),
+            text : Ext.String.format(i18n._( '{0} Previous' ),'&laquo;'),
+            handler : Ext.bind(this.goPrevious, this ),
 			cls:'x-btn-always-over small-right-margin'
         });
 
-        this.nextButton = new Ext.Button({
+        this.nextButton = Ext.create('Ext.button.Button',{
             id : 'card-next',
-            text : String.format(i18n._( 'Next {0}' ),'&raquo;'),
-            handler : this.goNext.createDelegate( this ),
+            text : Ext.String.format(i18n._( 'Next {0}' ),'&raquo;'),
+            handler : Ext.bind(this.goNext, this ),
 			cls:'x-btn-always-over'	
         });
         
@@ -62,15 +65,15 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
         this.cardDefaults.border = false;
         var bbarArr=[ '->', this.previousButton, this.nextButton ];
         if(this.hasCancel) {
-        	bbarArr.unshift(this.cancelButton);
+        //	bbarArr.unshift(this.cancelButton);
         };
         /* Build a card to hold the wizard */
-        this.contentPanel = new Ext.Panel({
+        this.contentPanel = Ext.create('Ext.panel.Panel',{
             layout : "card",
             items : panels,
             activeItem : 0,
             region : "center",
-            title : "&nbsp;",
+            //title : "&nbsp;",
 			header:false,
 			//autoScroll : true,
             defaults : this.cardDefaults, 
@@ -98,7 +101,7 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
 			}
             var title = '<span class="text'+addnlclass+'">' + card.title + '</span>';
             if (( c > 0 ) && ( c < ( length - 1 ))) {
-                title = String.format( '<span class="count">{0}</span> ', c  ) + title;
+                title = Ext.String.format( '<span class="count">{0}</span> ', c  ) + title;
             }
             var id = this.getStepId( c );
             items.push({ 
@@ -158,7 +161,7 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
 
         /* If the page has changed and it is defined, then call the handler */
         if ( handler ) {
-            handler( this.afterChangeHandler.createDelegate( this, [ index, hasChanged ] ));
+            handler( Ext.bind(this.afterChangeHandler, this, [ index, hasChanged ] ));
         } else {
 			//where are we going if there is no handler? - karthik
             this.afterChangeHandler( index, hasChanged );
@@ -181,7 +184,7 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
         //this.contentPanel.setTitle( "" );
         
         if ( hasChanged && ( handler )) {
-            handler( this.afterLoadHandler.createDelegate( this ));
+            handler( Ext.bind(this.afterLoadHandler, this ));
         } else {
             this.afterLoadHandler();
         }
@@ -195,24 +198,24 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
         this.contentPanel.doLayout();
         
         /* retrieve all of the items */
-        var items = this.headerPanel.find();
+        var items = this.headerPanel.query('');
         var length = items.length;
         var isComplete = true;
         for ( var c = 0 ; c < length ; c++ ) {
             var item = items[c];
             if ( c == this.currentPage ) {
-                item.removeClass( "incomplete" );
-                item.removeClass( "completed" );
-                item.addClass( "current" );
+                item.removeCls( "incomplete" );
+                item.removeCls( "completed" );
+                item.addCls( "current" );
                 isComplete = false;
             } else {
-                item.removeClass( "current" );
+                item.removeCls( "current" );
                 if ( isComplete ) {
-                    item.removeClass( "incomplete" );
-                    item.addClass( "completed" );
+                    item.removeCls( "incomplete" );
+                    item.addCls( "completed" );
                 } else {
-                    item.removeClass( "completed" );
-                    item.addClass( "incomplete" );
+                    item.removeCls( "completed" );
+                    item.addCls( "incomplete" );
                 }
             }
         }
@@ -236,7 +239,7 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
             	
             }
         } else {
-            this.nextButton.setText( String.format(i18n._('Next {0}'),"&raquo;"));
+            this.nextButton.setText( Ext.String.format(i18n._('Next {0}'),"&raquo;"));
             if(this.hasCancel) {
                 this.cancelButton.show();
             }
@@ -250,8 +253,8 @@ Ung.Wizard = Ext.extend(Ext.Panel, {
         if ( title == null ) title = card.title;
 
         if (( index > 0 ) && ( index < ( this.cards.length - 1 ))) {
-            if ( title == null ) title = String.format( i18n._('Step {0}'), index );
-            else title = String.format( i18n._('Step {0}'), index + ' - ' + title) ;
+            if ( title == null ) title = Ext.String.format( i18n._('Step {0}'), index );
+            else title = Ext.String.format( i18n._('Step {0}'), index + ' - ' + title) ;
         }
         
         return title;
