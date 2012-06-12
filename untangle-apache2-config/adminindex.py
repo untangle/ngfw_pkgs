@@ -45,7 +45,7 @@ def login(req, url=None, realm='Administrator'):
             if url == None:
                 return apache.OK
             else:
-                util.redirect(req, url)
+                util.redirect(req, url, text="Login Successfull")
 
     company_name = uvmlogin.get_company_name()
     title = cgi.escape(_("%s Administrator Login") % company_name)
@@ -63,7 +63,7 @@ def logout(req, url=None, realm='Administrator'):
     if url == None:
         return apache.OK
     else:
-        util.redirect(req, url)
+        util.redirect(req, url, text="Logout Successfull")
 
 # internal methods ------------------------------------------------------------
 
