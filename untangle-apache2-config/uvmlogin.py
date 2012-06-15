@@ -27,12 +27,15 @@ def authenhandler(req):
             apache.log_error('no realm specified')
             return apache.DECLINED
 
+def get_settings_item(a,b):
+    return None
 def get_node_settings_item(a,b):
     return None
 def get_uvm_settings_item(a,b):
     return None
 
 try:
+    from uvm.settings_reader import get_settings_item
     from uvm.settings_reader import get_node_settings_item
     from uvm.settings_reader import get_uvm_settings_item
 except ImportError:
@@ -200,10 +203,9 @@ def setup_gettext():
 def get_company_name():
     company = 'Untangle'
 
-    if (os.path.isfile("/etc/untangle/oem/oem.py")):
-        sys.path.append("/etc/untangle/oem")
-        import oem
-        company = oem.oemName()
+    oemName = get_settings_item("/usr/share/untangle/conf/oem.js","oemName")
+    if oemName != None:
+        company = oemName
 
     brandco = get_node_settings_item('untangle-node-branding','companyName')
     if (brandco != None):

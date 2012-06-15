@@ -34,6 +34,8 @@ def login(req, url=None, realm='Administrator'):
     if req.form.has_key('username') and req.form.has_key('password'):
         username = req.form['username']
         password = req.form['password']
+        # debug
+        # assert False, ("User:Pass = %s %s" % (username,password))
 
         if _valid_login(req, realm, username, password):
             sess = Session.Session(req)
@@ -48,7 +50,14 @@ def login(req, url=None, realm='Administrator'):
                 util.redirect(req, url, text="Login Successfull")
 
     company_name = uvmlogin.get_company_name()
-    title = cgi.escape(_("%s Administrator Login") % company_name)
+    title = _("Administrator Login")
+    # some i18n company_names cause exception here, so wrap to handle this 
+    # revert to "Administrator Login" if exception occurs
+    try:
+        title = cgi.escape(_("%s Administrator Login") % company_name)
+    except:
+        pass
+
     host = cgi.escape(req.hostname)
 
     _write_login_form(req, title, host, is_error)
