@@ -6,6 +6,17 @@
  * http://extjs.com/license
  */
 
+if ((typeof Range !== "undefined") && !Range.prototype.createContextualFragment)
+{
+	Range.prototype.createContextualFragment = function(html)
+	{
+		var frag = document.createDocumentFragment(), 
+		div = document.createElement("div");
+		frag.appendChild(div);
+		div.outerHTML = html;
+		return frag;
+	};
+}
 
 Ext.DomHelper=function(){var tempTableEl=null;var emptyTags=/^(?:br|frame|hr|img|input|link|meta|range|spacer|wbr|area|param|col)$/i;var tableRe=/^table|tbody|tr|td$/i;var createHtml=function(o){if(typeof o=='string'){return o;}
 var b="";if(Ext.isArray(o)){for(var i=0,l=o.length;i<l;i++){b+=createHtml(o[i]);}
