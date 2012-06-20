@@ -257,7 +257,7 @@ function cpd_replace_host( username, hw_addr, ipv4_addr, update_session_start )
    end
 
    expiration = get_expiration_sql( true, idle_timeout, timeout )
-   query = string.format( "INSERT INTO %s ( entry_id, username, ipv4_addr, hw_addr, session_start, last_session , expiration_date ) VALUES ( nextval( 'hibernate_sequence' ), '%s', '%s', %s, now(), now(), %s )",  host_database_table, username, ipv4_addr, hw_addr_str, expiration )
+   query = string.format( "INSERT INTO %s ( entry_id, username, ipv4_addr, hw_addr, session_start, last_session , expiration_date ) VALUES ( extract(epoch from date_trunc('milliseconds', now())) * 1000, '%s', '%s', %s, now(), now(), %s )",  host_database_table, username, ipv4_addr, hw_addr_str, expiration )
 
    num_rows = assert( uvm_db_execute( query ))
    assert( num_rows == 1, "INSERT didn't create a new row." )
