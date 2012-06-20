@@ -1648,3 +1648,6 @@ textarea.ua-test-output
 div.x-column-header-inner {
     text-align: center;
 }
+div.x-fieldset-header-text {
+	font-weight: bold
+}
