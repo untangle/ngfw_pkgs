@@ -11,7 +11,7 @@ awk_script()
 /^Name: cpd-ipv4-authenticated/ { ipset_name=$2 ; num_members=0 }
 
 ## By default do not count members.
-/^Bindings:/ { 
+/^Bindings:/ {
   count_member="false"
 }
 
@@ -27,7 +27,7 @@ EOF
 ## no MAC Address, 1.2.3.4
 get_host_entries()
 {
-    psql -U postgres uvm -t -c "SELECT ipv4_addr,hw_addr FROM events.n_cpd_host_database_entry ORDER BY ipv4_addr" | sed -e 's| ||g' -e 's/|$//' -e 's/|/:/' -e '/^$/ d' | uniq | sort
+    psql -U postgres uvm -t -c "SELECT ipv4_addr,hw_addr FROM cpd.host_database_entry ORDER BY ipv4_addr" | sed -e 's| ||g' -e 's/|$//' -e 's/|/:/' -e '/^$/ d' | uniq | sort
 }
 
 ## Get the actual entries from the IPSet
@@ -47,18 +47,18 @@ BEGIN { added_ipv4=0 ; added_hw_addr=0 ; deleted_ipv4=0 ; deleted_hw_addr=0 }
   added_ipv4++
   next
 }
-/^> *[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+$/ { 
+/^> *[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+$/ {
   print( "ADDING HW ADDR IS NOT SUPPORTED." )
   next
 }
-/^< *[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/ { 
+/^< *[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/ {
   ipv4_addr=$2
   system( "ipset -A cpd-ipv4-expired " ipv4_addr )
   system( "ipset -D cpd-ipv4-authenticated " ipv4_addr )
   deleted_ipv4++
   next
 }
-/^< *[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+$/ { 
+/^< *[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+:[0-9]+$/ {
   print( "REMOVING HW ADDR IS NOT SUPPORTED." )
   next
 }

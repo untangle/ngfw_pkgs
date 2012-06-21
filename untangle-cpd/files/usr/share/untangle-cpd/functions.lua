@@ -42,7 +42,7 @@ local function create_table( table_name, ... )
    -- Get the hash of all of the individual queries
    local hash = md5.sumhexa(table.concat( statements, "" ))
 
-   query = string.format( "SELECT * FROM settings.n_cpd_db_version WHERE table_name='%s' AND version_id='%s'", table_name, hash )
+   query = string.format( "SELECT * FROM cpd.db_version WHERE table_name='%s' AND version_id='%s'", table_name, hash )
 
    curs = assert( uvm_db_execute( query ))
    is_updated = not( curs:fetch() == nil )
@@ -58,24 +58,30 @@ local function create_table( table_name, ... )
       assert( uvm_db_execute( query ))
    end
 
-   query = string.format( "DELETE FROM settings.n_cpd_db_version WHERE table_name='%s'", table_name )
+   query = string.format( "DELETE FROM cpd.db_version WHERE table_name='%s'", table_name )
    assert( uvm_db_execute( query ))
-   query= string.format( "INSERT INTO settings.n_cpd_db_version (table_name,version_id) VALUES ('%s', '%s' )",
+   query= string.format( "INSERT INTO cpd.db_version (table_name,version_id) VALUES ('%s', '%s' )",
                          table_name, hash )
    assert( uvm_db_execute( query ))
 end
 
 local function init_database()
+
    uvm_db_execute([[
-                    CREATE TABLE settings.n_cpd_db_version (
+                    CREATE SCHEMA cpd;
+              ]], true )
+
+   uvm_db_execute([[
+                    CREATE TABLE cpd.db_version (
                        table_name TEXT,
                        version_id TEXT
                     );
               ]], true )
+
    local curs, is_updated
 
-   create_table( "n_cpd_host_database_entry", [[
-CREATE TABLE events.n_cpd_host_database_entry (
+   create_table( "host_database_entry", [[
+CREATE TABLE cpd.host_database_entry (
     entry_id        INT8 NOT NULL,
     hw_addr         TEXT,
     ipv4_addr       INET,
@@ -85,18 +91,18 @@ CREATE TABLE events.n_cpd_host_database_entry (
     expiration_date TIMESTAMP,
    PRIMARY KEY     (entry_id));
 ]],[[
-CREATE INDEX n_cpd_host_database_last_session_idx ON
-       events.n_cpd_host_database_entry(last_session);
+CREATE INDEX host_database_last_session_idx ON
+       cpd.host_database_entry(last_session);
  ]],[[
 -- For querying on sessions that are expired
-CREATE INDEX n_cpd_host_database_expiration_date_idx ON
-       events.n_cpd_host_database_entry(expiration_date);
+CREATE INDEX host_database_expiration_date_idx ON
+       cpd.host_database_entry(expiration_date);
  ]],[[
-CREATE INDEX n_cpd_host_database_username_idx ON
-       events.n_cpd_host_database_entry(username);
+CREATE INDEX host_database_username_idx ON
+       cpd.host_database_entry(username);
  ]],[[
-CREATE INDEX n_cpd_host_database_ipv4_addr_idx ON
-       events.n_cpd_host_database_entry(ipv4_addr);
+CREATE INDEX host_database_ipv4_addr_idx ON
+       cpd.host_database_entry(ipv4_addr);
  ]])
 end
 
@@ -491,7 +497,7 @@ authenticated_ipset = "cpd-ipv4-authenticated"
 
 expired_ipset = "cpd-ipv4-expired"
 
-host_database_table = "events.n_cpd_host_database_entry"
+host_database_table = "cpd.host_database_entry"
 
 clean_expire_sessions = 0
 
@@ -500,4 +506,3 @@ if ( not ( log_events  )) then
 end
 
 init_database()
-
