@@ -67,6 +67,9 @@ end
 
 local function init_database()
 
+   -- First make sure the uvm database exists
+   os.execute("createdb -O postgres -U postgres uvm")
+
    uvm_db_execute([[
                     CREATE SCHEMA cpd;
               ]], true )
