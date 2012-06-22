@@ -1,7 +1,5 @@
 #! /bin/bash
 
-#exec 2>> @UVM_LOG@/iptables.log
-
 ## Print the status of a list of interfaces.  Each interface should be
 ## given on the command line.
 
