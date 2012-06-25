@@ -60,7 +60,7 @@ Ung.Alpaca.Pages.Dhcp.Index = Ext.extend( Ung.Alpaca.PagePanel, {
             header : this._( "Add Static" ),
             width : 70,
             handle : this.addStatic.createDelegate( this ),
-            iconClass : 'icon-add-row'
+            iconClass : 'icon-add-inline-row'
         });
 
         this.currentLeasesGrid = new Ung.Alpaca.EditorGridPanel({
