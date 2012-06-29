@@ -140,7 +140,7 @@ div.icon-buy {
     width:15px;
 }
 /* help button icon */
-button .icon-help {
+.icon-help {
     background:transparent url(../images/admin/icon_help.png) no-repeat center left !important; 
 }
 /* logout button icon */
@@ -151,12 +151,7 @@ button .icon-logout {
 button .icon-myaccount {
     background:transparent url(../images/admin/icon_myaccount.png) no-repeat center left !important; 
 }
-/* help button icon */
-div.icon-help {
-    background:transparent url(../images/admin/icon_help.png) no-repeat !important;
-    height:15px;
-    width:15px;
-}
+
 /* node state container */
 div.node div.node-state {
     z-index: 200;
@@ -170,15 +165,19 @@ div.node div.node-state {
 div.icon-state-on {
     background:transparent url(../images/admin/icon_state_on.png) no-repeat center !important; 
 }
+/* node state off icon */
 div.icon-state-off {
     background:none; 
 }
+/* node state attention icon */
 div.icon-state-attention {
     background:transparent url(../images/admin/icon_state_attention.png) no-repeat center !important; 
 }
+/* node state error icon */
 div.icon-state-error {
     background:transparent url(../images/admin/icon_state_error.png) no-repeat center !important; 
 }
+/* node power button icon */
 div.node div.node-power {
     position:absolute;
     z-index: 250;
@@ -189,6 +188,7 @@ div.node div.node-power {
     cursor:pointer;
     cursor:hand; /*for ie*/
 }
+/* node power expired button icon */
 div.node div.node-power-expired {
     position:absolute;
     top:15px;
@@ -228,6 +228,7 @@ div#alert-container{
     overflow:hidden;
     padding:0 14px;
 }
+/* node buttons panel container */
 div.node div.node-buttons {
     position:absolute;
     top:34px;
@@ -246,15 +247,15 @@ button .node-remove-icon {
     background:transparent url(../images/admin/icon_remove.png) no-repeat center left !important; 
 }
 /* cancel button icon */
-button .cancel-icon {
+.cancel-icon {
     background:transparent url(../images/admin/icon_cancel.png) no-repeat center left !important; 
 }
 /* save button icon */
-button .save-icon {
+.save-icon {
     background:transparent url(../images/admin/icon_save.png) no-repeat center left !important; 
 }
 /* apply button icon */
-button .apply-icon {
+.apply-icon {
     background:transparent url(../images/admin/icon_floppy.png) no-repeat center left !important; 
 }
 /* test button icon */
@@ -285,34 +286,34 @@ button .reboot-icon {
 /* node metrics */
 div.node div.node-metrics {
     position:absolute;
-    bottom: 6px;
-    right: 100px;
-    width: 355px;
-    height: 87px;
+    bottom: 0px;
+    right: 35px;
+    width: 320px;
+    height: 72px;
 }
 /* chart container */
 div.node-metrics div.chart {
     position: absolute;
     top: 0px;
     left: 0px;
-    width: 133px;
-    height: 92px;
-    background: transparent url(../images/admin/background_activity_blinger_border.png) no-repeat scroll 4px 7px !important;
+    width: 103px;
+    height: 72px;
+    background: none;
 }
 /* system metrics container */
 div.node-metrics div.system {
     position:absolute;
     top: 0px;
     right: 0px;
-    width: 219px;
-    height: 87px;
-    background: transparent url(../images/admin/background_system_blinger_border.png) no-repeat scroll 0px 7px !important;
+    width: 216px;
+    height: 72px;
+    background: none;
 }
 /* system metrics box container */
 div.node-metrics div.system-box {
     position: relative;
-    top:15px;
-    left:5px;
+    top:6px;
+    left:3px;
     width: 209px;
     height:60px;
 }
@@ -327,10 +328,12 @@ div.node-metrics div.system-label {
     position:absolute;
     left:0px;
     text-align: left;
-    color: #3F3F3F;
-    width: 125px;
+    color: #FFFFFF;
+    width: 100px;
+    padding-left:2px;
     overflow: hidden;
     white-space : nowrap;
+    background: transparent url(../images/admin/background_system_blinger_value.png) no-repeat left !important;    
 }
 /* system metrics value */
 div.node-metrics div.system-value {
@@ -342,7 +345,8 @@ div.node-metrics div.system-value {
     padding-right:4px;
     width: 100px;
     height: 14px;
-    background: transparent url(../images/admin/background_system_blinger_value.png) no-repeat right !important;
+    background: none;
+    background: transparent url(../images/admin/background_system_blinger_value.png) no-repeat right !important;    
 }
 
 div.pixel {
@@ -369,36 +373,32 @@ div.ung-button-invalid {
     border: 1px solid green;
 }
 /* add row button icon */
-button .icon-add-row {
+.icon-add-row {
     background: transparent url(../images/admin/icon_add_row.gif) no-repeat center left !important;
 }
 /* import row button icon */
-button .icon-import {
+.icon-import {
     background: transparent url(../images/admin/icon_import.gif) no-repeat center left !important;
 }
 /* export row button icon */
-button .icon-export {
+.icon-export {
     background: transparent url(../images/admin/icon_export.gif) no-repeat center left !important;
 }
 /* row add icon */
-div.icon-add-row {
+.icon-add-inline-row {
     background:transparent url(../images/admin/icon_row_add.png) no-repeat center center;
     width: 100%;
     cursor: pointer;
 }
 /* edit row icon */
-img.icon-edit-row {
+.icon-edit-row {
     background:transparent url(../images/admin/icon_edit_row.gif) no-repeat center center;
     width: 100%;
     cursor: pointer;
     height:16px;
 }
-/* delete row button icon */
-button .icon-delete-row {
-    background:transparent url(../images/user/icon_remove.png) no-repeat center left !important;
-}
 /* delete row icon */
-img.icon-delete-row {
+.icon-delete-row {
     background:transparent url(../images/admin/icon_delete_row.gif) no-repeat center center;
     width: 100%;
     cursor: pointer;
@@ -411,13 +411,14 @@ div.icon-logout-row {
     cursor: pointer;
 }
 /* detail row icon */
-div.icon-detail-row {
+.icon-detail-row {
     background:transparent url(../images/admin/icon_detail_row.gif) no-repeat center center;
     width: 100%;
     cursor: pointer;
+    height:16px;
 }
 /* drag icon */
-img.icon-drag {
+.icon-drag {
     background:transparent url(../images/admin/icon_drag.gif) no-repeat center center;
     width: 100%;
     cursor: move;
@@ -425,11 +426,11 @@ img.icon-drag {
 }
 
 /* refresh button icon */
-button .icon-refresh {
+.icon-refresh {
     background: transparent url(../images/admin/icon_refresh.png) no-repeat center left !important;
 }
 /* autorefresh button icon */
-button .icon-autorefresh {
+.icon-autorefresh {
     background: transparent url(../images/admin/icon_autorefresh.png) no-repeat center left !important;
 }
 /* color of a deleted row in grid */
@@ -567,7 +568,7 @@ td.app-item-center div.action {
     right: 5px;
     top: 34px;
     height: 15px;
-    font-family: tahoma,arial,  helvetica,freesans,sans-serif;
+    font-family: tahoma,arial,helvetica,  freesans,sans-serif;
     font-size: 11px;
     color: white;
     padding-right: 19px;
@@ -1138,7 +1139,7 @@ table.email-tester
 button .email-tester
 { 
     background:transparent url(../images/admin/icon_test.png) no-repeat center left !important; 
-    width : 125px;
+    width : 190px;
 }
 label.optional-email-tester
 { 
@@ -1289,7 +1290,7 @@ body.wizard .ext-el-mask
     padding:1px 6px 2px 5px;
 }
 /* completed step marker */
-.completed div .count
+.completed div .count,
 .step_counter
 {
     background: url(../images/admin/wizard/step-completed.jpg) no-repeat left center !important;
@@ -1535,7 +1536,7 @@ body.wizard .ext-el-mask
 }
 .ua-message-warning{
     display:block;
-    margin-bottom:10px;    
+    margin-bottom:10px;
 }
 table.failover-refresh
 { 
@@ -1574,27 +1575,27 @@ fieldset.failover-test-type div.x-fieldset-bwrap
     padding-bottom: 0px;
 }
 
-button .icon-test-run
+.icon-test-run
 {
     background: transparent url(../images/admin/icon_test_run.png) no-repeat center left !important;
 }
 
-button .icon-test-running
+.icon-test-running
 {
     background: transparent url(../images/admin/icon_test_running.gif) no-repeat center left !important;
 }
 
-button .icon-clear-output
+.icon-clear-output
 {
     background: transparent url(../images/admin/icon_clear_output.png) no-repeat center left !important;
 }
 
-button .icon-test-ping
+.icon-test-ping
 {
     background: transparent url(../images/admin/icon_test_ping.png) no-repeat center left !important;
 }
 
-button .icon-test-connectivity
+.icon-test-connectivity
 {
     background: transparent url(../images/admin/icon_test_connectivity.png) no-repeat center left !important;
 }

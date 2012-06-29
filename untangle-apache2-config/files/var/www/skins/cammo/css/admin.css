@@ -118,7 +118,6 @@ div.node div.node-faceplate-info {
     padding:0px 2px;
     background-color:#C0C0C0;
 }
-
 .buy-button-text .x-btn-text-icon{
     margin-left:20px;
 }
@@ -143,7 +142,7 @@ div.icon-buy {
     width:15px;
 }
 /* help button icon */
-button .icon-help {
+.icon-help {
     background:transparent url(../images/admin/icon_help.png) no-repeat center left !important; 
 }
 /* logout button icon */
@@ -154,12 +153,7 @@ button .icon-logout {
 button .icon-myaccount {
     background:transparent url(../images/admin/icon_myaccount.png) no-repeat center left !important; 
 }
-/* help button icon */
-div.icon-help {
-    background:transparent url(../images/admin/icon_help.png) no-repeat !important;
-    height:15px;
-    width:15px;
-}
+
 /* node state container */
 div.node div.node-state {
     z-index: 200;
@@ -255,15 +249,15 @@ button .node-remove-icon {
     background:transparent url(../images/admin/icon_remove.png) no-repeat center left !important; 
 }
 /* cancel button icon */
-button .cancel-icon {
+.cancel-icon {
     background:transparent url(../images/admin/icon_cancel.png) no-repeat center left !important; 
 }
 /* save button icon */
-button .save-icon {
+.save-icon {
     background:transparent url(../images/admin/icon_save.png) no-repeat center left !important; 
 }
 /* apply button icon */
-button .apply-icon {
+.apply-icon {
     background:transparent url(../images/admin/icon_floppy.png) no-repeat center left !important; 
 }
 /* test button icon */
@@ -378,36 +372,32 @@ div.ung-button-invalid {
     border: 1px solid green;
 }
 /* add row button icon */
-button .icon-add-row {
+.icon-add-row {
     background: transparent url(../images/admin/icon_add_row.gif) no-repeat center left !important;
 }
 /* import row button icon */
-button .icon-import {
+.icon-import {
     background: transparent url(../images/admin/icon_import.gif) no-repeat center left !important;
 }
 /* export row button icon */
-button .icon-export {
+.icon-export {
     background: transparent url(../images/admin/icon_export.gif) no-repeat center left !important;
 }
 /* row add icon */
-div.icon-add-row {
+.icon-add-inline-row {
     background:transparent url(../images/admin/icon_row_add.png) no-repeat center center;
     width: 100%;
     cursor: pointer;
 }
 /* edit row icon */
-img.icon-edit-row {
+.icon-edit-row {
     background:transparent url(../images/admin/icon_edit_row.gif) no-repeat center center;
     width: 100%;
     cursor: pointer;
     height:16px;
 }
-/* delete row button icon */
-button .icon-delete-row {
-    background:transparent url(../images/user/icon_remove.png) no-repeat center left !important;
-}
 /* delete row icon */
-img.icon-delete-row {
+.icon-delete-row {
     background:transparent url(../images/admin/icon_delete_row.gif) no-repeat center center;
     width: 100%;
     cursor: pointer;
@@ -420,13 +410,14 @@ div.icon-logout-row {
     cursor: pointer;
 }
 /* detail row icon */
-div.icon-detail-row {
+.icon-detail-row {
     background:transparent url(../images/admin/icon_detail_row.gif) no-repeat center center;
     width: 100%;
     cursor: pointer;
+    height:16px;
 }
 /* drag icon */
-img.icon-drag {
+.icon-drag {
     background:transparent url(../images/admin/icon_drag.gif) no-repeat center center;
     width: 100%;
     cursor: move;
@@ -434,7 +425,7 @@ img.icon-drag {
 }
 
 /* refresh button icon */
-button .icon-refresh {
+.icon-refresh {
     background: transparent url(../images/admin/icon_refresh.png) no-repeat center left !important;
 }
 /* autorefresh button icon */
@@ -1545,7 +1536,7 @@ body.wizard .ext-el-mask
 }
 .ua-message-warning{
     display:block;
-    margin-bottom:10px;    
+    margin-bottom:10px;
 }
 table.failover-refresh
 { 
@@ -1584,27 +1575,27 @@ fieldset.failover-test-type div.x-fieldset-bwrap
     padding-bottom: 0px;
 }
 
-button .icon-test-run
+.icon-test-run
 {
     background: transparent url(../images/admin/icon_test_run.png) no-repeat center left !important;
 }
 
-button .icon-test-running
+.icon-test-running
 {
     background: transparent url(../images/admin/icon_test_running.gif) no-repeat center left !important;
 }
 
-button .icon-clear-output
+.icon-clear-output
 {
     background: transparent url(../images/admin/icon_clear_output.png) no-repeat center left !important;
 }
 
-button .icon-test-ping
+.icon-test-ping
 {
     background: transparent url(../images/admin/icon_test_ping.png) no-repeat center left !important;
 }
 
-button .icon-test-connectivity
+.icon-test-connectivity
 {
     background: transparent url(../images/admin/icon_test_connectivity.png) no-repeat center left !important;
 }
