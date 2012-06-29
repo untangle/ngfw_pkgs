@@ -24,9 +24,6 @@ Ung.I18N = Ext.extend(Ext.Component, {
         if (!this.map['timestamp_fmt']) {
             this.map['timestamp_fmt'] = 'Y-m-d g:i:s a';
         }
-        if (!this.map['time_fmt']) {
-            this.map['time_fmt'] = 'g:i a';
-        }
     },
     // translation function
     _: function(s) {
@@ -93,9 +90,6 @@ Ung.I18N = Ext.extend(Ext.Component, {
         var date = new Date();
         date.setTime(v.time);
         return Ext.util.Format.date(date, this.map['timestamp_fmt']);
-    },
-    timeFmt: function() {
-        return this.map['time_fmt'];
     },
     //date long version format
     dateLongFormat: function (date,format){
