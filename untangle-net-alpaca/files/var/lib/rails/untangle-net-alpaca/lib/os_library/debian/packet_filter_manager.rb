@@ -153,7 +153,9 @@ EOF
 ## We will continue to mark new sessions because splitd may have already marked the packet for a specific WAN
 ## However, if the packet is not destined for a WAN but a local network, we need to remark it here
 #{IPTablesCommand} #{args} -m mark ! --mark 0/#{DstIntfMask} -m conntrack ! --ctstate NEW -j RETURN
-#{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFF00FF
+# No need to zero out the mark - it will be overwritten if it the knowledge is there
+# This rule messes up VPN traffic, - want to keep the mark if its present
+# #{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFF00FF
 EOF
 
     MarkLocal = Chain.new( "mark-local", "mangle", "PREROUTING", "", <<'EOF' )
@@ -733,25 +735,25 @@ EOF
     end
 
     # Set the src mark 
-    rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in}  -j MARK --or-mark #{index}"
+    rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in}  -j MARK --set-mark #{index}"
     # If this is a new connection save the src interface index as the client interface connmark
     rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in}  -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index}/#{SrcIntfMask}"
     # Alternative marking technique (used in some cases like bridge of PPPoE)
     if !match_in_alt.nil?
       # Set the src mark 
-      rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in_alt}  -j MARK --or-mark #{index}"
+      rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in_alt}  -j MARK --set-mark #{index}"
       # If this is a new connection save the src interface index as the client interface connmark
       rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in_alt}  -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index}/#{SrcIntfMask}"
     end
 
     # Set the dst mark 
-    rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out} -j MARK --or-mark #{index << DstIntfShift}"
+    rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out} -j MARK --set-mark #{index << DstIntfShift}"
     # If this is a new connection save the dst interface index as the server interface connmark
     rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << DstIntfShift}/#{DstIntfMask}"
     # Alternative marking technique (used in some cases like bridge of PPPoE)
     if !match_out_alt.nil?
       # Set the dst mark 
-      rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out_alt} -j MARK --or-mark #{index << DstIntfShift}"
+      rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out_alt} -j MARK --set-mark #{index << DstIntfShift}"
       # If this is a new connection save the dst interface index as the server interface connmark
       rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out_alt} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << DstIntfShift}/#{DstIntfMask}"
     end
@@ -904,9 +906,14 @@ EOF
 
     # add openVPN nat rules
     wan_interfaces.each do |interface|
-      # 0xfa (250) is the openvpn interface, the -i test does not work here
-      #rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -i tun0 -o #{interface.os_name} -j MASQUERADE"
+      # the -i test does not work here, 0xfa (250) is the openvpn interface - use the mark instead
+      # rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -i tun0 -o #{interface.os_name} -j MASQUERADE"
+
+      # add a rule using the -o matcher
       rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -m mark --mark 0xfa/#{SrcIntfMask} -o #{interface.os_name} -j MASQUERADE"
+
+      # add a rule using the dst mark (sometimes previous won't work for bridged interfaces)
+      rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -m mark --mark #{((interface.index << DstIntfShift) | 0xfa)}/#{(DstIntfMask | SrcIntfMask)} -j MASQUERADE"
     end
 
     [ rules.join( "\n" ), fw_rules.join( "\n" ) ]    
