@@ -7,7 +7,6 @@
 # touch factory-defaults file to tell system to start in wizard mode
 touch /usr/share/untangle/conf/factory-defaults
 
-
 echo -n "Removing settings and configuration..."
 
 psql -U postgres -c "DROP DATABASE IF EXISTS uvm" >/dev/null 2>&1

@@ -191,7 +191,6 @@ main_menu()
     dialog --backtitle "$backtitle" --title "$OEM_NAME Recovery" \
         --cancel-label "Exit" \
         --menu "Choose operation:" 10 61 3 \
-        "Backup & Restore" "" \
         "Return to Factory Defaults" "" \
         "Reset Administrative Accounts" "" \
         "Upgrade" "" \
@@ -203,12 +202,6 @@ main_menu()
     case $retval in
         0) # OK
             case $choice in
-                "Backup & Restore")
-                    if [ -x /usr/share/untangle/bin/uvmdb-restore ] ; then
-                        /usr/share/untangle/bin/uvmdb-restore
-                    fi
-                    state=MAIN_MENU
-                    ;;
                 "Return to Factory Defaults")
                     if confirm "Return all settings to factory defaults?"; then
                         /usr/share/untangle/bin/factory-defaults  >> /var/log/uvm/factory-defaults.log 2>&1
@@ -223,10 +216,7 @@ main_menu()
                     ;;
                 "Reset Administrative Accounts")
                     if confirm "Reset administrative accounts to factory defaults (admin/passwd)?"; then
-                        psql -X -U postgres uvm >/dev/null <<EOF
-DELETE FROM u_user;
-DELETE FROM u_admin_settings;
-EOF
+                        rm -f /usr/share/untangle/settings/untangle-vm/admin.js
                         state=SUCCESS_SPLASH
                     else
                         state=MAIN_MENU
