@@ -7,6 +7,12 @@ DIALOG="Xdialog"
 COMMON_OPTS="--left"
 OEM_NAME="Untangle"
 
+# FIXME: for squeeze, port Xdialog to something else
+if [[ $(cat /etc/debian_version) == 6* ]] ; then
+  ${XTERM} -tn rxvt -T ${XTERM} -e sudo su &
+  exit 0
+fi
+
 if [ -f /etc/untangle/oem/oem.sh ] ; then
     source /etc/untangle/oem/oem.sh
 fi
