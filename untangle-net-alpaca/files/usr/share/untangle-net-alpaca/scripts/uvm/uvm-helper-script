@@ -209,10 +209,14 @@ uvm_packet_filter_secure_internal()
         HTTPS_PORT="443"
     fi
 
-    # non-WAN HTTPS administration rules
+    # non-WAN HTTPS administration rules (these assure that HTTPS administration is always reachable from non-WANs)
     /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan_idx | while read intfId ; do
-        local t_mark=$(( ${MASK_LOCAL} | ${MASK_FIRST_ALIAS} | $intfId ))
-        local t_mask=$(( ${MASK_LOCAL} | ${MASK_FIRST_ALIAS} | ${MASK_SRC_INTERFACE} ))
+        # This has been changed to just LOCAL | src_intf
+        # For example, if 1.2.3.4 is the external IP, these rules assure https://1.2.3.4:HTTPS_PORT/ is reachable from the non-WANs
+        #local t_mark=$(( ${MASK_LOCAL} | ${MASK_FIRST_ALIAS} | $intfId ))
+        #local t_mask=$(( ${MASK_LOCAL} | ${MASK_FIRST_ALIAS} | ${MASK_SRC_INTERFACE} ))
+        local t_mark=$(( ${MASK_LOCAL} | $intfId ))
+        local t_mask=$(( ${MASK_LOCAL} | ${MASK_SRC_INTERFACE} ))
 
         echo "[`date`] Enabling HTTPS administration on interface $intfId. Port: ${HTTPS_PORT}" 
         ${IPTABLES} -t nat    -A alpaca-redirect -p tcp -m multiport --destination-ports ${HTTPS_PORT} -m mark --mark ${t_mark}/${t_mask} -j REDIRECT --to-ports ${HTTPS_INTERNAL_REDIRECT_PORT}
