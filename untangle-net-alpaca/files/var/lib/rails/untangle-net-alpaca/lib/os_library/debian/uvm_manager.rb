@@ -195,24 +195,8 @@ fi
 #{IPTablesCommand} #{Chain::MarkInterface.args} -m conntrack --ctdir ORIGINAL -m connmark --mark #{0xfa}/#{0xff} -j MARK --set-mark #{0xfa << 8}/#{0xff00}
 #{IPTablesCommand} #{Chain::MarkInterface.args} -m conntrack --ctdir ORIGINAL -m connmark --mark #{0xfa << 8}/#{0xff00} -j MARK --set-mark #{0xfa}/#{0xff}
 
-## Function designed to insert the necessary filter rule to pass traffic from a
-## a VPN interface.
-insert_vpn_export()
-{
-  local t_network=$1
-  local t_netmask=$2
-
-  #{IPTablesCommand} #{Chain::FirewallRules.args} -i tun0 -d ${t_network}/${t_netmask} -j RETURN
-}
-
-## Now insert all exports
-EXPORTS_FILE=`uvm_home`/conf/openvpn/packet-filter-rules
-
-if [ -f ${EXPORTS_FILE} ]; then 
-  . ${EXPORTS_FILE}
-  ## At the end block everything else
-  #{IPTablesCommand} #{Chain::FirewallRules.args} -i tun0 -j DROP
-fi
+## Accept traffic from the VPN
+#{IPTablesCommand} #{Chain::FirewallRules.args} -i tun0 -j RETURN
 
 ## If it is a client, insert the pass rule.
 if [ -n "#{accept_vpn_client}" ] && [ ! -f /etc/openvpn/server.conf ] ; then

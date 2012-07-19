@@ -916,6 +916,12 @@ EOF
       rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -m mark --mark #{((interface.index << DstIntfShift) | 0xfa)}/#{(DstIntfMask | SrcIntfMask)} -j MASQUERADE"
     end
 
+      # add a rule that NAT traffic coming from the VPN and going to an unknown (0) interface
+      # unfortunately this happens on some machines as the mark-dst-intf fails to match physdev and mark the interface
+      # I'm unsure of why this only fails on some machine, but it does.
+      # This rule will just NAT the traffic just in case
+      rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -m mark --mark 0x00fa/#{(DstIntfMask | SrcIntfMask)} -j MASQUERADE"
+
     [ rules.join( "\n" ), fw_rules.join( "\n" ) ]    
   end
 
