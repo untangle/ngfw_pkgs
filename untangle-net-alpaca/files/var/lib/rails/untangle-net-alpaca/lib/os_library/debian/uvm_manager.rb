@@ -151,13 +151,7 @@ EOF
   end
 
   def write_openvpn_script
-    accept_vpn_client = ""
-
     route_bridge_vpn_traffic = ""
-
-    if Firewall.find( :first, :conditions => [ "system_id = ? and enabled='t'", "accept-client-vpn-8a762ae9" ] )
-      accept_vpn_client = "true"
-    end
 
     if Firewall.find( :first, :conditions => [ "system_id = ? and enabled='t'", "route-bridge-vpn-37ce4160" ] )
       route_bridge_vpn_traffic = "true"
@@ -197,11 +191,6 @@ fi
 
 ## Accept traffic from the VPN
 #{IPTablesCommand} #{Chain::FirewallRules.args} -i tun0 -j RETURN
-
-## If it is a client, insert the pass rule.
-if [ -n "#{accept_vpn_client}" ] && [ ! -f /etc/openvpn/server.conf ] ; then
-  #{IPTablesCommand} #{Chain::FirewallRules.args} -i tun0 -j RETURN
-fi
 
 if [ -n "#{route_bridge_vpn_traffic}" ]; then
   uvm_openvpn_ebtables_rules || true
