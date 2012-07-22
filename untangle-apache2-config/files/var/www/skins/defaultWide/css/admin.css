@@ -304,11 +304,11 @@ div.node div.node-metrics {
 /* chart container */
 div.node-metrics div.chart {
     position: absolute;
-    top: 0px;
+    top: 7px;
     left: 0px;
     width: 133px;
-    height: 92px;
-    background: transparent url(../images/admin/background_activity_blinger_border.png) no-repeat scroll 4px 7px !important;
+    height: 80px;
+    background: transparent url(../images/admin/background_activity_blinger_border.png) no-repeat scroll 4px 0px !important;
 }
 /* system metrics container */
 div.node-metrics div.system {
@@ -941,6 +941,7 @@ div.button-column {
     width:99%;
     height:16px;
     padding-left: 1px;
+    padding-top: 6px;
     overflow: hidden;
 }
 

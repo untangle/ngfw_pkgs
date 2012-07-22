@@ -304,10 +304,10 @@ div.node div.node-metrics {
 /* chart container */
 div.node-metrics div.chart {
     position: absolute;
-    top: 0px;
+    top: 4px;
     left: 0px;
     width: 103px;
-    height: 72px;
+    height: 68px;
     background: none;
 }
 /* system metrics container */
@@ -943,6 +943,7 @@ div.button-column {
     width:99%;
     height:16px;
     padding-left: 1px;
+    padding-top: 6px;
     overflow: hidden;
 }
 
