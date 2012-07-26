@@ -182,8 +182,8 @@ if [ "`pidof openvpn`x" = "x" ]; then
 fi    
 
 ## This is the openvpn mark rule
-#{IPTablesCommand} #{Chain::MarkSrcInterface.args} -i tun0 -j MARK --or-mark #{0xfa}
-#{IPTablesCommand} #{Chain::MarkDstInterface.args} -o tun0 -j MARK --or-mark #{0xfa << 8}
+#{IPTablesCommand} #{Chain::MarkSrcInterface.args} -i tun0 -j MARK --set-mark #{0xfa}
+#{IPTablesCommand} #{Chain::MarkDstInterface.args} -o tun0 -j MARK --set-mark #{0xfa << 8}
 #{IPTablesCommand} #{Chain::MarkSrcInterface.args} -i tun0 -m conntrack --ctstate NEW -j CONNMARK --set-mark #{0xfa}/#{0xff}
 #{IPTablesCommand} #{Chain::MarkDstInterface.args} -o tun0 -m conntrack --ctstate NEW -j CONNMARK --set-mark #{0xfa << 8}/#{0xff00}
 #{IPTablesCommand} #{Chain::MarkInterface.args} -m conntrack --ctdir ORIGINAL -m connmark --mark #{0xfa}/#{0xff} -j MARK --set-mark #{0xfa << 8}/#{0xff00}
