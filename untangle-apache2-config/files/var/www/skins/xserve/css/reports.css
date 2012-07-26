@@ -96,6 +96,9 @@
     margin-bottom:0px;
     padding-top:0px;
 }
+#rangeFieldSet div {
+    padding-top:0px;
+}
 .dateContainer .x-fieldset-body{
    height:60px !important;
 }
@@ -113,7 +116,7 @@
 }
 #report-day-menu,.print{
     float:right;
-        clear:both;
+    clear:both;
     text-align:right;
     cursor:pointer;
     cursor:hand;
