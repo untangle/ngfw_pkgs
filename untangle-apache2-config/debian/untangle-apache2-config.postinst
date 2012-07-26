@@ -85,13 +85,18 @@ if ! grep "Listen 64157" /etc/apache2/ports.conf >/dev/null; then
     echo "Listen 64157" >>/etc/apache2/ports.conf
 fi
 
-/usr/sbin/a2dismod jk
+# enabled these modules
 /usr/sbin/a2enmod jk
 /usr/sbin/a2enmod ssl
 /usr/sbin/a2enmod python
 /usr/sbin/a2enmod deflate
+/usr/sbin/a2enmod redirect
+
+# disable these modules for "PCI scan" issues
 /usr/sbin/a2dismod autoindex
 /usr/sbin/a2dismod userdir
+
+# enabled UVM site
 /usr/sbin/a2dissite default
 /usr/sbin/a2ensite uvm
 
@@ -107,6 +112,19 @@ if [ ! -f /var/www/images/BrandingLogo.gif ]; then
     else
         cp /var/www/images/Logo150x96.gif /var/www/images/BrandingLogo.gif
     fi
+fi
+
+# write index.html to redirect to start - just in case
+if [ -f /var/www/index.html ] ; then
+    rm -f /var/www/index.html
+    cat > /var/www/index.html <<EOF
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<meta http-equiv="REFRESH" content="/setup/welcome.do"></HEAD>
+<BODY></BODY>
+</HTML>
+EOF
 fi
 
 apply_oem="/usr/share/untangle/bin/apply-oem.sh"
