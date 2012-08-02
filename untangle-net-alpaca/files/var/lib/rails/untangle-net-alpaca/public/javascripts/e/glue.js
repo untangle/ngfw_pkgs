@@ -165,9 +165,9 @@ Ung.Alpaca.Glue = {
                 main = window.opener.main;
             }
             
-            if (( main !== null ) && ( main.hideWelcomeScreen !== null )) {
+            if (( main !== null ) && ( main.closeNetworking !== null )) {
                 handler = function() {
-                    main.hideWelcomeScreen();
+                    main.closeNetworking();
                     return;
                 };
             }
@@ -235,8 +235,8 @@ Ung.Alpaca.Glue = {
             main = window.opener.main;
         }
         
-        if (( main !== null ) && ( main.hideWelcomeScreen !== null )) {
-            main.hideWelcomeScreen();
+        if (( main !== null ) && ( main.closeNetworking !== null )) {
+            main.closeNetworking();
             return;
         }
 
