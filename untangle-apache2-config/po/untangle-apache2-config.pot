@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-07 12:40-0800\n"
+"POT-Creation-Date: 2012-08-09 15:36-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,128 +17,136 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=0; null;\n"
 
+#: ../adminindex.py:53
+msgid "Administrator Login"
+msgstr ""
+
 #: ../adminindex.py:57
 #, python-format
 msgid "%s Administrator Login"
 msgstr ""
 
-#: ../adminindex.py:116
+#: ../adminindex.py:142
 msgid "Error: Username and Password do not match"
 msgstr ""
 
-#: ../adminindex.py:170
+#: ../adminindex.py:196
 msgid "Server:"
 msgstr ""
 
-#: ../adminindex.py:170
+#: ../adminindex.py:196
 msgid "Username:"
 msgstr ""
 
-#: ../adminindex.py:170
+#: ../adminindex.py:196
 msgid "Password:"
 msgstr ""
 
-#: ../adminindex.py:170
+#: ../adminindex.py:196
 msgid "Login"
 msgstr ""
 
-#: ../errorindex.py:33
+#: ../errorindex.py:34
 msgid "Bad Request"
 msgstr ""
 
-#: ../errorindex.py:37
+#: ../errorindex.py:38
 msgid "Unauthorized"
 msgstr ""
 
-#: ../errorindex.py:41
+#: ../errorindex.py:42
 msgid "Payment Required"
 msgstr ""
 
-#: ../errorindex.py:45
+#: ../errorindex.py:46
 msgid "Forbidden"
 msgstr ""
 
-#: ../errorindex.py:49
+#: ../errorindex.py:50
 msgid "Not Found"
 msgstr ""
 
-#: ../errorindex.py:53
+#: ../errorindex.py:54
 msgid "Method Not Allowed"
 msgstr ""
 
-#: ../errorindex.py:57
+#: ../errorindex.py:58
 msgid "Not Acceptable"
 msgstr ""
 
-#: ../errorindex.py:61
+#: ../errorindex.py:62
 msgid "Proxy Authentication Required"
 msgstr ""
 
-#: ../errorindex.py:65
+#: ../errorindex.py:66
 msgid "Request Timeout"
 msgstr ""
 
-#: ../errorindex.py:69
+#: ../errorindex.py:70
 msgid "Conflict"
 msgstr ""
 
-#: ../errorindex.py:73
+#: ../errorindex.py:74
 msgid "Gone"
 msgstr ""
 
-#: ../errorindex.py:77
+#: ../errorindex.py:78
 msgid "Length Required"
 msgstr ""
 
-#: ../errorindex.py:81
+#: ../errorindex.py:82
 msgid "Precondition Failed"
 msgstr ""
 
-#: ../errorindex.py:85
+#: ../errorindex.py:86
 msgid "Request Entity Too Large"
 msgstr ""
 
-#: ../errorindex.py:89
+#: ../errorindex.py:90
 msgid "Request-URI Too Long"
 msgstr ""
 
-#: ../errorindex.py:93
+#: ../errorindex.py:94
 msgid "Unsupported Media Type"
 msgstr ""
 
-#: ../errorindex.py:97
+#: ../errorindex.py:98
 msgid "Requested Range Not Satisfiable"
 msgstr ""
 
-#: ../errorindex.py:101
+#: ../errorindex.py:102
 msgid "Expectation Failed"
 msgstr ""
 
-#: ../errorindex.py:105
+#: ../errorindex.py:106
 msgid "Internal Server Error"
 msgstr ""
 
-#: ../errorindex.py:109
+#: ../errorindex.py:110
 msgid "Not Implemented"
 msgstr ""
 
-#: ../errorindex.py:113
+#: ../errorindex.py:114
 msgid "Bad Gateway"
 msgstr ""
 
-#: ../errorindex.py:117
-msgid "Service Unavailable"
-msgstr ""
-
 #: ../errorindex.py:121
-msgid "Gateway Timeout"
+msgid "Server is starting. Please wait."
 msgstr ""
 
 #: ../errorindex.py:125
+msgid "Service Unavailable"
+msgstr ""
+
+#: ../errorindex.py:129
+msgid "Gateway Timeout"
+msgstr ""
+
+#: ../errorindex.py:133
 msgid "HTTP Version Not Supported"
 msgstr ""
 
-#: ../errorindex.py:133 ../uvmlogin.py:295
+#: ../errorindex.py:141 ../uvmlogin.py:255
 #, python-format
 msgid "%s Server"
 msgstr ""
