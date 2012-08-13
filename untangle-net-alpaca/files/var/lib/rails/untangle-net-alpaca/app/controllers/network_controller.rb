@@ -200,7 +200,7 @@ class NetworkController < ApplicationController
     modules_enabled = "" if modules_enabled.nil?
     settings["enable_sip_helper"] = modules_enabled.include?( "nf_nat_sip" )
     settings["send_icmp_redirects"] = alpaca_settings.send_icmp_redirects
-    settings["classy_nat_mode"] = alpaca_settings.classy_nat_mode
+    settings["legacy_nat_mode"] = !alpaca_settings.classy_nat_mode
 
     uvm_settings = UvmSettings.find( :first )
     uvm_settings = UvmSettings.new if uvm_settings.nil?
@@ -215,7 +215,7 @@ class NetworkController < ApplicationController
     alpaca_settings = AlpacaSettings.find( :first )
     alpaca_settings = AlpacaSettings.new( :send_icmp_redirects => true ) if @alpaca_settings.nil? 
     alpaca_settings.send_icmp_redirects = s["send_icmp_redirects"]
-    alpaca_settings.classy_nat_mode = s["classy_nat_mode"]
+    alpaca_settings.classy_nat_mode = !s["legacy_nat_mode"]
     
     modules_enabled = alpaca_settings.modules_enabled
     modules_enabled = "" if modules_enabled.nil?
