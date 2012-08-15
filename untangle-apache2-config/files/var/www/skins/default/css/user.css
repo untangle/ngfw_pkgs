@@ -166,12 +166,6 @@ body.quarantine #header .title
 .quarantine-received-messages{
     margin-top:50px;
 }
-.quarantine-change-address{    
-    display:inline;
-    margin:0px 0px 0px 10px;
-    position:relative;
-    top:7px;
-}
 
 .quarantine-attachment-header
 { 
