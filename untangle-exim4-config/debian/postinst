@@ -9,6 +9,6 @@ perl -0777 -i -pe 's|ignore_target_hosts.*?no_more|ignore_target_hosts = 0.0.0.0
 
 # FIXME: somehow on squeeze, the boot process hangs on trying to
 # restart the MTA
-[[ $(cat /etc/debian_version) == 6* ]] && rm /etc/init.d/exim4
+[[ $(cat /etc/debian_version) == 6* ]] && mv /etc/init.d/exim4 /etc/init.d/exim4.disabled
 
 exit 0
