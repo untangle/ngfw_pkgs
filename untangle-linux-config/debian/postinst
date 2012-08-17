@@ -79,7 +79,12 @@ if [ -n "$root" ]; then
     esac
     mkdir -p /boot/grub
     [ -f /boot/grub/menu.lst-pre-untangle ] || cp /boot/grub/menu.lst /boot/grub/menu.lst-pre-untangle
-    sed -e "s/@ROOTDEV@/$rootdev/" /usr/share/untangle-linux-config/menu.lst > /boot/grub/menu.lst
+    if [[ $(cat /etc/debian_version) == 6* ]] ; then
+      menuFile="/usr/share/untangle-linux-config/menu-squeeze.lst"
+    else
+      menuFile="/usr/share/untangle-linux-config/menu.lst"
+    fi
+    sed -e "s/@ROOTDEV@/$rootdev/" $menuFile > /boot/grub/menu.lst
     /usr/sbin/grub-set-default $newDefault
     /usr/sbin/update-grub
 fi
