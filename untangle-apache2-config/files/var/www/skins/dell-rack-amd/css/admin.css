@@ -584,18 +584,6 @@ td.app-item-center div.action {
     padding-right: 19px;
     line-height:15px;
 }
-/* app item buy button */
-td.app-item-center div.button-buy {
-    position: absolute;
-    left: 53px;
-    top: 34px;
-    cursor: pointer;
-    height: 15px;
-    font-family: tahoma,arial, helvetica, freesans,sans-serif;
-    font-size: 11px;
-    color: white;
-    padding-right: 19px;
-}
 /* app item progress bar container */
 td.app-item-center div.state-pos {
     position: absolute;
