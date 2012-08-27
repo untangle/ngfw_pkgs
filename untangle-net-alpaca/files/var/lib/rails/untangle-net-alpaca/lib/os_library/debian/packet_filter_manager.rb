@@ -67,9 +67,6 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
   MarkFwPass = 0x80000000
   MarkClearFwPass = ( 0xFFFFFFFF ^ MarkFwPass )
 
-  ## Mark that indicates that the packet should be 
-  MarkCaptivePortal = 0x800000
-
   DstIntfMask  = 0x0000FF00
   DstIntfShift = 8
   SrcIntfMask  = 0x000000FF
@@ -263,17 +260,11 @@ EOF
     SNatRules = Chain.new( "snat-rules", "nat", nil, "", <<'EOF' )
 EOF
 
-    ## Chain used for captive portal
-    CaptivePortal = Chain.new( "untangle-cpd", "mangle", "", "PREROUTING" )
-
-    ## Chain used to capture / drop traffic for the captive portal.
-    CaptivePortalCapture = Chain.new( "untangle-cpd-capture", "mangle", nil, "", "")
-
     Order = [ MarkInterface, MarkSrcInterface, MarkDstInterface, MarkLocal, MarkLocalOutput, PostNat, SNatRules,
               FirewallBlock, FirewallMarkReject, FirewallMarkDrop, 
               FirewallMarkInputReject, FirewallMarkInputDrop, FirewallNat,
               FirewallRules, 
-              BypassRules, BypassMark, CaptivePortal, CaptivePortalCapture, Redirect ]
+              BypassRules, BypassMark, Redirect ]
   end
   
   def hook_commit
