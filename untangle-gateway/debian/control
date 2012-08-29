@@ -11,7 +11,7 @@ Architecture: all
 Conflicts: untangle-gateway-light, untangle-kav, untangle-node-kav, untangle-libitem-kav, untangle-libitem-trial14-kav
 Replaces: untangle-gateway-light, untangle-kav, untangle-node-kav, untangle-libitem-kav, untangle-libitem-trial14-kav
 Provides: untangle-gateway-light, untangle-kav, untangle-node-kav, untangle-libitem-kav, untangle-libitem-trial14-kav
-Depends: untangle-vm, untangle-kiosk, untangle-ntp-config, untangle-bootsplash, untangle-restore-tools, untangle-exim4-config, untangle-linux-config, untangle-system-config, untangle-update-manager, ssh, smartmontools, untangle-extra-utils, untangle-kernel-modules-i386 | untangle-kernel-modules-squeeze-i386 | untangle-kernel-modules-amd64, untangle-client-local, untangle-postgresql-config, untangle-dhclient-config, untangle-ddclient-config, untangle-snmpd-config, iceweasel | firefox | mozilla | opera, ifupdown, nvi, nano
+Depends: untangle-vm, untangle-kiosk, untangle-ntp-config, untangle-bootsplash, untangle-restore-tools, untangle-exim4-config, untangle-linux-config, untangle-system-config, untangle-update-manager, ssh, smartmontools, untangle-extra-utils, untangle-kernel-modules-i386 | untangle-kernel-modules-squeeze-i386 | untangle-kernel-modules-amd64, untangle-client-local, untangle-dhclient-config, untangle-ddclient-config, untangle-snmpd-config, iceweasel | firefox | mozilla | opera, ifupdown, nvi, nano
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle Gateway
  The Untangle Top Level Untangle package.
