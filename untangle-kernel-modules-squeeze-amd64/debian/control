@@ -1,0 +1,17 @@
+Source: untangle-kernel-modules-squeeze-amd64
+Section: admin
+Priority: standard
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.8.0
+
+Package: untangle-kernel-modules-squeeze-amd64
+Architecture: amd64
+Conflicts: untangle-nic-kernel
+Provides: untangle-nic-kernel
+Replaces: untangle-nic-kernel
+Depends: linux-image-2.6.32-5-untangle-686 | linux-image-2.6.32-5-untangle+xen-686, firmware-bnx2, firmware-bnx2x, e1000-module-2.6.32-5-untangle-686, igb-module-2.6.32-5-untangle-686, niagara22xxed-module-2.6.32-5-untangle-686, bnx2-module-2.6.32-5-untangle-686, ipset, niagara22xxed
+Pre-Depends: untangle-debconf-manager
+Description: The Untangle appliance internal
+ The Untangle appliance internal-to-untangle mode.
