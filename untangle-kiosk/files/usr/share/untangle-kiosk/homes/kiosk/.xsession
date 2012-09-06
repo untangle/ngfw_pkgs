@@ -40,6 +40,12 @@ currentDPI=$(xdpyinfo | awk '/resolution/ { gsub(/x.+/, "", $2) ; print $2}')
 # do not recover a (potentially saved) previous session
 find .mozilla -name sessionstore.js -exec /bin/rm {} \;
 
+# Launch appliance imaging script if present
+
+if [ -x /usr/share/untangle/bin/appliance_imaging_script.sh ] ; then
+    sudo xterm /usr/share/untangle/bin/appliance_imaging_script.sh &
+fi
+
 # automatically start the setup wizard if it hasn't been completed
 if [ ! -f /usr/share/untangle/conf/wizard-complete-flag ] ; then
     /usr/bin/untangle-client &
