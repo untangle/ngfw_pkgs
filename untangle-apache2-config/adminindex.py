@@ -1,3 +1,5 @@
+# $Id: adminindex.py,v 1.00 2012/09/12 11:34:30 dmorris Exp $
+
 import md5
 import uvmlogin
 import cgi
@@ -143,7 +145,7 @@ def _write_login_form(req, title, host, is_error):
     else:
         error_msg = ''
 
-    req.write("""\
+    html = """\
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <!-- MagicComment: MVTimeout -->
@@ -193,4 +195,7 @@ def _write_login_form(req, title, host, is_error):
  <!-- Box End -->
 </div>
 </body>
-</html>""" % (title, error_msg, title, login_url, cgi.escape(_("Server:")), host, cgi.escape(_("Username:")), cgi.escape(_("Password:")), cgi.escape(_("Login"))))
+</html>""" % (title, error_msg, title, login_url, cgi.escape(_("Server:")), host, cgi.escape(_("Username:")), cgi.escape(_("Password:")), cgi.escape(_("Login")))
+    html = html.encode("utf-8")
+    
+    req.write(html)

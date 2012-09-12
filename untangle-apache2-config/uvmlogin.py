@@ -1,3 +1,5 @@
+# $Id: uvmlogin.py,v 1.00 2012/09/12 11:27:03 dmorris Exp $
+
 import base64
 import cgi
 import gettext
@@ -254,7 +256,7 @@ def write_error_page(req, msg):
 
     us = _("%s Server") % get_company_name()
 
-    req.write("""\
+    html = """\
 <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
 <html xmlns=\"http://www.w3.org/1999/xhtml\">
 <head>
@@ -278,4 +280,7 @@ def write_error_page(req, msg):
 </div>
 </body>
 </html>
-""" % (us, us, cgi.escape(msg)))
+""" % (us, us, cgi.escape(msg))
+    html = html.encode("utf-8")
+
+    req.write(html)
