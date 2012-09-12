@@ -66,6 +66,7 @@ Alias /error /usr/share/untangle/mod_python/error
 </VirtualHost>
 
 <VirtualHost *:64156>
+    Include /etc/apache2/untangle-conf.d/*
     Include /etc/apache2/untangle-unrestricted-conf.d/*
 </VirtualHost>
 
