@@ -1,9 +1,5 @@
 #!/bin/bash
 
-#TODO take out this debugging
-exec > /tmp/untangle-apache2-config.log 2>&1
-
-KEYSTORE=/usr/share/untangle/conf/keystore
 PEM=/etc/apache2/ssl/apache.pem
 ALIAS=$(hostname -f)
 
@@ -56,21 +52,13 @@ if [ ! -e /etc/apache2/untangle-unrestricted-conf.d/uvm.conf ]; then
     echo "Include /usr/share/untangle/apache2/unrestricted-conf.d/*.conf" >/etc/apache2/untangle-unrestricted-conf.d/uvm.conf
 fi
 
-if [ ! -e $PEM -a -e $KEYSTORE ]; then
-    echo 'moving cert from java keystore'
-    /usr/share/untangle-apache2-config/keystore2pem.sh $KEYSTORE $PEM $ALIAS
-fi
-
 if [ ! -e $PEM ]; then
     echo 'generating self-signed cert'
     mkdir -p /etc/apache2/ssl
     export RANDFILE=/dev/random
-    openssl req -batch -subj "/CN=$ALIAS" -new -newkey rsa:2048 \
-        -x509 -nodes -out $PEM -keyout $PEM
-        
+    openssl req -batch -subj "/CN=$ALIAS" -new -newkey rsa:2048 -x509 -nodes -out $PEM -keyout $PEM
     chmod 600 $PEM
-    ln -sf $PEM \
-        /etc/apache2/ssl/`/usr/bin/openssl x509 -noout -hash < $PEM`.0
+    ln -sf $PEM /etc/apache2/ssl/`/usr/bin/openssl x509 -noout -hash < $PEM`.0
 fi
 
 if ! grep "Listen 443" /etc/apache2/ports.conf >/dev/null; then
@@ -90,7 +78,7 @@ fi
 /usr/sbin/a2enmod ssl
 /usr/sbin/a2enmod python
 /usr/sbin/a2enmod deflate
-/usr/sbin/a2enmod redirect
+#/usr/sbin/a2enmod redirect
 
 # disable these modules for "PCI scan" issues
 /usr/sbin/a2dismod autoindex

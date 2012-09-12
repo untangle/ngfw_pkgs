@@ -30,16 +30,8 @@ build: configure
 	rm -rf ./debian/untangle-apache2-config/tmp
 	mkdir -p ./debian/untangle-apache2-config/tmp
 	dh_installdirs -A -v
-	cd files/usr/share/untangle-apache2-config/java && javac ExportPriv.java
-	cp ./uvm.config ./debian/untangle-apache2-config/etc/apache2/sites-available/uvm
-	cp ./adminindex.py ./debian/untangle-apache2-config/usr/share/untangle/mod_python/auth/index.py
-	cp ./errorindex.py ./debian/untangle-apache2-config/usr/share/untangle/mod_python/error/index.py
-	cp ./uvmlogin.py ./debian/untangle-apache2-config/usr/lib/python2.3/
-	cp ./uvmlogin.py ./debian/untangle-apache2-config/usr/lib/python2.5/
-	cp ./uvmlogin.py ./debian/untangle-apache2-config/usr/lib/python2.6/
 	tar c -C ./files --exclude .svn . | tar x -C ./debian/untangle-apache2-config
 	find ./debian/untangle-apache2-config/tmp -name ".svn" | xargs rm -rf
-
 	for f in $$(find ./po -name '*.po'); do \
 	  l=$$(echo $$f | cut -d/ -f 3); \
 	  d="./debian/untangle-apache2-config/usr/share/locale/$$l/LC_MESSAGES"; \
