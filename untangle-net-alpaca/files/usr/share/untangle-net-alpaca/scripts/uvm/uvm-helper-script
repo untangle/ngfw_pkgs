@@ -208,7 +208,7 @@ uvm_insert_non_wan_HTTPS_rules()
         local t_mask=$(( ${MASK_LOCAL} | ${MASK_SRC_INTERFACE} ))
 
         echo "[`date`] Enabling HTTPS administration on interface $intfId. Port: ${HTTPS_PORT}" 
-        ${IPTABLES} -t nat    -A alpaca-redirect -p tcp -m multiport --destination-ports ${HTTPS_PORT} -m mark --mark ${t_mark}/${t_mask} -j RETURN
+        ${IPTABLES} -t nat    -A alpaca-redirect -p tcp -m multiport --destination-ports ${HTTPS_PORT} -m mark --mark ${t_mark}/${t_mask} -j REDIRECT --to-ports 443
         ${IPTABLES} -t mangle -A firewall-rules  -p tcp -m multiport --destination-ports ${HTTPS_PORT} -m mark --mark ${t_mark}/${t_mask} -j RETURN
     done
 }
@@ -236,7 +236,7 @@ uvm_insert_wan_HTTPS_rules()
 
     # all interfaces HTTPS administration rules
     echo "[`date`] Enabling HTTPS administration on all interfaces. Port: ${HTTPS_PORT}" 
-    ${IPTABLES} -t nat    -A alpaca-redirect -p tcp -m multiport --destination-ports ${HTTPS_PORT} -m mark --mark ${t_mark}/${t_mark} -j RETURN
+    ${IPTABLES} -t nat    -A alpaca-redirect -p tcp -m multiport --destination-ports ${HTTPS_PORT} -m mark --mark ${t_mark}/${t_mark} -j REDIRECT --to-ports 443
     ${IPTABLES} -t mangle -A firewall-rules  -p tcp -m multiport --destination-ports ${HTTPS_PORT} -m mark --mark ${t_mark}/${t_mark} -j RETURN
 }
 
