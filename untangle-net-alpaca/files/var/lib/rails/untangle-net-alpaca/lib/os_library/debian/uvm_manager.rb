@@ -129,9 +129,9 @@ fi
 
 if [ "`is_uvm_running`x" = "truex" ]; then
   echo "[`date`] The untangle-vm is running, inserting service rules."
-  uvm_packet_filter_standard_internal
-  uvm_packet_filter_secure_internal
-  uvm_packet_filter_secure_external
+  uvm_insert_non_wan_HTTP_rules
+  uvm_insert_wan_HTTPS_rules
+  uvm_insert_non_wan_HTTPS_rules
 else
   echo "[`date`] The untangle-vm is currently not running."
 fi

@@ -65,14 +65,6 @@ if ! grep "Listen 443" /etc/apache2/ports.conf >/dev/null; then
     echo "Listen 443" >>/etc/apache2/ports.conf
 fi
 
-if ! grep "Listen 64156" /etc/apache2/ports.conf >/dev/null; then
-    echo "Listen 64156" >>/etc/apache2/ports.conf
-fi
-
-if ! grep "Listen 64157" /etc/apache2/ports.conf >/dev/null; then
-    echo "Listen 64157" >>/etc/apache2/ports.conf
-fi
-
 # enabled these modules
 /usr/sbin/a2enmod jk
 /usr/sbin/a2enmod ssl
@@ -92,7 +84,11 @@ fi
 perl -i -pe 's/^ServerTokens.*/ServerTokens Prod/ ; s/^ServerSignature.*/ServerSignature Off/' /etc/apache2/conf.d/security
 perl -i -pe 's/^TraceEnable.*/TraceEnable Off/' /etc/apache2/conf.d/security
 
-# 9.4 remove obsolete conf files 
+# CONVERSION - 9.4 - stop listening on obsolete ports 
+sed -i -e '/64156/d' /etc/apache2/ports.conf
+sed -i -e '/64157/d' /etc/apache2/ports.conf
+
+# CONVERSION - 9.4 - remove obsolete conf files 
 if [ -f /etc/apache2/untangle-conf.d ] ; then
     rm -rf /etc/apache2/untangle-conf.d
 fi

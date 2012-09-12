@@ -16,8 +16,6 @@ LOCAL_UVM_REDIRECT="uvm-tcp-redirect"
 
 ## Always set this just in case.
 TCP_REDIRECT_PORTS="9500-9627"
-HTTP_INTERNAL_REDIRECT_PORT="64156"
-HTTPS_INTERNAL_REDIRECT_PORT="64157"
 ## This is the port the UVM is serving HTTPs on the external interface.
 HTTPS_PORT="443"
 
@@ -173,36 +171,27 @@ uvm_iptables_rules()
 }
 
 ## Create the rules to allow internal access to port 80.
-uvm_packet_filter_standard_internal()
+uvm_insert_non_wan_HTTP_rules()
 {
-    # non-WAN HTTP administration rules
+    # non-WAN HTTP rules
     /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan_idx | while read intfId ; do
-        local t_mark=$(( ${MASK_LOCAL} | ${MASK_FIRST_ALIAS} | $intfId ))
-    	local t_mask=$(( ${MASK_LOCAL} | ${MASK_FIRST_ALIAS} | ${MASK_SRC_INTERFACE} ))
-
-        FLAG_ALLOW_INSIDE_INSECURE="`/usr/share/untangle/bin/ut-settings-reader.py -l -d true uvm system insideHttpEnabled`"
-        if [ "${FLAG_ALLOW_INSIDE_INSECURE}x" = "truex" ]; then 
-            echo "[`date`] Enabling HTTP administration on interface $intfId." 
-	        ${IPTABLES} -t nat    -A alpaca-redirect -p tcp -m multiport --destination-ports 80 -m mark --mark ${t_mark}/${t_mask} -j REDIRECT
-            ${IPTABLES} -t mangle -A firewall-rules  -p tcp -m multiport --destination-ports 80 -m mark --mark ${t_mark}/${t_mask} -j RETURN
-        fi
-    done	
-    
-    # non-WAN HTTP blockpage rules
-    /usr/share/untangle-net-alpaca/scripts/uvm/netConfig.py non_wan_idx | while read intfId ; do
-        local t_block_page_port=80 # now hardcoded at 80
         local t_mark=$(( ${MASK_LOCAL} | ${MASK_FIRST_ALIAS} | $intfId ))
     	local t_mask=$(( ${MASK_LOCAL} | ${MASK_FIRST_ALIAS} | ${MASK_SRC_INTERFACE} ))
 
         echo "[`date`] Enabling HTTP blockpages on interface $intfId." 
-        ${IPTABLES} -t nat    -A alpaca-redirect -p tcp -m multiport --destination-ports ${t_block_page_port} -m mark --mark ${t_mark}/${t_mask} -j REDIRECT --to-ports ${HTTP_INTERNAL_REDIRECT_PORT}
-        ${IPTABLES} -t mangle -A firewall-rules  -p tcp -m multiport --destination-ports ${t_block_page_port} -m mark --mark ${t_mark}/${t_mask} -j RETURN    
+        ${IPTABLES} -t nat    -A alpaca-redirect -p tcp -m multiport --destination-ports 80 -m mark --mark ${t_mark}/${t_mask} -j RETURN
+        ${IPTABLES} -t mangle -A firewall-rules  -p tcp -m multiport --destination-ports 80 -m mark --mark ${t_mark}/${t_mask} -j RETURN    
     done
 }
 
+# deprecated NAME
+uvm_packet_filter_standard_internal()
+{
+    uvm_insert_non_wan_HTTP_rules
+}
 
 ## Allow internal access to port.
-uvm_packet_filter_secure_internal()
+uvm_insert_non_wan_HTTPS_rules()
 {
     HTTPS_PORT="`/usr/share/untangle/bin/ut-settings-reader.py -l -d 443 uvm system httpsPort`"
     if [ -z "${HTTPS_PORT}" ] ; then
@@ -219,13 +208,19 @@ uvm_packet_filter_secure_internal()
         local t_mask=$(( ${MASK_LOCAL} | ${MASK_SRC_INTERFACE} ))
 
         echo "[`date`] Enabling HTTPS administration on interface $intfId. Port: ${HTTPS_PORT}" 
-        ${IPTABLES} -t nat    -A alpaca-redirect -p tcp -m multiport --destination-ports ${HTTPS_PORT} -m mark --mark ${t_mark}/${t_mask} -j REDIRECT --to-ports ${HTTPS_INTERNAL_REDIRECT_PORT}
+        ${IPTABLES} -t nat    -A alpaca-redirect -p tcp -m multiport --destination-ports ${HTTPS_PORT} -m mark --mark ${t_mark}/${t_mask} -j RETURN
         ${IPTABLES} -t mangle -A firewall-rules  -p tcp -m multiport --destination-ports ${HTTPS_PORT} -m mark --mark ${t_mark}/${t_mask} -j RETURN
     done
 }
 
+# deprecated NAME
+uvm_packet_filter_secure_internal()
+{
+    uvm_insert_non_wan_HTTPS_rules
+}
+
 ## Allow secure access to the external port,.
-uvm_packet_filter_secure_external()
+uvm_insert_wan_HTTPS_rules()
 {
     local t_mark
 
@@ -241,8 +236,14 @@ uvm_packet_filter_secure_external()
 
     # all interfaces HTTPS administration rules
     echo "[`date`] Enabling HTTPS administration on all interfaces. Port: ${HTTPS_PORT}" 
-    ${IPTABLES} -t nat    -A alpaca-redirect -p tcp -m multiport --destination-ports ${HTTPS_PORT} -m mark --mark ${t_mark}/${t_mark} -j REDIRECT --to-ports 443
+    ${IPTABLES} -t nat    -A alpaca-redirect -p tcp -m multiport --destination-ports ${HTTPS_PORT} -m mark --mark ${t_mark}/${t_mark} -j RETURN
     ${IPTABLES} -t mangle -A firewall-rules  -p tcp -m multiport --destination-ports ${HTTPS_PORT} -m mark --mark ${t_mark}/${t_mark} -j RETURN
+}
+
+# deprecated NAME
+uvm_packet_filter_secure_external()
+{
+    uvm_insert_wan_HTTPS_rules
 }
 
 ## You should only run this if openvpn is running, these rules will only apply to 

@@ -3,7 +3,6 @@ ServerName localhost
 # this is redundant (ports.conf) and causes an error message
 #NameVirtualHost *:80
 NameVirtualHost *:443
-NameVirtualHost *:64157
 
 ErrorDocument 400 /error/status400
 ErrorDocument 401 /error/status401
@@ -63,12 +62,3 @@ Alias /error /usr/share/untangle/mod_python/error
     Include /etc/apache2/uvm.conf
 </VirtualHost>
 
-<VirtualHost *:64156>
-    Include /etc/apache2/uvm.conf
-</VirtualHost>
-
-<VirtualHost *:64157>
-    SSLEngine on
-    SSLCertificateFile /etc/apache2/ssl/apache.pem
-    Include /etc/apache2/uvm.conf
-</VirtualHost>
