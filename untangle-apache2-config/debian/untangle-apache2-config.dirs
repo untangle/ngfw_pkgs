@@ -1,12 +1,4 @@
 etc/apache2
 etc/apache2/sites-available
-etc/apache2/untangle-conf.d
-etc/apache2/untangle-unrestricted-conf.d
-usr/lib/python2.3/
 usr/lib/python2.5/
 usr/lib/python2.6/
-usr/share/untangle/mod_python/auth
-usr/share/untangle/mod_python/error
-usr/share/untangle/mod_python/forward
-usr/share/untangle/apache2/conf.d
-usr/share/untangle/apache2/unrestricted-conf.d

@@ -54,24 +54,21 @@ Alias /error /usr/share/untangle/mod_python/error
 </Directory>
 
 <VirtualHost *:80>
-    Include /etc/apache2/untangle-conf.d/*
-    Include /etc/apache2/untangle-unrestricted-conf.d/*
+    Include /etc/apache2/uvm.conf
 </VirtualHost>
 
 <VirtualHost *:443>
     SSLEngine on
     SSLCertificateFile /etc/apache2/ssl/apache.pem
-    Include /etc/apache2/untangle-conf.d/*
-    Include /etc/apache2/untangle-unrestricted-conf.d/*
+    Include /etc/apache2/uvm.conf
 </VirtualHost>
 
 <VirtualHost *:64156>
-    Include /etc/apache2/untangle-unrestricted-conf.d/*
+    Include /etc/apache2/uvm.conf
 </VirtualHost>
 
 <VirtualHost *:64157>
     SSLEngine on
     SSLCertificateFile /etc/apache2/ssl/apache.pem
-    Include /etc/apache2/untangle-conf.d/*
-    Include /etc/apache2/untangle-unrestricted-conf.d/*
+    Include /etc/apache2/uvm.conf
 </VirtualHost>

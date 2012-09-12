@@ -92,6 +92,15 @@ fi
 perl -i -pe 's/^ServerTokens.*/ServerTokens Prod/ ; s/^ServerSignature.*/ServerSignature Off/' /etc/apache2/conf.d/security
 perl -i -pe 's/^TraceEnable.*/TraceEnable Off/' /etc/apache2/conf.d/security
 
+# 9.4 remove obsolete conf files 
+if [ -f /etc/apache2/untangle-conf.d ] ; then
+    rm -rf /etc/apache2/untangle-conf.d
+fi
+if [ -f /etc/apache2/untangle-unrestricted-conf.d ] ; then
+    rm -rf /etc/apache2/untangle-unrestricted-conf.d
+fi
+
+
 /etc/init.d/apache2 reload
 
 if [ ! -f /var/www/images/BrandingLogo.gif ]; then
@@ -117,5 +126,6 @@ fi
 
 apply_oem="/usr/share/untangle/bin/apply-oem.sh"
 [ -f $apply_oem ] && $apply_oem
+
 
 exit 0
