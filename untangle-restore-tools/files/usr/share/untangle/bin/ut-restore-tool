@@ -30,10 +30,6 @@ quit() {
         /etc/init.d/untangle-vm start
     fi
 
-    if [ -x /etc/init.d/untangle-reports ]; then
-        /etc/init.d/untangle-reports start
-    fi
-
     exit
 }
 
@@ -43,14 +39,6 @@ stop_services()
         /etc/init.d/untangle-vm stop
     fi
     
-    if [ -x /etc/init.d/untangle-reports ]; then
-        /etc/init.d/untangle-reports stop
-    fi
-
-    if [ -x /etc/init.d/untangle-cpd ]; then
-        /etc/init.d/untangle-cpd stop
-    fi
-
     if [ -x /etc/init.d/apache2 ]; then
         /etc/init.d/apache2 stop
     fi
@@ -217,7 +205,6 @@ main_menu()
                 "Reset Administrative Accounts")
                     if confirm "Reset administrative accounts to factory defaults (admin/passwd)?"; then
                         rm -f /usr/share/untangle/settings/untangle-vm/admin.js
-                        /etc/init.d/untangle-vm restart
                         state=SUCCESS_SPLASH
                     else
                         state=MAIN_MENU
