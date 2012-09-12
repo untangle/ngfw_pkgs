@@ -217,6 +217,7 @@ main_menu()
                 "Reset Administrative Accounts")
                     if confirm "Reset administrative accounts to factory defaults (admin/passwd)?"; then
                         rm -f /usr/share/untangle/settings/untangle-vm/admin.js
+                        /etc/init.d/untangle-vm restart
                         state=SUCCESS_SPLASH
                     else
                         state=MAIN_MENU
