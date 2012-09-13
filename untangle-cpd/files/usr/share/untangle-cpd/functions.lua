@@ -83,7 +83,7 @@ local function init_database()
 
    local curs, is_updated
 
-   create_table( "host_database_entry", [[
+   create_table( "cpd.host_database_entry", [[
 CREATE TABLE cpd.host_database_entry (
     entry_id        INT8 NOT NULL,
     hw_addr         TEXT,
