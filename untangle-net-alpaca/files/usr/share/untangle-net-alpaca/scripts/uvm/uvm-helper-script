@@ -1,7 +1,5 @@
 #!/bin/dash
 
-## Function to determine the pid of the process that owns the queue
-
 UVM_PID="invalid"
 
 TUN_DEV=utun
@@ -25,6 +23,7 @@ UVM_BIND_ADDRESS="192.0.2.42"
 ## UDP Session timeout
 UDP_SESSION_TIMEOUT=70
 
+## Function to determine the pid of the process that owns the queue
 queue_owner()
 {
     if [ "${UVM_PID}x" != "invalidx" ]; then return ; fi
@@ -50,6 +49,7 @@ is_uvm_running()
     grep -q com.untangle.uvm /proc/${UVM_PID}/cmdline 2>| /dev/null  && echo "true"
 }
 
+## Function to return uvm home dir (works in dev and prod env)
 uvm_home()
 {
     queue_owner
@@ -58,7 +58,7 @@ uvm_home()
 
     ## Ignore errors
     HOME="`perl -pe 's/[^0-9=a-zA-Z\/\-\+\*\.]/\n/g' /proc/${UVM_PID}/cmdline 2>| /dev/null | awk '/^-Duvm.home=/ { gsub( "-Duvm.home=", "" ) ; print }'`"
-    
+
     if [ -z "$HOME" ] ; then
        echo "/usr/share/untangle/"
     else
@@ -66,6 +66,7 @@ uvm_home()
     fi     
 }
 
+## Sets all proc variables to appropriate values
 set_proc_vars() 
 {  
     ## This setting should always be disabled.
