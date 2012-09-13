@@ -74,7 +74,7 @@ if [ ! -z "$PG_INIT" ] ; then
     done
 fi
 
-VERSION=$(ls /etc/init.d/postgresql* | perl -pe 's/.+-//')
+VERSION=$(dpkg -l postgresql* | awk '/^ii.+postgresql-[0-9]/ { gsub(/postgresql-/, "", $2) ; print $2 }')
 perl -i -pe 's/\+VERSION\+/'$VERSION'/' /etc/untangle/monit.d/postgresql_all.conf
 
 touch /etc/untangle/monit-to-restart
