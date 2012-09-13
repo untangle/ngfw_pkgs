@@ -74,6 +74,9 @@ if [ ! -z "$PG_INIT" ] ; then
     done
 fi
 
+VERSION=$(ls /etc/init.d/postgresql* | perl -pe 's/.+-//')
+perl -i -pe 's/\+VERSION\+/'$VERSION'/' /etc/untangle/monit.d/postgresql_all.conf
+
 touch /etc/untangle/monit-to-restart
     
 # create a "root" database so monit won't complain (bug #7492)
