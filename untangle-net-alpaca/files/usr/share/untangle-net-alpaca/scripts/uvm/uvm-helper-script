@@ -89,13 +89,6 @@ if [ -f /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout_stream ]; then
     echo 180 > /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout_stream
 fi
 
-# FIXME check for pid
-if [ ! -f ${UVM_NETWORKING_CONFIG} ]; then 
-  #echo "[`date`] '${UVM_NETWORKING_CONFIG}' does not exist."
-  echo "[`date`] The untangle-vm is not running. No rules inserted."
-  return 0
-fi
- 
 uvm_iptables_rules()
 {    
     local t_address
