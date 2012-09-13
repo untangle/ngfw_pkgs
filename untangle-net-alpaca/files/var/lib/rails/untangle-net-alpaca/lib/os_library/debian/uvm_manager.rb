@@ -92,6 +92,7 @@ if [ ! -f ${HELPER_SCRIPT} ]; then
 fi
 
 . ${HELPER_SCRIPT}
+set_proc_vars
 
 if [ "`is_uvm_running`x" = "truex" ]; then
   echo "[`date`] The untangle-vm is running. Inserting queueing hooks and bypass rules..."
@@ -126,6 +127,7 @@ if [ ! -f ${HELPER_SCRIPT} ]; then
 fi
 
 . ${HELPER_SCRIPT}
+set_proc_vars
 
 if [ "`is_uvm_running`x" = "truex" ]; then
   echo "[`date`] The untangle-vm is running, inserting service rules."
@@ -170,6 +172,7 @@ if [ ! -f ${HELPER_SCRIPT} ]; then
 fi
 
 . ${HELPER_SCRIPT}
+set_proc_vars
 
 if [ "`is_uvm_running`x" != "truex" ]; then 
   echo "[`date`] The untangle-vm is running, not inserting rules for openvpn"
