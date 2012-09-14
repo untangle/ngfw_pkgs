@@ -21,15 +21,15 @@ LOCK_FILE=/tmp/generate-iptables-rules.lock
 
 iptables_debug()
 {
-   echo "[`date`] /sbin/iptables $*"
-   /sbin/iptables $*
+   echo "[`date`] /sbin/iptables $@"
+   /sbin/iptables "$@"
 }
 
 iptables_debug_onerror()
 {
     # Ignore -N errors
-    /sbin/iptables $* || {
-        [ "${3}x" != "-Nx" ] && echo "[`date`] Failed: /sbin/iptables $*"
+    /sbin/iptables "$@" || {
+        [ "${3}x" != "-Nx" ] && echo "[`date`] Failed: /sbin/iptables $@"
     }
 
     true
@@ -38,8 +38,8 @@ iptables_debug_onerror()
 
 ebtables_debug()
 {
-    echo "[`date`] /sbin/ebtables $*"
-    /sbin/ebtables $*
+    echo "[`date`] /sbin/ebtables $@"
+    /sbin/ebtables "$@"
 }
 
 get_ip_addresses()
