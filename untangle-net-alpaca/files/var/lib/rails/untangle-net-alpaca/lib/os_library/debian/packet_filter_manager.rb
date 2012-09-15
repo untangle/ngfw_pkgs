@@ -116,7 +116,7 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
 ## This will determine the direction of the packet inside that session
 ## If its an ORIGINAL packet, it will simply restore the intf marks from the connmark
 ## If its a REPLY packet, it will reverse the intf marks from the connmark
-#{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFF0000
+#{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFF0000 -m comment --comment \"Zero out source and destination interface marks\"
 
 ## Don use connmark to mark the src/dst intf of broadcast (especially DHCP) packets
 ## All broadcast packets share the same conntrack
@@ -126,12 +126,13 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
 ## Everything else will be marked using the slower mark-src-intf and mark-dst-intf
 # WARNING The invert check in dst-type does not work in 2.6.26 - it always matches
 # So I've commented out these two lines and instead only called this change on unicast packets
-# #{IPTablesCommand} #{args} -m addrtype ! --dst-type unicast  -j RETURN
-# #{IPTablesCommand} #{args} -m addrtype ! --src-type unicast -j RETURN
+# #{IPTablesCommand} #{args} -m addrtype ! --dst-type unicast  -j RETURN -m comment --comment \"Do not use connmark on non unicast sessions, just return\"
+# #{IPTablesCommand} #{args} -m addrtype ! --src-type unicast -j RETURN -m comment --comment \"Do not use connmark on non unicast sessions, just return\"
 
 ## This rule says if the packet is in the original direction, just copy the intf marks from the connmark/session mark
 ## The rule actually says REPLY and not ORIGINAL and thats because ctdir seems to match backwards
-#{IPTablesCommand} #{args} -m conntrack --ctdir REPLY -j CONNMARK --restore-mark --mask #{BothIntfMask}
+## The following rule is marked XXX because it seems backwards
+#{IPTablesCommand} #{args} -m conntrack --ctdir REPLY -j CONNMARK --restore-mark --mask #{BothIntfMask} -m comment --comment \"If packet is in original direction, copy mark from connmark to packet (XXX)\"
 
 EOF
 
@@ -139,7 +140,7 @@ EOF
 ## This chain marks the src intf on the packet
 ##
 ## If the src is already marked, just return
-#{IPTablesCommand} #{args} -m mark ! --mark 0/#{SrcIntfMask} -j RETURN
+#{IPTablesCommand} #{args} -m mark ! --mark 0/#{SrcIntfMask} -j RETURN -m comment --comment \"Return if source interface mark is already set\"
 EOF
 
     MarkDstInterface = Chain.new( "mark-dst-intf", "mangle", "FORWARD", "", <<'EOF' )
@@ -149,10 +150,7 @@ EOF
 ## Or more simply: Continue to mark the packet if it isn't marked OR if its new session 
 ## We will continue to mark new sessions because splitd may have already marked the packet for a specific WAN
 ## However, if the packet is not destined for a WAN but a local network, we need to remark it here
-#{IPTablesCommand} #{args} -m mark ! --mark 0/#{DstIntfMask} -m conntrack ! --ctstate NEW -j RETURN
-# No need to zero out the mark - it will be overwritten if it the knowledge is there
-# This rule messes up VPN traffic, - want to keep the mark if its present
-# #{IPTablesCommand} #{args} -j MARK --and-mark 0xFFFF00FF
+#{IPTablesCommand} #{args} -m mark ! --mark 0/#{DstIntfMask} -m conntrack ! --ctstate NEW -j RETURN -m comment --comment \"Return if destination interface mark is already set (unless session is new)\"
 EOF
 
     MarkLocal = Chain.new( "mark-local", "mangle", "PREROUTING", "", <<'EOF' )
@@ -167,14 +165,14 @@ EOF
 
     ## Chain Used for natting in the prerouting table.
     PostNat = Chain.new( "alpaca-post-nat", "nat", "POSTROUTING", "", <<'EOF' )
-## Save the state for bypassed traffic
-#{IPTablesCommand} -t mangle -A POSTROUTING -m conntrack --ctstate NEW -m connmark --mark 0/#{DstIntfMask} -j CONNMARK --save-mark --mask #{DstIntfMask}
+## Save the state for new sessions
+#{IPTablesCommand} -t mangle -A POSTROUTING -m conntrack --ctstate NEW -m connmark --mark 0/#{DstIntfMask} -j CONNMARK --save-mark --mask #{DstIntfMask} -m comment --comment \"Save destination interface mark if not already saved\"
 
 
 ## Do not NAT packets destined to local host.
-#{IPTablesCommand} #{args} -o lo -j RETURN
+#{IPTablesCommand} #{args} -o lo -j RETURN -m comment --comment \"Do not NAT loopback packets\"
 ## Do not NAT packets that are destined to the VPN.
-#{IPTablesCommand} #{args} -o tun0 -j RETURN
+#{IPTablesCommand} #{args} -o tun0 -j RETURN -m comment --comment \"Do not NAT packets to the OpenVPN interface\"
 EOF
 
     ## Chain used to redirect traffic
@@ -184,20 +182,19 @@ EOF
     ## Chain used for actually blocking and dropping data
     FirewallBlock = Chain.new( "alpaca-firewall", "filter", [ "INPUT" ], "", <<'EOF' )
 ## Do not block traffic that has the INPUT mark set.
-#{IPTablesCommand} -t #{table} -A FORWARD -m mark --mark 0/#{MarkFwInput} -j #{name}
+#{IPTablesCommand} -t #{table} -A FORWARD -m mark --mark 0/#{MarkFwInput} -j #{name} -m comment --comment \"Allow packets with INPUT mark set\"
 
 ## Ignore any traffic that isn't marked
-#{IPTablesCommand} #{args} -m mark --mark 0/#{MarkFwReject | MarkFwDrop} -j RETURN
+#{IPTablesCommand} #{args} -m mark --mark 0/#{MarkFwReject | MarkFwDrop} -j RETURN -m comment --comment \"Ignore unmarked traffic\"
 
 ## Drop any traffic that is marked to drop
-#{IPTablesCommand} #{args} -m mark --mark #{MarkFwDrop}/#{MarkFwDrop} -j DROP
+#{IPTablesCommand} #{args} -m mark --mark #{MarkFwDrop}/#{MarkFwDrop} -j DROP -m comment --comment \"Drop traffic with drop mark set\"
 
 ## Reset any tcp traffic that is marked to reject.
-#{IPTablesCommand} #{args} -p tcp -m mark --mark #{MarkFwReject}/#{MarkFwReject} \
-  -j REJECT --reject-with tcp-reset
+#{IPTablesCommand} #{args} -p tcp -m mark --mark #{MarkFwReject}/#{MarkFwReject} -j REJECT --reject-with tcp-reset -m comment --comment \"Reject traffic with reject mark set\"
 
 ## Reject all other traffic with ICMP port unreachable
-#{IPTablesCommand} #{args} -m mark --mark #{MarkFwReject}/#{MarkFwReject} -j REJECT
+#{IPTablesCommand} #{args} -m mark --mark #{MarkFwReject}/#{MarkFwReject} -j REJECT -m comment --comment \"Reject all remaining packets\"
 EOF
 
     FirewallNat = Chain.new( "alpaca-nat-firewall", "filter", nil, "", <<'EOF' )
@@ -206,17 +203,17 @@ EOF
     ## Chain where all of the firewalls rules should go
     FirewallRules = Chain.new( "firewall-rules", "mangle", "PREROUTING", "", <<'EOF' )
 ## mark all sessions with the firewall pass tag
-#{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwPass}
+#{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwPass} -m comment --comment \"Set firewall pass mark\"
 ## Ignore any traffic that is related to an existing session
-#{IPTablesCommand} #{args} -i lo -j RETURN
-#{IPTablesCommand} #{args} -m state --state ESTABLISHED -j RETURN
-#{IPTablesCommand} #{args} -m state --state RELATED -j RETURN
+#{IPTablesCommand} #{args} -i lo -j RETURN -m comment --comment \"Allow loopback packets\"
+#{IPTablesCommand} #{args} -m state --state ESTABLISHED -j RETURN -m comment --comment \"Allow all packets in an allowed session\"
+#{IPTablesCommand} #{args} -m state --state RELATED -j RETURN -m comment --comment \"Allow all packets in an related allowed session\"
 EOF
     
     ## Goto chains used to indicate that a packet should be rejected or dropped.
     FirewallMarkReject = Chain.new( "alpaca-pf-reject", "mangle", nil, "", <<'EOF' )
 ## Clear the INPUT mark
-#{IPTablesCommand} #{args} -j MARK --and-mark #{MarkClearFwInput}
+#{IPTablesCommand} #{args} -j MARK --and-mark #{MarkClearFwInput} 
 #{IPTablesCommand} #{args} -j MARK --and-mark #{MarkClearFwPass}
 ## Mark the packets
 #{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwReject}
@@ -224,36 +221,36 @@ EOF
 
     FirewallMarkDrop = Chain.new( "alpaca-pf-drop", "mangle", nil, "", <<'EOF' )
 ## Clear the INPUT mark
-#{IPTablesCommand} #{args} -j MARK --and-mark #{MarkClearFwInput}
-#{IPTablesCommand} #{args} -j MARK --and-mark #{MarkClearFwPass}
+#{IPTablesCommand} #{args} -j MARK --and-mark #{MarkClearFwInput} -m comment --comment \"Clear input mark bit\"
+#{IPTablesCommand} #{args} -j MARK --and-mark #{MarkClearFwPass} -m comment --comment \"Clear pass mark bit\"
 ## Mark the packets
-#{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwDrop}
+#{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwDrop} -m comment --comment \"Set drop mark bit\"
 EOF
 
     ## Jumps chains used to indicate that a packet should be rejected or dropped on the INPUT chain
     FirewallMarkInputReject = Chain.new( "alpaca-pfi-reject", "mangle", nil, "", <<'EOF' )
 ## Mark the packets
-#{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwReject | MarkFwInput}
+#{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwReject | MarkFwInput} -m comment --comment \"Set input and reject mark bits\"
 EOF
 
     FirewallMarkInputDrop = Chain.new( "alpaca-pfi-drop", "mangle", nil, "", <<'EOF' )
 ## Mark the packets
-#{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwDrop | MarkFwInput}
+#{IPTablesCommand} #{args} -j MARK --or-mark #{MarkFwDrop | MarkFwInput} -m comment --comment \"Set input and drop mark bits\"
 EOF
     
     ## Chain where traffic should go to be marked for bypass.
     BypassMark = Chain.new( "bypass-mark", "mangle", nil, "", <<'EOF' )
 ## Mark the packets
-#{IPTablesCommand} #{args} -j MARK --or-mark #{MarkBypass}
+#{IPTablesCommand} #{args} -j MARK --or-mark #{MarkBypass} -m comment --comment \"Set bypass mark on packet\"
 ## Connmark the packets
-#{IPTablesCommand} #{args} -j CONNMARK --set-mark #{MarkBypass}/#{MarkBypass}
+#{IPTablesCommand} #{args} -j CONNMARK --set-mark #{MarkBypass}/#{MarkBypass} -m comment --comment \"Set bypass mark on session\"
 EOF
 
     ## Chain where all of the Bypass Rules go (This shouldn't be  defined unless
     ## There is a UVM, but it should only be a minor performance hit
     BypassRules = Chain.new( "bypass-rules", "mangle", "PREROUTING", "", <<'EOF' )
 ## Accept any packets that are connmarked with the bypass mark
-#{IPTablesCommand} #{args} -m connmark --mark #{MarkBypass}/#{MarkBypass} -g #{Chain::BypassMark}
+#{IPTablesCommand} #{args} -m connmark --mark #{MarkBypass}/#{MarkBypass} -g #{Chain::BypassMark} -m comment --comment \"Transfer bypass mark from session to packet\"
 EOF
 
     ## These are only used in classy NAT mode.
@@ -374,16 +371,16 @@ mark_local_ip()
    for t_ip in `get_ip_addresses ${t_intf_name}` ; do
 
      # Set this mark if the traffic is going to any one of Untangles IPs
-     #{IPTablesCommand} #{Chain::MarkLocal.args} -d ${t_ip} -j MARK --or-mark $(( #{MarkLocal} ))
+     #{IPTablesCommand} #{Chain::MarkLocal.args} -d ${t_ip} -j MARK --or-mark $(( #{MarkLocal} )) -m comment --comment \"Set local mark on packets destined to local IP ${t_ip}\"
 
      if [ "${t_first_alias}x" = "truex" ]; then
        # Set this mark if the traffic is going to the first alias of the interface in question
 
        # This rule matches on the source interface mark
-       #{IPTablesCommand} #{Chain::MarkLocal.args} -m mark --mark ${t_intf_index}/#{SrcIntfMask} -d ${t_ip} -j MARK --or-mark $(( #{MarkFirstAlias} ))
+       #{IPTablesCommand} #{Chain::MarkLocal.args} -m mark --mark ${t_intf_index}/#{SrcIntfMask} -d ${t_ip} -j MARK --or-mark $(( #{MarkFirstAlias} )) -m comment --comment \"Set first alias mark on packets destined to first alias ${t_ip} coming from that interface\"
 
        # This rule matches the interface name (this is so bridged interfaces match their master)
-       #{IPTablesCommand} #{Chain::MarkLocal.args} -i ${t_intf_name} -d ${t_ip} -j MARK --or-mark $(( #{MarkFirstAlias} ))
+       #{IPTablesCommand} #{Chain::MarkLocal.args} -i ${t_intf_name} -d ${t_ip} -j MARK --or-mark $(( #{MarkFirstAlias} )) -m comment --comment \"Set first alias mark on packets destined to first alias ${t_ip} coming from that interface\"
      fi
      t_first_alias="false"
    done
@@ -468,7 +465,7 @@ EOF
       ## So sessions may hit the NAT rules, and not be NATed.
       
       ## NAT Sessions that are DNATd.
-      text << "#{IPTablesCommand} #{Chain::PostNat.args} -m conntrack --ctstate DNAT -j #{Chain::SNatRules}"
+      text << "#{IPTablesCommand} #{Chain::PostNat.args} -m conntrack --ctstate DNAT -j #{Chain::SNatRules} -m comment --comment \"Source NAT all sessions that are DNATed (hairpin support)\"" 
       
       ## NAT Sessions that are going out WAN Interface
       wan_interfaces.each do |wan_interface|
@@ -485,16 +482,16 @@ EOF
           i_name = "${#{pppoe_variable_name(wan_interface)}}"
         end
 
-        text << "#{IPTablesCommand} #{Chain::PostNat.args} -o #{i_name} -j #{Chain::SNatRules}"
+        text << "#{IPTablesCommand} #{Chain::PostNat.args} -o #{i_name} -j #{Chain::SNatRules} -m comment --comment \"Source NAT all session going out WAN #{i_name}\""
 
         ## Firewall NAT rules apply to all of the traffic from WAN interfaces
-        fw_text << "#{IPTablesCommand} -t filter -A FORWARD -i #{i_name} -g #{Chain::FirewallNat}"
+        fw_text << "#{IPTablesCommand} -t filter -A FORWARD -i #{i_name} -g #{Chain::FirewallNat} -m comment --comment \"Filter traffic coming from WAN #{i_name}\""
       end
 
       ## Ignore DNATd traffic
-      fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -m conntrack --ctstate DNAT -j RETURN"
+      fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -m conntrack --ctstate DNAT -j RETURN -m comment --comment \"Allow DNATd traffic\""
       ## Ignore traffic with the passed mark
-      fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -m mark --mark #{MarkFwPass}/#{MarkFwPass} -j RETURN"
+      fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -m mark --mark #{MarkFwPass}/#{MarkFwPass} -j RETURN -m comment --comment \"Allow traffic with pass mark set\""
 
       ## Added an exception for unNATed interfaces (these should allow traffic just like normal routed interfaces
       non_wan_interfaces.each do |interface|
@@ -504,8 +501,9 @@ EOF
           if (!interface.current_config.nil? and 
               !interface.current_config.nat_policies.nil? and 
               !interface.current_config.nat_policies.empty?)
-            fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -o #{interface.os_name} -j DROP # block incoming traffic to non-wan #{interface}"
+            fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -o #{interface.os_name} -j DROP -m comment --comment \"Block incoming traffic to non-wan #{interface}\""
           else
+            # Do not filter, if no NAT policy, just be a normal router and allow traffic
             fw_text << "# #{IPTablesCommand} #{Chain::FirewallNat.args} -o #{interface.os_name} -j DROP # commented out to allow incoming traffic to non-wan #{interface} (no nat policies)"
           end
         rescue
@@ -515,7 +513,7 @@ EOF
       end
       
       ## Drop traffic going to the VPN interface that is not allowed.
-      fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -o tun0 -j DROP"
+      fw_text << "#{IPTablesCommand} #{Chain::FirewallNat.args} -o tun0 -j DROP -m comment --comment \"Drop traffic going out OpenVPN interface\""
 
       text.push <<EOF
 
@@ -528,11 +526,11 @@ add_destination_nat_rule()
   local t_pppoe
   
   if [ -z "${t_intf}" ]; then
-    #{IPTablesCommand} #{Chain::SNatRules.args} -s ${t_network} -j SNAT --to-source ${t_new_source}
+    #{IPTablesCommand} #{Chain::SNatRules.args} -s ${t_network} -j SNAT --to-source ${t_new_source} -m comment --comment \"NAT traffic from ${t_network} going anyway\"
     return
   fi
 
-  #{IPTablesCommand} #{Chain::SNatRules.args} -o ${t_intf} -s ${t_network} -j SNAT --to-source ${t_new_source}
+  #{IPTablesCommand} #{Chain::SNatRules.args} -o ${t_intf} -s ${t_network} -j SNAT --to-source ${t_new_source} -m comment --comment \"NAT traffic from ${t_network} going to ${t_intf}\"
 
   [ "${t_intf#ppp}" != "${t_intf}" ] && return
 
@@ -540,7 +538,7 @@ add_destination_nat_rule()
   [ -z "${t_pppoe}" ] && return
   [ "${t_pppoe}" = "ppp.${t_intf}" ] && return
   
-  #{IPTablesCommand} #{Chain::SNatRules.args} -o ${t_pppoe} -s ${t_network} -j SNAT --to-source ${t_new_source}
+  #{IPTablesCommand} #{Chain::SNatRules.args} -o ${t_pppoe} -s ${t_network} -j SNAT --to-source ${t_new_source} -m comment --comment \"NAT traffic from ${t_network} going out PPPoE\"
 }
 
 EOF
@@ -548,7 +546,7 @@ EOF
     end
     
     # XXX what is this?
-    text << "#{IPTablesCommand} -t mangle -I OUTPUT 1 -j CONNMARK --restore-mark --mask #{DstIntfMask}"
+    text << "#{IPTablesCommand} -t mangle -I OUTPUT 1 -j CONNMARK --restore-mark --mask #{DstIntfMask} -m comment --comment \"Restore destination interface mark (XXX WHY)\""
 
     interface_list.each do |interface|
 
@@ -572,44 +570,44 @@ EOF
     end
 
     # Mark the packet using the connmark (both local and first alias).
-    text << "#{IPTablesCommand} #{Chain::MarkLocal.args} -j CONNMARK --restore-mark --mask $(( #{MaskLocalAndFirstAlias} ))"
+    text << "#{IPTablesCommand} #{Chain::MarkLocal.args} -j CONNMARK --restore-mark --mask $(( #{MaskLocalAndFirstAlias} )) -m comment --comment \"Restore local and first alias mark from session\""
     # If the packet is not the first packet in a sesison, return (its already been marked above using the connmark if its local)
-    text << "#{IPTablesCommand} #{Chain::MarkLocal.args} -m conntrack ! --ctstate NEW -j RETURN"
+    text << "#{IPTablesCommand} #{Chain::MarkLocal.args} -m conntrack ! --ctstate NEW -j RETURN -m comment --comment \"Return for packets already marked above, NEW packets will continue to be marked\""
     # Add the local/first alias marks for each interface
     interface_list.each do |interface|
       text << local_rules( interface )
     end
     # save the connmark
-    text << "#{IPTablesCommand} #{Chain::MarkLocal.args} -j CONNMARK --save-mark --mask #{MaskLocalAndFirstAlias}"
+    text << "#{IPTablesCommand} #{Chain::MarkLocal.args} -j CONNMARK --save-mark --mask #{MaskLocalAndFirstAlias} -m comment --comment \"Save the local and first alias mark\""
     # erase the mark in the forward chain - this is we don't want to connmark port forwarded traffic as local
-    text << "#{IPTablesCommand} -t mangle -I FORWARD -j     MARK --set-mark 0/#{MaskLocalAndFirstAlias}"
-    text << "#{IPTablesCommand} -t mangle -I FORWARD -j CONNMARK --set-mark 0/#{MaskLocalAndFirstAlias}"
+    text << "#{IPTablesCommand} -t mangle -I FORWARD -j     MARK --set-mark 0/#{MaskLocalAndFirstAlias} -m comment --comment \"Zero the local and first alias mark\""
+    text << "#{IPTablesCommand} -t mangle -I FORWARD -j CONNMARK --set-mark 0/#{MaskLocalAndFirstAlias} -m comment --comment \"Zero the local and first alias mark\""
 
     # Mark the outbound packet using the connmark (both local and first alias).
-    text << "#{IPTablesCommand} #{Chain::MarkLocalOutput.args} -j CONNMARK --restore-mark --mask $(( #{MaskLocalAndFirstAlias} ))"
+    text << "#{IPTablesCommand} #{Chain::MarkLocalOutput.args} -j CONNMARK --restore-mark --mask $(( #{MaskLocalAndFirstAlias} )) -m comment --comment \"Restore the local and first alias mark\""
     # If the packet is not the first packet in a sesison, return (its already been marked above using the connmark if its local)
-    text << "#{IPTablesCommand} #{Chain::MarkLocalOutput.args} -m conntrack ! --ctstate NEW -j RETURN"
+    text << "#{IPTablesCommand} #{Chain::MarkLocalOutput.args} -m conntrack ! --ctstate NEW -j RETURN -m comment --comment \"Return for packets already marked above, NEW packets will continue to be marked\""
     # IF the packet reaches this point, it is a new session and since its in the OUTPUT chain we know its a local-initiated session
-    text << "#{IPTablesCommand} #{Chain::MarkLocalOutput.args} -j     MARK --set-mark #{MaskLocalAndFirstAlias}/#{MaskLocalAndFirstAlias}"
-    text << "#{IPTablesCommand} #{Chain::MarkLocalOutput.args} -j CONNMARK --set-mark #{MaskLocalAndFirstAlias}/#{MaskLocalAndFirstAlias}"
+    text << "#{IPTablesCommand} #{Chain::MarkLocalOutput.args} -j     MARK --set-mark #{MaskLocalAndFirstAlias}/#{MaskLocalAndFirstAlias} -m comment --comment \"Set local and first alias marks on all locally initiated packets\"" 
+    text << "#{IPTablesCommand} #{Chain::MarkLocalOutput.args} -j CONNMARK --set-mark #{MaskLocalAndFirstAlias}/#{MaskLocalAndFirstAlias} -m comment --comment \"Set local and first alias marks on all locally initiated packets\"" 
 
     block_all = Firewall.find( :first, :conditions => [ "system_id = ?", "block-all-local-04a98864"] )
 
     if !block_all.nil? && block_all.enabled
       ##A little rule to block all local traffic, done here so that custom items can
       ## insert rules in between.
-      fw_text << "#{IPTablesCommand} #{Chain::FirewallRules.args} -j #{Chain::FirewallMarkInputDrop.name}"
+      fw_text << "#{IPTablesCommand} #{Chain::FirewallRules.args} -j #{Chain::FirewallMarkInputDrop.name} -m comment --comment \"Set input drop mark\""
     end
 
     ## Allow traffic to the test IP, this is useful for people who don't know their IP.
-    fw_text << "#{IPTablesCommand} #{Chain::FirewallRules.args} -p tcp --destination-port 443 -d 192.0.2.42 -j RETURN"
+    fw_text << "#{IPTablesCommand} #{Chain::FirewallRules.args} -p tcp --destination-port 443 -d 192.0.2.42 -j RETURN -m comment --comment \"Allow traffic to 192.0.2.42 (XXX WHY)\""
 
     ## This is a special rule to block access to the dummy bind address.  Traffic
     ## should always be redirected to the dummy interface (unless it came in over lo.)
     ## which is ignored above.
-    fw_text << "#{IPTablesCommand} #{Chain::FirewallRules.args} -d 192.0.2.42 -j DROP"
+    fw_text << "#{IPTablesCommand} #{Chain::FirewallRules.args} -d 192.0.2.42 -j DROP -m comment --comment \"Drop traffic to 192.0.2.42 (XXX WHY)\""
     ## Clear the FwPass mark at the end
-    fw_text << "#{IPTablesCommand} #{Chain::FirewallRules.args} -j MARK --and-mark #{MarkClearFwPass}"
+    fw_text << "#{IPTablesCommand} #{Chain::FirewallRules.args} -j MARK --and-mark #{MarkClearFwPass} -m comment --comment \"Clear pass mark\""
 
     ## Delete all empty or nil parts
     text = text.delete_if { |p| p.nil? || p.empty? }
@@ -650,7 +648,7 @@ EOF
         filters.each do |filter|
           ## Nothing to do if the filtering string is empty.
           break if filter.strip.empty?
-          text << "#{IPTablesCommand} #{Chain::FirewallRules.args} #{filter} #{target}\n"
+          text << "#{IPTablesCommand} #{Chain::FirewallRules.args} #{filter} #{target} -m comment --comment \"Packet Filter Rule #{rule.id}\"\n"
         end
       rescue
         logger.warn( "The packet filter rule '#{rule.id}' '#{rule.filter}' could not be parsed: #{$!}" )
@@ -691,7 +689,7 @@ EOF
         filters.each do |filter|
           ## Nothing to do if the filtering string is empty.
           break if filter.strip.empty?
-          text << "#{IPTablesCommand} #{Chain::Redirect.args} #{filter} -j DNAT --to-destination #{destination}\n"
+          text << "#{IPTablesCommand} #{Chain::Redirect.args} #{filter} -j DNAT --to-destination #{destination} -m comment --comment \"Port Forward Rule #{rule.id}\"\n"
         end
       rescue
         logger.warn( "The port forward rule '#{rule.filter}' could not be parsed: #{$!}" )
@@ -726,36 +724,37 @@ EOF
     end
 
     # Set the src mark 
-    rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in}  -j MARK --set-mark #{index}/#{SrcIntfMask}"
+    rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in}  -j MARK --set-mark #{index}/#{SrcIntfMask} -m comment --comment \"Set source interface mark #{index} on #{interface.os_name}\""
     # If this is a new connection save the src interface index as the client interface connmark
-    rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in}  -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index}/#{SrcIntfMask}"
+    rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in}  -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index}/#{SrcIntfMask} -m comment --comment \"Set source interface mark #{index} on #{interface.os_name}\""
     # Alternative marking technique (used in some cases like bridge of PPPoE)
     if !match_in_alt.nil?
       # Set the src mark 
-      rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in_alt}  -j MARK --set-mark #{index}/#{SrcIntfMask}"
+      rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in_alt}  -j MARK --set-mark #{index}/#{SrcIntfMask} -m comment --comment \"Set source interface mark #{index} on #{interface.os_name} - alternate rule\""
       # If this is a new connection save the src interface index as the client interface connmark
-      rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in_alt}  -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index}/#{SrcIntfMask}"
+      rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in_alt}  -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index}/#{SrcIntfMask} -m comment --comment \"Set source interface mark #{index} on #{interface.os_name} - alternate rule\""
     end
 
     # Set the dst mark 
-    rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out} -j MARK --set-mark #{index << DstIntfShift}/#{DstIntfMask}"
+    rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out} -j MARK --set-mark #{index << DstIntfShift}/#{DstIntfMask} -m comment --comment \"Set destination interface mark #{index} on #{interface.os_name}\""
     # If this is a new connection save the dst interface index as the server interface connmark
-    rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << DstIntfShift}/#{DstIntfMask}"
+    rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << DstIntfShift}/#{DstIntfMask} -m comment --comment \"Set destination interface mark #{index} on #{interface.os_name}\""
     # Alternative marking technique (used in some cases like bridge of PPPoE)
     if !match_out_alt.nil?
       # Set the dst mark 
-      rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out_alt} -j MARK --set-mark #{index << DstIntfShift}/#{DstIntfMask}"
+      rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out_alt} -j MARK --set-mark #{index << DstIntfShift}/#{DstIntfMask} -m comment --comment \"Set destination interface mark #{index} on #{interface.os_name} - alternate rule\""
       # If this is a new connection save the dst interface index as the server interface connmark
-      rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out_alt} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << DstIntfShift}/#{DstIntfMask}"
+      rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out_alt} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << DstIntfShift}/#{DstIntfMask} -m comment --comment \"Set destination interface mark #{index} on #{interface.os_name} - alternate rule\""
     end
 
 
     # If this is a "reply" packet, set the client interface index as the dst intf on the packet mark
     # The rule actually says "ORIGINAL" and not "REPLY" and thats because ctdir seems to match backwards
-    rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} -m conntrack --ctdir ORIGINAL -m connmark --mark #{index}/#{SrcIntfMask} -j MARK --set-mark #{index << DstIntfShift}/#{DstIntfMask}"
+    # XXX because ctdir matches backwards
+    rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} -m conntrack --ctdir ORIGINAL -m connmark --mark #{index}/#{SrcIntfMask} -j MARK --set-mark #{index << DstIntfShift}/#{DstIntfMask} -m comment --comment \"Set destination interface mark from connmark\""
     # If this is a "reply" packet, set the server interface index as the src intf on the packet mark
     # The rule actually says "ORIGINAL" and not "REPLY" and thats because ctdir seems to match backwards
-    rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} -m conntrack --ctdir ORIGINAL -m connmark --mark #{index << DstIntfShift}/#{DstIntfMask} -j MARK --set-mark #{index}/#{SrcIntfMask}"
+    rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} -m conntrack --ctdir ORIGINAL -m connmark --mark #{index << DstIntfShift}/#{DstIntfMask} -j MARK --set-mark #{index}/#{SrcIntfMask} -m comment --comment \"Set source interface mark from connmark\""
 
     rules.join( "\n" )
   end
@@ -857,16 +856,16 @@ EOF
     if ( policy.new_source == NatPolicy::Automatic )
       if nat_automatic_target != "MASQUERADE"
         nat_automatic_target.each do |target|
-          rules << "#{IPTablesCommand} #{Chain::PostNat.args} -m conntrack ! --ctorigdst #{network} -s #{network} -j #{target}"
+          rules << "#{IPTablesCommand} #{Chain::PostNat.args} -m conntrack ! --ctorigdst #{network} -s #{network} -j #{target} -m comment --comment \"Auto NAT fixed target #{target} Rule (legacy)\"" 
         end
       end
       
-      rules << "#{IPTablesCommand} #{Chain::PostNat.args} -m conntrack ! --ctorigdst #{network} -s #{network} -j MASQUERADE"
+      rules << "#{IPTablesCommand} #{Chain::PostNat.args} -m conntrack ! --ctorigdst #{network} -s #{network} -j MASQUERADE -m comment --comment \"Auto NAT Rule (legacy)\""
     else
-      rules << "#{IPTablesCommand} #{Chain::PostNat.args} -m conntrack ! --ctorigdst #{network} -s #{network} -j SNAT --to-source #{policy.new_source}"
+      rules << "#{IPTablesCommand} #{Chain::PostNat.args} -m conntrack ! --ctorigdst #{network} -s #{network} -j SNAT --to-source #{policy.new_source} -m comment --comment \"NAT Rule (legacy)\""
     end
 
-    fw_rules << "#{IPTablesCommand} #{Chain::FirewallRules.args} -i ! #{os_name} -d #{network} -j DROP"
+    fw_rules << "#{IPTablesCommand} #{Chain::FirewallRules.args} -i ! #{os_name} -d #{network} -j DROP -m comment --comment \"Drop all traffic to private subnet (not from that interface)\""
   end
   
   def classy_nat( wan_interfaces, interface, nat_automatic_target )
@@ -901,17 +900,17 @@ EOF
       # rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -i tun0 -o #{interface.os_name} -j MASQUERADE"
 
       # add a rule using the -o matcher
-      rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -m mark --mark 0xfa/#{SrcIntfMask} -o #{interface.os_name} -j MASQUERADE"
+      rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -m mark --mark 0xfa/#{SrcIntfMask} -o #{interface.os_name} -j MASQUERADE -m comment --comment \"NAT traffic from OpenVPN to WAN intf #{interface.index}\""
 
       # add a rule using the dst mark (sometimes previous won't work for bridged interfaces)
-      rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -m mark --mark #{((interface.index << DstIntfShift) | 0xfa)}/#{(DstIntfMask | SrcIntfMask)} -j MASQUERADE"
+      rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -m mark --mark #{((interface.index << DstIntfShift) | 0xfa)}/#{(DstIntfMask | SrcIntfMask)} -j MASQUERADE -m comment --comment \"NAT traffic from OpenVPN to WAN intf #{interface.index}\""
     end
 
       # add a rule that NAT traffic coming from the VPN and going to an unknown (0) interface
       # unfortunately this happens on some machines as the mark-dst-intf fails to match physdev and mark the interface
       # I'm unsure of why this only fails on some machine, but it does.
       # This rule will just NAT the traffic just in case
-      rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -m mark --mark 0x00fa/#{(DstIntfMask | SrcIntfMask)} -j MASQUERADE"
+      rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -m mark --mark 0x00fa/#{(DstIntfMask | SrcIntfMask)} -j MASQUERADE -m comment --comment \"NAT traffic coming from OpenVPN to unknown (0 mark) interface\""
 
     [ rules.join( "\n" ), fw_rules.join( "\n" ) ]    
   end
@@ -925,11 +924,11 @@ EOF
     if ( policy.new_source == NatPolicy::Automatic )
       if nat_automatic_target != "MASQUERADE"
         nat_automatic_target.each do |target|
-          rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -s #{network} -j #{target}"
+          rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -s #{network} -j #{target} -m comment --comment \"Auto NAT fixed target #{target} Rule (classy)\""
         end
       end
       
-      rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -s #{network} -j MASQUERADE"
+      rules << "#{IPTablesCommand} #{Chain::SNatRules.args} -s #{network} -j MASQUERADE -m comment --comment \"Auto NAT Rule (classy)\""
     else
       rules << "add_destination_nat_rule #{network} #{policy.new_source}"
     end
@@ -969,16 +968,16 @@ EOF
     when "accept-dhcp-internal-e92de349"
       ## Accept traffic to the DHCP server on the Internal interface
       mark = InterfaceHelper::InternalIndex
-      return "#{IPTablesCommand} -t filter -I INPUT 1 -p udp -m mark --mark #{mark}/#{SrcIntfMask} -m multiport --destination-ports 67 -j RETURN\n"
+      return "#{IPTablesCommand} -t filter -I INPUT 1 -p udp -m mark --mark #{mark}/#{SrcIntfMask} -m multiport --destination-ports 67 -j RETURN -m comment --comment \"Accept DHCP on internal (system rule)\"\n"
 
     when "accept-dhcp-dmz-7a5a003c"
       ## Accept traffic to the DHCP server on the DMZ interface
       mark = InterfaceHelper::DmzIndex
-      return "#{IPTablesCommand} -t filter -I INPUT 1 -p udp -m mark --mark #{mark}/#{SrcIntfMask} -m multiport --destination-ports 67 -j RETURN\n"
+      return "#{IPTablesCommand} -t filter -I INPUT 1 -p udp -m mark --mark #{mark}/#{SrcIntfMask} -m multiport --destination-ports 67 -j RETURN -m comment --comment \"Accept DHCP on DMZ (system rule)\"\n"
 
     when "block-dhcp-remaining-58b3326c"
       ## Block remaining DHCP traffic to the server.
-      return "#{IPTablesCommand} -t filter -A INPUT -p udp -m multiport --destination-port 67 -j DROP\n"
+      return "#{IPTablesCommand} -t filter -A INPUT -p udp -m multiport --destination-port 67 -j DROP -m comment --comment \"Drop dhcp to server (system rule)\"\n"
 
     when "control-dhcp-cb848bea"
       ## Limit DHCP traffic to the Internal interface
@@ -991,12 +990,12 @@ EOF
       return "" if i.nil? || i.os_name.nil?
 
       ## Drop dhcp responses from being forwarded to the internal interface.
-      return "#{IPTablesCommand} -t mangle -A FORWARD -p udp -m multiport --destination-ports 67,68 -m physdev --physdev-is-bridged --physdev-out #{i.os_name} -j DROP\n" +
-        "#{IPTablesCommand} -t mangle -A FORWARD -p udp -m multiport --destination-ports 67,68 -m physdev --physdev-in #{i.os_name} -j DROP\n"
+      return "#{IPTablesCommand} -t mangle -A FORWARD -p udp -m multiport --destination-ports 67,68 -m physdev --physdev-is-bridged --physdev-out #{i.os_name} -j DROP -m comment --comment \"Drop DHCP forwarded to #{i.os_name}\"\n" +
+             "#{IPTablesCommand} -t mangle -A FORWARD -p udp -m multiport --destination-ports 67,68 -m physdev --physdev-in #{i.os_name} -j DROP -m comment --comment \"Drop DHCP coming from #{i.os_name}\"\n"
 
     when "accept-dhcp-client-43587bff"
       ## Accept all traffic to the local DHCP client
-      return "#{IPTablesCommand} -t filter -I INPUT 1 -p udp -m multiport --destination-ports 68 -j RETURN\n"
+      return "#{IPTablesCommand} -t filter -I INPUT 1 -p udp -m multiport --destination-ports 68 -j RETURN -m comment --comment \"Accept DHCP traffic to DHCP server\"\n"
     else return ""
     end
   end
