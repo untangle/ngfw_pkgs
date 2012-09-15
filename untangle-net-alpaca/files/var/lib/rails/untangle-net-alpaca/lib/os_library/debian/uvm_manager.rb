@@ -99,7 +99,7 @@ if [ "`is_uvm_running`x" = "truex" ]; then
   uvm_iptables_rules
   
   ## Ignore any traffic that is on the utun interface
-  #{IPTablesCommand} -t #{Chain::FirewallRules.table} -I #{Chain::FirewallRules} 1 -i ${TUN_DEV} -j RETURN
+  #{IPTablesCommand} -t #{Chain::FirewallRules.table} -I #{Chain::FirewallRules} 1 -i ${TUN_DEV} -j RETURN -m comment --comment "Allow all traffic on utun interface"
   
   #{BypassRules}
   echo "[`date`] The untangle-vm is running. Inserting queueing hooks and bypass rules...done"
@@ -185,15 +185,19 @@ if [ "`pidof openvpn`x" = "x" ]; then
 fi    
 
 ## This is the openvpn mark rule
-#{IPTablesCommand} #{Chain::MarkSrcInterface.args} -i tun0 -j MARK --set-mark #{0xfa}/#{0xff}
-#{IPTablesCommand} #{Chain::MarkDstInterface.args} -o tun0 -j MARK --set-mark #{0xfa << 8}/#{0xff00}
-#{IPTablesCommand} #{Chain::MarkSrcInterface.args} -i tun0 -m conntrack --ctstate NEW -j CONNMARK --set-mark #{0xfa}/#{0xff}
-#{IPTablesCommand} #{Chain::MarkDstInterface.args} -o tun0 -m conntrack --ctstate NEW -j CONNMARK --set-mark #{0xfa << 8}/#{0xff00}
-#{IPTablesCommand} #{Chain::MarkInterface.args} -m conntrack --ctdir ORIGINAL -m connmark --mark #{0xfa}/#{0xff} -j MARK --set-mark #{0xfa << 8}/#{0xff00}
-#{IPTablesCommand} #{Chain::MarkInterface.args} -m conntrack --ctdir ORIGINAL -m connmark --mark #{0xfa << 8}/#{0xff00} -j MARK --set-mark #{0xfa}/#{0xff}
+#{IPTablesCommand} #{Chain::MarkSrcInterface.args} -i tun0 -j MARK --set-mark #{0xfa}/#{0xff} -m comment --comment "Set OpenVPN source interface mark on traffic coming out of tun0"
+#{IPTablesCommand} #{Chain::MarkDstInterface.args} -o tun0 -j MARK --set-mark #{0xfa << 8}/#{0xff00} -m comment --comment "Set OpenVPN destination interface mark on traffic going to tun0"
+#{IPTablesCommand} #{Chain::MarkSrcInterface.args} -i tun0 -m conntrack --ctstate NEW -j CONNMARK --set-mark #{0xfa}/#{0xff} -m comment --comment "Set OpenVPN source interface mark on session coming out of tun0"
+#{IPTablesCommand} #{Chain::MarkDstInterface.args} -o tun0 -m conntrack --ctstate NEW -j CONNMARK --set-mark #{0xfa << 8}/#{0xff00} -m comment --comment "Set OpenVPN destination interface mark on session going to tun0"
+
+## The following two rules are marked XXX because they seem backwards
+## The rule reads if the packet is in the original direction and the connmark says the source interface of the session is OpenVPN then the destination of the packet should be set to OpenVPN.
+## My intuition says that the rule should read --ctdir REPLY, however it only works as intended with --ctdir ORIGINAL despite my understanding of the man page.
+#{IPTablesCommand} #{Chain::MarkInterface.args} -m conntrack --ctdir ORIGINAL -m connmark --mark #{0xfa}/#{0xff} -j MARK --set-mark #{0xfa << 8}/#{0xff00} -m comment --comment "Set source interface mark based ot session connmark and direction (XXX)"
+#{IPTablesCommand} #{Chain::MarkInterface.args} -m conntrack --ctdir ORIGINAL -m connmark --mark #{0xfa << 8}/#{0xff00} -j MARK --set-mark #{0xfa}/#{0xff} -m comment --comment "Set destination interface mark based ot session connmark and direction (XXX)"
 
 ## Accept traffic from the VPN
-#{IPTablesCommand} #{Chain::FirewallRules.args} -i tun0 -j RETURN
+#{IPTablesCommand} #{Chain::FirewallRules.args} -i tun0 -j RETURN -m comment --comment "Allow traffic from the OpenVPN interface"
 
 if [ -n "#{route_bridge_vpn_traffic}" ]; then
   uvm_openvpn_ebtables_rules || true
@@ -400,7 +404,7 @@ EOF
 
         filters.each do |filter|
           break if filter.strip.empty?
-          text << "#{IPTablesCommand} #{Chain::BypassRules.args} #{filter} #{target}\n"
+          text << "#{IPTablesCommand} #{Chain::BypassRules.args} #{filter} #{target} -m comment --comment \"Bypass Rule #{rule.id}\"\n"
         end
         
       rescue
