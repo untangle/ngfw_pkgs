@@ -44,12 +44,8 @@ fi
 chown www-data:www-data /etc/apache2/workers.properties
 chmod 600 /etc/apache2/workers.properties
 
-if [ ! -e /etc/apache2/untangle-conf.d/uvm.conf ]; then
-    echo "Include /usr/share/untangle/apache2/conf.d/*.conf" >/etc/apache2/untangle-conf.d/uvm.conf
-fi
-
-if [ ! -e /etc/apache2/untangle-unrestricted-conf.d/uvm.conf ]; then
-    echo "Include /usr/share/untangle/apache2/unrestricted-conf.d/*.conf" >/etc/apache2/untangle-unrestricted-conf.d/uvm.conf
+if [ ! -e /etc/apache2/uvm.conf ]; then
+    echo "Include /usr/share/untangle/conf/apache2/conf.d/*.conf" >/etc/apache2/uvm.conf
 fi
 
 if [ ! -e $PEM ]; then
@@ -89,10 +85,10 @@ sed -i -e '/64156/d' /etc/apache2/ports.conf
 sed -i -e '/64157/d' /etc/apache2/ports.conf
 
 # CONVERSION - 9.4 - remove obsolete conf files 
-if [ -f /etc/apache2/untangle-conf.d ] ; then
+if [ -d /etc/apache2/untangle-conf.d ] ; then
     rm -rf /etc/apache2/untangle-conf.d
 fi
-if [ -f /etc/apache2/untangle-unrestricted-conf.d ] ; then
+if [ -d /etc/apache2/untangle-unrestricted-conf.d ] ; then
     rm -rf /etc/apache2/untangle-unrestricted-conf.d
 fi
 
