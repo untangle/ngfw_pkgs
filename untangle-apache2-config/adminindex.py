@@ -4,6 +4,7 @@ import md5
 import uvmlogin
 import cgi
 import base64
+import sys
 
 from mod_python import apache, Session, util
 from psycopg2 import connect
@@ -145,6 +146,16 @@ def _write_login_form(req, title, host, is_error):
     else:
         error_msg = ''
 
+    server_str = cgi.escape(_("Server:"))
+    username_str = cgi.escape(_("Username:"))
+    password_str = cgi.escape(_("Password:"))
+    login_str = cgi.escape(_("Login"))
+
+    if not type(title) is str:
+        title = cgi.escape(title).encode("utf-8")
+    if not type(host) is str:
+        host = cgi.escape(host).encode("utf-8")
+
     html = """\
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -195,7 +206,7 @@ def _write_login_form(req, title, host, is_error):
  <!-- Box End -->
 </div>
 </body>
-</html>""" % (title, error_msg, title, login_url, cgi.escape(_("Server:")), host, cgi.escape(_("Username:")), cgi.escape(_("Password:")), cgi.escape(_("Login")))
-    html = html.encode("utf-8")
+</html>""" % (title, error_msg, title, login_url, server_str, host, username_str, password_str, login_str)
     
     req.write(html)
+
