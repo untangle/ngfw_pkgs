@@ -254,7 +254,11 @@ def write_error_page(req, msg):
     req.content_type = "text/html; charset=utf-8"
     req.send_http_header()
 
-    us = _("%s Server") % get_company_name()
+    us = _("Server")
+    try:
+        us = _("%s Server") % get_company_name()
+    except:
+        pass
 
     html = """\
 <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
@@ -281,6 +285,5 @@ def write_error_page(req, msg):
 </body>
 </html>
 """ % (us, us, cgi.escape(msg))
-    html = html.encode("utf-8")
 
     req.write(html)
