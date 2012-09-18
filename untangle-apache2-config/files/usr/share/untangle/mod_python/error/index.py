@@ -122,7 +122,16 @@ def _write_error_page(req, msg):
     req.content_type = "text/html; charset=utf-8"
     req.send_http_header()
 
-    us = _("%s Server") % uvmlogin.get_company_name()
+    us = _("Server")
+    try:
+        us = _("%s Server") % uvmlogin.get_company_name()
+    except:
+        pass
+    
+    if not type(us) is str:
+        us = us.encode("utf-8")
+    if not type(msg) is str:
+        msg = msg.encode("utf-8")
 
     html = """\
 <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
@@ -149,6 +158,5 @@ def _write_error_page(req, msg):
 </body>
 </html>
 """ % (us, us, cgi.escape(msg))
-    html = html.encode("utf-8")
     
     req.write(html)
