@@ -213,6 +213,9 @@ def get_company_name():
     if (brandco != None):
         company = brandco
 
+    if not type(company) is str:
+        company = company.encode("utf-8")
+
     return company
 
 def get_uvm_language():

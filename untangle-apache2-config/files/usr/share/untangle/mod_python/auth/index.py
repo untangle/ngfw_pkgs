@@ -56,8 +56,7 @@ def login(req, url=None, realm='Administrator'):
     # some i18n company_names cause exception here, so wrap to handle this 
     # revert to "Administrator Login" if exception occurs
     try:
-        
-        title = cgi.escape("%s Administrator Login" % company_name)
+        title = cgi.escape(_("%s Administrator Login") % company_name)
     except:
         pass
 
