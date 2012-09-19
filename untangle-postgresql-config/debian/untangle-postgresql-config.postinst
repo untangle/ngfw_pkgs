@@ -55,6 +55,11 @@ for file in $PG_CONF ; do
     sed -i -e "s/.*autovacuum_max_workers.*=.*/autovacuum_max_workers = 1/" $file
     # limit disk i/o of vacuuming by adding in minimal cost delay
     sed -i -e "s/.*vacuum_cost_delay.*=.*/vacuum_cost_delay = 10/" $file
+    # turn off synchronous commits
+    # since we only use the database for events now, and dont really care if some are lost in a shutdown
+    # we can gain massive speedups in writes by turning of synchronous commits.
+    sed -i -e "s/.*synchronous_commit.*=.*/synchronous_commit = off/" $file
+
 
     # disable autovacuuming
     # sed -i -e "s/.*AUTOVACUUM=.*/AUTOVACUUM=no/" $file
