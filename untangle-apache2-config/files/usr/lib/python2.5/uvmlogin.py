@@ -51,7 +51,7 @@ def headerparserhandler(req):
     if options.has_key('Realm'):
         realm = options['Realm']
     else:
-        apache.log_error('no realm specified')
+        apache.log_error('no realm specified')u
         return apache.DECLINED
 
     sess = Session.Session(req, lock=0)
@@ -119,6 +119,9 @@ def is_root(req):
 
     result = False;
 
+    # This determines the PID of the connecting process
+    # and determines if it is from a process who is owned by root
+    # or a user in uvmlogin group. If so, auto-authenticate it.
     if remote_ip == "127.0.0.1":
         uids = get_uvmlogin_uids()
 
@@ -148,6 +151,7 @@ def is_root(req):
 
     return result
 
+# This function will authenticate root (0) and any user in uvmlogin group
 def get_uvmlogin_uids():
     s = sets.Set([0])
 
