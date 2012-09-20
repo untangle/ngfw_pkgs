@@ -119,6 +119,9 @@ def is_root(req):
 
     result = False;
 
+    # This determines the PID of the connecting process
+    # and determines if it is from a process who is owned by root
+    # or a user in uvmlogin group. If so, auto-authenticate it.
     if remote_ip == "127.0.0.1":
         uids = get_uvmlogin_uids()
 
@@ -148,6 +151,7 @@ def is_root(req):
 
     return result
 
+# This function will authenticate root (0) and any user in uvmlogin group
 def get_uvmlogin_uids():
     s = sets.Set([0])
 
@@ -212,6 +216,9 @@ def get_company_name():
     brandco = get_node_settings_item('untangle-node-branding','companyName')
     if (brandco != None):
         company = brandco
+
+    if not type(company) is str:
+        company = company.encode("utf-8")
 
     return company
 

@@ -51,7 +51,7 @@ def headerparserhandler(req):
     if options.has_key('Realm'):
         realm = options['Realm']
     else:
-        apache.log_error('no realm specified')u
+        apache.log_error('no realm specified')
         return apache.DECLINED
 
     sess = Session.Session(req, lock=0)
