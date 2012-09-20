@@ -79,7 +79,7 @@ Ung.I18N = Ext.extend(Ext.Component, {
     // formats a date
     dateFormat: function(v) {
         var date = new Date();
-        date.setTime(v.time);
+        date.setTime((v.time == null ? v : v.time));
         return Ext.util.Format.date(date, this.map['date_fmt']);
     },
     // formats a timestamp
@@ -88,7 +88,7 @@ Ung.I18N = Ext.extend(Ext.Component, {
             return "";
         }
         var date = new Date();
-        date.setTime(v.time);
+        date.setTime((v.time == null ? v : v.time));
         return Ext.util.Format.date(date, this.map['timestamp_fmt']);
     },
     //date long version format
