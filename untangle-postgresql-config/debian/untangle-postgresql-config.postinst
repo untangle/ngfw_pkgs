@@ -79,8 +79,14 @@ if [ ! -z "$PG_INIT" ] ; then
     done
 fi
 
-VERSION=$(dpkg -l postgresql* | awk '/^ii.+postgresql-[0-9]/ { gsub(/postgresql-/, "", $2) ; print $2 }')
-perl -i -pe 's/\+VERSION\+/'$VERSION'/' /etc/untangle/monit.d/postgresql_all.conf
+# monit stuff
+version=$(dpkg -l postgresql* | awk '/^ii.+postgresql-[0-9]/ { gsub(/postgresql-/, "", $2) ; print $2 }')
+if dpkg --compare-versions $version lt 8.4 ; then
+  initd=/etc/init.d/postgresql-$version
+else
+  initd=/etc/init.d/postgresql
+fi
+perl -i -pe 's/\+VERSION\+/'$version'/ ; s|\+INITD\+|'$initd'|' /etc/untangle/monit.d/postgresql_all.conf
 
 touch /etc/untangle/monit-to-restart
     
