@@ -216,6 +216,10 @@ main_menu()
                     ;;
                 "Reset Administrative Accounts")
                     if confirm "Reset administrative accounts to factory defaults (admin/passwd)?"; then
+                        psql -X -U postgres uvm >/dev/null 2>&1 <<EOF
+DELETE FROM u_user;
+DELETE FROM u_admin_settings;
+EOF
                         rm -f /usr/share/untangle/settings/untangle-vm/admin.js
                         state=SUCCESS_SPLASH
                     else
