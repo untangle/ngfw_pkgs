@@ -1,7 +1,7 @@
 Source: untangle-apache2-config
 Section: admin
 Priority: optional
-Maintainer: Aaron Read <amread@untangle.com>
+Maintainer: Sebastien Delafond <seb.com>
 Build-Depends: debhelper (>> 3.0.0), sun-java6-jdk | sun-java5-jdk
 Standards-Version: 3.8.0
 
