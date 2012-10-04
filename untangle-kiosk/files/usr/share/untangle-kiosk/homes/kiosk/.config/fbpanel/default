@@ -12,6 +12,9 @@ Global {
     heighttype = pixel
     height = 100
     roundcorners = false
+    setlayer = true
+    layer = below
+
     # Identify panel window type as dock
     # legal values are boolean
     SetDockType = false
