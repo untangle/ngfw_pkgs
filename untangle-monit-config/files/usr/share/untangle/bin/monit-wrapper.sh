@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 CONFIG_PARTS_DIR=/etc/untangle/monit.d
 CONFIG_FILE=/etc/untangle/monit.conf
