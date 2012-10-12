@@ -11,12 +11,6 @@ if [ -f /etc/untangle/oem/oem.sh ] ; then
     source /etc/untangle/oem/oem.sh
 fi
 
-# FIXME: for squeeze, port Xdialog to something else
-if [[ $(cat /etc/debian_version) == 6* ]] ; then
-  ${XTERM} -tn rxvt -T ${XTERM} -e sudo su &
-  exit 0
-fi
-
 if sudo grep -qE '^root:(\*|YKN4WuGxhHpIw|$1$3kRMklXp$W/hDwKvL8GFi5Vdo3jtKC\.|CHANGEME):' /etc/shadow ; then
   tempfile=`tempfile 2>/dev/null` || tempfile=/tmp/test$$
   trap "rm -f $tempfile" 0 1 2 5 15  
