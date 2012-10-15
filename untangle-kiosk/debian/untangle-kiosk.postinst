@@ -9,7 +9,7 @@ perl -i -pe 's|^[xw]7:5:wait:.+$||' /etc/inittab
 rsync -Ha /usr/share/untangle-kiosk/homes/root/ /root/
 rsync -Ha /usr/share/untangle-kiosk/homes/kiosk/ /home/kiosk/
 # following 2 lines for older fbpanel in lenny
-if [[ $(cat /etc/debian_version) == 6* ]] ; then
+if [[ $(cat /etc/debian_version) != 6* ]] ; then
   mkdir -p /home/kiosk/.fbpanel
   ln -sf /home/kiosk/.config/fbpanel/default-lenny /home/kiosk/.fbpanel/default
 fi
