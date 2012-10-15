@@ -1,0 +1,124 @@
+########################################
+## fbpanel configuration file         ##
+########################################
+
+Global {
+
+    edge = bottom
+    allign = center
+    margin = 0
+    widthtype = request
+#    width = 50
+    heighttype = pixel
+    height = 100
+    roundcorners = false
+    # Identify panel window type as dock
+    # legal values are boolean
+    SetDockType = false
+
+    # Reserve panel's space so that it will not be covered by maximazied windows
+    # legal values are boolean
+    SetPartialStrut = false
+
+    # Transparency stuff:
+    # TintColor is a color to composite on root background given as #RRGGBB or as name
+    # Alpha is transparency of the tint color.
+    # Transparent = true
+    # TintColor = #FFFFFF
+    #    or
+    # TintColor = white
+    # Alpha = 127
+}
+
+Plugin {
+    type = launchbar
+    config {
+        button {
+            image = /usr/share/untangle-kiosk/panel/LaunchGUI.png
+            tooltip = Launch Administration
+            action = /usr/bin/untangle-client
+        }
+    }
+}
+
+
+Plugin {
+  type = separator
+}
+
+Plugin {
+    type = launchbar
+    config {
+        button {
+            image = /usr/share/untangle-kiosk/panel/Resolution.png
+            tooltip = Choose resolution
+            action = /home/kiosk/utils/ut-resolution.sh
+        }
+    }
+}
+
+Plugin {
+  type = separator
+}
+
+Plugin {
+    type = launchbar
+    config {
+        button {
+            image = /usr/share/untangle-kiosk/panel/ScreensaverOn.png
+            tooltip = Enable Screensaver
+            action = /home/kiosk/utils/screensaver.sh on
+        }
+        button {
+            image = /usr/share/untangle-kiosk/panel/ScreensaverOff.png
+            tooltip = Disable Screensaver
+            action = /home/kiosk/utils/screensaver.sh off
+        }
+    }
+}
+
+Plugin {
+  type = separator
+}
+
+Plugin {
+    type = launchbar
+    config {
+        button {
+            image = /usr/share/untangle-kiosk/panel/RestartBox.png
+            tooltip = Restart
+            action = /home/kiosk/utils/ut-reboot.sh
+        }
+        button {
+            image = /usr/share/untangle-kiosk/panel/ShutdownBox.png
+            tooltip = Shutdown
+            action = /home/kiosk/utils/ut-off.sh
+        }
+    }
+}
+
+Plugin {
+  type = separator
+}
+
+Plugin {
+    type = launchbar
+    config {
+        button {
+            image = /usr/share/untangle-kiosk/panel/RecoveryUtilities.png
+            tooltip = Launch Recovery Tools
+            action = /home/kiosk/utils/ut-restore.sh
+        }
+    }
+}
+
+Plugin {
+    type = launchbar
+    config {
+        button {
+            image = /usr/share/untangle-kiosk/panel/Terminal.png
+            tooltip = Launch Terminal
+            action = /home/kiosk/utils/ut-shell.sh
+        }
+    }
+}
