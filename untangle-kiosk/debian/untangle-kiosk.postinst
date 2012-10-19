@@ -2,18 +2,27 @@
 
 #rm -fr /etc/xdg/xfce4
 
+KIOSK_HOME=/home/kiosk
+XORG_VESA_CONF_BASE=${HOME_KIOSK}/xorg-confs/vesa
+
 #rsync -Ha /usr/share/untangle-kiosk/x-startup/etc/inittab /etc/inittab
 perl -i -pe 's|^1:.+|1:2345:respawn:/sbin/rungetty --noclear --autologin kiosk tty1|' /etc/inittab
 perl -i -pe 's|^[xw]7:5:wait:.+$||' /etc/inittab
 
 rsync -Ha /usr/share/untangle-kiosk/homes/root/ /root/
-rsync -Ha /usr/share/untangle-kiosk/homes/kiosk/ /home/kiosk/
-# following 2 lines for older fbpanel in lenny
+rsync -Ha /usr/share/untangle-kiosk/homes/kiosk/ ${HOME_KIOSK}/
 if [[ $(cat /etc/debian_version) != 6* ]] ; then
-  mkdir -p /home/kiosk/.fbpanel
-  ln -sf /home/kiosk/.config/fbpanel/default-lenny /home/kiosk/.fbpanel/default
+ # following 2 lines for older fbpanel in lenny
+  mkdir -p ${HOME_KIOSK}/.fbpanel
+  ln -sf ${HOME_KIOSK}/.config/fbpanel/default-lenny ${HOME_KIOSK}/.fbpanel/default
+
+  xorg_vesa_conf=${XORG_VESA_CONF_BASE}-lenny
+else
+  xorg_vesa_conf=${XORG_VESA_CONF_BASE}-squeeze
 fi
-chown -R kiosk:kiosk /home/kiosk
+chown -R kiosk:kiosk ${HOME_KIOSK}
+
+cp $xorg_vesa_conf /etc/X11/xorg-untangle-vesa-conf
 
 # Setup iceweasel and/or firefox
 if [ -d /etc/iceweasel/profile ] ; then

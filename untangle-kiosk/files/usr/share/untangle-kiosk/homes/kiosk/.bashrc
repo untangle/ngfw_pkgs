@@ -1,26 +1,4 @@
 XORG_CONF_VESA=xorg-untangle-vesa.conf
-sudo tee /etc/X11/$XORG_CONF_VESA > /dev/null <<EOF
-Section "Device"
-Identifier "Configured Video Device"
-Driver "vesa"
-EndSection
-
-Section "Monitor"
-Identifier "Configured Monitor"
-  VertRefresh  60
-EndSection
-
-Section "Screen" 
-Identifier "Default Screen"
-Monitor "Configured Monitor"
-Device "Configured Video Device"
-DefaultDepth 24
-SubSection "Display"
-Depth 24
-Modes "1024x768" 
-EndSubSection
-EndSection
-EOF
 
 abort() {
 for i in $(seq 50) ; do echo ; done
