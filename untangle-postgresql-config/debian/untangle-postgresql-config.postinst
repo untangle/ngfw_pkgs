@@ -58,7 +58,7 @@ for file in $PG_CONF ; do
     # comment out these settings to return them to default
     # we used to modify these
     # remove these lines in 10.x
-    sed -i -e "s/*constraint_exclusion *=.*/#constraint_exclusion = partition/" $file
+    sed -i -e "s/.*constraint_exclusion.*=.*/#constraint_exclusion = partition/" $file
     sed -i -e "s/.*autovacuum_max_workers.*=.*/#autovacuum_max_workers = 3/" $file
     sed -i -e "s/.*vacuum_cost_delay.*=.*/#vacuum_cost_delay = 0/" $file
     sed -i -e "s/.*search_path.*=.*/#search_path = 'public'/" $file
