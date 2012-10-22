@@ -1,20 +1,9 @@
 #! /bin/bash
 
-ourInit() {
-if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
-  invoke-rc.d $1 $2
-else
-  /etc/init.d/$1 $2
-fi
-}
-
 PG_CONF="`/usr/bin/find /etc/postgresql -name 'postgresql.conf' -type f`"
 PG_HBA="`/usr/bin/find /etc/postgresql -name 'pg_hba.conf' -type f`"
 PG_INIT="`/usr/bin/find /etc/init.d/ -name 'postgres*' ! -name '*dpkg-old*' -type f `"
-UNTANGLE_SYSCTL="/etc/sysctl.d/60-untangle.conf"
 DATE="`date '+%Y%m%d%H%M%S'`"
-
-echo $PG_CONF
 
 if [ -z "$PG_CONF" ] ; then
     echo "ERROR: Can't locate postgresql.conf"
@@ -25,6 +14,7 @@ if [ -z "$PG_HBA" ] ; then
     exit 0
 fi
 
+# backup original conf files
 for i in $PG_CONF ; do
     cp -f $i $i.$DATE
 done
@@ -32,6 +22,7 @@ for i in $PG_HBA ; do
     cp -f $i  $i.$DATE
 done
 
+# configure pg_hba.conf
 for file in $PG_HBA ; do
     sed -i -e 's/peer$/trust/' $file
     sed -i -e "s/\#\(local.*all.*all.*trust\)/\1/" $file
@@ -42,6 +33,7 @@ for file in $PG_HBA ; do
     sed -i -e 's/\(host.*all.*all.*::1\(\/128\|[ \t]\).*\)\(md5\)/\1trust/'  $file
 done
 
+# configure postgresql.conf
 for file in $PG_CONF ; do
     # enable TCP from local host
     sed -i -e "s/.*virtual_host.*=.*/virtual_host='127.0.0.1'/" $file
@@ -58,7 +50,7 @@ for file in $PG_CONF ; do
     # comment out these settings to return them to default
     # we used to modify these
     # remove these lines in 10.x
-    sed -i -e "s/.*constraint_exclusion.*=.*/#constraint_exclusion = partition/" $file
+    sed -i -e "s/.*constraint_exclusion.*=.*/#constraint_exclusion = off/" $file
     sed -i -e "s/.*autovacuum_max_workers.*=.*/#autovacuum_max_workers = 3/" $file
     sed -i -e "s/.*vacuum_cost_delay.*=.*/#vacuum_cost_delay = 0/" $file
     sed -i -e "s/.*search_path.*=.*/#search_path = 'public'/" $file
@@ -67,17 +59,19 @@ for file in $PG_CONF ; do
     perl -i -pe 's/^(?!#)/#/' /etc/cron.d/postgresql-common
 done
 
+# configure hw parameters
 /etc/untangle/startup.d/10postgres
 
-if [ -z "$PG_CONF" ] ; then
-    echo "WARNING: postgresql.conf not found (failed to disable autovacuum)"
-fi
-
+# restart postgres
 if [ ! -z "$PG_INIT" ] ; then
     for init in $PG_INIT ; do
         $init restart || true
     done
 fi
+
+# create a "root" database so monit won't complain (bug #7492)
+createuser -U postgres -DSR root &>/dev/null
+createdb -O root -U postgres root &> /dev/null
 
 # monit stuff
 version=$(dpkg -l postgresql* | awk '/^ii.+postgresql-[0-9]/ { gsub(/postgresql-/, "", $2) ; print $2 }')
@@ -86,12 +80,6 @@ if dpkg --compare-versions $version lt 8.4 ; then
   initd=${initd}-$version
 fi
 perl -i -pe 's/\+VERSION\+/'$version'/ ; s|\+INITD\+|'$initd'|' /etc/untangle/monit.d/postgresql_all.conf
-
 touch /etc/untangle/monit-to-restart
     
-# create a "root" database so monit won't complain (bug #7492)
-createuser -U postgres -DSR root &>/dev/null
-createdb -O root -U postgres root &> /dev/null
-
-
 exit 0
