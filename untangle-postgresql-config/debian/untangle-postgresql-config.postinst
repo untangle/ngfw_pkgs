@@ -42,10 +42,12 @@ for file in $PG_CONF ; do
     # turn of backslash warnings (Bug #7810)
     sed -i -e "s/.*escape_string_warning.*=.*/escape_string_warning = off/" $file
 
-    # turn off synchronous commits
-    # since we only use the database for events now, and dont really care if some are lost in a shutdown
-    # we can gain massive speedups in writes by turning of synchronous commits.
+    # Performance tuning
+    # http://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server
+    # we can gain massive speedups in writes by turning off synchronous commits.
     sed -i -e "s/.*synchronous_commit.*=.*/synchronous_commit = off/" $file
+    # increase checkpoint_segments 
+    sed -i -e "s/.*checkpoint_segments.*=.*/checkpoint_segments = 32/" $file
 
     # comment out these settings to return them to default
     # we used to modify these
