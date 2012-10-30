@@ -21,37 +21,37 @@ MEM=$(awk '/MemTotal/ { print $2 }' < /proc/meminfo)
 
 if [ $MEM -gt 7900000 ] ; then
     echo "    Using settings for 8+ gigabytes of memory"
-    MAX_FSM_PAGES=16000000
+    MAX_FSM_PAGES=8000000
     WORK_MEM=32MB 
     EFFECTIVE_CACHE_SIZE=1024MB
     SHMMAX="134217728"
 elif [ $MEM -gt 5900000 ] ; then
     echo "    Using settings for 6+ gigabytes of memory"
-    MAX_FSM_PAGES=12000000
+    MAX_FSM_PAGES=6000000
     WORK_MEM=32MB 
     EFFECTIVE_CACHE_SIZE=1024MB
     SHMMAX="134217728"
 elif [ $MEM -gt 3900000 ] ; then
     echo "    Using settings for 4+ gigabytes of memory"
-    MAX_FSM_PAGES=8000000
+    MAX_FSM_PAGES=4000000
     WORK_MEM=16MB 
     EFFECTIVE_CACHE_SIZE=1024MB
     SHMMAX="134217728"
 elif [ $MEM -gt 2900000 ] ; then
     echo "    Using settings for 3+ gigabytes of memory"
-    MAX_FSM_PAGES=6000000
+    MAX_FSM_PAGES=3000000
     WORK_MEM=8MB 
     EFFECTIVE_CACHE_SIZE=512MB
     SHMMAX="134217728"
 elif [ $MEM -gt 1900000 ] ; then
     echo "    Using settings for 2+ gigabytes of memory"
-    MAX_FSM_PAGES=4000000
+    MAX_FSM_PAGES=2000000
     WORK_MEM=4MB 
     EFFECTIVE_CACHE_SIZE=256MB
     SHMMAX="134217728"
 elif [ $MEM -gt 900000 ] ; then
     echo "    Using settings for 1 gigabyte of memory"
-    MAX_FSM_PAGES=1000000 
+    MAX_FSM_PAGES=500000 
     WORK_MEM=2MB
     EFFECTIVE_CACHE_SIZE=128MB
     SHMMAX="134217728"
