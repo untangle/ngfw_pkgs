@@ -22,7 +22,7 @@ else
 fi
 chown -R kiosk:kiosk ${KIOSK_HOME}
 
-cp $xorg_vesa_conf /etc/X11/xorg-untangle-vesa-conf
+cp $xorg_vesa_conf /etc/X11/xorg-untangle-vesa.conf
 
 # Setup iceweasel and/or firefox
 if [ -d /etc/iceweasel/profile ] ; then
