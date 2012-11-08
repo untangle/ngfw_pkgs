@@ -1,6 +1,6 @@
 Section "Device"
 Identifier "Configured Video Device"
-Driver "vesafb"
+Driver "vesa"
 EndSection
 
 Section "Monitor"
