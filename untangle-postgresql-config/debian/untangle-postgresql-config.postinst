@@ -61,7 +61,7 @@ for file in $PG_CONF ; do
     sed -i -e "s/*constraint_exclusion *=.*/#constraint_exclusion = partition/" $file
     sed -i -e "s/.*autovacuum_max_workers.*=.*/#autovacuum_max_workers = 3/" $file
     sed -i -e "s/.*vacuum_cost_delay.*=.*/#vacuum_cost_delay = 0/" $file
-    sed -i -e "s/.*search_path.*=.*/#search_path = 'public'/" $file
+    sed -i -e "s/.*search_path.*=.*/search_path = 'public,settings'/" $file
 
     # disable postgres common cron job
     perl -i -pe 's/^(?!#)/#/' /etc/cron.d/postgresql-common
