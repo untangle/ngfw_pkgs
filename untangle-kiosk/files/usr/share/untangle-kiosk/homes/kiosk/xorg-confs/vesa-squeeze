@@ -1,6 +1,6 @@
 Section "Device"
 Identifier "Configured Video Device"
-Driver "vesa"
+Driver "fbdev"
 EndSection
 
 Section "Monitor"
@@ -12,7 +12,4 @@ Section "Screen"
 Identifier "Default Screen"
 Monitor "Configured Monitor"
 Device "Configured Video Device"
-SubSection "Display"
-Modes "1024x768" 
-EndSubSection
 EndSection
