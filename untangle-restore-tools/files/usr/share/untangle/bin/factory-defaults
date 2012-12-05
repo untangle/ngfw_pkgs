@@ -1,7 +1,6 @@
 #! /bin/bash
 
 /etc/init.d/untangle-vm stop
-/etc/init.d/untangle-reports stop
 /etc/init.d/untangle-net-alpaca stop
 
 # touch factory-defaults file to tell system to start in wizard mode
