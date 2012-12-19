@@ -8,7 +8,11 @@ touch /usr/share/untangle/conf/factory-defaults
 
 echo -n "Removing settings and configuration..."
 
-psql -U postgres -c "DROP DATABASE IF EXISTS uvm" >/dev/null 2>&1
+if [ -f /usr/bin/psql ] ; then
+    psql -U postgres -c "DROP SCHEMA reports CASCADE" uvm >/dev/null 2>&1
+    psql -U postgres -c "DROP DATABASE IF EXISTS uvm" >/dev/null 2>&1
+fi
+
 rm -rf /usr/share/untangle/settings/*
 rm -f /usr/share/untangle/conf/timezone
 rm -f /usr/share/untangle/conf/keystore
