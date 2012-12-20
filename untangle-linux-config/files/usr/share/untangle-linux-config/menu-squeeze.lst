@@ -24,6 +24,7 @@ timeout     5
 
 # Use the Untangle splash for the grub menu
 splashimage=(hd0,0)/boot/grub/utsplash.xpm.gz
+background 67b03c # Untangle green
 
 ## password ['--md5'] passwd
 # If used in the first section of a menu file, disable all interactive editing
