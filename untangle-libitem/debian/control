@@ -1011,7 +1011,7 @@ Architecture: all
 Depends: untangle-node-capture
 Conflicts: untangle-libitem-cpd
 Replaces: untangle-libitem-cpd
-Provdies: untangle-libitem-cpd
+Provides: untangle-libitem-cpd
 XB-View-Position: 1060
 XB-Display-Name: Captive Portal
 XB-Untangle-Pkg-Type: lib_item
