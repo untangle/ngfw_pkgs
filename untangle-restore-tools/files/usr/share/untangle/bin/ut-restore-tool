@@ -180,7 +180,7 @@ main_menu()
         --cancel-label "Exit" \
         --menu "Choose operation:" 10 61 3 \
         "Return to Factory Defaults" "" \
-        "Reset Administrative Accounts" "" \
+        "Reset Administration Accounts" "" \
         "Upgrade" "" \
         "Remote Support" "" \
         2>$tmpfile
