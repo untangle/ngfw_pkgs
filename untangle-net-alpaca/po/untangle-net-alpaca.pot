@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-07 12:40-0800\n"
+"POT-Creation-Date: 2013-01-04 16:39-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -864,12 +864,12 @@ msgstr ""
 msgid "Enable SIP Helper"
 msgstr ""
 
-#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/general.js:36
+#: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/general.js:35
 msgid "Administration overrides Port Forwards"
 msgstr ""
 
 #: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/general.js:38
-msgid "Only NAT WAN traffic"
+msgid "Legacy NAT Mode"
 msgstr ""
 
 #: ../files/var/lib/rails/untangle-net-alpaca/public/javascripts/pages/network/ping_test.js:11
