@@ -1,0 +1,7 @@
+#! /bin/bash
+
+# 9.3.X change sources.list to point to stable-94
+if [ -f /etc/apt/sources.list.d/untangle.list ] ; then
+    sed -i 's/\sstable\s/ stable-94 /' /etc/apt/sources.list.d/untangle.list
+    sed -i 's/\sstable-9\s/ stable-94 /' /etc/apt/sources.list.d/untangle.list
+fi
