@@ -130,27 +130,20 @@ class OSLibrary::Debian::PacketFilterManager < OSLibrary::PacketFilterManager
 # #{IPTablesCommand} #{args} -m addrtype ! --src-type unicast -j RETURN -m comment --comment \"Do not use connmark on non unicast sessions, just return\"
 
 ## This rule says if the packet is in the original direction, just copy the intf marks from the connmark/session mark
-## The rule actually says REPLY and not ORIGINAL and thats because ctdir seems to match backwards
-## The following rule is marked XXX because it seems backwards
-#{IPTablesCommand} #{args} -m conntrack --ctdir REPLY -j CONNMARK --restore-mark --mask #{BothIntfMask} -m comment --comment \"If packet is in original direction, copy mark from connmark to packet (XXX)\"
+## The rule actually says REPLY and not ORIGINAL and thats because ctdir matches backwards # http://www.spinics.net/lists/netfilter-devel/msg17864.html
+#{IPTablesCommand} #{args} -m conntrack --ctdir REPLY -j CONNMARK --restore-mark --mask #{BothIntfMask} -m comment --comment \"If packet is in original direction, copy mark from connmark to packet\"
+#{IPTablesCommand} #{args} -m conntrack --ctdir REPLY -j RETURN -m comment --comment \"If packet is in original direction, return\"
 
 EOF
 
     MarkSrcInterface = Chain.new( "mark-src-intf", "mangle", "PREROUTING", "", <<'EOF' )
-## This chain marks the src intf on the packet
+## This chain marks the src intf on the packet and in the conmark
 ##
-## If the src is already marked, just return
-#{IPTablesCommand} #{args} -m mark ! --mark 0/#{SrcIntfMask} -j RETURN -m comment --comment \"Return if source interface mark is already set\"
 EOF
 
     MarkDstInterface = Chain.new( "mark-dst-intf", "mangle", "FORWARD", "", <<'EOF' )
-## This chain marks the dst intf on the packet
+## This chain marks the dst intf on the packet and in the connmark
 ##
-## If the dst is already marked AND the packet is not a new session, just return
-## Or more simply: Continue to mark the packet if it isn't marked OR if its new session 
-## We will continue to mark new sessions because splitd may have already marked the packet for a specific WAN
-## However, if the packet is not destined for a WAN but a local network, we need to remark it here
-#{IPTablesCommand} #{args} -m mark ! --mark 0/#{DstIntfMask} -m conntrack ! --ctstate NEW -j RETURN -m comment --comment \"Return if destination interface mark is already set (unless session is new)\"
 EOF
 
     MarkLocal = Chain.new( "mark-local", "mangle", "PREROUTING", "", <<'EOF' )
@@ -545,8 +538,8 @@ EOF
 
     end
     
-    # XXX what is this?
-    text << "#{IPTablesCommand} -t mangle -I OUTPUT 1 -j CONNMARK --restore-mark --mask #{DstIntfMask} -m comment --comment \"Restore destination interface mark (XXX WHY)\""
+    # This is because output packets will have no marks on them yet
+    text << "#{IPTablesCommand} -t mangle -I OUTPUT 1 -j CONNMARK --restore-mark --mask #{DstIntfMask} -m comment --comment \"Restore destination interface mark\""
 
     interface_list.each do |interface|
 
@@ -726,34 +719,33 @@ EOF
     # Set the src mark 
     rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in}  -j MARK --set-mark #{index}/#{SrcIntfMask} -m comment --comment \"Set source interface mark #{index} on #{interface.os_name}\""
     # If this is a new connection save the src interface index as the client interface connmark
-    rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in}  -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index}/#{SrcIntfMask} -m comment --comment \"Set source interface mark #{index} on #{interface.os_name}\""
+    rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in}  -j CONNMARK --set-mark #{index}/#{SrcIntfMask} -m comment --comment \"Set source interface mark #{index} on #{interface.os_name}\""
     # Alternative marking technique (used in some cases like bridge of PPPoE)
     if !match_in_alt.nil?
       # Set the src mark 
       rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in_alt}  -j MARK --set-mark #{index}/#{SrcIntfMask} -m comment --comment \"Set source interface mark #{index} on #{interface.os_name} - alternate rule\""
       # If this is a new connection save the src interface index as the client interface connmark
-      rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in_alt}  -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index}/#{SrcIntfMask} -m comment --comment \"Set source interface mark #{index} on #{interface.os_name} - alternate rule\""
+      rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in_alt}  -j CONNMARK --set-mark #{index}/#{SrcIntfMask} -m comment --comment \"Set source interface mark #{index} on #{interface.os_name} - alternate rule\""
     end
 
     # Set the dst mark 
     rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out} -j MARK --set-mark #{index << DstIntfShift}/#{DstIntfMask} -m comment --comment \"Set destination interface mark #{index} on #{interface.os_name}\""
     # If this is a new connection save the dst interface index as the server interface connmark
-    rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << DstIntfShift}/#{DstIntfMask} -m comment --comment \"Set destination interface mark #{index} on #{interface.os_name}\""
+    rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out} -j CONNMARK --set-mark #{index << DstIntfShift}/#{DstIntfMask} -m comment --comment \"Set destination interface mark #{index} on #{interface.os_name}\""
     # Alternative marking technique (used in some cases like bridge of PPPoE)
     if !match_out_alt.nil?
       # Set the dst mark 
       rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out_alt} -j MARK --set-mark #{index << DstIntfShift}/#{DstIntfMask} -m comment --comment \"Set destination interface mark #{index} on #{interface.os_name} - alternate rule\""
       # If this is a new connection save the dst interface index as the server interface connmark
-      rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out_alt} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << DstIntfShift}/#{DstIntfMask} -m comment --comment \"Set destination interface mark #{index} on #{interface.os_name} - alternate rule\""
+      rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out_alt} -j CONNMARK --set-mark #{index << DstIntfShift}/#{DstIntfMask} -m comment --comment \"Set destination interface mark #{index} on #{interface.os_name} - alternate rule\""
     end
 
 
     # If this is a "reply" packet, set the client interface index as the dst intf on the packet mark
-    # The rule actually says "ORIGINAL" and not "REPLY" and thats because ctdir seems to match backwards
-    # XXX because ctdir matches backwards
+    # The rule actually says "ORIGINAL" and not "REPLY" and thats because ctdir matches backwards # http://www.spinics.net/lists/netfilter-devel/msg17864.html
     rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} -m conntrack --ctdir ORIGINAL -m connmark --mark #{index}/#{SrcIntfMask} -j MARK --set-mark #{index << DstIntfShift}/#{DstIntfMask} -m comment --comment \"Set destination interface mark from connmark\""
     # If this is a "reply" packet, set the server interface index as the src intf on the packet mark
-    # The rule actually says "ORIGINAL" and not "REPLY" and thats because ctdir seems to match backwards
+    # The rule actually says "ORIGINAL" and not "REPLY" and thats because ctdir matches backwards # http://www.spinics.net/lists/netfilter-devel/msg17864.html
     rules << "#{IPTablesCommand} #{Chain::MarkInterface.args} -m conntrack --ctdir ORIGINAL -m connmark --mark #{index << DstIntfShift}/#{DstIntfMask} -j MARK --set-mark #{index}/#{SrcIntfMask} -m comment --comment \"Set source interface mark from connmark\""
 
     rules.join( "\n" )
