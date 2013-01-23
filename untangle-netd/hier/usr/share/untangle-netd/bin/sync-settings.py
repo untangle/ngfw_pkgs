@@ -72,4 +72,8 @@ except IOError,e:
 # print settings
     
 print "Syncing %s to system..." % parser.file
+
+interfacesManager = InterfacesManager()
+interfacesManager.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
+
 print "Done."
