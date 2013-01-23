@@ -3,6 +3,9 @@ import sys
 import subprocess
 import datetime
 
+# TODO PPPoE
+# TODO inet6
+
 # This class is responsible for writing /etc/network/interfaces
 # based on the settings object passed from sync-settings.py
 class InterfacesManager:
@@ -34,9 +37,6 @@ class InterfacesManager:
         if len(bridgedInterfaces) > 0:
             isBridge = True
 
-
-        # FIXME how to handle dhcp?
-
         self.interfacesFile.write("## Interface %i (%s)\n" % (interface_settings['interfaceId'], interface_settings['name']) )
         self.interfacesFile.write("auto %s\n" % interface_settings['symbolicDev'])
         self.interfacesFile.write("iface %s inet %s\n" % (interface_settings['symbolicDev'], ("auto" if isV4Auto else "manual")) )
@@ -47,6 +47,7 @@ class InterfacesManager:
             self.interfacesFile.write("\tnetd_v4_gateway %s\n" % interface_settings['v4StaticGateway'])
         if isBridge:
             self.interfacesFile.write("\tnetd_bridge_mtu %i\n" % 1500) #XXX
+            self.interfacesFile.write("\tnetd_bridge_ageing %i\n" % 900) #XXX
             self.interfacesFile.write("\tnetd_bridge_ports %s\n" % " ".join(bridgedInterfaces))
             
         self.interfacesFile.write("\n\n");
