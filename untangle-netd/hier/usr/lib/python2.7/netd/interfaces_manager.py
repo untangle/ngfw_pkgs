@@ -33,9 +33,10 @@ class InterfacesManager:
         bridgedInterfaces = []
         for intf in interfaces:
             if intf['config'] == 'bridged' and intf['bridgedTo'] == interface_settings['interfaceId']:
-                bridgedInterfaces.append(str(intf['symbolicDev']))
+                bridgedInterfaces.append(str(intf['iptablesDev']))
         if len(bridgedInterfaces) > 0:
             isBridge = True
+            bridgedInterfaces.append(interface_settings['iptablesDev']) # include yourself in bridge
 
         self.interfacesFile.write("## Interface %i (%s)\n" % (interface_settings['interfaceId'], interface_settings['name']) )
         self.interfacesFile.write("auto %s\n" % interface_settings['symbolicDev'])
@@ -65,7 +66,12 @@ class InterfacesManager:
         self.interfacesFile.write("## DO NOT EDIT. Changes will be overwritten\n");
         self.interfacesFile.write("\n\n");
 
-        self.interfacesFile.write("## XXX what is this? why? add comment here\n");
+        self.interfacesFile.write("auto lo\n");
+        self.interfacesFile.write("iface lo inet loopback\n");
+        self.interfacesFile.write("\n\n");
+
+        self.interfacesFile.write("## This is a fake interface that launches the pre-networking-restart\n");
+        self.interfacesFile.write("## hooks using the if-up.d scripts when IFACE=networking_pre_restart_hook\n");
         self.interfacesFile.write("auto networking_pre_restart_hook\n");
         self.interfacesFile.write("iface networking_pre_restart_hook inet manual\n");
         self.interfacesFile.write("\n\n");
@@ -77,7 +83,8 @@ class InterfacesManager:
                     continue
                 self.write_interface( interface_settings, settings['interfaces']['list'] )
 
-        self.interfacesFile.write("## XXX what is this? why? add comment here\n");
+        self.interfacesFile.write("## This is a fake interface that launches the post-networking-restart\n");
+        self.interfacesFile.write("## hooks using the if-up.d scripts when IFACE=networking_post_restart_hook\n");
         self.interfacesFile.write("auto networking_post_restart_hook\n");
         self.interfacesFile.write("iface networking_post_restart_hook inet manual\n");
         self.interfacesFile.write("\n\n");
