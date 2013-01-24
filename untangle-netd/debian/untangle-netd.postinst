@@ -1,14 +1,5 @@
 #! /bin/bash
 
-ourInit() {
-if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
-  invoke-rc.d $1 $2
-else
-  /etc/init.d/$1 $2
-fi
-}
-
-# start untangle-restore-tools
-if [ -x "/etc/init.d/untangle-restore-tools" ]; then
-    update-rc.d untangle-restore-tools defaults 99 > /dev/null
-fi
+# Comment out annoying warning from mountnfs script 
+# That gets printed during /etc/init.d/networking restart
+sed -e 's/\(.*log_warning_msg.*\)/#\1/' -i /etc/network/if-up.d/mountnfs

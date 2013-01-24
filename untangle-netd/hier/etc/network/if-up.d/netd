@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/sh
 
 # FIXME should only add routse for active WANs
 
@@ -52,24 +52,24 @@ bridge_expected()
 ## returns an md5sum string summarizing the current configuration of the bridges
 bridge_current()
 {
-    find /sys/class/net/*/brif* 2>/dev/null | \
-        sed -e 's|/sys/class/net/\([^/]*\)/brif/\?\(.*\)|\1[\2]|' | \
-        sort | md5sum | awk '{ print $1}'
+    find /sys/class/net/*/brif* 2>/dev/null | sed -e 's|/sys/class/net/\([^/]*\)/brif/\?\(.*\)|\1[\2]|' | sort | md5sum | awk '{ print $1}'
 }
 
+##
 bridge_configured()
 {
     local l_expected=`bridge_expected`
     local l_current=`bridge_current`
     
-    #$DEBUG "EXPECTED(${l_expected}) CURRENT(${l_current})"
+    $DEBUG "EXPECTED(${l_expected}) CURRENT(${l_current})"
+
     if [ "${l_expected}" == "${l_current}" ] ; then
         $DEBUG "NETD bridge_configured() = true"
-        return 0
     else
         $DEBUG "NETD bridge_configured() = false"
-        return 1
     fi
+
+    test "${l_expected}" = "${l_current}"
 }
 
 ## Return a list of all of the bridges
@@ -116,9 +116,7 @@ set_ethernet_media()
         return 0
     }
  
-    echo "FIXME set LINK MEDIA XXX"
-    echo "FIXME set LINK MEDIA XXX"
-    echo "FIXME set LINK MEDIA XXX"
+    echo "FIXME SET LINK MEDIA"
 #    cat "${ETHERNET_MEDIA_CONF}" | awk '/^[a-z][^#]*$/ { print }' | while read t_nic t_media ; do 
 #        $DEBUG "${t_nic}, ${t_media}"
 #        ${SCRIPT_SET_LINK_MEDIA} ${t_nic} ${t_media}
@@ -199,28 +197,29 @@ networking_pre_restart_hook()
     set_ethernet_media
     
     $DEBUG "Stopping all active PPP Connections."
-    poff -a
+    poff -a >/dev/null 2>&1
     
-    bridge_configured || {
-    # Determine which bridges need to be removed
+    # FIXME # WTF IS TIHS?
+    if bridge_configured ; then 
+        # Determine which bridges need to be removed
         $DEBUG "Destroying all of the bridges."
         bridge_delete_all
-    }
+    fi
 }
 
 netd_address()
 {
-    $DEBUG "netd_address: IF_NETD_V4_ADDRESS = ${IF_NETD_V4_ADDRESS}"
-    $DEBUG "netd_address: IF_NETD_V4_NETMASK = ${IF_NETD_V4_NETMASK}"
-    $DEBUG "netd_address: IF_NETD_V4_GATEWAY = ${IF_NETD_V4_GATEWAY}"
+    #$DEBUG "netd_address: IF_NETD_V4_ADDRESS = ${IF_NETD_V4_ADDRESS}"
+    #$DEBUG "netd_address: IF_NETD_V4_NETMASK = ${IF_NETD_V4_NETMASK}"
+    #$DEBUG "netd_address: IF_NETD_V4_GATEWAY = ${IF_NETD_V4_GATEWAY}"
 
     if [ -n "${IF_NETD_V4_ADDRESS}" ] && [ -n "${IF_NETD_V4_NETMASK}" ]; then
-        $DEBUG ifconfig $IFACE ${IF_NETD_V4_ADDRESS} netmask ${IF_NETD_V4_NETMASK} up
+        #$DEBUG ifconfig $IFACE ${IF_NETD_V4_ADDRESS} netmask ${IF_NETD_V4_NETMASK} up
         ifconfig $IFACE ${IF_NETD_V4_ADDRESS} netmask ${IF_NETD_V4_NETMASK} up
     fi
     
     if [ -n "${IF_NETD_V4_GATEWAY}" ]; then
-        $DEBUG ip route replace default via ${IF_NETD_V4_GATEWAY}
+        #$DEBUG ip route replace default via ${IF_NETD_V4_GATEWAY}
         ip route replace default via ${IF_NETD_V4_GATEWAY}
     fi
     
@@ -283,7 +282,6 @@ if [ $IFACE == "networking_pre_restart_hook" ] ; then
     networking_pre_restart_hook
 fi
 
-$DEBUG "netd_address"
 netd_address
 
 if [ $IFACE == "networking_post_restart_hook" ] ; then
