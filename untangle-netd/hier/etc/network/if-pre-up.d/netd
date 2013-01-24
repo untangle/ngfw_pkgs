@@ -4,7 +4,7 @@
 
 ## Done here so the setting takes effect every time, not just when the bridge is created.
 if [ "$IF_NETD_BRIDGE_MTU" ]; then
-    for port in "$IF_BRIDGE_PORTS" ; do
+    for port in $IF_BRIDGE_PORTS ; do
         ifconfig ${port} mtu $IF_NETD_BRIDGE_MTU
     done
 

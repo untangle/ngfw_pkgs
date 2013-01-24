@@ -48,6 +48,7 @@ class InterfacesManager:
         if isBridge:
             self.interfacesFile.write("\tbridge_ports %s\n" % " ".join(bridgedInterfaces))
             self.interfacesFile.write("\tbridge_ageing %i\n" % 900) #XXX
+            self.interfacesFile.write("\tbridge_maxwait %i\n" % 0) #XXX
             self.interfacesFile.write("\tnetd_bridge_mtu %i\n" % 1500) #XXX
             
         self.interfacesFile.write("\n\n");
@@ -65,8 +66,8 @@ class InterfacesManager:
         self.interfacesFile.write("\n\n");
 
         self.interfacesFile.write("## XXX what is this? why? add comment here\n");
-        self.interfacesFile.write("auto cleanup\n");
-        self.interfacesFile.write("iface cleanup inet manual\n");
+        self.interfacesFile.write("auto networking_pre_restart_hook\n");
+        self.interfacesFile.write("iface networking_pre_restart_hook inet manual\n");
         self.interfacesFile.write("\n\n");
 
         if settings != None and settings['interfaces'] != None and settings['interfaces']['list'] != None:
@@ -77,8 +78,8 @@ class InterfacesManager:
                 self.write_interface( interface_settings, settings['interfaces']['list'] )
 
         self.interfacesFile.write("## XXX what is this? why? add comment here\n");
-        self.interfacesFile.write("auto update\n");
-        self.interfacesFile.write("iface update inet manual\n");
+        self.interfacesFile.write("auto networking_post_restart_hook\n");
+        self.interfacesFile.write("iface networking_post_restart_hook inet manual\n");
         self.interfacesFile.write("\n\n");
         
         self.interfacesFile.flush()

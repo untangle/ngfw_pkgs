@@ -27,7 +27,7 @@ MAX_INTERFACES=250
 
 debug()
 {
-    /bin/echo -e "[DEBUG: `date`] ${*}"
+    /bin/echo -e "[NETD DEBUG: `date`] ${*}"
 }
 
 debug_ip()
@@ -37,19 +37,19 @@ debug_ip()
 }
 
 ## Return the expected/desired state of the bridge interfaces
+## returns an md5sum string summarizing the expected configuration of the bridges
 bridge_expected()
 {
     awk '
       /^iface.*inet/ { interface = $2  }
-      /alpaca_bridge_ports/ { print interface "[]"
-                              gsub( "^[ \t]*alpaca_bridge_ports[ \t]*", "")
+      /bridge_ports/ { print interface "[]"
+                              gsub( "^[ \t]*bridge_ports[ \t]*", "")
                               split( $0, intf_array )
-                              for ( i in intf_array ) print interface "[" intf_array[i] "]" }' \
-                                  /etc/network/interfaces | sort | md5sum | awk '{ print $1}'
+                              for ( i in intf_array ) print interface "[" intf_array[i] "]" }' /etc/network/interfaces | sort | md5sum | awk '{ print $1}'
 }
 
 ## Return the current state of the bridge interfaces
-## REVIEW : This doesn't include empty bridges.
+## returns an md5sum string summarizing the current configuration of the bridges
 bridge_current()
 {
     find /sys/class/net/*/brif* 2>/dev/null | \
@@ -62,9 +62,14 @@ bridge_configured()
     local l_expected=`bridge_expected`
     local l_current=`bridge_current`
     
-    $DEBUG "EXPECTED(${l_expected}) CURRENT(${l_current})"
-
-    test "${l_expected}" = "${l_current}"
+    #$DEBUG "EXPECTED(${l_expected}) CURRENT(${l_current})"
+    if [ "${l_expected}" == "${l_current}" ] ; then
+        $DEBUG "NETD bridge_configured() = true"
+        return 0
+    else
+        $DEBUG "NETD bridge_configured() = false"
+        return 1
+    fi
 }
 
 ## Return a list of all of the bridges
@@ -106,11 +111,6 @@ set_ethernet_media()
     local t_nic
     local t_media
 
-    test -f "${ETHERNET_MEDIA_CONF}" || { 
-        echo "[WARN: `date`] '${ETHERNET_MEDIA_CONF}' doesn't exist" 
-        return 0
-    }
-
     test -x "${SCRIPT_SET_LINK_MEDIA}" || { 
         echo "[WARN: `date`] '${SCRIPT_SET_LINK_MEDIA}' doesn't exist" 
         return 0
@@ -122,7 +122,7 @@ set_ethernet_media()
 #    cat "${ETHERNET_MEDIA_CONF}" | awk '/^[a-z][^#]*$/ { print }' | while read t_nic t_media ; do 
 #        $DEBUG "${t_nic}, ${t_media}"
 #        ${SCRIPT_SET_LINK_MEDIA} ${t_nic} ${t_media}
-    done
+#    done
 }
 
 ## Delete all of the rules thare are on one of the uplink tables.
@@ -174,12 +174,9 @@ flush_uplinks()
     insert_uplink_tables
 }
 
-cleanup()
+networking_pre_restart_hook()
 {
-    test "$IFACE" != "cleanup" && {
-        $DEBUG "Ignoring cleanup for interface ${IFACE}"
-        return
-    }
+    $DEBUG "networking_pre_restart_hook"
 
     $DEBUG "Stopping all dhcp daemons"
     ## If there are any processes, wait a little, then make sure they are gone.
@@ -211,49 +208,33 @@ cleanup()
     }
 }
 
-bridge_address()
+netd_address()
 {
-    if [ ! -x /usr/sbin/brctl ]
-    then
-        $DEBUG "Bridge utilities are not installed."
-        return 0
-    fi
-    
-    case "$IF_NETD_BRIDGE_PORTS" in
-        "")
-	    return 0
-	    ;;
-        none)
-            $DEBUG "'none' is not supported by the untangle-net-alpaca"
-	    return 0
-	    ;;
-        all)
-            $DEBUG "'all' is not supported by the untangle-net-alpaca"
-            return 0
-	    ;;
-        *)
-	    INTERFACES="$IF_NETD_BRIDGE_PORTS"
-	    ;;
-    esac
-    
+    $DEBUG "netd_address: IF_NETD_V4_ADDRESS = ${IF_NETD_V4_ADDRESS}"
+    $DEBUG "netd_address: IF_NETD_V4_NETMASK = ${IF_NETD_V4_NETMASK}"
+    $DEBUG "netd_address: IF_NETD_V4_GATEWAY = ${IF_NETD_V4_GATEWAY}"
+
     if [ -n "${IF_NETD_V4_ADDRESS}" ] && [ -n "${IF_NETD_V4_NETMASK}" ]; then
+        $DEBUG ifconfig $IFACE ${IF_NETD_V4_ADDRESS} netmask ${IF_NETD_V4_NETMASK} up
         ifconfig $IFACE ${IF_NETD_V4_ADDRESS} netmask ${IF_NETD_V4_NETMASK} up
     fi
     
     if [ -n "${IF_NETD_V4_GATEWAY}" ]; then
+        $DEBUG ip route replace default via ${IF_NETD_V4_GATEWAY}
         ip route replace default via ${IF_NETD_V4_GATEWAY}
     fi
     
     return 0
 }
 
-update_address()
+networking_post_restart_hook()
 {
-    [ "$IFACE" != "update" ] && {
-        return 0
-    }
-    
-    run-parts /etc/untangle-net-alpaca/update-address.d
+    $DEBUG "networking_post_restart_hook"
+
+    # FIXME
+    # restart run the necessary stuff 
+    # This is what "update-address" used to be
+    return 0
 }
 
 uplink_routes()
@@ -289,19 +270,29 @@ uplink_routes()
 
 IP="ip"
 DEBUG=/bin/true
+IF_NETD_DEBUG="true"
 
 test "${IF_NETD_DEBUG}" = "true" && {
     DEBUG="debug"
     IP="debug_ip"
 }
 
-cleanup
+$DEBUG "if-up.d start [$IFACE]"
 
-bridge_address
+if [ $IFACE == "networking_pre_restart_hook" ] ; then
+    networking_pre_restart_hook
+fi
 
-update_address
+$DEBUG "netd_address"
+netd_address
+
+if [ $IFACE == "networking_post_restart_hook" ] ; then
+    networking_post_restart_hook
+fi
 
 uplink_routes
+
+$DEBUG "if-up.d end   [$IFACE]"
 
 ## always exit 0
 exit 0
