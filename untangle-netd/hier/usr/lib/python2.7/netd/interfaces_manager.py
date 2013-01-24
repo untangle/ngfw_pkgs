@@ -46,9 +46,9 @@ class InterfacesManager:
             self.interfacesFile.write("\tnetd_v4_netmask %s\n" % interface_settings['v4StaticNetmask'])
             self.interfacesFile.write("\tnetd_v4_gateway %s\n" % interface_settings['v4StaticGateway'])
         if isBridge:
+            self.interfacesFile.write("\tbridge_ports %s\n" % " ".join(bridgedInterfaces))
+            self.interfacesFile.write("\tbridge_ageing %i\n" % 900) #XXX
             self.interfacesFile.write("\tnetd_bridge_mtu %i\n" % 1500) #XXX
-            self.interfacesFile.write("\tnetd_bridge_ageing %i\n" % 900) #XXX
-            self.interfacesFile.write("\tnetd_bridge_ports %s\n" % " ".join(bridgedInterfaces))
             
         self.interfacesFile.write("\n\n");
 

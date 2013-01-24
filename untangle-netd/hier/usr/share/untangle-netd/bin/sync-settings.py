@@ -1,5 +1,15 @@
 #!/usr/bin/env python
 
+# Sync Settings is takes the netork settings JSON file and "syncs" it to the operating system
+# It reads through the settings and writes the appropriate operating system files such as
+# /etc/network/interfaces
+# /etc/dnsmasq.conf
+# /etc/hosts
+# etc etc
+#
+# Ideally, this script should be called after changing the settings file to "sync" the settings to the OS.
+# Afterwards it will be necessary to restart certain services so the new settings will take effect
+
 import sys
 sys.path.insert(0, sys.path[0] + "/" + "../" + "../" + "../" + "lib/" + "python2.7/")
 
