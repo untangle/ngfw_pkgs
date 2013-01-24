@@ -233,6 +233,12 @@ networking_post_restart_hook()
     # FIXME
     # restart run the necessary stuff 
     # This is what "update-address" used to be
+
+    # XXX remove me
+    # this is hear to temoparily run the old alpaca update-address scripts
+    # this should be removed once those scripts have been ported to netd
+    run-parts /etc/untangle-net-alpaca/update-address.d
+
     return 0
 }
 
@@ -280,13 +286,17 @@ $DEBUG "if-up.d start [$IFACE]"
 
 if [ $IFACE == "networking_pre_restart_hook" ] ; then
     networking_pre_restart_hook
+    $DEBUG "if-up.d end   [$IFACE]"
+    exit 0
 fi
-
-netd_address
 
 if [ $IFACE == "networking_post_restart_hook" ] ; then
     networking_post_restart_hook
+    $DEBUG "if-up.d end   [$IFACE]"
+    exit 0
 fi
+
+netd_address
 
 uplink_routes
 

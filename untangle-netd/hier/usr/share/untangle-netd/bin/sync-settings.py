@@ -7,7 +7,7 @@
 # /etc/hosts
 # etc etc
 #
-# Ideally, this script should be called after changing the settings file to "sync" the settings to the OS.
+# This script should be called after changing the settings file to "sync" the settings to the OS.
 # Afterwards it will be necessary to restart certain services so the new settings will take effect
 
 import sys
