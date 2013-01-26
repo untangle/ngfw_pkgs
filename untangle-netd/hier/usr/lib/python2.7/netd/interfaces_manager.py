@@ -40,7 +40,7 @@ class InterfacesManager:
 
         self.interfacesFile.write("## Interface %i (%s)\n" % (interface_settings['interfaceId'], interface_settings['name']) )
         self.interfacesFile.write("auto %s\n" % interface_settings['symbolicDev'])
-        self.interfacesFile.write("iface %s inet %s\n" % (interface_settings['symbolicDev'], ("auto" if isV4Auto else "manual")) )
+        self.interfacesFile.write("iface %s inet %s\n" % (interface_settings['symbolicDev'], ("dhcp" if isV4Auto else "manual")) )
         self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings['interfaceId'])
         if not isV4Auto:
             self.interfacesFile.write("\tnetd_v4_address %s\n" % interface_settings['v4StaticAddress'])
@@ -66,6 +66,8 @@ class InterfacesManager:
         self.interfacesFile.write("## DO NOT EDIT. Changes will be overwritten\n");
         self.interfacesFile.write("\n\n");
 
+        # should this be before or after networking_pre_restart_hook?
+        # I think before in case anything in the before script needs loopback
         self.interfacesFile.write("auto lo\n");
         self.interfacesFile.write("iface lo inet loopback\n");
         self.interfacesFile.write("\n\n");
