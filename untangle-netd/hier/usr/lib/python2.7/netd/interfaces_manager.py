@@ -33,10 +33,10 @@ class InterfacesManager:
         bridgedInterfaces = []
         for intf in interfaces:
             if intf['config'] == 'bridged' and intf['bridgedTo'] == interface_settings['interfaceId']:
-                bridgedInterfaces.append(str(intf['iptablesDev']))
+                bridgedInterfaces.append(str(intf['systemDev']))
         if len(bridgedInterfaces) > 0:
             isBridge = True
-            bridgedInterfaces.append(interface_settings['iptablesDev']) # include yourself in bridge
+            bridgedInterfaces.append(interface_settings['systemDev']) # include yourself in bridge
 
         self.interfacesFile.write("## Interface %i (%s)\n" % (interface_settings['interfaceId'], interface_settings['name']) )
         self.interfacesFile.write("auto %s\n" % interface_settings['symbolicDev'])
