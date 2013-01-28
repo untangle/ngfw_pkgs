@@ -3,7 +3,6 @@ import sys
 import subprocess
 import datetime
 
-# TODO PPPoE
 # TODO inet6
 
 # This class is responsible for writing /etc/network/interfaces
@@ -24,9 +23,21 @@ class InterfacesManager:
             print "ERROR: Missisg interface name!"
             return
 
+        self.interfacesFile.write("## Interface %i (%s)\n" % (interface_settings['interfaceId'], interface_settings['name']) )
+        self.interfacesFile.write("auto %s\n" % interface_settings['symbolicDev'])
+
         isV4Auto = False
+        isV4PPPoE = False
         if interface_settings['v4ConfigType'] == 'auto':
             isV4Auto = True
+        if interface_settings['v4ConfigType'] == 'pppoe':
+            isV4PPPoE = True
+
+        configString = "manual"
+        if isV4Auto:
+            configString = "dhcp"
+        if isV4PPPoE:
+            configString = "ppp"
 
         # find interfaces bridged to this interface
         isBridge = False
@@ -38,9 +49,7 @@ class InterfacesManager:
             isBridge = True
             bridgedInterfaces.append(interface_settings['systemDev']) # include yourself in bridge
 
-        self.interfacesFile.write("## Interface %i (%s)\n" % (interface_settings['interfaceId'], interface_settings['name']) )
-        self.interfacesFile.write("auto %s\n" % interface_settings['symbolicDev'])
-        self.interfacesFile.write("iface %s inet %s\n" % (interface_settings['symbolicDev'], ("dhcp" if isV4Auto else "manual")) )
+        self.interfacesFile.write("iface %s inet %s\n" % (interface_settings['symbolicDev'], configString) )
         self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings['interfaceId'])
         if not isV4Auto:
             self.interfacesFile.write("\tnetd_v4_address %s\n" % interface_settings['v4StaticAddress'])
@@ -51,6 +60,9 @@ class InterfacesManager:
             self.interfacesFile.write("\tbridge_ageing %i\n" % 900) #XXX
             self.interfacesFile.write("\tbridge_maxwait %i\n" % 0) #XXX
             self.interfacesFile.write("\tnetd_bridge_mtu %i\n" % 1500) #XXX
+        if isV4PPPoE:
+            self.interfacesFile.write("\tpre-up /sbin/ifconfig %s up\n" % interface_settings['physicalDev']) 
+            self.interfacesFile.write("\tprovider %s\n" % ("connection." + interface_settings['physicalDev'])) 
             
         self.interfacesFile.write("\n\n");
 
