@@ -16,17 +16,10 @@ class InterfacesManager:
         self.interfacesFile.write("## Interface %i (%s) IPv4\n" % (interface_settings['interfaceId'], interface_settings['name']) )
         self.interfacesFile.write("auto %s\n" % interface_settings['symbolicDev'])
 
-        isV4Auto = False
-        isV4PPPoE = False
-        if interface_settings['v4ConfigType'] == 'auto':
-            isV4Auto = True
-        if interface_settings['v4ConfigType'] == 'pppoe':
-            isV4PPPoE = True
-
         configString = "manual"
-        if isV4Auto:
+        if interface_settings['v4ConfigType'] == 'auto':
             configString = "dhcp"
-        if isV4PPPoE:
+        if interface_settings['v4ConfigType'] == 'pppoe':
             configString = "ppp"
 
         # find interfaces bridged to this interface
@@ -41,16 +34,23 @@ class InterfacesManager:
 
         self.interfacesFile.write("iface %s inet %s\n" % (interface_settings['symbolicDev'], configString) )
         self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings['interfaceId'])
-        if not isV4Auto:
+
+        # handle static stuff
+        if interface_settings['v4ConfigType'] == 'static':
             self.interfacesFile.write("\tnetd_v4_address %s\n" % interface_settings['v4StaticAddress'])
             self.interfacesFile.write("\tnetd_v4_netmask %s\n" % interface_settings['v4StaticNetmask'])
-            self.interfacesFile.write("\tnetd_v4_gateway %s\n" % interface_settings['v4StaticGateway'])
+            if 'v4StaticGateway' in interface_settings:
+                self.interfacesFile.write("\tnetd_v4_gateway %s\n" % interface_settings['v4StaticGateway'])
+
+        # handle bridge-related stuff
         if isBridge:
             self.interfacesFile.write("\tbridge_ports %s\n" % " ".join(bridgedInterfaces))
             self.interfacesFile.write("\tbridge_ageing %i\n" % 900) #XXX
             self.interfacesFile.write("\tbridge_maxwait %i\n" % 0) #XXX
             self.interfacesFile.write("\tnetd_bridge_mtu %i\n" % 1500) #XXX
-        if isV4PPPoE:
+
+        # handle PPPoE stuff
+        if interface_settings['v4ConfigType'] == 'pppoe':
             self.interfacesFile.write("\tpre-up /sbin/ifconfig %s up\n" % interface_settings['physicalDev']) 
             self.interfacesFile.write("\tprovider %s\n" % ("connection." + interface_settings['physicalDev'])) 
             
@@ -58,10 +58,14 @@ class InterfacesManager:
 
     def write_interface_v6( self, interface_settings, interfaces ):
 
-        if interface_settings['v4ConfigType'] == 'auto':
+        if interface_settings['v6ConfigType'] == 'auto':
             return # nothing needed to support RA
-        
+
         self.interfacesFile.write("## Interface %i (%s) IPv6\n" % (interface_settings['interfaceId'], interface_settings['name']) )
+        if not 'v6StaticAddress' in interface_settings:
+            self.interfacesFile.write("## No IPv6 configed. Skipping %s \n" % interface_settings['name'] )
+            return
+
         self.interfacesFile.write("auto %s\n" % interface_settings['symbolicDev'])
         self.interfacesFile.write("iface %s inet6 %s\n" % (interface_settings['symbolicDev'], "static") )
         self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings['interfaceId'])
