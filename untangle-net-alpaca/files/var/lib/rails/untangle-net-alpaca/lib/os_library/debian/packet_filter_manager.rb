@@ -719,25 +719,25 @@ EOF
     # Set the src mark 
     rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in}  -j MARK --set-mark #{index}/#{SrcIntfMask} -m comment --comment \"Set source interface mark #{index} on #{interface.os_name}\""
     # If this is a new connection save the src interface index as the client interface connmark
-    rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in}  -j CONNMARK --set-mark #{index}/#{SrcIntfMask} -m comment --comment \"Set source interface mark #{index} on #{interface.os_name}\""
+    rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in}  -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index}/#{SrcIntfMask} -m comment --comment \"Set source interface mark #{index} on #{interface.os_name}\""
     # Alternative marking technique (used in some cases like bridge of PPPoE)
     if !match_in_alt.nil?
       # Set the src mark 
       rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in_alt}  -j MARK --set-mark #{index}/#{SrcIntfMask} -m comment --comment \"Set source interface mark #{index} on #{interface.os_name} - alternate rule\""
       # If this is a new connection save the src interface index as the client interface connmark
-      rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in_alt}  -j CONNMARK --set-mark #{index}/#{SrcIntfMask} -m comment --comment \"Set source interface mark #{index} on #{interface.os_name} - alternate rule\""
+      rules << "#{IPTablesCommand} #{Chain::MarkSrcInterface.args} #{match_in_alt}  -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index}/#{SrcIntfMask} -m comment --comment \"Set source interface mark #{index} on #{interface.os_name} - alternate rule\""
     end
 
     # Set the dst mark 
     rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out} -j MARK --set-mark #{index << DstIntfShift}/#{DstIntfMask} -m comment --comment \"Set destination interface mark #{index} on #{interface.os_name}\""
     # If this is a new connection save the dst interface index as the server interface connmark
-    rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out} -j CONNMARK --set-mark #{index << DstIntfShift}/#{DstIntfMask} -m comment --comment \"Set destination interface mark #{index} on #{interface.os_name}\""
+    rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << DstIntfShift}/#{DstIntfMask} -m comment --comment \"Set destination interface mark #{index} on #{interface.os_name}\""
     # Alternative marking technique (used in some cases like bridge of PPPoE)
     if !match_out_alt.nil?
       # Set the dst mark 
       rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out_alt} -j MARK --set-mark #{index << DstIntfShift}/#{DstIntfMask} -m comment --comment \"Set destination interface mark #{index} on #{interface.os_name} - alternate rule\""
       # If this is a new connection save the dst interface index as the server interface connmark
-      rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out_alt} -j CONNMARK --set-mark #{index << DstIntfShift}/#{DstIntfMask} -m comment --comment \"Set destination interface mark #{index} on #{interface.os_name} - alternate rule\""
+      rules << "#{IPTablesCommand} #{Chain::MarkDstInterface.args} #{match_out_alt} -m conntrack --ctstate NEW -j CONNMARK --set-mark #{index << DstIntfShift}/#{DstIntfMask} -m comment --comment \"Set destination interface mark #{index} on #{interface.os_name} - alternate rule\""
     end
 
 
