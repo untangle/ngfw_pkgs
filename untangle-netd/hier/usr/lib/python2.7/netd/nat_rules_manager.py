@@ -11,73 +11,74 @@ class NatRulesManager:
     filename = defaultFilename
     file = None
 
-    def write_ingress_nat_rules( self, src_intf, interfaces ):
-        if not 'interfaceId' in src_intf or not 'name' in src_intf:
+    def write_ingress_nat_rules( self, intf, interfaces ):
+        if not 'interfaceId' in intf or not 'name' in intf:
             print "ERROR: Missing settings on interface!"
             return;
 
-        for dst_intf in interfaces:
+        for other_intf in interfaces:
             # ignore bad interfaces
-            if not 'interfaceId' in dst_intf or not 'name' in dst_intf:
+            if not 'interfaceId' in other_intf or not 'name' in other_intf:
                 print "ERROR: Missing settings on intf!"
                 continue;
 
             # skip self
-            if dst_intf['interfaceId'] == src_intf['interfaceId']:
+            if other_intf['interfaceId'] == intf['interfaceId']:
                 continue;
 
             # ignore interfaces bridged with interface
-            if dst_intf['config'] == 'bridged' and dst_intf['bridgedTo'] == src_intf['interfaceId']:
+            if other_intf['config'] == 'bridged' and other_intf['bridgedTo'] == intf['interfaceId']:
                 continue;
             
-            self.file.write("# NAT ingress traffic coming from \"%s\"" % src_intf['name'] + "\n");
-            self.file.write("${IPTABLES} -t nat -A nat-rules -m connmark --mark 0x%0.4X -m comment --comment \"NAT traffic, %i -> %i (ingress setting)\" -j MASQUERADE" % 
-                            ( ((dst_intf['interfaceId'] << 8) + src_intf['interfaceId']),
-                              src_intf['interfaceId'],
-                              dst_intf['interfaceId'] ))
+            self.file.write("# NAT ingress traffic coming from \"%s\"" % intf['name'] + "\n");
+            self.file.write("${IPTABLES} -t nat -A nat-rules -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"NAT traffic, %i -> %i (ingress setting)\" -j MASQUERADE" % 
+                            ( ((other_intf['interfaceId'] << 8) + intf['interfaceId']),
+                              intf['interfaceId'],
+                              other_intf['interfaceId'] ))
             self.file.write("\n\n");
 
-            # FIXME put this is a chain!!
-            self.file.write("# block traffic to NATd interface \"%s\" (except port forwarded/DNAT traffic)" % src_intf['name'] + "\n");
-            self.file.write("${IPTABLES} -t filter -A FORWARD -m connmark --mark 0x%0.4X -m conntrack ! --ctstate DNAT -m comment --comment \"Block traffic to NATd interace, %i -> %i (ingress setting)\" -j REJECT" % 
-                            ( ((src_intf['interfaceId'] << 8) + dst_intf['interfaceId']),
-                              dst_intf['interfaceId'],
-                              src_intf['interfaceId'] ))
+            # FIXME put this in a special chain
+            self.file.write("# block traffic to NATd interface \"%s\" (except port forwarded/DNAT traffic)" % intf['name'] + "\n");
+            self.file.write("${IPTABLES} -t filter -A FORWARD -m connmark --mark 0x%0.4X/0xffff -m conntrack ! --ctstate DNAT -m comment --comment \"Block traffic to NATd interace, %i -> %i (ingress setting)\" -j REJECT" % 
+                            ( ((intf['interfaceId'] << 8) + other_intf['interfaceId']),
+                              other_intf['interfaceId'],
+                              intf['interfaceId'] ))
             self.file.write("\n\n");
 
         return
 
-    def write_egress_nat_rules( self, dst_intf, interfaces ):
-        if not 'interfaceId' in dst_intf or not 'name' in dst_intf:
+    def write_egress_nat_rules( self, intf, interfaces ):
+        if not 'interfaceId' in intf or not 'name' in intf:
             print "ERROR: Missing settings on interface!"
             return;
 
-        for src_intf in interfaces:
+        for other_intf in interfaces:
             # ignore bad interfaces
-            if not 'interfaceId' in src_intf or not 'name' in src_intf:
+            if not 'interfaceId' in other_intf or not 'name' in other_intf:
                 print "ERROR: Missing settings on intf!"
                 continue;
 
             # skip self
-            if src_intf['interfaceId'] == dst_intf['interfaceId']:
+            if other_intf['interfaceId'] == intf['interfaceId']:
                 continue;
 
             # ignore interfaces bridged with interface
-            if src_intf['config'] == 'bridged' and src_intf['bridgedTo'] == dst_intf['interfaceId']:
+            if other_intf['config'] == 'bridged' and other_intf['bridgedTo'] == intf['interfaceId']:
                 continue;
             
-            self.file.write("# NAT egress traffic exiting \"%s\"" % dst_intf['name'] + "\n");
-            self.file.write("${IPTABLES} -t nat -A nat-rules -m connmark --mark 0x%0.4X -m comment --comment \"NAT traffic, %i -> %i (egress setting)\" -j MASQUERADE" % 
-                            ( ((dst_intf['interfaceId'] << 8) + src_intf['interfaceId']),
-                              src_intf['interfaceId'],
-                              dst_intf['interfaceId'] ))
+            self.file.write("# NAT egress traffic exiting \"%s\"" % intf['name'] + "\n");
+            self.file.write("${IPTABLES} -t nat -A nat-rules -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"NAT traffic, %i -> %i (egress setting)\" -j MASQUERADE" % 
+                            ( ((intf['interfaceId'] << 8) + other_intf['interfaceId']),
+                              other_intf['interfaceId'],
+                              intf['interfaceId'] ))
             self.file.write("\n\n");
 
-            self.file.write("# block traffic from NATd interface \"%s\" (except port forwarded/DNAT traffic)" % dst_intf['name'] + "\n");
-            self.file.write("${IPTABLES} -t filter -A FORWARD -m connmark --mark 0x%0.4X -m conntrack ! --ctstate DNAT -m comment --comment \"Block traffic to NATd interace, %i -> %i (egress setting)\" -j REJECT" % 
-                            ( ((src_intf['interfaceId'] << 8) + dst_intf['interfaceId']),
-                              dst_intf['interfaceId'],
-                              src_intf['interfaceId'] ))
+            # FIXME put this in a special chain
+            self.file.write("# block traffic from NATd interface \"%s\" (except port forwarded/DNAT traffic)" % intf['name'] + "\n");
+            self.file.write("${IPTABLES} -t filter -A FORWARD -m connmark --mark 0x%0.4X/0xffff -m conntrack ! --ctstate DNAT -m comment --comment \"Block traffic to NATd interace, %i -> %i (egress setting)\" -j REJECT" % 
+                            ( ((other_intf['interfaceId'] << 8) + intf['interfaceId']),
+                              intf['interfaceId'],
+                              other_intf['interfaceId'] ))
             self.file.write("\n\n");
 
         return
