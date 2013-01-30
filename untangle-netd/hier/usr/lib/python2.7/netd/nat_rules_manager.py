@@ -31,10 +31,18 @@ class NatRulesManager:
                 continue;
             
             self.file.write("# NAT ingress traffic coming from \"%s\"" % src_intf['name'] + "\n");
-            self.file.write("${IPTABLES} -t nat -A nat-rules -m connmark --mark 0x%0.4X -m comment --comment \"NAT traffic, intf %i -> intf %i (ingress setting)\" -j MASQUERADE" % 
+            self.file.write("${IPTABLES} -t nat -A nat-rules -m connmark --mark 0x%0.4X -m comment --comment \"NAT traffic, %i -> %i (ingress setting)\" -j MASQUERADE" % 
                             ( ((dst_intf['interfaceId'] << 8) + src_intf['interfaceId']),
                               src_intf['interfaceId'],
                               dst_intf['interfaceId'] ))
+            self.file.write("\n\n");
+
+            # FIXME put this is a chain!!
+            self.file.write("# block traffic to NATd interface \"%s\" (except port forwarded/DNAT traffic)" % src_intf['name'] + "\n");
+            self.file.write("${IPTABLES} -t filter -A FORWARD -m connmark --mark 0x%0.4X -m conntrack ! --ctstate DNAT -m comment --comment \"Block traffic to NATd interace, %i -> %i (ingress setting)\" -j REJECT" % 
+                            ( ((src_intf['interfaceId'] << 8) + dst_intf['interfaceId']),
+                              dst_intf['interfaceId'],
+                              src_intf['interfaceId'] ))
             self.file.write("\n\n");
 
         return
@@ -59,10 +67,17 @@ class NatRulesManager:
                 continue;
             
             self.file.write("# NAT egress traffic exiting \"%s\"" % dst_intf['name'] + "\n");
-            self.file.write("${IPTABLES} -t nat -A nat-rules -m connmark --mark 0x%0.4X -m comment --comment \"NAT traffic, intf %i -> intf %i (egress setting)\" -j MASQUERADE" % 
+            self.file.write("${IPTABLES} -t nat -A nat-rules -m connmark --mark 0x%0.4X -m comment --comment \"NAT traffic, %i -> %i (egress setting)\" -j MASQUERADE" % 
                             ( ((dst_intf['interfaceId'] << 8) + src_intf['interfaceId']),
                               src_intf['interfaceId'],
                               dst_intf['interfaceId'] ))
+            self.file.write("\n\n");
+
+            self.file.write("# block traffic from NATd interface \"%s\" (except port forwarded/DNAT traffic)" % dst_intf['name'] + "\n");
+            self.file.write("${IPTABLES} -t filter -A FORWARD -m connmark --mark 0x%0.4X -m conntrack ! --ctstate DNAT -m comment --comment \"Block traffic to NATd interace, %i -> %i (egress setting)\" -j REJECT" % 
+                            ( ((src_intf['interfaceId'] << 8) + dst_intf['interfaceId']),
+                              dst_intf['interfaceId'],
+                              src_intf['interfaceId'] ))
             self.file.write("\n\n");
 
         return
