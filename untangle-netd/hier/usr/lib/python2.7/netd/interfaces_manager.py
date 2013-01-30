@@ -4,6 +4,10 @@ import subprocess
 import datetime
 import traceback
 
+# TODO IPv4 aliases
+# TODO IPv6 aliases
+# TODO change logic that writes PPPoE config file to use connection.systemDev as name instead 
+
 # This class is responsible for writing /etc/network/interfaces
 # based on the settings object passed from sync-settings.py
 class InterfacesManager:
@@ -51,8 +55,8 @@ class InterfacesManager:
 
         # handle PPPoE stuff
         if interface_settings['v4ConfigType'] == 'pppoe':
-            self.interfacesFile.write("\tpre-up /sbin/ifconfig %s up\n" % interface_settings['physicalDev']) 
-            self.interfacesFile.write("\tprovider %s\n" % ("connection." + interface_settings['physicalDev'])) 
+            self.interfacesFile.write("\tpre-up /sbin/ifconfig %s up\n" % interface_settings['systemDev']) 
+            self.interfacesFile.write("\tprovider %s\n" % ("connection." + interface_settings['systemDev'])) 
             
         self.interfacesFile.write("\n\n");
 
@@ -63,7 +67,7 @@ class InterfacesManager:
 
         self.interfacesFile.write("## Interface %i (%s) IPv6\n" % (interface_settings['interfaceId'], interface_settings['name']) )
         if not 'v6StaticAddress' in interface_settings:
-            self.interfacesFile.write("## No IPv6 configed. Skipping %s \n" % interface_settings['name'] )
+            self.interfacesFile.write("## No IPv6 configured. Skipping %s\n" % interface_settings['name'] )
             self.interfacesFile.write("\n\n");
             return
 
@@ -91,6 +95,7 @@ class InterfacesManager:
         return True
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
+        if verbosity > 1: print "InterfacesManager: sync_settings()"
         
         self.interfacesFilename = prefix + self.defaultFilename
         self.interfacesDir = os.path.dirname( self.interfacesFilename )
@@ -99,7 +104,7 @@ class InterfacesManager:
 
         self.interfacesFile = open( self.interfacesFilename, "w+" )
         self.interfacesFile.write("## Auto Generated on %s\n" % datetime.datetime.now());
-        self.interfacesFile.write("## DO NOT EDIT. Changes will be overwritten\n");
+        self.interfacesFile.write("## DO NOT EDIT. Changes will be overwritten.\n");
         self.interfacesFile.write("\n\n");
 
         # should this be before or after networking_pre_restart_hook?
@@ -142,8 +147,8 @@ class InterfacesManager:
         self.interfacesFile.flush()
         self.interfacesFile.close()
 
-        if verbosity > 1:
-            print "Writing %s" % interfacesFilename
+        if verbosity > 0:
+            print "InterfacesManager: Wrote %s" % self.interfacesFilename
 
         
 

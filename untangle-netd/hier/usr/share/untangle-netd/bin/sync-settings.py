@@ -3,6 +3,7 @@
 # Sync Settings is takes the netork settings JSON file and "syncs" it to the operating system
 # It reads through the settings and writes the appropriate operating system files such as
 # /etc/network/interfaces
+# /etc/netd/iptables-rules.d/200-nat-rules
 # /etc/dnsmasq.conf
 # /etc/hosts
 # etc etc
@@ -11,6 +12,7 @@
 # Afterwards it will be necessary to restart certain services so the new settings will take effect
 
 import sys
+print sys.path[0] + "/" + "../" + "../" + "../" + "lib/" + "python2.7/"
 sys.path.insert(0, sys.path[0] + "/" + "../" + "../" + "../" + "lib/" + "python2.7/")
 
 import getopt
@@ -22,7 +24,6 @@ try: import simplejson as json
 except ImportError: import json
 
 from   netd import *
-
 
 class ArgumentParser(object):
     def __init__(self):
@@ -84,6 +85,9 @@ except IOError,e:
 print "Syncing %s to system..." % parser.file
 
 interfacesManager = InterfacesManager()
+natRulesManager = NatRulesManager()
+
 interfacesManager.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
+natRulesManager.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
 
 print "Done."
