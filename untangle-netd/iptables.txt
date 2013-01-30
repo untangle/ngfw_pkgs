@@ -1,0 +1,23 @@
+
+
+mark-src-intf:
+
+for each interface & openvpn:
+    if -i interface set mark
+    if bridge --phsydev-in interface set mark
+
+save src mark to connmark if ctstate NEW
+
+
+
+mark-dst-intf:
+
+for each interface & openvpn:
+    if -o interface set mark
+
+for each bridge:
+    if -o bridge queue to userspace to determine outdevice and set mark
+
+if 0 dst interface mark, log wan warn with log-prefix (what to do with these?)
+
+save dst mark to connmark if ctstate NEW

@@ -64,6 +64,7 @@ class InterfacesManager:
         self.interfacesFile.write("## Interface %i (%s) IPv6\n" % (interface_settings['interfaceId'], interface_settings['name']) )
         if not 'v6StaticAddress' in interface_settings:
             self.interfacesFile.write("## No IPv6 configed. Skipping %s \n" % interface_settings['name'] )
+            self.interfacesFile.write("\n\n");
             return
 
         self.interfacesFile.write("auto %s\n" % interface_settings['symbolicDev'])
