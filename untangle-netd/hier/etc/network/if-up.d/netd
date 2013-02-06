@@ -38,8 +38,14 @@ debug_ip()
 
 ## Return the expected/desired state of the bridge interfaces
 ## returns an md5sum string summarizing the expected configuration of the bridges
-bridge_expected()
+bridge_wanted_configuration()
 {
+    awk '
+      /^iface.*inet/ { interface = $2  }
+      /bridge_ports/ { print interface "[]"
+                              gsub( "^[ \t]*bridge_ports[ \t]*", "")
+                              split( $0, intf_array )
+                              for ( i in intf_array ) print interface "[" intf_array[i] "]" }' /etc/network/interfaces | sort 
     awk '
       /^iface.*inet/ { interface = $2  }
       /bridge_ports/ { print interface "[]"
@@ -50,26 +56,28 @@ bridge_expected()
 
 ## Return the current state of the bridge interfaces
 ## returns an md5sum string summarizing the current configuration of the bridges
-bridge_current()
+bridge_current_configuration()
 {
+    find /sys/class/net/*/brif* 2>/dev/null | sed -e 's|/sys/class/net/\([^/]*\)/brif/\?\(.*\)|\1[\2]|' | sort
     find /sys/class/net/*/brif* 2>/dev/null | sed -e 's|/sys/class/net/\([^/]*\)/brif/\?\(.*\)|\1[\2]|' | sort | md5sum | awk '{ print $1}'
 }
 
-##
-bridge_configured()
+## Tests whether or not the current configured bridge state 
+## matches the existing current bridge state
+bridge_current_matches_configured()
 {
-    local l_expected=`bridge_expected`
-    local l_current=`bridge_current`
+    local l_wanted=`bridge_wanted_configuration`
+    local l_current=`bridge_current_configuration`
     
-    $DEBUG "EXPECTED(${l_expected}) CURRENT(${l_current})"
+    $DEBUG "WANTED(${l_wanted}) CURRENT(${l_current})"
 
-    if [ "${l_expected}" == "${l_current}" ] ; then
-        $DEBUG "NETD bridge_configured() = true"
+    if [ "${l_wanted}" == "${l_current}" ] ; then
+        $DEBUG "NETD bridge_current_matches_configured() = true"
     else
-        $DEBUG "NETD bridge_configured() = false"
+        $DEBUG "NETD bridge_current_matches_configured() = false"
     fi
 
-    test "${l_expected}" = "${l_current}"
+    test "${l_wanted}" = "${l_current}"
 }
 
 ## Return a list of all of the bridges
@@ -199,11 +207,14 @@ networking_pre_restart_hook()
     $DEBUG "Stopping all active PPP Connections."
     poff -a >/dev/null 2>&1
     
-    # FIXME # WTF IS TIHS?
-    if bridge_configured ; then 
+    # If the current bridge state is different than the desired configured bridge state
+    # Then just delete all the bridges
+    bridge_current_matches_configured
+    if [ $? != 0 ] ; then 
         # Determine which bridges need to be removed
         $DEBUG "Destroying all of the bridges."
         bridge_delete_all
+        $DEBUG "Destroyed all of the bridges."
     fi
 }
 
@@ -237,7 +248,21 @@ networking_post_restart_hook()
     # XXX remove me
     # this is hear to temoparily run the old alpaca update-address scripts
     # this should be removed once those scripts have been ported to netd
+
+    # disable alpaca iptables rules
+    # this is 
+    if [ -f /etc/untangle-net-alpaca/update-address.d/95-iptables ] ; then
+        mv /etc/untangle-net-alpaca/update-address.d/95-iptables /etc/untangle-net-alpaca/update-address.d/95-iptables.off
+    fi
+    
+    rm -f /etc/untangle-net-alpaca/update-address.d/96-iptables
+
+    # write a temp redirect to call netd iptables rules instead
+    ln -s /usr/share/untangle-netd/bin/generate-iptables-rules.sh /etc/untangle-net-alpaca/update-address.d/96-iptables
+
     run-parts /etc/untangle-net-alpaca/update-address.d
+    
+    
 
     return 0
 }

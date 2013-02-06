@@ -4,10 +4,10 @@ import subprocess
 import datetime
 import traceback
 
-# This class is responsible for writing /etc/netd/iptables-rules.d/200-nat-rules
+# This class is responsible for writing /etc/untangle-netd/iptables-rules.d/200-nat-rules
 # based on the settings object passed from sync-settings.py
 class NatRulesManager:
-    defaultFilename = "/etc/netd/iptables-rules.d/200-nat-rules"
+    defaultFilename = "/etc/untangle-netd/iptables-rules.d/200-nat-rules"
     filename = defaultFilename
     file = None
 
@@ -39,7 +39,7 @@ class NatRulesManager:
 
             # FIXME put this in a special chain
             self.file.write("# block traffic to NATd interface \"%s\" (except port forwarded/DNAT traffic)" % intf['name'] + "\n");
-            self.file.write("${IPTABLES} -t filter -A FORWARD -m connmark --mark 0x%0.4X/0xffff -m conntrack ! --ctstate DNAT -m comment --comment \"Block traffic to NATd interace, %i -> %i (ingress setting)\" -j REJECT" % 
+            self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m conntrack ! --ctstate DNAT -m comment --comment \"Block traffic to NATd interace, %i -> %i (ingress setting)\" -j REJECT" % 
                             ( ((intf['interfaceId'] << 8) + other_intf['interfaceId']),
                               other_intf['interfaceId'],
                               intf['interfaceId'] ))
@@ -75,7 +75,7 @@ class NatRulesManager:
 
             # FIXME put this in a special chain
             self.file.write("# block traffic from NATd interface \"%s\" (except port forwarded/DNAT traffic)" % intf['name'] + "\n");
-            self.file.write("${IPTABLES} -t filter -A FORWARD -m connmark --mark 0x%0.4X/0xffff -m conntrack ! --ctstate DNAT -m comment --comment \"Block traffic to NATd interace, %i -> %i (egress setting)\" -j REJECT" % 
+            self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m conntrack ! --ctstate DNAT -m comment --comment \"Block traffic to NATd interace, %i -> %i (egress setting)\" -j REJECT" % 
                             ( ((other_intf['interfaceId'] << 8) + intf['interfaceId']),
                               intf['interfaceId'],
                               other_intf['interfaceId'] ))
@@ -113,13 +113,22 @@ class NatRulesManager:
         self.file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         self.file.write("\n\n");
 
-        self.file.write("# Create chain if it does not exist" + "\n");
-        self.file.write("${IPTABLES} -t nat -N nat-rules 2>/dev/null" + "\n" + "\n");
-
-        self.file.write("# Flush chain if it exists" + "\n");
+        self.file.write("# Create (if needed) and flush nat-rules chain" + "\n");
+        self.file.write("${IPTABLES} -t nat -N nat-rules 2>/dev/null" + "\n");
         self.file.write("${IPTABLES} -t nat -F nat-rules >/dev/null 2>&1" + "\n" + "\n");
 
+        self.file.write("# Create (if needed) and flush nat-reverse-filter chain" + "\n");
+        self.file.write("${IPTABLES} -t filter -N nat-reverse-filter 2>/dev/null" + "\n");
+        self.file.write("${IPTABLES} -t filter -F nat-reverse-filter >/dev/null 2>&1" + "\n" + "\n");
+
+        self.file.write("# Call nat-reverse-filter chain from FORWARD chain to block traffic to NATd interface from \"outside\" " + "\n");
+        self.file.write("${IPTABLES} -t filter -D FORWARD -m comment --comment \"block traffic to NATd interfaces\" -j nat-reverse-filter >/dev/null 2>&1" + "\n");
+        self.file.write("${IPTABLES} -t filter -A FORWARD -m comment --comment \"block traffic to NATd interfaces\" -j nat-reverse-filter" + "\n" + "\n");
+
         self.write_interface_nat_options( settings, verbosity )
+
+        # FIXME
+        # write nat_rules
 
         self.file.flush()
         self.file.close()
