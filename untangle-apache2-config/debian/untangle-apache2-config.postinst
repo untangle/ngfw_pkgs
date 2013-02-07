@@ -94,7 +94,7 @@ fi
 
 # unpack ExtJS
 for tarball in /usr/share/untangle-apache2-config/ext*.tar.gz ; do
-  tar -C /var/www -xf $tarball
+  tar -C /var/www -xzf $tarball
 done
 
 /etc/init.d/apache2 reload
