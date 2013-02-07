@@ -3,7 +3,6 @@
 # FIXME should only add routse for active WANs
 
 # script
-SCRIPT_SET_LINK_MEDIA="/usr/share/untangle-netd/bin/set-link-media.sh"
 SCRIPT_ADD_UPLINK="/usr/share/untangle-netd/bin/add-uplink.sh"
 
 # This is the table name prefix of Untangle WAN tables
@@ -12,13 +11,6 @@ TABLE_PREFIX="uplink."
 ## All of the untangle rules MUST starting in this priority prefix.  
 ## This makes it easy to flush all of the untangle routing rules.
 UNTANGLE_PRIORITY_BASE="36"
-
-## Change this string you want to guarantee that the route tables are recreated.
-IP_ROUTE_TABLE_MARKER="version1"
-
-## The file the contains the names of the routing tables
-IP_RT_TABLES="/etc/iproute2/rt_tables"
-IP_RT_TABLE_BASE=0
 
 ## Maximum number of interfaces
 MAX_INTERFACES=250
@@ -36,42 +28,11 @@ debug_ip()
     ip $*
 }
 
-# ## Return the expected/desired state of the bridge interfaces
-# ## returns an md5sum string summarizing the expected configuration of the bridges
-# bridge_wanted_configuration()
-# {
-#     awk '
-#       /^iface.*inet/ { interface = $2  }
-#       /bridge_ports/ { print interface "[]"
-#                               gsub( "^[ \t]*bridge_ports[ \t]*", "")
-#                               split( $0, intf_array )
-#                               for ( i in intf_array ) print interface "[" intf_array[i] "]" }' /etc/network/interfaces | sort | md5sum | awk '{ print $1}'
-# }
-#
-# ## Return the current state of the bridge interfaces
-# ## returns an md5sum string summarizing the current configuration of the bridges
-# bridge_current_configuration()
-# {
-#     find /sys/class/net/*/brif* 2>/dev/null | sed -e 's|/sys/class/net/\([^/]*\)/brif/\?\(.*\)|\1[\2]|' | sort | md5sum | awk '{ print $1}'
-# }
-#
-# ## Tests whether or not the current configured bridge state 
-# ## matches the existing current bridge state
-# bridge_current_matches_wanted()
-# {
-#     local l_wanted=`bridge_wanted_configuration`
-#     local l_current=`bridge_current_configuration`
-#   
-#     $DEBUG "WANTED(${l_wanted}) CURRENT(${l_current})"
-#
-#     if [ "${l_wanted}" == "${l_current}" ] ; then
-#         $DEBUG "NETD bridge_current_matches_wanted() = true"
-#     else
-#         $DEBUG "NETD bridge_current_matches_wanted() = false"
-#     fi
-# 
-#     test "${l_wanted}" = "${l_current}"
-# }
+debug_run_parts()
+{
+    debug run-parts $*
+    run-parts -v $*
+}
 
 ## Return a list of all of the bridges
 bridge_list()
@@ -94,7 +55,6 @@ bridge_destroy_all()
 {
     local l_bridge
     local l_port
-    $DEBUG "Destroying all of the bridges."
  
     for l_bridge in `bridge_list` ; do
         $DEBUG "Destroying bridge: '${l_bridge}'."
@@ -107,25 +67,6 @@ bridge_destroy_all()
         ifconfig ${l_bridge} down
         brctl delbr ${l_bridge}
     done
-    $DEBUG "Destroyed all of the bridges."
-
-}
-
-set_ethernet_media()
-{
-    local t_nic
-    local t_media
-
-    test -x "${SCRIPT_SET_LINK_MEDIA}" || { 
-        echo "[WARN: `date`] '${SCRIPT_SET_LINK_MEDIA}' doesn't exist" 
-        return 0
-    }
- 
-    echo "FIXME SET LINK MEDIA"
-#    cat "${ETHERNET_MEDIA_CONF}" | awk '/^[a-z][^#]*$/ { print }' | while read t_nic t_media ; do 
-#        $DEBUG "${t_nic}, ${t_media}"
-#        ${SCRIPT_SET_LINK_MEDIA} ${t_nic} ${t_media}
-#    done
 }
 
 ## Delete all of the rules thare are on one of the uplink tables.
@@ -147,70 +88,35 @@ flush_uplink_rules()
     done    
 }
 
-insert_uplink_tables()
-{
-    local t_temp
-    local t_index
-
-    # if untangle has written the uplink tables already just return
-    grep -q "${IP_ROUTE_TABLE_MARKER}" ${IP_RT_TABLES} && return
-
-    t_temp=`mktemp`
-    
-    echo "# ${IP_ROUTE_TABLE_MARKER} MultiWAN uplink tables" >> ${t_temp}
-
-    for t_index in `seq 1 $MAX_INTERFACES`; do
-        /bin/echo -e "$((${IP_RT_TABLE_BASE} + ${t_index}))\t${TABLE_PREFIX}${t_index}" >> ${t_temp}
-    done
-    
-    sed -i -e '/uplink/d'  -e "/MultiWAN uplink tables/d" ${IP_RT_TABLES}
-    cat ${t_temp} >> ${IP_RT_TABLES}
-    
-    rm -f ${t_temp}
-}
-
-flush_uplinks()
-{
-    flush_uplink_tables
-    flush_uplink_rules
-    ## Make sure that all of the tables exist.
-    insert_uplink_tables
-}
-
 networking_pre_restart_hook()
 {
     $DEBUG "networking_pre_restart_hook"
 
-    $DEBUG "Stopping all dhcp daemons"
+    $DEBUG "running pre-network-hooks"
+    $RUN_PARTS /etc/untangle-netd/pre-network-hook.d
+
+    # TEMP to disable alpaca
+    rm -f /etc/network/if-up.d/alpaca
+    rm -f /etc/network/if-pre-up.d/alpaca
+
+    $DEBUG "cleanup: Stopping all dhcp daemons"
     ## If there are any processes, wait a little, then make sure they are gone.
     pkill -QUIT '(dhclient3|pump|dhclient)' && { sleep 1 ; pkill '(dhclient3|pump|dhclient)'; }
     
-    $DEBUG "Cleaning up the interface state."
-    
-    ## REVIEW : Possibly add a label for dynamically configured 
-    ## interfaces.
-    ## REVIEW : Down all interfaces that are not supposed to be
-    ## configured, eg ifconfig down <intf> for everything that is not
-    ## used.
-    $DEBUG "Flushing interface addresses."
+    $DEBUG "cleanup: Flushing interface addresses."
     ip addr flush scope global 2>/dev/null
     
-    $DEBUG "Flush all uplink routes."
-    flush_uplinks
+    $DEBUG "cleanup: Flush all uplink tables."
+    flush_uplink_tables
+
+    $DEBUG "cleanup: Flush all uplink rules."
+    flush_uplink_rules
     
-    $DEBUG "Configuring network media."
-    set_ethernet_media
-    
-    $DEBUG "Stopping all active PPP Connections."
+    $DEBUG "cleanup: Stopping all active PPP Connections."
     poff -a >/dev/null 2>&1
     
-    # If the current bridge state is different than the desired configured bridge state
-    # Then just delete all the bridges
-    #bridge_current_matches_wanted
-    #if [ $? != 0 ] ; then 
-        # Determine which bridges need to be removed
-        bridge_destroy_all
-    #fi
+    $DEBUG "cleanup: Destroying all of the bridges."
+    bridge_destroy_all
 }
 
 netd_address()
@@ -245,6 +151,9 @@ networking_post_restart_hook()
     if [ -f /etc/untangle-net-alpaca/update-address.d/95-iptables ] ; then
         mv /etc/untangle-net-alpaca/update-address.d/95-iptables /etc/untangle-net-alpaca/update-address.d/95-iptables.off
     fi
+    if [ -f /etc/untangle-net-alpaca/update-address.d/98-restart-services ] ; then
+        mv /etc/untangle-net-alpaca/update-address.d/98-restart-services /etc/untangle-net-alpaca/update-address.d/98-restart-services.off
+    fi
 
     # disable alpaca iptables rules
     # TEMP
@@ -256,10 +165,14 @@ networking_post_restart_hook()
     rm -f /etc/untangle-net-alpaca/update-address.d/96-iptables
     ln -s /usr/share/untangle-netd/bin/generate-iptables-rules.sh /etc/untangle-net-alpaca/update-address.d/96-iptables
 
+    $DEBUG "running post-network-hooks"
+    $RUN_PARTS /etc/untangle-netd/post-network-hook.d
+
     # call alpaca update-address
     # this is just until netd has implemented the networking restart scripts
     # TEMP
-    run-parts /etc/untangle-net-alpaca/update-address.d
+    $DEBUG "running alpaca update-address"
+    $RUN_PARTS /etc/untangle-net-alpaca/update-address.d
 
     return 0
 }
@@ -295,14 +208,13 @@ uplink_routes()
 
 ## Start of script
 
-IP="ip"
-DEBUG=/bin/true
-IF_NETD_DEBUG="true"
+#DEBUG=/bin/true
+#IP="ip"
+#RUN_PARTS="run-parts"
 
-test "${IF_NETD_DEBUG}" = "true" && {
-    DEBUG="debug"
-    IP="debug_ip"
-}
+DEBUG="debug"
+IP="debug_ip"
+RUN_PARTS="debug_run_parts"
 
 $DEBUG "if-up.d start [$IFACE]"
 

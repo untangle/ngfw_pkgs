@@ -1,2 +1,5 @@
 etc/untangle-netd/
+etc/untangle-netd/pre-network-hook.d
+etc/untangle-netd/post-network-hook.d
+etc/untangle-netd/iptables-rules.d
 usr/share/untangle-netd/bin

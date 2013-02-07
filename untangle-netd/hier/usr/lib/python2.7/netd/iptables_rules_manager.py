@@ -11,7 +11,6 @@ class IptablesRulesManager:
     interfaceMarksFilename = "/etc/untangle-netd/iptables-rules.d/100-interface-marks"
 
     def write_flush_file( self, prefix, verbosity ):
-        flushFile = None
 
         filename = prefix + self.flushFilename
         fileDir = os.path.dirname( filename )
@@ -29,11 +28,13 @@ class IptablesRulesManager:
         file.write("## Flush all etables rules. (the only rules exist in the broute table)\n")
         file.write("${EBTABLES} -t broute -F" + "\n" + "\n")
 
+        file.flush()
+        file.close()
+
         if verbosity > 0:
             print "IptablesRulesManager: Wrote %s" % filename
 
     def write_interface_marks( self, settings, prefix, verbosity ):
-        interfaceMarksFile = None
 
         filename = prefix + self.interfaceMarksFilename
         fileDir = os.path.dirname( filename )
@@ -52,6 +53,9 @@ class IptablesRulesManager:
         file.write("# Call restore-interface-marks chain from PREROUTING chain in mangle" + "\n");
         file.write("${IPTABLES} -t mangle -D PREROUTING -m comment --comment \"Restore interface marks from connmark\" -j restore-interface-marks >/dev/null 2>&1" + "\n");
         file.write("${IPTABLES} -t mangle -A PREROUTING -m comment --comment \"Restore interface marks from connmark\" -j restore-interface-marks" + "\n" + "\n");
+
+        file.flush()
+        file.close()
 
         if verbosity > 0:
             print "IptablesRulesManager: Wrote %s" % filename

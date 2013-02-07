@@ -87,9 +87,11 @@ print "Syncing %s to system..." % parser.file
 interfacesManager = InterfacesManager()
 iptablesRulesManager = IptablesRulesManager()
 natRulesManager = NatRulesManager()
+ethernetManager = EthernetManager()
 
 interfacesManager.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
 iptablesRulesManager.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
 natRulesManager.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
+ethernetManager.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
 
 print "Done."
