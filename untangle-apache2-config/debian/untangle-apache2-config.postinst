@@ -61,7 +61,7 @@ if ! grep "Listen 443" /etc/apache2/ports.conf >/dev/null; then
     echo "Listen 443" >>/etc/apache2/ports.conf
 fi
 
-# enabled these modules
+# enable these modules
 /usr/sbin/a2enmod jk
 /usr/sbin/a2enmod ssl
 /usr/sbin/a2enmod python
@@ -72,7 +72,7 @@ fi
 /usr/sbin/a2dismod autoindex
 /usr/sbin/a2dismod userdir
 
-# enabled UVM site
+# enable UVM site
 /usr/sbin/a2dissite default
 /usr/sbin/a2ensite uvm
 
@@ -92,6 +92,10 @@ if [ -d /etc/apache2/untangle-unrestricted-conf.d ] ; then
     rm -rf /etc/apache2/untangle-unrestricted-conf.d
 fi
 
+# unpack ExtJS
+for tarball in /usr/share/untangle-apache2-config/ext*.tar.gz ; do
+  tar -C /var/www -xf $tarball
+done
 
 /etc/init.d/apache2 reload
 
