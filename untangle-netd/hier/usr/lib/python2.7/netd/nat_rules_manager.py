@@ -12,15 +12,8 @@ class NatRulesManager:
     file = None
 
     def write_ingress_nat_rules( self, intf, interfaces ):
-        if not 'interfaceId' in intf or not 'name' in intf:
-            print "ERROR: Missing settings on interface!"
-            return;
 
         for other_intf in interfaces:
-            # ignore bad interfaces
-            if not 'interfaceId' in other_intf or not 'name' in other_intf:
-                print "ERROR: Missing settings on intf!"
-                continue;
 
             # skip self
             if other_intf['interfaceId'] == intf['interfaceId']:
@@ -48,15 +41,8 @@ class NatRulesManager:
         return
 
     def write_egress_nat_rules( self, intf, interfaces ):
-        if not 'interfaceId' in intf or not 'name' in intf:
-            print "ERROR: Missing settings on interface!"
-            return;
 
         for other_intf in interfaces:
-            # ignore bad interfaces
-            if not 'interfaceId' in other_intf or not 'name' in other_intf:
-                print "ERROR: Missing settings on intf!"
-                continue;
 
             # skip self
             if other_intf['interfaceId'] == intf['interfaceId']:
@@ -84,10 +70,6 @@ class NatRulesManager:
         return
 
     def write_interface_nat_options( self, settings, verbosity=0 ):
-
-        if settings == None or settings['interfaces'] == None or settings['interfaces']['list'] == None:
-            print "ERROR: Missisg interfaces settings!"
-            return
 
         interfaces = settings['interfaces']['list']
         for interface_settings in interfaces:

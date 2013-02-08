@@ -18,6 +18,7 @@ sys.path.insert(0, sys.path[0] + "/" + "../" + "../" + "../" + "lib/" + "python2
 import getopt
 import signal
 import os
+import traceback
 
 # python2.7 includes json, python2.5 uses simplejson
 try: import simplejson as json
@@ -66,7 +67,31 @@ def printUsage():
     -v          : verbose (can be specified more than one time)
 """ % sys.argv[0] )
 
+# sanity check settings
+def checkSettings( settings ):
+    if settings is None:
+        raise Exception("Invalid Settings: null")
+    if 'interfaces' not in settings:
+        raise Exception("Invalid Settings: missing interfaces")
+    if 'list' not in settings['interfaces']:
+        raise Exception("Invalid Settings: missing interfaces list")
+    interfaces = settings['interfaces']['list']
 
+    for intf in interfaces:
+        for key in ['interfaceId', 'name', 'systemDev', 'symbolicDev', 'physicalDev', 'config']:
+            if key not in intf:
+                raise Exception("Invalid Interface Settings: missing key %s" % key)
+            
+
+# remove unused fields for safety
+def cleanupSettings( settings ):
+    interfaces = settings['interfaces']['list']
+    
+    # remove disabled interfaces
+    new_interfaces = [ intf for intf in interfaces if intf['config'] != 'disabled' ]
+    settings['interfaces']['list'] = new_interfaces
+    
+    
 parser = ArgumentParser()
 parser.parse_args()
 settings = None
@@ -83,6 +108,13 @@ except IOError,e:
 # print settings
     
 print "Syncing %s to system..." % parser.file
+
+try:
+    checkSettings(settings)
+    cleanupSettings(settings)
+except Exception,e:
+    traceback.print_exc(e)
+    exit(1)
 
 interfacesManager = InterfacesManager()
 iptablesRulesManager = IptablesRulesManager()
