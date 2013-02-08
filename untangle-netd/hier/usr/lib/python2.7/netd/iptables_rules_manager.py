@@ -37,6 +37,94 @@ class IptablesRulesManager:
         if verbosity > 0:
             print "IptablesRulesManager: Wrote %s" % filename
 
+    def write_restore_interface_marks( self, file, interfaces, prefix, verbosity ):
+
+        file.write("\n\n");
+        file.write("#\n");
+        file.write("# Create restore-interface-marks chain"+ "\n");
+        file.write("#\n\n");
+
+        file.write("# First zero out any marks on this packet"+ "\n");
+        file.write("${IPTABLES} -t mangle -A restore-interface-marks -j MARK --and-mark 0xFFFF0000 -m comment --comment \"Zero out source and destination interface marks\"" + "\n");
+        file.write("\n");
+        
+        file.write("# Ignore and broadcast sessions as they will all share the same conntrack entry so the connmark cant be used for src/dst intf" + "\n");
+        file.write("# These packets will still be marked in the mark-src-intf and mark-dst-intf chains later");
+        file.write("${IPTABLES} -t mangle -A restore-interface-marks -m addrtype --dst-type broadcast  -j RETURN -m comment --comment \"Do not mark broadcast packets\"" + "\n");
+        file.write("${IPTABLES} -t mangle -A restore-interface-marks -m addrtype --src-type broadcast  -j RETURN -m comment --comment \"Do not mark broadcast packets\"" + "\n");
+        file.write("\n");
+
+        file.write("# This rule says if the packet is in the original direction, just copy the intf marks from the connmark/session mark" + "\n");
+        file.write("# The rule actually says REPLY and not ORIGINAL and thats because ctdir matches backwards in 2.6.32 # http://www.spinics.net/lists/netfilter-devel/msg17864.html" + "\n");
+        file.write("${IPTABLES} -t mangle -A restore-interface-marks -m conntrack --ctdir REPLY -j CONNMARK --restore-mark --mask 0x%X -m comment --comment \"If packet is in original direction, copy mark from connmark to packet\"" % self.bothInterfacesMarksMask + "\n");
+        file.write("${IPTABLES} -t mangle -A restore-interface-marks -m conntrack --ctdir REPLY -j RETURN -m comment --comment \"If packet is in original direction we are done, just return\"" + "\n");
+        file.write("\n");
+
+        file.write("# Since this is a reply packet, copy dst intf from connmark to src intf mark, copy src intf from connmark to dst intf mark." + "\n");
+        file.write("# Two rules for each interfaces, one to set src mark, one to set dst mark" + "\n")
+
+        for intf in interfaces:
+            id = intf['interfaceId']
+            file.write("${IPTABLES} -t mangle -A restore-interface-marks -m connmark --mark 0x%04X/0x%04X -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark from connmark for intf %i\"" % (id, self.srcInterfaceMarkMask, id << 8, self.dstInterfaceMarkMask, id) + "\n");
+            file.write("${IPTABLES} -t mangle -A restore-interface-marks -m connmark --mark 0x%04X/0x%04X -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark from connmark for intf %i\"" % (id << 8, self.dstInterfaceMarkMask, id, self.srcInterfaceMarkMask, id) + "\n");
+        file.write("\n");
+
+    def write_mark_src_intf( self, file, interfaces, prefix, verbosity ):
+
+        file.write("\n\n");
+        file.write("#\n");
+        file.write("# Create the mark-src-intf chain." + "\n");
+        file.write("#\n\n");
+
+        file.write("${IPTABLES} -t mangle -A mark-src-intf -m mark ! --mark 0/0x%04X -j RETURN -m comment --comment \"If its already set, just return\"" % (self.srcInterfaceMarkMask) + "\n");
+        file.write("\n");
+
+        for intf in interfaces:
+            id = intf['interfaceId']
+            systemDev = intf['systemDev']
+            symbolicDev = intf['symbolicDev']
+            config = intf['config']
+
+            file.write("${IPTABLES} -t mangle -A mark-src-intf -i %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark for intf %i\"" % (systemDev, id, self.srcInterfaceMarkMask, id) + "\n");
+            # if bridged also add bridge rules
+            if symbolicDev.startswith("br.") or config == 'bridged':
+                file.write("${IPTABLES} -t mangle -A mark-src-intf -m physdev --physdev-in %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark for intf %i using physdev\"" % (systemDev, id, self.srcInterfaceMarkMask, id) + "\n");
+
+        file.write("${IPTABLES} -t mangle -A mark-src-intf ! -i lo -m mark --mark 0/0x%04X -j LOG --log-prefix \"WARNING (unknown src intf):\" -m comment --comment \"WARN on missing src mark\"" % (self.srcInterfaceMarkMask) + "\n");
+        file.write("${IPTABLES} -t mangle -A mark-src-intf -m conntrack --ctstate NEW -j CONNMARK --save-mark --mask 0x%04X -m comment --comment \"Save src interface mark to connmark\"" % (self.srcInterfaceMarkMask) + "\n");
+
+        file.write("\n");
+
+    def write_mark_dst_intf( self, file, interfaces, prefix, verbosity ):
+
+        file.write("\n\n");
+        file.write("#\n");
+        file.write("# Create the mark-dst-intf chain." + "\n");
+        file.write("#\n\n");
+
+        file.write("${IPTABLES} -t mangle -A mark-dst-intf -m mark ! --mark 0/0x%04X -j RETURN -m comment --comment \"If its already set, just return\"" % (self.dstInterfaceMarkMask) + "\n");
+        file.write("\n");
+
+        for intf in interfaces:
+            id = intf['interfaceId']
+            systemDev = intf['systemDev']
+            symbolicDev = intf['symbolicDev']
+            config = intf['config']
+
+            file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i\"" % (systemDev, id << 8, self.dstInterfaceMarkMask, id) + "\n");
+            # if bridged also add bridge rules
+            if symbolicDev.startswith("br.") or config == 'bridged':
+                # physdev-out doesn't work, instead queue to userspace daemon
+                # file.write("${IPTABLES} -t mangle -A mark-dst-intf -m physdev --physdev-out %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i using physdev\"" % (systemDev, id << 8, self.dstInterfaceMarkMask, id) + "\n");
+                file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -j LOG --log-prefix \"FIXME nfqueue to mark-dst-intf:\" -m comment --comment \"FIXME need to queue bridge packets to daemon\"" % (symbolicDev) + "\n");
+
+                
+        file.write("${IPTABLES} -t mangle -A mark-dst-intf -m mark --mark 0/0x%04X -j LOG --log-prefix \"WARNING (unknown dst intf):\" -m comment --comment \"WARN on missing dst mark\"" % (self.dstInterfaceMarkMask) + "\n");
+        file.write("${IPTABLES} -t mangle -A mark-dst-intf -m conntrack --ctstate NEW -j CONNMARK --save-mark --mask 0x%04X -m comment --comment \"Save dst interface mark to connmark\"" % (self.dstInterfaceMarkMask) + "\n");
+                
+        file.write("\n");
+
+
     def write_interface_marks( self, settings, prefix, verbosity ):
         interfaces = settings['interfaces']['list']
 
@@ -71,85 +159,11 @@ class IptablesRulesManager:
         file.write("${IPTABLES} -t mangle -A FORWARD -m comment --comment \"Set dst intf mark (0xff00)\" -j mark-dst-intf" + "\n");
         file.write("\n");
 
-        file.write("\n\n");
-        file.write("#\n");
-        file.write("# Create restore-interface-marks chain"+ "\n");
-        file.write("#\n\n");
+        self.write_restore_interface_marks( file, interfaces, prefix, verbosity );
 
-        file.write("# First zero out any marks on this packet"+ "\n");
-        file.write("${IPTABLES} -t mangle -A restore-interface-marks -j MARK --and-mark 0xFFFF0000 -m comment --comment \"Zero out source and destination interface marks\"" + "\n");
-        file.write("\n");
-        
-        file.write("# Ignore and broadcast sessions as they will all share the same conntrack entry so the connmark cant be used for src/dst intf" + "\n");
-        file.write("# These packets will still be marked in the mark-src-intf and mark-dst-intf chains later");
-        file.write("${IPTABLES} -t mangle -A restore-interface-marks -m addrtype --dst-type broadcast  -j RETURN -m comment --comment \"Do not mark broadcast packets\"" + "\n");
-        file.write("${IPTABLES} -t mangle -A restore-interface-marks -m addrtype --src-type broadcast  -j RETURN -m comment --comment \"Do not mark broadcast packets\"" + "\n");
-        file.write("\n");
+        self.write_mark_src_intf( file, interfaces, prefix, verbosity );
 
-        file.write("# This rule says if the packet is in the original direction, just copy the intf marks from the connmark/session mark" + "\n");
-        file.write("# The rule actually says REPLY and not ORIGINAL and thats because ctdir matches backwards in 2.6.32 # http://www.spinics.net/lists/netfilter-devel/msg17864.html" + "\n");
-        file.write("${IPTABLES} -t mangle -A restore-interface-marks -m conntrack --ctdir REPLY -j CONNMARK --restore-mark --mask 0x%X -m comment --comment \"If packet is in original direction, copy mark from connmark to packet\"" % self.bothInterfacesMarksMask + "\n");
-        file.write("${IPTABLES} -t mangle -A restore-interface-marks -m conntrack --ctdir REPLY -j RETURN -m comment --comment \"If packet is in original direction we are done, just return\"" + "\n");
-        file.write("\n");
-
-        file.write("# Since this is a reply packet, copy dst intf from connmark to src intf mark, copy src intf from connmark to dst intf mark." + "\n");
-        file.write("# Two rules for each interfaces, one to set src mark, one to set dst mark" + "\n")
-
-        for intf in interfaces:
-            id = intf['interfaceId']
-            file.write("${IPTABLES} -t mangle -A restore-interface-marks -m connmark --mark 0x%04X/0x%04X -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark from connmark for intf %i\"" % (id, self.srcInterfaceMarkMask, id << 8, self.dstInterfaceMarkMask, id) + "\n");
-            file.write("${IPTABLES} -t mangle -A restore-interface-marks -m connmark --mark 0x%04X/0x%04X -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark from connmark for intf %i\"" % (id << 8, self.dstInterfaceMarkMask, id, self.srcInterfaceMarkMask, id) + "\n");
-        file.write("\n");
-
-        file.write("\n\n");
-        file.write("#\n");
-        file.write("# Create the mark-src-intf chain." + "\n");
-        file.write("#\n\n");
-
-        file.write("${IPTABLES} -t mangle -A mark-src-intf -m mark ! --mark 0/0x%04X -j RETURN -m comment --comment \"If its already set, just return\"" % (self.srcInterfaceMarkMask) + "\n");
-        file.write("\n");
-
-        for intf in interfaces:
-            id = intf['interfaceId']
-            systemDev = intf['systemDev']
-            symbolicDev = intf['symbolicDev']
-            config = intf['config']
-
-            file.write("${IPTABLES} -t mangle -A mark-src-intf -i %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark for intf %i\"" % (systemDev, id, self.srcInterfaceMarkMask, id) + "\n");
-            # if bridged also add bridge rules
-            if symbolicDev.startswith("br.") or config == 'bridged':
-                file.write("${IPTABLES} -t mangle -A mark-src-intf -m physdev --physdev-in %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark for intf %i using physdev\"" % (systemDev, id, self.srcInterfaceMarkMask, id) + "\n");
-
-        file.write("${IPTABLES} -t mangle -A mark-src-intf -m conntrack --ctstate NEW -j CONNMARK --save-mark --mask 0x%04X -m comment --comment \"Save src interface mark to connmark\"" % (self.srcInterfaceMarkMask) + "\n");
-        # XXX add warning if mark still zero
-
-        file.write("\n");
-
-        file.write("\n\n");
-        file.write("#\n");
-        file.write("# Create the mark-dst-intf chain." + "\n");
-        file.write("#\n\n");
-
-        file.write("${IPTABLES} -t mangle -A mark-dst-intf -m mark ! --mark 0/0x%04X -j RETURN -m comment --comment \"If its already set, just return\"" % (self.dstInterfaceMarkMask) + "\n");
-        file.write("\n");
-
-        for intf in interfaces:
-            id = intf['interfaceId']
-            systemDev = intf['systemDev']
-            symbolicDev = intf['symbolicDev']
-            config = intf['config']
-
-            file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i\"" % (systemDev, id << 8, self.dstInterfaceMarkMask, id) + "\n");
-            # if bridged also add bridge rules
-            if symbolicDev.startswith("br.") or config == 'bridged':
-                # 
-                #    file.write("${IPTABLES} -t mangle -A mark-dst-intf -m physdev --physdev-out %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i using physdev\"" % (systemDev, id << 8, self.dstInterfaceMarkMask, id) + "\n");
-                file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -j LOG --log-prefix \"FIXME nfqueue to mark-dst-intf:\" -m comment --comment \"FIXME need to queue bridge packets to daemon\"" % (symbolicDev) + "\n");
-
-        file.write("${IPTABLES} -t mangle -A mark-dst-intf -m conntrack --ctstate NEW -j CONNMARK --save-mark --mask 0x%04X -m comment --comment \"Save dst interface mark to connmark\"" % (self.dstInterfaceMarkMask) + "\n");
-        # XXX add warning if mark still zero
-                
-        file.write("\n");
+        self.write_mark_dst_intf( file, interfaces, prefix, verbosity );
 
         file.flush()
         file.close()
