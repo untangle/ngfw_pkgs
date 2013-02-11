@@ -121,9 +121,11 @@ iptablesRulesManager = IptablesRulesManager()
 natRulesManager = NatRulesManager()
 ethernetManager = EthernetManager()
 
-interfacesManager.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
-iptablesRulesManager.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
-natRulesManager.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
-ethernetManager.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
+for module in [ interfacesManager, iptablesRulesManager, natRulesManager, ethernetManager ]:
+    try:
+        module.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
+    except Exception,e:
+        traceback.print_exc(e)
+    
 
 print "Done."
