@@ -118,7 +118,7 @@ class IptablesRulesManager:
             if symbolicDev.startswith("br.") or config == 'bridged':
                 # physdev-out doesn't work, instead queue to userspace daemon
                 # file.write("${IPTABLES} -t mangle -A mark-dst-intf -m physdev --physdev-out %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i using physdev\"" % (systemDev, id << 8, self.dstInterfaceMarkMask, id) + "\n");
-                file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -j LOG --log-prefix \"FIXME nfqueue to mark-dst-intf:\" -m comment --comment \"FIXME need to queue bridge packets to daemon\"" % (symbolicDev) + "\n");
+                file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -j LOG --log-prefix \"FIXME queue me:\" -m comment --comment \"queue bridge destined packets to daemon to determine destination\"" % (symbolicDev) + "\n");
 
                 
         file.write("${IPTABLES} -t mangle -A mark-dst-intf -m mark --mark 0/0x%04X -j LOG --log-prefix \"WARNING (unknown dst intf):\" -m comment --comment \"WARN on missing dst mark\"" % (self.dstInterfaceMarkMask) + "\n");
