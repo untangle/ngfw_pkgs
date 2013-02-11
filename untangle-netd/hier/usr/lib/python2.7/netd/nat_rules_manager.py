@@ -3,6 +3,7 @@ import sys
 import subprocess
 import datetime
 import traceback
+from netd.iptables_util import IptablesUtil
 
 # This class is responsible for writing /etc/untangle-netd/iptables-rules.d/200-nat-rules
 # based on the settings object passed from sync-settings.py
@@ -10,6 +11,47 @@ class NatRulesManager:
     defaultFilename = "/etc/untangle-netd/iptables-rules.d/200-nat-rules"
     filename = defaultFilename
     file = None
+
+    def write_nat_rules( self, settings, verbosity=0 ):
+
+        if settings == None or 'natRules' not in settings or 'list' not in settings['natRules']:
+            print "ERROR: Missing NAT Rules"
+            return
+        
+        nat_rules = settings['natRules']['list'];
+
+        for nat_rule in nat_rules:
+            if 'matchers' not in nat_rule or 'list' not in nat_rule['matchers']:
+                continue
+            if 'ruleId' not in nat_rule:
+                continue
+
+            if 'auto' in nat_rule and nat_rule['auto']:
+                target = " -j MASQUERADE "
+            elif 'newSource' in nat_rule:
+                target = " -j SNAT --to-source %s " % str(matcher['newSource'])
+            else:
+                print "ERROR: invalid nat target: %s" + str(nat_rule)
+
+            description = "NAT Rule #%i" % int(nat_rule['ruleId'])
+            iptables_conditions = IptablesUtil.conditions_to_iptables_string( nat_rule['matchers']['list'], description, verbosity );
+
+            iptables_commands = [ "${IPTABLES} -t nat -A nat-rules " + ipt + target for ipt in iptables_conditions ]
+
+            #print "nat_rule: %s" % str(nat_rule)
+            #print "target:"
+            #print target
+            #print "iptables_conditions:"
+            #for ipt in iptables_conditions:
+            #    print ipt
+            #print "iptables_commands:"
+            #for cmd in iptables_commands:
+            #    print cmd
+
+            self.file.write("# %s\n" % description);
+            for cmd in iptables_commands:
+                self.file.write(cmd + "\n")
+            self.file.write("\n");
 
     def write_ingress_nat_rules( self, intf, interfaces ):
 
@@ -30,7 +72,6 @@ class NatRulesManager:
                               other_intf['interfaceId'] ))
             self.file.write("\n\n");
 
-            # FIXME put this in a special chain
             self.file.write("# block traffic to NATd interface \"%s\" (except port forwarded/DNAT traffic)" % intf['name'] + "\n");
             self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m conntrack ! --ctstate DNAT -m comment --comment \"Block traffic to NATd interace, %i -> %i (ingress setting)\" -j REJECT" % 
                             ( ((intf['interfaceId'] << 8) + other_intf['interfaceId']),
@@ -59,7 +100,6 @@ class NatRulesManager:
                               intf['interfaceId'] ))
             self.file.write("\n\n");
 
-            # FIXME put this in a special chain
             self.file.write("# block traffic from NATd interface \"%s\" (except port forwarded/DNAT traffic)" % intf['name'] + "\n");
             self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m conntrack ! --ctstate DNAT -m comment --comment \"Block traffic to NATd interace, %i -> %i (egress setting)\" -j REJECT" % 
                             ( ((other_intf['interfaceId'] << 8) + intf['interfaceId']),
@@ -111,13 +151,11 @@ class NatRulesManager:
         self.file.write("${IPTABLES} -t filter -D FORWARD -m comment --comment \"block traffic to NATd interfaces\" -j nat-reverse-filter >/dev/null 2>&1" + "\n");
         self.file.write("${IPTABLES} -t filter -A FORWARD -m comment --comment \"block traffic to NATd interfaces\" -j nat-reverse-filter" + "\n" + "\n");
 
-        self.write_interface_nat_options( settings, verbosity )
+        self.write_nat_rules( settings, verbosity );
+        self.write_interface_nat_options( settings, verbosity );
 
-        # FIXME
-        # write nat_rules
-
-        self.file.flush()
-        self.file.close()
+        self.file.flush();
+        self.file.close();
 
         if verbosity > 0:
             print "NatRulesManager: Wrote %s" % self.filename
