@@ -12,6 +12,44 @@ class NatRulesManager:
     filename = defaultFilename
     file = None
 
+    def write_nat_rule( self, nat_rule, verbosity=0 ):
+
+        if 'enabled' in nat_rule and not nat_rule['enabled']:
+            return
+        if 'matchers' not in nat_rule or 'list' not in nat_rule['matchers']:
+            return
+        if 'ruleId' not in nat_rule:
+            return
+
+        if 'auto' in nat_rule and nat_rule['auto']:
+            target = " -j MASQUERADE "
+        elif 'newSource' in nat_rule:
+            target = " -j SNAT --to-source %s " % str(nat_rule['newSource'])
+        else:
+            print "ERROR: invalid nat target: %s" + str(nat_rule)
+
+        description = "NAT Rule #%i" % int(nat_rule['ruleId'])
+        iptables_conditions = IptablesUtil.conditions_to_iptables_string( nat_rule['matchers']['list'], description, verbosity );
+
+        iptables_commands = [ "${IPTABLES} -t nat -A nat-rules " + ipt + target for ipt in iptables_conditions ]
+
+        # print "nat_rule: %s" % str(nat_rule)
+        # print "target:"
+        # print target
+        # print "iptables_conditions:"
+        # for ipt in iptables_conditions:
+        #     print ipt
+        # print "iptables_commands:"
+        # for cmd in iptables_commands:
+        #     print cmd
+
+        self.file.write("# %s\n" % description);
+        for cmd in iptables_commands:
+            self.file.write(cmd + "\n")
+        self.file.write("\n");
+
+        return
+
     def write_nat_rules( self, settings, verbosity=0 ):
 
         if settings == None or 'natRules' not in settings or 'list' not in settings['natRules']:
@@ -21,39 +59,10 @@ class NatRulesManager:
         nat_rules = settings['natRules']['list'];
 
         for nat_rule in nat_rules:
-            if 'enabled' in nat_rule and not nat_rule['enabled']:
-                continue
-            if 'matchers' not in nat_rule or 'list' not in nat_rule['matchers']:
-                continue
-            if 'ruleId' not in nat_rule:
-                continue
-
-            if 'auto' in nat_rule and nat_rule['auto']:
-                target = " -j MASQUERADE "
-            elif 'newSource' in nat_rule:
-                target = " -j SNAT --to-source %s " % str(nat_rule['newSource'])
-            else:
-                print "ERROR: invalid nat target: %s" + str(nat_rule)
-
-            description = "NAT Rule #%i" % int(nat_rule['ruleId'])
-            iptables_conditions = IptablesUtil.conditions_to_iptables_string( nat_rule['matchers']['list'], description, verbosity );
-
-            iptables_commands = [ "${IPTABLES} -t nat -A nat-rules " + ipt + target for ipt in iptables_conditions ]
-
-            # print "nat_rule: %s" % str(nat_rule)
-            # print "target:"
-            # print target
-            # print "iptables_conditions:"
-            # for ipt in iptables_conditions:
-            #     print ipt
-            # print "iptables_commands:"
-            # for cmd in iptables_commands:
-            #     print cmd
-
-            self.file.write("# %s\n" % description);
-            for cmd in iptables_commands:
-                self.file.write(cmd + "\n")
-            self.file.write("\n");
+            try:
+                self.write_nat_rule( nat_rule, verbosity );
+            except Exception,e:
+                traceback.print_exc(e)
 
     def write_ingress_nat_rules( self, intf, interfaces ):
 
