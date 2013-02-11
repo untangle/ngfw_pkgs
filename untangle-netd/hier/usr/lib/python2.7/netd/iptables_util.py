@@ -100,7 +100,7 @@ class IptablesUtil:
                 str = str + " --source-port %s " % value
                 if not hasProtocolMatcher:
                     # port explicitly means either TCP or UDP, since no protocol matcher has been specified, use "TCP,UDP" as the protocol matcher
-                    current_strings = [ current + " -p udp " for current in current_strings ] + [ current + " -p tcp " for current in current_strings ]
+                    current_strings = [ " --protocol udp " + current for current in current_strings ] + [ " --protocol tcp " + current for current in current_strings ]
                 current_strings = [ current + str for current in current_strings ]
 
             if matcherType == "DST_PORT":
@@ -109,7 +109,13 @@ class IptablesUtil:
                 str = str + " --destination-port %s " % value
                 if not hasProtocolMatcher:
                     # port explicitly means either TCP or UDP, since no protocol matcher has been specified, use "TCP,UDP" as the protocol matcher
-                    current_strings = [ current + " -p udp " for current in current_strings ] + [ current + " -p tcp " for current in current_strings ]
+                    current_strings = [ " --protocol udp " + current for current in current_strings ] + [ " --protocol tcp " + current for current in current_strings ]
+                current_strings = [ current + str for current in current_strings ]
+
+            if matcherType == "DST_LOCAL":
+                if invert:
+                    str = str + " ! "
+                str = str + " -m addrtype --dst-type local "
                 current_strings = [ current + str for current in current_strings ]
                 
 
