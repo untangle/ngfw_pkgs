@@ -17,7 +17,7 @@ class InterfacesManager:
 
     def write_interface_v4( self, interface_settings, interfaces ):
 
-        self.interfacesFile.write("## Interface %i (%s) IPv4\n" % (interface_settings['interfaceId'], interface_settings['name']) )
+        self.interfacesFile.write("## Interface %i IPv4\n" % (interface_settings['interfaceId']) )
         self.interfacesFile.write("auto %s\n" % interface_settings['symbolicDev'])
 
         configString = "manual"
@@ -65,18 +65,19 @@ class InterfacesManager:
         if interface_settings['v6ConfigType'] == 'auto':
             return # nothing needed to support RA
 
-        self.interfacesFile.write("## Interface %i (%s) IPv6\n" % (interface_settings['interfaceId'], interface_settings['name']) )
+        self.interfacesFile.write("## Interface %i IPv6\n" % (interface_settings['interfaceId']) )
         if not 'v6StaticAddress' in interface_settings:
             self.interfacesFile.write("## No IPv6 configured. Skipping %s\n" % interface_settings['name'] )
             self.interfacesFile.write("\n\n");
             return
 
-        self.interfacesFile.write("auto %s\n" % interface_settings['symbolicDev'])
+        #self.interfacesFile.write("auto %s\n" % interface_settings['symbolicDev'])
         self.interfacesFile.write("iface %s inet6 %s\n" % (interface_settings['symbolicDev'], "static") )
         self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings['interfaceId'])
         self.interfacesFile.write("\tnetd_v6_address %s\n" % interface_settings['v6StaticAddress'])
         self.interfacesFile.write("\tnetd_v6_netmask %s\n" % interface_settings['v6StaticPrefixLength'])
-        self.interfacesFile.write("\tnetd_v6_gateway %s\n" % interface_settings['v6StaticGateway'])
+        if 'v6StaticGateway' in interface_settings:
+            self.interfacesFile.write("\tnetd_v6_gateway %s\n" % interface_settings['v6StaticGateway'])
         self.interfacesFile.write("\n\n");
 
     def check_interface_settings( self, interface_settings):

@@ -102,7 +102,7 @@ class IptablesRulesManager:
         file.write("# Create the mark-dst-intf chain." + "\n");
         file.write("#\n\n");
 
-        # we dont bother with already marked packets, except if its the first packet in the session
+        # We dont bother with already marked packets, except if its the first packet in the session
         # If it is the first packet then WAN-balancer could have picked a WAN but it might be headed elsewhere because of a static route.
         file.write("${IPTABLES} -t mangle -A mark-dst-intf -m mark ! --mark 0/0x%04X -m conntrack ! --ctstate NEW -j RETURN -m comment --comment \"If its already set and an existing session, just return\"" % (self.dstInterfaceMarkMask) + "\n");
         file.write("\n");
