@@ -8,9 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-dhclient-config
 Architecture: all
-Depends: dhcp3-client, untangle-net-alpaca
-Conflicts: pump, pump-mv
-Provides: pump-mv
-Replaces: pump-mv
+Depends: dhcp3-client
+Conflicts: pump
 Description: The Untangle DHCP Config
  The Untangle DHCP Configurator.

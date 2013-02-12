@@ -8,6 +8,6 @@ Standards-Version: 3.8.0
 
 Package: untangle-shield
 Architecture: any
-Depends: ${shlibs:Depends}, untangle-net-alpaca, dash
+Depends: ${shlibs:Depends}, dash
 Description: The Untangle Shield
  The Untangle Shield.  A utility for regulating excessive traffic usage.

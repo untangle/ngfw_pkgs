@@ -8,6 +8,6 @@ Standards-Version: 3.8.0
 
 Package: untangle-ddclient-config
 Architecture: all
-Depends: ddclient, untangle-net-alpaca
+Depends: ddclient
 Description: Untangle ddclient wrapper package
  The Untangle ddclient autoconfigurator

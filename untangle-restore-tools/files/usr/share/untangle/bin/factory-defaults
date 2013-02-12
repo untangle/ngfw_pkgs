@@ -1,7 +1,6 @@
 #! /bin/bash
 
 /etc/init.d/untangle-vm stop
-/etc/init.d/untangle-net-alpaca stop
 
 # touch factory-defaults file to tell system to start in wizard mode
 touch /usr/share/untangle/conf/factory-defaults
@@ -22,7 +21,6 @@ rm -rf /usr/share/untangle/conf/openvpn
 rm -rf /usr/share/untangle/quarantine
 rm -rf /etc/openvpn
 rm -rf /usr/share/untangle/web/reports/data/*
-rm -f /var/lib/rails/untangle-net-alpaca/database/production.db
 
 echo " done"
 
