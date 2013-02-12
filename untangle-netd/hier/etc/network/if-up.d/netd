@@ -129,10 +129,18 @@ netd_address()
         #$DEBUG ifconfig $IFACE ${IF_NETD_V4_ADDRESS} netmask ${IF_NETD_V4_NETMASK} up
         ifconfig $IFACE ${IF_NETD_V4_ADDRESS} netmask ${IF_NETD_V4_NETMASK} up
     fi
+
+    if [ -n "${IF_NETD_V6_ADDRESS}" ] && [ -n "${IF_NETD_V6_NETMASK}" ]; then
+        debug "/etc/network/if-up.d/netd: FIXME implement IPv6 address/netmask"
+    fi
     
     if [ -n "${IF_NETD_V4_GATEWAY}" ]; then
         #$DEBUG ip route replace default via ${IF_NETD_V4_GATEWAY}
         ip route replace default via ${IF_NETD_V4_GATEWAY}
+    fi
+
+    if [ -n "${IF_NETD_V6_GATEWAY}" ]; then
+        debug "/etc/network/if-up.d/netd: FIXME implement IPv6 address/netmask"
     fi
     
     return 0

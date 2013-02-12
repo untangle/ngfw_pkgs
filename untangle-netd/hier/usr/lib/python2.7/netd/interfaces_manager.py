@@ -72,7 +72,7 @@ class InterfacesManager:
             return
 
         #self.interfacesFile.write("auto %s\n" % interface_settings['symbolicDev'])
-        self.interfacesFile.write("iface %s inet6 %s\n" % (interface_settings['symbolicDev'], "static") )
+        self.interfacesFile.write("iface %s inet6 %s\n" % (interface_settings['symbolicDev'], "manual") )
         self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings['interfaceId'])
         self.interfacesFile.write("\tnetd_v6_address %s\n" % interface_settings['v6StaticAddress'])
         self.interfacesFile.write("\tnetd_v6_netmask %s\n" % interface_settings['v6StaticPrefixLength'])
