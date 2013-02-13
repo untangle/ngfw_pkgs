@@ -27,21 +27,12 @@ class NatRulesManager:
             target = " -j SNAT --to-source %s " % str(nat_rule['newSource'])
         else:
             print "ERROR: invalid nat target: %s" + str(nat_rule)
+            return
 
         description = "NAT Rule #%i" % int(nat_rule['ruleId'])
         iptables_conditions = IptablesUtil.conditions_to_iptables_string( nat_rule['matchers']['list'], description, verbosity );
 
         iptables_commands = [ "${IPTABLES} -t nat -A nat-rules " + ipt + target for ipt in iptables_conditions ]
-
-        # print "nat_rule: %s" % str(nat_rule)
-        # print "target:"
-        # print target
-        # print "iptables_conditions:"
-        # for ipt in iptables_conditions:
-        #     print ipt
-        # print "iptables_commands:"
-        # for cmd in iptables_commands:
-        #     print cmd
 
         self.file.write("# %s\n" % description);
         for cmd in iptables_commands:

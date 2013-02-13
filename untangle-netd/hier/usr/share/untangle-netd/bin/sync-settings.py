@@ -5,6 +5,8 @@
 # /etc/network/interfaces
 # /etc/untangle-netd/iptables-rules.d/010-flush
 # /etc/untangle-netd/iptables-rules.d/200-nat-rules
+# /etc/untangle-netd/iptables-rules.d/210-port-forward-rules
+# /etc/untangle-netd/iptables-rules.d/220-bypass-rules
 # /etc/dnsmasq.conf
 # /etc/hosts
 # etc etc
@@ -116,7 +118,7 @@ except Exception,e:
     traceback.print_exc(e)
     exit(1)
 
-for module in [ InterfacesManager(), IptablesRulesManager(), NatRulesManager(), PortForwardManager(), EthernetManager() ]:
+for module in [ InterfacesManager(), IptablesRulesManager(), NatRulesManager(), PortForwardManager(), BypassRuleManager(), EthernetManager() ]:
     try:
         module.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
     except Exception,e:
