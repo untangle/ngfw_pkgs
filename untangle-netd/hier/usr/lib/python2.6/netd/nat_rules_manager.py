@@ -4,10 +4,13 @@ import subprocess
 import datetime
 import traceback
 from netd.iptables_util import IptablesUtil
+from netd.network_util import NetworkUtil
 
 # This class is responsible for writing /etc/untangle-netd/iptables-rules.d/200-nat-rules
 # based on the settings object passed from sync-settings.py
 class NatRulesManager:
+    interfacesMarkMask = 0x0000FFFF
+
     defaultFilename = "/etc/untangle-netd/iptables-rules.d/200-nat-rules"
     filename = defaultFilename
     file = None
@@ -124,6 +127,13 @@ class NatRulesManager:
 
         return
 
+    def write_implicit_nat_rules( self, settings, verbosity=0 ):
+        self.file.write("# Implicit NAT Rule (hairpin for port forwards)" + "\n");
+        for intfId in NetworkUtil.interface_list():
+            self.file.write("${IPTABLES} -t nat -A nat-rules -m conntrack --ctstate DNAT -m connmark --mark 0x%X/0x%X -j MASQUERADE -m comment --comment \"NAT all port forwards (hairpin) (interface %s)\"" % ( (intfId+(intfId<<8)), self.interfacesMarkMask, str(intfId)) + "\n");
+        self.file.write("\n");
+
+
     def sync_settings( self, settings, prefix="", verbosity=0 ):
         if verbosity > 1: print "NatRulesManager: sync_settings()"
 
@@ -135,26 +145,32 @@ class NatRulesManager:
         self.file = open( self.filename, "w+" )
         self.file.write("## Auto Generated on %s\n" % datetime.datetime.now());
         self.file.write("## DO NOT EDIT. Changes will be overwritten.\n");
-        self.file.write("\n\n");
+        self.file.write("\n");
+        self.file.write("\n");
 
         self.file.write("# Create (if needed) and flush nat-rules chain" + "\n");
         self.file.write("${IPTABLES} -t nat -N nat-rules 2>/dev/null" + "\n");
-        self.file.write("${IPTABLES} -t nat -F nat-rules >/dev/null 2>&1" + "\n" + "\n");
+        self.file.write("${IPTABLES} -t nat -F nat-rules >/dev/null 2>&1" + "\n");
+        self.file.write("\n");
 
         self.file.write("# Call nat-rules chain from POSTROUTING chain to SNAT traffic" + "\n");
         self.file.write("${IPTABLES} -t nat -D POSTROUTING -m comment --comment \"SNAT rules\" -j nat-rules >/dev/null 2>&1" + "\n");
-        self.file.write("${IPTABLES} -t nat -A POSTROUTING -m comment --comment \"SNAT rules\" -j nat-rules" + "\n" + "\n");
+        self.file.write("${IPTABLES} -t nat -A POSTROUTING -m comment --comment \"SNAT rules\" -j nat-rules" + "\n");
+        self.file.write("\n");
 
         self.file.write("# Create (if needed) and flush nat-reverse-filter chain" + "\n");
         self.file.write("${IPTABLES} -t filter -N nat-reverse-filter 2>/dev/null" + "\n");
-        self.file.write("${IPTABLES} -t filter -F nat-reverse-filter >/dev/null 2>&1" + "\n" + "\n");
+        self.file.write("${IPTABLES} -t filter -F nat-reverse-filter >/dev/null 2>&1" + "\n");
+        self.file.write("\n");
 
         self.file.write("# Call nat-reverse-filter chain from FORWARD chain to block traffic to NATd interface from \"outside\" " + "\n");
         self.file.write("${IPTABLES} -t filter -D FORWARD -m comment --comment \"block traffic to NATd interfaces\" -j nat-reverse-filter >/dev/null 2>&1" + "\n");
-        self.file.write("${IPTABLES} -t filter -A FORWARD -m comment --comment \"block traffic to NATd interfaces\" -j nat-reverse-filter" + "\n" + "\n");
+        self.file.write("${IPTABLES} -t filter -A FORWARD -m comment --comment \"block traffic to NATd interfaces\" -j nat-reverse-filter" + "\n");
+        self.file.write("\n");
 
         self.write_nat_rules( settings, verbosity );
         self.write_interface_nat_options( settings, verbosity );
+        self.write_implicit_nat_rules( settings, verbosity );
 
         self.file.flush();
         self.file.close();
