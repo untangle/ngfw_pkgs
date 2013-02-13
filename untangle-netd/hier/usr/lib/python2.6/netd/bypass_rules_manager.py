@@ -4,11 +4,13 @@ import subprocess
 import datetime
 import traceback
 from netd.iptables_util import IptablesUtil
+from netd.network_util import NetworkUtil
 
 # This class is responsible for writing /etc/untangle-netd/iptables-rules.d/220-bypass-rules
 # based on the settings object passed from sync-settings.py
 class BypassRuleManager:
     bypassMarkMask = 0x01000000
+    interfacesMarkMask = 0x0000FFFF
 
     defaultFilename = "/etc/untangle-netd/iptables-rules.d/220-bypass-rules"
     filename = defaultFilename
@@ -25,7 +27,7 @@ class BypassRuleManager:
 
         bypass = None
         if 'bypass' in bypass_rule and bypass_rule['bypass']:
-            target = " -g set-bypass-mark "
+            target = " --goto set-bypass-mark "
         elif 'bypass' in bypass_rule and not bypass_rule['bypass']:
             target = " -j RETURN "
         else:
@@ -52,9 +54,14 @@ class BypassRuleManager:
         
         bypass_rules = settings['bypassRules']['list'];
 
-        self.file.write("# Implicit Bypass rule (loopback)" + "\n");
-        self.file.write("${IPTABLES} -t mangle -A bypass-rules -i lo -g set-bypass-mark -m comment --comment \"Always bypass loopback traffic\"" + "\n");
-        self.file.write("${IPTABLES} -t mangle -A bypass-rules -o lo -g set-bypass-mark -m comment --comment \"Always bypass loopback traffic\"" + "\n");
+        self.file.write("# Implicit Bypass Rules (loopback)" + "\n");
+        self.file.write("${IPTABLES} -t mangle -A bypass-rules -i lo --goto set-bypass-mark -m comment --comment \"Bypass loopback traffic\"" + "\n");
+        self.file.write("${IPTABLES} -t mangle -A bypass-rules -o lo --goto set-bypass-mark -m comment --comment \"Bypass loopback traffic\"" + "\n");
+        self.file.write("\n");
+
+        self.file.write("# Implicit Bypass Rules (hairpin)" + "\n");
+        for intfId in NetworkUtil.interface_list():
+            self.file.write("${IPTABLES} -t mangle -A bypass-rules -m mark --mark 0x%X/0x%X --goto set-bypass-mark -m comment --comment \"Bypass hairpin traffic (interface %s)\"" % ( (intfId+(intfId<<8)), self.interfacesMarkMask, str(intfId)) + "\n");
         self.file.write("\n");
 
         for bypass_rule in bypass_rules:
