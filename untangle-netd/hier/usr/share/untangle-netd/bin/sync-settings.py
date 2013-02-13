@@ -15,14 +15,14 @@
 # Afterwards it will be necessary to restart certain services so the new settings will take effect
 
 import sys
-sys.path.insert(0, sys.path[0] + "/" + "../" + "../" + "../" + "lib/" + "python2.7/")
+sys.path.insert(0, sys.path[0] + "/" + "../" + "../" + "../" + "lib/" + "python2.6/")
 
 import getopt
 import signal
 import os
 import traceback
 
-# python2.7 includes json, python2.5 uses simplejson
+# python2.6 includes json, python2.5 uses simplejson
 try: import simplejson as json
 except ImportError: import json
 
