@@ -25,7 +25,6 @@ tee < ${LOGFILE}.pipe $LOGFILE &
 exec >> ${LOGFILE}.pipe 2>&1
 rm ${LOGFILE}.pipe
 
-
 iptables_debug()
 {
    echo "[`date`] /sbin/iptables $@"

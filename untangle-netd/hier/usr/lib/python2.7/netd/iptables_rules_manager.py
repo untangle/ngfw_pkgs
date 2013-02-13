@@ -79,6 +79,9 @@ class IptablesRulesManager:
         file.write("${IPTABLES} -t mangle -A mark-src-intf -m mark ! --mark 0/0x%04X -j RETURN -m comment --comment \"If its already set, just return\"" % (self.srcInterfaceMarkMask) + "\n");
         file.write("\n");
 
+        file.write("${IPTABLES} -t mangle -A mark-src-intf -i utun -j RETURN -m comment --comment \"Ignore utun traffic\"" + "\n");
+        file.write("\n");
+
         for intf in interfaces:
             id = intf['interfaceId']
             systemDev = intf['systemDev']
