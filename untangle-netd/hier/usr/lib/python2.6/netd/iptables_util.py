@@ -129,6 +129,7 @@ class IptablesUtil:
             if matcherType == "SRC_PORT":
                 if invert:
                     matcherStr = matcherStr + " ! "
+                value = value.replace("-",":").replace(" ","") # iptables uses colon to represent range not dash
                 matcherStr = matcherStr + " -m multiport  --source-ports %s " % value
                 if not hasProtocolMatcher:
                     # port explicitly means either TCP or UDP, since no protocol matcher has been specified, use "TCP,UDP" as the protocol matcher
@@ -138,6 +139,7 @@ class IptablesUtil:
             if matcherType == "DST_PORT":
                 if invert:
                     matcherStr = matcherStr + " ! "
+                value = value.replace("-",":").replace(" ","") # iptables uses colon to represent range not dash
                 matcherStr = matcherStr + " -m multiport --destination-ports %s " % value
                 if not hasProtocolMatcher:
                     # port explicitly means either TCP or UDP, since no protocol matcher has been specified, use "TCP,UDP" as the protocol matcher
