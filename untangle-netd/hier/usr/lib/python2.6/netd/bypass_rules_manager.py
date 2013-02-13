@@ -54,6 +54,7 @@ class BypassRuleManager:
 
         self.file.write("# Implicit Bypass rule (loopback)" + "\n");
         self.file.write("${IPTABLES} -t mangle -A bypass-rules -i lo -g set-bypass-mark -m comment --comment \"Always bypass loopback traffic\"" + "\n");
+        self.file.write("${IPTABLES} -t mangle -A bypass-rules -o lo -g set-bypass-mark -m comment --comment \"Always bypass loopback traffic\"" + "\n");
         self.file.write("\n");
 
         for bypass_rule in bypass_rules:
@@ -109,8 +110,8 @@ class BypassRuleManager:
         self.file.write("\n");
 
         self.file.write("# Call bypass-rules chain from PREROUTING chain to forward traffic" + "\n");
-        self.file.write("${IPTABLES} -t mangle -D PREROUTING -m conntrack --ctstate NEW -m comment --comment \"Bypass rules\" -j bypass-rules >/dev/null 2>&1" + "\n");
-        self.file.write("${IPTABLES} -t mangle -A PREROUTING -m conntrack --ctstate NEW -m comment --comment \"Bypass rules\" -j bypass-rules" + "\n");
+        self.file.write("${IPTABLES} -t mangle -D FORWARD -m conntrack --ctstate NEW -m comment --comment \"Bypass rules\" -j bypass-rules >/dev/null 2>&1" + "\n");
+        self.file.write("${IPTABLES} -t mangle -A FORWARD -m conntrack --ctstate NEW -m comment --comment \"Bypass rules\" -j bypass-rules" + "\n");
         self.file.write("\n");
 
         self.file.write("# Bypass all traffic from the local server" + "\n");
