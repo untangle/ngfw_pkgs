@@ -129,7 +129,7 @@ class IptablesUtil:
             if matcherType == "SRC_PORT":
                 if invert:
                     matcherStr = matcherStr + " ! "
-                matcherStr = matcherStr + " --source-port %s " % value
+                matcherStr = matcherStr + " -m multiport  --source-ports %s " % value
                 if not hasProtocolMatcher:
                     # port explicitly means either TCP or UDP, since no protocol matcher has been specified, use "TCP,UDP" as the protocol matcher
                     current_strings = [ " --protocol udp " + current for current in current_strings ] + [ " --protocol tcp " + current for current in current_strings ]
@@ -138,7 +138,7 @@ class IptablesUtil:
             if matcherType == "DST_PORT":
                 if invert:
                     matcherStr = matcherStr + " ! "
-                matcherStr = matcherStr + " --destination-port %s " % value
+                matcherStr = matcherStr + " -m multiport --destination-ports %s " % value
                 if not hasProtocolMatcher:
                     # port explicitly means either TCP or UDP, since no protocol matcher has been specified, use "TCP,UDP" as the protocol matcher
                     current_strings = [ " --protocol udp " + current for current in current_strings ] + [ " --protocol tcp " + current for current in current_strings ]
