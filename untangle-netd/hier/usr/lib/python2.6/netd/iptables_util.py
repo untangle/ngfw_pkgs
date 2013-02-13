@@ -4,10 +4,34 @@ import subprocess
 import datetime
 import traceback
 import string
+from netd.network_util import NetworkUtil
 
 # This class is a utility class with utility functions providing
 # useful tools for dealing with iptables rules
 class IptablesUtil:
+
+    settings = None
+
+    @staticmethod
+    def interface_matcher_string_to_interface_list( value ):
+        intfs = []
+        
+        for substr in value.split(","):
+            if substr == "wan":
+                intf_values  = NetworkUtil.wan_list()
+                for intfId in intf_values:
+                    if intfId not in intfs:
+                        intfs.append(intfId)
+            elif substr == "non_wan":
+                intf_values  = NetworkUtil.non_wan_list()
+                for intfId in intf_values:
+                    if intfId not in intfs:
+                        intfs.append(intfId)
+            else:
+                intfs.append(int(substr))
+
+        return intfs
+                    
 
     # This method takes a list of matchers (conditions) from a rule and translates them into a string containing the iptables conditions
     # It returns a list of strings, because some set of matchers require multiple iptables rules
@@ -37,7 +61,7 @@ class IptablesUtil:
                 print "ERROR: Ignoring invalid matcher: %s" % str(matcher)
                 continue
 
-            str = ""
+            matcherStr = ""
             matcherType = matcher['matcherType']
             invert = False
             value = None
@@ -55,11 +79,15 @@ class IptablesUtil:
                 current_strings = []
                 # split current rules for each protocol specified
                 for i in range(0 , len(protos) ):
-                    str = str + " --protocol %s " % string.lower(protos[i])
-                    current_strings = current_strings + [ str + current for current in orig_current_strings ]
+                    matcherStr = matcherStr + " --protocol %s " % string.lower(protos[i])
+                    current_strings = current_strings + [ matcherStr + current for current in orig_current_strings ]
 
             if matcherType == "SRC_INTF":
-                intfs = value.split(",")
+                if "any" in value:
+                    continue # no need to do anything
+
+                intfs = IptablesUtil.interface_matcher_string_to_interface_list( value )
+
                 if invert:
                     print "ERROR: invert not support on interface matcher"
                     continue
@@ -67,11 +95,15 @@ class IptablesUtil:
                 current_strings = []
                 # split current rules for each intf specified
                 for i in range(0 , len(intfs) ):
-                    str = " -m connmark --mark 0x%04X/0x00FF " % int(intfs[i])
-                    current_strings = current_strings + [ current + str for current in orig_current_strings ]
+                    matcherStr = " -m connmark --mark 0x%04X/0x00FF " % int(intfs[i])
+                    current_strings = current_strings + [ current + matcherStr for current in orig_current_strings ]
 
             if matcherType == "DST_INTF":
-                intfs = value.split(",")
+                if "any" in value:
+                    continue # no need to do anything
+
+                intfs = IptablesUtil.interface_matcher_string_to_interface_list( value )
+
                 if invert:
                     print "ERROR: invert not support on interface matcher"
                     continue
@@ -79,44 +111,44 @@ class IptablesUtil:
                 current_strings = []
                 # split current rules for each intf specified
                 for i in range(0 , len(intfs) ):
-                    str = " -m connmark --mark 0x%04X/0xFF00 " % (int(intfs[i]) << 8)
-                    current_strings = current_strings + [ current + str for current in orig_current_strings ]
+                    matcherStr = " -m connmark --mark 0x%04X/0xFF00 " % (int(intfs[i]) << 8)
+                    current_strings = current_strings + [ current + matcherStr for current in orig_current_strings ]
 
             if matcherType == "SRC_ADDR":
                 if invert:
-                    str = str + " ! "
-                str = str + " --source %s " % value
-                current_strings = [ current + str for current in current_strings ]
+                    matcherStr = matcherStr + " ! "
+                matcherStr = matcherStr + " --source %s " % value
+                current_strings = [ current + matcherStr for current in current_strings ]
 
             if matcherType == "DST_ADDR":
                 if invert:
-                    str = str + " ! "
-                str = str + " --destination %s " % value
-                current_strings = [ current + str for current in current_strings ]
+                    matcherStr = matcherStr + " ! "
+                matcherStr = matcherStr + " --destination %s " % value
+                current_strings = [ current + matcherStr for current in current_strings ]
 
             if matcherType == "SRC_PORT":
                 if invert:
-                    str = str + " ! "
-                str = str + " --source-port %s " % value
+                    matcherStr = matcherStr + " ! "
+                matcherStr = matcherStr + " --source-port %s " % value
                 if not hasProtocolMatcher:
                     # port explicitly means either TCP or UDP, since no protocol matcher has been specified, use "TCP,UDP" as the protocol matcher
                     current_strings = [ " --protocol udp " + current for current in current_strings ] + [ " --protocol tcp " + current for current in current_strings ]
-                current_strings = [ current + str for current in current_strings ]
+                current_strings = [ current + matcherStr for current in current_strings ]
 
             if matcherType == "DST_PORT":
                 if invert:
-                    str = str + " ! "
-                str = str + " --destination-port %s " % value
+                    matcherStr = matcherStr + " ! "
+                matcherStr = matcherStr + " --destination-port %s " % value
                 if not hasProtocolMatcher:
                     # port explicitly means either TCP or UDP, since no protocol matcher has been specified, use "TCP,UDP" as the protocol matcher
                     current_strings = [ " --protocol udp " + current for current in current_strings ] + [ " --protocol tcp " + current for current in current_strings ]
-                current_strings = [ current + str for current in current_strings ]
+                current_strings = [ current + matcherStr for current in current_strings ]
 
             if matcherType == "DST_LOCAL":
                 if invert:
-                    str = str + " ! "
-                str = str + " -m addrtype --dst-type local "
-                current_strings = [ current + str for current in current_strings ]
+                    matcherStr = matcherStr + " ! "
+                matcherStr = matcherStr + " -m addrtype --dst-type local "
+                current_strings = [ current + matcherStr for current in current_strings ]
                 
 
         

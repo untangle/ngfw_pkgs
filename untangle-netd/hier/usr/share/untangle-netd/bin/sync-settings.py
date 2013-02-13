@@ -118,6 +118,9 @@ except Exception,e:
     traceback.print_exc(e)
     exit(1)
 
+IptablesUtil.settings = settings
+NetworkUtil.settings = settings
+
 for module in [ InterfacesManager(), IptablesRulesManager(), NatRulesManager(), PortForwardManager(), BypassRuleManager(), EthernetManager() ]:
     try:
         module.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
