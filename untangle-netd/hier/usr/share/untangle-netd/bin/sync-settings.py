@@ -116,12 +116,7 @@ except Exception,e:
     traceback.print_exc(e)
     exit(1)
 
-interfacesManager = InterfacesManager()
-iptablesRulesManager = IptablesRulesManager()
-natRulesManager = NatRulesManager()
-ethernetManager = EthernetManager()
-
-for module in [ interfacesManager, iptablesRulesManager, natRulesManager, ethernetManager ]:
+for module in [ InterfacesManager(), IptablesRulesManager(), NatRulesManager(), PortForwardManager(), EthernetManager() ]:
     try:
         module.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
     except Exception,e:

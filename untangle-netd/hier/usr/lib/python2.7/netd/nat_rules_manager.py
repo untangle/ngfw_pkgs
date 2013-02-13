@@ -76,14 +76,14 @@ class NatRulesManager:
             if other_intf['config'] == 'bridged' and other_intf['bridgedTo'] == intf['interfaceId']:
                 continue;
             
-            self.file.write("# NAT ingress traffic coming from \"%s\"" % intf['name'] + "\n");
+            self.file.write("# NAT ingress traffic coming from interface %s" % str(intf['interfaceId']) + "\n");
             self.file.write("${IPTABLES} -t nat -A nat-rules -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"NAT traffic, %i -> %i (ingress setting)\" -j MASQUERADE" % 
                             ( ((other_intf['interfaceId'] << 8) + intf['interfaceId']),
                               intf['interfaceId'],
                               other_intf['interfaceId'] ))
             self.file.write("\n\n");
 
-            self.file.write("# block traffic to NATd interface \"%s\" (except port forwarded/DNAT traffic)" % intf['name'] + "\n");
+            self.file.write("# block traffic to NATd interface %i (except port forwarded/DNAT traffic)" % intf['interfaceId'] + "\n");
             self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m conntrack ! --ctstate DNAT -m comment --comment \"Block traffic to NATd interace, %i -> %i (ingress setting)\" -j REJECT" % 
                             ( ((intf['interfaceId'] << 8) + other_intf['interfaceId']),
                               other_intf['interfaceId'],
@@ -104,14 +104,14 @@ class NatRulesManager:
             if other_intf['config'] == 'bridged' and other_intf['bridgedTo'] == intf['interfaceId']:
                 continue;
             
-            self.file.write("# NAT egress traffic exiting \"%s\"" % intf['name'] + "\n");
+            self.file.write("# NAT egress traffic exiting interface %s" % str(intf['interfaceId']) + "\n");
             self.file.write("${IPTABLES} -t nat -A nat-rules -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"NAT traffic, %i -> %i (egress setting)\" -j MASQUERADE" % 
                             ( ((intf['interfaceId'] << 8) + other_intf['interfaceId']),
                               other_intf['interfaceId'],
                               intf['interfaceId'] ))
             self.file.write("\n\n");
 
-            self.file.write("# block traffic from NATd interface \"%s\" (except port forwarded/DNAT traffic)" % intf['name'] + "\n");
+            self.file.write("# block traffic from NATd interface %s (except port forwarded/DNAT traffic)" % intf['interfaceId'] + "\n");
             self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m conntrack ! --ctstate DNAT -m comment --comment \"Block traffic to NATd interace, %i -> %i (egress setting)\" -j REJECT" % 
                             ( ((other_intf['interfaceId'] << 8) + intf['interfaceId']),
                               intf['interfaceId'],
