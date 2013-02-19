@@ -59,6 +59,10 @@ class BypassRuleManager:
         self.file.write("${IPTABLES} -t mangle -A bypass-rules -o lo --goto set-bypass-mark -m comment --comment \"Bypass loopback traffic\"" + "\n");
         self.file.write("\n");
 
+        self.file.write("# Implicit Bypass Rules (DHCP)" + "\n");
+        self.file.write("${IPTABLES} -t mangle -A bypass-rules -p udp --destination-port 68 --goto set-bypass-mark -m comment --comment \"Bypass DHCP reply traffic\"" + "\n");
+        self.file.write("\n");
+
         self.file.write("# Implicit Bypass Rules (hairpin)" + "\n");
         for intfId in NetworkUtil.interface_list():
             self.file.write("${IPTABLES} -t mangle -A bypass-rules -m mark --mark 0x%X/0x%X --goto set-bypass-mark -m comment --comment \"Bypass hairpin traffic (interface %s)\"" % ( (intfId+(intfId<<8)), self.interfacesMarkMask, str(intfId)) + "\n");
