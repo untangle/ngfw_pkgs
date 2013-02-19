@@ -110,6 +110,10 @@ class IptablesRulesManager:
         file.write("${IPTABLES} -t mangle -A mark-dst-intf -m mark ! --mark 0/0x%04X -m conntrack ! --ctstate NEW -j RETURN -m comment --comment \"If its already set and an existing session, just return\"" % (self.dstInterfaceMarkMask) + "\n");
         file.write("\n");
 
+        # Don't bother with broadcast packets,
+        file.write("${IPTABLES} -t mangle -A mark-dst-intf -m addrtype --dst-type broadcast -j RETURN -m comment --comment \"If its a broadcast packet, just return\"" + "\n");
+        file.write("\n");
+
         for intf in interfaces:
             id = intf['interfaceId']
             systemDev = intf['systemDev']
@@ -122,9 +126,9 @@ class IptablesRulesManager:
                 # physdev-out doesn't work, instead queue to userspace daemon
                 # file.write("${IPTABLES} -t mangle -A mark-dst-intf -m physdev --physdev-out %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i using physdev\"" % (systemDev, id << 8, self.dstInterfaceMarkMask, id) + "\n");
                 # queue to userspace
-                # file.write("${IPTABLES} -t mangle -A mark-dst-intf -m mark --mark 0/0x%04X -o %s -j NFQUEUE --queue-num 1979 -m comment --comment \"queue bridge packets to daemon to determine dst intf/port\"" % (self.dstInterfaceMarkMask, symbolicDev) + "\n");
+                file.write("${IPTABLES} -t mangle -A mark-dst-intf -m mark --mark 0/0x%04X -o %s -j NFQUEUE --queue-num 1979 -m comment --comment \"queue bridge packets to daemon to determine dst intf/port\"" % (self.dstInterfaceMarkMask, symbolicDev) + "\n");
                 # warn
-                file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -j LOG --log-prefix \"FIXME queue me:\" -m comment --comment \"queue bridge destined packets to daemon to determine destination\"" % (symbolicDev) + "\n");
+                # file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -j LOG --log-prefix \"FIXME queue me:\" -m comment --comment \"queue bridge destined packets to daemon to determine destination\"" % (symbolicDev) + "\n");
 
                 
         file.write("${IPTABLES} -t mangle -A mark-dst-intf -m mark --mark 0/0x%04X -j LOG --log-prefix \"WARNING (unknown dst intf):\" -m comment --comment \"WARN on missing dst mark\"" % (self.dstInterfaceMarkMask) + "\n");
