@@ -166,15 +166,15 @@ networking_post_restart_hook()
     mv -f /etc/untangle-net-alpaca/update-address.d/25-arp /etc/untangle-net-alpaca/update-address.d/25-arp.off 2>/dev/null
     mv -f /etc/untangle-net-alpaca/update-address.d/40-openvpn /etc/untangle-net-alpaca/update-address.d/40-openvpn.off 2>/dev/null
 
-
-    $DEBUG "running post-network-hooks"
-    $RUN_PARTS /etc/untangle-netd/post-network-hook.d
-
     # call alpaca update-address
     # this is just until netd has implemented the networking restart scripts
     # TEMP
     $DEBUG "running alpaca update-address"
     $RUN_PARTS /etc/untangle-net-alpaca/update-address.d
+
+    $DEBUG "running post-network-hooks"
+    $RUN_PARTS /etc/untangle-netd/post-network-hook.d
+
 
     return 0
 }

@@ -197,5 +197,5 @@ class IptablesRulesManager:
 
         self.write_interface_marks( settings, prefix, verbosity )
 
-        os.system("ln -s /usr/share/untangle-netd/bin/generate-iptables-rules.sh /etc/untangle-netd/post-network-hook.d/96-iptables");
+        os.system("ln -sf /usr/share/untangle-netd/bin/generate-iptables-rules.sh /etc/untangle-netd/post-network-hook.d/96-iptables");
 
