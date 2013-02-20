@@ -4,8 +4,13 @@ import subprocess
 import datetime
 import traceback
 
-# This class is responsible for writing /etc/untangle-netd/iptables-rules.d/010-flush
+# This class is responsible for writing:
+# /etc/untangle-netd/post-network-hook.d/96-iptables
+# /etc/untangle-netd/iptables-rules.d/010-flush
+# /etc/untangle-netd/iptables-rules.d/100-interface-marks
+#
 # based on the settings object passed from sync-settings.py
+#
 class IptablesRulesManager:
     flushFilename = "/etc/untangle-netd/iptables-rules.d/010-flush"
     interfaceMarksFilename = "/etc/untangle-netd/iptables-rules.d/100-interface-marks"
@@ -191,4 +196,6 @@ class IptablesRulesManager:
         self.write_flush_file( prefix, verbosity )
 
         self.write_interface_marks( settings, prefix, verbosity )
+
+        os.system("ln -s /usr/share/untangle-netd/bin/generate-iptables-rules.sh /etc/untangle-netd/post-network-hook.d/96-iptables");
 

@@ -7,6 +7,8 @@ from netd.bypass_rules_manager import BypassRuleManager
 from netd.ethernet_manager import EthernetManager
 from netd.finddev_manager import FindDevManager
 from netd.hosts_manager import HostsManager
+from netd.sysctl_manager import SysctlManager
+from netd.arp_manager import ArpManager
 
 from netd.iptables_util import IptablesUtil
 from netd.network_util import NetworkUtil
