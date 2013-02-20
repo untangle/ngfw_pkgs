@@ -3,9 +3,12 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+#include <time.h>
+#include <pthread.h>
 #include <net/if.h>
 #include <net/if_arp.h>
 #include <netinet/in.h>
@@ -96,16 +99,33 @@ unsigned long delay_array[] = {
 };
 
 /**
+ * Global queue handle
+ */
+struct nfq_q_handle *qh = NULL;
+
+/**
+ * New thread attributes
+ */
+pthread_attr_t attr;
+
+/**
+ * print lock
+ */
+pthread_mutex_t print_mutex;
+
+/**
  * broadcast MAC address
  */
 struct ether_addr broadcast_mac = { .ether_addr_octet = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF } };
 
 static int    _usage( char *name );
 static int    _parse_args( int argc, char** argv );
+static int    _debug( int level, char *lpszFmt, ...);
 static char*  _inet_ntoa ( in_addr_t addr );
 static void   _mac_to_string ( char *mac_string, int len, struct ether_addr* mac );
 static void   _print_pkt ( struct nfq_data *tb );
 
+static void*  _pthread_callback ( void* nfav );
 static int    _nfqueue_callback ( struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfa, void *data );
 
 static int    _find_outdev_index ( struct nfq_data *tb );
@@ -119,7 +139,6 @@ static int    _arp_fake_connect      ( struct in_addr* src_ip, struct in_addr* d
 static int    _arp_build_packet  ( struct ether_arp* pkt, struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
 
 /**
- * TODO - create new thread in callback (thread can NOT block EVER)
  * TODO - test with valgrind
  * TODO - handling of non-IP packets?
  * TODO - handling of IPv6?
@@ -130,47 +149,58 @@ static int    _arp_build_packet  ( struct ether_arp* pkt, struct in_addr* src_ip
 int main( int argc, char **argv )
 {
     struct nfq_handle *h;
-    struct nfq_q_handle *qh;
     struct nfnl_handle *nh;
     int fd;
     int rv;
     char buf[4096];
-
+    
     if ( _parse_args( argc, argv ) < 0 )
         return _usage( argv[0] );
 
-    if (verbosity >= 2) printf("Initializing arp socket...\n");
+    if ( (rv = pthread_attr_init(&attr)) != 0 ) {
+        fprintf( stderr, "pthread_attr_init: %s\n", strerror(rv) );
+    }
+    
+    if ( (rv = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED)) != 0 ) {
+        fprintf( stderr, "pthread_attr_setdetachstate: %s\n", strerror(rv) );
+    }
+
+    if ( (rv = pthread_mutex_init( &print_mutex, NULL )) != 0 ) {
+        fprintf( stderr, "pthread_mutex_init: %s\n", strerror(rv) );
+    }
+
+    _debug( 2, "Initializing arp socket...\n");
     if (( arp_socket = socket( PF_INET, SOCK_DGRAM, 0 )) < 0 ) {
         fprintf( stderr, "socket: %s\n", strerror(errno) );
         return -1;
     }
 
-    if (verbosity >= 2) printf("Initializing pkt socket...\n");
+    _debug( 2, "Initializing pkt socket...\n");
     if (( pkt_socket = socket( PF_PACKET, SOCK_DGRAM, 0 )) < 0 ) {
         fprintf( stderr, "socket: %s\n", strerror(errno) );
         return -1;
     }
 
-    if (verbosity >= 2) printf("Opening netfilter queue...\n");
+    _debug( 2, "Opening netfilter queue...\n");
     h = nfq_open();
     if (!h) {
         fprintf( stderr, "error during nfq_open()\n");
         exit(1);
     }
 
-    if (verbosity >= 2) printf("Unbinding existing nf_queue handler for AF_INET (if any)\n");
+    _debug( 2, "Unbinding existing nf_queue handler for AF_INET (if any)\n");
     if (nfq_unbind_pf(h, AF_INET) < 0) {
         fprintf( stderr, "error during nfq_unbind_pf()\n");
         exit(1);
     }
 
-    if (verbosity >= 2) printf("Binding nfnetlink_queue as nf_queue handler for AF_INET\n");
+    _debug( 2, "Binding nfnetlink_queue as nf_queue handler for AF_INET\n");
     if (nfq_bind_pf(h, AF_INET) < 0) {
         fprintf( stderr, "error during nfq_bind_pf()\n");
         exit(1);
     }
 
-    if (verbosity >= 2) printf("Binding this socket to queue %i\n", QUEUE_NUM);
+    _debug( 2, "Binding this socket to queue %i\n", QUEUE_NUM);
     qh = nfq_create_queue(h, QUEUE_NUM, &_nfqueue_callback, NULL);
     if (!qh) {
         fprintf( stderr, "error during nfq_create_queue()\n");
@@ -178,7 +208,7 @@ int main( int argc, char **argv )
     }
 
     // IPv6? FIXME: sizeof(struct iphdr) is IPv4 header
-    if (verbosity >= 2) printf("Setting copy_packet mode\n");
+    _debug( 2, "Setting copy_packet mode\n");
     // if (nfq_set_mode(qh, NFQNL_COPY_META, 0xffff) < 0) {
     if (nfq_set_mode(qh, NFQNL_COPY_PACKET, sizeof(struct iphdr)) < 0) {
         fprintf( stderr, "can't set packet_copy mode\n");
@@ -188,21 +218,59 @@ int main( int argc, char **argv )
     nh = nfq_nfnlh(h);
     fd = nfnl_fd(nh);
 
-    if (verbosity >= 1)  printf("Listening for packets...\n");
+    _debug(1, "Listening for packets...\n");
     
     while ((rv = recv(fd, buf, sizeof(buf), 0)) && rv >= 0) {
         nfq_handle_packet(h, buf, rv);
     }
 
-    if (verbosity >= 2) printf("Unbinding from queue 0\n");
+    _debug( 2, "Unbinding from queue 0\n");
     nfq_destroy_queue(qh);
 
-    if (verbosity >= 2) printf("Closing library handle\n");
+    _debug( 2, "Closing library handle\n");
     nfq_close(h);
 
-    if (verbosity >= 1) printf("Exitting...");
+    _debug(1,"Exitting...");
 
     exit(0);
+}
+
+static int  _debug( int level, char *lpszFmt, ... )
+{
+    if (verbosity >= level)
+    {
+        va_list argptr;
+
+        va_start(argptr, lpszFmt);
+
+        if ( pthread_mutex_lock( &print_mutex ) < 0 ) {
+            fprintf( stderr, "pthread_mutex_lock: %s\n", strerror(errno) );
+        }
+        
+        if ( 1 ) {
+            struct timeval tv;
+            struct tm tm;
+            
+            gettimeofday(&tv,NULL);
+            if (!localtime_r(&tv.tv_sec,&tm))
+                fprintf( stderr, "gmtime_r: %s\n", strerror(errno) );
+            
+            fprintf( stdout, "%02i-%02i %02i:%02i:%02i.%06li| ", tm.tm_mon+1,tm.tm_mday,tm.tm_hour,tm.tm_min,tm.tm_sec, (long)tv.tv_usec );
+        }
+          
+        vfprintf( stdout, lpszFmt, argptr );
+
+        va_end( argptr );
+
+        fflush( stdout );
+
+        if ( pthread_mutex_unlock( &print_mutex ) < 0 ) {
+            fprintf( stderr, "pthread_mutex_unlock: %s\n", strerror(errno) );
+        }
+        
+    }
+
+	return 0;
 }
 
 static int _usage( char *name )
@@ -263,7 +331,7 @@ static int _parse_args( int argc, char** argv )
                 if ( interfaceNames[i] == NULL ) {
                     interfaceNames[i] = strdup(name);
                     interfaceIds[i] = id;
-                    if (verbosity >= 1) printf("Marking Interface %s with mark %i\n", interfaceNames[i], interfaceIds[i]);
+                    _debug( 1, "Marking Interface %s with mark %i\n", interfaceNames[i], interfaceIds[i]);
                     break;
                 }
             }
@@ -279,8 +347,22 @@ static int _parse_args( int argc, char** argv )
     return 0;
 }
 
+
 static int _nfqueue_callback(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfa, void *data)
 {
+    pthread_t id;
+    int ret = pthread_create( &id, &attr, _pthread_callback, nfa );
+
+    if (ret != 0) {
+        fprintf( stderr, "pthread_create: %s\n", strerror(ret));
+    }
+
+    return 0;
+}
+
+static void* _pthread_callback( void* nfav )
+{
+    struct nfq_data* nfa = (struct nfq_data*) nfav;
     int id = 0;
     struct nfqnl_msg_packet_hdr *ph;
 
@@ -302,25 +384,26 @@ static int _nfqueue_callback(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, st
          * Unable to determine out interface
          * Set the bypass mark and accept the packet
          */
-        if (verbosity >= 2) printf("CURRENT MARK: 0x%08x\n", mark);
+        _debug( 2, "CURRENT MARK: 0x%08x\n", mark);
         mark = mark | MARK_BYPASS;
-        if (verbosity >= 2) printf("NEW     MARK: 0x%08x\n", mark);
+        _debug( 2, "NEW     MARK: 0x%08x\n", mark);
 
         mark = htonl( mark );
-        return nfq_set_verdict_mark(qh, id, NF_ACCEPT, mark, 0, NULL);
+        nfq_set_verdict_mark(qh, id, NF_ACCEPT, mark, 0, NULL);
+        return NULL;
     }
     else {
-        if (verbosity >= 2) printf("CURRENT MARK: 0x%08x\n", mark);
+        _debug( 2, "CURRENT MARK: 0x%08x\n", mark);
         mark = mark & 0xFFFF00FF;
         mark = mark | (out_port_utindex << 8);
-        if (verbosity >= 2) printf("NEW     MARK: 0x%08x\n", mark);
+        _debug( 2, "NEW     MARK: 0x%08x\n", mark);
 
         mark = htonl( mark );
 
         // NF_REPEAT instead of NF_ACCEPT to repeat mark-dst-intf
         // this will force it to save the dst mark to the connmark
-        return nfq_set_verdict_mark(qh, id, NF_REPEAT, mark, 0, NULL);
-
+        nfq_set_verdict_mark(qh, id, NF_REPEAT, mark, 0, NULL);
+        return NULL;
     }
 }
 
@@ -333,11 +416,25 @@ static void _print_pkt ( struct nfq_data *tb )
     char *data;
     char intf_name[IF_NAMESIZE];
 
-    printf("PACKET: ");
+    if ( pthread_mutex_lock( &print_mutex ) < 0 ) {
+        fprintf( stderr, "pthread_mutex_lock: %s\n", strerror(errno) );
+    }
+
+    if ( 1 ) {
+        struct timeval tv;
+        struct tm tm;
+            
+        gettimeofday(&tv,NULL);
+        if (!localtime_r(&tv.tv_sec,&tm))
+            fprintf( stderr, "gmtime_r: %s\n", strerror(errno) );
+            
+        printf( "%02i-%02i %02i:%02i:%02i.%06li| ", tm.tm_mon+1,tm.tm_mday,tm.tm_hour,tm.tm_min,tm.tm_sec, (long)tv.tv_usec );
+    }
     
     ph = nfq_get_msg_packet_hdr(tb);
     if (ph){
         id = ntohl(ph->packet_id);
+        printf("PACKET[%i]: ", id);
         printf("hw_protocol=0x%04x hook=%u id=%u ",
                ntohs(ph->hw_protocol), ph->hook, id);
     }
@@ -350,18 +447,18 @@ static void _print_pkt ( struct nfq_data *tb )
     if (ifindex) {
         if ( if_indextoname(ifindex, intf_name) == NULL) {
             fprintf( stderr,"if_indextoname: %s\n", strerror(errno) );
-            return;
+        } else {
+            printf("indev=(%i,%s) ", ifindex, intf_name);
         }
-        printf("indev=(%i,%s) ", ifindex, intf_name);
     }
 
     ifindex = nfq_get_outdev(tb);
     if (ifindex) {
         if ( if_indextoname(ifindex, intf_name) == NULL) {
             fprintf( stderr,"if_indextoname: %s\n", strerror(errno) );
-            return;
+        } else {
+            printf("outdev=(%i,%s) ", ifindex, intf_name);
         }
-        printf("outdev=(%i,%s) ", ifindex, intf_name);
     }
 
     ret = nfq_get_payload(tb, &data);
@@ -369,23 +466,26 @@ static void _print_pkt ( struct nfq_data *tb )
         printf("payload_len=%d ", ret);
 
     if (ret < sizeof(struct iphdr)) {
-        fputc('\n', stdout);
-        return;
-    }
+        printf("\n");
+    } else {
     
-    struct iphdr * ip = (struct iphdr *) data;
-    struct in_addr ipa;
+        struct iphdr * ip = (struct iphdr *) data;
+        struct in_addr ipa;
 
-    printf( "IPv%i ", ip->version);
+        printf( "IPv%i ", ip->version);
 
-    if (ip->version != 4) {
-        fputc('\n', stdout);
-        return;
+        if (ip->version != 4) {
+            printf("\n");
+        } else {
+            printf( "src: %s ", _inet_ntoa(ip->saddr));
+            printf( "dst: %s ", _inet_ntoa(ip->daddr));
+            printf( "\n" );
+        }
     }
-    
-    printf( "src: %s ", _inet_ntoa(ip->saddr));
-    printf( "dst: %s ", _inet_ntoa(ip->daddr));
-    printf( "\n" );
+
+    if ( pthread_mutex_unlock( &print_mutex ) < 0 ) {
+        fprintf( stderr, "pthread_mutex_unlock: %s\n", strerror(errno) );
+    }
 
     return;
 }
@@ -397,6 +497,11 @@ static int _find_outdev_index( struct nfq_data* nfq_data )
     char *data;
     char intf_name[IF_NAMESIZE];
     int ret = 1;
+    struct nfqnl_msg_packet_hdr* ph = nfq_get_msg_packet_hdr(nfq_data);
+    int packet_id = 0;
+
+    if ( ph )
+        packet_id = ntohl(ph->packet_id);
 
     /**
      * Lookup interface information - will return an interface like br.eth0
@@ -407,10 +512,10 @@ static int _find_outdev_index( struct nfq_data* nfq_data )
         return -1;
     }
     if ( if_indextoname( ifindex, intf_name ) == NULL) {
-        fprintf( stderr,"if_indextoname: %s\n", strerror(errno));
+        fprintf( stderr,"if_indextoname( %i, %s): %s\n", ifindex, intf_name, strerror(errno));
         return -1;
     }
-    if (verbosity >= 2) printf("ARP: outdev=(%i,%s)\n", ifindex, intf_name);
+    _debug( 2, "ARP: outdev=(%i,%s)\n", ifindex, intf_name);
 
     /**
      * Lookup dst IP
@@ -471,7 +576,11 @@ static int _find_outdev_index( struct nfq_data* nfq_data )
         }
 
         if ( strncmp( bridge_port_intf_name, interfaceNames[i], IF_NAMESIZE ) == 0 ) {
-            if (verbosity >= 1) printf("RESULT: %s/%i\n", bridge_port_intf_name, interfaceIds[i]);
+            if (verbosity >= 1) {
+                char mac_string[MAC_STRING_LENGTH];
+                _mac_to_string( mac_string, sizeof( mac_string ), &mac_address );
+                _debug( 1, "RESULT[%i]: nextHop: %s nextHopMAC: %s -> systemDev: %s interfaceId: %i\n", packet_id, inet_ntoa( next_hop ), mac_string, bridge_port_intf_name, interfaceIds[i]);
+            }
             return interfaceIds[i];
         }
     }
@@ -479,7 +588,7 @@ static int _find_outdev_index( struct nfq_data* nfq_data )
     return -1;
 }
 
-char*   _inet_ntoa( in_addr_t addr )
+static char*   _inet_ntoa( in_addr_t addr )
 {
     struct in_addr i;
     memset(&i, 0, sizeof(i));
@@ -538,10 +647,8 @@ static int    _find_next_hop     ( char* dev_name, struct in_addr* dst_ip, struc
     
     /* Assuming that the return value is the index of the interface,
      * make sure this is always true */
-    if (verbosity >= 2)  {
-        printf( "ARP: The destination %s ", _inet_ntoa( dst_ip->s_addr ));
-        printf ("is going out [%s,%d] to %s\n", args.name, ifindex, _inet_ntoa( next_hop->s_addr ));
-    }
+    _debug( 2, "ARP: The destination %s ", _inet_ntoa( dst_ip->s_addr ));
+    _debug( 2,"is going out [%s,%d] to %s\n", args.name, ifindex, _inet_ntoa( next_hop->s_addr ));
         
     return 0;
 }
@@ -577,7 +684,7 @@ static int  _find_bridge_port   ( struct ether_addr* mac_address, char* bridge_n
         }
     }
         
-    if (verbosity >= 2) printf( "ARP[%s]: Outgoing interface index is %s,%d\n", bridge_name, buffer, ret );
+    _debug( 2,  "ARP[%s]: Outgoing interface index is %s,%d\n", bridge_name, buffer, ret );
     
 	return ret;
 }
@@ -607,7 +714,7 @@ static int  _arp_address       ( struct in_addr* dst_ip, struct ether_addr* mac,
         } else if (ret == 1 ) {
             return 1;
         } else {
-                if (verbosity >= 2) printf( "ARP: MAC not found for '%s' on '%s'. Sending ARP request.\n", _inet_ntoa( dst_ip->s_addr ), intf_name );
+                _debug( 2,  "ARP: MAC not found for '%s' on '%s'. Sending ARP request.\n", _inet_ntoa( dst_ip->s_addr ), intf_name );
         }
 
         /* Connect and close so the kernel grabs the source address */
@@ -630,7 +737,7 @@ static int  _arp_address       ( struct in_addr* dst_ip, struct ether_addr* mac,
         }
         c++;
         
-        if (verbosity >= 2) printf( "Waiting for the response for: %d ms\n", delay );
+        _debug( 2,  "Waiting for the response for: %d ms\n", delay );
         usleep( delay );
     }
     
@@ -665,7 +772,7 @@ static int  _arp_lookup_cache_entry     ( struct in_addr* ip, char* intf_name, s
         /* This only fails if a socket has never been opened to this IP address.
          * Must also check that the address returned a zero MAC address */
         if ( errno == ENXIO ) {
-            if (verbosity >= 2) printf( "ARP CACHE: MAC address for %s was not found\n", _inet_ntoa( ip->s_addr ));
+            _debug( 2,  "ARP CACHE: MAC address for %s was not found\n", _inet_ntoa( ip->s_addr ));
             return 0;
         }
 
@@ -675,7 +782,7 @@ static int  _arp_lookup_cache_entry     ( struct in_addr* ip, char* intf_name, s
 
     /* Returning an all zero MAC address indicates that the MAC was not found */
     if ( memcmp( &request.arp_ha.sa_data, &zero_mac, sizeof( struct ether_addr )) == 0 ) {
-        if (verbosity >= 2) printf( "ARP CACHE: Ethernet address for %s was not found\n", _inet_ntoa( ip->s_addr ));
+        _debug( 2,  "ARP CACHE: Ethernet address for %s was not found\n", _inet_ntoa( ip->s_addr ));
         return 0;
     }
 
@@ -684,7 +791,7 @@ static int  _arp_lookup_cache_entry     ( struct in_addr* ip, char* intf_name, s
     if (verbosity >= 2) {
         char mac_string[MAC_STRING_LENGTH];
         _mac_to_string( mac_string, sizeof( mac_string ), mac );
-        printf( "ARP: Cache resolved MAC[%d]: '%s' -> '%s'\n", ret, inet_ntoa( *ip ), mac_string );
+        _debug( 2, "ARP: Cache resolved MAC[%d]: '%s' -> '%s'\n", ret, inet_ntoa( *ip ), mac_string );
     }
 
     return 1;

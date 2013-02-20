@@ -1,7 +1,7 @@
 FILES = src/finddev
 
 INCLUDEDIR = /usr/include
-CFLAGS =  -g -O0 -I$(INCLUDEDIR) -lnetfilter_queue -lnfnetlink
+CFLAGS =  -g -O0 -I$(INCLUDEDIR) -lnetfilter_queue -lnfnetlink -lpthread
 
 all: $(FILES)
 
