@@ -512,7 +512,7 @@ static int _find_outdev_index( struct nfq_data* nfq_data )
         return -1;
     }
     if ( if_indextoname( ifindex, intf_name ) == NULL) {
-        fprintf( stderr,"if_indextoname( %i, %s): %s\n", ifindex, intf_name, strerror(errno));
+        fprintf( stderr,"if_indextoname: %s\n", strerror(errno));
         return -1;
     }
     _debug( 2, "ARP: outdev=(%i,%s)\n", ifindex, intf_name);
