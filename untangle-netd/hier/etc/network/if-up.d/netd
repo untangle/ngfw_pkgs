@@ -92,15 +92,6 @@ netd_address()
         debug "/etc/network/if-up.d/netd: FIXME implement IPv6 address/netmask"
     fi
     
-    if [ -n "${IF_NETD_V4_GATEWAY}" ]; then
-        #$DEBUG ip route replace default via ${IF_NETD_V4_GATEWAY}
-        ip route replace default via ${IF_NETD_V4_GATEWAY}
-    fi
-
-    if [ -n "${IF_NETD_V6_GATEWAY}" ]; then
-        debug "/etc/network/if-up.d/netd: FIXME implement IPv6 address/netmask"
-    fi
-    
     return 0
 }
 
@@ -135,26 +126,22 @@ networking_post_restart_hook()
 
 uplink_routes()
 {
-    local t_rt_table
-    local t_priority
-
-    [ -z "$IF_NETD_V4_GATEWAY" ] && {
-        $DEBUG "skipping uplink for ${IFACE}"
-        return 0
-    }
-
-    [ -z "$IF_NETD_V4_ADDRESS" ] && {
-        $DEBUG "skipping uplink for ${IFACE}"
-        return 0
-    }
+    local table_name
 
     [ -z "$IF_NETD_INTERFACE_INDEX" ] && {
         $DEBUG "Interface ${IFACE} is missing the interface index."
         return 0
     }
-    
-    t_rt_table="uplink.${IF_NETD_INTERFACE_INDEX}"
-    /usr/share/untangle-netd/bin/add-uplink.sh ${IFACE} ${IF_NETD_V4_GATEWAY} ${t_rt_table}
+
+    if [ -n "$IF_NETD_V4_GATEWAY" ] ; then
+        table_name="uplink.${IF_NETD_INTERFACE_INDEX}"
+        /usr/share/untangle-netd/bin/add-uplink.sh ${IFACE} ${IF_NETD_V4_GATEWAY} ${table_name}
+    fi
+
+    if [ -n "$IF_NETD_V6_GATEWAY" ] ; then
+        table_name="uplink.${IF_NETD_INTERFACE_INDEX}"
+        /usr/share/untangle-netd/bin/add-uplink.sh ${IFACE} ${IF_NETD_V6_GATEWAY} ${table_name}
+    fi
 }
 
 ## Start of script

@@ -113,28 +113,41 @@ fi
 
 """)
 
+        # Write an implicit route for each gateway
+        # This is necessary for dumb ISPs that provide gateways outside the netmask range
+        # Some other OSs (windows) do this, so people expect it
+        for intf in settings['interfaces']['list']:
+            if 'isWan' in intf and intf['isWan']:
+                if 'v4StaticGateway' in intf:
+                    file.write("# Implicit Gateway Route for Interface %i\n" % intf['interfaceId'])
+                    file.write("ip route add %s dev %s\n" % ( intf['v4StaticGateway'], intf['systemDev'] ) )
+                    file.write("if [ $? != 0 ] ; then echo \"ERROR: inserting implicity gateway for interface %i\" ; fi \n" % intf['interfaceId'])
+                    file.write("\n")
+
+        # Write the static routes from settings
         if settings == None or 'staticRoutes' not in settings or 'list' not in settings['staticRoutes']:
             print "ERROR: Missing Static Routes"
-            return
-        
-        static_routes = settings['staticRoutes']['list'];
+        else:
+            static_routes = settings['staticRoutes']['list'];
+            for static_route in static_routes:
+                for key in ['ruleId','nextHop','network','prefix']:
+                    if key not in static_route:
+                        print "ERROR: ignoring bad route missing key: %s\n" % key
+                        continue
+                    
+                if re.match('[a-z]+', static_route['nextHop']):
+                    # device route since nextHop includes alphas
+                    file.write("# Static Route %i\n" % static_route['ruleId'])
+                    file.write("ip route add %s/%s dev %s\n" % ( static_route['network'], static_route['prefix'], static_route['nextHop'] ) )
+                    file.write("if [ $? != 0 ] ; then echo \"ERROR: inserting route %i\" ; fi \n" % static_route['ruleId'])
+                    file.write("\n")
+                else:
+                    # otherwise gateway route
+                    file.write("# Static Route %i\n" % static_route['ruleId'])
+                    file.write("ip route add %s/%s via %s\n" % ( static_route['network'], static_route['prefix'], static_route['nextHop'] ) )
+                    file.write("if [ $? != 0 ] ; then echo \"ERROR: inserting route %i\" ; fi \n" % static_route['ruleId'])
+                    file.write("\n")
 
-        for static_route in static_routes:
-            for key in ['ruleId','nextHop','network','prefix']:
-                if key not in static_route:
-                    print "ERROR: ignoring bad route missing key: %s\n" % key
-                    continue
-
-            if re.match('[a-z]+', static_route['nextHop']):
-                # device route since nextHop includes alphas
-                file.write("# Static Route %i\n" % static_route['ruleId'])
-                file.write("ip route add %s/%s dev %s\n" % ( static_route['network'], static_route['prefix'], static_route['nextHop'] ) )
-                file.write("\n")
-            else:
-                # otherwise gateway route
-                file.write("# Static Route %i\n" % static_route['ruleId'])
-                file.write("ip route add %s/%s via %s\n" % ( static_route['network'], static_route['prefix'], static_route['nextHop'] ) )
-                file.write("\n")
 
         file.flush()
         file.close()
