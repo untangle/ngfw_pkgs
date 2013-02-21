@@ -113,17 +113,6 @@ fi
 
 """)
 
-        # Write an implicit route for each gateway
-        # This is necessary for dumb ISPs that provide gateways outside the netmask range
-        # Some other OSs (windows) do this, so people expect it
-        for intf in settings['interfaces']['list']:
-            if 'isWan' in intf and intf['isWan']:
-                if 'v4StaticGateway' in intf:
-                    file.write("# Implicit Gateway Route for Interface %i\n" % intf['interfaceId'])
-                    file.write("ip route add %s dev %s\n" % ( intf['v4StaticGateway'], intf['systemDev'] ) )
-                    file.write("if [ $? != 0 ] ; then echo \"ERROR: inserting implicity gateway for interface %i\" ; fi \n" % intf['interfaceId'])
-                    file.write("\n")
-
         # Write the static routes from settings
         if settings == None or 'staticRoutes' not in settings or 'list' not in settings['staticRoutes']:
             print "ERROR: Missing Static Routes"

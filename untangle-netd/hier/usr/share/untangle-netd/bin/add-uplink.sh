@@ -28,51 +28,22 @@ usage()
     exit 254
 }
 
+## Determine all of the routable aliases of an interface.
+ip_interface_get_aliases()
+{
+    ## Print out all of the aliases
+    ip -f inet addr show $1 scope global | awk '/inet/ { sub ( "/.*", "", $2 ) ; print  $2 }'
+}
+
+# Finds the first unused priority between $1 and $2
 ip_rule_get_priority()
 {
     local t_min_priority=$1
     local t_max_priority=$2
     
-    ip rule show | awk -v min_priority=$t_min_priority \
-        -v max_priority=$t_max_priority -v priority=$t_min_priority  \
+    ip rule show | awk -v min_priority=$t_min_priority -v max_priority=$t_max_priority -v priority=$t_min_priority  \
         '{ sub( ":", "" ) ; if (( $1 >= min_priority ) && ( $1 < max_priority ) && ( priority == $1 )) priority=$1 +1 } END { print priority }'
 
-}
-
-## Determine all of the routable aliases.
-ip_route_get_aliases()
-{
-    local t_interface
-    local t_gateway
-    local t_pppoe_interface
-    local t_connection_file
-    
-    t_interface=$1
-    t_gateway=$2
-    
-    ## Print out all of the aliases
-    ip -f inet addr show ${t_interface} scope global | \
-        awk '/inet/ { sub ( "/.*", "", $2 ) ; print  $2 }'
-            
-    if [ "${t_interface#ppp}" != "${t_interface}" ]; then
-        
-        if [ -f "/var/run/${t_interface}.pid" ]; then
-            t_pppoe_interface=`cat /var/run/${t_interface}.pid`
-            t_connection_file=`cat "/proc/${t_pppoe_interface}/cmdline" | tr '\000' '\001' | awk -v RS='\001' '/^connection./ { print ; exit }'`
-            
-            t_connection_file="/etc/ppp/peers/${t_connection_file}"
-            if [ -f ${t_connection_file} ] ; then
-                t_pppoe_interface=`awk '/^plugin rp-pppoe.so/ { print $3 ; exit }' ${t_connection_file}`
-            else
-                t_pppoe_interface=""
-            fi
-            
-            if [ -n "${t_pppoe_interface}" ] ; then
-                ip -f inet addr show ${t_pppoe_interface} scope global | \
-                    awk '/inet/ { sub("/.*","") ; print $2 }'
-            fi
-        fi
-    fi    
 }
 
 ## Determine if the rules are up to date.
@@ -91,7 +62,7 @@ ip_rule_update_source_routes()
     t_gateway=$2
     t_rt_table=$3
     
-    t_aliases=`ip_route_get_aliases $t_interface $t_gateway`
+    t_aliases=`ip_interface_get_aliases $t_interface`
     t_current_aliases=`ip rule show | awk "/from [0-9].*lookup ${t_rt_table}/ { print \\$3 }"`
  
     if [ "${t_aliases}x" = "${t_current_aliases}x" ]; then
@@ -130,11 +101,12 @@ $DEBUG "Adding uplink for [${IFACE}] -> ${GATEWAY} to ${RT_TABLE}"
 
 ip_rule_update_source_routes ${IFACE} ${GATEWAY} ${RT_TABLE}
 
-if [ "${GATEWAY}" = "ppp" ]; then
-    ${IP} route replace table ${RT_TABLE} default dev ${IFACE}
-else
-    ${IP} route replace table ${RT_TABLE} default via ${GATEWAY}
-fi
+# Add an implicit route for that gateway on IFACE
+# This is for ISPs that give out gateways not within the customer's network/netmask
+${IP} route add ${GATEWAY} dev ${IFACE}
+
+# Replace the default route in the uplink table
+${IP} route replace table ${RT_TABLE} default via ${GATEWAY}
 
 ## If necessary add the default uplink rule
 ip rule show | grep -q ${UNTANGLE_PRIORITY_DEFAULT} || {
