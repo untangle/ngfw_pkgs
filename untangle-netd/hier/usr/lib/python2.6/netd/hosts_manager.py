@@ -6,10 +6,11 @@ import traceback
 import re
 from netd.network_util import NetworkUtil
 
-# This class is responsible for writing /etc/untangle-netd/pre-network-hook.d/015-ethernet-media
+# This class is responsible for writing /etc/hosts and /etc/hostname
 # based on the settings object passed from sync-settings.py
 class HostsManager:
     hostsFile = "/etc/hosts"
+    hostnameFile = "/etc/hostname"
 
     def write_hosts_file( self, settings, prefix, verbosity ):
 
@@ -65,10 +66,34 @@ ff02::3 ip6-allhosts
         if verbosity > 0: print "HostsManager: Wrote %s" % filename
         return
 
+    def write_hostname_file( self, settings, prefix, verbosity ):
+
+        if 'hostName' not in settings:
+            print "ERROR: Missing hostname setting"
+            return
+
+        filename = prefix + self.hostnameFile
+        fileDir = os.path.dirname( filename )
+        if not os.path.exists( fileDir ):
+            os.makedirs( fileDir )
+
+        file = open( filename, "w+" )
+        file.write("%s\n" % settings['hostName'])
+
+        file.flush()
+        file.close()
+
+        # also set the hostname using '/bin/hostname'
+        os.system("/bin/hostname %s" % settings['hostName'])
+
+        if verbosity > 0: print "HostsManager: Wrote %s" % filename
+        return
+
     def sync_settings( self, settings, prefix="", verbosity=0 ):
 
         if verbosity > 1: print "HostsManager: sync_settings()"
         
+        self.write_hostname_file( settings, prefix, verbosity )
         self.write_hosts_file( settings, prefix, verbosity )
 
         return
