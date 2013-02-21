@@ -1,7 +1,7 @@
 #!/bin/dash
 
 # This script addes the appropriate ip route rules for a WAN interface
-# Usage: add-uplink.sh <interface> <gatewayIP> <routeTableNum>
+# Usage: add-uplink.sh <interface> <gatewayIP> <routeTable>
 
 ## All of the untangle rules MUST fall in this priority.  This makes it easy to
 ## flush all of the rules.
@@ -118,16 +118,15 @@ RT_TABLE=$3
 DEBUG=/bin/true
 IP="ip"
 
-[ -n "${DEBUG_MODE}" ] && {
-    DEBUG="debug"
-    IP="debug_ip"
-}
+DEBUG="debug"
+IP="debug_ip"
 
 [ -z "${IFACE}" ] && usage
 [ -z "${GATEWAY}" ] && usage
 [ -z "${RT_TABLE}" ] && usage
 
-$DEBUG "Adding uplink for[${IFACE}] ${ADDRESS}: -> ${GATEWAY} to ${RT_TABLE}"
+$DEBUG "$0 $*"
+$DEBUG "Adding uplink for [${IFACE}] -> ${GATEWAY} to ${RT_TABLE}"
 
 ip_rule_update_source_routes ${IFACE} ${GATEWAY} ${RT_TABLE}
 

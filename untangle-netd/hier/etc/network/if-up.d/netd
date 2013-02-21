@@ -1,22 +1,5 @@
 #!/bin/sh
 
-# FIXME should only add routse for active WANs
-
-# script
-SCRIPT_ADD_UPLINK="/usr/share/untangle-netd/bin/add-uplink.sh"
-
-# This is the table name prefix of Untangle WAN tables
-TABLE_PREFIX="uplink."
-
-## All of the untangle rules MUST starting in this priority prefix.  
-## This makes it easy to flush all of the untangle routing rules.
-UNTANGLE_PRIORITY_BASE="36"
-
-## Maximum number of interfaces
-MAX_INTERFACES=250
-
-## Functions
-
 debug()
 {
     /bin/echo -e "[NETD DEBUG: `date`] ${*}"
@@ -69,25 +52,6 @@ bridge_destroy_all()
     done
 }
 
-## Delete all of the rules thare are on one of the uplink tables.
-flush_uplink_tables()
-{
-    local t_route
-    ip route show table all | grep  "${TABLE_PREFIX}" | while read t_route ; do
-        ${IP} route delete ${t_route}
-    done
-}
-
-## Remove all of the rules
-flush_uplink_rules()
-{
-    local t_priority
-    
-    for t_priority in `ip rule show | awk "/^${UNTANGLE_PRIORITY_BASE}[0-9][0-9][0-9]:/ { sub( \":\", \"\", \\$1 ) ; print \\$1 }"` ; do
-        ${IP} rule delete priority ${t_priority}
-    done    
-}
-
 networking_pre_restart_hook()
 {
     $DEBUG "networking_pre_restart_hook"
@@ -105,12 +69,6 @@ networking_pre_restart_hook()
     
     $DEBUG "cleanup: Flushing interface addresses."
     ip addr flush scope global 2>/dev/null
-    
-    $DEBUG "cleanup: Flush all uplink tables."
-    flush_uplink_tables
-
-    $DEBUG "cleanup: Flush all uplink rules."
-    flush_uplink_rules
     
     $DEBUG "cleanup: Stopping all active PPP Connections."
     poff -a >/dev/null 2>&1
@@ -150,10 +108,6 @@ networking_post_restart_hook()
 {
     $DEBUG "networking_post_restart_hook"
 
-    # FIXME
-    # restart run the necessary stuff 
-    # This is what "update-address" used to be
-
     # write a temp redirect to call netd iptables rules instead
     rm -f /etc/untangle-net-alpaca/update-address.d/96-iptables 2>/dev/null
 
@@ -165,16 +119,16 @@ networking_post_restart_hook()
     mv -f /etc/untangle-net-alpaca/update-address.d/00-sysctl /etc/untangle-net-alpaca/update-address.d/00-sysctl.off 2>/dev/null
     mv -f /etc/untangle-net-alpaca/update-address.d/25-arp /etc/untangle-net-alpaca/update-address.d/25-arp.off 2>/dev/null
     mv -f /etc/untangle-net-alpaca/update-address.d/40-openvpn /etc/untangle-net-alpaca/update-address.d/40-openvpn.off 2>/dev/null
+    mv -f /etc/untangle-net-alpaca/update-address.d/30-routes /etc/untangle-net-alpaca/update-address.d/30-routes.off 2>/dev/null
 
     # call alpaca update-address
     # this is just until netd has implemented the networking restart scripts
-    # TEMP
+    # TEMP FIXME
     $DEBUG "running alpaca update-address"
     $RUN_PARTS /etc/untangle-net-alpaca/update-address.d
 
     $DEBUG "running post-network-hooks"
     $RUN_PARTS /etc/untangle-netd/post-network-hook.d
-
 
     return 0
 }
@@ -194,18 +148,13 @@ uplink_routes()
         return 0
     }
 
-    [ -x "${SCRIPT_ADD_UPLINK}" ] || {
-        $DEBUG "Missing the script '${SCRIPT_ADD_UPLINK}'."
-        return 0        
-    }
-
     [ -z "$IF_NETD_INTERFACE_INDEX" ] && {
         $DEBUG "Interface ${IFACE} is missing the interface index."
         return 0
     }
     
-    t_rt_table="${TABLE_PREFIX}${IF_NETD_INTERFACE_INDEX}"
-    ${SCRIPT_ADD_UPLINK} ${IFACE} ${IF_NETD_V4_GATEWAY} ${t_rt_table}
+    t_rt_table="uplink.${IF_NETD_INTERFACE_INDEX}"
+    /usr/share/untangle-netd/bin/add-uplink.sh ${IFACE} ${IF_NETD_V4_GATEWAY} ${t_rt_table}
 }
 
 ## Start of script
