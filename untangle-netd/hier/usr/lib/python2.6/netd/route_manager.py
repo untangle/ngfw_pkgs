@@ -3,13 +3,14 @@ import sys
 import subprocess
 import datetime
 import traceback
+import re
 from netd.network_util import NetworkUtil
 
 # This class is responsible for writing /etc/untangle-netd/pre-network-hook.d/015-ethernet-media
 # based on the settings object passed from sync-settings.py
 class RouteManager:
     rtTableFilename = "/etc/iproute2/rt_tables"
-    routeHookfilename = "/etc/untangle-netd/post-network-hook.d/30-route-rules"
+    routesFilename = "/etc/untangle-netd/post-network-hook.d/30-routes"
 
     IP_RULE_PRIORITY="366"
     DST_INTERFACE_SHIFT=8
@@ -53,9 +54,9 @@ class RouteManager:
         if verbosity > 0: print "RouteManager: Wrote %s" % filename
         return
 
-    def write_route_hook( self, settings, prefix, verbosity ):
+    def write_routes( self, settings, prefix, verbosity ):
 
-        filename = prefix + self.routeHookfilename
+        filename = prefix + self.routesFilename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
             os.makedirs( fileDir )
@@ -110,8 +111,30 @@ else
     insert_ip_route_rules
 fi
 
-exit 0
 """)
+
+        if settings == None or 'staticRoutes' not in settings or 'list' not in settings['staticRoutes']:
+            print "ERROR: Missing Static Routes"
+            return
+        
+        static_routes = settings['staticRoutes']['list'];
+
+        for static_route in static_routes:
+            for key in ['ruleId','nextHop','network','prefix']:
+                if key not in static_route:
+                    print "ERROR: ignoring bad route missing key: %s\n" % key
+                    continue
+
+            if re.match('[a-z]+', static_route['nextHop']):
+                # device route since nextHop includes alphas
+                file.write("# Static Route %i\n" % static_route['ruleId'])
+                file.write("ip route add %s/%s dev %s\n" % ( static_route['network'], static_route['prefix'], static_route['nextHop'] ) )
+                file.write("\n")
+            else:
+                # otherwise gateway route
+                file.write("# Static Route %i\n" % static_route['ruleId'])
+                file.write("ip route add %s/%s via %s\n" % ( static_route['network'], static_route['prefix'], static_route['nextHop'] ) )
+                file.write("\n")
 
         file.flush()
         file.close()
@@ -127,6 +150,6 @@ exit 0
         if verbosity > 1: print "RouteManager: sync_settings()"
         
         self.write_rt_table( settings, prefix, verbosity )
-        self.write_route_hook( settings, prefix, verbosity )
+        self.write_routes( settings, prefix, verbosity )
 
         return

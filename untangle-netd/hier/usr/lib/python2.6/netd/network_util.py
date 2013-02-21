@@ -4,6 +4,8 @@ import subprocess
 import datetime
 import traceback
 import string
+import socket
+import struct
 
 # This class is a utility class with utility functions providing
 # useful tools for dealing with iptables rules
