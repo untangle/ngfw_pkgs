@@ -1642,3 +1642,8 @@ div.x-column-header-inner {
 div.x-fieldset-header-text {
 	font-weight: bold
 }
+.boxlabel {
+    margin: 3px 0px 0px 10px;
+    font-family: arial, helvetica, freesans,sans-serif;
+    font-style: italic;
+}
