@@ -121,7 +121,8 @@ except Exception,e:
 IptablesUtil.settings = settings
 NetworkUtil.settings = settings
 
-for module in [ HostsManager(), InterfacesManager(), RouteManager(), IptablesRulesManager(), NatRulesManager(), PortForwardManager(), BypassRuleManager(), EthernetManager(), FindDevManager(), SysctlManager(), ArpManager() ]:
+for module in [ HostsManager(), DnsMasqManager(),
+                InterfacesManager(), RouteManager(), IptablesRulesManager(), NatRulesManager(), PortForwardManager(), BypassRuleManager(), EthernetManager(), FindDevManager(), SysctlManager(), ArpManager() ]:
     try:
         module.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
     except Exception,e:

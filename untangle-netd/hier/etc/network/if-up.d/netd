@@ -99,25 +99,6 @@ networking_post_restart_hook()
 {
     $DEBUG "networking_post_restart_hook"
 
-    # write a temp redirect to call netd iptables rules instead
-    rm -f /etc/untangle-net-alpaca/update-address.d/96-iptables 2>/dev/null
-
-    # disable old alpaca scripts TEMP
-    mv -f /etc/init.d/untangle-net-alpaca-iptables /etc/init.d/untangle-net-alpaca-iptables.off 2>/dev/null
-    mv -f /etc/untangle-net-alpaca/update-address.d/95-iptables /etc/untangle-net-alpaca/update-address.d/95-iptables.off 2>/dev/null
-    mv -f /etc/untangle-net-alpaca/update-address.d/98-restart-services /etc/untangle-net-alpaca/update-address.d/98-restart-services.off 2>/dev/null
-    mv -f /etc/untangle-net-alpaca/update-address.d/50-uvm /etc/untangle-net-alpaca/update-address.d/50-uvm.off 2>/dev/null
-    mv -f /etc/untangle-net-alpaca/update-address.d/00-sysctl /etc/untangle-net-alpaca/update-address.d/00-sysctl.off 2>/dev/null
-    mv -f /etc/untangle-net-alpaca/update-address.d/25-arp /etc/untangle-net-alpaca/update-address.d/25-arp.off 2>/dev/null
-    mv -f /etc/untangle-net-alpaca/update-address.d/40-openvpn /etc/untangle-net-alpaca/update-address.d/40-openvpn.off 2>/dev/null
-    mv -f /etc/untangle-net-alpaca/update-address.d/30-routes /etc/untangle-net-alpaca/update-address.d/30-routes.off 2>/dev/null
-
-    # call alpaca update-address
-    # this is just until netd has implemented the networking restart scripts
-    # TEMP FIXME
-    $DEBUG "running alpaca update-address"
-    $RUN_PARTS /etc/untangle-net-alpaca/update-address.d
-
     $DEBUG "running post-network-hooks"
     $RUN_PARTS /etc/untangle-netd/post-network-hook.d
 
