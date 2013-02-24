@@ -74,7 +74,7 @@ def headerparserhandler(req):
         username = 'setupwizard'
         save_session_user(sess, realm, username)
 
-    if None == username and is_root(req):
+    if None == username and is_local_process_uid_authorized(req):
         username = 'localadmin'
         log_login(req, username, True, True, None)
         save_session_user(sess, realm, username)
@@ -116,7 +116,7 @@ def session_user(sess, realm):
 def is_wizard_complete():
     return os.path.exists('/usr/share/untangle/conf/wizard-complete-flag')
 
-def is_root(req):
+def is_local_process_uid_authorized(req):
     (remote_ip, remote_port) = req.connection.remote_addr
 
     if remote_ip != "127.0.0.1":
@@ -136,12 +136,15 @@ def is_root(req):
     # We have to attempt to read /proc/net/tcp several times.
     # There is some race condition in the kernel and sometimes the socket we are looking for will not show up on the first read
     # This loop hack appears to "fix" the issue as it always shows up on the second read if the first fails.
+    #
+    # Also sometimes /proc/net/tcp reports the incorrect UID. 
+    # As a result, we must also try again if the UID is not authorized
+    uid = None
     for count in range(0,5):
         # if count > 0:
-        #     apache.log_error('Failed to find UID for %s:%s, attempting again... (try: %i)' % ( str(remote_ip), str(remote_port), (count+1) ) )
+        #     apache.log_error('Failed to find/authorize UID [%s, %s:%s], attempting again... (try: %i)' % ( str(uid), str(remote_ip), str(remote_port), (count+1) ) )
         try:
             infile = open('/proc/net/tcp', 'r')
-            uid = None
             for l in infile.readlines():
                 a = l.split()
                 if len(a) <= 2:
@@ -156,12 +159,9 @@ def is_root(req):
                         uid = int(a[7])
                         
                         # Found the UID
-                        # if its in the list of enabled UIDs, then return true otherwise false
-
+                        # if its in the list of enabled UIDs
                         if uid in uids:
                             return True
-                        if uid not in uids:
-                            return False
                     except:
                         apache.log_error('Bad UID: %s' % a[7])
 
@@ -170,7 +170,13 @@ def is_root(req):
         finally:
             infile.close()
 
-    apache.log_error('Failed to lookup PID for %s:%s' % ( str(remote_ip), str(remote_port) ) )
+    if uid == None:
+        apache.log_error('Failed to lookup PID for %s:%s' % ( str(remote_ip), str(remote_port) ) )
+    # This is commented out because its just for debugging
+    # This condition occurs regularly when connecting via a local browser
+    # else:
+    #     apache.log_error('UID not authorized (%i)' % uid )
+
     return False
 
 # This function will authenticate root (0) and any user in uvmlogin group
