@@ -85,7 +85,15 @@ def checkSettings( settings ):
                 raise Exception("Invalid Interface Settings: missing key %s" % key)
             
 
-# remove unused fields for safety
+# This removes/disable hidden fields in the interface settings so we are certain they don't apply
+# We do these operations here because we don't want to actually modify the settings
+# For example, lets say you have DHCP enabled, but then you choose to bridge that interface to another instead.
+# The settings will reflect that dhcp is still enabled, but to the user those fields are hidden.
+# It is convenient to keep it enabled in the settings so when the user switches back to their previous settings
+# everything is still the same. However, we need to make sure that we don't actually enable DHCP on that interface.
+# 
+# This function runs through the settings and removes/disables settings that are hidden/disabled in the current configuration.
+#
 def cleanupSettings( settings ):
     interfaces = settings['interfaces']['list']
     
@@ -97,13 +105,40 @@ def cleanupSettings( settings ):
     for intf in interfaces:
         if intf['isWan'] or intf['config'] == 'bridged':
             intf['dhcpEnabled'] = False
-            
-    # FIXME: Remove NAT settings if bridged
-    # FIXME: Disable PPPoE settings if not PPPoE
-    # FIXME: Remove Static fields from Auto interfaces
-    # FIXME: Remove Auto fields from Static interfaces
-    # FIXME: Remove bridgedTo if not a bridge
-    # FIXME: Disable DHCP if not a static non-WAN
+
+    # Disable NAT options on bridged interfaces
+    for intf in interfaces:
+        if intf['config'] == 'bridged':
+            intf['v4NatEgressTraffic'] == False
+            intf['v4NatIngressTraffic'] == False
+
+    # Remove PPPoE settings if not PPPoE intf
+    for intf in interfaces:
+        if intf['v4ConfigType'] != 'pppoe':
+            for key in intf.keys():
+                if 'v4PPPoE' in key:
+                    del intf[key]
+
+    # Remove static settings if not static intf
+    for intf in interfaces:
+        if intf['v4ConfigType'] != 'static':
+            for key in intf.keys():
+                if 'v4Static' in key:
+                    del intf[key]
+
+    # Remove auto settings if not auto intf
+    for intf in interfaces:
+        if intf['v4ConfigType'] != 'auto':
+            for key in intf.keys():
+                if 'v4Auto' in key:
+                    del intf[key]
+
+    # Remove bridgedTo settincgs if not bridged
+    for intf in interfaces:
+        if intf['config'] != 'bridged':
+            if 'bridgedTo' in intf: del intf['bridgedTo']
+        
+    return
     
 parser = ArgumentParser()
 parser.parse_args()
@@ -133,7 +168,11 @@ IptablesUtil.settings = settings
 NetworkUtil.settings = settings
 
 for module in [ HostsManager(), DnsMasqManager(),
-                InterfacesManager(), RouteManager(), IptablesRulesManager(), NatRulesManager(), PortForwardManager(), BypassRuleManager(), EthernetManager(), FindDevManager(), SysctlManager(), ArpManager() ]:
+                InterfacesManager(), RouteManager(), 
+                IptablesRulesManager(), NatRulesManager(), 
+                PortForwardManager(), BypassRuleManager(), 
+                EthernetManager(), FindDevManager(), 
+                SysctlManager(), ArpManager() ]:
     try:
         module.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
     except Exception,e:
