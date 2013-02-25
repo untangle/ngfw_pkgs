@@ -137,13 +137,13 @@ RUN_PARTS="debug_run_parts"
 
 $DEBUG "if-up.d start [$IFACE]"
 
-if [ $IFACE == "networking_pre_restart_hook" ] ; then
+if [ "$IFACE" = "networking_pre_restart_hook" ] ; then
     networking_pre_restart_hook
     $DEBUG "if-up.d end   [$IFACE]"
     exit 0
 fi
 
-if [ $IFACE == "networking_post_restart_hook" ] ; then
+if [ "$IFACE" = "networking_post_restart_hook" ] ; then
     networking_post_restart_hook
     $DEBUG "if-up.d end   [$IFACE]"
     exit 0
