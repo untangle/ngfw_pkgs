@@ -1,7 +1,7 @@
 # This is an example plymouth plugin script
 
-Window.SetBackgroundTopColor(0.234, 0.43, 0.705);
-Window.SetBackgroundBottomColor(0.16, 0.25, 0.44);
+Window.SetBackgroundTopColor(0, 0, 0);
+Window.SetBackgroundBottomColor(0, 0, 0);
 
 logo.image = Image("desktop_background-1024x768.png");
 logo.sprite = Sprite(logo.image);
