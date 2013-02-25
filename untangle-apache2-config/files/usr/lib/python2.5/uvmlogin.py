@@ -17,21 +17,6 @@ from mod_python import apache, Session, util
 from psycopg2 import connect
 
 
-def authenhandler(req):
-    if req.notes.get('authorized', 'false') == 'true':
-        return apache.OK
-    else:
-        options = req.get_options()
-
-        if options.has_key('Realm'):
-            realm = options['Realm']
-            apache.log_error('Auth failure [Not authorized]. Redirecting to auth page. (realm: %s)' % realm)
-            apache.log_error('Not logged in. Redirect to auth page. (realm: %s)' % realm)
-            login_redirect(req, realm)
-        else:
-            apache.log_error('Auth failure [No realm specified]. Redirecting to auth page.')
-            return apache.DECLINED
-
 def get_settings_item(a,b):
     return None
 def get_node_settings_item(a,b):
@@ -47,6 +32,21 @@ except ImportError:
     pass
 
 SESSION_TIMEOUT = 1800
+
+def authenhandler(req):
+    if req.notes.get('authorized', 'false') == 'true':
+        return apache.OK
+    else:
+        options = req.get_options()
+
+        if options.has_key('Realm'):
+            realm = options['Realm']
+            apache.log_error('Auth failure [Not authorized]. Redirecting to auth page. (realm: %s)' % realm)
+            apache.log_error('Not logged in. Redirect to auth page. (realm: %s)' % realm)
+            login_redirect(req, realm)
+        else:
+            apache.log_error('Auth failure [No realm specified]. Redirecting to auth page.')
+            return apache.DECLINED
 
 def headerparserhandler(req):
     options = req.get_options()
@@ -82,7 +82,7 @@ def headerparserhandler(req):
     sess.save()
     sess.unlock()
 
-    if None != username:
+    if username != None:
         pw = base64.encodestring('%s' % username).strip()
         req.headers_in['Authorization'] = "BASIC % s" % pw
         req.notes['authorized'] = 'true'
