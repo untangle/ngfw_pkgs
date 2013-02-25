@@ -89,10 +89,21 @@ def checkSettings( settings ):
 def cleanupSettings( settings ):
     interfaces = settings['interfaces']['list']
     
-    # remove disabled interfaces
+    # Remove disabled interfaces
     new_interfaces = [ intf for intf in interfaces if intf['config'] != 'disabled' ]
     settings['interfaces']['list'] = new_interfaces
-    
+
+    # Disable DHCP if if its a WAN or bridged to another interface
+    for intf in interfaces:
+        if intf['isWan'] or intf['config'] == 'bridged':
+            intf['dhcpEnabled'] = False
+            
+    # FIXME: Remove NAT settings if bridged
+    # FIXME: Disable PPPoE settings if not PPPoE
+    # FIXME: Remove Static fields from Auto interfaces
+    # FIXME: Remove Auto fields from Static interfaces
+    # FIXME: Remove bridgedTo if not a bridge
+    # FIXME: Disable DHCP if not a static non-WAN
     
 parser = ArgumentParser()
 parser.parse_args()
