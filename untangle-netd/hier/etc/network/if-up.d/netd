@@ -125,6 +125,20 @@ uplink_routes()
     fi
 }
 
+write_status_file()
+{
+    [ -z "$IF_NETD_INTERFACE_INDEX" ] && {
+        $DEBUG "Interface ${IFACE} is missing the interface index."
+        return 0
+    }
+
+    $DEBUG "writing /var/lib/untangle-netd/interface-${IF_NETD_INTERFACE_INDEX}-status.js"
+    /usr/share/untangle-netd/bin/write-interface-status.py -I ${IFACE} -i ${IF_NETD_INTERFACE_INDEX} -w /var/lib/untangle-netd/interface-${IF_NETD_INTERFACE_INDEX}-status.js
+
+    $DEBUG "writing /var/lib/untangle-netd/interface-${IFACE}-status.js"
+    /usr/share/untangle-netd/bin/write-interface-status.py -I ${IFACE} -i ${IF_NETD_INTERFACE_INDEX} -w /var/lib/untangle-netd/interface-${IFACE}-status.js
+}
+
 ## Start of script
 
 #DEBUG=/bin/true
@@ -152,6 +166,8 @@ fi
 netd_address
 
 uplink_routes
+
+write_status_file
 
 $DEBUG "if-up.d end   [$IFACE]"
 
