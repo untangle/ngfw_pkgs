@@ -91,11 +91,11 @@ class IptablesRulesManager:
             id = intf['interfaceId']
             systemDev = intf['systemDev']
             symbolicDev = intf['symbolicDev']
-            config = intf['config']
+            configType = intf['configType']
 
             file.write("${IPTABLES} -t mangle -A mark-src-intf -i %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark for intf %i\"" % (systemDev, id, self.srcInterfaceMarkMask, id) + "\n");
             # if bridged also add bridge rules
-            if symbolicDev.startswith("br.") or config == 'bridged':
+            if symbolicDev.startswith("br.") or configType == 'BRIDGED':
                 file.write("${IPTABLES} -t mangle -A mark-src-intf -m physdev --physdev-in %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark for intf %i using physdev\"" % (systemDev, id, self.srcInterfaceMarkMask, id) + "\n");
 
         file.write("${IPTABLES} -t mangle -A mark-src-intf ! -i lo -m mark --mark 0/0x%04X -j LOG --log-prefix \"WARNING (unknown src intf):\" -m comment --comment \"WARN on missing src mark\"" % (self.srcInterfaceMarkMask) + "\n");
@@ -123,11 +123,11 @@ class IptablesRulesManager:
             id = intf['interfaceId']
             systemDev = intf['systemDev']
             symbolicDev = intf['symbolicDev']
-            config = intf['config']
+            configType = intf['configType']
 
             file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i\"" % (systemDev, id << 8, self.dstInterfaceMarkMask, id) + "\n");
             # if bridged also add bridge rules
-            if symbolicDev.startswith("br.") or config == 'bridged':
+            if symbolicDev.startswith("br.") or configType == 'BRIDGED':
                 # physdev-out doesn't work, instead queue to userspace daemon
                 # file.write("${IPTABLES} -t mangle -A mark-dst-intf -m physdev --physdev-out %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i using physdev\"" % (systemDev, id << 8, self.dstInterfaceMarkMask, id) + "\n");
                 # queue to userspace

@@ -21,16 +21,16 @@ class InterfacesManager:
         self.interfacesFile.write("auto %s\n" % interface_settings['symbolicDev'])
 
         configString = "manual"
-        if interface_settings['v4ConfigType'] == 'auto':
+        if interface_settings['v4ConfigType'] == 'AUTO':
             configString = "dhcp"
-        if interface_settings['v4ConfigType'] == 'pppoe':
+        if interface_settings['v4ConfigType'] == 'PPPOE':
             configString = "ppp"
 
         # find interfaces bridged to this interface
         isBridge = False
         bridgedInterfaces = []
         for intf in interfaces:
-            if intf['config'] == 'bridged' and intf['bridgedTo'] == interface_settings['interfaceId']:
+            if intf['configType'] == 'BRIDGED' and intf['bridgedTo'] == interface_settings['interfaceId']:
                 bridgedInterfaces.append(str(intf['systemDev']))
         if len(bridgedInterfaces) > 0:
             isBridge = True
@@ -40,7 +40,7 @@ class InterfacesManager:
         self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings['interfaceId'])
 
         # handle static stuff
-        if interface_settings['v4ConfigType'] == 'static':
+        if interface_settings['v4ConfigType'] == 'STATIC':
             self.interfacesFile.write("\tnetd_v4_address %s\n" % interface_settings['v4StaticAddress'])
             self.interfacesFile.write("\tnetd_v4_netmask %s\n" % interface_settings['v4StaticNetmask'])
             if 'v4StaticGateway' in interface_settings:
@@ -54,7 +54,7 @@ class InterfacesManager:
             self.interfacesFile.write("\tnetd_bridge_mtu %i\n" % 1500) #XXX
 
         # handle PPPoE stuff
-        if interface_settings['v4ConfigType'] == 'pppoe':
+        if interface_settings['v4ConfigType'] == 'PPPOE':
             self.interfacesFile.write("\tpre-up /sbin/ifconfig %s up\n" % interface_settings['systemDev']) 
             self.interfacesFile.write("\tprovider %s\n" % ("connection." + interface_settings['systemDev'])) 
             
@@ -62,7 +62,7 @@ class InterfacesManager:
 
     def write_interface_v6( self, interface_settings, interfaces ):
 
-        if interface_settings['v6ConfigType'] == 'auto':
+        if interface_settings['v6ConfigType'] == 'AUTO':
             return # nothing needed to support RA
 
         self.interfacesFile.write("## Interface %i IPv6\n" % (interface_settings['interfaceId']) )
@@ -122,8 +122,8 @@ class InterfacesManager:
 
         if settings != None and settings['interfaces'] != None and settings['interfaces']['list'] != None:
             for interface_settings in settings['interfaces']['list']:
-                # only write 'addressed' interfaces
-                if interface_settings['config'] != 'addressed':
+                # only write 'ADDRESSED' interfaces
+                if interface_settings['configType'] != 'ADDRESSED':
                     continue
                 # if invalid settigs, skip it
                 if not self.check_interface_settings( interface_settings ):

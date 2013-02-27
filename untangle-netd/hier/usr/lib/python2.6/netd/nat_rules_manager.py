@@ -67,7 +67,7 @@ class NatRulesManager:
                 continue;
 
             # ignore interfaces bridged with interface
-            if other_intf['config'] == 'bridged' and other_intf['bridgedTo'] == intf['interfaceId']:
+            if other_intf['configType'] == 'BRIDGED' and other_intf['bridgedTo'] == intf['interfaceId']:
                 continue;
             
             self.file.write("# NAT ingress traffic coming from interface %s" % str(intf['interfaceId']) + "\n");
@@ -95,7 +95,7 @@ class NatRulesManager:
                 continue;
 
             # ignore interfaces bridged with interface
-            if other_intf['config'] == 'bridged' and other_intf['bridgedTo'] == intf['interfaceId']:
+            if other_intf['configType'] == 'BRIDGED' and other_intf['bridgedTo'] == intf['interfaceId']:
                 continue;
             
             self.file.write("# NAT egress traffic exiting interface %s" % str(intf['interfaceId']) + "\n");

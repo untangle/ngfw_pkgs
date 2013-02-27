@@ -80,7 +80,7 @@ def checkSettings( settings ):
     interfaces = settings['interfaces']['list']
 
     for intf in interfaces:
-        for key in ['interfaceId', 'name', 'systemDev', 'symbolicDev', 'physicalDev', 'config']:
+        for key in ['interfaceId', 'name', 'systemDev', 'symbolicDev', 'physicalDev', 'configType']:
             if key not in intf:
                 raise Exception("Invalid Interface Settings: missing key %s" % key)
             
@@ -98,44 +98,44 @@ def cleanupSettings( settings ):
     interfaces = settings['interfaces']['list']
     
     # Remove disabled interfaces
-    new_interfaces = [ intf for intf in interfaces if intf['config'] != 'disabled' ]
+    new_interfaces = [ intf for intf in interfaces if intf['configType'] != 'DISABLED' ]
     settings['interfaces']['list'] = new_interfaces
 
     # Disable DHCP if if its a WAN or bridged to another interface
     for intf in interfaces:
-        if intf['isWan'] or intf['config'] == 'bridged':
+        if intf['isWan'] or intf['configType'] == 'BRIDGED':
             intf['dhcpEnabled'] = False
 
     # Disable NAT options on bridged interfaces
     for intf in interfaces:
-        if intf['config'] == 'bridged':
+        if intf['configType'] == 'BRIDGED':
             intf['v4NatEgressTraffic'] == False
             intf['v4NatIngressTraffic'] == False
 
     # Remove PPPoE settings if not PPPoE intf
     for intf in interfaces:
-        if intf['v4ConfigType'] != 'pppoe':
+        if intf['v4ConfigType'] != 'PPPOE':
             for key in intf.keys():
                 if 'v4PPPoE' in key:
                     del intf[key]
 
     # Remove static settings if not static intf
     for intf in interfaces:
-        if intf['v4ConfigType'] != 'static':
+        if intf['v4ConfigType'] != 'STATIC':
             for key in intf.keys():
                 if 'v4Static' in key:
                     del intf[key]
 
     # Remove auto settings if not auto intf
     for intf in interfaces:
-        if intf['v4ConfigType'] != 'auto':
+        if intf['v4ConfigType'] != 'AUTO':
             for key in intf.keys():
                 if 'v4Auto' in key:
                     del intf[key]
 
     # Remove bridgedTo settincgs if not bridged
     for intf in interfaces:
-        if intf['config'] != 'bridged':
+        if intf['configType'] != 'BRIDGED':
             if 'bridgedTo' in intf: del intf['bridgedTo']
         
     return
