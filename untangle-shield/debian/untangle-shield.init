@@ -33,10 +33,6 @@ load_defaults()
 
     SHIELD_LOG_OUT="/var/log/untangle-shield/debug.log"
     SHIELD_LOG_ERR="/var/log/untangle-shield/error.log"
-    
-    if [ -f /etc/default/untangle-shield ] ; then
-        . /etc/default/untangle-shield
-    fi
 }
 
 is_running()
