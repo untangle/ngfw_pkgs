@@ -242,12 +242,6 @@ run_post_networking_hook()
     run-parts /etc/untangle-netd/post-network-hook.d
 }
 
-generate_iptables_rules()
-{
-    /usr/share/untangle-netd/bin/generate-iptables-rules.sh
-}
-
-
 ${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook ENTER [ reason: \"$reason\" interface: \"$interface\" ]"
 
 # Execute the operation
@@ -263,18 +257,15 @@ case "$reason" in
 
     BOUND|REBOOT)
         refresh_routes
-        # XXX I don't believe we need to run post networking hooks here because
-        # if BOUND or REBOOT then dhclient is running so network processing must be running now
-        # so the post networking hook will run in just a second
-        # run_post_networking_hook
+        # dhclient is currently running, so networking is being restarted, no need to call this
+        # run_post_networking_hook 
         ;;
 
     RENEW|REBIND)
+        # if we have a different address, then restart networking, otherwise do nothing
         if [ "$old_ip_address" != "$new_ip_address" ]; then
             refresh_routes
-            # XXX I don't believe we need to run post networking hooks here, only iptables
-            # run_post_networking_hook
-            generate_iptables_rules
+            run_post_networking_hook
         fi
         ;;
 
