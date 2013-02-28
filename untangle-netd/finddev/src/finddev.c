@@ -135,8 +135,8 @@ static int    _find_bridge_port ( struct ether_addr* mac_address, char* bridge_n
 static int    _arp_address ( struct in_addr* dst_ip, struct ether_addr* mac, char* intf_name );
 static int    _arp_lookup_cache_entry ( struct in_addr* ip, char* intf_name, struct ether_addr* mac );
 static int    _arp_issue_request ( struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
-static int    _arp_fake_connect      ( struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
-static int    _arp_build_packet  ( struct ether_arp* pkt, struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
+static int    _arp_fake_connect ( struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
+static int    _arp_build_packet ( struct ether_arp* pkt, struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
 
 /**
  * TODO - test with valgrind
@@ -146,7 +146,7 @@ static int    _arp_build_packet  ( struct ether_arp* pkt, struct in_addr* src_ip
  * TODO - remove logic from UVM
  */
 
-int main( int argc, char **argv )
+int main ( int argc, char **argv )
 {
     struct nfq_handle *h;
     struct nfnl_handle *nh;
@@ -235,7 +235,7 @@ int main( int argc, char **argv )
     exit(0);
 }
 
-static int  _debug( int level, char *lpszFmt, ... )
+static int   _debug ( int level, char *lpszFmt, ... )
 {
     if (verbosity >= level)
     {
@@ -273,7 +273,7 @@ static int  _debug( int level, char *lpszFmt, ... )
 	return 0;
 }
 
-static int _usage( char *name )
+static int   _usage ( char *name )
 {
     fprintf( stderr, "Usage: %s\n", name );
     fprintf( stderr, "\t-i interface_name:index.  specify interface. Example -i eth0:1. Can be specified many times.\n" );
@@ -281,7 +281,7 @@ static int _usage( char *name )
     return -1;
 }
 
-static int _parse_args( int argc, char** argv )
+static int   _parse_args ( int argc, char** argv )
 {
     int c = 0;
 
@@ -347,8 +347,7 @@ static int _parse_args( int argc, char** argv )
     return 0;
 }
 
-
-static int _nfqueue_callback(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfa, void *data)
+static int   _nfqueue_callback (struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfa, void *data)
 {
     pthread_t id;
     int ret = pthread_create( &id, &attr, _pthread_callback, nfa );
@@ -360,7 +359,7 @@ static int _nfqueue_callback(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, st
     return 0;
 }
 
-static void* _pthread_callback( void* nfav )
+static void* _pthread_callback ( void* nfav )
 {
     struct nfq_data* nfa = (struct nfq_data*) nfav;
     int id = 0;
@@ -407,7 +406,7 @@ static void* _pthread_callback( void* nfav )
     }
 }
 
-static void _print_pkt ( struct nfq_data *tb )
+static void  _print_pkt ( struct nfq_data *tb )
 {
     int id = 0;
     struct nfqnl_msg_packet_hdr *ph;
@@ -490,7 +489,7 @@ static void _print_pkt ( struct nfq_data *tb )
     return;
 }
 
-static int _find_outdev_index( struct nfq_data* nfq_data )
+static int   _find_outdev_index ( struct nfq_data* nfq_data )
 {
     struct ether_addr mac_address;
     struct in_addr next_hop;
@@ -588,7 +587,7 @@ static int _find_outdev_index( struct nfq_data* nfq_data )
     return -1;
 }
 
-static char*   _inet_ntoa( in_addr_t addr )
+static char* _inet_ntoa ( in_addr_t addr )
 {
     struct in_addr i;
     memset(&i, 0, sizeof(i));
@@ -599,7 +598,7 @@ static char*   _inet_ntoa( in_addr_t addr )
     return inet_ntoa_name;
 }
 
-static void _mac_to_string     ( char *mac_string, int len, struct ether_addr* mac )
+static void  _mac_to_string ( char *mac_string, int len, struct ether_addr* mac )
 {
     snprintf( mac_string, len, "%02x:%02x:%02x:%02x:%02x:%02x",
               mac->ether_addr_octet[0], mac->ether_addr_octet[1], mac->ether_addr_octet[2], 
@@ -610,7 +609,7 @@ static void _mac_to_string     ( char *mac_string, int len, struct ether_addr* m
  * This queries the kernel for the next hop for packets destined to the specied dst_ip.
  * For example,
  */
-static int    _find_next_hop     ( char* dev_name, struct in_addr* dst_ip, struct in_addr* next_hop )
+static int   _find_next_hop ( char* dev_name, struct in_addr* dst_ip, struct in_addr* next_hop )
 {
     int ifindex;
     struct 
@@ -653,14 +652,13 @@ static int    _find_next_hop     ( char* dev_name, struct in_addr* dst_ip, struc
     return 0;
 }
 
-
 /**
  * Finds the bridge port for the given MAC address,
  * returns the OS ifindex
  * or -1 for error
  * or 0 for unknown
  */
-static int  _find_bridge_port   ( struct ether_addr* mac_address, char* bridge_name )
+static int   _find_bridge_port ( struct ether_addr* mac_address, char* bridge_name )
 {
     struct ifreq ifr;
 	int ret;
@@ -698,7 +696,7 @@ static int  _find_bridge_port   ( struct ether_addr* mac_address, char* bridge_n
  * Returns 0 if ARP resolution failed
  * Returns -1 on error
  */
-static int  _arp_address       ( struct in_addr* dst_ip, struct ether_addr* mac, char* intf_name )
+static int   _arp_address ( struct in_addr* dst_ip, struct ether_addr* mac, char* intf_name )
 {
     int c = 0;
     int ret;
@@ -750,7 +748,7 @@ static int  _arp_address       ( struct in_addr* dst_ip, struct ether_addr* mac,
  * Otherwise, returns 0
  * Returns -1, if any error occurs
  */
-static int  _arp_lookup_cache_entry     ( struct in_addr* ip, char* intf_name, struct ether_addr* mac )
+static int   _arp_lookup_cache_entry ( struct in_addr* ip, char* intf_name, struct ether_addr* mac )
 {
     struct arpreq request;
     struct sockaddr_in* sin = (struct sockaddr_in*)&request.arp_pa;
@@ -804,7 +802,7 @@ static int  _arp_lookup_cache_entry     ( struct in_addr* ip, char* intf_name, s
  *
  * Returns: 0 on success, -1 on error
  */
-static int  _arp_fake_connect      ( struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name )
+static int   _arp_fake_connect ( struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name )
 {
     struct sockaddr_in addr;
     int fake_fd;
@@ -865,7 +863,7 @@ static int  _arp_fake_connect      ( struct in_addr* src_ip, struct in_addr* dst
 /**
  * Sends an ARP request for the dst_ip (from the src_ip) on intf_name
  */
-static int  _arp_issue_request ( struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name )
+static int   _arp_issue_request ( struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name )
 {
     struct ether_arp pkt;
     struct sockaddr_ll broadcast = {
@@ -910,8 +908,8 @@ static int  _arp_issue_request ( struct in_addr* src_ip, struct in_addr* dst_ip,
     return 0;
 }
 
-static int  _arp_build_packet  ( struct ether_arp* pkt, struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name )
-{    
+static int   _arp_build_packet ( struct ether_arp* pkt, struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name )
+{
     struct ifreq ifr;
     struct ether_addr mac;
     struct sockaddr_ll broadcast = {
