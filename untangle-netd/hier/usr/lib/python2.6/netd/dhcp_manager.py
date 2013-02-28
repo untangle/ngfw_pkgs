@@ -185,8 +185,11 @@ return 0
         os.system("chmod a+x %s" % filename)
         if verbosity > 0: print "DhcpManager: Wrote %s" % filename
 
-        os.system("cp -f %s /etc/dhcp3/dhclient-enter-hooks.d/netd-dhclient-enter-hook" % filename) # Debian Lenny backport
-        if verbosity > 0: print "DhcpManager: Wrote %s" % "/etc/dhcp3/dhclient-enter-hooks.d/netd-dhclient-enter-hook"
+        # FIXME lenny support - can remove
+        if os.path.exists('/etc/dhcp3'):
+            os.system("cp -f %s /etc/dhcp3/dhclient-enter-hooks.d/netd-dhclient-enter-hook" % filename)
+            if verbosity > 0: print "DhcpManager: Wrote %s" % "/etc/dhcp3/dhclient-enter-hooks.d/netd-dhclient-enter-hook"
+
         return
 
 
@@ -317,8 +320,11 @@ true
         os.system("chmod a+x %s" % filename)
         if verbosity > 0: print "DhcpManager: Wrote %s" % filename
 
-        os.system("cp -f %s /etc/dhcp3/dhclient-exit-hooks.d/netd-dhclient-exit-hook" % filename) # Debian Lenny backport
-        if verbosity > 0: print "DhcpManager: Wrote %s" % "/etc/dhcp3/dhclient-exit-hooks.d/netd-dhclient-exit-hook"
+        # FIXME lenny support - can remove
+        if os.path.exists('/etc/dhcp3'):
+            os.system("cp -f %s /etc/dhcp3/dhclient-exit-hooks.d/netd-dhclient-exit-hook" % filename)
+            if verbosity > 0: print "DhcpManager: Wrote %s" % "/etc/dhcp3/dhclient-exit-hooks.d/netd-dhclient-exit-hook"
+
         return
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
