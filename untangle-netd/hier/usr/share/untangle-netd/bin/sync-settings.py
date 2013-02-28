@@ -172,7 +172,8 @@ for module in [ HostsManager(), DnsMasqManager(),
                 IptablesRulesManager(), NatRulesManager(), 
                 PortForwardManager(), BypassRuleManager(), 
                 EthernetManager(), FindDevManager(), 
-                SysctlManager(), ArpManager() ]:
+                SysctlManager(), ArpManager(),
+                DhcpManager() ]:
     try:
         module.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
     except Exception,e:

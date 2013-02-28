@@ -14,6 +14,7 @@ import traceback
 class IptablesRulesManager:
     flushFilename = "/etc/untangle-netd/iptables-rules.d/010-flush"
     interfaceMarksFilename = "/etc/untangle-netd/iptables-rules.d/100-interface-marks"
+    iptablesHookFilename = "/etc/untangle-netd/post-network-hook.d/96-iptables"
     srcInterfaceMarkMask = 0x00ff
     dstInterfaceMarkMask = 0xff00
     bothInterfacesMarksMask = 0xffff
@@ -197,5 +198,7 @@ class IptablesRulesManager:
 
         self.write_interface_marks( settings, prefix, verbosity )
 
-        os.system("ln -sf /usr/share/untangle-netd/bin/generate-iptables-rules.sh /etc/untangle-netd/post-network-hook.d/96-iptables");
+        os.system("ln -sf /usr/share/untangle-netd/bin/generate-iptables-rules.sh %s" % self.iptablesHookFilename);
+        if verbosity > 0:
+            print "IptablesRulesManager: Wrote %s" % self.iptablesHookFilename
 
