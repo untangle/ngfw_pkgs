@@ -1,9 +1,0 @@
-#!/bin/dash
-
-## update any of the sysctl entries.
-if [ -e /etc/untangle-net-alpaca/sysctl ] ; then 
-    . /etc/untangle-net-alpaca/sysctl
-else
-    echo "[`date`] Missing sysctl file."
-fi
-

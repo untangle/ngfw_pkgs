@@ -1,9 +1,0 @@
-<div id="<%= config_id %>">
-  <p><%= _("Select an interface to bridge with.") %></p>
-  <ul class="text-fields">
-    <li>
-      <label for="bridge"><%= _("Bridge With:") %></label>
-      <%= select_tag( "#{config_id}.bridge_interface", options_for_select( [], nil )) %>
-    </li>
-  </ul>
-</div>

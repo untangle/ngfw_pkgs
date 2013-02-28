@@ -1,3 +1,0 @@
-usr/share/untangle-net-alpaca/scripts/generate-iptables-rules
-usr/share/untangle-net-alpaca/scripts/load-modules
-etc/untangle-net-alpaca/update-address.d/95-iptables

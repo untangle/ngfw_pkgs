@@ -1,8 +1,0 @@
-#!/bin/dash
-
-##Add static arp rules
-if [ -e /etc/untangle-net-alpaca/arps ] ; then
-	. /etc/untangle-net-alpaca/arps
-fi
-
-exit 0

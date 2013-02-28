@@ -1,6 +1,0 @@
-#! /bin/bash
-
-## Regenerate all of the iptables rules.
-/etc/init.d/untangle-net-alpaca-iptables restart update-address
-
-exit 0
