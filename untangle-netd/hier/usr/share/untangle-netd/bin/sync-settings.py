@@ -109,8 +109,8 @@ def cleanupSettings( settings ):
     # Disable NAT options on bridged interfaces
     for intf in interfaces:
         if intf['configType'] == 'BRIDGED':
-            intf['v4NatEgressTraffic'] == False
-            intf['v4NatIngressTraffic'] == False
+            intf['v4NatEgressTraffic'] = False
+            intf['v4NatIngressTraffic'] = False
 
     # Remove PPPoE settings if not PPPoE intf
     for intf in interfaces:
