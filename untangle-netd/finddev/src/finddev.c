@@ -162,9 +162,9 @@ static int    _arp_fake_connect ( struct in_addr* src_ip, struct in_addr* dst_ip
 static int    _arp_build_packet ( struct ether_arp* pkt, struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
 
 /**
- * TODO - handling of non-IP packets?
- * TODO - handling of IPv6?
- * TODO - remove logic from UVM
+ * FIXME TODO - handling of non-IP packets?
+ * FIXME TODO - handling of IPv6?
+ * FIXME TODO - remove logic from UVM
  */
 
 int main ( int argc, char **argv )
