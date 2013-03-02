@@ -11,7 +11,7 @@ from netd.network_util import NetworkUtil
 # based on the settings object passed from sync-settings.py
 class FindDevManager:
     defaultFilename = "/etc/untangle-netd/post-network-hook.d/10-finddev"
-    logFilename = "/var/log/uvm/findoutdev.log"
+    logFilename = "/var/log/uvm/finddev.log"
     filename = defaultFilename
     file = None
 
