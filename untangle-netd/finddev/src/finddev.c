@@ -164,7 +164,6 @@ static int    _arp_build_packet ( struct ether_arp* pkt, struct in_addr* src_ip,
 /**
  * FIXME TODO - handling of non-IP packets?
  * FIXME TODO - handling of IPv6?
- * FIXME TODO - remove logic from UVM
  */
 
 int main ( int argc, char **argv )
