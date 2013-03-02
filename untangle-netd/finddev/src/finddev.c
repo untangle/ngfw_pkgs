@@ -1,6 +1,7 @@
 /**
  * $Id: outdev.c,v 1.00 2013/02/14 10:59:31 dmorris Exp $
  */
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -20,21 +21,6 @@
 #include <linux/netfilter.h> 
 #include <linux/if_packet.h>
 #include <libnetfilter_queue/libnetfilter_queue.h>
-
-/**
- * Socket used for ARP queries
- */
-int arp_socket = 0;
-
-/**
- * Socket used for sending packets
- */
-int pkt_socket = 0;
-
-/**
- * Verbosity level
- */
-int verbosity = 0;
 
 /**
  * The NFqueue # to listen for packets
@@ -67,6 +53,45 @@ int verbosity = 0;
 #define MARK_BYPASS 0x01000000
 
 /**
+ * Is running flag, to exit set this to 0
+ */
+int running = 1;
+
+/**
+ * Socket used for ARP queries
+ */
+int arp_socket = 0;
+
+/**
+ * Socket used for sending packets
+ */
+int pkt_socket = 0;
+
+/**
+ * Verbosity level
+ */
+int verbosity = 0;
+
+/**
+ * File descriptor for nfnl
+ */
+int fd;
+
+/**
+ * Netfilter handles
+ */
+struct nfq_handle* h = NULL;
+struct nfnl_handle *nh = NULL;
+struct nfq_q_handle *qh = NULL;
+
+/**
+ * The current thread listening for new packets
+ * This will change frequently, as once a thread gets a packet it spawns a new thread to handle the next packet
+ * and it overwrites this.
+ */
+pthread_t current_thread;
+
+/**
  * The device names of the interfaces (according to Untangle)
  * Example: interfacesName[0] = "eth0" interafceNames[1] = "eth1"
  */
@@ -94,14 +119,10 @@ unsigned long delay_array[] = {
     60 * 1000,
     100 * 1000,
     1000 * 1000, /* 1 sec */
-    3 * 1000 * 1000, /* 1 sec */
+    3 * 1000 * 1000, /* 3 sec */
+    5 * 1000 * 1000, /* 5 sec */
     0
 };
-
-/**
- * Global queue handle
- */
-struct nfq_q_handle *qh = NULL;
 
 /**
  * New thread attributes
@@ -119,13 +140,15 @@ pthread_mutex_t print_mutex;
 struct ether_addr broadcast_mac = { .ether_addr_octet = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF } };
 
 static int    _usage( char *name );
+static int    _set_signals( void );
 static int    _parse_args( int argc, char** argv );
 static int    _debug( int level, char *lpszFmt, ...);
+static void*  _read_pkt (void* data);
 static char*  _inet_ntoa ( in_addr_t addr );
 static void   _mac_to_string ( char *mac_string, int len, struct ether_addr* mac );
 static void   _print_pkt ( struct nfq_data *tb );
 
-static void*  _pthread_callback ( void* nfav );
+static void*  _handle_packet ( struct nfq_data *nfa );
 static int    _nfqueue_callback ( struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfa, void *data );
 
 static int    _find_outdev_index ( struct nfq_data *tb );
@@ -139,20 +162,16 @@ static int    _arp_fake_connect ( struct in_addr* src_ip, struct in_addr* dst_ip
 static int    _arp_build_packet ( struct ether_arp* pkt, struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
 
 /**
- * TODO - test with valgrind
  * TODO - handling of non-IP packets?
  * TODO - handling of IPv6?
- * TODO - SIGINT handler
  * TODO - remove logic from UVM
  */
 
 int main ( int argc, char **argv )
 {
-    struct nfq_handle *h;
-    struct nfnl_handle *nh;
-    int fd;
     int rv;
-    char buf[4096];
+    
+    _set_signals();
     
     if ( _parse_args( argc, argv ) < 0 )
         return _usage( argv[0] );
@@ -220,19 +239,49 @@ int main ( int argc, char **argv )
 
     _debug(1, "Listening for packets...\n");
     
-    while ((rv = recv(fd, buf, sizeof(buf), 0)) && rv >= 0) {
-        nfq_handle_packet(h, buf, rv);
+    pthread_create( &current_thread, &attr, _read_pkt, NULL );
+    
+    while ( running ) {
+        sleep (1);
     }
-
-    _debug( 2, "Unbinding from queue 0\n");
+    pthread_kill( current_thread, SIGINT );
+    
+    _debug( 2, "Unbinding from queue %i\n",QUEUE_NUM);
     nfq_destroy_queue(qh);
 
     _debug( 2, "Closing library handle\n");
     nfq_close(h);
 
-    _debug(1,"Exitting...");
+    /**
+     * cleanup mallocd interface names
+     */
+    int i;
+    for ( i = 0 ; i < MAX_INTERFACES ; i++ ) {
+        if ( interfaceNames[i] != NULL )
+            free( interfaceNames[i] );
+    }
+        
+    _debug(1,"Exitting...\n");
 
     exit(0);
+}
+
+
+static void* _read_pkt (void* data)
+{
+    if ( ! running )
+        pthread_exit(NULL);
+
+    char buf[4096];
+    bzero(buf, 4096);
+    int rv = recv(fd, buf, 4096, 0);
+
+    if ( rv < 0 || running == 0 ) {
+        running = 0;
+        pthread_exit(NULL);
+    }
+    
+    nfq_handle_packet(h, buf, rv);
 }
 
 static int   _debug ( int level, char *lpszFmt, ... )
@@ -347,32 +396,55 @@ static int   _parse_args ( int argc, char** argv )
     return 0;
 }
 
-static int   _nfqueue_callback (struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfa, void *data)
+static void  _signal_term( int sig )
 {
-    pthread_t id;
-    int ret = pthread_create( &id, &attr, _pthread_callback, nfa );
+    running = 0;
+}
 
-    if (ret != 0) {
-        fprintf( stderr, "pthread_create: %s\n", strerror(ret));
-    }
-
+static int   _set_signals( void )
+{
+    struct sigaction signal_action;
+    
+    memset( &signal_action, 0, sizeof( signal_action ));
+    signal_action.sa_flags = SA_NOCLDSTOP;
+    signal_action.sa_handler = _signal_term;
+    sigaction( SIGINT,  &signal_action, NULL );
+    
+    signal_action.sa_handler = SIG_IGN;
+    sigaction( SIGCHLD, &signal_action, NULL );
+    sigaction( SIGPIPE, &signal_action, NULL );
+    
     return 0;
 }
 
-static void* _pthread_callback ( void* nfav )
+static int   _nfqueue_callback (struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfa, void *data)
 {
-    struct nfq_data* nfa = (struct nfq_data*) nfav;
+    pthread_t id;
+    
+    /**
+     * Create a new thread to handle the next packet
+     * We have to use this thread to handle this packet because nfq_handle_packet
+     * stores nfa on the stack, so this thread can not be returned
+     */
+    pthread_create( &current_thread, &attr, _read_pkt, NULL );
+
+    _handle_packet(nfa);
+    pthread_exit(NULL);
+}
+
+static void* _handle_packet ( struct nfq_data* nfa )
+{
     int id = 0;
     struct nfqnl_msg_packet_hdr *ph;
 
-    ph = nfq_get_msg_packet_hdr(nfa);
+    ph = nfq_get_msg_packet_hdr( nfa );
     if (!ph) {
         fprintf( stderr,"Packet missing header!\n" );
-        return;
+        pthread_exit( NULL );
     }
-    id = ntohl(ph->packet_id);
+    id = ntohl( ph->packet_id );
 
-    if (verbosity >= 1) _print_pkt(nfa);
+    if (verbosity >= 1) _print_pkt( nfa );
     
     int out_port_utindex = _find_outdev_index(nfa);
 
@@ -383,27 +455,29 @@ static void* _pthread_callback ( void* nfav )
          * Unable to determine out interface
          * Set the bypass mark and accept the packet
          */
-        _debug( 2, "CURRENT MARK: 0x%08x\n", mark);
+        _debug( 2, "RESULT: current mark: 0x%08x\n", mark);
         mark = mark | MARK_BYPASS;
-        _debug( 2, "NEW     MARK: 0x%08x\n", mark);
+        _debug( 2, "RESULT: new     mark: 0x%08x\n", mark);
 
         mark = htonl( mark );
         nfq_set_verdict_mark(qh, id, NF_ACCEPT, mark, 0, NULL);
-        return NULL;
+        pthread_exit( NULL );
     }
     else {
-        _debug( 2, "CURRENT MARK: 0x%08x\n", mark);
+        _debug( 2, "RESULT: current mark: 0x%08x\n", mark);
         mark = mark & 0xFFFF00FF;
         mark = mark | (out_port_utindex << 8);
-        _debug( 2, "NEW     MARK: 0x%08x\n", mark);
+        _debug( 2, "RESULT: new     mark: 0x%08x\n", mark);
 
         mark = htonl( mark );
 
         // NF_REPEAT instead of NF_ACCEPT to repeat mark-dst-intf
         // this will force it to save the dst mark to the connmark
         nfq_set_verdict_mark(qh, id, NF_REPEAT, mark, 0, NULL);
-        return NULL;
+        pthread_exit( NULL );
     }
+
+    pthread_exit( NULL );
 }
 
 static void  _print_pkt ( struct nfq_data *tb )
@@ -414,7 +488,8 @@ static void  _print_pkt ( struct nfq_data *tb )
     int ret;
     char *data;
     char intf_name[IF_NAMESIZE];
-
+    char buf[2048];
+    
     if ( pthread_mutex_lock( &print_mutex ) < 0 ) {
         fprintf( stderr, "pthread_mutex_lock: %s\n", strerror(errno) );
     }
@@ -442,10 +517,11 @@ static void  _print_pkt ( struct nfq_data *tb )
     if (mark)
         printf("mark=0x%08x ", mark);
 
+#if 0
     ifindex = nfq_get_indev(tb);
     if (ifindex) {
         if ( if_indextoname(ifindex, intf_name) == NULL) {
-            fprintf( stderr,"if_indextoname: %s\n", strerror(errno) );
+            fprintf( stderr,"print_pkt: in_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
         } else {
             printf("indev=(%i,%s) ", ifindex, intf_name);
         }
@@ -454,12 +530,33 @@ static void  _print_pkt ( struct nfq_data *tb )
     ifindex = nfq_get_outdev(tb);
     if (ifindex) {
         if ( if_indextoname(ifindex, intf_name) == NULL) {
-            fprintf( stderr,"if_indextoname: %s\n", strerror(errno) );
+            fprintf( stderr,"print_pkt: out_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
         } else {
             printf("outdev=(%i,%s) ", ifindex, intf_name);
         }
     }
+#endif
+    
+#if 1
+    ifindex = nfq_get_physindev(tb);
+    if (ifindex) {
+        if ( if_indextoname(ifindex, intf_name) == NULL) {
+            fprintf( stderr,"print_pkt: in_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
+        } else {
+            printf("physindev=(%i,%s) ", ifindex, intf_name);
+        }
+    }
 
+    ifindex = nfq_get_outdev(tb);
+    if (ifindex) {
+        if ( if_indextoname(ifindex, intf_name) == NULL) {
+            fprintf( stderr,"print_pkt: out_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
+        } else {
+            printf("physoutdev=(%i,%s) ", ifindex, intf_name);
+        }
+    }
+#endif
+    
     ret = nfq_get_payload(tb, &data);
     if (ret >= 0)
         printf("payload_len=%d ", ret);
@@ -514,7 +611,6 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
         fprintf( stderr,"if_indextoname: %s\n", strerror(errno));
         return -1;
     }
-    _debug( 2, "ARP: outdev=(%i,%s)\n", ifindex, intf_name);
 
     /**
      * Lookup dst IP
@@ -646,8 +742,7 @@ static int   _find_next_hop ( char* dev_name, struct in_addr* dst_ip, struct in_
     
     /* Assuming that the return value is the index of the interface,
      * make sure this is always true */
-    _debug( 2, "ARP: The destination %s ", _inet_ntoa( dst_ip->s_addr ));
-    _debug( 2,"is going out [%s,%d] to %s\n", args.name, ifindex, _inet_ntoa( next_hop->s_addr ));
+    _debug( 2,"ARP: next_hop %s going out [%s,%d]\n", _inet_ntoa( next_hop->s_addr ), args.name, ifindex);
         
     return 0;
 }
