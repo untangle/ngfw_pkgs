@@ -114,7 +114,8 @@ uplink_routes()
     local table_name
 
     [ -z "$IF_NETD_INTERFACE_INDEX" ] && {
-        $DEBUG "Interface ${IFACE} is missing the interface index."
+        # aliases don't have interface_index, just return
+        #$DEBUG "Interface ${IFACE} is missing the interface index."
         return 0
     }
 
@@ -132,7 +133,8 @@ uplink_routes()
 write_status_file()
 {
     [ -z "$IF_NETD_INTERFACE_INDEX" ] && {
-        $DEBUG "Interface ${IFACE} is missing the interface index."
+        # aliases don't have interface_index, just return
+        #$DEBUG "Interface ${IFACE} is missing the interface index."
         return 0
     }
 

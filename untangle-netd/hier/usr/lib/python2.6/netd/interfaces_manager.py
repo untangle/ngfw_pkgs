@@ -58,6 +58,20 @@ class InterfacesManager:
             self.interfacesFile.write("\tpre-up /sbin/ifconfig %s up\n" % interface_settings.get('systemDev')) 
             self.interfacesFile.write("\tprovider %s\n" % ("connection." + interface_settings.get('systemDev'))) 
             
+
+        # handle aliases
+        if interface_settings.get('v4Aliases') != None and interface_settings.get('v4Aliases').get('list') != None:
+            count = 1
+            for alias in interface_settings.get('v4Aliases').get('list'):
+                self.interfacesFile.write("\n");
+                self.interfacesFile.write("## Interface %s IPv4 alias\n" % (str(interface_settings.get('interfaceId'))) )
+                self.interfacesFile.write("auto %s:%i\n" % (interface_settings.get('symbolicDev'), count))
+                self.interfacesFile.write("iface %s:%i inet manual\n" % ( interface_settings.get('symbolicDev'), count ))
+                self.interfacesFile.write("\tnetd_v4_address %s\n" % alias.get('v4StaticAddress'))
+                self.interfacesFile.write("\tnetd_v4_netmask %s\n" % alias.get('v4StaticNetmask'))
+                count = count+1
+                
+        
         self.interfacesFile.write("\n\n");
 
     def write_interface_v6( self, interface_settings, interfaces ):
