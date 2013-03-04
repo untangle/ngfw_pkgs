@@ -132,7 +132,7 @@ make_resolv_conf()
                 /bin/echo -e "#new_name_server=${nameserver} # uplink.${DHCP_INTERFACE_INDEX}" >> /etc/dnsmasq.conf
             done
             
-            sed -i -e "/^#*\s*server=.*uplink.${DHCP_INTERFACE_INDEX}/d" -e 's/^#new_name_server=/server=/' /etc/dnsmasq.conf
+            sed -i -e "/^#*\s*server=.*uplink.${DHCP_INTERFACE_INDEX}$/d" -e 's/^#new_name_server=/server=/' /etc/dnsmasq.conf
         fi
 
         local t_new_hash="`md5sum /etc/dnsmasq.conf`"
