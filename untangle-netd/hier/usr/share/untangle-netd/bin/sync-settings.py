@@ -27,7 +27,7 @@ from   netd import *
 
 class ArgumentParser(object):
     def __init__(self):
-        self.file = '/etc/untangle-netd/network.js'
+        self.file = '/usr/share/untangle/settings/untangle-vm/network.js'
         self.prefix = ''
         self.verbosity = 0
 
