@@ -112,6 +112,15 @@ def cleanupSettings( settings ):
             intf['v4NatEgressTraffic'] = False
             intf['v4NatIngressTraffic'] = False
 
+    # Disable egress NAT on non-WANs
+    # Disable ingress NAT on WANs
+    for intf in interfaces:
+        if intf['isWan']:
+            intf['v4NatIngressTraffic'] = False
+        if not intf['isWan']:
+            intf['v4NatEgressTraffic'] = False
+            
+
     # Remove PPPoE settings if not PPPoE intf
     for intf in interfaces:
         if intf['v4ConfigType'] != 'PPPOE':
