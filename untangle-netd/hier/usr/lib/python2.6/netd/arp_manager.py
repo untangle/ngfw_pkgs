@@ -27,12 +27,12 @@ class ArpManager:
         # FIXME: get IP from interface instead of settings (so DHCP is supported)
         # FIXME: add support for aliases
         file.write("# For gateways to update MAC table" + "\n");
-        file.write("# This is necessary for disfunctional ISP routers that have permanent ARP caches" + "\n");
+        file.write("# This is necessary for malfunctioning ISP routers that have permanent ARP caches" + "\n");
         file.write("\n");
         for intf in settings['interfaces']['list']:
             if 'v4StaticGateway' in intf:
                 if 'v4StaticAddress' in intf:
-                    file.write("# arping -U -c 1 -I %s -s %s %s\n" % (intf['systemDev'], intf['v4StaticAddress'], intf['v4StaticGateway']) );
+                    file.write("arping -U -c 1 -I %s -s %s %s /dev/null &\n" % (intf['systemDev'], intf['v4StaticAddress'], intf['v4StaticGateway']) );
         file.write("\n\n");
 
         file.flush()
