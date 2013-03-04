@@ -17,34 +17,34 @@ class InterfacesManager:
 
     def write_interface_v4( self, interface_settings, interfaces ):
 
-        self.interfacesFile.write("## Interface %i IPv4\n" % (interface_settings['interfaceId']) )
-        self.interfacesFile.write("auto %s\n" % interface_settings['symbolicDev'])
-
+        self.interfacesFile.write("## Interface %s IPv4\n" % (str(interface_settings.get('interfaceId'))) )
+        self.interfacesFile.write("auto %s\n" % interface_settings.get('symbolicDev'))
+        
         configString = "manual"
-        if interface_settings['v4ConfigType'] == 'AUTO':
+        if interface_settings.get('v4ConfigType') == 'AUTO':
             configString = "dhcp"
-        if interface_settings['v4ConfigType'] == 'PPPOE':
+        if interface_settings.get('v4ConfigType') == 'PPPOE':
             configString = "ppp"
 
         # find interfaces bridged to this interface
         isBridge = False
         bridgedInterfaces = []
         for intf in interfaces:
-            if intf['configType'] == 'BRIDGED' and intf['bridgedTo'] == interface_settings['interfaceId']:
-                bridgedInterfaces.append(str(intf['systemDev']))
+            if intf.get('configType') == 'BRIDGED' and intf.get('bridgedTo') == interface_settings.get('interfaceId'):
+                bridgedInterfaces.append(str(intf.get('systemDev')))
         if len(bridgedInterfaces) > 0:
             isBridge = True
-            bridgedInterfaces.append(interface_settings['systemDev']) # include yourself in bridge
+            bridgedInterfaces.append(interface_settings.get('systemDev')) # include yourself in bridge
 
-        self.interfacesFile.write("iface %s inet %s\n" % (interface_settings['symbolicDev'], configString) )
-        self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings['interfaceId'])
+        self.interfacesFile.write("iface %s inet %s\n" % (interface_settings.get('symbolicDev'), configString) )
+        self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings.get('interfaceId'))
 
         # handle static stuff
-        if interface_settings['v4ConfigType'] == 'STATIC':
-            self.interfacesFile.write("\tnetd_v4_address %s\n" % interface_settings['v4StaticAddress'])
-            self.interfacesFile.write("\tnetd_v4_netmask %s\n" % interface_settings['v4StaticNetmask'])
-            if 'v4StaticGateway' in interface_settings:
-                self.interfacesFile.write("\tnetd_v4_gateway %s\n" % interface_settings['v4StaticGateway'])
+        if interface_settings.get('v4ConfigType') == 'STATIC':
+            self.interfacesFile.write("\tnetd_v4_address %s\n" % interface_settings.get('v4StaticAddress'))
+            self.interfacesFile.write("\tnetd_v4_netmask %s\n" % interface_settings.get('v4StaticNetmask'))
+            if interface_settings.get('v4StaticGateway') != None:
+                self.interfacesFile.write("\tnetd_v4_gateway %s\n" % interface_settings.get('v4StaticGateway'))
 
         # handle bridge-related stuff
         if isBridge:
@@ -54,43 +54,43 @@ class InterfacesManager:
             self.interfacesFile.write("\tnetd_bridge_mtu %i\n" % 1500) #XXX
 
         # handle PPPoE stuff
-        if interface_settings['v4ConfigType'] == 'PPPOE':
-            self.interfacesFile.write("\tpre-up /sbin/ifconfig %s up\n" % interface_settings['systemDev']) 
-            self.interfacesFile.write("\tprovider %s\n" % ("connection." + interface_settings['systemDev'])) 
+        if interface_settings.get('v4ConfigType') == 'PPPOE':
+            self.interfacesFile.write("\tpre-up /sbin/ifconfig %s up\n" % interface_settings.get('systemDev')) 
+            self.interfacesFile.write("\tprovider %s\n" % ("connection." + interface_settings.get('systemDev'))) 
             
         self.interfacesFile.write("\n\n");
 
     def write_interface_v6( self, interface_settings, interfaces ):
 
-        if interface_settings['v6ConfigType'] == 'AUTO':
-            return # nothing needed to support RA
+        if interface_settings.get('v6ConfigType') == 'AUTO':
+            return # nothing needed to support RA # FIXME what about non-WANs?
 
-        self.interfacesFile.write("## Interface %i IPv6\n" % (interface_settings['interfaceId']) )
-        if not 'v6StaticAddress' in interface_settings:
-            self.interfacesFile.write("## No IPv6 configured. Skipping %s\n" % interface_settings['name'] )
+        self.interfacesFile.write("## Interface %i IPv6\n" % (interface_settings.get('interfaceId')) )
+        if interface_settings.get('v6StaticAddress') == None:
+            self.interfacesFile.write("## No IPv6 configured. \n")
             self.interfacesFile.write("\n\n");
             return
 
-        #self.interfacesFile.write("auto %s\n" % interface_settings['symbolicDev'])
-        self.interfacesFile.write("iface %s inet6 %s\n" % (interface_settings['symbolicDev'], "manual") )
-        self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings['interfaceId'])
-        self.interfacesFile.write("\tnetd_v6_address %s\n" % interface_settings['v6StaticAddress'])
-        self.interfacesFile.write("\tnetd_v6_netmask %s\n" % interface_settings['v6StaticPrefixLength'])
-        if 'v6StaticGateway' in interface_settings:
-            self.interfacesFile.write("\tnetd_v6_gateway %s\n" % interface_settings['v6StaticGateway'])
+        #self.interfacesFile.write("auto %s\n" % interface_settings.get('symbolicDev'))
+        self.interfacesFile.write("iface %s inet6 %s\n" % (interface_settings.get('symbolicDev'), "manual") )
+        self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings.get('interfaceId'))
+        self.interfacesFile.write("\tnetd_v6_address %s\n" % interface_settings.get('v6StaticAddress'))
+        self.interfacesFile.write("\tnetd_v6_netmask %s\n" % interface_settings.get('v6StaticPrefixLength'))
+        if interface_settings.get('v6StaticGateway') != None:
+            self.interfacesFile.write("\tnetd_v6_gateway %s\n" % interface_settings.get('v6StaticGateway'))
         self.interfacesFile.write("\n\n");
 
     def check_interface_settings( self, interface_settings):
-        if interface_settings['systemDev'] == None:
+        if interface_settings.get('systemDev') == None:
             print "ERROR: Missisg symbolic dev!"
             return False
-        if interface_settings['symbolicDev'] == None:
+        if interface_settings.get('symbolicDev') == None:
             print "ERROR: Missisg symbolic dev!"
             return False
-        if interface_settings['interfaceId'] == None:
+        if interface_settings.get('interfaceId') == None:
             print "ERROR: Missisg interface ID!"
             return False
-        if interface_settings['name'] == None:
+        if interface_settings.get('name') == None:
             print "ERROR: Missisg interface name!"
             return False
         return True
@@ -120,22 +120,22 @@ class InterfacesManager:
         self.interfacesFile.write("iface networking_pre_restart_hook inet manual\n");
         self.interfacesFile.write("\n\n");
 
-        if settings != None and settings['interfaces'] != None and settings['interfaces']['list'] != None:
-            for interface_settings in settings['interfaces']['list']:
+        if settings != None and settings.get('interfaces') != None and settings.get('interfaces').get('list') != None:
+            for interface_settings in settings.get('interfaces').get('list'):
                 # only write 'ADDRESSED' interfaces
-                if interface_settings['configType'] != 'ADDRESSED':
+                if interface_settings.get('configType') != 'ADDRESSED':
                     continue
                 # if invalid settigs, skip it
                 if not self.check_interface_settings( interface_settings ):
                     continue
 
                 try:
-                    self.write_interface_v4( interface_settings, settings['interfaces']['list'] )
+                    self.write_interface_v4( interface_settings, settings.get('interfaces').get('list') )
                 except Exception,exc:
                     traceback.print_exc()
 
                 try:
-                    self.write_interface_v6( interface_settings, settings['interfaces']['list'] )
+                    self.write_interface_v6( interface_settings, settings.get('interfaces').get('list') )
                 except Exception,exc:
                     traceback.print_exc()
 

@@ -21,10 +21,7 @@ import getopt
 import signal
 import os
 import traceback
-
-# python2.6 includes json, python2.5 uses simplejson
-try: import simplejson as json
-except ImportError: import json
+import json
 
 from   netd import *
 
