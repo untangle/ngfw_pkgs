@@ -32,7 +32,7 @@ class ArpManager:
         for intf in settings['interfaces']['list']:
             if 'v4StaticGateway' in intf:
                 if 'v4StaticAddress' in intf:
-                    file.write("arping -U -c 1 -I %s -s %s %s /dev/null &\n" % (intf['systemDev'], intf['v4StaticAddress'], intf['v4StaticGateway']) );
+                    file.write("arping -U -c 1 -I %s -s %s %s >/dev/null &\n" % (intf['systemDev'], intf['v4StaticAddress'], intf['v4StaticGateway']) );
         file.write("\n\n");
 
         file.flush()

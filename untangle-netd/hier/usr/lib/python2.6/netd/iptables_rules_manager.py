@@ -177,6 +177,12 @@ class IptablesRulesManager:
         file.write("${IPTABLES} -t mangle -A FORWARD -m comment --comment \"Set dst intf mark (0xff00)\" -j mark-dst-intf" + "\n");
         file.write("\n");
 
+        file.write("# Call mark-dst-intf from OUTPUT chain in mangle for local traffic" + "\n");
+        file.write("# Do not think this is necessary - local traffic is always bypassed" + "\n");
+        file.write("# ${IPTABLES} -t mangle -D OUTPUT -m comment --comment \"Set dst intf mark (0xff00)\" -j mark-dst-intf >/dev/null 2>&1" + "\n");
+        file.write("# ${IPTABLES} -t mangle -A OUTPUT -m comment --comment \"Set dst intf mark (0xff00)\" -j mark-dst-intf" + "\n");
+        file.write("\n");
+
         self.write_restore_interface_marks( file, interfaces, prefix, verbosity );
 
         self.write_mark_src_intf( file, interfaces, prefix, verbosity );
