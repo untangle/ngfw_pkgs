@@ -1,1 +1,1 @@
-usr/share/untangle-shield/bin/update_rules etc/untangle-net-alpaca/iptables-rules.d/810-shield
+usr/share/untangle-shield/bin/update_rules etc/untangle-netd/iptables-rules.d/810-shield

@@ -102,7 +102,7 @@ while true ; do
       	trap 'rm -f "$LOCK_FILE"; exit $?' INT TERM EXIT
         
         # critical section
-        echo "[`date`] Running ${IPTABLES_DIRECTORY} scripts [REASON: $1]" 
+        echo "[`date`] Running ${IPTABLES_DIRECTORY} scripts ..." 
         run_iptables_scripts
         echo "[`date`] Running ${IPTABLES_DIRECTORY} scripts done." 
         

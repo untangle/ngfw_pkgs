@@ -59,14 +59,6 @@ networking_pre_restart_hook()
     $DEBUG "running pre-network-hooks"
     $RUN_PARTS /etc/untangle-netd/pre-network-hook.d
 
-    # TEMP to disable alpaca
-    rm -f /etc/network/if-up.d/alpaca
-    rm -f /etc/network/if-pre-up.d/alpaca
-    rm -f /etc/dhcp/dhclient-exit-hooks.d/net-alpaca
-    rm -f /etc/dhcp/dhclient-enter-hooks.d/net-alpaca
-    rm -f /etc/dhcp3/dhclient-exit-hooks.d/net-alpaca
-    rm -f /etc/dhcp3/dhclient-enter-hooks.d/net-alpaca
-
     $DEBUG "cleanup: Stopping all dhcp daemons"
     ## If there are any processes, wait a little, then make sure they are gone.
     pkill -QUIT '(dhclient3|pump|dhclient)' && { sleep 1 ; pkill '(dhclient3|pump|dhclient)'; }

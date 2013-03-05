@@ -1474,17 +1474,6 @@ body.wizard .ext-el-mask
 }
 
 
-.alpaca-panel{
-    padding:10px;
-}
-
-.alpaca-panel .page-header-text{
-    font-family:Tahoma, arial, helvetica, freesans,sans-serif;
-    font-weight:bold;
-    font-size:13px;
-    margin-bottom:5px;
-    display:block;
-}
 .label-section-heading, .label-section-heading-2,.label-text{
     font-family:Tahoma, arial,helvetica,  freesans,sans-serif;
     font-weight:bold;
