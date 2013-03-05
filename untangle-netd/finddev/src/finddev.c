@@ -16,6 +16,8 @@
 #include <netinet/ip.h>
 #include <netinet/if_ether.h>
 #include <sys/socket.h>
+#include <sys/time.h>
+#include <sys/ioctl.h>
 #include <arpa/inet.h>
 #include <linux/sockios.h> 
 #include <linux/netfilter.h> 
@@ -112,7 +114,7 @@ char inet_ntoa_name[INET_ADDRSTRLEN];
  * This is the delay times for ARP requests (in microsecs)
  * 0 means give-up.
  */
-unsigned long delay_array[] = {
+unsigned int delay_array[] = {
     3 * 1000,
     6 * 1000,
     20 * 1000,
@@ -281,6 +283,8 @@ static void* _read_pkt (void* data)
     }
     
     nfq_handle_packet(h, buf, rv);
+
+    return NULL;
 }
 
 static int   _debug ( int level, char *lpszFmt, ... )
@@ -417,10 +421,7 @@ static int   _set_signals( void )
 }
 
 static int   _nfqueue_callback (struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfa, void *data)
-{
-    pthread_t id;
-    
-    /**
+{    /**
      * Create a new thread to handle the next packet
      * We have to use this thread to handle this packet because nfq_handle_packet
      * stores nfa on the stack, so this thread can not be returned
@@ -469,10 +470,7 @@ static void* _handle_packet ( struct nfq_data* nfa )
         _debug( 2, "RESULT: new     mark: 0x%08x\n", mark);
 
         mark = htonl( mark );
-
-        // NF_REPEAT instead of NF_ACCEPT to repeat mark-dst-intf
-        // this will force it to save the dst mark to the connmark
-        nfq_set_verdict_mark(qh, id, NF_REPEAT, mark, 0, NULL);
+        nfq_set_verdict_mark(qh, id, NF_ACCEPT, mark, 0, NULL);
         pthread_exit( NULL );
     }
 
@@ -487,7 +485,6 @@ static void  _print_pkt ( struct nfq_data *tb )
     int ret;
     char *data;
     char intf_name[IF_NAMESIZE];
-    char buf[2048];
     
     if ( pthread_mutex_lock( &print_mutex ) < 0 ) {
         fprintf( stderr, "pthread_mutex_lock: %s\n", strerror(errno) );
@@ -565,7 +562,6 @@ static void  _print_pkt ( struct nfq_data *tb )
     } else {
     
         struct iphdr * ip = (struct iphdr *) data;
-        struct in_addr ipa;
 
         printf( "IPv%i ", ip->version);
 
@@ -794,7 +790,7 @@ static int   _arp_address ( struct in_addr* dst_ip, struct ether_addr* mac, char
 {
     int c = 0;
     int ret;
-    unsigned long delay;
+    unsigned int delay;
     struct in_addr src_ip;
 
     while ( 1 ) {
@@ -824,12 +820,12 @@ static int   _arp_address ( struct in_addr* dst_ip, struct ether_addr* mac, char
         delay = delay_array[c];
         if ( delay == 0 ) break;
         if ( delay < 0 ) {
-            fprintf( stderr, "Invalid delay: index %d is %l\n", c, delay );
+            fprintf( stderr, "Invalid delay: index:%i delay:%i\n", c, delay );
             return -1;
         }
         c++;
         
-        _debug( 2,  "Waiting for the response for: %d ms\n", delay );
+        _debug( 2,  "Waiting for the response for: %i ms\n", delay );
         usleep( delay );
     }
     
@@ -989,13 +985,12 @@ static int   _arp_issue_request ( struct in_addr* src_ip, struct in_addr* dst_ip
     size = sendto( pkt_socket, &pkt, sizeof( pkt ), 0, (struct sockaddr*)&broadcast, sizeof( broadcast ));
 
     if ( size < 0 ) {
-        fprintf( stderr, "sendto( %i , %08x , %i, %i, %08x, %i )\n", arp_socket, &pkt, sizeof( pkt ), 0, (struct sockaddr*)&broadcast, sizeof( broadcast ));
         fprintf( stderr, "sendto: %s\n", strerror(errno) );
         return -1;
     }
     
     if ( size != sizeof( pkt )) {
-        fprintf( stderr, "Transmitted truncated ARP packet %d < %d\n", size, sizeof( pkt ));
+        fprintf( stderr, "Transmitted truncated ARP packet %i < %i\n", size, (int)sizeof( pkt ));
         return -1;
     }
          

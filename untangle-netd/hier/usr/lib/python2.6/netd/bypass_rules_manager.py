@@ -6,13 +6,13 @@ import traceback
 from netd.iptables_util import IptablesUtil
 from netd.network_util import NetworkUtil
 
-# This class is responsible for writing /etc/untangle-netd/iptables-rules.d/220-bypass-rules
+# This class is responsible for writing /etc/untangle-netd/iptables-rules.d/210-bypass-rules
 # based on the settings object passed from sync-settings.py
 class BypassRuleManager:
     bypassMarkMask = 0x01000000
     interfacesMarkMask = 0x0000FFFF
 
-    defaultFilename = "/etc/untangle-netd/iptables-rules.d/220-bypass-rules"
+    defaultFilename = "/etc/untangle-netd/iptables-rules.d/210-bypass-rules"
     filename = defaultFilename
     file = None
 
@@ -37,7 +37,7 @@ class BypassRuleManager:
         description = "Bypass Rule #%i" % int(bypass_rule['ruleId'])
         iptables_conditions = IptablesUtil.conditions_to_iptables_string( bypass_rule['matchers']['list'], description, verbosity );
 
-        iptables_commands = [ "${IPTABLES} -t mangle -A bypass-rules " + ipt + target for ipt in iptables_conditions ]
+        iptables_commands = [ "${IPTABLES} -t filter -A bypass-rules " + ipt + target for ipt in iptables_conditions ]
 
         self.file.write("# %s\n" % description);
         for cmd in iptables_commands:
@@ -55,17 +55,17 @@ class BypassRuleManager:
         bypass_rules = settings['bypassRules']['list'];
 
         self.file.write("# Implicit Bypass Rules (loopback)" + "\n");
-        self.file.write("${IPTABLES} -t mangle -A bypass-rules -i lo --goto set-bypass-mark -m comment --comment \"Bypass loopback traffic\"" + "\n");
-        self.file.write("${IPTABLES} -t mangle -A bypass-rules -o lo --goto set-bypass-mark -m comment --comment \"Bypass loopback traffic\"" + "\n");
+        self.file.write("${IPTABLES} -t filter -A bypass-rules -i lo --goto set-bypass-mark -m comment --comment \"Bypass loopback traffic\"" + "\n");
+        self.file.write("${IPTABLES} -t filter -A bypass-rules -o lo --goto set-bypass-mark -m comment --comment \"Bypass loopback traffic\"" + "\n");
         self.file.write("\n");
 
         self.file.write("# Implicit Bypass Rules (DHCP)" + "\n");
-        self.file.write("${IPTABLES} -t mangle -A bypass-rules -p udp --destination-port 68 --goto set-bypass-mark -m comment --comment \"Bypass DHCP reply traffic\"" + "\n");
+        self.file.write("${IPTABLES} -t filter -A bypass-rules -p udp --destination-port 68 --goto set-bypass-mark -m comment --comment \"Bypass DHCP reply traffic\"" + "\n");
         self.file.write("\n");
 
         self.file.write("# Implicit Bypass Rules (hairpin)" + "\n");
         for intfId in NetworkUtil.interface_list():
-            self.file.write("${IPTABLES} -t mangle -A bypass-rules -m mark --mark 0x%X/0x%X --goto set-bypass-mark -m comment --comment \"Bypass hairpin traffic (interface %s)\"" % ( (intfId+(intfId<<8)), self.interfacesMarkMask, str(intfId)) + "\n");
+            self.file.write("${IPTABLES} -t filter -A bypass-rules -m mark --mark 0x%X/0x%X --goto set-bypass-mark -m comment --comment \"Bypass hairpin traffic (interface %s)\"" % ( (intfId+(intfId<<8)), self.interfacesMarkMask, str(intfId)) + "\n");
         self.file.write("\n");
 
         for bypass_rule in bypass_rules:
@@ -87,8 +87,8 @@ class BypassRuleManager:
     def write_set_bypass_mark( self, settings, verbosity ):
 
         self.file.write("# Set the bypass mark on both packet and session" + "\n");
-        self.file.write("${IPTABLES} -t mangle -A set-bypass-mark -j MARK --or-mark 0x%X -m comment --comment \"Set the bypass mark on this packet\"" % self.bypassMarkMask + "\n");
-        self.file.write("${IPTABLES} -t mangle -A set-bypass-mark -j CONNMARK --or-mark 0x%X -m comment --comment \"Set the bypass mark on this session\"" % self.bypassMarkMask + "\n");
+        self.file.write("${IPTABLES} -t filter -A set-bypass-mark -j MARK --or-mark 0x%X -m comment --comment \"Set the bypass mark on this packet\"" % self.bypassMarkMask + "\n");
+        self.file.write("${IPTABLES} -t filter -A set-bypass-mark -j CONNMARK --or-mark 0x%X -m comment --comment \"Set the bypass mark on this session\"" % self.bypassMarkMask + "\n");
         self.file.write("\n");
         
         return
@@ -109,10 +109,10 @@ class BypassRuleManager:
         self.file.write("# Create (if needed) and flush bypass-rules, set-bypass-mark, restore-bypass-mark chain" + "\n");
         self.file.write("${IPTABLES} -t mangle -N restore-bypass-mark 2>/dev/null" + "\n");
         self.file.write("${IPTABLES} -t mangle -F restore-bypass-mark >/dev/null 2>&1" + "\n");
-        self.file.write("${IPTABLES} -t mangle -N bypass-rules 2>/dev/null" + "\n");
-        self.file.write("${IPTABLES} -t mangle -F bypass-rules >/dev/null 2>&1" + "\n");
-        self.file.write("${IPTABLES} -t mangle -N set-bypass-mark 2>/dev/null" + "\n");
-        self.file.write("${IPTABLES} -t mangle -F set-bypass-mark >/dev/null 2>&1" + "\n");
+        self.file.write("${IPTABLES} -t filter -N bypass-rules 2>/dev/null" + "\n");
+        self.file.write("${IPTABLES} -t filter -F bypass-rules >/dev/null 2>&1" + "\n");
+        self.file.write("${IPTABLES} -t filter -N set-bypass-mark 2>/dev/null" + "\n");
+        self.file.write("${IPTABLES} -t filter -F set-bypass-mark >/dev/null 2>&1" + "\n");
         self.file.write("\n");
 
         self.file.write("# Call restore-interface-marks then mark-src-intf from PREROUTING chain in mangle" + "\n");
@@ -121,8 +121,8 @@ class BypassRuleManager:
         self.file.write("\n");
 
         self.file.write("# Call bypass-rules chain from PREROUTING chain to forward traffic" + "\n");
-        self.file.write("${IPTABLES} -t mangle -D FORWARD -m conntrack --ctstate NEW -m comment --comment \"Bypass rules\" -j bypass-rules >/dev/null 2>&1" + "\n");
-        self.file.write("${IPTABLES} -t mangle -A FORWARD -m conntrack --ctstate NEW -m comment --comment \"Bypass rules\" -j bypass-rules" + "\n");
+        self.file.write("${IPTABLES} -t filter -D FORWARD -m conntrack --ctstate NEW -m comment --comment \"Bypass rules\" -j bypass-rules >/dev/null 2>&1" + "\n");
+        self.file.write("${IPTABLES} -t filter -A FORWARD -m conntrack --ctstate NEW -m comment --comment \"Bypass rules\" -j bypass-rules" + "\n");
         self.file.write("\n");
 
         self.file.write("# Bypass all traffic from the local server" + "\n");
@@ -138,5 +138,7 @@ class BypassRuleManager:
 
         if verbosity > 0:
             print "BypassForwardManager: Wrote %s" % self.filename
+
+        os.system("rf -f /etc/untangle-netd/iptables-rules.d/210-bypass-rules") # remove old location
 
         return

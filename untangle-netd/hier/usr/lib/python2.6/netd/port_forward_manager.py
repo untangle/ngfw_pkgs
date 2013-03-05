@@ -5,10 +5,10 @@ import datetime
 import traceback
 from netd.iptables_util import IptablesUtil
 
-# This class is responsible for writing /etc/untangle-netd/iptables-rules.d/210-port-forward-rules
+# This class is responsible for writing /etc/untangle-netd/iptables-rules.d/230-port-forward-rules
 # based on the settings object passed from sync-settings.py
 class PortForwardManager:
-    defaultFilename = "/etc/untangle-netd/iptables-rules.d/210-port-forward-rules"
+    defaultFilename = "/etc/untangle-netd/iptables-rules.d/230-port-forward-rules"
     filename = defaultFilename
     file = None
 
@@ -38,6 +38,8 @@ class PortForwardManager:
         for cmd in iptables_commands:
             self.file.write(cmd + "\n")
         self.file.write("\n");
+
+        os.system("rf -f /etc/untangle-netd/iptables-rules.d/210-port-forward-rules") # remove old location
 
         return
 

@@ -133,12 +133,18 @@ class IptablesRulesManager:
                 # file.write("${IPTABLES} -t mangle -A mark-dst-intf -m physdev --physdev-out %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i using physdev\"" % (systemDev, id << 8, self.dstInterfaceMarkMask, id) + "\n");
                 # queue to userspace
                 file.write("${IPTABLES} -t mangle -A mark-dst-intf -m mark --mark 0/0x%04X -o %s -j NFQUEUE --queue-num 1979 -m comment --comment \"queue bridge packets to daemon to determine dst intf/port\"" % (self.dstInterfaceMarkMask, symbolicDev) + "\n");
-                # warn
-                # file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -j LOG --log-prefix \"FIXME queue me:\" -m comment --comment \"queue bridge destined packets to daemon to determine destination\"" % (symbolicDev) + "\n");
 
-                
-        file.write("${IPTABLES} -t mangle -A mark-dst-intf -m mark --mark 0/0x%04X -j LOG --log-prefix \"WARNING (unknown dst intf):\" -m comment --comment \"WARN on missing dst mark\"" % (self.dstInterfaceMarkMask) + "\n");
-        file.write("${IPTABLES} -t mangle -A mark-dst-intf -m conntrack --ctstate NEW -j CONNMARK --save-mark --mask 0x%04X -m comment --comment \"Save dst interface mark to connmark\"" % (self.dstInterfaceMarkMask) + "\n");
+        file.write("\n");
+
+    def write_save_dst_intf_mark( self, file, interfaces, prefix, verbosity ):
+
+        file.write("\n\n");
+        file.write("#\n");
+        file.write("# Create the save-mark-dst-intf chain." + "\n");
+        file.write("#\n\n");
+
+        # file.write("${IPTABLES} -t filter -A save-mark-dst-intf -m mark --mark 0/0x%04X -j LOG --log-prefix \"WARNING (unknown dst intf):\" -m comment --comment \"WARN on missing dst mark\"" % (self.dstInterfaceMarkMask) + "\n");
+        file.write("${IPTABLES} -t filter -A save-mark-dst-intf -m conntrack --ctstate NEW -j CONNMARK --save-mark --mask 0x%04X -m comment --comment \"Save dst interface mark to connmark\"" % (self.dstInterfaceMarkMask) + "\n");
                 
         file.write("\n");
 
@@ -163,6 +169,8 @@ class IptablesRulesManager:
         file.write("${IPTABLES} -t mangle -F mark-src-intf >/dev/null 2>&1" + "\n");
         file.write("${IPTABLES} -t mangle -N mark-dst-intf 2>/dev/null" + "\n");
         file.write("${IPTABLES} -t mangle -F mark-dst-intf >/dev/null 2>&1" + "\n");
+        file.write("${IPTABLES} -t filter -N save-mark-dst-intf 2>/dev/null" + "\n");
+        file.write("${IPTABLES} -t filter -F save-mark-dst-intf >/dev/null 2>&1" + "\n");
         file.write("\n");
         
         file.write("# Call restore-interface-marks then mark-src-intf from PREROUTING chain in mangle" + "\n");
@@ -177,6 +185,12 @@ class IptablesRulesManager:
         file.write("${IPTABLES} -t mangle -A FORWARD -m comment --comment \"Set dst intf mark (0xff00)\" -j mark-dst-intf" + "\n");
         file.write("\n");
 
+        file.write("# Call save-mark-dst-intf from FORWARD chain in filter" + "\n");
+        file.write("# Do not think this is necessary - local traffic is always bypassed" + "\n");
+        file.write("${IPTABLES} -t filter -D FORWARD -m comment --comment \"Save dst intf mark (0xff00)\" -j save-mark-dst-intf >/dev/null 2>&1" + "\n");
+        file.write("${IPTABLES} -t filter -A FORWARD -m comment --comment \"Save dst intf mark (0xff00)\" -j save-mark-dst-intf" + "\n");
+        file.write("\n");
+
         file.write("# Call mark-dst-intf from OUTPUT chain in mangle for local traffic" + "\n");
         file.write("# Do not think this is necessary - local traffic is always bypassed" + "\n");
         file.write("# ${IPTABLES} -t mangle -D OUTPUT -m comment --comment \"Set dst intf mark (0xff00)\" -j mark-dst-intf >/dev/null 2>&1" + "\n");
@@ -188,6 +202,8 @@ class IptablesRulesManager:
         self.write_mark_src_intf( file, interfaces, prefix, verbosity );
 
         self.write_mark_dst_intf( file, interfaces, prefix, verbosity );
+
+        self.write_save_dst_intf_mark( file, interfaces, prefix, verbosity );
 
         file.flush()
         file.close()

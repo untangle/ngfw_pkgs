@@ -6,12 +6,12 @@ import traceback
 from netd.iptables_util import IptablesUtil
 from netd.network_util import NetworkUtil
 
-# This class is responsible for writing /etc/untangle-netd/iptables-rules.d/200-nat-rules
+# This class is responsible for writing /etc/untangle-netd/iptables-rules.d/220-nat-rules
 # based on the settings object passed from sync-settings.py
 class NatRulesManager:
     interfacesMarkMask = 0x0000FFFF
 
-    defaultFilename = "/etc/untangle-netd/iptables-rules.d/200-nat-rules"
+    defaultFilename = "/etc/untangle-netd/iptables-rules.d/220-nat-rules"
     filename = defaultFilename
     file = None
 
@@ -178,4 +178,7 @@ class NatRulesManager:
         if verbosity > 0:
             print "NatRulesManager: Wrote %s" % self.filename
 
+        os.system("rm -f /etc/untangle-netd/iptables-rules.d/200-nat-rules") # remove old location
+
         return
+
