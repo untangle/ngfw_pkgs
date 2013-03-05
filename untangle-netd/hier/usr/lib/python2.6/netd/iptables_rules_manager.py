@@ -132,7 +132,7 @@ class IptablesRulesManager:
                 # physdev-out doesn't work, instead queue to userspace daemon
                 # file.write("${IPTABLES} -t mangle -A mark-dst-intf -m physdev --physdev-out %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i using physdev\"" % (systemDev, id << 8, self.dstInterfaceMarkMask, id) + "\n");
                 # queue to userspace
-                file.write("${IPTABLES} -t mangle -A mark-dst-intf -m mark --mark 0/0x%04X -o %s -j NFQUEUE --queue-num 1979 -m comment --comment \"queue bridge packets to daemon to determine dst intf/port\"" % (self.dstInterfaceMarkMask, symbolicDev) + "\n");
+                file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -j NFQUEUE --queue-num 1979 -m comment --comment \"queue bridge packets to daemon to determine dst intf/port\"" % (symbolicDev) + "\n");
 
         file.write("\n");
 
