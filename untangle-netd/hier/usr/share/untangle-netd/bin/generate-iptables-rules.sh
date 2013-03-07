@@ -25,9 +25,14 @@ tee < ${LOGFILE}.pipe $LOGFILE &
 exec >> ${LOGFILE}.pipe 2>&1
 rm ${LOGFILE}.pipe
 
+debug()
+{
+   /bin/echo -e "[IPTABLE DEBUG: `date`] ${*}"
+}
+
 iptables_debug()
 {
-   echo "[`date`] /sbin/iptables $@"
+   /bin/echo -e "[IPTABLE DEBUG: `date`] /sbin/iptables $@"
    /sbin/iptables "$@"
 }
 
@@ -43,7 +48,7 @@ iptables_debug_onerror()
 
 ebtables_debug()
 {
-    echo "[`date`] /sbin/ebtables $@"
+    /bin/echo -e "[EBTABLE DEBUG: `date`] /sbin/ebtables $@"
     /sbin/ebtables "$@"
 }
 
@@ -73,7 +78,7 @@ run_iptables_scripts()
     local t_ran_script=""
 
     if [ ! -d ${IPTABLES_DIRECTORY} ]; then
-        echo "[`date`] ${IPTABLES_DIRECTORY} does not exist."
+        debug "${IPTABLES_DIRECTORY} does not exist."
         return 0
     fi
     
@@ -82,18 +87,18 @@ run_iptables_scripts()
 
     # Do not run any of the dpkg backup files.
     for t_script in `run-parts --list --lsbsysinit ${IPTABLES_DIRECTORY} | sort` ; do
-        echo "[`date`] ${t_script} Running ..."
+        debug "${t_script} Running ..."
         START="`date +%s%N`"
         . ${t_script}
         RET=$?
         END="`date +%s%N`"
         TIME=$(( ($END-$START)/1000000 ))
-        echo "[`date`] ${t_script} Complete: $RET (took $TIME msec)"
+        debug "${t_script} Complete: $RET (took $TIME msec)"
         t_ran_script="true"
     done
     
     if [ "${t_ran_script}x" != "truex" ]; then
-        echo "[`date`] ${IPTABLES_DIRECTORY} is empty."
+        debug "${IPTABLES_DIRECTORY} is empty."
     fi
 }
 
@@ -102,9 +107,9 @@ while true ; do
       	trap 'rm -f "$LOCK_FILE"; exit $?' INT TERM EXIT
         
         # critical section
-        echo "[`date`] Running ${IPTABLES_DIRECTORY} scripts ..." 
+        debug "Running ${IPTABLES_DIRECTORY} scripts ..." 
         run_iptables_scripts
-        echo "[`date`] Running ${IPTABLES_DIRECTORY} scripts done." 
+        debug "Running ${IPTABLES_DIRECTORY} scripts done." 
         
         rm -f "$LOCK_FILE"
         trap - INT TERM EXIT
@@ -115,8 +120,8 @@ while true ; do
             # timeout
         t_count=$(($t_count+1))
         if [ $t_count -gt 1000 ] ; then 
-            echo "[`date`] ERROR: Failed to acquire lock file after 1000 tries."
-            echo "[`date`] ERROR: Removing \"stale\" lockfile..."
+            debug "ERROR: Failed to acquire lock file after 1000 tries."
+            debug "ERROR: Removing \"stale\" lockfile..."
             rm -f "$LOCK_FILE" 
             continue;
         fi

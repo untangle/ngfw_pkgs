@@ -11,7 +11,7 @@ UNTANGLE_PRIORITY_DEFAULT="${UNTANGLE_PRIORITY_BASE}6900"
 ## Functions
 debug()
 {
-    /bin/echo -e "[DEBUG: `date`] ${*}"
+    /bin/echo -e "[UPLINK  DEBUG: `date`] ${*}"
 }
 
 debug_ip()

@@ -106,7 +106,7 @@ class DnsMasqManager:
 
         file.write("## Auto Generated on %s\n" % datetime.datetime.now());
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
-        file.write("\n\n");
+        file.write("\n");
 
         file.write(r"""
 DNSMASQ_PID="`pidof dnsmasq`"
@@ -120,6 +120,7 @@ elif [ /etc/dnsmasq.conf -nt /proc/$DNSMASQ_PID/cmdline ] ; then
 fi
 """)
 
+        file.write("\n");
         file.flush()
         file.close()
     

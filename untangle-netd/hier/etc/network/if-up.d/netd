@@ -2,7 +2,7 @@
 
 debug()
 {
-    /bin/echo -e "[NETD DEBUG: `date`] ${*}"
+    /bin/echo -e "[NETD    DEBUG: `date`] ${*}"
 }
 
 debug_ip()
