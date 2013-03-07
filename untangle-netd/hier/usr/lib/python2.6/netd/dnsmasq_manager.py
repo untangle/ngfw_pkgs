@@ -10,6 +10,7 @@ from netd.network_util import NetworkUtil
 # based on the settings object passed from sync-settings.py
 class DnsMasqManager:
     dnsmasqConfFilename = "/etc/dnsmasq.conf"
+    restartHookFilename = "/etc/untangle-netd/post-network-hook.d/99-restart-dnsmasq"
 
     def write_dnsmasq_conf( self, settings, prefix="", verbosity=0 ):
         
@@ -92,10 +93,46 @@ class DnsMasqManager:
         if verbosity > 0: print "DnsMasqManager: Wrote %s" % filename
         return
 
+    def write_restart_dnsmasq_hook( self, settings, prefix="", verbosity=0 ):
+
+        filename = prefix + self.restartHookFilename
+        fileDir = os.path.dirname( filename )
+        if not os.path.exists( fileDir ):
+            os.makedirs( fileDir )
+
+        file = open( filename, "w+" )
+        file.write("#!/bin/dash");
+        file.write("\n\n");
+
+        file.write("## Auto Generated on %s\n" % datetime.datetime.now());
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
+        file.write("\n\n");
+
+        file.write(r"""
+DNSMASQ_PID="`pidof dnsmasq`"
+
+# Restart dnsmasq if it isnt found
+# Or if dnsmasq.conf has been written since dnsmasq was started
+if [ -z "$DNSMASQ_PID" ] ; then
+    /etc/init.d/dnsmasq restart
+elif [ /etc/dnsmasq.conf -nt /proc/$DNSMASQ_PID/cmdline ] ; then
+    /etc/init.d/dnsmasq restart
+fi
+""")
+
+        file.flush()
+        file.close()
+    
+        os.system("chmod a+x %s" % filename)
+        if verbosity > 0: print "DnsMasqManager: Wrote %s" % filename
+        return
+
     def sync_settings( self, settings, prefix="", verbosity=0 ):
 
         if verbosity > 1: print "DnsMasqManager: sync_settings()"
         
         self.write_dnsmasq_conf( settings, prefix, verbosity )
+
+        self.write_restart_dnsmasq_hook( settings, prefix, verbosity )
 
         return
