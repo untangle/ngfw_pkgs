@@ -44,7 +44,10 @@ clean:
 	$(MAKE) -C finddev clean
 	dh_clean
 
-binary-indep: build
+binary-indep:
+# nothing to do
+
+binary-arch: build
 	dh_testdir
 	dh_testroot
 	dh_movefiles
@@ -72,9 +75,6 @@ binary-indep: build
 #	echo "`cat debian/version`"
 	if [ -f debian/version ] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
 	dh_md5sums
-
-binary-arch: build
-# nothing to do
 
 binary: binary-indep binary-arch
 	dh_builddeb
