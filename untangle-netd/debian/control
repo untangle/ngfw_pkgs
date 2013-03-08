@@ -3,7 +3,7 @@ Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb.com>
 Uploaders: Untangle Buildbot <buildbot@untangle.com>
-Build-Depends: debhelper (>> 3.0.0), untangle-libnetfilter-queue-dev, libnfnetlink-dev, libc6
+Build-Depends: debhelper (>> 3.0.0), untangle-libnetfilter-queue-dev, libnfnetlink-dev, libc6-dev
 Standards-Version: 3.8.0
 
 Package: untangle-netd
