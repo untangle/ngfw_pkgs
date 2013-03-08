@@ -7,8 +7,8 @@ Build-Depends: debhelper (>> 3.0.0), untangle-libnetfilter-queue-dev, libnfnetli
 Standards-Version: 3.8.0
 
 Package: untangle-netd
-Architecture: all
-Depends: dash, bridge-utils, iptables, iputils-arping, untangle-libnetfilter-queue-dev, libnfnetlink-dev, libc6
+Architecture: any
+Depends: ${shlibs:Depends}, dash, bridge-utils, iptables, iputils-arping, untangle-libnetfilter-queue-dev, libnfnetlink-dev
 XB-Display-Name: Network Daemon
 XB-Untangle-Type: library
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9Y
