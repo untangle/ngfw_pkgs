@@ -80,11 +80,19 @@ class DnsMasqManager:
                     else:
                         file.write("dhcp-option=tag:%s,6,%s # dns" % (intf.get('symbolicDev'), str(intf.get('v4StaticAddress'))) + "\n")
 
+        # Local DNS servers
+        file.write("# Local DNS servers\n")
+        if ( settings.get('dnsSettings') != None and 
+             settings.get('dnsSettings').get('localServers') != None and 
+             settings.get('dnsSettings').get('localServers').get('list') != None ):
+            for localServer in settings.get('dnsSettings').get('localServers').get('list'):
+                if localServer.get('domain') != None and localServer.get('localServer') != None:
+                    file.write("local=/%s/%s" % ( localServer['domain'], localServer['localServer'] ) + "\n" )
 
         # FIXME write static DNS entries
         # FIXME write static DHCP leases
         # FIXME write domain (ie domain=untangle.local)
-        # FIXME write local DNS servers (ie local=/untangle.local/10.0.0.32)
+
 
         file.write("\n");
         file.flush()
