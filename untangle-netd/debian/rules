@@ -75,8 +75,9 @@ binary-arch: build
 #	echo "`cat debian/version`"
 	if [ -f debian/version ] ; then dh_gencontrol -a -- -v"`cat debian/version`" ; else dh_gencontrol -a ; fi
 	dh_md5sums
+	dh_builddeb -a
 
 binary: binary-indep binary-arch
-	dh_builddeb -a
+
 
 .PHONY: build clean binary-indep binary install configure
