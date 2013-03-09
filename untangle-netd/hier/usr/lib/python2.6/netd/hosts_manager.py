@@ -44,19 +44,8 @@ ff02::3 ip6-allhosts
 
             # write hostname
             file.write("127.0.0.1\t%s" % hostname + "\n")
-
-            if matcher:
-                # if hostname is fully qualified
-                # also write shortname and shortname.domain
-                shortname = matcher.group(0).replace('.','')
-                file.write("127.0.0.1\t%s" % shortname + "\n")
-                if 'domainName' in settings:
-                    file.write("127.0.0.1\t%s.%s" % ( shortname, settings['domainName'] ) + "\n" )
-            else:
-                # if hostname isn't fully qualified 
-                # also write hostname.domainname
-                if 'domainName' in settings:
-                    file.write("127.0.0.1\t%s.%s" % ( hostname, settings['domainName'] ) + "\n" )
+            if settings.get('domainName') != None:
+                file.write("127.0.0.1\t%s.%s" % ( hostname, settings.get('domainName') ) + "\n" )
 
         file.write("\n")
 

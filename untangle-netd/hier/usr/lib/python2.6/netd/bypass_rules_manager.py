@@ -94,7 +94,7 @@ class BypassRuleManager:
         return
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
-        if verbosity > 1: print "BypassForwardManager: sync_settings()"
+        if verbosity > 1: print "BypassRulesManager: sync_settings()"
 
         self.filename = prefix + self.defaultFilename
         self.fileDir = os.path.dirname( self.filename )
@@ -137,8 +137,8 @@ class BypassRuleManager:
         self.file.close();
 
         if verbosity > 0:
-            print "BypassForwardManager: Wrote %s" % self.filename
+            print "BypassRulesManager: Wrote %s" % self.filename
 
-        os.system("rm -f /etc/untangle-netd/iptables-rules.d/210-bypass-rules") # remove old location
+        os.system("rm -f /etc/untangle-netd/iptables-rules.d/220-bypass-rules") # remove old location
 
         return
