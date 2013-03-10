@@ -59,6 +59,11 @@ class BypassRuleManager:
         self.file.write("${IPTABLES} -t filter -A bypass-rules -o lo --goto set-bypass-mark -m comment --comment \"Bypass loopback traffic\"" + "\n");
         self.file.write("\n");
 
+        # If its RELATED, it must be RELATED to an already bypassed session, so bypass it also
+        self.file.write("# Implicit Bypass Rules (RELATED)" + "\n");
+        self.file.write("${IPTABLES} -t filter -A bypass-rules -m conntrack --ctstate RELATED --goto set-bypass-mark -m comment --comment \"Bypass RELATED sessions\"" + "\n");
+        self.file.write("\n");
+
         self.file.write("# Implicit Bypass Rules (DHCP)" + "\n");
         self.file.write("${IPTABLES} -t filter -A bypass-rules -p udp --destination-port 68 --goto set-bypass-mark -m comment --comment \"Bypass DHCP reply traffic\"" + "\n");
         self.file.write("\n");
