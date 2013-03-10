@@ -64,15 +64,19 @@ class BypassRuleManager:
         self.file.write("${IPTABLES} -t filter -A bypass-rules -m conntrack --ctstate RELATED --goto set-bypass-mark -m comment --comment \"Bypass RELATED sessions\"" + "\n");
         self.file.write("\n");
 
+        # We bypass DHCP reply traffic, because the host doesn't technically have an address yet, so our ARP lookup in finddev will fail.
+        # This assures its just sent across the bridge in normal fashion
         self.file.write("# Implicit Bypass Rules (DHCP)" + "\n");
         self.file.write("${IPTABLES} -t filter -A bypass-rules -p udp --destination-port 68 --goto set-bypass-mark -m comment --comment \"Bypass DHCP reply traffic\"" + "\n");
         self.file.write("\n");
 
+        # We bypass 'hairpin' traffic because end-pointing it at layer 7 wouldn't work because two sessions would have identical tuples 
         self.file.write("# Implicit Bypass Rules (hairpin)" + "\n");
         for intfId in NetworkUtil.interface_list():
             self.file.write("${IPTABLES} -t filter -A bypass-rules -m mark --mark 0x%X/0x%X --goto set-bypass-mark -m comment --comment \"Bypass hairpin traffic (interface %s)\"" % ( (intfId+(intfId<<8)), self.interfacesMarkMask, str(intfId)) + "\n");
         self.file.write("\n");
 
+        # Add the user bypass rules
         for bypass_rule in bypass_rules:
             try:
                 self.write_bypass_rule( bypass_rule, verbosity );
