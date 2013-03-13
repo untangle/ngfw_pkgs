@@ -6,6 +6,19 @@ if [ "$1" = "install" ] ; then
   touch /etc/ssh/sshd_not_to_be_run
 fi
 
+# attempt to fix bug #7974
+
+if ! grep -q 'HWCLOCKPARM' /etc/default/rcS > /dev/null 2>&1 ; then
+  echo "HWCLOCKPARS=--directisa" >> /etc/default/rcS
+fi
+
+# tell cron not to send emails
+if ! grep -q MAILTO /etc/crontab ; then
+  sed -e '/SHELL/i MAILTO=""' -i /etc/crontab
+else
+  sed -e 's/.*MAILTO=.*/MAILTO=""/' -i /etc/crontab
+fi
+
 perl -i -pe 's/FSCKFIX=.*/FSCKFIX=yes/' /etc/default/rcS
 
 exit 0

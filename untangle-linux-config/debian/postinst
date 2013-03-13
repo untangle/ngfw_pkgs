@@ -14,88 +14,59 @@ else
 fi
 }
 
-# attempt to fix bug #7974
-grep'HWCLOCKPARM' /etc/default/rcS > /dev/null 2>&1
-if [ ! $? = 0 ] ; then 
-    echo "HWCLOCKPARS=--directisa" >> /etc/default/rcS
-fi
+grabRootDevice() {
+  awk '/^[^#].*[ \t]+\/[ \t]+/ {print $1}' $1
+}
  
 # Clean up stuff left around by old version
 rm -f /boot/vmlinuz-ut
 rm -f /boot/vmlinuz
 rm -f /boot/initrd.img
 
-root=
-if [ -f /etc/mtab ]; then
-    root=`awk '/[ \t]+\/[ \t]+/ {print $1}' /etc/mtab`
-fi
-if [ -z "$root" -a -f /etc/fstab ]; then
-    # Special handling for install-time when /etc/mtab isn't valid
-    root=`awk '/[ \t]+\/[ \t]+/ {print $1}' /etc/fstab`
+if [ -f /etc/fstab ]; then
+  root=$(grabRootDevice /etc/fstab)
+elif [ -f /etc/mtab ]; then
+  root=$(grabRootDevice /etc/mtab)
 fi
 
 # If we couldn't find a root, don't bother with the rest as we must
 # be in some fake install time.
-if [ -n "$root" ]; then
+[ -z "$root" ] && exit 0
 
-    case "$root" in /dev/*)
-            rootuuid=`/lib/udev/vol_id -u $root`
-            if [ -z "$rootuuid" ]; then
-	        rootuuid=`uuidgen`
-                # FIXME: Only works for ext2/ext3
-                echo "No root UUID found, making one"
-	        tune2fs -U "$rootuuid" $root
-            fi
-            rootdev="UUID=$rootuuid"
-            ;;
-        *)
-            # Fallback
-            rootdev="$root"
-            ;;
-    esac
+case "$root" in
+  /dev/*)
+    rootdev=$(blkid $root | awk '{gsub(/"/, "", $2) ; print $2}') ;;
+  *) # Fallback
+    rootdev="$root" ;;
+esac
 
-    # depmod -a ${flavor}
-    # Update the initrd for all our kernels, since we changed
-    # bootsplash in 6.1
-    ls /boot/vmlinuz-2.6*untangle* | while read kernel ; do
-      update-initramfs -t -u -k $(echo $kernel | perl -pe 's/.*?-//')
-    done
+menuLst="/boot/grub/menu.lst"
+menuLstPreUntangle="${menuLst}-pre-untangle"
 
-    # Re-create menu.lst
-    echo "Installing Untangle /boot/grub/menu.lst."
-    mkdir -p /boot/grub
-    currentDefault=$(head -1 /boot/grub/default | perl -pe 's/^(\d).*/$1/')
-    if [ -z "$currentDefault" ] || [ "$currentDefault" = "default" ] ; then
-      currentDefault=0
-    fi
-
-    [ -f /boot/grub/menu.lst-pre-untangle ] || cp /boot/grub/menu.lst /boot/grub/menu.lst-pre-untangle
-    currentKernelParams="$(grep -E '^kernel' /boot/grub/menu.lst | head -$((1 + $currentDefault)) | tail -1)"
-    case "$currentKernelParams" in
-      *ut-video*|"") newDefault=0 ;;
-      *noapic*) newDefault=2 ;;
-      *ut-restore*) newDefault=3 ;;
-      *) newDefault=1 ;;
-    esac
-    mkdir -p /boot/grub
-    [ -f /boot/grub/menu.lst-pre-untangle ] || cp /boot/grub/menu.lst /boot/grub/menu.lst-pre-untangle
-    if [[ $(cat /etc/debian_version) == 6* ]] ; then
-      menuFile="/usr/share/untangle-linux-config/menu-squeeze.lst"
-    else
-      menuFile="/usr/share/untangle-linux-config/menu.lst"
-    fi
-    sed -e "s/@ROOTDEV@/$rootdev/" $menuFile > /boot/grub/menu.lst
-    /usr/sbin/grub-set-default $newDefault
-    /usr/sbin/update-grub
+# Re-create menu.lst
+echo "Installing Untangle $menuLst"
+mkdir -p /boot/grub
+currentDefault=$(head -1 /boot/grub/default | perl -pe 's/^(\d).*/$1/')
+if [ -z "$currentDefault" ] || [ "$currentDefault" = "default" ] ; then
+  currentDefault=0
 fi
 
+[ -f $menuLstPreUntangle ] || cp $menuLst $menuLstPreUntangle
+currentKernelParams="$(grep -E '^kernel' $menuLst | head -$((1 + $currentDefault)) | tail -1)"
+case "$currentKernelParams" in
+  *ut-video*|"") newDefault=0 ;;
+  *noapic*) newDefault=2 ;;
+  *ut-restore*) newDefault=3 ;;
+  *) newDefault=1 ;;
+esac
 
-# tell cron not to send emails
-if [ -z "`grep MAILTO /etc/crontab`" ] ; then
-    sed -e '/SHELL/i MAILTO=""' -i /etc/crontab
+if [[ $(cat /etc/debian_version) == 6* ]] ; then
+  menuFile="/usr/share/untangle-linux-config/menu-squeeze.lst"
 else
-    sed -e 's/.*MAILTO=.*/MAILTO=""/' -i /etc/crontab
+  menuFile="/usr/share/untangle-linux-config/menu.lst"
 fi
-
+sed -e "s/@ROOTDEV@/$rootdev/" $menuFile > $menuLst
+/usr/sbin/grub-set-default $newDefault
+/usr/sbin/update-grub
 
 exit 0
