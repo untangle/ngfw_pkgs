@@ -235,6 +235,21 @@ run_post_networking_hook()
     run-parts /etc/untangle-netd/post-network-hook.d
 }
 
+write_status_file()
+{
+    local t_interface="$1"
+    local t_index="$2"
+    ( [ -z "$t_interface" ] || [ -z "$t_index" ] ) && {
+        return 0
+    }
+
+    $DEBUG "writing /var/lib/untangle-netd/interface-${t_index}-status.js"
+    /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-netd/interface-${t_index}-status.js
+
+    $DEBUG "writing /var/lib/untangle-netd/interface-${t_interface}-status.js"
+    /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-netd/interface-${t_interface}-status.js
+}
+
 ${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook ENTER [ reason: \"$reason\" interface: \"$interface\" ]"
 
 # Execute the operation
@@ -258,6 +273,7 @@ case "$reason" in
         # if we have a different address, then restart networking, otherwise do nothing
         if [ "$old_ip_address" != "$new_ip_address" ]; then
             refresh_routes
+            write_status_file ${interface} ${DHCP_INTERFACE_INDEX}
             run_post_networking_hook
         fi
         ;;

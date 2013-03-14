@@ -1,7 +1,7 @@
 #!/bin/dash
 
 # This script addes the appropriate ip route rules for a WAN interface
-# Usage: add-uplink.sh <interface> <gatewayIP> <routeTable>
+# Usage: add-uplink.sh <interface> <gatewayIP|"dev"> <routeTable>
 
 ## All of the untangle rules MUST fall in this priority.  This makes it easy to
 ## flush all of the rules.
@@ -35,7 +35,7 @@ ip_interface_get_aliases()
     ip -f inet addr show $1 scope global | awk '/inet/ { sub ( "/.*", "", $2 ) ; print  $2 }'
 }
 
-# Finds the first unused priority between $1 and $2
+## Finds the first unused priority between $1 and $2
 ip_rule_get_priority()
 {
     local t_min_priority=$1
@@ -101,12 +101,16 @@ $DEBUG "Adding uplink for [${IFACE}] -> ${GATEWAY} to ${RT_TABLE}"
 
 ip_rule_update_source_routes ${IFACE} ${GATEWAY} ${RT_TABLE}
 
-# Add an implicit route for that gateway on IFACE
-# This is for ISPs that give out gateways not within the customer's network/netmask
-${IP} route add ${GATEWAY} dev ${IFACE}
-
 # Replace the default route in the uplink table
-${IP} route replace table ${RT_TABLE} default via ${GATEWAY}
+if [ "${GATEWAY}" = "dev" ]; then
+    ${IP} route replace table ${RT_TABLE} default dev ${IFACE}
+else
+    # Add an implicit route for that gateway on IFACE
+    # This is for ISPs that give out gateways not within the customer's network/netmask
+    ${IP} route add ${GATEWAY} dev ${IFACE}
+
+    ${IP} route replace table ${RT_TABLE} default via ${GATEWAY}
+fi
 
 ## If necessary add the default uplink rule
 ip rule show | grep -q ${UNTANGLE_PRIORITY_DEFAULT} || {

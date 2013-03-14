@@ -17,14 +17,17 @@ class InterfacesManager:
 
     def write_interface_v4( self, interface_settings, interfaces ):
 
-        self.interfacesFile.write("## Interface %s IPv4\n" % (str(interface_settings.get('interfaceId'))) )
-        self.interfacesFile.write("auto %s\n" % interface_settings.get('symbolicDev'))
-        
+        devName = interface_settings.get('symbolicDev')
         configString = "manual"
         if interface_settings.get('v4ConfigType') == 'AUTO':
             configString = "dhcp"
         if interface_settings.get('v4ConfigType') == 'PPPOE':
             configString = "ppp"
+            # we gave it a unique name in 9.4 - is this necessary?
+            # devName = "ppp." + interface_settings.get('symbolicDev')
+
+        self.interfacesFile.write("## Interface %s IPv4\n" % (str(interface_settings.get('interfaceId'))) )
+        self.interfacesFile.write("auto %s\n" % devName)
 
         # find interfaces bridged to this interface
         isBridge = False
@@ -36,7 +39,7 @@ class InterfacesManager:
             isBridge = True
             bridgedInterfaces.append(interface_settings.get('systemDev')) # include yourself in bridge
 
-        self.interfacesFile.write("iface %s inet %s\n" % (interface_settings.get('symbolicDev'), configString) )
+        self.interfacesFile.write("iface %s inet %s\n" % (devName, configString) )
         self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings.get('interfaceId'))
 
         # handle static stuff
@@ -55,8 +58,8 @@ class InterfacesManager:
 
         # handle PPPoE stuff
         if interface_settings.get('v4ConfigType') == 'PPPOE':
-            self.interfacesFile.write("\tpre-up /sbin/ifconfig %s up\n" % interface_settings.get('systemDev')) 
-            self.interfacesFile.write("\tprovider %s\n" % ("connection." + interface_settings.get('systemDev'))) 
+            self.interfacesFile.write("\tpre-up /sbin/ifconfig %s up\n" % interface_settings.get('physicalDev')) 
+            self.interfacesFile.write("\tprovider %s\n" % ("connection.intf" + str(interface_settings.get('interfaceId')))) 
             
 
         # handle aliases

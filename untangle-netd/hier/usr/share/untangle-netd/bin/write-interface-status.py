@@ -108,6 +108,8 @@ for line in subprocess.Popen(("ip addr show %s scope global" % dev).split(), std
             continue
 
         addrStr = segments[1].split("/")
+        if len( addrStr ) == 1:
+            addrStr.append( "32" )
         if len( addrStr ) != 2:
             print "ERROR: invalid ip addr show address format: \"%s\"" % addrStr
             continue

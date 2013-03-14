@@ -124,17 +124,17 @@ uplink_routes()
 
 write_status_file()
 {
-    [ -z "$IF_NETD_INTERFACE_INDEX" ] && {
-        # aliases don't have interface_index, just return
-        #$DEBUG "Interface ${IFACE} is missing the interface index."
+    local t_interface="$1"
+    local t_index="$2"
+    ( [ -z "$t_interface" ] || [ -z "$t_index" ] ) && {
         return 0
     }
+    
+    $DEBUG "writing /var/lib/untangle-netd/interface-${t_index}-status.js"
+    /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-netd/interface-${t_index}-status.js
 
-    $DEBUG "writing /var/lib/untangle-netd/interface-${IF_NETD_INTERFACE_INDEX}-status.js"
-    /usr/share/untangle-netd/bin/write-interface-status.py -I ${IFACE} -i ${IF_NETD_INTERFACE_INDEX} -w /var/lib/untangle-netd/interface-${IF_NETD_INTERFACE_INDEX}-status.js
-
-    $DEBUG "writing /var/lib/untangle-netd/interface-${IFACE}-status.js"
-    /usr/share/untangle-netd/bin/write-interface-status.py -I ${IFACE} -i ${IF_NETD_INTERFACE_INDEX} -w /var/lib/untangle-netd/interface-${IFACE}-status.js
+    $DEBUG "writing /var/lib/untangle-netd/interface-${t_interface}-status.js"
+    /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-netd/interface-${t_interface}-status.js
 }
 
 ## Start of script
@@ -165,7 +165,7 @@ netd_address
 
 uplink_routes
 
-write_status_file
+write_status_file $IFACE $IF_NETD_INTERFACE_INDEX
 
 $DEBUG "if-up.d end   [$IFACE]"
 
