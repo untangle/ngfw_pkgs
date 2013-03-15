@@ -56,7 +56,7 @@ class FindDevManager:
 
         self.file.write("start_finddev()" + "\n");
         self.file.write("{" + "\n");
-        self.file.write("    ${CMD} > %s 2>&1 &" % self.logFilename + "\n");
+        self.file.write("    ${CMD} >> %s 2>&1 &" % self.logFilename + "\n");
         self.file.write("}" + "\n");
         self.file.write("\n");
 
@@ -73,6 +73,11 @@ class FindDevManager:
         
         self.file.write("if [ ! -z \"`queue_owner`\" ] ; then" + "\n");
         self.file.write("    echo \"Stopping finddev [`queue_owner`].\"" + "\n");
+        self.file.write("    kill -INT `queue_owner`" + "\n");
+        self.file.write("fi" + "\n");
+
+        self.file.write("if [ ! -z \"`queue_owner`\" ] ; then" + "\n");
+        self.file.write("    echo \"Killing finddev [`queue_owner`].\"" + "\n");
         self.file.write("    kill `queue_owner`" + "\n");
         self.file.write("fi" + "\n");
 
@@ -80,21 +85,6 @@ class FindDevManager:
         self.file.write("    start_finddev" + "\n");
         self.file.write("    echo \"Started  finddev [$!].\"" + "\n");
         self.file.write("fi" + "\n");
-
-        #self.file.write("if [ -z \"`queue_owner`\" ] ; then" + "\n");
-        #self.file.write("    echo \"Starting finddev...\"" + "\n");
-        #self.file.write("    start_finddev" + "\n");
-        #self.file.write("elif [ \"`current_cmd`\" != \"${CMD}\" ] ; then" + "\n");
-        #self.file.write("    echo \"`current_cmd`\"" + "\n");
-        #self.file.write("    echo \"${CMD}\"" + "\n");
-        #self.file.write("    echo \"Restarting finddev...\"" + "\n");
-        #self.file.write("    kill `queue_owner`" + "\n");
-        #self.file.write("    start_finddev" + "\n");
-        #self.file.write("else" + "\n");
-        #self.file.write("    echo \"Alreading running...\"" + "\n");
-        #self.file.write("fi");
-        #self.file.write("\n");
-        #self.file.write("\n");
 
         self.file.flush();
         self.file.close();

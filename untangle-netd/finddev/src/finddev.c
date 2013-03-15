@@ -262,7 +262,7 @@ int main ( int argc, char **argv )
             free( interfaceNames[i] );
     }
         
-    _debug(1,"Exitting...\n");
+    _debug(1,"Exiting...\n");
 
     exit(0);
 }
