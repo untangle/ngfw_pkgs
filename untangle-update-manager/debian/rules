@@ -28,7 +28,6 @@ build: configure
 	rm -rf ./$(DESTDIR)
 	mkdir -p ./$(DESTDIR)
 	cp -r ./files/* $(DESTDIR)
-#	ruby versions.rb files/usr/share/untangle-update-manager/apt-preferences.d/*untangle-*
 	find ./$(DESTDIR) -name ".svn" | xargs rm -rf 
 
 clean:
