@@ -11,8 +11,10 @@ from netd.network_util import NetworkUtil
 class RouteManager:
     rtTableFilename = "/etc/iproute2/rt_tables"
     routesFilename = "/etc/untangle-netd/post-network-hook.d/30-routes"
+    preRoutesFilename = "/etc/untangle-netd/pre-network-hook.d/30-routes"
 
     IP_RULE_PRIORITY="366"
+    IP_RULE_DEFAULT_RULE_PRIORITY="366900"
     DST_INTERFACE_SHIFT=8
     DST_INTERFACE_MASK=0xFF00
 
@@ -105,14 +107,13 @@ flush_ip_route_rules()
 if [ "`expected_ip_route_rules | md5sum`" = "`current_ip_route_rules  | md5sum`" ]; then
     echo "ip route rules are up to date."
 else
-    echo "Flushing  ip rules..."
+    echo "Flushing  ip route rules..."
     flush_ip_route_rules
-    echo "Inserting ip rules..."
+    echo "Inserting ip route rules..."
     insert_ip_route_rules
 fi
 
 """)
-
         # Write the static routes from settings
         if settings == None or 'staticRoutes' not in settings or 'list' not in settings['staticRoutes']:
             print "ERROR: Missing Static Routes"
@@ -146,6 +147,32 @@ fi
 
         return
 
+    def write_routes_pre_hook( self, settings, prefix, verbosity ):
+
+        filename = prefix + self.preRoutesFilename
+        fileDir = os.path.dirname( filename )
+        if not os.path.exists( fileDir ):
+            os.makedirs( fileDir )
+
+        file = open( filename, "w+" )
+        file.write("#!/bin/dash");
+        file.write("\n\n");
+
+        file.write("## Auto Generated on %s\n" % datetime.datetime.now());
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
+        file.write("\n\n");
+
+        file.write("# Delete the default route, we do this because this might no longer be the default\n")
+        file.write("ip rule del priority %s \n" % self.IP_RULE_DEFAULT_RULE_PRIORITY)
+
+        file.flush()
+        file.close()
+
+        os.system("chmod a+x %s" % filename)
+        if verbosity > 0: print "RouteManager: Wrote %s" % filename
+
+        return
+
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
 
@@ -153,5 +180,6 @@ fi
         
         self.write_rt_table( settings, prefix, verbosity )
         self.write_routes( settings, prefix, verbosity )
+        self.write_routes_pre_hook( settings, prefix, verbosity )
 
         return

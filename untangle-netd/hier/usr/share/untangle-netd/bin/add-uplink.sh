@@ -76,7 +76,7 @@ ip_rule_update_source_routes()
     done
 
     for t_alias in ${t_aliases} ; do
-        t_priority=`ip_rule_get_priority ${UNTANGLE_PRIORITY_BASE}500 ${UNTANGLE_PRIORITY_BASE}600`
+        t_priority=`ip_rule_get_priority ${UNTANGLE_PRIORITY_BASE}5000 ${UNTANGLE_PRIORITY_BASE}6000`
         ${IP} rule add from ${t_alias} priority  ${t_priority} lookup ${t_rt_table}
     done
 }
@@ -115,5 +115,6 @@ fi
 ## If necessary add the default uplink rule
 ip rule show | grep -q ${UNTANGLE_PRIORITY_DEFAULT} || {
     $DEBUG "Adding default uplink rule for ${RT_TABLE}"
+    ip rule del priority ${UNTANGLE_PRIORITY_DEFAULT}
     ip rule add priority ${UNTANGLE_PRIORITY_DEFAULT} lookup ${RT_TABLE}
 }
