@@ -101,42 +101,49 @@ def cleanupSettings( settings ):
     # Disable DHCP if if its a WAN or bridged to another interface
     for intf in interfaces:
         if intf['isWan'] or intf['configType'] == 'BRIDGED':
-            intf['dhcpEnabled'] = False
+            for key in intf.keys():
+                if key.startswith('dhcp'):
+                    del intf[key]
 
     # Disable NAT options on bridged interfaces
     for intf in interfaces:
         if intf['configType'] == 'BRIDGED':
-            intf['v4NatEgressTraffic'] = False
-            intf['v4NatIngressTraffic'] = False
+            if 'v4NatEgressTraffic' in intf: del intf['v4NatEgressTraffic']
+            if 'v4NatIngressTraffic' in intf: del intf['v4NatIngressTraffic']
+
+    # Disable Gateway for non-WANs
+    for intf in interfaces:
+        if intf.get('isWan') != True:
+            if 'v4StaticGateway' in intf: del intf['v4StaticGateway']
+            if 'v6StaticGateway' in intf: del intf['v6StaticGateway']
 
     # Disable egress NAT on non-WANs
     # Disable ingress NAT on WANs
     for intf in interfaces:
         if intf['isWan']:
-            intf['v4NatIngressTraffic'] = False
+            if 'v4NatIngressTraffic' in intf: del intf['v4NatIngressTraffic']
         if not intf['isWan']:
-            intf['v4NatEgressTraffic'] = False
-            
+            if 'v4NatEgressTraffic' in intf: del intf['v4NatEgressTraffic']
 
     # Remove PPPoE settings if not PPPoE intf
     for intf in interfaces:
         if intf['v4ConfigType'] != 'PPPOE':
             for key in intf.keys():
-                if 'v4PPPoE' in key:
+                if key.startswith('v4PPPoE'):
                     del intf[key]
 
     # Remove static settings if not static intf
     for intf in interfaces:
         if intf['v4ConfigType'] != 'STATIC':
             for key in intf.keys():
-                if 'v4Static' in key:
+                if key.startswith('v4Static'):
                     del intf[key]
 
     # Remove auto settings if not auto intf
     for intf in interfaces:
         if intf['v4ConfigType'] != 'AUTO':
             for key in intf.keys():
-                if 'v4Auto' in key:
+                if key.startswith('v4Auto'):
                     del intf[key]
 
     # Remove bridgedTo settincgs if not bridged
@@ -159,16 +166,23 @@ except IOError,e:
     print "Unable to read settings file: ",e
     exit(1)
 
-# print settings
-    
-print "Syncing %s to system..." % parser.file
-
 try:
     checkSettings(settings)
     cleanupSettings(settings)
 except Exception,e:
     traceback.print_exc(e)
     exit(1)
+
+# Write the sanitized file for debugging
+# sanitized_filename = (os.path.dirname(parser.file) + "/network-sanitized.js")
+# print "Writing sanitized settings: %s " % sanitized_filename
+# sanitized_file = open( sanitized_filename + ".tmp" , 'w' )
+# json.dump(settings, sanitized_file)
+# sanitized_file.flush()
+# sanitized_file.close()
+# os.system("python -m simplejson.tool %s.tmp > %s ; rm %s.tmp " % (sanitized_filename, sanitized_filename, sanitized_filename))
+
+print "Syncing %s to system..." % parser.file
 
 IptablesUtil.settings = settings
 NetworkUtil.settings = settings
