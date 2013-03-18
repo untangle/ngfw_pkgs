@@ -67,8 +67,7 @@ class BypassRuleManager:
         # We bypass DHCP reply traffic, because the host doesn't technically have an address yet, so our ARP lookup in finddev will fail.
         # This assures its just sent across the bridge in normal fashion
         self.file.write("# Implicit Bypass Rules (DHCP)" + "\n");
-        self.file.write("${IPTABLES} -t filter -A bypass-rules -p udp --destination-port 67 --goto set-bypass-mark -m comment --comment \"Bypass DHCP session\"" + "\n");
-        self.file.write("${IPTABLES} -t filter -A bypass-rules -p udp --destination-port 68 --goto set-bypass-mark -m comment --comment \"Bypass DHCP reply traffic\"" + "\n");
+        self.file.write("${IPTABLES} -t filter -A bypass-rules -p udp --source-port 67:68 --destination-port 67:68 --goto set-bypass-mark -m comment --comment \"Bypass DHCP traffic\"" + "\n");
         self.file.write("\n");
 
         # We bypass 'hairpin' traffic because end-pointing it at layer 7 wouldn't work because two sessions would have identical tuples 
