@@ -220,7 +220,7 @@ div#parent-rack-container{
 }
 /* alert icon container */
 div#alert-container{
-    background:transparent url(../images/gray/window/icon-alert.gif) no-repeat center center !important;
+    background:transparent url(../images/admin/icon-alert.gif) no-repeat center center !important;
     float:left;
     height:21px;
     margin-left:10px;
@@ -230,7 +230,7 @@ div#alert-container{
 }
 /* No IE icon container */
 div#no-ie-container{
-    background:transparent url(../images/gray/window/icon-no-ie.png) no-repeat center center !important;
+    background:transparent url(../images/admin/icon-no-ie.png) no-repeat center center !important;
     float:left;
     height:21px;
     margin-left:2px;
@@ -1030,12 +1030,6 @@ div.wizard-network-rerouter span
 }
 .untangle-form-panel .x-form{
     border:none
-}
-.warning-row{
-    background-image:url('../../../ext/resources/images/default/shared/warning.gif');
-    background-position:left center;
-    background-repeat:no-repeat;
-    padding-left:18px;
 }
 #disk-unusable{
     display:none;
