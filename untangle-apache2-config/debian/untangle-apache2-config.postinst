@@ -80,18 +80,6 @@ fi
 perl -i -pe 's/^ServerTokens.*/ServerTokens Prod/ ; s/^ServerSignature.*/ServerSignature Off/' /etc/apache2/conf.d/security
 perl -i -pe 's/^TraceEnable.*/TraceEnable Off/' /etc/apache2/conf.d/security
 
-# CONVERSION - 9.4 - stop listening on obsolete ports 
-sed -i -e '/64156/d' /etc/apache2/ports.conf
-sed -i -e '/64157/d' /etc/apache2/ports.conf
-
-# CONVERSION - 9.4 - remove obsolete conf files 
-if [ -d /etc/apache2/untangle-conf.d ] ; then
-    rm -rf /etc/apache2/untangle-conf.d
-fi
-if [ -d /etc/apache2/untangle-unrestricted-conf.d ] ; then
-    rm -rf /etc/apache2/untangle-unrestricted-conf.d
-fi
-
 # unpack ExtJS
 for tarball in /usr/share/untangle-apache2-config/ext*.tar.gz ; do
   tar -C /var/www -xzf $tarball
