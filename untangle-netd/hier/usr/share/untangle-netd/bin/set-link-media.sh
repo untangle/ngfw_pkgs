@@ -4,7 +4,7 @@
 
 if [ $# != 2 ]; then
     echo "USAGE: $0 <nic> <mode>"
-    echo "\t mode: auto|10-full-duplex|10-half-duplex|100-full-duplex|100-half-duplex"
+    echo "\t mode: auto|10-full-duplex|10-half-duplex|100-full-duplex|100-half-duplex|1000-full-duplex"
     exit 0
 fi
 
@@ -57,6 +57,16 @@ set_ethernet_media()
 
         "100-half-duplex")
             t_speed="100"
+            t_duplex="half"
+            ;;
+
+        "1000-full-duplex")
+            t_speed="1000"
+            t_duplex="full"
+            ;;
+
+        "1000-half-duplex")
+            t_speed="1000"
             t_duplex="half"
             ;;
 

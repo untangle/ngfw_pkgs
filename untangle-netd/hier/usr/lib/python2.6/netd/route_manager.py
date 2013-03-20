@@ -6,8 +6,8 @@ import traceback
 import re
 from netd.network_util import NetworkUtil
 
-# This class is responsible for writing /etc/untangle-netd/pre-network-hook.d/015-ethernet-media
-# based on the settings object passed from sync-settings.py
+# This class is responsible for writing /etc/untangle-netd/post-network-hook.d/30-routes
+# and others based on the settings object passed from sync-settings.py
 class RouteManager:
     rtTableFilename = "/etc/iproute2/rt_tables"
     routesFilename = "/etc/untangle-netd/post-network-hook.d/30-routes"

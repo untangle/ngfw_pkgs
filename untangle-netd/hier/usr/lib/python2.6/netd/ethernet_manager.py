@@ -8,6 +8,7 @@ import traceback
 # based on the settings object passed from sync-settings.py
 class EthernetManager:
     ethernetMediaFilename = "/etc/untangle-netd/pre-network-hook.d/015-ethernet-media"
+    setLinkMediaScript = "/usr/share/untangle-netd/bin/set-link-media.sh"
 
     def write_ethernet_media( self, settings, prefix, verbosity ):
 
@@ -24,18 +25,28 @@ class EthernetManager:
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
         
-        file.write("SCRIPT_SET_LINK_MEDIA=\"/usr/share/untangle-netd/bin/set-link-media.sh\"\n")
-        file.write("\n");
-
-        # FIXME - write something that sets link media based on settings!
-
-        file.write("#    cat \"${ETHERNET_MEDIA_CONF}\" | awk '/^[a-z][^#]*$/ { print }' | while read t_nic t_media ; do \n")
-        file.write("#        $DEBUG \"${t_nic}, ${t_media}\" \n")
-        file.write("#        ${SCRIPT_SET_LINK_MEDIA} ${t_nic} ${t_media} \n")
-        file.write("#    done\n")
-
-        file.write("\n\n");
-        file.write("echo \"FIXME: set link media\"\n\n")
+        if settings.get('devices') != None and settings.get('devices').get('list') != None:
+            for deviceSettings in settings.get('devices').get('list'):
+                if deviceSettings.get('mtu') != None:
+                    file.write("ifconfig %s mtu %s" % (deviceSettings.get('deviceName'), stn(deviceSettings.get('mtu'))) + "\n")
+                if deviceSettings.get('duplex') != None:
+                    duplexString = deviceSettings.get('duplex')
+                    if duplexString == "AUTO":
+                        file.write("%s %s %s" % (self.setLinkMediaScript, deviceSettings.get('deviceName'), "auto") + "\n")
+                    elif duplexString == "M1000_FULL_DUPLEX":
+                        file.write("%s %s %s" % (self.setLinkMediaScript, deviceSettings.get('deviceName'), "1000-full-duplex") + "\n")
+                    elif duplexString == "M1000_HALF_DUPLEX":
+                        file.write("%s %s %s" % (self.setLinkMediaScript, deviceSettings.get('deviceName'), "1000-half-duplex") + "\n")
+                    elif duplexString == "M100_FULL_DUPLEX":
+                        file.write("%s %s %s" % (self.setLinkMediaScript, deviceSettings.get('deviceName'), "100-full-duplex") + "\n")
+                    elif duplexString == "M100_HALF_DUPLEX":
+                        file.write("%s %s %s" % (self.setLinkMediaScript, deviceSettings.get('deviceName'), "100-half-duplex") + "\n")
+                    elif duplexString == "M10_FULL_DUPLEX":
+                        file.write("%s %s %s" % (self.setLinkMediaScript, deviceSettings.get('deviceName'), "10-full-duplex") + "\n")
+                    elif duplexString == "M10_HALF_DUPLEX":
+                        file.write("%s %s %s" % (self.setLinkMediaScript, deviceSettings.get('deviceName'), "10-half-duplex") + "\n")
+                    else:
+                        print "ERROR: Unknown duplex: %s" % duplexString
 
         file.flush()
         file.close()
