@@ -112,6 +112,11 @@ class FilterRulesManager:
         self.file.write("${IPTABLES} -t filter -I filter-rules-input -i lo -j ACCEPT -m comment --comment \"Allow all local traffic\"" + "\n");
         self.file.write("\n");
 
+        self.file.write("# Pass all RELATED traffic " + "\n");
+        self.file.write("${IPTABLES} -t filter -D filter-rules-input -m conntrack --ctstate RELATED -j ACCEPT -m comment --comment \"Allow RELATED traffic\" >/dev/null 2>&1" + "\n");
+        self.file.write("${IPTABLES} -t filter -I filter-rules-input -m conntrack --ctstate RELATED -j ACCEPT -m comment --comment \"Allow RELATED traffic\"" + "\n");
+        self.file.write("\n");
+
         self.file.write("# Pass all redirected TCP traffic " + "\n");
         self.file.write("${IPTABLES} -t filter -D filter-rules-input -i utun -j ACCEPT -m comment --comment \"Allow all redirected traffic\" >/dev/null 2>&1" + "\n");
         self.file.write("${IPTABLES} -t filter -I filter-rules-input -i utun -j ACCEPT -m comment --comment \"Allow all redirected traffic\"" + "\n");
