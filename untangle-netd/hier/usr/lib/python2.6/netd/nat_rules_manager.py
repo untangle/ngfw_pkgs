@@ -178,7 +178,5 @@ class NatRulesManager:
         if verbosity > 0:
             print "NatRulesManager: Wrote %s" % self.filename
 
-        os.system("rm -f /etc/untangle-netd/iptables-rules.d/200-nat-rules") # remove old location
-
         return
 

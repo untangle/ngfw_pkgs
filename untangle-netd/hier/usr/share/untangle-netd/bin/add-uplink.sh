@@ -107,7 +107,8 @@ if [ "${GATEWAY}" = "dev" ]; then
 else
     # Add an implicit route for that gateway on IFACE
     # This is for ISPs that give out gateways not within the customer's network/netmask
-    ${IP} route add ${GATEWAY} dev ${IFACE}
+    # Ignore "RTNETLINK answers: File exists" error, this just mean the route exists
+    ${IP} route add ${GATEWAY} dev ${IFACE} 2>&1 | grep -v 'File exists'
 
     ${IP} route replace table ${RT_TABLE} default via ${GATEWAY}
 fi
@@ -115,6 +116,6 @@ fi
 ## If necessary add the default uplink rule
 ip rule show | grep -q ${UNTANGLE_PRIORITY_DEFAULT} || {
     $DEBUG "Adding default uplink rule for ${RT_TABLE}"
-    ip rule del priority ${UNTANGLE_PRIORITY_DEFAULT}
+    ip rule del priority ${UNTANGLE_PRIORITY_DEFAULT} >/dev/null 2>&1
     ip rule add priority ${UNTANGLE_PRIORITY_DEFAULT} lookup ${RT_TABLE}
 }

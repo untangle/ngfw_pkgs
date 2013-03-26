@@ -79,7 +79,7 @@ class IptablesUtil:
                 current_strings = []
                 # split current rules for each protocol specified
                 for i in range(0 , len(protos) ):
-                    matcherStr = matcherStr + " --protocol %s " % string.lower(protos[i])
+                    matcherStr = " --protocol %s " % string.lower(protos[i])
                     current_strings = current_strings + [ matcherStr + current for current in orig_current_strings ]
 
             if matcherType == "SRC_INTF":
