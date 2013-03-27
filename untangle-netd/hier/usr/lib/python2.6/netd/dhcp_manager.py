@@ -343,8 +343,10 @@ true
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
 
-        file.write("pkill -QUIT '(dhclient3|pump|dhclient)' && { sleep 1 ; pkill '(dhclient3|pump|dhclient)'; }")
+        file.write("# Kill any running dhcp client" + "\n")
+        file.write("pkill -QUIT '(dhclient|dhclient3|pump)' && { sleep 1 ; pkill '(dhclient|dhclient3|pump)'; }")
         file.write("\n\n");
+        file.write("true" + "\n")
         
         file.flush()
         file.close()
