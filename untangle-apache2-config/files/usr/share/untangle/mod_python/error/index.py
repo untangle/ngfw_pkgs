@@ -12,6 +12,14 @@ gettext.textdomain('untangle-apache2-config')
 _ = gettext.gettext
 
 # pages -----------------------------------------------------------------------
+def isUvmStarting():
+    try:
+        ret = os.system("ps aux | grep 'init.d/untangle-vm' | grep -v grep")
+        if ret == 0:
+            return True
+    except:
+        pass
+    return False
 
 def status400(req):
     uvmlogin.setup_gettext()
@@ -87,6 +95,9 @@ def status417(req):
 
 def status500(req):
     uvmlogin.setup_gettext()
+    if isUvmStarting():
+        _write_error_page(req, _("Server is starting. Please wait."))
+        return
     _write_error_page(req, _("Internal Server Error"))
 
 def status501(req):
@@ -99,13 +110,9 @@ def status502(req):
 
 def status503(req):
     uvmlogin.setup_gettext()
-    try:
-        ret = os.system("ps aux | grep 'init.d/untangle-vm' | grep -v grep")
-        if ret == 0:
-            _write_error_page(req, _("Server is starting. Please wait."))
-            return
-    except:
-        pass
+    if isUvmStarting():
+        _write_error_page(req, _("Server is starting. Please wait."))
+        return
     _write_error_page(req, _("Service Unavailable"))
 
 def status504(req):
