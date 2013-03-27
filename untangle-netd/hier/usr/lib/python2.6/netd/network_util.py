@@ -36,14 +36,14 @@ class NetworkUtil:
         settings = NetworkUtil.settings
         ret = []
 
-        if settings is None or 'interfaces' not in settings or 'list' not in settings['interfaces']:
+        if settings == None or settings.get('interfaces') == None or settings.get('interfaces').get('list') == None:
             return ret
 
         for intf in settings['interfaces']['list']:
-            if 'interfaceId' not in intf:
+            if intf.get('interfaceId') == None:
                 continue
 
-            if 'isWan' in intf and intf['isWan']:
+            if intf.get('configType') == 'ADDRESSED' and intf.get('isWan'):
                 ret.append(int(intf['interfaceId']))
         
         return ret
@@ -54,14 +54,14 @@ class NetworkUtil:
         settings = NetworkUtil.settings
         ret = []
 
-        if settings is None or 'interfaces' not in settings or 'list' not in settings['interfaces']:
+        if settings == None or settings.get('interfaces') == None or settings.get('interfaces').get('list') == None:
             return ret
 
         for intf in settings['interfaces']['list']:
-            if 'interfaceId' not in intf:
+            if intf.get('interfaceId') == None:
                 continue
 
-            if 'isWan' in intf and intf['isWan']:
+            if intf.get('configType') == 'ADDRESSED' and intf.get('isWan'):
                 continue
             else:
                 ret.append(int(intf['interfaceId']))

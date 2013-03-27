@@ -75,6 +75,9 @@ class IptablesUtil:
                 if invert:
                     print "ERROR: invert not support on protocol matcher"
                     continue
+                if len(protos) == 0:
+                    print "ERROR: interface matcher with no interfaces"
+                    continue
                 orig_current_strings = current_strings
                 current_strings = []
                 # split current rules for each protocol specified
@@ -91,6 +94,9 @@ class IptablesUtil:
                 if invert:
                     print "ERROR: invert not support on interface matcher"
                     continue
+                if len(intfs) == 0:
+                    print "ERROR: interface matcher with no interfaces"
+                    continue
                 orig_current_strings = current_strings
                 current_strings = []
                 # split current rules for each intf specified
@@ -106,6 +112,9 @@ class IptablesUtil:
 
                 if invert:
                     print "ERROR: invert not support on interface matcher"
+                    continue
+                if len(intfs) == 0:
+                    print "ERROR: interface matcher with no interfaces"
                     continue
                 orig_current_strings = current_strings
                 current_strings = []
@@ -153,6 +162,5 @@ class IptablesUtil:
                 current_strings = [ current + matcherStr for current in current_strings ]
                 
 
-        
         return current_strings;
         

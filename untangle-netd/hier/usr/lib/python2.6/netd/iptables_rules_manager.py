@@ -5,7 +5,7 @@ import datetime
 import traceback
 
 # This class is responsible for writing:
-# /etc/untangle-netd/post-network-hook.d/96-iptables
+# /etc/untangle-netd/post-network-hook.d/960-iptables
 # /etc/untangle-netd/iptables-rules.d/010-flush
 # /etc/untangle-netd/iptables-rules.d/100-interface-marks
 #
@@ -14,7 +14,7 @@ import traceback
 class IptablesRulesManager:
     flushFilename = "/etc/untangle-netd/iptables-rules.d/010-flush"
     interfaceMarksFilename = "/etc/untangle-netd/iptables-rules.d/100-interface-marks"
-    iptablesHookFilename = "/etc/untangle-netd/post-network-hook.d/96-iptables"
+    iptablesHookFilename = "/etc/untangle-netd/post-network-hook.d/960-iptables"
     srcInterfaceMarkMask = 0x00ff
     dstInterfaceMarkMask = 0xff00
     bothInterfacesMarksMask = 0xffff

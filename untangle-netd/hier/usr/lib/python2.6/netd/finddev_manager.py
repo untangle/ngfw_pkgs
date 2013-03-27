@@ -7,10 +7,10 @@ import re
 from netd.iptables_util import IptablesUtil
 from netd.network_util import NetworkUtil
 
-# This class is responsible for writing /etc/untangle-netd/post-network-hook.d/10-finddev
+# This class is responsible for writing /etc/untangle-netd/post-network-hook.d/100-finddev
 # based on the settings object passed from sync-settings.py
 class FindDevManager:
-    defaultFilename = "/etc/untangle-netd/post-network-hook.d/10-finddev"
+    defaultFilename = "/etc/untangle-netd/post-network-hook.d/100-finddev"
     logFilename = "/var/log/uvm/finddev.log"
     filename = defaultFilename
     file = None

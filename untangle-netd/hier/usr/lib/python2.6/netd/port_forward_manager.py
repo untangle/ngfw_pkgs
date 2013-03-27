@@ -39,8 +39,6 @@ class PortForwardManager:
             self.file.write(cmd + "\n")
         self.file.write("\n");
 
-        os.system("rf -f /etc/untangle-netd/iptables-rules.d/210-port-forward-rules") # remove old location
-
         return
 
     def write_port_forward_rules( self, settings, verbosity=0 ):

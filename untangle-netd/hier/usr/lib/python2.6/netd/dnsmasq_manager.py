@@ -10,7 +10,7 @@ from netd.network_util import NetworkUtil
 # based on the settings object passed from sync-settings.py
 class DnsMasqManager:
     dnsmasqConfFilename = "/etc/dnsmasq.conf"
-    restartHookFilename = "/etc/untangle-netd/post-network-hook.d/99-restart-dnsmasq"
+    restartHookFilename = "/etc/untangle-netd/post-network-hook.d/990-restart-dnsmasq"
 
     def write_dnsmasq_conf( self, settings, prefix="", verbosity=0 ):
         

@@ -13,6 +13,7 @@ from netd.network_util import NetworkUtil
 class DhcpManager:
     enterHookFilename = "/etc/dhcp/dhclient-enter-hooks.d/netd-dhclient-enter-hook"
     exitHookFilename = "/etc/dhcp/dhclient-exit-hooks.d/netd-dhclient-exit-hook"
+    preNetworkHookFilename = "/etc/untangle-netd/pre-network-hook.d/035-dhcp"
 
     def write_enter_hook( self, settings, prefix="", verbosity=0 ):
 
@@ -327,12 +328,38 @@ true
 
         return
 
+    def write_pre_network_hook( self, settings, prefix="", verbosity=0 ):
+
+        filename = prefix + self.preNetworkHookFilename
+        fileDir = os.path.dirname( filename )
+        if not os.path.exists( fileDir ):
+            os.makedirs( fileDir )
+
+        file = open( filename, "w+" )
+        file.write("#!/bin/dash");
+        file.write("\n\n");
+
+        file.write("## Auto Generated on %s\n" % datetime.datetime.now());
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
+        file.write("\n\n");
+
+        file.write("pkill -QUIT '(dhclient3|pump|dhclient)' && { sleep 1 ; pkill '(dhclient3|pump|dhclient)'; }")
+        file.write("\n\n");
+        
+        file.flush()
+        file.close()
+        os.system("chmod a+x %s" % filename)
+
+        if verbosity > 0: print "DhcpManager: Wrote %s" % filename
+
+
     def sync_settings( self, settings, prefix="", verbosity=0 ):
 
         if verbosity > 1: print "DhcpManager: sync_settings()"
         
         self.write_exit_hook( settings, prefix, verbosity )
         self.write_enter_hook( settings, prefix, verbosity )
+        self.write_pre_network_hook( settings, prefix, verbosity )
 
         return
 

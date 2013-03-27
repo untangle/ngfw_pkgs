@@ -4,10 +4,10 @@ import subprocess
 import datetime
 import traceback
 
-# This class is responsible for writing /etc/untangle-netd/post-network-hook.d/00-sysctl
+# This class is responsible for writing /etc/untangle-netd/post-network-hook.d/010-sysctl
 # based on the settings object passed from sync-settings.py
 class SysctlManager:
-    filename = "/etc/untangle-netd/post-network-hook.d/00-sysctl"
+    filename = "/etc/untangle-netd/post-network-hook.d/010-sysctl"
 
     def write_sysctl( self, settings, prefix, verbosity ):
 
