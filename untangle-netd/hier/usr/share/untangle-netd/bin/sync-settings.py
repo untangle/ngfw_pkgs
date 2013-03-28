@@ -190,7 +190,7 @@ NetworkUtil.settings = settings
 for module in [ HostsManager(), DnsMasqManager(),
                 InterfacesManager(), RouteManager(), 
                 IptablesManager(), NatRulesManager(), 
-                FilterRulesManager(), 
+                FilterRulesManager(), QosManager(),
                 PortForwardManager(), BypassRuleManager(), 
                 EthernetManager(), FindDevManager(), 
                 SysctlManager(), ArpManager(),
