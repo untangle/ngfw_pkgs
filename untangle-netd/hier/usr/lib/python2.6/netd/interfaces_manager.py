@@ -394,6 +394,10 @@ ip addr flush scope global 2>/dev/null
     
 # cleanup: Destroying all of the bridges.
 bridge_destroy_all
+
+# remove interface status files
+rm -f /var/lib/untangle-netd/interface*status.js
+
 """)
         
         file.flush()
