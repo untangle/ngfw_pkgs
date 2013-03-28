@@ -23,8 +23,12 @@ rm -f /boot/vmlinuz-ut
 rm -f /boot/vmlinuz
 rm -f /boot/initrd.img
 
-if [ -f /etc/fstab ]; then
-  root=$(grabRootDevice /etc/fstab)
+kernelRoot=$(perl -ne 'print $1 if m|root=([^\s]+)|' /proc/cmdline)
+
+if [ -n "$kernelRoot" ]; then
+  # regular boot; the system apparently was fine with whatever got
+  # passed to the kernel by grub, so we'll use that too
+  root=$kernelRoot
 elif [ -f /etc/mtab ]; then
   root=$(grabRootDevice /etc/mtab)
 fi
@@ -34,14 +38,18 @@ fi
 [ -z "$root" ] && exit 0
 
 case "$root" in
-  /dev/*)
+  /dev/*) # let's get a UUID for this device
     rootdev=$(blkid $root | awk '{gsub(/"/, "", $2) ; print $2}') ;;
-  *) # Fallback
+  *) # fallback: we already have a UUID
     rootdev="$root" ;;
 esac
 
 menuLst="/boot/grub/menu.lst"
 menuLstPreUntangle="${menuLst}-pre-untangle"
+
+# rewrite fstab
+echo "Forcing / in fstab to map to current root device ($rootdev)"
+perl -i -pe 's|^[^\s#]+(\s+/\s+)|'$rootdev'$1|' /etc/fstab
 
 # Re-create menu.lst
 echo "Installing Untangle $menuLst"
