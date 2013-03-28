@@ -110,8 +110,8 @@ class QosManager:
         file.write("# Call restore-qos-mark chain from PREROUTING chain in mangle" + "\n");
         file.write("${IPTABLES} -t mangle -D PREROUTING -m comment --comment \"Restore QoS Mark\" -j restore-qos-mark >/dev/null 2>&1" + "\n");
         file.write("${IPTABLES} -t mangle -D PREROUTING -m conntrack --ctstate NEW -m comment --comment \"Call QoS Rules\" -j qos-rules >/dev/null 2>&1" + "\n");
-        file.write("${IPTABLES} -t mangle -A PREROUTING -m comment --comment \"Restore QoS Mark\" -j restore-qos-mark" + "\n");
-        file.write("${IPTABLES} -t mangle -A PREROUTING -m conntrack --ctstate NEW -m comment --comment \"Call QoS Rules\" -j qos-rules" + "\n");
+        file.write("${IPTABLES} -t mangle -A PREROUTING -m conntrack --ctstate NEW -m comment --comment \"Restore QoS Mark\" -j restore-qos-mark" + "\n");
+        file.write("${IPTABLES} -t mangle -A PREROUTING -m comment --comment \"Call QoS Rules\" -j qos-rules" + "\n");
         file.write("\n");
 
         file.write("# Call qos-imq chain from PREROUTING chain in mangle" + "\n");
@@ -178,48 +178,6 @@ ${IPTABLES} -t mangle -A restore-qos-mark -m state ! --state UNTRACKED -j CONNMA
             file.write("# Openvpn Priority " + "\n")
             file.write("${IPTABLES} -t mangle -A qos-rules -p udp --dport 1194 -g qos-class%i" % qosSettings['openvpnPriority'] + "\n")
             file.write("${IPTABLES} -t mangle -A qos-rules -p tcp --dport 1194 -g qos-class%i" % qosSettings['openvpnPriority'] + "\n")
-            file.write("\n");
-
-        if qosSettings['gamingPriority'] != None and qosSettings['gamingPriority'] != 0:
-            file.write("# Gaming Priority " + "\n")
-            # XBOX Live
-            file.write("${IPTABLES} -t mangle -A qos-rules -p udp -m multiport --destination-ports 88 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp -m multiport --destination-ports 3074 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p udp -m multiport --destination-ports 3074 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            # PS3
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp -m multiport --destination-ports 5223 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p udp -m multiport --destination-ports 3478:3479 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            # wii
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp -m multiport --destination-ports 29900 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp -m multiport --destination-ports 29901 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp -m multiport --destination-ports 28910 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp -m multiport --destination-ports 29920 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            # other games
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp -m multiport --destination-ports 1200 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p udp -m multiport --destination-ports 1200 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp -m multiport --destination-ports 4000 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p udp -m multiport --destination-ports 4000 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp -m multiport --destination-ports 6003 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p udp -m multiport --destination-ports 6003 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p udp -m multiport --destination-ports 6073 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp -m multiport --destination-ports 7000 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p udp -m multiport --destination-ports 7000 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp -m multiport --destination-ports 7002 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p udp -m multiport --destination-ports 7002 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp -m multiport --destination-ports 8080 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p udp -m multiport --destination-ports 8080 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp -m multiport --destination-ports 27900 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p udp -m multiport --destination-ports 27900 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp -m multiport --destination-ports 27910 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p udp -m multiport --destination-ports 27910 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp -m multiport --destination-ports 2300:2400 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p udp -m multiport --destination-ports 2300:2400 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp -m multiport --destination-ports 6112:6119 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p udp -m multiport --destination-ports 6112:6119 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp -m multiport --destination-ports 7777:7783 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p udp -m multiport --destination-ports 7777:7783 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp -m multiport --destination-ports 6112:6119 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p udp -m multiport --destination-ports 6112:6119 -g qos-class%i " % qosSettings['gamingPriority'] + "\n")
             file.write("\n");
 
         file.flush()
