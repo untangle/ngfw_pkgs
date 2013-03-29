@@ -159,25 +159,25 @@ ${IPTABLES} -t mangle -A restore-qos-mark -m state ! --state UNTRACKED -j CONNMA
 
         if qosSettings['pingPriority'] != None and qosSettings['pingPriority'] != 0:
             file.write("# Ping Priority " + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p icmp --icmp-type echo-request -g qos-class%i" % qosSettings['pingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p icmp --icmp-type echo-reply   -g qos-class%i" % qosSettings['pingPriority'] + "\n")
+            file.write("${IPTABLES} -t mangle -A qos-rules -p icmp --icmp-type echo-request -g qos-class%i -m comment --comment \"set ping priority\"" % qosSettings['pingPriority'] + "\n")
+            file.write("${IPTABLES} -t mangle -A qos-rules -p icmp --icmp-type echo-reply   -g qos-class%i -m comment --comment \"set ping priority\"" % qosSettings['pingPriority'] + "\n")
             file.write("\n");
 
         if qosSettings['sshPriority'] != None and qosSettings['sshPriority'] != 0:
             file.write("# Ssh Priority " + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp --dport 22 -g qos-class%i" % qosSettings['sshPriority'] + "\n")
+            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp --dport 22 -g qos-class%i -m comment --comment \"set SSH priority\"" % qosSettings['sshPriority'] + "\n")
             file.write("\n");
 
         if qosSettings['dnsPriority'] != None and qosSettings['dnsPriority'] != 0:
             file.write("# Dns Priority " + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p udp --dport 53 -g qos-class%i" % qosSettings['dnsPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp --dport 53 -g qos-class%i" % qosSettings['dnsPriority'] + "\n")
+            file.write("${IPTABLES} -t mangle -A qos-rules -p udp --dport 53 -g qos-class%i -m comment --comment \"set DNS priority\"" % qosSettings['dnsPriority'] + "\n")
+            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp --dport 53 -g qos-class%i -m comment --comment \"set DNS priority\"" % qosSettings['dnsPriority'] + "\n")
             file.write("\n");
 
         if qosSettings['openvpnPriority'] != None and qosSettings['openvpnPriority'] != 0:
             file.write("# Openvpn Priority " + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p udp --dport 1194 -g qos-class%i" % qosSettings['openvpnPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp --dport 1194 -g qos-class%i" % qosSettings['openvpnPriority'] + "\n")
+            file.write("${IPTABLES} -t mangle -A qos-rules -p udp --dport 1194 -g qos-class%i -m comment --comment \"set openvpn priority\"" % qosSettings['openvpnPriority'] + "\n")
+            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp --dport 1194 -g qos-class%i -m comment --comment \"set openvpn priority\"" % qosSettings['openvpnPriority'] + "\n")
             file.write("\n");
 
         file.flush()

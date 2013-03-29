@@ -16,6 +16,7 @@ from netd.route_manager import RouteManager
 from netd.dhcp_manager import DhcpManager
 from netd.pppoe_manager import PPPoEManager
 from netd.qos_manager import QosManager
+from netd.ddclient_manager import DdclientManager
 
 from netd.iptables_util import IptablesUtil
 from netd.network_util import NetworkUtil

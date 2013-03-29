@@ -194,7 +194,8 @@ for module in [ HostsManager(), DnsMasqManager(),
                 PortForwardManager(), BypassRuleManager(), 
                 EthernetManager(), FindDevManager(), 
                 SysctlManager(), ArpManager(),
-                DhcpManager(), PPPoEManager() ]:
+                DhcpManager(), PPPoEManager(),
+                DdclientManager() ]:
     try:
         module.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
     except Exception,e:
