@@ -1325,9 +1325,6 @@ body.wizard .ext-el-mask
 .warning {
     color: #FF0000;
 }
-.fixed-pos{
-    position: fixed;
-}
 
 .draggable-enabled-interface
 { 
