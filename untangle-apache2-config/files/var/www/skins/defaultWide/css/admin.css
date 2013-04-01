@@ -1428,41 +1428,21 @@ body.wizard .ext-el-mask
     padding: 0px 0px 0px 0px;
 }
 
-.ua-cell-enabled-interface
+.ua-cell-enabled
 { 
     background: transparent url(../images/admin/icon_interface_enabled.png) no-repeat center right;
     width: 100%;
     height : 16px;
-    cursor: move;
-    padding: 0px 0px 0px 0px;
-}
-
-.ua-cell-disabled-interface
-{ 
-    background: transparent url(../images/admin/icon_interface_disabled.png) no-repeat center right;
-    width: 100%;
-    height : 16px;
-    cursor: move;
-    padding: 0px 0px 0px 0px;
-}
-.ua-cell-enabled
-{ 
-    background: transparent url(../images/admin/icon_interface_enabled.png) no-repeat center center;
-    width: 100%;
-    height : 16px;
-    cursor: move;
     padding: 0px 0px 0px 0px;
 }
 
 .ua-cell-disabled
 { 
-    background: transparent url(../images/admin/icon_interface_disabled.png) no-repeat center center;
+    background: transparent url(../images/admin/icon_interface_disabled.png) no-repeat center right;
     width: 100%;
     height : 16px;
-    cursor: move;
     padding: 0px 0px 0px 0px;
 }
-
 
 .label-section-heading, .label-section-heading-2,.label-text{
     font-family:Tahoma, arial,helvetica,  freesans,sans-serif;
