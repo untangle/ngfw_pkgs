@@ -1444,6 +1444,15 @@ body.wizard .ext-el-mask
     padding: 0px 0px 0px 0px;
 }
 
+.ua-draggable {
+    cursor: move;
+}
+
+.ua-pointer {
+    cursor:pointer;
+    cursor:hand; /*for ie*/
+}
+
 .label-section-heading, .label-section-heading-2,.label-text{
     font-family:Tahoma, arial,helvetica,  freesans,sans-serif;
     font-weight:bold;
