@@ -41,7 +41,7 @@ flush_htb_rules()
 
 add_htb_rules()
 {
-    if [ -z $1 ] ; then
+    if [ -z "$1" ] ; then
         echo "add_rules requires argument"
         exit 1
     fi
@@ -59,19 +59,19 @@ add_htb_rules()
     #
     # egress filtering
     #
- 	run "$add_qdisc $wan_interface root handle 1: htb default 1$DEFAULT_CLASS"
+    run "$add_qdisc $wan_interface root handle 1: htb default 1$DEFAULT_CLASS"
     UPLOAD_BANDWIDTH=$(eval echo "$"${wan_interface}_UPLOAD_BANDWIDTH)
- 	run "$add_class $wan_interface parent 1: classid 1:1 htb rate ${UPLOAD_BANDWIDTH}kbit"
+    run "$add_class $wan_interface parent 1: classid 1:1 htb rate ${UPLOAD_BANDWIDTH}kbit"
     for i in 1 2 3 4 5 6 7 ; do 
         UPLOAD_RESERVED=$(eval echo "$"${wan_interface}_CLASS${i}_UPLOAD_RESERVED)
         UPLOAD_LIMIT=$(eval echo "$"${wan_interface}_CLASS${i}_UPLOAD_LIMIT)
 
-        if [ $UPLOAD_RESERVED = "none" ] && [ $UPLOAD_LIMIT = "none" ] ; then
+        if [ -z "$UPLOAD_RESERVED" ] && [ -z "$UPLOAD_LIMIT" ] ; then
             # echo - skipping $i
             continue
         fi
 
-        if [ $UPLOAD_RESERVED = "none" ] ; then
+        if [ -z "$UPLOAD_RESERVED" ] ; then
             # should never happen as UPLOAD_RESERVED must be 1-100
             # Can't provide no reservation,TC says '"rate" is required'
             RESERVED=" rate 100kbit "
@@ -80,7 +80,7 @@ add_htb_rules()
             RESERVED=" rate ${UPLOAD_RESERVED}kbit "
         fi
 
-        if [ $UPLOAD_LIMIT = "none" ] ; then
+        if [ -z "$UPLOAD_LIMIT" ] ; then
             LIMITED=" ceil 99999999999kbit"
         else
             LIMITED=" ceil ${UPLOAD_LIMIT}kbit "
@@ -101,19 +101,19 @@ add_htb_rules()
     # ingress filtering is done via the IMQ interface
     #
     run "ifconfig $imq_interface up"
- 	run "$add_qdisc $imq_interface root handle 1: htb default 1$DEFAULT_CLASS"
+    run "$add_qdisc $imq_interface root handle 1: htb default 1$DEFAULT_CLASS"
     DOWNLOAD_BANDWIDTH=$(eval echo "$"${wan_interface}_DOWNLOAD_BANDWIDTH)
- 	run "$add_class $imq_interface parent 1: classid 1:1 htb rate ${DOWNLOAD_BANDWIDTH}kbit"
+    run "$add_class $imq_interface parent 1: classid 1:1 htb rate ${DOWNLOAD_BANDWIDTH}kbit"
     for i in 1 2 3 4 5 6 7 ; do 
         DOWNLOAD_RESERVED=$(eval echo "$"${wan_interface}_CLASS${i}_DOWNLOAD_RESERVED)
         DOWNLOAD_LIMIT=$(eval echo "$"${wan_interface}_CLASS${i}_DOWNLOAD_LIMIT)
 
-        if [ $DOWNLOAD_RESERVED = "none" ] && [ $DOWNLOAD_LIMIT = "none" ] ; then
+        if [ -z "$DOWNLOAD_RESERVED" ] && [ -z "$DOWNLOAD_LIMIT" ] ; then
             # echo - skipping $i
             continue
         fi
 
-        if [ $DOWNLOAD_RESERVED = "none" ] ; then
+        if [ -z "$DOWNLOAD_RESERVED" ] ; then
             # should never happen as DOWNLOAD_RESERVED must be 1-100
             # Can't provide no reservation,TC says '"rate" is required'
             RESERVED=" rate 100kbit "
@@ -122,7 +122,7 @@ add_htb_rules()
             RESERVED=" rate ${DOWNLOAD_RESERVED}kbit "
         fi
 
-        if [ $DOWNLOAD_LIMIT = "none" ] ; then
+        if [ -z "$DOWNLOAD_LIMIT" ] ; then
             LIMITED=" ceil 99999999999kbit"
         else
             LIMITED=" ceil ${DOWNLOAD_LIMIT}kbit "
