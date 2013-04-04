@@ -135,7 +135,8 @@ class BypassRuleManager:
         self.file.write("\n");
 
         self.file.write("# Bypass all traffic from the local server" + "\n");
-        self.file.write("${IPTABLES} -A OUTPUT -t mangle -j MARK --or-mark 0x%X -m comment --comment \"Set bypass bit on all outbound traffic\"" % self.bypassMarkMask + "\n");
+        self.file.write("${IPTABLES} -A OUTPUT -t mangle -j MARK --or-mark 0x%X -m comment --comment \"Set bypass bit on all local outbound packets\"" % self.bypassMarkMask + "\n");
+        self.file.write("${IPTABLES} -A OUTPUT -t mangle -m conntrack --ctstate NEW -j CONNMARK --or-mark 0x%X -m comment --comment \"Set bypass bit on all local outbound sessions\"" % self.bypassMarkMask + "\n");
         self.file.write("\n");
 
         self.write_restore_bypass_mark( settings, verbosity );

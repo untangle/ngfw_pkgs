@@ -102,16 +102,16 @@ class QosManager:
 
         file.write("# Call restore-qos-mark chain from POSTROUTING chain in mangle" + "\n");
         file.write("${IPTABLES} -t mangle -D POSTROUTING -m comment --comment \"Restore QoS Mark\" -j restore-qos-mark >/dev/null 2>&1" + "\n");
-        file.write("${IPTABLES} -t mangle -D POSTROUTING -m conntrack --ctstate NEW -m comment --comment \"Call QoS Rules\" -j qos-rules >/dev/null 2>&1" + "\n");
         file.write("${IPTABLES} -t mangle -A POSTROUTING -m comment --comment \"Restore QoS Mark\" -j restore-qos-mark" + "\n");
+        file.write("${IPTABLES} -t mangle -D POSTROUTING -m conntrack --ctstate NEW -m comment --comment \"Call QoS Rules\" -j qos-rules >/dev/null 2>&1" + "\n");
         file.write("${IPTABLES} -t mangle -A POSTROUTING -m conntrack --ctstate NEW -m comment --comment \"Call QoS Rules\" -j qos-rules" + "\n");
         file.write("\n");
 
         file.write("# Call restore-qos-mark chain from PREROUTING chain in mangle" + "\n");
         file.write("${IPTABLES} -t mangle -D PREROUTING -m comment --comment \"Restore QoS Mark\" -j restore-qos-mark >/dev/null 2>&1" + "\n");
+        file.write("${IPTABLES} -t mangle -A PREROUTING -m comment --comment \"Restore QoS Mark\" -j restore-qos-mark" + "\n");
         file.write("${IPTABLES} -t mangle -D PREROUTING -m conntrack --ctstate NEW -m comment --comment \"Call QoS Rules\" -j qos-rules >/dev/null 2>&1" + "\n");
-        file.write("${IPTABLES} -t mangle -A PREROUTING -m conntrack --ctstate NEW -m comment --comment \"Restore QoS Mark\" -j restore-qos-mark" + "\n");
-        file.write("${IPTABLES} -t mangle -A PREROUTING -m comment --comment \"Call QoS Rules\" -j qos-rules" + "\n");
+        file.write("${IPTABLES} -t mangle -A PREROUTING -m conntrack --ctstate NEW -m comment --comment \"Call QoS Rules\" -j qos-rules" + "\n");
         file.write("\n");
 
         file.write("# Call qos-imq chain from PREROUTING chain in mangle" + "\n");
