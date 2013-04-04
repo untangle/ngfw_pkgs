@@ -57,7 +57,7 @@ class InterfacesManager:
         if isBridge:
             self.interfacesFile.write("\tbridge_ports %s\n" % " ".join(bridgedInterfaces))
             self.interfacesFile.write("\tbridge_ageing %i\n" % 900) #XXX
-            self.interfacesFile.write("\tbridge_maxwait %i\n" % 0) #XXX
+            self.interfacesFile.write("\tbridge_maxwait %i\n" % 32) #XXX
             self.interfacesFile.write("\tnetd_bridge_mtu %i\n" % 1500) #XXX
 
         # handle PPPoE stuff
@@ -83,22 +83,22 @@ class InterfacesManager:
 
     def write_interface_v6( self, interface_settings, interfaces ):
 
-        if interface_settings.get('v6ConfigType') == 'AUTO':
-            return # nothing needed to support RA # FIXME what about non-WANs?
-
         self.interfacesFile.write("## Interface %i IPv6\n" % (interface_settings.get('interfaceId')) )
-        if interface_settings.get('v6StaticAddress') == None:
-            self.interfacesFile.write("## No IPv6 configured. \n")
-            self.interfacesFile.write("\n\n");
-            return
-
         #self.interfacesFile.write("auto %s\n" % interface_settings.get('symbolicDev'))
+
         self.interfacesFile.write("iface %s inet6 %s\n" % (interface_settings.get('symbolicDev'), "manual") )
         self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings.get('interfaceId'))
-        self.interfacesFile.write("\tnetd_v6_address %s\n" % interface_settings.get('v6StaticAddress'))
-        self.interfacesFile.write("\tnetd_v6_netmask %s\n" % interface_settings.get('v6StaticPrefixLength'))
-        if interface_settings.get('v6StaticGateway') != None:
-            self.interfacesFile.write("\tnetd_v6_gateway %s\n" % interface_settings.get('v6StaticGateway'))
+
+        if interface_settings.get('v6ConfigType') == 'STATIC':
+            self.interfacesFile.write("\tnetd_v6_address %s\n" % interface_settings.get('v6StaticAddress'))
+            self.interfacesFile.write("\tnetd_v6_prefix %s\n" % interface_settings.get('v6StaticPrefixLength'))
+            if interface_settings.get('v6StaticGateway') != None:
+                self.interfacesFile.write("\tnetd_v6_gateway %s\n" % interface_settings.get('v6StaticGateway'))
+        elif interface_settings.get('v6ConfigType') == 'AUTO':
+            self.interfacesFile.write("\tnetd_v6_address %s\n" % "auto")
+        elif interface_settings.get('v6ConfigType') == 'DISABLED':
+            self.interfacesFile.write("\tnetd_v6_address %s\n" % "disabled")
+
         self.interfacesFile.write("\n\n");
 
     def check_interface_settings( self, interface_settings):
@@ -139,9 +139,11 @@ class InterfacesManager:
 
         if settings != None and settings.get('interfaces') != None and settings.get('interfaces').get('list') != None:
             for interface_settings in settings.get('interfaces').get('list'):
+
                 # only write 'ADDRESSED' interfaces
                 if interface_settings.get('configType') != 'ADDRESSED':
                     continue
+
                 # if invalid settigs, skip it
                 if not self.check_interface_settings( interface_settings ):
                     continue
@@ -398,7 +400,20 @@ bridge_destroy_all
 # remove interface status files
 rm -f /var/lib/untangle-netd/interface*status.js
 
+# disable forwarding on all interfaces, enable in all
+# enable accept_ra on all interfaces
+# http://strugglers.net/~andy/blog/2011/09/04/linux-ipv6-router-advertisements-and-forwarding/
 """)
+        file.write("echo 1 > /proc/sys/net/ipv6/conf/all/forwarding" + "\n")
+        file.write("echo 0 > /proc/sys/net/ipv6/conf/default/forwarding" + "\n")
+        for intf in settings.get('interfaces').get('list'):
+            file.write("echo 0 > /proc/sys/net/ipv6/conf/%s/forwarding" % intf['physicalDev']+ "\n")
+
+        file.write("\n")
+        file.write("echo 1 > /proc/sys/net/ipv6/conf/all/accept_ra" + "\n")
+        file.write("echo 1 > /proc/sys/net/ipv6/conf/default/accept_ra" + "\n")
+        for intf in settings.get('interfaces').get('list'):
+            file.write("echo 1 > /proc/sys/net/ipv6/conf/%s/accept_ra" % intf['physicalDev']+ "\n")
         
         file.flush()
         file.close()

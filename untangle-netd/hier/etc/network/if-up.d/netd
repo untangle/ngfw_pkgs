@@ -25,21 +25,40 @@ networking_pre_restart_hook()
     return 0
 }
 
-netd_address()
+netd_v6_address()
 {
-    #$DEBUG "netd_address: IF_NETD_V4_ADDRESS = ${IF_NETD_V4_ADDRESS}"
-    #$DEBUG "netd_address: IF_NETD_V4_NETMASK = ${IF_NETD_V4_NETMASK}"
-    #$DEBUG "netd_address: IF_NETD_V4_GATEWAY = ${IF_NETD_V4_GATEWAY}"
+    if [ -n "${IF_NETD_V6_ADDRESS}" ] ; then
+        if [ "disabled" = "${IF_NETD_V6_ADDRESS}" ] ; then
+            # disable IPv6
+            echo 1 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6
+        elif [ "auto" = "${IF_NETD_V6_ADDRESS}" ] ; then
+            echo 0 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6
+            # force kernel router solicitation now
+            if [ -x /bin/rdisc6 ] ; then
+                rdisc6 $IFACE
+            else
+                echo "FIXME missing rdisc6"
+            fi
+        elif [ -n "${IF_NETD_V6_PREFIX}" ] ; then
+            echo 0 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6
+            ip -6 addr add ${IF_NETD_V6_ADDRESS}/${IF_NETD_V6_PREFIX} dev $IFACE
+        fi
+    fi
+
+    return 0
+}
+
+netd_v4_address()
+{
+    #$DEBUG "netd_v4_address: IF_NETD_V4_ADDRESS = ${IF_NETD_V4_ADDRESS}"
+    #$DEBUG "netd_v4_address: IF_NETD_V4_NETMASK = ${IF_NETD_V4_NETMASK}"
+    #$DEBUG "netd_v4_address: IF_NETD_V4_GATEWAY = ${IF_NETD_V4_GATEWAY}"
 
     if [ -n "${IF_NETD_V4_ADDRESS}" ] && [ -n "${IF_NETD_V4_NETMASK}" ]; then
         #$DEBUG ifconfig $IFACE ${IF_NETD_V4_ADDRESS} netmask ${IF_NETD_V4_NETMASK} up
         ifconfig $IFACE ${IF_NETD_V4_ADDRESS} netmask ${IF_NETD_V4_NETMASK} up
     fi
 
-    if [ -n "${IF_NETD_V6_ADDRESS}" ] && [ -n "${IF_NETD_V6_NETMASK}" ]; then
-        debug "/etc/network/if-up.d/netd: FIXME implement IPv6 address/netmask"
-    fi
-    
     return 0
 }
 
@@ -110,7 +129,9 @@ if [ "$IFACE" = "networking_post_restart_hook" ] ; then
     exit 0
 fi
 
-netd_address
+netd_v4_address
+
+netd_v6_address
 
 uplink_routes
 
