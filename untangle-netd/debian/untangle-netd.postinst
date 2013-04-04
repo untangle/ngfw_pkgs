@@ -15,4 +15,10 @@ if [ -f /etc/untangle-netd/network.js ] ; then
     rm -f /etc/untangle-netd/post-network-hook.d/*
     rm -f /etc/untangle-netd/pre-network-hook.d/*
     /usr/share/untangle-netd/bin/sync-settings.py -vv -f /etc/untangle-netd/network.js
+elif [ -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
+    echo "Updating hooks..."
+    rm -f /etc/untangle-netd/iptables-rules.d/*
+    rm -f /etc/untangle-netd/post-network-hook.d/*
+    rm -f /etc/untangle-netd/pre-network-hook.d/*
+    /usr/share/untangle-netd/bin/sync-settings.py -vv -f /usr/share/untangle/settings/untangle-vm/network.js
 fi

@@ -95,7 +95,7 @@ if fileName == None or dev == None or interfaceId == None:
 
 if verbosity > 0: print "Writing %s status to %s." % (dev, fileName)
 
-obj = {"javaClass":"com.untangle.uvm.network.InterfaceStatus"}
+obj = {"javaClass":"com.untangle.uvm.network.InterfaceStatus", "interfaceId":interfaceId}
 
 
 # Parse IPv4 Address, Netmask, Prefix Length

@@ -41,6 +41,7 @@ netd_v6_address()
             fi
         elif [ -n "${IF_NETD_V6_PREFIX}" ] ; then
             echo 0 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6
+            #$DEBUG ip -6 addr add ${IF_NETD_V6_ADDRESS}/${IF_NETD_V6_PREFIX} dev $IFACE
             ip -6 addr add ${IF_NETD_V6_ADDRESS}/${IF_NETD_V6_PREFIX} dev $IFACE
         fi
     fi
