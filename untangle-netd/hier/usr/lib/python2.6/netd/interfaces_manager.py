@@ -83,6 +83,10 @@ class InterfacesManager:
 
     def write_interface_v6( self, interface_settings, interfaces ):
 
+        # If its statically configured with no address, just return
+        if interface_settings.get('v6ConfigType') == 'STATIC' and interface_settings.get('v6StaticAddress') == None:
+            return
+
         self.interfacesFile.write("## Interface %i IPv6\n" % (interface_settings.get('interfaceId')) )
         #self.interfacesFile.write("auto %s\n" % interface_settings.get('symbolicDev'))
 
@@ -94,8 +98,16 @@ class InterfacesManager:
             self.interfacesFile.write("\tnetd_v6_prefix %s\n" % interface_settings.get('v6StaticPrefixLength'))
             if interface_settings.get('v6StaticGateway') != None:
                 self.interfacesFile.write("\tnetd_v6_gateway %s\n" % interface_settings.get('v6StaticGateway'))
+            if interface_settings.get('isWan'):
+                self.interfacesFile.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
+            else:
+                self.interfacesFile.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
         elif interface_settings.get('v6ConfigType') == 'AUTO':
             self.interfacesFile.write("\tnetd_v6_address %s\n" % "auto")
+            if interface_settings.get('isWan'):
+                self.interfacesFile.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
+            else:
+                self.interfacesFile.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
         elif interface_settings.get('v6ConfigType') == 'DISABLED':
             self.interfacesFile.write("\tnetd_v6_address %s\n" % "disabled")
 
@@ -409,12 +421,6 @@ rm -f /var/lib/untangle-netd/interface*status.js
         for intf in settings.get('interfaces').get('list'):
             file.write("echo 0 > /proc/sys/net/ipv6/conf/%s/forwarding" % intf['physicalDev']+ "\n")
 
-        file.write("\n")
-        file.write("echo 1 > /proc/sys/net/ipv6/conf/all/accept_ra" + "\n")
-        file.write("echo 1 > /proc/sys/net/ipv6/conf/default/accept_ra" + "\n")
-        for intf in settings.get('interfaces').get('list'):
-            file.write("echo 1 > /proc/sys/net/ipv6/conf/%s/accept_ra" % intf['physicalDev']+ "\n")
-        
         file.flush()
         file.close()
         os.system("chmod a+x %s" % filename)
