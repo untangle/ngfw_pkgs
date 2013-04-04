@@ -157,7 +157,17 @@ for line in subprocess.Popen(("ip route show table uplink.%i" % interfaceId).spl
         obj['v4Gateway'] = segments[2]
         
 # Parse IPv6 Gateway
-# FIXME
+# XXX table main? table uplink.X?
+for line in subprocess.Popen(("ip -6 route show table main").split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].split('\n'):
+    if re.search(r'default via.*', line):
+
+        segments = line.split()
+        if len( segments ) < 3:
+            print "ERROR: invalid ip route show output: \"%s\"" % line
+            continue
+        
+        obj['v6Gateway'] = segments[2]
+
 
 # Parse DNS (read from dnsmasq.conf)
 count=1
