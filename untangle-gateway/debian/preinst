@@ -1,11 +1,5 @@
 #! /bin/sh
 
-# do not start sshd by default if this is the first install
-if [ "$1" = "install" ] ; then
-  mkdir -p /etc/ssh
-  touch /etc/ssh/sshd_not_to_be_run
-fi
-
 # attempt to fix bug #7974
 
 if ! grep -q 'HWCLOCKPARM' /etc/default/rcS > /dev/null 2>&1 ; then

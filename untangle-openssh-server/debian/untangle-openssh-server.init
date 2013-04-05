@@ -16,19 +16,6 @@ run_by_init() {
   ([ "$previous" ] && [ "$runlevel" ]) || [ "$runlevel" = S ]
 }
 
-check_for_no_start() {
-    # forget it if we're trying to start, and /etc/untangle-ssh/sshd_not_to_be_run exists
-  if [ -e /etc/untangle-ssh/sshd_not_to_be_run ]; then 
-    if [ "$1" = log_end_msg ]; then
-      log_end_msg 0
-    fi
-    if ! run_by_init; then
-      log_action_msg "$SERVICE_DESC not in use (/etc/untangle-ssh/sshd_not_to_be_run)"
-    fi
-    exit 0
-  fi
-}
-
 check_dev_null() {
   if [ ! -c /dev/null ]; then
     if [ "$1" = log_end_msg ]; then
@@ -59,7 +46,6 @@ export PATH="${PATH:+$PATH:}/usr/sbin:/sbin"
 
 case "$1" in
   start)
-    check_for_no_start
     check_dev_null
     log_daemon_msg "Starting $SERVICE_DESC" "sshd"
     check_privsep_dir
@@ -79,7 +65,6 @@ case "$1" in
     ;;
 
   reload|force-reload)
-    check_for_no_start
     check_config
     log_daemon_msg "Reloading ${SERVICE_DESC}'s configuration" "sshd"
     if start-stop-daemon --stop --signal 1 --quiet --oknodo --pidfile $PID_FILE --exec $BINARY -- -f $CONF_FILE ; then
@@ -94,7 +79,6 @@ case "$1" in
     check_config
     log_daemon_msg "Restarting $SERVICE_DESC" "sshd"
     start-stop-daemon --stop --quiet --oknodo --retry 30 --pidfile $PID_FILE
-    check_for_no_start log_end_msg
     check_dev_null log_end_msg
     if start-stop-daemon --start --quiet --oknodo --pidfile $PID_FILE --exec $BINARY -- -f $CONF_FILE ; then
       log_end_msg 0
@@ -114,7 +98,6 @@ case "$1" in
     case $RET in
       0)
 		# old daemon stopped
-	check_for_no_start log_end_msg
 	check_dev_null log_end_msg
 	if start-stop-daemon --start --quiet --oknodo --pidfile $PID_FILE --exec $BINARY -- -f $CONF_FILE ; then
 	  log_end_msg 0
