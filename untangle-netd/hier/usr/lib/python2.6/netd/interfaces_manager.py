@@ -83,10 +83,6 @@ class InterfacesManager:
 
     def write_interface_v6( self, interface_settings, interfaces ):
 
-        # If its statically configured with no address, just return
-        if interface_settings.get('v6ConfigType') == 'STATIC' and interface_settings.get('v6StaticAddress') == None:
-            return
-
         self.interfacesFile.write("## Interface %i IPv6\n" % (interface_settings.get('interfaceId')) )
         #self.interfacesFile.write("auto %s\n" % interface_settings.get('symbolicDev'))
 
@@ -94,8 +90,10 @@ class InterfacesManager:
         self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings.get('interfaceId'))
 
         if interface_settings.get('v6ConfigType') == 'STATIC':
-            self.interfacesFile.write("\tnetd_v6_address %s\n" % interface_settings.get('v6StaticAddress'))
-            self.interfacesFile.write("\tnetd_v6_prefix %s\n" % interface_settings.get('v6StaticPrefixLength'))
+            if interface_settings.get('v6StaticAddress') != None:
+                self.interfacesFile.write("\tnetd_v6_address %s\n" % interface_settings.get('v6StaticAddress'))
+            if interface_settings.get('v6StaticPrefixLength') != None:
+                self.interfacesFile.write("\tnetd_v6_prefix %s\n" % interface_settings.get('v6StaticPrefixLength'))
             if interface_settings.get('v6StaticGateway') != None:
                 self.interfacesFile.write("\tnetd_v6_gateway %s\n" % interface_settings.get('v6StaticGateway'))
             if interface_settings.get('isWan'):
