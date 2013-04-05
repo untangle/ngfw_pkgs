@@ -28,15 +28,10 @@ networking_pre_restart_hook()
 netd_v6_config()
 {
     if [ -n "${IF_NETD_V6_ADDRESS}" ] ; then
-        if [ "disabled" = "${IF_NETD_V6_ADDRESS}" ] ; then
-            # disable IPv6
-            echo 1 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6
-        elif [ "auto" = "${IF_NETD_V6_ADDRESS}" ] ; then
-            echo 0 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6
+        if [ "auto" = "${IF_NETD_V6_ADDRESS}" ] ; then
             # force kernel router solicitation now
             rdisc6 $IFACE
         elif [ -n "${IF_NETD_V6_PREFIX}" ] ; then
-            echo 0 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6
             #$DEBUG ip -6 addr add ${IF_NETD_V6_ADDRESS}/${IF_NETD_V6_PREFIX} dev $IFACE
             ip -6 addr add ${IF_NETD_V6_ADDRESS}/${IF_NETD_V6_PREFIX} dev $IFACE
         fi

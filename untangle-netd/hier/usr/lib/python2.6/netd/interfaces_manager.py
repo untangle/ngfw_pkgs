@@ -83,13 +83,14 @@ class InterfacesManager:
 
     def write_interface_v6( self, interface_settings, interfaces ):
 
-        self.interfacesFile.write("## Interface %i IPv6 (%s)\n" % (interface_settings.get('interfaceId'),interface_settings.get('v4ConfigType')) )
+        self.interfacesFile.write("## Interface %i IPv6 (%s)\n" % (interface_settings.get('interfaceId'),interface_settings.get('v6ConfigType')) )
         #self.interfacesFile.write("auto %s\n" % interface_settings.get('symbolicDev'))
 
         self.interfacesFile.write("iface %s inet6 %s\n" % (interface_settings.get('symbolicDev'), "manual") )
         self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings.get('interfaceId'))
 
         if interface_settings.get('v6ConfigType') == 'STATIC':
+            self.interfacesFile.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6" + "\n")
             self.interfacesFile.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/autoconf" + "\n")
             if interface_settings.get('v6StaticAddress') != None:
                 self.interfacesFile.write("\tnetd_v6_address %s\n" % interface_settings.get('v6StaticAddress'))
@@ -102,6 +103,7 @@ class InterfacesManager:
                 else: # no gateway specified, use RAs
                     self.interfacesFile.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
         elif interface_settings.get('v6ConfigType') == 'AUTO':
+            self.interfacesFile.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6" + "\n")
             self.interfacesFile.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/autoconf" + "\n")
             self.interfacesFile.write("\tnetd_v6_address %s\n" % "auto")
             if interface_settings.get('isWan'):
@@ -109,7 +111,7 @@ class InterfacesManager:
             else:
                 self.interfacesFile.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
         elif interface_settings.get('v6ConfigType') == 'DISABLED':
-            self.interfacesFile.write("\tnetd_v6_address %s\n" % "disabled")
+            self.interfacesFile.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6" + "\n")
 
         self.interfacesFile.write("\n\n");
 
