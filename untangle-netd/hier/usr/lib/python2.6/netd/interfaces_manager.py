@@ -30,7 +30,7 @@ class InterfacesManager:
             # we gave it a unique name in 9.4 - is this necessary?
             # devName = "ppp." + interface_settings.get('symbolicDev')
 
-        self.interfacesFile.write("## Interface %s IPv4\n" % (str(interface_settings.get('interfaceId'))) )
+        self.interfacesFile.write("## Interface %i IPv4 (%s)\n" % (interface_settings.get('interfaceId'),interface_settings.get('v4ConfigType')) )
         self.interfacesFile.write("auto %s\n" % devName)
 
         # find interfaces bridged to this interface
@@ -71,7 +71,7 @@ class InterfacesManager:
             count = 1
             for alias in interface_settings.get('v4Aliases').get('list'):
                 self.interfacesFile.write("\n");
-                self.interfacesFile.write("## Interface %s IPv4 alias\n" % (str(interface_settings.get('interfaceId'))) )
+                self.interfacesFile.write("## Interface %i IPv4 alias\n" % (interface_settings.get('interfaceId')) )
                 self.interfacesFile.write("auto %s:%i\n" % (interface_settings.get('symbolicDev'), count))
                 self.interfacesFile.write("iface %s:%i inet manual\n" % ( interface_settings.get('symbolicDev'), count ))
                 self.interfacesFile.write("\tnetd_v4_address %s\n" % alias.get('v4StaticAddress'))
@@ -83,7 +83,7 @@ class InterfacesManager:
 
     def write_interface_v6( self, interface_settings, interfaces ):
 
-        self.interfacesFile.write("## Interface %i IPv6\n" % (interface_settings.get('interfaceId')) )
+        self.interfacesFile.write("## Interface %i IPv6 (%s)\n" % (interface_settings.get('interfaceId'),interface_settings.get('v4ConfigType')) )
         #self.interfacesFile.write("auto %s\n" % interface_settings.get('symbolicDev'))
 
         self.interfacesFile.write("iface %s inet6 %s\n" % (interface_settings.get('symbolicDev'), "manual") )
