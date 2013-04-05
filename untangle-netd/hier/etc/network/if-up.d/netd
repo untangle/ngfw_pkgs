@@ -25,7 +25,7 @@ networking_pre_restart_hook()
     return 0
 }
 
-netd_v6_address()
+netd_v6_config()
 {
     if [ -n "${IF_NETD_V6_ADDRESS}" ] ; then
         if [ "disabled" = "${IF_NETD_V6_ADDRESS}" ] ; then
@@ -34,11 +34,7 @@ netd_v6_address()
         elif [ "auto" = "${IF_NETD_V6_ADDRESS}" ] ; then
             echo 0 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6
             # force kernel router solicitation now
-            if [ -x /bin/rdisc6 ] ; then
-                rdisc6 $IFACE
-            else
-                echo "FIXME missing rdisc6"
-            fi
+            rdisc6 $IFACE
         elif [ -n "${IF_NETD_V6_PREFIX}" ] ; then
             echo 0 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6
             #$DEBUG ip -6 addr add ${IF_NETD_V6_ADDRESS}/${IF_NETD_V6_PREFIX} dev $IFACE
@@ -46,18 +42,26 @@ netd_v6_address()
         fi
     fi
 
+    if [ -n "$IF_NETD_V6_GATEWAY" ] && [ -n "$IF_NETD_INTERFACE_INDEX" ] ; then
+        /usr/share/untangle-netd/bin/add-uplink.sh ${IFACE} ${IF_NETD_V6_GATEWAY} uplink.${IF_NETD_INTERFACE_INDEX}
+    fi
+
     return 0
 }
 
-netd_v4_address()
+netd_v4_config()
 {
-    #$DEBUG "netd_v4_address: IF_NETD_V4_ADDRESS = ${IF_NETD_V4_ADDRESS}"
-    #$DEBUG "netd_v4_address: IF_NETD_V4_NETMASK = ${IF_NETD_V4_NETMASK}"
-    #$DEBUG "netd_v4_address: IF_NETD_V4_GATEWAY = ${IF_NETD_V4_GATEWAY}"
+    #$DEBUG "netd_v4_config: IF_NETD_V4_ADDRESS = ${IF_NETD_V4_ADDRESS}"
+    #$DEBUG "netd_v4_config: IF_NETD_V4_NETMASK = ${IF_NETD_V4_NETMASK}"
+    #$DEBUG "netd_v4_config: IF_NETD_V4_GATEWAY = ${IF_NETD_V4_GATEWAY}"
 
     if [ -n "${IF_NETD_V4_ADDRESS}" ] && [ -n "${IF_NETD_V4_NETMASK}" ]; then
         #$DEBUG ifconfig $IFACE ${IF_NETD_V4_ADDRESS} netmask ${IF_NETD_V4_NETMASK} up
         ifconfig $IFACE ${IF_NETD_V4_ADDRESS} netmask ${IF_NETD_V4_NETMASK} up
+    fi
+
+    if [ -n "$IF_NETD_V4_GATEWAY" ] && [ -n "$IF_NETD_INTERFACE_INDEX" ] ; then
+        /usr/share/untangle-netd/bin/add-uplink.sh ${IFACE} ${IF_NETD_V4_GATEWAY} uplink.${IF_NETD_INTERFACE_INDEX}
     fi
 
     return 0
@@ -68,27 +72,6 @@ networking_post_restart_hook()
     $DEBUG "networking_post_restart_hook"
     $RUN_PARTS /etc/untangle-netd/post-network-hook.d
     return 0
-}
-
-uplink_routes()
-{
-    local table_name
-
-    [ -z "$IF_NETD_INTERFACE_INDEX" ] && {
-        # aliases don't have interface_index, just return
-        #$DEBUG "Interface ${IFACE} is missing the interface index."
-        return 0
-    }
-
-    if [ -n "$IF_NETD_V4_GATEWAY" ] ; then
-        table_name="uplink.${IF_NETD_INTERFACE_INDEX}"
-        /usr/share/untangle-netd/bin/add-uplink.sh ${IFACE} ${IF_NETD_V4_GATEWAY} ${table_name}
-    fi
-
-    if [ -n "$IF_NETD_V6_GATEWAY" ] ; then
-        table_name="uplink.${IF_NETD_INTERFACE_INDEX}"
-        /usr/share/untangle-netd/bin/add-uplink.sh ${IFACE} ${IF_NETD_V6_GATEWAY} ${table_name}
-    fi
 }
 
 write_status_file()
@@ -130,11 +113,9 @@ if [ "$IFACE" = "networking_post_restart_hook" ] ; then
     exit 0
 fi
 
-netd_v4_address
+netd_v4_config
 
-netd_v6_address
-
-uplink_routes
+netd_v6_config
 
 write_status_file $IFACE $IF_NETD_INTERFACE_INDEX
 

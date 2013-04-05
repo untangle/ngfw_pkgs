@@ -11,6 +11,7 @@ from netd.network_util import NetworkUtil
 # based on the settings object passed from sync-settings.py
 class RadvdManager:
     configFilename = "/etc/radvd.conf"
+    restartHookFilename = "/etc/untangle-netd/post-network-hook.d/990-restart-radvd"
 
     def write_config_file( self, settings, prefix="", verbosity=0 ):
 
@@ -47,10 +48,50 @@ class RadvdManager:
 
         if verbosity > 0: print "RadvdManager: Wrote %s" % filename
 
+    def write_restart_radvd_hook( self, settings, prefix="", verbosity=0 ):
+
+        filename = prefix + self.restartHookFilename
+        fileDir = os.path.dirname( filename )
+        if not os.path.exists( fileDir ):
+            os.makedirs( fileDir )
+
+        file = open( filename, "w+" )
+        file.write("#!/bin/dash");
+        file.write("\n\n");
+
+        file.write("## Auto Generated on %s\n" % datetime.datetime.now());
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
+        file.write("\n");
+
+        file.write(r"""
+RADVD_PID="`pidof radvd`"
+
+# Start radvd if it isnt found and is needed (config file is non-zero)
+# Restart radvd if it is found and but is outdated and is needed (config file is non-zero)
+# Stop if radvd is found, but no longer needed (config file is zero size)
+# The reason we don't just stop and then start if needed if to avoid doing anything if nothing is required.
+if [ -z "$RADVD_PID" ] && [ -s /etc/radvd.conf ] ; then
+    /etc/init.d/radvd start
+elif [ /etc/radvd.conf -nt /proc/$RADVD_PID/cmdline ] && [ -s /etc/radvd.conf ] ; then
+    /etc/init.d/radvd restart
+elif [ ! -z "$RADVD_PID" ] && [ ! -s /etc/radvd.conf ] ; then
+    /etc/init.d/radvd stop
+fi
+""")
+
+        file.write("\n");
+        file.flush()
+        file.close()
+    
+        os.system("chmod a+x %s" % filename)
+        if verbosity > 0: print "RadvdManager: Wrote %s" % filename
+        return
+
     def sync_settings( self, settings, prefix="", verbosity=0 ):
 
         if verbosity > 1: print "RadvdManager: sync_settings()"
         
         self.write_config_file( settings, prefix, verbosity )
+        self.write_restart_radvd_hook( settings, prefix, verbosity )
 
         return

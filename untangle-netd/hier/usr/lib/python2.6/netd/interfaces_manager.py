@@ -90,17 +90,19 @@ class InterfacesManager:
         self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings.get('interfaceId'))
 
         if interface_settings.get('v6ConfigType') == 'STATIC':
+            self.interfacesFile.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/autoconf" + "\n")
             if interface_settings.get('v6StaticAddress') != None:
                 self.interfacesFile.write("\tnetd_v6_address %s\n" % interface_settings.get('v6StaticAddress'))
             if interface_settings.get('v6StaticPrefixLength') != None:
                 self.interfacesFile.write("\tnetd_v6_prefix %s\n" % interface_settings.get('v6StaticPrefixLength'))
-            if interface_settings.get('v6StaticGateway') != None:
-                self.interfacesFile.write("\tnetd_v6_gateway %s\n" % interface_settings.get('v6StaticGateway'))
             if interface_settings.get('isWan'):
-                self.interfacesFile.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
-            else:
-                self.interfacesFile.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
+                if interface_settings.get('v6StaticGateway') != None:
+                    self.interfacesFile.write("\tnetd_v6_gateway %s\n" % interface_settings.get('v6StaticGateway'))
+                    self.interfacesFile.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
+                else: # no gateway specified, use RAs
+                    self.interfacesFile.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
         elif interface_settings.get('v6ConfigType') == 'AUTO':
+            self.interfacesFile.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/autoconf" + "\n")
             self.interfacesFile.write("\tnetd_v6_address %s\n" % "auto")
             if interface_settings.get('isWan'):
                 self.interfacesFile.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
