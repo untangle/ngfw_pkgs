@@ -4,9 +4,7 @@ import subprocess
 import datetime
 import traceback
 
-# TODO IPv4 aliases
 # TODO IPv6 aliases
-# TODO change logic that writes PPPoE config file to use connection.systemDev as name instead 
 
 # This class is responsible for writing /etc/network/interfaces
 # based on the settings object passed from sync-settings.py
@@ -65,20 +63,6 @@ class InterfacesManager:
             self.interfacesFile.write("\tpre-up /sbin/ifconfig %s up\n" % interface_settings.get('physicalDev')) 
             self.interfacesFile.write("\tprovider %s\n" % ("connection.intf" + str(interface_settings.get('interfaceId')))) 
             
-
-        # handle aliases
-        if interface_settings.get('v4Aliases') != None and interface_settings.get('v4Aliases').get('list') != None:
-            count = 1
-            for alias in interface_settings.get('v4Aliases').get('list'):
-                self.interfacesFile.write("\n");
-                self.interfacesFile.write("## Interface %i IPv4 alias\n" % (interface_settings.get('interfaceId')) )
-                self.interfacesFile.write("auto %s:%i\n" % (interface_settings.get('symbolicDev'), count))
-                self.interfacesFile.write("iface %s:%i inet manual\n" % ( interface_settings.get('symbolicDev'), count ))
-                self.interfacesFile.write("\tnetd_v4_address %s\n" % alias.get('v4StaticAddress'))
-                self.interfacesFile.write("\tnetd_v4_netmask %s\n" % alias.get('v4StaticNetmask'))
-                count = count+1
-                
-        
         self.interfacesFile.write("\n\n");
 
     def write_interface_v6( self, interface_settings, interfaces ):
@@ -114,6 +98,30 @@ class InterfacesManager:
             self.interfacesFile.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6" + "\n")
 
         self.interfacesFile.write("\n\n");
+
+    def write_interface_aliases( self, interface_settings, interfaces ):
+        # handle v4 aliases
+        count = 1
+        if interface_settings.get('v4Aliases') != None and interface_settings.get('v4Aliases').get('list') != None:
+            for alias in interface_settings.get('v4Aliases').get('list'):
+                self.interfacesFile.write("## Interface %i IPv4 alias\n" % (interface_settings.get('interfaceId')) )
+                self.interfacesFile.write("auto %s:%i\n" % (interface_settings.get('symbolicDev'), count))
+                self.interfacesFile.write("iface %s:%i inet manual\n" % ( interface_settings.get('symbolicDev'), count ))
+                self.interfacesFile.write("\tnetd_v4_address %s\n" % alias.get('staticAddress'))
+                self.interfacesFile.write("\tnetd_v4_netmask %s\n" % alias.get('staticNetmask'))
+                self.interfacesFile.write("\n");
+                count = count+1
+
+        # handle v4 aliases
+        if interface_settings.get('v6Aliases') != None and interface_settings.get('v6Aliases').get('list') != None:
+            for alias in interface_settings.get('v6Aliases').get('list'):
+                self.interfacesFile.write("## Interface %i IPv6 alias\n" % (interface_settings.get('interfaceId')) )
+                self.interfacesFile.write("auto %s:%i\n" % (interface_settings.get('symbolicDev'), count))
+                self.interfacesFile.write("iface %s:%i inet manual\n" % ( interface_settings.get('symbolicDev'), count ))
+                self.interfacesFile.write("\tnetd_v6_address %s\n" % alias.get('staticAddress'))
+                self.interfacesFile.write("\tnetd_v6_netmask %s\n" % alias.get('staticNetmask'))
+                self.interfacesFile.write("\n");
+                count = count+1
 
     def check_interface_settings( self, interface_settings):
         if interface_settings.get('systemDev') == None:
@@ -166,11 +174,15 @@ class InterfacesManager:
                     self.write_interface_v4( interface_settings, settings.get('interfaces').get('list') )
                 except Exception,exc:
                     traceback.print_exc()
-
                 try:
                     self.write_interface_v6( interface_settings, settings.get('interfaces').get('list') )
                 except Exception,exc:
                     traceback.print_exc()
+                try:
+                    self.write_interface_aliases( interface_settings, settings.get('interfaces').get('list') )
+                except Exception,exc:
+                    traceback.print_exc()
+
 
         self.interfacesFile.write("## This is a fake interface that launches the post-networking-restart\n");
         self.interfacesFile.write("## hooks using the if-up.d scripts when IFACE=networking_post_restart_hook\n");

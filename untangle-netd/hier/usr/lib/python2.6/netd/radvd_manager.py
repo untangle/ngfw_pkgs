@@ -22,26 +22,26 @@ class RadvdManager:
 
         file = open( filename, "w+" )
 
-        if settings.get('raEnabled'):
-            for intf in settings.get('interfaces').get('list'):
+        for intf in settings.get('interfaces').get('list'):
+            if not intf.get('raEnabled'):
+                continue
+            if intf.get('configType') != "ADDRESSED":
+                continue
+            if intf.get('v6ConfigType') != "STATIC":
+                continue
+            if intf.get('v6StaticAddress') == None or intf.get('v6StaticPrefixLength') == None:
+                continue
 
-                if intf.get('configType') != "ADDRESSED":
-                    continue
-                if intf.get('v6ConfigType') != "STATIC":
-                    continue
-                if intf.get('v6StaticAddress') == None or intf.get('v6StaticPrefixLength') == None:
-                    continue
-
-                file.write("interface %s {" % intf.get('systemDev') + "\n")
-                file.write("    AdvSendAdvert on;" + "\n")
-                file.write("    MinRtrAdvInterval 3;" + "\n")
-                file.write("    MaxRtrAdvInterval 10;" + "\n")
-                file.write("    prefix %s/%s {" % (intf.get('v6StaticAddress'), intf.get('v6StaticPrefixLength')) + "\n")
-                file.write("        AdvOnLink on;" + "\n")
-                file.write("        AdvAutonomous on;" + "\n")
-                file.write("        AdvRouterAddr on;" + "\n")
-                file.write("    };" + "\n")
-                file.write("};" + "\n")
+            file.write("interface %s {" % intf.get('systemDev') + "\n")
+            file.write("    AdvSendAdvert on;" + "\n")
+            file.write("    MinRtrAdvInterval 3;" + "\n")
+            file.write("    MaxRtrAdvInterval 10;" + "\n")
+            file.write("    prefix %s/%s {" % (intf.get('v6StaticAddress'), intf.get('v6StaticPrefixLength')) + "\n")
+            file.write("        AdvOnLink on;" + "\n")
+            file.write("        AdvAutonomous on;" + "\n")
+            file.write("        AdvRouterAddr on;" + "\n")
+            file.write("    };" + "\n")
+            file.write("};" + "\n")
             
         file.flush()
         file.close()
