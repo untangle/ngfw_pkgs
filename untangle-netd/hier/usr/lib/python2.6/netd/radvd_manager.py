@@ -33,6 +33,7 @@ class RadvdManager:
                 continue
 
             file.write("interface %s {" % intf.get('systemDev') + "\n")
+            file.write("    IgnoreIfMissing on;" + "\n")
             file.write("    AdvSendAdvert on;" + "\n")
             file.write("    MinRtrAdvInterval 3;" + "\n")
             file.write("    MaxRtrAdvInterval 10;" + "\n")
