@@ -6,10 +6,10 @@ import traceback
 import re
 from netd.network_util import NetworkUtil
 
-# This class is responsible for writing /etc/untangle-netd/iptables-rules.d/790-qos
+# This class is responsible for writing /etc/untangle-netd/iptables-rules.d/300-qos
 # and others based on the settings object passed from sync-settings.py
 class QosManager:
-    qosFilename = "/etc/untangle-netd/iptables-rules.d/790-qos"
+    qosFilename = "/etc/untangle-netd/iptables-rules.d/300-qos"
     srcInterfaceMarkMask = 0x00ff
 
     def find_priority( self, qosPriorities, priorityId ):
@@ -183,7 +183,6 @@ ${IPTABLES} -t mangle -A restore-qos-mark -m state ! --state UNTRACKED -j CONNMA
         file.flush()
         file.close()
 
-        os.system("chmod a+x %s" % filename)
         if verbosity > 0: print "QosManager: Wrote %s" % filename
 
         return
