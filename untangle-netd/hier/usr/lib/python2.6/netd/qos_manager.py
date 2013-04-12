@@ -82,7 +82,7 @@ class QosManager:
 
         file.write("\n\n");
 
-        file.write("/home/dmorris/work/pkgs/untangle-netd/hier/usr/share/untangle-netd/bin/qos-service start" + "\n")
+        file.write("/usr/share/untangle-netd/bin/qos-service start" + "\n")
         file.write("\n\n");
 
         file.write("# Create restore-qos-mark chain" + "\n");
