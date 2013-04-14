@@ -203,7 +203,7 @@ main_menu()
                     fi
                     ;;
                 "Reset Administration Accounts")
-                    if confirm "Reset adminstration accounts to factory defaults (admin/passwd)?"; then
+                    if confirm "Reset adminstration login (to admin/passwd)?"; then
                         rm -f /usr/share/untangle/settings/untangle-vm/admin.js
                         state=SUCCESS_SPLASH
                     else
