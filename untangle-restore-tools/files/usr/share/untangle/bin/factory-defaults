@@ -2,23 +2,18 @@
 
 /etc/init.d/untangle-vm stop
 
-# touch factory-defaults file to tell system to start in wizard mode
-touch /usr/share/untangle/conf/factory-defaults
-
 echo -n "Removing settings and configuration..."
+
+rm -f /usr/share/untangle/conf/wizard-complete-flag
+rm -rf /usr/share/untangle/settings/*
+rm -rf /usr/share/untangle/quarantine
+rm -rf /usr/share/untangle/web/reports/data/*
+rm -rf /etc/openvpn/*
 
 if [ -f /usr/bin/psql ] ; then
     psql -U postgres -c "DROP SCHEMA reports CASCADE" uvm >/dev/null 2>&1
     psql -U postgres -c "DROP DATABASE IF EXISTS uvm" >/dev/null 2>&1
 fi
-
-rm -rf /usr/share/untangle/settings/*
-rm -f /usr/share/untangle/conf/timezone
-rm -f /usr/share/untangle/conf/wizard-complete-flag
-rm -rf /usr/share/untangle/conf/openvpn
-rm -rf /usr/share/untangle/quarantine
-rm -rf /etc/openvpn
-rm -rf /usr/share/untangle/web/reports/data/*
 
 echo " done"
 
