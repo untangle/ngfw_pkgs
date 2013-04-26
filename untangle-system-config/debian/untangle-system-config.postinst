@@ -25,9 +25,6 @@ if [ $1 = "configure" ] && [ -z "$2" ] ; then
   # load factory defaults
   bash /usr/share/untangle/bin/factory-defaults
 
-  # prepare for extraction of the ISO brand
-  mkdir -p /usr/share/untangle/tmp
-
   rm /etc/resolv.conf
 fi
 
