@@ -1,0 +1,4 @@
+ 
+# remove old files
+rm -f /usr/share/untangle-google-safebrowsing/lib/*
+rm -f /etc/cron.d/untangle-google-safebrowsing
