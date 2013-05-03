@@ -1,14 +1,6 @@
 #!/bin/bash
 
-PEM=/etc/apache2/ssl/apache.pem
-ALIAS=$(hostname -f)
-
 addgroup uvmlogin 2>/dev/null
-
-if [ -z "$ALIAS" ] ; then
-    echo setting ALIAS to default value
-    ALIAS=hostname.example.com
-fi
 
 sed -e 's/NO_START=1/NO_START=0/' -i /etc/default/apache2
 
@@ -48,13 +40,22 @@ if [ ! -e /etc/apache2/uvm.conf ]; then
     echo "Include /usr/share/untangle/conf/apache2/conf.d/*.conf" >/etc/apache2/uvm.conf
 fi
 
+PEM=/etc/apache2/ssl/apache.pem
 if [ ! -e $PEM ]; then
-    echo 'generating self-signed cert'
+    echo 'Generating self-signed cert...'
+
+    ALIAS=$(hostname -f)
+    if [ -z "$ALIAS" ] ; then
+        echo "no hostname set: setting ALIAS to hostname.example.com"
+        ALIAS="hostname.example.com"
+    fi
     mkdir -p /etc/apache2/ssl
     export RANDFILE=/dev/random
     openssl req -batch -subj "/CN=$ALIAS" -new -newkey rsa:2048 -x509 -nodes -out $PEM -keyout $PEM
     chmod 600 $PEM
     ln -sf $PEM /etc/apache2/ssl/`/usr/bin/openssl x509 -noout -hash < $PEM`.0
+
+    echo 'Generating self-signed cert...done'
 fi
 
 if ! grep "Listen 443" /etc/apache2/ports.conf >/dev/null; then
