@@ -11,6 +11,7 @@ import sets
 import urllib
 import os.path
 import sys
+import traceback
 
 from mod_python import apache, Session, util
 from psycopg2 import connect
@@ -24,9 +25,11 @@ def authenhandler(req):
 
         if options.has_key('Realm'):
             realm = options['Realm']
+            apache.log_error('Auth failure [Not authorized]. Redirecting to auth page. (realm: %s)' % realm)
+            apache.log_error('Not logged in. Redirect to auth page. (realm: %s)' % realm)
             login_redirect(req, realm)
         else:
-            apache.log_error('no realm specified')
+            apache.log_error('Auth failure [No realm specified]. Redirecting to auth page.')
             return apache.DECLINED
 
 def get_settings_item(a,b):
@@ -71,7 +74,7 @@ def headerparserhandler(req):
         username = 'setupwizard'
         save_session_user(sess, realm, username)
 
-    if None == username and is_root(req):
+    if None == username and is_local_process_uid_authorized(req):
         username = 'localadmin'
         log_login(req, username, True, True, None)
         save_session_user(sess, realm, username)
@@ -89,17 +92,16 @@ def headerparserhandler(req):
         # is restricted. a tomcat valve enforces this setting.
         if options.get('UseRemoteAccessSettings', 'no') == 'yes':
             (inside_http_enabled, outside_https_enabled) = get_access_settings()
-
             connection = req.connection
 
             (addr, port) = connection.local_addr
-
             if not re.match('127\.', connection.remote_ip):
                 if 80 == port and not inside_http_enabled:
                     return apache.HTTP_FORBIDDEN
                 elif 443 == port and not outside_https_enabled:
                     return apache.HTTP_FORBIDDEN
 
+        apache.log_error('Auth failure [Username not specified]. Redirecting to auth page. (realm: %s)' % realm)
         login_redirect(req, realm)
 
 def session_user(sess, realm):
@@ -114,42 +116,68 @@ def session_user(sess, realm):
 def is_wizard_complete():
     return os.path.exists('/usr/share/untangle/conf/wizard-complete-flag')
 
-def is_root(req):
+def is_local_process_uid_authorized(req):
     (remote_ip, remote_port) = req.connection.remote_addr
 
-    result = False;
+    if remote_ip != "127.0.0.1":
+        return False
 
     # This determines the PID of the connecting process
     # and determines if it is from a process who is owned by root
     # or a user in uvmlogin group. If so, auto-authenticate it.
-    if remote_ip == "127.0.0.1":
-        uids = get_uvmlogin_uids()
+    uids = get_uvmlogin_uids()
 
-        q = remote_ip.split(".")
-        q.reverse()
-        n = reduce(lambda a, b: long(a) * 256 + long(b), q)
-        hexaddr = "%08X" % n
-        hexport = "%04X" % remote_port
+    q = remote_ip.split(".")
+    q.reverse()
+    n = reduce(lambda a, b: long(a) * 256 + long(b), q)
+    hexaddr = "%08X" % n
+    hexport = "%04X" % remote_port
 
+    # We have to attempt to read /proc/net/tcp several times.
+    # There is some race condition in the kernel and sometimes the socket we are looking for will not show up on the first read
+    # This loop hack appears to "fix" the issue as it always shows up on the second read if the first fails.
+    #
+    # Also sometimes /proc/net/tcp reports the incorrect UID. 
+    # As a result, we must also try again if the UID is not authorized
+    uid = None
+    for count in range(0,5):
+        # if count > 0:
+        #     apache.log_error('Failed to find/authorize UID [%s, %s:%s], attempting again... (try: %i)' % ( str(uid), str(remote_ip), str(remote_port), (count+1) ) )
         try:
             infile = open('/proc/net/tcp', 'r')
-            for l in infile:
+            for l in infile.readlines():
                 a = l.split()
-                if len(a) > 2:
-                    p = a[1].split(':')
-                    if len(p) == 2 and p[0] == hexaddr and p[1] == hexport:
-                        try:
-                            uid = int(a[7])
+                if len(a) <= 2:
+                    continue
 
-                            if uid in uids:
-                                result = True
-                                break
-                        except:
-                            apache.log_error('bad uid: %s' % a[7])
+                p = a[1].split(':')
+                if len(p) != 2:
+                    continue
+
+                if p[0] == hexaddr and p[1] == hexport:
+                    try:
+                        uid = int(a[7])
+                        
+                        # Found the UID
+                        # if its in the list of enabled UIDs
+                        if uid in uids:
+                            return True
+                    except:
+                        apache.log_error('Bad UID: %s' % a[7])
+
+        except Exception,e:
+            apache.log_error('Exception reading /proc/net/tcp: %s' % traceback.format_exc(e))
         finally:
             infile.close()
 
-    return result
+    if uid == None:
+        apache.log_error('Failed to lookup PID for %s:%s' % ( str(remote_ip), str(remote_port) ) )
+    # This is commented out because its just for debugging
+    # This condition occurs regularly when connecting via a local browser
+    # else:
+    #     apache.log_error('UID not authorized (%i)' % uid )
+
+    return False
 
 # This function will authenticate root (0) and any user in uvmlogin group
 def get_uvmlogin_uids():
