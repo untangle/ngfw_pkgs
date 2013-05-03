@@ -11,12 +11,11 @@ from netd.network_util import NetworkUtil
 # based on the settings object passed from sync-settings.py
 class FindDevManager:
     defaultFilename = "/etc/untangle-netd/post-network-hook.d/100-finddev"
-    logFilename = "/var/log/uvm/finddev.log"
     filename = defaultFilename
     file = None
 
     def calculate_cmd( self, settings, verbosity=0 ):
-        cmd = "/usr/share/untangle-netd/bin/finddev -v"
+        cmd = "/usr/share/untangle-netd/bin/finddev -v -d -l /var/log/uvm/finddev.log "
         for intf in settings['interfaces']['list']:
             if 'interfaceId' not in intf or 'systemDev' not in intf:
                 continue
@@ -42,9 +41,6 @@ class FindDevManager:
         self.file.write("\n");
         self.file.write("\n");
 
-        self.file.write("CMD=\"" + self.calculate_cmd( settings ) + "\"\n");
-        self.file.write("\n");
-                          
         self.file.write("QUEUE_NUM=1979" + "\n");
         self.file.write("\n");
 
@@ -56,7 +52,7 @@ class FindDevManager:
 
         self.file.write("start_finddev()" + "\n");
         self.file.write("{" + "\n");
-        self.file.write("    ${CMD} >> %s 2>&1 &" % self.logFilename + "\n");
+        self.file.write("    %s \n" % self.calculate_cmd( settings ));
         self.file.write("}" + "\n");
         self.file.write("\n");
 
@@ -83,7 +79,7 @@ class FindDevManager:
 
         self.file.write("if [ -z \"`queue_owner`\" ] ; then" + "\n");
         self.file.write("    start_finddev" + "\n");
-        self.file.write("    echo \"Started  finddev [$!].\"" + "\n");
+        self.file.write("    echo \"Started  finddev.\"" + "\n");
         self.file.write("fi" + "\n");
 
         self.file.flush();

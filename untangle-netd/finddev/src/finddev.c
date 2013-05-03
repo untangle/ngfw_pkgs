@@ -10,6 +10,7 @@
 #include <errno.h>
 #include <time.h>
 #include <pthread.h>
+#include <fcntl.h>
 #include <net/if.h>
 #include <net/if_arp.h>
 #include <netinet/in.h>
@@ -18,6 +19,8 @@
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/ioctl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <arpa/inet.h>
 #include <linux/sockios.h> 
 #include <linux/netfilter.h> 
@@ -74,6 +77,16 @@ int pkt_socket = 0;
  */
 int verbosity = 0;
 
+/**
+ * Run as daemon?
+ */
+int daemonize = 0;
+
+/**
+ * log file (if daemonized)
+ */
+char* logfile = "/var/log/uvm/finddev.log";
+    
 /**
  * File descriptor for nfnl
  */
@@ -142,6 +155,7 @@ pthread_mutex_t print_mutex;
 struct ether_addr broadcast_mac = { .ether_addr_octet = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF } };
 
 static int    _usage( char *name );
+static int    _daemonize( );
 static int    _set_signals( void );
 static int    _parse_args( int argc, char** argv );
 static int    _debug( int level, char *lpszFmt, ...);
@@ -170,13 +184,20 @@ static int    _arp_build_packet ( struct ether_arp* pkt, struct in_addr* src_ip,
 
 int main ( int argc, char **argv )
 {
-    int rv;
+    int rv, i;
     
     _set_signals();
     
     if ( _parse_args( argc, argv ) < 0 )
         return _usage( argv[0] );
 
+    if ( daemonize ) {
+        int ret = _daemonize();
+        if ( ret < 0 )
+            exit( ret );
+    }
+            
+    
     if ( (rv = pthread_attr_init(&attr)) != 0 ) {
         fprintf( stderr, "pthread_attr_init: %s\n", strerror(rv) );
     }
@@ -238,6 +259,12 @@ int main ( int argc, char **argv )
     nh = nfq_nfnlh(h);
     fd = nfnl_fd(nh);
 
+    for ( i = 0 ; i < MAX_INTERFACES ; i++ ) {
+        if ( interfaceNames[i] != NULL ) {
+            _debug( 1, "Marking Interface %s with mark %i\n", interfaceNames[i], interfaceIds[i]);
+        }
+    }
+
     _debug(1, "Listening for packets...\n");
     
     pthread_create( &current_thread, &attr, _read_pkt, NULL );
@@ -256,7 +283,6 @@ int main ( int argc, char **argv )
     /**
      * cleanup mallocd interface names
      */
-    int i;
     for ( i = 0 ; i < MAX_INTERFACES ; i++ ) {
         if ( interfaceNames[i] != NULL )
             free( interfaceNames[i] );
@@ -266,7 +292,6 @@ int main ( int argc, char **argv )
 
     exit(0);
 }
-
 
 static void* _read_pkt (void* data)
 {
@@ -330,6 +355,8 @@ static int   _usage ( char *name )
     fprintf( stderr, "Usage: %s\n", name );
     fprintf( stderr, "\t-i interface_name:index.  specify interface. Example -i eth0:1. Can be specified many times.\n" );
     fprintf( stderr, "\t-v                        increase verbosity\n" );
+    fprintf( stderr, "\t-d                        run as daemon\n" );
+    fprintf( stderr, "\t-l logfile                logfile to write stdout & stderr to (if daemonized) \n" );
     return -1;
 }
 
@@ -340,7 +367,7 @@ static int   _parse_args ( int argc, char** argv )
     bzero( interfaceNames, sizeof(interfaceNames));
     bzero( interfaceIds, sizeof(interfaceIds));
 
-    while (( c = getopt( argc, argv, "i:v" ))  != -1 ) {
+    while (( c = getopt( argc, argv, "i:vdl:" ))  != -1 ) {
         switch( c ) {
 
         case 'v':
@@ -349,6 +376,18 @@ static int   _parse_args ( int argc, char** argv )
             break;
         }
 
+        case 'd':
+        {
+            daemonize = 1;
+            break;
+        }
+
+        case 'l':
+        {
+            logfile = optarg;
+            break;
+        }
+        
         case 'i':
         {
             /**
@@ -383,7 +422,6 @@ static int   _parse_args ( int argc, char** argv )
                 if ( interfaceNames[i] == NULL ) {
                     interfaceNames[i] = strdup(name);
                     interfaceIds[i] = id;
-                    _debug( 1, "Marking Interface %s with mark %i\n", interfaceNames[i], interfaceIds[i]);
                     break;
                 }
             }
@@ -396,6 +434,53 @@ static int   _parse_args ( int argc, char** argv )
         }
     }
     
+    return 0;
+}
+
+static int   _daemonize ()
+{
+    pid_t pid, sid;
+    int logfile_fd;
+
+    pid = fork();
+    if ( pid < 0 ){ 
+        fprintf( stderr, "Unable to fork daemon process.\n" );
+        return -1;
+    } else if ( pid > 0 ) {
+        exit(0);
+    }
+        
+    /* This is just copied from http://www.systhread.net/texts/200508cdaemon2.php ... shameless. */
+    umask( 0 );
+    if (( sid = setsid()) < 0 ) {
+        fprintf( stderr, "setsid: %s\n", strerror(errno) );
+        return -1;
+    }
+        
+    if ( chdir( "/var/run/" ) < 0 ) {
+        fprintf( stderr, "chdir: %s\n", strerror(errno) );
+        return -1;
+    }
+        
+    /* pid is zero, this is the daemon process */
+    /* Dupe these to logfile until something changes them */
+    if (( logfile_fd = open( logfile, O_WRONLY | O_APPEND | O_CREAT )) < 0 ) {
+        fprintf( stderr, "open: %s\n", strerror(errno) );
+        return -1;
+    }
+        
+    close( STDIN_FILENO );
+    close( STDOUT_FILENO );
+    close( STDERR_FILENO );
+    if ( dup2( logfile_fd, STDOUT_FILENO ) < 0 ) {
+        fprintf( stderr, "dup2: %s\n", strerror(errno) );
+        return -1;
+    }
+    if ( dup2( logfile_fd, STDERR_FILENO ) < 0 ) {
+        fprintf( stderr, "dup2: %s\n", strerror(errno) );
+        return -1;
+    }
+
     return 0;
 }
 
