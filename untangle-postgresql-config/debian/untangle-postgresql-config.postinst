@@ -36,6 +36,7 @@ done
 # configure postgresql.conf
 for file in $PG_CONF ; do
     # enable TCP from local host
+    sed -i -e "s/.*port.*=.*/port=5432/" $file
     sed -i -e "s/.*virtual_host.*=.*/virtual_host='127.0.0.1'/" $file
     sed -i -e "s/.*tcpip_socket.*=.*/tcpip_socket = true/" $file
 
