@@ -821,7 +821,7 @@ JSONRpcClient.prototype._sendRequest = function (req)
         {
           res.ex = e;
         }
-        if (!JSONRpcClient.async_inflight[req.requestId].canceled)
+        if (JSONRpcClient.async_inflight[req.requestId] != null && !JSONRpcClient.async_inflight[req.requestId].canceled)
         {
           JSONRpcClient.async_responses.push(res);
         }
