@@ -311,12 +311,12 @@ static void* _read_pkt (void* data)
 
         if ( running == 0 ) {
             fprintf( stderr, "Exitting (running == 0)\n" );
+            running = 0;
             pthread_exit(NULL);
         } else {
             break;
         }
     } while ( 1 );
-        
     
     nfq_handle_packet(h, buf, rv);
 
