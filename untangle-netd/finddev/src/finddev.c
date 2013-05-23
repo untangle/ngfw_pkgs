@@ -300,12 +300,23 @@ static void* _read_pkt (void* data)
 
     char buf[4096];
     bzero(buf, 4096);
-    int rv = recv(fd, buf, 4096, 0);
+    int rv;
+    
+    do {
+        rv = recv(fd, buf, 4096, 0);
+        if ( rv < 0 ) {
+            fprintf( stderr, "recv: %s\n", strerror(errno) );
+            continue;
+        }
 
-    if ( rv < 0 || running == 0 ) {
-        running = 0;
-        pthread_exit(NULL);
-    }
+        if ( running == 0 ) {
+            fprintf( stderr, "Exitting (running == 0)\n" );
+            pthread_exit(NULL);
+        } else {
+            break;
+        }
+    } while ( 1 );
+        
     
     nfq_handle_packet(h, buf, rv);
 
@@ -506,7 +517,8 @@ static int   _set_signals( void )
 }
 
 static int   _nfqueue_callback (struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfa, void *data)
-{    /**
+{
+    /**
      * Create a new thread to handle the next packet
      * We have to use this thread to handle this packet because nfq_handle_packet
      * stores nfa on the stack, so this thread can not be returned
