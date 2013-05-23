@@ -272,7 +272,6 @@ int main ( int argc, char **argv )
     while ( running ) {
         sleep (1);
     }
-    pthread_kill( current_thread, SIGINT );
     
     _debug( 2, "Unbinding from queue %i\n",QUEUE_NUM);
     nfq_destroy_queue(qh);
@@ -303,6 +302,7 @@ static void* _read_pkt (void* data)
     int rv;
     
     do {
+        _debug(2,"Waiting for pkt...\n");
         rv = recv(fd, buf, 4096, 0);
         if ( rv < 0 ) {
             fprintf( stderr, "recv: %s\n", strerror(errno) );
@@ -318,6 +318,13 @@ static void* _read_pkt (void* data)
         }
     } while ( 1 );
     
+    /**
+     * Create a new thread to handle the next packet
+     * We have to use this thread to handle this packet because nfq_handle_packet
+     * stores nfa on the stack, so this thread can not be returned
+     */
+    pthread_create( &current_thread, &attr, _read_pkt, NULL );
+
     nfq_handle_packet(h, buf, rv);
 
     return NULL;
@@ -518,13 +525,6 @@ static int   _set_signals( void )
 
 static int   _nfqueue_callback (struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfa, void *data)
 {
-    /**
-     * Create a new thread to handle the next packet
-     * We have to use this thread to handle this packet because nfq_handle_packet
-     * stores nfa on the stack, so this thread can not be returned
-     */
-    pthread_create( &current_thread, &attr, _read_pkt, NULL );
-
     _handle_packet(nfa);
     pthread_exit(NULL);
 }
@@ -991,15 +991,23 @@ static int   _arp_lookup_cache_entry ( struct in_addr* ip, char* intf_name, stru
  */
 static int   _arp_fake_connect ( struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name )
 {
-    struct sockaddr_in addr;
     int fake_fd;
     int ret = 0;
 
     int _critical_section( void ) {
+
         int one = 1;
+        struct sockaddr_in addr;
         u_int addr_len = sizeof( addr );
         int name_len = strnlen( intf_name, sizeof( intf_name )) + 1;
 
+        bzero( &addr, sizeof (struct sockaddr_in) );
+        addr.sin_family = AF_INET;
+        /* NULL PORT is not actually used */
+        #define NULL_PORT            59999 
+        addr.sin_port = htons( NULL_PORT );
+        memcpy( &addr.sin_addr, dst_ip, sizeof( addr.sin_addr ));
+        
         if ( setsockopt( fake_fd, SOL_SOCKET, SO_BINDTODEVICE, intf_name, name_len ) < 0 ) {
             fprintf( stderr, "setsockopt(SO_BINDTODEVICE,%s): %s\n", intf_name, strerror(errno) );
         }
@@ -1013,7 +1021,7 @@ static int   _arp_fake_connect ( struct in_addr* src_ip, struct in_addr* dst_ip,
         }
         
         if ( connect( fake_fd, (struct sockaddr*)&addr, sizeof( addr )) < 0 ) {
-            fprintf( stderr, "connect[%s] %s\n", _inet_ntoa( dst_ip->s_addr ), strerror(errno) );
+            fprintf( stderr, "connect[%s] %s\n", _inet_ntoa( addr.sin_addr.s_addr ), strerror(errno) );
             return -1;
         }
         
@@ -1026,12 +1034,6 @@ static int   _arp_fake_connect ( struct in_addr* src_ip, struct in_addr* dst_ip,
         return 0;
     }
     
-    addr.sin_family = AF_INET;
-
-    /* NULL PORT is not actually used */
-    #define NULL_PORT            59999 
-    addr.sin_port = htons( NULL_PORT );
-    memcpy( &addr.sin_addr, dst_ip, sizeof( addr.sin_addr ));
 
     if (( fake_fd = socket( AF_INET, SOCK_DGRAM, 0 )) < 0 ) {
         fprintf( stderr, "socket: %s\n", strerror( errno ) );
