@@ -265,17 +265,22 @@ int main ( int argc, char **argv )
         }
     }
 
-    _debug(1, "Listening for packets...\n");
+    _debug( 1, "Listening for packets...\n" );
     
     pthread_create( &current_thread, &attr, _read_pkt, NULL );
     
     while ( running ) {
         sleep (1);
     }
+
+    fprintf( stderr, "Exiting...\n" );
     
-    _debug( 2, "Unbinding from queue %i\n",QUEUE_NUM);
+    fprintf( stderr, "Unbinding from queue %i\n",QUEUE_NUM );
+    _debug( 2, "Unbinding from queue %i\n",QUEUE_NUM );
+    // XXX sometimes this hangs indefinitely preventing the process from exiting 
     nfq_destroy_queue(qh);
 
+    fprintf( stderr, "Closing library handle\n");
     _debug( 2, "Closing library handle\n");
     nfq_close(h);
 
@@ -310,7 +315,7 @@ static void* _read_pkt (void* data)
         }
 
         if ( running == 0 ) {
-            fprintf( stderr, "Exitting (running == 0)\n" );
+            fprintf( stderr, "Thread Exiting...\n" );
             running = 0;
             pthread_exit(NULL);
         } else {
@@ -691,6 +696,8 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
     if ( ph )
         packet_id = ntohl(ph->packet_id);
 
+    memset( &next_hop, 0, sizeof (struct in_addr) );
+    
     /**
      * Lookup interface information - will return an interface like br.eth0
      */
@@ -718,6 +725,7 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
     }
     struct in_addr dst;
     memcpy( &dst.s_addr, &ip->daddr, sizeof(in_addr_t));
+
     if ( _find_next_hop( intf_name, &dst, &next_hop) < 0 ) {
         fprintf( stderr, "_find_next_hop: %s\n", strerror(errno));
         return -1;
@@ -815,7 +823,7 @@ static int   _find_next_hop ( char* dev_name, struct in_addr* dst_ip, struct in_
         switch ( errno ) {
         case ENETUNREACH:
             fprintf( stderr, "ARP: Destination IP is not reachable: %s\n", _inet_ntoa( args.addr) );
-            return 0;
+            return -1;
         default:  /* Ignore all other error codes */
             break;
         }
@@ -831,7 +839,7 @@ static int   _find_next_hop ( char* dev_name, struct in_addr* dst_ip, struct in_
     } else {
         next_hop->s_addr = dst_ip->s_addr;
     }
-    
+
     /* Assuming that the return value is the index of the interface,
      * make sure this is always true */
     _debug( 2,"ARP: next_hop %s going out [%s,%d]\n", _inet_ntoa( next_hop->s_addr ), args.name, ifindex);
@@ -1001,11 +1009,10 @@ static int   _arp_fake_connect ( struct in_addr* src_ip, struct in_addr* dst_ip,
         u_int addr_len = sizeof( addr );
         int name_len = strnlen( intf_name, sizeof( intf_name )) + 1;
 
-        bzero( &addr, sizeof (struct sockaddr_in) );
+        memset( &addr, 0, sizeof (struct sockaddr_in) );
+        
         addr.sin_family = AF_INET;
-        /* NULL PORT is not actually used */
-        #define NULL_PORT            59999 
-        addr.sin_port = htons( NULL_PORT );
+        addr.sin_port = htons( 59999 ); /* not actually used */
         memcpy( &addr.sin_addr, dst_ip, sizeof( addr.sin_addr ));
         
         if ( setsockopt( fake_fd, SOL_SOCKET, SO_BINDTODEVICE, intf_name, name_len ) < 0 ) {
