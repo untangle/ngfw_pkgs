@@ -39,7 +39,7 @@ exec >> /var/log/uvm/dhcp.log 2>&1
         for interface_settings in settings['interfaces']['list']:
             if interface_settings['v4ConfigType'] == 'AUTO':
 
-                file.write("if [ \"$interface\" = \"%s\" ] ; then" % interface_settings['systemDev'] + "\n")
+                file.write("if [ \"$interface\" = \"%s\" ] || [ \"$interface\" = \"%s\" ] ; then" % (interface_settings['systemDev'],interface_settings['symbolicDev']) + "\n")
                 file.write("    DHCP_INTERFACE_INDEX=%s" % interface_settings['interfaceId'] + "\n")
 
                 if 'v4AutoAddressOverride' in interface_settings and interface_settings['v4AutoAddressOverride'] != None and interface_settings['v4AutoAddressOverride'].strip() != "":
