@@ -121,7 +121,7 @@ class PortForwardManager:
             self.file.write("# don't allow port forwarding of port 80 of primary IP on non-WAN interface %i.\n" % interface_settings.get('interfaceId'))
             self.file.write("ADDR=\"`ip addr show %s | awk '/^ *inet.*scope global/ { interface = $2 ; sub( \"/.*\", \"\", interface ) ; print interface ; exit }'`\"\n" % interface_settings.get('symbolicDev'))
             self.file.write("if [ ! -z \"${ADDR}\" ] ; then" + "\n")
-            self.file.write("\t${IPTABLES} -t nat -I port-forward-rules -p tcp -m mark --mark 0x%04X/0x%04X --destination ${ADDR} --destination-port 80 -j REDIRECT --to-ports 80 -m comment --comment \"Reserve port 80 on ${ADDR} for blockpages\"" % (interface_settings.get('interfaceId'), self.srcInterfaceMarkMask) + "\n")
+            self.file.write("\t${IPTABLES} -t nat -I port-forward-rules -p tcp -m mark --mark 0x%04X/0x%04X --destination ${ADDR} --destination-port 80 -j RETURN -m comment --comment \"Reserve port 80 on ${ADDR} for blockpages\"" % (interface_settings.get('interfaceId'), self.srcInterfaceMarkMask) + "\n")
             self.file.write("fi" + "\n")
         self.file.write("\n");
 
