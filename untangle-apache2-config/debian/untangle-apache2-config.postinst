@@ -67,7 +67,6 @@ fi
 /usr/sbin/a2enmod ssl
 /usr/sbin/a2enmod python
 /usr/sbin/a2enmod deflate
-#/usr/sbin/a2enmod redirect
 
 # disable these modules for "PCI scan" issues
 /usr/sbin/a2dismod autoindex
@@ -86,31 +85,13 @@ for tarball in /usr/share/untangle-apache2-config/ext*.tar.gz ; do
   tar -C /var/www -xzf $tarball
 done
 
-/etc/init.d/apache2 reload
-
 if [ ! -f /var/www/images/BrandingLogo.gif ]; then
-    if [ -f /usr/share/untangle/web/ROOT/images/BrandingLogo.gif ]; then
-        cp /usr/share/untangle/web/ROOT/images/BrandingLogo.gif /var/www/images/BrandingLogo.gif
-    else
-        cp /var/www/images/Logo150x96.gif /var/www/images/BrandingLogo.gif
-    fi
-fi
-
-# write index.html to redirect to start - just in case
-if [ -f /var/www/index.html ] ; then
-    rm -f /var/www/index.html
-    cat > /var/www/index.html <<EOF
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-<HEAD>
-<meta http-equiv="REFRESH" content="/setup/welcome.do"></HEAD>
-<BODY></BODY>
-</HTML>
-EOF
+    cp /var/www/images/Logo150x96.gif /var/www/images/BrandingLogo.gif
 fi
 
 apply_oem="/usr/share/untangle/bin/apply-oem.sh"
 [ -f $apply_oem ] && $apply_oem
 
+/etc/init.d/apache2 reload
 
 exit 0

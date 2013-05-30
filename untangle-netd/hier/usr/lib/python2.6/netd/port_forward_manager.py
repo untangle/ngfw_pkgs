@@ -20,8 +20,6 @@ class PortForwardManager:
         try :
             from uvm.settings_reader import get_uvm_settings_item
             https_port = get_uvm_settings_item('system','httpsPort')
-            inside_http_enabled = get_uvm_settings_item('system','insideHttpEnabled')
-            outside_https_enabled = get_uvm_settings_item('system','outsideHttpsEnabled')
         except Exception,e:
             traceback.print_exc(e)
 
@@ -110,36 +108,51 @@ class PortForwardManager:
         self.file.write("\n\n");
 
         https_port = settings.get('httpsPort')
-        outside_https_enabled = settings.get('outsideHttpsEnabled')
+        http_port = settings.get('httpPort')
 
-        # write rules to protect blockpage ports
-        # This is one rule for each non-WAN allowing it to reach port 80 of the internal IP on the main address of that interface only.
-        for interface_settings in settings.get('interfaces').get('list'):
-            # only non-WAN interfaces
-            if interface_settings.get('configType') == 'ADDRESSED' and interface_settings.get('isWan'):
-                continue
-            self.file.write("# don't allow port forwarding of port 80 of primary IP on non-WAN interface %i.\n" % interface_settings.get('interfaceId'))
-            self.file.write("ADDR=\"`ip addr show %s | awk '/^ *inet.*scope global/ { interface = $2 ; sub( \"/.*\", \"\", interface ) ; print interface ; exit }'`\"\n" % interface_settings.get('symbolicDev'))
-            self.file.write("if [ ! -z \"${ADDR}\" ] ; then" + "\n")
-            self.file.write("\t${IPTABLES} -t nat -I port-forward-rules -p tcp -m mark --mark 0x%04X/0x%04X --destination ${ADDR} --destination-port 80 -j RETURN -m comment --comment \"Reserve port 80 on ${ADDR} for blockpages\"" % (interface_settings.get('interfaceId'), self.srcInterfaceMarkMask) + "\n")
-            self.file.write("fi" + "\n")
-        self.file.write("\n");
-
-        # write rules to protect admin ports
-        # this a set of rules for each interface allowing it to reach HTTPS on the primary IP of any interfaces
-        for source_intf in settings.get('interfaces').get('list'):
-            if source_intf.get('configType') == 'ADDRESSED' and source_intf.get('isWan') and not outside_https_enabled:
-                continue
-            for intf in settings.get('interfaces').get('list'):
-                if intf.get('configType') != 'ADDRESSED':
-                    continue
-                self.file.write("# forward HTTPS admin from intf %i to local apache process\n" % source_intf.get('interfaceId'))
+        # write rules to protect (by redirecting) https port for all primary addresses
+        # add rule to block at the end. If that point is reached then it hasn't been protected or port forwarded 
+        # The block rule exists so that when the port is changed from the default the original port won't still work
+        for intf in settings.get('interfaces').get('list'):
+            if intf.get('configType') == 'ADDRESSED':
+                self.file.write("# forward HTTPS admin from intf %i to local apache process\n" % intf.get('interfaceId'))
                 self.file.write("ADDR=\"`ip addr show %s | awk '/^ *inet.*scope global/ { interface = $2 ; sub( \"/.*\", \"\", interface ) ; print interface ; exit }'`\"\n" % intf.get('symbolicDev'))
                 self.file.write("if [ ! -z \"${ADDR}\" ] ; then" + "\n")
-                self.file.write("\t${IPTABLES} -t nat -I port-forward-rules -p tcp  -m mark --mark 0x%04X/0x%04X --destination ${ADDR} --destination-port %i -j REDIRECT --to-ports 443 -m comment --comment \"Redirect admin traffic to port 443\"" % (source_intf.get('interfaceId'), self.srcInterfaceMarkMask, https_port) + "\n")
+                self.file.write("\t${IPTABLES} -t nat -I port-forward-rules -p tcp --destination ${ADDR} --destination-port %i -j REDIRECT --to-ports 443 -m comment --comment \"Redirect admin traffic to port 443\"" % (https_port) + "\n")
+                self.file.write("\t${IPTABLES} -t nat -A port-forward-rules -p tcp --destination ${ADDR} --destination-port 443 -j REDIRECT --to-ports 0 -m comment --comment \"Drop local HTTPS traffic that hasn't been handled earlier in chain\"" + "\n")
                 self.file.write("fi" + "\n")
                 self.file.write("\n");
 
+        # write rules to protect http port for all non-WAN primary addresses
+        # add rule to block at the end. If that point is reached then it hasn't been protected or port forwarded 
+        # The block rule exists so that when the port is changed from the default the original port won't still work
+        for intf in settings.get('interfaces').get('list'):
+            if intf.get('configType') == 'ADDRESSED' and not intf.get('isWan'):
+                self.file.write("# don't allow port forwarding of http port of primary IP on non-WAN interface %i.\n" % intf.get('interfaceId'))
+                self.file.write("ADDR=\"`ip addr show %s | awk '/^ *inet.*scope global/ { interface = $2 ; sub( \"/.*\", \"\", interface ) ; print interface ; exit }'`\"\n" % intf.get('symbolicDev'))
+                self.file.write("if [ ! -z \"${ADDR}\" ] ; then" + "\n")
+                self.file.write("\t${IPTABLES} -t nat -I port-forward-rules -p tcp --destination ${ADDR} --destination-port %i -j REDIRECT --to-ports 80 -m comment --comment \"Reserve port 80 on ${ADDR} for blockpages\"" % (http_port)+ "\n")
+                self.file.write("\t${IPTABLES} -t nat -A port-forward-rules -p tcp --destination ${ADDR} --destination-port 80 -j REDIRECT --to-ports 0 -m comment --comment \"Drop local HTTP traffic that hasn't been handled earlier in chain\""+ "\n")
+                self.file.write("fi" + "\n")
+                self.file.write("\n");
+
+        # write a rule to protect http port for primary address when coming from a bridged interface
+        # add rule to block at the end. If that point is reached then it hasn't been protected or port forwarded 
+        # The block rule exists so that when the port is changed from the default the original port won't still work
+        # This is for bridged cases. If the primary IP of external is 1.2.3.4 we want to reserve 1.2.3.4:80 for http, but ONLY from the inside so that port forwards work externally.
+        for intf in settings.get('interfaces').get('list'):
+            if intf.get('configType') == 'ADDRESSED' and intf.get('isWan'):
+                # now find all interfaces bridged to this WAN
+                for sub_intf in settings.get('interfaces').get('list'):
+                    if sub_intf.get('configType') == 'BRIDGED' and sub_intf.get('bridgedTo') == intf.get('interfaceId'):
+                        self.file.write("# don't allow port forwarding of http port of primary IP of WAN from bridged interface %i.\n" % sub_intf.get('interfaceId'))
+                        self.file.write("ADDR=\"`ip addr show %s | awk '/^ *inet.*scope global/ { interface = $2 ; sub( \"/.*\", \"\", interface ) ; print interface ; exit }'`\"\n" % intf.get('symbolicDev'))
+                        self.file.write("if [ ! -z \"${ADDR}\" ] ; then" + "\n")
+                        self.file.write("\t${IPTABLES} -t nat -I port-forward-rules -p tcp -m mark --mark 0x%04X/0x%04X --destination ${ADDR} --destination-port %i -j REDIRECT --to-ports 80 -m comment --comment \"Reserve port 80 on ${ADDR} for blockpages\"" % (sub_intf.get('interfaceId'), self.srcInterfaceMarkMask, http_port) + "\n")
+                        self.file.write("\t${IPTABLES} -t nat -A port-forward-rules -p tcp -m mark --mark 0x%04X/0x%04X --destination ${ADDR} --destination-port 80 -j REDIRECT --to-ports 0 -m comment --comment \"Drop local HTTP traffic that hasn't been handled earlier in chain\"" % (sub_intf.get('interfaceId'), self.srcInterfaceMarkMask) + "\n")
+                        self.file.write("fi" + "\n")
+                        self.file.write("\n");
+            
 
         self.file.write("\n\n");
         self.file.flush();
