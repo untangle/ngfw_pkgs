@@ -108,7 +108,9 @@ class PortForwardManager:
         self.file.write("\n\n");
 
         https_port = settings.get('httpsPort')
+        if not https_port: https_port = 443
         http_port = settings.get('httpPort')
+        if not http_port: http_port = 80
 
         # write rules to protect (by redirecting) https port for all primary addresses
         # add rule to block at the end. If that point is reached then it hasn't been protected or port forwarded 
