@@ -80,6 +80,17 @@ class DnsMasqManager:
                     else:
                         file.write("dhcp-option=tag:%s,6,%s # dns" % (intf.get('symbolicDev'), str(intf.get('v4StaticAddress'))) + "\n")
 
+                    # write custom DHCP options
+                    if intf.get('dhcpOptions') != None and intf.get('dhcpOptions').get('list') != None:
+                        for dhcpOption in intf.get('dhcpOptions').get('list'):
+                            if dhcpOption.get('enabled') == None or not dhcpOption.get('enabled'):
+                                continue
+                            file.write("dhcp-option=tag:%s,%s # custom dhcp option" % (intf.get('symbolicDev'), dhcpOption.get('value')) + "\n")
+
+                    file.write("\n");
+                            
+                        
+
         # Local DNS servers
         file.write("# Local DNS servers\n")
         if ( settings.get('dnsSettings') != None and 
@@ -88,11 +99,17 @@ class DnsMasqManager:
             for localServer in settings.get('dnsSettings').get('localServers').get('list'):
                 if localServer.get('domain') != None and localServer.get('localServer') != None:
                     file.write("local=/%s/%s" % ( localServer['domain'], localServer['localServer'] ) + "\n" )
+            file.write("\n");
+
+        # Write custom advanced options
+        if settings.get('dnsmasqOptions') != None:
+            file.write("# Custom dnsmasq options\n");
+            file.write("%s" % ( settings.get('dnsmasqOptions') ) + "\n" )
+            file.write("\n");
 
         # FIXME write static DNS entries
         # FIXME write static DHCP leases
         # FIXME write domain (ie domain=untangle.local)
-
 
         file.write("\n");
         file.flush()
