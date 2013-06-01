@@ -433,7 +433,7 @@ rm -f /var/lib/untangle-netd/interface*status.js
         file.write("echo 1 > /proc/sys/net/ipv6/conf/all/forwarding" + "\n")
         file.write("echo 0 > /proc/sys/net/ipv6/conf/default/forwarding" + "\n")
         for intf in settings.get('interfaces').get('list'):
-            file.write("echo 0 > /proc/sys/net/ipv6/conf/%s/forwarding" % intf['physicalDev']+ "\n")
+            file.write("if [ -f /proc/sys/net/ipv6/conf/%s/forwarding ] ; then echo 0 > /proc/sys/net/ipv6/conf/%s/forwarding; fi" % (intf['physicalDev'], intf['physicalDev'])+ "\n")
 
         file.flush()
         file.close()

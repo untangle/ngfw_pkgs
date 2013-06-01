@@ -123,6 +123,12 @@ class IptablesUtil:
                     matcherStr = " -m connmark --mark 0x%04X/0xFF00 " % (int(intfs[i]) << 8)
                     current_strings = current_strings + [ current + matcherStr for current in orig_current_strings ]
 
+            if matcherType == "SRC_MAC":
+                if invert:
+                    matcherStr = matcherStr + " ! "
+                matcherStr = matcherStr + " -m mac --mac-source %s " % value
+                current_strings = [ current + matcherStr for current in current_strings ]
+
             if matcherType == "SRC_ADDR":
                 if invert:
                     matcherStr = matcherStr + " ! "

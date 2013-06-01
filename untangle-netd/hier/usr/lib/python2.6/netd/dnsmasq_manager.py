@@ -89,7 +89,11 @@ class DnsMasqManager:
 
                     file.write("\n");
                             
-                        
+        # Write domain
+        if settings.get('domainName') != None:
+            file.write("# domain\n");
+            file.write("domain=%s" % ( settings.get('domainName') ) + "\n" )
+            file.write("\n");
 
         # Local DNS servers
         file.write("# Local DNS servers\n")
@@ -107,9 +111,7 @@ class DnsMasqManager:
             file.write("%s" % ( settings.get('dnsmasqOptions') ) + "\n" )
             file.write("\n");
 
-        # FIXME write static DNS entries
         # FIXME write static DHCP leases
-        # FIXME write domain (ie domain=untangle.local)
 
         file.write("\n");
         file.flush()
