@@ -9,7 +9,7 @@ OPENSSL_CONF="/usr/share/untangle/conf/https-openssl.cnf"
 OPENSSL_TOOL="/usr/bin/openssl"
 ROOT_PATH="/usr/share/untangle/settings/untangle-certificates"
 CERT_PATH="/var/cache/untangle-https"
-SUBJECT="/C=US/ST=California/L=Sunnyvale/O=Untangle/OU=Security/CN=RootCA"
+SUBJECT="/C=US/ST=California/L=Sunnyvale/O=Untangle/OU=Security/CN=www.untangle.com"
 
 # We use /dev/urandom because it does not block and because all of the security
 # articles I found suggest it has plenty of entropy and should always be used
@@ -23,7 +23,7 @@ show_usage()
 echo " "
 echo "  USAGE: https-rootgen subject"
 echo " "
-echo "  subject = /C=US/ST=California/L=Sunnyvale/O=Untangle/OU=Security/CN=RootCA"
+echo "  subject = /C=US/ST=California/L=Sunnyvale/O=Untangle/OU=Security/CN=www.untangle.com"
 echo " "
 echo "  WARNING: Any existing root CA files will be deleted and created from scratch!"
 echo " "
