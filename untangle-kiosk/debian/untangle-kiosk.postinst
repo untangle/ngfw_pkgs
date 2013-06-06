@@ -11,13 +11,7 @@ perl -i -pe 's|^[xw]7:5:wait:.+$||' /etc/inittab
 
 rsync -Ha /usr/share/untangle-kiosk/homes/root/ /root/
 rsync -Ha /usr/share/untangle-kiosk/homes/kiosk/ ${KIOSK_HOME}/
-if [[ $(cat /etc/debian_version) != 6* ]] ; then
- # following 2 lines for older fbpanel in lenny
-  mkdir -p ${KIOSK_HOME}/.fbpanel
-  ln -sf ${KIOSK_HOME}/.config/fbpanel/default-lenny ${KIOSK_HOME}/.fbpanel/default
-
-  xorg_vesa_conf=${XORG_VESA_CONF_BASE}-lenny
-else
+if [[ $(cat /etc/debian_version) == 6* ]] ; then
   xorg_vesa_conf=${XORG_VESA_CONF_BASE}-squeeze
 fi
 chown -R kiosk:kiosk ${KIOSK_HOME}
