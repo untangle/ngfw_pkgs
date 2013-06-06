@@ -91,14 +91,12 @@ def headerparserhandler(req):
         # we only do this as to not present a login screen when access
         # is restricted. a tomcat valve enforces this setting.
         if options.get('UseRemoteAccessSettings', 'no') == 'yes':
-            (inside_http_enabled, outside_https_enabled) = get_access_settings()
+            http_enabled = get_uvm_settings_item('system','httpAdministrationAllowed')
             connection = req.connection
 
             (addr, port) = connection.local_addr
             if not re.match('127\.', connection.remote_ip):
-                if 80 == port and not inside_http_enabled:
-                    return apache.HTTP_FORBIDDEN
-                elif 443 == port and not outside_https_enabled:
+                if port == 80 and not http_enabled:
                     return apache.HTTP_FORBIDDEN
 
         apache.log_error('Auth failure [Username not specified]. Redirecting to auth page. (realm: %s)' % realm)
@@ -259,24 +257,13 @@ def get_uvm_language():
 
     return lang
 
-def get_access_settings():
-    inside_http_enabled = get_uvm_settings_item('system','insideHttpEnabled')
-    outside_https_enabled = get_uvm_settings_item('system','outsideHttpsEnabled')
-
-    if inside_http_enabled == None:
-        inside_http_enabled = True
-    if outside_https_enabled == None:
-        outside_https_enabled = True
-
-    return (inside_http_enabled, outside_https_enabled)
-
 def log_login(req, login, local, succeeded, reason):
     (client_addr, client_port) = req.connection.remote_addr
     conn = None
     try:
         conn = connect("dbname=uvm user=postgres")
         curs = conn.cursor()
-        sql = "INSERT INTO reports.n_admin_logins (client_addr, login, local, succeeded, time_stamp) VALUES ('%s', '%s', '%s', '%s', now())" % (client_addr, login, local, succeeded)
+        sql = "INSERT INTO reports.admin_logins (client_addr, login, local, succeeded, time_stamp) VALUES ('%s', '%s', '%s', '%s', now())" % (client_addr, login, local, succeeded)
         curs.execute(sql);
         conn.commit()
     except Exception, e:
