@@ -108,6 +108,7 @@ support_menu()
         --menu "Choose operation:" 10 61 2 \
         "Enable Remote Support" "" \
         "Disable Remote Support" "" \
+        "Display UID" "" \
         2>$tmpfile
     retval=$?
 
@@ -116,11 +117,21 @@ support_menu()
         0) # OK
             case $choice in
                 "Enable Remote Support")
-		    apt-get install -o DPkg::Options::=--force-confnew --yes --force-yes --fix-broken --purge untangle-support-agent
+                    if [ -f /usr/share/untangle/settings/untangle-vm/system.js ] ; then
+                        sed -e 's/\"supportEnabled\": false/\"supportEnabled\": true/' -i /usr/share/untangle/settings/untangle-vm/system.js
+                    fi
+                    /etc/init.d/untangle-pyconnector restart
                     state=SUCCESS_SPLASH
                     ;;
                 "Disable Remote Support")
-                    apt-get remove --yes --force-yes --fix-broken --purge untangle-support-agent untangle-openssh-server
+                    if [ -f /usr/share/untangle/settings/untangle-vm/system.js ] ; then
+                        sed -e 's/\"supportEnabled\": true/\"supportEnabled\": false/' -i /usr/share/untangle/settings/untangle-vm/system.js
+                    fi
+                    /etc/init.d/untangle-pyconnector restart
+                    state=SUCCESS_SPLASH
+                    ;;
+                "Display UID")
+                    if [ -f /usr/share/untangle/conf/uid ] ; then cat /usr/share/untangle/conf/uid ; else echo "No UID" ; fi
                     state=SUCCESS_SPLASH
                     ;;
                 *)
