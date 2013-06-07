@@ -17,7 +17,7 @@ EOF
 fi
 
 if [ ! -e /etc/apache2/workers.properties ]; then
-    secret=$(dd if=/dev/random count=10 bs=1 2>/dev/null | hexdump | cut -d \  -f 2-| head -n 1 | tr -d " ")
+    secret=$(dd if=/dev/urandom count=10 bs=1 2>/dev/null | hexdump | cut -d \  -f 2-| head -n 1 | tr -d " ")
     cat >/etc/apache2/workers.properties <<EOF
 worker.list=uvmWorker
 
@@ -29,7 +29,7 @@ EOF
 fi
 
 if ! grep worker.uvmWorker.secret /etc/apache2/workers.properties >/dev/null 2>&1; then
-    secret=$(dd if=/dev/random count=10 bs=1 2>/dev/null | hexdump | cut -d \  -f 2-| head -n 1 | tr -d " ")
+    secret=$(dd if=/dev/urandom count=10 bs=1 2>/dev/null | hexdump | cut -d \  -f 2-| head -n 1 | tr -d " ")
     echo "worker.uvmWorker.secret=$secret" >>/etc/apache2/workers.properties
 fi
 
