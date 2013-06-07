@@ -62,11 +62,15 @@ if [ ! -e $PEMFILE ]; then
     # call our cert generator with the magic APACHE argument to create
     # the apache cert that is signed by our own root CA
     /usr/share/untangle/bin/https-certgen APACHE "/CN=$ALIAS"
-    chmod 600 $PEMFILE
-    PEMHASH=`/usr/bin/openssl x509 -noout -hash < $PEMFILE`
-    ln -sf $PEMFILE /etc/apache2/ssl/$PEMHASH.0
 
-    echo 'Generating Apache SSL certificate... done'
+    if [ -e $PEMFILE ]; then
+        chmod 600 $PEMFILE
+        PEMHASH=`/usr/bin/openssl x509 -noout -hash < $PEMFILE`
+        ln -sf $PEMFILE /etc/apache2/ssl/$PEMHASH.0
+        echo 'Generating Apache SSL certificate... done'
+    else
+        echo 'Generating Apache SSL certificate... failure!'
+    fi
 fi
 
 if ! grep "Listen 443" /etc/apache2/ports.conf >/dev/null; then
