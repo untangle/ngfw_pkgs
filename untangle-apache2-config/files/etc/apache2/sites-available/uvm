@@ -58,7 +58,7 @@ Alias /error /usr/share/untangle/mod_python/error
 
 <VirtualHost *:443>
     SSLEngine on
-    SSLCertificateFile /etc/apache2/ssl/apache.pem
+    SSLCertificateFile /usr/share/untangle/settings/untangle-certificates/apache.pem
     Include /etc/apache2/uvm.conf
 </VirtualHost>
 
