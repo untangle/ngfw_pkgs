@@ -10,9 +10,6 @@ fi
 
 SPAM_USER=spamc
 SPAM_GROUP=spamc
-GPG_KEYS_DIR=/usr/share/untangle-spamassassin-update
-SA_GPG_KEY=${GPG_KEYS_DIR}/sa.gpg
-SARE_GPG_KEY=${GPG_KEYS_DIR}/sare.gpg
 
 # setting up the user account we use to run the daemons
 adduser --gecos "" --firstuid 10000 --disabled-password $SPAM_USER 2>/dev/null
@@ -21,9 +18,7 @@ chown -R $SPAM_USER:$SPAM_GROUP /home/$SPAM_USER
 # enable in /etc/default/spamassassin
 sed -i "s/^ENABLED=.*/ENABLED=1/" /etc/default/spamassassin
 sed -i "s/^CRON=.*/CRON=1/" /etc/default/spamassassin
-sed -i "s/^#.*loadplugin Mail::SpamAssassin::Plugin::Rule2XSBody/loadplugin Mail::SpamAssassin::Plugin::Rule2XSBody/" /etc/spamassassin/v320.pre
 
-# XXX moved /etc/spamassassin/local.cf overwrites to database settings schema
 ## turn off stuff in local.cf
 rm -f /etc/spamassassin/local.cf
 cat > /etc/spamassassin/local.cf << EOF
@@ -37,19 +32,6 @@ pyzor_timeout 3
 clear_report_template
 report _SUMMARY_
 EOF
-
-if dpkg -l untangle-spamassassin | grep -q ii ; then
-  sa=untangle-spamassassin
-else
-  sa=spamassassin
-fi
-saVersion=$(dpkg-query --showformat='${Version}\n' -W $sa)
-
-if dpkg --compare-versions $saVersion lt 3.1.4 ; then
-  perl -i -npe 's/.*focr_pre314.*/focr_pre314 1/' /etc/mail/spamassassin/FuzzyOcr.cf
-else
-  perl -i -npe 's/.*focr_pre314.*/#focr_pre314 1/' /etc/mail/spamassassin/FuzzyOcr.cf
-fi
 
 /etc/untangle/startup.d/20spamassassin
 
