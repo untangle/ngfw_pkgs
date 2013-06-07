@@ -48,7 +48,7 @@ if [ ! -r $UT_ROOT_PATH/untangle.key -o ! -r $UT_ROOT_PATH/untangle.crt ]; then
     /usr/share/untangle/bin/https-rootgen DEFAULT
 fi
 
-PEMFILE=/usr/share/untangle/settings/untangle-certificates/apache.pem
+PEMFILE=/etc/apache2/ssl/apache.pem
 
 if [ ! -e $PEMFILE ]; then
     echo 'Generating Apache SSL certificate...'
