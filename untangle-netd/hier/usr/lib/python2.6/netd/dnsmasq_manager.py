@@ -105,13 +105,21 @@ class DnsMasqManager:
                     file.write("local=/%s/%s" % ( localServer['domain'], localServer['localServer'] ) + "\n" )
             file.write("\n");
 
+        # Static DHCP Entries
+        file.write("# Static DHCP entries\n")
+        print settings.get('staticDhcpEntries')
+        if ( settings.get('staticDhcpEntries') != None and 
+             settings.get('staticDhcpEntries').get('list') != None ):
+            for staticDhcpEntry in settings.get('staticDhcpEntries').get('list'):
+                if staticDhcpEntry.get('macAddress') != None and staticDhcpEntry.get('address') != None:
+                    file.write("dhcp-host=%s,%s" % ( staticDhcpEntry.get('macAddress'), staticDhcpEntry.get('address') ) + "\n" )
+            file.write("\n");
+
         # Write custom advanced options
         if settings.get('dnsmasqOptions') != None:
             file.write("# Custom dnsmasq options\n");
             file.write("%s" % ( settings.get('dnsmasqOptions') ) + "\n" )
             file.write("\n");
-
-        # FIXME write static DHCP leases
 
         file.write("\n");
         file.flush()
