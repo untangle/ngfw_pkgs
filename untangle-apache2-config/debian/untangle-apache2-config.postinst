@@ -1,5 +1,13 @@
 #!/bin/bash
 
+PEMFILE=/etc/apache2/ssl/apache.pem
+ALIAS=$(hostname -f)
+
+if [ -z "$ALIAS" ]; then
+    echo setting ALIAS to default value
+    ALIAS=hostname.example.com
+fi
+
 addgroup uvmlogin 2>/dev/null
 
 sed -e 's/NO_START=1/NO_START=0/' -i /etc/default/apache2
@@ -40,30 +48,13 @@ if [ ! -e /etc/apache2/uvm.conf ]; then
     echo "Include /usr/share/untangle/conf/apache2/conf.d/*.conf" >/etc/apache2/uvm.conf
 fi
 
-ROOTCRT=/usr/share/untangle/settings/untangle-certificates/untangle.crt
-ROOTKEY=/usr/share/untangle/settings/untangle-certificates/untangle.key
-
-# if either of the root certificate files are missing we create now
-if [ ! -r $UT_ROOT_PATH/untangle.key -o ! -r $UT_ROOT_PATH/untangle.crt ]; then
-    /usr/share/untangle/bin/https-rootgen DEFAULT
-fi
-
-PEMFILE=/etc/apache2/ssl/apache.pem
-
 if [ ! -e $PEMFILE ]; then
-    echo 'Generating Apache SSL certificate...'
-
-    ALIAS=$(hostname -f)
-    if [ -z "$ALIAS" ] ; then
-        echo "no hostname set: setting ALIAS to hostname.example.com"
-        ALIAS="hostname.example.com"
-    fi
-
-    # call our cert generator with the magic APACHE argument to create
-    # the apache cert that is signed by our own root CA
-    /usr/share/untangle/bin/https-certgen APACHE "/CN=$ALIAS"
+    echo 'generating self-signed cert'
+    mkdir -p /etc/apache2/ssl
+    export RANDFILE=/dev/urandom
+    openssl req -batch -subj "/CN=$ALIAS" -new -newkey rsa:2048 -x509 -nodes -out $PEMFILE -keyout $PEMFILE
     chmod 600 $PEMFILE
-    echo 'Generating Apache SSL certificate... done'
+    ln -sf $PEMFILE /etc/apache2/ssl/`/usr/bin/openssl x509 -noout -hash < $PEMFILE`.0
 fi
 
 if ! grep "Listen 443" /etc/apache2/ports.conf >/dev/null; then
