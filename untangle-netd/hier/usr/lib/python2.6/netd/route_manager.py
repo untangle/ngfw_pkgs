@@ -109,9 +109,7 @@ flush_ip_route_rules()
         file.write("}" + "\n")
 
         file.write(r"""
-if [ "`expected_ip_route_rules | md5sum`" = "`current_ip_route_rules  | md5sum`" ]; then
-    echo "ip route rules are up to date."
-else
+if [ "`expected_ip_route_rules | md5sum`" != "`current_ip_route_rules  | md5sum`" ]; then
     echo "Flushing  ip route rules..."
     flush_ip_route_rules
     echo "Inserting ip route rules..."
