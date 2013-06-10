@@ -107,7 +107,6 @@ class DnsMasqManager:
 
         # Static DHCP Entries
         file.write("# Static DHCP entries\n")
-        print settings.get('staticDhcpEntries')
         if ( settings.get('staticDhcpEntries') != None and 
              settings.get('staticDhcpEntries').get('list') != None ):
             for staticDhcpEntry in settings.get('staticDhcpEntries').get('list'):
