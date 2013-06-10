@@ -25,7 +25,6 @@ Ung.Alpaca.Pages.Redirect.Index = Ext.extend( Ung.Alpaca.PagePanel, {
                               [ "udp", this._( "UDP" ) ]];
 
         this.portStore = [[ 21, "FTP (21)" ],
-                          [ 22, "FTP (22)" ],
                           [ 25, "SMTP (25)" ],
                           [ 53, "DNS (53)" ],
                           [ 80, "HTTP (80)" ],
