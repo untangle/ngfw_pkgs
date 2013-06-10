@@ -49,9 +49,11 @@ class RouteManager:
         for intf in settings['interfaces']['list']:
             if 'isWan' in intf and intf['isWan']:
                 file.write("%i\tuplink.%i" % ( int(intf['interfaceId']), int(intf['interfaceId']) ) + "\n")
+        file.write("\n\n");
 
         file.write("# special tables " + "\n");
         file.write("500\tbalance" + "\n")
+        file.write("\n\n");
             
         file.flush()
         file.close()
