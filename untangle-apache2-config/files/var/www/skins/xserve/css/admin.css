@@ -441,7 +441,9 @@ img.icon-drag {
     cursor: move;
     height:16px;
 }
-
+button .icon-drag {
+    background:transparent url(../images/admin/icon_drag.gif) no-repeat center left !important;
+}
 /* refresh button icon */
 button .icon-refresh {
     background: transparent url(../images/admin/icon_refresh.png) no-repeat center left !important;
