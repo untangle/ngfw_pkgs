@@ -44,6 +44,10 @@ class InterfacesManager:
         self.interfacesFile.write("iface %s inet %s\n" % (devName, configString) )
         self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings.get('interfaceId'))
 
+        # load 8021q
+        if interface_settings.get('isVlanInterface'):
+            self.interfacesFile.write("\tpre-up modprobe -q 8021q\n") 
+
         # handle static stuff
         if interface_settings.get('v4ConfigType') == 'STATIC':
             self.interfacesFile.write("\tnetd_v4_address %s\n" % interface_settings.get('v4StaticAddress'))
