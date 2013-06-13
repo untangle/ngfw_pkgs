@@ -18,6 +18,13 @@ class RouteManager:
     DST_INTERFACE_SHIFT=8
     DST_INTERFACE_MASK=0xFF00
 
+    def string_is_int( self, s ):
+        try:
+            int(s)
+            return True
+        except ValueError:
+            return False
+
     def write_rt_table( self, settings, prefix, verbosity ):
 
         filename = prefix + self.rtTableFilename
@@ -128,12 +135,16 @@ fi
                         print "ERROR: ignoring bad route missing key: %s\n" % key
                         continue
                     
-                if re.match('[a-z]+', static_route['nextHop']):
-                    # device route since nextHop includes alphas
-                    file.write("# Static Route %i\n" % static_route['ruleId'])
-                    file.write("ip route add %s/%s dev %s\n" % ( static_route['network'], static_route['prefix'], static_route['nextHop'] ) )
-                    file.write("if [ $? != 0 ] ; then echo \"ERROR: inserting route %i\" ; fi \n" % static_route['ruleId'])
-                    file.write("\n")
+                if self.string_is_int(static_route['nextHop']):
+                    # if nextHop is an interfaceId
+                    interfaceId = int(static_route['nextHop'])
+                    for intf in settings['interfaces']['list']:
+                        if intf.get('interfaceId') == interfaceId:
+                            # device route since nextHop includes alphas
+                            file.write("# Static Route %i\n" % static_route['ruleId'])
+                            file.write("ip route add %s/%s dev %s\n" % ( static_route['network'], static_route['prefix'], intf.get('systemDev') ) )
+                            file.write("if [ $? != 0 ] ; then echo \"ERROR: inserting route %i\" ; fi \n" % static_route['ruleId'])
+                            file.write("\n")
                 else:
                     # otherwise gateway route
                     file.write("# Static Route %i\n" % static_route['ruleId'])
