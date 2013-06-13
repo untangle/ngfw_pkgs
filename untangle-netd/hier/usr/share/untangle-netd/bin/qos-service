@@ -8,7 +8,7 @@ run ()
 
 imq_dev()
 {
-    echo $1 | sed 's/eth/imq/'
+    echo $1 | sed -e 's/eth/imq/' | sed -e 's/ppp/imq/'
 }
     
 

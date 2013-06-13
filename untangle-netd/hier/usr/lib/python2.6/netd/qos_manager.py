@@ -18,6 +18,19 @@ class QosManager:
                 return qosPriority
         return None
 
+    # Returns true if the interface is QoS eligible
+    # QoS is run on WAN interfaces ( excluding VLANs )
+    def qosed_interface( self, intfSettings ):
+        if ( intfSettings == None ):
+            return False
+        if ( intfSettings.get('configType') == None or intfSettings.get('configType') != 'ADDRESSED' ):
+            return False
+        if ( intfSettings.get('isWan') == None or not intfSettings.get('isWan') ):
+            return False
+        if ( intfSettings.get('isVlanInterface') != None and intfSettings.get('isVlanInterface') ):
+            return False;
+        return True
+
     def write_qos_hook( self, settings, prefix, verbosity ):
 
         if settings == None or settings.get('interfaces') == None or settings.get('interfaces').get('list') == None:
@@ -52,7 +65,7 @@ class QosManager:
         space=""
         wans_string=""
         for intfSettings in interfaces:
-            if intfSettings['configType'] == 'ADDRESSED' and intfSettings['isWan']:
+            if self.qosed_interface( intfSettings ):
                 wans_string = wans_string + space + intfSettings['systemDev']
                 space=" "
         file.write("export UPLINKS=\"%s\"" % wans_string + "\n")
@@ -63,12 +76,12 @@ class QosManager:
 
 
         for intfSettings in interfaces:
-            if intfSettings['configType'] == 'ADDRESSED' and intfSettings['isWan']:
+            if self.qosed_interface( intfSettings ):
                 file.write("export %s_DOWNLOAD_BANDWIDTH=%s" % (intfSettings['systemDev'], str(intfSettings['downloadBandwidthKbps'])) + "\n")
                 file.write("export %s_UPLOAD_BANDWIDTH=%s" % (intfSettings['systemDev'], str(intfSettings['uploadBandwidthKbps'])) + "\n")
         file.write("\n");
         for intfSettings in interfaces:
-            if intfSettings['configType'] == 'ADDRESSED' and intfSettings['isWan']:
+            if self.qosed_interface( intfSettings ):
                 for classInt in range(1,8):
                     qosPriority = self.find_priority( qosSettings.get('qosPriorities').get('list'), classInt )
                     if qosPriority == None:
@@ -152,7 +165,7 @@ ${IPTABLES} -t mangle -A restore-qos-mark -m state ! --state UNTRACKED -j CONNMA
 
         file.write("# Insert IMQ rules for each WAN interface" + "\n");
         for intfSettings in interfaces:
-            if intfSettings['configType'] == 'ADDRESSED' and intfSettings['isWan']:
+            if self.qosed_interface( intfSettings ):
                 devnumstr = re.sub('[a-z]','',intfSettings['systemDev'])
                 file.write("${IPTABLES} -t mangle -A qos-imq -m mark --mark 0x%04X/0x%04X -j IMQ --todev %s" % (intfSettings['interfaceId'], self.srcInterfaceMarkMask, devnumstr) + "\n")
         file.write("\n");
