@@ -10,7 +10,6 @@ Package: untangle-netd
 Architecture: any
 Depends: ${shlibs:Depends}, dash, bridge-utils, iptables, iputils-arping, untangle-libnetfilter-queue-dev, libnfnetlink-dev, radvd, ndisc6, vlan
 XB-Display-Name: Network Daemon
-XB-Untangle-Type: library
 XB-Desc-Icon: iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAIAAABKoV4MAAAABGdBTUEAANbY1E9Y
  MgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAATkSURBVHja
  1JhrKG1bFMftg1semyghESVKSClSSilSinyQV5S8SoqUV5RIKSJFREJuiigRpZQS
