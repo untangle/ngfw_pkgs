@@ -68,26 +68,6 @@ Plugin {
     type = launchbar
     config {
         button {
-            image = /usr/share/untangle-kiosk/panel/ScreensaverOn.png
-            tooltip = Enable Screensaver
-            action = /home/kiosk/utils/screensaver.sh on
-        }
-        button {
-            image = /usr/share/untangle-kiosk/panel/ScreensaverOff.png
-            tooltip = Disable Screensaver
-            action = /home/kiosk/utils/screensaver.sh off
-        }
-    }
-}
-
-Plugin {
-  type = separator
-}
-
-Plugin {
-    type = launchbar
-    config {
-        button {
             image = /usr/share/untangle-kiosk/panel/RestartBox.png
             tooltip = Restart
             action = /home/kiosk/utils/ut-reboot.sh
