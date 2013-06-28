@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-27 11:34+0300\n"
+"POT-Creation-Date: 2013-06-28 13:15+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,118 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=0; null;\n"
+
+#: ../files/usr/lib/python2.6/uvmlogin.py:279
+#: ../files/usr/share/untangle/mod_python/error/index.py:132
+msgid "Server"
+msgstr ""
+
+#: ../files/usr/lib/python2.6/uvmlogin.py:281
+#: ../files/usr/share/untangle/mod_python/error/index.py:134
+#, python-format
+msgid "%s Server"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:26
+msgid "Bad Request"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:30
+msgid "Unauthorized"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:34
+msgid "Payment Required"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:38
+msgid "Forbidden"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:42
+msgid "Not Found"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:46
+msgid "Method Not Allowed"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:50
+msgid "Not Acceptable"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:54
+msgid "Proxy Authentication Required"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:58
+msgid "Request Timeout"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:62
+msgid "Conflict"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:66
+msgid "Gone"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:70
+msgid "Length Required"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:74
+msgid "Precondition Failed"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:78
+msgid "Request Entity Too Large"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:82
+msgid "Request-URI Too Long"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:86
+msgid "Unsupported Media Type"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:90
+msgid "Requested Range Not Satisfiable"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:94
+msgid "Expectation Failed"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:99
+#: ../files/usr/share/untangle/mod_python/error/index.py:114
+msgid "Server is starting. Please wait."
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:101
+msgid "Internal Server Error"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:105
+msgid "Not Implemented"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:109
+msgid "Bad Gateway"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:116
+msgid "Service Unavailable"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:120
+msgid "Gateway Timeout"
+msgstr ""
+
+#: ../files/usr/share/untangle/mod_python/error/index.py:124
+msgid "HTTP Version Not Supported"
+msgstr ""
 
 #: ../files/usr/share/untangle/mod_python/auth/index.py:55
 msgid "Administrator Login"
