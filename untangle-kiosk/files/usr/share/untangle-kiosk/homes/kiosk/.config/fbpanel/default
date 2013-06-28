@@ -44,22 +44,6 @@ Plugin {
     }
 }
 
-
-Plugin {
-  type = separator
-}
-
-Plugin {
-    type = launchbar
-    config {
-        button {
-            image = /usr/share/untangle-kiosk/panel/Resolution.png
-            tooltip = Choose resolution
-            action = /home/kiosk/utils/ut-resolution.sh
-        }
-    }
-}
-
 Plugin {
   type = separator
 }
