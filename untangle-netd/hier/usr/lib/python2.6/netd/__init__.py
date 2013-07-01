@@ -11,6 +11,7 @@ from netd.ethernet_manager import EthernetManager
 from netd.finddev_manager import FindDevManager
 from netd.hosts_manager import HostsManager
 from netd.sysctl_manager import SysctlManager
+from netd.kernel_manager import KernelManager
 from netd.arp_manager import ArpManager
 from netd.route_manager import RouteManager
 from netd.dhcp_manager import DhcpManager

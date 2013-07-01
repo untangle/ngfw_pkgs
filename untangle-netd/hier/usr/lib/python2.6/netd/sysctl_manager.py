@@ -28,11 +28,18 @@ class SysctlManager:
         file.write("sysctl -q -w net.ipv4.ip_forward=1" + "\n");
         file.write("\n");
 
-        file.write("# turn on ICMP redirects" + "\n");
-        file.write("find /proc/sys/net/ipv4/conf -type f -name 'send_redirects' | while read f ; do" + "\n");
-        file.write("  echo 1 > ${f}" + "\n");
-        file.write("done" + "\n");
-        file.write("\n");
+        if settings.get('sendIcmpRedirects'):
+            file.write("# turn on ICMP redirects" + "\n");
+            file.write("find /proc/sys/net/ipv4/conf -type f -name 'send_redirects' | while read f ; do" + "\n");
+            file.write("  echo 1 > ${f}" + "\n");
+            file.write("done" + "\n");
+            file.write("\n");
+        else:
+            file.write("# turn off ICMP redirects" + "\n");
+            file.write("find /proc/sys/net/ipv4/conf -type f -name 'send_redirects' | while read f ; do" + "\n");
+            file.write("  echo 0 > ${f}" + "\n");
+            file.write("done" + "\n");
+            file.write("\n");
 
         file.flush()
         file.close()
@@ -48,6 +55,5 @@ class SysctlManager:
         if verbosity > 1: print "SysctlManager: sync_settings()"
         
         self.write_sysctl( settings, prefix, verbosity )
-
 
         return
