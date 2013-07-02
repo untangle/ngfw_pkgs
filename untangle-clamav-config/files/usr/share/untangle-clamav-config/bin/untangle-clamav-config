@@ -157,12 +157,6 @@ JUNK_SIGS_URL="http://phishupdates.untangle.com/clam-updates/junk.ndb.gz"
 ROGUE_SIGS="rogue.hdb"
 ROGUE_SIGS_URL="http://phishupdates.untangle.com/clam-updates/rogue.hdb.gz"
 
-# The URLs of the spam and image-spam signature files from MSRBL
-MSRBL_SPAM_SIGS="MSRBL-SPAM.ndb"
-MSRBL_SPAM_SIGS_URL="rsync://rsync.mirror.msrbl.com/msrbl/MSRBL-SPAM.ndb"
-MSRBL_IMAGE_SIGS="MSRBL-Images.hdb"
-MSRBL_IMAGE_SIGS_URL="rsync://rsync.mirror.msrbl.com/msrbl/MSRBL-Images.hdb"
-
 # Log messages with this or greater severity to syslog
 syslog_loglevel=error
 
@@ -672,8 +666,6 @@ log_startup_summary()
 	log debug "SCAM_SIGS     : $SCAM_SIGS_URL"
 	log debug "JUNK_SIGS     : $JUNK_SIGS_URL"
 	log debug "ROGUE_SIGS    : $ROGUE_SIGS_URL"
-	log debug "SPAM_SIGS     : $MSRBL_SPAM_SIGS_URL"
-	log debug "IMAGE_SIGS    : $MSRBL_IMAGE_SIGS_URL"
 	log debug "ClamScan      : $clamscan"
 	log debug "CURL          : $curl"
 	log debug "GunZip        : $gunzip"
@@ -843,17 +835,24 @@ cd "$clam_db_dir"
 declare sigfile_updated=0
 if [ "$unprivileged_child" -ne 0 -o $(id -u) -ne 0 ]; then
 	# Update/download the signature files
-	update_sigfile_with_curl "$SCAM_SIGS_URL" "$SCAM_SIGS" && sigfile_updated=1
+    MEM=$(awk '/MemTotal/ { print $2 }' < /proc/meminfo)
+
+    # If more than 1.9G ram, download extra signatures
+    if [ $MEM -gt 1900000 ] ; then
+	    update_sigfile_with_curl "$SCAM_SIGS_URL" "$SCAM_SIGS" && sigfile_updated=1
         random_small_sleep
-	update_sigfile_with_curl "$PHISH_SIGS_URL" "$PHISH_SIGS" && sigfile_updated=1
+	    update_sigfile_with_curl "$PHISH_SIGS_URL" "$PHISH_SIGS" && sigfile_updated=1
         random_small_sleep
-	update_sigfile_with_curl "$JUNK_SIGS_URL" "$JUNK_SIGS" && sigfile_updated=1
+	    update_sigfile_with_curl "$JUNK_SIGS_URL" "$JUNK_SIGS" && sigfile_updated=1
         random_small_sleep
-	update_sigfile_with_curl "$ROGUE_SIGS_URL" "$ROGUE_SIGS" && sigfile_updated=1
-        random_small_sleep
-	update_sigfile_with_rsync "$MSRBL_SPAM_SIGS_URL" "$MSRBL_SPAM_SIGS" && sigfile_updated=1
-        random_small_sleep
-	update_sigfile_with_rsync "$MSRBL_IMAGE_SIGS_URL" "$MSRBL_IMAGE_SIGS" && sigfile_updated=1
+	    update_sigfile_with_curl "$ROGUE_SIGS_URL" "$ROGUE_SIGS" && sigfile_updated=1
+    # If less than 1.9G ram, delete extra signatures
+    else
+        rm -f $clam_db_dir/$SCAM_SIGS*
+        rm -f $clam_db_dir/$PHISH_SIGS*
+        rm -f $clam_db_dir/$JUNK_SIGS*
+        rm -f $clam_db_dir/$ROGUE_SIGS*
+    fi
 else
 	# Re-execute the script as the unprivileged user to do the download/check/install part.
 	# (It exits with 0 exit status only if at least on the signature file were updated.)
