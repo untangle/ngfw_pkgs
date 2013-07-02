@@ -178,10 +178,12 @@ fi
 
         file.write("# Delete the default route, we do this because this might no longer be the default\n")
         file.write("ip rule del priority %s \n" % self.IP_RULE_DEFAULT_RULE_PRIORITY)
+        file.write("\n");
 
         file.write("# Delete the main table, we do this because some routes may have been removed\n")
         file.write("# All routes will be recreated later\n")
         file.write("ip route flush table main \n")
+        file.write("\n");
 
         file.flush()
         file.close()
