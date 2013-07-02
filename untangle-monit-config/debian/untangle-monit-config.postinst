@@ -3,12 +3,12 @@
 INITTAB=/etc/inittab
 
 if ! grep -q monit $INITTAB ; then
-  echo "mo:2345:respawn:/usr/share/untangle/bin/monit-wrapper.sh" >> $INITTAB
+  echo "mo:2345:respawn:/usr/share/untangle-monit-config/bin/monit-wrapper.sh" >> $INITTAB
   [ -p /dev/initctl ] && telinit q
 fi
 
 # in case we changed the wrapper
-pkill -f /usr/share/untangle/bin/monit-wrapper.sh
+pkill -f /usr/share/untangle-monit-config/bin/monit-wrapper.sh
 
 touch /etc/untangle/monit-to-restart
 
