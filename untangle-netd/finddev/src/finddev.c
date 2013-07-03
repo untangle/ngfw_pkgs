@@ -273,14 +273,10 @@ int main ( int argc, char **argv )
         sleep (1);
     }
 
-    fprintf( stderr, "Exiting...\n" );
-    
-    fprintf( stderr, "Unbinding from queue %i\n",QUEUE_NUM );
     _debug( 2, "Unbinding from queue %i\n",QUEUE_NUM );
     // XXX sometimes this hangs indefinitely preventing the process from exiting 
     nfq_destroy_queue(qh);
 
-    fprintf( stderr, "Closing library handle\n");
     _debug( 2, "Closing library handle\n");
     nfq_close(h);
 
