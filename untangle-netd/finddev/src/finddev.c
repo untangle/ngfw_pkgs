@@ -273,11 +273,13 @@ int main ( int argc, char **argv )
         sleep (1);
     }
 
+    _debug( 1, "Shutdown initiated...\n" );
+
     _debug( 2, "Unbinding from queue %i\n",QUEUE_NUM );
     // XXX sometimes this hangs indefinitely preventing the process from exiting 
     nfq_destroy_queue(qh);
 
-    _debug( 2, "Closing library handle\n");
+    _debug( 2, "Closing library handle\n" );
     nfq_close(h);
 
     /**
@@ -288,7 +290,7 @@ int main ( int argc, char **argv )
             free( interfaceNames[i] );
     }
         
-    _debug(1,"Exiting...\n");
+    _debug( 1, "Exiting...\n" );
 
     exit(0);
 }
