@@ -48,7 +48,10 @@ for line in proc.stdout:
         entry['ctokens']=input[1]
       count+=1
     else:
-      output.append(dict(entry))
+      #TODO: properly parse priority
+      entry['priority']=0
+      if 'imq' not in entry['interface_name']:
+        output.append(dict(entry))
       entry.clear()
       count=1
       continue
