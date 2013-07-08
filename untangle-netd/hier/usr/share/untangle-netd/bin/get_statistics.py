@@ -11,6 +11,7 @@ secondLine=' Sent {:d} bytes {:d} pkt (dropped {:d}, overlimits {:d} requeues {:
 thirdLine=' rate {} {} backlog {} {} requeues {:d} '
 fourthLine= ' lended: {:d} borrowed: {:d} giants: {:d}'
 lastLine=' tokens: {:d} ctokens:{:d}'
+priorityParser='{} prio {:d}'
 
 indexMap={1:firstLine, 2:secondLine, 3:thirdLine, 4:fourthLine, 5:lastLine}
 
@@ -35,21 +36,23 @@ entry={}
 for line in proc.stdout:
     if count <= 5:
       res=parse(indexMap[count],line)
-      input = res.fixed
+      parsed = res.fixed
       if count == 1:
-        entry['interface_name']=input[0]
-        entry['burst']=input[len(input)-2]
+        entry['interface_name']=parsed[0]
+        entry['burst']=parsed[len(parsed)-2]
+        if 'prio' in parsed[3]:
+          prioParse = parse(priorityParser, parsed[3])
+          val=prioParse.fixed
+          entry['priority']=val[len(val)-1]
       if count == 2:
-        entry['sent']=str(input[0]) + ' bytes'
+        entry['sent']=str(parsed[0]) + ' bytes'
       if count == 3:
-        entry['rate']=input[0]
+        entry['rate']=parsed[0]
       if count == 5:
-        entry['tokens']=input[0]
-        entry['ctokens']=input[1]
+        entry['tokens']=parsed[0]
+        entry['ctokens']=parsed[1]
       count+=1
     else:
-      #TODO: properly parse priority
-      entry['priority']=0
       if 'imq' not in entry['interface_name']:
         output.append(dict(entry))
       entry.clear()
