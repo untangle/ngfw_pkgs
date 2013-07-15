@@ -195,9 +195,12 @@ make_resolv_conf() {
 }
 
 PPP_PID=`cat /var/run/${PPP_IFACE}.pid`
-CONNECTION_FILE=`cat "/proc/${PPP_PID}/cmdline" | tr '\000' '\001' | awk -v RS='\001' '/^connection./ { print ; exit }'`
-PPPOE_UPLINK_INDEX=`echo ${CONNECTION_FILE} | sed -e 's/connection\.intf//'`
+/bin/echo -e "[DEBUG: `date`] PPP pid: ${PPP_PID}"
 
+CONNECTION_FILE=`cat "/proc/${PPP_PID}/cmdline" | tr '\\000' '\\n' | awk '/^connection./ { print ; exit }'`
+/bin/echo -e "[DEBUG: `date`] Connection file: ${CONNECTION_FILE}"
+
+PPPOE_UPLINK_INDEX=`echo ${CONNECTION_FILE} | sed -e 's/connection\.intf//'`
 /bin/echo -e "[DEBUG: `date`] Interface index: ${PPPOE_UPLINK_INDEX}"
 
 if [ -z "${PPPOE_UPLINK_INDEX}" ]; then
