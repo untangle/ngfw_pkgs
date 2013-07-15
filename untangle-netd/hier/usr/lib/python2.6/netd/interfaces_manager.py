@@ -385,7 +385,7 @@ class InterfacesManager:
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
 
-        file.write("""
+        file.write(r"""
 ## Return a list of all of the bridges
 bridge_list()
 {

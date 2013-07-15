@@ -29,7 +29,7 @@ class PPPoEManager:
                 conffile.write("## DO NOT EDIT. Changes will be overwritten.\n");
                 conffile.write("\n");
 
-                conffile.write("""
+                conffile.write(r"""
 noipdefault
 hide-password
 noauth
@@ -127,7 +127,7 @@ maxfail 0
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
 
-        file.write("""
+        file.write(r"""
 # These variables are for the use of the scripts run by run-parts
 # PPP_IFACE="$1"
 # PPP_TTY="$2"
@@ -161,11 +161,11 @@ write_status_file()
 
 make_resolv_conf() { 
     ## This guarantees that ${t_new_domain_name_servers} will just be " "
-    local t_new_domain_name_servers="`echo "${DNS1}\\n${DNS2}" | sort | uniq`"
+    local t_new_domain_name_servers="`echo "${DNS1}\n${DNS2}" | sort | uniq`"
     
     ## Check MS_DNSx if the DNS servers were not specified in DNS1 and DNS2
     test -z "${t_new_domain_name_servers}" && {
-        t_new_domain_name_servers=`echo "${MS_DNS1}\\n${MS_DNS2}" | sort | uniq`
+        t_new_domain_name_servers=`echo "${MS_DNS1}\n${MS_DNS2}" | sort | uniq`
     }
 
     ## only update the dns server when instructed to.
@@ -177,7 +177,7 @@ make_resolv_conf() {
                 /bin/echo -e "#new_name_server=${nameserver} # uplink.${PPPOE_UPLINK_INDEX}" >> /etc/dnsmasq.conf
             done
             
-            sed -i -e "/^#*\\s*server=.*uplink.${PPPOE_UPLINK_INDEX}/d" -e 's/^#new_name_server=/server=/' /etc/dnsmasq.conf
+            sed -i -e "/^#*\s*server=.*uplink.${PPPOE_UPLINK_INDEX}/d" -e 's/^#new_name_server=/server=/' /etc/dnsmasq.conf
         fi
 
         local t_new_hash="`md5sum /etc/dnsmasq.conf`"
@@ -197,10 +197,10 @@ make_resolv_conf() {
 PPP_PID=`cat /var/run/${PPP_IFACE}.pid`
 /bin/echo -e "[DEBUG: `date`] PPP pid: ${PPP_PID}"
 
-CONNECTION_FILE=`cat "/proc/${PPP_PID}/cmdline" | tr '\\000' '\\n' | awk '/^connection./ { print ; exit }'`
+CONNECTION_FILE=`cat "/proc/${PPP_PID}/cmdline" | tr '\000' '\n' | awk '/^connection./ { print ; exit }'`
 /bin/echo -e "[DEBUG: `date`] Connection file: ${CONNECTION_FILE}"
 
-PPPOE_UPLINK_INDEX=`echo ${CONNECTION_FILE} | sed -e 's/connection\\.intf//'`
+PPPOE_UPLINK_INDEX=`echo ${CONNECTION_FILE} | sed -e 's/connection\.intf//'`
 /bin/echo -e "[DEBUG: `date`] Interface index: ${PPPOE_UPLINK_INDEX}"
 
 if [ -z "${PPPOE_UPLINK_INDEX}" ]; then

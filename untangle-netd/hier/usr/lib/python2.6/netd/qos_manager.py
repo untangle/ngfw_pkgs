@@ -132,13 +132,13 @@ class QosManager:
         file.write("${IPTABLES} -t mangle -A PREROUTING -m comment --comment \"Do inbound QoS via IMQ\" -j qos-imq" + "\n");
         file.write("\n");
 
-        file.write("""
+        file.write(r"""
 # Flush qos-classX chains
 for i in 1 2 3 4 5 6 7 ; do 
     ${IPTABLES} -t mangle -F qos-class${i} 2> /dev/null
 done""")
 
-        file.write("""
+        file.write(r"""
 # Create special targets for both marking the current packet and the rest of the session via connmark
 for i in 1 2 3 4 5 6 7 ; do 
     ${IPTABLES} -t mangle -N qos-class${i} 2> /dev/null
@@ -148,7 +148,7 @@ for i in 1 2 3 4 5 6 7 ; do
 done
 """)
 
-        file.write("""
+        file.write(r"""
 # If we see a UDP mark on a packet immediately save it to the conntrack before further processing
 # We do this because userspace may decide to mark a packet and we need to save it to conntrack
 ${IPTABLES} -t mangle -I restore-qos-mark -p udp -m mark ! --mark 0x00000000/0x000F0000 -j CONNMARK --save-mark --mask 0x000F0000 -m comment --comment "save non-zero QoS mark"
