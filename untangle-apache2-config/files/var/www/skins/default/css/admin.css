@@ -396,6 +396,7 @@ div.ung-button-invalid {
     background:transparent url(../images/admin/icon_row_add.png) no-repeat center center;
     width: 100%;
     cursor: pointer;
+    height:16px;
 }
 /* edit row icon */
 .icon-edit-row {
