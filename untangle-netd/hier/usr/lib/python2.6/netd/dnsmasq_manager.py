@@ -24,12 +24,26 @@ class DnsMasqManager:
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
         
-        # If its a static WAN then write the uplink DNS values
         for intf in settings['interfaces']['list']:
+            # If its a static WAN then write the uplink DNS values
             if intf.get('configType') == 'ADDRESSED' and intf.get('isWan') == True and intf.get('v4ConfigType') == 'STATIC':
                 if intf.get('v4StaticDns1') != None:
                     file.write("# Interface %s DNS 1" % str(intf.get('interfaceId')) + "\n")
                     file.write("server=%s # uplink.%s" % (intf.get('v4StaticDns1'), str(intf.get('interfaceId'))) + "\n")
+                    file.write("\n");
+                if intf.get('v4StaticDns2') != None:
+                    file.write("# Interface %s DNS 2" % str(intf.get('interfaceId')) + "\n")
+                    file.write("server=%s # uplink.%s" % (intf.get('v4StaticDns2'), str(intf.get('interfaceId'))) + "\n")
+                    file.write("\n");
+            # If its a PPPoE WAN then write the uplink DNS values if UserPeerDns is disabled
+            if intf.get('configType') == 'ADDRESSED' and intf.get('isWan') == True and intf.get('v4ConfigType') == 'PPPOE' and intf.get('v4PPPoEUsePeerDns') == False:
+                if intf.get('v4PPPoEDns1') != None:
+                    file.write("# Interface %s DNS 1" % str(intf.get('interfaceId')) + "\n")
+                    file.write("server=%s # uplink.%s" % (intf.get('v4PPPoEDns1'), str(intf.get('interfaceId'))) + "\n")
+                    file.write("\n");
+                if intf.get('v4PPPoEDns2') != None:
+                    file.write("# Interface %s DNS 2" % str(intf.get('interfaceId')) + "\n")
+                    file.write("server=%s # uplink.%s" % (intf.get('v4PPPoEDns2'), str(intf.get('interfaceId'))) + "\n")
                     file.write("\n");
                 
         # Set globla options
