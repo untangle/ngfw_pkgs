@@ -110,7 +110,7 @@ Continuing with system boot in 5 seconds."
 			    logsave -s $FSCK_LOGFILE fsck $spinner -R -A $fix $force $FSCKTYPES_OPT
 			    FSCKCODE=$?
                             plymouth hide-message --text="  ... please be patient: this may take several minutes"
-                            plymouth hide-message --text="Checking your disk"
+                            plymouth display-message --text="Checking your disk ... done"
 			    splash_stop_indefinite
 			fi
 
