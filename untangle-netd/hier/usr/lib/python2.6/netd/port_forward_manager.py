@@ -120,7 +120,7 @@ class PortForwardManager:
                 self.file.write("# forward HTTPS admin from intf %i to local apache process\n" % intf.get('interfaceId'))
                 self.file.write("ADDR=\"`ip addr show %s | awk '/^ *inet.*scope global/ { interface = $2 ; sub( \"/.*\", \"\", interface ) ; print interface ; exit }'`\"\n" % intf.get('symbolicDev'))
                 self.file.write("if [ ! -z \"${ADDR}\" ] ; then" + "\n")
-                self.file.write("\t${IPTABLES} -t nat -I port-forward-rules -p tcp --destination ${ADDR} --destination-port %i -j REDIRECT --to-ports 443 -m comment --comment \"Redirect admin traffic to port 443\"" % (https_port) + "\n")
+                self.file.write("\t${IPTABLES} -t nat -I port-forward-rules -p tcp --destination ${ADDR} --destination-port %i -j REDIRECT --to-ports 443 -m comment --comment \"Send ${ADDR}:%i to Apache\"" % (https_port, https_port) + "\n")
                 self.file.write("\t${IPTABLES} -t nat -A port-forward-rules -p tcp --destination ${ADDR} --destination-port 443 -j REDIRECT --to-ports 0 -m comment --comment \"Drop local HTTPS traffic that hasn't been handled earlier in chain\"" + "\n")
                 self.file.write("fi" + "\n")
                 self.file.write("\n");
@@ -133,7 +133,7 @@ class PortForwardManager:
                 self.file.write("# don't allow port forwarding of http port of primary IP on non-WAN interface %i.\n" % intf.get('interfaceId'))
                 self.file.write("ADDR=\"`ip addr show %s | awk '/^ *inet.*scope global/ { interface = $2 ; sub( \"/.*\", \"\", interface ) ; print interface ; exit }'`\"\n" % intf.get('symbolicDev'))
                 self.file.write("if [ ! -z \"${ADDR}\" ] ; then" + "\n")
-                self.file.write("\t${IPTABLES} -t nat -I port-forward-rules -p tcp --destination ${ADDR} --destination-port %i -j REDIRECT --to-ports 80 -m comment --comment \"Reserve port 80 on ${ADDR} for blockpages\"" % (http_port)+ "\n")
+                self.file.write("\t${IPTABLES} -t nat -I port-forward-rules -p tcp --destination ${ADDR} --destination-port %i -j REDIRECT --to-ports 80 -m comment --comment \"Send ${ADDR}:%i to Apache\"" % (http_port, http_port)+ "\n")
                 self.file.write("\t${IPTABLES} -t nat -A port-forward-rules -p tcp --destination ${ADDR} --destination-port 80 -j REDIRECT --to-ports 0 -m comment --comment \"Drop local HTTP traffic that hasn't been handled earlier in chain\""+ "\n")
                 self.file.write("fi" + "\n")
                 self.file.write("\n");
