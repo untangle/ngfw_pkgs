@@ -19,7 +19,7 @@ if [ `tty` = "/dev/tty1" ] ; then
     n10=$(lspci | grep "Intel Corporation N10 Family Integrated Graphics Controller (rev 02)")
     # use vesa only if we were passed "ut-video" via grub, *and* we're
     # not on the same graphics controller as the u50
-    [ -n "$utVideo" ] && [ -z "$n10" ] && grep export XORGCONFIG=$XORG_CONF_VESA
+    [ -n "$utVideo" ] && [ -z "$n10" ] && export XORGCONFIG=$XORG_CONF_VESA
     startx
     STOP_TIME=$(date +%s)
     if [ $(($STOP_TIME - $START_TIME)) -lt 60 ] ; then
