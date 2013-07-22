@@ -20,6 +20,7 @@ fileName = None
 dev = None
 interfaceId = None
 verbosity = 0
+ipRegex = r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$"
 
 class ArgumentParser(object):
     def __init__(self):
@@ -115,7 +116,8 @@ for line in subprocess.Popen(("ip addr show %s scope global" % dev).split(), std
             continue
 
         try:
-            obj['v4Address'] = addrStr[0]
+            if ( re.match( ipRegex, addrStr[0] ) ):
+                obj['v4Address'] = addrStr[0]
             obj['v4PrefixLength'] = int( addrStr[1] )
             obj['v4Netmask'] = ipv4_cidr_to_netmask( obj['v4PrefixLength'] )
         except Exception,e:
@@ -154,7 +156,8 @@ for line in subprocess.Popen(("ip route show table uplink.%i" % interfaceId).spl
             print "ERROR: invalid ip route show output: \"%s\"" % line
             continue
         
-        obj['v4Gateway'] = segments[2]
+        if ( re.match( ipRegex, segments[2] ) ):
+            obj['v4Gateway'] = segments[2]
         
 # Parse IPv6 Gateway
 # XXX table main? table uplink.X?
@@ -183,8 +186,9 @@ for line in subprocess.Popen(("cat /etc/dnsmasq.conf").split(), stdout=subproces
             print "ERROR: invalid dnsmasq.conf output: \"%s\"" % line
             continue
         
-        obj['v4Dns%i' % count] = segments[1]
-        count = count +1
+        if ( re.match( ipRegex, segments[1] ) ):
+            obj['v4Dns%i' % count] = segments[1]
+            count = count +1
 
 
 try:
