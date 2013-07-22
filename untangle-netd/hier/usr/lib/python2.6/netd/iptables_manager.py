@@ -27,8 +27,13 @@ class IptablesManager:
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
         
-        file.write("## Flush all iptables rules.\n")
-        file.write("for t_table in `cat /proc/net/ip_tables_names` ; do ${IPTABLES} -t ${t_table} -F ; done" + "\n" + "\n")
+        file.write("## Flush all iptables rules\n")
+        file.write("${IPTABLES} -t raw -F" + "\n");
+        file.write("${IPTABLES} -t tune -F" + "\n");
+        file.write("${IPTABLES} -t nat -F" + "\n");
+        file.write("${IPTABLES} -t filter -F" + "\n");
+        file.write("${IPTABLES} -t mangle -F" + "\n");
+        file.write("\n");
 
         file.write("## Flush all etables rules. (the only rules exist in the broute table)\n")
         file.write("${EBTABLES} -t broute -F" + "\n" + "\n")
