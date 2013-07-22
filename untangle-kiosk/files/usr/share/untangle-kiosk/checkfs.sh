@@ -104,13 +104,12 @@ Continuing with system boot in 5 seconds."
 			    rm -f $PROGRESS_FILE
 			else
 			    splash_start_indefinite
-                            plymouth display-message --text="Checking your disk"
-                            sleep 1
-                            plymouth display-message --text="  ... please be patient: this may take several minutes"
+                plymouth display-message --text="Checking disk"
+                plymouth display-message --text="  ... please be patient: this may take several minutes"
 			    logsave -s $FSCK_LOGFILE fsck $spinner -R -A $fix $force $FSCKTYPES_OPT
 			    FSCKCODE=$?
-                            plymouth hide-message --text="  ... please be patient: this may take several minutes"
-                            plymouth display-message --text="Checking your disk ... done"
+                plymouth hide-message --text="  ... please be patient: this may take several minutes"
+                plymouth hide-message --text="Checking disk"
 			    splash_stop_indefinite
 			fi
 
