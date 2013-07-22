@@ -19,6 +19,7 @@ from netd.radvd_manager import RadvdManager
 from netd.pppoe_manager import PPPoEManager
 from netd.qos_manager import QosManager
 from netd.ddclient_manager import DdclientManager
+from netd.ebtables_manager import EbtablesManager
 
 from netd.iptables_util import IptablesUtil
 from netd.network_util import NetworkUtil

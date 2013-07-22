@@ -149,6 +149,4 @@ class BypassRuleManager:
         if verbosity > 0:
             print "BypassRulesManager: Wrote %s" % self.filename
 
-        os.system("rm -f /etc/untangle-netd/iptables-rules.d/220-bypass-rules") # remove old location
-
         return
