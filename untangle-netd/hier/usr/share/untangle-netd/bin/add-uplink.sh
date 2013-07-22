@@ -72,7 +72,8 @@ ip_rule_update_source_routes()
 
     ## Delete the current rules
     for t_alias in ${t_current_aliases}; do 
-        ${IP} rule del from ${t_alias} lookup ${t_rt_table}
+        # ignore error (if alias didnt exist previously)
+        ${IP} rule del from ${t_alias} lookup ${t_rt_table} >/dev/null 2>&1
     done
 
     for t_alias in ${t_aliases} ; do

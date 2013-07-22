@@ -46,7 +46,9 @@ class FindDevManager:
 
         self.file.write("queue_owner()" + "\n");
         self.file.write("{" + "\n");
-        self.file.write("    echo `awk -v queue=$QUEUE_NUM '{ if ( $1 == queue  ) print $2 } ' /proc/net/netfilter/nfnetlink_queue`" + "\n");
+        self.file.write("    if [ -f /proc/net/netfilter/nfnetlink_queue ] ; then" + "\n");
+        self.file.write("        echo `awk -v queue=$QUEUE_NUM '{ if ( $1 == queue  ) print $2 } ' /proc/net/netfilter/nfnetlink_queue`" + "\n");
+        self.file.write("    fi" + "\n");
         self.file.write("}" + "\n");
         self.file.write("\n");
 
