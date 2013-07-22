@@ -74,7 +74,7 @@ background 67b03c
 ## additional options to use with the default boot option, but not with the
 ## alternatives
 ## e.g. defoptions=vga=791 resume=/dev/hda5
-# defoptions=vga=791 quiet splash ut-video nomodeset video=uvesafb:mode_option=1280x1024-24,mtrr=3,scroll=ywrap
+# defoptions=vga=791 quiet splash nomodeset 
 
 ## should update-grub lock old automagic boot options
 ## e.g. lockold=false
@@ -91,9 +91,10 @@ background 67b03c
 ## multiple altoptions lines are allowed
 ## e.g. altoptions=(extra menu suffix) extra boot options
 ##      altoptions=(single-user) single
-# altoptions=(high resolution mode) vga=791 quiet splash nomodeset video=uvesafb:mode_option=1280x1024-24,mtrr=3,scroll=ywrap
-# altoptions=(hardware safe mode) acpi=off noapic
-# altoptions=(recovery mode) ut-restore
+# altoptions=(vesa video mode) vga=791 splash force-vesa nomodeset video=uvesafb:mode_option=1280x1024-24,mtrr=3,scroll=ywrap
+# altoptions=(kern video mode) vga=791 splash
+# altoptions=(hardware safe mode) acpi=off noapic nosplash
+# altoptions=(recovery mode) ut-restore nosplash
 
 ## controls how many kernels should be put into the menu.lst
 ## only counts the first occurence of a kernel, not the

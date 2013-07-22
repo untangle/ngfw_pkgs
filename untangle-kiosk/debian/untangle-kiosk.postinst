@@ -11,9 +11,14 @@ perl -i -pe 's|^[xw]7:5:wait:.+$||' /etc/inittab
 
 rsync -Ha /usr/share/untangle-kiosk/homes/root/ /root/
 rsync -Ha /usr/share/untangle-kiosk/homes/kiosk/ ${KIOSK_HOME}/
-if [[ $(cat /etc/debian_version) == 6* ]] ; then
-  xorg_vesa_conf=${XORG_VESA_CONF_BASE}-squeeze
+
+xorg_vesa_conf=${XORG_VESA_CONF_BASE}
+
+if [[ $(cat /etc/debian_version) == 7* ]] ; then
+  echo "UNSUPPORTED DEBIAN VERSION: `cat /etc/debian_version`"
+  xorg_vesa_conf=${XORG_VESA_CONF_BASE}
 fi
+
 chown -R kiosk:kiosk ${KIOSK_HOME}
 
 cp $xorg_vesa_conf /etc/X11/xorg-untangle-vesa.conf

@@ -45,9 +45,6 @@ if [ -n "$rootdev" ]; then
     tune2fs -i 0 $rootdev
 fi
 
-# enable bootlogd
-perl -i -pe 's/^BOOTLOGD_ENABLE=.*/BOOTLOGD_ENABLE=Yes/' /etc/default/bootlogd
-
 # Disable Debian version banner in SSH for compliance
 # This is in case SSH is enabled and they run a PCI scan
 if [ -z "`grep DebianBanner /etc/ssh/sshd_config`" ] ; then
