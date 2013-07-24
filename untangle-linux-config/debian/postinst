@@ -55,8 +55,6 @@ perl -i -pe 's|^[^\s#]+(\s+/\s+)|'$rootdev'$1|' /etc/fstab
 echo "Installing Untangle $menuLst"
 mkdir -p /boot/grub
 
-[ -f $menuLstPreUntangle ] || cp $menuLst $menuLstPreUntangle
-
 if [[ $(cat /etc/debian_version) == 6* ]] ; then
   menuFile="/usr/share/untangle-linux-config/menu-squeeze.lst"
 else
@@ -65,6 +63,8 @@ else
 fi
 
 sed -e "s/@ROOTDEV@/$rootdev/" $menuFile > $menuLst
+
+[ -f $menuLstPreUntangle ] || cp $menuLst $menuLstPreUntangle
 
 # Set default (not necessary on this upgrade)
 # 
