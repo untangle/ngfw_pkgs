@@ -45,8 +45,12 @@ if [ -f "$bad_libnet" ] ; then
   cp -f /usr/share/untangle-kiosk/libnet-good.so $bad_libnet
 fi
 
+# Display plymouth message when running fsck
 # Bug #11111
+# This is a nasty hack because squeeze doesnt notify 
+# plymouth (wheezy will probably handle this)
 cp -f /usr/share/untangle-kiosk/checkfs.sh /etc/init.d/
+cp -f /usr/share/untangle-kiosk/checkroot.sh /etc/init.d/
 
 echo >| /etc/motd.tail
 
