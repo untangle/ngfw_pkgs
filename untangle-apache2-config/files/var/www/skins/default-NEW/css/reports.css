@@ -1,0 +1,197 @@
+/*
+ * Ext JS Library 2.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
+ * licensing@extjs.com
+ *
+ * http://extjs.com/license
+ */
+#base {
+    margin: 0 auto;
+    width: 960px;
+}
+/* for printing */
+.full-height{
+    height: auto !important;
+}
+.full-height .x-panel-body, .full-height .x-tab-panel-body{
+    height : auto !important;
+}
+/* end for printing */
+.base-container {
+    margin-top:15px;
+}
+.base-container img {
+    vertical-align:middle;
+    margin-bottom:0.2em;
+}
+.base-container h1 {
+    display:inline;
+    margin-left:0.4em;
+    font-size:2.3em;
+    color:#444;
+}
+.export-excel {
+    background: transparent url('../images/reports/csv.png') no-repeat center left !important;
+}
+.export-printer {
+    background: transparent url('../images/reports/icon_printer.gif') no-repeat center left !important;
+}
+.breadcrumbs {
+    color: #555555;
+    font-weight: normal;
+}
+.icon-breadcrumbs-separator {
+    background:transparent url(../images/admin/icon_breadcrumbs_separator.gif) no-repeat center center !important;
+    width:13px;
+    height:12px;
+}
+/* icons */
+.untangle-node-spamassassin{
+    background-image: url(../images/reports/nodes/spamblocker.png) !important;
+}
+.untangle-node-shield {
+    background-image: url(../images/reports/nodes/attackblocker.png) !important;
+}
+.untangle-node-phish {
+    background-image: url(../images/reports/nodes/phishblocker.png) !important;
+}
+.untangle-node-clam {
+    background-image: url(../images/reports/nodes/virusblocker.png) !important;
+}
+.untangle-node-webfilter {
+    background-image: url(../images/reports/nodes/webfilter.png) !important;
+}
+.untangle-node-spyware {
+    background-image: url(../images/reports/nodes/spywareblocker.png) !important;
+}
+.untangle-node-kav {
+    background-image: url(../images/reports/nodes/kav.png) !important;
+}
+.untangle-node-openvpn {
+    background-image: url(../images/reports/nodes/openvpn.png) !important;
+}
+.untangle-node-ips {
+    background-image: url(../images/reports/nodes/intrusionprevention.png) !important;
+}
+.untangle-node-firewall{
+    background-image: url(../images/reports/nodes/firewall.png) !important;
+}
+.untangle-node-adconnector {
+    background-image: url(../images/reports/nodes/adconnector.png) !important;
+}
+.untangle-node-protofilter {
+    background-image: url(../images/reports/nodes/protocolcontrol.png) !important;
+}
+.untangle-node-remoteaccessportal {
+    background-image: url(../images/reports/nodes/remoteaccessportal.png) !important;
+}
+.dateRange{
+    left:456px !important;
+}
+.dateRange .x-panel-body{
+    height:60px !important;
+}
+#rangeFieldSet{
+    padding-bottom:0px;
+    margin-bottom:0px;
+    padding-top:0px;
+}
+#rangeFieldSet div {
+	padding-top:0px;
+}
+.dateContainer .x-fieldset-body{
+   height:60px !important;
+}
+#logout-link{
+    float:right;
+    clear:both;
+    text-align:right;
+    margin-bottom:10px;
+    cursor:pointer;
+    cursor:hand;
+    color:blue;
+    text-decoration:underline;
+    font-size:11px;
+    font-family:Tahoma,Helvetica,sans-serif; 
+}
+#report-day-menu,.print{
+    float:right;
+    clear:both;
+    text-align:right;
+    cursor:pointer;
+    cursor:hand;
+    color:blue;
+    text-decoration:underline;
+    font-size:11px;
+    font-family:Tahoma,Helvetica,sans-serif;    
+}
+.small-right-margin{
+    margin-right:5px;
+    margin-top:5px;
+}
+#report-date-range{
+    float:right;
+        clear:both;    
+    height:16px;
+    text-align:right;
+    font-style: normal;
+    font-size:11px;
+    font-weight:bold;
+    font-family:Tahoma,Helvetica,sans-serif;
+}
+.highlight{
+    margin:0em 0 0em 1em;
+}
+.highlight p{
+    padding:0em 1em 0em 55px ;
+    line-height:53px;
+    background-color:#CCC;
+    font-family:Tahoma,Helvetica,sans-serif;
+    font-size:12px;
+    background-repeat:no-repeat;
+    background-position:5px 5px;  
+    margin-right:25px;  
+}
+.highlight-2 p{
+    padding:0em 1em 0em 35px ;
+    line-height:25px;
+    background-color:#CCC;
+    font-family:Tahoma,Helvetica,sans-serif;
+    font-size:12px;
+    background-repeat:no-repeat;
+    background-position:5px 5px;  
+    margin-right:25px;  
+}
+.highlight-2{
+    margin:0em 0 0em 1em;
+}
+.odd p{
+    background-color:#EFEFEF;
+}
+.highlight p strong, .highlight-2 p strong{
+    font-weight:bold;
+}
+.first{
+    margin-top:1em;
+}
+.summary-header{
+    height:51px;
+    margin:0.5em 0 0 1em;
+}
+.summary-header img{
+    margin-right:1em;
+}
+
+.summary-header strong{
+    font-weight:bold;
+    font-family:Tahoma,helvetica,sans-serif;
+    font-size:14px;
+}
+#window-container{
+    top:15px !important;
+    margin: 0 auto !important;
+    left: auto !important;
+}
+.top-align{
+    vertical-align:top;
+}
