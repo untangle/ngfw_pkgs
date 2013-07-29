@@ -65,6 +65,18 @@ class FindDevManager:
         self.file.write("}" + "\n");
         self.file.write("\n");
 
+        self.file.write("wait_queue()" + "\n");
+        self.file.write("{" + "\n");
+        self.file.write("    for i in `seq 10` ; do" + "\n")
+        self.file.write("        if [ -z \"`queue_owner`\" ] ; then" + "\n")
+        self.file.write("            return" + "\n")
+        self.file.write("        fi" + "\n")
+        self.file.write("        sleep 1" + "\n")
+        self.file.write("    done" + "\n")
+        self.file.write("    echo \"finddev queue still owned by `queue_owner`!\"" + "\n")
+        self.file.write("}" + "\n");
+        self.file.write("\n");
+
         #self.file.write("echo \"CURRENT QUEUE OWNER:\" `queue_owner`" + "\n");
         #self.file.write("echo \"CURRENT CMD:\" `current_cmd`" + "\n");
         #self.file.write("\n");
@@ -72,17 +84,23 @@ class FindDevManager:
         self.file.write("if [ ! -z \"`queue_owner`\" ] ; then" + "\n");
         self.file.write("    echo \"Stopping finddev [`queue_owner`].\"" + "\n");
         self.file.write("    kill -INT `queue_owner`" + "\n");
+        self.file.write("    wait_queue" + "\n");
         self.file.write("fi" + "\n");
+        self.file.write("\n");
+
 
         self.file.write("if [ ! -z \"`queue_owner`\" ] ; then" + "\n");
         self.file.write("    echo \"Killing finddev [`queue_owner`].\"" + "\n");
         self.file.write("    kill `queue_owner`" + "\n");
+        self.file.write("    wait_queue" + "\n");
         self.file.write("fi" + "\n");
+        self.file.write("\n");
 
         self.file.write("if [ -z \"`queue_owner`\" ] ; then" + "\n");
         self.file.write("    start_finddev" + "\n");
         self.file.write("    echo \"Started  finddev.\"" + "\n");
         self.file.write("fi" + "\n");
+        self.file.write("\n");
 
         self.file.flush();
         self.file.close();
