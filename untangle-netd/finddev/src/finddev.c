@@ -58,6 +58,11 @@
 #define MARK_BYPASS 0x01000000
 
 /**
+ * nfnetlink socket buffer size
+ */
+#define BUFFER_SIZE 1048576
+
+/**
  * Is running flag, to exit set this to 0
  */
 int running = 1;
@@ -258,7 +263,10 @@ int main ( int argc, char **argv )
 
     nh = nfq_nfnlh(h);
     fd = nfnl_fd(nh);
-
+    if ( nfnl_rcvbufsiz(nh, BUFFER_SIZE) < 0 ) {
+        fprintf( stderr, "nfnl_rcvbufsiz: %s\n", strerror(errno) );
+    }
+    
     for ( i = 0 ; i < MAX_INTERFACES ; i++ ) {
         if ( interfaceNames[i] != NULL ) {
             _debug( 1, "Marking Interface %s with mark %i\n", interfaceNames[i], interfaceIds[i]);
@@ -276,7 +284,25 @@ int main ( int argc, char **argv )
     _debug( 1, "Shutdown initiated...\n" );
 
     _debug( 2, "Unbinding from queue %i\n",QUEUE_NUM );
-    // XXX sometimes this hangs indefinitely preventing the process from exiting 
+
+    /**
+     * XXX
+     * Sometimes nfq_destroy_queue hangs indefinitely preventing the process from exiting
+     *
+     * Do an alarm(2) so that the process will be killed regardless in 2 seconds.
+     *
+     * Also, unbind and rebind so nfq_destroy_queue wont hang.
+     * http://developer.berlios.de/bugs/?func=detailbug&bug_id=14793&group_id=2509
+     */
+    if ( alarm( 2 ) < 0 ) {
+        fprintf( stderr, "alarm: %s\n", strerror(errno) );
+    }
+    if (nfq_unbind_pf(h, AF_INET) < 0) {
+        fprintf( stderr, "error during nfq_unbind_pf()\n");
+    }
+    if (nfq_bind_pf(h, AF_INET) < 0) {
+        fprintf( stderr, "error during nfq_bind_pf()\n");
+    }
     nfq_destroy_queue(qh);
 
     _debug( 2, "Closing library handle\n" );
@@ -291,7 +317,7 @@ int main ( int argc, char **argv )
     }
         
     _debug( 1, "Exiting...\n" );
-
+    
     exit(0);
 }
 
@@ -313,7 +339,7 @@ static void* _read_pkt (void* data)
         }
 
         if ( running == 0 ) {
-            fprintf( stderr, "Thread Exiting...\n" );
+            fprintf( stdout, "Thread Exiting...\n" );
             running = 0;
             pthread_exit(NULL);
         } else {
@@ -510,18 +536,27 @@ static void  _signal_term( int sig )
     running = 0;
 }
 
+static void  _signal_kill( int sig )
+{
+    exit(0);
+}
+
 static int   _set_signals( void )
 {
     struct sigaction signal_action;
     
     memset( &signal_action, 0, sizeof( signal_action ));
     signal_action.sa_flags = SA_NOCLDSTOP;
+
     signal_action.sa_handler = _signal_term;
-    sigaction( SIGINT,  &signal_action, NULL );
+    sigaction( SIGINT,   &signal_action, NULL );
+
+    signal_action.sa_handler = _signal_kill;
+    sigaction( SIGALRM,  &signal_action, NULL );
     
     signal_action.sa_handler = SIG_IGN;
-    sigaction( SIGCHLD, &signal_action, NULL );
-    sigaction( SIGPIPE, &signal_action, NULL );
+    sigaction( SIGCHLD,  &signal_action, NULL );
+    sigaction( SIGPIPE,  &signal_action, NULL );
     
     return 0;
 }
