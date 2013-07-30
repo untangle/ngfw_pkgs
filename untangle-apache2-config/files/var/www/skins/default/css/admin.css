@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'PT Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('PT Sans'), local('PTSans-Regular'), url(../fonts/PTSans.woff) format('woff');
+}
+
 /* Left side container */
 .content-left {
     width: 214px;
@@ -94,6 +101,9 @@ div.node-cap {
     position:absolute;
     top:12px;
     left:50px;
+    -moz-box-shadow:1px 1px 1px 1px #333;
+    -webkit-box-shadow:1px 1px 1px 1px #333;
+    box-shadow:1px 1px 1px 1px #333;    
 }
 /* node display name text*/
 div.node div.node-label {
@@ -102,9 +112,10 @@ div.node div.node-label {
     left: 100px;
     height: 55px;
     width: 230px;
-    font-family: tahoma,arial, helvetica, freesans,sans-serif;
-    font-size: 18px;
+    font-family: PT Sans,arial, helvetica, freesans,sans-serif;
+    font-size: 20px;
     color: #F8F8F8;
+    text-shadow: 1px 1px 2px #000;
 }
 /* node trial info text */
 div.node div.node-faceplate-info {
@@ -580,9 +591,9 @@ td.app-item-center div.text {
     height: 35px;
     text-align: left;
     color:#4E4C4C;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
-    font-family:Tahoma, arial, freesans,sans-serif;
+    font-family:PT Sans, Tahoma, arial, freesans,sans-serif;
 }
 /* app item config display name text */
 td.app-item-center div.text-center {
