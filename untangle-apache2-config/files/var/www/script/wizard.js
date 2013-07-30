@@ -12,7 +12,7 @@ Ext.define('Ung.Wizard', {
 		var logo_container = Ext.get('extra-div-1');
 		logo_container.addCls( 'logo-container');
         var logo = document.createElement('img');
-		logo.src= '../images/BrandingLogo.gif';		
+		logo.src= '../images/BrandingLogo.png';		
 		logo_container.appendChild(logo);		
         /* Build a panel to hold the headers on the left */
         this.headerPanel = Ext.create('Ext.panel.Panel', {

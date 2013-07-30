@@ -174,7 +174,7 @@ def _write_login_form(req, title, host, is_error):
  <!-- Content Start -->
 
       <center>
-        <img alt="" src="/images/BrandingLogo.gif" /><br />
+        <img alt="" src="/images/BrandingLogo.png" /><br />
 
         <b>%s</b><br/>
 

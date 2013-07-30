@@ -156,7 +156,7 @@ def _write_error_page(req, msg):
 <div id=\"main\" style=\"width:500px;margin:50px auto 0 auto;\">
 <div class=\"main-top-left\"></div><div class=\"main-top-right\"></div><div class=\"main-mid-left\"><div class=\"main-mid-right\"><div class=\"main-mid\">
 <center>
-<img alt=\"\" src=\"/images/BrandingLogo.gif\" /><br /><br />
+<img alt=\"\" src=\"/images/BrandingLogo.png\" /><br /><br />
 <b>%s</b><br /><br />
 <em>%s</em>
 </center><br /><br />

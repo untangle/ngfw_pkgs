@@ -84,8 +84,8 @@ for tarball in /usr/share/untangle-apache2-config/ext*.tar.gz ; do
   tar -C /var/www -xzf $tarball
 done
 
-if [ ! -f /var/www/images/BrandingLogo.gif ]; then
-    cp /var/www/images/Logo150x96.gif /var/www/images/BrandingLogo.gif
+if [ ! -f /var/www/images/BrandingLogo.png ]; then
+    cp /var/www/images/Logo150x96.png /var/www/images/BrandingLogo.png
 fi
 
 apply_oem="/usr/share/untangle/bin/apply-oem.sh"
