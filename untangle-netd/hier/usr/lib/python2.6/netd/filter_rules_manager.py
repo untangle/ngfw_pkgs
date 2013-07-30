@@ -15,7 +15,7 @@ class FilterRulesManager:
     filename = defaultFilename
     file = None
 
-    def write_filter_rule( self, table_name, filter_rule, verbosity=0 ):
+    def write_filter_rule( self, table_name, filter_rule, drop_target, verbosity=0 ):
 
         if filter_rule.get('enabled') == None or filter_rule.get('enabled') == False:
             return
@@ -27,7 +27,7 @@ class FilterRulesManager:
             return
 
         if filter_rule.get('blocked'):
-            target = ' -j DROP '
+            target = ' -j %s ' % drop_target
         else:
             target = ' -j RETURN '
 
@@ -53,7 +53,7 @@ class FilterRulesManager:
 
         for filter_rule in input_filter_rules:
             try:
-                self.write_filter_rule( "filter-rules-input", filter_rule, verbosity );
+                self.write_filter_rule( "filter-rules-input", filter_rule, "DROP", verbosity );
             except Exception,e:
                 traceback.print_exc(e)
         return
@@ -68,7 +68,7 @@ class FilterRulesManager:
 
         for filter_rule in forward_filter_rules:
             try:
-                self.write_filter_rule( "filter-rules-forward", filter_rule, verbosity );
+                self.write_filter_rule( "filter-rules-forward", filter_rule, "REJECT", verbosity );
             except Exception,e:
                 traceback.print_exc(e)
         return
