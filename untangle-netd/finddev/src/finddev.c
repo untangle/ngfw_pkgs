@@ -182,6 +182,8 @@ static int    _arp_issue_request ( struct in_addr* src_ip, struct in_addr* dst_i
 static int    _arp_fake_connect ( struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
 static int    _arp_build_packet ( struct ether_arp* pkt, struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
 
+static long long _timeval_diff( struct timeval *end_time, struct timeval *start_time );
+
 /**
  * FIXME TODO - handling of non-IP packets?
  * FIXME TODO - handling of IPv6?
@@ -725,6 +727,10 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
     int ret = 1;
     struct nfqnl_msg_packet_hdr* ph = nfq_get_msg_packet_hdr(nfq_data);
     int packet_id = 0;
+    struct timeval start_time;
+    struct timeval end_time;
+  
+    gettimeofday( &start_time, NULL );
 
     if ( ph )
         packet_id = ntohl(ph->packet_id);
@@ -793,6 +799,9 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
         return -1;
     }
 
+    gettimeofday( &end_time, NULL );
+    long long usec = _timeval_diff( &end_time, &start_time);
+    
     /**
      * Now find Untangle's ID for that bridge port and return that ID
      */
@@ -807,7 +816,7 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
             if (verbosity >= 1) {
                 char mac_string[MAC_STRING_LENGTH];
                 _mac_to_string( mac_string, sizeof( mac_string ), &mac_address );
-                _debug( 1, "RESULT[%i]: nextHop: %s nextHopMAC: %s -> systemDev: %s interfaceId: %i\n", packet_id, inet_ntoa( next_hop ), mac_string, bridge_port_intf_name, interfaceIds[i]);
+                _debug( 1, "RESULT[%i]: nextHop: %s nextHopMAC: %s -> systemDev: %s interfaceId: %i usec: %lld\n", packet_id, inet_ntoa( next_hop ), mac_string, bridge_port_intf_name, interfaceIds[i], usec);
             }
             return interfaceIds[i];
         }
@@ -1173,3 +1182,18 @@ static int   _arp_build_packet ( struct ether_arp* pkt, struct in_addr* src_ip, 
 
     return 0;
 }
+
+long long _timeval_diff( struct timeval *end_time, struct timeval *start_time )
+{
+    struct timeval difference;
+
+    difference.tv_sec =end_time->tv_sec -start_time->tv_sec ;
+    difference.tv_usec=end_time->tv_usec-start_time->tv_usec;
+
+    while( difference.tv_usec < 0 ) {
+        difference.tv_usec += 1000000;
+        difference.tv_sec -= 1;
+    }
+
+    return 1000000LL*difference.tv_sec+ difference.tv_usec;
+} 
