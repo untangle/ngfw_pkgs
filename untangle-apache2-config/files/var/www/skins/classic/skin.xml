@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <skin>
-  <name>defaultWide</name>
-  <displayName>Default Wide</displayName>
+  <name>classic</name>
+  <displayName>Classic</displayName>
   <adminSkin>true</adminSkin>
   <adminSkinVersion>2</adminSkinVersion>
 </skin>
