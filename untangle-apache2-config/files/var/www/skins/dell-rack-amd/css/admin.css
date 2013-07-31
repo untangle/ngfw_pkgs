@@ -1,9 +1,8 @@
 /* Left side container */
 .content-left {
-    width: 214px;
+    width: 215px;
     background:#F9F9FA url(../images/admin/background_left.png)  repeat-x !important;
     text-align:center;
-    height:100%;
     border-right:1px #333 solid;
 }
 /* right content container */
@@ -31,17 +30,8 @@ div.racks-without-separator {
 /* logo container */
 div.logo {
     position:relative;
-    height:100px;
-    margin-top:20px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom:15px;
+    padding-top:20px;
     overflow:hidden;
-}
-/* left tabs container */
-.left-tabs {
-    background-color: transparent;
-    padding:0px 0px 0px 0px;
 }
 /* top rack list background */
 #rack-list {

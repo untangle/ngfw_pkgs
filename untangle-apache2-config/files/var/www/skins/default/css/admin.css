@@ -7,10 +7,9 @@
 
 /* Left side container */
 .content-left {
-    width: 214px;
-    background:url(../images/admin/background_left.png) left top no-repeat !important;
+    width: 215px;
+    background: #5C5C5D url(../images/admin/background_left.png) no-repeat !important;
     text-align:center;
-    height:100%;
     border-right:1px #333 solid;
 }
 /* right content container */
@@ -38,17 +37,8 @@ div.racks-without-separator {
 /* logo container */
 div.logo {
     position:relative;
-    height:100px;
-    margin-top:20px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom:15px;
+    padding-top:20px;
     overflow:hidden;
-}
-/* left tabs container */
-.left-tabs {
-    background-color: transparent;
-    padding:0px 0px 0px 0px;
 }
 /* top rack list background */
 #rack-list {
@@ -676,8 +666,8 @@ div.icon-arrow-down {
 /* rack top system stat container */
 div.system-stats {
     position:absolute;
-    width:390px;
-    height:50px;
+    width: 390px;
+    height: 50px;
     top:0px;
     right:40px;
     color: #FFFFFF;
@@ -1513,7 +1503,7 @@ table.failover-run-test
 }
 
 table.failover-ping-suggestions
-{
+{ 
     float : left;
     margin-top : -2.1em;
     margin-left : 23em;
