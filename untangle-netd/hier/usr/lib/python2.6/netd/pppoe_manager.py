@@ -239,6 +239,6 @@ true
 
         # move 0000usepeerdns file, we will handle usepeerdns option
         # bug #11185
-        os.system("mv -f /etc/ppp/ip-up.d/0000usepeerdns /etc/ppp/ip-up.d/0000usepeerdns.disabled")
+        os.system("if [ -f /etc/ppp/ip-up.d/0000usepeerdns ] ; then mv -f /etc/ppp/ip-up.d/0000usepeerdns /etc/ppp/ip-up.d/0000usepeerdns.disabled ; fi")
 
         return
