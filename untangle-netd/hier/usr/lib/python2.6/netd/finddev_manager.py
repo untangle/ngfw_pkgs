@@ -15,7 +15,8 @@ class FindDevManager:
     file = None
 
     def calculate_cmd( self, settings, verbosity=0 ):
-        cmd = "/usr/share/untangle-netd/bin/finddev -v -d -l /var/log/uvm/finddev.log "
+        #cmd = "/usr/share/untangle-netd/bin/finddev -d -l /var/log/uvm/finddev.log -v "
+        cmd = "/usr/share/untangle-netd/bin/finddev -d -l /var/log/uvm/finddev.log "
         for intf in settings['interfaces']['list']:
             if 'interfaceId' not in intf or 'systemDev' not in intf:
                 continue
