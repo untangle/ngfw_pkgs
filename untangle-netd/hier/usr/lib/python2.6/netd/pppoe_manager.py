@@ -237,4 +237,8 @@ true
         self.write_pre_network_hook( settings, prefix, verbosity )
         self.write_ppp_ipup_hook( settings, prefix, verbosity )
 
+        # move 0000usepeerdns file, we will handle usepeerdns option
+        # bug #11185
+        os.system("mv -f /etc/ppp/ip-up.d/0000usepeerdns /etc/ppp/ip-up.d/0000usepeerdns.disabled")
+
         return
