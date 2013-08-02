@@ -168,41 +168,29 @@ def _write_login_form(req, title, host, is_error):
 /* ]]> */
 </style>
 </head>
-<body>
+<body class="loginPage">
 <div id="main" style="width: 500px; margin: 50px auto 0 auto;">
- <div class="main-top-left"></div><div class="main-top-right"></div><div class="main-mid-left"><div class="main-mid-right"><div class="main-mid">
- <!-- Content Start -->
-
-      <center>
-        <img alt="" src="/images/BrandingLogo.png" /><br />
-
-        <b>%s</b><br/>
-
-        <font size="4"><b>%s</b></font>
-
-        <div style="margin: 0 auto; width: 250px; padding: 20px 0 5px;">
-
-        <form method="post" action="%s">
-          <table><tbody>
-            <tr><td style="text-align:right">%s</td><td><em>&nbsp;%s</em></td></tr>
-            <tr><td style="text-align:right">%s</td><td><input id="username" type="text" name="username" value="admin"/></td></tr>
-            <tr><td style="text-align:right">%s</td><td><input id="password" type="password" name="password" /></td></tr>
-          </tbody></table>
-          <br />
-          <div style="text-align: center;"><button value="login" type="submit">%s</button></div>
-        </form>
-
-        <script type="text/javascript">document.getElementById('password').focus();</script>
-
-        </div>
-      </center>
-
-
- <!-- Content End -->
- </div></div></div><div class="main-bot-left"></div><div class="main-bot-right"></div>
- <!-- Box End -->
+    <form method="post" action="%s" class="form-signin">
+        <center>
+    	    <img style="margin-bottom:10px;" src="/images/BrandingLogo.png"><br/>
+            <span class="form-signin-heading"><strong>%s</strong></span>
+            <br/>
+            <br/>
+            <span><strong>%s</strong></span>
+            <table>
+                <tbody>
+                    <tr><td style="text-align:right;color:white;">%s</td><td><em><font color="white">&nbsp;%s</font></em></td></tr>
+                    <tr><td style="text-align:right;color:white;">%s</td><td><input id="username" type="text" name="username" value="admin" class="input-block-level"/></td></tr>
+                    <tr><td style="text-align:right;color:white;">%s</td><td><input id="password" type="password" name="password" class="input-block-level"/></td></tr>
+                </tbody>
+            </table>
+            <br/>
+            <div style="text-align: center;color:white;"><button value="login" type="submit">%s</button></div>
+        </center>
+    </form>
+    <script type="text/javascript">document.getElementById('password').focus();</script>
 </div>
 </body>
-</html>""" % (title, error_msg, title, login_url, server_str, host, username_str, password_str, login_str)
+</html>""" % (title, login_url,title,error_msg, server_str, host, username_str, password_str, login_str)
     
     req.write(html)

@@ -140,30 +140,33 @@ def _write_error_page(req, msg):
     if not type(msg) is str:
         msg = msg.encode("utf-8")
 
+
     html = """\
-<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
-<html xmlns=\"http://www.w3.org/1999/xhtml\">
-<head>
-<title>%s</title>
-<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />
-<style type=\"text/css\">
-/* <![CDATA[ */
-@import url(/images/base.css);
-/* ]]> */
-</style>
-</head>
-<body>
-<div id=\"main\" style=\"width:500px;margin:50px auto 0 auto;\">
-<div class=\"main-top-left\"></div><div class=\"main-top-right\"></div><div class=\"main-mid-left\"><div class=\"main-mid-right\"><div class=\"main-mid\">
-<center>
-<img alt=\"\" src=\"/images/BrandingLogo.png\" /><br /><br />
-<b>%s</b><br /><br />
-<em>%s</em>
-</center><br /><br />
-</div></div></div><div class=\"main-bot-left\"></div><div class=\"main-bot-right\"></div>
-</div>
-</body>
-</html>
-""" % (us, us, cgi.escape(msg))
-    
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+    <title>%s</title>
+    <script type="text/javascript">if (top.location!=location) top.location.href=document.location.href;</script>
+    <style type="text/css">
+    /* <![CDATA[ */
+    @import url(/images/base.css);
+    /* ]]> */
+    </style>
+    </head>
+    <body class="loginPage">
+    <div id="main" style="width: 500px; margin: 50px auto 0 auto;">
+        <form class="form-signin">
+            <center>
+                <img style="margin-bottom:10px;" src="/images/BrandingLogo.png"><br/>
+                <span class="form-signin-heading"><strong>%s</strong></span>
+             <br/>
+                <br/>
+                <span class="form-signin-heading"><font color="red"><em>%s</em></font></span>
+            </center>
+        </form>
+    </div>
+    </body>
+    </html>""" % (us,us, cgi.escape(msg))
+       
     req.write(html)

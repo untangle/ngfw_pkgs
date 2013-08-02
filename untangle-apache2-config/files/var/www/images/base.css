@@ -67,35 +67,46 @@ hr {
 p {
 	margin-bottom: 4px;
 }
-.main-top-left, .main-top-right, .main-bot-left, .main-bot-right {
-    background-image: url(/images/bg_main_top_bot.gif);
-    height: 23px;
+
+.loginPage {
+	padding-top: 40px;
+       padding-bottom: 40px;
+	background: #fff url(/images/background_body.gif) repeat-x top left;
 }
-.main-top-left, .main-bot-left {
-    margin-right: 23px;
+
+.form-signin {
+        width: 380px;
+	 padding: 19px 29px 29px;
+	 margin: 0 auto 20px;
+	 background:#585858 url(/images/background_login_box.png) no-repeat top left;
+   	 background-size: cover;
+	 border: 2px solid #e5e5e5;
+	 -webkit-border-radius: 20px;
+	 -moz-border-radius: 20px;
+	 border-radius: 20px;
+	 -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+	 -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+	 box-shadow: 0 1px 2px rgba(0,0,0,.05);
 }
-.main-top-right, .main-bot-right {
-    margin: -23px 0 0 23px;
+
+.form-signin-heading {
+    font-size: 18px;
+    font-weight: bold;
+    color: #efefef;
 }
-.main-bot-left    {
-    background-position: 0 -23px;
+
+.input-block-level {
+    display: block;
+    margin-bottom: 2px;
 }
-.main-bot-right {
-    background-position: 100% -23px;
-}
+
 .main-mid {
     margin: 0 23px;
     padding: 0 2px;
-	text-align: left;
-    background: #fff url(/images/bg_main_mid.gif);
-	overflow: hidden;
+    text-align: left;
+    overflow: hidden;
 }
-.main-mid-left, .main-mid-right {
-    background: url(/images/bg_main_left_right.gif) 0 0 repeat-y;
-}
-.main-top-right, .main-mid-right {
-    background-position: 100% 0;
-}
+
 .main-reduced {
 	width: 500px; 
 	margin: 50px auto 0 auto;
