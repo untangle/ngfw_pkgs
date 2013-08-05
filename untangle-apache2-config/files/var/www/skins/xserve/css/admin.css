@@ -1561,6 +1561,11 @@ div.ua-cell-test-traceroute
     background: transparent url(../images/admin/icon_test_traceroute.png) no-repeat center left !important;
 }
 
+div.ua-cell-test-download
+{ 
+    background: transparent url(../images/admin/icon_test_download.png) no-repeat center left !important;
+}
+
 div.ua-cell-test-packet
 { 
     background: transparent url(../images/admin/icon_test_packet.png) no-repeat center left !important;
