@@ -59,6 +59,8 @@ INST_OPTS=" -o DPkg::Options::=--force-confnew --yes --force-yes --fix-broken "
 UPGD_OPTS=" -o DPkg::Options::=--force-confnew --yes --force-yes --fix-broken "
 tmpfile=$(tempfile)
 backtitle="$OEM_NAME"
+height="12"
+width="61"
 
 confirm_exit()
 {
@@ -82,7 +84,7 @@ confirm()
 
 success_splash()
 {
-    dialog --backtitle "$backtitle" --title "Complete" --msgbox "Settings Applied" 10 61
+    dialog --backtitle "$backtitle" --title "Complete" --msgbox "Settings Applied" $height $width
 
     state=MAIN_MENU
 }
@@ -90,14 +92,14 @@ success_splash()
 factory_success_splash()
 {
     REBOOT_ON_EXIT=1
-    dialog --backtitle "$backtitle" --title "Complete" --msgbox "Factory settings restored. The $OEM_NAME Server will now reboot." 10 61
+    dialog --backtitle "$backtitle" --title "Complete" --msgbox "Factory settings restored. The $OEM_NAME Server will now reboot." $height $width
 
     state=END_STATE
 }
 
 factory_fail_splash()
 {
-    dialog --backtitle "$backtitle" --title "Warning" --msgbox "Unable to return to Factory Defaults, Please try again." 10 61
+    dialog --backtitle "$backtitle" --title "Warning" --msgbox "Unable to return to Factory Defaults, Please try again." $height $width
 
     state=MAIN_MENU
 }
@@ -105,7 +107,7 @@ factory_fail_splash()
 support_menu()
 {
     dialog --backtitle "$backtitle" --title "$OEM_NAME Support" \
-        --menu "Choose operation:" 10 61 2 \
+        --menu "Choose operation:" $height $width 3 \
         "Enable Remote Support" "" \
         "Disable Remote Support" "" \
         "Display UID" "" \
@@ -132,7 +134,8 @@ support_menu()
                     ;;
                 "Display UID")
                     if [ -f /usr/share/untangle/conf/uid ] ; then cat /usr/share/untangle/conf/uid ; else echo "No UID" ; fi
-                    state=SUCCESS_SPLASH
+                    dialog --backtitle "$backtitle" --title "UID" --msgbox "`cat /usr/share/untangle/conf/uid`" $height $width
+                    state=MAIN_MENU
                     ;;
                 *)
                     echo "Invalid Option: $choice"
@@ -149,7 +152,7 @@ support_menu()
 upgrade_menu()
 {
     dialog --backtitle "$backtitle" --title "$OEM_NAME Upgrade" \
-        --menu "Choose operation:" 10 61 3 \
+        --menu "Choose operation:" $height $width 3 \
         "Upgrade" "" \
         "Resume Halted Upgrade" "" \
         "Fix Halted Upgrade" "" \
@@ -189,7 +192,7 @@ main_menu()
 {
     dialog --backtitle "$backtitle" --title "$OEM_NAME Recovery" \
         --cancel-label "Exit" \
-        --menu "Choose operation:" 10 61 3 \
+        --menu "Choose operation:" $height $width 4 \
         "Return to Factory Defaults" "" \
         "Reset Administration Accounts" "" \
         "Upgrade" "" \
