@@ -1,7 +1,7 @@
 #!/bin/dash
 
 # This script addes the appropriate ip route rules for a WAN interface
-# Usage: add-uplink.sh <interface> <gatewayIP|"dev"> <routeTable>
+# Usage: add-uplink.sh <interface> <gatewayIP> <routeTable>
 
 ## All of the untangle rules MUST fall in this priority.  This makes it easy to
 ## flush all of the rules.
@@ -102,17 +102,14 @@ $DEBUG "Adding uplink for [${IFACE}] -> ${GATEWAY} to ${RT_TABLE}"
 
 ip_rule_update_source_routes ${IFACE} ${GATEWAY} ${RT_TABLE}
 
-# Replace the default route in the uplink table
-if [ "${GATEWAY}" = "dev" ]; then
-    ${IP} route replace table ${RT_TABLE} default dev ${IFACE}
-else
-    # Add an implicit route for that gateway on IFACE
-    # This is for ISPs that give out gateways not within the customer's network/netmask
-    # Ignore "RTNETLINK answers: File exists" error, this just mean the route exists
-    ${IP} route add ${GATEWAY} dev ${IFACE} 2>&1 | grep -v 'File exists'
 
-    ${IP} route replace table ${RT_TABLE} default via ${GATEWAY}
-fi
+# Add/Replace an implicit route for that gateway on IFACE
+# This is for ISPs that give out gateways not within the customer's network/netmask
+# Ignore "RTNETLINK answers: File exists" error, this just mean the route exists
+${IP} route replace ${GATEWAY} dev ${IFACE}
+
+# Add/Replace the default route in the uplink table
+${IP} route replace table ${RT_TABLE} default via ${GATEWAY}
 
 ## If necessary add the default uplink rule
 ip rule show | grep -q ${UNTANGLE_PRIORITY_DEFAULT} || {
