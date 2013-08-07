@@ -67,19 +67,15 @@ def add_htb_rules( qos_settings, wan_intf ):
 
     wan_dev = wan_intf.get('systemDev')
     imq_dev = wan_intf.get('imqDev')
-
-    add_qdisc = "tc qdisc add dev " 
-    add_class = "tc class add dev " 
-    add_filtr = "tc filter add dev " 
     sfq = "sfq perturb 10"
-    
     default_class = qos_settings.get('defaultPriority')
+    wan_upload_bandwidth = wan_intf.get('uploadBandwidthKbps')
+    wan_download_bandwidth = wan_intf.get('downloadBandwidthKbps')
 
     #
     # egress filtering
     #
     run("tc qdisc add dev %s root handle 1: htb default 1%i" % (wan_dev, default_class) )
-    wan_upload_bandwidth = wan_intf.get('uploadBandwidthKbps')
     run("tc class add dev %s parent 1: classid 1:1 htb rate %ikbit" % (wan_dev, wan_upload_bandwidth) )
     for i in qos_priorities(): 
         upload_reserved = qos_priority_upload_reserved( qos_settings, wan_intf, i)
@@ -106,18 +102,17 @@ def add_htb_rules( qos_settings, wan_intf ):
             quantum = 2000
 
         # egress outbound hierarchical token bucket for class $i - need quantum or prio?
-        run("%s %s parent 1:1 classid 1:1%i htb %s %s quantum %i" % (add_class, wan_dev, i, reserved, limited, int(quantum)) ) 
-        run("%s %s parent 1:1%i handle 1%i: %s" % (add_qdisc, wan_dev, i, i, sfq) )
-        run("%s %s parent 1: prio 1%i protocol ip u32 match mark 0x000%i0000 0x000F0000 flowid 1:1%i" % (add_filtr, wan_dev, i, i, i) )
+        run("tc class add dev %s parent 1:1 classid 1:1%i htb %s %s quantum %i" % (wan_dev, i, reserved, limited, int(quantum)) ) 
+        run("tc qdisc add dev %s parent 1:1%i handle 1%i: %s" % (wan_dev, i, i, sfq) )
+        run("tc filter add dev %s parent 1: prio 1%i protocol ip u32 match mark 0x000%i0000 0x000F0000 flowid 1:1%i" % (wan_dev, i, i, i) )
 
     #
     # ingress filtering
     # ingress filtering is done via the IMQ interface
     #
     run("ifconfig %s up" % imq_dev)
-    run("%s %s root handle 1: htb default 1%i" % (add_qdisc, imq_dev, default_class) )
-    wan_download_bandwidth = wan_intf.get('downloadBandwidthKbps')
-    run("%s %s parent 1: classid 1:1 htb rate %ikbit" % (add_class, imq_dev,  wan_download_bandwidth) )
+    run("tc qdisc add dev %s root handle 1: htb default 1%i" % (imq_dev, default_class) )
+    run("tc class add dev %s parent 1: classid 1:1 htb rate %ikbit" % (imq_dev,  wan_download_bandwidth) )
     for i in qos_priorities(): 
         download_reserved = qos_priority_download_reserved( qos_settings, wan_intf, i)
         download_limit    = qos_priority_download_limit( qos_settings, wan_intf, i)
@@ -143,9 +138,9 @@ def add_htb_rules( qos_settings, wan_intf ):
             quantum = 2000
 
         # ingress inbound hierarchical token bucket for class $i - need quantum or prio?
-        run("%s %s parent 1:1 classid 1:1%i htb %s %s quantum %i" % (add_class, imq_dev, i, reserved, limited, int(quantum)) )
-        run("%s %s parent 1:1%i handle 1%i: %s" % (add_qdisc, imq_dev, i, i, sfq) )
-        run("%s %s parent 1: prio 1%i protocol ip u32 match mark 0x000%i0000 0x000F0000 flowid 1:1%i" % (add_filtr, imq_dev, i, i, i) )
+        run("tc class add dev %s parent 1:1 classid 1:1%i htb %s %s quantum %i" % (imq_dev, i, reserved, limited, int(quantum)) )
+        run("tc qdisc add dev %s parent 1:1%i handle 1%i: %s" % (imq_dev, i, i, sfq) )
+        run("tc filter add dev %s parent 1: prio 1%i protocol ip u32 match mark 0x000%i0000 0x000F0000 flowid 1:1%i" % (imq_dev, i, i, i) )
 
 def stop( qos_settings, wan_intfs ):
     flush_htb_rules( wan_intfs )
