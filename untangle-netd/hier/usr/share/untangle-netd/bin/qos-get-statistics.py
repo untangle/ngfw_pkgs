@@ -3,9 +3,9 @@ from parse import *
 from subprocess import *
 import json
 
-# Get QOS statistics from the output of qos-service status command
+# Get QoS statistics from the output of qos-service.py status command
 
-#Parse patterns for qos-service status output
+#Parse patterns for qos-service.py status output
 firstLine='interface: {} class {} {} {} rate {} ceil {} burst {} cburst {}'
 secondLine=' Sent {:d} bytes {:d} pkt (dropped {:d}, overlimits {:d} requeues {:d}) '
 thirdLine=' rate {} {} backlog {} {} requeues {:d} '
@@ -17,25 +17,12 @@ indexMap={1:firstLine, 2:secondLine, 3:thirdLine, 4:fourthLine, 5:lastLine}
 
 priorityQueueToName = { '10:': '0 - Default','11:': '1 - Very High','12:': '2 - High', '13:':'3 - Medium','14:':'4 - Low','15:':'5 - Limited','16:':'6 - Limited More','17:':'7 - Limited Severely' }
 
-exports=[]
-exportedNames=['UPLINKS','_IMQ_DEV']
-
-# Check the file for the definition of $UPLINKS as it needs to be exported
-# for the proper functioning of the QOS script
-with open('/etc/untangle-netd/iptables-rules.d/300-qos') as definitions:
-  for line in definitions:
-      for name in exportedNames:
-            if name in line:
-                    exports.append(line[:-1])
-
-exports.append('/usr/share/untangle-netd/bin/qos-service status')
-command =' && '.join(exports)
-output=[]
-
-proc = Popen(command, stdout=PIPE, shell=True)
-count=1
-entry={}
+output = []
+proc = Popen('/usr/share/untangle-netd/bin/qos-service.py status', stdout=PIPE, shell=True)
+count = 1
+entry = {}
 skipEntry=False
+
 for line in proc.stdout:
     if count <= 5:
         res=parse(indexMap[count],line)
@@ -59,10 +46,6 @@ for line in proc.stdout:
             entry['ctokens']=int(parsed[1])
         count+=1
     else:
-        if 'imq' not in entry['interface_name']:
-            entry['interface_name']=entry['interface_name'] +' Outbound'
-        else:
-            entry['interface_name']=entry['interface_name'].replace('imq','eth') +' Inbound'
         if not skipEntry:
             output.append(dict(entry))
         entry.clear()
