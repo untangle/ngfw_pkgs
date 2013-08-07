@@ -125,7 +125,6 @@ def add_htb_rules( qos_settings, wan_intf ):
         if download_limit == None and download_reserved == None:
             continue
         
-        print download_reserved
         if download_reserved == None:
             # should never happen as DOWNLOAD_RESERVED must be >0
             # Can't provide no reservation,TC says '"rate" is required'
@@ -144,8 +143,7 @@ def add_htb_rules( qos_settings, wan_intf ):
             quantum = 2000
 
         # ingress inbound hierarchical token bucket for class $i - need quantum or prio?
-        # run("%s %s parent 1:1 classid 1:1%i htb %s %s quantum %i" % add_(class, imq_dev, i, reserved, limited, int(quantum)) )
-        run("%s %s parent 1:1 classid 1:1%i htb %s %s" % (add_class, imq_dev, i, reserved, limited) )
+        run("%s %s parent 1:1 classid 1:1%i htb %s %s quantum %i" % (add_class, imq_dev, i, reserved, limited, int(quantum)) )
         run("%s %s parent 1:1%i handle 1%i: %s" % (add_qdisc, imq_dev, i, i, sfq) )
         run("%s %s parent 1: prio 1%i protocol ip u32 match mark 0x000%i0000 0x000F0000 flowid 1:1%i" % (add_filtr, imq_dev, i, i, i) )
 
