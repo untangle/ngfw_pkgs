@@ -18,6 +18,9 @@ class QosManager:
                 return qosPriority
         return None
 
+    def systemDev_variable_name( self, intfSettings ):
+        return intfSettings['systemDev'].replace(".","_")
+
     # Returns true if the interface is QoS eligible
     # QoS is run on WAN interfaces ( excluding VLANs )
     def qosed_interface( self, intfSettings ):
@@ -27,8 +30,8 @@ class QosManager:
             return False
         if ( intfSettings.get('isWan') == None or not intfSettings.get('isWan') ):
             return False
-        if ( intfSettings.get('isVlanInterface') != None and intfSettings.get('isVlanInterface') ):
-            return False;
+        # if ( intfSettings.get('isVlanInterface') != None and intfSettings.get('isVlanInterface') ):
+        #     return False;
         return True
 
     def write_qos_hook( self, settings, prefix, verbosity ):
@@ -64,21 +67,24 @@ class QosManager:
 
         space=""
         wans_string=""
+        qosed_interface_index=0
         for intfSettings in interfaces:
             if self.qosed_interface( intfSettings ):
+                file.write("export %s_IMQ_DEV=\"imq%i\"" % (self.systemDev_variable_name(intfSettings), qosed_interface_index) + "\n")
+                intfSettings['qosIndex'] = qosed_interface_index
+                qosed_interface_index = qosed_interface_index + 1
                 wans_string = wans_string + space + intfSettings['systemDev']
                 space=" "
         file.write("export UPLINKS=\"%s\"" % wans_string + "\n")
-
         file.write("export DEFAULT_CLASS=%s" % str(qosSettings.get('defaultPriority')) + "\n");
-
         file.write("\n");
 
+        
 
         for intfSettings in interfaces:
             if self.qosed_interface( intfSettings ):
-                file.write("export %s_DOWNLOAD_BANDWIDTH=%s" % (intfSettings['systemDev'], str(intfSettings['downloadBandwidthKbps'])) + "\n")
-                file.write("export %s_UPLOAD_BANDWIDTH=%s" % (intfSettings['systemDev'], str(intfSettings['uploadBandwidthKbps'])) + "\n")
+                file.write("export %s_DOWNLOAD_BANDWIDTH=%s" % (self.systemDev_variable_name(intfSettings), str(intfSettings['downloadBandwidthKbps'])) + "\n")
+                file.write("export %s_UPLOAD_BANDWIDTH=%s" % (self.systemDev_variable_name(intfSettings), str(intfSettings['uploadBandwidthKbps'])) + "\n")
         file.write("\n");
         for intfSettings in interfaces:
             if self.qosed_interface( intfSettings ):
@@ -87,10 +93,10 @@ class QosManager:
                     if qosPriority == None:
                         print "ERROR: Missing QoS class %i" % classInt
                         continue
-                    file.write("export %s_CLASS%i_UPLOAD_RESERVED=%i" % (intfSettings['systemDev'], classInt, round(intfSettings['uploadBandwidthKbps']*qosPriority['uploadReservation']/100)) + "\n")
-                    file.write("export %s_CLASS%i_UPLOAD_LIMIT=%i" % (intfSettings['systemDev'], classInt, round(intfSettings['uploadBandwidthKbps']*qosPriority['uploadLimit']/100)) + "\n")
-                    file.write("export %s_CLASS%i_DOWNLOAD_RESERVED=%i" % (intfSettings['systemDev'], classInt, round(intfSettings['downloadBandwidthKbps']*qosPriority['downloadReservation']/100)) + "\n")
-                    file.write("export %s_CLASS%i_DOWNLOAD_LIMIT=%i" % (intfSettings['systemDev'], classInt, round(intfSettings['downloadBandwidthKbps']*qosPriority['downloadLimit']/100)) + "\n")
+                    file.write("export %s_CLASS%i_UPLOAD_RESERVED=%i" % (self.systemDev_variable_name(intfSettings), classInt, round(intfSettings['uploadBandwidthKbps']*qosPriority['uploadReservation']/100)) + "\n")
+                    file.write("export %s_CLASS%i_UPLOAD_LIMIT=%i" % (self.systemDev_variable_name(intfSettings), classInt, round(intfSettings['uploadBandwidthKbps']*qosPriority['uploadLimit']/100)) + "\n")
+                    file.write("export %s_CLASS%i_DOWNLOAD_RESERVED=%i" % (self.systemDev_variable_name(intfSettings), classInt, round(intfSettings['downloadBandwidthKbps']*qosPriority['downloadReservation']/100)) + "\n")
+                    file.write("export %s_CLASS%i_DOWNLOAD_LIMIT=%i" % (self.systemDev_variable_name(intfSettings), classInt, round(intfSettings['downloadBandwidthKbps']*qosPriority['downloadLimit']/100)) + "\n")
                     file.write("\n");
 
         file.write("\n\n");
@@ -166,7 +172,7 @@ ${IPTABLES} -t mangle -A restore-qos-mark -m state ! --state UNTRACKED -j CONNMA
         file.write("# Insert IMQ rules for each WAN interface" + "\n");
         for intfSettings in interfaces:
             if self.qosed_interface( intfSettings ):
-                devnumstr = re.sub('[a-z]','',intfSettings['systemDev'])
+                devnumstr = str(intfSettings['qosIndex'])
                 file.write("${IPTABLES} -t mangle -A qos-imq -m mark --mark 0x%04X/0x%04X -j IMQ --todev %s" % (intfSettings['interfaceId'], self.srcInterfaceMarkMask, devnumstr) + "\n")
         file.write("\n");
 

@@ -1,4 +1,4 @@
-#!/bin/dash 
+#!/bin/bash 
 
 run ()
 {
@@ -8,9 +8,10 @@ run ()
 
 imq_dev()
 {
-    echo $1 | sed -e 's/eth/imq/' | sed -e 's/ppp/imq/'
+    # requires bash only (no dash)
+    name=`echo $1 | sed -e 's/\./_/g'`_IMQ_DEV
+    echo "${!name}"
 }
-    
 
 flush_htb_rules()
 {
@@ -49,6 +50,7 @@ add_htb_rules()
     run "### Add HTB ###"
 
     wan_interface=$1
+    wan_interface_var=`echo $1 | sed -e 's/\./_/g'`
     imq_interface=$(imq_dev $1)
 
     add_qdisc="tc qdisc add dev " 
@@ -60,11 +62,11 @@ add_htb_rules()
     # egress filtering
     #
     run "$add_qdisc $wan_interface root handle 1: htb default 1$DEFAULT_CLASS"
-    UPLOAD_BANDWIDTH=$(eval echo "$"${wan_interface}_UPLOAD_BANDWIDTH)
+    UPLOAD_BANDWIDTH=$(eval echo "$"${wan_interface_var}_UPLOAD_BANDWIDTH)
     run "$add_class $wan_interface parent 1: classid 1:1 htb rate ${UPLOAD_BANDWIDTH}kbit"
     for i in 1 2 3 4 5 6 7 ; do 
-        UPLOAD_RESERVED=$(eval echo "$"${wan_interface}_CLASS${i}_UPLOAD_RESERVED)
-        UPLOAD_LIMIT=$(eval echo "$"${wan_interface}_CLASS${i}_UPLOAD_LIMIT)
+        UPLOAD_RESERVED=$(eval echo "$"${wan_interface_var}_CLASS${i}_UPLOAD_RESERVED)
+        UPLOAD_LIMIT=$(eval echo "$"${wan_interface_var}_CLASS${i}_UPLOAD_LIMIT)
 
         if [ -z "$UPLOAD_RESERVED" ] && [ -z "$UPLOAD_LIMIT" ] ; then
             # echo - skipping $i
@@ -102,11 +104,11 @@ add_htb_rules()
     #
     run "ifconfig $imq_interface up"
     run "$add_qdisc $imq_interface root handle 1: htb default 1$DEFAULT_CLASS"
-    DOWNLOAD_BANDWIDTH=$(eval echo "$"${wan_interface}_DOWNLOAD_BANDWIDTH)
+    DOWNLOAD_BANDWIDTH=$(eval echo "$"${wan_interface_var}_DOWNLOAD_BANDWIDTH)
     run "$add_class $imq_interface parent 1: classid 1:1 htb rate ${DOWNLOAD_BANDWIDTH}kbit"
     for i in 1 2 3 4 5 6 7 ; do 
-        DOWNLOAD_RESERVED=$(eval echo "$"${wan_interface}_CLASS${i}_DOWNLOAD_RESERVED)
-        DOWNLOAD_LIMIT=$(eval echo "$"${wan_interface}_CLASS${i}_DOWNLOAD_LIMIT)
+        DOWNLOAD_RESERVED=$(eval echo "$"${wan_interface_var}_CLASS${i}_DOWNLOAD_RESERVED)
+        DOWNLOAD_LIMIT=$(eval echo "$"${wan_interface_var}_CLASS${i}_DOWNLOAD_LIMIT)
 
         if [ -z "$DOWNLOAD_RESERVED" ] && [ -z "$DOWNLOAD_LIMIT" ] ; then
             # echo - skipping $i

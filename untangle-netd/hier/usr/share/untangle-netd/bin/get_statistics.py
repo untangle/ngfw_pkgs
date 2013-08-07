@@ -18,7 +18,7 @@ indexMap={1:firstLine, 2:secondLine, 3:thirdLine, 4:fourthLine, 5:lastLine}
 priorityQueueToName = { '10:': '0 - Default','11:': '1 - Very High','12:': '2 - High', '13:':'3 - Medium','14:':'4 - Low','15:':'5 - Limited','16:':'6 - Limited More','17:':'7 - Limited Severely' }
 
 exports=[]
-exportedNames=['UPLINKS']
+exportedNames=['UPLINKS','_IMQ_DEV']
 
 # Check the file for the definition of $UPLINKS as it needs to be exported
 # for the proper functioning of the QOS script
