@@ -35,7 +35,6 @@ def qos_priority_download_limit( qos_settings, intf, priorityId ):
     return qos_priority_field( qos_settings, intf, priorityId, 'downloadBandwidthKbps', 'downloadLimit')
 
 def run( cmd, ignore_errors=False, print_cmd=False ):
-    print cmd
     if print_cmd:
         print cmd
     ret = os.system( cmd )
