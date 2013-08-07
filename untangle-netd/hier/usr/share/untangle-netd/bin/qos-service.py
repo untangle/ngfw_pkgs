@@ -141,6 +141,15 @@ def add_htb_rules( qos_settings, wan_intf ):
         run("tc class add dev %s parent 1:1 classid 1:1%i htb %s %s quantum %i" % (imq_dev, i, reserved, limited, int(quantum)) )
         run("tc qdisc add dev %s parent 1:1%i handle 1%i: %s" % (imq_dev, i, i, sfq) )
         run("tc filter add dev %s parent 1: prio 1%i protocol ip u32 match mark 0x000%i0000 0x000F0000 flowid 1:1%i" % (imq_dev, i, i, i) )
+    
+    # this is an attempt to share fairly between hosts (dst on imq)
+    # it does not seem to work as expected
+    # bug #8207
+    # run("tc filter add dev %s pref 1 parent 1: protocol ip handle 1 flow hash keys nfct-src" % (wan_dev) )
+    # run("tc filter add dev %s pref 1 parent 1: protocol ip handle 1 flow hash keys nfct-src" % (imq_dev) )
+    # Maybe this: ?
+    # run("tc filter add dev %s pref 1 parent 1: protocol ip handle 1 flow hash keys src" % (wan_dev) )
+    # run("tc filter add dev %s pref 1 parent 1: protocol ip handle 1 flow hash keys dst" % (imq_dev) )
 
 def stop( qos_settings, wan_intfs ):
     flush_htb_rules( wan_intfs )
