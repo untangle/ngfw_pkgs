@@ -10,7 +10,7 @@ firstLine='interface: {} class {} {} {} rate {} ceil {} burst {} cburst {}'
 secondLine=' Sent {:d} bytes {:d} pkt (dropped {:d}, overlimits {:d} requeues {:d}) '
 thirdLine=' rate {} {} backlog {} {} requeues {:d} '
 fourthLine= ' lended: {:d} borrowed: {:d} giants: {:d}'
-lastLine=' tokens: {:d} ctokens:{:d}'
+lastLine=' tokens: {} ctokens:{}'
 priorityParser='parent {} leaf {} prio {:d}'
 
 indexMap={1:firstLine, 2:secondLine, 3:thirdLine, 4:fourthLine, 5:lastLine}
@@ -55,8 +55,8 @@ for line in proc.stdout:
         if count == 3:
             entry['rate']=parsed[0]
         if count == 5:
-            entry['tokens']=parsed[0]
-            entry['ctokens']=parsed[1]
+            entry['tokens']=int(parsed[0])
+            entry['ctokens']=int(parsed[1])
         count+=1
     else:
         if 'imq' not in entry['interface_name']:
