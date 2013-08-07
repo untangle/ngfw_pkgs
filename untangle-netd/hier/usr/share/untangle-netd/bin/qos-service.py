@@ -225,6 +225,18 @@ interfaces = network_settings.get('interfaces').get('list')
 wan_intfs = []
 for intf in interfaces:
     if intf.get('configType') == "ADDRESSED" and intf.get('isWan'):
+        if intf.get('systemDev') == None:
+            print "Failed to read systemDev on %s" % intf.get('name')
+            sys.exit(1)
+        if intf.get('imqDev') == None:
+            print "Failed to read imqDev on %s" % intf.get('name')
+            sys.exit(1)
+        if intf.get('downloadBandwidthKbps') == None:
+            print "Failed to read downloadBandwidthKbps on %s" % intf.get('name')
+            sys.exit(1)
+        if intf.get('uploadBandwidthKbps') == None:
+            print "Failed to read uploadBandwidthKbps on %s" % intf.get('name')
+            sys.exit(1)
         wan_intfs.append(intf)
 
 if action == "stop":
