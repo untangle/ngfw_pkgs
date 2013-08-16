@@ -256,8 +256,18 @@ class InterfacesManager:
             if symbolicDev.startswith("br.") or configType == 'BRIDGED':
                 file.write("${IPTABLES} -t mangle -A mark-src-intf -m physdev --physdev-in %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark for intf %i using physdev\"" % (systemDev, id, self.srcInterfaceMarkMask, id) + "\n");
 
-        file.write("${IPTABLES} -t mangle -A mark-src-intf ! -i lo -m mark --mark 0/0x%04X -j LOG --log-prefix \"WARNING (unknown src intf):\" -m comment --comment \"WARN on missing src mark\"" % (self.srcInterfaceMarkMask) + "\n");
-        file.write("${IPTABLES} -t mangle -A mark-src-intf -m conntrack --ctstate NEW -j CONNMARK --save-mark --mask 0x%04X -m comment --comment \"Save src interface mark to connmark\"" % (self.srcInterfaceMarkMask) + "\n");
+
+        file.write("${IPTABLES} -t mangle -A mark-src-intf -m mark ! --mark 0/0x%04X -m conntrack --ctstate NEW -j CONNMARK --save-mark --mask 0x%04X -m comment --comment \"Save src interface mark to connmark\"" % (self.srcInterfaceMarkMask, self.srcInterfaceMarkMask) + "\n");
+
+        # IPsec traffic may come from a bridge interface
+        # Unfortunately, the incoming interface will be br.ethX but none of the above physdev rules will match above.
+        # Do not print a warning to kern.log in this case
+        file.write("${IPTABLES} -t mangle -A mark-src-intf -m policy --pol ipsec --dir in -j RETURN -m comment --comment \"Do not warn on IPsec traffic\"" + "\n")
+
+        file.write("${IPTABLES} -t mangle -A mark-src-intf -i lo -j RETURN -m comment --comment \"Do not warn loopback traffic\"" + "\n")
+
+        file.write("${IPTABLES} -t mangle -A mark-src-intf -m mark --mark 0/0x%04X -j LOG --log-prefix \"WARNING (unknown src intf):\" -m comment --comment \"WARN on missing src mark\"" % (self.srcInterfaceMarkMask) + "\n");
+
 
         file.write("\n");
 
