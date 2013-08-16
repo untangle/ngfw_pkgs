@@ -131,16 +131,32 @@ class IptablesUtil:
                 current_strings = [ current + matcherStr for current in current_strings ]
 
             if matcherType == "SRC_ADDR":
-                if invert:
-                    matcherStr = matcherStr + " ! "
-                matcherStr = matcherStr + " --source %s " % value
-                current_strings = [ current + matcherStr for current in current_strings ]
+                srcs = value.split(",")
+                orig_current_strings = current_strings
+                current_strings = []
+                for i in srcs:
+                    matcherStr = ""
+                    if invert:
+                        matcherStr = matcherStr + " ! "
+                    if "-" in i:
+                        matcherStr = matcherStr + " -m iprange --src-range %s " % i
+                    else:
+                        matcherStr = matcherStr + " --source %s " % i
+                    current_strings = current_strings + [ current + matcherStr for current in orig_current_strings ]
 
             if matcherType == "DST_ADDR":
-                if invert:
-                    matcherStr = matcherStr + " ! "
-                matcherStr = matcherStr + " --destination %s " % value
-                current_strings = [ current + matcherStr for current in current_strings ]
+                dsts = value.split(",")
+                orig_current_strings = current_strings
+                current_strings = []
+                for i in dsts:
+                    matcherStr = ""
+                    if invert:
+                        matcherStr = matcherStr + " ! "
+                    if "-" in i:
+                        matcherStr = matcherStr + " -m iprange --dst-range %s " % i
+                    else:
+                        matcherStr = matcherStr + " --destination %s " % i
+                    current_strings = current_strings + [ current + matcherStr for current in orig_current_strings ]
 
             if matcherType == "SRC_PORT":
                 if invert:
