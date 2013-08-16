@@ -219,18 +219,20 @@ def statusToJSON(input):
             count=1
             continue
     newlist = sorted(output, key=lambda k: k['priority'])
-    return json.dumps(newlist)
+    return newlist
     
 
 def status( qos_interfaces, wan_intfs ):
 
-    result=''
+    json_objs = []
     for wan_intf in wan_intfs:
+        result=''
         wan_dev = wan_intf.get('systemDev')
         imq_dev = wan_intf.get('imqDev')
         wan_name = wan_intf.get('name')
         result= runSubprocess( "tc -s class ls dev %s | sed \"s/^class/interface: %s Outbound class/\"" % (wan_dev, wan_name) )
         result.extend( runSubprocess( "tc -s class ls dev %s | sed \"s/^class/interface: %s Inbound class/\"" % (imq_dev, wan_name)))
+        json_objs.extend( statusToJSON(result) )
        
         #run("echo ------ Qdisc  ------")
         #run("tc -s qdisc ls dev %s" % wan_dev)
@@ -241,7 +243,7 @@ def status( qos_interfaces, wan_intfs ):
         #run("echo ------ Filter ------")
         #run("tc -s filter ls dev %s" % wan_dev)
         #run("tc -s filter ls dev %s" % imq_dev)
-    print statusToJSON(result)
+    print json_objs
         
 
 def sessionsToJSON(input):
