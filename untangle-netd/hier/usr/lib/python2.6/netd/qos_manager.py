@@ -66,7 +66,7 @@ class QosManager:
     def write_qos_custom_rules( self, settings, verbosity=0 ):
 
         if settings == None or 'qosRules' not in settings or 'list' not in settings['qosRules']:
-            print "ERROR: Missing Port Forward Rules"
+            print "ERROR: Missing QoS Custom Rules"
             return
         
         qos_rules = settings['qosRules']['list'];
