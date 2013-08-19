@@ -5,12 +5,14 @@ import datetime
 import traceback
 import re
 from netd.network_util import NetworkUtil
+from netd.iptables_util import IptablesUtil
 
 # This class is responsible for writing /etc/untangle-netd/iptables-rules.d/300-qos
 # and others based on the settings object passed from sync-settings.py
 class QosManager:
     qosFilename = "/etc/untangle-netd/iptables-rules.d/300-qos"
     srcInterfaceMarkMask = 0x00ff
+    file = None
 
     def find_priority( self, qosPriorities, priorityId ):
         for qosPriority in qosPriorities:
@@ -34,6 +36,47 @@ class QosManager:
         #     return False;
         return True
 
+    def write_qos_rule( self, qos_rule, verbosity=0 ):
+
+        if 'enabled' in qos_rule and not qos_rule['enabled']:
+            return
+        if 'matchers' not in qos_rule or 'list' not in qos_rule['matchers']:
+            return
+        if 'ruleId' not in qos_rule:
+            return
+
+        if 'priority' in qos_rule:
+            target = " -g qos-class%i " % qos_rule['priority']
+        else:
+            print "ERROR: invalid qos priority: %s" + str(qos_rule)
+            return
+
+        description = "QoS Custom Rule #%i" % int(qos_rule['ruleId'])
+        iptables_conditions = IptablesUtil.conditions_to_iptables_string( qos_rule['matchers']['list'], description, verbosity );
+
+        iptables_commands = [ "${IPTABLES} -t mangle -A qos-rules " + ipt + target for ipt in iptables_conditions ]
+
+        self.file.write("# %s\n" % description);
+        for cmd in iptables_commands:
+            self.file.write(cmd + "\n")
+        self.file.write("\n");
+
+        return
+
+    def write_qos_custom_rules( self, settings, verbosity=0 ):
+
+        if settings == None or 'qosRules' not in settings or 'list' not in settings['qosRules']:
+            print "ERROR: Missing Port Forward Rules"
+            return
+        
+        qos_rules = settings['qosRules']['list'];
+
+        for qos_rule in qos_rules:
+            try:
+                self.write_qos_rule( qos_rule, verbosity );
+            except Exception,e:
+                traceback.print_exc(e)
+
     def write_qos_hook( self, settings, prefix, verbosity ):
 
         if settings == None or settings.get('interfaces') == None or settings.get('interfaces').get('list') == None:
@@ -48,7 +91,8 @@ class QosManager:
         if not os.path.exists( fileDir ):
             os.makedirs( fileDir )
 
-        file = open( filename, "w+" )
+        self.file = open( filename, "w+" )
+        file = self.file
         file.write("#!/bin/dash");
         file.write("\n\n");
 
@@ -161,6 +205,8 @@ ${IPTABLES} -t mangle -A restore-qos-mark -m state ! --state UNTRACKED -j CONNMA
             file.write("${IPTABLES} -t mangle -A qos-rules -p udp --dport 1194 -g qos-class%i -m comment --comment \"set openvpn priority\"" % qosSettings['openvpnPriority'] + "\n")
             file.write("${IPTABLES} -t mangle -A qos-rules -p tcp --dport 1194 -g qos-class%i -m comment --comment \"set openvpn priority\"" % qosSettings['openvpnPriority'] + "\n")
             file.write("\n");
+
+        self.write_qos_custom_rules( qosSettings, verbosity)
 
         file.flush()
         file.close()

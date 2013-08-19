@@ -265,7 +265,7 @@ def sessions( qos_interfaces, wan_intfs ):
 
     result = runSubprocess( r"""cat /proc/net/ip_conntrack | grep -v '127.0.0.1' | grep tcp | sed 's/[a-z]*=//g' | awk '{printf "proto %s state %s src %s dst %s src-port %s dst-port %s packets %s bytes %s priority %x\n", $1, $4, $5, $6, $7, $8, $9, $10, rshift(and($18,0x000F0000),16)}'""")
     result.extend(runSubprocess( r"""cat /proc/net/ip_conntrack | grep -v '127.0.0.1' | grep udp | sed 's/\[.*\]//g' | sed 's/[a-z]*=//g' | awk '{printf "proto %s state xx src %s dst %s src-port %s dst-port %s packets %s bytes %s priority %x\n", $1, $4, $5, $6, $7, $8, $9, rshift(and($16,0x000F0000),16)}'"""))
-    print sessionsToJSON(result)
+    return result
     
 #
 # Main
@@ -326,6 +326,8 @@ elif action == "start":
 elif action == "status":
     status( qos_settings, wan_intfs )
 elif action == "sessions":
+    sessionsToJSON( sessions( qos_settings, wan_intfs ) )
+elif action == "sessions2":
     sessions( qos_settings, wan_intfs )
 else:
     print "Unknown argument: %s" % action
