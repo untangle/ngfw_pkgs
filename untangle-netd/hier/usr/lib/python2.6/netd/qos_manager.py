@@ -208,6 +208,12 @@ ${IPTABLES} -t mangle -A restore-qos-mark -m state ! --state UNTRACKED -j CONNMA
 
         self.write_qos_custom_rules( qosSettings, verbosity)
 
+        if qosSettings['defaultPriority'] != None and qosSettings['defaultPriority'] != 0:
+            file.write("# Default Priority " + "\n")
+            file.write("${IPTABLES} -t mangle -A qos-rules -m mark     --mark 0/0x000F0000 -g qos-class%i -m comment --comment \"set default priority if unset\"" % qosSettings['defaultPriority'] + "\n")
+            file.write("${IPTABLES} -t mangle -A qos-rules -m connmark --mark 0/0x000F0000 -g qos-class%i -m comment --comment \"set default priority if unset\"" % qosSettings['defaultPriority'] + "\n")
+            file.write("\n");
+
         file.flush()
         file.close()
 
