@@ -50,6 +50,8 @@ class DnsMasqManager:
         file.write("# Global DNS options\n")
         file.write("localise-queries\n");
         file.write("expand-hosts\n");
+        # dont read /etc/hosts - this will result in returning 127.0.0.1 for some queries
+        file.write("no-hosts\n");
         file.write("\n");
 
         # Set global DHCP options
