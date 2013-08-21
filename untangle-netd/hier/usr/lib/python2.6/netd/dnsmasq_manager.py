@@ -9,8 +9,38 @@ from netd.network_util import NetworkUtil
 # This class is responsible for writing 
 # based on the settings object passed from sync-settings.py
 class DnsMasqManager:
+    dnsmasqHostsFilename = "/etc/hosts.dnsmasq"
     dnsmasqConfFilename = "/etc/dnsmasq.conf"
     restartHookFilename = "/etc/untangle-netd/post-network-hook.d/990-restart-dnsmasq"
+
+    def write_dnsmasq_hosts( self, settings, prefix, verbosity ):
+
+        filename = prefix + self.dnsmasqHostsFilename
+        fileDir = os.path.dirname( filename )
+        if not os.path.exists( fileDir ):
+            os.makedirs( fileDir )
+
+        file = open( filename, "w+" )
+        file.write("## Auto Generated on %s\n" % datetime.datetime.now());
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
+        file.write("\n\n");
+
+        file.write("# user-defined static entries \n")
+        if ( settings.get('dnsSettings') != None and 
+             settings.get('dnsSettings').get('staticEntries') != None and 
+             settings.get('dnsSettings').get('staticEntries').get('list') != None ):
+            for entry in settings.get('dnsSettings').get('staticEntries').get('list'):
+                if entry.get('name') != None and entry.get('address') != None:
+                    file.write("%s\t%s" % ( entry.get('address'), entry.get('name') ) + "\n" )
+            file.write("\n")
+                        
+        file.write("\n")
+
+        file.flush()
+        file.close()
+
+        if verbosity > 0: print "DnsMasqManager: Wrote %s" % filename
+        return
 
     def write_dnsmasq_conf( self, settings, prefix="", verbosity=0 ):
         
@@ -52,6 +82,7 @@ class DnsMasqManager:
         file.write("expand-hosts\n");
         # dont read /etc/hosts - this will result in returning 127.0.0.1 for some queries
         file.write("no-hosts\n");
+        file.write("addn-hosts=/etc/hosts.dnsmasq\n");
         file.write("\n");
 
         # Set global DHCP options
@@ -162,10 +193,12 @@ class DnsMasqManager:
 DNSMASQ_PID="`pidof dnsmasq`"
 
 # Restart dnsmasq if it isnt found
-# Or if dnsmasq.conf has been written since dnsmasq was started
+# Or if dnsmasq.conf or hosts.dnsmasq has been written since dnsmasq was started
 if [ -z "$DNSMASQ_PID" ] ; then
     /etc/init.d/dnsmasq restart
 elif [ /etc/dnsmasq.conf -nt /proc/$DNSMASQ_PID/cmdline ] ; then
+    /etc/init.d/dnsmasq restart
+elif [ /etc/hosts.dnsmasq -nt /proc/$DNSMASQ_PID/cmdline ] ; then
     /etc/init.d/dnsmasq restart
 fi
 """)
@@ -182,6 +215,8 @@ fi
 
         if verbosity > 1: print "DnsMasqManager: sync_settings()"
         
+        self.write_dnsmasq_hosts( settings, prefix, verbosity )
+
         self.write_dnsmasq_conf( settings, prefix, verbosity )
 
         self.write_restart_dnsmasq_hook( settings, prefix, verbosity )
