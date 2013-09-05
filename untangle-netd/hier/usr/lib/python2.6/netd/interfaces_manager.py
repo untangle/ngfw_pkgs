@@ -59,7 +59,11 @@ class InterfacesManager:
         if isBridge:
             self.interfacesFile.write("\tbridge_ports %s\n" % " ".join(bridgedInterfaces))
             self.interfacesFile.write("\tbridge_ageing %i\n" % 900) #XXX
-            self.interfacesFile.write("\tbridge_maxwait %i\n" % 32) #XXX
+            self.interfacesFile.write("\tbridge_stp no\n") 
+            # maxwait comments: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=549696
+            # For now I've decide to set this to 20 
+            # Its tempting to set this to zero because stp is disbled
+            self.interfacesFile.write("\tbridge_maxwait %i\n" % 20)
             self.interfacesFile.write("\tnetd_bridge_mtu %i\n" % 1500) #XXX
 
         # handle PPPoE stuff
