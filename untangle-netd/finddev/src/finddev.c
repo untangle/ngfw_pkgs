@@ -164,6 +164,7 @@ static int    _daemonize( );
 static int    _set_signals( void );
 static int    _parse_args( int argc, char** argv );
 static int    _debug( int level, char *lpszFmt, ...);
+static int    _error( char *lpszFmt, ...);
 static void*  _read_pkt (void* data);
 static char*  _inet_ntoa ( in_addr_t addr );
 static void   _mac_to_string ( char *mac_string, int len, struct ether_addr* mac );
@@ -206,52 +207,52 @@ int main ( int argc, char **argv )
             
     
     if ( (rv = pthread_attr_init(&attr)) != 0 ) {
-        fprintf( stderr, "pthread_attr_init: %s\n", strerror(rv) );
+        _error( "pthread_attr_init: %s\n", strerror(rv) );
     }
     
     if ( (rv = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED)) != 0 ) {
-        fprintf( stderr, "pthread_attr_setdetachstate: %s\n", strerror(rv) );
+        _error( "pthread_attr_setdetachstate: %s\n", strerror(rv) );
     }
 
     if ( (rv = pthread_mutex_init( &print_mutex, NULL )) != 0 ) {
-        fprintf( stderr, "pthread_mutex_init: %s\n", strerror(rv) );
+        _error( "pthread_mutex_init: %s\n", strerror(rv) );
     }
 
     _debug( 2, "Initializing arp socket...\n");
     if (( arp_socket = socket( PF_INET, SOCK_DGRAM, 0 )) < 0 ) {
-        fprintf( stderr, "socket: %s\n", strerror(errno) );
+        _error( "socket: %s\n", strerror(errno) );
         return -1;
     }
 
     _debug( 2, "Initializing pkt socket...\n");
     if (( pkt_socket = socket( PF_PACKET, SOCK_DGRAM, 0 )) < 0 ) {
-        fprintf( stderr, "socket: %s\n", strerror(errno) );
+        _error( "socket: %s\n", strerror(errno) );
         return -1;
     }
 
     _debug( 2, "Opening netfilter queue...\n");
     h = nfq_open();
     if (!h) {
-        fprintf( stderr, "error during nfq_open()\n");
+        _error( "error during nfq_open()\n");
         exit(1);
     }
 
     _debug( 2, "Unbinding existing nf_queue handler for AF_INET (if any)\n");
     if (nfq_unbind_pf(h, AF_INET) < 0) {
-        fprintf( stderr, "error during nfq_unbind_pf()\n");
+        _error( "error during nfq_unbind_pf()\n");
         exit(1);
     }
 
     _debug( 2, "Binding nfnetlink_queue as nf_queue handler for AF_INET\n");
     if (nfq_bind_pf(h, AF_INET) < 0) {
-        fprintf( stderr, "error during nfq_bind_pf()\n");
+        _error( "error during nfq_bind_pf()\n");
         exit(1);
     }
 
     _debug( 2, "Binding this socket to queue %i\n", QUEUE_NUM);
     qh = nfq_create_queue(h, QUEUE_NUM, &_nfqueue_callback, NULL);
     if (!qh) {
-        fprintf( stderr, "error during nfq_create_queue()\n");
+        _error( "error during nfq_create_queue()\n");
         exit(1);
     }
 
@@ -259,14 +260,14 @@ int main ( int argc, char **argv )
     _debug( 2, "Setting copy_packet mode\n");
     // if (nfq_set_mode(qh, NFQNL_COPY_META, 0xffff) < 0) {
     if (nfq_set_mode(qh, NFQNL_COPY_PACKET, sizeof(struct iphdr)) < 0) {
-        fprintf( stderr, "can't set packet_copy mode\n");
+        _error( "can't set packet_copy mode\n");
         exit(1);
     }
 
     nh = nfq_nfnlh(h);
     fd = nfnl_fd(nh);
     if ( nfnl_rcvbufsiz(nh, BUFFER_SIZE) < 0 ) {
-        fprintf( stderr, "nfnl_rcvbufsiz: %s\n", strerror(errno) );
+        _error( "nfnl_rcvbufsiz: %s\n", strerror(errno) );
     }
     
     for ( i = 0 ; i < MAX_INTERFACES ; i++ ) {
@@ -297,13 +298,13 @@ int main ( int argc, char **argv )
      * http://developer.berlios.de/bugs/?func=detailbug&bug_id=14793&group_id=2509
      */
     if ( alarm( 2 ) < 0 ) {
-        fprintf( stderr, "alarm: %s\n", strerror(errno) );
+        _error( "alarm: %s\n", strerror(errno) );
     }
     if (nfq_unbind_pf(h, AF_INET) < 0) {
-        fprintf( stderr, "error during nfq_unbind_pf()\n");
+        _error( "error during nfq_unbind_pf()\n");
     }
     if (nfq_bind_pf(h, AF_INET) < 0) {
-        fprintf( stderr, "error during nfq_bind_pf()\n");
+        _error( "error during nfq_bind_pf()\n");
     }
     nfq_destroy_queue(qh);
 
@@ -336,12 +337,12 @@ static void* _read_pkt (void* data)
         _debug(2,"Waiting for pkt...\n");
         rv = recv(fd, buf, 4096, 0);
         if ( rv < 0 ) {
-            fprintf( stderr, "recv: %s\n", strerror(errno) );
+            _error( "recv: %s\n", strerror(errno) );
             continue;
         }
 
         if ( running == 0 ) {
-            fprintf( stdout, "Thread Exiting...\n" );
+            _debug( 0, "Thread Exiting...\n" );
             running = 0;
             pthread_exit(NULL);
         } else {
@@ -370,7 +371,7 @@ static int   _debug ( int level, char *lpszFmt, ... )
         va_start(argptr, lpszFmt);
 
         if ( pthread_mutex_lock( &print_mutex ) < 0 ) {
-            fprintf( stderr, "pthread_mutex_lock: %s\n", strerror(errno) );
+            _error( "pthread_mutex_lock: %s\n", strerror(errno) );
         }
         
         if ( 1 ) {
@@ -399,13 +400,47 @@ static int   _debug ( int level, char *lpszFmt, ... )
 	return 0;
 }
 
+static int   _error ( char *lpszFmt, ... )
+{
+    va_list argptr;
+
+    va_start(argptr, lpszFmt);
+
+    if ( pthread_mutex_lock( &print_mutex ) < 0 ) {
+        fprintf( stderr, "pthread_mutex_lock: %s\n", strerror(errno) );
+    }
+        
+    if ( 1 ) {
+        struct timeval tv;
+        struct tm tm;
+            
+        gettimeofday(&tv,NULL);
+        if (!localtime_r(&tv.tv_sec,&tm))
+            fprintf( stderr, "gmtime_r: %s\n", strerror(errno) );
+            
+        fprintf( stderr, "%02i-%02i %02i:%02i:%02i.%06li| ", tm.tm_mon+1,tm.tm_mday,tm.tm_hour,tm.tm_min,tm.tm_sec, (long)tv.tv_usec );
+    }
+          
+    vfprintf( stderr, lpszFmt, argptr );
+
+    va_end( argptr );
+
+    fflush( stderr );
+
+    if ( pthread_mutex_unlock( &print_mutex ) < 0 ) {
+        fprintf( stderr, "pthread_mutex_unlock: %s\n", strerror(errno) );
+    }
+
+    return 0;
+}
+
 static int   _usage ( char *name )
 {
-    fprintf( stderr, "Usage: %s\n", name );
-    fprintf( stderr, "\t-i interface_name:index.  specify interface. Example -i eth0:1. Can be specified many times.\n" );
-    fprintf( stderr, "\t-v                        increase verbosity\n" );
-    fprintf( stderr, "\t-d                        run as daemon\n" );
-    fprintf( stderr, "\t-l logfile                logfile to write stdout & stderr to (if daemonized) \n" );
+    _error( "Usage: %s\n", name );
+    _error( "\t-i interface_name:index.  specify interface. Example -i eth0:1. Can be specified many times.\n" );
+    _error( "\t-v                        increase verbosity\n" );
+    _error( "\t-d                        run as daemon\n" );
+    _error( "\t-l logfile                logfile to write stdout & stderr to (if daemonized) \n" );
     return -1;
 }
 
@@ -456,11 +491,11 @@ static int   _parse_args ( int argc, char** argv )
             }
 
             if ( name == NULL ) {
-                fprintf( stderr, "Invalid interface name\n");
+                _error( "Invalid interface name\n");
                 return -1;
             }
             if ( id == -1 ) {
-                fprintf( stderr, "Invalid interface index\n");
+                _error( "Invalid interface index\n");
                 return -1;
             }
             
@@ -493,7 +528,7 @@ static int   _daemonize ()
 
     pid = fork();
     if ( pid < 0 ){ 
-        fprintf( stderr, "Unable to fork daemon process.\n" );
+        _error( "Unable to fork daemon process.\n" );
         return -1;
     } else if ( pid > 0 ) {
         exit(0);
@@ -502,19 +537,19 @@ static int   _daemonize ()
     /* This is just copied from http://www.systhread.net/texts/200508cdaemon2.php ... shameless. */
     umask( 0 );
     if (( sid = setsid()) < 0 ) {
-        fprintf( stderr, "setsid: %s\n", strerror(errno) );
+        _error( "setsid: %s\n", strerror(errno) );
         return -1;
     }
         
     if ( chdir( "/var/run/" ) < 0 ) {
-        fprintf( stderr, "chdir: %s\n", strerror(errno) );
+        _error( "chdir: %s\n", strerror(errno) );
         return -1;
     }
         
     /* pid is zero, this is the daemon process */
     /* Dupe these to logfile until something changes them */
     if (( logfile_fd = open( logfile, O_WRONLY | O_APPEND | O_CREAT )) < 0 ) {
-        fprintf( stderr, "open: %s\n", strerror(errno) );
+        _error( "open: %s\n", strerror(errno) );
         return -1;
     }
         
@@ -522,11 +557,11 @@ static int   _daemonize ()
     close( STDOUT_FILENO );
     close( STDERR_FILENO );
     if ( dup2( logfile_fd, STDOUT_FILENO ) < 0 ) {
-        fprintf( stderr, "dup2: %s\n", strerror(errno) );
+        _error( "dup2: %s\n", strerror(errno) );
         return -1;
     }
     if ( dup2( logfile_fd, STDERR_FILENO ) < 0 ) {
-        fprintf( stderr, "dup2: %s\n", strerror(errno) );
+        _error( "dup2: %s\n", strerror(errno) );
         return -1;
     }
 
@@ -576,7 +611,7 @@ static void* _handle_packet ( struct nfq_data* nfa )
 
     ph = nfq_get_msg_packet_hdr( nfa );
     if (!ph) {
-        fprintf( stderr,"Packet missing header!\n" );
+        _error( "Packet missing header!\n" );
         pthread_exit( NULL );
     }
     id = ntohl( ph->packet_id );
@@ -624,7 +659,7 @@ static void  _print_pkt ( struct nfq_data *tb )
     char intf_name[IF_NAMESIZE];
     
     if ( pthread_mutex_lock( &print_mutex ) < 0 ) {
-        fprintf( stderr, "pthread_mutex_lock: %s\n", strerror(errno) );
+        _error( "pthread_mutex_lock: %s\n", strerror(errno) );
     }
 
     if ( 1 ) {
@@ -633,7 +668,7 @@ static void  _print_pkt ( struct nfq_data *tb )
             
         gettimeofday(&tv,NULL);
         if (!localtime_r(&tv.tv_sec,&tm))
-            fprintf( stderr, "gmtime_r: %s\n", strerror(errno) );
+            _error( "gmtime_r: %s\n", strerror(errno) );
             
         printf( "%02i-%02i %02i:%02i:%02i.%06li| ", tm.tm_mon+1,tm.tm_mday,tm.tm_hour,tm.tm_min,tm.tm_sec, (long)tv.tv_usec );
     }
@@ -654,7 +689,7 @@ static void  _print_pkt ( struct nfq_data *tb )
     ifindex = nfq_get_indev(tb);
     if (ifindex) {
         if ( if_indextoname(ifindex, intf_name) == NULL) {
-            fprintf( stderr,"print_pkt: in_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
+            _error( "print_pkt: in_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
         } else {
             printf("indev=(%i,%s) ", ifindex, intf_name);
         }
@@ -663,7 +698,7 @@ static void  _print_pkt ( struct nfq_data *tb )
     ifindex = nfq_get_outdev(tb);
     if (ifindex) {
         if ( if_indextoname(ifindex, intf_name) == NULL) {
-            fprintf( stderr,"print_pkt: out_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
+            _error( "print_pkt: out_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
         } else {
             printf("outdev=(%i,%s) ", ifindex, intf_name);
         }
@@ -674,18 +709,18 @@ static void  _print_pkt ( struct nfq_data *tb )
     ifindex = nfq_get_physindev(tb);
     if (ifindex) {
         if ( if_indextoname(ifindex, intf_name) == NULL) {
-            fprintf( stderr,"print_pkt: in_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
+            _error( "print_pkt: in_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
         } else {
-            printf("physindev=(%i,%s) ", ifindex, intf_name);
+            printf( "physindev=(%i,%s) ", ifindex, intf_name);
         }
     }
 
     ifindex = nfq_get_outdev(tb);
     if (ifindex) {
         if ( if_indextoname(ifindex, intf_name) == NULL) {
-            fprintf( stderr,"print_pkt: out_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
+            _error( "print_pkt: out_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
         } else {
-            printf("physoutdev=(%i,%s) ", ifindex, intf_name);
+            printf( "physoutdev=(%i,%s) ", ifindex, intf_name);
         }
     }
 #endif
@@ -712,7 +747,7 @@ static void  _print_pkt ( struct nfq_data *tb )
     }
 
     if ( pthread_mutex_unlock( &print_mutex ) < 0 ) {
-        fprintf( stderr, "pthread_mutex_unlock: %s\n", strerror(errno) );
+        _error( "pthread_mutex_unlock: %s\n", strerror(errno) );
     }
 
     return;
@@ -742,11 +777,11 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
      */
     int ifindex = nfq_get_outdev( nfq_data );
     if (ifindex <= 0) {
-        fprintf( stderr, "Unable to locate ifindex: %s\n", strerror(errno) );
+        _error( "Unable to locate ifindex: %s\n", strerror(errno) );
         return -1;
     }
     if ( if_indextoname( ifindex, intf_name ) == NULL) {
-        fprintf( stderr,"if_indextoname: %s\n", strerror(errno));
+        _error( "if_indextoname: %s\n", strerror(errno));
         return -1;
     }
 
@@ -754,19 +789,19 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
      * Lookup dst IP
      */
     if ( ( ret = nfq_get_payload( nfq_data, &data ) ) < sizeof(struct iphdr) ) {
-        fprintf( stderr,"packet too short: %i\n", ret);
+        _error( "packet too short: %i\n", ret);
         return -1;
     }
     struct iphdr * ip = (struct iphdr *) data;
     if ( ip->version != 4 ) {
-        fprintf( stderr,"Ignoring non-IPV4 %i\n", ip->version);
+        _error( "Ignoring non-IPV4 %i\n", ip->version);
         return -1;
     }
     struct in_addr dst;
     memcpy( &dst.s_addr, &ip->daddr, sizeof(in_addr_t));
 
     if ( _find_next_hop( intf_name, &dst, &next_hop) < 0 ) {
-        fprintf( stderr, "_find_next_hop: %s\n", strerror(errno));
+        _error( "_find_next_hop: %s\n", strerror(errno));
         return -1;
     }
 
@@ -774,11 +809,11 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
      * Lookup the MAC address for next hop
      */
     if (( ret = _arp_address( &next_hop, &mac_address, intf_name )) < 0 ) {
-        fprintf( stderr, "_arp_address: %s\n", strerror(errno) );
+        _error( "_arp_address: %s\n", strerror(errno) );
         return -1;
     }
     if ( ret == 0 ) {
-        fprintf( stderr, "ARP: Unable to resolve the MAC address %s\n", inet_ntoa( next_hop ));
+        _error( "ARP: Unable to resolve the MAC address %s\n", inet_ntoa( next_hop ));
         return 0;
     }
     if ( memcmp(&mac_address, &broadcast_mac, sizeof(broadcast_mac)) == 0 )  {
@@ -790,12 +825,12 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
      */
     int out_port_ifindex = _find_bridge_port( &mac_address, intf_name );
     if ( out_port_ifindex < 0 ) {
-        fprintf( stderr, "_find_bridge_port: %s\n", strerror(errno) );
+        _error( "_find_bridge_port: %s\n", strerror(errno) );
         return -1;
     }
     char bridge_port_intf_name[IF_NAMESIZE];
     if ( if_indextoname( out_port_ifindex, bridge_port_intf_name ) == NULL) {
-        fprintf( stderr,"if_indextoname: %s\n", strerror(errno));
+        _error( "if_indextoname: %s\n", strerror(errno));
         return -1;
     }
 
@@ -808,7 +843,7 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
     int i = 0;
     for( i = 0 ; i < MAX_INTERFACES ; i++ ) {
         if (interfaceNames[i] == NULL) {
-            fprintf( stderr, "Unable to find interface: %s\n", bridge_port_intf_name );
+            _error( "Unable to find interface: %s\n", bridge_port_intf_name );
             return -1;
         }
 
@@ -864,13 +899,13 @@ static int   _find_next_hop ( char* dev_name, struct in_addr* dst_ip, struct in_
     if (( ifindex = ioctl( arp_socket, SIOCFINDEV, &args )) < 0) {
         switch ( errno ) {
         case ENETUNREACH:
-            fprintf( stderr, "ARP: Destination IP is not reachable: %s\n", _inet_ntoa( args.addr) );
+            _error( "ARP: Destination IP is not reachable: %s\n", _inet_ntoa( args.addr) );
             return -1;
         default:  /* Ignore all other error codes */
             break;
         }
 
-        fprintf( stderr, "SIOCFINDEV[%s] %s.\n", _inet_ntoa( dst_ip->s_addr ), strerror(errno) );
+        _error( "SIOCFINDEV[%s] %s.\n", _inet_ntoa( dst_ip->s_addr ), strerror(errno) );
         return -1;
     }
 
@@ -911,10 +946,10 @@ static int   _find_bridge_port ( struct ether_addr* mac_address, char* bridge_na
         
 	if (( ret = ioctl( arp_socket, SIOCDEVPRIVATE, &ifr )) < 0 ) {
         if ( errno == EINVAL ) {
-            fprintf( stderr, "ARP: Invalid argument, MAC Address is found in ARP Cache but not in bridge MAC table.\n" );
+            _error( "ARP: Invalid argument, MAC Address is found in ARP Cache but not in bridge MAC table.\n" );
             return -1;
         } else {
-            fprintf( stderr, "ioctl: %s\n", strerror(errno) );
+            _error( "ioctl: %s\n", strerror(errno) );
             return -1;
         }
     }
@@ -944,7 +979,7 @@ static int   _arp_address ( struct in_addr* dst_ip, struct ether_addr* mac, char
         /* Check the cache before issuing the request */
         ret = _arp_lookup_cache_entry( dst_ip, intf_name, mac );
         if ( ret < 0 ) {
-            fprintf( stderr, "_get_arp_entry: %s\n", strerror(errno) );
+            _error( "_get_arp_entry: %s\n", strerror(errno) );
             return -1;
         } else if (ret == 1 ) {
             return 1;
@@ -954,20 +989,20 @@ static int   _arp_address ( struct in_addr* dst_ip, struct ether_addr* mac, char
 
         /* Connect and close so the kernel grabs the source address */
         if (( c == 0 ) && ( _arp_fake_connect( &src_ip, dst_ip, intf_name ) < 0 )) {
-            fprintf( stderr, "_arp_fake_connect: %s \n", strerror(errno) );
+            _error( "_arp_fake_connect: %s \n", strerror(errno) );
             return -1;
         }
 
         /* Issue the arp request */
         if ( _arp_issue_request( &src_ip, dst_ip, intf_name ) < 0 ) {
-            fprintf( stderr, "_arp_issue_request: %s \n", strerror(errno) );
+            _error( "_arp_issue_request: %s \n", strerror(errno) );
             return -1;
         }
 
         delay = delay_array[c];
         if ( delay == 0 ) break;
         if ( delay < 0 ) {
-            fprintf( stderr, "Invalid delay: index:%i delay:%i\n", c, delay );
+            _error( "Invalid delay: index:%i delay:%i\n", c, delay );
             return -1;
         }
         c++;
@@ -1011,7 +1046,7 @@ static int   _arp_lookup_cache_entry ( struct in_addr* ip, char* intf_name, stru
             return 0;
         }
 
-        fprintf( stderr, "ioctl: %s\n", strerror(errno));
+        _error( "ioctl: %s\n", strerror(errno));
         return -1;
     }
 
@@ -1058,24 +1093,24 @@ static int   _arp_fake_connect ( struct in_addr* src_ip, struct in_addr* dst_ip,
         memcpy( &addr.sin_addr, dst_ip, sizeof( addr.sin_addr ));
         
         if ( setsockopt( fake_fd, SOL_SOCKET, SO_BINDTODEVICE, intf_name, name_len ) < 0 ) {
-            fprintf( stderr, "setsockopt(SO_BINDTODEVICE,%s): %s\n", intf_name, strerror(errno) );
+            _error( "setsockopt(SO_BINDTODEVICE,%s): %s\n", intf_name, strerror(errno) );
         }
 
         if ( setsockopt( fake_fd, SOL_SOCKET, SO_BROADCAST,  &one, sizeof(one)) < 0 ) {
-            fprintf( stderr, "setsockopt(SO_BROADCAST)\n" );
+            _error( "setsockopt(SO_BROADCAST)\n" );
         }
 
         if ( setsockopt( fake_fd, SOL_SOCKET, SO_DONTROUTE, &one, sizeof( one )) < 0 ) {
-            fprintf( stderr, "setsockopt(SO_DONTROUTE)\n" );
+            _error( "setsockopt(SO_DONTROUTE)\n" );
         }
         
         if ( connect( fake_fd, (struct sockaddr*)&addr, sizeof( addr )) < 0 ) {
-            fprintf( stderr, "connect[%s] %s\n", _inet_ntoa( addr.sin_addr.s_addr ), strerror(errno) );
+            _error( "connect[%s] %s\n", _inet_ntoa( addr.sin_addr.s_addr ), strerror(errno) );
             return -1;
         }
         
         if ( getsockname( fake_fd, (struct sockaddr*)&addr, &addr_len ) < 0 ) {
-            fprintf( stderr, "getsockname: %s\n", strerror(errno) );
+            _error( "getsockname: %s\n", strerror(errno) );
             return -1;
         }
         
@@ -1085,14 +1120,14 @@ static int   _arp_fake_connect ( struct in_addr* src_ip, struct in_addr* dst_ip,
     
 
     if (( fake_fd = socket( AF_INET, SOCK_DGRAM, 0 )) < 0 ) {
-        fprintf( stderr, "socket: %s\n", strerror( errno ) );
+        _error( "socket: %s\n", strerror( errno ) );
         return -1;
     }
     
     ret = _critical_section();
     
     if ( close( fake_fd ) < 0 ) {
-        fprintf( stderr, "close: %s\n", strerror( errno ) );
+        _error( "close: %s\n", strerror( errno ) );
     }
     
     return ret;
@@ -1121,24 +1156,24 @@ static int   _arp_issue_request ( struct in_addr* src_ip, struct in_addr* dst_ip
     broadcast.sll_ifindex = if_nametoindex(intf_name);
 
     if (broadcast.sll_ifindex == 0) {
-        fprintf( stderr, "failed to find index of \"%s\"\n", intf_name);
+        _error( "failed to find index of \"%s\"\n", intf_name);
         return -1;
     }
     
     if ( _arp_build_packet( &pkt, src_ip, dst_ip, intf_name ) < 0 ) {
-        fprintf( stderr, "_arp_build_packet: %s\n", strerror(errno));
+        _error( "_arp_build_packet: %s\n", strerror(errno));
         return -1;
     }
     
     size = sendto( pkt_socket, &pkt, sizeof( pkt ), 0, (struct sockaddr*)&broadcast, sizeof( broadcast ));
 
     if ( size < 0 ) {
-        fprintf( stderr, "sendto: %s\n", strerror(errno) );
+        _error( "sendto: %s\n", strerror(errno) );
         return -1;
     }
     
     if ( size != sizeof( pkt )) {
-        fprintf( stderr, "Transmitted truncated ARP packet %i < %i\n", size, (int)sizeof( pkt ));
+        _error( "Transmitted truncated ARP packet %i < %i\n", size, (int)sizeof( pkt ));
         return -1;
     }
          
@@ -1164,7 +1199,7 @@ static int   _arp_build_packet ( struct ether_arp* pkt, struct in_addr* src_ip, 
     strncpy( ifr.ifr_name, intf_name, IFNAMSIZ );
 
     if ( ioctl( arp_socket, SIOCGIFHWADDR, &ifr ) < 0 ) {
-        fprintf( stderr, "ioctl: %s\n", strerror( errno ));
+        _error( "ioctl: %s\n", strerror( errno ));
         return -1;
     }
 
