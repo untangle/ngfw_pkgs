@@ -1093,7 +1093,20 @@ static int   _arp_fake_connect ( struct in_addr* src_ip, struct in_addr* dst_ip,
         memcpy( &addr.sin_addr, dst_ip, sizeof( addr.sin_addr ));
         
         if ( setsockopt( fake_fd, SOL_SOCKET, SO_BINDTODEVICE, intf_name, name_len ) < 0 ) {
-            _error( "setsockopt(SO_BINDTODEVICE,%s): %s\n", intf_name, strerror(errno) );
+            /**
+             * XXX
+             * Sometimes this setsockopt fails when a bridge is involved.
+             * It seems to be only occasional and sporadic, and I'm not sure why.
+             * In an attempt to fix this, if it fails with "br.eth0" try "eth0"
+             */
+            if ( strncmp( "br.", intf_name, 3 ) == 0 ) {
+                if ( setsockopt( fake_fd, SOL_SOCKET, SO_BINDTODEVICE, &intf_name[3], name_len ) < 0 ) {
+                    _error( "setsockopt(SO_BINDTODEVICE,%s) 1: %s\n", intf_name, strerror(errno) );
+                    _error( "setsockopt(SO_BINDTODEVICE,%s) 2: %s\n", &intf_name[3], strerror(errno) );
+                }
+            } else {
+                _error( "setsockopt(SO_BINDTODEVICE,%s): %s\n", intf_name, strerror(errno) );
+            }
         }
 
         if ( setsockopt( fake_fd, SOL_SOCKET, SO_BROADCAST,  &one, sizeof(one)) < 0 ) {
