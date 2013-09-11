@@ -546,8 +546,6 @@ static int   _daemonize ()
         return -1;
     }
         
-    /* pid is zero, this is the daemon process */
-    /* Dupe these to logfile until something changes them */
     if (( logfile_fd = open( logfile, O_WRONLY | O_APPEND | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH )) < 0 ) {
         _error( "open: %s\n", strerror(errno) );
         return -1;
