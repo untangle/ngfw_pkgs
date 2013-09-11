@@ -534,7 +534,6 @@ static int   _daemonize ()
         exit(0);
     }
         
-    /* This is just copied from http://www.systhread.net/texts/200508cdaemon2.php ... shameless. */
     umask( S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH );
 
     if (( sid = setsid()) < 0 ) {
