@@ -180,8 +180,8 @@ static int    _find_bridge_port ( struct ether_addr* mac_address, char* bridge_n
 static int    _arp_address ( struct in_addr* dst_ip, struct ether_addr* mac, char* intf_name );
 static int    _arp_lookup_cache_entry ( struct in_addr* ip, char* intf_name, struct ether_addr* mac );
 static int    _arp_issue_request ( struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
-static int    _arp_fake_connect ( struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
 static int    _arp_build_packet ( struct ether_arp* pkt, struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
+static int    _arp_determine_source_addr ( struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
 
 static long long _timeval_diff( struct timeval *end_time, struct timeval *start_time );
 
@@ -988,14 +988,14 @@ static int   _arp_address ( struct in_addr* dst_ip, struct ether_addr* mac, char
         }
 
         /* Connect and close so the kernel grabs the source address */
-        if (( c == 0 ) && ( _arp_fake_connect( &src_ip, dst_ip, intf_name ) < 0 )) {
-            _error( "_arp_fake_connect: %s \n", strerror(errno) );
+        if (( c == 0 ) && ( _arp_determine_source_addr( &src_ip, dst_ip, intf_name ) < 0 )) {
+            _error( "Failed to determine address for %s: %s\n", intf_name, strerror(errno) );
             return -1;
         }
 
         /* Issue the arp request */
         if ( _arp_issue_request( &src_ip, dst_ip, intf_name ) < 0 ) {
-            _error( "_arp_issue_request: %s \n", strerror(errno) );
+            _error( "_arp_issue_request: %s\n", strerror(errno) );
             return -1;
         }
 
@@ -1007,7 +1007,7 @@ static int   _arp_address ( struct in_addr* dst_ip, struct ether_addr* mac, char
         }
         c++;
         
-        _debug( 2,  "Waiting for the response for: %i ms\n", delay );
+        _debug( 2,  "Waiting for the response for: %i usec\n", delay );
         usleep( delay );
     }
     
@@ -1074,76 +1074,20 @@ static int   _arp_lookup_cache_entry ( struct in_addr* ip, char* intf_name, stru
  *
  * Returns: 0 on success, -1 on error
  */
-static int   _arp_fake_connect ( struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name )
+static int   _arp_determine_source_addr ( struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name )
 {
-    int fake_fd;
-    int ret = 0;
-
-    int _critical_section( void ) {
-
-        int one = 1;
-        struct sockaddr_in addr;
-        u_int addr_len = sizeof( addr );
-        int name_len = strnlen( intf_name, sizeof( intf_name )) + 1;
-
-        memset( &addr, 0, sizeof (struct sockaddr_in) );
-        
-        addr.sin_family = AF_INET;
-        addr.sin_port = htons( 59999 ); /* not actually used */
-        memcpy( &addr.sin_addr, dst_ip, sizeof( addr.sin_addr ));
-        
-        if ( setsockopt( fake_fd, SOL_SOCKET, SO_BINDTODEVICE, intf_name, name_len ) < 0 ) {
-            /**
-             * XXX
-             * Sometimes this setsockopt fails when a bridge is involved.
-             * It seems to be only occasional and sporadic, and I'm not sure why.
-             * In an attempt to fix this, if it fails with "br.eth0" try "eth0"
-             */
-            if ( strncmp( "br.", intf_name, 3 ) == 0 ) {
-                if ( setsockopt( fake_fd, SOL_SOCKET, SO_BINDTODEVICE, &intf_name[3], name_len ) < 0 ) {
-                    _error( "setsockopt(SO_BINDTODEVICE,%s) 1: %s\n", intf_name, strerror(errno) );
-                    _error( "setsockopt(SO_BINDTODEVICE,%s) 2: %s\n", &intf_name[3], strerror(errno) );
-                }
-            } else {
-                _error( "setsockopt(SO_BINDTODEVICE,%s): %s\n", intf_name, strerror(errno) );
-            }
-        }
-
-        if ( setsockopt( fake_fd, SOL_SOCKET, SO_BROADCAST,  &one, sizeof(one)) < 0 ) {
-            _error( "setsockopt(SO_BROADCAST)\n" );
-        }
-
-        if ( setsockopt( fake_fd, SOL_SOCKET, SO_DONTROUTE, &one, sizeof( one )) < 0 ) {
-            _error( "setsockopt(SO_DONTROUTE)\n" );
-        }
-        
-        if ( connect( fake_fd, (struct sockaddr*)&addr, sizeof( addr )) < 0 ) {
-            _error( "connect[%s] %s\n", _inet_ntoa( addr.sin_addr.s_addr ), strerror(errno) );
-            return -1;
-        }
-        
-        if ( getsockname( fake_fd, (struct sockaddr*)&addr, &addr_len ) < 0 ) {
-            _error( "getsockname: %s\n", strerror(errno) );
-            return -1;
-        }
-        
-        memcpy( src_ip, &addr.sin_addr, sizeof( addr.sin_addr ));
-        return 0;
-    }
+    struct ifreq ifr;
+    ifr.ifr_addr.sa_family = AF_INET;
     
+    strncpy(ifr.ifr_name, intf_name, IFNAMSIZ-1);
 
-    if (( fake_fd = socket( AF_INET, SOCK_DGRAM, 0 )) < 0 ) {
-        _error( "socket: %s\n", strerror( errno ) );
+    if ( ioctl( arp_socket, SIOCGIFADDR, &ifr) < 0 ) {
+        _error( "ioctl: %s\n", intf_name, strerror(errno) );
         return -1;
     }
-    
-    ret = _critical_section();
-    
-    if ( close( fake_fd ) < 0 ) {
-        _error( "close: %s\n", strerror( errno ) );
-    }
-    
-    return ret;
+
+    memcpy( src_ip, &((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr, sizeof( struct in_addr ) );
+    return 0;
 }
 
 /**
