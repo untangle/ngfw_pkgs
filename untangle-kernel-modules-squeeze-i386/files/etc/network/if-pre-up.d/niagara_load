@@ -1,9 +1,9 @@
 #!/bin/sh
-module="n22xxed"
-device="n22xxed"
+module="niagara"
+device="niagara"
 prog=$(basename $0)
 logger="logger -t $prog"
-util="/usr/sbin/n22xxed_util"
+util="/usr/sbin/niagara_util"
 mode="664"
 
 $logger "loading intel NIC driver kernel module"
