@@ -9,6 +9,7 @@ Standards-Version: 3.8.0
 Package: untangle-kernel-modules-squeeze-amd64
 Architecture: amd64
 Depends: linux-image-2.6.32-5-untangle-amd64, firmware-bnx2, firmware-bnx2x, e1000-module-2.6.32-5-untangle-amd64, igb-module-2.6.32-5-untangle-amd64, niagara-module-2.6.32-5-untangle-amd64, bnx2-module-2.6.32-5-untangle-amd64, niagara
+Conflicts: niagara22xxed-module-2.6.32-5-untangle-amd64, niagara22xxed
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle appliance internal
  The Untangle appliance internal-to-untangle mode.
