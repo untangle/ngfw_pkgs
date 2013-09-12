@@ -3,7 +3,7 @@ module="niagara"
 device="niagara"
 prog=$(basename $0)
 logger="logger -t $prog"
-util="/usr/sbin/niagara_util"
+util="/usr/sbin/util"
 mode="664"
 
 $logger "loading intel NIC driver kernel module"
