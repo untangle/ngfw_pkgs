@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-kernel-modules-squeeze-i386
 Architecture: i386
-Depends: linux-image-2.6.32-5-untangle-686 | linux-image-2.6.32-5-untangle+xen-686, firmware-bnx2, firmware-bnx2x, e1000-module-2.6.32-5-untangle-686, igb-module-2.6.32-5-untangle-686, niagara22xxed-module-2.6.32-5-untangle-686, bnx2-module-2.6.32-5-untangle-686, niagara22xxed
+Depends: linux-image-2.6.32-5-untangle-686 | linux-image-2.6.32-5-untangle+xen-686, firmware-bnx2, firmware-bnx2x, e1000-module-2.6.32-5-untangle-686, igb-module-2.6.32-5-untangle-686, niagara-module-2.6.32-5-untangle-686, bnx2-module-2.6.32-5-untangle-686, niagara
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle appliance internal
  The Untangle appliance internal-to-untangle mode.
