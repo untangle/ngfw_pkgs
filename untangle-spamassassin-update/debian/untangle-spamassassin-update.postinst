@@ -19,8 +19,10 @@ chown -R $SPAM_USER:$SPAM_GROUP /home/$SPAM_USER
 sed -i "s/^ENABLED=.*/ENABLED=1/" /etc/default/spamassassin
 sed -i "s/^CRON=.*/CRON=1/" /etc/default/spamassassin
 
-# change cronjob to also touch file when it runs so we know when last update ran
+# change cronjob to also touch /tmp/sa-update.ran file when it runs so we know when last update ran
 sed -i -e 's|^sa-update$|sa-update ; touch /tmp/sa-update.ran|' /etc/cron.daily/spamassassin
+# touch /tmp/sa-update.ran so users do not see "never updated" and panic like the world is ending
+if [ ! -f /tmp/sa-update.ran ] ; then touch /tmp/sa-update.ran ; fi 
 
 ## turn off stuff in local.cf
 rm -f /etc/spamassassin/local.cf
