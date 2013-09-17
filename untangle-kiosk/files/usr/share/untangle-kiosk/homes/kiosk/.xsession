@@ -20,7 +20,7 @@ fi
 # If we're still in 800x600 or 640x480 go ahead and warn the user with a pop-up
 currentResolutionX=$(xrandr | head -1 | perl -pe 's/.*current (\d+) x (\d+).*/$1/')
 if [ "$currentResolutionX" -lt "1024" ] ; then
-    Xdialog --left --title "Warning" --msgbox "The system is unable to configure the minimum required resolution (1024x768). Try another video boot option or video card/monitor configuration." 0 0 &
+    Xdialog --left --title "Warning" --msgbox "The system is unable to configure the minimum required resolution (1024x768).\nTry another video boot option or video card/monitor configuration." 0 0 &
 fi
 
 # set a reasonable DPI value if the current one is grossly wrong (this
