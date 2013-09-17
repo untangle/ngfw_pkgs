@@ -34,8 +34,8 @@ pkill fbpanel
 fbpanel &
 
 # set the background
-if [ -f /usr/share/untangle-kiosk/desktop_background-1024x768.png ] ; then
-    feh --bg-scale /usr/share/untangle-kiosk/desktop_background-1024x768.png
+if [ -f /usr/share/untangle-kiosk/desktop_background-4x3.png ] ; then
+    feh --bg-scale /usr/share/untangle-kiosk/desktop_background-4x3.png
 fi
 
 # do not recover a (potentially saved) previous session
