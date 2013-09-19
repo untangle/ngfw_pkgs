@@ -75,7 +75,7 @@ fi
 # Reset default (not necessary now, necessary when upgrading kernel)
 # currentKernelParams="$(grep -E '^kernel' $menuLst | head -$((1 + $currentDefault)) | tail -1)"
 # case "$currentKernelParams" in
-#   *force-vesa*|"") newDefault=1 ;;
+#   *force-video-safe*|"") newDefault=1 ;;
 #   *noapic*) newDefault=3 ;;
 #   *) newDefault=0 ;;
 # esac

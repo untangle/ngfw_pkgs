@@ -91,7 +91,7 @@ background 67b03c
 ## multiple altoptions lines are allowed
 ## e.g. altoptions=(extra menu suffix) extra boot options
 ##      altoptions=(single-user) single
-# altoptions=(vesa video mode) vga=791 quiet splash force-vesa nomodeset video=uvesafb:mode_option=1280x1024-24,mtrr=3,scroll=ywrap
+# altoptions=(safe video mode) vga=791 quiet splash force-video-safe nomodeset video=uvesafb:mode_option=1280x1024-24,mtrr=3,scroll=ywrap
 # altoptions=(kern video mode) vga=791 quiet splash
 # altoptions=(hardware safe mode) acpi=off noapic nosplash
 # altoptions=(recovery mode) ut-restore nosplash

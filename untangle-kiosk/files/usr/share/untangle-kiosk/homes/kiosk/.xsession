@@ -5,8 +5,8 @@ xhost +
 xset s off
 xset -dpms
 
-# If we're in VESA always resize screen on to 1024x768
-if grep -qE '^\(II\) VESA\(0\)' /var/log/Xorg.0.log ; then
+# If we're in FBDEV always resize screen on to 1024x768
+if grep -qE '^\(II\) FBDEV\(0\)' /var/log/Xorg.0.log ; then
     xrandr -s 1024x768
 fi
 
