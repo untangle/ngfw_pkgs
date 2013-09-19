@@ -1,42 +1,51 @@
 XORG_CONF_SAFE=xorg-untangle-safe.conf
 
 print_warning() {
-for i in $(seq 50) ; do echo ; done
-cat <<EOF
+    for i in $(seq 50) ; do echo ; done
+    cat <<EOF
 The server has failed to properly detect the video & monitor settings.
 
 Try restarting the server and selecting a different video-mode boot
 option from the boot menu.
 EOF
-for i in $(seq 10) ; do echo ; done
+    for i in $(seq 10) ; do echo ; done
 }
 
 if [ `tty` = "/dev/tty1" ] ; then
-  while true ; do
-    ps aux | awk '/^(xinit|X|startx)/ { print $2 }' | xargs kill -9 2> /dev/null
+    for i in $(seq 3) ; do
 
-    START_TIME=$(date +%s)
+        # kill any running X processes
+        ps aux | awk '/^(xinit|X|startx)/ { print $2 }' | xargs kill -9 2> /dev/null
 
-    forceVideoSafe=$(grep force-video-safe /proc/cmdline)
-    n10=$(lspci | grep "Intel Corporation N10 Family Integrated Graphics Controller (rev 02)")
+        #
+        # Special handling for some video cards
+        # This is used if we know our appliances (u50) don't support the default
+        # We can force video-safe-mode
+        #
+        # n10=$(lspci | grep "Intel Corporation N10 Family Integrated Graphics Controller (rev 02)")
+        # if [ -z "$n10" ] ; then
+        #    export XORGCONFIG=$XORG_CONF_SAFE
+        # fi
 
-    # use safe xorg config only if we were passed "force-video-safe" via grub, *and* we're
-    # not on the same graphics controller as the u50
-    [ -n "$forceVideoSafe" ] && [ -z "$n10" ] && export XORGCONFIG=$XORG_CONF_SAFE
-    startx
+        #
+        # Use video-safe-mode xorg config only if we were passed "force-video-safe" via grub
+        # 
+        forceVideoSafe=$(grep force-video-safe /proc/cmdline)
+        if [ -n "$forceVideoSafe" ] ; then
+            export XORGCONFIG=$XORG_CONF_SAFE
+        fi
 
-    STOP_TIME=$(date +%s)
+        # Start X
+        startx
 
-    failures=0
-    if [ $(($STOP_TIME - $START_TIME)) -lt 60 ] ; then
-      export XORGCONFIG=$XORG_CONF_SAFE
-      startx
-      print_warning
-      failures=$(($failures + 1))
-      if [ $failures -gt 2 ] ; then
-          print_warning
-          exit
-      fi
-    fi
-  done
+        # Print this warning to console to let the user know X is failing
+        print_warning
+        sleep 5
+
+        # If we have failed for 2 attempts already, try safe mode on the next try
+        if [ $i -gt 2 ] ; then
+            export XORGCONFIG=$XORG_CONF_SAFE
+        fi
+
+    done
 fi
