@@ -41,6 +41,7 @@ if [ `tty` = "/dev/tty1" ] ; then
 
         # Start X
         startx
+        # If X returns, something has gone wrong
 
         # Print this warning to console to let the user know X is failing
         print_warning
@@ -56,7 +57,8 @@ fi
 
 
 # 
-# Sleep forever so that they do not get a shell prompt
+# Sleep forever so that they do not automatically get a shell prompt
+# You can easily ctrl-C this to get the bash shell
 #
 while true; do
     print_warning
