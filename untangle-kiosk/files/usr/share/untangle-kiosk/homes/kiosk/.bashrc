@@ -3,10 +3,14 @@ XORG_CONF_SAFE=xorg-untangle-safe.conf
 print_warning() {
     for i in $(seq 50) ; do echo ; done
     cat <<EOF
-The server has failed to properly detect the video & monitor settings.
+The server has failed to properly detect correct video and monitor settings.
 
-Try restarting the server and selecting a different video-mode boot
-option from the boot menu.
+There are several things to try:
+1) Restarting the server and select a different video-mode boot option from the boot menu.
+2) Use a different monitor (restart the server after switching monitors).
+3) Use a different video card (if applicable).
+4) Change the BIOS video card settings (if applicable).
+
 EOF
     for i in $(seq 10) ; do echo ; done
 }
@@ -49,3 +53,12 @@ if [ `tty` = "/dev/tty1" ] ; then
 
     done
 fi
+
+
+# 
+# Sleep forever so that they do not get a shell prompt
+#
+while true; do
+    print_warning
+    sleep 60
+done
