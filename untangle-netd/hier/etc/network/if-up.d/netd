@@ -38,7 +38,7 @@ netd_v6_config()
     fi
 
     if [ -n "$IF_NETD_V6_GATEWAY" ] && [ -n "$IF_NETD_INTERFACE_INDEX" ] ; then
-        /usr/share/untangle-netd/bin/add-uplink.sh ${IFACE} ${IF_NETD_V6_GATEWAY} uplink.${IF_NETD_INTERFACE_INDEX}
+        /usr/share/untangle-netd/bin/add-uplink.sh ${IFACE} ${IF_NETD_V6_GATEWAY} uplink.${IF_NETD_INTERFACE_INDEX} -6
     fi
 
     return 0
