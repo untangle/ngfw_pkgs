@@ -42,7 +42,6 @@ fi
 find .mozilla -name sessionstore.js -exec /bin/rm {} \;
 
 # Launch appliance imaging script if present
-
 if [ -x /usr/share/untangle/bin/appliance_imaging_script.sh ] ; then
     sudo xterm /usr/share/untangle/bin/appliance_imaging_script.sh 
 fi
