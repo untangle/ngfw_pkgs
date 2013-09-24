@@ -28,6 +28,10 @@ class EbtablesManager:
         self.file.write("${EBTABLES} -t broute -I BROUTING -p ipv4 --ip-protocol udp --ip-dport 67:68 -j ACCEPT" + "\n")
         self.file.write("${EBTABLES} -t broute -I BROUTING -p ipv4 --ip-protocol udp --ip-sport 67:68 -j ACCEPT" + "\n")
         self.file.write("\n");
+
+        self.file.write("## Don't BROUTE VRRP" + "\n")
+        self.file.write("${EBTABLES} -t broute -I BROUTING -p ipv4 --ip-protocol vrrp -j ACCEPT" + "\n")
+        self.file.write("\n");
         
         self.file.write("## Broute everything else" + "\n")
         self.file.write("## ACCEPT here means to BROUTE the packet - BROUTE all IPv4 (http://ebtables.sourceforge.net/examples/basic.html#ex_redirect) " + "\n")
