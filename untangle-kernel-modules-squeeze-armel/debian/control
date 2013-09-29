@@ -8,8 +8,8 @@ Standards-Version: 3.8.0
 
 Package: untangle-kernel-modules-squeeze-armel
 Architecture: armel
-Depends: linux-image-2.6.32-5-untangle-armel, firmware-bnx2, firmware-bnx2x, e1000-module-2.6.32-5-untangle-armel, igb-module-2.6.32-5-untangle-armel, bnx2-module-2.6.32-5-untangle-armel
-Conflicts: niagara22xxed-module-2.6.32-5-untangle-armel, niagara22xxed
+Depends: linux-image-2.6.32-5-untangle-versatile, firmware-bnx2, firmware-bnx2x, e1000-module-2.6.32-5-untangle-versatile, igb-module-2.6.32-5-untangle-versatile, bnx2-module-2.6.32-5-untangle-versatile
+Conflicts: niagara22xxed-module-2.6.32-5-untangle-versatile, niagara22xxed
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle appliance internal
  The Untangle appliance internal-to-untangle mode.
