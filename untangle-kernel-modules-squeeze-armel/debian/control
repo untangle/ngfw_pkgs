@@ -1,0 +1,15 @@
+Source: untangle-kernel-modules-squeeze-armel
+Section: admin
+Priority: standard
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.8.0
+
+Package: untangle-kernel-modules-squeeze-armel
+Architecture: armel
+Depends: linux-image-2.6.32-5-untangle-armel, firmware-bnx2, firmware-bnx2x, e1000-module-2.6.32-5-untangle-armel, igb-module-2.6.32-5-untangle-armel, bnx2-module-2.6.32-5-untangle-armel
+Conflicts: niagara22xxed-module-2.6.32-5-untangle-armel, niagara22xxed
+Pre-Depends: untangle-debconf-manager
+Description: The Untangle appliance internal
+ The Untangle appliance internal-to-untangle mode.
