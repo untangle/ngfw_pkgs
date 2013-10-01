@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-gateway
 Architecture: all
-Depends: untangle-vm, untangle-kiosk, untangle-ntp-config, untangle-bootsplash, untangle-restore-tools, untangle-exim4-config, untangle-linux-config, untangle-system-config, untangle-update-manager, ssh, smartmontools, untangle-extra-utils, untangle-client-local, untangle-dhclient-config, untangle-ddclient-config, untangle-snmpd-config, iceweasel | firefox | mozilla | opera, ifupdown, nvi, nano, pciutils
+Depends: untangle-vm, untangle-kiosk, untangle-ntp-config, untangle-bootsplash | oracle-java7-jdk, untangle-restore-tools, untangle-exim4-config, untangle-linux-config, untangle-system-config, untangle-update-manager, ssh, smartmontools, untangle-extra-utils, untangle-client-local, untangle-dhclient-config, untangle-ddclient-config, untangle-snmpd-config, iceweasel | firefox | mozilla | opera, ifupdown, nvi, nano, pciutils
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle Gateway
  The Untangle Top Level Untangle package.
