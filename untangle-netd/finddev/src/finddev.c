@@ -26,6 +26,7 @@
 #include <linux/netfilter.h> 
 #include <linux/if_packet.h>
 #include <libnetfilter_queue/libnetfilter_queue.h>
+#include <sys/resource.h>
 
 /**
  * The NFqueue # to listen for packets
@@ -194,6 +195,13 @@ int main ( int argc, char **argv )
 {
     int rv, i;
     
+    /**
+     * Allow infinite sized coredumps
+     */
+    struct rlimit core_limits;
+    core_limits.rlim_cur = core_limits.rlim_max = RLIM_INFINITY;
+    setrlimit(RLIMIT_CORE, &core_limits);
+
     _set_signals();
     
     if ( _parse_args( argc, argv ) < 0 )
