@@ -362,8 +362,19 @@ static void* _read_pkt (void* data)
      * Create a new thread to handle the next packet
      * We have to use this thread to handle this packet because nfq_handle_packet
      * stores nfa on the stack, so this thread can not be returned
+     *
+     * This thread is critical so we loop until we succeed.
      */
-    pthread_create( &current_thread, &attr, _read_pkt, NULL );
+    do {
+        rv = pthread_create( &current_thread, &attr, _read_pkt, NULL );
+        if ( rv == 0 ) {
+            break;
+        } else {
+            _error("pthread_create: %s\n", strerror(rv));
+            usleep(100 * 1000); /* .1 second delay to prevent spinning */
+        }
+    } while ( 1 );
+        
 
     nfq_handle_packet(h, buf, rv);
 
