@@ -117,14 +117,15 @@ class FilterRulesManager:
         self.file.write("${IPTABLES} -t filter -I filter-rules-input -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\"" + "\n");
         self.file.write("\n");
 
-        self.file.write("# Pass all port forwarded traffic (for block pages & admin) " + "\n");
-        self.file.write("${IPTABLES} -t filter -D filter-rules-input -m conntrack --ctstate DNAT -j RETURN -m comment --comment \"Allow port forwarded traffic\" >/dev/null 2>&1" + "\n");
-        self.file.write("${IPTABLES} -t filter -I filter-rules-input -m conntrack --ctstate DNAT -j RETURN -m comment --comment \"Allow port forwarded traffic\"" + "\n");
-        self.file.write("\n");
+        # This is commented out because we have explicity rules to handle admin & blockpages in the input rules.
+        # self.file.write("# Pass all port forwarded traffic (for block pages & admin) " + "\n");
+        # self.file.write("${IPTABLES} -t filter -D filter-rules-input -m conntrack --ctstate DNAT -j RETURN -m comment --comment \"Allow port forwarded traffic\" >/dev/null 2>&1" + "\n");
+        # self.file.write("${IPTABLES} -t filter -I filter-rules-input -m conntrack --ctstate DNAT -j RETURN -m comment --comment \"Allow port forwarded traffic\"" + "\n");
+        # self.file.write("\n");
 
-        self.file.write("# Pass all redirected TCP traffic " + "\n");
-        self.file.write("${IPTABLES} -t filter -D filter-rules-input -i utun -j RETURN -m comment --comment \"Allow all redirected traffic\" >/dev/null 2>&1" + "\n");
-        self.file.write("${IPTABLES} -t filter -I filter-rules-input -i utun -j RETURN -m comment --comment \"Allow all redirected traffic\"" + "\n");
+        self.file.write("# Pass all reinjected TCP traffic " + "\n");
+        self.file.write("${IPTABLES} -t filter -D filter-rules-input -i utun -j RETURN -m comment --comment \"Allow all reinjected traffic\" >/dev/null 2>&1" + "\n");
+        self.file.write("${IPTABLES} -t filter -I filter-rules-input -i utun -j RETURN -m comment --comment \"Allow all reinjected traffic\"" + "\n");
         self.file.write("\n");
 
         self.write_input_filter_rules( settings, verbosity );
