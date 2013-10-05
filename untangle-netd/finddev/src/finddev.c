@@ -366,11 +366,11 @@ static void* _read_pkt (void* data)
      * This thread is critical so we loop until we succeed.
      */
     do {
-        rv = pthread_create( &current_thread, &attr, _read_pkt, NULL );
-        if ( rv == 0 ) {
+        int pcrv = pthread_create( &current_thread, &attr, _read_pkt, NULL );
+        if ( pcrv == 0 ) {
             break;
         } else {
-            _error("pthread_create: %s\n", strerror(rv));
+            _error("pthread_create: %s\n", strerror(pcrv));
             usleep(100 * 1000); /* .1 second delay to prevent spinning */
         }
     } while ( 1 );
