@@ -154,8 +154,8 @@ class NatRulesManager:
         self.file.write("\n");
 
         self.file.write("# Call nat-rules chain from POSTROUTING chain to SNAT traffic" + "\n");
-        self.file.write("${IPTABLES} -t nat -D POSTROUTING -m comment --comment \"SNAT rules\" -j nat-rules >/dev/null 2>&1" + "\n");
-        self.file.write("${IPTABLES} -t nat -A POSTROUTING -m comment --comment \"SNAT rules\" -j nat-rules" + "\n");
+        self.file.write("${IPTABLES} -t nat -D POSTROUTING -m conntrack --ctstate NEW -m comment --comment \"SNAT rules\" -j nat-rules >/dev/null 2>&1" + "\n");
+        self.file.write("${IPTABLES} -t nat -A POSTROUTING -m conntrack --ctstate NEW -m comment --comment \"SNAT rules\" -j nat-rules" + "\n");
         self.file.write("\n");
 
         self.file.write("# Create (if needed) and flush nat-reverse-filter chain" + "\n");
