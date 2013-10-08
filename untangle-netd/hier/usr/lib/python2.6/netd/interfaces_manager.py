@@ -178,16 +178,21 @@ class InterfacesManager:
                 if not self.check_interface_settings( interface_settings ):
                     continue
 
+                # write aliases first so that they already exist when the main interface is brought up
+                # the main interface calls add-uplink which relies on the current aliases being initialized
+                # bug #11428
+                try:
+                    self.write_interface_aliases( interface_settings, settings.get('interfaces').get('list') )
+                except Exception,exc:
+                    traceback.print_exc()
+
+                # Now write the main interface configurations
                 try:
                     self.write_interface_v4( interface_settings, settings.get('interfaces').get('list') )
                 except Exception,exc:
                     traceback.print_exc()
                 try:
                     self.write_interface_v6( interface_settings, settings.get('interfaces').get('list') )
-                except Exception,exc:
-                    traceback.print_exc()
-                try:
-                    self.write_interface_aliases( interface_settings, settings.get('interfaces').get('list') )
                 except Exception,exc:
                     traceback.print_exc()
 
