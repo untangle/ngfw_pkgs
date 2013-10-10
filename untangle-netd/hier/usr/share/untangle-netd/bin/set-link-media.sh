@@ -81,10 +81,11 @@ set_ethernet_media()
             ;;
 
         "auto")
-            ${ETHTOOL} ${t_nic} | \
-                awk 'BEGIN { IGNORECASE = 1} ; /auto-negotiation: on/ { exit 1 } ;' \
-                && ${ETHTOOL} -s ${t_nic} autoneg on
-            true
+            ${ETHTOOL} ${t_nic} | grep -qi 'auto-negotiation: on'
+            if [ ! $? -eq 0 ] ; then
+                echo "Setting ${t_nic} to auto-negotiation."
+                ${ETHTOOL} -s ${t_nic} autoneg on
+            fi
             return 0
             ;;
         "*")
@@ -94,7 +95,11 @@ set_ethernet_media()
     esac
 
     ## Not auto, have to set the speed manually (first check if it is already set)
-    is_media_unset ${t_nic} ${t_speed} ${t_duplex} && ${ETHTOOL} -s ${t_nic} autoneg off speed ${t_speed} duplex ${t_duplex}
+    is_media_unset ${t_nic} ${t_speed} ${t_duplex} 
+    if [ $? -eq 0 ] ; then
+        echo "Setting ${t_nic} to ${t_speed} ${t_duplex}."
+        ${ETHTOOL} -s ${t_nic} autoneg off speed ${t_speed} duplex ${t_duplex}
+    fi
 }
 
 set_ethernet_media $*
