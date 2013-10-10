@@ -73,7 +73,7 @@ class BypassRuleManager:
         # We bypass routing protocols
         # http://www.iana.org/assignments/multicast-addresses/multicast-addresses.xhtml
         self.file.write("# Implicit Bypass Rules (RIP and routing protocols)" + "\n");
-        self.file.write("${IPTABLES} -t filter -A bypass-rules -p udp --source-port 67:68 --destination-port 67:68 --goto set-bypass-mark -m comment --comment \"Bypass DHCP traffic\"" + "\n");
+        self.file.write("${IPTABLES} -t filter -A bypass-rules --destination 224.0.0.0/8 --goto set-bypass-mark -m comment --comment \"Bypass 224 traffic\"" + "\n");
         self.file.write("\n");
 
         # We bypass 'hairpin' traffic because end-pointing it at layer 7 wouldn't work because two sessions would have identical tuples 
