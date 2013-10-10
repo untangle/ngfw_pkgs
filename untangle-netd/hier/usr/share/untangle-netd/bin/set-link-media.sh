@@ -70,6 +70,16 @@ set_ethernet_media()
             t_duplex="half"
             ;;
 
+        "10000-full-duplex")
+            t_speed="10000"
+            t_duplex="full"
+            ;;
+
+        "10000-half-duplex")
+            t_speed="10000"
+            t_duplex="half"
+            ;;
+
         "auto")
             ${ETHTOOL} ${t_nic} | \
                 awk 'BEGIN { IGNORECASE = 1} ; /auto-negotiation: on/ { exit 1 } ;' \

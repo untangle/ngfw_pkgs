@@ -33,6 +33,10 @@ class EthernetManager:
                     duplexString = deviceSettings.get('duplex')
                     if duplexString == "AUTO":
                         file.write("%s %s %s" % (self.setLinkMediaScript, deviceSettings.get('deviceName'), "auto") + "\n")
+                    elif duplexString == "M10000_FULL_DUPLEX":
+                        file.write("%s %s %s" % (self.setLinkMediaScript, deviceSettings.get('deviceName'), "10000-full-duplex") + "\n")
+                    elif duplexString == "M10000_HALF_DUPLEX":
+                        file.write("%s %s %s" % (self.setLinkMediaScript, deviceSettings.get('deviceName'), "10000-half-duplex") + "\n")
                     elif duplexString == "M1000_FULL_DUPLEX":
                         file.write("%s %s %s" % (self.setLinkMediaScript, deviceSettings.get('deviceName'), "1000-full-duplex") + "\n")
                     elif duplexString == "M1000_HALF_DUPLEX":
