@@ -32,6 +32,12 @@ class EbtablesManager:
         self.file.write("## Don't BROUTE VRRP" + "\n")
         self.file.write("${EBTABLES} -t broute -I BROUTING -p ipv4 --ip-protocol vrrp -j ACCEPT" + "\n")
         self.file.write("\n");
+
+        # Bypass routing protocols
+        # http://www.iana.org/assignments/multicast-addresses/multicast-addresses.xhtml
+        self.file.write("## Don't BROUTE RIP and other routing protocols" + "\n")
+        self.file.write("${EBTABLES} -t broute -I BROUTING -p ipv4 --ip-destination 224.0.0.0/24 -j ACCEPT" + "\n")
+        self.file.write("\n");
         
         self.file.write("## Broute everything else" + "\n")
         self.file.write("## ACCEPT here means to BROUTE the packet - BROUTE all IPv4 (http://ebtables.sourceforge.net/examples/basic.html#ex_redirect) " + "\n")
