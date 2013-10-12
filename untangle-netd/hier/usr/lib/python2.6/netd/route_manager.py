@@ -185,6 +185,10 @@ fi
         file.write("ip route flush table main \n")
         file.write("\n");
 
+        file.write("# Delete source route rules\n")
+        file.write("""ip -4 rule show | awk -v min_priority=365000 -v max_priority=366000 '{ sub( ":", "" ) ; if (( $1 >= min_priority ) && ( $1 < max_priority ) ) print $1 }' | while read prio ; do ip rule delete priority $prio ; done""" + "\n")
+        file.write("\n");
+
         file.flush()
         file.close()
 

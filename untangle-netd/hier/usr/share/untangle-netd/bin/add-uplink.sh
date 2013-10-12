@@ -3,10 +3,8 @@
 # This script addes the appropriate ip route rules for a WAN interface
 # Usage: add-uplink.sh <interface> <gatewayIP> <routeTable> <family>
 
-## All of the untangle rules MUST fall in this priority.  This makes it easy to
-## flush all of the rules.
-UNTANGLE_PRIORITY_BASE="36"
-UNTANGLE_PRIORITY_DEFAULT="${UNTANGLE_PRIORITY_BASE}6900"
+# The ip route priority for the default rule
+PRIORITY_DEFAULT="366900"
 
 ## Functions
 debug()
@@ -35,60 +33,6 @@ usage()
     exit 254
 }
 
-## Determine all of the routable aliases of an interface.
-ip_interface_get_v4_aliases()
-{
-    ## Print out all of the aliases
-    ip -4 -f inet addr show $1 scope global | awk '/inet/ { sub ( "/.*", "", $2 ) ; print  $2 }'
-}
-
-## Finds the first unused priority between $1 and $2
-ip_rule_get_v4_priority()
-{
-    local t_min_priority=$1
-    local t_max_priority=$2
-    
-    ip -4 rule show | awk -v min_priority=$t_min_priority -v max_priority=$t_max_priority -v priority=$t_min_priority  \
-        '{ sub( ":", "" ) ; if (( $1 >= min_priority ) && ( $1 < max_priority ) && ( priority == $1 )) priority=$1 +1 } END { print priority }'
-
-}
-
-## Determine if the rules are up to date.
-ip_rule_update_v4_source_routes()
-{
-    local t_interface
-    local t_gateway
-    local t_rt_table
-    local t_aliases
-    local t_expected_hash
-    local t_current_hash
-    local t_current_aliases
-    local t_alias
-
-    t_interface=$1
-    t_gateway=$2
-    t_rt_table=$3
-    
-    t_aliases=`ip_interface_get_v4_aliases $t_interface`
-    t_current_aliases=`ip rule show | awk "/from [0-9].*lookup ${t_rt_table}/ { print \\$3 }"`
- 
-    if [ "${t_aliases}x" = "${t_current_aliases}x" ]; then
-        $DEBUG "Source based uplinks are up to date for '${t_interface}'"
-        return 0
-    fi
-
-    ## Delete the current rules
-    for t_alias in ${t_current_aliases}; do 
-        # ignore error (if alias didnt exist previously)
-        ${IP} -4 rule del from ${t_alias} lookup ${t_rt_table} >/dev/null 2>&1
-    done
-
-    for t_alias in ${t_aliases} ; do
-        t_priority=`ip_rule_get_v4_priority ${UNTANGLE_PRIORITY_BASE}5000 ${UNTANGLE_PRIORITY_BASE}6000`
-        ${IP} -4 rule add from ${t_alias} priority  ${t_priority} lookup ${t_rt_table}
-    done
-}
-
 ## Start of script
 IFACE=$1
 GATEWAY=$2
@@ -109,16 +53,7 @@ IP="debug_ip"
 [ -z "${GATEWAY}" ] && usage
 [ -z "${RT_TABLE}" ] && usage
 
-$DEBUG "$0 $*"
-$DEBUG "Adding uplink for [${IFACE}] -> ${GATEWAY} to ${RT_TABLE}"
-
-# Add source routes to force traffic from aliases out correct intf
-if [ "$FAMILY" = "-4" ] ; then
-    ip_rule_update_v4_source_routes ${IFACE} ${GATEWAY} ${RT_TABLE}
-else
-    # XXX source routes for IPv6?
-    true
-fi
+$DEBUG "Adding default route table ${RT_TABLE} for ${IFACE} to ${GATEWAY}."
 
 # Add/Replace an implicit route for that gateway on IFACE
 # This is for ISPs that give out gateways not within the customer's network/netmask
@@ -140,10 +75,10 @@ if [ "$FAMILY" = "-6" ] ; then
 fi
 
 ## If necessary add the default uplink rule for IPv4
-ip ${FAMILY} rule show | grep -q ${UNTANGLE_PRIORITY_DEFAULT} || {
+ip ${FAMILY} rule show | grep -q ${PRIORITY_DEFAULT} || {
     $DEBUG "Adding default uplink rule for ${RT_TABLE} IPv4"
-    ip ${FAMILY} rule del priority ${UNTANGLE_PRIORITY_DEFAULT} >/dev/null 2>&1
-    ${IP} ${FAMILY} rule add priority ${UNTANGLE_PRIORITY_DEFAULT} lookup ${RT_TABLE}
+    ip ${FAMILY} rule del priority ${PRIORITY_DEFAULT} >/dev/null 2>&1
+    ${IP} ${FAMILY} rule add priority ${PRIORITY_DEFAULT} lookup ${RT_TABLE}
 }
 
 
