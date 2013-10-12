@@ -228,6 +228,7 @@ refresh_routes()
     
     for router in $netd_new_routers; do
         /usr/share/untangle-netd/bin/add-uplink.sh ${interface} ${router} "uplink.${DHCP_INTERFACE_INDEX}"
+        /usr/share/untangle-netd/bin/add-source-route.sh ${new_ip_address} "uplink.${DHCP_INTERFACE_INDEX}" -4
     done
 }
 

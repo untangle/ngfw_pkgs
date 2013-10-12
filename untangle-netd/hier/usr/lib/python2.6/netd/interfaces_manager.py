@@ -117,6 +117,7 @@ class InterfacesManager:
                 self.interfacesFile.write("## Interface %i IPv4 alias\n" % (interface_settings.get('interfaceId')) )
                 self.interfacesFile.write("auto %s:%i\n" % (interface_settings.get('symbolicDev'), count))
                 self.interfacesFile.write("iface %s:%i inet manual\n" % ( interface_settings.get('symbolicDev'), count ))
+                self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings.get('interfaceId'))
                 self.interfacesFile.write("\tnetd_v4_address %s\n" % alias.get('staticAddress'))
                 self.interfacesFile.write("\tnetd_v4_netmask %s\n" % alias.get('staticNetmask'))
                 self.interfacesFile.write("\n");
@@ -128,6 +129,7 @@ class InterfacesManager:
                 self.interfacesFile.write("## Interface %i IPv6 alias\n" % (interface_settings.get('interfaceId')) )
                 self.interfacesFile.write("auto %s:%i\n" % (interface_settings.get('symbolicDev'), count))
                 self.interfacesFile.write("iface %s:%i inet manual\n" % ( interface_settings.get('symbolicDev'), count ))
+                self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings.get('interfaceId'))
                 self.interfacesFile.write("\tnetd_v6_address %s\n" % alias.get('staticAddress'))
                 self.interfacesFile.write("\tnetd_v6_netmask %s\n" % alias.get('staticNetmask'))
                 self.interfacesFile.write("\n");
@@ -176,23 +178,9 @@ class InterfacesManager:
                 if interface_settings.get('configType') != 'ADDRESSED':
                     continue
 
-                if interface_settings.get('symbolicDev') != None and interface_settings.get('symbolicDev').startswith('br'):
-                    isBridge = True
-                else:
-                    isBridge = False
-
                 # if invalid settigs, skip it
                 if not self.check_interface_settings( interface_settings ):
                     continue
-
-                if not isBridge:
-                    # write aliases first so that they already exist when the main interface is brought up
-                    # the main interface calls add-uplink which relies on the current aliases being initialized
-                    # bug #11428
-                    try:
-                        self.write_interface_aliases( interface_settings, settings.get('interfaces').get('list') )
-                    except Exception,exc:
-                        traceback.print_exc()
 
                 # Now write the main interface configurations
                 try:
@@ -203,12 +191,10 @@ class InterfacesManager:
                     self.write_interface_v6( interface_settings, settings.get('interfaces').get('list') )
                 except Exception,exc:
                     traceback.print_exc()
-
-                if isBridge: 
-                    try:
-                        self.write_interface_aliases( interface_settings, settings.get('interfaces').get('list') )
-                    except Exception,exc:
-                        traceback.print_exc()
+                try:
+                    self.write_interface_aliases( interface_settings, settings.get('interfaces').get('list') )
+                except Exception,exc:
+                    traceback.print_exc()
 
 
         self.interfacesFile.write("## This is a fake interface that launches the post-networking-restart\n");
