@@ -109,6 +109,15 @@ class InterfacesManager:
 
         self.interfacesFile.write("\n\n");
 
+    def write_interface_disabled( self, interface_settings, interfaces ):
+        devName = interface_settings.get('symbolicDev')
+        self.interfacesFile.write("## Interface %i (DISABLED)\n" % interface_settings.get('interfaceId') )
+        self.interfacesFile.write("auto %s\n" % devName)
+        self.interfacesFile.write("iface %s inet manual\n" % devName )
+        self.interfacesFile.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6" + "\n")
+        self.interfacesFile.write("\tpost-up ifconfig %s 0.0.0.0 up\n" % devName )
+        self.interfacesFile.write("\n\n");
+
     def write_interface_aliases( self, interface_settings, interfaces ):
         # handle v4 aliases
         count = 1
@@ -196,6 +205,13 @@ class InterfacesManager:
                 except Exception,exc:
                     traceback.print_exc()
 
+        if settings != None and settings.get('disabledInterfaces') != None and settings.get('disabledInterfaces').get('list') != None:
+            for interface_settings in settings.get('disabledInterfaces').get('list'):
+
+                try:
+                    self.write_interface_disabled( interface_settings, settings.get('interfaces').get('list') )
+                except Exception,exc:
+                    traceback.print_exc()
 
         self.interfacesFile.write("## This is a fake interface that launches the post-networking-restart\n");
         self.interfacesFile.write("## hooks using the if-up.d scripts when IFACE=networking_post_restart_hook\n");
