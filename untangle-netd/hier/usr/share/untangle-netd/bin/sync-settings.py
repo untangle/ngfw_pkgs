@@ -94,9 +94,12 @@ def checkSettings( settings ):
 def cleanupSettings( settings ):
     interfaces = settings['interfaces']['list']
     
-    # Remove disabled interfaces
+    # Remove disabled interfaces from regular interfaces list
+    # Save them in another field in case anyone needs them
+    disabled_interfaces = [ intf for intf in interfaces if intf['configType'] == 'DISABLED' ]
     new_interfaces = [ intf for intf in interfaces if intf['configType'] != 'DISABLED' ]
     settings['interfaces']['list'] = new_interfaces
+    settings['disabledInterfaces'] = { 'list': disabled_interfaces }
 
     # Disable DHCP if if its a WAN or bridged to another interface
     for intf in interfaces:
