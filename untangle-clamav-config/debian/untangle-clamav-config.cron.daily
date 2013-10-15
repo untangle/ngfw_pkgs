@@ -1,4 +1,4 @@
 #!/bin/bash
 
-nohup /usr/share/untangle/bin/untangle-clamav-config >/dev/null 2>&1 &
+nohup /usr/share/untangle-clamav-config/bin/untangle-clamav-config >/dev/null 2>&1 &
 exit 0

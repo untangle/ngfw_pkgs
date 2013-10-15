@@ -1,13 +1,5 @@
 #! /bin/bash
 
-ourInit() {
-if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
-  invoke-rc.d $1 $2
-else
-  /etc/init.d/$1 $2
-fi
-}
-
 CLAMAV_CONF_FILE=/etc/clamav/clamd.conf
 
 setOption() {
@@ -20,8 +12,8 @@ EOF
   fi
 }
 
-# obsolete options
-perl -i -pe 's/^\s*(ArchiveMax|ArchiveBlockMax|LocalSocket|MailMaxRecursion|NodalCoreAcceleration|PhishingRestrictedScan)(.*)/#$1$2/' $CLAMAV_CONF_FILE
+# disable obsolete options
+# perl -i -pe 's/^\s*(OldOption1|OldOption2)(.*)/#$1$2/' $CLAMAV_CONF_FILE
 
 # options we need
 setOption TCPAddr 127.0.0.1
@@ -30,28 +22,11 @@ setOption MaxFileSize 100M
 setOption MaxScanSize 100M
 setOption StreamMaxLength 100M
 
-# reloading daemons
-ourInit clamav-freshclam stop
-ourInit clamav-daemon stop
+# disable clamav at startup (apps start as necessary)
+update-rc.d clamav-daemon stop
+update-rc.d clamav-freshclam stop
 
-if [ -n "$2" ]; then
-    # Upstream bug causes duplicate signatures when upgrading.  To work around, we remove
-    # the existing signatures (but only when upgrading, bug #4995).
-    # Freshclam will restore them quickly.
-    rm -rf /var/lib/clamav/*
-fi
+# remove old monit files 
+rm -f /etc/untangle/monit.d/clamav*
 
-ourInit clamav-freshclam start
-ourInit clamav-daemon start
-
-sleep 2
-
-# fetch unofficial clam phishing signatures.
-rm /etc/cron.daily/update_sanesecurity > /dev/null 2>&1
-rm /etc/cron.hourly/update_sanesecurity > /dev/null 2>&1
-rm /etc/cron.hourly/untangle-clamav-config > /dev/null 2>&1
-nohup /etc/cron.daily/untangle-clamav-config --no-sleep 1 >/dev/null 2>&1 &
-
-touch /etc/untangle/monit-to-restart
-    
 exit 0
