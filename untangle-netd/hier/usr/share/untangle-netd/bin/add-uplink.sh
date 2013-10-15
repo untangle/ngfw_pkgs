@@ -4,7 +4,7 @@
 # Usage: add-uplink.sh <interface> <gatewayIP> <routeTable> <family>
 
 # The ip route priority for the default rule
-PRIORITY_DEFAULT="366900"
+PRIORITY_DEFAULT="1000000"
 
 ## Functions
 debug()

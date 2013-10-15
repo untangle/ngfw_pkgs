@@ -5,8 +5,8 @@
 
 ## All of the untangle rules MUST fall in this priority.  This makes it easy to
 ## flush all of the rules.
-PRIORITY_MIN="365000"
-PRIORITY_MAX="366000"
+PRIORITY_MIN="50000"
+PRIORITY_MAX="59999"
 
 ## Functions
 debug()
@@ -74,13 +74,13 @@ if [ ! $? -eq 0 ] ; then
     exit 1
 fi
 
-ip rule ls | grep -qE "365[0-9]{3}:\s*from\s*${ADDRESS}\s*lookup\s*${RT_TABLE}"
+ip rule ls | grep -qE "^5[0-9]{4}:\s*from\s*${ADDRESS}\s*lookup\s*${RT_TABLE}"
 if [ $? -eq 0 ] ; then
     # rule already exists
     exit 0
 fi
   
-t_priority=`next_free_priority 365000 366000`
+t_priority=`next_free_priority 50000 59999`
 debug_ip rule add priority ${t_priority} from ${ADDRESS} lookup ${RT_TABLE}
 
 

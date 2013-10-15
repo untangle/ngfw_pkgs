@@ -13,8 +13,8 @@ class RouteManager:
     routesFilename = "/etc/untangle-netd/post-network-hook.d/030-routes"
     preRoutesFilename = "/etc/untangle-netd/pre-network-hook.d/030-routes"
 
-    IP_RULE_PRIORITY="366"
-    IP_RULE_DEFAULT_RULE_PRIORITY="366900"
+    IP_RULE_PRIORITY="70"
+    IP_RULE_DEFAULT_RULE_PRIORITY="1000000"
     DST_INTERFACE_SHIFT=8
     DST_INTERFACE_MASK=0xFF00
 
@@ -93,7 +93,7 @@ class RouteManager:
         file.write(r"""
 current_ip_route_rules()
 {
-    ip rule show | awk "/^%s[0-2][0-9][0-9]:/ { print }" 
+    ip rule show | awk "/^%s[0-9][0-9][0-9]:/ { print }" 
 }
 """ % self.IP_RULE_PRIORITY)
         file.write("\n\n");
@@ -102,7 +102,7 @@ current_ip_route_rules()
 flush_ip_route_rules()
 {
     local t_priority
-    for t_priority in `ip rule show | awk "/^%s[0-2][0-9][0-9]:/ { sub( \":\", \"\", \\$1 ) ; print \\$1 }"`; do
+    for t_priority in `ip rule show | awk "/^%s[0-9][0-9][0-9]:/ { sub( \":\", \"\", \\$1 ) ; print \\$1 }"`; do
         ip rule del priority ${t_priority}
     done
 }
@@ -185,8 +185,12 @@ fi
         file.write("ip route flush table main \n")
         file.write("\n");
 
+        file.write("# Delete the old routing priorities\n")
+        file.write("ip rule ls | grep -E '^36[5-6][0-9]{3}:' | awk -F: '{print $1}' | while read i ; do ip rule delete priority $i ; done\n")
+        file.write("\n");
+
         file.write("# Delete source route rules\n")
-        file.write("""ip -4 rule show | awk -v min_priority=365000 -v max_priority=366000 '{ sub( ":", "" ) ; if (( $1 >= min_priority ) && ( $1 < max_priority ) ) print $1 }' | while read prio ; do ip rule delete priority $prio ; done""" + "\n")
+        file.write("""ip -4 rule show | awk -v min_priority=50000 -v max_priority=59999 '{ sub( ":", "" ) ; if (( $1 >= min_priority ) && ( $1 < max_priority ) ) print $1 }' | while read prio ; do ip rule delete priority $prio ; done""" + "\n")
         file.write("\n");
 
         file.flush()
