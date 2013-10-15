@@ -117,11 +117,11 @@ div.node div.node-faceplate-info {
     font-weight:bold;
 }
 /* Trial node buy button icon */
-button .icon-buy {
+.x-btn .icon-buy {
     background:transparent url(../images/admin/icon_buy.png) no-repeat center left !important; 
 }
 /* In Wizard Download Button icon*/
-button .icon-download {
+.x-btn .icon-download {
     background:transparent url(../images/admin/icon_download.png) no-repeat center left !important;
     padding-left:17px !important;
 }
@@ -132,15 +132,15 @@ div.icon-buy {
     width:15px;
 }
 /* help button icon */
-button .icon-help {
+.x-btn .icon-help {
     background:transparent url(../images/admin/icon_help.png) no-repeat center left !important; 
 }
 /* logout button icon */
-button .icon-logout {
+.x-btn .icon-logout {
     background:transparent url(../images/admin/icon_logout_row.gif) no-repeat center left !important; 
 }
 /* myaccount button icon */
-button .icon-myaccount {
+.x-btn .icon-myaccount {
     background:transparent url(../images/admin/icon_myaccount.png) no-repeat center left !important; 
 }
 /* help button icon */
@@ -243,50 +243,50 @@ div.node div.node-buttons {
     width: 1px;
 }
 /* node settings button icon */
-button .node-settings-icon {
+.x-btn .node-settings-icon {
     background:transparent url(../images/admin/icon_settings.png) no-repeat center left !important;  
 }
 div.window-background {
     background: transparent url(../images/admin/background_grey.png) repeat;
 }
 /* node remove button icon */
-button .node-remove-icon {
+.x-btn .node-remove-icon {
     background:transparent url(../images/admin/icon_remove.png) no-repeat center left !important; 
 }
 /* cancel button icon */
-button .cancel-icon {
+.x-btn .cancel-icon {
     background:transparent url(../images/admin/icon_cancel.png) no-repeat center left !important; 
 }
 /* save button icon */
-button .save-icon {
+.x-btn .save-icon {
     background:transparent url(../images/admin/icon_save.png) no-repeat center left !important; 
 }
 /* apply button icon */
-button .apply-icon {
+.x-btn .apply-icon {
     background:transparent url(../images/admin/icon_floppy.png) no-repeat center left !important; 
 }
 /* test button icon */
-button .test-icon {
+.x-btn .test-icon {
     background:transparent url(../images/admin/icon_test.png) no-repeat center left !important; 
 }
 /* action button icon */
-button .action-icon {
+.x-btn .action-icon {
     background:transparent url(../images/admin/icon_action.gif) no-repeat center left !important; 
 }
 /* purge button icon */
-button .purge-icon {
+.x-btn .purge-icon {
     background:transparent url(../images/admin/icon_purge.png) no-repeat center left !important; 
 }
 /* release button icon */
-button .release-icon {
+.x-btn .release-icon {
     background:transparent url(../images/admin/icon_release.png) no-repeat center left !important; 
 }
 /* detail button icon */
-button .detail-icon {
+.x-btn .detail-icon {
     background:transparent url(../images/admin/icon_detail.png) no-repeat center left !important; 
 }
 /* reboot button icon */
-button .reboot-icon {
+.x-btn .reboot-icon {
     background:transparent url(../images/admin/icon_reboot.png) no-repeat center left !important; 
 }
 
@@ -377,15 +377,15 @@ div.ung-button-invalid {
     border: 1px solid green;
 }
 /* add row button icon */
-button .icon-add-row {
+.x-btn .icon-add-row {
     background: transparent url(../images/admin/icon_add_row.gif) no-repeat center left !important;
 }
 /* import row button icon */
-button .icon-import {
+.x-btn .icon-import {
     background: transparent url(../images/admin/icon_import.gif) no-repeat center left !important;
 }
 /* export row button icon */
-button .icon-export {
+.x-btn .icon-export {
     background: transparent url(../images/admin/icon_export.gif) no-repeat center left !important;
 }
 /* row add icon */
@@ -403,7 +403,7 @@ img.icon-edit-row {
     height:16px;
 }
 /* delete row button icon */
-button .icon-delete-row {
+.x-btn .icon-delete-row {
     background:transparent url(../images/user/icon_remove.png) no-repeat center left !important;
 }
 /* delete row icon */
@@ -432,15 +432,15 @@ img.icon-drag {
     cursor: move;
     height:16px;
 }
-button .icon-drag {
+.x-btn .icon-drag {
     background:transparent url(../images/admin/icon_drag.gif) no-repeat center left !important;
 }
 /* refresh button icon */
-button .icon-refresh {
+.x-btn .icon-refresh {
     background: transparent url(../images/admin/icon_refresh.png) no-repeat center left !important;
 }
 /* autorefresh button icon */
-button .icon-autorefresh {
+.x-btn .icon-autorefresh {
     background: transparent url(../images/admin/icon_autorefresh.png) no-repeat center left !important;
 }
 /* color of a deleted row in grid */
@@ -924,7 +924,7 @@ div.extended-stats div.values{
     padding-left: 30px;
 }
 /* upgrade button icon */
-button .icon-upgrade {
+.x-btn .icon-upgrade {
     background: transparent url(../images/admin/icon_upgrade.png) no-repeat center left !important;
 }
 div.button-column {
@@ -1129,7 +1129,7 @@ table.email-tester
     margin-left:7px;
 }
 /* email test button icon */
-button .email-tester
+.x-btn .email-tester
 { 
     background:transparent url(../images/admin/icon_test.png) no-repeat center left !important; 
     width : 190px;
