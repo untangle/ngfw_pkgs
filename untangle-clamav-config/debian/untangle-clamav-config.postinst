@@ -23,8 +23,8 @@ setOption MaxScanSize 100M
 setOption StreamMaxLength 100M
 
 # disable clamav at startup (apps start as necessary)
-update-rc.d clamav-daemon stop
-update-rc.d clamav-freshclam stop
+update-rc.d clamav-daemon remove
+update-rc.d clamav-freshclam remove
 
 # remove old monit files 
 rm -f /etc/untangle/monit.d/clamav*
