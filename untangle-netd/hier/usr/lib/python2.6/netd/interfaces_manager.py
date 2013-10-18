@@ -4,8 +4,6 @@ import subprocess
 import datetime
 import traceback
 
-# TODO IPv6 aliases
-
 # This class is responsible for writing /etc/network/interfaces
 # based on the settings object passed from sync-settings.py
 class InterfacesManager:
@@ -132,7 +130,7 @@ class InterfacesManager:
                 self.interfacesFile.write("\n");
                 count = count+1
 
-        # handle v4 aliases
+        # handle v6 aliases
         if interface_settings.get('v6Aliases') != None and interface_settings.get('v6Aliases').get('list') != None:
             for alias in interface_settings.get('v6Aliases').get('list'):
                 self.interfacesFile.write("## Interface %i IPv6 alias\n" % (interface_settings.get('interfaceId')) )
