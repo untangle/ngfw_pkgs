@@ -84,12 +84,16 @@ write_status_file()
     ( [ -z "$t_interface" ] || [ -z "$t_index" ] ) && {
         return 0
     }
-    
-    $DEBUG "writing /var/lib/untangle-netd/interface-${t_index}-status.js"
-    /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-netd/interface-${t_index}-status.js
 
     $DEBUG "writing /var/lib/untangle-netd/interface-${t_interface}-status.js"
     /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-netd/interface-${t_interface}-status.js
+
+    # Only write the index status file if this is not an alias
+    echo "${t_interface}" | grep -q ":"
+    if [ ! $? -eq 0 ] ; then
+        $DEBUG "writing /var/lib/untangle-netd/interface-${t_index}-status.js"
+        /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-netd/interface-${t_index}-status.js
+    fi
 }
 
 ## Start of script
