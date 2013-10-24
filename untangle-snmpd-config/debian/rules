@@ -29,7 +29,7 @@ build: configure
 	dh_testdir
 	mkdir -p ./debian/tmp
 	dh_installdirs -A -v
-	cp -r ./files/* ./debian/tmp/
+#	cp -r ./files/* ./debian/tmp/
 	find ./debian/tmp -name ".svn" | xargs rm -rf 
 
 clean:
@@ -42,7 +42,7 @@ clean:
 binary-indep: build
 	dh_testdir  
 	dh_testroot   
-	dh_movefiles  
+#	dh_movefiles  
 #	dh_installdebconf   
 #	dh_shlibdeps   # FIXME - had to remove
 	dh_installdocs -n   
