@@ -69,6 +69,8 @@ class NatRulesManager:
             # ignore interfaces bridged with interface
             if other_intf['configType'] == 'BRIDGED' and other_intf['bridgedTo'] == intf['interfaceId']:
                 continue;
+            if intf['configType'] == 'BRIDGED' and intf['bridgedTo'] == other_intf['interfaceId']:
+                continue;
             
             self.file.write("# NAT ingress traffic coming from interface %s" % str(intf['interfaceId']) + "\n");
             self.file.write("${IPTABLES} -t nat -A nat-rules -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"NAT traffic, %i -> %i (ingress setting)\" -j MASQUERADE" % 
@@ -97,6 +99,8 @@ class NatRulesManager:
             # ignore interfaces bridged with interface
             if other_intf['configType'] == 'BRIDGED' and other_intf['bridgedTo'] == intf['interfaceId']:
                 continue;
+            if intf['configType'] == 'BRIDGED' and intf['bridgedTo'] == other_intf['interfaceId']:
+                continue;
             
             self.file.write("# NAT egress traffic exiting interface %s" % str(intf['interfaceId']) + "\n");
             self.file.write("${IPTABLES} -t nat -A nat-rules -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"NAT traffic, %i -> %i (egress setting)\" -j MASQUERADE" % 
@@ -121,9 +125,27 @@ class NatRulesManager:
 
             if 'v4NatEgressTraffic' in interface_settings and interface_settings['v4NatEgressTraffic']:
                 self.write_egress_nat_rules( interface_settings, interfaces )
+                # Find all interfaces bridged to this one
+                for other_intf in interfaces:
+                    if other_intf['interfaceId'] == interface_settings['interfaceId']:
+                        continue
+                    if other_intf['configType'] != 'BRIDGED':
+                        continue
+                    if other_intf['bridgedTo'] != interface_settings['interfaceId']:
+                        continue
+                    self.write_egress_nat_rules( other_intf, interfaces )
 
             if 'v4NatIngressTraffic' in interface_settings and interface_settings['v4NatIngressTraffic']:
                 self.write_ingress_nat_rules( interface_settings, interfaces )
+                # Find all interfaces bridged to this one
+                for other_intf in interfaces:
+                    if other_intf['interfaceId'] == interface_settings['interfaceId']:
+                        continue
+                    if other_intf['configType'] != 'BRIDGED':
+                        continue
+                    if other_intf['bridgedTo'] != interface_settings['interfaceId']:
+                        continue
+                    self.write_ingress_nat_rules( other_intf, interfaces )
 
         return
 
