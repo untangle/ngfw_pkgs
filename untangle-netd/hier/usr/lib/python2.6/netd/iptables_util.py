@@ -72,6 +72,9 @@ class IptablesUtil:
                 invert = True
 
             if matcherType == "PROTOCOL":
+                if "any" in value:
+                    continue
+
                 protos = value.split(",")
                 if invert:
                     print "ERROR: invert not support on protocol matcher"
