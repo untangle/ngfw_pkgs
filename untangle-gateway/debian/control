@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-gateway
 Architecture: all
-Depends: untangle-vm, untangle-kiosk, untangle-ntp-config, untangle-bootsplash | oracle-java7-jdk, untangle-restore-tools, untangle-exim4-config, untangle-linux-config, untangle-system-config, untangle-update-manager, ssh, smartmontools, untangle-extra-utils, untangle-client-local, untangle-dhclient-config, untangle-ddclient-config, untangle-snmpd-config, iceweasel | firefox | mozilla | opera, ifupdown, nvi, nano, pciutils
+Depends: untangle-vm, untangle-kiosk, untangle-ntp-config, untangle-bootsplash | oracle-java7-jdk, untangle-restore-tools, untangle-exim4-config, untangle-linux-config, untangle-system-config, untangle-update-manager, ssh, smartmontools, untangle-extra-utils, untangle-client-local, untangle-dhclient-config, untangle-ddclient-config, untangle-snmpd-config, untangle-node-shield, untangle-node-webfilter, untangle-node-clam, untangle-node-protofilter, untangle-node-router, untangle-node-firewall, untangle-node-spamassassin, untangle-node-phish, untangle-node-openvpn, untangle-node-ips, untangle-node-reporting, untangle-node-adblocker, untangle-node-capture, untangle-node-license, untangle-node-adconnector, untangle-node-policy, untangle-node-boxbackup, untangle-node-commtouchav, untangle-node-commtouchas, untangle-node-branding, untangle-node-sitefilter, untangle-node-bandwidth, untangle-node-splitd, untangle-node-faild, untangle-node-support, untangle-node-webcache, untangle-node-ipsec, untangle-node-classd, untangle-casing-https, iceweasel | firefox | mozilla | opera, ifupdown, nvi, nano, pciutils
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle Gateway
  The Untangle Top Level Untangle package.
