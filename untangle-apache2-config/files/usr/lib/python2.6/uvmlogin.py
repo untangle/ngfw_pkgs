@@ -116,6 +116,7 @@ def is_wizard_complete():
 
 def is_local_process_uid_authorized(req):
     (remote_ip, remote_port) = req.connection.remote_addr
+    apache.log_error('XXX: remote_ip: %s remote_port: %s' % (str(remote_ip), str(remote_port)))
 
     if remote_ip != "127.0.0.1":
         return False
