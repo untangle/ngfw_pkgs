@@ -180,6 +180,11 @@ class NatRulesManager:
         self.file.write("${IPTABLES} -t nat -A POSTROUTING -m conntrack --ctstate NEW -m comment --comment \"SNAT rules\" -j nat-rules" + "\n");
         self.file.write("\n");
 
+        self.file.write("# Call nat-rules chain from POSTROUTING chain to SNAT traffic" + "\n");
+        self.file.write("${IPTABLES} -t nat -I nat-rules -i lo -j RETURN -m comment --comment \"Never NAT loopback traffic\" >/dev/null 2>&1" + "\n");
+        self.file.write("${IPTABLES} -t nat -I nat-rules -o lo -j RETURN -m comment --comment \"Never NAT loopback traffic\" >/dev/null 2>&1" + "\n");
+        self.file.write("\n");
+
         self.file.write("# Create (if needed) and flush nat-reverse-filter chain" + "\n");
         self.file.write("${IPTABLES} -t filter -N nat-reverse-filter 2>/dev/null" + "\n");
         self.file.write("${IPTABLES} -t filter -F nat-reverse-filter >/dev/null 2>&1" + "\n");
