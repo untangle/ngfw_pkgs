@@ -68,14 +68,5 @@ fi
 # create a "root" database so monit won't complain (bug #7492)
 createuser -U postgres -DSR root &>/dev/null
 createdb -O root -U postgres root &> /dev/null
-
-# monit stuff
-version=$(dpkg -l postgresql* | awk '/^ii.+postgresql-[0-9]/ { gsub(/postgresql-/, "", $2) ; print $2 }')
-initd=postgresql
-if dpkg --compare-versions $version lt 8.4 ; then
-  initd=${initd}-$version
-fi
-perl -i -pe 's/\+VERSION\+/'$version'/ ; s|\+INITD\+|'$initd'|' /etc/untangle/monit.d/postgresql_all.conf
-touch /etc/untangle/monit-to-restart
     
 exit 0

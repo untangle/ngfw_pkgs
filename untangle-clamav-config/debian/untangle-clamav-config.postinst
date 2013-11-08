@@ -26,7 +26,4 @@ setOption StreamMaxLength 100M
 update-rc.d clamav-daemon disable
 update-rc.d clamav-freshclam disable
 
-# remove old monit files 
-rm -f /etc/untangle/monit.d/clamav*
-
 exit 0
