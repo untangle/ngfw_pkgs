@@ -24,15 +24,20 @@ class ArpManager:
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
         
-        # FIXME: get IP from interface instead of settings (so DHCP is supported)
-        # FIXME: add support for aliases
-        file.write("# For gateways to update MAC table" + "\n");
+        file.write("# Force send ARP to the gateways to update MAC table" + "\n");
         file.write("# This is necessary for malfunctioning ISP routers that have permanent ARP caches" + "\n");
         file.write("\n");
         for intf in settings['interfaces']['list']:
-            if 'v4StaticGateway' in intf:
-                if 'v4StaticAddress' in intf:
-                    file.write("arping -U -c 1 -I %s -s %s %s >/dev/null &\n" % (intf['systemDev'], intf['v4StaticAddress'], intf['v4StaticGateway']) );
+            if intf.get('v4ConfigType') == 'STATIC':
+                if 'v4StaticGateway' in intf and 'v4StaticAddress' in intf:
+                    file.write("# Static IP of interface %i\n" % intf.get('interfaceId'));
+                    file.write("arping -U -c 1 -I %s -s %s %s >/dev/null &\n" % (intf.get('systemDev'), intf.get('v4StaticAddress'), intf.get('v4StaticGateway')) );
+                if intf.get('v4Aliases') != None and intf.get('v4Aliases').get('list') != None:
+                    for alias in intf.get('v4Aliases').get('list'):
+                        file.write("# Alias IPs of interface %i\n" % intf.get('interfaceId'));
+                        file.write("arping -U -c 1 -I %s -s %s %s >/dev/null &\n" % (intf.get('systemDev'), alias.get('staticAddress'), intf.get('v4StaticGateway')) );
+                        
+
         file.write("\n\n");
 
         file.flush()
