@@ -52,8 +52,9 @@ Alias /error /usr/share/untangle/mod_python/error
     PythonHandler mod_python.publisher
 </Directory>
 
-# This spiffy alias will allow folks to download our CA root certificate
+# These spiffy aliases will allow folks to download our CA root certificate
 # by simply pointing their browser at http://untangle_ip_addres/cert
+Alias /cert/ /usr/share/untangle/settings/untangle-certificates/untangle.crt
 Alias /cert /usr/share/untangle/settings/untangle-certificates/untangle.crt
 
 <VirtualHost *:80>
