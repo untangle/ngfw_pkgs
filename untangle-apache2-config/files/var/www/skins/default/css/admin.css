@@ -1603,3 +1603,7 @@ div.x-fieldset-header-text {
     font-family: arial, helvetica, freesans,sans-serif;
     font-style: italic;
 }
+.x-livesearch-match {
+    font-weight: bold;
+    background-color: yellow;
+}
