@@ -2,12 +2,12 @@ Source: untangle-apache2-config
 Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb.com>
-Build-Depends: debhelper (>> 3.0.0), sun-java6-jdk | sun-java5-jdk
+Build-Depends: debhelper (>> 3.0.0), oracle-j2sdk1.7
 Standards-Version: 3.8.0
 
 Package: untangle-apache2-config
 Architecture: all
 Depends: apache2, libapache2-mod-jk, libapache2-mod-python, python-psycopg2, bsdmainutils
-Pre-Depends: untangle-debconf-manager, sun-java6-jre | oracle-java7-jdk
+Pre-Depends: untangle-debconf-manager, oracle-j2sdk1.7
 Description: The Untangle Apache2 config
  The Untangle Apache2 config.
