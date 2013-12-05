@@ -145,3 +145,31 @@ p {
 	margin-top: 30px;
 	
 }
+
+
+
+.ad_logon_head {
+	height: 110px;
+	overflow: hidden;
+}
+.ad_logon_head a {
+	float: left;
+	clear: none;
+}
+.ad_logon_head div {
+	float: left;
+	clear: none;
+	vertical-align: middle;
+    font: bold 25pt Arial,Sans-Serif;
+    color: #000;
+	line-height: 100px;
+	margin-left: 14px;
+}
+.ad_logon_sub_title {
+    font: bold 17pt Arial,Sans-Serif;
+    color: #000;
+}
+.ad_logon_sub_text {
+    font: 10pt Arial,sans-serif;
+    color: #000;
+}
