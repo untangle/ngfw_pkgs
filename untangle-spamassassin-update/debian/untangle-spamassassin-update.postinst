@@ -38,6 +38,7 @@ update-rc.d spamassassin disable
 # update (commented out - don't do this on install - takes too long)
 # /etc/cron.daily/untangle-spamassassin-update
 
-touch /etc/untangle/monit-to-restart
+# remove old FuzzyOcr stuff (10.1)
+rm -f /etc/spamassassin/Fuzzy*
 
 exit 0
