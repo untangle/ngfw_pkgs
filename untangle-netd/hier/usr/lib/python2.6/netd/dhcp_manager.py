@@ -267,6 +267,8 @@ case "$reason" in
 
     BOUND|REBOOT)
         refresh_routes
+        write_status_file ${interface} ${DHCP_INTERFACE_INDEX}
+
         # dhclient is currently running, so networking is being restarted, no need to call this
         # run_post_networking_hook 
         ;;
@@ -281,6 +283,7 @@ case "$reason" in
         ;;
 
     EXPIRE|RELEASE|STOP)
+        write_status_file ${interface} ${DHCP_INTERFACE_INDEX}
         run_post_networking_hook
         ;;
 
@@ -305,6 +308,7 @@ case "$reason" in
             exit_with_hooks 2 "$@"
         fi
 
+        write_status_file ${interface} ${DHCP_INTERFACE_INDEX}
         run_post_networking_hook
         ;;
 
