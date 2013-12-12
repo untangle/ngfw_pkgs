@@ -15,6 +15,7 @@ from netd.kernel_manager import KernelManager
 from netd.arp_manager import ArpManager
 from netd.route_manager import RouteManager
 from netd.dhcp_manager import DhcpManager
+from netd.vrrp_manager import VrrpManager
 from netd.radvd_manager import RadvdManager
 from netd.pppoe_manager import PPPoEManager
 from netd.qos_manager import QosManager
