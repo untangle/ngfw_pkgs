@@ -326,11 +326,6 @@ true
         os.system("chmod a+x %s" % filename)
         if verbosity > 0: print "DhcpManager: Wrote %s" % filename
 
-        # FIXME lenny support - can remove
-        if os.path.exists('/etc/dhcp3'):
-            os.system("cp -f %s /etc/dhcp3/dhclient-exit-hooks.d/netd-dhclient-exit-hook" % filename)
-            if verbosity > 0: print "DhcpManager: Wrote %s" % "/etc/dhcp3/dhclient-exit-hooks.d/netd-dhclient-exit-hook"
-
         return
 
     def write_pre_network_hook( self, settings, prefix="", verbosity=0 ):
