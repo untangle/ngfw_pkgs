@@ -31,8 +31,8 @@ class DdclientManager:
                 "dslreports" : [ "dslreports1", "www.dslreports.com" ],
                 "dnspark" : [ "dnspark", "www.dnspark.com" ],
                 "namecheap" : [ "namecheap", "dynamicdns.park-your-domain.com" ],
-                "dyndns" : [ "dyndns2", "members.dyndns.org" ]
-                "no-ip" : [ "dyndns2", "dynupdate.no-ip.com" ]
+                "dyndns" : [ "dyndns2", "members.dyndns.org" ],
+                "no-ip" : [ "dyndns2", "dynupdate.no-ip.com" ],
                 "dnsomatic" : [ "dyndns2", "updates.dnsomatic.com" ]
                 }
 
