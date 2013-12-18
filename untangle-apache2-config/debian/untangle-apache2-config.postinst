@@ -66,8 +66,6 @@ fi
 /usr/sbin/a2enmod ssl
 /usr/sbin/a2enmod python
 /usr/sbin/a2enmod deflate
-/usr/sbin/a2enmod rewrite
-/usr/sbin/a2enmod headers
 
 # disable these modules for "PCI scan" issues
 /usr/sbin/a2dismod autoindex
