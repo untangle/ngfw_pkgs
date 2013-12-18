@@ -28,7 +28,7 @@ class EthernetManager:
         if settings.get('devices') != None and settings.get('devices').get('list') != None:
             for deviceSettings in settings.get('devices').get('list'):
                 if deviceSettings.get('mtu') != None:
-                    file.write("ifconfig %s mtu %s" % (deviceSettings.get('deviceName'), stn(deviceSettings.get('mtu'))) + "\n")
+                    file.write("ifconfig %s mtu %s" % (deviceSettings.get('deviceName'), str(deviceSettings.get('mtu'))) + "\n")
                 if deviceSettings.get('duplex') != None:
                     duplexString = deviceSettings.get('duplex')
                     if duplexString == "AUTO":
