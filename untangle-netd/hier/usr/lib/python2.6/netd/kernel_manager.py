@@ -30,7 +30,7 @@ class KernelManager:
         #
         # Handle NF Nat modules
         #
-        file.write("for mod in nf_nat_ftp nf_nat_tftp nf_nat_pptp nf_nat_h323 nf_nat_amanda nf_nat_snmp_basic nf_nat_proto_gre nf_nat_irc nf_nat_ftp ; do" + "\n")
+        file.write("for mod in nf_nat_ftp nf_nat_tftp nf_nat_pptp nf_nat_h323 nf_nat_amanda nf_nat_snmp_basic nf_nat_proto_gre nf_nat_irc nf_nat_ftp nf_conntrack_pptp nf_conntrack_irc nf_conntrack_ftp nf_conntrack_amanda nf_conntrack_tftp nf_conntrack_h323 ; do" + "\n")
         file.write("\tif lsmod | grep -q $mod ; then" + "\n")
         file.write("\t\ttrue # do nothing" + "\n")         
         file.write("\telse" + "\n")
