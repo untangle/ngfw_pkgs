@@ -28,14 +28,16 @@ class KernelManager:
         file.write("\n\n");
         
         #
-        # Handle nf_nat_ftp
+        # Handle NF Nat modules
         #
-        file.write("if lsmod | grep -q nf_nat_ftp ; then" + "\n")
-        file.write("\ttrue # do nothing" + "\n")         
-        file.write("else" + "\n")
-        file.write("\techo Loading nf_nat_ftp kernel module..." + "\n")
-        file.write("\tmodprobe nf_nat_ftp" + "\n")
-        file.write("fi" + "\n")
+        file.write("for mod in nf_nat_ftp nf_nat_tftp nf_nat_pptp nf_nat_h323 nf_nat_amanda nf_nat_snmp_basic nf_nat_proto_gre nf_nat_irc nf_nat_ftp ; do" + "\n")
+        file.write("\tif lsmod | grep -q $mod ; then" + "\n")
+        file.write("\t\ttrue # do nothing" + "\n")         
+        file.write("\telse" + "\n")
+        file.write("\t\techo Loading $mod kernel module..." + "\n")
+        file.write("\t\tmodprobe $mod" + "\n")
+        file.write("\tfi" + "\n")
+        file.write("done" + "\n")
         file.write("\n\n");
 
         #
