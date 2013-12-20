@@ -104,7 +104,24 @@ fi
                 vrrpEnabled = True
 
         if vrrpEnabled:
+            file.write("if lsmod | grep -q ip_vs ; then" + "\n")
+            file.write("\ttrue # do nothing" + "\n")         
+            file.write("else" + "\n")
+            file.write("\techo Loading ip_vs kernel module..." + "\n")
+            file.write("\tmodprobe ip_vs" + "\n")
+            file.write("fi" + "\n")
+            file.write("\n")
+
             file.write("/usr/sbin/keepalived --vrrp -f /etc/keepalived/keepalived.conf --dump-conf --log-console --log-detail" + "\n")
+        else:
+            file.write("if lsmod | grep -q ip_vs ; then" + "\n")
+            file.write("\techo Unloading ip_vs kernel module..." + "\n")
+            file.write("\tmodprobe -r ip_vs" + "\n")
+            file.write("else" + "\n")
+            file.write("\ttrue # do nothing" + "\n")
+            file.write("fi" + "\n")
+            file.write("\n")
+
         file.write("\n\n");
 
         file.flush()
