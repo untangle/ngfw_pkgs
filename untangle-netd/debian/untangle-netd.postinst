@@ -7,3 +7,12 @@ sed -e 's/\(.*log_warning_msg.*\)/#\1/' -i /etc/network/if-up.d/mountnfs
 # disable keepalived in sysvinit
 # It will be started via the post-network scripts if needed
 update-rc.d keepalived disable
+
+
+# 10.1 conversion
+# until networking is restarted there will still be source route rules in 365000-365999 priorities
+# we need to shift these to 50000-50999 priority
+ip -4 rule show | awk -v min_priority=365000 -v max_priority=365999 '{ sub( ":", "" ) ; if (( $1 >= min_priority ) && ( $1 < max_priority ) ) print $1-315000 " " $2 " " $3 " " $4 " " $5 }' | while read rule ; do sh -c "ip rule add priority $rule" ; done
+# now delete original priority rules
+ip -4 rule show | awk -v min_priority=365000 -v max_priority=365999 '{ sub( ":", "" ) ; if (( $1 >= min_priority ) && ( $1 < max_priority ) ) print $1 }' | while read prio ; do ip rule del priority $prio ; done
+
