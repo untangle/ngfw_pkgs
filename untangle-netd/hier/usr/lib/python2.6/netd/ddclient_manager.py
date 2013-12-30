@@ -112,6 +112,9 @@ class DdclientManager:
             os.system('/etc/init.d/ddclient restart >/dev/null 2>&1')
         else:
             os.system('/usr/sbin/update-rc.d -f ddclient remove >/dev/null 2>&1')
-            os.system('/etc/init.d/ddclient stop >/dev/null 2>&1')
+            # this doesn't work because it checks /etc/default/ddclient first
+            # use killall instead
+            # os.system('/etc/init.d/ddclient stop >/dev/null 2>&1')
+            os.system('killall ddclient >/dev/null 2>&1')
 
         return
