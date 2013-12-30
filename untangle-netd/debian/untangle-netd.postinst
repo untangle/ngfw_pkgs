@@ -14,5 +14,15 @@ update-rc.d keepalived disable
 ip -4 rule show | awk -v min_priority=365000 -v max_priority=365999 '{ sub( ":", "" ) ; if (( $1 >= min_priority ) && ( $1 < max_priority ) ) print $1-315000 " " $2 " " $3 " " $4 " " $5 }' | while read rule ; do sh -c "ip rule add priority $rule" ; done
 # now delete original priority rules
 ip -4 rule show | awk -v min_priority=365000 -v max_priority=365999 '{ sub( ":", "" ) ; if (( $1 >= min_priority ) && ( $1 < max_priority ) ) print $1 }' | while read prio ; do ip rule del priority $prio ; done
+# now delete original fwmark rules if new ones exist
+ip rule ls | grep -q 70001
+if [ $? = 0 ] ; then 
+    ip -4 rule show | awk -v min_priority=366000 -v max_priority=366999 '{ sub( ":", "" ) ; if (( $1 >= min_priority ) && ( $1 < max_priority ) ) print $1 }' | while read prio ; do ip rule del priority $prio ; done
+fi
+# delete original default rule priority if new one exists
+ip rule ls | grep -q 1000000
+if [ $? = 0 ] ; then 
+    ip rule del priority 366900 >dev/null 2>&1 
+fi
 
 exit 0
