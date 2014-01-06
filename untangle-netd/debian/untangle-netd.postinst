@@ -22,7 +22,7 @@ fi
 # delete original default rule priority if new one exists
 ip rule ls | grep -q 1000000
 if [ $? = 0 ] ; then 
-    ip rule del priority 366900 >dev/null 2>&1 
+    ip rule del priority 366900 >/dev/null 2>&1 
 fi
 
 exit 0
