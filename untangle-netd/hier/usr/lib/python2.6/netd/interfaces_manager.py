@@ -39,6 +39,21 @@ class InterfacesManager:
             isBridge = True
             bridgedInterfaces.append(interface_settings.get('systemDev')) # include yourself in bridge
 
+        # find the minimum MTU of all devs in bridge (if its a bridge)
+        bridgeMinMtu = None
+        if isBridge:
+            for intf in interfaces:
+                if intf.get('systemDev') in bridgedInterfaces:
+                    if intf.get('physicalDev') != None and settings.get('devices') != None and settings.get('devices').get('list') != None:
+                        for devSettings in settings.get('devices').get('list'):
+                            if devSettings.get('deviceName') != None and devSettings.get('deviceName') == intf.get('physicalDev'):
+                                if devSettings.get('mtu') != None:
+                                    # mtu found
+                                    if bridgeMinMtu == None:
+                                        bridgeMinMtu = int(devSettings.get('mtu'))
+                                    elif int(devSettings.get('mtu')) < bridgeMinMtu:
+                                        bridgeMinMtu = int(devSettings.get('mtu'))
+
         self.interfacesFile.write("iface %s inet %s\n" % (devName, configString) )
         self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings.get('interfaceId'))
 
@@ -67,8 +82,8 @@ class InterfacesManager:
                 # For now I've decide to set this to 20 
                 # Its tempting to set this to zero because stp is disbled
                 self.interfacesFile.write("\tbridge_maxwait %i\n" % 20)
-
-            self.interfacesFile.write("\tnetd_bridge_mtu %i\n" % 1500) #XXX
+            if bridgeMinMtu != None:
+                self.interfacesFile.write("\tmtu %i\n" % bridgeMinMtu)
 
         # handle PPPoE stuff
         if interface_settings.get('v4ConfigType') == 'PPPOE':
@@ -76,6 +91,7 @@ class InterfacesManager:
             self.interfacesFile.write("\tprovider %s\n" % ("connection.intf" + str(interface_settings.get('interfaceId')))) 
             # sleep to give PPPoE time to get address (bug #11431)
             self.interfacesFile.write("\tpost-up /usr/share/untangle-netd/bin/pppoe-wait-for-address.sh %s 60\n" % devName ) 
+
             
         self.interfacesFile.write("\n\n");
 
