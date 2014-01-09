@@ -435,6 +435,10 @@ img.icon-drag {
 .x-btn .icon-autorefresh {
     background: transparent url(../images/admin/icon_autorefresh.png) no-repeat center left !important;
 }
+/* clear filter button icon */
+.x-btn .icon-clear-filter {
+    background: transparent url(../images/admin/icon_clear_filter.png) no-repeat center left !important;
+}
 /* color of a deleted row in grid */
 .grid-row-deleted {
     background-color: #FF5151 !important;
