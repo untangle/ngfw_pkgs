@@ -175,7 +175,7 @@ static void*  _handle_packet ( struct nfq_data *nfa );
 static int    _nfqueue_callback ( struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfa, void *data );
 
 static int    _find_outdev_index ( struct nfq_data *tb );
-static int    _find_next_hop ( char* dev_name, struct in_addr* dst_ip, struct in_addr* next_hop );
+static int    _find_next_hop ( u_int32_t mark, struct in_addr* dst_ip, struct in_addr* next_hop );
 static int    _find_bridge_port ( struct ether_addr* mac_address, char* bridge_name );
 
 static int    _arp_address ( struct in_addr* dst_ip, struct ether_addr* mac, char* intf_name );
@@ -185,6 +185,7 @@ static int    _arp_build_packet ( struct ether_arp* pkt, struct in_addr* src_ip,
 static int    _arp_determine_source_addr ( struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
 
 static long long _timeval_diff( struct timeval *end_time, struct timeval *start_time );
+static int   _find_utindex( char* ifname );
 
 /**
  * FIXME TODO - handling of non-IP packets?
@@ -801,7 +802,7 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
         _error( "if_indextoname: %s\n", strerror(errno));
         return -1;
     }
-
+    
     /**
      * Lookup dst IP
      */
@@ -817,7 +818,8 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
     struct in_addr dst;
     memcpy( &dst.s_addr, &ip->daddr, sizeof(in_addr_t));
 
-    if ( _find_next_hop( intf_name, &dst, &next_hop) < 0 ) {
+    u_int mark = nfq_get_nfmark(nfq_data);
+    if ( _find_next_hop( mark, &dst, &next_hop) < 0 ) {
         _error( "_find_next_hop: %s\n", strerror(errno));
         return -1;
     }
@@ -857,24 +859,14 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
     /**
      * Now find Untangle's ID for that bridge port and return that ID
      */
-    int i = 0;
-    for( i = 0 ; i < MAX_INTERFACES ; i++ ) {
-        if (interfaceNames[i] == NULL) {
-            _error( "Unable to find interface: %s\n", bridge_port_intf_name );
-            return -1;
-        }
-
-        if ( strncmp( bridge_port_intf_name, interfaceNames[i], IF_NAMESIZE ) == 0 ) {
-            if (verbosity >= 1) {
-                char mac_string[MAC_STRING_LENGTH];
-                _mac_to_string( mac_string, sizeof( mac_string ), &mac_address );
-                _debug( 1, "RESULT[%i]: nextHop: %s nextHopMAC: %s -> systemDev: %s interfaceId: %i usec: %lld\n", packet_id, inet_ntoa( next_hop ), mac_string, bridge_port_intf_name, interfaceIds[i], usec);
-            }
-            return interfaceIds[i];
-        }
+    int verdict_utindex = _find_utindex( bridge_port_intf_name );
+    if ( verdict_utindex > -1 && verbosity >= 1 ) {
+            char mac_string[MAC_STRING_LENGTH];
+            _mac_to_string( mac_string, sizeof( mac_string ), &mac_address );
+            _debug( 1, "RESULT[%i]: nextHop: %s nextHopMAC: %s -> systemDev: %s interfaceId: %i usec: %lld\n", packet_id, inet_ntoa( next_hop ), mac_string, bridge_port_intf_name, verdict_utindex, usec);
     }
-    
-    return -1;
+
+    return verdict_utindex;
 }
 
 static char* _inet_ntoa ( in_addr_t addr )
@@ -899,20 +891,21 @@ static void  _mac_to_string ( char *mac_string, int len, struct ether_addr* mac 
  * This queries the kernel for the next hop for packets destined to the specied dst_ip.
  * For example,
  */
-static int   _find_next_hop ( char* dev_name, struct in_addr* dst_ip, struct in_addr* next_hop )
+static int   _find_next_hop ( u_int32_t mark, struct in_addr* dst_ip, struct in_addr* next_hop )
 {
     int ifindex;
     struct 
     {
         in_addr_t addr;
         in_addr_t nh;
-        char name[IFNAMSIZ];
+        u_int32_t mark;
+        char unused[IFNAMSIZ]; // for old kernels that used to use this space
     } args;
     
     bzero( &args, sizeof( args ));
     args.addr = dst_ip->s_addr;
-    strncpy( args.name, dev_name, IFNAMSIZ);
-    
+    args.mark = mark;
+
     if (( ifindex = ioctl( arp_socket, SIOCFINDEV, &args )) < 0) {
         switch ( errno ) {
         case ENETUNREACH:
@@ -936,7 +929,7 @@ static int   _find_next_hop ( char* dev_name, struct in_addr* dst_ip, struct in_
 
     /* Assuming that the return value is the index of the interface,
      * make sure this is always true */
-    _debug( 2,"ARP: next_hop %s going out [%s,%d]\n", _inet_ntoa( next_hop->s_addr ), args.name, ifindex);
+    _debug( 2,"ARP: next_hop %s going out [%d]\n", _inet_ntoa( next_hop->s_addr ), ifindex);
         
     return 0;
 }
@@ -1190,6 +1183,26 @@ static int   _arp_build_packet ( struct ether_arp* pkt, struct in_addr* src_ip, 
     memcpy( &pkt->arp_tpa, dst_ip, sizeof( pkt->arp_tpa ));
 
     return 0;
+}
+
+static int   _find_utindex( char* ifname )
+{
+    /**
+     * Now find Untangle's ID for that bridge port and return that ID
+     */
+    int i = 0;
+    for( i = 0 ; i < MAX_INTERFACES ; i++ ) {
+        if (interfaceNames[i] == NULL) {
+            _error( "Unable to find interface: %s\n", ifname );
+            return -1;
+        }
+
+        if ( strncmp( ifname, interfaceNames[i], IF_NAMESIZE ) == 0 ) {
+            return interfaceIds[i];
+        }
+    }
+
+    return -1;
 }
 
 long long _timeval_diff( struct timeval *end_time, struct timeval *start_time )
