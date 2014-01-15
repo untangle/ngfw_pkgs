@@ -192,8 +192,8 @@ static char*  _inet_ntoa ( in_addr_t addr );
 static void   _mac_to_string ( char *mac_string, int len, struct ether_addr* mac );
 static void   _print_pkt ( struct nfq_data *tb );
 
-static void*  _handle_packet ( struct nfq_data *nfa );
-static int    _nfqueue_callback ( struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfa, void *data );
+static void*  _handle_packet ( struct nfq_data *nfq_data );
+static int    _nfqueue_callback ( struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfq_data, void *data );
 
 static int    _find_outdev_index ( struct nfq_data *tb );
 static int    _find_bridge_port ( struct ether_addr* mac_address, char* bridge_name );
@@ -383,7 +383,7 @@ static void* _read_pkt (void* data)
     /**
      * Create a new thread to handle the next packet
      * We have to use this thread to handle this packet because nfq_handle_packet
-     * stores nfa on the stack, so this thread can not be returned
+     * stores nfq_data on the stack, so this thread can not be returned
      *
      * This thread is critical so we loop until we succeed.
      */
@@ -637,37 +637,37 @@ static int   _set_signals( void )
     return 0;
 }
 
-static int   _nfqueue_callback (struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfa, void *data)
+static int   _nfqueue_callback (struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfq_data, void *data)
 {
-    _handle_packet(nfa);
+    _handle_packet(nfq_data);
     pthread_exit(NULL);
 }
 
-static void* _handle_packet ( struct nfq_data* nfa )
+static void* _handle_packet ( struct nfq_data* nfq_data )
 {
     int id = 0;
     struct nfqnl_msg_packet_hdr *ph;
 
-    ph = nfq_get_msg_packet_hdr( nfa );
+    ph = nfq_get_msg_packet_hdr( nfq_data );
     if (!ph) {
         _error( "Packet missing header!\n" );
         pthread_exit( NULL );
     }
     id = ntohl( ph->packet_id );
 
-    if (verbosity >= 1) _print_pkt( nfa );
+    if (verbosity >= 1) _print_pkt( nfq_data );
     
-    int out_port_utindex = _find_outdev_index(nfa);
+    int out_port_utindex = _find_outdev_index( nfq_data );
 
-    u_int mark = nfq_get_nfmark(nfa);
+    u_int mark = nfq_get_nfmark( nfq_data );
 
     if (out_port_utindex <= 0) {
         /**
          * Unable to determine out interface
          * Set the bypass mark and accept the packet
          */
-        _error( "WARNING: Unable to determine appropriate packet mark. Bypassing packet:\n");
-        _print_pkt( nfa );
+        _error( "WARNING: Unable to determine appropriate packet mark. Bypassing packet %i\n", ph->packet_id);
+        //_print_pkt( nfq_data );
 
         _debug( 2, "RESULT: current mark: 0x%08x\n", mark);
         mark = mark | MARK_BYPASS;
@@ -691,7 +691,7 @@ static void* _handle_packet ( struct nfq_data* nfa )
     pthread_exit( NULL );
 }
 
-static void  _print_pkt ( struct nfq_data *tb )
+static void  _print_pkt ( struct nfq_data *nfq_data )
 {
     int id = 0;
     struct nfqnl_msg_packet_hdr *ph;
@@ -715,7 +715,7 @@ static void  _print_pkt ( struct nfq_data *tb )
         printf( "%02i-%02i %02i:%02i:%02i.%06li| ", tm.tm_mon+1,tm.tm_mday,tm.tm_hour,tm.tm_min,tm.tm_sec, (long)tv.tv_usec );
     }
     
-    ph = nfq_get_msg_packet_hdr(tb);
+    ph = nfq_get_msg_packet_hdr(nfq_data);
     if (ph){
         id = ntohl(ph->packet_id);
         printf("PACKET[%i]: ", id);
@@ -723,12 +723,12 @@ static void  _print_pkt ( struct nfq_data *tb )
                ntohs(ph->hw_protocol), ph->hook, id);
     }
 
-    mark = nfq_get_nfmark(tb);
+    mark = nfq_get_nfmark(nfq_data);
     if (mark)
         printf("mark=0x%08x ", mark);
 
 #if 1
-    ifindex = nfq_get_indev(tb);
+    ifindex = nfq_get_indev(nfq_data);
     if (ifindex) {
         if ( if_indextoname(ifindex, intf_name) == NULL) {
             _error( "print_pkt: in_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
@@ -737,7 +737,7 @@ static void  _print_pkt ( struct nfq_data *tb )
         }
     }
 
-    ifindex = nfq_get_physindev(tb);
+    ifindex = nfq_get_physindev(nfq_data);
     if (ifindex) {
         if ( if_indextoname(ifindex, intf_name) == NULL) {
             _error( "print_pkt: physin_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
@@ -746,7 +746,7 @@ static void  _print_pkt ( struct nfq_data *tb )
         }
     }
 
-    ifindex = nfq_get_outdev(tb);
+    ifindex = nfq_get_outdev(nfq_data);
     if (ifindex) {
         if ( if_indextoname(ifindex, intf_name) == NULL) {
             _error( "print_pkt: out_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
@@ -755,7 +755,7 @@ static void  _print_pkt ( struct nfq_data *tb )
         }
     }
 
-    ifindex = nfq_get_physoutdev(tb);
+    ifindex = nfq_get_physoutdev(nfq_data);
     if (ifindex) {
         if ( if_indextoname(ifindex, intf_name) == NULL) {
             _error( "print_pkt: out_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
@@ -765,7 +765,7 @@ static void  _print_pkt ( struct nfq_data *tb )
     }
 #endif
     
-    ret = nfq_get_payload(tb, &data);
+    ret = nfq_get_payload(nfq_data, &data);
     if (ret >= 0)
         printf("payload_len=%d ", ret);
 
