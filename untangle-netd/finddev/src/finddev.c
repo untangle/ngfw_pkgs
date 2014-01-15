@@ -1285,7 +1285,7 @@ static int   _init_routes()
             char line[512];
             char cmd[512];
 
-            snprintf( cmd, 512, "/bin/ip route show table %i | awk '/default/ {print $3}'", id);
+            snprintf( cmd, 512, "/bin/ip route show table %i | awk '/^default/ {print $3}'", id);
             //_debug(3, "cmd: %s\n", cmd);
             
             fp = popen(cmd, "r");
