@@ -41,11 +41,6 @@
 /**
  * Kernel constant
  */
-#define SIOCFINDEV 0x890E
-
-/**
- * Kernel constant
- */
 #define BRCTL_GET_DEVNAME 19
 
 /**
@@ -125,6 +120,13 @@ char* interfaceNames[MAX_INTERFACES];
 int   interfaceIds[MAX_INTERFACES];
 
 /**
+ * The gateways of the interfaces
+ * Example: interfacesName[0] = "1.2.3.4" interafceNames[1] = "0"
+ * 0 means no gateway (not a WAN)
+ */
+int   interfaceGateways[MAX_INTERFACES];
+
+/**
  * A global static string used to return inet_ntoa strings
  */
 char inet_ntoa_name[INET_ADDRSTRLEN];
@@ -160,6 +162,25 @@ pthread_mutex_t print_mutex;
  */
 struct ether_addr broadcast_mac = { .ether_addr_octet = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF } };
 
+/**
+ * stores a local network and netmask pair
+ */
+struct local_network {
+    in_addr_t network;
+    in_addr_t netmask;
+};
+
+/**
+ * a list of all local networks
+ */
+struct local_network local_nets[1024];
+
+/**
+ * number of local networks
+ */
+int num_local_nets = 0;
+
+static int    _init_routes();
 static int    _usage( char *name );
 static int    _daemonize( );
 static int    _set_signals( void );
@@ -175,7 +196,6 @@ static void*  _handle_packet ( struct nfq_data *nfa );
 static int    _nfqueue_callback ( struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfa, void *data );
 
 static int    _find_outdev_index ( struct nfq_data *tb );
-static int    _find_next_hop ( u_int32_t mark, struct in_addr* dst_ip, struct in_addr* next_hop );
 static int    _find_bridge_port ( struct ether_addr* mac_address, char* bridge_name );
 
 static int    _arp_address ( struct in_addr* dst_ip, struct ether_addr* mac, char* intf_name );
@@ -184,13 +204,10 @@ static int    _arp_issue_request ( struct in_addr* src_ip, struct in_addr* dst_i
 static int    _arp_build_packet ( struct ether_arp* pkt, struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
 static int    _arp_determine_source_addr ( struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
 
+static int    _is_local_addr ( struct in_addr* addr );
+static in_addr_t _get_gateway_for_interface ( char* intf_name );
 static long long _timeval_diff( struct timeval *end_time, struct timeval *start_time );
 static int   _find_utindex( char* ifname );
-
-/**
- * FIXME TODO - handling of non-IP packets?
- * FIXME TODO - handling of IPv6?
- */
 
 int main ( int argc, char **argv )
 {
@@ -204,7 +221,7 @@ int main ( int argc, char **argv )
     setrlimit(RLIMIT_CORE, &core_limits);
 
     _set_signals();
-    
+
     if ( _parse_args( argc, argv ) < 0 )
         return _usage( argv[0] );
 
@@ -213,8 +230,7 @@ int main ( int argc, char **argv )
         if ( ret < 0 )
             exit( ret );
     }
-            
-    
+
     if ( (rv = pthread_attr_init(&attr)) != 0 ) {
         _error( "pthread_attr_init: %s\n", strerror(rv) );
     }
@@ -227,6 +243,12 @@ int main ( int argc, char **argv )
         _error( "pthread_mutex_init: %s\n", strerror(rv) );
     }
 
+    _debug( 2, "Initializing routes...\n");
+    if ( _init_routes() < 0 ) {
+        _error( "_init_routes: %s\n", strerror(errno) );
+        return -1;
+    }
+    
     _debug( 2, "Initializing arp socket...\n");
     if (( arp_socket = socket( PF_INET, SOCK_DGRAM, 0 )) < 0 ) {
         _error( "socket: %s\n", strerror(errno) );
@@ -265,7 +287,6 @@ int main ( int argc, char **argv )
         exit(1);
     }
 
-    // IPv6? FIXME: sizeof(struct iphdr) is IPv4 header
     _debug( 2, "Setting copy_packet mode\n");
     // if (nfq_set_mode(qh, NFQNL_COPY_META, 0xffff) < 0) {
     if (nfq_set_mode(qh, NFQNL_COPY_PACKET, sizeof(struct iphdr)) < 0) {
@@ -645,10 +666,13 @@ static void* _handle_packet ( struct nfq_data* nfa )
          * Unable to determine out interface
          * Set the bypass mark and accept the packet
          */
+        _error( "WARNING: Unable to determine appropriate packet mark. Bypassing packet:\n");
+        _print_pkt( nfa );
+
         _debug( 2, "RESULT: current mark: 0x%08x\n", mark);
         mark = mark | MARK_BYPASS;
         _debug( 2, "RESULT: new     mark: 0x%08x\n", mark);
-
+        
         mark = htonl( mark );
         nfq_set_verdict_mark(qh, id, NF_ACCEPT, mark, 0, NULL);
         pthread_exit( NULL );
@@ -703,7 +727,7 @@ static void  _print_pkt ( struct nfq_data *tb )
     if (mark)
         printf("mark=0x%08x ", mark);
 
-#if 0
+#if 1
     ifindex = nfq_get_indev(tb);
     if (ifindex) {
         if ( if_indextoname(ifindex, intf_name) == NULL) {
@@ -713,27 +737,25 @@ static void  _print_pkt ( struct nfq_data *tb )
         }
     }
 
-    ifindex = nfq_get_outdev(tb);
-    if (ifindex) {
-        if ( if_indextoname(ifindex, intf_name) == NULL) {
-            _error( "print_pkt: out_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
-        } else {
-            printf("outdev=(%i,%s) ", ifindex, intf_name);
-        }
-    }
-#endif
-    
-#if 1
     ifindex = nfq_get_physindev(tb);
     if (ifindex) {
         if ( if_indextoname(ifindex, intf_name) == NULL) {
-            _error( "print_pkt: in_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
+            _error( "print_pkt: physin_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
         } else {
             printf( "physindev=(%i,%s) ", ifindex, intf_name);
         }
     }
 
     ifindex = nfq_get_outdev(tb);
+    if (ifindex) {
+        if ( if_indextoname(ifindex, intf_name) == NULL) {
+            _error( "print_pkt: out_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
+        } else {
+            printf( "outdev=(%i,%s) ", ifindex, intf_name);
+        }
+    }
+
+    ifindex = nfq_get_physoutdev(tb);
     if (ifindex) {
         if ( if_indextoname(ifindex, intf_name) == NULL) {
             _error( "print_pkt: out_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
@@ -818,10 +840,20 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
     struct in_addr dst;
     memcpy( &dst.s_addr, &ip->daddr, sizeof(in_addr_t));
 
-    u_int mark = nfq_get_nfmark(nfq_data);
-    if ( _find_next_hop( mark, &dst, &next_hop) < 0 ) {
-        _error( "_find_next_hop: %s\n", strerror(errno));
-        return -1;
+    /**
+     * If the address is local the "next hop" is the address itself.
+     * Otherwise its the gateway of the exit interface.
+     */
+    if ( _is_local_addr( &dst ) ) {
+        memcpy( &next_hop.s_addr, &dst.s_addr, sizeof(in_addr_t));
+    } else {
+        in_addr_t gateway = _get_gateway_for_interface( intf_name );
+        if ( gateway == 0 ) {
+            _error( "ERROR: packet destined to non-gateway interface but isnt local. (%s,%s)\n", _inet_ntoa(dst.s_addr), intf_name);
+            return -1;
+        } else {
+            memcpy( &next_hop.s_addr, &gateway, sizeof(in_addr_t));
+        }
     }
 
     /**
@@ -885,53 +917,6 @@ static void  _mac_to_string ( char *mac_string, int len, struct ether_addr* mac 
     snprintf( mac_string, len, "%02x:%02x:%02x:%02x:%02x:%02x",
               mac->ether_addr_octet[0], mac->ether_addr_octet[1], mac->ether_addr_octet[2], 
               mac->ether_addr_octet[3], mac->ether_addr_octet[4], mac->ether_addr_octet[5] );
-}
-
-/**
- * This queries the kernel for the next hop for packets destined to the specied dst_ip.
- * For example,
- */
-static int   _find_next_hop ( u_int32_t mark, struct in_addr* dst_ip, struct in_addr* next_hop )
-{
-    int ifindex;
-    struct 
-    {
-        in_addr_t addr;
-        in_addr_t nh;
-        u_int32_t mark;
-        char unused[IFNAMSIZ]; // for old kernels that used to use this space
-    } args;
-    
-    bzero( &args, sizeof( args ));
-    args.addr = dst_ip->s_addr;
-    args.mark = mark;
-
-    if (( ifindex = ioctl( arp_socket, SIOCFINDEV, &args )) < 0) {
-        switch ( errno ) {
-        case ENETUNREACH:
-            _error( "ARP: Destination IP is not reachable: %s\n", _inet_ntoa( args.addr) );
-            return -1;
-        default:  /* Ignore all other error codes */
-            break;
-        }
-
-        _error( "SIOCFINDEV[%s] %s.\n", _inet_ntoa( dst_ip->s_addr ), strerror(errno) );
-        return -1;
-    }
-
-    /* If the next hop is on the local network, (eg. the next hop is the destination), 
-     * the ioctl returns 0 */
-    if ( args.nh != 0x00000000 ) {
-        next_hop->s_addr = args.nh;
-    } else {
-        next_hop->s_addr = dst_ip->s_addr;
-    }
-
-    /* Assuming that the return value is the index of the interface,
-     * make sure this is always true */
-    _debug( 2,"ARP: next_hop %s going out [%d]\n", _inet_ntoa( next_hop->s_addr ), ifindex);
-        
-    return 0;
 }
 
 /**
@@ -1203,6 +1188,129 @@ static int   _find_utindex( char* ifname )
     }
 
     return -1;
+}
+
+static int    _is_local_addr ( struct in_addr* addr )
+{
+    int i = 0;
+
+    for ( i = 0 ; i < num_local_nets ; i++ ) {
+        if ( ( addr->s_addr & local_nets[i].netmask ) == ( local_nets[i].network & local_nets[i].netmask ) ) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+static in_addr_t _get_gateway_for_interface ( char* intf_name_orig )
+{
+    int i;
+    char* short_name;
+    char intf_name[IFNAMSIZ];
+    strncpy( intf_name, intf_name_orig, IFNAMSIZ );
+    
+    if ( intf_name[0] == 'b' && intf_name[1] == 'r' && intf_name[2] == '.' ) {
+        /**
+         * We are passed the bridge name, but we need the parent interface name.
+         * To do that we just need to remove the "br." and change any "-" to "."
+         * So br.eth0 becomes eth0 and br.eth1-3 becomes eth1.3
+         */
+        short_name = &intf_name[3];
+        char* c;
+        for ( c = short_name ; *c != 0 ; c++ ) {
+            if ( *c == '-' )
+                *c = '.';        
+        }
+    }
+    else
+        short_name = intf_name;
+
+    for ( i = 0 ; i < MAX_INTERFACES ; i++ ) {
+        if ( interfaceNames[i] == NULL )
+            continue;
+        
+        if ( strcmp ( short_name, interfaceNames[i] ) == 0 )
+            return interfaceGateways[i];
+    }
+    
+    return 0;
+}
+
+static int   _init_routes()
+{
+    /**
+     * determine local routes
+     */
+    FILE* file = fopen("/proc/net/route", "r"); 
+    if ( file == NULL ) {
+        _error("Failed to open file: %s\n",strerror(errno));
+        return -1;
+    }
+
+    char line[256];
+    int linecount = 0;
+    while ( fgets(line, sizeof(line), file) ) {
+        char* token;
+        int i = 0;
+        in_addr_t network = 0;
+        in_addr_t netmask = 0;
+
+        linecount++;
+        if ( linecount == 1 )
+            continue;
+        
+        for ( token = strtok(line, " \t") ; token != NULL ; token = strtok(NULL, " \t") ) {
+            if ( i == 1 ) 
+                network = strtol( token, NULL, 16);
+            if ( i == 7 ) 
+                netmask = strtol( token, NULL, 16);
+            i++;
+        }
+
+        _debug( 2, "Local Network: %s / %s\n", _inet_ntoa(network), _inet_ntoa(netmask) );
+        local_nets[num_local_nets].network = network;
+        local_nets[num_local_nets].netmask = netmask;
+        num_local_nets++;
+    }
+
+    /**
+     * determine which interfaces have gateways, and parse them
+     */
+    int i;
+    for ( i = 0 ; i < MAX_INTERFACES ; i++ ) {
+        if ( interfaceNames[i] != NULL ) {
+            int id = interfaceIds[i];
+            FILE *fp;
+            char line[512];
+            char cmd[512];
+
+            snprintf( cmd, 512, "/bin/ip route show table %i | awk '/default/ {print $3}'", id);
+            //_debug(3, "cmd: %s\n", cmd);
+            
+            fp = popen(cmd, "r");
+            if (fp == NULL) {
+                _error("popen: %s\n" , strerror(errno));
+                return -1;
+            }
+
+            while ( fgets( line, sizeof(line), fp ) != NULL ) {
+                struct in_addr addr;
+
+                if ( inet_aton( line, &addr ) == 0 ) {
+                    _error("Invalid address: %s\n" , line);
+                    return -1;
+                }
+                _debug( 2, "Gateway for %s:\n", interfaceNames[i] );
+                _debug( 2, "%s.\n", _inet_ntoa(addr.s_addr) );
+                interfaceGateways[i] = addr.s_addr;
+            }
+
+            pclose(fp);
+        }
+    }
+    
+    return 0;
 }
 
 long long _timeval_diff( struct timeval *end_time, struct timeval *start_time )
