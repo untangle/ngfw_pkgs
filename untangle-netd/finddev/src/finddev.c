@@ -666,7 +666,7 @@ static void* _handle_packet ( struct nfq_data* nfq_data )
          * Unable to determine out interface
          * Set the bypass mark and accept the packet
          */
-        _error( "WARNING: Unable to determine appropriate packet mark. Bypassing packet %i\n", ph->packet_id);
+        _error( "WARNING: Unable to determine appropriate packet mark. Bypassing packet %i\n", id);
         //_print_pkt( nfq_data );
 
         _debug( 2, "RESULT: current mark: 0x%08x\n", mark);
