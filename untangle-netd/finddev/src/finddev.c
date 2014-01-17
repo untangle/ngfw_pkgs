@@ -180,6 +180,11 @@ struct local_network local_nets[1024];
  */
 int num_local_nets = 0;
 
+/**
+ * This stores the packet ID being handled by this thread
+ */
+__thread int packet_id = 0;
+
 static int    _init_routes();
 static int    _usage( char *name );
 static int    _daemonize( );
@@ -191,23 +196,20 @@ static void*  _read_pkt (void* data);
 static char*  _inet_ntoa ( in_addr_t addr );
 static void   _mac_to_string ( char *mac_string, int len, struct ether_addr* mac );
 static void   _print_pkt ( struct nfq_data *tb );
-
-static void*  _handle_packet ( struct nfq_data *nfq_data );
-static int    _nfqueue_callback ( struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfq_data, void *data );
-
-static int    _find_outdev_index ( struct nfq_data *tb );
-static int    _find_bridge_port ( struct ether_addr* mac_address, char* bridge_name );
-
-static int    _arp_address ( struct in_addr* dst_ip, struct ether_addr* mac, char* intf_name );
-static int    _arp_lookup_cache_entry ( struct in_addr* ip, char* intf_name, struct ether_addr* mac );
-static int    _arp_issue_request ( struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
-static int    _arp_build_packet ( struct ether_arp* pkt, struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
-static int    _arp_determine_source_addr ( struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
-
-static int    _is_local_addr ( struct in_addr* addr );
+static int       _is_local_addr ( struct in_addr* addr );
 static in_addr_t _get_gateway_for_interface ( char* intf_name );
+static int       _find_utindex( char* ifname );
 static long long _timeval_diff( struct timeval *end_time, struct timeval *start_time );
-static int   _find_utindex( char* ifname );
+
+static void*     _handle_packet ( struct nfq_data *nfq_data );
+static int       _nfqueue_callback ( struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfq_data, void *data );
+static int       _find_outdev_index ( struct nfq_data *tb );
+static int       _find_bridge_port ( struct ether_addr* mac_address, char* bridge_name );
+static int       _arp_address ( struct in_addr* dst_ip, struct ether_addr* mac, char* intf_name );
+static int       _arp_lookup_cache_entry ( struct in_addr* ip, char* intf_name, struct ether_addr* mac );
+static int       _arp_issue_request ( struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
+static int       _arp_build_packet ( struct ether_arp* pkt, struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
+static int       _arp_determine_source_addr ( struct in_addr* src_ip, struct in_addr* dst_ip, char* intf_name );
 
 int main ( int argc, char **argv )
 {
@@ -397,82 +399,9 @@ static void* _read_pkt (void* data)
         }
     } while ( 1 );
         
-
     nfq_handle_packet(h, buf, rv);
 
     return NULL;
-}
-
-static int   _debug ( int level, char *lpszFmt, ... )
-{
-    if (verbosity >= level)
-    {
-        va_list argptr;
-
-        va_start(argptr, lpszFmt);
-
-        if ( pthread_mutex_lock( &print_mutex ) < 0 ) {
-            _error( "pthread_mutex_lock: %s\n", strerror(errno) );
-        }
-        
-        if ( 1 ) {
-            struct timeval tv;
-            struct tm tm;
-            
-            gettimeofday(&tv,NULL);
-            if (!localtime_r(&tv.tv_sec,&tm))
-                fprintf( stderr, "gmtime_r: %s\n", strerror(errno) );
-            
-            fprintf( stdout, "%02i-%02i %02i:%02i:%02i.%06li| ", tm.tm_mon+1,tm.tm_mday,tm.tm_hour,tm.tm_min,tm.tm_sec, (long)tv.tv_usec );
-        }
-          
-        vfprintf( stdout, lpszFmt, argptr );
-
-        va_end( argptr );
-
-        fflush( stdout );
-
-        if ( pthread_mutex_unlock( &print_mutex ) < 0 ) {
-            fprintf( stderr, "pthread_mutex_unlock: %s\n", strerror(errno) );
-        }
-        
-    }
-
-	return 0;
-}
-
-static int   _error ( char *lpszFmt, ... )
-{
-    va_list argptr;
-
-    va_start(argptr, lpszFmt);
-
-    if ( pthread_mutex_lock( &print_mutex ) < 0 ) {
-        fprintf( stderr, "pthread_mutex_lock: %s\n", strerror(errno) );
-    }
-        
-    if ( 1 ) {
-        struct timeval tv;
-        struct tm tm;
-            
-        gettimeofday(&tv,NULL);
-        if (!localtime_r(&tv.tv_sec,&tm))
-            fprintf( stderr, "gmtime_r: %s\n", strerror(errno) );
-            
-        fprintf( stderr, "%02i-%02i %02i:%02i:%02i.%06li| ", tm.tm_mon+1,tm.tm_mday,tm.tm_hour,tm.tm_min,tm.tm_sec, (long)tv.tv_usec );
-    }
-          
-    vfprintf( stderr, lpszFmt, argptr );
-
-    va_end( argptr );
-
-    fflush( stderr );
-
-    if ( pthread_mutex_unlock( &print_mutex ) < 0 ) {
-        fprintf( stderr, "pthread_mutex_unlock: %s\n", strerror(errno) );
-    }
-
-    return 0;
 }
 
 static int   _usage ( char *name )
@@ -645,7 +574,6 @@ static int   _nfqueue_callback (struct nfq_q_handle *qh, struct nfgenmsg *nfmsg,
 
 static void* _handle_packet ( struct nfq_data* nfq_data )
 {
-    int id = 0;
     struct nfqnl_msg_packet_hdr *ph;
 
     ph = nfq_get_msg_packet_hdr( nfq_data );
@@ -653,7 +581,7 @@ static void* _handle_packet ( struct nfq_data* nfq_data )
         _error( "Packet missing header!\n" );
         pthread_exit( NULL );
     }
-    id = ntohl( ph->packet_id );
+    packet_id = ntohl( ph->packet_id );
 
     if (verbosity >= 1) _print_pkt( nfq_data );
     
@@ -666,25 +594,25 @@ static void* _handle_packet ( struct nfq_data* nfq_data )
          * Unable to determine out interface
          * Set the bypass mark and accept the packet
          */
-        _error( "WARNING: Unable to determine appropriate packet mark. Bypassing packet %i\n", id);
+        _error( "pkt[%i] WARNING: Unable to determine appropriate packet mark. Bypassing...\n", packet_id );
         //_print_pkt( nfq_data );
 
-        _debug( 2, "RESULT: current mark: 0x%08x\n", mark);
+        _debug( 2, "pkt[%i] RESULT: current mark: 0x%08x\n", packet_id, mark);
         mark = mark | MARK_BYPASS;
-        _debug( 2, "RESULT: new     mark: 0x%08x\n", mark);
+        _debug( 2, "pkt[%i] RESULT: new     mark: 0x%08x\n", packet_id, mark);
         
         mark = htonl( mark );
-        nfq_set_verdict_mark(qh, id, NF_ACCEPT, mark, 0, NULL);
+        nfq_set_verdict_mark(qh, packet_id, NF_ACCEPT, mark, 0, NULL);
         pthread_exit( NULL );
     }
     else {
-        _debug( 2, "RESULT: current mark: 0x%08x\n", mark);
+        _debug( 2, "pkt[%i] RESULT: current mark: 0x%08x\n", packet_id, mark);
         mark = mark & 0xFFFF00FF;
         mark = mark | (out_port_utindex << 8);
-        _debug( 2, "RESULT: new     mark: 0x%08x\n", mark);
+        _debug( 2, "pkt[%i] RESULT: new     mark: 0x%08x\n", packet_id, mark);
 
         mark = htonl( mark );
-        nfq_set_verdict_mark(qh, id, NF_ACCEPT, mark, 0, NULL);
+        nfq_set_verdict_mark(qh, packet_id, NF_ACCEPT, mark, 0, NULL);
         pthread_exit( NULL );
     }
 
@@ -693,7 +621,6 @@ static void* _handle_packet ( struct nfq_data* nfq_data )
 
 static void  _print_pkt ( struct nfq_data *nfq_data )
 {
-    int id = 0;
     struct nfqnl_msg_packet_hdr *ph;
     u_int32_t mark,ifindex;
     int ret;
@@ -717,8 +644,8 @@ static void  _print_pkt ( struct nfq_data *nfq_data )
     
     ph = nfq_get_msg_packet_hdr(nfq_data);
     if (ph){
-        id = ntohl(ph->packet_id);
-        printf("PACKET[%i]: ", id);
+        int id = ntohl(ph->packet_id);
+        printf("pkt[%i]: ", id);
         printf("hw_protocol=0x%04x hook=%u id=%u ",
                ntohs(ph->hw_protocol), ph->hook, id);
     }
@@ -800,15 +727,10 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
     char *data;
     char intf_name[IF_NAMESIZE];
     int ret = 1;
-    struct nfqnl_msg_packet_hdr* ph = nfq_get_msg_packet_hdr(nfq_data);
-    int packet_id = 0;
     struct timeval start_time;
     struct timeval end_time;
   
     gettimeofday( &start_time, NULL );
-
-    if ( ph )
-        packet_id = ntohl(ph->packet_id);
 
     memset( &next_hop, 0, sizeof (struct in_addr) );
     
@@ -817,11 +739,11 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
      */
     int ifindex = nfq_get_outdev( nfq_data );
     if (ifindex <= 0) {
-        _error( "Unable to locate ifindex: %s\n", strerror(errno) );
+        _error( "pkt[%i] ERROR: Unable to locate ifindex: %s\n", packet_id, strerror(errno) );
         return -1;
     }
     if ( if_indextoname( ifindex, intf_name ) == NULL) {
-        _error( "if_indextoname: %s\n", strerror(errno));
+        _error( "pkt[%i] ERROR: if_indextoname: %s\n", packet_id, strerror(errno) );
         return -1;
     }
     
@@ -829,12 +751,12 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
      * Lookup dst IP
      */
     if ( ( ret = nfq_get_payload( nfq_data, &data ) ) < sizeof(struct iphdr) ) {
-        _error( "packet too short: %i\n", ret);
+        _error( "pkt[%i] ERROR: packet too short: %i\n", packet_id, ret );
         return -1;
     }
     struct iphdr * ip = (struct iphdr *) data;
     if ( ip->version != 4 ) {
-        _error( "Ignoring non-IPV4 %i\n", ip->version);
+        _error( "pkt[%i] ERROR: Ignoring non-IPV4 %i\n", packet_id, ip->version );
         return -1;
     }
     struct in_addr dst;
@@ -849,7 +771,7 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
     } else {
         in_addr_t gateway = _get_gateway_for_interface( intf_name );
         if ( gateway == 0 ) {
-            _error( "ERROR: packet destined to non-gateway interface but isnt local. (%s,%s)\n", _inet_ntoa(dst.s_addr), intf_name);
+            _error( "pkt[%i] ERROR: packet destined to non-gateway interface but isnt local. (%s,%s)\n", packet_id, _inet_ntoa(dst.s_addr), intf_name );
             return -1;
         } else {
             memcpy( &next_hop.s_addr, &gateway, sizeof(in_addr_t));
@@ -860,11 +782,11 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
      * Lookup the MAC address for next hop
      */
     if (( ret = _arp_address( &next_hop, &mac_address, intf_name )) < 0 ) {
-        _error( "_arp_address: %s\n", strerror(errno) );
+        _error( "pkt[%i] ERROR: arp_address: %s\n", packet_id, strerror(errno) );
         return -1;
     }
     if ( ret == 0 ) {
-        _error( "ARP: Unable to resolve the MAC address %s\n", inet_ntoa( next_hop ));
+        _error( "pkt[%i] ARP: Unable to resolve the MAC address %s\n", packet_id, inet_ntoa( next_hop ) );
         return 0;
     }
     if ( memcmp(&mac_address, &broadcast_mac, sizeof(broadcast_mac)) == 0 )  {
@@ -876,12 +798,12 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
      */
     int out_port_ifindex = _find_bridge_port( &mac_address, intf_name );
     if ( out_port_ifindex < 0 ) {
-        _error( "_find_bridge_port: %s\n", strerror(errno) );
+        _error( "pkt[%i] ERROR: _find_bridge_port: %s\n", packet_id, strerror(errno) );
         return -1;
     }
     char bridge_port_intf_name[IF_NAMESIZE];
     if ( if_indextoname( out_port_ifindex, bridge_port_intf_name ) == NULL) {
-        _error( "if_indextoname: %s\n", strerror(errno));
+        _error( "pkt[%i] ERROR: if_indextoname: %s\n", packet_id, strerror(errno) );
         return -1;
     }
 
@@ -895,28 +817,10 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
     if ( verdict_utindex > -1 && verbosity >= 1 ) {
             char mac_string[MAC_STRING_LENGTH];
             _mac_to_string( mac_string, sizeof( mac_string ), &mac_address );
-            _debug( 1, "RESULT[%i]: nextHop: %s nextHopMAC: %s -> systemDev: %s interfaceId: %i usec: %lld\n", packet_id, inet_ntoa( next_hop ), mac_string, bridge_port_intf_name, verdict_utindex, usec);
+            _debug( 1, "pkt[%i] RESULT: nextHop: %s nextHopMAC: %s -> systemDev: %s interfaceId: %i usec: %lld\n", packet_id, inet_ntoa( next_hop ), mac_string, bridge_port_intf_name, verdict_utindex, usec );
     }
 
     return verdict_utindex;
-}
-
-static char* _inet_ntoa ( in_addr_t addr )
-{
-    struct in_addr i;
-    memset(&i, 0, sizeof(i));
-    i.s_addr = addr;
-    
-    strncpy( inet_ntoa_name, inet_ntoa( i ), INET_ADDRSTRLEN );
-    
-    return inet_ntoa_name;
-}
-
-static void  _mac_to_string ( char *mac_string, int len, struct ether_addr* mac )
-{
-    snprintf( mac_string, len, "%02x:%02x:%02x:%02x:%02x:%02x",
-              mac->ether_addr_octet[0], mac->ether_addr_octet[1], mac->ether_addr_octet[2], 
-              mac->ether_addr_octet[3], mac->ether_addr_octet[4], mac->ether_addr_octet[5] );
 }
 
 /**
@@ -941,15 +845,15 @@ static int   _find_bridge_port ( struct ether_addr* mac_address, char* bridge_na
         
 	if (( ret = ioctl( arp_socket, SIOCDEVPRIVATE, &ifr )) < 0 ) {
         if ( errno == EINVAL ) {
-            _error( "ARP: Invalid argument, MAC Address is found in ARP Cache but not in bridge MAC table.\n" );
+            _error( "pkt[%i] ARP: Invalid argument, MAC Address is found in ARP Cache but not in bridge MAC table.\n", packet_id );
             return -1;
         } else {
-            _error( "ioctl: %s\n", strerror(errno) );
+            _error( "pkt[%i] ERROR: ioctl: %s\n", packet_id, strerror(errno) );
             return -1;
         }
     }
         
-    _debug( 2,  "ARP[%s]: Outgoing interface index is %s,%d\n", bridge_name, buffer, ret );
+    _debug( 2,  "pkt[%i] ARP[%s]: Outgoing interface index is %s,%d\n", packet_id, bridge_name, buffer, ret );
     
 	return ret;
 }
@@ -974,35 +878,35 @@ static int   _arp_address ( struct in_addr* dst_ip, struct ether_addr* mac, char
         /* Check the cache before issuing the request */
         ret = _arp_lookup_cache_entry( dst_ip, intf_name, mac );
         if ( ret < 0 ) {
-            _error( "_get_arp_entry: %s\n", strerror(errno) );
+            _error( "_pkt[%i] ERROR: get_arp_entry: %s\n", packet_id, strerror(errno) );
             return -1;
         } else if (ret == 1 ) {
             return 1;
         } else {
-                _debug( 2,  "ARP: MAC not found for '%s' on '%s'. Sending ARP request.\n", _inet_ntoa( dst_ip->s_addr ), intf_name );
+            _debug( 2,  "pkt[%i] ARP: MAC not found for '%s' on '%s'. Sending ARP request.\n", packet_id, _inet_ntoa( dst_ip->s_addr ), intf_name );
         }
 
         /* Connect and close so the kernel grabs the source address */
         if (( c == 0 ) && ( _arp_determine_source_addr( &src_ip, dst_ip, intf_name ) < 0 )) {
-            _error( "Failed to determine address for %s: %s\n", intf_name, strerror(errno) );
+            _error( "pkt[%i] ERROR: Failed to determine address for %s: %s\n", packet_id, intf_name, strerror(errno) );
             return -1;
         }
 
         /* Issue the arp request */
         if ( _arp_issue_request( &src_ip, dst_ip, intf_name ) < 0 ) {
-            _error( "_arp_issue_request: %s\n", strerror(errno) );
+            _error( "_pkt[%i] ERROR: arp_issue_request: %s\n", packet_id, strerror(errno) );
             return -1;
         }
 
         delay = delay_array[c];
         if ( delay == 0 ) break;
         if ( delay < 0 ) {
-            _error( "Invalid delay: index:%i delay:%i\n", c, delay );
+            _error( "pkt[%i] ERROR: Invalid delay: index:%i delay:%i\n", packet_id, c, delay );
             return -1;
         }
         c++;
         
-        _debug( 2,  "Waiting for the response for: %i usec\n", delay );
+        _debug( 2,  "pkt[%i] ARP: Waiting for the response for: %i usec\n", packet_id, delay );
         usleep( delay );
     }
     
@@ -1037,7 +941,7 @@ static int   _arp_lookup_cache_entry ( struct in_addr* ip, char* intf_name, stru
         /* This only fails if a socket has never been opened to this IP address.
          * Must also check that the address returned a zero MAC address */
         if ( errno == ENXIO ) {
-            _debug( 2,  "ARP CACHE: MAC address for %s was not found\n", _inet_ntoa( ip->s_addr ));
+            _debug( 2,  "pkt[%i] ARP CACHE: MAC address for %s was not found\n", packet_id, _inet_ntoa( ip->s_addr ) );
             return 0;
         }
 
@@ -1047,7 +951,7 @@ static int   _arp_lookup_cache_entry ( struct in_addr* ip, char* intf_name, stru
 
     /* Returning an all zero MAC address indicates that the MAC was not found */
     if ( memcmp( &request.arp_ha.sa_data, &zero_mac, sizeof( struct ether_addr )) == 0 ) {
-        _debug( 2,  "ARP CACHE: Ethernet address for %s was not found\n", _inet_ntoa( ip->s_addr ));
+        _debug( 2,  "pkt[%i] ARP CACHE: Ethernet address for %s was not found\n", packet_id, _inet_ntoa( ip->s_addr ));
         return 0;
     }
 
@@ -1056,7 +960,7 @@ static int   _arp_lookup_cache_entry ( struct in_addr* ip, char* intf_name, stru
     if (verbosity >= 2) {
         char mac_string[MAC_STRING_LENGTH];
         _mac_to_string( mac_string, sizeof( mac_string ), mac );
-        _debug( 2, "ARP: Cache resolved MAC[%d]: '%s' -> '%s'\n", ret, inet_ntoa( *ip ), mac_string );
+        _debug( 2, "pkt[%i] ARP: Cache resolved MAC[%d]: '%s' -> '%s'\n", packet_id, ret, inet_ntoa( *ip ), mac_string );
     }
 
     return 1;
@@ -1077,7 +981,7 @@ static int   _arp_determine_source_addr ( struct in_addr* src_ip, struct in_addr
     strncpy(ifr.ifr_name, intf_name, IFNAMSIZ-1);
 
     if ( ioctl( arp_socket, SIOCGIFADDR, &ifr) < 0 ) {
-        _error( "ioctl: %s\n", intf_name, strerror(errno) );
+        _error( "pkt[%i] ERROR: ioctl: %s\n", packet_id, intf_name, strerror(errno) );
         return -1;
     }
 
@@ -1108,24 +1012,24 @@ static int   _arp_issue_request ( struct in_addr* src_ip, struct in_addr* dst_ip
     broadcast.sll_ifindex = if_nametoindex(intf_name);
 
     if (broadcast.sll_ifindex == 0) {
-        _error( "failed to find index of \"%s\"\n", intf_name);
+        _error( "pkt[%i] ERROR: failed to find index of \"%s\"\n", packet_id, intf_name);
         return -1;
     }
     
     if ( _arp_build_packet( &pkt, src_ip, dst_ip, intf_name ) < 0 ) {
-        _error( "_arp_build_packet: %s\n", strerror(errno));
+        _error( "pkt[%i] ERROR: arp_build_packet: %s\n", packet_id, strerror(errno));
         return -1;
     }
     
     size = sendto( pkt_socket, &pkt, sizeof( pkt ), 0, (struct sockaddr*)&broadcast, sizeof( broadcast ));
 
     if ( size < 0 ) {
-        _error( "sendto: %s\n", strerror(errno) );
+        _error( "pkt[%i] ERROR: sendto: %s\n", packet_id, strerror(errno) );
         return -1;
     }
     
     if ( size != sizeof( pkt )) {
-        _error( "Transmitted truncated ARP packet %i < %i\n", size, (int)sizeof( pkt ));
+        _error( "pkt[%i] ERROR: Transmitted truncated ARP packet %i < %i\n", packet_id, size, (int)sizeof( pkt ) );
         return -1;
     }
          
@@ -1151,7 +1055,7 @@ static int   _arp_build_packet ( struct ether_arp* pkt, struct in_addr* src_ip, 
     strncpy( ifr.ifr_name, intf_name, IFNAMSIZ );
 
     if ( ioctl( arp_socket, SIOCGIFHWADDR, &ifr ) < 0 ) {
-        _error( "ioctl: %s\n", strerror( errno ));
+        _error( "pkt[%i] ERROR: ioctl: %s\n", packet_id, strerror( errno ));
         return -1;
     }
 
@@ -1178,7 +1082,7 @@ static int   _find_utindex( char* ifname )
     int i = 0;
     for( i = 0 ; i < MAX_INTERFACES ; i++ ) {
         if (interfaceNames[i] == NULL) {
-            _error( "Unable to find interface: %s\n", ifname );
+            _error( "ERROR: Unable to find interface: %s\n", ifname );
             return -1;
         }
 
@@ -1244,7 +1148,7 @@ static int   _init_routes()
      */
     FILE* file = fopen("/proc/net/route", "r"); 
     if ( file == NULL ) {
-        _error("Failed to open file: %s\n",strerror(errno));
+        _error("ERROR: Failed to open file: %s\n",strerror(errno));
         return -1;
     }
 
@@ -1313,7 +1217,7 @@ static int   _init_routes()
     return 0;
 }
 
-long long _timeval_diff( struct timeval *end_time, struct timeval *start_time )
+static long long _timeval_diff( struct timeval *end_time, struct timeval *start_time )
 {
     struct timeval difference;
 
@@ -1327,3 +1231,93 @@ long long _timeval_diff( struct timeval *end_time, struct timeval *start_time )
 
     return 1000000LL*difference.tv_sec+ difference.tv_usec;
 } 
+
+static char* _inet_ntoa ( in_addr_t addr )
+{
+    struct in_addr i;
+    memset(&i, 0, sizeof(i));
+    i.s_addr = addr;
+    
+    strncpy( inet_ntoa_name, inet_ntoa( i ), INET_ADDRSTRLEN );
+    
+    return inet_ntoa_name;
+}
+
+static int   _debug ( int level, char *lpszFmt, ... )
+{
+    if (verbosity >= level)
+    {
+        va_list argptr;
+
+        va_start(argptr, lpszFmt);
+
+        if ( pthread_mutex_lock( &print_mutex ) < 0 ) {
+            _error( "pthread_mutex_lock: %s\n", strerror(errno) );
+        }
+        
+        if ( 1 ) {
+            struct timeval tv;
+            struct tm tm;
+            
+            gettimeofday(&tv,NULL);
+            if (!localtime_r(&tv.tv_sec,&tm))
+                fprintf( stderr, "gmtime_r: %s\n", strerror(errno) );
+            
+            fprintf( stdout, "%02i-%02i %02i:%02i:%02i.%06li| ", tm.tm_mon+1,tm.tm_mday,tm.tm_hour,tm.tm_min,tm.tm_sec, (long)tv.tv_usec );
+        }
+          
+        vfprintf( stdout, lpszFmt, argptr );
+
+        va_end( argptr );
+
+        fflush( stdout );
+
+        if ( pthread_mutex_unlock( &print_mutex ) < 0 ) {
+            fprintf( stderr, "pthread_mutex_unlock: %s\n", strerror(errno) );
+        }
+        
+    }
+
+	return 0;
+}
+
+static int   _error ( char *lpszFmt, ... )
+{
+    va_list argptr;
+
+    va_start(argptr, lpszFmt);
+
+    if ( pthread_mutex_lock( &print_mutex ) < 0 ) {
+        fprintf( stderr, "pthread_mutex_lock: %s\n", strerror(errno) );
+    }
+        
+    if ( 1 ) {
+        struct timeval tv;
+        struct tm tm;
+            
+        gettimeofday(&tv,NULL);
+        if (!localtime_r(&tv.tv_sec,&tm))
+            fprintf( stderr, "gmtime_r: %s\n", strerror(errno) );
+            
+        fprintf( stderr, "%02i-%02i %02i:%02i:%02i.%06li| ", tm.tm_mon+1,tm.tm_mday,tm.tm_hour,tm.tm_min,tm.tm_sec, (long)tv.tv_usec );
+    }
+          
+    vfprintf( stderr, lpszFmt, argptr );
+
+    va_end( argptr );
+
+    fflush( stderr );
+
+    if ( pthread_mutex_unlock( &print_mutex ) < 0 ) {
+        fprintf( stderr, "pthread_mutex_unlock: %s\n", strerror(errno) );
+    }
+
+    return 0;
+}
+
+static void  _mac_to_string ( char *mac_string, int len, struct ether_addr* mac )
+{
+    snprintf( mac_string, len, "%02x:%02x:%02x:%02x:%02x:%02x",
+              mac->ether_addr_octet[0], mac->ether_addr_octet[1], mac->ether_addr_octet[2], 
+              mac->ether_addr_octet[3], mac->ether_addr_octet[4], mac->ether_addr_octet[5] );
+}
