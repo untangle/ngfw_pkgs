@@ -878,7 +878,7 @@ static int   _arp_address ( struct in_addr* dst_ip, struct ether_addr* mac, char
         /* Check the cache before issuing the request */
         ret = _arp_lookup_cache_entry( dst_ip, intf_name, mac );
         if ( ret < 0 ) {
-            _error( "_pkt[%i] ERROR: get_arp_entry: %s\n", packet_id, strerror(errno) );
+            _error( "pkt[%i] ERROR: _arp_lookup_cache_entry: %s\n", packet_id, strerror(errno) );
             return -1;
         } else if (ret == 1 ) {
             return 1;
@@ -894,7 +894,7 @@ static int   _arp_address ( struct in_addr* dst_ip, struct ether_addr* mac, char
 
         /* Issue the arp request */
         if ( _arp_issue_request( &src_ip, dst_ip, intf_name ) < 0 ) {
-            _error( "_pkt[%i] ERROR: arp_issue_request: %s\n", packet_id, strerror(errno) );
+            _error( "pkt[%i] ERROR: _arp_issue_request: %s\n", packet_id, strerror(errno) );
             return -1;
         }
 
