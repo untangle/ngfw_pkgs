@@ -190,8 +190,8 @@ static int    _usage( char *name );
 static int    _daemonize( );
 static int    _set_signals( void );
 static int    _parse_args( int argc, char** argv );
-static int    _debug( int level, char *lpszFmt, ...);
-static int    _error( char *lpszFmt, ...);
+static int    _debug( int level, char *lpszFmt, ...) __attribute__ ((format (printf, 2, 3)));
+static int    _error( char *lpszFmt, ...) __attribute__ ((format (printf, 1, 2)));
 static void*  _read_pkt (void* data);
 static char*  _inet_ntoa ( in_addr_t addr );
 static void   _mac_to_string ( char *mac_string, int len, struct ether_addr* mac );
@@ -299,7 +299,7 @@ int main ( int argc, char **argv )
     nh = nfq_nfnlh(h);
     fd = nfnl_fd(nh);
     if ( nfnl_rcvbufsiz(nh, BUFFER_SIZE) < 0 ) {
-        _error( "nfnl_rcvbufsiz: %s\n", strerror(errno) );
+        _error( "nfnl_rcvbufsiz: errno:%i\n", errno );
     }
     
     for ( i = 0 ; i < MAX_INTERFACES ; i++ ) {
@@ -330,7 +330,7 @@ int main ( int argc, char **argv )
      * http://developer.berlios.de/bugs/?func=detailbug&bug_id=14793&group_id=2509
      */
     if ( alarm( 2 ) < 0 ) {
-        _error( "alarm: %s\n", strerror(errno) );
+        _error( "alarm: errno:%i\n", errno );
     }
     if (nfq_unbind_pf(h, AF_INET) < 0) {
         _error( "error during nfq_unbind_pf()\n");
@@ -369,7 +369,7 @@ static void* _read_pkt (void* data)
         _debug(2,"Waiting for pkt...\n");
         rv = recv(fd, buf, 4096, 0);
         if ( rv < 0 ) {
-            _error( "recv: %s\n", strerror(errno) );
+            _error( "recv: errno:%i\n", errno );
             continue;
         }
 
@@ -394,7 +394,7 @@ static void* _read_pkt (void* data)
         if ( pcrv == 0 ) {
             break;
         } else {
-            _error("pthread_create: %s\n", strerror(pcrv));
+            _error( "pthread_create: errno:%i\n", pcrv );
             usleep(100 * 1000); /* .1 second delay to prevent spinning */
         }
     } while ( 1 );
@@ -507,17 +507,17 @@ static int   _daemonize ()
     umask( S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH );
 
     if (( sid = setsid()) < 0 ) {
-        _error( "setsid: %s\n", strerror(errno) );
+        _error( "setsid: errno:%i\n", errno );
         return -1;
     }
         
     if ( chdir( "/var/run/" ) < 0 ) {
-        _error( "chdir: %s\n", strerror(errno) );
+        _error( "chdir: errno:%i\n", errno );
         return -1;
     }
         
     if (( logfile_fd = open( logfile, O_WRONLY | O_APPEND | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH )) < 0 ) {
-        _error( "open: %s\n", strerror(errno) );
+        _error( "open: errno:%i\n", errno );
         return -1;
     }
         
@@ -525,11 +525,11 @@ static int   _daemonize ()
     close( STDOUT_FILENO );
     close( STDERR_FILENO );
     if ( dup2( logfile_fd, STDOUT_FILENO ) < 0 ) {
-        _error( "dup2: %s\n", strerror(errno) );
+        _error( "dup2: errno:%i\n", errno );
         return -1;
     }
     if ( dup2( logfile_fd, STDERR_FILENO ) < 0 ) {
-        _error( "dup2: %s\n", strerror(errno) );
+        _error( "dup2: errno:%i\n", errno );
         return -1;
     }
 
@@ -628,7 +628,7 @@ static void  _print_pkt ( struct nfq_data *nfq_data )
     char intf_name[IF_NAMESIZE];
     
     if ( pthread_mutex_lock( &print_mutex ) < 0 ) {
-        _error( "pthread_mutex_lock: %s\n", strerror(errno) );
+        _error( "pthread_mutex_lock: errno:%i\n", errno );
     }
 
     if ( 1 ) {
@@ -637,7 +637,7 @@ static void  _print_pkt ( struct nfq_data *nfq_data )
             
         gettimeofday(&tv,NULL);
         if (!localtime_r(&tv.tv_sec,&tm))
-            _error( "gmtime_r: %s\n", strerror(errno) );
+            _error( "gmtime_r: errno:%i\n", errno );
             
         printf( "%02i-%02i %02i:%02i:%02i.%06li| ", tm.tm_mon+1,tm.tm_mday,tm.tm_hour,tm.tm_min,tm.tm_sec, (long)tv.tv_usec );
     }
@@ -645,20 +645,19 @@ static void  _print_pkt ( struct nfq_data *nfq_data )
     ph = nfq_get_msg_packet_hdr(nfq_data);
     if (ph){
         int id = ntohl(ph->packet_id);
-        printf("pkt[%i]: ", id);
-        printf("hw_protocol=0x%04x hook=%u id=%u ",
-               ntohs(ph->hw_protocol), ph->hook, id);
+        printf( "pkt[%i]: ", id);
+        printf( "hw_protocol=0x%04x hook=%u id=%u ", ntohs(ph->hw_protocol), ph->hook, id );
     }
 
     mark = nfq_get_nfmark(nfq_data);
     if (mark)
-        printf("mark=0x%08x ", mark);
+        printf( "mark=0x%08x ", mark );
 
 #if 1
     ifindex = nfq_get_indev(nfq_data);
     if (ifindex) {
         if ( if_indextoname(ifindex, intf_name) == NULL) {
-            _error( "print_pkt: in_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
+            _error( "print_pkt: in_dev: if_indextoname(%i): errno:%i\n", ifindex, errno );
         } else {
             printf("indev=(%i,%s) ", ifindex, intf_name);
         }
@@ -667,7 +666,7 @@ static void  _print_pkt ( struct nfq_data *nfq_data )
     ifindex = nfq_get_physindev(nfq_data);
     if (ifindex) {
         if ( if_indextoname(ifindex, intf_name) == NULL) {
-            _error( "print_pkt: physin_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
+            _error( "print_pkt: physin_dev: if_indextoname(%i): errno:%i\n", ifindex, errno );
         } else {
             printf( "physindev=(%i,%s) ", ifindex, intf_name);
         }
@@ -676,7 +675,7 @@ static void  _print_pkt ( struct nfq_data *nfq_data )
     ifindex = nfq_get_outdev(nfq_data);
     if (ifindex) {
         if ( if_indextoname(ifindex, intf_name) == NULL) {
-            _error( "print_pkt: out_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
+            _error( "print_pkt: out_dev: if_indextoname(%i): errno:%i\n", ifindex, errno );
         } else {
             printf( "outdev=(%i,%s) ", ifindex, intf_name);
         }
@@ -685,7 +684,7 @@ static void  _print_pkt ( struct nfq_data *nfq_data )
     ifindex = nfq_get_physoutdev(nfq_data);
     if (ifindex) {
         if ( if_indextoname(ifindex, intf_name) == NULL) {
-            _error( "print_pkt: out_dev: if_indextoname(%i): %s\n", ifindex, strerror(errno) );
+            _error( "print_pkt: out_dev: if_indextoname(%i): errno:%i\n", ifindex, errno );
         } else {
             printf( "physoutdev=(%i,%s) ", ifindex, intf_name);
         }
@@ -714,7 +713,7 @@ static void  _print_pkt ( struct nfq_data *nfq_data )
     }
 
     if ( pthread_mutex_unlock( &print_mutex ) < 0 ) {
-        _error( "pthread_mutex_unlock: %s\n", strerror(errno) );
+        _error( "pthread_mutex_unlock: errno:%i\n", errno );
     }
 
     return;
@@ -739,11 +738,11 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
      */
     int ifindex = nfq_get_outdev( nfq_data );
     if (ifindex <= 0) {
-        _error( "pkt[%i] ERROR: Unable to locate ifindex: %s\n", packet_id, strerror(errno) );
+        _error( "pkt[%i] ERROR: Unable to locate ifindex: errno:%i\n", packet_id, errno );
         return -1;
     }
     if ( if_indextoname( ifindex, intf_name ) == NULL) {
-        _error( "pkt[%i] ERROR: if_indextoname: %s\n", packet_id, strerror(errno) );
+        _error( "pkt[%i] ERROR: if_indextoname: errno:%i\n", packet_id, errno );
         return -1;
     }
     
@@ -782,7 +781,7 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
      * Lookup the MAC address for next hop
      */
     if (( ret = _arp_address( &next_hop, &mac_address, intf_name )) < 0 ) {
-        _error( "pkt[%i] ERROR: arp_address: %s\n", packet_id, strerror(errno) );
+        _error( "pkt[%i] ERROR: arp_address: errno:%i\n", packet_id, errno );
         return -1;
     }
     if ( ret == 0 ) {
@@ -798,12 +797,12 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
      */
     int out_port_ifindex = _find_bridge_port( &mac_address, intf_name );
     if ( out_port_ifindex < 0 ) {
-        _error( "pkt[%i] ERROR: _find_bridge_port: %s\n", packet_id, strerror(errno) );
+        _error( "pkt[%i] ERROR: _find_bridge_port: errno:%i\n", packet_id, errno );
         return -1;
     }
     char bridge_port_intf_name[IF_NAMESIZE];
     if ( if_indextoname( out_port_ifindex, bridge_port_intf_name ) == NULL) {
-        _error( "pkt[%i] ERROR: if_indextoname: %s\n", packet_id, strerror(errno) );
+        _error( "pkt[%i] ERROR: if_indextoname: errno:%i\n", packet_id, errno );
         return -1;
     }
 
@@ -848,7 +847,7 @@ static int   _find_bridge_port ( struct ether_addr* mac_address, char* bridge_na
             _error( "pkt[%i] ARP: Invalid argument, MAC Address is found in ARP Cache but not in bridge MAC table.\n", packet_id );
             return -1;
         } else {
-            _error( "pkt[%i] ERROR: ioctl: %s\n", packet_id, strerror(errno) );
+            _error( "pkt[%i] ERROR: ioctl: errno:%i\n", packet_id, errno );
             return -1;
         }
     }
@@ -878,7 +877,7 @@ static int   _arp_address ( struct in_addr* dst_ip, struct ether_addr* mac, char
         /* Check the cache before issuing the request */
         ret = _arp_lookup_cache_entry( dst_ip, intf_name, mac );
         if ( ret < 0 ) {
-            _error( "pkt[%i] ERROR: _arp_lookup_cache_entry: %s\n", packet_id, strerror(errno) );
+            _error( "pkt[%i] ERROR: _arp_lookup_cache_entry: errno:%i\n", packet_id, errno );
             return -1;
         } else if (ret == 1 ) {
             return 1;
@@ -888,13 +887,13 @@ static int   _arp_address ( struct in_addr* dst_ip, struct ether_addr* mac, char
 
         /* Connect and close so the kernel grabs the source address */
         if (( c == 0 ) && ( _arp_determine_source_addr( &src_ip, dst_ip, intf_name ) < 0 )) {
-            _error( "pkt[%i] ERROR: Failed to determine address for %s: %s\n", packet_id, intf_name, strerror(errno) );
+            _error( "pkt[%i] ERROR: Failed to determine address for %s: errno:%i\n", packet_id, intf_name, errno );
             return -1;
         }
 
         /* Issue the arp request */
         if ( _arp_issue_request( &src_ip, dst_ip, intf_name ) < 0 ) {
-            _error( "pkt[%i] ERROR: _arp_issue_request: %s\n", packet_id, strerror(errno) );
+            _error( "pkt[%i] ERROR: _arp_issue_request: errno:%i\n", packet_id, errno );
             return -1;
         }
 
@@ -945,7 +944,7 @@ static int   _arp_lookup_cache_entry ( struct in_addr* ip, char* intf_name, stru
             return 0;
         }
 
-        _error( "ioctl: %s\n", strerror(errno));
+        _error( "ioctl: errno:%i\n", errno );
         return -1;
     }
 
@@ -981,7 +980,7 @@ static int   _arp_determine_source_addr ( struct in_addr* src_ip, struct in_addr
     strncpy(ifr.ifr_name, intf_name, IFNAMSIZ-1);
 
     if ( ioctl( arp_socket, SIOCGIFADDR, &ifr) < 0 ) {
-        _error( "pkt[%i] ERROR: ioctl: %s\n", packet_id, intf_name, strerror(errno) );
+        _error( "pkt[%i] ERROR: ioctl( SIOCGIFADDR, %s): errno:%i\n", packet_id, intf_name, errno );
         return -1;
     }
 
@@ -1017,14 +1016,14 @@ static int   _arp_issue_request ( struct in_addr* src_ip, struct in_addr* dst_ip
     }
     
     if ( _arp_build_packet( &pkt, src_ip, dst_ip, intf_name ) < 0 ) {
-        _error( "pkt[%i] ERROR: arp_build_packet: %s\n", packet_id, strerror(errno));
+        _error( "pkt[%i] ERROR: arp_build_packet: errno:%i\n", packet_id, errno );
         return -1;
     }
     
     size = sendto( pkt_socket, &pkt, sizeof( pkt ), 0, (struct sockaddr*)&broadcast, sizeof( broadcast ));
 
     if ( size < 0 ) {
-        _error( "pkt[%i] ERROR: sendto: %s\n", packet_id, strerror(errno) );
+        _error( "pkt[%i] ERROR: sendto: errno:%i\n", packet_id, errno );
         return -1;
     }
     
@@ -1055,7 +1054,7 @@ static int   _arp_build_packet ( struct ether_arp* pkt, struct in_addr* src_ip, 
     strncpy( ifr.ifr_name, intf_name, IFNAMSIZ );
 
     if ( ioctl( arp_socket, SIOCGIFHWADDR, &ifr ) < 0 ) {
-        _error( "pkt[%i] ERROR: ioctl: %s\n", packet_id, strerror( errno ));
+        _error( "pkt[%i] ERROR: ioctl: errno:%i\n", packet_id, errno );
         return -1;
     }
 
@@ -1148,7 +1147,7 @@ static int   _init_routes()
      */
     FILE* file = fopen("/proc/net/route", "r"); 
     if ( file == NULL ) {
-        _error("ERROR: Failed to open file: %s\n",strerror(errno));
+        _error("ERROR: Failed to open file: errno:%i\n", errno );
         return -1;
     }
 
@@ -1194,7 +1193,7 @@ static int   _init_routes()
             
             fp = popen(cmd, "r");
             if (fp == NULL) {
-                _error("popen: %s\n" , strerror(errno));
+                _error( "popen: errno:%i\n" , errno );
                 return -1;
             }
 
@@ -1252,7 +1251,7 @@ static int   _debug ( int level, char *lpszFmt, ... )
         va_start(argptr, lpszFmt);
 
         if ( pthread_mutex_lock( &print_mutex ) < 0 ) {
-            _error( "pthread_mutex_lock: %s\n", strerror(errno) );
+            _error( "pthread_mutex_lock: errno:%i\n", errno );
         }
         
         if ( 1 ) {
@@ -1261,7 +1260,7 @@ static int   _debug ( int level, char *lpszFmt, ... )
             
             gettimeofday(&tv,NULL);
             if (!localtime_r(&tv.tv_sec,&tm))
-                fprintf( stderr, "gmtime_r: %s\n", strerror(errno) );
+                fprintf( stderr, "gmtime_r: errno:%i\n", errno );
             
             fprintf( stdout, "%02i-%02i %02i:%02i:%02i.%06li| ", tm.tm_mon+1,tm.tm_mday,tm.tm_hour,tm.tm_min,tm.tm_sec, (long)tv.tv_usec );
         }
@@ -1273,7 +1272,7 @@ static int   _debug ( int level, char *lpszFmt, ... )
         fflush( stdout );
 
         if ( pthread_mutex_unlock( &print_mutex ) < 0 ) {
-            fprintf( stderr, "pthread_mutex_unlock: %s\n", strerror(errno) );
+            fprintf( stderr, "pthread_mutex_unlock: errno:%i\n", errno );
         }
         
     }
@@ -1288,7 +1287,7 @@ static int   _error ( char *lpszFmt, ... )
     va_start(argptr, lpszFmt);
 
     if ( pthread_mutex_lock( &print_mutex ) < 0 ) {
-        fprintf( stderr, "pthread_mutex_lock: %s\n", strerror(errno) );
+        fprintf( stderr, "pthread_mutex_lock: errno:%i\n", errno );
     }
         
     if ( 1 ) {
@@ -1297,7 +1296,7 @@ static int   _error ( char *lpszFmt, ... )
             
         gettimeofday(&tv,NULL);
         if (!localtime_r(&tv.tv_sec,&tm))
-            fprintf( stderr, "gmtime_r: %s\n", strerror(errno) );
+            fprintf( stderr, "gmtime_r: errno:%i\n", errno );
             
         fprintf( stderr, "%02i-%02i %02i:%02i:%02i.%06li| ", tm.tm_mon+1,tm.tm_mday,tm.tm_hour,tm.tm_min,tm.tm_sec, (long)tv.tv_usec );
     }
@@ -1309,7 +1308,7 @@ static int   _error ( char *lpszFmt, ... )
     fflush( stderr );
 
     if ( pthread_mutex_unlock( &print_mutex ) < 0 ) {
-        fprintf( stderr, "pthread_mutex_unlock: %s\n", strerror(errno) );
+        fprintf( stderr, "pthread_mutex_unlock: errno:%i\n", errno );
     }
 
     return 0;
