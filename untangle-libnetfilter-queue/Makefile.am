@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = foreign dist-bzip2 1.6
 
 EXTRA_DIST = $(man_MANS) 
 
-SUBDIRS = include src utils
+SUBDIRS = include src
 
 man_MANS = #nfnetlink_queue.3 nfnetlink_queue.7
 
