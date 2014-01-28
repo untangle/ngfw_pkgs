@@ -7,8 +7,7 @@
  */
 #base {
     margin: 0 auto;
-    width: 960px;
-}
+
 /* for printing */
 .full-height{
     height: auto !important;
