@@ -491,9 +491,9 @@ div.icon-config-directory {
     width:34px;
     height:34px;
 }
-/* Config System Info item icon */
+/* Config About item icon */
 div.icon-config-support {
-    background: transparent url(../images/admin/config/icon_config_systeminfo.png) no-repeat !important; 
+    background: transparent url(../images/admin/config/icon_config_about.png) no-repeat !important; 
     margin-top:4px;
     width:34px;
     height:34px;
