@@ -1,9 +1,10 @@
 #! /bin/bash
 
-# Force English US locale for GTK bug
-LANG="en_US"
-
-Xdialog --default-no --wrap --title "Recovery" --yesno "Are you sure want to run Recovery? It will stop network services." 15 60
+/usr/bin/zenity \
+    --question \
+    --timeout=30 \
+    --title "Recovery" \
+    --text "Are you sure want to run Recovery? It will stop network services." 
 
 if [ $? -eq 0 ]; then
     urxvt -T "Recovery" -e sudo /usr/share/untangle/bin/ut-restore-tool

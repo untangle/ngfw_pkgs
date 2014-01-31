@@ -1,9 +1,10 @@
 #! /bin/bash
 
-# Force English US locale for GTK bug
-LANG="en_US"
-
-Xdialog --default-no --wrap --title "Reboot" --yesno "Are you sure you want to reboot the Server?" 15 60
+/usr/bin/zenity \
+    --question \
+    --timeout=30 \
+    --title "Reboot" \
+    --text "Are you sure you want to reboot the Server?"
 
 if [ $? -eq 0 ]; then
         sudo /sbin/reboot

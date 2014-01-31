@@ -1,10 +1,8 @@
 #! /bin/bash
 
-#Force US English Locale due to Xdialog/GTK font bug.
-LANG="en_US"
 XTERM="urxvt"
-DIALOG="Xdialog"
-COMMON_OPTS="--left"
+DIALOG="/usr/bin/zenity"
+COMMON_OPTS="--timeout=30"
 OEM_NAME="Untangle"
 
 if [ -f /etc/untangle/oem/oem.sh ] ; then
@@ -12,66 +10,97 @@ if [ -f /etc/untangle/oem/oem.sh ] ; then
 fi
 
 if sudo grep -qE '^root:(\*|YKN4WuGxhHpIw|$1$3kRMklXp$W/hDwKvL8GFi5Vdo3jtKC\.|CHANGEME):' /etc/shadow ; then
-  tempfile=`tempfile 2>/dev/null` || tempfile=/tmp/test$$
-  trap "rm -f $tempfile" 0 1 2 5 15  
-  # set the password for the first time
-  $DIALOG $COMMON_OPTS --stdout --password --password --title "Set a password" --2inputsbox "This is the first time accessing the terminal on this system. A password
-needs to be set for the super-user (root) account.\n\n
-Enter the same password twice to set the new password.\n
-\n
-Please choose a password that is not easily guessed, especially if you\n
-plan on enabling ssh access to the system.\n" 0 0 "New Password" "" "Confirm Password" "" > $tempfile
-  case $? in
-    0)
-      #Ok pressed
-      password1=`cat $tempfile | cut -f1 -d/`
-      password2=`cat $tempfile | cut -f2 -d/`
-      if [ "$password1" == "" ] ; then
-        $DIALOG $COMMON_OPTS --title "No Password set" --msgbox "The password can not be blank." 0 0
+    tempfilePassword=`tempfile 2>/dev/null` || tempfile=/tmp/test$$
+    tempfileConfirmPassword=`tempfile 2>/dev/null` || tempfile=/tmp/test$$
+    trap "rm -f $tempfilePassword" 0 1 2 5 15  
+    trap "rm -f $tempfileConfirmPassword" 0 1 2 5 15  
+    
+    ##
+    ## Password
+    ##
+    $DIALOG \
+        $COMMMON_OPTS \
+        --entry \
+        --title "Set a password" \
+        --hide-text \
+        --text \
+"This is the first time accessing the terminal on this system.
+A password needs to be set for the super-user (root) account.
+
+Please choose a password that is not easily guessed,
+especially if you plan on enabling ssh access to the system.
+
+After you click Ok, you'll be asked to confirm the password you've typed here.
+ 
+Password"  \
+        --entry "Password" \
+        > $tempfilePassword
+
+    if [ $? -ne 0 ] ; then
+        # Cancel Pressed
+        $DIALOG \
+            --info \
+            --title "Cancelled" \
+            --text "The setting of the password was cancelled." 
         exit
-      fi
-      if [ "$password1" != "$password2" ] ;  then
-        $DIALOG $COMMON_OPTS --title "Password set failed" --msgbox "You did not enter the same password twice." 0 0
+    fi
+        
+    ##
+    ## Confirm Password
+    ##
+    $DIALOG \
+        --entry \
+        --title "Confirm password" \
+        --hide-text \
+        --text \
+"Type the same password you previously specified to confirm it.
+ 
+Confirm Password"  \
+        --entry "Password" \
+        > $tempfileConfirmPassword
+        
+    if [ $? -ne 0 ] ; then
+        # Cancel Pressed
+        $DIALOG \
+            --info \
+            --title "Cancelled" \
+            --text "The setting of the password was cancelled." 
         exit
-      else
-        sudo usermod -p `echo $password1 | openssl passwd -crypt -stdin -salt '$1'` root
-      fi ;;
-    1)
-      #Cancel Pressed
-      $DIALOG $COMMON_OPTS --title "Cancelled" --msgbox "The setting of the password was cancelled." 0 0
-      exit ;;
-    255)
-      #ESC Pressed
-      $DIALOG $COMMON_OPTS --title "Cancelled" --msgbox "The setting of the password was cancelled." 0 0
-      exit ;;
-  esac
-  password1=`cat $tempfile | cut -f1 -d/`
-  password2=`cat $tempfile | cut -f2 -d/`
-  if [ "$password1" == "" ] ; then
-    $DIALOG $COMMON_OPTS --title "No Password set" --msgbox "The password can not be blank." 0 0
-    exit
-  fi
-  if [ "$password1" != "$password2" ] ;  then
-    # password change failed, output a message and exit
-    $DIALOG $COMMON_OPTS --title "Password set failed" --msgbox "You did not enter the same password twice." 0 0
-    exit
-  else
-    sudo usermod -p `echo $password1 | openssl passwd -1 -stdin` root
-  fi
+    fi
+      
+    password1=`cat $tempfilePassword | cut -f1 -d/`
+    password2=`cat $tempfileConfirmPassword | cut -f2 -d/`
+    if [ "$password1" == "" ] ; then
+        $DIALOG \
+            --info \
+            --title "Password was not set" \
+            --text "The password can not be blank." 
+      exit
+    fi
+    if [ "$password1" != "$password2" ] ;  then
+        $DIALOG \
+            --info \
+            --title "Password was not set" \
+            --text "You did not type the same password twice." 
+      exit
+    fi
+    sudo usermod -p `echo $password1 | openssl passwd -crypt -stdin -salt '$1'` root
 fi
-$DIALOG $COMMON_OPTS --title "Terminal Use Warning" --msgbox "You will be prompted to enter the super-user password to proceed.\n
-\n
-Note: this password is not the same as the web interface admin password.\n
-It is set the first time the Terminal is opened.\n
-\n
-\n
-WARNING:\n
-Changes made via the command line are NOT supported and can seriously\n
-interfere with the proper operation of $OEM_NAME.\n
-Changes made via the command line are NOT supported by $OEM_NAME and\n
-can severely limit your support options.\n
-It is recommended to disable upgrades if any changes are made.\n
-\n
-This feature is for advanced users only.\n" 0 0
+
+$DIALOG \
+    --info \
+    --title "Terminal Use Warning" \
+    --text \
+"You will be prompted to enter the super-user password to proceed.
+
+Note: this password is not the same as the web interface admin password.
+It is set the first time the Terminal is opened.
+
+WARNING:
+Changes made via the command line are NOT supported and can seriously interfere with the proper operation of $OEM_NAME.
+Changes made via the command line are NOT supported by $OEM_NAME and can severely limit your support options.
+It is recommended to disable upgrades if any changes are made.
+
+This feature is for advanced users only." 
 
 ${XTERM} -tn rxvt -T ${XTERM} -e su root &
