@@ -164,10 +164,16 @@ struct ether_addr broadcast_mac = { .ether_addr_octet = { 0xFF, 0xFF, 0xFF, 0xFF
 
 /**
  * stores a local network and netmask pair
+ *
+ * network stores the network of the route: 172.16.0.0
+ * netmask stores the netmask of the route: 255.255.0.0
+ * gateway stores the next_hop of the route: 192.168.1.1
+ * if gateway is 0 (0.0.0.0) then the next_hop is actually local on that interface
  */
 struct local_network {
     in_addr_t network;
     in_addr_t netmask;
+    in_addr_t gateway; 
 };
 
 /**
@@ -196,10 +202,10 @@ static void*  _read_pkt (void* data);
 static char*  _inet_ntoa ( in_addr_t addr );
 static void   _mac_to_string ( char *mac_string, int len, struct ether_addr* mac );
 static void   _print_pkt ( struct nfq_data *tb );
-static int       _is_local_addr ( struct in_addr* addr );
 static in_addr_t _get_gateway_for_interface ( char* intf_name );
 static int       _find_utindex( char* ifname );
 static long long _timeval_diff( struct timeval *end_time, struct timeval *start_time );
+static struct local_network* _is_local_addr ( struct in_addr* addr );
 
 static void*     _handle_packet ( struct nfq_data *nfq_data );
 static int       _nfqueue_callback ( struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfq_data, void *data );
@@ -765,8 +771,17 @@ static int   _find_outdev_index ( struct nfq_data* nfq_data )
      * If the address is local the "next hop" is the address itself.
      * Otherwise its the gateway of the exit interface.
      */
-    if ( _is_local_addr( &dst ) ) {
-        memcpy( &next_hop.s_addr, &dst.s_addr, sizeof(in_addr_t));
+    struct local_network* localnet = _is_local_addr( &dst );
+    if ( localnet != NULL ) {
+
+        /**
+         * If there is a local route with a gateway, the next hop is that gateway
+         * If there is a local route without a getway, the next hop is the address itself
+         */
+        if ( localnet->gateway != 0 )
+            memcpy( &next_hop.s_addr, &localnet->gateway, sizeof(in_addr_t));
+        else
+            memcpy( &next_hop.s_addr, &dst.s_addr, sizeof(in_addr_t));
     } else {
         in_addr_t gateway = _get_gateway_for_interface( intf_name );
         if ( gateway == 0 ) {
@@ -1093,13 +1108,13 @@ static int   _find_utindex( char* ifname )
     return -1;
 }
 
-static int    _is_local_addr ( struct in_addr* addr )
+static struct local_network* _is_local_addr ( struct in_addr* addr )
 {
     int i = 0;
 
     for ( i = 0 ; i < num_local_nets ; i++ ) {
         if ( ( addr->s_addr & local_nets[i].netmask ) == ( local_nets[i].network & local_nets[i].netmask ) ) {
-            return 1;
+            return &local_nets[i];
         }
     }
 
@@ -1158,6 +1173,7 @@ static int   _init_routes()
         int i = 0;
         in_addr_t network = 0;
         in_addr_t netmask = 0;
+        in_addr_t gateway = 0;
 
         linecount++;
         if ( linecount == 1 )
@@ -1166,14 +1182,20 @@ static int   _init_routes()
         for ( token = strtok(line, " \t") ; token != NULL ; token = strtok(NULL, " \t") ) {
             if ( i == 1 ) 
                 network = strtol( token, NULL, 16);
+            if ( i == 2 ) 
+                gateway = strtol( token, NULL, 16);
             if ( i == 7 ) 
                 netmask = strtol( token, NULL, 16);
             i++;
         }
 
-        _debug( 2, "Local Network: %s / %s\n", _inet_ntoa(network), _inet_ntoa(netmask) );
+        if ( gateway == 0 )
+            _debug( 2, "Local Network: %s / %s\n", _inet_ntoa(network), _inet_ntoa(netmask) );
+        else
+            _debug( 2, "Local Network: %s / %s Gateway: %s\n", _inet_ntoa(network), _inet_ntoa(netmask), _inet_ntoa(gateway) );
         local_nets[num_local_nets].network = network;
         local_nets[num_local_nets].netmask = netmask;
+        local_nets[num_local_nets].gateway = gateway;
         num_local_nets++;
     }
 
