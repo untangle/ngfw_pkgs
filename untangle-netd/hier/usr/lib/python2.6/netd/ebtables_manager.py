@@ -41,7 +41,7 @@ class EbtablesManager:
 
         # Bypass multicast
         self.file.write("## Don't BROUTE multicast" + "\n")
-        self.file.write("${EBTABLES} -t broute -I BROUTING -p ipv4 --ip-destination 239.0.0.0/24 -j ACCEPT" + "\n")
+        self.file.write("${EBTABLES} -t broute -I BROUTING -p ipv4 --ip-destination 239.0.0.0/8 -j ACCEPT" + "\n")
         self.file.write("\n");
         
         self.file.write("## Broute everything else" + "\n")
