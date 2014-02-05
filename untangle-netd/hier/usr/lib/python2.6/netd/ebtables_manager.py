@@ -33,15 +33,10 @@ class EbtablesManager:
         self.file.write("${EBTABLES} -t broute -I BROUTING -p ipv4 --ip-protocol vrrp -j ACCEPT" + "\n")
         self.file.write("\n");
 
-        # Bypass routing protocols
+        # Bypass multicast
         # http://www.iana.org/assignments/multicast-addresses/multicast-addresses.xhtml
         self.file.write("## Don't BROUTE RIP and other routing protocols" + "\n")
-        self.file.write("${EBTABLES} -t broute -I BROUTING -p ipv4 --ip-destination 224.0.0.0/24 -j ACCEPT" + "\n")
-        self.file.write("\n");
-
-        # Bypass multicast
-        self.file.write("## Don't BROUTE multicast" + "\n")
-        self.file.write("${EBTABLES} -t broute -I BROUTING -p ipv4 --ip-destination 239.0.0.0/8 -j ACCEPT" + "\n")
+        self.file.write("${EBTABLES} -t broute -I BROUTING -p ipv4 --ip-destination 224.0.0.0/4 -j ACCEPT" + "\n")
         self.file.write("\n");
         
         self.file.write("## Broute everything else" + "\n")
