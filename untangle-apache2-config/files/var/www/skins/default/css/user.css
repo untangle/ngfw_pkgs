@@ -11,7 +11,7 @@ body.quarantine {
   padding: 17px 12px 12px 12px;
 }
 /* blockpage body*/
-body.blockpage, body.captive-portal
+body.blockpage
 { 
   text-align: center;
   background-color: #C0C0C0;
@@ -24,7 +24,6 @@ body.quarantine #content
   border:1px solid #CCC;
   margin:0 auto;
   margin-top:50px;
-
 }
 .service-error-height{
     height:400px;
@@ -41,29 +40,14 @@ body.blockpage #content
   border : 1px solid #888888;
   margin-top: 30px;
   margin-bottom: 30px;
-  background: #505050; 
+  background: #505050;
   -webkit-border-radius: 15px;
   -moz-border-radius: 15px;
   border-radius: 15px;
 }
 
-body.captive-portal #content
-{
-  width : 650px;
-  height: 605px;
-  position: relative;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: left;
-  border : 1px solid #FFFFFF;
-  margin-top: 30px;
-  margin-bottom: 30px;
-  background: transparent url(../images/user/background_content.png) repeat-x !important;
-  }
-
 /* blockpage body*/
-body.blockpage,
-body.captive-portal
+body.blockpage
 { 
   font-family: arial, tahoma, helvetica, sans-serif;
   font-size: 10pt;
@@ -75,7 +59,6 @@ body.blockpage .description
   margin-bottom: 30px;
   color:#FFFFFF;
 }
-
 
 /* blockpage contact text*/
 body.blockpage p.contact
@@ -119,12 +102,6 @@ body.quarantine #header .title
     background:transparent url(../images/user/icon_block.png) no-repeat center center;
     height: 130px;
 }
-/* blocked page icon*/
-.icon-captive-portal {
-    background:transparent url(../images/user/icon_captive_portal.png) no-repeat center center;
-    height: 130px;
-}
-
 /* quarantined messages toolbar message*/
 .message, .message-2 {
     padding: 5px 5px 5px 28px;
@@ -193,17 +170,7 @@ body.blockpage #main
   z-index: 100;
 }
 
-body.captive-portal #main
-{
-
-  left: 15px;
-  top: 130px;
-  height: 500px;
-  /* This is to place this above the border */
-  z-index: 100;
-}
-
-body.blockpage #extra-div-1, 
+body.blockpage #extra-div-1
 { 
   position : absolute;
   left: 15px;
@@ -212,12 +179,7 @@ body.blockpage #extra-div-1,
   height: 380px;
   background: transparent ;
 }
-body.captive-portal #extra-div-1{
-    display:none;
-}
-
-body.blockpage #extra-div-2,
-body.captive-portal #extra-div-2
+body.blockpage #extra-div-2
 { 
   position : absolute;
   left: 15px;
@@ -227,14 +189,12 @@ body.captive-portal #extra-div-2
   background: transparent ;
 }
 
-
 #header
 { 
   position : relative;
 }
 /* block page title */
-body.blockpage #header .title,
-body.captive-portal #header .title
+body.blockpage #header .title
 { 
   position : absolute;
   left : 180px;
@@ -254,18 +214,12 @@ body.captive-portal #header .title
   background-color: #505050;
   color:white;
 }
-.info-list-captive-portal{
-    margin:10px 0px 20px 0px;
-    background-color:#FFF;
-    position: relative;
-}
 /* block page information list element */
 .info-list div{
-    padding:5px 5px 5px 5px;
+  padding:5px 5px 5px 5px;
 }
 /* block page footer */
-body.blockpage #footer,
-body.captive-portal #footer
+body.blockpage #footer
 {
   font-size: small;
   text-align: right;
@@ -277,7 +231,7 @@ body.captive-portal #footer
 
 .action-messages
 { 
-  width : 300px;
+  width: 300px;
   position:absolute;
   top:93px;
   left:40%;
@@ -316,20 +270,20 @@ body.captive-portal #footer
 }
 /* block page */
 .u-form-item{
-    margin:5px auto 0px;
+    margin:5px 0px 0px 170px;
     text-align:left;
     width:340px;
 }
 .u-form-item-label{
-    margin-right:5px;
+    margin-right: 5px;
     float:left;
     font-weight:bold;
     text-align:left;
+    color: white;
 }
 #unblockNowButton{
     margin-left:0px;
     font-size:11px;
-
     font-family:Tahoma,Helvetica,Arial,sans-serif;
 }
 #unblockGlobalButton{
@@ -340,124 +294,3 @@ body.captive-portal #footer
 #invalid-password{
     color:#FF0000;
 }
-/* Captive portal */
-body.captive-portal .description
-{ 
-  margin-bottom: 10px;
-}
-
-.info-list-captive-portal .u-form-item{
-    margin:5px 0px 2px 10px;    
-}
-.info-list-captive-portal .u-form-item .u-form-item-label
-{
-    font-size:16px;
-    color:#333;
-    line-height:26px;
-    display:block;
-    margin-bottom:5px;
-    margin-right:0px;
-    float:none;
-    
-}
-.info-list-captive-portal  .message-text{
-    border-left:1px solid #CCCCCC;
-    color:#333333;
-    font-size:12px;
-    height:90%;
-    margin:10px 10px 10px 345px;
-    overflow:auto;
-    padding-left:10px;
-    padding-right:10px;
-    position:absolute;
-    top:0;
-    width:268px;
-    
-}
-.info-list-captive-portal .text-field{
-    margin-left:5px;
-}
-.info-list-captive-portal .u-form-item  .u-form-text {
-    padding:2px 0px;
-    margin-right:5px;
-    display:block;
-}
-.info-list-captive-portal .u-form-item a.img-background{    
-    background-image:url(../images/user/green-button-background-3.gif);
-    background-position:center center;
-    background-repeat:repeat-x;
-    color:#FFF;
-    font-family:tahoma,arial,helvetica,sans-serif;
-    font-size:20px;
-    line-height:35px;
-    border:1px #5b9400 solid;
-    padding:0px 10px;
-    text-decoration:none;
-    display:inline-block;
-    margin:10px 0px;    
-}
-.info-list-captive-portal .u-form-item a.img-background:hover{
-    background-image:url(../images/user/green-button-background-3_f2.gif);
-    
-}
-
-body.captive-portal #basic-message-text
-{ 
-    background-color:#FFFFFF;
-    border:1px solid #666666;
-    height:170px;
-    margin:5px;
-    overflow:auto;
-    padding:10px;
-    position:relative;
-    text-align:left;
-    top:5px;
-    width:auto;
- }
-body.captive-portal .agree-checkbox{
-    margin-left:5px;
-    margin-top:15px;
-}
-body.captive-portal .continue-message{
-    margin-left:5px;
-}
-p.error{
-    background:#FFE3DF url(../images/user/message_error.png) no-repeat scroll 4px center;
-    border:1px solid #F08A73;
-    color:#525252;
-    display:none;
-    line-height:40px;
-    padding-left:40px;
-    font-weight:bold;
-        
-}
-p.success{
-    background:#E9FAD0 url(../images/user/message_success.png) no-repeat scroll 4px center;
-    border:1px solid #AEE756;
-    color:#525252;
-    line-height:40px;
-    padding-left:40px;
-    font-weight:bold; 
-    margin-bottom:10px;
-    display:none;   
-}
-#please-wait{
-    background-image:url(../images/user/please-wait.gif);
-    background-position:left  center;
-    background-repeat:no-repeat;
-    font-family:tahoma,arial,helvetica,sans-serif;
-    font-size:20px;
-    line-height:35px;
-    padding:0px 10px 0px 20px;
-    text-decoration:none;
-    display:inline-block;
-    margin:10px 0px;
-
-}
-body.captive-portal p.contact
-{ 
-  position: absolute;
-  bottom: 0px;
-  left: 20px;
-  font-size: 8pt;
-} 

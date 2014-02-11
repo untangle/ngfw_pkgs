@@ -17,19 +17,19 @@ body.blockpage
   background-color: #808080;
 }
 /* quarantine content */
-body.quarantine #content {
-    width:75%;
-    background: transparent url(../images/user/background_content.png) repeat-x !important;
-    border:1px solid #CCC;
-    margin:0 auto;
-    margin-top:50px;
-    
+body.quarantine #content
+{
+  width:75%;
+  background: transparent url(../images/user/background_content.png) repeat-x !important;
+  border:1px solid #CCC;
+  margin:0 auto;
+  margin-top:50px;
 }
 .service-error-height{
     height:400px;
 }
 /* blockpage content */
-body.blockpage #content
+body.blockpage #content 
 {
   width : 627px;
   height: 505px;
@@ -42,6 +42,7 @@ body.blockpage #content
   margin-bottom: 30px;
   background: transparent url(../images/user/background_content.png) repeat-x !important;
 }
+
 /* blockpage body*/
 body.blockpage
 { 
@@ -98,7 +99,7 @@ body.quarantine #header .title
     height: 130px;
 }
 /* quarantined messages toolbar message*/
-.message,.message-2 {
+.message, .message-2 {
     padding: 5px 5px 5px 28px;
     border: 1px solid #60BB3F;
     font-size: 8pt;
@@ -153,7 +154,7 @@ body.quarantine #header .title
     font-size: larger;
 }
 /* block page main container */
-body.blockpage #main
+body.blockpage #main 
 {
   position : absolute;
   left: 15px;
@@ -172,9 +173,8 @@ body.blockpage #extra-div-1
   top: 130px;
   width: 620px;
   height: 380px;
-  background: transparent url(../images/user/blockpage_border.gif) no-repeat;
+  background: transparent ;
 }
-
 body.blockpage #extra-div-2
 { 
   position : absolute;
@@ -182,9 +182,8 @@ body.blockpage #extra-div-2
   bottom: 20px;
   width: 620px;
   height: 12px;
-  background: transparent url(../images/user/blockpage_border_bottom.gif) no-repeat;
+  background: transparent ;
 }
-
 
 #header
 { 
@@ -201,17 +200,17 @@ body.blockpage #header .title
 }
 /* block page information list container*/
 .info-list {
-    margin-top: 10px;
-    margin-bottom: 20px;
-    width:340px;
-    margin-left:auto;
-    margin-right:auto;
-    text-align: left;
-    background-color: #FFFFFF;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  width:340px;
+  margin-left:auto;
+  margin-right:auto;
+  text-align: left;
+  background-color: #FFFFFF;
 }
 /* block page information list element */
 .info-list div{
-    padding:5px 5px 5px 5px;
+  padding:5px 5px 5px 5px;
 }
 /* block page footer */
 body.blockpage #footer
@@ -226,7 +225,7 @@ body.blockpage #footer
 
 .action-messages
 { 
-  width : 300px;
+  width: 300px;
   position:absolute;
   top:93px;
   left:40%;
@@ -262,4 +261,29 @@ body.blockpage #footer
     margin-left:-15px;
     color:#111;
     font-size:12px;
+}
+/* block page */
+.u-form-item{
+    margin:5px 0px 0px 170px;
+    text-align:left;
+    width:340px;
+}
+.u-form-item-label{
+    margin-right: 5px;
+    float:left;
+    font-weight:bold;
+    text-align:left;
+}
+#unblockNowButton{
+    margin-left:0px;
+    font-size:11px;
+    font-family:Tahoma,Helvetica,Arial,sans-serif;
+}
+#unblockGlobalButton{
+    margin-left:5px;
+    font-size:11px;
+    font-family:Tahoma,Helvetica,Arial,sans-serif;
+}
+#invalid-password{
+    color:#FF0000;
 }
