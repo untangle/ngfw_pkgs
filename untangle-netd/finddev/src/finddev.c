@@ -1181,18 +1181,24 @@ static int   _init_routes()
         
         for ( token = strtok(line, " \t") ; token != NULL ; token = strtok(NULL, " \t") ) {
             if ( i == 1 ) 
-                network = strtol( token, NULL, 16);
+                network = strtoll( token, NULL, 16);
             if ( i == 2 ) 
-                gateway = strtol( token, NULL, 16);
-            if ( i == 7 ) 
-                netmask = strtol( token, NULL, 16);
+                gateway = strtoll( token, NULL, 16);
+            if ( i == 7 )
+                netmask = strtoll( token, NULL, 16);
             i++;
         }
 
-        if ( gateway == 0 )
-            _debug( 2, "Local Network: %s / %s\n", _inet_ntoa(network), _inet_ntoa(netmask) );
-        else
-            _debug( 2, "Local Network: %s / %s Gateway: %s\n", _inet_ntoa(network), _inet_ntoa(netmask), _inet_ntoa(gateway) );
+        if ( gateway == 0 ) {
+            _debug( 2, "Local Network: %s\n", _inet_ntoa(network));
+            _debug( 2, "Local Netmask: %s\n", _inet_ntoa(netmask));
+            _debug( 2, "Local Gateway: none\n");
+        }
+        else {
+            _debug( 2, "Local Network: %s\n", _inet_ntoa(network));
+            _debug( 2, "Local Netmask: %s\n", _inet_ntoa(netmask));
+            _debug( 2, "Local Gateway: %s\n", _inet_ntoa(gateway));
+        }
         local_nets[num_local_nets].network = network;
         local_nets[num_local_nets].netmask = netmask;
         local_nets[num_local_nets].gateway = gateway;
