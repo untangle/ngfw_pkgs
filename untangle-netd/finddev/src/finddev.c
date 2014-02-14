@@ -168,6 +168,7 @@ struct ether_addr broadcast_mac = { .ether_addr_octet = { 0xFF, 0xFF, 0xFF, 0xFF
  * network stores the network of the route: 172.16.0.0
  * netmask stores the netmask of the route: 255.255.0.0
  * gateway stores the next_hop of the route: 192.168.1.1
+ * gateway is either an IP or 0.
  * if gateway is 0 (0.0.0.0) then the next_hop is actually local on that interface
  */
 struct local_network {
