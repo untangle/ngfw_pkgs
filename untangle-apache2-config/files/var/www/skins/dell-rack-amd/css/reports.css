@@ -53,6 +53,10 @@
 .icon-export {
     background: transparent url(../images/admin/icon_export.gif) no-repeat center left !important;
 }
+/* clear filter button icon */
+.x-btn .icon-clear-filter {
+    background: transparent url(../images/admin/icon_clear_filter.png) no-repeat center left !important;
+}
 .untangle-node-spamassassin{
     background-image: url(../images/reports/nodes/spamblocker.png) !important;
 }
