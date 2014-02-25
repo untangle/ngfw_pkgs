@@ -144,6 +144,11 @@ tee < ${LOGFILE}.pipe $LOGFILE &
 exec >> ${LOGFILE}.pipe 2>&1
 rm ${LOGFILE}.pipe
 
+if [ "$PPP_IPPARAM" = "L2TP" ]; then
+    /bin/echo -e "[INFO: `date`] Ignoring ${PPP_IFACE} because it is an L2TP instance"
+    exit
+fi
+
 write_status_file()
 {
     local t_interface="$1"
