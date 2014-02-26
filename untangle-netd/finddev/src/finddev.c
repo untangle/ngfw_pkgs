@@ -1,5 +1,5 @@
 /**
- * $Id: outdev.c,v 1.00 2013/02/14 10:59:31 dmorris Exp $
+ * $Id$
  */
 #include <signal.h>
 #include <stdio.h>

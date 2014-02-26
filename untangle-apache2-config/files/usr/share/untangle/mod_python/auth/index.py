@@ -1,4 +1,4 @@
-# $Id: index.py,v 1.00 2012/09/17 20:35:31 dmorris Exp $
+# $Id$
 import md5
 import uvmlogin
 import cgi

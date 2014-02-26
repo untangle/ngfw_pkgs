@@ -1,4 +1,4 @@
-# $Id: errorindex.py,v 1.00 2012/09/12 11:27:06 dmorris Exp $
+# $Id$
 
 import gettext
 import uvmlogin

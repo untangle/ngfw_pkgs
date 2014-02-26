@@ -1,4 +1,4 @@
-# $Id: uvmlogin.py,v 1.00 2012/09/12 11:27:03 dmorris Exp $
+# $Id$
 
 import base64
 import cgi
