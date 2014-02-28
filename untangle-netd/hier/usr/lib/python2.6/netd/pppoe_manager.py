@@ -8,11 +8,11 @@ from netd.network_util import NetworkUtil
 
 # This class is responsible for writing PPPoE related conf files
 # based on the settings object passed from sync-settings.py
-# 
-# 
+#
+#
 class PPPoEManager:
     papSecretsFilename = "/etc/ppp/pap-secrets"
-    chapSecretsFilename = "/etc/ppp/chap-secrets"
+    chapSecretsFilename = "/tmp/chap-secrets.pppoe"
     peersDirectory = "/etc/ppp/peers/"
     connectionBaseName = "connection.intf"
     preNetworkHookFilename = "/etc/untangle-netd/pre-network-hook.d/040-pppoe"
@@ -75,14 +75,15 @@ maxfail 0
         papSecretsFile.close();
         if verbosity > 0:
             print "PPPoEManager: Wrote %s" % self.papSecretsFilename
-        
+
         chapSecretsFile = open( self.chapSecretsFilename, "w+" )
         chapSecretsFile.write(secrets)
         chapSecretsFile.flush();
         chapSecretsFile.close();
         if verbosity > 0:
             print "PPPoEManager: Wrote %s" % self.chapSecretsFilename
-        
+        os.system("/usr/share/untangle/bin/ut-chap-manager PPPOE %s" % self.chapSecretsFilename)
+
         return
 
     def write_pre_network_hook( self, settings, prefix="", verbosity=0 ):
@@ -104,7 +105,7 @@ maxfail 0
         file.write("poff -a >/dev/null 2>&1" + "\n")
         file.write("\n\n");
         file.write("true" + "\n")
-        
+
         file.flush()
         file.close()
         os.system("chmod a+x %s" % filename)
@@ -164,10 +165,10 @@ write_status_file()
     /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-netd/interface-${t_interface}-status.js
 }
 
-make_resolv_conf() { 
+make_resolv_conf() {
     ## This guarantees that ${t_new_domain_name_servers} will just be " "
     local t_new_domain_name_servers="`echo "${DNS1}\n${DNS2}" | sort | uniq`"
-    
+
     ## Check MS_DNSx if the DNS servers were not specified in DNS1 and DNS2
     test -z "${t_new_domain_name_servers}" && {
         t_new_domain_name_servers=`echo "${MS_DNS1}\n${MS_DNS2}" | sort | uniq`
@@ -176,17 +177,17 @@ make_resolv_conf() {
     ## only update the dns server when instructed to.
     if [ -n "${t_new_domain_name_servers}" ] && [ "${USEPEERDNS}x" = "1x" ]; then
         local t_hash="`md5sum /etc/dnsmasq.conf`"
-        
+
         if [ -n "$t_new_domain_name_servers" ]; then
             for nameserver in $t_new_domain_name_servers ; do
                 /bin/echo -e "#new_name_server=${nameserver} # uplink.${PPPOE_UPLINK_INDEX}" >> /etc/dnsmasq.conf
             done
-            
+
             sed -i -e "/^#*\s*server=.*uplink.${PPPOE_UPLINK_INDEX}/d" -e 's/^#new_name_server=/server=/' /etc/dnsmasq.conf
         fi
 
         local t_new_hash="`md5sum /etc/dnsmasq.conf`"
-                    
+
         ## Reststart dnsmasq if necessary
         if [ "${t_hash}x" != "${t_new_hash}x" ]; then
             /bin/echo -e "[DEBUG: `date`] Restarting dnsmasq..."
@@ -226,19 +227,19 @@ write_status_file ${PPP_IFACE} ${PPPOE_UPLINK_INDEX}
 
 true
 """)
-        
+
         file.flush()
         file.close()
         os.system("chmod a+x %s" % filename)
 
         if verbosity > 0: print "PPPoEManager: Wrote %s" % filename
 
-        
+
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
 
         if verbosity > 1: print "PPPoEManager: sync_settings()"
-        
+
         self.write_pppoe_connection_files( settings, prefix, verbosity )
         self.write_secret_files( settings, prefix, verbosity )
         self.write_pre_network_hook( settings, prefix, verbosity )
