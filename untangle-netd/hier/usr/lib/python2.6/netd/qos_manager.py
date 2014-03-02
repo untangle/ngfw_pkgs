@@ -10,6 +10,7 @@ from netd.iptables_util import IptablesUtil
 # This class is responsible for writing /etc/untangle-netd/iptables-rules.d/300-qos
 # and others based on the settings object passed from sync-settings.py
 class QosManager:
+    bypassMarkMask = 0x01000000
     qosFilename = "/etc/untangle-netd/iptables-rules.d/300-qos"
     srcInterfaceMarkMask = 0x00ff
     file = None
@@ -54,7 +55,7 @@ class QosManager:
         description = "QoS Custom Rule #%i" % int(qos_rule['ruleId'])
         iptables_conditions = IptablesUtil.conditions_to_iptables_string( qos_rule['matchers']['list'], description, verbosity );
 
-        iptables_commands = [ "${IPTABLES} -t mangle -A qos-rules " + ipt + target for ipt in iptables_conditions ]
+        iptables_commands = [ "${IPTABLES} -t mangle -A qos-rules -m mark --mark 0x%X/0x%X " % (self.bypassMarkMask,self.bypassMarkMask) + ipt + target for ipt in iptables_conditions ]
 
         self.file.write("# %s\n" % description);
         for cmd in iptables_commands:
