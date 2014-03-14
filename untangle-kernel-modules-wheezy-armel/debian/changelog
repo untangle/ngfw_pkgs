@@ -1,4 +1,4 @@
-untangle-kernel-modules-wheezy-i386 (0-0) stable; urgency=low
+untangle-kernel-modules-wheezy-armel (0-0) stable; urgency=low
 
   * auto build
 
