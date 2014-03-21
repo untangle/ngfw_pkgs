@@ -15,6 +15,23 @@ class VrrpManager:
     iptablesHookFilename = "/etc/untangle-netd/iptables-rules.d/241-vrrp-rules"
     vrrp_enabled = False
 
+    def get_vrrp_interfaces( self, settings ):
+        vrrp_interfaces = []
+        for interface_settings in settings['interfaces']['list']:
+            if interface_settings.get('vrrpEnabled'):
+                if not interface_settings.get('vrrpId') or not interface_settings.get('vrrpPriority'):
+                    print "Missing VRRP Config: %s, %s" % (interface_settings.get('vrrpId'), interface_settings.get('vrrpPriority'))
+                    continue
+                if not interface_settings.get('vrrpAliases') or not interface_settings.get('vrrpAliases').get('list'):
+                    print "Missing VRRP Aliases: %s" % (str(vrrpAliases))
+                    continue
+                if len( interface_settings.get('vrrpAliases').get('list') ) < 1:
+                    print "Missing VRRP Aliases (0 length): %i" % (len( interface_settings.get('vrrpAliases').get('list') ))
+                    continue
+                vrrp_interfaces.append( interface_settings )
+
+        return vrrp_interfaces
+
     def write_keepalivd_conf( self, settings, prefix="", verbosity=0 ):
         
         filename = prefix + self.keepalivedConfFilename
@@ -22,13 +39,7 @@ class VrrpManager:
         if not os.path.exists( fileDir ):
             os.makedirs( fileDir )
 
-        vrrp_interfaces = []
-        for interface_settings in settings['interfaces']['list']:
-            if interface_settings.get('vrrpEnabled'):
-                if not interface_settings.get('vrrpId') or not interface_settings.get('vrrpPriority') or not interface_settings.get('vrrpAddress'):
-                    print "Missing VRRP Config: %s, %s, %s" % (str(vrrpId), str(vrrpPriority), str(vrrpAddress))
-                    continue
-                vrrp_interfaces.append( interface_settings )
+        vrrp_interfaces = self.get_vrrp_interfaces( settings );
 
         file = open( filename, "w+" )
         file.write("! Auto Generated on %s\n" % datetime.datetime.now());
@@ -64,7 +75,8 @@ global_defs {
             file.write("\tpriority %s" % str(intf.get('vrrpPriority')) + "\n")
             file.write("\tadvert_int 1" + "\n")
             file.write("\tvirtual_ipaddress {" + "\n")
-            file.write("\t\t%s" % str(intf.get('vrrpAddress')) + "\n")
+            for alias in intf.get('vrrpAliases').get('list'):
+                file.write("\t\t%s/%s" % (str(alias.get('staticAddress')),str(alias.get('staticPrefix')))  + "\n")
             file.write("\t}" + "\n")
             file.write("}" + "\n")
             file.write("\n\n");
@@ -97,13 +109,11 @@ fi
 """)
         file.write("\n\n");
 
-        self.vrrp_enabled = False
-        for interface_settings in settings['interfaces']['list']:
-            if interface_settings.get('vrrpEnabled'):
-                if not interface_settings.get('vrrpId') or not interface_settings.get('vrrpPriority') or not interface_settings.get('vrrpAddress'):
-                    print "Missing VRRP Config: %s, %s, %s" % (str(vrrpId), str(vrrpPriority), str(vrrpAddress))
-                    continue
-                self.vrrp_enabled = True
+        vrrp_interfaces = self.get_vrrp_interfaces( settings );
+        if len(vrrp_interfaces) > 0:
+            self.vrrp_enabled = True
+        else:
+            self.vrrp_enabled = False
 
         if self.vrrp_enabled:
             file.write("if lsmod | grep -q ip_vs ; then" + "\n")
