@@ -41,6 +41,25 @@ class SysctlManager:
             file.write("done" + "\n");
             file.write("\n");
 
+        if settings.get('strictArpMode'):
+            file.write("# set strict ARP mode (no arp flux)" + "\n");
+            file.write("find /proc/sys/net/ipv4/conf -type f -name 'arp_ignore' | while read f ; do" + "\n");
+            file.write("  echo 1 > ${f}" + "\n");
+            file.write("done" + "\n");
+            file.write("find /proc/sys/net/ipv4/conf -type f -name 'arp_announce' | while read f ; do" + "\n");
+            file.write("  echo 2 > ${f}" + "\n");
+            file.write("done" + "\n");
+            file.write("\n");
+        else:
+            file.write("# set default ARP mode (arp flux)" + "\n");
+            file.write("find /proc/sys/net/ipv4/conf -type f -name 'arp_ignore' | while read f ; do" + "\n");
+            file.write("  echo 0 > ${f}" + "\n");
+            file.write("done" + "\n");
+            file.write("find /proc/sys/net/ipv4/conf -type f -name 'arp_announce' | while read f ; do" + "\n");
+            file.write("  echo 0 > ${f}" + "\n");
+            file.write("done" + "\n");
+            file.write("\n");
+
         file.flush()
         file.close()
 
