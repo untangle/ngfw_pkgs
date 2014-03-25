@@ -190,8 +190,10 @@ make_resolv_conf() {
 
         ## Reststart dnsmasq if necessary
         if [ "${t_hash}x" != "${t_new_hash}x" ]; then
-            /bin/echo -e "[DEBUG: `date`] Restarting dnsmasq..."
+            /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.conf changed. Restarting dnsmasq..."
             /etc/init.d/dnsmasq restart
+            /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.conf changed. Restarting dnsmasq...done"
+            /usr/share/untangle-netd/bin/update-dns-iptables-rules.sh
         else
             /bin/echo -e "[DEBUG: `date`] Skipping dnsmasq restart"
         fi

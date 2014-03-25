@@ -143,6 +143,7 @@ make_resolv_conf()
             /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.conf changed. Restarting dnsmasq..."
             /etc/init.d/dnsmasq restart
             /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.conf changed. Restarting dnsmasq...done"
+            /usr/share/untangle-netd/bin/update-dns-iptables-rules.sh
         fi
     fi
 
