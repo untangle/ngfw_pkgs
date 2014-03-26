@@ -58,6 +58,10 @@ maxfail 0
 
                 if verbosity > 0:
                     print "PPPoEManager: Wrote %s" % fileName
+            else:
+                # interface is not PPPoE, remove any existing peer file
+                fileName = self.peersDirectory + self.connectionBaseName + str(interface_settings.get('interfaceId'))
+                os.system("/bin/rm -f %s" % fileName)
 
         return
 
