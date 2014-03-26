@@ -39,6 +39,14 @@ maxfail 0
 """)
                 conffile.write("# PPPoE settings for %s." % interface_settings.get('systemDev') + "\n");
 
+                # Check for the parent device's MTU setting
+                # If it is set, set the ppp interface mtu to the same value
+                if settings.get('devices') != None and settings.get('devices').get('list') != None:
+                    for deviceSettings in settings.get('devices').get('list'):
+                        if interface_settings.get('physicalDev') == deviceSettings.get('deviceName'):
+                            if deviceSettings.get('mtu') != None:
+                                conffile.write("mtu %s" % (deviceSettings.get('mtu')) + "\n")
+
                 conffile.write("plugin rp-pppoe.so %s" % interface_settings.get('physicalDev') + "\n")
                 conffile.write("user \"%s\"" % interface_settings.get('v4PPPoEUsername') + "\n")
 
