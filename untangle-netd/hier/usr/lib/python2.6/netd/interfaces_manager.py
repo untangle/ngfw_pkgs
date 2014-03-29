@@ -343,8 +343,14 @@ class InterfacesManager:
             if symbolicDev.startswith("br.") or configType == 'BRIDGED':
                 # physdev-out doesn't work, instead queue to userspace daemon
                 # file.write("${IPTABLES} -t mangle -A mark-dst-intf -m physdev --physdev-out %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i using physdev\"" % (systemDev, id << 8, self.dstInterfaceMarkMask, id) + "\n");
+
                 # queue to userspace
-                file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -j NFQUEUE --queue-num 1979 -m comment --comment \"queue bridge packets to daemon to determine dst intf/port\"" % (symbolicDev) + "\n");
+                # file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -j NFQUEUE --queue-num 1979 -m comment --comment \"queue bridge packets to daemon to determine dst intf/port\"" % (symbolicDev) + "\n");
+
+                # queue to userspace (but only first packet of session)
+                # Sometimes if we miss the first packet of a session, it will queue all packets in the session and overwhelm finddev.
+                # It is better to leave those packets unmarked if they don't have a conntrack table than queue all of them to finddev.
+                file.write("${IPTABLES} -t mangle -A mark-dst-intf -m conntrack --ctstate NEW -o %s -j NFQUEUE --queue-num 1979 -m comment --comment \"queue bridge packets to daemon to determine dst intf/port\"" % (symbolicDev) + "\n");
 
         file.write("\n");
 
