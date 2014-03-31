@@ -32,7 +32,7 @@ add_rule()
     ${IPTABLES} -t mangle -I OUTPUT -j dns-rule-wan-${WAN_INDEX} 
 
     $DEBUG "Adding DNS rule for ${DNS_ADDR} to WAN ${WAN_INDEX}"
-    ${IPTABLES} -t mangle -A dns-rule-wan-${WAN_INDEX} -d ${DNS_ADDR} -m conntrack --ctstate NEW -j MARK --set-mark $((${WAN_INDEX}<<8))/0xff00 -m comment --comment "Vote for traffic to this DNS to go out WAN ${WAN_INDEX}."
+    ${IPTABLES} -t mangle -A dns-rule-wan-${WAN_INDEX} -d ${DNS_ADDR} -m mark --mark 0/0xff00 -m conntrack --ctstate NEW -j MARK --set-mark $((${WAN_INDEX}<<8))/0xff00 -m comment --comment "Vote for traffic to this DNS to go out WAN ${WAN_INDEX}."
 }
 
 awk -F"[ =]" '/server=/ {print sub(/uplink./,"",$4) " " $2}' /etc/dnsmasq.conf | while read line ; do
