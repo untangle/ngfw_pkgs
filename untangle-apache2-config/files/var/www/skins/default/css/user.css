@@ -251,6 +251,10 @@ body.blockpage #footer
 .x-btn .icon-delete-row{
     background:transparent url(../images/user/icon_remove.png) no-repeat center left !important;
 }
+/* clear filter button icon */
+.x-btn .icon-clear-filter {
+    background: transparent url(../images/admin/icon_clear_filter.png) no-repeat center left !important;
+}
  /* Ext Js Overrides - across the board */
 .x-grid3-hd-inner{
     text-transform:capitalize;
