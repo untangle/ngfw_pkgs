@@ -14,6 +14,7 @@ class DhcpManager:
     enterHookFilename = "/etc/dhcp/dhclient-enter-hooks.d/netd-dhclient-enter-hook"
     exitHookFilename = "/etc/dhcp/dhclient-exit-hooks.d/netd-dhclient-exit-hook"
     preNetworkHookFilename = "/etc/untangle-netd/pre-network-hook.d/035-dhcp"
+    dhcpConfFilename = "/etc/dhcp/dhclient.conf"
 
     def write_enter_hook( self, settings, prefix="", verbosity=0 ):
 
@@ -352,6 +353,30 @@ true
         file.flush()
         file.close()
         os.system("chmod a+x %s" % filename)
+
+        if verbosity > 0: print "DhcpManager: Wrote %s" % filename
+
+    def write_dhcp_conf_file( self, settings, prefix="", verbosity=0 ):
+
+        filename = prefix + self.dhcpConfFilename
+        fileDir = os.path.dirname( filename )
+        if not os.path.exists( fileDir ):
+            os.makedirs( fileDir )
+
+        file = open( filename, "w+" )
+        file.write("## Auto Generated on %s\n" % datetime.datetime.now());
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
+        file.write("\n\n");
+
+        file.write("timeout 40;" + "\n")
+        file.write("retry 15;" + "\n")
+        file.write("\n\n");
+        hostname = settings.get('hostName')
+        if hostname != None:
+            file.write("send host-name \"%s\";" % hostname + "\n")
+
+        file.flush()
+        file.close()
 
         if verbosity > 0: print "DhcpManager: Wrote %s" % filename
 

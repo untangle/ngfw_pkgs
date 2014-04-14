@@ -8,6 +8,6 @@ Standards-Version: 3.8.0
 
 Package: untangle-netd
 Architecture: any
-Depends: ${shlibs:Depends}, dash, bridge-utils, iptables, iputils-arping, untangle-libnetfilter-queue-dev, libnfnetlink-dev, radvd, ndisc6, vlan, keepalived, psmisc
+Depends: ${shlibs:Depends}, dash, bridge-utils, iptables, dhcp3-client, iputils-arping, untangle-libnetfilter-queue-dev, libnfnetlink-dev, radvd, ndisc6, vlan, keepalived, psmisc
 Description: The Untangle network daemon
  The Untangle network daemon for managing the network
