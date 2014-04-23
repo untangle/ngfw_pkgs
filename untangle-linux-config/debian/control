@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-linux-config
 Architecture: any
-Depends: linux-untangle | untangle-linux-image | linux-virtual-untangle, untangle-bootsplash [!armel], grub-legacy [!armel] | grub [!armel], initramfs-tools, udev, e2fsprogs (>= 1.37), bash (>= 3.1), uuid-runtime, untangle-keruntangle-kernel-modules-wheezy-i386 [i386] | untangle-kernel-modules-squeeze-i386 [i386], untangle-kernel-modules-wheezy-amd64 [amd64] | untangle-kernel-modules-squeeze-amd64 [amd64], untangle-kernel-modules-wheezy-armel [armel] | untangle-kernel-modules-squeeze-armel [armel]
+Depends: linux-untangle | untangle-linux-image | linux-virtual-untangle, untangle-bootsplash [!armel], grub-legacy [!armel] | grub [!armel], initramfs-tools, udev, e2fsprogs (>= 1.37), bash (>= 3.1), uuid-runtime, untangle-kernel-modules-wheezy-i386 [i386] | untangle-kernel-modules-squeeze-i386 [i386], untangle-kernel-modules-wheezy-amd64 [amd64] | untangle-kernel-modules-squeeze-amd64 [amd64], untangle-kernel-modules-wheezy-armel [armel] | untangle-kernel-modules-squeeze-armel [armel]
 Description: The Untangle kernel config
  The Untangle Linux kernel config package. Provides
  bootsplash support and grub auto-configuration.
