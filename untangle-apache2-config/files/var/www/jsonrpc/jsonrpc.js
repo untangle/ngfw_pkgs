@@ -394,7 +394,7 @@ function JSONRpcClient()
       var nonceReq = this._makeRequest("system.getNonce", []);
       jsonRpcNonce = this._sendRequest.call(this, nonceReq);
 
-      his._addMethods(["system.listMethods"],this.javaClass);
+      this._addMethods(["system.listMethods"],this.javaClass);
       req = this._makeRequest("system.listMethods", []);
     }
 
