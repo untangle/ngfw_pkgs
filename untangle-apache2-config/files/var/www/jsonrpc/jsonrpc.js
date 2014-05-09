@@ -24,6 +24,8 @@
  *
  */
 
+var jsonRpcNonce = "";
+
 /* escape a character */
 
 var escapeJSONChar=function ()
@@ -388,6 +390,10 @@ function JSONRpcClient()
     //If it is the bridge get the bridge's methods
     else
     {
+      //Initializing the bridge - get the nonce
+      var nonceReq = this._makeRequest("system.getNonce", []);
+      jsonRpcNonce = this._sendRequest.call(this, nonceReq);
+
       this._addMethods(["system.listMethods"],this.javaClass);
       req = this._makeRequest("system.listMethods", []);
     }
@@ -727,7 +733,7 @@ JSONRpcClient.prototype._makeRequest = function (methodName, args, cb)
   req.client = this;
   req.requestId = JSONRpcClient.requestId++;
 
-  var obj = "{\"id\":"+req.requestId+",\"method\":";
+  var obj = "{\"id\":"+req.requestId+",\"nonce\":\""+jsonRpcNonce+"\",\"method\":";
 
   if (this.objectID)
   {
