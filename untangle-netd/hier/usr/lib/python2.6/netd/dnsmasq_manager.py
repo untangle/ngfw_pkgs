@@ -218,9 +218,9 @@ DNSMASQ_PID="`pidof dnsmasq`"
 # Or if dnsmasq.conf or hosts.dnsmasq has been written since dnsmasq was started
 if [ -z "$DNSMASQ_PID" ] ; then
     /etc/init.d/dnsmasq restart
-elif [ /etc/dnsmasq.conf -nt /proc/$DNSMASQ_PID/cmdline ] ; then
+elif [ /etc/dnsmasq.conf -nt /proc/$DNSMASQ_PID ] ; then
     /etc/init.d/dnsmasq restart
-elif [ /etc/hosts.dnsmasq -nt /proc/$DNSMASQ_PID/cmdline ] ; then
+elif [ /etc/hosts.dnsmasq -nt /proc/$DNSMASQ_PID ] ; then
     /etc/init.d/dnsmasq restart
 fi
 """)

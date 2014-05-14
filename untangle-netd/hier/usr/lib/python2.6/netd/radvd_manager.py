@@ -73,7 +73,7 @@ RADVD_PID="`pidof radvd`"
 # The reason we don't just stop and then start if needed if to avoid doing anything if nothing is required.
 if [ -z "$RADVD_PID" ] && [ -s /etc/radvd.conf ] ; then
     /etc/init.d/radvd start
-elif [ /etc/radvd.conf -nt /proc/$RADVD_PID/cmdline ] && [ -s /etc/radvd.conf ] ; then
+elif [ /etc/radvd.conf -nt /proc/$RADVD_PID ] && [ -s /etc/radvd.conf ] ; then
     /etc/init.d/radvd restart
 elif [ ! -z "$RADVD_PID" ] && [ ! -s /etc/radvd.conf ] ; then
     /etc/init.d/radvd stop
