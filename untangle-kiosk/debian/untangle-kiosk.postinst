@@ -1,5 +1,17 @@
 #! /bin/bash
 
+# setting up the user account we use to run the daemons
+adduser --gecos "" --shell /bin/bash --firstuid 10000 --disabled-password kiosk 2>/dev/null
+chown -R kiosk:kiosk /home/kiosk 
+
+grep -q kiosk /etc/sudoers 2>/dev/null || echo "kiosk ALL=NOPASSWD: ALL" >> /etc/sudoers
+
+if grep -qE '^root' /etc/sudoers ; then
+  perl -i -pe 's/^root.+/root ALL=NOPASSWD: ALL/' /etc/sudoers
+else
+  echo "root ALL=NOPASSWD: ALL" >> /etc/sudoers
+fi
+
 #rm -fr /etc/xdg/xfce4
 
 KIOSK_HOME=/home/kiosk
