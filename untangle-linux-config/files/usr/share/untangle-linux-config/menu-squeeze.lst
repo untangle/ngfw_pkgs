@@ -54,8 +54,8 @@ background 67b03c
 ## e.g. kopt=root=/dev/hda1 ro
 ##      kopt_2_6_8=root=/dev/hdc1 ro
 ##      kopt_2_6_8_2_686=root=/dev/hdc2 ro
-# kopt=root=@ROOTDEV@ ro ramdisk_size=100000 lang=us apm=power-off screen=1024x768 nomce nodhcp nofstab panic=5
-# kopt_2_6_26=root=@ROOTDEV@ ro ramdisk_size=100000 panic=5 hpet=disable
+# kopt=root=@ROOTDEV@ ramdisk_size=100000 lang=us apm=power-off screen=1024x768 nomce nodhcp nofstab panic=5
+# kopt_2_6_26=root=@ROOTDEV@ ramdisk_size=100000 panic=5 hpet=disable
 
 ## default grub root device
 ## e.g. groot=(hd0,0)
