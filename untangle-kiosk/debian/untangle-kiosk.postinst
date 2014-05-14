@@ -62,8 +62,10 @@ fi
 # Bug #11111
 # This is a nasty hack because squeeze doesnt notify 
 # plymouth (wheezy will probably handle this)
-cp -f /usr/share/untangle-kiosk/checkfs.sh /etc/init.d/
-cp -f /usr/share/untangle-kiosk/checkroot.sh /etc/init.d/
+if [[ $(cat /etc/debian_version) != 7* ]] ; then
+  cp -f /usr/share/untangle-kiosk/checkfs.sh /etc/init.d/
+  cp -f /usr/share/untangle-kiosk/checkroot.sh /etc/init.d/
+fi
 
 echo >| /etc/motd.tail
 
