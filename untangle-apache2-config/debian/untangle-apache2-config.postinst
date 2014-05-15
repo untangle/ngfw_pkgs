@@ -12,8 +12,7 @@ addgroup uvmlogin 2>/dev/null
 
 sed -e 's/NO_START=1/NO_START=0/' -i /etc/default/apache2
 
-if [ ! -e /etc/apache2/mods-available/jk.conf ]; then
-    cat >/etc/apache2/mods-available/jk.conf <<EOF
+cat >/etc/apache2/mods-available/jk.conf <<EOF
 <IfModule mod_jk.c>
 
 JkWorkersFile /etc/apache2/workers.properties
@@ -22,7 +21,6 @@ JkLogLevel error
 
 </IfModule>
 EOF
-fi
 
 if [ ! -e /etc/apache2/workers.properties ]; then
     secret=$(dd if=/dev/urandom count=10 bs=1 2>/dev/null | hexdump | cut -d \  -f 2-| head -n 1 | tr -d " ")
