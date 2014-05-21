@@ -15,6 +15,7 @@
 # Afterwards it will be necessary to restart certain services so the new settings will take effect
 
 import sys
+sys.path.insert(0, sys.path[0] + "/" + "../" + "../" + "../" + "lib/" + "python2.7/")
 sys.path.insert(0, sys.path[0] + "/" + "../" + "../" + "../" + "lib/" + "python2.6/")
 
 import getopt
