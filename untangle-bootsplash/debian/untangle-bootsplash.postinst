@@ -2,6 +2,13 @@
 
 plymouth-set-default-theme untangle
 
+# fix #11851, in about the nastiest way possible; this is upstream
+# https://bugs.debian.org/702040 and https://bugs.debian.org/711587
+if [[ ! -e /usr/lib/pango ]] ; then
+  srcDir="/usr/lib/$(dpkg-architecture -qDEB_BUILD_GNU_TYPE)/pango"
+  ln -sf $srcDir /usr/lib/pango
+fi
+
 # proper module
 MODULES_FILE=/etc/initramfs-tools/modules
 MODULES_LINE="uvesafb mode_option=1280x1024-24 mtrr=3 scroll=ywrap"
