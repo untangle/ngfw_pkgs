@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 SERVICE=untangle-ssh
 SERVICE_DESC="Untangle'd OpenBSD Secure Shell server"
