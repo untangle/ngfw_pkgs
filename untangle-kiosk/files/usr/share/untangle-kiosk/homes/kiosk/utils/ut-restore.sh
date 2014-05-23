@@ -2,7 +2,6 @@
 
 /usr/bin/zenity \
     --question \
-    --timeout=30 \
     --title "Recovery" \
     --text "Are you sure want to run Recovery? It will stop network services." 
 

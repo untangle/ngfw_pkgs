@@ -2,7 +2,6 @@
 
 /usr/bin/zenity \
     --question \
-    --timeout=30 \
     --title "Power off" \
     --text "Are you sure you want to shut down the Server?"
 

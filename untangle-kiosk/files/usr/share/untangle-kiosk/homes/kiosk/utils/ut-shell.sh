@@ -2,7 +2,6 @@
 
 XTERM="urxvt"
 DIALOG="/usr/bin/zenity"
-COMMON_OPTS="--timeout=30"
 OEM_NAME="Untangle"
 
 if [ -f /etc/untangle/oem/oem.sh ] ; then
@@ -19,7 +18,6 @@ if sudo grep -qE '^root:(\*|YKN4WuGxhHpIw|$1$3kRMklXp$W/hDwKvL8GFi5Vdo3jtKC\.|CH
     ## Password
     ##
     $DIALOG \
-        $COMMMON_OPTS \
         --entry \
         --title "Set a password" \
         --hide-text \

@@ -2,7 +2,6 @@
 
 /usr/bin/zenity \
     --question \
-    --timeout=30 \
     --title "Reboot" \
     --text "Are you sure you want to reboot the Server?"
 
