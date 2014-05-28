@@ -85,6 +85,7 @@ echo "Updating grub..."
 /usr/sbin/update-grub
 
 # disable bootlog (conflicts with plymouth and enabled by default in squeeze)
+# not needed in wheezy and can be removed after wheezy
 # bug #11162
 if [ -f /etc/default/bootlogd ] ; then
     sed -e 's/BOOTLOGD_ENABLE.*/BOOTLOGD_ENABLE=No/' -i /etc/default/bootlogd
