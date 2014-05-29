@@ -78,7 +78,7 @@ class IptablesUtil:
 
                 protos = value.split(",")
                 if invert:
-                    print "ERROR: invert not support on protocol matcher"
+                    print "ERROR: invert not supported on protocol matcher"
                     continue
                 if len(protos) == 0:
                     print "ERROR: interface matcher with no interfaces"
@@ -97,7 +97,7 @@ class IptablesUtil:
                 intfs = IptablesUtil.interface_matcher_string_to_interface_list( value )
 
                 if invert:
-                    print "ERROR: invert not support on interface matcher"
+                    print "ERROR: invert not supported on interface matcher"
                     continue
                 if len(intfs) == 0:
                     print "ERROR: interface matcher with no interfaces"
@@ -116,7 +116,7 @@ class IptablesUtil:
                 intfs = IptablesUtil.interface_matcher_string_to_interface_list( value )
 
                 if invert:
-                    print "ERROR: invert not support on interface matcher"
+                    print "ERROR: invert not supported on interface matcher"
                     continue
                 if len(intfs) == 0:
                     print "ERROR: interface matcher with no interfaces"
@@ -136,12 +136,14 @@ class IptablesUtil:
 
             if matcherType == "SRC_ADDR":
                 srcs = value.split(",")
+                if invert:
+                    print "ERROR: invert not supported on addr matcher"
+                    continue
+
                 orig_current_strings = current_strings
                 current_strings = []
                 for i in srcs:
                     matcherStr = ""
-                    if invert:
-                        matcherStr = matcherStr + " ! "
                     if "-" in i:
                         matcherStr = matcherStr + " -m iprange --src-range %s " % i
                     else:
@@ -150,12 +152,14 @@ class IptablesUtil:
 
             if matcherType == "DST_ADDR":
                 dsts = value.split(",")
+                if invert:
+                    print "ERROR: invert not supported on addr matcher"
+                    continue
+
                 orig_current_strings = current_strings
                 current_strings = []
                 for i in dsts:
                     matcherStr = ""
-                    if invert:
-                        matcherStr = matcherStr + " ! "
                     if "-" in i:
                         matcherStr = matcherStr + " -m iprange --dst-range %s " % i
                     else:
