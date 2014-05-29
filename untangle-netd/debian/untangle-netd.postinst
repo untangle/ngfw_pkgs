@@ -25,4 +25,8 @@ if [ $? = 0 ] ; then
     ip rule del priority 366900 >/dev/null 2>&1 
 fi
 
+# 10.3 conversion
+# remove this file - now lives in /usr/lib/python2.x
+rm -f /usr/share/untangle-netd/bin/parse.pyc
+
 exit 0
