@@ -167,20 +167,22 @@ class IptablesUtil:
                     current_strings = current_strings + [ current + matcherStr for current in orig_current_strings ]
 
             if matcherType == "SRC_PORT":
+                value = value.replace("-",":").replace(" ","") # iptables uses colon to represent range not dash
+                matcherStr = matcherStr + " -m multiport"
                 if invert:
                     matcherStr = matcherStr + " ! "
-                value = value.replace("-",":").replace(" ","") # iptables uses colon to represent range not dash
-                matcherStr = matcherStr + " -m multiport  --source-ports %s " % value
+                matcherStr = matcherStr + " --source-ports %s " % value
                 if not hasProtocolMatcher:
                     # port explicitly means either TCP or UDP, since no protocol matcher has been specified, use "TCP,UDP" as the protocol matcher
                     current_strings = [ " --protocol udp " + current for current in current_strings ] + [ " --protocol tcp " + current for current in current_strings ]
                 current_strings = [ current + matcherStr for current in current_strings ]
 
             if matcherType == "DST_PORT":
+                value = value.replace("-",":").replace(" ","") # iptables uses colon to represent range not dash
+                matcherStr = matcherStr + " -m multiport " 
                 if invert:
                     matcherStr = matcherStr + " ! "
-                value = value.replace("-",":").replace(" ","") # iptables uses colon to represent range not dash
-                matcherStr = matcherStr + " -m multiport --destination-ports %s " % value
+                matcherStr = matcherStr + " --destination-ports %s " % value
                 if not hasProtocolMatcher:
                     # port explicitly means either TCP or UDP, since no protocol matcher has been specified, use "TCP,UDP" as the protocol matcher
                     current_strings = [ " --protocol udp " + current for current in current_strings ] + [ " --protocol tcp " + current for current in current_strings ]
