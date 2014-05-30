@@ -262,10 +262,18 @@ class InterfacesManager:
         file.write("${IPTABLES} -t mangle -A restore-interface-marks -m addrtype --src-type broadcast  -j RETURN -m comment --comment \"Do not mark broadcast packets\"" + "\n");
         file.write("\n");
 
+
         file.write("# This rule says if the packet is in the original direction, just copy the intf marks from the connmark/session mark" + "\n");
-        file.write("# The rule actually says REPLY and not ORIGINAL and thats because ctdir matches backwards in 2.6.32 # http://www.spinics.net/lists/netfilter-devel/msg17864.html" + "\n");
-        file.write("${IPTABLES} -t mangle -A restore-interface-marks -m conntrack --ctdir REPLY -j CONNMARK --restore-mark --mask 0x%X -m comment --comment \"If packet is in original direction, copy mark from connmark to packet\"" % self.bothInterfacesMarksMask + "\n");
-        file.write("${IPTABLES} -t mangle -A restore-interface-marks -m conntrack --ctdir REPLY -j RETURN -m comment --comment \"If packet is in original direction we are done, just return\"" + "\n");
+        file.write("uname -a | grep -q 2.6.32" + "\n");
+        file.write("KERN_2_6_32=$?" + "\n");
+        file.write("if [ ${KERN_2_6_32} -eq 0 ] ; then" + "\n");
+        file.write("\t# The rule actually says REPLY and not ORIGINAL and thats because ctdir matches backwards in 2.6.32 # http://www.spinics.net/lists/netfilter-devel/msg17864.html" + "\n");
+        file.write("\t${IPTABLES} -t mangle -A restore-interface-marks -m conntrack --ctdir REPLY -j CONNMARK --restore-mark --mask 0x%X -m comment --comment \"If packet is in original direction, copy mark from connmark to packet\"" % self.bothInterfacesMarksMask + "\n");
+        file.write("\t${IPTABLES} -t mangle -A restore-interface-marks -m conntrack --ctdir REPLY -j RETURN -m comment --comment \"If packet is in original direction we are done, just return\"" + "\n");
+        file.write("else" + "\n");
+        file.write("\t${IPTABLES} -t mangle -A restore-interface-marks -m conntrack --ctdir ORIGINAL -j CONNMARK --restore-mark --mask 0x%X -m comment --comment \"If packet is in original direction, copy mark from connmark to packet\"" % self.bothInterfacesMarksMask + "\n");
+        file.write("\t${IPTABLES} -t mangle -A restore-interface-marks -m conntrack --ctdir ORIGINAL -j RETURN -m comment --comment \"If packet is in original direction we are done, just return\"" + "\n");
+        file.write("fi" + "\n");
         file.write("\n");
 
         file.write("# Since this is a reply packet, copy dst intf from connmark to src intf mark, copy src intf from connmark to dst intf mark." + "\n");
