@@ -15,8 +15,10 @@
 # Afterwards it will be necessary to restart certain services so the new settings will take effect
 
 import sys
-sys.path.insert(0, sys.path[0] + "/" + "../" + "../" + "../" + "lib/" + "python2.7/")
-sys.path.insert(0, sys.path[0] + "/" + "../" + "../" + "../" + "lib/" + "python2.6/")
+if sys.version_info[0] == 2 and sys.version_info[0] == 6:
+    sys.path.insert(0, sys.path[0] + "/" + "../" + "../" + "../" + "lib/" + "python2.6/")
+if sys.version_info[0] == 2 and sys.version_info[0] == 7:
+    sys.path.insert(0, sys.path[0] + "/" + "../" + "../" + "../" + "lib/" + "python2.7/")
 
 import getopt
 import signal
