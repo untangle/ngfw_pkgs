@@ -4,8 +4,8 @@
 # Proceed only if you know what you are doing 
 #
 
-#deb http://ftp.debian.org/debian squeeze main contrib non-free
+#deb http://ftp.debian.org/debian wheezy main contrib non-free
 
-#deb http://security.debian.org squeeze/updates main contrib non-free
+#deb http://security.debian.org wheezy/updates main contrib non-free
 
-#deb http://www.backports.org/debian squeeze-backports main contrib non-free
+#deb http://backports.debian.org/debian-backports wheezy-backports main contrib non-free

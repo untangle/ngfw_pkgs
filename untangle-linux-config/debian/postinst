@@ -55,11 +55,9 @@ perl -i -pe 's|^[^\s#]+(\s+/\s+)|'$rootdev'$1|' /etc/fstab
 echo "Installing Untangle $menuLst"
 mkdir -p /boot/grub
 
-if [[ $(cat /etc/debian_version) == 6* ]] ; then
-  menuFile="/usr/share/untangle-linux-config/menu-squeeze.lst"
-else
-  echo "UNSUPPORTED DEBIAN VERSION: `cat /etc/debian_version`"
-  menuFile="/usr/share/untangle-linux-config/menu-squeeze.lst"
+menuFile="/usr/share/untangle-linux-config/menu-squeeze.lst"
+if ! [[ $(cat /etc/debian_version) == 7* ]] ; then
+  echo "WARNING: UNSUPPORTED DEBIAN VERSION: $(cat /etc/debian_version)"
 fi
 
 sed -e "s/@ROOTDEV@/$rootdev/" $menuFile > $menuLst
