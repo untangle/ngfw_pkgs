@@ -1,7 +1,5 @@
 #! /bin/bash
 
-MAX_SPARE=1
-
 # The tuning depends on the memory available. We have settings for > 1 gig, and <= 1 gig
 
 echo "  Customizing HW-related settings for clamav"
