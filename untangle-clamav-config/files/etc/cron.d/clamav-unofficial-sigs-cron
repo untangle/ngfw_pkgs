@@ -1,0 +1,5 @@
+#
+# Update unofficial sigs every 4 hours
+#
+
+45 */4 * * * root /usr/share/untangle-clamav-config/bin/clamav-unofficial-sigs.sh -c /usr/share/untangle-clamav-config/clamav-unofficial-sigs.conf >/var/log/clamav-unofficial-sigs-update.log 2>&1

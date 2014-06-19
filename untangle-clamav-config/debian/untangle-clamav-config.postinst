@@ -12,9 +12,6 @@ EOF
   fi
 }
 
-# disable obsolete options
-# perl -i -pe 's/^\s*(OldOption1|OldOption2)(.*)/#$1$2/' $CLAMAV_CONF_FILE
-
 # options we need
 setOption TCPAddr 127.0.0.1
 setOption TCPSocket 3310 
