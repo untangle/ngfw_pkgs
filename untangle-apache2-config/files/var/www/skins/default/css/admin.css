@@ -227,22 +227,22 @@ div#parent-rack-container{
     float:left;
     font-family:Tahoma;
     font-size:11px;
-    height:20px;
+    height:32px;
     line-height:16px;
-    margin-left:10px;
-    margin-top:14px;
+    margin-left:5px;
+    margin-top:9px;
     overflow:hidden;
-    padding:0 10px;
+    padding:0 2px;
 }
 /* alert icon container */
 div#alert-container{
     background:transparent url(../images/admin/icon-alert.gif) no-repeat center center !important;
     float:left;
     height:21px;
-    margin-left:10px;
+    margin-left:2px;
     margin-top:14px;
     overflow:hidden;
-    padding:0 14px;
+    width: 25px;
 }
 /* No IE icon container */
 div#no-ie-container{
@@ -252,7 +252,7 @@ div#no-ie-container{
     margin-left:2px;
     margin-top:14px;
     overflow:hidden;
-    padding:0 14px;
+    width: 25px;
 }
 /* node buttons panel container */
 div.node div.node-buttons {
@@ -670,7 +670,7 @@ div.icon-arrow-down {
 /* rack top system stat container */
 div.system-stats {
     position:absolute;
-    width: 390px;
+    width: 393px;
     height: 50px;
     top:0px;
     right:40px;
@@ -742,7 +742,21 @@ div.system-stats div.network div.tx div.tx-value {
 div.system-stats div.sessions {
     position: absolute;
     top: 4px;
-    left:113px;
+    left:102px;
+    background: transparent url(../images/admin/background_sessions.png) no-repeat;
+    width:50px;
+    height:30px;
+    text-align: center;
+    padding-top: 7px;
+    font-weight: bold;
+    font-family:arial,helvetica, freesans,sans-serif;
+    
+}
+/* system stats cpu */
+div.system-stats div.hosts {
+    position: absolute;
+    top: 4px;
+    left:155px;
     background: transparent url(../images/admin/background_sessions.png) no-repeat;
     width:50px;
     height:30px;
@@ -756,7 +770,7 @@ div.system-stats div.sessions {
 div.system-stats div.cpu {
     position: absolute;
     top: 4px;
-    left:183px;
+    left:208px;
     background: transparent url(../images/admin/background_cpu.png) no-repeat;
     width:50px;
     height:30px;
@@ -770,7 +784,7 @@ div.system-stats div.cpu {
 div.system-stats div.memory {
     position: absolute;
     top: 4px;
-    left:247px;
+    left:261px;
     background: transparent url(../images/admin/background_network.png) no-repeat;/*../images/admin/background_memory.png) no-repeat;*/
     width:99px;
     height:30px;
