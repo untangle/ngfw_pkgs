@@ -15,9 +15,9 @@
 # Afterwards it will be necessary to restart certain services so the new settings will take effect
 
 import sys
-if sys.version_info[0] == 2 and sys.version_info[0] == 6:
+if sys.version_info[0] == 2 and sys.version_info[1] == 6:
     sys.path.insert(0, sys.path[0] + "/" + "../" + "../" + "../" + "lib/" + "python2.6/")
-if sys.version_info[0] == 2 and sys.version_info[0] == 7:
+if sys.version_info[0] == 2 and sys.version_info[1] == 7:
     sys.path.insert(0, sys.path[0] + "/" + "../" + "../" + "../" + "lib/" + "python2.7/")
 
 import getopt
