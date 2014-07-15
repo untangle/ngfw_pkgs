@@ -9,6 +9,7 @@ Standards-Version: 3.8.0
 Package: untangle-kernel-modules-wheezy-armel
 Architecture: armel
 Depends: linux-image-3.2.0-4-untangle-armel, firmware-bnx2, firmware-bnx2x, e1000-module-3.2.0-4-untangle-armel, igb-module-3.2.0-4-untangle-armel
+Provides: untangle-kernel-modules-wheezy
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle appliance internal
  The Untangle appliance internal-to-untangle mode.

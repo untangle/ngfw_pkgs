@@ -9,5 +9,6 @@ Standards-Version: 3.8.0
 Package: untangle-kernel-modules-wheezy-armhf
 Architecture: armhf
 Pre-Depends: untangle-debconf-manager
+Provides: untangle-kernel-modules-wheezy
 Description: The Untangle appliance internal
  The Untangle appliance internal-to-untangle mode.
