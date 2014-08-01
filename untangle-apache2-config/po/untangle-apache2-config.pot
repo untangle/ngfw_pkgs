@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=0; null;\n"
 
-#: ../files/usr/lib/python2.6/uvmlogin.py:279
+#: ../files/usr/lib/python2.7/uvmlogin.py:279
 #: ../files/usr/share/untangle/mod_python/error/index.py:132
 msgid "Server"
 msgstr ""
 
-#: ../files/usr/lib/python2.6/uvmlogin.py:281
+#: ../files/usr/lib/python2.7/uvmlogin.py:281
 #: ../files/usr/share/untangle/mod_python/error/index.py:134
 #, python-format
 msgid "%s Server"
