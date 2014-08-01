@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, getopt, sys, json, subprocess, parse
+import os, getopt, sys, json, subprocess, parse, platform
 
 def usage():
     print """\
@@ -12,6 +12,10 @@ usage: %s start|stop|status|sessions
 """ % sys.argv[0]
     sys.exit(1)
 
+def debug(str):
+    if False:
+        print(str)
+
 def qos_priorities():
     return [1,2,3,4,5,6,7]
 
@@ -19,7 +23,7 @@ def qos_priority_field( qos_settings, intf, priorityId, base, field ):
     for prio in qos_settings.get('qosPriorities').get('list'):
         if prio.get('priorityId') == priorityId:
             return intf.get(base) * (prio.get(field)/100.0)
-    print("Unable to find %s for priority %i" % (field, priorityId))
+    debug("Unable to find %s for priority %i" % (field, priorityId))
     return None
 
 def qos_priority_upload_reserved( qos_settings, intf, priorityId ):
@@ -50,7 +54,7 @@ def runSubprocess(cmd):
 
 
 def flush_htb_rules( wan_intfs ):
-    #print "Flushing HTB..."
+    debug("Flushing HTB...")
 
     for intf in wan_intfs:
         wan_dev = intf.get('systemDev')
@@ -65,13 +69,13 @@ def flush_htb_rules( wan_intfs ):
     p = subprocess.Popen(["sh","-c","tc qdisc show | awk '{ print $5; }'"],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     for line in iter(p.stdout.readline, ''):
         dev = line.strip()
-        # print( "Flushing %s..." % dev )
+        debug( "Flushing %s..." % dev )
         if dev != "utun":
             run("tc qdisc del dev %s root    2> /dev/null > /dev/null" % dev, ignore_errors=True)
             run("tc qdisc del dev %s ingress 2> /dev/null > /dev/null" % dev, ignore_errors=True)
                 
 def add_htb_rules( qos_settings, wan_intf ):
-    #print "Adding HTB for %s and %s..." % (wan_intf.get('systemDev'), wan_intf.get('imqDev'))
+    debug( "Adding HTB for %s and %s..." % (wan_intf.get('systemDev'), wan_intf.get('imqDev')) )
 
     wan_dev = wan_intf.get('systemDev')
     imq_dev = wan_intf.get('imqDev')
@@ -248,8 +252,8 @@ def status( qos_interfaces, wan_intfs ):
 
 def sessionsToJSON(input):
     #Parse patterns for qos-service.py sessions output
-    parsePattern='proto {:^} state {:^} src {:^} dst {:^} src-port {:^d} dst-port {:^d} packets {:^d} bytes {:^d} priority {:^d}'
-    entryKeys=('proto','state','src','dst','src_port','dst_port','packets','bytes','priority')
+    parsePattern='proto {:^} state {:^} src {:^} dst {:^} src-port {:^d} dst-port {:^d} priority {:^d}'
+    entryKeys=('proto','state','src','dst','src_port','dst_port','priority')
     output=[]
     entry={}
     for line in input:
@@ -262,9 +266,12 @@ def sessionsToJSON(input):
         
         
 def sessions( qos_interfaces, wan_intfs ):
-
-    result = runSubprocess( r"""cat /proc/net/ip_conntrack | grep -v '127.0.0.1' | grep tcp | sed 's/[a-z]*=//g' | awk '{printf "proto %s state %12s src %15s dst %15s src-port %5s dst-port %5s packets %9s bytes %9s priority %x\n", $1, $4, $5, $6, $7, $8, $9, $10, rshift(and($18,0x000F0000),16)}'""")
-    result.extend(runSubprocess( r"""cat /proc/net/ip_conntrack | grep -v '127.0.0.1' | grep udp | sed 's/\[.*\]//g' | sed 's/[a-z]*=//g' | awk '{printf "proto %s state           xx src %15s dst %15s src-port %5s dst-port %5s packets %9s bytes %9s priority %x\n", $1, $4, $5, $6, $7, $8, $9, rshift(and($16,0x000F0000),16)}'"""))
+    if "2.6.26" in platform.platform():
+        result = runSubprocess( r"""cat /proc/net/ip_conntrack | grep -v '127.0.0.1' | grep tcp | sed 's/[a-z]*=//g' | awk '{printf "proto %s state %12s src %15s dst %15s src-port %5s dst-port %5s priority %x\n", $1, $4, $5, $6, $7, $8, rshift(and($18,0x000F0000),16)}'""")
+        result.extend(runSubprocess( r"""cat /proc/net/ip_conntrack | grep -v '127.0.0.1' | grep udp | sed 's/\[.*\]//g' | sed 's/[a-z]*=//g' | awk '{printf "proto %s state           xx src %15s dst %15s src-port %5s dst-port %5s priority %x\n", $1, $4, $5, $6, $7, rshift(and($16,0x000F0000),16)}'"""))
+    else:
+        result = runSubprocess( r"""cat /proc/net/ip_conntrack | grep -v '127.0.0.1' | grep tcp | sed 's/\[.*\]//g' | sed 's/[a-z]*=//g' | awk '{printf "proto %s state %12s src %15s dst %15s src-port %5s dst-port %5s priority %x\n", $1, $4, $5, $6, $7, $8, rshift(and($13,0x000F0000),16)}'""")
+        result.extend(runSubprocess( r"""cat /proc/net/ip_conntrack | grep -v '127.0.0.1' | grep udp | sed 's/\[.*\]//g' | sed 's/[a-z]*=//g' | awk '{printf "proto %s state           xx src %15s dst %15s src-port %5s dst-port %5s priority %x\n", $1, $4, $5, $6, $7, rshift(and($12,0x000F0000),16)}'"""))
     return result
     
 #
@@ -318,6 +325,7 @@ for intf in interfaces:
             print "Failed to read uploadBandwidthKbps on %s" % intf.get('name')
             sys.exit(1)
         wan_intfs.append(intf)
+
 
 if action == "stop":
     stop( qos_settings, wan_intfs )
