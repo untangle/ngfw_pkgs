@@ -8,9 +8,6 @@ Standards-Version: 3.8.0
 
 Package: untangle-restore-tools
 Architecture: all
-Conflicts: restore-mv
-Provides: restore-mv
-Replaces: restore-mv
 Depends: untangle-vm, dialog
 Description: The Untangle restore utility
  The Untangle restore utility for fixing the Untangle Appliance.
