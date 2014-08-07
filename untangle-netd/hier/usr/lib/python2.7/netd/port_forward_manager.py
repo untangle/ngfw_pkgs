@@ -78,6 +78,9 @@ class PortForwardManager:
         self.file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         self.file.write("\n\n");
 
+        self.file.write("# enable hairpin mode for hairpin port forwards (bug #11899)" + "\n");
+        self.file.write("/usr/bin/find /sys/devices -type f -name hairpin_mode | while read file ; do echo 1 > $file ; done" + "\n" + "\n")
+
         self.file.write("# Create (if needed) and flush port-forward-rules chain" + "\n");
         self.file.write("${IPTABLES} -t nat -N port-forward-rules 2>/dev/null" + "\n");
         self.file.write("${IPTABLES} -t nat -F port-forward-rules >/dev/null 2>&1" + "\n" + "\n");
