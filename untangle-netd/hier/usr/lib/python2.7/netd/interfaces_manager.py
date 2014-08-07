@@ -84,6 +84,8 @@ class InterfacesManager:
                 self.interfacesFile.write("\tbridge_maxwait %i\n" % 20)
             if bridgeMinMtu != None:
                 self.interfacesFile.write("\tmtu %i\n" % bridgeMinMtu)
+            # multicast_snooping causes issues with IMQ/QoS, disable it (bug #11930)
+            self.interfacesFile.write("\tpost-up echo 0 > /sys/devices/virtual/net/$IFACE/bridge/multicast_snooping" ) 
 
         # handle PPPoE stuff
         if interface_settings.get('v4ConfigType') == 'PPPOE':
