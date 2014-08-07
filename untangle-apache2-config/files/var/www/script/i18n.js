@@ -6,6 +6,7 @@ Ung.i18nModuleInstances = {};
 Ung.I18N = Ext.extend(Ext.Component, {
     // map of translations
     map: null,
+    timeoffset: 0,
     // initialize I18N component
     initComponent: function() {
         Ung.I18N.superclass.initComponent.call(this);
@@ -78,8 +79,11 @@ Ung.I18N = Ext.extend(Ext.Component, {
     },
     // formats a date
     dateFormat: function(v) {
+        if (v==null) {
+            return "";
+        }
         var date = new Date();
-        date.setTime((v.time == null ? v : v.time));
+        date.setTime((v.time == null ? v+this.timeoffset : v.time+this.timeoffset));
         return Ext.util.Format.date(date, this.map['date_fmt']);
     },
     // formats a timestamp
@@ -88,7 +92,7 @@ Ung.I18N = Ext.extend(Ext.Component, {
             return "";
         }
         var date = new Date();
-        date.setTime((v.time == null ? v : v.time));
+        date.setTime((v.time == null ? v+this.timeoffset : v.time+this.timeoffset));
         return Ext.util.Format.date(date, this.map['timestamp_fmt']);
     },
     //date long version format
