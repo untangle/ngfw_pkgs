@@ -69,8 +69,8 @@ global_defs {
         for intf in vrrp_interfaces:
             file.write("vrrp_instance VI_" + str(intf.get('interfaceId')) + " {" + "\n")
             file.write("\tstate MASTER" + "\n")
-            file.write("\tinterface %s" % str(intf.get('systemDev')) + "\n")
-            file.write("\tlvs_sync_daemon_interface %s" % str(intf.get('systemDev')) + "\n")
+            file.write("\tinterface %s" % str(intf.get('symbolicDev')) + "\n")
+            file.write("\tlvs_sync_daemon_interface %s" % str(intf.get('symbolicDev')) + "\n")
             file.write("\tvirtual_router_id %s" % str(intf.get('vrrpId')) + "\n")
             file.write("\tpriority %s" % str(intf.get('vrrpPriority')) + "\n")
             file.write("\tadvert_int 1" + "\n")
