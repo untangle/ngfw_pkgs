@@ -266,7 +266,7 @@ def sessionsToJSON(input):
         
         
 def sessions( qos_interfaces, wan_intfs ):
-    if "2.6.26" in platform.platform():
+    if "2.6.32" in platform.platform():
         result = runSubprocess( r"""cat /proc/net/ip_conntrack | grep -v '127.0.0.1' | grep tcp | sed 's/[a-z]*=//g' | awk '{printf "proto %s state %12s src %15s dst %15s src-port %5s dst-port %5s priority %x\n", $1, $4, $5, $6, $7, $8, rshift(and($18,0x000F0000),16)}'""")
         result.extend(runSubprocess( r"""cat /proc/net/ip_conntrack | grep -v '127.0.0.1' | grep udp | sed 's/\[.*\]//g' | sed 's/[a-z]*=//g' | awk '{printf "proto %s state           xx src %15s dst %15s src-port %5s dst-port %5s priority %x\n", $1, $4, $5, $6, $7, rshift(and($16,0x000F0000),16)}'"""))
     else:
