@@ -88,8 +88,9 @@ fi
 $DIALOG \
     --info \
     --title "Terminal Use Warning" \
+    --no-wrap
     --text \
-"You will be prompted to enter the super-user password to proceed.
+"You will be prompted to enter the root password to proceed.
 
 Note: this password is not the same as the web interface admin password.
 It is set the first time the Terminal is opened.
