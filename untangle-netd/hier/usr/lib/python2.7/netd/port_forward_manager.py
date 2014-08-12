@@ -144,7 +144,7 @@ class PortForwardManager:
                 self.file.write("\n");
 
         self.file.write("# If its local and port 80 and hasnt already been handled in this chain, block it\n");
-        self.file.write("${IPTABLES} -t nat -A port-forward-rules -p tcp -m addrtype --dst-type local --destination-port 80 j REDIRECT --to-ports 0 -m comment --comment \"Drop local HTTP traffic that hasn't been handled earlier in chain\"" + "\n")
+        self.file.write("${IPTABLES} -t nat -A port-forward-rules -p tcp -m addrtype --dst-type local --destination-port 80 -j REDIRECT --to-ports 0 -m comment --comment \"Drop local HTTP traffic that hasn't been handled earlier in chain\"" + "\n")
         self.file.write("\n");
 
         # write a rule to protect http port for primary address when coming from a bridged interface
@@ -160,7 +160,7 @@ class PortForwardManager:
                         self.file.write("ADDR=\"`ip addr show %s | awk '/^ *inet.*scope global/ { interface = $2 ; sub( \"/.*\", \"\", interface ) ; print interface ; exit }'`\"\n" % intf.get('symbolicDev'))
                         self.file.write("if [ ! -z \"${ADDR}\" ] ; then" + "\n")
                         self.file.write("\t${IPTABLES} -t nat -I port-forward-rules -p tcp -m mark --mark 0x%04X/0x%04X --destination ${ADDR} --destination-port %i -j DNAT --to-destination ${ADDR}:80 -m comment --comment \"Reserve port 80 on ${ADDR} for blockpages\"" % (sub_intf.get('interfaceId'), self.srcInterfaceMarkMask, http_port) + "\n")
-                        self.file.write("\t${IPTABLES} -t nat -A port-forward-rules -p tcp -m mark --mark 0x%04X/0x%04X --destination ${ADDR} --destination-port 80 j REDIRECT --to-ports 0 -m comment --comment \"Drop local HTTP traffic that hasn't been handled earlier in chain\"" % (sub_intf.get('interfaceId'), self.srcInterfaceMarkMask) + "\n")
+                        self.file.write("\t${IPTABLES} -t nat -A port-forward-rules -p tcp -m mark --mark 0x%04X/0x%04X --destination ${ADDR} --destination-port 80 -j REDIRECT --to-ports 0 -m comment --comment \"Drop local HTTP traffic that hasn't been handled earlier in chain\"" % (sub_intf.get('interfaceId'), self.srcInterfaceMarkMask) + "\n")
                         self.file.write("fi" + "\n")
                         self.file.write("\n");
             
