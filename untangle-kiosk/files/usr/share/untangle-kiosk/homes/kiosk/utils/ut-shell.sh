@@ -88,7 +88,7 @@ fi
 $DIALOG \
     --info \
     --title "Terminal Use Warning" \
-    --no-wrap
+    --no-wrap \
     --text \
 "You will be prompted to enter the root password to proceed.
 
