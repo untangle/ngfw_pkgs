@@ -12,6 +12,8 @@ ourInit() {
   fi
 }
 
+/usr/share/untangle-system-config/syslog-maxsize-conf.sh /etc/rsyslog.conf /etc/rsyslog.d/* > /dev/null
+
 ourInit rsyslog restart
 rm -f /var/log/uvm/[0-9]*log /var/log/uvm/node[0-9]*log /var/log/uvm/*:.log
 
