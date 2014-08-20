@@ -38,7 +38,7 @@ if [ -f "${CRONTAB_FILE}" ] ; then
 fi
 
 # Fix up boxes so they don't fsck after 6 months.  Now only limit is 32 reboots.
-rootdev=`awk '/ \/ / {print $1}' /etc/mtab`
+rootdev=`awk '/^\/.* \/ / {print $1}' /etc/mtab`
 if [ -z "$rootdev" -a -f /etc/fstab ]; then
     # Special handling for install-time when /etc/mtab isn't valid
     rootdev=`awk '/ \/ / {print $1}' /etc/fstab`
