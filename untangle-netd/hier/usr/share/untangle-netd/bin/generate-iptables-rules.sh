@@ -13,6 +13,10 @@ IPTABLES_DIRECTORY=/etc/untangle-netd/iptables-rules.d
 #IPTABLES="iptables_debug"
 IPTABLES=iptables_debug_onerror
 
+#IP6TABLES=/sbin/ip6tables
+#IP6TABLES="ip6tables_debug"
+IP6TABLES=ip6tables_debug_onerror
+
 #EBTABLES=/sbin/ebtables
 #EBTABLES=ebtables_debug
 EBTABLES=ebtables_debug_onerror
@@ -41,6 +45,22 @@ iptables_debug_onerror()
     # Ignore -N errors
     /sbin/iptables "$@" || {
         [ "${3}x" != "-Nx" ] && echo "[`date`] Failed: /sbin/iptables $@"
+    }
+
+    true
+}
+
+ip6tables_debug()
+{
+   /bin/echo -e "[IPTABLE DEBUG: `date`] /sbin/ip6tables $@"
+   /sbin/ip6tables "$@"
+}
+
+ip6tables_debug_onerror()
+{
+    # Ignore -N errors
+    /sbin/ip6tables "$@" || {
+        [ "${3}x" != "-Nx" ] && echo "[`date`] Failed: /sbin/ip6tables $@"
     }
 
     true

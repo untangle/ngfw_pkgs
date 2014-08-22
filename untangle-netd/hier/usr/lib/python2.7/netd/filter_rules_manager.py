@@ -131,6 +131,14 @@ class FilterRulesManager:
         self.write_input_filter_rules( settings, verbosity );
         self.write_forward_filter_rules( settings, verbosity );
 
+        self.file.write("# Flush IPv6 Rules" + "\n");
+        self.file.write("${IP6TABLES} -t filter -F FORWARD -m comment --comment \"Flush IPv6 rules\" >/dev/null 2>&1" + "\n");
+        if settings.get('blockIpv6Forwarding'):
+            self.file.write("# Block IPv6 Fowarding" + "\n");
+            self.file.write("${IP6TABLES} -t filter -A FORWARD -j DROP -m comment --comment \"Do not allow IPv6 forwarding\" >/dev/null 2>&1" + "\n");
+            self.file.write("\n");
+            
+
         self.file.flush();
         self.file.close();
 
