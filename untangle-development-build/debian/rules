@@ -37,9 +37,6 @@ clean:
 	dh_clean
 
 binary-indep: build
-# nothing to do
-
-binary-arch: build 
 	dh_testdir  
 	dh_testroot   
 	dh_movefiles  
@@ -66,7 +63,10 @@ binary-arch: build
 #	dh_perl     
 	if [ -f debian/version ] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
 	dh_md5sums     
-	dh_builddeb -a
+	dh_builddeb
+
+binary-arch: build 
+# nothing to do
 
 binary: binary-indep binary-arch
 
