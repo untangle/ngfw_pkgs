@@ -1,7 +1,7 @@
 #! /bin/bash
 
-SPAM_USER=spamc
-SPAM_GROUP=spamc
+SPAM_USER=spamd
+SPAM_GROUP=spamd
 
 # setting up the user account we use to run the daemons
 adduser --gecos "" --firstuid 10000 --disabled-password $SPAM_USER 2>/dev/null
@@ -42,6 +42,8 @@ update-rc.d spamassassin disable
 rm -f /etc/spamassassin/Fuzzy*
 
 # 11.0 - remove ctasd
+deluser spamc
+delgroup spamc
 rm -f /etc/spamassassin/ctasd*
 
 exit 0

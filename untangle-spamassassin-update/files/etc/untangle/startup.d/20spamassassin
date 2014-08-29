@@ -18,4 +18,4 @@ fi
 
 echo "    $MAX_CHILDREN children"
 
-sed -i "s/^OPTIONS=.*/OPTIONS=\"--create-prefs --max-children $MAX_CHILDREN --max-spare $MAX_SPARE --helper-home-dir\"/" /etc/default/spamassassin
+sed -i "s/^OPTIONS=.*/OPTIONS=\"--create-prefs --max-children $MAX_CHILDREN --max-spare $MAX_SPARE --helper-home-dir -u spamd\"/" /etc/default/spamassassin
