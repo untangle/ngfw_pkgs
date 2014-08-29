@@ -22,10 +22,8 @@ cat > /etc/spamassassin/local.cf << EOF
 # Untangle global spamassassin settings
 lock_method flock
 
-# Lower impact of AWL
-auto_whitelist_factor 0.3
 # Lower auto-learn ham threshold
-bayes_auto_learn_threshold_nonspam -1
+bayes_auto_learn_threshold_nonspam -1.00
 
 # A simple-to-parse report format
 clear_report_template
