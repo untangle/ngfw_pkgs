@@ -19,11 +19,13 @@ if [ ! -f /tmp/sa-update.ran ] ; then touch /tmp/sa-update.ran ; fi
 ## turn off stuff in local.cf
 rm -f /etc/spamassassin/local.cf
 cat > /etc/spamassassin/local.cf << EOF
-# Untangle global Spam Blocker settings
-score ALL_TRUSTED 0
+# Untangle global spamassassin settings
 lock_method flock
+
+# Lower impact of AWL
 auto_whitelist_factor 0.3
-pyzor_timeout 3
+# Lower auto-learn ham threshold
+bayes_auto_learn_threshold_nonspam -1
 
 # A simple-to-parse report format
 clear_report_template
