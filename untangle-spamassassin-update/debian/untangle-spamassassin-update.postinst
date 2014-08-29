@@ -42,6 +42,9 @@ update-rc.d spamassassin disable
 rm -f /etc/spamassassin/Fuzzy*
 
 # 11.0 - remove ctasd
+if [ -d /home/spamc/.spamasssassin ] ; then
+    mv /home/spamc/.spamasssassin /home/spamd/
+fi
 deluser spamc
 delgroup spamc
 rm -f /etc/spamassassin/ctasd*
