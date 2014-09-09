@@ -1,6 +1,6 @@
 #!/bin/bash
 ##
-## 
+## Dynamic log rotation script used for maximum size limit detection by rsyslog 
 ##
 
 LOG=$1
