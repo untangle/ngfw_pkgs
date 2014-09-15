@@ -23,7 +23,7 @@ cat > /etc/spamassassin/local.cf << EOF
 lock_method flock
 
 # Lower auto-learn ham threshold
-bayes_auto_learn_threshold_nonspam -1.00
+bayes_auto_learn_threshold_nonspam -0.50
 
 # A simple-to-parse report format
 clear_report_template
