@@ -1,5 +1,3 @@
-# test function
-
 ###################################
 # Modules & Options
 ###################################
@@ -89,24 +87,6 @@ for key in ${(k)extensions[@]} ; do
   extensions[$key]="$extensions[$key] ${(U)extensions[$key]}"
 done
 
-local -A colors
-colors=()
-colors[backup]="02;90"
-colors[docs]="02;37"
-colors[archives]="01;31"
-colors[video]="01;33"
-colors[audio]="00;36"
-colors[pics]="00;32"
-colors[code]="01;35"
-
-LS_COLORS='ex=01;35:no=00:fi=00;37:di=01;36:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=04;31'
-for key in ${(k)extensions[@]} ; do
-  color=${colors[$key]}
-  # join on '=${color}:*.', and prepend to LS_COLORS
-  LS_COLORS='*.'${(ej,=${color}:*.,)${=${extensions[$key]}}}=${color}:$LS_COLORS
-done
-export LS_COLORS=${LS_COLORS//\*.${literal}/\*}
-
 # history
 HISTSIZE=1000000
 SAVEHIST=1000000
@@ -119,18 +99,7 @@ LOGCHECK=30 # in seconds
 WATCH=all
 WATCHFMT="[%D %T] %n has %a %l from %M"
 
-WORDCHARS=
-
-# misc
-if which less > /dev/null ; then
-  export PAGER=less
-else
-  export PAGER=more
-fi
-
-export XTERM="aterm-xterm -tr -sh 80 -fg White -bg Black -fn -jmk-neep-medium-r-normal--15-140-75-75-c-80-iso8859-15 -g 80x54 +sb -sl 10000 &"
-
-ZSH_CONFIG_FILES=(~/.z(log|sh)^(_*|*~)(.) ~/.zsh/functions/_*)
+export PAGER=less
 
 # ulimit
 limit coredumpsize 0 # don't allow coredumps
@@ -138,12 +107,11 @@ limit coredumpsize 0 # don't allow coredumps
 ###################################
 # Key bindings
 ###################################
+alias myls="ls -ldh --color *(N/) ; ls -lh --color *(^/) 2> /dev/null"
 bindkey -e
-bindkey '^W' kill-region
-zle -N history-beginning-search-backward-end history-search-end
-zle -N history-beginning-search-forward-end history-search-end
-bindkey '\e[A' history-beginning-search-backward-end
-bindkey '\e[B' history-beginning-search-forward-end
+bindkey -s "^o"   '; myls \r'
+bindkey -s "^b"   'cd ..\r'
+bindkey -s "^f"   'popd\r'
 
 ###################################
 # Completion settings
@@ -165,14 +133,7 @@ zstyle ':completion:*' file-sort name
 zstyle ':completion:*' menu select=long
 
 # completion for functions
-compdef _connect-run connect run
-compdef _cvs cvsseb
 compdef _hosts dig digs
-compdef '_deb_packages expl uninstalled' i
-compdef _python-doc pydoc-html
-compdef '_files -W $HELPDIR' run-help
-compdef _smartsudo s
-compdef _initd-service se
 compdef _locales setlocale
 compdef _which what
 
