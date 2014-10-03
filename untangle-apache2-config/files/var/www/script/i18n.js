@@ -127,3 +127,5 @@ Ung.ModuleI18N = Ext.extend(Ung.I18N, {
         return s;
     }
 });
+
+var i18n=Ext.create('Ung.I18N',{"map":null}); // the main internationalization object
