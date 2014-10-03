@@ -107,6 +107,7 @@ limit coredumpsize 0 # don't allow coredumps
 ###################################
 # Key bindings
 ###################################
+alias s="" # sudo not needed for root
 alias myls="ls -ldh --color *(N/) ; ls -lh --color *(^/) 2> /dev/null"
 bindkey -e
 bindkey -s "^o"   '; myls \r'
