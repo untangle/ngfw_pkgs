@@ -22,6 +22,9 @@ cat > /etc/spamassassin/local.cf << EOF
 # Untangle global spamassassin settings
 lock_method flock
 
+# Set a timeout for scans to shortcut (35 seconds)
+time_limit 35
+
 # Lower auto-learn ham threshold
 bayes_auto_learn_threshold_nonspam -0.50
 
