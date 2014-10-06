@@ -3,13 +3,12 @@ Ext.namespace('Ung');
 Ung.i18nModuleInstances = {};
 
 // I18N object class
-Ung.I18N = Ext.extend(Ext.Component, {
+Ext.define("Ung.I18N", {
     // map of translations
     map: null,
     timeoffset: 0,
     // initialize I18N component
-    initComponent: function() {
-        Ung.I18N.superclass.initComponent.call(this);
+    constructor: function() {
         if (this.map == null) {
             this.map = {};
         }
@@ -58,7 +57,6 @@ Ung.I18N = Ext.extend(Ext.Component, {
         }
         return out;
     },
-
     // formats a number with local separators
     numberFormat: function(v) {
         return this.numberFormatSep(v, '.', this.map['decimal_sep'], this.map['thousand_sep']);
@@ -112,7 +110,8 @@ Ung.I18N = Ext.extend(Ext.Component, {
 });
 
 // module I18N class object
-Ung.ModuleI18N = Ext.extend(Ung.I18N, {
+Ext.define("Ung.ModuleI18N", {
+    extend: "Ung.I18N",
     // module map
     moduleMap: null,
     // translation function tryes to find the word in the moduleMap
