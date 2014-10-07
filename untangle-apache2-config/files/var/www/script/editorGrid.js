@@ -79,6 +79,9 @@ Ext.define('Ung.grid.ReorderColumn', {
 // Editor Grid class
 Ext.define('Ung.EditorGrid', {
     extend:'Ext.grid.Panel',
+    statics: {
+        maxRowCount: 2147483647
+    }
     selType: 'rowmodel',
     //reserveScrollbar: true,
     // record per page
@@ -372,7 +375,7 @@ Ext.define('Ung.EditorGrid', {
         Ext.defer(function(){
             this.buildData(Ext.bind(function() {
                 this.getStore().loadPage(1, {
-                    limit:this.isPaginated() ? this.recordsPerPage: Ung.Util.maxRowCount,
+                    limit:this.isPaginated() ? this.recordsPerPage: Ung.EditorGrid.maxRowCount,
                     callback: function() {
                         this.dataLoaded=true;
                         //must call this even when setLoading was not set to true, or prevent reload error
@@ -581,7 +584,7 @@ Ext.define('Ung.EditorGrid', {
     removePagination: function (handler) {
         if(this.isPaginated()) {
             //to remove bottom pagination bar
-            this.minPaginateCount = Ung.Util.maxRowCount;
+            this.minPaginateCount = Ung.EditorGrid.maxRowCount;
             this.setTotalRecords(this.totalRecords);
             //make all cahnged data apear in first page
             for (var id in this.changedData) {
@@ -590,7 +593,7 @@ Ext.define('Ung.EditorGrid', {
             }
             //reload grid
             this.getStore().loadPage(1, {
-                limit: Ung.Util.maxRowCount,
+                limit: Ung.EditorGrid.maxRowCount,
                 callback: handler,
                 scope: this
             });
@@ -615,7 +618,7 @@ Ext.define('Ung.EditorGrid', {
     // load a page
     loadPage: function(page, callback, scope, arg) {
         this.getStore().loadPage(page, {
-            limit:this.isPaginated() ? this.recordsPerPage: Ung.Util.maxRowCount,
+            limit:this.isPaginated() ? this.recordsPerPage: Ung.EditorGrid.maxRowCount,
             callback: callback,
             scope: scope,
             arg: arg
@@ -655,7 +658,7 @@ Ext.define('Ung.EditorGrid', {
         //never use defer here because it has unexpected behaviour!
         this.buildData(Ext.bind(function() {
             this.getStore().loadPage(this.getStore().currentPage, {
-                limit:this.isPaginated() ? this.recordsPerPage: Ung.Util.maxRowCount,
+                limit:this.isPaginated() ? this.recordsPerPage: Ung.EditorGrid.maxRowCount,
                 callback: function() {
                     this.enableSorting();
                     this.getView().setLoading(false);
@@ -784,7 +787,7 @@ Ext.define('Ung.EditorGrid', {
         this.totalRecords = totalRecords;
         if(this.paginated) {
             var isPaginated=this.isPaginated();
-            this.getStore().pageSize=isPaginated?this.recordsPerPage:Ung.Util.maxRowCount;
+            this.getStore().pageSize=isPaginated?this.recordsPerPage:Ung.EditorGrid.maxRowCount;
             if(!isPaginated) {
                 //Needs to set currentPage to 1 when not using pagination toolbar.
                 this.getStore().currentPage=1;
@@ -939,7 +942,7 @@ Ext.define('Ung.EditorGrid', {
                 };
             }
             //to remove bottom pagination bar
-            this.minPaginateCount = Ung.Util.maxRowCount;
+            this.minPaginateCount = Ung.EditorGrid.maxRowCount;
             if(skipRepagination) {
                 this.setTotalRecords(this.totalRecords);
             }
@@ -950,14 +953,14 @@ Ext.define('Ung.EditorGrid', {
             }
             //reload grid
             this.getStore().loadPage(1, {
-                limit:Ung.Util.maxRowCount,
+                limit:Ung.EditorGrid.maxRowCount,
                 callback: Ext.bind(function() {
                     var result=this.getPageList();
                     if(!skipRepagination) {
                         this.changedData = oldSettings.changedData;
                         this.minPaginateCount = oldSettings.minPaginateCount;
                         this.getStore().loadPage(oldSettings.page, {
-                            limit:this.isPaginated() ? this.recordsPerPage: Ung.Util.maxRowCount,
+                            limit:this.isPaginated() ? this.recordsPerPage: Ung.EditorGrid.maxRowCount,
                             callback:Ext.bind(function() {
                                 handler({
                                     javaClass: "java.util.LinkedList",
