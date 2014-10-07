@@ -81,7 +81,7 @@ Ext.define('Ung.EditorGrid', {
     extend:'Ext.grid.Panel',
     statics: {
         maxRowCount: 2147483647
-    }
+    },
     selType: 'rowmodel',
     //reserveScrollbar: true,
     // record per page
