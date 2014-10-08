@@ -52,8 +52,8 @@ for file in $PG_CONF ; do
     sed -i -e "s/.*autovacuum_max_workers.*=.*/autovacuum_max_workers = 1/" $file
 done
 
-# disable postgres common cron job
-perl -i -pe 's/^(?!#)/#/' /etc/cron.d/postgresql-common
+# disable postgres common cron job (if it exists)
+rm -f /etc/cron.d/postgresql-common
 
 # configure hw parameters
 /etc/untangle/startup.d/10postgres
