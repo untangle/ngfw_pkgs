@@ -167,10 +167,8 @@ Ext.define('Ung.Wizard', {
 
     afterLoadHandler : function() {
         this.contentPanel.getLayout().setActiveItem( this.currentPage );
-
         /* You have to force the layout for components that need to recalculate their heights */
         this.contentPanel.doLayout();
-
         /* retrieve all of the items */
         var items = this.headerPanel.query('');
         var length = items.length;

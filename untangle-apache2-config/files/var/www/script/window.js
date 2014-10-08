@@ -3,6 +3,20 @@ Ext.define('Ung.window', {});
 // Standard Ung window
 Ext.define('Ung.Window', {
     extend: 'Ext.window.Window',
+    statics: {
+        cancelAction: function(dirty, closeWinFn) {
+            if (dirty) {
+                Ext.MessageBox.confirm(i18n._('Warning'), i18n._('There are unsaved settings which will be lost. Do you want to continue?'),
+                function(btn) {
+                    if (btn == 'yes') {
+                        closeWinFn();
+                    }
+                });
+            } else {
+                closeWinFn();
+            }
+        }
+    },
     modal: true,
     // window title
     title: null,
@@ -120,19 +134,6 @@ Ext.define('Ung.Window', {
         }
     }
 });
-
-Ung.Window.cancelAction = function(dirty, closeWinFn) {
-    if (dirty) {
-        Ext.MessageBox.confirm(i18n._('Warning'), i18n._('There are unsaved settings which will be lost. Do you want to continue?'),
-        function(btn) {
-            if (btn == 'yes') {
-                closeWinFn();
-            }
-        });
-    } else {
-        closeWinFn();
-    }
-};
 
 Ext.define("Ung.SettingsWin", {
     extend: "Ung.Window",
@@ -635,7 +636,6 @@ Ext.define('Ung.EditWindow', {
     helpAction: function() {
         main.openHelp(this.helpSource);
     }
-
 });
 
 // Manage list popup window

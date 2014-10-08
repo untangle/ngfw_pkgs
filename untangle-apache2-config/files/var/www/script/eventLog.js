@@ -401,7 +401,6 @@ Ext.define("Ung.GridEventLogBase", {
     }
 });
 
-
 Ext.define("Ung.GridEventLog", {
     extend: "Ung.GridEventLogBase",
     // the settings component
