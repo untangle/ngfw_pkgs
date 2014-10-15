@@ -8,9 +8,9 @@ Standards-Version: 3.8.0
 
 Package: untangle-gateway
 Architecture: all
-Conflicts: untangle-gateway-light, untangle-kav, untangle-node-kav, untangle-libitem-kav, untangle-libitem-trial14-kav, untangle-http-proxy, untangle-ldap-server, untangle-ctasd, untangle-node-commtouchav, untangle-libitem-commtouchav, untangle-node-commtouchas, untangle-libitem-commtouchas
-Replaces: untangle-gateway-light, untangle-kav, untangle-node-kav, untangle-libitem-kav, untangle-libitem-trial14-kav, untangle-http-proxy, untangle-ldap-server, untangle-ctasd, untangle-node-commtouchav, untangle-libitem-commtouchav, untangle-node-commtouchas, untangle-libitem-commtouchas 
-Provides: untangle-gateway-light, untangle-kav, untangle-node-kav, untangle-libitem-kav, untangle-libitem-trial14-kav, untangle-http-proxy, untangle-ldap-server, untangle-ctasd, untangle-node-commtouchav, untangle-libitem-commtouchav, untangle-node-commtouchas, untangle-libitem-commtouchas
+Conflicts: untangle-gateway-light, untangle-kav, untangle-node-kav, untangle-libitem-kav, untangle-libitem-trial14-kav, untangle-http-proxy, untangle-ldap-server
+Replaces: untangle-gateway-light, untangle-kav, untangle-node-kav, untangle-libitem-kav, untangle-libitem-trial14-kav, untangle-http-proxy, untangle-ldap-server
+Provides: untangle-gateway-light, untangle-kav, untangle-node-kav, untangle-libitem-kav, untangle-libitem-trial14-kav, untangle-http-proxy, untangle-ldap-server
 Depends: untangle-vm, untangle-kiosk, untangle-ntp-config, untangle-bootsplash, untangle-restore-tools, untangle-exim4-config, untangle-linux-config, untangle-system-config, untangle-update-manager, ssh, smartmontools, untangle-extra-utils, untangle-kernel-modules-i386 | untangle-kernel-modules-squeeze-i386 | untangle-kernel-modules-amd64 | untangle-kernel-modules-squeeze-amd64, untangle-client-local, untangle-dhclient-config, untangle-ddclient-config, untangle-snmpd-config, iceweasel | firefox | mozilla | opera, ifupdown, nvi, nano
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle Gateway
