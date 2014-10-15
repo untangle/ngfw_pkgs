@@ -18,10 +18,9 @@ Ext.define('Ext.ux.form.field.DateTime', {
         type: 'hbox',
         align: 'stretch'
     },
-    
     dateFormat:'m/d/y',
     timeFormat:'g:i A',
-    
+
     height: 22,
     style: {
         width : "100%"
@@ -29,7 +28,7 @@ Ext.define('Ext.ux.form.field.DateTime', {
     dateCfg:{},
     timeCfg:{},
     valueCfg:{},
-    
+
     initComponent: function() {
         var me = this;
         me.buildField();
@@ -51,10 +50,10 @@ Ext.define('Ext.ux.form.field.DateTime', {
                 flex: 0.55,
                 margin: '0 1 0 0',
                 submitValue: false,
-                listeners : {     
-                    'change':function ( dateObj, newValue, oldValue, eOpts ){            
-                                this.ownerCt.onUpdateDate();
-                             }
+                listeners : {
+                    'change': function ( dateObj, newValue, oldValue, eOpts ) {
+                        this.ownerCt.onUpdateDate();
+                     }
                 }
             },this.dateCfg),
             Ext.apply({
@@ -65,10 +64,10 @@ Ext.define('Ext.ux.form.field.DateTime', {
                 flex: 0.45,
                 margin: '0 0 0 1',
                 submitValue: false,
-                listeners : {     
-                    'change':function ( dateObj, newValue, oldValue, eOpts ){            
-                                this.ownerCt.onUpdateTime();
-                             }
+                listeners : {
+                    'change':function ( dateObj, newValue, oldValue, eOpts ){
+                        this.ownerCt.onUpdateTime();
+                     }
                 }
             },this.timeCfg),
             Ext.apply({
@@ -77,30 +76,30 @@ Ext.define('Ext.ux.form.field.DateTime', {
                 name: this.name + "-datetimevalue",
                 value: '',
                 getValue: function(){
-            if(this.ownerCt) {
-                return this.ownerCt.getValue();
-            }else{
-                return;
-            } 
-        },
-        getSubmitData: function(){
-            data = {};
-            if(this.ownerCt){
-                data[this.ownerCt.name] = '' + this.ownerCt.getRawValue();
-            }
-            return data;
-        }
+                    if(this.ownerCt) {
+                        return this.ownerCt.getValue();
+                    } else {
+                        return;
+                    }
+                },
+                getSubmitData: function(){
+                    data = {};
+                    if(this.ownerCt){
+                        data[this.ownerCt.name] = '' + this.ownerCt.getRawValue();
+                    }
+                    return data;
+                }
             }, this.valueCfg)
         ];
     },
 
     getValue: function() {
-        var value = '',date = this.dateField.getSubmitValue(),time = this.timeField.getSubmitValue();
-        if(date){
-            if(time){
+        var value = '', date = this.dateField.getSubmitValue(), time = this.timeField.getSubmitValue();
+        if(date) {
+            if(time) {
                 var format = this.getFormat();
                 value = Ext.Date.parse(date + ' ' + time,format);
-            }else{
+            } else {
                 value = this.dateField.getValue();
             }
         }
@@ -120,26 +119,26 @@ Ext.define('Ext.ux.form.field.DateTime', {
     getSubmitData: function(){
         data = {};
         data[this.name] = '' + this.getRawValue();
-        return data; 
+        return data;
     },
 
     getFormat: function(){
         return (this.dateField.submitFormat || this.dateField.format) + " " + (this.timeField.submitFormat || this.timeField.format);
     },
-    
+
     getRawValue: function() {
         if(this.getValue()){
             return this.getValue();
         }
         return '';
     },
-    
+
     getTime: function() {
         if(!Ext.isEmpty(this.getValue())){
             return this.getValue().getTime();
         }
     },
-    
+
     initDateValue:function() {
         return new Date();
     },
@@ -155,9 +154,9 @@ Ext.define('Ext.ux.form.field.DateTime', {
         if(d && !this.timeField.getValue()) {
             this.timeField.setValue(this.initDateValue());
         }
-        this.valueField.value = this.getRawValue(); 
+        this.valueField.value = this.getRawValue();
     },
-    
+
     onUpdateTime:function() {
         var t = this.timeField.getValue();
         if(t && !(t instanceof Date)) {
@@ -168,5 +167,4 @@ Ext.define('Ext.ux.form.field.DateTime', {
         }
         this.valueField.value = this.getRawValue();
     }
-    
 });
