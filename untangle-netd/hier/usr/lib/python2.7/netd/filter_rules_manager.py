@@ -141,6 +141,7 @@ class FilterRulesManager:
         self.file.write("\n");
         self.file.write("# Block IPv6 Input" + "\n");
         self.file.write("${IP6TABLES} -t filter -F INPUT -m comment --comment \"Flush IPv6 filter rules\" >/dev/null 2>&1" + "\n");
+        self.file.write("${IP6TABLES} -t filter -A INPUT -p icmpv6 -j RETURN -m comment --comment \"Allow IPv6 icmp RA, solicitions, ping etc\" >/dev/null 2>&1" + "\n");
         self.file.write("${IP6TABLES} -t filter -A INPUT -j DROP -m comment --comment \"Do not allow IPv6 input\" >/dev/null 2>&1" + "\n");
         self.file.write("\n");
             
