@@ -1,5 +1,3 @@
-Ext.define('Ung.baseEventLog', {});
-
 //Event Log class
 Ext.define("Ung.GridEventLogBase", {
     extend: "Ext.grid.Panel",
