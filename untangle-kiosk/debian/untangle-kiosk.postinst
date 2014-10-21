@@ -52,12 +52,6 @@ chsh -s /bin/zsh root
 find /root/.zsh -type f | xargs chmod 640
 find /root/.zsh -type d | xargs chmod 750
 
-bad_libnet="/usr/lib/jvm/java-6-sun-1.6.0.20/jre/lib/amd64/libnet.so"
-if [ -f "$bad_libnet" ] ; then
-  mv $bad_libnet ${bad_libnet}.bad
-  cp -f /usr/share/untangle-kiosk/libnet-good.so $bad_libnet
-fi
-
 # Display plymouth message when running fsck
 # Bug #11111
 # This is a nasty hack because squeeze doesnt notify 
