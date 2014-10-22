@@ -42,15 +42,4 @@ update-rc.d spamassassin disable
 # update (commented out - don't do this on install - takes too long)
 # /etc/cron.daily/untangle-spamassassin-update
 
-# remove old FuzzyOcr stuff (10.1)
-rm -f /etc/spamassassin/Fuzzy*
-
-# 11.0 - remove ctasd
-# this will delete /home/spamc and all the bayes stored inside it effectively resetting the bayes
-deluser spamc
-delgroup spamc
-rm -rf /home/spamc
-rm -rf /home/spamassassin
-rm -f /etc/spamassassin/ctasd*
-
 exit 0
