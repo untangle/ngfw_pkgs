@@ -15,9 +15,9 @@ rm -fr $tmpDir
 mkdir $tmpDir
 cd $tmpDir
 
-unzip $jarFile
+unzip -q $jarFile
 sed -i 's/Iceweasel//g' $(eval echo $filesToRebrand)
-zip -r $jarFile .
+zip -rq $jarFile .
 
 cd /
 rm -rf $tmpDir
