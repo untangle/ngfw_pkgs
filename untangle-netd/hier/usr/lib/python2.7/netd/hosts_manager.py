@@ -70,19 +70,22 @@ ff02::3 ip6-allhosts
             print "ERROR: Missing hostname setting"
             return
 
+        fqdnHostname = settings['hostName']
+        if 'domainName' in settings:
+            fqdnHostname = fqdnHostname + "." + settings['domainName']
         filename = prefix + self.hostnameFile
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
             os.makedirs( fileDir )
 
         file = open( filename, "w+" )
-        file.write("%s\n" % settings['hostName'])
+        file.write("%s\n" % fqdnHostname)
 
         file.flush()
         file.close()
 
         # also set the hostname using '/bin/hostname'
-        os.system("/bin/hostname %s" % settings['hostName'])
+        os.system("/bin/hostname %s" % fqdnHostname)
 
         if verbosity > 0: print "HostsManager: Wrote %s" % filename
         return
