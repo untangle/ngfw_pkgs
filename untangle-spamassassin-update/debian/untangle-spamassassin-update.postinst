@@ -29,6 +29,12 @@ time_limit 35
 # Lower auto-learn ham threshold
 bayes_auto_learn_threshold_nonspam -0.50
 
+# Set RP_MATCHES_RCVD score to low - causes problems
+# http://spamassassin.1065346.n5.nabble.com/RP-MATCHES-RCVD-td111557.html
+# http://www.gossamer-threads.com/lists/spamassassin/users/166185
+# http://www.gossamer-threads.com/lists/spamassassin/users/181911
+score RP_MATCHES_RCVD -0.0001
+
 # A simple-to-parse report format
 clear_report_template
 report _SUMMARY_
