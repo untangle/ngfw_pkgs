@@ -3,11 +3,11 @@ Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb.com>
 Uploaders: Untangle Buildbot <buildbot@untangle.com>
-Build-Depends: debhelper (>> 3.0.0), untangle-libnetfilter-queue-dev, libnfnetlink-dev, libc6-dev
+Build-Depends: debhelper (>> 3.0.0), libnetfilter-queue-dev (>= 1.0.2+20141023+git329468), libnfnetlink-dev (>= 1.0.1), libc6-dev
 Standards-Version: 3.8.0
 
 Package: untangle-netd
 Architecture: any
-Depends: ${shlibs:Depends}, dash, bridge-utils, iptables, dhcp3-client, iputils-arping, untangle-libnetfilter-queue-dev, libnfnetlink-dev, radvd, ndisc6, vlan, keepalived, psmisc
+Depends: ${shlibs:Depends}, dash, bridge-utils, iptables, dhcp3-client, iputils-arping, libnetfilter-queue-dev (>= 1.0.2+20141023+git329468), libnfnetlink-dev (>= 1.0.1), radvd, ndisc6, vlan, keepalived, psmisc
 Description: The Untangle network daemon
  The Untangle network daemon for managing the network
