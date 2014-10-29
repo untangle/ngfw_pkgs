@@ -3,7 +3,6 @@ Ext.namespace('Ung');
 Ext.define('Ung.Wizard', {
     extend:'Ext.panel.Panel',
     currentPage : 0,
-    hidePreviousOnLastPage: false,
     hasCancel: false,
     modalFinish: false, //can not go back or cancel on finish step
     finished: false,
@@ -13,9 +12,9 @@ Ext.define('Ung.Wizard', {
         var logo = document.createElement('img');
         logo.src= '../images/BrandingLogo.png';
         logo_container.appendChild(logo);
-        /* Build a panel to hold the headers on the left */
+        // Build a panel to hold the headers on the left
         this.headerPanel = Ext.create('Ext.panel.Panel', {
-            cls : 'wizard-steps',
+            cls: 'wizard-steps',
             defaults : { border : false, width : 200 },
             items:this.buildHeaders( this.cards ),
             layout: {
@@ -35,6 +34,7 @@ Ext.define('Ung.Wizard', {
         if(this.hasCancel) {
             this.cancelButton = Ext.create('Ext.button.Button',{
                 id : 'cancel',
+                iconCls: 'cancel-icon',
                 text : i18n._( 'Cancel' ),
                 handler : Ext.bind(function() {
                     this.cancelAction();
@@ -63,24 +63,22 @@ Ext.define('Ung.Wizard', {
         this.cardDefaults.border = false;
         var bbarArr=[ '->', this.previousButton, this.nextButton ];
         if(this.hasCancel) {
-        //    bbarArr.unshift(this.cancelButton);
+            bbarArr.unshift(this.cancelButton);
         };
-        /* Build a card to hold the wizard */
+        // Build a card to hold the wizard
         this.contentPanel = Ext.create('Ext.panel.Panel',{
             layout : "card",
             items : panels,
             activeItem : 0,
             region : "center",
-            //title : "&nbsp;",
             header:false,
-            //autoScroll : true,
             defaults : this.cardDefaults,
             bbar : bbarArr,
             border:false
         });
         this.layout = "border";
         this.items = [ this.headerPanel, this.contentPanel ];
-        Ung.Wizard.superclass.initComponent.apply(this);
+        this.callParent(arguments);
     },
     buildHeaders : function( cards ) {
         var items = [];
