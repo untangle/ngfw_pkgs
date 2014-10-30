@@ -1,0 +1,14 @@
+#! /bin/sh
+
+set -x
+set -e
+
+cat > /etc/modules <<EOF
+xt_conntrack
+xt_comment
+xt_multiport
+xt_policy
+xt_socket
+EOF
+
+exit 0
