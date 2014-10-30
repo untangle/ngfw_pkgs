@@ -1,0 +1,797 @@
+#!/bin/sh
+
+# this is creates the default network settings for the buffalo wzr1750
+
+
+
+if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
+
+   echo "Initializing default network settings for Buffalo WZR 1750..."
+    
+   cat > /usr/share/untangle/settings/untangle-vm/network.js <<EOF
+{
+    "blockIpv6Forwarding": false,
+    "bypassRules": {
+        "javaClass": "java.util.LinkedList",
+        "list": [
+            {
+                "bypass": true,
+                "description": "Bypass DNS Sessions",
+                "enabled": false,
+                "javaClass": "com.untangle.uvm.network.BypassRule",
+                "matchers": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.BypassRuleMatcher",
+                            "matcherType": "DST_PORT",
+                            "value": "53"
+                        }
+                    ]
+                },
+                "ruleId": 1
+            },
+            {
+                "bypass": true,
+                "description": "Bypass VoIP (SIP) Sessions",
+                "enabled": true,
+                "javaClass": "com.untangle.uvm.network.BypassRule",
+                "matchers": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.BypassRuleMatcher",
+                            "matcherType": "DST_PORT",
+                            "value": "5060"
+                        }
+                    ]
+                },
+                "ruleId": 2
+            },
+            {
+                "bypass": true,
+                "description": "Bypass VoIP (IAX2) Sessions",
+                "enabled": true,
+                "javaClass": "com.untangle.uvm.network.BypassRule",
+                "matchers": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.BypassRuleMatcher",
+                            "matcherType": "DST_PORT",
+                            "value": "4569"
+                        }
+                    ]
+                },
+                "ruleId": 3
+            },
+            {
+                "bypass": true,
+                "description": "Bypass PPTP Sessions",
+                "enabled": true,
+                "javaClass": "com.untangle.uvm.network.BypassRule",
+                "matchers": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.BypassRuleMatcher",
+                            "matcherType": "DST_PORT",
+                            "value": "1723"
+                        },
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.BypassRuleMatcher",
+                            "matcherType": "PROTOCOL",
+                            "value": "TCP"
+                        }
+                    ]
+                },
+                "ruleId": 4
+            }
+        ]
+    },
+    "devices": {
+        "javaClass": "java.util.LinkedList",
+        "list": [
+            {
+                "deviceName": "eth0",
+                "duplex": "AUTO",
+                "javaClass": "com.untangle.uvm.network.DeviceSettings"
+            }
+        ]
+    },
+    "dhcpAuthoritative": true,
+    "dnsSettings": {
+        "javaClass": "com.untangle.uvm.network.DnsSettings",
+        "localServers": {
+            "javaClass": "java.util.LinkedList",
+            "list": []
+        },
+        "staticEntries": {
+            "javaClass": "java.util.LinkedList",
+            "list": []
+        }
+    },
+    "domainName": "example.com",
+    "dynamicDnsServiceEnabled": false,
+    "enableSipNatHelper": false,
+    "forwardFilterRules": {
+        "javaClass": "java.util.LinkedList",
+        "list": []
+    },
+    "hostName": "untangle",
+    "httpPort": 80,
+    "httpsPort": 443,
+    "inputFilterRules": {
+        "javaClass": "java.util.LinkedList",
+        "list": [
+            {
+                "blocked": false,
+                "description": "Allow SSH",
+                "enabled": true,
+                "javaClass": "com.untangle.uvm.network.FilterRule",
+                "matchers": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "DST_PORT",
+                            "value": "22"
+                        },
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "PROTOCOL",
+                            "value": "TCP"
+                        }
+                    ]
+                },
+                "readOnly": true,
+                "ruleId": 1
+            },
+            {
+                "blocked": false,
+                "description": "Allow HTTPS on WANs",
+                "enabled": true,
+                "javaClass": "com.untangle.uvm.network.FilterRule",
+                "matchers": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "DST_PORT",
+                            "value": "443"
+                        },
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "PROTOCOL",
+                            "value": "TCP"
+                        },
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "SRC_INTF",
+                            "value": "wan"
+                        }
+                    ]
+                },
+                "readOnly": true,
+                "ruleId": 2
+            },
+            {
+                "blocked": false,
+                "description": "Allow HTTPS on non-WANs",
+                "enabled": true,
+                "javaClass": "com.untangle.uvm.network.FilterRule",
+                "matchers": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "DST_PORT",
+                            "value": "443"
+                        },
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "PROTOCOL",
+                            "value": "TCP"
+                        },
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "SRC_INTF",
+                            "value": "non_wan"
+                        }
+                    ]
+                },
+                "readOnly": true,
+                "ruleId": 3
+            },
+            {
+                "blocked": false,
+                "description": "Allow PING",
+                "enabled": true,
+                "javaClass": "com.untangle.uvm.network.FilterRule",
+                "matchers": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "PROTOCOL",
+                            "value": "ICMP"
+                        }
+                    ]
+                },
+                "readOnly": true,
+                "ruleId": 4
+            },
+            {
+                "blocked": false,
+                "description": "Allow DNS on non-WANs",
+                "enabled": true,
+                "javaClass": "com.untangle.uvm.network.FilterRule",
+                "matchers": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "DST_PORT",
+                            "value": "53"
+                        },
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "PROTOCOL",
+                            "value": "TCP,UDP"
+                        },
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "SRC_INTF",
+                            "value": "non_wan"
+                        }
+                    ]
+                },
+                "readOnly": true,
+                "ruleId": 5
+            },
+            {
+                "blocked": false,
+                "description": "Allow DHCP on non-WANs",
+                "enabled": true,
+                "javaClass": "com.untangle.uvm.network.FilterRule",
+                "matchers": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "DST_PORT",
+                            "value": "67"
+                        },
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "PROTOCOL",
+                            "value": "UDP"
+                        },
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "SRC_INTF",
+                            "value": "non_wan"
+                        }
+                    ]
+                },
+                "readOnly": true,
+                "ruleId": 6
+            },
+            {
+                "blocked": false,
+                "description": "Allow HTTP on non-WANs",
+                "enabled": true,
+                "javaClass": "com.untangle.uvm.network.FilterRule",
+                "matchers": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "DST_PORT",
+                            "value": "80"
+                        },
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "PROTOCOL",
+                            "value": "TCP"
+                        }
+                    ]
+                },
+                "readOnly": true,
+                "ruleId": 7
+            },
+            {
+                "blocked": false,
+                "description": "Allow SNMP on non-WANs",
+                "enabled": true,
+                "javaClass": "com.untangle.uvm.network.FilterRule",
+                "matchers": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "DST_PORT",
+                            "value": "161"
+                        },
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "PROTOCOL",
+                            "value": "UDP"
+                        },
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "SRC_INTF",
+                            "value": "non_wan"
+                        }
+                    ]
+                },
+                "readOnly": true,
+                "ruleId": 8
+            },
+            {
+                "blocked": false,
+                "description": "Allow AH/ESP for IPsec",
+                "enabled": true,
+                "javaClass": "com.untangle.uvm.network.FilterRule",
+                "matchers": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "PROTOCOL",
+                            "value": "AH,ESP"
+                        }
+                    ]
+                },
+                "readOnly": true,
+                "ruleId": 9
+            },
+            {
+                "blocked": false,
+                "description": "Allow IKE for IPsec",
+                "enabled": true,
+                "javaClass": "com.untangle.uvm.network.FilterRule",
+                "matchers": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "PROTOCOL",
+                            "value": "UDP"
+                        },
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "DST_PORT",
+                            "value": "500"
+                        }
+                    ]
+                },
+                "readOnly": true,
+                "ruleId": 10
+            },
+            {
+                "blocked": false,
+                "description": "Allow NAT-T for IPsec",
+                "enabled": true,
+                "javaClass": "com.untangle.uvm.network.FilterRule",
+                "matchers": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "PROTOCOL",
+                            "value": "UDP"
+                        },
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "DST_PORT",
+                            "value": "4500"
+                        }
+                    ]
+                },
+                "readOnly": true,
+                "ruleId": 11
+            },
+            {
+                "blocked": false,
+                "description": "Allow L2TP",
+                "enabled": true,
+                "javaClass": "com.untangle.uvm.network.FilterRule",
+                "matchers": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "PROTOCOL",
+                            "value": "UDP"
+                        },
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "DST_PORT",
+                            "value": "1701"
+                        }
+                    ]
+                },
+                "readOnly": true,
+                "ruleId": 12
+            },
+            {
+                "blocked": false,
+                "description": "Allow OpenVPN",
+                "enabled": true,
+                "javaClass": "com.untangle.uvm.network.FilterRule",
+                "matchers": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "PROTOCOL",
+                            "value": "UDP"
+                        },
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "DST_PORT",
+                            "value": "1194"
+                        },
+                        {
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleMatcher",
+                            "matcherType": "SRC_INTF",
+                            "value": "wan"
+                        }
+                    ]
+                },
+                "readOnly": true,
+                "ruleId": 13
+            },
+            {
+                "blocked": true,
+                "description": "Block All",
+                "enabled": true,
+                "javaClass": "com.untangle.uvm.network.FilterRule",
+                "matchers": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "readOnly": true,
+                "ruleId": 14
+            }
+        ]
+    },
+    "interfaces": {
+        "javaClass": "java.util.LinkedList",
+        "list": [
+            {
+                "addressed": true,
+                "bridged": false,
+                "configType": "DISABLED",
+                "dhcpEnabled": false,
+                "dhcpOptions": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "disabled": true,
+                "imqDev": "imq0",
+                "interfaceId": 1,
+                "isVlanInterface": false,
+                "isWan": true,
+                "javaClass": "com.untangle.uvm.network.InterfaceSettings",
+                "name": "Root Dev",
+                "physicalDev": "eth0",
+                "raEnabled": false,
+                "symbolicDev": "eth0",
+                "systemDev": "eth0",
+                "v4Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v4ConfigType": "STATIC",
+                "v4NatEgressTraffic": true,
+                "v4NatIngressTraffic": false,
+                "v4PPPoEPassword": "",
+                "v4PPPoEUsePeerDns": false,
+                "v4PPPoEUsername": "",
+                "v4StaticAddress": "172.16.2.3",
+                "v4StaticDns1": "172.16.2.1",
+                "v4StaticGateway": "172.16.2.1",
+                "v4StaticNetmask": "255.255.255.0",
+                "v4StaticPrefix": 24,
+                "v6Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v6ConfigType": "DISABLED",
+                "vrrpEnabled": false,
+                "vrrpId": 1,
+                "vrrpPriority": 50
+            },
+            {
+                "addressed": true,
+                "bridged": false,
+                "configType": "ADDRESSED",
+                "dhcpEnabled": false,
+                "dhcpOptions": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "disabled": false,
+                "imqDev": "imq1",
+                "interfaceId": 100,
+                "isVlanInterface": true,
+                "isWan": true,
+                "javaClass": "com.untangle.uvm.network.InterfaceSettings",
+                "name": "External",
+                "physicalDev": "eth0",
+                "raEnabled": false,
+                "symbolicDev": "eth0.1",
+                "systemDev": "eth0.1",
+                "v4Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v4ConfigType": "AUTO",
+                "v4NatEgressTraffic": true,
+                "v4NatIngressTraffic": false,
+                "v4PPPoEPassword": "",
+                "v4PPPoEUsePeerDns": false,
+                "v4PPPoEUsername": "",
+                "v6Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v6ConfigType": "STATIC",
+                "vlanParent": 1,
+                "vlanTag": 1,
+                "vrrpAliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
+                            "javaClass": "com.untangle.uvm.network.InterfaceSettings$InterfaceAlias",
+                            "staticAddress": "172.16.2.61",
+                            "staticNetmask": "255.255.255.0",
+                            "staticPrefix": 24
+                        }
+                    ]
+                },
+                "vrrpEnabled": false
+            },
+            {
+                "addressed": true,
+                "bridged": false,
+                "configType": "ADDRESSED",
+                "dhcpEnabled": false,
+                "dhcpOptions": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "disabled": false,
+                "interfaceId": 101,
+                "isVlanInterface": true,
+                "isWan": false,
+                "javaClass": "com.untangle.uvm.network.InterfaceSettings",
+                "name": "Internal",
+                "physicalDev": "eth0",
+                "raEnabled": false,
+                "symbolicDev": "eth0.2",
+                "systemDev": "eth0.2",
+                "v4Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v4ConfigType": "STATIC",
+                "v4NatEgressTraffic": false,
+                "v4NatIngressTraffic": false,
+                "v4PPPoEPassword": "",
+                "v4PPPoEUsePeerDns": false,
+                "v4PPPoEUsername": "",
+                "v4StaticAddress": "192.168.1.1",
+                "v4StaticNetmask": "255.255.0.0",
+                "v4StaticPrefix": 16,
+                "v6Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v6ConfigType": "STATIC",
+                "vlanParent": 1,
+                "vlanTag": 2,
+                "vrrpAliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "vrrpEnabled": false
+            }
+        ]
+    },
+    "javaClass": "com.untangle.uvm.network.NetworkSettings",
+    "natRules": {
+        "javaClass": "java.util.LinkedList",
+        "list": []
+    },
+    "portForwardRules": {
+        "javaClass": "java.util.LinkedList",
+        "list": []
+    },
+    "qosSettings": {
+        "defaultPriority": 3,
+        "dnsPriority": 1,
+        "javaClass": "com.untangle.uvm.network.QosSettings",
+        "openvpnPriority": 0,
+        "pingPriority": 1,
+        "qosEnabled": false,
+        "qosPriorities": {
+            "javaClass": "java.util.LinkedList",
+            "list": [
+                {
+                    "downloadLimit": 100,
+                    "downloadReservation": 50,
+                    "javaClass": "com.untangle.uvm.network.QosPriority",
+                    "priorityId": 1,
+                    "priorityName": "Very High",
+                    "uploadLimit": 100,
+                    "uploadReservation": 50
+                },
+                {
+                    "downloadLimit": 100,
+                    "downloadReservation": 25,
+                    "javaClass": "com.untangle.uvm.network.QosPriority",
+                    "priorityId": 2,
+                    "priorityName": "High",
+                    "uploadLimit": 100,
+                    "uploadReservation": 25
+                },
+                {
+                    "downloadLimit": 100,
+                    "downloadReservation": 12,
+                    "javaClass": "com.untangle.uvm.network.QosPriority",
+                    "priorityId": 3,
+                    "priorityName": "Medium",
+                    "uploadLimit": 100,
+                    "uploadReservation": 12
+                },
+                {
+                    "downloadLimit": 100,
+                    "downloadReservation": 6,
+                    "javaClass": "com.untangle.uvm.network.QosPriority",
+                    "priorityId": 4,
+                    "priorityName": "Low",
+                    "uploadLimit": 100,
+                    "uploadReservation": 6
+                },
+                {
+                    "downloadLimit": 75,
+                    "downloadReservation": 3,
+                    "javaClass": "com.untangle.uvm.network.QosPriority",
+                    "priorityId": 5,
+                    "priorityName": "Limited",
+                    "uploadLimit": 75,
+                    "uploadReservation": 3
+                },
+                {
+                    "downloadLimit": 50,
+                    "downloadReservation": 2,
+                    "javaClass": "com.untangle.uvm.network.QosPriority",
+                    "priorityId": 6,
+                    "priorityName": "Limited More",
+                    "uploadLimit": 50,
+                    "uploadReservation": 2
+                },
+                {
+                    "downloadLimit": 10,
+                    "downloadReservation": 2,
+                    "javaClass": "com.untangle.uvm.network.QosPriority",
+                    "priorityId": 7,
+                    "priorityName": "Limited Severely",
+                    "uploadLimit": 10,
+                    "uploadReservation": 2
+                }
+            ]
+        },
+        "qosRules": {
+            "javaClass": "java.util.LinkedList",
+            "list": [
+                {
+                    "description": "VoIP (SIP) Traffic",
+                    "enabled": true,
+                    "javaClass": "com.untangle.uvm.network.QosRule",
+                    "matchers": {
+                        "javaClass": "java.util.LinkedList",
+                        "list": [
+                            {
+                                "invert": false,
+                                "javaClass": "com.untangle.uvm.network.QosRuleMatcher",
+                                "matcherType": "DST_PORT",
+                                "value": "5060"
+                            },
+                            {
+                                "invert": false,
+                                "javaClass": "com.untangle.uvm.network.QosRuleMatcher",
+                                "matcherType": "PROTOCOL",
+                                "value": "TCP,UDP"
+                            }
+                        ]
+                    },
+                    "priority": 1,
+                    "ruleId": 1
+                },
+                {
+                    "description": "VoIP (IAX) Traffic",
+                    "enabled": true,
+                    "javaClass": "com.untangle.uvm.network.QosRule",
+                    "matchers": {
+                        "javaClass": "java.util.LinkedList",
+                        "list": [
+                            {
+                                "invert": false,
+                                "javaClass": "com.untangle.uvm.network.QosRuleMatcher",
+                                "matcherType": "DST_PORT",
+                                "value": "4569"
+                            },
+                            {
+                                "invert": false,
+                                "javaClass": "com.untangle.uvm.network.QosRuleMatcher",
+                                "matcherType": "PROTOCOL",
+                                "value": "TCP,UDP"
+                            }
+                        ]
+                    },
+                    "priority": 1,
+                    "ruleId": 2
+                }
+            ]
+        },
+        "sshPriority": 0
+    },
+    "sendIcmpRedirects": true,
+    "staticDhcpEntries": {
+        "javaClass": "java.util.LinkedList",
+        "list": []
+    },
+    "staticRoutes": {
+        "javaClass": "java.util.LinkedList",
+        "list": []
+    },
+    "stpEnabled": false,
+    "strictArpMode": true,
+    "version": 2
+}
+EOF
+
+   /usr/share/untangle-netd/bin/sync-settings.py -vv
+   echo "Initializing default network settings for Buffalo WZR 1750...done"
+
+fi
+
