@@ -3,12 +3,24 @@
 set -x
 set -e
 
-# ip ad flush dev eth0
-# modprobe switch_core
-# modprobe switch_robo
-# modprobe softdog
-# vconfig set_name_type VLAN_PLUS_VID_NO_PAD
-# vconfig add eth0 1
-# vconfig add eth0 2
+
+# load switch config module
+modprobe switch-robo
+
+# disable switch
+echo 0 > /proc/switch/eth0/enable
+
+# reset config
+echo 1 > /proc/switch/eth0/reset
+
+# ports 0,1,2,3 (LAN) -> vlan 2
+echo "0\t1\t2\t3\t5t" >| /proc/switch/eth0/vlan/2/ports
+
+# port 4 (WAN) -> vlan 1
+echo "4\t5t" >| /proc/switch/eth0/vlan/1/ports
+
+# enable switch
+echo 1 > /proc/switch/eth0/enable
+
 
 exit 0
