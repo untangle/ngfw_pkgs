@@ -3,12 +3,12 @@
 set -x
 set -e
 
-ip ad flush dev eth0
-modprobe switch_core
-modprobe switch_robo
-modprobe softdog
-vconfig set_name_type VLAN_PLUS_VID_NO_PAD
-vconfig add eth0 1
-vconfig add eth0 2
+# ip ad flush dev eth0
+# modprobe switch_core
+# modprobe switch_robo
+# modprobe softdog
+# vconfig set_name_type VLAN_PLUS_VID_NO_PAD
+# vconfig add eth0 1
+# vconfig add eth0 2
 
 exit 0
