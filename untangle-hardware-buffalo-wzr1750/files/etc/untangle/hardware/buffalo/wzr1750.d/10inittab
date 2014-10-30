@@ -3,6 +3,9 @@
 set -x
 set -e
 
-# FIXME
+if [ -f /etc/inittab ] ; then
+    # disable getty on local terminals
+    sed -e '/^[0-9].*respawn.*getty.*/ s/^/#/g' /etc/inittab
+fi
 
 exit 0
