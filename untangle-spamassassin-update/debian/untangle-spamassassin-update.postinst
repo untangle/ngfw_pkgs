@@ -28,10 +28,18 @@ sed -i "s/^#.*loadplugin Mail::SpamAssassin::Plugin::Rule2XSBody/loadplugin Mail
 rm -f /etc/spamassassin/local.cf
 cat > /etc/spamassassin/local.cf << EOF
 # Untangle global Spam Blocker settings
-score ALL_TRUSTED 0
 lock_method flock
+
 auto_whitelist_factor 0.3
-pyzor_timeout 3
+
+# Lower auto-learn ham threshold
+bayes_auto_learn_threshold_nonspam -0.50
+
+# Set RP_MATCHES_RCVD score to low - causes problems
+# http://spamassassin.1065346.n5.nabble.com/RP-MATCHES-RCVD-td111557.html
+# http://www.gossamer-threads.com/lists/spamassassin/users/166185
+# http://www.gossamer-threads.com/lists/spamassassin/users/181911
+score RP_MATCHES_RCVD -0.0001
 
 # A simple-to-parse report format
 clear_report_template
