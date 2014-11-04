@@ -203,7 +203,7 @@ for module in [ HostsManager(), DnsMasqManager(),
                 DhcpManager(), RadvdManager(),
                 PPPoEManager(), DdclientManager(),
                 KernelManager(), EbtablesManager(),
-                VrrpManager()]:
+                VrrpManager(), WirelessManager()]:
     try:
         module.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
     except Exception,e:

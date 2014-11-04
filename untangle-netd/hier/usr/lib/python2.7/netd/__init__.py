@@ -1,6 +1,7 @@
 
 from netd.hosts_manager import HostsManager
 from netd.interfaces_manager import InterfacesManager
+from netd.wireless_manager import WirelessManager
 from netd.dnsmasq_manager import DnsMasqManager
 from netd.nat_rules_manager import NatRulesManager
 from netd.filter_rules_manager import FilterRulesManager
