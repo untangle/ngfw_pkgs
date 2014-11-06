@@ -59,9 +59,4 @@ rm -rf /home/spamc
 rm -rf /home/spamassassin
 rm -f /etc/spamassassin/ctasd*
 
-# reset bayse
-if [ -d /home/spamd/.spamassassin ] ; then
-    rm -f /home/spamd/.spamassassin/bayes*
-fi
-
 exit 0
