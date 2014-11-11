@@ -100,7 +100,7 @@ obj = {"javaClass":"com.untangle.uvm.network.InterfaceStatus", "interfaceId":int
 
 
 # Parse IPv4 Address, Netmask, Prefix Length
-for line in subprocess.Popen(("ip addr show %s scope global" % dev).split(), stdout=subprocess.PIPE).communicate()[0].split('\n'):
+for line in subprocess.Popen(("ip addr show %s scope global" % dev).split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].split('\n'):
     if re.search(r'\sinet\s.*', line):
 
         segments = line.split()
@@ -126,7 +126,7 @@ for line in subprocess.Popen(("ip addr show %s scope global" % dev).split(), std
             continue
 
 # Parse IPv6 Address, Prefix Length
-for line in subprocess.Popen(("ip addr show %s scope global" % dev).split(), stdout=subprocess.PIPE).communicate()[0].split('\n'):
+for line in subprocess.Popen(("ip addr show %s scope global" % dev).split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].split('\n'):
     if re.search(r'\sinet6\s.*', line):
 
         segments = line.split()
