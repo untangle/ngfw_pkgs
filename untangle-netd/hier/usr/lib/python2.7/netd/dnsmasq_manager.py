@@ -12,7 +12,6 @@ class DnsMasqManager:
     dnsmasqHostsFilename = "/etc/hosts.dnsmasq"
     dnsmasqConfFilename = "/etc/dnsmasq.conf"
     restartHookFilename = "/etc/untangle-netd/post-network-hook.d/990-restart-dnsmasq"
-    iptablesHookFilename = "/etc/untangle-netd/iptables-rules.d/340-dns-rules"
 
     def write_dnsmasq_hosts( self, settings, prefix, verbosity ):
 
@@ -175,27 +174,6 @@ class DnsMasqManager:
         if verbosity > 0: print "DnsMasqManager: Wrote %s" % filename
         return
 
-    def write_iptables_hook( self, settings, prefix="", verbosity=0 ):
-        
-        filename = prefix + self.iptablesHookFilename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
-
-        file = open( filename, "w+" )
-        file.write("## Auto Generated on %s\n" % datetime.datetime.now());
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
-        file.write("\n\n");
-
-        file.write("/usr/share/untangle-netd/bin/update-dns-iptables-rules.sh" + "\n");
-        
-        file.write("\n");
-        file.flush()
-        file.close()
-    
-        if verbosity > 0: print "DnsMasqManager: Wrote %s" % filename
-        return
-
     def write_restart_dnsmasq_hook( self, settings, prefix="", verbosity=0 ):
 
         filename = prefix + self.restartHookFilename
@@ -242,7 +220,5 @@ fi
         self.write_dnsmasq_conf( settings, prefix, verbosity )
 
         self.write_restart_dnsmasq_hook( settings, prefix, verbosity )
-
-        self.write_iptables_hook( settings, prefix, verbosity )
 
         return

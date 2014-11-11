@@ -205,7 +205,6 @@ make_resolv_conf() {
             /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.conf changed. Restarting dnsmasq..."
             /etc/init.d/dnsmasq restart
             /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.conf changed. Restarting dnsmasq...done"
-            /usr/share/untangle-netd/bin/update-dns-iptables-rules.sh
         else
             /bin/echo -e "[DEBUG: `date`] Skipping dnsmasq restart"
         fi
@@ -230,7 +229,7 @@ fi
 
 make_resolv_conf
 
-/usr/share/untangle-netd/bin/add-uplink.sh ${PPP_IFACE} ${PPP_REMOTE} "uplink.${PPPOE_UPLINK_INDEX}"
+/usr/share/untangle-netd/bin/add-uplink.sh ${PPP_IFACE} ${PPP_REMOTE} "uplink.${PPPOE_UPLINK_INDEX}" -4 ${DNS1} ${DNS2}
 
 /usr/share/untangle-netd/bin/add-source-route.sh ${PPP_LOCAL} "uplink.${PPPOE_UPLINK_INDEX}" -4
 

@@ -1,7 +1,7 @@
 #!/bin/dash
 
 # This script addes the appropriate ip route source route for the address of a WAN
-# Usage: add-uplink.sh <address> <routeTable> <family>
+# Usage: add-source-route.sh <address> <routeTable> <family>
 
 ## All of the untangle rules MUST fall in this priority.  This makes it easy to
 ## flush all of the rules.
@@ -27,7 +27,7 @@ usage()
     echo
     echo "\t address: the address of the local interface (ex: 1.2.3.4)"
     echo "\t rt_table: the route table (ex: uplink.1)"
-    echo "\t family: the family, -4 or -6, -4 assumed if not specified"
+    echo "\t family: the family, -4 or -6"
     echo
 
     exit 254
@@ -46,6 +46,10 @@ next_free_priority()
 ADDRESS=$1
 RT_TABLE=$2
 FAMILY=$3
+
+# old version called this as an option argument
+# it is now a required argument but this logic is kept for backwards compatibility
+# it can be removed in the future
 if [ -z "${FAMILY}" ] ; then
     FAMILY="-4"
 fi

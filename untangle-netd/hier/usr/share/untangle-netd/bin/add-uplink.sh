@@ -20,14 +20,16 @@ debug_ip()
 
 usage()
 {
-    echo "$0 <interface> <gateway> <rt_table> <family>"
+    echo "$0 <interface> <gateway> <rt_table> <family> <dns1> <dns2>"
     echo "\t This will configure an uplink table <rt_table> with gateway"
     echo "\t and add routing entries for all of the addresses on interface."
     echo
     echo "\t interface: the interface (ex: eth0)"
     echo "\t gateway: the gateway address (ex: 1.2.3.4)"
     echo "\t rt_table: the route table (ex: uplink.1)"
-    echo "\t family: the family, -4 or -6, -4 assumed if not specified"
+    echo "\t family: the family, -4 or -6"
+    echo "\t dns1: the primary dns for this interface (optional)"
+    echo "\t dns2: the secondary dns for this interface (optional)"
     echo
 
     exit 254
@@ -38,8 +40,17 @@ IFACE=$1
 GATEWAY=$2
 RT_TABLE=$3
 FAMILY=$4
+
+# old version called this as an option argument
+# it is now a required argument but this logic is kept for backwards compatibility
+# it can be removed in the future
 if [ -z "${FAMILY}" ] ; then
     FAMILY="-4"
+    DNS1=""
+    DNS2=""
+else
+    DNS1=$5
+    DNS2=$6
 fi
 
 

@@ -8,25 +8,7 @@ sed -e 's/\(.*log_warning_msg.*\)/#\1/' -i /etc/network/if-up.d/mountnfs
 # It will be started via the post-network scripts if needed
 update-rc.d keepalived disable
 
-# 10.1 conversion
-# until networking is restarted there will still be source route rules in 365000-365999 priorities
-# we need to shift these to 50000-50999 priority
-ip -4 rule show | awk -v min_priority=365000 -v max_priority=365999 '{ sub( ":", "" ) ; if (( $1 >= min_priority ) && ( $1 < max_priority ) ) print $1-315000 " " $2 " " $3 " " $4 " " $5 }' | while read rule ; do sh -c "ip rule add priority $rule" ; done
-# now delete original priority rules
-ip -4 rule show | awk -v min_priority=365000 -v max_priority=365999 '{ sub( ":", "" ) ; if (( $1 >= min_priority ) && ( $1 < max_priority ) ) print $1 }' | while read prio ; do ip rule del priority $prio ; done
-# now delete original fwmark rules if new ones exist
-ip rule ls | grep -q 70001
-if [ $? = 0 ] ; then 
-    ip -4 rule show | awk -v min_priority=366000 -v max_priority=366999 '{ sub( ":", "" ) ; if (( $1 >= min_priority ) && ( $1 < max_priority ) ) print $1 }' | while read prio ; do ip rule del priority $prio ; done
-fi
-# delete original default rule priority if new one exists
-ip rule ls | grep -q 1000000
-if [ $? = 0 ] ; then 
-    ip rule del priority 366900 >/dev/null 2>&1 
-fi
-
-# 10.3 conversion
-# remove this file - now lives in /usr/lib/python2.x
-rm -f /usr/share/untangle-netd/bin/parse.pyc
+# 11.1 conversion
+rm -f /etc/untangle-netd/iptables-rules.d/340-dns-rules
 
 exit 0
