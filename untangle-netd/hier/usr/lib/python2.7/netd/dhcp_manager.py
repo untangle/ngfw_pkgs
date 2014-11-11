@@ -228,7 +228,7 @@ refresh_routes()
 	fi
     
     for router in $netd_new_routers; do
-        /usr/share/untangle-netd/bin/add-uplink.sh ${interface} ${router} "uplink.${DHCP_INTERFACE_INDEX}" -4 ${domain_name_servers}
+        /usr/share/untangle-netd/bin/add-uplink.sh ${interface} ${router} "uplink.${DHCP_INTERFACE_INDEX}" -4 
         /usr/share/untangle-netd/bin/add-source-route.sh ${new_ip_address} "uplink.${DHCP_INTERFACE_INDEX}" -4
     done
 }
@@ -299,7 +299,7 @@ case "$reason" in
             fi
 	    
             for router in $netd_new_routers; do
-                /usr/share/untangle-netd/bin/add-uplink.sh ${interface} ${router} "uplink.${DHCP_INTERFACE_INDEX}" -4 ${domain_name_servers}
+                /usr/share/untangle-netd/bin/add-uplink.sh ${interface} ${router} "uplink.${DHCP_INTERFACE_INDEX}" -4 
             done
 
             make_resolv_conf

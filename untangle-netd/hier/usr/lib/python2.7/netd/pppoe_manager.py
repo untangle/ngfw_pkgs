@@ -229,8 +229,7 @@ fi
 
 make_resolv_conf
 
-/usr/share/untangle-netd/bin/add-uplink.sh ${PPP_IFACE} ${PPP_REMOTE} "uplink.${PPPOE_UPLINK_INDEX}" -4 ${DNS1} ${DNS2}
-
+/usr/share/untangle-netd/bin/add-uplink.sh ${PPP_IFACE} ${PPP_REMOTE} "uplink.${PPPOE_UPLINK_INDEX}" -4 
 /usr/share/untangle-netd/bin/add-source-route.sh ${PPP_LOCAL} "uplink.${PPPOE_UPLINK_INDEX}" -4
 
 write_status_file ${PPP_IFACE} ${PPPOE_UPLINK_INDEX}

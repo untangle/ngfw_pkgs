@@ -46,11 +46,6 @@ FAMILY=$4
 # it can be removed in the future
 if [ -z "${FAMILY}" ] ; then
     FAMILY="-4"
-    DNS1=""
-    DNS2=""
-else
-    DNS1=$5
-    DNS2=$6
 fi
 
 
