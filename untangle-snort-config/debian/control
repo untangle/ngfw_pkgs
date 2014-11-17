@@ -1,4 +1,4 @@
-Source: untangle-idps-rules
+Source: untangle-snort-config
 Section: admin
 Priority: optional
 Maintainer: Chris Blaise <cblaise@untangle.com>
@@ -6,7 +6,7 @@ Uploaders: Untangle Buildbot <buildbot@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.8.0
 
-Package: untangle-idps-rules
+Package: untangle-snort-config
 Architecture: all
-Description: Initial versions of idps Snort configuration and rules
- Initial versions of idps Snort configuration and rules.
+Description: Initial versions of Snort configuration and rules
+ Initial versions of Snort configuration and rules.
