@@ -8,9 +8,4 @@ else
 fi
 }
 
-if [ -x "/etc/init.d/untangle-hardware-buffalo-wzr1750" ]; then
-  update-rc.d untangle-hardware-buffalo-wzr1750 defaults 10 >/dev/null # early on
-  ourInit untangle-hardware-buffalo-wzr1750 restart
-fi
-    
 exit 0
