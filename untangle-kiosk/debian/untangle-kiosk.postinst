@@ -43,9 +43,11 @@ fi
 if [ -d /etc/firefox/profile ] ; then
     cp -f /usr/share/untangle-kiosk/firefox-profile/* /etc/firefox/profile/
 fi
-if [ -x /usr/share/untangle-kiosk/rebrand-iceweasel.sh ] ; then
-    /usr/share/untangle-kiosk/rebrand-iceweasel.sh
-fi
+
+# disabled for now (bug #12014 for more info)
+#if [ -x /usr/share/untangle-kiosk/rebrand-iceweasel.sh ] ; then
+#    /usr/share/untangle-kiosk/rebrand-iceweasel.sh
+#fi
 
 # Moved here from untangle-gateway
 chsh -s /bin/zsh root
