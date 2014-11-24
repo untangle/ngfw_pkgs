@@ -9,7 +9,7 @@ import traceback
 class WirelessManager:
     hostapdConfFilename = "/etc/hostapd/hostapd.conf"
     hostapdDefaultFilename = "/etc/default/hostapd"
-    hostapdRestartFilename = "/etc/untangle-netd/post-network-hook.d/990-restart-hostapd"
+    hostapdRestartFilename = "/etc/untangle-netd/pre-network-hook.d/990-restart-hostapd"
 
     def write_hostapd_conf( self, settings, prefix="", verbosity=0 ):
 
