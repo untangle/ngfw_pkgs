@@ -123,18 +123,18 @@
     color:blue;
     text-decoration:underline;
     font-size:11px;
-    font-family:Tahoma,Helvetica,sans-serif; 
+    font-family:Tahoma,Helvetica,sans-serif;
 }
 #report-day-menu,.print{
     float:right;
-        clear:both;
+    clear:both;
     text-align:right;
     cursor:pointer;
     cursor:hand;
     color:blue;
     text-decoration:underline;
     font-size:11px;
-    font-family:Tahoma,Helvetica,sans-serif;    
+    font-family:Tahoma,Helvetica,sans-serif;
 }
 .small-right-margin{
     margin-right:5px;
@@ -142,7 +142,7 @@
 }
 #report-date-range{
     float:right;
-        clear:both;    
+    clear:both;
     height:16px;
     text-align:right;
     font-style: normal;
@@ -160,8 +160,8 @@
     font-family:Tahoma,Helvetica,sans-serif;
     font-size:12px;
     background-repeat:no-repeat;
-    background-position:5px 5px;  
-    margin-right:25px;  
+    background-position:5px 5px;
+    margin-right:25px;
 }
 .highlight-2 p{
     padding:0em 1em 0em 35px ;
@@ -170,8 +170,8 @@
     font-family:Tahoma,Helvetica,sans-serif;
     font-size:12px;
     background-repeat:no-repeat;
-    background-position:5px 5px;  
-    margin-right:25px;  
+    background-position:5px 5px;
+    margin-right:25px;
 }
 .highlight-2{
     margin:0em 0 0em 1em;
