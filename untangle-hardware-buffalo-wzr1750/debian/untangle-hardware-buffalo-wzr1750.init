@@ -2,7 +2,7 @@
 
 ### BEGIN INIT INFO
 # Provides:          untangle-hardware-buffalo-wzr1750
-# Required-Start:    $local_fs $network
+# Required-Start:    $local_fs
 # Required-Stop:
 # Default-Start:     S
 # Default-Stop:      
