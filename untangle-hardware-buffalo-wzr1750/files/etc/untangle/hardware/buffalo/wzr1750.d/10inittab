@@ -6,7 +6,7 @@ set -e
 if [ -f /etc/inittab ] ; then
     # disable getty on local terminals
     sed -i -e '/^[0-9].*respawn.*getty.*/ s/^/#/g' /etc/inittab
-    sed -i -e '/^#.* ttyS0 .*/ s/.*/T0:23:respawn:\/sbin\/getty -L ttyS0 9600 vt100/' /etc/inittab
+    sed -i -e '/^#.* ttyS0 .*/ s/.*/T0:23:respawn:\/sbin\/getty -L ttyS0 115200 vt100/' /etc/inittab
 fi
 
 exit 0
