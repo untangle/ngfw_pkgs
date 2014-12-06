@@ -42,7 +42,7 @@ class VrrpManager:
         vrrp_interfaces = self.get_vrrp_interfaces( settings );
 
         file = open( filename, "w+" )
-        file.write("! Auto Generated on %s\n" % datetime.datetime.now());
+        file.write("! Auto Generated\n");
         file.write("! DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
 
@@ -98,7 +98,7 @@ global_defs {
         file.write("#!/bin/dash");
         file.write("\n\n");
 
-        file.write("## Auto Generated on %s\n" % datetime.datetime.now());
+        file.write("## Auto Generated\n");
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
 
@@ -155,7 +155,7 @@ fi
         file.write("#!/bin/dash");
         file.write("\n\n");
 
-        file.write("## Auto Generated on %s\n" % datetime.datetime.now());
+        file.write("## Auto Generated\n");
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
 

@@ -27,7 +27,7 @@ class DhcpManager:
         file.write("#!/bin/dash");
         file.write("\n\n");
 
-        file.write("## Auto Generated on %s\n" % datetime.datetime.now());
+        file.write("## Auto Generated\n");
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
 
@@ -200,7 +200,7 @@ return 0
         file.write("#!/bin/dash");
         file.write("\n\n");
 
-        file.write("## Auto Generated on %s\n" % datetime.datetime.now());
+        file.write("## Auto Generated\n");
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
 
@@ -340,7 +340,7 @@ true
         file.write("#!/bin/dash");
         file.write("\n\n");
 
-        file.write("## Auto Generated on %s\n" % datetime.datetime.now());
+        file.write("## Auto Generated\n");
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
 
@@ -363,7 +363,7 @@ true
             os.makedirs( fileDir )
 
         file = open( filename, "w+" )
-        file.write("## Auto Generated on %s\n" % datetime.datetime.now());
+        file.write("## Auto Generated\n");
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
 

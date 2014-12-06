@@ -117,7 +117,7 @@ class BypassRuleManager:
             os.makedirs( self.fileDir )
 
         self.file = open( self.filename, "w+" )
-        self.file.write("## Auto Generated on %s\n" % datetime.datetime.now());
+        self.file.write("## Auto Generated\n");
         self.file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         self.file.write("\n\n");
 

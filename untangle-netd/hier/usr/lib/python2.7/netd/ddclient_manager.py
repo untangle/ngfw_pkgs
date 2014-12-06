@@ -20,7 +20,7 @@ class DdclientManager:
             os.makedirs( fileDir )
 
         file = open( filename, "w+" )
-        file.write("## Auto Generated on %s\n" % datetime.datetime.now());
+        file.write("## Auto Generated\n");
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
 
@@ -79,7 +79,7 @@ class DdclientManager:
             os.makedirs( fileDir )
 
         file = open( filename, "w+" )
-        file.write("## Auto Generated on %s\n" % datetime.datetime.now());
+        file.write("## Auto Generated\n");
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
 

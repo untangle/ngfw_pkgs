@@ -43,6 +43,7 @@ clean:
 	rm -rf debian/tmp debian/untangle-restore-tools sav-install
 	$(MAKE) -C finddev clean
 	dh_clean
+	find . -type f -name '*.pyc' | xargs rm -f
 
 binary-indep:
 # nothing to do

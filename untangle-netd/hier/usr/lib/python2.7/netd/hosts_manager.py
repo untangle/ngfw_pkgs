@@ -21,7 +21,7 @@ class HostsManager:
             os.makedirs( fileDir )
 
         file = open( filename, "w+" )
-        file.write("## Auto Generated on %s\n" % datetime.datetime.now());
+        file.write("## Auto Generated\n");
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
 
         file.write(r"""
@@ -102,7 +102,7 @@ ff02::3 ip6-allhosts
             os.makedirs( fileDir )
 
         file = open( filename, "w+" )
-        file.write("## Auto Generated on %s\n" % datetime.datetime.now());
+        file.write("## Auto Generated\n");
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         
         file.write("\n")

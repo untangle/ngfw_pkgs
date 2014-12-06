@@ -25,7 +25,7 @@ class PPPoEManager:
                 # open this pppoe config file for this connection
                 fileName = self.peersDirectory + self.connectionBaseName + str(interface_settings.get('interfaceId'))
                 conffile = open( fileName, "w+" )
-                conffile.write("## Auto Generated on %s\n" % datetime.datetime.now());
+                conffile.write("## Auto Generated\n");
                 conffile.write("## DO NOT EDIT. Changes will be overwritten.\n");
                 conffile.write("\n");
 
@@ -68,7 +68,7 @@ maxfail 0
     def write_secret_files( self, settings, prefix="", verbosity=0 ):
 
         secrets = ""
-        secrets += "## Auto Generated on %s\n" % datetime.datetime.now()
+        secrets += "## Auto Generated\n"
         secrets += "## DO NOT EDIT. Changes will be overwritten.\n"
         secrets += "\n"
 
@@ -109,7 +109,7 @@ maxfail 0
         file.write("#!/bin/dash");
         file.write("\n\n");
 
-        file.write("## Auto Generated on %s\n" % datetime.datetime.now());
+        file.write("## Auto Generated\n");
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
 
@@ -136,7 +136,7 @@ maxfail 0
         file.write("#!/bin/dash");
         file.write("\n\n");
 
-        file.write("## Auto Generated on %s\n" % datetime.datetime.now());
+        file.write("## Auto Generated\n");
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
 

@@ -3,6 +3,7 @@ import sys
 import subprocess
 import datetime
 import traceback
+import time
 
 # This class is responsible for writing /etc/network/interfaces
 # based on the settings object passed from sync-settings.py
@@ -29,7 +30,7 @@ class WirelessManager:
 
         self.hostapdConfFile = open( configFilename, "w+" )
 
-        self.hostapdConfFile.write("## Auto Generated on %s\n" % datetime.datetime.now())
+        self.hostapdConfFile.write("## Auto Generated\n");
         self.hostapdConfFile.write("## DO NOT EDIT. Changes will be overwritten.\n")
         self.hostapdConfFile.write("\n\n")
         
@@ -89,7 +90,7 @@ class WirelessManager:
 
             self.hostapdRestartFile.write("#!/bin/dash")
             self.hostapdRestartFile.write("\n\n")
-            self.hostapdRestartFile.write("## Auto Generated on %s\n" % datetime.datetime.now())
+            self.hostapdRestartFile.write("## Auto Generated\n");
             self.hostapdRestartFile.write("## DO NOT EDIT. Changes will be overwritten.\n")
             self.hostapdRestartFile.write("\n")
 
@@ -109,7 +110,7 @@ class WirelessManager:
 
             self.hostapdRestartFile.write("#!/bin/dash")
             self.hostapdRestartFile.write("\n\n")
-            self.hostapdRestartFile.write("## Auto Generated on %s\n" % datetime.datetime.now())
+            self.hostapdRestartFile.write("## Auto Generated\n");
             self.hostapdRestartFile.write("## DO NOT EDIT. Changes will be overwritten.\n")
             self.hostapdRestartFile.write("\n")
 
@@ -121,9 +122,6 @@ class WirelessManager:
             os.system("chmod a+x %s" % restartFilename)
 
             print "WirelessManager: Wrote " + restartFilename
-
-            os.unlink(configFilename)
-            os.unlink(defaultFilename)
 
         return
 
