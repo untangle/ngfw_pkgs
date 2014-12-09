@@ -104,7 +104,7 @@ class DnsMasqManager:
                     
                     # Use symbolicDev so the whole bridge is served if its a bridge
                     file.write("# Interface %s (%s) DHCP" % (str(intf.get('interfaceId')), intf.get('symbolicDev')) + "\n")
-                    file.write("dhcp-range=interface:%s,%s,%s,%i" % (intf.get('symbolicDev'), str(intf.get('dhcpRangeStart')), str(intf.get('dhcpRangeEnd')), leaseTime) + "\n")
+                    file.write("dhcp-range=tag:%s,%s,%s,%i" % (intf.get('symbolicDev'), str(intf.get('dhcpRangeStart')), str(intf.get('dhcpRangeEnd')), leaseTime) + "\n")
                     
                     # set gateway option 
                     # If the override value is specified, set it, otherwise use static address (ourselves) as gateway
