@@ -1,1 +1,3 @@
 /etc/snort
+/etc/rsyslog.d
+/etc/logrotate.d
