@@ -47,8 +47,13 @@ if [ -x /usr/share/untangle/bin/appliance_imaging_script.sh ] ; then
 fi
 
 # automatically start the setup wizard if it hasn't been completed
-if [ ! -f /usr/share/untangle/conf/wizard-complete-flag ] ; then
+if [ ! -f /usr/share/untangle/conf/wizard.js ] ; then
     /usr/bin/untangle-client &
+else
+    /bin/egrep -q 'wizardComplete.*true' /usr/share/untangle/conf/wizard.js
+    if [ $? == 0 ] ; then
+        /usr/bin/untangle-client &
+    fi
 fi
 
 # the window manager; when this exits, X stops, but it will restart

@@ -5,6 +5,7 @@
 echo -n "Removing settings and configuration..."
 
 rm -f /usr/share/untangle/conf/wizard-complete-flag
+rm -f /usr/share/untangle/conf/wizard.js
 rm -rf /usr/share/untangle/settings/*
 rm -rf /usr/share/untangle/quarantine
 rm -rf /usr/share/untangle/web/reports/data/*

@@ -112,7 +112,13 @@ def session_user(sess, realm):
     return None
 
 def is_wizard_complete():
-    return os.path.exists('/usr/share/untangle/conf/wizard-complete-flag')
+    if not os.path.exists('/usr/share/untangle/conf/wizard.js'):
+        return False
+
+    wizardComplete = get_settings_item("/usr/share/untangle/conf/wizard.js","wizardComplete")
+    if wizardComplete != None:
+        return wizardComplete
+    return False
 
 def is_local_process_uid_authorized(req):
     (remote_ip, remote_port) = req.connection.remote_addr
