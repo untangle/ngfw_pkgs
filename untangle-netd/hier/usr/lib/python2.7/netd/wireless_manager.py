@@ -17,23 +17,11 @@ class WirelessManager:
         configFilename = prefix + self.hostapdConfFilename
         defaultFilename = prefix + self.hostapdDefaultFilename
         restartFilename = prefix + self.hostapdRestartFilename
+        configFiles = ""
 
         if settings == None or settings.get('interfaces') == None and settings.get('interfaces').get('list') == None:
             return
 
-        self.hostapdDefaultFile = open( defaultFilename, "w+" )
-        self.hostapdDefaultFile.write('DAEMON_CONF="/etc/hostapd/hostapd.conf"' + "\n")
-        self.hostapdDefaultFile.flush()
-        self.hostapdDefaultFile.close()
-
-        print "WirelessManager: Wrote " + defaultFilename
-
-        self.hostapdConfFile = open( configFilename, "w+" )
-
-        self.hostapdConfFile.write("## Auto Generated\n");
-        self.hostapdConfFile.write("## DO NOT EDIT. Changes will be overwritten.\n")
-        self.hostapdConfFile.write("\n\n")
-        
         interfaces = settings.get('interfaces').get('list')
 
         foundInterface = 0
@@ -41,6 +29,12 @@ class WirelessManager:
         for intf in interfaces:
             if intf.get('isWirelessInterface'):
                 foundInterface = 1
+                filename = configFilename + "-" + intf.get('systemDev')
+                self.hostapdConfFile = open( filename, "w+" )
+
+                self.hostapdConfFile.write("## Auto Generated\n")
+                self.hostapdConfFile.write("## DO NOT EDIT. Changes will be overwritten.\n")
+                self.hostapdConfFile.write("\n\n")        
                 self.hostapdConfFile.write("interface=%s\n" % intf.get('systemDev'))
                 self.hostapdConfFile.write("ssid=%s\n" % intf.get('wirelessSsid'))
                 self.hostapdConfFile.write("country_code=US\n")
@@ -77,11 +71,21 @@ class WirelessManager:
                     self.hostapdConfFile.write("ieee80211n=1\n")
                     self.hostapdConfFile.write("wmm_enabled=1\n")
 
-                # hostapd can only handle one wireless interface, so break after the first one
-                break
+                self.hostapdConfFile.flush()
+                self.hostapdConfFile.close()
 
-        self.hostapdConfFile.flush()
-        self.hostapdConfFile.close()
+                print "WirelessManager: Wrote " + filename
+
+                configFiles += filename + " "
+
+        configFiles = configFiles[:-1]
+
+        self.hostapdDefaultFile = open( defaultFilename, "w+" )
+        self.hostapdDefaultFile.write('DAEMON_CONF="' + configFiles + '"' + "\n")
+        self.hostapdDefaultFile.flush()
+        self.hostapdDefaultFile.close()
+
+        print "WirelessManager: Wrote " + defaultFilename
 
         if foundInterface == 1:            
             # Write out the hostapd restart script
@@ -101,7 +105,6 @@ class WirelessManager:
 
             os.system("chmod a+x %s" % restartFilename)
 
-            print "WirelessManager: Wrote " + configFilename
             print "WirelessManager: Wrote " + restartFilename
         else:
             # Write out the hostapd stop script
