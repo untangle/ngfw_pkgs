@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# this is creates the default wizard settings for the buffalo wzr1750
+
+
+
+if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
+
+   echo "Initializing default wizard settings for Buffalo WZR 1750..."
+
+   mkdir -p /usr/share/untangle/conf
+   cat > /usr/share/untangle/conf/wizard.js <<EOF
+{
+    "javaClass": "com.untangle.uvm.WizardSettings",
+    "steps": [
+        "Ung.SetupWizard.Welcome",
+        "Ung.SetupWizard.ServerSettings",
+        "Ung.SetupWizard.Internet",
+        "Ung.SetupWizard.InternalNetwork",
+        "Ung.SetupWizard.AutoUpgrades",
+        "Ung.SetupWizard.Complete"
+    ],
+    "wizardComplete": true
+}
+EOF
+
+   echo "Initializing default wizard settings for Buffalo WZR 1750...done"
+
+fi
+
