@@ -15,8 +15,6 @@ if [ ! -f /usr/share/untangle/conf/wizard.js ] ; then
     "steps": [
         "Ung.SetupWizard.Welcome",
         "Ung.SetupWizard.ServerSettings",
-        "Ung.SetupWizard.Internet",
-        "Ung.SetupWizard.InternalNetwork",
         "Ung.SetupWizard.AutoUpgrades",
         "Ung.SetupWizard.Complete"
     ],
