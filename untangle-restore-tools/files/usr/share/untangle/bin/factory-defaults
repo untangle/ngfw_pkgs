@@ -31,6 +31,11 @@ if [ -f /usr/share/untangle/bin/oem-apply.sh ] ; then
     /usr/share/untangle/bin/oem-apply.sh
 fi
 
+# rerun all the hardware default scripts
+ls /etc/init.d/untangle-hardware-* 2>/dev/null | while read script ; do 
+    $script restart
+done
+
 echo " done"
 
 exit 0
