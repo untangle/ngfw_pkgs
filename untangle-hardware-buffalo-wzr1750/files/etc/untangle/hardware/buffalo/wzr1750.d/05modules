@@ -3,12 +3,12 @@
 set -x
 set -e
 
-cat > /etc/modules <<EOF
-xt_conntrack
-xt_comment
-xt_multiport
-xt_policy
-xt_socket
-EOF
+modprobe xt_conntrack
+modprobe xt_comment
+modprobe xt_multiport
+modprobe xt_policy
+modprobe xt_socket
+
+modprobe ip6_tables
 
 exit 0
