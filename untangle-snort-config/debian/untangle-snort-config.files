@@ -1,4 +1,5 @@
+/etc/init.d/*
+/etc/logrotate.d/*
 /etc/snort/*
 /etc/rsyslog.d/*
-/etc/logrotate.d/*
 
