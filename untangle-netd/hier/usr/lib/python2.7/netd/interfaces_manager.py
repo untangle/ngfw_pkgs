@@ -409,6 +409,11 @@ class InterfacesManager:
         file.write("${IPTABLES} -t filter -F save-mark-dst-intf >/dev/null 2>&1" + "\n");
         file.write("\n");
         
+        file.write("# Set reinjected packet mark" + "\n");
+        file.write("${IPTABLES} -t mangle -D INPUT -i utun -j MARK --set-mark 0x10000000/0x10000000 -m comment --comment \"Set reinjected packet mark\"  \n");
+        file.write("${IPTABLES} -t mangle -A INPUT -i utun -j MARK --set-mark 0x10000000/0x10000000 -m comment --comment \"Set reinjected packet mark\"  \n");
+        file.write("\n");
+
         file.write("# Call restore-interface-marks then mark-src-intf from PREROUTING chain in mangle" + "\n");
         file.write("${IPTABLES} -t mangle -D PREROUTING -m comment --comment \"Restore interface marks (0xffff) from connmark\" -j restore-interface-marks >/dev/null 2>&1" + "\n");
         file.write("${IPTABLES} -t mangle -D PREROUTING -m comment --comment \"Set src intf mark (0x00ff)\" -j mark-src-intf >/dev/null 2>&1" + "\n");
