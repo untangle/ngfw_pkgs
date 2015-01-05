@@ -192,6 +192,7 @@ print "Syncing %s to system..." % parser.file
 
 IptablesUtil.settings = settings
 NetworkUtil.settings = settings
+errorOccurred = False
 
 for module in [ HostsManager(), DnsMasqManager(),
                 InterfacesManager(), RouteManager(), 
@@ -208,6 +209,12 @@ for module in [ HostsManager(), DnsMasqManager(),
         module.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
     except Exception,e:
         traceback.print_exc(e)
-    
+        errorOccurred = True
 
-print "Done."
+if errorOccurred:
+    print "Done. (with errors)"
+    exit(1)
+else:
+    print "Done."
+    exit(0)
+
