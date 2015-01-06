@@ -409,6 +409,7 @@ class InterfacesManager:
         file.write("${IPTABLES} -t filter -F save-mark-dst-intf >/dev/null 2>&1" + "\n");
         file.write("\n");
         
+        # this is so IPsec/UVM works (Bug #8948)
         file.write("# Set reinjected packet mark" + "\n");
         file.write("${IPTABLES} -t mangle -D INPUT -i utun -j MARK --set-mark 0x10000000/0x10000000 -m comment --comment \"Set reinjected packet mark\" >/dev/null 2>&1 \n");
         file.write("${IPTABLES} -t mangle -A INPUT -i utun -j MARK --set-mark 0x10000000/0x10000000 -m comment --comment \"Set reinjected packet mark\"  \n");
