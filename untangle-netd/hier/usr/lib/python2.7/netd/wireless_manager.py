@@ -11,12 +11,14 @@ class WirelessManager:
     hostapdConfFilename = "/etc/hostapd/hostapd.conf"
     hostapdDefaultFilename = "/etc/default/hostapd"
     hostapdRestartFilename = "/etc/untangle-netd/pre-network-hook.d/990-restart-hostapd"
+    crdaDefaultFilename = "/etc/default/crda"
 
     def write_hostapd_conf( self, settings, prefix="", verbosity=0 ):
 
         configFilename = prefix + self.hostapdConfFilename
         defaultFilename = prefix + self.hostapdDefaultFilename
         restartFilename = prefix + self.hostapdRestartFilename
+        crdaFilename = prefix + self.crdaDefaultFilename
         configFiles = ""
 
         if settings == None or settings.get('interfaces') == None and settings.get('interfaces').get('list') == None:
@@ -40,7 +42,15 @@ class WirelessManager:
                 self.hostapdConfFile.write("country_code=US\n")
                 self.hostapdConfFile.write("max_num_sta=255\n")
                 self.hostapdConfFile.write("auth_algs=1\n")
-                self.hostapdConfFile.write("channel=%u\n" % intf.get('wirelessChannel'))
+
+                channel = intf.get('wirelessChannel')
+
+                # Channel will be -1 for 2.4 GHz Auto and -2 for 5 GHz Auto
+                # hostapd expect the channel to be 0 for auto channel selection
+                if channel < 0:
+                    channel = 0
+
+                self.hostapdConfFile.write("channel=%u\n" % channel)
                 if intf.get('wirelessEncryption') == 'NONE':
                     self.hostapdConfFile.write("wpa=0\n")
                 elif intf.get('wirelessEncryption') == 'WPA1':
@@ -62,14 +72,13 @@ class WirelessManager:
                     self.hostapdConfFile.write("wpa_pairwise=TKIP\n")
                     self.hostapdConfFile.write("rsn_pairwise=CCMP\n")
 
-                if intf.get('wirelessRadioMode') == 'W80211B':
-                    self.hostapdConfFile.write("hw_mode=b\n")
-                elif intf.get('wirelessRadioMode') == 'W80211BG':
+                if intf.get('wirelessChannel') > 11 or intf.get('wirelessChannel') == -2:
+                    self.hostapdConfFile.write("hw_mode=a\n")
+                else:
                     self.hostapdConfFile.write("hw_mode=g\n")
-                elif intf.get('wirelessRadioMode') == 'W80211BGN':
-                    self.hostapdConfFile.write("hw_mode=g\n")
-                    self.hostapdConfFile.write("ieee80211n=1\n")
-                    self.hostapdConfFile.write("wmm_enabled=1\n")
+                    
+                self.hostapdConfFile.write("ieee80211n=1\n")
+                self.hostapdConfFile.write("wmm_enabled=1\n")
 
                 self.hostapdConfFile.flush()
                 self.hostapdConfFile.close()
@@ -80,7 +89,19 @@ class WirelessManager:
 
         configFiles = configFiles[:-1]
 
+        # FIXME need to get regulatory domain from the UI
+        self.crdaDefaultFile = open( crdaFilename, "w+" )
+        self.crdaDefaultFile.write("## Auto Generated\n");
+        self.crdaDefaultFile.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        self.crdaDefaultFile.write("REGDOMAIN=US\n")
+        self.crdaDefaultFile.flush()
+        self.crdaDefaultFile.close()
+
+        print "WirelessManager: Wrote " + crdaFilename
+
         self.hostapdDefaultFile = open( defaultFilename, "w+" )
+        self.hostapdDefaultFile.write("## Auto Generated\n");
+        self.hostapdDefaultFile.write("## DO NOT EDIT. Changes will be overwritten.\n")
         self.hostapdDefaultFile.write('DAEMON_CONF="' + configFiles + '"' + "\n")
         self.hostapdDefaultFile.flush()
         self.hostapdDefaultFile.close()
