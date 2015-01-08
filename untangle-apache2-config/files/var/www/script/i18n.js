@@ -8,7 +8,8 @@ Ext.define("Ung.I18N", {
     map: null,
     timeoffset: 0,
     // initialize I18N component
-    constructor: function() {
+    constructor: function(config) {
+        Ext.apply(this, config);
         if (this.map == null) {
             this.map = {};
         }
