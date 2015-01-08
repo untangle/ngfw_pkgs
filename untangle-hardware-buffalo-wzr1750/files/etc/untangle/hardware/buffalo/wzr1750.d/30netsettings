@@ -544,11 +544,14 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
                 "addressed": true,
                 "bridged": false,
                 "configType": "ADDRESSED",
-                "dhcpEnabled": false,
+                "dhcpEnabled": true,
+                "dhcpLeaseDuration": 86400,
                 "dhcpOptions": {
                     "javaClass": "java.util.LinkedList",
                     "list": []
                 },
+                "dhcpRangeEnd": "192.168.1.200",
+                "dhcpRangeStart": "192.168.1.100",
                 "disabled": false,
                 "imqDev": "imq1",
                 "interfaceId": 100,
