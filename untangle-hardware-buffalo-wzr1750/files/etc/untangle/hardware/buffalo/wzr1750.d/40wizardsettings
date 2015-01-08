@@ -18,7 +18,7 @@ if [ ! -f /usr/share/untangle/conf/wizard.js ] ; then
         "AutoUpgrades",
         "Complete"
     ],
-    "wizardComplete": true
+    "wizardComplete": false
 }
 EOF
 
