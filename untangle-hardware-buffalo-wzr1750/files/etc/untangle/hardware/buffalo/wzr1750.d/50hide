@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# this script "hides" certain apps so they can not be installed
+# this is temporary
+# it just deletes the nodeProperties files, but they will be recreated on upgrade
+# we need to figure out a better way to hide apps
+
+#hide spamblocker,spamassassin,phish,virusblocker,clam,webfilter,faild,splitd
+
+# hide email apps (not useful in home deployment, too memory intensive)
+rm -f /usr/share/untangle/lib/untangle-node-spamassassin/nodeProperties.js
+rm -f /usr/share/untangle/lib/untangle-node-spamblocker/nodeProperties.js
+rm -f /usr/share/untangle/lib/untangle-node-phish/nodeProperties.js
+
+# hide web filter lite (too memory intensive)
+rm -f /usr/share/untangle/lib/untangle-node-webfilter/nodeProperties.js
+
+# hide virus blocker (bdamserver has no arm build)
+rm -f /usr/share/untangle/lib/untangle-node-virusblocker/nodeProperties.js
+
+# hide virus blocker lite (clam is too memory intesive)
+# rm -f /usr/share/untangle/lib/untangle-node-clam/nodeProperties.js
+# keep the app shown for demo, but disable daemon for now
+rm -f /etc/init.d/clamav-daemon
+rm -f /etc/init.d/clamav-freshclam
+
+# hide multi wan apps
+rm -f /usr/share/untangle/lib/untangle-node-faild/nodeProperties.js
+rm -f /usr/share/untangle/lib/untangle-node-splitd/nodeProperties.js
+
+
