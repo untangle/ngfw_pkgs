@@ -115,6 +115,8 @@ wait_for_bridge()
 ${DEBUG} "dhclient-enter-hooks.d/netd_dhclient-enter-hook ENTER [ reason: \"$reason\" interface: \"$interface\" ]"
 ${DEBUG} "dhclient-enter-hooks.d/netd-dhclient-enter-hook ENTER [ old_ip_address: \"$old_ip_address\" ]"
 ${DEBUG} "dhclient-enter-hooks.d/netd-dhclient-enter-hook ENTER [ new_ip_address: \"$new_ip_address\" ]"
+${DEBUG} "dhclient-enter-hooks.d/netd-dhclient-enter-hook ENTER [ new_domain_name_servers: \"$new_domain_name_servers\" ]"
+${DEBUG} "dhclient-enter-hooks.d/netd-dhclient-enter-hook ENTER [ new_domain_name: \"$new_domain_name\" ]"
 ${DEBUG} "dhclient-enter-hooks.d/netd-dhclient-enter-hook ENTER [ DHCP_INTERFACE_INDEX: \"$DHCP_INTERFACE_INDEX\" ]"
 ${DEBUG} "dhclient-enter-hooks.d/netd-dhclient-enter-hook ENTER [ DHCP_ADDRESS_OVERRIDE: \"$DHCP_ADDRESS_OVERRIDE\" ]"
 ${DEBUG} "dhclient-enter-hooks.d/netd-dhclient-enter-hook ENTER [ DHCP_NETMASK_OVERRIDE: \"$DHCP_NETMASK_OVERRIDE\" ]"
@@ -126,24 +128,28 @@ ${DEBUG} "Overriding make_resolv_conf()."
 # Override this function to change the behavior dhclient-script later call it to write resolv.conf
 make_resolv_conf() 
 { 
+    # we used to store this config in dnsmasq.conf in 11.0 and prior (remove it if it still exists)
+    sed -i -e "/^#*\s*server=.*uplink.${DHCP_INTERFACE_INDEX}$/d" /etc/dnsmasq.conf
+
+    # remove this interfaces line from list of servers
+    sed -i -e "/^#*\s*server=.*uplink.${DHCP_INTERFACE_INDEX}$/d" /etc/dnsmasq.d/dhcp-upstream-dns-servers
+
     if [ -n "$new_domain_name" -o -n "$new_domain_name_servers" ]; then
-        local t_hash="`md5sum /etc/dnsmasq.conf`"
+        local t_hash="`md5sum /etc/dnsmasq.d/dhcp-upstream-dns-servers`"
         
         if [ -n "$new_domain_name_servers" ]; then
             for nameserver in $new_domain_name_servers ; do
-                /bin/echo -e "#new_name_server=${nameserver} # uplink.${DHCP_INTERFACE_INDEX}" >> /etc/dnsmasq.conf
+                /bin/echo -e "server=${nameserver} # uplink.${DHCP_INTERFACE_INDEX}" >> /etc/dnsmasq.d/dhcp-upstream-dns-servers
             done
-            
-            sed -i -e "/^#*\s*server=.*uplink.${DHCP_INTERFACE_INDEX}$/d" -e 's/^#new_name_server=/server=/' /etc/dnsmasq.conf
         fi
 
-        local t_new_hash="`md5sum /etc/dnsmasq.conf`"
+        local t_new_hash="`md5sum /etc/dnsmasq.d/dhcp-upstream-dns-servers`"
                     
         ## Reststart DNS MASQ if necessary
         if [ "${t_hash}x" != "${t_new_hash}x" ]; then
-            /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.conf changed. Restarting dnsmasq..."
+            /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.d/dhcp-upstream-dns-servers changed. Restarting dnsmasq..."
             /etc/init.d/dnsmasq restart
-            /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.conf changed. Restarting dnsmasq...done"
+            /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.d/dhcp-upstream-dns-servers changed. Restarting dnsmasq...done"
         fi
     fi
 
@@ -347,6 +353,11 @@ true
         file.write("# Kill any running dhcp client" + "\n")
         file.write("pkill -QUIT '(dhclient|dhclient3|pump)' && { sleep 1 ; pkill '(dhclient|dhclient3|pump)'; }")
         file.write("\n\n");
+
+        file.write("# Delete old DHCP dns servers (this will be recreated)" + "\n")
+        file.write("rm -f /etc/dnsmasq.d/dhcp-upstream-dns-servers" + "\n")
+        file.write("\n\n");
+
         file.write("true" + "\n")
         
         file.flush()

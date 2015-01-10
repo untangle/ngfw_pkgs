@@ -75,6 +75,12 @@ class DnsMasqManager:
                     file.write("# Interface %s DNS 2" % str(intf.get('interfaceId')) + "\n")
                     file.write("server=%s # uplink.%s" % (intf.get('v4PPPoEDns2'), str(intf.get('interfaceId'))) + "\n")
                     file.write("\n");
+            # If its a dhcp WAN then write the some comments for clarity
+            if intf.get('configType') == 'ADDRESSED' and intf.get('isWan') == True and intf.get('v4ConfigType') == 'AUTO':
+                file.write("# Interface %s DNS" % str(intf.get('interfaceId')) + "\n")
+                file.write("# stored in /etc/dnsmasq.d/dhcp-upstream-dns-servers" + "\n")
+                file.write("\n");
+                
                 
         # Set globla options
         file.write("# Global DNS options\n")
