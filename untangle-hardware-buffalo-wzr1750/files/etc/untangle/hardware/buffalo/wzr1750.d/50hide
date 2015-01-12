@@ -28,4 +28,6 @@ rm -f /etc/init.d/clamav-freshclam
 rm -f /usr/share/untangle/lib/untangle-node-faild/nodeProperties.js
 rm -f /usr/share/untangle/lib/untangle-node-splitd/nodeProperties.js
 
+# hide new idps
+rm -f /usr/share/untangle/lib/untangle-node-idps/nodeProperties.js
 
