@@ -170,8 +170,16 @@ ${IPTABLES} -t mangle -I restore-qos-mark -p udp -m mark ! --mark 0x00000000/0x0
 # if there is a non-zero mark there we should save it. After the UVM is queue the packet it will release it with NF_REPEAT
 # and so this rule will save the new QoS mark
 ${IPTABLES} -t tune -I POSTROUTING -p udp -m mark ! --mark 0x00000000/0x000F0000 -j CONNMARK --save-mark --mask 0x000F0000 -m comment --comment "save non-zero QoS mark"
+KERNVER=$(uname -r | awk -F. '{ printf("%d%d%d\n",$1,$2,$3); }')
+ORIGVER=31049
 
+if [ "$KERNVER" -ge "$ORIGVER" ]; then
 ${IPTABLES} -t mangle -A restore-qos-mark -m conntrack  ! --ctstate UNTRACKED -j CONNMARK --restore-mark --mask 0x000F0000 -m comment --comment "restore QoS mark"
+else
+# Using -m state --state instead of -m conntrack --ctstate ref: http://markmail.org/thread/b7eg6aovfh4agyz7
+${IPTABLES} -t mangle -A restore-qos-mark -m state ! --state UNTRACKED -j CONNMARK --restore-mark --mask 0x000F0000 -m comment --comment "restore QoS mark"
+fi
+
 """)
         file.write("\n");
 
