@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [ "$1" = "purge" ]; then
+    rm -rf /usr/share/untangle-snort-config/*
+fi
+
+exit 0
