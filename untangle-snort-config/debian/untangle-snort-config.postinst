@@ -4,7 +4,6 @@ UNTANGLESNORTCONFIG_DIR=/usr/share/untangle-snort-config
 
 cd ${UNTANGLESNORTCONFIG_DIR}
 
-mkdir current
 tar -xzf snortrules.tar.gz -C current
 
 cd -
