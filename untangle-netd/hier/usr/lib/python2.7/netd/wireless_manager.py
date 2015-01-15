@@ -79,6 +79,9 @@ class WirelessManager:
                     
                 self.hostapdConfFile.write("ieee80211n=1\n")
                 self.hostapdConfFile.write("wmm_enabled=1\n")
+                # This configures what HT modes the wifi card support. We are going with the AR9280 to start and it will
+                # be the only card supported for now
+                self.hostapdConfFile.write("ht_capab=[HT40-][HT40+][SHORT-GI-40][TX-STBC][RX-STBC1][DSSS_CCK-40]\n")
 
                 self.hostapdConfFile.flush()
                 self.hostapdConfFile.close()
