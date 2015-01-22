@@ -113,8 +113,8 @@ ff02::3 ip6-allhosts
 
     def write_resolve_file( self, settings, prefix, verbosity ):
 
-        if 'mailname' not in settings:
-            print "ERROR: Missing mailname setting"
+        if 'hostName' not in settings:
+            print "ERROR: Missing hostname setting"
             return
 
         filename = prefix + self.resolvFile
