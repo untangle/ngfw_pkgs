@@ -174,7 +174,7 @@ for line in subprocess.Popen(("ip -6 route show table main").split(), stdout=sub
 
 # Parse DNS (read from dnsmasq.conf)
 count=1
-for line in subprocess.Popen(("cat /etc/dnsmasq.conf").split(), stdout=subprocess.PIPE).communicate()[0].split('\n'):
+for line in subprocess.Popen(["/bin/sh","-c","cat /etc/dnsmasq.conf /etc/dnsmasq.d/*"], stdout=subprocess.PIPE).communicate()[0].split('\n'):
     if re.search(r'server=.*\suplink.%i\s*$' % interfaceId, line):
 
         if count > 2:
