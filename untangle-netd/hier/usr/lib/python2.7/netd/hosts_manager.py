@@ -11,6 +11,7 @@ from netd.network_util import NetworkUtil
 class HostsManager:
     hostsFile = "/etc/hosts"
     hostnameFile = "/etc/hostname"
+    mailnameFile = "/etc/mailname"
     resolvFile = "/etc/resolv.conf"
 
     def write_hosts_file( self, settings, prefix, verbosity ):
@@ -90,10 +91,30 @@ ff02::3 ip6-allhosts
         if verbosity > 0: print "HostsManager: Wrote %s" % filename
         return
 
+    def write_mailname_file( self, settings, prefix, verbosity ):
+
+        if 'domainName' not in settings:
+            print "ERROR: Missing domainName setting"
+            return
+
+        filename = prefix + self.mailnameFile
+        fileDir = os.path.dirname( filename )
+        if not os.path.exists( fileDir ):
+            os.makedirs( fileDir )
+
+        file = open( filename, "w+" )
+        file.write("%s\n" % settings.get('domainName'))
+
+        file.flush()
+        file.close()
+
+        if verbosity > 0: print "HostsManager: Wrote %s" % filename
+        return
+
     def write_resolve_file( self, settings, prefix, verbosity ):
 
-        if 'hostName' not in settings:
-            print "ERROR: Missing hostname setting"
+        if 'mailname' not in settings:
+            print "ERROR: Missing mailname setting"
             return
 
         filename = prefix + self.resolvFile
@@ -124,5 +145,6 @@ ff02::3 ip6-allhosts
         self.write_hostname_file( settings, prefix, verbosity )
         self.write_hosts_file( settings, prefix, verbosity )
         self.write_resolve_file( settings, prefix, verbosity )
+        self.write_mailname_file( settings, prefix, verbosity )
 
         return
