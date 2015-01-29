@@ -12,9 +12,9 @@
 
 . /lib/lsb/init-functions
 
-DESC="Untangle Hardware Portwell U5"
-PARTS_DIR="/etc/untangle/hardware/portwell/u5.d"
-LOG_FILE="/var/log/uvm/portwell-u5.log"
+DESC="Untangle Hardware Jetway u5"
+PARTS_DIR="/etc/untangle/hardware/jetway/u50w.d"
+LOG_FILE="/var/log/uvm/jetway-u50w.log"
 
 start() {
   log_daemon_msg "Starting $DESC"
