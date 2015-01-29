@@ -8,6 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-hardware-portwell-u150
 Architecture: all
+Depends: untangle-lcd
 Description: The Untangle hardware config
  Provides the mechanism for other packages to register startup
  actions, to load hardware-related settings at boot time.
