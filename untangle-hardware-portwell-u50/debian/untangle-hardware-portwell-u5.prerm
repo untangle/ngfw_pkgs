@@ -8,7 +8,7 @@ else
 fi
 }
 
-SERVICE=untangle-hardware-portwell-u5
+SERVICE=untangle-hardware-portwell-u50
 
 case "$1" in
     remove|deconfigure)
