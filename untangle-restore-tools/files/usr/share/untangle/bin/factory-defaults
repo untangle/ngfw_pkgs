@@ -38,4 +38,6 @@ done
 
 echo " done"
 
+/etc/init.d/untangle-vm start
+
 exit 0
