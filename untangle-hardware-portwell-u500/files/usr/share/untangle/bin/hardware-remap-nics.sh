@@ -1,16 +1,4 @@
-#! /bin/bash
-
-if [ $1 != "install" ] ; then
-    exit 0
-fi
-
-# only remap-nics if the flag file exists
-if [ ! -f /tmp/remap-nics ] ; then
-    exit 0
-fi
-
-# remap NICs
-rm -f /tmp/remap-nics
+#!/bin/bash
 
 # detect specific model of u500
 # the original u500
@@ -45,5 +33,3 @@ done
 perl -i -pe "s/new_//g" $udev_file 
 
 echo "Remapped ports for $model appliance, changes take effect after reboot..."
-
-

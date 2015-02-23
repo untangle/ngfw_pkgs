@@ -1,37 +1,25 @@
-#! /bin/bash
+#!/bin/bash
 
-if [ $1 != "install" ] ; then
-    exit 0
-fi
-
-# only remap-nics if the flag file exists
-if [ ! -f /tmp/remap-nics ] ; then
-    exit 0
-fi
-
-# remap NICs
-rm -f /tmp/remap-nics
-
-# detect specific model of m1500
-# the original m1500
-# the new m1500 (the m1500b) uses E5-2609 CPUs
+# detect specific model of m3000
+# the original m3000
+# the new m3000 (the m3000b) uses E5-2620 CPUs
 cpu_count=`grep "model name" /proc/cpuinfo | wc -l`
 cpu_model=`grep -m1 "model name" /proc/cpuinfo | cut -f2 -d: | cut -c2-`
 if [[ $cpu_count -eq 12 ]]; then
-    is_m1500b=`echo $cpu_model | grep 'E5-2609' | wc -l`
-    if [ $is_m1500b -gt 0 ]; then
-        model='m1500b'
+    is_m3000b=`echo $cpu_model | grep 'E5-2620' | wc -l`
+    if [ $is_m3000b -gt 0 ]; then
+        model='m3000b'
     else
-        model='m1500'
+        model='m3000'
     fi
 fi
 
 case $model in
-    m1500)
+    m3000)
         declare -a from=(eth2 eth3 eth4 eth5 eth6 eth7 eth8 eth9 eth0 eth1)
         declare -a   to=(eth0 eth1 eth2 eth3 eth4 eth5 eth6 eth7 eth8 eth9)
         ;;
-    m1500b)
+    m3000b)
         declare -a from=(eth6 eth7 eth8 eth9 eth2 eth3 eth4 eth5 eth0 eth1)
         declare -a   to=(eth0 eth1 eth2 eth3 eth4 eth5 eth6 eth7 eth8 eth9)
         ;;
