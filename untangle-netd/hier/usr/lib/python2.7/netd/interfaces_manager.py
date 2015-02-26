@@ -312,9 +312,9 @@ class InterfacesManager:
 
         for intf in interfaces:
             id = intf['interfaceId']
-
+            # Restore the mark from the source MAC address
+            # see netcap_virtual_interface.c for more details
             file.write("${IPTABLES} -t mangle -A mark-src-intf -i utun -p tcp -m mac --mac-source 00:00:00:00:00:%02X -j MARK --set-mark 0x00%02X/0x00FF -m comment --comment \"Set reinject packet src interface mark for intf %x\"" % (id, id, id) + "\n");
-
 
         file.write("${IPTABLES} -t mangle -A mark-src-intf -m mark ! --mark 0/0x%04X -m conntrack --ctstate NEW -j CONNMARK --save-mark --mask 0x%04X -m comment --comment \"Save src interface mark to connmark\"" % (self.srcInterfaceMarkMask, self.srcInterfaceMarkMask) + "\n");
 
