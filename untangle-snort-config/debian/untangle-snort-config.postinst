@@ -8,7 +8,9 @@ if [ ! -d "${UNTANGLESNORTCONFIG_DIR}/current/rules" ] ; then
     cd -
 fi
 
-/usr/sbin/update-rc.d/update-rc.d snort disable > /dev/null 2>&1
-/usr/sbin/update-rc.d/update-rc.d snort-untangle disable > /dev/null 2>&1
+/etc/init.d/snort stop
+/etc/init.d/snort-untangle stop
+/usr/sbin/update-rc.d snort disable > /dev/null 2>&1
+/usr/sbin/update-rc.d snort-untangle disable > /dev/null 2>&1
 
 exit 0
