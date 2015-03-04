@@ -1,5 +1,13 @@
 #! /bin/bash
 
+ourInit() {
+if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
+  invoke-rc.d $1 $2
+else
+  /etc/init.d/$1 $2
+fi
+}
+
 OEM_NAME="Untangle"
 
 if [ -f /etc/untangle/oem/oem.sh ] ; then
@@ -23,11 +31,11 @@ quit() {
     echo Quit
     
     if [ -x /etc/init.d/apache2 ]; then
-        /etc/init.d/apache2 restart
+        ourInit apache2 restart
     fi
 
     if [ -x /etc/init.d/untangle-vm ] ; then
-        /etc/init.d/untangle-vm start
+        ourInit untangle-vm start
     fi
 
     exit
@@ -36,11 +44,11 @@ quit() {
 stop_services()
 {
     if [ -x /etc/init.d/untangle-vm ]; then
-        /etc/init.d/untangle-vm stop
+        ourInit untangle-vm stop
     fi
     
     if [ -x /etc/init.d/apache2 ]; then
-        /etc/init.d/apache2 stop
+        ourInit apache2 stop
     fi
 }
 
@@ -122,14 +130,14 @@ support_menu()
                     if [ -f /usr/share/untangle/settings/untangle-vm/system.js ] ; then
                         sed -e 's/\"supportEnabled\": false/\"supportEnabled\": true/' -i /usr/share/untangle/settings/untangle-vm/system.js
                     fi
-                    /etc/init.d/untangle-pyconnector restart
+                    ourInit untangle-pyconnector restart
                     state=SUCCESS_SPLASH
                     ;;
                 "Disable Remote Support")
                     if [ -f /usr/share/untangle/settings/untangle-vm/system.js ] ; then
                         sed -e 's/\"supportEnabled\": true/\"supportEnabled\": false/' -i /usr/share/untangle/settings/untangle-vm/system.js
                     fi
-                    /etc/init.d/untangle-pyconnector restart
+                    ourInit untangle-pyconnector restart
                     state=SUCCESS_SPLASH
                     ;;
                 "Display UID")
