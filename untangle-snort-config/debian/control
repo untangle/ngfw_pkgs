@@ -4,10 +4,10 @@ Priority: optional
 Maintainer: Chris Blaise <cblaise@untangle.com>
 Uploaders: Untangle Buildbot <buildbot@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
-Pre-Depends: snort
 Standards-Version: 3.8.0
 
 Package: untangle-snort-config
 Architecture: all
+Pre-Depends: snort
 Description: Initial versions of Snort configuration and rules
  Initial versions of Snort configuration and rules.
