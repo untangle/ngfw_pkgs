@@ -38,7 +38,7 @@ exec >> /var/log/uvm/dhcp.log 2>&1
 """)
 
         for interface_settings in settings['interfaces']['list']:
-            if interface_settings['v4ConfigType'] == 'AUTO':
+            if interface_settings['configType'] == 'ADDRESSED' and interface_settings['v4ConfigType'] == 'AUTO':
 
                 file.write("if [ \"$interface\" = \"%s\" ] || [ \"$interface\" = \"%s\" ] ; then" % (interface_settings['systemDev'],interface_settings['symbolicDev']) + "\n")
                 file.write("    DHCP_INTERFACE_INDEX=%s" % interface_settings['interfaceId'] + "\n")
@@ -132,6 +132,9 @@ make_resolv_conf()
     sed -i -e "/^#*\s*server=.*uplink.${DHCP_INTERFACE_INDEX}$/d" /etc/dnsmasq.conf
 
     # remove this interfaces line from list of servers
+    if [ ! -f /etc/dnsmasq.d/dhcp-upstream-dns-servers ] ; then
+        touch /etc/dnsmasq.d/dhcp-upstream-dns-servers
+    fi
     sed -i -e "/^#*\s*server=.*uplink.${DHCP_INTERFACE_INDEX}$/d" /etc/dnsmasq.d/dhcp-upstream-dns-servers
 
     if [ -n "$new_domain_name" -o -n "$new_domain_name_servers" ]; then
