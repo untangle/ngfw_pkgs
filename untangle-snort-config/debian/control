@@ -8,6 +8,6 @@ Standards-Version: 3.8.0
 
 Package: untangle-snort-config
 Architecture: all
-Pre-Depends: snort
+Depends: snort
 Description: Initial versions of Snort configuration and rules
  Initial versions of Snort configuration and rules.
