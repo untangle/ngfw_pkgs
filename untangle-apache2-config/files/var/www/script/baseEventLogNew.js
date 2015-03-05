@@ -34,7 +34,7 @@ Ext.define("Ung.GridEventLogBase", {
         this.callParent(arguments);
     },
     beforeDestroy: function() {
-        Ext.each(this.subCmps, Ext.destroy);
+        Ext.destroy(this.subCmps);
         this.callParent(arguments);
     },
     initComponent: function() {
