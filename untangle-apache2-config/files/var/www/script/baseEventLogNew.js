@@ -42,8 +42,10 @@ Ext.define("Ung.GridEventLogBase", {
         this.rpc = {
             repository: {}
         };
+        if(!this.title) {
+            this.title = i18n._('Event Log');
+        }
         Ext.applyIf(this, {
-            title: i18n._('Event Log'),
             name: 'EventLog',
             features:[],
             viewConfig: {}
