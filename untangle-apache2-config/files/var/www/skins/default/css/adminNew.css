@@ -1537,3 +1537,8 @@ div.x-column-header-inner {
     font-family: arial, helvetica, freesans,sans-serif;
     font-style: italic;
 }
+
+
+.row-editor-textfield {
+    width: 100%;
+}
