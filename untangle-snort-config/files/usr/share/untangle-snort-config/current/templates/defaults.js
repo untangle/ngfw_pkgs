@@ -1,5 +1,29 @@
 {
-    "version": 1,
+    "version": 2,
+    "categories": [{
+        "category" : "preprocessor_portscan",
+        "description": "Portscan detection.",
+        "ids":[
+            "5_122",
+            "9_122",
+            "13_122",
+            "2_122",
+            "20_122",
+            "10_122",
+            "6_122",
+            "18_122",
+            "4_122",
+            "14_122",
+            "12_122",
+            "21_122",
+            "1_122",
+            "22_122",
+            "17_122",
+            "24_122",
+            "16_122",
+            "8_122"
+        ]
+    }],
     "profiles": [{
         "profileId":   "low_32",
         "systemStats": {
@@ -21,7 +45,9 @@
                 "+web-application-attack"
             ],
             "categories": "recommended",
-            "categoriesSelected": []
+            "categoriesSelected": [
+                "preprocessor_portscan"
+            ]
         }
     },{
         "profileId":   "medium_32",
@@ -60,7 +86,9 @@
                 "+web-application-activity"
             ],
             "categories": "recommended",
-            "categoriesSelected": []
+            "categoriesSelected": [
+                "preprocessor_portscan"
+            ]
         }
     },{
         "profileId":   "high_32",
@@ -107,7 +135,9 @@
                 "+tcp-connection"
             ],
             "categories": "recommended",
-            "categoriesSelected": []
+            "categoriesSelected": [
+                "preprocessor_portscan"
+            ]
         }
     },{
         "profileId":   "low_64",
@@ -130,7 +160,9 @@
                 "+web-application-attack"
             ],
             "categories": "recommended",
-            "categoriesSelected": []
+            "categoriesSelected": [
+                "preprocessor_portscan"
+            ]
         }
     },{
         "profileId":   "medium_64",
@@ -169,7 +201,9 @@
                 "+web-application-activity"
             ],
             "categories": "recommended",
-            "categoriesSelected": []
+            "categoriesSelected": [
+                "preprocessor_portscan"
+            ]
         }
     },{
         "profileId":   "high_64",
@@ -216,7 +250,9 @@
                 "+tcp-connection"
             ],
             "categories": "recommended",
-            "categoriesSelected": []
+            "categoriesSelected": [
+                "preprocessor_portscan"
+            ]
         }
     },{
         "profileId":   "low_unknown",
@@ -239,7 +275,9 @@
                 "+web-application-attack"
             ],
             "categories": "recommended",
-            "categoriesSelected": []
+            "categoriesSelected": [
+                "preprocessor_portscan"
+            ]
         }
     },{
         "profileId":   "medium_unknown",
@@ -278,7 +316,9 @@
                 "+web-application-activity"
             ],
             "categories": "recommended",
-            "categoriesSelected": []
+            "categoriesSelected": [
+                "preprocessor_portscan"
+            ]
         }
     },{
         "profileId":   "high_unknown",
@@ -325,7 +365,9 @@
                 "+tcp-connection"
             ],
             "categories": "recommended",
-            "categoriesSelected": []
+            "categoriesSelected": [
+                "preprocessor_portscan"
+            ]
         }
     }]
 }
