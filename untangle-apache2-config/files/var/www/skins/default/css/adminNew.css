@@ -1119,18 +1119,16 @@ body.wizard label.info-detail
     margin-left:4px;
     white-space: nowrap;
 }
-.x-form-combo-detail{
-    margin-left:22px;
+.x-form-combo-detail {
+    margin-left: 22px;
 }
-body.wizard
-{
-    font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
+body.wizard {
+    font-family: arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
 }
-body.wizard .ext-el-mask
-{ 
+body.wizard .ext-el-mask { 
     background-color: #CCCCCC;
 }
-.network-card-form-margin{
+.network-card-form-margin {
     margin-top:1em;
     padding-top:1em;
 }
@@ -1153,108 +1151,76 @@ body.wizard .ext-el-mask
 }
 
 /* Z-Index required on some browsers. */
-.logo-container{
-    position:absolute;
-    top:10px;
-    left:25px;
+.logo-container {
+    position: absolute;
+    top: 10px;
+    left: 25px;
     z-index : 2;
-    width:166px;
-    height:100px;
-    overflow:hidden;
+    width: 166px;
+    height: 100px;
+    overflow: hidden;
 }
-.wizard-steps{
-    padding-top:120px;
-    background-color:#e8e8e8;    
+.wizard-steps {
+    padding-top: 120px;
+    background-color: #e8e8e8;
 }
-.empty-background{
-    background-color:none;
+
+/* wizard step container*/
+.wizard-steps .step {
+    font-size: 12px;
+    line-height: 23px;
+    font-family: arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
+    margin: 3px 0px;
+}
+.wizard-steps .nostep {
+    padding: 0px 0px 0px 33px;
 }
 /* wizard completed step */
-.wizard-steps .completed
-{ 
-    color: #000;  
+.wizard-steps .completed { 
+    color: #000000;  
 }
 /* wizard incomplete step */
-.wizard-steps .incomplete
-{ 
+.wizard-steps .incomplete { 
     color: #444;
 }
 /* wizard current step */
-.wizard-steps .current
-{ 
+.wizard-steps .current { 
     color: #333;
     font-weight: bold;
-}
-/* wizard step container*/
-.wizard-steps .step
-{
-    font-size: 12px;
-    line-height: 23px;
-    font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
-    margin:3px 0px 3px 15px;
-    padding:0px 0px 0px 0px;
-}
-
-.nostep{
-    padding:0px 0px 0px 22px;
-}
-.current div, .incomplete div, .completed div
-{
-    padding:0px 0px 0px 5px;
-}
-
-.current div{
-    width:200px;
-}
-
-.incomplete div
-{
-    background-color:#E8e8e8;
-}
-
-.completed div
-{
-    background-color:#e8e8e8;
+    background-color: #ffffff;
 }
 /* incomplete step marker */
-.incomplete div .count{
-    background:url(../images/admin/wizard/step-incomplete.jpg) no-repeat left center !important;
-    margin:0px 4px 0px 0px;
-    color:#444444;
-    font-size:11px;
-    padding:2px 6px 2px 5px;    
+.wizard-steps .count {
+    margin: 0px 4px 0px 10px;
+    font-size: 11px;
+    padding: 2px 6px 2px 5px;
+	}
+.wizard-steps .incomplete .count {
+    background: url(../images/admin/wizard/step-incomplete.jpg) no-repeat left center !important;
+    color: #444444;
 }
 /* current step marker */
-.current div .count
-{
+.wizard-steps .current .count {
     background: url(../images/admin/wizard/step-current.jpg) no-repeat left center !important;
-    margin:0px 4px 0px 0px;
-    color:#444444;
-    font-size:11px;
-    padding:2px 6px 2px 5px;
+    color: #444444;
 }
 /* completed step marker */
-.completed div .count,
-.step_counter
-{
+.wizard-steps .completed .count, .step_counter {
     background: url(../images/admin/wizard/step-completed.jpg) no-repeat left center !important;
-    margin:0px 4px 0px 0px;
-    color:#FFF;
-    font-size:11px;
-    padding:2px 6px 2px 5px;    
+    color: #FFFFFF;
 }
-.wizard .x-form-item label
-{ 
+.wizard .x-form-item label { 
     text-align: right;
 }
+
 /* wizard title*/ 
-.wizard-title{
-    margin-bottom:0.8em;
-    padding-top:5px;
-    color:#333;
-    font-size:18px;
-    font-weight:bold;
-    font-family:arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
+.wizard-title {
+    margin-bottom: 0.8em;
+    padding-top: 5px;
+    color: #333;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
 }
 /* required info text */
 .required-info {
@@ -1267,10 +1233,6 @@ body.wizard .ext-el-mask
 .required-star {
     color:#FF2222;
     font-weight:bold;
-}
-.wizard-label{
-    color:#333;
-    font-size:12px;
 }
 /* warning message text*/
 .warning {
@@ -1537,7 +1499,6 @@ div.x-column-header-inner {
     font-family: arial, helvetica, freesans,sans-serif;
     font-style: italic;
 }
-
 
 .row-editor-textfield {
     width: 100%;
