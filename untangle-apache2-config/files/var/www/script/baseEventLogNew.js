@@ -9,15 +9,6 @@ Ext.define("Ung.GridEventLogBase", {
     // for internal use
     rpc: null,
     helpSource: 'event_log',
-    enableColumnHide: true,
-    enableColumnMove: true,
-    enableColumnMenu: true,
-    verticalScrollerType: 'paginggridscroller',
-    plugins: {
-        ptype: 'bufferedrenderer',
-        trailingBufferZone: 20,  // Keep 20 rows rendered in the table behind scroll
-        leadingBufferZone: 50   // Keep 50 rows rendered in the table ahead of scroll
-    },
     loadMask: true,
         startDate: null,
     endDate: null,
@@ -25,7 +16,7 @@ Ext.define("Ung.GridEventLogBase", {
     // called when the component is initialized
     constructor: function(config) {
         this.subCmps = [];
-        var modelName='Ung.GridEventLog.Store.ImplicitModel-' + Ext.id();
+        var modelName='Ung.EventLog.Model-' + Ext.id();
         Ext.define(modelName, {
             extend: 'Ext.data.Model',
             fields: config.fields
@@ -341,8 +332,8 @@ Ext.define("Ung.GridEventLogBase", {
          * Display the results
          */
         if (this.settingsCmp !== null) {
-            this.getStore().getProxy().data = this.eventEntries;
-            this.getStore().loadPage(1);
+            this.getStore().getProxy().setData(this.eventEntries);
+            this.getStore().load();
         }
         this.setLoading(false);
     },
