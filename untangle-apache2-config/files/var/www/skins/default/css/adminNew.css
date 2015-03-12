@@ -117,29 +117,15 @@ div.node div.node-faceplate-info {
     font-weight: bold;
     color: #DE2020;
 }
-.buy-button-text .x-btn-text-icon{
-    margin-left:20px;
-}
 /* Application Item buy button text */
-.buy-button-text .x-btn-text-icon .x-btn-center .x-btn-text {
-    color:green;
-    font-weight:bold;
+.buy-button .x-btn-inner-default-small {
+    color: green;
 }
 /* Trial node buy button icon */
 .x-btn .icon-buy {
     background:transparent url(../images/admin/icon_buy.png) no-repeat center left !important; 
 }
 /* In Wizard Download Button icon*/
-.x-btn .icon-download {
-    background:transparent url(../images/admin/icon_download.png) no-repeat center left !important;
-    padding-left:17px !important;
-}
-/* Application Item buy button icon */
-div.icon-buy {
-    background:transparent url(../images/admin/icon_buy.png) no-repeat !important;
-    height:15px;
-    width:15px;
-}
 /* help button icon */
 .icon-help {
     background:transparent url(../images/admin/icon_help.png) no-repeat center left !important; 
@@ -971,24 +957,8 @@ div.button-column {
 }
 
 /* Wizard */
-.large-option {
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.noborder {
-    border:0px solid;
-    background-image:none;
-    font-family:tahoma,arial,helvetica,freesans,sans-serif;
-    font-size:12px;
-    font-size-adjust:none;
-    font-style:normal;
-    font-variant:normal;
-    font-weight:normal;
-    line-height:normal;    
-}
-.italics{
-    font-style:italic;        
+.italics {
+    font-style: italic;
 }
 .untangle-form-panel .x-form{
     border:none
@@ -1073,42 +1043,6 @@ div.button-column {
     padding-left:140px;
     padding-top:22px;
 }
-.share-illustration{
-    background-image:url(../images/admin/disk/share.png) !important;
-    background-repeat:no-repeat;
-    padding:0 0 5px 18px;
-}
-.volume-illustration{
-    background-image:url(../images/admin/disk/volume.png) !important;
-    background-repeat:no-repeat;
-    padding-left:18px;
-}
-table.email-tester
-{ 
-    margin-bottom:0px;
-    margin-left:7px;
-}
-/* email test button icon */
-.x-btn .email-tester
-{ 
-    background:transparent url(../images/admin/icon_test.png) no-repeat center left !important; 
-    width : 190px;
-}
-label.optional-email-tester
-{ 
-    padding: 10px 0px 0px 0px;
-    float: right;
-    margin-right:28em;
-    font-style: italic;
-}
-body.wizard label.info-detail
-{
-    float:left;
-    font-size:80%;
-    font-style:italic;
-    margin-top:-20px;
-    padding-left:270px;
-}
 .x-form-textfield-detail, .x-form-combo-detail
 { 
     font-size:80%;
@@ -1122,28 +1056,18 @@ body.wizard label.info-detail
 .x-form-combo-detail {
     margin-left: 22px;
 }
+/* Wizard CSS */
 body.wizard {
     font-family: arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
 }
 body.wizard .ext-el-mask { 
     background-color: #CCCCCC;
 }
-.network-card-form-margin {
-    margin-top:1em;
-    padding-top:1em;
-}
-.network-card-form-margin div div form fieldset{
-    border:0px;
-    border-top:1px #CCC solid;
-}
-.right-align{
-    margin-left:214px;
+body.wizard .x-form-item label { 
+    text-align: right;
 }
 .small-top-margin{
     margin-top:1em;
-}
-.small-bottom-margin{
-    margin-bottom:1em;
 }
 #container{
     margin:10px auto;
@@ -1164,8 +1088,6 @@ body.wizard .ext-el-mask {
     padding-top: 120px;
     background-color: #e8e8e8;
 }
-
-/* wizard step container*/
 .wizard-steps .step {
     font-size: 12px;
     line-height: 23px;
@@ -1175,45 +1097,34 @@ body.wizard .ext-el-mask {
 .wizard-steps .nostep {
     padding: 0px 0px 0px 33px;
 }
-/* wizard completed step */
 .wizard-steps .completed { 
     color: #000000;  
 }
-/* wizard incomplete step */
 .wizard-steps .incomplete { 
     color: #444;
 }
-/* wizard current step */
 .wizard-steps .current { 
     color: #333;
     font-weight: bold;
     background-color: #ffffff;
 }
-/* incomplete step marker */
 .wizard-steps .count {
     margin: 0px 4px 0px 10px;
     font-size: 11px;
     padding: 2px 6px 2px 5px;
-	}
+}
 .wizard-steps .incomplete .count {
     background: url(../images/admin/wizard/step-incomplete.jpg) no-repeat left center !important;
     color: #444444;
 }
-/* current step marker */
 .wizard-steps .current .count {
     background: url(../images/admin/wizard/step-current.jpg) no-repeat left center !important;
     color: #444444;
 }
-/* completed step marker */
 .wizard-steps .completed .count, .step_counter {
     background: url(../images/admin/wizard/step-completed.jpg) no-repeat left center !important;
     color: #FFFFFF;
 }
-.wizard .x-form-item label { 
-    text-align: right;
-}
-
-/* wizard title*/ 
 .wizard-title {
     margin-bottom: 0.8em;
     padding-top: 5px;
@@ -1222,21 +1133,16 @@ body.wizard .ext-el-mask {
     font-weight: bold;
     font-family: arial,helvetica,"FreeSans","Utkal","Nimbus Sans L","Malayalam","Phetsarath OT","Garuda",clean,freesans,sans-serif;
 }
-/* required info text */
-.required-info {
-    padding-left : 20px;
-    display : block;
-    font-style : italic;
-    font-size : 80%;
-}
-/* required info star*/
-.required-star {
-    color:#FF2222;
-    font-weight:bold;
-}
+.wizard-network-img {
+    border: 1px #ccc solid;
+} 
 /* warning message text*/
 .warning {
     color: #FF0000;
+}
+.large-option {
+    font-size: 14px;
+    font-weight: bold;
 }
 .description {
     font-family:tahoma,arial,helvetica,sans-serif;
@@ -1253,26 +1159,29 @@ body.wizard .ext-el-mask {
     padding:5px 5px 0px 5px;
 }
 /* Ext Js Overrides - across the board */
-.x-grid3-hd-inner{
+.x-grid3-hd-inner {
     text-transform:capitalize;
 }
-.x-fieldset{
+.x-fieldset {
     padding:5px 10px 10px 20px;
 }
-.x-fieldset-bwrap{
+.x-fieldset-bwrap {
     padding-bottom:5px;
     border-bottom:1px #d0d0d0 dotted;
 }
-.x-fieldset legend{
+.x-fieldset legend {
     margin-left:-15px;
     color:#111;
     font-size:12px;
 }
-/* Specific Overrides*/
-#external_administration_fieldset{
-    margin-top:10px;
+div.x-column-header-inner {
+    text-align: center;
 }
-.administration_network,.left-indent-1{
+.x-fieldset-header-default > .x-fieldset-header-text {
+    font-weight: bold;
+}
+/* Specific Overrides*/
+.left-indent-1{
     margin-left:17px;
 }
 .left-indent-2{
@@ -1297,209 +1206,73 @@ body.wizard .ext-el-mask {
 .super-spam-threshold label{
     width:150px !important;
 }
-.ua-cell-draggable
-{ 
-    background: transparent url(../images/admin/icon_drag.gif) no-repeat center center;
-    width: 100%;
-    height : 16px;
-    cursor: move;
-    padding: 0px 0px 0px 0px;
-}
-
-.ua-cell-enabled
-{ 
+.ua-cell-enabled { 
     background: transparent url(../images/admin/icon_interface_enabled.png) no-repeat center right;
     width: 100%;
     height : 16px;
     padding: 0px 0px 0px 0px;
 }
-
-.ua-cell-disabled
-{ 
+.ua-cell-disabled { 
     background: transparent url(../images/admin/icon_interface_disabled.png) no-repeat center right;
     width: 100%;
     height : 16px;
     padding: 0px 0px 0px 0px;
 }
-
 .ua-draggable {
-	cursor: move;
+    cursor: move;
 }
-
 .ua-pointer {
-    cursor:pointer;
-    cursor:hand; /*for ie*/
+    cursor: pointer;
 }
-
-.label-section-heading, .label-section-heading-2,.label-text{
-    font-family:Tahoma, arial,helvetica,  freesans,sans-serif;
-    font-weight:bold;
-    font-size:12px;
-    display:block;
-    margin-bottom:5px;
-}
-
-.label-text{
-    font-weight:normal;
-}
-.label-section-heading-2{
-    margin-top:10px;
-}
-.label-width-1 label.x-form-item-label{
-    width:120px !important;
-}
-.label-width-1 label.x-form-textfield-detail{
-    width:180px !important;
-}
-.label-width-1 div.x-form-element{
-    padding-left:125px !important;
-}
-.label-width-2 label.x-form-item-label{
-    width:190px !important;
-}
-.label-width-2 label.x-form-textfield-detail{
-    width:240px !important;
-}
-.label-width-2 div.x-form-element{
-    padding-left:200px !important;
-}
-.float-button-1, .float-button-2{
-    float:left;
-}
-.float-button-2{
-    clear:right;
-    margin-left:10px;
-}
-.ua-message-warning {
-    padding: 5px 5px 5px 28px;
-    border: 1px solid #60BB3F;
-    background: #FEFEDD url(../images/user/icon_message.png) no-repeat scroll 7px center !important;
-    color:#333;
-    font-size:11px;
-    font-family:Tahoma, arial,helvetica, freesans,sans-serif;
-}
-.ua-message-warning{
-    display:block;
-    margin-bottom:10px;
-}
-table.failover-refresh
-{ 
-    float : left;
-    margin-top : -2.2em;
-    margin-left : 22em;
-    position : absolute;
-}
-
-table.failover-run-test
-{ 
-    float : left;
-    margin-top : -2.1em;
-    margin-left : 23em;
-    position : absolute;
-}
-
-table.failover-ping-suggestions
-{ 
-    float : left;
-    margin-top : -2.1em;
-    margin-left : 23em;
-    position : absolute;
-}
-
-
-fieldset.failover-test-type
-{ 
-    border-bottom: none;
-    padding-bottom: 0px;
-}
-
-fieldset.failover-test-type div.x-fieldset-bwrap
-{ 
-    border-bottom: none;
-    padding-bottom: 0px;
-}
-
-.icon-test-run
-{
+.icon-test-run {
     background: transparent url(../images/admin/icon_test_run.png) no-repeat center left !important;
 }
-
-.icon-test-running
-{
+.icon-test-running {
     background: transparent url(../images/admin/icon_test_running.gif) no-repeat center left !important;
 }
-
-.icon-clear-output
-{
+.icon-clear-output {
     background: transparent url(../images/admin/icon_clear_output.png) no-repeat center left !important;
 }
-
-.icon-test-ping
-{
+.icon-test-ping {
     background: transparent url(../images/admin/icon_test_ping.png) no-repeat center left !important;
 }
 
-.icon-test-connectivity
-{
+.icon-test-connectivity {
     background: transparent url(../images/admin/icon_test_connectivity.png) no-repeat center left !important;
 }
-
-div.ua-cell-test
-{ 
+div.ua-cell-test { 
     padding-left: 20px;
     line-height: 18px;
 }
-
-div.ua-cell-test-connectivity
-{ 
+div.ua-cell-test-connectivity { 
     background: transparent url(../images/admin/icon_test_connectivity.png) no-repeat center left !important;
 }
-
-div.ua-cell-test-ping
-{ 
+div.ua-cell-test-ping { 
     background: transparent url(../images/admin/icon_test_ping.png) no-repeat center left !important;
 }
-
-div.ua-cell-test-dns
-{ 
+div.ua-cell-test-dns { 
     background: transparent url(../images/admin/icon_test_dns.png) no-repeat center left !important;
 }
-
-div.ua-cell-test-tcp
-{ 
+div.ua-cell-test-tcp { 
     background: transparent url(../images/admin/icon_test_tcp.png) no-repeat center left !important;
 }
-
-div.ua-cell-test-traceroute
-{ 
+div.ua-cell-test-traceroute { 
     background: transparent url(../images/admin/icon_test_traceroute.png) no-repeat center left !important;
 }
-
-div.ua-cell-test-download
-{ 
+div.ua-cell-test-download { 
     background: transparent url(../images/admin/icon_test_download.png) no-repeat center left !important;
 }
-
-div.ua-cell-test-packet
-{ 
+div.ua-cell-test-packet { 
     background: transparent url(../images/admin/icon_test_packet.png) no-repeat center left !important;
 }
-textarea.ua-test-output
-{ 
+textarea.ua-test-output { 
     font-family: courier, monospace;
-}
-div.x-column-header-inner {
-    text-align: center;
-}
-.x-fieldset-header-default > .x-fieldset-header-text {
-	font-weight: bold;
 }
 .boxlabel {
     margin: 3px 0px 0px 10px;
     font-family: arial, helvetica, freesans,sans-serif;
     font-style: italic;
 }
-
 .row-editor-textfield {
     width: 100%;
 }
