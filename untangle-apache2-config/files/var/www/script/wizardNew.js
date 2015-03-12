@@ -40,15 +40,13 @@ Ext.define('Ung.Wizard', {
         this.previousButton = Ext.create('Ext.button.Button', {
             id : 'card-prev',
             text : Ext.String.format(i18n._( '{0} Previous' ),'&laquo;'),
-            handler : Ext.bind(this.goPrevious, this ),
-            cls:'x-btn-always-over small-right-margin'
+            handler : Ext.bind(this.goPrevious, this )
         });
 
         this.nextButton = Ext.create('Ext.button.Button',{
             id : 'card-next',
             text : Ext.String.format(i18n._( 'Next {0}' ),'&raquo;'),
-            handler : Ext.bind(this.goNext, this ),
-            cls:'x-btn-always-over'
+            handler : Ext.bind(this.goNext, this )
         });
 
         if ( this.cardDefaults == null ) this.cardDefaults = {};
@@ -56,7 +54,7 @@ Ext.define('Ung.Wizard', {
             border: true,
             autoScroll: true
         });
-        var bbarArr=[ '->', this.previousButton, this.nextButton , { xtype: 'tbspacer', width: 15 }];
+        var bbarArr=[ '->', this.previousButton, { xtype: 'tbspacer', width: 10 },this.nextButton , { xtype: 'tbspacer', width: 15 }];
         if(this.hasCancel) {
             bbarArr.unshift(this.cancelButton);
         };
