@@ -1,8 +1,7 @@
 Ext.namespace('Ung');
 // The location of the blank pixel image
 Ext.define('Ung.Wizard', {
-    extend:'Ext.container.Container',
-    border: 1,
+    extend:'Ext.panel.Panel',
     layout: { type: 'hbox', align: 'stretch' },
     currentPage: 0,
     hasCancel: false,
