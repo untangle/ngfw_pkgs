@@ -136,6 +136,9 @@ class IptablesUtil:
                 current_strings = [ current + matcherStr for current in current_strings ]
 
             if matcherType == "SRC_ADDR":
+                if "any" in value:
+                    continue # no need to do anything
+
                 srcs = value.split(",")
                 if invert:
                     print "ERROR: invert not supported on addr matcher"
@@ -152,6 +155,9 @@ class IptablesUtil:
                     current_strings = current_strings + [ current + matcherStr for current in orig_current_strings ]
 
             if matcherType == "DST_ADDR":
+                if "any" in value:
+                    continue # no need to do anything
+
                 dsts = value.split(",")
                 if invert:
                     print "ERROR: invert not supported on addr matcher"
@@ -168,6 +174,9 @@ class IptablesUtil:
                     current_strings = current_strings + [ current + matcherStr for current in orig_current_strings ]
 
             if matcherType == "SRC_PORT":
+                if "any" in value:
+                    continue # no need to do anything
+
                 value = value.replace("-",":").replace(" ","") # iptables uses colon to represent range not dash
                 matcherStr = matcherStr + " -m multiport"
                 if invert:
@@ -179,6 +188,9 @@ class IptablesUtil:
                 current_strings = [ current + matcherStr for current in current_strings ]
 
             if matcherType == "DST_PORT":
+                if "any" in value:
+                    continue # no need to do anything
+
                 value = value.replace("-",":").replace(" ","") # iptables uses colon to represent range not dash
                 matcherStr = matcherStr + " -m multiport " 
                 if invert:
