@@ -1156,7 +1156,7 @@ body.wizard #container{
 }
 /* panel content container*/
 .ung-panel {
-    padding:5px 5px 0px 5px;
+    padding: 5px;
 }
 /* Ext Js Overrides - across the board */
 .x-grid3-hd-inner {

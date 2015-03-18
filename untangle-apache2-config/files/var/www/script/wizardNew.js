@@ -13,7 +13,7 @@ Ext.define('Ung.Wizard', {
                 tag: 'div',
                 cls: 'logo-container',
                 children: [{tag: 'img', src:'../images/BrandingLogo.png'}]
-            })
+            });
         }
         // Build a panel to hold the headers on the left
         this.headerPanel = Ext.create('Ext.container.Container', {
@@ -48,7 +48,7 @@ Ext.define('Ung.Wizard', {
                 },this)
             });
             bbarArr.unshift(this.cancelButton);
-        };
+        }
         
         if ( this.cardDefaults == null ) { this.cardDefaults = {}; }
         Ext.apply(this.cardDefaults, { border: true, autoScroll: true });

@@ -10,8 +10,6 @@ Ext.define("Ung.GridEventLogBase", {
     rpc: null,
     helpSource: 'event_log',
     loadMask: true,
-        startDate: null,
-    endDate: null,
     stateful: true,
     // called when the component is initialized
     constructor: function(config) {
@@ -49,17 +47,13 @@ Ext.define("Ung.GridEventLogBase", {
         this.store=Ext.create('Ext.data.Store', {
             model: this.modelName,
             data: [],
-            buffered: false,
             proxy: {
                 type: 'memory',
                 reader: {
                     type: 'json',
                     rootProperty: 'list'
                 }
-            },
-            autoLoad: false,
-            remoteSort:false,
-            remoteFilter: false
+            }
         });
         this.dockedItems = [{
             xtype: 'toolbar',
