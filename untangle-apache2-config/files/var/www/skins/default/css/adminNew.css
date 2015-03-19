@@ -1121,9 +1121,16 @@ body.wizard #container{
     background: url(../images/admin/wizard/step-current.jpg) no-repeat left center !important;
     color: #444444;
 }
-.wizard-steps .completed .count, .step_counter {
+.wizard-steps .completed .count {
     background: url(../images/admin/wizard/step-completed.jpg) no-repeat left center !important;
     color: #FFFFFF;
+}
+.step_counter {
+    background: url(../images/admin/wizard/step-completed.jpg) no-repeat left center !important;
+    color: #FFFFFF;
+    margin: 0px 4px 0px 10px;
+    font-size: 11px;
+    padding: 2px 6px 2px 5px;
 }
 .wizard-title {
     margin-bottom: 0.8em;
