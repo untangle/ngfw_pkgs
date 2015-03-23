@@ -50,7 +50,7 @@ fi
 if [ ! -f /usr/share/untangle/conf/wizard.js ] ; then
     /usr/bin/untangle-client &
 else
-    /bin/egrep -q 'wizardComplete.*true' /usr/share/untangle/conf/wizard.js
+    /bin/egrep -q 'wizardComplete.*false' /usr/share/untangle/conf/wizard.js
     if [ $? == 0 ] ; then
         /usr/bin/untangle-client &
     fi
