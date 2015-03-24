@@ -33,27 +33,21 @@ currentDPI=$(xdpyinfo | awk '/resolution/ { gsub(/x.+/, "", $2) ; print $2}')
 pkill fbpanel
 fbpanel &
 
-# set the background
-if [ -f /usr/share/untangle-kiosk/desktop_background-4x3.png ] ; then
-    feh --bg-scale /usr/share/untangle-kiosk/desktop_background-4x3.png
-fi
+# set the background if present
+bgFile="/usr/share/untangle-kiosk/desktop_background-4x3.png"
+[ -f $bgFile ] && feh --bg-scale $bgFile
 
 # do not recover a (potentially saved) previous session
 find .mozilla -name sessionstore.js -exec /bin/rm {} \;
 
-# Launch appliance imaging script if present
-if [ -x /usr/share/untangle/bin/appliance_imaging_script.sh ] ; then
-    sudo xterm /usr/share/untangle/bin/appliance_imaging_script.sh 
-fi
+# launch appliance imaging script if present
+imagingScript="/usr/share/untangle/bin/appliance_imaging_script.sh"
+[ -x $imagingScript ] && sudo xterm $imagingScript
 
 # automatically start the setup wizard if it hasn't been completed
-if [ ! -f /usr/share/untangle/conf/wizard.js ] ; then
+wizardFile="/usr/share/untangle/conf/wizard.js"
+if [ ! -f $wizardFile ] || grep -qE 'wizardComplete.*false' $wizardFile ; then
     /usr/bin/untangle-client &
-else
-    /bin/egrep -q 'wizardComplete.*false' /usr/share/untangle/conf/wizard.js
-    if [ $? == 0 ] ; then
-        /usr/bin/untangle-client &
-    fi
 fi
 
 # the window manager; when this exits, X stops, but it will restart
