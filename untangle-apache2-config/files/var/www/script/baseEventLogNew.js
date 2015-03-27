@@ -100,7 +100,6 @@ Ext.define("Ung.GridEventLogBase", {
                 }, this)
             },'->',{
                 xtype: 'button',
-                id: "export_"+this.getId(),
                 text: i18n._('Export'),
                 name: "Export",
                 tooltip: i18n._('Export Events to File'),
@@ -113,17 +112,17 @@ Ext.define("Ung.GridEventLogBase", {
             items: [{
                 xtype: 'tbtext',
                 hidden: !this.hasSelectors,
-                id: "querySelector_"+this.getId(),
+                name: 'querySelector',
                 text: ''
             }, {
                 xtype: 'tbtext',
                 hidden: !this.hasSelectors,
-                id: "rackSelector_"+this.getId(),
+                name: 'rackSelector',
                 text: ''
             }, {
                 xtype: 'tbtext',
                 hidden: !this.hasSelectors,
-                id: "limitSelector_"+this.getId(),
+                name: 'limitSelector',
                 text: ''
             }, {
                 xtype: 'button',
@@ -156,9 +155,8 @@ Ext.define("Ung.GridEventLogBase", {
             },
             {
                 xtype: 'button',
-                id: "refresh_"+this.getId(),
                 text: i18n._('Refresh'),
-                name: "Refresh",
+                name: "refresh",
                 tooltip: i18n._('Flush Events from Memory to Database and then Refresh'),
                 iconCls: 'icon-refresh',
                 handler:function () {
@@ -168,11 +166,10 @@ Ext.define("Ung.GridEventLogBase", {
             }, {
                 xtype: 'button',
                 hidden: !this.hasAutoRefresh,
-                id: "auto_refresh_"+this.getId(),
+                name: 'auto_refresh',
                 text: i18n._('Auto Refresh'),
                 enableToggle: true,
                 pressed: false,
-                name: "Auto Refresh",
                 tooltip: i18n._('Auto Refresh every 5 seconds'),
                 iconCls: 'icon-autorefresh',
                 handler: Ext.bind(function(button) {
@@ -255,11 +252,9 @@ Ext.define("Ung.GridEventLogBase", {
             columnModel[i].sortable = false;
             }
         if(setButton) {
-            var autoRefreshButton=Ext.getCmp("auto_refresh_"+this.getId());
-            autoRefreshButton.toggle(true);
+            this.down('button[name=auto_refresh]').toggle(true);
         }
-        var refreshButton=Ext.getCmp("refresh_"+this.getId());
-        refreshButton.disable();
+        this.down('button[name=refresh]').disable();
         this.autoRefreshList();
     },
     stopAutoRefresh: function(setButton) {
@@ -269,11 +264,9 @@ Ext.define("Ung.GridEventLogBase", {
             columnModel[i].sortable = columnModel[i].initialSortable;
         }
         if(setButton) {
-            var autoRefreshButton=Ext.getCmp("auto_refresh_"+this.getId());
-            autoRefreshButton.toggle(false);
+            this.down('button[name=auto_refresh]').toggle(false);
         }
-        var refreshButton=Ext.getCmp("refresh_"+this.getId());
-        refreshButton.enable();
+        this.down('button[name=refresh]').enable();
     },
     // return the list of columns in the event long as a comma separated list
     getColumnList: function() {
