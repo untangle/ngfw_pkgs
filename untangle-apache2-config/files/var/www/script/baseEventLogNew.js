@@ -384,8 +384,8 @@ Ext.define("Ung.grid.feature.GlobalFilter", {
                     return true;
                 }
                 var datas = record.getData(), key, val;
-                for(key in datas) {
-                    if(this.visibleColumns[key]){
+                for(key in this.visibleColumns) {
+                    if(datas[key] !== undefined){
                         val = datas[key];
                         if(val == null) {
                             continue;
