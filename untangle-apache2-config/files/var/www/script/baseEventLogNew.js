@@ -189,7 +189,7 @@ Ext.define("Ung.grid.BaseEventLog", {
                 col.sortable = true;
             }
             col.initialSortable = col.sortable;
-            if (col.filter === undefined) {
+            if (col.dataIndex !== undefined && col.filter === undefined) {
                 if (col.dataIndex != 'time_stamp') {
                     col.filter = { type: 'string' };
                 } else {
