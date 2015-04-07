@@ -413,6 +413,13 @@ img.icon-delete-row {
     cursor: pointer;
     height:16px;
 }
+/* wireless icon */
+img.icon-wireless {
+    background:transparent url(../images/admin/icon_wireless.png) no-repeat center center;
+    width: 100%;
+    cursor: pointer;
+    height:16px;
+}
 /* logout row icon */
 div.icon-logout-row {
     background:transparent url(../images/admin/icon_logout_row.gif) no-repeat center center;

@@ -382,6 +382,13 @@ div.node-metrics div.system-value {
     cursor: pointer;
     height: 16px;
 }
+/* wireless icon */
+.icon-wireless {
+    background:transparent url(../images/admin/icon_wireless.png) no-repeat center center;
+    width: 100%;
+    cursor: pointer;
+    height:16px;
+}
 /* detail row icon */
 .icon-detail-row {
     background:transparent url(../images/admin/icon_detail_row.gif) no-repeat center center;
