@@ -244,7 +244,12 @@ refresh_routes()
 
 run_post_networking_hook()
 {
-    run-parts /etc/untangle-netd/post-network-hook.d
+    # check if it is already running
+    # if it is, don't run it again
+    ps aux | grep run-parts | grep -v grep | grep post-network-hook.d >/dev/null 2>&1
+    if [ $? != 0 ] ; then
+      run-parts /etc/untangle-netd/post-network-hook.d
+    fi
 }
 
 write_status_file()
@@ -279,8 +284,7 @@ case "$reason" in
         refresh_routes
         write_status_file ${interface} ${DHCP_INTERFACE_INDEX}
 
-        # dhclient is currently running, so networking is being restarted, no need to call this
-        # run_post_networking_hook 
+        run_post_networking_hook 
         ;;
 
     RENEW|REBIND)
