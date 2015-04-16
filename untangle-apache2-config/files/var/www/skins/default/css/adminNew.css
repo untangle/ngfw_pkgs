@@ -403,6 +403,12 @@ img.icon-wired {
     cursor: pointer;
     height: 16px;
 }
+.href-icon {
+    text-decoration:none !important;
+    display:inline-block;
+    width: 16px;
+    margin-right: 4px;
+}
 /* drag icon */
 img.icon-drag {
     background:transparent url(../images/admin/icon_drag.gif) no-repeat center center;

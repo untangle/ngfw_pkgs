@@ -368,6 +368,8 @@ Ext.define("Ung.grid.BaseEventLog", {
 
 Ext.define("Ung.grid.feature.GlobalFilter", {
     extend: "Ext.grid.feature.Feature",
+    useVisibleColumns: true,
+    useFields: null,
     init: function (grid) {
         this.grid=grid;
 
@@ -378,13 +380,13 @@ Ext.define("Ung.grid.feature.GlobalFilter", {
             caseSensitive: false,
             regExp: null,
             stateId: 'globalFilter',
-            visibleColumns: {},
+            searchFields: {},
             filterFn: function(record) {
                 if(!this.regExp) {
                     return true;
                 }
                 var datas = record.getData(), key, val;
-                for(key in this.visibleColumns) {
+                for(key in this.searchFields) {
                     if(datas[key] !== undefined){
                         val = datas[key];
                         if(val == null) {
@@ -423,8 +425,8 @@ Ext.define("Ung.grid.feature.GlobalFilter", {
                 }
                 return value;
             },
-            buildSearch: function(value, caseSensitive, visibleColumns) {
-                this.visibleColumns = visibleColumns;
+            buildSearch: function(value, caseSensitive, searchFields) {
+                this.searchFields = searchFields;
                 this.setCaseSensitive(caseSensitive);
                 var searchValue = this.getSearchValue(value);
                 this.regExp = searchValue==null? null:new RegExp(searchValue, 'g' + (caseSensitive ? '' : 'i'));
@@ -442,15 +444,20 @@ Ext.define("Ung.grid.feature.GlobalFilter", {
         this.callParent(arguments);
     },
     updateGlobalFilter: function(value, caseSensitive) {
-        var visibleColumns = {}, i, col;
-        for(i=0; i<this.grid.columns.length; i++) {
-            col = this.grid.columns[i];
-            if(!col.isHidden() && col.dataIndex) {
-                visibleColumns[col.dataIndex] = true;
+        var searchFields = {}, i, col;
+        if(this.useVisibleColumns) {
+            for(i=0; i<this.grid.columns.length; i++) {
+                col = this.grid.columns[i];
+                if(!col.isHidden() && col.dataIndex) {
+                    searchFields[col.dataIndex] = true;
+                }
+            }
+        } else if(this.searchFields!=null) {
+            for(i=0; i<this.searchFields.length; i++) {
+                searchFields[this.searchFields[i]] = true;
             }
         }
-        this.globalFilter.buildSearch(value, caseSensitive, visibleColumns);
-        // this.grid.getStore().reload();
+        this.globalFilter.buildSearch(value, caseSensitive, searchFields);
         this.grid.getStore().getFilters().notify('endupdate');
     }
 });
