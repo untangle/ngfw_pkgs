@@ -1,82 +1,68 @@
-Ext.namespace('Ung');
-// The location of the blank pixel image
 Ext.define('Ung.Wizard', {
     extend:'Ext.panel.Panel',
-    currentPage : 0,
+    layout: { type: 'hbox', align: 'stretch' },
+    name: 'wizard',
+    currentPage: null,
     hasCancel: false,
     modalFinish: false, //can not go back or cancel on finish step
     finished: false,
+    showLogo: false,
     initComponent : function() {
-        var logo_container = Ext.get('extra-div-1');
-        logo_container.addCls( 'logo-container');
-        var logo = document.createElement('img');
-        logo.src= '../images/BrandingLogo.png';
-        logo_container.appendChild(logo);
+        if(this.showLogo) {
+            Ext.DomHelper.append(this.renderTo,{
+                tag: 'div',
+                cls: 'logo-container',
+                children: [{tag: 'img', src:'../images/BrandingLogo.png'}]
+            });
+        }
         // Build a panel to hold the headers on the left
-        this.headerPanel = Ext.create('Ext.panel.Panel', {
+        this.headerPanel = Ext.create('Ext.container.Container', {
             cls: 'wizard-steps',
-            defaults : { border : false, width : 200 },
-            items:this.buildHeaders( this.cards ),
-            layout: {
-                type: 'vbox',
-                align: 'right'
-            },
-            region : "west",
-            width : 200,
-            bodyStyle:{background:'none'},
-            border:false
+            layout: { type: 'vbox', align: 'right'},
+            flex: 0,
+            width: 200,
+            defaults: { border : false, width : 200 },
+            items: this.buildHeaders( this.cards )
         } );
 
-        var panels = [];
+        var items = [];
+        for (var i = 0; i < this.cards.length; i++ ) {
+            items.push(this.cards[i].panel );
+        }
+        this.previousButton = Ext.create('Ext.button.Button', {
+            text : Ext.String.format(i18n._( '{0} Previous' ),'&laquo;'),
+            handler : Ext.bind(this.goPrevious, this )
+        });
+        this.nextButton = Ext.create('Ext.button.Button',{
+            text : Ext.String.format(i18n._( 'Next {0}' ),'&raquo;'),
+            handler : Ext.bind(this.goNext, this )
+        });
 
-        var length = this.cards.length;
-        for ( c = 0 ;c < length ; c++ ) panels.push(this.cards[c].panel );
+        var bbarArr=[ '->', this.previousButton, { xtype: 'tbspacer', width: 10 },this.nextButton , { xtype: 'tbspacer', width: 15 }];
         if(this.hasCancel) {
             this.cancelButton = Ext.create('Ext.button.Button',{
-                id : 'cancel',
                 iconCls: 'cancel-icon',
                 text : i18n._( 'Cancel' ),
                 handler : Ext.bind(function() {
                     this.cancelAction();
                 },this)
             });
-        }
-        this.previousButton = Ext.create('Ext.button.Button', {
-            id : 'card-prev',
-            text : Ext.String.format(i18n._( '{0} Previous' ),'&laquo;'),
-            handler : Ext.bind(this.goPrevious, this ),
-            cls:'x-btn-always-over small-right-margin'
-        });
-
-        this.nextButton = Ext.create('Ext.button.Button',{
-            id : 'card-next',
-            text : Ext.String.format(i18n._( 'Next {0}' ),'&raquo;'),
-            handler : Ext.bind(this.goNext, this ),
-            cls:'x-btn-always-over'
-        });
-
-        if ( this.cardDefaults == null ) this.cardDefaults = {};
-
-        /* Append some necessary defaults */
-        this.cardDefaults.autoHeight = true;
-        this.cardDefaults.autoScroll = true;
-        this.cardDefaults.border = false;
-        var bbarArr=[ '->', this.previousButton, this.nextButton ];
-        if(this.hasCancel) {
             bbarArr.unshift(this.cancelButton);
-        };
+        }
+        
+        if ( this.cardDefaults == null ) { this.cardDefaults = {}; }
+        Ext.apply(this.cardDefaults, { border: true, autoScroll: true });
+
         // Build a card to hold the wizard
         this.contentPanel = Ext.create('Ext.panel.Panel',{
             layout : "card",
-            items : panels,
+            flex: 1,
+            items : items,
             activeItem : 0,
-            region : "center",
-            header:false,
             defaults : this.cardDefaults,
             bbar : bbarArr,
             border:false
         });
-        this.layout = "border";
         this.items = [ this.headerPanel, this.contentPanel ];
         this.callParent(arguments);
     },
@@ -93,16 +79,13 @@ Ext.define('Ung.Wizard', {
             if (( c > 0 ) && ( c < ( length - 1 ))) {
                 title = Ext.String.format( '<span class="count">{0}</span> ', c  ) + title;
             }
-            var id = this.getStepId( c );
             items.push({
+                xtype: 'component',
                 html : title,
                 cls : 'step'
             });
         }
         return items;
-    },
-    getStepId : function( index ) {
-        return "wizard-step-" + index;
     },
     goPrevious : function() {
         this.goToPage( this.currentPage - 1 );
@@ -111,64 +94,47 @@ Ext.define('Ung.Wizard', {
         this.goToPage( this.currentPage + 1 );
     },
     goToPage : function( index ) {
-        if ( index >= this.cards.length ) index = this.cards.length - 1;
-        if ( index < 0 ) index = 0;
-
-        var hasChanged = false;
+        if(this.currentPage == null || this.currentPage == index) {
+            this.loadPage(index);
+            return;
+        }
         var handler = null;
-        var validationPassed = true;
-        if(validationPassed === true){
-            if ( this.currentPage <= index ) {
-                if(this.cards[this.currentPage].onValidate){
-                    validationPassed = this.cards[this.currentPage].onValidate();
+        if ( this.currentPage <= index ) {
+            if(Ext.isFunction(this.cards[this.currentPage].onValidate)){
+                if(!this.cards[this.currentPage].onValidate()){
+                    return;
                 }
-                if(validationPassed === true){
-                    /* moving forward, call the forward handler */
-                    hasChanged = true;
-                    handler = this.cards[this.currentPage].onNext;
-                }else{
-                    return false;
-                }
-            } else if ( this.currentPage > index ) {
-                hasChanged = true;
-                handler = this.cards[this.currentPage].onPrevious;
             }
-        } else {
-            return false;
+            handler = this.cards[this.currentPage].onNext;
+        } else if ( this.currentPage > index ) {
+            handler = this.cards[this.currentPage].onPrevious;
         }
 
-        if ( this.disableNext == true ) handler = null;
-        /* If the page has changed and it is defined, then call the handler */
-        if ( handler ) {
-            handler( Ext.bind(this.afterChangeHandler, this, [ index, hasChanged ] ));
+        // Call the handler if it is defined
+        if ( Ext.isFunction(handler) ) {
+            handler( Ext.bind(this.loadPage, this, [index] ));
         } else {
-            //where are we going if there is no handler? - karthik
-            this.afterChangeHandler( index, hasChanged );
+            this.loadPage(index);
         }
-        return true;
     },
 
-    cancelAction: function () {
-    },
-    /* This function must be called once the the onPrevious or onNext handler completes,
-     * broken into its own function so the handler can run asynchronously */
-    afterChangeHandler : function( index, hasChanged ) {
+    loadPage : function( index) {
+        if ( index < 0 || index >= this.cards.length ) {
+            return;
+        }
         this.currentPage = index;
         var card = this.cards[this.currentPage];
-        handler = card.onLoad;
-        if ( hasChanged && ( handler )) {
-            handler( Ext.bind(this.afterLoadHandler, this ));
+        if ( Ext.isFunction(card.onLoad)) {
+            card.onLoad( Ext.bind(this.syncWizard, this ));
         } else {
-            this.afterLoadHandler();
+            this.syncWizard();
         }
     },
 
-    afterLoadHandler : function() {
+    syncWizard : function() {
         this.contentPanel.getLayout().setActiveItem( this.currentPage );
-        /* You have to force the layout for components that need to recalculate their heights */
-        this.contentPanel.doLayout();
-        /* retrieve all of the items */
-        var items = this.headerPanel.query('');
+        // update steps classes
+        var items = this.headerPanel.query('component');
         var length = items.length;
         var isComplete = true;
         for ( var c = 0 ; c < length ; c++ ) {
@@ -213,15 +179,5 @@ Ext.define('Ung.Wizard', {
             }
         }
     },
-
-    getCardTitle : function( index, card ){
-        var title = card.cardTitle;
-        if ( title == null ) title = card.title;
-
-        if (( index > 0 ) && ( index < ( this.cards.length - 1 ))) {
-            if ( title == null ) title = Ext.String.format( i18n._('Step {0}'), index );
-            else title = Ext.String.format( i18n._('Step {0}'), index + ' - ' + title) ;
-        }
-        return title;
-    }
+    cancelAction: Ext.emptyFn
 });

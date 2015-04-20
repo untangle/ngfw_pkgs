@@ -1,5 +1,5 @@
 //Event Log class
-Ext.define("Ung.GridEventLogBase", {
+Ext.define("Ung.grid.BaseEventLog", {
     extend: "Ext.grid.Panel",
     hasSelectors: null,
     hasAutoRefresh: null,
@@ -9,23 +9,11 @@ Ext.define("Ung.GridEventLogBase", {
     // for internal use
     rpc: null,
     helpSource: 'event_log',
-    enableColumnHide: true,
-    enableColumnMove: true,
-    enableColumnMenu: true,
-    verticalScrollerType: 'paginggridscroller',
-    plugins: {
-        ptype: 'bufferedrenderer',
-        trailingBufferZone: 20,  // Keep 20 rows rendered in the table behind scroll
-        leadingBufferZone: 50   // Keep 50 rows rendered in the table ahead of scroll
-    },
     loadMask: true,
-        startDate: null,
-    endDate: null,
     stateful: true,
-    // called when the component is initialized
     constructor: function(config) {
         this.subCmps = [];
-        var modelName='Ung.GridEventLog.Store.ImplicitModel-' + Ext.id();
+        var modelName='Ung.EventLog.Model-' + Ext.id();
         Ext.define(modelName, {
             extend: 'Ext.data.Model',
             fields: config.fields
@@ -34,7 +22,7 @@ Ext.define("Ung.GridEventLogBase", {
         this.callParent(arguments);
     },
     beforeDestroy: function() {
-        Ext.each(this.subCmps, Ext.destroy);
+        Ext.destroy(this.subCmps);
         this.callParent(arguments);
     },
     initComponent: function() {
@@ -42,10 +30,13 @@ Ext.define("Ung.GridEventLogBase", {
         this.rpc = {
             repository: {}
         };
+        if(!this.title) {
+            this.title = i18n._('Event Log');
+        }
         Ext.applyIf(this, {
-            title: i18n._('Event Log'),
             name: 'EventLog',
-            features:[],
+            plugins: [],
+            features: [],
             viewConfig: {}
         });
         this.stateId = 'eventLog-' +
@@ -56,17 +47,14 @@ Ext.define("Ung.GridEventLogBase", {
         this.store=Ext.create('Ext.data.Store', {
             model: this.modelName,
             data: [],
-            buffered: false,
+            statefulFilters: false,
             proxy: {
                 type: 'memory',
                 reader: {
                     type: 'json',
-                    root: 'list'
+                    rootProperty: 'list'
                 }
-            },
-            autoLoad: false,
-            remoteSort:false,
-            remoteFilter: false
+            }
         });
         this.dockedItems = [{
             xtype: 'toolbar',
@@ -101,19 +89,18 @@ Ext.define("Ung.GridEventLogBase", {
                 text: i18n._('Clear Filters'),
                 tooltip: i18n._('Filters can be added by clicking on column headers arrow down menu and using Filters menu'),
                 handler: Ext.bind(function () {
+                    this.clearFilters();
                     this.searchField.setValue("");
-                    this.filters.clearFilters();
                 }, this)
             }, {
                 text: i18n._('Reset View'),
                 tooltip: i18n._('Restore default columns positions, widths and visibility'),
                 handler: Ext.bind(function () {
                     Ext.state.Manager.clear(this.stateId);
-                    this.reconfigure(this.getStore(), this.initialConfig.columns);
+                    this.reconfigure(null, this.getInitialConfig("columns"));
                 }, this)
             },'->',{
                 xtype: 'button',
-                id: "export_"+this.getId(),
                 text: i18n._('Export'),
                 name: "Export",
                 tooltip: i18n._('Export Events to File'),
@@ -126,17 +113,17 @@ Ext.define("Ung.GridEventLogBase", {
             items: [{
                 xtype: 'tbtext',
                 hidden: !this.hasSelectors,
-                id: "querySelector_"+this.getId(),
+                name: 'querySelector',
                 text: ''
             }, {
                 xtype: 'tbtext',
                 hidden: !this.hasSelectors,
-                id: "rackSelector_"+this.getId(),
+                name: 'rackSelector',
                 text: ''
             }, {
                 xtype: 'tbtext',
                 hidden: !this.hasSelectors,
-                id: "limitSelector_"+this.getId(),
+                name: 'limitSelector',
                 text: ''
             }, {
                 xtype: 'button',
@@ -169,9 +156,8 @@ Ext.define("Ung.GridEventLogBase", {
             },
             {
                 xtype: 'button',
-                id: "refresh_"+this.getId(),
                 text: i18n._('Refresh'),
-                name: "Refresh",
+                name: "refresh",
                 tooltip: i18n._('Flush Events from Memory to Database and then Refresh'),
                 iconCls: 'icon-refresh',
                 handler:function () {
@@ -181,11 +167,10 @@ Ext.define("Ung.GridEventLogBase", {
             }, {
                 xtype: 'button',
                 hidden: !this.hasAutoRefresh,
-                id: "auto_refresh_"+this.getId(),
+                name: 'auto_refresh',
                 text: i18n._('Auto Refresh'),
                 enableToggle: true,
                 pressed: false,
-                name: "Auto Refresh",
                 tooltip: i18n._('Auto Refresh every 5 seconds'),
                 iconCls: 'icon-autorefresh',
                 handler: Ext.bind(function(button) {
@@ -204,10 +189,12 @@ Ext.define("Ung.GridEventLogBase", {
                 col.sortable = true;
             }
             col.initialSortable = col.sortable;
-            if (col.filter === undefined) {
+            if (col.dataIndex !== undefined && col.filter === undefined) {
                 if (col.dataIndex != 'time_stamp') {
                     col.filter = { type: 'string' };
                 } else {
+                    col.filter = { type: 'string' };
+                    /* TODO: ext5
                     col.filter = {
                         type: 'datetime',
                         dataIndex: 'time_stamp',
@@ -244,15 +231,18 @@ Ext.define("Ung.GridEventLogBase", {
                             }
                             return true;
                         }
-                    };
+                    };*/
                 }
             }
             if( col.stateId === undefined ){
                 col.stateId = col.dataIndex;
             }
         }
-        this.filterFeature=Ext.create('Ung.GlobalFiltersFeature', {});
+        
+        this.plugins.push('gridfilters');
+        this.filterFeature=Ext.create('Ung.grid.feature.GlobalFilter', {});
         this.features.push(this.filterFeature);
+
         this.callParent(arguments);
         this.searchField=this.down('textfield[name=searchField]');
         this.caseSensitive = this.down('checkbox[name=caseSensitive]');
@@ -266,11 +256,9 @@ Ext.define("Ung.GridEventLogBase", {
             columnModel[i].sortable = false;
             }
         if(setButton) {
-            var autoRefreshButton=Ext.getCmp("auto_refresh_"+this.getId());
-            autoRefreshButton.toggle(true);
+            this.down('button[name=auto_refresh]').toggle(true);
         }
-        var refreshButton=Ext.getCmp("refresh_"+this.getId());
-        refreshButton.disable();
+        this.down('button[name=refresh]').disable();
         this.autoRefreshList();
     },
     stopAutoRefresh: function(setButton) {
@@ -280,11 +268,9 @@ Ext.define("Ung.GridEventLogBase", {
             columnModel[i].sortable = columnModel[i].initialSortable;
         }
         if(setButton) {
-            var autoRefreshButton=Ext.getCmp("auto_refresh_"+this.getId());
-            autoRefreshButton.toggle(false);
+            this.down('button[name=auto_refresh]').toggle(false);
         }
-        var refreshButton=Ext.getCmp("refresh_"+this.getId());
-        refreshButton.enable();
+        this.down('button[name=refresh]').enable();
     },
     // return the list of columns in the event long as a comma separated list
     getColumnList: function() {
@@ -318,34 +304,24 @@ Ext.define("Ung.GridEventLogBase", {
     },
     refreshNextChunkCallback: function(result, exception) {
         if(Ung.Util.handleException(exception)) return;
-
         var newEventEntries = result;
-
-        /**
-         * If we got results append them to the current events list
-         * And make another call for more
-         */
+        // If we got results append them to the current events list, and make another call for more
         if ( newEventEntries != null && newEventEntries.list != null && newEventEntries.list.length != 0 ) {
             this.eventEntries.push.apply( this.eventEntries, newEventEntries.list );
             this.setLoading(i18n._('Fetching Events...') + ' (' + this.eventEntries.length + ')');
             this.reader.getNextChunk(Ext.bind(this.refreshNextChunkCallback, this), 1000);
             return;
         }
-
-        /**
-         * If we got here, then we either reached the end of the resultSet or ran out of room
-         * Display the results
-         */
+        // If we got here, then we either reached the end of the resultSet or ran out of room display the results
         if (this.settingsCmp !== null) {
-            this.getStore().getProxy().data = this.eventEntries;
-            this.getStore().loadPage(1);
+            this.getStore().getProxy().setData(this.eventEntries);
+            this.getStore().load();
         }
         this.setLoading(false);
     },
     // Refresh the events list
     refreshCallback: function(result, exception) {
         if(Ung.Util.handleException(exception)) return;
-
         this.eventEntries = [];
 
         if( testMode ) {
@@ -383,76 +359,105 @@ Ext.define("Ung.GridEventLogBase", {
     },
     isDirty: function() {
         return false;
+    },
+    afterRender: function() {
+        this.getStore().setStatefulFilters(false);
+        this.callParent(arguments);
     }
 });
 
-Ext.define("Ung.GlobalFiltersFeature", {
-    extend: "Ext.ux.grid.FiltersFeature",
-    encode: false,
-    local: true,
+Ext.define("Ung.grid.feature.GlobalFilter", {
+    extend: "Ext.grid.feature.Feature",
+    useVisibleColumns: true,
+    useFields: null,
     init: function (grid) {
-        Ext.applyIf(this,{
-            globalFilter: {
-                value: "",
-                caseSensitive: false
+        this.grid=grid;
+
+        this.globalFilter = Ext.create('Ext.util.Filter', {
+            regExpProtect: /\\|\/|\+|\\|\.|\[|\]|\{|\}|\?|\$|\*|\^|\|/gm,
+            disabled: true,
+            regExpMode: false,
+            caseSensitive: false,
+            regExp: null,
+            stateId: 'globalFilter',
+            searchFields: {},
+            filterFn: function(record) {
+                if(!this.regExp) {
+                    return true;
                 }
+                var datas = record.getData(), key, val;
+                for(key in this.searchFields) {
+                    if(datas[key] !== undefined){
+                        val = datas[key];
+                        if(val == null) {
+                            continue;
+                        }
+                        if(typeof val == 'boolean' || typeof val == 'number') {
+                            val=val.toString();
+                        } else if(typeof val == 'object') {
+                            if(val.time != null) {
+                                val = i18n.timestampFormat(val);
+                            }
+                        }
+                        if(typeof val == 'string') {
+                            if(this.regExp.test(val)) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
+            },
+            getSearchValue: function(value) {
+                if (value === '' || value === '^' || value === '$') {
+                    return null;
+                }
+                if (!this.regExpMode) {
+                    value = value.replace(this.regExpProtect, function(m) {
+                        return '\\' + m;
+                    });
+                } else {
+                    try {
+                        new RegExp(value);
+                    } catch (error) {
+                        return null;
+                    }
+                }
+                return value;
+            },
+            buildSearch: function(value, caseSensitive, searchFields) {
+                this.searchFields = searchFields;
+                this.setCaseSensitive(caseSensitive);
+                var searchValue = this.getSearchValue(value);
+                this.regExp = searchValue==null? null:new RegExp(searchValue, 'g' + (caseSensitive ? '' : 'i'));
+                this.setDisabled(this.regExp==null);
+            }
         });
+        
+        this.grid.on("afterrender", Ext.bind(function() {
+            this.grid.getStore().addFilter(this.globalFilter);
+        }, this));
+        this.grid.on("beforedestroy", Ext.bind(function() {
+            this.grid.getStore().removeFilter(this.globalFilter);
+            Ext.destroy(this.globalFilter);
+        }, this));
         this.callParent(arguments);
     },
-    getRecordFilter: function() {
-        var me = this;
-        var globalFilterFn = this.globalFilterFn;
-        var parentFn = Ext.ux.grid.FiltersFeature.prototype.getRecordFilter.call(this);
-        return function(record) {
-            return parentFn.call(me, record) && globalFilterFn.call(me, record);
-        };
-    },
     updateGlobalFilter: function(value, caseSensitive) {
-        if(caseSensitive !== null) {
-            this.globalFilter.caseSensitive=caseSensitive;
-        }
-        if(!this.globalFilter.caseSensitive) {
-            value=value.toLowerCase();
-        }
-        this.globalFilter.value = value;
-            this.reload();
-    },
-    globalFilterFn: function(record) {
-        //TODO: 1) support regular exppressions
-        //2) provide option to search in displayed columns only
-        var inputValue = this.globalFilter.value,
-        caseSensitive = this.globalFilter.caseSensitive;
-        if(inputValue.length === 0) {
-            return true;
-        }
-        var fields = record.fields.items,
-        fLen   = record.fields.length,
-        f, val;
-
-        for (f = 0; f < fLen; f++) {
-            val = record.get(fields[f].name);
-            if(val == null) {
-                continue;
-            }
-            if(typeof val == 'boolean' || typeof val == 'number') {
-                val=val.toString();
-            } else if(typeof val == 'object') {
-                if(val.time != null) {
-                    val = i18n.timestampFormat(val);
+        var searchFields = {}, i, col;
+        if(this.useVisibleColumns) {
+            for(i=0; i<this.grid.columns.length; i++) {
+                col = this.grid.columns[i];
+                if(!col.isHidden() && col.dataIndex) {
+                    searchFields[col.dataIndex] = true;
                 }
             }
-            if(typeof val == 'string') {
-                if(caseSensitive) {
-                    if(val.indexOf(inputValue) > -1) {
-                        return true;
-                    }
-                } else {
-                    if(val.toLowerCase().indexOf(inputValue) > -1) {
-                        return true;
-                    }
-                }
+        } else if(this.searchFields!=null) {
+            for(i=0; i<this.searchFields.length; i++) {
+                searchFields[this.searchFields[i]] = true;
             }
         }
-        return false;
+        this.globalFilter.buildSearch(value, caseSensitive, searchFields);
+        this.grid.getStore().getFilters().notify('endupdate');
     }
 });
