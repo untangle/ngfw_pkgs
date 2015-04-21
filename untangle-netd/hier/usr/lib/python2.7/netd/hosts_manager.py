@@ -103,7 +103,7 @@ ff02::3 ip6-allhosts
             os.makedirs( fileDir )
 
         file = open( filename, "w+" )
-        file.write("%s\n" % settings.get('domainName'))
+        file.write("%s.%s\n" % (settings.get('hostName'),settings.get('domainName')))
 
         file.flush()
         file.close()
