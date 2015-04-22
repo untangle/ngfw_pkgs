@@ -10,7 +10,7 @@ Package: untangle-development-build
 Architecture: all
 Recommends: subversion-tools
 Pre-Depends: untangle-debconf-manager
-Depends: autoconf, bzip2, cowdancer (>= 0.25), debhelper (>> 3.0.0), devscripts, docbook-xsl, dpatch, dput, fakeroot, g++, gcc, git-core, git-svn, libc6-dev, libgettext-ruby-util, libgettext-ruby1.8, libncurses-dev, libnetpbm10-dev, libssl-dev, libxext6, libxml2-dev, lintian, linux-libc-dev, linuxdoc-tools, global, make, module-assistant, pbuilder (>= 0.161), rake (>= 0.7.0-1build1), rake (<= 0.9~), subversion, oracle-j2sdk1.7 | oracle-java7-jdk | openjdk-7-jdk, libnetfilter-conntrack-dev (>= 1.0.4), libnetfilter-queue-dev (>= 1.0.2+20141023+git329468), libnfnetlink-dev (>= 1.0.1), unzip, automake1.9 | automake1.11, libtool, cdbs (>= 0.4), libjson0-dev | libjson-dev, manpages-dev, untangle-postgresql-config, rhino, jshint
+Depends: autoconf, bzip2, cowdancer (>= 0.25), debhelper (>> 3.0.0), devscripts, docbook-xsl, dpatch, dput, fakeroot, g++, gcc, git-core, git-svn, libc6-dev, libgettext-ruby-util | ruby-gettext, libgettext-ruby1.8 | ruby-gettext, libncurses-dev, libnetpbm10-dev, libssl-dev, libxext6, libxml2-dev, lintian, linux-libc-dev, linuxdoc-tools, global, make, module-assistant, pbuilder (>= 0.161), rake (>= 0.7.0-1build1), rake (<= 0.9~), subversion, oracle-j2sdk1.7 | oracle-java7-jdk | openjdk-7-jdk, libnetfilter-conntrack-dev (>= 1.0.4), libnetfilter-queue-dev (>= 1.0.2+20141023+git329468), libnfnetlink-dev (>= 1.0.1), unzip, automake1.9 | automake1.11, libtool, cdbs (>= 0.4), libjson0-dev | libjson-dev, manpages-dev, untangle-postgresql-config, rhino, jshint
 Conflicts: ruby-locale
 Provides: ruby-locale
 Replaces: ruby-locale
