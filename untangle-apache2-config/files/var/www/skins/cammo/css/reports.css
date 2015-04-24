@@ -81,8 +81,8 @@
 .untangle-node-openvpn {
     background-image: url(../images/reports/nodes/openvpn.png) !important;
 }
-.untangle-node-ips {
-    background-image: url(../images/reports/nodes/intrusionprevention.png) !important;
+.untangle-node-idps {
+    background-image: url(../images/reports/nodes/intrusiondetectionprevention.png) !important;
 }
 .untangle-node-firewall{
     background-image: url(../images/reports/nodes/firewall.png) !important;
