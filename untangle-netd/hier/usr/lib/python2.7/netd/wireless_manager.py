@@ -19,6 +19,11 @@ class WirelessManager:
         defaultFilename = prefix + self.hostapdDefaultFilename
         restartFilename = prefix + self.hostapdRestartFilename
         crdaFilename = prefix + self.crdaDefaultFilename
+        for filename in [ configFilename, defaultFilename, restartFilename, crdaFilename ]:
+            fileDir = os.path.dirname( filename )
+            if not os.path.exists( fileDir ):
+                os.makedirs( fileDir )
+
         configFiles = ""
 
         if settings == None or settings.get('interfaces') == None and settings.get('interfaces').get('list') == None:
