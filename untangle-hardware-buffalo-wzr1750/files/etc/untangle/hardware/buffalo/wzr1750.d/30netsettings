@@ -11,7 +11,6 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
    mkdir -p /usr/share/untangle/settings/untangle-vm
    cat > /usr/share/untangle/settings/untangle-vm/network.js <<EOF
 {
-    "blockIpv6Forwarding": false,
     "bypassRules": {
         "javaClass": "java.util.LinkedList",
         "list": [

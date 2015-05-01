@@ -41,6 +41,15 @@ class FilterRulesManager:
             self.file.write(cmd + "\n")
         self.file.write("\n");
 
+        if filter_rule.get('ipv6_enabled') == None or filter_rule.get('ipv6_enabled') == False:
+            return
+
+        ip6tables_commands = [ ("${IP6TABLES} -t filter -A %s " % table_name) + ipt + target for ipt in iptables_conditions ]
+        for cmd in ip6tables_commands:
+            self.file.write(cmd + "\n")
+        self.file.write("\n");
+
+
         return
 
     def write_input_filter_rules( self, settings, verbosity=0 ):
@@ -92,9 +101,17 @@ class FilterRulesManager:
         self.file.write("${IPTABLES} -t filter -F filter-rules-input >/dev/null 2>&1" + "\n");
         self.file.write("\n");
 
+        self.file.write("${IP6TABLES} -t filter -N filter-rules-input 2>/dev/null" + "\n");
+        self.file.write("${IP6TABLES} -t filter -F filter-rules-input >/dev/null 2>&1" + "\n");
+        self.file.write("\n");
+
         self.file.write("# Create (if needed) and flush filter-rules-input chain" + "\n");
         self.file.write("${IPTABLES} -t filter -N filter-rules-forward 2>/dev/null" + "\n");
         self.file.write("${IPTABLES} -t filter -F filter-rules-forward >/dev/null 2>&1" + "\n");
+        self.file.write("\n");
+
+        self.file.write("${IP6TABLES} -t filter -N filter-rules-forward 2>/dev/null" + "\n");
+        self.file.write("${IP6TABLES} -t filter -F filter-rules-forward >/dev/null 2>&1" + "\n");
         self.file.write("\n");
 
         self.file.write("# Call filter-rules-input chain from INPUT/filter chain" + "\n");
@@ -102,9 +119,17 @@ class FilterRulesManager:
         self.file.write("${IPTABLES} -t filter -A INPUT -m conntrack --ctstate NEW -m comment --comment \"input filter rules\" -j filter-rules-input" + "\n");
         self.file.write("\n");
 
+        self.file.write("${IP6TABLES} -t filter -D INPUT -m conntrack --ctstate NEW -m comment --comment \"input filter rules\" -j filter-rules-input >/dev/null 2>&1" + "\n");
+        self.file.write("${IP6TABLES} -t filter -A INPUT -m conntrack --ctstate NEW -m comment --comment \"input filter rules\" -j filter-rules-input" + "\n");
+        self.file.write("\n");
+
         self.file.write("# Call filter-rules-forward chain from FORWARD/filter chain" + "\n");
         self.file.write("${IPTABLES} -t filter -D FORWARD -m conntrack --ctstate NEW -m comment --comment \"forward filter rules\" -j filter-rules-forward >/dev/null 2>&1" + "\n");
         self.file.write("${IPTABLES} -t filter -A FORWARD -m conntrack --ctstate NEW -m comment --comment \"forward filter rules\" -j filter-rules-forward" + "\n");
+        self.file.write("\n");
+
+        self.file.write("${IP6TABLES} -t filter -D FORWARD -m conntrack --ctstate NEW -m comment --comment \"forward filter rules\" -j filter-rules-forward >/dev/null 2>&1" + "\n");
+        self.file.write("${IP6TABLES} -t filter -A FORWARD -m conntrack --ctstate NEW -m comment --comment \"forward filter rules\" -j filter-rules-forward" + "\n");
         self.file.write("\n");
 
         self.file.write("# Pass all local traffic " + "\n");
@@ -112,9 +137,17 @@ class FilterRulesManager:
         self.file.write("${IPTABLES} -t filter -I filter-rules-input -i lo -j RETURN -m comment --comment \"Allow all local traffic\"" + "\n");
         self.file.write("\n");
 
+        self.file.write("${IP6TABLES} -t filter -D filter-rules-input -i lo -j RETURN -m comment --comment \"Allow all local traffic\" >/dev/null 2>&1" + "\n");
+        self.file.write("${IP6TABLES} -t filter -I filter-rules-input -i lo -j RETURN -m comment --comment \"Allow all local traffic\"" + "\n");
+        self.file.write("\n");
+
         self.file.write("# Pass all RELATED traffic " + "\n");
         self.file.write("${IPTABLES} -t filter -D filter-rules-input -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\" >/dev/null 2>&1" + "\n");
         self.file.write("${IPTABLES} -t filter -I filter-rules-input -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\"" + "\n");
+        self.file.write("\n");
+
+        self.file.write("${IP6TABLES} -t filter -D filter-rules-input -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\" >/dev/null 2>&1" + "\n");
+        self.file.write("${IP6TABLES} -t filter -I filter-rules-input -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\"" + "\n");
         self.file.write("\n");
 
         # This is commented out because we have explicity rules to handle admin & blockpages in the input rules.
@@ -128,22 +161,26 @@ class FilterRulesManager:
         self.file.write("${IPTABLES} -t filter -I filter-rules-input -i utun -j RETURN -m comment --comment \"Allow all reinjected traffic\"" + "\n");
         self.file.write("\n");
 
+        self.file.write("${IP6TABLES} -t filter -D filter-rules-input -i utun -j RETURN -m comment --comment \"Allow all reinjected traffic\" >/dev/null 2>&1" + "\n");
+        self.file.write("${IP6TABLES} -t filter -I filter-rules-input -i utun -j RETURN -m comment --comment \"Allow all reinjected traffic\"" + "\n");
+        self.file.write("\n");
+
         self.write_input_filter_rules( settings, verbosity );
         self.write_forward_filter_rules( settings, verbosity );
 
-        self.file.write("# Flush IPv6 Rules" + "\n");
-        self.file.write("${IP6TABLES} -t filter -F FORWARD -m comment --comment \"Flush IPv6 rules\" >/dev/null 2>&1" + "\n");
-        if settings.get('blockIpv6Forwarding'):
-            self.file.write("# Block IPv6 Fowarding" + "\n");
-            self.file.write("${IP6TABLES} -t filter -A FORWARD -j DROP -m comment --comment \"Do not allow IPv6 forwarding\" >/dev/null 2>&1" + "\n");
-            self.file.write("\n");
+        #self.file.write("# Flush IPv6 Rules" + "\n");
+        #self.file.write("${IP6TABLES} -t filter -F FORWARD -m comment --comment \"Flush IPv6 rules\" >/dev/null 2>&1" + "\n");
+        #if settings.get('blockIpv6Forwarding'):
+        #    self.file.write("# Block IPv6 Fowarding" + "\n");
+        #    self.file.write("${IP6TABLES} -t filter -A FORWARD -j DROP -m comment --comment \"Do not allow IPv6 forwarding\" >/dev/null 2>&1" + "\n");
+        #    self.file.write("\n");
 
         self.file.write("\n");
-        self.file.write("# Block IPv6 Input" + "\n");
-        self.file.write("${IP6TABLES} -t filter -F INPUT -m comment --comment \"Flush IPv6 filter rules\" >/dev/null 2>&1" + "\n");
-        self.file.write("${IP6TABLES} -t filter -A INPUT -p icmpv6 -j RETURN -m comment --comment \"Allow IPv6 icmp RA, solicitions, ping etc\" >/dev/null 2>&1" + "\n");
-        self.file.write("${IP6TABLES} -t filter -A INPUT -j DROP -m comment --comment \"Do not allow IPv6 input\" >/dev/null 2>&1" + "\n");
-        self.file.write("\n");
+        #self.file.write("# Block IPv6 Input" + "\n");
+        #self.file.write("${IP6TABLES} -t filter -F INPUT -m comment --comment \"Flush IPv6 filter rules\" >/dev/null 2>&1" + "\n");
+        #self.file.write("${IP6TABLES} -t filter -A INPUT -p icmpv6 -j RETURN -m comment --comment \"Allow IPv6 icmp RA, solicitions, ping etc\" >/dev/null 2>&1" + "\n");
+        #self.file.write("${IP6TABLES} -t filter -A INPUT -j DROP -m comment --comment \"Do not allow IPv6 input\" >/dev/null 2>&1" + "\n");
+        #self.file.write("\n");
             
         self.file.flush();
         self.file.close();
