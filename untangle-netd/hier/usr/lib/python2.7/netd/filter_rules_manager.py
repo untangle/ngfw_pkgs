@@ -41,7 +41,7 @@ class FilterRulesManager:
             self.file.write(cmd + "\n")
         self.file.write("\n");
 
-        if filter_rule.get('ipv6_enabled') == None or filter_rule.get('ipv6_enabled') == False:
+        if filter_rule.get('ipv6Enabled') == None or filter_rule.get('ipv6Enabled') == False:
             return
 
         ip6tables_commands = [ ("${IP6TABLES} -t filter -A %s " % table_name) + ipt + target for ipt in iptables_conditions ]
