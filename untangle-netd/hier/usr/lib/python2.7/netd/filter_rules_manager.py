@@ -31,7 +31,7 @@ class FilterRulesManager:
         else:
             target = ' -j RETURN '
 
-        description = "FILTER Rule #%i" % int(filter_rule['ruleId'])
+        description = "Filter Rule #%i" % int(filter_rule['ruleId'])
         iptables_conditions = IptablesUtil.conditions_to_iptables_string( filter_rule['matchers']['list'], description, verbosity );
 
         iptables_commands = [ ("${IPTABLES} -t filter -A %s " % table_name) + ipt + target for ipt in iptables_conditions ]
@@ -39,7 +39,6 @@ class FilterRulesManager:
         self.file.write("# %s\n" % description);
         for cmd in iptables_commands:
             self.file.write(cmd + "\n")
-        self.file.write("\n");
 
         if filter_rule.get('ipv6Enabled') == None or filter_rule.get('ipv6Enabled') == False:
             return
@@ -47,8 +46,8 @@ class FilterRulesManager:
         ip6tables_commands = [ ("${IP6TABLES} -t filter -A %s " % table_name) + ipt + target for ipt in iptables_conditions ]
         for cmd in ip6tables_commands:
             self.file.write(cmd + "\n")
-        self.file.write("\n");
 
+        self.file.write("\n");
 
         return
 
@@ -165,8 +164,23 @@ class FilterRulesManager:
         self.file.write("${IP6TABLES} -t filter -I filter-rules-input -i utun -j RETURN -m comment --comment \"Allow all reinjected traffic\"" + "\n");
         self.file.write("\n");
 
+        if settings.get('blockInvalidPackets'):
+            self.file.write("# Block INVALID packets" + "\n");
+            self.file.write("${IPTABLES} -t filter -D FORWARD -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\" >/dev/null 2>&1\n");
+            self.file.write("${IPTABLES} -t filter -A FORWARD -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\"\n");
+            self.file.write("${IPTABLES} -t filter -D FORWARD -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" >/dev/null 2>&1" + "\n");
+            self.file.write("${IPTABLES} -t filter -A FORWARD -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" " + "\n");
+            self.file.write("\n");
+            self.file.write("# Block INVALID packets" + "\n");
+            self.file.write("${IP6TABLES} -t filter -D FORWARD -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\" >/dev/null 2>&1\n");
+            self.file.write("${IP6TABLES} -t filter -A FORWARD -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\"\n");
+            self.file.write("${IP6TABLES} -t filter -D FORWARD -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" >/dev/null 2>&1" + "\n");
+            self.file.write("${IP6TABLES} -t filter -A FORWARD -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" " + "\n");
+            self.file.write("\n");
+
         self.write_input_filter_rules( settings, verbosity );
         self.write_forward_filter_rules( settings, verbosity );
+
 
         #self.file.write("# Flush IPv6 Rules" + "\n");
         #self.file.write("${IP6TABLES} -t filter -F FORWARD -m comment --comment \"Flush IPv6 rules\" >/dev/null 2>&1" + "\n");
@@ -175,7 +189,6 @@ class FilterRulesManager:
         #    self.file.write("${IP6TABLES} -t filter -A FORWARD -j DROP -m comment --comment \"Do not allow IPv6 forwarding\" >/dev/null 2>&1" + "\n");
         #    self.file.write("\n");
 
-        self.file.write("\n");
         #self.file.write("# Block IPv6 Input" + "\n");
         #self.file.write("${IP6TABLES} -t filter -F INPUT -m comment --comment \"Flush IPv6 filter rules\" >/dev/null 2>&1" + "\n");
         #self.file.write("${IP6TABLES} -t filter -A INPUT -p icmpv6 -j RETURN -m comment --comment \"Allow IPv6 icmp RA, solicitions, ping etc\" >/dev/null 2>&1" + "\n");
