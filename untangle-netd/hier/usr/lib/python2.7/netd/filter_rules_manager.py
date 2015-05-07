@@ -45,6 +45,8 @@ class FilterRulesManager:
 
         ip6tables_commands = [ ("${IP6TABLES} -t filter -A %s " % table_name) + ipt + target for ipt in iptables_conditions ]
         for cmd in ip6tables_commands:
+            if cmd.find("--protocol ah") : 
+                cmd = cmd.replace("--protocol ah", "-m ah ! --ahspi 0");
             self.file.write(cmd + "\n")
 
         self.file.write("\n");
