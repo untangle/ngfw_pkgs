@@ -15,7 +15,7 @@ class IptablesManager:
     flushFilename = "/etc/untangle-netd/iptables-rules.d/010-flush"
     iptablesHookFilename = "/etc/untangle-netd/post-network-hook.d/960-iptables"
 
-    def write_flush_file( self, prefix, verbosity ):
+    def write_flush_file( self, settings, prefix, verbosity ):
 
         filename = prefix + self.flushFilename
         fileDir = os.path.dirname( filename )
@@ -31,8 +31,12 @@ class IptablesManager:
         file.write("${IPTABLES} -t raw -F" + "\n");
         file.write("${IPTABLES} -t tune -F" + "\n");
         file.write("${IPTABLES} -t nat -F" + "\n");
-        file.write("${IPTABLES} -t filter -F" + "\n");
         file.write("${IPTABLES} -t mangle -F" + "\n");
+        file.write("${IPTABLES} -t filter -F" + "\n");
+        if settings.get('blockDuringRestarts') != None and settings.get('blockDuringRestarts'):
+            file.write("${IPTABLES} -t filter -I FORWARD -m conntrack --ctstate NEW -j DROP -m comment --comment \"drop sessions during restart\"\n");
+            file.write("${IPTABLES} -t filter -I INPUT   -m conntrack --ctstate NEW -j DROP -m comment --comment \"drop sessions during restart\"\n");
+
         file.write("\n");
 
         file.write("## Flush all etables rules. (the only rules exist in the broute table)\n")
@@ -47,7 +51,7 @@ class IptablesManager:
     def sync_settings( self, settings, prefix="", verbosity=0 ):
         if verbosity > 1: print "IptablesManager: sync_settings()"
 
-        self.write_flush_file( prefix, verbosity )
+        self.write_flush_file( settings, prefix, verbosity )
 
         os.system("ln -sf /usr/share/untangle-netd/bin/generate-iptables-rules.sh %s" % self.iptablesHookFilename);
         if verbosity > 0:

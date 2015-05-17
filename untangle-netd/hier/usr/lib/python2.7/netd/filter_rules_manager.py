@@ -183,6 +183,10 @@ class FilterRulesManager:
         self.write_input_filter_rules( settings, verbosity );
         self.write_forward_filter_rules( settings, verbosity );
 
+        self.file.write("\n");
+        self.file.write("${IPTABLES} -t filter -D FORWARD -m conntrack --ctstate NEW -j DROP -m comment --comment \"drop sessions during restart\" >/dev/null 2>&1\n");
+        self.file.write("${IPTABLES} -t filter -D INPUT   -m conntrack --ctstate NEW -j DROP -m comment --comment \"drop sessions during restart\" >/dev/null 2>&1\n");
+        self.file.write("\n");
 
         #self.file.write("# Flush IPv6 Rules" + "\n");
         #self.file.write("${IP6TABLES} -t filter -F FORWARD -m comment --comment \"Flush IPv6 rules\" >/dev/null 2>&1" + "\n");

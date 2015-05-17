@@ -196,6 +196,9 @@ class InterfacesManager:
         self.interfacesFile.write("## hooks using the if-up.d scripts when IFACE=networking_pre_restart_hook\n");
         self.interfacesFile.write("auto networking_pre_restart_hook\n");
         self.interfacesFile.write("iface networking_pre_restart_hook inet manual\n");
+        if settings.get('blockDuringRestarts') != None and settings.get('blockDuringRestarts'):
+            self.interfacesFile.write("\tpre-up /sbin/iptables -t filter -I FORWARD -m conntrack --ctstate NEW -j DROP -m comment --comment \"drop sessions during restart\"\n");
+            self.interfacesFile.write("\tpre-up /sbin/iptables -t filter -I INPUT   -m conntrack --ctstate NEW -j DROP -m comment --comment \"drop sessions during restart\"\n");
         self.interfacesFile.write("\n\n");
 
         self.interfacesFile.write("auto lo\n");
