@@ -69,8 +69,9 @@ fi
 /usr/sbin/a2enmod deflate
 
 # disable these modules for "PCI scan" issues
-/usr/sbin/a2dismod autoindex
-/usr/sbin/a2dismod userdir
+grep -qE '^8.0' /etc/debian_version && A2DISMOD_OPTS="-m"
+/usr/sbin/a2dismod $A2DISMOD_OPTS autoindex
+/usr/sbin/a2dismod $A2DISMOD_OPTS userdir
 
 # enable UVM site
 /usr/sbin/a2dissite default
