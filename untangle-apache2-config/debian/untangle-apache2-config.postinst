@@ -75,6 +75,8 @@ grep -qE '^8.0' /etc/debian_version && A2DISMOD_OPTS="-m -f"
 
 # enable UVM site
 /usr/sbin/a2dissite default
+/usr/sbin/a2dissite 000-default # jessie
+/usr/sbin/a2dissite default-ssl # jessie
 /usr/sbin/a2ensite uvm
 
 # disable Trace and Server Signatures for silly PCI compliance
