@@ -151,6 +151,15 @@ class FilterRulesManager:
         self.file.write("${IP6TABLES} -t filter -I filter-rules-input -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\"" + "\n");
         self.file.write("\n");
 
+        self.file.write("# Pass all RELATED traffic " + "\n");
+        self.file.write("${IPTABLES} -t filter -D filter-rules-forward -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\" >/dev/null 2>&1" + "\n");
+        self.file.write("${IPTABLES} -t filter -I filter-rules-forward -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\"" + "\n");
+        self.file.write("\n");
+
+        self.file.write("${IP6TABLES} -t filter -D filter-rules-forward -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\" >/dev/null 2>&1" + "\n");
+        self.file.write("${IP6TABLES} -t filter -I filter-rules-forward -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\"" + "\n");
+        self.file.write("\n");
+
         # This is commented out because we have explicity rules to handle admin & blockpages in the input rules.
         # self.file.write("# Pass all port forwarded traffic (for block pages & admin) " + "\n");
         # self.file.write("${IPTABLES} -t filter -D filter-rules-input -m conntrack --ctstate DNAT -j RETURN -m comment --comment \"Allow port forwarded traffic\" >/dev/null 2>&1" + "\n");
