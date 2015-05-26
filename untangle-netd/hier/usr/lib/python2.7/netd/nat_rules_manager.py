@@ -79,8 +79,8 @@ class NatRulesManager:
                               other_intf['interfaceId'] ))
             self.file.write("\n\n");
 
-            self.file.write("# block traffic to NATd interface %i (except port forwarded/DNAT traffic)" % intf['interfaceId'] + "\n");
-            self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m conntrack ! --ctstate DNAT -m comment --comment \"Block traffic to NATd interace, %i -> %i (ingress setting)\" -j REJECT" % 
+            self.file.write("# block traffic to NATd interface %i" % intf['interfaceId'] + "\n");
+            self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"Block traffic to NATd interace, %i -> %i (ingress setting)\" -j REJECT" % 
                             ( ((intf['interfaceId'] << 8) + other_intf['interfaceId']),
                               other_intf['interfaceId'],
                               intf['interfaceId'] ))
@@ -109,8 +109,8 @@ class NatRulesManager:
                               intf['interfaceId'] ))
             self.file.write("\n\n");
 
-            self.file.write("# block traffic from NATd interface %s (except port forwarded/DNAT traffic)" % intf['interfaceId'] + "\n");
-            self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m conntrack ! --ctstate DNAT -m comment --comment \"Block traffic to NATd interace, %i -> %i (egress setting)\" -j REJECT" % 
+            self.file.write("# block traffic from NATd interface %s" % intf['interfaceId'] + "\n");
+            self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"Block traffic to NATd interace, %i -> %i (egress setting)\" -j REJECT" % 
                             ( ((other_intf['interfaceId'] << 8) + intf['interfaceId']),
                               intf['interfaceId'],
                               other_intf['interfaceId'] ))
@@ -198,6 +198,11 @@ class NatRulesManager:
         self.file.write("# Call nat-reverse-filter chain from FORWARD chain to block traffic to NATd interface from \"outside\" " + "\n");
         self.file.write("${IPTABLES} -t filter -D nat-reverse-filter -m conntrack --ctstate RELATED -m comment --comment \"Allow RELATED traffic\" -j RETURN >/dev/null 2>&1" + "\n");
         self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m conntrack --ctstate RELATED -m comment --comment \"Allow RELATED traffic\" -j RETURN" + "\n");
+        self.file.write("\n");
+
+        self.file.write("# Call nat-reverse-filter chain from FORWARD chain to block traffic to NATd interface from \"outside\" " + "\n");
+        self.file.write("${IPTABLES} -t filter -D nat-reverse-filter -m conntrack --ctstate DNAT -m comment --comment \"Allow port forwarded traffic\" -j RETURN >/dev/null 2>&1" + "\n");
+        self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m conntrack --ctstate DNAT -m comment --comment \"Allow port forwarded traffic\" -j RETURN" + "\n");
         self.file.write("\n");
 
         self.write_nat_rules( settings, verbosity );
