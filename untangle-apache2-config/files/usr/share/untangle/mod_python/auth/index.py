@@ -49,7 +49,7 @@ def login(req, url=None, realm='Administrator'):
             if url == None:
                 return apache.OK
             else:
-                util.redirect(req, url, text="Login Successfull")
+                util.redirect(req, url, text="Login Successful")
 
     company_name = uvmlogin.get_company_name()
     title = _("Administrator Login")
@@ -155,6 +155,13 @@ def _write_login_form(req, title, host, is_error):
     if not type(host) is str:
         host = cgi.escape(host).encode("utf-8")
 
+    banner_msg = get_node_settings_item('untangle-node-branding','bannerMessage')
+    if banner_msg != None and banner_msg != "":
+        banner_msg = banner_msg.replace("\n", "<br/>")
+        banner_msg = "<br>" + banner_msg
+    else:
+        banner_msg = ""
+        
     html = """\
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -175,6 +182,7 @@ def _write_login_form(req, title, host, is_error):
     	    <img style="margin-bottom:10px;" src="/images/BrandingLogo.png"><br/>
             <span class="form-signin-heading"><strong>%s</strong></span>
             <br/>
+            <div style="color:white;">%s</div>
             <br/>
             <span><strong>%s</strong></span>
             <table>
@@ -191,6 +199,6 @@ def _write_login_form(req, title, host, is_error):
     <script type="text/javascript">document.getElementById('password').focus();</script>
 </div>
 </body>
-</html>""" % (title, login_url,title,error_msg, server_str, host, username_str, password_str, login_str)
+</html>""" % (title, login_url,title,banner_msg,error_msg, server_str, host, username_str, password_str, login_str)
     
     req.write(html)
