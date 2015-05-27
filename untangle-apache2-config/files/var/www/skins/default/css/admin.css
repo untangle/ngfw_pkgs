@@ -406,7 +406,7 @@ div.node-metrics div.system-value {
 }
 /* add filter row icon */
 .icon-filter-row {
-    background:transparent url(../images/admin/icon_filter.gif) no-repeat center center;
+    background:transparent url(../images/admin/icon_filter.png) no-repeat center center;
     width: 100%;
     cursor: pointer;
     height: 16px;
