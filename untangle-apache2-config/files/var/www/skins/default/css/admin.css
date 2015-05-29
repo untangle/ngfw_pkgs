@@ -116,7 +116,7 @@ div.node div.node-faceplate-info {
     font-weight: bold;
     color: #DE2020;
 }
-/* Application Item buy button text */
+/* Node buy button text */
 .buy-button .x-btn-inner-default-small {
     color: green;
 }
@@ -124,9 +124,8 @@ div.node div.node-faceplate-info {
 .x-btn .icon-buy {
     background: transparent url(../images/admin/icon_buy.png) no-repeat center left !important; 
 }
-/* In Wizard Download Button icon*/
 /* help button icon */
-.icon-help {
+.x-btn .icon-help {
     background: transparent url(../images/admin/icon_help.png) no-repeat center left !important; 
 }
 /* logout button icon */
@@ -137,7 +136,6 @@ div.node div.node-faceplate-info {
 .x-btn .icon-myaccount {
     background: transparent url(../images/admin/icon_myaccount.png) no-repeat center left !important; 
 }
-
 /* node state container */
 div.node div.node-state {
     z-index: 200;
@@ -152,25 +150,21 @@ div.icon-state-on {
     background: transparent url(../images/admin/icon_state_on.png) no-repeat center !important; 
     cursor: pointer;
 }
-
 /* node state off icon */
 div.icon-state-off {
     background: transparent url(../images/admin/icon_state_off.png) no-repeat center !important; 
     cursor: pointer;
 }
-
 /* node state attention icon */
 div.icon-state-attention {
     background: transparent url(../images/admin/icon_state_attention.png) no-repeat center !important; 
     cursor :pointer;
 }
-
 /* node state error icon */
 div.icon-state-error {
     background:transparent url(../images/admin/icon_state_error.png) no-repeat center !important; 
     cursor: pointer;
 }
-
 /* node power button icon */
 div.node div.node-power {
     z-index: 300;
@@ -182,7 +176,6 @@ div.node div.node-power {
     background:transparent !important; 
     cursor: pointer;
 }
-
 /* node power expired button icon */
 div.node div.node-power-expired {
     z-index: 300;
@@ -214,7 +207,7 @@ div#parent-rack-container {
     padding: 0 2px;
 }
 /* alert icon container */
-div#alert-container{
+div#alert-container {
     background: transparent url(../images/admin/icon-alert.gif) no-repeat center center !important;
     float: left;
     height: 21px;
@@ -224,7 +217,7 @@ div#alert-container{
     width: 25px;
 }
 /* No IE icon container */
-div#no-ie-container{
+div#no-ie-container {
     background: transparent url(../images/admin/icon-no-ie.png) no-repeat center center !important;
     float: left;
     height: 21px;
@@ -249,15 +242,15 @@ div.node div.node-buttons {
     background: transparent url(../images/admin/icon_remove.png) no-repeat center left !important; 
 }
 /* cancel button icon */
-.cancel-icon {
+.x-btn .cancel-icon {
     background: transparent url(../images/admin/icon_cancel.png) no-repeat center left !important; 
 }
 /* save button icon */
-.save-icon {
+.x-btn .save-icon {
     background: transparent url(../images/admin/icon_save.png) no-repeat center left !important; 
 }
 /* apply button icon */
-.apply-icon {
+.x-btn .apply-icon {
     background: transparent url(../images/admin/icon_floppy.png) no-repeat center left !important; 
 }
 /* test button icon */
