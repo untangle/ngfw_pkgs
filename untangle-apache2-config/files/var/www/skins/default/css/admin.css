@@ -282,6 +282,18 @@ div.node div.node-buttons {
     background: transparent url(../images/admin/icon_upgrade.png) no-repeat center left !important;
 }
 
+.x-btn .icon-line-chart {
+    background: transparent url(../images/admin/icon_line_chart.png) no-repeat center left !important;
+}
+
+.x-btn .icon-bar-chart {
+    background: transparent url(../images/admin/icon_bar_chart.png) no-repeat center left !important;
+}
+
+.x-btn .icon-bar3d-chart {
+    background: transparent url(../images/admin/icon_bar3d_chart.png) no-repeat center left !important;
+}
+
 /* node metrics */
 div.node div.node-metrics {
     position: absolute;
