@@ -112,7 +112,7 @@ linux_entry ()
   if [ -z "$boot_device_id" ]; then
       boot_device_id="$(grub_get_device_id "${GRUB_DEVICE}")"
   fi
-  if [ x$type != xsimple ] ; then
+  if [ x"$type" != xsimple ] ; then
       case $type in
 	  recovery)
 	      title="$(gettext_printf "%s, with Linux %s (%s)" "${os}" "${version}" "$(gettext "${GRUB_RECOVERY_TITLE}")")" ;;
@@ -134,7 +134,7 @@ linux_entry ()
   if [ "$quick_boot" = 1 ]; then
       echo "	recordfail" | sed "s/^/$submenu_indentation/"
   fi
-  if [ x$type != xrecovery ] ; then
+  if [ x"$type" != xrecovery ] ; then
       save_default_entry | grub_add_tab
   fi
 
