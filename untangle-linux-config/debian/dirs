@@ -1,4 +1,5 @@
 boot
 boot/grub
 usr/share/untangle-linux-config
-
+etc/grub.d
+etc/default
