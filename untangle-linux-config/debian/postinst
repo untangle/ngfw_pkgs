@@ -66,6 +66,7 @@ if dpkg -l grub-legacy 2> /dev/null | grep -qE '^ii' ; then
 else
   currentDefault=$(grub-editenv list | awk -F= '/^saved_entry/ {print $2}')
   rm -f /etc/grub.d/10_linux # we use our own 50_custom instead
+  mv -f /usr/share/untangle-linux-config/default-grub /etc/default/grub
 fi
 
 if [ -z "$currentDefault" ] || [ "$currentDefault" = "default" ] ; then
