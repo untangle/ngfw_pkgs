@@ -38,7 +38,7 @@ if [ "x${GRUB_DISTRIBUTOR}" = "x" ] ; then
   OS=GNU/Linux
 else
   case ${GRUB_DISTRIBUTOR} in
-    Ubuntu|Kubuntu)
+    Ubuntu|Kubuntu|Untangle)
       OS="${GRUB_DISTRIBUTOR}"
       ;;
     *)
@@ -341,7 +341,7 @@ while [ "x$list" != "x" ] ; do
     is_top_level=false
   fi
 
-  linux_entry "${OS}" "${version}" "" \
+  linux_entry "${OS}" "" "" \
               "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
   for supported_init in ${SUPPORTED_INITS}; do
     init_path="${supported_init#*:}"
@@ -356,19 +356,19 @@ while [ "x$list" != "x" ] ; do
   fi
 
   # safe video mode
-  linux_entry "${OS}" "${version}" "safe video mode" \
+  linux_entry "${OS}" "safe video mode" "safe video mode" \
               "${GRUB_CMDLINE_LINUX} vga=791 quiet splash vga=791 quiet splash force-video-safe nomodeset video=uvesafb:mode_option=1280x1024-24,mtrr=3,scroll=ywrap"
 
   # kern video mode
-  linux_entry "${OS}" "${version}" "kern video mode" \
+  linux_entry "${OS}" "kern video mode" "kern video mode" \
               "${GRUB_CMDLINE_LINUX} vga=791 quiet splash"
 
   # hardware safe mode
-  linux_entry "${OS}" "${version}" "hardware safe mode" \
+  linux_entry "${OS}" "hardware safe mode" "hardware safe mode" \
               "${GRUB_CMDLINE_LINUX} acpi=off noapic nosplash"
 
   # recovery mode
-  linux_entry "${OS}" "${version}" "recovery  mode" \
+  linux_entry "${OS}" "recovery mode" "recovery mode" \
               "${GRUB_CMDLINE_LINUX} ut-restore nosplash"
 
   list=`echo $list | tr ' ' '\n' | fgrep -vx "$linux" | tr '\n' ' '`
