@@ -182,7 +182,7 @@ def _write_login_form(req, title, host, is_error):
     	    <img style="margin-bottom:10px;" src="/images/BrandingLogo.png"><br/>
             <span class="form-signin-heading"><strong>%s</strong></span>
             <br/>
-            <div style="color:white;">%s</div>
+            <div class="banner">%s</div>
             <br/>
             <span><strong>%s</strong></span>
             <table>
