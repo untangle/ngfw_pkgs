@@ -9,6 +9,12 @@ table, div, span {
     text-align: left;
     color: #606060;
 }
+.banner {
+    color:white;
+    min-width: 200px;
+    width: 90%;
+    margin: 0 auto;
+}
 input {
     font: 10pt/14pt arial,sans-serif;
     text-align: left;
