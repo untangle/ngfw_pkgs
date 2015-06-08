@@ -281,17 +281,21 @@ div.node div.node-buttons {
 .x-btn .icon-upgrade {
     background: transparent url(../images/admin/icon_upgrade.png) no-repeat center left !important;
 }
-
+/*Time chart style switch buttons*/
 .x-btn .icon-line-chart {
     background: transparent url(../images/admin/icon_line_chart.png) no-repeat center left !important;
 }
-
 .x-btn .icon-bar-chart {
     background: transparent url(../images/admin/icon_bar_chart.png) no-repeat center left !important;
 }
-
+.x-btn .icon-bar-overlapped-chart {
+    background: transparent url(../images/admin/icon_bar_overlapped_chart.png) no-repeat center left !important;
+}
 .x-btn .icon-bar3d-chart {
     background: transparent url(../images/admin/icon_bar3d_chart.png) no-repeat center left !important;
+}
+.x-btn .icon-bar3d-overlapped-chart {
+    background: transparent url(../images/admin/icon_bar3d_overlapped_chart.png) no-repeat center left !important;
 }
 
 /* node metrics */
