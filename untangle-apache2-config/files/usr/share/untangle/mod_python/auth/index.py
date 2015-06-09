@@ -110,6 +110,8 @@ def _reports_valid_login(req, realm, username, password, log=True):
             if log:
                 uvmlogin.log_login(req, username, False, False, 'P')
             return False
+    if log:
+        uvmlogin.log_login(req, username, False, False, 'U')
     return False
 
 def _admin_valid_login(req, realm, username, password, log=True):
@@ -133,6 +135,8 @@ def _admin_valid_login(req, realm, username, password, log=True):
             if log:
                 uvmlogin.log_login(req, username, False, False, 'P')
             return False
+    if log:
+        uvmlogin.log_login(req, username, False, False, 'U')
     return False
 
 def _write_login_form(req, title, host, is_error):

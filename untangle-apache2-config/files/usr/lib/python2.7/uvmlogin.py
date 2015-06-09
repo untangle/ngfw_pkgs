@@ -269,10 +269,15 @@ def log_login(req, login, local, succeeded, reason):
     try:
         conn = connect("dbname=uvm user=postgres")
         curs = conn.cursor()
-        sql = "INSERT INTO reports.admin_logins (client_addr, login, local, succeeded, time_stamp) VALUES ('%s', '%s', '%s', '%s', now())" % (client_addr, login, local, succeeded)
+        sql = ""
+        if reason != None and succeeded == False:
+            sql = "INSERT INTO reports.admin_logins (client_addr, login, local, succeeded, reason, time_stamp) VALUES ('%s', '%s', '%s', '%s', '%s', now())" % (client_addr, login, local, succeeded, reason)
+        else:
+            sql = "INSERT INTO reports.admin_logins (client_addr, login, local, succeeded, time_stamp) VALUES ('%s', '%s', '%s', '%s', now())" % (client_addr, login, local, succeeded)
         curs.execute(sql);
         conn.commit()
     except Exception, e:
+        apache.log_error('Log Exception %s' % e)
         pass
     finally:
         if (conn != None):
