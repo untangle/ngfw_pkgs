@@ -11,6 +11,7 @@ class WirelessManager:
     hostapdConfFilename = "/etc/hostapd/hostapd.conf"
     hostapdDefaultFilename = "/etc/default/hostapd"
     hostapdRestartFilename = "/etc/untangle-netd/pre-network-hook.d/990-restart-hostapd"
+    hostapdRestartCronFilename = "/etc/cron.daily/hostapd-restart"
     crdaDefaultFilename = "/etc/default/crda"
 
     def write_hostapd_conf( self, settings, prefix="", verbosity=0 ):
@@ -18,6 +19,7 @@ class WirelessManager:
         configFilename = prefix + self.hostapdConfFilename
         defaultFilename = prefix + self.hostapdDefaultFilename
         restartFilename = prefix + self.hostapdRestartFilename
+        restartCronFilename = prefix + self.hostapdRestartCronFilename
         crdaFilename = prefix + self.crdaDefaultFilename
         for filename in [ configFilename, defaultFilename, restartFilename, crdaFilename ]:
             fileDir = os.path.dirname( filename )
@@ -154,6 +156,46 @@ class WirelessManager:
             os.system("chmod a+x %s" % restartFilename)
 
             print "WirelessManager: Wrote " + restartFilename
+
+        if foundInterface == 1:            
+            # Write out the hostapd restart script cron job
+            # This is an horrible hack to solve stability issues discovered in wireless drivers
+            # The only way to revive the wireless card is to restart hostapd
+            # as such, we just do it every 24 hours
+
+            self.hostapdRestartCronFile = open( restartCronFilename, "w+" )
+
+            self.hostapdRestartCronFile.write("#!/bin/dash")
+            self.hostapdRestartCronFile.write("\n\n")
+            self.hostapdRestartCronFile.write("## Auto Generated\n");
+            self.hostapdRestartCronFile.write("## DO NOT EDIT. Changes will be overwritten.\n")
+            self.hostapdRestartCronFile.write("\n")
+
+            self.hostapdRestartCronFile.write("/etc/init.d/hostapd restart >/dev/null 2>&1\n")
+
+            self.hostapdRestartCronFile.flush()
+            self.hostapdRestartCronFile.close()
+
+            os.system("chmod a+x %s" % restartFilename)
+
+            print "WirelessManager: Wrote " + restartCronFilename
+        else:
+            # Write out the hostapd stop script
+
+            self.hostapdRestartCronFile = open( restartCronFilename, "w+" )
+
+            self.hostapdRestartCronFile.write("#!/bin/dash")
+            self.hostapdRestartCronFile.write("\n\n")
+            self.hostapdRestartCronFile.write("## Auto Generated\n");
+            self.hostapdRestartCronFile.write("## DO NOT EDIT. Changes will be overwritten.\n")
+            self.hostapdRestartCronFile.write("\n")
+
+            self.hostapdRestartCronFile.flush()
+            self.hostapdRestartCronFile.close()
+
+            os.system("chmod a+x %s" % restartFilename)
+
+            print "WirelessManager: Wrote " + restartCronFilename
 
         return
 
