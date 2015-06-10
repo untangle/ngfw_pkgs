@@ -119,7 +119,7 @@ linux_entry ()
 	  init-*)
 	      title="$(gettext_printf "%s, with Linux %s (%s)" "${os}" "${version}" "${type#init-}")" ;;
 	  *)
-	      title="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")" ;;
+	      title="$(gettext_printf "%s %s" "${os}" "${version}")" ;;
       esac
       if [ x"$title" = x"$GRUB_ACTUAL_DEFAULT" ] || [ x"Previous Linux versions>$title" = x"$GRUB_ACTUAL_DEFAULT" ]; then
 	  replacement_title="$(echo "Advanced options for ${OS}" | sed 's,>,>>,g')>$(echo "$title" | sed 's,>,>>,g')"
