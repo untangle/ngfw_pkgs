@@ -357,11 +357,11 @@ while [ "x$list" != "x" ] ; do
 
   # safe video mode
   linux_entry "${OS}" "safe video mode" "safe video mode" \
-              "${GRUB_CMDLINE_LINUX} vga=791 quiet splash vga=791 quiet splash force-video-safe nomodeset video=uvesafb:mode_option=1280x1024-24,mtrr=3,scroll=ywrap"
+              "${GRUB_CMDLINE_LINUX} quiet splash force-video-safe nomodeset video=uvesafb:mode_option=1280x1024-24,mtrr=3,scroll=ywrap"
 
   # kern video mode
   linux_entry "${OS}" "kern video mode" "kern video mode" \
-              "${GRUB_CMDLINE_LINUX} vga=791 quiet splash"
+              "${GRUB_CMDLINE_LINUX} quiet splash"
 
   # hardware safe mode
   linux_entry "${OS}" "hardware safe mode" "hardware safe mode" \
