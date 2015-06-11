@@ -8,7 +8,9 @@ MODULES_LINE="uvesafb mode_option=1280x1024-24 mtrr=3 scroll=ywrap"
 perl -i -ne 'print unless m/uvesafb/' $MODULES_FILE
 echo $MODULES_LINE > $MODULES_FILE
 
-echo FRAMEBUFFER=y >| /etc/initramfs-tools/conf.d/splash
+if ! grep -qE '^8.' /etc/debian_version ; then
+  echo FRAMEBUFFER=y >| /etc/initramfs-tools/conf.d/splash
+fi
 
 update-initramfs -u
 
