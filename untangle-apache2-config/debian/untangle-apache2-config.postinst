@@ -69,7 +69,7 @@ fi
 /usr/sbin/a2enmod deflate
 
 # disable these modules for "PCI scan" issues
-grep -qE '^8.0' /etc/debian_version && A2DISMOD_OPTS="-m -f"
+grep -qE '^8.' /etc/debian_version && A2DISMOD_OPTS="-m -f"
 /usr/sbin/a2dismod $A2DISMOD_OPTS autoindex
 /usr/sbin/a2dismod $A2DISMOD_OPTS userdir
 
