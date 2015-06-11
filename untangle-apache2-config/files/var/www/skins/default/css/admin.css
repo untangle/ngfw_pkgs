@@ -361,6 +361,11 @@ div.node-metrics div.system-value {
 .x-btn .icon-add-row {
     background: transparent url(../images/admin/icon_add_row.gif) no-repeat center left !important;
 }
+/* edit button icon */
+.x-btn .icon-edit {
+    background: transparent url(../images/admin/icon_edit_row.gif) no-repeat center left !important;
+}
+
 /* import row button icon */
 .x-btn .icon-import {
     background: transparent url(../images/admin/icon_import.gif) no-repeat center left !important;
