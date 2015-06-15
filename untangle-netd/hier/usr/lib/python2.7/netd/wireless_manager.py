@@ -176,7 +176,7 @@ class WirelessManager:
             self.hostapdRestartCronFile.flush()
             self.hostapdRestartCronFile.close()
 
-            os.system("chmod a+x %s" % restartFilename)
+            os.system("chmod a+x %s" % restartCronFilename)
 
             print "WirelessManager: Wrote " + restartCronFilename
         else:
@@ -193,7 +193,7 @@ class WirelessManager:
             self.hostapdRestartCronFile.flush()
             self.hostapdRestartCronFile.close()
 
-            os.system("chmod a+x %s" % restartFilename)
+            os.system("chmod a+x %s" % restartCronFilename)
 
             print "WirelessManager: Wrote " + restartCronFilename
 
