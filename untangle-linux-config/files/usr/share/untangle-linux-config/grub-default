@@ -6,5 +6,4 @@ GRUB_CMDLINE_LINUX_DEFAULT="quiet splash nomodeset"
 GRUB_CMDLINE_LINUX="ramdisk_size=100000 lang=us apm=power-off screen=1024x768 nomce nodhcp nofstab panic=5"
 GRUB_DISABLE_SUBMENU=y
 GRUB_GFXMODE=1024x768
-GRUB_GFXPAYLOAD_LINUX=keep
 GRUB_DISABLE_RECOVERY="true"
