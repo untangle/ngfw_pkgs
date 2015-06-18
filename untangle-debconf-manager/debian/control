@@ -9,6 +9,6 @@ Package: untangle-debconf-manager
 Architecture: all
 Pre-Depends: python
 Depends: sysvinit-core | gcc-4.7-base
-Conflicts: systemd-sysv, systemd, libsystemd-journal0, libsystemd-daemon0, libsystemd-id128-0, libsystemd-login0
+Conflicts: systemd-sysv, systemd, libsystemd-journal0, libsystemd-daemon0, libsystemd-id128-0
 Description: The Untangle Debconf Manager
  The Untangle Manager for the debconf database.
