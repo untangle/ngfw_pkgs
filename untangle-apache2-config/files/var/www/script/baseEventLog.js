@@ -446,9 +446,10 @@ Ext.define("Ung.grid.feature.GlobalFilter", {
     updateGlobalFilter: function(value, caseSensitive) {
         var searchFields = {}, i, col;
         if(this.useVisibleColumns) {
-            for(i=0; i<this.grid.columns.length; i++) {
-                col = this.grid.columns[i];
-                if(!col.isHidden() && col.dataIndex) {
+            var visibleColumns = this.grid.getVisibleColumns(); 
+            for(i=0; i<visibleColumns.length; i++) {
+                col = visibleColumns[i];
+                if(col.dataIndex) {
                     searchFields[col.dataIndex] = true;
                 }
             }
