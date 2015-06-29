@@ -1,3 +1,4 @@
+//TODO: remove this after report servlet refactoring
 //Event Log class
 Ext.define("Ung.grid.BaseEventLog", {
     extend: "Ext.grid.Panel",
