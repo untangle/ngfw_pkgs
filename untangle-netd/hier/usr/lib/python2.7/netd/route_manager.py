@@ -142,7 +142,7 @@ fi
                         if intf.get('interfaceId') == interfaceId:
                             # device route since nextHop includes alphas
                             file.write("# Static Route %i\n" % static_route['ruleId'])
-                            file.write("ip route add %s/%s dev %s\n" % ( static_route['network'], static_route['prefix'], intf.get('systemDev') ) )
+                            file.write("ip route add %s/%s dev %s\n" % ( static_route['network'], static_route['prefix'], intf.get('symbolicDev') ) )
                             file.write("if [ $? != 0 ] ; then echo \"ERROR: inserting route %i\" ; fi \n" % static_route['ruleId'])
                             file.write("\n")
                 else:
