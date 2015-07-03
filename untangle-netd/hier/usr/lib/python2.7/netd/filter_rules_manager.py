@@ -189,6 +189,20 @@ class FilterRulesManager:
             self.file.write("${IP6TABLES} -t filter -A FORWARD -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" " + "\n");
             self.file.write("\n");
 
+        if settings.get('blockReplayPackets'):
+            self.file.write("# Block Replay packets" + "\n");
+            # more info in bug #12357 #12358 #12359
+            self.file.write("${IPTABLES} -t filter -D FORWARD -p tcp --tcp-flags RST RST -j CONNMARK --set-mark 0x02000000/0x02000000 -m comment --comment \"set replay bit\" >/dev/null 2>&1" + "\n")
+            self.file.write("${IPTABLES} -t filter -I FORWARD -p tcp --tcp-flags RST RST -j CONNMARK --set-mark 0x02000000/0x02000000 -m comment --comment \"set replay bit\" " + "\n")
+            self.file.write("${IPTABLES} -t filter -D FORWARD -p tcp --tcp-flags RST RST -m connmark --mark 0x02000000/0x02000000 -m state --state RELATED -j DROP -m comment --comment \"drop if replay\" >/dev/null 2>&1" + "\n")
+            self.file.write("${IPTABLES} -t filter -I FORWARD -p tcp --tcp-flags RST RST -m connmark --mark 0x02000000/0x02000000 -m state --state RELATED -j DROP -m comment --comment \"drop if replay\" " + "\n")
+            self.file.write("${IPTABLES} -t filter -D FORWARD -p icmp ! --icmp-type 8 -m state --state RELATED -j CONNMARK --set-mark 0x02000000/0x02000000 -m comment --comment \"set replay bit\" >/dev/null 2>&1" + "\n")
+            self.file.write("${IPTABLES} -t filter -I FORWARD -p icmp ! --icmp-type 8 -m state --state RELATED -j CONNMARK --set-mark 0x02000000/0x02000000 -m comment --comment \"set replay bit\" " + "\n")
+            self.file.write("${IPTABLES} -t filter -D FORWARD -p icmp ! --icmp-type 8 -m connmark --mark 0x02000000/0x02000000 -m state --state RELATED -j DROP -m comment --comment \"drop if replay\" >/dev/null 2>&1" + "\n")
+            self.file.write("${IPTABLES} -t filter -I FORWARD -p icmp ! --icmp-type 8 -m connmark --mark 0x02000000/0x02000000 -m state --state RELATED -j DROP -m comment --comment \"drop if replay\" " + "\n")
+            self.file.write("\n");
+            # no need for ipv6 - this is only for ICSA compliance
+
         self.write_input_filter_rules( settings, verbosity );
         self.write_forward_filter_rules( settings, verbosity );
 
