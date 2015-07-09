@@ -101,7 +101,7 @@ div.node div.node-label {
     left: 100px;
     height: 55px;
     width: 230px;
-    font-family: PT Sans,arial, helvetica, freesans,sans-serif;
+    font-family: PT Sans, arial, helvetica, freesans,sans-serif;
     font-size: 20px;
     color: #F8F8F8;
     text-shadow: 1px 1px 2px #000;
@@ -173,7 +173,7 @@ div.node div.node-power {
     right: 54px;
     height: 33px;
     width: 33px;
-    background:transparent !important; 
+    background: transparent !important; 
     cursor: pointer;
 }
 /* node power expired button icon */
@@ -194,7 +194,6 @@ div#rack-select-container {
     margin-top: 14px;
 }
 div#parent-rack-container {
-    /* background-color:#333333; */
     color: #222222;
     float: left;
     font-family: Tahoma;
@@ -558,7 +557,7 @@ td.app-item-center div.text {
     color:#4E4C4C;
     font-size: 12px;
     font-weight: bold;
-    font-family:PT Sans, Tahoma, arial, freesans,sans-serif;
+    font-family: PT Sans, Tahoma, arial, freesans,sans-serif;
 }
 /* app item config display name text */
 td.app-item-center div.text-center {
