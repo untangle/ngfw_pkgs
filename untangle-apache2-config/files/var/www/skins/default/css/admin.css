@@ -959,3 +959,6 @@ textarea.ua-test-output {
 .row-editor-textfield {
     width: 100%;
 }
+.diff-grid .x-grid-cell {
+    font-family: courier, monospace;
+}

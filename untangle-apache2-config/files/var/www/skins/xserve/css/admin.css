@@ -952,6 +952,9 @@ textarea.ua-test-output {
     font-family: arial, helvetica, freesans,sans-serif;
     font-style: italic;
 }
+.diff-grid .x-grid-cell {
+    font-family: courier, monospace;
+}
 .row-editor-textfield {
     width: 100%;
 }
