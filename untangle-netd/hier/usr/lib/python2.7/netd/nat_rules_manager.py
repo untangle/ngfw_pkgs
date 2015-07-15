@@ -80,6 +80,12 @@ class NatRulesManager:
             self.file.write("\n\n");
 
             self.file.write("# block traffic to NATd interface %i" % intf['interfaceId'] + "\n");
+            # write a log rule before each block rule so we log every drop
+            self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"Block traffic to NATd interace, %i -> %i (ingress setting)\" -j LOG --log-prefix 'filter_blocked: '" % 
+                            ( ((intf['interfaceId'] << 8) + other_intf['interfaceId']),
+                              other_intf['interfaceId'],
+                              intf['interfaceId'] ))
+            self.file.write("\n");
             self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"Block traffic to NATd interace, %i -> %i (ingress setting)\" -j REJECT" % 
                             ( ((intf['interfaceId'] << 8) + other_intf['interfaceId']),
                               other_intf['interfaceId'],
@@ -110,6 +116,11 @@ class NatRulesManager:
             self.file.write("\n\n");
 
             self.file.write("# block traffic from NATd interface %s" % intf['interfaceId'] + "\n");
+            self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"Block traffic to NATd interace, %i -> %i (egress setting)\" -j LOG --log-prefix 'filter_blocked: ' " % 
+                            ( ((other_intf['interfaceId'] << 8) + intf['interfaceId']),
+                              intf['interfaceId'],
+                              other_intf['interfaceId'] ))
+            self.file.write("\n");
             self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"Block traffic to NATd interace, %i -> %i (egress setting)\" -j REJECT" % 
                             ( ((other_intf['interfaceId'] << 8) + intf['interfaceId']),
                               intf['interfaceId'],

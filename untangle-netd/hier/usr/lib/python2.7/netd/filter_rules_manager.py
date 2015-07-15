@@ -34,10 +34,17 @@ class FilterRulesManager:
         description = "Filter Rule #%i" % int(filter_rule['ruleId'])
         iptables_conditions = IptablesUtil.conditions_to_iptables_string( filter_rule['matchers']['list'], description, verbosity );
 
+        iptables_log_commands = [ ("${IPTABLES} -t filter -A %s " % table_name) + ipt + " -j LOG --log-prefix 'filter_blocked: ' " for ipt in iptables_conditions ]
         iptables_commands = [ ("${IPTABLES} -t filter -A %s " % table_name) + ipt + target for ipt in iptables_conditions ]
 
         self.file.write("# %s\n" % description);
+        i = 0
         for cmd in iptables_commands:
+            # write a log rule before each block rule so we log every drop
+            if filter_rule.get('blocked'):
+                self.file.write(iptables_log_commands[i] + "\n")
+            i=i+1
+
             self.file.write(cmd + "\n")
 
         if filter_rule.get('ipv6Enabled') == None or filter_rule.get('ipv6Enabled') == False:
