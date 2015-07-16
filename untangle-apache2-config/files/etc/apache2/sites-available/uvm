@@ -53,9 +53,10 @@ Alias /error /usr/share/untangle/mod_python/error
 </Directory>
 
 # These spiffy aliases will allow folks to download our CA root certificate
-# by simply pointing their browser at http://untangle_ip_addres/cert
+# by simply pointing their browser at http://untangle_ip_address/cert
 Alias /cert/ /usr/share/untangle/settings/untangle-certificates/untangle.crt
 Alias /cert /usr/share/untangle/settings/untangle-certificates/untangle.crt
+Alias /UntangleRootCAInstaller.exe /usr/share/untangle/settings/untangle-certificates/UntangleRootCAInstaller.exe
 
 <VirtualHost *:80>
     Include /etc/apache2/uvm.conf
