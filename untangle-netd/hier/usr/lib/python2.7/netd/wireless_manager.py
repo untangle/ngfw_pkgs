@@ -11,7 +11,7 @@ class WirelessManager:
     hostapdConfFilename = "/etc/hostapd/hostapd.conf"
     hostapdDefaultFilename = "/etc/default/hostapd"
     hostapdRestartFilename = "/etc/untangle-netd/pre-network-hook.d/990-restart-hostapd"
-    hostapdRestartCronFilename = "/etc/cron.daily/hostapd-restart"
+    hostapdRestartCronFilename = "/etc/cron.hourly/hostapd-restart"
     crdaDefaultFilename = "/etc/default/crda"
 
     def write_hostapd_conf( self, settings, prefix="", verbosity=0 ):
@@ -21,7 +21,7 @@ class WirelessManager:
         restartFilename = prefix + self.hostapdRestartFilename
         restartCronFilename = prefix + self.hostapdRestartCronFilename
         crdaFilename = prefix + self.crdaDefaultFilename
-        for filename in [ configFilename, defaultFilename, restartFilename, crdaFilename ]:
+        for filename in [ configFilename, defaultFilename, restartFilename, restartCronFilename, crdaFilename ]:
             fileDir = os.path.dirname( filename )
             if not os.path.exists( fileDir ):
                 os.makedirs( fileDir )
