@@ -60,7 +60,7 @@ for file in $PG_CONF ; do
     sed -i -e "s/.*autovacuum_max_workers.*=.*/autovacuum_max_workers = 1/" $file
 
     # decrease auto-vacuum since tables are now partitioned vacuuming is hardly required since rows are never removed only updated
-    sed -i -e "s/.*autovacuum_vacuum_scale_factor.*=.*/autovacuum_vacuum_scale_factor = 1/" $file
+    sed -i -e "s/.*autovacuum_vacuum_scale_factor.*=.*/autovacuum_vacuum_scale_factor = .5/" $file
 
 done
 
