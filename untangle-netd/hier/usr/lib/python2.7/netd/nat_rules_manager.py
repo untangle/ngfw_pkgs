@@ -81,7 +81,7 @@ class NatRulesManager:
 
             self.file.write("# block traffic to NATd interface %i" % intf['interfaceId'] + "\n");
             # write a log rule before each block rule so we log every drop
-            self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"Block traffic to NATd interace, %i -> %i (ingress setting)\" -j NFLOG --nflog-prefix 'filter_blocked: '" % 
+            self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"Block traffic to NATd interace, %i -> %i (ingress setting)\" -j NFLOG --nflog-prefix 'nat_blocked'" % 
                             ( ((intf['interfaceId'] << 8) + other_intf['interfaceId']),
                               other_intf['interfaceId'],
                               intf['interfaceId'] ))

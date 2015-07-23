@@ -34,7 +34,7 @@ class FilterRulesManager:
         description = "Filter Rule #%i" % int(filter_rule['ruleId'])
         iptables_conditions = IptablesUtil.conditions_to_iptables_string( filter_rule['matchers']['list'], description, verbosity );
 
-        iptables_log_commands = [ ("${IPTABLES} -t filter -A %s " % table_name) + ipt + " -j NFLOG --nflog-prefix 'filter_blocked: ' " for ipt in iptables_conditions ]
+        iptables_log_commands = [ ("${IPTABLES} -t filter -A %s " % table_name) + ipt + " -j NFLOG --nflog-prefix 'filter_blocked' " for ipt in iptables_conditions ]
         iptables_commands = [ ("${IPTABLES} -t filter -A %s " % table_name) + ipt + target for ipt in iptables_conditions ]
 
         self.file.write("# %s\n" % description);
