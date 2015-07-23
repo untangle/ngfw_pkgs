@@ -13,7 +13,10 @@ if [ ! -x "/etc/init.d/untangle-nflogd" ]; then
     exit 0
 fi
 
+# make sure untangle-nflogd is always running
+update-rc.d untangle-nflogd defaults >/dev/null 2>&1
+
 # start the daemon
-/etc/init.d/untangle-nflogd start
+/etc/init.d/untangle-nflogd restart
 
 exit 0
