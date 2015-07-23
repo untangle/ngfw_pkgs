@@ -42,7 +42,7 @@ reap_child()
 
 start_nflogd()
 {
-    $NFLOGD_BIN
+    $NFLOGD_BIN -f &
     NFLOGD_PID=$!
     echo "[`date`] Started NFlogD    (monitor: $$) (nflogd: $NFLOGD_PID)" | logger -t ${NFLOGD_LOG}
 }
