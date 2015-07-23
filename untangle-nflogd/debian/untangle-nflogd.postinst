@@ -1,0 +1,19 @@
+#!/bin/dash
+
+LOG_FILE=/var/log/untangle-nflogd/nflogd.log
+
+# make sure our directory exists
+mkdir -p `dirname ${LOG_FILE}`
+
+# spew something in the log file
+echo "[`date`] DEBUG untangle-nflogd installed or upgraded" >> ${LOG_FILE}
+
+# if the init script can't be executed just bail
+if [ ! -x "/etc/init.d/untangle-nflogd" ]; then
+    exit 0
+fi
+
+# start the daemon
+/etc/init.d/untangle-nflogd start
+
+exit 0

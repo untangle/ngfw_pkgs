@@ -1,0 +1,13 @@
+#!/bin/dash
+
+LOG_PATH=/var/log/untangle-nflogd
+
+# we only want to delete the log and flag if
+# the package is being completely removed
+
+if [ "$1" = "purge" ]; then
+    rm -f $LOG_PATH/nflogd.*
+    rm -f $LOG_PATH/*.log
+fi
+
+exit 0

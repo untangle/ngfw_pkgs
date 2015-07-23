@@ -1,0 +1,9 @@
+/var/log/untangle-nflogd/*.log {
+rotate 2
+missingok
+size 500k
+compress
+notifempty
+copytruncate
+}
+

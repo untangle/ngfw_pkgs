@@ -1,0 +1,6 @@
+#!/bin/dash
+
+# always stop the daemon just in case
+/etc/init.d/untangle-nflogd stop
+
+exit 0
