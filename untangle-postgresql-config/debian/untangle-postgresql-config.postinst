@@ -58,6 +58,10 @@ for file in $PG_CONF ; do
     # increase checkpoint_segments 
     sed -i -e "s/.*checkpoint_segments.*=.*/checkpoint_segments = 32/" $file
     sed -i -e "s/.*autovacuum_max_workers.*=.*/autovacuum_max_workers = 1/" $file
+
+    # decrease auto-vacuum since tables are now partitioned vacuuming is hardly required since rows are never removed only updated
+    sed -i -e "s/.*autovacuum_vacuum_scale_factor.*=.*/autovacuum_vacuum_scale_factor = 1/" $file
+
 done
 
 # configure hw parameters
