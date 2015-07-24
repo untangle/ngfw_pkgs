@@ -1,4 +1,12 @@
-#!/bin/dash
+#! /bin/sh
+
+ourInit() {
+  if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
+    invoke-rc.d $1 $2
+  else
+    /etc/init.d/$1 $2
+  fi
+}
 
 LOG_FILE=/var/log/untangle-nflogd/nflogd.log
 
@@ -17,6 +25,6 @@ fi
 update-rc.d untangle-nflogd defaults >/dev/null 2>&1
 
 # start the daemon
-/etc/init.d/untangle-nflogd restart
+ourInit untangle-nflogd restart
 
 exit 0
