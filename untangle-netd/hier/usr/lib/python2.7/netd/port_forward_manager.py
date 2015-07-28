@@ -14,15 +14,6 @@ class PortForwardManager:
     filename = defaultFilename
     file = None
 
-    # We shouldn't port forward administration and block pages ports
-    # write a rule to protect this traffic
-    def write_admin_ignore_rules( self, settings, verbosity=0 ):
-        try :
-            from uvm.settings_reader import get_uvm_settings_item
-            https_port = get_uvm_settings_item('system','httpsPort')
-        except Exception,e:
-            traceback.print_exc(e)
-
     def write_port_forward_rule( self, port_forward_rule, verbosity=0 ):
 
         if 'enabled' in port_forward_rule and not port_forward_rule['enabled']:
@@ -89,7 +80,6 @@ class PortForwardManager:
         self.file.write("${IPTABLES} -t nat -D PREROUTING -m conntrack --ctstate NEW -m comment --comment \"Port Forward rules\" -j port-forward-rules >/dev/null 2>&1" + "\n");
         self.file.write("${IPTABLES} -t nat -A PREROUTING -m conntrack --ctstate NEW -m comment --comment \"Port Forward rules\" -j port-forward-rules" + "\n" + "\n");
 
-        self.write_admin_ignore_rules( settings, verbosity );
         self.write_port_forward_rules( settings, verbosity );
 
         self.file.flush();
