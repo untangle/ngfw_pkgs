@@ -184,12 +184,17 @@ class FilterRulesManager:
 
         if settings.get('blockInvalidPackets'):
             self.file.write("# Block INVALID packets" + "\n");
+            self.file.write("${IPTABLES} -t filter -D FORWARD -m conntrack --ctstate INVALID -j NFLOG --nflog-prefix \"invalid_blocked\" -m comment --comment \"nflog on invalid\" >/dev/null 2>&1\n");
+            self.file.write("${IPTABLES} -t filter -A FORWARD -m conntrack --ctstate INVALID -j NFLOG --nflog-prefix \"invalid_blocked\" -m comment --comment \"nflog on invalid\"\n");
             #self.file.write("${IPTABLES} -t filter -D FORWARD -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\" >/dev/null 2>&1\n");
             #self.file.write("${IPTABLES} -t filter -A FORWARD -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\"\n");
             self.file.write("${IPTABLES} -t filter -D FORWARD -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" >/dev/null 2>&1" + "\n");
             self.file.write("${IPTABLES} -t filter -A FORWARD -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" " + "\n");
             self.file.write("\n");
             self.file.write("# Block INVALID packets" + "\n");
+            # disabled because I don't think the nflog daemon handles IPv6 currently
+            #self.file.write("${IP6TABLES} -t filter -D FORWARD -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"nflog on invalid\" >/dev/null 2>&1\n");
+            #self.file.write("${IP6TABLES} -t filter -A FORWARD -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"nflog on invalid\"\n");
             #self.file.write("${IP6TABLES} -t filter -D FORWARD -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\" >/dev/null 2>&1\n");
             #self.file.write("${IP6TABLES} -t filter -A FORWARD -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\"\n");
             self.file.write("${IP6TABLES} -t filter -D FORWARD -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" >/dev/null 2>&1" + "\n");
