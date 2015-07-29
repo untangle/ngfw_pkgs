@@ -151,21 +151,21 @@ class FilterRulesManager:
 
         if settings.get('blockInvalidPackets'):
             self.file.write("# Block INVALID packets" + "\n");
-            self.file.write("${IPTABLES} -t filter -D INPUT -m conntrack --ctstate INVALID -j NFLOG --nflog-prefix \"invalid_blocked\" -m comment --comment \"nflog on invalid\" >/dev/null 2>&1\n");
-            self.file.write("${IPTABLES} -t filter -I INPUT -m conntrack --ctstate INVALID -j NFLOG --nflog-prefix \"invalid_blocked\" -m comment --comment \"nflog on invalid\"\n");
-            #self.file.write("${IPTABLES} -t filter -D INPUT -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\" >/dev/null 2>&1\n");
-            #self.file.write("${IPTABLES} -t filter -I INPUT -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\"\n");
-            self.file.write("${IPTABLES} -t filter -D INPUT -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" >/dev/null 2>&1" + "\n");
-            self.file.write("${IPTABLES} -t filter -I INPUT -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" " + "\n");
+            self.file.write("${IPTABLES} -t filter -D INPUT -m mark ! --mark 0xfe00/0xff00 -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" >/dev/null 2>&1" + "\n");
+            self.file.write("${IPTABLES} -t filter -I INPUT -m mark ! --mark 0xfe00/0xff00 -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" " + "\n");
+            self.file.write("${IPTABLES} -t filter -D INPUT -m mark ! --mark 0xfe00/0xff00 -m conntrack --ctstate INVALID -j NFLOG --nflog-prefix \"invalid_blocked\" -m comment --comment \"nflog on invalid\" >/dev/null 2>&1\n");
+            self.file.write("${IPTABLES} -t filter -I INPUT -m mark ! --mark 0xfe00/0xff00 -m conntrack --ctstate INVALID -j NFLOG --nflog-prefix \"invalid_blocked\" -m comment --comment \"nflog on invalid\"\n");
+            #self.file.write("${IPTABLES} -t filter -D INPUT -m mark ! --mark 0xfe00/0xff00 -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\" >/dev/null 2>&1\n");
+            #self.file.write("${IPTABLES} -t filter -I INPUT -m mark ! --mark 0xfe00/0xff00 -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\"\n");
             self.file.write("\n");
             self.file.write("# Block INVALID packets" + "\n");
+            self.file.write("${IP6TABLES} -t filter -D INPUT -m mark ! --mark 0xfe00/0xff00 -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" >/dev/null 2>&1" + "\n");
+            self.file.write("${IP6TABLES} -t filter -I INPUT -m mark ! --mark 0xfe00/0xff00 -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" " + "\n");
             # disabled because I don't think the nflog daemon handles IPv6 currently
-            #self.file.write("${IP6TABLES} -t filter -D INPUT -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"nflog on invalid\" >/dev/null 2>&1\n");
-            #self.file.write("${IP6TABLES} -t filter -I INPUT -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"nflog on invalid\"\n");
-            #self.file.write("${IP6TABLES} -t filter -D INPUT -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\" >/dev/null 2>&1\n");
-            #self.file.write("${IP6TABLES} -t filter -I INPUT -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\"\n");
-            self.file.write("${IP6TABLES} -t filter -D INPUT -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" >/dev/null 2>&1" + "\n");
-            self.file.write("${IP6TABLES} -t filter -I INPUT -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" " + "\n");
+            #self.file.write("${IP6TABLES} -t filter -D INPUT -m mark ! --mark 0xfe00/0xff00 -m conntrack --ctstate INVALID -j NFLOG --nflog-prefix \"invalid_blocked\" -m comment --comment \"nflog on invalid\" >/dev/null 2>&1\n");
+            #self.file.write("${IP6TABLES} -t filter -I INPUT -m mark ! --mark 0xfe00/0xff00 -m conntrack --ctstate INVALID -j NFLOG --nflog-prefix \"invalid_blocked\" -m comment --comment \"nflog on invalid\"\n");
+            #self.file.write("${IP6TABLES} -t filter -D INPUT -m mark ! --mark 0xfe00/0xff00 -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\" >/dev/null 2>&1\n");
+            #self.file.write("${IP6TABLES} -t filter -I INPUT -m mark ! --mark 0xfe00/0xff00 -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\"\n");
             self.file.write("\n");
 
         self.file.write("# Pass all RELATED traffic " + "\n");
@@ -202,22 +202,22 @@ class FilterRulesManager:
         self.file.write("\n");
 
         if settings.get('blockInvalidPackets'):
+            self.file.write("${IPTABLES} -t filter -D FORWARD -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" >/dev/null 2>&1" + "\n");
+            self.file.write("${IPTABLES} -t filter -I FORWARD -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" " + "\n");
             self.file.write("# Block INVALID packets" + "\n");
             self.file.write("${IPTABLES} -t filter -D FORWARD -m conntrack --ctstate INVALID -j NFLOG --nflog-prefix \"invalid_blocked\" -m comment --comment \"nflog on invalid\" >/dev/null 2>&1\n");
             self.file.write("${IPTABLES} -t filter -I FORWARD -m conntrack --ctstate INVALID -j NFLOG --nflog-prefix \"invalid_blocked\" -m comment --comment \"nflog on invalid\"\n");
             #self.file.write("${IPTABLES} -t filter -D FORWARD -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\" >/dev/null 2>&1\n");
             #self.file.write("${IPTABLES} -t filter -I FORWARD -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\"\n");
-            self.file.write("${IPTABLES} -t filter -D FORWARD -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" >/dev/null 2>&1" + "\n");
-            self.file.write("${IPTABLES} -t filter -I FORWARD -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" " + "\n");
             self.file.write("\n");
             self.file.write("# Block INVALID packets" + "\n");
-            # disabled because I don't think the nflog daemon handles IPv6 currently
-            #self.file.write("${IP6TABLES} -t filter -D FORWARD -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"nflog on invalid\" >/dev/null 2>&1\n");
-            #self.file.write("${IP6TABLES} -t filter -I FORWARD -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"nflog on invalid\"\n");
-            #self.file.write("${IP6TABLES} -t filter -D FORWARD -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\" >/dev/null 2>&1\n");
-            #self.file.write("${IP6TABLES} -t filter -I FORWARD -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\"\n");
             self.file.write("${IP6TABLES} -t filter -D FORWARD -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" >/dev/null 2>&1" + "\n");
             self.file.write("${IP6TABLES} -t filter -I FORWARD -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" " + "\n");
+            # disabled because I don't think the nflog daemon handles IPv6 currently
+            #self.file.write("${IP6TABLES} -t filter -D FORWARD -m conntrack --ctstate INVALID -j NFLOG --nflog-prefix \"invalid_blocked\" -m comment --comment \"nflog on invalid\" >/dev/null 2>&1\n");
+            #self.file.write("${IP6TABLES} -t filter -I FORWARD -m conntrack --ctstate INVALID -j NFLOG --nflog-prefix \"invalid_blocked\" -m comment --comment \"nflog on invalid\"\n");
+            #self.file.write("${IP6TABLES} -t filter -D FORWARD -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\" >/dev/null 2>&1\n");
+            #self.file.write("${IP6TABLES} -t filter -I FORWARD -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\"\n");
             self.file.write("\n");
 
         if settings.get('blockReplayPackets'):
