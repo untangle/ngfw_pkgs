@@ -48,7 +48,11 @@ esac
 echo "Forcing / in fstab to map to current root device ($rootdev)"
 perl -i -pe 's|^[^\s#]+(\s+/\s+)|'$rootdev'$1|' /etc/fstab
 
-if dpkg -l grub-legacy 2> /dev/null | grep -qE '^ii' ; then
+if dpkg -l grub-pc 2> /dev/null | grep -qE '^i' ; then
+  currentDefault=$(grub-editenv list | awk -F= '/^saved_entry/ {print $2}')
+  rm -f /etc/grub.d/10_linux # we use our own 50_custom instead
+  cp -f /usr/share/untangle-linux-config/grub-default /etc/default/grub
+else
   menuLst="/boot/grub/menu.lst"
   menuLstPreUntangle="${menuLst}-pre-untangle"
 
@@ -63,10 +67,6 @@ if dpkg -l grub-legacy 2> /dev/null | grep -qE '^ii' ; then
   [ -f $menuLstPreUntangle ] || cp $menuLst $menuLstPreUntangle
 
   currentDefault=$(head -1 /boot/grub/default 2>/dev/null | perl -pe 's/^(\d).*/$1/')
-else
-  currentDefault=$(grub-editenv list | awk -F= '/^saved_entry/ {print $2}')
-  rm -f /etc/grub.d/10_linux # we use our own 50_custom instead
-  cp -f /usr/share/untangle-linux-config/grub-default /etc/default/grub
 fi
 
 if [ -z "$currentDefault" ] || [ "$currentDefault" = "default" ] ; then
