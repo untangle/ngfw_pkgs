@@ -27,11 +27,16 @@ configure-stamp:
 
 build: configure
 	dh_testdir
-	rm -rf ./debian/untangle-apache2-config/tmp
-	mkdir -p ./debian/untangle-apache2-config/tmp
+	rm -rf ./debian/untangle-apache2-config/*
+	mkdir -p ./debian/untangle-apache2-config/
 	dh_installdirs -A -v
-	tar c -C ./files --exclude .svn . | tar x -C ./debian/untangle-apache2-config
-	find ./debian/untangle-apache2-config/tmp -name ".svn" | xargs rm -rf
+	cp -r ./files/* ./debian/untangle-apache2-config/
+	find ./debian/untangle-apache2-config -name "\.svn" | xargs rm -rf
+# copy the common files to all skins
+	for d in $$(ls -d ./debian/untangle-apache2-config/var/www/skins/*); do \
+	  find $$d -exec touch {} \; ; \
+	  cp -rfu ./debian/untangle-apache2-config/var/www/skins/common/* $$d/ ; \
+	done
 	for f in $$(find ./po -name '*.po'); do \
 	  l=$$(echo $$f | cut -d/ -f 3); \
 	  d="./debian/untangle-apache2-config/usr/share/locale/$$l/LC_MESSAGES"; \
