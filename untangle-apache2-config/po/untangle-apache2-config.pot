@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-28 13:15+0300\n"
+"POT-Creation-Date: 2015-08-03 15:59-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=0; null;\n"
 
-#: ../files/usr/lib/python2.7/uvmlogin.py:279
+#: ../files/usr/lib/python2.7/uvmlogin.py:290
 #: ../files/usr/share/untangle/mod_python/error/index.py:132
 msgid "Server"
 msgstr ""
 
-#: ../files/usr/lib/python2.7/uvmlogin.py:281
+#: ../files/usr/lib/python2.7/uvmlogin.py:292
 #: ../files/usr/share/untangle/mod_python/error/index.py:134
 #, python-format
 msgid "%s Server"
@@ -139,22 +139,22 @@ msgstr ""
 msgid "%s Administrator Login"
 msgstr ""
 
-#: ../files/usr/share/untangle/mod_python/auth/index.py:144
+#: ../files/usr/share/untangle/mod_python/auth/index.py:148
 msgid "Error: Username and Password do not match"
 msgstr ""
 
-#: ../files/usr/share/untangle/mod_python/auth/index.py:148
+#: ../files/usr/share/untangle/mod_python/auth/index.py:152
 msgid "Server:"
 msgstr ""
 
-#: ../files/usr/share/untangle/mod_python/auth/index.py:149
+#: ../files/usr/share/untangle/mod_python/auth/index.py:153
 msgid "Username:"
 msgstr ""
 
-#: ../files/usr/share/untangle/mod_python/auth/index.py:150
+#: ../files/usr/share/untangle/mod_python/auth/index.py:154
 msgid "Password:"
 msgstr ""
 
-#: ../files/usr/share/untangle/mod_python/auth/index.py:151
+#: ../files/usr/share/untangle/mod_python/auth/index.py:155
 msgid "Login"
 msgstr ""
