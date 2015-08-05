@@ -234,7 +234,7 @@ body.blockpage #footer
     background: transparent url(../images/user/icon_email_move.png) no-repeat center left !important;
 }
 .x-btn .icon-add-row {
-    background: transparent url(../images/admin/icon_add_row.gif) no-repeat center left !important;
+    background: transparent url(../images/admin/icons/icon_add_row.gif) no-repeat center left !important;
 }
 .x-btn .icon-safe-list{
     background: transparent url(../images/user/icon_safelist.png) no-repeat center left !important;
@@ -244,7 +244,7 @@ body.blockpage #footer
 }
 /* clear filter button icon */
 .x-btn .icon-clear-filter {
-    background: transparent url(../images/admin/icon_clear_filter.png) no-repeat center left !important;
+    background: transparent url(../images/admin/icons/icon_clear_filter.png) no-repeat center left !important;
 }
  /* Ext Js Overrides - across the board */
 .x-grid3-hd-inner{

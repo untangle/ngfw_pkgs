@@ -3363,7 +3363,7 @@ Ext.define('Ung.panel.Reports', {
                             dataIndex: 'settings_file',
                             width: 100,
                             items: [{
-                                icon: '/skins/default/images/admin/icon_detail.png',
+                                icon: '/skins/default/images/admin/icons/icon_detail.png',
                                 tooltip: i18n._("Show difference between previous version"),
                                 handler: function(grid, rowIndex, colIndex, item, e, record){
                                     if( !this.diffWindow ){

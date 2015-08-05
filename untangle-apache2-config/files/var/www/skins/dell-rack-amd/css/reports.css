@@ -40,22 +40,22 @@
     font-weight: normal;
 }
 .icon-breadcrumbs-separator {
-    background:transparent url(../images/admin/icon_breadcrumbs_separator.gif) no-repeat center center !important;
+    background:transparent url(../images/admin/icons/icon_breadcrumbs_separator.gif) no-repeat center center !important;
     width:13px;
     height:12px;
 }
 /* icons */
 /* refresh button icon */
 .icon-refresh {
-    background: transparent url(../images/admin/icon_refresh.png) no-repeat center left !important;
+    background: transparent url(../images/admin/icons/icon_refresh.png) no-repeat center left !important;
 }
 /* export row button icon */
 .icon-export {
-    background: transparent url(../images/admin/icon_export.gif) no-repeat center left !important;
+    background: transparent url(../images/admin/icons/icon_export.gif) no-repeat center left !important;
 }
 /* clear filter button icon */
 .x-btn .icon-clear-filter {
-    background: transparent url(../images/admin/icon_clear_filter.png) no-repeat center left !important;
+    background: transparent url(../images/admin/icons/icon_clear_filter.png) no-repeat center left !important;
 }
 .untangle-node-spamassassin{
     background-image: url(../images/reports/nodes/spamblocker.png) !important;
