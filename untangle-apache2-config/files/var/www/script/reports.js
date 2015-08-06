@@ -1247,16 +1247,6 @@ Ext.define('Ung.panel.Reports', {
         isEvent: function(entry) {
             return "com.untangle.node.reporting.EventEntry" == entry.javaClass;
         },
-        getColumnRenderer: function(columnName) {
-            if(!this.columnRenderers) {
-                this.columnRenderers = {
-                    policy_id: function(value) {
-                        return rpc.policyNamesMap[value] || value;
-                    }
-                };
-            }
-            return this.columnRenderers[columnName];
-        },
         getColumnHumanReadableName: function(columnName) {
             if(!this.columnsHumanReadableNames) {
                 this.columnsHumanReadableNames = {
@@ -3555,17 +3545,23 @@ Ext.define("Ung.panel.ExtraConditions", {
         }, this);
         rpc.reportingManagerNew.getConditionQuickAddHints(Ext.bind(function(result, exception) {
             if(Ung.Util.handleException(exception)) return;
-            var column, hintMenus = [], columnItems, i, columnRenderer;
+            var column, hintMenus = [], columnItems, i, text, value;
             for(column in result) {
                 var values = result[column];
                 if(values.length > 0) {
                     columnItems = [];
-                    columnRenderer = Ung.panel.Reports.getColumnRenderer(column);
                     for(i=0; i<values.length; i++) {
+                        if(column=="policy_id") {
+                            text = values[i].name;
+                            value = values[i].policyId;
+                        } else {
+                            text = values[i];
+                            value = values[i];
+                        }
                         columnItems.push({
-                            text: Ext.isFunction(columnRenderer) ? columnRenderer(values[i]) : values[i],
+                            text: text,
                             column: column,
-                            value: values[i],
+                            value: value,
                             handler: addQuickCondition
                         });
                     }
