@@ -911,33 +911,26 @@ Ext.define('Ung.panel.Reports', {
             return;
         }
         if(!this.autoRefreshEnabled) { this.setLoading(i18n._('Refreshing report... ')); }
-        //rpc.nodeReporting.flushEvents(Ext.bind(function(result, exception) { //TODO: do this getDataForReportEntry
-            rpc.reportingManagerNew.getDataForReportEntry(Ext.bind(function(result, exception) {
-                this.setLoading(false);
-                if(Ung.Util.handleException(exception)) return;
-                this.loadReportData(result.list);
-                if(this!=null && this.rendered && this.autoRefreshEnabled) {
-                    Ext.Function.defer(this.autoRefresh, this.autoRefreshInterval*1000, this);
-                }
-            }, this), this.entry, this.startDateWindow.date, this.endDateWindow.date, this.extraConditions, -1);
-        //}, this));
+        rpc.reportingManagerNew.getDataForReportEntry(Ext.bind(function(result, exception) {
+            this.setLoading(false);
+            if(Ung.Util.handleException(exception)) return;
+            this.loadReportData(result.list);
+            if(this!=null && this.rendered && this.autoRefreshEnabled) {
+                Ext.Function.defer(this.autoRefresh, this.autoRefreshInterval*1000, this);
+            }
+        }, this), this.entry, this.startDateWindow.date, this.endDateWindow.date, this.extraConditions, -1);
     },
     refreshEvents: function() {
         if(!this.entry) {
             return;
         }
         var limit = this.limitSelector.getValue();
-        if(!this.autoRefreshEnabled) { this.setLoading(i18n._('Syncing events to Database... ')); }
-        //rpc.nodeReporting.flushEvents(Ext.bind(function(result, exception) { //TODO: do this getEventsForDateRangeResultSet
             if(!this.autoRefreshEnabled) { this.setLoading(i18n._('Querying Database...')); }
             rpc.reportingManagerNew.getEventsForDateRangeResultSet(Ext.bind(function(result, exception) {
                 this.setLoading(false);
                 if(Ung.Util.handleException(exception)) return;
                 this.loadResultSet(result);
             }, this), this.entry, this.extraConditions, limit, this.startDateWindow.date, this.endDateWindow.date);
-            
-        //}, this));
-        
     },
     autoRefreshEnabled: false,
     startAutoRefresh: function(setButton) {
@@ -1246,6 +1239,16 @@ Ext.define('Ung.panel.Reports', {
     statics: {
         isEvent: function(entry) {
             return "com.untangle.node.reporting.EventEntry" == entry.javaClass;
+        },
+        getColumnRenderer: function(columnName) {
+            if(!this.columnRenderers) {
+                this.columnRenderers = {
+                    policy_id: function(value) {
+                        return rpc.policyNamesMap[value] || value;
+                    }
+                };
+            }
+            return this.columnRenderers[columnName];
         },
         getColumnHumanReadableName: function(columnName) {
             if(!this.columnsHumanReadableNames) {
@@ -3550,18 +3553,15 @@ Ext.define("Ung.panel.ExtraConditions", {
                 var values = result[column];
                 if(values.length > 0) {
                     columnItems = [];
+                    columnRenderer = Ung.panel.Reports.getColumnRenderer(column);
                     for(i=0; i<values.length; i++) {
                         if(column=="policy_id") {
-                            text = values[i].name;
-                            value = values[i].policyId;
-                        } else {
-                            text = values[i];
-                            value = values[i];
+                            
                         }
                         columnItems.push({
-                            text: text,
+                            text: Ext.isFunction(columnRenderer) ? columnRenderer(values[i]) : values[i],
                             column: column,
-                            value: value,
+                            value: values[i],
                             handler: addQuickCondition
                         });
                     }
