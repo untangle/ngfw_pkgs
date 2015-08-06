@@ -673,3 +673,9 @@ textarea.ua-test-output {
 .diff-grid .x-grid-cell {
     font-family: courier, monospace;
 }
+a.link, a.link:visited {
+    color: blue;
+    text-decoration: underline;
+    font-size: 12px;
+    font-family: Tahoma,Helvetica,sans-serif;
+}

@@ -674,3 +674,9 @@ textarea.ua-test-output {
 .row-editor-textfield {
     width: 100%;
 }
+a.link, a.link:visited {
+    color: blue;
+    text-decoration: underline;
+    font-size: 12px;
+    font-family: Tahoma,Helvetica,sans-serif;
+}
