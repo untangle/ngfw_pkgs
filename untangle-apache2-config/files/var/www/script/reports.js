@@ -3417,7 +3417,7 @@ Ext.define('Ung.panel.Reports', {
                                                 }, this)
                                             }],
                                             update: function(fileName){
-                                                rpc.jsonrpc.UvmContext.settingsManager().getDiff(Ext.bind(function(result,exception){
+                                                rpc.reportingManagerNew.getSettingsDiff(Ext.bind(function(result,exception){
                                                     if(Ung.Util.handleException(exception)){
                                                         return;
                                                     }
