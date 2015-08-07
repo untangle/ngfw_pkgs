@@ -879,8 +879,17 @@ Ext.define('Ung.panel.Reports', {
                 }
             }
         }
-        this.gridEvents.getStore().setFields(tableConfig.fields);
-        this.gridEvents.setColumns(tableConfig.columns);
+        var store = Ext.create('Ext.data.Store', {
+            fields: tableConfig.fields,
+            data: [],
+            proxy: {
+                type: 'memory',
+                reader: {
+                    type: 'json'
+                }
+            }
+        });
+        this.gridEvents.reconfigure(store, tableConfig.columns);
         this.refreshHandler();
         Ung.panel.Reports.getColumnsForTable(entry.table, this.extraConditionsPanel.columnsStore);
     },
@@ -961,6 +970,8 @@ Ext.define('Ung.panel.Reports', {
                 (property=='time_stamp')?{javaClass:"java.util.Date", time: (new Date(Math.floor((Math.random()*index*12345678)))).getTime()}:
                 (property.indexOf('_addr') != -1)?Math.floor((Math.random()*255))+"."+Math.floor((Math.random()*255))+"."+Math.floor((Math.random()*255))+"."+Math.floor((Math.random()*255))+"/"+Math.floor((Math.random()*32)):
                 (property.indexOf('_port') != -1)?Math.floor((Math.random()*65000)):
+                //(fields[i].convert==Ung.panel.Reports.mailEventConvertAction)?'P':
+                (property=="spam_blocker_action")?'P':
             property+"_"+(i*index)+"_"+Math.floor((Math.random()*10));
         }
         return rec;
@@ -993,11 +1004,10 @@ Ext.define('Ung.panel.Reports', {
         if( testMode ) {
             var emptyRec={};
             var length = Math.floor((Math.random()*5000));
-            var fields = this.eventEntriesGrid.getStore().getFields();
+            var fields = this.gridEvents.getStore().getModel().getFields();
             for(var i=0; i<length; i++) {
                 this.events.push(this.getTestRecord(i, fields));
             }
-            this.loadNextChunkCallback(null);
         }
 
         this.reader = result;
