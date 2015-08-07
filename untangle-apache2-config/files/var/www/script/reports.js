@@ -1071,15 +1071,26 @@ Ext.define('Ung.panel.Reports', {
         if(!chart) {
             return;
         }
-        var fileName = this.entry.title.trim().replace(/ /g,"_");
-        
+        var fileName = this.entry.title.trim().replace(/ /g,"_")+".png";
+        Ext.MessageBox.wait(i18n._("Downloading Chart..."), i18n._("Please wait"));
+        var downloadForm = document.getElementById('downloadForm');
+        downloadForm["type"].value="imageDownload";
+        downloadForm["arg1"].value=fileName;
+        downloadForm["arg2"].value=chart.getImage().data;
+        downloadForm["arg3"].value="";
+        downloadForm["arg4"].value="";
+        downloadForm["arg5"].value="";
+        downloadForm["arg6"].value="";
+        downloadForm.submit();
+        Ext.MessageBox.hide();
+        /*
         if (Ext.os.is.Desktop) {
             chart.download({
                 filename: fileName
             });
         } else {
             chart.preview();
-        } 
+        } */
     },
     exportEventsHandler: function() {
         if(!this.entry) {
