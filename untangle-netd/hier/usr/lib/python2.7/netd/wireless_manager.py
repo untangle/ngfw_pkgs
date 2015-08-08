@@ -26,7 +26,7 @@ class WirelessManager:
             if not os.path.exists( fileDir ):
                 os.makedirs( fileDir )
 
-        configFiles = ""
+        configFilesString = ""
 
         if settings == None or settings.get('interfaces') == None and settings.get('interfaces').get('list') == None:
             return
@@ -95,9 +95,9 @@ class WirelessManager:
 
                 print "WirelessManager: Wrote " + filename
 
-                configFiles += filename + " "
+                configFilesString += self.hostapdConfFilename + "-" + intf.get('systemDev') + " "
 
-        configFiles = configFiles[:-1]
+        configFilesString = configFilesString[:-1]
 
         # FIXME need to get regulatory domain from the UI
         self.crdaDefaultFile = open( crdaFilename, "w+" )
@@ -112,7 +112,7 @@ class WirelessManager:
         self.hostapdDefaultFile = open( defaultFilename, "w+" )
         self.hostapdDefaultFile.write("## Auto Generated\n");
         self.hostapdDefaultFile.write("## DO NOT EDIT. Changes will be overwritten.\n")
-        self.hostapdDefaultFile.write('DAEMON_CONF="' + configFiles + '"' + "\n")
+        self.hostapdDefaultFile.write('DAEMON_CONF="' + configFilesString + '"' + "\n")
         self.hostapdDefaultFile.flush()
         self.hostapdDefaultFile.close()
 
