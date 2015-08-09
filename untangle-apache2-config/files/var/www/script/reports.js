@@ -661,6 +661,7 @@ Ext.define('Ung.panel.Reports', {
             }
             var timeStyleButtons = [], timeStyle, timeStyles = [
                 { name: 'LINE', iconCls: 'icon-line-chart', text: i18n._("Line"), tooltip: i18n._("Switch to Line Chart") },
+                { name: 'AREA', iconCls: 'icon-area-chart', text: i18n._("Area"), tooltip: i18n._("Switch to Area Chart") },
                 { name: 'BAR_3D', iconCls: 'icon-bar3d-chart', text: i18n._("Bar 3D"), tooltip: i18n._("Switch to Bar 3D Chart") },
                 { name: 'BAR_3D_OVERLAPPED', iconCls: 'icon-bar3d-overlapped-chart', text: i18n._("Bar 3D Overlapped"), tooltip: i18n._("Switch to Bar 3D Overlapped Chart") },
                 { name: 'BAR', iconCls: 'icon-bar-chart', text: i18n._("Bar"), tooltip: i18n._("Switch to Bar Chart") },
@@ -749,6 +750,38 @@ Ext.define('Ung.panel.Reports', {
                         yField: axesFields[i],
                         style: {
                             opacity: 0.90,
+                            lineWidth: 3
+                        },
+                        marker: {
+                            radius: 2
+                        },
+                        highlight: {
+                            fillStyle: '#000',
+                            radius: 4,
+                            lineWidth: 1,
+                            strokeStyle: '#fff'
+                        },
+                        tooltip: {
+                            trackMouse: true,
+                            style: 'background: #fff',
+                            renderer: function(storeItem, item) {
+                                var title = item.series.getTitle();
+                                this.setHtml(title + ' for ' + storeItem.get('time_trunc') + ': ' + storeItem.get(item.series.getYField()) + " " +i18n._(entry.units) + legendHint);
+                            }
+                        }
+                    });
+                }
+                chart.series = series;
+            } else if (entry.timeStyle == 'AREA') {
+                for(i=0; i<axesFields.length; i++) {
+                    series.push({
+                        type: 'area',
+                        axis: 'left',
+                        title: axesFields[i],
+                        xField: 'time_trunc',
+                        yField: axesFields[i],
+                        style: {
+                            opacity: 0.60,
                             lineWidth: 3
                         },
                         marker: {

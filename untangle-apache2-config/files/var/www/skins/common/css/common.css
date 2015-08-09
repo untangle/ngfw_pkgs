@@ -98,6 +98,9 @@ img.icon-drag {
 .x-btn .icon-line-chart {
     background: transparent url(../images/admin/icons/icon_line_chart.png) no-repeat center left !important;
 }
+.x-btn .icon-area-chart {
+    background: transparent url(../images/admin/icons/icon_area_chart.png) no-repeat center left !important;
+}
 .x-btn .icon-bar-chart {
     background: transparent url(../images/admin/icons/icon_bar_chart.png) no-repeat center left !important;
 }
