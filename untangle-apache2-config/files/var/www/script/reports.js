@@ -882,7 +882,7 @@ Ext.define('Ung.panel.Reports', {
         this.gridEvents.setTitle(entry.title);
         var tableConfig = Ext.clone(Ung.panel.Reports.getTableConfig(entry.table));
         if(!tableConfig) {
-            console.log("tableConfig auto generated for table: "+entry.table+". Consider adding it to Ung.panel.Reports.getTableConfig.");
+            console.log("Warning: table '"+entry.table+"' is not defined");
             tableConfig = {
                 fields: [],
                 columns: []
@@ -906,6 +906,7 @@ Ext.define('Ung.panel.Reports', {
             for(i=0; i<entry.defaultColumns.length; i++) {
                 col = entry.defaultColumns[i];
                 if(!columnsNames[col]) {
+                    console.log("Warning: column '"+col+"' is not defined in the tableConfig for "+entry.table);
                     config = Ung.panel.Reports.getColumnConfig(col);
                     tableConfig.columns.push(config.column);
                     tableConfig.fields.push(config.field);
