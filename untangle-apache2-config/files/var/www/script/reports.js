@@ -1673,22 +1673,24 @@ Ext.define('Ung.panel.Reports', {
                 this.tableConfig = {
                     sessions: {
                         fields: [{
+                            name: 'session_id'
+                        }, {
                             name: 'time_stamp',
                             sortType: 'asTimestamp'
                         }, {
-                            name: 'bandwidth_control_priority'
+                            name: 'end_time',
+                            sortType: 'asTimestamp'
                         }, {
-                            name: 'bandwidth_control_rule'
+                            name: 'bypassed',
+                            type: 'boolean'
                         }, {
                             name: 'protocol'
                         }, {
-                            name: 'username'
-                        }, {
                             name: 'hostname'
                         }, {
-                            name: 'client_intf'
+                            name: 'username'
                         }, {
-                            name: 'server_intf'
+                            name: 'policy_id'
                         }, {
                             name: 'c_client_addr',
                             sortType: 'asIp'
@@ -1714,6 +1716,36 @@ Ext.define('Ung.panel.Reports', {
                             name: 's_server_port',
                             sortType: 'asInt'
                         }, {
+                            name: 'client_intf'
+                        }, {
+                            name: 'server_intf'
+                        }, {
+                            name: "c2p_bytes"
+                        }, {
+                            name: "p2c_bytes"
+                        }, {
+                            name: "s2p_bytes"
+                        }, {
+                            name: "p2s_bytes"
+                        }, {
+                            name: 'shield_blocked',
+                            type: 'boolean'
+                        }, {
+                            name: 'firewall_blocked'
+                        }, {
+                            name: 'firewall_flagged'
+                        }, {
+                            name: 'firewall_rule_index'
+                        }, {
+                            name: 'application_control_lite_blocked'
+                        }, {
+                            name: 'application_control_lite_protocol',
+                            type: 'string'
+                        }, {
+                            name: "captive_portal_rule_index"
+                        }, {
+                            name: "captive_portal_blocked"
+                        }, {
                             name: 'application_control_application',
                             type: 'string'
                         }, {
@@ -1730,53 +1762,48 @@ Ext.define('Ung.panel.Reports', {
                         }, {
                             name: 'application_control_detail'
                         }, {
-                            name: 'application_control_lite_blocked'
-                        }, {
-                            name: 'application_control_lite_protocol',
-                            type: 'string'
-                        }, {
                             name: 'application_control_ruleid'
+                        }, {
+                            name: 'bandwidth_control_priority'
+                        }, {
+                            name: 'bandwidth_control_rule'
                         }, {
                             name: 'ssl_inspector_status'
                         }, {
                             name: 'ssl_inspector_detail'
                         }, {
                             name: 'ssl_inspector_ruleid'
-                        }, {
-                            name: 'policy_id'
-                        }, {
-                            name: 'firewall_blocked'
-                        }, {
-                            name: 'firewall_flagged'
-                        }, {
-                            name: 'firewall_rule_index'
-                        }, {
-                            name: 'ips_blocked'
-                        }, {
-                            name: 'ips_ruleid'
-                        }, {
-                            name: 'ips_description',
-                            type: 'string'
-                        }, {
-                            name: "captive_portal_rule_index"
-                        }, {
-                            name: "captive_portal_blocked"
-                        }, {
-                            name: "c2p_bytes"
-                        }, {
-                            name: "p2c_bytes"
-                        }, {
-                            name: "s2p_bytes"
-                        }, {
-                            name: "p2s_bytes"
                         }],
                         columns: [{
+                            header: i18n._("Session ID"),
+                            width: Ung.Util.portFieldWidth,
+                            sortable: true,
+                            dataIndex: 'session_id'
+                        }, {
                             header: i18n._("Timestamp"),
                             width: Ung.Util.timestampFieldWidth,
                             sortable: true,
                             dataIndex: 'time_stamp',
                             renderer: function(value) {
                                 return i18n.timestampFormat(value);
+                            }
+                        }, {
+                            header: i18n._("End Timestamp"),
+                            width: Ung.Util.timestampFieldWidth,
+                            sortable: true,
+                            dataIndex: 'end_time',
+                            renderer: function(value) {
+                                return i18n.timestampFormat(value);
+                            }
+                        }, {
+                            header: i18n._('Bypassed'),
+                            width: Ung.Util.booleanFieldWidth,
+                            sortable: true,
+                            dataIndex: 'bypassed',
+                            filter: {
+                                type: 'boolean',
+                                yesText: 'true',
+                                noText: 'false'
                             }
                         }, {
                             header: i18n._("Protocol"),
@@ -1861,6 +1888,16 @@ Ext.define('Ung.panel.Reports', {
                             dataIndex: 's_server_port',
                             filter: {
                                 type: 'numeric'
+                            }
+                        }, {
+                            header: i18n._('Shield Blocked'),
+                            width: Ung.Util.booleanFieldWidth,
+                            sortable: true,
+                            dataIndex: 'shield_blocked',
+                            filter: {
+                                type: 'boolean',
+                                yesText: 'true',
+                                noText: 'false'
                             }
                         }, {
                             header: i18n._('Rule ID') + ' (Application Control)',
@@ -2004,31 +2041,6 @@ Ext.define('Ung.panel.Reports', {
                             filter: {
                                 type: 'numeric'
                             }
-                        }, {
-                            header: i18n._('Blocked') + ' (Intrusion Prevention)',
-                            width: Ung.Util.booleanFieldWidth,
-                            sortable: true,
-                            dataIndex: 'ips_blocked',
-                            filter: {
-                                type: 'boolean',
-                                yesText: 'true',
-                                noText: 'false'
-                            }
-                        }, {
-                            header: i18n._('Rule Id') + ' (Intrusion Prevention)',
-                            width: 60,
-                            sortable: true,
-                            dataIndex: 'ips_ruleid'
-                        }, {
-                            header: i18n._('Rule Description') + ' (Intrusion Prevention)',
-                            width: 150,
-                            sortable: true,
-                            flex:1,
-                            dataIndex: 'ips_description'
-                        }, {
-                            header: i18n._('Rule ID') + ' (Captive Portal)',
-                            width: 80,
-                            dataIndex: 'captive_portal_rule_index'
                         }, {
                             header: i18n._('Captured') + ' (Captive Portal)',
                             width: 100,
