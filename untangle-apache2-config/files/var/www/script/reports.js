@@ -463,7 +463,7 @@ Ext.define('Ung.panel.Reports', {
         var tbar = [{
             xtype: 'button',
             text: i18n._('Customize'),
-            hidden: !this.servletMode,
+            hidden: !this.webuiMode,
             name: "edit",
             tooltip: i18n._('Advanced report customization'),
             iconCls: 'icon-edit',
