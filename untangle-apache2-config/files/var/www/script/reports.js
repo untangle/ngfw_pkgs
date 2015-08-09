@@ -1761,6 +1761,14 @@ Ext.define('Ung.panel.Reports', {
                             name: "captive_portal_rule_index"
                         }, {
                             name: "captive_portal_blocked"
+                        }, {
+                            name: "c2p_bytes"
+                        }, {
+                            name: "p2c_bytes"
+                        }, {
+                            name: "s2p_bytes"
+                        }, {
+                            name: "p2s_bytes"
                         }],
                         columns: [{
                             header: i18n._("Timestamp"),
@@ -1843,12 +1851,12 @@ Ext.define('Ung.panel.Reports', {
                             }
                         }, {
                             header: i18n._("Server") ,
-                            width: Ung.Util.ipFieldWidth + 40, // +40 for column header
+                            width: Ung.Util.ipFieldWidth,
                             sortable: true,
                             dataIndex: 's_server_addr'
                         }, {
                             header: i18n._("Server Port"),
-                            width: Ung.Util.portFieldWidth + 40, // +40 for column header
+                            width: Ung.Util.portFieldWidth,
                             sortable: true,
                             dataIndex: 's_server_port',
                             filter: {
@@ -2030,6 +2038,38 @@ Ext.define('Ung.panel.Reports', {
                                 type: 'boolean',
                                 yesText: 'true',
                                 noText: 'false'
+                            }
+                        }, {
+                            header: i18n._('To-Server Bytes'),
+                            width: Ung.Util.portFieldWidth,
+                            sortable: true,
+                            dataIndex: 'p2s_bytes',
+                            filter: {
+                                type: 'numeric'
+                            }
+                        }, {
+                            header: i18n._('From-Server Bytes'),
+                            width: Ung.Util.portFieldWidth,
+                            sortable: true,
+                            dataIndex: 's2p_bytes',
+                            filter: {
+                                type: 'numeric'
+                            }
+                        }, {
+                            header: i18n._('To-Client Bytes'),
+                            width: Ung.Util.portFieldWidth,
+                            sortable: true,
+                            dataIndex: 'p2c_bytes',
+                            filter: {
+                                type: 'numeric'
+                            }
+                        }, {
+                            header: i18n._('From-Client Bytes'),
+                            width: Ung.Util.portFieldWidth,
+                            sortable: true,
+                            dataIndex: 'c2p_bytes',
+                            filter: {
+                                type: 'numeric'
                             }
                         }]
                     },
