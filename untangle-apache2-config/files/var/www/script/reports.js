@@ -2449,6 +2449,9 @@ Ext.define('Ung.panel.Reports', {
                         }, {
                             name: 'spam_blocker_lite_score'
                         }, {
+                            name: 'spam_blocker_lite_is_spam',
+                            type: 'boolean'
+                        }, {
                             name: 'spam_blocker_lite_tests_string'
                         }, {
                             name:  'spam_blocker_action',
@@ -2457,6 +2460,9 @@ Ext.define('Ung.panel.Reports', {
                         }, {
                             name: 'spam_blocker_score'
                         }, {
+                            name: 'spam_blocker_is_spam',
+                            type: 'boolean'
+                        }, {
                             name: 'spam_blocker_tests_string'
                         }, {
                             name:  'phish_blocker_action',
@@ -2464,6 +2470,9 @@ Ext.define('Ung.panel.Reports', {
                             convert: Ung.panel.Reports.mailEventConvertAction
                         }, {
                             name: 'phish_blocker_score'
+                        }, {
+                            name: 'phish_blocker_is_spam',
+                            type: 'boolean'
                         }, {
                             name: 'phish_blocker_tests_string'
                         }],
@@ -2535,6 +2544,11 @@ Ext.define('Ung.panel.Reports', {
                                 type: 'numeric'
                             }
                         }, {
+                            header: i18n._("Is Spam (Spam Blocker Lite)"),
+                            width: 70,
+                            sortable: true,
+                            dataIndex: 'spam_blocker_lite_is_spam'
+                        }, {
                             header: i18n._("Detail (Spam Blocker Lite)"),
                             width: 125,
                             sortable: true,
@@ -2553,6 +2567,11 @@ Ext.define('Ung.panel.Reports', {
                                 type: 'numeric'
                             }
                         }, {
+                            header: i18n._("Is Spam (Spam Blocker)"),
+                            width: 70,
+                            sortable: true,
+                            dataIndex: 'spam_blocker_is_spam'
+                        }, {
                             header: i18n._("Detail (Spam Blocker)"),
                             width: 125,
                             sortable: true,
@@ -2562,6 +2581,11 @@ Ext.define('Ung.panel.Reports', {
                             width: 125,
                             sortable: true,
                             dataIndex: 'phish_blocker_action'
+                        }, {
+                            header: i18n._("Is Phish (Phish Blocker)"),
+                            width: 70,
+                            sortable: true,
+                            dataIndex: 'phish_blocker_is_spam'
                         }, {
                             header: i18n._("Detail (Phish Blocker)"),
                             width: 125,
