@@ -2036,7 +2036,7 @@ Ext.define('Ung.TableConfig', {
                     items: [{
                         icon: '/skins/default/images/admin/icons/icon_detail.png',
                         tooltip: i18n._("Show difference between previous version"),
-                        handler: function(grid, rowIndex, colIndex, item, e, record){
+                        handler: function(view, rowIndex, colIndex, item, e, record){
                             if( !this.diffWindow ){
                                 var columnRenderer = function(value, meta, record){
                                     var action = record.get("action");
