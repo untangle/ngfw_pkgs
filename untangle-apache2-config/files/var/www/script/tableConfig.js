@@ -1369,6 +1369,46 @@ Ext.define('Ung.TableConfig', {
                     }
                 }]
             },
+            host_table_updates: {
+                fields: [{
+                    name: 'time_stamp',
+                    sortType: 'asTimestamp'
+                }, {
+                    name: 'address',
+                    sortType: 'asIp'
+                }, {
+                    name: 'key',
+                    type: 'string'
+                }, {
+                    name: 'value',
+                    type: 'string'
+                }],
+                columns: [{
+                    header: i18n._("Timestamp"),
+                    width: Ung.TableConfig.timestampFieldWidth,
+                    sortable: true,
+                    dataIndex: 'time_stamp',
+                    renderer: function(value) {
+                        return i18n.timestampFormat(value);
+                    }
+                }, {
+                    header: i18n._("Address"),
+                    width: Ung.TableConfig.ipFieldWidth,
+                    sortable: true,
+                    dataIndex: 'address'
+                }, {
+                    header: i18n._("Key"),
+                    width: 150,
+                    sortable: true,
+                    dataIndex: 'key'
+                }, {
+                    header: i18n._("Value"),
+                    width: 150,
+                    flex: 1,
+                    sortable: true,
+                    dataIndex: 'value'
+                }]
+            },
             configuration_backup_events: {
                 fields: [{
                     name: 'time_stamp',
