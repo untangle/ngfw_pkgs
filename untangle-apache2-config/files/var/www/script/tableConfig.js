@@ -1355,7 +1355,6 @@ Ext.define('Ung.TableConfig', {
                         var meg = value/1024/1024;
                         return (Math.round( meg*10 )/10).toString() + " MB";
                     }
-
                 }, {
                     header: i18n._("Swap Free"),
                     width: 120,
@@ -1368,7 +1367,6 @@ Ext.define('Ung.TableConfig', {
                         var meg = value/1024/1024;
                         return (Math.round( meg*10 )/10).toString() + " MB";
                     }
-
                 }]
             },
             configuration_backup_events: {
@@ -1558,12 +1556,20 @@ Ext.define('Ung.TableConfig', {
                     header: i18n._("RX Bytes"),
                     width: 120,
                     sortable: true,
-                    dataIndex: "rx_bytes"
+                    dataIndex: "rx_bytes",
+                    renderer: function(value) {
+                        var kb = value/1024;
+                        return (Math.round( kb*10 )/10).toString() + " KB";
+                    }
                 },{
                     header: i18n._("TX Bytes"),
                     width: 120,
                     sortable: true,
-                    dataIndex: "tx_bytes"
+                    dataIndex: "tx_bytes",
+                    renderer: function(value) {
+                        var kb = value/1024;
+                        return (Math.round( kb*10 )/10).toString() + " KB";
+                    }
                 }]
             },
             smtp_tarpit_events: {
@@ -1923,7 +1929,8 @@ Ext.define('Ung.TableConfig', {
                 }, {
                     name: 'type'
                 }, {
-                    name: 'client_name'
+                    name: 'client_name',
+                    type: 'string'
                 }, {
                     name: 'remote_address',
                     sortType: 'asIp'
@@ -1955,6 +1962,102 @@ Ext.define('Ung.TableConfig', {
                     header: i18n._("Pool Address"),
                     sortable: true,
                     dataIndex: 'pool_address'
+                }]
+            },
+            openvpn_stats: {
+                fields: [{
+                    name: 'time_stamp',
+                    sortType: 'asTimestamp'
+                }, {
+                    name: 'start_time',
+                    sortType: 'asTimestamp'
+                }, {
+                    name: 'end_time',
+                    sortType: 'asTimestamp'
+                }, {
+                    name: 'rx_bytes',
+                    sortType: 'asInt'
+                }, {
+                    name: 'tx_bytes',
+                    sortType: 'asInt'
+                }, {
+                    name: 'remote_address',
+                    sortType: 'asIp'
+                }, {
+                    name: 'pool_address',
+                    sortType: 'asIp'
+                }, {
+                    name: 'remote_port',
+                    sortType: 'asInt'
+                }, {
+                    name: 'client_name',
+                    type: 'string'
+                }, {
+                    name: 'event_id',
+                    sortType: 'asInt'
+                }],
+                columns: [{
+                    header: i18n._("Timestamp"),
+                    width: Ung.TableConfig.timestampFieldWidth,
+                    sortable: true,
+                    dataIndex: 'time_stamp',
+                    renderer: Ext.bind(function(value) {
+                        return i18n.timestampFormat(value);
+                    }, this )
+                }, {
+                    header: i18n._("Start Time"),
+                    width: Ung.TableConfig.timestampFieldWidth,
+                    sortable: true,
+                    dataIndex: 'start_time',
+                    renderer: Ext.bind(function(value) {
+                        return i18n.timestampFormat(value);
+                    }, this )
+                }, {
+                    header: i18n._("End Time"),
+                    width: Ung.TableConfig.timestampFieldWidth,
+                    sortable: true,
+                    dataIndex: 'end_time',
+                    renderer: Ext.bind(function(value) {
+                        return i18n.timestampFormat(value);
+                    }, this )
+                }, {
+                    header: i18n._("Client Name"),
+                    width: 120,
+                    sortable: true,
+                    dataIndex: 'client_name'
+                }, {
+                    header: i18n._("Client Address"),
+                    width: Ung.TableConfig.ipFieldWidth,
+                    sortable: true,
+                    dataIndex: 'remote_address'
+                }, {
+                    header: i18n._("Client Port"),
+                    width: Ung.TableConfig.portFieldWidth,
+                    sortable: true,
+                    dataIndex: "remote_port"
+                }, {
+                    header: i18n._("Pool Address"),
+                    width: Ung.TableConfig.ipFieldWidth,
+                    sortable: true,
+                    dataIndex: 'pool_address'
+                }, {
+                    header: i18n._("RX Bytes"),
+                    width: 120,
+                    sortable: true,
+                    dataIndex: "rx_bytes",
+                    renderer: function(value) {
+                        var kb = value/1024;
+                        return (Math.round( kb*10 )/10).toString() + " KB";
+                    }
+                }, {
+                    header: i18n._("TX Bytes"),
+                    width: 120,
+                    sortable: true,
+                    dataIndex: "tx_bytes",
+                    renderer: function(value) {
+                        var kb = value/1024;
+                        return (Math.round( kb*10 )/10).toString() + " KB";
+                    }
                 }]
             },
             alerts: {
