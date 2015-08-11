@@ -1572,6 +1572,61 @@ Ext.define('Ung.TableConfig', {
                     }
                 }]
             },
+            ipsec_tunnel_stats: {
+                fields: [{
+                    name: 'time_stamp',
+                    sortType: 'asTimestamp'
+                }, {
+                    name: 'in_bytes',
+                    sortType: 'asInt'
+                }, {
+                    name: 'out_bytes',
+                    sortType: 'asInt'
+                }, {
+                    name: 'tunnel_name',
+                    type: 'string'
+                }, {
+                    name: 'event_id',
+                    sortType: 'asInt'
+                }],
+                columns: [{
+                    header: i18n._("Event ID"),
+                    width: 100,
+                    sortable: true,
+                    dataIndex: "event_id"
+                }, {
+                    header: i18n._("Timestamp"),
+                    width: Ung.TableConfig.timestampFieldWidth,
+                    sortable: true,
+                    dataIndex: 'time_stamp',
+                    renderer: Ext.bind(function(value) {
+                        return i18n.timestampFormat(value);
+                    }, this )
+                }, {
+                    header: i18n._("Tunnel Name"),
+                    width: 120,
+                    sortable: true,
+                    dataIndex: 'tunnel_name'
+                }, {
+                    header: i18n._("In Bytes"),
+                    width: 120,
+                    sortable: true,
+                    dataIndex: "in_bytes",
+                    renderer: function(value) {
+                        var kb = value/1024;
+                        return (Math.round( kb*10 )/10).toString() + " KB";
+                    }
+                }, {
+                    header: i18n._("Out Bytes"),
+                    width: 120,
+                    sortable: true,
+                    dataIndex: "out_bytes",
+                    renderer: function(value) {
+                        var kb = value/1024;
+                        return (Math.round( kb*10 )/10).toString() + " KB";
+                    }
+                }]
+            },
             smtp_tarpit_events: {
                 fields: [{
                     name: 'time_stamp',
@@ -1997,6 +2052,11 @@ Ext.define('Ung.TableConfig', {
                     sortType: 'asInt'
                 }],
                 columns: [{
+                    header: i18n._("Event ID"),
+                    width: 100,
+                    sortable: true,
+                    dataIndex: "event_id"
+                }, {
                     header: i18n._("Timestamp"),
                     width: Ung.TableConfig.timestampFieldWidth,
                     sortable: true,
