@@ -1670,9 +1670,7 @@ Ext.define('Ung.panel.Reports', {
             return sortType;
         },
         getTableConfig: function(table) {
-            if(!this.tableConfig) {
-            }
-            return this.tableConfig[table];
+              return Ung.TableConfig.getConfig(table);
         },
         httpEventConvertReason: function(value) {
             if(Ext.isEmpty(value)) {

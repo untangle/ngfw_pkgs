@@ -32,11 +32,19 @@ Ext.define('Ung.TableConfig', {
             systemTablesMap[systemTables[i]] = true;
             
             if(!this.tableConfig[systemTables[i]]) {
+
+                // ignore "totals" tables (from old reports and will be deprecated soon) 
+                if ( systemTables[i].indexOf("totals") != -1 )
+                    continue;
+                // ignore "mail_msgs" table (will be deprecated soon) 
+                if ( systemTables[i].indexOf("mail_msgs") != -1 )
+                    continue;
+                
                 missingTables.push(systemTables[i]);
             }
         }
         if(missingTables.length>0) {
-            console.log("Warning: Mising tables: "+missingTables.join(", "));
+            console.log("Warning: Missing tables: "+missingTables.join(", "));
         }
         var extraTables = [];
         for(table in this.tableConfig) {
@@ -64,7 +72,7 @@ Ext.define('Ung.TableConfig', {
                     }
                 }
                 if(missingColumns.length>0) {
-                    console.log("Warning: Table '"+table+"' Mising columns: "+missingColumns.join(", "));
+                    console.log("Warning: Table '"+table+"' Missing columns: "+missingColumns.join(", "));
                 }
                 
                 var extraColumns = [];
@@ -1203,6 +1211,164 @@ Ext.define('Ung.TableConfig', {
                             default: return i18n._("");
                         }
                     }, this)
+                }]
+            },
+            server_events: {
+                fields: [{
+                    name: 'time_stamp',
+                    sortType: 'asTimestamp'
+                }, {
+                    name: 'load_1'
+                }, {
+                    name: 'load_5'
+                }, {
+                    name: 'load_15'
+                }, {
+                    name: 'cpu_user'
+                }, {
+                    name: 'cpu_system'
+                }, {
+                    name: 'mem_total',
+                    sortType: 'asInt'
+                }, {
+                    name: 'mem_free',
+                    sortType: 'asInt'
+                }, {
+                    name: 'disk_total',
+                    sortType: 'asInt'
+                }, {
+                    name: 'disk_free',
+                    sortType: 'asInt'
+                }, {
+                    name: 'swap_total',
+                    sortType: 'asInt'
+                }, {
+                    name: 'swap_free',
+                    sortType: 'asInt'
+                }],
+                columns: [{
+                    header: i18n._("Timestamp"),
+                    width: Ung.TableConfig.timestampFieldWidth,
+                    sortable: true,
+                    dataIndex: 'time_stamp',
+                    renderer: function(value) {
+                        return i18n.timestampFormat(value);
+                    }
+                }, {
+                    header: i18n._("Load (1-minute)"),
+                    width: 120,
+                    sortable: true,
+                    dataIndex: 'load_1',
+                    filter: {
+                        type: 'numeric'
+                    }
+                }, {
+                    header: i18n._("Load (5-minute)"),
+                    width: 120,
+                    sortable: true,
+                    dataIndex: 'load_5',
+                    filter: {
+                        type: 'numeric'
+                    }
+                }, {
+                    header: i18n._("Load (15-minute)"),
+                    width: 120,
+                    sortable: true,
+                    dataIndex: 'load_15',
+                    filter: {
+                        type: 'numeric'
+                    }
+                }, {
+                    header: i18n._("CPU User Utilization"),
+                    width: 120,
+                    sortable: true,
+                    dataIndex: 'cpu_user',
+                    filter: {
+                        type: 'numeric'
+                    }
+                }, {
+                    header: i18n._("CPU System Utilization"),
+                    width: 120,
+                    sortable: true,
+                    dataIndex: 'cpu_system',
+                    filter: {
+                        type: 'numeric'
+                    }
+                }, {
+                    header: i18n._("Memory Total"),
+                    width: 120,
+                    sortable: true,
+                    dataIndex: 'mem_total',
+                    filter: {
+                        type: 'numeric'
+                    },
+                    renderer: function(value) {
+                        var meg = value/1024/1024;
+                        return (Math.round( meg*10 )/10).toString() + " MB";
+                    }
+
+                }, {
+                    header: i18n._("Memory Free"),
+                    width: 120,
+                    sortable: true,
+                    dataIndex: 'mem_free',
+                    filter: {
+                        type: 'numeric'
+                    },
+                    renderer: function(value) {
+                        var meg = value/1024/1024;
+                        return (Math.round( meg*10 )/10).toString() + " MB";
+                    }
+                }, {
+                    header: i18n._("Disk Total"),
+                    width: 120,
+                    sortable: true,
+                    dataIndex: 'disk_total',
+                    filter: {
+                        type: 'numeric'
+                    },
+                    renderer: function(value) {
+                        var gig = value/1024/1024/1024;
+                        return (Math.round( gig*10 )/10).toString() + " GB";
+                    }
+                }, {
+                    header: i18n._("Disk Free"),
+                    width: 120,
+                    sortable: true,
+                    dataIndex: 'disk_free',
+                    filter: {
+                        type: 'numeric'
+                    },
+                    renderer: function(value) {
+                        var gig = value/1024/1024/1024;
+                        return (Math.round( gig*10 )/10).toString() + " GB";
+                    }
+                }, {
+                    header: i18n._("Swap Total"),
+                    width: 120,
+                    sortable: true,
+                    dataIndex: 'swap_total',
+                    filter: {
+                        type: 'numeric'
+                    },
+                    renderer: function(value) {
+                        var meg = value/1024/1024;
+                        return (Math.round( meg*10 )/10).toString() + " MB";
+                    }
+
+                }, {
+                    header: i18n._("Swap Free"),
+                    width: 120,
+                    sortable: true,
+                    dataIndex: 'swap_free',
+                    filter: {
+                        type: 'numeric'
+                    },
+                    renderer: function(value) {
+                        var meg = value/1024/1024;
+                        return (Math.round( meg*10 )/10).toString() + " MB";
+                    }
+
                 }]
             },
             configuration_backup_events: {
