@@ -62,13 +62,17 @@ Ext.define('Ung.TableConfig', {
                 systemColumnsMap = {};
                 tableConfigColumnsMap = {};
                 for(i=0;i<tableConfigColumns.length; i++) {
-                    tableConfigColumnsMap[tableConfigColumns[i].dataIndex] = true;
+                    tableConfigColumnsMap[tableConfigColumns[i].dataIndex] = tableConfigColumns[i];
                 }
                 var missingColumns = [];
                 for(i=0;i<systemColumns.length; i++) {
                     systemColumnsMap[systemColumns[i]] = true;
-                    if(!tableConfigColumnsMap[systemColumns[i]]) {
+                    var columnConfig = tableConfigColumnsMap[systemColumns[i]];
+                    if ( columnConfig == null ) {
                         missingColumns.push(systemColumns[i]);
+                    } else {
+                        if (! columnConfig.width )
+                            console.log("Warning: Table '"+table+"' Columns: '"+columnConfig.dataIndex+"' missing width");
                     }
                 }
                 if(missingColumns.length>0) {
@@ -2440,18 +2444,22 @@ Ext.define('Ung.TableConfig', {
                     }, this )
                 }, {
                     header: i18n._("Type"),
+                    width: 120,
                     sortable: true,
                     dataIndex: 'type'
                 }, {
                     header: i18n._("Client Name"),
+                    width: Ung.TableConfig.usernameFieldWidth,
                     sortable: true,
                     dataIndex: 'client_name'
                 }, {
                     header: i18n._("Client Address"),
+                    width: Ung.TableConfig.ipFieldWidth,
                     sortable: true,
                     dataIndex: 'remote_address'
                 }, {
                     header: i18n._("Pool Address"),
+                    width: Ung.TableConfig.ipFieldWidth,
                     sortable: true,
                     dataIndex: 'pool_address'
                 }]
@@ -2780,6 +2788,7 @@ Ext.define('Ung.TableConfig', {
                     dataIndex: 'address'
                 }, {
                     header: i18n._("Reason"),
+                    width: 120,
                     sortable: true,
                     flex: 1,
                     dataIndex: 'reason'
@@ -2831,14 +2840,24 @@ Ext.define('Ung.TableConfig', {
                     dataIndex: 'address'
                 }, {
                     header: i18n._("Action"),
+                    width: 120,
                     sortable: true,
-                    dataIndex: 'action'
+                    dataIndex: 'action',
+                    renderer: function(value) {
+                        if ( value == 1 ) 
+                            return "1 (" + i18n._("Given") + ")";
+                        if ( vauel == 2 )
+                            return "2 (" + i18n._("Exceeded") + ")";
+                        return value;
+                    }
                 }, {
                     header: i18n._("Size"),
+                    width: Ung.TableConfig.portFieldWidth,
                     sortable: true,
                     dataIndex: 'size'
                 }, {
                     header: i18n._("Reason"),
+                    width: 200,
                     sortable: true,
                     flex: 1,
                     dataIndex: 'reason'
