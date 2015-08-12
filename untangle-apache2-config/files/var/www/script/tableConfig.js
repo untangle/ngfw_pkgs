@@ -245,12 +245,12 @@ Ext.define('Ung.TableConfig', {
                     renderer: Ung.Main.getPolicyName
                 }, {
                     header: i18n._("Client Interface") ,
-                    width: Ung.TableConfig.portFieldWidth + 40, // +40 for column header
+                    width: Ung.TableConfig.portFieldWidth,
                     sortable: true,
                     dataIndex: 'client_intf'
                 }, {
                     header: i18n._("Server Interface") ,
-                    width: Ung.TableConfig.portFieldWidth + 40, // +40 for column header
+                    width: Ung.TableConfig.portFieldWidth,
                     sortable: true,
                     dataIndex: 'server_intf'
                 }, {
@@ -291,12 +291,12 @@ Ext.define('Ung.TableConfig', {
                     }
                 }, {
                     header: i18n._("Original Server") ,
-                    width: Ung.TableConfig.ipFieldWidth + 40, // +40 for column header
+                    width: Ung.TableConfig.ipFieldWidth,
                     sortable: true,
                     dataIndex: 'c_server_addr'
                 }, {
                     header: i18n._("Original Server Port"),
-                    width: Ung.TableConfig.portFieldWidth + 40, // +40 for column header
+                    width: Ung.TableConfig.portFieldWidth,
                     sortable: true,
                     dataIndex: 'c_server_port',
                     filter: {
@@ -664,12 +664,12 @@ Ext.define('Ung.TableConfig', {
                     dataIndex: 'session_id'
                 }, {
                     header: i18n._("Client Interface") ,
-                    width: Ung.TableConfig.portFieldWidth + 40, // +40 for column header
+                    width: Ung.TableConfig.portFieldWidth,
                     sortable: true,
                     dataIndex: 'client_intf'
                 }, {
                     header: i18n._("Server Interface") ,
-                    width: Ung.TableConfig.portFieldWidth + 40, // +40 for column header
+                    width: Ung.TableConfig.portFieldWidth,
                     sortable: true,
                     dataIndex: 'server_intf'
                 }, {
@@ -700,12 +700,12 @@ Ext.define('Ung.TableConfig', {
                     }
                 }, {
                     header: i18n._("Original Server") ,
-                    width: Ung.TableConfig.ipFieldWidth + 40, // +40 for column header
+                    width: Ung.TableConfig.ipFieldWidth,
                     sortable: true,
                     dataIndex: 'c_server_addr'
                 }, {
                     header: i18n._("Original Server Port"),
-                    width: Ung.TableConfig.portFieldWidth + 40, // +40 for column header
+                    width: Ung.TableConfig.portFieldWidth,
                     sortable: true,
                     dataIndex: 'c_server_port',
                     filter: {
@@ -713,12 +713,12 @@ Ext.define('Ung.TableConfig', {
                     }
                 }, {
                     header: i18n._("Server") ,
-                    width: Ung.TableConfig.ipFieldWidth + 40, // +40 for column header
+                    width: Ung.TableConfig.ipFieldWidth,
                     sortable: true,
                     dataIndex: 's_server_addr'
                 }, {
                     header: i18n._("Server Port"),
-                    width: Ung.TableConfig.portFieldWidth + 40, // +40 for column header
+                    width: Ung.TableConfig.portFieldWidth,
                     sortable: true,
                     dataIndex: 's_server_port',
                     filter: {
@@ -965,12 +965,12 @@ Ext.define('Ung.TableConfig', {
                     dataIndex: 'session_id'
                 }, {
                     header: i18n._("Client Interface") ,
-                    width: Ung.TableConfig.portFieldWidth + 40, // +40 for column header
+                    width: Ung.TableConfig.portFieldWidth,
                     sortable: true,
                     dataIndex: 'client_intf'
                 }, {
                     header: i18n._("Server Interface") ,
-                    width: Ung.TableConfig.portFieldWidth + 40, // +40 for column header
+                    width: Ung.TableConfig.portFieldWidth,
                     sortable: true,
                     dataIndex: 'server_intf'
                 }, {
@@ -1011,12 +1011,12 @@ Ext.define('Ung.TableConfig', {
                     }
                 }, {
                     header: i18n._("Original Server") ,
-                    width: Ung.TableConfig.ipFieldWidth + 40, // +40 for column header
+                    width: Ung.TableConfig.ipFieldWidth,
                     sortable: true,
                     dataIndex: 'c_server_addr'
                 }, {
                     header: i18n._("Original Server Port"),
-                    width: Ung.TableConfig.portFieldWidth + 40, // +40 for column header
+                    width: Ung.TableConfig.portFieldWidth,
                     sortable: true,
                     dataIndex: 'c_server_port',
                     filter: {
@@ -1221,12 +1221,12 @@ Ext.define('Ung.TableConfig', {
                     dataIndex: "msg_id"
                 }, {
                     header: i18n._("Client Interface") ,
-                    width: Ung.TableConfig.portFieldWidth + 40, // +40 for column header
+                    width: Ung.TableConfig.portFieldWidth,
                     sortable: true,
                     dataIndex: 'client_intf'
                 }, {
                     header: i18n._("Server Interface") ,
-                    width: Ung.TableConfig.portFieldWidth + 40, // +40 for column header
+                    width: Ung.TableConfig.portFieldWidth,
                     sortable: true,
                     dataIndex: 'server_intf'
                 }, {
@@ -1267,12 +1267,12 @@ Ext.define('Ung.TableConfig', {
                     }
                 }, {
                     header: i18n._("Original Server") ,
-                    width: Ung.TableConfig.ipFieldWidth + 40, // +40 for column header
+                    width: Ung.TableConfig.ipFieldWidth,
                     sortable: true,
                     dataIndex: 'c_server_addr'
                 }, {
                     header: i18n._("Original Server Port"),
-                    width: Ung.TableConfig.portFieldWidth + 40, // +40 for column header
+                    width: Ung.TableConfig.portFieldWidth,
                     sortable: true,
                     dataIndex: 'c_server_port',
                     filter: {
@@ -2687,12 +2687,12 @@ Ext.define('Ung.TableConfig', {
                     dataIndex: 'method'
                 }, {
                     header: i18n._("Client Interface") ,
-                    width: Ung.TableConfig.portFieldWidth + 40, // +40 for column header
+                    width: Ung.TableConfig.portFieldWidth,
                     sortable: true,
                     dataIndex: 'client_intf'
                 }, {
                     header: i18n._("Server Interface") ,
-                    width: Ung.TableConfig.portFieldWidth + 40, // +40 for column header
+                    width: Ung.TableConfig.portFieldWidth,
                     sortable: true,
                     dataIndex: 'server_intf'
                 }, {
@@ -2707,7 +2707,7 @@ Ext.define('Ung.TableConfig', {
                     dataIndex: 's_client_addr'
                 }, {
                     header: i18n._("Original Server") ,
-                    width: Ung.TableConfig.ipFieldWidth + 40, // +40 for column header
+                    width: Ung.TableConfig.ipFieldWidth,
                     sortable: true,
                     dataIndex: 'c_server_addr'
                 }, {
