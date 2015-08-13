@@ -125,17 +125,18 @@ Ext.define('Ung.TableConfig', {
         if(Ext.isEmpty(value)) {
             return null;
         }
-        switch (value) {
-          case 'D': return i18n._("in Categories Block list");
-          case 'U': return i18n._("in URLs Block list");
-          case 'E': return i18n._("in File Extensions Block list");
-          case 'M': return i18n._("in MIME Types Block list");
-          case 'H': return i18n._("Hostname is an IP address");
-          case 'I': return i18n._("in URLs Pass list");
-          case 'R': return i18n._("in URLs Pass list (via referer)");
-          case 'C': return i18n._("in Clients Pass list");
-          case 'B': return i18n._("Client Bypass");
-          default: return i18n._("no rule applied");
+        switch ( value ) {
+          case 'D': return i18n._("in Categories Block list") + " (D)";
+          case 'U': return i18n._("in Site Block list") + " (U)";
+          case 'E': return i18n._("in File Block list") + " (E)";
+          case 'M': return i18n._("in MIME Types Block list") + " (M)";
+          case 'H': return i18n._("hostname is an IP address") + " (H)";
+          case 'I': return i18n._("in Site Pass list") + " (I)";
+          case 'R': return i18n._("referer in Site Pass list") + " (R)";
+          case 'C': return i18n._("in Clients Pass list") + " (C)";
+          case 'B': return i18n._("in Bypass list") + " (B)";
+          case 'N': return i18n._("no rule applied") + " (N)";
+        default: return i18n._("no rule applied");
         }
     },
     mailEventConvertAction: function(value) {
@@ -306,7 +307,7 @@ Ext.define('Ung.TableConfig', {
                     width: 60,
                     sortable: true,
                     dataIndex: 'policy_id',
-                    renderer: Ung.Main.getPolicyName
+                    renderer: Ung.panel.Reports.getColumnRenderer('policy_id')
                 }, {
                     header: i18n._("Client Interface") ,
                     width: Ung.TableConfig.portFieldWidth,
@@ -720,7 +721,7 @@ Ext.define('Ung.TableConfig', {
                     width: 60,
                     sortable: true,
                     dataIndex: 'policy_id',
-                    renderer: Ung.Main.getPolicyName
+                    renderer: Ung.panel.Reports.getColumnRenderer('policy_id')
                 }, {
                     header: i18n._("Session Id"),
                     width: Ung.TableConfig.portFieldWidth,
@@ -818,7 +819,22 @@ Ext.define('Ung.TableConfig', {
                     header: i18n._("Method"),
                     width: Ung.TableConfig.portFieldWidth,
                     sortable: true,
-                    dataIndex: 'method'
+                    dataIndex: 'method',
+                    renderer: function(value) {
+                        // untranslated because these are HTTP methods
+                        switch ( value ) {
+                            case 'O': return "OPTIONS" + " (O)";
+                            case 'G': return "GET" + " (G)";
+                            case 'H': return "HEAD" + " (H)";
+                            case 'P': return "POST" + " (P)";
+                            case 'U': return "PUT" + " (U)";
+                            case 'D': return "DELETE" + " (D)";
+                            case 'T': return "TRACE" + " (T)";
+                            case 'C': return "CONNECT" + " (C)";
+                            case 'X': return "NON-STANDARD" + " (X)";
+                            default: return value;
+                        }
+                    }
                 }, {
                     header: i18n._("Download Content Length"),
                     width: Ung.TableConfig.portFieldWidth,
@@ -1016,7 +1032,7 @@ Ext.define('Ung.TableConfig', {
                     width: 60,
                     sortable: true,
                     dataIndex: 'policy_id',
-                    renderer: Ung.Main.getPolicyName
+                    renderer: Ung.panel.Reports.getColumnRenderer('policy_id')
                 }, {
                     header: i18n._('Request Id'),
                     width: 60,
@@ -1277,7 +1293,7 @@ Ext.define('Ung.TableConfig', {
                     width: 60,
                     sortable: true,
                     dataIndex: 'policy_id',
-                    renderer: Ung.Main.getPolicyName
+                    renderer: Ung.panel.Reports.getColumnRenderer('policy_id')
                 }, {
                     header: i18n._("Message Id"),
                     width: 60,
@@ -2131,7 +2147,7 @@ Ext.define('Ung.TableConfig', {
                     width: 60,
                     sortable: true,
                     dataIndex: 'policy_id',
-                    renderer: Ung.Main.getPolicyName
+                    renderer: Ung.panel.Reports.getColumnRenderer('policy_id')
                 }, {
                     header: i18n._('Event Id'),
                     width: 60,
@@ -2267,7 +2283,7 @@ Ext.define('Ung.TableConfig', {
                     width: 60,
                     sortable: true,
                     dataIndex: 'policy_id',
-                    renderer: Ung.Main.getPolicyName
+                    renderer: Ung.panel.Reports.getColumnRenderer('policy_id')
                 }, {
                     header: i18n._('Event Id'),
                     width: 60,
@@ -2733,7 +2749,7 @@ Ext.define('Ung.TableConfig', {
                     width: 60,
                     sortable: true,
                     dataIndex: 'policy_id',
-                    renderer: Ung.Main.getPolicyName
+                    renderer: Ung.panel.Reports.getColumnRenderer('policy_id')
                 }, {
                     header: i18n._("Session Id"),
                     width: Ung.TableConfig.portFieldWidth,
