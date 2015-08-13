@@ -93,6 +93,70 @@ Ext.define('Ung.TableConfig', {
         }
         
     },
+    getColumnsForTable: function(table, store) {
+        if(table!=null) {
+            var tableConfig = this.getConfig(table);
+            var columns= (tableConfig!=null && Ext.isArray(tableConfig.columns))?tableConfig.columns:[];
+            store.loadData(columns);
+        }
+    },
+    getColumnHumanReadableName: function(columnName) {
+        if(!this.columnsHumanReadableNames) {
+            this.columnsHumanReadableNames = {};
+            if(!this.tableConfig) {
+                this.buildTableConfig();
+            }
+            var i, table, columns, dataIndex;
+            for(table in this.tableConfig) {
+                columns = this.tableConfig[table].columns;
+                for(i=0; i<columns.length; i++) {
+                    dataIndex = columns[i].dataIndex; 
+                    if(dataIndex && !this.columnsHumanReadableNames[dataIndex]) {
+                        this.columnsHumanReadableNames[dataIndex] = columns[i].header;
+                    }
+                }
+            }
+        }
+        if(!columnName) columnName="";
+        var readableName = this.columnsHumanReadableNames[columnName];
+        return readableName!=null ? readableName : columnName.replace(/_/g," ");
+    },
+    httpEventConvertReason: function(value) {
+        if(Ext.isEmpty(value)) {
+            return null;
+        }
+        switch (value) {
+          case 'D': return i18n._("in Categories Block list");
+          case 'U': return i18n._("in URLs Block list");
+          case 'E': return i18n._("in File Extensions Block list");
+          case 'M': return i18n._("in MIME Types Block list");
+          case 'H': return i18n._("Hostname is an IP address");
+          case 'I': return i18n._("in URLs Pass list");
+          case 'R': return i18n._("in URLs Pass list (via referer)");
+          case 'C': return i18n._("in Clients Pass list");
+          case 'B': return i18n._("Client Bypass");
+          default: return i18n._("no rule applied");
+        }
+    },
+    mailEventConvertAction: function(value) {
+        if(Ext.isEmpty(value)) {
+            return "";
+        }
+        switch (value) {
+            case 'P': return i18n._("pass message");
+            case 'M': return i18n._("mark message");
+            case 'D': return i18n._("drop message");
+            case 'B': return i18n._("block message");
+            case 'Q': return i18n._("quarantine message");
+            case 'S': return i18n._("pass safelist message");
+            case 'Z': return i18n._("pass oversize message");
+            case 'O': return i18n._("pass outbound message");
+            case 'F': return i18n._("block message (scan failure)");
+            case 'G': return i18n._("pass message (scan failure)");
+            case 'Y': return i18n._("block message (greylist)");
+            default: return i18n._("unknown action");
+        }
+    },
     buildTableConfig: function() {
         this.tableConfig = {
             sessions: {
@@ -611,11 +675,11 @@ Ext.define('Ung.TableConfig', {
                 }, {
                     name: 'web_filter_lite_reason',
                     type: 'string',
-                    convert: Ung.panel.Reports.httpEventConvertReason
+                    convert: Ung.TableConfig.httpEventConvertReason
                 }, {
                     name: 'web_filter_reason',
                     type: 'string',
-                    convert: Ung.panel.Reports.httpEventConvertReason
+                    convert: Ung.TableConfig.httpEventConvertReason
                 }, {
                     name: 'ad_blocker_action',
                     type: 'string',
@@ -1159,7 +1223,7 @@ Ext.define('Ung.TableConfig', {
                 }, {
                     name:  'spam_blocker_lite_action',
                     type: 'string',
-                    convert: Ung.panel.Reports.mailEventConvertAction
+                    convert: Ung.TableConfig.mailEventConvertAction
                 }, {
                     name: 'spam_blocker_lite_score'
                 }, {
@@ -1170,7 +1234,7 @@ Ext.define('Ung.TableConfig', {
                 }, {
                     name:  'spam_blocker_action',
                     type: 'string',
-                    convert: Ung.panel.Reports.mailEventConvertAction
+                    convert: Ung.TableConfig.mailEventConvertAction
                 }, {
                     name: 'spam_blocker_score'
                 }, {
@@ -1181,7 +1245,7 @@ Ext.define('Ung.TableConfig', {
                 }, {
                     name:  'phish_blocker_action',
                     type: 'string',
-                    convert: Ung.panel.Reports.mailEventConvertAction
+                    convert: Ung.TableConfig.mailEventConvertAction
                 }, {
                     name: 'phish_blocker_score'
                 }, {

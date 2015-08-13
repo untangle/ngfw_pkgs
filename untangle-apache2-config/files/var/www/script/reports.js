@@ -864,7 +864,7 @@ Ext.define('Ung.panel.Reports', {
             if(Ung.Util.handleException(exception)) return;
             this.loadReportData(result.list);
         }, this), entry, this.startDateWindow.date, this.endDateWindow.date, this.extraConditions, -1);
-        Ung.panel.Reports.getColumnsForTable(entry.table, this.extraConditionsPanel.columnsStore);
+        Ung.TableConfig.getColumnsForTable(entry.table, this.extraConditionsPanel.columnsStore);
     },
     loadEventEntry: function(entry) {
         var i, col, sortType, config;
@@ -880,19 +880,13 @@ Ext.define('Ung.panel.Reports', {
         this.limitSelector.show();
         
         this.gridEvents.setTitle(entry.title);
-        var tableConfig = Ext.clone(Ung.panel.Reports.getTableConfig(entry.table));
+        var tableConfig = Ext.clone(Ung.TableConfig.getConfig(entry.table));
         if(!tableConfig) {
             console.log("Warning: table '"+entry.table+"' is not defined");
             tableConfig = {
                 fields: [],
                 columns: []
             };
-            for(i=0; i< entry.defaultColumns.length; i++) {
-                col = entry.defaultColumns[i];
-                config = Ung.panel.Reports.getColumnConfig(entry.defaultColumns[i]);
-                tableConfig.columns.push(config.column);
-                tableConfig.fields.push(config.field);
-            }
         } else {
             var columnsNames = {};
             for(i=0; i< tableConfig.columns.length; i++) {
@@ -907,9 +901,6 @@ Ext.define('Ung.panel.Reports', {
                 col = entry.defaultColumns[i];
                 if(!columnsNames[col]) {
                     console.log("Warning: column '"+col+"' is not defined in the tableConfig for "+entry.table);
-                    config = Ung.panel.Reports.getColumnConfig(col);
-                    tableConfig.columns.push(config.column);
-                    tableConfig.fields.push(config.field);
                 }
             }
         }
@@ -925,7 +916,7 @@ Ext.define('Ung.panel.Reports', {
         });
         this.gridEvents.reconfigure(store, tableConfig.columns);
         this.refreshHandler();
-        Ung.panel.Reports.getColumnsForTable(entry.table, this.extraConditionsPanel.columnsStore);
+        Ung.TableConfig.getColumnsForTable(entry.table, this.extraConditionsPanel.columnsStore);
     },
     refreshHandler: function () {
         if(this.autoRefreshEnabled) {
@@ -1004,7 +995,6 @@ Ext.define('Ung.panel.Reports', {
                 (property=='time_stamp')?{javaClass:"java.util.Date", time: (new Date(Math.floor((Math.random()*index*12345678)))).getTime()}:
                 (property.indexOf('_addr') != -1)?Math.floor((Math.random()*255))+"."+Math.floor((Math.random()*255))+"."+Math.floor((Math.random()*255))+"."+Math.floor((Math.random()*255))+"/"+Math.floor((Math.random()*32)):
                 (property.indexOf('_port') != -1)?Math.floor((Math.random()*65000)):
-                //(fields[i].convert==Ung.panel.Reports.mailEventConvertAction)?'P':
                 (property=="spam_blocker_action")?'P':
             property+"_"+(i*index)+"_"+Math.floor((Math.random()*10));
         }
@@ -1448,265 +1438,6 @@ Ext.define('Ung.panel.Reports', {
                 };
             }
             return this.columnRenderers[columnName];
-        },
-        getColumnHumanReadableName: function(columnName) {
-            if(!this.columnsHumanReadableNames) {
-                this.columnsHumanReadableNames = {
-                    action: i18n._('Action'),
-                    ad_blocker_action: 'Ad Blocker ' + i18n._('Action'),
-                    ad_blocker_cookie_ident: 'Ad Blocker ' + i18n._('Cookie'),
-                    addr: i18n._('Address'),
-                    addr_kind: i18n._('Address Kind'),
-                    addr_name: i18n._('Address Name'),
-                    address: i18n._('Address'),
-                    application_control_application: 'Application Control ' + i18n._('Application'),
-                    application_control_blocked: 'Application Control ' + i18n._('Blocked'),
-                    application_control_confidence: 'Application Control ' + i18n._('Confidence'),
-                    application_control_detail: 'Application Control ' + i18n._('Detail'),
-                    application_control_flagged: 'Application Control ' + i18n._('Flagged'),
-                    application_control_lite_blocked: 'Application Control Lite ' + i18n._('Blocked'),
-                    application_control_lite_protocol: 'Application Control Lite ' + i18n._('Protocol'),
-                    application_control_protochain: 'Application Control ' + i18n._('Protochain'),
-                    application_control_ruleid: 'Application Control ' + i18n._('Rule ID'),
-                    auth_type: i18n._('Authorization Type'),
-                    bandwidth_control_priority: 'Bandwidth Control ' + i18n._('Priority'),
-                    bandwidth_control_rule: 'Bandwidth Control ' + i18n._('Rule ID'),
-                    blocked: i18n._('Blocked'),
-                    bypasses: i18n._('Bypasses'),
-                    bypassed: i18n._('Bypassed'),
-                    c2p_bytes: i18n._('From-Client Bytes'),
-                    c2s_content_length: i18n._('Client-to-server Content Length'),
-                    c_client_addr: i18n._('Client-side Client Address'),
-                    c_client_port: i18n._('Client-side Client Port'),
-                    c_server_addr: i18n._('Client-side Server Address'),
-                    c_server_port: i18n._('Client-side Server Port'),
-                    captive_portal_blocked: 'Captive Portal ' + i18n._('Blocked'),
-                    captive_portal_rule_index: 'Captive Portal ' + i18n._('Rule ID'),
-                    category: i18n._('Category'),
-                    class_id: i18n._('Classtype ID'),
-                    classtype: i18n._('Classtype'),
-                    client_addr: i18n._('Client Address'),
-                    client_address: i18n._('Client Address'),
-                    client_intf: i18n._('Client Interface'),
-                    client_name: i18n._('Client Name'),
-                    client_protocol: i18n._('Client Protocol'),
-                    client_username: i18n._('Client Username'),
-                    connect_stamp: i18n._('Connect Time'),
-                    cpu_system: i18n._('CPU System Utilization'),
-                    cpu_user: i18n._('CPU User Utilization'),
-                    description: i18n._('Text detail of the event'),
-                    dest_addr: i18n._('Destination Address'),
-                    dest_port: i18n._('Destination Port'),
-                    disk_free: i18n._('Disk Free'),
-                    disk_total: i18n._('Disk Size'),
-                    domain: i18n._('Domain'),
-                    elapsed_time: i18n._('Elapsed Time'),
-                    end_time: i18n._('End Time'),
-                    event_id: i18n._('Event ID'),
-                    event_info: i18n._('Event Type'),
-                    firewall_blocked: 'Firewall ' + i18n._('Blocked'),
-                    firewall_flagged: 'Firewall ' + i18n._('Flagged'),
-                    firewall_rule_index: 'Firewall ' + i18n._('Rule ID'),
-                    gen_id: i18n._('Grouping ID'),
-                    goodbye_stamp: i18n._('End Time'),
-                    hit_bytes: i18n._('Hit Bytes'),
-                    hits: i18n._('Hits'),
-                    host: i18n._('Host'),
-                    hostname: i18n._('Hostname'),
-                    interface_id: i18n._('Interface ID'),
-                    ipaddr: i18n._('Client Address'),
-                    json: i18n._('JSON Text'),
-                    key: i18n._('Key'),
-                    load_1: i18n._('CPU load (1-min)'),
-                    load_15: i18n._('CPU load (15-min)'),
-                    load_5: i18n._('CPU load (5-min)'),
-                    local: i18n._('Local'),
-                    login: i18n._('Login'),
-                    login_name: i18n._('Login Name'),
-                    mem_buffers: i18n._('Memory Buffers'),
-                    mem_cache: i18n._('Memory Cache'),
-                    mem_free: i18n._('Memory Free'),
-                    method: i18n._('Method'),
-                    miss_bytes: i18n._('Miss Bytes'),
-                    misses: i18n._('Misses'),
-                    msg: i18n._('Message'),
-                    msg_id: i18n._('Message ID'),
-                    name: i18n._('Interface Name'),
-                    net_interface: i18n._('Net Interface'),
-                    net_process: i18n._('Net Process'),
-                    os_name: i18n._('Interface O/S Name'),
-                    p2c_bytes: i18n._('To-Client Bytes'),
-                    p2s_bytes: i18n._('To-Server Bytes'),
-                    phish_blocker_action: 'Phish Blocker ' + i18n._('Action'),
-                    phish_blocker_is_spam: 'Phish Blocker ' + i18n._('Phish'),
-                    phish_blocker_score: 'Phish Blocker ' + i18n._('Score'),
-                    phish_blocker_tests_string: 'Phish Blocker ' + i18n._('Tests'),
-                    policy_id: i18n._('Policy ID'),
-                    pool_address: i18n._('Pool Address'),
-                    protocol: i18n._('Protocol'),
-                    reason: i18n._('Reason'),
-                    receiver: i18n._('Receiver'),
-                    remote_address: i18n._('Remote Address'),
-                    remote_port: i18n._('Remote Port'),
-                    request_id: i18n._('Request ID'),
-                    rx_bytes: i18n._('Bytes Received'),
-                    s2c_content_length: i18n._('Server-to-client Content Length'),
-                    s2c_content_type: i18n._('Server-to-client Content Type'),
-                    s2p_bytes: i18n._('From-Server Bytes'),
-                    s_client_addr: i18n._('Server-side Client Address'),
-                    s_client_port: i18n._('Server-side Client Port'),
-                    s_server_addr: i18n._('Server-side Server Address'),
-                    s_server_port: i18n._('Server-side Server Port'),
-                    sender: i18n._('Sender'),
-                    server_intf: i18n._('Server Interface'),
-                    session_id: i18n._('Session ID'),
-                    settings_file: i18n._('Settings File'),
-                    shield_blocked: 'Shield ' + i18n._('Blocked'),
-                    sig_id: i18n._('Signature ID'),
-                    size: i18n._('Size'),
-                    source_addr: i18n._('Source Address'),
-                    source_port: i18n._('Source Port'),
-                    spam_blocker_action: 'Spam Blocker ' + i18n._('Action'),
-                    spam_blocker_is_spam: 'Spam Blocker ' + i18n._('Spam'),
-                    spam_blocker_lite_action: 'Spam Blocker Lite ' + i18n._('Action'),
-                    spam_blocker_lite_is_spam: 'Spam Blocker Lite ' + i18n._('Spam'),
-                    spam_blocker_lite_score: 'Spam Blocker Lite ' + i18n._('Score'),
-                    spam_blocker_lite_tests_string: 'Spam Blocker Lite ' + i18n._('Tests'),
-                    spam_blocker_score: 'Spam Blocker ' + i18n._('Score'),
-                    spam_blocker_tests_string: 'Spam Blocker ' + i18n._('Tests'),
-                    ssl_inspector_detail: 'HTTPS Inspector ' + i18n._('Detail'),
-                    ssl_inspector_ruleid: 'HTTPS Inspector ' + i18n._('Rule ID'),
-                    ssl_inspector_status: 'HTTPS Inspector ' + i18n._('Status'),
-                    start_time: i18n._('Start Time'),
-                    subject: i18n._('Subject'),
-                    succeeded: i18n._('Succeeded'),
-                    success: i18n._('Success'),
-                    summary_text: i18n._('Summary Text'),
-                    swap_free: i18n._('Swap Free'),
-                    swap_total: i18n._('Swap Size'),
-                    systems: i18n._('System bypasses'),
-                    term: i18n._('Search Term'),
-                    time_stamp: i18n._('Timestamp'),
-                    tx_bytes: i18n._('Bytes Sent'),
-                    type: i18n._('Type'),
-                    uri: i18n._('URI'),
-                    username: i18n._('Username'),
-                    value: i18n._('Value'),
-                    vendor_name: i18n._('Vendor Name'),
-                    virus_blocker_clean: 'Virus Blocker ' + i18n._('Clean'),
-                    virus_blocker_lite_clean: 'Virus Blocker Lite ' + i18n._('Clean'),
-                    virus_blocker_lite_name: 'Virus Blocker Lite ' + i18n._('Name'),
-                    virus_blocker_name: 'Virus Blocker ' + i18n._('Name'),
-                    web_filter_blocked: 'Web Filter ' + i18n._('Blocked'),
-                    web_filter_category: 'Web Filter ' + i18n._('Category'),
-                    web_filter_flagged: 'Web Filter ' + i18n._('Flagged'),
-                    web_filter_lite_blocked: 'Web Filter Lite ' + i18n._('Blocked'),
-                    web_filter_lite_category: 'Web Filter Lite ' + i18n._('Category'),
-                    web_filter_lite_flagged: 'Web Filter Lite ' + i18n._('Flagged'),
-                    web_filter_lite_reason: 'Web Filter Lite ' + i18n._('Reason'),
-                    web_filter_reason: 'Web Filter ' + i18n._('Reason')
-                };
-            }
-            if(!columnName) columnName="";
-            var readableName = this.columnsHumanReadableNames[columnName];
-            return readableName!=null ? readableName : columnName.replace(/_/g," ");
-        },
-        getColumnsForTable: function(table, store) {
-            if(table != null && table.length > 2) {
-                rpc.reportingManagerNew.getColumnsForTable(function(result, exception) {
-                    if(Ung.Util.handleException(exception)) return;
-                    var columns = [];
-                    for (var i=0; i< result.length; i++) {
-                        columns.push({
-                            name: result[i],
-                            displayName: Ung.panel.Reports.getColumnHumanReadableName(result[i]) + " ["+result[i]+"]"
-                        });
-                    }
-                    store.loadData(columns);
-                }, table);
-            }
-        },
-        getColumnConfig: function(columnName) {
-            var config = {
-                column: {
-                    header: Ung.panel.Reports.getColumnHumanReadableName(columnName),
-                    dataIndex: columnName,
-                    sortable: true,
-                    flex: 1
-                },
-                field: {
-                    name: columnName
-                }
-            };
-            var sortType = this.getColumnSortType(columnName);
-            if(sortType) {
-                config.field.sortType = sortType;
-            }
-            if(columnName == "time_stamp") {
-                config.column.renderer = function(value) {
-                    return i18n.timestampFormat(value);
-                };
-            }
-            return config;
-        },
-        getColumnSortType: function(columnName) {
-            if(!this.columnsSortTypes) {
-                this.columnsSortTypes = {
-                    'time_stamp': 'asTimestamp',
-                    'sid': 'asInt',
-                    'protocol': 'asInt',
-                    'network': 'asIp'
-                };
-            }
-            if(!columnName) columnName="";
-            var sortType = this.columnsSortTypes[columnName];
-            if(!sortType) {
-                if(/_addr$/.test(columnName) || /address$/.test(columnName)) {
-                    sortType = 'asIp';
-                } else if(/_port$/.test(columnName) || /_id$/.test(columnName)) {
-                    sortType = 'asInt';
-                }
-            }
-            return sortType;
-        },
-        getTableConfig: function(table) {
-              return Ung.TableConfig.getConfig(table);
-        },
-        httpEventConvertReason: function(value) {
-            if(Ext.isEmpty(value)) {
-                return null;
-            }
-            switch (value) {
-              case 'D': return i18n._("in Categories Block list");
-              case 'U': return i18n._("in URLs Block list");
-              case 'E': return i18n._("in File Extensions Block list");
-              case 'M': return i18n._("in MIME Types Block list");
-              case 'H': return i18n._("Hostname is an IP address");
-              case 'I': return i18n._("in URLs Pass list");
-              case 'R': return i18n._("in URLs Pass list (via referer)");
-              case 'C': return i18n._("in Clients Pass list");
-              case 'B': return i18n._("Client Bypass");
-              default: return i18n._("no rule applied");
-            }
-        },
-        mailEventConvertAction: function(value) {
-            if(Ext.isEmpty(value)) {
-                return "";
-            }
-            switch (value) {
-                case 'P': return i18n._("pass message");
-                case 'M': return i18n._("mark message");
-                case 'D': return i18n._("drop message");
-                case 'B': return i18n._("block message");
-                case 'Q': return i18n._("quarantine message");
-                case 'S': return i18n._("pass safelist message");
-                case 'Z': return i18n._("pass oversize message");
-                case 'O': return i18n._("pass outbound message");
-                case 'F': return i18n._("block message (scan failure)");
-                case 'G': return i18n._("pass message (scan failure)");
-                case 'Y': return i18n._("block message (greylist)");
-                default: return i18n._("unknown action");
-            }
         }
     }
 });
@@ -1725,8 +1456,8 @@ Ext.define("Ung.panel.ExtraConditions", {
     layout: { type: 'vbox'},
     initComponent: function() {
         this.columnsStore = Ext.create('Ext.data.Store', {
-            sorters: "displayName",
-            fields: ["name", "displayName"],
+            sorters: "header",
+            fields: ["dataIndex", "header"],
             data: []
         });
         this.items = [];
@@ -1750,9 +1481,6 @@ Ext.define("Ung.panel.ExtraConditions", {
                     columnItems = [];
                     columnRenderer = Ung.panel.Reports.getColumnRenderer(column);
                     for(i=0; i<values.length; i++) {
-                        if(column=="policy_id") {
-                            
-                        }
                         columnItems.push({
                             text: Ext.isFunction(columnRenderer) ? columnRenderer(values[i]) : values[i],
                             column: column,
@@ -1761,7 +1489,7 @@ Ext.define("Ung.panel.ExtraConditions", {
                         });
                     }
                     hintMenus.push({
-                        text: Ung.panel.Reports.getColumnHumanReadableName(column),
+                        text: Ung.TableConfig.getColumnHumanReadableName(column),
                         menu: {
                             items: columnItems
                         }
@@ -1812,8 +1540,8 @@ Ext.define("Ung.panel.ExtraConditions", {
                 emptyText: i18n._("[enter column]"),
                 dataIndex: "column",
                 typeAhead: true,
-                valueField: "name",
-                displayField: "displayName",
+                valueField: "dataIndex",
+                displayField: "header",
                 queryMode: 'local',
                 store: this.columnsStore,
                 value: data.column,
