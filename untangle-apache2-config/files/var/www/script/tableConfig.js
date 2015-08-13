@@ -2993,15 +2993,15 @@ Ext.define('Ung.TableConfig', {
                     items: [{
                         icon: '/skins/default/images/admin/icons/icon_detail.png',
                         tooltip: i18n._("Show difference between previous version"),
-                        handler: function(view, rowIndex, colIndex, item, e, record){
-                            if( !this.diffWindow ){
-                                var columnRenderer = function(value, meta, record){
+                        handler: function(view, rowIndex, colIndex, item, e, record) {
+                            if( !this.diffWindow ) {
+                                var columnRenderer = function(value, meta, record) {
                                     var action = record.get("action");
                                     if( action == 3){
                                         meta.style = "background-color:#ffff99";
-                                    }else if(action == 2){
+                                    }else if(action == 2) {
                                         meta.style = "background-color:#ffdfd9";
-                                    }else if(action == 1){
+                                    }else if(action == 1) {
                                         meta.style = "background-color:#d9f5cb";
                                     }
                                     return value;
@@ -3040,28 +3040,23 @@ Ext.define('Ung.TableConfig', {
                                     buttons: [{
                                         text: i18n._("Close"),
                                         handler: Ext.bind(function() {
-                                            this.diffWindow.destroy();
-                                            this.diffWindow = null;
+                                            this.diffWindow.hide();
                                         }, this)
                                     }],
-                                    update: function(fileName){
-                                        rpc.reportingManagerNew.getSettingsDiff(Ext.bind(function(result,exception){
-                                            if(Ung.Util.handleException(exception)){
-                                                return;
-                                            }
+                                    update: function(fileName) {
+                                        this.down("grid").getStore().loadData([]);
+                                        rpc.reportingManagerNew.getSettingsDiff(Ext.bind(function(result,exception) {
+                                            if(Ung.Util.handleException(exception)) return;
                                             var diffData = [];
                                             var diffLines = result.split("\n");
-                                            var lineNum;
                                             var action;
-                                            for( var i = 0; i < diffLines.length; i++){
-                                                lineNum = (i + 1);
-
+                                            for( var i = 0; i < diffLines.length; i++) {
                                                 previousAction = diffLines[i].substr(0,1);
                                                 previousLine = diffLines[i].substr(1,510);
                                                 currentAction = diffLines[i].substr(511,1);
                                                 currentLine = diffLines[i].substr(512);
                                                 
-                                                if( previousAction != "<" && previousAction != ">"){
+                                                if( previousAction != "<" && previousAction != ">") {
                                                     previousLine = previousAction + previousLine;
                                                     previousAction = -1;
                                                 }
@@ -3070,13 +3065,13 @@ Ext.define('Ung.TableConfig', {
                                                     currentAction = -1;
                                                 }
 
-                                                if( currentAction == "|" ){
+                                                if( currentAction == "|" ) {
                                                     action = 3;
-                                                }else if(currentAction == "<"){
+                                                } else if(currentAction == "<") {
                                                     action = 2;
-                                                }else if(currentAction == ">"){
+                                                } else if(currentAction == ">") {
                                                     action = 1;
-                                                }else{
+                                                } else {
                                                     action = 0;
                                                 }
 
@@ -3088,10 +3083,16 @@ Ext.define('Ung.TableConfig', {
                                                 });
                                             }
 
-                                            this.down("grid").store.loadData(diffData);
+                                            this.down("grid").getStore().loadData(diffData);
                                         },this), fileName);
                                     }
                                 });
+                                this.on("beforedestroy", Ext.bind(function() {
+                                    if(this.diffWindow) {
+                                        Ext.destroy(this.diffWindow);
+                                        this.diffWindow = null;
+                                    }
+                                }, this));
                             }
                             this.diffWindow.show();
                             this.diffWindow.update(record.get("settings_file"));
@@ -3111,5 +3112,4 @@ Ext.define('Ung.TableConfig', {
         }
 
     }
-    
 });
