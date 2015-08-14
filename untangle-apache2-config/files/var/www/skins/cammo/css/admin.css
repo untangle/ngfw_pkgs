@@ -81,12 +81,14 @@ div.node-cap {
 }
 /* Node image container */
 .node-image {
-    position:absolute;
-    top:12px;
-    left:50px;
-    -moz-box-shadow:1px 1px 1px 1px #333;
-    -webkit-box-shadow:1px 1px 1px 1px #333;
-    box-shadow:1px 1px 1px 1px #333;
+    position: absolute;
+    top: 12px;
+    left: 50px;
+    height: 42px;
+    width: 42px;
+    -moz-box-shadow: 1px 1px 1px 1px #333;
+    -webkit-box-shadow: 1px 1px 1px 1px #333;
+    box-shadow: 1px 1px 1px 1px #333;
 }
 /* node display name text*/
 div.node div.node-label {
