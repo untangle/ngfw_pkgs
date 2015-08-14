@@ -282,9 +282,9 @@ Ext.define('Ung.panel.Reports', {
                     renderer: function( value, metaData, record, rowIdx, colIdx, store ) {
                         var description = record.get("description");
                         if(description) {
-                            metaData.tdAttr = 'data-qtip="' + Ext.String.htmlEncode( description ) + '"';
+                            metaData.tdAttr = 'data-qtip="' + Ext.String.htmlEncode( i18n._(description) ) + '"';
                         }
-                        return value;
+                        return i18n._(value);
                     }
                 }],
                 selModel: {
@@ -311,7 +311,14 @@ Ext.define('Ung.panel.Reports', {
                 reserveScrollbar: true,
                 columns: [{
                     dataIndex: 'title',
-                    flex: 1
+                    flex: 1,
+                    renderer: function( value, metaData, record, rowIdx, colIdx, store ) {
+                        var description = record.get("description");
+                        if(description) {
+                            metaData.tdAttr = 'data-qtip="' + Ext.String.htmlEncode( i18n._(description) ) + '"';
+                        }
+                        return i18n._(value);
+                    }
                 }],
                 selModel: {
                     selType: 'rowmodel',
@@ -496,7 +503,7 @@ Ext.define('Ung.panel.Reports', {
                 tbar: tbar,
                 sprites: [{
                     type: 'text',
-                    text: entry.title,
+                    text: i18n._(entry.title),
                     fontSize: 18,
                     width: 100,
                     height: 30,
@@ -504,7 +511,7 @@ Ext.define('Ung.panel.Reports', {
                     y: 22  // the sprite y position
                 }, {
                     type: 'text',
-                    text: entry.description,
+                    text: i18n._(entry.description),
                     fontSize: 12,
                     x: 10,
                     y: 40
@@ -553,7 +560,7 @@ Ext.define('Ung.panel.Reports', {
                 tbar: tbar,
                 sprites: [{
                     type: 'text',
-                    text: entry.title,
+                    text: i18n._(entry.title),
                     fontSize: 18,
                     width: 100,
                     height: 30,
@@ -561,7 +568,7 @@ Ext.define('Ung.panel.Reports', {
                     y: 22  // the sprite y position
                 }, {
                     type: 'text',
-                    text: entry.description,
+                    text: i18n._(entry.description),
                     fontSize: 12,
                     x: 10,
                     y: 40
@@ -704,7 +711,7 @@ Ext.define('Ung.panel.Reports', {
                 tbar: timeStyleButtons.concat(tbar),
                 sprites: [{
                     type: 'text',
-                    text: entry.title,
+                    text: i18n._(entry.title),
                     fontSize: 18,
                     width: 100,
                     height: 30,
@@ -712,7 +719,7 @@ Ext.define('Ung.panel.Reports', {
                     y: 22  // the sprite y position
                 }, {
                     type: 'text',
-                    text: entry.description,
+                    text: i18n._(entry.description),
                     fontSize: 12,
                     x: 10,
                     y: 40
