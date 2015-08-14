@@ -1512,7 +1512,7 @@ Ext.define("Ung.panel.ExtraConditions", {
             },
             scope: this
         }, {
-            text:'Quick Add',
+            text:i18n._('Quick Add'),
             iconCls: 'icon-add-row',
             menu: quickAddMenu
         }, '->', {
