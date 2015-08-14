@@ -20,7 +20,7 @@ Ext.define("Ung.I18N", {
             this.map['thousand_sep'] = ',';
         }
         if (!this.map['date_fmt']) {
-            this.map['date_fmt'] = 'm/d/y';
+            this.map['date_fmt'] = 'Y-m-d';
         }
         if (!this.map['timestamp_fmt']) {
             this.map['timestamp_fmt'] = 'Y-m-d g:i:s a';
