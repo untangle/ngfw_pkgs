@@ -1602,7 +1602,7 @@ Ext.define('Ung.TableConfig', {
                         switch(value) {
                             case "U": return i18n._("invalid username");
                             case "P": return i18n._("invalid password");
-                            default: return i18n._("");
+                            default: return "";
                         }
                     }, this)
                 }]
