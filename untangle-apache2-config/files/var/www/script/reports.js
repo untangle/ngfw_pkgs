@@ -1725,10 +1725,6 @@ Ext.define("Ung.panel.ExtraConditions", {
     
 });
 
-
-
-
-
 Ext.define("Ung.grid.feature.GlobalFilter", {
     extend: "Ext.grid.feature.Feature",
     useVisibleColumns: true,

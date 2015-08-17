@@ -96,10 +96,21 @@ Ext.define('Ung.TableConfig', {
     getColumnsForTable: function(table, store) {
         if(table!=null) {
             var tableConfig = this.getConfig(table);
-            var columns= (tableConfig!=null && Ext.isArray(tableConfig.columns))?tableConfig.columns:[];
+            var columns = [], col;
+            if(tableConfig!=null && Ext.isArray(tableConfig.columns)) {
+                for(var i = 0; i<tableConfig.columns.length; i++) {
+                    col = tableConfig.columns[i];
+                    columns.push({
+                        dataIndex: col.dataIndex,
+                        header: col.header + " [" + col.dataIndex + "]"
+                    });
+                }
+            }
+            
             store.loadData(columns);
         }
     },
+    
     getColumnHumanReadableName: function(columnName) {
         if(!this.columnsHumanReadableNames) {
             this.columnsHumanReadableNames = {};
