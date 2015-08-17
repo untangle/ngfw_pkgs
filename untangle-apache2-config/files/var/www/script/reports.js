@@ -732,7 +732,8 @@ Ext.define('Ung.panel.Reports', {
                     grid: true,
                     minimum: 0,
                     renderer: function (v) {
-                        return (entry.units == "bytes") ? Ung.Util.bytesRenderer(v) : v + " " + i18n._(entry.units);
+                        var significantValue = Ung.panel.Reports.significantFigures(v, 3);
+                        return (entry.units == "bytes") ? Ung.Util.bytesRenderer(significantValue) : significantValue + " " + i18n._(entry.units);
                     }
                 }, {
                     type: (entry.timeStyle.indexOf('BAR_3D')!=-1) ? 'category3d' : 'category',
@@ -1291,6 +1292,16 @@ Ext.define('Ung.panel.Reports', {
     statics: {
         isEvent: function(entry) {
             return "com.untangle.node.reporting.EventEntry" == entry.javaClass;
+        },
+        significantFigures: function(n, sig) {
+            if(isNaN(n)) {
+                return n;
+            }
+            if(n==0) {
+                return 0;
+            }
+            var mult = Math.pow(10, sig - Math.floor(Math.log(n) / Math.LN10) - 1);
+            return Math.round(n * mult) / mult;
         },
         getColumnRenderer: function(columnName) {
             if(!this.columnRenderers) {
