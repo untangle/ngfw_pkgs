@@ -1300,8 +1300,11 @@ Ext.define('Ung.panel.Reports', {
             if(n==0) {
                 return 0;
             }
+            var isNegative = n<0;
+            if(isNegative) n = -n;
             var mult = Math.pow(10, sig - Math.floor(Math.log(n) / Math.LN10) - 1);
-            return Math.round(n * mult) / mult;
+            var result =  Math.round(n * mult) / mult;
+            return isNegative? -result : result;
         },
         getColumnRenderer: function(columnName) {
             if(!this.columnRenderers) {
