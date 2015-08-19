@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-bootsplash
 Architecture: all
-Depends: plymouth-drm | plymouth-themes, gcc-4.7-base | plymouth, v86d | oracle-java7-jdk | oracle-java7-jre
+Depends: plymouth-drm | plymouth-themes, plymouth, v86d | oracle-java7-jdk | oracle-java7-jre
 Description: The Untangle bootsplash utilities
  The Untangle bootsplash utilities using at boot time.
 

@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-extra-utils
 Architecture: all
-Depends: apachetop, apt-spy | ext4magic, attr, binutils, bwm-ng, bzip2, coreutils, dctrl-tools, dialog, hdparm, hping3, libtcl8.6 | gcc-4.7, htop, httptunnel, iptraf, iftop, iotop, jnettop, latencytop, lftp, less, lsof, bsd-mailx, memtester, netcat-traditional, nmap, patch, powertop, procinfo, screen, strace, stunnel | stunnel4, sysstat, tcpdump, telnet-ssl, traceroute, wakeonlan, whois, man-db
+Depends: apachetop, attr, binutils, bwm-ng, bzip2, coreutils, dctrl-tools, dialog, hdparm, hping3, libtcl8.6, htop, httptunnel, iptraf, iftop, iotop, jnettop, latencytop, lftp, less, lsof, bsd-mailx, memtester, netcat-traditional, nmap, patch, powertop, procinfo, screen, strace, stunnel | stunnel4, sysstat, tcpdump, telnet-ssl, traceroute, wakeonlan, whois, man-db
 Description: Extra utilities for Untangle
  This packages depends on a list of utilities that are, although
  non-essential to the functioning of the Untangle server itself, are
