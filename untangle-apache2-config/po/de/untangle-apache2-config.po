@@ -1,12 +1,8 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
 "Project-Id-Version: Untangle\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-03 15:59-0700\n"
+"POT-Creation-Date: 2015-08-15 20:39-0700\n"
 "PO-Revision-Date: 2010-03-03 14:33-0800\n"
 "Last-Translator: Marcus Lumpp <ml@m2lp-consult.de>\n"
 "Language-Team: German\n"
@@ -18,146 +14,105 @@ msgstr ""
 "X-Generator: Pootle 1.1.0\n"
 "X-Poedit-Language: German\n"
 
-#: ../files/usr/lib/python2.7/uvmlogin.py:290
-#: ../files/usr/share/untangle/mod_python/error/index.py:132
 msgid "Server"
 msgstr ""
 
-#: ../files/usr/lib/python2.7/uvmlogin.py:292
-#: ../files/usr/share/untangle/mod_python/error/index.py:134
-#, python-format
 msgid "%s Server"
 msgstr "%s Server"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:26
 msgid "Bad Request"
 msgstr "Bad Request"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:30
 msgid "Unauthorized"
 msgstr "Unberechtigt"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:34
 msgid "Payment Required"
 msgstr "Bezahlung erforderlich"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:38
 msgid "Forbidden"
 msgstr "Zugriff verweigert"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:42
 msgid "Not Found"
 msgstr "Nicht gefunden"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:46
 msgid "Method Not Allowed"
 msgstr "Maßnahme nicht erlaubt"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:50
 msgid "Not Acceptable"
 msgstr "Nicht zulässig"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:54
 msgid "Proxy Authentication Required"
 msgstr "Proxy Authentifizierung erforderlich"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:58
 msgid "Request Timeout"
 msgstr "Zeitüberschreitung der Anforderung"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:62
 msgid "Conflict"
 msgstr "Konflikt"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:66
 msgid "Gone"
 msgstr "Daten wurden verschoben"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:70
 msgid "Length Required"
 msgstr "Längenangabe erforderlich"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:74
 msgid "Precondition Failed"
 msgstr "Vorbedingung nicht erfüllt"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:78
 msgid "Request Entity Too Large"
 msgstr "Anfrage zur Bearbeitung zu lang"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:82
 msgid "Request-URI Too Long"
 msgstr "Adresse des Dokuments zur Bearbeitung zu lang"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:86
 msgid "Unsupported Media Type"
 msgstr "Nicht unterstützter Medientyp"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:90
 msgid "Requested Range Not Satisfiable"
 msgstr "Angegebener Bereich ist falsch"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:94
 msgid "Expectation Failed"
 msgstr "Vorgegebene Voraussetzungen nicht erfüllt"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:99
-#: ../files/usr/share/untangle/mod_python/error/index.py:114
 msgid "Server is starting. Please wait."
 msgstr ""
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:101
 msgid "Internal Server Error"
 msgstr "Interner Server Fehler"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:105
 msgid "Not Implemented"
 msgstr "Nicht implementierte Anfrage"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:109
 msgid "Bad Gateway"
 msgstr "Gatewayfehler"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:116
 msgid "Service Unavailable"
 msgstr "Service nicht verfügbar"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:120
 msgid "Gateway Timeout"
 msgstr "Zeitüberschreitung Gateway"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:124
 msgid "HTTP Version Not Supported"
 msgstr "Nicht unterstützte HTTP Version"
 
-#: ../files/usr/share/untangle/mod_python/auth/index.py:55
 msgid "Administrator Login"
 msgstr ""
 
-#: ../files/usr/share/untangle/mod_python/auth/index.py:59
-#, python-format
 msgid "%s Administrator Login"
 msgstr "%s Administrator Login"
 
-#: ../files/usr/share/untangle/mod_python/auth/index.py:148
 msgid "Error: Username and Password do not match"
 msgstr "Fehler: Benutzername und Kennwort passen nicht"
 
-#: ../files/usr/share/untangle/mod_python/auth/index.py:152
 msgid "Server:"
 msgstr "Server:"
 
-#: ../files/usr/share/untangle/mod_python/auth/index.py:153
 msgid "Username:"
 msgstr "Benutzername:"
 
-#: ../files/usr/share/untangle/mod_python/auth/index.py:154
 msgid "Password:"
 msgstr "Kennwort:"
 
-#: ../files/usr/share/untangle/mod_python/auth/index.py:155
 msgid "Login"
 msgstr "Login"
 
-#~ msgid "%s Login"
-#~ msgstr "%s Login"

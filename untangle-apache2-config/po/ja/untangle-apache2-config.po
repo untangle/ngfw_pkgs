@@ -1,12 +1,8 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-03 15:59-0700\n"
+"POT-Creation-Date: 2015-08-15 20:39-0700\n"
 "PO-Revision-Date: 2010-01-03 12:18+0900\n"
 "Last-Translator: kazu.nito@gmail.com <Nito Kazunori>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,146 +12,105 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Pootle 1.1.0\n"
 
-#: ../files/usr/lib/python2.7/uvmlogin.py:290
-#: ../files/usr/share/untangle/mod_python/error/index.py:132
 msgid "Server"
 msgstr ""
 
-#: ../files/usr/lib/python2.7/uvmlogin.py:292
-#: ../files/usr/share/untangle/mod_python/error/index.py:134
-#, python-format
 msgid "%s Server"
 msgstr "%sサーバー"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:26
 msgid "Bad Request"
 msgstr "不正要求"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:30
 msgid "Unauthorized"
 msgstr "認証無し"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:34
 msgid "Payment Required"
 msgstr "支払い要求"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:38
 msgid "Forbidden"
 msgstr "禁止"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:42
 msgid "Not Found"
 msgstr "未検出"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:46
 msgid "Method Not Allowed"
 msgstr "禁止メソッド"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:50
 msgid "Not Acceptable"
 msgstr "不受理"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:54
 msgid "Proxy Authentication Required"
 msgstr "プロクシ認証が必要である"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:58
 msgid "Request Timeout"
 msgstr "時間切れ"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:62
 msgid "Conflict"
 msgstr "コンフリクト"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:66
 msgid "Gone"
 msgstr "消滅した"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:70
 msgid "Length Required"
 msgstr "長さが必要"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:74
 msgid "Precondition Failed"
 msgstr "不正必須要件"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:78
 msgid "Request Entity Too Large"
 msgstr "要求実体が大きすぎる"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:82
 msgid "Request-URI Too Long"
 msgstr "要求URIが長すぎる"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:86
 msgid "Unsupported Media Type"
 msgstr "未対応のメディアタイプ"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:90
 msgid "Requested Range Not Satisfiable"
 msgstr "要求レンジが不足している"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:94
 msgid "Expectation Failed"
 msgstr "期待するヘッダに失敗"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:99
-#: ../files/usr/share/untangle/mod_python/error/index.py:114
 msgid "Server is starting. Please wait."
 msgstr ""
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:101
 msgid "Internal Server Error"
 msgstr "インターナル　サーバーエラー"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:105
 msgid "Not Implemented"
 msgstr "実装されていない"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:109
 msgid "Bad Gateway"
 msgstr "不正なゲートウェイ"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:116
 msgid "Service Unavailable"
 msgstr "サービス利用不可"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:120
 msgid "Gateway Timeout"
 msgstr "ゲートウェイタイムアウト"
 
-#: ../files/usr/share/untangle/mod_python/error/index.py:124
 msgid "HTTP Version Not Supported"
 msgstr "サポートされていないHTTPバージョン"
 
-#: ../files/usr/share/untangle/mod_python/auth/index.py:55
 msgid "Administrator Login"
 msgstr ""
 
-#: ../files/usr/share/untangle/mod_python/auth/index.py:59
-#, python-format
 msgid "%s Administrator Login"
 msgstr "%s 管理者ログイン"
 
-#: ../files/usr/share/untangle/mod_python/auth/index.py:148
 msgid "Error: Username and Password do not match"
 msgstr "誤り: ユーザ名とパスワードが一致しません。"
 
-#: ../files/usr/share/untangle/mod_python/auth/index.py:152
 msgid "Server:"
 msgstr "サーバー:"
 
-#: ../files/usr/share/untangle/mod_python/auth/index.py:153
 msgid "Username:"
 msgstr "ユーザ名:"
 
-#: ../files/usr/share/untangle/mod_python/auth/index.py:154
 msgid "Password:"
 msgstr "パスワード:"
 
-#: ../files/usr/share/untangle/mod_python/auth/index.py:155
 msgid "Login"
 msgstr "ログイン"
 
-#~ msgid "%s Login"
-#~ msgstr "%sログイン"

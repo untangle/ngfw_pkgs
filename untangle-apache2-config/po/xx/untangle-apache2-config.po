@@ -1,0 +1,101 @@
+msgid "Server"
+msgstr "XServerX"
+
+msgid "%s Server"
+msgstr "X%s ServerX"
+
+msgid "Bad Request"
+msgstr "XBad RequestX"
+
+msgid "Unauthorized"
+msgstr "XUnauthorizedX"
+
+msgid "Payment Required"
+msgstr "XPayment RequiredX"
+
+msgid "Forbidden"
+msgstr "XForbiddenX"
+
+msgid "Not Found"
+msgstr "XNot FoundX"
+
+msgid "Method Not Allowed"
+msgstr "XMethod Not AllowedX"
+
+msgid "Not Acceptable"
+msgstr "XNot AcceptableX"
+
+msgid "Proxy Authentication Required"
+msgstr "XProxy Authentication RequiredX"
+
+msgid "Request Timeout"
+msgstr "XRequest TimeoutX"
+
+msgid "Conflict"
+msgstr "XConflictX"
+
+msgid "Gone"
+msgstr "XGoneX"
+
+msgid "Length Required"
+msgstr "XLength RequiredX"
+
+msgid "Precondition Failed"
+msgstr "XPrecondition FailedX"
+
+msgid "Request Entity Too Large"
+msgstr "XRequest Entity Too LargeX"
+
+msgid "Request-URI Too Long"
+msgstr "XRequest-URI Too LongX"
+
+msgid "Unsupported Media Type"
+msgstr "XUnsupported Media TypeX"
+
+msgid "Requested Range Not Satisfiable"
+msgstr "XRequested Range Not SatisfiableX"
+
+msgid "Expectation Failed"
+msgstr "XExpectation FailedX"
+
+msgid "Server is starting. Please wait."
+msgstr "XServer is starting. Please wait.X"
+
+msgid "Internal Server Error"
+msgstr "XInternal Server ErrorX"
+
+msgid "Not Implemented"
+msgstr "XNot ImplementedX"
+
+msgid "Bad Gateway"
+msgstr "XBad GatewayX"
+
+msgid "Service Unavailable"
+msgstr "XService UnavailableX"
+
+msgid "Gateway Timeout"
+msgstr "XGateway TimeoutX"
+
+msgid "HTTP Version Not Supported"
+msgstr "XHTTP Version Not SupportedX"
+
+msgid "Administrator Login"
+msgstr "XAdministrator LoginX"
+
+msgid "%s Administrator Login"
+msgstr "X%s Administrator LoginX"
+
+msgid "Error: Username and Password do not match"
+msgstr "XError: Username and Password do not matchX"
+
+msgid "Server:"
+msgstr "XServer:X"
+
+msgid "Username:"
+msgstr "XUsername:X"
+
+msgid "Password:"
+msgstr "XPassword:X"
+
+msgid "Login"
+msgstr "XLoginX"
