@@ -48,26 +48,9 @@ esac
 echo "Forcing / in fstab to map to current root device ($rootdev)"
 perl -i -pe 's|^[^\s#]+(\s+/\s+)|'$rootdev'$1|' /etc/fstab
 
-if dpkg -l grub-pc 2> /dev/null | grep -qE '^i' ; then
-  currentDefault=$(grub-editenv list | awk -F= '/^saved_entry/ {print $2}')
-  rm -f /etc/grub.d/10_linux # we use our own 50_custom instead
-  cp -f /usr/share/untangle-linux-config/grub-default /etc/default/grub
-else
-  menuLst="/boot/grub/menu.lst"
-  menuLstPreUntangle="${menuLst}-pre-untangle"
-
-  # Re-create menu.lst
-  echo "Installing Untangle $menuLst"
-  mkdir -p /boot/grub
-
-  menuFile="/usr/share/untangle-linux-config/menu-wheezy.lst"
-
-  sed -e "s/@ROOTDEV@/$rootdev/" $menuFile > $menuLst
-
-  [ -f $menuLstPreUntangle ] || cp $menuLst $menuLstPreUntangle
-
-  currentDefault=$(head -1 /boot/grub/default 2>/dev/null | perl -pe 's/^(\d).*/$1/')
-fi
+currentDefault=$(grub-editenv list | awk -F= '/^saved_entry/ {print $2}')
+rm -f /etc/grub.d/10_linux # we use our own 50_custom instead
+cp -f /usr/share/untangle-linux-config/grub-default /etc/default/grub
 
 if [ -z "$currentDefault" ] || [ "$currentDefault" = "default" ] ; then
   echo "Setting default grub option: 0"
