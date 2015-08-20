@@ -1877,17 +1877,18 @@ Ext.define("Ung.window.SelectDateTime", {
                         if(!this.buttonObj) {
                             return;
                         }
-                        if (combo.getValue()!=null) {
+                        var comboValue = combo.getValue(); 
+                        if (comboValue!=null) {
                             if(!this.date) {
                                 var selDate=this.down("datepicker[name=date]").getValue();
                                 if(!selDate) {
                                     selDate=new Date();
                                     selDate.setHours(0,0,0,0);
                                 }
-                                this.date = new Date(selDate.getTime()+i18n.timeoffset);
+                                this.date = new Date(selDate.getTime());
                             }
-                            this.date.setHours(combo.getValue().getHours());
-                            this.date.setMinutes(combo.getValue().getMinutes());
+                            this.date.setHours(comboValue.getHours());
+                            this.date.setMinutes(comboValue.getMinutes());
                             this.setDate(this.date);
                         }
                     },
@@ -1917,9 +1918,9 @@ Ext.define("Ung.window.SelectDateTime", {
         var dateStr ="";
         var buttonLabel = null;
         if(this.date) {
-            this.date.setTime(this.date.getTime()-i18n.timeoffset);
-            dateStr = i18n.timestampFormat({time: this.date.getTime()});
-            buttonLabel = i18n.timestampFormat({time: this.date.getTime()});
+            var displayTime = this.date.getTime()-i18n.timeoffset;
+            dateStr = i18n.timestampFormat({time: displayTime});
+            buttonLabel = i18n.timestampFormat({time: displayTime});
         }
         this.down("textfield[name=dateAndTime]").setValue(dateStr);
         if(this.buttonObj) {
