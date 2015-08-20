@@ -55,4 +55,11 @@ else
     sed -e "s/.*DebianBanner.*/DebianBanner no/" -i /etc/ssh/sshd_config
 fi
 
+# Allow root login in SSH 
+if [ -z "`grep PermitRootLogin /etc/ssh/sshd_config`" ] ; then
+    echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
+else
+    sed -e "s/.*PermitRootLogin.*/PermitRootLogin yes/" -i /etc/ssh/sshd_config
+fi
+
 exit 0
