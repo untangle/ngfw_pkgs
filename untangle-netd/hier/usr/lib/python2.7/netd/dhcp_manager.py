@@ -91,22 +91,25 @@ wait_for_bridge()
     local t_ready="${BRIDGE_CHECK_ATTEMPTS}"
     local t_count=0
     
-    for (( t_count = 0 ; t_count < ${BRIDGE_CHECK_ATTEMPTS} ; t_count++ )) {
-        t_ready="true"
+
+    while [ "$t_count" -lt $BRIDGE_CHECK_ATTEMPTS ] ; do 
+        t_ready="true";
         ## Iterate all of the interfaces in the bridge
         for t_interface in `bridge_port_list ${interface}`; do
             ## Skip the files that don't exist.
-            test -f /sys/class/net/${t_interface}/brport/state || continue
+            test -f /sys/class/net/${t_interface}/brport/state || continue ;
             
             ## Search for interfaces that are disabled or forwarding
-            grep -q "[03]" /sys/class/net/${t_interface}/brport/state || t_ready="false" 
+            grep -q "[03]" /sys/class/net/${t_interface}/brport/state || t_ready="false"  ;
         done
         
-        ${t_ready} && break
+        ${t_ready} && break ;
         
-        sleep ${BRIDGE_CHECK_INTERVAL}
-    }
- 
+        sleep ${BRIDGE_CHECK_INTERVAL} ;
+        t_count = $(($t_count + 1))  
+        
+    done 
+
     if [ ${t_count} -gt 0 ] ; then
         debug "Waited ${t_count} counts for the bridge(s) before configuring ${interface}."
     fi
