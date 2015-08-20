@@ -9,7 +9,7 @@ Standards-Version: 3.8.0
 Package: untangle-kernel-modules-jessie-i386
 Architecture: i386
 Depends: linux-image-3.16.0-4-untangle-686-pae, e1000e-module-3.16.0-4-untangle-686-pae, igb-module-3.16.0-4-untangle-686-pae, backports-modules-3.16.0-4-untangle-686-pae, firmware-bnx2, firmware-bnx2x
-Conflicts: libperl5.14, libsnmp15
+Conflicts: libsnmp15
 Provides: untangle-kernel-modules-jessie
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle kernel modules for i386
