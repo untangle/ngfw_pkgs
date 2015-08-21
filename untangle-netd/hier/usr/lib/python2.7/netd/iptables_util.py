@@ -78,8 +78,8 @@ class IptablesUtil:
                     continue
 
                 protos = value.split(",")
-                if invert:
-                    print "ERROR: invert not supported on protocol matcher"
+                if invert and len(protos)>1:
+                    print "ERROR: invert not supported on multiple protocol matcher"
                     continue
                 if len(protos) == 0:
                     print "ERROR: interface matcher with no interfaces"
@@ -88,7 +88,10 @@ class IptablesUtil:
                 current_strings = []
                 # split current rules for each protocol specified
                 for i in range(0 , len(protos) ):
-                    matcherStr = " --protocol %s " % string.lower(protos[i])
+                    matcherStr = ""
+                    if invert:
+                        matcherStr = matcherStr + " ! "
+                    matcherStr = matcherStr + (" --protocol %s " % string.lower(protos[i]))
                     current_strings = current_strings + [ matcherStr + current for current in orig_current_strings ]
 
             if matcherType == "SRC_INTF":
@@ -97,8 +100,8 @@ class IptablesUtil:
 
                 intfs = IptablesUtil.interface_matcher_string_to_interface_list( value )
 
-                if invert:
-                    print "ERROR: invert not supported on interface matcher"
+                if invert and len(intfs) > 1:
+                    print "ERROR: invert not supported on multiple interface matcher"
                     continue
                 if len(intfs) == 0:
                     print "ERROR: interface matcher with no interfaces"
@@ -107,7 +110,10 @@ class IptablesUtil:
                 current_strings = []
                 # split current rules for each intf specified
                 for i in range(0 , len(intfs) ):
-                    matcherStr = " -m connmark --mark 0x%04X/0x00FF " % int(intfs[i])
+                    matcherStr = ""
+                    if invert:
+                        matcherStr = matcherStr + " ! "
+                    matcherStr = matcherStr + (" -m connmark --mark 0x%04X/0x00FF " % int(intfs[i]))
                     current_strings = current_strings + [ current + matcherStr for current in orig_current_strings ]
 
             if matcherType == "DST_INTF":
@@ -116,8 +122,8 @@ class IptablesUtil:
 
                 intfs = IptablesUtil.interface_matcher_string_to_interface_list( value )
 
-                if invert:
-                    print "ERROR: invert not supported on interface matcher"
+                if invert and len(intfs) > 1:
+                    print "ERROR: invert not supported on multiple interface matcher"
                     continue
                 if len(intfs) == 0:
                     print "ERROR: interface matcher with no interfaces"
@@ -126,7 +132,10 @@ class IptablesUtil:
                 current_strings = []
                 # split current rules for each intf specified
                 for i in range(0 , len(intfs) ):
-                    matcherStr = " -m connmark --mark 0x%04X/0xFF00 " % (int(intfs[i]) << 8)
+                    matcherStr = ""
+                    if invert:
+                        matcherStr = matcherStr + " ! "
+                    matcherStr = matcherStr + (" -m connmark --mark 0x%04X/0xFF00 " % (int(intfs[i]) << 8))
                     current_strings = current_strings + [ current + matcherStr for current in orig_current_strings ]
 
             if matcherType == "SRC_MAC":
@@ -140,14 +149,19 @@ class IptablesUtil:
                     continue # no need to do anything
 
                 srcs = value.split(",")
-                if invert:
-                    print "ERROR: invert not supported on addr matcher"
+                if invert and len(srcs) > 1:
+                    print "ERROR: invert not supported on multiple addr matcher"
+                    continue
+                if len(srcs) == 0:
+                    print "ERROR: address matcher with no interfaces"
                     continue
 
                 orig_current_strings = current_strings
                 current_strings = []
                 for i in srcs:
                     matcherStr = ""
+                    if invert:
+                        matcherStr = matcherStr + " ! "
                     if "-" in i:
                         matcherStr = matcherStr + " -m iprange --src-range %s " % i
                     else:
@@ -159,14 +173,19 @@ class IptablesUtil:
                     continue # no need to do anything
 
                 dsts = value.split(",")
-                if invert:
-                    print "ERROR: invert not supported on addr matcher"
+                if invert and len(dsts) > 1:
+                    print "ERROR: invert not supported on multiple addr matcher"
+                    continue
+                if len(dsts) == 0:
+                    print "ERROR: address matcher with no interfaces"
                     continue
 
                 orig_current_strings = current_strings
                 current_strings = []
                 for i in dsts:
                     matcherStr = ""
+                    if invert:
+                        matcherStr = matcherStr + " ! "
                     if "-" in i:
                         matcherStr = matcherStr + " -m iprange --dst-range %s " % i
                     else:
