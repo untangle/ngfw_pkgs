@@ -186,6 +186,8 @@ Ext.define('Ung.TableConfig', {
                 }, {
                     name: 'protocol'
                 }, {
+                    name: 'icmp_type'
+                }, {
                     name: 'hostname'
                 }, {
                     name: 'username'
@@ -313,6 +315,11 @@ Ext.define('Ung.TableConfig', {
                     sortable: true,
                     dataIndex: 'protocol',
                     renderer: Ung.panel.Reports.getColumnRenderer('protocol')
+                }, {
+                    header: i18n._("ICMP Type"),
+                    width: Ung.TableConfig.portFieldWidth,
+                    sortable: true,
+                    dataIndex: 'icmp_type'
                 }, {
                     header: i18n._('Policy Id'),
                     width: 60,
