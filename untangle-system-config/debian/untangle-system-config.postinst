@@ -62,4 +62,8 @@ else
     sed -e "s/.*PermitRootLogin.*/PermitRootLogin yes/" -i /etc/ssh/sshd_config
 fi
 
+if [ -f /etc/dhcp/dhclient-exit-hooks.d/ddclient  ] ; then
+    sed -e "s/\$run_dhclient = \"true\"/\"\$run_dhclient\" = \"true\"/" -i /etc/dhcp/dhclient-exit-hooks.d/ddclient 
+fi
+
 exit 0
