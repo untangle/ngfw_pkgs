@@ -233,7 +233,7 @@ debug()
 refresh_routes()
 {
     # point to point
-	if [ "$new_subnet_mask" == "255.255.255.255" ]; then
+	if [ "$new_subnet_mask" = "255.255.255.255" ]; then
 	    for router in $netd_new_routers; do
 	    	route add -host $router dev $interface
 	    done
