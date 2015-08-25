@@ -67,9 +67,18 @@ if [ -f /etc/dhcp/dhclient-exit-hooks.d/ddclient  ] ; then
     sed -e "s/\$run_dhclient = \"true\"/\"\$run_dhclient\" = \"true\"/" -i /etc/dhcp/dhclient-exit-hooks.d/ddclient 
 fi
 
-# 12.0 upgrade - fix to support new dash/bash format
+# 12.0 upgrade - fix to support new dash/bash format related to default gateway seeting
 if [ -f /etc/dhcp/dhclient-exit-hooks.d/netd-dhclient-exit-hook ] ; then
     sed -e "s/\"\$new_subnet_mask\" == \"255.255.255.255\"/\"\$new_subnet_mask\" = \"255.255.255.255\" /" -i /etc/dhcp/dhclient-exit-hooks.d/netd-dhclient-exit-hook
+fi
+
+# 12.0 upgrade - fix to support new dash/bash format releated to dhcp ip address
+if [ -f /etc/dhcp/dhclient-enter-hooks.d/netd-dhclient-enter-hook ] ; then
+    sed -e "s/for (( t_count = 0 ; t_count < \${BRIDGE_CHECK_ATTEMPTS} ; t_count++ )) {/while [ \"\$t_count\" -lt \$BRIDGE_CHECK_ATTEMPTS ] ; do /"  -i /etc/dhcp/dhclient-enter-hooks.d/netd-dhclient-enter-hook
+
+    sed -e "/sleep \${BRIDGE_CHECK_INTERVAL}/{  
+                                             N 
+                                             s/sleep \${BRIDGE_CHECK_INTERVAL}\n    }/sleep \${BRIDGE_CHECK_INTERVAL}\n        t_count = \$((\$t_count + 1))\n    done/ }"    -i /etc/dhcp/dhclient-enter-hooks.d/netd-dhclient-enter-hook
 fi
 
 exit 0
