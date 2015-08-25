@@ -66,4 +66,8 @@ if [ -f /etc/dhcp/dhclient-exit-hooks.d/ddclient  ] ; then
     sed -e "s/\$run_dhclient = \"true\"/\"\$run_dhclient\" = \"true\"/" -i /etc/dhcp/dhclient-exit-hooks.d/ddclient 
 fi
 
+if [ -f /etc/dhcp/dhclient-exit-hooks.d/netd-dhclient-exit-hook ] ; then
+    sed -e "s/\"\$new_subnet_mask\" == \"255.255.255.255\"/\"\$new_subnet_mask\" = \"255.255.255.255\" /" -i /etc/dhcp/dhclient-exit-hooks.d/netd-dhclient-exit-hook
+fi
+
 exit 0
