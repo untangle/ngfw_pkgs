@@ -923,6 +923,7 @@ Ext.define('Ung.panel.Reports', {
             }
         });
         this.gridEvents.reconfigure(store, tableConfig.columns);
+        this.gridEvents.getStore().addFilter(this.filterFeature.globalFilter);
         this.refreshHandler();
         Ung.TableConfig.getColumnsForTable(entry.table, this.extraConditionsPanel.columnsStore);
     },
@@ -1807,9 +1808,6 @@ Ext.define("Ung.grid.feature.GlobalFilter", {
             }
         });
         
-        this.grid.on("afterrender", Ext.bind(function() {
-            this.grid.getStore().addFilter(this.globalFilter);
-        }, this));
         this.grid.on("beforedestroy", Ext.bind(function() {
             this.grid.getStore().removeFilter(this.globalFilter);
             Ext.destroy(this.globalFilter);
