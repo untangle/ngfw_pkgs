@@ -741,8 +741,11 @@ Ext.define('Ung.panel.Reports', {
                     position: 'bottom',
                     grid: true,
                     label: {
+                        'fontSize': '11px',
+                        'text-anchor': 'right',
+                        x: 20,
                         rotate: {
-                            degrees: -90
+                            degrees: -45
                         }
                     }
                 }]
