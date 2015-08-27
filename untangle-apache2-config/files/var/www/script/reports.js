@@ -6,7 +6,6 @@ Ext.define('Ung.panel.Reports', {
     layout: { type: 'border'},
     extraConditions: null,
     reportingManager: null,
-    webuiMode: true,
     hasEntriesSection: true,
     entry: null,
     beforeDestroy: function() {
@@ -15,7 +14,7 @@ Ext.define('Ung.panel.Reports', {
     },
     initComponent: function() {
         this.subCmps = [];
-        if(this.webuiMode) {
+        if(Ung.Main.webuiMode) {
             if(this.category) {
                 this.helpSource = this.category.toLowerCase().replace(" ","_") + "_reports";
                 if(!this.title) {
@@ -470,7 +469,7 @@ Ext.define('Ung.panel.Reports', {
         var tbar = [{
             xtype: 'button',
             text: i18n._('Customize'),
-            hidden: !this.webuiMode,
+            hidden: !Ung.Main.webuiMode,
             name: "edit",
             tooltip: i18n._('Advanced report customization'),
             iconCls: 'icon-edit',
