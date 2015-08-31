@@ -62,13 +62,14 @@ else
     sed -e "s/.*PermitRootLogin.*/PermitRootLogin yes/" -i /etc/ssh/sshd_config
 fi
 
-# update ddclient package file to fit NGFW environment
 if [ -f /etc/dhcp/dhclient-exit-hooks.d/ddclient  ] ; then
-    #support new dash/bash format 
-    sed -e "s/\$run_dhclient = \"true\"/\"\$run_dhclient\" = \"true\"/" -i /etc/dhcp/dhclient-exit-hooks.d/ddclient 
-
     #change exit 0 to return to avoid dhclient-exit-hooks.d shells stop in middle
     sed -e "s/exit 0/return/" -i /etc/dhcp/dhclient-exit-hooks.d/ddclient
+fi
+
+# 12.0 upgrade support new dash/bash format 
+if [ -f /etc/dhcp/dhclient-exit-hooks.d/ddclient  ] ; then
+    sed -e "s/\$run_dhclient = \"true\"/\"\$run_dhclient\" = \"true\"/" -i /etc/dhcp/dhclient-exit-hooks.d/ddclient 
 fi
 
 # 12.0 upgrade - fix to support new dash/bash format related to default gateway seeting
