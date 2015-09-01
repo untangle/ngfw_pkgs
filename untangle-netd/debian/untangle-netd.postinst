@@ -11,4 +11,7 @@ update-rc.d keepalived disable
 # 11.1 conversion
 rm -f /etc/untangle-netd/iptables-rules.d/340-dns-rules
 
+# 12.0 conversion
+rm -f /etc/untangle-netd/post-network-hook.d/100-finddev
+
 exit 0
