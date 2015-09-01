@@ -9,7 +9,6 @@ from netd.iptables_manager import IptablesManager
 from netd.port_forward_manager import PortForwardManager
 from netd.bypass_rules_manager import BypassRuleManager
 from netd.ethernet_manager import EthernetManager
-from netd.finddev_manager import FindDevManager
 from netd.hosts_manager import HostsManager
 from netd.sysctl_manager import SysctlManager
 from netd.kernel_manager import KernelManager

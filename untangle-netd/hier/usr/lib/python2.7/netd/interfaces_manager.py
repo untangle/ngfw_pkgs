@@ -363,21 +363,8 @@ class InterfacesManager:
             file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i\"" % (systemDev, id << 8, self.dstInterfaceMarkMask, id) + "\n");
             # if bridged also add bridge rules
             if symbolicDev.startswith("br.") or configType == 'BRIDGED':
-                file.write("if [ ${KERN_2_6_32} -eq 0 ] ; then" + "\n");
-                # queue to userspace
-                # file.write("\t${IPTABLES} -t mangle -A mark-dst-intf -o %s -j NFQUEUE --queue-num 1979 -m comment --comment \"queue bridge packets to daemon to determine dst intf/port\"" % (symbolicDev) + "\n");
-
-                # queue to userspace (but only first packet of session)
-                # Sometimes if we miss the first packet of a session, it will queue all packets in the session and overwhelm finddev.
-                # It is better to leave those packets unmarked if they don't have a conntrack table than queue all of them to finddev.
-                file.write("\t${IPTABLES} -t mangle -A mark-dst-intf -m conntrack --ctstate NEW -o %s -j NFQUEUE --queue-num 1979 -m comment --comment \"queue bridge packets to daemon to determine dst intf/port\"" % (symbolicDev) + "\n");
-
-                file.write("else" + "\n");
-
-                # if we are on 3.2.0 or newer (anything but 2.6.32), our physdev patch is installed and physdev should work
-                file.write("\t${IPTABLES} -t mangle -A mark-dst-intf -o %s -m physdev --physdev-out %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i using physdev\"" % (symbolicDev, systemDev, id << 8, self.dstInterfaceMarkMask, id) + "\n");
-
-                file.write("fi" + "\n");
+                # if we are on 3.2.0 or newer (anything but 2.6.32), our physdev patch is installed and physdev should work on bridges
+                file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -m physdev --physdev-out %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i using physdev\"" % (symbolicDev, systemDev, id << 8, self.dstInterfaceMarkMask, id) + "\n");
 
 
         file.write("\n");

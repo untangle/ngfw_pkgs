@@ -27,13 +27,11 @@ configure-stamp:
 
 build: configure
 	dh_testdir
-	$(MAKE) -C finddev
 	rm -rf ./debian/tmp
 	mkdir -p ./debian/tmp
 	dh_installdirs -A -v
 	for i in `cat debian/untangle-netd.dirs` ; do mkdir -p debian/tmp/$$i ; done
 	cp -r ./hier/* ./debian/tmp/
-	cp ./finddev/src/finddev ./debian/tmp/usr/share/untangle-netd/bin/
 	find ./debian/tmp -name .svn -type d | xargs rm -fr
 
 clean:
@@ -41,7 +39,6 @@ clean:
 	dh_testroot
 	rm -f build-arch-stamp build-indep-stamp configure-stamp
 	rm -rf debian/tmp debian/untangle-restore-tools sav-install
-	$(MAKE) -C finddev clean
 	dh_clean
 	find . -type f -name '*.pyc' | xargs rm -f
 

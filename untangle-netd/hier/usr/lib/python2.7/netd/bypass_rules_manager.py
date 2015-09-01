@@ -64,7 +64,7 @@ class BypassRuleManager:
         self.file.write("${IPTABLES} -t filter -A bypass-rules -m conntrack --ctstate RELATED --goto set-bypass-mark -m comment --comment \"Bypass RELATED sessions\"" + "\n");
         self.file.write("\n");
 
-        # We bypass DHCP reply traffic, because the host doesn't technically have an address yet, so our ARP lookup in finddev will fail.
+        # We bypass DHCP reply traffic, because the host doesn't technically have an address yet, so our destination interface lookup will fail.
         # This assures its just sent across the bridge in normal fashion
         self.file.write("# Implicit Bypass Rules (DHCP)" + "\n");
         self.file.write("${IPTABLES} -t filter -A bypass-rules -p udp --source-port 67:68 --destination-port 67:68 --goto set-bypass-mark -m comment --comment \"Bypass DHCP traffic\"" + "\n");
