@@ -163,11 +163,9 @@ class FilterRulesManager:
         self.file.write("${IPTABLES} -t filter -I block-invalid -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" " + "\n");
         self.file.write("${IPTABLES} -t filter -D block-invalid -m conntrack --ctstate INVALID -j NFLOG --nflog-prefix \"invalid_blocked\" -m comment --comment \"nflog on invalid\" >/dev/null 2>&1\n");
         self.file.write("${IPTABLES} -t filter -I block-invalid -m conntrack --ctstate INVALID -j NFLOG --nflog-prefix \"invalid_blocked\" -m comment --comment \"nflog on invalid\"\n");
-        #self.file.write("${IPTABLES} -t filter -D block-invalid -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\" >/dev/null 2>&1\n");
-        #self.file.write("${IPTABLES} -t filter -I block-invalid -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\"\n");
         for intfId in NetworkUtil.interface_list():
             self.file.write("${IPTABLES} -t filter -I block-invalid -m mark --mark 0x%X/0x%X -j RETURN -m comment --comment \"Allow INVALID hairpin traffic (interface %s)\"" % ( (intfId+(intfId<<8)), self.interfacesMarkMask, str(intfId)) + "\n");
-        self.file.write("${IPTABLES} -t filter -I block-invalid -m mark --mark 0xfe00/0xff00 -j RETURN -m comment --comment \"Allow INVALID hairpin traffic (interface 0xfe)\"" + "\n");
+        self.file.write("${IPTABLES} -t filter -I block-invalid -m mark --mark 0xfe00/0xff00 -j RETURN -m comment --comment \"Allow INVALID to local sockets (interface 0xfe)\"" + "\n");
         self.file.write("\n");
         self.file.write("# Block INVALID packets" + "\n");
         self.file.write("${IP6TABLES} -t filter -D block-invalid -m conntrack --ctstate INVALID -j DROP -m comment --comment \"Block INVALID packets\" >/dev/null 2>&1" + "\n");
@@ -175,8 +173,6 @@ class FilterRulesManager:
         # disabled because I don't think the nflog daemon handles IPv6 currently
         #self.file.write("${IP6TABLES} -t filter -D block-invalid -m conntrack --ctstate INVALID -j NFLOG --nflog-prefix \"invalid_blocked\" -m comment --comment \"nflog on invalid\" >/dev/null 2>&1\n");
         #self.file.write("${IP6TABLES} -t filter -I block-invalid -m conntrack --ctstate INVALID -j NFLOG --nflog-prefix \"invalid_blocked\" -m comment --comment \"nflog on invalid\"\n");
-        #self.file.write("${IP6TABLES} -t filter -D block-invalid -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\" >/dev/null 2>&1\n");
-        #self.file.write("${IP6TABLES} -t filter -I block-invalid -m conntrack --ctstate INVALID -j LOG --log-prefix \"WARNING (dropping invalid):\" -m comment --comment \"warn on invalid\"\n");
         for intfId in NetworkUtil.interface_list():
             self.file.write("${IP6TABLES} -t filter -I block-invalid -m mark --mark 0x%X/0x%X -j RETURN -m comment --comment \"Allow INVALID hairpin traffic (interface %s)\"" % ( (intfId+(intfId<<8)), self.interfacesMarkMask, str(intfId)) + "\n");
         self.file.write("${IP6TABLES} -t filter -I block-invalid -m mark --mark 0xfe00/0xff00 -j RETURN -m comment --comment \"Allow INVALID to local sockets (interface 0xfe)\"" + "\n");
@@ -184,8 +180,13 @@ class FilterRulesManager:
 
         if settings.get('blockInvalidPackets'):
             self.file.write("# Block INVALID packets" + "\n");
-            self.file.write("${IPTABLES} -t filter -D filter-rules-input -j block-invalid -m comment --comment \"Block INVALID\" >/dev/null 2>&1" + "\n");
-            self.file.write("${IPTABLES} -t filter -I filter-rules-input -j block-invalid -m comment --comment \"Block INVALID\"" + "\n");
+            self.file.write("${IPTABLES} -t filter -D INPUT -m conntrack --ctstate INVALID -j block-invalid -m comment --comment \"Block INVALID\" >/dev/null 2>&1" + "\n");
+            self.file.write("${IPTABLES} -t filter -A INPUT -m conntrack --ctstate INVALID -j block-invalid -m comment --comment \"Block INVALID\"" + "\n");
+            self.file.write("\n");
+
+            self.file.write("# Block INVALID packets" + "\n");
+            self.file.write("${IPTABLES} -t filter -D FORWARD -m conntrack --ctstate INVALID -j block-invalid -m comment --comment \"Block INVALID\" >/dev/null 2>&1" + "\n");
+            self.file.write("${IPTABLES} -t filter -A FORWARD -m conntrack --ctstate INVALID -j block-invalid -m comment --comment \"Block INVALID\"" + "\n");
             self.file.write("\n");
 
         self.file.write("# Pass all RELATED traffic " + "\n");
@@ -220,12 +221,6 @@ class FilterRulesManager:
         self.file.write("${IP6TABLES} -t filter -D filter-rules-input -i utun -j RETURN -m comment --comment \"Allow all reinjected traffic\" >/dev/null 2>&1" + "\n");
         self.file.write("${IP6TABLES} -t filter -I filter-rules-input -i utun -j RETURN -m comment --comment \"Allow all reinjected traffic\"" + "\n");
         self.file.write("\n");
-
-        if settings.get('blockInvalidPackets'):
-            self.file.write("# Block INVALID packets" + "\n");
-            self.file.write("${IPTABLES} -t filter -D filter-rules-forward -j block-invalid -m comment --comment \"Block INVALID\" >/dev/null 2>&1" + "\n");
-            self.file.write("${IPTABLES} -t filter -I filter-rules-forward -j block-invalid -m comment --comment \"Block INVALID\"" + "\n");
-            self.file.write("\n");
 
         if settings.get('blockReplayPackets'):
             self.file.write("# Block Replay packets" + "\n");
