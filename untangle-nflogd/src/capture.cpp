@@ -28,10 +28,11 @@ static int capture_callback(
 	void *data
 	)
 {
+struct icmphdr	*icmphead;
 struct tcphdr	*tcphead;
 struct udphdr	*udphead;
 struct iphdr	*iphead;
-u_int16_t		sport,dport;
+u_int16_t		sport,dport,itype;
 const char		*prefix;
 char			message[1024];
 char			*packet_data;
@@ -60,6 +61,7 @@ din = ((mark & 0xFF00) >> 8);
 iphead = (struct iphdr *)packet_data;
 tcphead = (struct tcphdr *)&packet_data[iphead->ihl << 2];
 udphead = (struct udphdr *)&packet_data[iphead->ihl << 2];
+icmphead = (struct icmphdr *)&packet_data[iphead->ihl << 2];
 
 // grab the protocol
 protocol = iphead->protocol;
@@ -68,8 +70,15 @@ protocol = iphead->protocol;
 inet_ntop(AF_INET,&iphead->saddr,sname,sizeof(sname));
 inet_ntop(AF_INET,&iphead->daddr,dname,sizeof(dname));
 
+// Since 0 is a valid ICMP type we use 999 to signal null or unknown
+sport = dport = 0;
+itype = 999;
+
 	switch(protocol)
 	{
+	case IPPROTO_ICMP:
+		itype = icmphead->type;
+		break;
 	case IPPROTO_TCP:
 		sport = ntohs(tcphead->source);
 		dport = ntohs(tcphead->dest);
@@ -78,12 +87,9 @@ inet_ntop(AF_INET,&iphead->daddr,dname,sizeof(dname));
 		sport = ntohs(udphead->source);
 		dport = ntohs(udphead->dest);
 		break;
-	default:
-		sport = dport = 0;
-		break;
 	}
 
-len = sprintf(message,"|PROTO:%d|SINTF:%d|SADDR:%s|SPORT:%d|DINTF:%d|DADDR:%s|DPORT:%d|PREFIX:%s|\r\n",protocol,sin,sname,sport,din,dname,dport,prefix);
+len = sprintf(message,"|PROTO:%d|ICMP:%d|SINTF:%d|SADDR:%s|SPORT:%d|DINTF:%d|DADDR:%s|DPORT:%d|PREFIX:%s|\r\n",protocol,itype,sin,sname,sport,din,dname,dport,prefix);
 g_netserver->BroadcastMessage(message,len);
 
 return(0);
