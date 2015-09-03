@@ -180,8 +180,13 @@ class FilterRulesManager:
 
         if settings.get('blockInvalidPackets'):
             self.file.write("# Block INVALID packets" + "\n");
-            self.file.write("${IPTABLES} -t filter -D filter-rules-input -m conntrack --ctstate INVALID -j block-invalid -m comment --comment \"Block INVALID\" >/dev/null 2>&1" + "\n");
-            self.file.write("${IPTABLES} -t filter -I filter-rules-input -m conntrack --ctstate INVALID -j block-invalid -m comment --comment \"Block INVALID\"" + "\n");
+            self.file.write("${IPTABLES} -t filter -D INPUT -m conntrack --ctstate INVALID -j block-invalid -m comment --comment \"Block INVALID\" >/dev/null 2>&1" + "\n");
+            self.file.write("${IPTABLES} -t filter -A INPUT -m conntrack --ctstate INVALID -j block-invalid -m comment --comment \"Block INVALID\"" + "\n");
+            self.file.write("\n");
+
+            self.file.write("# Block INVALID packets" + "\n");
+            self.file.write("${IPTABLES} -t filter -D FORWARD -m conntrack --ctstate INVALID -j block-invalid -m comment --comment \"Block INVALID\" >/dev/null 2>&1" + "\n");
+            self.file.write("${IPTABLES} -t filter -A FORWARD -m conntrack --ctstate INVALID -j block-invalid -m comment --comment \"Block INVALID\"" + "\n");
             self.file.write("\n");
 
         self.file.write("# Pass all RELATED traffic " + "\n");
@@ -216,12 +221,6 @@ class FilterRulesManager:
         self.file.write("${IP6TABLES} -t filter -D filter-rules-input -i utun -j RETURN -m comment --comment \"Allow all reinjected traffic\" >/dev/null 2>&1" + "\n");
         self.file.write("${IP6TABLES} -t filter -I filter-rules-input -i utun -j RETURN -m comment --comment \"Allow all reinjected traffic\"" + "\n");
         self.file.write("\n");
-
-        if settings.get('blockInvalidPackets'):
-            self.file.write("# Block INVALID packets" + "\n");
-            self.file.write("${IPTABLES} -t filter -D filter-rules-forward -m conntrack --ctstate INVALID -j block-invalid -m comment --comment \"Block INVALID\" >/dev/null 2>&1" + "\n");
-            self.file.write("${IPTABLES} -t filter -I filter-rules-forward -m conntrack --ctstate INVALID -j block-invalid -m comment --comment \"Block INVALID\"" + "\n");
-            self.file.write("\n");
 
         if settings.get('blockReplayPackets'):
             self.file.write("# Block Replay packets" + "\n");
