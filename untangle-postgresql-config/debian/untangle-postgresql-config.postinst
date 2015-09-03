@@ -61,6 +61,8 @@ for file in $PG_CONF ; do
 
     # decrease auto-vacuum since tables are now partitioned vacuuming is hardly required since rows are never removed only updated
     sed -i -e "s/.*autovacuum_vacuum_scale_factor.*=.*/autovacuum_vacuum_scale_factor = .5/" $file
+    # decrease auto-analyze 
+    sed -i -e "s/.*autovacuum_analyze_scale_factor.*=.*/autovacuum_analyze_scale_factor = .5/" $file
 
 done
 
