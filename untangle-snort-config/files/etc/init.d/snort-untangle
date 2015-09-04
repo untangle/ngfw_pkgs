@@ -173,7 +173,7 @@ case "$1" in
                 # - only if iproute is available
                 # - the interface exists 
                 # - the interface is up
-                if ! [ -x /sbin/ip ] || ( ip link show dev "$interface" >/dev/null 2>&1 && [ -n "`ip link show up "$interface" 2>/dev/null`" ] ) ; then
+                if ! [ -x /sbin/ip ] || ( ip link show dev "${interface%:*}" >/dev/null 2>&1 && [ -n "`ip link show up "${interface%:*}" 2>/dev/null`" ] ) ; then
 
 		PIDFILE=/var/run/snort_$interface.pid
                 CONFIGFILE=/etc/snort/snort.$interface.conf
