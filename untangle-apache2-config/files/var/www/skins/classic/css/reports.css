@@ -57,7 +57,7 @@
 .x-btn .icon-clear-filter {
     background: transparent url(../images/admin/icons/icon_clear_filter.png) no-repeat center left !important;
 }
-.untangle-node-spamassassin{
+.untangle-node-spam-blocker-lite{
     background-image: url(../images/reports/nodes/spamblocker.png) !important;
 }
 .untangle-node-shield {
