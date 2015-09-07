@@ -57,45 +57,6 @@
 .x-btn .icon-clear-filter {
     background: transparent url(../images/admin/icons/icon_clear_filter.png) no-repeat center left !important;
 }
-.untangle-node-spam-blocker-lite{
-    background-image: url(../images/reports/nodes/spamblocker.png) !important;
-}
-.untangle-node-shield {
-    background-image: url(../images/reports/nodes/attackblocker.png) !important;
-}
-.untangle-node-phish {
-    background-image: url(../images/reports/nodes/phishblocker.png) !important;
-}
-.untangle-node-clam {
-    background-image: url(../images/reports/nodes/virusblocker.png) !important;
-}
-.untangle-node-webfilter {
-    background-image: url(../images/reports/nodes/webfilter.png) !important;
-}
-.untangle-node-spyware {
-    background-image: url(../images/reports/nodes/spywareblocker.png) !important;
-}
-.untangle-node-kav {
-    background-image: url(../images/reports/nodes/kav.png) !important;
-}
-.untangle-node-openvpn {
-    background-image: url(../images/reports/nodes/openvpn.png) !important;
-}
-.untangle-node-idps {
-    background-image: url(../images/reports/nodes/intrusiondetectionprevention.png) !important;
-}
-.untangle-node-firewall{
-    background-image: url(../images/reports/nodes/firewall.png) !important;
-}
-.untangle-node-adconnector {
-    background-image: url(../images/reports/nodes/adconnector.png) !important;
-}
-.untangle-node-application-control-lite {
-    background-image: url(../images/reports/nodes/protocolcontrol.png) !important;
-}
-.untangle-node-remoteaccessportal {
-    background-image: url(../images/reports/nodes/remoteaccessportal.png) !important;
-}
 .dateRange{
     left:456px !important;
 }
