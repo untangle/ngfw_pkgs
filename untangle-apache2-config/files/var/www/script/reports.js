@@ -5,7 +5,7 @@ Ext.define('Ung.panel.Reports', {
     autoRefreshInterval: 10, //In Seconds
     layout: { type: 'border'},
     extraConditions: null,
-    reportingManager: null,
+    reportsManager: null,
     hasEntriesSection: true,
     entry: null,
     beforeDestroy: function() {
@@ -31,7 +31,7 @@ Ext.define('Ung.panel.Reports', {
                     return;
                 }
             }
-            rpc.reportingManagerNew = Ung.Main.getReportingManagerNew();
+            rpc.reportsManagerNew = Ung.Main.getReportsManagerNew();
         }
         
         this.filterFeature = Ext.create('Ung.grid.feature.GlobalFilter', {});
@@ -352,7 +352,7 @@ Ext.define('Ung.panel.Reports', {
         if(!this.reportEntriesGrid) {
             this.reportEntriesGrid = this.down("grid[name=reportEntriesGrid]");
         }
-        rpc.reportingManagerNew.getReportEntries(Ext.bind(function(result, exception) {
+        rpc.reportsManagerNew.getReportEntries(Ext.bind(function(result, exception) {
             if(Ung.Util.handleException(exception)) return;
             var reportEntries = [];
             this.initialEntryIndex = null;
@@ -386,7 +386,7 @@ Ext.define('Ung.panel.Reports', {
         if(!this.eventEntriesGrid) {
             this.eventEntriesGrid = this.down("grid[name=eventEntriesGrid]");
         }
-        rpc.reportingManagerNew.getEventEntries(Ext.bind(function(result, exception) {
+        rpc.reportsManagerNew.getEventEntries(Ext.bind(function(result, exception) {
             if(Ung.Util.handleException(exception)) return;
             this.eventEntriesGrid.getStore().loadData(result.list);
             this.eventEntriesGrid.setHidden(result.list.length == 0);
@@ -869,7 +869,7 @@ Ext.define('Ung.panel.Reports', {
         }
         
         this.chartContainer.add(chart);
-        rpc.reportingManagerNew.getDataForReportEntry(Ext.bind(function(result, exception) {
+        rpc.reportsManagerNew.getDataForReportEntry(Ext.bind(function(result, exception) {
             this.setLoading(false);
             if(Ung.Util.handleException(exception)) return;
             this.loadReportData(result.list);
@@ -956,7 +956,7 @@ Ext.define('Ung.panel.Reports', {
             return;
         }
         if(!this.autoRefreshEnabled) { this.setLoading(i18n._('Refreshing report... ')); }
-        rpc.reportingManagerNew.getDataForReportEntry(Ext.bind(function(result, exception) {
+        rpc.reportsManagerNew.getDataForReportEntry(Ext.bind(function(result, exception) {
             this.setLoading(false);
             if(Ung.Util.handleException(exception)) return;
             this.loadReportData(result.list);
@@ -971,7 +971,7 @@ Ext.define('Ung.panel.Reports', {
         }
         var limit = this.limitSelector.getValue();
             if(!this.autoRefreshEnabled) { this.setLoading(i18n._('Querying Database...')); }
-            rpc.reportingManagerNew.getEventsForDateRangeResultSet(Ext.bind(function(result, exception) {
+            rpc.reportsManagerNew.getEventsForDateRangeResultSet(Ext.bind(function(result, exception) {
                 this.setLoading(false);
                 if(Ung.Util.handleException(exception)) return;
                 this.loadResultSet(result);
@@ -1254,7 +1254,7 @@ Ext.define('Ung.panel.Reports', {
         }
         
         var entry = {
-            javaClass: "com.untangle.node.reporting.EventEntry",
+            javaClass: "com.untangle.node.reports.EventEntry",
             category: this.entry.category,
             conditions: this.entry.conditions,
             displayOrder: 1,
@@ -1294,7 +1294,7 @@ Ext.define('Ung.panel.Reports', {
     },
     statics: {
         isEvent: function(entry) {
-            return "com.untangle.node.reporting.EventEntry" == entry.javaClass;
+            return "com.untangle.node.reports.EventEntry" == entry.javaClass;
         },
         significantFigures: function(n, sig) {
             if(isNaN(n)) {
@@ -1500,7 +1500,7 @@ Ext.define("Ung.panel.ExtraConditions", {
                 value: item.value
             });
         }, this);
-        rpc.reportingManagerNew.getConditionQuickAddHints(Ext.bind(function(result, exception) {
+        rpc.reportsManagerNew.getConditionQuickAddHints(Ext.bind(function(result, exception) {
             if(Ung.Util.handleException(exception)) return;
             var column, hintMenus = [], columnItems, i, text, value;
             for(column in result) {
@@ -1702,7 +1702,7 @@ Ext.define("Ung.panel.ExtraConditions", {
             isEmptyColumn = Ext.isEmpty(columnValue);
             if(!isEmptyColumn) {
                 conditions.push({
-                    "javaClass": "com.untangle.node.reporting.SqlCondition",
+                    "javaClass": "com.untangle.node.reports.SqlCondition",
                     "column": columnValue,
                     "operator": operator.getValue(),
                     "value": value.getValue()

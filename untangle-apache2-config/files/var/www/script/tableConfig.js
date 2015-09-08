@@ -18,14 +18,14 @@ Ext.define('Ung.TableConfig', {
         return this.tableConfig[tableName];
     },
     checkHealth: function() {
-        if(!rpc.reportingManagerNew) {
-            rpc.reportingManagerNew = Ung.Main.getReportingManagerNew();
+        if(!rpc.reportsManagerNew) {
+            rpc.reportsManagerNew = Ung.Main.getReportsManagerNew();
         }
         if(!this.tableConfig) {
             this.buildTableConfig();
         }
         var i, j, table, column, systemColumns, systemColumnsMap, tableConfigColumns, tableConfigColumnsMap;
-        var systemTables = rpc.reportingManagerNew.getTables();
+        var systemTables = rpc.reportsManagerNew.getTables();
         var systemTablesMap={};
         var missingTables = [];
         for(i=0; i<systemTables.length;i++) {
@@ -58,7 +58,7 @@ Ext.define('Ung.TableConfig', {
         for(table in this.tableConfig) {
             tableConfigColumns = this.tableConfig[table].columns;
             if(systemTablesMap[table]) {
-                systemColumns = rpc.reportingManagerNew.getColumnsForTable(table);
+                systemColumns = rpc.reportsManagerNew.getColumnsForTable(table);
                 systemColumnsMap = {};
                 tableConfigColumnsMap = {};
                 for(i=0;i<tableConfigColumns.length; i++) {
