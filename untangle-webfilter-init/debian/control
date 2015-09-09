@@ -1,4 +1,4 @@
-Source: untangle-webfilter-init
+Source: untangle-web-filter-lite-init
 Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb.com>
@@ -6,7 +6,7 @@ Uploaders: Untangle Buildbot <buildbot@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.8.0
 
-Package: untangle-webfilter-init
+Package: untangle-web-filter-lite-init
 Architecture: all
 Description: Webfilter initial blocklists
  Blocklists used during Webfilter initialization.
