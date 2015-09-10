@@ -162,7 +162,7 @@ def _write_login_form(req, title, host, is_error):
     banner_msg = get_node_settings_item('untangle-node-branding','bannerMessage')
     if banner_msg != None and banner_msg != "":
         banner_msg = banner_msg.replace("\n", "<br/>")
-        banner_msg = "<br>" + banner_msg
+        banner_msg = "<br>" + banner_msg.encode('utf-8')
     else:
         banner_msg = ""
         
