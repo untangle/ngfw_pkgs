@@ -858,6 +858,38 @@ Ext.define('Ung.panel.Reports', {
                 }];
             }
             this.reportDataGrid.setColumns(reportDataColumns);
+        } else if(entry.type == 'TIME_GRAPH_DYNAMIC') { 
+            chart = {
+                    xtype: 'draw',
+                    name: "chart",
+                    border: false,
+                    width: '100%',
+                    height: '100%',
+                    tbar: tbar,
+                    sprites: [{
+                        type: 'text',
+                        text: i18n._(entry.title),
+                        fontSize: 18,
+                        width: 100,
+                        height: 30,
+                        x: 10, // the sprite x position
+                        y: 22  // the sprite y position
+                    }, {
+                        type: 'text',
+                        text: i18n._(entry.description),
+                        fontSize: 12,
+                        x: 10,
+                        y: 40
+                    }, {
+                        type: 'text',
+                        id: 'infos',
+                        text: "",
+                        fontSize: 12,
+                        x: 10,
+                        y: 80
+                    }]
+                };
+                this.reportDataGrid.setColumns([]);
         }
         
         if(chart.xtype!= 'draw') {
