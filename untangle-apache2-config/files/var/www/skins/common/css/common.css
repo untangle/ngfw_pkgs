@@ -180,6 +180,13 @@ img.icon-drag {
     cursor: pointer;
     height: 16px;
 }
+/* download row icon */
+.icon-download-row {
+    background:transparent url(../images/admin/icons/icon_export.gif) no-repeat center center;
+    width: 100%;
+    cursor: pointer;
+    height: 16px;
+}
 /* add filter row icon */
 .icon-play-row {
     background:transparent url(../images/admin/icons/icon_play.png) no-repeat center center;
