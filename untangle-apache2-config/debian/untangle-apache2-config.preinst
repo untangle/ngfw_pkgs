@@ -1,7 +1,10 @@
 #!/bin/bash
 
 # 12.0 conversion for new names (apache 2.4.3)
-rm -f /etc/apache2/sites-available/uvm.conf
+if [ -h /etc/apache2/sites-available/uvm.conf ]; then
+    rm -f /etc/apache2/sites-available/uvm.conf
+fi
+# 12.0 conversion for new names (apache 2.4.3)
 if [ -f /etc/apache2/sites-available/uvm ]; then
     mv /etc/apache2/sites-available/uvm /etc/apache2/sites-available/uvm.conf
     ln -s /etc/apache2/sites-available/uvm.conf /etc/apache2/sites-available/uvm
