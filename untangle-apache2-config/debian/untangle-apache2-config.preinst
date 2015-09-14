@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# 12.0 conversion for new names (apache 2.4.3)
+rm -f /etc/apache2/sites-available/uvm.conf
+if [ -f /etc/apache2/sites-available/uvm ]; then
+    mv /etc/apache2/sites-available/uvm /etc/apache2/sites-available/uvm.conf
+    ln -s /etc/apache2/sites-available/uvm.conf /etc/apache2/sites-available/uvm
+fi
+
 if [ -f /etc/apache2/untangle-conf.d ]; then
     t=$(mktemp)
     mv /etc/apache2/untangle-conf.d $t
