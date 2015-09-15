@@ -197,7 +197,20 @@ img.icon-drag {
 .x-btn .icon-play {
     background:transparent url(../images/admin/icons/icon_play.png) no-repeat center left !important;
 }
-
+/* refresh row icon */
+.icon-refresh-row {
+    background: transparent url(../images/admin/icons/icon_refresh.png) no-repeat center center;
+    width: 100%;
+    cursor: pointer;
+    height: 16px;
+}
+/* drop row icon */
+.icon-drop-row {
+    background: transparent url(../images/admin/icons/icon_arrow_down.png) no-repeat center center;
+    width: 100%;
+    cursor: pointer;
+    height: 16px;
+}
 /* Config Network item icon */
 div.icon-config-network {
     background: transparent url(../images/admin/config/icon_config_network.png) no-repeat !important; 
