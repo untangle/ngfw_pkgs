@@ -59,8 +59,10 @@ for file in $PG_CONF ; do
     sed -i -e "s/.*checkpoint_segments.*=.*/checkpoint_segments = 32/" $file
     sed -i -e "s/.*autovacuum_max_workers.*=.*/autovacuum_max_workers = 1/" $file
 
+    # log autovacuum
+    sed -i -e "s/.*log_autovacuum_min_duration.*=.*/log_autovacuum_min_duration = 0/" $file
     # decrease auto-vacuum since tables are now partitioned vacuuming is hardly required since rows are never removed only updated
-    sed -i -e "s/.*autovacuum_vacuum_scale_factor.*=.*/autovacuum_vacuum_scale_factor = .5/" $file
+    sed -i -e "s/.*autovacuum_vacuum_scale_factor.*=.*/autovacuum_vacuum_scale_factor = 2/" $file
     # decrease auto-analyze 
     sed -i -e "s/.*autovacuum_analyze_scale_factor.*=.*/autovacuum_analyze_scale_factor = .5/" $file
 
