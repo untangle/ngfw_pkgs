@@ -3,4 +3,6 @@
 # allow snort to start even if there is no eth0
 # This is so the snort postinst does not exit with an error and screw up dpkg
 #
-sed -i -e "s/.*ALLOW_UNAVAILABLE.*=.*/ALLOW_UNAVAILABLE=\"yes\"/" /etc/default/snort
+if [ -f /etc/default/snort ] ; then
+  sed -i -e "s/.*ALLOW_UNAVAILABLE.*=.*/ALLOW_UNAVAILABLE=\"yes\"/" /etc/default/snort
+fi
