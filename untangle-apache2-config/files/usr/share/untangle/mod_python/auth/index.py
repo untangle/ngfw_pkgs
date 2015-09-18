@@ -159,7 +159,7 @@ def _write_login_form(req, title, host, is_error):
     if not type(host) is str:
         host = cgi.escape(host).encode("utf-8")
 
-    banner_msg = get_node_settings_item('untangle-node-branding','bannerMessage')
+    banner_msg = get_node_settings_item('untangle-node-branding-manager','bannerMessage')
     if banner_msg != None and banner_msg != "":
         banner_msg = banner_msg.replace("\n", "<br/>")
         banner_msg = "<br>" + banner_msg.encode('utf-8')
