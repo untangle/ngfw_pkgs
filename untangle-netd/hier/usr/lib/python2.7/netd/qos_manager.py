@@ -148,14 +148,14 @@ class QosManager:
         file.write(r"""
 # Flush qos-classX chains
 for i in 1 2 3 4 5 6 7 ; do 
-    ${IPTABLES} -t mangle -F qos-class${i} 2> /dev/null
+    ${IPTABLES} -t mangle -F qos-class${i} >/dev/null 2>&1
 done""")
 
         file.write(r"""
 # Create special targets for both marking the current packet and the rest of the session via connmark
 for i in 1 2 3 4 5 6 7 ; do 
-    ${IPTABLES} -t mangle -N qos-class${i} 2> /dev/null
-    ${IPTABLES} -t mangle -F qos-class${i}
+    ${IPTABLES} -t mangle -N qos-class${i} >/dev/null 2>&1
+    ${IPTABLES} -t mangle -F qos-class${i} 
     ${IPTABLES} -t mangle -A qos-class${i} -j MARK --set-mark 0x000${i}0000/0x000F0000
     ${IPTABLES} -t mangle -A qos-class${i} -j CONNMARK --set-mark 0x000${i}0000/0x000F0000
 done
