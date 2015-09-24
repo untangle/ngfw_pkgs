@@ -99,6 +99,10 @@ class InterfacesManager:
 
     def write_interface_v6( self, interface_settings, interfaces ):
 
+        # If it is static without an address it is disabled
+        if interface_settings.get('v6ConfigType') == 'STATIC' and interface_settings.get('v6StaticAddress') == None:
+            interface_settings['v6ConfigType'] = 'DISABLED'
+
         self.interfacesFile.write("## Interface %i IPv6 (%s)\n" % (interface_settings.get('interfaceId'),interface_settings.get('v6ConfigType')) )
         #self.interfacesFile.write("auto %s\n" % interface_settings.get('symbolicDev'))
 
