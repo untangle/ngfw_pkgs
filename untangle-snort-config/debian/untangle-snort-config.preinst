@@ -5,7 +5,7 @@
 #
 if [ -f /etc/default/snort ] ; then
   sed -i -e "s/.*ALLOW_UNAVAILABLE.*=.*/ALLOW_UNAVAILABLE=\"yes\"/" /etc/default/snort
-else
+elif ! ps aux | grep -q pgksel.postinst ; then # d-i
   cat > /etc/default/snort <<EOF
 # Parameters for the daemon
 # Add any additional parameteres here.
