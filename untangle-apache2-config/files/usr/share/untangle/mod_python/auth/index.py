@@ -90,7 +90,7 @@ def _valid_login(req, realm, username, password):
         return False
 
 def _reports_valid_login(req, realm, username, password, log=True):
-    users = get_node_settings_item('untangle-node-reports','reportingUsers')
+    users = get_node_settings_item('untangle-node-reports','reportsUsers')
     if users == None:
         return False;
     if users['list'] == None:
