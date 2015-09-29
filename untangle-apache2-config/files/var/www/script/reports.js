@@ -1226,7 +1226,9 @@ Ext.define('Ung.panel.Reports', {
                 title: i18n._("Advanced report customization"),
                 forReportCustomization: true,
                 parentCmp: this,
-                grid: {},
+                grid: {
+                    reconfigure: function(){}
+                },
                 isDirty: function() {
                     return false;
                 },
