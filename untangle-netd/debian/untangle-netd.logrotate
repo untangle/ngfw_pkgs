@@ -1,12 +1,3 @@
-/var/log/uvm/finddev.log {
-rotate 2
-size 500k
-compress
-notifempty
-copytruncate
-missingok
-}
-
 /var/log/uvm/iptables.log {
 rotate 2
 size 500k
