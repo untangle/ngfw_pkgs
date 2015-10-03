@@ -1,6 +1,6 @@
 #! /bin/sh
 
-if [ ! -e '/dev//dev/plcm_drv' ]  ; then
+if [ ! -e '/dev/plcm_drv' ]  ; then
 mknod /dev/plcm_drv c 248 0 
 fi
 
