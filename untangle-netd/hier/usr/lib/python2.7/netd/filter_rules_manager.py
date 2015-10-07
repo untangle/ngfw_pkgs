@@ -54,6 +54,8 @@ class FilterRulesManager:
         for cmd in ip6tables_commands:
             if cmd.find("--protocol ah") : 
                 cmd = cmd.replace("--protocol ah", "-m ah ! --ahspi 0");
+            if cmd.find("--protocol icmp") : 
+                cmd = cmd.replace("--protocol icmp", "--protocol icmpv6");
             self.file.write(cmd + "\n")
 
         self.file.write("\n");
