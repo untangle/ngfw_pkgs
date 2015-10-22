@@ -119,7 +119,7 @@ linux_entry ()
 	  init-*)
 	      title="$(gettext_printf "%s, with Linux %s (%s)" "${os}" "${version}" "${type#init-}")" ;;
 	  *)
-	      title="$(gettext_printf "%s %s" "${os}" "${version}")" ;;
+	      title="$(gettext_printf "%s %s %s" "${os}" "${version}" "${type}")" ;;
       esac
       if [ x"$title" = x"$GRUB_ACTUAL_DEFAULT" ] || [ x"Previous Linux versions>$title" = x"$GRUB_ACTUAL_DEFAULT" ]; then
 	  replacement_title="$(echo "Advanced options for ${OS}" | sed 's,>,>>,g')>$(echo "$title" | sed 's,>,>>,g')"
@@ -341,34 +341,34 @@ while [ "x$list" != "x" ] ; do
     is_top_level=false
   fi
 
-  linux_entry "${OS}" "" "" \
+  linux_entry "${OS}" "${version}" "" \
               "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
-  for supported_init in ${SUPPORTED_INITS}; do
-    init_path="${supported_init#*:}"
-    if [ -x "${init_path}" ] && [ "$(readlink -f /sbin/init)" != "${init_path}" ]; then
-      linux_entry "${OS}" "${version}" "init-${supported_init%%:*}" \
-		  "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} init=${init_path}"
-    fi
-  done
+  # for supported_init in ${SUPPORTED_INITS}; do
+  #   init_path="${supported_init#*:}"
+  #   if [ -x "${init_path}" ] && [ "$(readlink -f /sbin/init)" != "${init_path}" ]; then
+  #     linux_entry "${OS}" "${version}" "init-${supported_init%%:*}" \
+  # 		  "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} init=${init_path}"
+  #   fi
+  # done
   if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
     linux_entry "${OS}" "${version}" recovery \
                 "${GRUB_CMDLINE_LINUX_RECOVERY} ${GRUB_CMDLINE_LINUX}"
   fi
 
   # safe video mode
-  linux_entry "${OS}" "safe video mode" "safe video mode" \
+  linux_entry "${OS}" "${version}" "safe video mode" \
               "${GRUB_CMDLINE_LINUX} quiet splash force-video-safe nomodeset video=uvesafb:mode_option=1280x1024-24,mtrr=3,scroll=ywrap"
 
   # kern video mode
-  linux_entry "${OS}" "kern video mode" "kern video mode" \
-              "${GRUB_CMDLINE_LINUX} quiet splash"
+  linux_entry "${OS}" "${version}" "kern video mode" \
+              "${GRUB_CMDLINE_LINUX} quiet splash vga=791"
 
   # hardware safe mode
-  linux_entry "${OS}" "hardware safe mode" "hardware safe mode" \
+  linux_entry "${OS}" "${version}" "hardware safe mode" \
               "${GRUB_CMDLINE_LINUX} acpi=off noapic nosplash"
 
   # recovery mode
-  linux_entry "${OS}" "recovery mode" "recovery mode" \
+  linux_entry "${OS}" "${version}" "recovery mode" \
               "${GRUB_CMDLINE_LINUX} ut-restore nosplash"
 
   list=`echo $list | tr ' ' '\n' | fgrep -vx "$linux" | tr '\n' ' '`
