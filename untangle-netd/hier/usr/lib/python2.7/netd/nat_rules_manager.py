@@ -19,7 +19,7 @@ class NatRulesManager:
 
         if 'enabled' in nat_rule and not nat_rule['enabled']:
             return
-        if 'matchers' not in nat_rule or 'list' not in nat_rule['matchers']:
+        if 'conditions' not in nat_rule or 'list' not in nat_rule['conditions']:
             return
         if 'ruleId' not in nat_rule:
             return
@@ -33,7 +33,7 @@ class NatRulesManager:
             return
 
         description = "NAT Rule #%i" % int(nat_rule['ruleId'])
-        iptables_conditions = IptablesUtil.conditions_to_iptables_string( nat_rule['matchers']['list'], description, verbosity );
+        iptables_conditions = IptablesUtil.conditions_to_iptables_string( nat_rule['conditions']['list'], description, verbosity );
 
         iptables_commands = [ "${IPTABLES} -t nat -A nat-rules " + ipt + target for ipt in iptables_conditions ]
 

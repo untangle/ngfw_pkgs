@@ -19,7 +19,7 @@ class FilterRulesManager:
 
         if filter_rule.get('enabled') == None or filter_rule.get('enabled') == False:
             return
-        if filter_rule.get('matchers') == None or filter_rule.get('matchers').get('list') == None:
+        if filter_rule.get('conditions') == None or filter_rule.get('conditions').get('list') == None:
             return
         if filter_rule.get('ruleId') == None:
             return
@@ -32,7 +32,7 @@ class FilterRulesManager:
             target = ' -j RETURN '
 
         description = "Filter Rule #%i" % int(filter_rule['ruleId'])
-        iptables_conditions = IptablesUtil.conditions_to_iptables_string( filter_rule['matchers']['list'], description, verbosity );
+        iptables_conditions = IptablesUtil.conditions_to_iptables_string( filter_rule['conditions']['list'], description, verbosity );
 
         iptables_log_commands = [ ("${IPTABLES} -t filter -A %s " % table_name) + ipt + " -j NFLOG --nflog-prefix 'filter_blocked' " for ipt in iptables_conditions ]
         iptables_commands = [ ("${IPTABLES} -t filter -A %s " % table_name) + ipt + target for ipt in iptables_conditions ]

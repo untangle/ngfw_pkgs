@@ -13,7 +13,7 @@ class IptablesUtil:
     settings = None
 
     @staticmethod
-    def interface_matcher_string_to_interface_list( value ):
+    def interface_condition_string_to_interface_list( value ):
         intfs = []
         
         for substr in value.split(","):
@@ -36,195 +36,195 @@ class IptablesUtil:
         return intfs
                     
 
-    # This method takes a list of matchers (conditions) from a rule and translates them into a string containing the iptables conditions
-    # It returns a list of strings, because some set of matchers require multiple iptables rules
-    # Example input: ['matcherType':'SRC_INTF', 'value':'1'] -> ["-m connmark --mark 0x01/0xff"]
-    # Example input: ['matcherType':'DST_PORT', 'value':'123'] -> ["-p udp --dport 123", "-p tcp --dport 123"]
+    # This method takes a list of conditions from a rule and translates them into a string containing the iptables conditions
+    # It returns a list of strings, because some set of conditions require multiple iptables rules
+    # Example input: ['conditionType':'SRC_INTF', 'value':'1'] -> ["-m connmark --mark 0x01/0xff"]
+    # Example input: ['conditionType':'DST_PORT', 'value':'123'] -> ["-p udp --dport 123", "-p tcp --dport 123"]
     @staticmethod
-    def conditions_to_iptables_string( matchers, comment=None, verbosity=0 ):
+    def conditions_to_iptables_string( conditions, comment=None, verbosity=0 ):
         
         current_strings = [ "" ];
 
-        if matchers is None:
+        if conditions is None:
             return current_strings;
 
         if comment != None:
                 current_strings = [ current + (" -m comment --comment \"%s\" " % comment)  for current in current_strings ]
 
-        hasProtocolMatcher = False
-        for matcher in matchers:
-            if 'matcherType' not in matcher:
-                print "ERROR: Ignoring invalid matcher: %s" % str(matcher)
+        hasProtocolCondition = False
+        for condition in conditions:
+            if 'conditionType' not in condition:
+                print "ERROR: Ignoring invalid condition: %s" % str(condition)
                 continue
-            if matcher['matcherType'] == 'PROTOCOL':
-                hasProtocolMatcher = True
+            if condition['conditionType'] == 'PROTOCOL':
+                hasProtocolCondition = True
 
-        for matcher in matchers:
-            if 'matcherType' not in matcher:
-                print "ERROR: Ignoring invalid matcher: %s" % str(matcher)
+        for condition in conditions:
+            if 'conditionType' not in condition:
+                print "ERROR: Ignoring invalid condition: %s" % str(condition)
                 continue
 
-            matcherStr = ""
-            matcherType = matcher['matcherType']
+            conditionStr = ""
+            conditionType = condition['conditionType']
             invert = False
             value = None
-            if 'value' in matcher:
-                value = matcher['value']
-            if 'invert' in matcher and matcher['invert']:
+            if 'value' in condition:
+                value = condition['value']
+            if 'invert' in condition and condition['invert']:
                 invert = True
 
-            if matcherType == "PROTOCOL":
+            if conditionType == "PROTOCOL":
                 if "any" in value:
                     continue
 
                 protos = value.split(",")
                 if invert and len(protos)>1:
-                    print "ERROR: invert not supported on multiple protocol matcher"
+                    print "ERROR: invert not supported on multiple protocol condition"
                     continue
                 if len(protos) == 0:
-                    print "ERROR: interface matcher with no interfaces"
+                    print "ERROR: interface condition with no interfaces"
                     continue
                 orig_current_strings = current_strings
                 current_strings = []
                 # split current rules for each protocol specified
                 for i in range(0 , len(protos) ):
-                    matcherStr = ""
+                    conditionStr = ""
                     if invert:
-                        matcherStr = matcherStr + " ! "
-                    matcherStr = matcherStr + (" --protocol %s " % string.lower(protos[i]))
-                    current_strings = current_strings + [ matcherStr + current for current in orig_current_strings ]
+                        conditionStr = conditionStr + " ! "
+                    conditionStr = conditionStr + (" --protocol %s " % string.lower(protos[i]))
+                    current_strings = current_strings + [ conditionStr + current for current in orig_current_strings ]
 
-            if matcherType == "SRC_INTF":
+            if conditionType == "SRC_INTF":
                 if "any" in value:
                     continue # no need to do anything
 
-                intfs = IptablesUtil.interface_matcher_string_to_interface_list( value )
+                intfs = IptablesUtil.interface_condition_string_to_interface_list( value )
 
                 if invert and len(intfs) > 1:
-                    print "ERROR: invert not supported on multiple interface matcher"
+                    print "ERROR: invert not supported on multiple interface condition"
                     continue
                 if len(intfs) == 0:
-                    print "ERROR: interface matcher with no interfaces"
+                    print "ERROR: interface condition with no interfaces"
                     continue
                 orig_current_strings = current_strings
                 current_strings = []
                 # split current rules for each intf specified
                 for i in range(0 , len(intfs) ):
-                    matcherStr = ""
+                    conditionStr = ""
                     if invert:
-                        matcherStr = matcherStr + " ! "
-                    matcherStr = matcherStr + (" -m connmark --mark 0x%04X/0x00FF " % int(intfs[i]))
-                    current_strings = current_strings + [ current + matcherStr for current in orig_current_strings ]
+                        conditionStr = conditionStr + " ! "
+                    conditionStr = conditionStr + (" -m connmark --mark 0x%04X/0x00FF " % int(intfs[i]))
+                    current_strings = current_strings + [ current + conditionStr for current in orig_current_strings ]
 
-            if matcherType == "DST_INTF":
+            if conditionType == "DST_INTF":
                 if "any" in value:
                     continue # no need to do anything
 
-                intfs = IptablesUtil.interface_matcher_string_to_interface_list( value )
+                intfs = IptablesUtil.interface_condition_string_to_interface_list( value )
 
                 if invert and len(intfs) > 1:
-                    print "ERROR: invert not supported on multiple interface matcher"
+                    print "ERROR: invert not supported on multiple interface condition"
                     continue
                 if len(intfs) == 0:
-                    print "ERROR: interface matcher with no interfaces"
+                    print "ERROR: interface condition with no interfaces"
                     continue
                 orig_current_strings = current_strings
                 current_strings = []
                 # split current rules for each intf specified
                 for i in range(0 , len(intfs) ):
-                    matcherStr = ""
+                    conditionStr = ""
                     if invert:
-                        matcherStr = matcherStr + " ! "
-                    matcherStr = matcherStr + (" -m connmark --mark 0x%04X/0xFF00 " % (int(intfs[i]) << 8))
-                    current_strings = current_strings + [ current + matcherStr for current in orig_current_strings ]
+                        conditionStr = conditionStr + " ! "
+                    conditionStr = conditionStr + (" -m connmark --mark 0x%04X/0xFF00 " % (int(intfs[i]) << 8))
+                    current_strings = current_strings + [ current + conditionStr for current in orig_current_strings ]
 
-            if matcherType == "SRC_MAC":
+            if conditionType == "SRC_MAC":
                 if invert:
-                    matcherStr = matcherStr + " ! "
-                matcherStr = matcherStr + " -m mac --mac-source %s " % value
-                current_strings = [ current + matcherStr for current in current_strings ]
+                    conditionStr = conditionStr + " ! "
+                conditionStr = conditionStr + " -m mac --mac-source %s " % value
+                current_strings = [ current + conditionStr for current in current_strings ]
 
-            if matcherType == "SRC_ADDR":
+            if conditionType == "SRC_ADDR":
                 if "any" in value:
                     continue # no need to do anything
 
                 srcs = value.split(",")
                 if invert and len(srcs) > 1:
-                    print "ERROR: invert not supported on multiple addr matcher"
+                    print "ERROR: invert not supported on multiple addr condition"
                     continue
                 if len(srcs) == 0:
-                    print "ERROR: address matcher with no interfaces"
+                    print "ERROR: address condition with no interfaces"
                     continue
 
                 orig_current_strings = current_strings
                 current_strings = []
                 for i in srcs:
-                    matcherStr = ""
+                    conditionStr = ""
                     if invert:
-                        matcherStr = matcherStr + " ! "
+                        conditionStr = conditionStr + " ! "
                     if "-" in i:
-                        matcherStr = matcherStr + " -m iprange --src-range %s " % i
+                        conditionStr = conditionStr + " -m iprange --src-range %s " % i
                     else:
-                        matcherStr = matcherStr + " --source %s " % i
-                    current_strings = current_strings + [ current + matcherStr for current in orig_current_strings ]
+                        conditionStr = conditionStr + " --source %s " % i
+                    current_strings = current_strings + [ current + conditionStr for current in orig_current_strings ]
 
-            if matcherType == "DST_ADDR":
+            if conditionType == "DST_ADDR":
                 if "any" in value:
                     continue # no need to do anything
 
                 dsts = value.split(",")
                 if invert and len(dsts) > 1:
-                    print "ERROR: invert not supported on multiple addr matcher"
+                    print "ERROR: invert not supported on multiple addr condition"
                     continue
                 if len(dsts) == 0:
-                    print "ERROR: address matcher with no interfaces"
+                    print "ERROR: address condition with no interfaces"
                     continue
 
                 orig_current_strings = current_strings
                 current_strings = []
                 for i in dsts:
-                    matcherStr = ""
+                    conditionStr = ""
                     if invert:
-                        matcherStr = matcherStr + " ! "
+                        conditionStr = conditionStr + " ! "
                     if "-" in i:
-                        matcherStr = matcherStr + " -m iprange --dst-range %s " % i
+                        conditionStr = conditionStr + " -m iprange --dst-range %s " % i
                     else:
-                        matcherStr = matcherStr + " --destination %s " % i
-                    current_strings = current_strings + [ current + matcherStr for current in orig_current_strings ]
+                        conditionStr = conditionStr + " --destination %s " % i
+                    current_strings = current_strings + [ current + conditionStr for current in orig_current_strings ]
 
-            if matcherType == "SRC_PORT":
+            if conditionType == "SRC_PORT":
                 if "any" in value:
                     continue # no need to do anything
 
                 value = value.replace("-",":").replace(" ","") # iptables uses colon to represent range not dash
-                matcherStr = matcherStr + " -m multiport"
+                conditionStr = conditionStr + " -m multiport"
                 if invert:
-                    matcherStr = matcherStr + " ! "
-                matcherStr = matcherStr + " --source-ports %s " % value
-                if not hasProtocolMatcher:
-                    # port explicitly means either TCP or UDP, since no protocol matcher has been specified, use "TCP,UDP" as the protocol matcher
+                    conditionStr = conditionStr + " ! "
+                conditionStr = conditionStr + " --source-ports %s " % value
+                if not hasProtocolCondition:
+                    # port explicitly means either TCP or UDP, since no protocol condition has been specified, use "TCP,UDP" as the protocol condition
                     current_strings = [ " --protocol udp " + current for current in current_strings ] + [ " --protocol tcp " + current for current in current_strings ]
-                current_strings = [ current + matcherStr for current in current_strings ]
+                current_strings = [ current + conditionStr for current in current_strings ]
 
-            if matcherType == "DST_PORT":
+            if conditionType == "DST_PORT":
                 if "any" in value:
                     continue # no need to do anything
 
                 value = value.replace("-",":").replace(" ","") # iptables uses colon to represent range not dash
-                matcherStr = matcherStr + " -m multiport " 
+                conditionStr = conditionStr + " -m multiport " 
                 if invert:
-                    matcherStr = matcherStr + " ! "
-                matcherStr = matcherStr + " --destination-ports %s " % value
-                if not hasProtocolMatcher:
-                    # port explicitly means either TCP or UDP, since no protocol matcher has been specified, use "TCP,UDP" as the protocol matcher
+                    conditionStr = conditionStr + " ! "
+                conditionStr = conditionStr + " --destination-ports %s " % value
+                if not hasProtocolCondition:
+                    # port explicitly means either TCP or UDP, since no protocol condition has been specified, use "TCP,UDP" as the protocol condition
                     current_strings = [ " --protocol udp " + current for current in current_strings ] + [ " --protocol tcp " + current for current in current_strings ]
-                current_strings = [ current + matcherStr for current in current_strings ]
+                current_strings = [ current + conditionStr for current in current_strings ]
 
-            if matcherType == "DST_LOCAL":
+            if conditionType == "DST_LOCAL":
                 if invert:
-                    matcherStr = matcherStr + " ! "
-                matcherStr = matcherStr + " -m addrtype --dst-type local "
-                current_strings = [ current + matcherStr for current in current_strings ]
+                    conditionStr = conditionStr + " ! "
+                conditionStr = conditionStr + " -m addrtype --dst-type local "
+                current_strings = [ current + conditionStr for current in current_strings ]
                 
 
         return current_strings;

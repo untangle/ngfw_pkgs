@@ -20,7 +20,7 @@ class BypassRuleManager:
 
         if 'enabled' in bypass_rule and not bypass_rule['enabled']:
             return
-        if 'matchers' not in bypass_rule or 'list' not in bypass_rule['matchers']:
+        if 'conditions' not in bypass_rule or 'list' not in bypass_rule['conditions']:
             return
         if 'ruleId' not in bypass_rule:
             return
@@ -35,7 +35,7 @@ class BypassRuleManager:
             return
 
         description = "Bypass Rule #%i" % int(bypass_rule['ruleId'])
-        iptables_conditions = IptablesUtil.conditions_to_iptables_string( bypass_rule['matchers']['list'], description, verbosity );
+        iptables_conditions = IptablesUtil.conditions_to_iptables_string( bypass_rule['conditions']['list'], description, verbosity );
 
         iptables_commands = [ "${IPTABLES} -t filter -A bypass-rules " + ipt + target for ipt in iptables_conditions ]
 

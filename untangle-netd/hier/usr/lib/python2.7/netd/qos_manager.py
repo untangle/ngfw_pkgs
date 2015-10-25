@@ -41,7 +41,7 @@ class QosManager:
 
         if 'enabled' in qos_rule and not qos_rule['enabled']:
             return
-        if 'matchers' not in qos_rule or 'list' not in qos_rule['matchers']:
+        if 'conditions' not in qos_rule or 'list' not in qos_rule['conditions']:
             return
         if 'ruleId' not in qos_rule:
             return
@@ -53,7 +53,7 @@ class QosManager:
             return
 
         description = "QoS Custom Rule #%i" % int(qos_rule['ruleId'])
-        iptables_conditions = IptablesUtil.conditions_to_iptables_string( qos_rule['matchers']['list'], description, verbosity );
+        iptables_conditions = IptablesUtil.conditions_to_iptables_string( qos_rule['conditions']['list'], description, verbosity );
 
         iptables_commands = [ "${IPTABLES} -t mangle -A qos-rules -m mark --mark 0x%X/0x%X " % (self.bypassMarkMask,self.bypassMarkMask) + ipt + target for ipt in iptables_conditions ]
 

@@ -18,7 +18,7 @@ class PortForwardManager:
 
         if 'enabled' in port_forward_rule and not port_forward_rule['enabled']:
             return
-        if 'matchers' not in port_forward_rule or 'list' not in port_forward_rule['matchers']:
+        if 'conditions' not in port_forward_rule or 'list' not in port_forward_rule['conditions']:
             return
         if 'ruleId' not in port_forward_rule:
             return
@@ -32,7 +32,7 @@ class PortForwardManager:
             return
 
         description = "Port Forward Rule #%i" % int(port_forward_rule['ruleId'])
-        iptables_conditions = IptablesUtil.conditions_to_iptables_string( port_forward_rule['matchers']['list'], description, verbosity );
+        iptables_conditions = IptablesUtil.conditions_to_iptables_string( port_forward_rule['conditions']['list'], description, verbosity );
 
         iptables_commands = [ "${IPTABLES} -t nat -A port-forward-rules " + ipt + target for ipt in iptables_conditions ]
 
