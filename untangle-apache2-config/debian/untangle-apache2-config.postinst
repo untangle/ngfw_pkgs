@@ -12,8 +12,10 @@ addgroup uvmlogin 2>/dev/null
 
 sed -e 's/NO_START=1/NO_START=0/' -i /etc/default/apache2
 
-# disable SSLv2 and SSLv3 (buge #12028)
+# disable SSLv2 and SSLv3 (bug #12028)
 sed -e 's/SSLProtocol all.*/SSLProtocol all -SSLv2 -SSLv3/' -i /etc/apache2/mods-available/ssl.conf
+# remove directive not supported in apache 2.4
+perl -i -pe 's/^SSLMutex/#SSLMutex/' -i /etc/apache2/mods-available/ssl.conf
 
 cat >/etc/apache2/mods-available/jk.conf <<EOF
 <IfModule mod_jk.c>
