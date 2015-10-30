@@ -8,6 +8,7 @@ fi
 if [ -f /etc/apache2/sites-available/uvm ]; then
     mv /etc/apache2/sites-available/uvm /etc/apache2/sites-available/uvm.conf
     ln -s /etc/apache2/sites-available/uvm.conf /etc/apache2/sites-available/uvm
+    rm -f /etc/apache2/sites-enabled/uvm
 fi
 
 if [ -f /etc/apache2/untangle-conf.d ]; then
