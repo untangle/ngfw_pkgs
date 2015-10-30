@@ -82,8 +82,8 @@ grep -qE '^8.' /etc/debian_version && A2DISMOD_OPTS="-m -f"
 /usr/sbin/a2ensite uvm
 
 # disable Trace and Server Signatures for silly PCI compliance
-perl -i -pe 's/^ServerTokens.*/ServerTokens Prod/ ; s/^ServerSignature.*/ServerSignature Off/' /etc/apache2/conf.d/security
-perl -i -pe 's/^TraceEnable.*/TraceEnable Off/' /etc/apache2/conf.d/security
+perl -i -pe 's/^ServerTokens.*/ServerTokens Prod/ ; s/^ServerSignature.*/ServerSignature Off/' /etc/apache2/conf-available/security
+perl -i -pe 's/^TraceEnable.*/TraceEnable Off/' /etc/apache2/conf-available/security
 
 # unpack ExtJS
 for tarball in /usr/share/untangle-apache2-config/ext*.tar.gz ; do

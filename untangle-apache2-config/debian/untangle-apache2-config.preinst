@@ -10,6 +10,7 @@ if [ -f /etc/apache2/sites-available/uvm ]; then
     rm -f /etc/apache2/sites-available/uvm
     rm -f /etc/apache2/sites-enabled/uvm
 fi
+rm -f /etc/apache2/conf.d/uvm-upgrade #12.0 remove old file
 
 if [ -f /etc/apache2/untangle-conf.d ]; then
     t=$(mktemp)
