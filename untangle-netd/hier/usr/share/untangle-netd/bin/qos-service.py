@@ -4,11 +4,10 @@ import os, getopt, sys, json, subprocess, parse, platform
 
 def usage():
     print """\
-usage: %s start|stop|status|sessions 
+usage: %s start|stop|status 
     start   - start QoS services
     stop    - stop QoS services
     status  - print QoS status
-    session - print current sessions
 """ % sys.argv[0]
     sys.exit(1)
 
@@ -250,30 +249,6 @@ def status( qos_interfaces, wan_intfs ):
     print json_objs
         
 
-def sessionsToJSON(input):
-    #Parse patterns for qos-service.py sessions output
-    parsePattern='proto {:^} state {:^} src {:^} dst {:^} src-port {:^d} dst-port {:^d} priority {:^d}'
-    entryKeys=('proto','state','src','dst','src_port','dst_port','priority')
-    output=[]
-    entry={}
-    for line in input:
-        res=parse.parse(parsePattern,line[:-1])
-        if res:
-            parsed = res.fixed
-            output.append(dict(zip(entryKeys,parsed)))
-    return json.dumps(output)
-    
-        
-        
-def sessions( qos_interfaces, wan_intfs ):
-    if "2.6.32" in platform.platform():
-        result = runSubprocess( r"""cat /proc/net/ip_conntrack | grep -v '127.0.0.1' | grep tcp | sed 's/[a-z]*=//g' | awk '{printf "proto %s state %12s src %15s dst %15s src-port %5s dst-port %5s priority %x\n", $1, $4, $5, $6, $7, $8, rshift(and($18,0x000F0000),16)}'""")
-        result.extend(runSubprocess( r"""cat /proc/net/ip_conntrack | grep -v '127.0.0.1' | grep udp | sed 's/\[.*\]//g' | sed 's/[a-z]*=//g' | awk '{printf "proto %s state           xx src %15s dst %15s src-port %5s dst-port %5s priority %x\n", $1, $4, $5, $6, $7, rshift(and($16,0x000F0000),16)}'"""))
-    else:
-        result = runSubprocess( r"""cat /proc/net/ip_conntrack | grep -v '127.0.0.1' | grep tcp | sed 's/\[.*\]//g' | sed 's/[a-z]*=//g' | awk '{printf "proto %s state %12s src %15s dst %15s src-port %5s dst-port %5s priority %x\n", $1, $4, $5, $6, $7, $8, rshift(and($13,0x000F0000),16)}'""")
-        result.extend(runSubprocess( r"""cat /proc/net/ip_conntrack | grep -v '127.0.0.1' | grep udp | sed 's/\[.*\]//g' | sed 's/[a-z]*=//g' | awk '{printf "proto %s state           xx src %15s dst %15s src-port %5s dst-port %5s priority %x\n", $1, $4, $5, $6, $7, rshift(and($12,0x000F0000),16)}'"""))
-    return result
-    
 #
 # Main
 #
@@ -333,11 +308,6 @@ elif action == "start":
     start( qos_settings, wan_intfs )
 elif action == "status":
     status( qos_settings, wan_intfs )
-elif action == "sessions":
-    print sessionsToJSON( sessions( qos_settings, wan_intfs ) )
-elif action == "sessions2":
-    for i in sessions( qos_settings, wan_intfs ):
-        print i.strip()
 else:
     print "Unknown argument: %s" % action
     usage
