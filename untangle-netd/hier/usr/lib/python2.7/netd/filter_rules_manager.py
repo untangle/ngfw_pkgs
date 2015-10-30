@@ -19,8 +19,6 @@ class FilterRulesManager:
 
         if filter_rule.get('enabled') == None or filter_rule.get('enabled') == False:
             return
-        if filter_rule.get('conditions') == None or filter_rule.get('conditions').get('list') == None:
-            return
         if filter_rule.get('ruleId') == None:
             return
         if filter_rule.get('blocked') == None:
