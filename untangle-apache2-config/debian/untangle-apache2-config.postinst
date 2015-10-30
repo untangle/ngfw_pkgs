@@ -50,9 +50,6 @@ chmod 600 /etc/apache2/workers.properties
 if [ ! -e /etc/apache2/uvm.conf ]; then
     echo "Include /usr/share/untangle/conf/apache2/conf.d/*.conf" >/etc/apache2/uvm.conf
 fi
-if [ -f /etc/apache2/sites-enabled/uvm ] ; then
-    rm -f /etc/apache2/sites-enabled/uvm #12.0 upgrade
-fi
 
 if [ ! -e $PEMFILE ]; then
     echo 'generating self-signed cert'
