@@ -84,6 +84,7 @@ class DnsMasqManager:
                 
         # Set globla options
         file.write("# Global DNS options\n")
+        file.write("interface=* # specified so local-service option is disabled\n");
         file.write("localise-queries\n");
         file.write("expand-hosts\n");
         # dont read /etc/hosts - this will result in returning 127.0.0.1 for some queries
