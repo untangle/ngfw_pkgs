@@ -91,7 +91,7 @@ def add_htb_rules( qos_settings, wan_intf ):
     if quantum <=1000 or quantum >= 20000:
         #quantum need between 1000 and 20000
         # when it is out of range, use quantum as 10000 to calculate the r2q value
-	r2q = wan_upload_bandwidth * 1024 / 80000 
+        r2q = wan_upload_bandwidth * 1024 / 80000 
 	 
     if r2q == 10:
     	run("tc qdisc add dev %s root handle 1: htb default 1%i" % (wan_dev, default_class) )
@@ -138,7 +138,7 @@ def add_htb_rules( qos_settings, wan_intf ):
     if quantum <=1000 or quantum >= 20000:
         #quantum need between 1000 and 20000
         # when it is out of range, use quantum as 10000 to calculate the r2q value
-	r2q = wan_download_bandwidth * 1024 / 80000 
+        r2q = wan_download_bandwidth * 1024 / 80000 
 
     if r2q == 10:
         run("tc qdisc add dev %s root handle 1: htb default 1%i" % (imq_dev, default_class) )
