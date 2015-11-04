@@ -86,7 +86,18 @@ def add_htb_rules( qos_settings, wan_intf ):
     #
     # egress filtering
     #
-    run("tc qdisc add dev %s root handle 1: htb default 1%i" % (wan_dev, default_class) )
+    r2q = 10
+    quantum = wan_upload_bandwidth * 1024 / (8 *  r2q)
+    if quantum <=1000 or quantum >= 20000:
+        #quantum need between 1000 and 20000
+        # when it is out of range, use quantum as 10000 to calculate the r2q value
+	r2q = wan_upload_bandwidth * 1024 / 80000 
+	 
+    if r2q == 10:
+    	run("tc qdisc add dev %s root handle 1: htb default 1%i" % (wan_dev, default_class) )
+    else:
+        run("tc qdisc add dev %s root handle 1: htb default 1%i r2q %i" % (wan_dev, default_class, r2q) )
+
     run("tc class add dev %s parent 1: classid 1:1 htb rate %ikbit" % (wan_dev, wan_upload_bandwidth) )
     for i in qos_priorities(): 
         upload_reserved = qos_priority_upload_reserved( qos_settings, wan_intf, i)
@@ -122,7 +133,18 @@ def add_htb_rules( qos_settings, wan_intf ):
     # ingress filtering is done via the IMQ interface
     #
     run("ifconfig %s up" % imq_dev)
-    run("tc qdisc add dev %s root handle 1: htb default 1%i" % (imq_dev, default_class) )
+    r2q = 10
+    quantum = wan_download_bandwidth * 1024 / (8 *  r2q)
+    if quantum <=1000 or quantum >= 20000:
+        #quantum need between 1000 and 20000
+        # when it is out of range, use quantum as 10000 to calculate the r2q value
+	r2q = wan_download_bandwidth * 1024 / 80000 
+
+    if r2q == 10:
+        run("tc qdisc add dev %s root handle 1: htb default 1%i" % (imq_dev, default_class) )
+    else:
+        run("tc qdisc add dev %s root handle 1: htb default 1%i r2q %i" % (imq_dev, default_class, r2q) )
+
     run("tc class add dev %s parent 1: classid 1:1 htb rate %ikbit" % (imq_dev,  wan_download_bandwidth) )
     for i in qos_priorities(): 
         download_reserved = qos_priority_download_reserved( qos_settings, wan_intf, i)
