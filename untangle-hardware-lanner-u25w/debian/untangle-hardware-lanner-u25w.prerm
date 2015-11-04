@@ -8,7 +8,7 @@ else
 fi
 }
 
-SERVICE=untangle-hardware-lanner-u5
+SERVICE=untangle-hardware-lanner-u25w
 
 case "$1" in
     remove|deconfigure)
