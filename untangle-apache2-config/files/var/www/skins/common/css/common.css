@@ -158,13 +158,6 @@ img.icon-drag {
     cursor: pointer;
     height:16px;
 }
-/* delete row icon */
-.icon-delete-row {
-    background: transparent url(../images/admin/icons/icon_delete_row.gif) no-repeat center center;
-    width: 100%;
-    cursor: pointer;
-    height: 16px;
-}
 
 /* detail row icon */
 .icon-detail-row {
