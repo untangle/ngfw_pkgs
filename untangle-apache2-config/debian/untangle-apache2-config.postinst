@@ -91,8 +91,8 @@ for tarball in /usr/share/untangle-apache2-config/ext*.tar.gz ; do
 done
 
 # copy english local file to "xx" test language locale
-if [ -f /var/www/ext5/packages/ext-locale/build/ext-locale-en.js ] ; then
-    cp /var/www/ext5/packages/ext-locale/build/ext-locale-en.js /var/www/ext5/packages/ext-locale/build/ext-locale-xx.js
+if [ -f /var/www/ext6/classic/locale/locale-en.js ] ; then
+    cp /var/www/ext6/classic/locale/locale-en.js /var/www/ext6/classic/locale/locale-xx.js
 fi
 
 if [ ! -f /var/www/images/BrandingLogo.png ]; then
