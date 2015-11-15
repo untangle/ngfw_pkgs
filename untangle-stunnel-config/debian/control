@@ -1,0 +1,13 @@
+Source: untangle-stunnel-config
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.8.0
+
+Package: untangle-stunnel-config
+Architecture: all
+Depends: stunnel4, bc, xinetd, update-inetd, libfile-copy-recursive-perl
+Description: The Untangle stunnel configuration
+ The Untangle stunnel configuration.

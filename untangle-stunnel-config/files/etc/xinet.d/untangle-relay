@@ -1,0 +1,18 @@
+# This is the configuration for the Untangle mail relay server
+# Note that binding 127.0.0.2 (dot-two) is NOT a typo!
+
+service untangle-relay
+{
+	disable		= no
+	type		= UNLISTED
+	flags		= IPv4
+	id		= untangle-relay
+	socket_type	= stream
+	protocol	= tcp
+	user		= root
+	wait		= no
+	port		= 2525
+	bind		= 127.0.0.2
+	server		= /usr/bin/stunnel
+	server_args	= /etc/stunnel/untangle-relay.conf
+}

@@ -1,0 +1,6 @@
+#! /bin/bash
+
+# enable xinetd for auto start
+update-rc.d xinetd enable
+
+exit 0
