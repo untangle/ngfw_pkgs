@@ -1,6 +1,9 @@
-#! /bin/bash
+#!/bin/bash
 
 # enable xinetd for auto start
 update-rc.d xinetd enable
+
+# make sure it gets started or restarted
+/etc/init.d/xinetd restart
 
 exit 0
