@@ -1,2 +1,3 @@
 /etc
-/etc/untangle/monit.d
+/etc/stunnel
+/etc/xinetd.d
