@@ -6,10 +6,10 @@
 }
 /* Left side container */
 .content-left {
-    width: 215px;
     background: #5C5C5D url(../images/admin/background_left.png) no-repeat !important;
-    text-align:center;
-    border-right:1px #333 solid;
+}
+.menu-button .x-btn-inner {
+    font-size: 13px;
 }
 /* right content container */
 #content-right {
@@ -339,7 +339,7 @@ td.app-item-center div.text {
     position: absolute;
     top: 5px;
     left: 53px;
-    width: 135px;
+    width: 130px;
     height: 35px;
     text-align: left;
     color:#4E4C4C;
