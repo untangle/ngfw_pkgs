@@ -64,6 +64,11 @@ if ! grep "Listen 443" /etc/apache2/ports.conf >/dev/null; then
     echo "Listen 443" >>/etc/apache2/ports.conf
 fi
 
+# enable MemorySessions for mod_python
+if ! grep "PythonOption mod_python.session.database_directory" /etc/apache2/mods-available/python.load >/dev/null; then
+    echo "PythonOption mod_python.session.database_directory /var/run/shm" >> /etc/apache2/mods-available/python.load
+fi
+
 # enable these modules
 /usr/sbin/a2enmod jk
 /usr/sbin/a2enmod ssl
