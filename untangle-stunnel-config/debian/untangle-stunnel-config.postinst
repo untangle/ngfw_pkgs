@@ -1,9 +1,17 @@
 #!/bin/bash
 
+ourInit() {
+  if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
+    invoke-rc.d $1 $2
+  else
+    /etc/init.d/$1 $2
+  fi
+}
+
 # enable xinetd for auto start
 update-rc.d xinetd enable
 
 # make sure it gets started or restarted
-/etc/init.d/xinetd restart
+ourInit xinetd restart
 
 exit 0
