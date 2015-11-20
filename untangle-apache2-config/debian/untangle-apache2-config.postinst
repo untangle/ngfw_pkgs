@@ -89,7 +89,10 @@ grep -qE '^8.' /etc/debian_version && A2DISMOD_OPTS="-m -f"
 # disable these confs
 /usr/sbin/a2disconf -q other-vhosts-access-log # do not log separate vhosts
 
-# disable Trace and Server Signatures for silly PCI compliance
+# 12.0 remove old files
+rm -f /var/log/apache2/other_vhosts*log*
+
+# disable Trace and Server Signatures for PCI compliance
 perl -i -pe 's/^ServerTokens.*/ServerTokens Prod/ ; s/^ServerSignature.*/ServerSignature Off/' /etc/apache2/conf-available/security.conf
 perl -i -pe 's/^TraceEnable.*/TraceEnable Off/' /etc/apache2/conf-available/security.conf
 
