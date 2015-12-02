@@ -298,83 +298,54 @@ div.node-metrics div.system-value {
 .grid-row-added td, .grid-row-deleted td, .grid-row-modified td {
     background-color: transparent !important;
 }
-td.app-item-center div.icon  div {
-    margin-top: 4px;
-    width: 34px;
-    height: 34px;
-}
-/* left side app item container */
+/* app items*/
 div.app-item {
     cursor: pointer;
     position: relative;
-    height: 53px;
-    margin-bottom: 2px;
-    margin-top:2px;
-    margin-left:auto;
-    margin-right:auto;
+    display: inline-table;
+    height: 79px;
+    width: 110px;
+    margin: 5px;
 }
-/* app item left background */
-td.app-item-left {
-    background: transparent url(../images/admin/background_app_item_left.png) no-repeat !important;
-    width: 2px;
+div.app-item div.app-icon {
+    display: block;
+    position: relative;
+    margin: 2px auto 8px auto;
+    border: 2px solid black;
+    padding: 1px;
+    width: 48px;
+    height: 48px;
 }
-/* app item center background */
-td.app-item-center {
-    background: transparent url(../images/admin/background_app_item_center.png) repeat-x !important;
+div.app-item div.app-icon-install {
+    position: absolute;
+    right: -9px;
+    bottom: -9px;
+    width: 15px;
+    height: 15px;
+}
+div.app-item p.app-progress-text {
+    margin: 0 2px;
+    font-size: 11px;
+    line-height: 14px;
+}
+div.app-item div.app-name {
+    display: block;
+    height: 32px;
     width: 100%;
-}
-/* app item right background */
-td.app-item-right {
-    background: transparent url(../images/admin/background_app_item_right.png) no-repeat !important;
-    width: 2px;
-}
-/* app item icon background */
-td.app-item-center div.icon {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-}
-/* app item display name text */
-td.app-item-center div.text {
-    position: absolute;
-    top: 5px;
-    left: 53px;
-    width: 130px;
-    height: 35px;
-    text-align: left;
+    text-align: center;
     color:#4E4C4C;
-    font-size: 12px;
     font-weight: bold;
+    font-size: 12px;
     font-family: PT Sans, Tahoma, arial, freesans,sans-serif;
 }
-/* app item config display name text */
-td.app-item-center div.text-center {
-    top: 18px;
-}
-/* app item action text */
-td.app-item-center div.action {
+div.app-item div.app-progress {
     position: absolute;
-    right: 5px;
-    top: 34px;
-    height: 15px;
-    font-family: tahoma,arial,helvetica,  freesans,sans-serif;
-    font-size: 11px;
-    color: green;
-    padding-right: 19px;
-    line-height:15px;
+    bottom: 1px;
+    left: 1px;
+    width: 108px;
+    height: 30px;
 }
-/* app item progress bar container */
-td.app-item-center div.state-pos {
-    position: absolute;
-    left: 52px;
-    top: 33px;
-    cursor: pointer;
-    height: 15px;
-    font-family: verdana, helvetica, freesans,sans-serif;
-    font-size: 10px;
-    font-weight: bold;
-    color: red;
-}
+
 /* breadcrumb text */
 .breadcrumb-text, .breadcrumb-link {
     font-size: 11px; /* On a base font of 13px works out to 11.05px*/
