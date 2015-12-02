@@ -3,5 +3,6 @@
   <name>xserve</name>
   <displayName>Xserve - by Drewster727</displayName>
   <adminSkin>true</adminSkin>
-  <adminSkinVersion>2</adminSkinVersion>
+  <adminSkinVersion>3</adminSkinVersion>
+  <extjsTheme>gray</extjsTheme>
 </skin>

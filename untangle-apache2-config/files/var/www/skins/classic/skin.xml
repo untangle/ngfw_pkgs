@@ -3,5 +3,6 @@
   <name>classic</name>
   <displayName>Classic</displayName>
   <adminSkin>true</adminSkin>
-  <adminSkinVersion>2</adminSkinVersion>
+  <adminSkinVersion>3</adminSkinVersion>
+  <extjsTheme>gray</extjsTheme>
 </skin>
