@@ -5,4 +5,5 @@
   <adminSkin>true</adminSkin>
   <adminSkinVersion>3</adminSkinVersion>
   <extjsTheme>gray</extjsTheme>
+  <appsViewType>rack</appsViewType>
 </skin>
