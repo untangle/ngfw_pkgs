@@ -174,9 +174,16 @@ div.node div.node-power-expired {
     cursor: pointer;
 }
 /* node power expired button icon */
-div#rack-select-container {
+div#install-apps-container {
     float: left;
     margin-left: 38px;
+    margin-top: 14px;
+}
+
+/* node power expired button icon */
+div#rack-select-container {
+    float: left;
+    margin-left: 5px;
     margin-top: 14px;
 }
 div#parent-rack-container {
@@ -311,10 +318,16 @@ div.app-item div.app-icon {
     display: block;
     position: relative;
     margin: 2px auto 8px auto;
-    border: 2px solid black;
+    border: 2px solid #535355;
+    border-radius: 2px;
     padding: 1px;
     width: 48px;
     height: 48px;
+}
+div.app-item div.app-config-icon {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 div.app-item div.app-icon-install {
     position: absolute;
