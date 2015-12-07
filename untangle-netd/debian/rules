@@ -11,15 +11,6 @@
 
 # This is the debhelper compatibility version to use.
 
-MKDIR=/bin/mkdir -p
-
-ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
-	CFLAGS += -g
-endif
-ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
-	INSTALL_PROGRAM += -s
-endif
-
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
@@ -38,14 +29,12 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-arch-stamp build-indep-stamp configure-stamp
-	rm -rf debian/tmp debian/untangle-restore-tools sav-install
+	rm -rf debian/tmp
 	dh_clean
 	find . -type f -name '*.pyc' | xargs rm -f
 
-binary-indep:
-# nothing to do
 
-binary-arch: build
+binary-indep: build
 	dh_testdir
 	dh_testroot
 	dh_movefiles
@@ -73,9 +62,13 @@ binary-arch: build
 #	echo "`cat debian/version`"
 	if [ -f debian/version ] ; then dh_gencontrol -a -- -v"`cat debian/version`" ; else dh_gencontrol -a ; fi
 	dh_md5sums
-	dh_builddeb -a
+
+binary-arch: 
+# nothing to do
 
 binary: binary-indep binary-arch
+	dh_builddeb 
+
+.PHONY: build clean binary-indep binary binary-indep binary-arch install configure
 
 
-.PHONY: build clean binary-indep binary install configure
