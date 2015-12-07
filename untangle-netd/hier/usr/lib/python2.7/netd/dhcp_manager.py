@@ -406,12 +406,16 @@ true
             os.makedirs( fileDir )
 
         file = open( filename, "w+" )
-        file.write("## Auto Generated\n");
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("#!/bin/sh");
 
+        file.write("## Auto Generated\n");
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
+        
         file.write("\n\n");
-
+        file.write("# The dhcp exit hook packaged with ddclient has syntax error" + "\n")
+        file.write("# Since the DHCP hooks are sources, syntax erros break DHCP" + "\n")
+        file.write("# This blank script is written to replace it" + "\n")
+                   
         file.flush()
         file.close()
 
