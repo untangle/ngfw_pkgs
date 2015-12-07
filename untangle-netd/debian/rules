@@ -60,7 +60,7 @@ binary-indep: build
 	dh_installdeb
 #	dh_perl
 #	echo "`cat debian/version`"
-	if [ -f debian/version ] ; then dh_gencontrol -a -- -v"`cat debian/version`" ; else dh_gencontrol -a ; fi
+	if [ -f debian/version ] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
 	dh_md5sums
 
 binary-arch: 
