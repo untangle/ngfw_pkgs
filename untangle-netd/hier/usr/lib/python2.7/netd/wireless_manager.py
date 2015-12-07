@@ -195,7 +195,7 @@ class WirelessManager:
 
             os.system("chmod a+x %s" % restartCronFilename)
 
-            print "WirelessManager: Wrote " + restartCronFilename
+            if verbosity > 0: print "WirelessManager: Wrote " + restartCronFilename
 
         return
 

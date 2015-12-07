@@ -15,6 +15,7 @@ class DhcpManager:
     exitHookFilename = "/etc/dhcp/dhclient-exit-hooks.d/netd-dhclient-exit-hook"
     preNetworkHookFilename = "/etc/untangle-netd/pre-network-hook.d/035-dhcp"
     dhcpConfFilename = "/etc/dhcp/dhclient.conf"
+    ddclientHookFilename = "/etc/dhcp/dhclient-exit-hooks.d/ddclient"
 
     def write_enter_hook( self, settings, prefix="", verbosity=0 ):
 
@@ -186,10 +187,7 @@ case ${reason} in
         ;;
 esac
 
-
 ${DEBUG} "dhclient-enter-hooks.d/netd_dhclient-enter-hook EXIT  [ reason: \"$reason\" interface: \"$interface\" ]"
-
-return 0
 
 """)
 
@@ -400,6 +398,25 @@ true
 
         if verbosity > 0: print "DhcpManager: Wrote %s" % filename
 
+    def write_dhcp_ddclient_file( self, settings, prefix="", verbosity=0 ):
+
+        filename = prefix + self.ddclientHookFilename
+        fileDir = os.path.dirname( filename )
+        if not os.path.exists( fileDir ):
+            os.makedirs( fileDir )
+
+        file = open( filename, "w+" )
+        file.write("## Auto Generated\n");
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
+        file.write("#!/bin/sh");
+
+        file.write("\n\n");
+
+        file.flush()
+        file.close()
+
+        if verbosity > 0: print "DhcpManager: Wrote %s" % filename
+        
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
 
@@ -408,6 +425,7 @@ true
         self.write_exit_hook( settings, prefix, verbosity )
         self.write_enter_hook( settings, prefix, verbosity )
         self.write_pre_network_hook( settings, prefix, verbosity )
-
+        self.write_dhcp_ddclient_file( settings, prefix, verbosity )
+        
         return
 
