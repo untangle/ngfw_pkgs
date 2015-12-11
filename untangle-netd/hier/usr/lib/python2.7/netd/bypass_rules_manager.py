@@ -130,9 +130,9 @@ class BypassRuleManager:
         self.file.write("${IPTABLES} -t filter -F set-bypass-mark >/dev/null 2>&1" + "\n");
         self.file.write("\n");
 
-        self.file.write("# Call restore-interface-marks then mark-src-intf from PREROUTING chain in mangle" + "\n");
-        self.file.write("${IPTABLES} -t mangle -D PREROUTING -m comment --comment \"Restore bypass mark (0x01000000) from connmark\" -j restore-bypass-mark >/dev/null 2>&1" + "\n");
-        self.file.write("${IPTABLES} -t mangle -A PREROUTING -m comment --comment \"Restore bypass mark (0x01000000) from connmark\" -j restore-bypass-mark" + "\n");
+        self.file.write("# Call restore-interface-marks then mark-src-intf from prerouting-set-marks chain in mangle" + "\n");
+        self.file.write("${IPTABLES} -t mangle -D prerouting-set-marks -m comment --comment \"Restore bypass mark (0x01000000) from connmark\" -j restore-bypass-mark >/dev/null 2>&1" + "\n");
+        self.file.write("${IPTABLES} -t mangle -A prerouting-set-marks -m comment --comment \"Restore bypass mark (0x01000000) from connmark\" -j restore-bypass-mark" + "\n");
         self.file.write("\n");
 
         self.file.write("# Call bypass-rules chain from PREROUTING chain to forward traffic" + "\n");
@@ -141,8 +141,8 @@ class BypassRuleManager:
         self.file.write("\n");
 
         self.file.write("# Bypass all traffic from the local server" + "\n");
-        self.file.write("${IPTABLES} -A OUTPUT -t mangle -j MARK --or-mark 0x%X -m comment --comment \"Set bypass bit on all local outbound packets\"" % self.bypassMarkMask + "\n");
-        self.file.write("${IPTABLES} -A OUTPUT -t mangle -m conntrack --ctstate NEW -j CONNMARK --or-mark 0x%X -m comment --comment \"Set bypass bit on all local outbound sessions\"" % self.bypassMarkMask + "\n");
+        self.file.write("${IPTABLES} -A output-set-marks -t mangle -j MARK --or-mark 0x%X -m comment --comment \"Set bypass bit on all local outbound packets\"" % self.bypassMarkMask + "\n");
+        self.file.write("${IPTABLES} -A output-set-marks -t mangle -m conntrack --ctstate NEW -j CONNMARK --or-mark 0x%X -m comment --comment \"Set bypass bit on all local outbound sessions\"" % self.bypassMarkMask + "\n");
         self.file.write("\n");
 
         self.write_restore_bypass_mark( settings, verbosity );

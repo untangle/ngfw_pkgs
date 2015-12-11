@@ -410,22 +410,16 @@ class InterfacesManager:
         file.write("${IPTABLES} -t filter -F save-mark-dst-intf >/dev/null 2>&1" + "\n");
         file.write("\n");
         
-        # this is so IPsec/UVM works (Bug #8948)
-        file.write("# Set reinjected packet mark" + "\n");
-        file.write("${IPTABLES} -t mangle -D INPUT -i utun -j MARK --set-mark 0x10000000/0x10000000 -m comment --comment \"Set reinjected packet mark\" >/dev/null 2>&1 \n");
-        file.write("${IPTABLES} -t mangle -A INPUT -i utun -j MARK --set-mark 0x10000000/0x10000000 -m comment --comment \"Set reinjected packet mark\"  \n");
-        file.write("\n");
-
         file.write("# Call restore-interface-marks then mark-src-intf from PREROUTING chain in mangle" + "\n");
-        file.write("${IPTABLES} -t mangle -D PREROUTING -m comment --comment \"Restore interface marks (0xffff) from connmark\" -j restore-interface-marks >/dev/null 2>&1" + "\n");
-        file.write("${IPTABLES} -t mangle -D PREROUTING -m comment --comment \"Set src intf mark (0x00ff)\" -j mark-src-intf >/dev/null 2>&1" + "\n");
-        file.write("${IPTABLES} -t mangle -A PREROUTING -m comment --comment \"Restore interface marks (0xffff) from connmark\" -j restore-interface-marks" + "\n");
-        file.write("${IPTABLES} -t mangle -A PREROUTING -m comment --comment \"Set src intf mark (0x00ff)\" -j mark-src-intf" + "\n");
+        file.write("${IPTABLES} -t mangle -D prerouting-set-marks -m comment --comment \"Restore interface marks (0xffff) from connmark\" -j restore-interface-marks >/dev/null 2>&1" + "\n");
+        file.write("${IPTABLES} -t mangle -D prerouting-set-marks -m comment --comment \"Set src intf mark (0x00ff)\" -j mark-src-intf >/dev/null 2>&1" + "\n");
+        file.write("${IPTABLES} -t mangle -A prerouting-set-marks -m comment --comment \"Restore interface marks (0xffff) from connmark\" -j restore-interface-marks" + "\n");
+        file.write("${IPTABLES} -t mangle -A prerouting-set-marks -m comment --comment \"Set src intf mark (0x00ff)\" -j mark-src-intf" + "\n");
         file.write("\n");
 
         file.write("# Call mark-dst-intf from FORWARD chain in mangle" + "\n");
-        file.write("${IPTABLES} -t mangle -D FORWARD -m comment --comment \"Set dst intf mark (0xff00)\" -j mark-dst-intf >/dev/null 2>&1" + "\n");
-        file.write("${IPTABLES} -t mangle -A FORWARD -m comment --comment \"Set dst intf mark (0xff00)\" -j mark-dst-intf" + "\n");
+        file.write("${IPTABLES} -t mangle -D forward-set-marks -m comment --comment \"Set dst intf mark (0xff00)\" -j mark-dst-intf >/dev/null 2>&1" + "\n");
+        file.write("${IPTABLES} -t mangle -A forward-set-marks -m comment --comment \"Set dst intf mark (0xff00)\" -j mark-dst-intf" + "\n");
         file.write("\n");
 
         file.write("# Call save-mark-dst-intf from FORWARD chain in filter" + "\n");
@@ -436,8 +430,8 @@ class InterfacesManager:
 
         file.write("# Call mark-dst-intf from OUTPUT chain in mangle for local traffic" + "\n");
         file.write("# Do not think this is necessary - local traffic is always bypassed" + "\n");
-        file.write("# ${IPTABLES} -t mangle -D OUTPUT -m comment --comment \"Set dst intf mark (0xff00)\" -j mark-dst-intf >/dev/null 2>&1" + "\n");
-        file.write("# ${IPTABLES} -t mangle -A OUTPUT -m comment --comment \"Set dst intf mark (0xff00)\" -j mark-dst-intf" + "\n");
+        file.write("# ${IPTABLES} -t mangle -D output-set-marks -m comment --comment \"Set dst intf mark (0xff00)\" -j mark-dst-intf >/dev/null 2>&1" + "\n");
+        file.write("# ${IPTABLES} -t mangle -A output-set-marks -m comment --comment \"Set dst intf mark (0xff00)\" -j mark-dst-intf" + "\n");
         file.write("\n");
 
         self.write_restore_interface_marks( file, interfaces, prefix, verbosity );

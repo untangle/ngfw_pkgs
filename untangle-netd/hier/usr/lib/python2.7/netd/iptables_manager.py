@@ -42,6 +42,49 @@ class IptablesManager:
         file.write("## Flush all etables rules. (the only rules exist in the broute table)\n")
         file.write("${EBTABLES} -t broute -F" + "\n" + "\n")
 
+        file.write("\n");
+        file.write("\n");
+
+        file.write("## Create and flush all chains.\n")
+        file.write("## We create and insert rules to call all chains here so the order is always the same no matter the order the scripts are called in.\n")
+        file.write("## The scripts are responsible for filling in the chains with the appropriate rules.\n")
+        
+        file.write("${IPTABLES} -t mangle -N prerouting-set-marks 2>/dev/null" + "\n");
+        file.write("${IPTABLES} -t mangle -F prerouting-set-marks" + "\n");
+        file.write("${IPTABLES} -t mangle -A PREROUTING -j prerouting-set-marks" + "\n");
+
+        file.write("${IPTABLES} -t mangle -N forward-set-marks 2>/dev/null" + "\n");
+        file.write("${IPTABLES} -t mangle -F forward-set-marks" + "\n");
+        file.write("${IPTABLES} -t mangle -A FORWARD -j forward-set-marks" + "\n");
+
+        file.write("${IPTABLES} -t mangle -N output-set-marks 2>/dev/null" + "\n");
+        file.write("${IPTABLES} -t mangle -F output-set-marks" + "\n");
+        file.write("${IPTABLES} -t mangle -A OUTPUT -j output-set-marks" + "\n");
+
+        file.write("${IPTABLES} -t mangle -N output-untangle-vm 2>/dev/null" + "\n");
+        file.write("${IPTABLES} -t mangle -F output-untangle-vm" + "\n");
+        file.write("${IPTABLES} -t mangle -A OUTPUT -j output-untangle-vm" + "\n");
+
+        file.write("${IPTABLES} -t mangle -N input-untangle-vm 2>/dev/null" + "\n");
+        file.write("${IPTABLES} -t mangle -F input-untangle-vm" + "\n");
+        file.write("${IPTABLES} -t mangle -A INPUT -j input-untangle-vm" + "\n");
+        
+        file.write("${IPTABLES} -t mangle -N prerouting-untangle-vm 2>/dev/null" + "\n");
+        file.write("${IPTABLES} -t mangle -F prerouting-untangle-vm" + "\n");
+        file.write("${IPTABLES} -t mangle -A PREROUTING -j prerouting-untangle-vm" + "\n");
+        
+        file.write("${IPTABLES} -t mangle -N prerouting-qos 2>/dev/null" + "\n");
+        file.write("${IPTABLES} -t mangle -F prerouting-qos" + "\n");
+        file.write("${IPTABLES} -t mangle -A PREROUTING -j prerouting-qos" + "\n");
+
+        file.write("${IPTABLES} -t mangle -N postrouting-qos 2>/dev/null" + "\n");
+        file.write("${IPTABLES} -t mangle -F postrouting-qos" + "\n");
+        file.write("${IPTABLES} -t mangle -A POSTROUTING -j postrouting-qos" + "\n");
+        
+        file.write("${IPTABLES} -t mangle -N prerouting-wan-balancer 2>/dev/null" + "\n");
+        file.write("${IPTABLES} -t mangle -F prerouting-wan-balancer" + "\n");
+        file.write("${IPTABLES} -t mangle -A PREROUTING -j prerouting-wan-balancer" + "\n");
+        
         file.flush()
         file.close()
 
