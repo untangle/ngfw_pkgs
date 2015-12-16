@@ -671,3 +671,19 @@ a.link, a.link:visited {
     font-size: 12px;
     font-family: Tahoma,Helvetica,sans-serif;
 }
+
+.icon-enable {
+    background-image: url(../images/admin/icons/icon_save.png);
+}
+
+.icon-disable {
+    background-image: url(../images/admin/icons/icon_cancel.png);
+}
+
+.app-status-enabled {
+    color: green;
+}
+
+.app-status-disabled {
+    color: red;
+}
