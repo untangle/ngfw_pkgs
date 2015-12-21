@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<skin>
-  <name>cammo</name>
-  <displayName>Black Cammo - by gabrielr</displayName>
-  <adminSkin>true</adminSkin>
-  <adminSkinVersion>3</adminSkinVersion>
-  <extjsTheme>gray</extjsTheme>
-  <appsViewType>rack</appsViewType>
-</skin>
