@@ -1,15 +1,12 @@
 #!/bin/sh
 
-# This script freely provided by Bill Landry (bill@inetmsg.com).
-# Comments, suggestions, and recommendations for improving this
-# script are always welcome.
+# This script freely provided by Bill Landry (unofficialsigs@gmail.com).
+# Comments, suggestions, and recommendations for improving this script
+# are always welcome.
 #
-# Script documentation and updates can be viewed/downloaded from:
+# Script updates can be found at: http://sourceforge.net/projects/unofficial-sigs
 #
-#     http://www.inetmsg.com/pub/
-#
-# The latest version will always be named: clamav-unofficial-sigs.tar.gz
-# Older versions can be found in the "archive" directory.
+# License: BSD (Berkeley Software Distribution)
 
 ################################################################################
 #                                                                              #
@@ -21,7 +18,7 @@
 
 default_config="/etc/clamav-unofficial-sigs.conf"
 
-version="v3.7.1 (updated 2010-06-06)"
+version="v3.7.2 (updated 2013-08-25)"
 output_ver="
    `basename $0` $version
 "
@@ -31,7 +28,10 @@ ClamAV Unofficial Signature Databases Update Script - $version
 
    Usage: `basename $0` [OPTION] [PATH|FILE]
 
-        -b      Add a bypass signature entry to local.ign in order to
+        -b      DEPRECATED - Consider using -w instead, it supports
+                the newer ClamAV signature whitelist funtionality.
+                ----------------------------------------------------------
+                Add a bypass signature entry to local.ign in order to
                 temporarily resolve a false-positive issue with a specific
                 third-party signature.  The script added local.ign entries
                 will automatically be removed if the original signature is
@@ -76,6 +76,13 @@ ClamAV Unofficial Signature Databases Update Script - $version
 
         -v      Output script version and date information.
 
+        -w      Adds a signature whitelist entry in the newer ClamAV IGN2
+                format to 'my-whitelist.ign2' in order to temporarily resolve
+                a false-positive issue with a specific third-party signature.
+                Script added whitelist entries will automatically be removed
+                if the original signature is either modified or removed from
+                the third-party signature database.
+
 Alternative to using '-c': Place config file in /etc ($default_config)
 "
 
@@ -101,7 +108,7 @@ perms () {
 }
 
 # Take input from the commandline and process.
-while getopts 'bc:defg:himrs:tv' option ; do
+while getopts 'bc:defg:himrs:tvw' option ; do
    case $option in
       b)  no_default_config
           echo "Input a third-party signature name that you wish to bypass due to false-positives"
@@ -150,7 +157,7 @@ while getopts 'bc:defg:himrs:tv' option ; do
                       echo ""
                       echo "Signature '$input' could not be found."
                       echo ""
-                      echo "This script will only create a bypass entry in local.ign for ClamAV."
+                      echo "This script will only create a bypass entry in local.ign for ClamAV"
                       echo "'UNOFFICIAL' third-Party signatures as found in the *.ndb databases."
                 fi
              else
@@ -225,9 +232,11 @@ while getopts 'bc:defg:himrs:tv' option ; do
              then
                 echo "GPG signature testing database file: $ss_dir/$db_file"
                 echo ""
-                if ! gpg --trust-model always -q --no-default-keyring --homedir $gpg_dir --keyring $gpg_dir/ss-keyring.gpg --verify $ss_dir/$db_file.sig $ss_dir/$db_file
+                if ! gpg --trust-model always -q --no-default-keyring --homedir $gpg_dir --keyring $gpg_dir/ss-keyring.gpg \
+                     --verify $ss_dir/$db_file.sig $ss_dir/$db_file
                    then
-                     gpg --always-trust -q --no-default-keyring --homedir $gpg_dir --keyring $gpg_dir/ss-keyring.gpg --verify $ss_dir/$db_file.sig $ss_dir/$db_file
+                     gpg --always-trust -q --no-default-keyring --homedir $gpg_dir --keyring $gpg_dir/ss-keyring.gpg \
+                     --verify $ss_dir/$db_file.sig $ss_dir/$db_file
                 fi
              else
                 echo "File '$db_file' cannot be found or is not a Sanesecurity database file."
@@ -350,9 +359,11 @@ while getopts 'bc:defg:himrs:tv' option ; do
                          line_prefix=`echo "$line" | awk -F ':' '{print $1}'`
                          if [ "$line_prefix" = "-" ]
                             then
-                               echo "$line" | cut -d ":" -f2- | perl -pe 's/(.)/sprintf("%02lx", ord $1)/eg' | sed "s/^/$prefix\.$line_num:4:\*:/" >> "$path_file"
+                               echo "$line" | cut -d ":" -f2- | perl -pe 's/(.)/sprintf("%02lx", ord $1)/eg' | \
+                               sed "s/^/$prefix\.$line_num:4:\*:/" >> "$path_file"
                             elif [ "$line_prefix" = "=" ] ; then
-                               echo "$line" | cut -d ":" -f2- | perl -pe 's/(\{[^}]*\}|\([^)]*\)|\*)|(.)/defined $1 ? $1 : sprintf("%02lx", ord $2)/eg' | sed "s/^/$prefix\.$line_num:4:\*:/" >> "$path_file"
+                               echo "$line" | cut -d ":" -f2- | perl -pe 's/(\{[^}]*\}|\([^)]*\)|\*)|(.)/defined \
+                               $1 ? $1 : sprintf("%02lx", ord $2)/eg' | sed "s/^/$prefix\.$line_num:4:\*:/" >> "$path_file"
                             else
                                echo "$line" | perl -pe 's/(.)/sprintf("%02lx", ord $1)/eg' | sed "s/^/$prefix\.$line_num:4:\*:/" >> "$path_file"
                          fi
@@ -494,6 +505,62 @@ while getopts 'bc:defg:himrs:tv' option ; do
       v)  echo "$output_ver"
           exit
           ;;
+      w)  no_default_config
+          echo "Input a third-party signature name that you wish to whitelist due to false-positives"
+          echo "and press enter (do not include '.UNOFFICIAL' in the signature name nor add quote"
+          echo "marks to the input string):"
+          echo ""
+          read input
+          if [ -n "$input" ]
+             then
+                cd "$clam_dbs"
+                input=`echo "$input" | tr -d "'" | tr -d '"'`
+                sig_full=`grep -H "$input:" *.ndb`
+                sig_name=`echo "$sig_full" | cut -d ":" -f2`
+                if [ -n "$sig_name" ]
+                   then
+                      if ! grep "$sig_name" my-whitelist.ign2 > /dev/null 2>&1
+                         then
+                            cp -f my-whitelist.ign2 "$config_dir" 2>/dev/null
+                            echo "$sig_name" >> "$config_dir/my-whitelist.ign2"
+                            echo "$sig_full" >> "$config_dir/tracker.txt"
+                            if clamscan --quiet -d "$config_dir/my-whitelist.ign2" "$config_dir/scan-test.txt"
+                               then
+                                  if rsync -pcqt $config_dir/my-whitelist.ign2 $clam_dbs
+                                     then
+                                        perms chown $clam_user:$clam_group my-whitelist.ign2
+                                        chmod 0644 my-whitelist.ign2 "$config_dir/monitor-ign.txt"
+                                        $reload_opt
+                                        echo ""
+                                        echo "Signature '$input' has been added to my-whitelist.ign2 and"
+                                        echo "all databases have been reloaded.  The script will track any changes"
+                                        echo "to the offending signature and will automatically remove it if the"
+                                        echo "signature is modified or removed from the third-party database."
+                                     else
+                                        echo ""
+                                        echo "Failed to successfully update my-whitelist.ign2 file - SKIPPING."
+                                  fi
+                               else
+                                  echo ""
+                                  echo "Clamscan reports my-whitelist.ign2 database integrity is bad - SKIPPING."
+                            fi
+                         else
+                            echo ""
+                            echo "Signature '$input' already exists in my-whitelist.ign2 - no action taken."
+                      fi
+                   else
+                      echo ""
+                      echo "Signature '$input' could not be found."
+                      echo ""
+                      echo "This script will only create a whitelise entry in my-whitelist.ign2 for ClamAV"
+                      echo "'UNOFFICIAL' third-Party signatures as found in the *.ndb databases."
+                fi
+             else
+                echo "No input detected - no action taken."
+          fi
+          echo ""
+          exit
+          ;;
       *)  echo "$usage"
           exit
           ;;
@@ -607,7 +674,8 @@ chmod 0700 "$gpg_dir"
 
 # If we haven't done so yet, download Sanesecurity public GPG key and import to custom keyring.
 if [ ! -s "$gpg_dir/publickey.gpg" ] ; then
-   if ! curl -s -S $curl_proxy --connect-timeout 15 --max-time 60 -L -R http://www.sanesecurity.net/publickey.gpg -o $gpg_dir/publickey.gpg
+   if ! curl -s -S $curl_proxy --connect-timeout "$curl_connect_timeout" --max-time "$curl_max_time" \
+        -L -R http://www.sanesecurity.net/publickey.gpg -o $gpg_dir/publickey.gpg
       then
          echo ""
          echo "Could not download Sanesecurity public GPG key"
@@ -619,7 +687,8 @@ if [ ! -s "$gpg_dir/publickey.gpg" ] ; then
          comment ""
          log "INFO - Sanesecurity public GPG key successfully downloaded"
          rm -f -- "$gpg_dir/ss-keyring.gp*"
-         if ! gpg -q --no-options --no-default-keyring --homedir $gpg_dir --keyring $gpg_dir/ss-keyring.gpg --import $gpg_dir/publickey.gpg 2>/dev/null
+         if ! gpg -q --no-options --no-default-keyring --homedir $gpg_dir --keyring $gpg_dir/ss-keyring.gpg \
+              --import $gpg_dir/publickey.gpg 2>/dev/null
             then
                echo "Could not import Sanesecurity public GPG key to custom keyring"
                log "ALERT - Could not import Sanesecurity public GPG key to custom keyring"
@@ -722,12 +791,6 @@ if [ -n "$ss_dbs" ] ; then
       clamav_files
    done
 fi
-if [ -n "$msrbl_dbs" ] ; then
-   for db in $msrbl_dbs ; do
-      echo "$msrbl_dir/$db" >> "$current_tmp"
-      clamav_files
-   done
-fi
 if [ -n "$si_dbs" ] ; then
    for db in $si_dbs ; do
       echo "$si_dir/$db" >> "$current_tmp"
@@ -776,7 +839,8 @@ echo "$config_dir/last-mbl-update.txt" >> "$purge"
 echo "$config_dir/last-si-update.txt" >> "$purge"
 echo "$config_dir/local.ign" >> "$purge"
 echo "$config_dir/monitor-ign.txt" >> "$purge"
-echo "$config_dir/msrbl-include-dbs.txt" >> "$purge"
+echo "$config_dir/my-whitelist.ign2" >> "$purge"
+echo "$config_dir/tracker.txt"  >> "$purge"
 echo "$config_dir/previous-dbs.txt" >> "$purge"
 echo "$config_dir/scan-test.txt" >> "$purge"
 echo "$config_dir/ss-include-dbs.txt" >> "$purge"
@@ -800,7 +864,7 @@ fi
 
 # If the local rsync client supports the '--contimeout' flag, then enable it.
 if rsync --help | grep 'contimeout' > /dev/null ; then
-   contimeout="--contimeout=30"
+   connect_timeout="--contimeout=$rsync_connect_timeout"
 fi
 
 # Silence curl output and only report errors - useful if script is run via cron.
@@ -959,8 +1023,8 @@ if [ -n "$ss_dbs" ] ; then
       comment ""
       comment "Sanesecurity mirror site used: $ss_mirror_site_info"
       log "INFO - Sanesecurity mirror site used: $ss_mirror_site_info"
-      if rsync $rsync_output_level $no_motd --files-from=$ss_include_dbs -ctuz $contimeout \
-         --timeout=30 --stats rsync://$ss_mirror_ip/sanesecurity $ss_dir 2>/dev/null
+      if rsync $rsync_output_level $no_motd --files-from=$ss_include_dbs -ctuz $connect_timeout \
+         --timeout="$rsync_max_time" --stats rsync://$ss_mirror_ip/sanesecurity $ss_dir 2>/dev/null
          then
             ss_rsync_success="1"
             for db_file in $ss_dbs ; do
@@ -1102,8 +1166,8 @@ if [ -n "$si_dbs" ] ; then
                else
                   z_opt=""
             fi
-            if curl $curl_proxy $curl_output_level --connect-timeout 15 --max-time 60 \
-               -L -R $z_opt -o $si_dir/$db_file http://$si_url/$db_file
+            if curl $curl_proxy $curl_output_level --connect-timeout "$curl_connect_timeout" \
+               --max-time "$curl_max_time" -L -R $z_opt -o $si_dir/$db_file http://$si_url/$db_file
                then
                   loop="1"
                   if ! cmp -s $si_dir/$db_file $clam_dbs/$db_file ; then
@@ -1116,11 +1180,11 @@ if [ -n "$si_dbs" ] ; then
                            then
                               if clamscan --quiet -d "$si_dir/$db_file" "$config_dir/scan-test.txt" 2>/dev/null
                                  then
-                                    comment "Clamscan reports Sanesecurity $db_file database integrity tested good"
-                                    log "INFO - Clamscan reports Sanesecurity $db_file database integrity tested good" ; true
+                                    comment "Clamscan reports SecuriteInfo $db_file database integrity tested good"
+                                    log "INFO - Clamscan reports SecuriteInfo $db_file database integrity tested good" ; true
                                  else
-                                    echo "Clamscan reports Sanesecurity $db_file database integrity tested BAD - SKIPPING"
-                                    log "WARNING - Clamscan reports Sanesecurity $db_file database integrity tested BAD - SKIPPING" ; false
+                                    echo "Clamscan reports SecuriteInfo $db_file database integrity tested BAD - SKIPPING"
+                                    log "WARNING - Clamscan reports SecuriteInfo $db_file database integrity tested BAD - SKIPPING" ; false
                                     rm -f "$si_dir/$db_file"
                               fi && \
                               (test "$keep_db_backup" = "yes" && cp -f $clam_dbs/$db_file $clam_dbs/$db_file-bak 2>/dev/null ; true) && \
@@ -1146,11 +1210,11 @@ if [ -n "$si_dbs" ] ; then
                               mv -f "$test_dir/$db_file-tmp" "$test_dir/$db_file"
                               if clamscan --quiet -d "$test_dir/$db_file" "$config_dir/scan-test.txt" 2>/dev/null
                                  then
-                                    comment "Clamscan reports Sanesecurity $db_file database integrity tested good"
-                                    log "INFO - Clamscan reports Sanesecurity $db_file database integrity tested good" ; true
+                                    comment "Clamscan reports SecuriteInfo $db_file database integrity tested good"
+                                    log "INFO - Clamscan reports SecuriteInfo $db_file database integrity tested good" ; true
                                  else
-                                    echo "Clamscan reports Sanesecurity $db_file database integrity tested BAD - SKIPPING"
-                                    log "WARNING - Clamscan reports Sanesecurity $db_file database integrity tested BAD - SKIPPING" ; false
+                                    echo "Clamscan reports SecuriteInfo $db_file database integrity tested BAD - SKIPPING"
+                                    log "WARNING - Clamscan reports SecuriteInfo $db_file database integrity tested BAD - SKIPPING" ; false
                                     rm -f "$si_dir/$db_file"
                               fi && \
                               (test "$keep_db_backup" = "yes" && cp -f $clam_dbs/$db_file $clam_dbs/$db_file-bak 2>/dev/null ; true) && \
@@ -1170,7 +1234,7 @@ if [ -n "$si_dbs" ] ; then
                      fi
                   fi
                else
-                 log "WARNING - Failed curl connection to $si_url - SKIPPED SecuriteInfo $db_file update"
+                  log "WARNING - Failed curl connection to $si_url - SKIPPED SecuriteInfo $db_file update"
             fi
             if [ "$si_db_update" != "1" ] ; then
                comment ""
@@ -1225,8 +1289,8 @@ if [ -n "$mbl_dbs" ] ; then
             comment "MalwarePatrol $db_file Database File Update"
             comment "======================================================================"
             comment ""
-            if curl $curl_proxy $curl_output_level --connect-timeout 15 --max-time 60 -R \
-               -o $mbl_dir/$db_file http://$mbl_url/cgi/submit?action=list_clamav_ext
+            if curl $curl_proxy $curl_output_level -R --connect-timeout "$curl_connect_timeout" \
+               --max-time "$curl_max_time" -o $mbl_dir/$db_file http://$mbl_url/cgi/submit?action=list_clamav_ext
                then
                   if ! cmp -s $mbl_dir/$db_file $clam_dbs/$db_file 
                      then
@@ -1239,11 +1303,11 @@ if [ -n "$mbl_dbs" ] ; then
                               then
                                  if clamscan --quiet -d "$mbl_dir/$db_file" "$config_dir/scan-test.txt" 2>/dev/null
                                     then
-                                       comment "Clamscan reports Sanesecurity $db_file database integrity tested good"
-                                       log "INFO - Clamscan reports Sanesecurity $db_file database integrity tested good" ; true
+                                       comment "Clamscan reports MalwarePatrol $db_file database integrity tested good"
+                                       log "INFO - Clamscan reports MalwarePatrol $db_file database integrity tested good" ; true
                                     else
-                                       echo "Clamscan reports Sanesecurity $db_file database integrity tested BAD - SKIPPING"
-                                       log "WARNING - Clamscan reports Sanesecurity $db_file database integrity tested BAD - SKIPPING" ; false
+                                       echo "Clamscan reports MalwarePatrol $db_file database integrity tested BAD - SKIPPING"
+                                       log "WARNING - Clamscan reports MalwarePatrol $db_file database integrity tested BAD - SKIPPING" ; false
                                  fi && \
                                  (test "$keep_db_backup" = "yes" && cp -f $clam_dbs/$db_file $clam_dbs/$db_file-bak 2>/dev/null ; true) && \
                                  if rsync -pcqt $mbl_dir/$db_file $clam_dbs
@@ -1267,11 +1331,11 @@ if [ -n "$mbl_dbs" ] ; then
                                  mv -f "$test_dir/$db_file-tmp" "$test_dir/$db_file"
                                  if clamscan --quiet -d "$test_dir/$db_file" "$config_dir/scan-test.txt" 2>/dev/null
                                     then
-                                       comment "Clamscan reports Sanesecurity $db_file database integrity tested good"
-                                       log "INFO - Clamscan reports Sanesecurity $db_file database integrity tested good" ; true
+                                       comment "Clamscan reports MalwarePatrol $db_file database integrity tested good"
+                                       log "INFO - Clamscan reports MalwarePatrol $db_file database integrity tested good" ; true
                                     else
-                                       echo "Clamscan reports Sanesecurity $db_file database integrity tested BAD - SKIPPING"
-                                       log "WARNING - Clamscan reports Sanesecurity $db_file database integrity tested BAD - SKIPPING" ; false
+                                       echo "Clamscan reports MalwarePatrol $db_file database integrity tested BAD - SKIPPING"
+                                       log "WARNING - Clamscan reports MalwarePatrol $db_file database integrity tested BAD - SKIPPING" ; false
                                  fi && \
                                  (test "$keep_db_backup" = "yes" && cp -f $clam_dbs/$db_file $clam_dbs/$db_file-bak 2>/dev/null ; true) && \
                                  if rsync -pcqt $test_dir/$db_file $clam_dbs
@@ -1328,20 +1392,23 @@ if [ -n "$add_dbs" ] ; then
       db_file=`basename $db_url`
       if [ "`echo $db_url | cut -d ":" -f1`" = "rsync" ]
          then
-            if ! rsync $rsync_output_level $no_motd $contimeout --timeout=30 -crtuz --exclude=*.txt \
-                 --stats --exclude=*.sha256 --exclude=*.sig --exclude=*.gz $db_url $add_dir ; then
+            if ! rsync $rsync_output_level $no_motd $connect_timeout --timeout="$rsync_max_time" --exclude=*.txt \
+                 -crtuz --stats --exclude=*.sha256 --exclude=*.sig --exclude=*.gz $db_url $add_dir ; then
                echo "Failed rsync connection to $base_url - SKIPPED $db_file update"
                log "WARNING - Failed rsync connection to $base_url - SKIPPED $db_file update"
             fi
          else
-            if [ -s "$add_dir/$db_file" ] ; then
-               z_opt="-z $add_dir/$db_file"
-               if ! curl $curl_output_level --connect-timeout 15 --max-time 60 \
-                    -L -R $z_opt -o $add_dir/$db_file $db_url ; then
-                  echo "Failed curl connection to $base_url - SKIPPED $db_file update"
-                  log "WARNING - Failed curl connection to $base_url - SKIPPED $db_file update"
-               fi
-            fi
+             if [ -s "$add_dir/$db_file" ]
+                then
+                   z_opt="-z $add_dir/$db_file"
+                else
+                   z_opt=""
+             fi
+             if ! curl $curl_output_level --connect-timeout "$curl_connect_timeout" --max-time \
+                  "$curl_max_time" -L -R $z_opt -o $add_dir/$db_file $db_url ; then
+                echo "Failed curl connection to $base_url - SKIPPED $db_file update"
+                log "WARNING - Failed curl connection to $base_url - SKIPPED $db_file update"
+             fi
       fi
    done
    db_file=""
@@ -1355,8 +1422,8 @@ if [ -n "$add_dbs" ] ; then
                comment "Clamscan reports $db_file database integrity tested good"
                log "INFO - Clamscan reports $db_file database integrity tested good" ; true
             else
-               echo "Clamscan reports $db_file database integrity tested BAD - SKIPPING"
-               log "WARNING - Clamscan reports $db_file database integrity tested BAD - SKIPPING" ; false
+               echo "Clamscan reports User Added $db_file database integrity tested BAD - SKIPPING"
+               log "WARNING - Clamscan reports User Added $db_file database integrity tested BAD - SKIPPING" ; false
          fi && \
          (test "$keep_db_backup" = "yes" && cp -f $clam_dbs/$db_file $clam_dbs/$db_file-bak 2>/dev/null ; true) && \
          if rsync -pcqt $add_dir/$db_file $clam_dbs
@@ -1381,20 +1448,20 @@ fi
 
 # Check to see if the local.ign file exists, and if it does, check to see if any of the script
 # added bypass entries can be removed due to offending signature modifications or removals.
-comment ""
-comment "======================================================================"
 if [ -s "$clam_dbs/local.ign" -a -s "$config_dir/monitor-ign.txt" ] ; then
    ign_updated=0
    cd "$clam_dbs"
    cp -f local.ign "$config_dir/local.ign"
+   comment ""
+   comment "======================================================================"
    for entry in `cat "$config_dir/monitor-ign.txt" 2>/dev/null` ; do
       sig_file=`echo "$entry" | tr -d "\r" | awk -F ":" '{print $1}'`
       sig_hex=`echo "$entry" | tr -d "\r" | awk -F ":" '{print $NF}'`
       sig_name_old=`echo "$entry" | tr -d "\r" | awk -F ":" '{print $3}'`
       sig_ign_old=`grep "$sig_name_old" "$config_dir/local.ign"`
       sig_old=`echo "$entry" | tr -d "\r" | cut -d ":" -f3-`
-      sig_new=`grep -h "$sig_hex" "$sig_file" | tr -d "\r" 2>/dev/null`
-      sig_mon_new=`grep -H -n "$sig_hex" "$sig_file" | tr -d "\r"`
+      sig_new=`grep -hwF "$sig_hex" "$sig_file" | tr -d "\r" 2>/dev/null`
+      sig_mon_new=`grep -HwF -n "$sig_hex" "$sig_file" | tr -d "\r"`
       if [ -n "$sig_new" ]
          then
             if [ "$sig_old" != "$sig_new" -o "$entry" != "$sig_mon_new" ] ; then
@@ -1404,9 +1471,9 @@ if [ -s "$clam_dbs/local.ign" -a -s "$config_dir/monitor-ign.txt" ] ; then
                echo "$sig_mon_new" >> "$config_dir/monitor-ign.txt"
                perl -p -i -e "s/$sig_ign_old/$sig_ign_new/" "$config_dir/local.ign"
                comment ""
-               comment "$sig_name_old hexadecimal is signature unchanged, however signature name and/or line placement"
+               comment "$sig_name_old hexadecimal signature unchanged, however signature name and/or line placement"
                comment "in $sig_file has change to $sig_name_new - updated local.ign to reflect this change."
-               log "INFO - $sig_name_old hexadecimal is signature unchanged, however signature name and/or line placement"
+               log "INFO - $sig_name_old hexadecimal signature unchanged, however signature name and/or line placement"
                log "INFO - in $sig_file has change to $sig_name_new - updated local.ign to reflect this change."
                ign_updated=1
             fi
@@ -1418,22 +1485,76 @@ if [ -s "$clam_dbs/local.ign" -a -s "$config_dir/monitor-ign.txt" ] ; then
             ign_updated=1
       fi
    done
-   if [ "$ign_updated" = "1" ] ; then
-      if clamscan --quiet -d "$config_dir/local.ign" "$config_dir/scan-test.txt"
-         then
-            if rsync -pcqt $config_dir/local.ign $clam_dbs
-               then
-                  perms chown $clam_user:$clam_group "$clam_dbs/local.ign"
-                  chmod 0644 "$clam_dbs/local.ign" "$config_dir/monitor-ign.txt"
-                  do_clamd_reload=3
-               else
-                  echo "Failed to successfully update local.ign file - SKIPPING"
-                  log "WARNING - Failed to successfully update local.ign file - SKIPPING"
-            fi
-         else
-            echo "Clamscan reports local.ign database integrity is bad - SKIPPING"
-            log "WARNING - Clamscan reports local.ign database integrity is bad - SKIPPING"
+   if [ "$ign_updated" = "1" ]
+      then
+         if clamscan --quiet -d "$config_dir/local.ign" "$config_dir/scan-test.txt"
+            then
+               if rsync -pcqt $config_dir/local.ign $clam_dbs
+                  then
+                     perms chown $clam_user:$clam_group "$clam_dbs/local.ign"
+                     chmod 0644 "$clam_dbs/local.ign" "$config_dir/monitor-ign.txt"
+                     do_clamd_reload=3
+                  else
+                     echo "Failed to successfully update local.ign file - SKIPPING"
+                     log "WARNING - Failed to successfully update local.ign file - SKIPPING"
+               fi
+            else
+               echo "Clamscan reports local.ign database integrity is bad - SKIPPING"
+               log "WARNING - Clamscan reports local.ign database integrity is bad - SKIPPING"
+         fi
+      else
+         comment "No whitelist signature changes found in local.ign."
+         comment "======================================================================"
+         log "INFO - No whitelist signature changes found in local.ign."
+   fi
+fi
+
+# Check to see if my-whitelist.ign2 file exists, and if it does, check to see if any of the script
+# added whitelist entries can be removed due to offending signature modifications or removals.
+if [ -s "$clam_dbs/my-whitelist.ign2" -a -s "$config_dir/tracker.txt" ] ; then
+   ign2_updated=0
+   cd "$clam_dbs"
+   cp -f my-whitelist.ign2 "$config_dir/my-whitelist.ign2"
+   comment ""
+   comment "======================================================================"
+   for entry in `cat "$config_dir/tracker.txt" 2>/dev/null` ; do
+      sig_file=`echo "$entry" | cut -d ":" -f1`
+      sig_full=`echo "$entry" | cut -d ":" -f2-`
+      sig_name=`echo "$entry" | cut -d ":" -f2`
+      if ! grep -F "$sig_full" "$sig_file" > /dev/null 2>&1 ; then
+         perl -i -ne "print unless /$sig_name$/" "$config_dir/my-whitelist.ign2"
+         perl -i -ne "print unless /:$sig_name:/" "$config_dir/tracker.txt"
+         comment ""
+         comment "$sig_name signature no longer exists in"
+         comment "$sig_file, whitelist entry removed from my-whitelist.ign2."
+         log "INFO - $sig_name signature no longer exists in"
+         log "INFO - $sig_file, whitelist entry removed from my-whitelist.ign2."
+         ign2_updated=1
       fi
+   done
+   comment ""
+   comment "======================================================================"
+   if [ "$ign2_updated" = "1" ]
+      then
+         if clamscan --quiet -d "$config_dir/my-whitelist.ign2" "$config_dir/scan-test.txt"
+            then
+               if rsync -pcqt $config_dir/my-whitelist.ign2 $clam_dbs
+                  then
+                     perms chown $clam_user:$clam_group "$clam_dbs/my-whitelist.ign2"
+                     chmod 0644 "$clam_dbs/my-whitelist.ign2" "$config_dir/tracker.txt"
+                     do_clamd_reload=4
+                  else
+                     echo "Failed to successfully update my-whitelist.ign2 file - SKIPPING"
+                     log "WARNING - Failed to successfully update my-whitelist.ign2 file - SKIPPING"
+               fi
+            else
+               echo "Clamscan reports my-whitelist.ign2 database integrity is bad - SKIPPING"
+               log "WARNING - Clamscan reports my-whitelist.ign2 database integrity is bad - SKIPPING"
+         fi
+      else
+         comment "No whitelist signature changes found in my-whitelist.ign2."
+         comment "======================================================================"
+         log "INFO - No whitelist signature changes found in my-whitelist.ign2."
    fi
 fi
 
@@ -1459,13 +1580,24 @@ if [ -n "$ham_dir" ] ; then
    fi
 fi
 
-# Set appropriate directory and file access permissions
+# Set appropriate directory and file permissions to all production signature files
+# and set file access mode to 0644 on all working directory files.
 perms chown -R $clam_user:$clam_group "$clam_dbs"
-if ! find "$clam_dbs" "$work_dir" -type f -exec chmod 0644 {} + 2>/dev/null ; then
-   if ! find "$clam_dbs" "$work_dir" -type f -print0 | xargs -0 chmod 0644 2>/dev/null ; then
-      if ! find "$clam_dbs" "$work_dir" -type f | xargs chmod 0644 2>/dev/null ; then
-         find "$clam_dbs" -type f -exec chmod 0644 {} \;
+if ! find "$work_dir" -type f -exec chmod 0644 {} + 2>/dev/null ; then
+   if ! find "$work_dir" -type f -print0 | xargs -0 chmod 0644 2>/dev/null ; then
+      if ! find "$work_dir" -type f | xargs chmod 0644 2>/dev/null ; then
          find "$work_dir" -type f -exec chmod 0644 {} \;
+      fi
+   fi
+fi
+
+# If enabled, set file access mode for all production signature database files to 0644.
+if [ "$setmode" = "yes" ] ; then
+   if ! find "$clam_dbs" -type f -exec chmod 0644 {} + 2>/dev/null ; then
+      if ! find "$clam_dbs" -type f -print0 | xargs -0 chmod 0644 2>/dev/null ; then
+         if ! find "$clam_dbs" -type f | xargs chmod 0644 2>/dev/null ; then
+            find "$clam_dbs" -type f -exec chmod 0644 {} \;
+         fi
       fi
    fi
 fi
@@ -1500,16 +1632,25 @@ if [ "$reload_dbs" = "yes" -a -z "$reload_opt" ]
       comment "==========================================================="
       log "INFO - File 'local.ign' has changed, reloaded ClamAV databases"
       $reload_opt
+   elif [ "$reload_dbs" = "yes" -a "$do_clamd_reload" = "4" -a -n "$reload_opt" ] ; then
+      comment ""
+      comment "==================================================================="
+      comment "= File 'my-whitelist.ign2' has changed, reloaded ClamAV databases ="
+      comment "==================================================================="
+      log "INFO - File 'my-whitelist.ign2' has changed, reloaded ClamAV databases"
+      $reload_opt
    elif [ "$reload_dbs" = "yes" -a -z "$do_clamd_reload" ] ; then
       comment ""
-      comment "============================================================="
-      comment "= No update(s) detected, ClamAV databases were not reloaded ="
-      comment "============================================================="
-      log "INFO - No update(s) detected, ClamAV databases were not reloaded"
+      comment "==========================================================="
+      comment "= No updates detected, ClamAV databases were not reloaded ="
+      comment "==========================================================="
+      log "INFO - No updates detected, ClamAV databases were not reloaded"
    else
       comment ""
-      comment "======================================================================"
-      log "INFO - Database reloading has been disabled in the configuration file."
+      comment "==============================================================="
+      comment "= Database reload has been disabled in the configuration file ="
+      comment "==============================================================="
+      log "INFO - Database reload has been disabled in the configuration file"
       true
 fi
 
