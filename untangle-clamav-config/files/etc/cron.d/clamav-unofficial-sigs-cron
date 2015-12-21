@@ -11,4 +11,4 @@
 # 60 - 600 seconds.  Adjust the cron start time, user account to run the
 # script under, and path information shown below to meet your own needs.
 
-45 */4 * * * root /usr/share/untangle-clamav-config/bin/clamav-unofficial-sigs.sh -c /etc/clamav/clamav-unofficial-sigs.conf >/var/log/clamav-unofficial-sigs-update.log 2>&1
+45 */4 * * * root /usr/share/untangle-clamav-config/bin/clamav-unofficial-sigs.sh -c /etc/clamav/clamav-unofficial-sigs.conf >/var/log/clamav-unofficial-sigs.log 2>&1
