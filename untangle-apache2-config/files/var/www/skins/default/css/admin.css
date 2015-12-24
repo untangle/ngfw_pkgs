@@ -68,22 +68,17 @@ div.node-cap {
     width: 708px;
     z-index: 1000;
 }
-/* Service separator text */
-#nodes-separator-text {
-    position: relative;
-    left: 90px;
-    top: 12px;
-    width: 300px;
-    font-family: verdana, helvetica, freesans,sans-serif;
-    font-size: 19px;
-    color: #7C7B7B;
-}
 /* Service separator for nodes */
 #nodes-separator {
     position: relative;
     background: transparent url(../images/admin/background_separator.png) no-repeat;
     width: 785px;
     height: 50px;
+    line-height: 50px;
+    padding-left: 90px;
+    font-family: verdana, helvetica, freesans,sans-serif;
+    font-size: 19px;
+    color: #7C7B7B;
 }
 /* Node image container */
 .node-image {
