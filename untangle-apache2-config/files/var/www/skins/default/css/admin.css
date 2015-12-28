@@ -4,10 +4,6 @@
     font-weight: 400;
     src: local('PT Sans'), local('PTSans-Regular'), url(../fonts/PTSans.woff) format('woff');
 }
-/* Left side container */
-.content-left {
-    background-color: #1b1e26;
-}
 /* right content container */
 #content-right {
     height:100%;
@@ -686,4 +682,30 @@ a.link, a.link:visited {
 
 .menu-button.x-btn-pressed .x-btn-inner, .menu-button.x-btn-over .x-btn-inner {
     color: #ffffff;
+}
+
+a.menu-link, a.menu-link:visited {
+	float: left;
+    color: #1b1e26;
+    text-decoration: none;
+    text-transform: uppercase;
+    margin: 0 5px;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+a.menu-link.logout, a.menu-link.logout:visited {
+    color: #d80909;
+}
+.links-menu {
+	margin-right: 10px;
+    top: 35px;
+    float: right;
+} 
+/* Left side container */
+.main-menu {
+    background-color: #1b1e26;
+}
+.top-container {
+    background-color: white;
 }
