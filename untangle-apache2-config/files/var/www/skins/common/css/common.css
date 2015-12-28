@@ -7,6 +7,16 @@
 .icon-config {
     background-image: url(../images/admin/icons/icon_config.png);  
 }
+.x-btn-pressed .icon-dashboard, .x-btn-over .icon-dashboard {
+    background-image: url(../images/admin/icons/icon_dashboard_active.png);
+}
+.x-btn-pressed .icon-apps, .x-btn-over .icon-apps {
+    background-image: url(../images/admin/icons/icon_apps_active.png);
+}
+.x-btn-pressed .icon-config, .x-btn-over .icon-config {
+    background-image: url(../images/admin/icons/icon_config_active.png);  
+}
+
 .icon-tools {
     background-image: url(../images/admin/icons/icon_tools.png);  
 }

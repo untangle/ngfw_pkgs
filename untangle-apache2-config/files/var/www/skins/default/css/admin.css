@@ -6,10 +6,7 @@
 }
 /* Left side container */
 .content-left {
-    background: #5C5C5D url(../images/admin/background_left.png) no-repeat !important;
-}
-.menu-button .x-btn-inner {
-    font-size: 13px;
+    background-color: #1b1e26;
 }
 /* right content container */
 #content-right {
@@ -665,4 +662,28 @@ a.link, a.link:visited {
     text-decoration: underline;
     font-size: 12px;
     font-family: Tahoma,Helvetica,sans-serif;
+}
+
+.menu-button.x-btn{
+    border-radius: 0;
+    background-color: #1b1e26;
+    border-color: #1b1e26;
+    background-image: none;
+}
+.menu-button .x-btn-wrap {
+    height: 40px;
+}
+.menu-button .x-btn-inner {
+    font-size: 15px;
+    font-family: 'Source Sans Pro', sans-serif;
+    color: #B2B6C0;
+}
+.menu-button.x-btn.x-btn-pressed,.menu-button.x-btn.x-btn-over {
+    border-color: #67bd4a;
+    background-color: #67bd4a;
+    background-image: none;
+}
+
+.menu-button.x-btn-pressed .x-btn-inner, .menu-button.x-btn-over .x-btn-inner {
+    color: #ffffff;
 }
