@@ -49,12 +49,6 @@ img.icon-drag {
 .x-btn .icon-buy {
     background-image: url(../images/admin/icons/icon_buy.png);
 }
-.x-btn .icon-power-on {
-    background-image: url(../images/admin/icons/icon_power_on.png);
-}
-.x-btn .icon-power-off {
-    background-image: url(../images/admin/icons/icon_power_off.png);
-}
 /* help button icon */
 .x-btn .icon-help {
     background-image: url(../images/admin/icons/icon_help.png);
@@ -276,4 +270,31 @@ img.icon-drag {
 }
 .icon-test-packet { 
     background-image:  url(../images/admin/icons/icon_test_packet.png);
+}
+/* app power section in status panel*/
+.app-status {
+    padding: 0 0 0 28px;
+    line-height: 20px;
+    background-repeat: no-repeat;
+    background-position: left center;
+}
+.app-on .app-status {
+    background-image: url(../images/admin/icons/icon_power_on.png);
+    color: #67bd4a;
+}
+.app-off .app-status {
+    background-image: url(../images/admin/icons/icon_power_off.png);
+    color: #d80909;
+}
+.app-attention .app-status {
+    background-image: url(../images/admin/icons/icon_power_attention.png);
+}
+.app-on .app-power-button {
+    background-image: url(../images/admin/icons/icon_cancel.png);
+}
+.app-off .app-power-button {
+    background-image: url(../images/admin/icons/icon_save.png);
+}
+.app-attention .app-power-button {
+    background-image: url(../images/admin/icons/icon_wait.gif);
 }

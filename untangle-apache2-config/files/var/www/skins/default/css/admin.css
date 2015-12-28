@@ -666,10 +666,3 @@ a.link, a.link:visited {
     font-size: 12px;
     font-family: Tahoma,Helvetica,sans-serif;
 }
-.app-status-enabled {
-    color: green;
-}
-
-.app-status-disabled {
-    color: red;
-}
