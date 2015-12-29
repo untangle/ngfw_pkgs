@@ -10,7 +10,7 @@
 }
 /* right content background */
 div.center-region {
-    background: transparent url(../images/admin/background_right.png) repeat !important;
+    background: transparent url(../images/admin/background_right.png) repeat;
 }
 /* rack nodes background */
 #racks {
@@ -161,19 +161,6 @@ div.node div.node-power-expired {
     background:transparent url(../images/admin/button_power_expired.png) no-repeat center !important; 
     cursor: pointer;
 }
-/* node power expired button icon */
-div#install-apps-container {
-    float: left;
-    margin-left: 38px;
-    margin-top: 14px;
-}
-
-/* node power expired button icon */
-div#rack-select-container {
-    float: left;
-    margin-left: 5px;
-    margin-top: 14px;
-}
 div#parent-rack-container {
     color: #222222;
     float: left;
@@ -191,7 +178,7 @@ div#alert-container {
     background: transparent url(../images/admin/icons/icon_alert.gif) no-repeat center center !important;
     float: left;
     height: 21px;
-    margin-left: 2px;
+    margin-left: 5px;
     margin-top: 14px;
     overflow: hidden;
     width: 25px;
@@ -201,7 +188,7 @@ div#no-ie-container {
     background: transparent url(../images/admin/icons/icon_no_ie.png) no-repeat center center !important;
     float: left;
     height: 21px;
-    margin-left: 2px;
+    margin-left: 5px;
     margin-top: 14px;
     overflow: hidden;
     width: 25px;
@@ -683,9 +670,26 @@ a.link, a.link:visited {
 .menu-button.x-btn-pressed .x-btn-inner, .menu-button.x-btn-over .x-btn-inner {
     color: #ffffff;
 }
+.action-button.x-btn{
+    border-radius: 16px;
+    background-color: #67bd4a;
+    border-color: #67bd4a;
+    background-image: none;
+}
+.action-button .x-btn-wrap {
+    height: 30px;
+}
+.action-button .x-btn-inner {
+    font-size: 14px;
+    font-family: 'Source Sans Pro', sans-serif;
+    color: #ffffff;
+}
+
+.action-button.x-btn-over .x-btn-inner {
+    color: #1b1e26;
+}
 
 a.menu-link, a.menu-link:visited {
-	float: left;
     color: #1b1e26;
     text-decoration: none;
     text-transform: uppercase;
@@ -711,4 +715,18 @@ a.menu-link:hover, a.menu-link.logout:hover {
 }
 .top-container {
     background-color: white;
+    width: 100%;
+    height: 88px;
+}
+.top-title {
+    font-size: 18px;
+    color: #AAACAE;
+}
+.policy-selector .x-btn-text {
+    text-align: left;
+    justify-content: initial;
+}
+.policy-selector .x-btn-inner {
+    font-size: 14px;
+    color: #1b1e26;
 }
