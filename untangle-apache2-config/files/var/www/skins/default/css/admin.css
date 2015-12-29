@@ -697,8 +697,11 @@ a.menu-link, a.menu-link:visited {
 a.menu-link.logout, a.menu-link.logout:visited {
     color: #d80909;
 }
+a.menu-link:hover, a.menu-link.logout:hover {
+    color: #67bd4a;
+}
 .links-menu {
-	margin-right: 10px;
+    margin-right: 10px;
     top: 35px;
     float: right;
 } 
