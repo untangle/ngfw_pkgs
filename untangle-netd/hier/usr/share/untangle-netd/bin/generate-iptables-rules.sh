@@ -36,14 +36,14 @@ debug()
 
 iptables_debug()
 {
-   /bin/echo -e "[IPTABLE DEBUG: `date`] /sbin/iptables $@"
-   /sbin/iptables "$@"
+   /bin/echo -e "[IPTABLE DEBUG: `date`] /sbin/iptables -w $@"
+   /sbin/iptables -w "$@"
 }
 
 iptables_debug_onerror()
 {
     # Ignore -N errors
-    /sbin/iptables "$@" || {
+    /sbin/iptables -w "$@" || {
         [ "${3}x" != "-Nx" ] && echo "[`date`] Failed: /sbin/iptables $@"
     }
 
@@ -53,13 +53,13 @@ iptables_debug_onerror()
 ip6tables_debug()
 {
    /bin/echo -e "[IPTABLE DEBUG: `date`] /sbin/ip6tables $@"
-   /sbin/ip6tables "$@"
+   /sbin/ip6tables -w "$@"
 }
 
 ip6tables_debug_onerror()
 {
     # Ignore -N errors
-    /sbin/ip6tables "$@" || {
+    /sbin/ip6tables -w "$@" || {
         [ "${3}x" != "-Nx" ] && echo "[`date`] Failed: /sbin/ip6tables $@"
     }
 
