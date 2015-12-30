@@ -14,7 +14,7 @@ _ = gettext.gettext
 # pages -----------------------------------------------------------------------
 def isUvmStarting():
     try:
-        ret = os.system("ps aux | grep 'init.d/untangle-vm' | grep -v grep")
+        ret = os.system("ps aux | grep -v grep | grep 'init.d/untangle-vm'")
         if ret == 0:
             return True
     except:
@@ -96,7 +96,7 @@ def status417(req):
 def status500(req):
     uvmlogin.setup_gettext()
     if isUvmStarting():
-        _write_error_page(req, _("Server is starting. Please wait."))
+        _write_error_page(req, _("Server is starting. Please wait."), True)
         return
     _write_error_page(req, _("Internal Server Error"))
 
@@ -111,7 +111,7 @@ def status502(req):
 def status503(req):
     uvmlogin.setup_gettext()
     if isUvmStarting():
-        _write_error_page(req, _("Server is starting. Please wait."))
+        _write_error_page(req, _("Server is starting. Please wait."), True)
         return
     _write_error_page(req, _("Service Unavailable"))
 
@@ -125,7 +125,7 @@ def status505(req):
 
 # private methods --------------------------------------------------------------
 
-def _write_error_page(req, msg):
+def _write_error_page(req, msg, refresh=False):
     req.content_type = "text/html; charset=utf-8"
     req.send_http_header()
 
@@ -145,7 +145,12 @@ def _write_error_page(req, msg):
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
     <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
+    <head>"""
+
+    if refresh:
+        html += """<meta http-equiv="refresh" content="1">"""
+    
+    html += """
     <title>%s</title>
     <script type="text/javascript">if (top.location!=location) top.location.href=document.location.href;</script>
     <style type="text/css">
