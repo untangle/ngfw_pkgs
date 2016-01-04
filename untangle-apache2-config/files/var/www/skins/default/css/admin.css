@@ -4,48 +4,25 @@
     font-weight: 400;
     src: local('PT Sans'), local('PTSans-Regular'), url(../fonts/PTSans.woff) format('woff');
 }
-/* right content container */
-#content-right {
-    height:100%;
-}
 /* right content background */
-div.center-region {
-    background: transparent url(../images/admin/background_right.png) repeat;
+.rack-region {
+    background-image: url(../images/admin/background_empty_rack.png), url(../images/admin/background_right.png);
+    background-repeat:  repeat-y, repeat;
+    background-position:  center top, left top;
+    background-attachment: local, local;
 }
-/* rack nodes background */
-#racks {
-    position:relative;
-    margin:auto;
-    background: transparent url(../images/admin/background_empty_rack.png) repeat-y;
-    width:785px;
-    height:100%;
-}
-div.racks-with-separator {
-    background:scroll 0px 100px;
-}
-div.racks-without-separator {
-    background:scroll 0px 50px;
-}
-/* logo container */
-div.logo {
-    position:relative;
-    padding-top:20px;
-    overflow:hidden;
+.rack-has-separator {
+    background-position: center 50px;
 }
 /* top rack list background */
-#rack-list {
-    position:relative;
+.rack-top {
     background:transparent url(../images/admin/background_rack_list.png) no-repeat;
     width:785px;
     height:50px;
 }
-/* rack nodes container */
-#rack-nodes {
-    position:relative;
-    width: 785px;
-}
 /* node background */
 div.node {
+    margin: 0 auto;
     position:relative;
     background: transparent url(../images/admin/background_node.png) no-repeat;
     width: 785px;
@@ -56,13 +33,12 @@ div.node-cap {
     height: 98%;
     left: 38px;
     opacity: 0.7;
-    filter:alpha(opacity=70);
-    position:absolute;
+    position: absolute;
     width: 708px;
     z-index: 1000;
 }
 /* Service separator for nodes */
-#nodes-separator {
+.nodes-separator {
     position: relative;
     background: transparent url(../images/admin/background_separator.png) no-repeat;
     width: 785px;
@@ -121,22 +97,17 @@ div.node div.node-state {
 }
 /* node state on icon */
 div.icon-state-on {
-    background: transparent url(../images/admin/state_on.png) no-repeat center !important; 
+    background: transparent url(../images/admin/state_on.png) no-repeat center center;
     cursor: pointer;
 }
 /* node state off icon */
 div.icon-state-off {
-    background: transparent url(../images/admin/state_off.png) no-repeat center !important; 
+    background: transparent url(../images/admin/state_off.png) no-repeat center center;
     cursor: pointer;
 }
 /* node state attention icon */
 div.icon-state-attention {
-    background: transparent url(../images/admin/state_attention.png) no-repeat center !important; 
-    cursor :pointer;
-}
-/* node state error icon */
-div.icon-state-error {
-    background:transparent url(../images/admin/state_error.png) no-repeat center !important; 
+    background: transparent url(../images/admin/state_attention.png) no-repeat center center;
     cursor: pointer;
 }
 /* node power button icon */
