@@ -4,22 +4,32 @@
     font-weight: 400;
     src: local('PT Sans'), local('PTSans-Regular'), url(../fonts/PTSans.woff) format('woff');
 }
-/* right content background */
-.rack-region {
-    background-image: url(../images/admin/background_empty_rack.png), url(../images/admin/background_right.png);
-    background-repeat:  repeat-y, repeat;
-    background-position:  center top, left top;
-    background-attachment: local, local;
+.apps {
+    background: #A4A4A4 url(../images/admin/background_empty_rack.png) center 143px repeat-y local;
 }
-.rack-has-separator {
-    background-position: center 50px;
+.apps-content {
+    width: 785px;
+    margin: 0 auto;
 }
-/* top rack list background */
-.rack-top {
+.apps-have-services {
+    background-position: center 193px;
+}
+.apps-top {
     background:transparent url(../images/admin/background_rack_list.png) no-repeat;
     width:785px;
-    height:50px;
+    height: 50px;
 }
+.apps-separator {
+    background: transparent url(../images/admin/background_separator.png) no-repeat;
+    width: 785px;
+    height: 50px;
+    line-height: 50px;
+    padding-left: 90px;
+    font-family: verdana, helvetica, freesans,sans-serif;
+    font-size: 19px;
+    color: #7C7B7B;
+}
+
 /* node background */
 div.node {
     margin: 0 auto;
@@ -36,18 +46,6 @@ div.node-cap {
     position: absolute;
     width: 708px;
     z-index: 1000;
-}
-/* Service separator for nodes */
-.nodes-separator {
-    position: relative;
-    background: transparent url(../images/admin/background_separator.png) no-repeat;
-    width: 785px;
-    height: 50px;
-    line-height: 50px;
-    padding-left: 90px;
-    font-family: verdana, helvetica, freesans,sans-serif;
-    font-size: 19px;
-    color: #7C7B7B;
 }
 /* Node image container */
 .node-image {
@@ -132,36 +130,14 @@ div.node div.node-power-expired {
     background:transparent url(../images/admin/button_power_expired.png) no-repeat center !important; 
     cursor: pointer;
 }
-div#parent-rack-container {
-    color: #222222;
-    float: left;
-    font-family: Tahoma;
-    font-size: 11px;
-    height: 32px;
-    line-height: 16px;
-    margin-left: 5px;
-    margin-top: 9px;
-    overflow:hidden;
-    padding: 0 2px;
-}
-/* alert icon container */
-div#alert-container {
-    background: transparent url(../images/admin/icons/icon_alert.gif) no-repeat center center !important;
-    float: left;
+.alert-container {
+    background: transparent url(../images/admin/icons/icon_alert.gif) no-repeat center center;
     height: 21px;
-    margin-left: 5px;
-    margin-top: 14px;
-    overflow: hidden;
     width: 25px;
 }
-/* No IE icon container */
-div#no-ie-container {
-    background: transparent url(../images/admin/icons/icon_no_ie.png) no-repeat center center !important;
-    float: left;
+.no-ie-container {
+    background: transparent url(../images/admin/icons/icon_no_ie.png) no-repeat center center;
     height: 21px;
-    margin-left: 5px;
-    margin-top: 14px;
-    overflow: hidden;
     width: 25px;
 }
 /* node buttons panel container */
@@ -318,7 +294,7 @@ div.app-item div.app-progress {
 .breadcrumb-link {
     color: #20377A;
 }
-/* rack top system stat container */
+/* rack top system stats container */
 div.system-stats {
     position: absolute;
     width: 393px;
