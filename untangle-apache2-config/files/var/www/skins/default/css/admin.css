@@ -231,7 +231,7 @@ div.node-metrics div.system-value {
 div.app-item {
     cursor: pointer;
     position: relative;
-    display: inline-table;
+    float: left;
     height: 79px;
     width: 110px;
     margin: 5px;
