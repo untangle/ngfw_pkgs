@@ -1,5 +1,8 @@
 .apps {
-    background: #A4A4A4 url(../images/admin/background_empty_rack.png) center 138px repeat-y local;
+    background-image: url(../images/admin/background_empty_rack.png), url(../images/admin/bg_right.jpg);
+    background-repeat: repeat-y, repeat;
+    background-position: center 139px, left top;
+    background-attachment: local, local;
 }
 
 .apps-content {
@@ -8,24 +11,24 @@
 }
 
 .apps-have-services {
-    background-position: center 188px;
+    background-position: center 190px;
 }
 
 .apps-top {
     background: transparent url(../images/admin/background_rack_list.png) no-repeat;
     width: 785px;
-    height: 50px;
+    height: 51px;
 }
 
 .apps-separator {
     background: transparent url(../images/admin/background_separator.png) no-repeat;
     width: 785px;
-    height: 50px;
-    line-height: 50px;
+    height: 51px;
+    line-height: 51px;
     padding-left: 90px;
     font-family: Verdana, Helvetica, sans-serif;
     font-size: 19px;
-    color: #7C7B7B;
+    color: white;
 }
 
 /* node background */
@@ -34,48 +37,49 @@ div.node {
     position: relative;
     background: transparent url(../images/admin/background_node.png) no-repeat;
     width: 785px;
-    height: 93px;
+    height: 72px;
 }
 
 div.node-cap {
     background-color: #666666;
     height: 98%;
-    left: 38px;
+    left: 0px;
     opacity: 0.7;
     position: absolute;
-    width: 708px;
+    width: 100%;
     z-index: 1000;
 }
 /* Node image container */
 .node-image {
     position: absolute;
-    top: 12px;
-    left: 50px;
+    top: 15px;
+    left: 305px;
     height: 42px;
     width: 42px;
     -moz-box-shadow: 1px 1px 1px 1px #333;
     -webkit-box-shadow: 1px 1px 1px 1px #333;
     box-shadow: 1px 1px 1px 1px #333;
+    left: 305px;
 }
 /* node display name text*/
 div.node div.node-label {
     position: absolute;
-    top: 8px;
-    left: 100px;
-    height: 55px;
-    width: 230px;
+    top: 7px;
+    left: 106px;
+    width: 169px;
     font-family: 'PT Sans', Arial, Helvetica, sans-serif;
-    font-size: 20px;
+    font-size: 14px;
     color: #F8F8F8;
+    text-align: center;
     text-shadow: 1px 1px 2px #000;
 }
 /* node trial info text */
 div.node div.node-faceplate-info {
     position: absolute;
-    top: 35px;
-    left: 100px;
+    top: 26px;
+    left: 101px;
     font-family: Tahoma, Geneva, sans-serif;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: bold;
     color: #DE2020;
 }
@@ -87,10 +91,10 @@ div.node div.node-faceplate-info {
 div.node div.node-state {
     z-index: 200;
     position: absolute;
-    top: 30px;
-    right: 54px;
-    height: 33px;
-    width: 33px;
+    top: 16px;
+    right: 372px;
+    height: 43px;
+    width: 43px;
     cursor: pointer;
     background-repeat: no-repeat;
     background-position: center center;
@@ -99,10 +103,10 @@ div.node div.node-state {
 .node-power {
     z-index: 300;
     position: absolute;
-    top: 30px;
-    right: 54px;
-    height: 33px;
-    width: 33px;
+    top: 16px;
+    right: 372px;
+    height: 43px;
+    width: 43px;
     cursor: pointer;
     background-repeat: no-repeat;
     background-position: center center;
@@ -115,40 +119,39 @@ div.node div.node-state {
 /* node buttons panel container */
 div.node div.node-buttons {
     position: absolute;
-    top: 55px;
-    left: 40px;
+    top: 36px;
+    left: 86px;
     width: 1px;
 }
 /* node metrics */
 div.node div.node-metrics {
     position: absolute;
-    bottom: 6px;
-    right: 100px;
-    width: 355px;
-    height: 87px;
+    bottom: 0px;
+    right: 35px;
+    width: 320px;
+    height: 72px;
 }
 /* chart container */
 div.node-metrics div.chart {
     position: absolute;
     top: 7px;
-    left: 5px;
-    width: 125px;
-    height: 75px;
+    left: 0px;
+    width: 103px;
+    height: 59px;
 }
 /* system metrics container */
 div.node-metrics div.system {
     position: absolute;
     top: 0px;
     right: 0px;
-    width: 219px;
-    height: 87px;
-    background: transparent url(../images/admin/background_system_blinger_border.png) no-repeat scroll 0px 7px;
+    width: 216px;
+    height: 72px;
 }
 /* system metrics box container */
 div.node-metrics div.system-box {
     position: relative;
-    top: 15px;
-    left: 5px;
+    top: 6px;
+    left: 3px;
     width: 209px;
     height: 60px;
 }
@@ -162,10 +165,12 @@ div.node-metrics div.system-label {
     position: absolute;
     left: 0px;
     text-align: left;
-    color: #3F3F3F;
-    width: 125px;
+    color: #FFFFFF;
+    width: 100px;
+    padding-left: 2px;
     overflow: hidden;
     white-space: nowrap;
+    background: transparent url(../images/admin/background_system_blinger_value.png) no-repeat top left;
 }
 /* system metrics value */
 div.node-metrics div.system-value {
@@ -195,7 +200,7 @@ div.system-stats div.label {
     position: absolute;
     bottom: 4px;
     text-align: center;
-    color: #000000;
+    color: white;
 }
 /* system stats network*/
 div.system-stats div.network {
@@ -342,4 +347,8 @@ div.extended-stats div.title {
 /* system stats tooltip value */
 div.extended-stats div.values {
     padding-left: 30px;
+}
+
+.icon-state-off {
+    background: none;
 }

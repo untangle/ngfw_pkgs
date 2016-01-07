@@ -87,7 +87,7 @@ div.node div.node-faceplate-info {
 div.node div.node-state {
     z-index: 200;
     position: absolute;
-    top: 30px;
+    top: 50px;
     right: 54px;
     height: 33px;
     width: 33px;
@@ -99,13 +99,14 @@ div.node div.node-state {
 .node-power {
     z-index: 300;
     position: absolute;
-    top: 30px;
+    top: 15px;
     right: 54px;
     height: 33px;
     width: 33px;
     cursor: pointer;
     background-repeat: no-repeat;
     background-position: center center;
+    background-image: url(../images/admin/button_power.png);
 }
 /* node power expired button icon */
 .node-power.node-power-expired {

@@ -1,5 +1,8 @@
 .apps {
-    background: #A4A4A4 url(../images/admin/background_empty_rack.png) center 138px repeat-y local;
+    background-image: url(../images/admin/background_empty_rack.png), url(../images/admin/background_right.png);
+    background-repeat: repeat-y, repeat;
+    background-position: center 138px, left top;
+    background-attachment: local, local;
 }
 
 .apps-content {
@@ -65,9 +68,9 @@ div.node div.node-label {
     height: 55px;
     width: 230px;
     font-family: 'PT Sans', Arial, Helvetica, sans-serif;
-    font-size: 20px;
-    color: #F8F8F8;
+    font-size: 18px; color : #FFFFFF;
     text-shadow: 1px 1px 2px #000;
+    color: #FFFFFF;
 }
 /* node trial info text */
 div.node div.node-faceplate-info {
@@ -78,6 +81,7 @@ div.node div.node-faceplate-info {
     font-size: 12px;
     font-weight: bold;
     color: #DE2020;
+    background-color: #C0C0C0;
 }
 /* Node buy button text */
 .buy-button .x-btn-inner-default-small {
@@ -87,7 +91,7 @@ div.node div.node-faceplate-info {
 div.node div.node-state {
     z-index: 200;
     position: absolute;
-    top: 30px;
+    top: 50px;
     right: 54px;
     height: 33px;
     width: 33px;
@@ -99,13 +103,14 @@ div.node div.node-state {
 .node-power {
     z-index: 300;
     position: absolute;
-    top: 30px;
+    top: 15px;
     right: 54px;
     height: 33px;
     width: 33px;
     cursor: pointer;
     background-repeat: no-repeat;
     background-position: center center;
+    background-image: url(../images/admin/button_power.png);
 }
 /* node power expired button icon */
 .node-power.node-power-expired {
@@ -162,7 +167,7 @@ div.node-metrics div.system-label {
     position: absolute;
     left: 0px;
     text-align: left;
-    color: #3F3F3F;
+    color: #EEEEEE;
     width: 125px;
     overflow: hidden;
     white-space: nowrap;
@@ -195,7 +200,7 @@ div.system-stats div.label {
     position: absolute;
     bottom: 4px;
     text-align: center;
-    color: #000000;
+    color: #ffffff;
 }
 /* system stats network*/
 div.system-stats div.network {

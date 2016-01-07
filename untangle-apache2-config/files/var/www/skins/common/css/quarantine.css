@@ -1,16 +1,20 @@
- /* Button icons*/
+/* Button icons*/
 .x-btn .icon-move-mails {
     background-image: url(../images/user/icon_email_move.png);
 }
+
 .x-btn .icon-add-row {
     background-image: url(../images/admin/icons/icon_add_row.gif);
 }
-.x-btn .icon-safe-list{
+
+.x-btn .icon-safe-list {
     background-image: url(../images/user/icon_safelist.png);
 }
-.x-btn .icon-delete{
+
+.x-btn .icon-delete {
     background-image: url(../images/user/icon_remove.png);
 }
+
 .x-btn .icon-clear-filter {
     background-image: url(../images/admin/icons/icon_clear_filter.png);
 }
