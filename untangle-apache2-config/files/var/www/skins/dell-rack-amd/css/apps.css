@@ -100,7 +100,7 @@ div.node div.node-state {
     background-position: center center;
 }
 /* node power button icon */
-.node-power {
+div.node .node-power {
     z-index: 300;
     position: absolute;
     top: 16px;
@@ -112,7 +112,7 @@ div.node div.node-state {
     background-position: center center;
 }
 /* node power expired button icon */
-.node-power.node-power-expired {
+div.node .node-power.node-power-expired {
     background-image: url(../images/admin/button_power_expired.png);
 }
 
