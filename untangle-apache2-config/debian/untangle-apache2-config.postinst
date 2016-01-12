@@ -74,6 +74,7 @@ fi
 /usr/sbin/a2enmod ssl
 /usr/sbin/a2enmod python
 /usr/sbin/a2enmod deflate
+/usr/sbin/a2enmod rewrite
 
 # disable these modules for "PCI scan" issues
 grep -qE '^8.' /etc/debian_version && A2DISMOD_OPTS="-m -f"
