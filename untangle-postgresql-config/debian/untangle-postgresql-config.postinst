@@ -72,7 +72,7 @@ done
 /etc/untangle/startup.d/10postgres
 
 # migrate from 9.1 to 9.4 if necessary (See #12692)
-if [ -d /var/lib/postgresql/9.1 ] && [ -d /var/lib/postgresql/9.4 ] ; then
+if [ -d /var/lib/postgresql/9.1 ] ; then
   pg_dropcluster --stop 9.4 main && \
     pg_upgradecluster -v 9.4 9.1 main && \
     pg_dropcluster 9.1 main && \
