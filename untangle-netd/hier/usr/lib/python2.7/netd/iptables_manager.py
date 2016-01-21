@@ -65,6 +65,10 @@ class IptablesManager:
         file.write("${IPTABLES} -t mangle -F output-untangle-vm" + "\n");
         file.write("${IPTABLES} -t mangle -A OUTPUT -j output-untangle-vm" + "\n");
 
+        file.write("${IPTABLES} -t mangle -N input-set-marks 2>/dev/null" + "\n");
+        file.write("${IPTABLES} -t mangle -F input-set-marks" + "\n");
+        file.write("${IPTABLES} -t mangle -A INPUT -j input-set-marks" + "\n");
+
         file.write("${IPTABLES} -t mangle -N input-untangle-vm 2>/dev/null" + "\n");
         file.write("${IPTABLES} -t mangle -F input-untangle-vm" + "\n");
         file.write("${IPTABLES} -t mangle -A INPUT -j input-untangle-vm" + "\n");
