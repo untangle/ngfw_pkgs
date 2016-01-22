@@ -8,13 +8,20 @@ else
 fi
 }
 
-
+# 12.0 conversion
 # migrate from 9.1 to 9.4 if necessary (See #12692)
 if [ -d /var/lib/postgresql/9.1 ] ; then
-  pg_dropcluster --stop 9.4 main && \
+    echo
+    echo "[`date +%Y-%m%-dT%H:%m`] Starting conversion"
+    echo
+    pg_dropcluster --stop 9.4 main && \
     pg_upgradecluster -v 9.4 9.1 main && \
     pg_dropcluster 9.1 main && \
     rm -fr /var/lib/postgresql/9.1
+    echo
+    echo "[`date +%Y-%m%-dT%H:%m`] Conversion complete"
+    echo
+    
 fi
 
 PG_CONF="`/usr/bin/find /etc/postgresql/9.4 -name 'postgresql.conf' -type f`"
