@@ -303,11 +303,6 @@ class InterfacesManager:
         file.write("${IPTABLES} -t mangle -A mark-src-intf -m mark ! --mark 0/0x%04X -j RETURN -m comment --comment \"If its already set, just return\"" % (self.srcInterfaceMarkMask) + "\n");
         file.write("\n");
 
-        # Comment out this rule as we restore the mark from the source MAC address
-        # see netcap_virtual_interface.c for more details
-        file.write("#${IPTABLES} -t mangle -A mark-src-intf -i utun -j RETURN -m comment --comment \"Ignore utun traffic\"" + "\n");
-        file.write("#\n");
-
         for intf in interfaces:
             id = intf['interfaceId']
             systemDev = intf['systemDev']
@@ -333,7 +328,7 @@ class InterfacesManager:
         file.write("${IPTABLES} -t mangle -A mark-src-intf -m policy --pol ipsec --dir in -j RETURN -m comment --comment \"Do not warn on IPsec traffic\"" + "\n")
 
         file.write("${IPTABLES} -t mangle -A mark-src-intf -i lo -j RETURN -m comment --comment \"Do not warn loopback traffic\"" + "\n")
-
+        file.write("${IPTABLES} -t mangle -A mark-src-intf -i utun -j RETURN -m comment --comment \"Do not warn on utun traffic\"" + "\n");
         file.write("${IPTABLES} -t mangle -A mark-src-intf -m mark --mark 0/0x%04X -j LOG --log-prefix \"WARNING (unknown src intf):\" -m comment --comment \"WARN on missing src mark\"" % (self.srcInterfaceMarkMask) + "\n");
 
 
