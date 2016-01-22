@@ -128,7 +128,7 @@ sem_post(&g_capture_sem);
 	// if there were any capture startup errors set the shutdown flag
 	if (ret != 0)
 	{
-	logmessage(LOG_ERR,"Error %d returned from capture_startup()\n",ret);
+	logmessage(LOG_ERR,"Error %d returned from capture_startup(init)\n",ret);
 	g_shutdown = 1;
 	}
 
@@ -148,14 +148,28 @@ sem_post(&g_capture_sem);
 	// read the log data
 	ret = recv(l_logsock,buffer,sizeof(buffer),0);
 
-		// break out on error
+		// recycle connection on error
 		if (ret < 0)
 		{
-		logmessage(LOG_ERR,"Error %d returned from recv()\n",errno);
-		break;
+		logmessage(LOG_ERR,"Error %d returned from recv() - Recycling nflog connection\n",errno);
+		capture_shutdown();
+		sleep(1000);
+		ret = capture_startup();
+
+			// if startup failed log the error and set the shutdown flag
+			if (ret != 0)
+			{
+			logmessage(LOG_ERR,"Error %d returned from capture_startup(loop)\n",ret);
+			g_shutdown = 1;
+			break;
+			}
 		}
 
-	nflog_handle_packet(l_log_handle,buffer,ret);
+		// no error so do the packet handling
+		else
+		{
+		nflog_handle_packet(l_log_handle,buffer,ret);
+		}
 	}
 
 // call our capture shutdown function
