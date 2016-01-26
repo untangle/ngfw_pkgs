@@ -219,6 +219,14 @@ l_grp_handle = nflog_bind_group(l_log_handle,0);
 	return(__LINE__);
 	}
 
+// give the log plenty of buffer space
+ret = nflog_set_nlbufsiz(l_grp_handle,0x8000);
+	if (ret < 0)
+	{
+	logmessage(LOG_ERR,"Error %d returned from nflog_set_nlbufsiz()\n",errno);
+	return(__LINE__);
+	}
+
 // set copy packet mode to give us the first 256 bytes
 ret = nflog_set_mode(l_grp_handle,NFULNL_COPY_PACKET,256);
 
