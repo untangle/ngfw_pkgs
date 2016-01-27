@@ -16,14 +16,14 @@ if [ -d /var/lib/postgresql/9.1 ] ; then
     echo
     ourInit postgresql stop && \
     cd /tmp && \
-    sudo -H -u postgres /usr/lib/postgresql/9.4/bin/pg_upgrade \
+    su -c "/usr/lib/postgresql/9.4/bin/pg_upgrade \
        --link \
        -b /usr/lib/postgresql/9.1/bin \
        -B /usr/lib/postgresql/9.4/bin \
        -d /var/lib/postgresql/9.1/main \
        -D /var/lib/postgresql/9.4/main \
        -o ' -c config_file=/etc/postgresql/9.1/main/postgresql.conf' \
-       -O ' -c config_file=/etc/postgresql/9.4/main/postgresql.conf' && \
+       -O ' -c config_file=/etc/postgresql/9.4/main/postgresql.conf'" postgres && \
     pg_dropcluster 9.1 main && \
     rm -fr /var/lib/postgresql/9.1
     echo
