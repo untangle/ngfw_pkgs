@@ -12,7 +12,7 @@ fi
 # migrate from 9.1 to 9.4 if necessary (See #12692)
 if [ -d /var/lib/postgresql/9.1 ] ; then
     echo
-    echo "[`date +%Y-%m%-dT%H:%m`] Starting conversion"
+    echo "[`date +%Y-%m-%dT%H:%m`] Starting conversion"
     echo
     ourInit postgresql stop && \
     cd /tmp && \
@@ -27,7 +27,7 @@ if [ -d /var/lib/postgresql/9.1 ] ; then
     pg_dropcluster 9.1 main && \
     rm -fr /var/lib/postgresql/9.1
     echo
-    echo "[`date +%Y-%m%-dT%H:%m`] Conversion complete"
+    echo "[`date +%Y-%m-%dT%H:%m`] Completed conversion"
     echo
     
 fi
