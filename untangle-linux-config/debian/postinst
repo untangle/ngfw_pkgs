@@ -67,14 +67,15 @@ fi
 # esac
 # /usr/sbin/grub-set-default $newDefault
 
-# install new grub; can't re-use the above UUID=... as grub-install
-# doesn't understand that
-echo "Installing grub2..."
-/usr/sbin/grub-install $(awk '/hd0/ { print $2 }' /boot/grub/device.map)
+# install new grub on update; can't re-use the above UUID=... as
+# grub-install doesn't understand that
+if [ -f /boot/grub/device.map ] ; then
+  echo "Installing grub2..."
+  /usr/sbin/grub-install $(awk '/hd0/ { print $2 }' /boot/grub/device.map)
+fi
 
 # update config
 echo "Updating grub2..."
 /usr/sbin/update-grub
 
 exit 0
-
