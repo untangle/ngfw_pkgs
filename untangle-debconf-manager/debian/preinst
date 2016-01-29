@@ -1,7 +1,9 @@
 #! /usr/bin/env python
 
-import re, shutil, sys
+import os, os.path, re, shutil, sys
 
+## variables
+menuLst          = '/boot/grub/menu.lst'
 debconf          = "/var/cache/debconf/config.dat"
 debconfCopy      = debconf + ".bak"
 splitObject      = re.compile('^\n', re.MULTILINE)
@@ -21,6 +23,13 @@ Flags: seen
 entries      = splitObject.split(open(debconf).read())
 otherEntries = [] # will leave those untouched
 
+## main
+
+# bug #12748
+if os.path.isfile(menuLst):
+  os.remove
+
+# DLJ handling
 for entry in entries:
   if entry.count(dljEntryName) == 0:
     otherEntries.append(entry)
