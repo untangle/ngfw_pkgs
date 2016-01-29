@@ -27,7 +27,7 @@ otherEntries = [] # will leave those untouched
 
 # bug #12748
 if os.path.isfile(menuLst):
-  os.remove
+  os.remove(menuLst)
 
 # DLJ handling
 for entry in entries:
