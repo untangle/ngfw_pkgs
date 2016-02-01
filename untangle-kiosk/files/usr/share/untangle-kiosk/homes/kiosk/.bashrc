@@ -40,7 +40,7 @@ if [ `tty` = "/dev/tty1" ] ; then
         fi
 
         # Start X
-        startx
+        startx -- vt7
         # If X returns, something has gone wrong
 
         # Print this warning to console to let the user know X is failing
