@@ -4,7 +4,7 @@ plymouth-set-default-theme untangle
 
 # proper modules for initramfs
 MODULES_FILE=/etc/initramfs-tools/modules
-if dpkg -l | grep -q -P 'ii.+untangle-portwell' ; then
+if dpkg -l | grep -q -P 'ii.+untangle-hardware-portwell' ; then
   # Fix #12704 on portwell hardware by not loading uvesafb
   #
   # FIXME: Note that if the untangle-portwell-* package is installed
