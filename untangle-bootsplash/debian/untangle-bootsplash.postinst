@@ -26,6 +26,6 @@ fi
 # let's disable it everywhere
 rm -f /etc/initramfs-tools/conf.d/splash
 
-dpkg-trigger --no-await
+dpkg-trigger --no-await update-initramfs
 
 exit 0
