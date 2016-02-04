@@ -4,8 +4,7 @@ plymouth-set-default-theme untangle
 
 # proper modules for initramfs
 MODULES_FILE=/etc/initramfs-tools/modules
-dpkg -l | grep untangle-hardware-portwell
-if dpkg -l | grep -q -P 'ii.+untangle-hardware-portwell' ; then
+if dpkg -l | grep -q -P 'i?\s+untangle-hardware-portwell' ; then
   # Fix #12704 on portwell hardware by not loading uvesafb
   #
   # FIXME: Note that if the untangle-portwell-* package is installed
@@ -26,5 +25,7 @@ fi
 # does not seem to affect QEMU either, so for the sake of consistency
 # let's disable it everywhere
 rm -f /etc/initramfs-tools/conf.d/splash
+
+dpkg-trigger --no-await
 
 exit 0
