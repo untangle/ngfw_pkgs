@@ -1,11 +1,5 @@
 #! /bin/bash
 
-exec >> /tmp/bootsplash.log 2>&1
-set -x
-
-date
-echo $@
-
 plymouth-set-default-theme untangle
 
 # proper modules for initramfs
@@ -31,8 +25,6 @@ fi
 # #12704: no forcing of FRAMEBUFFER in initramfs configuration; this
 # does not seem to affect QEMU either, so for the sake of consistency
 # let's disable it everywhere
-rm /etc/initramfs-tools/conf.d/splash
-
-update-initramfs -u
+rm -f /etc/initramfs-tools/conf.d/splash
 
 exit 0

@@ -1,1 +1,2 @@
 interest-noawait untangle-bootsplash
+activate-noawait update-initramfs
