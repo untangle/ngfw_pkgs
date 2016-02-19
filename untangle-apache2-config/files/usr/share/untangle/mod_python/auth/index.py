@@ -53,7 +53,7 @@ def login(req, url=None, realm='Administrator'):
 
     company_name = uvmlogin.get_company_name()
     title = _("Administrator Login")
-    # some i18n company_names cause exception here, so wrap to handle this 
+    # some i18n company_names cause exception here, so wrap to handle this
     # revert to "Administrator Login" if exception occurs
     try:
         title = cgi.escape(_("%s Administrator Login") % company_name)
@@ -79,7 +79,7 @@ def logout(req, url=None, realm='Administrator'):
 # internal methods ------------------------------------------------------------
 
 def _valid_login(req, realm, username, password):
-    if realm == 'Administrator': 
+    if realm == 'Administrator':
         return _admin_valid_login(req, realm, username, password)
     elif realm == 'Reports':
         if _admin_valid_login(req, 'Administrator', username, password, False):
@@ -145,7 +145,7 @@ def _write_login_form(req, title, host, is_error):
     req.send_http_header()
 
     if is_error:
-        error_msg = '<b style="color:#f00">%s</b><br/><br/>' % cgi.escape(_('Error: Username and Password do not match'))
+        error_msg = '%s' % cgi.escape(_('Error: Username and Password do not match'))
     else:
         error_msg = ''
 
@@ -162,15 +162,15 @@ def _write_login_form(req, title, host, is_error):
     banner_msg = get_node_settings_item('untangle-node-branding-manager','bannerMessage')
     if banner_msg != None and banner_msg != "":
         banner_msg = banner_msg.replace("\n", "<br/>")
-        banner_msg = "<br>" + banner_msg.encode('utf-8')
+        banner_msg = "<p>" + banner_msg.encode('utf-8') + "</p>"
     else:
         banner_msg = ""
-        
-    html = """\
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+    html = """\
+<!DOCTYPE html>
+<html>
 <head>
+<meta name="viewport" content="initial-scale=1.0, width=device-width">
 <title>%s</title>
 <script type="text/javascript">if (top.location!=location) top.location.href=document.location.href;</script>
 <style type="text/css">
@@ -179,30 +179,28 @@ def _write_login_form(req, title, host, is_error):
 /* ]]> */
 </style>
 </head>
-<body class="loginPage">
-<div id="main" style="width: 500px; margin: 50px auto 0 auto;">
-    <form method="post" action="%s" class="form-signin">
-        <center>
-    	    <img style="margin-bottom:10px;" src="/images/BrandingLogo.png"><br/>
-            <span class="form-signin-heading"><strong>%s</strong></span>
-            <br/>
-            <div class="banner">%s</div>
-            <br/>
-            <span><strong>%s</strong></span>
-            <table>
-                <tbody>
-                    <tr><td style="text-align:right;color:white;">%s</td><td><em><font color="white">&nbsp;%s</font></em></td></tr>
-                    <tr><td style="text-align:right;color:white;">%s</td><td><input id="username" type="text" name="username" value="admin" class="input-block-level"/></td></tr>
-                    <tr><td style="text-align:right;color:white;">%s</td><td><input id="password" type="password" name="password" class="input-block-level"/></td></tr>
-                </tbody>
-            </table>
-            <br/>
-            <div style="text-align: center;color:white;"><button value="login" type="submit">%s</button></div>
-        </center>
+<body>
+
+<header>
+    <img src="/images/BrandingLogo.png">
+</header>
+
+<div class="form-login">
+    <form method="post" action="%s">
+        <h2>%s</h2>
+        <p class="server">%s</p>
+        <div class="banner">%s</div>
+
+        <p class="error">%s</p>
+        <input id="username" type="text" name="username" value="admin" placeholder="%s"/>
+        <input id="password" type="password" name="password" placeholder="%s"/>
+        <button type="submit">%s</button>
     </form>
-    <script type="text/javascript">document.getElementById('password').focus();</script>
 </div>
+
+<script type="text/javascript">document.getElementById('password').focus();</script>
+
 </body>
-</html>""" % (title, login_url,title,banner_msg,error_msg, server_str, host, username_str, password_str, login_str)
-    
+</html>""" % (title, login_url, title, host, banner_msg, error_msg, username_str, password_str, login_str)
+
     req.write(html)
