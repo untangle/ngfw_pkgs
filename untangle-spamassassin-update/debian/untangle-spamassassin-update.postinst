@@ -14,6 +14,9 @@ sed -i "s/^CRON=.*/CRON=1/" /etc/default/spamassassin
 # change cronjob to also touch /tmp/sa-update.ran file when it runs so we know when last update ran
 grep -q -F 'touch /tmp/sa-update.ran' /etc/cron.daily/spamassassin || sed -i -e '/^case.*/i touch /tmp/sa-update.ran' /etc/cron.daily/spamassassin
 
+# disable sleep as it sleeps all cron jobs randomly
+sed -i -e 's/^sleep\(.*\)/\#sleep \1/' /etc/cron.daily/spamassassin
+
 # touch /tmp/sa-update.ran so users do not see "never updated" and panic like the world is ending
 if [ ! -f /tmp/sa-update.ran ] ; then touch /tmp/sa-update.ran ; fi 
 
