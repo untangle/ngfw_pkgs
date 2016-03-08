@@ -49,6 +49,6 @@ EOF
 update-rc.d spamassassin disable
 
 # update (commented out - don't do this on install - takes too long)
-# /etc/cron.daily/untangle-spamassassin-update
+# /etc/cron.daily/spamassassin
 
 exit 0
