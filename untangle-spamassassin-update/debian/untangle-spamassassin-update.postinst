@@ -45,7 +45,11 @@ EOF
 # disable spamassassin at startup (now started by apps when needed)
 update-rc.d spamassassin disable
 
-# update (commented out - don't do this on install - takes too long)
-# /etc/cron.daily/untangle-spamassassin-update
+
+# 12.0 upgrade, use old signatures as a starting point
+if [ -d /var/lib/spamassassin/3.003002 ] && [ ! -d /var/lib/spamassassin/3.004000 ] ; then
+    cp -r /var/lib/spamassassin/3.003002 /var/lib/spamassassin/3.004000
+    chown -R debian-spamd:debian-spamd /var/lib/spamassassin/3.004000
+fi
 
 exit 0
