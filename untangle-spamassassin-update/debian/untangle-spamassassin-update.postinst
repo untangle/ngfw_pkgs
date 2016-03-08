@@ -14,6 +14,9 @@ sed -i "s/^CRON=.*/CRON=1/" /etc/default/spamassassin
 # change cronjob to also touch /tmp/sa-update.ran file when it runs so we know when last update ran
 grep -q -F 'touch /tmp/sa-update.ran' /etc/cron.daily/spamassassin || sed -i -e '/^case.*/i touch /tmp/sa-update.ran' /etc/cron.daily/spamassassin
 
+# disable sleep as it sleeps all cron jobs randomly
+sed -i -e 's/^sleep\(.*\)/\#sleep \1/' /etc/cron.daily/spamassassin
+
 # touch /tmp/sa-update.ran so users do not see "never updated" and panic like the world is ending
 if [ ! -f /tmp/sa-update.ran ] ; then touch /tmp/sa-update.ran ; fi 
 
@@ -47,9 +50,12 @@ update-rc.d spamassassin disable
 
 
 # 12.0 upgrade, use old signatures as a starting point
+# attempt to fetch new sigs
 if [ -d /var/lib/spamassassin/3.003002 ] && [ ! -d /var/lib/spamassassin/3.004000 ] ; then
     cp -r /var/lib/spamassassin/3.003002 /var/lib/spamassassin/3.004000
     chown -R debian-spamd:debian-spamd /var/lib/spamassassin/3.004000
+    echo "Updating spamassassin rules..."
+    /etc/cron.daily/spamassassin
 fi
 
 exit 0
