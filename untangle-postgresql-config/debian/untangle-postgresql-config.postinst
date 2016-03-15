@@ -23,9 +23,8 @@ if [ -d /var/lib/postgresql/9.1 ] ; then
        -d /var/lib/postgresql/9.1/main \
        -D /var/lib/postgresql/9.4/main \
        -o ' -c config_file=/etc/postgresql/9.1/main/postgresql.conf' \
-       -O ' -c config_file=/etc/postgresql/9.4/main/postgresql.conf'" postgres && \
-    pg_dropcluster 9.1 main && \
-    rm -fr /var/lib/postgresql/9.1
+       -O ' -c config_file=/etc/postgresql/9.4/main/postgresql.conf'" postgres
+    pg_dropcluster 9.1 main && rm -fr /var/lib/postgresql/9.1
     echo
     echo "[`date +%Y-%m-%dT%H:%m`] Completed conversion"
     echo
