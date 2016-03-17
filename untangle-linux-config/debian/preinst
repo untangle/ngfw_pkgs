@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# might be empty, but it doesn't matter (see examples below)
+oldVersion=$2
+
+# 12.0 upgrade
+if dpkg --compare-versions "$oldVersion" le 11.3~ ; then
+    # stop apache immediately
+    # On the 12.0 upgrade we want to stop apache as soon as possible
+    # The untangle-linux-config preinst runs first of all untangle scripts
+    # So we stop apache here so the user won't be able to login and change settings
+    # while the upgrade is being performed
+    /usr/sbin/service apache2 stop
+    /etc/init.d/untangle-vm stop
+fi
+
+exit 0
