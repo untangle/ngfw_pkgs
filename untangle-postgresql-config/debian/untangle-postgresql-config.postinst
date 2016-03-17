@@ -8,88 +8,85 @@ else
 fi
 }
 
-# 12.0 conversion
-# migrate from 9.1 to 9.4 if necessary (See #12692)
-if [ -d /var/lib/postgresql/9.1 ] ; then
-    echo
-    echo "[`date +%Y-%m-%dT%H:%m`] Starting conversion"
-    echo
-    ourInit postgresql stop && \
+PG_VERSION_OLD="9.1"
+PG_ETC_DIR_OLD="/etc/postgresql/${PG_VERSION_OLD}"
+PG_BIN_DIR_OLD="/usr/lib/postgresql/${PG_VERSION_OLD}/bin"
+PG_VAR_DIR_OLD="/var/lib/postgresql/${PG_VERSION_OLD}"
+
+PG_VERSION="9.4"
+PG_ETC_DIR="/etc/postgresql/${PG_VERSION}"
+PG_MAIN_DIR="${PG_ETC_DIR}/main"
+PG_CONF="${PG_MAIN_DIR}/postgresql.conf"
+PG_HBA="${PG_MAIN_DIR}/pg_hba.conf"
+PG_BIN_DIR="/usr/lib/postgresql/${PG_VERSION}/bin"
+PG_VAR_DIR="/var/lib/postgresql/${PG_VERSION}"
+
+createDB() {
+  # re-create cluster with en_US.UTF-8 locale (#12847)
+  ourInit postgresql stop
+  rm -fr ${PG_VAR_DIR}
+  mkdir -p ${PG_VAR_DIR}/main
+  chown -R postgres ${PG_VAR_DIR}
+  su -c "${PG_BIN_DIR}/initdb --encoding=utf8 --locale=en_US.UTF-8 -D ${PG_VAR_DIR}/main" postgres
+}
+
+if [ -z "$2" ] ; then # this is a new install
+    createDB
+elif [ -d $PG_VAR_DIR_OLD ] ; then
+    # 12.0 conversion
+    # migrate from $PG_VERSION_OLD to $PG_VERSION if necessary (See
+    # #12692)
+    echo -e "\n[`date +%Y-%m-%dT%H:%m`] Starting conversion\n"
+    createDB
     cd /tmp && \
-    su -c "/usr/lib/postgresql/9.4/bin/pg_upgrade \
+    su -c "${PG_BIN_DIR}/pg_upgrade \
        --link \
-       -b /usr/lib/postgresql/9.1/bin \
-       -B /usr/lib/postgresql/9.4/bin \
-       -d /var/lib/postgresql/9.1/main \
-       -D /var/lib/postgresql/9.4/main \
-       -o ' -c config_file=/etc/postgresql/9.1/main/postgresql.conf' \
-       -O ' -c config_file=/etc/postgresql/9.4/main/postgresql.conf'" postgres && \
-    pg_dropcluster 9.1 main && \
-    rm -fr /var/lib/postgresql/9.1
-    echo
-    echo "[`date +%Y-%m-%dT%H:%m`] Completed conversion"
-    echo
-    
+       -b $PG_BIN_DIR_OLD \
+       -B $PG_BIN_DIR \
+       -d ${PG_VAR_DIR_OLD}/main \
+       -D ${PG_VAR_DIR}/main \
+       -o ' -c config_file=${PG_ETC_DIR_OLD}/main/postgresql.conf' \
+       -O ' -c config_file=${PG_ETC_DIR}/main/postgresql.conf'" postgres
+    pg_dropcluster $PG_VERSION_OLD main && rm -fr $PG_VAR_DIR_OLD
+    echo -e "\n[`date +%Y-%m-%dT%H:%m`] Completed conversion\n"
 fi
 
-PG_CONF="`/usr/bin/find /etc/postgresql/9.4 -name 'postgresql.conf' -type f`"
-PG_HBA="`/usr/bin/find /etc/postgresql/9.4 -name 'pg_hba.conf' -type f`"
-DATE="`date '+%Y%m%d%H%M%S'`"
-
-if [ -z "$PG_CONF" ] ; then
-    echo "ERROR: Can't locate postgresql.conf"
-    exit 0
-fi
-if [ -z "$PG_HBA" ] ; then
-    echo "ERROR: Can't locate pg_hba.conf"
-    exit 0
-fi
+DATE=$(date '+%Y%m%d%H%M%S')
 
 # backup original conf files
-for i in $PG_CONF ; do
-    cp -f $i $i.$DATE
-done
-for i in $PG_HBA ; do
-    cp -f $i  $i.$DATE
-done
+cp -f $PG_CONF ${PG_CONF}.$DATE
+cp -f $PG_HBA ${PG_HBA}.$DATE
 
 # configure pg_hba.conf
-for file in $PG_HBA ; do
-    sed -i -e 's/peer$/trust/' $file
-    sed -i -e "s/\#\(local.*all.*all.*trust\)/\1/" $file
-    sed -i -e "s/\#\(host.*all.*all.*127.0.0.1.*255.255.255.255.*trust\)/\1/" $file
-    sed -i -e 's/\(local.*all.*postgres.*\)\(ident.*\)/\1trust/'  $file
-    sed -i -e 's/\(local.*all.*all.*\)\(ident.*\)/\1trust/'  $file
-    sed -i -e 's/\(host.*all.*all.*127.0.0.1\(\/32\|[ \t]\).*\)\(md5\)/\1trust/'  $file
-    sed -i -e 's/\(host.*all.*all.*::1\(\/128\|[ \t]\).*\)\(md5\)/\1trust/'  $file
-done
+sed -i -e 's/peer$/trust/' $PG_HBA
+sed -i -e "s/\#\(local.*all.*all.*trust\)/\1/" $PG_HBA
+sed -i -e "s/\#\(host.*all.*all.*127.0.0.1.*255.255.255.255.*trust\)/\1/" $PG_HBA
+sed -i -e 's/\(local.*all.*postgres.*\)\(ident.*\)/\1trust/'  $PG_HBA
+sed -i -e 's/\(local.*all.*all.*\)\(ident.*\)/\1trust/'  $PG_HBA
+sed -i -e 's/\(host.*all.*all.*127.0.0.1\(\/32\|[ \t]\).*\)\(md5\)/\1trust/'  $PG_HBA
+sed -i -e 's/\(host.*all.*all.*::1\(\/128\|[ \t]\).*\)\(md5\)/\1trust/'  $PG_HBA
 
 # configure postgresql.conf
-for file in $PG_CONF ; do
-    # enable TCP from local host
-    sed -i -e "s/.*port.*=.*/port=5432/" $file
-    sed -i -e "s/.*virtual_host.*=.*/virtual_host='127.0.0.1'/" $file
-    sed -i -e "s/.*tcpip_socket.*=.*/tcpip_socket = true/" $file
-
-    # turn of backslash warnings (Bug #7810)
-    sed -i -e "s/.*escape_string_warning.*=.*/escape_string_warning = off/" $file
-
-    # Performance tuning
-    # http://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server
-    # we can gain massive speedups in writes by turning off synchronous commits.
-    sed -i -e "s/.*synchronous_commit.*=.*/synchronous_commit = off/" $file
-    # increase checkpoint_segments 
-    sed -i -e "s/.*checkpoint_segments.*=.*/checkpoint_segments = 32/" $file
-    sed -i -e "s/.*autovacuum_max_workers.*=.*/autovacuum_max_workers = 1/" $file
-
-    # log autovacuum
-    sed -i -e "s/.*log_autovacuum_min_duration.*=.*/log_autovacuum_min_duration = 0/" $file
-    # decrease auto-vacuum since tables are now partitioned vacuuming is hardly required since rows are never removed only updated
-    sed -i -e "s/.*autovacuum_vacuum_scale_factor.*=.*/autovacuum_vacuum_scale_factor = 2/" $file
-    # decrease auto-analyze 
-    sed -i -e "s/.*autovacuum_analyze_scale_factor.*=.*/autovacuum_analyze_scale_factor = .5/" $file
-
-done
+# ... enable TCP from local host
+sed -i -e "s/.*port.*=.*/port=5432/" $PG_CONF
+sed -i -e "s/.*virtual_host.*=.*/virtual_host='127.0.0.1'/" $PG_CONF
+sed -i -e "s/.*tcpip_socket.*=.*/tcpip_socket = true/" $PG_CONF
+# ... turn of backslash warnings (Bug #7810)
+sed -i -e "s/.*escape_string_warning.*=.*/escape_string_warning = off/" $PG_CONF
+# ... Performance tuning
+# ... http://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server
+# ... we can gain massive speedups in writes by turning off synchronous commits.
+sed -i -e "s/.*synchronous_commit.*=.*/synchronous_commit = off/" $PG_CONF
+# ... increase checkpoint_segments 
+sed -i -e "s/.*checkpoint_segments.*=.*/checkpoint_segments = 32/" $PG_CONF
+sed -i -e "s/.*autovacuum_max_workers.*=.*/autovacuum_max_workers = 1/" $PG_CONF
+# ... log autovacuum
+sed -i -e "s/.*log_autovacuum_min_duration.*=.*/log_autovacuum_min_duration = 0/" $PG_CONF
+# ... decrease auto-vacuum since tables are now partitioned vacuuming
+# is hardly required since rows are never removed only updated
+sed -i -e "s/.*autovacuum_vacuum_scale_factor.*=.*/autovacuum_vacuum_scale_factor = 2/" $PG_CONF
+# ... decrease auto-analyze 
+sed -i -e "s/.*autovacuum_analyze_scale_factor.*=.*/autovacuum_analyze_scale_factor = .5/" $PG_CONF
 
 # configure hw parameters
 /etc/untangle/startup.d/10postgres
