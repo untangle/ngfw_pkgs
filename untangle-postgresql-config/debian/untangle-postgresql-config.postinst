@@ -10,6 +10,8 @@ fi
 
 PG_VERSION_OLD="9.1"
 PG_ETC_DIR_OLD="/etc/postgresql/${PG_VERSION_OLD}"
+PG_MAIN_DIR_OLD="${PG_ETC_DIR_OLD}/main"
+PG_CONF_OLD="${PG_MAIN_DIR_OLD}/postgresql.conf"
 PG_BIN_DIR_OLD="/usr/lib/postgresql/${PG_VERSION_OLD}/bin"
 PG_VAR_DIR_OLD="/var/lib/postgresql/${PG_VERSION_OLD}"
 
@@ -22,22 +24,26 @@ PG_BIN_DIR="/usr/lib/postgresql/${PG_VERSION}/bin"
 PG_VAR_DIR="/var/lib/postgresql/${PG_VERSION}"
 
 createDB() {
-  # re-create cluster with en_US.UTF-8 locale (#12847)
+  # re-create cluster with older cluster's locale (#12847)
+  locale=${1:-"en_US.UTF-8"}
+  echo -e "\n[`date +%Y-%m-%dT%H:%m`] ... using locale '$locale'\n"
   ourInit postgresql stop
   rm -fr ${PG_VAR_DIR}
   mkdir -p ${PG_VAR_DIR}/main
   chown -R postgres ${PG_VAR_DIR}
-  su -c "${PG_BIN_DIR}/initdb --encoding=utf8 --locale=en_US.UTF-8 -D ${PG_VAR_DIR}/main" postgres
+  su -c "${PG_BIN_DIR}/initdb --encoding=utf8 --locale=${locale} -D ${PG_VAR_DIR}/main" postgres
 }
 
 if [ -z "$2" ] ; then # this is a new install
-    createDB
+    createDB "en_US.UTF-8" # FIXME: is it safer to use the locale
+			   # selected by the user at install time ?
 elif [ -d $PG_VAR_DIR_OLD ] ; then
     # 12.0 conversion
     # migrate from $PG_VERSION_OLD to $PG_VERSION if necessary (See
     # #12692)
     echo -e "\n[`date +%Y-%m-%dT%H:%m`] Starting conversion\n"
-    createDB
+    locale=$(awk -F\' '/lc_messages/ {print $2}' $PG_CONF_OLD)
+    createDB $locale
     cd /tmp && \
     su -c "${PG_BIN_DIR}/pg_upgrade \
        --link \
