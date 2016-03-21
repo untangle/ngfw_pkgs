@@ -41,10 +41,26 @@ chsh -s /bin/zsh root
 find /root/.zsh -type f | xargs chmod 640 2> /dev/null
 find /root/.zsh -type d | xargs chmod 750 2> /dev/null
 
+echo >| /etc/motd
 echo >| /etc/motd.tail
 
 apply_oem="/usr/share/untangle/bin/apply-oem.sh"
 [ -f $apply_oem ] && $apply_oem
+
+
+#12.0 upgrade (see #12836 for details)
+# check for bad checkfs.sh and checkroot.sh
+# if bad, copy original
+if [ "`md5sum /etc/init.d/checkfs.sh`" = "9b1ba9bbbf3a3352749e1b60a7406083  /etc/init.d/checkfs.sh" ] ; then
+    echo "Fixing /etc/init.d/checkfs.sh ..."
+    cp /usr/share/untangle-kiosk/orig-checkfs.sh /etc/init.d/checkfs.sh
+    chmod 755 /etc/init.d/checkfs.sh
+fi
+if [ "`md5sum /etc/init.d/checkroot.sh`" = "90cb4cb070eb81f6a73064e2e9be2c14  /etc/init.d/checkroot.sh" ] ; then
+    echo "Fixing /etc/init.d/checkroot.sh ..."
+    cp /usr/share/untangle-kiosk/orig-checkroot.sh /etc/init.d/checkroot.sh
+    chmod 755 /etc/init.d/checkroot.sh
+fi
 
 
 exit 0
