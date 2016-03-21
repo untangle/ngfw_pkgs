@@ -69,20 +69,27 @@ fi
 
 # install new grub on update; can't re-use the above UUID=... as
 # grub-install doesn't understand that
+echo "Configuring grub2..."
 if [ -f /boot/grub/device.map ] ; then
-  echo "Installing grub2..."
+  echo "  * Checking in /boot/grub/device.map"
   hd0=$(awk '/hd0/ { print $2 }' /boot/grub/device.map)
   echo "  * found hd0 on '${hd0}'"
   hd0Target=$(readlink -f ${hd0})
-  if [ ! -e "$hd0Target" ] ; then
-    echo "  * grub's device.map points to non-existing disk, will try to use /"
-    root=$(grabRootDevice /etc/mtab)
-    rootTarget=$(readlink -f ${root})
-    echo "  * / is on '${root}', which links to '${rootTarget}'"
-    hd0Target=$(echo $rootTarget | perl -pe 's/\d$//')
-  fi
-  echo "  * about to install grub to '${hd0Target}'"
-  /usr/sbin/grub-install $hd0Target
+  echo "  * target '${hd0Target}'"
+fi
+if [ ! -e "$hd0Target" ] ; then
+  echo "  * No target found in /boot/grub/device.map. Using /"
+  root=$(grabRootDevice /etc/mtab)
+  rootTarget=$(readlink -f ${root})
+  echo "  * / is on '${root}', which links to '${rootTarget}'"
+  hd0Target=$(echo $rootTarget | perl -pe 's/\d$//')
+  echo "  * target '${hd0Target}'"
+fi
+
+echo "Installing grub2... \"${hd0Target}\""
+
+if [ ! -z "${hd0Target}" ] ; then
+    /usr/sbin/grub-install $hd0Target
 fi
 
 # update config
