@@ -1,3 +1,4 @@
+
 #! /bin/bash
 
 ourInit() {
@@ -30,13 +31,18 @@ createDB() {
   ourInit postgresql stop
   rm -fr ${PG_VAR_DIR}
   mkdir -p ${PG_VAR_DIR}/main
-  chown -R postgres ${PG_VAR_DIR}
+  chown -R postgres:postgres ${PG_VAR_DIR}
   su -c "${PG_BIN_DIR}/initdb --encoding=utf8 --locale=${locale} -D ${PG_VAR_DIR}/main" postgres
 }
 
 if [ -z "$2" ] ; then # this is a new install
-    createDB "en_US.UTF-8" # FIXME: is it safer to use the locale
-			   # selected by the user at install time ?
+    # enable en_US.UTF-8
+    sed -i -e "s/.*en_US.UTF-8 UTF-8.*/en_US.UTF-8 UTF-8/" /etc/locale.gen
+    locale-gen
+
+    # FIXME: is it safer to use the locale
+	# selected by the user at install time ?
+    createDB "en_US.UTF-8"
 elif [ -d $PG_VAR_DIR_OLD ] ; then
     # 12.0 conversion
     # migrate from $PG_VERSION_OLD to $PG_VERSION if necessary (See
