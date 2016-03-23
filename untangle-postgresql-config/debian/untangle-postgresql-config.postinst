@@ -80,4 +80,9 @@ sed -i -e "s/.*autovacuum_analyze_scale_factor.*=.*/autovacuum_analyze_scale_fac
 # restart postgres
 ourInit postgresql restart
 
+# 12.1 remove old directories if they still exist
+rm -rf /var/lib/postgresql/9.1
+rm -rf /var/lib/postgresql/8.4
+
+
 exit 0
