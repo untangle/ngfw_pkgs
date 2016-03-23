@@ -11,6 +11,7 @@ if dpkg --compare-versions "$oldVersion" le 11.3~ ; then
     # So we stop apache here so the user won't be able to login and change settings
     # while the upgrade is being performed
     /etc/init.d/untangle-vm stop
+    nohup /usr/bin/uvm-restart >>/var/log/restart-uvm.log 2>&1 &
     /usr/sbin/service apache2 stop
 fi
 
