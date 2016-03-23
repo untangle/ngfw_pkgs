@@ -1,4 +1,3 @@
-
 #! /bin/bash
 
 ourInit() {
@@ -8,13 +7,6 @@ else
   /etc/init.d/$1 $2
 fi
 }
-
-PG_VERSION_OLD="9.1"
-PG_ETC_DIR_OLD="/etc/postgresql/${PG_VERSION_OLD}"
-PG_MAIN_DIR_OLD="${PG_ETC_DIR_OLD}/main"
-PG_CONF_OLD="${PG_MAIN_DIR_OLD}/postgresql.conf"
-PG_BIN_DIR_OLD="/usr/lib/postgresql/${PG_VERSION_OLD}/bin"
-PG_VAR_DIR_OLD="/var/lib/postgresql/${PG_VERSION_OLD}"
 
 PG_VERSION="9.4"
 PG_ETC_DIR="/etc/postgresql/${PG_VERSION}"
@@ -35,32 +27,14 @@ createDB() {
   su -c "${PG_BIN_DIR}/initdb --encoding=utf8 --locale=${locale} -D ${PG_VAR_DIR}/main" postgres
 }
 
-if [ -z "$2" ] ; then # this is a new install
+# if this is a new install
+if [ -z "$2" ] ; then
     # enable en_US.UTF-8
     sed -i -e "s/.*en_US.UTF-8 UTF-8.*/en_US.UTF-8 UTF-8/" /etc/locale.gen
     locale-gen
 
-    # FIXME: is it safer to use the locale
-	# selected by the user at install time ?
+    # create en_US.UTF-8 regardless of system locale
     createDB "en_US.UTF-8"
-elif [ -d $PG_VAR_DIR_OLD ] ; then
-    # 12.0 conversion
-    # migrate from $PG_VERSION_OLD to $PG_VERSION if necessary (See
-    # #12692)
-    echo -e "\n[`date +%Y-%m-%dT%H:%m`] Starting conversion\n"
-    locale=$(awk -F\' '/lc_messages/ {print $2}' $PG_CONF_OLD)
-    createDB $locale
-    cd /tmp && \
-    su -c "${PG_BIN_DIR}/pg_upgrade \
-       --link \
-       -b $PG_BIN_DIR_OLD \
-       -B $PG_BIN_DIR \
-       -d ${PG_VAR_DIR_OLD}/main \
-       -D ${PG_VAR_DIR}/main \
-       -o ' -c config_file=${PG_ETC_DIR_OLD}/main/postgresql.conf' \
-       -O ' -c config_file=${PG_ETC_DIR}/main/postgresql.conf'" postgres
-    pg_dropcluster $PG_VERSION_OLD main && rm -fr $PG_VAR_DIR_OLD
-    echo -e "\n[`date +%Y-%m-%dT%H:%m`] Completed conversion\n"
 fi
 
 DATE=$(date '+%Y%m%d%H%M%S')
