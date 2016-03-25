@@ -63,7 +63,7 @@ elif [ -d $PG_VAR_DIR_OLD ] ; then
     pg_dropcluster $PG_VERSION_OLD main
     rm -fr $PG_VAR_DIR_OLD
     echo -e "\n[`date +%Y-%m-%dT%H:%m`] Completed conversion\n"
-elif [ ! -d "${PG_VAR_DIR}/base" ] ; then 
+elif [ ! -d "${PG_VAR_DIR}/main/base" ] ; then 
     # database does not exist for whatever reason, just create it
 
     # enable en_US.UTF-8
