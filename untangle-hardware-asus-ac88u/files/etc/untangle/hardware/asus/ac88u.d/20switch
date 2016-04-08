@@ -1,0 +1,33 @@
+#! /bin/sh
+
+set -x
+set -e
+
+# load switch config module
+modprobe switch-robo
+
+# disable switch
+echo 0 > /proc/switch/eth0/enable
+
+# reset config
+echo 1 > /proc/switch/eth0/reset
+
+# VLAN naming
+vconfig set_name_type VLAN_PLUS_VID_NO_PAD
+
+# eth0 up
+ip link set eth0 up
+
+# vlan 1
+echo "4\t7u" >| /proc/switch/eth0/vlan/1/ports
+
+# vlan 2
+echo "0\t1\t2\t3\t5\t7t" >| /proc/switch/eth0/vlan/2/ports
+
+# enable switch
+echo 1 > /proc/switch/eth0/enable
+
+# FIXME: default IP
+ifconfig vlan1 192.168.1.1 netmask 255.255.255.0
+
+exit 0
