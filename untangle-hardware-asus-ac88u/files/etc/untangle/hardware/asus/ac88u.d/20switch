@@ -37,7 +37,5 @@ echo "0\t1\t2\t3\t5\t7t" >| /proc/switch/eth0/vlan/2/ports
 # enable switch
 echo 1 > /proc/switch/eth0/enable
 
-# FIXME: default IP
-ifconfig vlan1 192.168.1.1 netmask 255.255.255.0
 
 exit 0
