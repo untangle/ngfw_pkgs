@@ -3,8 +3,18 @@
 set -x
 set -e
 
-# load switch config module
+# load modules for ethernet NIC
+depmod -a
+modprobe emf
+modprobe igs
+modprobe et
+modprobe switch-core
 modprobe switch-robo
+modprobe dhd
+modprobe wl
+
+lsmod
+ip ad
 
 # disable switch
 echo 0 > /proc/switch/eth0/enable
