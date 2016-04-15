@@ -17,10 +17,10 @@ lsmod
 ip ad
 
 # disable switch
-echo 0 > /proc/switch/eth0/enable
+echo 0 >| /proc/switch/eth0/enable
 
 # reset config
-echo 1 > /proc/switch/eth0/reset
+echo 1 >| /proc/switch/eth0/reset
 
 # VLAN naming
 vconfig set_name_type VLAN_PLUS_VID_NO_PAD
@@ -28,19 +28,21 @@ vconfig set_name_type VLAN_PLUS_VID_NO_PAD
 # eth0 up
 ip link set eth0 up
 
-# Port 8 is the CPU port
-# port 4 is the WAN port
-# ports 0,1,2,3,5,6,7 are the LAN ports
-# There are actually 8 LAN ports so I'm not sure why there are only 7 ports, but they all work
+CPUPORT="`cat /proc/switch/eth0/cpuport | tr -d '[[:space:]]'`"
 
-# ports 0,1,2,3 5,6,7 (LAN) -> vlan 2
-echo "0\t1\t2\t3\t5\t6\t7\t8t" >| /proc/switch/eth0/vlan/2/ports
+# CPU port is usually 8 or 7, it seems to be different per appliance
+
+# ports 0,1,2,3,5 are the LAN ports
+# port 5 is actually ports 5-8 labeled on the appliance
+
+# ports 0,1,2,3,5 (LAN) -> vlan 2
+echo "0\t1\t2\t3\t5\t${CPUPORT}t" >| /proc/switch/eth0/vlan/2/ports
 
 # port 4 (WAN) -> vlan 1
-echo "4\t8t" >| /proc/switch/eth0/vlan/1/ports
+echo "4\t${CPUPORT}t" >| /proc/switch/eth0/vlan/1/ports
 
 # enable switch
-echo 1 > /proc/switch/eth0/enable
+echo 1 >| /proc/switch/eth0/enable
 
 
 exit 0
