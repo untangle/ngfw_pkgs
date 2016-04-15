@@ -22,9 +22,6 @@ echo 0 >| /proc/switch/eth0/enable
 # reset config
 echo 1 >| /proc/switch/eth0/reset
 
-# VLAN naming
-vconfig set_name_type VLAN_PLUS_VID_NO_PAD
-
 # eth0 up
 ip link set eth0 up
 
