@@ -22,12 +22,8 @@ echo 0 >| /proc/switch/eth0/enable
 # reset config
 echo 1 >| /proc/switch/eth0/reset
 
-# eth0 up
-ip link set eth0 up
-
-CPUPORT="`cat /proc/switch/eth0/cpuport | tr -d '[[:space:]]'`"
-
 # CPU port is usually 8 or 7, it seems to be different per appliance
+CPUPORT="`cat /proc/switch/eth0/cpuport | tr -d '[[:space:]]'`"
 
 # ports 0,1,2,3,5 are the LAN ports
 # port 5 is actually ports 5-8 labeled on the appliance
