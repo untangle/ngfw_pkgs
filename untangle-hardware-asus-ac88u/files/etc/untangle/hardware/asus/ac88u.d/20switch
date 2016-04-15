@@ -28,11 +28,16 @@ vconfig set_name_type VLAN_PLUS_VID_NO_PAD
 # eth0 up
 ip link set eth0 up
 
-# vlan 1
-echo "4\t7u" >| /proc/switch/eth0/vlan/1/ports
+# Port 8 is the CPU port
+# port 4 is the WAN port
+# ports 0,1,2,3,5,6,7 are the LAN ports
+# There are actually 8 LAN ports so I'm not sure why there are only 7 ports, but they all work
 
-# vlan 2
-echo "0\t1\t2\t3\t5\t7t" >| /proc/switch/eth0/vlan/2/ports
+# ports 0,1,2,3 5,6,7 (LAN) -> vlan 2
+echo "0\t1\t2\t3\t5\t6\t7\t8t" >| /proc/switch/eth0/vlan/2/ports
+
+# port 4 (WAN) -> vlan 1
+echo "4\t8t" >| /proc/switch/eth0/vlan/1/ports
 
 # enable switch
 echo 1 > /proc/switch/eth0/enable
