@@ -1,12 +1,12 @@
 #!/bin/sh
 
-# this is creates the default network settings for the buffalo wzr1750
+# this is creates the default network settings for the buffalo wxr1900
 
 
 
 if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
 
-   echo "Initializing default network settings for Buffalo WZR 1750..."
+   echo "Initializing default network settings for Buffalo WXR 1900..."
 
    mkdir -p /usr/share/untangle/settings/untangle-vm
    cat > /usr/share/untangle/settings/untangle-vm/network.js <<EOF
@@ -832,7 +832,7 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
 EOF
 
    /usr/share/untangle-netd/bin/sync-settings.py -vv
-   echo "Initializing default network settings for Buffalo WZR 1750...done"
+   echo "Initializing default network settings for Buffalo WXR 1900...done"
 
 fi
 
