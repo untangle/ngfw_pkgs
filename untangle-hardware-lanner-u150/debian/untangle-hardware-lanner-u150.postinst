@@ -12,5 +12,9 @@ if [ -x "/etc/init.d/untangle-hardware-lanner-u150" ]; then
   update-rc.d untangle-hardware-lanner-u150 defaults 10 >/dev/null # early on
   ourInit untangle-hardware-lanner-u150 restart
 fi
-    
+
+# 12.0 fix for some u150 servers that have been imaged wrongly
+# This will ensure that the root partition uses all the space the partition has available
+resize2fs /dev/sda1
+
 exit 0
