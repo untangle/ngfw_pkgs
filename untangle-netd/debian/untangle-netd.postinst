@@ -8,12 +8,4 @@ sed -e 's/\(.*log_warning_msg.*\)/#\1/' -i /etc/network/if-up.d/mountnfs
 # It will be started via the post-network scripts if needed
 update-rc.d keepalived disable
 
-# 11.1 conversion
-rm -f /etc/untangle-netd/iptables-rules.d/340-dns-rules
-
-# 12.0 conversion
-rm -f /etc/untangle-netd/post-network-hook.d/100-finddev
-rm -f /var/log/uvm/finddev* 
-rm -f /etc/cron.hourly/hostapd-restart
-
 exit 0

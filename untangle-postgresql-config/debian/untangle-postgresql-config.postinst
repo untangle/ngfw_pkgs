@@ -36,27 +36,7 @@ if [ -z "$2" ] ; then
 
     # create en_US.UTF-8 regardless of system locale
     createDB "en_US.UTF-8"
-elif [ -d $PG_VAR_DIR_OLD ] ; then
-    # 12.0 conversion
-    # migrate from $PG_VERSION_OLD to $PG_VERSION if necessary (See
-    # #12692)
-    echo -e "\n[`date +%Y-%m-%dT%H:%m`] Starting conversion\n"
-    locale=$(psql -t -U postgres -c "select setting from pg_settings where name = 'lc_collate';" uvm | xargs )
-    echo -e "\n[`date +%Y-%m-%dT%H:%m`] Old locale: $locale\n"
-    # re-create cluster with older cluster's locale (#12847)
-    createDB $locale
-    cd /tmp && \
-    su -c "${PG_BIN_DIR}/pg_upgrade \
-       --link \
-       -b $PG_BIN_DIR_OLD \
-       -B $PG_BIN_DIR \
-       -d ${PG_VAR_DIR_OLD}/main \
-       -D ${PG_VAR_DIR}/main \
-       -o ' -c config_file=${PG_ETC_DIR_OLD}/main/postgresql.conf' \
-       -O ' -c config_file=${PG_ETC_DIR}/main/postgresql.conf'" postgres
-    pg_dropcluster $PG_VERSION_OLD main
-    rm -fr $PG_VAR_DIR_OLD
-    echo -e "\n[`date +%Y-%m-%dT%H:%m`] Completed conversion\n"
+
 elif [ ! -d "${PG_VAR_DIR}/main/base" ] ; then 
     # database does not exist for whatever reason, just create it
 

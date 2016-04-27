@@ -23,7 +23,4 @@ setOption StreamMaxLength 100M
 update-rc.d clamav-daemon disable
 update-rc.d clamav-freshclam disable
 
-# 12.0 old log file name
-rm -f /var/log/clamav-unofficial-sigs-update.log
-
 exit 0
