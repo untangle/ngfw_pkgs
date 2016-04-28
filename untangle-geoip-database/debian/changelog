@@ -1,0 +1,6 @@
+untangle-geoip-database (0-0) stable; urgency=low
+
+  * auto build
+
+ -- Michael Hotz <mahotz@untangle.com>  Thu, 28 Apr 2016 11:30:00 -0700
+

@@ -1,0 +1,5 @@
+#!/bin/dash
+
+/bin/rm -f /var/cache/untangle-geoip/GeoLite2-City.*
+
+exit 0

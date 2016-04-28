@@ -1,0 +1,41 @@
+#!/bin/sh
+#
+# This file is part of the untangle-geoip-database package.  We hook into
+# the monthly cron process to download a new database file for the
+# Uvm GeographyManager.  We put the new file in the expected location
+# with the .update extension and Uvm will take care of the rest.
+#
+
+# This is the URL where we download the compressed city database from maxmind
+NETURL=http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz
+
+# This is the location for the temporary working copy we download
+TEMPFILE=/tmp/geoip_download.gz
+
+# This is the name of the update file
+UPFILE=/var/cache/untangle-geoip/GeoLite2-City.update
+
+# Remove any existing temporary file that may have been downloaded
+if [ -f $TEMPFILE ]; then
+    /bin/rm -f $TEMPFILE
+fi
+
+# Download the update from the external server
+/usr/bin/wget -O $TEMPFILE $NETURL
+
+# Make sure we actually received the file
+if [ ! -f $TEMPFILE ]; then
+    printf "Unable to download GeoIP database file"
+    exit 1
+fi
+
+# Remove any existing update file
+if [ -f $UPFILE ]; then
+    /bin/rm -f $UPFILE
+fi
+
+# Uncompress the downloaded file and write to the update file
+/bin/gunzip --stdout -d $TEMPFILE > $UPFILE
+
+# Remove the temporary
+/bin/rm -f $TEMPFILE
