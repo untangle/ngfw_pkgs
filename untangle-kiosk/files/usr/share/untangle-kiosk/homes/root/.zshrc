@@ -109,6 +109,7 @@ limit coredumpsize 0 # don't allow coredumps
 ###################################
 alias s="" # sudo not needed for root
 alias myls="ls -ldh --color *(N/) ; ls -lh --color *(^/) 2> /dev/null"
+alias cloak=" unset HISTFILE"
 bindkey -e
 bindkey -s "^o"   '; myls \r'
 bindkey -s "^b"   'cd ..\r'
