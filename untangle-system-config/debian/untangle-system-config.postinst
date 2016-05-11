@@ -13,9 +13,7 @@ ourInit() {
 }
 
 /usr/share/untangle-system-config/syslog-maxsize-conf.sh /etc/rsyslog.conf /etc/rsyslog.d/* > /dev/null
-
 ourInit rsyslog restart
-rm -f /var/log/uvm/[0-9]*log /var/log/uvm/node[0-9]*log /var/log/uvm/*:.log
 
 # only upon first install of this package
 if [ $1 = "configure" ] && [ -z "$2" ] ; then
@@ -65,6 +63,11 @@ fi
 if [ -f /etc/dhcp/dhclient-exit-hooks.d/ddclient  ] ; then
     #change exit 0 to return to avoid dhclient-exit-hooks.d shells stop in middle
     sed -e "s/exit 0/return/" -i /etc/dhcp/dhclient-exit-hooks.d/ddclient
+fi
+
+# Build certs list
+if [ -x /usr/sbin/update-ca-certificates ] ; then
+    /usr/sbin/update-ca-certificates    
 fi
 
 exit 0
