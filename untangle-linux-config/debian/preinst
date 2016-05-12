@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# might be empty, but it doesn't matter (see examples below)
-oldVersion=$2
-
 # 12.0 upgrade
 if dpkg --compare-versions "$oldVersion" le 11.3~ ; then
     # stop apache immediately
@@ -13,6 +10,18 @@ if dpkg --compare-versions "$oldVersion" le 11.3~ ; then
     /etc/init.d/untangle-vm stop
     nohup /usr/bin/uvm-restart >>/var/log/restart-uvm.log 2>&1 &
     /usr/sbin/service apache2 stop
+fi
+
+installDevice=$(echo "get grub-pc/install_devices" | debconf-communicate | awk '{print $2}')
+
+if echo $installDevice | grep -q VBOX_HARDDISK ; then
+  # we're on virtualbox, let's see about fixing #12857
+  if [ ! -e "$installDevice" ] ; then
+    # yep, the install device is gone. grub update will fail, so we'll
+    # assume /dev/sda
+    echo "set grub-pc/install_devices /dev/sda" | debconf-communicate
+    apt-get install --yes --force-yes grub-common grub-pc grub-pc-bin grub2-common
+  fi
 fi
 
 exit 0
