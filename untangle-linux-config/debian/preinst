@@ -8,7 +8,6 @@ if echo $installDevice | grep -q VBOX_HARDDISK ; then
     # yep, the install device is gone. grub update will fail, so we'll
     # assume /dev/sda
     echo "set grub-pc/install_devices /dev/sda" | debconf-communicate
-    apt-get install --yes --force-yes grub-common grub-pc grub-pc-bin grub2-common
   fi
 fi
 
