@@ -30,6 +30,14 @@ class KernelManager:
         #
         # Handle NF Nat modules
         #
+        file.write("uname -r | grep -q '^3'" + "\n");
+        file.write("KERN_3_X=$?" + "\n");
+        file.write("\n");
+
+        file.write("# automatic conntrack helpers are removed from newer kernels > 4.0 " + "\n");
+        file.write("if [ ${KERN_3_X} -eq 0 ] ; then" + "\n");
+        file.write("\n");
+
         file.write("for mod in nf_nat_ftp nf_nat_tftp nf_nat_pptp nf_nat_h323 nf_nat_amanda nf_nat_snmp_basic nf_nat_proto_gre nf_nat_irc nf_nat_ftp nf_conntrack_pptp nf_conntrack_irc nf_conntrack_ftp nf_conntrack_amanda nf_conntrack_tftp nf_conntrack_h323 ; do" + "\n")
         file.write("\tif lsmod | grep -q $mod ; then" + "\n")
         file.write("\t\ttrue # do nothing" + "\n")         
@@ -95,6 +103,9 @@ class KernelManager:
 
         file.write("fi" + "\n")
 
+        file.write("fi" + "\n");
+        file.write("\n");
+        
         file.flush()
         file.close()
 

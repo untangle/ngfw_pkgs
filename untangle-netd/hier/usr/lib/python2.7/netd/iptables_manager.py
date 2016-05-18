@@ -13,6 +13,7 @@ import traceback
 #
 class IptablesManager:
     flushFilename = "/etc/untangle-netd/iptables-rules.d/010-flush"
+    helpersFilename = "/etc/untangle-netd/iptables-rules.d/011-helpers"
     iptablesHookFilename = "/etc/untangle-netd/post-network-hook.d/960-iptables"
 
     def write_flush_file( self, settings, prefix, verbosity ):
@@ -95,10 +96,74 @@ class IptablesManager:
         if verbosity > 0:
             print "IptablesManager: Wrote %s" % filename
 
+
+    def write_helpers_file( self, settings, prefix, verbosity ):
+
+        filename = prefix + self.helpersFilename
+        fileDir = os.path.dirname( filename )
+        if not os.path.exists( fileDir ):
+            os.makedirs( fileDir )
+
+        file = open( filename, "w+" )
+        file.write("## Auto Generated\n");
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
+        file.write("\n\n");
+        
+        file.write("## Create all helper rules.\n")
+        
+        file.write("${IPTABLES} -t raw -N helpers 2>/dev/null" + "\n");
+        file.write("${IPTABLES} -t raw -F helpers" + "\n");
+        file.write("\n");
+
+        file.write("${IPTABLES} -t raw -D PREROUTING -j helpers >/dev/null 2>&1" + "\n");
+        file.write("${IPTABLES} -t raw -I PREROUTING -j helpers" + "\n");
+        file.write("\n");
+
+        file.write("uname -r | grep -q '^4'" + "\n");
+        file.write("KERN_4_X=$?" + "\n");
+        file.write("\n");
+
+        file.write("if [ ${KERN_4_X} -eq 0 ] ; then" + "\n");
+        file.write("\n");
+
+        file.write("\t" + "${IPTABLES} -t raw -A helpers -p udp --dport 1719 -j CT --helper RAS" + "\n");
+        file.write("\t" + "${IPTABLES} -t raw -A helpers -p tcp --dport 1720 -j CT --helper Q.931" + "\n");
+        file.write("\n");
+
+        if settings.get('enableSipNatHelper'):
+            file.write("\t" + "${IPTABLES} -t raw -A helpers -p tcp --dport 5060 -j CT --helper sip" + "\n");
+            file.write("\t" + "${IPTABLES} -t raw -A helpers -p udp --dport 5060 -j CT --helper sip" + "\n");
+            file.write("\t" + "${IPTABLES} -t raw -A helpers -p tcp --dport 5061 -j CT --helper sip" + "\n");
+            file.write("\t" + "${IPTABLES} -t raw -A helpers -p udp --dport 5061 -j CT --helper sip" + "\n");
+            file.write("\n");
+        
+        file.write("\t" + "${IPTABLES} -t raw -A helpers -p tcp --dport 21 -j CT --helper ftp" + "\n");
+        file.write("\n");
+
+        file.write("\t" + "${IPTABLES} -t raw -A helpers -p tcp --dport 6667 -j CT --helper irc" + "\n");
+        file.write("\n");
+
+        file.write("\t" + "${IPTABLES} -t raw -A helpers -p tcp --dport 1723 -j CT --helper pptp" + "\n");
+        file.write("\n");
+
+        file.write("\t" + "${IPTABLES} -t raw -A helpers -p udp --dport 69 -j CT --helper tftp" + "\n");
+        file.write("\n");
+
+        file.write("fi" + "\n");
+        file.write("\n");
+        
+        file.flush()
+        file.close()
+
+        if verbosity > 0:
+            print "IptablesManager: Wrote %s" % filename
+
+
     def sync_settings( self, settings, prefix="", verbosity=0 ):
         if verbosity > 1: print "IptablesManager: sync_settings()"
 
         self.write_flush_file( settings, prefix, verbosity )
+        self.write_helpers_file( settings, prefix, verbosity )
 
         os.system("ln -sf /usr/share/untangle-netd/bin/generate-iptables-rules.sh %s" % self.iptablesHookFilename);
         if verbosity > 0:
