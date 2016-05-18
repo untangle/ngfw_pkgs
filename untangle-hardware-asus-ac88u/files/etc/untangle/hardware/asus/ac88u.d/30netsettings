@@ -538,6 +538,7 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
                     "list": []
                 },
                 "disabled": true,
+                "hidden": true,
                 "interfaceId": 1,
                 "isVlanInterface": false,
                 "isWan": false,
@@ -826,7 +827,8 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
     },
     "stpEnabled": false,
     "strictArpMode": true,
-    "version": 2
+    "version": 2,
+    "vlansEnabled": false
 }
 EOF
 
