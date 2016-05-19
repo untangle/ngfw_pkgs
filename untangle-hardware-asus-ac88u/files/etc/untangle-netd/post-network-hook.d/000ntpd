@@ -1,0 +1,17 @@
+#! /bin/bash
+
+set -x
+
+date -s "2016-01-01"
+
+ntpd -q -g &
+pid=$!
+
+slept=0
+while [ $slept -lt 15 ] && [ -e /proc/$pid ] && grep -q ntpd /proc/${pid}/cmdline ; do
+ sleep 1
+ let slept=${slept}+1
+done
+
+kill $pid || true
+
