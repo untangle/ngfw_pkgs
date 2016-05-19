@@ -1,5 +1,5 @@
 #! /bin/bash
 
-pkill -f 'ntpdq -q' || true
+pkill -f 'ntpd -q' || true
 
 exit 0
