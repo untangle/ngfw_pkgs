@@ -2,5 +2,5 @@
 
 set -x
 
-modprobe 8021q && vconfig add eth0 1 && dhclient -v eth0.1 && ifconfig eth0.1| grep -q "inet addr" && ntpd -q -g && pkill dhclient && vconfig rm eth0.1
+#modprobe 8021q && vconfig add eth0 1 && dhclient -v eth0.1 && ifconfig eth0.1| grep -q "inet addr" && ntpd -q -g && pkill dhclient && vconfig rm eth0.1
 
