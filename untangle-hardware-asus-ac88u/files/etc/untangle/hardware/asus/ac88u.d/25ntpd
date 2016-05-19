@@ -2,6 +2,4 @@
 
 set -x
 
-dhclient eth0.1
-ntpd -q -g
-pkill dhclient
+vconfig add eth0 1 && dhclient -v eth0.1 && ntpd -q -g && pkill dhclient && vconfig rm eth0.1
