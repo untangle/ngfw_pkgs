@@ -1,0 +1,16 @@
+#! /bin/bash
+
+set -x
+
+nvram set et1macaddr MAC_ADDR # FIXME
+
+nvram set vlan2ports "4 7u"
+nvram set vlan2hwname "et1"
+nvram set vlan1hwname "et1"
+nvram set vlan1ports "0 1 2 3 5 7*"
+nvram set et0macaddr ""
+nvram set et0phyaddr ""
+nvram set et0mdcport ""
+nvram set et2macaddr ""
+nvram set et2phyaddr ""
+nvram set et2mdcport ""
