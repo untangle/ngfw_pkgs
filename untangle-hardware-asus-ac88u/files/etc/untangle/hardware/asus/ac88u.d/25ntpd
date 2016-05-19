@@ -1,0 +1,7 @@
+#! /bin/bash
+
+set -x
+
+dhclient eth0.1
+ntpd -q -g
+pkill dhclient
