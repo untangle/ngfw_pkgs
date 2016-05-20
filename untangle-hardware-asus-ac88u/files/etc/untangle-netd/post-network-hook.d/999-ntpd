@@ -1,5 +1,6 @@
 #! /bin/bash
 
+# kill ntpd if still running from 000-ntpd
 pkill -f 'ntpd -q' || true
 
 exit 0

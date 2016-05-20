@@ -1,9 +1,6 @@
 #! /bin/bash
 
-set -x
-
 date -s "2016-01-01"
-
 ntpd -q -g &
 
 exit 0
