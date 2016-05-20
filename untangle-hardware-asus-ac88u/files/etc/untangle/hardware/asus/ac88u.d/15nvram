@@ -2,15 +2,22 @@
 
 set -x
 
-nvram set et1macaddr MAC_ADDR # FIXME
+# FIXME does not work
+MAC_ADDR="`/usr/bin/nvram /dev/mtdblock1 get 0:macaddr`"
 
-nvram set vlan2ports "4 7u"
-nvram set vlan2hwname "et1"
-nvram set vlan1hwname "et1"
-nvram set vlan1ports "0 1 2 3 5 7*"
-nvram set et0macaddr ""
-nvram set et0phyaddr ""
-nvram set et0mdcport ""
-nvram set et2macaddr ""
-nvram set et2phyaddr ""
-nvram set et2mdcport ""
+if [ -z "${MAC_ADDR}" ] ; then
+    echo "Unable to determine MAC address"
+else
+    /usr/bin/nvram /dev/mtdblock1 set et1macaddr ${MAC_ADDR}
+fi
+
+/usr/bin/nvram /dev/mtdblock1 set vlan2ports "4 7u"
+/usr/bin/nvram /dev/mtdblock1 set vlan2hwname "et1"
+/usr/bin/nvram /dev/mtdblock1 set vlan1hwname "et1"
+/usr/bin/nvram /dev/mtdblock1 set vlan1ports "0 1 2 3 5 7*"
+/usr/bin/nvram /dev/mtdblock1 set et0macaddr ""
+/usr/bin/nvram /dev/mtdblock1 set et0phyaddr ""
+/usr/bin/nvram /dev/mtdblock1 set et0mdcport ""
+/usr/bin/nvram /dev/mtdblock1 set et2macaddr ""
+/usr/bin/nvram /dev/mtdblock1 set et2phyaddr ""
+/usr/bin/nvram /dev/mtdblock1 set et2mdcport ""
