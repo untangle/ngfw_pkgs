@@ -2,7 +2,6 @@
 
 set -x
 
-# FIXME does not work
 MAC_ADDR="`/usr/bin/nvram /dev/mtdblock1 get 0:macaddr`"
 
 if [ -z "${MAC_ADDR}" ] ; then

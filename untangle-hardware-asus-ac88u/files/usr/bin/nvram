@@ -18,12 +18,12 @@ setKey() {
   local tmpNvram=/tmp/nvram.bin
   local blockSize=100k
   dd if=$mtdblock of=$tmpNvram bs=$blockSize 2> /dev/null
-  perl -i -pe 's/(\0'${1}')=[^\0]*/$1='${2}'/' $tmpNvram
+  perl -i -pe 's/(\x00'${1}')=[^\x00]*/$1='${2}'/' $tmpNvram
   dd if=$tmpNvram of=$mtdblock bs=$blockSize 2> /dev/null
 }
 
 getKey() {
-  perl -pe 's/.*\0'${1}'=([^\0]*).*/$1\n/' $mtdblock
+  perl -pe 's/.*\x00'${1}'=([^\x00]*).*/$1\n/' $mtdblock
 }
 
 case $action in
