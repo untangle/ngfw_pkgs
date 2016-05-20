@@ -20,3 +20,12 @@ fi
 /usr/bin/nvram /dev/mtdblock1 set et2macaddr ""
 /usr/bin/nvram /dev/mtdblock1 set et2phyaddr ""
 /usr/bin/nvram /dev/mtdblock1 set et2mdcport ""
+
+
+# If this is the first time we've intiliazed the NVRAM variables
+# we must reboot to have these changes seen by the kernel
+# FIXME - why?
+if [ ! -f /usr/share/untangle/conf/nvram-initialized-flag ] ; then
+    touch /usr/share/untangle/conf/nvram-initialized-flag
+    reboot
+fi
