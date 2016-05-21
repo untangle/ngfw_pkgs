@@ -3,4 +3,7 @@
 date -s "2016-01-01"
 ntpd -q -g &
 
+# kill ntpd in 30 seconds if it has not exited on its own
+/bin/sh -c "sleep 30 ; pkill -f 'ntpd -q' || true" &
+
 exit 0
