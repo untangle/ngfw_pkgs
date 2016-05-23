@@ -12,6 +12,8 @@ class WirelessManager:
     hostapdDefaultFilename = "/etc/default/hostapd"
     hostapdRestartFilename = "/etc/untangle-netd/pre-network-hook.d/990-restart-hostapd"
     crdaDefaultFilename = "/etc/default/crda"
+    ht40MinusChannels = [0,5,6,7,8,9,10,11,12,13,40,48,56,64]
+    ht40PlusChannels = [0,1,2,3,4,5,6,7,36,44,52,60]
 
     def write_hostapd_conf( self, settings, prefix="", verbosity=0 ):
 
@@ -86,7 +88,17 @@ class WirelessManager:
                 self.hostapdConfFile.write("wmm_enabled=1\n")
                 # This configures what HT modes the wifi card support. We are going with the AR9280 to start and it will
                 # be the only card supported for now
-                self.hostapdConfFile.write("ht_capab=[HT40-][HT40+][SHORT-GI-40][TX-STBC][RX-STBC1][DSSS_CCK-40]\n")
+                ht_capabs=[]
+                if channel in self.ht40MinusChannels:
+                    ht_capabs.append("[HT40-]")
+                if channel in self.ht40PlusChannels:
+                    ht_capabs.append("[HT40+]")
+
+                ht_capabs.append("[SHORT-GI-40]")
+                ht_capabs.append("[TX-STBC]")
+                ht_capabs.append("[RX-STBC1]")
+                ht_capabs.append("[DSSS_CCK-40]")
+                self.hostapdConfFile.write("ht_capab=%s\n" % "".join(map(str,ht_capabs)))
 
                 self.hostapdConfFile.flush()
                 self.hostapdConfFile.close()
