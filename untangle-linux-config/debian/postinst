@@ -96,10 +96,9 @@ fi
 echo "Updating grub2..."
 /usr/sbin/update-grub
 
-
 if [ ! -f /etc/ssl/certs/java/cacerts ] ; then
+    echo "Creating default /etc/ssl/certs/java/cacerts file..."
     cp -f /usr/share/untangle-linux-config/default-java-cacerts /etc/ssl/certs/java/cacerts
 fi
-    
 
 exit 0
