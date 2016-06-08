@@ -2,7 +2,7 @@
 
 # Disable uvesafb on portwell boxes (#12704)
 if ! grep -qE 'portwell' /etc/initramfs-tools/modules ; then
-    cat <<EOF >> /etc/initramfs-tools/modules
+    cat <<EOF > /etc/initramfs-tools/modules
 # Untangle portwell bootsplash settings
 EOF
 fi

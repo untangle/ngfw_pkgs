@@ -6,7 +6,7 @@ plymouth-set-default-theme untangle
 # Set the default initramfs-tool/modules setup
 # This may be set differently by a hardware-specific package
 if ! grep -qE 'Untangle' /etc/initramfs-tools/modules ; then
-    cat <<EOF >> /etc/initramfs-tools/modules
+    cat <<EOF > /etc/initramfs-tools/modules
 # Untangle default bootsplash settings
 uvesafb mode_option=1024x768-24 mtrr=3 scroll=ywrap
 EOF

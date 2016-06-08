@@ -2,7 +2,7 @@
 
 # Use intel on lanner boxes
 if ! grep -qE 'lanner' /etc/initramfs-tools/modules ; then
-    cat <<EOF >> /etc/initramfs-tools/modules
+    cat <<EOF > /etc/initramfs-tools/modules
 # Untangle lanner bootsplash settings
 intel_agp
 drm
