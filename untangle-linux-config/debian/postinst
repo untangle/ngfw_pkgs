@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# we don't deal with grub on arm* at all
+dpkg-architecture -qDEB_BUILD_ARCH | grep -qE '^arm' && exit 0
+
 if [ "$1" = "configure" ] ; then
   # oldVersion will be non-empty if untangle-linux-config has been
   # configured before

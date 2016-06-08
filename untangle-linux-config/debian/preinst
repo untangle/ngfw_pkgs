@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# we don't deal with grub on arm* at all
+dpkg-architecture -qDEB_BUILD_ARCH | grep -qE '^arm' && exit 0
+
 installDevice=$(echo "get grub-pc/install_devices" | debconf-communicate | awk '{print $2}')
 
 if echo $installDevice | grep -q VBOX_HARDDISK ; then
