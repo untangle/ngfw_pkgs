@@ -10,15 +10,16 @@ if ! grep -qE 'Untangle' /etc/initramfs-tools/modules ; then
 # Untangle default bootsplash settings
 uvesafb mode_option=1024x768-24 mtrr=3 scroll=ywrap
 EOF
-    /usr/sbin/update-initramfs -u
+    dpkg-trigger --no-await update-initramfs
 fi
 
 # #12704: no forcing of FRAMEBUFFER in initramfs configuration; this
 # does not seem to affect QEMU either, so for the sake of consistency
 # let's disable it everywhere
-rm -f /etc/initramfs-tools/conf.d/splash
 
-# update initramfs
-dpkg-trigger --no-await update-initramfs
+if [ -f /etc/initramfs-tools/conf.d/splash ] ; then
+    rm -f /etc/initramfs-tools/conf.d/splash
+    dpkg-trigger --no-await update-initramfs
+fi
 
 exit 0
