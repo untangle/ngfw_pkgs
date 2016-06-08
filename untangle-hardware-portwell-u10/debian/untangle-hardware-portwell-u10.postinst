@@ -12,5 +12,5 @@ if [ -x "/etc/init.d/untangle-hardware-portwell-u10" ]; then
   update-rc.d untangle-hardware-portwell-u10 defaults 10 >/dev/null # early on
   ourInit untangle-hardware-portwell-u10 restart
 fi
-    
+
 exit 0

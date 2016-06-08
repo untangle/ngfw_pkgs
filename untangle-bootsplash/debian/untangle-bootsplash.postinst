@@ -1,24 +1,15 @@
 #! /bin/bash
 
+# Set the bootsplash theme
 plymouth-set-default-theme untangle
 
-# proper modules for initramfs
-MODULES_FILE=/etc/initramfs-tools/modules
-if dpkg -l | grep -q -P 'i?\s+untangle-hardware-portwell' ; then
-  # Fix #12704 on portwell hardware by not loading uvesafb
-  #
-  # FIXME: Note that if the untangle-portwell-* package is installed
-  # separately, *after* the other untangle packages, "dpkg-reconfigure
-  # untangle-bootsplash" will need to be run once manually. This can
-  # be fixed in one two ways:
-  #  - changing all affected untangle-portwell-* postinsts, which is
-  #    ugly
-  #  - using a dpkg trigger, which sounds like a much better option
-  echo >| $MODULES_FILE
-else
-  MODULES_LINE="uvesafb mode_option=1024x768-24 mtrr=3 scroll=ywrap"
-  perl -i -ne 'print unless m/uvesafb/' $MODULES_FILE
-  echo $MODULES_LINE > $MODULES_FILE
+# Set the default initramfs-tool/modules setup
+# This may be set differently by a hardware-specific package
+if ! grep -qE 'Untangle' /etc/initramfs-tools/modules ; then
+    cat <<EOF >> /etc/initramfs-tools/modules
+# Untangle default bootsplash settings
+uvesafb mode_option=1024x768-24 mtrr=3 scroll=ywrap
+EOF
 fi
 
 # #12704: no forcing of FRAMEBUFFER in initramfs configuration; this
@@ -26,6 +17,7 @@ fi
 # let's disable it everywhere
 rm -f /etc/initramfs-tools/conf.d/splash
 
+# update initramfs
 dpkg-trigger --no-await update-initramfs
 
 exit 0
