@@ -1,9 +1,9 @@
 #!/bin/sh
 
-# Use intel on lanner boxes
-if ! grep -qE 'lanner' /etc/initramfs-tools/modules ; then
+# Use intel on jetway boxes
+if ! grep -qE 'jetway' /etc/initramfs-tools/modules ; then
     cat <<EOF > /etc/initramfs-tools/modules
-# Untangle lanner bootsplash settings
+# Untangle jetway bootsplash settings
 intel_agp
 drm
 i915 modeset=1

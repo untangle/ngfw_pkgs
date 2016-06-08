@@ -10,6 +10,7 @@ if ! grep -qE 'Untangle' /etc/initramfs-tools/modules ; then
 # Untangle default bootsplash settings
 uvesafb mode_option=1024x768-24 mtrr=3 scroll=ywrap
 EOF
+    /usr/sbin/update-initramfs -u
 fi
 
 # #12704: no forcing of FRAMEBUFFER in initramfs configuration; this

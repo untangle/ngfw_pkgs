@@ -5,6 +5,7 @@ if ! grep -qE 'portwell' /etc/initramfs-tools/modules ; then
     cat <<EOF > /etc/initramfs-tools/modules
 # Untangle portwell bootsplash settings
 EOF
+    /usr/sbin/update-initramfs -u
 fi
 
 exit 0
