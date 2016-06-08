@@ -8,7 +8,7 @@ intel_agp
 drm
 i915 modeset=1
 EOF
-    dpkg-trigger --no-await update-initramfs
+    /usr/sbin/update-initramfs -u
 fi
 
 exit 0
