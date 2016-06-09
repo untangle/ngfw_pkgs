@@ -92,6 +92,9 @@ sed -i -e "s/.*autovacuum_analyze_scale_factor.*=.*/autovacuum_analyze_scale_fac
 rm -rf /var/lib/postgresql/9.1
 rm -rf /var/lib/postgresql/8.4
 
+# 12.1 remove old log files
+rm -f /var/log/postgresql/postgresql-9.1-main*
+
 # restart postgres
 ourInit postgresql restart
 
