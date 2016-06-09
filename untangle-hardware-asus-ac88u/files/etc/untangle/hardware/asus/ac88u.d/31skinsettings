@@ -1,0 +1,19 @@
+#!/bin/sh
+
+MODEL="Asus ac88u"
+
+if [ ! -f /usr/share/untangle/settings/untangle-vm/skin.js ] ; then
+
+   echo "Initializing default skin settings for ${MODEL}..."
+
+   mkdir -p /usr/share/untangle/settings/untangle-vm
+   cat > /usr/share/untangle/settings/untangle-vm/skin.js <<EOF
+{
+    "javaClass": "com.untangle.uvm.SkinSettings",
+    "skinName": "simple-gray"
+}
+EOF
+
+   echo "Initializing default skin settings for ${MODEL}... done"
+fi
+
