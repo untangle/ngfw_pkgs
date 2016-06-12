@@ -1,0 +1,13 @@
+Source: untangle-broadcom-wireless
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <seb.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.8.0
+
+Package: untangle-broadcom-wireless
+Architecture: all
+Depends: dash, bridge-utils, iptables, dhcp3-client | isc-dhcp-client, iputils-arping, libnetfilter-queue1 (>= 1.0.2+20141023+git329468+11.1), libnfnetlink0 (>= 1.0.1), radvd, ndisc6, vlan, keepalived, psmisc, hostapd, firmware-iwlwifi, wireless-tools, iw, crda, wireless-regdb, firmware-realtek
+Description: The Untangle network daemon
+ The Untangle network daemon for managing the network

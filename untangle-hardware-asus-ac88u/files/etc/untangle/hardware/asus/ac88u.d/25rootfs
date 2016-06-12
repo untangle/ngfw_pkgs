@@ -1,0 +1,10 @@
+#! /bin/bash
+
+set -x
+
+ROOTFS="/var/lib/asus-ac88u-rootfs"
+
+mount --bind /proc ${ROOTFS}/proc
+mount --bind /sys ${ROOTFS}/sys
+mount --bind /dev ${ROOTFS}/dev
+mount --bind /dev/pts ${ROOTFS}/dev/pts
