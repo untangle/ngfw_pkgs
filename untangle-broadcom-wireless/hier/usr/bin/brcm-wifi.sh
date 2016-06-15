@@ -15,21 +15,21 @@ usage() {
 }
 
 interfaceUp() {
-  chroot $WL_BIN -i $1 radio on
-  chroot $WL_BIN -i $1 up
+  chroot $ASUS_ROOTFS $WL_BIN -i $1 radio on
+  chroot $ASUS_ROOTFS $WL_BIN -i $1 up
 }
 
 interfaceDown() {
-  chroot $WL_BIN -i $1 down
-  chroot $WL_BIN -i $1 radio off
+  chroot $ASUS_ROOTFS $WL_BIN -i $1 down
+  chroot $ASUS_ROOTFS $WL_BIN -i $1 radio off
 }
 
 interfaceApMode() {
-  chroot $WL_BIN -i $1 ap 1
+  chroot $ASUS_ROOTFS $WL_BIN -i $1 ap 1
 }
 
 startAp() {
-  chroot $NAS_BIN -P /tmp/nas.${nic}.pid -H 34954 -i $nic -A -m 4 -w 4 -g 3600 $($PY_SCRIPT)
+  chroot $ASUS_ROOTFS $NAS_BIN -P /tmp/nas.${nic}.pid -H 34954 -i $nic -A -m 4 -w 4 -g 3600 $($PY_SCRIPT)
 }
 
 # main
