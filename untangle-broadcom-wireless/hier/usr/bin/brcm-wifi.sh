@@ -29,7 +29,7 @@ interfaceApMode() {
 }
 
 startAp() {
-  chroot $ASUS_ROOTFS $NAS_BIN -P /tmp/nas.${nic}.pid -H 34954 -i $nic -A -m 4 -w 4 -g 3600 $($PY_SCRIPT)
+  chroot $ASUS_ROOTFS $NAS_BIN -P /tmp/nas.${1}.pid -H 34954 -i $1 -A -m 4 -w 4 -g 3600 $(python $PY_SCRIPT)
 }
 
 # main
@@ -46,7 +46,7 @@ case $action in
   start)
     interfaceUp $nic
     interfaceApMode $nic
-    
+    startAp $nic
     ;;
   stop)
     pkill nas 

@@ -4,7 +4,7 @@ import StringIO
 from ConfigParser import RawConfigParser
 
 ## constants
-HOSTAPD_CONF = "/etc/hostapd_conf"
+HOSTAPD_CONF = "/etc/hostapd.conf"
 FAKE_SECTION = "foo"
 
 # make RawConfigParser objects behave like regular dictionaries
@@ -21,4 +21,4 @@ config = RawConfigParser()
 config.readfp(fd)
 
 # format options for nas(1)
-print "-s %(ssid)s -m %(security)s -k %(wpa_passphrase)s"
+print "-s %(ssid)s -m %(wpa)s -k %(wpa_passphrase)s" % config
