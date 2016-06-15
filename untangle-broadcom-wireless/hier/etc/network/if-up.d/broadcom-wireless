@@ -1,1 +1,6 @@
-FIXME
+#! /bin/bash
+
+echo FIXME
+
+exit 0
+
