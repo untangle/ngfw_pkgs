@@ -1,5 +1,7 @@
 #! /bin/bash
 
+set -e
+
 # constants
 
 ASUS_ROOTFS="/var/lib/asus-ac88u-rootfs"
@@ -17,19 +19,19 @@ usage() {
 interfaceUp() {
   chroot $ASUS_ROOTFS $WL_BIN -i $1 radio on
   chroot $ASUS_ROOTFS $WL_BIN -i $1 up
+  chroot $ASUS_ROOTFS $WL_BIN -i $1 ap on
 }
 
 interfaceDown() {
+  chroot $ASUS_ROOTFS $WL_BIN -i $1 ap off
   chroot $ASUS_ROOTFS $WL_BIN -i $1 down
   chroot $ASUS_ROOTFS $WL_BIN -i $1 radio off
 }
 
-interfaceApMode() {
-  chroot $ASUS_ROOTFS $WL_BIN -i $1 ap 1
-}
-
 startAp() {
-  chroot $ASUS_ROOTFS $NAS_BIN -P /tmp/nas.${1}.pid -H 34954 -i $1 -A -m 4 -w 4 -g 3600 $(python $PY_SCRIPT)
+  python $PY_SCRIPT $nic | while read line ; do
+    chroot $ASUS_ROOTFS $line
+  done
 }
 
 # main
@@ -45,10 +47,9 @@ action=$2
 case $action in
   start)
     interfaceUp $nic
-    interfaceApMode $nic
     startAp $nic
     ;;
   stop)
-    pkill nas 
+    pkill nas || true
     interfaceDown $nic ;;
 esac
