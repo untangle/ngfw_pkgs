@@ -6,7 +6,6 @@ set -e
 
 ASUS_ROOTFS="/var/lib/asus-ac88u-rootfs"
 WL_BIN="/usr/sbin/wl"
-NAS_BIN="/usr/sbin/nas"
 PY_SCRIPT="/usr/lib/python2.7/brcm-wifi.py"
 
 # functions
