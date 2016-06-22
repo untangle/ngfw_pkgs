@@ -59,7 +59,7 @@ class WifiOptionFactory:
       equivalent = 'country'
     elif name == 'auth_algs':
       equivalent = 'm'
-      converter = lambda x: 'wpa' if x >= 3 else 'wep'
+      converter = lambda x: '4' if x >= 3 else 'wep'
     elif name == 'channel':
       if value != '0':
         # 0 means automatic channel, and should not be taken literally
@@ -76,7 +76,7 @@ class WifiOptionFactory:
     elif name == 'wpa_pairwise':
       equivalent = 'w'
       # WARNING: nas only supports TKIP or AES; we choose TKIP
-      converter = lambda x: 2
+      converter = lambda x: 4
     elif name == 'rsn_pairwise':
       pass # not supported by RSA
     elif name == 'hw_mode':
