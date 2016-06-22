@@ -190,12 +190,6 @@ def _write_login_form(req, title, host, is_error):
         <h2>%s</h2>
         <p class="server">%s</p>
         <div class="banner">%s</div>
-
-        <!-- dirty hack to avoid chrome/webkit fields autofill -->
-        <input style="display: none;">
-        <input type="password" style="display: none;">
-        <!-- end hack -->
-
         <p class="error">%s</p>
         <input id="username" type="text" name="username" value="admin" placeholder="%s"/>
         <input id="password" type="password" name="password" placeholder="%s"/>
