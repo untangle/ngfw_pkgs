@@ -28,7 +28,7 @@ interfaceDown() {
 }
 
 startAp() {
-  python $PY_SCRIPT $nic /etc/hostapd/hostapd.conf-$nic | while read line ; do
+  python $PY_SCRIPT $1 $2 | while read line ; do
     chroot $ASUS_ROOTFS $line
   done
 }
@@ -43,10 +43,13 @@ fi
 nic=$1
 action=$2
 
+hostapdConf="/etc/hostapd/hostapd.conf-$nic"
+
 case $action in
   start)
+    if [ -f $hostapdConf ]
     interfaceUp $nic
-    startAp $nic
+    startAp $nic $hostapdConf
     ;;
   stop)
     pkill nas || true
