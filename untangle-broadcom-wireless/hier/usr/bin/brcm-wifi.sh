@@ -28,7 +28,7 @@ interfaceDown() {
 }
 
 startAp() {
-  python $PY_SCRIPT $nic | while read line ; do
+  python $PY_SCRIPT $nic /etc/hostapd/hostapd.conf-$nic | while read line ; do
     chroot $ASUS_ROOTFS $line
   done
 }
