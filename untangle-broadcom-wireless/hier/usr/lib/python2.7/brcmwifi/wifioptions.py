@@ -61,8 +61,10 @@ class WifiOptionFactory:
       equivalent = 'm'
       converter = lambda x: 'wpa' if x >= 3 else 'wep'
     elif name == 'channel':
-      isWl = True
-      equivalent = name
+      if value != '0':
+        # 0 means automatic channel, and should not be taken literally
+        isWl = True
+        equivalent = name
     elif name == 'wpa':
       pass # FIXME
     elif name == 'wpa_passphrase':
