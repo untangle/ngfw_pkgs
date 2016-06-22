@@ -1,9 +1,9 @@
 #! /bin/bash
 
 date -s "2016-01-01"
-nohup ntpd -q -g >dev/null 2>&1 &
+nohup ntpd -q -g > /dev/null 2>&1 &
 
 # kill ntpd in 30 seconds if it has not exited on its own
-nohup /bin/sh -c "sleep 30 ; pkill -f 'ntpd -q' || true" >/dev/null 2>&1 &
+nohup /bin/sh -c "sleep 30 ; pkill -f 'ntpd -q' || true" > /dev/null 2>&1 &
 
 exit 0
