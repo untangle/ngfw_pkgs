@@ -47,9 +47,10 @@ hostapdConf="/etc/hostapd/hostapd.conf-$nic"
 
 case $action in
   start)
-    if [ -f $hostapdConf ]
-    interfaceUp $nic
-    startAp $nic $hostapdConf
+    if [ -f $hostapdConf ] ; then
+      interfaceUp $nic
+      startAp $nic $hostapdConf
+    fi
     ;;
   stop)
     pkill nas || true
