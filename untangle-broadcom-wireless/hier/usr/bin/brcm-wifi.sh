@@ -16,15 +16,21 @@ usage() {
 }
 
 interfaceUp() {
+  ifconfig $1 down
+  chroot $ASUS_ROOTFS $WL_BIN -i $1 down
   chroot $ASUS_ROOTFS $WL_BIN -i $1 radio on
+  chroot $ASUS_ROOTFS $WL_BIN -i $1 ap 1
+  chroot $ASUS_ROOTFS $WL_BIN -i $1 vht_features 3
+  chroot $ASUS_ROOTFS $WL_BIN -i $1 vhtmode 1
+  chroot $ASUS_ROOTFS $WL_BIN -i $1 roam_delta 15
+  ifconfig $1 up
   chroot $ASUS_ROOTFS $WL_BIN -i $1 up
-  chroot $ASUS_ROOTFS $WL_BIN -i $1 ap on
 }
 
 interfaceDown() {
   chroot $ASUS_ROOTFS $WL_BIN -i $1 ap off
-  chroot $ASUS_ROOTFS $WL_BIN -i $1 down
   chroot $ASUS_ROOTFS $WL_BIN -i $1 radio off
+  chroot $ASUS_ROOTFS $WL_BIN -i $1 down
 }
 
 startAp() {

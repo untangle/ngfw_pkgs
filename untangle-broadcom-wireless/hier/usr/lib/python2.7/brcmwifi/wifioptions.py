@@ -20,7 +20,8 @@ class WifiOption(object):
 class NasWifiOption(WifiOption):
 
   COMMAND = 'nas'
-  DEFAULT_OPTIONS = "-P /tmp/nas.%(interface)s.pid -H 34954 -i %(interface)s -A -g 3600"
+  # FIXME: probably unsafe to hardcode the bridge name like that
+  DEFAULT_OPTIONS = "-P /tmp/nas.%(interface)s.pid -H 34954 -l br.eth0-2 -i %(interface)s -A -g 3600"
 
   def __init__(self, name, value, equivalent, converter):
     
@@ -79,7 +80,14 @@ class WifiOptionFactory:
       # WARNING: nas only supports WPA-PSK
       pass
     elif name == 'wpa_pairwise':
-      pass # not supported in dd-wrt
+      equivalent = 'w'
+      def converter(x):
+        if x == 'CCMP':
+          return 4
+        elif x == 'TKIP':
+          return 2
+        else: # TKIP+AES
+          return 6
     elif name == 'rsn_pairwise':
       pass # not supported by RSA
     elif name == 'hw_mode':
