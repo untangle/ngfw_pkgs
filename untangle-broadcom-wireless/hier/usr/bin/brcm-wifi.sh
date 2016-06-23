@@ -53,6 +53,6 @@ case $action in
     fi
     ;;
   stop)
-    pkill nas || true
+    pkill -9 nas || true
     interfaceDown $nic ;;
 esac
