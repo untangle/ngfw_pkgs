@@ -57,15 +57,20 @@ class WifiOptionFactory:
     elif name == 'country_code':
       isWl = True
       equivalent = 'country'
-    elif name == 'auth_algs':
-      equivalent = 'm'
-      converter = lambda x: '4' if x >= 3 else 'wep'
     elif name == 'channel':
       if value != '0':
         # 0 means automatic channel, and should not be taken literally
         isWl = True
         equivalent = name
     elif name == 'wpa':
+      equivalent = 'm'
+      def converter(x):
+        if x == '1': # WPA
+          return 4
+        elif x == '2': # WPA2
+          return 128
+        elif x == '3': # WPA/WPA2
+          return 132
       pass # FIXME
     elif name == 'wpa_passphrase':
       equivalent = 'k'
@@ -74,9 +79,7 @@ class WifiOptionFactory:
       # WARNING: nas only supports WPA-PSK
       pass
     elif name == 'wpa_pairwise':
-      equivalent = 'w'
-      # WARNING: nas only supports TKIP or AES; we choose TKIP
-      converter = lambda x: 4
+      pass # not supported in dd-wrt
     elif name == 'rsn_pairwise':
       pass # not supported by RSA
     elif name == 'hw_mode':
@@ -88,14 +91,16 @@ class WifiOptionFactory:
       pass
     elif name == 'interface':
       pass # handled at command level
+    elif name == 'auth_algs':
+      pass # not supported
     elif name == 'max_num_sta':
-      pass # FIXME
+      pass # FIXME ?
     elif name == 'ieee80211n':
-      pass # FIXME
+      pass # FIXME ?
     elif name == 'ht_capab':
-      pass # FIXME
+      pass # FIXME ?
     elif name == 'wmm_enabled':
-      pass # FIXME
+      pass # FIXME ?
     else:
       print "%s option not supported" % name
       sys.exit(2)
