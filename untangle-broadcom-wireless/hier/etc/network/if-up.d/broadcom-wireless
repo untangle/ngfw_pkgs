@@ -1,7 +1,6 @@
 #! /bin/bash
 
-brcm-wifi.sh start eth1
-brcm-wifi.sh start eth2
+brcm-wifi start eth1
+brcm-wifi start eth2
 
 exit 0
-
