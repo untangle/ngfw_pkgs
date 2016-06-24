@@ -672,6 +672,116 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
                 "vrrpEnabled": false,
                 "wirelessPassword": "",
                 "wirelessSsid": ""
+            },
+            {
+                "addressed": false,
+                "bridged": true,
+                "bridgedTo": 101,
+                "configType": "BRIDGED",
+                "dhcpDnsOverride": "",
+                "dhcpEnabled": true,
+                "dhcpLeaseDuration": 86400,
+                "dhcpOptions": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "dhcpRangeEnd": "192.168.100.200",
+                "dhcpRangeStart": "192.168.100.100",
+                "disabled": false,
+                "interfaceId": 102,
+                "isVlanInterface": true,
+                "isWan": false,
+                "isWirelessInterface": true,
+                "javaClass": "com.untangle.uvm.network.InterfaceSettings",
+                "name": "Wifi 2Ghz",
+                "physicalDev": "eth1",
+                "raEnabled": false,
+                "symbolicDev": "br.eth0-2",
+                "systemDev": "eth1",
+                "v4Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v4ConfigType": "STATIC",
+                "v4NatEgressTraffic": false,
+                "v4NatIngressTraffic": false,
+                "v4PPPoEPassword": "",
+                "v4PPPoEUsePeerDns": false,
+                "v4PPPoEUsername": "",
+                "v4StaticAddress": "192.168.100.1",
+                "v4StaticNetmask": "255.255.0.0",
+                "v4StaticPrefix": 16,
+                "v6Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v6ConfigType": "STATIC",
+                "vlanParent": 1,
+                "vlanTag": 2,
+                "vrrpAliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "vrrpEnabled": false,
+                "wirelessChannel": -1,
+                "wirelessEncryption": "WPA2",
+                "wirelessPassword": "chakas53",
+                "wirelessSsid": "fromut"
+            },
+            {
+                "addressed": false,
+                "bridged": true,
+                "bridgedTo": 101,
+                "configType": "BRIDGED",
+                "dhcpDnsOverride": "",
+                "dhcpEnabled": true,
+                "dhcpLeaseDuration": 86400,
+                "dhcpOptions": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "dhcpRangeEnd": "192.168.200.200",
+                "dhcpRangeStart": "192.168.200.100",
+                "disabled": false,
+                "interfaceId": 103,
+                "isVlanInterface": true,
+                "isWan": false,
+                "isWirelessInterface": true,
+                "javaClass": "com.untangle.uvm.network.InterfaceSettings",
+                "name": "Wifi 5Ghz",
+                "physicalDev": "eth2",
+                "raEnabled": false,
+                "symbolicDev": "br.eth0-2",
+                "systemDev": "eth2",
+                "v4Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v4ConfigType": "STATIC",
+                "v4NatEgressTraffic": false,
+                "v4NatIngressTraffic": false,
+                "v4PPPoEPassword": "",
+                "v4PPPoEUsePeerDns": false,
+                "v4PPPoEUsername": "",
+                "v4StaticAddress": "192.168.200.1",
+                "v4StaticNetmask": "255.255.0.0",
+                "v4StaticPrefix": 16,
+                "v6Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v6ConfigType": "STATIC",
+                "vlanParent": 1,
+                "vlanTag": 2,
+                "vrrpAliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "vrrpEnabled": false,
+                "wirelessChannel": -1,
+                "wirelessEncryption": "WPA1",
+                "wirelessPassword": "chakas53",
+                "wirelessSsid": "fromut5"
             }
         ]
     },
