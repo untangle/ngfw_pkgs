@@ -1,0 +1,14 @@
+#! /bin/sh
+
+set -x
+set -e
+
+# load modules
+modprobe dhd
+modprobe wl
+
+# make sure they show up in ifconfig
+ifconfig eth1 up
+ifconfig eth2 up
+
+exit 0
