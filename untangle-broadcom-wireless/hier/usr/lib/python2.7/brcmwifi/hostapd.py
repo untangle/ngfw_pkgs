@@ -12,8 +12,8 @@ class Hostapd:
                       WifiOptionFactory.make("down"),
                       WifiOptionFactory.make("radio", "on"),
                       WifiOptionFactory.make("ap", 1),
-                      WifiOptionFactory.make("vht_features", 3),
-                      WifiOptionFactory.make("vhtmode", 1),
+                      # WifiOptionFactory.make("vht_features", 3),
+                      # WifiOptionFactory.make("vhtmode", 1),
                       WifiOptionFactory.make("roam_delta", 15) ]
 
   POST_WL_COMMANDS = [ IfconfigOption("up", None, "up"), # FIXME: nasty
