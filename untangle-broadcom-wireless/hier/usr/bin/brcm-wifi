@@ -49,7 +49,7 @@ case $action in
   status)
     chroot $ASUS_ROOTFS wl -i $nic status ;;
   *)
-    echo "Unknow action '$action'"
+    echo "Unknown action '$action'"
     usage
     exit 1 ;;
 esac

@@ -7,7 +7,7 @@ for nic in eth1 eth2 ; do
   else
     action=stop
   fi
-  brcm-wifi $action $nic $hostapdConf
+  brcm-wifi $nic $action $hostapdConf
 done
 
 exit 0
