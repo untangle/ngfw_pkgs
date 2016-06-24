@@ -26,7 +26,7 @@ class NasWifiOption(WifiOption):
 
   COMMAND = 'nas'
   # FIXME: probably unsafe to hardcode the bridge name like that
-  DEFAULT_OPTIONS = "-P /tmp/nas.%(interface)s.pid -H 34954 -l br.eth0-2 -i %(interface)s -A -g 3600"
+  DEFAULT_OPTIONS = "-P /tmp/nas.%(interface)s.pid -l br.eth0-2 -i %(interface)s -A -g 3600"
 
   def __init__(self, name, value = None, equivalent = None, converter = None):
     
