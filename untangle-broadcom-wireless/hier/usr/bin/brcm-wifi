@@ -12,7 +12,7 @@ PY_SCRIPT="/usr/lib/python2.7/brcm-wifi.py"
 
 usage() {
   echo "Usage:"
-  echo "  $0 <interface> (start|stop)"
+  echo "  $0 <interface> (start|stop|status) [/path/to/hostapd.conf]"
 }
 
 wifiDown() {
@@ -31,23 +31,25 @@ startAp() {
 
 # main
 
-if [ $# != 2 ] ; then
+if [ $# != 2 ] || [ $# != 3 ] ; then
   usage
   exit 1
 fi
 
 nic=$1
 action=$2
-
-hostapdConf="/etc/hostapd/hostapd.conf-$nic"
+hostapdConf=${3:-"/etc/hostapd.conf"}
 
 case $action in
   start)
-    if [ -f $hostapdConf ] ; then
-     startAp $nic $hostapdConf
-    fi
-    ;;
+    startAp $nic $hostapdConf ;;
   stop)
     pkill -9 nas || true
     wifiDown $nic ;;
+  status)
+    chroot $ASUS_ROOTFS wl -i $nic status ;;
+  *)
+    echo "Unknow action '$action'"
+    usage
+    exit 1 ;;
 esac

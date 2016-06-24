@@ -1,7 +1,0 @@
-#! /bin/bash
-
-brcm-wifi stop eth1
-brcm-wifi stop eth2
-
-exit 0
-
