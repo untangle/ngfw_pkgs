@@ -696,7 +696,7 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
                 "name": "Wifi 2Ghz",
                 "physicalDev": "eth1",
                 "raEnabled": false,
-                "symbolicDev": "br.eth0-2",
+                "symbolicDev": "eth1",
                 "systemDev": "eth1",
                 "v4Aliases": {
                     "javaClass": "java.util.LinkedList",
@@ -751,7 +751,7 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
                 "name": "Wifi 5Ghz",
                 "physicalDev": "eth2",
                 "raEnabled": false,
-                "symbolicDev": "br.eth0-2",
+                "symbolicDev": "eth2",
                 "systemDev": "eth2",
                 "v4Aliases": {
                     "javaClass": "java.util.LinkedList",
