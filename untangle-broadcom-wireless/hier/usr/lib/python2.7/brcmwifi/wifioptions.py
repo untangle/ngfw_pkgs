@@ -1,6 +1,8 @@
+import sys
+
 class WifiOption(object):
 
-  def __init__(self, name, value, equivalent = None, converter = None, command = None):
+  def __init__(self, name, value = None, equivalent = None, converter = None, command = None):
     self.name = name
     self.value = value
     self.equivalent = equivalent
@@ -12,7 +14,10 @@ class WifiOption(object):
 
   def __str__(self):
     value = self.converter(*(self.value,))
-    return "%s%s %s" % (self.dash, self.equivalent, value)
+    ret = "%s%s" % (self.dash, self.equivalent)
+    if value:
+      ret += " %s" % value
+    return ret
 
   def defaultOptions(self, interface):
     return self.DEFAULT_OPTIONS % { 'interface' : interface }
@@ -23,35 +28,40 @@ class NasWifiOption(WifiOption):
   # FIXME: probably unsafe to hardcode the bridge name like that
   DEFAULT_OPTIONS = "-P /tmp/nas.%(interface)s.pid -H 34954 -l br.eth0-2 -i %(interface)s -A -g 3600"
 
-  def __init__(self, name, value, equivalent, converter):
+  def __init__(self, name, value = None, equivalent = None, converter = None):
     
     super(NasWifiOption, self).__init__(name, value, equivalent, converter)
     self.command = self.COMMAND
     self.dash = "-"
-
-  def isWl(self):
-    return False
 
 class WlWifiOption(WifiOption):
 
   COMMAND = 'wl'
   DEFAULT_OPTIONS = "-i %(interface)s"
 
-  def __init__(self, name, value, equivalent, converter):
+  def __init__(self, name, value = None, equivalent = None, converter = None):
     super(WlWifiOption, self).__init__(name, value, equivalent, converter)
     self.command = self.COMMAND
     self.dash = ""
 
-  def isWl(self):
-    return True
+class IfconfigOption(WifiOption):
+
+  COMMAND = 'ifconfig'
+  DEFAULT_OPTIONS = "%(interface)s"
+
+  def __init__(self, name, value = None, equivalent = None, converter = None):
+    super(IfconfigOption, self).__init__(name, value, equivalent, converter)
+    self.command = self.COMMAND
+    self.dash = ""
 
 class WifiOptionFactory:
 
   @staticmethod
-  def make(name, value):
+  def make(name, value = None):
     equivalent = None
     converter = None
     isWl = False
+    isIfconfig = False
 
     if name == 'ssid':
       equivalent = 's'
@@ -75,7 +85,6 @@ class WifiOptionFactory:
       pass # FIXME
     elif name == 'wpa_passphrase':
       equivalent = 'k'
-      converter = lambda x: "'%s'" % x # single-quote it
     elif name == 'wpa_key_mgmt':
       # WARNING: nas only supports WPA-PSK
       pass
@@ -97,6 +106,9 @@ class WifiOptionFactory:
       #   equivalent = 'band'
       #   converter = lambda x: 'a' if x == 'g' else x
       pass
+    elif name in ("down","radio","ap","roam_delta","up","vht_features","vhtmode"):
+      isWl = True
+      equivalent = name
     elif name == 'interface':
       pass # handled at command level
     elif name == 'auth_algs':
@@ -117,6 +129,8 @@ class WifiOptionFactory:
     if equivalent:
       if isWl:
         obj = WlWifiOption(name, value, equivalent, converter)
+      elif isIfconfig:
+        obj = IfconfigOption(name, value, equivalent, converter)
       else:
         obj = NasWifiOption(name, value, equivalent, converter)
 
