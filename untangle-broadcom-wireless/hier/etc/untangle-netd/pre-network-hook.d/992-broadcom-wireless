@@ -1,13 +1,11 @@
 #! /bin/bash
 
 for nic in eth1 eth2 ; do
+  # first we stop any potentially running APs
+  brcm-wifi $nic stop
+
   hostapdConf="/etc/hostapd/hostapd.conf-$nic"
-  if [ -f $hostapdConf ] ; then
-    action=start
-  else
-    action=stop
-  fi
-  brcm-wifi $nic $action $hostapdConf
+  [ -f $hostapdConf ] && brcm-wifi $nic start $hostapdConf
 done
 
 exit 0
