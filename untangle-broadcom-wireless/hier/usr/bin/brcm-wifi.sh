@@ -20,9 +20,12 @@ interfaceUp() {
   chroot $ASUS_ROOTFS $WL_BIN -i $1 down
   chroot $ASUS_ROOTFS $WL_BIN -i $1 radio on
   chroot $ASUS_ROOTFS $WL_BIN -i $1 ap 1
-  chroot $ASUS_ROOTFS $WL_BIN -i $1 vht_features 3
-  chroot $ASUS_ROOTFS $WL_BIN -i $1 vhtmode 1
+  if [[ $1 == eth1 ]] ; then
+    chroot $ASUS_ROOTFS $WL_BIN -i $1 vht_features 3
+    chroot $ASUS_ROOTFS $WL_BIN -i $1 vhtmode 1
+  fi
   chroot $ASUS_ROOTFS $WL_BIN -i $1 roam_delta 15
+  # chroot $ASUS_ROOTFS $WL_BIN -i $1 band FIXME
   ifconfig $1 up
   chroot $ASUS_ROOTFS $WL_BIN -i $1 up
 }
