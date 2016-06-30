@@ -3,22 +3,4 @@
 # Set the bootsplash theme
 plymouth-set-default-theme untangle
 
-# Set the default initramfs-tool/modules setup
-# This may be set differently by a hardware-specific package
-if ! grep -qE 'Untangle' /etc/initramfs-tools/modules ; then
-    cat <<EOF >> /etc/initramfs-tools/modules
-# Untangle default bootsplash settings
-uvesafb mode_option=1024x768-24 mtrr=3 scroll=ywrap
-EOF
-    dpkg-trigger --no-await update-initramfs
-fi
-
-# #12704: no forcing of FRAMEBUFFER in initramfs configuration; this
-# does not seem to affect QEMU either, so for the sake of consistency
-# let's disable it everywhere
-if [ -f /etc/initramfs-tools/conf.d/splash ] ; then
-    rm -f /etc/initramfs-tools/conf.d/splash
-    dpkg-trigger --no-await update-initramfs
-fi
-
 exit 0

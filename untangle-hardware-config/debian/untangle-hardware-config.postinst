@@ -12,5 +12,61 @@ if [ -x "/etc/init.d/untangle-hardware-config" ]; then
   update-rc.d untangle-hardware-config defaults 10 >/dev/null # early on
   ourInit untangle-hardware-config restart
 fi
-    
+
+# #12704: no forcing of FRAMEBUFFER in initramfs configuration; this
+# does not seem to affect QEMU either, so for the sake of consistency
+# let's disable it everywhere
+if [ -f /etc/initramfs-tools/conf.d/splash ] ; then
+    rm -f /etc/initramfs-tools/conf.d/splash
+    dpkg-trigger --no-await update-initramfs
+fi
+
+if grep -q 'Untangle' /etc/initramfs-tools/modules ; then
+    # Untangle specific modules already written
+    exit 0
+fi
+
+# Write the modules files based on video card type
+# https://wiki.debian.org/plymouth#Configuration
+if lspci | grep ' VGA' | grep 'Intel' ; then
+    echo
+    echo "Configuring Intel video setup..."
+    echo
+    cat <<EOF > /etc/initramfs-tools/modules
+# Untangle intel video settings
+intel_agp
+drm
+i915 modeset=1
+EOF
+elif lspci | grep ' VGA' | grep -i 'nvidia' ; then
+    echo
+    echo "Configuring nVidia video setup..."
+    echo
+    cat <<EOF > /etc/initramfs-tools/modules
+# Untangle nvidia video settings
+drm
+nouveau modeset=1
+EOF
+elif lspci | grep ' VGA' | grep 'ATI' ; then
+    echo
+    echo "Configuring ATI video setup..."
+    echo
+    cat <<EOF > /etc/initramfs-tools/modules
+# Untangle ATI video settings
+drm
+radeon modeset=1
+EOF
+else
+    echo
+    echo "Configuring default video setup..."
+    echo
+    cat <<EOF > /etc/initramfs-tools/modules
+# Untangle default bootsplash settings
+uvesafb mode_option=1024x768-24 mtrr=3 scroll=ywrap
+EOF
+fi
+
+# Update initram fs
+dpkg-trigger --no-await update-initramfs
+
 exit 0
