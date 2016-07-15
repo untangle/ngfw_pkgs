@@ -171,6 +171,7 @@ def _write_login_form(req, title, host, is_error):
 <html>
 <head>
 <meta name="viewport" content="initial-scale=1.0, width=device-width">
+<meta name="description" content="loginPage">
 <title>%s</title>
 <script type="text/javascript">if (top.location!=location) top.location.href=document.location.href;</script>
 <style type="text/css">
