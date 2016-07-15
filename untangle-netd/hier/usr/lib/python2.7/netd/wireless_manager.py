@@ -171,6 +171,18 @@ class WirelessManager:
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
         if verbosity > 1: print "WirelessManager: sync_settings()"
+
+        # on Asus AC88U, find each disabled wifi interface, and remove
+        # its corresponding hostapd configuration file if it
+        # exists. untangle-broadcom-wireless relies solely on the
+        # presence of that file to decide whether to start the AP
+        # daemon or not (#13066)
+        enabledInterfaces = [ x['physicalDev'] for x in settings.get('interfaces').get('list') ]
+        for intfName in [ x for x  in ('eth1', 'eth2') if not x in enabledInterfaces ]:
+            filename = prefix + self.hostapdConfFilename + "-" + intfName
+            if os.path.isfile(filename):
+                print "WirelessManager: Removed " + filename
+                os.remove(filename)
         
         self.write_hostapd_conf( settings, prefix, verbosity )
 
