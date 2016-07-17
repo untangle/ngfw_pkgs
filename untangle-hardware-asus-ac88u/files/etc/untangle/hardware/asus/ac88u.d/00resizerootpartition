@@ -11,7 +11,7 @@ FLAG_FS="/var/lib/untangle-resized-fs"
 # exit if we've already done the job
 [ ! -f $FLAG_FS ] || exit 0
 
-    
+
 # what device to operate on
 disk=${1:-"/dev/sda"}
 device=${disk}$PART
@@ -34,7 +34,7 @@ w
 EOF
   } || true
   date -Iseconds > $FLAG_PART
-elif [ ! -f $FLAG_FS ] # partition already resized, let's take care of the FS now
+elif [ ! -f $FLAG_FS ] ; then # partition already resized, let's take care of the FS now
   # resize FS (in the background)
   resize2fs $device &
 
