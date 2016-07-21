@@ -46,10 +46,7 @@ class DdclientManager:
 
             protocol = config[serviceName][0]
             server = config[serviceName][1]
-            if serviceName == 'dyndns':
-                use_str = "web, web=checkip.dyndns.com/, web-skip='IP Address'"  
-            else:
-                use_str = "web, web=www.untangle.com/ddclient/ip.php?activation=#{key}, web-skip=''"
+            use_str = "web, web=checkip.dyndns.com/, web-skip='IP Address'"  
 
             file.write("pid=/var/run/ddclient.pid" + "\n")
             file.write("use=%s" % use_str + "\n")
