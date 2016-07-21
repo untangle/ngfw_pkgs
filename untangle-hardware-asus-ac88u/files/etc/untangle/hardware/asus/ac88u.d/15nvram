@@ -27,5 +27,8 @@ fi
 # FIXME - why?
 if [ ! -f /usr/share/untangle/conf/nvram-initialized-flag ] ; then
     touch /usr/share/untangle/conf/nvram-initialized-flag
+
+    # tell the scripts to reboot after complete
+    touch /tmp/reboot-flag
     reboot
 fi

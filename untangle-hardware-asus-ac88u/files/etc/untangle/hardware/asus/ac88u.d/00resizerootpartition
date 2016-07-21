@@ -35,8 +35,8 @@ EOF
   } || true
   date -Iseconds > $FLAG_PART
 
-  # reboot now
-  /sbin/reboot
+  # tell the scripts to reboot after complete
+  touch /tmp/reboot-flag
 
 elif [ ! -f $FLAG_FS ] ; then # partition already resized, let's take care of the FS now
   # resize FS (in the background)
