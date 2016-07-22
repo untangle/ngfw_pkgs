@@ -11,7 +11,7 @@ rm -f /usr/share/untangle/lib/untangle-node-spam-blocker/nodeProperties.js
 rm -f /usr/share/untangle/lib/untangle-node-phish-blocker/nodeProperties.js
 
 # hide web filter lite (too memory intensive)
-rm -f /usr/share/untangle/lib/untangle-node-web-filter/nodeProperties.js
+rm -f /usr/share/untangle/lib/untangle-node-web-filter-lite/nodeProperties.js
 
 # hide virus blocker (bdamserver has no arm build)
 rm -f /usr/share/untangle/lib/untangle-node-virus-blocker/nodeProperties.js
