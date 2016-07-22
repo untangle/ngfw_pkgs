@@ -23,4 +23,7 @@ setOption StreamMaxLength 100M
 update-rc.d clamav-daemon disable
 update-rc.d clamav-freshclam disable
 
+# fix clamav.conf from broken security update (Bug #13073)
+sed -e '/AllowSupplementaryGroups/d' -i $CLAMAV_CONF_FILE
+
 exit 0
