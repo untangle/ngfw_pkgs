@@ -12,10 +12,16 @@ if [ "$IFACE" = "networking_post_restart_hook" ] ; then
     if ps aux | grep -v grep | grep -q nas.eth1.pid ; then
         echo "Stopping eth1 wireless..."
         /usr/bin/brcm-wifi eth1 stop
+
+        brctl delif br.eth0-2 eth1
+        brctl delif br.eth0-1 eth1
     fi
 
     if ps aux | grep -v grep | grep -q nas.eth2.pid ; then
         echo "Stopping eth2 wireless..."
         /usr/bin/brcm-wifi eth2 stop
+
+        brctl delif br.eth0-2 eth2
+        brctl delif br.eth0-1 eth2
     fi
 fi
