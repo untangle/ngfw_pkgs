@@ -25,3 +25,5 @@ if [ "$IFACE" = "networking_post_restart_hook" ] ; then
         brctl delif br.eth0-1 eth2
     fi
 fi
+
+exit 0
