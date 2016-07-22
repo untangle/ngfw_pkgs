@@ -177,7 +177,7 @@ fi
         file.write("\n\n");
 
         file.write("# Delete the default route, we do this because this might no longer be the default\n")
-        file.write("ip rule del priority %s \n" % self.IP_RULE_DEFAULT_RULE_PRIORITY)
+        file.write("ip rule del priority %s 2>/dev/null\n" % self.IP_RULE_DEFAULT_RULE_PRIORITY)
         file.write("\n");
 
         file.write("# Delete the main table, we do this because some routes may have been removed\n")
