@@ -11,4 +11,10 @@ modprobe wl
 ifconfig eth1 up
 ifconfig eth2 up
 
+# disable hostapd (we use broadcom drivers inside ddwrt to drive wireless)
+if [ -f /etc/init.d/hostapd ] ; then
+    mv /etc/init.d/hostapd /etc/init.d/hostapd-disabled
+fi
+/usr/sbin/update-rc.d -f hostapd remove
+
 exit 0
