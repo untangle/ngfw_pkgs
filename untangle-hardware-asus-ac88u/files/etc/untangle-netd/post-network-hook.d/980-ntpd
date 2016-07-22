@@ -1,6 +1,11 @@
 #! /bin/bash
 
-date -s "2016-01-01"
+now=$(date +%s)
+check=$(date -d 2016-07-01 +%s)
+if [ $now -lt $check ] ; then
+    date -s "2016-07-01"
+fi
+
 nohup ntpd -q -g > /dev/null 2>&1 &
 
 # kill ntpd in 303 seconds if it has not exited on its own
