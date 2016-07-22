@@ -139,7 +139,7 @@ class WirelessManager:
             self.hostapdRestartFile.write("## DO NOT EDIT. Changes will be overwritten.\n")
             self.hostapdRestartFile.write("\n")
 
-            self.hostapdRestartFile.write("/etc/init.d/hostapd restart\n")
+            self.hostapdRestartFile.write("if [ -x /etc/init.d/hostapd ] ; then /etc/init.d/hostapd restart; fi \n")
 
             self.hostapdRestartFile.flush()
             self.hostapdRestartFile.close()
@@ -158,7 +158,7 @@ class WirelessManager:
             self.hostapdRestartFile.write("## DO NOT EDIT. Changes will be overwritten.\n")
             self.hostapdRestartFile.write("\n")
 
-            self.hostapdRestartFile.write("/etc/init.d/hostapd stop\n")
+            self.hostapdRestartFile.write("if [ -x /etc/init.d/hostapd ] ; then /etc/init.d/hostapd stop; fi \n")
 
             self.hostapdRestartFile.flush()
             self.hostapdRestartFile.close()
