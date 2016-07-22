@@ -30,5 +30,4 @@ if [ ! -f /usr/share/untangle/conf/nvram-initialized-flag ] ; then
 
     # tell the scripts to reboot after complete
     touch /tmp/reboot-flag
-    reboot
 fi
