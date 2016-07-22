@@ -11,4 +11,9 @@ modprobe wl
 ifconfig eth1 up
 ifconfig eth2 up
 
+# disable hostapd
+if [ -f /etc/init.d/hostapd ] ; then
+    mv /etc/init.d/hostapd /etc/init.d/hostapd-disabled
+fi
+
 exit 0
