@@ -8,4 +8,8 @@ for nic in eth1 eth2 ; do
   [ -f $hostapdConf ] && brcm-wifi $nic start $hostapdConf
 done
 
+if [ -f /etc/hostapd/hostapd.conf-eth1 ] || [ -f /etc/hostapd/hostapd.conf-eth2 ] ; then
+    sleep 10
+fi
+
 exit 0
