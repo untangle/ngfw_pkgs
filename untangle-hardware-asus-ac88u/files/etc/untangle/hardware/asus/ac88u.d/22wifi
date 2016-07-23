@@ -16,10 +16,4 @@ if [ -f /etc/init.d/hostapd ] ; then
     mv /etc/init.d/hostapd /etc/init.d/hostapd.disabled
 fi
 
-# hack to disable vconfig rem which hangs
-if [ -f /etc/network/if-post-down.d/vlan ] ; then
-    mv /etc/network/if-post-down.d/vlan /etc/network/if-post-down.d/vlan.disabled
-fi
-
-
 exit 0
