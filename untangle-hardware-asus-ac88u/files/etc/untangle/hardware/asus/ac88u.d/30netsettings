@@ -643,7 +643,7 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
                 "name": "Internal",
                 "physicalDev": "eth0",
                 "raEnabled": false,
-                "symbolicDev": "eth0.2",
+                "symbolicDev": "br.eth0-2",
                 "systemDev": "eth0.2",
                 "v4Aliases": {
                     "javaClass": "java.util.LinkedList",
