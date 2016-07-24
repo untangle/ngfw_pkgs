@@ -17,42 +17,48 @@ class InterfacesManager:
 
     def write_interface_v4( self, interface_settings, interfaces, settings ):
 
+        # find interfaces bridged to this interface
+        isBridge = False
+        bridgedInterfacesStr = []
+        bridgedInterfaces = []
+        for intf in interfaces:
+            if intf.get('configType') == 'BRIDGED' and intf.get('bridgedTo') == interface_settings.get('interfaceId'):
+                bridgedInterfacesStr.append(str(intf.get('systemDev')))
+                bridgedInterfaces.append(intf)
+        if len(bridgedInterfaces) > 0:
+            isBridge = True
+            bridgedInterfacesStr.append(interface_settings.get('systemDev')) # include yourself in bridge
+            bridgedInterfaces.append(interface_settings) # include yourself in bridge
+
+        # If this is a bridge interface, wirte the blank config for the systemDev
+        if isBridge:
+            for intf in bridgedInterfaces:
+                self.write_interface_blank( intf, interfaces )
+        
         devName = interface_settings.get('symbolicDev')
         configString = "manual"
         if interface_settings.get('v4ConfigType') == 'AUTO':
             configString = "dhcp"
         if interface_settings.get('v4ConfigType') == 'PPPOE':
             configString = "ppp"
-            # we gave it a unique name in 9.4 - is this necessary?
-            # devName = "ppp." + interface_settings.get('symbolicDev')
 
         self.interfacesFile.write("## Interface %i IPv4 (%s)\n" % (interface_settings.get('interfaceId'),interface_settings.get('v4ConfigType')) )
         self.interfacesFile.write("auto %s\n" % devName)
 
-        # find interfaces bridged to this interface
-        isBridge = False
-        bridgedInterfaces = []
-        for intf in interfaces:
-            if intf.get('configType') == 'BRIDGED' and intf.get('bridgedTo') == interface_settings.get('interfaceId'):
-                bridgedInterfaces.append(str(intf.get('systemDev')))
-        if len(bridgedInterfaces) > 0:
-            isBridge = True
-            bridgedInterfaces.append(interface_settings.get('systemDev')) # include yourself in bridge
 
         # find the minimum MTU of all devs in bridge (if its a bridge)
         bridgeMinMtu = None
         if isBridge:
-            for intf in interfaces:
-                if intf.get('systemDev') in bridgedInterfaces:
-                    if intf.get('physicalDev') != None and settings.get('devices') != None and settings.get('devices').get('list') != None:
-                        for devSettings in settings.get('devices').get('list'):
-                            if devSettings.get('deviceName') != None and devSettings.get('deviceName') == intf.get('physicalDev'):
-                                if devSettings.get('mtu') != None:
-                                    # mtu found
-                                    if bridgeMinMtu == None:
-                                        bridgeMinMtu = int(devSettings.get('mtu'))
-                                    elif int(devSettings.get('mtu')) < bridgeMinMtu:
-                                        bridgeMinMtu = int(devSettings.get('mtu'))
+            for intf in bridgedInterfaces:
+                if intf.get('physicalDev') != None and settings.get('devices') != None and settings.get('devices').get('list') != None:
+                    for devSettings in settings.get('devices').get('list'):
+                        if devSettings.get('deviceName') != None and devSettings.get('deviceName') == intf.get('physicalDev'):
+                            if devSettings.get('mtu') != None:
+                                # mtu found
+                                if bridgeMinMtu == None:
+                                    bridgeMinMtu = int(devSettings.get('mtu'))
+                                elif int(devSettings.get('mtu')) < bridgeMinMtu:
+                                    bridgeMinMtu = int(devSettings.get('mtu'))
 
         self.interfacesFile.write("iface %s inet %s\n" % (devName, configString) )
         self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings.get('interfaceId'))
@@ -70,7 +76,7 @@ class InterfacesManager:
 
         # handle bridge-related stuff
         if isBridge:
-            self.interfacesFile.write("\tbridge_ports %s\n" % " ".join(bridgedInterfaces))
+            self.interfacesFile.write("\tbridge_ports %s\n" % " ".join(bridgedInterfacesStr))
             self.interfacesFile.write("\tbridge_ageing %i\n" % 900) #XXX
             stpEnabled = (settings.get('stpEnabled') != None and settings.get('stpEnabled'))
             if stpEnabled:
@@ -144,6 +150,20 @@ class InterfacesManager:
         self.interfacesFile.write("\tpost-up ifconfig %s 0.0.0.0 up\n" % devName )
         self.interfacesFile.write("\n\n");
 
+    def write_interface_blank( self, interface_settings, interfaces ):
+        # This is not necessary as the bridge-utils scripts bring up any sub-interfaces automatically
+        # in /etc/network/if-**.d/bridge
+        # However, we may want to control how and when those interfaces are brought up and down
+        # If so, we can specify the config here
+        
+        # devName = interface_settings.get('systemDev')
+        # self.interfacesFile.write("## Interface %i (BRIDGE PORT)\n" % interface_settings.get('interfaceId') )
+        # self.interfacesFile.write("auto %s\n" % devName)
+        # self.interfacesFile.write("iface %s inet manual\n" % devName )
+        # self.interfacesFile.write("\tpost-up ifconfig %s 0.0.0.0 up\n" % devName )
+        # self.interfacesFile.write("\n\n");
+        pass
+        
     def write_interface_aliases( self, interface_settings, interfaces ):
         # handle v4 aliases
         count = 1
@@ -209,9 +229,18 @@ class InterfacesManager:
         self.interfacesFile.write("iface lo inet loopback\n");
         self.interfacesFile.write("\n\n");
 
+        # Write disable interfaces first
+        if settings != None and settings.get('disabledInterfaces') != None and settings.get('disabledInterfaces').get('list') != None:
+            for interface_settings in settings.get('disabledInterfaces').get('list'):
+
+                try:
+                    self.write_interface_disabled( interface_settings, settings.get('interfaces').get('list') )
+                except Exception,exc:
+                    traceback.print_exc()
+
+        # Write addressed interfaces last
         if settings != None and settings.get('interfaces') != None and settings.get('interfaces').get('list') != None:
             for interface_settings in settings.get('interfaces').get('list'):
-
                 # only write 'ADDRESSED' interfaces
                 if interface_settings.get('configType') != 'ADDRESSED':
                     continue
@@ -231,14 +260,6 @@ class InterfacesManager:
                     traceback.print_exc()
                 try:
                     self.write_interface_aliases( interface_settings, settings.get('interfaces').get('list') )
-                except Exception,exc:
-                    traceback.print_exc()
-
-        if settings != None and settings.get('disabledInterfaces') != None and settings.get('disabledInterfaces').get('list') != None:
-            for interface_settings in settings.get('disabledInterfaces').get('list'):
-
-                try:
-                    self.write_interface_disabled( interface_settings, settings.get('interfaces').get('list') )
                 except Exception,exc:
                     traceback.print_exc()
 

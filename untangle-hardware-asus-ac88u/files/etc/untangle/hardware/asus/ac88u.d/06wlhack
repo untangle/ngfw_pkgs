@@ -1,10 +1,10 @@
 #! /bin/sh
 
 #
-# broadcom wireless drivers do not release interfaces to any interfaces that they are bridged to
+# broadcom wireless drivers do not release references to any interfaces that they are bridged to
 # As such, any interfaces that is bridged with the wireless interfaces can not be brought down properly
 # On the asus, the wireless interfaces are bridged to the external and internal interfaces, which are both
-# vlans. As such, we remove this script that that vlan interfaces are *never* actually brought down
+# vlans. As such, we remove this script so that vlan interfaces are *never* actually brought down
 #
 # Read more in bug#13074
 # 
