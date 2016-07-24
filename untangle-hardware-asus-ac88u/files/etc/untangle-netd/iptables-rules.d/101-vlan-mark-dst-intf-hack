@@ -1,0 +1,14 @@
+# This scripts add a fake rule to mark the dest interface in cases where we failed to set the mark
+
+# Because of bug #13076, we fail to set the mark when the session is going to the eth0.2 port in the br.eth0-2 bridge
+# As such we add this rule to just assume its going to eth0.2
+
+# If there is a br.eth0-2 bridge interface, add a rule to mark any packets going to this bridge which are unmarked
+if ip addr list | grep -q '\sbr.eth0-2:\s' ; then
+   ${IPTABLES} -t mangle -A mark-dst-intf -o br.eth0-2 -m mark --mark 0/0xff00 -j MARK --set-mark 0x6500/0xFF00 -m comment --comment "see /etc/untangle-netd/iptables-rules.d/101-vlan-mark-dst-intf-mark"
+fi
+
+# If there is a br.eth0-1 bridge interface, add a rule to mark any packets going to this bridge which are unmarked
+if ip addr list | grep -q '\sbr.eth0-1:\s' ; then
+   ${IPTABLES} -t mangle -A mark-dst-intf -o br.eth0-1 -m mark --mark 0/0xff00 -j MARK --set-mark 0x6400/0xFF00 -m comment --comment "see /etc/untangle-netd/iptables-rules.d/101-vlan-mark-dst-intf-mark"
+fi
