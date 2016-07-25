@@ -281,7 +281,13 @@ case "$reason" in
         # Do nothing
         ;;
 
-    BOUND|REBOOT)
+    REBOOT)
+        refresh_routes
+        write_status_file ${interface} ${DHCP_INTERFACE_INDEX}
+        # Do not run post networking hooks (we are booting up and baout to run them)
+        ;;
+
+    BOUND)
         refresh_routes
         write_status_file ${interface} ${DHCP_INTERFACE_INDEX}
 
