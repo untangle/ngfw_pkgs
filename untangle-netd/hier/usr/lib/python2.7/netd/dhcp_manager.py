@@ -245,10 +245,13 @@ refresh_routes()
 
 run_post_networking_hook()
 {
-    # check if it is already running
-    # if it is, don't run it again
-    ps aux | grep run-parts | grep -v grep | grep post-network-hook.d >/dev/null 2>&1
-    if [ $? != 0 ] ; then
+    if [ "`/sbin/runlevel | cut -d " " -f 2`" != "2" ] ; then 
+      # if the runlevel is not 2, we are either in bootup or shutdown
+      $DEBUG "Skipping post-network-hook.d hooks - still booting."
+    elif ps aux | grep run-parts | grep -v grep | grep post-network-hook.d >/dev/null 2>&1 ; then
+      # if we already see post-network-hook.d running, do not run it again
+      $DEBUG "Skipping post-network-hook.d hooks - already running."
+    else
       run-parts /etc/untangle-netd/post-network-hook.d
     fi
 }
@@ -284,13 +287,12 @@ case "$reason" in
     REBOOT)
         refresh_routes
         write_status_file ${interface} ${DHCP_INTERFACE_INDEX}
-        # Do not run post networking hooks (we are booting up and baout to run them)
+        # Do not run post networking hooks (we are booting up and about to run them)
         ;;
 
     BOUND)
         refresh_routes
         write_status_file ${interface} ${DHCP_INTERFACE_INDEX}
-
         run_post_networking_hook 
         ;;
 
