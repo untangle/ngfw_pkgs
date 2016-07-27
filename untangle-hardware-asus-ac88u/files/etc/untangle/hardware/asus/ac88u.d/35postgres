@@ -1,0 +1,46 @@
+#! /bin/bash
+
+set -x
+
+PG_VERSION="9.4"
+PG_VAR_DIR="/var/lib/postgresql/${PG_VERSION}"
+PG_BIN_DIR="/usr/lib/postgresql/${PG_VERSION}/bin"
+PG_MAIN_DIR="/var/lib/postgresql/${PG_VERSION}/main"
+
+echo "Drive Type:"
+echo `hdparm -I /dev/sda 2>/dev/null | grep 'removable'`
+
+if hdparm -I /dev/sda | grep -q 'non-removable' ; then
+    echo "Looks like a USB hard drive..."
+    
+    # Just in case we previously thought this was a flash drive, set back to normal
+    rm -f /etc/cron.daily/reports-cron-asus
+    sed -e 's/UNLOGGED_ENABLED = True/UNLOGGED_ENABLED = False/g' -i /usr/lib/python2.7/reports/sql_helper.py
+    sed -e 's/EXTRA_INDEXES_ENABLED = False/EXTRA_INDEXES_ENABLED = True/g' -i /usr/lib/python2.7/reports/sql_helper.py
+else
+    echo "Looks like a USB flash drive..."
+
+    # Hack to save disk space on ram drive
+    # Enabled unlogged tables and disable indexes (except primary indexes)
+    sed -e 's/UNLOGGED_ENABLED = False/UNLOGGED_ENABLED = True/g' -i /usr/lib/python2.7/reports/sql_helper.py
+    sed -e 's/EXTRA_INDEXES_ENABLED = True/EXTRA_INDEXES_ENABLED = False/g' -i /usr/lib/python2.7/reports/sql_helper.py
+
+    # force 1 day retention time regardless of settings
+    cat > /etc/cron.daily/reports-cron-asus <<EOF
+/usr/share/untangle/bin/reports-clean-tables.py 1 >> /var/log/uvm/reports.log 2>&1
+EOF
+    chmod 755 /etc/cron.daily/reports-cron-asus
+
+    # umount just in case running this script by hand
+    umount ${PG_MAIN_DIR} >/dev/null 2>&1
+    
+    # mount a ramdisk
+    rm -rf ${PG_MAIN_DIR}
+    mkdir -p ${PG_MAIN_DIR}
+    chown -R postgres:postgres ${PG_MAIN_DIR}
+    mount -t tmpfs -o size=128m tmpfs ${PG_MAIN_DIR}
+    chown -R postgres:postgres ${PG_MAIN_DIR}
+
+    # create DB
+    su -c "${PG_BIN_DIR}/initdb --encoding=utf8 --locale=${locale} -D ${PG_VAR_DIR}/main" postgres
+fi	

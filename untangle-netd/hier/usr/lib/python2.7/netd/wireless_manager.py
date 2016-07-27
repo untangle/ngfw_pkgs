@@ -37,6 +37,11 @@ class WirelessManager:
 
         for intf in interfaces:
             if intf.get('isWirelessInterface'):
+                passwordLen = len(intf.get('wirelessPassword'))
+                if passwordLen < 8:
+                    print "WirelessManager: Ignoring " + intf.get('systemDev') + " because password is too short (" + str(passwordLen) + ")"
+                    continue;
+                    
                 foundInterface = 1
                 filename = configFilename + "-" + intf.get('systemDev')
                 self.hostapdConfFile = open( filename, "w+" )
