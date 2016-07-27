@@ -726,7 +726,7 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
                 "vrrpEnabled": false,
                 "wirelessChannel": -1,
                 "wirelessEncryption": "WPA2",
-                "wirelessPassword": "",
+                "wirelessPassword": "12345678",
                 "wirelessSsid": "UntangleAsus"
             },
             {
@@ -782,7 +782,7 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
                 "vrrpEnabled": false,
                 "wirelessChannel": -1,
                 "wirelessEncryption": "WPA1",
-                "wirelessPassword": "",
+                "wirelessPassword": "12345678",
                 "wirelessSsid": "UntangleAsus5"
             }
         ]
