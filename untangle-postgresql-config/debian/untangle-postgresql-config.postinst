@@ -13,8 +13,9 @@ PG_ETC_DIR="/etc/postgresql/${PG_VERSION}"
 PG_MAIN_DIR="${PG_ETC_DIR}/main"
 PG_CONF="${PG_MAIN_DIR}/postgresql.conf"
 PG_HBA="${PG_MAIN_DIR}/pg_hba.conf"
-PG_BIN_DIR="/usr/lib/postgresql/${PG_VERSION}/bin"
 PG_VAR_DIR="/var/lib/postgresql/${PG_VERSION}"
+PG_BIN_DIR="/usr/lib/postgresql/${PG_VERSION}/bin"
+PG_MAIN_DIR="/usr/lib/postgresql/${PG_VERSION}/main"
 
 createDB() {
   # re-create cluster with older cluster's locale (#12847)
