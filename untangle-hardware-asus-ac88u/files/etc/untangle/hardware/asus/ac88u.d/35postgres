@@ -15,6 +15,7 @@ if hdparm -I /dev/sda | grep -q 'non-removable' ; then
     
     # Just in case we previously thought this was a flash drive, set back to normal
     rm -f /etc/cron.hourly/reports-cron-asus
+    rm -f /etc/cron.daily/reports-cron-asus
     sed -e 's/UNLOGGED_ENABLED = True/UNLOGGED_ENABLED = False/g' -i /usr/lib/python2.7/reports/sql_helper.py
     sed -e 's/EXTRA_INDEXES_ENABLED = False/EXTRA_INDEXES_ENABLED = True/g' -i /usr/lib/python2.7/reports/sql_helper.py
 else
@@ -26,7 +27,15 @@ else
     sed -e 's/EXTRA_INDEXES_ENABLED = True/EXTRA_INDEXES_ENABLED = False/g' -i /usr/lib/python2.7/reports/sql_helper.py
 
     # force 1 day retention time regardless of settings
+    cat > /etc/cron.daily/reports-cron-asus <<EOF
+#!/bin/sh
+/home/dmorris/work/src/dist/usr/share/untangle/bin/reports-clean-tables.py 7 >> /var/log/uvm/reports.log 2>&1
+EOF
+    chmod 755 /etc/cron.daily/reports-cron-asus
+
+    # hourly check DB size and prune if large
     cat > /etc/cron.hourly/reports-cron-asus <<EOF
+#!/bin/sh
 /usr/bin/cleandb.sh >> /var/log/uvm/asus-ac88u.log 2>&1
 EOF
     chmod 755 /etc/cron.hourly/reports-cron-asus
