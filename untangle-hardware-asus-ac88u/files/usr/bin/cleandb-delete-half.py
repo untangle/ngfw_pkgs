@@ -68,9 +68,9 @@ if len(sys.argv) < 1:
 sessions_count = get_count("reports.sessions")
 session_minutes_count = get_count("reports.session_minutes")
 http_count = get_count("reports.http_events")
-print "sessions              post count: %s" % str(sessions_count)
-print "session_minutes       post count: %s" % str(session_minutes_count)
-print "http_events           post count: %s" % str(http_count)
+print "sessions                   count: %s" % str(sessions_count)
+print "session_minutes            count: %s" % str(session_minutes_count)
+print "http_events                count: %s" % str(http_count)
      
 # Find the mid-point for the major three tables
 sessions_cutoff = get_mid_date("session_id","reports.sessions")
