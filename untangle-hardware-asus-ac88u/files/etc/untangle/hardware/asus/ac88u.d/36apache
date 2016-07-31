@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# Reduce apache numbers a little bit so it consumes less memory
+sed -e 's/^\s*StartServers.*/\tStartServers\t1/' -i /etc/apache2/mods-available/mpm_event.conf
+sed -e 's/^\s*MinSpareThreads.*/\tMinSpareThreads\t10/' -i /etc/apache2/mods-available/mpm_event.conf
+sed -e  's/^\s*ThreadsPerChild.*/\tThreadsPerChild\t15/' -i /etc/apache2/mods-available/mpm_event.conf
