@@ -18,6 +18,12 @@ if hdparm -I /dev/sda | grep -q 'non-removable' ; then
     rm -f /etc/cron.daily/reports-cron-asus
     sed -e 's/UNLOGGED_ENABLED = True/UNLOGGED_ENABLED = False/g' -i /usr/lib/python2.7/reports/sql_helper.py
     sed -e 's/EXTRA_INDEXES_ENABLED = False/EXTRA_INDEXES_ENABLED = True/g' -i /usr/lib/python2.7/reports/sql_helper.py
+
+    # If DB is missing recreate it
+    if [ ! -d /var/lib/postgresql/9.4/main/base ] ; then
+        # create DB
+        su -c "${PG_BIN_DIR}/initdb --encoding=utf8 --locale=${locale} -D ${PG_VAR_DIR}/main" postgres
+    fi
 else
     echo "Looks like a USB flash drive..."
 
