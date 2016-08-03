@@ -4,6 +4,7 @@
 sed -e 's/^\s*StartServers.*/\tStartServers\t1/' -i /etc/apache2/mods-available/mpm_event.conf
 sed -e 's/^\s*MinSpareThreads.*/\tMinSpareThreads\t10/' -i /etc/apache2/mods-available/mpm_event.conf
 sed -e  's/^\s*ThreadsPerChild.*/\tThreadsPerChild\t15/' -i /etc/apache2/mods-available/mpm_event.conf
+sed -e  's/^\s*MaxRequestWorkers.*/\tMaxRequestWorkers\t15/' -i /etc/apache2/mods-available/mpm_event.conf
 
 # set ServerLimit
 if grep -q "ServerLimit" /etc/apache2/mods-available/mpm_event.conf ; then
