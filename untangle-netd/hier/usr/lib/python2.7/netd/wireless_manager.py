@@ -37,7 +37,9 @@ class WirelessManager:
 
         for intf in interfaces:
             if intf.get('isWirelessInterface'):
-                passwordLen = len(intf.get('wirelessPassword'))
+                passwordLen = 0
+                if intf.get('wirelessPassword') != None:
+                    passwordLen = len(intf.get('wirelessPassword'))
                 if passwordLen < 8:
                     print "WirelessManager: Ignoring " + intf.get('systemDev') + " because password is too short (" + str(passwordLen) + ")"
                     continue;
