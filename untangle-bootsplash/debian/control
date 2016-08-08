@@ -9,7 +9,6 @@ Standards-Version: 3.8.0
 Package: untangle-bootsplash
 Architecture: all
 Depends: plymouth-themes, plymouth, v86d, untangle-hardware-config
-Conflicts: plymouth-drm
 Description: The Untangle bootsplash utilities
  The Untangle bootsplash utilities using at boot time.
 
