@@ -269,6 +269,9 @@ fi
         Modify miniupnpd's daemon to not manage iptables and not to use /etc/default/minipnpd
         """
         filename = self.upnpDaemonInitFilename
+        if os.path.isfile(filename) is False:
+            return
+
         tempFilename = prefix + self.upnpDaemonInitFilename + ".tmp"
 
         fileDir = os.path.dirname( tempFilename )
