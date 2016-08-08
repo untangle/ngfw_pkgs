@@ -1,18 +1,12 @@
 #!/bin/dash
 
-echo "`date -Iseconds`| Checking DB ramdisk size..."
-
 PG_VERSION="9.4"
 PG_VAR_DIR="/var/lib/postgresql/${PG_VERSION}"
 PG_BIN_DIR="/usr/lib/postgresql/${PG_VERSION}/bin"
 PG_MAIN_DIR="/var/lib/postgresql/${PG_VERSION}/main"
 
-percent="`df --output=pcent ${PG_MAIN_DIR} | sed 1d | sed 's/%//'`"
-#percent="85"
-
-echo "`date -Iseconds`| DB ramdisk status: $percent%"
-
-if [ "$percent" = "100" ] ; then
+reinit_db()
+{
     echo "`date -Iseconds`| Completely nuking database..."
     /etc/init.d/postgresql stop
 
@@ -33,10 +27,10 @@ if [ "$percent" = "100" ] ; then
 
     # create 
     /usr/share/untangle/bin/reports-generate-tables.py
-    exit 0
-fi
+}
 
-if [ "$percent" -gt "70" ] ; then
+clean_db()
+{
     echo "`date -Iseconds`| Cleaning tables..."
     # Delete half the data from the DB
     /usr/bin/cleandb-delete-half.py
@@ -46,6 +40,31 @@ if [ "$percent" -gt "70" ] ; then
                                                                                                                                   echo "`date -Iseconds`| VACUUM FULL $table..."
                                                                                                                                   psql -U postgres -c "VACUUM FULL reports.$table;" uvm
                                                                                                                               done
+}
+
+echo "`date -Iseconds`| Cleaning postgres DB..."
+
+# If postgres not running, reinitialize
+if [ ! -f "/var/run/postgresql/${PG_VERSION}-main.pid" ] ; then
+    echo "`date -Iseconds`| Postgres not running."
+    reinit_db
+    exit 0
+fi
+
+percent="`df --output=pcent ${PG_MAIN_DIR} | sed 1d | sed 's/%//'`"
+#percent="100"
+#percent="85"
+echo "`date -Iseconds`| DB ramdisk status: $percent%"
+
+# If more than 90% used, just reinitialize
+if [ "$percent" -gt "90" ] ; then
+    reinit_db
+    exit 0
+fi
+
+# If more than 70% used, clean up data
+if [ "$percent" -gt "70" ] ; then
+    clean_db
     exit 0
 fi
 
