@@ -5,6 +5,7 @@ set -e
 
 
 # load switch config module
+modprobe et
 modprobe switch-robo
 
 # disable switch
