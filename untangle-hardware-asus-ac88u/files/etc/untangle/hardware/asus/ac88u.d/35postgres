@@ -96,16 +96,16 @@ EOF
 EOF
     chmod 755 /etc/cron.hourly/reports-cron-asus
 
-    # umount just in case running this script by hand
-    umount ${PG_MAIN_DIR} >/dev/null 2>&1
+    # If ramdisk is not already mounted, create it and initialize database
+    if [ "tmpfs" != "`stat -f -c '%T' ${PG_MAIN_DIR}`" ] ; then
+        # mount a ramdisk
+        rm -rf ${PG_MAIN_DIR}
+        mkdir -p ${PG_MAIN_DIR}
+        chown -R postgres:postgres ${PG_MAIN_DIR}
+        mount -t tmpfs -o size=${PG_RAMDISK_SIZE}m tmpfs ${PG_MAIN_DIR}
+        chown -R postgres:postgres ${PG_MAIN_DIR}
 
-    # mount a ramdisk
-    rm -rf ${PG_MAIN_DIR}
-    mkdir -p ${PG_MAIN_DIR}
-    chown -R postgres:postgres ${PG_MAIN_DIR}
-    mount -t tmpfs -o size=${PG_RAMDISK_SIZE}m tmpfs ${PG_MAIN_DIR}
-    chown -R postgres:postgres ${PG_MAIN_DIR}
-
-    # create DB
-    su -c "${PG_BIN_DIR}/initdb --encoding=utf8 --locale=${locale} -D ${PG_VAR_DIR}/main" postgres
+        # create DB
+        su -c "${PG_BIN_DIR}/initdb --encoding=utf8 --locale=${locale} -D ${PG_VAR_DIR}/main" postgres
+    fi
 fi
