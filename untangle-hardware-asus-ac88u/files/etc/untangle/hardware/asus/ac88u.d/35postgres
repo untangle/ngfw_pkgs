@@ -8,7 +8,7 @@ PG_MAIN_DIR="/var/lib/postgresql/${PG_VERSION}/main"
 PG_CONF="${PG_ETC_DIR}/postgresql.conf"
 PG_HBA="${PG_ETC_DIR}/pg_hba.conf"
 
-PG_RAMDISK_SIZE="96"
+PG_RAMDISK_SIZE="112"
 
 # lower checkpoint_segments. we want frequent checkpoints to keep the WAL small
 sed -i -e "s/.*checkpoint_segments.*=.*/checkpoint_segments = 1/" $PG_CONF
@@ -26,7 +26,7 @@ pg_ram_settings()
     # Turn off fsync
     sed -i -e "s/.*fsync.*=.*/fsync = off/" $PG_CONF
 
-    # Tune memory usage & query optimizer
+    # Set memory parameters
     sed -i -e "s/[# ]*shared_buffers *=.*/shared_buffers = 128kB/" $PG_CONF
     sed -i -e "s/[# ]*work_mem *=.*/work_mem = 64kB/" $PG_CONF
     sed -i -e "s/[# ]*maintenance_work_mem *=.*/maintenance_work_mem = 1024kB/" $PG_CONF
@@ -34,6 +34,7 @@ pg_ram_settings()
 
     # Other
     sed -i -e "s/[# ]*temp_buffers *=.*/temp_buffers = 800kB/" $PG_CONF
+    sed -i -e "s/[# ]*full_page_writes *=.*/full_page_writes = off/" $PG_CONF
     sed -i -e "s/[# ]*seq_page_post *=.*/seq_page_cost = .01/" $PG_CONF
     sed -i -e "s/[# ]*random_page_post *=.*/random_page_cost = .01/" $PG_CONF
 }
@@ -43,7 +44,7 @@ pg_disk_settings()
     # Set fsync back to default (on)
     sed -i -e "s/.*fsync.*=.*/# fsync = on/" $PG_CONF
 
-    # Set memory parameters to something reasonable
+    # Set memory parameters
     sed -i -e "s/[# ]*shared_buffers *=.*/shared_buffers = 12MB/" $PG_CONF
     sed -i -e "s/[# ]*work_mem *=.*/work_mem = 1MB/" $PG_CONF
     sed -i -e "s/[# ]*maintenance_work_mem *=.*/maintenance_work_mem = 8MB/" $PG_CONF
@@ -51,6 +52,7 @@ pg_disk_settings()
 
     # Other
     sed -i -e "s/[# ]*temp_buffers *=.*/# temp_buffers = 8MB/" $PG_CONF
+    sed -i -e "s/[# ]*full_page_writes *=.*/# full_page_writes = on/" $PG_CONF
     sed -i -e "s/[# ]*seq_page_post *=.*/# seq_page_cost = 1.0/" $PG_CONF
     sed -i -e "s/[# ]*random_page_post *=.*/# random_page_cost = 4.0/" $PG_CONF
 }
