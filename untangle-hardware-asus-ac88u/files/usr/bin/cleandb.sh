@@ -62,8 +62,8 @@ if [ "$percent" -gt "90" ] ; then
     exit 0
 fi
 
-# If more than 72% used, clean up data
-if [ "$percent" -gt "72" ] ; then
+# If more than 75% used, clean up data
+if [ "$percent" -gt "75" ] ; then
     clean_db
     exit 0
 fi
