@@ -1,10 +1,16 @@
 #! /bin/bash
 
-set -x
-
 ROOTFS="/var/lib/asus-ac88u-rootfs"
 
-mount --bind /proc ${ROOTFS}/proc
-mount --bind /sys ${ROOTFS}/sys
-mount --bind /dev ${ROOTFS}/dev
-mount --bind /dev/pts ${ROOTFS}/dev/pts
+if [ "proc" != "`stat -f -c '%T' ${ROOTFS}/proc`" ] ; then
+    mount --bind /proc ${ROOTFS}/proc
+fi
+if [ "sysfs" != "`stat -f -c '%T' ${ROOTFS}/sys`" ] ; then
+    mount --bind /sys ${ROOTFS}/sys
+fi
+if [ "tmpfs" != "`stat -f -c '%T' ${ROOTFS}/dev`" ] ; then
+    mount --bind /dev ${ROOTFS}/dev
+fi
+if [ "devpts" != "`stat -f -c '%T' ${ROOTFS}/dev/pts`" ] ; then
+    mount --bind /dev/pts ${ROOTFS}/dev/pts
+fi
