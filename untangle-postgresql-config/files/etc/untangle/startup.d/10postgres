@@ -7,9 +7,8 @@ UNTANGLE_SYSCTL="/etc/sysctl.d/60-untangle.conf"
 
 echo "  Customizing HW-related settings for postgres"
 
-# 8.3 DEFAULTS:
+# Postgres DEFAULTS:
 SHARED_BUFFERS=24MB
-MAX_FSM_PAGES=153600
 WORK_MEM=1MB
 MAINTANENCE_WORK_MEM=16MB
 EFFECTIVE_CACHE_SIZE=128MB
@@ -21,37 +20,31 @@ MEM=$(awk '/MemTotal/ { print $2 }' < /proc/meminfo)
 
 if [ $MEM -gt 7900000 ] ; then
     echo "    Using settings for 8+ gigabytes of memory"
-    MAX_FSM_PAGES=8000000
     WORK_MEM=32MB 
     EFFECTIVE_CACHE_SIZE=1024MB
     SHMMAX="134217728"
 elif [ $MEM -gt 5900000 ] ; then
     echo "    Using settings for 6+ gigabytes of memory"
-    MAX_FSM_PAGES=6000000
     WORK_MEM=32MB 
     EFFECTIVE_CACHE_SIZE=1024MB
     SHMMAX="134217728"
 elif [ $MEM -gt 3900000 ] ; then
     echo "    Using settings for 4+ gigabytes of memory"
-    MAX_FSM_PAGES=4000000
     WORK_MEM=16MB 
     EFFECTIVE_CACHE_SIZE=1024MB
     SHMMAX="134217728"
 elif [ $MEM -gt 2900000 ] ; then
     echo "    Using settings for 3+ gigabytes of memory"
-    MAX_FSM_PAGES=3000000
     WORK_MEM=8MB 
     EFFECTIVE_CACHE_SIZE=512MB
     SHMMAX="134217728"
 elif [ $MEM -gt 1900000 ] ; then
     echo "    Using settings for 2+ gigabytes of memory"
-    MAX_FSM_PAGES=2000000
     WORK_MEM=4MB 
     EFFECTIVE_CACHE_SIZE=256MB
     SHMMAX="134217728"
 elif [ $MEM -gt 900000 ] ; then
     echo "    Using settings for 1 gigabyte of memory"
-    MAX_FSM_PAGES=500000 
     WORK_MEM=2MB
     EFFECTIVE_CACHE_SIZE=128MB
     SHMMAX="134217728"
@@ -65,7 +58,6 @@ fi
 for file in $PG_CONF ; do
     # Tune memory usage & query optimizer
     sed -i -e "s/[# ]*shared_buffers *=.*/shared_buffers = ${SHARED_BUFFERS}/" $file
-    sed -i -e "s/[# ]*max_fsm_pages *=.*/max_fsm_pages = ${MAX_FSM_PAGES}/" $file
     sed -i -e "s/[# ]*work_mem *=.*/work_mem = ${WORK_MEM}/" $file
     sed -i -e "s/[# ]*maintenance_work_mem *=.*/maintenance_work_mem = ${MAINTANENCE_WORK_MEM}/" $file
     sed -i -e "s/[# ]*effective_cache_size *=.*/effective_cache_size = ${EFFECTIVE_CACHE_SIZE}/" $file
