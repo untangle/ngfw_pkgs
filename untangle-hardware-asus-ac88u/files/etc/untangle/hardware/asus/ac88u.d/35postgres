@@ -8,7 +8,7 @@ PG_MAIN_DIR="/var/lib/postgresql/${PG_VERSION}/main"
 PG_CONF="${PG_ETC_DIR}/postgresql.conf"
 PG_HBA="${PG_ETC_DIR}/pg_hba.conf"
 
-PG_RAMDISK_SIZE="96"
+PG_RAMDISK_SIZE="112"
 
 # lower checkpoint_segments. we want frequent checkpoints to keep the WAL small
 sed -i -e "s/.*checkpoint_segments.*=.*/checkpoint_segments = 1/" $PG_CONF
