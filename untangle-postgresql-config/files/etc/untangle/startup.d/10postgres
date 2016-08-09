@@ -69,7 +69,6 @@ for file in $PG_CONF ; do
     sed -i -e "s/[# ]*work_mem *=.*/work_mem = ${WORK_MEM}/" $file
     sed -i -e "s/[# ]*maintenance_work_mem *=.*/maintenance_work_mem = ${MAINTANENCE_WORK_MEM}/" $file
     sed -i -e "s/[# ]*effective_cache_size *=.*/effective_cache_size = ${EFFECTIVE_CACHE_SIZE}/" $file
-    sed -i -e "s/[# ]*checkpoint_segments *=.*/checkpoint_segments = 12/" $file
 done
 
 # tune postgres-related kernel settings
