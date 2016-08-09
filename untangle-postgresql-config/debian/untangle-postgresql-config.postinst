@@ -86,7 +86,9 @@ sed -i -e "s/.*autovacuum_vacuum_scale_factor.*=.*/autovacuum_vacuum_scale_facto
 sed -i -e "s/.*autovacuum_analyze_scale_factor.*=.*/autovacuum_analyze_scale_factor = .5/" $PG_CONF
 
 # configure hw parameters
-/etc/untangle/startup.d/10postgres
+if [ -x /etc/untangle/startup.d/10postgres ] ; then
+    /etc/untangle/startup.d/10postgres
+fi
 
 # 12.1 remove old directories if they still exist
 rm -rf /var/lib/postgresql/9.1
