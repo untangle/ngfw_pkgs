@@ -14,7 +14,9 @@ PG_RAMDISK_SIZE="96"
 sed -i -e "s/.*checkpoint_segments.*=.*/checkpoint_segments = 1/" $PG_CONF
 
 # Disable the standard postgres startup tuning script
-mv /etc/untangle/startup.d/10postgres /etc/untangle/startup.d/10postgres.disabled
+if [ -f /etc/untangle/startup.d/10postgres ] ; then
+    mv /etc/untangle/startup.d/10postgres /etc/untangle/startup.d/10postgres.disabled
+fi
 
 echo "Drive Type:"
 echo `hdparm -I /dev/sda 2>/dev/null | grep 'removable'`
