@@ -9,13 +9,12 @@ fi
 }
 
 PG_VERSION="9.4"
-PG_ETC_DIR="/etc/postgresql/${PG_VERSION}"
-PG_MAIN_DIR="${PG_ETC_DIR}/main"
-PG_CONF="${PG_MAIN_DIR}/postgresql.conf"
-PG_HBA="${PG_MAIN_DIR}/pg_hba.conf"
+PG_ETC_DIR="/etc/postgresql/${PG_VERSION}/main"
 PG_VAR_DIR="/var/lib/postgresql/${PG_VERSION}"
 PG_BIN_DIR="/usr/lib/postgresql/${PG_VERSION}/bin"
-PG_MAIN_DIR="/usr/lib/postgresql/${PG_VERSION}/main"
+PG_MAIN_DIR="/var/lib/postgresql/${PG_VERSION}/main"
+PG_CONF="${PG_ETC_DIR}/postgresql.conf"
+PG_HBA="${PG_ETC_DIR}/pg_hba.conf"
 
 createDB() {
   # re-create cluster with older cluster's locale (#12847)
@@ -76,7 +75,7 @@ sed -i -e "s/.*escape_string_warning.*=.*/escape_string_warning = off/" $PG_CONF
 # ... we can gain massive speedups in writes by turning off synchronous commits.
 sed -i -e "s/.*synchronous_commit.*=.*/synchronous_commit = off/" $PG_CONF
 # ... increase checkpoint_segments 
-sed -i -e "s/.*checkpoint_segments.*=.*/checkpoint_segments = 32/" $PG_CONF
+sed -i -e "s/.*checkpoint_segments.*=.*/checkpoint_segments = 12/" $PG_CONF
 sed -i -e "s/.*autovacuum_max_workers.*=.*/autovacuum_max_workers = 1/" $PG_CONF
 # ... log autovacuum
 sed -i -e "s/.*log_autovacuum_min_duration.*=.*/log_autovacuum_min_duration = 0/" $PG_CONF

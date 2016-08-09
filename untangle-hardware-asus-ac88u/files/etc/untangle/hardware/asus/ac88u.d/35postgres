@@ -1,11 +1,15 @@
 #! /bin/bash
 
-set -x
-
 PG_VERSION="9.4"
+PG_ETC_DIR="/etc/postgresql/${PG_VERSION}/main"
 PG_VAR_DIR="/var/lib/postgresql/${PG_VERSION}"
 PG_BIN_DIR="/usr/lib/postgresql/${PG_VERSION}/bin"
 PG_MAIN_DIR="/var/lib/postgresql/${PG_VERSION}/main"
+PG_CONF="${PG_ETC_DIR}/postgresql.conf"
+PG_HBA="${PG_ETC_DIR}/pg_hba.conf"
+
+# lower checkpoint_segments. we want frequent checkpoints to keep the WAL small
+sed -i -e "s/.*checkpoint_segments.*=.*/checkpoint_segments = 1/" $PG_CONF
 
 echo "Drive Type:"
 echo `hdparm -I /dev/sda 2>/dev/null | grep 'removable'`
