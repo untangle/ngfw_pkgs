@@ -5,7 +5,8 @@
 # It runs all the scripts in /etc/untangle-netd/iptables.rules.d
 # It logs both to stdout and the logfile
 
-LOGFILE="/var/log/uvm/iptables.log"
+#LOGFILE="/var/log/uvm/iptables.log"
+LOGFILE=""
 
 IPTABLES_DIRECTORY=/etc/untangle-netd/iptables-rules.d
 
@@ -23,11 +24,13 @@ EBTABLES=ebtables_debug_onerror
 
 LOCK_FILE=/tmp/generate-iptables-rules.lock
 
-# switch stdout/stderr to tee for stdout and logfile
-mkfifo ${LOGFILE}.pipe
-tee < ${LOGFILE}.pipe $LOGFILE &
-exec >> ${LOGFILE}.pipe 2>&1
-rm ${LOGFILE}.pipe
+if [ ! -z "${LOGFILE}" ] ; then
+    # switch stdout/stderr to tee for stdout and logfile
+    mkfifo ${LOGFILE}.pipe
+    tee < ${LOGFILE}.pipe $LOGFILE &
+    exec >> ${LOGFILE}.pipe 2>&1
+    rm ${LOGFILE}.pipe
+fi
 
 debug()
 {
