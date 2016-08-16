@@ -75,13 +75,6 @@ class UpnpManager:
         file.write("upnp_nat_chain=UPnP\n")
 
         file.write("\n# Client notifications\n");
-        file.write("notify_interval=60\n")
-        # Notify download speed
-        notify_download_speed = settings['upnpSettings'].get('downloadSpeed')
-        file.write("%sbitrate_down=%d\n" % ("#" if notify_download_speed == 0 else "", notify_download_speed) )
-        # Notify upload speed
-        notify_upload_speed = settings['upnpSettings'].get('uploadSpeed')
-        file.write("%sbitrate_up=%d\n" % ("#" if notify_upload_speed == 0 else "", notify_upload_speed) )
         file.write("uuid=b014febc-1170-4421-9f04-852de5742a80\n")
         file.write("serial=12345678\n")
         file.write("model_number=1\n")
