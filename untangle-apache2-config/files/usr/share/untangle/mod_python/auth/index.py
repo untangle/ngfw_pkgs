@@ -4,6 +4,7 @@ import uvmlogin
 import cgi
 import base64
 import sys
+import re
 
 from mod_python import apache, Session, util
 from psycopg2 import connect
@@ -49,6 +50,7 @@ def login(req, url=None, realm='Administrator'):
             if url == None:
                 return apache.OK
             else:
+                url = re.sub('[^A-Za-z0-9-_/.]','',url) # sanitize input
                 util.redirect(req, url, text="Login Successful")
 
     company_name = uvmlogin.get_company_name()
@@ -74,6 +76,7 @@ def logout(req, url=None, realm='Administrator'):
     if url == None:
         return apache.OK
     else:
+        url = re.sub('[^A-Za-z0-9-_/.]','',url) # sanitize input
         util.redirect(req, url, text="Logout Successfull")
 
 # internal methods ------------------------------------------------------------
