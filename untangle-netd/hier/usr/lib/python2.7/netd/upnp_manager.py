@@ -191,17 +191,14 @@ EXTERNAL_IP_ADDRESS=UNKNOWN
 
 get_listening_port()
 {
-    LISTENING_PORT="$(LC_ALL=C grep ^port /etc/miniupnpd/miniupnpd.conf | cut -d= -f2)"
-}
-
-get_external_interface()
-{
-        EXTERNAL_INTERFACE="$(LC_ALL=C grep ^ext_ifname /etc/miniupnpd/miniupnpd.conf | cut -d= -f2)"
-}
-
-get_external_ip_address()
-{
-        EXTERNAL_IP_ADDRESS="$(LC_ALL=C ${IP} addr show ${EXTERNAL_INTERFACE} | grep "inet " | awk '{ print $2 }' | cut -d"/" -f1)"
+# REWORK TO VERIFY LSOF
+    port="$(LC_ALL=C grep ^port\= /etc/miniupnpd/miniupnpd.conf | cut -d= -f2)"
+    if [ "${port}" != "" ] ; then
+        UPNPD_LISTENING=$(LC_ALL=C lsof -i | grep -q -c ${port}  )
+        if [ $? -eq 0 ] ; then
+            LISTENING_PORT=${port}
+        fi
+    fi
 }
 
 flush_upnp_iptables_rules()
@@ -209,14 +206,14 @@ flush_upnp_iptables_rules()
         ${IPTABLES} -t filter -D filter-rules-input  --protocol tcp  -m comment --comment "UPNP daemon listener"  -m multiport  --destination-ports ${LISTENING_PORT}  -j RETURN >/dev/null 2>&1
 
         # Clean the nat tables
-        ${IPTABLES} -t nat -F ${CHAIN} || true
-        ${IPTABLES} -t nat -D PREROUTING -d ${EXTERNAL_IP_ADDRESS} -i ${EXTERNAL_INTERFACE} -j ${CHAIN} || true
-        ${IPTABLES} -t nat -X ${CHAIN} || true
+        ${IPTABLES} -t nat -F ${CHAIN} >/dev/null 2>&1
+        ${IPTABLES} -t nat -D PREROUTING -j ${CHAIN} -m conntrack --ctstate NEW  >/dev/null 2>&1
+        ${IPTABLES} -t nat -X ${CHAIN} >/dev/null 2>&1
 
         # Clean the filter tables
-        ${IPTABLES} -t filter -F ${CHAIN} || true
-        ${IPTABLES} -t filter -D FORWARD -i ${EXTERNAL_INTERFACE} ! -o ${EXTERNAL_INTERFACE} -j ${CHAIN} || true
-        ${IPTABLES} -t filter -X ${CHAIN} || true
+        ${IPTABLES} -t filter -F ${CHAIN} >/dev/null 2>&1
+        ${IPTABLES} -t filter -D FORWARD -j ${CHAIN} -m conntrack --ctstate NEW >/dev/null 2>&1
+        ${IPTABLES} -t filter -X ${CHAIN} >/dev/null 2>&1
 
 }
 
@@ -226,23 +223,20 @@ insert_upnp_iptables_rules()
 
         # Initialize the PREROUTING chain first
         ${IPTABLES} -t nat -N ${CHAIN}
-        ${IPTABLES} -t nat -A PREROUTING -d ${EXTERNAL_IP_ADDRESS} -i ${EXTERNAL_INTERFACE} -j ${CHAIN}
+        ${IPTABLES} -t nat -A PREROUTING -j ${CHAIN} -m conntrack --ctstate NEW 
         ${IPTABLES} -t nat -F ${CHAIN}
 
         # then do the FORWARD chain
         ${IPTABLES} -t filter -N ${CHAIN}
-        ${IPTABLES} -t filter -I FORWARD -i ${EXTERNAL_INTERFACE} ! -o ${EXTERNAL_INTERFACE} -j ${CHAIN}
+        ${IPTABLES} -t filter -I FORWARD -j ${CHAIN}  -m conntrack --ctstate NEW 
         ${IPTABLES} -t filter -F ${CHAIN}
 }
 
 get_listening_port
-get_external_interface
-get_external_ip_address
 
 flush_upnp_iptables_rules
 
-if [ "${LISTENING_PORT}" != "
-" ] ; then
+if [ "${LISTENING_PORT}" != "UNKNOWN" ] ; then
     echo "[`date`] upnp is running. Inserting rules."
     insert_upnp_iptables_rules
 fi
