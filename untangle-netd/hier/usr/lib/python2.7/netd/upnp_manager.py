@@ -43,9 +43,9 @@ class UpnpManager:
         	if intf.get('disabled'):
         		continue
         	if intf.get('isWan'):
-        		wan_interfaces.append(intf.get('physicalDev'))
+        		wan_interfaces.append(intf.get('symbolicDev'))
         	else:
-        		lan_interfaces.append(intf.get('physicalDev'))
+        		lan_interfaces.append(intf.get('symbolicDev'))
         file.write("# Server options\n");
         # WAN interface
         file.write("ext_ifname=%s\n" % " ".join(wan_interfaces))
