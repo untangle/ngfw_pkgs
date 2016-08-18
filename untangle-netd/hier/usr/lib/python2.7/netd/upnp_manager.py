@@ -63,7 +63,7 @@ class UpnpManager:
         file.write("enable_natpmp=yes\n")
         file.write("enable_upnp=yes\n")
         # Secure mode
-        file.write("secure_mode=%s\n" % ("yes" if settings['upnpSettings'].get('secureMode') else "no"))
+        file.write("secure_mode=%s\n" % ("yes" if settings['upnpSettings'].get('secureMode') is True else "no"))
         # Minimum lifetime
         file.write("min_lifetime=%d\n" % settings['upnpSettings'].get('minimumLifetime'))
         # Maximium lifetime
@@ -132,8 +132,8 @@ class UpnpManager:
             file.write(r"""
 UPNPD_PID="`pidof miniupnpd`"
 
-# Restart dnsmasq if it isnt found
-# Or if dnsmasq.conf or hosts.dnsmasq has been written since dnsmasq was started
+# Restart miniupnpd if it isnt found
+# Or if miniuopnpd.conf has been written since dnsmasq was started
 if [ ! -z "$UPNPD_PID" ] ; then
     /etc/init.d/miniupnpd stop
 fi
@@ -142,7 +142,7 @@ fi
             file.write(r"""
 UPNPD_PID="`pidof miniupnpd`"
 
-# Restart dnsmasq if it isnt found
+# Restart miniupnpd if it isnt found
 # Or if dnsmasq.conf or hosts.dnsmasq has been written since dnsmasq was started
 if [ -z "$UPNPD_PID" ] ; then
     /etc/untangle-netd/iptables-rules.d/741-upnp
@@ -185,20 +185,11 @@ IP="/bin/ip"
 CHAIN=UPnP
 
 MINIUPNPD_CONF=/etc/miniupnpd/miniupnpd.conf
-LISTENING_PORT=UNKNOWN
-EXTERNAL_INTERFACE=UNKNOWN
-EXTERNAL_IP_ADDRESS=UNKNOWN
+LISTENING_PORT=
 
 get_listening_port()
 {
-# REWORK TO VERIFY LSOF
-    port="$(LC_ALL=C grep ^port\= /etc/miniupnpd/miniupnpd.conf | cut -d= -f2)"
-    if [ "${port}" != "" ] ; then
-        UPNPD_LISTENING=$(LC_ALL=C lsof -i | grep -q -c ${port}  )
-        if [ $? -eq 0 ] ; then
-            LISTENING_PORT=${port}
-        fi
-    fi
+    LISTENING_PORT="$(LC_ALL=C grep ^port\= /etc/miniupnpd/miniupnpd.conf | cut -d= -f2)"
 }
 
 flush_upnp_iptables_rules()
@@ -236,7 +227,7 @@ get_listening_port
 
 flush_upnp_iptables_rules
 
-if [ "${LISTENING_PORT}" != "UNKNOWN" ] ; then
+if [ "${LISTENING_PORT}" != "" ] ; then
     echo "[`date`] upnp is running. Inserting rules."
     insert_upnp_iptables_rules
 fi
