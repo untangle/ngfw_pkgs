@@ -63,7 +63,7 @@ class UpnpManager:
         file.write("enable_natpmp=yes\n")
         file.write("enable_upnp=yes\n")
         # Secure mode
-        file.write("secure_mode=%s\n" % "yes" if settings['upnpSettings'].get('secureMode') else "no")
+        file.write("secure_mode=%s\n" % ("yes" if settings['upnpSettings'].get('secureMode') else "no"))
         # Minimum lifetime
         file.write("min_lifetime=%d\n" % settings['upnpSettings'].get('minimumLifetime'))
         # Maximium lifetime
