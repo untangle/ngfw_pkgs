@@ -15,6 +15,8 @@ class UpnpManager:
     iptablesFilename = "/etc/untangle-netd/iptables-rules.d/741-upnp"
     upnpDaemonInitFilename = "/etc/init.d/miniupnpd"
 
+    iptables_chain = "upnp-rules"
+
     init_start_daemon_regex = re.compile(r'^if \[ "\${START_DAEMON}" != "1" \]')
     init_default_check_interface_regex = re.compile(r'^if \[ -z "\${MiniUPnPd_EXTERNAL_INTERFACE}" \]')
     init_default_check_listening_ip_regex = re.compile(r'^if \[ -z "\${MiniUPnPd_LISTENING_IP}" \]')
@@ -71,8 +73,8 @@ class UpnpManager:
         # file.write("lease_file=/var/lib/misc/upnp.leases\n")
         file.write("system_uptime=yes\n")
 
-        file.write("upnp_forward_chain=UPnP\n")
-        file.write("upnp_nat_chain=UPnP\n")
+        file.write("upnp_forward_chain=%s\n" % (self.iptables_chain))
+        file.write("upnp_nat_chain=%s\n" % (self.iptables_chain))
 
         file.write("\n# Client notifications\n");
         file.write("uuid=b014febc-1170-4421-9f04-852de5742a80\n")
@@ -182,7 +184,7 @@ fi
         file.write(r"""
 IPTABLES=${IPTABLES:-iptables}
 IP="/bin/ip"
-CHAIN=UPnP
+CHAIN=%s
 
 MINIUPNPD_CONF=/etc/miniupnpd/miniupnpd.conf
 LISTENING_PORT=
@@ -231,7 +233,7 @@ if [ "${LISTENING_PORT}" != "" ] ; then
     echo "[`date`] upnp is running. Inserting rules."
     insert_upnp_iptables_rules
 fi
-""")
+""" % (self.iptables_chain))
 
 
         file.write("\n");
