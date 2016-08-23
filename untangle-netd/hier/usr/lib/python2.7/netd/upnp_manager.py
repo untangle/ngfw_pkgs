@@ -73,7 +73,7 @@ class UpnpManager:
         # file.write("lease_file=/var/lib/misc/upnp.leases\n")
         file.write("system_uptime=yes\n")
 
-        file.write("upnp_forward_chain=%s\n" % (self.iptables_chain))
+        file.write("upnp_forward_chain=ignore-this-chain-rule\n")
         file.write("upnp_nat_chain=%s\n" % (self.iptables_chain))
 
         file.write("\n# Client notifications\n");
@@ -203,11 +203,6 @@ flush_upnp_iptables_rules()
         ${IPTABLES} -t nat -D PREROUTING -j ${CHAIN} -m conntrack --ctstate NEW  >/dev/null 2>&1
         ${IPTABLES} -t nat -X ${CHAIN} >/dev/null 2>&1
 
-        # Clean the filter tables
-        ${IPTABLES} -t filter -F ${CHAIN} >/dev/null 2>&1
-        ${IPTABLES} -t filter -D FORWARD -j ${CHAIN} -m conntrack --ctstate NEW >/dev/null 2>&1
-        ${IPTABLES} -t filter -X ${CHAIN} >/dev/null 2>&1
-
 }
 
 insert_upnp_iptables_rules()
@@ -218,11 +213,6 @@ insert_upnp_iptables_rules()
         ${IPTABLES} -t nat -N ${CHAIN}
         ${IPTABLES} -t nat -A PREROUTING -j ${CHAIN} -m conntrack --ctstate NEW 
         ${IPTABLES} -t nat -F ${CHAIN}
-
-        # then do the FORWARD chain
-        ${IPTABLES} -t filter -N ${CHAIN}
-        ${IPTABLES} -t filter -I FORWARD -j ${CHAIN}  -m conntrack --ctstate NEW 
-        ${IPTABLES} -t filter -F ${CHAIN}
 }
 
 get_listening_port
