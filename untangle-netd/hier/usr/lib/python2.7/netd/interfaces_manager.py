@@ -89,7 +89,7 @@ class InterfacesManager:
 
         # handle PPPoE stuff
         if interface_settings.get('v4ConfigType') == 'PPPOE':
-            self.interfacesFile.write("\tpre-up /sbin/ifconfig %s up\n" % interface_settings.get('physicalDev')) 
+            self.interfacesFile.write("\tpre-up /sbin/ifconfig %s up\n" % interface_settings.get('systemDev')) 
             self.interfacesFile.write("\tprovider %s\n" % ("connection.intf" + str(interface_settings.get('interfaceId')))) 
             # sleep to give PPPoE time to get address (bug #11431)
             self.interfacesFile.write("\tpost-up /usr/share/untangle-netd/bin/pppoe-wait-for-address.sh %s 60\n" % devName ) 
