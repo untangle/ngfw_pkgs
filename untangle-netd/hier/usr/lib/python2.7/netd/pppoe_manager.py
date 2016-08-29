@@ -47,7 +47,7 @@ maxfail 0
                             if deviceSettings.get('mtu') != None:
                                 conffile.write("mtu %s" % (deviceSettings.get('mtu')) + "\n")
 
-                conffile.write("plugin rp-pppoe.so %s" % interface_settings.get('physicalDev') + "\n")
+                conffile.write("plugin rp-pppoe.so %s" % interface_settings.get('systemDev') + "\n")
                 conffile.write("user \"%s\"" % interface_settings.get('v4PPPoEUsername') + "\n")
 
                 if ( interface_settings.get('v4PPPoEUsePeerDns') == True ):
@@ -188,25 +188,26 @@ make_resolv_conf() {
 
     ## only update the dns server when instructed to.
     if [ -n "${t_new_domain_name_servers}" ] && [ "${USEPEERDNS}x" = "1x" ]; then
-        local t_hash="`md5sum /etc/dnsmasq.conf`"
+        if [ ! -f /etc/dnsmasq.d/dhcp-upstream-dns-servers ] ; then
+            touch /etc/dnsmasq.d/dhcp-upstream-dns-servers
+        fi
+        local t_hash="`md5sum /etc/dnsmasq.d/dhcp-upstream-dns-servers`"
 
         if [ -n "$t_new_domain_name_servers" ]; then
             for nameserver in $t_new_domain_name_servers ; do
-                /bin/echo -e "#new_name_server=${nameserver} # uplink.${PPPOE_UPLINK_INDEX}" >> /etc/dnsmasq.conf
+                /bin/echo -e "#new_name_server=${nameserver} # uplink.${PPPOE_UPLINK_INDEX}" >> /etc/dnsmasq.d/dhcp-upstream-dns-servers
             done
 
-            sed -i -e "/^#*\s*server=.*uplink.${PPPOE_UPLINK_INDEX}/d" -e 's/^#new_name_server=/server=/' /etc/dnsmasq.conf
+            sed -i -e "/^#*\s*server=.*uplink.${PPPOE_UPLINK_INDEX}/d" -e 's/^#new_name_server=/server=/' /etc/dnsmasq.d/dhcp-upstream-dns-servers
         fi
 
-        local t_new_hash="`md5sum /etc/dnsmasq.conf`"
-
-        ## Reststart dnsmasq if necessary
+        local t_new_hash="`md5sum /etc/dnsmasq.d/dhcp-upstream-dns-servers`"
+                    
+        ## Reststart DNS MASQ if necessary
         if [ "${t_hash}x" != "${t_new_hash}x" ]; then
-            /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.conf changed. Restarting dnsmasq..."
+            /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.d/dhcp-upstream-dns-servers changed. Restarting dnsmasq..."
             /etc/init.d/dnsmasq restart
-            /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.conf changed. Restarting dnsmasq...done"
-        else
-            /bin/echo -e "[DEBUG: `date`] Skipping dnsmasq restart"
+            /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.d/dhcp-upstream-dns-servers changed. Restarting dnsmasq...done"
         fi
     fi
 
