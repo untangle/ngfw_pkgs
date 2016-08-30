@@ -138,6 +138,7 @@ UPNPD_PID="`pidof miniupnpd`"
 # Or if miniuopnpd.conf has been written since dnsmasq was started
 if [ ! -z "$UPNPD_PID" ] ; then
     /etc/init.d/miniupnpd stop
+    /etc/untangle-netd/iptables-rules.d/741-upnp
 fi
 """)
         else:
