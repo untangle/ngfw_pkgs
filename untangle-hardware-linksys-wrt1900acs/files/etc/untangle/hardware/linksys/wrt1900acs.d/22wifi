@@ -4,6 +4,9 @@ set -x
 set -e
 
 # load modules
+modprobe compat
+modprobe cfg80211
+modprobe mac80211
 modprobe mwlwifi
 
 # make sure they show up in ifconfig
