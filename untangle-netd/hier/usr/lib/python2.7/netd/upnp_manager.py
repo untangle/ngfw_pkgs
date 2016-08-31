@@ -66,10 +66,6 @@ class UpnpManager:
         file.write("enable_upnp=yes\n")
         # Secure mode
         file.write("secure_mode=%s\n" % ("yes" if settings['upnpSettings'].get('secureMode') is True else "no"))
-        # Minimum lifetime
-        file.write("min_lifetime=%d\n" % settings['upnpSettings'].get('minimumLifetime'))
-        # Maximium lifetime
-        file.write("max_lifetime=%d\n" % settings['upnpSettings'].get('maximumLifetime'))
         # file.write("lease_file=/var/lib/misc/upnp.leases\n")
         file.write("system_uptime=yes\n")
 
