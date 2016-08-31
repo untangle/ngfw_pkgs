@@ -1,4 +1,4 @@
-sd#!/bin/sh
+#!/bin/sh
 
 # this is creates the default network settings for the Linksys wrt1900acs
 MODEL="Linksys wrt1900acs"
