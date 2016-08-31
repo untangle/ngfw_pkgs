@@ -1,0 +1,13 @@
+#! /bin/sh
+
+set -x
+set -e
+
+# load modules
+modprobe mwlwifi
+
+# make sure they show up in ifconfig
+ifconfig wlan0 up
+ifconfig wlan1 up
+
+exit 0

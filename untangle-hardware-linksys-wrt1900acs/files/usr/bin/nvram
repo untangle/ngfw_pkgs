@@ -1,0 +1,33 @@
+#! /bin/bash
+
+set -e
+
+if [ $# != 4 ] && [ $# != 3 ] ; then
+  echo "Usage: $0 <mtdblock> <action> <key> [<value>]"
+  echo "  example: $0 /dev/mtdblock1 get pptpd_client_mru"
+  echo "  example: $0 /dev/mtdblock1 set pptpd_client_mru 1492"
+  exit 1
+fi
+
+mtdblock=$1
+action=$2
+key=$3
+value=$4
+
+setKey() {
+  local tmpNvram=/tmp/nvram.bin
+  local blockSize=100k
+  dd if=$mtdblock of=$tmpNvram bs=$blockSize 2> /dev/null
+  perl -i -pe 's/(\x00'${1}')=[^\x00]*/$1='${2}'/' $tmpNvram
+  dd if=$tmpNvram of=$mtdblock bs=$blockSize 2> /dev/null
+}
+
+getKey() {
+  perl -pe 's/.*\x00'${1}'=([^\x00]*).*/$1\n/' $mtdblock
+}
+
+case $action in
+  set) setKey $key $value ;;
+  get) getKey $key ;;
+esac
+

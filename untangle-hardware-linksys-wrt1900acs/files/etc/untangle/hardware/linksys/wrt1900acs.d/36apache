@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Reduce apache numbers a little bit so it consumes less memory
+sed -e 's/^\s*StartServers.*/\tStartServers\t1/' -i /etc/apache2/mods-available/mpm_event.conf
+sed -e 's/^\s*MinSpareThreads.*/\tMinSpareThreads\t10/' -i /etc/apache2/mods-available/mpm_event.conf
+sed -e  's/^\s*ThreadsPerChild.*/\tThreadsPerChild\t15/' -i /etc/apache2/mods-available/mpm_event.conf
+sed -e  's/^\s*MaxRequestWorkers.*/\tMaxRequestWorkers\t15/' -i /etc/apache2/mods-available/mpm_event.conf
+
+# set ServerLimit
+if grep -q "ServerLimit" /etc/apache2/mods-available/mpm_event.conf ; then
+    sed -e  's/^\s*ServerLimit.*/\tServerLimit\t1/' -i /etc/apache2/mods-available/mpm_event.conf
+else
+    sed -e '/^\s*StartServers/a ServerLimit 1' -i /etc/apache2/mods-available/mpm_event.conf
+fi

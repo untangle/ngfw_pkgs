@@ -1,0 +1,115 @@
+#! /bin/bash
+
+PG_VERSION="9.4"
+PG_ETC_DIR="/etc/postgresql/${PG_VERSION}/main"
+PG_VAR_DIR="/var/lib/postgresql/${PG_VERSION}"
+PG_BIN_DIR="/usr/lib/postgresql/${PG_VERSION}/bin"
+PG_MAIN_DIR="/var/lib/postgresql/${PG_VERSION}/main"
+PG_CONF="${PG_ETC_DIR}/postgresql.conf"
+PG_HBA="${PG_ETC_DIR}/pg_hba.conf"
+
+PG_RAMDISK_SIZE="112"
+
+# lower checkpoint_segments. we want frequent checkpoints to keep the WAL small
+sed -i -e "s/.*checkpoint_segments.*=.*/checkpoint_segments = 1/" $PG_CONF
+
+# Disable the standard postgres startup tuning script
+if [ -f /etc/untangle/startup.d/10postgres ] ; then
+    mv /etc/untangle/startup.d/10postgres /etc/untangle/startup.d/10postgres.disabled
+fi
+
+echo "Drive Type:"
+echo `hdparm -I /dev/sda 2>/dev/null | grep 'removable'`
+
+pg_ram_settings()
+{
+    # Turn off fsync
+    sed -i -e "s/.*fsync.*=.*/fsync = off/" $PG_CONF
+
+    # Set memory parameters
+    sed -i -e "s/[# ]*shared_buffers *=.*/shared_buffers = 128kB/" $PG_CONF
+    sed -i -e "s/[# ]*work_mem *=.*/work_mem = 64kB/" $PG_CONF
+    sed -i -e "s/[# ]*maintenance_work_mem *=.*/maintenance_work_mem = 1024kB/" $PG_CONF
+    sed -i -e "s/[# ]*effective_cache_size *=.*/effective_cache_size = 64kB/" $PG_CONF
+
+    # Other
+    sed -i -e "s/[# ]*temp_buffers *=.*/temp_buffers = 800kB/" $PG_CONF
+    sed -i -e "s/[# ]*full_page_writes *=.*/full_page_writes = off/" $PG_CONF
+    sed -i -e "s/[# ]*seq_page_post *=.*/seq_page_cost = .01/" $PG_CONF
+    sed -i -e "s/[# ]*random_page_post *=.*/random_page_cost = .01/" $PG_CONF
+}
+
+pg_disk_settings()
+{
+    # Set fsync back to default (on)
+    sed -i -e "s/.*fsync.*=.*/# fsync = on/" $PG_CONF
+
+    # Set memory parameters
+    sed -i -e "s/[# ]*shared_buffers *=.*/shared_buffers = 12MB/" $PG_CONF
+    sed -i -e "s/[# ]*work_mem *=.*/work_mem = 1MB/" $PG_CONF
+    sed -i -e "s/[# ]*maintenance_work_mem *=.*/maintenance_work_mem = 8MB/" $PG_CONF
+    sed -i -e "s/[# ]*effective_cache_size *=.*/effective_cache_size = 32MB/" $PG_CONF
+
+    # Other
+    sed -i -e "s/[# ]*temp_buffers *=.*/# temp_buffers = 8MB/" $PG_CONF
+    sed -i -e "s/[# ]*full_page_writes *=.*/# full_page_writes = on/" $PG_CONF
+    sed -i -e "s/[# ]*seq_page_post *=.*/# seq_page_cost = 1.0/" $PG_CONF
+    sed -i -e "s/[# ]*random_page_post *=.*/# random_page_cost = 4.0/" $PG_CONF
+}
+
+if hdparm -I /dev/sda | grep -q 'non-removable' ; then
+    echo "Looks like a USB hard drive..."
+
+    # Just in case we previously thought this was a flash drive, set back to normal
+    rm -f /etc/cron.hourly/reports-cron-linksys
+    rm -f /etc/cron.daily/reports-cron-linksys
+    sed -e 's/UNLOGGED_ENABLED = True/UNLOGGED_ENABLED = False/g' -i /usr/lib/python2.7/reports/sql_helper.py
+    sed -e 's/EXTRA_INDEXES_ENABLED = False/EXTRA_INDEXES_ENABLED = True/g' -i /usr/lib/python2.7/reports/sql_helper.py
+
+    # Set postgres settings for a disk
+    pg_disk_settings
+
+    # If DB is missing recreate it
+    if [ ! -d /var/lib/postgresql/9.4/main/base ] ; then
+        # create DB
+        su -c "${PG_BIN_DIR}/initdb --encoding=utf8 --locale=${locale} -D ${PG_VAR_DIR}/main" postgres
+    fi
+
+else
+    echo "Looks like a USB flash drive..."
+
+    # Hack to save disk space on ram drive
+    # Enabled unlogged tables and disable indexes (except primary indexes)
+    sed -e 's/UNLOGGED_ENABLED = False/UNLOGGED_ENABLED = True/g' -i /usr/lib/python2.7/reports/sql_helper.py
+    sed -e 's/EXTRA_INDEXES_ENABLED = True/EXTRA_INDEXES_ENABLED = False/g' -i /usr/lib/python2.7/reports/sql_helper.py
+
+    # Set postgres settings for RAM
+    pg_ram_settings
+
+    # force 1 day retention time regardless of settings
+    cat > /etc/cron.daily/reports-cron-linksys <<EOF
+#!/bin/sh
+/home/dmorris/work/src/dist/usr/share/untangle/bin/reports-clean-tables.py 7 >> /var/log/uvm/reports.log 2>&1
+EOF
+    chmod 755 /etc/cron.daily/reports-cron-linksys
+
+    # hourly check DB size and prune if large
+    cat > /etc/cron.hourly/reports-cron-linksys <<EOF
+#!/bin/sh
+/usr/bin/cleandb.sh >> /var/log/uvm/linksys-wrt1900acs.log 2>&1
+EOF
+    chmod 755 /etc/cron.hourly/reports-cron-linksys
+
+    # If ramdisk is not already mounted, create it and initialize database
+    if [ "tmpfs" != "`stat -f -c '%T' ${PG_MAIN_DIR}`" ] ; then
+        # mount a ramdisk
+        rm -rf ${PG_MAIN_DIR}
+        mkdir -p ${PG_MAIN_DIR}
+        chown -R postgres:postgres ${PG_MAIN_DIR}
+        mount -t tmpfs -o size=${PG_RAMDISK_SIZE}m tmpfs ${PG_MAIN_DIR}
+        chown -R postgres:postgres ${PG_MAIN_DIR}
+
+        # create DB
+        su -c "${PG_BIN_DIR}/initdb --encoding=utf8 --locale=${locale} -D ${PG_VAR_DIR}/main" postgres
+    fi
+fi
