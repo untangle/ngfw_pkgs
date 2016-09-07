@@ -39,3 +39,8 @@ fi
 
 # Remove the temporary
 /bin/rm -f $TEMPFILE
+
+# Remove the new update file if empty
+if [ ! -s $UPFILE ]; then
+    /bin/rm -f $UPFILE
+fi
