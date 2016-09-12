@@ -23,7 +23,7 @@ class VrrpManager:
                     print "Missing VRRP Config: %s, %s" % (interface_settings.get('vrrpId'), interface_settings.get('vrrpPriority'))
                     continue
                 if not interface_settings.get('vrrpAliases') or not interface_settings.get('vrrpAliases').get('list'):
-                    print "Missing VRRP Aliases: %s" % (str(vrrpAliases))
+                    print "Missing VRRP Aliases: %s" % (str(interface_settings.get('vrrpAliases')))
                     continue
                 if len( interface_settings.get('vrrpAliases').get('list') ) < 1:
                     print "Missing VRRP Aliases (0 length): %i" % (len( interface_settings.get('vrrpAliases').get('list') ))
