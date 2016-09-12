@@ -113,3 +113,4 @@ EOF
         su -c "${PG_BIN_DIR}/initdb --encoding=utf8 --locale=${locale} -D ${PG_VAR_DIR}/main" postgres
     fi
 fi
+
