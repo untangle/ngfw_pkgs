@@ -118,6 +118,10 @@ maxfail 0
         file.write("\n\n");
         file.write("true" + "\n")
 
+        file.write("# Delete old PPPoE dns servers (this will be recreated)" + "\n")
+        file.write("rm -f /etc/dnsmasq.d/pppoe-upstream-dns-servers" + "\n")
+        file.write("\n\n");
+        
         file.flush()
         file.close()
         os.system("chmod a+x %s" % filename)
@@ -188,26 +192,26 @@ make_resolv_conf() {
 
     ## only update the dns server when instructed to.
     if [ -n "${t_new_domain_name_servers}" ] && [ "${USEPEERDNS}x" = "1x" ]; then
-        if [ ! -f /etc/dnsmasq.d/dhcp-upstream-dns-servers ] ; then
-            touch /etc/dnsmasq.d/dhcp-upstream-dns-servers
+        if [ ! -f /etc/dnsmasq.d/pppoe-upstream-dns-servers ] ; then
+            touch /etc/dnsmasq.d/pppoe-upstream-dns-servers
         fi
-        local t_hash="`md5sum /etc/dnsmasq.d/dhcp-upstream-dns-servers`"
+        local t_hash="`md5sum /etc/dnsmasq.d/pppoe-upstream-dns-servers`"
 
         if [ -n "$t_new_domain_name_servers" ]; then
             for nameserver in $t_new_domain_name_servers ; do
-                /bin/echo -e "#new_name_server=${nameserver} # uplink.${PPPOE_UPLINK_INDEX}" >> /etc/dnsmasq.d/dhcp-upstream-dns-servers
+                /bin/echo -e "#new_name_server=${nameserver} # uplink.${PPPOE_UPLINK_INDEX}" >> /etc/dnsmasq.d/pppoe-upstream-dns-servers
             done
 
-            sed -i -e "/^#*\s*server=.*uplink.${PPPOE_UPLINK_INDEX}/d" -e 's/^#new_name_server=/server=/' /etc/dnsmasq.d/dhcp-upstream-dns-servers
+            sed -i -e "/^#*\s*server=.*uplink.${PPPOE_UPLINK_INDEX}/d" -e 's/^#new_name_server=/server=/' /etc/dnsmasq.d/pppoe-upstream-dns-servers
         fi
 
-        local t_new_hash="`md5sum /etc/dnsmasq.d/dhcp-upstream-dns-servers`"
+        local t_new_hash="`md5sum /etc/dnsmasq.d/pppoe-upstream-dns-servers`"
                     
         ## Reststart DNS MASQ if necessary
         if [ "${t_hash}x" != "${t_new_hash}x" ]; then
-            /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.d/dhcp-upstream-dns-servers changed. Restarting dnsmasq..."
+            /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.d/pppoe-upstream-dns-servers changed. Restarting dnsmasq..."
             /etc/init.d/dnsmasq restart
-            /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.d/dhcp-upstream-dns-servers changed. Restarting dnsmasq...done"
+            /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.d/pppoe-upstream-dns-servers changed. Restarting dnsmasq...done"
         fi
     fi
 
