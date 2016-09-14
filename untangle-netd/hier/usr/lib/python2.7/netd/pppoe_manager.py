@@ -50,7 +50,7 @@ maxfail 0
                 if interface_settings.get('v4PPPoERootDev') != None:
                     conffile.write("plugin rp-pppoe.so %s" % interface_settings.get('v4PPPoERootDev') + "\n")
                 else:
-                    conffile.write("plugin rp-pppoe.so %s" % interface_settings.get('systemDev') + "\n")
+                    conffile.write("plugin rp-pppoe.so %s" % interface_settings.get('physicalDev') + "\n")
                 conffile.write("user \"%s\"" % interface_settings.get('v4PPPoEUsername') + "\n")
 
                 if ( interface_settings.get('v4PPPoEUsePeerDns') == True ):
