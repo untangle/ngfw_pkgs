@@ -362,9 +362,7 @@ class InterfacesManager:
             file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i\"" % (systemDev, id << 8, self.dstInterfaceMarkMask, id) + "\n");
             # if bridged also add bridge rules
             if symbolicDev.startswith("br.") or configType == 'BRIDGED':
-                # if we are on 3.2.0 or newer (anything but 2.6.32), our physdev patch is installed and physdev should work on bridges
                 file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -m physdev --physdev-out %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i using physdev\"" % (symbolicDev, systemDev, id << 8, self.dstInterfaceMarkMask, id) + "\n");
-
 
         file.write("\n");
 

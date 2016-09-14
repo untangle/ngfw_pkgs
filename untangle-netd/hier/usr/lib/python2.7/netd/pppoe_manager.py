@@ -47,7 +47,10 @@ maxfail 0
                             if deviceSettings.get('mtu') != None:
                                 conffile.write("mtu %s" % (deviceSettings.get('mtu')) + "\n")
 
-                conffile.write("plugin rp-pppoe.so %s" % interface_settings.get('systemDev') + "\n")
+                if interface_settings.get('v4PPPoERootDev') != None:
+                    conffile.write("plugin rp-pppoe.so %s" % interface_settings.get('v4PPPoERootDev') + "\n")
+                else:
+                    conffile.write("plugin rp-pppoe.so %s" % interface_settings.get('systemDev') + "\n")
                 conffile.write("user \"%s\"" % interface_settings.get('v4PPPoEUsername') + "\n")
 
                 if ( interface_settings.get('v4PPPoEUsePeerDns') == True ):
