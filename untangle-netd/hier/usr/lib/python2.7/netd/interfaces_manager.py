@@ -29,8 +29,11 @@ class InterfacesManager:
             isBridge = True
             bridgedInterfacesStr.append(interface_settings.get('systemDev')) # include yourself in bridge
             bridgedInterfaces.append(interface_settings) # include yourself in bridge
+        # We want to add the physical devices to the bridge first (see issue NGFW-10101)
+        # And easy way to do this is to just sort by length
+        bridgedInterfacesStr.sort(lambda x,y: cmp(len(x), len(y)))
 
-        # If this is a bridge interface, wirte the blank config for the systemDev
+        # If this is a bridge interface, write the blank config for the systemDev
         if isBridge:
             for intf in bridgedInterfaces:
                 self.write_interface_blank( intf, interfaces )
