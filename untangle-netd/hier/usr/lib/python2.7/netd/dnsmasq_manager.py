@@ -12,6 +12,7 @@ class DnsMasqManager:
     dnsmasqHostsFilename = "/etc/hosts.dnsmasq"
     dnsmasqConfFilename = "/etc/dnsmasq.conf"
     restartHookFilename = "/etc/untangle-netd/post-network-hook.d/990-restart-dnsmasq"
+    dhcpStaticsFilename = "/etc/dnsmasq.d/dhcp-static"
 
     def write_dnsmasq_hosts( self, settings, prefix, verbosity ):
 
@@ -159,15 +160,6 @@ class DnsMasqManager:
                     file.write("local=/%s/%s" % ( localServer['domain'], localServer['localServer'] ) + "\n" )
             file.write("\n");
 
-        # Static DHCP Entries
-        file.write("# Static DHCP entries\n")
-        if ( settings.get('staticDhcpEntries') != None and 
-             settings.get('staticDhcpEntries').get('list') != None ):
-            for staticDhcpEntry in settings.get('staticDhcpEntries').get('list'):
-                if staticDhcpEntry.get('macAddress') != None and staticDhcpEntry.get('address') != None:
-                    file.write("dhcp-host=%s,%s" % ( staticDhcpEntry.get('macAddress'), staticDhcpEntry.get('address') ) + "\n" )
-            file.write("\n");
-
         # Write custom advanced options
         if settings.get('dnsmasqOptions') != None:
             file.write("# Custom dnsmasq options\n");
@@ -177,7 +169,32 @@ class DnsMasqManager:
         file.write("\n");
         file.flush()
         file.close()
-    
+
+        if verbosity > 0: print "DnsMasqManager: Wrote %s" % filename
+        return
+
+    def write_dhcp_statics_file( self, settings, prefix="", verbosity=0 ):
+
+        filename = prefix + self.dhcpStaticsFilename
+        fileDir = os.path.dirname( filename )
+        if not os.path.exists( fileDir ):
+            os.makedirs( fileDir )
+
+        file = open( filename, "w+" )
+
+        # Static DHCP Entries
+        file.write("# Static DHCP entries\n")
+        if ( settings.get('staticDhcpEntries') != None and 
+             settings.get('staticDhcpEntries').get('list') != None ):
+            for staticDhcpEntry in settings.get('staticDhcpEntries').get('list'):
+                if staticDhcpEntry.get('macAddress') != None and staticDhcpEntry.get('address') != None:
+                    file.write("dhcp-host=%s,%s" % ( staticDhcpEntry.get('macAddress'), staticDhcpEntry.get('address') ) + "\n" )
+            file.write("\n");
+
+        file.write("\n");
+        file.flush()
+        file.close()
+
         if verbosity > 0: print "DnsMasqManager: Wrote %s" % filename
         return
 
@@ -225,6 +242,8 @@ fi
         if verbosity > 1: print "DnsMasqManager: sync_settings()"
         
         self.write_dnsmasq_hosts( settings, prefix, verbosity )
+
+        self.write_dhcp_statics_file( settings, prefix, verbosity )
 
         self.write_dnsmasq_conf( settings, prefix, verbosity )
 
