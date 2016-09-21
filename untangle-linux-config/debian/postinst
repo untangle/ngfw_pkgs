@@ -104,4 +104,13 @@ if [ ! -f /etc/ssl/certs/java/cacerts ] ; then
     cp -f /usr/share/untangle-linux-config/default-java-cacerts /etc/ssl/certs/java/cacerts
 fi
 
+# Disable irqbalance spamming (https://bugs.launchpad.net/ubuntu/+source/irqbalance/+bug/1321425)
+if [ -f /etc/default/irqbalance ] ; then
+    if [ -z "`grep OPTIONS /etc/default/irqbalance`" ] ; then
+        echo 'OPTIONS="--hintpolicy=ignore"' >> /etc/default/irqbalance
+    else
+        sed -e 's/.*OPTIONS.*/OPTIONS="--hintpolicy=ignore"/' -i /etc/default/irqbalance
+    fi
+fi
+
 exit 0
