@@ -38,8 +38,8 @@ chown -R kiosk:kiosk ${KIOSK_HOME}
 
 # Moved here from untangle-gateway
 chsh -s /bin/zsh root
-find /root/.zsh -type f 2> /dev/null | xargs chmod 640
-find /root/.zsh -type d 2> /dev/null | xargs chmod 750
+find /root/.zsh -type f -exec chmod 640 {} \;
+find /root/.zsh -type d -exec chmod 750 {} \;
 
 echo >| /etc/motd
 echo >| /etc/motd.tail
