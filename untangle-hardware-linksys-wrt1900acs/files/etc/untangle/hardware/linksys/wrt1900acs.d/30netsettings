@@ -536,9 +536,9 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
         "javaClass": "java.util.LinkedList",
         "list": [
             {
-                "addressed": false,
+                "addressed": true,
                 "bridged": false,
-                "configType": "DISABLED",
+                "configType": "ADDRESSED",
                 "dhcpDnsOverride": "",
                 "dhcpEnabled": false,
                 "dhcpOptions": {
@@ -593,7 +593,7 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
                 "disabled": false,
                 "imqDev": "imq0",
                 "interfaceId": 100,
-                "isVlanInterface": true,
+                "isVlanInterface": false,
                 "isWan": true,
                 "isWirelessInterface": false,
                 "javaClass": "com.untangle.uvm.network.InterfaceSettings",
@@ -617,8 +617,6 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
                     "list": []
                 },
                 "v6ConfigType": "STATIC",
-                "vlanParent": 1,
-                "vlanTag": 1,
                 "vrrpAliases": {
                     "javaClass": "java.util.LinkedList",
                     "list": []
@@ -642,7 +640,7 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
                 "dhcpRangeStart": "192.168.1.100",
                 "disabled": false,
                 "interfaceId": 101,
-                "isVlanInterface": true,
+                "isVlanInterface": false,
                 "isWan": false,
                 "isWirelessInterface": false,
                 "javaClass": "com.untangle.uvm.network.InterfaceSettings",
@@ -669,8 +667,6 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
                     "list": []
                 },
                 "v6ConfigType": "STATIC",
-                "vlanParent": 1,
-                "vlanTag": 2,
                 "vrrpAliases": {
                     "javaClass": "java.util.LinkedList",
                     "list": []
