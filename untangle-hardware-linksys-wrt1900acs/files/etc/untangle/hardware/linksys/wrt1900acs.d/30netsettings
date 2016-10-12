@@ -545,8 +545,8 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
                     "javaClass": "java.util.LinkedList",
                     "list": []
                 },
-                "disabled": true,
-                "hidden": true,
+                "disabled": false,
+                "hidden": false,
                 "interfaceId": 1,
                 "isVlanInterface": false,
                 "isWan": true,
