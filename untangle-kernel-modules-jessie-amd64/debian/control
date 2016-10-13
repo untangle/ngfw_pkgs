@@ -9,7 +9,7 @@ Standards-Version: 3.8.0
 Package: untangle-kernel-modules-jessie-amd64
 Architecture: amd64
 Depends: linux-image-3.16.0-4-untangle-amd64, e1000e-module-3.16.0-4-untangle-amd64, igb-module-3.16.0-4-untangle-amd64, backports-3.17.1-1-modules-3.16.0-4-untangle-amd64, firmware-bnx2, firmware-bnx2x
-Conflicts: libsnmp15
+Conflicts: libsnmp15, backports-modules-3.16.0-4-untangle-amd64
 Provides: untangle-kernel-modules-jessie
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle kernel modules for amd64
