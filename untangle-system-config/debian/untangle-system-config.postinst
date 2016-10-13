@@ -70,4 +70,11 @@ if [ -x /usr/sbin/update-ca-certificates ] ; then
     /usr/sbin/update-ca-certificates    
 fi
 
+# Tell irqbalance to not spam log
+# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=784391
+if [ -f /etc/default/irqbalance ] && [ -z "`grep OPTIONS /etc/default/irqbalance`" ] ; then
+    echo '#Options' >> /etc/default/irqbalance
+    echo 'OPTIONS="--hintpolicy=ignore"' >> /etc/default/irqbalance
+fi
+
 exit 0
