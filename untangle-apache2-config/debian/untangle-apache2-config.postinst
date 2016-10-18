@@ -8,8 +8,6 @@ if [ -z "$ALIAS" ]; then
     ALIAS=hostname.example.com
 fi
 
-addgroup uvmlogin 2>/dev/null
-
 sed -e 's/NO_START=1/NO_START=0/' -i /etc/default/apache2
 
 # disable SSLv2 and SSLv3 (bug #12028)
