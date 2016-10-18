@@ -162,6 +162,13 @@ def _write_login_form(req, title, host, is_error):
     if not type(host) is str:
         host = cgi.escape(host).encode("utf-8")
 
+    default_username = get_uvm_settings_item('admin','defaultUsername')
+    if default_username == None:
+        default_username = "admin"
+    focus_field_id = "password"
+    if default_username == "":
+        focus_field_id = "username"
+
     banner_msg = get_node_settings_item('untangle-node-branding-manager','bannerMessage')
     if banner_msg != None and banner_msg != "":
         banner_msg = banner_msg.replace("\n", "<br/>")
@@ -195,15 +202,15 @@ def _write_login_form(req, title, host, is_error):
         <p class="server">%s</p>
         <div class="banner">%s</div>
         <p class="error">%s</p>
-        <input id="username" type="text" name="username" value="admin" placeholder="%s"/>
+        <input id="username" type="text" name="username" value="%s" placeholder="%s"/>
         <input id="password" type="password" name="password" placeholder="%s"/>
         <button type="submit">%s</button>
     </form>
 </div>
 
-<script type="text/javascript">document.getElementById('password').focus();</script>
+<script type="text/javascript">document.getElementById('%s').focus();</script>
 
 </body>
-</html>""" % (title, login_url, title, host, banner_msg, error_msg, username_str, password_str, login_str)
+</html>""" % (title, login_url, title, host, banner_msg, error_msg, default_username, username_str, password_str, login_str, focus_field_id)
 
     req.write(html)
