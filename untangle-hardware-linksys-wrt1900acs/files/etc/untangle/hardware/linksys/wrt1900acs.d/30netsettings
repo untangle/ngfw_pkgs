@@ -112,16 +112,13 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
             {
                 "deviceName": "wlan0",
                 "duplex": "AUTO",
-                "isWirelessInterface": true,
                 "javaClass": "com.untangle.uvm.network.DeviceSettings"
             },
             {
                 "deviceName": "wlan1",
                 "duplex": "AUTO",
-                "isWirelessInterface": true,
                 "javaClass": "com.untangle.uvm.network.DeviceSettings"
             }
-
         ]
     },
     "dhcpAuthoritative": true,
@@ -547,12 +544,13 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
                 },
                 "disabled": false,
                 "hidden": false,
+                "imqDev": "imq0",
                 "interfaceId": 1,
                 "isVlanInterface": false,
                 "isWan": true,
                 "isWirelessInterface": false,
                 "javaClass": "com.untangle.uvm.network.InterfaceSettings",
-                "name": "Root Dev",
+                "name": "External",
                 "physicalDev": "eth0",
                 "raEnabled": false,
                 "symbolicDev": "eth0",
@@ -585,51 +583,6 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
                 "bridged": false,
                 "configType": "ADDRESSED",
                 "dhcpDnsOverride": "",
-                "dhcpEnabled": false,
-                "dhcpOptions": {
-                    "javaClass": "java.util.LinkedList",
-                    "list": []
-                },
-                "disabled": false,
-                "imqDev": "imq0",
-                "interfaceId": 100,
-                "isVlanInterface": false,
-                "isWan": true,
-                "isWirelessInterface": false,
-                "javaClass": "com.untangle.uvm.network.InterfaceSettings",
-                "name": "External",
-                "physicalDev": "eth1",
-                "raEnabled": false,
-                "symbolicDev": "eth1",
-                "systemDev": "eth1",
-                "v4Aliases": {
-                    "javaClass": "java.util.LinkedList",
-                    "list": []
-                },
-                "v4ConfigType": "AUTO",
-                "v4NatEgressTraffic": true,
-                "v4NatIngressTraffic": false,
-                "v4PPPoEPassword": "",
-                "v4PPPoEUsePeerDns": false,
-                "v4PPPoEUsername": "",
-                "v6Aliases": {
-                    "javaClass": "java.util.LinkedList",
-                    "list": []
-                },
-                "v6ConfigType": "STATIC",
-                "vrrpAliases": {
-                    "javaClass": "java.util.LinkedList",
-                    "list": []
-                },
-                "vrrpEnabled": false,
-                "wirelessPassword": "",
-                "wirelessSsid": ""
-            },
-            {
-                "addressed": true,
-                "bridged": false,
-                "configType": "ADDRESSED",
-                "dhcpDnsOverride": "",
                 "dhcpEnabled": true,
                 "dhcpLeaseDuration": 86400,
                 "dhcpOptions": {
@@ -639,7 +592,7 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
                 "dhcpRangeEnd": "192.168.1.200",
                 "dhcpRangeStart": "192.168.1.100",
                 "disabled": false,
-                "interfaceId": 101,
+                "interfaceId": 2,
                 "isVlanInterface": false,
                 "isWan": false,
                 "isWirelessInterface": false,
@@ -678,9 +631,8 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
             {
                 "addressed": false,
                 "bridged": true,
-                "bridgedTo": 101,
+                "bridgedTo": 2,
                 "configType": "BRIDGED",
-                "supportedConfigTypes": ["BRIDGED","DISABLED"],
                 "dhcpDnsOverride": "",
                 "dhcpEnabled": true,
                 "dhcpLeaseDuration": 86400,
@@ -688,10 +640,8 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
                     "javaClass": "java.util.LinkedList",
                     "list": []
                 },
-                "dhcpRangeEnd": "192.168.100.200",
-                "dhcpRangeStart": "192.168.100.100",
                 "disabled": false,
-                "interfaceId": 102,
+                "interfaceId": 3,
                 "isVlanInterface": false,
                 "isWan": false,
                 "isWirelessInterface": true,
@@ -699,7 +649,11 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
                 "name": "Wifi 2Ghz",
                 "physicalDev": "wlan0",
                 "raEnabled": false,
-                "symbolicDev": "wlan0",
+                "supportedConfigTypes": [
+                    "BRIDGED",
+                    "DISABLED"
+                ],
+                "symbolicDev": "br.eth1",
                 "systemDev": "wlan0",
                 "v4Aliases": {
                     "javaClass": "java.util.LinkedList",
@@ -711,9 +665,6 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
                 "v4PPPoEPassword": "",
                 "v4PPPoEUsePeerDns": false,
                 "v4PPPoEUsername": "",
-                "v4StaticAddress": "192.168.100.1",
-                "v4StaticNetmask": "255.255.0.0",
-                "v4StaticPrefix": 16,
                 "v6Aliases": {
                     "javaClass": "java.util.LinkedList",
                     "list": []
@@ -734,20 +685,17 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
             {
                 "addressed": false,
                 "bridged": true,
-                "bridgedTo": 101,
+                "bridgedTo": 2,
                 "configType": "BRIDGED",
-                "supportedConfigTypes": ["BRIDGED","DISABLED"],
                 "dhcpDnsOverride": "",
-                "dhcpEnabled": true,
+                "dhcpEnabled": false,
                 "dhcpLeaseDuration": 86400,
                 "dhcpOptions": {
                     "javaClass": "java.util.LinkedList",
                     "list": []
                 },
-                "dhcpRangeEnd": "192.168.200.200",
-                "dhcpRangeStart": "192.168.200.100",
                 "disabled": false,
-                "interfaceId": 103,
+                "interfaceId": 4,
                 "isVlanInterface": false,
                 "isWan": false,
                 "isWirelessInterface": true,
@@ -755,7 +703,11 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
                 "name": "Wifi 5Ghz",
                 "physicalDev": "wlan1",
                 "raEnabled": false,
-                "symbolicDev": "wlan1",
+                "supportedConfigTypes": [
+                    "BRIDGED",
+                    "DISABLED"
+                ],
+                "symbolicDev": "br.eth1",
                 "systemDev": "wlan1",
                 "v4Aliases": {
                     "javaClass": "java.util.LinkedList",
@@ -767,9 +719,6 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
                 "v4PPPoEPassword": "",
                 "v4PPPoEUsePeerDns": false,
                 "v4PPPoEUsername": "",
-                "v4StaticAddress": "192.168.200.1",
-                "v4StaticNetmask": "255.255.0.0",
-                "v4StaticPrefix": 16,
                 "v6Aliases": {
                     "javaClass": "java.util.LinkedList",
                     "list": []
@@ -943,7 +892,78 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
     },
     "stpEnabled": false,
     "strictArpMode": true,
-    "version": 2,
+    "upnpSettings": {
+        "javaClass": "com.untangle.uvm.network.UpnpSettings",
+        "listenPort": 5000,
+        "secureMode": true,
+        "upnpEnabled": true,
+        "upnpRules": {
+            "javaClass": "java.util.LinkedList",
+            "list": [
+                {
+                    "allow": true,
+                    "conditions": {
+                        "javaClass": "java.util.LinkedList",
+                        "list": [
+                            {
+                                "conditionType": "SRC_ADDR",
+                                "invert": false,
+                                "javaClass": "com.untangle.uvm.network.UpnpRuleCondition",
+                                "value": "0.0.0.0/0"
+                            },
+                            {
+                                "conditionType": "DST_PORT",
+                                "invert": false,
+                                "javaClass": "com.untangle.uvm.network.UpnpRuleCondition",
+                                "value": "1024-65535"
+                            },
+                            {
+                                "conditionType": "SRC_PORT",
+                                "invert": false,
+                                "javaClass": "com.untangle.uvm.network.UpnpRuleCondition",
+                                "value": "1024-65535"
+                            }
+                        ]
+                    },
+                    "description": "Allow all",
+                    "enabled": true,
+                    "javaClass": "com.untangle.uvm.network.UpnpRule",
+                    "ruleId": 1
+                },
+                {
+                    "allow": false,
+                    "conditions": {
+                        "javaClass": "java.util.LinkedList",
+                        "list": [
+                            {
+                                "conditionType": "SRC_ADDR",
+                                "invert": false,
+                                "javaClass": "com.untangle.uvm.network.UpnpRuleCondition",
+                                "value": "0.0.0.0/0"
+                            },
+                            {
+                                "conditionType": "DST_PORT",
+                                "invert": false,
+                                "javaClass": "com.untangle.uvm.network.UpnpRuleCondition",
+                                "value": "0-65535"
+                            },
+                            {
+                                "conditionType": "SRC_PORT",
+                                "invert": false,
+                                "javaClass": "com.untangle.uvm.network.UpnpRuleCondition",
+                                "value": "0-65535"
+                            }
+                        ]
+                    },
+                    "description": "Deny all",
+                    "enabled": true,
+                    "javaClass": "com.untangle.uvm.network.UpnpRule",
+                    "ruleId": 2
+                }
+            ]
+        }
+    },
+    "version": 3,
     "vlansEnabled": false
 }
 EOF
