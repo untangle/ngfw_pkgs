@@ -941,7 +941,78 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
     },
     "stpEnabled": false,
     "strictArpMode": true,
-    "version": 2,
+    "upnpSettings": {
+        "javaClass": "com.untangle.uvm.network.UpnpSettings",
+        "listenPort": 5000,
+        "secureMode": true,
+        "upnpEnabled": true,
+        "upnpRules": {
+            "javaClass": "java.util.LinkedList",
+            "list": [
+                {
+                    "allow": true,
+                    "conditions": {
+                        "javaClass": "java.util.LinkedList",
+                        "list": [
+                            {
+                                "conditionType": "SRC_ADDR",
+                                "invert": false,
+                                "javaClass": "com.untangle.uvm.network.UpnpRuleCondition",
+                                "value": "0.0.0.0/0"
+                            },
+                            {
+                                "conditionType": "DST_PORT",
+                                "invert": false,
+                                "javaClass": "com.untangle.uvm.network.UpnpRuleCondition",
+                                "value": "1024-65535"
+                            },
+                            {
+                                "conditionType": "SRC_PORT",
+                                "invert": false,
+                                "javaClass": "com.untangle.uvm.network.UpnpRuleCondition",
+                                "value": "1024-65535"
+                            }
+                        ]
+                    },
+                    "description": "Allow all",
+                    "enabled": true,
+                    "javaClass": "com.untangle.uvm.network.UpnpRule",
+                    "ruleId": 1
+                },
+                {
+                    "allow": false,
+                    "conditions": {
+                        "javaClass": "java.util.LinkedList",
+                        "list": [
+                            {
+                                "conditionType": "SRC_ADDR",
+                                "invert": false,
+                                "javaClass": "com.untangle.uvm.network.UpnpRuleCondition",
+                                "value": "0.0.0.0/0"
+                            },
+                            {
+                                "conditionType": "DST_PORT",
+                                "invert": false,
+                                "javaClass": "com.untangle.uvm.network.UpnpRuleCondition",
+                                "value": "0-65535"
+                            },
+                            {
+                                "conditionType": "SRC_PORT",
+                                "invert": false,
+                                "javaClass": "com.untangle.uvm.network.UpnpRuleCondition",
+                                "value": "0-65535"
+                            }
+                        ]
+                    },
+                    "description": "Deny all",
+                    "enabled": true,
+                    "javaClass": "com.untangle.uvm.network.UpnpRule",
+                    "ruleId": 2
+                }
+            ]
+        }
+    },
+    "version": 3,
     "vlansEnabled": false
 }
 EOF
