@@ -54,7 +54,7 @@ class UpnpManager:
         # LAN interface
         file.write("listening_ip=%s\n" % " ".join(lan_interfaces))
 
-        if settings['upnpSettings'].get('upnpEnabled') is False:
+        if settings.get('upnpSettings') == None or settings['upnpSettings'].get('upnpEnabled') is False:
             file.flush()
             file.close()
             os.system("chmod a+x %s" % filename)
@@ -126,7 +126,7 @@ class UpnpManager:
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n");
 
-        if settings['upnpSettings'].get('upnpEnabled') is False:
+        if settings.get('upnpSettings') == None or settings['upnpSettings'].get('upnpEnabled') is False:
             file.write(r"""
 UPNPD_PID="`pidof miniupnpd`"
 
