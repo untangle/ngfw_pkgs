@@ -1,0 +1,19 @@
+#! /bin/dash
+
+HOSTAPD_CONF_DIR="/etc/hostapd"
+WLAN0_CONF="$HOSTAPD_CONF_DIR/hostapd.conf-wlan0"
+WLAN1_CONF="$HOSTAPD_CONF_DIR/hostapd.conf-wlan1"
+
+for f in $WLAN0_CONF $WLAN1_CONF ; do
+  cp $f ${f}.bak
+done
+
+# comment out ht_capab
+perl -i -pe 's/^(?=ht_capab)/#/' $WLAN0_CONF $WLAN1_CONF
+
+# change wlan0 mode to "a"
+perl -i -pe 's/(?<=hw_mode=).+/a/' $WLAN0_CONF
+
+# change wlan0 channel to 36
+perl -i -pe 's/(?<=channel=).+/36/' $WLAN0_CONF
+
