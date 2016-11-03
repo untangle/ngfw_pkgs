@@ -99,9 +99,14 @@ class InterfacesManager:
         # handle PPPoE stuff
         if interface_settings.get('v4ConfigType') == 'PPPOE':
             if interface_settings.get('v4PPPoERootDev') != None:
-                self.interfacesFile.write("\tpre-up /sbin/ifconfig %s up\n" % interface_settings.get('v4PPPoERootDev'))
-            else:
-                self.interfacesFile.write("\tpre-up /sbin/ifconfig %s up\n" % interface_settings.get('physicalDev'))
+                # if its a VLAN device bring it up with the vlan scripts
+                # otherwise use ifconfig
+                if interface_settings.get('isVlanInterface'):
+                    self.interfacesFile.write("\tpre-up env IF_VLAN_ROOT_DEVICE=%s IFACE=%s /etc/network/if-pre-up.d/vlan\n" % (interface_settings.get('physicalDev'),interface_settings.get('v4PPPoERootDev')))
+                    self.interfacesFile.write("\tpre-down env IF_VLAN_ROOT_DEVICE=%s IFACE=%s /etc/network/if-post-down.d/vlan\n" % (interface_settings.get('physicalDev'),interface_settings.get('v4PPPoERootDev')))
+                else:
+                    self.interfacesFile.write("\tpre-up /sbin/ifconfig %s up\n" % interface_settings.get('v4PPPoERootDev'))
+                    self.interfacesFile.write("\tpost-down /sbin/ifconfig %s up\n" % interface_settings.get('v4PPPoERootDev'))
             self.interfacesFile.write("\tprovider %s\n" % ("connection.intf" + str(interface_settings.get('interfaceId')))) 
             # sleep to give PPPoE time to get address (bug #11431)
             self.interfacesFile.write("\tpost-up /usr/share/untangle-netd/bin/pppoe-wait-for-address.sh %s 60\n" % devName ) 
