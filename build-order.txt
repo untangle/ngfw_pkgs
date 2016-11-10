@@ -1,5 +1,6 @@
+untangle-firmware-common		jessie
 untangle-broadcom-wireless              jessie
-untangle-stunnel-config	             jessie
+untangle-stunnel-config	             	jessie
 untangle-hardware-lanner-u25            jessie
 untangle-hardware-lanner-u25w           jessie
 untangle-hardware-lanner-u50            jessie
@@ -15,7 +16,7 @@ untangle-hardware-portwell-m1500        jessie
 untangle-hardware-portwell-m3000        jessie
 untangle-hardware-jetway-u50w           jessie
 untangle-hardware-buffalo-wxr1900       jessie
-untangle-hardware-asus-ac88u	     jessie
+untangle-hardware-asus-ac88u	     	jessie
 untangle-hardware-linksys-wrt1900acs    jessie
 untangle-bootsplash                     jessie
 untangle-kernel-modules-jessie-armel    jessie
@@ -44,7 +45,7 @@ untangle-snort-config                   jessie
 untangle-spamassassin-update            jessie
 untangle-system-config                  jessie
 untangle-apache2-config                 jessie
-untangle-netd			     jessie
-untangle-nflogd			     jessie
+untangle-netd			     	jessie
+untangle-nflogd			     	jessie
 untangle-webfilter-init                 jessie
 untangle-geoip-database                 jessie

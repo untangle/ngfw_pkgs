@@ -1,2 +1,1 @@
-etc/untangle/hardware/linksys/wrt1900acs.d
-var/log/uvm
+etc/untangle/hardware/firmware.d

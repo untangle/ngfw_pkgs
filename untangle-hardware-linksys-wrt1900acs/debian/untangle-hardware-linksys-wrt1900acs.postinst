@@ -8,9 +8,8 @@ else
 fi
 }
 
-if [ -x "/etc/init.d/untangle-hardware-linksys-wrt1900acs" ]; then
-  update-rc.d untangle-hardware-linksys-wrt1900acs defaults >/dev/null # early on
-  ourInit untangle-hardware-linksys-wrt1900acs restart
+if [ -x "/etc/init.d/untangle-firmware-common" ]; then
+  ourInit untangle-firmware-common restart
 fi
     
 exit 0

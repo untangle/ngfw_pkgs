@@ -1,7 +1,7 @@
 #! /bin/sh
 
 ### BEGIN INIT INFO
-# Provides:          untangle-hardware-asus-ac88u
+# Provides:          untangle-firmware-common
 # Required-Start:    $local_fs
 # Required-Stop:
 # Default-Start:     S
@@ -12,13 +12,13 @@
 
 . /lib/lsb/init-functions
 
-DESC="Untangle Hardware Asus ac88u"
-PARTS_DIR="/etc/untangle/hardware/asus/ac88u.d"
-LOG_FILE="/var/log/uvm/asus-ac88u.log"
+DESC="Untangle firmware common"
+PARTS_DIR="/etc/untangle/hardware/firmware.d"
+LOG_FILE="/var/log/uvm/firmware.log"
 
 start() {
   log_daemon_msg "Starting $DESC"
-  log_progress_msg "untangle-hardware-asus-ac88u"    
+  log_progress_msg "untangle-firmware-common"    
   run-parts --lsbsysinit -v $PARTS_DIR >> $LOG_FILE 2>&1
   RET=$?
   log_end_msg $RET
@@ -27,7 +27,7 @@ start() {
 
 stop() {
   log_daemon_msg "Stopping $DESC"
-  log_progress_msg "untangle-hardware-asus-ac88u"    
+  log_progress_msg "untangle-firmware-common"    
   log_end_msg $RET
 }
 
