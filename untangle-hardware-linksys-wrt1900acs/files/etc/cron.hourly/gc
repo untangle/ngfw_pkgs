@@ -1,8 +1,0 @@
-#!/bin/sh
-
-# Run a System.gc()
-# The java8 G1 garbage collector seems very hesitant to release memory back to the O/S
-# Explicitly calling System.gc() seems to force it do so.
-#
-# Call it occasionally so that java gives back unused memory to the O/S
-/usr/bin/ucli gc

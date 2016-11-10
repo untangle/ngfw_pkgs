@@ -10,6 +10,9 @@ PG_HBA="${PG_ETC_DIR}/pg_hba.conf"
 
 PG_RAMDISK_SIZE="112"
 
+VENDOR=$(awk '{print tolower($1) }' /usr/share/untangle/conf/appliance-model)
+MODEL=$(awk '{print tolower($2) }' /usr/share/untangle/conf/appliance-model)
+
 # lower checkpoint_segments. we want frequent checkpoints to keep the WAL small
 sed -i -e "s/.*checkpoint_segments.*=.*/checkpoint_segments = 1/" $PG_CONF
 
@@ -61,8 +64,8 @@ if hdparm -I /dev/sda | grep -q 'non-removable' ; then
     echo "Looks like a USB hard drive..."
 
     # Just in case we previously thought this was a flash drive, set back to normal
-    rm -f /etc/cron.hourly/reports-cron-linksys
-    rm -f /etc/cron.daily/reports-cron-linksys
+    rm -f /etc/cron.hourly/reports-cron-${VENDOR}
+    rm -f /etc/cron.daily/reports-cron-${VENDOR}
     sed -e 's/UNLOGGED_ENABLED = True/UNLOGGED_ENABLED = False/g' -i /usr/lib/python2.7/reports/sql_helper.py
     sed -e 's/EXTRA_INDEXES_ENABLED = False/EXTRA_INDEXES_ENABLED = True/g' -i /usr/lib/python2.7/reports/sql_helper.py
 
@@ -87,18 +90,18 @@ else
     pg_ram_settings
 
     # force 1 day retention time regardless of settings
-    cat > /etc/cron.daily/reports-cron-linksys <<EOF
+    cat > /etc/cron.daily/reports-cron-${VENDOR} <<EOF
 #!/bin/sh
-/home/dmorris/work/src/dist/usr/share/untangle/bin/reports-clean-tables.py 7 >> /var/log/uvm/reports.log 2>&1
+/usr/share/untangle/bin/reports-clean-tables.py 7 >> /var/log/uvm/reports.log 2>&1
 EOF
-    chmod 755 /etc/cron.daily/reports-cron-linksys
+    chmod 755 /etc/cron.daily/reports-cron-${VENDOR}
 
     # hourly check DB size and prune if large
-    cat > /etc/cron.hourly/reports-cron-linksys <<EOF
+    cat > /etc/cron.hourly/reports-cron-${VENDOR} <<EOF
 #!/bin/sh
-/usr/bin/cleandb.sh >> /var/log/uvm/linksys-wrt1900acs.log 2>&1
+/usr/bin/cleandb.sh >> /var/log/uvm/${VENDOR}-${MODEL}.log 2>&1
 EOF
-    chmod 755 /etc/cron.hourly/reports-cron-linksys
+    chmod 755 /etc/cron.hourly/reports-cron-${VENDOR}
 
     # If ramdisk is not already mounted, create it and initialize database
     if [ "tmpfs" != "`stat -f -c '%T' ${PG_MAIN_DIR}`" ] ; then

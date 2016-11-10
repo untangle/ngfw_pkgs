@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MODEL="Asus ac88u"
+MODEL=$(perl -pe 's/(.+)/\u\L$1/' /usr/share/untangle/conf/appliance-model)
 
 if [ ! -f /usr/share/untangle/settings/untangle-vm/skin.js ] ; then
 

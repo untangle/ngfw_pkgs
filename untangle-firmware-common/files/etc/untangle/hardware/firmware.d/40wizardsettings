@@ -1,7 +1,7 @@
 #!/bin/sh
 
-# this is creates the default wizard settings for the asus ac88u
-MODEL="Asus ac88u"
+# this is creates the default wizard settings
+MODEL=$(perl -pe 's/(.+)/\u\L$1/' /usr/share/untangle/conf/appliance-model)
 
 if [ ! -f /usr/share/untangle/conf/wizard.js ] ; then
    echo "Initializing default wizard settings for ${MODEL}..."
