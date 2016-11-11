@@ -1,14 +1,3 @@
-#!/bin/sh
-
-# this is creates the default network settings for the Linksys wrt1900acs
-MODEL="Linksys wrt1900acs"
-
-if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
-
-   echo "Initializing default network settings for ${MODEL}..."
-
-   mkdir -p /usr/share/untangle/settings/untangle-vm
-   cat > /usr/share/untangle/settings/untangle-vm/network.js <<EOF
 {
     "blockDuringRestarts": false,
     "blockInvalidPackets": true,
@@ -966,9 +955,4 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
     "version": 3,
     "vlansEnabled": false
 }
-EOF
-
-   /usr/share/untangle-netd/bin/sync-settings.py -vv
-   echo "Initializing default network settings for ${MODEL}... done"
-fi
 
