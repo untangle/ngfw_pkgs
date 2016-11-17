@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Restart postgres
+# postgres seems to behave poorly on USB based systems and can get stuck creating load even while idle
+/etc/init.d/postgresql restart
