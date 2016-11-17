@@ -25,7 +25,7 @@ startAp() {
   # the python module translate hostpad.conf's content into a list of
   # commands, and we run each of those sequentially in our chroot
   python $PY_SCRIPT $1 $2 | while read line ; do
-    chroot $ASUS_ROOTFS $line
+    chroot $ASUS_ROOTFS $line > /var/log/brcm.log 2>&1
   done
 }
 
