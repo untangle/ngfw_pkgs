@@ -130,8 +130,7 @@ class UpnpManager:
             file.write(r"""
 UPNPD_PID="`pidof miniupnpd`"
 
-# Restart miniupnpd if it isnt found
-# Or if miniuopnpd.conf has been written since dnsmasq was started
+# Stop miniupnpd if running
 if [ ! -z "$UPNPD_PID" ] ; then
     /etc/init.d/miniupnpd stop
     /etc/untangle-netd/iptables-rules.d/741-upnp
@@ -142,7 +141,7 @@ fi
 UPNPD_PID="`pidof miniupnpd`"
 
 # Restart miniupnpd if it isnt found
-# Or if dnsmasq.conf or hosts.dnsmasq has been written since dnsmasq was started
+# Or if miniupnpd.conf orhas been written since miniupnpd was started
 if [ -z "$UPNPD_PID" ] ; then
     /etc/untangle-netd/iptables-rules.d/741-upnp
     /etc/init.d/miniupnpd restart
