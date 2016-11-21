@@ -108,6 +108,21 @@ class QosManager:
             if verbosity > 0: print "QosManager: Wrote %s" % filename
             return
 
+        # Write the settings JSON as a comment at top of script
+        # We do this because the actual logic reads the settings directly in qos-service
+        # But we only restart networking when something changes, so if QoS settings change
+        # we need something to change in the file so it restarts networking
+        # NGFW-10116
+        #
+        # FIXME
+        # The proper fix for this would be to rewrite qos-service so that it doesn't read the settings
+        # directly. The logic should be in the iptables-rules.d script like everything else
+        # and should be written when settings are saved.
+        file.write("# QoS Settings: \n")
+        file.write(("# %s" % str(qosSettings)) + "\n")
+        file.write("\n\n");
+
+        file.write("# Start QoS \n")
         file.write("/usr/share/untangle-netd/bin/qos-service.py start" + "\n")
         file.write("\n\n");
 
