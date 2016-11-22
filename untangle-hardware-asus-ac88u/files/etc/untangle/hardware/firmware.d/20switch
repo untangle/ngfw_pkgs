@@ -10,8 +10,6 @@ modprobe igs
 modprobe et
 modprobe switch-core
 modprobe switch-robo
-modprobe dhd
-modprobe wl
 
 lsmod
 ip ad
