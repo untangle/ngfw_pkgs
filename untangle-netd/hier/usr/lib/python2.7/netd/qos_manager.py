@@ -102,6 +102,8 @@ class QosManager:
         file.write("\n\n");
 
         if not qosSettings.get('qosEnabled'):
+            file.write("# Stop QoS \n")
+            file.write("/usr/share/untangle-netd/bin/qos-service.py stop" + "\n")
             file.flush()
             file.close()
             os.system("chmod a+x %s" % filename)
