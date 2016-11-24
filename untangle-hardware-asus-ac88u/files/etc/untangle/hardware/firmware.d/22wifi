@@ -4,6 +4,8 @@ set -x
 set -e
 
 # load modules
+modprobe emf
+modprobe igs
 modprobe dhd
 modprobe wl
 
