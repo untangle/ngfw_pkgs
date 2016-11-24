@@ -5,8 +5,6 @@ set -e
 
 # load modules for ethernet NIC
 depmod -a
-modprobe emf
-modprobe igs
 modprobe et
 modprobe switch-core
 modprobe switch-robo
