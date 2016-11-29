@@ -623,8 +623,7 @@
                 "bridgedTo": 2,
                 "configType": "BRIDGED",
                 "dhcpDnsOverride": "",
-                "dhcpEnabled": true,
-                "dhcpLeaseDuration": 86400,
+                "dhcpEnabled": false,
                 "dhcpOptions": {
                     "javaClass": "java.util.LinkedList",
                     "list": []
@@ -678,7 +677,6 @@
                 "configType": "BRIDGED",
                 "dhcpDnsOverride": "",
                 "dhcpEnabled": false,
-                "dhcpLeaseDuration": 86400,
                 "dhcpOptions": {
                     "javaClass": "java.util.LinkedList",
                     "list": []

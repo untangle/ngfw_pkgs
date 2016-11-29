@@ -669,14 +669,11 @@
                 "configType": "BRIDGED",
                 "supportedConfigTypes": ["BRIDGED","DISABLED"],
                 "dhcpDnsOverride": "",
-                "dhcpEnabled": true,
-                "dhcpLeaseDuration": 86400,
+                "dhcpEnabled": false,
                 "dhcpOptions": {
                     "javaClass": "java.util.LinkedList",
                     "list": []
                 },
-                "dhcpRangeEnd": "192.168.100.200",
-                "dhcpRangeStart": "192.168.100.100",
                 "disabled": false,
                 "interfaceId": 102,
                 "isVlanInterface": false,
