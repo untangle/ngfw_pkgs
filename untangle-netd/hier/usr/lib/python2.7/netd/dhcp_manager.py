@@ -271,7 +271,16 @@ write_status_file()
     /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-netd/interface-${t_interface}-status.js
 }
 
-${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook ENTER [ reason: \"$reason\" interface: \"$interface\" ]"
+${DEBUG} "dhclient-exit-hooks.d/netd_dhclient-exit-hook EXIT [ reason: \"$reason\" interface: \"$interface\" ]"
+${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook EXIT [ old_ip_address: \"$old_ip_address\" ]"
+${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook EXIT [ new_ip_address: \"$new_ip_address\" ]"
+${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook EXIT [ new_domain_name_servers: \"$new_domain_name_servers\" ]"
+${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook EXIT [ new_domain_name: \"$new_domain_name\" ]"
+${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook EXIT [ DHCP_INTERFACE_INDEX: \"$DHCP_INTERFACE_INDEX\" ]"
+${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook EXIT [ DHCP_ADDRESS_OVERRIDE: \"$DHCP_ADDRESS_OVERRIDE\" ]"
+${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook EXIT [ DHCP_NETMASK_OVERRIDE: \"$DHCP_NETMASK_OVERRIDE\" ]"
+${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook EXIT [ DHCP_GATEWAY_OVERRIDE: \"$DHCP_GATEWAY_OVERRIDE\" ]"
+${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook EXIT [ DHCP_DNS_OVERRIDES: \"$DHCP_DNS_OVERRIDES\" ]"
 
 # Execute the operation
 case "$reason" in
