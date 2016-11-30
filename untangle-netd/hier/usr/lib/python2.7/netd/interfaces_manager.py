@@ -174,13 +174,22 @@ class InterfacesManager:
         pass
         
     def write_interface_aliases( self, interface_settings, interfaces ):
+        # determine the proper interface to put the aliases "on"
+        if interface_settings.get('v4ConfigType') != 'PPPOE':
+            intf_str = interface_settings.get('symbolicDev')
+        else:
+            # If its a PPPoE interface, put the alias on the physical device
+            # This is because the ppp interface can go up and down
+            intf_str = interface_settings.get('physicalDev')
+
         # handle v4 aliases
         count = 1
         if interface_settings.get('v4Aliases') != None and interface_settings.get('v4Aliases').get('list') != None:
+
             for alias in interface_settings.get('v4Aliases').get('list'):
                 self.interfacesFile.write("## Interface %i IPv4 alias\n" % (interface_settings.get('interfaceId')) )
-                self.interfacesFile.write("auto %s:%i\n" % (interface_settings.get('symbolicDev'), count))
-                self.interfacesFile.write("iface %s:%i inet manual\n" % ( interface_settings.get('symbolicDev'), count ))
+                self.interfacesFile.write("auto %s:%i\n" % (intf_str, count))
+                self.interfacesFile.write("iface %s:%i inet manual\n" % ( intf_str, count ))
                 self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings.get('interfaceId'))
                 self.interfacesFile.write("\tnetd_v4_address %s\n" % alias.get('staticAddress'))
                 self.interfacesFile.write("\tnetd_v4_netmask %s\n" % alias.get('staticNetmask'))
@@ -191,8 +200,8 @@ class InterfacesManager:
         if interface_settings.get('v6Aliases') != None and interface_settings.get('v6Aliases').get('list') != None:
             for alias in interface_settings.get('v6Aliases').get('list'):
                 self.interfacesFile.write("## Interface %i IPv6 alias\n" % (interface_settings.get('interfaceId')) )
-                self.interfacesFile.write("auto %s:%i\n" % (interface_settings.get('symbolicDev'), count))
-                self.interfacesFile.write("iface %s:%i inet manual\n" % ( interface_settings.get('symbolicDev'), count ))
+                self.interfacesFile.write("auto %s:%i\n" % (intf_str, count))
+                self.interfacesFile.write("iface %s:%i inet manual\n" % ( intf_str, count ))
                 self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings.get('interfaceId'))
                 self.interfacesFile.write("\tnetd_v6_address %s\n" % alias.get('staticAddress'))
                 self.interfacesFile.write("\tnetd_v6_netmask %s\n" % alias.get('staticNetmask'))
