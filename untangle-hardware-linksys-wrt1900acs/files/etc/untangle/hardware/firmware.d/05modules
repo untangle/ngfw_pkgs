@@ -11,11 +11,11 @@ modprobe xt_mac
 modprobe xt_IMQ
 modprobe xt_physdev
 
-# modprobe ip6_tables
-# modprobe nf_conntrack_ipv6
+modprobe ip6_tables
+modprobe nf_conntrack_ipv6
 
-# modprobe ip6t_ah
-# modprobe ip6table_filter
+modprobe ip6t_ah
+modprobe ip6table_filter
 modprobe ebt_redirect
 modprobe ebt_ip
 modprobe ebtable_broute

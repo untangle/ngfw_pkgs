@@ -1,9 +1,0 @@
-#! /bin/sh
-
-set -x
-
-for m in /lib/modules/3.18.38/kernel/net/ipv6/netfilter/ip6*ko ; do
-  mv $m ${m}.bak
-done
-
-exit 0
