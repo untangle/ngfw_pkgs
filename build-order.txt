@@ -15,7 +15,6 @@ untangle-hardware-portwell-u500         jessie
 untangle-hardware-portwell-m1500        jessie
 untangle-hardware-portwell-m3000        jessie
 untangle-hardware-jetway-u50w           jessie
-untangle-hardware-buffalo-wxr1900       jessie
 untangle-hardware-asus-ac88u	     	jessie
 untangle-hardware-linksys-wrt1900acs    jessie
 untangle-bootsplash                     jessie
