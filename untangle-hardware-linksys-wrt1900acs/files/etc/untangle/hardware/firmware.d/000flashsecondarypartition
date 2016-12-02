@@ -1,0 +1,16 @@
+#! /bin/sh
+
+set -e
+
+FLAG_FLASHED="/var/lib/untangle-flashed"
+FIRST_OS_PARTITION="/dev/mtdblock4"
+SECOND_OS_PARTITION="/dev/mtdblock6"
+
+# exit if we've already done the job
+[ ! -f $FLAG_FLASHED ] || exit 0
+
+# the 1st 5 megs are enough
+dd if=$FIRST_OS_PARTITION of=$SECOND_OS_PARTITION bs=1M count=5
+
+date -Iseconds > $FLAG_FLASHED
+
