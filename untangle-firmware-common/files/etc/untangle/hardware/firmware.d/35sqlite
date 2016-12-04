@@ -1,0 +1,21 @@
+#! /bin/bash
+
+VENDOR=$(awk '{print tolower($1) }' /usr/share/untangle/conf/appliance-model)
+RAMDISK_SIZE="112"
+DIR=/var/lib/sqlite
+
+# If ramdisk is not already mounted, create it and initialize database
+if [ "tmpfs" != "`stat -f -c '%T' ${PG_MAIN_DIR}`" ] ; then
+        # mount a ramdisk
+        rm -rf ${DIR}
+        mkdir -p ${DIR}
+        mount -t tmpfs -o size=${RAMDISK_SIZE}m tmpfs ${DIR}
+fi
+
+
+cat > /etc/cron.hourly/reports-cron-${VENDOR} <<EOF
+#!/bin/sh
+/usr/bin/cleandb.sh >> /var/log/uvm/${VENDOR}-${MODEL}.log 2>&1
+EOF
+chmod 755 /etc/cron.hourly/reports-cron-${VENDOR}
+
