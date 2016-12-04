@@ -11,5 +11,8 @@ fi
 if [ -x "/etc/init.d/untangle-firmware-common" ]; then
   ourInit untangle-firmware-common restart
 fi
-    
+
+# remove old 12.1 conf
+rm -rf /etc/untangle/hardware/asus
+
 exit 0
