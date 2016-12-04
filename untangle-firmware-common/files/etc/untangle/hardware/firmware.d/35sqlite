@@ -5,7 +5,7 @@ RAMDISK_SIZE="64"
 DIR=/var/lib/sqlite
 
 # If ramdisk is not already mounted, create it and initialize database
-if [ "tmpfs" != "`stat -f -c '%T' ${PG_MAIN_DIR}`" ] ; then
+if [ "tmpfs" != "`stat -f -c '%T' ${DIR}`" ] ; then
         # mount a ramdisk
         rm -rf ${DIR}
         mkdir -p ${DIR}
