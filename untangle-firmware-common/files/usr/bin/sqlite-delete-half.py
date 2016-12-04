@@ -4,8 +4,6 @@
 import getopt, logging, mx, os, os.path, re, sys, tempfile, time, shutil, datetime, traceback
 from subprocess import Popen, PIPE
 from psycopg2.extensions import DateFromMx, TimestampFromMx
-from uvm.settings_reader import get_node_settings_item
-from uvm.settings_reader import get_node_settings
 
 def usage():
      print """\
@@ -13,16 +11,15 @@ usage: %s [num days of data to keep]
 Options:
 """ % sys.argv[0]
 
-REPORTS_PYTHON_DIR = '/usr/lib/python%d.%d' % (sys.version_info[0], sys.version_info[1])
-NODE_MODULE_DIR = '%s/reports/node' % REPORTS_PYTHON_DIR
+PYTHON_DIR = '/usr/lib/python%d.%d' % (sys.version_info[0], sys.version_info[1])
+REPORTS_PYTHON_DIR = '%s/reports' % (PYTHON_DIR)
 
-import reports.engine
 import reports.sql_helper as sql_helper
+sql_helper.DBDRIVER = "sqlite"
+sql_helper.SCHEMA = "main"
 
-reports.engine.init_engine(NODE_MODULE_DIR)
 connection = sql_helper.get_connection()
 cursor = connection.cursor()
-
 
 def get_mid_date(id_column,table):
      # Get the mid-point by ID
@@ -45,8 +42,8 @@ def get_mid_date(id_column,table):
           sys.exit(1)
 
      time_stamp = row[0]
-
-     cutoff = mx.DateTime.Parser.DateTimeFromString(str(time_stamp))
+     cutoff = mx.DateTime.DateTimeFromTicks(time_stamp/1000)
+     print cutoff
      return cutoff
 
 def get_count(table):
@@ -65,17 +62,17 @@ if len(sys.argv) < 1:
      sys.exit(1)
 
 # Print the before table size - just for debugging/logging
-sessions_count = get_count("reports.sessions")
-session_minutes_count = get_count("reports.session_minutes")
-http_count = get_count("reports.http_events")
+sessions_count = get_count("sessions")
+session_minutes_count = get_count("session_minutes")
+http_count = get_count("http_events")
 print "sessions                   count: %s" % str(sessions_count)
 print "session_minutes            count: %s" % str(session_minutes_count)
 print "http_events                count: %s" % str(http_count)
      
 # Find the mid-point for the major three tables
-sessions_cutoff = get_mid_date("session_id","reports.sessions")
-session_minutes_cutoff = get_mid_date("session_id","reports.session_minutes")
-http_cutoff = get_mid_date("request_id","reports.http_events")
+sessions_cutoff = get_mid_date("session_id","sessions")
+session_minutes_cutoff = get_mid_date("session_id","session_minutes")
+http_cutoff = get_mid_date("request_id","http_events")
 print "sessions         cutoff estimate: %s" % str(sessions_cutoff)
 print "session_minutes  cutoff estimate: %s" % str(session_minutes_cutoff)
 print "http_events      cutoff estimate: %s" % str(http_cutoff)
@@ -84,13 +81,29 @@ print "http_events      cutoff estimate: %s" % str(http_cutoff)
 cutoff = max(sessions_cutoff, session_minutes_cutoff, http_cutoff)
 print "using cutoff: %s" % str(cutoff)
 
-# Clean the tables with the maximum cutoff
-reports.engine.reports_cleanup(cutoff)     
+# delete the stuff
+for f in os.listdir(REPORTS_PYTHON_DIR):
+     if f.endswith('py'):
+          (m, e) = os.path.splitext(f)
+          if "__init__" == m:
+               continue
+          name = 'reports.%s' % m
+          print name
+          obj = __import__('reports.%s' % m)
+          app = getattr(obj,m)
+          #obj = eval(name)
+          try:
+               if "cleanup_tables" in dir(app):
+                    print "%s.cleanup_tables()" % name
+                    app.cleanup_tables( cutoff )
+          except:
+               print "%s.cleanup_tables() Exception:" % name
+               traceback.print_exc()
 
 # Print the after table size - just for debugging/logging
-sessions_count = get_count("reports.sessions")
-session_minutes_count = get_count("reports.session_minutes")
-http_count = get_count("reports.http_events")
+sessions_count = get_count("sessions")
+session_minutes_count = get_count("session_minutes")
+http_count = get_count("http_events")
 print "sessions              post count: %s" % str(sessions_count)
 print "session_minutes       post count: %s" % str(session_minutes_count)
 print "http_events           post count: %s" % str(http_count)

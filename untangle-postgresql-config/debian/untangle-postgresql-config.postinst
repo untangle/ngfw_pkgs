@@ -50,6 +50,9 @@ fi
 
 DATE=$(date '+%Y%m%d%H%M%S')
 
+# disable postgres at startup (report app will start as necessary)
+update-rc.d postgresql disable
+
 # backup original conf files
 cp -f $PG_CONF ${PG_CONF}.$DATE
 cp -f $PG_HBA ${PG_HBA}.$DATE
@@ -96,8 +99,5 @@ rm -rf /var/lib/postgresql/8.4
 
 # 12.1 remove old log files
 rm -f /var/log/postgresql/postgresql-9.1-main*
-
-# restart postgres
-ourInit postgresql restart
 
 exit 0
