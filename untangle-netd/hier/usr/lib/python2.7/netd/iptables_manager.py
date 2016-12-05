@@ -119,39 +119,29 @@ class IptablesManager:
         file.write("${IPTABLES} -t raw -I PREROUTING -j helpers" + "\n");
         file.write("\n");
 
-        file.write("uname -r | grep -q '^4'" + "\n");
-        file.write("KERN_4_X=$?" + "\n");
-        file.write("\n");
-
-        file.write("if [ ${KERN_4_X} -eq 0 ] ; then" + "\n");
-        file.write("\n");
-
-        file.write("\t" + "${IPTABLES} -t raw -A helpers -p udp --dport 1719 -j CT --helper RAS" + "\n");
-        file.write("\t" + "${IPTABLES} -t raw -A helpers -p tcp --dport 1720 -j CT --helper Q.931" + "\n");
+        file.write("${IPTABLES} -t raw -A helpers -p udp --dport 1719 -j CT --helper RAS" + "\n");
+        file.write("${IPTABLES} -t raw -A helpers -p tcp --dport 1720 -j CT --helper Q.931" + "\n");
         file.write("\n");
 
         if settings.get('enableSipNatHelper'):
-            file.write("\t" + "${IPTABLES} -t raw -A helpers -p tcp --dport 5060 -j CT --helper sip" + "\n");
-            file.write("\t" + "${IPTABLES} -t raw -A helpers -p udp --dport 5060 -j CT --helper sip" + "\n");
-            file.write("\t" + "${IPTABLES} -t raw -A helpers -p tcp --dport 5061 -j CT --helper sip" + "\n");
-            file.write("\t" + "${IPTABLES} -t raw -A helpers -p udp --dport 5061 -j CT --helper sip" + "\n");
+            file.write("${IPTABLES} -t raw -A helpers -p tcp --dport 5060 -j CT --helper sip" + "\n");
+            file.write("${IPTABLES} -t raw -A helpers -p udp --dport 5060 -j CT --helper sip" + "\n");
+            file.write("${IPTABLES} -t raw -A helpers -p tcp --dport 5061 -j CT --helper sip" + "\n");
+            file.write("${IPTABLES} -t raw -A helpers -p udp --dport 5061 -j CT --helper sip" + "\n");
             file.write("\n");
         
-        file.write("\t" + "${IPTABLES} -t raw -A helpers -p tcp --dport 21 -j CT --helper ftp" + "\n");
+        file.write("${IPTABLES} -t raw -A helpers -p tcp --dport 21 -j CT --helper ftp" + "\n");
         file.write("\n");
 
-        file.write("\t" + "${IPTABLES} -t raw -A helpers -p tcp --dport 6667 -j CT --helper irc" + "\n");
+        file.write("${IPTABLES} -t raw -A helpers -p tcp --dport 6667 -j CT --helper irc" + "\n");
         file.write("\n");
 
-        file.write("\t" + "${IPTABLES} -t raw -A helpers -p tcp --dport 1723 -j CT --helper pptp" + "\n");
+        file.write("${IPTABLES} -t raw -A helpers -p tcp --dport 1723 -j CT --helper pptp" + "\n");
         file.write("\n");
 
-        file.write("\t" + "${IPTABLES} -t raw -A helpers -p udp --dport 69 -j CT --helper tftp" + "\n");
+        file.write("${IPTABLES} -t raw -A helpers -p udp --dport 69 -j CT --helper tftp" + "\n");
         file.write("\n");
 
-        file.write("fi" + "\n");
-        file.write("\n");
-        
         file.flush()
         file.close()
 
