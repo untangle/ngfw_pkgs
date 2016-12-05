@@ -998,6 +998,9 @@
             ]
         }
     },
+    "publicUrlMethod": "external",
+    "publicUrlAddress": "hostname.example.com",
+    "publicUrlPort": 443,
     "version": 3,
     "vlansEnabled": false
 }
