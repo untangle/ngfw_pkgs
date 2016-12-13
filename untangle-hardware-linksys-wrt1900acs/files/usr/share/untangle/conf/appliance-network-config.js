@@ -634,7 +634,7 @@
                 "isWan": false,
                 "isWirelessInterface": true,
                 "javaClass": "com.untangle.uvm.network.InterfaceSettings",
-                "name": "Wifi 5Ghz",
+                "name": "Wifi 2Ghz",
                 "physicalDev": "wlan0",
                 "raEnabled": false,
                 "supportedConfigTypes": [
@@ -658,8 +658,6 @@
                     "list": []
                 },
                 "v6ConfigType": "STATIC",
-                "vlanParent": 1,
-                "vlanTag": 2,
                 "vrrpAliases": {
                     "javaClass": "java.util.LinkedList",
                     "list": []
@@ -687,7 +685,7 @@
                 "isWan": false,
                 "isWirelessInterface": true,
                 "javaClass": "com.untangle.uvm.network.InterfaceSettings",
-                "name": "Wifi 2Ghz",
+                "name": "Wifi 5Ghz",
                 "physicalDev": "wlan1",
                 "raEnabled": false,
                 "supportedConfigTypes": [
@@ -711,8 +709,6 @@
                     "list": []
                 },
                 "v6ConfigType": "STATIC",
-                "vlanParent": 1,
-                "vlanTag": 2,
                 "vrrpAliases": {
                     "javaClass": "java.util.LinkedList",
                     "list": []
