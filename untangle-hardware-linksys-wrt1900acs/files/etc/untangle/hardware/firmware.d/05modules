@@ -10,6 +10,7 @@ modprobe xt_socket
 modprobe xt_mac
 modprobe xt_IMQ
 modprobe xt_physdev
+modprobe xt_iprange
 
 modprobe ip6_tables
 modprobe nf_conntrack_ipv6
