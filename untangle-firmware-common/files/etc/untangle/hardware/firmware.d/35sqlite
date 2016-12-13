@@ -15,7 +15,7 @@ fi
 
 cat > /etc/cron.hourly/reports-cron-${VENDOR} <<EOF
 #!/bin/sh
-/usr/bin/sqlite-cleandb.sh >> /var/log/uvm/${VENDOR}-${MODEL}.log 2>&1
+/usr/bin/sqlite-cleandb.sh >> /var/log/uvm/reports.log 2>&1
 EOF
 chmod 755 /etc/cron.hourly/reports-cron-${VENDOR}
 
