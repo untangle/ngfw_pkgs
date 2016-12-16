@@ -48,15 +48,17 @@ if [ -f /usr/share/untangle/bin/oem-apply.sh ] ; then
 fi
 
 # rerun all the hardware default scripts
-ls /etc/init.d/untangle-hardware-* 2>/dev/null | while read script ; do 
-    echo "$script restart"
-    $script restart
-done
-ls /etc/init.d/untangle-firmware-* 2>/dev/null | while read script ; do
-    echo "$script restart"
-    $script restart
-done
-
+/usr/sbin/invoke-rc.d --query untangle-vm start
+if [ $? != 101 ] ; then # action is allowed, we're not in a chroot
+    ls /etc/init.d/untangle-hardware-* 2>/dev/null | while read script ; do 
+	echo "$script restart"
+	$script restart
+    done
+    ls /etc/init.d/untangle-firmware-* 2>/dev/null | while read script ; do
+	echo "$script restart"
+	$script restart
+    done
+fi
 echo "Restoring File System State...done"
 
 ourInit untangle-vm start
