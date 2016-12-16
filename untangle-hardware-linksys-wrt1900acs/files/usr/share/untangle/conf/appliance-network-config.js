@@ -634,7 +634,7 @@
                 "isWan": false,
                 "isWirelessInterface": true,
                 "javaClass": "com.untangle.uvm.network.InterfaceSettings",
-                "name": "Wifi 2Ghz",
+                "name": "Wifi 5Ghz",
                 "physicalDev": "wlan0",
                 "raEnabled": false,
                 "supportedConfigTypes": [
@@ -663,10 +663,10 @@
                     "list": []
                 },
                 "vrrpEnabled": false,
-                "wirelessChannel": -1,
+                "wirelessChannel": -2,
                 "wirelessEncryption": "WPA2",
                 "wirelessPassword": "12345678",
-                "wirelessSsid": "UntangleLinksys"
+                "wirelessSsid": "UntangleLinksys5"
             },
             {
                 "addressed": false,
@@ -685,7 +685,7 @@
                 "isWan": false,
                 "isWirelessInterface": true,
                 "javaClass": "com.untangle.uvm.network.InterfaceSettings",
-                "name": "Wifi 5Ghz",
+                "name": "Wifi 2Ghz",
                 "physicalDev": "wlan1",
                 "raEnabled": false,
                 "supportedConfigTypes": [
@@ -714,10 +714,10 @@
                     "list": []
                 },
                 "vrrpEnabled": false,
-                "wirelessChannel": -2,
+                "wirelessChannel": -1,
                 "wirelessEncryption": "WPA2",
                 "wirelessPassword": "12345678",
-                "wirelessSsid": "UntangleLinksys5"
+                "wirelessSsid": "UntangleLinksys"
             }
         ]
     },
