@@ -14,14 +14,13 @@ class WirelessManager:
     crdaDefaultFilename = "/etc/default/crda"
     ht40MinusChannels = [0,5,6,7,8,9,10,11,12,13,40,48,56,64]
     ht40PlusChannels = [0,1,2,3,4,5,6,7,36,44,52,60]
+    hasWireless = False
 
     def write_hostapd_conf( self, settings, prefix="", verbosity=0 ):
 
         configFilename = prefix + self.hostapdConfFilename
         defaultFilename = prefix + self.hostapdDefaultFilename
-        restartFilename = prefix + self.hostapdRestartFilename
-        crdaFilename = prefix + self.crdaDefaultFilename
-        for filename in [ configFilename, defaultFilename, restartFilename, crdaFilename ]:
+        for filename in [ configFilename, defaultFilename ]:
             fileDir = os.path.dirname( filename )
             if not os.path.exists( fileDir ):
                 os.makedirs( fileDir )
@@ -33,7 +32,7 @@ class WirelessManager:
 
         interfaces = settings.get('interfaces').get('list')
 
-        foundInterface = 0
+        self.hasWireless = False
 
         for intf in interfaces:
             if intf.get('isWirelessInterface'):
@@ -44,7 +43,7 @@ class WirelessManager:
                     print "WirelessManager: Ignoring " + intf.get('systemDev') + " because password is too short (" + str(passwordLen) + ")"
                     continue;
                     
-                foundInterface = 1
+                self.hasWireless = True
                 filename = configFilename + "-" + intf.get('systemDev')
                 self.hostapdConfFile = open( filename, "w+" )
 
@@ -116,6 +115,23 @@ class WirelessManager:
 
         configFilesString = configFilesString[:-1]
 
+        self.hostapdDefaultFile = open( defaultFilename, "w+" )
+        self.hostapdDefaultFile.write("## Auto Generated\n");
+        self.hostapdDefaultFile.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        self.hostapdDefaultFile.write('DAEMON_CONF="' + configFilesString + '"' + "\n")
+        self.hostapdDefaultFile.flush()
+        self.hostapdDefaultFile.close()
+
+        print "WirelessManager: Wrote " + defaultFilename
+
+
+    def write_crda_file( self, settings, prefix="", verbosity=0 ):
+        crdaFilename = prefix + self.crdaDefaultFilename
+        for filename in [ crdaFilename ]:
+            fileDir = os.path.dirname( filename )
+            if not os.path.exists( fileDir ):
+                os.makedirs( fileDir )
+
         # FIXME need to get regulatory domain from the UI
         self.crdaDefaultFile = open( crdaFilename, "w+" )
         self.crdaDefaultFile.write("## Auto Generated\n");
@@ -126,16 +142,14 @@ class WirelessManager:
 
         print "WirelessManager: Wrote " + crdaFilename
 
-        self.hostapdDefaultFile = open( defaultFilename, "w+" )
-        self.hostapdDefaultFile.write("## Auto Generated\n");
-        self.hostapdDefaultFile.write("## DO NOT EDIT. Changes will be overwritten.\n")
-        self.hostapdDefaultFile.write('DAEMON_CONF="' + configFilesString + '"' + "\n")
-        self.hostapdDefaultFile.flush()
-        self.hostapdDefaultFile.close()
+    def write_network_hook( self, settings, prefix="", verbosity=0 ):
+        restartFilename = prefix + self.hostapdRestartFilename
+        for filename in [ restartFilename ]:
+            fileDir = os.path.dirname( filename )
+            if not os.path.exists( fileDir ):
+                os.makedirs( fileDir )
 
-        print "WirelessManager: Wrote " + defaultFilename
-
-        if foundInterface == 1:            
+        if self.hasWireless:
             # Write out the hostapd restart script
 
             self.hostapdRestartFile = open( restartFilename, "w+" )
@@ -146,6 +160,10 @@ class WirelessManager:
             self.hostapdRestartFile.write("## DO NOT EDIT. Changes will be overwritten.\n")
             self.hostapdRestartFile.write("\n")
 
+            # We restart hostapd in PRE networking
+            # because the interface must be up for it to be added to bridges
+            # As such, we start hostapd now
+            # Hostapd can survive interfaces going up and down so this is fine
             self.hostapdRestartFile.write("if [ -x /etc/init.d/hostapd ] ; then /etc/init.d/hostapd restart; fi \n")
 
             self.hostapdRestartFile.flush()
@@ -190,6 +208,8 @@ class WirelessManager:
             if os.path.isfile(filename):
                 print "WirelessManager: Removed " + filename
                 os.remove(filename)
-        
+
         self.write_hostapd_conf( settings, prefix, verbosity )
+        self.write_crda_file( settings, prefix, verbosity )
+        self.write_network_hook( settings, prefix, verbosity )
 
