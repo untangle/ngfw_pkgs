@@ -252,7 +252,7 @@ run_post_networking_hook()
       # if we already see post-network-hook.d running, do not run it again
       $DEBUG "Skipping post-network-hook.d hooks - already running."
     else
-      run-parts /etc/untangle-netd/post-network-hook.d
+      run-parts -v /etc/untangle-netd/post-network-hook.d
     fi
 }
 
