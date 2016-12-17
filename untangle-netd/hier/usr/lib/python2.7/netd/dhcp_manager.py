@@ -248,10 +248,10 @@ run_post_networking_hook()
     if [ "`/sbin/runlevel | cut -d " " -f 2`" != "2" ] ; then 
         # if the runlevel is not 2, we are either in bootup or shutdown
         $DEBUG "Skipping post-network-hook.d hooks - still booting."
-    elif psgrep -f 'run-parts.*post-network-hook.d' >/dev/null 2>&1 ; then
+    elif pgrep -f 'run-parts.*post-network-hook.d' >/dev/null 2>&1 ; then
         # if we already see post-network-hook.d running, do not run it again
         $DEBUG "Skipping post-network-hook.d hooks - post-network hooks already running."
-    elif psgrep -f 'ifup.*-a' >/dev/null 2>&1 ; then
+    elif pgrep -f 'ifup.*-a' >/dev/null 2>&1 ; then
         # if we already see ifup -a then it will run these scripts
         $DEBUG "Skipping post-network-hook.d hooks - "ifup -a" running."
     else
