@@ -246,16 +246,16 @@ refresh_routes()
 run_post_networking_hook()
 {
     if [ "`/sbin/runlevel | cut -d " " -f 2`" != "2" ] ; then 
-      # if the runlevel is not 2, we are either in bootup or shutdown
-      $DEBUG "Skipping post-network-hook.d hooks - still booting."
-    elif ps aux | grep run-parts | grep -v grep | grep post-network-hook.d >/dev/null 2>&1 ; then
-      # if we already see post-network-hook.d running, do not run it again
-      $DEBUG "Skipping post-network-hook.d hooks - already running."
-    elif ps aux | grep 'ifup -a' | grep -v grep >/dev/null 2>&1 ; then
-      # if we already see ifup -a then it will run these scripts
-      $DEBUG "Skipping post-network-hook.d hooks - ifup -a already running."
+        # if the runlevel is not 2, we are either in bootup or shutdown
+        $DEBUG "Skipping post-network-hook.d hooks - still booting."
+    elif psgrep -f 'run-parts.*post-network-hook.d' >/dev/null 2>&1 ; then
+        # if we already see post-network-hook.d running, do not run it again
+        $DEBUG "Skipping post-network-hook.d hooks - post-network hooks already running."
+    elif psgrep -f 'ifup.*-a' >/dev/null 2>&1 ; then
+        # if we already see ifup -a then it will run these scripts
+        $DEBUG "Skipping post-network-hook.d hooks - "ifup -a" running."
     else
-      run-parts -v /etc/untangle-netd/post-network-hook.d
+        run-parts -v /etc/untangle-netd/post-network-hook.d
     fi
 }
 
