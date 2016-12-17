@@ -1,7 +1,7 @@
 #! /bin/bash
 
 VENDOR=$(awk '{print tolower($1) }' /usr/share/untangle/conf/appliance-model)
-RAMDISK_SIZE="64"
+RAMDISK_SIZE="32"
 DIR=/var/lib/sqlite
 
 # If ramdisk is not already mounted, create it and initialize database
