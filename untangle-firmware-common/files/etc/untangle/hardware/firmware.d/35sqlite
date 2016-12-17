@@ -12,10 +12,6 @@ if [ "tmpfs" != "`stat -f -c '%T' ${DIR}`" ] ; then
         mount -t tmpfs -o size=${RAMDISK_SIZE}m tmpfs ${DIR}
 fi
 
-
-cat > /etc/cron.hourly/reports-cron-${VENDOR} <<EOF
-#!/bin/sh
-/usr/bin/sqlite-cleandb.sh >> /var/log/uvm/reports.log 2>&1
-EOF
-chmod 755 /etc/cron.hourly/reports-cron-${VENDOR}
+# 12.2 remove old file
+rm -f /etc/cron.hourly/reports-cron-${VENDOR}
 

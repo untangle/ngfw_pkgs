@@ -13,11 +13,15 @@ clean_db()
 {
     echo "`date -Iseconds`| Cleaning tables..."
     /usr/bin/sqlite-delete-half.py
-
+    sqlite3 /var/lib/sqlite/reports.db 'vacuum;'
 }
 
-echo "`date -Iseconds`| Cleaning postgres DB..."
+# If DB doesn't exsit - nothing to do
+if [ ! -f $DIR/reports.db ] ; then
+    exit 0
+fi
 
+echo "`date -Iseconds`| Cleaning postgres DB..."
 percent="`df --output=pcent ${DIR} | sed 1d | sed 's/%//'`"
 #percent="100"
 percent="85"
@@ -34,5 +38,4 @@ if [ "$percent" -gt "75" ] ; then
     clean_db
     exit 0
 fi
-
 
