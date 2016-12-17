@@ -251,6 +251,9 @@ run_post_networking_hook()
     elif ps aux | grep run-parts | grep -v grep | grep post-network-hook.d >/dev/null 2>&1 ; then
       # if we already see post-network-hook.d running, do not run it again
       $DEBUG "Skipping post-network-hook.d hooks - already running."
+    elif ps aux | grep 'ifup -a' | grep -v grep >/dev/null 2>&1 ; then
+      # if we already see ifup -a then it will run these scripts
+      $DEBUG "Skipping post-network-hook.d hooks - ifup -a already running."
     else
       run-parts -v /etc/untangle-netd/post-network-hook.d
     fi
