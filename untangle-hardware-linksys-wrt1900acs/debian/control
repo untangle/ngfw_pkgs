@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-hardware-linksys-wrt1900acs
 Architecture: all
-Depends: untangle-firmware-common, untangle-linux-image-3.18.42-linksys-wrt1900acs
+Depends: untangle-firmware-common, untangle-linux-image-3.18-linksys-wrt1900acs
 Description: The Untangle hardware config
  Provides the mechanism for other packages to register startup
  actions, to load hardware-related settings at boot time.
