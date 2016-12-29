@@ -24,7 +24,7 @@ fi
 echo "`date -Iseconds`| Cleaning postgres DB..."
 percent="`df --output=pcent ${DIR} | sed 1d | sed 's/%//'`"
 #percent="100"
-percent="85"
+#percent="85"
 echo "`date -Iseconds`| DB ramdisk status: $percent%"
 
 # If more than 90% used, just reinitialize
