@@ -2,17 +2,11 @@
 
 DIR="/var/lib/sqlite"
 
-reinit_db()
-{
-    echo "`date -Iseconds`| Completely nuking database..."
-    rm -rf ${DIR}/*
-    /usr/share/untangle/bin/reports-generate-tables.py -d sqlite
-}
-
 clean_db()
 {
     echo "`date -Iseconds`| Cleaning tables..."
-    /usr/bin/sqlite-delete-half.py
+    # delete half of data
+    /usr/bin/sqlite-delete-percent.py $1
     sqlite3 /var/lib/sqlite/reports.db 'vacuum;'
 }
 
@@ -27,15 +21,13 @@ percent="`df --output=pcent ${DIR} | sed 1d | sed 's/%//'`"
 #percent="85"
 echo "`date -Iseconds`| DB ramdisk status: $percent%"
 
-# If more than 90% used, just reinitialize
-if [ "$percent" -gt "90" ] ; then
-    reinit_db
-    exit 0
-fi
+# try to maintain approximately this amount of space used
+target_percent="40"
 
-# If more than 75% used, clean up data
-if [ "$percent" -gt "75" ] ; then
-    clean_db
+if [ "$percent" -gt "$target_percent" ] ; then
+    # delete the enough data to get approximately back to the target disk usage percent
+    delete_percent="`awk \"BEGIN {printf \\\"%.0f\\\", ((($percent-$target_percent)/($percent))*100)}\" `"
+    clean_db delete_percent
     exit 0
 fi
 
