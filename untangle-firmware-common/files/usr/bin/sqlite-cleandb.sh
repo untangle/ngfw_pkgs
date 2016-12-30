@@ -31,3 +31,5 @@ if [ "$percent" -gt "$target_percent" ] ; then
     exit 0
 fi
 
+echo "`date -Iseconds`| DB ramdisk status: $percent%"
+
