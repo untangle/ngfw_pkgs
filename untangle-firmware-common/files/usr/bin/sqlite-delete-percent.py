@@ -7,7 +7,8 @@ from psycopg2.extensions import DateFromMx, TimestampFromMx
 
 def usage():
      print """\
-usage: %s [num days of data to keep]
+usage: %s percent
+percent: percent of amount of data to delete (eg, 10 = 10%)
 Options:
 """ % sys.argv[0]
 
@@ -20,10 +21,11 @@ sql_helper.SCHEMA = "main"
 
 connection = sql_helper.get_connection()
 cursor = connection.cursor()
+percent = 2
 
-def get_mid_date(id_column,table):
+def get_mid_date(id_column,table,percent):
      # Get the mid-point by ID
-     cursor.execute("SELECT (max(%s)+min(%s))/2 AS mid FROM %s" % (id_column,id_column,table))
+     cursor.execute("SELECT (min(%s) + cast(((max(%s)-min(%s))*(%i.0/100.0)) as int) ) AS mid FROM %s" % (id_column,id_column,id_column,percent,table))
      row = cursor.fetchone()
      if row == None or len(row) < 1:
           print "Invalid mid point from %s" % table
@@ -57,10 +59,16 @@ def get_count(table):
      count = int(row[0])
      return count
 
-if len(sys.argv) < 1:
+if len(sys.argv) < 2:
      usage()
      sys.exit(1)
 
+try:
+     percent = int(sys.argv[1])
+except:
+     usage()
+     sys.exit(1)
+     
 # Print the before table size - just for debugging/logging
 sessions_count = get_count("sessions")
 session_minutes_count = get_count("session_minutes")
@@ -70,9 +78,9 @@ print "session_minutes            count: %s" % str(session_minutes_count)
 print "http_events                count: %s" % str(http_count)
      
 # Find the mid-point for the major three tables
-sessions_cutoff = get_mid_date("session_id","sessions")
-session_minutes_cutoff = get_mid_date("session_id","session_minutes")
-http_cutoff = get_mid_date("request_id","http_events")
+sessions_cutoff = get_mid_date("session_id","sessions",percent)
+session_minutes_cutoff = get_mid_date("session_id","session_minutes",percent)
+http_cutoff = get_mid_date("request_id","http_events",percent)
 print "sessions         cutoff estimate: %s" % str(sessions_cutoff)
 print "session_minutes  cutoff estimate: %s" % str(session_minutes_cutoff)
 print "http_events      cutoff estimate: %s" % str(http_cutoff)
