@@ -21,7 +21,7 @@ percent="`df --output=pcent ${DIR} | sed 1d | sed 's/%//'`"
 echo "`date -Iseconds`| DB ramdisk status: $percent%"
 
 # try to maintain approximately this amount of space used
-target_percent="40"
+target_percent="50"
 
 if [ "$percent" -gt "$target_percent" ] ; then
 
@@ -29,7 +29,7 @@ if [ "$percent" -gt "$target_percent" ] ; then
     delete_percent="`awk \"BEGIN {printf \\\"%.0f\\\", ((($percent-$target_percent)/($percent))*100)}\" `"
     echo "`date -Iseconds`| Cleaning postgres DB... (deleting ${delete_percent}%)"
 
-    clean_db delete_percent
+    clean_db $delete_percent
 
     echo "`date -Iseconds`| DB ramdisk status: $percent%"
 
