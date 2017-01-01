@@ -33,7 +33,8 @@ class DdclientManager:
                 "namecheap" : [ "namecheap", "dynamicdns.park-your-domain.com" ],
                 "dyndns" : [ "dyndns2", "members.dyndns.org" ],
                 "no-ip" : [ "dyndns2", "dynupdate.no-ip.com" ],
-                "dnsomatic" : [ "dyndns2", "updates.dnsomatic.com" ]
+                "dnsomatic" : [ "dyndns2", "updates.dnsomatic.com" ],
+                "cloudflare" : [ "cloudflare", "www.cloudflare.com" ]
                 }
 
             if not settings.get('dynamicDnsServiceEnabled'):
