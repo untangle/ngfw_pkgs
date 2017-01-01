@@ -26,15 +26,15 @@ class DdclientManager:
 
         try:
             config = {
-                "zoneedit" : [ "zoneedit1", "dynamic.zoneedit.com" ],
-                "easydns" : [ "easydns", "members.easydns.com" ],
-                "dslreports" : [ "dslreports1", "www.dslreports.com" ],
-                "dnspark" : [ "dnspark", "www.dnspark.com" ],
-                "namecheap" : [ "namecheap", "dynamicdns.park-your-domain.com" ],
-                "dyndns" : [ "dyndns2", "members.dyndns.org" ],
-                "no-ip" : [ "dyndns2", "dynupdate.no-ip.com" ],
-                "dnsomatic" : [ "dyndns2", "updates.dnsomatic.com" ],
-                "cloudflare" : [ "cloudflare", "www.cloudflare.com" ]
+                "zoneedit" : [ "zoneedit1", "dynamic.zoneedit.com", False ],
+                "easydns" : [ "easydns", "members.easydns.com", False ],
+                "dslreports" : [ "dslreports1", "www.dslreports.com", False ],
+                "dnspark" : [ "dnspark", "www.dnspark.com", False ],
+                "namecheap" : [ "namecheap", "dynamicdns.park-your-domain.com", False ],
+                "dyndns" : [ "dyndns2", "members.dyndns.org", False ],
+                "no-ip" : [ "dyndns2", "dynupdate.no-ip.com", False ],
+                "dnsomatic" : [ "dyndns2", "updates.dnsomatic.com", False ],
+                "cloudflare" : [ "cloudflare", "www.cloudflare.com", True ]
                 }
 
             if not settings.get('dynamicDnsServiceEnabled'):
@@ -47,10 +47,13 @@ class DdclientManager:
 
             protocol = config[serviceName][0]
             server = config[serviceName][1]
+            use_ssl = config[serviceName][2]
             use_str = "web, web=checkip.dyndns.com/, web-skip='IP Address'"  
 
             file.write("pid=/var/run/ddclient.pid" + "\n")
             file.write("use=%s" % use_str + "\n")
+            if use_ssl:
+                file.write("ssl=yes" + "\n")
             file.write("protocol=%s" % protocol + "\n")
             file.write("login=%s" % str(settings.get('dynamicDnsServiceUsername')) + "\n")
             file.write("password=%s" % str(settings.get('dynamicDnsServicePassword')) + "\n")
