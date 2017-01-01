@@ -20,10 +20,12 @@ percent="`df --output=pcent ${DIR} | sed 1d | sed 's/%//'`"
 #percent="85"
 echo "`date -Iseconds`| DB ramdisk status: $percent%"
 
-# try to maintain approximately this amount of space used
-target_percent="40"
+# Only clean DB if the percentage of used ramdisk is more than the soft limit
+limit_percent="50"
+# When cleaning, try to reach a target percent of used ramdisk
+target_percent="35"
 
-if [ "$percent" -gt "$target_percent" ] ; then
+if [ "$percent" -gt "$limit_percent" ] ; then
 
     # delete the enough data to get approximately back to the target disk usage percent
     delete_percent="`awk \"BEGIN {printf \\\"%.0f\\\", ((($percent-$target_percent)/($percent))*100)}\" `"
