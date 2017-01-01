@@ -21,7 +21,7 @@ percent="`df --output=pcent ${DIR} | sed 1d | sed 's/%//'`"
 echo "`date -Iseconds`| DB ramdisk status: $percent%"
 
 # try to maintain approximately this amount of space used
-target_percent="50"
+target_percent="40"
 
 if [ "$percent" -gt "$target_percent" ] ; then
 
