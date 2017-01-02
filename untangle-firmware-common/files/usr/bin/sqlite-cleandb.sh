@@ -33,9 +33,6 @@ if [ "$percent" -gt "$limit_percent" ] ; then
 
     clean_db $delete_percent
 
-    sleep 10
-    echo "`date -Iseconds`| DB ramdisk status: $percent%"
-
     exit 0
 fi
 
