@@ -949,7 +949,7 @@
     "publicUrlMethod": "external",
     "publicUrlAddress": "hostname.example.com",
     "publicUrlPort": 443,
-    "version": 3,
+    "version": 4,
     "vlansEnabled": true
 }
 

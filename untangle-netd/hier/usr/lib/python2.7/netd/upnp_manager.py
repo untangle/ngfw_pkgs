@@ -192,8 +192,6 @@ get_listening_port()
 
 flush_upnp_iptables_rules()
 {
-        ${IPTABLES} -t filter -D filter-rules-input  --protocol tcp  -m comment --comment "UPNP daemon listener"  -m multiport  --destination-ports ${LISTENING_PORT}  -j RETURN >/dev/null 2>&1
-
         # Clean the nat tables
         ${IPTABLES} -t nat -F ${CHAIN} >/dev/null 2>&1
         ${IPTABLES} -t nat -D PREROUTING -j ${CHAIN} -m conntrack --ctstate NEW  >/dev/null 2>&1
@@ -207,8 +205,6 @@ flush_upnp_iptables_rules()
 
 insert_upnp_iptables_rules()
 {
-        ${IPTABLES} -t filter -I filter-rules-input  --protocol tcp  -m comment --comment "UPNP daemon listener"  -m multiport  --destination-ports ${LISTENING_PORT}  -j RETURN >/dev/null 2>&1
-
         # Initialize the PREROUTING chain first
         ${IPTABLES} -t nat -N ${CHAIN}
         ${IPTABLES} -t nat -A PREROUTING -j ${CHAIN} -m conntrack --ctstate NEW 
