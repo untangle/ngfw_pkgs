@@ -12,6 +12,9 @@ if [ -x "/etc/init.d/untangle-firmware-common" ]; then
   ourInit untangle-firmware-common restart
 fi
 
+# disable rsyslog by default on linksys
+update-rc.d rsyslog disable
+
 # remove old 12.1 conf
 rm -rf /etc/untangle/hardware/asus
 
