@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# remove old cron job
+rm -f /etc/cron.hourly/sqlite
