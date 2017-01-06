@@ -1,4 +1,0 @@
-#!/bin/sh
-
-/usr/bin/sqlite-cleandb.sh >> /var/log/uvm/reports.log 2>&1
-
