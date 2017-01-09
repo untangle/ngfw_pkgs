@@ -122,7 +122,10 @@ class QosManager:
         # and should be written when settings are saved.
         file.write("# QoS Settings: \n")
         file.write(("# %s" % str(qosSettings)) + "\n")
-        file.write("\n\n");
+        for intfSettings in interfaces:
+            if self.qosed_interface( intfSettings ):
+                file.write("# %s %s %s" % (intfSettings.get('name'),str(intfSettings.get('downloadBandwidthKbps')),str(intfSettings.get('uploadBandwidthKbps'))) + "\n")
+        file.write("\n\n")
 
         file.write("# Start QoS \n")
         file.write("/usr/share/untangle-netd/bin/qos-service.py start" + "\n")
