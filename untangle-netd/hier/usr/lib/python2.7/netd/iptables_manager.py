@@ -119,28 +119,47 @@ class IptablesManager:
         file.write("${IPTABLES} -t raw -I PREROUTING -j helpers" + "\n");
         file.write("\n");
 
-        file.write("${IPTABLES} -t raw -A helpers -p udp --dport 1719 -j CT --helper RAS" + "\n");
-        file.write("${IPTABLES} -t raw -A helpers -p tcp --dport 1720 -j CT --helper Q.931" + "\n");
+        file.write("uname -r | grep -q '^4'" + "\n");
+        file.write("KERN_4_X=$?" + "\n");
+        file.write("\n");
+
+        file.write("if [ ${KERN_4_X} -eq 0 ] ; then" + "\n");
+        file.write("\n");
+
+        file.write("\t${IPTABLES} -t raw -A helpers -p udp --dport 1719 -j CT --helper RAS" + "\n");
+        file.write("\t${IPTABLES} -t raw -A helpers -p tcp --dport 1720 -j CT --helper Q.931" + "\n");
         file.write("\n");
 
         if settings.get('enableSipNatHelper'):
-            file.write("${IPTABLES} -t raw -A helpers -p tcp --dport 5060 -j CT --helper sip" + "\n");
-            file.write("${IPTABLES} -t raw -A helpers -p udp --dport 5060 -j CT --helper sip" + "\n");
-            file.write("${IPTABLES} -t raw -A helpers -p tcp --dport 5061 -j CT --helper sip" + "\n");
-            file.write("${IPTABLES} -t raw -A helpers -p udp --dport 5061 -j CT --helper sip" + "\n");
+            file.write("\t${IPTABLES} -t raw -A helpers -p tcp --dport 5060 -j CT --helper sip" + "\n");
+            file.write("\t${IPTABLES} -t raw -A helpers -p udp --dport 5060 -j CT --helper sip" + "\n");
+            file.write("\t${IPTABLES} -t raw -A helpers -p tcp --dport 5061 -j CT --helper sip" + "\n");
+            file.write("\t${IPTABLES} -t raw -A helpers -p udp --dport 5061 -j CT --helper sip" + "\n");
             file.write("\n");
         
-        file.write("# only process bypassed sessions, the ftp-casing will handle scanned sessions" + "\n")
-        file.write("${IPTABLES} -t raw -A helpers -m connmark --mark 0x01000000/0x01000000 -p tcp --dport 21 -j CT --helper ftp" + "\n");
+        file.write("\t# only process bypassed sessions, the ftp-casing will handle scanned sessions" + "\n")
+        file.write("\t${IPTABLES} -t raw -A helpers -m connmark --mark 0x01000000/0x01000000 -p tcp --dport 21 -j CT --helper ftp" + "\n");
         file.write("\n");
 
-        file.write("${IPTABLES} -t raw -A helpers -p tcp --dport 6667 -j CT --helper irc" + "\n");
+        file.write("\t${IPTABLES} -t raw -A helpers -p tcp --dport 6667 -j CT --helper irc" + "\n");
         file.write("\n");
 
-        file.write("${IPTABLES} -t raw -A helpers -p tcp --dport 1723 -j CT --helper pptp" + "\n");
+        # FIXME - in testing it seems this PPTP helper does not work
+        # The GRE session does not get redirected
+        # the nf_nat_pptp and associated GRE plugin do work correctly, but is deprecated in newer kernels
+        file.write("\t${IPTABLES} -t raw -A helpers -p tcp --dport 1723 -j CT --helper pptp" + "\n");
         file.write("\n");
 
-        file.write("${IPTABLES} -t raw -A helpers -p udp --dport 69 -j CT --helper tftp" + "\n");
+        file.write("\t${IPTABLES} -t raw -A helpers -p udp --dport 69 -j CT --helper tftp" + "\n");
+        file.write("\n");
+
+        file.write("\t${IPTABLES} -t raw -A helpers -p udp --dport 137 -j CT --helper netbios-ns" + "\n");
+        file.write("\n");
+
+        file.write("\t${IPTABLES} -t raw -A helpers -p udp --dport 161 -j CT --helper snmp" + "\n");
+        file.write("\n");
+
+        file.write("fi" + "\n");
         file.write("\n");
 
         file.flush()
