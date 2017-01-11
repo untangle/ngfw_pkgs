@@ -18,4 +18,8 @@ fi
 # no longer run postgres
 rm -f /etc/untangle/hardware/firmware.d/35postgres
 
+# 12.2
+# remove old cron job
+rm -f /etc/cron.hourly/sqlite
+
 exit 0
