@@ -4,10 +4,10 @@ set -x
 set -e
 
 # load modules
-modprobe compat
 modprobe cfg80211
 modprobe mac80211
-modprobe mwlwifi
+modprobe ath9k
+modprobe ath10k_pci
 
 # make sure they show up in ifconfig
 ifconfig wlan0 up
