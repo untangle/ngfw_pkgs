@@ -540,10 +540,10 @@
                 "isWirelessInterface": false,
                 "javaClass": "com.untangle.uvm.network.InterfaceSettings",
                 "name": "External",
-                "physicalDev": "eth0",
+                "physicalDev": "eth1",
                 "raEnabled": false,
-                "symbolicDev": "eth0",
-                "systemDev": "eth0",
+                "symbolicDev": "eth1",
+                "systemDev": "eth1",
                 "v4Aliases": {
                     "javaClass": "java.util.LinkedList",
                     "list": []
@@ -587,10 +587,10 @@
                 "isWirelessInterface": false,
                 "javaClass": "com.untangle.uvm.network.InterfaceSettings",
                 "name": "Internal",
-                "physicalDev": "eth1",
+                "physicalDev": "eth0",
                 "raEnabled": false,
-                "symbolicDev": "br.eth1",
-                "systemDev": "eth1",
+                "symbolicDev": "br.eth0",
+                "systemDev": "eth0",
                 "v4Aliases": {
                     "javaClass": "java.util.LinkedList",
                     "list": []
@@ -641,7 +641,7 @@
                     "BRIDGED",
                     "DISABLED"
                 ],
-                "symbolicDev": "br.eth1",
+                "symbolicDev": "br.eth0",
                 "systemDev": "wlan0",
                 "v4Aliases": {
                     "javaClass": "java.util.LinkedList",
@@ -692,7 +692,7 @@
                     "BRIDGED",
                     "DISABLED"
                 ],
-                "symbolicDev": "br.eth1",
+                "symbolicDev": "br.eth0",
                 "systemDev": "wlan1",
                 "v4Aliases": {
                     "javaClass": "java.util.LinkedList",
