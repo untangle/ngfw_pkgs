@@ -1,0 +1,13 @@
+# hack to work around issue NGFW-10208
+
+${IPTABLES} -t mangle -D mark-src-intf -m mark --mark 0/0x00FF -p udp --dport 67 -j MARK --set-mark 0x0002/0x00FF -m comment --comment "set mark of stuff coming in the bridge as internal if unsure" >/dev/null 2>&1
+${IPTABLES} -t mangle -D mark-src-intf -m mark --mark 0/0x00FF -i br.eth1 -j MARK --set-mark 0x0002/0x00FF -m comment --comment "set mark of stuff coming in the bridge as internal if unsure" >/dev/null 2>&1
+
+POSITION="`${IPTABLES} -t mangle -L mark-src-intf --line-numbers | grep 'Save src interface' | awk '{print $1}'`"
+
+if [ -z "$POSITION" ] ; then
+  echo "Unable to find Save mark rule"
+else
+  ${IPTABLES} -t mangle -I mark-src-intf $POSITION -m mark --mark 0/0x00FF -p udp --dport 67 -j MARK --set-mark 0x0002/0x00FF -m comment --comment "set mark of stuff coming in the bridge as internal if unsure"
+  ${IPTABLES} -t mangle -I mark-src-intf $POSITION -m mark --mark 0/0x00FF -i br.eth1 -j MARK --set-mark 0x0002/0x00FF -m comment --comment "set mark of stuff coming in the bridge as internal if unsure"
+fi

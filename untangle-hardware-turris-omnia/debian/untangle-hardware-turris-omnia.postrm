@@ -1,0 +1,12 @@
+#!/bin/bash
+
+SERVICE=untangle-hardware-turris-omnia
+
+case $1 in
+  purge)
+    rm -f /etc/init.d/$SERVICE
+    update-rc.d untangle-hardware-turris-omnia remove >/dev/null # lintian...
+    ;;
+esac
+
+exit 0
