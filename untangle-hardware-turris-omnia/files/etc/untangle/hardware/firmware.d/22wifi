@@ -10,7 +10,9 @@ modprobe ath9k
 modprobe ath10k_pci
 
 # make sure they show up in ifconfig
-ifconfig wlan0 up
-ifconfig wlan1 up
+for i in 0 1 ; do
+  ifconfig wlan${i} up
+  iw dev wlan${i} set 4addr on
+done
 
 exit 0
