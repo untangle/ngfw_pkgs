@@ -9,7 +9,9 @@ modprobe mac80211
 modprobe ath9k
 modprobe ath10k_pci
 
-# make sure they show up in ifconfig
+# make sure they show up in ifconfig, but sleep a bit before that to
+# allow for loading of ath10k firmware blob
+sleep 2
 for i in 0 1 ; do
   ifconfig wlan${i} up
   iw dev wlan${i} set 4addr on
