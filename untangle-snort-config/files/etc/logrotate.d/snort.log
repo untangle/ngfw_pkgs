@@ -1,9 +1,10 @@
 /var/log/snort.log {
-	weekly
-	rotate 4
+	rotate 2
+	size 500k
 	missingok
 	notifempty
 	compress
 	nocreate
+	copytruncate
 }
 
