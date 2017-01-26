@@ -99,6 +99,11 @@
                 "javaClass": "com.untangle.uvm.network.DeviceSettings"
             },
             {
+                "deviceName": "eth2",
+                "duplex": "AUTO",
+                "javaClass": "com.untangle.uvm.network.DeviceSettings"
+            },
+            {
                 "deviceName": "wlan0",
                 "duplex": "AUTO",
                 "javaClass": "com.untangle.uvm.network.DeviceSettings"
@@ -616,6 +621,53 @@
                 "vrrpEnabled": false,
                 "wirelessPassword": "",
                 "wirelessSsid": ""
+            },
+            {
+                "addressed": false,
+                "bridged": true,
+                "bridgedTo": 2,
+                "configType": "BRIDGED",
+                "dhcpDnsOverride": "",
+                "dhcpEnabled": false,
+                "dhcpOptions": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "disabled": false,
+                "interfaceId": 3,
+                "isVlanInterface": false,
+                "isWan": false,
+                "isWirelessInterface": false,
+                "javaClass": "com.untangle.uvm.network.InterfaceSettings",
+                "name": "eth2",
+                "physicalDev": "eth2",
+                "raEnabled": false,
+                "supportedConfigTypes": [
+                    "BRIDGED",
+                    "DISABLED"
+                ],
+                "symbolicDev": "br.eth0",
+                "systemDev": "eth2",
+                "v4Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v4ConfigType": "STATIC",
+                "v4NatEgressTraffic": false,
+                "v4NatIngressTraffic": false,
+                "v4PPPoEPassword": "",
+                "v4PPPoEUsePeerDns": false,
+                "v4PPPoEUsername": "",
+                "v6Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v6ConfigType": "STATIC",
+                "vrrpAliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "vrrpEnabled": false,
             },
             {
                 "addressed": false,
