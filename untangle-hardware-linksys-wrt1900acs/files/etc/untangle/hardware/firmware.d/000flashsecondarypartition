@@ -3,14 +3,25 @@
 set -e
 
 FLAG_FLASHED="/var/lib/untangle-flashed"
-FIRST_OS_PARTITION="/dev/mtdblock4"
-SECOND_OS_PARTITION="/dev/mtdblock6"
+KERNEL_VERSION=$(uname -r)
+PART_ONE="/dev/mtdblock2"
+PART_TWO="/dev/mtdblock4"
 
-# exit if we've already done the job
-[ ! -f $FLAG_FLASHED ] || exit 0
+## functions
 
-# the 1st 5 megs are enough
-dd if=$FIRST_OS_PARTITION of=$SECOND_OS_PARTITION bs=1M count=5
+hashPart() {
+  # the 1st 100k is enough for a fingerprint
+  dd if=$1 bs=100k count=1 2> /dev/null | md5sum
+}
 
-date -Iseconds > $FLAG_FLASHED
+## main
 
+# remove older, unused flag
+rm -f $FLAG_FLASHED
+
+# re-flash both partitions if they're not the same
+if [[ $(hashPart $PART_ONE) != $(hashPart $PART_TWO) ]] ; then
+  for p in $PART_ONE $PART_TWO ; do
+    dd if=/boot/vmlinux-${KERNEL_VERSION}.trx of=$p bs=1M 2> /dev/null
+  done
+fi
