@@ -624,16 +624,16 @@
             },
             {
                 "addressed": false,
-                "bridged": true,
+                "bridged": disabled,
                 "bridgedTo": 2,
-                "configType": "BRIDGED",
+                "configType": "DISABLED",
                 "dhcpDnsOverride": "",
                 "dhcpEnabled": false,
                 "dhcpOptions": {
                     "javaClass": "java.util.LinkedList",
                     "list": []
                 },
-                "disabled": false,
+                "disabled": true,
                 "interfaceId": 3,
                 "isVlanInterface": false,
                 "isWan": false,
@@ -646,7 +646,7 @@
                     "BRIDGED",
                     "DISABLED"
                 ],
-                "symbolicDev": "br.eth0",
+                "symbolicDev": "eth2",
                 "systemDev": "eth2",
                 "v4Aliases": {
                     "javaClass": "java.util.LinkedList",
