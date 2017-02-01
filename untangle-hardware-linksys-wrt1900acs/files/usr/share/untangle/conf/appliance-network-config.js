@@ -578,8 +578,8 @@
                     "javaClass": "java.util.LinkedList",
                     "list": []
                 },
-                "dhcpRangeEnd": "192.168.1.200",
-                "dhcpRangeStart": "192.168.1.100",
+                "dhcpRangeEnd": "192.168.11.200",
+                "dhcpRangeStart": "192.168.11.100",
                 "disabled": false,
                 "interfaceId": 2,
                 "isVlanInterface": false,
@@ -601,7 +601,7 @@
                 "v4PPPoEPassword": "",
                 "v4PPPoEUsePeerDns": false,
                 "v4PPPoEUsername": "",
-                "v4StaticAddress": "192.168.1.1",
+                "v4StaticAddress": "192.168.11.1",
                 "v4StaticNetmask": "255.255.0.0",
                 "v4StaticPrefix": 16,
                 "v6Aliases": {

@@ -1,6 +1,4 @@
-#! /bin/sh
-
-set -e
+#! /bin/bash
 
 FLAG_FLASHED="/var/lib/untangle-flashed"
 KERNEL_VERSION=$(uname -r)
@@ -22,6 +20,8 @@ rm -f $FLAG_FLASHED
 # re-flash both partitions if they're not the same
 if [[ $(hashPart $PART_ONE) != $(hashPart $PART_TWO) ]] ; then
   for p in $PART_ONE $PART_TWO ; do
+    echo "Flashing /boot/vmlinux-${KERNEL_VERSION}.trx to $p ..."
     dd if=/boot/vmlinux-${KERNEL_VERSION}.trx of=$p bs=1M 2> /dev/null
+    echo "Flashing /boot/vmlinux-${KERNEL_VERSION}.trx to $p ... done"
   done
 fi
