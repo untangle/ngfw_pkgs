@@ -152,7 +152,7 @@
                     ]
                 },
                 "description": "Allow SSH",
-                "enabled": true,
+                "enabled": false,
                 "ipv6Enabled": false,
                 "javaClass": "com.untangle.uvm.network.FilterRule",
                 "readOnly": true,
@@ -184,7 +184,7 @@
                     ]
                 },
                 "description": "Allow HTTPS on WANs",
-                "enabled": true,
+                "enabled": false,
                 "ipv6Enabled": false,
                 "javaClass": "com.untangle.uvm.network.FilterRule",
                 "readOnly": true,
