@@ -36,11 +36,6 @@ cp $xorg_safe_conf /etc/X11/xorg-untangle-safe.conf
 
 chown -R kiosk:kiosk ${KIOSK_HOME}
 
-# Moved here from untangle-gateway
-chsh -s /bin/zsh root
-find /root/.zsh -type f -exec chmod 640 {} \;
-find /root/.zsh -type d -exec chmod 750 {} \;
-
 echo >| /etc/motd
 echo >| /etc/motd.tail
 
