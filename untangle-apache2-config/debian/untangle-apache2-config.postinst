@@ -109,6 +109,6 @@ fi
 apply_oem="/usr/share/untangle/bin/apply-oem.sh"
 [ -f $apply_oem ] && $apply_oem
 
-/etc/init.d/apache2 reload
+/etc/init.d/apache2 restart
 
 exit 0
