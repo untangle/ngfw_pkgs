@@ -1,5 +1,13 @@
 #!/bin/bash
 
+ourInit() {
+  if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
+    invoke-rc.d $1 $2
+  else
+    /etc/init.d/$1 $2
+  fi
+}
+
 PEMFILE=/etc/apache2/ssl/apache.pem
 ALIAS=$(hostname -f)
 
@@ -109,6 +117,6 @@ fi
 apply_oem="/usr/share/untangle/bin/apply-oem.sh"
 [ -f $apply_oem ] && $apply_oem
 
-/etc/init.d/apache2 restart
+ourInit apache2 restart
 
 exit 0
