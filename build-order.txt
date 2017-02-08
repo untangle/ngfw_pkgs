@@ -1,4 +1,4 @@
-untangle-turris-omnia			jessie
+untangle-hardware-turris-omnia		jessie
 untangle-firmware-common		jessie
 untangle-broadcom-wireless              jessie
 untangle-stunnel-config	             	jessie
