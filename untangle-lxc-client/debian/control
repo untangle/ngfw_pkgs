@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-lxc-client
 Architecture: any
-Depends: lxc, cgroupfs-mount
+Depends: lxc, cgroupfs-mount, untangle-netd (>= 13.0.0.20170209)
 Description: The Untangle LXC client
  Provides the basic setup for putting an LXC container "behind" a
  local Untangle VM install
