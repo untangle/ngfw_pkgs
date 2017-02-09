@@ -2,7 +2,10 @@
 
 NAME="client"
 
+# FIXME: use local dnsmasq, ideally via 192.168.235.1
+echo "Setting DNS for containe ${NAME} to 8.8.8.8"
+echo nameserver 8.8.8.8 >| /var/lib/lxc/${NAME}/rootfs/etc/resolv.conf
+
 echo "Starting LXC container ${NAME} in the background..."
 lxc-start -d -n $NAME
 echo "You can attach to it via lxc-attach -n $NAME"
-
