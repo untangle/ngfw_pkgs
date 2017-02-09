@@ -38,8 +38,8 @@ build-indep-stamp:
 
 build-arch: configure build-arch-stamp
 build-arch-stamp:
-	sudo lxc-create -n test -t debian -- -r jessie
-	sudo tar -C /var/cache/lxc/debian/rootfs-jessie-$(ARCH) -cavf ./debian/untangle-lxc-client/var/lib/untangle-lxc-client/rootfs-jessie-$(ARCH).tar.bz2 .
+	# sudo lxc-create -n test -t debian -- -r jessie
+	# sudo tar -C /var/cache/lxc/debian/rootfs-jessie-$(ARCH) -cavf ./debian/untangle-lxc-client/var/lib/untangle-lxc-client/rootfs-jessie-$(ARCH).tar.bz2 .
 	touch $@
 
 clean:
