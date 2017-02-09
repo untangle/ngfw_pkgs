@@ -234,6 +234,9 @@ class InterfacesManager:
         self.interfacesFile.write("## DO NOT EDIT. Changes will be overwritten.\n");
         self.interfacesFile.write("\n\n");
 
+        self.interfacesFile.write("source-directory interfaces.d\n");
+        self.interfacesFile.write("\n\n");
+
         self.interfacesFile.write("## This is a fake interface that launches the pre-networking-restart\n");
         self.interfacesFile.write("## hooks using the if-up.d scripts when IFACE=networking_pre_restart_hook\n");
         self.interfacesFile.write("auto networking_pre_restart_hook\n");
