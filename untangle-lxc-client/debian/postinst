@@ -11,8 +11,8 @@ else
 fi
 }
 
-mkdir -p $LXC_CACHE_DIR
-tar -C $LXC_CACHE_DIR -xaf /var/lib/untangle-lxc-client/rootfs-jessie-${ARCH}.tar.bz2
+# mkdir -p $LXC_CACHE_DIR
+# tar -C $LXC_CACHE_DIR -xaf /var/lib/untangle-lxc-client/rootfs-jessie-${ARCH}.tar.bz2
 
 cp -f /usr/share/untangle-lxc-client/default.conf /etc/lxc
 
