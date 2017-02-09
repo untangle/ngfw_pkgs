@@ -47,5 +47,4 @@ untangle-system-config                  jessie
 untangle-apache2-config                 jessie
 untangle-netd			     	jessie
 untangle-nflogd			     	jessie
-untangle-webfilter-init                 jessie
 untangle-geoip-database                 jessie
