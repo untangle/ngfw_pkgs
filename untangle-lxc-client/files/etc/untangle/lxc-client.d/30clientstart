@@ -1,0 +1,8 @@
+#! /bin/bash
+
+NAME="client"
+
+echo "Starting LXC container ${NAME} in the background..."
+lxc-start -d -n $NAME
+echo "You can attach to it via lxc-attach -n $NAME"
+

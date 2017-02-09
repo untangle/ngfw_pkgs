@@ -1,0 +1,5 @@
+untangle-lxc-client (11.0.0-1) stable; urgency=low
+
+  * Initial release
+
+ -- Sebastien Delafond <sdelafond@gmail.com>  Thu, 10 Nov 2016 16:20:51 +0100

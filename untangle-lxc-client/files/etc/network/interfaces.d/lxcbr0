@@ -1,0 +1,7 @@
+iface lxcbr0 inet static
+  bridge_ports none
+  bridge_fd 0
+  bridge_maxwait 0
+  address 192.168.235.1
+  netmask 255.255.255.0
+  up iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE

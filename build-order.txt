@@ -1,3 +1,4 @@
+untangle-lxc-client			jessie
 untangle-hardware-turris-omnia		jessie
 untangle-firmware-common		jessie
 untangle-broadcom-wireless              jessie
