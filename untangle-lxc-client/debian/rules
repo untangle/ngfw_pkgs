@@ -28,16 +28,14 @@ configure-stamp:
 
 build: build-indep build-arch
 
-build-indep: configure build-indep-stamp
-build-indep-stamp:
+build-indep: configure
+
+build-arch: configure build-arch-stamp
+build-arch-stamp:
 	mkdir -p ./debian/tmp
 	dh_installdirs -A -v
 	for i in `cat debian/untangle-lxc-client.dirs` ; do mkdir -p debian/tmp/$$i ; done
 	cp -r ./files/* ./debian/tmp/
-	touch $@
-
-build-arch: configure build-arch-stamp
-build-arch-stamp:
 	# sudo lxc-create -n test -t debian -- -r jessie
 	# sudo tar -C /var/cache/lxc/debian/rootfs-jessie-$(ARCH) -cavf ./debian/untangle-lxc-client/var/lib/untangle-lxc-client/rootfs-jessie-$(ARCH).tar.bz2 .
 	touch $@
