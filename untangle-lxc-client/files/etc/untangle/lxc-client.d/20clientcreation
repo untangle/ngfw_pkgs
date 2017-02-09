@@ -3,12 +3,12 @@
 set -e
 
 NAME="client"
-PACKAGES="curl,iputils-ping,nvi" # bare minimum
+#PACKAGES="curl,iputils-ping,nvi" # bare minimum
 
 if lxc-info -n $NAME > /dev/null ; then
   echo "LXC container $NAME already exists"
 else
   echo "Creating LXC container ${NAME}..."
-  lxc-create -n $NAME -t debian -- -r jessie --packages $PACKAGES
+  lxc-create -n $NAME -t debian -- -r jessie # --packages $PACKAGES
   echo "LXC container ${NAME} is ready"
 fi
