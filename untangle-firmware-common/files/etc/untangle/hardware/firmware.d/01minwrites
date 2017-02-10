@@ -50,3 +50,10 @@ if ! egrep -q '^log_selector\s*=.*all' /etc/exim4/exim4.conf.template ; then
     /usr/sbin/update-exim4.conf
 fi
 
+# Change exit spool dir to tmp dir
+if ! egrep -q '^SPOOLDIR\s*=.*/tmp/exim' /etc/exim4/exim4.conf.template ; then
+    echo "changing exim spool directory..."
+    sed -e 's|^SPOOLDIR\s*=.*|SPOOLDIR = /tmp/exim|' -i /etc/exim4/exim4.conf.template
+    /usr/sbin/update-exim4.conf
+fi
+
