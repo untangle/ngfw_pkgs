@@ -1,0 +1,52 @@
+#! /bin/bash
+
+function commentOutOption
+{
+    # first check that it isn't already disabled
+    if egrep -q "^\s*$2\s*.*" $1 ; then
+        echo "Disabling option $2 in $1"
+        # search for line and comment it out
+        sed -e "/^\s*$2\s*.*/s/^#*/#/" -i $1
+    fi
+}
+
+# mount with relatime to minimize writes
+mount -o remount,relatime,nodiratime /
+
+# prevent writes to /var/log/btmp (lastlog and wtmp still written)
+chattr +i /var/log/btmp
+
+# link /var/tmp to /tmp
+# /var/tmp is traditionally used for tmp files that should presist through a reboot
+# sqlite uses /var/tmp during vacuums and despite
+# https://www.sqlite.org/tempfiles.html
+# setting TMPDIR SQLITE_TMPDIR nor temp_store_directory seems to have no effect
+# as such the only fix seems to be just to relink /var/tmp to /tmp
+# We check that it isnt already a link to minimize writes on startup
+if [ ! -L /var/tmp ] ; then
+    echo "Linking /var/tmp to /tmp..."
+    rm -rf /var/tmp
+    ln -s /tmp /var/tmp
+fi
+
+# Disable apache logging - it logs even with syslog disabled
+commentOutOption /etc/apache2/sites-available/uvm.conf CustomLog
+commentOutOption /etc/apache2/sites-available/uvm.conf ErrorLog
+if ! egrep -q 'ErrorLog.*/dev/null' /etc/apache2/apache2.conf ; then
+    echo "Disabling apache logging..."
+    sed -e 's|ErrorLog\s*.*|ErrorLog /dev/null|' -i /etc/apache2/apache2.conf
+fi
+
+# Disable pyconnector logging
+if ! egrep -q '/dev/null' /etc/default/pyconnector ; then
+    echo "Disabling pyconnector logging..."
+    sed -e 's|^OPTIONS\s*=.*|OPTIONS="-l /dev/null"|' -i /etc/default/pyconnector
+fi
+
+# Disable exim logging
+if ! egrep -q '^log_selector\s*=.*all' /etc/exim4/exim4.conf.template ; then
+    echo "Disabling exim logging..."
+    sed -e 's/^log_selector\s*=.*/log_selector = -all/' -i /etc/exim4/exim4.conf.template
+    /usr/sbin/update-exim4.conf
+fi
+
