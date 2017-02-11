@@ -107,6 +107,12 @@ perms () {
    fi
 }
 
+# Only run if clamd running
+if [ ! -f /var/run/clamav/clamd.pid ] ; then
+    echo "clamd not running - exit"
+    exit 0
+fi
+
 # Take input from the commandline and process.
 while getopts 'bc:defg:himrs:tvw' option ; do
    case $option in
@@ -613,12 +619,6 @@ comment () {
 log () {
    test "$enable_logging" = "yes" && echo `date "+%b %d %T"` "${@:-}" >> "$log_file_path/$log_file_name"
 }
-
-# Only run if clamd running
-if [ ! -f /var/run/clamav/clamd.pid ] ; then
-    echo "clamd not running - exit"
-    exit 0
-fi
 
 # Check to see if the script's "USER CONFIGURATION FILE" has been completed.
 if [ "$user_configuration_complete" != "yes" ]
