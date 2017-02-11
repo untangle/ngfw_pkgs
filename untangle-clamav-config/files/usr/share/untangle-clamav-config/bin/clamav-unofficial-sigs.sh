@@ -107,12 +107,6 @@ perms () {
    fi
 }
 
-# Only run if clamd running
-if [ ! -f /var/run/clamav/clamd.pid ] ; then
-    echo "clamd not running - exit"
-    exit 0
-fi
-
 # Take input from the commandline and process.
 while getopts 'bc:defg:himrs:tvw' option ; do
    case $option in
