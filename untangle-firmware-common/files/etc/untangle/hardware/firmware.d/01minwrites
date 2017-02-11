@@ -57,3 +57,15 @@ if ! egrep -q '^SPOOLDIR\s*=.*/tmp/exim' /etc/exim4/exim4.conf.template ; then
     /usr/sbin/update-exim4.conf
 fi
 
+# mv NTP drift file to tmp
+# Because the clock is reset on each reboot, there is no point to saving drift on disk
+if ! egrep -q 'driftfile /tmp/ntp.drift' /etc/ntp.conf ; then
+    echo "Moving ntp drift file to /tmp..."
+    sed -e 's|^driftfile\s*.*|driftfile /tmp/ntp.drift|' -i /etc/ntp.conf
+fi
+
+# move dnsmasq.leases file from /var/lib/misc/dnsmasq.leases to /tmp/dnsmasq.leases
+if [ ! -f /etc/dnsmasq.d/dhcp-leasefile ] ; then
+    echo "Moving dnsmasq lease file to /tmp..."
+    echo "dhcp-leasefile=/tmp/dnsmasq.leases" > /etc/dnsmasq.d/dhcp-leasefile
+fi
