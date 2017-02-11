@@ -34,8 +34,6 @@ class DhcpManager:
 
         file.write(r"""
 
-mkdir -p /var/log/uvm/
-exec >> /var/log/uvm/dhcp.log 2>&1
 """)
 
         for interface_settings in settings['interfaces']['list']:
@@ -69,7 +67,7 @@ DEBUG=debug
 
 debug()
 {
-    /bin/echo -e "[DEBUG: `date`] ${*}"
+    /bin/echo -e "[DEBUG: `date`] ${*}" | logger -t uvmdhcp
 }
 
 ## Return a list of interfaces that are in bridge. 
@@ -216,16 +214,13 @@ ${DEBUG} "dhclient-enter-hooks.d/netd_dhclient-enter-hook EXIT  [ reason: \"$rea
 
         file.write(r"""
 
-mkdir -p /var/log/uvm/
-exec >> /var/log/uvm/dhcp.log 2>&1
-
 ## Debug function
 #DEBUG=/bin/true
 DEBUG=debug
 
 debug()
 {
-    /bin/echo -e "[DEBUG: `date`] ${*}"
+    /bin/echo -e "[DEBUG: `date`] ${*}" | logger -t uvmdhcp
 }
 
 refresh_routes()
