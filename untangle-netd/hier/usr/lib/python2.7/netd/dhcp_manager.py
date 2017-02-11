@@ -67,7 +67,8 @@ DEBUG=debug
 
 debug()
 {
-    /bin/echo -e "[DEBUG: `date`] ${*}" | logger -t uvmdhcp
+    #/bin/echo -e "[DEBUG: `date`] ${*}"
+    /bin/echo -e "${*}" | logger -t uvmdhcp
 }
 
 ## Return a list of interfaces that are in bridge. 
@@ -220,7 +221,8 @@ DEBUG=debug
 
 debug()
 {
-    /bin/echo -e "[DEBUG: `date`] ${*}" | logger -t uvmdhcp
+    #/bin/echo -e "[DEBUG: `date`] ${*}"
+    /bin/echo -e "${*}" | logger -t uvmdhcp
 }
 
 refresh_routes()
