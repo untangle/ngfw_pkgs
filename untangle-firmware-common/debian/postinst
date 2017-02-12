@@ -15,8 +15,9 @@ fi
 
 
 # 12.2
-# no longer run postgres
+# remove old scripts
 rm -f /etc/untangle/hardware/firmware.d/35postgres
+rm -f /etc/untangle/hardware/firmware.d/01remountroot
 
 # 12.2
 # remove old cron job
