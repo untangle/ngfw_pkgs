@@ -49,6 +49,10 @@ if ! egrep -q '^log_selector\s*=.*all' /etc/exim4/exim4.conf.template ; then
     sed -e 's/^log_selector\s*=.*/log_selector = -all/' -i /etc/exim4/exim4.conf.template
     /usr/sbin/update-exim4.conf
 fi
+if ! egrep -q '^log_selector\s*=.*all' /etc/exim4/conf.d/main/90_exim4-config_log_selector ; then
+    sed -e 's/^log_selector\s*=.*/log_selector = -all/' -i /etc/exim4/conf.d/main/90_exim4-config_log_selector
+    /usr/sbin/update-exim4.conf
+fi
 
 # Change exit spool dir to tmp dir
 if ! egrep -q '^SPOOLDIR\s*=.*/tmp/exim' /etc/exim4/exim4.conf.template ; then
@@ -69,3 +73,12 @@ if [ ! -f /etc/dnsmasq.d/dhcp-leasefile ] ; then
     echo "Moving dnsmasq lease file to /tmp..."
     echo "dhcp-leasefile=/tmp/dnsmasq.leases" > /etc/dnsmasq.d/dhcp-leasefile
 fi
+
+# remove man cron job from daily & weekly to once a month
+if [ -f /etc/cron.daily/man-db ] ; then
+    mv -f /etc/cron.daily/man-db /etc/cron.monthly/man-db-daily
+fi
+if [ -f /etc/cron.weekly/man-db ] ; then
+    mv -f /etc/cron.weekly/man-db /etc/cron.monthly/man-db-weekly
+fi
+
