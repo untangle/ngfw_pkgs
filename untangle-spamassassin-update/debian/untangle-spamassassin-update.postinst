@@ -19,6 +19,9 @@ grep -q -F 'touch /tmp/sa-update.ran' /etc/cron.daily/spamassassin || sed -i -e 
 # As a result all future upgrades fail because it never re-downloads them
 grep -q -F 'find /var/lib/spamassassin' /etc/cron.daily/spamassassin || sed -i -e '/^umask.*/i find /var/lib/spamassassin/ -type f -name "*tar.gz*" -exec rm {} \\;' /etc/cron.daily/spamassassin
 
+# change cronjob to only run if spamd is running
+grep -q -F '/var/run/spamd.pid' /etc/cron.daily/spamassassin || sed -i -e '/^CRON=.*/i test -f /var/run/spamd.pid || exit 0' /etc/cron.daily/spamassassin
+
 # disable sleep as it sleeps all cron jobs randomly
 sed -i -e 's/^\s*sleep\(.*\)/\# sleep \1/' /etc/cron.daily/spamassassin
 

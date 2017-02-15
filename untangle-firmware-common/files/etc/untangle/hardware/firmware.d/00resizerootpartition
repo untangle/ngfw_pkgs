@@ -2,6 +2,12 @@
 
 set -e
 
+if grep -q "TURRIS OMNIA" /usr/share/untangle/conf/appliance-model ; then
+  # we don't need to resize anything on the Turris Omnia, as we run
+  # from the internal disk and it's already been properly flashed
+  exit 0
+fi
+
 PART=1 # we work on the 1st partition
 FLAG_PART="/var/lib/untangle-resized-part"
 FLAG_FS="/var/lib/untangle-resized-fs"
