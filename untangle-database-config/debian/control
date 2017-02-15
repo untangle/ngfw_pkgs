@@ -1,0 +1,13 @@
+Source: untangle-database-config
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.8.0
+
+Package: untangle-database-config
+Architecture: any
+Depends: untangle-postgresql-config [!armel !armhf], sqlite3 [armel armhf], python-sqlite [armel armhf]
+Description: Untangle Database config
+ The Untangle database config

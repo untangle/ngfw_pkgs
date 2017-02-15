@@ -1,3 +1,4 @@
+untangle-database-config		jessie
 untangle-lxc-client			jessie
 untangle-hardware-turris-omnia		jessie
 untangle-firmware-common		jessie
