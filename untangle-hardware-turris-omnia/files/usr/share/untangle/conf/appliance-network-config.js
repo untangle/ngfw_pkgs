@@ -718,7 +718,7 @@
                 "wirelessChannel": -1,
                 "wirelessEncryption": "WPA2",
                 "wirelessPassword": "12345678",
-                "wirelessSsid": "UntangleLinksys"
+                "wirelessSsid": "UntangleOmnia"
             },
             {
                 "addressed": false,
@@ -766,10 +766,10 @@
                     "list": []
                 },
                 "vrrpEnabled": false,
-                "wirelessChannel": -2,
+                "wirelessChannel": 36,
                 "wirelessEncryption": "WPA2",
                 "wirelessPassword": "12345678",
-                "wirelessSsid": "UntangleLinksys5"
+                "wirelessSsid": "UntangleOmnia5"
             }
         ]
     },
