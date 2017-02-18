@@ -44,21 +44,28 @@ if ! egrep -q '/dev/null' /etc/default/pyconnector ; then
 fi
 
 # Disable exim logging
-if ! egrep -q '^log_selector\s*=.*all' /etc/exim4/exim4.conf.template ; then
-    echo "Disabling exim logging..."
-    sed -e 's/^log_selector\s*=.*/log_selector = -all/' -i /etc/exim4/exim4.conf.template
-    /usr/sbin/update-exim4.conf
+# it appears setting log_selector = -all does not work
+# so instead just link the log file to /tmp
+mkdir -p /tmp/exim
+if [ ! -L /var/log/exim4 ] ; then
+    echo "Linking /var/log/exim4/ to /tmp/exim..."
+    rm -rf /var/log/exim4
+    ln -s /tmp/exim /var/log/exim4
 fi
-if ! egrep -q '^log_selector\s*=.*all' /etc/exim4/conf.d/main/90_exim4-config_log_selector ; then
-    sed -e 's/^log_selector\s*=.*/log_selector = -all/' -i /etc/exim4/conf.d/main/90_exim4-config_log_selector
-    /usr/sbin/update-exim4.conf
-fi
-
 # Change exit spool dir to tmp dir
 if ! egrep -q '^SPOOLDIR\s*=.*/tmp/exim' /etc/exim4/exim4.conf.template ; then
     echo "changing exim spool directory..."
     sed -e 's|^SPOOLDIR\s*=.*|SPOOLDIR = /tmp/exim|' -i /etc/exim4/exim4.conf.template
     /usr/sbin/update-exim4.conf
+fi
+# Change exim logrotate spool dir to tmp dir
+if egrep -q '^\s*rotate 10' /etc/logrotate.d/exim4-base ; then
+    echo "changing exim logrotate config..."
+    sed -e 's|rotate 10|rotate 1|' -i /etc/logrotate.d/exim4-base
+fi
+if egrep -q '^\s*rotate 10' /etc/logrotate.d/exim4-paniclog ; then
+    echo "changing exim logrotate config..."
+    sed -e 's|rotate 10|rotate 1|' -i /etc/logrotate.d/exim4-paniclog
 fi
 
 # mv NTP drift file to tmp
