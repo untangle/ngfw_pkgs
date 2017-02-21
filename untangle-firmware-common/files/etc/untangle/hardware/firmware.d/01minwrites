@@ -13,8 +13,14 @@ function commentOutOption
 # mount with relatime to minimize writes
 mount -o remount,relatime,nodiratime /
 
-# prevent writes to /var/log/btmp (lastlog and wtmp still written)
-chattr +i /var/log/btmp
+# link /tmp to /run/shm
+# /run/shm is already mounted as a tmpfs
+if [ ! -L /tmp ] ; then
+    echo "Linking /tmp to /run/shm/tmp..."
+    mkdir -p /run/shm/tmp
+    rm -rf /tmp
+    ln -s /run/shm/tmp /tmp
+fi
 
 # link /var/tmp to /tmp
 # /var/tmp is traditionally used for tmp files that should presist through a reboot
@@ -28,6 +34,9 @@ if [ ! -L /var/tmp ] ; then
     rm -rf /var/tmp
     ln -s /tmp /var/tmp
 fi
+
+# prevent writes to /var/log/btmp (lastlog and wtmp still written)
+chattr +i /var/log/btmp
 
 # Disable apache logging - it logs even with syslog disabled
 commentOutOption /etc/apache2/sites-available/uvm.conf CustomLog
