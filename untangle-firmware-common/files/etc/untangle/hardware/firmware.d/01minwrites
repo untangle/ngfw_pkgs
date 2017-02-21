@@ -14,19 +14,18 @@ function commentOutOption
 mount -o remount,relatime,nodiratime /
 
 # make a new tmpdir
-if [ ! -d /run/shm/tmp ] ; then
-    echo "Creating /run/shm/tmp..."
-    mkdir -p /run/shm/tmp
-fi
-chmod 0777 /run/shm/tmp
-chmod +t /run/shm/tmp
+RAMDISK_SIZE="32"
+TMPDIR=/tmp
 
-# link /tmp to /run/shm
-# /run/shm is already mounted as a tmpfs
-if [ ! -L /tmp ] ; then
-    echo "Linking /tmp to /run/shm/tmp..."
-    rm -rf /tmp
-    ln -s /run/shm/tmp /tmp
+# If ramdisk is not already mounted, create it and initialize database
+if [ "tmpfs" != "`stat -f -c '%T' ${TMPDIR}`" ] ; then
+    echo "Creating /tmp ramdisk..."
+    # mount a ramdisk
+    rm -rf ${TMPDIR}
+    mkdir -p ${TMPDIR}
+    mount -t tmpfs -o size=${RAMDISK_SIZE}m tmpfs ${TMPDIR}
+    chmod 0777 ${TMPDIR}
+    chmod +t ${TMPDIR}
 fi
 
 # link /var/tmp to /tmp
