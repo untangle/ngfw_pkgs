@@ -46,7 +46,7 @@ EOF
   date -Iseconds > $FLAG_PART
 
   # tell the scripts to reboot after complete
-  touch /tmp/reboot-flag
+  touch /var/lib/untangle-reboot-flag
 
 elif [ ! -f $FLAG_FS ] ; then # partition already resized, let's take care of the FS now
 
