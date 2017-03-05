@@ -12,6 +12,7 @@ class InterfacesManager:
     preNetworkHookFilename = "/etc/untangle-netd/pre-network-hook.d/045-interfaces"
     srcInterfaceMarkMask = 0x00ff
     dstInterfaceMarkMask = 0xff00
+    lxcInterfaceMarkMask = 0x04000000
     bothInterfacesMarksMask = 0xffff
     interfacesFile = None
 
@@ -234,9 +235,6 @@ class InterfacesManager:
         self.interfacesFile.write("## DO NOT EDIT. Changes will be overwritten.\n");
         self.interfacesFile.write("\n\n");
 
-        self.interfacesFile.write("source-directory interfaces.d\n");
-        self.interfacesFile.write("\n\n");
-
         self.interfacesFile.write("## This is a fake interface that launches the pre-networking-restart\n");
         self.interfacesFile.write("## hooks using the if-up.d scripts when IFACE=networking_pre_restart_hook\n");
         self.interfacesFile.write("auto networking_pre_restart_hook\n");
@@ -248,6 +246,9 @@ class InterfacesManager:
 
         self.interfacesFile.write("auto lo\n");
         self.interfacesFile.write("iface lo inet loopback\n");
+        self.interfacesFile.write("\n\n");
+
+        self.interfacesFile.write("source-directory interfaces.d\n");
         self.interfacesFile.write("\n\n");
 
         # Write disable interfaces first
@@ -362,29 +363,59 @@ class InterfacesManager:
             # see netcap_virtual_interface.c for more details
             file.write("${IPTABLES} -t mangle -A mark-src-intf -i utun -p tcp -m mac --mac-source 00:00:00:00:00:%02X -j MARK --set-mark 0x00%02X/0x00FF -m comment --comment \"Set reinject packet src interface mark for intf %x\"" % (id, id, id) + "\n");
 
+        # Special rule to mark LXC traffic
+        # This is put in a special chain so it can be easily flushed/changed
+        file.write("${IPTABLES} -t mangle -A mark-src-intf -i br.lxc -j mark-src-lxc-intf -m comment --comment \"Mark LXC interface\"" + "\n")
+        file.write("${IPTABLES} -t mangle -A mark-src-intf -i veth+  -j mark-src-lxc-intf -m comment --comment \"Mark LXC interface\"" + "\n")
+
+       # Save mark to connmark
         file.write("${IPTABLES} -t mangle -A mark-src-intf -m mark ! --mark 0/0x%04X -m conntrack --ctstate NEW -j CONNMARK --save-mark --mask 0x%04X -m comment --comment \"Save src interface mark to connmark\"" % (self.srcInterfaceMarkMask, self.srcInterfaceMarkMask) + "\n");
 
         # IPsec traffic may come from a bridge interface
         # Unfortunately, the incoming interface will be br.ethX but none of the above physdev rules will match above.
         # Do not print a warning to kern.log in this case
         file.write("${IPTABLES} -t mangle -A mark-src-intf -m policy --pol ipsec --dir in -j RETURN -m comment --comment \"Do not warn on IPsec traffic\"" + "\n")
+        file.write("${IPTABLES} -t mangle -A mark-src-intf -m policy --pol ipsec --dir in -j RETURN -m comment --comment \"Do not warn on IPsec traffic\"" + "\n")
 
+        # Dont log lo or utun packets
         file.write("${IPTABLES} -t mangle -A mark-src-intf -i lo -j RETURN -m comment --comment \"Do not warn loopback traffic\"" + "\n")
         file.write("${IPTABLES} -t mangle -A mark-src-intf -i utun -j RETURN -m comment --comment \"Do not warn on utun traffic\"" + "\n");
-        file.write("${IPTABLES} -t mangle -A mark-src-intf -m mark --mark 0/0x%04X -j LOG --log-prefix \"WARNING (unknown src intf):\" -m comment --comment \"WARN on missing src mark\"" % (self.srcInterfaceMarkMask) + "\n");
 
+        # Log unknown packets
+        file.write("${IPTABLES} -t mangle -A mark-src-intf -m mark --mark 0/0x%04X -j LOG --log-prefix \"WARNING (unknown src intf):\" -m comment --comment \"WARN on missing src mark\"" % (self.srcInterfaceMarkMask) + "\n");
 
         file.write("\n");
 
-    def write_mark_dst_intf( self, file, interfaces, prefix, verbosity ):
+    def write_mark_src_lxc_intf( self, file, settings, interfaces, prefix, verbosity ):
+
+        file.write("\n\n");
+        file.write("#\n");
+        file.write("# Create the mark-src-lxc-intf chain." + "\n");
+        file.write("#\n\n");
+
+        lxcInterfaceId = self.get_lxc_interface_id( settings )
+        if lxcInterfaceId == None:
+            return
+
+        # Add a rule so LXC traffic is marked as if it was coming from lxcInterfaceId
+        file.write("${IPTABLES} -t mangle -A mark-src-lxc-intf -i br.lxc -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark lxc\"" % (lxcInterfaceId, self.srcInterfaceMarkMask) + "\n")
+        file.write("${IPTABLES} -t mangle -A mark-src-lxc-intf -i veth+  -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark lxc\"" % (lxcInterfaceId, self.srcInterfaceMarkMask) + "\n")
+
+        # Give it a special mark
+        file.write("${IPTABLES} -t mangle -A mark-src-lxc-intf -i br.lxc -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set lxc mark for lxc\"" % (self.lxcInterfaceMarkMask, self.lxcInterfaceMarkMask) + "\n")
+        file.write("${IPTABLES} -t mangle -A mark-src-lxc-intf -i veth+  -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set lxc mark for lxc\"" % (self.lxcInterfaceMarkMask, self.lxcInterfaceMarkMask) + "\n")
+
+        file.write("${IPTABLES} -t mangle -A mark-src-lxc-intf -i br.lxc -j CONNMARK --save-mark --mask 0x%04X -m comment --comment \"Save lxc mark to connmark\"" % (self.lxcInterfaceMarkMask)+ "\n")
+        file.write("${IPTABLES} -t mangle -A mark-src-lxc-intf -i veth+  -j CONNMARK --save-mark --mask 0x%04X -m comment --comment \"Save lxc mark to connmark\"" % (self.lxcInterfaceMarkMask)+ "\n")
+
+        file.write("\n");
+
+    def write_mark_dst_intf( self, file, settings, interfaces, prefix, verbosity ):
 
         file.write("\n\n");
         file.write("#\n");
         file.write("# Create the mark-dst-intf chain." + "\n");
         file.write("#\n\n");
-
-        file.write("uname -a | grep -q 2.6.32" + "\n");
-        file.write("KERN_2_6_32=$?" + "\n");
 
         # We dont bother with already marked packets, except if its the first packet in the session
         # If it is the first packet then WAN-balancer could have picked a WAN but it might be headed elsewhere because of a static route.
@@ -408,6 +439,13 @@ class InterfacesManager:
 
         file.write("\n");
 
+        lxcInterfaceId = self.get_lxc_interface_id( settings )
+        if lxcInterfaceId != None:
+            # Add a rule so LXC traffic is marked as if it was going to from lxcInterfaceId
+            file.write("${IPTABLES} -t mangle -A mark-dst-intf -o br.lxc -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark lxc\"" % ((lxcInterfaceId<<8), self.dstInterfaceMarkMask) + "\n")
+            file.write("${IPTABLES} -t mangle -A mark-dst-intf -o veth+  -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark lxc\"" % ((lxcInterfaceId<<8), self.dstInterfaceMarkMask) + "\n")
+            file.write("\n");
+        
     def write_save_dst_intf_mark( self, file, interfaces, prefix, verbosity ):
 
         file.write("\n\n");
@@ -443,6 +481,8 @@ class InterfacesManager:
         file.write("${IPTABLES} -t mangle -F mark-dst-intf >/dev/null 2>&1" + "\n");
         file.write("${IPTABLES} -t filter -N save-mark-dst-intf 2>/dev/null" + "\n");
         file.write("${IPTABLES} -t filter -F save-mark-dst-intf >/dev/null 2>&1" + "\n");
+        file.write("${IPTABLES} -t mangle -N mark-src-lxc-intf 2>/dev/null" + "\n");
+        file.write("${IPTABLES} -t mangle -F mark-src-lxc-intf 2>/dev/null" + "\n");
         file.write("\n");
         
         file.write("# Call restore-interface-marks then mark-src-intf from PREROUTING chain in mangle" + "\n");
@@ -473,9 +513,11 @@ class InterfacesManager:
 
         self.write_mark_src_intf( file, interfaces, prefix, verbosity );
 
-        self.write_mark_dst_intf( file, interfaces, prefix, verbosity );
+        self.write_mark_dst_intf( file, settings, interfaces, prefix, verbosity );
 
         self.write_save_dst_intf_mark( file, interfaces, prefix, verbosity );
+
+        self.write_mark_src_lxc_intf( file, settings, interfaces, prefix, verbosity );
 
         file.flush()
         file.close()
@@ -560,6 +602,22 @@ rm -f /var/lib/untangle-netd/interface*status.js
 
         if verbosity > 0: print "InterfacesManager: Wrote %s" % filename
 
+    def get_lxc_interface_id( self, settings ):
+
+        lxcInterfaceId = settings.get('lxcInterfaceId')
+        if lxcInterfaceId == 0 or lxcInterfaceId == None:
+            try:
+                for intf in settings.get('interfaces').get('list'):
+                    if not intf.get('isWan'):
+                        lxcInterfaceId = intf.get('interfaceId')
+                        return lxcInterfaceId
+            except Exception,exc:
+                traceback.print_exc()
+
+        if lxcInterfaceId == 0 or lxcInterfaceId == None:
+            return None
+
+        
     def sync_settings( self, settings, prefix="", verbosity=0 ):
         if verbosity > 1: print "InterfacesManager: sync_settings()"
         

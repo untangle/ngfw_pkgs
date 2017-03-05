@@ -287,6 +287,10 @@ if len(args) < 1:
 
 action = args[0]
 
+if not os.path.exists('/usr/share/untangle/settings/untangle-vm/network.js'):
+    print "Failed to read network settings"
+    sys.exit(1)
+
 network_settings = json.loads(open('/usr/share/untangle/settings/untangle-vm/network.js', 'r').read())
 if network_settings == None:
     print "Failed to read network settings"

@@ -53,6 +53,8 @@ class UpnpManager:
         file.write("ext_ifname=%s\n" % " ".join(wan_interfaces))
         # LAN interface
         file.write("listening_ip=%s\n" % " ".join(lan_interfaces))
+        # LXC interface
+        file.write("listening_ip=br.lxc\n")
 
         if settings.get('upnpSettings') == None or settings['upnpSettings'].get('upnpEnabled') is False:
             file.flush()
@@ -179,51 +181,38 @@ fi
 
         file.write(r"""
 IPTABLES=${IPTABLES:-iptables}
-IP="/bin/ip"
 CHAIN=%s
-
-MINIUPNPD_CONF=/etc/miniupnpd/miniupnpd.conf
-LISTENING_PORT=
-
-get_listening_port()
-{
-    LISTENING_PORT="$(LC_ALL=C grep ^port\= /etc/miniupnpd/miniupnpd.conf | cut -d= -f2)"
-}
 
 flush_upnp_iptables_rules()
 {
-        # Clean the nat tables
-        ${IPTABLES} -t nat -F ${CHAIN} >/dev/null 2>&1
-        ${IPTABLES} -t nat -D PREROUTING -j ${CHAIN} -m conntrack --ctstate NEW  >/dev/null 2>&1
-        ${IPTABLES} -t nat -X ${CHAIN} >/dev/null 2>&1
+    # Clean the nat tables
+    ${IPTABLES} -t nat -F ${CHAIN} >/dev/null 2>&1
+    ${IPTABLES} -t nat -D PREROUTING -j ${CHAIN} -m conntrack --ctstate NEW  >/dev/null 2>&1
+    ${IPTABLES} -t nat -X ${CHAIN} >/dev/null 2>&1
 
-        # Clean the filter tables
-        ${IPTABLES} -t filter -F ${CHAIN} >/dev/null 2>&1
-        # Just create it, don't worry about jump.
-        ${IPTABLES} -t filter -X ${CHAIN} >/dev/null 2>&1
+    # Clean the filter tables
+    ${IPTABLES} -t filter -F ${CHAIN} >/dev/null 2>&1
+    # Just create it, don't worry about jump.
+    ${IPTABLES} -t filter -X ${CHAIN} >/dev/null 2>&1
 }
 
 insert_upnp_iptables_rules()
 {
-        # Initialize the PREROUTING chain first
-        ${IPTABLES} -t nat -N ${CHAIN}
-        ${IPTABLES} -t nat -A PREROUTING -j ${CHAIN} -m conntrack --ctstate NEW 
-        ${IPTABLES} -t nat -F ${CHAIN}
+    # Initialize the PREROUTING chain first
+    ${IPTABLES} -t nat -N ${CHAIN}
+    ${IPTABLES} -t nat -A PREROUTING -j ${CHAIN} -m conntrack --ctstate NEW 
+    ${IPTABLES} -t nat -F ${CHAIN}
 
-        # then do the FORWARD chain
-        ${IPTABLES} -t filter -N ${CHAIN}
-        # Just create the chain, don't worry about jump
-        ${IPTABLES} -t filter -F ${CHAIN}
+    # then do the FORWARD chain
+    ${IPTABLES} -t filter -N ${CHAIN}
+    # Just create the chain, don't worry about jump
+    ${IPTABLES} -t filter -F ${CHAIN}
 }
-
-get_listening_port
 
 flush_upnp_iptables_rules
 
-if [ "${LISTENING_PORT}" != "" ] ; then
-    echo "[`date`] upnp is running. Inserting rules."
-    insert_upnp_iptables_rules
-fi
+insert_upnp_iptables_rules
+
 """ % (self.iptables_chain))
 
 

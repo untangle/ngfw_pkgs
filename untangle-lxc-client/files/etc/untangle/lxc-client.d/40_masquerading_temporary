@@ -1,4 +1,0 @@
-#! /bin/sh
-
-# FIXME: may not be eth0
-iptables -t nat -A POSTROUTING -o eth0 -s 192.168.235.0/24 -j MASQUERADE
