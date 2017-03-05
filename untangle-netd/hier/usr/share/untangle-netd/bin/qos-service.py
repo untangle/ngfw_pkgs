@@ -1,5 +1,18 @@
 #!/usr/bin/env python
 
+# WARNING
+#
+# This file is DEPRECATED in v13
+# It is still here because some old netd configs still call it
+# and will continue to call it until network settings are saved
+#
+# call qos-status.py to get the status
+#
+# This file can be removed after we have an upgrade that calls sync-settings.py
+# Until then, it may still be called by the existing scripts and must be left in place
+#
+# -dmorris 2017-03-05
+
 import os, getopt, sys, json, subprocess, parse, platform
 
 def usage():

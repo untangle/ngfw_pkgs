@@ -78,14 +78,155 @@ class QosManager:
             except Exception,e:
                 traceback.print_exc(e)
 
+    def qos_priorities( self, qos_settings ):
+        return [1,2,3,4,5,6,7]
+
+    def qos_priority_field( self, qos_settings, intf, priorityId, base, field ):
+        for prio in qos_settings.get('qosPriorities').get('list'):
+            if prio.get('priorityId') == priorityId:
+                return intf.get(base) * (prio.get(field)/100.0)
+        debug("Unable to find %s for priority %i" % (field, priorityId))
+        return None
+
+    def qos_priority_upload_reserved( self, qos_settings, intf, priorityId ):
+        return self.qos_priority_field( qos_settings, intf, priorityId, 'uploadBandwidthKbps', 'uploadReservation')
+
+    def qos_priority_upload_limit( self, qos_settings, intf, priorityId ):
+        return self.qos_priority_field( qos_settings, intf, priorityId, 'uploadBandwidthKbps', 'uploadLimit')
+
+    def qos_priority_download_reserved( self, qos_settings, intf, priorityId ):
+        return self.qos_priority_field( qos_settings, intf, priorityId, 'downloadBandwidthKbps', 'downloadReservation')
+
+    def qos_priority_download_limit( self, qos_settings, intf, priorityId ):
+        return self.qos_priority_field( qos_settings, intf, priorityId, 'downloadBandwidthKbps', 'downloadLimit')
+
+    def add_htb_rules( self, file, qos_settings, wan_intf ):
+        print( "Adding HTB for %s and %s..." % (wan_intf.get('systemDev'), wan_intf.get('imqDev')) )
+
+        wan_dev = wan_intf.get('systemDev')
+        imq_dev = wan_intf.get('imqDev')
+        sfq = "sfq perturb 10"
+        default_class = qos_settings.get('defaultPriority')
+        wan_upload_bandwidth = wan_intf.get('uploadBandwidthKbps')
+        wan_download_bandwidth = wan_intf.get('downloadBandwidthKbps')
+
+        #
+        # egress filtering
+        #
+        r2q = 10
+        quantum = wan_upload_bandwidth * 1024 / (8 *  r2q)
+        if quantum <=1000 or quantum >= 20000:
+            #quantum need between 1000 and 20000
+            # when it is out of range, use quantum as 10000 to calculate the r2q value
+            r2q = wan_upload_bandwidth * 1024 / 80000 
+
+        if r2q == 10:
+            file.write("tc qdisc add dev %s root handle 1: htb default 1%i\n" % (wan_dev, default_class) )
+        else:
+            file.write("tc qdisc add dev %s root handle 1: htb default 1%i r2q %i\n" % (wan_dev, default_class, r2q) )
+
+        file.write("tc class add dev %s parent 1: classid 1:1 htb rate %ikbit\n" % (wan_dev, wan_upload_bandwidth) )
+        for i in self.qos_priorities(qos_settings): 
+            upload_reserved = self.qos_priority_upload_reserved( qos_settings, wan_intf, i)
+            upload_limit    = self.qos_priority_upload_limit( qos_settings, wan_intf, i)
+
+            if upload_limit == None and upload_reserved == None:
+                continue
+
+            if upload_reserved == None:
+                # should never happen as UPLOAD_RESERVED must be >0
+                # Can't provide no reservation,TC says '"rate" is required'
+                upload_reserved=100
+                reserved=" rate %ikbit " % upload_reserved
+            else:
+                reserved=" rate %ikbit " % upload_reserved
+
+            if upload_limit == None:
+                limited=" ceil 99999999999kbit"
+            else:
+                limited=" ceil %ikbit " % upload_limit
+
+            quantum = (upload_reserved / wan_upload_bandwidth) * 60000
+            if quantum < 2000:
+                quantum = 2000
+
+            # egress outbound hierarchical token bucket for class $i - need quantum or prio?
+            file.write("tc class add dev %s parent 1:1 classid 1:1%i htb %s %s quantum %i\n" % (wan_dev, i, reserved, limited, int(quantum)) ) 
+            file.write("tc qdisc add dev %s parent 1:1%i handle 1%i: %s\n" % (wan_dev, i, i, sfq) )
+            file.write("tc filter add dev %s parent 1: prio 1%i protocol ip u32 match mark 0x000%i0000 0x000F0000 flowid 1:1%i\n" % (wan_dev, i, i, i) )
+
+        #
+        # ingress filtering
+        # ingress filtering is done via the IMQ interface
+        #
+        file.write("ifconfig %s up\n" % imq_dev)
+        r2q = 10
+        quantum = wan_download_bandwidth * 1024 / (8 *  r2q)
+        if quantum <=1000 or quantum >= 20000:
+            #quantum need between 1000 and 20000
+            # when it is out of range, use quantum as 10000 to calculate the r2q value
+            r2q = wan_download_bandwidth * 1024 / 80000 
+
+        if r2q == 10:
+            file.write("tc qdisc add dev %s root handle 1: htb default 1%i\n" % (imq_dev, default_class) )
+        else:
+            file.write("tc qdisc add dev %s root handle 1: htb default 1%i r2q %i\n" % (imq_dev, default_class, r2q) )
+
+        file.write("tc class add dev %s parent 1: classid 1:1 htb rate %ikbit\n" % (imq_dev,  wan_download_bandwidth) )
+        for i in self.qos_priorities(qos_settings): 
+            download_reserved = self.qos_priority_download_reserved( qos_settings, wan_intf, i)
+            download_limit    = self.qos_priority_download_limit( qos_settings, wan_intf, i)
+
+            if download_limit == None and download_reserved == None:
+                continue
+
+            if download_reserved == None:
+                # should never happen as DOWNLOAD_RESERVED must be >0
+                # Can't provide no reservation,TC says '"rate" is required'
+                download_reserved=100
+                reserved = " rate 100kbit "
+            else:
+                reserved=" rate %ikbit " % download_reserved
+
+            if download_limit == None:
+                limited=" ceil 99999999999kbit"
+            else:
+                limited=" ceil %ikbit " % download_limit
+
+            quantum = (download_reserved / wan_download_bandwidth) * 60000
+            if quantum < 2000:
+                quantum = 2000
+
+            # ingress inbound hierarchical token bucket for class $i - need quantum or prio?
+            file.write("tc class add dev %s parent 1:1 classid 1:1%i htb %s %s quantum %i\n" % (imq_dev, i, reserved, limited, int(quantum)) )
+            file.write("tc qdisc add dev %s parent 1:1%i handle 1%i: %s\n" % (imq_dev, i, i, sfq) )
+            file.write("tc filter add dev %s parent 1: prio 1%i protocol ip u32 match mark 0x000%i0000 0x000F0000 flowid 1:1%i\n" % (imq_dev, i, i, i) )
+
+        # this is an attempt to share fairly between hosts (dst on imq)
+        # it does not seem to work as expected
+        # bug #8207
+        # file.write("tc filter add dev %s pref 1 parent 1: protocol ip handle 1 flow hash keys nfct-src\n" % (wan_dev) )
+        # file.write("tc filter add dev %s pref 1 parent 1: protocol ip handle 1 flow hash keys nfct-src\n" % (imq_dev) )
+        # Maybe this: ?
+        # file.write("tc filter add dev %s pref 1 parent 1: protocol ip handle 1 flow hash keys src\n" % (wan_dev) )
+        # file.write("tc filter add dev %s pref 1 parent 1: protocol ip handle 1 flow hash keys dst\n" % (imq_dev) )
+
     def write_qos_hook( self, settings, prefix, verbosity ):
 
         if settings == None or settings.get('interfaces') == None or settings.get('interfaces').get('list') == None:
             return;
         if settings.get('qosSettings') == None:
             return;
-        qosSettings = settings.get('qosSettings')
+        qos_settings = settings.get('qosSettings')
         interfaces = settings.get('interfaces').get('list')
+        wan_intfs = []
+        wan_system_devs = []
+        wan_imq_devs = []
+        for intf in interfaces:
+            if intf.get('isWan'):
+                wan_system_devs.append(intf.get('systemDev'))
+                wan_imq_devs.append(intf.get('imqDev'))
+                wan_intfs.append(intf)
 
         filename = prefix + self.qosFilename
         fileDir = os.path.dirname( filename )
@@ -101,34 +242,36 @@ class QosManager:
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
 
-        if not qosSettings.get('qosEnabled'):
-            file.write("# Stop QoS \n")
-            file.write("/usr/share/untangle-netd/bin/qos-service.py stop" + "\n")
+        file.write("# Stop QoS \n")
+
+        file.write( "# delete qdiscs \n")
+        for dev in wan_system_devs:
+            file.write( "tc qdisc del dev %s root    2> /dev/null > /dev/null \n" % dev )
+            file.write( "tc qdisc del dev %s ingress 2> /dev/null > /dev/null \n" % dev )
+        for dev in wan_imq_devs:
+            file.write( "tc qdisc del dev %s root    2> /dev/null > /dev/null \n" % dev )
+            file.write( "tc qdisc del dev %s ingress 2> /dev/null > /dev/null \n" % dev )
+        file.write("\n\n");
+
+        file.write( "# delete any remaining qdiscs \n")
+        file.write( "tc qdisc show | awk '{print $5}' | sort | uniq | while read dev ; do\n")
+        file.write( "    tc qdisc del dev $dev root    2> /dev/null > /dev/null \n")
+        file.write( "    tc qdisc del dev $dev ingress 2> /dev/null > /dev/null \n")
+        file.write( "done\n")
+        file.write("\n\n");
+
+        if not qos_settings.get('qosEnabled'):
             file.flush()
             file.close()
             os.system("chmod a+x %s" % filename)
             if verbosity > 0: print "QosManager: Wrote %s" % filename
             return
 
-        # Write the settings JSON as a comment at top of script
-        # We do this because the actual logic reads the settings directly in qos-service
-        # But we only restart networking when something changes, so if QoS settings change
-        # we need something to change in the file so it restarts networking
-        # NGFW-10116
-        #
-        # FIXME
-        # The proper fix for this would be to rewrite qos-service so that it doesn't read the settings
-        # directly. The logic should be in the iptables-rules.d script like everything else
-        # and should be written when settings are saved.
-        file.write("# QoS Settings: \n")
-        file.write(("# %s" % str(qosSettings)) + "\n")
-        for intfSettings in interfaces:
-            if self.qosed_interface( intfSettings ):
-                file.write("# %s %s %s" % (intfSettings.get('name'),str(intfSettings.get('downloadBandwidthKbps')),str(intfSettings.get('uploadBandwidthKbps'))) + "\n")
-        file.write("\n\n")
-
         file.write("# Start QoS \n")
-        file.write("/usr/share/untangle-netd/bin/qos-service.py start" + "\n")
+        file.write("modprobe imq\n");
+        for wan_intf in wan_intfs:
+            self.add_htb_rules( file, qos_settings, wan_intf )
+
         file.write("\n\n");
 
         file.write("# Create restore-qos-mark chain" + "\n");
@@ -211,35 +354,35 @@ fi
                 file.write("${IPTABLES} -t mangle -A qos-imq -m mark --mark 0x%04X/0x%04X -j IMQ --todev %s" % (intfSettings['interfaceId'], self.srcInterfaceMarkMask, devnumstr) + "\n")
         file.write("\n");
 
-        if qosSettings['pingPriority'] != None and qosSettings['pingPriority'] != 0:
+        if qos_settings['pingPriority'] != None and qos_settings['pingPriority'] != 0:
             file.write("# Ping Priority " + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p icmp --icmp-type echo-request -g qos-class%i -m comment --comment \"set ping priority\"" % qosSettings['pingPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p icmp --icmp-type echo-reply   -g qos-class%i -m comment --comment \"set ping priority\"" % qosSettings['pingPriority'] + "\n")
+            file.write("${IPTABLES} -t mangle -A qos-rules -p icmp --icmp-type echo-request -g qos-class%i -m comment --comment \"set ping priority\"" % qos_settings['pingPriority'] + "\n")
+            file.write("${IPTABLES} -t mangle -A qos-rules -p icmp --icmp-type echo-reply   -g qos-class%i -m comment --comment \"set ping priority\"" % qos_settings['pingPriority'] + "\n")
             file.write("\n");
 
-        if qosSettings['sshPriority'] != None and qosSettings['sshPriority'] != 0:
+        if qos_settings['sshPriority'] != None and qos_settings['sshPriority'] != 0:
             file.write("# Ssh Priority " + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp --dport 22 -g qos-class%i -m comment --comment \"set SSH priority\"" % qosSettings['sshPriority'] + "\n")
+            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp --dport 22 -g qos-class%i -m comment --comment \"set SSH priority\"" % qos_settings['sshPriority'] + "\n")
             file.write("\n");
 
-        if qosSettings['dnsPriority'] != None and qosSettings['dnsPriority'] != 0:
+        if qos_settings['dnsPriority'] != None and qos_settings['dnsPriority'] != 0:
             file.write("# Dns Priority " + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p udp --dport 53 -g qos-class%i -m comment --comment \"set DNS priority\"" % qosSettings['dnsPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp --dport 53 -g qos-class%i -m comment --comment \"set DNS priority\"" % qosSettings['dnsPriority'] + "\n")
+            file.write("${IPTABLES} -t mangle -A qos-rules -p udp --dport 53 -g qos-class%i -m comment --comment \"set DNS priority\"" % qos_settings['dnsPriority'] + "\n")
+            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp --dport 53 -g qos-class%i -m comment --comment \"set DNS priority\"" % qos_settings['dnsPriority'] + "\n")
             file.write("\n");
 
-        if qosSettings['openvpnPriority'] != None and qosSettings['openvpnPriority'] != 0:
+        if qos_settings['openvpnPriority'] != None and qos_settings['openvpnPriority'] != 0:
             file.write("# Openvpn Priority " + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p udp --dport 1194 -g qos-class%i -m comment --comment \"set openvpn priority\"" % qosSettings['openvpnPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp --dport 1194 -g qos-class%i -m comment --comment \"set openvpn priority\"" % qosSettings['openvpnPriority'] + "\n")
+            file.write("${IPTABLES} -t mangle -A qos-rules -p udp --dport 1194 -g qos-class%i -m comment --comment \"set openvpn priority\"" % qos_settings['openvpnPriority'] + "\n")
+            file.write("${IPTABLES} -t mangle -A qos-rules -p tcp --dport 1194 -g qos-class%i -m comment --comment \"set openvpn priority\"" % qos_settings['openvpnPriority'] + "\n")
             file.write("\n");
 
-        self.write_qos_custom_rules( qosSettings, verbosity)
+        self.write_qos_custom_rules( qos_settings, verbosity)
 
-        if qosSettings['defaultPriority'] != None and qosSettings['defaultPriority'] != 0:
+        if qos_settings['defaultPriority'] != None and qos_settings['defaultPriority'] != 0:
             file.write("# Default Priority " + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -m mark     --mark 0/0x000F0000 -g qos-class%i -m comment --comment \"set default priority if unset\"" % qosSettings['defaultPriority'] + "\n")
-            file.write("${IPTABLES} -t mangle -A qos-rules -m connmark --mark 0/0x000F0000 -g qos-class%i -m comment --comment \"set default priority if unset\"" % qosSettings['defaultPriority'] + "\n")
+            file.write("${IPTABLES} -t mangle -A qos-rules -m mark     --mark 0/0x000F0000 -g qos-class%i -m comment --comment \"set default priority if unset\"" % qos_settings['defaultPriority'] + "\n")
+            file.write("${IPTABLES} -t mangle -A qos-rules -m connmark --mark 0/0x000F0000 -g qos-class%i -m comment --comment \"set default priority if unset\"" % qos_settings['defaultPriority'] + "\n")
             file.write("\n");
 
         file.flush()
