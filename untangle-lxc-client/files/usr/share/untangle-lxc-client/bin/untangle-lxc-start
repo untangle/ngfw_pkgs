@@ -4,7 +4,11 @@ NAME="client"
 LOG_FILE="/var/log/uvm/lxc-client.log"
 
 ARCH="$(dpkg-architecture -qDEB_BUILD_ARCH)"
-#PACKAGES="iputils-ping dnsutils curl wget netcat ssh nmap mime-construct python netcat-openbsd iperf snmp miniupnpc ntp nano traceroute telnet" 
+
+# FIXME - install these packages
+# PACKAGES="iputils-ping dnsutils curl wget netcat ssh nmap mime-construct python netcat-openbsd iperf snmp miniupnpc ntp nano traceroute telnet" 
+# FIXME - run this script automatically?
+# ATS_SCRIPT="https://test.untangle.com/test/setup_testshell.sh"
 
 if [ "$USER" != "root" ] ; then
     echo "sudo $0 $*"
