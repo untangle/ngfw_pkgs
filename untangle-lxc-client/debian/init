@@ -37,7 +37,7 @@ stop() {
   /usr/share/untangle-lxc-client/bin/untangle-lxc-running
   if [ $? != 0 ] ; then
       log_failure_msg "Not running"
-      exit 1
+      return
   fi
 
   /usr/share/untangle-lxc-client/bin/untangle-lxc-stop >/dev/null 2>&1
