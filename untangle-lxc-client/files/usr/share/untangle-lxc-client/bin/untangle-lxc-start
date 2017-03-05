@@ -5,10 +5,11 @@ LOG_FILE="/var/log/uvm/lxc-client.log"
 
 ARCH="$(dpkg-architecture -qDEB_BUILD_ARCH)"
 
-# FIXME - install these packages
+# FIXME/TODO - install these packages
 # PACKAGES="iputils-ping dnsutils curl wget netcat ssh nmap mime-construct python netcat-openbsd iperf snmp miniupnpc ntp nano traceroute telnet" 
-# FIXME - run this script automatically?
+# FIXME/TODO - run this script automatically?
 # ATS_SCRIPT="https://test.untangle.com/test/setup_testshell.sh"
+# FIXME/TODO - how to tell it to start ssh? ssh after install does not start automatically
 
 if [ "$USER" != "root" ] ; then
     echo "sudo $0 $*"
