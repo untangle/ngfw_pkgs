@@ -16,15 +16,16 @@ fi
 
 cp -f /usr/share/untangle-lxc-client/default.conf /etc/lxc
 
-/usr/share/untangle-netd/bin/sync-settings.py
+#if [ -x "/etc/init.d/untangle-lxc-client" ]; then
+#  update-rc.d untangle-lxc-client defaults >/dev/null # early on
+#  ourInit untangle-lxc-client restart
+#fi
 
-if [ -x "/etc/init.d/untangle-lxc-client" ]; then
-  update-rc.d untangle-lxc-client defaults >/dev/null # early on
-  ourInit untangle-lxc-client restart
-fi
 
 # delete old files
 rm -f /etc/network/interfaces.d/lxcbr0
-rm -f /etc/untangle/lxc-client.d/40_masquerading_temporary
+rm -rf /etc/untangle/lxc-client.d
+# disable - should not start automatically
+update-rc.d untangle-lxc-client disable
 
 exit 0

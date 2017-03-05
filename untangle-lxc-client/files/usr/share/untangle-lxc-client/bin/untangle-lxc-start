@@ -1,0 +1,41 @@
+#!/bin/bash
+
+NAME="client"
+LOG_FILE="/var/log/uvm/lxc-client.log"
+
+ARCH="$(dpkg-architecture -qDEB_BUILD_ARCH)"
+#PACKAGES="iputils-ping dnsutils curl wget netcat ssh nmap mime-construct python netcat-openbsd iperf snmp miniupnpc ntp nano traceroute telnet" 
+
+if [ "$USER" != "root" ] ; then
+    echo "sudo $0 $*"
+    exec sudo -E $0 $*
+fi
+
+exec &> >(tee -a "$LOG_FILE")
+
+# Bring up bridge
+ifup br.lxc
+
+# Create LXC instance (if it doesn't exist)
+if lxc-info -n $NAME > /dev/null ; then
+  echo "LXC container $NAME already exists"
+else
+  echo "Creating LXC container ${NAME}..."
+  lxc-create -n $NAME -t download -- -d debian -r jessie -a $ARCH
+  echo "LXC container ${NAME} is ready"
+fi
+
+# Configure LXC instance
+echo "Setting DNS for containe ${NAME} to 192.0.2.1"
+echo nameserver 192.0.2.1 >| /var/lib/lxc/${NAME}/rootfs/etc/resolv.conf
+echo "Setting SSH configuration (using /etc/ssh/sshd_config)"
+cp /etc/ssh/sshd_config /var/lib/lxc/${NAME}/rootfs/etc/ssh/sshd_config
+
+
+echo "Starting LXC container..."
+lxc-start -d -n $NAME
+lxc-wait -n client -s RUNNING
+
+echo "You can attach to it via \"lxc-attach -n $NAME\""
+
+

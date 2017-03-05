@@ -1,0 +1,20 @@
+#!/bin/bash
+
+NAME="client"
+LOG_FILE="/var/log/uvm/lxc-client.log"
+
+if [ "$USER" != "root" ] ; then
+    echo "sudo $0 $*"
+    exec sudo -E $0 $*
+fi
+
+exec &> >(tee -a "$LOG_FILE")
+
+if lxc-info -n $NAME 2>&1 | grep -q 'State.*RUNNING' ; then
+    echo "Stopping LXC $NAME..."
+    lxc-stop -k -n $NAME
+    echo "Waiting on LXC $NAME..."
+    lxc-wait -n client -s STOPPED
+else
+    echo "LXC $NAME not running."
+fi
