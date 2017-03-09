@@ -25,7 +25,7 @@ Depends: autoconf,
          git,
          git-core,
          global,
-         jshint
+         jshint,
          libc6-dev,
          libgettext-ruby-util | ruby-gettext,
          libgettext-ruby1.8 | ruby-gettext,
@@ -49,6 +49,6 @@ Depends: autoconf,
          pbuilder (>= 0.161),
          rake (>= 10),
          rhino,
-         unzip,
+         unzip
 Description: Untangle Development Environment
  The Untangle Development Environment.
