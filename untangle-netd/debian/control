@@ -14,7 +14,7 @@ Depends: bridge-utils,
          dhcp3-client | isc-dhcp-client,
          ifupdown,
          firmware-iwlwifi,
-         firmware-realtek
+         firmware-realtek,
          hostapd,
          iptables,
          iputils-arping,
@@ -27,6 +27,6 @@ Depends: bridge-utils,
          radvd,
          vlan,
          wireless-regdb,
-         wireless-tools,
+         wireless-tools
 Description: The Untangle network daemon
  The Untangle network daemon for managing the network
