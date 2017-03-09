@@ -9,7 +9,6 @@ Standards-Version: 3.8.0
 Package: untangle-gateway
 Architecture: any
 Depends: chromedriver [!armel !armhf],
-         ifupdown,
          nano,
          ntp,
          nvi,

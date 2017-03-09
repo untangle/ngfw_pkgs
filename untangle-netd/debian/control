@@ -8,6 +8,25 @@ Standards-Version: 3.8.0
 
 Package: untangle-netd
 Architecture: all
-Depends: dash, bridge-utils, iptables, dhcp3-client | isc-dhcp-client, iputils-arping, libnetfilter-queue1 (>= 1.0.2+20141023+git329468+11.1), libnfnetlink0 (>= 1.0.1), radvd, ndisc6, vlan, keepalived, psmisc, hostapd, firmware-iwlwifi, wireless-tools, iw, crda, wireless-regdb, firmware-realtek
+Depends: bridge-utils,
+         crda,
+         dash,
+         dhcp3-client | isc-dhcp-client,
+         ifupdown,
+         firmware-iwlwifi,
+         firmware-realtek
+         hostapd,
+         iptables,
+         iputils-arping,
+         iw,
+         keepalived,
+         libnetfilter-queue1 (>= 1.0.2+20141023+git329468+11.1),
+         libnfnetlink0 (>= 1.0.1),
+         ndisc6,
+         psmisc,
+         radvd,
+         vlan,
+         wireless-regdb,
+         wireless-tools,
 Description: The Untangle network daemon
  The Untangle network daemon for managing the network
