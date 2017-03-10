@@ -46,7 +46,7 @@ Depends: apachetop,
          telnet-ssl,
          traceroute,
          wakeonlan,
-         whois,
+         whois
 Description: Extra utilities for Untangle
  This packages depends on a list of utilities that are, although
  non-essential to the functioning of the Untangle server itself, are
