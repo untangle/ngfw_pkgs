@@ -30,7 +30,7 @@ Depends: apachetop,
          lftp,
          libtcl8.6,
          lsof,
-         man-db
+         man-db,
          manpages,
          memtester,
          netcat-traditional,
