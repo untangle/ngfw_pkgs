@@ -83,7 +83,7 @@ global_defs {
 
             file.write("vrrp_instance VI_" + str(intf.get('interfaceId')) + " {" + "\n")
             file.write("\tstate MASTER" + "\n")
-            file.write("\tdont_track_primary" + "\n") # http://s.co.tt/2014/06/06/fix-for-keepalived-router-enters-fault-state-on-link-down/
+            # file.write("\tdont_track_primary" + "\n") # http://s.co.tt/2014/06/06/fix-for-keepalived-router-enters-fault-state-on-link-down/
             file.write("\tinterface %s" % str(intf.get('symbolicDev')) + "\n")
             file.write("\tlvs_sync_daemon_interface %s" % str(intf.get('symbolicDev')) + "\n")
             file.write("\tvirtual_router_id %s" % str(intf.get('vrrpId')) + "\n")
