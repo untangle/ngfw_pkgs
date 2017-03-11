@@ -10,7 +10,6 @@ Package: untangle-development-runtime
 Architecture: all
 Depends: at,
          bridge-utils,
-         chromium [!armel !armhf],
          conntrack,
          curl,
          dash,
