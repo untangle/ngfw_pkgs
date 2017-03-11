@@ -8,7 +8,17 @@ Standards-Version: 3.8.0
 
 Package: untangle-linux-config
 Architecture: any
-Depends: linux-untangle [!armel !armhf] | untangle-linux-image [!armel !armhf] | linux-virtual-untangle [!armel !armhf], untangle-bootsplash [!armel !armhf], grub-pc [!armel !armhf], grub2-common [!armel !armhf], initramfs-tools [!armel !armhf], bash (>= 3.1), uuid-runtime, untangle-kernel-modules-jessie, firmware-linux-free, firmware-linux-nonfree, irqbalance
+Depends: bash (>= 3.1),
+         firmware-linux-free,
+         firmware-linux-nonfree,
+         grub-pc [!armel !armhf],
+         grub2-common [!armel !armhf],
+         initramfs-tools [!armel !armhf],
+         irqbalance,
+	 linux-untangle [!armel !armhf] | untangle-linux-image [!armel !armhf] | linux-virtual-untangle [!armel !armhf],
+         untangle-bootsplash [!armel !armhf],
+         untangle-kernel-modules-jessie,
+         uuid-runtime
 Conflicts: grub-legacy [!armel !armhf], desktop-base
 Description: The Untangle kernel config
  The Untangle Linux kernel config package. Provides
