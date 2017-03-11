@@ -36,10 +36,10 @@ clean:
 	rm -rf debian/tmp debian/untangle-development-runtime
 	dh_clean
 
-binary-indep: build
+binary-arch: build
 # nothing to do
 
-binary-arch: build 
+binary-indep: build 
 	dh_testdir  
 	dh_testroot   
 	dh_movefiles  
@@ -66,7 +66,7 @@ binary-arch: build
 #	dh_perl     
 	if [ -f debian/version ] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
 	dh_md5sums     
-	dh_builddeb -a
+	dh_builddeb
 
 binary: binary-indep binary-arch
 
