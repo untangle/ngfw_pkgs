@@ -69,8 +69,7 @@ Depends: at,
          untangle-stunnel-config,
          untangle-system-config,
          unzip,
-         wget,
-         xutils-dev | xutils
+         wget
 Description: Untangle Development Runtime Environment
  The Untangle Development Runtime Environment. Contains all packages
  needed to support running the Untangle Gateway in development mode.
