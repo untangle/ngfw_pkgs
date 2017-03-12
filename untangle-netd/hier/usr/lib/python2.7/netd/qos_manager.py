@@ -100,15 +100,25 @@ class QosManager:
     def qos_priority_download_limit( self, qos_settings, intf, priorityId ):
         return self.qos_priority_field( qos_settings, intf, priorityId, 'downloadBandwidthKbps', 'downloadLimit')
 
+    def get_queue_discipline_str( self, qos_settings ):
+        queue_discipline = qos_settings.get('queueDiscipline')
+        if queue_discipline == "pfifo":
+            queue_discipline_str = "pfifo"
+        elif queue_discipline == "fq_codel":
+            queue_discipline_str = "fq_codel"
+        elif queue_discipline == "sfq":
+            queue_discipline_str = "sfq perturb 10"
+        return queue_discipline_str
+
     def add_htb_rules( self, file, qos_settings, wan_intf ):
         print( "Adding HTB for %s and %s..." % (wan_intf.get('systemDev'), wan_intf.get('imqDev')) )
 
         wan_dev = wan_intf.get('systemDev')
         imq_dev = wan_intf.get('imqDev')
-        sfq = "sfq perturb 10"
         default_class = qos_settings.get('defaultPriority')
         wan_upload_bandwidth = wan_intf.get('uploadBandwidthKbps')
         wan_download_bandwidth = wan_intf.get('downloadBandwidthKbps')
+        queue_discipline = self.get_queue_discipline_str( qos_settings )
 
         #
         # egress filtering
@@ -152,8 +162,10 @@ class QosManager:
 
             # egress outbound hierarchical token bucket for class $i - need quantum or prio?
             file.write("tc class add dev %s parent 1:1 classid 1:1%i htb %s %s quantum %i\n" % (wan_dev, i, reserved, limited, int(quantum)) ) 
-            file.write("tc qdisc add dev %s parent 1:1%i handle 1%i: %s\n" % (wan_dev, i, i, sfq) )
+            file.write("tc qdisc add dev %s parent 1:1%i handle 1%i: %s\n" % (wan_dev, i, i, queue_discipline) )
             file.write("tc filter add dev %s parent 1: prio 1%i protocol ip u32 match mark 0x000%i0000 0x000F0000 flowid 1:1%i\n" % (wan_dev, i, i, i) )
+
+        #file.write("tc filter add dev %s parent 1: prio %i protocol ip u32 match ip dst 0.0.0.0/0 flowid 1:1%i\n" % (wan_dev, 20, default_class) )
 
         #
         # ingress filtering
@@ -199,8 +211,10 @@ class QosManager:
 
             # ingress inbound hierarchical token bucket for class $i - need quantum or prio?
             file.write("tc class add dev %s parent 1:1 classid 1:1%i htb %s %s quantum %i\n" % (imq_dev, i, reserved, limited, int(quantum)) )
-            file.write("tc qdisc add dev %s parent 1:1%i handle 1%i: %s\n" % (imq_dev, i, i, sfq) )
+            file.write("tc qdisc add dev %s parent 1:1%i handle 1%i: %s\n" % (imq_dev, i, i, queue_discipline) )
             file.write("tc filter add dev %s parent 1: prio 1%i protocol ip u32 match mark 0x000%i0000 0x000F0000 flowid 1:1%i\n" % (imq_dev, i, i, i) )
+
+        #file.write("tc filter add dev %s parent 1: prio %i protocol ip u32 match ip dst 0.0.0.0/0 flowid 1:1%i\n" % (imq_dev, 20, default_class) )
 
         # this is an attempt to share fairly between hosts (dst on imq)
         # it does not seem to work as expected
@@ -242,6 +256,9 @@ class QosManager:
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
 
+        file.write("IPTABLES=${IPTABLES:-iptables}" + "\n");
+        file.write("\n\n");
+
         file.write("# Stop QoS \n")
 
         file.write( "# delete qdiscs \n")
@@ -261,6 +278,16 @@ class QosManager:
         file.write("\n\n");
 
         if not qos_settings.get('qosEnabled'):
+            # if not driver default - set qdisc
+            if qos_settings.get('queueDiscipline') != 'driver':
+                queue_discipline = self.get_queue_discipline_str( qos_settings )
+                file.write( "# set qdiscs \n")
+                file.write( "tc qdisc show | awk '{print $5}' | sort | uniq | while read dev ; do\n")
+                file.write( "    tc qdisc add dev $dev root %s \n" % queue_discipline)
+                #file.write( "    tc qdisc add dev $dev ingress %s \n" % queue_discipline)
+                file.write( "done\n")
+                file.write("\n\n");
+
             file.flush()
             file.close()
             os.system("chmod a+x %s" % filename)
