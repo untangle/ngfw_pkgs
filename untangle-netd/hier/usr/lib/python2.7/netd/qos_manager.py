@@ -165,7 +165,7 @@ class QosManager:
             file.write("tc qdisc add dev %s parent 1:1%i handle 1%i: %s\n" % (wan_dev, i, i, queue_discipline) )
             file.write("tc filter add dev %s parent 1: prio 1%i protocol ip u32 match mark 0x000%i0000 0x000F0000 flowid 1:1%i\n" % (wan_dev, i, i, i) )
 
-        #file.write("tc filter add dev %s parent 1: prio %i protocol ip u32 match ip dst 0.0.0.0/0 flowid 1:1%i\n" % (wan_dev, 20, default_class) )
+        file.write("tc filter add dev %s parent 1: prio %i protocol ip u32 match ip dst 0.0.0.0/0 flowid 1:1%i\n" % (wan_dev, 20, default_class) )
 
         #
         # ingress filtering
@@ -214,7 +214,7 @@ class QosManager:
             file.write("tc qdisc add dev %s parent 1:1%i handle 1%i: %s\n" % (imq_dev, i, i, queue_discipline) )
             file.write("tc filter add dev %s parent 1: prio 1%i protocol ip u32 match mark 0x000%i0000 0x000F0000 flowid 1:1%i\n" % (imq_dev, i, i, i) )
 
-        #file.write("tc filter add dev %s parent 1: prio %i protocol ip u32 match ip dst 0.0.0.0/0 flowid 1:1%i\n" % (imq_dev, 20, default_class) )
+        file.write("tc filter add dev %s parent 1: prio %i protocol ip u32 match ip dst 0.0.0.0/0 flowid 1:1%i\n" % (imq_dev, 20, default_class) )
 
         # this is an attempt to share fairly between hosts (dst on imq)
         # it does not seem to work as expected
