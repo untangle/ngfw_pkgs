@@ -18,4 +18,10 @@ perl -i -pe 's/FSCKFIX=.*/FSCKFIX=yes/' /etc/default/rcS
 # Fix #12696. This can be taken out in 12.1
 apt-mark manual $(apt-mark showauto 'modules?-3\.2\.0')
 
+# NGFW-10390: apt-mark will complain on stderr if those packages are
+# not installed (which is fine on arm* plaforms), but this is safer
+# than trying to parse dpkg's output during a preinst, to figure out
+# if the call is needed or not
+apt-mark manual untangle-kiosk untangle-extra-utils
+
 exit 0
