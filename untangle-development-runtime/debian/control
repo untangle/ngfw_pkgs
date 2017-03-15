@@ -25,7 +25,7 @@ Depends: at,
          libnetfilter-conntrack3 (>= 1.0.4),
          libnetfilter-queue1 (>= 1.0.2+20141023+git329468),
          libnfnetlink0 (>= 1.0.1),
-         libsnmp-dev, # unfortunate since it brings in manpages-dev, but needed because of /usr/bin/net-snmp-config
+         libsnmp-dev,
          locales,
          mime-support,
          miniupnpd,
