@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-snort-config
 Architecture: all
-Depends: snort
+Depends: snort (>= 2.9.8.2), libdaq0 (>= 2.0.6)
 Replaces: untangle-snort-rules
 Description: Initial versions of Snort configuration and rules
  Initial versions of Snort configuration and rules.
