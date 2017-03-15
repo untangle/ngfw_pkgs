@@ -27,8 +27,7 @@ Depends: acpi-support-base,
          xserver-xorg-input-all,
          xserver-xorg-video-all,
          zenity,
-         zip,
-         zsh
+         zip
 Conflicts: x-display-manager
 Description: The Untangle kiosk utils
  The Untangle kiosk mode utilities.
