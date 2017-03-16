@@ -1,3 +1,4 @@
+auto br.lxc
 iface br.lxc inet static
   bridge_ports regex (veth).*
   bridge_fd 0
