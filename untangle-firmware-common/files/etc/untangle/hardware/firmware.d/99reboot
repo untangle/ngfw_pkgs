@@ -1,6 +1,6 @@
 #! /bin/bash
 
-if [ -f /tmp/reboot-flag ] ; then
-   rm -f /tmp/reboot-flag
+if [ -f /var/lib/untangle-reboot-flag ] ; then
+   rm -f /var/lib/untangle-reboot-flag
    /sbin/reboot
 fi

@@ -1,6 +1,6 @@
 #! /bin/sh
 
-set -e
+set -x
 
 if grep -q "TURRIS OMNIA" /usr/share/untangle/conf/appliance-model ; then
   # we don't need to resize anything on the Turris Omnia, as we run
@@ -26,6 +26,8 @@ if [ ! -f $FLAG_PART ] ; then # no partition resize yet
   # get the start of the PART partition on that device
   start=$(fdisk -l $disk | perl -ne 'if (m|^/|) { s/.*?\s(\d+).*/$1/ ; print }')
 
+  echo "Using fdisk to resize partition..."
+
   # resize that PART partition so it uses the entire space
   { fdisk $disk <<EOF
 p
@@ -38,13 +40,18 @@ $start
 p
 w
 EOF
-  } || true
+  }
+  echo "Using fdisk to resize partition... done ($?)"
+
   date -Iseconds > $FLAG_PART
 
   # tell the scripts to reboot after complete
-  touch /tmp/reboot-flag
+  touch /var/lib/untangle-reboot-flag
 
 elif [ ! -f $FLAG_FS ] ; then # partition already resized, let's take care of the FS now
+
+  echo "Launching resize2fs to resize filesystem in background..."
+
   # resize FS (in the background)
   resize2fs $device &
 

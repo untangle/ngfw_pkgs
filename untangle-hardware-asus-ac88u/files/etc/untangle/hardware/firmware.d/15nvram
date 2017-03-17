@@ -29,5 +29,5 @@ if [ ! -f /usr/share/untangle/conf/nvram-initialized-flag ] ; then
     touch /usr/share/untangle/conf/nvram-initialized-flag
 
     # tell the scripts to reboot after complete
-    touch /tmp/reboot-flag
+    touch /var/lib/untangle-reboot-flag
 fi

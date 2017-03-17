@@ -13,13 +13,18 @@
 . /lib/lsb/init-functions
 
 DESC="Untangle LXC client"
-PARTS_DIR="/etc/untangle/lxc-client.d/"
-LOG_FILE="/var/log/uvm/lxc-client.log"
 
 start() {
   log_daemon_msg "Starting $DESC"
   log_progress_msg "untangle-lxc-client"    
-  run-parts --lsbsysinit -v $PARTS_DIR >> $LOG_FILE 2>&1
+
+  /usr/share/untangle-lxc-client/bin/untangle-lxc-running
+  if [ $? = 0 ] ; then
+      log_failure_msg "Already running"
+      exit 1
+  fi
+
+  /usr/share/untangle-lxc-client/bin/untangle-lxc-start >/dev/null 2>&1
   RET=$?
   log_end_msg $RET
   [ $RET = 0 ] || exit $RET
@@ -28,7 +33,17 @@ start() {
 stop() {
   log_daemon_msg "Stopping $DESC"
   log_progress_msg "untangle-lxc-client"    
+
+  /usr/share/untangle-lxc-client/bin/untangle-lxc-running
+  if [ $? != 0 ] ; then
+      log_failure_msg "Not running"
+      return
+  fi
+
+  /usr/share/untangle-lxc-client/bin/untangle-lxc-stop >/dev/null 2>&1
+  RET=$?
   log_end_msg $RET
+  [ $RET = 0 ] || exit $RET
 }
 
 case "$1" in

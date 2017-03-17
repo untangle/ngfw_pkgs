@@ -1,0 +1,10 @@
+#!/bin/bash
+
+NAME="client"
+
+if [ "$USER" != "root" ] ; then
+    echo "sudo $0 $*"
+    exec sudo -E $0 $*
+fi
+
+lxc-info -n $NAME 2>&1 | grep -q 'State.*RUNNING'

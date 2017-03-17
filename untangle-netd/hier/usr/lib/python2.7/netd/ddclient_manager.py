@@ -48,10 +48,13 @@ class DdclientManager:
             protocol = config[serviceName][0]
             server = config[serviceName][1]
             use_ssl = config[serviceName][2]
-            use_str = "web, web=checkip.dyndns.com/, web-skip='IP Address'"  
+
 
             file.write("pid=/var/run/ddclient.pid" + "\n")
-            file.write("use=%s" % use_str + "\n")
+
+            file.write("use=cmd" + "\n")
+            file.write("cmd='/usr/bin/dig @204.69.234.1 +short whoami.ultradns.net'" + "\n")
+
             if use_ssl:
                 file.write("ssl=yes" + "\n")
             file.write("protocol=%s" % protocol + "\n")

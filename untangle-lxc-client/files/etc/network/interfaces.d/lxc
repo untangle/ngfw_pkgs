@@ -1,0 +1,7 @@
+auto br.lxc
+iface br.lxc inet static
+  bridge_ports regex (veth).*
+  bridge_fd 0
+  bridge_maxwait 0
+  address 192.0.2.1
+  netmask 255.255.255.252

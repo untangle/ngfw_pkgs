@@ -1,0 +1,17 @@
+#!/bin/bash
+
+NAME="client"
+
+if [ "$USER" != "root" ] ; then
+    echo "sudo $0 $*"
+    exec sudo -E $0 $*
+fi
+
+if lxc-info -n $NAME 2>&1 | egrep -q '^State.*RUNNING' ; then
+    lxc-attach -n client
+else
+    echo "LXC $NAME not running."
+    echo "Launch with /usr/share/untangle-lxc-client/bin/untangle-lxc-start"
+    exit 1
+fi
+

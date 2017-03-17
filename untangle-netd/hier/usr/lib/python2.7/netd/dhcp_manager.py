@@ -251,6 +251,9 @@ run_post_networking_hook()
     elif pgrep -f 'ifup.*-a' >/dev/null 2>&1 ; then
         # if we already see ifup -a then it will run these scripts
         $DEBUG "Skipping post-network-hook.d hooks - "ifup -a" running."
+    elif pgrep -f 'ifdown.*-a' >/dev/null 2>&1 ; then
+        # if we already see ifdown -a then it will run these scripts
+        $DEBUG "Skipping post-network-hook.d hooks - "ifdown -a" running."
     else
         run-parts -v /etc/untangle-netd/post-network-hook.d
     fi

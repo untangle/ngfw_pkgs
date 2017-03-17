@@ -105,6 +105,13 @@ for tarball in /usr/share/untangle-apache2-config/ext*.tar.gz ; do
   tar -C /var/www -xzf $tarball
 done
 
+# link fonts provided by upstream
+# FIXME: just one for now, more to come (NGFW-10346)
+# FIXME: un-hardcode ExtJS version
+for font in font-awesome ; do
+  ln -sf /usr/share/fonts-${font} /var/www/ext6.2/fonts/${font}
+done
+
 # copy english local file to "xx" test language locale
 if [ -f /var/www/ext6/classic/locale/locale-en.js ] ; then
     cp /var/www/ext6/classic/locale/locale-en.js /var/www/ext6/classic/locale/locale-xx.js
