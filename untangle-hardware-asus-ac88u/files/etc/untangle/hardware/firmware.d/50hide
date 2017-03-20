@@ -2,12 +2,12 @@
 
 # this script "hides" certain apps so they can not be installed
 # this is temporary
-# it just deletes the nodeProperties files, but they will be recreated on upgrade
+# it just deletes the appProperties files, but they will be recreated on upgrade
 # we need to figure out a better way to hide apps
 
 # hide multi wan apps
-rm -f /usr/share/untangle/lib/untangle-node-wan-failover/nodeProperties.js
-rm -f /usr/share/untangle/lib/untangle-node-wan-balancer/nodeProperties.js
+rm -f /usr/share/untangle/lib/wan-failover/appProperties.js
+rm -f /usr/share/untangle/lib/wan-balancer/appProperties.js
 
 
 
