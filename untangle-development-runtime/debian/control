@@ -68,6 +68,7 @@ Depends: at,
          untangle-spamassassin-update,
          untangle-stunnel-config,
          untangle-system-config,
+         untangle-lxc-client,
          unzip,
          wget,
          zsh
