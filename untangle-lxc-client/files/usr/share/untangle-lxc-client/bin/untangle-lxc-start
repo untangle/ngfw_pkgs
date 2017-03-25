@@ -1,11 +1,10 @@
 #!/bin/bash
 
 NAME="client"
-LOG_FILE="/var/log/uvm/lxc-client.log"
-
+LOG_FILE="/var/log/uvm/lxc-${NAME}.log"
 ARCH="$(dpkg-architecture -qDEB_BUILD_ARCH)"
 
-PACKAGES="iputils-ping dnsutils curl wget netcat ssh nmap mime-construct python netcat-openbsd iperf snmp miniupnpc ntp nano traceroute telnet"
+PACKAGES="iputils-ping dnsutils curl wget ssh nmap mime-construct python netcat-openbsd iperf snmp miniupnpc ntp nano traceroute telnet"
 ATS_SCRIPT="setup_testshell.sh"
 ATS_SCRIPT_URL="https://test.untangle.com/test/${ATS_SCRIPT}"
 
@@ -14,26 +13,26 @@ if [ "$USER" != "root" ] ; then
     exec sudo -E $0 $*
 fi
 
-runInContainer() {
+runInLxc() {
   lxc-attach -n ${NAME} -- "$@"
 }
 
-installInContainer() {
+installInLxc() {
   lxc-attach -n ${NAME} --set-var DEBIAN_FRONTEND=noninteractive -- apt-get install --yes $@
 }
 
 exec &> >(tee -a "$LOG_FILE")
 
 # Bring up bridge
-ifup br.lxc
+if ! ifquery --state br.lxc | grep -q 'br.lxc' ; then
+   ifup br.lxc
+fi
 
 # Create LXC instance (if it doesn't exist)
-if lxc-info -n $NAME > /dev/null ; then
-  echo "LXC container $NAME already exists"
-else
-  echo "Creating LXC container ${NAME}..."
+if ! lxc-info -n $NAME > /dev/null ; then
+  echo "Creating LXC ${NAME}..."
   lxc-create -n $NAME -t download -- -d debian -r jessie -a $ARCH
-  echo "LXC container ${NAME} is ready"
+  echo "LXC ${NAME} is ready"
 
   # Configure LXC instance
   echo "Setting DNS for containe ${NAME} to 192.0.2.1"
@@ -42,20 +41,40 @@ else
   cp /etc/ssh/sshd_config /var/lib/lxc/${NAME}/rootfs/etc/ssh/sshd_config
 fi
 
-echo "Starting LXC container..."
-lxc-start -d -n $NAME
-lxc-wait -n client -s RUNNING
+if ! lxc-info -n ${NAME} | egrep -q 'State:.*RUNNING' ; then
+    echo "Starting LXC ${NAME}..."
+    lxc-start -d -n ${NAME}
+    lxc-wait -n ${NAME} -s RUNNING
+else
+    echo "Starting LXC ${NAME} already running."
+fi
 
-echo "Installing default packages in LXC container..."
-installInContainer $PACKAGES
+# if any package is missing install all packages
+for p in $PACKAGES; do
+    runInLxc dpkg -l | egrep -q "ii.*$p"
+    if [ $? != 0 ] ; then
+        echo "Installing default packages in LXC ${NAME}..."
+        echo
+        installInLxc $PACKAGES
+        echo "Installing default packages in LXC ${NAME}...done"
+        echo
+        break;
+    fi
+done
 
-echo "Setting up test shell in LXC container..."
-runInContainer curl -k -o /tmp/${ATS_SCRIPT} ${ATS_SCRIPT_URL}
-runInContainer bash -c "echo y | bash /tmp/${ATS_SCRIPT}"
+if ! runInLxc bash -c "grep -q testshell /etc/passwd" ; then
+    echo "Setting up test shell in LXC ${NAME}..."
+    echo
+    runInLxc bash -c "curl -k -o /root/${ATS_SCRIPT} ${ATS_SCRIPT_URL} && echo y | bash /root/${ATS_SCRIPT}"
+    echo "Setting up test shell in LXC ${NAME}...done"
+    echo
+fi
 
-echo "Restarting ssh in LXC container..."
-runInContainer systemctl restart ssh.service
+if ! runInLxc bash -c 'pgrep "sshd" &>/dev/null' ; then
+    echo "Starting ssh in LXC ${NAME}..."
+    runInLxc service ssh start
+fi
 
-echo "You can attach to it via \"lxc-attach -n $NAME\""
+echo "Attach to LXC ${NAME} via \"lxc-attach -n $NAME\""
 
 
