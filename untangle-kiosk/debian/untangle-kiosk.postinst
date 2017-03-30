@@ -1,7 +1,5 @@
 #! /bin/bash
 
-set -e
-
 KIOSK_HOME=/home/kiosk
 XORG_SAFE_CONF_BASE=${KIOSK_HOME}/xorg-confs/safe
 
