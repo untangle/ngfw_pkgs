@@ -19,6 +19,6 @@ perl -i -pe 's/FSCKFIX=.*/FSCKFIX=yes/' /etc/default/rcS
 # not installed (which is fine on arm* plaforms), but this is safer
 # than trying to parse dpkg's output during a preinst, to figure out
 # if the call is needed or not
-apt-mark manual untangle-kiosk untangle-extra-utils 2>&1 | grep -v 'No packages'
+apt-mark manual untangle-kiosk untangle-extra-utils untangle-linux-config 2>&1 | grep -v 'No packages'
 
 exit 0
