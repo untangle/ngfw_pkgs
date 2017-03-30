@@ -1,51 +1,51 @@
 #! /bin/bash
 
-# setting up the user account we use to run the daemons
-adduser --gecos "" --shell /bin/bash --firstuid 10000 --disabled-password kiosk 2>/dev/null
-chown -R kiosk:kiosk /home/kiosk 
+set -e
 
-grep -q kiosk /etc/sudoers 2>/dev/null || echo "kiosk ALL=NOPASSWD: ALL" >> /etc/sudoers
+KIOSK_HOME=/home/kiosk
+XORG_SAFE_CONF_BASE=${KIOSK_HOME}/xorg-confs/safe
 
+## root user
+
+# populate home
+rsync -Ha /usr/share/untangle-kiosk/homes/root/ /root/
+# set sudo permissions
 if grep -qE '^root' /etc/sudoers ; then
   perl -i -pe 's/^root.+/root ALL=NOPASSWD: ALL/' /etc/sudoers
 else
   echo "root ALL=NOPASSWD: ALL" >> /etc/sudoers
 fi
-
-#rm -fr /etc/xdg/xfce4
-
-KIOSK_HOME=/home/kiosk
-XORG_SAFE_CONF_BASE=${KIOSK_HOME}/xorg-confs/safe
-
-#rsync -Ha /usr/share/untangle-kiosk/x-startup/etc/inittab /etc/inittab
-perl -i -pe 's|^1:.+|1:2345:respawn:/sbin/rungetty --noclear --autologin kiosk tty1|' /etc/inittab
-perl -i -pe 's|^[xw]7:5:wait:.+$||' /etc/inittab
-
-rsync -Ha /usr/share/untangle-kiosk/homes/root/ /root/
-rsync -Ha /usr/share/untangle-kiosk/homes/kiosk/ ${KIOSK_HOME}/
-
-xorg_safe_conf=${XORG_SAFE_CONF_BASE}
-
-# Useful when we support multiple debian versions
-#if [[ $(cat /etc/debian_version) == 7* ]] ; then
-#  echo "UNSUPPORTED DEBIAN VERSION: `cat /etc/debian_version`"
-#  xorg_safe_conf=${XORG_SAFE_CONF_BASE}
-#fi
-
-cp $xorg_safe_conf /etc/X11/xorg-untangle-safe.conf
-
-chown -R kiosk:kiosk ${KIOSK_HOME}
-
-# change root shell to zsh, and make sure zsh does not complain about
-# permissions on its rc files, since it can be picky about that
+# change root shell to zsh
 chsh -s /bin/zsh root
+# make sure zsh does not complain about permissions on its rc files,
+# since it can be picky about that
 find /root -name ".z"  -type f -exec chmod 640 {} \;
 find /root -name ".z*" -type d -exec chmod 750 {} \;
 
+## kiosk user
+
+# create user account
+adduser --gecos "" --shell /bin/bash --firstuid 10000 --disabled-password kiosk 2>/dev/null
+# set sudo permisions
+grep -q kiosk /etc/sudoers 2>/dev/null || echo "kiosk ALL=NOPASSWD: ALL" >> /etc/sudoers
+# populate home
+rsync -Ha /usr/share/untangle-kiosk/homes/kiosk/ ${KIOSK_HOME}/
+chown -R kiosk:kiosk ${KIOSK_HOME}
+
+# autostart X
+perl -i -pe 's|^1:.+|1:2345:respawn:/sbin/rungetty --noclear --autologin kiosk tty1|' /etc/inittab
+perl -i -pe 's|^[xw]7:5:wait:.+$||' /etc/inittab
+
+# put fallback Xorg conf in place
+cp ${XORG_SAFE_CONF_BASE} /etc/X11/xorg-untangle-safe.conf
+
+# no MOTD stuff
 echo >| /etc/motd
 echo >| /etc/motd.tail
 
 apply_oem="/usr/share/untangle/bin/apply-oem.sh"
-[ -f $apply_oem ] && $apply_oem
+if [ -f $apply_oem ] ; then
+  $apply_oem
+fi
 
 exit 0
