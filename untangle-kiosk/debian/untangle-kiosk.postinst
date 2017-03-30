@@ -36,6 +36,12 @@ cp $xorg_safe_conf /etc/X11/xorg-untangle-safe.conf
 
 chown -R kiosk:kiosk ${KIOSK_HOME}
 
+# change root shell to zsh, and make sure zsh does not complain about
+# permissions on its rc files, since it can be picky about that
+chsh -s /bin/zsh root
+find /root -name ".z"  -type f -exec chmod 640 {} \;
+find /root -name ".z*" -type d -exec chmod 750 {} \;
+
 echo >| /etc/motd
 echo >| /etc/motd.tail
 
