@@ -7,16 +7,16 @@ Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.8.0
 
 Package: untangle-linux-config
-Architecture: any
+Architecture: i386 amd64
 Depends: bash (>= 3.1),
          firmware-linux-free,
          firmware-linux-nonfree,
-         grub-pc [!armel !armhf],
-         grub2-common [!armel !armhf],
-         initramfs-tools [!armel !armhf],
+         grub-pc,
+         grub2-common,
+         initramfs-tools,
          irqbalance,
-	 linux-untangle [!armel !armhf] | untangle-linux-image [!armel !armhf] | linux-virtual-untangle [!armel !armhf],
-         untangle-bootsplash [!armel !armhf],
+	 linux-untangle | untangle-linux-image | linux-virtual-untangle,
+         untangle-bootsplash,
          untangle-kernel-modules-jessie,
          uuid-runtime
 Conflicts: grub-legacy [!armel !armhf], desktop-base
