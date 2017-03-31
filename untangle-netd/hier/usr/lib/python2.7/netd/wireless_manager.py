@@ -4,6 +4,7 @@ import subprocess
 import datetime
 import traceback
 import time
+import re
 
 # This class is responsible for writing /etc/network/interfaces
 # based on the settings object passed from sync-settings.py
@@ -15,6 +16,200 @@ class WirelessManager:
     ht40MinusChannels = [0,5,6,7,8,9,10,11,12,13,40,48,56,64]
     ht40PlusChannels = [0,1,2,3,4,5,6,7,36,44,52,60]
     hasWireless = False
+
+    # Much of the ht_capab and vht_capab logic shamelessly copied from openwrt:
+    # https://dev.openwrt.org/browser/trunk/package/kernel/mac80211/files/lib/netifd/wireless/mac80211.sh
+    # https://dev.openwrt.org/browser/trunk/package/kernel/mac80211/files/lib/wifi/mac80211.sh
+
+    def get_iw_info( self, phy_dev ):
+        return subprocess.Popen(("iw phy %s info" % phy_dev).split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].split('\n')
+
+    def set_hw_mode( self, conf, channel ):
+        if channel > 11 or channel == -2:
+            conf['hw_mode'] = 'a'
+        else:
+            conf['hw_mode'] = 'g'
+        return
+
+    def set_fallback_ht_capab( self, conf, channel ):
+        ht_capabs=[]
+        if ((channel / 4) % 2) == 0:
+            ht_capabs.append("[HT40-]")
+        if ((channel / 4) % 2) == 1:
+            ht_capabs.append("[HT40+]")
+
+        ht_capabs.append("[SHORT-GI-40]")
+        ht_capabs.append("[TX-STBC]")
+        ht_capabs.append("[RX-STBC1]")
+        ht_capabs.append("[DSSS_CCK-40]")
+        conf['ht_capab'] = "".join(map(str,ht_capabs))
+
+
+    def set_ht_capab( self, conf, iw_info, channel, wlan_dev ):
+        capab_line = None
+        for line in iw_info:
+            if re.search(r'\s*Capabilities:\s.*', line):
+                capab_line = line
+                break
+
+        if capab_line == None:
+            print "Unable to determine capabilities: %s\n" % wlan_dev
+            return set_fallback_ht_capab( conf, channel )
+
+        segments = line.split()
+        if len(segments) != 2:
+            print "Unknown capabilities: %s\n" % line
+            return set_fallback_ht_capab( conf, channel )
+        capab_int = None
+        try:
+            capab_int = int(segments[1],16)
+        except Exception,exc:
+            print "Unknown capabilities: %s\n" % line
+            traceback.print_exc(exc)
+            return set_fallback_ht_capab( conf, channel )
+
+        ht_capabs=[]
+        if ((channel / 4) % 2) == 0:
+            ht_capabs.append("[HT40-]")
+        if ((channel / 4) % 2) == 1:
+            ht_capabs.append("[HT40+]")
+        if (capab_int & 0x1) == 0x1:
+            ht_capabs.append("[LDPC]")
+        if (capab_int & 0x10) == 0x10:
+            ht_capabs.append("[GF]")
+        if (capab_int & 0x20) == 0x20:
+            ht_capabs.append("[SHORT-GI-20]")
+        if (capab_int & 0x40) == 0x40:
+            ht_capabs.append("[SHORT-GI-40]")
+        if (capab_int & 0x80) == 0x80:
+            ht_capabs.append("[TX-STBC]")
+        if (capab_int & 0x300) == 0x100:
+            ht_capabs.append("[RX-STBC1]")
+        if (capab_int & 0x300) == 0x200:
+            ht_capabs.append("[RX-STBC12]")
+        if (capab_int & 0x300) == 0x300:
+            ht_capabs.append("[RX-STBC123]")
+        if (capab_int & 0x800) == 0x800:
+            ht_capabs.append("[MAX-AMSDU-7935]")
+        if (capab_int & 0x1000) == 0x1000:
+            ht_capabs.append("[DSSS_CCK-40]")
+        conf['ht_capab'] = "".join(map(str,ht_capabs))
+        return
+
+    def set_80211n( self, conf ):
+        conf['ieee80211n'] = 1
+        conf['wmm_enabled'] = 1
+
+    def set_80211ac( self, conf ):
+        conf['ieee80211ac'] = 1
+
+    def set_vht( self, conf ):
+        # assume VHT40h
+        # need some user options for VHT80
+        conf['vht_oper_chwidth'] = 0
+
+    def set_vht_capab( self, conf, iw_info, channel, wlan_dev ):
+        capab_line = None
+        for line in iw_info:
+            if re.search(r'\s*VHT Capabilities\s.*', line):
+                capab_line = line
+                break
+
+        if capab_line == None:
+            print "Unable to determine VHT capabilitiese: %s\n" % wlan_dev 
+            return set_fallback_ht_capab( conf, channel )
+
+        segments = line.split()
+        if len(segments) != 3:
+            print "Unknown VHT capabilities: %s\n" % line
+            return set_fallback_ht_capab( conf, channel )
+        capab_str = segments[2]
+        capab_str = re.sub('[\(\):]','',capab_str)
+        capab_int = None
+        try:
+            capab_int = int(capab_str,16)
+        except Exception,exc:
+            print "Unknown VHT capabilities: %s\n" % line
+            traceback.print_exc(exc)
+            return set_fallback_ht_capab( conf, channel )
+
+        ht_capabs=[]
+        if (capab_int & 0x10) == 0x10:
+            ht_capabs.append("[RXLDPC]")
+        if (capab_int & 0x20) == 0x20:
+            ht_capabs.append("[SHORT-GI-80]")
+        if (capab_int & 0x40) == 0x40:
+            ht_capabs.append("[SHORT-GI-160]")
+        if (capab_int & 0x80) == 0x80:
+            ht_capabs.append("[TX-STBC-2BY1]")
+        if (capab_int & 0x800) == 0x800:
+            ht_capabs.append("[SU-BEAMFORMER]")
+        if (capab_int & 0x1000) == 0x1000:
+            ht_capabs.append("[SU-BEAMFORMEE]")
+        if (capab_int & 0x80000) == 0x80000:
+            ht_capabs.append("[MU-BEAMFORMER]")
+        if (capab_int & 0x100000) == 0x100000:
+            ht_capabs.append("[MU-BEAMFORMEE]")
+        if (capab_int & 0x200000) == 0x200000:
+            ht_capabs.append("[VHT-TXOP-PS]")
+        if (capab_int & 0x400000) == 0x400000:
+            ht_capabs.append("[HTC-VHT]")
+        if (capab_int & 0x10000000) == 0x10000000:
+            ht_capabs.append("[RX-ANTENNA-PATTERN]")
+        if (capab_int & 0x20000000) == 0x20000000:
+            ht_capabs.append("[TX-ANTENNA-PATTERN]")
+        if (capab_int & 0x700) == 0x100:
+            ht_capabs.append("[RX-STBC1]")
+        if (capab_int & 0x700) == 0x200:
+            ht_capabs.append("[RX-STBC12]")
+        if (capab_int & 0x700) == 0x300:
+            ht_capabs.append("[RX-STBC123]")
+        if (capab_int & 0x700) == 0x400:
+            ht_capabs.append("[RX-STBC1234]")
+        conf['vht_capab'] = "".join(map(str,ht_capabs))
+        return
+
+    def find_string( self, iw_info, regex ):
+        for line in iw_info:
+            if re.search(regex, line):
+                return True
+        return False
+
+    def supports_80211ac( self, channel, iw_info ):
+        # if a 2.4 channel is chosen - then its 2.4 which does not support AC
+        if channel > 0 and channel <= 11:
+            return False
+        # channel -1 means 2.4 auto
+        if channel == -1:
+            return False
+        if not self.find_string( iw_info, r'\s*VHT Capabilities.*' ):
+            return False
+        if not self.find_string( iw_info, r'\s*Band 2.*' ):
+            return False
+        return True
+
+    def get_wificard_config( self, wlan_dev, channel ):
+        try:
+            conf = {}
+            phy_dev = open('/sys/class/net/%s/phy80211/name'%wlan_dev, 'r').read()
+
+            iw_info = self.get_iw_info( phy_dev )
+
+            self.set_hw_mode( conf, channel )
+            self.set_80211n( conf )
+            self.set_ht_capab( conf, iw_info, channel, wlan_dev )
+
+            if self.supports_80211ac( channel, iw_info ):
+                self.set_80211ac( conf )
+                self.set_vht( conf )
+                self.set_vht_capab( conf, iw_info, channel, wlan_dev )
+
+            return conf
+        except Exception,exc:
+            print "Unexpected error:", sys.exc_info()[0]
+            traceback.print_exc(exc)
+            return None
+
 
     def write_hostapd_conf( self, settings, prefix="", verbosity=0 ):
 
@@ -85,26 +280,10 @@ class WirelessManager:
                     self.hostapdConfFile.write("wpa_pairwise=TKIP\n")
                     self.hostapdConfFile.write("rsn_pairwise=CCMP\n")
 
-                if intf.get('wirelessChannel') > 11 or intf.get('wirelessChannel') == -2:
-                    self.hostapdConfFile.write("hw_mode=a\n")
-                else:
-                    self.hostapdConfFile.write("hw_mode=g\n")
-                    
-                self.hostapdConfFile.write("ieee80211n=1\n")
-                self.hostapdConfFile.write("wmm_enabled=1\n")
-                # This configures what HT modes the wifi card support. We are going with the AR9280 to start and it will
-                # be the only card supported for now
-                ht_capabs=[]
-                if channel in self.ht40MinusChannels:
-                    ht_capabs.append("[HT40-]")
-                if channel in self.ht40PlusChannels:
-                    ht_capabs.append("[HT40+]")
-
-                ht_capabs.append("[SHORT-GI-40]")
-                ht_capabs.append("[TX-STBC]")
-                ht_capabs.append("[RX-STBC1]")
-                ht_capabs.append("[DSSS_CCK-40]")
-                self.hostapdConfFile.write("ht_capab=%s\n" % "".join(map(str,ht_capabs)))
+                # build the card specific hostapd config
+                conf = self.get_wificard_config(intf.get('systemDev'), intf.get('wirelessChannel'))
+                for key,value in conf.items():
+                    self.hostapdConfFile.write("%s=%s\n"%(str(key),str(value)))
 
                 self.hostapdConfFile.flush()
                 self.hostapdConfFile.close()
