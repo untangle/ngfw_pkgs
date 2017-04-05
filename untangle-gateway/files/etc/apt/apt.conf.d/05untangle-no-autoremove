@@ -1,0 +1,9 @@
+APT
+{
+  NeverAutoRemove
+  {
+    "^untangle-extra-utils$";
+    "^untangle-linux-config$";
+    "^untangle-kiosk$";
+  }
+}
