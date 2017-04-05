@@ -108,6 +108,8 @@ class QosManager:
             queue_discipline_str = "fq_codel"
         elif queue_discipline == "sfq":
             queue_discipline_str = "sfq perturb 10"
+        else:
+            queue_discipline_str = "fq_codel" # default if null
         return queue_discipline_str
 
     def add_htb_rules( self, file, qos_settings, wan_intf ):
