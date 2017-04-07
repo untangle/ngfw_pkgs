@@ -97,16 +97,6 @@
                 "deviceName": "eth1",
                 "duplex": "AUTO",
                 "javaClass": "com.untangle.uvm.network.DeviceSettings"
-            },
-            {
-                "deviceName": "wlan0",
-                "duplex": "AUTO",
-                "javaClass": "com.untangle.uvm.network.DeviceSettings"
-            },
-            {
-                "deviceName": "wlan1",
-                "duplex": "AUTO",
-                "javaClass": "com.untangle.uvm.network.DeviceSettings"
             }
         ]
     },
@@ -155,7 +145,7 @@
                     ]
                 },
                 "description": "Allow SSH",
-                "enabled": false,
+                "enabled": true,
                 "ipv6Enabled": false,
                 "javaClass": "com.untangle.uvm.network.FilterRule",
                 "readOnly": true,
@@ -379,6 +369,102 @@
                     "javaClass": "java.util.LinkedList",
                     "list": [
                         {
+                            "conditionType": "DST_PORT",
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleCondition",
+                            "value": "1900"
+                        },
+                        {
+                            "conditionType": "PROTOCOL",
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleCondition",
+                            "value": "UDP"
+                        },
+                        {
+                            "conditionType": "SRC_INTF",
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleCondition",
+                            "value": "non_wan"
+                        }
+                    ]
+                },
+                "description": "Allow UPnP (UDP/1900) on non-WANs",
+                "enabled": true,
+                "ipv6Enabled": true,
+                "javaClass": "com.untangle.uvm.network.FilterRule",
+                "readOnly": true,
+                "ruleId": 9
+            },
+            {
+                "blocked": false,
+                "conditions": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
+                            "conditionType": "DST_PORT",
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleCondition",
+                            "value": "5000"
+                        },
+                        {
+                            "conditionType": "PROTOCOL",
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleCondition",
+                            "value": "TCP"
+                        },
+                        {
+                            "conditionType": "SRC_INTF",
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleCondition",
+                            "value": "non_wan"
+                        }
+                    ]
+                },
+                "description": "Allow UPnP (TCP/5000) on non-WANs",
+                "enabled": true,
+                "ipv6Enabled": true,
+                "javaClass": "com.untangle.uvm.network.FilterRule",
+                "readOnly": true,
+                "ruleId": 10
+            },
+            {
+                "blocked": false,
+                "conditions": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
+                            "conditionType": "DST_PORT",
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleCondition",
+                            "value": "5351"
+                        },
+                        {
+                            "conditionType": "PROTOCOL",
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleCondition",
+                            "value": "UDP"
+                        },
+                        {
+                            "conditionType": "SRC_INTF",
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleCondition",
+                            "value": "non_wan"
+                        }
+                    ]
+                },
+                "description": "Allow UPnP (UDP/5351) on non-WANs",
+                "enabled": true,
+                "ipv6Enabled": true,
+                "javaClass": "com.untangle.uvm.network.FilterRule",
+                "readOnly": true,
+                "ruleId": 11
+            },
+            {
+                "blocked": false,
+                "conditions": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
                             "conditionType": "PROTOCOL",
                             "invert": false,
                             "javaClass": "com.untangle.uvm.network.FilterRuleCondition",
@@ -391,7 +477,7 @@
                 "ipv6Enabled": true,
                 "javaClass": "com.untangle.uvm.network.FilterRule",
                 "readOnly": true,
-                "ruleId": 9
+                "ruleId": 12
             },
             {
                 "blocked": false,
@@ -417,7 +503,7 @@
                 "ipv6Enabled": true,
                 "javaClass": "com.untangle.uvm.network.FilterRule",
                 "readOnly": true,
-                "ruleId": 10
+                "ruleId": 13
             },
             {
                 "blocked": false,
@@ -443,7 +529,7 @@
                 "ipv6Enabled": true,
                 "javaClass": "com.untangle.uvm.network.FilterRule",
                 "readOnly": true,
-                "ruleId": 11
+                "ruleId": 14
             },
             {
                 "blocked": false,
@@ -469,7 +555,7 @@
                 "ipv6Enabled": true,
                 "javaClass": "com.untangle.uvm.network.FilterRule",
                 "readOnly": true,
-                "ruleId": 12
+                "ruleId": 15
             },
             {
                 "blocked": false,
@@ -501,7 +587,7 @@
                 "ipv6Enabled": true,
                 "javaClass": "com.untangle.uvm.network.FilterRule",
                 "readOnly": true,
-                "ruleId": 13
+                "ruleId": 16
             },
             {
                 "blocked": true,
@@ -514,7 +600,7 @@
                 "ipv6Enabled": true,
                 "javaClass": "com.untangle.uvm.network.FilterRule",
                 "readOnly": true,
-                "ruleId": 14
+                "ruleId": 17
             }
         ]
     },
@@ -525,14 +611,7 @@
                 "addressed": true,
                 "bridged": false,
                 "configType": "ADDRESSED",
-                "dhcpDnsOverride": "",
-                "dhcpEnabled": false,
-                "dhcpOptions": {
-                    "javaClass": "java.util.LinkedList",
-                    "list": []
-                },
                 "disabled": false,
-                "hidden": false,
                 "imqDev": "imq0",
                 "interfaceId": 1,
                 "isVlanInterface": false,
@@ -541,7 +620,6 @@
                 "javaClass": "com.untangle.uvm.network.InterfaceSettings",
                 "name": "External",
                 "physicalDev": "eth0",
-                "raEnabled": false,
                 "symbolicDev": "eth0",
                 "systemDev": "eth0",
                 "v4Aliases": {
@@ -550,10 +628,6 @@
                 },
                 "v4ConfigType": "AUTO",
                 "v4NatEgressTraffic": true,
-                "v4NatIngressTraffic": false,
-                "v4PPPoEPassword": "",
-                "v4PPPoEUsePeerDns": false,
-                "v4PPPoEUsername": "",
                 "v6Aliases": {
                     "javaClass": "java.util.LinkedList",
                     "list": []
@@ -562,24 +636,17 @@
                 "vrrpAliases": {
                     "javaClass": "java.util.LinkedList",
                     "list": []
-                },
-                "vrrpEnabled": false,
-                "wirelessPassword": "",
-                "wirelessSsid": ""
+                }
             },
             {
                 "addressed": true,
                 "bridged": false,
+                "bridgedTo": 1,
                 "configType": "ADDRESSED",
-                "dhcpDnsOverride": "",
-                "dhcpEnabled": true,
-                "dhcpLeaseDuration": 86400,
-                "dhcpOptions": {
-                    "javaClass": "java.util.LinkedList",
-                    "list": []
-                },
-                "dhcpRangeEnd": "192.168.11.200",
-                "dhcpRangeStart": "192.168.11.100",
+                "dhcpEnabled": false,
+                "dhcpLeaseDuration": 3600,
+                "dhcpRangeEnd": "192.168.2.200",
+                "dhcpRangeStart": "192.168.2.100",
                 "disabled": false,
                 "interfaceId": 2,
                 "isVlanInterface": false,
@@ -588,136 +655,26 @@
                 "javaClass": "com.untangle.uvm.network.InterfaceSettings",
                 "name": "Internal",
                 "physicalDev": "eth1",
-                "raEnabled": false,
-                "symbolicDev": "br.eth1",
+                "symbolicDev": "eth1",
                 "systemDev": "eth1",
                 "v4Aliases": {
                     "javaClass": "java.util.LinkedList",
                     "list": []
                 },
                 "v4ConfigType": "STATIC",
-                "v4NatEgressTraffic": false,
-                "v4NatIngressTraffic": false,
-                "v4PPPoEPassword": "",
-                "v4PPPoEUsePeerDns": false,
-                "v4PPPoEUsername": "",
-                "v4StaticAddress": "192.168.11.1",
-                "v4StaticNetmask": "255.255.0.0",
-                "v4StaticPrefix": 16,
+                "v4StaticAddress": "%ETH1_V4_ADDRESS%",
+                "v4StaticNetmask": "%ETH1_V4_NETMASK%",
+                "v4StaticPrefix": 24,
                 "v6Aliases": {
                     "javaClass": "java.util.LinkedList",
                     "list": []
                 },
                 "v6ConfigType": "STATIC",
+                "v6StaticPrefixLength": 64,
                 "vrrpAliases": {
                     "javaClass": "java.util.LinkedList",
                     "list": []
-                },
-                "vrrpEnabled": false,
-                "wirelessPassword": "",
-                "wirelessSsid": ""
-            },
-            {
-                "addressed": false,
-                "bridged": true,
-                "bridgedTo": 2,
-                "configType": "BRIDGED",
-                "dhcpDnsOverride": "",
-                "dhcpEnabled": false,
-                "dhcpOptions": {
-                    "javaClass": "java.util.LinkedList",
-                    "list": []
-                },
-                "disabled": false,
-                "interfaceId": 3,
-                "isVlanInterface": false,
-                "isWan": false,
-                "isWirelessInterface": true,
-                "javaClass": "com.untangle.uvm.network.InterfaceSettings",
-                "name": "Wifi 5Ghz",
-                "physicalDev": "wlan0",
-                "raEnabled": false,
-                "supportedConfigTypes": [
-                    "BRIDGED",
-                    "DISABLED"
-                ],
-                "symbolicDev": "br.eth1",
-                "systemDev": "wlan0",
-                "v4Aliases": {
-                    "javaClass": "java.util.LinkedList",
-                    "list": []
-                },
-                "v4ConfigType": "STATIC",
-                "v4NatEgressTraffic": false,
-                "v4NatIngressTraffic": false,
-                "v4PPPoEPassword": "",
-                "v4PPPoEUsePeerDns": false,
-                "v4PPPoEUsername": "",
-                "v6Aliases": {
-                    "javaClass": "java.util.LinkedList",
-                    "list": []
-                },
-                "v6ConfigType": "STATIC",
-                "vrrpAliases": {
-                    "javaClass": "java.util.LinkedList",
-                    "list": []
-                },
-                "vrrpEnabled": false,
-                "wirelessChannel": -2,
-                "wirelessEncryption": "WPA2",
-                "wirelessPassword": "12345678",
-                "wirelessSsid": "UntangleAmazon5"
-            },
-            {
-                "addressed": false,
-                "bridged": true,
-                "bridgedTo": 2,
-                "configType": "BRIDGED",
-                "dhcpDnsOverride": "",
-                "dhcpEnabled": false,
-                "dhcpOptions": {
-                    "javaClass": "java.util.LinkedList",
-                    "list": []
-                },
-                "disabled": false,
-                "interfaceId": 4,
-                "isVlanInterface": false,
-                "isWan": false,
-                "isWirelessInterface": true,
-                "javaClass": "com.untangle.uvm.network.InterfaceSettings",
-                "name": "Wifi 2Ghz",
-                "physicalDev": "wlan1",
-                "raEnabled": false,
-                "supportedConfigTypes": [
-                    "BRIDGED",
-                    "DISABLED"
-                ],
-                "symbolicDev": "br.eth1",
-                "systemDev": "wlan1",
-                "v4Aliases": {
-                    "javaClass": "java.util.LinkedList",
-                    "list": []
-                },
-                "v4ConfigType": "STATIC",
-                "v4NatEgressTraffic": false,
-                "v4NatIngressTraffic": false,
-                "v4PPPoEPassword": "",
-                "v4PPPoEUsePeerDns": false,
-                "v4PPPoEUsername": "",
-                "v6Aliases": {
-                    "javaClass": "java.util.LinkedList",
-                    "list": []
-                },
-                "v6ConfigType": "STATIC",
-                "vrrpAliases": {
-                    "javaClass": "java.util.LinkedList",
-                    "list": []
-                },
-                "vrrpEnabled": false,
-                "wirelessChannel": -1,
-                "wirelessEncryption": "WPA2",
-                "wirelessPassword": "12345678",
-                "wirelessSsid": "UntangleAmazon"
+                }
             }
         ]
     },
@@ -726,6 +683,7 @@
     "logBypassedSessions": true,
     "logLocalInboundSessions": false,
     "logLocalOutboundSessions": true,
+    "lxcInterfaceId": 0,
     "natRules": {
         "javaClass": "java.util.LinkedList",
         "list": []
@@ -734,6 +692,9 @@
         "javaClass": "java.util.LinkedList",
         "list": []
     },
+    "publicUrlAddress": "hostname.example.com",
+    "publicUrlMethod": "external",
+    "publicUrlPort": 443,
     "qosSettings": {
         "defaultPriority": 3,
         "dnsPriority": 1,
@@ -862,6 +823,7 @@
                 }
             ]
         },
+        "queueDiscipline": "fq_codel",
         "sshPriority": 0
     },
     "sendIcmpRedirects": true,
@@ -879,7 +841,7 @@
         "javaClass": "com.untangle.uvm.network.UpnpSettings",
         "listenPort": 5000,
         "secureMode": true,
-        "upnpEnabled": true,
+        "upnpEnabled": false,
         "upnpRules": {
             "javaClass": "java.util.LinkedList",
             "list": [
@@ -946,10 +908,6 @@
             ]
         }
     },
-    "publicUrlMethod": "external",
-    "publicUrlAddress": "hostname.example.com",
-    "publicUrlPort": 443,
-    "version": 4,
+    "version": 5,
     "vlansEnabled": true
 }
-
