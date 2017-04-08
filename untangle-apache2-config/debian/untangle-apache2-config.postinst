@@ -118,7 +118,7 @@ if [ -f /var/www/ext6/classic/locale/locale-en.js ] ; then
 fi
 
 if [ ! -f /var/www/images/BrandingLogo.png ]; then
-    cp /var/www/images/Logo150x96.png /var/www/images/BrandingLogo.png
+    cp /var/www/images/DefaultLogo.png /var/www/images/BrandingLogo.png
 fi
 
 apply_oem="/usr/share/untangle/bin/apply-oem.sh"
