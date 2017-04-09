@@ -23,4 +23,8 @@ rm -f /etc/untangle/hardware/firmware.d/01remountroot
 # remove old cron job
 rm -f /etc/cron.hourly/sqlite
 
+# 13.0
+# delete sqlite3 DB because it doesn't support DROP COLUMN
+rm -f /var/lib/sqlite/reports.db
+
 exit 0
