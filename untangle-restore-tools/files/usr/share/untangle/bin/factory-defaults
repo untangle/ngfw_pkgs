@@ -40,7 +40,7 @@ echo "Restoring File System State..."
 tar -C / -zxf /usr/share/untangle/conf/canonical.tar.gz
 
 # restore logo
-cp -f /var/www/images/Logo150x96.png /var/www/images/BrandingLogo.png
+cp -f /var/www/images/DefaultLogo.png /var/www/images/BrandingLogo.png
 
 # restore OEM settings if they exist
 if [ -f /usr/share/untangle/bin/oem-apply.sh ] ; then
