@@ -177,7 +177,7 @@
                     ]
                 },
                 "description": "Allow HTTPS on WANs",
-                "enabled": false,
+                "enabled": true,
                 "ipv6Enabled": false,
                 "javaClass": "com.untangle.uvm.network.FilterRule",
                 "readOnly": true,
