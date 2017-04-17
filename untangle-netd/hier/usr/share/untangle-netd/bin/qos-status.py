@@ -38,6 +38,8 @@ def statusToJSON(input):
     for line in input:
         if count <= 5:
             res=parse.parse(indexMap[count],line)
+            if res == None:
+                continue
             parsed = res.fixed
             if count == 1:
                 entry['interface_name']=parsed[0]
