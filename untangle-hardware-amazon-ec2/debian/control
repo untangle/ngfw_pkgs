@@ -1,4 +1,4 @@
-Source: untangle-hardware-amazon-ec2
+Sourcefoo: untangle-hardware-amazon-ec2
 Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
