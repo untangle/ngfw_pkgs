@@ -12,6 +12,6 @@ if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
   cp /usr/share/untangle/conf/appliance-network-config.js /usr/share/untangle/settings/untangle-vm/network.js
   perl -i -pe 's/%ETH1_V4_ADDRESS%/'${ip}'/ ; s/%ETH1_V4_NETMASK%/'${netmask}'/' /usr/share/untangle/settings/untangle-vm/network.js
 
-  /usr/share/untangle-netd/bin/sync-settings.py -vv
+  # /usr/share/untangle-netd/bin/sync-settings.py -vv
   echo "Initializing default network settings for ${MODEL}... done"
 fi
