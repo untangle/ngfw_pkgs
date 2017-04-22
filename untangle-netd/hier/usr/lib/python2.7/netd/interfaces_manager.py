@@ -110,6 +110,11 @@ class InterfacesManager:
             # sleep to give PPPoE time to get address (bug #11431)
             self.interfacesFile.write("\tpost-up /usr/share/untangle-netd/bin/pppoe-wait-for-address.sh %s 60\n" % devName ) 
 
+        # write VRRP source routes
+        if interface_settings.get('configType') == 'ADDRESSED' and interface_settings.get('vrrpEnabled'):
+            if interface_settings.get('vrrpAliases') != None and interface_settings.get('vrrpAliases').get('list') != None:
+                for alias in interface_settings.get('vrrpAliases').get('list'):
+                    self.interfacesFile.write("\tpost-up /usr/share/untangle-netd/bin/add-source-route.sh %s \"uplink.%i\" -4\n" % (alias.get('staticAddress'), interface_settings.get('interfaceId'))) 
             
         self.interfacesFile.write("\n\n");
 
@@ -186,7 +191,6 @@ class InterfacesManager:
         # handle v4 aliases
         count = 1
         if interface_settings.get('v4Aliases') != None and interface_settings.get('v4Aliases').get('list') != None:
-
             for alias in interface_settings.get('v4Aliases').get('list'):
                 self.interfacesFile.write("## Interface %i IPv4 alias\n" % (interface_settings.get('interfaceId')) )
                 self.interfacesFile.write("auto %s:%i\n" % (intf_str, count))

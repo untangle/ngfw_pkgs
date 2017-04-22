@@ -19,6 +19,8 @@ class VrrpManager:
         vrrp_interfaces = []
         for interface_settings in settings['interfaces']['list']:
             if interface_settings.get('vrrpEnabled'):
+                if interface_settings.get('configType') != 'ADDRESSED':
+                    continue
                 if not interface_settings.get('vrrpId') or not interface_settings.get('vrrpPriority'):
                     print "Missing VRRP Config: %s, %s" % (interface_settings.get('vrrpId'), interface_settings.get('vrrpPriority'))
                     continue
