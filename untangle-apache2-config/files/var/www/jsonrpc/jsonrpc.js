@@ -432,7 +432,7 @@ function JSONRpcClient()
 JSONRpcClient.knownClasses = {};
 
 /* JSONRpcCLient.Exception */
-JSONRpcClient.Exception = function (code, message, javaStack)
+JSONRpcClient.Exception = function (code, message, javaStack, response)
 {
   this.code = code;
   var name,m;
@@ -454,6 +454,7 @@ JSONRpcClient.Exception = function (code, message, javaStack)
     this.name = "JSONRpcClientException";
   }
   this.message = message;
+  this.response = response;
 };
 
 //Error codes that are the same as on the bridge
@@ -944,11 +945,11 @@ JSONRpcClient.prototype._handleResponse = function (http)
   }
   catch(e)
   {
-    throw new JSONRpcClient.Exception(550, "error parsing result");
+    throw new JSONRpcClient.Exception(550, "error parsing result", null, data);
   }
   if (obj.error)
   {
-    throw new JSONRpcClient.Exception (obj.error.code, obj.error.msg, obj.error.trace);
+    throw new JSONRpcClient.Exception(obj.error.code, obj.error.msg, obj.error.trace, data);
   }
   var r = obj.result;
 
