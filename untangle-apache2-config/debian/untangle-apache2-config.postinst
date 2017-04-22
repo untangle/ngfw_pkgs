@@ -71,8 +71,11 @@ if ! grep "Listen 443" /etc/apache2/ports.conf >/dev/null; then
 fi
 
 # store mod_python session state in memory instead of on disk
-if ! grep "PythonOption mod_python.session.database_directory" /etc/apache2/mods-available/python.load >/dev/null; then
+if ! grep -q "PythonOption mod_python.session.database_directory" /etc/apache2/mods-available/python.load; then
     echo "PythonOption mod_python.session.database_directory /var/run/shm" >> /etc/apache2/mods-available/python.load
+fi
+if ! grep -q "PythonOption mod_python.session.cookie_name" /etc/apache2/mods-available/python.load; then
+    echo "PythonOption mod_python.session.cookie_name authsession" >> /etc/apache2/mods-available/python.load
 fi
 
 # enable these modules
