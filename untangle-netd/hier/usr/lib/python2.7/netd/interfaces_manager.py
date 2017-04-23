@@ -111,7 +111,7 @@ class InterfacesManager:
             self.interfacesFile.write("\tpost-up /usr/share/untangle-netd/bin/pppoe-wait-for-address.sh %s 60\n" % devName ) 
 
         # write VRRP source routes
-        if interface_settings.get('configType') == 'ADDRESSED' and interface_settings.get('vrrpEnabled'):
+        if interface_settings.get('isWan') and interface_settings.get('configType') == 'ADDRESSED' and interface_settings.get('vrrpEnabled'):
             if interface_settings.get('vrrpAliases') != None and interface_settings.get('vrrpAliases').get('list') != None:
                 for alias in interface_settings.get('vrrpAliases').get('list'):
                     self.interfacesFile.write("\tpost-up /usr/share/untangle-netd/bin/add-source-route.sh %s \"uplink.%i\" -4\n" % (alias.get('staticAddress'), interface_settings.get('interfaceId'))) 
