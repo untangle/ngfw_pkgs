@@ -8,10 +8,6 @@ else
 fi
 }
 
-if [ -f /etc/untangle/oem/oem.sh ] ; then
-    source /etc/untangle/oem/oem.sh
-fi
-
 if [ $# -gt 0 ] ; then
     # this is for started from init.d
     REBOOT_ON_EXIT=1 # reboot after quit
@@ -64,7 +60,7 @@ fi
 INST_OPTS=" -o DPkg::Options::=--force-confnew --yes --force-yes --fix-broken "
 UPGD_OPTS=" -o DPkg::Options::=--force-confnew --yes --force-yes --fix-broken "
 tmpfile=$(tempfile)
-backtitle="$OEM_NAME"
+backtitle="Restore Utility"
 height="12"
 width="61"
 
