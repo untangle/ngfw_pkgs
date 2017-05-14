@@ -31,7 +31,7 @@ setopt autolist
 setopt bare_glob_qual
 setopt NO_beep
 setopt NO_check_jobs
-setopt NO_clobber
+setopt clobber
 setopt cdable_vars
 setopt complete_in_word
 setopt correct
