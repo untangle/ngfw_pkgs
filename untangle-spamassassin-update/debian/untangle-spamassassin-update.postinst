@@ -9,7 +9,6 @@ chown -R $SPAM_USER:$SPAM_GROUP /home/$SPAM_USER
 
 # enable in /etc/default/spamassassin
 sed -i "s/^ENABLED=.*/ENABLED=1/" /etc/default/spamassassin
-sed -i "s/^CRON=.*/CRON=1/" /etc/default/spamassassin
 
 # change cronjob to also touch /tmp/sa-update.ran file when it runs so we know when last update ran
 grep -q -F 'touch /tmp/sa-update.ran' /etc/cron.daily/spamassassin || sed -i -e '/^case.*/i touch /tmp/sa-update.ran' /etc/cron.daily/spamassassin
@@ -18,9 +17,6 @@ grep -q -F 'touch /tmp/sa-update.ran' /etc/cron.daily/spamassassin || sed -i -e 
 # If it downloads a bad update truncated file it never deletes them
 # As a result all future upgrades fail because it never re-downloads them
 grep -q -F 'find /var/lib/spamassassin' /etc/cron.daily/spamassassin || sed -i -e '/^umask.*/i find /var/lib/spamassassin/ -type f -name "*tar.gz*" -exec rm {} \\;' /etc/cron.daily/spamassassin
-
-# change cronjob to only run if spamd is running
-grep -q -F '/var/run/spamd.pid' /etc/cron.daily/spamassassin || sed -i -e '/^CRON=.*/i test -f /var/run/spamd.pid || exit 0' /etc/cron.daily/spamassassin
 
 # disable sleep as it sleeps all cron jobs randomly
 sed -i -e 's/^\s*sleep\(.*\)/\# sleep \1/' /etc/cron.daily/spamassassin
@@ -58,5 +54,8 @@ update-rc.d spamassassin disable
 
 # update (commented out - don't do this on install - takes too long)
 # /etc/cron.daily/spamassassin
+
+# 13.0 - 13.1 remove line
+sed -i -e '/^test -f \/var\/run\/spamd.pid.*/d' /etc/cron.daily/spamassassin
 
 exit 0
