@@ -282,8 +282,9 @@ class WirelessManager:
 
                 # build the card specific hostapd config
                 conf = self.get_wificard_config(intf.get('systemDev'), intf.get('wirelessChannel'))
-                for key,value in conf.items():
-                    self.hostapdConfFile.write("%s=%s\n"%(str(key),str(value)))
+                if conf != None:
+                    for key,value in conf.items():
+                        self.hostapdConfFile.write("%s=%s\n"%(str(key),str(value)))
 
                 self.hostapdConfFile.flush()
                 self.hostapdConfFile.close()
