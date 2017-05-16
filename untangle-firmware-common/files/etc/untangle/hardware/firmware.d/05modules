@@ -2,6 +2,8 @@
 
 set -x
 
+depmod -a -A
+
 modprobe xt_conntrack
 modprobe xt_comment
 modprobe xt_multiport
