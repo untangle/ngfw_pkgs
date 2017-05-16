@@ -1,6 +1,14 @@
 #! /bin/sh
 
-set -x
+# load the first module
+# if it fails run depmode
+modprobe compat
+if [ $? != 0 ] ; then
+    echo "Running depmod..."
+    depmod -a
+fi
+
+# if any command fails after this, exit with error
 set -e
 
 # load modules

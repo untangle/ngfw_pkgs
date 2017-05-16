@@ -1,27 +1,24 @@
 #! /bin/bash
 
-FLAG_FLASHED="/var/lib/untangle-flashed"
 KERNEL_VERSION=$(uname -r)
-PART_ONE="/dev/mtdblock2"
-PART_TWO="/dev/mtdblock4"
-
-## functions
+TRX="/boot/vmlinux-${KERNEL_VERSION}.trx"
+PARTITION_ONE="/dev/mtdblock2"
+PARTITION_TWO="/dev/mtdblock4"
 
 hashPart() {
   # the 1st 100k is enough for a fingerprint
   dd if=$1 bs=100k count=1 2> /dev/null | md5sum
 }
 
-## main
+# re-flash both partitions if they're not the same
+for p in $PARTITION_ONE $PARTITION_TWO ; do
+  if [[ $(hashPart $p) != $(hashPart $TRX) ]] ; then
+    echo "Flashing ${TRX} to $p ..."
+    dd if=${TRX} of=$p bs=1M 2> /dev/null
+    echo "Flashing ${TRX} to $p ... done"
+  fi
+done
 
 # remove older, unused flag
-rm -f $FLAG_FLASHED
+rm -f /var/lib/untangle-flashed
 
-# re-flash both partitions if they're not the same
-if [[ $(hashPart $PART_ONE) != $(hashPart $PART_TWO) ]] ; then
-  for p in $PART_ONE $PART_TWO ; do
-    echo "Flashing /boot/vmlinux-${KERNEL_VERSION}.trx to $p ..."
-    dd if=/boot/vmlinux-${KERNEL_VERSION}.trx of=$p bs=1M 2> /dev/null
-    echo "Flashing /boot/vmlinux-${KERNEL_VERSION}.trx to $p ... done"
-  done
-fi

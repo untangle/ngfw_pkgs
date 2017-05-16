@@ -12,14 +12,4 @@ if [ -x "/etc/init.d/untangle-firmware-common" ]; then
   ourInit untangle-firmware-common restart
 fi
 
-# 12.2.1 upgrade NGFW-10303
-# remove file if it exists
-rm -f /etc/udev/rules.d/70-persistent-net.rules
-
-# 13.0 remove wan balancer limitation
-rm -f /etc/untangle/hardware/firmware.d/50hide
-
-# disable rsyslog by default on amazon
-update-rc.d rsyslog disable
-
 exit 0
