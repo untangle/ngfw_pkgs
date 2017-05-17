@@ -2,7 +2,7 @@
 
 DEFAULT_FILE="/etc/default/snmpd"
 
-update-rc.d snmpd disable
+update-rc.d -f snmpd disable
 
 # Only for first time installation.
 if [ -z "$2" ] && ! grep -q "UDP" $DEFAULT_FILE ; then

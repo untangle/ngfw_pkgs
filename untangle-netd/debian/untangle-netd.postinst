@@ -6,7 +6,7 @@ sed -e 's/\(.*log_warning_msg.*\)/#\1/' -i /etc/network/if-up.d/mountnfs
 
 # disable keepalived in sysvinit
 # It will be started via the post-network scripts if needed
-update-rc.d keepalived disable
+update-rc.d -f keepalived disable
 
 # 13.0 conversion (remove old log file)
 rm -f /var/log/uvm/iptables.log

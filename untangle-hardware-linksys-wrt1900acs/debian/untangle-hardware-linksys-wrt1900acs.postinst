@@ -19,7 +19,7 @@ rm -f /etc/udev/rules.d/70-persistent-net.rules
 # 13.0 remove wan balancer limitation
 rm -f /etc/untangle/hardware/firmware.d/50hide
 
-# disable rsyslog by default on linksys
-update-rc.d rsyslog disable
+# disable rsyslog by default
+update-rc.d -f rsyslog disable
 
 exit 0
