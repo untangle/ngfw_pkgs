@@ -18,7 +18,8 @@ runInLxc() {
 }
 
 installInLxc() {
-  lxc-attach -n ${NAME} --set-var DEBIAN_FRONTEND=noninteractive -- apt-get install --yes $@
+ lxc-attach -n ${NAME} --set-var DEBIAN_FRONTEND=noninteractive -- apt-get update
+ lxc-attach -n ${NAME} --set-var DEBIAN_FRONTEND=noninteractive -- apt-get install --yes $@
 }
 
 exec &> >(tee -a "$LOG_FILE")
