@@ -1,0 +1,24 @@
+#! /bin/bash
+
+KERNEL_VERSION=$(uname -r)
+TRX="/boot/vmlinux-${KERNEL_VERSION}.trx"
+PARTITION_ONE="/dev/mtdblock2"
+PARTITION_TWO="/dev/mtdblock4"
+
+hashPart() {
+  # the 1st 100k is enough for a fingerprint
+  dd if=$1 bs=100k count=1 2> /dev/null | md5sum
+}
+
+# re-flash both partitions if they're not the same
+for p in $PARTITION_ONE $PARTITION_TWO ; do
+  if [[ $(hashPart $p) != $(hashPart $TRX) ]] ; then
+    echo "Flashing ${TRX} to $p ..."
+    dd if=${TRX} of=$p bs=1M 2> /dev/null
+    echo "Flashing ${TRX} to $p ... done"
+  fi
+done
+
+# remove older, unused flag
+rm -f /var/lib/untangle-flashed
+

@@ -1,0 +1,26 @@
+#! /bin/dash
+
+HOSTAPD_CONF_DIR="/etc/hostapd"
+WLAN_CONF="$HOSTAPD_CONF_DIR/hostapd.conf-wlan"
+WLAN0_CONF="${WLAN_CONF}0"
+WLAN1_CONF="${WLAN_CONF}1"
+
+for file in $WLAN0_CONF $WLAN1_CONF ; do
+    if [ -f $file ] ; then
+        # backup uvm-generated configurations first
+        cp $file ${file}.bak
+
+        # remove unsupported ht_capab
+        sed -e 's/\[TX-STBC\]//g' -e 's/\[RX-STBC1\]//g' -e 's/\[DSSS_CCK-40\]//g' -i $file
+
+        # if 5Ghz, and auto is chosen, choose a channel manually
+        # 5Ghz does not seemingly support auto channel selection
+        if grep 'hw_mode=a' $file ; then
+            sed -e 's/channel=0\s*/channel=149/' -i $file
+        fi
+
+        # comment out ht_capab for both interfaces
+        #perl -i -pe 's/^(?=ht_capab)/#/' $file
+    fi
+done
+

@@ -1,0 +1,20 @@
+#! /bin/sh
+
+# if any command fails after this, exit with error
+set -e
+
+depmod -a -A
+
+# load modules
+modprobe compat
+modprobe cfg80211
+modprobe mac80211
+modprobe mwlwifi
+modprobe mwifiex
+modprobe mwifiex_sdio
+
+# make sure they show up in ifconfig
+ifconfig wlan0 up
+ifconfig wlan1 up
+
+exit 0

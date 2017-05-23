@@ -1,0 +1,26 @@
+#! /bin/bash
+
+set -x
+
+setMac() {
+  local interface=$1
+  local mac=$2
+  ip link set $interface down
+  ip link set $interface address $mac
+  ip link set $interface up
+}
+
+# read from nvram
+macAddress=$(nvram /dev/mtdblock1 get ethaddr)
+
+# increment by 1 for eth1
+nextMacAddress=$(printf "%012x" $((0x${macAddress//:}+1)) | perl -pe 's/(..)(?!$)/$1:/g')
+
+# set MAC address
+# only do this during bootup (anything but runlevel 2)
+if [ "`/sbin/runlevel | cut -d " " -f 2`" != "2" ] ; then 
+    setMac eth0 $macAddress
+    setMac eth1 $nextMacAddress
+fi
+
+exit 0
