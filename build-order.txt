@@ -1,3 +1,4 @@
+untangle-hardware-linksys-wrt3200acm	jessie
 untangle-hardware-amazon-ec2		jessie
 untangle-database-config		jessie
 untangle-lxc-client			jessie
