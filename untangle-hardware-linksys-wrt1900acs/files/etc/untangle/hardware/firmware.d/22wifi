@@ -1,9 +1,13 @@
 #! /bin/sh
 
+# if loading compat fails, run depmod
+modprobe compat
+if [ ! $? -eq 0 ] ; then
+    depmod -a
+fi
+
 # if any command fails after this, exit with error
 set -e
-
-depmod -a -A
 
 # load modules
 modprobe compat
