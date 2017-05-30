@@ -19,7 +19,7 @@ fi
 OLD_UNTANGLE_SNORT_INIT=/etc/init.d/snort-untangle
 if [ -f ${OLD_UNTANGLE_SNORT_INIT} ] ; then
     ourInit snort-untangle stop
-    /usr/sbin/update-rc.d snort-untangle disable > /dev/null 2>&1
+    /usr/sbin/update-rc.d snort-untangle -f disable > /dev/null 2>&1
     rm -f ${OLD_UNTANGLE_SNORT_INIT}
 fi
 

@@ -50,7 +50,7 @@ EOF
 /etc/untangle/startup.d/20spamassassin
 
 # disable spamassassin at startup (now started by apps when needed)
-update-rc.d spamassassin disable
+update-rc.d -f spamassassin disable
 
 # update (commented out - don't do this on install - takes too long)
 # /etc/cron.daily/spamassassin
