@@ -2,8 +2,8 @@
 
 KERNEL_VERSION=$(uname -r)
 TRX="/boot/vmlinux-${KERNEL_VERSION}.trx"
-PARTITION_ONE="/dev/mtdblock4"
-PARTITION_TWO="/dev/mtdblock6"
+PARTITION_ONE="/dev/mtdblock5"
+PARTITION_TWO="/dev/mtdblock7"
 
 hashPart() {
   # the 1st 100k is enough for a fingerprint
