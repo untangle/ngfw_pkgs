@@ -91,6 +91,9 @@ class DnsMasqManager:
         # dont read /etc/hosts - this will result in returning 127.0.0.1 for some queries
         file.write("no-hosts\n");
         file.write("addn-hosts=/etc/hosts.dnsmasq\n");
+        # use a dedicated file for the interface specific feature where dnsmasq returns the
+        # most appropriate IP based on the interface address where the query was received
+        file.write("addn-hosts=/etc/hosts.untangle\n");
         file.write("\n");
 
         # Set global DHCP options
