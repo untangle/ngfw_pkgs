@@ -430,7 +430,6 @@ class InterfacesManager:
         file.write("${IPTABLES} -t mangle -A mark-dst-intf -m addrtype --dst-type broadcast -j RETURN -m comment --comment \"If its a broadcast packet, just return\"" + "\n");
         file.write("\n");
 
-        ngfw6246HackRuleAdded = False
         for intf in interfaces:
             id = intf['interfaceId']
             systemDev = intf['systemDev']
@@ -442,12 +441,20 @@ class InterfacesManager:
             if symbolicDev.startswith("br.") or configType == 'BRIDGED':
                 file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -m physdev --physdev-out %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i using physdev\"" % (symbolicDev, systemDev, id << 8, self.dstInterfaceMarkMask, id) + "\n");
 
-                # This is a terrible hack to work around NGFW-6246
-                # physdev-out does not work for bridged interfaces in 4.x, so we have to assume some destination interface so we assume the main interface
-                # otherwise the traffic will have no dest interface
-                # This may mean we incorrectly mark the dest interface!
-                if not ngfw6246HackRuleAdded:
-                    ngfw6246HackRuleAdded = True
+        # This is a terrible hack to work around NGFW-6246
+        # physdev-out does not work for bridged interfaces in 4.x, so we have to assume some destination interface so we assume the main interface
+        # otherwise the traffic will have no dest interface
+        # This may mean we incorrectly mark the dest interface!
+        ngfw6246HackRules = {}
+        for intf in interfaces:
+            id = intf['interfaceId']
+            systemDev = intf['systemDev']
+            symbolicDev = intf['symbolicDev']
+            configType = intf['configType']
+
+            if symbolicDev.startswith("br.") or configType == 'BRIDGED':
+                if ngfw6246HackRules.get(symbolicDev) == None:
+                    ngfw6246HackRules[symbolicDev] = True
                     file.write("uname -r | grep -q '^4'" + "\n");
                     file.write("KERN_4_X=$?" + "\n");
                     file.write("if [ ${KERN_4_X} -eq 0 ] ; then" + "\n");
