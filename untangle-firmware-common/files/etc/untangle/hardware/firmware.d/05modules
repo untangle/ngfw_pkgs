@@ -11,6 +11,7 @@ modprobe xt_policy
 modprobe xt_socket
 modprobe xt_mac
 modprobe xt_IMQ
+modprobe xt_LOG
 modprobe xt_physdev
 modprobe xt_iprange
 

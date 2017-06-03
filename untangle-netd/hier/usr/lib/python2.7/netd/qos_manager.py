@@ -113,8 +113,6 @@ class QosManager:
         return queue_discipline_str
 
     def add_htb_rules( self, file, qos_settings, wan_intf ):
-        print( "Adding HTB for %s and %s..." % (wan_intf.get('systemDev'), wan_intf.get('imqDev')) )
-
         wan_dev = wan_intf.get('systemDev')
         imq_dev = wan_intf.get('imqDev')
         default_class = qos_settings.get('defaultPriority')
