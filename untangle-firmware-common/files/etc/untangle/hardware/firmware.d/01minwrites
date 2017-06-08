@@ -94,6 +94,10 @@ fi
 if [ ! -f /etc/dnsmasq.d/dhcp-leasefile ] ; then
     echo "Moving dnsmasq lease file to /tmp..."
     echo "dhcp-leasefile=/tmp/dnsmasq.leases" > /etc/dnsmasq.d/dhcp-leasefile
+    if [ ! -L /var/lib/misc/dnsmasq.leases ] ; then
+        rm -f /var/lib/misc/dnsmasq.leases
+        ln -s /tmp/dnsmasq.leases /var/lib/misc/dnsmasq.leases
+    fi
 fi
 
 # remove man cron job from daily & weekly to once a month
