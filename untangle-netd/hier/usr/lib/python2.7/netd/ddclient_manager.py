@@ -26,14 +26,14 @@ class DdclientManager:
 
         try:
             config = {
-                "zoneedit" : [ "zoneedit1", "dynamic.zoneedit.com", False ],
-                "easydns" : [ "easydns", "members.easydns.com", False ],
-                "dslreports" : [ "dslreports1", "www.dslreports.com", False ],
-                "dnspark" : [ "dnspark", "www.dnspark.com", False ],
-                "namecheap" : [ "namecheap", "dynamicdns.park-your-domain.com", False ],
-                "dyndns" : [ "dyndns2", "members.dyndns.org", False ],
-                "no-ip" : [ "dyndns2", "dynupdate.no-ip.com", False ],
-                "dnsomatic" : [ "dyndns2", "updates.dnsomatic.com", False ],
+                "zoneedit" : [ "zoneedit1", "dynamic.zoneedit.com", True ],
+                "easydns" : [ "easydns", "members.easydns.com", True ],
+                "dslreports" : [ "dslreports1", "www.dslreports.com", True ],
+                "dnspark" : [ "dnspark", "www.dnspark.com", True ],
+                "namecheap" : [ "namecheap", "dynamicdns.park-your-domain.com", True ],
+                "dyndns" : [ "dyndns2", "members.dyndns.org", True ],
+                "no-ip" : [ "dyndns2", "dynupdate.no-ip.com", True ],
+                "dnsomatic" : [ "dyndns2", "updates.dnsomatic.com", True ],
                 "cloudflare" : [ "cloudflare", "www.cloudflare.com", True ]
                 }
 
