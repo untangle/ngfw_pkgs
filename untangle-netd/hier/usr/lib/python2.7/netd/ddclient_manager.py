@@ -24,6 +24,7 @@ class DdclientManager:
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
 
+        # https://sourceforge.net/p/ddclient/wiki/protocols/
         try:
             config = {
                 "zoneedit" : [ "zoneedit1", "dynamic.zoneedit.com", True ],
@@ -34,6 +35,7 @@ class DdclientManager:
                 "dyndns" : [ "dyndns2", "members.dyndns.org", True ],
                 "no-ip" : [ "dyndns2", "dynupdate.no-ip.com", True ],
                 "dnsomatic" : [ "dyndns2", "updates.dnsomatic.com", True ],
+                "google" : [ "dyndns2", "domains.google.com", True ],
                 "cloudflare" : [ "cloudflare", "www.cloudflare.com", True ]
                 }
 
