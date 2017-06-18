@@ -185,7 +185,7 @@ fi
         file.write("\n\n");
 
         if self.vrrp_enabled:
-            file.write("${IPTABLES} -t filter -I filter-rules-input -p vrrp -m comment --comment \"Allow VRRP\" -j RETURN" + "\n");
+            file.write("${IPTABLES} -t filter -I access-rules -p vrrp -m comment --comment \"Allow VRRP\" -j RETURN" + "\n");
 
         file.flush()
         file.close()

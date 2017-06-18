@@ -156,6 +156,20 @@ def cleanupSettings( settings ):
     for intf in interfaces:
         if intf['configType'] != 'BRIDGED':
             if 'bridgedTo' in intf: del intf['bridgedTo']
+
+    # In 13.1 we renamed inputFilterRules to accessRules
+    # Check for safety NGFW-10791
+    # This can be removed after 13.1
+    if settings.get('inputFilterRules') != None and settings.get('accessRules') == None:
+        print "WARNING: accessRules missing - using inputFilterRules"
+        settings['accessRules'] = settings.get('inputFilterRules')
+
+    # In 13.1 we renamed forwardFilterRules to filterRules
+    # Check for safety NGFW-10791
+    # This can be removed after 13.1
+    if settings.get('forwardFilterRules') != None and settings.get('filterRules') == None:
+        print "WARNING: filterRules missing - using forwardFilterRules"
+        settings['filterRules'] = settings.get('forwardFilterRules')
         
     return
     

@@ -60,32 +60,32 @@ class FilterRulesManager:
 
         return
 
-    def write_input_filter_rules( self, settings, verbosity=0 ):
+    def write_access_rules( self, settings, verbosity=0 ):
 
-        if settings == None or settings.get('inputFilterRules') == None or settings.get('inputFilterRules').get('list') == None:
+        if settings == None or settings.get('accessRules') == None or settings.get('accessRules').get('list') == None:
             print "ERROR: Missing input filter Rules"
             return
 
-        input_filter_rules = settings['inputFilterRules']['list'];
+        access_rules = settings['accessRules']['list'];
 
-        for filter_rule in input_filter_rules:
+        for filter_rule in access_rules:
             try:
-                self.write_filter_rule( "filter-rules-input", filter_rule, "DROP", verbosity );
+                self.write_filter_rule( "access-rules", filter_rule, "DROP", verbosity );
             except Exception,e:
                 traceback.print_exc(e)
         return
 
-    def write_forward_filter_rules( self, settings, verbosity=0 ):
+    def write_filter_rules( self, settings, verbosity=0 ):
 
-        if settings == None or settings.get('forwardFilterRules') == None or settings.get('forwardFilterRules').get('list') == None:
+        if settings == None or settings.get('filterRules') == None or settings.get('filterRules').get('list') == None:
             print "ERROR: Missing forward filter Rules"
             return
         
-        forward_filter_rules = settings['forwardFilterRules']['list'];
+        filter_rules = settings['filterRules']['list'];
 
-        for filter_rule in forward_filter_rules:
+        for filter_rule in filter_rules:
             try:
-                self.write_filter_rule( "filter-rules-forward", filter_rule, "REJECT", verbosity );
+                self.write_filter_rule( "filter-rules", filter_rule, "REJECT", verbosity );
             except Exception,e:
                 traceback.print_exc(e)
         return
@@ -104,25 +104,25 @@ class FilterRulesManager:
         self.file.write("\n");
         self.file.write("\n");
 
-        self.file.write("# Create (if needed) and flush filter-rules-input chain" + "\n");
-        self.file.write("${IPTABLES} -t filter -N filter-rules-input 2>/dev/null" + "\n");
-        self.file.write("${IPTABLES} -t filter -F filter-rules-input >/dev/null 2>&1" + "\n");
+        self.file.write("# Create (if needed) and flush access-rules chain" + "\n");
+        self.file.write("${IPTABLES} -t filter -N access-rules 2>/dev/null" + "\n");
+        self.file.write("${IPTABLES} -t filter -F access-rules >/dev/null 2>&1" + "\n");
         self.file.write("\n");
 
-        self.file.write("${IP6TABLES} -t filter -N filter-rules-input 2>/dev/null" + "\n");
-        self.file.write("${IP6TABLES} -t filter -F filter-rules-input >/dev/null 2>&1" + "\n");
+        self.file.write("${IP6TABLES} -t filter -N access-rules 2>/dev/null" + "\n");
+        self.file.write("${IP6TABLES} -t filter -F access-rules >/dev/null 2>&1" + "\n");
         self.file.write("\n");
 
-        self.file.write("# Create (if needed) and flush filter-rules-input chain" + "\n");
-        self.file.write("${IPTABLES} -t filter -N filter-rules-forward 2>/dev/null" + "\n");
-        self.file.write("${IPTABLES} -t filter -F filter-rules-forward >/dev/null 2>&1" + "\n");
+        self.file.write("# Create (if needed) and flush access-rules chain" + "\n");
+        self.file.write("${IPTABLES} -t filter -N filter-rules 2>/dev/null" + "\n");
+        self.file.write("${IPTABLES} -t filter -F filter-rules >/dev/null 2>&1" + "\n");
         self.file.write("\n");
 
-        self.file.write("${IP6TABLES} -t filter -N filter-rules-forward 2>/dev/null" + "\n");
-        self.file.write("${IP6TABLES} -t filter -F filter-rules-forward >/dev/null 2>&1" + "\n");
+        self.file.write("${IP6TABLES} -t filter -N filter-rules 2>/dev/null" + "\n");
+        self.file.write("${IP6TABLES} -t filter -F filter-rules >/dev/null 2>&1" + "\n");
         self.file.write("\n");
 
-        self.file.write("# Create (if needed) and flush filter-rules-input chain" + "\n");
+        self.file.write("# Create (if needed) and flush access-rules chain" + "\n");
         self.file.write("${IPTABLES} -t filter -N block-invalid 2>/dev/null" + "\n");
         self.file.write("${IPTABLES} -t filter -F block-invalid >/dev/null 2>&1" + "\n");
         self.file.write("\n");
@@ -131,31 +131,31 @@ class FilterRulesManager:
         self.file.write("${IP6TABLES} -t filter -F block-invalid >/dev/null 2>&1" + "\n");
         self.file.write("\n");
 
-        self.file.write("# Call filter-rules-input chain from INPUT/filter chain" + "\n");
-        self.file.write("${IPTABLES} -t filter -D INPUT -m conntrack --ctstate NEW -m comment --comment \"input filter rules\" -j filter-rules-input >/dev/null 2>&1" + "\n");
-        self.file.write("${IPTABLES} -t filter -A INPUT -m conntrack --ctstate NEW -m comment --comment \"input filter rules\" -j filter-rules-input" + "\n");
+        self.file.write("# Call access-rules chain from INPUT/filter chain" + "\n");
+        self.file.write("${IPTABLES} -t filter -D INPUT -m conntrack --ctstate NEW -m comment --comment \"input filter rules\" -j access-rules >/dev/null 2>&1" + "\n");
+        self.file.write("${IPTABLES} -t filter -A INPUT -m conntrack --ctstate NEW -m comment --comment \"input filter rules\" -j access-rules" + "\n");
         self.file.write("\n");
 
-        self.file.write("${IP6TABLES} -t filter -D INPUT -m conntrack --ctstate NEW -m comment --comment \"input filter rules\" -j filter-rules-input >/dev/null 2>&1" + "\n");
-        self.file.write("${IP6TABLES} -t filter -A INPUT -m conntrack --ctstate NEW -m comment --comment \"input filter rules\" -j filter-rules-input" + "\n");
+        self.file.write("${IP6TABLES} -t filter -D INPUT -m conntrack --ctstate NEW -m comment --comment \"input filter rules\" -j access-rules >/dev/null 2>&1" + "\n");
+        self.file.write("${IP6TABLES} -t filter -A INPUT -m conntrack --ctstate NEW -m comment --comment \"input filter rules\" -j access-rules" + "\n");
         self.file.write("\n");
 
-        self.file.write("# Call filter-rules-forward chain from FORWARD/filter chain" + "\n");
-        self.file.write("${IPTABLES} -t filter -D FORWARD -m conntrack --ctstate NEW -m comment --comment \"forward filter rules\" -j filter-rules-forward >/dev/null 2>&1" + "\n");
-        self.file.write("${IPTABLES} -t filter -A FORWARD -m conntrack --ctstate NEW -m comment --comment \"forward filter rules\" -j filter-rules-forward" + "\n");
+        self.file.write("# Call filter-rules chain from FORWARD/filter chain" + "\n");
+        self.file.write("${IPTABLES} -t filter -D FORWARD -m conntrack --ctstate NEW -m comment --comment \"forward filter rules\" -j filter-rules >/dev/null 2>&1" + "\n");
+        self.file.write("${IPTABLES} -t filter -A FORWARD -m conntrack --ctstate NEW -m comment --comment \"forward filter rules\" -j filter-rules" + "\n");
         self.file.write("\n");
 
-        self.file.write("${IP6TABLES} -t filter -D FORWARD -m conntrack --ctstate NEW -m comment --comment \"forward filter rules\" -j filter-rules-forward >/dev/null 2>&1" + "\n");
-        self.file.write("${IP6TABLES} -t filter -A FORWARD -m conntrack --ctstate NEW -m comment --comment \"forward filter rules\" -j filter-rules-forward" + "\n");
+        self.file.write("${IP6TABLES} -t filter -D FORWARD -m conntrack --ctstate NEW -m comment --comment \"forward filter rules\" -j filter-rules >/dev/null 2>&1" + "\n");
+        self.file.write("${IP6TABLES} -t filter -A FORWARD -m conntrack --ctstate NEW -m comment --comment \"forward filter rules\" -j filter-rules" + "\n");
         self.file.write("\n");
 
         self.file.write("# Pass all local traffic " + "\n");
-        self.file.write("${IPTABLES} -t filter -D filter-rules-input -i lo -j RETURN -m comment --comment \"Allow all local traffic\" >/dev/null 2>&1" + "\n");
-        self.file.write("${IPTABLES} -t filter -I filter-rules-input -i lo -j RETURN -m comment --comment \"Allow all local traffic\"" + "\n");
+        self.file.write("${IPTABLES} -t filter -D access-rules -i lo -j RETURN -m comment --comment \"Allow all local traffic\" >/dev/null 2>&1" + "\n");
+        self.file.write("${IPTABLES} -t filter -I access-rules -i lo -j RETURN -m comment --comment \"Allow all local traffic\"" + "\n");
         self.file.write("\n");
 
-        self.file.write("${IP6TABLES} -t filter -D filter-rules-input -i lo -j RETURN -m comment --comment \"Allow all local traffic\" >/dev/null 2>&1" + "\n");
-        self.file.write("${IP6TABLES} -t filter -I filter-rules-input -i lo -j RETURN -m comment --comment \"Allow all local traffic\"" + "\n");
+        self.file.write("${IP6TABLES} -t filter -D access-rules -i lo -j RETURN -m comment --comment \"Allow all local traffic\" >/dev/null 2>&1" + "\n");
+        self.file.write("${IP6TABLES} -t filter -I access-rules -i lo -j RETURN -m comment --comment \"Allow all local traffic\"" + "\n");
         self.file.write("\n");
 
         self.file.write("# Block INVALID packets" + "\n");
@@ -190,36 +190,36 @@ class FilterRulesManager:
             self.file.write("\n");
 
         self.file.write("# Pass all RELATED traffic " + "\n");
-        self.file.write("${IPTABLES} -t filter -D filter-rules-input -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\" >/dev/null 2>&1" + "\n");
-        self.file.write("${IPTABLES} -t filter -I filter-rules-input -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\"" + "\n");
+        self.file.write("${IPTABLES} -t filter -D access-rules -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\" >/dev/null 2>&1" + "\n");
+        self.file.write("${IPTABLES} -t filter -I access-rules -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\"" + "\n");
         self.file.write("\n");
 
-        self.file.write("${IP6TABLES} -t filter -D filter-rules-input -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\" >/dev/null 2>&1" + "\n");
-        self.file.write("${IP6TABLES} -t filter -I filter-rules-input -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\"" + "\n");
+        self.file.write("${IP6TABLES} -t filter -D access-rules -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\" >/dev/null 2>&1" + "\n");
+        self.file.write("${IP6TABLES} -t filter -I access-rules -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\"" + "\n");
         self.file.write("\n");
 
         self.file.write("# Pass all RELATED traffic " + "\n");
-        self.file.write("${IPTABLES} -t filter -D filter-rules-forward -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\" >/dev/null 2>&1" + "\n");
-        self.file.write("${IPTABLES} -t filter -I filter-rules-forward -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\"" + "\n");
+        self.file.write("${IPTABLES} -t filter -D filter-rules -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\" >/dev/null 2>&1" + "\n");
+        self.file.write("${IPTABLES} -t filter -I filter-rules -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\"" + "\n");
         self.file.write("\n");
 
-        self.file.write("${IP6TABLES} -t filter -D filter-rules-forward -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\" >/dev/null 2>&1" + "\n");
-        self.file.write("${IP6TABLES} -t filter -I filter-rules-forward -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\"" + "\n");
+        self.file.write("${IP6TABLES} -t filter -D filter-rules -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\" >/dev/null 2>&1" + "\n");
+        self.file.write("${IP6TABLES} -t filter -I filter-rules -m conntrack --ctstate RELATED -j RETURN -m comment --comment \"Allow RELATED traffic\"" + "\n");
         self.file.write("\n");
 
         # This is commented out because we have explicit rules to handle admin & blockpages in the input rules.
         # self.file.write("# Pass all port forwarded traffic (for block pages & admin) " + "\n");
-        # self.file.write("${IPTABLES} -t filter -D filter-rules-input -m conntrack --ctstate DNAT -j RETURN -m comment --comment \"Allow port forwarded traffic\" >/dev/null 2>&1" + "\n");
-        # self.file.write("${IPTABLES} -t filter -I filter-rules-input -m conntrack --ctstate DNAT -j RETURN -m comment --comment \"Allow port forwarded traffic\"" + "\n");
+        # self.file.write("${IPTABLES} -t filter -D access-rules -m conntrack --ctstate DNAT -j RETURN -m comment --comment \"Allow port forwarded traffic\" >/dev/null 2>&1" + "\n");
+        # self.file.write("${IPTABLES} -t filter -I access-rules -m conntrack --ctstate DNAT -j RETURN -m comment --comment \"Allow port forwarded traffic\"" + "\n");
         # self.file.write("\n");
 
         self.file.write("# Pass all reinjected TCP traffic " + "\n");
-        self.file.write("${IPTABLES} -t filter -D filter-rules-input -i utun -j RETURN -m comment --comment \"Allow all reinjected traffic\" >/dev/null 2>&1" + "\n");
-        self.file.write("${IPTABLES} -t filter -I filter-rules-input -i utun -j RETURN -m comment --comment \"Allow all reinjected traffic\"" + "\n");
+        self.file.write("${IPTABLES} -t filter -D access-rules -i utun -j RETURN -m comment --comment \"Allow all reinjected traffic\" >/dev/null 2>&1" + "\n");
+        self.file.write("${IPTABLES} -t filter -I access-rules -i utun -j RETURN -m comment --comment \"Allow all reinjected traffic\"" + "\n");
         self.file.write("\n");
 
-        self.file.write("${IP6TABLES} -t filter -D filter-rules-input -i utun -j RETURN -m comment --comment \"Allow all reinjected traffic\" >/dev/null 2>&1" + "\n");
-        self.file.write("${IP6TABLES} -t filter -I filter-rules-input -i utun -j RETURN -m comment --comment \"Allow all reinjected traffic\"" + "\n");
+        self.file.write("${IP6TABLES} -t filter -D access-rules -i utun -j RETURN -m comment --comment \"Allow all reinjected traffic\" >/dev/null 2>&1" + "\n");
+        self.file.write("${IP6TABLES} -t filter -I access-rules -i utun -j RETURN -m comment --comment \"Allow all reinjected traffic\"" + "\n");
         self.file.write("\n");
 
         if settings.get('blockReplayPackets'):
@@ -236,8 +236,8 @@ class FilterRulesManager:
             self.file.write("\n");
             # no need for ipv6 - this is only for ICSA compliance
 
-        self.write_input_filter_rules( settings, verbosity );
-        self.write_forward_filter_rules( settings, verbosity );
+        self.write_access_rules( settings, verbosity );
+        self.write_filter_rules( settings, verbosity );
 
         self.file.write("\n");
         self.file.write("${IPTABLES} -t filter -D FORWARD -m conntrack --ctstate NEW -j DROP -m comment --comment \"drop sessions during restart\" >/dev/null 2>&1\n");
