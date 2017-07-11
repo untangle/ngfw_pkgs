@@ -140,10 +140,25 @@ class IptablesUtil:
                     current_strings = current_strings + [ current + conditionStr for current in orig_current_strings ]
 
             if conditionType == "SRC_MAC":
-                if invert:
-                    conditionStr = conditionStr + " ! "
-                conditionStr = conditionStr + " -m mac --mac-source %s " % value
-                current_strings = [ current + conditionStr for current in current_strings ]
+                if "any" in value:
+                    continue
+
+                macs = value.split(",")
+                if invert and len(macs)>1:
+                    print "ERROR: invert not supported on multiple protocol condition"
+                    continue
+                if len(macs) == 0:
+                    print "ERROR: interface condition with no interfaces"
+                    continue
+                orig_current_strings = current_strings
+                current_strings = []
+                # split current rules for each mac specified
+                for i in range(0 , len(macs) ):
+                    conditionStr = ""
+                    if invert:
+                        conditionStr = conditionStr + " ! "
+                    conditionStr = conditionStr + (" -m mac --mac-source %s " % string.lower(protos[i]))
+                    current_strings = current_strings + [ conditionStr + current for current in orig_current_strings ]
 
             if conditionType == "SRC_ADDR":
                 if "any" in value:
