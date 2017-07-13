@@ -86,6 +86,10 @@ class IptablesManager:
         file.write("${IPTABLES} -t mangle -F postrouting-qos" + "\n");
         file.write("${IPTABLES} -t mangle -A POSTROUTING -j postrouting-qos" + "\n");
         
+        file.write("${IPTABLES} -t mangle -N prerouting-tunnel-vpn 2>/dev/null" + "\n");
+        file.write("${IPTABLES} -t mangle -F prerouting-tunnel-vpn" + "\n");
+        file.write("${IPTABLES} -t mangle -A PREROUTING -j prerouting-tunnel-vpn" + "\n");
+
         file.write("${IPTABLES} -t mangle -N prerouting-wan-balancer 2>/dev/null" + "\n");
         file.write("${IPTABLES} -t mangle -F prerouting-wan-balancer" + "\n");
         file.write("${IPTABLES} -t mangle -A PREROUTING -j prerouting-wan-balancer" + "\n");
