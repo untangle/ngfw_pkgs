@@ -42,10 +42,15 @@ class NetworkUtil:
         for intf in settings['interfaces']['list']:
             if intf.get('interfaceId') == None:
                 continue
-
             if intf.get('configType') == 'ADDRESSED' and intf.get('isWan'):
                 ret.append(int(intf['interfaceId']))
-        
+
+        for intf in settings['virtualInterfaces']['list']:
+            if intf.get('interfaceId') == None:
+                continue
+            if intf.get('isWan'):
+                ret.append(int(intf['interfaceId']))
+                
         return ret
 
     @staticmethod
@@ -60,11 +65,17 @@ class NetworkUtil:
         for intf in settings['interfaces']['list']:
             if intf.get('interfaceId') == None:
                 continue
-
             if intf.get('configType') == 'ADDRESSED' and intf.get('isWan'):
                 continue
             else:
                 ret.append(int(intf['interfaceId']))
-        
+        for intf in settings['virtualInterfaces']['list']:
+            if intf.get('interfaceId') == None:
+                continue
+            if intf.get('isWan'):
+                continue
+            else:
+                ret.append(int(intf['interfaceId']))
+                
         return ret
 

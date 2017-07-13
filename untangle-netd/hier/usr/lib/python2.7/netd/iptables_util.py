@@ -27,10 +27,6 @@ class IptablesUtil:
                 for intfId in intf_values:
                     if intfId not in intfs:
                         intfs.append(intfId)
-                intfs.append(0xfa) # OpenVPN (250) is a non_wan 
-                intfs.append(0xfb) # L2TP (251) is a non_wan 
-                intfs.append(0xfc) # Xauth (252) is a non_wan 
-                intfs.append(0xfd) # GRE (253) is a non_wan 
             else:
                 intfs.append(int(substr))
 

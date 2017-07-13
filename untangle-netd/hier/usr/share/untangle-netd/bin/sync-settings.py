@@ -96,14 +96,20 @@ def checkSettings( settings ):
 #
 def cleanupSettings( settings ):
     interfaces = settings['interfaces']['list']
+    virtualInterfaces = settings['virtualInterfaces']['list']
     
     # Remove disabled interfaces from regular interfaces list
     # Save them in another field in case anyone needs them
-    disabled_interfaces = [ intf for intf in interfaces if intf['configType'] == 'DISABLED' ]
-    new_interfaces = [ intf for intf in interfaces if intf['configType'] != 'DISABLED' ]
+    disabled_interfaces = [ intf for intf in interfaces if intf.get('configType') == 'DISABLED' ]
+    new_interfaces = [ intf for intf in interfaces if intf.get('configType') != 'DISABLED' ]
     settings['interfaces']['list'] = new_interfaces
     settings['disabledInterfaces'] = { 'list': disabled_interfaces }
 
+    disabled_virtual_interfaces = [ intf for intf in virtualInterfaces if intf.get('configType') == 'DISABLED' ]
+    new_virtual_interfaces = [ intf for intf in virtualInterfaces if intf.get('configType') != 'DISABLED' ]
+    settings['virtualInterfaces']['list'] = new_virtual_interfaces
+    settings['disabledVirtualInterfaces'] = { 'list': disabled_virtual_interfaces }
+    
     # Disable DHCP if if its a WAN or bridged to another interface
     for intf in interfaces:
         if intf['isWan'] or intf['configType'] == 'BRIDGED':

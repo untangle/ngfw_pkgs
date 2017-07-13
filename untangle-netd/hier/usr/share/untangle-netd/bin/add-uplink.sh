@@ -28,8 +28,6 @@ usage()
     echo "\t gateway: the gateway address (ex: 1.2.3.4)"
     echo "\t rt_table: the route table (ex: uplink.1)"
     echo "\t family: the family, -4 or -6"
-    echo "\t dns1: the primary dns for this interface (optional)"
-    echo "\t dns2: the secondary dns for this interface (optional)"
     echo
 
     exit 254
