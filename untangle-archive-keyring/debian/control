@@ -1,4 +1,4 @@
-Source: untangle-keyring
+Source: untangle-archive-keyring
 Section: admin
 Priority: standard
 Maintainer: Sebastien Delafond <seb@untangle.com>
@@ -6,9 +6,12 @@ Uploaders: Untangle Buildbot <buildbot@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.8.0
 
-Package: untangle-keyring
+Package: untangle-archive-keyring
 Architecture: all
 Depends: gnupg (>= 1.0.6-4)
+Provides: untangle-keyring
+Replaces: untangle-keyring
+Conflicts: untangle-keyring
 Description: GnuPG archive keys of the Untangle archive
  Untangle digitally signs its Release files. This package
  contains the archive keys used for that.

@@ -1,0 +1,16 @@
+#! /bin/bash
+
+if [ "$1" = 'configure' -a -n "$2" ]; then
+  # remove keys from the trusted.gpg file as they are now shipped in fragment files in trusted.gpg.d
+  if dpkg --compare-versions "$2" 'lt' "13.1" ; then
+    TRUSTEDFILE='/etc/apt/trusted.gpg'
+    for key in EDC4FDFC6E50D66C ; do
+      apt-key --keyring "$TRUSTEDFILE" del $key > /dev/null 2>&1
+    done
+  fi
+fi
+
+#DEBHELPER#
+
+
+exit 0

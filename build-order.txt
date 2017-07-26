@@ -36,7 +36,7 @@ untangle-development-runtime            jessie,stretch
 untangle-gateway                        jessie,stretch
 untangle-extra-utils                    jessie,stretch
 untangle-update-manager                 jessie,stretch
-untangle-keyring                        jessie,stretch
+untangle-archive-keyring 		jessie,stretch
 untangle-nsis-addons                    jessie,stretch
 untangle-postgresql-config              jessie,stretch
 untangle-hardware-config                jessie,stretch
