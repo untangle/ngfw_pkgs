@@ -1,13 +1,17 @@
 #! /bin/bash
 
-TRUSTEDFILE='/etc/apt/trusted.gpg'
+TRUSTED_FILE='/etc/apt/trusted.gpg'
 OLD_KEY='EDC4FDFC6E50D66C'
 
 # remove keys from the trusted.gpg file as they are now shipped in
 # fragment files in trusted.gpg.d
-if gpg $TRUSTED_FILE | grep -q $OLD_KEY ; then
+export GNUPGHOME=$(mktemp -d)
+
+if [ -f $TRUSTED_FILE ] && gpg $TRUSTED_FILE | grep -q $OLD_KEY ; then
   apt-key --keyring $TRUSTED_FILE del $OLD_KEY > /dev/null 2>&1
 fi
+
+rm -fr $GNUPGHOME
 
 #DEBHELPER#
 
