@@ -14,3 +14,4 @@ Replaces: untangle-snort-rules
 Provides: untangle-snort-rules
 Description: Initial versions of Snort configuration and rules
  Initial versions of Snort configuration and rules.
+

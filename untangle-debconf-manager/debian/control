@@ -10,3 +10,4 @@ Architecture: all
 Pre-Depends: python-minimal
 Description: The Untangle Debconf Manager
  The Untangle Manager for the debconf database.
+

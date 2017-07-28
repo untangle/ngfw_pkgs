@@ -22,3 +22,4 @@ Conflicts: grub-legacy [!armel !armhf], desktop-base
 Description: The Untangle kernel config
  The Untangle Linux kernel config package. Provides
  bootsplash support and grub auto-configuration.
+

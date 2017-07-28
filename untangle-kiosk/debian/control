@@ -35,3 +35,4 @@ Conflicts: systemd-sysv,
            x-display-manager
 Description: The Untangle kiosk utils
  The Untangle kiosk mode utilities.
+

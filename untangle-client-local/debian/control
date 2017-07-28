@@ -12,3 +12,4 @@ Depends: untangle-kiosk
 Description: The Untangle client, local on appliance version
  Contains dependencies needed for a basic desktop (the untangle-kiosk
  package provides the full kiosk).
+

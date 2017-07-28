@@ -30,3 +30,4 @@ Depends: bridge-utils,
          wireless-tools
 Description: The Untangle network daemon
  The Untangle network daemon for managing the network
+

@@ -15,3 +15,4 @@ Conflicts: untangle-keyring
 Description: GnuPG archive keys of the Untangle archive
  Untangle digitally signs its Release files. This package
  contains the archive keys used for that.
+

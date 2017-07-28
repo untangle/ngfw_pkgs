@@ -11,3 +11,4 @@ Architecture: all
 Depends: untangle-hardware-config
 Description: The Untangle Amazon EC2 config
  Configuration specific to Amazon EC2.
+
