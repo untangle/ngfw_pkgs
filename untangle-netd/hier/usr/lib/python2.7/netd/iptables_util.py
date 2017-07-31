@@ -237,7 +237,48 @@ class IptablesUtil:
                     conditionStr = conditionStr + " ! "
                 conditionStr = conditionStr + " -m addrtype --dst-type local "
                 current_strings = [ current + conditionStr for current in current_strings ]
-                
+
+            if conditionType == "CLIENT_TAGGED":
+                if "any" in value:
+                    continue
+
+                tags = value.split(",")
+                if invert and len(tags)>1:
+                    print "ERROR: invert not supported on multiple protocol condition"
+                    continue
+                if len(tags) == 0:
+                    print "ERROR: interface condition with no interfaces"
+                    continue
+                orig_current_strings = current_strings
+                current_strings = []
+                # split current rules for each protocol specified
+                for i in range(0 , len(tags) ):
+                    conditionStr = " -m set "
+                    if invert:
+                        conditionStr = conditionStr + " ! "
+                    conditionStr = conditionStr + (" --set tag-%s src " % tags[i])
+                    current_strings = current_strings + [ conditionStr + current for current in orig_current_strings ]
+
+            if conditionType == "SERVER_TAGGED":
+                if "any" in value:
+                    continue
+
+                tags = value.split(",")
+                if invert and len(tags)>1:
+                    print "ERROR: invert not supported on multiple protocol condition"
+                    continue
+                if len(tags) == 0:
+                    print "ERROR: interface condition with no interfaces"
+                    continue
+                orig_current_strings = current_strings
+                current_strings = []
+                # split current rules for each protocol specified
+                for i in range(0 , len(tags) ):
+                    conditionStr = " -m set "
+                    if invert:
+                        conditionStr = conditionStr + " ! "
+                    conditionStr = conditionStr + (" --set tag-%s dst " % tags[i])
+                    current_strings = current_strings + [ conditionStr + current for current in orig_current_strings ]
 
         return current_strings;
         
