@@ -141,8 +141,9 @@ class IptablesManager:
             file.write("\t${IPTABLES} -t raw -A helpers -p udp --dport 5061 -j CT --helper sip" + "\n");
             file.write("\n");
         
-        file.write("\t# only process bypassed sessions, the ftp-casing will handle scanned sessions" + "\n")
-        file.write("\t${IPTABLES} -t raw -A helpers -m connmark --mark 0x01000000/0x01000000 -p tcp --dport 21 -j CT --helper ftp" + "\n");
+        # file.write("\t# only process bypassed sessions, the ftp-casing will handle scanned sessions" + "\n")
+        # file.write("\t${IPTABLES} -t raw -A helpers -m connmark --mark 0x01000000/0x01000000 -p tcp --dport 21 -j CT --helper ftp" + "\n");
+        file.write("\t${IPTABLES} -t raw -A helpers -p tcp --dport 21 -j CT --helper ftp" + "\n");
         file.write("\n");
 
         file.write("\t${IPTABLES} -t raw -A helpers -p tcp --dport 6667 -j CT --helper irc" + "\n");
