@@ -4,6 +4,7 @@ import subprocess
 import datetime
 import traceback
 import string
+import re
 from netd.network_util import NetworkUtil
 
 # This class is a utility class with utility functions providing
@@ -253,10 +254,11 @@ class IptablesUtil:
                 current_strings = []
                 # split current rules for each protocol specified
                 for i in range(0 , len(tags) ):
+                    setname = re.sub(r'[^a-zA-Z0-9]',r'',tags[i])
                     conditionStr = " -m set "
                     if invert:
                         conditionStr = conditionStr + " ! "
-                    conditionStr = conditionStr + (" --set tag-%s src " % tags[i])
+                    conditionStr = conditionStr + (" --match-set tag-%s src " % setname)
                     current_strings = current_strings + [ conditionStr + current for current in orig_current_strings ]
 
             if conditionType == "SERVER_TAGGED":
@@ -275,9 +277,10 @@ class IptablesUtil:
                 # split current rules for each protocol specified
                 for i in range(0 , len(tags) ):
                     conditionStr = " -m set "
+                    setname = re.sub(r'[^a-zA-Z0-9]',r'',tags[i])
                     if invert:
                         conditionStr = conditionStr + " ! "
-                    conditionStr = conditionStr + (" --set tag-%s dst " % tags[i])
+                    conditionStr = conditionStr + (" --match-set tag-%s dst " % setname)
                     current_strings = current_strings + [ conditionStr + current for current in orig_current_strings ]
 
         return current_strings;
