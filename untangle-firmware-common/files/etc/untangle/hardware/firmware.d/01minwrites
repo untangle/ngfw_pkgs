@@ -62,6 +62,7 @@ fi
 # it appears setting log_selector = -all does not work
 # so instead just link the log file to /tmp
 mkdir -p /tmp/exim
+chown Debian-exim:Debian-exim /tmp/exim
 if [ ! -L /var/log/exim4 ] ; then
     echo "Linking /var/log/exim4/ to /tmp/exim..."
     rm -rf /var/log/exim4
