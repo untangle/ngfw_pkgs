@@ -9,7 +9,6 @@ Standards-Version: 3.8.0
 Package: untangle-gateway
 Architecture: any
 Depends: chromedriver [!armel !armhf],
-         untangle-linux-image-4.9-linksys-wrt1900acs [armhf] | untangle-linux-image-4.4-turris-omnia [armhf],
          nano,
          nvi,
 	 smartmontools,
