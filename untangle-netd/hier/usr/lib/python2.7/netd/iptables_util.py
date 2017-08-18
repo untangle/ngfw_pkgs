@@ -63,7 +63,7 @@ class IptablesUtil:
                 tags = value.split(",")
                 for i in range(0 , len(tags) ):
                     setname = "tag-"+re.sub(r'[^a-zA-Z0-9]',r'',tags[i])
-                    current_strings = current_strings + [ "ipset create %s iphash"%setname ]
+                    current_strings = current_strings + [ "ipset create %s iphash >/dev/null 2>&1"%setname ]
 
         return current_strings;
             
