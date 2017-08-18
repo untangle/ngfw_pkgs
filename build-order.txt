@@ -23,10 +23,10 @@ untangle-hardware-jetway-u50w           jessie,stretch
 untangle-hardware-asus-ac88u	     	jessie,stretch
 untangle-hardware-linksys-wrt1900acs    jessie,stretch
 untangle-bootsplash                     jessie,stretch
-untangle-kernel-modules-jessie,stretch-armel    jessie
-untangle-kernel-modules-jessie,stretch-armhf    jessie
-untangle-kernel-modules-jessie,stretch-i386     jessie
-untangle-kernel-modules-jessie,stretch-amd64    jessie
+untangle-kernel-modules-jessie-armel    jessie
+untangle-kernel-modules-jessie-armhf    jessie
+untangle-kernel-modules-jessie-i386     jessie
+untangle-kernel-modules-jessie-amd64    jessie
 untangle-debconf-manager                jessie,stretch
 untangle-clamav-config                  jessie,stretch
 untangle-client-local                   jessie,stretch
