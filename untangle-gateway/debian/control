@@ -65,6 +65,7 @@ Conflicts: systemd-sysv,
 	   libsystemd-journal0,
 	   libsystemd-daemon0,
 	   libsystemd-id128-0,
+	   untangle-linux-image-3.18-linksys-wrt1900acs
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle Gateway
  The Untangle Top Level Untangle package.
