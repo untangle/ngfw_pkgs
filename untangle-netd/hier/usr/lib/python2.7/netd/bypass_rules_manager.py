@@ -34,13 +34,14 @@ class BypassRuleManager:
             print "ERROR: invalid bypass target: %s" + str(bypass_rule)
             return
 
+        
         description = "Bypass Rule #%i" % int(bypass_rule['ruleId'])
+        commands = IptablesUtil.conditions_to_prep_commands( bypass_rule['conditions']['list'], description, verbosity );
         iptables_conditions = IptablesUtil.conditions_to_iptables_string( bypass_rule['conditions']['list'], description, verbosity );
-
-        iptables_commands = [ "${IPTABLES} -t filter -A bypass-rules " + ipt + target for ipt in iptables_conditions ]
+        commands += [ "${IPTABLES} -t filter -A bypass-rules " + ipt + target for ipt in iptables_conditions ]
 
         self.file.write("# %s\n" % description);
-        for cmd in iptables_commands:
+        for cmd in commands:
             self.file.write(cmd + "\n")
         self.file.write("\n");
 

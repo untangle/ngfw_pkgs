@@ -30,14 +30,15 @@ class FilterRulesManager:
             target = ' -j RETURN '
 
         description = "Filter Rule #%i" % int(filter_rule['ruleId'])
+        commands = IptablesUtil.conditions_to_prep_commands( filter_rule['conditions']['list'], description, verbosity );
         iptables_conditions = IptablesUtil.conditions_to_iptables_string( filter_rule['conditions']['list'], description, verbosity );
 
         iptables_log_commands = [ ("${IPTABLES} -t filter -A %s " % table_name) + ipt + " -j NFLOG --nflog-prefix 'filter_blocked' " for ipt in iptables_conditions ]
-        iptables_commands = [ ("${IPTABLES} -t filter -A %s " % table_name) + ipt + target for ipt in iptables_conditions ]
+        commands += [ ("${IPTABLES} -t filter -A %s " % table_name) + ipt + target for ipt in iptables_conditions ]
 
         self.file.write("# %s\n" % description);
         i = 0
-        for cmd in iptables_commands:
+        for cmd in commands:
             # write a log rule before each block rule so we log every drop
             if filter_rule.get('blocked'):
                 self.file.write(iptables_log_commands[i] + "\n")

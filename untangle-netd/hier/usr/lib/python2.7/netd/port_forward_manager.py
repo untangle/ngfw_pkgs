@@ -32,12 +32,12 @@ class PortForwardManager:
             return
 
         description = "Port Forward Rule #%i" % int(port_forward_rule['ruleId'])
+        commands = IptablesUtil.conditions_to_prep_commands( port_forward_rule['conditions']['list'], description, verbosity );
         iptables_conditions = IptablesUtil.conditions_to_iptables_string( port_forward_rule['conditions']['list'], description, verbosity );
-
-        iptables_commands = [ "${IPTABLES} -t nat -A port-forward-rules " + ipt + target for ipt in iptables_conditions ]
+        commands += [ "${IPTABLES} -t nat -A port-forward-rules " + ipt + target for ipt in iptables_conditions ]
 
         self.file.write("# %s\n" % description);
-        for cmd in iptables_commands:
+        for cmd in commands:
             self.file.write(cmd + "\n")
         self.file.write("\n");
 

@@ -34,12 +34,12 @@ class NatRulesManager:
             return
 
         description = "NAT Rule #%i" % int(nat_rule['ruleId'])
+        commands = IptablesUtil.conditions_to_prep_commands( nat_rule['conditions']['list'], description, verbosity );
         iptables_conditions = IptablesUtil.conditions_to_iptables_string( nat_rule['conditions']['list'], description, verbosity );
-
-        iptables_commands = [ "${IPTABLES} -t nat -A nat-rules " + ipt + target for ipt in iptables_conditions ]
+        commands += [ "${IPTABLES} -t nat -A nat-rules " + ipt + target for ipt in iptables_conditions ]
 
         self.file.write("# %s\n" % description);
-        for cmd in iptables_commands:
+        for cmd in commands:
             self.file.write(cmd + "\n")
         self.file.write("\n");
 

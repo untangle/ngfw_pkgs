@@ -34,15 +34,47 @@ class IptablesUtil:
         return intfs
                     
 
+    # This method takes a list of conditions from a rule and translates them into a commands that must run prior to inserting the rules
+    # It returns a list of strings
+    # This is necessary because some conditions require some prep work
+    # Example input: ['conditionType':'CLIENT_TAGGED', 'value':'tag'] -> ["ipset create set iphash"]
+    # Example input: ['conditionType':'SRC_INTF', 'value':'1'] -> []
+    @staticmethod
+    def conditions_to_prep_commands( conditions, comment=None, verbosity=0 ):
+        current_strings = [];
+        if conditions is None:
+            return current_strings;
+        
+        for condition in conditions:
+            if 'conditionType' not in condition:
+                print "ERROR: Ignoring invalid condition: %s" % str(condition)
+                continue
+
+            conditionStr = ""
+            conditionType = condition['conditionType']
+            invert = False
+            value = None
+            if 'value' in condition:
+                value = condition['value']
+            if 'invert' in condition and condition['invert']:
+                invert = True
+
+            if conditionType == "CLIENT_TAGGED" or conditionType == "SERVER_TAGGED":
+                tags = value.split(",")
+                for i in range(0 , len(tags) ):
+                    setname = "tag-"+re.sub(r'[^a-zA-Z0-9]',r'',tags[i])
+                    current_strings = current_strings + [ "ipset create %s iphash"%setname ]
+
+        return current_strings;
+            
+            
     # This method takes a list of conditions from a rule and translates them into a string containing the iptables conditions
     # It returns a list of strings, because some set of conditions require multiple iptables rules
     # Example input: ['conditionType':'SRC_INTF', 'value':'1'] -> ["-m connmark --mark 0x01/0xff"]
     # Example input: ['conditionType':'DST_PORT', 'value':'123'] -> ["-p udp --dport 123", "-p tcp --dport 123"]
     @staticmethod
     def conditions_to_iptables_string( conditions, comment=None, verbosity=0 ):
-        
         current_strings = [ "" ];
-
         if conditions is None:
             return current_strings;
 
@@ -254,11 +286,11 @@ class IptablesUtil:
                 current_strings = []
                 # split current rules for each protocol specified
                 for i in range(0 , len(tags) ):
-                    setname = re.sub(r'[^a-zA-Z0-9]',r'',tags[i])
+                    setname = "tag-" + re.sub(r'[^a-zA-Z0-9]',r'',tags[i])
                     conditionStr = " -m set "
                     if invert:
                         conditionStr = conditionStr + " ! "
-                    conditionStr = conditionStr + (" --match-set tag-%s src " % setname)
+                    conditionStr = conditionStr + (" --match-set %s src " % setname)
                     current_strings = current_strings + [ conditionStr + current for current in orig_current_strings ]
 
             if conditionType == "SERVER_TAGGED":

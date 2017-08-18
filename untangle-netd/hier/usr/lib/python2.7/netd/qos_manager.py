@@ -53,12 +53,12 @@ class QosManager:
             return
 
         description = "QoS Custom Rule #%i" % int(qos_rule['ruleId'])
+        commands = IptablesUtil.conditions_to_prep_commands( qos_rule['conditions']['list'], description, verbosity );
         iptables_conditions = IptablesUtil.conditions_to_iptables_string( qos_rule['conditions']['list'], description, verbosity );
-
-        iptables_commands = [ "${IPTABLES} -t mangle -A qos-rules -m mark --mark 0x%X/0x%X " % (self.bypassMarkMask,self.bypassMarkMask) + ipt + target for ipt in iptables_conditions ]
+        commands += [ "${IPTABLES} -t mangle -A qos-rules -m mark --mark 0x%X/0x%X " % (self.bypassMarkMask,self.bypassMarkMask) + ipt + target for ipt in iptables_conditions ]
 
         self.file.write("# %s\n" % description);
-        for cmd in iptables_commands:
+        for cmd in commands:
             self.file.write(cmd + "\n")
         self.file.write("\n");
 
