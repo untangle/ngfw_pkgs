@@ -83,7 +83,7 @@ case x"$GRUB_FS" in
 	;;
 esac
 
-title_correction_code=
+rtitle_correction_code=
 
 if [ -x /lib/recovery-mode/recovery-menu ]; then
     GRUB_CMDLINE_LINUX_RECOVERY=recovery
@@ -367,9 +367,9 @@ while [ "x$list" != "x" ] ; do
   linux_entry "${OS}" "${version}" "hardware safe mode" \
               "${GRUB_CMDLINE_LINUX} acpi=off noapic nosplash"
 
-  # recovery mode
-  linux_entry "${OS}" "${version}" "recovery mode" \
-              "${GRUB_CMDLINE_LINUX} ut-restore nosplash"
+  # text administration mode
+  linux_entry "${OS}" "${version}" "text adminstration mode" \
+              "${GRUB_CMDLINE_LINUX} text-administration nosplash"
 
   list=`echo $list | tr ' ' '\n' | fgrep -vx "$linux" | tr '\n' ' '`
 done

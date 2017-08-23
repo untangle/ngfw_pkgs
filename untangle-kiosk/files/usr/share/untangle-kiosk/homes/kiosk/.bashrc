@@ -15,7 +15,8 @@ EOF
     for i in $(seq 10) ; do echo ; done
 }
 
-if [ `tty` = "/dev/tty1" ] ; then
+
+launch_x() {
     for i in $(seq 3) ; do
 
         # kill any running X processes
@@ -53,14 +54,27 @@ if [ `tty` = "/dev/tty1" ] ; then
         fi
 
     done
+
+    # 
+    # Sleep forever so that they do not automatically get a shell prompt
+    # You can easily ctrl-C this to get the bash shell
+    #
+    while true; do
+        print_warning
+        sleep 60
+    done
+}
+
+if [ `tty` = "/dev/tty1" ] ; then
+
+    textAdmin=$(grep text-administration /proc/cmdline)
+    if [ -n "$textAdmin" ] ; then
+        /usr/share/untangle/bin/ut-textui.py
+    else
+        launch_x
+    fi
+
+
 fi
 
 
-# 
-# Sleep forever so that they do not automatically get a shell prompt
-# You can easily ctrl-C this to get the bash shell
-#
-while true; do
-    print_warning
-    sleep 60
-done
