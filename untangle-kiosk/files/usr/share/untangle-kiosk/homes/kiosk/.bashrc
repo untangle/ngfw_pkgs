@@ -69,7 +69,7 @@ if [ `tty` = "/dev/tty1" ] ; then
 
     textAdmin=$(grep text-administration /proc/cmdline)
     if [ -n "$textAdmin" ] ; then
-        /usr/share/untangle/bin/ut-textui.py
+        sudo /usr/share/untangle/bin/ut-textui.py
     else
         launch_x
     fi
