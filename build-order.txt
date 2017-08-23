@@ -44,7 +44,6 @@ untangle-kiosk                          jessie,stretch
 untangle-linux-config                   jessie,stretch
 untangle-exim4-config                   jessie,stretch
 untangle-snmpd-config                   jessie,stretch
-untangle-restore-tools                  jessie,stretch
 untangle-snort-config                   jessie,stretch
 untangle-spamassassin-update            jessie,stretch
 untangle-system-config                  jessie,stretch

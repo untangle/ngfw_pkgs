@@ -1,4 +1,0 @@
-#! /bin/bash
-
-# remove obsolete utility (13.1)
-update-rc.d untangle-restore-tools disable >/dev/null 2>&1
