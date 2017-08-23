@@ -8,9 +8,6 @@ if [ -f /etc/inittab ] ; then
     # disable getty on local terminals
     sed -i -e '/^[0-9].*respawn.*getty.*/ s/^/#/g' /etc/inittab
 
-    # enable serial console
-    sed -i -e '/^#.* ttyS0 .*/ s/.*/T0:23:respawn:\/sbin\/getty -L ttyS0 115200 vt100/' /etc/inittab
-
     # if inittab changed, tell init
     if ! cmp -s /etc/inittab /tmp/inittab.orig; then
         kill -HUP 1

@@ -104,4 +104,17 @@ if [ ! -f /etc/ssl/certs/java/cacerts ] ; then
     cp -f /usr/share/untangle-linux-config/default-java-cacerts /etc/ssl/certs/java/cacerts
 fi
 
+# autostart X
+perl -i -pe 's|^1:.+|1:2345:respawn:/sbin/rungetty --noclear --autologin kiosk tty1|' /etc/inittab
+perl -i -pe 's|^[xw]7:5:wait:.+$||' /etc/inittab
+
+# enable serial console
+sed -i -e '/^#.* ttyS0 .*/ s/.*/T0:23:respawn:\/sbin\/getty -L ttyS0 115200 vt100/' /etc/inittab
+
+# Start textui process on ttyS0
+grep -q 'ttyS0::respawn' /etc/inittab
+if [ $? == 0 ] ; then
+    echo "ttyS0::respawn:-/usr/share/untangle/bit/ut-textui.sh" >> /etc/inittab
+fi
+
 exit 0
