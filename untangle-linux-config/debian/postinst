@@ -113,14 +113,14 @@ sed -i -e 's/.*ttyS0.*/T0:23:respawn:\/sbin\/getty -n -a root -L ttyS0 115200 li
 
 # enable textui on serial console for zsh or bash shell when root logs in
 if ! grep -q ttyS0 /root/.zshrc ; then
-    echo 'if [ `tty` = "/dev/ttyS0" ] ; then /usr/share/untangle/bin/ut-textui.py ; fi' >> /root/.zshrc
+    echo 'if [ `tty` = "/dev/ttyS0" ] ; then read ; /usr/share/untangle/bin/ut-textui.py ; fi' >> /root/.zshrc
 else
-    sed -e 's|.*ttyS0.*|if [ `tty` = "/dev/ttyS0" ] ; then /usr/share/untangle/bin/ut-textui.py ; fi|' -i /root/.zshrc
+    sed -e 's|.*ttyS0.*|if [ `tty` = "/dev/ttyS0" ] ; then read ; /usr/share/untangle/bin/ut-textui.py ; fi|' -i /root/.zshrc
 fi
 if ! grep -q ttyS0 /root/.bashrc ; then
-    echo 'if [ `tty` = "/dev/ttyS0" ] ; then /usr/share/untangle/bin/ut-textui.py ; fi' >> /root/.bashrc
+    echo 'if [ `tty` = "/dev/ttyS0" ] ; then read ; /usr/share/untangle/bin/ut-textui.py ; fi' >> /root/.bashrc
 else
-    sed -e 's|.*ttyS0.*|if [ `tty` = "/dev/ttyS0" ] ; then /usr/share/untangle/bin/ut-textui.py ; fi|' -i /root/.bashrc
+    sed -e 's|.*ttyS0.*|if [ `tty` = "/dev/ttyS0" ] ; then read ; /usr/share/untangle/bin/ut-textui.py ; fi|' -i /root/.bashrc
 fi
 
 exit 0
