@@ -109,6 +109,14 @@ perl -i -pe 's|^1:.+|1:2345:respawn:/sbin/rungetty --noclear --autologin kiosk t
 perl -i -pe 's|^[xw]7:5:wait:.+$||' /etc/inittab
 
 # enable serial console
-sed -i -e '/^#.* ttyS0 .*/ s/.*/T0:23:respawn:\/sbin\/getty -n -l /usr/share/untangle/bit/ut-textui.py -L ttyS0 115200 vt100/' /etc/inittab
+sed -i -e '/^#.* ttyS0 .*/ s/.*/T0:23:respawn:\/sbin\/getty -n -a root -L ttyS0 115200 linux/' /etc/inittab
+
+# enable textui on serial console for zsh or bash shell when root logs in
+if [ ! grep -q ttyS0 /root/.zshrc ] ; then
+    echo 'if [ `tty` = "/dev/ttyS0" ] ; then /usr/share/untangle/bin/ut-textui.py fi' >> /root/.zshrc
+fi
+if [ ! grep -q ttyS0 /root/.bashrc ] ; then
+    echo 'if [ `tty` = "/dev/ttyS0" ] ; then /usr/share/untangle/bin/ut-textui.py fi' >> /root/.zshrc
+fi
 
 exit 0
