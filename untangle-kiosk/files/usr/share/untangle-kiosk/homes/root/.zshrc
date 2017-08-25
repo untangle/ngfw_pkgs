@@ -151,4 +151,6 @@ case $TERM in
     true
 esac
 
+# If this is serial console start textui
+if [ `tty` = "/dev/ttyS0" ] ; then /usr/share/untangle/bin/ut-textui.py ; fi
 
