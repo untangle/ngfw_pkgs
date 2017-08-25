@@ -116,7 +116,7 @@ if [ ! grep -q ttyS0 /root/.zshrc ] ; then
     echo 'if [ `tty` = "/dev/ttyS0" ] ; then /usr/share/untangle/bin/ut-textui.py fi' >> /root/.zshrc
 fi
 if [ ! grep -q ttyS0 /root/.bashrc ] ; then
-    echo 'if [ `tty` = "/dev/ttyS0" ] ; then /usr/share/untangle/bin/ut-textui.py fi' >> /root/.zshrc
+    echo 'if [ `tty` = "/dev/ttyS0" ] ; then /usr/share/untangle/bin/ut-textui.py fi' >> /root/.bashrc
 fi
 
 exit 0
