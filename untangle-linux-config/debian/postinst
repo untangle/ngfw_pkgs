@@ -109,12 +109,6 @@ perl -i -pe 's|^1:.+|1:2345:respawn:/sbin/rungetty --noclear --autologin kiosk t
 perl -i -pe 's|^[xw]7:5:wait:.+$||' /etc/inittab
 
 # enable serial console
-sed -i -e '/^#.* ttyS0 .*/ s/.*/T0:23:respawn:\/sbin\/getty -L ttyS0 115200 vt100/' /etc/inittab
-
-# Start textui process on ttyS0
-grep -q 'ttyS0::respawn' /etc/inittab
-if [ $? == 0 ] ; then
-    echo "ttyS0::respawn:-/usr/share/untangle/bit/ut-textui.sh" >> /etc/inittab
-fi
+sed -i -e '/^#.* ttyS0 .*/ s/.*/T0:23:respawn:\/sbin\/getty -n -l /usr/share/untangle/bit/ut-textui.py -L ttyS0 115200 vt100/' /etc/inittab
 
 exit 0
