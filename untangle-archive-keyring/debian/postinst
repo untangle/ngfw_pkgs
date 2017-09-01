@@ -9,7 +9,7 @@ UNTANGLE_STRETCH_KEY='0B9D6AE3627BF103'
 export GNUPGHOME=$(mktemp -d)
 if [ -f $TRUSTED_FILE ] ; then
   for key in $UNTANGLE_JESSIE_KEY $UNTANGLE_STRETCH_KEY ; do
-    if gpg --keyid-format 0xlong $TRUSTED_FILE | grep -q $key ; then
+    if gpg --keyid-format 0xlong $TRUSTED_FILE 2> /dev/null | grep -q $key ; then
       apt-key --keyring $TRUSTED_FILE del $key > /dev/null 2>&1
     fi
   done
