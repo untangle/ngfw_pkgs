@@ -1,18 +1,20 @@
 #! /bin/bash
 
 TRUSTED_FILE='/etc/apt/trusted.gpg'
-OLD_KEY='EDC4FDFC6E50D66C'
+UNTANGLE_JESSIE_KEY='EDC4FDFC6E50D66C'
+UNTANGLE_STRETCH_KEY='0B9D6AE3627BF103'
 
 # remove keys from the trusted.gpg file as they are now shipped in
 # fragment files in trusted.gpg.d
 export GNUPGHOME=$(mktemp -d)
-
-if [ -f $TRUSTED_FILE ] && gpg $TRUSTED_FILE | grep -q $OLD_KEY ; then
-  apt-key --keyring $TRUSTED_FILE del $OLD_KEY > /dev/null 2>&1
+if [ -f $TRUSTED_FILE ] ; then
+  for key in $UNTANGLE_JESSIE_KEY $UNTANGLE_STRETCH_KEY ; do
+    if gpg --keyid-format 0xlong $TRUSTED_FILE | grep -q $key ; then
+      apt-key --keyring $TRUSTED_FILE del $key > /dev/null 2>&1
+    fi
+  done
 fi
 
 rm -fr $GNUPGHOME
-
-#DEBHELPER#
 
 exit 0
