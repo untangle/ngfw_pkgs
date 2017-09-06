@@ -50,9 +50,11 @@ class UpnpManager:
         		lan_interfaces.append(intf.get('symbolicDev'))
         file.write("# Server options\n");
         # WAN interface
-        file.write("ext_ifname=%s\n" % " ".join(wan_interfaces))
+        for intf in wan_interfaces:
+            file.write("ext_ifname=%s\n" % intf)
         # LAN interface
-        file.write("listening_ip=%s\n" % " ".join(lan_interfaces))
+        for intf in lan_interfaces:
+            file.write("listening_ip=%s\n" % intf)
         # LXC interface
         file.write("listening_ip=br.lxc\n")
 
