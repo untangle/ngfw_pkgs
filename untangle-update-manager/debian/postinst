@@ -2,11 +2,19 @@
 
 PARTS_DIR=/usr/share/untangle-update-manager/apt-preferences.d
 APT_PREFERENCES=/etc/apt/preferences
+APT_PREFERENCES_D=${APT_PREFERENCES}.d
 
-rm -f $APT_PREFERENCES
+rm -f $APT_PREFERENCES ${APT_PREFERENCES_D}/*
 
-for part in $PARTS_DIR/*.conf ; do
-  echo "Explanation: `basename $part`" >> $APT_PREFERENCES
-  cat $part >> $APT_PREFERENCES
-  echo -e "\n\n\n" >> $APT_PREFERENCES
+for part in ${PARTS_DIR}/*.conf ; do
+  cp $part $APT_PREFERENCES_D
 done
+
+# we can do per-release pinning later if necessary, with something
+# like the following:
+#
+# if grep -qE '^9\.' /etc/debian_version ; then
+#   for part in ${PARTS_DIR}/stretch/*.conf ; do
+#     cp $part $APT_PREFERENCES_D
+#   done
+# fi

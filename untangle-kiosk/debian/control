@@ -19,7 +19,6 @@ Depends: acpi-support-base,
          rungetty,
          rxvt-unicode-ml,
          sudo,
-         sysvinit-core,
          fonts-hanazono | ttf-kochi-gothic,
          xfce4-mcs-manager | xfce4-session,
          xfwm4,
@@ -27,12 +26,6 @@ Depends: acpi-support-base,
          xserver-xorg-input-all,
          xserver-xorg-video-all,
          zenity,
-Conflicts: systemd-sysv,
-	   systemd,
-	   libsystemd-journal0,
-	   libsystemd-daemon0,
-	   libsystemd-id128-0,
-           x-display-manager
 Description: The Untangle kiosk utils
  The Untangle kiosk mode utilities.
 
