@@ -48,6 +48,7 @@ Depends: autoconf,
          openjdk-8-jdk,
          pbuilder (>= 0.161),
          rake (>= 10),
+	 ruby-sass,
          rhino,
          unzip
 Description: Untangle Development Environment
