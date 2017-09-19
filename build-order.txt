@@ -27,6 +27,8 @@ untangle-kernel-modules-jessie-armel    jessie
 untangle-kernel-modules-jessie-armhf    jessie
 untangle-kernel-modules-jessie-i386     jessie
 untangle-kernel-modules-jessie-amd64    jessie
+untangle-kernel-modules-stretch-i386    stretch
+untangle-kernel-modules-stretch-amd64   stretch
 untangle-debconf-manager                jessie,stretch
 untangle-clamav-config                  jessie,stretch
 untangle-client-local                   jessie,stretch

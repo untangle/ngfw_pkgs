@@ -1,0 +1,17 @@
+Source: untangle-kernel-modules-stretch-i386
+Section: admin
+Priority: standard
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.8.0
+
+Package: untangle-kernel-modules-stretch-i386
+Architecture: i386
+Depends: linux-image-3.16.0-4-untangle-686-pae, e1000e-module-3.16.0-4-untangle-686-pae, igb-module-3.16.0-4-untangle-686-pae, backports-3.17.1-1-modules-3.16.0-4-untangle-686-pae, firmware-bnx2, firmware-bnx2x
+Conflicts: libsnmp15, backports-modules-3.16.0-4-untangle-686-pae
+Provides: untangle-kernel-modules-stretch
+Pre-Depends: untangle-debconf-manager
+Description: The Untangle kernel modules for i386
+ The Untangle kernel modules for i386.
+
