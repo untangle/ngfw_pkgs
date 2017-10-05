@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -x
-
 ourInit() {
   if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
     invoke-rc.d $1 $2
@@ -88,7 +86,7 @@ fi
 /usr/sbin/a2enmod rewrite
 
 # disable these modules for "PCI scan" issues
-grep -qE '^8.' /etc/debian_version && A2DISMOD_OPTS="-m -f"
+A2DISMOD_OPTS="-m -f"
 /usr/sbin/a2dismod $A2DISMOD_OPTS autoindex
 /usr/sbin/a2dismod $A2DISMOD_OPTS userdir
 
