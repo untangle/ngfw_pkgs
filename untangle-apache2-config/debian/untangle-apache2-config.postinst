@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 ourInit() {
   if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
     invoke-rc.d $1 $2
