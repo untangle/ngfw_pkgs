@@ -58,8 +58,11 @@ Depends: chromedriver [!armel !armhf],
          untangle-snmpd-config,
          untangle-system-config,
          untangle-update-manager,
-	 untangle-vm,
-Conflicts: systemd-sysv (<< 232~)
+	 untangle-vm
+Conflicts: systemd-sysv (<< 232),
+	   systemd  (<< 232),
+	   libsystemd-journal0 (<< 232),
+	   libsystemd-daemon0 (<< 232)
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle Gateway
  The Untangle Top Level Untangle package.
