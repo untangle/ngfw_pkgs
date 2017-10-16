@@ -36,6 +36,7 @@ class DdclientManager:
                 "no-ip" : [ "dyndns2", "dynupdate.no-ip.com", True ],
                 "dnsomatic" : [ "dyndns2", "updates.dnsomatic.com", True ],
                 "google" : [ "dyndns2", "domains.google.com", True ],
+                "freedns" : [ "dyndns2", "freedns.afraid.org", True ],
                 "cloudflare" : [ "cloudflare", "www.cloudflare.com", True ]
                 }
 
