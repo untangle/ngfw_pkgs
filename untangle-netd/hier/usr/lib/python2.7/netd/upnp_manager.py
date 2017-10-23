@@ -291,9 +291,4 @@ insert_upnp_iptables_rules
         self.write_iptables_hook( settings, prefix, verbosity )
         self.write_upnp_daemon_init_hook( settings, prefix, verbosity )
 
-        if settings['upnpSettings'].get('upnpEnabled'):
-            os.system('/usr/sbin/update-rc.d miniupnpd defaults >/dev/null 2>&1')
-        else:
-            os.system('/usr/sbin/update-rc.d -f miniupnpd remove >/dev/null 2>&1')
-
         return
