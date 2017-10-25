@@ -6,7 +6,7 @@ APT_PREFERENCES_D=${APT_PREFERENCES}.d
 
 rm -f $APT_PREFERENCES ${APT_PREFERENCES_D}/*
 
-for part in ${PARTS_DIR}/*.conf ; do
+for part in ${PARTS_DIR}/*.pref ; do
   cp $part $APT_PREFERENCES_D
 done
 
