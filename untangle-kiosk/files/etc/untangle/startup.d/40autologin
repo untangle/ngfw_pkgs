@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# Delete this file in case it has a date in the future
+# If this file exists and has the wrong date rungetty hangs
+# NGFW-11213
+rm -f /var/log/autologin
