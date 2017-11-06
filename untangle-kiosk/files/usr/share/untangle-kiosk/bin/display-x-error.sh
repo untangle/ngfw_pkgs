@@ -12,8 +12,11 @@ There are several things to try:
 4) Remove any KVM (keyboard-video-monitor) switch if in use.
 5) Try a different video card (if applicable).
 
+Alternatively, Restart and choose the "Text Administration" option.
+Configure the network using text administration, then complete configuration the remotely using web administration.
+
 EOF
-    for i in $(seq 10) ; do echo >> $1 ; done
+    for i in $(seq 8) ; do echo >> $1 ; done
 }
 
 print_warning /dev/tty1
