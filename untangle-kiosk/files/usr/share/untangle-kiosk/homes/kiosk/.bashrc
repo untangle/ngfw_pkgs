@@ -1,18 +1,19 @@
 XORG_CONF_SAFE=xorg-untangle-safe.conf
 
 print_warning() {
-    for i in $(seq 50) ; do echo ; done
-    cat <<EOF
+    for i in $(seq 50) ; do echo >> $1 ; done
+    cat <<EOF >> $1
 The server has failed to properly detect correct video and monitor settings.
 
 There are several things to try:
 1) Restarting the server and select a different video-mode boot option from the boot menu.
-2) Use a different monitor (restart the server after switching monitors).
-3) Use a different video card (if applicable).
-4) Change the BIOS video card settings (if applicable).
+2) Use a different monitor. Restart the server after switching monitors.
+3) Change the BIOS video card settings (if applicable).
+4) Remove any KVM (keyboard-video-monitor) switch if in use.
+5) Try a different video card (if applicable).
 
 EOF
-    for i in $(seq 10) ; do echo ; done
+    for i in $(seq 10) ; do echo >> $1 ; done
 }
 
 
@@ -44,8 +45,9 @@ launch_x() {
         startx -- vt7
         # If X returns, something has gone wrong
 
-        # Print this warning to console to let the user know X is failing
-        print_warning
+        # Print this warning to stdout and tty7 to let the user know X is failing
+        print_warning /dev/tty1
+        print_warning /dev/tty7
         sleep 5
 
         # If we have failed for 2 attempts already, try safe mode on the next try
@@ -60,7 +62,8 @@ launch_x() {
     # You can easily ctrl-C this to get the bash shell
     #
     while true; do
-        print_warning
+        print_warning /dev/tty1
+        print_warning /dev/tty7
         sleep 60
     done
 }
