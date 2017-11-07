@@ -26,4 +26,6 @@ modprobe ebtable_broute
 modprobe ebtables
 modprobe iptable_tune
 
+modprobe pppoe
+
 exit 0
