@@ -16,7 +16,9 @@ if [ -z "$ALIAS" ]; then
     ALIAS=hostname.example.com
 fi
 
-sed -e 's/NO_START=1/NO_START=0/' -i /etc/default/apache2
+if ! greq -qE '^9\.' /etc/debian_version ; then
+  sed -e 's/NO_START=1/NO_START=0/' -i /etc/default/apache2
+fi
 
 # disable SSLv2 and SSLv3 (bug #12028)
 sed -e 's/SSLProtocol all.*/SSLProtocol all -SSLv2 -SSLv3 -TLSv1/' -i /etc/apache2/mods-available/ssl.conf
