@@ -10,7 +10,7 @@ if grep -q force-video-safe /proc/cmdline ; then
 fi
 
 # on Stretch, do not pass -- vt7 to startx
-if ! greq -qE '^9\.' /etc/debian_version ; then
+if ! grep -qE '^9\.' /etc/debian_version ; then
     STARTX_OPTIONS="-- vt7"
 fi
 

@@ -22,17 +22,24 @@ find /root -name ".z*" -type d -exec chmod 750 {} \;
 
 ## kiosk user
 
-# create user account
+# create account
 adduser --gecos "" --shell /bin/bash --firstuid 10000 --disabled-password kiosk 2>/dev/null
-# set sudo permisions
+# make sure it can access keyboard and mouse
+groups kiosk | grep -q input || adduser kiosk input
+# set proper sudo permisions
 grep -q kiosk /etc/sudoers 2>/dev/null || echo "kiosk ALL=NOPASSWD: ALL" >> /etc/sudoers
 # populate home
 rsync -Ha /usr/share/untangle-kiosk/homes/kiosk/ ${KIOSK_HOME}/
 chown -R kiosk:kiosk ${KIOSK_HOME}
 
 # autostart X
-perl -i -pe 's|^1:.+|1:2345:respawn:/sbin/rungetty --noclear --autologin kiosk tty1|' /etc/inittab
-perl -i -pe 's|^[xw]7:5:wait:.+$||' /etc/inittab
+if ! greq -qE '^9\.' /etc/debian_version ; then
+  perl -i -pe 's|^1:.+|1:2345:respawn:/sbin/rungetty --noclear --autologin kiosk tty1|' /etc/inittab
+  perl -i -pe 's|^[xw]7:5:wait:.+$||' /etc/inittab
+else
+  mkdir -p /etc/systemd/system/getty@tty1.service.d
+  cp /usr/share/untangle-kiosk/getty@tty1.service /etc/systemd/system/getty@tty1.service.d/autologin.conf
+fi
 
 # put fallback Xorg conf in place
 cp ${XORG_SAFE_CONF_BASE} /etc/X11/xorg-untangle-safe.conf
