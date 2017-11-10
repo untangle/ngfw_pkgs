@@ -16,7 +16,7 @@ if [ -z "$ALIAS" ]; then
     ALIAS=hostname.example.com
 fi
 
-if ! greq -qE '^9\.' /etc/debian_version ; then
+if ! grep -qE '^9\.' /etc/debian_version ; then
   sed -e 's/NO_START=1/NO_START=0/' -i /etc/default/apache2
 fi
 
