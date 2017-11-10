@@ -33,7 +33,7 @@ rsync -Ha /usr/share/untangle-kiosk/homes/kiosk/ ${KIOSK_HOME}/
 chown -R kiosk:kiosk ${KIOSK_HOME}
 
 # autostart X
-if ! greq -qE '^9\.' /etc/debian_version ; then
+if ! grep -qE '^9\.' /etc/debian_version ; then
   perl -i -pe 's|^1:.+|1:2345:respawn:/sbin/rungetty --noclear --autologin kiosk tty1|' /etc/inittab
   perl -i -pe 's|^[xw]7:5:wait:.+$||' /etc/inittab
 else
