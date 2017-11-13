@@ -24,8 +24,10 @@ find /root -name ".z*" -type d -exec chmod 750 {} \;
 
 # create account
 adduser --gecos "" --shell /bin/bash --firstuid 10000 --disabled-password kiosk 2>/dev/null
-# make sure it can access keyboard and mouse
-groups kiosk | grep -q input || adduser kiosk input
+# make sure it can startx and then access keyboard and mouse
+for group in video input ; do 
+  groups kiosk | grep -q $group || adduser kiosk $group
+done
 # set proper sudo permisions
 grep -q kiosk /etc/sudoers 2>/dev/null || echo "kiosk ALL=NOPASSWD: ALL" >> /etc/sudoers
 # populate home
