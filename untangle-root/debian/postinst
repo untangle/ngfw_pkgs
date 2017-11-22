@@ -1,0 +1,20 @@
+#! /bin/bash
+
+## root user
+
+# populate home
+rsync -Ha /usr/share/untangle-root/homes/root/ /root/
+# set sudo permissions
+if grep -qE '^root' /etc/sudoers ; then
+  perl -i -pe 's/^root.+/root ALL=NOPASSWD: ALL/' /etc/sudoers
+else
+  echo "root ALL=NOPASSWD: ALL" >> /etc/sudoers
+fi
+# change root shell to zsh
+chsh -s /bin/zsh root
+# make sure zsh does not complain about permissions on its rc files,
+# since it can be picky about that
+find /root -name ".z"  -type f -exec chmod 640 {} \;
+find /root -name ".z*" -type d -exec chmod 750 {} \;
+
+exit 0

@@ -3,23 +3,6 @@
 KIOSK_HOME=/home/kiosk
 XORG_SAFE_CONF_BASE=${KIOSK_HOME}/xorg-confs/safe
 
-## root user
-
-# populate home
-rsync -Ha /usr/share/untangle-kiosk/homes/root/ /root/
-# set sudo permissions
-if grep -qE '^root' /etc/sudoers ; then
-  perl -i -pe 's/^root.+/root ALL=NOPASSWD: ALL/' /etc/sudoers
-else
-  echo "root ALL=NOPASSWD: ALL" >> /etc/sudoers
-fi
-# change root shell to zsh
-chsh -s /bin/zsh root
-# make sure zsh does not complain about permissions on its rc files,
-# since it can be picky about that
-find /root -name ".z"  -type f -exec chmod 640 {} \;
-find /root -name ".z*" -type d -exec chmod 750 {} \;
-
 ## kiosk user
 
 # create account
@@ -34,7 +17,7 @@ grep -q kiosk /etc/sudoers 2>/dev/null || echo "kiosk ALL=NOPASSWD: ALL" >> /etc
 rsync -Ha /usr/share/untangle-kiosk/homes/kiosk/ ${KIOSK_HOME}/
 chown -R kiosk:kiosk ${KIOSK_HOME}
 
-# autostart X
+## autostart X
 if ! grep -qE '^9\.' /etc/debian_version ; then
   perl -i -pe 's|^1:.+|1:2345:respawn:/sbin/rungetty --noclear --autologin kiosk tty1|' /etc/inittab
   perl -i -pe 's|^[xw]7:5:wait:.+$||' /etc/inittab
@@ -43,13 +26,14 @@ else
   cp /usr/share/untangle-kiosk/getty@tty1.service /etc/systemd/system/getty@tty1.service.d/autologin.conf
 fi
 
-# put fallback Xorg conf in place
+## put fallback Xorg conf in place
 cp ${XORG_SAFE_CONF_BASE} /etc/X11/xorg-untangle-safe.conf
 
-# no MOTD stuff
+## no MOTD stuff
 echo >| /etc/motd
 echo >| /etc/motd.tail
 
+## OEM settings if needed
 apply_oem="/usr/share/untangle/bin/apply-oem.sh"
 if [ -f $apply_oem ] ; then
   $apply_oem
