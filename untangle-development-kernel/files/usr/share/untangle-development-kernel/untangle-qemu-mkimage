@@ -1,0 +1,48 @@
+#! /bin/bash
+
+set -e
+
+usage() {
+  echo "$0 -f <output-file> [-r <repository>] [-a <arch>]"
+  exit 1
+}
+
+if [ "$USER" != "root" ] ; then
+    echo "sudo $0 $*"
+    exec sudo -E $0 $*
+fi
+
+### CLI args
+while getopts f:r:a: option ; do
+  case "$option" in
+    r) REPOSITORY="$OPTARG" ;;
+    f) IMAGE="$OPTARG" ;;
+    a) ARCH="$OPTARG" ;;
+    h) usage ;;
+    \?) usage ;;
+  esac
+done
+
+## main
+[[ -z "$IMAGE" ]] && usage
+if [[ -e $IMAGE ]] ; then
+  echo "$IMAGE already exists, please remove it manually"
+  exit 1
+fi
+
+[[ -z "$ARCH" ]] && ARCH="amd64"
+[[ -z "$REPOSITORY" ]] && REPOSITORY="stretch"
+
+vmdebootstrap --arch amd64 \
+              --distribution $REPOSITORY \
+	      --mirror http://package-server.untangle.int/public/$REPOSITORY \
+	      --image $IMAGE \
+	      --size 5G \
+	      --no-mbr \
+	      --verbose \
+	      --root-password passwd \
+	      --hostname ${REPOSITORY}-${ARCH} \
+	      --no-systemd-networkd \
+	      --no-kernel \
+	      --sparse \
+	      --debootstrapopts="no-check-gpg"

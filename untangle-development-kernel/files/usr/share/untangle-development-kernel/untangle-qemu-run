@@ -1,0 +1,43 @@
+#! /bin/bash
+
+set -e
+
+usage() {
+  echo "$0 -f <image-file> -k <kernel> -i <initrd> [-m <memory>]"
+  exit 1
+}
+
+if [ "$USER" != "root" ] ; then
+    echo "sudo $0 $*"
+    exec sudo -E $0 $*
+fi
+
+### CLI args
+while getopts f:k:i:m: option ; do
+  case "$option" in
+    k) KERNEL="$OPTARG" ;;
+    f) IMAGE="$OPTARG" ;;
+    i) INITRD="$OPTARG" ;;
+    m) MEMORY="$OPTARG" ;;
+    h) usage ;;
+    \?) usage ;;
+  esac
+done
+
+## main
+{ [[ -z "$IMAGE" ]] || [[ -z "$KERNEL" ]] || [[ -z "$INITRD" ]] ; } && usage
+
+[[ -z "$MEMORY" ]] && MEMORY="1G"
+
+modprobe virtio-blk
+modprobe virtio-pci
+
+kvm -enable-kvm \
+    -m $MEMORY \
+    -kernel $KERNEL \
+    -initrd $INITRD \
+    -drive if=none,format=raw,id=hd0,file=$IMAGE \
+    -device driver=virtio-blk-pci,id=drive0,drive=hd0 \
+    -monitor stdio \
+    -append "root=/dev/vda1"
+
