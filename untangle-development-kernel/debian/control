@@ -1,0 +1,15 @@
+Source: untangle-development-kernel
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.8.0
+
+Package: untangle-development-kernel
+Architecture: all
+Depends: qemu, qemu-kvm
+Description: Untangle kernel development environment
+ The Untangle kernel development environment
+
+

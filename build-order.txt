@@ -1,3 +1,4 @@
+untangle-development-kernel		jessie,stretch
 untangle-root				jessie,stretch
 untangle-hardware-linksys-wrt3200acm	jessie,stretch
 untangle-hardware-amazon-ec2		jessie,stretch
