@@ -45,4 +45,12 @@ vmdebootstrap --arch amd64 \
 	      --no-systemd-networkd \
 	      --no-kernel \
 	      --sparse \
-	      --debootstrapopts="no-check-gpg"
+	      --debootstrapopts="no-check-gpg components=main,non-free" \
+	      --package untangle-gateway \
+	      --package postgresql-client-9.6 \
+	      --package postgresql-9.6 \
+	      --package openjdk-8-jre \
+	      --package perl-openssl-defaults \
+	      --package lhasa \
+	      --package zoo \
+	      --package libfreeradius-dev
