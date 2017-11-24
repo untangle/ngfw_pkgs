@@ -7,10 +7,12 @@ if ! grep -q 'HWCLOCKPARM' /etc/default/rcS > /dev/null 2>&1 ; then
 fi
 
 # tell cron not to send emails
-if ! grep -q MAILTO /etc/crontab ; then
-  sed -e '/SHELL/i MAILTO=""' -i /etc/crontab
-else
-  sed -e 's/.*MAILTO=.*/MAILTO=""/' -i /etc/crontab
+if [ -e /etc/crontab ] ; then
+  if ! grep -q MAILTO /etc/crontab ; then
+    sed -e '/SHELL/i MAILTO=""' -i /etc/crontab
+  else
+    sed -e 's/.*MAILTO=.*/MAILTO=""/' -i /etc/crontab
+  fi
 fi
 
 perl -i -pe 's/FSCKFIX=.*/FSCKFIX=yes/' /etc/default/rcS
