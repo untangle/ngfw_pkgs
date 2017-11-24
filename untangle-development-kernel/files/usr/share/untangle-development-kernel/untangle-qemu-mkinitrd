@@ -1,0 +1,40 @@
+#! /bin/bash
+
+set -e
+
+usage() {
+  echo "$0 -f <output-file> -p <path/to/modules> -v <version>"
+  exit 1
+}
+
+if [ "$USER" != "root" ] ; then
+    echo "sudo $0 $*"
+    exec sudo -E $0 $*
+fi
+
+### CLI args
+while getopts f:p:v: option ; do
+  case "$option" in
+    f) IMAGE="$OPTARG" ;;
+    v) VERSION="$OPTARG" ;;
+    p) MODULES_PATH="$OPTARG" ;;
+    h) usage ;;
+    \?) usage ;;
+  esac
+done
+
+## main
+{ [[ -z "$IMAGE" ]] || [[ -z "$VERSION" ]] || [[ -z "$MODULES_PATH" ]] ; } && usage
+
+if [[ -e $IMAGE ]] ; then
+  echo "$IMAGE already exists, please remove it manually"
+  exit 1
+fi
+
+dracut --kver "${VERSION}" \
+       --kmoddir $MODULES_PATH \
+       --add-drivers "iscsi_target_mod target_core_mod" \
+       --add-drivers "target_core_file target_core_iblock" \
+       --add-drivers "virtio virtio_blk virtio_pci virtio_scsi" \
+       --no-hostonly --no-hostonly-cmdline \
+       $IMAGE
