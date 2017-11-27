@@ -11,6 +11,7 @@ Architecture: all
 Depends: rsync,
          sudo,
 	 zsh
+Conflicts: untangle-kiosk (<< 13.2.0.20171122~)
 Description: The Untangle root configuration
  The Untangle root configuration.
 
