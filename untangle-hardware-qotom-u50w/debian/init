@@ -1,0 +1,53 @@
+#! /bin/sh
+
+### BEGIN INIT INFO
+# Provides:          untangle-hardware-qotom-u50x
+# Required-Start:    $local_fs $network
+# Required-Stop:
+# Default-Start:     S
+# Default-Stop:      
+### END INIT INFO
+
+# Author: Dirk Morris <dmorris@untangle.com>
+
+. /lib/lsb/init-functions
+
+SERVICE="`basename $0`"
+SHORT_NAME="`echo ${SERVICE} | sed 's/untangle-hardware-//'`"
+DIR_NAME="`echo ${SERVICE}.d | sed 's/untangle-hardware-//' | sed 's|-|/|'`"
+PARTS_DIR="/etc/untangle/hardware/${DIR_NAME}"
+LOG_FILE="/var/log/uvm/${SHORT_NAME}.log"
+
+start() {
+  log_daemon_msg "Starting $SERVICE"
+  log_progress_msg "$SERVICE"    
+  run-parts --lsbsysinit -v $PARTS_DIR >> $LOG_FILE 2>&1
+  RET=$?
+  log_end_msg $RET
+  [ $RET = 0 ] || exit $RET
+}
+
+stop() {
+  log_daemon_msg "Stopping $SERVICE"
+  log_progress_msg "$SERVICE"    
+  log_end_msg $RET
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    reload|restart|force-reload)
+        stop
+        start
+        ;;
+    *)
+        /bin/echo "Usage: $0 {start|stop|restart|force-reload}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0
