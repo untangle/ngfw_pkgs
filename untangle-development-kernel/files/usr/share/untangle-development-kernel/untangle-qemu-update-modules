@@ -1,0 +1,36 @@
+#! /bin/bash
+
+set -e
+
+usage() {
+  echo "$0 -f <output-file> -p <path/to/modules> -v <version>"
+  exit 1
+}
+
+if [ $(id -u) != 0 ] ; then
+  exec sudo -E $0 $*
+fi
+
+### CLI args
+while getopts f:p:v: option ; do
+  case "$option" in
+    f) IMAGE="$OPTARG" ;;
+    v) VERSION="$OPTARG" ;;
+    p) MODULES_PATH="$OPTARG" ;;
+    h) usage ;;
+    \?) usage ;;
+  esac
+done
+
+## main
+{ [[ -z "$IMAGE" ]] || [[ -z "$VERSION" ]] || [[ -z "$MODULES_PATH" ]] ; } && usage
+
+TMP_DIR=$(mktemp -d /tmp/qemu-update-modules-XXXXXXX)
+
+trap "umount -f $TMP_DIR 2> /dev/null ; rm -r $TMP_DIR" 0
+
+depmod -b ${MODULES_PATH}/../../.. $VERSION
+
+mount -t ext4 -o loop,offset=$((2048*512)) $IMAGE $TMP_DIR
+mkdir -p ${TMP_DIR}/lib/modules/$VERSION
+rsync -aHP --delete ${MODULES_PATH}/ ${TMP_DIR}/lib/modules/$VERSION/
