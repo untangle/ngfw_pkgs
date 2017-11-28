@@ -33,6 +33,8 @@ fi
 [[ -z "$ARCH" ]] && ARCH="amd64"
 [[ -z "$REPOSITORY" ]] && REPOSITORY="stretch"
 
+CUSTOM_DIR=$(readlink -f $(dirname $0))/vmdebootstrap
+
 vmdebootstrap --arch amd64 \
               --distribution $REPOSITORY \
 	      --mirror http://package-server.untangle.int/public/$REPOSITORY \
@@ -46,6 +48,7 @@ vmdebootstrap --arch amd64 \
 	      --no-kernel \
 	      --sparse \
 	      --debootstrapopts="no-check-gpg components=main,non-free" \
+	      --customize=${CUSTOM_DIR}/kill-gpg-agent.sh \
 	      --package untangle-gateway \
 	      --package postgresql-client-9.6 \
 	      --package postgresql-9.6 \
