@@ -22,6 +22,7 @@ untangle-hardware-portwell-m3000        jessie,stretch
 untangle-hardware-jetway-u50w           jessie,stretch
 untangle-hardware-asus-ac88u	     	jessie,stretch
 untangle-hardware-linksys-wrt1900acs    jessie,stretch
+untangle-hardware-qotom-u25x            jessie,stretch
 untangle-bootsplash                     jessie,stretch
 untangle-kernel-modules-jessie-armel    jessie
 untangle-kernel-modules-jessie-armhf    jessie
