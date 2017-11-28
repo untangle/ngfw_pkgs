@@ -7,9 +7,8 @@ usage() {
   exit 1
 }
 
-if [ "$USER" != "root" ] ; then
-    echo "sudo $0 $*"
-    exec sudo -E $0 $*
+if [ $(id -u) != 0 ] ; then
+  exec sudo -E $0 $*
 fi
 
 ### CLI args
