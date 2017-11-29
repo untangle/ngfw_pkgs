@@ -3,7 +3,7 @@
 set -e
 
 usage() {
-  echo "$0 -f <image-file> -k <kernel> -i <initrd> [-m <memory>]"
+  echo "$0 -f <image-file> -k <kernel> -i <initrd> -n <nic-to-bridge> [-m <memory>]"
   exit 1
 }
 
@@ -12,21 +12,39 @@ if [ $(id -u) != 0 ] ; then
 fi
 
 ### CLI args
-while getopts f:k:i:m: option ; do
+while getopts f:k:i:m:n: option ; do
   case "$option" in
     k) KERNEL="$OPTARG" ;;
     f) IMAGE="$OPTARG" ;;
     i) INITRD="$OPTARG" ;;
     m) MEMORY="$OPTARG" ;;
+    n) NIC="$OPTARG" ;;
     h) usage ;;
     \?) usage ;;
   esac
 done
 
 ## main
-{ [[ -z "$IMAGE" ]] || [[ -z "$KERNEL" ]] || [[ -z "$INITRD" ]] ; } && usage
+{ [[ -z "$IMAGE" ]] || [[ -z "$KERNEL" ]] || [[ -z "$INITRD" ]] || [[ -z $NIC ]] ; } && usage
 
 [[ -z "$MEMORY" ]] && MEMORY="1G"
+
+# FIXME: support multiples bridges and qemu instances
+# FIXME: adding $NIC with an already-defined IP, to a bridge without
+#        an IP, messes up ARP and access to the $NIC's subnet from the
+#        host itself. Any traffic that's routed to the outside is
+#        fine, though.  To fix that, I manually force subnet traffic
+#        on the bridge interface:
+#   ip route del default dev $NIC
+#   ip route del 172.16.25.0/24 dev $NIC
+#   ip route add 172.16.25.0/24 dev $BRIDGE
+#   ip route add default via 172.16.25.1
+BRIDGE="qemubr0"
+ip link add $BRIDGE type bridge
+ip link set $NIC master $BRIDGE
+ip link set dev $BRIDGE up
+
+trap "ip link set $NIC nomaster ; ip link del $BRIDGE" 0
 
 modprobe virtio-blk
 modprobe virtio-pci
@@ -39,11 +57,10 @@ kvm -enable-kvm \
     -device driver=virtio-blk-pci,id=drive0,drive=hd0 \
     -monitor stdio \
     -append "root=/dev/vda1 net.ifnames=0" \
-    -device e1000,netdev=network0 \
-    -netdev user,id=network0
-    # convenient, but needs way more manual setup on the host
+    -net nic -net bridge,br=$BRIDGE
+    # # featureful, but needs way more manual setup on the host
     # -device e1000,netdev=network0,mac=12:34:56:78:90:ab \
     # -netdev tap,id=network0,ifname=tap0,script=no,downscript=no
-    # ends up being the same as above
-    # -net nic -net bridge,br=bridge-qemu \
-
+    # # host-only
+    # -device e1000,netdev=network0 \
+    # -netdev user,id=network0

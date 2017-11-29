@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-development-kernel
 Architecture: all
-Depends: qemu, qemu-kvm, vmdebootstrap, dracut
+Depends: qemu, qemu-kvm, vmdebootstrap, dracut, iproute2
 Description: Untangle kernel development environment
  The Untangle kernel development environment
 
