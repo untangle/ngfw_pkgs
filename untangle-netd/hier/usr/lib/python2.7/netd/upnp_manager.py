@@ -136,7 +136,7 @@ UPNPD_PID="`pidof miniupnpd`"
 
 # Stop miniupnpd if running
 if [ ! -z "$UPNPD_PID" ] ; then
-    /etc/init.d/miniupnpd stop
+    service miniupnpd restart
     /etc/untangle-netd/iptables-rules.d/741-upnp
 fi
 """)
@@ -148,11 +148,11 @@ UPNPD_PID="`pidof miniupnpd`"
 # Or if miniupnpd.conf orhas been written since miniupnpd was started
 if [ -z "$UPNPD_PID" ] ; then
     /etc/untangle-netd/iptables-rules.d/741-upnp
-    /etc/init.d/miniupnpd restart
+    service miniupnpd restart
 # use not older than (instead of newer than) because it compares seconds and we want an equal value to still do a restart
 elif [ ! /etc/miniupnpd/miniupnpd.conf -ot /proc/$UPNPD_PID ] ; then
     /etc/untangle-netd/iptables-rules.d/741-upnp
-    /etc/init.d/miniupnpd restart
+    service miniupnpd restart
 fi
 """)
 

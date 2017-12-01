@@ -22,6 +22,7 @@ from netd.qos_manager import QosManager
 from netd.ddclient_manager import DdclientManager
 from netd.ebtables_manager import EbtablesManager
 from netd.upnp_manager import UpnpManager
+from netd.netflow_manager import NetflowManager
 
 from netd.iptables_util import IptablesUtil
 from netd.network_util import NetworkUtil
