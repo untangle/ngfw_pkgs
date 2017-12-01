@@ -38,7 +38,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-arch-stamp build-indep-stamp configure-stamp
-	rm -rf debian/tmp debian/untangle-hardware-* sav-install
+	rm -rf debian/tmp debian/untangle-hardware-qotom-u50x sav-install
 	dh_clean
 
 binary-indep: build
