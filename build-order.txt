@@ -51,6 +51,7 @@ untangle-hardware-config                jessie,stretch
 untangle-kiosk                          jessie,stretch
 untangle-linux-config                   jessie,stretch
 untangle-exim4-config                   jessie,stretch
+untangle-softflowd-config               jessie,stretch
 untangle-snmpd-config                   jessie,stretch
 untangle-snort-config                   jessie,stretch
 untangle-spamassassin-update            jessie,stretch

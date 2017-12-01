@@ -1,0 +1,10 @@
+Package: untangle-softflowd-config
+Version: 0-1
+Architecture: all
+Maintainer: Dirk Morris <dmorris@untangle.com>
+Installed-Size: 27
+Depends: softflowd
+Section: admin
+Priority: optional
+Description: Untangle softflowd wrapper package
+ The Untangle softflowd autoconfigurator
