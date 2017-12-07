@@ -34,7 +34,7 @@ fi
 
 CUSTOM_DIR=$(readlink -f $(dirname $0))/vmdebootstrap
 
-vmdebootstrap --arch amd64 \
+vmdebootstrap --arch $ARCH \
               --distribution $REPOSITORY \
 	      --mirror http://package-server.untangle.int/public/$REPOSITORY \
 	      --image $IMAGE \
@@ -42,7 +42,7 @@ vmdebootstrap --arch amd64 \
 	      --no-mbr \
 	      --verbose \
 	      --root-password passwd \
-	      --hostname ${REPOSITORY}-${ARCH} \
+	      --hostname uvm-${REPOSITORY}-${ARCH} \
 	      --no-systemd-networkd \
 	      --no-kernel \
 	      --sparse \
