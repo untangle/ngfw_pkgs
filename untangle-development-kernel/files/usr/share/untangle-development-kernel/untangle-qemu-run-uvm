@@ -64,13 +64,10 @@ ip link set $NIC master $BRIDGE_EXT
 ip link set dev $BRIDGE_EXT up
 
 # setup bridge for internal interface
-
-# FIXME: I add a default route for 192.168.2.0/24 via $BRIDGE_INT, so
-#        I can for instance acces the setup wizard the 1st time
-#   ip route add 192.168.2.0/24 dev $BRIDGE_INT
 BRIDGE_INT="qemubr-int0"
 ip link add $BRIDGE_INT type bridge
 ip link set dev $BRIDGE_INT up
+ip route add 192.168.2.0/24 dev $BRIDGE_INT
 
 # make sure we tear down those bridges upon exiting
 trap "ip link set $NIC nomaster ; ip link del $BRIDGE_EXT; ip link del $BRIDGE_INT" 0
