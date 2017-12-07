@@ -3,50 +3,83 @@ Typical workflow:
 
 Let's define version="4.9.0-3-untangle-amd64".
 
-1. build a disk image to be used in qemu:
+Let's also assume you added /usr/share/untangle-development-kernel to
+your PATH (later on, all those tools will be moved to /usr/bin).
 
-     /usr/share/untangle-development-kernel/untangle-qemu-mkimage -f ~/images/stretch-untangle.qcow2 -a amd64 -r stretch
+1. build a UVM disk image
+-------------------------
 
-2. build a kernel your usual way, make sure you run modules_install, and
-   remember where they are installed. This can typically be forced via:
+This only needs to be run once, when you start using the qemu
+framework:
 
-     INSTALL_MOD_PATH=/tmp/modules-$version make modules_install
+  untangle-qemu-mkimage-uvm -f ~/images/stretch-uvm.qcow2 -a amd64 -r stretch
 
-3. build an initrd using those modules (make sure the version you pass
-   to -v is indeed the one matching the kernel you built):
+You can later create additional images of course, for instance to test a
+new release.
 
-     /usr/share/untangle-development-kernel/untangle-qemu-mkinitrd -f ~/images/dracut.initrd -p /tmp/modules-$version -v $version
+2. build a kernel image and associated modules
+----------------------------------------------
 
-4. update the modules tree in the qemu image:
+Simply build the kernel your usual way, and make sure you run
+modules_install and remember where they are installed. This can
+typically be forced via:
 
-     /usr/share/untangle-development-kernel/untangle-qemu-udpate-modules -f ~/images/stretch-untangle.qcow2 -p /tmp/modules-$version -v $version
+  INSTALL_MOD_PATH=/tmp/modules-$version make modules_install
 
-5. boot an instance, using the kernel and initrd produced earlier:
+3. build an initrd suitable for qemu
+------------------------------------
 
-     /usr/share/untangle-development-kernel/untangle-qemu-run -f ~/images/stretch-untangle.qcow2 -k path/to/vmlinuz -i ~/images/dracut.initrd
+It will use those modules you just built, by using -p to point to the
+directory they were installed in. Make extra sure the version you pass
+to -v is indeed the one matching the kernel you built:
 
-   This will spawn an SDL (graphical window) with your qemu VM, and
-   leave you with the QEMU monitor in the calling shell. The monitor is
-   quite awesome in its own right, with a wide array of debugging and
-   introspection capabilities (type "help" to list all commands). Quick
-   example:
+  untangle-qemu-mkinitrd -f ~/images/dracut.initrd -p /tmp/modules-$version -v $version
 
-     (qemu) info network
-     hub 0
-      \ hub0port1: user.0: index=0,type=user,net=10.0.2.0,restrict=off
-      \ hub0port0: e1000.0: index=0,type=nic,model=e1000,macaddr=52:54:00:12:34:56
-     (qemu) info block
-     hd0 (#block143): /home/seb/images/stretch-untangle.qcow2 (raw)
-	 Attached to:      /machine/peripheral/drive0/virtio-backend
-	 Cache mode:       writeback
+4. update the modules tree in the UVM disk image
+------------------------------------------------
 
-     ide1-cd0: [not inserted]
-	 Attached to:      /machine/unattached/device[24]
-	 Removable device: not locked, tray closed
+  untangle-qemu-udpate-modules -f ~/images/stretch-uvm.qcow2 -p /tmp/modules-$version -v $version
 
-     floppy0: [not inserted]
-	 Attached to:      /machine/unattached/device[21]
-	 Removable device: not locked, tray closed
+5. boot a UVM instance
+----------------------
 
-     sd0: [not inserted]
-	 Removable device: not locked, tray closed
+Using the kernel and initrd produced earlier:
+
+  untangle-qemu-run-uvm -f ~/images/stretch-uvm.qcow2 -k path/to/vmlinuz -i ~/images/dracut.initrd
+
+This will spawn an SDL (graphical) window with your qemu VM, and leave
+you with the QEMU monitor in the calling shell.
+
+The monitor is awesome, with a wide array of debugging and introspection
+capabilities (type "help" to list all commands). Quick example:
+
+ ,----
+ | (qemu) info network
+ | hub 0                                            
+ |  \ hub0port1: bridge.0: index=0,type=tap,helper=/usr/lib/qemu/qemu-bridge-helper,br=qemubr-ext0
+ |  \ hub0port0: e1000.0: index=0,type=nic,model=e1000,macaddr=52:54:00:12:34:56
+ | (qemu) info block
+ | hd0 (#block143): /home/seb/images/stretch-uvm.qcow2 (raw)
+ |     Attached to:      /machine/peripheral/drive0/virtio-backend
+ |     Cache mode:       writeback
+ | [...]
+ `----
+
+At this point you can complete the setup wizard by accessing the
+internal interface at https://192.168.2.1.
+
+6. create a client disk image
+-----------------------------
+
+  untangle-qemu-mkimage-client -f ~/images/stretch-client.qcow2
+
+7. boot a client instance
+-------------------------
+
+No need to pass a kernel or initrd, this will automatically find grub
+inside the disk image:
+
+  untangle-qemu-run-client -f ~/images/stretch-client.qcow2
+
+If everything goes well, that client will grab a DHCP address from the
+uvm, and then you're all set.
