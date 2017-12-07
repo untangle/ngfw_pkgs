@@ -1,0 +1,58 @@
+#! /bin/bash
+
+### This can only run if untangle-qemu-run-uvm has been started
+### already (because it needs the presence of the client bridge)
+
+set -e
+
+usage() {
+  echo "$0 -f <image-file> -k <kernel> -i <initrd> [-m <memory>]"
+  exit 1
+}
+
+if [ $(id -u) != 0 ] ; then
+  exec sudo -E $0 $*
+fi
+
+#############
+#############
+## CLI args
+#############
+#############
+while getopts f:m: option ; do
+  case "$option" in
+    f) IMAGE="$OPTARG" ;;
+    m) MEMORY="$OPTARG" ;;
+    h) usage ;;
+    \?) usage ;;
+  esac
+done
+
+#########
+#########
+## main
+#########
+#########
+
+##################
+# check CLI args
+[[ -z "$IMAGE" ]] && usage
+
+# default RAM to 1G
+[[ -z "$MEMORY" ]] && MEMORY="1G"
+
+BRIDGE_INT="qemubr-int0"
+
+################
+# start the VM
+kvm -enable-kvm \
+    -m $MEMORY \
+    -drive if=none,format=raw,id=hd0,file=$IMAGE \
+    -device driver=virtio-blk-pci,id=drive0,drive=hd0 \
+    -monitor stdio \
+    -netdev bridge,id=hostnet0,br=$BRIDGE_INT \
+    -device virtio-net-pci,netdev=hostnet0,mac=52:54:00:AB:CD:EF
+# the following simple call can't be used, because somehow
+# /usr/lib/qemu/qemu-bridge-helper duplicates 52:54:00:12:34:56 which
+# is already eth0 on qemubr-ext0 (eth0 in the uvm):
+# -netdev nic -net bridge,br=$BRIDGE_INT
