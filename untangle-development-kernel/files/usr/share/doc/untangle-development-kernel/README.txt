@@ -24,7 +24,11 @@ Simply build the kernel your usual way, and make sure you run
 modules_install and remember where they are installed. This can
 typically be forced via:
 
-  INSTALL_MOD_PATH=/tmp/modules-$version make modules_install
+  # build and install modules
+  INSTALL_MOD_PATH=/tmp/modules-$version make bzImage modules modules_install
+
+  # create symbols files
+  depmod -b $INSTALL_MOD_PATH -a $version
 
 3. build an initrd suitable for qemu
 ------------------------------------
@@ -33,12 +37,12 @@ It will use those modules you just built, by using -p to point to the
 directory they were installed in. Make extra sure the version you pass
 to -v is indeed the one matching the kernel you built:
 
-  untangle-qemu-mkinitrd -f ~/images/dracut.initrd -p /tmp/modules-$version -v $version
+  untangle-qemu-mkinitrd -f ~/images/dracut.initrd -p /tmp/modules-$version/lib/modules/$version -v $version
 
 4. update the modules tree in the UVM disk image
 ------------------------------------------------
 
-  untangle-qemu-udpate-modules -f ~/images/stretch-uvm.qcow2 -p /tmp/modules-$version -v $version
+  untangle-qemu-udpate-modules -f ~/images/stretch-uvm.qcow2 -p /tmp/modules-$version/lib/modules/$version -v $version -n eth0
 
 5. boot a UVM instance
 ----------------------
