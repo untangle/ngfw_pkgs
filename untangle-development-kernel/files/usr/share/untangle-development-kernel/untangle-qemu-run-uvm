@@ -47,6 +47,7 @@ done
 
 # FIXME: support multiples bridges and qemu instances, by supporting
 #        bridge-(ext|int)N instead of just bridge-(ext|int)0
+#        tap0 should be tapN0, etc
 
 # setup bridge for external interface
 # FIXME: adding $NIC with an already-defined IP, to a bridge without
