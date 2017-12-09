@@ -38,7 +38,7 @@ vmdebootstrap --arch $ARCH \
               --distribution $REPOSITORY \
 	      --mirror http://package-server.untangle.int/public/$REPOSITORY \
 	      --image $IMAGE \
-	      --size 5G \
+	      --size 10G \
 	      --no-mbr \
 	      --verbose \
 	      --root-password passwd \

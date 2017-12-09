@@ -87,3 +87,36 @@ inside the disk image:
 
 If everything goes well, that client will grab a DHCP address from the
 uvm, and then you're all set.
+
+
+
+Network setup:
+
+   (internet)
+       |
+       |
+_________________
+      eth0
+qemubr-ext bridge
+      tap0
+_________________
+       |
+       |
+_________________
+  eth0 - DHCP
+  untangle VM 
+  eth1 - 192.168.2.1/24
+_________________
+       |
+       |
+_________________
+      tap1
+qemubr-int bridge
+      tap2
+_________________
+       |
+       |
+_________________
+  eth0 - DHCP
+  stretch client
+_________________

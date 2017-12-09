@@ -3,8 +3,6 @@
 ### This can only run if untangle-qemu-run-uvm has been started
 ### already (because it needs the presence of the client bridge)
 
-set -e
-
 usage() {
   echo "$0 -f <image-file> -k <kernel> -i <initrd> [-m <memory>]"
   exit 1
@@ -41,7 +39,32 @@ done
 # default RAM to 1G
 [[ -z "$MEMORY" ]] && MEMORY="1G"
 
+INTF="tap2"
 BRIDGE_INT="qemubr-int0"
+
+########################
+# load required modules
+modprobe virtio-blk
+modprobe virtio-pci
+
+########################
+# create the ifup script
+# to bring up tap interface and add to correct bridge
+ifup=$(mktemp /tmp/qemu-ifup.XXXXXX)
+chmod 755 ${ifup}
+cat > ${ifup} <<EOF
+#!/bin/sh -x
+ip link set ${INTF} up
+brctl addif ${BRIDGE_INT} ${INTF}
+EOF
+
+#######################
+# create bridge
+if ! ip link ls ${BRIDGE_INT} >/dev/null ; then
+    ip link add $BRIDGE_INT type bridge
+    ip link set dev $BRIDGE_INT up
+    ip route add 192.168.2.0/24 dev $BRIDGE_INT
+fi
 
 ################
 # start the VM
@@ -50,8 +73,11 @@ kvm -enable-kvm \
     -drive if=none,format=raw,id=hd0,file=$IMAGE \
     -device driver=virtio-blk-pci,id=drive0,drive=hd0 \
     -monitor stdio \
-    -netdev bridge,id=hostnet0,br=$BRIDGE_INT \
-    -device virtio-net-pci,netdev=hostnet0,mac=52:54:00:AB:CD:EF
+    -netdev tap,id=external,ifname=${INTF},br=${BRIDGE_INT},script="${ifup}" \
+    -device e1000,netdev=external,mac=00:11:22:33:44:55
+#    -netdev nic -net bridge,br=$BRIDGE_INT \
+#    -net nic,macaddr=00:11:22:33:44:55 -net bridge,br=$BRIDGE_INT
+#    -device virtio-net-pci,netdev=hostnet0,mac=52:54:00:AB:CD:EF
 # the following simple call can't be used, because somehow
 # /usr/lib/qemu/qemu-bridge-helper duplicates 52:54:00:12:34:56 which
 # is already eth0 on qemubr-ext0 (eth0 in the uvm):
