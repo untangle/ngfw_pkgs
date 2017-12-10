@@ -42,7 +42,7 @@ to -v is indeed the one matching the kernel you built:
 4. update the modules tree in the UVM disk image
 ------------------------------------------------
 
-  untangle-qemu-udpate-modules -f ~/images/stretch-uvm.qcow2 -p /tmp/modules-$version/lib/modules/$version -v $version -n eth0
+  untangle-qemu-update-modules -f ~/images/stretch-uvm.qcow2 -p /tmp/modules-$version/lib/modules/$version -v $version -n eth0
 
 5. boot a UVM instance
 ----------------------

@@ -66,9 +66,9 @@ INTF_INT="tap1"
 
 if ! ip link ls ${BRIDGE_EXT} >/dev/null ; then
     ip link add $BRIDGE_EXT type bridge
-    ip link set $NIC master $BRIDGE_EXT
     ip link set dev $BRIDGE_EXT up
 fi
+ip link set $NIC master $BRIDGE_EXT || true
 
 # setup bridge for internal interface
 if ! ip link ls ${BRIDGE_INT} >/dev/null ; then
@@ -94,9 +94,10 @@ modprobe virtio-pci
 ifupext=$(mktemp /tmp/qemu-ifup.XXXXXX)
 chmod 755 ${ifupext}
 cat > ${ifupext} <<EOF
-#!/bin/sh -x
+#!/bin/sh
+echo "Creating interface ${INTF_EXT} and adding to bridge ${BRIDGE_EXT}"
 ip link set ${INTF_EXT} up
-brctl addif ${BRIDGE_EXT} ${INTF_EXT}
+ip link set ${INTF_EXT} master ${BRIDGE_EXT}
 EOF
 
 ########################
@@ -105,9 +106,10 @@ EOF
 ifupint=$(mktemp /tmp/qemu-ifup.XXXXXX)
 chmod 755 ${ifupint}
 cat > ${ifupint} <<EOF
-#!/bin/sh -x
+#!/bin/sh
+echo "Creating interface ${INTF_INT} and adding to bridge ${BRIDGE_INT}"
 ip link set ${INTF_INT} up
-brctl addif ${BRIDGE_INT} ${INTF_INT}
+ip link set ${INTF_INT} master ${BRIDGE_INT}
 EOF
 
 ########################

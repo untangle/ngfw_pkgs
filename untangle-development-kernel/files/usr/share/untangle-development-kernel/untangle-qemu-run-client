@@ -53,9 +53,10 @@ modprobe virtio-pci
 ifup=$(mktemp /tmp/qemu-ifup.XXXXXX)
 chmod 755 ${ifup}
 cat > ${ifup} <<EOF
-#!/bin/sh -x
+#!/bin/sh
+echo "Creating interface ${INTF} and adding to bridge ${BRIDGE_INT}"
 ip link set ${INTF} up
-brctl addif ${BRIDGE_INT} ${INTF}
+ip link set ${INTF} master ${BRIDGE_INT}
 EOF
 
 #######################

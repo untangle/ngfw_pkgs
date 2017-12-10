@@ -49,8 +49,8 @@ vmdebootstrap --arch $ARCH \
 	      --debootstrapopts="no-check-gpg components=main,non-free" \
 	      --customize=${CUSTOM_DIR}/kill-gpg-agent.sh \
 	      --package untangle-gateway \
-	      --package postgresql-client-9.6 \
-	      --package postgresql-9.6 \
+	      --package postgresql-client \
+	      --package postgresql \
 	      --package openjdk-8-jre \
 	      --package perl-openssl-defaults \
 	      --package lhasa \
