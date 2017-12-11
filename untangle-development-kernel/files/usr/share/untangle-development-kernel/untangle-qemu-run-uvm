@@ -47,7 +47,6 @@ done
 
 # FIXME: support multiples bridges and qemu instances, by supporting
 #        bridge-(ext|int)N instead of just bridge-(ext|int)0
-#        tap0 should be tapN0, etc
 
 # setup bridge for external interface
 # FIXME: adding $NIC with an already-defined IP, to a bridge without
@@ -59,11 +58,8 @@ done
 #   ip route del 172.16.25.0/24 dev $NIC
 #   ip route add 172.16.25.0/24 dev $BRIDGE_EXT
 #   ip route add default via 172.16.25.1
-BRIDGE_EXT="qemubr-ext0"
-BRIDGE_INT="qemubr-int0"
-INTF_EXT="tap0"
-INTF_INT="tap1"
 
+BRIDGE_EXT="qemubr-ext0"
 if ! ip link ls ${BRIDGE_EXT} >/dev/null ; then
     ip link add $BRIDGE_EXT type bridge
     ip link set dev $BRIDGE_EXT up
@@ -71,6 +67,7 @@ fi
 ip link set $NIC master $BRIDGE_EXT || true
 
 # setup bridge for internal interface
+BRIDGE_INT="qemubr-int0"
 if ! ip link ls ${BRIDGE_INT} >/dev/null ; then
     ip link add $BRIDGE_INT type bridge
     ip link set dev $BRIDGE_INT up
@@ -78,39 +75,13 @@ if ! ip link ls ${BRIDGE_INT} >/dev/null ; then
 fi
 
 # make sure we tear down those bridges upon exiting
-# trap "ip link set $NIC nomaster ; ip link del $BRIDGE_EXT; ip link del $BRIDGE_INT" 0
-
-# remove $NIC from bridge on exit
+#trap "ip link set $NIC nomaster ; ip link del $BRIDGE_EXT; ip link del $BRIDGE_INT" 0
 trap "ip link set $NIC nomaster" 0
 
 ########################
 # load required modules
 modprobe virtio-blk
 modprobe virtio-pci
-
-########################
-# create the ext ifup script
-# to bring up tap interface and add to correct bridge
-ifupext=$(mktemp /tmp/qemu-ifup.XXXXXX)
-chmod 755 ${ifupext}
-cat > ${ifupext} <<EOF
-#!/bin/sh
-echo "Creating interface ${INTF_EXT} and adding to bridge ${BRIDGE_EXT}"
-ip link set ${INTF_EXT} up
-ip link set ${INTF_EXT} master ${BRIDGE_EXT}
-EOF
-
-########################
-# create the int ifup script
-# to bring up tap interface and add to correct bridge
-ifupint=$(mktemp /tmp/qemu-ifup.XXXXXX)
-chmod 755 ${ifupint}
-cat > ${ifupint} <<EOF
-#!/bin/sh
-echo "Creating interface ${INTF_INT} and adding to bridge ${BRIDGE_INT}"
-ip link set ${INTF_INT} up
-ip link set ${INTF_INT} master ${BRIDGE_INT}
-EOF
 
 ########################
 # start the Untangle VM
@@ -121,13 +92,10 @@ kvm -enable-kvm \
     -drive if=none,format=raw,id=hd0,file=$IMAGE \
     -device driver=virtio-blk-pci,id=drive0,drive=hd0 \
     -monitor stdio \
-    -append "root=/dev/vda1 net.ifnames=0 systemd.log_level=debug systemd.log_target=kmsg log_buf_len=10M printk.devkmsg=on" \
-    -netdev tap,id=external,ifname=${INTF_EXT},br=${BRIDGE_EXT},script="${ifupext}" \
-    -device e1000,netdev=external,mac=00:11:22:33:44:11 \
-    -netdev tap,id=internal,ifname=${INTF_INT},br=${BRIDGE_INT},script="${ifupint}" \
-    -device e1000,netdev=internal,mac=00:11:22:33:44:22
-    # -net nic -net bridge,br=$BRIDGE_EXT \
-    # -net nic -net bridge,br=$BRIDGE_INT
+    -append "root=/dev/vda1 net.ifnames=0" \
+    -net nic -net bridge,br=$BRIDGE_EXT \
+    -net nic -net bridge,br=$BRIDGE_INT
+
     # # featureful, but needs way more manual setup on the host
     # -device e1000,netdev=network0,mac=12:34:56:78:90:ab \
     # -netdev tap,id=network0,ifname=tap0,script=no,downscript=no
