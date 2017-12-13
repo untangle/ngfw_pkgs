@@ -90,6 +90,8 @@ trap "ip link set $NIC nomaster" 0
 modprobe virtio-blk
 modprobe virtio-pci
 
+QEMU_SOCKET_PORT="12345"
+
 ########################
 # start the Untangle VM
 kvm -enable-kvm \
@@ -102,5 +104,5 @@ kvm -enable-kvm \
     -append "root=/dev/vda1 net.ifnames=0 console=tty0 console=ttyS0,115200" \
     -netdev bridge,id=external0,br=$BRIDGE_EXT \
     -device virtio-net-pci,netdev=external0 \
-    -netdev bridge,id=internal0,br=$BRIDGE_INT \
+    -netdev socket,id=internal0,listen=:$QEMU_SOCKET_PORT \
     -device virtio-net-pci,netdev=internal0
