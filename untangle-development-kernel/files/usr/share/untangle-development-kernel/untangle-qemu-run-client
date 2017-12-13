@@ -6,7 +6,7 @@
 set -e
 
 usage() {
-  echo "$0 -f <image-file> -k <kernel> -i <initrd> [-m <memory>]"
+  echo "$0 -f <image-file> -k <kernel> -i <initrd> [-m <memory>] [-t (g|graphic|t|terminal)]"
   exit 1
 }
 
@@ -23,6 +23,11 @@ while getopts f:m: option ; do
   case "$option" in
     f) IMAGE="$OPTARG" ;;
     m) MEMORY="$OPTARG" ;;
+    t) case $OPTARG in
+	 g|graphic) MODE="-monitor stdio" ;;
+	 t|terminal) MODE="-nographic" ;;
+	 *) usage ;;
+       esac ;;
     h) usage ;;
     \?) usage ;;
   esac
@@ -56,7 +61,7 @@ kvm -enable-kvm \
     -m $MEMORY \
     -drive if=none,format=raw,id=hd0,file=$IMAGE \
     -device driver=virtio-blk-pci,id=drive0,drive=hd0 \
-    -monitor stdio \
+    $MODE \
     -netdev bridge,id=hostnet0,br=$BRIDGE_INT \
     -device virtio-net-pci,netdev=hostnet0,mac=52:54:00:AB:CD:EF
 # the following simple call can't be used, because somehow
