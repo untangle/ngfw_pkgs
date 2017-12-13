@@ -74,14 +74,6 @@ if ! ip link ls ${BRIDGE_EXT} > /dev/null 2>&1 ; then
 fi
 ip link set $NIC master $BRIDGE_EXT || true
 
-# setup bridge for internal interface
-BRIDGE_INT="qemubr-int0"
-if ! ip link ls ${BRIDGE_INT} > /dev/null 2>&1 ; then
-    ip link add $BRIDGE_INT type bridge
-    ip link set dev $BRIDGE_INT up
-    ip route add 192.168.2.0/24 dev $BRIDGE_INT
-fi
-
 # make sure we remove $NIC from the ext bridge upon exiting
 trap "ip link set $NIC nomaster" 0
 
