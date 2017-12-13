@@ -3,7 +3,7 @@
 set -e
 
 usage() {
-  echo "$0 -f <image-file> -k <kernel> -i <initrd> -n <nic-to-bridge> [-m <memory>]"
+  echo "$0 -f <image-file> -k <kernel> -i <initrd> -n <nic-to-bridge> [-m <memory>] [-t (g|graphic|t|terminal)]"
   exit 1
 }
 
@@ -16,13 +16,18 @@ fi
 ## CLI args
 #############
 #############
-while getopts f:k:i:m:n: option ; do
+while getopts f:k:i:m:n:t: option ; do
   case "$option" in
     k) KERNEL="$OPTARG" ;;
     f) IMAGE="$OPTARG" ;;
     i) INITRD="$OPTARG" ;;
     m) MEMORY="$OPTARG" ;;
     n) NIC="$OPTARG" ;;
+    t) case $OPTARG in
+	 g|graphic) MODE="-monitor stdio" ;;
+	 t|terminal) MODE="-nographic" ;;
+	 *) usage ;;
+       esac ;;
     h) usage ;;
     \?) usage ;;
   esac
@@ -38,7 +43,7 @@ done
 # check CLI args
 { [[ -z "$IMAGE" ]] || [[ -z "$KERNEL" ]] || [[ -z "$INITRD" ]] || [[ -z $NIC ]] ; } && usage
 
-# default RAM to 1G
+# default RAM to 2G
 [[ -z "$MEMORY" ]] && MEMORY="2G"
 
 #####################################################################
@@ -91,8 +96,8 @@ kvm -enable-kvm \
     -initrd $INITRD \
     -drive if=none,format=raw,id=hd0,file=$IMAGE \
     -device driver=virtio-blk-pci,id=drive0,drive=hd0 \
-    -monitor stdio \
-    -append "root=/dev/vda1 net.ifnames=0" \
+    $MODE \
+    -append "root=/dev/vda1 net.ifnames=0 console=tty0 console=ttyS0,115200" \
     -net nic -net bridge,br=$BRIDGE_EXT \
     -net nic -net bridge,br=$BRIDGE_INT
 
