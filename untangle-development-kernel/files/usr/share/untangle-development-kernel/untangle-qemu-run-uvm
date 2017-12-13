@@ -46,6 +46,9 @@ done
 # default RAM to 2G
 [[ -z "$MEMORY" ]] && MEMORY="2G"
 
+# default MODE to graphical
+[[ -z "$MODE" ]] && MODE="-monitor stdio"
+
 #####################################################################
 # setup bridge networking for both external and internal interfaces
 # in the VM

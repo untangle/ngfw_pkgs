@@ -19,7 +19,7 @@ fi
 ## CLI args
 #############
 #############
-while getopts f:m: option ; do
+while getopts f:m:t: option ; do
   case "$option" in
     f) IMAGE="$OPTARG" ;;
     m) MEMORY="$OPTARG" ;;
@@ -45,6 +45,9 @@ done
 
 # default RAM to 1G
 [[ -z "$MEMORY" ]] && MEMORY="1G"
+
+# default MODE to graphical
+[[ -z "$MODE" ]] && MODE="-monitor stdio"
 
 BRIDGE_INT="qemubr-int0"
 # setup bridge for internal interface
