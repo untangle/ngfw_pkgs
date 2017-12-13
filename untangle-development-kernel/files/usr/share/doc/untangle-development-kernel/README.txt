@@ -39,6 +39,11 @@ to -v is indeed the one matching the kernel you built:
 
   untangle-qemu-mkinitrd -f ~/images/dracut.initrd -p /tmp/modules-$version/lib/modules/$version -v $version
 
+lsinitrd(1) can be used to inspect or unpack the created file if needed:
+
+  lsinitrd ~/images/dracut.initrd
+  lsinitrd --unpack ~/images/dracut.initrd
+
 4. update the modules tree in the UVM disk image
 ------------------------------------------------
 
