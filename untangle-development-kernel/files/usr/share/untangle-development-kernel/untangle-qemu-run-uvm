@@ -82,8 +82,7 @@ if ! ip link ls ${BRIDGE_INT} > /dev/null 2>&1 ; then
     ip route add 192.168.2.0/24 dev $BRIDGE_INT
 fi
 
-# make sure we tear down those bridges upon exiting
-#trap "ip link set $NIC nomaster ; ip link del $BRIDGE_EXT; ip link del $BRIDGE_INT" 0
+# make sure we remove $NIC from the ext bridge upon exiting
 trap "ip link set $NIC nomaster" 0
 
 ########################
@@ -101,12 +100,7 @@ kvm -enable-kvm \
     -device driver=virtio-blk-pci,id=drive0,drive=hd0 \
     $MODE \
     -append "root=/dev/vda1 net.ifnames=0 console=tty0 console=ttyS0,115200" \
-    -net nic -net bridge,br=$BRIDGE_EXT \
-    -net nic -net bridge,br=$BRIDGE_INT
-
-    # # featureful, but needs way more manual setup on the host
-    # -device e1000,netdev=network0,mac=12:34:56:78:90:ab \
-    # -netdev tap,id=network0,ifname=tap0,script=no,downscript=no
-    # # host-only
-    # -device e1000,netdev=network0 \
-    # -netdev user,id=network0
+    -netdev bridge,id=external0,br=$BRIDGE_EXT \
+    -device virtio-net-pci,netdev=external0 \
+    -netdev bridge,id=internal0,br=$BRIDGE_INT \
+    -device virtio-net-pci,netdev=internal0

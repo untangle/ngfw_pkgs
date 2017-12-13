@@ -50,13 +50,6 @@ done
 [[ -z "$MODE" ]] && MODE="-monitor stdio"
 
 BRIDGE_INT="qemubr-int0"
-# setup bridge for internal interface
-BRIDGE_INT="qemubr-int0"
-if ! ip link ls ${BRIDGE_INT} >/dev/null ; then
-    ip link add $BRIDGE_INT type bridge
-    ip link set dev $BRIDGE_INT up
-    ip route add 192.168.2.0/24 dev $BRIDGE_INT
-fi
 
 ################
 # start the VM
@@ -65,9 +58,5 @@ kvm -enable-kvm \
     -drive if=none,format=raw,id=hd0,file=$IMAGE \
     -device driver=virtio-blk-pci,id=drive0,drive=hd0 \
     $MODE \
-    -netdev bridge,id=hostnet0,br=$BRIDGE_INT \
-    -device virtio-net-pci,netdev=hostnet0,mac=52:54:00:AB:CD:EF
-# the following simple call can't be used, because somehow
-# /usr/lib/qemu/qemu-bridge-helper duplicates 52:54:00:12:34:56 which
-# is already eth0 on qemubr-ext0 (eth0 in the uvm):
-# -netdev nic -net bridge,br=$BRIDGE_INT
+    -netdev bridge,id=internal0,br=$BRIDGE_INT \
+    -device virtio-net-pci,netdev=internal0
