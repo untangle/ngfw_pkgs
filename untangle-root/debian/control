@@ -8,7 +8,8 @@ Standards-Version: 3.8.0
 
 Package: untangle-root
 Architecture: all
-Depends: rsync,
+Depends: less,
+	 rsync,
          sudo,
 	 zsh
 Conflicts: untangle-kiosk (<< 13.2.0.20171122~)
