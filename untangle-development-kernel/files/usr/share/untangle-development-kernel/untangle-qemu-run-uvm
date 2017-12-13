@@ -60,7 +60,7 @@ done
 #   ip route add default via 172.16.25.1
 
 BRIDGE_EXT="qemubr-ext0"
-if ! ip link ls ${BRIDGE_EXT} >/dev/null ; then
+if ! ip link ls ${BRIDGE_EXT} > /dev/null 2>&1 ; then
     ip link add $BRIDGE_EXT type bridge
     ip link set dev $BRIDGE_EXT up
 fi
@@ -68,7 +68,7 @@ ip link set $NIC master $BRIDGE_EXT || true
 
 # setup bridge for internal interface
 BRIDGE_INT="qemubr-int0"
-if ! ip link ls ${BRIDGE_INT} >/dev/null ; then
+if ! ip link ls ${BRIDGE_INT} > /dev/null 2>&1 ; then
     ip link add $BRIDGE_INT type bridge
     ip link set dev $BRIDGE_INT up
     ip route add 192.168.2.0/24 dev $BRIDGE_INT
