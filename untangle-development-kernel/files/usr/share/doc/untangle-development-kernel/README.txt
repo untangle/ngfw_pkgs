@@ -17,6 +17,14 @@ framework:
 You can later create additional images of course, for instance to test a
 new release.
 
+Note that you can mount the resulting qcow2 image, to copy files or
+chroot into:
+
+  mount -t ext4 -o loop,offset=$((2048*512)) ~/images/stretch-untangle.qcow2 /mnt
+
+Make sure you umount before running a qemu instance based on that disk
+image, otherwise you're guaranteed to encounter data corruption.
+
 2. build a kernel image and associated modules
 ----------------------------------------------
 
