@@ -44,4 +44,5 @@ vmdebootstrap --arch $ARCH \
 	      --hostname client-${REPOSITORY}-${ARCH} \
 	      --sparse \
 	      --grub \
-	      --package curl
+	      --package curl \
+	      --customize no-systemd-emergency-target.sh
