@@ -1,0 +1,119 @@
+#! /bin/bash
+
+set -e -x
+
+usage() {
+  echo "$0 -f <image-file> -k <kernel> -i <initrd> -n <nic-to-bridge> [-u] [-m <memory>] [-t (g|graphic|t|terminal)]"
+  exit 1
+}
+
+if [ $(id -u) != 0 ] ; then
+  exec sudo -E $0 $*
+fi
+
+#############
+## Constants
+#############
+MODE="-monitor stdio" # default mode
+# FIXME: use a dynamic port
+QEMU_SOCKET="localhost:12345"
+QEMU_BRIDGE_ACL="/etc/qemu/bridge.conf"
+
+#############
+## CLI args
+#############
+while getopts uf:k:i:m:n:t: option ; do
+  case "$option" in
+    k) KERNEL_OPTIONS="-kernel $OPTARG" ;;
+    i) INITRD_OPTION="-initrd $OPTARG" ;;
+    f) IMAGE="$OPTARG" ;;
+    m) MEMORY="$OPTARG" ;;
+    n) NIC="$OPTARG" ;;
+    u) UVM=1 ;;
+    t) case $OPTARG in
+	 g|graphic) MODE="-monitor stdio" n;;
+	 t|terminal) MODE="-nographic" ;;
+	 *) usage ;;
+       esac ;;
+    h|\?) usage ;;
+  esac
+done
+
+#########
+## main
+#########
+
+##################
+# check CLI args
+[[ -z "$IMAGE" ]] && usage
+
+if [[ -n "$UVM" ]] ; then
+  # require additional parameters
+  { [[ -z "$KERNEL_OPTIONS" ]] || [[ -z "$INITRD_OPTION" ]] || [[ -z "$NIC" ]] ; } && usage
+  # default RAM to 2G
+  [[ -z "$MEMORY" ]] && MEMORY="2G"
+else
+  [[ -z "$MEMORY" ]] && MEMORY="1G"
+fi
+
+if [[ -n "$UVM" ]] ; then
+  #####################################################################
+  # setup bridge networking for both external and internal interfaces
+  # in the VM
+
+  # FIXME: support multiples bridges and qemu instances, by supporting
+  #        uvm-bridgeN instead of just uvm-bridge0
+
+  # setup bridge for external interface
+  # FIXME: adding $NIC with an already-defined IP, to a bridge without
+  #        an IP, messes up ARP and access to the $NIC's subnet from the
+  #        host itself. Any traffic that's routed to the outside is
+  #        fine, though.  To fix that, I manually force my subnet traffic
+  #        on the bridge interface:
+  #   ip route del default dev $NIC
+  #   ip route del 172.16.25.0/24 dev $NIC
+  #   ip route add 172.16.25.0/24 dev $BRIDGE_EXT
+  #   ip route add default via 172.16.25.1
+
+  BRIDGE_EXT="uvm-bridge0"
+
+  # create bridge if needed
+  if ! ip link ls ${BRIDGE_EXT} > /dev/null 2>&1 ; then
+    ip link add $BRIDGE_EXT type bridge
+    ip link set dev $BRIDGE_EXT up
+  fi
+  ip link set $NIC master $BRIDGE_EXT || true
+
+  # add it to QEMU ACL
+  echo "allow $BRIDGE_EXT" >> $QEMU_BRIDGE_ACL
+
+  # upon exiting, make sure we:
+  #   * remove $NIC from bridge upon exiting
+  #   * remove bridge from QEMU ACL
+  trap "ip link set $NIC nomaster" 0
+  trap "sed -i -e /^allow.$BRIDGE_EXT\$/d $QEMU_BRIDGE_ACL" 0
+
+  # pass extra kernel parameters
+  APPEND_OPTIONS=(-append "root=/dev/vda1 net.ifnames=0 console=tty0 console=ttyS0,115200")
+
+  NETWORK_OPTIONS="-netdev bridge,id=external0,br=$BRIDGE_EXT \
+    -device virtio-net-pci,netdev=external0 \
+    -netdev socket,id=internal0,listen=$QEMU_SOCKET \
+    -device virtio-net-pci,netdev=internal0"
+else
+  NETWORK_OPTIONS="-netdev socket,id=internal0,connect=$QEMU_SOCKET \
+    -device virtio-net-pci,netdev=internal0"
+fi
+
+########################
+# load required modules
+modprobe virtio-blk
+modprobe virtio-pci
+
+########################
+# start the VM
+kvm -enable-kvm \
+    -m $MEMORY $MODE $KERNEL_OPTIONS "${APPEND_OPTIONS[@]}" $INITRD_OPTION \
+    -drive if=none,format=raw,id=hd0,file=$IMAGE \
+    -device driver=virtio-blk-pci,id=drive0,drive=hd0 \
+    $NETWORK_OPTIONS

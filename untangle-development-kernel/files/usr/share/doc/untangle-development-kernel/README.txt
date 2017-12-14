@@ -1,5 +1,5 @@
-Typical workflow:
-=================
+A. Typical workflow:
+====================
 
 Let's define version="4.9.0-3-untangle-amd64".
 
@@ -60,9 +60,10 @@ lsinitrd(1) can be used to inspect or unpack the created file if needed:
 5. boot a UVM instance
 ----------------------
 
-Using the kernel and initrd produced earlier:
+Using the kernel and initrd produced earlier, and specifying the LAN
+interface on your host:
 
-  untangle-qemu-run-uvm -f ~/images/stretch-uvm.qcow2 -k path/to/vmlinuz -i ~/images/dracut.initrd
+  untangle-qemu-run -u -f ~/images/stretch-uvm.qcow2 -k path/to/vmlinuz -i ~/images/dracut.initrd -n eth0
 
 This will spawn an SDL (graphical) window with your qemu VM, and leave
 you with the QEMU monitor in the calling shell.
@@ -96,21 +97,22 @@ internal interface at https://192.168.2.1.
 No need to pass a kernel or initrd, this will automatically find grub
 inside the disk image:
 
-  untangle-qemu-run-client -f ~/images/stretch-client.qcow2
+  untangle-qemu-run -f ~/images/stretch-client.qcow2
 
 If everything goes well, that client will grab a DHCP address from the
 uvm, and then you're all set.
 
 
 
-Network setup:
+B. Network setup:
+=================
 
    (internet)
        |
        |
 _________________
       eth0
-qemubr-ext bridge
+uvm-bridge0 bridge
       tap0
 _________________
        |
@@ -123,9 +125,7 @@ _________________
        |
        |
 _________________
-      tap1
-qemubr-int bridge
-      tap2
+   QEMU socket
 _________________
        |
        |
