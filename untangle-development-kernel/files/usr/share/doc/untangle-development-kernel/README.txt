@@ -60,10 +60,11 @@ lsinitrd(1) can be used to inspect or unpack the created file if needed:
 5. boot a UVM instance
 ----------------------
 
-Using the kernel and initrd produced earlier, and specifying the LAN
-interface on your host:
+You will be using the kernel and initrd produced earlier; you also need
+to specify the LAN interface on your host via -n, and a local port to be
+used as the QEMU socket (default is 12345):
 
-  untangle-qemu-run -u -f ~/images/stretch-uvm.qcow2 -k path/to/vmlinuz -i ~/images/dracut.initrd -n eth0
+  untangle-qemu-run -u -f ~/images/stretch-uvm.qcow2 -k path/to/vmlinuz -i ~/images/dracut.initrd -n eth0 -p 12345
 
 This will spawn an SDL (graphical) window with your qemu VM, and leave
 you with the QEMU monitor in the calling shell.
@@ -95,9 +96,11 @@ internal interface at https://192.168.2.1.
 -------------------------
 
 No need to pass a kernel or initrd, this will automatically find grub
-inside the disk image:
+inside the disk image; you however want to specify the same local port
+you used to start the uvm instance, so that your client ends up on the
+local side of your uvm:
 
-  untangle-qemu-run -f ~/images/stretch-client.qcow2
+  untangle-qemu-run -f ~/images/stretch-client.qcow2 -p 12345
 
 If everything goes well, that client will grab a DHCP address from the
 uvm, and then you're all set.
