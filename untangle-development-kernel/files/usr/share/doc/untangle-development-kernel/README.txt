@@ -3,16 +3,13 @@ A. Typical workflow:
 
 Let's define version="4.9.0-3-untangle-amd64".
 
-Let's also assume you added /usr/share/untangle-development-kernel to
-your PATH (later on, all those tools will be moved to /usr/bin).
-
 1. build a UVM disk image
 -------------------------
 
 This only needs to be run once, when you start using the qemu
 framework:
 
-  untangle-qemu-mkimage-uvm -f ~/images/stretch-uvm.qcow2 -a amd64 -r stretch
+  ut-qemu-mkimage-uvm -f ~/images/stretch-uvm.qcow2 -a amd64 -r stretch
 
 You can later create additional images of course, for instance to test a
 new release.
@@ -45,7 +42,7 @@ It will use those modules you just built, by using -p to point to the
 directory they were installed in. Make extra sure the version you pass
 to -v is indeed the one matching the kernel you built:
 
-  untangle-qemu-mkinitrd -f ~/images/dracut.initrd -p /tmp/modules-$version/lib/modules/$version -v $version
+  ut-qemu-mkinitrd -f ~/images/dracut.initrd -p /tmp/modules-$version/lib/modules/$version -v $version
 
 lsinitrd(1) can be used to inspect or unpack the created file if needed:
 
@@ -55,7 +52,7 @@ lsinitrd(1) can be used to inspect or unpack the created file if needed:
 4. update the modules tree in the UVM disk image
 ------------------------------------------------
 
-  untangle-qemu-update-modules -f ~/images/stretch-uvm.qcow2 -p /tmp/modules-$version/lib/modules/$version -v $version -n eth0
+  ut-qemu-update-modules -f ~/images/stretch-uvm.qcow2 -p /tmp/modules-$version/lib/modules/$version -v $version -n eth0
 
 5. boot a UVM instance
 ----------------------
@@ -64,7 +61,7 @@ You will be using the kernel and initrd produced earlier; you also need
 to specify the LAN interface on your host via -n, and a local port to be
 used as the QEMU socket (default is 12345):
 
-  untangle-qemu-run -u -f ~/images/stretch-uvm.qcow2 -k path/to/vmlinuz -i ~/images/dracut.initrd -n eth0 -p 12345
+  ut-qemu-run -u -f ~/images/stretch-uvm.qcow2 -k path/to/vmlinuz -i ~/images/dracut.initrd -n eth0 -p 12345
 
 This will spawn an SDL (graphical) window with your qemu VM, and leave
 you with the QEMU monitor in the calling shell.
@@ -90,7 +87,7 @@ internal interface at https://192.168.2.1.
 6. create a client disk image
 -----------------------------
 
-  untangle-qemu-mkimage-client -f ~/images/stretch-client.qcow2
+  ut-qemu-mkimage-client -f ~/images/stretch-client.qcow2
 
 7. boot a client instance
 -------------------------
@@ -100,7 +97,7 @@ inside the disk image; you however want to specify the same local port
 you used to start the uvm instance, so that your client ends up on the
 local side of your uvm:
 
-  untangle-qemu-run -f ~/images/stretch-client.qcow2 -p 12345
+  ut-qemu-run -f ~/images/stretch-client.qcow2 -p 12345
 
 If everything goes well, that client will grab a DHCP address from the
 uvm, and then you're all set.
