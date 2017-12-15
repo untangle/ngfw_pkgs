@@ -9,7 +9,7 @@ Let's define version="4.9.0-3-untangle-amd64".
 This only needs to be run once, when you start using the qemu
 framework:
 
-  ut-qemu-mkimage-uvm -f ~/images/stretch-uvm.qcow2 -a amd64 -r stretch
+  ut-qemu-mkimage -u -f ~/images/stretch-uvm.qcow2 -a amd64 -r stretch
 
 You can later create additional images of course, for instance to test a
 new release.
@@ -87,7 +87,7 @@ internal interface at https://192.168.2.1.
 6. create a client disk image
 -----------------------------
 
-  ut-qemu-mkimage-client -f ~/images/stretch-client.qcow2
+  ut-qemu-mkimage -f ~/images/stretch-client.qcow2
 
 7. boot a client instance
 -------------------------

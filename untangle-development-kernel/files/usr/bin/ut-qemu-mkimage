@@ -1,0 +1,68 @@
+#! /bin/bash
+
+set -e
+
+usage() {
+  echo "$0 -f <output-file> [-r <repository>] [-a <arch>] [-u]"
+  exit 1
+}
+
+if [ $(id -u) != 0 ] ; then
+  exec sudo -E $0 $*
+fi
+
+### CLI args
+while getopts uf:r:a: option ; do
+  case "$option" in
+    r) REPOSITORY="$OPTARG" ;;
+    f) IMAGE="$OPTARG" ;;
+    a) ARCH="$OPTARG" ;;
+    u) UVM=1 ;;
+    h|\?) usage ;;
+  esac
+done
+
+## main
+[[ -z "$IMAGE" ]] && usage
+if [[ -e $IMAGE ]] ; then
+  echo "$IMAGE already exists, please remove it manually"
+  exit 1
+fi
+
+[[ -z "$ARCH" ]] && ARCH="amd64"
+[[ -z "$REPOSITORY" ]] && REPOSITORY="stretch"
+
+if [[ -n "$UVM" ]] ; then
+  MIRROR="http://package-server.untangle.int/public/$REPOSITORY"
+  SIZE="10G"
+  HOST="uvm-${REPOSITORY}-${ARCH}"
+  EXTRA_ARGS=(--no-mbr --no-systemd-networkd --no-kernel --debootstrapopts "no-check-gpg components=main,non-free")
+  CUSTOMIZE=(--customize fix-uvm.sh)
+  PACKAGES=(--package untangle-gateway
+            --package postgresql-client
+            --package postgresql
+            --package openjdk-8-jre
+            --package perl-openssl-defaults
+            --package lhasa
+            --package zoo
+            --package libfreeradius-dev)
+else
+  MIRROR="http://deb.debian.org/debian"
+  SIZE="5G"
+  HOST="client-${REPOSITORY}-${ARCH}"
+  EXTRA_ARGS=(--grub)
+fi
+
+vmdebootstrap --arch $ARCH \
+              --distribution $REPOSITORY \
+              --mirror $MIRROR \
+              --image $IMAGE \
+              --size $SIZE \
+              --verbose \
+              --root-password passwd \
+              --hostname $HOST \
+              --sparse \
+              "${CUSTOMIZE[@]}" \
+	      "${EXTRA_ARGS[@]}" \
+	      --package curl \
+	      "${PACKAGES[@]}"
