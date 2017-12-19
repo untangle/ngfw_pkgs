@@ -24,6 +24,7 @@ if [ -z "$2" ] ; then
     # and for each element, map to a temporary interface named new_ethx
     udev_file='/etc/udev/rules.d/70-persistent-net.rules';
     for (( i = 0 ; i < ${#from[@]} ; i++ )); do
+        echo "Moving interface ${from[$i]} to ${to[$i]}"
         perl -i -pe "s/NAME\=\"${from[$i]}\"/NAME\=\"new_${to[$i]}\"/g" $udev_file
     done
     # then remove all the "new_".  We do the intermeidate step to avoid renaming collisions
