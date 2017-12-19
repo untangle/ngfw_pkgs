@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 SERVICE=${DPKG_MAINTSCRIPT_PACKAGE}
 
@@ -15,20 +15,24 @@ if [ -x "/etc/init.d/${SERVICE}" ]; then
   ourInit ${SERVICE} restart
 fi
 
+swapNic() {
+    udev_file='/etc/udev/rules.d/70-persistent-net.rules';
+    echo "Moving interface ${1} to ${2}"
+    perl -i -pe "s/NAME\=\"${1}\"/NAME\=\"new_${2}\"/g" $udev_file
+}
+
+swapNicFinish() {
+    # then remove all the "new_".  We do the intermeidate step to avoid renaming collisions
+    udev_file='/etc/udev/rules.d/70-persistent-net.rules';
+    perl -i -pe "s/new_//g" $udev_file 
+}
+
 # Swap eth1 and eth2 so order is correct on faceplate
 # Do this only on new install of this package
 if [ -z "$2" ] ; then
-    declare -a from=(eth0 eth1 eth2 eth3)
-    declare -a   to=(eth0 eth2 eth1 eth3)
-
-    # and for each element, map to a temporary interface named new_ethx
-    udev_file='/etc/udev/rules.d/70-persistent-net.rules';
-    for (( i = 0 ; i < ${#from[@]} ; i++ )); do
-        echo "Moving interface ${from[$i]} to ${to[$i]}"
-        perl -i -pe "s/NAME\=\"${from[$i]}\"/NAME\=\"new_${to[$i]}\"/g" $udev_file
-    done
-    # then remove all the "new_".  We do the intermeidate step to avoid renaming collisions
-    perl -i -pe "s/new_//g" $udev_file 
+    swapNic eth1 eth2
+    swapNic eth2 eth1
+    swapNicFinish
 fi
 
 exit 0
