@@ -17,7 +17,7 @@ new release.
 Note that you can mount the resulting qcow2 image, to copy files or
 chroot into:
 
-  mount -t ext4 -o loop,offset=$((2048*512)) ~/images/stretch-untangle.qcow2 /mnt
+  mount -t ext4 -o loop,offset=$((2048*512)) ~/images/stretch-uvm.qcow2 /mnt
 
 Make sure you umount before running a qemu instance based on that disk
 image, otherwise you're guaranteed to encounter data corruption.
@@ -30,10 +30,23 @@ modules_install and remember where they are installed. This can
 typically be forced via:
 
   # build and install modules
-  INSTALL_MOD_PATH=/tmp/modules-$version make bzImage modules modules_install
+  INSTALL_MOD_PATH=~/images/modules-$version make bzImage modules modules_install
 
   # create symbols files
-  depmod -b $INSTALL_MOD_PATH -a $version
+  depmod -b ~/images/modules-$version -a $version
+
+For example I do something like this to build the traditional untangle kernel from git:
+  version="4.9.30"
+  cd ~/ngfw_kernels/debian-4.9.0
+  make deps all
+  cp -r ~/ngfw_kernels/debian-4.9.0/linux-4.9.30/debian/build/source_untangle ~/
+  cp ~/ngfw_kernels/debian-4.9.0/linux-4.9.30/debian/build/build_amd64_untangle_amd64/.config ~/source_untangle/.config
+  cd ~/source_untangle
+  make -j32 bzImage
+  make -j32 modules
+  INSTALL_MOD_PATH=~/images/modules-$version make modules_install
+  depmod -b ~/images/modules-$version -a $version
+  cp ./arch/x86/boot/bzImage ~/images/
 
 3. build an initrd suitable for qemu
 ------------------------------------
@@ -42,7 +55,7 @@ It will use those modules you just built, by using -p to point to the
 directory they were installed in. Make extra sure the version you pass
 to -v is indeed the one matching the kernel you built:
 
-  ut-qemu-mkinitrd -f ~/images/dracut.initrd -p /tmp/modules-$version/lib/modules/$version -v $version
+  ut-qemu-mkinitrd -f ~/images/dracut.initrd -p ~/images/modules-$version/lib/modules/$version -v $version
 
 lsinitrd(1) can be used to inspect or unpack the created file if needed:
 
@@ -52,7 +65,7 @@ lsinitrd(1) can be used to inspect or unpack the created file if needed:
 4. update the modules tree in the UVM disk image
 ------------------------------------------------
 
-  ut-qemu-update-modules -f ~/images/stretch-uvm.qcow2 -p /tmp/modules-$version/lib/modules/$version -v $version -n eth0
+  ut-qemu-update-modules -f ~/images/stretch-uvm.qcow2 -p ~/images/modules-$version/lib/modules/$version -v $version
 
 5. boot a UVM instance
 ----------------------
@@ -61,7 +74,7 @@ You will be using the kernel and initrd produced earlier; you also need
 to specify the LAN interface on your host via -n, and a local port to be
 used as the QEMU socket (default is 12345):
 
-  ut-qemu-run -u -f ~/images/stretch-uvm.qcow2 -k path/to/vmlinuz -i ~/images/dracut.initrd -n eth0 -p 12345
+  ut-qemu-run -u -f ~/images/stretch-uvm.qcow2 -k ~/images/bzImage -i ~/images/dracut.initrd -n eth0 -p 12345
 
 This will spawn an SDL (graphical) window with your qemu VM, and leave
 you with the QEMU monitor in the calling shell.
