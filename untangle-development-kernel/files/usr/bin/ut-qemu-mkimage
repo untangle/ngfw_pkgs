@@ -34,7 +34,7 @@ fi
 
 if [[ -n "$UVM" ]] ; then
   MIRROR="http://package-server.untangle.int/public/$REPOSITORY"
-  SIZE="10G"
+  SIZE="20G"
   HOST="uvm-${REPOSITORY}-${ARCH}"
   EXTRA_ARGS=(--no-mbr --no-systemd-networkd --no-kernel --debootstrapopts "no-check-gpg components=main,non-free")
   CUSTOMIZE=(--customize fix-uvm.sh)
