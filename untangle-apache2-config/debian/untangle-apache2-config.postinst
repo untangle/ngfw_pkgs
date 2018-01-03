@@ -105,10 +105,6 @@ A2DISMOD_OPTS="-m -f"
 perl -i -pe 's/^ServerTokens.*/ServerTokens Prod/ ; s/^ServerSignature.*/ServerSignature Off/' /etc/apache2/conf-available/security.conf
 perl -i -pe 's/^TraceEnable.*/TraceEnable Off/' /etc/apache2/conf-available/security.conf
 
-# Make sure the www-data user is a member of the uvmlogin group
-# which allows the mod_python handlers to make calls RPC to the uvm
-usermod -G uvmlogin www-data
-
 # unpack ExtJS
 for tarball in /usr/share/untangle-apache2-config/ext*.tar.gz ; do
   tar -C /var/www -xzf $tarball
