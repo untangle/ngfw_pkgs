@@ -91,15 +91,19 @@ if ! egrep -q 'driftfile /tmp/ntp.drift' /etc/ntp.conf ; then
     sed -e 's|^driftfile\s*.*|driftfile /tmp/ntp.drift|' -i /etc/ntp.conf
 fi
 
+# disable moving of lease file
+if [ -f /etc/dnsmasq.d/dhcp-leasefile ] ; then
+    rm -f /etc/dnsmasq.d/dhcp-leasefile
+fi
 # move dnsmasq.leases file from /var/lib/misc/dnsmasq.leases to /tmp/dnsmasq.leases
-if [ ! -f /etc/dnsmasq.d/dhcp-leasefile ] ; then
-    echo "Moving dnsmasq lease file to /tmp..."
-    echo "dhcp-leasefile=/tmp/dnsmasq.leases" > /etc/dnsmasq.d/dhcp-leasefile
-fi
-if [ ! -L /var/lib/misc/dnsmasq.leases ] ; then
-    rm -f /var/lib/misc/dnsmasq.leases
-    ln -s /tmp/dnsmasq.leases /var/lib/misc/dnsmasq.leases
-fi
+#if [ ! -f /etc/dnsmasq.d/dhcp-leasefile ] ; then
+#    echo "Moving dnsmasq lease file to /tmp..."
+#    echo "dhcp-leasefile=/tmp/dnsmasq.leases" > /etc/dnsmasq.d/dhcp-leasefile
+#fi
+#if [ ! -L /var/lib/misc/dnsmasq.leases ] ; then
+#    rm -f /var/lib/misc/dnsmasq.leases
+#    ln -s /tmp/dnsmasq.leases /var/lib/misc/dnsmasq.leases
+#fi
 
 # remove man cron job from daily & weekly to once a month
 if [ -f /etc/cron.daily/man-db ] ; then
