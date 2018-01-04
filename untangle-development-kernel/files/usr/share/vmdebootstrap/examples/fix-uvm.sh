@@ -13,7 +13,7 @@ kill $(lsof $CHROOT | awk '{print $2}' | sort -u)  2> /dev/null
 # buster.
 version=$(systemd --version | awk '/^systemd / { print $2 }')
 if [[ $version -lt 236 ]] ; then 
-  sed -i -e '/^OnFailure=/d' ${DIR}/lib/systemd/system/initrd-switch-root.service
+  sed -i -e '/^OnFailure=/d' ${CHROOT}/lib/systemd/system/initrd-switch-root.service
 fi
 
 exit 0
