@@ -33,6 +33,9 @@ if [ -z "$2" ] ; then
     swapNic eth1 eth2
     swapNic eth2 eth1
     swapNicFinish
+    swapNic eth2 eth3
+    swapNic eth3 eth2
+    swapNicFinish
 fi
 
 exit 0
