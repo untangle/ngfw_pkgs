@@ -142,10 +142,12 @@ inside the disk image; you however want to specify the same local port
 you used to start the uvm instance, so that your client ends up on the
 local side of your uvm:
 
-  ut-qemu-run -f ~/images/stretch-client.qcow2 -c br10
+  ut-qemu-run -f ~/images/stretch-client.qcow2 -b br10
 
 If everything goes well, that client will grab a DHCP address from the
 uvm, and then you're all set.
+Make sure you specify that it join the "internal" bridge you specified
+when launching the uvm.
 
 
 
