@@ -24,12 +24,12 @@ QEMU_BRIDGE_ACL="/etc/qemu/bridge.conf"
 #############
 while getopts uf:k:i:m:b:c:t:p: option ; do
   case "$option" in
+#    p) QEMU_SOCKET="localhost:$OPTARG" ;;
     k) KERNEL_OPTIONS="-kernel $OPTARG" ;;
     i) INITRD_OPTION="-initrd $OPTARG" ;;
     f) IMAGE="$OPTARG" ;;
     m) MEMORY="$OPTARG" ;;
-#    p) QEMU_SOCKET="localhost:$OPTARG" ;;
-    b) BRIDGE_EXT="$OPTARG" ;;
+    b) BRIDGE="$OPTARG" ;;
     c) BRIDGE_INT="$OPTARG" ;;
     u) UVM=1 ;;
     t) case $OPTARG in
@@ -47,40 +47,29 @@ done
 
 ##################
 # check CLI args
-{ [[ -z "$IMAGE" ]] || [[ -z "$BRIDGE_INT" ]] ; } && usage
+{ [[ -z "$IMAGE" ]] || [[ -z "$BRIDGE" ]] ; } && usage
 
 if [[ -n "$UVM" ]] ; then
   # require additional parameters
-  { [[ -z "$KERNEL_OPTIONS" ]] || [[ -z "$INITRD_OPTION" ]] || [[ -z "$BRIDGE_EXT" ]] || [[ -z "$BRIDGE_INT" ]] ; } && usage
+  { [[ -z "$KERNEL_OPTIONS" ]] || [[ -z "$INITRD_OPTION" ]] || [[ -z "$BRIDGE_INT" ]] ; } && usage
   # default RAM to 2G
   [[ -z "$MEMORY" ]] && MEMORY="2G"
 else
   [[ -z "$MEMORY" ]] && MEMORY="1G"
 fi
 
-# Create the internal bridge if necessary
-if ! ip link ls ${BRIDGE_INT} > /dev/null 2>&1 ; then
+if [[ -n "$UVM" ]] ; then
+
+  # Create the internal bridge if necessary
+  if ! ip link ls ${BRIDGE_INT} > /dev/null 2>&1 ; then
     ip link add $BRIDGE_INT type bridge
     ip link set dev $BRIDGE_INT up
-fi
-
-if [[ -n "$UVM" ]] ; then
-  #####################################################################
-  # setup bridge networking for both external and internal interfaces
-  # in the VM
-
-  # FIXME: support multiples bridges and qemu instances, by supporting
-  #        uvm-bridgeN instead of just uvm-bridge0
-
-  # XXX: Is this still needed?
-  # add it to QEMU ACL
-  # echo "allow $BRIDGE_EXT" >> $QEMU_BRIDGE_ACL
-  # trap "sed -i -e /^allow.$BRIDGE_EXT\$/d $QEMU_BRIDGE_ACL" 0
+  fi
 
   # pass extra kernel parameters
   APPEND_OPTIONS=(-append "root=/dev/vda1 net.ifnames=0 console=tty0 console=ttyS0,115200")
 
-  NETWORK_OPTIONS="-netdev bridge,id=external0,br=$BRIDGE_EXT \
+  NETWORK_OPTIONS="-netdev bridge,id=external0,br=$BRIDGE \
     -device virtio-net-pci,netdev=external0 \
     -netdev bridge,id=internal0,br=$BRIDGE_INT \
     -device virtio-net-pci,netdev=internal0"
@@ -89,7 +78,7 @@ if [[ -n "$UVM" ]] ; then
 #    -netdev socket,id=internal0,listen=$QEMU_SOCKET \
 #    -device virtio-net-pci,netdev=internal0"
 else
-  NETWORK_OPTIONS="-netdev bridge,id=internal0,br=$BRIDGE_INT \
+  NETWORK_OPTIONS="-netdev bridge,id=internal0,br=$BRIDGE \
     -device virtio-net-pci,netdev=internal0"
 
 # Socket is faster and simpler, but is bugged in the stretch version of qemu
