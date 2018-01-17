@@ -45,6 +45,15 @@ class NatRulesManager:
 
         return
 
+    def interfaces_in_same_bridge_group( self, intf1, intf2 ):
+        if intf2['configType'] == 'BRIDGED' and intf2['bridgedTo'] == intf1['interfaceId']:
+            return True;
+        if intf1['configType'] == 'BRIDGED' and intf1['bridgedTo'] == intf2['interfaceId']:
+            return True;
+        if intf1['configType'] == 'BRIDGED' and intf2['configType'] == 'BRIDGED' and intf1['bridgedTo']  == intf2['bridgedTo']:
+            return True;
+        return False;
+
     def write_nat_rules( self, settings, verbosity=0 ):
 
         if settings == None or 'natRules' not in settings or 'list' not in settings['natRules']:
@@ -66,11 +75,8 @@ class NatRulesManager:
             # skip self
             if other_intf['interfaceId'] == intf['interfaceId']:
                 continue;
-
-            # ignore interfaces bridged with interface
-            if other_intf['configType'] == 'BRIDGED' and other_intf['bridgedTo'] == intf['interfaceId']:
-                continue;
-            if intf['configType'] == 'BRIDGED' and intf['bridgedTo'] == other_intf['interfaceId']:
+            # skip interfaces in same zone
+            if self.interfaces_in_same_bridge_group( intf, other_intf ):
                 continue;
             
             self.file.write("# NAT ingress traffic coming from interface %s" % str(intf['interfaceId']) + "\n");
@@ -103,11 +109,8 @@ class NatRulesManager:
             # skip self
             if other_intf['interfaceId'] == intf['interfaceId']:
                 continue;
-
-            # ignore interfaces bridged with interface
-            if other_intf['configType'] == 'BRIDGED' and other_intf['bridgedTo'] == intf['interfaceId']:
-                continue;
-            if intf['configType'] == 'BRIDGED' and intf['bridgedTo'] == other_intf['interfaceId']:
+            # skip interfaces in same zone
+            if self.interfaces_in_same_bridge_group( intf, other_intf ):
                 continue;
             
             self.file.write("# NAT egress traffic exiting interface %s" % str(intf['interfaceId']) + "\n");
