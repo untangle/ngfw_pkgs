@@ -3,7 +3,7 @@
 set -e -x
 
 usage() {
-  echo "$0 -f <image-file> -k <kernel> -i <initrd> -b <external-bridge> -c <internal-bridge> -n [-u] [-m <memory>] [-p <port>] -t (g|graphic|t|terminal)]"
+  echo "$0 -f <image-file> -k <kernel> -i <initrd> -b <external-bridge> -c <internal-bridge> [-u] [-m <memory>] -t (g|graphic|t|terminal)]"
   exit 1
 }
 
@@ -22,7 +22,7 @@ QEMU_BRIDGE_ACL="/etc/qemu/bridge.conf"
 #############
 ## CLI args
 #############
-while getopts uf:k:i:m:b:c:t:p: option ; do
+while getopts uf:k:i:m:b:c:t: option ; do
   case "$option" in
 #    p) QEMU_SOCKET="localhost:$OPTARG" ;;
     k) KERNEL_OPTIONS="-kernel $OPTARG" ;;
