@@ -32,8 +32,8 @@ Then restart or restart networking with:
 service networking restart
 
 You will also need to add an "allow all" line in /etc/qemu/bridge.conf to make sure
-that qemu has access to adding interfaces to bridges on your system
-Alternatively you can manually name only certain bridges like "allow br0"
+that qemu has access to adding interfaces to bridges on your system.
+Alternatively you can manually name only certain bridges like "allow br0".
 
 2. build a UVM disk image
 -------------------------
