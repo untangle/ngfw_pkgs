@@ -51,7 +51,8 @@ done
 
 if [[ -n "$UVM" ]] ; then
   # require additional parameters
-  { [[ -z "$KERNEL_OPTIONS" ]] || [[ -z "$INITRD_OPTION" ]] || [[ -z "$BRIDGE_INT" ]] ; } && usage
+  # { [[ -z "$KERNEL_OPTIONS" ]] || [[ -z "$INITRD_OPTION" ]] || [[ -z "$BRIDGE_INT" ]] ; } && usage
+  { [[ -z "$BRIDGE_INT" ]] ; } && usage
   # default RAM to 2G
   [[ -z "$MEMORY" ]] && MEMORY="2G"
 else
@@ -67,7 +68,9 @@ if [[ -n "$UVM" ]] ; then
   fi
 
   # pass extra kernel parameters
-  APPEND_OPTIONS=(-append "root=/dev/vda1 net.ifnames=0 console=tty0 console=ttyS0,115200")
+  if [[ -n "$KERNEL_OPTIONS" ]] ; then
+    APPEND_OPTIONS=(-append "root=/dev/vda1 net.ifnames=0 console=tty0 console=ttyS0,115200")
+  fi
 
   NETWORK_OPTIONS="-netdev bridge,id=external0,br=$BRIDGE \
     -device virtio-net-pci,netdev=external0 \

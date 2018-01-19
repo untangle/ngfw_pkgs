@@ -102,14 +102,25 @@ lsinitrd(1) can be used to inspect or unpack the created file if needed:
 6. boot a UVM instance
 ----------------------
 
-You will be using the kernel and initrd produced earlier; you also need
-to specify the bridge interface on your host via -i, and a local port to be
-used as the QEMU socket (default is 12345):
+Two options are available, but in both you need to specify the bridge
+interface on your host via -b, and also the name of the "local bridge"
+(between uvm and client) via -c.
+
+a. you use a kernel and initrd you built earlier
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You need to point to the kernel and initrd produced earlier; 
 
   ut-qemu-run -u -f ~/images/stretch-uvm.qcow2 -k ~/images/bzImage -i ~/images/dracut.initrd -b br0 -c br10
 
-This will spawn an SDL (graphical) window with your qemu VM, and leave
-you with the QEMU monitor in the calling shell.
+b. you are fine with the default Untangle kernel
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  ut-qemu-run -u -f ~/images/stretch-uvm.qcow2 -b br0 -c br10
+
+
+In both scenarios, this will spawn an SDL (graphical) window with your
+qemu VM, and leave you with the QEMU monitor in the calling shell.
 
 The monitor is awesome, with a wide array of debugging and introspection
 capabilities (type "help" to list all commands). Quick example:
@@ -138,9 +149,9 @@ internal interface at https://192.168.2.1.
 -------------------------
 
 No need to pass a kernel or initrd, this will automatically find grub
-inside the disk image; you however want to specify the same local port
-you used to start the uvm instance, so that your client ends up on the
-local side of your uvm:
+inside the disk image; you however want to specify the same "local
+brige" you used to start the uvm instance, so that your client ends up
+on the local side of your uvm:
 
   ut-qemu-run -f ~/images/stretch-client.qcow2 -b br10
 
