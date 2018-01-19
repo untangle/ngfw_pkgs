@@ -32,13 +32,24 @@ fi
 [[ -z "$ARCH" ]] && ARCH="amd64"
 [[ -z "$REPOSITORY" ]] && REPOSITORY="stretch"
 
+case $ARCH in
+  # FIXME: if we need to support other distributions than stretch,
+  # we'll need to add extra versions here...
+  # We unfortunately can't pass linux-image-untangle because
+  # debootstrap has trouble resolving virtual packages
+  amd64) KERNEL_PACKAGE="linux-image-4.9.0-5-untangle-amd64" ;;
+  i386) KERNEL_PACKAGE="linux-image-4.9.0-5-untangle-686-pae" ;;
+  *) KERNEL_PACKAGE="libc6" ;; # cheap
+esac
+
 if [[ -n "$UVM" ]] ; then
   MIRROR="http://package-server.untangle.int/public/$REPOSITORY"
   SIZE="20G"
   HOST="uvm-${REPOSITORY}-${ARCH}"
-  EXTRA_ARGS=(--no-mbr --no-systemd-networkd --no-kernel --debootstrapopts "no-check-gpg components=main,non-free")
+  EXTRA_ARGS=(--grub --no-systemd-networkd --kernel-package $KERNEL_PACKAGE --debootstrapopts "no-check-gpg components=main,non-free")
   CUSTOMIZE=(--customize fix-uvm.sh)
-  PACKAGES=(--package untangle-gateway
+  PACKAGES=(--package untangle-kernel-modules-${REPOSITORY}-${ARCH}
+            --package untangle-gateway
             --package postgresql-client
             --package postgresql
             --package openjdk-8-jre
