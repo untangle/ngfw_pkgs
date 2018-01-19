@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set -e -x
+set -e
 
 usage() {
   echo "$0 -f <image-file> -k <kernel> -i <initrd> -b <external-bridge> -c <internal-bridge> [-u] [-m <memory>] -t (g|graphic|t|terminal)]"
@@ -33,8 +33,8 @@ while getopts uf:k:i:m:b:c:t: option ; do
     c) BRIDGE_INT="$OPTARG" ;;
     u) UVM=1 ;;
     t) case $OPTARG in
-	 g|graphic) MODE="-monitor stdio" n;;
-	 t|terminal) MODE="-nographic" ;;
+	 g|graphic) MODE="-monitor stdio" ;;
+	 t|terminal) MODE="-nographic -serial stdio -monitor none" ;;
 	 *) usage ;;
        esac ;;
     h|\?) usage ;;
