@@ -39,11 +39,15 @@ Alternatively you can manually name only certain bridges like "allow br0".
 -------------------------
 
 This only needs to be run once, when you start using the qemu
-framework:
+framework. In addition to the base Debian distribution (jessie or
+stretch) specified via -r, you can also target a specific Untangle
+distribution via -d; right now only "stable" (the default, what's on the
+latest release-* branch) or "testing" (what's on the master branch) are
+supported
 
-  ut-qemu-mkimage -u -f ~/images/stretch-uvm.qcow2 -a amd64 -r stretch
+  ut-qemu-mkimage -u -f ~/images/stretch-uvm.qcow2 -a amd64 -r stretch -d stable
 
-You can later create additional images of course, for instance to test a
+You can of course create additional images at any time, for instance to test a
 new release.
 
 Note that you can mount the resulting qcow2 image, to copy files or
