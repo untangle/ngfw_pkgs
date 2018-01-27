@@ -1,7 +1,6 @@
 #! /bin/sh
 
 set -x
-set -e
 
 # load modules
 modprobe cfg80211
