@@ -909,5 +909,130 @@
         }
     },
     "version": 5,
+    "virtualInterfaces": {
+        "javaClass": "java.util.LinkedList",
+        "list": [
+            {
+                "configType": "DISABLED",
+                "interfaceId": 250,
+                "isVirtualInterface": true,
+                "isVlanInterface": false,
+                "isWan": false,
+                "isWirelessInterface": false,
+                "javaClass": "com.untangle.uvm.network.InterfaceSettings",
+                "name": "OpenVPN",
+                "v4Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v4ConfigType": "AUTO",
+                "v6Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v6ConfigType": "DISABLED",
+                "vrrpAliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                }
+            },
+            {
+                "configType": "DISABLED",
+                "interfaceId": 251,
+                "isVirtualInterface": true,
+                "isVlanInterface": false,
+                "isWan": false,
+                "isWirelessInterface": false,
+                "javaClass": "com.untangle.uvm.network.InterfaceSettings",
+                "name": "L2TP",
+                "v4Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v4ConfigType": "AUTO",
+                "v6Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v6ConfigType": "DISABLED",
+                "vrrpAliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                }
+            },
+            {
+                "configType": "DISABLED",
+                "interfaceId": 252,
+                "isVirtualInterface": true,
+                "isVlanInterface": false,
+                "isWan": false,
+                "isWirelessInterface": false,
+                "javaClass": "com.untangle.uvm.network.InterfaceSettings",
+                "name": "XAUTH",
+                "v4Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v4ConfigType": "AUTO",
+                "v6Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v6ConfigType": "DISABLED",
+                "vrrpAliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                }
+            },
+            {
+                "configType": "DISABLED",
+                "interfaceId": 253,
+                "isVirtualInterface": true,
+                "isVlanInterface": false,
+                "isWan": false,
+                "isWirelessInterface": false,
+                "javaClass": "com.untangle.uvm.network.InterfaceSettings",
+                "name": "GRE",
+                "v4Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v4ConfigType": "AUTO",
+                "v6Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v6ConfigType": "DISABLED",
+                "vrrpAliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                }
+            },
+            {
+                "configType": "DISABLED",
+                "interfaceId": 200,
+                "isVirtualInterface": true,
+                "isVlanInterface": false,
+                "isWan": true,
+                "isWirelessInterface": false,
+                "javaClass": "com.untangle.uvm.network.InterfaceSettings",
+                "name": "tunnel-ExpressVPN",
+                "v4Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v4ConfigType": "AUTO",
+                "v6Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v6ConfigType": "DISABLED",
+                "vrrpAliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                }
+            }
+        ]
+    },
     "vlansEnabled": true
 }
