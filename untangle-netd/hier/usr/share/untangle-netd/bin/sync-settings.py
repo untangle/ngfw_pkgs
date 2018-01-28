@@ -73,16 +73,26 @@ def printUsage():
 def checkSettings( settings ):
     if settings is None:
         raise Exception("Invalid Settings: null")
+
     if 'interfaces' not in settings:
         raise Exception("Invalid Settings: missing interfaces")
     if 'list' not in settings['interfaces']:
         raise Exception("Invalid Settings: missing interfaces list")
     interfaces = settings['interfaces']['list']
-
     for intf in interfaces:
         for key in ['interfaceId', 'name', 'systemDev', 'symbolicDev', 'physicalDev', 'configType']:
             if key not in intf:
                 raise Exception("Invalid Interface Settings: missing key %s" % key)
+
+    if 'virtualInterfaces' not in settings:
+        raise Exception("Invalid Settings: missing virtualInterfaces")
+    if 'list' not in settings['virtualInterfaces']:
+        raise Exception("Invalid Settings: missing virtualInterfaces list")
+    virtualInterfaces = settings['virtualInterfaces']['list']
+    for intf in virtualInterfaces:
+        for key in ['interfaceId', 'name', 'configType']:
+            if key not in intf:
+                raise Exception("Invalid Virtual Interface Settings: missing key %s" % key)
             
 
 # This removes/disable hidden fields in the interface settings so we are certain they don't apply
@@ -97,7 +107,7 @@ def checkSettings( settings ):
 def cleanupSettings( settings ):
     interfaces = settings['interfaces']['list']
     virtualInterfaces = settings['virtualInterfaces']['list']
-    
+
     # Remove disabled interfaces from regular interfaces list
     # Save them in another field in case anyone needs them
     disabled_interfaces = [ intf for intf in interfaces if intf.get('configType') == 'DISABLED' ]
