@@ -3,7 +3,11 @@
 set -e
 
 usage() {
-  echo "$0 -f <output-file> [-r <repository>] [-d distribution] [-a <arch>] [-u]"
+  echo "$0 -f <output-file> [-r <repository>] [-d distribution] [-a <arch>] [-u] [-s size]"
+  echo "-r repository   : jessie or stretch"
+  echo "-d distribution : stable or testing (Untangle's definitions, not Debian's)"
+  echo "-u              : installs untangle-gateway and all its dependencies"
+  echo "-s size         : size of the image, for instance 20G"
   exit 1
 }
 
@@ -12,12 +16,13 @@ if [ $(id -u) != 0 ] ; then
 fi
 
 ### CLI args
-while getopts uf:r:d:a: option ; do
+while getopts uf:r:d:a:s: option ; do
   case "$option" in
     r) REPOSITORY="$OPTARG" ;;
     d) DISTRIBUTION="$OPTARG" ;;
     f) IMAGE="$OPTARG" ;;
     a) ARCH="$OPTARG" ;;
+    s) SIZE="$OPTARG" ;;
     u) UVM=1 ;;
     h|\?) usage ;;
   esac
@@ -68,12 +73,12 @@ if [[ -n "$UVM" ]] ; then
   esac
 
   MIRROR="http://package-server.untangle.int/public/$REPOSITORY"
-  SIZE="20G"
+  SIZE="${SIZE:-20G}"
   HOST="uvm-${REPOSITORY}-${ARCH}"
   EXTRA_ARGS=(--grub --no-systemd-networkd --kernel-package $KERNEL_PACKAGE --debootstrapopts "variant=minbase no-check-gpg components=main,non-free")
 else
   MIRROR="http://deb.debian.org/debian"
-  SIZE="5G"
+  SIZE="${SIZE:-5G}"
   HOST="client-${REPOSITORY}-${ARCH}"
   EXTRA_ARGS=(--grub)
 fi
