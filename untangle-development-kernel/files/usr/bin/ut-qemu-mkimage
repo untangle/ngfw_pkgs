@@ -53,6 +53,8 @@ if [[ -n "$UVM" ]] ; then
     stretch)
       KERNEL_VERSION="4.9.0-5"
       CUSTOMIZE=(--customize fix-uvm.sh)
+      # FIXME: manually maintaining a list of or'ed dependencies is
+      # not sustainable in the longer run
       PACKAGES+=(--package untangle-kernel-modules-${REPOSITORY}-${ARCH}
 		--package untangle-gateway
 		--package postgresql-client
@@ -62,6 +64,8 @@ if [[ -n "$UVM" ]] ; then
 		--package lhasa
 		--package zoo
 		--package isc-dhcp-client
+		--package xfce4-session
+		--package dbus-x11
 		--package libfreeradius-dev) ;;
   esac
 
