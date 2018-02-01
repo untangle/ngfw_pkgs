@@ -3,11 +3,12 @@
 set -e
 
 usage() {
-  echo "$0 -f <output-file> [-r <repository>] [-d distribution] [-a <arch>] [-u] [-s size]"
-  echo "-r repository   : jessie or stretch"
-  echo "-d distribution : stable or testing (Untangle's definitions, not Debian's)"
-  echo "-u              : installs untangle-gateway and all its dependencies"
-  echo "-s size         : size of the image, for instance 20G"
+  echo "$0 -f <output-file> [-r <repository>] [-d distribution] [-a <arch>] [-u] [-s size] [-p package[,package]]"
+  echo "-r repository        : jessie or stretch"
+  echo "-d distribution      : stable or testing (Untangle's definitions, not Debian's)"
+  echo "-u                   : installs untangle-gateway and all its dependencies"
+  echo "-s size              : size of the image, for instance 20G"
+  echo "-p package[,package] : also install those extra package, for instance -p emacs,tmux"
   exit 1
 }
 
@@ -16,13 +17,15 @@ if [ $(id -u) != 0 ] ; then
 fi
 
 ### CLI args
-while getopts uf:r:d:a:s: option ; do
+typeset -a PACKAGES
+while getopts uf:r:d:a:s:p: option ; do
   case "$option" in
     r) REPOSITORY="$OPTARG" ;;
     d) DISTRIBUTION="$OPTARG" ;;
     f) IMAGE="$OPTARG" ;;
     a) ARCH="$OPTARG" ;;
     s) SIZE="$OPTARG" ;;
+    p) PACKAGES=(${OPTARG//,/ }) ;;
     u) UVM=1 ;;
     h|\?) usage ;;
   esac
@@ -46,11 +49,11 @@ if [[ -n "$UVM" ]] ; then
     jessie)
       KERNEL_VERSION="3.16.0-4"
       CUSTOMIZE=(--customize install-uvm.sh)
-      PACKAGES=(--package sysvinit-core) ;;
+      PACKAGES+=(--package sysvinit-core) ;;
     stretch)
       KERNEL_VERSION="4.9.0-5"
       CUSTOMIZE=(--customize fix-uvm.sh)
-      PACKAGES=(--package untangle-kernel-modules-${REPOSITORY}-${ARCH}
+      PACKAGES+=(--package untangle-kernel-modules-${REPOSITORY}-${ARCH}
 		--package untangle-gateway
 		--package postgresql-client
 		--package postgresql
@@ -81,6 +84,7 @@ else
   SIZE="${SIZE:-5G}"
   HOST="client-${REPOSITORY}-${ARCH}"
   EXTRA_ARGS=(--grub)
+  PACKAGES+=(--package curl)
 fi
 
 vmdebootstrap --arch $ARCH \
@@ -94,5 +98,4 @@ vmdebootstrap --arch $ARCH \
               --sparse \
               "${CUSTOMIZE[@]}" \
 	      "${EXTRA_ARGS[@]}" \
-	      --package curl \
 	      "${PACKAGES[@]}"
