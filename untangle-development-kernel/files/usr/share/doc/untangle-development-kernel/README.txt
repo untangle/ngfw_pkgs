@@ -1,3 +1,17 @@
+WARNING:
+========
+
+You need to install this package from an Untangle mirror: calling
+files/usr/bin/ut-qemu-* from a git clone is unsupported, especially for
+creating images.
+
+To install on stretch, you can for instance do:
+
+  echo deb http://package-server.untangle.int/public/stretch current main non-free | sudo tee /etc/apt/sources.list.d/stretch-current.list
+  apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 735A9E18E8F62EDF413592460B9D6AE3627BF103
+  sudo apt update
+  sudo apt install untangle-development-kernel
+
 A. Typical workflow:
 ====================
 
