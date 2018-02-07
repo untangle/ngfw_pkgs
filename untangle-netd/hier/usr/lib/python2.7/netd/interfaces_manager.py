@@ -313,7 +313,7 @@ class InterfacesManager:
         file.write("\n");
         
         file.write("# Ignore and broadcast sessions as they will all share the same conntrack entry so the connmark cant be used for src/dst intf" + "\n");
-        file.write("# These packets will still be marked in the mark-src-intf and mark-dst-intf chains later");
+        file.write("# These packets will still be marked in the mark-src-intf and mark-dst-intf chains later\n");
         file.write("${IPTABLES} -t mangle -A restore-interface-marks -m addrtype --dst-type broadcast  -j RETURN -m comment --comment \"Do not mark broadcast packets\"" + "\n");
         file.write("${IPTABLES} -t mangle -A restore-interface-marks -m addrtype --src-type broadcast  -j RETURN -m comment --comment \"Do not mark broadcast packets\"" + "\n");
         file.write("\n");
