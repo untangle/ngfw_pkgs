@@ -122,7 +122,7 @@
     "hostName": "untangle",
     "httpPort": 80,
     "httpsPort": 443,
-    "inputFilterRules": {
+    "accessRules": {
         "javaClass": "java.util.LinkedList",
         "list": [
             {
