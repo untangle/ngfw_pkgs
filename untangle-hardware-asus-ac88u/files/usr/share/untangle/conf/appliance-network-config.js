@@ -122,7 +122,7 @@
     "domainName": "example.com",
     "dynamicDnsServiceEnabled": false,
     "enableSipNatHelper": false,
-    "forwardFilterRules": {
+    "filterRules": {
         "javaClass": "java.util.LinkedList",
         "list": []
     },
