@@ -1,0 +1,11 @@
+#!/bin/sh
+
+pidof chromium | sed -e 's/\s\+/\n/g' |
+    while read pid ; do
+        AGE=$(($(date +%s) - $(date +%s -r "/proc/$pid/cmdline")))
+        # if age of process > 12 hours
+        if [ ! -z "$AGE" ] && [ $AGE -gt 43200 ] ; then
+            # echo "Killing chromium PID: $pid"
+            kill $pid
+        fi
+    done
