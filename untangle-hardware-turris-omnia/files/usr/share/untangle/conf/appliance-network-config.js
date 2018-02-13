@@ -624,7 +624,7 @@
             },
             {
                 "addressed": false,
-                "bridged": disabled,
+                "bridged": false,
                 "bridgedTo": 2,
                 "configType": "DISABLED",
                 "dhcpDnsOverride": "",
@@ -668,6 +668,8 @@
                     "list": []
                 },
                 "vrrpEnabled": false,
+                "wirelessPassword": "",
+                "wirelessSsid": ""
             },
             {
                 "addressed": false,
