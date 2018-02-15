@@ -98,6 +98,6 @@ modprobe virtio-pci
 # start the VM
 kvm -enable-kvm \
     -m $MEMORY $MODE $KERNEL_OPTIONS "${APPEND_OPTIONS[@]}" $INITRD_OPTION \
-    -drive if=none,format=raw,id=hd0,file=$IMAGE \
+    -drive if=none,id=hd0,file=$IMAGE \
     -device driver=virtio-blk-pci,id=drive0,drive=hd0 \
     $NETWORK_OPTIONS
