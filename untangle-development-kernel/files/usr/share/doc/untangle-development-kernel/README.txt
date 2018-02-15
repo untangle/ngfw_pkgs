@@ -67,7 +67,12 @@ new release.
 Note that you can mount the resulting qcow2 image, to copy files or
 chroot into:
 
-  mount -t ext4 -o loop,offset=$((2048*512)) ~/images/stretch-uvm.qcow2 /mnt
+  modprobe nbd max_parts=16
+  qemu-nbd -c /dev/nbd0 ~/images/stretch-uvm.qcow2
+  mount /dev/nbd0p1 /mnt
+  [...]
+  umount /mnt
+  qemu-nbd -d /dev/nbd0
 
 Make sure you umount before running a qemu instance based on that disk
 image, otherwise you're guaranteed to encounter data corruption.
