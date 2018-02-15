@@ -47,12 +47,11 @@ done
 
 ##################
 # check CLI args
-{ [[ -z "$IMAGE" ]] || [[ -z "$BRIDGE" ]] ; } && usage
+{ [[ -z "$IMAGE" ]] || [[ -z "$BRIDGE_INT" ]] ; } && usage
 
 if [[ -n "$UVM" ]] ; then
   # require additional parameters
-  # { [[ -z "$KERNEL_OPTIONS" ]] || [[ -z "$INITRD_OPTION" ]] || [[ -z "$BRIDGE_INT" ]] ; } && usage
-  { [[ -z "$BRIDGE_INT" ]] ; } && usage
+  { [[ -z "$BRIDGE" ]] ; } && usage
   # default RAM to 2G
   [[ -z "$MEMORY" ]] && MEMORY="2G"
 else
@@ -60,7 +59,6 @@ else
 fi
 
 if [[ -n "$UVM" ]] ; then
-
   # Create the internal bridge if necessary
   if ! ip link ls ${BRIDGE_INT} > /dev/null 2>&1 ; then
     ip link add $BRIDGE_INT type bridge
@@ -77,16 +75,18 @@ if [[ -n "$UVM" ]] ; then
     -netdev bridge,id=internal0,br=$BRIDGE_INT \
     -device virtio-net-pci,netdev=internal0"
 
-# Socket is faster and simpler, but is bugged in the stretch version of qemu
-#    -netdev socket,id=internal0,listen=$QEMU_SOCKET \
-#    -device virtio-net-pci,netdev=internal0"
+  # Socket is faster and simpler, but is bugged in the stretch version
+  # of qemu. We can switch back to it when qemu >= 2.10
+  #    -netdev socket,id=internal0,listen=$QEMU_SOCKET \
+  #    -device virtio-net-pci,netdev=internal0"
 else
   NETWORK_OPTIONS="-netdev bridge,id=internal0,br=$BRIDGE \
     -device virtio-net-pci,netdev=internal0"
 
-# Socket is faster and simpler, but is bugged in the stretch version of qemu
-#  NETWORK_OPTIONS="-netdev socket,id=internal0,connect=$QEMU_SOCKET \
-#    -device virtio-net-pci,netdev=internal0"
+  # Socket is faster and simpler, but is bugged in the stretch version
+  # of qemu. We can switch back to it when qemu >= 2.10
+  #  NETWORK_OPTIONS="-netdev socket,id=internal0,connect=$QEMU_SOCKET \
+  #    -device virtio-net-pci,netdev=internal0"
 fi
 
 ########################
