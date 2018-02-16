@@ -64,19 +64,6 @@ supported
 You can of course create additional images at any time, for instance to test a
 new release.
 
-Note that you can mount the resulting qcow2 image, to copy files or
-chroot into:
-
-  modprobe nbd max_parts=16
-  qemu-nbd -c /dev/nbd0 ~/images/stretch-uvm.qcow2
-  mount /dev/nbd0p1 /mnt
-  [...]
-  umount /mnt
-  qemu-nbd -d /dev/nbd0
-
-Make sure you umount before running a qemu instance based on that disk
-image, otherwise you're guaranteed to encounter data corruption.
-
 3. build a kernel image and associated modules
 ----------------------------------------------
 
@@ -91,7 +78,7 @@ typically be forced via:
   depmod -b ~/images/modules-$version -a $version
 
 For example I do something like this to build the traditional untangle kernel from git:
-  version="4.9.30"
+  upstream_version="4.9.30"
   cd ~/ngfw_kernels/debian-4.9.0
   make deps all
   cp -r ~/ngfw_kernels/debian-4.9.0/linux-4.9.30/debian/build/source_untangle ~/
@@ -99,8 +86,8 @@ For example I do something like this to build the traditional untangle kernel fr
   cd ~/source_untangle
   make -j32 bzImage
   make -j32 modules
-  INSTALL_MOD_PATH=~/images/modules-$version make modules_install
-  depmod -b ~/images/modules-$version -a $version
+  INSTALL_MOD_PATH=~/images/modules-$upstream_version make modules_install
+  depmod -b ~/images/modules-$upstream_version -a $upstream_version
   cp ./arch/x86/boot/bzImage ~/images/
 
 4. build an initrd suitable for qemu
@@ -140,7 +127,6 @@ b. you are fine with the default Untangle kernel
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ut-qemu-run -u -f ~/images/stretch-uvm.qcow2 -b br0 -c br10
-
 
 In both scenarios, this will spawn an SDL (graphical) window with your
 qemu VM, and leave you with the QEMU monitor in the calling shell.
@@ -183,9 +169,43 @@ uvm, and then you're all set.
 Make sure you specify that it join the "internal" bridge you specified
 when launching the uvm.
 
+B. Manage disk images
+=====================
 
+1. mount
+--------
 
-B. Network setup:
+You can mount the qcow2 image, for instance to copy files or chroot
+into:
+
+  modprobe nbd max_parts=16
+  qemu-nbd -c /dev/nbd0 ~/images/stretch-uvm.qcow2
+  mount /dev/nbd0p1 /mnt
+  [...]
+  umount /mnt
+  qemu-nbd -d /dev/nbd0
+
+Make sure you umount before running a qemu instance based on that disk
+image, otherwise you're guaranteed to encounter data corruption.
+
+2. snapshots
+------------
+
+You can also create and restore snapshots on qcow2 images:
+
+  # create a snapshot named "good-state"
+  qemu-img snapshot -c good-state ~/images/image.qcow2
+
+  # run a VM, potentially doing somethign dangerious in it
+  ut-qemu-run [...] -f ~/images/image.qcow2 [...]
+
+  # look at existing snapshots
+  qemu-img info ~/images/image.qcow2
+
+  # restore "good-state"
+  qemu-img snapshot -a good-state ~/images/image.qcow2
+
+C. Network setup:
 =================
 
    (internet)
