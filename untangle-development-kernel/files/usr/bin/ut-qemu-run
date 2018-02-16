@@ -3,7 +3,7 @@
 set -e
 
 usage() {
-  echo "$0 -f <image-file> -k <kernel> -i <initrd> -b <external-bridge> -c <internal-bridge> [-u] [-m <memory>] -t (g|graphic|t|terminal)]"
+  echo "$0 -f <image-file> [-k <kernel>] [-i <initrd>] [-b <external-bridge>] -c <internal-bridge> [-a arch] [-u] [-m <memory>] -t (g|graphic|t|terminal)]"
   exit 1
 }
 
@@ -22,11 +22,12 @@ QEMU_BRIDGE_ACL="/etc/qemu/bridge.conf"
 #############
 ## CLI args
 #############
-while getopts uf:k:i:m:b:c:t: option ; do
+while getopts ua:f:k:i:m:b:c:t: option ; do
   case "$option" in
 #    p) QEMU_SOCKET="localhost:$OPTARG" ;;
     k) KERNEL_OPTIONS="-kernel $OPTARG" ;;
     i) INITRD_OPTION="-initrd $OPTARG" ;;
+    a) ARCH="$OPTARG" ;;
     f) IMAGE="$OPTARG" ;;
     m) MEMORY="$OPTARG" ;;
     b) BRIDGE="$OPTARG" ;;
@@ -47,6 +48,7 @@ done
 
 ##################
 # check CLI args
+[[ -z "$ARCH" ]] && ARCH="amd64"
 { [[ -z "$IMAGE" ]] || [[ -z "$BRIDGE_INT" ]] ; } && usage
 
 if [[ -n "$UVM" ]] ; then
@@ -96,7 +98,28 @@ modprobe virtio-pci
 
 ########################
 # start the VM
-kvm -enable-kvm \
+
+case $ARCH in
+  amd64) QEMU_ARCH="x86_64" ;;
+  i386) QEMU_ARCH="i386" ;;
+  armel)
+    QEMU_ARCH="arm"
+    MACHINE=(-machine vexpress-a9 -cpu cortex-a9) ;;
+  armhf)
+    QEMU_ARCH="arm"
+    MACHINE=(-machine vexpress-a15 -cpu cortex-a15) ;;
+  arm64)
+    QEMU_ARCH="aarch64"
+    MACHINE=(-machine virt -cpu cortex-a57) ;;
+esac
+
+if [[ $(uname -m) == "$QEMU_ARCH" ]] ; then
+  ENABLE_KVM="-enable-kvm"
+fi
+
+qemu-system-$QEMU_ARCH \
+    ${MACHINE[@]} \
+    $ENABLE_KVM \
     -m $MEMORY $MODE $KERNEL_OPTIONS "${APPEND_OPTIONS[@]}" $INITRD_OPTION \
     -drive if=none,id=hd0,file=$IMAGE \
     -device driver=virtio-blk-pci,id=drive0,drive=hd0 \

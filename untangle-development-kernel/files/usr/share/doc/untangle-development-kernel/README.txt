@@ -59,7 +59,7 @@ distribution via -d; right now only "stable" (the default, what's on the
 latest release-* branch) or "testing" (what's on the master branch) are
 supported
 
-  ut-qemu-mkimage -u -f ~/images/stretch-uvm.qcow2 -a amd64 -r stretch -d stable
+  ut-qemu-mkimage -u -f ~/images/stretch-uvm.qcow2 -a amd64 -r stretch -d stable -a amd64
 
 You can of course create additional images at any time, for instance to test a
 new release.
@@ -121,12 +121,12 @@ a. you use a kernel and initrd you built earlier
 
 You need to point to the kernel and initrd produced earlier; 
 
-  ut-qemu-run -u -f ~/images/stretch-uvm.qcow2 -k ~/images/bzImage -i ~/images/dracut.initrd -b br0 -c br10
+  ut-qemu-run -u -a amd64 -f ~/images/stretch-uvm.qcow2 -k ~/images/bzImage -i ~/images/dracut.initrd -b br0 -c br10
 
 b. you are fine with the default Untangle kernel
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ut-qemu-run -u -f ~/images/stretch-uvm.qcow2 -b br0 -c br10
+  ut-qemu-run -u -a amd64 -f ~/images/stretch-uvm.qcow2 -b br0 -c br10
 
 In both scenarios, this will spawn an SDL (graphical) window with your
 qemu VM, and leave you with the QEMU monitor in the calling shell.
