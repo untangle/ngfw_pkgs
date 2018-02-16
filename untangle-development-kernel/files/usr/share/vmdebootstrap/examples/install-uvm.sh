@@ -25,6 +25,9 @@ done
 # re-enable starting of services
 rm ${CHROOT}/usr/sbin/policy-rc.d
 
+# force vda1 in /etc/fstab
+perl -i -pe 's|.*\s/\s|/dev/vda1 / |' /etc/fstab
+
 # kill leftover processes (gpg-agent for instance)
 kill $(lsof $CHROOT | awk '{print $2}' | sort -u)  2> /dev/null
 
