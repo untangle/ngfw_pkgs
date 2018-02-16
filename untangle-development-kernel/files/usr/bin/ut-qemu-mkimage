@@ -6,6 +6,7 @@ usage() {
   echo "$0 -f <output-file> [-r <repository>] [-d distribution] [-a <arch>] [-u] [-s size] [-p package[,package]]"
   echo "-r repository        : jessie or stretch"
   echo "-d distribution      : stable or testing (Untangle's definitions, not Debian's)"
+  echo "-a architecture      : amd64, i386, armel, armhf, arm64, etc"
   echo "-u                   : installs untangle-gateway and all its dependencies"
   echo "-s size              : size of the image, for instance 20G"
   echo "-p package[,package] : also install those extra package, for instance -p emacs,tmux"
