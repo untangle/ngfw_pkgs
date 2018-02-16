@@ -49,11 +49,11 @@ done
 ##################
 # check CLI args
 [[ -z "$ARCH" ]] && ARCH="amd64"
-{ [[ -z "$IMAGE" ]] || [[ -z "$BRIDGE_INT" ]] ; } && usage
+{ [[ -z "$IMAGE" ]] ; } && usage
 
 if [[ -n "$UVM" ]] ; then
   # require additional parameters
-  { [[ -z "$BRIDGE" ]] ; } && usage
+  { [[ -z "$BRIDGE" ]] || [[ -z "$BRIDGE_INT" ]] ; } && usage
   # default RAM to 2G
   [[ -z "$MEMORY" ]] && MEMORY="2G"
 else
