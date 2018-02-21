@@ -57,6 +57,6 @@ untangle-snort-config                   jessie,stretch
 untangle-spamassassin-update            jessie,stretch
 untangle-system-config                  jessie,stretch
 untangle-apache2-config                 jessie,stretch
-untangle-netd			     	jessie,stretch
+untangle-sync-settings		     	jessie,stretch
 untangle-nflogd			     	jessie,stretch
 untangle-geoip-database                 jessie,stretch

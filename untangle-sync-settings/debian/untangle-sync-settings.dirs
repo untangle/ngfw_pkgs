@@ -1,0 +1,7 @@
+etc/untangle/
+etc/untangle/pre-network-hook.d
+etc/untangle/post-network-hook.d
+etc/untangle/iptables-rules.d
+usr/bin
+usr/share/untangle-netd/bin
+var/lib/untangle-netd

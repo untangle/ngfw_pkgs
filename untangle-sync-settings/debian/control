@@ -1,4 +1,4 @@
-Source: untangle-netd
+Source: untangle-sync-settings
 Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb.com>
@@ -6,8 +6,11 @@ Uploaders: Untangle Buildbot <buildbot@untangle.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.8.0
 
-Package: untangle-netd
+Package: untangle-sync-settings
 Architecture: all
+Conflicts: untangle-netd
+Replaces: untangle-netd
+Provides: untangle-netd
 Depends: bridge-utils,
          crda,
          dash,
@@ -25,6 +28,7 @@ Depends: bridge-utils,
          libnfnetlink0 (>= 1.0.1),
          ndisc6,
          psmisc,
+	 python3,
          radvd,
          vlan,
          wireless-regdb,

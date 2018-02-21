@@ -15,4 +15,7 @@ update-rc.d -f miniupnpd disable
 # 13.0 conversion (remove old log file)
 rm -f /var/log/uvm/iptables.log
 
+# 14.0 conversion
+cp -r /etc/untangle-netd/* /etc/untangle/
+
 exit 0
