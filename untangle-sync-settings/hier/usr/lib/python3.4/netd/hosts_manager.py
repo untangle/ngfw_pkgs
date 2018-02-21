@@ -62,13 +62,13 @@ ff02::3 ip6-allhosts
         file.flush()
         file.close()
 
-        if verbosity > 0: print "HostsManager: Wrote %s" % filename
+        if verbosity > 0: print("HostsManager: Wrote %s" % filename)
         return
 
     def write_hostname_file( self, settings, prefix, verbosity ):
 
         if 'hostName' not in settings:
-            print "ERROR: Missing hostname setting"
+            print("ERROR: Missing hostname setting")
             return
 
         fqdnHostname = settings['hostName']
@@ -88,13 +88,13 @@ ff02::3 ip6-allhosts
         # also set the hostname using '/bin/hostname'
         os.system("/bin/hostname %s" % fqdnHostname)
 
-        if verbosity > 0: print "HostsManager: Wrote %s" % filename
+        if verbosity > 0: print("HostsManager: Wrote %s" % filename)
         return
 
     def write_mailname_file( self, settings, prefix, verbosity ):
 
         if 'domainName' not in settings:
-            print "ERROR: Missing domainName setting"
+            print("ERROR: Missing domainName setting")
             return
 
         filename = prefix + self.mailnameFile
@@ -108,13 +108,13 @@ ff02::3 ip6-allhosts
         file.flush()
         file.close()
 
-        if verbosity > 0: print "HostsManager: Wrote %s" % filename
+        if verbosity > 0: print("HostsManager: Wrote %s" % filename)
         return
 
     def write_resolve_file( self, settings, prefix, verbosity ):
 
         if 'hostName' not in settings:
-            print "ERROR: Missing hostname setting"
+            print("ERROR: Missing hostname setting")
             return
 
         filename = prefix + self.resolvFile
@@ -135,12 +135,12 @@ ff02::3 ip6-allhosts
         file.flush()
         file.close()
 
-        if verbosity > 0: print "HostsManager: Wrote %s" % filename
+        if verbosity > 0: print("HostsManager: Wrote %s" % filename)
         return
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
 
-        if verbosity > 1: print "HostsManager: sync_settings()"
+        if verbosity > 1: print("HostsManager: sync_settings()")
         
         self.write_hostname_file( settings, prefix, verbosity )
         self.write_hosts_file( settings, prefix, verbosity )

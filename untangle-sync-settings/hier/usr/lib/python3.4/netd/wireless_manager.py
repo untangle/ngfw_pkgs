@@ -53,18 +53,18 @@ class WirelessManager:
                 break
 
         if capab_line == None:
-            print "Unable to determine capabilities: %s\n" % wlan_dev
+            print("Unable to determine capabilities: %s\n" % wlan_dev)
             return set_fallback_ht_capab( conf, channel )
 
         segments = line.split()
         if len(segments) != 2:
-            print "Unknown capabilities: %s\n" % line
+            print("Unknown capabilities: %s\n" % line)
             return set_fallback_ht_capab( conf, channel )
         capab_int = None
         try:
             capab_int = int(segments[1],16)
-        except Exception,exc:
-            print "Unknown capabilities: %s\n" % line
+        except Exception as exc:
+            print("Unknown capabilities: %s\n" % line)
             traceback.print_exc(exc)
             return set_fallback_ht_capab( conf, channel )
 
@@ -116,20 +116,20 @@ class WirelessManager:
                 break
 
         if capab_line == None:
-            print "Unable to determine VHT capabilitiese: %s\n" % wlan_dev 
+            print("Unable to determine VHT capabilitiese: %s\n" % wlan_dev )
             return set_fallback_ht_capab( conf, channel )
 
         segments = line.split()
         if len(segments) != 3:
-            print "Unknown VHT capabilities: %s\n" % line
+            print("Unknown VHT capabilities: %s\n" % line)
             return set_fallback_ht_capab( conf, channel )
         capab_str = segments[2]
         capab_str = re.sub('[\(\):]','',capab_str)
         capab_int = None
         try:
             capab_int = int(capab_str,16)
-        except Exception,exc:
-            print "Unknown VHT capabilities: %s\n" % line
+        except Exception as exc:
+            print("Unknown VHT capabilities: %s\n" % line)
             traceback.print_exc(exc)
             return set_fallback_ht_capab( conf, channel )
 
@@ -205,8 +205,8 @@ class WirelessManager:
                 self.set_vht_capab( conf, iw_info, channel, wlan_dev )
 
             return conf
-        except Exception,exc:
-            print "Unexpected error:", sys.exc_info()[0]
+        except Exception as exc:
+            print("Unexpected error:", sys.exc_info()[0])
             traceback.print_exc(exc)
             return None
 
@@ -235,7 +235,7 @@ class WirelessManager:
                 if intf.get('wirelessPassword') != None:
                     passwordLen = len(intf.get('wirelessPassword'))
                 if passwordLen < 8:
-                    print "WirelessManager: Ignoring " + intf.get('systemDev') + " because password is too short (" + str(passwordLen) + ")"
+                    print("WirelessManager: Ignoring " + intf.get('systemDev') + " because password is too short (" + str(passwordLen) + ")")
                     continue;
                     
                 self.hasWireless = True
@@ -289,7 +289,7 @@ class WirelessManager:
                 self.hostapdConfFile.flush()
                 self.hostapdConfFile.close()
 
-                print "WirelessManager: Wrote " + filename
+                print("WirelessManager: Wrote " + filename)
 
                 configFilesString += self.hostapdConfFilename + "-" + intf.get('systemDev') + " "
 
@@ -302,7 +302,7 @@ class WirelessManager:
         self.hostapdDefaultFile.flush()
         self.hostapdDefaultFile.close()
 
-        print "WirelessManager: Wrote " + defaultFilename
+        print("WirelessManager: Wrote " + defaultFilename)
 
 
     def write_crda_file( self, settings, prefix="", verbosity=0 ):
@@ -320,7 +320,7 @@ class WirelessManager:
         self.crdaDefaultFile.flush()
         self.crdaDefaultFile.close()
 
-        print "WirelessManager: Wrote " + crdaFilename
+        print("WirelessManager: Wrote " + crdaFilename)
 
     def write_network_hook( self, settings, prefix="", verbosity=0 ):
         restartFilename = prefix + self.hostapdRestartFilename
@@ -351,7 +351,7 @@ class WirelessManager:
 
             os.system("chmod a+x %s" % restartFilename)
 
-            print "WirelessManager: Wrote " + restartFilename
+            print("WirelessManager: Wrote " + restartFilename)
         else:
             # Write out the hostapd stop script
 
@@ -370,12 +370,12 @@ class WirelessManager:
 
             os.system("chmod a+x %s" % restartFilename)
 
-            print "WirelessManager: Wrote " + restartFilename
+            print("WirelessManager: Wrote " + restartFilename)
 
         return
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
-        if verbosity > 1: print "WirelessManager: sync_settings()"
+        if verbosity > 1: print("WirelessManager: sync_settings()")
 
         # on Asus AC88U, find each disabled wifi interface, and remove
         # its corresponding hostapd configuration file if it
@@ -386,7 +386,7 @@ class WirelessManager:
         for intfName in [ x for x  in ('eth1', 'eth2') if not x in enabledInterfaces ]:
             filename = prefix + self.hostapdConfFilename + "-" + intfName
             if os.path.isfile(filename):
-                print "WirelessManager: Removed " + filename
+                print("WirelessManager: Removed " + filename)
                 os.remove(filename)
 
         self.write_hostapd_conf( settings, prefix, verbosity )

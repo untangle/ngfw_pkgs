@@ -47,7 +47,7 @@ class IptablesUtil:
         
         for condition in conditions:
             if 'conditionType' not in condition:
-                print "ERROR: Ignoring invalid condition: %s" % str(condition)
+                print("ERROR: Ignoring invalid condition: %s" % str(condition))
                 continue
 
             conditionStr = ""
@@ -84,14 +84,14 @@ class IptablesUtil:
         hasProtocolCondition = False
         for condition in conditions:
             if 'conditionType' not in condition:
-                print "ERROR: Ignoring invalid condition: %s" % str(condition)
+                print("ERROR: Ignoring invalid condition: %s" % str(condition))
                 continue
             if condition['conditionType'] == 'PROTOCOL':
                 hasProtocolCondition = True
 
         for condition in conditions:
             if 'conditionType' not in condition:
-                print "ERROR: Ignoring invalid condition: %s" % str(condition)
+                print("ERROR: Ignoring invalid condition: %s" % str(condition))
                 continue
 
             conditionStr = ""
@@ -109,10 +109,10 @@ class IptablesUtil:
 
                 protos = value.split(",")
                 if invert and len(protos)>1:
-                    print "ERROR: invert not supported on multiple protocol condition"
+                    print("ERROR: invert not supported on multiple protocol condition")
                     continue
                 if len(protos) == 0:
-                    print "ERROR: interface condition with no interfaces"
+                    print("ERROR: interface condition with no interfaces")
                     continue
                 orig_current_strings = current_strings
                 current_strings = []
@@ -121,7 +121,7 @@ class IptablesUtil:
                     conditionStr = ""
                     if invert:
                         conditionStr = conditionStr + " ! "
-                    conditionStr = conditionStr + (" --protocol %s " % string.lower(protos[i]))
+                    conditionStr = conditionStr + (" --protocol %s " % str(protos[i])).lower()
                     current_strings = current_strings + [ conditionStr + current for current in orig_current_strings ]
 
             if conditionType == "SRC_INTF":
@@ -131,10 +131,10 @@ class IptablesUtil:
                 intfs = IptablesUtil.interface_condition_string_to_interface_list( value )
 
                 if invert and len(intfs) > 1:
-                    print "ERROR: invert not supported on multiple interface condition"
+                    print("ERROR: invert not supported on multiple interface condition")
                     continue
                 if len(intfs) == 0:
-                    print "ERROR: interface condition with no interfaces"
+                    print("ERROR: interface condition with no interfaces")
                     continue
                 orig_current_strings = current_strings
                 current_strings = []
@@ -153,10 +153,10 @@ class IptablesUtil:
                 intfs = IptablesUtil.interface_condition_string_to_interface_list( value )
 
                 if invert and len(intfs) > 1:
-                    print "ERROR: invert not supported on multiple interface condition"
+                    print("ERROR: invert not supported on multiple interface condition")
                     continue
                 if len(intfs) == 0:
-                    print "ERROR: interface condition with no interfaces"
+                    print("ERROR: interface condition with no interfaces")
                     continue
                 orig_current_strings = current_strings
                 current_strings = []
@@ -174,10 +174,10 @@ class IptablesUtil:
 
                 macs = value.split(",")
                 if invert and len(macs)>1:
-                    print "ERROR: invert not supported on multiple protocol condition"
+                    print("ERROR: invert not supported on multiple protocol condition")
                     continue
                 if len(macs) == 0:
-                    print "ERROR: interface condition with no interfaces"
+                    print("ERROR: interface condition with no interfaces")
                     continue
                 orig_current_strings = current_strings
                 current_strings = []
@@ -195,10 +195,10 @@ class IptablesUtil:
 
                 srcs = value.split(",")
                 if invert and len(srcs) > 1:
-                    print "ERROR: invert not supported on multiple addr condition"
+                    print("ERROR: invert not supported on multiple addr condition")
                     continue
                 if len(srcs) == 0:
-                    print "ERROR: address condition with no interfaces"
+                    print("ERROR: address condition with no interfaces")
                     continue
 
                 orig_current_strings = current_strings
@@ -219,10 +219,10 @@ class IptablesUtil:
 
                 dsts = value.split(",")
                 if invert and len(dsts) > 1:
-                    print "ERROR: invert not supported on multiple addr condition"
+                    print("ERROR: invert not supported on multiple addr condition")
                     continue
                 if len(dsts) == 0:
-                    print "ERROR: address condition with no interfaces"
+                    print("ERROR: address condition with no interfaces")
                     continue
 
                 orig_current_strings = current_strings
@@ -277,10 +277,10 @@ class IptablesUtil:
 
                 tags = value.split(",")
                 if invert and len(tags)>1:
-                    print "ERROR: invert not supported on multiple protocol condition"
+                    print("ERROR: invert not supported on multiple protocol condition")
                     continue
                 if len(tags) == 0:
-                    print "ERROR: interface condition with no interfaces"
+                    print("ERROR: interface condition with no interfaces")
                     continue
                 orig_current_strings = current_strings
                 current_strings = []
@@ -299,10 +299,10 @@ class IptablesUtil:
 
                 tags = value.split(",")
                 if invert and len(tags)>1:
-                    print "ERROR: invert not supported on multiple protocol condition"
+                    print("ERROR: invert not supported on multiple protocol condition")
                     continue
                 if len(tags) == 0:
-                    print "ERROR: interface condition with no interfaces"
+                    print("ERROR: interface condition with no interfaces")
                     continue
                 orig_current_strings = current_strings
                 current_strings = []

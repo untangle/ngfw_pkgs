@@ -32,7 +32,7 @@ class InterfacesManager:
             bridgedInterfaces.append(interface_settings) # include yourself in bridge
         # We want to add the physical devices to the bridge first (see issue NGFW-10101)
         # And easy way to do this is to just sort by length
-        bridgedInterfacesStr.sort(lambda x,y: cmp(len(x), len(y)))
+        bridgedInterfacesStr.sort(key=lambda x,y: cmp(len(x), len(y)))
 
         # If this is a bridge interface, write the blank config for the systemDev
         if isBridge:
@@ -215,16 +215,16 @@ class InterfacesManager:
 
     def check_interface_settings( self, interface_settings):
         if interface_settings.get('systemDev') == None:
-            print "ERROR: Missisg symbolic dev!"
+            print("ERROR: Missisg symbolic dev!")
             return False
         if interface_settings.get('symbolicDev') == None:
-            print "ERROR: Missisg symbolic dev!"
+            print("ERROR: Missisg symbolic dev!")
             return False
         if interface_settings.get('interfaceId') == None:
-            print "ERROR: Missisg interface ID!"
+            print("ERROR: Missisg interface ID!")
             return False
         if interface_settings.get('name') == None:
-            print "ERROR: Missisg interface name!"
+            print("ERROR: Missisg interface name!")
             return False
         return True
 
@@ -261,7 +261,7 @@ class InterfacesManager:
 
                 try:
                     self.write_interface_disabled( interface_settings, settings.get('interfaces').get('list') )
-                except Exception,exc:
+                except Exception as exc:
                     traceback.print_exc()
 
         # Write addressed interfaces last
@@ -278,15 +278,15 @@ class InterfacesManager:
                 # Now write the main interface configurations
                 try:
                     self.write_interface_v4( interface_settings, settings.get('interfaces').get('list') , settings)
-                except Exception,exc:
+                except Exception as exc:
                     traceback.print_exc()
                 try:
                     self.write_interface_v6( interface_settings, settings.get('interfaces').get('list') )
-                except Exception,exc:
+                except Exception as exc:
                     traceback.print_exc()
                 try:
                     self.write_interface_aliases( interface_settings, settings.get('interfaces').get('list') )
-                except Exception,exc:
+                except Exception as exc:
                     traceback.print_exc()
 
         self.interfacesFile.write("## This is a fake interface that launches the post-networking-restart\n");
@@ -299,7 +299,7 @@ class InterfacesManager:
         self.interfacesFile.close()
 
         if verbosity > 0:
-            print "InterfacesManager: Wrote %s" % filename
+            print("InterfacesManager: Wrote %s" % filename)
 
     def write_restore_interface_marks( self, file, interfaces, prefix, verbosity ):
 
@@ -548,7 +548,7 @@ class InterfacesManager:
         file.close()
 
         if verbosity > 0:
-            print "InterfacesManager: Wrote %s" % filename
+            print("InterfacesManager: Wrote %s" % filename)
 
         return
 
@@ -625,7 +625,7 @@ rm -f /var/lib/untangle-interface-status/interface*status.js
         file.close()
         os.system("chmod a+x %s" % filename)
 
-        if verbosity > 0: print "InterfacesManager: Wrote %s" % filename
+        if verbosity > 0: print("InterfacesManager: Wrote %s" % filename)
 
     def get_lxc_interface_id( self, settings ):
 
@@ -636,7 +636,7 @@ rm -f /var/lib/untangle-interface-status/interface*status.js
                     if not intf.get('isWan'):
                         lxcInterfaceId = intf.get('interfaceId')
                         return lxcInterfaceId
-            except Exception,exc:
+            except Exception as exc:
                 traceback.print_exc()
 
         if lxcInterfaceId == 0 or lxcInterfaceId == None:
@@ -644,7 +644,7 @@ rm -f /var/lib/untangle-interface-status/interface*status.js
 
         
     def sync_settings( self, settings, prefix="", verbosity=0 ):
-        if verbosity > 1: print "InterfacesManager: sync_settings()"
+        if verbosity > 1: print("InterfacesManager: sync_settings()")
         
         self.write_interfaces_file( settings, prefix, verbosity )
         self.write_interface_marks( settings, prefix, verbosity )
