@@ -177,11 +177,11 @@ write_status_file()
         return 0
     }
 
-    /bin/echo -e "[DEBUG: `date`] Writing /var/lib/untangle-netd/interface-${t_index}-status.js"
-    /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-netd/interface-${t_index}-status.js
+    /bin/echo -e "[DEBUG: `date`] Writing /var/lib/untangle-interface-status/interface-${t_index}-status.js"
+    /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-interface-status/interface-${t_index}-status.js
 
-    /bin/echo -e "[DEBUG: `date`] Writing /var/lib/untangle-netd/interface-${t_interface}-status.js"
-    /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-netd/interface-${t_interface}-status.js
+    /bin/echo -e "[DEBUG: `date`] Writing /var/lib/untangle-interface-status/interface-${t_interface}-status.js"
+    /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-interface-status/interface-${t_interface}-status.js
 }
 
 make_resolv_conf() {

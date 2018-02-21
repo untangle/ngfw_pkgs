@@ -267,11 +267,11 @@ write_status_file()
         return 0
     }
 
-    $DEBUG "writing /var/lib/untangle-netd/interface-${t_index}-status.js"
-    /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-netd/interface-${t_index}-status.js
+    $DEBUG "writing /var/lib/untangle-interface-status/interface-${t_index}-status.js"
+    /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-interface-status/interface-${t_index}-status.js
 
-    $DEBUG "writing /var/lib/untangle-netd/interface-${t_interface}-status.js"
-    /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-netd/interface-${t_interface}-status.js
+    $DEBUG "writing /var/lib/untangle-interface-status/interface-${t_interface}-status.js"
+    /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-interface-status/interface-${t_interface}-status.js
 }
 
 ${DEBUG} "dhclient-exit-hooks.d/netd_dhclient-exit-hook EXIT [ reason: \"$reason\" interface: \"$interface\" ]"

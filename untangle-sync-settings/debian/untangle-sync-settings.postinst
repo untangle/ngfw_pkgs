@@ -19,5 +19,6 @@ rm -f /var/log/uvm/iptables.log
 cp -r /etc/untangle-netd/* /etc/untangle/
 rm -f /etc/network/if-up.d/netd # replaced by /etc/network/if-up.d/untangle
 sed -i -e 's/netd_/untangle_/g' /etc/network/interfaces
+mv /var/lib/untangle-interface-status /var/lib/untangle-interface-status
 
 exit 0
