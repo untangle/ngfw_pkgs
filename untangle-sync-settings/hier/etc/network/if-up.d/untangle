@@ -2,7 +2,7 @@
 
 debug()
 {
-    /bin/echo -e "[        DEBUG: `date`] ${*}"
+    /bin/echo -e "[NETWORK DEBUG: `date`] ${*}"
 }
 
 debug_ip()
