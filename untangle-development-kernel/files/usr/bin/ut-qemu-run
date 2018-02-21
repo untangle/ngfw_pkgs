@@ -20,6 +20,17 @@ MODE="-monitor stdio" # default mode
 QEMU_BRIDGE_ACL="/etc/qemu/bridge.conf"
 
 #############
+## Functions
+#############
+generateMAC() {
+  # sha1sum the first argument, take its 5 most significant bytes, and
+  # use those to generate a 02:... MAC address
+  local image=$1
+  local sha1=$(echo $image | sha1sum)
+  echo 02$sha1 | python -c 'import sys ; s=sys.stdin.read()[:12] ; print(":".join([s[2*i:2*i+2] for i in range(6)]))'
+}
+
+#############
 ## CLI args
 #############
 while getopts ua:f:k:i:m:b:c:t: option ; do
@@ -60,34 +71,32 @@ else
   [[ -z "$MEMORY" ]] && MEMORY="1G"
 fi
 
-if [[ -n "$UVM" ]] ; then
-  # Create the internal bridge if necessary
+# external network
+NETWORK_OPTIONS="-netdev bridge,id=external0,br=$BRIDGE \
+    -device virtio-net-pci,netdev=external0,mac=$(generateMAC "$IMAGE")"
+
+if [[ -n "$UVM" ]] ; then # setup the "internal" network
+  # create the internal bridge if necessary
   if ! ip link ls ${BRIDGE_INT} > /dev/null 2>&1 ; then
     ip link add $BRIDGE_INT type bridge
     ip link set dev $BRIDGE_INT up
   fi
+
+  # generate an additional MAC
+  intMac=$(generateMAC "${IMAGE}${BRIDGE_INT}")
 
   # pass extra kernel parameters
   if [[ -n "$KERNEL_OPTIONS" ]] ; then
     APPEND_OPTIONS=(-append "root=/dev/vda1 net.ifnames=0 console=tty0 console=ttyS0,115200")
   fi
 
-  NETWORK_OPTIONS="-netdev bridge,id=external0,br=$BRIDGE \
-    -device virtio-net-pci,netdev=external0 \
+  NETWORK_OPTIONS="$NETWORK_OPTIONS \
     -netdev bridge,id=internal0,br=$BRIDGE_INT \
-    -device virtio-net-pci,netdev=internal0"
+    -device virtio-net-pci,netdev=internal0,mac=$intMac"
 
   # Socket is faster and simpler, but is bugged in the stretch version
   # of qemu. We can switch back to it when qemu >= 2.10
   #    -netdev socket,id=internal0,listen=$QEMU_SOCKET \
-  #    -device virtio-net-pci,netdev=internal0"
-else
-  NETWORK_OPTIONS="-netdev bridge,id=internal0,br=$BRIDGE \
-    -device virtio-net-pci,netdev=internal0"
-
-  # Socket is faster and simpler, but is bugged in the stretch version
-  # of qemu. We can switch back to it when qemu >= 2.10
-  #  NETWORK_OPTIONS="-netdev socket,id=internal0,connect=$QEMU_SOCKET \
   #    -device virtio-net-pci,netdev=internal0"
 fi
 
