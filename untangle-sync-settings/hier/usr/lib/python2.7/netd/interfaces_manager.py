@@ -108,13 +108,13 @@ class InterfacesManager:
                     self.interfacesFile.write("\tpost-down env IF_VLAN_RAW_DEVICE=%s IFACE=%s /etc/network/if-post-down.d/vlan\n" % (interface_settings.get('physicalDev'),interface_settings.get('v4PPPoERootDev')))
             self.interfacesFile.write("\tprovider %s\n" % ("connection.intf" + str(interface_settings.get('interfaceId')))) 
             # sleep to give PPPoE time to get address (bug #11431)
-            self.interfacesFile.write("\tpost-up /usr/share/untangle-netd/bin/pppoe-wait-for-address.sh %s 60\n" % devName ) 
+            self.interfacesFile.write("\tpost-up /usr/share/untangle-sync-settings/bin/pppoe-wait-for-address.sh %s 60\n" % devName ) 
 
         # write VRRP source routes
         if interface_settings.get('isWan') and interface_settings.get('configType') == 'ADDRESSED' and interface_settings.get('vrrpEnabled'):
             if interface_settings.get('vrrpAliases') != None and interface_settings.get('vrrpAliases').get('list') != None:
                 for alias in interface_settings.get('vrrpAliases').get('list'):
-                    self.interfacesFile.write("\tpost-up /usr/share/untangle-netd/bin/add-source-route.sh %s \"uplink.%i\" -4\n" % (alias.get('staticAddress'), interface_settings.get('interfaceId'))) 
+                    self.interfacesFile.write("\tpost-up /usr/share/untangle-sync-settings/bin/add-source-route.sh %s \"uplink.%i\" -4\n" % (alias.get('staticAddress'), interface_settings.get('interfaceId'))) 
             
         self.interfacesFile.write("\n\n");
 

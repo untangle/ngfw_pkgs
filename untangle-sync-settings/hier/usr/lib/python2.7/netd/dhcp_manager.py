@@ -235,8 +235,8 @@ refresh_routes()
 	fi
     
     for router in $untangle_new_routers; do
-        /usr/share/untangle-netd/bin/add-uplink.sh ${interface} ${router} "uplink.${DHCP_INTERFACE_INDEX}" -4 
-        /usr/share/untangle-netd/bin/add-source-route.sh ${new_ip_address} "uplink.${DHCP_INTERFACE_INDEX}" -4
+        /usr/share/untangle-sync-settings/bin/add-uplink.sh ${interface} ${router} "uplink.${DHCP_INTERFACE_INDEX}" -4 
+        /usr/share/untangle-sync-settings/bin/add-source-route.sh ${new_ip_address} "uplink.${DHCP_INTERFACE_INDEX}" -4
     done
 }
 
@@ -268,10 +268,10 @@ write_status_file()
     }
 
     $DEBUG "writing /var/lib/untangle-interface-status/interface-${t_index}-status.js"
-    /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-interface-status/interface-${t_index}-status.js
+    /usr/share/untangle-sync-settings/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-interface-status/interface-${t_index}-status.js
 
     $DEBUG "writing /var/lib/untangle-interface-status/interface-${t_interface}-status.js"
-    /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-interface-status/interface-${t_interface}-status.js
+    /usr/share/untangle-sync-settings/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-interface-status/interface-${t_interface}-status.js
 }
 
 ${DEBUG} "dhclient-exit-hooks.d/untangle-dhclient-exit-hook EXIT [ reason: \"$reason\" interface: \"$interface\" ]"
@@ -333,7 +333,7 @@ case "$reason" in
             fi
 	    
             for router in $untangle_new_routers; do
-                /usr/share/untangle-netd/bin/add-uplink.sh ${interface} ${router} "uplink.${DHCP_INTERFACE_INDEX}" -4 
+                /usr/share/untangle-sync-settings/bin/add-uplink.sh ${interface} ${router} "uplink.${DHCP_INTERFACE_INDEX}" -4 
             done
 
             make_resolv_conf

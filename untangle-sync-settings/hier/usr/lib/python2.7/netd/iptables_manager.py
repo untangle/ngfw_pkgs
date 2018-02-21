@@ -180,7 +180,7 @@ class IptablesManager:
         self.write_flush_file( settings, prefix, verbosity )
         self.write_helpers_file( settings, prefix, verbosity )
 
-        os.system("ln -sf /usr/share/untangle-netd/bin/generate-iptables-rules.sh %s" % self.iptablesHookFilename);
+        os.system("ln -sf /usr/share/untangle-sync-settings/bin/generate-iptables-rules.sh %s" % self.iptablesHookFilename);
         if verbosity > 0:
             print "IptablesManager: Wrote %s" % self.iptablesHookFilename
 

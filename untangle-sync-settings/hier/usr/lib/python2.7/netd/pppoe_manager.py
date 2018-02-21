@@ -178,10 +178,10 @@ write_status_file()
     }
 
     /bin/echo -e "[DEBUG: `date`] Writing /var/lib/untangle-interface-status/interface-${t_index}-status.js"
-    /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-interface-status/interface-${t_index}-status.js
+    /usr/share/untangle-sync-settings/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-interface-status/interface-${t_index}-status.js
 
     /bin/echo -e "[DEBUG: `date`] Writing /var/lib/untangle-interface-status/interface-${t_interface}-status.js"
-    /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-interface-status/interface-${t_interface}-status.js
+    /usr/share/untangle-sync-settings/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-interface-status/interface-${t_interface}-status.js
 }
 
 make_resolv_conf() {
@@ -237,8 +237,8 @@ fi
 
 make_resolv_conf
 
-/usr/share/untangle-netd/bin/add-uplink.sh ${PPP_IFACE} ${PPP_REMOTE} "uplink.${PPPOE_UPLINK_INDEX}" -4 
-/usr/share/untangle-netd/bin/add-source-route.sh ${PPP_LOCAL} "uplink.${PPPOE_UPLINK_INDEX}" -4
+/usr/share/untangle-sync-settings/bin/add-uplink.sh ${PPP_IFACE} ${PPP_REMOTE} "uplink.${PPPOE_UPLINK_INDEX}" -4 
+/usr/share/untangle-sync-settings/bin/add-source-route.sh ${PPP_LOCAL} "uplink.${PPPOE_UPLINK_INDEX}" -4
 
 write_status_file ${PPP_IFACE} ${PPPOE_UPLINK_INDEX}
 

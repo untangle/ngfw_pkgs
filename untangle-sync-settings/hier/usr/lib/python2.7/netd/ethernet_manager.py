@@ -8,7 +8,7 @@ import traceback
 # based on the settings object passed from sync-settings.py
 class EthernetManager:
     ethernetMediaFilename = "/etc/untangle/pre-network-hook.d/015-ethernet-media"
-    setLinkMediaScript = "/usr/share/untangle-netd/bin/set-link-media.sh"
+    setLinkMediaScript = "/usr/share/untangle-sync-settings/bin/set-link-media.sh"
 
     def write_ethernet_media( self, settings, prefix, verbosity ):
 
