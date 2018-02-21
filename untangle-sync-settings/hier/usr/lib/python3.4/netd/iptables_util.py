@@ -186,7 +186,7 @@ class IptablesUtil:
                     conditionStr = ""
                     if invert:
                         conditionStr = conditionStr + " ! "
-                    conditionStr = conditionStr + (" -m mac --mac-source %s " % string.lower(macs[i]))
+                    conditionStr = conditionStr + (" -m mac --mac-source %s " % str(macs[i]).lower())
                     current_strings = current_strings + [ conditionStr + current for current in orig_current_strings ]
 
             if conditionType == "SRC_ADDR":
