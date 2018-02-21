@@ -29,7 +29,7 @@ class FilterRulesManager:
         else:
             target = ' -j RETURN '
 
-        description = "Filter Rule #%i" % int(filter_rule['ruleId'])
+        description = "Rule #%i" % int(filter_rule['ruleId'])
         prep_commands = IptablesUtil.conditions_to_prep_commands( filter_rule['conditions']['list'], description, verbosity );
         iptables_conditions = IptablesUtil.conditions_to_iptables_string( filter_rule['conditions']['list'], description, verbosity );
 
