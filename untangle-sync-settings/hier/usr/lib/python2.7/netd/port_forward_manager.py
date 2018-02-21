@@ -5,11 +5,11 @@ import datetime
 import traceback
 from netd.iptables_util import IptablesUtil
 
-# This class is responsible for writing /etc/untangle-netd/iptables-rules.d/230-port-forward-rules
+# This class is responsible for writing /etc/untangle/iptables-rules.d/230-port-forward-rules
 # based on the settings object passed from sync-settings.py
 class PortForwardManager:
-    defaultFilename = "/etc/untangle-netd/iptables-rules.d/230-port-forward-rules"
-    adminFilename = "/etc/untangle-netd/iptables-rules.d/250-admin-port-rules"
+    defaultFilename = "/etc/untangle/iptables-rules.d/230-port-forward-rules"
+    adminFilename = "/etc/untangle/iptables-rules.d/250-admin-port-rules"
     srcInterfaceMarkMask = 0x00ff
     filename = defaultFilename
     file = None

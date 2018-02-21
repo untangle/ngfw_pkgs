@@ -6,13 +6,13 @@ import traceback
 from netd.iptables_util import IptablesUtil
 from netd.network_util import NetworkUtil
 
-# This class is responsible for writing /etc/untangle-netd/iptables-rules.d/210-bypass-rules
+# This class is responsible for writing /etc/untangle/iptables-rules.d/210-bypass-rules
 # based on the settings object passed from sync-settings.py
 class BypassRuleManager:
     bypassMarkMask = 0x01000000
     interfacesMarkMask = 0x0000FFFF
 
-    defaultFilename = "/etc/untangle-netd/iptables-rules.d/210-bypass-rules"
+    defaultFilename = "/etc/untangle/iptables-rules.d/210-bypass-rules"
     filename = defaultFilename
     file = None
 

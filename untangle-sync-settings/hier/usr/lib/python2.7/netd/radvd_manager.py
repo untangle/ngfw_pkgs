@@ -11,7 +11,7 @@ from netd.network_util import NetworkUtil
 # based on the settings object passed from sync-settings.py
 class RadvdManager:
     configFilename = "/etc/radvd.conf"
-    restartHookFilename = "/etc/untangle-netd/post-network-hook.d/990-restart-radvd"
+    restartHookFilename = "/etc/untangle/post-network-hook.d/990-restart-radvd"
 
     def write_config_file( self, settings, prefix="", verbosity=0 ):
 

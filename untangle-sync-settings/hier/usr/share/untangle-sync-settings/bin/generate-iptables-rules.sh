@@ -2,13 +2,13 @@
 
 #
 # This script handles all the iptables rules
-# It runs all the scripts in /etc/untangle-netd/iptables.rules.d
+# It runs all the scripts in /etc/untangle/iptables.rules.d
 # It logs both to stdout and the logfile
 
 #LOGFILE="/var/log/uvm/iptables.log"
 LOGFILE=""
 
-IPTABLES_DIRECTORY=/etc/untangle-netd/iptables-rules.d
+IPTABLES_DIRECTORY=/etc/untangle/iptables-rules.d
 
 #IPTABLES=/sbin/iptables
 #IPTABLES="iptables_debug"

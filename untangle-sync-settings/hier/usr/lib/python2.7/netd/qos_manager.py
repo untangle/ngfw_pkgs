@@ -7,11 +7,11 @@ import re
 from netd.network_util import NetworkUtil
 from netd.iptables_util import IptablesUtil
 
-# This class is responsible for writing /etc/untangle-netd/iptables-rules.d/300-qos
+# This class is responsible for writing /etc/untangle/iptables-rules.d/300-qos
 # and others based on the settings object passed from sync-settings.py
 class QosManager:
     bypassMarkMask = 0x01000000
-    qosFilename = "/etc/untangle-netd/iptables-rules.d/300-qos"
+    qosFilename = "/etc/untangle/iptables-rules.d/300-qos"
     srcInterfaceMarkMask = 0x00ff
     file = None
 

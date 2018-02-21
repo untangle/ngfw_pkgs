@@ -15,7 +15,7 @@ class PPPoEManager:
     chapSecretsFilename = "/tmp/chap-secrets.pppoe"
     peersDirectory = "/etc/ppp/peers/"
     connectionBaseName = "connection.intf"
-    preNetworkHookFilename = "/etc/untangle-netd/pre-network-hook.d/040-pppoe"
+    preNetworkHookFilename = "/etc/untangle/pre-network-hook.d/040-pppoe"
     pppIpUpFilename = "/etc/ppp/ip-up.d/99-netd"
 
     def write_pppoe_connection_files( self, settings, prefix="", verbosity=0 ):
@@ -243,7 +243,7 @@ make_resolv_conf
 write_status_file ${PPP_IFACE} ${PPPOE_UPLINK_INDEX}
 
 # FIXME - should we run this here?
-# run-parts /etc/untangle-netd/post-network-hook.d
+# run-parts /etc/untangle/post-network-hook.d
 
 true
 """)

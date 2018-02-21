@@ -7,13 +7,13 @@ import re
 from netd.network_util import NetworkUtil
 
 # This class is responsible for writing:
-# /etc/dhcp/dhclient-enter-hooks.d/netd-dhclient-enter-hook
-# /etc/dhcp/dhclient-exit-hooks.d/netd-dhclient-exit-hook
+# /etc/dhcp/dhclient-enter-hooks.d/untangle-dhclient-enter-hook
+# /etc/dhcp/dhclient-exit-hooks.d/untangle-dhclient-exit-hook
 # based on the settings object passed from sync-settings.py
 class DhcpManager:
-    enterHookFilename = "/etc/dhcp/dhclient-enter-hooks.d/netd-dhclient-enter-hook"
-    exitHookFilename = "/etc/dhcp/dhclient-exit-hooks.d/netd-dhclient-exit-hook"
-    preNetworkHookFilename = "/etc/untangle-netd/pre-network-hook.d/035-dhcp"
+    enterHookFilename = "/etc/dhcp/dhclient-enter-hooks.d/untangle-dhclient-enter-hook"
+    exitHookFilename = "/etc/dhcp/dhclient-exit-hooks.d/untangle-dhclient-exit-hook"
+    preNetworkHookFilename = "/etc/untangle/pre-network-hook.d/035-dhcp"
     dhcpConfFilename = "/etc/dhcp/dhclient.conf"
     ddclientHookFilename = "/etc/dhcp/dhclient-exit-hooks.d/ddclient"
 
@@ -115,16 +115,16 @@ wait_for_bridge()
     fi
 }
 
-${DEBUG} "dhclient-enter-hooks.d/netd_dhclient-enter-hook ENTER [ reason: \"$reason\" interface: \"$interface\" ]"
-${DEBUG} "dhclient-enter-hooks.d/netd-dhclient-enter-hook ENTER [ old_ip_address: \"$old_ip_address\" ]"
-${DEBUG} "dhclient-enter-hooks.d/netd-dhclient-enter-hook ENTER [ new_ip_address: \"$new_ip_address\" ]"
-${DEBUG} "dhclient-enter-hooks.d/netd-dhclient-enter-hook ENTER [ new_domain_name_servers: \"$new_domain_name_servers\" ]"
-${DEBUG} "dhclient-enter-hooks.d/netd-dhclient-enter-hook ENTER [ new_domain_name: \"$new_domain_name\" ]"
-${DEBUG} "dhclient-enter-hooks.d/netd-dhclient-enter-hook ENTER [ DHCP_INTERFACE_INDEX: \"$DHCP_INTERFACE_INDEX\" ]"
-${DEBUG} "dhclient-enter-hooks.d/netd-dhclient-enter-hook ENTER [ DHCP_ADDRESS_OVERRIDE: \"$DHCP_ADDRESS_OVERRIDE\" ]"
-${DEBUG} "dhclient-enter-hooks.d/netd-dhclient-enter-hook ENTER [ DHCP_NETMASK_OVERRIDE: \"$DHCP_NETMASK_OVERRIDE\" ]"
-${DEBUG} "dhclient-enter-hooks.d/netd-dhclient-enter-hook ENTER [ DHCP_GATEWAY_OVERRIDE: \"$DHCP_GATEWAY_OVERRIDE\" ]"
-${DEBUG} "dhclient-enter-hooks.d/netd-dhclient-enter-hook ENTER [ DHCP_DNS_OVERRIDES: \"$DHCP_DNS_OVERRIDES\" ]"
+${DEBUG} "dhclient-enter-hooks.d/untangle-dhclient-enter-hook ENTER [ reason: \"$reason\" interface: \"$interface\" ]"
+${DEBUG} "dhclient-enter-hooks.d/untangle-dhclient-enter-hook ENTER [ old_ip_address: \"$old_ip_address\" ]"
+${DEBUG} "dhclient-enter-hooks.d/untangle-dhclient-enter-hook ENTER [ new_ip_address: \"$new_ip_address\" ]"
+${DEBUG} "dhclient-enter-hooks.d/untangle-dhclient-enter-hook ENTER [ new_domain_name_servers: \"$new_domain_name_servers\" ]"
+${DEBUG} "dhclient-enter-hooks.d/untangle-dhclient-enter-hook ENTER [ new_domain_name: \"$new_domain_name\" ]"
+${DEBUG} "dhclient-enter-hooks.d/untangle-dhclient-enter-hook ENTER [ DHCP_INTERFACE_INDEX: \"$DHCP_INTERFACE_INDEX\" ]"
+${DEBUG} "dhclient-enter-hooks.d/untangle-dhclient-enter-hook ENTER [ DHCP_ADDRESS_OVERRIDE: \"$DHCP_ADDRESS_OVERRIDE\" ]"
+${DEBUG} "dhclient-enter-hooks.d/untangle-dhclient-enter-hook ENTER [ DHCP_NETMASK_OVERRIDE: \"$DHCP_NETMASK_OVERRIDE\" ]"
+${DEBUG} "dhclient-enter-hooks.d/untangle-dhclient-enter-hook ENTER [ DHCP_GATEWAY_OVERRIDE: \"$DHCP_GATEWAY_OVERRIDE\" ]"
+${DEBUG} "dhclient-enter-hooks.d/untangle-dhclient-enter-hook ENTER [ DHCP_DNS_OVERRIDES: \"$DHCP_DNS_OVERRIDES\" ]"
 
 ${DEBUG} "Overriding make_resolv_conf()."
 
@@ -176,7 +176,7 @@ case ${reason} in
             new_subnet_arg="netmask ${DHCP_NETMASK_OVERRIDE}"
         fi
 
-        netd_new_routers=${DHCP_GATEWAY_OVERRIDE:-${new_routers}}
+        untangle_new_routers=${DHCP_GATEWAY_OVERRIDE:-${new_routers}}
         new_routers=""
 
         new_domain_name_servers=${DHCP_DNS_OVERRIDES:-${new_domain_name_servers}}
@@ -186,7 +186,7 @@ case ${reason} in
         ;;
 esac
 
-${DEBUG} "dhclient-enter-hooks.d/netd_dhclient-enter-hook EXIT  [ reason: \"$reason\" interface: \"$interface\" ]"
+${DEBUG} "dhclient-enter-hooks.d/untangle-dhclient-enter-hook EXIT  [ reason: \"$reason\" interface: \"$interface\" ]"
 
 """)
 
@@ -229,12 +229,12 @@ refresh_routes()
 {
     # point to point
 	if [ "$new_subnet_mask" = "255.255.255.255" ]; then
-	    for router in $netd_new_routers; do
+	    for router in $untangle_new_routers; do
 	    	route add -host $router dev $interface
 	    done
 	fi
     
-    for router in $netd_new_routers; do
+    for router in $untangle_new_routers; do
         /usr/share/untangle-netd/bin/add-uplink.sh ${interface} ${router} "uplink.${DHCP_INTERFACE_INDEX}" -4 
         /usr/share/untangle-netd/bin/add-source-route.sh ${new_ip_address} "uplink.${DHCP_INTERFACE_INDEX}" -4
     done
@@ -255,7 +255,7 @@ run_post_networking_hook()
         # if we already see ifdown -a then it will run these scripts
         $DEBUG "Skipping post-network-hook.d hooks - "ifdown -a" running."
     else
-        run-parts -v /etc/untangle-netd/post-network-hook.d
+        run-parts -v /etc/untangle/post-network-hook.d
     fi
 }
 
@@ -274,16 +274,16 @@ write_status_file()
     /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-interface-status/interface-${t_interface}-status.js
 }
 
-${DEBUG} "dhclient-exit-hooks.d/netd_dhclient-exit-hook EXIT [ reason: \"$reason\" interface: \"$interface\" ]"
-${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook EXIT [ old_ip_address: \"$old_ip_address\" ]"
-${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook EXIT [ new_ip_address: \"$new_ip_address\" ]"
-${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook EXIT [ new_domain_name_servers: \"$new_domain_name_servers\" ]"
-${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook EXIT [ new_domain_name: \"$new_domain_name\" ]"
-${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook EXIT [ DHCP_INTERFACE_INDEX: \"$DHCP_INTERFACE_INDEX\" ]"
-${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook EXIT [ DHCP_ADDRESS_OVERRIDE: \"$DHCP_ADDRESS_OVERRIDE\" ]"
-${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook EXIT [ DHCP_NETMASK_OVERRIDE: \"$DHCP_NETMASK_OVERRIDE\" ]"
-${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook EXIT [ DHCP_GATEWAY_OVERRIDE: \"$DHCP_GATEWAY_OVERRIDE\" ]"
-${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook EXIT [ DHCP_DNS_OVERRIDES: \"$DHCP_DNS_OVERRIDES\" ]"
+${DEBUG} "dhclient-exit-hooks.d/untangle-dhclient-exit-hook EXIT [ reason: \"$reason\" interface: \"$interface\" ]"
+${DEBUG} "dhclient-exit-hooks.d/untangle-dhclient-exit-hook EXIT [ old_ip_address: \"$old_ip_address\" ]"
+${DEBUG} "dhclient-exit-hooks.d/untangle-dhclient-exit-hook EXIT [ new_ip_address: \"$new_ip_address\" ]"
+${DEBUG} "dhclient-exit-hooks.d/untangle-dhclient-exit-hook EXIT [ new_domain_name_servers: \"$new_domain_name_servers\" ]"
+${DEBUG} "dhclient-exit-hooks.d/untangle-dhclient-exit-hook EXIT [ new_domain_name: \"$new_domain_name\" ]"
+${DEBUG} "dhclient-exit-hooks.d/untangle-dhclient-exit-hook EXIT [ DHCP_INTERFACE_INDEX: \"$DHCP_INTERFACE_INDEX\" ]"
+${DEBUG} "dhclient-exit-hooks.d/untangle-dhclient-exit-hook EXIT [ DHCP_ADDRESS_OVERRIDE: \"$DHCP_ADDRESS_OVERRIDE\" ]"
+${DEBUG} "dhclient-exit-hooks.d/untangle-dhclient-exit-hook EXIT [ DHCP_NETMASK_OVERRIDE: \"$DHCP_NETMASK_OVERRIDE\" ]"
+${DEBUG} "dhclient-exit-hooks.d/untangle-dhclient-exit-hook EXIT [ DHCP_GATEWAY_OVERRIDE: \"$DHCP_GATEWAY_OVERRIDE\" ]"
+${DEBUG} "dhclient-exit-hooks.d/untangle-dhclient-exit-hook EXIT [ DHCP_DNS_OVERRIDES: \"$DHCP_DNS_OVERRIDES\" ]"
 
 # Execute the operation
 case "$reason" in
@@ -323,7 +323,7 @@ case "$reason" in
         ;;
 
     TIMEOUT)
-        set -- $netd_new_routers
+        set -- $untangle_new_routers
         first_router="$1"
 
         if [ -z "$first_router" ] || ping -q -c 1 $first_router; then
@@ -332,7 +332,7 @@ case "$reason" in
                 route add -host $alias_ip_address dev $interface:0
             fi
 	    
-            for router in $netd_new_routers; do
+            for router in $untangle_new_routers; do
                 /usr/share/untangle-netd/bin/add-uplink.sh ${interface} ${router} "uplink.${DHCP_INTERFACE_INDEX}" -4 
             done
 
@@ -349,7 +349,7 @@ case "$reason" in
 
 esac
 
-${DEBUG} "dhclient-exit-hooks.d/netd-dhclient-exit-hook EXIT  [ reason: \"$reason\" interface: \"$interface\" ]"
+${DEBUG} "dhclient-exit-hooks.d/untangle-dhclient-exit-hook EXIT  [ reason: \"$reason\" interface: \"$interface\" ]"
 
 true
 

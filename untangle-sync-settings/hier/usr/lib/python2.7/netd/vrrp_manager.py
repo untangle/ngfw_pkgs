@@ -7,12 +7,12 @@ import re
 from netd.network_util import NetworkUtil
 
 # This class is responsible for writing:
-# /etc/untangle-netd/post-network-hook.d/200-vrrp
+# /etc/untangle/post-network-hook.d/200-vrrp
 # based on the settings object passed from sync-settings.py
 class VrrpManager:
     keepalivedConfFilename = "/etc/keepalived/keepalived.conf"
-    postNetworkHookFilename = "/etc/untangle-netd/post-network-hook.d/200-vrrp"
-    iptablesHookFilename = "/etc/untangle-netd/iptables-rules.d/241-vrrp-rules"
+    postNetworkHookFilename = "/etc/untangle/post-network-hook.d/200-vrrp"
+    iptablesHookFilename = "/etc/untangle/iptables-rules.d/241-vrrp-rules"
     vrrp_enabled = False
 
     def get_vrrp_interfaces( self, settings ):

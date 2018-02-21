@@ -4,10 +4,10 @@ import subprocess
 import datetime
 import traceback
 
-# This class is responsible for writing /etc/untangle-netd/pre-network-hook.d/015-ethernet-media
+# This class is responsible for writing /etc/untangle/pre-network-hook.d/015-ethernet-media
 # based on the settings object passed from sync-settings.py
 class EthernetManager:
-    ethernetMediaFilename = "/etc/untangle-netd/pre-network-hook.d/015-ethernet-media"
+    ethernetMediaFilename = "/etc/untangle/pre-network-hook.d/015-ethernet-media"
     setLinkMediaScript = "/usr/share/untangle-netd/bin/set-link-media.sh"
 
     def write_ethernet_media( self, settings, prefix, verbosity ):

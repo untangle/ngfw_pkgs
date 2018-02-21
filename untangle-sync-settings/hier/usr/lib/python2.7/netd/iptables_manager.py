@@ -5,16 +5,16 @@ import datetime
 import traceback
 
 # This class is responsible for writing:
-# /etc/untangle-netd/post-network-hook.d/960-iptables
-# /etc/untangle-netd/iptables-rules.d/010-flush
-# /etc/untangle-netd/iptables-rules.d/100-interface-marks
+# /etc/untangle/post-network-hook.d/960-iptables
+# /etc/untangle/iptables-rules.d/010-flush
+# /etc/untangle/iptables-rules.d/100-interface-marks
 #
 # based on the settings object passed from sync-settings.py
 #
 class IptablesManager:
-    flushFilename = "/etc/untangle-netd/iptables-rules.d/010-flush"
-    helpersFilename = "/etc/untangle-netd/iptables-rules.d/011-helpers"
-    iptablesHookFilename = "/etc/untangle-netd/post-network-hook.d/960-iptables"
+    flushFilename = "/etc/untangle/iptables-rules.d/010-flush"
+    helpersFilename = "/etc/untangle/iptables-rules.d/011-helpers"
+    iptablesHookFilename = "/etc/untangle/post-network-hook.d/960-iptables"
 
     def write_flush_file( self, settings, prefix, verbosity ):
 

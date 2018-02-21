@@ -6,13 +6,13 @@ import traceback
 from netd.iptables_util import IptablesUtil
 from netd.network_util import NetworkUtil
 
-# This class is responsible for writing /etc/untangle-netd/iptables-rules.d/220-nat-rules
+# This class is responsible for writing /etc/untangle/iptables-rules.d/220-nat-rules
 # based on the settings object passed from sync-settings.py
 class NatRulesManager:
     interfacesMarkMask = 0x0000FFFF
     lxcMarkMask = 0x04000000
 
-    defaultFilename = "/etc/untangle-netd/iptables-rules.d/220-nat-rules"
+    defaultFilename = "/etc/untangle/iptables-rules.d/220-nat-rules"
     filename = defaultFilename
     file = None
 

@@ -6,12 +6,12 @@ import traceback
 import re
 from netd.network_util import NetworkUtil
 
-# This class is responsible for writing /etc/untangle-netd/post-network-hook.d/030-routes
+# This class is responsible for writing /etc/untangle/post-network-hook.d/030-routes
 # and others based on the settings object passed from sync-settings.py
 class RouteManager:
     rtTableFilename = "/etc/iproute2/rt_tables"
-    routesFilename = "/etc/untangle-netd/post-network-hook.d/030-routes"
-    preRoutesFilename = "/etc/untangle-netd/pre-network-hook.d/030-routes"
+    routesFilename = "/etc/untangle/post-network-hook.d/030-routes"
+    preRoutesFilename = "/etc/untangle/pre-network-hook.d/030-routes"
 
     IP_RULE_PRIORITY="70"
     IP_RULE_DEFAULT_RULE_PRIORITY="1000000"

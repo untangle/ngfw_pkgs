@@ -4,10 +4,10 @@ import subprocess
 import datetime
 import traceback
 
-# This class is responsible for writing /etc/untangle-netd/post-network-hook.d/025-arp
+# This class is responsible for writing /etc/untangle/post-network-hook.d/025-arp
 # based on the settings object passed from sync-settings.py
 class ArpManager:
-    filename = "/etc/untangle-netd/post-network-hook.d/025-arp"
+    filename = "/etc/untangle/post-network-hook.d/025-arp"
 
     def write_arp( self, settings, prefix, verbosity ):
 
