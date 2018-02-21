@@ -2,7 +2,7 @@
 
 debug()
 {
-    /bin/echo -e "[NETD    DEBUG: `date`] ${*}"
+    /bin/echo -e "[        DEBUG: `date`] ${*}"
 }
 
 debug_ip()
@@ -24,7 +24,7 @@ networking_pre_restart_hook()
     return 0
 }
 
-netd_v6_config()
+untangle_v6_config()
 {
     if [ -n "${IF_NETD_V6_ADDRESS}" ] ; then
         if [ "auto" = "${IF_NETD_V6_ADDRESS}" ] ; then
@@ -37,7 +37,7 @@ netd_v6_config()
     fi
 
     if [ -n "$IF_NETD_V6_GATEWAY" ] && [ -n "$IF_NETD_INTERFACE_INDEX" ] ; then
-        /usr/share/untangle-netd/bin/add-uplink.sh ${IFACE} ${IF_NETD_V6_GATEWAY} uplink.${IF_NETD_INTERFACE_INDEX} -6
+        /usr/share/untangle-sync-settings/bin/add-uplink.sh ${IFACE} ${IF_NETD_V6_GATEWAY} uplink.${IF_NETD_INTERFACE_INDEX} -6
     fi
 
     return 0
@@ -55,7 +55,7 @@ netd_v4_config()
     fi
 
     if [ -n "$IF_NETD_V4_GATEWAY" ] && [ -n "$IF_NETD_INTERFACE_INDEX" ] ; then
-        /usr/share/untangle-netd/bin/add-uplink.sh ${IFACE} ${IF_NETD_V4_GATEWAY} uplink.${IF_NETD_INTERFACE_INDEX} -4
+        /usr/share/untangle-sync-settings/bin/add-uplink.sh ${IFACE} ${IF_NETD_V4_GATEWAY} uplink.${IF_NETD_INTERFACE_INDEX} -4
     fi
 
     # add a source route so any traffic from this address goes out correct WAN (if it goes out a WAN)
@@ -63,7 +63,7 @@ netd_v4_config()
         # If uplink.X exists (this must be a WAN)
         ip route show table uplink.${IF_NETD_INTERFACE_INDEX} >/dev/null 2>&1
         if [ $? -eq 0 ] ; then
-            /usr/share/untangle-netd/bin/add-source-route.sh ${IF_NETD_V4_ADDRESS} uplink.${IF_NETD_INTERFACE_INDEX} -4
+            /usr/share/untangle-sync-settings/bin/add-source-route.sh ${IF_NETD_V4_ADDRESS} uplink.${IF_NETD_INTERFACE_INDEX} -4
         fi
     fi
 
@@ -73,7 +73,7 @@ netd_v4_config()
 networking_post_restart_hook()
 {
     $DEBUG "networking_post_restart_hook"
-    $RUN_PARTS /etc/untangle-netd/post-network-hook.d
+    $RUN_PARTS /etc/untangle/post-network-hook.d
     return 0
 }
 
@@ -85,14 +85,14 @@ write_status_file()
         return 0
     }
 
-    $DEBUG "writing /var/lib/untangle-netd/interface-${t_interface}-status.js"
-    /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-netd/interface-${t_interface}-status.js
+    $DEBUG "writing /var/lib/untangle-sync-settings/interface-${t_interface}-status.js"
+    /usr/share/untangle-sync-settings/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-netd/interface-${t_interface}-status.js
 
     # Only write the index status file if this is not an alias
     echo "${t_interface}" | grep -q ":"
     if [ ! $? -eq 0 ] ; then
         $DEBUG "writing /var/lib/untangle-netd/interface-${t_index}-status.js"
-        /usr/share/untangle-netd/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-netd/interface-${t_index}-status.js
+        /usr/share/untangle-sync-settings/bin/write-interface-status.py -I ${t_interface} -i ${t_index} -w /var/lib/untangle-netd/interface-${t_index}-status.js
     fi
 }
 
@@ -120,11 +120,11 @@ if [ "$IFACE" = "networking_post_restart_hook" ] ; then
     exit 0
 fi
 
-netd_v4_config
+untangle_v4_config
 
-netd_v6_config
+untangle_v6_config
 
-write_status_file $IFACE $IF_NETD_INTERFACE_INDEX
+write_status_file $IFACE $IF_UNTANGLE_INTERFACE_INDEX
 
 $DEBUG "if-up.d end   [$IFACE]"
 
