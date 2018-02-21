@@ -16,7 +16,7 @@ class PPPoEManager:
     peersDirectory = "/etc/ppp/peers/"
     connectionBaseName = "connection.intf"
     preNetworkHookFilename = "/etc/untangle/pre-network-hook.d/040-pppoe"
-    pppIpUpFilename = "/etc/ppp/ip-up.d/99-netd"
+    pppIpUpFilename = "/etc/ppp/ip-up.d/99-untangle"
 
     def write_pppoe_connection_files( self, settings, prefix="", verbosity=0 ):
 
