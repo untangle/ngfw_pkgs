@@ -610,7 +610,7 @@ ip addr flush scope global 2>/dev/null
 bridge_destroy_all
 
 # remove interface status files
-rm -f /var/lib/untangle-netd/interface*status.js
+rm -f /var/lib/untangle-interface-status/interface*status.js
 
 # disable forwarding on all interfaces, enable in all
 # enable accept_ra on all interfaces
