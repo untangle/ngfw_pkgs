@@ -40,7 +40,7 @@ class DnsMasqManager:
         file.flush()
         file.close()
 
-        if verbosity > 0: print "DnsMasqManager: Wrote %s" % filename
+        if verbosity > 0: print("DnsMasqManager: Wrote %s" % filename)
         return
 
     def write_dnsmasq_conf( self, settings, prefix="", verbosity=0 ):
@@ -110,7 +110,7 @@ class DnsMasqManager:
                     if intf.get('dhcpLeaseDuration') != None and intf.get('dhcpLeaseDuration') != "":
                         try:
                             leaseTime = int(intf.get('dhcpLeaseDuration'))
-                        except Exception,e:
+                        except Exception as e:
                             pass
                     
                     # Use symbolicDev so the whole bridge is served if its a bridge
@@ -173,7 +173,7 @@ class DnsMasqManager:
         file.flush()
         file.close()
 
-        if verbosity > 0: print "DnsMasqManager: Wrote %s" % filename
+        if verbosity > 0: print("DnsMasqManager: Wrote %s" % filename)
         return
 
     def write_dhcp_statics_file( self, settings, prefix="", verbosity=0 ):
@@ -198,7 +198,7 @@ class DnsMasqManager:
         file.flush()
         file.close()
 
-        if verbosity > 0: print "DnsMasqManager: Wrote %s" % filename
+        if verbosity > 0: print("DnsMasqManager: Wrote %s" % filename)
         return
 
     def write_restart_dnsmasq_hook( self, settings, prefix="", verbosity=0 ):
@@ -237,12 +237,12 @@ fi
         file.close()
     
         os.system("chmod a+x %s" % filename)
-        if verbosity > 0: print "DnsMasqManager: Wrote %s" % filename
+        if verbosity > 0: print("DnsMasqManager: Wrote %s" % filename)
         return
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
 
-        if verbosity > 1: print "DnsMasqManager: sync_settings()"
+        if verbosity > 1: print("DnsMasqManager: sync_settings()")
         
         self.write_dnsmasq_hosts( settings, prefix, verbosity )
 
