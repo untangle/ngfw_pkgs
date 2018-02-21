@@ -20,7 +20,7 @@ debug_run_parts()
 networking_pre_restart_hook()
 {
     $DEBUG "networking_pre_restart_hook"
-    $RUN_PARTS /etc/untangle-netd/pre-network-hook.d
+    $RUN_PARTS /etc/untangle/pre-network-hook.d
     return 0
 }
 
