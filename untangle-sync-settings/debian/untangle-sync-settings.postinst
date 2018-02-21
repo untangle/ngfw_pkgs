@@ -21,6 +21,7 @@ rm -f /etc/network/if-up.d/netd # replaced by /etc/network/if-up.d/untangle
 mv -f /var/lib/untangle-netd /var/lib/untangle-interface-status
 mv -f /etc/dhcp/dhclient-exit-hooks.d/netd-dhclient-exit-hook /etc/dhcp/dhclient-exit-hooks.d/untangle-dhclient-exit-hook
 mv -f /etc/dhcp/dhclient-enter-hooks.d/netd-dhclient-enter-hook /etc/dhcp/dhclient-enter-hooks.d/untangle-dhclient-enter-hook
+mv -f /etc/ppp/ip-up.d/99-netd /etc/ppp/ip-up.d/99-untangle
 sed -i -e 's/netd_/untangle_/g' /etc/network/interfaces
 
 exit 0
