@@ -5,12 +5,12 @@ import datetime
 import traceback
 
 # This class is responsible for writing:
-# /etc/untangle-netd/post-network-hook.d/011-kernel
+# /etc/untangle/post-network-hook.d/011-kernel
 #
 # based on the settings object passed from sync-settings.py
 #
 class KernelManager:
-    kernelHookFilename = "/etc/untangle-netd/post-network-hook.d/011-kernel"
+    kernelHookFilename = "/etc/untangle/post-network-hook.d/011-kernel"
 
     def write_file( self, settings, prefix, verbosity ):
 

@@ -8,8 +8,8 @@ import traceback
 # based on the settings object passed from sync-settings.py
 class InterfacesManager:
     interfacesFilename = "/etc/network/interfaces"
-    interfaceMarksFilename = "/etc/untangle-netd/iptables-rules.d/100-interface-marks"
-    preNetworkHookFilename = "/etc/untangle-netd/pre-network-hook.d/045-interfaces"
+    interfaceMarksFilename = "/etc/untangle/iptables-rules.d/100-interface-marks"
+    preNetworkHookFilename = "/etc/untangle/pre-network-hook.d/045-interfaces"
     srcInterfaceMarkMask = 0x00ff
     dstInterfaceMarkMask = 0xff00
     lxcInterfaceMarkMask = 0x04000000
@@ -65,7 +65,7 @@ class InterfacesManager:
                                     bridgeMinMtu = int(devSettings.get('mtu'))
 
         self.interfacesFile.write("iface %s inet %s\n" % (devName, configString) )
-        self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings.get('interfaceId'))
+        self.interfacesFile.write("\tuntangle_interface_index %i\n" % interface_settings.get('interfaceId'))
 
         # load 8021q
         if interface_settings.get('isVlanInterface'):
@@ -73,10 +73,10 @@ class InterfacesManager:
 
         # handle static stuff
         if interface_settings.get('v4ConfigType') == 'STATIC':
-            self.interfacesFile.write("\tnetd_v4_address %s\n" % interface_settings.get('v4StaticAddress'))
-            self.interfacesFile.write("\tnetd_v4_netmask %s\n" % interface_settings.get('v4StaticNetmask'))
+            self.interfacesFile.write("\tuntangle_v4_address %s\n" % interface_settings.get('v4StaticAddress'))
+            self.interfacesFile.write("\tuntangle_v4_netmask %s\n" % interface_settings.get('v4StaticNetmask'))
             if interface_settings.get('v4StaticGateway') != None:
-                self.interfacesFile.write("\tnetd_v4_gateway %s\n" % interface_settings.get('v4StaticGateway'))
+                self.interfacesFile.write("\tuntangle_v4_gateway %s\n" % interface_settings.get('v4StaticGateway'))
 
         # handle bridge-related stuff
         if isBridge:
@@ -128,25 +128,25 @@ class InterfacesManager:
         #self.interfacesFile.write("auto %s\n" % interface_settings.get('symbolicDev'))
 
         self.interfacesFile.write("iface %s inet6 %s\n" % (interface_settings.get('symbolicDev'), "manual") )
-        self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings.get('interfaceId'))
+        self.interfacesFile.write("\tuntangle_interface_index %i\n" % interface_settings.get('interfaceId'))
 
         if interface_settings.get('v6ConfigType') == 'STATIC':
             self.interfacesFile.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6" + "\n")
             self.interfacesFile.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/autoconf" + "\n")
             if interface_settings.get('v6StaticAddress') != None:
-                self.interfacesFile.write("\tnetd_v6_address %s\n" % interface_settings.get('v6StaticAddress'))
+                self.interfacesFile.write("\tuntangle_v6_address %s\n" % interface_settings.get('v6StaticAddress'))
             if interface_settings.get('v6StaticPrefixLength') != None:
-                self.interfacesFile.write("\tnetd_v6_prefix %s\n" % interface_settings.get('v6StaticPrefixLength'))
+                self.interfacesFile.write("\tuntangle_v6_prefix %s\n" % interface_settings.get('v6StaticPrefixLength'))
             if interface_settings.get('isWan'):
                 if interface_settings.get('v6StaticGateway') != None:
-                    self.interfacesFile.write("\tnetd_v6_gateway %s\n" % interface_settings.get('v6StaticGateway'))
+                    self.interfacesFile.write("\tuntangle_v6_gateway %s\n" % interface_settings.get('v6StaticGateway'))
                     self.interfacesFile.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
                 else: # no gateway specified, use RAs
                     self.interfacesFile.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
         elif interface_settings.get('v6ConfigType') == 'AUTO':
             self.interfacesFile.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6" + "\n")
             self.interfacesFile.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/autoconf" + "\n")
-            self.interfacesFile.write("\tnetd_v6_address %s\n" % "auto")
+            self.interfacesFile.write("\tuntangle_v6_address %s\n" % "auto")
             if interface_settings.get('isWan'):
                 self.interfacesFile.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
             else:
@@ -195,9 +195,9 @@ class InterfacesManager:
                 self.interfacesFile.write("## Interface %i IPv4 alias\n" % (interface_settings.get('interfaceId')) )
                 self.interfacesFile.write("auto %s:%i\n" % (intf_str, count))
                 self.interfacesFile.write("iface %s:%i inet manual\n" % ( intf_str, count ))
-                self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings.get('interfaceId'))
-                self.interfacesFile.write("\tnetd_v4_address %s\n" % alias.get('staticAddress'))
-                self.interfacesFile.write("\tnetd_v4_netmask %s\n" % alias.get('staticNetmask'))
+                self.interfacesFile.write("\tuntangle_interface_index %i\n" % interface_settings.get('interfaceId'))
+                self.interfacesFile.write("\tuntangle_v4_address %s\n" % alias.get('staticAddress'))
+                self.interfacesFile.write("\tuntangle_v4_netmask %s\n" % alias.get('staticNetmask'))
                 self.interfacesFile.write("\n");
                 count = count+1
 
@@ -207,9 +207,9 @@ class InterfacesManager:
                 self.interfacesFile.write("## Interface %i IPv6 alias\n" % (interface_settings.get('interfaceId')) )
                 self.interfacesFile.write("auto %s:%i\n" % (intf_str, count))
                 self.interfacesFile.write("iface %s:%i inet manual\n" % ( intf_str, count ))
-                self.interfacesFile.write("\tnetd_interface_index %i\n" % interface_settings.get('interfaceId'))
-                self.interfacesFile.write("\tnetd_v6_address %s\n" % alias.get('staticAddress'))
-                self.interfacesFile.write("\tnetd_v6_netmask %s\n" % alias.get('staticNetmask'))
+                self.interfacesFile.write("\tuntangle_interface_index %i\n" % interface_settings.get('interfaceId'))
+                self.interfacesFile.write("\tuntangle_v6_address %s\n" % alias.get('staticAddress'))
+                self.interfacesFile.write("\tuntangle_v6_netmask %s\n" % alias.get('staticNetmask'))
                 self.interfacesFile.write("\n");
                 count = count+1
 

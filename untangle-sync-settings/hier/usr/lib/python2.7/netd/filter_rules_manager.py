@@ -6,12 +6,12 @@ import traceback
 from netd.iptables_util import IptablesUtil
 from netd.network_util import NetworkUtil
 
-# This class is responsible for writing /etc/untangle-netd/iptables-rules.d/240-filter-rules
+# This class is responsible for writing /etc/untangle/iptables-rules.d/240-filter-rules
 # based on the settings object passed from sync-settings.py
 class FilterRulesManager:
     interfacesMarkMask = 0x0000FFFF
 
-    defaultFilename = "/etc/untangle-netd/iptables-rules.d/240-filter-rules"
+    defaultFilename = "/etc/untangle/iptables-rules.d/240-filter-rules"
     filename = defaultFilename
     file = None
 

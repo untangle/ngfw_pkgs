@@ -4,10 +4,10 @@ import subprocess
 import datetime
 import traceback
 
-# This class is responsible for writing /etc/untangle-netd/iptables-rules.d/020-ebtables
+# This class is responsible for writing /etc/untangle/iptables-rules.d/020-ebtables
 # based on the settings object passed from sync-settings.py
 class EbtablesManager:
-    defaultFilename = "/etc/untangle-netd/iptables-rules.d/020-ebtables"
+    defaultFilename = "/etc/untangle/iptables-rules.d/020-ebtables"
     filename = defaultFilename
     file = None
 

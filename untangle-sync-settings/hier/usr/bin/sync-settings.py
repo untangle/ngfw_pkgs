@@ -3,10 +3,10 @@
 # Sync Settings is takes the netork settings JSON file and "syncs" it to the operating system
 # It reads through the settings and writes the appropriate operating system files such as
 # /etc/network/interfaces
-# /etc/untangle-netd/iptables-rules.d/010-flush
-# /etc/untangle-netd/iptables-rules.d/200-nat-rules
-# /etc/untangle-netd/iptables-rules.d/210-port-forward-rules
-# /etc/untangle-netd/iptables-rules.d/220-bypass-rules
+# /etc/untangle/iptables-rules.d/010-flush
+# /etc/untangle/iptables-rules.d/200-nat-rules
+# /etc/untangle/iptables-rules.d/210-port-forward-rules
+# /etc/untangle/iptables-rules.d/220-bypass-rules
 # /etc/dnsmasq.conf
 # /etc/hosts
 # etc etc

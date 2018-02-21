@@ -11,8 +11,8 @@ from netd.network_util import NetworkUtil
 # based on the settings object passed from sync-settings.py
 class UpnpManager:
     upnpDaemonConfFilename = "/etc/miniupnpd/miniupnpd.conf"
-    restartHookFilename = "/etc/untangle-netd/post-network-hook.d/990-restart-upnp"
-    iptablesFilename = "/etc/untangle-netd/iptables-rules.d/741-upnp"
+    restartHookFilename = "/etc/untangle/post-network-hook.d/990-restart-upnp"
+    iptablesFilename = "/etc/untangle/iptables-rules.d/741-upnp"
     upnpDaemonInitFilename = "/etc/init.d/miniupnpd"
 
     iptables_chain = "upnp-rules"
@@ -137,7 +137,7 @@ UPNPD_PID="`pidof miniupnpd`"
 # Stop miniupnpd if running
 if [ ! -z "$UPNPD_PID" ] ; then
     service miniupnpd restart
-    /etc/untangle-netd/iptables-rules.d/741-upnp
+    /etc/untangle/iptables-rules.d/741-upnp
 fi
 """)
         else:
@@ -147,11 +147,11 @@ UPNPD_PID="`pidof miniupnpd`"
 # Restart miniupnpd if it isnt found
 # Or if miniupnpd.conf orhas been written since miniupnpd was started
 if [ -z "$UPNPD_PID" ] ; then
-    /etc/untangle-netd/iptables-rules.d/741-upnp
+    /etc/untangle/iptables-rules.d/741-upnp
     service miniupnpd restart
 # use not older than (instead of newer than) because it compares seconds and we want an equal value to still do a restart
 elif [ ! /etc/miniupnpd/miniupnpd.conf -ot /proc/$UPNPD_PID ] ; then
-    /etc/untangle-netd/iptables-rules.d/741-upnp
+    /etc/untangle/iptables-rules.d/741-upnp
     service miniupnpd restart
 fi
 """)

@@ -11,7 +11,7 @@ from netd.network_util import NetworkUtil
 class DnsMasqManager:
     dnsmasqHostsFilename = "/etc/hosts.dnsmasq"
     dnsmasqConfFilename = "/etc/dnsmasq.conf"
-    restartHookFilename = "/etc/untangle-netd/post-network-hook.d/990-restart-dnsmasq"
+    restartHookFilename = "/etc/untangle/post-network-hook.d/990-restart-dnsmasq"
     dhcpStaticsFilename = "/etc/dnsmasq.d/dhcp-static"
 
     def write_dnsmasq_hosts( self, settings, prefix, verbosity ):

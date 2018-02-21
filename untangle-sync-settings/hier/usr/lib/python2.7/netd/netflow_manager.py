@@ -11,7 +11,7 @@ from netd.network_util import NetworkUtil
 # based on the settings object passed from sync-settings.py
 class NetflowManager:
     softflowDaemonConfFilename = "/etc/default/softflowd"
-    restartHookFilename = "/etc/untangle-netd/post-network-hook.d/990-restart-softflowd"
+    restartHookFilename = "/etc/untangle/post-network-hook.d/990-restart-softflowd"
 
     def write_softflow_daemon_conf( self, settings, prefix="", verbosity=0 ):
         """
