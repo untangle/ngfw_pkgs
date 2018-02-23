@@ -13,7 +13,7 @@ Depends: chromedriver [!armel !armhf !arm64],
          nvi,
 	 smartmontools,
          ssh,
-         systemd-sysv (>> 232~) | sysvinit-core (>> 2.88dsf-59.9~),
+         systemd-sysv (>> 232~) | sysvinit-core (<< 2.88dsf-59.9),
          untangle-base-spam-blocker,
          untangle-base-virus-blocker,
          untangle-base-web-filter,
@@ -65,7 +65,7 @@ Conflicts: systemd-sysv (<< 232),
 	   systemd  (<< 232),
 	   libsystemd-journal0 (<< 232),
 	   libsystemd-daemon0 (<< 232),
-	   sysvinit-core (<< 2.88dsf-59.9~)
+	   sysvinit-core (>> 2.88dsf-59.9~)
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle Gateway
  The Untangle Top Level Untangle package.
