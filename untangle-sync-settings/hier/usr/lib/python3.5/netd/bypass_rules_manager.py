@@ -31,7 +31,7 @@ class BypassRuleManager:
         elif 'bypass' in bypass_rule and not bypass_rule['bypass']:
             target = " -j RETURN "
         else:
-            print "ERROR: invalid bypass target: %s" + str(bypass_rule)
+            print("ERROR: invalid bypass target: %s" + str(bypass_rule))
             return
 
         
@@ -50,7 +50,7 @@ class BypassRuleManager:
     def write_bypass_rules( self, settings, verbosity=0 ):
 
         if settings == None or 'bypassRules' not in settings or 'list' not in settings['bypassRules']:
-            print "ERROR: Missing Bypass Rules"
+            print("ERROR: Missing Bypass Rules")
             return
         
         bypass_rules = settings['bypassRules']['list'];
@@ -87,7 +87,7 @@ class BypassRuleManager:
         for bypass_rule in bypass_rules:
             try:
                 self.write_bypass_rule( bypass_rule, verbosity );
-            except Exception,e:
+            except Exception as e:
                 traceback.print_exc(e)
 
 
@@ -110,7 +110,7 @@ class BypassRuleManager:
         return
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
-        if verbosity > 1: print "BypassRulesManager: sync_settings()"
+        if verbosity > 1: print("BypassRulesManager: sync_settings()")
 
         self.filename = prefix + self.defaultFilename
         self.fileDir = os.path.dirname( self.filename )
@@ -159,6 +159,6 @@ class BypassRuleManager:
         self.file.close();
 
         if verbosity > 0:
-            print "BypassRulesManager: Wrote %s" % self.filename
+            print("BypassRulesManager: Wrote %s" % self.filename)
 
         return

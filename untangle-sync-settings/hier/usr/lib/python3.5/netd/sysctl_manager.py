@@ -64,14 +64,14 @@ class SysctlManager:
         file.close()
 
         os.system("chmod a+x %s" % filename)
-        if verbosity > 0: print "SysctlManager: Wrote %s" % filename
+        if verbosity > 0: print("SysctlManager: Wrote %s" % filename)
 
         return
 
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
 
-        if verbosity > 1: print "SysctlManager: sync_settings()"
+        if verbosity > 1: print("SysctlManager: sync_settings()")
         
         self.write_sysctl( settings, prefix, verbosity )
 

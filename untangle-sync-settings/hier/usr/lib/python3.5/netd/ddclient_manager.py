@@ -45,7 +45,7 @@ class DdclientManager:
 
             serviceName = settings.get('dynamicDnsServiceName')
             if serviceName not in config:
-                print "ERROR: Missing configuration information for \"%s\" DNS service." % serviceName
+                print("ERROR: Missing configuration information for \"%s\" DNS service." % serviceName)
                 return
 
             protocol = config[serviceName][0]
@@ -65,7 +65,7 @@ class DdclientManager:
             file.write("password=%s" % str(settings.get('dynamicDnsServicePassword')) + "\n")
             file.write("server=%s %s" % (server, str(settings.get('dynamicDnsServiceHostnames'))) + "\n")
 
-        except Exception,e:
+        except Exception as e:
             traceback.print_exc(e)
 
         finally:
@@ -73,7 +73,7 @@ class DdclientManager:
             file.close()
 
             os.system("chmod a+x %s" % filename)
-            if verbosity > 0: print "DdclientManager: Wrote %s" % filename
+            if verbosity > 0: print("DdclientManager: Wrote %s" % filename)
             
             return
 
@@ -95,7 +95,7 @@ class DdclientManager:
             file.write("daemon_interval=300" + "\n")
             file.write("run_daemon=%s" % str(settings.get('dynamicDnsServiceEnabled')).lower()+ "\n")
 
-        except Exception,e:
+        except Exception as e:
             traceback.print_exc(e)
 
         finally:
@@ -103,13 +103,13 @@ class DdclientManager:
             file.close()
 
             os.system("chmod a+x %s" % filename)
-            if verbosity > 0: print "DdclientManager: Wrote %s" % filename
+            if verbosity > 0: print("DdclientManager: Wrote %s" % filename)
             
             return
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
 
-        if verbosity > 1: print "DdclientManager: sync_settings()"
+        if verbosity > 1: print("DdclientManager: sync_settings()")
         
         self.write_ddclient_config_file( settings, prefix, verbosity )
         self.write_ddclient_default_file( settings, prefix, verbosity )

@@ -68,7 +68,7 @@ class RouteManager:
         file.flush()
         file.close()
 
-        if verbosity > 0: print "RouteManager: Wrote %s" % filename
+        if verbosity > 0: print("RouteManager: Wrote %s" % filename)
         return
 
     def write_routes( self, settings, prefix, verbosity ):
@@ -129,13 +129,13 @@ fi
 """)
         # Write the static routes from settings
         if settings == None or 'staticRoutes' not in settings or 'list' not in settings['staticRoutes']:
-            print "ERROR: Missing Static Routes"
+            print("ERROR: Missing Static Routes")
         else:
             static_routes = settings['staticRoutes']['list'];
             for static_route in static_routes:
                 for key in ['ruleId','nextHop','network','prefix']:
                     if key not in static_route:
-                        print "ERROR: ignoring bad route missing key: %s\n" % key
+                        print("ERROR: ignoring bad route missing key: %s\n" % key)
                         continue
                     
                 if self.string_is_int(static_route['nextHop']):
@@ -160,7 +160,7 @@ fi
         file.close()
 
         os.system("chmod a+x %s" % filename)
-        if verbosity > 0: print "RouteManager: Wrote %s" % filename
+        if verbosity > 0: print("RouteManager: Wrote %s" % filename)
 
         return
 
@@ -200,14 +200,14 @@ fi
         file.close()
 
         os.system("chmod a+x %s" % filename)
-        if verbosity > 0: print "RouteManager: Wrote %s" % filename
+        if verbosity > 0: print("RouteManager: Wrote %s" % filename)
 
         return
 
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
 
-        if verbosity > 1: print "RouteManager: sync_settings()"
+        if verbosity > 1: print("RouteManager: sync_settings()")
         
         self.write_rt_table( settings, prefix, verbosity )
         self.write_routes( settings, prefix, verbosity )

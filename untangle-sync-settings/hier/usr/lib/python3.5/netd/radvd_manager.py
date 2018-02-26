@@ -47,7 +47,7 @@ class RadvdManager:
         file.flush()
         file.close()
 
-        if verbosity > 0: print "RadvdManager: Wrote %s" % filename
+        if verbosity > 0: print("RadvdManager: Wrote %s" % filename)
 
     def write_restart_radvd_hook( self, settings, prefix="", verbosity=0 ):
 
@@ -85,12 +85,12 @@ fi
         file.close()
     
         os.system("chmod a+x %s" % filename)
-        if verbosity > 0: print "RadvdManager: Wrote %s" % filename
+        if verbosity > 0: print("RadvdManager: Wrote %s" % filename)
         return
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
 
-        if verbosity > 1: print "RadvdManager: sync_settings()"
+        if verbosity > 1: print("RadvdManager: sync_settings()")
         
         self.write_config_file( settings, prefix, verbosity )
         self.write_restart_radvd_hook( settings, prefix, verbosity )

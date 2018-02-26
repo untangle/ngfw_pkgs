@@ -110,9 +110,9 @@ class KernelManager:
         file.close()
 
         os.system("chmod a+x %s" % filename)
-        if verbosity > 0: print "KernelManager: Wrote %s" % filename
+        if verbosity > 0: print("KernelManager: Wrote %s" % filename)
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
-        if verbosity > 1: print "KernelManager: sync_settings()"
+        if verbosity > 1: print("KernelManager: sync_settings()")
 
         self.write_file( settings, prefix, verbosity )

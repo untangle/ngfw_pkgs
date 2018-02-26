@@ -60,7 +60,7 @@ maxfail 0
                 conffile.close()
 
                 if verbosity > 0:
-                    print "PPPoEManager: Wrote %s" % fileName
+                    print("PPPoEManager: Wrote %s" % fileName)
             else:
                 # interface is not PPPoE, remove any existing peer file
                 fileName = self.peersDirectory + self.connectionBaseName + str(interface_settings.get('interfaceId'))
@@ -89,14 +89,14 @@ maxfail 0
         papSecretsFile.flush();
         papSecretsFile.close();
         if verbosity > 0:
-            print "PPPoEManager: Wrote %s" % self.papSecretsFilename
+            print("PPPoEManager: Wrote %s" % self.papSecretsFilename)
 
         chapSecretsFile = open( self.chapSecretsFilename, "w+" )
         chapSecretsFile.write(secrets)
         chapSecretsFile.flush();
         chapSecretsFile.close();
         if verbosity > 0:
-            print "PPPoEManager: Wrote %s" % self.chapSecretsFilename
+            print("PPPoEManager: Wrote %s" % self.chapSecretsFilename)
         os.system("/usr/share/untangle/bin/ut-chap-manager PPPOE %s" % self.chapSecretsFilename)
 
         return
@@ -129,7 +129,7 @@ maxfail 0
         file.close()
         os.system("chmod a+x %s" % filename)
 
-        if verbosity > 0: print "PPPoEManager: Wrote %s" % filename
+        if verbosity > 0: print("PPPoEManager: Wrote %s" % filename)
 
 
     def write_ppp_ipup_hook( self, settings, prefix="", verbosity=0 ):
@@ -252,13 +252,13 @@ true
         file.close()
         os.system("chmod a+x %s" % filename)
 
-        if verbosity > 0: print "PPPoEManager: Wrote %s" % filename
+        if verbosity > 0: print("PPPoEManager: Wrote %s" % filename)
 
 
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
 
-        if verbosity > 1: print "PPPoEManager: sync_settings()"
+        if verbosity > 1: print("PPPoEManager: sync_settings()")
 
         self.write_pppoe_connection_files( settings, prefix, verbosity )
         self.write_secret_files( settings, prefix, verbosity )

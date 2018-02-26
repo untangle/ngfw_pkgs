@@ -194,7 +194,7 @@ ${DEBUG} "dhclient-enter-hooks.d/untangle-dhclient-enter-hook EXIT  [ reason: \"
         file.close()
 
         os.system("chmod a+x %s" % filename)
-        if verbosity > 0: print "DhcpManager: Wrote %s" % filename
+        if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
 
         return
 
@@ -359,7 +359,7 @@ true
         file.close()
 
         os.system("chmod a+x %s" % filename)
-        if verbosity > 0: print "DhcpManager: Wrote %s" % filename
+        if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
 
         return
 
@@ -392,7 +392,7 @@ true
         file.close()
         os.system("chmod a+x %s" % filename)
 
-        if verbosity > 0: print "DhcpManager: Wrote %s" % filename
+        if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
 
     def write_dhcp_conf_file( self, settings, prefix="", verbosity=0 ):
 
@@ -416,7 +416,7 @@ true
         file.flush()
         file.close()
 
-        if verbosity > 0: print "DhcpManager: Wrote %s" % filename
+        if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
 
     def write_dhcp_ddclient_file( self, settings, prefix="", verbosity=0 ):
 
@@ -439,12 +439,12 @@ true
         file.flush()
         file.close()
 
-        if verbosity > 0: print "DhcpManager: Wrote %s" % filename
+        if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
         
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
 
-        if verbosity > 1: print "DhcpManager: sync_settings()"
+        if verbosity > 1: print("DhcpManager: sync_settings()")
         
         self.write_exit_hook( settings, prefix, verbosity )
         self.write_enter_hook( settings, prefix, verbosity )

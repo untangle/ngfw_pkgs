@@ -44,14 +44,14 @@ class ArpManager:
         file.close()
 
         os.system("chmod a+x %s" % filename)
-        if verbosity > 0: print "ArpManager: Wrote %s" % filename
+        if verbosity > 0: print("ArpManager: Wrote %s" % filename)
 
         return
 
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
 
-        if verbosity > 1: print "ArpManager: sync_settings()"
+        if verbosity > 1: print("ArpManager: sync_settings()")
         
         self.write_arp( settings, prefix, verbosity )
 
