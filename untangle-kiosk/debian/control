@@ -25,7 +25,8 @@ Depends: acpi-support-base,
          xorg,
          xserver-xorg-input-all,
          xserver-xorg-video-all,
-         zenity
+	 xserver-xorg-legacy,
+	 zenity
 Conflicts: x-display-manager
 Description: The Untangle kiosk utils
  The Untangle kiosk mode utilities.
