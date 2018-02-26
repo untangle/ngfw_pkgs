@@ -98,7 +98,7 @@ class IptablesManager:
         file.close()
 
         if verbosity > 0:
-            print "IptablesManager: Wrote %s" % filename
+            print("IptablesManager: Wrote %s" % filename)
 
 
     def write_helpers_file( self, settings, prefix, verbosity ):
@@ -171,16 +171,16 @@ class IptablesManager:
         file.close()
 
         if verbosity > 0:
-            print "IptablesManager: Wrote %s" % filename
+            print("IptablesManager: Wrote %s" % filename)
 
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
-        if verbosity > 1: print "IptablesManager: sync_settings()"
+        if verbosity > 1: print("IptablesManager: sync_settings()")
 
         self.write_flush_file( settings, prefix, verbosity )
         self.write_helpers_file( settings, prefix, verbosity )
 
         os.system("ln -sf /usr/share/untangle-sync-settings/bin/generate-iptables-rules.sh %s" % self.iptablesHookFilename);
         if verbosity > 0:
-            print "IptablesManager: Wrote %s" % self.iptablesHookFilename
+            print("IptablesManager: Wrote %s" % self.iptablesHookFilename)
 

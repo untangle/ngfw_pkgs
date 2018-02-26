@@ -28,7 +28,7 @@ class PortForwardManager:
         elif 'newDestination' in port_forward_rule:
             target = " -j DNAT --to-destination %s " % str(port_forward_rule['newDestination'])
         else:
-            print "ERROR: invalid port forward target: %s" + str(port_forward_rule)
+            print("ERROR: invalid port forward target: %s" + str(port_forward_rule))
             return
 
         description = "Port Forward Rule #%i" % int(port_forward_rule['ruleId'])
@@ -46,7 +46,7 @@ class PortForwardManager:
     def write_port_forward_rules( self, settings, verbosity=0 ):
 
         if settings == None or 'portForwardRules' not in settings or 'list' not in settings['portForwardRules']:
-            print "ERROR: Missing Port Forward Rules"
+            print("ERROR: Missing Port Forward Rules")
             return
         
         port_forward_rules = settings['portForwardRules']['list'];
@@ -54,7 +54,7 @@ class PortForwardManager:
         for port_forward_rule in port_forward_rules:
             try:
                 self.write_port_forward_rule( port_forward_rule, verbosity );
-            except Exception,e:
+            except Exception as e:
                 traceback.print_exc(e)
 
     def write_port_forwards( self, settings, prefix="", verbosity=0):
@@ -86,7 +86,7 @@ class PortForwardManager:
         self.file.close();
 
         if verbosity > 0:
-            print "PortForwardManager: Wrote %s" % self.filename
+            print("PortForwardManager: Wrote %s" % self.filename)
 
     def write_admin_port_rules( self, settings, prefix="", verbosity=0):
 
@@ -160,10 +160,10 @@ class PortForwardManager:
         self.file.close();
 
         if verbosity > 0:
-            print "PortForwardManager: Wrote %s" % self.filename
+            print("PortForwardManager: Wrote %s" % self.filename)
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
-        if verbosity > 1: print "PortForwardManager: sync_settings()"
+        if verbosity > 1: print("PortForwardManager: sync_settings()")
 
         self.write_port_forwards( settings, prefix, verbosity);
         self.write_admin_port_rules( settings, prefix, verbosity);

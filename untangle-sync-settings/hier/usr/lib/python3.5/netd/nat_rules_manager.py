@@ -30,7 +30,7 @@ class NatRulesManager:
         elif 'newSource' in nat_rule:
             target = " -j SNAT --to-source %s " % str(nat_rule['newSource'])
         else:
-            print "ERROR: invalid nat target: %s" + str(nat_rule)
+            print("ERROR: invalid nat target: %s" + str(nat_rule))
             return
 
         description = "NAT Rule #%i" % int(nat_rule['ruleId'])
@@ -57,7 +57,7 @@ class NatRulesManager:
     def write_nat_rules( self, settings, verbosity=0 ):
 
         if settings == None or 'natRules' not in settings or 'list' not in settings['natRules']:
-            print "ERROR: Missing NAT Rules"
+            print("ERROR: Missing NAT Rules")
             return
         
         nat_rules = settings['natRules']['list'];
@@ -65,7 +65,7 @@ class NatRulesManager:
         for nat_rule in nat_rules:
             try:
                 self.write_nat_rule( nat_rule, verbosity );
-            except Exception,e:
+            except Exception as e:
                 traceback.print_exc(e)
 
     def write_ingress_nat_rules( self, intf, interfaces ):
@@ -177,7 +177,7 @@ class NatRulesManager:
         self.file.write("\n");
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
-        if verbosity > 1: print "NatRulesManager: sync_settings()"
+        if verbosity > 1: print("NatRulesManager: sync_settings()")
 
         self.filename = prefix + self.defaultFilename
         self.fileDir = os.path.dirname( self.filename )
@@ -234,7 +234,7 @@ class NatRulesManager:
         self.file.close();
 
         if verbosity > 0:
-            print "NatRulesManager: Wrote %s" % self.filename
+            print("NatRulesManager: Wrote %s" % self.filename)
 
         return
 

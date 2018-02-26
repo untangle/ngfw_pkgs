@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Sync Settings is takes the netork settings JSON file and "syncs" it to the operating system
 # It reads through the settings and writes the appropriate operating system files such as
@@ -16,9 +16,13 @@
 
 import sys
 if sys.version_info[0] == 2 and sys.version_info[1] == 6:
-    sys.path.insert(0, sys.path[0] + "/" + "../" + "../" + "../" + "lib/" + "python2.6/")
+    sys.path.insert(0, sys.path[0] + "/" + "../lib/" + "python2.6/")
 if sys.version_info[0] == 2 and sys.version_info[1] == 7:
-    sys.path.insert(0, sys.path[0] + "/" + "../" + "../" + "../" + "lib/" + "python2.7/")
+    sys.path.insert(0, sys.path[0] + "/" + "../lib/" + "python2.7/")
+if sys.version_info[0] == 3 and sys.version_info[1] == 4:
+    sys.path.insert(0, sys.path[0] + "/" + "../lib/" + "python3.4/")
+if sys.version_info[0] == 3 and sys.version_info[1] == 5:
+    sys.path.insert(0, sys.path[0] + "/" + "../lib/" + "python3.5/")
 
 import getopt
 import signal
@@ -55,8 +59,8 @@ class ArgumentParser(object):
             for opt in optlist:
                 handlers[opt[0]](opt[1])
             return args
-        except getopt.GetoptError, exc:
-            print exc
+        except getopt.GetoptError as exc:
+            print(exc)
             printUsage()
             exit(1)
 
@@ -123,7 +127,7 @@ def cleanupSettings( settings ):
     # Disable DHCP if if its a WAN or bridged to another interface
     for intf in interfaces:
         if intf['isWan'] or intf['configType'] == 'BRIDGED':
-            for key in intf.keys():
+            for key in list(intf.keys()):
                 if key.startswith('dhcp'):
                     del intf[key]
 
@@ -150,21 +154,21 @@ def cleanupSettings( settings ):
     # Remove PPPoE settings if not PPPoE intf
     for intf in interfaces:
         if intf['v4ConfigType'] != 'PPPOE':
-            for key in intf.keys():
+            for key in list(intf.keys()):
                 if key.startswith('v4PPPoE'):
                     del intf[key]
 
     # Remove static settings if not static intf
     for intf in interfaces:
         if intf['v4ConfigType'] != 'STATIC':
-            for key in intf.keys():
+            for key in list(intf.keys()):
                 if key.startswith('v4Static'):
                     del intf[key]
 
     # Remove auto settings if not auto intf
     for intf in interfaces:
         if intf['v4ConfigType'] != 'AUTO':
-            for key in intf.keys():
+            for key in list(intf.keys()):
                 if key.startswith('v4Auto'):
                     del intf[key]
 
@@ -177,14 +181,14 @@ def cleanupSettings( settings ):
     # Check for safety NGFW-10791
     # This can be removed after 13.1
     if settings.get('inputFilterRules') != None and settings.get('accessRules') == None:
-        print "WARNING: accessRules missing - using inputFilterRules"
+        print("WARNING: accessRules missing - using inputFilterRules")
         settings['accessRules'] = settings.get('inputFilterRules')
 
     # In 13.1 we renamed forwardFilterRules to filterRules
     # Check for safety NGFW-10791
     # This can be removed after 13.1
     if settings.get('forwardFilterRules') != None and settings.get('filterRules') == None:
-        print "WARNING: filterRules missing - using forwardFilterRules"
+        print("WARNING: filterRules missing - using forwardFilterRules")
         settings['filterRules'] = settings.get('forwardFilterRules')
         
     return
@@ -198,28 +202,28 @@ try:
     settingsData = settingsFile.read()
     settingsFile.close()
     settings = json.loads(settingsData)
-except IOError,e:
-    print "Unable to read settings file: ",e
+except IOError as e:
+    print("Unable to read settings file: ",e)
     exit(1)
 
 try:
     checkSettings(settings)
     cleanupSettings(settings)
-except Exception,e:
+except Exception as e:
     traceback.print_exc(e)
     exit(1)
 
     
 # Write the sanitized file for debugging
 # sanitized_filename = (os.path.dirname(parser.file) + "/network-sanitized.js")
-# print "Writing sanitized settings: %s " % sanitized_filename
+# print("Writing sanitized settings: %s " % sanitized_filename)
 # sanitized_file = open( sanitized_filename + ".tmp" , 'w' )
 # json.dump(settings, sanitized_file)
 # sanitized_file.flush()
 # sanitized_file.close()
 # os.system("python -m simplejson.tool %s.tmp > %s ; rm %s.tmp " % (sanitized_filename, sanitized_filename, sanitized_filename))
 
-print "Syncing %s to system..." % parser.file
+print("Syncing %s to system..." % parser.file)
 
 IptablesUtil.settings = settings
 NetworkUtil.settings = settings
@@ -239,14 +243,14 @@ for module in [ HostsManager(), DnsMasqManager(),
                 UpnpManager(), NetflowManager()]:
     try:
         module.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
-    except Exception,e:
+    except Exception as e:
         traceback.print_exc(e)
         errorOccurred = True
 
 if errorOccurred:
-    print "Done. (with errors)"
+    print("Done. (with errors)")
     exit(1)
 else:
-    print "Done."
+    print("Done.")
     exit(0)
 

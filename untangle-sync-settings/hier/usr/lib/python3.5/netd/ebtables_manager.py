@@ -12,7 +12,7 @@ class EbtablesManager:
     file = None
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
-        if verbosity > 1: print "EbtablesManager: sync_settings()"
+        if verbosity > 1: print("EbtablesManager: sync_settings()")
 
         self.filename = prefix + self.defaultFilename
         self.fileDir = os.path.dirname( self.filename )
@@ -48,7 +48,7 @@ class EbtablesManager:
         self.file.close();
 
         if verbosity > 0:
-            print "EbtablesManager: Wrote %s" % self.filename
+            print("EbtablesManager: Wrote %s" % self.filename)
 
         return
 

@@ -29,7 +29,7 @@ class FilterRulesManager:
         else:
             target = ' -j RETURN '
 
-        description = "Filter Rule #%i" % int(filter_rule['ruleId'])
+        description = "Rule #%i" % int(filter_rule['ruleId'])
         prep_commands = IptablesUtil.conditions_to_prep_commands( filter_rule['conditions']['list'], description, verbosity );
         iptables_conditions = IptablesUtil.conditions_to_iptables_string( filter_rule['conditions']['list'], description, verbosity );
 
@@ -66,7 +66,7 @@ class FilterRulesManager:
     def write_access_rules( self, settings, verbosity=0 ):
 
         if settings == None or settings.get('accessRules') == None or settings.get('accessRules').get('list') == None:
-            print "ERROR: Missing input filter Rules"
+            print("ERROR: Missing input filter Rules")
             return
 
         access_rules = settings['accessRules']['list'];
@@ -74,14 +74,14 @@ class FilterRulesManager:
         for filter_rule in access_rules:
             try:
                 self.write_filter_rule( "access-rules", filter_rule, "DROP", verbosity );
-            except Exception,e:
+            except Exception as e:
                 traceback.print_exc(e)
         return
 
     def write_filter_rules( self, settings, verbosity=0 ):
 
         if settings == None or settings.get('filterRules') == None or settings.get('filterRules').get('list') == None:
-            print "ERROR: Missing forward filter Rules"
+            print("ERROR: Missing forward filter Rules")
             return
         
         filter_rules = settings['filterRules']['list'];
@@ -89,12 +89,12 @@ class FilterRulesManager:
         for filter_rule in filter_rules:
             try:
                 self.write_filter_rule( "filter-rules", filter_rule, "REJECT", verbosity );
-            except Exception,e:
+            except Exception as e:
                 traceback.print_exc(e)
         return
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
-        if verbosity > 1: print "FilterRulesManager: sync_settings()"
+        if verbosity > 1: print("FilterRulesManager: sync_settings()")
 
         self.filename = prefix + self.defaultFilename
         self.fileDir = os.path.dirname( self.filename )
@@ -264,7 +264,7 @@ class FilterRulesManager:
         self.file.close();
 
         if verbosity > 0:
-            print "FilterRulesManager: Wrote %s" % self.filename
+            print("FilterRulesManager: Wrote %s" % self.filename)
 
         return
 

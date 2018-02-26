@@ -22,13 +22,13 @@ class VrrpManager:
                 if interface_settings.get('configType') != 'ADDRESSED':
                     continue
                 if not interface_settings.get('vrrpId') or not interface_settings.get('vrrpPriority'):
-                    print "Missing VRRP Config: %s, %s" % (interface_settings.get('vrrpId'), interface_settings.get('vrrpPriority'))
+                    print("Missing VRRP Config: %s, %s" % (interface_settings.get('vrrpId'), interface_settings.get('vrrpPriority')))
                     continue
                 if not interface_settings.get('vrrpAliases') or not interface_settings.get('vrrpAliases').get('list'):
-                    print "Missing VRRP Aliases: %s" % (str(interface_settings.get('vrrpAliases')))
+                    print("Missing VRRP Aliases: %s" % (str(interface_settings.get('vrrpAliases'))))
                     continue
                 if len( interface_settings.get('vrrpAliases').get('list') ) < 1:
-                    print "Missing VRRP Aliases (0 length): %i" % (len( interface_settings.get('vrrpAliases').get('list') ))
+                    print("Missing VRRP Aliases (0 length): %i" % (len( interface_settings.get('vrrpAliases').get('list') )))
                     continue
                 vrrp_interfaces.append( interface_settings )
 
@@ -51,7 +51,7 @@ class VrrpManager:
         if len(vrrp_interfaces) < 1:
             file.flush()
             file.close()
-            if verbosity > 0: print "VrrpManager: Wrote %s" % filename
+            if verbosity > 0: print("VrrpManager: Wrote %s" % filename)
             return
 
         file.write(r"""
@@ -109,7 +109,7 @@ global_defs {
 
         file.flush()
         file.close()
-        if verbosity > 0: print "VrrpManager: Wrote %s" % filename
+        if verbosity > 0: print("VrrpManager: Wrote %s" % filename)
         return
         
     def write_post_network_hook( self, settings, prefix="", verbosity=0 ):
@@ -165,7 +165,7 @@ fi
         file.close()
 
         os.system("chmod a+x %s" % filename)
-        if verbosity > 0: print "VrrpManager: Wrote %s" % filename
+        if verbosity > 0: print("VrrpManager: Wrote %s" % filename)
 
         return
 
@@ -191,13 +191,13 @@ fi
         file.close()
 
         os.system("chmod a+x %s" % filename)
-        if verbosity > 0: print "VrrpManager: Wrote %s" % filename
+        if verbosity > 0: print("VrrpManager: Wrote %s" % filename)
 
         return
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
 
-        if verbosity > 1: print "VrrpManager: sync_settings()"
+        if verbosity > 1: print("VrrpManager: sync_settings()")
         
         self.write_keepalivd_conf( settings, prefix, verbosity )
         self.write_post_network_hook( settings, prefix, verbosity )

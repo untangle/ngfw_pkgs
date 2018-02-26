@@ -49,7 +49,7 @@ class QosManager:
         if 'priority' in qos_rule:
             target = " -g qos-class%i " % qos_rule['priority']
         else:
-            print "ERROR: invalid qos priority: %s" + str(qos_rule)
+            print("ERROR: invalid qos priority: %s" + str(qos_rule))
             return
 
         description = "QoS Custom Rule #%i" % int(qos_rule['ruleId'])
@@ -67,7 +67,7 @@ class QosManager:
     def write_qos_custom_rules( self, settings, verbosity=0 ):
 
         if settings == None or 'qosRules' not in settings or 'list' not in settings['qosRules']:
-            print "ERROR: Missing QoS Custom Rules"
+            print("ERROR: Missing QoS Custom Rules")
             return
         
         qos_rules = settings['qosRules']['list'];
@@ -75,7 +75,7 @@ class QosManager:
         for qos_rule in qos_rules:
             try:
                 self.write_qos_rule( qos_rule, verbosity );
-            except Exception,e:
+            except Exception as e:
                 traceback.print_exc(e)
 
     def qos_priorities( self, qos_settings ):
@@ -291,7 +291,7 @@ class QosManager:
             file.flush()
             file.close()
             os.system("chmod a+x %s" % filename)
-            if verbosity > 0: print "QosManager: Wrote %s" % filename
+            if verbosity > 0: print("QosManager: Wrote %s" % filename)
             return
 
         file.write("# Start QoS \n")
@@ -415,14 +415,14 @@ fi
         file.flush()
         file.close()
 
-        if verbosity > 0: print "QosManager: Wrote %s" % filename
+        if verbosity > 0: print("QosManager: Wrote %s" % filename)
 
         return
 
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
 
-        if verbosity > 1: print "QosManager: sync_settings()"
+        if verbosity > 1: print("QosManager: sync_settings()")
         
         self.write_qos_hook( settings, prefix, verbosity )
 

@@ -50,19 +50,19 @@ class EthernetManager:
                     elif duplexString == "M10_HALF_DUPLEX":
                         file.write("%s %s %s" % (self.setLinkMediaScript, deviceSettings.get('deviceName'), "10-half-duplex") + "\n")
                     else:
-                        print "ERROR: Unknown duplex: %s" % duplexString
+                        print("ERROR: Unknown duplex: %s" % duplexString)
 
         file.flush()
         file.close()
 
         os.system("chmod a+x %s" % filename)
-        if verbosity > 0: print "EthernetManager: Wrote %s" % filename
+        if verbosity > 0: print("EthernetManager: Wrote %s" % filename)
 
         return
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
 
-        if verbosity > 1: print "EthernetManager: sync_settings()"
+        if verbosity > 1: print("EthernetManager: sync_settings()")
         
         self.write_ethernet_media( settings, prefix, verbosity )
 
