@@ -29,7 +29,17 @@ class DynamicRoutingManager:
     allowed_daemons = ["bgp", "ospf"]
 
     restartHookFilename = "/etc/untangle-netd/post-network-hook.d/990-restart-quagga"
+    ip_dev_regex = re.compile(r'\s+dev\s+([^\s]+)')
+    # ?? supprt inet6?
+    ip_addr_regex = re.compile(r'\s+inet\s+([^\s]+)')
 
+    def address_to_bits(address):
+        return ''.join('{:08b}'.format(int(x)) for x in address.split('.'))
+
+    def bits_to_address(bits, prefix):
+        chunks = len(bits)
+        chunk_size = chunks/4
+        return '.'.join([ '{0}'.format(int(bits[i:i+chunk_size], 2)) for i in range(0, chunks, chunk_size)])
 
     def get_interfaces_from_networks(self, settings, want_daemon=None):
         interfaces = []
@@ -37,9 +47,12 @@ class DynamicRoutingManager:
         # Look at bgp + ospf networks
         # look at interfaces to get best route match:
         # interfaces
-        # ipsec GRE
         # openvpn
         # tunnelvpn
+        #
+
+        # Build explicitly define network list for specified daemon.
+        # If daemon is not defined, pull from all daemons (used in Zebra)
         #
         networks = []
         for daemon in self.allowed_daemons:
@@ -54,12 +67,16 @@ class DynamicRoutingManager:
                         if networkSetting["enabled"]:
                             network = networkSetting["network"] + "/" + str(networkSetting["prefix"])
                             if not network in networks:
-                                networks.append(network)
+                                networks.append({
+                                    "network": network,
+                                    "found": False
+                                })
 
         for network in networks:
-            network_net, netmask_bits = network.split('/')
+            network_net, netmask_bits = network["network"].split('/')
             netmask_bits = int(netmask_bits)
             network_bits = ''.join('{:08b}'.format(int(x)) for x in network_net.split('.'))
+
             # print network_net_bits
             # print network_net_bits[:netmask_bits]
             if settings["interfaces"] and settings["interfaces"]["list"]:
@@ -68,23 +85,46 @@ class DynamicRoutingManager:
                         i_netmask_bits = interface["v4StaticPrefix"]
                         i_network_bits = ''.join('{:08b}'.format(int(x)) for x in interface["v4StaticAddress"].split('.'))
                         if netmask_bits <= i_netmask_bits and network_bits[:i_netmask_bits] == i_network_bits[:i_netmask_bits]:
-                            interfaces.append({
+                            dev_object = {
                                 'dev': interface["symbolicDev"],
                                 'address': interface["v4StaticAddress"],
                                 'prefix': interface["v4StaticPrefix"]
-                            })
+                            }
+                            network["found"] = True
+                            if not dev_object in interfaces:
+                                interfaces.append(dev_object)
+                            network["found"] = True
                     if interface["configType"] == "ADDRESSED" and interface["v4Aliases"] and interface["v4Aliases"]["list"]:
                         for alias in interface["v4Aliases"]["list"]:
                             i_netmask_bits = alias["staticPrefix"]
                             i_network_bits = ''.join('{:08b}'.format(int(x)) for x in alias["staticAddress"].split('.'))
                             if netmask_bits <= i_netmask_bits and network_bits[:i_netmask_bits] == i_network_bits[:i_netmask_bits]:
-                                # print network_bits[:i_netmask_bits]
-                                # print i_network_bits[:i_netmask_bits]
-                                interfaces.append({
+                                dev_object = {
                                     'dev': interface["symbolicDev"],
                                     'address': alias["staticAddress"],
                                     'prefix': alias["staticPrefix"]
-                                })
+                                }
+                                network["found"] = True
+                                if not dev_object in interfaces:
+                                    interfaces.append(dev_object)
+
+            if network["found"] is False:
+                for route in subprocess.Popen("ip route show {0}".format(network["network"]), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].split('\n'):
+                    match_dev = re.search( self.ip_dev_regex, route )
+                    if match_dev:
+                        dev = match_dev.group(1)
+                        for addr in subprocess.Popen("ip addr show dev {0}".format(dev), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].split('\n'):
+                            match_addr = re.search( self.ip_addr_regex, addr )
+                            if match_addr:
+                                dev_network_addr, dev_network_prefix = match_addr.group(1).split('/')
+                                dev_object = {
+                                    'dev': dev,
+                                    'address': dev_network_addr,
+                                    'prefix': dev_network_prefix
+                                }
+                                if not dev_object in interfaces:
+                                    interfaces.append( dev_object )
+                                break
 
         return interfaces
 
@@ -265,6 +305,7 @@ route-map set-nexthop permit 10
                 ospf_networks.append(" network {0}/{1} area {2}".format(network["network"], network["prefix"], ospf_areas[network["area"]]) )
 
         file = open( filename, "w+" )
+# passive-interface {6}
         file.write(r"""
 ! {0}
 ! {1}
@@ -277,7 +318,6 @@ log stdout
 {5}
 
 router ospf
- passive-interface {6}
 {7}
 
 route-map set-nexthop permit 10
@@ -308,8 +348,6 @@ route-map set-nexthop permit 10
 ## {1} 
 
 """.format(self.autoGeneratedComment, self.doNotEditComment))
-
-        print settings['dynamicRoutingSettings']['enabled']
 
         # !!! look for enabled with dictionary check
         if settings['dynamicRoutingSettings']['enabled'] is False:
