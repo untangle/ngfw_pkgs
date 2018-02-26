@@ -240,12 +240,14 @@ line vty
         bgp_networks = []
         if settings['dynamicRoutingSettings']['bgpNetworks'] and settings['dynamicRoutingSettings']['bgpNetworks']["list"]:
             for network in settings['dynamicRoutingSettings']['bgpNetworks']["list"]:
-                bgp_networks.append("network {0}/{1}".format(network["network"], network["prefix"]) )
+                if network["enabled"] is True:
+                    bgp_networks.append("network {0}/{1}".format(network["network"], network["prefix"]) )
 
         bgp_neighbors = []
         if settings['dynamicRoutingSettings']['bgpNeighbors'] and settings['dynamicRoutingSettings']['bgpNeighbors']["list"]:
             for neighbor in settings['dynamicRoutingSettings']['bgpNeighbors']["list"]:
-                bgp_neighbors.append("""
+                if neighbor["enabled"] is True:
+                    bgp_neighbors.append("""
 neighbor {0} remote-as {1}
 neighbor {0} route-map set-nexthop out
 neighbor {0} ebgp-multihop
@@ -302,7 +304,8 @@ route-map set-nexthop permit 10
         ospf_networks = []
         if settings['dynamicRoutingSettings']['ospfNetworks'] and settings['dynamicRoutingSettings']['ospfNetworks']["list"]:
             for network in settings['dynamicRoutingSettings']['ospfNetworks']["list"]:
-                ospf_networks.append(" network {0}/{1} area {2}".format(network["network"], network["prefix"], ospf_areas[network["area"]]) )
+                if network["enabled"] is True:
+                    ospf_networks.append(" network {0}/{1} area {2}".format(network["network"], network["prefix"], ospf_areas[network["area"]]) )
 
         file = open( filename, "w+" )
 # passive-interface {6}
