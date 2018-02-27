@@ -16,7 +16,7 @@ update-rc.d -f miniupnpd disable
 rm -f /var/log/uvm/iptables.log
 
 # 14.0 conversion
-cp -r /etc/untangle-netd/* /etc/untangle/
+cp -r -a /etc/untangle-netd/* /etc/untangle/
 rm -f /etc/network/if-up.d/netd # replaced by /etc/network/if-up.d/untangle
 [ -f /var/lib/untangle-netd ] && mv -f /var/lib/untangle-netd /var/lib/untangle-interface-status
 [ -f /etc/dhcp/dhclient-exit-hooks.d/netd-dhclient-exit-hook ] && mv -f /etc/dhcp/dhclient-exit-hooks.d/netd-dhclient-exit-hook /etc/dhcp/dhclient-exit-hooks.d/untangle-dhclient-exit-hook
