@@ -9,13 +9,12 @@ Standards-Version: 3.8.0
 Package: untangle-gateway
 Architecture: any
 Depends: chromedriver [!armel !armhf !arm64],
+         libpam-systemd,
          nano,
          nvi,
 	 smartmontools,
          ssh,
-         systemd-sysv (>> 232~) | sysvinit-core (<< 2.88dsf-59.9),
-         libpam-systemd (>> 232~) | sysvinit-core (<< 2.88dsf-59.9),
-         xserver-xorg-legacy | sysvinit-core (<< 2.88dsf-59.9),
+         systemd-sysv,
          untangle-base-spam-blocker,
          untangle-base-virus-blocker,
          untangle-base-web-filter,
@@ -63,12 +62,7 @@ Depends: chromedriver [!armel !armhf !arm64],
          untangle-system-config,
          untangle-update-manager,
 	 untangle-vm
-Conflicts: systemd-sysv (<< 232),
-	   systemd  (<< 232),
-	   libpam-systemd (< 232),
-	   libsystemd-journal0 (<< 232),
-	   libsystemd-daemon0 (<< 232),
-	   sysvinit-core (>> 2.88dsf-59.9~)
+Conflicts: sysvinit-core
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle Gateway
  The Untangle Top Level Untangle package.
