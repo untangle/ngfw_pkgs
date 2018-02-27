@@ -5,8 +5,8 @@ import subprocess
 import datetime
 import traceback
 import re
-from netd.network_util import NetworkUtil
-from netd.iptables_util import IptablesUtil
+from sync.network_util import NetworkUtil
+from sync.iptables_util import IptablesUtil
 
 # This class is responsible for writing /etc/untangle/iptables-rules.d/300-qos
 # and others based on the settings object passed from sync-settings.py
