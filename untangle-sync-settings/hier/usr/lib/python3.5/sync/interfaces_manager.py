@@ -33,7 +33,7 @@ class InterfacesManager:
             bridgedInterfaces.append(interface_settings) # include yourself in bridge
         # We want to add the physical devices to the bridge first (see issue NGFW-10101)
         # And easy way to do this is to just sort by length
-        bridgedInterfacesStr.sort(key=lambda x,y: cmp(len(x), len(y)))
+        bridgedInterfacesStr.sort(key= x: len(x))
 
         # If this is a bridge interface, write the blank config for the systemDev
         if isBridge:
