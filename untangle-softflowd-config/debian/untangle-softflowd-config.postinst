@@ -2,7 +2,7 @@
 
 DEFAULT_FILE="/etc/default/softflowd"
 
-update-rc.d -f softflowd disable
+systemctl disable softflowd
 
 # Only for first time installation.
 if [ -z "$2" ] ; then

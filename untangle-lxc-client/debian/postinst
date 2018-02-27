@@ -26,6 +26,6 @@ cp -f /usr/share/untangle-lxc-client/default.conf /etc/lxc
 rm -f /etc/network/interfaces.d/lxcbr0
 rm -rf /etc/untangle/lxc-client.d
 # disable - should not start automatically
-update-rc.d -f untangle-lxc-client disable
+systemctl disable untangle-lxc-client
 
 exit 0
