@@ -1,4 +1,5 @@
 import os
+import stat
 import sys
 import subprocess
 import datetime
@@ -159,7 +160,7 @@ fi
         file.flush()
         file.close()
 
-        os.system("chmod a+x %s" % filename)
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         if verbosity > 0: print("RouteManager: Wrote %s" % filename)
 
         return
@@ -199,7 +200,7 @@ fi
         file.flush()
         file.close()
 
-        os.system("chmod a+x %s" % filename)
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         if verbosity > 0: print("RouteManager: Wrote %s" % filename)
 
         return

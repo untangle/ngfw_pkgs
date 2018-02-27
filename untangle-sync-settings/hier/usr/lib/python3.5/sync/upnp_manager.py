@@ -1,4 +1,5 @@
 import os
+import stat
 import sys
 import subprocess
 import datetime
@@ -61,7 +62,7 @@ class UpnpManager:
         if settings.get('upnpSettings') == None or settings['upnpSettings'].get('upnpEnabled') is False:
             file.flush()
             file.close()
-            os.system("chmod a+x %s" % filename)
+            os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
             if verbosity > 0: print("UpnpManager: Wrote %s" % filename)
             return
 
@@ -160,7 +161,7 @@ fi
         file.flush()
         file.close()
     
-        os.system("chmod a+x %s" % filename)
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         if verbosity > 0: print("UpnpManager: Wrote %s" % filename)
         return
 
@@ -222,7 +223,7 @@ insert_upnp_iptables_rules
         file.flush()
         file.close()
     
-        os.system("chmod a+x %s" % filename)
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         if verbosity > 0: print("UpnpManager: Wrote %s" % filename)
         return
 
@@ -278,7 +279,7 @@ insert_upnp_iptables_rules
 
         move(tempFilename, filename)
     
-        os.system("chmod a+x %s" % filename)
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         if verbosity > 0: print("UpnpManager: Wrote %s" % filename)
         return
 

@@ -5,7 +5,7 @@ import datetime
 import traceback
 import string
 import re
-from netd.network_util import NetworkUtil
+from sync.network_util import NetworkUtil
 
 # This class is a utility class with utility functions providing
 # useful tools for dealing with iptables rules

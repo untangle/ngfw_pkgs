@@ -1,5 +1,6 @@
 import os
 import sys
+import stat
 import subprocess
 import datetime
 import traceback
@@ -290,7 +291,7 @@ class QosManager:
 
             file.flush()
             file.close()
-            os.system("chmod a+x %s" % filename)
+            os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
             if verbosity > 0: print("QosManager: Wrote %s" % filename)
             return
 

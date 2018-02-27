@@ -1,10 +1,11 @@
 import os
+import stat
 import sys
 import subprocess
 import datetime
 import traceback
 import re
-from netd.network_util import NetworkUtil
+from sync.network_util import NetworkUtil
 
 # This class is responsible for writing PPPoE related conf files
 # based on the settings object passed from sync-settings.py
@@ -97,6 +98,7 @@ maxfail 0
         chapSecretsFile.close();
         if verbosity > 0:
             print("PPPoEManager: Wrote %s" % self.chapSecretsFilename)
+        # FIXME - this modifies the filesystem directly! FIXME
         os.system("/usr/share/untangle/bin/ut-chap-manager PPPOE %s" % self.chapSecretsFilename)
 
         return
@@ -127,7 +129,7 @@ maxfail 0
         
         file.flush()
         file.close()
-        os.system("chmod a+x %s" % filename)
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
 
         if verbosity > 0: print("PPPoEManager: Wrote %s" % filename)
 
@@ -242,7 +244,7 @@ make_resolv_conf
 
 write_status_file ${PPP_IFACE} ${PPPOE_UPLINK_INDEX}
 
-# FIXME - should we run this here?
+# XXX - should we run this here?
 # run-parts /etc/untangle/post-network-hook.d
 
 true
@@ -250,7 +252,7 @@ true
 
         file.flush()
         file.close()
-        os.system("chmod a+x %s" % filename)
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
 
         if verbosity > 0: print("PPPoEManager: Wrote %s" % filename)
 
@@ -267,6 +269,7 @@ true
 
         # move 0000usepeerdns file, we will handle usepeerdns option
         # bug #11185
+        # FIXME - this modifies the filesystem directly! FIXME
         os.system("if [ -f /etc/ppp/ip-up.d/0000usepeerdns ] ; then mv -f /etc/ppp/ip-up.d/0000usepeerdns /etc/ppp/ip-up.d/0000usepeerdns.disabled ; fi")
 
         return
