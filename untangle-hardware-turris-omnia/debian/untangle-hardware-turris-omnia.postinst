@@ -13,6 +13,6 @@ if [ -x "/etc/init.d/untangle-firmware-common" ]; then
 fi
 
 # disable rsyslog by default
-update-rc.d -f rsyslog disable
+systemctl disable rsyslog
 
 exit 0

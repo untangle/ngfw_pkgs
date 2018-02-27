@@ -55,7 +55,7 @@ fi
 DATE=$(date '+%Y%m%d%H%M%S')
 
 # disable postgres at startup (report app will start as necessary)
-update-rc.d -f postgresql disable
+systemctl disable postgresql
 
 # backup original conf files
 cp -f $PG_CONF ${PG_CONF}.$DATE
