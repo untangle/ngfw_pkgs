@@ -20,6 +20,6 @@ rm -f /etc/udev/rules.d/70-persistent-net.rules
 rm -f /etc/untangle/hardware/firmware.d/50hide
 
 # disable rsyslog by default on linksys
-update-rc.d rsyslog disable
+systemctl disable rsyslog
 
 exit 0
