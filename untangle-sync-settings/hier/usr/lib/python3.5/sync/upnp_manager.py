@@ -6,7 +6,7 @@ import datetime
 import traceback
 import re
 from shutil import move
-from netd.network_util import NetworkUtil
+from sync.network_util import NetworkUtil
 
 # This class is responsible for writing 
 # based on the settings object passed from sync-settings.py

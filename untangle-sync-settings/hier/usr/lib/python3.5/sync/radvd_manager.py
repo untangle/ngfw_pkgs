@@ -5,7 +5,7 @@ import subprocess
 import datetime
 import traceback
 import re
-from netd.network_util import NetworkUtil
+from sync.network_util import NetworkUtil
 
 # This class is responsible for writing:
 # /etc/radvd.conf

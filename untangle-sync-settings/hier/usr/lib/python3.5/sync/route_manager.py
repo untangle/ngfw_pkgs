@@ -5,7 +5,7 @@ import subprocess
 import datetime
 import traceback
 import re
-from netd.network_util import NetworkUtil
+from sync.network_util import NetworkUtil
 
 # This class is responsible for writing /etc/untangle/post-network-hook.d/030-routes
 # and others based on the settings object passed from sync-settings.py
