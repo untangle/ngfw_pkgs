@@ -29,14 +29,15 @@ import signal
 import os
 import traceback
 import json
+import tempfile
 
-from   netd import *
+from   sync import *
 
 class ArgumentParser(object):
     def __init__(self):
         self.file = '/usr/share/untangle/settings/untangle-vm/network.js'
-        self.prefix = ''
         self.verbosity = 0
+        self.prefix = ''
 
     def set_file( self, arg ):
         self.file = arg

@@ -3,7 +3,7 @@ import sys
 import subprocess
 import datetime
 import traceback
-from netd.iptables_util import IptablesUtil
+from sync.iptables_util import IptablesUtil
 
 # This class is responsible for writing /etc/untangle/iptables-rules.d/230-port-forward-rules
 # based on the settings object passed from sync-settings.py

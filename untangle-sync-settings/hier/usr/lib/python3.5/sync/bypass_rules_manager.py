@@ -3,8 +3,8 @@ import sys
 import subprocess
 import datetime
 import traceback
-from netd.iptables_util import IptablesUtil
-from netd.network_util import NetworkUtil
+from sync.iptables_util import IptablesUtil
+from sync.network_util import NetworkUtil
 
 # This class is responsible for writing /etc/untangle/iptables-rules.d/210-bypass-rules
 # based on the settings object passed from sync-settings.py

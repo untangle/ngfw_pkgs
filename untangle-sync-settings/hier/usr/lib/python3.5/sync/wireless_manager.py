@@ -1,4 +1,5 @@
 import os
+import stat
 import sys
 import subprocess
 import datetime
@@ -349,7 +350,7 @@ class WirelessManager:
             self.hostapdRestartFile.flush()
             self.hostapdRestartFile.close()
 
-            os.system("chmod a+x %s" % restartFilename)
+            os.chmod(restartFilename, os.stat(restartFilename).st_mode | stat.S_IEXEC)
 
             print("WirelessManager: Wrote " + restartFilename)
         else:
@@ -368,7 +369,7 @@ class WirelessManager:
             self.hostapdRestartFile.flush()
             self.hostapdRestartFile.close()
 
-            os.system("chmod a+x %s" % restartFilename)
+            os.chmod(restartFilename, os.stat(restartFilename).st_mode | stat.S_IEXEC)
 
             print("WirelessManager: Wrote " + restartFilename)
 

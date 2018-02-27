@@ -1,10 +1,11 @@
 import os
+import stat
 import sys
 import subprocess
 import datetime
 import traceback
 import re
-from netd.network_util import NetworkUtil
+from sync.network_util import NetworkUtil
 
 # This class is responsible for writing 
 # based on the settings object passed from sync-settings.py
@@ -236,7 +237,7 @@ fi
         file.flush()
         file.close()
     
-        os.system("chmod a+x %s" % filename)
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         if verbosity > 0: print("DnsMasqManager: Wrote %s" % filename)
         return
 

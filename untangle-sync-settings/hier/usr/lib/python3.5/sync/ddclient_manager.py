@@ -1,10 +1,11 @@
 import os
+import stat
 import sys
 import subprocess
 import datetime
 import traceback
 import re
-from netd.network_util import NetworkUtil
+from sync.network_util import NetworkUtil
 
 # This class is responsible for writing /etc/ddclient.conf
 # and others based on the settings object passed from sync-settings.py
@@ -72,7 +73,7 @@ class DdclientManager:
             file.flush()
             file.close()
 
-            os.system("chmod a+x %s" % filename)
+            os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
             if verbosity > 0: print("DdclientManager: Wrote %s" % filename)
             
             return
@@ -102,7 +103,7 @@ class DdclientManager:
             file.flush()
             file.close()
 
-            os.system("chmod a+x %s" % filename)
+            os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
             if verbosity > 0: print("DdclientManager: Wrote %s" % filename)
             
             return
@@ -114,12 +115,15 @@ class DdclientManager:
         self.write_ddclient_config_file( settings, prefix, verbosity )
         self.write_ddclient_default_file( settings, prefix, verbosity )
 
+        # FIXME - this modifies the filesystem directly! FIXME
         if prefix == "":
             if settings.get('dynamicDnsServiceEnabled'):
+                # FIXME - this modifies the filesystem directly! FIXME
                 os.system('chmod 600 /etc/ddclient.conf')
                 os.system('/usr/sbin/update-rc.d ddclient defaults >/dev/null 2>&1')
                 os.system('/etc/init.d/ddclient restart >/dev/null 2>&1')
             else:
+                # FIXME - this modifies the filesystem directly! FIXME
                 os.system('/usr/sbin/update-rc.d -f ddclient remove >/dev/null 2>&1')
                 # this doesn't work because it checks /etc/default/ddclient first
                 # use killall instead

@@ -1,10 +1,11 @@
 import os
+import stat
 import sys
 import subprocess
 import datetime
 import traceback
 import re
-from netd.network_util import NetworkUtil
+from sync.network_util import NetworkUtil
 
 # This class is responsible for writing:
 # /etc/dhcp/dhclient-enter-hooks.d/untangle-dhclient-enter-hook
@@ -193,7 +194,7 @@ ${DEBUG} "dhclient-enter-hooks.d/untangle-dhclient-enter-hook EXIT  [ reason: \"
         file.flush()
         file.close()
 
-        os.system("chmod a+x %s" % filename)
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
 
         return
@@ -358,7 +359,7 @@ true
         file.flush()
         file.close()
 
-        os.system("chmod a+x %s" % filename)
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
 
         return
@@ -390,7 +391,7 @@ true
         
         file.flush()
         file.close()
-        os.system("chmod a+x %s" % filename)
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
 
         if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
 

@@ -1,10 +1,11 @@
 import os
+import stat
 import sys
 import subprocess
 import datetime
 import traceback
 import re
-from netd.network_util import NetworkUtil
+from sync.network_util import NetworkUtil
 
 # This class is responsible for writing /etc/hosts and /etc/hostname
 # based on the settings object passed from sync-settings.py
@@ -86,6 +87,7 @@ ff02::3 ip6-allhosts
         file.close()
 
         # also set the hostname using '/bin/hostname'
+        # FIXME
         os.system("/bin/hostname %s" % fqdnHostname)
 
         if verbosity > 0: print("HostsManager: Wrote %s" % filename)
