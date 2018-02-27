@@ -30,6 +30,7 @@ Depends: bridge-utils,
          psmisc,
 	 python3.5,
          radvd,
+	 systemd,
          vlan,
          wireless-regdb,
          wireless-tools
