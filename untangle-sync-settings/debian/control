@@ -14,7 +14,7 @@ Provides: untangle-netd
 Depends: bridge-utils,
          crda,
          dash,
-         dhcp3-client | isc-dhcp-client,
+         isc-dhcp-client,
          ifupdown,
          firmware-iwlwifi,
          firmware-realtek,
