@@ -16,6 +16,7 @@ Depends: bash (>= 3.1),
          initramfs-tools,
 	 linux-untangle | untangle-linux-image | linux-virtual-untangle,
          untangle-bootsplash,
+	 untangle-kernel-modules-jessie,
          untangle-kernel-modules-stretch,
          uuid-runtime
 Conflicts: grub-legacy [!armel !armhf], desktop-base
