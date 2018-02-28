@@ -10,7 +10,7 @@ cp -f /usr/share/untangle-lxc-client/default.conf /etc/lxc
 
 #if [ -x "/etc/init.d/untangle-lxc-client" ]; then
 #  update-rc.d untangle-lxc-client defaults >/dev/null # early on
-#  ourInit untangle-lxc-client restart
+#  systemctl restart untangle-lxc-client
 #fi
 
 

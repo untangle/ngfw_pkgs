@@ -6,7 +6,7 @@ APT_CACHE_DIR="/var/cache/apt/archives"
 
 /usr/share/untangle-system-config/syslog-maxsize-conf.sh /etc/rsyslog.conf /etc/rsyslog.d/* > /dev/null
 if [ -f /var/run/rsyslogd.pid ] ; then
-    ourInit rsyslog restart
+    systemctl restart rsyslog
 fi
 
 # only upon first install of this package

@@ -17,6 +17,6 @@ fi
 update-rc.d untangle-nflogd defaults >/dev/null 2>&1
 
 # start the daemon
-ourInit untangle-nflogd restart
+systemctl restart untangle-nflogd
 
 exit 0

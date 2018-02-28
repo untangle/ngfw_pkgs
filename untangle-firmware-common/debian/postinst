@@ -2,7 +2,7 @@
 
 if [ -x "/etc/init.d/untangle-firmware-common" ]; then
   update-rc.d untangle-firmware-common defaults >/dev/null # early on
-  ourInit untangle-firmware-common restart
+  systemctl restart untangle-firmware-common
 fi
 
 

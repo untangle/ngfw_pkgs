@@ -2,7 +2,7 @@
 
 if [ -x "/etc/init.d/untangle-hardware-lanner-u25w" ]; then
   update-rc.d untangle-hardware-lanner-u25w defaults 10 >/dev/null # early on
-  ourInit untangle-hardware-lanner-u25w restart
+  systemctl restart untangle-hardware-lanner-u25w
 fi
     
 exit 0

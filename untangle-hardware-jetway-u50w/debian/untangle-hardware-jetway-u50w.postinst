@@ -2,7 +2,7 @@
 
 if [ -x "/etc/init.d/untangle-hardware-jetway-u50w" ]; then
   update-rc.d untangle-hardware-jetway-u50w defaults 10 >/dev/null # early on
-  ourInit untangle-hardware-jetway-u50w restart
+  systemctl restart untangle-hardware-jetway-u50w
 fi
     
 exit 0
