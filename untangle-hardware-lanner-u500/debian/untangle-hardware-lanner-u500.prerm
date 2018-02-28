@@ -4,7 +4,7 @@ SERVICE=untangle-hardware-lanner-u500
 
 case "$1" in
     remove|deconfigure)
-      ourInit $SERVICE stop
+      systemctl stop $SERVICE
       ;;
     upgrade|failed-upgrade)
         ;;

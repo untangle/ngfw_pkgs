@@ -12,7 +12,7 @@ createDB() {
   # re-create cluster with older cluster's locale (#12847)
   locale=${1:-"en_US.UTF-8"}
   echo -e "\n[`date +%Y-%m-%dT%H:%m`] ... using locale '$locale'\n"
-  ourInit postgresql stop
+  systemctl stop postgresql
   rm -fr ${PG_VAR_DIR}
   mkdir -p ${PG_VAR_DIR}/main
   chown -R postgres:postgres ${PG_VAR_DIR}

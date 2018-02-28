@@ -2,7 +2,7 @@
 
 if [ -x "/etc/init.d/untangle-hardware-lanner-u500" ]; then
   update-rc.d untangle-hardware-lanner-u500 defaults 10 >/dev/null # early on
-  ourInit untangle-hardware-lanner-u500 restart
+  systemctl restart untangle-hardware-lanner-u500
 fi
     
 exit 0

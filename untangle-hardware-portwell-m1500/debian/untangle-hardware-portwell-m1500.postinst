@@ -2,7 +2,7 @@
 
 if [ -x "/etc/init.d/untangle-hardware-portwell-m1500" ]; then
   update-rc.d untangle-hardware-portwell-m1500 defaults 10 >/dev/null # early on
-  ourInit untangle-hardware-portwell-m1500 restart
+  systemctl restart untangle-hardware-portwell-m1500
 fi
     
 exit 0
