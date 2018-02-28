@@ -5,7 +5,7 @@ SERVICE=untangle-hardware-linksys-wrt3200acm
 case $1 in
   purge)
     rm -f /etc/init.d/$SERVICE
-    update-rc.d untangle-hardware-linksys-wrt3200acm remove >/dev/null # lintian...
+    systemctl disable untangle-hardware-linksys-wrt3200acm >/dev/null # lintian...
     ;;
 esac
 

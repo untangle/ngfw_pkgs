@@ -5,7 +5,7 @@ SERVICE=untangle-hardware-linksys-wrt1900acs
 case $1 in
   purge)
     rm -f /etc/init.d/$SERVICE
-    update-rc.d untangle-hardware-linksys-wrt1900acs remove >/dev/null # lintian...
+    systemctl disable untangle-hardware-linksys-wrt1900acs >/dev/null # lintian...
     ;;
 esac
 

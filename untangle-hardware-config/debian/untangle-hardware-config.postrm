@@ -5,7 +5,7 @@ SERVICE=untangle-hardware-config
 case $1 in
   purge)
     rm -f /etc/init.d/$SERVICE
-    update-rc.d untangle-hardware-config remove >/dev/null # lintian...
+    systemctl disable untangle-hardware-config >/dev/null # lintian...
     ;;
 esac
 
