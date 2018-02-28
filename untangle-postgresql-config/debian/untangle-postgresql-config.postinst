@@ -8,11 +8,7 @@ else
 fi
 }
 
-if grep -qE '^9\.' /etc/debian_version ; then
-  PG_VERSION="9.6"
-else
-  PG_VERSION="9.4"
-fi
+PG_VERSION="9.6"
 PG_ETC_DIR="/etc/postgresql/${PG_VERSION}/main"
 PG_VAR_DIR="/var/lib/postgresql/${PG_VERSION}"
 PG_BIN_DIR="/usr/lib/postgresql/${PG_VERSION}/bin"
