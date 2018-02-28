@@ -230,6 +230,7 @@ insert_upnp_iptables_rules
     def write_upnp_daemon_init_hook( self, settings, prefix="", verbosity=0 ):
         """
         Modify miniupnpd's daemon to not manage iptables and not to use /etc/default/minipnpd
+        FIXME: this will not work in a systemd world
         """
         filename = self.upnpDaemonInitFilename
         if os.path.isfile(filename) is False:
