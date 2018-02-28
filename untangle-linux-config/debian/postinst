@@ -9,14 +9,6 @@ if [ "$1" = "configure" ] ; then
   oldVersion="$2" 
 fi
 
-ourInit() {
-if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
-  invoke-rc.d $1 $2
-else
-  /etc/init.d/$1 $2
-fi
-}
-
 grabRootDevice() {
   awk '/^[^#].*[ \t]+\/[ \t]+ext/ {print $1}' $1
 }

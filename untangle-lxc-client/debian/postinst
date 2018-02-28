@@ -3,14 +3,6 @@
 ARCH=$(dpkg-architecture -qDEB_BUILD_ARCH)
 LXC_CACHE_DIR="/var/cache/lxc/debian/rootfs-jessie-${ARCH}"
 
-ourInit() {
-if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
-  invoke-rc.d $1 $2
-else
-  /etc/init.d/$1 $2
-fi
-}
-
 # mkdir -p $LXC_CACHE_DIR
 # tar -C $LXC_CACHE_DIR -xaf /var/lib/untangle-lxc-client/rootfs-jessie-${ARCH}.tar.bz2
 
