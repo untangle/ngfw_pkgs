@@ -215,7 +215,7 @@ make_resolv_conf() {
         ## Reststart DNS MASQ if necessary
         if [ "${t_hash}x" != "${t_new_hash}x" ]; then
             /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.d/pppoe-upstream-dns-servers changed. Restarting dnsmasq..."
-            /etc/init.d/dnsmasq restart
+            systemctl restart dnsmasq
             /bin/echo -e "[DEBUG: `date`] /etc/dnsmasq.d/pppoe-upstream-dns-servers changed. Restarting dnsmasq...done"
         fi
     fi

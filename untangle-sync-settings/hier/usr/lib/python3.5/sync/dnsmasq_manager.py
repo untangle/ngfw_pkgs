@@ -223,13 +223,13 @@ DNSMASQ_PID="`pidof dnsmasq`"
 # Restart dnsmasq if it isnt found
 # Or if dnsmasq.conf or hosts.dnsmasq has been written since dnsmasq was started
 if [ -z "$DNSMASQ_PID" ] ; then
-    /etc/init.d/dnsmasq restart
+    systemctl restart dnsmasq
 # use not older than (instead of newer than) because it compares seconds and we want an equal value to still do a restart
 elif [ ! /etc/dnsmasq.conf -ot /proc/$DNSMASQ_PID ] ; then
-    /etc/init.d/dnsmasq restart
+    systemctl restart dnsmasq
 # use not older than (instead of newer than) because it compares seconds and we want an equal value to still do a restart
 elif [ ! /etc/hosts.dnsmasq -ot /proc/$DNSMASQ_PID ] ; then
-    /etc/init.d/dnsmasq restart
+    systemctl restart dnsmasq
 fi
 """)
 

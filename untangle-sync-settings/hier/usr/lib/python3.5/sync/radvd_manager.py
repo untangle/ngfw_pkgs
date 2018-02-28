@@ -73,11 +73,11 @@ RADVD_PID="`pidof radvd`"
 # Stop if radvd is found, but no longer needed (config file is zero size)
 # The reason we don't just stop and then start if needed if to avoid doing anything if nothing is required.
 if [ -z "$RADVD_PID" ] && [ -s /etc/radvd.conf ] ; then
-    /etc/init.d/radvd start
+    systemctl start radvd
 elif [ /etc/radvd.conf -nt /proc/$RADVD_PID ] && [ -s /etc/radvd.conf ] ; then
-    /etc/init.d/radvd restart
+    systemctl restart radvd
 elif [ ! -z "$RADVD_PID" ] && [ ! -s /etc/radvd.conf ] ; then
-    /etc/init.d/radvd stop
+    systemctl stop radvd
 fi
 """)
 
