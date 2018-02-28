@@ -1,7 +1,7 @@
 #! /bin/bash
 
-# Comment out annoying warning from mountnfs script 
-# That gets printed during /etc/init.d/networking restart
+# Comment out annoying warning from mountnfs script that gets printed
+# when starting the networking service
 sed -e 's/\(.*log_warning_msg.*\)/#\1/' -i /etc/network/if-up.d/mountnfs
 
 # disable keepalived in sysvinit
