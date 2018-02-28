@@ -99,11 +99,4 @@ if [ -x /etc/untangle/startup.d/10postgres ] ; then
     /etc/untangle/startup.d/10postgres
 fi
 
-# 12.1 remove old directories if they still exist
-rm -rf /var/lib/postgresql/9.1
-rm -rf /var/lib/postgresql/8.4
-
-# 12.1 remove old log files
-rm -f /var/log/postgresql/postgresql-9.1-main*
-
 exit 0
