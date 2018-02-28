@@ -5,7 +5,7 @@ SERVICE=untangle-hardware-turris-omnia
 case $1 in
   purge)
     rm -f /etc/init.d/$SERVICE
-    update-rc.d untangle-hardware-turris-omnia remove >/dev/null # lintian...
+    systemctl disable untangle-hardware-turris-omnia >/dev/null # lintian...
     ;;
 esac
 

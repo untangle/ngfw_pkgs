@@ -5,7 +5,7 @@ SERVICE=untangle-hardware-lanner-u150
 case $1 in
   purge)
     rm -f /etc/init.d/$SERVICE
-    update-rc.d untangle-hardware-lanner-u150 remove >/dev/null # lintian...
+    systemctl disable untangle-hardware-lanner-u150 >/dev/null # lintian...
     ;;
 esac
 
