@@ -4,14 +4,6 @@
 
 APT_CACHE_DIR="/var/cache/apt/archives"
 
-ourInit() {
-  if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
-    invoke-rc.d $1 $2
-  else
-    /etc/init.d/$1 $2
-  fi
-}
-
 /usr/share/untangle-system-config/syslog-maxsize-conf.sh /etc/rsyslog.conf /etc/rsyslog.d/* > /dev/null
 if [ -f /var/run/rsyslogd.pid ] ; then
     ourInit rsyslog restart

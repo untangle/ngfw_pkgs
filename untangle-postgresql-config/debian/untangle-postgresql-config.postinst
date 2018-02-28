@@ -1,13 +1,5 @@
 #! /bin/bash
 
-ourInit() {
-if [ -x /usr/sbin/invoke-rc.d ] && [ ! "`readlink /usr/sbin/invoke-rc.d`" = /bin/true ] ; then
-  invoke-rc.d $1 $2
-else
-  /etc/init.d/$1 $2
-fi
-}
-
 PG_VERSION="9.6"
 PG_ETC_DIR="/etc/postgresql/${PG_VERSION}/main"
 PG_VAR_DIR="/var/lib/postgresql/${PG_VERSION}"
