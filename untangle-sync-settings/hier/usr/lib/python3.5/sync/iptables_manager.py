@@ -3,9 +3,10 @@ import sys
 import subprocess
 import datetime
 import traceback
+from sync import registrar
 
 # This class is responsible for writing:
-# /etc/untangle/post-network-hook.d/960-iptables
+# /etc/untangle/post-network-hook.d/960-iptables #FIXME
 # /etc/untangle/iptables-rules.d/010-flush
 # /etc/untangle/iptables-rules.d/100-interface-marks
 #
@@ -14,8 +15,16 @@ import traceback
 class IptablesManager:
     flushFilename = "/etc/untangle/iptables-rules.d/010-flush"
     helpersFilename = "/etc/untangle/iptables-rules.d/011-helpers"
-    iptablesHookFilename = "/etc/untangle/post-network-hook.d/960-iptables"
 
+    def sync_settings( self, settings, prefix="", verbosity=0 ):
+        if verbosity > 1: print("IptablesManager: sync_settings()")
+        self.write_flush_file( settings, prefix, verbosity )
+        self.write_helpers_file( settings, prefix, verbosity )
+
+    def initialize( self ):
+        registrar.register_file( self.flushFilename, "restart-iptables", self )
+        registrar.register_file( self.helpersFilename, "restart-iptables", self )
+        
     def write_flush_file( self, settings, prefix, verbosity ):
 
         filename = prefix + self.flushFilename
@@ -173,13 +182,4 @@ class IptablesManager:
         if verbosity > 0:
             print("IptablesManager: Wrote %s" % filename)
 
-
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
-        if verbosity > 1: print("IptablesManager: sync_settings()")
-
-        self.write_flush_file( settings, prefix, verbosity )
-        self.write_helpers_file( settings, prefix, verbosity )
-
-        if verbosity > 0:
-            print("IptablesManager: Wrote %s" % self.iptablesHookFilename)
 

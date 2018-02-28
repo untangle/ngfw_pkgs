@@ -11,8 +11,6 @@ from sync.network_util import NetworkUtil
 # useful tools for dealing with iptables rules
 class IptablesUtil:
 
-    settings = None
-
     @staticmethod
     def interface_condition_string_to_interface_list( value ):
         intfs = []

@@ -4,14 +4,22 @@ import sys
 import subprocess
 import datetime
 import traceback
+from sync import registrar
 
 # This class is responsible for writing /etc/untangle/post-network-hook.d/010-sysctl
 # based on the settings object passed from sync-settings.py
 class SysctlManager:
     filename = "/etc/untangle/post-network-hook.d/010-sysctl"
 
+    def sync_settings( self, settings, prefix="", verbosity=0 ):
+        if verbosity > 1: print("SysctlManager: sync_settings()")
+        self.write_sysctl( settings, prefix, verbosity )
+        return
+    
+    def initialize( self ):
+        registrar.register_file( self.filename, "restart-networking", self )
+    
     def write_sysctl( self, settings, prefix, verbosity ):
-
         filename = prefix + self.filename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
@@ -66,14 +74,5 @@ class SysctlManager:
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         if verbosity > 0: print("SysctlManager: Wrote %s" % filename)
-
-        return
-
-
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
-
-        if verbosity > 1: print("SysctlManager: sync_settings()")
-        
-        self.write_sysctl( settings, prefix, verbosity )
 
         return

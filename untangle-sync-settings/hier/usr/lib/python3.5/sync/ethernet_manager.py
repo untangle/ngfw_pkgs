@@ -4,6 +4,7 @@ import sys
 import subprocess
 import datetime
 import traceback
+from sync import registrar
 
 # This class is responsible for writing /etc/untangle/pre-network-hook.d/015-ethernet-media
 # based on the settings object passed from sync-settings.py
@@ -11,6 +12,14 @@ class EthernetManager:
     ethernetMediaFilename = "/etc/untangle/pre-network-hook.d/015-ethernet-media"
     setLinkMediaScript = "/usr/share/untangle-sync-settings/bin/set-link-media.sh"
 
+    def sync_settings( self, settings, prefix="", verbosity=0 ):
+        if verbosity > 1: print("EthernetManager: sync_settings()")
+        self.write_ethernet_media( settings, prefix, verbosity )
+        return
+
+    def initialize( self ):
+        registrar.register_file( self.ethernetMediaFilename, "restart-networking", self )
+    
     def write_ethernet_media( self, settings, prefix, verbosity ):
 
         filename = prefix + self.ethernetMediaFilename
@@ -61,10 +70,5 @@ class EthernetManager:
 
         return
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
 
-        if verbosity > 1: print("EthernetManager: sync_settings()")
         
-        self.write_ethernet_media( settings, prefix, verbosity )
-
-        return

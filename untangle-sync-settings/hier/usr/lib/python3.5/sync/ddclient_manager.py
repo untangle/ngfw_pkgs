@@ -6,6 +6,7 @@ import datetime
 import traceback
 import re
 from sync.network_util import NetworkUtil
+from sync import registrar
 
 # This class is responsible for writing /etc/ddclient.conf
 # and others based on the settings object passed from sync-settings.py
@@ -13,8 +14,34 @@ class DdclientManager:
     ddclientConfigFilename = "/etc/ddclient.conf"
     ddclientDefaultFilename = "/etc/default/ddclient"
 
-    def write_ddclient_config_file( self, settings, prefix="", verbosity=0 ):
+    def sync_settings( self, settings, prefix="", verbosity=0 ):
+        if verbosity > 1: print("DdclientManager: sync_settings()")
+        
+        self.write_ddclient_config_file( settings, prefix, verbosity )
+        self.write_ddclient_default_file( settings, prefix, verbosity )
 
+        # FIXME - this modifies the filesystem directly! FIXME
+        if prefix == "":
+            if settings.get('dynamicDnsServiceEnabled'):
+                # FIXME - this modifies the filesystem directly! FIXME
+                os.system('chmod 600 /etc/ddclient.conf')
+                os.system('/usr/sbin/update-rc.d ddclient defaults >/dev/null 2>&1')
+                os.system('/etc/init.d/ddclient restart >/dev/null 2>&1')
+            else:
+                # FIXME - this modifies the filesystem directly! FIXME
+                os.system('/usr/sbin/update-rc.d -f ddclient remove >/dev/null 2>&1')
+                # this doesn't work because it checks /etc/default/ddclient first
+                # use killall instead
+                # os.system('/etc/init.d/ddclient stop >/dev/null 2>&1')
+                os.system('killall ddclient >/dev/null 2>&1')
+
+        return
+    
+    def initialize( self ):
+        registrar.register_file( self.ddclientConfigFilename, "restart-ddclient", self )
+        registrar.register_file( self.ddclientDefaultFilename, "restart-ddclient", self )
+
+    def write_ddclient_config_file( self, settings, prefix="", verbosity=0 ):
         filename = prefix + self.ddclientConfigFilename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
@@ -67,7 +94,7 @@ class DdclientManager:
             file.write("server=%s %s" % (server, str(settings.get('dynamicDnsServiceHostnames'))) + "\n")
 
         except Exception as e:
-            traceback.print_exc(e)
+            traceback.print_exc()
 
         finally:
             file.flush()
@@ -78,9 +105,7 @@ class DdclientManager:
             
             return
 
-
     def write_ddclient_default_file( self, settings, prefix="", verbosity=0 ):
-
         filename = prefix + self.ddclientDefaultFilename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
@@ -97,7 +122,7 @@ class DdclientManager:
             file.write("run_daemon=%s" % str(settings.get('dynamicDnsServiceEnabled')).lower()+ "\n")
 
         except Exception as e:
-            traceback.print_exc(e)
+            traceback.print_exc()
 
         finally:
             file.flush()
@@ -108,26 +133,3 @@ class DdclientManager:
             
             return
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
-
-        if verbosity > 1: print("DdclientManager: sync_settings()")
-        
-        self.write_ddclient_config_file( settings, prefix, verbosity )
-        self.write_ddclient_default_file( settings, prefix, verbosity )
-
-        # FIXME - this modifies the filesystem directly! FIXME
-        if prefix == "":
-            if settings.get('dynamicDnsServiceEnabled'):
-                # FIXME - this modifies the filesystem directly! FIXME
-                os.system('chmod 600 /etc/ddclient.conf')
-                os.system('/usr/sbin/update-rc.d ddclient defaults >/dev/null 2>&1')
-                os.system('/etc/init.d/ddclient restart >/dev/null 2>&1')
-            else:
-                # FIXME - this modifies the filesystem directly! FIXME
-                os.system('/usr/sbin/update-rc.d -f ddclient remove >/dev/null 2>&1')
-                # this doesn't work because it checks /etc/default/ddclient first
-                # use killall instead
-                # os.system('/etc/init.d/ddclient stop >/dev/null 2>&1')
-                os.system('killall ddclient >/dev/null 2>&1')
-
-        return
