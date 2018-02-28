@@ -88,7 +88,7 @@ class BypassRuleManager:
             try:
                 self.write_bypass_rule( bypass_rule, verbosity );
             except Exception as e:
-                traceback.print_exc(e)
+                traceback.print_exc()
 
 
     def write_restore_bypass_mark( self, settings, verbosity ):
@@ -162,3 +162,7 @@ class BypassRuleManager:
             print("BypassRulesManager: Wrote %s" % self.filename)
 
         return
+
+    def initialize( self ):
+        return
+    

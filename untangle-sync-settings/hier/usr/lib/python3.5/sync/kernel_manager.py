@@ -4,6 +4,7 @@ import sys
 import subprocess
 import datetime
 import traceback
+from sync import registrar
 
 # This class is responsible for writing:
 # /etc/untangle/post-network-hook.d/011-kernel
@@ -13,8 +14,14 @@ import traceback
 class KernelManager:
     kernelHookFilename = "/etc/untangle/post-network-hook.d/011-kernel"
 
-    def write_file( self, settings, prefix, verbosity ):
+    def sync_settings( self, settings, prefix="", verbosity=0 ):
+        if verbosity > 1: print("KernelManager: sync_settings()")
+        self.write_file( settings, prefix, verbosity )
 
+    def initialize( self ):
+        registrar.register_file( self.kernelHookFilename, "restart-networking", self )
+        
+    def write_file( self, settings, prefix, verbosity ):
         filename = prefix + self.kernelHookFilename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
@@ -113,7 +120,3 @@ class KernelManager:
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         if verbosity > 0: print("KernelManager: Wrote %s" % filename)
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
-        if verbosity > 1: print("KernelManager: sync_settings()")
-
-        self.write_file( settings, prefix, verbosity )

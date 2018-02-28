@@ -213,7 +213,6 @@ try:
 except Exception as e:
     traceback.print_exc(e)
     exit(1)
-
     
 # Write the sanitized file for debugging
 # sanitized_filename = (os.path.dirname(parser.file) + "/network-sanitized.js")
@@ -224,30 +223,46 @@ except Exception as e:
 # sanitized_file.close()
 # os.system("python -m simplejson.tool %s.tmp > %s ; rm %s.tmp " % (sanitized_filename, sanitized_filename, sanitized_filename))
 
-print("Syncing %s to system..." % parser.file)
-
 IptablesUtil.settings = settings
 NetworkUtil.settings = settings
 errorOccurred = False
 
-for module in [ HostsManager(), DnsMasqManager(),
-                InterfacesManager(), RouteManager(), 
-                IptablesManager(), NatRulesManager(), 
-                FilterRulesManager(), QosManager(),
-                PortForwardManager(), BypassRuleManager(), 
-                EthernetManager(), 
-                SysctlManager(), ArpManager(),
-                DhcpManager(), RadvdManager(),
-                PPPoEManager(), DdclientManager(),
-                KernelManager(), EbtablesManager(),
-                VrrpManager(), WirelessManager(),
-                UpnpManager(), NetflowManager()]:
+modules = [ HostsManager(), DnsMasqManager(),
+            InterfacesManager(), RouteManager(), 
+            IptablesManager(), NatRulesManager(), 
+            FilterRulesManager(), QosManager(),
+            PortForwardManager(), BypassRuleManager(), 
+            EthernetManager(), 
+            SysctlManager(), ArpManager(),
+            DhcpManager(), RadvdManager(),
+            PPPoEManager(), DdclientManager(),
+            KernelManager(), EbtablesManager(),
+            VrrpManager(), WirelessManager(),
+            UpnpManager(), NetflowManager()]
+
+for module in modules:
+    try:
+        module.initialize()
+    except Exception as e:
+        traceback.print_exc()
+        errorOccurred = True
+        exit(1) # REMOVE ME
+
+if errorOccurred:
+    print("Abort. (errors)")
+    exit(1)
+    
+print("Syncing %s to system..." % parser.file)
+
+for module in modules:
     try:
         module.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
     except Exception as e:
-        traceback.print_exc(e)
+        traceback.print_exc()
         errorOccurred = True
 
+#print(changes_util.operations)
+        
 if errorOccurred:
     print("Done. (with errors)")
     exit(1)

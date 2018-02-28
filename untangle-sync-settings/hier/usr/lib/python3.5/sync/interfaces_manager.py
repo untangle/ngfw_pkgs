@@ -4,6 +4,7 @@ import sys
 import subprocess
 import datetime
 import traceback
+from sync import registrar
 
 # This class is responsible for writing /etc/network/interfaces
 # based on the settings object passed from sync-settings.py
@@ -17,6 +18,17 @@ class InterfacesManager:
     bothInterfacesMarksMask = 0xffff
     interfacesFile = None
 
+    def sync_settings( self, settings, prefix="", verbosity=0 ):
+        if verbosity > 1: print("InterfacesManager: sync_settings()")
+        self.write_interfaces_file( settings, prefix, verbosity )
+        self.write_interface_marks( settings, prefix, verbosity )
+        self.write_pre_network_hook( settings, prefix, verbosity )
+
+    def initialize( self ):
+        registrar.register_file( self.interfacesFilename, "restart-networking", self )
+        registrar.register_file( self.interfaceMarksFilename, "restart-iptables", self )
+        registrar.register_file( self.preNetworkHookFilename, "restart-networking", self )
+        
     def write_interface_v4( self, interface_settings, interfaces, settings ):
 
         # find interfaces bridged to this interface
@@ -643,13 +655,6 @@ rm -f /var/lib/untangle-interface-status/interface*status.js
         if lxcInterfaceId == 0 or lxcInterfaceId == None:
             return None
 
-        
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
-        if verbosity > 1: print("InterfacesManager: sync_settings()")
-        
-        self.write_interfaces_file( settings, prefix, verbosity )
-        self.write_interface_marks( settings, prefix, verbosity )
-        self.write_pre_network_hook( settings, prefix, verbosity )
 
         
 

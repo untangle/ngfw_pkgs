@@ -7,6 +7,7 @@ import traceback
 import re
 from sync.network_util import NetworkUtil
 from sync.iptables_util import IptablesUtil
+from sync import registrar
 
 # This class is responsible for writing /etc/untangle/iptables-rules.d/300-qos
 # and others based on the settings object passed from sync-settings.py
@@ -16,14 +17,19 @@ class QosManager:
     srcInterfaceMarkMask = 0x00ff
     file = None
 
+    def sync_settings( self, settings, prefix="", verbosity=0 ):
+        if verbosity > 1: print("QosManager: sync_settings()")
+        self.write_qos_hook( settings, prefix, verbosity )
+        return
+
+    def initialize( self ):
+        registrar.register_file( self.qosFilename, "restart-iptables", self )
+    
     def find_priority( self, qosPriorities, priorityId ):
         for qosPriority in qosPriorities:
             if qosPriority.get('priorityId') == priorityId:
                 return qosPriority
         return None
-
-    def systemDev_variable_name( self, intfSettings ):
-        return intfSettings['systemDev'].replace(".","_")
 
     # Returns true if the interface is QoS eligible
     # QoS is run on WAN interfaces ( excluding VLANs )
@@ -39,7 +45,6 @@ class QosManager:
         return True
 
     def write_qos_rule( self, qos_rule, verbosity=0 ):
-
         if 'enabled' in qos_rule and not qos_rule['enabled']:
             return
         if 'conditions' not in qos_rule or 'list' not in qos_rule['conditions']:
@@ -66,7 +71,6 @@ class QosManager:
         return
 
     def write_qos_custom_rules( self, settings, verbosity=0 ):
-
         if settings == None or 'qosRules' not in settings or 'list' not in settings['qosRules']:
             print("ERROR: Missing QoS Custom Rules")
             return
@@ -77,7 +81,7 @@ class QosManager:
             try:
                 self.write_qos_rule( qos_rule, verbosity );
             except Exception as e:
-                traceback.print_exc(e)
+                traceback.print_exc()
 
     def qos_priorities( self, qos_settings ):
         return [1,2,3,4,5,6,7]
@@ -227,7 +231,6 @@ class QosManager:
         # file.write("tc filter add dev %s pref 1 parent 1: protocol ip handle 1 flow hash keys dst\n" % (imq_dev) )
 
     def write_qos_hook( self, settings, prefix, verbosity ):
-
         if settings == None or settings.get('interfaces') == None or settings.get('interfaces').get('list') == None:
             return;
         if settings.get('qosSettings') == None:
@@ -417,14 +420,5 @@ fi
         file.close()
 
         if verbosity > 0: print("QosManager: Wrote %s" % filename)
-
-        return
-
-
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
-
-        if verbosity > 1: print("QosManager: sync_settings()")
-        
-        self.write_qos_hook( settings, prefix, verbosity )
 
         return
