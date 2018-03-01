@@ -1,9 +1,6 @@
 #!/bin/sh
 
-if [ -x "/etc/init.d/untangle-hardware-config" ]; then
-  update-rc.d untangle-hardware-config defaults 10 >/dev/null # early on
-  systemctl restart untangle-hardware-config
-fi
+#DEBHELPER#
 
 # #12704: no forcing of FRAMEBUFFER in initramfs configuration; this
 # does not seem to affect QEMU either, so for the sake of consistency
