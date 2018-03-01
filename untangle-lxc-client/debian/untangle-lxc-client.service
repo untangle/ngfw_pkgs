@@ -1,0 +1,12 @@
+[Unit]
+Description=Untangle LXC Client
+
+[Service]
+User=root
+Type=forking
+ExecStart=/usr/share/untangle-lxc-client/bin/untangle-lxc-start
+ExecStop=/usr/share/untangle-lxc-client/bin/untangle-lxc-stop
+ExecRestart=always
+
+[Install]
+WantedBy=multi-user.target
