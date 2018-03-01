@@ -30,14 +30,14 @@ import os
 import traceback
 import json
 import tempfile
+import shutil
+import subprocess
 
 from   sync import *
 
 class ArgumentParser(object):
     def __init__(self):
         self.file = '/usr/share/untangle/settings/untangle-vm/network.js'
-        self.verbosity = 0
-        self.prefix = ''
 
     def set_file( self, arg ):
         self.file = arg
@@ -45,14 +45,9 @@ class ArgumentParser(object):
     def set_prefix( self, arg ):
         self.prefix = arg
 
-    def increase_verbosity( self, arg ):
-        self.verbosity += 1
-
     def parse_args( self ):
         handlers = {
             '-f' : self.set_file,
-            '-p' : self.set_prefix,
-            '-v' : self.increase_verbosity
         }
 
         try:
@@ -65,12 +60,17 @@ class ArgumentParser(object):
             printUsage()
             exit(1)
 
+def cleanup(code):
+    global tmpdir
+    if tmpdir != None:
+        shutil.rmtree(tmpdir)
+    exit(code)
+
 def printUsage():
     sys.stderr.write( """\
 %s Usage:
   optional args:
     -f <file>   : settings file to sync to OS
-    -p <prefix> : prefix to append to output files
     -v          : verbose (can be specified more than one time)
 """ % sys.argv[0] )
 
@@ -197,6 +197,7 @@ def cleanupSettings( settings ):
 parser = ArgumentParser()
 parser.parse_args()
 settings = None
+tmpdir = tempfile.mkdtemp()
 
 try:
     settingsFile = open(parser.file, 'r')
@@ -205,15 +206,15 @@ try:
     settings = json.loads(settingsData)
 except IOError as e:
     print("Unable to read settings file: ",e)
-    exit(1)
+    cleanup(1)
 
 try:
     checkSettings(settings)
     cleanupSettings(settings)
 except Exception as e:
     traceback.print_exc(e)
-    exit(1)
-    
+    cleanup(1)
+
 # Write the sanitized file for debugging
 # sanitized_filename = (os.path.dirname(parser.file) + "/network-sanitized.js")
 # print("Writing sanitized settings: %s " % sanitized_filename)
@@ -223,9 +224,8 @@ except Exception as e:
 # sanitized_file.close()
 # os.system("python -m simplejson.tool %s.tmp > %s ; rm %s.tmp " % (sanitized_filename, sanitized_filename, sanitized_filename))
 
-IptablesUtil.settings = settings
 NetworkUtil.settings = settings
-errorOccurred = False
+erroc_occurred = False
 
 modules = [ HostsManager(), DnsMasqManager(),
             InterfacesManager(), RouteManager(), 
@@ -245,28 +245,57 @@ for module in modules:
         module.initialize()
     except Exception as e:
         traceback.print_exc()
-        errorOccurred = True
-        exit(1) # REMOVE ME
+        erroc_occurred = True
 
-if errorOccurred:
+if erroc_occurred:
     print("Abort. (errors)")
-    exit(1)
+    cleanup(1)
     
-print("Syncing %s to system..." % parser.file)
+print("\nSyncing %s to system..." % parser.file)
 
 for module in modules:
     try:
-        module.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
+        module.sync_settings( settings, prefix=tmpdir, verbosity=2 )
     except Exception as e:
         traceback.print_exc()
-        errorOccurred = True
+        erroc_occurred = True
 
-#print(changes_util.operations)
+cmd = "diff -rq / " + tmpdir + " | grep -v '^Only in' | awk '{print $2}'"
+process = subprocess.Popen(["sh","-c",cmd], stdout=subprocess.PIPE);
+out,err = process.communicate()
+
+changes = []
+
+print()
+print("Changed files:")
+for line in out.decode('ascii').split():
+    if line.strip() != '':
+        changes.append(line.strip())
+        print(line.strip())
         
-if errorOccurred:
+print()
+print("New files:")
+for root, dirs, files in os.walk(tmpdir):
+    for file in files:
+        rootpath = os.path.join(root,file).replace(tmpdir,"")
+        if not os.path.exists(rootpath):
+            changes.append(rootpath)
+            print(rootpath)
+print("")
+
+if len(changes) > 0:
+    cmd = "/bin/cp -ar " + tmpdir+"/*" + " /"
+    print(cmd)
+    result = subprocess.call(cmd, shell=True)
+    if result != 0:
+        print("Failed to copy results.")
+        cleanup(1)
+
+if erroc_occurred:
     print("Done. (with errors)")
-    exit(1)
+    cleanup(1)
 else:
     print("Done.")
-    exit(0)
+    cleanup(0)
+
 
