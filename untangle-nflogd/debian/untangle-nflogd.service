@@ -1,0 +1,10 @@
+[Unit]
+Description=Untangle NFlogD
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/nflogd
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

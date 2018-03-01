@@ -1,6 +1,0 @@
-#!/bin/dash
-
-# always stop the daemon just in case
-systemctl stop untangle-nflogd
-
-exit 0
