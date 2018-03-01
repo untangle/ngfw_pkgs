@@ -3,21 +3,12 @@
 ARCH=$(dpkg-architecture -qDEB_BUILD_ARCH)
 LXC_CACHE_DIR="/var/cache/lxc/debian/rootfs-jessie-${ARCH}"
 
-# mkdir -p $LXC_CACHE_DIR
-# tar -C $LXC_CACHE_DIR -xaf /var/lib/untangle-lxc-client/rootfs-jessie-${ARCH}.tar.bz2
-
 cp -f /usr/share/untangle-lxc-client/default.conf /etc/lxc
-
-#if [ -x "/etc/init.d/untangle-lxc-client" ]; then
-#  update-rc.d untangle-lxc-client defaults >/dev/null # early on
-#  systemctl restart untangle-lxc-client
-#fi
-
 
 # delete old files
 rm -f /etc/network/interfaces.d/lxcbr0
 rm -rf /etc/untangle/lxc-client.d
-# disable - should not start automatically
-systemctl disable untangle-lxc-client
+
+#DEBHELPER#
 
 exit 0
