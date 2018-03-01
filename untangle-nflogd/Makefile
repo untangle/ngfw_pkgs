@@ -3,8 +3,6 @@
 # All Rights Reserved
 # Written by Michael A. Hotz
 
-DESTDIR ?= .
-
 DEBUG = -g3 -ggdb
 #GPROF = -pg
 SPEED = -O2
@@ -25,7 +23,7 @@ OBJFILES := $(patsubst src/%.cpp,src/%.o,$(wildcard src/*.cpp))
 
 install: untangle-nflogd
 	mkdir -p $(DESTDIR)/usr/bin
-	cp nflogd $(DESTDIR)/
+	cp nflogd $(DESTDIR)/usr/bin/
 
 untangle-nflogd : $(OBJFILES)
 	$(CXX) $(DEBUG) $(GPROF) $(SPEED) $(OBJFILES) $(LIBPATH) $(LIBFILES) -o nflogd
