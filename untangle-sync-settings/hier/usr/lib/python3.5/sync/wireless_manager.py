@@ -316,7 +316,8 @@ class WirelessManager:
                 self.hostapdConfFile.flush()
                 self.hostapdConfFile.close()
 
-                print("WirelessManager: Wrote " + filename)
+                if verbosity > 0:
+                    print("WirelessManager: Wrote " + filename)
 
                 configFilesString += self.hostapdConfFilename + "-" + intf.get('systemDev') + " "
 
@@ -329,7 +330,8 @@ class WirelessManager:
         self.hostapdDefaultFile.flush()
         self.hostapdDefaultFile.close()
 
-        print("WirelessManager: Wrote " + defaultFilename)
+        if verbosity > 0:
+            print("WirelessManager: Wrote " + defaultFilename)
 
 
     def write_crda_file( self, settings, prefix="", verbosity=0 ):
@@ -347,7 +349,8 @@ class WirelessManager:
         self.crdaDefaultFile.flush()
         self.crdaDefaultFile.close()
 
-        print("WirelessManager: Wrote " + crdaFilename)
+        if verbosity > 0:
+            print("WirelessManager: Wrote " + crdaFilename)
 
     def write_network_hook( self, settings, prefix="", verbosity=0 ):
         restartFilename = prefix + self.hostapdRestartFilename
@@ -378,7 +381,8 @@ class WirelessManager:
 
             os.chmod(restartFilename, os.stat(restartFilename).st_mode | stat.S_IEXEC)
 
-            print("WirelessManager: Wrote " + restartFilename)
+            if verbosity > 0:
+                print("WirelessManager: Wrote " + restartFilename)
         else:
             # Write out the hostapd stop script
 
@@ -397,7 +401,8 @@ class WirelessManager:
 
             os.chmod(restartFilename, os.stat(restartFilename).st_mode | stat.S_IEXEC)
 
-            print("WirelessManager: Wrote " + restartFilename)
+            if verbosity > 0:
+                print("WirelessManager: Wrote " + restartFilename)
 
         return
 
