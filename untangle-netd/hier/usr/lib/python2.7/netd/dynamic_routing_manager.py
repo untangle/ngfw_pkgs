@@ -33,10 +33,11 @@ class DynamicRoutingManager:
     # ?? supprt inet6?
     ip_addr_regex = re.compile(r'\s+inet\s+([^\s]+)')
 
-    def address_to_bits(address):
+    def address_to_bits(self, address):
         return ''.join('{:08b}'.format(int(x)) for x in address.split('.'))
 
-    def bits_to_address(bits, prefix):
+    def bits_to_address(self, bits, prefix):
+        bits = '{message:{fill}{align}{width}}'.format(message=bits,fill='0',align='<',width=32)
         chunks = len(bits)
         chunk_size = chunks/4
         return '.'.join([ '{0}'.format(int(bits[i:i+chunk_size], 2)) for i in range(0, chunks, chunk_size)])
@@ -53,16 +54,15 @@ class DynamicRoutingManager:
 
         # Build explicitly define network list for specified daemon.
         # If daemon is not defined, pull from all daemons (used in Zebra)
-        #
         networks = []
         for daemon in self.allowed_daemons:
             if want_daemon is not None and want_daemon is not daemon:
                 continue
 
-            if settings["dynamicRoutingSettings"]:
-                if ( settings["dynamicRoutingSettings"][daemon+"Enabled"] and 
-                     settings["dynamicRoutingSettings"][daemon+"Networks"] and
-                    settings["dynamicRoutingSettings"][daemon+"Networks"]["list"]):
+            if "dynamicRoutingSettings" in settings:
+                if ( daemon+"Enabled" in settings["dynamicRoutingSettings"] and 
+                     daemon+"Networks" in settings["dynamicRoutingSettings"] and
+                    "list" in settings["dynamicRoutingSettings"][daemon+"Networks"] ):
                     for networkSetting in settings["dynamicRoutingSettings"][daemon+"Networks"]["list"]:
                         if networkSetting["enabled"]:
                             network = networkSetting["network"] + "/" + str(networkSetting["prefix"])
@@ -72,59 +72,101 @@ class DynamicRoutingManager:
                                     "found": False
                                 })
 
+        interfaces_routes_to_add = {}
         for network in networks:
-            network_net, netmask_bits = network["network"].split('/')
-            netmask_bits = int(netmask_bits)
-            network_bits = ''.join('{:08b}'.format(int(x)) for x in network_net.split('.'))
+            network_network, netmask_prefix = network["network"].split('/')
+            dynamic_prefix = int(netmask_prefix)
+            dynamic_network_bits = self.address_to_bits(network_network)
 
-            # print network_net_bits
-            # print network_net_bits[:netmask_bits]
-            if settings["interfaces"] and settings["interfaces"]["list"]:
+            #
+            # Look at static route settings
+            #
+            if "staticRoutes" in settings and "list" in settings["staticRoutes"]:
+                for route in settings["staticRoutes"]["list"]:
+                    route_prefix = route["prefix"]
+                    route_network_bits = self.address_to_bits(route["network"])
+                    if dynamic_prefix <= route_prefix and dynamic_network_bits[:route_prefix] == route_network_bits[:route_prefix]:
+                        if not route["nextHop"] in interfaces_routes_to_add:
+                            interfaces_routes_to_add[route["nextHop"]] = []
+                        route_network = self.bits_to_address(route_network_bits, route_prefix)
+                        if route_network not in interfaces_routes_to_add[route["nextHop"]]:
+                            interfaces_routes_to_add[route["nextHop"]].append(route_network)
+
+            #
+            # Look at interface settings.
+            #
+            if "interfaces" in settings and "list" in settings["interfaces"]:
                 for interface in settings["interfaces"]["list"]:
-                    if interface["configType"] == "ADDRESSED" and interface["v4ConfigType"] == "STATIC":
-                        i_netmask_bits = interface["v4StaticPrefix"]
-                        i_network_bits = ''.join('{:08b}'.format(int(x)) for x in interface["v4StaticAddress"].split('.'))
-                        if netmask_bits <= i_netmask_bits and network_bits[:i_netmask_bits] == i_network_bits[:i_netmask_bits]:
-                            dev_object = {
-                                'dev': interface["symbolicDev"],
-                                'address': interface["v4StaticAddress"],
-                                'prefix': interface["v4StaticPrefix"]
-                            }
-                            network["found"] = True
-                            if not dev_object in interfaces:
-                                interfaces.append(dev_object)
-                            network["found"] = True
+                    #
+                    #  Treat aliases like routes.
+                    #
                     if interface["configType"] == "ADDRESSED" and interface["v4Aliases"] and interface["v4Aliases"]["list"]:
                         for alias in interface["v4Aliases"]["list"]:
-                            i_netmask_bits = alias["staticPrefix"]
-                            i_network_bits = ''.join('{:08b}'.format(int(x)) for x in alias["staticAddress"].split('.'))
-                            if netmask_bits <= i_netmask_bits and network_bits[:i_netmask_bits] == i_network_bits[:i_netmask_bits]:
-                                dev_object = {
-                                    'dev': interface["symbolicDev"],
-                                    'address': alias["staticAddress"],
-                                    'prefix': alias["staticPrefix"]
-                                }
+                            alias_prefix = int(alias["staticPrefix"])
+                            alias_network_bits = self.address_to_bits(alias["staticAddress"])
+                            if dynamic_prefix <= alias_prefix and dynamic_network_bits[:alias_prefix] == alias_network_bits[:alias_prefix]:
+                                if not interface["interfaceId"] in interfaces_routes_to_add:
+                                    interfaces_routes_to_add[interface["interfaceId"]] = []
+                                alias_network = self.bits_to_address(self.address_to_bits(alias["staticAddress"]), alias_prefix)
+                                if alias_network not in interfaces_routes_to_add[interface["interfaceId"]]:
+                                    interfaces_routes_to_add[interface["interfaceId"]].append(alias_network)
+                                
                                 network["found"] = True
                                 if not dev_object in interfaces:
                                     interfaces.append(dev_object)
 
+                    #
+                    # Look at static interface address
+                    #
+                    if interface["configType"] == "ADDRESSED" and interface["v4ConfigType"] == "STATIC":
+                        interface_prefix = int(interface["v4StaticPrefix"])
+                        interface_network_bits = self.address_to_bits(interface["v4StaticAddress"])
+                        if (interface["interfaceId"] in interfaces_routes_to_add.keys()) or ( dynamic_prefix <= interface_prefix and dynamic_network_bits[:interface_prefix] == interface_network_bits[:interface_prefix]):
+                            dev_object = {
+                                'interfaceId': interface["interfaceId"],
+                                'dev': interface["symbolicDev"],
+                                'address': interface["v4StaticAddress"],
+                                'prefix': interface["v4StaticPrefix"],
+                                'network': self.bits_to_address(self.address_to_bits(interface["v4StaticAddress"])[:interface_prefix], interface_prefix)
+                            }
+                            if not dev_object in interfaces:
+                                interfaces.append(dev_object)
+                            network["found"] = True
+
+                    # look @ dhcp, pppoe
+
             if network["found"] is False:
+                # Look in system
                 for route in subprocess.Popen("ip route show {0}".format(network["network"]), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].split('\n'):
                     match_dev = re.search( self.ip_dev_regex, route )
                     if match_dev:
                         dev = match_dev.group(1)
-                        for addr in subprocess.Popen("ip addr show dev {0}".format(dev), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].split('\n'):
-                            match_addr = re.search( self.ip_addr_regex, addr )
-                            if match_addr:
-                                dev_network_addr, dev_network_prefix = match_addr.group(1).split('/')
-                                dev_object = {
-                                    'dev': dev,
-                                    'address': dev_network_addr,
-                                    'prefix': dev_network_prefix
-                                }
-                                if not dev_object in interfaces:
-                                    interfaces.append( dev_object )
-                                break
+                        if dev not in interfaces_routes_to_add:
+                            interfaces_routes_to_add[dev] = []
+                        if network not in interfaces_routes_to_add[dev]:
+                            interfaces_routes_to_add[dev].append(network["network"])
+
+                for dev in interfaces_routes_to_add.keys():
+                    for addr in subprocess.Popen("ip addr show dev {0}".format(dev), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].split('\n'):
+                        match_addr = re.search( self.ip_addr_regex, addr )
+                        if match_addr:
+                            dev_address, dev_prefix = match_addr.group(1).split('/')
+                            dev_prefix = int(dev_prefix)
+                            dev_object = {
+                                'dev': dev,
+                                'address': dev_address,
+                                'prefix': dev_prefix,
+                                'network': self.bits_to_address(self.address_to_bits(dev_address)[:dev_prefix], dev_prefix),
+                            }
+                            if not dev_object in interfaces:
+                                interfaces.append( dev_object )
+                            break
+
+        for interface in interfaces:
+            if "interfaceId" in interface and interface["interfaceId"] in interfaces_routes_to_add:
+                interface["routes"] = interfaces_routes_to_add[interface["interfaceId"]]
+            if interface["dev"] in interfaces_routes_to_add:
+                interface["routes"] = interfaces_routes_to_add[interface["dev"]]
 
         return interfaces
 
@@ -200,8 +242,7 @@ class DynamicRoutingManager:
             zebra_interfaces.append("""
 interface {0}
  ip address {1}/{2}
- ipv6 nd suppress-ra
-""".format(interface["dev"], interface["address"], interface["prefix"]))
+ ipv6 nd suppress-ra""".format(interface["dev"], interface["address"], interface["prefix"]))
 
         file = open( filename, "w+" )
         file.write(r"""
@@ -292,8 +333,10 @@ route-map set-nexthop permit 10
         if not os.path.exists( fileDir ):
             os.makedirs( fileDir )
 
+        interfaces_from_networks = self.get_interfaces_from_networks(settings, "ospf")
+
         ospf_interfaces = []
-        for interface in self.get_interfaces_from_networks(settings, "ospf"):
+        for interface in interfaces_from_networks:
             ospf_interfaces.append("interface {0}".format(interface["dev"]) )
 
         ospf_areas = {}
@@ -306,6 +349,9 @@ route-map set-nexthop permit 10
             for network in settings['dynamicRoutingSettings']['ospfNetworks']["list"]:
                 if network["enabled"] is True:
                     ospf_networks.append(" network {0}/{1} area {2}".format(network["network"], network["prefix"], ospf_areas[network["area"]]) )
+                    for interface in interfaces_from_networks:
+                        if "routes" in interface and network["network"] + '/' + str(network["prefix"]) in interface['routes']:
+                            ospf_networks.append(" network {0}/{1} area {2}".format(interface["network"], interface["prefix"], ospf_areas[network["area"]]) )
 
         file = open( filename, "w+" )
 # passive-interface {6}
