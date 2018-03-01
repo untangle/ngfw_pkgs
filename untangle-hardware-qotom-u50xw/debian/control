@@ -7,6 +7,7 @@ Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.8.0
 
 Package: untangle-hardware-qotom-u50xw
+Depends: untangle-hardware-config
 Architecture: all
 Description: The Untangle hardware config
  Provides the mechanism for other packages to register startup
