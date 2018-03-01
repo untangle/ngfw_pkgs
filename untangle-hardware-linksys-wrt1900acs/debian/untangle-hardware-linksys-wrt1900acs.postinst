@@ -1,8 +1,6 @@
 #!/bin/sh
 
-if [ -x "/etc/init.d/untangle-firmware-common" ]; then
-  systemctl restart untangle-firmware-common
-fi
+systemctl restart untangle-firmware-common
 
 # 12.2.1 upgrade NGFW-10303
 # remove file if it exists
@@ -14,4 +12,6 @@ rm -f /etc/untangle/hardware/firmware.d/50hide
 # disable rsyslog by default
 systemctl disable rsyslog
 
-exit 0
+rm /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
+
+exit0

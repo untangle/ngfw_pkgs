@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-hardware-asus-ac88u
 Architecture: all
-Depends: untangle-hardware-config, untangle-firmware-common, untangle-broadcom-wireless, untangle-linux-image-4.4-asus-ac88u
+Depends: untangle-firmware-common, untangle-broadcom-wireless, untangle-linux-image-4.4-asus-ac88u
 Conflicts: untangle-firmware-common (< 12.2.0~vcs20161118~)
 Description: The Untangle hardware config
  Provides the mechanism for other packages to register startup

@@ -1,8 +1,6 @@
 #!/bin/sh
 
-if [ -x "/etc/init.d/untangle-firmware-common" ]; then
-  systemctl restart untangle-firmware-common
-fi
+systemctl restart untangle-firmware-common
 
 # disable rsyslog by default on linksys
 systemctl disable rsyslog
@@ -14,4 +12,6 @@ rm -rf /etc/untangle/hardware/asus
 systemctl disable untangle-hardware-asus-ac88u
 rm -f /etc/init.d/untangle-hardware-asus-ac88u
 
-exit 0
+rm /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
+
+exit0

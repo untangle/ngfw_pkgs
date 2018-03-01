@@ -1,10 +1,10 @@
-#!/bin/sh
+#! /bin/bash
 
-if [ -x "/etc/init.d/untangle-firmware-common" ]; then
-  systemctl restart untangle-firmware-common
-fi
+systemctl restart untangle-firmware-common
 
 # disable rsyslog by default
 systemctl disable rsyslog
 
-exit 0
+rm /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
+
+exit0
