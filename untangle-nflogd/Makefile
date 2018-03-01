@@ -3,12 +3,13 @@
 # All Rights Reserved
 # Written by Michael A. Hotz
 
+DESTDIR ?= .
+
 DEBUG = -g3 -ggdb
 #GPROF = -pg
 SPEED = -O2
 
 BUILDID := "$(shell date -u "+%G/%m/%d %H:%M:%S UTC")"
-VERSION := $(shell svn info | /usr/bin/awk '/Revision/ { print $$2 }')
 SYSTEM := $(shell uname)
 ARCH := $(shell uname -m)
 
@@ -17,11 +18,14 @@ LIBFILES = -lpthread -ldl -lnetfilter_log
 
 CXXFLAGS = $(DEBUG) $(GPROF) $(SPEED) -Wall -pthread
 
-CXXFLAGS += -DVERSION=\"$(VERSION)\"
 CXXFLAGS += -DBUILDID=\"$(BUILDID)\"
 CXXFLAGS += -DPLATFORM=\"$(PLATFORM)\"
 
 OBJFILES := $(patsubst src/%.cpp,src/%.o,$(wildcard src/*.cpp))
+
+install: untangle-nflogd
+	mkdir -p $(DESTDIR)/usr/bin
+	cp nflogd $(DESTDIR)/
 
 untangle-nflogd : $(OBJFILES)
 	$(CXX) $(DEBUG) $(GPROF) $(SPEED) $(OBJFILES) $(LIBPATH) $(LIBFILES) -o nflogd
@@ -33,4 +37,3 @@ clean : force
 	rm -f src/*.o
 
 force :
-
