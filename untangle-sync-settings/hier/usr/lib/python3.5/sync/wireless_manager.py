@@ -43,6 +43,7 @@ class WirelessManager:
         registrar.register_file( self.hostapdConfFilename, "restart-hostapd", self )
         registrar.register_file( self.hostapdDefaultFilename, "restart-hostapd", self )
         registrar.register_file( self.hostapdRestartFilename, "restart-hostapd", self )
+        registrar.register_file( self.crdaDefaultFilename, "restart-hostapd", self )
 
     # Much of the ht_capab and vht_capab logic shamelessly copied from openwrt:
     # https://dev.openwrt.org/browser/trunk/package/kernel/mac80211/files/lib/netifd/wireless/mac80211.sh
