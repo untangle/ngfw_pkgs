@@ -1,10 +1,7 @@
-#!/bin/sh
+#! /bin/bash
 
-SERVICE=${DPKG_MAINTSCRIPT_PACKAGE}
+systemctl restart untangle-firmware-common
 
-if [ -x "/etc/init.d/${SERVICE}" ]; then
-  update-rc.d ${SERVICE} defaults 10 >/dev/null # early on
-  systemctl restart ${SERVICE}
-fi
-    
-exit 0
+rm /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
+
+exit0

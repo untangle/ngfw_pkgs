@@ -7,7 +7,7 @@ Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.8.0
 
 Package: untangle-hardware-lanner-u500
-Depends: untangle-hardware-config
+Depends: untangle-firmware-common
 Architecture: all
 Depends: untangle-lanner-lcd
 Description: The Untangle hardware config
