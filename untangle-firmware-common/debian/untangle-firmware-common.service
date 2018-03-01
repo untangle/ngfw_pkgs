@@ -3,6 +3,7 @@ Description=Untangle Firmware Common
 
 [Service]
 User=root
+Type=oneshot
 ExecStart=run-parts --lsbsysinit -v /etc/untangle/hardware/firmware.d
 
 [Install]
