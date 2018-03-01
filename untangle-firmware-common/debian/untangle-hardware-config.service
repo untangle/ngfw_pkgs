@@ -1,0 +1,9 @@
+[Unit]
+Description=Untangle Firmware Common
+
+[Service]
+User=root
+ExecStart=run-parts --lsbsysinit -v /etc/untangle/hardware/firmware.d
+
+[Install]
+WantedBy=multi-user.target
