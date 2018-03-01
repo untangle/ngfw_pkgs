@@ -25,13 +25,14 @@ if sys.version_info[0] == 3 and sys.version_info[1] == 5:
     sys.path.insert(0, sys.path[0] + "/" + "../lib/" + "python3.5/")
 
 import getopt
-import signal
-import os
-import traceback
 import json
-import tempfile
+import os
+import re
 import shutil
+import signal
 import subprocess
+import tempfile
+import traceback
 
 from   sync import *
 
@@ -193,7 +194,69 @@ def cleanupSettings( settings ):
         settings['filterRules'] = settings.get('forwardFilterRules')
         
     return
+
+def check_file(filename):
+    """
+    Checks that the specified filename is present in the registrar
+    Exits with exit code 1 if filename is not found
+    """
+    for regex in registrar.files.keys():
+        if filename == regex:
+            return
+    for regex in registrar.files.keys():
+        if re.compile(regex).match(filename):
+            return
+    print("File missing in registrar: " + filename)
+    cleanup(1)
+
+def check_registrar(tmpdir):
+    """
+    This checks that all files written in tmpdir are properly registered
+    in the registrar. If a file is missing in the registrar exit(1) is
+    called to exit immediately
+    """
+    for root, dirs, files in os.walk(tmpdir):
+        for file in files:
+            rootpath = os.path.join(root,file).replace(tmpdir,"")
+            check_file(rootpath)
+
+def check_changes(tmpdir):
+    """
+    Compares the contents of tmpdir with the existing filesystem
+    Returns a list of files that have changed (using root path)
+    """
+    cmd = "diff -rq / " + tmpdir + " | grep -v '^Only in' | awk '{print $2}'"
+    process = subprocess.Popen(["sh","-c",cmd], stdout=subprocess.PIPE);
+    out,err = process.communicate()
     
+    changed_files = []
+    for line in out.decode('ascii').split():
+        if line.strip() != '':
+            changed_files.append(line.strip())
+    new_files = []
+    for root, dirs, files in os.walk(tmpdir):
+        for file in files:
+            rootpath = os.path.join(root,file).replace(tmpdir,"")
+            if not os.path.exists(rootpath):
+                new_files.append(rootpath)
+
+    if len(changed_files) > 0:
+        print("\nChanged files:")
+        for f in changed_files:
+            print(f)
+    if len(new_files) > 0:
+        print("\nNew files:")
+        for f in new_files:
+            print(f)
+
+    changes = []
+    changes.extend(changed_files)
+    changes.extend(new_files)
+    if len(changes) == 0:
+        print("\nNo changed files.")
+
+    return changes
+
 parser = ArgumentParser()
 parser.parse_args()
 settings = None
@@ -260,28 +323,9 @@ for module in modules:
         traceback.print_exc()
         erroc_occurred = True
 
-cmd = "diff -rq / " + tmpdir + " | grep -v '^Only in' | awk '{print $2}'"
-process = subprocess.Popen(["sh","-c",cmd], stdout=subprocess.PIPE);
-out,err = process.communicate()
+check_registrar(tmpdir)
 
-changes = []
-
-print()
-print("Changed files:")
-for line in out.decode('ascii').split():
-    if line.strip() != '':
-        changes.append(line.strip())
-        print(line.strip())
-        
-print()
-print("New files:")
-for root, dirs, files in os.walk(tmpdir):
-    for file in files:
-        rootpath = os.path.join(root,file).replace(tmpdir,"")
-        if not os.path.exists(rootpath):
-            changes.append(rootpath)
-            print(rootpath)
-print("")
+changes = check_changes(tmpdir)
 
 if len(changes) > 0:
     cmd = "/bin/cp -ar " + tmpdir+"/*" + " /"
