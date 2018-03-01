@@ -54,7 +54,9 @@ binary-indep: build
 #	dh_installemacsen   
 #	dh_installpam   
 #	dh_installmime   
+	dh_systemd_enable
 	dh_installinit
+	dh_systemd_start
 #	dh_installcron   
 #	dh_installman   
 #	dh_installinfo   
