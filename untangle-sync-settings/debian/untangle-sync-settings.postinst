@@ -12,9 +12,6 @@ systemctl disable keepalived
 # It will be started via the post-network scripts if needed
 systemctl disable miniupnpd
 
-# 13.0 conversion (remove old log file)
-rm -f /var/log/uvm/iptables.log
-
 # 14.0 conversion
 cp -r -a /etc/untangle-netd/* /etc/untangle/
 rm -f /etc/network/if-up.d/netd # replaced by /etc/network/if-up.d/untangle
@@ -23,5 +20,10 @@ rm -f /etc/network/if-up.d/netd # replaced by /etc/network/if-up.d/untangle
 [ -f /etc/dhcp/dhclient-enter-hooks.d/netd-dhclient-enter-hook ] && mv -f /etc/dhcp/dhclient-enter-hooks.d/netd-dhclient-enter-hook /etc/dhcp/dhclient-enter-hooks.d/untangle-dhclient-enter-hook
 [ -f /etc/ppp/ip-up.d/99-netd ] && mv -f /etc/ppp/ip-up.d/99-netd /etc/ppp/ip-up.d/99-untangle
 sed -i -e 's/netd_/untangle_/g' /etc/network/interfaces
+
+# 14.0 remove old log files
+rm -f /var/log/uvm/dhcp.log*
+rm -f /var/log/uvm/pppoe.log*
+rm -f /var/log/uvm/iptables.log*
 
 exit 0
