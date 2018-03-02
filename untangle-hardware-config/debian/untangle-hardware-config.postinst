@@ -1,5 +1,7 @@
 #!/bin/sh
 
+rm /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
+
 #DEBHELPER#
 
 # #12704: no forcing of FRAMEBUFFER in initramfs configuration; this
