@@ -5,6 +5,6 @@ systemctl restart untangle-firmware-common
 # disable rsyslog by default
 systemctl disable rsyslog
 
-rm /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
+rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
 
 exit0

@@ -12,6 +12,6 @@ rm -rf /etc/untangle/hardware/asus
 systemctl disable untangle-hardware-asus-ac88u
 rm -f /etc/init.d/untangle-hardware-asus-ac88u
 
-rm /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
+rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
 
 exit0

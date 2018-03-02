@@ -1,6 +1,6 @@
 #!/bin/sh
 
-rm /etc/init.d/untangle-firmware-common
+rm -f /etc/init.d/untangle-firmware-common
 
 #DEBHELPER#
 

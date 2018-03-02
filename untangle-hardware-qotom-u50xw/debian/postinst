@@ -25,6 +25,6 @@ if [ -z "$2" ] ; then
     swapNicFinish
 fi
 
-rm /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
+rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
 
 exit0
