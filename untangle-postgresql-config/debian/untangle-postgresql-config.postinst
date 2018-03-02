@@ -42,6 +42,9 @@ fi
 
 DATE=$(date '+%Y%m%d%H%M%S')
 
+# 14.0 conversion: migrate from 9.4 to 9.6 (NGFW-11582)
+/usr/share/untangle/bin/postgresql-upgrade-cluster.sh 9.4 $PG_VERSION
+
 # disable postgres at startup (report app will start as necessary)
 systemctl disable postgresql
 
