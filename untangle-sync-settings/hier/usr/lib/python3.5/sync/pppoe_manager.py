@@ -173,8 +173,7 @@ maxfail 0
 # PPP_IPPARAM="$6"
 
 # redirect to logfile and stdout
-mkdir -p /var/log/uvm/
-LOGFILE="/var/log/uvm/pppoe.log"
+LOGFILE="/var/log/pppoe.log"
 mkfifo ${LOGFILE}.pipe
 tee < ${LOGFILE}.pipe $LOGFILE &
 exec >> ${LOGFILE}.pipe 2>&1

@@ -262,11 +262,11 @@ def copy_files(tmpdir):
     """
     Copy the files from tmpdir into the root filesystem
     """
-    cmd = "/bin/cp -ar " + tmpdir+"/*" + " /"
+    cmd = "/bin/cp -ar --remove-destination " + tmpdir+"/*" + " /"
     print("\nCopying files...")
     result = run_cmd(cmd)
     if result != 0:
-        print("Failed to copy results: " + result)
+        print("Failed to copy results: " + str(result))
         return result
     return 0
 
@@ -284,10 +284,16 @@ def run_commands(ops, key):
             result = run_cmd(command)
             print("[" + op + "]: " + command + " done.")
             if result != 0:
-                print("Error[" + result + "]: " + command)
+                print("Error[" + str(result) + "]: " + command)
             ret += result
     return ret
 
+def tee_stdout_log():
+    tee = subprocess.Popen(["tee", "/var/log/sync.log"], stdin=subprocess.PIPE)
+    os.dup2(tee.stdin.fileno(), sys.stdout.fileno())
+    os.dup2(tee.stdin.fileno(), sys.stderr.fileno())
+
+tee_stdout_log()
 parser = ArgumentParser()
 parser.parse_args()
 settings = None
@@ -369,9 +375,18 @@ for op in operations:
         cleanup(1)
 
 ret = 0
-ret += run_commands(operations, 'pre_command')
-ret += copy_files(tmpdir)
-ret += run_commands(operations, 'post_command')
+try:
+    ret += run_commands(operations, 'pre_command')
+except Exception as e:
+    traceback.print_exc()
+try:
+    ret += copy_files(tmpdir)
+except Exception as e:
+    traceback.print_exc()
+try:
+    ret += run_commands(operations, 'post_command')
+except Exception as e:
+    traceback.print_exc()
 
 if ret != 0:
     print("\nDone. (with errors)")

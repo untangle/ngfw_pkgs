@@ -1,4 +1,4 @@
-/var/log/uvm/iptables.log {
+/var/log/iptables.log {
 rotate 2
 size 500k
 compress
@@ -7,7 +7,7 @@ copytruncate
 missingok
 }
 
-/var/log/uvm/pppoe.log {
+/var/log/pppoe.log {
 rotate 2
 size 500k
 compress
@@ -16,7 +16,16 @@ copytruncate
 missingok
 }
 
-/var/log/uvm/dhcp.log {
+/var/log/dhcp.log {
+rotate 2
+size 500k
+compress
+notifempty
+copytruncate
+missingok
+}
+
+/var/log/sync.log {
 rotate 2
 size 500k
 compress
