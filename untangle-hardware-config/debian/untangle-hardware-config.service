@@ -2,9 +2,8 @@
 Description=Untangle Hardware Config
 
 [Service]
-User=root
 Type=oneshot
-ExecStart=run-parts --lsbsysinit -v /etc/untangle/startup.d
+ExecStart=/bin/run-parts --lsbsysinit -v /etc/untangle/startup.d
 
 [Install]
 WantedBy=multi-user.target
