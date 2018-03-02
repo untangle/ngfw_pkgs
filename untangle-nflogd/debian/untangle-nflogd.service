@@ -3,7 +3,7 @@ Description=Untangle NFlogD
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/nflogd
+ExecStart=/usr/bin/nflogd -F
 Restart=always
 
 [Install]
