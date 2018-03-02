@@ -4,6 +4,7 @@ Description=Untangle Firmware Common
 [Service]
 Type=oneshot
 ExecStart=/bin/run-parts --lsbsysinit -v /etc/untangle/hardware/firmware.d
+RemainAfterExit=yes
 
 [Install]
 WantedBy=multi-user.target
