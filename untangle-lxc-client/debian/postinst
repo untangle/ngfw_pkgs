@@ -5,7 +5,7 @@ cp -f /usr/share/untangle-lxc-client/default.conf /etc/lxc
 # delete old files
 rm -f /etc/network/interfaces.d/lxcbr0
 rm -rf /etc/untangle/lxc-client.d
-rm /etc/init.d/untangle-lxc-client
+rm -f /etc/init.d/untangle-lxc-client
 
 #DEBHELPER#
 

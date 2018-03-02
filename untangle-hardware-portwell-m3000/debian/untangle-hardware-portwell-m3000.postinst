@@ -2,6 +2,6 @@
 
 systemctl restart untangle-firmware-common
 
-rm /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
+rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
 
 exit0

@@ -12,6 +12,6 @@ rm -f /etc/untangle/hardware/firmware.d/50hide
 # disable rsyslog by default on linksys
 systemctl disable rsyslog
 
-rm /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
+rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
 
 exit0
