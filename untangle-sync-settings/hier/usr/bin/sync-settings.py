@@ -32,6 +32,7 @@ import shutil
 import signal
 import subprocess
 import tempfile
+import time
 import traceback
 
 from   sync import *
@@ -195,19 +196,6 @@ def cleanupSettings( settings ):
         
     return
 
-def check_file(filename):
-    """
-    Checks that the specified filename is present in the registrar
-    Exits with exit code 1 if filename is not found
-    """
-    for regex in registrar.files.keys():
-        if filename == regex:
-            return
-    for regex in registrar.files.keys():
-        if re.compile(regex).match(filename):
-            return
-    print("File missing in registrar: " + filename)
-    cleanup(1)
 
 def check_registrar(tmpdir):
     """
@@ -218,9 +206,12 @@ def check_registrar(tmpdir):
     for root, dirs, files in os.walk(tmpdir):
         for file in files:
             rootpath = os.path.join(root,file).replace(tmpdir,"")
-            check_file(rootpath)
+            result = registrar.registrar_check_file(rootpath)
+            if not result:
+                print("File missing in registrar: " + filename)
+                cleanup(1)
 
-def check_changes(tmpdir):
+def calculate_changed_files(tmpdir):
     """
     Compares the contents of tmpdir with the existing filesystem
     Returns a list of files that have changed (using root path)
@@ -257,6 +248,46 @@ def check_changes(tmpdir):
 
     return changes
 
+def run_cmd(cmd):
+    stdin=open(os.devnull, 'rb')
+    p = subprocess.Popen(["sh","-c","%s 2>&1" % (cmd)], stdout=subprocess.PIPE, stdin=stdin )
+    for line in iter(p.stdout.readline, ''):
+        if line == b'':
+            break
+        print( line.decode('ascii').strip() )
+    p.wait()
+    return p.returncode
+
+def copy_files(tmpdir):
+    """
+    Copy the files from tmpdir into the root filesystem
+    """
+    cmd = "/bin/cp -ar " + tmpdir+"/*" + " /"
+    print("\nCopying files...")
+    result = run_cmd(cmd)
+    if result != 0:
+        print("Failed to copy results: " + result)
+        return result
+    return 0
+
+def run_commands(ops, key):
+    """
+    Run all the commands for the specified operations
+    """
+    print("\nRunning operations " + key + "...")
+    ret = 0
+    for op in ops:
+        o = registrar.operations.get(op)
+        command = o.get(key)
+        if command != None:
+            print("\n[" + op + "]: " + command)
+            result = run_cmd(command)
+            print("[" + op + "]: " + command + " done.")
+            if result != 0:
+                print("Error[" + result + "]: " + command)
+            ret += result
+    return ret
+
 parser = ArgumentParser()
 parser.parse_args()
 settings = None
@@ -288,7 +319,6 @@ except Exception as e:
 # os.system("python -m simplejson.tool %s.tmp > %s ; rm %s.tmp " % (sanitized_filename, sanitized_filename, sanitized_filename))
 
 NetworkUtil.settings = settings
-erroc_occurred = False
 
 modules = [ HostsManager(), DnsMasqManager(),
             InterfacesManager(), RouteManager(), 
@@ -308,12 +338,9 @@ for module in modules:
         module.initialize()
     except Exception as e:
         traceback.print_exc()
-        erroc_occurred = True
+        print("Abort. (errors)")
+        cleanup(1)
 
-if erroc_occurred:
-    print("Abort. (errors)")
-    cleanup(1)
-    
 print("\nSyncing %s to system..." % parser.file)
 
 for module in modules:
@@ -321,25 +348,36 @@ for module in modules:
         module.sync_settings( settings, prefix=tmpdir, verbosity=2 )
     except Exception as e:
         traceback.print_exc()
-        erroc_occurred = True
+        cleanup(1)
 
 check_registrar(tmpdir)
 
-changes = check_changes(tmpdir)
+changed_files = calculate_changed_files(tmpdir)
+operations = registrar.calculate_required_operations(changed_files)
+operations = registrar.reduce_operations(operations)
+if len(operations) < 1:
+    copy_files(tmpdir)
+    print("\nDone.")
+    cleanup(0)
 
-if len(changes) > 0:
-    cmd = "/bin/cp -ar " + tmpdir+"/*" + " /"
-    print(cmd)
-    result = subprocess.call(cmd, shell=True)
-    if result != 0:
-        print("Failed to copy results.")
+print("\nRequired operations: ")
+for op in operations:
+    print(op)
+    o = registrar.operations.get(op)
+    if o == None:
+        print("Operation missing from registrar: " + op)
         cleanup(1)
 
-if erroc_occurred:
-    print("Done. (with errors)")
+ret = 0
+ret += run_commands(operations, 'pre_command')
+ret += copy_files(tmpdir)
+ret += run_commands(operations, 'post_command')
+
+if ret != 0:
+    print("\nDone. (with errors)")
     cleanup(1)
 else:
-    print("Done.")
+    print("\nDone.")
     cleanup(0)
 
 
