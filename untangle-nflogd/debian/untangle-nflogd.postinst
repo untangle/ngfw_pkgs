@@ -1,0 +1,5 @@
+#! /bin/bash
+
+rm /etc/init.d/untangle-nflogd
+
+#DEBHELPER#
