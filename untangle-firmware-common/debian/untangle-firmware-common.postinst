@@ -1,5 +1,7 @@
 #!/bin/sh
 
+rm /etc/init.d/untangle-firmware-common
+
 #DEBHELPER#
 
 # 12.2
