@@ -5,6 +5,6 @@ APT
     "^untangle-extra-utils$";
     "^untangle-linux-config$";
     "^untangle-kiosk$";
-    "^untangle-kernel-modules-jessie$";
+    "^untangle-kernel-modules-jessie.*";
   }
 }
