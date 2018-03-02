@@ -1,13 +1,11 @@
 #!/bin/sh
 
-ARCH=$(dpkg-architecture -qDEB_BUILD_ARCH)
-LXC_CACHE_DIR="/var/cache/lxc/debian/rootfs-jessie-${ARCH}"
-
 cp -f /usr/share/untangle-lxc-client/default.conf /etc/lxc
 
 # delete old files
 rm -f /etc/network/interfaces.d/lxcbr0
 rm -rf /etc/untangle/lxc-client.d
+rm /etc/init.d/untangle-lxc-client
 
 #DEBHELPER#
 
