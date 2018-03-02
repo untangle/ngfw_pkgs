@@ -4,6 +4,7 @@ Description=Untangle Hardware Config
 [Service]
 Type=oneshot
 ExecStart=/bin/run-parts --lsbsysinit -v /etc/untangle/startup.d
+RemainAfterExit=true
 
 [Install]
 WantedBy=multi-user.target
