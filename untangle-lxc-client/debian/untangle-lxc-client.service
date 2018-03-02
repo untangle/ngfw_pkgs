@@ -6,7 +6,7 @@ User=root
 Type=forking
 ExecStart=/usr/share/untangle-lxc-client/bin/untangle-lxc-start
 ExecStop=/usr/share/untangle-lxc-client/bin/untangle-lxc-stop
-ExecRestart=always
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
