@@ -6,11 +6,10 @@ import datetime
 import traceback
 import re
 from sync.network_util import NetworkUtil
+from sync import registrar
 
 # This class is responsible for writing PPPoE related conf files
 # based on the settings object passed from sync-settings.py
-#
-#
 class PPPoEManager:
     papSecretsFilename = "/etc/ppp/pap-secrets"
     chapSecretsFilename = "/tmp/chap-secrets.pppoe"
@@ -19,8 +18,26 @@ class PPPoEManager:
     preNetworkHookFilename = "/etc/untangle/pre-network-hook.d/040-pppoe"
     pppIpUpFilename = "/etc/ppp/ip-up.d/99-untangle"
 
-    def write_pppoe_connection_files( self, settings, prefix="", verbosity=0 ):
+    def sync_settings( self, settings, prefix="", verbosity=0 ):
+        if verbosity > 1: print("PPPoEManager: sync_settings()")
+        self.write_pppoe_connection_files( settings, prefix, verbosity )
+        self.write_secret_files( settings, prefix, verbosity )
+        self.write_pre_network_hook( settings, prefix, verbosity )
+        self.write_ppp_ipup_hook( settings, prefix, verbosity )
 
+        # move 0000usepeerdns file, we will handle usepeerdns option
+        # bug #11185
+        # FIXME - this modifies the filesystem directly! FIXME
+        os.system("if [ -f /etc/ppp/ip-up.d/0000usepeerdns ] ; then mv -f /etc/ppp/ip-up.d/0000usepeerdns /etc/ppp/ip-up.d/0000usepeerdns.disabled ; fi")
+
+    def initialize( self ):
+        registrar.register_file( self.papSecretsFilename, "restart-networking", self )
+        #registrar.register_file( self.chapSecretsFilename, "restart-networking", self ) # FIXME
+        registrar.register_file( self.peersDirectory+".*", "restart-networking", self )
+        registrar.register_file( self.preNetworkHookFilename, "restart-networking", self )
+        registrar.register_file( self.pppIpUpFilename, "restart-networking", self )
+        
+    def write_pppoe_connection_files( self, settings, prefix="", verbosity=0 ):
         for interface_settings in settings.get('interfaces').get('list'):
             if "PPPOE" == interface_settings.get('v4ConfigType'):
                 # open this pppoe config file for this connection
@@ -70,7 +87,6 @@ maxfail 0
         return
 
     def write_secret_files( self, settings, prefix="", verbosity=0 ):
-
         secrets = ""
         secrets += "## Auto Generated\n"
         secrets += "## DO NOT EDIT. Changes will be overwritten.\n"
@@ -104,7 +120,6 @@ maxfail 0
         return
 
     def write_pre_network_hook( self, settings, prefix="", verbosity=0 ):
-
         filename = prefix + self.preNetworkHookFilename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
@@ -135,7 +150,6 @@ maxfail 0
 
 
     def write_ppp_ipup_hook( self, settings, prefix="", verbosity=0 ):
-
         filename = prefix + self.pppIpUpFilename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
@@ -159,8 +173,7 @@ maxfail 0
 # PPP_IPPARAM="$6"
 
 # redirect to logfile and stdout
-mkdir -p /var/log/uvm/
-LOGFILE="/var/log/uvm/pppoe.log"
+LOGFILE="/var/log/pppoe.log"
 mkfifo ${LOGFILE}.pipe
 tee < ${LOGFILE}.pipe $LOGFILE &
 exec >> ${LOGFILE}.pipe 2>&1
@@ -256,20 +269,3 @@ true
 
         if verbosity > 0: print("PPPoEManager: Wrote %s" % filename)
 
-
-
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
-
-        if verbosity > 1: print("PPPoEManager: sync_settings()")
-
-        self.write_pppoe_connection_files( settings, prefix, verbosity )
-        self.write_secret_files( settings, prefix, verbosity )
-        self.write_pre_network_hook( settings, prefix, verbosity )
-        self.write_ppp_ipup_hook( settings, prefix, verbosity )
-
-        # move 0000usepeerdns file, we will handle usepeerdns option
-        # bug #11185
-        # FIXME - this modifies the filesystem directly! FIXME
-        os.system("if [ -f /etc/ppp/ip-up.d/0000usepeerdns ] ; then mv -f /etc/ppp/ip-up.d/0000usepeerdns /etc/ppp/ip-up.d/0000usepeerdns.disabled ; fi")
-
-        return

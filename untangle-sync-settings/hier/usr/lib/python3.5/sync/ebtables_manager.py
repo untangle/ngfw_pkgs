@@ -3,6 +3,7 @@ import sys
 import subprocess
 import datetime
 import traceback
+from sync import registrar
 
 # This class is responsible for writing /etc/untangle/iptables-rules.d/020-ebtables
 # based on the settings object passed from sync-settings.py
@@ -13,7 +14,12 @@ class EbtablesManager:
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
         if verbosity > 1: print("EbtablesManager: sync_settings()")
+        self.write_file( settings, prefix, verbosity )
 
+    def initialize( self ):
+        registrar.register_file( self.defaultFilename, "restart-iptables", self )
+        
+    def write_file( self, settings, prefix="", verbosity=0 ):
         self.filename = prefix + self.defaultFilename
         self.fileDir = os.path.dirname( self.filename )
         if not os.path.exists( self.fileDir ):

@@ -6,6 +6,7 @@ import datetime
 import traceback
 import re
 from sync.network_util import NetworkUtil
+from sync import registrar
 
 # This class is responsible for writing /etc/untangle/post-network-hook.d/030-routes
 # and others based on the settings object passed from sync-settings.py
@@ -19,6 +20,17 @@ class RouteManager:
     DST_INTERFACE_SHIFT=8
     DST_INTERFACE_MASK=0xFF00
 
+    def sync_settings( self, settings, prefix="", verbosity=0 ):
+        if verbosity > 1: print("RouteManager: sync_settings()")
+        self.write_rt_table( settings, prefix, verbosity )
+        self.write_routes( settings, prefix, verbosity )
+        self.write_routes_pre_hook( settings, prefix, verbosity )
+
+    def initialize( self ):
+        registrar.register_file( self.rtTableFilename, "restart-networking", self )
+        registrar.register_file( self.routesFilename, "restart-networking", self )
+        registrar.register_file( self.preRoutesFilename, "restart-networking", self )
+    
     def string_is_int( self, s ):
         try:
             int(s)
@@ -27,7 +39,6 @@ class RouteManager:
             return False
 
     def write_rt_table( self, settings, prefix, verbosity ):
-
         filename = prefix + self.rtTableFilename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
@@ -73,7 +84,6 @@ class RouteManager:
         return
 
     def write_routes( self, settings, prefix, verbosity ):
-
         filename = prefix + self.routesFilename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
@@ -105,7 +115,7 @@ current_ip_route_rules()
         file.write(r"""
 flush_ip_route_rules()
 {
-    local t_priority
+t    local t_priority
     for t_priority in `ip rule show | awk "/^%s[0-9][0-9][0-9]:/ { sub( \":\", \"\", \\$1 ) ; print \\$1 }"`; do
         ip rule del priority ${t_priority}
     done
@@ -166,7 +176,6 @@ fi
         return
 
     def write_routes_pre_hook( self, settings, prefix, verbosity ):
-
         filename = prefix + self.preRoutesFilename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
@@ -202,16 +211,5 @@ fi
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         if verbosity > 0: print("RouteManager: Wrote %s" % filename)
-
-        return
-
-
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
-
-        if verbosity > 1: print("RouteManager: sync_settings()")
-        
-        self.write_rt_table( settings, prefix, verbosity )
-        self.write_routes( settings, prefix, verbosity )
-        self.write_routes_pre_hook( settings, prefix, verbosity )
 
         return

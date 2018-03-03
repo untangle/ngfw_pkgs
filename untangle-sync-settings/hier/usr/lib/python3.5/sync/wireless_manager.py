@@ -6,6 +6,7 @@ import datetime
 import traceback
 import time
 import re
+from sync import registrar
 
 # This class is responsible for writing /etc/network/interfaces
 # based on the settings object passed from sync-settings.py
@@ -17,6 +18,32 @@ class WirelessManager:
     ht40MinusChannels = [0,5,6,7,8,9,10,11,12,13,40,48,56,64]
     ht40PlusChannels = [0,1,2,3,4,5,6,7,36,44,52,60]
     hasWireless = False
+
+    def sync_settings( self, settings, prefix="", verbosity=0 ):
+        if verbosity > 1: print("WirelessManager: sync_settings()")
+
+        # on Asus AC88U, find each disabled wifi interface, and remove
+        # its corresponding hostapd configuration file if it
+        # exists. untangle-broadcom-wireless relies solely on the
+        # presence of that file to decide whether to start the AP
+        # daemon or not (#13066)
+        # FIXME - changes filesystem directly
+        enabledInterfaces = [ x['physicalDev'] for x in settings.get('interfaces').get('list') ]
+        for intfName in [ x for x  in ('eth1', 'eth2') if not x in enabledInterfaces ]:
+            filename = prefix + self.hostapdConfFilename + "-" + intfName
+            if os.path.isfile(filename):
+                print("WirelessManager: Removed " + filename)
+                os.remove(filename)
+
+        self.write_hostapd_conf( settings, prefix, verbosity )
+        self.write_crda_file( settings, prefix, verbosity )
+        self.write_network_hook( settings, prefix, verbosity )
+
+    def initialize( self ):
+        registrar.register_file( self.hostapdConfFilename, "restart-hostapd", self )
+        registrar.register_file( self.hostapdDefaultFilename, "restart-hostapd", self )
+        registrar.register_file( self.hostapdRestartFilename, "restart-hostapd", self )
+        registrar.register_file( self.crdaDefaultFilename, "restart-hostapd", self )
 
     # Much of the ht_capab and vht_capab logic shamelessly copied from openwrt:
     # https://dev.openwrt.org/browser/trunk/package/kernel/mac80211/files/lib/netifd/wireless/mac80211.sh
@@ -66,7 +93,7 @@ class WirelessManager:
             capab_int = int(segments[1],16)
         except Exception as exc:
             print("Unknown capabilities: %s\n" % line)
-            traceback.print_exc(exc)
+            traceback.print_exc()
             return set_fallback_ht_capab( conf, channel )
 
         ht_capabs=[]
@@ -131,7 +158,7 @@ class WirelessManager:
             capab_int = int(capab_str,16)
         except Exception as exc:
             print("Unknown VHT capabilities: %s\n" % line)
-            traceback.print_exc(exc)
+            traceback.print_exc()
             return set_fallback_ht_capab( conf, channel )
 
         ht_capabs=[]
@@ -208,7 +235,7 @@ class WirelessManager:
             return conf
         except Exception as exc:
             print("Unexpected error:", sys.exc_info()[0])
-            traceback.print_exc(exc)
+            traceback.print_exc()
             return None
 
 
@@ -290,7 +317,8 @@ class WirelessManager:
                 self.hostapdConfFile.flush()
                 self.hostapdConfFile.close()
 
-                print("WirelessManager: Wrote " + filename)
+                if verbosity > 0:
+                    print("WirelessManager: Wrote " + filename)
 
                 configFilesString += self.hostapdConfFilename + "-" + intf.get('systemDev') + " "
 
@@ -303,7 +331,8 @@ class WirelessManager:
         self.hostapdDefaultFile.flush()
         self.hostapdDefaultFile.close()
 
-        print("WirelessManager: Wrote " + defaultFilename)
+        if verbosity > 0:
+            print("WirelessManager: Wrote " + defaultFilename)
 
 
     def write_crda_file( self, settings, prefix="", verbosity=0 ):
@@ -321,7 +350,8 @@ class WirelessManager:
         self.crdaDefaultFile.flush()
         self.crdaDefaultFile.close()
 
-        print("WirelessManager: Wrote " + crdaFilename)
+        if verbosity > 0:
+            print("WirelessManager: Wrote " + crdaFilename)
 
     def write_network_hook( self, settings, prefix="", verbosity=0 ):
         restartFilename = prefix + self.hostapdRestartFilename
@@ -352,7 +382,8 @@ class WirelessManager:
 
             os.chmod(restartFilename, os.stat(restartFilename).st_mode | stat.S_IEXEC)
 
-            print("WirelessManager: Wrote " + restartFilename)
+            if verbosity > 0:
+                print("WirelessManager: Wrote " + restartFilename)
         else:
             # Write out the hostapd stop script
 
@@ -371,26 +402,9 @@ class WirelessManager:
 
             os.chmod(restartFilename, os.stat(restartFilename).st_mode | stat.S_IEXEC)
 
-            print("WirelessManager: Wrote " + restartFilename)
+            if verbosity > 0:
+                print("WirelessManager: Wrote " + restartFilename)
 
         return
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
-        if verbosity > 1: print("WirelessManager: sync_settings()")
-
-        # on Asus AC88U, find each disabled wifi interface, and remove
-        # its corresponding hostapd configuration file if it
-        # exists. untangle-broadcom-wireless relies solely on the
-        # presence of that file to decide whether to start the AP
-        # daemon or not (#13066)
-        enabledInterfaces = [ x['physicalDev'] for x in settings.get('interfaces').get('list') ]
-        for intfName in [ x for x  in ('eth1', 'eth2') if not x in enabledInterfaces ]:
-            filename = prefix + self.hostapdConfFilename + "-" + intfName
-            if os.path.isfile(filename):
-                print("WirelessManager: Removed " + filename)
-                os.remove(filename)
-
-        self.write_hostapd_conf( settings, prefix, verbosity )
-        self.write_crda_file( settings, prefix, verbosity )
-        self.write_network_hook( settings, prefix, verbosity )
 

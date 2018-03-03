@@ -6,6 +6,7 @@ import datetime
 import traceback
 import re
 from sync.network_util import NetworkUtil
+from sync import registrar
 
 # This class is responsible for writing:
 # /etc/dhcp/dhclient-enter-hooks.d/untangle-dhclient-enter-hook
@@ -18,8 +19,21 @@ class DhcpManager:
     dhcpConfFilename = "/etc/dhcp/dhclient.conf"
     ddclientHookFilename = "/etc/dhcp/dhclient-exit-hooks.d/ddclient"
 
-    def write_enter_hook( self, settings, prefix="", verbosity=0 ):
+    def sync_settings( self, settings, prefix="", verbosity=0 ):
+        if verbosity > 1: print("DhcpManager: sync_settings()")
+        self.write_exit_hook( settings, prefix, verbosity )
+        self.write_enter_hook( settings, prefix, verbosity )
+        self.write_pre_network_hook( settings, prefix, verbosity )
+        self.write_dhcp_ddclient_file( settings, prefix, verbosity )
 
+    def initialize( self ):
+        registrar.register_file( self.enterHookFilename, "restart-networking", self )
+        registrar.register_file( self.exitHookFilename, "restart-networking", self )
+        registrar.register_file( self.preNetworkHookFilename, "restart-networking", self )
+        registrar.register_file( self.dhcpConfFilename, "restart-networking", self )
+        registrar.register_file( self.ddclientHookFilename, "restart-networking", self )
+        
+    def write_enter_hook( self, settings, prefix="", verbosity=0 ):
         filename = prefix + self.enterHookFilename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
@@ -365,7 +379,6 @@ true
         return
 
     def write_pre_network_hook( self, settings, prefix="", verbosity=0 ):
-
         filename = prefix + self.preNetworkHookFilename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
@@ -392,11 +405,9 @@ true
         file.flush()
         file.close()
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-
         if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
 
     def write_dhcp_conf_file( self, settings, prefix="", verbosity=0 ):
-
         filename = prefix + self.dhcpConfFilename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
@@ -416,11 +427,9 @@ true
 
         file.flush()
         file.close()
-
         if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
 
     def write_dhcp_ddclient_file( self, settings, prefix="", verbosity=0 ):
-
         filename = prefix + self.ddclientHookFilename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
@@ -439,18 +448,6 @@ true
                    
         file.flush()
         file.close()
-
         if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
         
-
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
-
-        if verbosity > 1: print("DhcpManager: sync_settings()")
-        
-        self.write_exit_hook( settings, prefix, verbosity )
-        self.write_enter_hook( settings, prefix, verbosity )
-        self.write_pre_network_hook( settings, prefix, verbosity )
-        self.write_dhcp_ddclient_file( settings, prefix, verbosity )
-        
-        return
 

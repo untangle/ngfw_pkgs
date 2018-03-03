@@ -5,6 +5,7 @@ import datetime
 import traceback
 from sync.iptables_util import IptablesUtil
 from sync.network_util import NetworkUtil
+from sync import registrar
 
 # This class is responsible for writing /etc/untangle/iptables-rules.d/220-nat-rules
 # based on the settings object passed from sync-settings.py
@@ -16,6 +17,13 @@ class NatRulesManager:
     filename = defaultFilename
     file = None
 
+    def sync_settings( self, settings, prefix="", verbosity=0 ):
+        if verbosity > 1: print("NatRulesManager: sync_settings()")
+        self.write_nat_rules_file( settings, prefix, verbosity )
+
+    def initialize( self ):
+        registrar.register_file( self.defaultFilename, "restart-iptables", self )
+        
     def write_nat_rule( self, nat_rule, verbosity=0 ):
 
         if 'enabled' in nat_rule and not nat_rule['enabled']:
@@ -66,7 +74,7 @@ class NatRulesManager:
             try:
                 self.write_nat_rule( nat_rule, verbosity );
             except Exception as e:
-                traceback.print_exc(e)
+                traceback.print_exc()
 
     def write_ingress_nat_rules( self, intf, interfaces ):
 
@@ -176,9 +184,7 @@ class NatRulesManager:
         self.file.write("${IPTABLES} -t nat -A nat-rules -m connmark --mark 0x%X/0x%X -j MASQUERADE -m comment --comment \"NAT all LXC sessions\"" % ( self.lxcMarkMask, self.lxcMarkMask) + "\n");
         self.file.write("\n");
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
-        if verbosity > 1: print("NatRulesManager: sync_settings()")
-
+    def write_nat_rules_file( self, settings, prefix="", verbosity=0 ):
         self.filename = prefix + self.defaultFilename
         self.fileDir = os.path.dirname( self.filename )
         if not os.path.exists( self.fileDir ):
