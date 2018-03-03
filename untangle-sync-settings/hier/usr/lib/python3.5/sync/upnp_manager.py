@@ -7,6 +7,7 @@ import traceback
 import re
 from shutil import move
 from sync.network_util import NetworkUtil
+from sync import registrar
 
 # This class is responsible for writing 
 # based on the settings object passed from sync-settings.py
@@ -27,6 +28,19 @@ class UpnpManager:
     init_stop_ip6tables_regex = re.compile(r'^(\s+if \[ "\${MiniUPnPd_ip6tables_enable}" = "yes" \] ; then ip6tables_stop_fw_tables ; fi)')
     init_daemon_start_regex = re.compile(r'^(\s+start-stop-daemon -q --start --exec "/usr/sbin/miniupnpd" --)')
 
+    def sync_settings( self, settings, prefix="", verbosity=0 ):
+        if verbosity > 1: print("UpnpManager: sync_settings()")
+        self.write_upnp_daemon_conf( settings, prefix, verbosity )
+        self.write_restart_upnp_daemon_hook( settings, prefix, verbosity )
+        self.write_iptables_hook( settings, prefix, verbosity )
+        self.write_upnp_daemon_init_hook( settings, prefix, verbosity )
+
+    def initialize( self ):
+        registrar.register_file( self.upnpDaemonConfFilename, "restart-miniupnpd", self )
+        registrar.register_file( self.upnpDaemonInitFilename, "restart-miniupnpd", self )
+        registrar.register_file( self.restartHookFilename, "restart-miniupnpd", self )
+        registrar.register_file( self.iptablesFilename, "restart-iptables", self )
+        
     def write_upnp_daemon_conf( self, settings, prefix="", verbosity=0 ):
         """
         Create UPnP configuration file
@@ -284,13 +298,3 @@ insert_upnp_iptables_rules
         if verbosity > 0: print("UpnpManager: Wrote %s" % filename)
         return
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
-
-        if verbosity > 1: print("UpnpManager: sync_settings()")
-        
-        self.write_upnp_daemon_conf( settings, prefix, verbosity )
-        self.write_restart_upnp_daemon_hook( settings, prefix, verbosity )
-        self.write_iptables_hook( settings, prefix, verbosity )
-        self.write_upnp_daemon_init_hook( settings, prefix, verbosity )
-
-        return

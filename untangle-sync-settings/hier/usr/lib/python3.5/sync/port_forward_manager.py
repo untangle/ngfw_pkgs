@@ -4,6 +4,7 @@ import subprocess
 import datetime
 import traceback
 from sync.iptables_util import IptablesUtil
+from sync import registrar
 
 # This class is responsible for writing /etc/untangle/iptables-rules.d/230-port-forward-rules
 # based on the settings object passed from sync-settings.py
@@ -14,8 +15,16 @@ class PortForwardManager:
     filename = defaultFilename
     file = None
 
-    def write_port_forward_rule( self, port_forward_rule, verbosity=0 ):
+    def sync_settings( self, settings, prefix="", verbosity=0 ):
+        if verbosity > 1: print("PortForwardManager: sync_settings()")
+        self.write_port_forwards( settings, prefix, verbosity);
+        self.write_admin_port_rules( settings, prefix, verbosity);
 
+    def initialize( self ):
+        registrar.register_file( self.defaultFilename, "restart-iptables", self )
+        registrar.register_file( self.adminFilename, "restart-iptables", self )
+        
+    def write_port_forward_rule( self, port_forward_rule, verbosity=0 ):
         if 'enabled' in port_forward_rule and not port_forward_rule['enabled']:
             return
         if 'conditions' not in port_forward_rule or 'list' not in port_forward_rule['conditions']:
@@ -44,7 +53,6 @@ class PortForwardManager:
         return
 
     def write_port_forward_rules( self, settings, verbosity=0 ):
-
         if settings == None or 'portForwardRules' not in settings or 'list' not in settings['portForwardRules']:
             print("ERROR: Missing Port Forward Rules")
             return
@@ -55,10 +63,9 @@ class PortForwardManager:
             try:
                 self.write_port_forward_rule( port_forward_rule, verbosity );
             except Exception as e:
-                traceback.print_exc(e)
+                traceback.print_exc()
 
     def write_port_forwards( self, settings, prefix="", verbosity=0):
-
         self.filename = prefix + self.defaultFilename
         self.fileDir = os.path.dirname( self.filename )
         if not os.path.exists( self.fileDir ):
@@ -89,7 +96,6 @@ class PortForwardManager:
             print("PortForwardManager: Wrote %s" % self.filename)
 
     def write_admin_port_rules( self, settings, prefix="", verbosity=0):
-
         self.filename = prefix + self.adminFilename
         self.fileDir = os.path.dirname( self.filename )
         if not os.path.exists( self.fileDir ):
@@ -162,10 +168,4 @@ class PortForwardManager:
         if verbosity > 0:
             print("PortForwardManager: Wrote %s" % self.filename)
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
-        if verbosity > 1: print("PortForwardManager: sync_settings()")
 
-        self.write_port_forwards( settings, prefix, verbosity);
-        self.write_admin_port_rules( settings, prefix, verbosity);
-
-        return

@@ -5,6 +5,7 @@ import datetime
 import traceback
 from sync.iptables_util import IptablesUtil
 from sync.network_util import NetworkUtil
+from sync import registrar
 
 # This class is responsible for writing /etc/untangle/iptables-rules.d/240-filter-rules
 # based on the settings object passed from sync-settings.py
@@ -15,6 +16,13 @@ class FilterRulesManager:
     filename = defaultFilename
     file = None
 
+    def sync_settings( self, settings, prefix="", verbosity=0 ):
+        if verbosity > 1: print("FilterRulesManager: sync_settings()")
+        self.write_filter_rules_file( settings, prefix, verbosity )
+
+    def initialize( self ):
+        registrar.register_file( self.defaultFilename, "restart-iptables", self )
+        
     def write_filter_rule( self, table_name, filter_rule, drop_target, verbosity=0 ):
 
         if filter_rule.get('enabled') == None or filter_rule.get('enabled') == False:
@@ -75,7 +83,7 @@ class FilterRulesManager:
             try:
                 self.write_filter_rule( "access-rules", filter_rule, "DROP", verbosity );
             except Exception as e:
-                traceback.print_exc(e)
+                traceback.print_exc()
         return
 
     def write_filter_rules( self, settings, verbosity=0 ):
@@ -90,12 +98,10 @@ class FilterRulesManager:
             try:
                 self.write_filter_rule( "filter-rules", filter_rule, "REJECT", verbosity );
             except Exception as e:
-                traceback.print_exc(e)
+                traceback.print_exc()
         return
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
-        if verbosity > 1: print("FilterRulesManager: sync_settings()")
-
+    def write_filter_rules_file( self, settings, prefix="", verbosity=0 ):
         self.filename = prefix + self.defaultFilename
         self.fileDir = os.path.dirname( self.filename )
         if not os.path.exists( self.fileDir ):

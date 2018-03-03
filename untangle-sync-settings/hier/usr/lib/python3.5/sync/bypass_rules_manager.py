@@ -5,6 +5,7 @@ import datetime
 import traceback
 from sync.iptables_util import IptablesUtil
 from sync.network_util import NetworkUtil
+from sync import registrar
 
 # This class is responsible for writing /etc/untangle/iptables-rules.d/210-bypass-rules
 # based on the settings object passed from sync-settings.py
@@ -16,8 +17,14 @@ class BypassRuleManager:
     filename = defaultFilename
     file = None
 
-    def write_bypass_rule( self, bypass_rule, verbosity=0 ):
+    def sync_settings( self, settings, prefix="", verbosity=0 ):
+        if verbosity > 1: print("BypassRulesManager: sync_settings()")
+        self.write_files( settings, prefix, verbosity )
 
+    def initialize( self ):
+        registrar.register_file( self.defaultFilename, "restart-iptables", self )
+
+    def write_bypass_rule( self, bypass_rule, verbosity=0 ):
         if 'enabled' in bypass_rule and not bypass_rule['enabled']:
             return
         if 'conditions' not in bypass_rule or 'list' not in bypass_rule['conditions']:
@@ -48,7 +55,6 @@ class BypassRuleManager:
         return
 
     def write_bypass_rules( self, settings, verbosity=0 ):
-
         if settings == None or 'bypassRules' not in settings or 'list' not in settings['bypassRules']:
             print("ERROR: Missing Bypass Rules")
             return
@@ -88,11 +94,10 @@ class BypassRuleManager:
             try:
                 self.write_bypass_rule( bypass_rule, verbosity );
             except Exception as e:
-                traceback.print_exc(e)
+                traceback.print_exc()
 
 
     def write_restore_bypass_mark( self, settings, verbosity ):
-
         self.file.write("# Restore the bypass mark from connmark" + "\n");
         self.file.write("${IPTABLES} -t mangle -A restore-bypass-mark -j CONNMARK --restore-mark --mask 0x%X -m comment --comment \"Restore the bypass mark from conntrack\"" % self.bypassMarkMask + "\n");
         self.file.write("${IPTABLES} -t mangle -A restore-bypass-mark -i lo -j MARK --or-mark 0x%X -m comment --comment \"Always bypass loopback traffic\"" % self.bypassMarkMask + "\n");
@@ -101,7 +106,6 @@ class BypassRuleManager:
         return
 
     def write_set_bypass_mark( self, settings, verbosity ):
-
         self.file.write("# Set the bypass mark on both packet and session" + "\n");
         self.file.write("${IPTABLES} -t filter -A set-bypass-mark -j MARK --or-mark 0x%X -m comment --comment \"Set the bypass mark on this packet\"" % self.bypassMarkMask + "\n");
         self.file.write("${IPTABLES} -t filter -A set-bypass-mark -j CONNMARK --or-mark 0x%X -m comment --comment \"Set the bypass mark on this session\"" % self.bypassMarkMask + "\n");
@@ -109,9 +113,7 @@ class BypassRuleManager:
         
         return
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
-        if verbosity > 1: print("BypassRulesManager: sync_settings()")
-
+    def write_files( self, settings, prefix="", verbosity=0 ):
         self.filename = prefix + self.defaultFilename
         self.fileDir = os.path.dirname( self.filename )
         if not os.path.exists( self.fileDir ):
@@ -162,3 +164,5 @@ class BypassRuleManager:
             print("BypassRulesManager: Wrote %s" % self.filename)
 
         return
+
+    

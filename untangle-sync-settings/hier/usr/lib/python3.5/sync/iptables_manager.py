@@ -2,10 +2,12 @@ import os
 import sys
 import subprocess
 import datetime
+import stat
 import traceback
+from sync import registrar
 
 # This class is responsible for writing:
-# /etc/untangle/post-network-hook.d/960-iptables
+# /etc/untangle/post-network-hook.d/960-iptables #FIXME
 # /etc/untangle/iptables-rules.d/010-flush
 # /etc/untangle/iptables-rules.d/100-interface-marks
 #
@@ -14,10 +16,188 @@ import traceback
 class IptablesManager:
     flushFilename = "/etc/untangle/iptables-rules.d/010-flush"
     helpersFilename = "/etc/untangle/iptables-rules.d/011-helpers"
-    iptablesHookFilename = "/etc/untangle/post-network-hook.d/960-iptables"
+    postNetworkFilename = "/etc/untangle/post-network-hook.d/960-iptables"
 
+    def sync_settings( self, settings, prefix="", verbosity=0 ):
+        if verbosity > 1: print("IptablesManager: sync_settings()")
+        self.write_flush_file( settings, prefix, verbosity )
+        self.write_helpers_file( settings, prefix, verbosity )
+        self.write_post_file( settings, prefix, verbosity )
+
+    def initialize( self ):
+        registrar.register_file( self.flushFilename, "restart-iptables", self )
+        registrar.register_file( self.helpersFilename, "restart-iptables", self )
+        registrar.register_file( self.postNetworkFilename, "restart-networking", self )
+
+    def write_post_file( self, settings, prefix, verbosity ):
+        filename = prefix + self.postNetworkFilename
+        fileDir = os.path.dirname( filename )
+        if not os.path.exists( fileDir ):
+            os.makedirs( fileDir )
+
+        file = open( filename, "w+" )
+        file.write("#!/bin/dash");
+        file.write("\n\n");
+
+        file.write("## Auto Generated\n");
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
+        file.write("\n\n");
+
+        file.write(r"""
+
+#
+# This script handles all the iptables rules
+# It runs all the scripts in /etc/untangle/iptables.rules.d
+# It logs both to stdout and the logfile
+
+#LOGFILE="/var/log/iptables.log"
+LOGFILE=""
+
+IPTABLES_DIRECTORY=/etc/untangle/iptables-rules.d
+
+#IPTABLES=/sbin/iptables
+#IPTABLES="iptables_debug"
+IPTABLES=iptables_debug_onerror
+
+#IP6TABLES=/sbin/ip6tables
+#IP6TABLES="ip6tables_debug"
+IP6TABLES=ip6tables_debug_onerror
+
+#EBTABLES=/sbin/ebtables
+#EBTABLES=ebtables_debug
+EBTABLES=ebtables_debug_onerror
+
+LOCK_FILE=/tmp/generate-iptables-rules.lock
+
+if [ ! -z "${LOGFILE}" ] ; then
+    # switch stdout/stderr to tee for stdout and logfile
+    mkfifo ${LOGFILE}.pipe
+    tee < ${LOGFILE}.pipe $LOGFILE &
+    exec >> ${LOGFILE}.pipe 2>&1
+    rm ${LOGFILE}.pipe
+fi
+
+debug()
+{
+   /bin/echo -e "[IPTABLE DEBUG: `date`] ${*}"
+}
+
+iptables_debug()
+{
+   /bin/echo -e "[IPTABLE DEBUG: `date`] /sbin/iptables -w $@"
+   /sbin/iptables -w "$@"
+}
+
+iptables_debug_onerror()
+{
+    # Ignore -N errors
+    /sbin/iptables -w "$@" || {
+        [ "${3}x" != "-Nx" ] && echo "[`date`] Failed: /sbin/iptables $@"
+    }
+
+    true
+}
+
+ip6tables_debug()
+{
+   /bin/echo -e "[IPTABLE DEBUG: `date`] /sbin/ip6tables $@"
+   /sbin/ip6tables -w "$@"
+}
+
+ip6tables_debug_onerror()
+{
+    # Ignore -N errors
+    /sbin/ip6tables -w "$@" || {
+        [ "${3}x" != "-Nx" ] && echo "[`date`] Failed: /sbin/ip6tables $@"
+    }
+
+    true
+}
+
+ebtables_debug()
+{
+    /bin/echo -e "[EBTABLE DEBUG: `date`] /sbin/ebtables $@"
+    /sbin/ebtables "$@"
+}
+
+ebtables_debug_onerror()
+{
+    # Ignore -N errors
+    /sbin/ebtables "$@" || {
+        echo "[`date`] Failed: /sbin/ebtables $@"
+    }
+
+    true
+}
+
+run_iptables_scripts()
+{
+    local t_script
+    local t_ran_script=""
+
+    if [ ! -d ${IPTABLES_DIRECTORY} ]; then
+        debug "${IPTABLES_DIRECTORY} does not exist."
+        return 0
+    fi
+    
+    # Would use run-parts, but that doesn't maintain environment variables 
+    # or the iptables_debug function.
+
+    # Do not run any of the dpkg backup files.
+    for t_script in `run-parts --list --lsbsysinit ${IPTABLES_DIRECTORY} | sort` ; do
+        debug "${t_script} Running ..."
+        START="`date +%s%N`"
+        . ${t_script}
+        RET=$?
+        END="`date +%s%N`"
+        TIME=$(( ($END-$START)/1000000 ))
+        debug "${t_script} Complete: $RET (took $TIME msec)"
+        t_ran_script="true"
+    done
+    
+    if [ "${t_ran_script}x" != "truex" ]; then
+        debug "${IPTABLES_DIRECTORY} is empty."
+    fi
+}
+
+while true ; do
+    if ( set -o noclobber; echo "$$" > "$LOCK_FILE" ) 2> /dev/null; then
+      	trap 'rm -f "$LOCK_FILE"; exit $?' INT TERM EXIT
+        
+        # critical section
+        debug "Running ${IPTABLES_DIRECTORY} scripts ..." 
+        run_iptables_scripts
+        debug "Running ${IPTABLES_DIRECTORY} scripts done." 
+        
+        rm -f "$LOCK_FILE"
+        trap - INT TERM EXIT
+        break
+    else
+        sleep .2
+        
+            # timeout
+        t_count=$(($t_count+1))
+        if [ $t_count -gt 1000 ] ; then 
+            debug "ERROR: Failed to acquire lock file after 1000 tries."
+            debug "ERROR: Removing \"stale\" lockfile..."
+            rm -f "$LOCK_FILE" 
+            continue;
+        fi
+    fi 
+done
+
+
+""")
+        
+        file.flush()
+        file.close()
+
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
+        if verbosity > 0:
+            print("IptablesManager: Wrote %s" % filename)
+        
+            
     def write_flush_file( self, settings, prefix, verbosity ):
-
         filename = prefix + self.flushFilename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
@@ -173,13 +353,4 @@ class IptablesManager:
         if verbosity > 0:
             print("IptablesManager: Wrote %s" % filename)
 
-
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
-        if verbosity > 1: print("IptablesManager: sync_settings()")
-
-        self.write_flush_file( settings, prefix, verbosity )
-        self.write_helpers_file( settings, prefix, verbosity )
-
-        if verbosity > 0:
-            print("IptablesManager: Wrote %s" % self.iptablesHookFilename)
 

@@ -25,19 +25,21 @@ if sys.version_info[0] == 3 and sys.version_info[1] == 5:
     sys.path.insert(0, sys.path[0] + "/" + "../lib/" + "python3.5/")
 
 import getopt
-import signal
-import os
-import traceback
 import json
+import os
+import re
+import shutil
+import signal
+import subprocess
 import tempfile
+import time
+import traceback
 
 from   sync import *
 
 class ArgumentParser(object):
     def __init__(self):
         self.file = '/usr/share/untangle/settings/untangle-vm/network.js'
-        self.verbosity = 0
-        self.prefix = ''
 
     def set_file( self, arg ):
         self.file = arg
@@ -45,14 +47,9 @@ class ArgumentParser(object):
     def set_prefix( self, arg ):
         self.prefix = arg
 
-    def increase_verbosity( self, arg ):
-        self.verbosity += 1
-
     def parse_args( self ):
         handlers = {
             '-f' : self.set_file,
-            '-p' : self.set_prefix,
-            '-v' : self.increase_verbosity
         }
 
         try:
@@ -65,12 +62,17 @@ class ArgumentParser(object):
             printUsage()
             exit(1)
 
+def cleanup(code):
+    global tmpdir
+    if tmpdir != None:
+        shutil.rmtree(tmpdir)
+    exit(code)
+
 def printUsage():
     sys.stderr.write( """\
 %s Usage:
   optional args:
     -f <file>   : settings file to sync to OS
-    -p <prefix> : prefix to append to output files
     -v          : verbose (can be specified more than one time)
 """ % sys.argv[0] )
 
@@ -193,10 +195,109 @@ def cleanupSettings( settings ):
         settings['filterRules'] = settings.get('forwardFilterRules')
         
     return
+
+
+def check_registrar(tmpdir):
+    """
+    This checks that all files written in tmpdir are properly registered
+    in the registrar. If a file is missing in the registrar exit(1) is
+    called to exit immediately
+    """
+    for root, dirs, files in os.walk(tmpdir):
+        for file in files:
+            rootpath = os.path.join(root,file).replace(tmpdir,"")
+            result = registrar.registrar_check_file(rootpath)
+            if not result:
+                print("File missing in registrar: " + filename)
+                cleanup(1)
+
+def calculate_changed_files(tmpdir):
+    """
+    Compares the contents of tmpdir with the existing filesystem
+    Returns a list of files that have changed (using root path)
+    """
+    cmd = "diff -rq / " + tmpdir + " | grep -v '^Only in' | awk '{print $2}'"
+    process = subprocess.Popen(["sh","-c",cmd], stdout=subprocess.PIPE);
+    out,err = process.communicate()
     
+    changed_files = []
+    for line in out.decode('ascii').split():
+        if line.strip() != '':
+            changed_files.append(line.strip())
+    new_files = []
+    for root, dirs, files in os.walk(tmpdir):
+        for file in files:
+            rootpath = os.path.join(root,file).replace(tmpdir,"")
+            if not os.path.exists(rootpath):
+                new_files.append(rootpath)
+
+    if len(changed_files) > 0:
+        print("\nChanged files:")
+        for f in changed_files:
+            print(f)
+    if len(new_files) > 0:
+        print("\nNew files:")
+        for f in new_files:
+            print(f)
+
+    changes = []
+    changes.extend(changed_files)
+    changes.extend(new_files)
+    if len(changes) == 0:
+        print("\nNo changed files.")
+
+    return changes
+
+def run_cmd(cmd):
+    stdin=open(os.devnull, 'rb')
+    p = subprocess.Popen(["sh","-c","%s 2>&1" % (cmd)], stdout=subprocess.PIPE, stdin=stdin )
+    for line in iter(p.stdout.readline, ''):
+        if line == b'':
+            break
+        print( line.decode('ascii').strip() )
+    p.wait()
+    return p.returncode
+
+def copy_files(tmpdir):
+    """
+    Copy the files from tmpdir into the root filesystem
+    """
+    cmd = "/bin/cp -ar --remove-destination " + tmpdir+"/*" + " /"
+    print("\nCopying files...")
+    result = run_cmd(cmd)
+    if result != 0:
+        print("Failed to copy results: " + str(result))
+        return result
+    return 0
+
+def run_commands(ops, key):
+    """
+    Run all the commands for the specified operations
+    """
+    print("\nRunning operations " + key + "...")
+    ret = 0
+    for op in ops:
+        o = registrar.operations.get(op)
+        command = o.get(key)
+        if command != None:
+            print("\n[" + op + "]: " + command)
+            result = run_cmd(command)
+            print("[" + op + "]: " + command + " done.")
+            if result != 0:
+                print("Error[" + str(result) + "]: " + command)
+            ret += result
+    return ret
+
+def tee_stdout_log():
+    tee = subprocess.Popen(["tee", "/var/log/sync.log"], stdin=subprocess.PIPE)
+    os.dup2(tee.stdin.fileno(), sys.stdout.fileno())
+    os.dup2(tee.stdin.fileno(), sys.stderr.fileno())
+
+tee_stdout_log()
 parser = ArgumentParser()
 parser.parse_args()
 settings = None
+tmpdir = tempfile.mkdtemp()
 
 try:
     settingsFile = open(parser.file, 'r')
@@ -205,16 +306,15 @@ try:
     settings = json.loads(settingsData)
 except IOError as e:
     print("Unable to read settings file: ",e)
-    exit(1)
+    cleanup(1)
 
 try:
     checkSettings(settings)
     cleanupSettings(settings)
 except Exception as e:
     traceback.print_exc(e)
-    exit(1)
+    cleanup(1)
 
-    
 # Write the sanitized file for debugging
 # sanitized_filename = (os.path.dirname(parser.file) + "/network-sanitized.js")
 # print("Writing sanitized settings: %s " % sanitized_filename)
@@ -224,34 +324,75 @@ except Exception as e:
 # sanitized_file.close()
 # os.system("python -m simplejson.tool %s.tmp > %s ; rm %s.tmp " % (sanitized_filename, sanitized_filename, sanitized_filename))
 
-print("Syncing %s to system..." % parser.file)
-
-IptablesUtil.settings = settings
 NetworkUtil.settings = settings
-errorOccurred = False
 
-for module in [ HostsManager(), DnsMasqManager(),
-                InterfacesManager(), RouteManager(), 
-                IptablesManager(), NatRulesManager(), 
-                FilterRulesManager(), QosManager(),
-                PortForwardManager(), BypassRuleManager(), 
-                EthernetManager(), 
-                SysctlManager(), ArpManager(),
-                DhcpManager(), RadvdManager(),
-                PPPoEManager(), DdclientManager(),
-                KernelManager(), EbtablesManager(),
-                VrrpManager(), WirelessManager(),
-                UpnpManager(), NetflowManager()]:
+modules = [ HostsManager(), DnsMasqManager(),
+            InterfacesManager(), RouteManager(), 
+            IptablesManager(), NatRulesManager(), 
+            FilterRulesManager(), QosManager(),
+            PortForwardManager(), BypassRuleManager(), 
+            EthernetManager(), 
+            SysctlManager(), ArpManager(),
+            DhcpManager(), RadvdManager(),
+            PPPoEManager(), DdclientManager(),
+            KernelManager(), EbtablesManager(),
+            VrrpManager(), WirelessManager(),
+            UpnpManager(), NetflowManager()]
+
+for module in modules:
     try:
-        module.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
+        module.initialize()
     except Exception as e:
-        traceback.print_exc(e)
-        errorOccurred = True
+        traceback.print_exc()
+        print("Abort. (errors)")
+        cleanup(1)
 
-if errorOccurred:
-    print("Done. (with errors)")
-    exit(1)
+print("\nSyncing %s to system..." % parser.file)
+
+for module in modules:
+    try:
+        module.sync_settings( settings, prefix=tmpdir, verbosity=2 )
+    except Exception as e:
+        traceback.print_exc()
+        cleanup(1)
+
+check_registrar(tmpdir)
+
+changed_files = calculate_changed_files(tmpdir)
+operations = registrar.calculate_required_operations(changed_files)
+operations = registrar.reduce_operations(operations)
+if len(operations) < 1:
+    copy_files(tmpdir)
+    print("\nDone.")
+    cleanup(0)
+
+print("\nRequired operations: ")
+for op in operations:
+    print(op)
+    o = registrar.operations.get(op)
+    if o == None:
+        print("Operation missing from registrar: " + op)
+        cleanup(1)
+
+ret = 0
+try:
+    ret += run_commands(operations, 'pre_command')
+except Exception as e:
+    traceback.print_exc()
+try:
+    ret += copy_files(tmpdir)
+except Exception as e:
+    traceback.print_exc()
+try:
+    ret += run_commands(operations, 'post_command')
+except Exception as e:
+    traceback.print_exc()
+
+if ret != 0:
+    print("\nDone. (with errors)")
+    cleanup(1)
 else:
-    print("Done.")
-    exit(0)
+    print("\nDone.")
+    cleanup(0)
+
 

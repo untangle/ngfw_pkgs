@@ -6,6 +6,7 @@ import datetime
 import traceback
 import re
 from sync.network_util import NetworkUtil
+from sync import registrar
 
 # This class is responsible for writing:
 # /etc/untangle/post-network-hook.d/200-vrrp
@@ -16,6 +17,17 @@ class VrrpManager:
     iptablesHookFilename = "/etc/untangle/iptables-rules.d/241-vrrp-rules"
     vrrp_enabled = False
 
+    def sync_settings( self, settings, prefix="", verbosity=0 ):
+        if verbosity > 1: print("VrrpManager: sync_settings()")
+        self.write_keepalivd_conf( settings, prefix, verbosity )
+        self.write_post_network_hook( settings, prefix, verbosity )
+        self.write_iptables_hook( settings, prefix, verbosity )
+
+    def initialize( self ):
+        registrar.register_file( self.keepalivedConfFilename, "restart-keepalived", self )
+        registrar.register_file( self.postNetworkHookFilename, "restart-networking", self )
+        registrar.register_file( self.iptablesHookFilename, "restart-iptables", self )
+        
     def get_vrrp_interfaces( self, settings ):
         vrrp_interfaces = []
         for interface_settings in settings['interfaces']['list']:
@@ -36,7 +48,6 @@ class VrrpManager:
         return vrrp_interfaces
 
     def write_keepalivd_conf( self, settings, prefix="", verbosity=0 ):
-        
         filename = prefix + self.keepalivedConfFilename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
@@ -114,7 +125,6 @@ global_defs {
         return
         
     def write_post_network_hook( self, settings, prefix="", verbosity=0 ):
-
         filename = prefix + self.postNetworkHookFilename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
@@ -171,7 +181,6 @@ fi
         return
 
     def write_iptables_hook( self, settings, prefix="", verbosity=0 ):
-
         filename = prefix + self.iptablesHookFilename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
@@ -196,13 +205,4 @@ fi
 
         return
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
-
-        if verbosity > 1: print("VrrpManager: sync_settings()")
-        
-        self.write_keepalivd_conf( settings, prefix, verbosity )
-        self.write_post_network_hook( settings, prefix, verbosity )
-        self.write_iptables_hook( settings, prefix, verbosity )
-
-        return
 

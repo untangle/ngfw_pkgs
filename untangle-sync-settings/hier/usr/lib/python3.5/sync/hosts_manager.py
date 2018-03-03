@@ -6,6 +6,7 @@ import datetime
 import traceback
 import re
 from sync.network_util import NetworkUtil
+from sync import registrar
 
 # This class is responsible for writing /etc/hosts and /etc/hostname
 # based on the settings object passed from sync-settings.py
@@ -15,6 +16,20 @@ class HostsManager:
     mailnameFile = "/etc/mailname"
     resolvFile = "/etc/resolv.conf"
 
+    def sync_settings( self, settings, prefix="", verbosity=0 ):
+        if verbosity > 1: print("HostsManager: sync_settings()")
+        self.write_hostname_file( settings, prefix, verbosity )
+        self.write_hosts_file( settings, prefix, verbosity )
+        self.write_resolve_file( settings, prefix, verbosity )
+        self.write_mailname_file( settings, prefix, verbosity )
+        return
+
+    def initialize( self ):
+        registrar.register_file( self.hostsFile, None, self )
+        registrar.register_file( self.hostnameFile, "restart-networking", self )
+        registrar.register_file( self.mailnameFile, None, self )
+        registrar.register_file( self.resolvFile, None, self )
+    
     def write_hosts_file( self, settings, prefix, verbosity ):
 
         filename = prefix + self.hostsFile
@@ -140,13 +155,3 @@ ff02::3 ip6-allhosts
         if verbosity > 0: print("HostsManager: Wrote %s" % filename)
         return
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
-
-        if verbosity > 1: print("HostsManager: sync_settings()")
-        
-        self.write_hostname_file( settings, prefix, verbosity )
-        self.write_hosts_file( settings, prefix, verbosity )
-        self.write_resolve_file( settings, prefix, verbosity )
-        self.write_mailname_file( settings, prefix, verbosity )
-
-        return

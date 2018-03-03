@@ -6,6 +6,7 @@ import datetime
 import traceback
 import re
 from sync.network_util import NetworkUtil
+from sync import registrar
 
 # This class is responsible for writing:
 # /etc/radvd.conf
@@ -14,8 +15,16 @@ class RadvdManager:
     configFilename = "/etc/radvd.conf"
     restartHookFilename = "/etc/untangle/post-network-hook.d/990-restart-radvd"
 
-    def write_config_file( self, settings, prefix="", verbosity=0 ):
+    def sync_settings( self, settings, prefix="", verbosity=0 ):
+        if verbosity > 1: print("RadvdManager: sync_settings()")
+        self.write_config_file( settings, prefix, verbosity )
+        self.write_restart_radvd_hook( settings, prefix, verbosity )
 
+    def initialize( self ):
+        registrar.register_file( self.configFilename, "restart-radvd", self )
+        registrar.register_file( self.restartHookFilename, "restart-networking", self )
+        
+    def write_config_file( self, settings, prefix="", verbosity=0 ):
         filename = prefix + self.configFilename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
@@ -51,7 +60,6 @@ class RadvdManager:
         if verbosity > 0: print("RadvdManager: Wrote %s" % filename)
 
     def write_restart_radvd_hook( self, settings, prefix="", verbosity=0 ):
-
         filename = prefix + self.restartHookFilename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
@@ -87,13 +95,4 @@ fi
     
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         if verbosity > 0: print("RadvdManager: Wrote %s" % filename)
-        return
-
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
-
-        if verbosity > 1: print("RadvdManager: sync_settings()")
-        
-        self.write_config_file( settings, prefix, verbosity )
-        self.write_restart_radvd_hook( settings, prefix, verbosity )
-
         return
