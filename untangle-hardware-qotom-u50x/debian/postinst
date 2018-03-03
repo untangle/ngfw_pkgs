@@ -1,6 +1,6 @@
 #!/bin/sh
 
-systemctl restart untangle-firmware-common
+systemctl restart untangle-hardware-config
 
 swapNic() {
     udev_file='/etc/udev/rules.d/70-persistent-net.rules';
