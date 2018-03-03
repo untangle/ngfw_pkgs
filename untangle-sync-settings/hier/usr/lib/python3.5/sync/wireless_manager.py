@@ -61,10 +61,16 @@ class WirelessManager:
 
     def set_fallback_ht_capab( self, conf, channel ):
         ht_capabs=[]
-        if ((channel / 4) % 2) == 0:
-            ht_capabs.append("[HT40-]")
-        if ((channel / 4) % 2) == 1:
-            ht_capabs.append("[HT40+]")
+        if channel > 11 or channel == -2:
+            if ((channel / 4) % 2) == 0:
+                ht_capabs.append("[HT40-]")
+            if ((channel / 4) % 2) == 1:
+                ht_capabs.append("[HT40+]")
+        else:
+            if channel < 7:
+                ht_capabs.append("[HT40+]")
+            else:
+                ht_capabs.append("[HT40-]")
 
         ht_capabs.append("[SHORT-GI-40]")
         ht_capabs.append("[TX-STBC]")
@@ -97,10 +103,16 @@ class WirelessManager:
             return set_fallback_ht_capab( conf, channel )
 
         ht_capabs=[]
-        if ((channel / 4) % 2) == 0:
-            ht_capabs.append("[HT40-]")
-        if ((channel / 4) % 2) == 1:
-            ht_capabs.append("[HT40+]")
+        if channel > 11 or channel == -2:
+            if ((channel / 4) % 2) == 0:
+                ht_capabs.append("[HT40-]")
+            if ((channel / 4) % 2) == 1:
+                ht_capabs.append("[HT40+]")
+        else:
+            if channel < 7:
+                ht_capabs.append("[HT40+]")
+            else:
+                ht_capabs.append("[HT40-]")
         if (capab_int & 0x1) == 0x1:
             ht_capabs.append("[LDPC]")
         if (capab_int & 0x10) == 0x10:
