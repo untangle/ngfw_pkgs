@@ -12,17 +12,17 @@ from sync import registrar
 # based on the settings object passed from sync-settings.py
 #
 class KernelManager:
-    kernelHookFilename = "/etc/untangle/post-network-hook.d/011-kernel"
+    kernel_hook_filename = "/etc/untangle/post-network-hook.d/011-kernel"
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
         if verbosity > 1: print("KernelManager: sync_settings()")
         self.write_file( settings, prefix, verbosity )
 
     def initialize( self ):
-        registrar.register_file( self.kernelHookFilename, "restart-networking", self )
+        registrar.register_file( self.kernel_hook_filename, "restart-networking", self )
         
     def write_file( self, settings, prefix, verbosity ):
-        filename = prefix + self.kernelHookFilename
+        filename = prefix + self.kernel_hook_filename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
             os.makedirs( fileDir )

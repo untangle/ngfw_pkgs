@@ -9,8 +9,8 @@ from sync import registrar
 # This class is responsible for writing /etc/untangle/pre-network-hook.d/015-ethernet-media
 # based on the settings object passed from sync-settings.py
 class EthernetManager:
-    ethernetMediaFilename = "/etc/untangle/pre-network-hook.d/015-ethernet-media"
-    setLinkMediaScript = "/usr/share/untangle-sync-settings/bin/set-link-media.sh"
+    ethernet_media_filename = "/etc/untangle/pre-network-hook.d/015-ethernet-media"
+    set_link_media_script = "/usr/share/untangle-sync-settings/bin/set-link-media.sh"
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
         if verbosity > 1: print("EthernetManager: sync_settings()")
@@ -18,14 +18,13 @@ class EthernetManager:
         return
 
     def initialize( self ):
-        registrar.register_file( self.ethernetMediaFilename, "restart-networking", self )
+        registrar.register_file( self.ethernet_media_filename, "restart-networking", self )
     
     def write_ethernet_media( self, settings, prefix, verbosity ):
-
-        filename = prefix + self.ethernetMediaFilename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.ethernet_media_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("#!/bin/dash");
@@ -42,23 +41,23 @@ class EthernetManager:
                 if deviceSettings.get('duplex') != None:
                     duplexString = deviceSettings.get('duplex')
                     if duplexString == "AUTO":
-                        file.write("%s %s %s" % (self.setLinkMediaScript, deviceSettings.get('deviceName'), "auto") + "\n")
+                        file.write("%s %s %s" % (self.set_link_media_script, deviceSettings.get('deviceName'), "auto") + "\n")
                     elif duplexString == "M10000_FULL_DUPLEX":
-                        file.write("%s %s %s" % (self.setLinkMediaScript, deviceSettings.get('deviceName'), "10000-full-duplex") + "\n")
+                        file.write("%s %s %s" % (self.set_link_media_script, deviceSettings.get('deviceName'), "10000-full-duplex") + "\n")
                     elif duplexString == "M10000_HALF_DUPLEX":
-                        file.write("%s %s %s" % (self.setLinkMediaScript, deviceSettings.get('deviceName'), "10000-half-duplex") + "\n")
+                        file.write("%s %s %s" % (self.set_link_media_script, deviceSettings.get('deviceName'), "10000-half-duplex") + "\n")
                     elif duplexString == "M1000_FULL_DUPLEX":
-                        file.write("%s %s %s" % (self.setLinkMediaScript, deviceSettings.get('deviceName'), "1000-full-duplex") + "\n")
+                        file.write("%s %s %s" % (self.set_link_media_script, deviceSettings.get('deviceName'), "1000-full-duplex") + "\n")
                     elif duplexString == "M1000_HALF_DUPLEX":
-                        file.write("%s %s %s" % (self.setLinkMediaScript, deviceSettings.get('deviceName'), "1000-half-duplex") + "\n")
+                        file.write("%s %s %s" % (self.set_link_media_script, deviceSettings.get('deviceName'), "1000-half-duplex") + "\n")
                     elif duplexString == "M100_FULL_DUPLEX":
-                        file.write("%s %s %s" % (self.setLinkMediaScript, deviceSettings.get('deviceName'), "100-full-duplex") + "\n")
+                        file.write("%s %s %s" % (self.set_link_media_script, deviceSettings.get('deviceName'), "100-full-duplex") + "\n")
                     elif duplexString == "M100_HALF_DUPLEX":
-                        file.write("%s %s %s" % (self.setLinkMediaScript, deviceSettings.get('deviceName'), "100-half-duplex") + "\n")
+                        file.write("%s %s %s" % (self.set_link_media_script, deviceSettings.get('deviceName'), "100-half-duplex") + "\n")
                     elif duplexString == "M10_FULL_DUPLEX":
-                        file.write("%s %s %s" % (self.setLinkMediaScript, deviceSettings.get('deviceName'), "10-full-duplex") + "\n")
+                        file.write("%s %s %s" % (self.set_link_media_script, deviceSettings.get('deviceName'), "10-full-duplex") + "\n")
                     elif duplexString == "M10_HALF_DUPLEX":
-                        file.write("%s %s %s" % (self.setLinkMediaScript, deviceSettings.get('deviceName'), "10-half-duplex") + "\n")
+                        file.write("%s %s %s" % (self.set_link_media_script, deviceSettings.get('deviceName'), "10-half-duplex") + "\n")
                     else:
                         print("ERROR: Unknown duplex: %s" % duplexString)
 

@@ -10,11 +10,11 @@ from sync import registrar
 # This class is responsible for writing /etc/untangle/iptables-rules.d/210-bypass-rules
 # based on the settings object passed from sync-settings.py
 class BypassRuleManager:
-    bypassMarkMask = 0x01000000
-    interfacesMarkMask = 0x0000FFFF
+    bypass_mark_mask = 0x01000000
+    interfaces_mark_mask = 0x0000FFFF
 
-    defaultFilename = "/etc/untangle/iptables-rules.d/210-bypass-rules"
-    filename = defaultFilename
+    bypass_rules_filename = "/etc/untangle/iptables-rules.d/210-bypass-rules"
+    filename = bypass_rules_filename
     file = None
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
@@ -22,7 +22,7 @@ class BypassRuleManager:
         self.write_files( settings, prefix, verbosity )
 
     def initialize( self ):
-        registrar.register_file( self.defaultFilename, "restart-iptables", self )
+        registrar.register_file( self.bypass_rules_filename, "restart-iptables", self )
 
     def write_bypass_rule( self, bypass_rule, verbosity=0 ):
         if 'enabled' in bypass_rule and not bypass_rule['enabled']:
@@ -86,7 +86,7 @@ class BypassRuleManager:
         # We bypass 'hairpin' traffic because end-pointing it at layer 7 wouldn't work because two sessions would have identical tuples 
         self.file.write("# Implicit Bypass Rules (hairpin)" + "\n");
         for intfId in NetworkUtil.interface_list():
-            self.file.write("${IPTABLES} -t filter -A bypass-rules -m mark --mark 0x%X/0x%X --goto set-bypass-mark -m comment --comment \"Bypass hairpin traffic (interface %s)\"" % ( (intfId+(intfId<<8)), self.interfacesMarkMask, str(intfId)) + "\n");
+            self.file.write("${IPTABLES} -t filter -A bypass-rules -m mark --mark 0x%X/0x%X --goto set-bypass-mark -m comment --comment \"Bypass hairpin traffic (interface %s)\"" % ( (intfId+(intfId<<8)), self.interfaces_mark_mask, str(intfId)) + "\n");
         self.file.write("\n");
 
         # Add the user bypass rules
@@ -99,25 +99,25 @@ class BypassRuleManager:
 
     def write_restore_bypass_mark( self, settings, verbosity ):
         self.file.write("# Restore the bypass mark from connmark" + "\n");
-        self.file.write("${IPTABLES} -t mangle -A restore-bypass-mark -j CONNMARK --restore-mark --mask 0x%X -m comment --comment \"Restore the bypass mark from conntrack\"" % self.bypassMarkMask + "\n");
-        self.file.write("${IPTABLES} -t mangle -A restore-bypass-mark -i lo -j MARK --or-mark 0x%X -m comment --comment \"Always bypass loopback traffic\"" % self.bypassMarkMask + "\n");
+        self.file.write("${IPTABLES} -t mangle -A restore-bypass-mark -j CONNMARK --restore-mark --mask 0x%X -m comment --comment \"Restore the bypass mark from conntrack\"" % self.bypass_mark_mask + "\n");
+        self.file.write("${IPTABLES} -t mangle -A restore-bypass-mark -i lo -j MARK --or-mark 0x%X -m comment --comment \"Always bypass loopback traffic\"" % self.bypass_mark_mask + "\n");
         self.file.write("\n");
         
         return
 
     def write_set_bypass_mark( self, settings, verbosity ):
         self.file.write("# Set the bypass mark on both packet and session" + "\n");
-        self.file.write("${IPTABLES} -t filter -A set-bypass-mark -j MARK --or-mark 0x%X -m comment --comment \"Set the bypass mark on this packet\"" % self.bypassMarkMask + "\n");
-        self.file.write("${IPTABLES} -t filter -A set-bypass-mark -j CONNMARK --or-mark 0x%X -m comment --comment \"Set the bypass mark on this session\"" % self.bypassMarkMask + "\n");
+        self.file.write("${IPTABLES} -t filter -A set-bypass-mark -j MARK --or-mark 0x%X -m comment --comment \"Set the bypass mark on this packet\"" % self.bypass_mark_mask + "\n");
+        self.file.write("${IPTABLES} -t filter -A set-bypass-mark -j CONNMARK --or-mark 0x%X -m comment --comment \"Set the bypass mark on this session\"" % self.bypass_mark_mask + "\n");
         self.file.write("\n");
         
         return
 
     def write_files( self, settings, prefix="", verbosity=0 ):
-        self.filename = prefix + self.defaultFilename
-        self.fileDir = os.path.dirname( self.filename )
-        if not os.path.exists( self.fileDir ):
-            os.makedirs( self.fileDir )
+        self.filename = prefix + self.bypass_rules_filename
+        self.file_dir = os.path.dirname( self.filename )
+        if not os.path.exists( self.file_dir ):
+            os.makedirs( self.file_dir )
 
         self.file = open( self.filename, "w+" )
         self.file.write("## Auto Generated\n");
@@ -144,13 +144,13 @@ class BypassRuleManager:
         self.file.write("\n");
 
         self.file.write("# Bypass all packets and sessions to the local server" + "\n");
-        self.file.write("${IPTABLES} -A input-set-marks -t mangle ! -i utun -m conntrack --ctstate NEW -j MARK --or-mark 0x%X -m comment --comment \"Set bypass bit on all local inbound packets\"" % self.bypassMarkMask + "\n");
-        self.file.write("${IPTABLES} -A input-set-marks -t mangle ! -i utun -m conntrack --ctstate NEW -j CONNMARK --or-mark 0x%X -m comment --comment \"Set bypass bit on all local inbound sessions\"" % self.bypassMarkMask + "\n");
+        self.file.write("${IPTABLES} -A input-set-marks -t mangle ! -i utun -m conntrack --ctstate NEW -j MARK --or-mark 0x%X -m comment --comment \"Set bypass bit on all local inbound packets\"" % self.bypass_mark_mask + "\n");
+        self.file.write("${IPTABLES} -A input-set-marks -t mangle ! -i utun -m conntrack --ctstate NEW -j CONNMARK --or-mark 0x%X -m comment --comment \"Set bypass bit on all local inbound sessions\"" % self.bypass_mark_mask + "\n");
         self.file.write("\n");
 
         self.file.write("# Bypass all packets and sessions from the local server" + "\n");
-        self.file.write("${IPTABLES} -A output-set-marks -t mangle -j MARK --or-mark 0x%X -m comment --comment \"Set bypass bit on all local outbound packets\"" % self.bypassMarkMask + "\n");
-        self.file.write("${IPTABLES} -A output-set-marks -t mangle -m conntrack --ctstate NEW -j CONNMARK --or-mark 0x%X -m comment --comment \"Set bypass bit on all local outbound sessions\"" % self.bypassMarkMask + "\n");
+        self.file.write("${IPTABLES} -A output-set-marks -t mangle -j MARK --or-mark 0x%X -m comment --comment \"Set bypass bit on all local outbound packets\"" % self.bypass_mark_mask + "\n");
+        self.file.write("${IPTABLES} -A output-set-marks -t mangle -m conntrack --ctstate NEW -j CONNMARK --or-mark 0x%X -m comment --comment \"Set bypass bit on all local outbound sessions\"" % self.bypass_mark_mask + "\n");
         self.file.write("\n");
 
         self.write_restore_bypass_mark( settings, verbosity );

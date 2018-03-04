@@ -9,10 +9,10 @@ from sync import registrar
 # This class is responsible for writing /etc/untangle/iptables-rules.d/230-port-forward-rules
 # based on the settings object passed from sync-settings.py
 class PortForwardManager:
-    defaultFilename = "/etc/untangle/iptables-rules.d/230-port-forward-rules"
-    adminFilename = "/etc/untangle/iptables-rules.d/250-admin-port-rules"
-    srcInterfaceMarkMask = 0x00ff
-    filename = defaultFilename
+    iptables_filename = "/etc/untangle/iptables-rules.d/230-port-forward-rules"
+    admin_filename = "/etc/untangle/iptables-rules.d/250-admin-port-rules"
+    src_interface_mark_mask = 0x00ff
+    filename = iptables_filename
     file = None
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
@@ -21,8 +21,8 @@ class PortForwardManager:
         self.write_admin_port_rules( settings, prefix, verbosity);
 
     def initialize( self ):
-        registrar.register_file( self.defaultFilename, "restart-iptables", self )
-        registrar.register_file( self.adminFilename, "restart-iptables", self )
+        registrar.register_file( self.iptables_filename, "restart-iptables", self )
+        registrar.register_file( self.admin_filename, "restart-iptables", self )
         
     def write_port_forward_rule( self, port_forward_rule, verbosity=0 ):
         if 'enabled' in port_forward_rule and not port_forward_rule['enabled']:
@@ -66,10 +66,10 @@ class PortForwardManager:
                 traceback.print_exc()
 
     def write_port_forwards( self, settings, prefix="", verbosity=0):
-        self.filename = prefix + self.defaultFilename
-        self.fileDir = os.path.dirname( self.filename )
-        if not os.path.exists( self.fileDir ):
-            os.makedirs( self.fileDir )
+        self.filename = prefix + self.iptables_filename
+        self.file_dir = os.path.dirname( self.filename )
+        if not os.path.exists( self.file_dir ):
+            os.makedirs( self.file_dir )
 
         self.file = open( self.filename, "w+" )
         self.file.write("## Auto Generated\n");
@@ -96,10 +96,10 @@ class PortForwardManager:
             print("PortForwardManager: Wrote %s" % self.filename)
 
     def write_admin_port_rules( self, settings, prefix="", verbosity=0):
-        self.filename = prefix + self.adminFilename
-        self.fileDir = os.path.dirname( self.filename )
-        if not os.path.exists( self.fileDir ):
-            os.makedirs( self.fileDir )
+        self.filename = prefix + self.admin_filename
+        self.file_dir = os.path.dirname( self.filename )
+        if not os.path.exists( self.file_dir ):
+            os.makedirs( self.file_dir )
 
         self.file = open( self.filename, "w+" )
         self.file.write("## Auto Generated\n");
@@ -155,8 +155,8 @@ class PortForwardManager:
                         self.file.write("# don't allow port forwarding of http port of primary IP of WAN from bridged interface %i.\n" % sub_intf.get('interfaceId'))
                         self.file.write("ADDR=\"`ip addr show %s | awk '/^ *inet.*scope global/ { interface = $2 ; sub( \"/.*\", \"\", interface ) ; print interface ; exit }'`\"\n" % intf.get('symbolicDev'))
                         self.file.write("if [ ! -z \"${ADDR}\" ] ; then" + "\n")
-                        self.file.write("\t${IPTABLES} -t nat -I port-forward-rules -p tcp -m mark --mark 0x%04X/0x%04X --destination ${ADDR} --destination-port %i -j DNAT --to-destination ${ADDR}:80 -m comment --comment \"Reserve port 80 on ${ADDR} for blockpages\"" % (sub_intf.get('interfaceId'), self.srcInterfaceMarkMask, http_port) + "\n")
-                        self.file.write("\t${IPTABLES} -t nat -A port-forward-rules -p tcp -m mark --mark 0x%04X/0x%04X --destination ${ADDR} --destination-port 80 -j REDIRECT --to-ports 0 -m comment --comment \"Drop local HTTP traffic that hasn't been handled earlier in chain\"" % (sub_intf.get('interfaceId'), self.srcInterfaceMarkMask) + "\n")
+                        self.file.write("\t${IPTABLES} -t nat -I port-forward-rules -p tcp -m mark --mark 0x%04X/0x%04X --destination ${ADDR} --destination-port %i -j DNAT --to-destination ${ADDR}:80 -m comment --comment \"Reserve port 80 on ${ADDR} for blockpages\"" % (sub_intf.get('interfaceId'), self.src_interface_mark_mask, http_port) + "\n")
+                        self.file.write("\t${IPTABLES} -t nat -A port-forward-rules -p tcp -m mark --mark 0x%04X/0x%04X --destination ${ADDR} --destination-port 80 -j REDIRECT --to-ports 0 -m comment --comment \"Drop local HTTP traffic that hasn't been handled earlier in chain\"" % (sub_intf.get('interfaceId'), self.src_interface_mark_mask) + "\n")
                         self.file.write("fi" + "\n")
                         self.file.write("\n");
             

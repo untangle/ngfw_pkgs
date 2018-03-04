@@ -9,14 +9,14 @@ from sync import registrar
 # This class is responsible for writing /etc/network/interfaces
 # based on the settings object passed from sync-settings.py
 class InterfacesManager:
-    interfacesFilename = "/etc/network/interfaces"
-    interfaceMarksFilename = "/etc/untangle/iptables-rules.d/100-interface-marks"
-    preNetworkHookFilename = "/etc/untangle/pre-network-hook.d/045-interfaces"
-    srcInterfaceMarkMask = 0x00ff
-    dstInterfaceMarkMask = 0xff00
-    lxcInterfaceMarkMask = 0x04000000
-    bothInterfacesMarksMask = 0xffff
-    interfacesFile = None
+    interfaces_filename = "/etc/network/interfaces"
+    interfaces_marks_filename = "/etc/untangle/iptables-rules.d/100-interface-marks"
+    pre_network_hook_filename = "/etc/untangle/pre-network-hook.d/045-interfaces"
+    src_interface_mark_mask = 0x00ff
+    dst_interface_mark_mask = 0xff00
+    lxc_interface_mark_mask = 0x04000000
+    both_interfaces_mark_mask = 0xffff
+    interfaces_file = None
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
         if verbosity > 1: print("InterfacesManager: sync_settings()")
@@ -25,9 +25,9 @@ class InterfacesManager:
         self.write_pre_network_hook( settings, prefix, verbosity )
 
     def initialize( self ):
-        registrar.register_file( self.interfacesFilename, "restart-networking", self )
-        registrar.register_file( self.interfaceMarksFilename, "restart-iptables", self )
-        registrar.register_file( self.preNetworkHookFilename, "restart-networking", self )
+        registrar.register_file( self.interfaces_filename, "restart-networking", self )
+        registrar.register_file( self.interfaces_marks_filename, "restart-iptables", self )
+        registrar.register_file( self.pre_network_hook_filename, "restart-networking", self )
         
     def write_interface_v4( self, interface_settings, interfaces, settings ):
 
@@ -59,8 +59,8 @@ class InterfacesManager:
         if interface_settings.get('v4ConfigType') == 'PPPOE':
             configString = "ppp"
 
-        self.interfacesFile.write("## Interface %i IPv4 (%s)\n" % (interface_settings.get('interfaceId'),interface_settings.get('v4ConfigType')) )
-        self.interfacesFile.write("auto %s\n" % devName)
+        self.interfaces_file.write("## Interface %i IPv4 (%s)\n" % (interface_settings.get('interfaceId'),interface_settings.get('v4ConfigType')) )
+        self.interfaces_file.write("auto %s\n" % devName)
 
 
         # find the minimum MTU of all devs in bridge (if its a bridge)
@@ -77,59 +77,59 @@ class InterfacesManager:
                                 elif int(devSettings.get('mtu')) < bridgeMinMtu:
                                     bridgeMinMtu = int(devSettings.get('mtu'))
 
-        self.interfacesFile.write("iface %s inet %s\n" % (devName, configString) )
-        self.interfacesFile.write("\tuntangle_interface_index %i\n" % interface_settings.get('interfaceId'))
+        self.interfaces_file.write("iface %s inet %s\n" % (devName, configString) )
+        self.interfaces_file.write("\tuntangle_interface_index %i\n" % interface_settings.get('interfaceId'))
 
         # load 8021q
         if interface_settings.get('isVlanInterface'):
-            self.interfacesFile.write("\tpre-up modprobe -q 8021q\n") 
+            self.interfaces_file.write("\tpre-up modprobe -q 8021q\n") 
 
         # handle static stuff
         if interface_settings.get('v4ConfigType') == 'STATIC':
-            self.interfacesFile.write("\tuntangle_v4_address %s\n" % interface_settings.get('v4StaticAddress'))
-            self.interfacesFile.write("\tuntangle_v4_netmask %s\n" % interface_settings.get('v4StaticNetmask'))
+            self.interfaces_file.write("\tuntangle_v4_address %s\n" % interface_settings.get('v4StaticAddress'))
+            self.interfaces_file.write("\tuntangle_v4_netmask %s\n" % interface_settings.get('v4StaticNetmask'))
             if interface_settings.get('v4StaticGateway') != None:
-                self.interfacesFile.write("\tuntangle_v4_gateway %s\n" % interface_settings.get('v4StaticGateway'))
+                self.interfaces_file.write("\tuntangle_v4_gateway %s\n" % interface_settings.get('v4StaticGateway'))
 
         # handle bridge-related stuff
         if isBridge:
-            self.interfacesFile.write("\tbridge_ports %s\n" % " ".join(bridgedInterfacesStr))
-            self.interfacesFile.write("\tbridge_ageing %i\n" % 900) #XXX
+            self.interfaces_file.write("\tbridge_ports %s\n" % " ".join(bridgedInterfacesStr))
+            self.interfaces_file.write("\tbridge_ageing %i\n" % 900) #XXX
             stpEnabled = (settings.get('stpEnabled') != None and settings.get('stpEnabled'))
             if stpEnabled:
-                self.interfacesFile.write("\tbridge_stp on\n") 
-                self.interfacesFile.write("\tbridge_maxwait %i\n" % 30)
+                self.interfaces_file.write("\tbridge_stp on\n") 
+                self.interfaces_file.write("\tbridge_maxwait %i\n" % 30)
             else:
-                self.interfacesFile.write("\tbridge_stp off\n") 
+                self.interfaces_file.write("\tbridge_stp off\n") 
                 # maxwait comments: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=549696
                 # For now I've decide to set this to 20 
                 # Its tempting to set this to zero because stp is disbled
-                self.interfacesFile.write("\tbridge_maxwait %i\n" % 20)
+                self.interfaces_file.write("\tbridge_maxwait %i\n" % 20)
             if bridgeMinMtu != None:
-                self.interfacesFile.write("\tmtu %i\n" % bridgeMinMtu)
+                self.interfaces_file.write("\tmtu %i\n" % bridgeMinMtu)
             # multicast_snooping causes issues with IMQ/QoS, disable it (bug #11930)
-            self.interfacesFile.write("\tpost-up if [ -f /sys/devices/virtual/net/$IFACE/bridge/multicast_snooping ] ; then echo 0 > /sys/devices/virtual/net/$IFACE/bridge/multicast_snooping || true ; fi" + "\n") 
+            self.interfaces_file.write("\tpost-up if [ -f /sys/devices/virtual/net/$IFACE/bridge/multicast_snooping ] ; then echo 0 > /sys/devices/virtual/net/$IFACE/bridge/multicast_snooping || true ; fi" + "\n") 
 
         # handle PPPoE stuff
         if interface_settings.get('v4ConfigType') == 'PPPOE':
             if interface_settings.get('v4PPPoERootDev') != None:
                 if interface_settings.get('isVlanInterface'):
-                    self.interfacesFile.write("\tpre-up env IF_VLAN_RAW_DEVICE=%s IFACE=%s /etc/network/if-pre-up.d/vlan\n" % (interface_settings.get('physicalDev'),interface_settings.get('v4PPPoERootDev')))
-                self.interfacesFile.write("\tpre-up /sbin/ifconfig %s up\n" % interface_settings.get('v4PPPoERootDev'))
-                self.interfacesFile.write("\tpost-down /sbin/ifconfig %s down\n" % interface_settings.get('v4PPPoERootDev'))
+                    self.interfaces_file.write("\tpre-up env IF_VLAN_RAW_DEVICE=%s IFACE=%s /etc/network/if-pre-up.d/vlan\n" % (interface_settings.get('physicalDev'),interface_settings.get('v4PPPoERootDev')))
+                self.interfaces_file.write("\tpre-up /sbin/ifconfig %s up\n" % interface_settings.get('v4PPPoERootDev'))
+                self.interfaces_file.write("\tpost-down /sbin/ifconfig %s down\n" % interface_settings.get('v4PPPoERootDev'))
                 if interface_settings.get('isVlanInterface'):
-                    self.interfacesFile.write("\tpost-down env IF_VLAN_RAW_DEVICE=%s IFACE=%s /etc/network/if-post-down.d/vlan\n" % (interface_settings.get('physicalDev'),interface_settings.get('v4PPPoERootDev')))
-            self.interfacesFile.write("\tprovider %s\n" % ("connection.intf" + str(interface_settings.get('interfaceId')))) 
+                    self.interfaces_file.write("\tpost-down env IF_VLAN_RAW_DEVICE=%s IFACE=%s /etc/network/if-post-down.d/vlan\n" % (interface_settings.get('physicalDev'),interface_settings.get('v4PPPoERootDev')))
+            self.interfaces_file.write("\tprovider %s\n" % ("connection.intf" + str(interface_settings.get('interfaceId')))) 
             # sleep to give PPPoE time to get address (bug #11431)
-            self.interfacesFile.write("\tpost-up /usr/share/untangle-sync-settings/bin/pppoe-wait-for-address.sh %s 60\n" % devName ) 
+            self.interfaces_file.write("\tpost-up /usr/share/untangle-sync-settings/bin/pppoe-wait-for-address.sh %s 60\n" % devName ) 
 
         # write VRRP source routes
         if interface_settings.get('isWan') and interface_settings.get('configType') == 'ADDRESSED' and interface_settings.get('vrrpEnabled'):
             if interface_settings.get('vrrpAliases') != None and interface_settings.get('vrrpAliases').get('list') != None:
                 for alias in interface_settings.get('vrrpAliases').get('list'):
-                    self.interfacesFile.write("\tpost-up /usr/share/untangle-sync-settings/bin/add-source-route.sh %s \"uplink.%i\" -4\n" % (alias.get('staticAddress'), interface_settings.get('interfaceId'))) 
+                    self.interfaces_file.write("\tpost-up /usr/share/untangle-sync-settings/bin/add-source-route.sh %s \"uplink.%i\" -4\n" % (alias.get('staticAddress'), interface_settings.get('interfaceId'))) 
             
-        self.interfacesFile.write("\n\n");
+        self.interfaces_file.write("\n\n");
 
     def write_interface_v6( self, interface_settings, interfaces ):
 
@@ -137,46 +137,46 @@ class InterfacesManager:
         if interface_settings.get('v6ConfigType') == 'STATIC' and interface_settings.get('v6StaticAddress') == None:
             interface_settings['v6ConfigType'] = 'DISABLED'
 
-        self.interfacesFile.write("## Interface %i IPv6 (%s)\n" % (interface_settings.get('interfaceId'),interface_settings.get('v6ConfigType')) )
-        #self.interfacesFile.write("auto %s\n" % interface_settings.get('symbolicDev'))
+        self.interfaces_file.write("## Interface %i IPv6 (%s)\n" % (interface_settings.get('interfaceId'),interface_settings.get('v6ConfigType')) )
+        #self.interfaces_file.write("auto %s\n" % interface_settings.get('symbolicDev'))
 
-        self.interfacesFile.write("iface %s inet6 %s\n" % (interface_settings.get('symbolicDev'), "manual") )
-        self.interfacesFile.write("\tuntangle_interface_index %i\n" % interface_settings.get('interfaceId'))
+        self.interfaces_file.write("iface %s inet6 %s\n" % (interface_settings.get('symbolicDev'), "manual") )
+        self.interfaces_file.write("\tuntangle_interface_index %i\n" % interface_settings.get('interfaceId'))
 
         if interface_settings.get('v6ConfigType') == 'STATIC':
-            self.interfacesFile.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6" + "\n")
-            self.interfacesFile.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/autoconf" + "\n")
+            self.interfaces_file.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6" + "\n")
+            self.interfaces_file.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/autoconf" + "\n")
             if interface_settings.get('v6StaticAddress') != None:
-                self.interfacesFile.write("\tuntangle_v6_address %s\n" % interface_settings.get('v6StaticAddress'))
+                self.interfaces_file.write("\tuntangle_v6_address %s\n" % interface_settings.get('v6StaticAddress'))
             if interface_settings.get('v6StaticPrefixLength') != None:
-                self.interfacesFile.write("\tuntangle_v6_prefix %s\n" % interface_settings.get('v6StaticPrefixLength'))
+                self.interfaces_file.write("\tuntangle_v6_prefix %s\n" % interface_settings.get('v6StaticPrefixLength'))
             if interface_settings.get('isWan'):
                 if interface_settings.get('v6StaticGateway') != None:
-                    self.interfacesFile.write("\tuntangle_v6_gateway %s\n" % interface_settings.get('v6StaticGateway'))
-                    self.interfacesFile.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
+                    self.interfaces_file.write("\tuntangle_v6_gateway %s\n" % interface_settings.get('v6StaticGateway'))
+                    self.interfaces_file.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
                 else: # no gateway specified, use RAs
-                    self.interfacesFile.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
+                    self.interfaces_file.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
         elif interface_settings.get('v6ConfigType') == 'AUTO':
-            self.interfacesFile.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6" + "\n")
-            self.interfacesFile.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/autoconf" + "\n")
-            self.interfacesFile.write("\tuntangle_v6_address %s\n" % "auto")
+            self.interfaces_file.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6" + "\n")
+            self.interfaces_file.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/autoconf" + "\n")
+            self.interfaces_file.write("\tuntangle_v6_address %s\n" % "auto")
             if interface_settings.get('isWan'):
-                self.interfacesFile.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
+                self.interfaces_file.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
             else:
-                self.interfacesFile.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
+                self.interfaces_file.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
         elif interface_settings.get('v6ConfigType') == 'DISABLED':
-            self.interfacesFile.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6" + "\n")
+            self.interfaces_file.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6" + "\n")
 
-        self.interfacesFile.write("\n\n");
+        self.interfaces_file.write("\n\n");
 
     def write_interface_disabled( self, interface_settings, interfaces ):
         devName = interface_settings.get('symbolicDev')
-        self.interfacesFile.write("## Interface %i (DISABLED)\n" % interface_settings.get('interfaceId') )
-        self.interfacesFile.write("auto %s\n" % devName)
-        self.interfacesFile.write("iface %s inet manual\n" % devName )
-        self.interfacesFile.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6" + "\n")
-        self.interfacesFile.write("\tpost-up ifconfig %s 0.0.0.0 up\n" % devName )
-        self.interfacesFile.write("\n\n");
+        self.interfaces_file.write("## Interface %i (DISABLED)\n" % interface_settings.get('interfaceId') )
+        self.interfaces_file.write("auto %s\n" % devName)
+        self.interfaces_file.write("iface %s inet manual\n" % devName )
+        self.interfaces_file.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6" + "\n")
+        self.interfaces_file.write("\tpost-up ifconfig %s 0.0.0.0 up\n" % devName )
+        self.interfaces_file.write("\n\n");
 
     def write_interface_blank( self, interface_settings, interfaces ):
         # This is not necessary as the bridge-utils scripts bring up any sub-interfaces automatically
@@ -185,11 +185,11 @@ class InterfacesManager:
         # If so, we can specify the config here
         
         # devName = interface_settings.get('systemDev')
-        # self.interfacesFile.write("## Interface %i (BRIDGE PORT)\n" % interface_settings.get('interfaceId') )
-        # self.interfacesFile.write("auto %s\n" % devName)
-        # self.interfacesFile.write("iface %s inet manual\n" % devName )
-        # self.interfacesFile.write("\tpost-up ifconfig %s 0.0.0.0 up\n" % devName )
-        # self.interfacesFile.write("\n\n");
+        # self.interfaces_file.write("## Interface %i (BRIDGE PORT)\n" % interface_settings.get('interfaceId') )
+        # self.interfaces_file.write("auto %s\n" % devName)
+        # self.interfaces_file.write("iface %s inet manual\n" % devName )
+        # self.interfaces_file.write("\tpost-up ifconfig %s 0.0.0.0 up\n" % devName )
+        # self.interfaces_file.write("\n\n");
         pass
         
     def write_interface_aliases( self, interface_settings, interfaces ):
@@ -205,25 +205,25 @@ class InterfacesManager:
         count = 1
         if interface_settings.get('v4Aliases') != None and interface_settings.get('v4Aliases').get('list') != None:
             for alias in interface_settings.get('v4Aliases').get('list'):
-                self.interfacesFile.write("## Interface %i IPv4 alias\n" % (interface_settings.get('interfaceId')) )
-                self.interfacesFile.write("auto %s:%i\n" % (intf_str, count))
-                self.interfacesFile.write("iface %s:%i inet manual\n" % ( intf_str, count ))
-                self.interfacesFile.write("\tuntangle_interface_index %i\n" % interface_settings.get('interfaceId'))
-                self.interfacesFile.write("\tuntangle_v4_address %s\n" % alias.get('staticAddress'))
-                self.interfacesFile.write("\tuntangle_v4_netmask %s\n" % alias.get('staticNetmask'))
-                self.interfacesFile.write("\n");
+                self.interfaces_file.write("## Interface %i IPv4 alias\n" % (interface_settings.get('interfaceId')) )
+                self.interfaces_file.write("auto %s:%i\n" % (intf_str, count))
+                self.interfaces_file.write("iface %s:%i inet manual\n" % ( intf_str, count ))
+                self.interfaces_file.write("\tuntangle_interface_index %i\n" % interface_settings.get('interfaceId'))
+                self.interfaces_file.write("\tuntangle_v4_address %s\n" % alias.get('staticAddress'))
+                self.interfaces_file.write("\tuntangle_v4_netmask %s\n" % alias.get('staticNetmask'))
+                self.interfaces_file.write("\n");
                 count = count+1
 
         # handle v6 aliases
         if interface_settings.get('v6Aliases') != None and interface_settings.get('v6Aliases').get('list') != None:
             for alias in interface_settings.get('v6Aliases').get('list'):
-                self.interfacesFile.write("## Interface %i IPv6 alias\n" % (interface_settings.get('interfaceId')) )
-                self.interfacesFile.write("auto %s:%i\n" % (intf_str, count))
-                self.interfacesFile.write("iface %s:%i inet manual\n" % ( intf_str, count ))
-                self.interfacesFile.write("\tuntangle_interface_index %i\n" % interface_settings.get('interfaceId'))
-                self.interfacesFile.write("\tuntangle_v6_address %s\n" % alias.get('staticAddress'))
-                self.interfacesFile.write("\tuntangle_v6_netmask %s\n" % alias.get('staticNetmask'))
-                self.interfacesFile.write("\n");
+                self.interfaces_file.write("## Interface %i IPv6 alias\n" % (interface_settings.get('interfaceId')) )
+                self.interfaces_file.write("auto %s:%i\n" % (intf_str, count))
+                self.interfaces_file.write("iface %s:%i inet manual\n" % ( intf_str, count ))
+                self.interfaces_file.write("\tuntangle_interface_index %i\n" % interface_settings.get('interfaceId'))
+                self.interfaces_file.write("\tuntangle_v6_address %s\n" % alias.get('staticAddress'))
+                self.interfaces_file.write("\tuntangle_v6_netmask %s\n" % alias.get('staticNetmask'))
+                self.interfaces_file.write("\n");
                 count = count+1
 
     def check_interface_settings( self, interface_settings):
@@ -242,31 +242,31 @@ class InterfacesManager:
         return True
 
     def write_interfaces_file( self, settings, prefix="", verbosity=0 ):
-        filename = prefix + self.interfacesFilename
+        filename = prefix + self.interfaces_filename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
             os.makedirs( fileDir )
 
-        self.interfacesFile = open( filename, "w+" )
-        self.interfacesFile.write("## Auto Generated\n");
-        self.interfacesFile.write("## DO NOT EDIT. Changes will be overwritten.\n");
-        self.interfacesFile.write("\n\n");
+        self.interfaces_file = open( filename, "w+" )
+        self.interfaces_file.write("## Auto Generated\n");
+        self.interfaces_file.write("## DO NOT EDIT. Changes will be overwritten.\n");
+        self.interfaces_file.write("\n\n");
 
-        self.interfacesFile.write("## This is a fake interface that launches the pre-networking-restart\n");
-        self.interfacesFile.write("## hooks using the if-up.d scripts when IFACE=networking_pre_restart_hook\n");
-        self.interfacesFile.write("auto networking_pre_restart_hook\n");
-        self.interfacesFile.write("iface networking_pre_restart_hook inet manual\n");
+        self.interfaces_file.write("## This is a fake interface that launches the pre-networking-restart\n");
+        self.interfaces_file.write("## hooks using the if-up.d scripts when IFACE=networking_pre_restart_hook\n");
+        self.interfaces_file.write("auto networking_pre_restart_hook\n");
+        self.interfaces_file.write("iface networking_pre_restart_hook inet manual\n");
         if settings.get('blockDuringRestarts') != None and settings.get('blockDuringRestarts'):
-            self.interfacesFile.write("\tpre-up /sbin/iptables -t filter -I FORWARD -m conntrack --ctstate NEW -j DROP -m comment --comment \"drop sessions during restart\"\n");
-            self.interfacesFile.write("\tpre-up /sbin/iptables -t filter -I INPUT   -m conntrack --ctstate NEW -j DROP -m comment --comment \"drop sessions during restart\"\n");
-        self.interfacesFile.write("\n\n");
+            self.interfaces_file.write("\tpre-up /sbin/iptables -t filter -I FORWARD -m conntrack --ctstate NEW -j DROP -m comment --comment \"drop sessions during restart\"\n");
+            self.interfaces_file.write("\tpre-up /sbin/iptables -t filter -I INPUT   -m conntrack --ctstate NEW -j DROP -m comment --comment \"drop sessions during restart\"\n");
+        self.interfaces_file.write("\n\n");
 
-        self.interfacesFile.write("auto lo\n");
-        self.interfacesFile.write("iface lo inet loopback\n");
-        self.interfacesFile.write("\n\n");
+        self.interfaces_file.write("auto lo\n");
+        self.interfaces_file.write("iface lo inet loopback\n");
+        self.interfaces_file.write("\n\n");
 
-        self.interfacesFile.write("source-directory interfaces.d\n");
-        self.interfacesFile.write("\n\n");
+        self.interfaces_file.write("source-directory interfaces.d\n");
+        self.interfaces_file.write("\n\n");
 
         # Write disable interfaces first
         if settings != None and settings.get('disabledInterfaces') != None and settings.get('disabledInterfaces').get('list') != None:
@@ -302,14 +302,14 @@ class InterfacesManager:
                 except Exception as exc:
                     traceback.print_exc()
 
-        self.interfacesFile.write("## This is a fake interface that launches the post-networking-restart\n");
-        self.interfacesFile.write("## hooks using the if-up.d scripts when IFACE=networking_post_restart_hook\n");
-        self.interfacesFile.write("auto networking_post_restart_hook\n");
-        self.interfacesFile.write("iface networking_post_restart_hook inet manual\n");
-        self.interfacesFile.write("\n\n");
+        self.interfaces_file.write("## This is a fake interface that launches the post-networking-restart\n");
+        self.interfaces_file.write("## hooks using the if-up.d scripts when IFACE=networking_post_restart_hook\n");
+        self.interfaces_file.write("auto networking_post_restart_hook\n");
+        self.interfaces_file.write("iface networking_post_restart_hook inet manual\n");
+        self.interfaces_file.write("\n\n");
         
-        self.interfacesFile.flush()
-        self.interfacesFile.close()
+        self.interfaces_file.flush()
+        self.interfaces_file.close()
 
         if verbosity > 0:
             print("InterfacesManager: Wrote %s" % filename)
@@ -336,10 +336,10 @@ class InterfacesManager:
         file.write("KERN_2_6_32=$?" + "\n");
         file.write("if [ ${KERN_2_6_32} -eq 0 ] ; then" + "\n");
         file.write("\t# The rule actually says REPLY and not ORIGINAL and thats because ctdir matches backwards in 2.6.32 # http://www.spinics.net/lists/netfilter-devel/msg17864.html" + "\n");
-        file.write("\t${IPTABLES} -t mangle -A restore-interface-marks -m conntrack --ctdir REPLY -j CONNMARK --restore-mark --mask 0x%X -m comment --comment \"If packet is in original direction, copy mark from connmark to packet\"" % self.bothInterfacesMarksMask + "\n");
+        file.write("\t${IPTABLES} -t mangle -A restore-interface-marks -m conntrack --ctdir REPLY -j CONNMARK --restore-mark --mask 0x%X -m comment --comment \"If packet is in original direction, copy mark from connmark to packet\"" % self.both_interfaces_mark_mask + "\n");
         file.write("\t${IPTABLES} -t mangle -A restore-interface-marks -m conntrack --ctdir REPLY -j RETURN -m comment --comment \"If packet is in original direction we are done, just return\"" + "\n");
         file.write("else" + "\n");
-        file.write("\t${IPTABLES} -t mangle -A restore-interface-marks -m conntrack --ctdir ORIGINAL -j CONNMARK --restore-mark --mask 0x%X -m comment --comment \"If packet is in original direction, copy mark from connmark to packet\"" % self.bothInterfacesMarksMask + "\n");
+        file.write("\t${IPTABLES} -t mangle -A restore-interface-marks -m conntrack --ctdir ORIGINAL -j CONNMARK --restore-mark --mask 0x%X -m comment --comment \"If packet is in original direction, copy mark from connmark to packet\"" % self.both_interfaces_mark_mask + "\n");
         file.write("\t${IPTABLES} -t mangle -A restore-interface-marks -m conntrack --ctdir ORIGINAL -j RETURN -m comment --comment \"If packet is in original direction we are done, just return\"" + "\n");
         file.write("fi" + "\n");
         file.write("\n");
@@ -349,8 +349,8 @@ class InterfacesManager:
 
         for intf in interfaces:
             id = intf['interfaceId']
-            file.write("${IPTABLES} -t mangle -A restore-interface-marks -m connmark --mark 0x%04X/0x%04X -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark from connmark for intf %i\"" % (id, self.srcInterfaceMarkMask, id << 8, self.dstInterfaceMarkMask, id) + "\n");
-            file.write("${IPTABLES} -t mangle -A restore-interface-marks -m connmark --mark 0x%04X/0x%04X -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark from connmark for intf %i\"" % (id << 8, self.dstInterfaceMarkMask, id, self.srcInterfaceMarkMask, id) + "\n");
+            file.write("${IPTABLES} -t mangle -A restore-interface-marks -m connmark --mark 0x%04X/0x%04X -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark from connmark for intf %i\"" % (id, self.src_interface_mark_mask, id << 8, self.dst_interface_mark_mask, id) + "\n");
+            file.write("${IPTABLES} -t mangle -A restore-interface-marks -m connmark --mark 0x%04X/0x%04X -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark from connmark for intf %i\"" % (id << 8, self.dst_interface_mark_mask, id, self.src_interface_mark_mask, id) + "\n");
         file.write("\n");
 
     def write_mark_src_intf( self, file, interfaces, prefix, verbosity ):
@@ -360,7 +360,7 @@ class InterfacesManager:
         file.write("# Create the mark-src-intf chain." + "\n");
         file.write("#\n\n");
 
-        file.write("${IPTABLES} -t mangle -A mark-src-intf -m mark ! --mark 0/0x%04X -j RETURN -m comment --comment \"If its already set, just return\"" % (self.srcInterfaceMarkMask) + "\n");
+        file.write("${IPTABLES} -t mangle -A mark-src-intf -m mark ! --mark 0/0x%04X -j RETURN -m comment --comment \"If its already set, just return\"" % (self.src_interface_mark_mask) + "\n");
         file.write("\n");
 
         for intf in interfaces:
@@ -369,10 +369,10 @@ class InterfacesManager:
             symbolicDev = intf['symbolicDev']
             configType = intf['configType']
 
-            file.write("${IPTABLES} -t mangle -A mark-src-intf -i %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark for intf %i\"" % (systemDev, id, self.srcInterfaceMarkMask, id) + "\n");
+            file.write("${IPTABLES} -t mangle -A mark-src-intf -i %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark for intf %i\"" % (systemDev, id, self.src_interface_mark_mask, id) + "\n");
             # if bridged also add bridge rules
             if symbolicDev.startswith("br.") or configType == 'BRIDGED':
-                file.write("${IPTABLES} -t mangle -A mark-src-intf -m physdev --physdev-in %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark for intf %i using physdev\"" % (systemDev, id, self.srcInterfaceMarkMask, id) + "\n");
+                file.write("${IPTABLES} -t mangle -A mark-src-intf -m physdev --physdev-in %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark for intf %i using physdev\"" % (systemDev, id, self.src_interface_mark_mask, id) + "\n");
 
         for intf in interfaces:
             id = intf['interfaceId']
@@ -386,7 +386,7 @@ class InterfacesManager:
         file.write("${IPTABLES} -t mangle -A mark-src-intf -i veth+  -j mark-src-lxc-intf -m comment --comment \"Mark LXC interface\"" + "\n")
 
        # Save mark to connmark
-        file.write("${IPTABLES} -t mangle -A mark-src-intf -m mark ! --mark 0/0x%04X -m conntrack --ctstate NEW -j CONNMARK --save-mark --mask 0x%04X -m comment --comment \"Save src interface mark to connmark\"" % (self.srcInterfaceMarkMask, self.srcInterfaceMarkMask) + "\n");
+        file.write("${IPTABLES} -t mangle -A mark-src-intf -m mark ! --mark 0/0x%04X -m conntrack --ctstate NEW -j CONNMARK --save-mark --mask 0x%04X -m comment --comment \"Save src interface mark to connmark\"" % (self.src_interface_mark_mask, self.src_interface_mark_mask) + "\n");
 
         # IPsec traffic may come from a bridge interface
         # Unfortunately, the incoming interface will be br.ethX but none of the above physdev rules will match above.
@@ -399,7 +399,7 @@ class InterfacesManager:
         file.write("${IPTABLES} -t mangle -A mark-src-intf -i utun -j RETURN -m comment --comment \"Do not warn on utun traffic\"" + "\n");
 
         # Log unknown packets
-        file.write("${IPTABLES} -t mangle -A mark-src-intf -m mark --mark 0/0x%04X -j LOG --log-prefix \"WARNING (unknown src intf):\" -m comment --comment \"WARN on missing src mark\"" % (self.srcInterfaceMarkMask) + "\n");
+        file.write("${IPTABLES} -t mangle -A mark-src-intf -m mark --mark 0/0x%04X -j LOG --log-prefix \"WARNING (unknown src intf):\" -m comment --comment \"WARN on missing src mark\"" % (self.src_interface_mark_mask) + "\n");
 
         file.write("\n");
 
@@ -415,15 +415,15 @@ class InterfacesManager:
             return
 
         # Add a rule so LXC traffic is marked as if it was coming from lxcInterfaceId
-        file.write("${IPTABLES} -t mangle -A mark-src-lxc-intf -i br.lxc -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark lxc\"" % (lxcInterfaceId, self.srcInterfaceMarkMask) + "\n")
-        file.write("${IPTABLES} -t mangle -A mark-src-lxc-intf -i veth+  -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark lxc\"" % (lxcInterfaceId, self.srcInterfaceMarkMask) + "\n")
+        file.write("${IPTABLES} -t mangle -A mark-src-lxc-intf -i br.lxc -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark lxc\"" % (lxcInterfaceId, self.src_interface_mark_mask) + "\n")
+        file.write("${IPTABLES} -t mangle -A mark-src-lxc-intf -i veth+  -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark lxc\"" % (lxcInterfaceId, self.src_interface_mark_mask) + "\n")
 
         # Give it a special mark
-        file.write("${IPTABLES} -t mangle -A mark-src-lxc-intf -i br.lxc -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set lxc mark for lxc\"" % (self.lxcInterfaceMarkMask, self.lxcInterfaceMarkMask) + "\n")
-        file.write("${IPTABLES} -t mangle -A mark-src-lxc-intf -i veth+  -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set lxc mark for lxc\"" % (self.lxcInterfaceMarkMask, self.lxcInterfaceMarkMask) + "\n")
+        file.write("${IPTABLES} -t mangle -A mark-src-lxc-intf -i br.lxc -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set lxc mark for lxc\"" % (self.lxc_interface_mark_mask, self.lxc_interface_mark_mask) + "\n")
+        file.write("${IPTABLES} -t mangle -A mark-src-lxc-intf -i veth+  -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set lxc mark for lxc\"" % (self.lxc_interface_mark_mask, self.lxc_interface_mark_mask) + "\n")
 
-        file.write("${IPTABLES} -t mangle -A mark-src-lxc-intf -i br.lxc -j CONNMARK --save-mark --mask 0x%04X -m comment --comment \"Save lxc mark to connmark\"" % (self.lxcInterfaceMarkMask)+ "\n")
-        file.write("${IPTABLES} -t mangle -A mark-src-lxc-intf -i veth+  -j CONNMARK --save-mark --mask 0x%04X -m comment --comment \"Save lxc mark to connmark\"" % (self.lxcInterfaceMarkMask)+ "\n")
+        file.write("${IPTABLES} -t mangle -A mark-src-lxc-intf -i br.lxc -j CONNMARK --save-mark --mask 0x%04X -m comment --comment \"Save lxc mark to connmark\"" % (self.lxc_interface_mark_mask)+ "\n")
+        file.write("${IPTABLES} -t mangle -A mark-src-lxc-intf -i veth+  -j CONNMARK --save-mark --mask 0x%04X -m comment --comment \"Save lxc mark to connmark\"" % (self.lxc_interface_mark_mask)+ "\n")
 
         file.write("\n");
 
@@ -436,7 +436,7 @@ class InterfacesManager:
 
         # We dont bother with already marked packets, except if its the first packet in the session
         # If it is the first packet then WAN-balancer could have picked a WAN but it might be headed elsewhere because of a static route.
-        file.write("${IPTABLES} -t mangle -A mark-dst-intf -m mark ! --mark 0/0x%04X -m conntrack ! --ctstate NEW -j RETURN -m comment --comment \"If its already set and an existing session, just return\"" % (self.dstInterfaceMarkMask) + "\n");
+        file.write("${IPTABLES} -t mangle -A mark-dst-intf -m mark ! --mark 0/0x%04X -m conntrack ! --ctstate NEW -j RETURN -m comment --comment \"If its already set and an existing session, just return\"" % (self.dst_interface_mark_mask) + "\n");
         file.write("\n");
 
         # Don't bother with broadcast packets,
@@ -449,10 +449,10 @@ class InterfacesManager:
             symbolicDev = intf['symbolicDev']
             configType = intf['configType']
 
-            file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i\"" % (systemDev, id << 8, self.dstInterfaceMarkMask, id) + "\n");
+            file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i\"" % (systemDev, id << 8, self.dst_interface_mark_mask, id) + "\n");
             # if bridged also add bridge rules
             if symbolicDev.startswith("br.") or configType == 'BRIDGED':
-                file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -m physdev --physdev-out %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i using physdev\"" % (symbolicDev, systemDev, id << 8, self.dstInterfaceMarkMask, id) + "\n");
+                file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -m physdev --physdev-out %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i using physdev\"" % (symbolicDev, systemDev, id << 8, self.dst_interface_mark_mask, id) + "\n");
 
         # This is a terrible hack to work around NGFW-6246
         # physdev-out does not work for bridged interfaces in 4.x, so we have to assume some destination interface so we assume the main interface
@@ -471,7 +471,7 @@ class InterfacesManager:
                     file.write("uname -r | grep -q '^4'" + "\n");
                     file.write("KERN_4_X=$?" + "\n");
                     file.write("if [ ${KERN_4_X} -eq 0 ] ; then" + "\n");
-                    file.write("    ${IPTABLES} -t mangle -A mark-dst-intf -o %s -m mark --mark 0x0000/0xff00 -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Assume dst interface mark for intf %i\"" % (symbolicDev, id << 8, self.dstInterfaceMarkMask, id) + "\n");
+                    file.write("    ${IPTABLES} -t mangle -A mark-dst-intf -o %s -m mark --mark 0x0000/0xff00 -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Assume dst interface mark for intf %i\"" % (symbolicDev, id << 8, self.dst_interface_mark_mask, id) + "\n");
                     file.write("fi" + "\n");
                     file.write("\n");
 
@@ -480,8 +480,8 @@ class InterfacesManager:
         lxcInterfaceId = self.get_lxc_interface_id( settings )
         if lxcInterfaceId != None:
             # Add a rule so LXC traffic is marked as if it was going to from lxcInterfaceId
-            file.write("${IPTABLES} -t mangle -A mark-dst-intf -o br.lxc -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark lxc\"" % ((lxcInterfaceId<<8), self.dstInterfaceMarkMask) + "\n")
-            file.write("${IPTABLES} -t mangle -A mark-dst-intf -o veth+  -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark lxc\"" % ((lxcInterfaceId<<8), self.dstInterfaceMarkMask) + "\n")
+            file.write("${IPTABLES} -t mangle -A mark-dst-intf -o br.lxc -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark lxc\"" % ((lxcInterfaceId<<8), self.dst_interface_mark_mask) + "\n")
+            file.write("${IPTABLES} -t mangle -A mark-dst-intf -o veth+  -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark lxc\"" % ((lxcInterfaceId<<8), self.dst_interface_mark_mask) + "\n")
             file.write("\n");
         
     def write_save_dst_intf_mark( self, file, interfaces, prefix, verbosity ):
@@ -491,8 +491,8 @@ class InterfacesManager:
         file.write("# Create the save-mark-dst-intf chain." + "\n");
         file.write("#\n\n");
 
-        # file.write("${IPTABLES} -t filter -A save-mark-dst-intf -m mark --mark 0/0x%04X -j LOG --log-prefix \"WARNING (unknown dst intf):\" -m comment --comment \"WARN on missing dst mark\"" % (self.dstInterfaceMarkMask) + "\n");
-        file.write("${IPTABLES} -t filter -A save-mark-dst-intf -m conntrack --ctstate NEW -j CONNMARK --save-mark --mask 0x%04X -m comment --comment \"Save dst interface mark to connmark\"" % (self.dstInterfaceMarkMask) + "\n");
+        # file.write("${IPTABLES} -t filter -A save-mark-dst-intf -m mark --mark 0/0x%04X -j LOG --log-prefix \"WARNING (unknown dst intf):\" -m comment --comment \"WARN on missing dst mark\"" % (self.dst_interface_mark_mask) + "\n");
+        file.write("${IPTABLES} -t filter -A save-mark-dst-intf -m conntrack --ctstate NEW -j CONNMARK --save-mark --mask 0x%04X -m comment --comment \"Save dst interface mark to connmark\"" % (self.dst_interface_mark_mask) + "\n");
                 
         file.write("\n");
 
@@ -500,7 +500,7 @@ class InterfacesManager:
     def write_interface_marks( self, settings, prefix, verbosity ):
         interfaces = settings['interfaces']['list']
 
-        filename = prefix + self.interfaceMarksFilename
+        filename = prefix + self.interfaces_marks_filename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
             os.makedirs( fileDir )
@@ -567,7 +567,7 @@ class InterfacesManager:
 
     def write_pre_network_hook( self, settings, prefix="", verbosity=0 ):
 
-        filename = prefix + self.preNetworkHookFilename
+        filename = prefix + self.pre_network_hook_filename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
             os.makedirs( fileDir )

@@ -10,10 +10,10 @@ from sync import registrar
 # This class is responsible for writing /etc/untangle/iptables-rules.d/240-filter-rules
 # based on the settings object passed from sync-settings.py
 class FilterRulesManager:
-    interfacesMarkMask = 0x0000FFFF
+    interfaces_mark_mask = 0x0000FFFF
 
-    defaultFilename = "/etc/untangle/iptables-rules.d/240-filter-rules"
-    filename = defaultFilename
+    iptables_filename = "/etc/untangle/iptables-rules.d/240-filter-rules"
+    filename = iptables_filename
     file = None
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
@@ -21,7 +21,7 @@ class FilterRulesManager:
         self.write_filter_rules_file( settings, prefix, verbosity )
 
     def initialize( self ):
-        registrar.register_file( self.defaultFilename, "restart-iptables", self )
+        registrar.register_file( self.iptables_filename, "restart-iptables", self )
         
     def write_filter_rule( self, table_name, filter_rule, drop_target, verbosity=0 ):
 
@@ -102,7 +102,7 @@ class FilterRulesManager:
         return
 
     def write_filter_rules_file( self, settings, prefix="", verbosity=0 ):
-        self.filename = prefix + self.defaultFilename
+        self.filename = prefix + self.iptables_filename
         self.fileDir = os.path.dirname( self.filename )
         if not os.path.exists( self.fileDir ):
             os.makedirs( self.fileDir )
@@ -173,7 +173,7 @@ class FilterRulesManager:
         self.file.write("${IPTABLES} -t filter -D block-invalid -m conntrack --ctstate INVALID -j NFLOG --nflog-prefix \"invalid_blocked\" -m comment --comment \"nflog on invalid\" >/dev/null 2>&1\n");
         self.file.write("${IPTABLES} -t filter -I block-invalid -m conntrack --ctstate INVALID -j NFLOG --nflog-prefix \"invalid_blocked\" -m comment --comment \"nflog on invalid\"\n");
         for intfId in NetworkUtil.interface_list():
-            self.file.write("${IPTABLES} -t filter -I block-invalid -m mark --mark 0x%X/0x%X -j RETURN -m comment --comment \"Allow INVALID hairpin traffic (interface %s)\"" % ( (intfId+(intfId<<8)), self.interfacesMarkMask, str(intfId)) + "\n");
+            self.file.write("${IPTABLES} -t filter -I block-invalid -m mark --mark 0x%X/0x%X -j RETURN -m comment --comment \"Allow INVALID hairpin traffic (interface %s)\"" % ( (intfId+(intfId<<8)), self.interfaces_mark_mask, str(intfId)) + "\n");
         self.file.write("${IPTABLES} -t filter -I block-invalid -m mark --mark 0xfe00/0xff00 -j RETURN -m comment --comment \"Allow INVALID to local sockets (interface 0xfe)\"" + "\n");
         self.file.write("\n");
         self.file.write("# Block INVALID packets" + "\n");
@@ -183,7 +183,7 @@ class FilterRulesManager:
         #self.file.write("${IP6TABLES} -t filter -D block-invalid -m conntrack --ctstate INVALID -j NFLOG --nflog-prefix \"invalid_blocked\" -m comment --comment \"nflog on invalid\" >/dev/null 2>&1\n");
         #self.file.write("${IP6TABLES} -t filter -I block-invalid -m conntrack --ctstate INVALID -j NFLOG --nflog-prefix \"invalid_blocked\" -m comment --comment \"nflog on invalid\"\n");
         for intfId in NetworkUtil.interface_list():
-            self.file.write("${IP6TABLES} -t filter -I block-invalid -m mark --mark 0x%X/0x%X -j RETURN -m comment --comment \"Allow INVALID hairpin traffic (interface %s)\"" % ( (intfId+(intfId<<8)), self.interfacesMarkMask, str(intfId)) + "\n");
+            self.file.write("${IP6TABLES} -t filter -I block-invalid -m mark --mark 0x%X/0x%X -j RETURN -m comment --comment \"Allow INVALID hairpin traffic (interface %s)\"" % ( (intfId+(intfId<<8)), self.interfaces_mark_mask, str(intfId)) + "\n");
         self.file.write("${IP6TABLES} -t filter -I block-invalid -m mark --mark 0xfe00/0xff00 -j RETURN -m comment --comment \"Allow INVALID to local sockets (interface 0xfe)\"" + "\n");
         self.file.write("\n");
 

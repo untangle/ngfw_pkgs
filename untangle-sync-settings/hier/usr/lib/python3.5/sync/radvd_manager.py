@@ -12,8 +12,8 @@ from sync import registrar
 # /etc/radvd.conf
 # based on the settings object passed from sync-settings.py
 class RadvdManager:
-    configFilename = "/etc/radvd.conf"
-    restartHookFilename = "/etc/untangle/post-network-hook.d/990-restart-radvd"
+    config_filename = "/etc/radvd.conf"
+    restart_hook_filename = "/etc/untangle/post-network-hook.d/990-restart-radvd"
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
         if verbosity > 1: print("RadvdManager: sync_settings()")
@@ -21,14 +21,14 @@ class RadvdManager:
         self.write_restart_radvd_hook( settings, prefix, verbosity )
 
     def initialize( self ):
-        registrar.register_file( self.configFilename, "restart-radvd", self )
-        registrar.register_file( self.restartHookFilename, "restart-networking", self )
+        registrar.register_file( self.config_filename, "restart-radvd", self )
+        registrar.register_file( self.restart_hook_filename, "restart-networking", self )
         
     def write_config_file( self, settings, prefix="", verbosity=0 ):
-        filename = prefix + self.configFilename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.config_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
 
@@ -60,10 +60,10 @@ class RadvdManager:
         if verbosity > 0: print("RadvdManager: Wrote %s" % filename)
 
     def write_restart_radvd_hook( self, settings, prefix="", verbosity=0 ):
-        filename = prefix + self.restartHookFilename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.restart_hook_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("#!/bin/dash");

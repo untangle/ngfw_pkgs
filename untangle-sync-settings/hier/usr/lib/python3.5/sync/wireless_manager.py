@@ -11,13 +11,13 @@ from sync import registrar
 # This class is responsible for writing /etc/network/interfaces
 # based on the settings object passed from sync-settings.py
 class WirelessManager:
-    hostapdConfFilename = "/etc/hostapd/hostapd.conf"
-    hostapdDefaultFilename = "/etc/default/hostapd"
-    hostapdRestartFilename = "/etc/untangle/pre-network-hook.d/990-restart-hostapd"
-    crdaDefaultFilename = "/etc/default/crda"
+    hostapd_conf_filename = "/etc/hostapd/hostapd.conf"
+    hostapd_default_filename = "/etc/default/hostapd"
+    hostapd_restart_filename = "/etc/untangle/pre-network-hook.d/990-restart-hostapd"
+    crda_default_filename = "/etc/default/crda"
     ht40MinusChannels = [0,5,6,7,8,9,10,11,12,13,40,48,56,64]
     ht40PlusChannels = [0,1,2,3,4,5,6,7,36,44,52,60]
-    hasWireless = False
+    has_wireless = False
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
         if verbosity > 1: print("WirelessManager: sync_settings()")
@@ -30,7 +30,7 @@ class WirelessManager:
         # FIXME - changes filesystem directly
         enabledInterfaces = [ x['physicalDev'] for x in settings.get('interfaces').get('list') ]
         for intfName in [ x for x  in ('eth1', 'eth2') if not x in enabledInterfaces ]:
-            filename = prefix + self.hostapdConfFilename + "-" + intfName
+            filename = prefix + self.hostapd_conf_filename + "-" + intfName
             if os.path.isfile(filename):
                 print("WirelessManager: Removed " + filename)
                 os.remove(filename)
@@ -40,10 +40,10 @@ class WirelessManager:
         self.write_network_hook( settings, prefix, verbosity )
 
     def initialize( self ):
-        registrar.register_file( self.hostapdConfFilename, "restart-hostapd", self )
-        registrar.register_file( self.hostapdDefaultFilename, "restart-hostapd", self )
-        registrar.register_file( self.hostapdRestartFilename, "restart-hostapd", self )
-        registrar.register_file( self.crdaDefaultFilename, "restart-hostapd", self )
+        registrar.register_file( self.hostapd_conf_filename, "restart-hostapd", self )
+        registrar.register_file( self.hostapd_default_filename, "restart-hostapd", self )
+        registrar.register_file( self.hostapd_restart_filename, "restart-hostapd", self )
+        registrar.register_file( self.crda_default_filename, "restart-hostapd", self )
 
     # Much of the ht_capab and vht_capab logic shamelessly copied from openwrt:
     # https://dev.openwrt.org/browser/trunk/package/kernel/mac80211/files/lib/netifd/wireless/mac80211.sh
@@ -253,12 +253,12 @@ class WirelessManager:
 
     def write_hostapd_conf( self, settings, prefix="", verbosity=0 ):
 
-        configFilename = prefix + self.hostapdConfFilename
-        defaultFilename = prefix + self.hostapdDefaultFilename
+        configFilename = prefix + self.hostapd_conf_filename
+        defaultFilename = prefix + self.hostapd_default_filename
         for filename in [ configFilename, defaultFilename ]:
-            fileDir = os.path.dirname( filename )
-            if not os.path.exists( fileDir ):
-                os.makedirs( fileDir )
+            file_dir = os.path.dirname( filename )
+            if not os.path.exists( file_dir ):
+                os.makedirs( file_dir )
 
         configFilesString = ""
 
@@ -267,7 +267,7 @@ class WirelessManager:
 
         interfaces = settings.get('interfaces').get('list')
 
-        self.hasWireless = False
+        self.has_wireless = False
 
         for intf in interfaces:
             if intf.get('isWirelessInterface'):
@@ -278,7 +278,7 @@ class WirelessManager:
                     print("WirelessManager: Ignoring " + intf.get('systemDev') + " because password is too short (" + str(passwordLen) + ")")
                     continue;
                     
-                self.hasWireless = True
+                self.has_wireless = True
                 filename = configFilename + "-" + intf.get('systemDev')
                 self.hostapdConfFile = open( filename, "w+" )
 
@@ -332,7 +332,7 @@ class WirelessManager:
                 if verbosity > 0:
                     print("WirelessManager: Wrote " + filename)
 
-                configFilesString += self.hostapdConfFilename + "-" + intf.get('systemDev') + " "
+                configFilesString += self.hostapd_conf_filename + "-" + intf.get('systemDev') + " "
 
         configFilesString = configFilesString[:-1]
 
@@ -348,11 +348,11 @@ class WirelessManager:
 
 
     def write_crda_file( self, settings, prefix="", verbosity=0 ):
-        crdaFilename = prefix + self.crdaDefaultFilename
+        crdaFilename = prefix + self.crda_default_filename
         for filename in [ crdaFilename ]:
-            fileDir = os.path.dirname( filename )
-            if not os.path.exists( fileDir ):
-                os.makedirs( fileDir )
+            file_dir = os.path.dirname( filename )
+            if not os.path.exists( file_dir ):
+                os.makedirs( file_dir )
 
         # FIXME need to get regulatory domain from the UI
         self.crdaDefaultFile = open( crdaFilename, "w+" )
@@ -366,13 +366,13 @@ class WirelessManager:
             print("WirelessManager: Wrote " + crdaFilename)
 
     def write_network_hook( self, settings, prefix="", verbosity=0 ):
-        restartFilename = prefix + self.hostapdRestartFilename
+        restartFilename = prefix + self.hostapd_restart_filename
         for filename in [ restartFilename ]:
-            fileDir = os.path.dirname( filename )
-            if not os.path.exists( fileDir ):
-                os.makedirs( fileDir )
+            file_dir = os.path.dirname( filename )
+            if not os.path.exists( file_dir ):
+                os.makedirs( file_dir )
 
-        if self.hasWireless:
+        if self.has_wireless:
             # Write out the hostapd restart script
 
             self.hostapdRestartFile = open( restartFilename, "w+" )
