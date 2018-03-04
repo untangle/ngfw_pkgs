@@ -14,9 +14,9 @@ from sync import registrar
 # based on the settings object passed from sync-settings.py
 #
 class IptablesManager:
-    flushFilename = "/etc/untangle/iptables-rules.d/010-flush"
-    helpersFilename = "/etc/untangle/iptables-rules.d/011-helpers"
-    postNetworkFilename = "/etc/untangle/post-network-hook.d/960-iptables"
+    flush_filename = "/etc/untangle/iptables-rules.d/010-flush"
+    helpers_filename = "/etc/untangle/iptables-rules.d/011-helpers"
+    post_network_filename = "/etc/untangle/post-network-hook.d/960-iptables"
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
         if verbosity > 1: print("IptablesManager: sync_settings()")
@@ -25,15 +25,15 @@ class IptablesManager:
         self.write_post_file( settings, prefix, verbosity )
 
     def initialize( self ):
-        registrar.register_file( self.flushFilename, "restart-iptables", self )
-        registrar.register_file( self.helpersFilename, "restart-iptables", self )
-        registrar.register_file( self.postNetworkFilename, "restart-networking", self )
+        registrar.register_file( self.flush_filename, "restart-iptables", self )
+        registrar.register_file( self.helpers_filename, "restart-iptables", self )
+        registrar.register_file( self.post_network_filename, "restart-networking", self )
 
     def write_post_file( self, settings, prefix, verbosity ):
-        filename = prefix + self.postNetworkFilename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.post_network_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("#!/bin/dash");
@@ -198,10 +198,10 @@ done
         
             
     def write_flush_file( self, settings, prefix, verbosity ):
-        filename = prefix + self.flushFilename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.flush_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("## Auto Generated\n");
@@ -283,10 +283,10 @@ done
 
     def write_helpers_file( self, settings, prefix, verbosity ):
 
-        filename = prefix + self.helpersFilename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.helpers_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("## Auto Generated\n");

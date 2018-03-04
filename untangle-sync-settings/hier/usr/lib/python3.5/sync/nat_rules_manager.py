@@ -10,11 +10,11 @@ from sync import registrar
 # This class is responsible for writing /etc/untangle/iptables-rules.d/220-nat-rules
 # based on the settings object passed from sync-settings.py
 class NatRulesManager:
-    interfacesMarkMask = 0x0000FFFF
-    lxcMarkMask = 0x04000000
+    interfaces_mark_mask = 0x0000FFFF
+    lxc_mark_mask = 0x04000000
 
-    defaultFilename = "/etc/untangle/iptables-rules.d/220-nat-rules"
-    filename = defaultFilename
+    iptables_filename = "/etc/untangle/iptables-rules.d/220-nat-rules"
+    filename = iptables_filename
     file = None
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
@@ -22,7 +22,7 @@ class NatRulesManager:
         self.write_nat_rules_file( settings, prefix, verbosity )
 
     def initialize( self ):
-        registrar.register_file( self.defaultFilename, "restart-iptables", self )
+        registrar.register_file( self.iptables_filename, "restart-iptables", self )
         
     def write_nat_rule( self, nat_rule, verbosity=0 ):
 
@@ -176,16 +176,16 @@ class NatRulesManager:
     def write_implicit_nat_rules( self, settings, verbosity=0 ):
         self.file.write("# Implicit NAT Rule (hairpin for port forwards)" + "\n");
         for intfId in NetworkUtil.interface_list():
-            self.file.write("${IPTABLES} -t nat -A nat-rules -m conntrack --ctstate DNAT -m connmark --mark 0x%X/0x%X -j MASQUERADE -m comment --comment \"NAT all port forwards (hairpin) (interface %s)\"" % ( (intfId+(intfId<<8)), self.interfacesMarkMask, str(intfId)) + "\n");
+            self.file.write("${IPTABLES} -t nat -A nat-rules -m conntrack --ctstate DNAT -m connmark --mark 0x%X/0x%X -j MASQUERADE -m comment --comment \"NAT all port forwards (hairpin) (interface %s)\"" % ( (intfId+(intfId<<8)), self.interfaces_mark_mask, str(intfId)) + "\n");
         self.file.write("\n");
 
     def write_lxc_nat_rules( self, settings, verbosity=0 ):
         self.file.write("# LXC NAT Rule" + "\n");
-        self.file.write("${IPTABLES} -t nat -A nat-rules -m connmark --mark 0x%X/0x%X -j MASQUERADE -m comment --comment \"NAT all LXC sessions\"" % ( self.lxcMarkMask, self.lxcMarkMask) + "\n");
+        self.file.write("${IPTABLES} -t nat -A nat-rules -m connmark --mark 0x%X/0x%X -j MASQUERADE -m comment --comment \"NAT all LXC sessions\"" % ( self.lxc_mark_mask, self.lxc_mark_mask) + "\n");
         self.file.write("\n");
 
     def write_nat_rules_file( self, settings, prefix="", verbosity=0 ):
-        self.filename = prefix + self.defaultFilename
+        self.filename = prefix + self.iptables_filename
         self.fileDir = os.path.dirname( self.filename )
         if not os.path.exists( self.fileDir ):
             os.makedirs( self.fileDir )

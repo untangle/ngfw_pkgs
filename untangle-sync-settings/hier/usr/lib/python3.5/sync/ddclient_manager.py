@@ -11,14 +11,16 @@ from sync import registrar
 # This class is responsible for writing /etc/ddclient.conf
 # and others based on the settings object passed from sync-settings.py
 class DdclientManager:
-    ddclientConfigFilename = "/etc/ddclient.conf"
-    ddclientDefaultFilename = "/etc/default/ddclient"
+    config_filename = "/etc/ddclient.conf"
+    default_filename = "/etc/default/ddclient"
+    restart_filename = "/etc/untangle/post-network-hook.d/990-restart-ddclient"
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
         if verbosity > 1: print("DdclientManager: sync_settings()")
         
-        self.write_ddclient_config_file( settings, prefix, verbosity )
-        self.write_ddclient_default_file( settings, prefix, verbosity )
+        self.write_config_file( settings, prefix, verbosity )
+        self.write_default_file( settings, prefix, verbosity )
+        self.write_restart_file( settings, prefix, verbosity )
 
         # FIXME - this modifies the filesystem directly! FIXME
         if prefix == "":
@@ -38,11 +40,12 @@ class DdclientManager:
         return
     
     def initialize( self ):
-        registrar.register_file( self.ddclientConfigFilename, "restart-ddclient", self )
-        registrar.register_file( self.ddclientDefaultFilename, "restart-ddclient", self )
+        registrar.register_file( self.config_filename, "restart-ddclient", self )
+        registrar.register_file( self.default_filename, "restart-ddclient", self )
+        registrar.register_file( self.restart_filename, "restart-networking", self )
 
-    def write_ddclient_config_file( self, settings, prefix="", verbosity=0 ):
-        filename = prefix + self.ddclientConfigFilename
+    def write_config_file( self, settings, prefix="", verbosity=0 ):
+        filename = prefix + self.config_filename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
             os.makedirs( fileDir )
@@ -105,11 +108,11 @@ class DdclientManager:
             
             return
 
-    def write_ddclient_default_file( self, settings, prefix="", verbosity=0 ):
-        filename = prefix + self.ddclientDefaultFilename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+    def write_default_file( self, settings, prefix="", verbosity=0 ):
+        filename = prefix + self.default_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("## Auto Generated\n");
@@ -132,4 +135,52 @@ class DdclientManager:
             if verbosity > 0: print("DdclientManager: Wrote %s" % filename)
             
             return
+
+    def write_restart_file( self, settings, prefix="", verbosity=0 ):
+        """
+        Create network process extension to restart or stop daemon
+        """
+        filename = prefix + self.restart_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
+
+        file = open( filename, "w+" )
+        file.write("#!/bin/dash");
+        file.write("\n\n");
+
+        file.write("## Auto Generated\n");
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
+        file.write("\n");
+
+        if not settings.get('dynamicDnsServiceEnabled'):
+            file.write(r"""
+DDCLIENT_PID="`pidof ddclient`"
+
+# Stop ddclient if running
+if [ ! -z "$DDCLIENT_PID" ] ; then
+    service ddclient stop
+fi
+""")
+        else:
+            file.write(r"""
+DDCLIENT_PID="`pidof ddclient`"
+
+# Restart ddclient if it isnt found
+# Or if ddclient.conf orhas been written since ddclient was started
+if [ -z "$DDCLIENT_PID" ] ; then
+    service ddclient restart
+# use not older than (instead of newer than) because it compares seconds and we want an equal value to still do a restart
+elif [ ! /etc/ddclient.conf -ot /proc/$DDCLIENT_PID ] ; then
+    service ddclient restart
+fi
+""")
+
+        file.write("\n");
+        file.flush()
+        file.close()
+    
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
+        if verbosity > 0: print("DdclientManager: Wrote %s" % filename)
+        return
 

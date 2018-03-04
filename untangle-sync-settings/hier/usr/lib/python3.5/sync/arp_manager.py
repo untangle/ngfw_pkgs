@@ -21,9 +21,9 @@ class ArpManager:
     
     def write_arp( self, settings, prefix, verbosity ):
         filename = prefix + self.filename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("#!/bin/dash");

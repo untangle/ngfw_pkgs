@@ -11,10 +11,10 @@ from sync import registrar
 # This class is responsible for writing /etc/hosts and /etc/hostname
 # based on the settings object passed from sync-settings.py
 class HostsManager:
-    hostsFile = "/etc/hosts"
-    hostnameFile = "/etc/hostname"
-    mailnameFile = "/etc/mailname"
-    resolvFile = "/etc/resolv.conf"
+    hosts_filename = "/etc/hosts"
+    hostname_filename = "/etc/hostname"
+    mailname_filename = "/etc/mailname"
+    resolv_filename = "/etc/resolv.conf"
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
         if verbosity > 1: print("HostsManager: sync_settings()")
@@ -25,17 +25,17 @@ class HostsManager:
         return
 
     def initialize( self ):
-        registrar.register_file( self.hostsFile, None, self )
-        registrar.register_file( self.hostnameFile, "restart-networking", self )
-        registrar.register_file( self.mailnameFile, None, self )
-        registrar.register_file( self.resolvFile, None, self )
+        registrar.register_file( self.hosts_filename, None, self )
+        registrar.register_file( self.hostname_filename, "restart-networking", self )
+        registrar.register_file( self.mailname_filename, None, self )
+        registrar.register_file( self.resolv_filename, None, self )
     
     def write_hosts_file( self, settings, prefix, verbosity ):
 
-        filename = prefix + self.hostsFile
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.hosts_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("## Auto Generated\n");
@@ -90,10 +90,10 @@ ff02::3 ip6-allhosts
         fqdnHostname = settings['hostName']
         if 'domainName' in settings:
             fqdnHostname = fqdnHostname + "." + settings['domainName']
-        filename = prefix + self.hostnameFile
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.hostname_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("%s\n" % fqdnHostname)
@@ -114,10 +114,10 @@ ff02::3 ip6-allhosts
             print("ERROR: Missing domainName setting")
             return
 
-        filename = prefix + self.mailnameFile
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.mailname_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("%s.%s\n" % (settings.get('hostName'),settings.get('domainName')))
@@ -134,10 +134,10 @@ ff02::3 ip6-allhosts
             print("ERROR: Missing hostname setting")
             return
 
-        filename = prefix + self.resolvFile
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.resolv_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("## Auto Generated\n");

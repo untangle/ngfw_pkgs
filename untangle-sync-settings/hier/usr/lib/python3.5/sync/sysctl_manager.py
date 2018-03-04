@@ -9,7 +9,7 @@ from sync import registrar
 # This class is responsible for writing /etc/untangle/post-network-hook.d/010-sysctl
 # based on the settings object passed from sync-settings.py
 class SysctlManager:
-    filename = "/etc/untangle/post-network-hook.d/010-sysctl"
+    post_filename = "/etc/untangle/post-network-hook.d/010-sysctl"
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
         if verbosity > 1: print("SysctlManager: sync_settings()")
@@ -17,13 +17,13 @@ class SysctlManager:
         return
     
     def initialize( self ):
-        registrar.register_file( self.filename, "restart-networking", self )
+        registrar.register_file( self.post_filename, "restart-networking", self )
     
     def write_sysctl( self, settings, prefix, verbosity ):
-        filename = prefix + self.filename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.post_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("#!/bin/dash");

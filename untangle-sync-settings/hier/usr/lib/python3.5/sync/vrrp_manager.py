@@ -12,9 +12,9 @@ from sync import registrar
 # /etc/untangle/post-network-hook.d/200-vrrp
 # based on the settings object passed from sync-settings.py
 class VrrpManager:
-    keepalivedConfFilename = "/etc/keepalived/keepalived.conf"
-    postNetworkHookFilename = "/etc/untangle/post-network-hook.d/200-vrrp"
-    iptablesHookFilename = "/etc/untangle/iptables-rules.d/241-vrrp-rules"
+    keepalived_conf_filename = "/etc/keepalived/keepalived.conf"
+    post_network_hook_filename = "/etc/untangle/post-network-hook.d/200-vrrp"
+    iptables_hook_filename = "/etc/untangle/iptables-rules.d/241-vrrp-rules"
     vrrp_enabled = False
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
@@ -24,9 +24,9 @@ class VrrpManager:
         self.write_iptables_hook( settings, prefix, verbosity )
 
     def initialize( self ):
-        registrar.register_file( self.keepalivedConfFilename, "restart-keepalived", self )
-        registrar.register_file( self.postNetworkHookFilename, "restart-networking", self )
-        registrar.register_file( self.iptablesHookFilename, "restart-iptables", self )
+        registrar.register_file( self.keepalived_conf_filename, "restart-keepalived", self )
+        registrar.register_file( self.post_network_hook_filename, "restart-networking", self )
+        registrar.register_file( self.iptables_hook_filename, "restart-iptables", self )
         
     def get_vrrp_interfaces( self, settings ):
         vrrp_interfaces = []
@@ -48,7 +48,7 @@ class VrrpManager:
         return vrrp_interfaces
 
     def write_keepalivd_conf( self, settings, prefix="", verbosity=0 ):
-        filename = prefix + self.keepalivedConfFilename
+        filename = prefix + self.keepalived_conf_filename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
             os.makedirs( fileDir )
@@ -125,7 +125,7 @@ global_defs {
         return
         
     def write_post_network_hook( self, settings, prefix="", verbosity=0 ):
-        filename = prefix + self.postNetworkHookFilename
+        filename = prefix + self.post_network_hook_filename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
             os.makedirs( fileDir )
@@ -181,7 +181,7 @@ fi
         return
 
     def write_iptables_hook( self, settings, prefix="", verbosity=0 ):
-        filename = prefix + self.iptablesHookFilename
+        filename = prefix + self.iptables_hook_filename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
             os.makedirs( fileDir )

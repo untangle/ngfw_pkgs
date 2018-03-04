@@ -11,10 +11,10 @@ from sync import registrar
 # This class is responsible for writing 
 # based on the settings object passed from sync-settings.py
 class DnsMasqManager:
-    dnsmasqHostsFilename = "/etc/hosts.dnsmasq"
-    dnsmasqConfFilename = "/etc/dnsmasq.conf"
-    restartHookFilename = "/etc/untangle/post-network-hook.d/990-restart-dnsmasq"
-    dhcpStaticsFilename = "/etc/dnsmasq.d/dhcp-static"
+    dnsmasq_hosts_filename = "/etc/hosts.dnsmasq"
+    dnsmasq_conf_filename = "/etc/dnsmasq.conf"
+    restart_hook_filename = "/etc/untangle/post-network-hook.d/990-restart-dnsmasq"
+    dhcp_statics_filename = "/etc/dnsmasq.d/dhcp-static"
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
         if verbosity > 1: print("DnsMasqManager: sync_settings()")
@@ -26,18 +26,17 @@ class DnsMasqManager:
 
     def initialize( self ):
         # dnsmasq settings, requires dnsmasq restart
-        registrar.register_file( self.dnsmasqHostsFilename, "restart-dnsmasq", self )
-        registrar.register_file( self.dnsmasqConfFilename, "restart-dnsmasq", self )
-        registrar.register_file( self.dhcpStaticsFilename, "restart-dnsmasq", self )
+        registrar.register_file( self.dnsmasq_hosts_filename, "restart-dnsmasq", self )
+        registrar.register_file( self.dnsmasq_conf_filename, "restart-dnsmasq", self )
+        registrar.register_file( self.dhcp_statics_filename, "restart-dnsmasq", self )
         # Just a restart script, no need to restart if changed
-        registrar.register_file( self.restartHookFilename, None, self )
+        registrar.register_file( self.restart_hook_filename, None, self )
     
     def write_dnsmasq_hosts( self, settings, prefix, verbosity ):
-
-        filename = prefix + self.dnsmasqHostsFilename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.dnsmasq_hosts_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("## Auto Generated\n");
@@ -62,11 +61,10 @@ class DnsMasqManager:
         return
 
     def write_dnsmasq_conf( self, settings, prefix="", verbosity=0 ):
-        
-        filename = prefix + self.dnsmasqConfFilename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.dnsmasq_conf_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("## Auto Generated\n");
@@ -195,11 +193,10 @@ class DnsMasqManager:
         return
 
     def write_dhcp_statics_file( self, settings, prefix="", verbosity=0 ):
-
-        filename = prefix + self.dhcpStaticsFilename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.dhcp_statics_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
 
@@ -220,11 +217,10 @@ class DnsMasqManager:
         return
 
     def write_restart_dnsmasq_hook( self, settings, prefix="", verbosity=0 ):
-
-        filename = prefix + self.restartHookFilename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.restart_hook_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("#!/bin/dash");

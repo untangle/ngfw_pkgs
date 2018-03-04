@@ -12,8 +12,8 @@ from sync import registrar
 # This class is responsible for writing 
 # based on the settings object passed from sync-settings.py
 class NetflowManager:
-    softflowDaemonConfFilename = "/etc/default/softflowd"
-    restartHookFilename = "/etc/untangle/post-network-hook.d/990-restart-softflowd"
+    softflow_daemon_conf_filename = "/etc/default/softflowd"
+    restart_hook_filename = "/etc/untangle/post-network-hook.d/990-restart-softflowd"
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
         if verbosity > 1: print("NetflowManager: sync_settings()")
@@ -21,14 +21,14 @@ class NetflowManager:
         self.write_restart_softflow_daemon_hook( settings, prefix, verbosity )
 
     def initialize( self ):
-        registrar.register_file( self.softflowDaemonConfFilename, "restart-softflowd", self )
-        registrar.register_file( self.restartHookFilename, "restart-softflowd", self )
+        registrar.register_file( self.softflow_daemon_conf_filename, "restart-softflowd", self )
+        registrar.register_file( self.restart_hook_filename, "restart-softflowd", self )
         
     def write_softflow_daemon_conf( self, settings, prefix="", verbosity=0 ):
         """
         Create softflow configuration file
         """
-        filename = prefix + self.softflowDaemonConfFilename
+        filename = prefix + self.softflow_daemon_conf_filename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
             os.makedirs( fileDir )
@@ -58,7 +58,7 @@ class NetflowManager:
         """
         Create network process extension to restart or stop daemon
         """
-        filename = prefix + self.restartHookFilename
+        filename = prefix + self.restart_hook_filename
         fileDir = os.path.dirname( filename )
         if not os.path.exists( fileDir ):
             os.makedirs( fileDir )

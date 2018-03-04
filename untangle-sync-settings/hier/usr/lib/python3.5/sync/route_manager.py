@@ -11,9 +11,9 @@ from sync import registrar
 # This class is responsible for writing /etc/untangle/post-network-hook.d/030-routes
 # and others based on the settings object passed from sync-settings.py
 class RouteManager:
-    rtTableFilename = "/etc/iproute2/rt_tables"
-    routesFilename = "/etc/untangle/post-network-hook.d/030-routes"
-    preRoutesFilename = "/etc/untangle/pre-network-hook.d/030-routes"
+    rt_table_filename = "/etc/iproute2/rt_tables"
+    routes_filename = "/etc/untangle/post-network-hook.d/030-routes"
+    pre_routes_filename = "/etc/untangle/pre-network-hook.d/030-routes"
 
     IP_RULE_PRIORITY="70"
     IP_RULE_DEFAULT_RULE_PRIORITY="1000000"
@@ -27,9 +27,9 @@ class RouteManager:
         self.write_routes_pre_hook( settings, prefix, verbosity )
 
     def initialize( self ):
-        registrar.register_file( self.rtTableFilename, "restart-networking", self )
-        registrar.register_file( self.routesFilename, "restart-networking", self )
-        registrar.register_file( self.preRoutesFilename, "restart-networking", self )
+        registrar.register_file( self.rt_table_filename, "restart-networking", self )
+        registrar.register_file( self.routes_filename, "restart-networking", self )
+        registrar.register_file( self.pre_routes_filename, "restart-networking", self )
     
     def string_is_int( self, s ):
         try:
@@ -39,10 +39,10 @@ class RouteManager:
             return False
 
     def write_rt_table( self, settings, prefix, verbosity ):
-        filename = prefix + self.rtTableFilename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.rt_table_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("## Auto Generated\n");
@@ -84,10 +84,10 @@ class RouteManager:
         return
 
     def write_routes( self, settings, prefix, verbosity ):
-        filename = prefix + self.routesFilename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.routes_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("#!/bin/dash");
@@ -176,10 +176,10 @@ fi
         return
 
     def write_routes_pre_hook( self, settings, prefix, verbosity ):
-        filename = prefix + self.preRoutesFilename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.pre_routes_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("#!/bin/dash");

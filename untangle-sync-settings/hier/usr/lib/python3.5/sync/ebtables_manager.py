@@ -8,8 +8,8 @@ from sync import registrar
 # This class is responsible for writing /etc/untangle/iptables-rules.d/020-ebtables
 # based on the settings object passed from sync-settings.py
 class EbtablesManager:
-    defaultFilename = "/etc/untangle/iptables-rules.d/020-ebtables"
-    filename = defaultFilename
+    iptables_filename = "/etc/untangle/iptables-rules.d/020-ebtables"
+    filename = iptables_filename
     file = None
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
@@ -17,13 +17,13 @@ class EbtablesManager:
         self.write_file( settings, prefix, verbosity )
 
     def initialize( self ):
-        registrar.register_file( self.defaultFilename, "restart-iptables", self )
+        registrar.register_file( self.iptables_filename, "restart-iptables", self )
         
     def write_file( self, settings, prefix="", verbosity=0 ):
-        self.filename = prefix + self.defaultFilename
-        self.fileDir = os.path.dirname( self.filename )
-        if not os.path.exists( self.fileDir ):
-            os.makedirs( self.fileDir )
+        self.filename = prefix + self.iptables_filename
+        self.file_dir = os.path.dirname( self.filename )
+        if not os.path.exists( self.file_dir ):
+            os.makedirs( self.file_dir )
 
         self.file = open( self.filename, "w+" )
         self.file.write("## Auto Generated\n");

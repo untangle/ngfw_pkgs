@@ -12,10 +12,10 @@ from sync import registrar
 # This class is responsible for writing 
 # based on the settings object passed from sync-settings.py
 class UpnpManager:
-    upnpDaemonConfFilename = "/etc/miniupnpd/miniupnpd.conf"
-    restartHookFilename = "/etc/untangle/post-network-hook.d/990-restart-upnp"
-    iptablesFilename = "/etc/untangle/iptables-rules.d/741-upnp"
-    upnpDaemonInitFilename = "/etc/init.d/miniupnpd"
+    upnp_daemon_conf_filename = "/etc/miniupnpd/miniupnpd.conf"
+    restart_hook_filename = "/etc/untangle/post-network-hook.d/990-restart-upnp"
+    iptables_filename = "/etc/untangle/iptables-rules.d/741-upnp"
+    upnp_daemon_init_filename = "/etc/init.d/miniupnpd"
 
     iptables_chain = "upnp-rules"
 
@@ -36,19 +36,19 @@ class UpnpManager:
         self.write_upnp_daemon_init_hook( settings, prefix, verbosity )
 
     def initialize( self ):
-        registrar.register_file( self.upnpDaemonConfFilename, "restart-miniupnpd", self )
-        registrar.register_file( self.upnpDaemonInitFilename, "restart-miniupnpd", self )
-        registrar.register_file( self.restartHookFilename, "restart-miniupnpd", self )
-        registrar.register_file( self.iptablesFilename, "restart-iptables", self )
+        registrar.register_file( self.upnp_daemon_conf_filename, "restart-miniupnpd", self )
+        registrar.register_file( self.upnp_daemon_init_filename, "restart-miniupnpd", self )
+        registrar.register_file( self.restart_hook_filename, "restart-miniupnpd", self )
+        registrar.register_file( self.iptables_filename, "restart-iptables", self )
         
     def write_upnp_daemon_conf( self, settings, prefix="", verbosity=0 ):
         """
         Create UPnP configuration file
         """
-        filename = prefix + self.upnpDaemonConfFilename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.upnp_daemon_conf_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("## Auto Generated\n");
@@ -132,10 +132,10 @@ class UpnpManager:
         """
         Create network process extension to restart or stop daemon
         """
-        filename = prefix + self.restartHookFilename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.restart_hook_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("#!/bin/dash");
@@ -151,8 +151,8 @@ UPNPD_PID="`pidof miniupnpd`"
 
 # Stop miniupnpd if running
 if [ ! -z "$UPNPD_PID" ] ; then
-    service miniupnpd restart
-    /etc/untangle/iptables-rules.d/741-upnp
+    service miniupnpd stop
+    #/etc/untangle/iptables-rules.d/741-upnp
 fi
 """)
         else:
@@ -162,11 +162,9 @@ UPNPD_PID="`pidof miniupnpd`"
 # Restart miniupnpd if it isnt found
 # Or if miniupnpd.conf orhas been written since miniupnpd was started
 if [ -z "$UPNPD_PID" ] ; then
-    /etc/untangle/iptables-rules.d/741-upnp
     service miniupnpd restart
 # use not older than (instead of newer than) because it compares seconds and we want an equal value to still do a restart
 elif [ ! /etc/miniupnpd/miniupnpd.conf -ot /proc/$UPNPD_PID ] ; then
-    /etc/untangle/iptables-rules.d/741-upnp
     service miniupnpd restart
 fi
 """)
@@ -183,10 +181,10 @@ fi
         """
         Create iptables configuraton for daemon
         """
-        filename = prefix + self.iptablesFilename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.iptables_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("#!/bin/dash");
@@ -246,15 +244,15 @@ insert_upnp_iptables_rules
         Modify miniupnpd's daemon to not manage iptables and not to use /etc/default/minipnpd
         FIXME: this will not work in a systemd world
         """
-        filename = self.upnpDaemonInitFilename
+        filename = self.upnp_daemon_init_filename
         if os.path.isfile(filename) is False:
             return
 
-        tempFilename = prefix + self.upnpDaemonInitFilename + ".tmp"
+        tempFilename = prefix + self.upnp_daemon_init_filename + ".tmp"
 
-        fileDir = os.path.dirname( tempFilename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        file_dir = os.path.dirname( tempFilename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( tempFilename, "w+" )
         readFile = open( filename, "r" )

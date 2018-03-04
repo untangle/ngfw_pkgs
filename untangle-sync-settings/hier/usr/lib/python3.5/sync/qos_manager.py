@@ -12,9 +12,9 @@ from sync import registrar
 # This class is responsible for writing /etc/untangle/iptables-rules.d/300-qos
 # and others based on the settings object passed from sync-settings.py
 class QosManager:
-    bypassMarkMask = 0x01000000
-    qosFilename = "/etc/untangle/iptables-rules.d/300-qos"
-    srcInterfaceMarkMask = 0x00ff
+    bypass_mark_mask = 0x01000000
+    qos_filename = "/etc/untangle/iptables-rules.d/300-qos"
+    src_interface_mark_mask = 0x00ff
     file = None
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
@@ -23,7 +23,7 @@ class QosManager:
         return
 
     def initialize( self ):
-        registrar.register_file( self.qosFilename, "restart-iptables", self )
+        registrar.register_file( self.qos_filename, "restart-iptables", self )
     
     def find_priority( self, qosPriorities, priorityId ):
         for qosPriority in qosPriorities:
@@ -61,7 +61,7 @@ class QosManager:
         description = "QoS Custom Rule #%i" % int(qos_rule['ruleId'])
         commands = IptablesUtil.conditions_to_prep_commands( qos_rule['conditions']['list'], description, verbosity );
         iptables_conditions = IptablesUtil.conditions_to_iptables_string( qos_rule['conditions']['list'], description, verbosity );
-        commands += [ "${IPTABLES} -t mangle -A qos-rules -m mark --mark 0x%X/0x%X " % (self.bypassMarkMask,self.bypassMarkMask) + ipt + target for ipt in iptables_conditions ]
+        commands += [ "${IPTABLES} -t mangle -A qos-rules -m mark --mark 0x%X/0x%X " % (self.bypass_mark_mask,self.bypass_mark_mask) + ipt + target for ipt in iptables_conditions ]
 
         self.file.write("# %s\n" % description);
         for cmd in commands:
@@ -246,10 +246,10 @@ class QosManager:
                 wan_imq_devs.append(intf.get('imqDev'))
                 wan_intfs.append(intf)
 
-        filename = prefix + self.qosFilename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        filename = prefix + self.qos_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         self.file = open( filename, "w+" )
         file = self.file
@@ -382,7 +382,7 @@ fi
             if self.qosed_interface( intfSettings ):
                 imqDev = intfSettings.get('imqDev')
                 devnumstr = imqDev.replace("imq","")
-                file.write("${IPTABLES} -t mangle -A qos-imq -m mark --mark 0x%04X/0x%04X -j IMQ --todev %s" % (intfSettings['interfaceId'], self.srcInterfaceMarkMask, devnumstr) + "\n")
+                file.write("${IPTABLES} -t mangle -A qos-imq -m mark --mark 0x%04X/0x%04X -j IMQ --todev %s" % (intfSettings['interfaceId'], self.src_interface_mark_mask, devnumstr) + "\n")
         file.write("\n");
 
         if qos_settings['pingPriority'] != None and qos_settings['pingPriority'] != 0:
