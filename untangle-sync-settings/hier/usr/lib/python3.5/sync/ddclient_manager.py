@@ -155,23 +155,32 @@ class DdclientManager:
 
         if not settings.get('dynamicDnsServiceEnabled'):
             file.write(r"""
-DDCLIENT_PID="`pidof ddclient`"
+# ddclient process changes its own name, no "pidof ddclient" does not work
+DDCLIENT_PID="`pgrep ddclient`"
 
 # Stop ddclient if running
 if [ ! -z "$DDCLIENT_PID" ] ; then
     service ddclient stop
+    # For whatever reason this does not effectively stop ddclient processes
+    pgrep ddclient | while read pid ; do kill $pid ; done
 fi
 """)
         else:
             file.write(r"""
-DDCLIENT_PID="`pidof ddclient`"
+# ddclient process changes its own name, no "pidof ddclient" does not work
+DDCLIENT_PID="`pgrep ddclient`"
 
 # Restart ddclient if it isnt found
 # Or if ddclient.conf orhas been written since ddclient was started
 if [ -z "$DDCLIENT_PID" ] ; then
-    service ddclient restart
+    service ddclient start
+
 # use not older than (instead of newer than) because it compares seconds and we want an equal value to still do a restart
 elif [ ! /etc/ddclient.conf -ot /proc/$DDCLIENT_PID ] ; then
+    service ddclient stop
+    # For whatever reason this does not effectively stop ddclient processes
+    pgrep ddclient | while read pid ; do kill $pid ; done
+
     service ddclient restart
 fi
 """)
