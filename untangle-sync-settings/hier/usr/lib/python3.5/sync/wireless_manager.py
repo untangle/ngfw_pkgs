@@ -15,8 +15,6 @@ class WirelessManager:
     hostapd_default_filename = "/etc/default/hostapd"
     hostapd_restart_filename = "/etc/untangle/pre-network-hook.d/990-restart-hostapd"
     crda_default_filename = "/etc/default/crda"
-    ht40MinusChannels = [0,5,6,7,8,9,10,11,12,13,40,48,56,64]
-    ht40PlusChannels = [0,1,2,3,4,5,6,7,36,44,52,60]
     has_wireless = False
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
