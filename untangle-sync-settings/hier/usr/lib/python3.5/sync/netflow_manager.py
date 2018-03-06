@@ -77,7 +77,7 @@ SOFTFLOWD_PID="`pidof softflowd`"
 
 # Stop softflowd if running
 if [ ! -z "$SOFTFLOWD_PID" ] ; then
-    service softflowd stop
+    systemctl stop softflowd
 fi
 """)
         else:
@@ -87,10 +87,10 @@ SOFTFLOWD_PID="`pidof softflowd`"
 # Restart softflowd if it isnt found
 # Or if /etc/default/softflowd has been written since softflowd was started
 if [ ! -z "$SOFTFLOWD_PID" ] ; then
-    service softflowd restart
+    systemctl restart softflowd
 # use not older than (instead of newer than) because it compares seconds and we want an equal value to still do a restart
 elif [ ! /etc/default/softflowd -ot /proc/$SOFTFLOWD_PID ] ; then
-    service softflowd restart
+    systemctl restart softflowd
 fi
 """)
 
