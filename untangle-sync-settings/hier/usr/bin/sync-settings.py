@@ -24,6 +24,7 @@ import os
 import re
 import shutil
 import signal
+import stat
 import subprocess
 import tempfile
 import time
@@ -292,11 +293,73 @@ def tee_stdout_log():
     os.dup2(tee.stdin.fileno(), sys.stdout.fileno())
     os.dup2(tee.stdin.fileno(), sys.stderr.fileno())
 
+def init_modules():
+    global modules
+    for module in modules:
+        try:
+            module.initialize()
+        except Exception as e:
+            traceback.print_exc()
+            print("Abort. (errors)")
+            cleanup(1)
+
+def sync_to_tmpdir(tmpdir):
+    global modules
+    print("\nSyncing %s to system..." % parser.filename)
+
+    for module in modules:
+        try:
+            module.sync_settings( settings, prefix=tmpdir, verbosity=2 )
+        except Exception as e:
+            traceback.print_exc()
+            cleanup(1)
+
+def drop_permissions():
+    os.setegid(65534) # nogroup
+    os.seteuid(65534) # nobody
+
+def call_without_permissions(func, *args, **kw):
+    pid = os.fork()
+    if pid == 0:
+        drop_permissions()
+        func(*args, **kw)
+        os._exit(0)
+    else:
+        (xpid, result) = os.waitpid(pid, 0)
+        return result
+
+
+
+
+# Duplicate all stdout to log
 tee_stdout_log()
+
+# Globals
+modules = [ HostsManager(), DnsMasqManager(),
+            InterfacesManager(), RouteManager(),
+            IptablesManager(), NatRulesManager(),
+            FilterRulesManager(), QosManager(),
+            PortForwardManager(), BypassRuleManager(),
+            EthernetManager(),
+            SysctlManager(), ArpManager(),
+            DhcpManager(), RadvdManager(),
+            PPPoEManager(), DdclientManager(),
+            KernelManager(), EbtablesManager(),
+            VrrpManager(), WirelessManager(),
+            UpnpManager(), NetflowManager()]
 parser = ArgumentParser()
-parser.parse_args()
 settings = None
-tmpdir = tempfile.mkdtemp()
+tmpdir = None
+
+parser.parse_args()
+
+try:
+    tmpdir = tempfile.mkdtemp()
+    os.chmod(tmpdir, os.stat(tmpdir).st_mode | stat.S_IEXEC | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
+except Exception as e:
+    print("Error creating tmp directory.",e)
+    traceback.print_exc(e)
+    cleanup(1)
 
 try:
     settingsFile = open(parser.filename, 'r')
@@ -325,35 +388,11 @@ except Exception as e:
 
 NetworkUtil.settings = settings
 
-modules = [ HostsManager(), DnsMasqManager(),
-            InterfacesManager(), RouteManager(), 
-            IptablesManager(), NatRulesManager(), 
-            FilterRulesManager(), QosManager(),
-            PortForwardManager(), BypassRuleManager(), 
-            EthernetManager(), 
-            SysctlManager(), ArpManager(),
-            DhcpManager(), RadvdManager(),
-            PPPoEManager(), DdclientManager(),
-            KernelManager(), EbtablesManager(),
-            VrrpManager(), WirelessManager(),
-            UpnpManager(), NetflowManager()]
+init_modules()
 
-for module in modules:
-    try:
-        module.initialize()
-    except Exception as e:
-        traceback.print_exc()
-        print("Abort. (errors)")
-        cleanup(1)
-
-print("\nSyncing %s to system..." % parser.filename)
-
-for module in modules:
-    try:
-        module.sync_settings( settings, prefix=tmpdir, verbosity=2 )
-    except Exception as e:
-        traceback.print_exc()
-        cleanup(1)
+result = call_without_permissions(sync_to_tmpdir,tmpdir)
+if result != 0:
+    cleanup(result)
 
 check_registrar(tmpdir)
 

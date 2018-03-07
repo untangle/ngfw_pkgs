@@ -244,22 +244,19 @@ insert_upnp_iptables_rules
         Modify miniupnpd's daemon to not manage iptables and not to use /etc/default/minipnpd
         FIXME: this will not work in a systemd world
         """
-        # FIXME - all files written should be written in prefix
-        # FIXME - modifies filesystem directly!
-        filename = self.upnp_daemon_init_filename
-        if os.path.isfile(filename) is False:
+        orig_filename = self.upnp_daemon_init_filename
+        if os.path.isfile(orig_filename) is False:
             return
 
-        tempFilename = prefix + self.upnp_daemon_init_filename + ".tmp"
-
-        file_dir = os.path.dirname( tempFilename )
+        new_filename = prefix + self.upnp_daemon_init_filename
+        file_dir = os.path.dirname( new_filename )
         if not os.path.exists( file_dir ):
             os.makedirs( file_dir )
 
-        file = open( tempFilename, "w+" )
-        readFile = open( filename, "r" )
+        file = open( new_filename, "w+" )
+        read_file = open( orig_filename, "r" )
 
-        for line in readFile:
+        for line in read_file:
             matches = re.search(self.init_start_daemon_regex, line)
             if matches:
                 line =  "if [ \"\" = \"x\" ] \n"
@@ -286,15 +283,11 @@ insert_upnp_iptables_rules
                 line =  matches.group(1) + " -N -f /etc/miniupnpd/miniupnpd.conf\n"
             file.write(line)
 
-        readFile.close()
-
-        file.write("\n");
+        read_file.close()
         file.flush()
         file.close()
 
-        move(tempFilename, filename)
-    
-        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("UpnpManager: Wrote %s" % filename)
+        os.chmod(new_filename, os.stat(new_filename).st_mode | stat.S_IEXEC)
+        if verbosity > 0: print("UpnpManager: Wrote %s" % new_filename)
         return
 
