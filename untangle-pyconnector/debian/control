@@ -1,0 +1,13 @@
+Source: untangle-pyconnector
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: debhelper, dh-systemd
+Standards-Version: 3.8.0
+
+Package: untangle-pyconnector
+Architecture: all
+Depends: python3
+Description: The Untangle PyConnector
+ Connector for the Untangle Cloud 
