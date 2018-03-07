@@ -22,21 +22,6 @@ class DdclientManager:
         self.write_default_file( settings, prefix, verbosity )
         self.write_restart_file( settings, prefix, verbosity )
 
-        # FIXME - this modifies the filesystem directly! FIXME
-        if prefix == "":
-            if settings.get('dynamicDnsServiceEnabled'):
-                # FIXME - this modifies the filesystem directly! FIXME
-                os.system('chmod 600 /etc/ddclient.conf')
-                os.system('/usr/sbin/update-rc.d ddclient defaults >/dev/null 2>&1')
-                os.system('systemctl restart ddclient >/dev/null 2>&1')
-            else:
-                # FIXME - this modifies the filesystem directly! FIXME
-                os.system('/usr/sbin/update-rc.d -f ddclient remove >/dev/null 2>&1')
-                # this doesn't work because it checks /etc/default/ddclient first
-                # use killall instead
-                # os.system('systemctl stop ddclient >/dev/null 2>&1')
-                os.system('killall ddclient >/dev/null 2>&1')
-
         return
     
     def initialize( self ):
@@ -103,7 +88,7 @@ class DdclientManager:
             file.flush()
             file.close()
 
-            os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
+            os.chmod(filename, 600)
             if verbosity > 0: print("DdclientManager: Wrote %s" % filename)
             
             return
@@ -160,8 +145,10 @@ DDCLIENT_PID="`pgrep ddclient`"
 
 # Stop ddclient if running
 if [ ! -z "$DDCLIENT_PID" ] ; then
-    systemctl stop ddclient
-    # For whatever reason this does not effectively stop ddclient processes
+    # systemctl --no-block stop ddclient 
+    # Does not work
+    # Likely because the ddclient process renames itself
+    # Instead manually kill all process with ddclient in name
     pgrep ddclient | while read pid ; do kill $pid ; done
 fi
 """)
@@ -173,15 +160,17 @@ DDCLIENT_PID="`pgrep ddclient`"
 # Restart ddclient if it isnt found
 # Or if ddclient.conf orhas been written since ddclient was started
 if [ -z "$DDCLIENT_PID" ] ; then
-    systemctl start ddclient
+    systemctl --no-block start ddclient
 
 # use not older than (instead of newer than) because it compares seconds and we want an equal value to still do a restart
 elif [ ! /etc/ddclient.conf -ot /proc/$DDCLIENT_PID ] ; then
-    systemctl stop ddclient
-    # For whatever reason this does not effectively stop ddclient processes
+    # systemctl --no-block stop ddclient 
+    # Does not work
+    # Likely because the ddclient process renames itself
+    # Instead manually kill all process with ddclient in name
     pgrep ddclient | while read pid ; do kill $pid ; done
 
-    systemctl restart ddclient
+    systemctl --no-block start ddclient
 fi
 """)
 

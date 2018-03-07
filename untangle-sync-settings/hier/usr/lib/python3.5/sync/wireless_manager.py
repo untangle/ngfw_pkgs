@@ -385,7 +385,7 @@ class WirelessManager:
             # because the interface must be up for it to be added to bridges
             # As such, we start hostapd now
             # Hostapd can survive interfaces going up and down so this is fine
-            self.hostapdRestartFile.write("systemctl restart hostapd\n")
+            self.hostapdRestartFile.write("systemctl --no-block restart hostapd\n")
 
             self.hostapdRestartFile.flush()
             self.hostapdRestartFile.close()
@@ -405,7 +405,7 @@ class WirelessManager:
             self.hostapdRestartFile.write("## DO NOT EDIT. Changes will be overwritten.\n")
             self.hostapdRestartFile.write("\n")
 
-            self.hostapdRestartFile.write("systemctl stop hostapd\n")
+            self.hostapdRestartFile.write("systemctl --no-block stop hostapd\n")
 
             self.hostapdRestartFile.flush()
             self.hostapdRestartFile.close()
