@@ -244,6 +244,8 @@ insert_upnp_iptables_rules
         Modify miniupnpd's daemon to not manage iptables and not to use /etc/default/minipnpd
         FIXME: this will not work in a systemd world
         """
+        # FIXME - all files written should be written in prefix
+        # FIXME - modifies filesystem directly!
         filename = self.upnp_daemon_init_filename
         if os.path.isfile(filename) is False:
             return

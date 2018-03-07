@@ -15,6 +15,7 @@ class HostsManager:
     hostname_filename = "/etc/hostname"
     mailname_filename = "/etc/mailname"
     resolv_filename = "/etc/resolv.conf"
+    pre_network_hook_filename = "/etc/untangle/pre-network-hook.d/001-sethostname"
 
     def sync_settings( self, settings, prefix="", verbosity=0 ):
         if verbosity > 1: print("HostsManager: sync_settings()")
@@ -22,6 +23,7 @@ class HostsManager:
         self.write_hosts_file( settings, prefix, verbosity )
         self.write_resolve_file( settings, prefix, verbosity )
         self.write_mailname_file( settings, prefix, verbosity )
+        self.write_pre_network_hook_file( settings, prefix, verbosity )
         return
 
     def initialize( self ):
@@ -29,6 +31,7 @@ class HostsManager:
         registrar.register_file( self.hostname_filename, "restart-networking", self )
         registrar.register_file( self.mailname_filename, None, self )
         registrar.register_file( self.resolv_filename, None, self )
+        registrar.register_file( self.pre_network_hook_filename, "restart-networking", self )
     
     def write_hosts_file( self, settings, prefix, verbosity ):
 
@@ -82,7 +85,6 @@ ff02::3 ip6-allhosts
         return
 
     def write_hostname_file( self, settings, prefix, verbosity ):
-
         if 'hostName' not in settings:
             print("ERROR: Missing hostname setting")
             return
@@ -101,13 +103,39 @@ ff02::3 ip6-allhosts
         file.flush()
         file.close()
 
-        # also set the hostname using '/bin/hostname'
-        # FIXME
-        os.system("/bin/hostname %s" % fqdnHostname)
-
         if verbosity > 0: print("HostsManager: Wrote %s" % filename)
         return
 
+    def write_pre_network_hook_file( self, settings, prefix, verbosity ):
+        if 'hostName' not in settings:
+            print("ERROR: Missing hostname setting")
+            return
+
+        fqdnHostname = settings['hostName']
+        if 'domainName' in settings:
+            fqdnHostname = fqdnHostname + "." + settings['domainName']
+        filename = prefix + self.pre_network_hook_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
+
+        file = open( filename, "w+" )
+        file.write("#!/bin/dash");
+        file.write("\n\n");
+
+        file.write("## Auto Generated\n");
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
+        file.write("\n\n");
+
+        file.write("/bin/hostname %s" % fqdnHostname)
+        file.write("\n\n");
+        
+        file.flush()
+        file.close()
+
+        if verbosity > 0: print("HostsManager: Wrote %s" % filename)
+        return
+    
     def write_mailname_file( self, settings, prefix, verbosity ):
 
         if 'domainName' not in settings:
