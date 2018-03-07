@@ -1,3 +1,4 @@
+untangle-pyconnector			stretch
 untangle-development-kernel		stretch
 untangle-root				stretch
 untangle-hardware-linksys-wrt3200acm	stretch
