@@ -343,7 +343,7 @@ route-map set-nexthop permit 10
 
             if "ospfInterfaces" in settings['dynamicRoutingSettings'] and "list" in settings['dynamicRoutingSettings']['ospfInterfaces']:
                 for ospf_interface in settings['dynamicRoutingSettings']['ospfInterfaces']["list"]:
-                    if ospf_interface["dev"] == interface["dev"]:
+                    if ospf_interface["dev"] == interface["dev"] and ospf_interface["enabled"] is True:
                         if ospf_interface["authentication"] != 0:
                             if ospf_interface["authentication"] == 1:
                                 ospf_interfaces.append(" ip ospf authentication-key {0}".format( ospf_interface["authenticationPassword"]));
