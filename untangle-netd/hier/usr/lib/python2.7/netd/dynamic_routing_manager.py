@@ -239,7 +239,7 @@ class DynamicRoutingManager:
 
         zebra_interfaces = []
         for interface in self.get_interfaces_from_networks(settings):
-            zebra_interfaces.append("""
+            zebra_interfaces.append("""\
 interface {0}
  ip address {1}/{2}
  ipv6 nd suppress-ra""".format(interface["dev"], interface["address"], interface["prefix"]))
@@ -288,7 +288,7 @@ line vty
         if settings['dynamicRoutingSettings']['bgpNeighbors'] and settings['dynamicRoutingSettings']['bgpNeighbors']["list"]:
             for neighbor in settings['dynamicRoutingSettings']['bgpNeighbors']["list"]:
                 if neighbor["enabled"] is True:
-                    bgp_neighbors.append("""
+                    bgp_neighbors.append("""\
 neighbor {0} remote-as {1}
 neighbor {0} route-map set-nexthop out
 neighbor {0} ebgp-multihop
@@ -335,9 +335,32 @@ route-map set-nexthop permit 10
 
         interfaces_from_networks = self.get_interfaces_from_networks(settings, "ospf")
 
+        # !??? look for defined interfaces and add anyway
+
         ospf_interfaces = []
         for interface in interfaces_from_networks:
             ospf_interfaces.append("interface {0}".format(interface["dev"]) )
+
+            if "ospfInterfaces" in settings['dynamicRoutingSettings'] and "list" in settings['dynamicRoutingSettings']['ospfInterfaces']:
+                for ospf_interface in settings['dynamicRoutingSettings']['ospfInterfaces']["list"]:
+                    if ospf_interface["dev"] == interface["dev"]:
+                        if ospf_interface["authentication"] != 0:
+                            if ospf_interface["authentication"] == 1:
+                                ospf_interfaces.append(" ip ospf authentication-key {0}".format( ospf_interface["authenticationPassword"]));
+                            if ospf_interface["authentication"] == 2:
+                                ospf_interfaces.append(" ip ospf authentication message-digest")
+                                ospf_interfaces.append(" ip ospf message-digest-key {0} md5 {1}".format( ospf_interface["authenticationKeyId"], ospf_interface["authenticationKey"]));
+                        ospf_interfaces.append("""\
+ ip ospf hello-interval {0}
+ ip ospf dead-interval {1}
+ ip ospf retransmit-interval {2}
+ ip ospf transmit-delay {3}
+ ip ospf priority {4}
+ """.format(str(ospf_interface["helloInterval"]), str(ospf_interface["deadInterval"]),str(ospf_interface["retransmitInterval"]), str(ospf_interface["transmitDelay"]),str(ospf_interface["routerPriority"]) ))
+                        if ospf_interface["autoInterfaceCost"] is False:
+                            ospf_interfaces.append(" ip ospf cost {0}".format(str(ospf_interface["interfaceCost"])))
+                        else:
+                            ospf_interfaces.append(" no ip ospf cost")
 
         ospf_ids_areas = {}
         ospf_areas = []
@@ -345,15 +368,24 @@ route-map set-nexthop permit 10
             for area in settings['dynamicRoutingSettings']['ospfAreas']["list"]:
                 ospf_ids_areas[area["ruleId"]] = area["area"]
                 if area["type"] == 0:
-                    continue
-                elif area["type"] == 1:
-                    ospf_areas.append(" area {0} stub".format(area["area"]))
-                elif area["type"] == 2:
-                    ospf_areas.append(" area {0} stub no-summary".format(area["area"]))
-                elif area["type"] == 3:
-                    ospf_areas.append(" no area {0} stub".format(area["area"]))
-                elif area["type"] == 4:
-                    ospf_areas.append(" no area {0} stub no-summary".format(area["area"]))
+                    if "virtualLinks" in area and "list" in area["virtualLinks"]:
+                        for virtual_link in area["virtualLinks"]["list"]:
+                            ospf_areas.append(" area {0} virtual-link {1}".format(area["area"], virtual_link))
+                else:
+                    if area["type"] == 1:
+                        ospf_areas.append(" area {0} stub".format(area["area"]))
+                    elif area["type"] == 2:
+                        ospf_areas.append(" area {0} stub no-summary".format(area["area"]))
+                    elif area["type"] == 3:
+                        ospf_areas.append(" no area {0} stub".format(area["area"]))
+                    elif area["type"] == 4:
+                        ospf_areas.append(" no area {0} stub no-summary".format(area["area"]))
+
+                if area["authentication"] != 0:
+                    if area["authentication"] == 1:
+                        ospf_areas.append(" area {0} authentication".format(area["area"]))
+                    elif area["authentication"] == 2:
+                        ospf_areas.append(" area {0} authentication message-digest".format(area["area"]))
 
         ospf_options = []
         if 'ospfRouterId' in settings['dynamicRoutingSettings'] and settings['dynamicRoutingSettings']["ospfRouterId"] != "":
