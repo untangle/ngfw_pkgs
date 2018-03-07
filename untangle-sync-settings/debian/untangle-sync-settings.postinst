@@ -16,6 +16,10 @@ systemctl disable miniupnpd
 # It will be started via the post-network scripts if needed
 systemctl disable ddclient
 
+# disable 0000usepeerdns pppoe script, we will handle usepeerdns option
+# bug #11185
+if [ -f /etc/ppp/ip-up.d/0000usepeerdns ] ; then mv -f /etc/ppp/ip-up.d/0000usepeerdns /etc/ppp/ip-up.d/0000usepeerdns.disabled ; fi
+
 # 14.0 conversion
 cp -r -a /etc/untangle-netd/* /etc/untangle/
 rm -f /etc/network/if-up.d/netd # replaced by /etc/network/if-up.d/untangle

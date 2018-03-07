@@ -7,7 +7,7 @@ import traceback
 from sync import registrar
 
 # This class is responsible for writing:
-# /etc/untangle/post-network-hook.d/960-iptables #FIXME
+# /etc/untangle/post-network-hook.d/960-iptables
 # /etc/untangle/iptables-rules.d/010-flush
 # /etc/untangle/iptables-rules.d/100-interface-marks
 #
@@ -329,7 +329,7 @@ done
         file.write("\t${IPTABLES} -t raw -A helpers -p tcp --dport 6667 -j CT --helper irc" + "\n");
         file.write("\n");
 
-        # FIXME - in testing it seems this PPTP helper does not work
+        # XXX - in testing it seems this PPTP helper does not work
         # The GRE session does not get redirected
         # the nf_nat_pptp and associated GRE plugin do work correctly, but is deprecated in newer kernels
         file.write("\t${IPTABLES} -t raw -A helpers -p tcp --dport 1723 -j CT --helper pptp" + "\n");

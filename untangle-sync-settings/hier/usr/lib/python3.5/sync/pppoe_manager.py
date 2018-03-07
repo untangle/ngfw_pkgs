@@ -25,11 +25,6 @@ class PPPoEManager:
         self.write_pre_network_hook( settings, prefix, verbosity )
         self.write_ppp_ipup_hook( settings, prefix, verbosity )
 
-        # move 0000usepeerdns file, we will handle usepeerdns option
-        # bug #11185
-        # FIXME - this modifies the filesystem directly! FIXME
-        os.system("if [ -f /etc/ppp/ip-up.d/0000usepeerdns ] ; then mv -f /etc/ppp/ip-up.d/0000usepeerdns /etc/ppp/ip-up.d/0000usepeerdns.disabled ; fi")
-
     def initialize( self ):
         registrar.register_file( self.pap_secrets_filename, "restart-networking", self )
         #registrar.register_file( self.chap_secrets_filename, "restart-networking", self ) # FIXME
