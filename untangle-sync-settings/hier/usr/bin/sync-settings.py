@@ -15,12 +15,6 @@
 # Afterwards it will be necessary to restart certain services so the new settings will take effect
 
 import sys
-if sys.version_info[0] == 2 and sys.version_info[1] == 6:
-    sys.path.insert(0, sys.path[0] + "/" + "../lib/" + "python2.6/")
-if sys.version_info[0] == 2 and sys.version_info[1] == 7:
-    sys.path.insert(0, sys.path[0] + "/" + "../lib/" + "python2.7/")
-if sys.version_info[0] == 3 and sys.version_info[1] == 4:
-    sys.path.insert(0, sys.path[0] + "/" + "../lib/" + "python3.4/")
 if sys.version_info[0] == 3 and sys.version_info[1] == 5:
     sys.path.insert(0, sys.path[0] + "/" + "../lib/" + "python3.5/")
 
@@ -39,21 +33,23 @@ from   sync import *
 
 class ArgumentParser(object):
     def __init__(self):
-        self.file = '/usr/share/untangle/settings/untangle-vm/network.js'
+        self.filename = '/usr/share/untangle/settings/untangle-vm/network.js'
+        self.restart_services = True
 
-    def set_file( self, arg ):
-        self.file = arg
+    def set_filename( self, arg ):
+        self.filename = arg
 
-    def set_prefix( self, arg ):
-        self.prefix = arg
+    def set_norestart( self, arg ):
+        self.restart_services = False
 
     def parse_args( self ):
         handlers = {
-            '-f' : self.set_file,
+            '-f' : self.set_filename,
+            '-n' : self.set_norestart,
         }
 
         try:
-            (optlist, args) = getopt.getopt(sys.argv[1:], 'f:p:v')
+            (optlist, args) = getopt.getopt(sys.argv[1:], 'f:n')
             for opt in optlist:
                 handlers[opt[0]](opt[1])
             return args
@@ -72,8 +68,8 @@ def printUsage():
     sys.stderr.write( """\
 %s Usage:
   optional args:
-    -f <file>   : settings file to sync to OS
-    -v          : verbose (can be specified more than one time)
+    -f <file>   : settings filename to sync to OS
+    -n          : do not run restart commands (just copy files onto filesystem)
 """ % sys.argv[0] )
 
 # sanity check settings
@@ -274,6 +270,9 @@ def run_commands(ops, key):
     """
     Run all the commands for the specified operations
     """
+    if not parser.restart_services:
+        print("\nSkipping operations " + key + "...")
+        return 0
     print("\nRunning operations " + key + "...")
     ret = 0
     for op in ops:
@@ -300,7 +299,7 @@ settings = None
 tmpdir = tempfile.mkdtemp()
 
 try:
-    settingsFile = open(parser.file, 'r')
+    settingsFile = open(parser.filename, 'r')
     settingsData = settingsFile.read()
     settingsFile.close()
     settings = json.loads(settingsData)
@@ -316,7 +315,7 @@ except Exception as e:
     cleanup(1)
 
 # Write the sanitized file for debugging
-# sanitized_filename = (os.path.dirname(parser.file) + "/network-sanitized.js")
+# sanitized_filename = (os.path.dirname(parser.filename) + "/network-sanitized.js")
 # print("Writing sanitized settings: %s " % sanitized_filename)
 # sanitized_file = open( sanitized_filename + ".tmp" , 'w' )
 # json.dump(settings, sanitized_file)
@@ -347,7 +346,7 @@ for module in modules:
         print("Abort. (errors)")
         cleanup(1)
 
-print("\nSyncing %s to system..." % parser.file)
+print("\nSyncing %s to system..." % parser.filename)
 
 for module in modules:
     try:
@@ -375,14 +374,20 @@ for op in operations:
         cleanup(1)
 
 ret = 0
+
+# Run all pre commands
 try:
     ret += run_commands(operations, 'pre_command')
 except Exception as e:
     traceback.print_exc()
+
+# Copy files to / filesystem
 try:
     ret += copy_files(tmpdir)
 except Exception as e:
     traceback.print_exc()
+
+# Run all post commands
 try:
     ret += run_commands(operations, 'post_command')
 except Exception as e:
