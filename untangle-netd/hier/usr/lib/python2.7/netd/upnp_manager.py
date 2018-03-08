@@ -7,7 +7,7 @@ import re
 from shutil import move
 from netd.network_util import NetworkUtil
 
-# This class is responsible for writing 
+# This class is responsible for writing
 # based on the settings object passed from sync-settings.py
 class UpnpManager:
     upnpDaemonConfFilename = "/etc/miniupnpd/miniupnpd.conf"
@@ -42,12 +42,12 @@ class UpnpManager:
         wan_interfaces = []
         lan_interfaces = []
         for intf in settings['interfaces']['list']:
-        	if intf.get('disabled'):
-        		continue
-        	if intf.get('isWan'):
-        		wan_interfaces.append(intf.get('symbolicDev'))
-        	else:
-        		lan_interfaces.append(intf.get('symbolicDev'))
+            if intf.get('disabled'):
+                continue
+            if intf.get('isWan'):
+                wan_interfaces.append(intf.get('symbolicDev'))
+            else:
+                lan_interfaces.append(intf.get('symbolicDev'))
         file.write("# Server options\n");
         # WAN interface
         for intf in wan_interfaces:
@@ -136,7 +136,7 @@ UPNPD_PID="`pidof miniupnpd`"
 
 # Stop miniupnpd if running
 if [ ! -z "$UPNPD_PID" ] ; then
-    service miniupnpd restart
+    service miniupnpd stop
     /etc/untangle-netd/iptables-rules.d/741-upnp
 fi
 """)
@@ -159,7 +159,7 @@ fi
         file.write("\n");
         file.flush()
         file.close()
-    
+
         os.system("chmod a+x %s" % filename)
         if verbosity > 0: print "UpnpManager: Wrote %s" % filename
         return
@@ -221,7 +221,7 @@ insert_upnp_iptables_rules
         file.write("\n");
         file.flush()
         file.close()
-    
+
         os.system("chmod a+x %s" % filename)
         if verbosity > 0: print "UpnpManager: Wrote %s" % filename
         return
@@ -277,7 +277,7 @@ insert_upnp_iptables_rules
         file.close()
 
         move(tempFilename, filename)
-    
+
         os.system("chmod a+x %s" % filename)
         if verbosity > 0: print "UpnpManager: Wrote %s" % filename
         return
@@ -285,7 +285,7 @@ insert_upnp_iptables_rules
     def sync_settings( self, settings, prefix="", verbosity=0 ):
 
         if verbosity > 1: print "UpnpManager: sync_settings()"
-        
+
         self.write_upnp_daemon_conf( settings, prefix, verbosity )
         self.write_restart_upnp_daemon_hook( settings, prefix, verbosity )
         self.write_iptables_hook( settings, prefix, verbosity )

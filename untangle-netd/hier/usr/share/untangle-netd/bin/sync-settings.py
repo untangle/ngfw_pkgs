@@ -226,7 +226,8 @@ for module in [ HostsManager(), DnsMasqManager(),
                 PPPoEManager(), DdclientManager(),
                 KernelManager(), EbtablesManager(),
                 VrrpManager(), WirelessManager(),
-                UpnpManager(), NetflowManager()]:
+                UpnpManager(), NetflowManager(),
+		DynamicRoutingManager()]:
     try:
         module.sync_settings( settings, prefix=parser.prefix, verbosity=parser.verbosity )
     except Exception,e:

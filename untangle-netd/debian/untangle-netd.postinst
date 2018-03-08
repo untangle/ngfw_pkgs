@@ -9,8 +9,11 @@ sed -e 's/\(.*log_warning_msg.*\)/#\1/' -i /etc/network/if-up.d/mountnfs
 update-rc.d -f keepalived disable
 
 # disable miniupnpd in sysvinit
-# It will be started via the post-network scripts if needed
 update-rc.d -f miniupnpd disable
+
+# disable quagga
+# It will be started via the post-network scripts if needed
+update-rc.d -f quagga disable
 
 # 13.0 conversion (remove old log file)
 rm -f /var/log/uvm/iptables.log

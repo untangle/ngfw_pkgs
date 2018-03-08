@@ -23,6 +23,7 @@ from netd.ddclient_manager import DdclientManager
 from netd.ebtables_manager import EbtablesManager
 from netd.upnp_manager import UpnpManager
 from netd.netflow_manager import NetflowManager
+from netd.dynamic_routing_manager import DynamicRoutingManager
 
 from netd.iptables_util import IptablesUtil
 from netd.network_util import NetworkUtil
