@@ -21,7 +21,7 @@ systemctl disable ddclient
 if [ -f /etc/ppp/ip-up.d/0000usepeerdns ] ; then mv -f /etc/ppp/ip-up.d/0000usepeerdns /etc/ppp/ip-up.d/0000usepeerdns.disabled ; fi
 
 # 14.0 conversion
-[ -f /var/lib/untangle-netd ] && mv -f /var/lib/untangle-netd /var/lib/untangle-interface-status
+[ -f /var/lib/untangle-netd ] && mv -f /var/lib/untangle-netd /var/lib/interface-status
 
 # FIXME this should be handled by sync-settings
 cp -r -a /etc/untangle-netd/* /etc/untangle/

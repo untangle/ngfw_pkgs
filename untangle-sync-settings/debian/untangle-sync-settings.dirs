@@ -4,4 +4,4 @@ etc/untangle/post-network-hook.d
 etc/untangle/iptables-rules.d
 usr/bin
 usr/share/untangle-sync-settings/bin
-var/lib/untangle-interface-status
+var/lib/interface-status
