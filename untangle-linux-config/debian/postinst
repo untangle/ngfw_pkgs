@@ -13,11 +13,6 @@ grabRootDevice() {
   awk '/^[^#].*[ \t]+\/[ \t]+ext/ {print $1}' $1
 }
  
-# Clean up stuff left around by old version
-rm -f /boot/vmlinuz-ut
-rm -f /boot/vmlinuz
-rm -f /boot/initrd.img
-
 kernelRoot=$(perl -ne 'print $1 if m|root=([^\s]+)|' /proc/cmdline)
 
 if [ -n "$kernelRoot" ]; then
