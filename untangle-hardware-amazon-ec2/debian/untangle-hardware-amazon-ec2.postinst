@@ -4,4 +4,9 @@ systemctl restart untangle-hardware-config
 
 rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
 
-exit0
+rm -f /usr/share/untangle-snort-config/snortrules.tar.gz
+rm -f /usr/share/untangle-snort-config/current/rules/emerging-deleted.rules
+rm -f /usr/share/untangle-snort-config/current/rules/emerging-current_events.rules
+rm -f /usr/share/untangle-snort-config/current/rules/emerging-activex.rules
+
+exit 0
