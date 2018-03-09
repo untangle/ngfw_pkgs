@@ -10,8 +10,6 @@ Package: untangle-gateway
 Architecture: any
 Depends: chromedriver [!armel !armhf !arm64],
          libpam-systemd,
-	 libsystemd-journal0,
-	 libsystemd-daemon0,
          nvi,
 	 smartmontools,
          ssh,
