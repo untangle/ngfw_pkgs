@@ -24,12 +24,12 @@ files = {}
 
 def register_operation( name, pre_command, post_command, priority, parent=None ):
     global operations
-    print("Registering operation: " + name.ljust(20) + " parent: " + str(parent))
+    # print("Registering operation: " + name.ljust(20) + " parent: " + str(parent))
     operations[name] = { "name": name, "pre_command": pre_command, "post_command": post_command, "priority": priority, "parent": parent }
 
 def register_file( filepath, operation, owner ):
     global files, operations
-    print("Registering file: " + filepath.ljust(70) + " op: " + str(operation).ljust(20) + " owner: " + str(type(owner).__name__))
+    # print("Registering file: " + filepath.ljust(70) + " op: " + str(operation).ljust(20) + " owner: " + str(type(owner).__name__))
     if operation != None:
         op = operations[operation]
         if op == None:
