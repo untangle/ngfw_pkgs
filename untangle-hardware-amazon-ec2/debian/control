@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-hardware-amazon-ec2
 Architecture: all
-Depends: untangle-hardware-config
+Depends: untangle-hardware-config, untangle-snort-config
 Description: The Untangle Amazon EC2 config
  Configuration specific to Amazon EC2.
 
