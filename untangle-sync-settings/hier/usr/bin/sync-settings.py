@@ -56,7 +56,7 @@ class ArgumentParser(object):
             return args
         except getopt.GetoptError as exc:
             print(exc)
-            printUsage()
+            print_usage()
             exit(1)
 
 def cleanup(code):
@@ -65,7 +65,7 @@ def cleanup(code):
         shutil.rmtree(tmpdir)
     exit(code)
 
-def printUsage():
+def print_usage():
     sys.stderr.write( """\
 %s Usage:
   optional args:
@@ -73,7 +73,7 @@ def printUsage():
     -n          : do not run restart commands (just copy files onto filesystem)
 """ % sys.argv[0] )
 
-def checkSettings( settings ):
+def check_settings( settings ):
     """
     Sanity check the settings
     """
@@ -101,7 +101,7 @@ def checkSettings( settings ):
                 raise Exception("Invalid Virtual Interface Settings: missing key %s" % key)
             
 
-def cleanupSettings( settings ):
+def cleanup_settings( settings ):
     """
     This removes/disable hidden fields in the interface settings so we are certain they don't apply
     We do these operations here because we don't want to actually modify the settings
@@ -217,7 +217,10 @@ def check_registrar_operations(operations):
     If an operation is missing in the registrar exit(1) is
     called to exit immediately
     """
-    print("\nRequired operations: ")
+    if operations == None:
+        return
+    if len(operations) > 0:
+        print("Required operations: ")
     for op in operations:
         print(op)
         o = registrar.operations.get(op)
@@ -246,11 +249,11 @@ def calculate_changed_files(tmpdir):
                 new_files.append(rootpath)
 
     if len(changed_files) > 0:
-        print("\nChanged files:")
+        print("Changed files:")
         for f in changed_files:
             print(f)
     if len(new_files) > 0:
-        print("\nNew files:")
+        print("New files:")
         for f in new_files:
             print(f)
 
@@ -258,7 +261,7 @@ def calculate_changed_files(tmpdir):
     changes.extend(changed_files)
     changes.extend(new_files)
     if len(changes) == 0:
-        print("\nNo changed files.")
+        print("No changed files.")
 
     return changes
 
@@ -273,9 +276,9 @@ def calculate_deleted_files(tmpdir_delete):
             if os.path.lexists(rootpath):
                 deleted_files.append(rootpath)
     if len(deleted_files) == 0:
-        print("\nNo deleted files.")
+        print("No deleted files.")
     else:
-        print("\nDeleted files:")
+        print("Deleted files:")
         for f in deleted_files:
             print(f)
         
@@ -299,7 +302,6 @@ def copy_files(tmpdir):
     Copy the files from tmpdir into the root filesystem
     """
     cmd = "/bin/cp -ar --remove-destination " + tmpdir+"/*" + " /"
-    print("\nCopying files...")
     result = run_cmd(cmd)
     if result != 0:
         print("Failed to copy results: " + str(result))
@@ -310,14 +312,20 @@ def delete_files(delete_list):
     """
     Delete the files in the list
     """
-    print("\nDeleting files...")
+    print("Deleting files...")
     sum = 0;
+    if delete_list == None:
+        return
     for f in delete_list:
-        cmd = "/bin/rm -f " + f
-        result = run_cmd(cmd)
-        if result != 0:
-            print("Failed to delete: " + str(result))
-            sum += result
+        try:
+            cmd = "/bin/rm -f " + f
+            result = run_cmd(cmd)
+            if result != 0:
+                print("Failed to delete: " + str(result))
+                sum += result
+        except Exception as e:
+            print("Error deleting file: " + f,e)
+
     return sum
 
 def run_commands(ops, key):
@@ -325,15 +333,15 @@ def run_commands(ops, key):
     Run all the commands for the specified operations
     """
     if not parser.restart_services:
-        print("\nSkipping operations " + key + "...")
+        print("Skipping operations " + key + "...")
         return 0
-    print("\nRunning operations " + key + "...")
+    print("Running operations " + key + "...")
     ret = 0
     for op in ops:
         o = registrar.operations.get(op)
         command = o.get(key)
         if command != None:
-            print("\n[" + op + "]: " + command)
+            print("[" + op + "]: " + command)
             result = run_cmd(command)
             print("[" + op + "]: " + command + " done.")
             if result != 0:
@@ -367,7 +375,7 @@ def sync_to_tmpdirs(tmpdir, tmpdir_delete):
     Call sync_settings on all modules
     """
     global modules
-    print("\nSyncing %s to system..." % parser.filename)
+    print("Syncing %s to system..." % parser.filename)
 
     delete_list=[]
     for module in modules:
@@ -407,8 +415,34 @@ def call_without_permissions(func, *args, **kw):
         (xpid, result) = os.waitpid(pid, 0)
         return result
 
+def make_tmpdirs():
+    """
+    Make required tmp directories
+    """
+    global tmpdir, tmpdir_delete
+    try:
+        tmpdir = tempfile.mkdtemp()
+        os.chmod(tmpdir, os.stat(tmpdir).st_mode | stat.S_IEXEC | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
+        tmpdir_delete = tempfile.mkdtemp()
+        os.chmod(tmpdir_delete, os.stat(tmpdir_delete).st_mode | stat.S_IEXEC | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
+    except Exception as e:
+        print("Error creating tmp directory.",e)
+        traceback.print_exc(e)
+        cleanup(1)
 
-
+def read_settings():
+    """
+    Read and parse the settings file
+    """
+    global settings
+    try:
+        settingsFile = open(parser.filename, 'r')
+        settingsData = settingsFile.read()
+        settingsFile.close()
+        settings = json.loads(settingsData)
+    except IOError as e:
+        print("Unable to read settings file: ",e)
+        cleanup(1)
 
 # Duplicate all stdout to log
 tee_stdout_log()
@@ -426,35 +460,24 @@ modules = [ HostsManager(), DnsMasqManager(),
             KernelManager(), EbtablesManager(),
             VrrpManager(), WirelessManager(),
             UpnpManager(), NetflowManager()]
+# argument parser
 parser = ArgumentParser()
+# The JSON settings object
 settings = None
+# tmpdir stores all files to be copied to the filesystem
 tmpdir = None
+# tmpdir_delete contains all the files to be delete (the content is irrelevent)
 tmpdir_delete = None
 
 parser.parse_args()
 
-try:
-    tmpdir = tempfile.mkdtemp()
-    os.chmod(tmpdir, os.stat(tmpdir).st_mode | stat.S_IEXEC | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
-    tmpdir_delete = tempfile.mkdtemp()
-    os.chmod(tmpdir_delete, os.stat(tmpdir_delete).st_mode | stat.S_IEXEC | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
-except Exception as e:
-    print("Error creating tmp directory.",e)
-    traceback.print_exc(e)
-    cleanup(1)
+make_tmpdirs()
+
+read_settings()
 
 try:
-    settingsFile = open(parser.filename, 'r')
-    settingsData = settingsFile.read()
-    settingsFile.close()
-    settings = json.loads(settingsData)
-except IOError as e:
-    print("Unable to read settings file: ",e)
-    cleanup(1)
-
-try:
-    checkSettings(settings)
-    cleanupSettings(settings)
+    check_settings(settings)
+    cleanup_settings(settings)
 except Exception as e:
     traceback.print_exc(e)
     cleanup(1)
@@ -473,12 +496,16 @@ NetworkUtil.settings = settings
 # Initialize all modules
 init_modules()
 
+print("")
+
 # Call all the modules to "sync" settings to tmpdir
 # We drop root permissions to call these functions so that
 # the modules can't access the / filesystem directly
 result = call_without_permissions(sync_to_tmpdirs,tmpdir,tmpdir_delete)
 if result != 0:
     cleanup(result)
+
+print("")
 
 # Check that all new files in the tmpdir are registered in the registrar
 check_registrar_files(tmpdir)
@@ -492,12 +519,15 @@ operations = registrar.reduce_operations(operations)
 # Check that all operations are registered
 check_registrar_operations(operations)
 
+print("")
+
 # Copy in the files and delete any required files
 if len(deleted_files) > 0:
     delete_files(deleted_files)
 if len(operations) < 1:
+    print("Copying files...")
     copy_files(tmpdir)
-    print("\nDone.")
+    print("Done.")
     cleanup(0)
 
 ret = 0
@@ -510,6 +540,7 @@ except Exception as e:
 
 # Copy files to / filesystem
 try:
+    print("Copying files...")
     ret += copy_files(tmpdir)
 except Exception as e:
     traceback.print_exc()

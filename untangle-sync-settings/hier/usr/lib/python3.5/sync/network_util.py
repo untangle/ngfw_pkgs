@@ -15,7 +15,9 @@ class NetworkUtil:
 
     @staticmethod
     def interface_list( verbosity=0 ):
-
+        """
+        returns a list of the interfaceId's extracted from the settings
+        """
         settings = NetworkUtil.settings
         ret = []
 
@@ -32,7 +34,9 @@ class NetworkUtil:
 
     @staticmethod
     def wan_list( verbosity=0 ):
-        
+        """
+        returns a list of the interfaceId's for WANS extracted from the settings
+        """
         settings = NetworkUtil.settings
         ret = []
 
@@ -55,7 +59,9 @@ class NetworkUtil:
 
     @staticmethod
     def non_wan_list( verbosity=0 ):
-        
+        """
+        returns a list of the interfaceId's for non-WANS extracted from the settings
+        """
         settings = NetworkUtil.settings
         ret = []
 
