@@ -18,11 +18,14 @@ class IptablesManager:
     helpers_filename = "/etc/untangle/iptables-rules.d/011-helpers"
     post_network_filename = "/etc/untangle/post-network-hook.d/960-iptables"
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
+    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
         if verbosity > 1: print("IptablesManager: sync_settings()")
         self.write_flush_file( settings, prefix, verbosity )
         self.write_helpers_file( settings, prefix, verbosity )
         self.write_post_file( settings, prefix, verbosity )
+
+        # 14.0 delete obsolete file (can be removed in 14.1)
+        delete_list.append("/etc/untangle/iptables-rules.d/825-classd")
 
     def initialize( self ):
         registrar.register_file( self.flush_filename, "restart-iptables", self )

@@ -17,7 +17,7 @@ class WirelessManager:
     crda_default_filename = "/etc/default/crda"
     has_wireless = False
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
+    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
         if verbosity > 1: print("WirelessManager: sync_settings()")
 
         # on Asus AC88U, find each disabled wifi interface, and remove
@@ -25,13 +25,11 @@ class WirelessManager:
         # exists. untangle-broadcom-wireless relies solely on the
         # presence of that file to decide whether to start the AP
         # daemon or not (#13066)
-        # FIXME - changes filesystem directly
         enabledInterfaces = [ x['physicalDev'] for x in settings.get('interfaces').get('list') ]
         for intfName in [ x for x  in ('eth1', 'eth2') if not x in enabledInterfaces ]:
             filename = prefix + self.hostapd_conf_filename + "-" + intfName
-            if os.path.isfile(filename):
-                print("WirelessManager: Removed " + filename)
-                os.remove(filename)
+            if os.path.exists(filename):
+                delete_list.append(filename)
 
         self.write_hostapd_conf( settings, prefix, verbosity )
         self.write_crda_file( settings, prefix, verbosity )

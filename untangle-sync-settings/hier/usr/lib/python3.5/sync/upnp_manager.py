@@ -28,7 +28,7 @@ class UpnpManager:
     init_stop_ip6tables_regex = re.compile(r'^(\s+if \[ "\${MiniUPnPd_ip6tables_enable}" = "yes" \] ; then ip6tables_stop_fw_tables ; fi)')
     init_daemon_start_regex = re.compile(r'^(\s+start-stop-daemon -q --start --exec "/usr/sbin/miniupnpd" --)')
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
+    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
         if verbosity > 1: print("UpnpManager: sync_settings()")
         self.write_upnp_daemon_conf( settings, prefix, verbosity )
         self.write_restart_upnp_daemon_hook( settings, prefix, verbosity )

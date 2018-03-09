@@ -18,12 +18,15 @@ class InterfacesManager:
     both_interfaces_mark_mask = 0xffff
     interfaces_file = None
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
+    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
         if verbosity > 1: print("InterfacesManager: sync_settings()")
         self.write_interfaces_file( settings, prefix, verbosity )
         self.write_interface_marks( settings, prefix, verbosity )
         self.write_pre_network_hook( settings, prefix, verbosity )
 
+        # 14.0 delete obsolete file (can be removed in 14.1)
+        delete_list.append("/etc/network/if-up.d/netd")
+        
     def initialize( self ):
         registrar.register_file( self.interfaces_filename, "restart-networking", self )
         registrar.register_file( self.interfaces_marks_filename, "restart-iptables", self )

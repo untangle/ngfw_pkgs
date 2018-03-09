@@ -18,13 +18,15 @@ class PPPoEManager:
     pre_network_hook_filename = "/etc/untangle/pre-network-hook.d/040-pppoe"
     ppp_ip_up_filename = "/etc/ppp/ip-up.d/99-untangle"
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
+    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
         if verbosity > 1: print("PPPoEManager: sync_settings()")
         self.write_pppoe_connection_files( settings, prefix, verbosity )
         self.write_secret_files( settings, prefix, verbosity )
         self.write_pre_network_hook( settings, prefix, verbosity )
         self.write_ppp_ipup_hook( settings, prefix, verbosity )
-
+        # 14.0 delete obsolete file (can be removed in 14.1)
+        delete_list.append("/etc/ppp/ip-up.d/99-netd")
+        
     def initialize( self ):
         registrar.register_file( self.pap_secrets_filename, "restart-networking", self )
         #registrar.register_file( self.chap_secrets_filename, "restart-networking", self ) # FIXME
@@ -76,8 +78,9 @@ maxfail 0
                     print("PPPoEManager: Wrote %s" % fileName)
             else:
                 # interface is not PPPoE, remove any existing peer file
-                fileName = self.peers_directory + self.connection_base_name + str(interface_settings.get('interfaceId'))
-                os.system("/bin/rm -f %s" % fileName)
+                filename = self.peers_directory + self.connection_base_name + str(interface_settings.get('interfaceId'))
+                if os.path.exists(filename):
+                    delete_list.append(filename)
 
         return
 

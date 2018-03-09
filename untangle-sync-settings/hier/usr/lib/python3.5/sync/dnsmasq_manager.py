@@ -16,7 +16,7 @@ class DnsMasqManager:
     restart_hook_filename = "/etc/untangle/post-network-hook.d/990-restart-dnsmasq"
     dhcp_statics_filename = "/etc/dnsmasq.d/dhcp-static"
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
+    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
         if verbosity > 1: print("DnsMasqManager: sync_settings()")
         self.write_dnsmasq_hosts( settings, prefix, verbosity )
         self.write_dhcp_statics_file( settings, prefix, verbosity )

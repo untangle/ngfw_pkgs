@@ -11,7 +11,7 @@ from sync import registrar
 class SysctlManager:
     post_filename = "/etc/untangle/post-network-hook.d/010-sysctl"
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
+    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
         if verbosity > 1: print("SysctlManager: sync_settings()")
         self.write_sysctl( settings, prefix, verbosity )
         return
