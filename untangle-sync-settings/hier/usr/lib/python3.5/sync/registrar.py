@@ -131,6 +131,7 @@ register_operation( "restart-radvd",      None, "/etc/untangle/post-network-hook
 register_operation( "restart-ddclient",   None, "/etc/untangle/post-network-hook.d/990-restart-ddclient",  23, "restart-networking" )
 register_operation( "restart-hostapd",    None, "/etc/untangle/post-network-hook.d/990-restart-hostapd",   24, "restart-networking" )
 register_operation( "restart-softflowd",  None, "/etc/untangle/post-network-hook.d/990-restart-softflowd", 25, "restart-networking" )
+register_operation( "restart-quagga",     None, "/etc/untangle/post-network-hook.d/990-restart-quagga",    26, "restart-networking" )
 register_operation( "restart-keepalived", None, "/etc/untangle/post-network-hook.d/200-vrrp",              30, "restart-networking" )
 register_operation( "restart-iptables",   None, "/etc/untangle/post-network-hook.d/960-iptables",          50, "restart-networking" )
 

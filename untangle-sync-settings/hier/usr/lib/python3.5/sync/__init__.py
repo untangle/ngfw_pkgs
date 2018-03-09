@@ -23,6 +23,7 @@ from sync.ddclient_manager import DdclientManager
 from sync.ebtables_manager import EbtablesManager
 from sync.upnp_manager import UpnpManager
 from sync.netflow_manager import NetflowManager
+from sync.dynamic_routing_manager import DynamicRoutingManager
 
 from sync.iptables_util import IptablesUtil
 from sync.network_util import NetworkUtil
