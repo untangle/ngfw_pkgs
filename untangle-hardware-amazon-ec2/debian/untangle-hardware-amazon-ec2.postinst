@@ -12,4 +12,10 @@ if [ -x "/etc/init.d/untangle-firmware-common" ]; then
   ourInit untangle-firmware-common restart
 fi
 
+rm -f /usr/share/untangle-snort-config/snortrules.tar.gz
+rm -f /usr/share/untangle-snort-config/current/rules/emerging-deleted.rules
+rm -f /usr/share/untangle-snort-config/current/rules/emerging-current_events.rules
+rm -f /usr/share/untangle-snort-config/current/rules/emerging-activex.rules
+
 exit 0
+
