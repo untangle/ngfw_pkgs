@@ -15,7 +15,7 @@ class DdclientManager:
     default_filename = "/etc/default/ddclient"
     restart_filename = "/etc/untangle/post-network-hook.d/990-restart-ddclient"
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
+    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
         if verbosity > 1: print("DdclientManager: sync_settings()")
         
         self.write_config_file( settings, prefix, verbosity )

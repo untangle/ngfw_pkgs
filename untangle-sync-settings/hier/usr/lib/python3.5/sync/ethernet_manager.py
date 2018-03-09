@@ -12,7 +12,7 @@ class EthernetManager:
     ethernet_media_filename = "/etc/untangle/pre-network-hook.d/015-ethernet-media"
     set_link_media_script = "/usr/share/untangle-sync-settings/bin/set-link-media.sh"
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
+    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
         if verbosity > 1: print("EthernetManager: sync_settings()")
         self.write_ethernet_media( settings, prefix, verbosity )
         return

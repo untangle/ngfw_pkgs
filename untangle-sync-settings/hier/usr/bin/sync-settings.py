@@ -73,8 +73,10 @@ def printUsage():
     -n          : do not run restart commands (just copy files onto filesystem)
 """ % sys.argv[0] )
 
-# sanity check settings
 def checkSettings( settings ):
+    """
+    Sanity check the settings
+    """
     if settings is None:
         raise Exception("Invalid Settings: null")
 
@@ -99,16 +101,17 @@ def checkSettings( settings ):
                 raise Exception("Invalid Virtual Interface Settings: missing key %s" % key)
             
 
-# This removes/disable hidden fields in the interface settings so we are certain they don't apply
-# We do these operations here because we don't want to actually modify the settings
-# For example, lets say you have DHCP enabled, but then you choose to bridge that interface to another instead.
-# The settings will reflect that dhcp is still enabled, but to the user those fields are hidden.
-# It is convenient to keep it enabled in the settings so when the user switches back to their previous settings
-# everything is still the same. However, we need to make sure that we don't actually enable DHCP on that interface.
-# 
-# This function runs through the settings and removes/disables settings that are hidden/disabled in the current configuration.
-#
 def cleanupSettings( settings ):
+    """
+    This removes/disable hidden fields in the interface settings so we are certain they don't apply
+    We do these operations here because we don't want to actually modify the settings
+    For example, lets say you have DHCP enabled, but then you choose to bridge that interface to another instead.
+    The settings will reflect that dhcp is still enabled, but to the user those fields are hidden.
+    It is convenient to keep it enabled in the settings so when the user switches back to their previous settings
+    everything is still the same. However, we need to make sure that we don't actually enable DHCP on that interface.
+
+    This function runs through the settings and removes/disables settings that are hidden/disabled in the current configuration.
+    """
     interfaces = settings['interfaces']['list']
     virtualInterfaces = settings['virtualInterfaces']['list']
 
@@ -194,7 +197,7 @@ def cleanupSettings( settings ):
     return
 
 
-def check_registrar(tmpdir):
+def check_registrar_files(tmpdir):
     """
     This checks that all files written in tmpdir are properly registered
     in the registrar. If a file is missing in the registrar exit(1) is
@@ -208,6 +211,20 @@ def check_registrar(tmpdir):
                 print("File missing in registrar: " + filename)
                 cleanup(1)
 
+def check_registrar_operations(operations):
+    """
+    Check that all operations in the ops list is in the registrar
+    If an operation is missing in the registrar exit(1) is
+    called to exit immediately
+    """
+    print("\nRequired operations: ")
+    for op in operations:
+        print(op)
+        o = registrar.operations.get(op)
+        if o == None:
+            print("Operation missing from registrar: " + op)
+            cleanup(1)
+                
 def calculate_changed_files(tmpdir):
     """
     Compares the contents of tmpdir with the existing filesystem
@@ -225,7 +242,7 @@ def calculate_changed_files(tmpdir):
     for root, dirs, files in os.walk(tmpdir):
         for file in files:
             rootpath = os.path.join(root,file).replace(tmpdir,"")
-            if not os.path.exists(rootpath):
+            if not os.path.lexists(rootpath):
                 new_files.append(rootpath)
 
     if len(changed_files) > 0:
@@ -245,7 +262,29 @@ def calculate_changed_files(tmpdir):
 
     return changes
 
+def calculate_deleted_files(tmpdir_delete):
+    """
+    Calculate the list of files to be deleted by looking in the tmpdir
+    """
+    deleted_files = []
+    for root, dirs, files in os.walk(tmpdir_delete):
+        for file in files:
+            rootpath = os.path.join(root,file).replace(tmpdir_delete,"")
+            if os.path.lexists(rootpath):
+                deleted_files.append(rootpath)
+    if len(deleted_files) == 0:
+        print("\nNo deleted files.")
+    else:
+        print("\nDeleted files:")
+        for f in deleted_files:
+            print(f)
+        
+    return deleted_files
+
 def run_cmd(cmd):
+    """
+    Run the specified command and print the ouput and return the result
+    """
     stdin=open(os.devnull, 'rb')
     p = subprocess.Popen(["sh","-c","%s 2>&1" % (cmd)], stdout=subprocess.PIPE, stdin=stdin )
     for line in iter(p.stdout.readline, ''):
@@ -266,6 +305,20 @@ def copy_files(tmpdir):
         print("Failed to copy results: " + str(result))
         return result
     return 0
+
+def delete_files(delete_list):
+    """
+    Delete the files in the list
+    """
+    print("\nDeleting files...")
+    sum = 0;
+    for f in delete_list:
+        cmd = "/bin/rm -f " + f
+        result = run_cmd(cmd)
+        if result != 0:
+            print("Failed to delete: " + str(result))
+            sum += result
+    return sum
 
 def run_commands(ops, key):
     """
@@ -289,11 +342,17 @@ def run_commands(ops, key):
     return ret
 
 def tee_stdout_log():
+    """
+    Forks stdout to a log file
+    """
     tee = subprocess.Popen(["tee", "/var/log/sync.log"], stdin=subprocess.PIPE)
     os.dup2(tee.stdin.fileno(), sys.stdout.fileno())
     os.dup2(tee.stdin.fileno(), sys.stderr.fileno())
 
 def init_modules():
+    """
+    Call init() on all modules
+    """
     global modules
     for module in modules:
         try:
@@ -303,22 +362,42 @@ def init_modules():
             print("Abort. (errors)")
             cleanup(1)
 
-def sync_to_tmpdir(tmpdir):
+def sync_to_tmpdirs(tmpdir, tmpdir_delete):
+    """
+    Call sync_settings on all modules
+    """
     global modules
     print("\nSyncing %s to system..." % parser.filename)
 
+    delete_list=[]
     for module in modules:
         try:
-            module.sync_settings( settings, prefix=tmpdir, verbosity=2 )
+            module.sync_settings( settings, tmpdir, delete_list, verbosity=2 )
         except Exception as e:
             traceback.print_exc()
             cleanup(1)
 
+    for filename in delete_list:
+        path = tmpdir_delete + filename
+        file_dir = os.path.dirname( path )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
+        file = open( path, "w+" )
+        file.write("\n\n");
+        file.flush()
+        file.close()
+
 def drop_permissions():
+    """
+    Set this process permissions to nobody (drop root permissions)
+    """
     os.setegid(65534) # nogroup
     os.seteuid(65534) # nobody
 
 def call_without_permissions(func, *args, **kw):
+    """
+    Call the specified function without root privs
+    """
     pid = os.fork()
     if pid == 0:
         drop_permissions()
@@ -350,12 +429,15 @@ modules = [ HostsManager(), DnsMasqManager(),
 parser = ArgumentParser()
 settings = None
 tmpdir = None
+tmpdir_delete = None
 
 parser.parse_args()
 
 try:
     tmpdir = tempfile.mkdtemp()
     os.chmod(tmpdir, os.stat(tmpdir).st_mode | stat.S_IEXEC | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
+    tmpdir_delete = tempfile.mkdtemp()
+    os.chmod(tmpdir_delete, os.stat(tmpdir_delete).st_mode | stat.S_IEXEC | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
 except Exception as e:
     print("Error creating tmp directory.",e)
     traceback.print_exc(e)
@@ -388,29 +470,35 @@ except Exception as e:
 
 NetworkUtil.settings = settings
 
+# Initialize all modules
 init_modules()
 
-result = call_without_permissions(sync_to_tmpdir,tmpdir)
+# Call all the modules to "sync" settings to tmpdir
+# We drop root permissions to call these functions so that
+# the modules can't access the / filesystem directly
+result = call_without_permissions(sync_to_tmpdirs,tmpdir,tmpdir_delete)
 if result != 0:
     cleanup(result)
 
-check_registrar(tmpdir)
+# Check that all new files in the tmpdir are registered in the registrar
+check_registrar_files(tmpdir)
 
+# Calculate the changed files and the needed operations
 changed_files = calculate_changed_files(tmpdir)
+deleted_files = calculate_deleted_files(tmpdir_delete)
 operations = registrar.calculate_required_operations(changed_files)
 operations = registrar.reduce_operations(operations)
+
+# Check that all operations are registered
+check_registrar_operations(operations)
+
+# Copy in the files and delete any required files
+if len(deleted_files) > 0:
+    delete_files(deleted_files)
 if len(operations) < 1:
     copy_files(tmpdir)
     print("\nDone.")
     cleanup(0)
-
-print("\nRequired operations: ")
-for op in operations:
-    print(op)
-    o = registrar.operations.get(op)
-    if o == None:
-        print("Operation missing from registrar: " + op)
-        cleanup(1)
 
 ret = 0
 

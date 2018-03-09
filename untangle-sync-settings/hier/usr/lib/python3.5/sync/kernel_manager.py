@@ -14,7 +14,7 @@ from sync import registrar
 class KernelManager:
     kernel_hook_filename = "/etc/untangle/post-network-hook.d/011-kernel"
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
+    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
         if verbosity > 1: print("KernelManager: sync_settings()")
         self.write_file( settings, prefix, verbosity )
 

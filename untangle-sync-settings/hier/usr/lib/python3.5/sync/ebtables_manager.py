@@ -12,7 +12,7 @@ class EbtablesManager:
     filename = iptables_filename
     file = None
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
+    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
         if verbosity > 1: print("EbtablesManager: sync_settings()")
         self.write_file( settings, prefix, verbosity )
 
