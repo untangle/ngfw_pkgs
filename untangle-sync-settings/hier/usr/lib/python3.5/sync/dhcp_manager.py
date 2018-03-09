@@ -20,7 +20,6 @@ class DhcpManager:
     ddclient_hook_filename = "/etc/dhcp/dhclient-exit-hooks.d/ddclient"
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        if verbosity > 1: print("DhcpManager: sync_settings()")
         self.write_exit_hook( settings, prefix, verbosity )
         self.write_enter_hook( settings, prefix, verbosity )
         self.write_pre_network_hook( settings, prefix, verbosity )

@@ -18,7 +18,6 @@ class VrrpManager:
     vrrp_enabled = False
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        if verbosity > 1: print("VrrpManager: sync_settings()")
         self.write_keepalivd_conf( settings, prefix, verbosity )
         self.write_post_network_hook( settings, prefix, verbosity )
         self.write_iptables_hook( settings, prefix, verbosity )

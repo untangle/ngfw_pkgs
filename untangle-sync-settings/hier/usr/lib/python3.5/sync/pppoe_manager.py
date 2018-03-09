@@ -19,7 +19,6 @@ class PPPoEManager:
     ppp_ip_up_filename = "/etc/ppp/ip-up.d/99-untangle"
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        if verbosity > 1: print("PPPoEManager: sync_settings()")
         self.write_pppoe_connection_files( settings, prefix, verbosity )
         self.write_secret_files( settings, prefix, verbosity )
         self.write_pre_network_hook( settings, prefix, verbosity )

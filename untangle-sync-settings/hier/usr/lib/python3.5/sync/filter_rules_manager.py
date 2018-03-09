@@ -17,7 +17,6 @@ class FilterRulesManager:
     file = None
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        if verbosity > 1: print("FilterRulesManager: sync_settings()")
         self.write_filter_rules_file( settings, prefix, verbosity )
 
     def initialize( self ):

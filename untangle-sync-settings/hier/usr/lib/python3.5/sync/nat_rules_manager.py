@@ -18,7 +18,6 @@ class NatRulesManager:
     file = None
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        if verbosity > 1: print("NatRulesManager: sync_settings()")
         self.write_nat_rules_file( settings, prefix, verbosity )
 
     def initialize( self ):

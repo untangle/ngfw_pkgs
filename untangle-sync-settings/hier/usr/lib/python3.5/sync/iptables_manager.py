@@ -19,7 +19,6 @@ class IptablesManager:
     post_network_filename = "/etc/untangle/post-network-hook.d/960-iptables"
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        if verbosity > 1: print("IptablesManager: sync_settings()")
         self.write_flush_file( settings, prefix, verbosity )
         self.write_helpers_file( settings, prefix, verbosity )
         self.write_post_file( settings, prefix, verbosity )

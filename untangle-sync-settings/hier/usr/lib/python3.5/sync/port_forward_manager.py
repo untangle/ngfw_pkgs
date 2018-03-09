@@ -16,7 +16,6 @@ class PortForwardManager:
     file = None
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        if verbosity > 1: print("PortForwardManager: sync_settings()")
         self.write_port_forwards( settings, prefix, verbosity);
         self.write_admin_port_rules( settings, prefix, verbosity);
 

@@ -18,7 +18,6 @@ class BypassRuleManager:
     file = None
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        if verbosity > 1: print("BypassRulesManager: sync_settings()")
         self.write_files( settings, prefix, verbosity )
 
     def initialize( self ):

@@ -35,8 +35,6 @@ class DynamicRoutingManager:
     ip_addr_regex = re.compile(r'\s+inet\s+([^\s]+)')
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        if verbosity > 1:
-            print("DynamicRoutingManager: sync_settings()")
         self.write_daemons_conf( settings, prefix, verbosity )
         self.write_zebra_conf( settings, prefix, verbosity )
         self.write_bgpd_conf( settings, prefix, verbosity )
@@ -249,8 +247,7 @@ class DynamicRoutingManager:
         file.close()
         os.chown(filename, self.file_uid, self.file_gid)
 
-        if verbosity > 0:
-            print("DynamicRoutingManager: Wrote %s" % filename)
+        if verbosity > 0: print("DynamicRoutingManager: Wrote %s" % filename)
 
     def write_zebra_conf( self, settings, prefix="", verbosity=0 ):
         """
