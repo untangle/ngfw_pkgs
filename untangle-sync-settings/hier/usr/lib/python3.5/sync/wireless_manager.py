@@ -18,7 +18,6 @@ class WirelessManager:
     has_wireless = False
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        if verbosity > 1: print("WirelessManager: sync_settings()")
 
         # on Asus AC88U, find each disabled wifi interface, and remove
         # its corresponding hostapd configuration file if it

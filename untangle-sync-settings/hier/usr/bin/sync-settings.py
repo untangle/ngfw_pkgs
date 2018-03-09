@@ -383,7 +383,7 @@ def sync_to_tmpdirs(tmpdir, tmpdir_delete):
             module.sync_settings( settings, tmpdir, delete_list, verbosity=2 )
         except Exception as e:
             traceback.print_exc()
-            cleanup(1)
+            return 1
 
     for filename in delete_list:
         path = tmpdir_delete + filename
@@ -394,6 +394,8 @@ def sync_to_tmpdirs(tmpdir, tmpdir_delete):
         file.write("\n\n");
         file.flush()
         file.close()
+
+    return 0
 
 def drop_permissions():
     """
@@ -409,8 +411,8 @@ def call_without_permissions(func, *args, **kw):
     pid = os.fork()
     if pid == 0:
         drop_permissions()
-        func(*args, **kw)
-        os._exit(0)
+        result = func(*args, **kw)
+        os._exit(result)
     else:
         (xpid, result) = os.waitpid(pid, 0)
         return result
@@ -503,6 +505,7 @@ print("")
 # the modules can't access the / filesystem directly
 result = call_without_permissions(sync_to_tmpdirs,tmpdir,tmpdir_delete)
 if result != 0:
+    print("\nError during sync process. Abort.")
     cleanup(result)
 
 print("")

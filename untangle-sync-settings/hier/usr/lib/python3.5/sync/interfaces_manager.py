@@ -19,7 +19,6 @@ class InterfacesManager:
     interfaces_file = None
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        if verbosity > 1: print("InterfacesManager: sync_settings()")
         self.write_interfaces_file( settings, prefix, verbosity )
         self.write_interface_marks( settings, prefix, verbosity )
         self.write_pre_network_hook( settings, prefix, verbosity )

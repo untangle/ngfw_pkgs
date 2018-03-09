@@ -16,7 +16,6 @@ class NetflowManager:
     restart_hook_filename = "/etc/untangle/post-network-hook.d/990-restart-softflowd"
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        if verbosity > 1: print("NetflowManager: sync_settings()")
         self.write_softflow_daemon_conf( settings, prefix, verbosity )
         self.write_restart_softflow_daemon_hook( settings, prefix, verbosity )
 

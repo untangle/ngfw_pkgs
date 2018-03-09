@@ -29,7 +29,6 @@ class UpnpManager:
     init_daemon_start_regex = re.compile(r'^(\s+start-stop-daemon -q --start --exec "/usr/sbin/miniupnpd" --)')
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        if verbosity > 1: print("UpnpManager: sync_settings()")
         self.write_upnp_daemon_conf( settings, prefix, verbosity )
         self.write_restart_upnp_daemon_hook( settings, prefix, verbosity )
         self.write_iptables_hook( settings, prefix, verbosity )

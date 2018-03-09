@@ -18,7 +18,6 @@ class HostsManager:
     pre_network_hook_filename = "/etc/untangle/pre-network-hook.d/001-sethostname"
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        if verbosity > 1: print("HostsManager: sync_settings()")
         self.write_hostname_file( settings, prefix, verbosity )
         self.write_hosts_file( settings, prefix, verbosity )
         self.write_resolve_file( settings, prefix, verbosity )

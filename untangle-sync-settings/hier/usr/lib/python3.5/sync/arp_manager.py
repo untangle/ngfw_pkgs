@@ -12,7 +12,6 @@ class ArpManager:
     filename = "/etc/untangle/post-network-hook.d/025-arp"
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        if verbosity > 1: print("ArpManager: sync_settings()")
         self.write_arp( settings, prefix, verbosity )
         return
 

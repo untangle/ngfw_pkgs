@@ -13,7 +13,6 @@ class EthernetManager:
     set_link_media_script = "/usr/share/untangle-sync-settings/bin/set-link-media.sh"
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        if verbosity > 1: print("EthernetManager: sync_settings()")
         self.write_ethernet_media( settings, prefix, verbosity )
         return
 

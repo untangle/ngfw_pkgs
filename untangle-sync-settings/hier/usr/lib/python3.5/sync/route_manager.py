@@ -21,7 +21,6 @@ class RouteManager:
     DST_INTERFACE_MASK=0xFF00
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        if verbosity > 1: print("RouteManager: sync_settings()")
         self.write_rt_table( settings, prefix, verbosity )
         self.write_routes( settings, prefix, verbosity )
         self.write_routes_pre_hook( settings, prefix, verbosity )

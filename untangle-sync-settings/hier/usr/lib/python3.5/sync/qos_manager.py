@@ -18,7 +18,6 @@ class QosManager:
     file = None
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        if verbosity > 1: print("QosManager: sync_settings()")
         self.write_qos_hook( settings, prefix, verbosity )
         return
 
