@@ -35,7 +35,7 @@ class WirelessManager:
         self.write_network_hook( settings, prefix, verbosity )
 
     def initialize( self ):
-        registrar.register_file( self.hostapd_conf_filename, "restart-hostapd", self )
+        registrar.register_file( self.hostapd_conf_filename+".*", "restart-hostapd", self )
         registrar.register_file( self.hostapd_default_filename, "restart-hostapd", self )
         registrar.register_file( self.hostapd_restart_filename, "restart-hostapd", self )
         registrar.register_file( self.crda_default_filename, "restart-hostapd", self )
