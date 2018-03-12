@@ -226,7 +226,7 @@ class WirelessManager:
     def get_wificard_config( self, wlan_dev, channel ):
         try:
             conf = {}
-            phy_dev = open('/sys/class/net/%s/phy80211/name'%wlan_dev, 'r').read()
+            phy_dev = str(open('/sys/class/net/%s/phy80211/name'%wlan_dev, 'r').read())
 
             iw_info = self.get_iw_info( phy_dev )
 
