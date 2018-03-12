@@ -45,7 +45,7 @@ class WirelessManager:
     # https://dev.openwrt.org/browser/trunk/package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
     def get_iw_info( self, phy_dev ):
-        output = subprocess.Popen(("iw phy %s info" % phy_dev).split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0])
+        output = subprocess.Popen(("iw phy %s info" % phy_dev).split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0]
         str = output.decode('ascii').split('\n')
         return str
 

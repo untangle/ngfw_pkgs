@@ -36,6 +36,7 @@ class ArgumentParser(object):
     def __init__(self):
         self.filename = '/usr/share/untangle/settings/untangle-vm/network.js'
         self.restart_services = True
+        self.test_run = False
 
     def set_filename( self, arg ):
         self.filename = arg
@@ -43,14 +44,18 @@ class ArgumentParser(object):
     def set_norestart( self, arg ):
         self.restart_services = False
 
+    def set_test_run( self, arg ):
+        self.test_run = True
+
     def parse_args( self ):
         handlers = {
             '-f' : self.set_filename,
             '-n' : self.set_norestart,
+            '-s' : self.set_test_run,
         }
 
         try:
-            (optlist, args) = getopt.getopt(sys.argv[1:], 'f:n')
+            (optlist, args) = getopt.getopt(sys.argv[1:], 'f:ns')
             for opt in optlist:
                 handlers[opt[0]](opt[1])
             return args
@@ -71,6 +76,7 @@ def print_usage():
   optional args:
     -f <file>   : settings filename to sync to OS
     -n          : do not run restart commands (just copy files onto filesystem)
+    -s          : do not copy or run restart commands (test run)
 """ % sys.argv[0] )
 
 def check_settings( settings ):
@@ -523,6 +529,10 @@ operations = registrar.reduce_operations(operations)
 check_registrar_operations(operations)
 
 print("")
+if parser.test_run:
+    print("Test run complete.")
+    # exit without cleanup
+    exit(0)
 
 # Copy in the files and delete any required files
 if len(deleted_files) > 0:
