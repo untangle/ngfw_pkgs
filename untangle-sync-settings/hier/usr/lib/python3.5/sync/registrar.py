@@ -64,13 +64,26 @@ def calculate_required_operations( changed_files ):
     global files
     operations = []
     for filename in changed_files:
-        f = files.get(filename)
+        f = find_file_registration(filename)
         if f == None:
             raise ValueError("Missing file from registrar: " + filename)
         op = f.get('operation')
         if op != None and op not in operations:
             operations.append(op)
     return operations
+
+def find_file_registration( filename ):
+    """
+    Find the file registration object for the given filename
+    """
+    global files
+    f = files.get(filename)
+    if f != None:
+        return f
+    for regex in files.keys():
+        if re.compile(regex).match(filename):
+            return files.get(regex)
+    return None
 
 def registrar_check_file(filename):
     """
