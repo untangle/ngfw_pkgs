@@ -45,7 +45,9 @@ class WirelessManager:
     # https://dev.openwrt.org/browser/trunk/package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
     def get_iw_info( self, phy_dev ):
-        return subprocess.Popen(("iw phy %s info" % phy_dev).split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].split('\n')
+        output = subprocess.Popen(("iw phy %s info" % phy_dev).split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0])
+        str = output.decode('ascii').split('\n')
+        return str
 
     def set_hw_mode( self, conf, channel ):
         if channel > 11 or channel == -2:
@@ -226,7 +228,7 @@ class WirelessManager:
     def get_wificard_config( self, wlan_dev, channel ):
         try:
             conf = {}
-            phy_dev = str(open('/sys/class/net/%s/phy80211/name'%wlan_dev, 'r').read())
+            phy_dev = open('/sys/class/net/%s/phy80211/name'%wlan_dev, 'r').read().decode('ascii')
 
             iw_info = self.get_iw_info( phy_dev )
 
