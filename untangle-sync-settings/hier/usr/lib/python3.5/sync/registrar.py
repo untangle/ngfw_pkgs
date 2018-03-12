@@ -81,7 +81,7 @@ def registrar_check_file(filename):
     for regex in files.keys():
         if filename == regex:
             return True
-    for regex in registrar.files.keys():
+    for regex in files.keys():
         if re.compile(regex).match(filename):
             return True
     return False
