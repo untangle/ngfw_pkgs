@@ -138,11 +138,11 @@ def reduce_operations( ops ):
 
 
 register_operation( "restart-networking", "ifdown -a -v --exclude=lo", "ifup -a -v --exclude=lo",          10, None )
+register_operation( "restart-hostapd",    None, "/etc/untangle/pre-network-hook.d/990-restart-hostapd",    15, "restart-networking" )
 register_operation( "restart-dnsmasq",    None, "/etc/untangle/post-network-hook.d/990-restart-dnsmasq",   20, "restart-networking" )
 register_operation( "restart-miniupnpd",  None, "/etc/untangle/post-network-hook.d/990-restart-upnp",      21, "restart-networking" )
 register_operation( "restart-radvd",      None, "/etc/untangle/post-network-hook.d/990-restart-radvd",     22, "restart-networking" )
 register_operation( "restart-ddclient",   None, "/etc/untangle/post-network-hook.d/990-restart-ddclient",  23, "restart-networking" )
-register_operation( "restart-hostapd",    None, "/etc/untangle/post-network-hook.d/990-restart-hostapd",   24, "restart-networking" )
 register_operation( "restart-softflowd",  None, "/etc/untangle/post-network-hook.d/990-restart-softflowd", 25, "restart-networking" )
 register_operation( "restart-quagga",     None, "/etc/untangle/post-network-hook.d/990-restart-quagga",    26, "restart-networking" )
 register_operation( "restart-keepalived", None, "/etc/untangle/post-network-hook.d/200-vrrp",              30, "restart-networking" )
