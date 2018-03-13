@@ -8,6 +8,8 @@ Standards-Version: 3.8.0
 
 Package: untangle-hardware-config
 Architecture: all
+Depends: systemd-sysv
+Conflicts: sysvinit-core, sysvinit-utils
 Description: The Untangle hardware config
  Provides the mechanism for other packages to register startup
  actions, to load hardware-related settings at boot time.
