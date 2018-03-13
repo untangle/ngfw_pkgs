@@ -8,7 +8,8 @@ Standards-Version: 3.8.0
 
 Package: untangle-pyconnector
 Architecture: all
-Depends: python3
+Depends: python3, systemd-sysv
+Conflicts: sysvinit-core, sysvinit-utils
 Breaks: untangle-vm (<< 14.0.0.20180307T1008050800.9066580463-1stretch)
 Replaces: untangle-vm (<< 14.0.0.20180307T1008050800.9066580463-1stretch)
 Description: The Untangle PyConnector
