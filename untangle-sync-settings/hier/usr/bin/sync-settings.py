@@ -359,7 +359,7 @@ def tee_stdout_log():
     """
     Forks stdout to a log file
     """
-    tee = subprocess.Popen(["tee", "/var/log/sync.log"], stdin=subprocess.PIPE)
+    tee = subprocess.Popen(["tee", "-a", "/var/log/sync.log"], stdin=subprocess.PIPE)
     os.dup2(tee.stdin.fileno(), sys.stdout.fileno())
     os.dup2(tee.stdin.fileno(), sys.stderr.fileno())
 
