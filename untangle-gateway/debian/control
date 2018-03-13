@@ -63,7 +63,7 @@ Depends: chromedriver [!armel !armhf !arm64],
          untangle-system-config,
          untangle-update-manager,
 	 untangle-vm
-Conflicts: sysvinit-core
+Conflicts: sysvinit-core, sysvinit-utils
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle Gateway
  The Untangle Top Level Untangle package.
