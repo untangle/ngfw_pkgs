@@ -102,10 +102,9 @@ def check_settings( settings ):
         raise Exception("Invalid Settings: missing virtualInterfaces list")
     virtualInterfaces = settings['virtualInterfaces']['list']
     for intf in virtualInterfaces:
-        for key in ['interfaceId', 'name', 'configType']:
+        for key in ['interfaceId', 'name']:
             if key not in intf:
                 raise Exception("Invalid Virtual Interface Settings: missing key %s" % key)
-            
 
 def cleanup_settings( settings ):
     """
@@ -181,7 +180,7 @@ def cleanup_settings( settings ):
                 if key.startswith('v4Auto'):
                     del intf[key]
 
-    # Remove bridgedTo settincgs if not bridged
+    # Remove bridgedTo settings if not bridged
     for intf in interfaces:
         if intf['configType'] != 'BRIDGED':
             if 'bridgedTo' in intf: del intf['bridgedTo']
