@@ -531,3 +531,16 @@ fi
         if verbosity > 0: print("DynamicRoutingManager: Wrote %s" % filename)
         return
 
+    def sync_settings( self, settings, prefix="", verbosity=0 ):
+
+        if verbosity > 1: print "DynamicRoutingManager: sync_settings()"
+
+        if settings.get('dynamicRoutingSettings') is not None:
+            self.write_daemons_conf( settings, prefix, verbosity )
+            self.write_zebra_conf( settings, prefix, verbosity )
+            self.write_bgpd_conf( settings, prefix, verbosity )
+            self.write_ospfd_conf( settings, prefix, verbosity )
+            self.write_restart_quagga_daemons_hook( settings, prefix, verbosity )
+
+        return
+
