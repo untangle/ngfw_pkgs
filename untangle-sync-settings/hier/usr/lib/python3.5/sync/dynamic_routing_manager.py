@@ -35,11 +35,12 @@ class DynamicRoutingManager:
     ip_addr_regex = re.compile(r'\s+inet\s+([^\s]+)')
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_daemons_conf( settings, prefix, verbosity )
-        self.write_zebra_conf( settings, prefix, verbosity )
-        self.write_bgpd_conf( settings, prefix, verbosity )
-        self.write_ospfd_conf( settings, prefix, verbosity )
-        self.write_restart_quagga_daemons_hook( settings, prefix, verbosity )
+        if settings.get('dynamicRoutingSettings') is not None:
+            self.write_daemons_conf( settings, prefix, verbosity )
+            self.write_zebra_conf( settings, prefix, verbosity )
+            self.write_bgpd_conf( settings, prefix, verbosity )
+            self.write_ospfd_conf( settings, prefix, verbosity )
+            self.write_restart_quagga_daemons_hook( settings, prefix, verbosity )
         return
 
     def initialize( self ):
@@ -531,16 +532,4 @@ fi
         if verbosity > 0: print("DynamicRoutingManager: Wrote %s" % filename)
         return
 
-    def sync_settings( self, settings, prefix="", verbosity=0 ):
-
-        if verbosity > 1: print "DynamicRoutingManager: sync_settings()"
-
-        if settings.get('dynamicRoutingSettings') is not None:
-            self.write_daemons_conf( settings, prefix, verbosity )
-            self.write_zebra_conf( settings, prefix, verbosity )
-            self.write_bgpd_conf( settings, prefix, verbosity )
-            self.write_ospfd_conf( settings, prefix, verbosity )
-            self.write_restart_quagga_daemons_hook( settings, prefix, verbosity )
-
-        return
 
