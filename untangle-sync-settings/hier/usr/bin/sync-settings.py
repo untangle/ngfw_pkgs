@@ -435,7 +435,7 @@ def make_tmpdirs():
         os.chmod(tmpdir_delete, os.stat(tmpdir_delete).st_mode | stat.S_IEXEC | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
     except Exception as e:
         print("Error creating tmp directory.",e)
-        traceback.print_exc(e)
+        traceback.print_exc()
         cleanup(1)
 
 def read_settings():
@@ -487,7 +487,7 @@ try:
     check_settings(settings)
     cleanup_settings(settings)
 except Exception as e:
-    traceback.print_exc(e)
+    traceback.print_exc()
     cleanup(1)
 
 # Write the sanitized file for debugging
