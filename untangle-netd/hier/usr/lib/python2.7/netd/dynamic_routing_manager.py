@@ -510,10 +510,11 @@ fi
 
         if verbosity > 1: print "DynamicRoutingManager: sync_settings()"
 
-        self.write_daemons_conf( settings, prefix, verbosity )
-        self.write_zebra_conf( settings, prefix, verbosity )
-        self.write_bgpd_conf( settings, prefix, verbosity )
-        self.write_ospfd_conf( settings, prefix, verbosity )
-        self.write_restart_quagga_daemons_hook( settings, prefix, verbosity )
+        if settings.get('dynamicRoutingSettings') is not None:
+            self.write_daemons_conf( settings, prefix, verbosity )
+            self.write_zebra_conf( settings, prefix, verbosity )
+            self.write_bgpd_conf( settings, prefix, verbosity )
+            self.write_ospfd_conf( settings, prefix, verbosity )
+            self.write_restart_quagga_daemons_hook( settings, prefix, verbosity )
 
         return
