@@ -1,5 +1,5 @@
 #!/bin/sh
 
-#DEBHELPER#
+systemctl disable untangle-pyconnector
 
 exit 0
