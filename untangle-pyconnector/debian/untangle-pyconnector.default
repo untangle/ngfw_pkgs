@@ -1,7 +1,3 @@
 
-# Log file location (not used by default: logging by systemd instead)
-LOG_FILE="/var/log/uvm/pyconnector.log"
-
 # Pyconnector options
-# OPTIONS="-l ${LOG_FILE} -d 2"
-OPTIONS="-d 1"
+OPTIONS="-l /var/log/uvm/pyconnector.log -d 2"
