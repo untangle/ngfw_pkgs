@@ -37,8 +37,8 @@ class PPPoEManager:
         for interface_settings in settings.get('interfaces').get('list'):
             if "PPPOE" == interface_settings.get('v4ConfigType'):
                 # open this pppoe config file for this connection
-                fileName = self.peers_directory + self.connection_base_name + str(interface_settings.get('interfaceId'))
-                conffile = open( fileName, "w+" )
+                filename = prefix + self.peers_directory + self.connection_base_name + str(interface_settings.get('interfaceId'))
+                conffile = open( filename, "w+" )
                 conffile.write("## Auto Generated\n");
                 conffile.write("## DO NOT EDIT. Changes will be overwritten.\n");
                 conffile.write("\n");
@@ -74,7 +74,7 @@ maxfail 0
                 conffile.close()
 
                 if verbosity > 0:
-                    print("PPPoEManager: Wrote %s" % fileName)
+                    print("PPPoEManager: Wrote %s" % filename)
             else:
                 # interface is not PPPoE, remove any existing peer file
                 filename = self.peers_directory + self.connection_base_name + str(interface_settings.get('interfaceId'))
