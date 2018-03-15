@@ -114,7 +114,9 @@ maxfail 0
         if verbosity > 0:
             print("PPPoEManager: Wrote %s" % self.pap_secrets_filename)
 
-        filename = prefix + self.chap_secrets_filename
+        # FIXME FIXME FIXME
+        # filename = prefix + self.chap_secrets_filename
+        filename = self.chap_secrets_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
             os.makedirs( file_dir )
@@ -125,6 +127,8 @@ maxfail 0
         chap_secrets_file.close();
         if verbosity > 0:
             print("PPPoEManager: Wrote %s" % self.chap_secrets_filename)
+        # FIXME - this modifies the filesystem directly! FIXME
+        # FIXME - this modifies the filesystem directly! FIXME
         # FIXME - this modifies the filesystem directly! FIXME
         os.system("/usr/share/untangle/bin/ut-chap-manager PPPOE %s" % self.chap_secrets_filename)
 
