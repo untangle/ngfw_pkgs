@@ -102,17 +102,27 @@ maxfail 0
         if not pppoe_found:
             return
 
-        papSecretsFile = open( self.pap_secrets_filename, "w+" )
-        papSecretsFile.write(secrets)
-        papSecretsFile.flush();
-        papSecretsFile.close();
+        filename = prefix + self.pap_secrets_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
+
+        pap_secrets_file = open( filename, "w+" )
+        pap_secrets_file.write(secrets)
+        pap_secrets_file.flush();
+        pap_secrets_file.close();
         if verbosity > 0:
             print("PPPoEManager: Wrote %s" % self.pap_secrets_filename)
 
-        chapSecretsFile = open( self.chap_secrets_filename, "w+" )
-        chapSecretsFile.write(secrets)
-        chapSecretsFile.flush();
-        chapSecretsFile.close();
+        filename = prefix + self.chap_secrets_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
+            
+        chap_secrets_file = open( filename, "w+" )
+        chap_secrets_file.write(secrets)
+        chap_secrets_file.flush();
+        chap_secrets_file.close();
         if verbosity > 0:
             print("PPPoEManager: Wrote %s" % self.chap_secrets_filename)
         # FIXME - this modifies the filesystem directly! FIXME
