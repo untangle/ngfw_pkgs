@@ -209,8 +209,8 @@ def check_registrar_files(tmpdir):
     called to exit immediately
     """
     for root, dirs, files in os.walk(tmpdir):
-        for file in files:
-            rootpath = os.path.join(root,file).replace(tmpdir,"")
+        for filename in files:
+            rootpath = os.path.join(root,filename).replace(tmpdir,"")
             result = registrar.registrar_check_file(rootpath)
             if not result:
                 print("File missing in registrar: " + filename)
