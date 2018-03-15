@@ -28,9 +28,9 @@ class NetflowManager:
         Create softflow configuration file
         """
         filename = prefix + self.softflow_daemon_conf_filename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("## Auto Generated\n");
@@ -58,9 +58,9 @@ class NetflowManager:
         Create network process extension to restart or stop daemon
         """
         filename = prefix + self.restart_hook_filename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("#!/bin/dash");

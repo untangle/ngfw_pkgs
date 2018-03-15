@@ -185,9 +185,9 @@ class NatRulesManager:
 
     def write_nat_rules_file( self, settings, prefix="", verbosity=0 ):
         self.filename = prefix + self.iptables_filename
-        self.fileDir = os.path.dirname( self.filename )
-        if not os.path.exists( self.fileDir ):
-            os.makedirs( self.fileDir )
+        self.file_dir = os.path.dirname( self.filename )
+        if not os.path.exists( self.file_dir ):
+            os.makedirs( self.file_dir )
 
         self.file = open( self.filename, "w+" )
         self.file.write("## Auto Generated\n");

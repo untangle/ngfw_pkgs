@@ -38,6 +38,10 @@ class PPPoEManager:
             if "PPPOE" == interface_settings.get('v4ConfigType'):
                 # open this pppoe config file for this connection
                 filename = prefix + self.peers_directory + self.connection_base_name + str(interface_settings.get('interfaceId'))
+                file_dir = os.path.dirname( filename )
+                if not os.path.exists( file_dir ):
+                    os.makedirs( file_dir )
+
                 conffile = open( filename, "w+" )
                 conffile.write("## Auto Generated\n");
                 conffile.write("## DO NOT EDIT. Changes will be overwritten.\n");
@@ -118,9 +122,9 @@ maxfail 0
 
     def write_pre_network_hook( self, settings, prefix="", verbosity=0 ):
         filename = prefix + self.pre_network_hook_filename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("#!/bin/dash");
@@ -148,9 +152,9 @@ maxfail 0
 
     def write_ppp_ipup_hook( self, settings, prefix="", verbosity=0 ):
         filename = prefix + self.ppp_ip_up_filename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("#!/bin/dash");

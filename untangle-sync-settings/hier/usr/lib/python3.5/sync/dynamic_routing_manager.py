@@ -198,9 +198,9 @@ class DynamicRoutingManager:
         Create Quagga daemon configuration file.
         """
         filename = prefix + self.daemons_conf_filename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         enables = {
             'zebra': False,
@@ -259,9 +259,9 @@ class DynamicRoutingManager:
             return
 
         filename = prefix + self.zebra_conf_filename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         zebra_interfaces = []
         for interface in self.get_interfaces_from_networks(settings):
@@ -300,9 +300,9 @@ line vty
             return
 
         filename = prefix + self.bgpd_conf_filename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         bgp_networks = []
         if settings['dynamicRoutingSettings']['bgpNetworks'] and settings['dynamicRoutingSettings']['bgpNetworks']["list"]:
@@ -355,9 +355,9 @@ route-map set-nexthop permit 10
             return
 
         filename = prefix + self.ospfd_conf_filename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         interfaces_from_networks = self.get_interfaces_from_networks(settings, "ospf")
 
@@ -486,9 +486,9 @@ route-map set-nexthop permit 10
         Create network process extension to restart or stop daemon
         """
         filename = prefix + self.restart_hook_filename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("#!/bin/dash");
