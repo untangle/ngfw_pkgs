@@ -245,9 +245,9 @@ class InterfacesManager:
 
     def write_interfaces_file( self, settings, prefix="", verbosity=0 ):
         filename = prefix + self.interfaces_filename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         self.interfaces_file = open( filename, "w+" )
         self.interfaces_file.write("## Auto Generated\n");
@@ -503,9 +503,9 @@ class InterfacesManager:
         interfaces = settings['interfaces']['list']
 
         filename = prefix + self.interfaces_marks_filename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("## Auto Generated\n");
@@ -570,9 +570,9 @@ class InterfacesManager:
     def write_pre_network_hook( self, settings, prefix="", verbosity=0 ):
 
         filename = prefix + self.pre_network_hook_filename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("#!/bin/dash");

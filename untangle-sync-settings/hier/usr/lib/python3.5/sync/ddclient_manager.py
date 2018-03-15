@@ -30,9 +30,9 @@ class DdclientManager:
 
     def write_config_file( self, settings, prefix="", verbosity=0 ):
         filename = prefix + self.config_filename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("## Auto Generated\n");

@@ -48,9 +48,9 @@ class VrrpManager:
 
     def write_keepalivd_conf( self, settings, prefix="", verbosity=0 ):
         filename = prefix + self.keepalived_conf_filename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         vrrp_interfaces = self.get_vrrp_interfaces( settings );
 
@@ -125,9 +125,9 @@ global_defs {
         
     def write_post_network_hook( self, settings, prefix="", verbosity=0 ):
         filename = prefix + self.post_network_hook_filename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("#!/bin/dash");
@@ -181,9 +181,9 @@ fi
 
     def write_iptables_hook( self, settings, prefix="", verbosity=0 ):
         filename = prefix + self.iptables_hook_filename
-        fileDir = os.path.dirname( filename )
-        if not os.path.exists( fileDir ):
-            os.makedirs( fileDir )
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
 
         file = open( filename, "w+" )
         file.write("#!/bin/dash");
