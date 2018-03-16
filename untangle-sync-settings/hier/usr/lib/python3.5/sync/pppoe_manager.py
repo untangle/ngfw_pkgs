@@ -12,7 +12,7 @@ from sync import registrar
 # based on the settings object passed from sync-settings.py
 class PPPoEManager:
     pap_secrets_filename = "/etc/ppp/pap-secrets"
-    chap_secrets_filename = "/tmp/chap-secrets.pppoe"
+    chap_secrets_filename = "/etc/ppp/chap-secrets"
     peers_directory = "/etc/ppp/peers/"
     connection_base_name = "connection.intf"
     pre_network_hook_filename = "/etc/untangle/pre-network-hook.d/040-pppoe"
@@ -28,7 +28,7 @@ class PPPoEManager:
         
     def initialize( self ):
         registrar.register_file( self.pap_secrets_filename, "restart-networking", self )
-        #registrar.register_file( self.chap_secrets_filename, "restart-networking", self ) # FIXME
+        registrar.register_file( self.chap_secrets_filename, "restart-networking", self ) # FIXME
         registrar.register_file( self.peers_directory+".*", "restart-networking", self )
         registrar.register_file( self.pre_network_hook_filename, "restart-networking", self )
         registrar.register_file( self.ppp_ip_up_filename, "restart-networking", self )
@@ -114,9 +114,7 @@ maxfail 0
         if verbosity > 0:
             print("PPPoEManager: Wrote %s" % self.pap_secrets_filename)
 
-        # FIXME FIXME FIXME
-        # filename = prefix + self.chap_secrets_filename
-        filename = self.chap_secrets_filename
+        filename = prefix + self.chap_secrets_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
             os.makedirs( file_dir )
@@ -127,10 +125,6 @@ maxfail 0
         chap_secrets_file.close();
         if verbosity > 0:
             print("PPPoEManager: Wrote %s" % self.chap_secrets_filename)
-        # FIXME - this modifies the filesystem directly! FIXME
-        # FIXME - this modifies the filesystem directly! FIXME
-        # FIXME - this modifies the filesystem directly! FIXME
-        os.system("/usr/share/untangle/bin/ut-chap-manager PPPOE %s" % self.chap_secrets_filename)
 
         return
 
