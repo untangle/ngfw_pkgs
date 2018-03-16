@@ -16,9 +16,12 @@ systemctl disable miniupnpd
 # It will be started via the post-network scripts if needed
 systemctl disable ddclient
 
-# disable quagga
+# disable dynamic routing daemons
 # It will be started via the post-network scripts if needed
-systemctl disable quagga
+systemctl disable zebra
+systemctl disable ospfd
+systemctl disable ospf6d
+systemctl disable bgpd
 
 # disable 0000usepeerdns pppoe script, we will handle usepeerdns option
 # bug #11185
