@@ -507,6 +507,7 @@ ZEBRA_PID="`pidof zebra`"
 
 # Stop quagga if running
 if [ ! -z "$ZEBRA_PID" ] ; then
+    # FIXME stretch uses separate services for zebra/ospfd/ospf6d/bgpd
     systemctl --no-block stop quagga
 fi
 """)
@@ -517,9 +518,11 @@ ZEBRA_PID="`pidof zebra`"
 # Restart quagga if it isnt found
 # Or if zebra.conf orhas been written since quagga was started
 if [ -z "ZEBRA_PID" ] ; then
+    # FIXME stretch uses separate services for zebra/ospfd/ospf6d/bgpd
     systemctl --no-block restart quagga
 # use not older than (instead of newer than) because it compares seconds and we want an equal value to still do a restart
 elif [ ! {0} -ot /proc/$ZEBRA_PID ] ; then
+    # FIXME stretch uses separate services for zebra/ospfd/ospf6d/bgpd
     systemctl --no-block restart quagga
 fi
 """.format(self.daemons_conf_filename))
