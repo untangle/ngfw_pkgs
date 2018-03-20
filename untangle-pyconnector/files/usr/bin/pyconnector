@@ -194,7 +194,7 @@ def reset_command_socket():
      write_status_file(False)
 
 def write_status_file(connected):
-     status_filename = "/var/run/ut-pyconnector.status"
+     status_filename = "/var/run/pyconnector.status"
      status_file = open(status_filename,"w")
      if connected:
           status_file.write("connected")
@@ -203,7 +203,7 @@ def write_status_file(connected):
      status_file.close()
 
 def check_pid_file():
-     pid_filename = "/var/run/ut-pyconnector.pid"
+     pid_filename = "/var/run/pyconnector.pid"
      old_pid = None
      if os.access(pid_filename, os.F_OK):
           pid_file = open(pid_filename, "r")
@@ -213,7 +213,7 @@ def check_pid_file():
      # if theres already a pid file and its not me, exit
      if (os.path.exists("/proc/%s" % old_pid)):
           if (str(os.getpid()) != old_pid):
-               print "ut-pyconnector already running! pid: %s" % old_pid
+               print "pyconnector already running! pid: %s" % old_pid
                sys.exit(1)
           else:
                debug("removing stale pid file: %s" % old_pid)
