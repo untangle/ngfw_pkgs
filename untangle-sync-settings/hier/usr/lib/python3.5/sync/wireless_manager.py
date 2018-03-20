@@ -255,7 +255,7 @@ class WirelessManager:
         interfaces = settings.get('interfaces').get('list')
 
         for intf in interfaces:
-            if intf.get('isWirelessInterface'):
+            if intf.get('isWirelessInterface') and intf.get('wirelessMode') == 'AP':
                 passwordLen = 0
                 if intf.get('wirelessPassword') != None:
                     passwordLen = len(intf.get('wirelessPassword'))
