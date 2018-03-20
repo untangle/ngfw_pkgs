@@ -10,7 +10,7 @@ def check_pyconnector_running():
      return rc == 0
 
 def check_pyconnector_status():
-     status_filename = "/var/run/ut-pyconnector.status"
+     status_filename = "/var/run/pyconnector.status"
      status = None
      if os.access(status_filename, os.F_OK):
           status_file = open(status_filename, "r")
