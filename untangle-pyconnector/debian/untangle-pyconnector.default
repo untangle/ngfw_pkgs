@@ -1,3 +1,6 @@
 
 # Pyconnector options
-OPTIONS="-l /var/log/uvm/pyconnector.log -d 1"
+LOG_FILE="/var/log/pyconnector.log"
+DEBUG_LEVEL=1
+
+
