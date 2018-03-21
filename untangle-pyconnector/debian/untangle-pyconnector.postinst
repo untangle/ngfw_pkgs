@@ -2,4 +2,7 @@
 
 systemctl disable untangle-pyconnector
 
+# 14.0 remove old log files
+rm -f /var/log/uvm/pyconnector.log*
+
 exit 0
