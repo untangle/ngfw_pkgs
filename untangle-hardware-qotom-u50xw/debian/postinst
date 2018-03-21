@@ -27,4 +27,4 @@ fi
 
 rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
 
-exit0
+exit 0
