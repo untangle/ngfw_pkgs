@@ -30,10 +30,6 @@ untangle-hardware-qotom-u25xw           stretch
 untangle-hardware-qotom-u50x            stretch
 untangle-hardware-qotom-u50xw           stretch
 untangle-bootsplash                     stretch
-untangle-kernel-modules-jessie-armel    stretch
-untangle-kernel-modules-jessie-armhf    stretch
-untangle-kernel-modules-jessie-i386     stretch
-untangle-kernel-modules-jessie-amd64    stretch
 untangle-kernel-modules-stretch-i386    stretch
 untangle-kernel-modules-stretch-amd64   stretch
 untangle-debconf-manager                stretch
