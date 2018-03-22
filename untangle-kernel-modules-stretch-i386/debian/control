@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: untangle-kernel-modules-stretch-i386
 Architecture: i386
-Depends: linux-image-4.9.0-5-untangle-686-pae, firmware-bnx2, firmware-bnx2x
+Depends: linux-image-4.9.0-6-untangle-686-pae, firmware-bnx2, firmware-bnx2x
 Provides: untangle-kernel-modules-stretch
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle kernel modules for i386
