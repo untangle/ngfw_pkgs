@@ -11,6 +11,7 @@ from sync import registrar
 # This class is responsible for writing /etc/network/interfaces
 # based on the settings object passed from sync-settings.py
 class WirelessManager:
+    wpasupplicant_conf_filename = "/etc/wpa_supplicant/wpa_supplicant.conf"
     hostapd_conf_filename = "/etc/hostapd/hostapd.conf"
     crda_default_filename = "/etc/default/crda"
 
@@ -27,10 +28,12 @@ class WirelessManager:
             if os.path.exists(filename):
                 delete_list.append(filename)
 
+        self.write_wpasupplicant_conf( settings, prefix, verbosity )
         self.write_hostapd_conf( settings, prefix, verbosity )
         self.write_crda_file( settings, prefix, verbosity )
 
     def initialize( self ):
+        registrar.register_file( self.wpasupplicant_conf_filename+".*", "restart-networking", self )
         registrar.register_file( self.hostapd_conf_filename+".*", "restart-networking", self )
         registrar.register_file( self.crda_default_filename, "restart-networking", self )
 
@@ -312,6 +315,68 @@ class WirelessManager:
 
                 self.hostapdConfFile.flush()
                 self.hostapdConfFile.close()
+
+                if verbosity > 0:
+                    print("WirelessManager: Wrote " + filename)
+
+    def write_wpasupplicant_conf( self, settings, prefix="", verbosity=0 ):
+
+        configFilename = prefix + self.wpasupplicant_conf_filename
+        for filename in [ configFilename ]:
+            fileDir = os.path.dirname( filename )
+            if not os.path.exists( fileDir ):
+                os.makedirs( fileDir )
+
+        if settings == None or settings.get('interfaces') == None and settings.get('interfaces').get('list') == None:
+            return
+
+        interfaces = settings.get('interfaces').get('list')
+
+        for intf in interfaces:
+            if intf.get('isWirelessInterface') and intf.get('wirelessMode') == 'CLIENT':
+                passwordLen = 0
+                if intf.get('wirelessPassword') != None:
+                    passwordLen = len(intf.get('wirelessPassword'))
+                if passwordLen < 8:
+                    print("WirelessManager: Ignoring " + intf.get('systemDev') + " because password is too short (" + str(passwordLen) + ")")
+                    continue;
+
+                filename = configFilename + "-" + intf.get('systemDev')
+                self.wpasupplicantConfFile = open( filename, "w+" )
+
+                self.wpasupplicantConfFile.write("## Auto Generated\n")
+                self.wpasupplicantConfFile.write("## DO NOT EDIT. Changes will be overwritten.\n")
+                self.wpasupplicantConfFile.write("\n\n")
+                self.wpasupplicantConfFile.write("ctrl_interface=/run/wpa_supplicant\n")
+                self.wpasupplicantConfFile.write("update_config=1\n")
+                self.wpasupplicantConfFile.write("network={\n")
+                self.wpasupplicantConfFile.write("\tssid=\"%s\"\n" % intf.get('wirelessSsid'))
+
+                if intf.get('wirelessEncryption') == 'NONE':
+                    self.wpasupplicantConfFile.write("\tkey_mgmt=NONE\n")
+                elif intf.get('wirelessEncryption') == 'WPA1':
+                    self.wpasupplicantConfFile.write("\tproto=WPA\n")
+                    self.wpasupplicantConfFile.write("\tkey_mgmt=WPA-PSK\n")
+                    self.wpasupplicantConfFile.write("\tpairwise=TKIP CCMP\n")
+                    self.wpasupplicantConfFile.write("\tgroup=TKIP CCMP\n")
+                    self.wpasupplicantConfFile.write("\tpsk=\"%s\"\n" % intf.get('wirelessPassword'))
+                elif intf.get('wirelessEncryption') == 'WPA12':
+                    self.wpasupplicantConfFile.write("\tproto=WPA RSN\n")
+                    self.wpasupplicantConfFile.write("\tkey_mgmt=WPA-PSK\n")
+                    self.wpasupplicantConfFile.write("\tpairwise=TKIP CCMP\n")
+                    self.wpasupplicantConfFile.write("\tgroup=TKIP CCMP\n")
+                    self.wpasupplicantConfFile.write("\tpsk=\"%s\"\n" % intf.get('wirelessPassword'))
+                elif intf.get('wirelessEncryption') == 'WPA2':
+                    self.wpasupplicantConfFile.write("\tproto=RSN\n")
+                    self.wpasupplicantConfFile.write("\tkey_mgmt=WPA-PSK\n")
+                    self.wpasupplicantConfFile.write("\tpairwise=TKIP CCMP\n")
+                    self.wpasupplicantConfFile.write("\tgroup=TKIP CCMP\n")
+                    self.wpasupplicantConfFile.write("\tpsk=\"%s\"\n" % intf.get('wirelessPassword'))
+
+                self.wpasupplicantConfFile.write("}\n")
+
+                self.wpasupplicantConfFile.flush()
+                self.wpasupplicantConfFile.close()
 
                 if verbosity > 0:
                     print("WirelessManager: Wrote " + filename)
