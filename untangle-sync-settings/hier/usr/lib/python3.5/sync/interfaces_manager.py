@@ -131,8 +131,11 @@ class InterfacesManager:
                 for alias in interface_settings.get('vrrpAliases').get('list'):
                     self.interfaces_file.write("\tpost-up /usr/share/untangle-sync-settings/bin/add-source-route.sh %s \"uplink.%i\" -4\n" % (alias.get('staticAddress'), interface_settings.get('interfaceId'))) 
             
-        if interface_settings.get('isWirelessInterface') and interface_settings.get('wirelessMode') == 'AP':
-            self.interfaces_file.write("\thostapd /etc/hostapd/hostapd.conf-%s\n" % devName);
+        if interface_settings.get('isWirelessInterface'):
+            if interface_settings.get('wirelessMode') == 'AP':
+                self.interfaces_file.write("\thostapd /etc/hostapd/hostapd.conf-%s\n" % devName);
+            elif interface_settings.get('wirelessMode') == 'CLIENT':
+                self.interfaces_file.write("\twpa-conf /etc/wpa_supplicant/wpa_supplicant.conf-%s\n" % devName);
 
         self.interfaces_file.write("\n\n");
 
@@ -188,13 +191,16 @@ class InterfacesManager:
         # in /etc/network/if-**.d/bridge
         # However, we may want to control how and when those interfaces are brought up and down
         # If so, we can specify the config here
-        if interface_settings.get('isWirelessInterface') and interface_settings.get('wirelessMode') == 'AP':
+        if interface_settings.get('isWirelessInterface'):
             devName = interface_settings.get('systemDev')
             self.interfaces_file.write("## Interface %i (BRIDGE PORT)\n" % interface_settings.get('interfaceId') )
             self.interfaces_file.write("auto %s\n" % devName)
             self.interfaces_file.write("iface %s inet manual\n" % devName )
             self.interfaces_file.write("\tpost-up ifconfig %s 0.0.0.0 up\n" % devName )
-            self.interfaces_file.write("\thostapd /etc/hostapd/hostapd.conf-%s\n" % devName);
+            if interface_settings.get('wirelessMode') == 'AP':
+                self.interfaces_file.write("\thostapd /etc/hostapd/hostapd.conf-%s\n" % devName);
+            elif interface_settings.get('wirelessMode') == 'CLIENT':
+                self.interfaces_file.write("\twpa-conf /etc/wpa_supplicant/wpa_supplicant.conf-%s\n" % devName);
             self.interfaces_file.write("\n\n");
         
     def write_interface_aliases( self, interface_settings, interfaces ):
