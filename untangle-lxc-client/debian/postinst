@@ -7,6 +7,10 @@ rm -f /etc/network/interfaces.d/lxcbr0
 rm -rf /etc/untangle/lxc-client.d
 rm -f /etc/init.d/untangle-lxc-client
 
+# disable the service from auto-starting
+# NGFW-11687
+systemctl disable untangle-lxc-client
+
 #DEBHELPER#
 
 exit 0
