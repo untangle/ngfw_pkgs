@@ -201,7 +201,7 @@ flush_upnp_iptables_rules()
 {
     # Clean the nat tables
     ${IPTABLES} -t nat -F ${CHAIN} >/dev/null 2>&1
-    ${IPTABLES} -t nat -D PREROUTING -m addrtype --dst-type local -m conntrack --ctstate NEW -j ${CHAIN} >/dev/null 2>&1
+    ${IPTABLES} -t nat -D PREROUTING -m addrtype --dst-type local -j ${CHAIN} >/dev/null 2>&1
     ${IPTABLES} -t nat -X ${CHAIN} >/dev/null 2>&1
 
     # Clean the filter tables
@@ -214,7 +214,7 @@ insert_upnp_iptables_rules()
 {
     # Initialize the PREROUTING chain first
     ${IPTABLES} -t nat -N ${CHAIN}
-    ${IPTABLES} -t nat -A PREROUTING -m addrtype --dst-type local -m conntrack --ctstate NEW -j ${CHAIN}
+    ${IPTABLES} -t nat -A PREROUTING -m addrtype --dst-type local -j ${CHAIN}
     ${IPTABLES} -t nat -F ${CHAIN}
 
     # then do the FORWARD chain

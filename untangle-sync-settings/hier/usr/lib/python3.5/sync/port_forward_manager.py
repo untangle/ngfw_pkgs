@@ -83,8 +83,8 @@ class PortForwardManager:
         self.file.write("${IPTABLES} -t nat -F port-forward-rules >/dev/null 2>&1" + "\n" + "\n");
 
         self.file.write("# Call port-forward-rules chain from PREROUTING chain to forward traffic" + "\n");
-        self.file.write("${IPTABLES} -t nat -D PREROUTING -m conntrack --ctstate NEW -m comment --comment \"Port Forward rules\" -j port-forward-rules >/dev/null 2>&1" + "\n");
-        self.file.write("${IPTABLES} -t nat -A PREROUTING -m conntrack --ctstate NEW -m comment --comment \"Port Forward rules\" -j port-forward-rules" + "\n" + "\n");
+        self.file.write("${IPTABLES} -t nat -D PREROUTING -m comment --comment \"Port Forward rules\" -j port-forward-rules >/dev/null 2>&1" + "\n");
+        self.file.write("${IPTABLES} -t nat -A PREROUTING -m comment --comment \"Port Forward rules\" -j port-forward-rules" + "\n" + "\n");
 
         self.write_port_forward_rules( settings, verbosity );
 

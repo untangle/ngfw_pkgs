@@ -201,8 +201,8 @@ class NatRulesManager:
         self.file.write("\n");
 
         self.file.write("# Call nat-rules chain from POSTROUTING chain to SNAT traffic" + "\n");
-        self.file.write("${IPTABLES} -t nat -D POSTROUTING -m conntrack --ctstate NEW -m comment --comment \"SNAT rules\" -j nat-rules >/dev/null 2>&1" + "\n");
-        self.file.write("${IPTABLES} -t nat -A POSTROUTING -m conntrack --ctstate NEW -m comment --comment \"SNAT rules\" -j nat-rules" + "\n");
+        self.file.write("${IPTABLES} -t nat -D POSTROUTING -m comment --comment \"SNAT rules\" -j nat-rules >/dev/null 2>&1" + "\n");
+        self.file.write("${IPTABLES} -t nat -A POSTROUTING -m comment --comment \"SNAT rules\" -j nat-rules" + "\n");
         self.file.write("\n");
 
         self.file.write("# Call nat-rules chain from POSTROUTING chain to SNAT traffic" + "\n");
@@ -224,7 +224,7 @@ class NatRulesManager:
         self.file.write("${IPTABLES} -t filter -D nat-reverse-filter -m conntrack --ctstate RELATED -m comment --comment \"Allow RELATED traffic\" -j RETURN >/dev/null 2>&1" + "\n");
         self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m conntrack --ctstate RELATED -m comment --comment \"Allow RELATED traffic\" -j RETURN" + "\n");
         self.file.write("\n");
-
+        
         self.file.write("# Call nat-reverse-filter chain from FORWARD chain to block traffic to NATd interface from \"outside\" " + "\n");
         self.file.write("${IPTABLES} -t filter -D nat-reverse-filter -m conntrack --ctstate DNAT -m comment --comment \"Allow port forwarded traffic\" -j RETURN >/dev/null 2>&1" + "\n");
         self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m conntrack --ctstate DNAT -m comment --comment \"Allow port forwarded traffic\" -j RETURN" + "\n");
