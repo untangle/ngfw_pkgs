@@ -1,0 +1,56 @@
+#! /bin/bash
+
+SQUID_CONF_FILE=/etc/squid/squid.conf
+
+setOption() {
+  if grep -qE "^$1" $SQUID_CONF_FILE ; then
+    perl -i -pe "s|^$1 .*|$1 $2|" $SQUID_CONF_FILE
+  else
+    cat >> $SQUID_CONF_FILE <<EOF
+$1 $2
+EOF
+  fi
+}
+
+# As of 9.2 we partition the whole drive so using /data only applies to older installs
+# Since this wasn't a particularly good idea anyway as allowing squid to store way more data seems
+# to increase its memory usage and decrease its performance, I'm reverting it back to the simple
+# use X% of / as a cache (up to a certain size)
+if [ -d /data/var/spool/squid ] ; then
+    echo "Deleting old cache directory..."
+    rm -rf /data/var/spool/squid
+fi
+if [ -L /var/spool/squid ] ; then 
+    # remove the symlink if its a symlink
+    rm -f /var/spool/squid
+fi
+
+MAX_CACHE_SIZE="2000" # 2 gig
+PERCENTAGE_TO_RESERVE=0.05 # percentage of partition to reserve (up to max size)
+CACHE_DIR="/var/spool/squid"
+PARTITION_SIZE=$(df / | awk 'END {print $2}')
+CACHE_SIZE=$( echo "scale = 0 ; size = ${PERCENTAGE_TO_RESERVE}*${PARTITION_SIZE}/1000 ; if (size > ${MAX_CACHE_SIZE}) { print ${MAX_CACHE_SIZE} } else { print size }" | bc -l )
+
+# ensure cache dir exists and has the correct properties
+mkdir -p ${CACHE_DIR}
+chown -R proxy:proxy ${CACHE_DIR}
+
+# options we need
+setOption http_port "3128 transparent"
+setOption extension_methods "REPORT MERGE MKACTIVITY CHECKOUT X-UNTANGLE-WEBCACHE"
+setOption cache_dir "ufs ${CACHE_DIR} ${CACHE_SIZE} 16 256"
+setOption maximum_object_size "32768 KB"
+setOption client_persistent_connections off
+setOption server_persistent_connections off
+setOption dns_testnames www.untangle.com
+setOption digest_generation off 
+setOption cache_peer "127.0.0.1 parent 8888 0 no-query no-digest default"
+setOption never_direct "allow all"
+
+# change error messages to say "WebCache" instead of "Squid"
+find /usr/share/squid/errors/ -type f -exec sed -i 's/Squid/WebCache/' {} \; >/dev/null 2>&1
+
+# remove squid from startup
+update-rc.d -f squid disable
+
+exit 0

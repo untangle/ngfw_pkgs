@@ -57,3 +57,4 @@ untangle-apache2-config                 stretch
 untangle-sync-settings		     	stretch
 untangle-nflogd			     	stretch
 untangle-geoip-database                 stretch
+untangle-squid-config          		stretch
