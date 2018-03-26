@@ -138,7 +138,6 @@ def reduce_operations( ops ):
 
 
 register_operation( "restart-networking", "ifdown -a -v --exclude=lo", "ifup -a -v --exclude=lo",          10, None )
-register_operation( "restart-hostapd",    None, "/etc/untangle/pre-network-hook.d/990-restart-hostapd",    15, "restart-networking" )
 register_operation( "restart-dnsmasq",    None, "/etc/untangle/post-network-hook.d/990-restart-dnsmasq",   20, "restart-networking" )
 register_operation( "restart-miniupnpd",  None, "/etc/untangle/post-network-hook.d/990-restart-upnp",      21, "restart-networking" )
 register_operation( "restart-radvd",      None, "/etc/untangle/post-network-hook.d/990-restart-radvd",     22, "restart-networking" )
