@@ -34,7 +34,8 @@ Depends: bridge-utils,
 	 systemd,
          vlan,
          wireless-regdb,
-         wireless-tools
+         wireless-tools,
+	 wpasupplicant
 Description: The Untangle network daemon
  The Untangle network daemon for managing the network
 
