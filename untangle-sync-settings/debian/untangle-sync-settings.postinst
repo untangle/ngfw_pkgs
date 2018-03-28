@@ -4,6 +4,10 @@
 # when starting the networking service
 sed -e 's/\(.*log_warning_msg.*\)/#\1/' -i /etc/network/if-up.d/mountnfs
 
+# Prevent bridge-utils from trying to bring up bridge interfaces
+# (NGFW-11669)
+perl -i -pe 's/(?<=BRIDGE_HOTPLUG=).*/no/' > /etc/default/bridge-utils
+
 # disable keepalived
 # It will be started via the post-network scripts if needed
 systemctl disable keepalived
