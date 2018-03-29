@@ -1,0 +1,15 @@
+Source: untangle-kernel-modules-stretch-armhf
+Section: admin
+Priority: standard
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.8.0
+
+Package: untangle-kernel-modules-stretch-armhf
+Architecture: armhf
+Provides: untangle-kernel-modules-stretch
+Pre-Depends: untangle-debconf-manager
+Description: The Untangle kernel modules for armhf
+ The Untangle kernel modules for armhf.
+
