@@ -32,6 +32,9 @@ class WirelessManager:
         self.write_hostapd_conf( settings, prefix, verbosity )
         self.write_crda_file( settings, prefix, verbosity )
 
+        # 14.0 delete obsolete file (can be removed in 14.1)
+        delete_list.append("/etc/untangle/pre-network-hook.d/990-restart-hostapd")
+
     def initialize( self ):
         registrar.register_file( self.wpasupplicant_conf_filename+".*", "restart-networking", self )
         registrar.register_file( self.hostapd_conf_filename+".*", "restart-networking", self )
