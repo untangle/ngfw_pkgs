@@ -6,7 +6,7 @@ import os
 sys.path.insert(0,'@PREFIX@/usr/lib/python%d.%d/' % sys.version_info[:2])
 
 def check_pyconnector_running():
-     rc = subprocess.call("systemctl is-active untangle-pyconnector")
+     rc = subprocess.call("systemctl -q is-active untangle-pyconnector", shell=True)
      return rc == 0
 
 def check_pyconnector_status():
