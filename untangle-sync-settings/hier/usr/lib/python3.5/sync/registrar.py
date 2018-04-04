@@ -22,10 +22,10 @@ operations = {}
 # owner - the manager responsible for writing this file
 files = {}
 
-def register_operation( name, pre_command, post_command, priority, parent=None ):
+def register_operation( name, pre_commands, post_commands, priority, parent=None ):
     global operations
     # print("Registering operation: " + name.ljust(20) + " parent: " + str(parent))
-    operations[name] = { "name": name, "pre_command": pre_command, "post_command": post_command, "priority": priority, "parent": parent }
+    operations[name] = { "name": name, "pre_commands": pre_commands, "post_commands": post_commands, "priority": priority, "parent": parent }
 
 def register_file( filepath, operation, owner ):
     global files, operations
@@ -137,15 +137,20 @@ def reduce_operations( ops ):
 
 
 
-register_operation( "restart-networking", "ifdown -a -v --exclude=lo", "ifup -a -v --exclude=lo",          10, None )
-register_operation( "restart-dnsmasq",    None, "/etc/untangle/post-network-hook.d/990-restart-dnsmasq",   20, "restart-networking" )
-register_operation( "restart-miniupnpd",  None, "/etc/untangle/post-network-hook.d/990-restart-upnp",      21, "restart-networking" )
-register_operation( "restart-radvd",      None, "/etc/untangle/post-network-hook.d/990-restart-radvd",     22, "restart-networking" )
-register_operation( "restart-ddclient",   None, "/etc/untangle/post-network-hook.d/990-restart-ddclient",  23, "restart-networking" )
-register_operation( "restart-softflowd",  None, "/etc/untangle/post-network-hook.d/990-restart-softflowd", 25, "restart-networking" )
-register_operation( "restart-quagga",     None, "/etc/untangle/post-network-hook.d/990-restart-quagga",    26, "restart-networking" )
-register_operation( "restart-keepalived", None, "/etc/untangle/post-network-hook.d/200-vrrp",              30, "restart-networking" )
-register_operation( "restart-iptables",   None, "/etc/untangle/post-network-hook.d/960-iptables",          50, "restart-networking" )
+register_operation( "restart-networking",
+                    ["ifdown -a -v --exclude=lo"],
+                    ["ifup -a -v --exclude=lo",
+                     "for i in `seq 20` ; do if systemctl status | grep -q 'Jobs: 0 queued' ; then break ; else sleep .5 done ; fi ; done"],
+                    10,
+                    None )
+register_operation( "restart-dnsmasq",    None, ["/etc/untangle/post-network-hook.d/990-restart-dnsmasq"],   20, "restart-networking" )
+register_operation( "restart-miniupnpd",  None, ["/etc/untangle/post-network-hook.d/990-restart-upnp"],      21, "restart-networking" )
+register_operation( "restart-radvd",      None, ["/etc/untangle/post-network-hook.d/990-restart-radvd"],     22, "restart-networking" )
+register_operation( "restart-ddclient",   None, ["/etc/untangle/post-network-hook.d/990-restart-ddclient"],  23, "restart-networking" )
+register_operation( "restart-softflowd",  None, ["/etc/untangle/post-network-hook.d/990-restart-softflowd"], 25, "restart-networking" )
+register_operation( "restart-quagga",     None, ["/etc/untangle/post-network-hook.d/990-restart-quagga"],    26, "restart-networking" )
+register_operation( "restart-keepalived", None, ["/etc/untangle/post-network-hook.d/200-vrrp"],              30, "restart-networking" )
+register_operation( "restart-iptables",   None, ["/etc/untangle/post-network-hook.d/960-iptables"],          50, "restart-networking" )
 
 
 
