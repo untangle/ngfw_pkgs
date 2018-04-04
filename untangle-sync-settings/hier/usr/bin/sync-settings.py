@@ -344,8 +344,12 @@ def run_commands(ops, key):
     ret = 0
     for op in ops:
         o = registrar.operations.get(op)
-        command = o.get(key)
-        if command != None:
+        commands = o.get(key)
+        if commands == None:
+            continue
+        for command in commands:
+            if command == None:
+                continue
             print("[" + op + "]: " + command)
             result = run_cmd(command)
             print("[" + op + "]: " + command + " done.")
@@ -546,7 +550,7 @@ ret = 0
 
 # Run all pre commands
 try:
-    ret += run_commands(operations, 'pre_command')
+    ret += run_commands(operations, 'pre_commands')
 except Exception as e:
     traceback.print_exc()
 
@@ -559,7 +563,7 @@ except Exception as e:
 
 # Run all post commands
 try:
-    ret += run_commands(operations, 'post_command')
+    ret += run_commands(operations, 'post_commands')
 except Exception as e:
     traceback.print_exc()
 
