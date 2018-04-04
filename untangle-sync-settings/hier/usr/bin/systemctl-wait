@@ -1,0 +1,10 @@
+#!/bin/sh
+for i in `seq 20` ; do
+    if systemctl status | grep -q 'Jobs: 0 queued' ; then
+        exit 0
+    else
+	    sleep .5
+    fi
+done
+
+exit 1
