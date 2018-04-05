@@ -6,7 +6,7 @@ systemctl disable softflowd
 
 # Only for first time installation.
 if [ -z "$2" ] ; then
-    service softflowd stop
+    systemctl stop softflowd
 fi
 
 exit 0
