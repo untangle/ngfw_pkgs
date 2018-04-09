@@ -11,7 +11,7 @@ function commentOutOption
 }
 
 # mount with relatime to minimize writes
-mount -o remount,relatime,nodiratime /
+mount -o remount,rw,relatime,nodiratime /
 
 # make a new tmpdir
 RAMDISK_SIZE="32"
