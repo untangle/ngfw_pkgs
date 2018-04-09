@@ -214,33 +214,13 @@ class DynamicRoutingManager:
 
         # Daemon file is supplied by package, so "modify" by reading live instead of overwriting.
         daemons_contents = []
-        # FIXME template no longer exists in jessie
-        # file = open(self.daemons_conf_filename, "r")
-        # for line in file:
-        #     line = line.strip()
-        #     if line == "":
-        #         continue
-        #     elif line.startswith('#'):
-        #         if self.auto_generated_comment in line:
-        #             continue
-        #         if self.do_not_edit_comment in line:
-        #             continue
-        #         daemons_contents.append(line)
-        #     elif "=" in line:
-        #         [daemon,currently_enabled] = line.split("=", 2)
-        #         if daemon in enables:
-        #             daemons_contents.append("{0}={1}".format(daemon, 'yes' if enables[daemon] is True else 'no'))
-        #         else:
-        #             daemons_contents.append(line)
-        #     else:
-        #         daemons_contents.append(line)
-        # file.close()
+        for daemon in enables:
+            daemons_contents.append("{0}={1}".format(daemon, 'yes' if enables[daemon] is True else 'no'))
 
         file = open( filename, "w+" )
         file.write("## {0}{1}".format(self.auto_generated_comment, "\n"));
         file.write("## {0}{1}".format(self.do_not_edit_comment, "\n"));
 
-        # FIXME
         for line in daemons_contents:
             file.write(line + "\n")
 
