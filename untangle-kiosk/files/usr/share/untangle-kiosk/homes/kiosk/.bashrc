@@ -55,6 +55,12 @@ launch_x() {
 }
 
 ## Main
+
+# wait for the uvm to start before we continue
+while ! grep -q running /var/run/uvm.status; do
+	sleep 10
+done
+
 if [ $(tty) = "/dev/tty1" ] ; then
     if grep -q text-administration /proc/cmdline ; then
         sudo /usr/share/untangle/bin/ut-textui.py
