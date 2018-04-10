@@ -193,6 +193,19 @@ class DynamicRoutingManager:
 
         return interfaces
 
+    def get_enabled_daemons(self, settings):
+        enables = {
+            'zebra': False,
+            'bgpd': False,
+            'ospfd': False
+        }
+        enables['zebra'] = False if settings.get('dynamicRoutingSettings') == None or settings.get('dynamicRoutingSettings') is False else settings.get('dynamicRoutingSettings').get('enabled')
+        if enables['zebra']:
+            enables['bgpd']= settings['dynamicRoutingSettings']['bgpEnabled']
+            enables['ospfd'] = settings['dynamicRoutingSettings']['ospfEnabled']
+
+        return enables
+
     def write_daemons_conf( self, settings, prefix="", verbosity=0 ):
         """
         Create Quagga daemon configuration file.
@@ -202,18 +215,9 @@ class DynamicRoutingManager:
         if not os.path.exists( file_dir ):
             os.makedirs( file_dir )
 
-        enables = {
-            'zebra': False,
-            'bgpd': False,
-            'ospfd': False
-        }
-        enables['zebra'] = False if settings.get('dynamicRoutingSettings') == None else settings.get('dynamicRoutingSettings').get('enabled')
-        if enables['zebra']:
-            enables['bgpd']= settings['dynamicRoutingSettings']['bgpEnabled']
-            enables['ospfd'] = settings['dynamicRoutingSettings']['ospfEnabled']
-
         # Daemon file is supplied by package, so "modify" by reading live instead of overwriting.
         daemons_contents = []
+        enables = self.get_enabled_daemons( settings )
         for daemon in enables:
             daemons_contents.append("{0}={1}".format(daemon, 'yes' if enables[daemon] is True else 'no'))
 
@@ -285,13 +289,13 @@ line vty
             os.makedirs( file_dir )
 
         bgp_networks = []
-        if settings['dynamicRoutingSettings']['bgpNetworks'] and settings['dynamicRoutingSettings']['bgpNetworks']["list"]:
+        if settings['dynamicRoutingSettings'].get('bgpNetworks') is not None and settings['dynamicRoutingSettings']['bgpNetworks']["list"]:
             for network in settings['dynamicRoutingSettings']['bgpNetworks']["list"]:
                 if network["enabled"] is True:
                     bgp_networks.append("network {0}/{1}".format(network["network"], network["prefix"]) )
 
         bgp_neighbors = []
-        if settings['dynamicRoutingSettings']['bgpNeighbors'] and settings['dynamicRoutingSettings']['bgpNeighbors']["list"]:
+        if settings['dynamicRoutingSettings'].get('bgpNeighbors') is not None and settings['dynamicRoutingSettings']['bgpNeighbors']["list"]:
             for neighbor in settings['dynamicRoutingSettings']['bgpNeighbors']["list"]:
                 if neighbor["enabled"] is True:
                     bgp_neighbors.append("""\
@@ -470,6 +474,8 @@ route-map set-nexthop permit 10
         if not os.path.exists( file_dir ):
             os.makedirs( file_dir )
 
+        daemon_enableds = self.get_enabled_daemons(settings);
+
         file = open( filename, "w+" )
         file.write("#!/bin/dash");
         file.write("\n\n");
@@ -480,32 +486,36 @@ route-map set-nexthop permit 10
 
 """.format(self.auto_generated_comment, self.do_not_edit_comment))
 
-        # !!! look for enabled with dictionary check
-        if settings.get('dynamicRoutingSettings') == None or not settings.get('dynamicRoutingSettings').get('enabled'):
-            file.write(r"""
-ZEBRA_PID="`pidof zebra`"
+        # if settings.get('dynamicRoutingSettings') == None or not settings.get('dynamicRoutingSettings').get('enabled'):
+        if daemon_enableds['zebra'] is False:
+            for daemon in daemon_enableds:
+                file.write(r"""
+{0}_PID="`pidof {1}`"
 
 # Stop quagga if running
-if [ ! -z "$ZEBRA_PID" ] ; then
-    # FIXME stretch uses separate services for zebra/ospfd/ospf6d/bgpd
-    systemctl --no-block stop quagga
+if [ ! -z "${0}_PID" ] ; then
+    systemctl --no-block stop {1}
 fi
-""")
+""".format(daemon.upper(), daemon))
         else:
-            file.write(r"""
-ZEBRA_PID="`pidof zebra`"
+            for daemon in reversed(sorted(daemon_enableds)):
+                if daemon_enableds[daemon] is False:
+                    file.write(r"""
+systemctl --no-block stop {0}
+""".format(daemon))
+                else:
+                    file.write(r"""
+{0}_PID="`pidof {1}`"
 
 # Restart quagga if it isnt found
 # Or if zebra.conf orhas been written since quagga was started
-if [ -z "ZEBRA_PID" ] ; then
-    # FIXME stretch uses separate services for zebra/ospfd/ospf6d/bgpd
-    systemctl --no-block restart quagga
+if [ -z "${0}_PID" ] ; then
+    systemctl --no-block restart {1}
 # use not older than (instead of newer than) because it compares seconds and we want an equal value to still do a restart
-elif [ ! {0} -ot /proc/$ZEBRA_PID ] ; then
-    # FIXME stretch uses separate services for zebra/ospfd/ospf6d/bgpd
-    systemctl --no-block restart quagga
+elif [ ! {2} -ot /proc/${0}_PID ] ; then
+    systemctl --no-block restart {1}
 fi
-""".format(self.daemons_conf_filename))
+""".format(daemon.upper(), daemon, self.daemons_conf_filename))
 
         file.write("\n");
         file.flush()
