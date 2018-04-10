@@ -58,7 +58,7 @@ launch_x() {
 
 # wait for the uvm to start before we continue
 while ! grep -q running /var/run/uvm.status; do
-	sleep 10
+	sleep 1
 done
 
 if [ $(tty) = "/dev/tty1" ] ; then
