@@ -1,5 +1,6 @@
 [Unit]
 Description=Untangle Firmware Common
+Before=networking.service
 
 [Service]
 Type=oneshot
