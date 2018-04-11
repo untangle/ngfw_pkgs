@@ -17,4 +17,7 @@ rm -f /etc/cron.hourly/sqlite
 # delete sqlite3 DB because it doesn't support DROP COLUMN
 rm -f /var/lib/sqlite/reports.db
 
+# we don't need smart disk monitoring on devices without a disk
+systemctl disable smartd.service
+
 exit 0
