@@ -41,7 +41,6 @@ rm -f /etc/clamav/clamav-unofficial-sigs.conf
 rm -f /etc/logrotate.d/clamav-unofficial-sigs-logrotate
 rm -f /etc/untangle/startup.d/25clamav
 
-
 # Remove old sigs and start fresh
 if echo $oldVersion | grep -q "13\.2" ; then
     rm -f /var/lib/clamav/*
