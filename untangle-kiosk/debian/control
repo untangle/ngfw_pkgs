@@ -10,7 +10,7 @@ Package: untangle-kiosk
 Architecture: all
 Depends: acpi-support-base,
          adduser,
-         chromium | oracle-java7-jdk | oracle-java7-jre,
+         chromium | oracle-java8-jdk,
 	 fbpanel,
          feh,
          gvidm,
