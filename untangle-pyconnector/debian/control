@@ -3,12 +3,12 @@ Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
 Uploaders: Untangle Buildbot <buildbot@untangle.com>
-Build-Depends: debhelper, dh-systemd
+Build-Depends: systemd, debhelper, dh-systemd
 Standards-Version: 3.8.0
 
 Package: untangle-pyconnector
 Architecture: all
-Depends: python3, systemd-sysv
+Depends: systemd, python3, systemd-sysv
 Conflicts: sysvinit-core
 Breaks: untangle-vm (<< 14.0.0.20180307T1008050800.9066580463-1stretch)
 Replaces: untangle-vm (<< 14.0.0.20180307T1008050800.9066580463-1stretch)

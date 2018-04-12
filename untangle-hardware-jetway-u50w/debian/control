@@ -3,11 +3,11 @@ Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
 Uploaders: Untangle Buildbot <buildbot@untangle.com>
-Build-Depends: debhelper (>> 3.0.0)
+Build-Depends: systemd, debhelper (>> 3.0.0)
 Standards-Version: 3.8.0
 
 Package: untangle-hardware-jetway-u50w
-Depends: untangle-hardware-config
+Depends: systemd, untangle-hardware-config
 Architecture: all
 Description: The Untangle hardware config
  Provides the mechanism for other packages to register startup

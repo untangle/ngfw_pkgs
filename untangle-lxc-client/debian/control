@@ -3,12 +3,12 @@ Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
 Uploaders: Untangle Buildbot <buildbot@untangle.com>
-Build-Depends: debhelper, dh-systemd
+Build-Depends: systemd, debhelper, dh-systemd
 Standards-Version: 3.8.0
 
 Package: untangle-lxc-client
 Architecture: any
-Depends: dpkg-dev, lxc, cgroupfs-mount, untangle-sync-settings
+Depends: systemd, dpkg-dev, lxc, cgroupfs-mount, untangle-sync-settings
 Description: The Untangle LXC client
  Provides the basic setup for putting an LXC container "behind" a
  local Untangle VM install

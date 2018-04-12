@@ -3,12 +3,12 @@ Section: admin
 Priority: optional
 Maintainer: Chris Blaise <cblaise@untangle.com>
 Uploaders: Untangle Buildbot <buildbot@untangle.com>
-Build-Depends: debhelper (>> 3.0.0)
+Build-Depends: systemd, debhelper (>> 3.0.0)
 Standards-Version: 3.8.0
 
 Package: untangle-snort-config
 Architecture: all
-Depends: snort (>= 2.9.7.0), libdaq0
+Depends: systemd, snort (>= 2.9.7.0), libdaq0
 Conflicts: untangle-snort-rules
 Replaces: untangle-snort-rules
 Provides: untangle-snort-rules

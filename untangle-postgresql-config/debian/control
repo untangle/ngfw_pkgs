@@ -3,12 +3,12 @@ Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <seb@untangle.com>
 Uploaders: Untangle Buildbot <buildbot@untangle.com>
-Build-Depends: debhelper (>> 3.0.0)
+Build-Depends: systemd, debhelper (>> 3.0.0)
 Standards-Version: 3.8.0
 
 Package: untangle-postgresql-config
 Architecture: i386 amd64
-Depends: procps (>= 3.2.7-2~bpo.1), untangle-hardware-config, postgresql-client-9.6, postgresql-9.6
+Depends: systemd, procps (>= 3.2.7-2~bpo.1), untangle-hardware-config, postgresql-client-9.6, postgresql-9.6
 Description: Untangle Postgres wrapper package
  The Untangle Postgres config for Postgres 8.3
 
