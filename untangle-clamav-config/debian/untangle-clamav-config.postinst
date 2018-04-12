@@ -1,5 +1,12 @@
 #! /bin/bash
 
+oldVersion=""
+if [ "$1" = "configure" ] ; then
+  # oldVersion will be non-empty if untangle-linux-config has been
+  # configured before
+  oldVersion="$2"
+fi
+
 CLAMAV_CONF_FILE=/etc/clamav/clamd.conf
 
 setOption() {
@@ -25,5 +32,19 @@ systemctl disable clamav-freshclam
 
 # fix clamav.conf from broken security update (Bug #13073)
 sed -e '/AllowSupplementaryGroups/d' -i $CLAMAV_CONF_FILE
+
+# 14.0
+# Remove old cron job
+rm -f /etc/cron.d/clamav-unofficial-sigs-cron
+rm -f /var/log/clamav-unofficial-sigs.log
+rm -f /etc/clamav/clamav-unofficial-sigs.conf
+rm -f /etc/logrotate.d/clamav-unofficial-sigs-logrotate
+rm -f /etc/untangle/startup.d/25clamav
+
+
+# Remove old sigs and start fresh
+if echo $oldVersion | grep -q "13\.2" ; then
+    rm -f /var/lib/clamav/*
+fi
 
 exit 0
