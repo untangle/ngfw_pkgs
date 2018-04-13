@@ -20,4 +20,8 @@ rm -f /var/lib/sqlite/reports.db
 # we don't need smart disk monitoring on devices without a disk
 systemctl disable smartd.service
 
+# remove immutability attribute from /var/log/btmp
+# we are just going to link it to /dev/null
+chattr -i /var/log/btmp
+
 exit 0

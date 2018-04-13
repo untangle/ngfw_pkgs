@@ -41,9 +41,6 @@ if [ ! -L /var/tmp ] ; then
     ln -s /tmp /var/tmp
 fi
 
-# prevent writes to /var/log/btmp (lastlog and wtmp still written)
-chattr +i /var/log/btmp
-
 # Disable apache logging - it logs even with syslog disabled
 commentOutOption /etc/apache2/sites-available/uvm.conf CustomLog
 commentOutOption /etc/apache2/sites-available/uvm.conf ErrorLog
