@@ -1,5 +1,5 @@
 #!/bin/sh
-for i in `seq 60` ; do
+for i in `seq 240` ; do
     if systemctl status | /bin/egrep -q 'Jobs: [1-9][0-9]* queued' ; then
 	    sleep .5
     else
