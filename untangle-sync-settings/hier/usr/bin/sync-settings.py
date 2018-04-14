@@ -29,6 +29,7 @@ import subprocess
 import tempfile
 import time
 import traceback
+import collections
 
 from   sync import *
 
@@ -450,7 +451,7 @@ def read_settings():
         settingsFile = open(parser.filename, 'r')
         settingsData = settingsFile.read()
         settingsFile.close()
-        settings = json.loads(settingsData)
+        settings = json.loads(settingsData, object_pairs_hook=collections.OrderedDict)
     except IOError as e:
         print("Unable to read settings file: ",e)
         cleanup(1)
