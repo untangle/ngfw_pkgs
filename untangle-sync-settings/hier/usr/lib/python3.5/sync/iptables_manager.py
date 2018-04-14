@@ -81,12 +81,12 @@ fi
 
 debug()
 {
-   /bin/echo -e "[IPTABLE DEBUG: `date`] ${*}"
+   /bin/echo -e "[`date`] 960-iptables ${*}"
 }
 
 iptables_debug()
 {
-   /bin/echo -e "[IPTABLE DEBUG: `date`] /sbin/iptables -w $@"
+   /bin/echo -e "[`date`] /sbin/iptables -w $@"
    /sbin/iptables -w "$@"
 }
 
@@ -102,7 +102,7 @@ iptables_debug_onerror()
 
 ip6tables_debug()
 {
-   /bin/echo -e "[IPTABLE DEBUG: `date`] /sbin/ip6tables $@"
+   /bin/echo -e "[`date`] /sbin/ip6tables $@"
    /sbin/ip6tables -w "$@"
 }
 
@@ -118,7 +118,7 @@ ip6tables_debug_onerror()
 
 ebtables_debug()
 {
-    /bin/echo -e "[EBTABLE DEBUG: `date`] /sbin/ebtables $@"
+    /bin/echo -e "[`date`] /sbin/ebtables $@"
     /sbin/ebtables "$@"
 }
 

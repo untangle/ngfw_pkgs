@@ -2,7 +2,7 @@
 
 debug()
 {
-    /bin/echo -e "[NETWORK DEBUG: `date`] ${*}"
+    /bin/echo -e "[`date`] if-up.d/untangle: ${*}"
 }
 
 debug_ip()
