@@ -191,7 +191,7 @@ class DynamicRoutingManager:
 
         # Daemon file is supplied by package, so "modify" by reading live instead of overwriting.
         daemons_contents = []
-        for daemon in enables:
+        for daemon in ['zebra','bgpd','ospfd']:
             daemons_contents.append("{0}={1}".format(daemon, 'yes' if enables[daemon] is True else 'no'))
 
         file = open( filename, "w+" )
