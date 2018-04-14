@@ -30,6 +30,7 @@ import tempfile
 import time
 import traceback
 import collections
+import time
 
 from   sync import *
 
@@ -352,8 +353,10 @@ def run_commands(ops, key):
             if command == None:
                 continue
             print("[" + op + "]: " + command)
+            t1 = time.time()
             result = run_cmd(command)
-            print("[" + op + "]: " + command + " done.")
+            t2 = time.time()
+            print("[" + op + "]: " + command + " done. [" + ("%.2f"%(t2-t1)) + "s]")
             if result != 0:
                 print("Error[" + str(result) + "]: " + command)
             ret += result
