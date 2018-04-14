@@ -1,7 +1,27 @@
 #!/bin/sh
-for i in `seq 600` ; do
-    if systemctl status | /bin/egrep -q 'Jobs: [1-9][0-9]* queued' ; then
-	    sleep 1
+
+# This script is used after restarting networking to pause and wait for important services
+# If will wait up until MAX_WAIT seconds for DAEMONS to complete
+# It will returns 0 on success, or 1 if the timeout was exceeded
+
+# Often networking is restarted from a systemd service, so more calls to systemctl deadlock
+# Because of that many services with the --no-block option: systemctl --no-block restart service-name
+# So when the process completes there are still a few pending restarts in systemd
+# This script will pause until those specific restarts are complete
+# We can't wait on all systemd jobs to be complete because this process itself
+# can be launched from within a systemd job
+
+# Wait on these daemons
+DAEMONS="(dnsmasq|miniupnpd|keepalived|ddclient|zebra|ospfd|bgpd|softflow)"
+
+# Max wait this many seconds.
+# systemd timeout is 90 seconds by default
+# So this should be shorter than that
+MAX_WAIT="60"
+
+for i in `seq $(($MAX_WAIT*2))` ; do
+    if systemctl list-jobs | /bin/egrep -q $DAEMONS ; then
+	    sleep .5
     else
         exit 0
     fi
