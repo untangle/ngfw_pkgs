@@ -19,7 +19,11 @@ DAEMONS="(dnsmasq|miniupnpd|keepalived|ddclient|zebra|ospfd|bgpd|softflow)"
 # So this should be shorter than that
 MAX_WAIT="60"
 
-for i in `seq $(($MAX_WAIT*2))` ; do
+if [ ! -x /bin/systemctl ] ; then
+    exit 0
+fi
+
+for i in `/usr/bin/seq $(($MAX_WAIT*2))` ; do
     if systemctl list-jobs | /bin/egrep -q $DAEMONS ; then
 	    sleep .5
     else
