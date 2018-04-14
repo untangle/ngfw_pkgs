@@ -218,7 +218,7 @@ class DynamicRoutingManager:
         # Daemon file is supplied by package, so "modify" by reading live instead of overwriting.
         daemons_contents = []
         enables = self.get_enabled_daemons( settings )
-        for daemon in enables:
+        for daemon in sorted(daemon_enableds):
             daemons_contents.append("{0}={1}".format(daemon, 'yes' if enables[daemon] is True else 'no'))
 
         file = open( filename, "w+" )
@@ -488,7 +488,7 @@ route-map set-nexthop permit 10
 
         # if settings.get('dynamicRoutingSettings') == None or not settings.get('dynamicRoutingSettings').get('enabled'):
         if daemon_enableds['zebra'] is False:
-            for daemon in daemon_enableds:
+            for daemon in sorted(daemon_enableds):
                 file.write(r"""
 {0}_PID="`pidof {1}`"
 
