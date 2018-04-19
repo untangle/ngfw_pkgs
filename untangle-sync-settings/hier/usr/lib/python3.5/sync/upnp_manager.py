@@ -15,28 +15,16 @@ class UpnpManager:
     upnp_daemon_conf_filename = "/etc/miniupnpd/miniupnpd.conf"
     restart_hook_filename = "/etc/untangle/post-network-hook.d/990-restart-upnp"
     iptables_filename = "/etc/untangle/iptables-rules.d/741-upnp"
-    upnp_daemon_init_filename = "/etc/init.d/miniupnpd"
 
     iptables_chain = "upnp-rules"
-
-    init_start_daemon_regex = re.compile(r'^if \[ "\${START_DAEMON}" != "1" \]')
-    init_default_check_interface_regex = re.compile(r'^if \[ -z "\${MiniUPnPd_EXTERNAL_INTERFACE}" \]')
-    init_default_check_listening_ip_regex = re.compile(r'^if \[ -z "\${MiniUPnPd_LISTENING_IP}" \]')
-    init_init_iptables_regex = re.compile(r'^(\s+iptables_init_nat_tables)')
-    init_init_ip6tables_regex = re.compile(r'^(\s+if \[ "\${MiniUPnPd_ip6tables_enable}" = "yes" \] ; then ip6tables_init_fw_tables ; fi)')
-    init_stop_iptables_regex = re.compile(r'^(\s+iptables_stop_nat_tables)')
-    init_stop_ip6tables_regex = re.compile(r'^(\s+if \[ "\${MiniUPnPd_ip6tables_enable}" = "yes" \] ; then ip6tables_stop_fw_tables ; fi)')
-    init_daemon_start_regex = re.compile(r'^(\s+start-stop-daemon -q --start --exec "/usr/sbin/miniupnpd" --)')
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
         self.write_upnp_daemon_conf( settings, prefix, verbosity )
         self.write_restart_upnp_daemon_hook( settings, prefix, verbosity )
         self.write_iptables_hook( settings, prefix, verbosity )
-        self.write_upnp_daemon_init_hook( settings, prefix, verbosity )
 
     def initialize( self ):
         registrar.register_file( self.upnp_daemon_conf_filename, "restart-miniupnpd", self )
-        registrar.register_file( self.upnp_daemon_init_filename, "restart-miniupnpd", self )
         registrar.register_file( self.restart_hook_filename, "restart-miniupnpd", self )
         registrar.register_file( self.iptables_filename, "restart-iptables", self )
         
@@ -236,57 +224,5 @@ insert_upnp_iptables_rules
     
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         if verbosity > 0: print("UpnpManager: Wrote %s" % filename)
-        return
-
-    def write_upnp_daemon_init_hook( self, settings, prefix="", verbosity=0 ):
-        """
-        Modify miniupnpd's daemon to not manage iptables and not to use /etc/default/minipnpd
-        FIXME: this will not work in a systemd world
-        """
-        orig_filename = self.upnp_daemon_init_filename
-        if os.path.isfile(orig_filename) is False:
-            return
-
-        new_filename = prefix + self.upnp_daemon_init_filename
-        file_dir = os.path.dirname( new_filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
-
-        file = open( new_filename, "w+" )
-        read_file = open( orig_filename, "r" )
-
-        for line in read_file:
-            matches = re.search(self.init_start_daemon_regex, line)
-            if matches:
-                line =  "if [ \"\" = \"x\" ] \n"
-            matches = re.search(self.init_default_check_interface_regex, line)
-            if matches:
-                line =  "if [ \"\" = \"x\" ] \n"
-            matches = re.search(self.init_default_check_listening_ip_regex, line)
-            if matches:
-                line =  "if [ \"\" = \"x\" ] \n"
-            matches = re.search(self.init_init_iptables_regex, line)
-            if matches:
-                line =  "#" + matches.group(1) + "\n"
-            matches = re.search(self.init_init_ip6tables_regex, line)
-            if matches:
-                line =  "#" + matches.group(1) + "\n"
-            matches = re.search(self.init_stop_iptables_regex, line)
-            if matches:
-                line =  "#" + matches.group(1) + "\n"
-            matches = re.search(self.init_stop_ip6tables_regex, line)
-            if matches:
-                line =  "#" + matches.group(1) + "\n"
-            matches = re.search(self.init_daemon_start_regex, line)
-            if matches:
-                line =  matches.group(1) + " -N -f /etc/miniupnpd/miniupnpd.conf\n"
-            file.write(line)
-
-        read_file.close()
-        file.flush()
-        file.close()
-
-        os.chmod(new_filename, os.stat(new_filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("UpnpManager: Wrote %s" % new_filename)
         return
 
