@@ -37,49 +37,62 @@ class DdclientManager:
         file = open( filename, "w+" )
         file.write("## Auto Generated\n");
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
-        file.write("\n\n");
 
         # https://sourceforge.net/p/ddclient/wiki/protocols/
         try:
             config = {
-                "zoneedit" : [ "zoneedit1", "dynamic.zoneedit.com", True ],
-                "easydns" : [ "easydns", "members.easydns.com", True ],
-                "dslreports" : [ "dslreports1", "www.dslreports.com", True ],
-                "dnspark" : [ "dnspark", "www.dnspark.com", True ],
-                "namecheap" : [ "namecheap", "dynamicdns.park-your-domain.com", True ],
-                "dyndns" : [ "dyndns2", "members.dyndns.org", True ],
-                "no-ip" : [ "dyndns2", "dynupdate.no-ip.com", True ],
-                "dnsomatic" : [ "dyndns2", "updates.dnsomatic.com", True ],
-                "google" : [ "dyndns2", "domains.google.com", True ],
-                "freedns" : [ "dyndns2", "freedns.afraid.org", True ],
-                "cloudflare" : [ "cloudflare", "www.cloudflare.com", True ]
+                "zoneedit" : { "protocol": "zoneedit1", "server": "dynamic.zoneedit.com", "ssl": True },
+                "easydns" : { "protocol": "easydns", "server": "members.easydns.com", "ssl": True },
+                "dslreports" : { "protocol": "dslreports1", "server": "www.dslreports.com", "ssl": True },
+                "dnspark" : { "protocol": "dnspark", "server": "www.dnspark.com", "ssl": True },
+                "namecheap" : { "protocol": "namecheap", "server": "dynamicdns.park-your-domain.com", "ssl": True },
+                "dyndns" : { "protocol": "dyndns2", "server": "members.dyndns.org", "ssl": True },
+                "no-ip" : { "protocol": "dyndns2", "server": "dynupdate.no-ip.com", "ssl": True },
+                "dnsomatic" : { "protocol": "dyndns2", "server": "updates.dnsomatic.com", "ssl": True },
+                "google" : { "protocol": "dyndns2", "server": "domains.google.com", "ssl": True },
+                "freedns" : { "protocol": "dyndns2", "server": "freedns.afraid.org", "ssl": True },
+                "cloudflare" : { "protocol": "cloudflare", "server": "www.cloudflare.com", "ssl": True },
+                "googledomains" : { "protocol": "googledomains", "ssl": True },
+                "duckdns" : { "protocol": "duckdns", "server": "www.duckdns.org", "ssl": True }
                 }
 
             if not settings.get('dynamicDnsServiceEnabled'):
                 return
 
-            serviceName = settings.get('dynamicDnsServiceName')
-            if serviceName not in config:
-                print("ERROR: Missing configuration information for \"%s\" DNS service." % serviceName)
+            service_name = settings.get('dynamicDnsServiceName')
+            service = config.get(service_name)
+            if service == None:
+                print("ERROR: Missing configuration information for \"%s\" DNS service." % service_name)
                 return
 
-            protocol = config[serviceName][0]
-            server = config[serviceName][1]
-            use_ssl = config[serviceName][2]
+            ssl = service.get('ssl')
+            protocol = service.get('protocol')
+            server = service.get('server')
 
+            login = str(settings.get('dynamicDnsServiceUsername'))
+            password = str(settings.get('dynamicDnsServicePassword'))
+            hostname = str(settings.get('dynamicDnsServiceHostnames'))
+            
+            if protocol == None or login == None or password == None or hostname == None:
+                print("ERROR: Missing information for \"%s\" DNS service." % service_name)
+                return
 
             file.write("pid=/var/run/ddclient.pid" + "\n")
 
-            file.write("use=cmd" + "\n")
-            file.write("cmd='/usr/bin/dig @204.69.234.1 +short whoami.ultradns.net'" + "\n")
+            #file.write("use=cmd" + "\n")
+            #file.write("cmd='/usr/bin/dig @204.69.234.1 +short whoami.ultradns.net'" + "\n")
+            #file.write("use=web" + " " + "web=checkip.dyndns.com/, web-skip='IP Address'" + "\n")
+            file.write("use=web" + " " + "web=myip.dnsomatic.com/" + "\n")
 
-            if use_ssl:
-                file.write("ssl=yes" + "\n")
             file.write("protocol=%s" % protocol + "\n")
-            file.write("login=%s" % str(settings.get('dynamicDnsServiceUsername')) + "\n")
-            file.write("password=%s" % str(settings.get('dynamicDnsServicePassword')) + "\n")
-            file.write("server=%s %s" % (server, str(settings.get('dynamicDnsServiceHostnames'))) + "\n")
-
+            file.write("login=%s" % login + "\n")
+            file.write("password=%s" % password + "\n")
+            if ssl != None:
+                file.write("ssl=yes" + "\n")
+            if server != None:
+                file.write("server=%s" % (server) + "\n")
+            file.write("%s" % hostname + "\n")
+            
         except Exception as e:
             traceback.print_exc()
 
