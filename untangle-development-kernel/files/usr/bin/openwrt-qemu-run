@@ -14,8 +14,7 @@ fi
 #############
 ## Constants
 #############
-# FIXME: use a dynamic port
-#QEMU_SOCKET="localhost:12345"
+ARCH="x86_64"
 
 #############
 ## Functions
@@ -31,12 +30,11 @@ generateMAC() {
 #############
 ## CLI args
 #############
-while getopts ua:f:k:i:m:b:c:t: option ; do
+while getopts uf:k:i:m:b:c:t: option ; do
   case "$option" in
 #    p) QEMU_SOCKET="localhost:$OPTARG" ;;
     k) KERNEL_OPTIONS="-kernel $OPTARG" ;;
     i) INITRD_OPTION="-initrd $OPTARG" ;;
-    a) ARCH="$OPTARG" ;;
     f) IMAGE="$OPTARG" ;;
     m) MEMORY="$OPTARG" ;;
     b) BRIDGE="$OPTARG" ;;
@@ -61,12 +59,10 @@ done
 { [[ -z "$BRIDGE" ]] || [[ -z "$BRIDGE_INT" ]] ; } && usage
 
 # defaults
-[[ -z "$ARCH" ]] && ARCH="arm"
 [[ -z "$MEMORY" ]] && MEMORY="2G"
-[[ -z "$KERNEL_OPTIONS" ]] && KERNEL_OPTIONS="-kernel openwrt-realview-vmlinux.elf"
-[[ -z "$IMAGE" ]] && IMAGE="openwrt-realview-sdcard.img"
+[[ -z "$IMAGE" ]] && IMAGE="openwrt-x86-64-combined-ext4.img"
 [[ -z "$MODE" ]] && MODE="-nographic -serial stdio -monitor none"
-[[ -z "$MACHINE" ]] && MACHINE="realview-pbx-a9"
+#[[ -z "$MACHINE" ]] && MACHINE="pc-q35-2.0"
 
 # external network
 NETWORK_OPTIONS="-netdev bridge,id=external0,br=$BRIDGE \
@@ -83,7 +79,7 @@ intMac=$(generateMAC "${IMAGE}${BRIDGE_INT}")
 
 # pass extra kernel parameters
 if [[ -n "$KERNEL_OPTIONS" ]] ; then
-  APPEND_OPTIONS=(-append "console=ttyAMA0 verbose debug root=/dev/mmcblk0p1")
+  APPEND_OPTIONS=(-append "console=ttyAMA0")
 fi
 
 NETWORK_OPTIONS="$NETWORK_OPTIONS \
@@ -103,24 +99,33 @@ modprobe virtio-pci
 ########################
 # start the VM
 
+if [[ $(uname -m) == "$ARCH" ]] ; then
+  ENABLE_KVM="-enable-kvm"
+fi
 
 echo qemu-system-$ARCH \
-    -M ${MACHINE} \
-    -m $MEMORY \
+    ${MACHINE[@]} \
+    ${ENABLE_KVM} \
     $MODE \
     $KERNEL_OPTIONS "${APPEND_OPTIONS[@]}" \
     $INITRD_OPTION \
-    -sd $IMAGE \
-    -net nic \
-    -net user
+    -drive file=${IMAGE},id=d0,if=none \
+    -device ide-hd,drive=d0,bus=ide.0 \
+    -drive file=data.qcow2,id=d1,if=none \
+    -device ide-hd,drive=d1,bus=ide.1 \
+    ${NETWORK_OPTIONS}
+
 
 qemu-system-$ARCH \
-    -M ${MACHINE} \
-    -m $MEMORY \
+    ${MACHINE[@]} \
+    ${ENABLE_KVM} \
     $MODE \
     $KERNEL_OPTIONS "${APPEND_OPTIONS[@]}" \
     $INITRD_OPTION \
-    -sd $IMAGE \
-    -net nic \
-    -net user
+    -drive file=${IMAGE},id=d0,if=none \
+    -device ide-hd,drive=d0,bus=ide.0 \
+    -drive file=data.qcow2,id=d1,if=none \
+    -device ide-hd,drive=d1,bus=ide.1 \
+    ${NETWORK_OPTIONS}
+
 
