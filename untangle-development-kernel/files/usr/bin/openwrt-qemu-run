@@ -32,7 +32,6 @@ generateMAC() {
 #############
 while getopts uf:k:i:m:b:c:t: option ; do
   case "$option" in
-#    p) QEMU_SOCKET="localhost:$OPTARG" ;;
     k) KERNEL_OPTIONS="-kernel $OPTARG" ;;
     i) INITRD_OPTION="-initrd $OPTARG" ;;
     f) IMAGE="$OPTARG" ;;
@@ -61,11 +60,9 @@ done
 # defaults
 [[ -z "$MEMORY" ]] && MEMORY="2G"
 [[ -z "$IMAGE" ]] && IMAGE="openwrt-x86-64-combined-ext4.img"
-[[ -z "$MODE" ]] && MODE="-nographic -serial stdio -monitor none"
-#[[ -z "$MACHINE" ]] && MACHINE="pc-q35-2.0"
+[[ -z "$MODE" ]] && MODE="-monitor stdio"
 
 NETWORK_OPTIONS=""
-
 
 # create the internal bridge if necessary
 if ! ip link ls ${BRIDGE_INT} > /dev/null 2>&1 ; then
@@ -109,7 +106,6 @@ if [[ $(uname -m) == "$ARCH" ]] ; then
 fi
 
 echo qemu-system-$ARCH \
-    ${MACHINE[@]} \
     ${ENABLE_KVM} \
     $MODE \
     $KERNEL_OPTIONS "${APPEND_OPTIONS[@]}" \
@@ -119,18 +115,17 @@ echo qemu-system-$ARCH \
     -drive file=data.qcow2,id=d1,if=none \
     -device ide-hd,drive=d1,bus=ide.1 \
     ${NETWORK_OPTIONS}
-
 
 qemu-system-$ARCH \
-    ${MACHINE[@]} \
     ${ENABLE_KVM} \
     $MODE \
     $KERNEL_OPTIONS "${APPEND_OPTIONS[@]}" \
     $INITRD_OPTION \
     -drive file=${IMAGE},id=d0,if=none \
     -device ide-hd,drive=d0,bus=ide.0 \
-    -drive file=data.qcow2,id=d1,if=none \
-    -device ide-hd,drive=d1,bus=ide.1 \
     ${NETWORK_OPTIONS}
+
+#    -drive file=data.qcow2,id=d1,if=none \
+#    -device ide-hd,drive=d1,bus=ide.1 \
 
 
