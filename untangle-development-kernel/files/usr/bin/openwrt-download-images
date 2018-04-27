@@ -1,0 +1,4 @@
+#!/bin/sh
+
+wget https://archive.openwrt.org/snapshots/trunk/realview/generic/openwrt-realview-sdcard.img
+wget https://archive.openwrt.org/snapshots/trunk/realview/generic/openwrt-realview-vmlinux.elf
