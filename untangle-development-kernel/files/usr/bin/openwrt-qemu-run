@@ -64,9 +64,8 @@ done
 [[ -z "$MODE" ]] && MODE="-nographic -serial stdio -monitor none"
 #[[ -z "$MACHINE" ]] && MACHINE="pc-q35-2.0"
 
-# external network
-NETWORK_OPTIONS="-netdev bridge,id=external0,br=$BRIDGE \
-    -device e1000,netdev=external0,mac=$(generateMAC "$IMAGE")"
+NETWORK_OPTIONS=""
+
 
 # create the internal bridge if necessary
 if ! ip link ls ${BRIDGE_INT} > /dev/null 2>&1 ; then
@@ -82,9 +81,15 @@ if [[ -n "$KERNEL_OPTIONS" ]] ; then
   APPEND_OPTIONS=(-append "console=ttyAMA0")
 fi
 
+# internal network
 NETWORK_OPTIONS="$NETWORK_OPTIONS \
   -netdev bridge,id=internal0,br=$BRIDGE_INT \
   -device e1000,netdev=internal0,mac=$intMac"
+
+# external network
+NETWORK_OPTIONS="$NETWORK_OPTIONS \
+    -netdev bridge,id=external0,br=$BRIDGE \
+    -device e1000,netdev=external0,mac=$(generateMAC "$IMAGE")"
 
 # Socket is faster and simpler, but is bugged in the stretch version
 # of qemu. We can switch back to it when qemu >= 2.10
