@@ -1,0 +1,126 @@
+#! /bin/bash
+
+set -e
+
+usage() {
+  echo "$0 -f <image-file> [-k <kernel>] [-i <initrd>] [-b <external-bridge>] -c <internal-bridge> [-a arch] [-u] [-m <memory>] -t (g|graphic|t|terminal)]"
+  exit 1
+}
+
+if [ $(id -u) != 0 ] ; then
+  exec sudo -E $0 $*
+fi
+
+#############
+## Constants
+#############
+# FIXME: use a dynamic port
+#QEMU_SOCKET="localhost:12345"
+
+#############
+## Functions
+#############
+generateMAC() {
+  # sha1sum the first argument, take its 5 most significant bytes, and
+  # use those to generate a 02:... MAC address
+  local image=$1
+  local sha1=$(echo $image | sha1sum)
+  echo 02$sha1 | python -c 'import sys ; s=sys.stdin.read()[:12] ; print(":".join([s[2*i:2*i+2] for i in range(6)]))'
+}
+
+#############
+## CLI args
+#############
+while getopts ua:f:k:i:m:b:c:t: option ; do
+  case "$option" in
+#    p) QEMU_SOCKET="localhost:$OPTARG" ;;
+    k) KERNEL_OPTIONS="-kernel $OPTARG" ;;
+    i) INITRD_OPTION="-initrd $OPTARG" ;;
+    a) ARCH="$OPTARG" ;;
+    f) IMAGE="$OPTARG" ;;
+    m) MEMORY="$OPTARG" ;;
+    b) BRIDGE="$OPTARG" ;;
+    c) BRIDGE_INT="$OPTARG" ;;
+    t) case $OPTARG in
+	 g|graphic) MODE="-monitor stdio" ;;
+	 t|terminal) MODE="-nographic -serial stdio -monitor none" ;;
+	 *) usage ;;
+       esac ;;
+    h|\?) usage ;;
+  esac
+done
+
+#########
+## main
+#########
+
+##################
+# check CLI args
+
+# require additional parameters
+{ [[ -z "$BRIDGE" ]] || [[ -z "$BRIDGE_INT" ]] ; } && usage
+
+# defaults
+[[ -z "$ARCH" ]] && ARCH="arm"
+[[ -z "$MEMORY" ]] && MEMORY="2G"
+[[ -z "$KERNEL_OPTIONS" ]] && KERNEL_OPTIONS="-kernel openwrt-realview-vmlinux.elf"
+[[ -z "$IMAGE" ]] && IMAGE="openwrt-realview-sdcard.img"
+[[ -z "$MODE" ]] && MODE="-nographic -serial stdio -monitor none"
+[[ -z "$MACHINE" ]] && MACHINE="realview-pbx-a9"
+
+# external network
+NETWORK_OPTIONS="-netdev bridge,id=external0,br=$BRIDGE \
+    -device e1000,netdev=external0,mac=$(generateMAC "$IMAGE")"
+
+# create the internal bridge if necessary
+if ! ip link ls ${BRIDGE_INT} > /dev/null 2>&1 ; then
+  ip link add $BRIDGE_INT type bridge
+  ip link set dev $BRIDGE_INT up
+fi
+
+# generate an additional MAC
+intMac=$(generateMAC "${IMAGE}${BRIDGE_INT}")
+
+# pass extra kernel parameters
+if [[ -n "$KERNEL_OPTIONS" ]] ; then
+  APPEND_OPTIONS=(-append "console=ttyAMA0 verbose debug root=/dev/mmcblk0p1")
+fi
+
+NETWORK_OPTIONS="$NETWORK_OPTIONS \
+  -netdev bridge,id=internal0,br=$BRIDGE_INT \
+  -device e1000,netdev=internal0,mac=$intMac"
+
+# Socket is faster and simpler, but is bugged in the stretch version
+# of qemu. We can switch back to it when qemu >= 2.10
+#    -netdev socket,id=internal0,listen=$QEMU_SOCKET \
+#    -device virtio-net-pci,netdev=internal0"
+
+########################
+# load required modules
+modprobe virtio-blk
+modprobe virtio-pci
+
+########################
+# start the VM
+
+
+echo qemu-system-$ARCH \
+    -M ${MACHINE} \
+    -m $MEMORY \
+    $MODE \
+    $KERNEL_OPTIONS "${APPEND_OPTIONS[@]}" \
+    $INITRD_OPTION \
+    -sd $IMAGE \
+    -net nic \
+    -net user
+
+qemu-system-$ARCH \
+    -M ${MACHINE} \
+    -m $MEMORY \
+    $MODE \
+    $KERNEL_OPTIONS "${APPEND_OPTIONS[@]}" \
+    $INITRD_OPTION \
+    -sd $IMAGE \
+    -net nic \
+    -net user
+
