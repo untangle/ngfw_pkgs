@@ -112,8 +112,6 @@ echo qemu-system-$ARCH \
     $INITRD_OPTION \
     -drive file=${IMAGE},id=d0,if=none \
     -device ide-hd,drive=d0,bus=ide.0 \
-    -drive file=data.qcow2,id=d1,if=none \
-    -device ide-hd,drive=d1,bus=ide.1 \
     ${NETWORK_OPTIONS}
 
 qemu-system-$ARCH \
