@@ -313,6 +313,7 @@ def copy_files(tmpdir):
     if result != 0:
         print("Failed to copy results: " + str(result))
         return result
+    run_cmd("/bin/sync")
     return 0
 
 def delete_files(delete_list):
