@@ -126,11 +126,13 @@ def cleanup_settings( settings ):
     # Save them in another field in case anyone needs them
     disabled_interfaces = [ intf for intf in interfaces if intf.get('configType') == 'DISABLED' ]
     new_interfaces = [ intf for intf in interfaces if intf.get('configType') != 'DISABLED' ]
+    new_interfaces = sorted( new_interfaces, key=lambda x:x.get('interfaceId') )
     settings['interfaces']['list'] = new_interfaces
     settings['disabledInterfaces'] = { 'list': disabled_interfaces }
 
     disabled_virtual_interfaces = [ ]
     new_virtual_interfaces = [ intf for intf in virtualInterfaces ]
+    new_virtual_interfaces = sorted( new_virtual_interfaces, key=lambda x:x.get('interfaceId') )
     settings['virtualInterfaces']['list'] = new_virtual_interfaces
     settings['disabledVirtualInterfaces'] = { 'list': disabled_virtual_interfaces }
     
