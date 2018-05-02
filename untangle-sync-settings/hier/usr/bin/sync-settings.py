@@ -553,30 +553,34 @@ if len(operations) < 1:
     print("Done.")
     cleanup(0)
 
-ret = 0
+copy_ret = 0
+commands_ret = 0
 
 # Run all pre commands
 try:
-    ret += run_commands(operations, 'pre_commands')
+    commonds_ret += run_commands(operations, 'pre_commands')
 except Exception as e:
     traceback.print_exc()
 
 # Copy files to / filesystem
 try:
     print("Copying files...")
-    ret += copy_files(tmpdir)
+    copy_ret = copy_files(tmpdir)
 except Exception as e:
     traceback.print_exc()
 
 # Run all post commands
 try:
-    ret += run_commands(operations, 'post_commands')
+    commands_ret += run_commands(operations, 'post_commands')
 except Exception as e:
     traceback.print_exc()
 
-if ret != 0:
-    print("\nDone. (with errors)")
+if copy_ret != 0:
+    print("\nDone. (with critical errors)")
     cleanup(1)
+elif commands_ret != 0:
+    print("\nDone. (with non-critical errors)")
+    cleanup(0) # exit 0 for non-critical errors
 else:
     print("\nDone.")
     cleanup(0)
