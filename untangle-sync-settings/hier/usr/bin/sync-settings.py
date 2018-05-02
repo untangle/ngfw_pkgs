@@ -558,7 +558,7 @@ commands_ret = 0
 
 # Run all pre commands
 try:
-    commonds_ret += run_commands(operations, 'pre_commands')
+    commands_ret += run_commands(operations, 'pre_commands')
 except Exception as e:
     traceback.print_exc()
 
