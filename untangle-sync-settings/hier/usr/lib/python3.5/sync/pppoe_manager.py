@@ -19,7 +19,7 @@ class PPPoEManager:
     ppp_ip_up_filename = "/etc/ppp/ip-up.d/99-untangle"
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_pppoe_connection_files( settings, prefix, verbosity )
+        self.write_pppoe_connection_files( settings, delete_list, prefix, verbosity )
         self.write_secret_files( settings, prefix, verbosity )
         self.write_pre_network_hook( settings, prefix, verbosity )
         self.write_ppp_ipup_hook( settings, prefix, verbosity )
@@ -33,7 +33,7 @@ class PPPoEManager:
         registrar.register_file( self.pre_network_hook_filename, "restart-networking", self )
         registrar.register_file( self.ppp_ip_up_filename, "restart-networking", self )
         
-    def write_pppoe_connection_files( self, settings, prefix="", verbosity=0 ):
+    def write_pppoe_connection_files( self, settings, delete_list, prefix="", verbosity=0 ):
         for interface_settings in settings.get('interfaces').get('list'):
             if "PPPOE" == interface_settings.get('v4ConfigType'):
                 # open this pppoe config file for this connection
