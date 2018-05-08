@@ -5,11 +5,11 @@ set -xu
 VERSION_OLD=$1
 VERSION_NEW=$2
 
-PG_VAR_DIR_OLD="/var/lib/postgresql/${VERSION_OLD}"
+PG_VAR_DIR_OLD="/var/lib/postgresql/${VERSION_OLD}/main"
 PG_BIN_DIR_OLD="/usr/lib/postgresql/${VERSION_OLD}/bin"
 PG_CONF_OLD="/etc/postgresql/${VERSION_OLD}/main/postgresql.conf"
 
-PG_VAR_DIR_NEW="/var/lib/postgresql/${VERSION_NEW}"
+PG_VAR_DIR_NEW="/var/lib/postgresql/${VERSION_NEW}/main"
 PG_BIN_DIR_NEW="/usr/lib/postgresql/${VERSION_NEW}/bin"
 PG_CONF_NEW="/etc/postgresql/${VERSION_NEW}/main/postgresql.conf"
 
