@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set -eu
+set -xu
 
 VERSION_OLD=$1
 VERSION_NEW=$2
@@ -15,7 +15,10 @@ PG_CONF_NEW="/etc/postgresql/${VERSION_NEW}/main/postgresql.conf"
 
 if [ -d $PG_VAR_DIR_OLD ] ; then
   echo "[$(date +%Y-%m%-dT%H:%m)] Starting conversion"
+
   systemctl stop postgresql
+  /etc/init.d/postgresql stop
+  
   pushd /tmp
   sudo -H -u postgres /usr/lib/postgresql/9.4/bin/pg_upgrade \
        --link \
