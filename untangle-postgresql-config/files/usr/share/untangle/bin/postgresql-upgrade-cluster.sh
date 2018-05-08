@@ -22,9 +22,9 @@ if [ -d $PG_VAR_DIR_OLD ] ; then
   pushd /tmp
   su postgres -c "/usr/lib/postgresql/9.6/bin/pg_upgrade --link -b $PG_BIN_DIR_OLD -B $PG_BIN_DIR_NEW -d $PG_VAR_DIR_OLD -D $PG_VAR_DIR_NEW -o ' -c config_file='$PG_CONF_OLD -O ' -c config_file='$PG_CONF_NEW"
 
-  # sudo -u postgres says:
-  # Sorry, user root is not allowed to execute '/usr/lib/postgresql/9.4/bin/pg_upgrade' 
-  #sudo -H -u postgres /usr/lib/postgresql/9.4/bin/pg_upgrade \
+  # sudo -u postgres doesn't work - it says:
+  # Sorry, user root is not allowed to execute '/usr/lib/postgresql/9.6/bin/pg_upgrade'
+  # sudo -H -u postgres /usr/lib/postgresql/9.6/bin/pg_upgrade \
   #     --link \
   #     -b $PG_BIN_DIR_OLD \
   #     -B $PG_BIN_DIR_NEW \
@@ -35,7 +35,8 @@ if [ -d $PG_VAR_DIR_OLD ] ; then
   
   pg_dropcluster $VERSION_OLD main
   popd
-  # rm -fr $PG_VAR_DIR_OLD
+
+  rm -fr $PG_VAR_DIR_OLD
   echo "[$(date +%Y-%m%-dT%H:%m)] Conversion complete"
   echo
 fi
