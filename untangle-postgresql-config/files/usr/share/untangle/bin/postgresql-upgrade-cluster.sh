@@ -35,7 +35,7 @@ if [ -d $PG_VAR_DIR_OLD ] ; then
   
   pg_dropcluster $VERSION_OLD main
   popd
-  rm -fr $PG_VAR_DIR_OLD
+  # rm -fr $PG_VAR_DIR_OLD
   echo "[$(date +%Y-%m%-dT%H:%m)] Conversion complete"
   echo
 fi
