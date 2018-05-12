@@ -2,7 +2,7 @@
 Description=Untangle PyConnector
 
 [Service]
-Type=Simple
+Type=simple
 EnvironmentFile=-/etc/default/untangle-pyconnector
 ExecStart=/usr/bin/pyconnector -l ${LOG_FILE} -d ${DEBUG_LEVEL}
 Restart=always
