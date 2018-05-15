@@ -137,6 +137,7 @@ def reduce_operations( ops ):
 
 
 
+register_operation( "update-hostname",    None, ["hostname -F /etc/hostname"],          1, None )
 register_operation( "restart-networking", ["ifdown -a -v --exclude=lo"], ["ifup -a -v --exclude=lo","/usr/bin/systemctl-wait"], 10, None )
 register_operation( "restart-dnsmasq",    None, ["/etc/untangle/post-network-hook.d/990-restart-dnsmasq","/usr/bin/systemctl-wait"],   20, "restart-networking" )
 register_operation( "restart-miniupnpd",  None, ["/etc/untangle/post-network-hook.d/990-restart-upnp","/usr/bin/systemctl-wait"],      21, "restart-networking" )
