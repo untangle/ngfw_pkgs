@@ -27,7 +27,7 @@ class HostsManager:
 
     def initialize( self ):
         registrar.register_file( self.hosts_filename, None, self )
-        registrar.register_file( self.hostname_filename, "restart-networking", self )
+        registrar.register_file( self.hostname_filename, "update-hostname", self )
         registrar.register_file( self.mailname_filename, None, self )
         registrar.register_file( self.resolv_filename, None, self )
         registrar.register_file( self.pre_network_hook_filename, "restart-networking", self )
