@@ -88,16 +88,16 @@ ff02::3 ip6-allhosts
             print("ERROR: Missing hostname setting")
             return
 
-        fqdnHostname = settings['hostName']
+        fqdn_hostname = settings['hostName']
         if 'domainName' in settings:
-            fqdnHostname = fqdnHostname + "." + settings['domainName']
+            fqdn_hostname = fqdn_hostname + "." + settings['domainName']
         filename = prefix + self.hostname_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
             os.makedirs( file_dir )
 
         file = open( filename, "w+" )
-        file.write("%s\n" % fqdnHostname)
+        file.write("%s\n" % fqdn_hostname)
 
         file.flush()
         file.close()
@@ -110,9 +110,9 @@ ff02::3 ip6-allhosts
             print("ERROR: Missing hostname setting")
             return
 
-        fqdnHostname = settings['hostName']
+        fqdn_hostname = settings['hostName']
         if 'domainName' in settings:
-            fqdnHostname = fqdnHostname + "." + settings['domainName']
+            fqdn_hostname = fqdn_hostname + "." + settings['domainName']
         filename = prefix + self.pre_network_hook_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -126,12 +126,14 @@ ff02::3 ip6-allhosts
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
 
-        file.write("/bin/hostname %s" % fqdnHostname)
+        # file.write("/bin/hostname %s" % fqdn_hostname)
+        file.write("/bin/hostname -F /etc/hostname")
         file.write("\n\n");
         
         file.flush()
         file.close()
 
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         if verbosity > 0: print("HostsManager: Wrote %s" % filename)
         return
     
