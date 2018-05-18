@@ -37,8 +37,8 @@ class FilterRulesManager:
             target = ' -j RETURN '
 
         description = "Rule #%i" % int(filter_rule['ruleId'])
-        prep_commands = IptablesUtil.conditions_to_prep_commands( filter_rule['conditions']['list'], description, verbosity );
-        iptables_conditions = IptablesUtil.conditions_to_iptables_string( filter_rule['conditions']['list'], description, verbosity );
+        prep_commands = IptablesUtil.conditions_to_prep_commands( filter_rule['conditions'], description, verbosity );
+        iptables_conditions = IptablesUtil.conditions_to_iptables_string( filter_rule['conditions'], description, verbosity );
 
         iptables_log_commands = [ ("${IPTABLES} -t filter -A %s " % table_name) + ipt + " -j NFLOG --nflog-prefix 'filter_blocked' " for ipt in iptables_conditions ]
         iptables_commands = [ ("${IPTABLES} -t filter -A %s " % table_name) + ipt + target for ipt in iptables_conditions ]
@@ -72,11 +72,11 @@ class FilterRulesManager:
 
     def write_access_rules( self, settings, verbosity=0 ):
 
-        if settings == None or settings.get('accessRules') == None or settings.get('accessRules').get('list') == None:
+        if settings == None or settings.get('accessRules') == None:
             print("ERROR: Missing input filter Rules")
             return
 
-        access_rules = settings['accessRules']['list'];
+        access_rules = settings['accessRules'];
 
         for filter_rule in access_rules:
             try:
@@ -87,11 +87,11 @@ class FilterRulesManager:
 
     def write_filter_rules( self, settings, verbosity=0 ):
 
-        if settings == None or settings.get('filterRules') == None or settings.get('filterRules').get('list') == None:
+        if settings == None or settings.get('filterRules') == None:
             print("ERROR: Missing forward filter Rules")
             return
         
-        filter_rules = settings['filterRules']['list'];
+        filter_rules = settings['filterRules'];
 
         for filter_rule in filter_rules:
             try:

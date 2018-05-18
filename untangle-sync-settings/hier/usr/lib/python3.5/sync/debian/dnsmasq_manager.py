@@ -44,9 +44,8 @@ class DnsMasqManager:
 
         file.write("# user-defined static entries \n")
         if ( settings.get('dnsSettings') != None and 
-             settings.get('dnsSettings').get('staticEntries') != None and 
-             settings.get('dnsSettings').get('staticEntries').get('list') != None ):
-            for entry in settings.get('dnsSettings').get('staticEntries').get('list'):
+             settings.get('dnsSettings').get('staticEntries') != None ):
+            for entry in settings.get('dnsSettings').get('staticEntries'):
                 if entry.get('name') != None and entry.get('address') != None:
                     file.write("%s\t%s" % ( entry.get('address'), entry.get('name') ) + "\n" )
             file.write("\n")
@@ -70,7 +69,7 @@ class DnsMasqManager:
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
         
-        for intf in settings['interfaces']['list']:
+        for intf in settings['interfaces']:
             # If its a static WAN then write the uplink DNS values
             if intf.get('configType') == 'ADDRESSED' and intf.get('isWan') == True and intf.get('v4ConfigType') == 'STATIC':
                 if intf.get('v4StaticDns1') != None:
@@ -118,7 +117,7 @@ class DnsMasqManager:
         file.write("\n");
 
         # Enable DHCP on internal NICs (where configured)
-        for intf in settings['interfaces']['list']:
+        for intf in settings['interfaces']:
             if intf.get('configType') == 'ADDRESSED' and intf.get('isWan') == False:
                 if intf.get('dhcpEnabled') == True:
                     leaseTime = 3600
@@ -154,8 +153,8 @@ class DnsMasqManager:
                         file.write("dhcp-option=tag:%s,6,%s # dns" % (intf.get('symbolicDev'), str(intf.get('v4StaticAddress'))) + "\n")
 
                     # write custom DHCP options
-                    if intf.get('dhcpOptions') != None and intf.get('dhcpOptions').get('list') != None:
-                        for dhcpOption in intf.get('dhcpOptions').get('list'):
+                    if intf.get('dhcpOptions') != None:
+                        for dhcpOption in intf.get('dhcpOptions'):
                             if dhcpOption.get('enabled') == None or not dhcpOption.get('enabled'):
                                 continue
                             file.write("dhcp-option=tag:%s,%s # custom dhcp option" % (intf.get('symbolicDev'), dhcpOption.get('value')) + "\n")
@@ -171,9 +170,8 @@ class DnsMasqManager:
         # Local DNS servers
         file.write("# Local DNS servers\n")
         if ( settings.get('dnsSettings') != None and 
-             settings.get('dnsSettings').get('localServers') != None and 
-             settings.get('dnsSettings').get('localServers').get('list') != None ):
-            for localServer in settings.get('dnsSettings').get('localServers').get('list'):
+             settings.get('dnsSettings').get('localServers') != None ):
+            for localServer in settings.get('dnsSettings').get('localServers'):
                 if localServer.get('domain') != None and localServer.get('localServer') != None:
                     file.write("local=/%s/%s" % ( localServer['domain'], localServer['localServer'] ) + "\n" )
             file.write("\n");
@@ -201,9 +199,8 @@ class DnsMasqManager:
 
         # Static DHCP Entries
         file.write("# Static DHCP entries\n")
-        if ( settings.get('staticDhcpEntries') != None and 
-             settings.get('staticDhcpEntries').get('list') != None ):
-            for staticDhcpEntry in settings.get('staticDhcpEntries').get('list'):
+        if ( settings.get('staticDhcpEntries') != None ):
+            for staticDhcpEntry in settings.get('staticDhcpEntries'):
                 if staticDhcpEntry.get('macAddress') != None and staticDhcpEntry.get('address') != None:
                     file.write("dhcp-host=%s,%s" % ( staticDhcpEntry.get('macAddress'), staticDhcpEntry.get('address') ) + "\n" )
             file.write("\n");

@@ -46,7 +46,7 @@ class QosManager:
     def write_qos_rule( self, qos_rule, verbosity=0 ):
         if 'enabled' in qos_rule and not qos_rule['enabled']:
             return
-        if 'conditions' not in qos_rule or 'list' not in qos_rule['conditions']:
+        if 'conditions' not in qos_rule:
             return
         if 'ruleId' not in qos_rule:
             return
@@ -58,8 +58,8 @@ class QosManager:
             return
 
         description = "QoS Custom Rule #%i" % int(qos_rule['ruleId'])
-        commands = IptablesUtil.conditions_to_prep_commands( qos_rule['conditions']['list'], description, verbosity );
-        iptables_conditions = IptablesUtil.conditions_to_iptables_string( qos_rule['conditions']['list'], description, verbosity );
+        commands = IptablesUtil.conditions_to_prep_commands( qos_rule['conditions'], description, verbosity );
+        iptables_conditions = IptablesUtil.conditions_to_iptables_string( qos_rule['conditions'], description, verbosity );
         commands += [ "${IPTABLES} -t mangle -A qos-rules -m mark --mark 0x%X/0x%X " % (self.bypass_mark_mask,self.bypass_mark_mask) + ipt + target for ipt in iptables_conditions ]
 
         self.file.write("# %s\n" % description);
@@ -70,11 +70,11 @@ class QosManager:
         return
 
     def write_qos_custom_rules( self, settings, verbosity=0 ):
-        if settings == None or 'qosRules' not in settings or 'list' not in settings['qosRules']:
+        if settings == None or 'qosRules' not in settings:
             print("ERROR: Missing QoS Custom Rules")
             return
         
-        qos_rules = settings['qosRules']['list'];
+        qos_rules = settings['qosRules'];
 
         for qos_rule in qos_rules:
             try:
@@ -86,7 +86,7 @@ class QosManager:
         return [1,2,3,4,5,6,7]
 
     def qos_priority_field( self, qos_settings, intf, priorityId, base, field ):
-        for prio in qos_settings.get('qosPriorities').get('list'):
+        for prio in qos_settings.get('qosPriorities'):
             if prio.get('priorityId') == priorityId:
                 return intf.get(base) * (prio.get(field)/100.0)
         debug("Unable to find %s for priority %i" % (field, priorityId))
@@ -230,12 +230,12 @@ class QosManager:
         # file.write("tc filter add dev %s pref 1 parent 1: protocol ip handle 1 flow hash keys dst\n" % (imq_dev) )
 
     def write_qos_hook( self, settings, prefix, verbosity ):
-        if settings == None or settings.get('interfaces') == None or settings.get('interfaces').get('list') == None:
+        if settings == None or settings.get('interfaces') == None:
             return;
         if settings.get('qosSettings') == None:
             return;
         qos_settings = settings.get('qosSettings')
-        interfaces = settings.get('interfaces').get('list')
+        interfaces = settings.get('interfaces')
         wan_intfs = []
         wan_system_devs = []
         wan_imq_devs = []

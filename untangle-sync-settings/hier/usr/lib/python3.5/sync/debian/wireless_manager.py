@@ -22,7 +22,7 @@ class WirelessManager:
         # exists. untangle-broadcom-wireless relies solely on the
         # presence of that file to decide whether to start the AP
         # daemon or not (#13066)
-        enabledInterfaces = [ x['physicalDev'] for x in settings.get('interfaces').get('list') ]
+        enabledInterfaces = [ x['physicalDev'] for x in settings.get('interfaces') ]
         for intfName in [ x for x  in ('eth1', 'eth2') if not x in enabledInterfaces ]:
             filename = prefix + self.hostapd_conf_filename + "-" + intfName
             if os.path.exists(filename):
@@ -255,10 +255,10 @@ class WirelessManager:
             if not os.path.exists( file_dir ):
                 os.makedirs( file_dir )
 
-        if settings == None or settings.get('interfaces') == None and settings.get('interfaces').get('list') == None:
+        if settings == None or settings.get('interfaces') == None:
             return
 
-        interfaces = settings.get('interfaces').get('list')
+        interfaces = settings.get('interfaces')
 
         for intf in interfaces:
             if intf.get('isWirelessInterface') and intf.get('wirelessMode') == 'AP':
@@ -330,10 +330,10 @@ class WirelessManager:
             if not os.path.exists( fileDir ):
                 os.makedirs( fileDir )
 
-        if settings == None or settings.get('interfaces') == None and settings.get('interfaces').get('list') == None:
+        if settings == None or settings.get('interfaces') == None:
             return
 
-        interfaces = settings.get('interfaces').get('list')
+        interfaces = settings.get('interfaces')
 
         for intf in interfaces:
             if intf.get('isWirelessInterface') and intf.get('wirelessMode') == 'CLIENT':

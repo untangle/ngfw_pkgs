@@ -33,8 +33,8 @@ class EthernetManager:
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
         
-        if settings.get('devices') != None and settings.get('devices').get('list') != None:
-            for deviceSettings in settings.get('devices').get('list'):
+        if settings.get('devices') != None:
+            for deviceSettings in settings.get('devices'):
                 if deviceSettings.get('mtu') != None:
                     file.write("ifconfig %s mtu %s" % (deviceSettings.get('deviceName'), str(deviceSettings.get('mtu'))) + "\n")
                 if deviceSettings.get('duplex') != None:

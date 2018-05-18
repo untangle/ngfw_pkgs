@@ -64,10 +64,10 @@ class RouteManager:
         file.write("\n\n");
 
         file.write("# WAN tables " + "\n");
-        for intf in settings['interfaces']['list']:
+        for intf in settings['interfaces']:
             if 'isWan' in intf and intf['isWan']:
                 file.write("%i\tuplink.%i" % ( int(intf['interfaceId']), int(intf['interfaceId']) ) + "\n")
-        for intf in settings['virtualInterfaces']['list']:
+        for intf in settings['virtualInterfaces']:
             if 'isWan' in intf and intf['isWan']:
                 file.write("%i\tuplink.%i" % ( int(intf['interfaceId']), int(intf['interfaceId']) ) + "\n")
         file.write("\n\n");
@@ -138,10 +138,10 @@ fi
 
 """)
         # Write the static routes from settings
-        if settings == None or 'staticRoutes' not in settings or 'list' not in settings['staticRoutes']:
+        if settings == None or 'staticRoutes' not in settings:
             print("ERROR: Missing Static Routes")
         else:
-            static_routes = settings['staticRoutes']['list'];
+            static_routes = settings['staticRoutes'];
             for static_route in static_routes:
                 for key in ['ruleId','nextHop','network','prefix']:
                     if key not in static_route:
@@ -151,7 +151,7 @@ fi
                 if self.string_is_int(static_route['nextHop']):
                     # if nextHop is an interfaceId
                     interfaceId = int(static_route['nextHop'])
-                    for intf in settings['interfaces']['list']:
+                    for intf in settings['interfaces']:
                         if intf.get('interfaceId') == interfaceId:
                             # device route since nextHop includes alphas
                             file.write("# Static Route %i\n" % static_route['ruleId'])

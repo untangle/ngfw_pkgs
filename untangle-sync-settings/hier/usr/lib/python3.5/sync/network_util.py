@@ -21,10 +21,10 @@ class NetworkUtil:
         settings = NetworkUtil.settings
         ret = []
 
-        if settings is None or 'interfaces' not in settings or 'list' not in settings['interfaces']:
+        if settings is None or 'interfaces' not in settings:
             return ret
 
-        for intf in settings['interfaces']['list']:
+        for intf in settings['interfaces']:
             if 'interfaceId' not in intf:
                 continue
             ret.append(int(intf['interfaceId']))
@@ -40,16 +40,16 @@ class NetworkUtil:
         settings = NetworkUtil.settings
         ret = []
 
-        if settings == None or settings.get('interfaces') == None or settings.get('interfaces').get('list') == None:
+        if settings == None or settings.get('interfaces') == None:
             return ret
 
-        for intf in settings['interfaces']['list']:
+        for intf in settings['interfaces']:
             if intf.get('interfaceId') == None:
                 continue
             if intf.get('configType') == 'ADDRESSED' and intf.get('isWan'):
                 ret.append(int(intf['interfaceId']))
 
-        for intf in settings['virtualInterfaces']['list']:
+        for intf in settings['virtualInterfaces']:
             if intf.get('interfaceId') == None:
                 continue
             if intf.get('isWan'):
@@ -65,17 +65,17 @@ class NetworkUtil:
         settings = NetworkUtil.settings
         ret = []
 
-        if settings == None or settings.get('interfaces') == None or settings.get('interfaces').get('list') == None:
+        if settings == None or settings.get('interfaces') == None:
             return ret
 
-        for intf in settings['interfaces']['list']:
+        for intf in settings['interfaces']:
             if intf.get('interfaceId') == None:
                 continue
             if intf.get('configType') == 'ADDRESSED' and intf.get('isWan'):
                 continue
             else:
                 ret.append(int(intf['interfaceId']))
-        for intf in settings['virtualInterfaces']['list']:
+        for intf in settings['virtualInterfaces']:
             if intf.get('interfaceId') == None:
                 continue
             if intf.get('isWan'):

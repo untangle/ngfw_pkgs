@@ -93,6 +93,27 @@ def print_usage():
     -s          : do not copy or run restart commands (test run)
 """ % sys.argv[0] )
 
+def fixup_settings(json):
+    """
+    Fixes JSON serialization oddities in the JSON object
+    """
+    if isinstance(json, dict):
+        for key in list(json.keys()):
+            value = json.get(key)
+            if isinstance(value, dict):
+                if value.get('list') != None and value.get('javaClass') != None and "List" in value.get('javaClass'):
+                    # Java serializes list objects as:
+                    # "foo": { "javaClass": "java.util.LinkedList", "list": [] },
+                    # This will change it to this for simplicity:
+                    # "foo": []
+                    new_value = value.get('list')
+                    value = new_value
+                    json[key] = new_value
+            fixup_settings(json.get(key))
+    elif isinstance(json, list):
+        for i in range(len(json)):
+            fixup_settings(json[i])
+
 def check_settings( settings ):
     """
     Sanity check the settings
@@ -102,9 +123,7 @@ def check_settings( settings ):
 
     if 'interfaces' not in settings:
         raise Exception("Invalid Settings: missing interfaces")
-    if 'list' not in settings['interfaces']:
-        raise Exception("Invalid Settings: missing interfaces list")
-    interfaces = settings['interfaces']['list']
+    interfaces = settings['interfaces']
     for intf in interfaces:
         for key in ['interfaceId', 'name', 'systemDev', 'symbolicDev', 'physicalDev', 'configType']:
             if key not in intf:
@@ -112,9 +131,7 @@ def check_settings( settings ):
 
     if 'virtualInterfaces' not in settings:
         raise Exception("Invalid Settings: missing virtualInterfaces")
-    if 'list' not in settings['virtualInterfaces']:
-        raise Exception("Invalid Settings: missing virtualInterfaces list")
-    virtualInterfaces = settings['virtualInterfaces']['list']
+    virtualInterfaces = settings['virtualInterfaces']
     for intf in virtualInterfaces:
         for key in ['interfaceId', 'name']:
             if key not in intf:
@@ -131,22 +148,22 @@ def cleanup_settings( settings ):
 
     This function runs through the settings and removes/disables settings that are hidden/disabled in the current configuration.
     """
-    interfaces = settings['interfaces']['list']
-    virtualInterfaces = settings['virtualInterfaces']['list']
+    interfaces = settings['interfaces']
+    virtualInterfaces = settings['virtualInterfaces']
 
     # Remove disabled interfaces from regular interfaces list
     # Save them in another field in case anyone needs them
     disabled_interfaces = [ intf for intf in interfaces if intf.get('configType') == 'DISABLED' ]
     new_interfaces = [ intf for intf in interfaces if intf.get('configType') != 'DISABLED' ]
     new_interfaces = sorted( new_interfaces, key=lambda x:x.get('interfaceId') )
-    settings['interfaces']['list'] = new_interfaces
-    settings['disabledInterfaces'] = { 'list': disabled_interfaces }
+    settings['interfaces'] = new_interfaces
+    settings['disabledInterfaces'] = disabled_interfaces
 
     disabled_virtual_interfaces = [ ]
     new_virtual_interfaces = [ intf for intf in virtualInterfaces ]
     new_virtual_interfaces = sorted( new_virtual_interfaces, key=lambda x:x.get('interfaceId') )
-    settings['virtualInterfaces']['list'] = new_virtual_interfaces
-    settings['disabledVirtualInterfaces'] = { 'list': disabled_virtual_interfaces }
+    settings['virtualInterfaces'] = new_virtual_interfaces
+    settings['disabledVirtualInterfaces'] = disabled_virtual_interfaces
     
     # Disable DHCP if if its a WAN or bridged to another interface
     for intf in interfaces:
@@ -551,6 +568,7 @@ if parser.create_settings:
 read_settings()
 
 try:
+    fixup_settings(settings)
     check_settings(settings)
     cleanup_settings(settings)
 except Exception as e:

@@ -27,7 +27,7 @@ class NatRulesManager:
 
         if 'enabled' in nat_rule and not nat_rule['enabled']:
             return
-        if 'conditions' not in nat_rule or 'list' not in nat_rule['conditions']:
+        if 'conditions' not in nat_rule:
             return
         if 'ruleId' not in nat_rule:
             return
@@ -41,8 +41,8 @@ class NatRulesManager:
             return
 
         description = "NAT Rule #%i" % int(nat_rule['ruleId'])
-        commands = IptablesUtil.conditions_to_prep_commands( nat_rule['conditions']['list'], description, verbosity );
-        iptables_conditions = IptablesUtil.conditions_to_iptables_string( nat_rule['conditions']['list'], description, verbosity );
+        commands = IptablesUtil.conditions_to_prep_commands( nat_rule['conditions'], description, verbosity );
+        iptables_conditions = IptablesUtil.conditions_to_iptables_string( nat_rule['conditions'], description, verbosity );
         commands += [ "${IPTABLES} -t nat -A nat-rules " + ipt + target for ipt in iptables_conditions ]
 
         self.file.write("# %s\n" % description);
@@ -63,11 +63,11 @@ class NatRulesManager:
 
     def write_nat_rules( self, settings, verbosity=0 ):
 
-        if settings == None or 'natRules' not in settings or 'list' not in settings['natRules']:
+        if settings == None or 'natRules' not in settings:
             print("ERROR: Missing NAT Rules")
             return
         
-        nat_rules = settings['natRules']['list'];
+        nat_rules = settings['natRules'];
 
         for nat_rule in nat_rules:
             try:
@@ -143,7 +143,7 @@ class NatRulesManager:
 
     def write_interface_nat_options( self, settings, verbosity=0 ):
 
-        interfaces = settings['interfaces']['list']
+        interfaces = settings['interfaces']
         for interface_settings in interfaces:
 
             if 'v4NatEgressTraffic' in interface_settings and interface_settings['v4NatEgressTraffic']:
