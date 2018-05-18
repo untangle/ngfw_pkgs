@@ -75,3 +75,5 @@ class SysctlManager:
         if verbosity > 0: print("SysctlManager: Wrote %s" % filename)
 
         return
+
+registrar.register_manager(SysctlManager())

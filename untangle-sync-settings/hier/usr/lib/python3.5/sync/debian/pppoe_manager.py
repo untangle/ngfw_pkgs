@@ -278,3 +278,4 @@ true
 
         if verbosity > 0: print("PPPoEManager: Wrote %s" % filename)
 
+registrar.register_manager(PPPoEManager())

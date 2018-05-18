@@ -421,3 +421,5 @@ fi
         if verbosity > 0: print("QosManager: Wrote %s" % filename)
 
         return
+
+registrar.register_manager(QosManager())

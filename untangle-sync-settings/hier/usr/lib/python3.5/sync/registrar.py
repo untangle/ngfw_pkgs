@@ -22,6 +22,14 @@ operations = {}
 # owner - the manager responsible for writing this file
 files = {}
 
+# managers store a list of all the "manager" modules
+# managers are responsible for serializing the settings to disk
+managers = []
+
+def register_manager( manager ):
+    global managers
+    managers.append(manager)
+
 def register_operation( name, pre_commands, post_commands, priority, parent=None ):
     global operations
     # print("Registering operation: " + name.ljust(20) + " parent: " + str(parent))

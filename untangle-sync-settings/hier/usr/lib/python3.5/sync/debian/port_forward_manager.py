@@ -167,4 +167,4 @@ class PortForwardManager:
         if verbosity > 0:
             print("PortForwardManager: Wrote %s" % self.filename)
 
-
+registrar.register_manager(PortForwardManager())

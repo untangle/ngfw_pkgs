@@ -204,4 +204,5 @@ fi
 
         return
 
+registrar.register_manager(VrrpManager())
 

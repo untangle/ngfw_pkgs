@@ -212,3 +212,5 @@ fi
         if verbosity > 0: print("RouteManager: Wrote %s" % filename)
 
         return
+
+registrar.register_manager(RouteManager())

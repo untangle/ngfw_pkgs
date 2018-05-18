@@ -525,4 +525,4 @@ fi
         if verbosity > 0: print("DynamicRoutingManager: Wrote %s" % filename)
         return
 
-
+registrar.register_manager(DynamicRoutingManager())

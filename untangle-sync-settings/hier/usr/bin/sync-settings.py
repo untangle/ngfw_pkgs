@@ -377,14 +377,13 @@ def tee_stdout_log():
     os.dup2(tee.stdin.fileno(), sys.stdout.fileno())
     os.dup2(tee.stdin.fileno(), sys.stderr.fileno())
 
-def init_modules():
+def init_managers():
     """
-    Call init() on all modules
+    Call init() on all managers
     """
-    global modules
-    for module in modules:
+    for manager in sync.registrar.managers:
         try:
-            module.initialize()
+            manager.initialize()
         except Exception as e:
             traceback.print_exc()
             print("Abort. (errors)")
@@ -392,15 +391,14 @@ def init_modules():
 
 def sync_to_tmpdirs(tmpdir, tmpdir_delete):
     """
-    Call sync_settings on all modules
+    Call sync_settings on all manager
     """
-    global modules
     print("Syncing %s to system..." % parser.filename)
 
     delete_list=[]
-    for module in modules:
+    for manager in sync.registrar.managers:
         try:
-            module.sync_settings( settings, tmpdir, delete_list, verbosity=2 )
+            manager.sync_settings( settings, tmpdir, delete_list, verbosity=2 )
         except Exception as e:
             traceback.print_exc()
             return 1
@@ -469,19 +467,6 @@ def read_settings():
 # Duplicate all stdout to log
 tee_stdout_log()
 
-# Globals
-modules = [ HostsManager(), DnsMasqManager(),
-            InterfacesManager(), RouteManager(),
-            IptablesManager(), NatRulesManager(),
-            FilterRulesManager(), QosManager(),
-            PortForwardManager(), BypassRuleManager(),
-            EthernetManager(), DynamicRoutingManager(),
-            SysctlManager(), ArpManager(),
-            DhcpManager(), RadvdManager(),
-            PPPoEManager(), DdclientManager(),
-            KernelManager(), EbtablesManager(),
-            VrrpManager(), WirelessManager(),
-            UpnpManager(), NetflowManager()]
 # argument parser
 parser = ArgumentParser()
 # The JSON settings object
@@ -515,14 +500,14 @@ except Exception as e:
 
 NetworkUtil.settings = settings
 
-# Initialize all modules
-init_modules()
+# Initialize all managers
+init_managers()
 
 print("")
 
-# Call all the modules to "sync" settings to tmpdir
+# Call all the managers to "sync" settings to tmpdir
 # We drop root permissions to call these functions so that
-# the modules can't access the / filesystem directly
+# the managers can't access the / filesystem directly
 result = call_without_permissions(sync_to_tmpdirs,tmpdir,tmpdir_delete)
 if result != 0:
     print("\nError during sync process. Abort.")

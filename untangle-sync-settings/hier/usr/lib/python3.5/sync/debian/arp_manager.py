@@ -56,5 +56,4 @@ class ArpManager:
 
         return
 
-
-    
+registrar.register_manager(ArpManager())

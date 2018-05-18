@@ -453,4 +453,5 @@ true
         file.close()
         if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
         
+registrar.register_manager(DhcpManager())
 

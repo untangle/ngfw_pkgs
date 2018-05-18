@@ -194,3 +194,5 @@ fi
         if verbosity > 0: print("DdclientManager: Wrote %s" % filename)
         return
 
+registrar.register_manager(DdclientManager())
+

@@ -184,3 +184,4 @@ ff02::3 ip6-allhosts
         if verbosity > 0: print("HostsManager: Wrote %s" % filename)
         return
 
+registrar.register_manager(HostsManager())

@@ -273,3 +273,4 @@ class FilterRulesManager:
 
         return
 
+registrar.register_manager(FilterRulesManager())
