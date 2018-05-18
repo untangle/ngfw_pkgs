@@ -48,7 +48,8 @@ class DynamicRoutingManager:
             file_uid=pwd.getpwnam("quagga").pw_uid
             file_gid=grp.getgrnam("quagga").gr_gid
         except Exception as exc:
-            traceback.print_exc()
+            print("quagga user/group missing!")
+            #traceback.print_exc()
             
         registrar.register_file( self.daemons_conf_filename, "restart-quagga", self )
         registrar.register_file( self.zebra_conf_filename, "restart-quagga", self )
