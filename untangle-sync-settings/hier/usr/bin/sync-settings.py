@@ -34,6 +34,10 @@ import time
 
 from   sync import *
 
+if os.path.isfile('/etc/debian_version'):
+    from   sync.debian import *
+    
+
 class ArgumentParser(object):
     def __init__(self):
         self.filename = '/usr/share/untangle/settings/untangle-vm/network.js'
