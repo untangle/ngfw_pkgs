@@ -29,18 +29,18 @@ class VrrpManager:
         
     def get_vrrp_interfaces( self, settings ):
         vrrp_interfaces = []
-        for interface_settings in settings['interfaces']['list']:
+        for interface_settings in settings['interfaces']:
             if interface_settings.get('vrrpEnabled'):
                 if interface_settings.get('configType') != 'ADDRESSED':
                     continue
                 if not interface_settings.get('vrrpId') or not interface_settings.get('vrrpPriority'):
                     print("Missing VRRP Config: %s, %s" % (interface_settings.get('vrrpId'), interface_settings.get('vrrpPriority')))
                     continue
-                if not interface_settings.get('vrrpAliases') or not interface_settings.get('vrrpAliases').get('list'):
+                if not interface_settings.get('vrrpAliases') or not interface_settings.get('vrrpAliases'):
                     print("Missing VRRP Aliases: %s" % (str(interface_settings.get('vrrpAliases'))))
                     continue
-                if len( interface_settings.get('vrrpAliases').get('list') ) < 1:
-                    print("Missing VRRP Aliases (0 length): %i" % (len( interface_settings.get('vrrpAliases').get('list') )))
+                if len( interface_settings.get('vrrpAliases') ) < 1:
+                    print("Missing VRRP Aliases (0 length): %i" % (len( interface_settings.get('vrrpAliases') )))
                     continue
                 vrrp_interfaces.append( interface_settings )
 
@@ -80,7 +80,7 @@ global_defs {
         file.write("\n\n");
 
         for intf in vrrp_interfaces:
-            address_list = intf.get('vrrpAliases').get('list')
+            address_list = intf.get('vrrpAliases')
 
             main_list = []
             supp_list = []

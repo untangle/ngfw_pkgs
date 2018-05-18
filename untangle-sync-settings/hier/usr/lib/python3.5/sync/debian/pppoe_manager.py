@@ -34,7 +34,7 @@ class PPPoEManager:
         registrar.register_file( self.ppp_ip_up_filename, "restart-networking", self )
         
     def write_pppoe_connection_files( self, settings, delete_list, prefix="", verbosity=0 ):
-        for interface_settings in settings.get('interfaces').get('list'):
+        for interface_settings in settings.get('interfaces'):
             if "PPPOE" == interface_settings.get('v4ConfigType'):
                 # open this pppoe config file for this connection
                 filename = prefix + self.peers_directory + self.connection_base_name + str(interface_settings.get('interfaceId'))
@@ -59,8 +59,8 @@ maxfail 0
 
                 # Check for the parent device's MTU setting
                 # If it is set, set the ppp interface mtu to the same value
-                if settings.get('devices') != None and settings.get('devices').get('list') != None:
-                    for deviceSettings in settings.get('devices').get('list'):
+                if settings.get('devices') != None:
+                    for deviceSettings in settings.get('devices'):
                         if interface_settings.get('physicalDev') == deviceSettings.get('deviceName'):
                             if deviceSettings.get('mtu') != None:
                                 conffile.write("mtu %s" % (deviceSettings.get('mtu')) + "\n")
@@ -94,7 +94,7 @@ maxfail 0
         secrets += "\n"
 
         pppoe_found = False
-        for interface_settings in settings.get('interfaces').get('list'):
+        for interface_settings in settings.get('interfaces'):
             if "PPPOE" == interface_settings.get('v4ConfigType'):
                 pppoe_found = True
                 secrets += "\"%s\" * \"%s\" *\n" % ( interface_settings.get('v4PPPoEUsername'), interface_settings.get('v4PPPoEPassword') )

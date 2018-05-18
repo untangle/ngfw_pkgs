@@ -43,7 +43,7 @@ class UpnpManager:
 
         wan_interfaces = []
         lan_interfaces = []
-        for intf in settings['interfaces']['list']:
+        for intf in settings['interfaces']:
         	if intf.get('disabled'):
         		continue
         	if intf.get('isWan'):
@@ -85,14 +85,14 @@ class UpnpManager:
 
         file.write("\n# Rules\n");
         # Rules
-        for rule in settings['upnpSettings']['upnpRules']['list']:
+        for rule in settings['upnpSettings']['upnpRules']:
             if rule.get('enabled') is False:
                 continue
             upnp_rule_action = "allow" if rule.get('allow') else "deny"
             upnp_rule_external_ports = "0-65535"
             upnp_rule_internal_address = "0.0.0.0/0"
             upnp_rule_internal_ports = "0-65535"
-            for condition in rule['conditions']['list']:
+            for condition in rule['conditions']:
                 if condition.get('conditionType') == "DST_PORT":
                     upnp_rule_external_ports = condition.get('value')
                 elif condition.get('conditionType') == "SRC_ADDR":

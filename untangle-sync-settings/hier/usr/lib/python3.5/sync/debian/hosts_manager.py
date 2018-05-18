@@ -67,9 +67,8 @@ ff02::3 ip6-allhosts
 
         file.write("# user-defined static entries \n")
         if ( settings.get('dnsSettings') != None and 
-             settings.get('dnsSettings').get('staticEntries') != None and 
-             settings.get('dnsSettings').get('staticEntries').get('list') != None ):
-            for entry in settings.get('dnsSettings').get('staticEntries').get('list'):
+             settings.get('dnsSettings').get('staticEntries') != None ):
+            for entry in settings.get('dnsSettings').get('staticEntries'):
                 if entry.get('name') != None and entry.get('address') != None:
                     file.write("%s\t%s" % ( entry.get('address'), entry.get('name') ) + "\n" )
             file.write("\n")

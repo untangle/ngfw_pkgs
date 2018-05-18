@@ -26,7 +26,7 @@ class BypassRuleManager:
     def write_bypass_rule( self, bypass_rule, verbosity=0 ):
         if 'enabled' in bypass_rule and not bypass_rule['enabled']:
             return
-        if 'conditions' not in bypass_rule or 'list' not in bypass_rule['conditions']:
+        if 'conditions' not in bypass_rule:
             return
         if 'ruleId' not in bypass_rule:
             return
@@ -42,8 +42,8 @@ class BypassRuleManager:
 
         
         description = "Bypass Rule #%i" % int(bypass_rule['ruleId'])
-        commands = IptablesUtil.conditions_to_prep_commands( bypass_rule['conditions']['list'], description, verbosity );
-        iptables_conditions = IptablesUtil.conditions_to_iptables_string( bypass_rule['conditions']['list'], description, verbosity );
+        commands = IptablesUtil.conditions_to_prep_commands( bypass_rule['conditions'], description, verbosity );
+        iptables_conditions = IptablesUtil.conditions_to_iptables_string( bypass_rule['conditions'], description, verbosity );
         commands += [ "${IPTABLES} -t filter -A bypass-rules " + ipt + target for ipt in iptables_conditions ]
 
         self.file.write("# %s\n" % description);
@@ -54,11 +54,11 @@ class BypassRuleManager:
         return
 
     def write_bypass_rules( self, settings, verbosity=0 ):
-        if settings == None or 'bypassRules' not in settings or 'list' not in settings['bypassRules']:
+        if settings == None or 'bypassRules' not in settings:
             print("ERROR: Missing Bypass Rules")
             return
         
-        bypass_rules = settings['bypassRules']['list'];
+        bypass_rules = settings['bypassRules'];
 
         self.file.write("# Implicit Bypass Rules (loopback)" + "\n");
         self.file.write("${IPTABLES} -t filter -A bypass-rules -i lo --goto set-bypass-mark -m comment --comment \"Bypass loopback traffic\"" + "\n");

@@ -31,7 +31,7 @@ class RadvdManager:
 
         file = open( filename, "w+" )
 
-        for intf in settings.get('interfaces').get('list'):
+        for intf in settings.get('interfaces'):
             if not intf.get('raEnabled'):
                 continue
             if intf.get('configType') != "ADDRESSED":

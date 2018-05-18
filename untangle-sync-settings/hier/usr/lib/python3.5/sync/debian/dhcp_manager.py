@@ -54,7 +54,7 @@ class DhcpManager:
 
 """)
 
-        for interface_settings in settings['interfaces']['list']:
+        for interface_settings in settings['interfaces']:
             if interface_settings['configType'] == 'ADDRESSED' and interface_settings['v4ConfigType'] == 'AUTO':
 
                 file.write("if [ \"$interface\" = \"%s\" ] || [ \"$interface\" = \"%s\" ] ; then" % (interface_settings['systemDev'],interface_settings['symbolicDev']) + "\n")

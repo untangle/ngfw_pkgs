@@ -26,7 +26,7 @@ class PortForwardManager:
     def write_port_forward_rule( self, port_forward_rule, verbosity=0 ):
         if 'enabled' in port_forward_rule and not port_forward_rule['enabled']:
             return
-        if 'conditions' not in port_forward_rule or 'list' not in port_forward_rule['conditions']:
+        if 'conditions' not in port_forward_rule:
             return
         if 'ruleId' not in port_forward_rule:
             return
@@ -40,8 +40,8 @@ class PortForwardManager:
             return
 
         description = "Port Forward Rule #%i" % int(port_forward_rule['ruleId'])
-        commands = IptablesUtil.conditions_to_prep_commands( port_forward_rule['conditions']['list'], description, verbosity );
-        iptables_conditions = IptablesUtil.conditions_to_iptables_string( port_forward_rule['conditions']['list'], description, verbosity );
+        commands = IptablesUtil.conditions_to_prep_commands( port_forward_rule['conditions'], description, verbosity );
+        iptables_conditions = IptablesUtil.conditions_to_iptables_string( port_forward_rule['conditions'], description, verbosity );
         commands += [ "${IPTABLES} -t nat -A port-forward-rules " + ipt + target for ipt in iptables_conditions ]
 
         self.file.write("# %s\n" % description);
@@ -52,11 +52,11 @@ class PortForwardManager:
         return
 
     def write_port_forward_rules( self, settings, verbosity=0 ):
-        if settings == None or 'portForwardRules' not in settings or 'list' not in settings['portForwardRules']:
+        if settings == None or 'portForwardRules' not in settings:
             print("ERROR: Missing Port Forward Rules")
             return
         
-        port_forward_rules = settings['portForwardRules']['list'];
+        port_forward_rules = settings['portForwardRules'];
 
         for port_forward_rule in port_forward_rules:
             try:
@@ -113,7 +113,7 @@ class PortForwardManager:
         # write rules to protect (by redirecting) https port for all primary addresses
         # add rule to block at the end. If that point is reached then it hasn't been protected or port forwarded 
         # The block rule exists so that when the port is changed from the default the original port won't still work
-        for intf in settings.get('interfaces').get('list'):
+        for intf in settings.get('interfaces'):
             if intf.get('configType') == 'ADDRESSED':
                 self.file.write("# forward HTTPS admin from intf %i to local apache process\n" % intf.get('interfaceId'))
                 self.file.write("ADDR=\"`ip addr show %s | awk '/^ *inet.*scope global/ { interface = $2 ; sub( \"/.*\", \"\", interface ) ; print interface ; exit }'`\"\n" % intf.get('symbolicDev'))
@@ -129,7 +129,7 @@ class PortForwardManager:
         # write rules to protect http port for all non-WAN primary addresses
         # add rule to block at the end. If that point is reached then it hasn't been protected or port forwarded 
         # The block rule exists so that when the port is changed from the default the original port won't still work
-        for intf in settings.get('interfaces').get('list'):
+        for intf in settings.get('interfaces'):
             if intf.get('configType') == 'ADDRESSED' and not intf.get('isWan'):
                 self.file.write("# don't allow port forwarding of http port of primary IP on non-WAN interface %i.\n" % intf.get('interfaceId'))
                 self.file.write("ADDR=\"`ip addr show %s | awk '/^ *inet.*scope global/ { interface = $2 ; sub( \"/.*\", \"\", interface ) ; print interface ; exit }'`\"\n" % intf.get('symbolicDev'))
@@ -146,10 +146,10 @@ class PortForwardManager:
         # add rule to block at the end. If that point is reached then it hasn't been protected or port forwarded 
         # The block rule exists so that when the port is changed from the default the original port won't still work
         # This is for bridged cases. If the primary IP of external is 1.2.3.4 we want to reserve 1.2.3.4:80 for http, but ONLY from the inside so that port forwards work externally.
-        for intf in settings.get('interfaces').get('list'):
+        for intf in settings.get('interfaces'):
             if intf.get('configType') == 'ADDRESSED' and intf.get('isWan'):
                 # now find all interfaces bridged to this WAN
-                for sub_intf in settings.get('interfaces').get('list'):
+                for sub_intf in settings.get('interfaces'):
                     if sub_intf.get('configType') == 'BRIDGED' and sub_intf.get('bridgedTo') == intf.get('interfaceId'):
                         self.file.write("# don't allow port forwarding of http port of primary IP of WAN from bridged interface %i.\n" % sub_intf.get('interfaceId'))
                         self.file.write("ADDR=\"`ip addr show %s | awk '/^ *inet.*scope global/ { interface = $2 ; sub( \"/.*\", \"\", interface ) ; print interface ; exit }'`\"\n" % intf.get('symbolicDev'))

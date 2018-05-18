@@ -85,9 +85,8 @@ class DynamicRoutingManager:
 
             if "dynamicRoutingSettings" in settings:
                 if ( daemon+"Enabled" in settings["dynamicRoutingSettings"] and 
-                     daemon+"Networks" in settings["dynamicRoutingSettings"] and
-                    "list" in settings["dynamicRoutingSettings"][daemon+"Networks"] ):
-                    for networkSetting in settings["dynamicRoutingSettings"][daemon+"Networks"]["list"]:
+                     daemon+"Networks" in settings["dynamicRoutingSettings"] ):
+                    for networkSetting in settings["dynamicRoutingSettings"][daemon+"Networks"]:
                         if networkSetting["enabled"]:
                             network = networkSetting["network"] + "/" + str(networkSetting["prefix"])
                             if not network in networks:
@@ -105,8 +104,8 @@ class DynamicRoutingManager:
             #
             # Look at static route settings
             #
-            if "staticRoutes" in settings and "list" in settings["staticRoutes"]:
-                for route in settings["staticRoutes"]["list"]:
+            if "staticRoutes" in settings:
+                for route in settings["staticRoutes"]:
                     route_prefix = route["prefix"]
                     route_network_bits = self.address_to_bits(route["network"])
                     if dynamic_prefix <= route_prefix and dynamic_network_bits[:route_prefix] == route_network_bits[:route_prefix]:
@@ -119,13 +118,13 @@ class DynamicRoutingManager:
             #
             # Look at interface settings.
             #
-            if "interfaces" in settings and "list" in settings["interfaces"]:
-                for interface in settings["interfaces"]["list"]:
+            if "interfaces" in settings:
+                for interface in settings["interfaces"]:
                     #
                     #  Treat aliases like routes.
                     #
-                    if interface["configType"] == "ADDRESSED" and interface["v4Aliases"] and interface["v4Aliases"]["list"]:
-                        for alias in interface["v4Aliases"]["list"]:
+                    if interface["configType"] == "ADDRESSED" and interface["v4Aliases"]:
+                        for alias in interface["v4Aliases"]:
                             alias_prefix = int(alias["staticPrefix"])
                             alias_network_bits = self.address_to_bits(alias["staticAddress"])
                             if dynamic_prefix <= alias_prefix and dynamic_network_bits[:alias_prefix] == alias_network_bits[:alias_prefix]:
@@ -290,14 +289,14 @@ line vty
             os.makedirs( file_dir )
 
         bgp_networks = []
-        if settings['dynamicRoutingSettings'].get('bgpNetworks') is not None and settings['dynamicRoutingSettings']['bgpNetworks']["list"]:
-            for network in settings['dynamicRoutingSettings']['bgpNetworks']["list"]:
+        if settings['dynamicRoutingSettings'].get('bgpNetworks') is not None and settings['dynamicRoutingSettings']['bgpNetworks']:
+            for network in settings['dynamicRoutingSettings']['bgpNetworks']:
                 if network["enabled"] is True:
                     bgp_networks.append("network {0}/{1}".format(network["network"], network["prefix"]) )
 
         bgp_neighbors = []
-        if settings['dynamicRoutingSettings'].get('bgpNeighbors') is not None and settings['dynamicRoutingSettings']['bgpNeighbors']["list"]:
-            for neighbor in settings['dynamicRoutingSettings']['bgpNeighbors']["list"]:
+        if settings['dynamicRoutingSettings'].get('bgpNeighbors') is not None and settings['dynamicRoutingSettings']['bgpNeighbors']:
+            for neighbor in settings['dynamicRoutingSettings']['bgpNeighbors']:
                 if neighbor["enabled"] is True:
                     bgp_neighbors.append("""\
 neighbor {0} remote-as {1}
@@ -352,8 +351,8 @@ route-map set-nexthop permit 10
         for interface in interfaces_from_networks:
             ospf_interfaces.append("interface {0}".format(interface["dev"]) )
 
-            if "ospfInterfaces" in settings['dynamicRoutingSettings'] and "list" in settings['dynamicRoutingSettings']['ospfInterfaces']:
-                for ospf_interface in settings['dynamicRoutingSettings']['ospfInterfaces']["list"]:
+            if "ospfInterfaces" in settings['dynamicRoutingSettings']:
+                for ospf_interface in settings['dynamicRoutingSettings']['ospfInterfaces']:
                     if ospf_interface["dev"] == interface["dev"] and ospf_interface["enabled"] is True:
                         if ospf_interface["authentication"] != 0:
                             if ospf_interface["authentication"] == 1:
@@ -375,12 +374,12 @@ route-map set-nexthop permit 10
 
         ospf_ids_areas = {}
         ospf_areas = []
-        if "ospfAreas" in settings['dynamicRoutingSettings'] and "list" in settings['dynamicRoutingSettings']['ospfAreas']:
-            for area in settings['dynamicRoutingSettings']['ospfAreas']["list"]:
+        if "ospfAreas" in settings['dynamicRoutingSettings']:
+            for area in settings['dynamicRoutingSettings']['ospfAreas']:
                 ospf_ids_areas[area["ruleId"]] = area["area"]
                 if area["type"] == 0:
-                    if "virtualLinks" in area and "list" in area["virtualLinks"]:
-                        for virtual_link in area["virtualLinks"]["list"]:
+                    if "virtualLinks" in area:
+                        for virtual_link in area["virtualLinks"]:
                             ospf_areas.append(" area {0} virtual-link {1}".format(area["area"], virtual_link))
                 else:
                     if area["type"] == 1:
@@ -430,8 +429,8 @@ route-map set-nexthop permit 10
 
 
         ospf_networks = []
-        if 'ospfNetworks' in settings['dynamicRoutingSettings'] and "list" in settings['dynamicRoutingSettings']['ospfNetworks']:
-            for network in settings['dynamicRoutingSettings']['ospfNetworks']["list"]:
+        if 'ospfNetworks' in settings['dynamicRoutingSettings']:
+            for network in settings['dynamicRoutingSettings']['ospfNetworks']:
                 if network["enabled"] is True:
                     ospf_networks.append(" network {0}/{1} area {2}".format(network["network"], network["prefix"], ospf_ids_areas[network["area"]]) )
                     for interface in interfaces_from_networks:

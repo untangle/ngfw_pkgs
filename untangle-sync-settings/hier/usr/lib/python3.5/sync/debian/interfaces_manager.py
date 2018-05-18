@@ -69,8 +69,8 @@ class InterfacesManager:
         bridgeMinMtu = None
         if isBridge:
             for intf in bridgedInterfaces:
-                if intf.get('physicalDev') != None and settings.get('devices') != None and settings.get('devices').get('list') != None:
-                    for devSettings in settings.get('devices').get('list'):
+                if intf.get('physicalDev') != None and settings.get('devices') != None:
+                    for devSettings in settings.get('devices'):
                         if devSettings.get('deviceName') != None and devSettings.get('deviceName') == intf.get('physicalDev'):
                             if devSettings.get('mtu') != None:
                                 # mtu found
@@ -127,8 +127,8 @@ class InterfacesManager:
 
         # write VRRP source routes
         if interface_settings.get('isWan') and interface_settings.get('configType') == 'ADDRESSED' and interface_settings.get('vrrpEnabled'):
-            if interface_settings.get('vrrpAliases') != None and interface_settings.get('vrrpAliases').get('list') != None:
-                for alias in interface_settings.get('vrrpAliases').get('list'):
+            if interface_settings.get('vrrpAliases') != None:
+                for alias in interface_settings.get('vrrpAliases'):
                     self.interfaces_file.write("\tpost-up /usr/share/untangle-sync-settings/bin/add-source-route.sh %s \"uplink.%i\" -4\n" % (alias.get('staticAddress'), interface_settings.get('interfaceId'))) 
             
         if interface_settings.get('isWirelessInterface'):
@@ -214,8 +214,8 @@ class InterfacesManager:
 
         # handle v4 aliases
         count = 1
-        if interface_settings.get('v4Aliases') != None and interface_settings.get('v4Aliases').get('list') != None:
-            for alias in interface_settings.get('v4Aliases').get('list'):
+        if interface_settings.get('v4Aliases') != None:
+            for alias in interface_settings.get('v4Aliases'):
                 self.interfaces_file.write("## Interface %i IPv4 alias\n" % (interface_settings.get('interfaceId')) )
                 self.interfaces_file.write("auto %s:%i\n" % (intf_str, count))
                 self.interfaces_file.write("iface %s:%i inet manual\n" % ( intf_str, count ))
@@ -226,8 +226,8 @@ class InterfacesManager:
                 count = count+1
 
         # handle v6 aliases
-        if interface_settings.get('v6Aliases') != None and interface_settings.get('v6Aliases').get('list') != None:
-            for alias in interface_settings.get('v6Aliases').get('list'):
+        if interface_settings.get('v6Aliases') != None:
+            for alias in interface_settings.get('v6Aliases'):
                 self.interfaces_file.write("## Interface %i IPv6 alias\n" % (interface_settings.get('interfaceId')) )
                 self.interfaces_file.write("auto %s:%i\n" % (intf_str, count))
                 self.interfaces_file.write("iface %s:%i inet manual\n" % ( intf_str, count ))
@@ -280,17 +280,17 @@ class InterfacesManager:
         self.interfaces_file.write("\n\n");
 
         # Write disable interfaces first
-        if settings != None and settings.get('disabledInterfaces') != None and settings.get('disabledInterfaces').get('list') != None:
-            for interface_settings in settings.get('disabledInterfaces').get('list'):
+        if settings != None and settings.get('disabledInterfaces') != None:
+            for interface_settings in settings.get('disabledInterfaces'):
 
                 try:
-                    self.write_interface_disabled( interface_settings, settings.get('interfaces').get('list') )
+                    self.write_interface_disabled( interface_settings, settings.get('interfaces') )
                 except Exception as exc:
                     traceback.print_exc()
 
         # Write addressed interfaces last
-        if settings != None and settings.get('interfaces') != None and settings.get('interfaces').get('list') != None:
-            for interface_settings in settings.get('interfaces').get('list'):
+        if settings != None and settings.get('interfaces') != None:
+            for interface_settings in settings.get('interfaces'):
                 # only write 'ADDRESSED' interfaces
                 if interface_settings.get('configType') != 'ADDRESSED':
                     continue
@@ -301,15 +301,15 @@ class InterfacesManager:
 
                 # Now write the main interface configurations
                 try:
-                    self.write_interface_v4( interface_settings, settings.get('interfaces').get('list') , settings)
+                    self.write_interface_v4( interface_settings, settings.get('interfaces') , settings)
                 except Exception as exc:
                     traceback.print_exc()
                 try:
-                    self.write_interface_v6( interface_settings, settings.get('interfaces').get('list') )
+                    self.write_interface_v6( interface_settings, settings.get('interfaces') )
                 except Exception as exc:
                     traceback.print_exc()
                 try:
-                    self.write_interface_aliases( interface_settings, settings.get('interfaces').get('list') )
+                    self.write_interface_aliases( interface_settings, settings.get('interfaces') )
                 except Exception as exc:
                     traceback.print_exc()
 
@@ -488,7 +488,7 @@ class InterfacesManager:
 
 
     def write_interface_marks( self, settings, prefix, verbosity ):
-        interfaces = settings['interfaces']['list']
+        interfaces = settings['interfaces']
 
         filename = prefix + self.interfaces_marks_filename
         file_dir = os.path.dirname( filename )
@@ -621,7 +621,7 @@ rm -f /var/lib/interface-status/interface*status.js
 """)
         file.write("echo 1 > /proc/sys/net/ipv6/conf/all/forwarding" + "\n")
         file.write("echo 0 > /proc/sys/net/ipv6/conf/default/forwarding" + "\n")
-        for intf in settings.get('interfaces').get('list'):
+        for intf in settings.get('interfaces'):
             file.write("if [ -f /proc/sys/net/ipv6/conf/%s/forwarding ] ; then echo 0 > /proc/sys/net/ipv6/conf/%s/forwarding; fi" % (intf['physicalDev'], intf['physicalDev'])+ "\n")
 
         file.flush()
@@ -635,7 +635,7 @@ rm -f /var/lib/interface-status/interface*status.js
         lxcInterfaceId = settings.get('lxcInterfaceId')
         if lxcInterfaceId == 0 or lxcInterfaceId == None:
             try:
-                for intf in settings.get('interfaces').get('list'):
+                for intf in settings.get('interfaces'):
                     if not intf.get('isWan'):
                         lxcInterfaceId = intf.get('interfaceId')
                         return lxcInterfaceId
