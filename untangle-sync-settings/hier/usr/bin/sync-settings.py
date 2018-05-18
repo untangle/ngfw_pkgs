@@ -34,34 +34,43 @@ import time
 
 from   sync import *
 
-if os.path.isfile('/etc/debian_version'):
-    from   sync.debian import *
     
-
 class ArgumentParser(object):
     def __init__(self):
         self.filename = '/usr/share/untangle/settings/untangle-vm/network.js'
+        if os.path.isfile('/etc/debian_version'):
+            self.os = 'debian'
+        self.os = 'debian'
         self.restart_services = True
         self.test_run = False
+        self.create_settings = False
 
     def set_filename( self, arg ):
         self.filename = arg
 
+    def set_os( self, arg ):
+        self.os = arg
+        
     def set_norestart( self, arg ):
         self.restart_services = False
 
     def set_test_run( self, arg ):
         self.test_run = True
 
+    def set_create_settings( self, arg ):
+        self.create_settings = True
+        
     def parse_args( self ):
         handlers = {
             '-f' : self.set_filename,
+            '-o' : self.set_os,
             '-n' : self.set_norestart,
             '-s' : self.set_test_run,
+            '-c' : self.set_create_settings,
         }
 
         try:
-            (optlist, args) = getopt.getopt(sys.argv[1:], 'f:ns')
+            (optlist, args) = getopt.getopt(sys.argv[1:], 'f:o:nsc')
             for opt in optlist:
                 handlers[opt[0]](opt[1])
             return args
@@ -71,9 +80,7 @@ class ArgumentParser(object):
             exit(1)
 
 def cleanup(code):
-    global tmpdir
-    if tmpdir != None:
-        shutil.rmtree(tmpdir)
+    cleanup_tmpdirs()
     exit(code)
 
 def print_usage():
@@ -81,6 +88,7 @@ def print_usage():
 %s Usage:
   optional args:
     -f <file>   : settings filename to sync to OS
+    -c          : create settings file if non-existant
     -n          : do not run restart commands (just copy files onto filesystem)
     -s          : do not copy or run restart commands (test run)
 """ % sys.argv[0] )
@@ -288,9 +296,7 @@ def calculate_deleted_files(tmpdir_delete):
             rootpath = os.path.join(root,file).replace(tmpdir_delete,"")
             if os.path.lexists(rootpath):
                 deleted_files.append(rootpath)
-    if len(deleted_files) == 0:
-        print("No deleted files.")
-    else:
+    if len(deleted_files) > 0:
         print("Deleted files:")
         for f in deleted_files:
             print(f)
@@ -450,20 +456,68 @@ def make_tmpdirs():
         traceback.print_exc()
         cleanup(1)
 
+def cleanup_tmpdirs():
+    global tmpdir, tmpdir_delete
+    if tmpdir != None:
+        shutil.rmtree(tmpdir)
+    if tmpdir_delete != None:
+        shutil.rmtree(tmpdir_delete)
+        
 def read_settings():
     """
     Read and parse the settings file
     """
     global settings
     try:
-        settingsFile = open(parser.filename, 'r')
-        settingsData = settingsFile.read()
-        settingsFile.close()
-        settings = json.loads(settingsData, object_pairs_hook=collections.OrderedDict)
+        settings_file = open(parser.filename, 'r')
+        settings_data = settings_file.read()
+        settings_file.close()
+        settings = json.loads(settings_data, object_pairs_hook=collections.OrderedDict)
     except IOError as e:
         print("Unable to read settings file: ",e)
         cleanup(1)
 
+def create_settings_in_tmpdir(tmpdir, tmpdir_delete):
+    new_settings = {}
+    delete_list=[]
+
+    for manager in sync.registrar.managers:
+        try:
+            manager.create_settings(new_settings, tmpdir, delete_list, verbosity=2)
+        except Exception as e:
+            traceback.print_exc()
+            return 1
+
+    for filename in delete_list:
+        path = tmpdir_delete + filename
+        file_dir = os.path.dirname( path )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
+        file = open( path, "w+" )
+        file.write("\n\n");
+        file.flush()
+        file.close()
+        
+    return 0
+    
+def create_settings():
+    """
+    Create settings from scratch
+    """
+    result = call_without_permissions(create_settings_in_tmpdir, tmpdir, tmpdir_delete)
+    if result != 0:
+        print("\nError during sync process. Abort.")
+        cleanup(result)
+
+    deleted_files = calculate_deleted_files(tmpdir_delete)
+    if len(deleted_files) > 0:
+        delete_files(deleted_files)
+    copy_files(tmpdir)
+
+    # Cleanup and make new tmpdirs
+    cleanup_tmpdirs()
+    make_tmpdirs()
+        
 # Duplicate all stdout to log
 tee_stdout_log()
 
@@ -478,7 +532,21 @@ tmpdir_delete = None
 
 parser.parse_args()
 
+if parser.os == 'debian':
+    from   sync.debian import *
+elif parser.os == 'openwrt':
+    from   sync.openwrt import *
+else:
+    print("\nUnknown OS: " + parser.os)
+    cleanup(1)
+
 make_tmpdirs()
+
+# Initialize all managers
+init_managers()
+
+if parser.create_settings:
+    create_settings()
 
 read_settings()
 
@@ -499,9 +567,6 @@ except Exception as e:
 # os.system("python -m simplejson.tool %s.tmp > %s ; rm %s.tmp " % (sanitized_filename, sanitized_filename, sanitized_filename))
 
 NetworkUtil.settings = settings
-
-# Initialize all managers
-init_managers()
 
 print("")
 
