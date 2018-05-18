@@ -68,5 +68,4 @@ class EthernetManager:
 
         return
 
-
-        
+registrar.register_manager(EthernetManager())

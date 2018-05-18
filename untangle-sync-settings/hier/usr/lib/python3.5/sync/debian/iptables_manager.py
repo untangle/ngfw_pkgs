@@ -365,4 +365,4 @@ done
         if verbosity > 0:
             print("IptablesManager: Wrote %s" % filename)
 
-
+registrar.register_manager(IptablesManager())

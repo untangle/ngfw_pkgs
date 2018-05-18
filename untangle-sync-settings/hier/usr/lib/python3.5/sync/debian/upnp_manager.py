@@ -226,3 +226,4 @@ insert_upnp_iptables_rules
         if verbosity > 0: print("UpnpManager: Wrote %s" % filename)
         return
 
+registrar.register_manager(UpnpManager())

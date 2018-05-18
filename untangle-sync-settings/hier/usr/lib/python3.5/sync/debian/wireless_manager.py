@@ -404,4 +404,5 @@ class WirelessManager:
 
         return
 
+registrar.register_manager(WirelessManager())
 

@@ -95,3 +95,5 @@ fi
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         if verbosity > 0: print("RadvdManager: Wrote %s" % filename)
         return
+
+registrar.register_manager(RadvdManager())

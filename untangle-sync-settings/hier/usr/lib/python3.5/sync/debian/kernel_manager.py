@@ -110,3 +110,4 @@ class KernelManager:
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         if verbosity > 0: print("KernelManager: Wrote %s" % filename)
 
+registrar.register_manager(KernelManager())

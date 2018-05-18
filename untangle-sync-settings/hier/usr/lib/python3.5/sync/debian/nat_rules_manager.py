@@ -243,3 +243,4 @@ class NatRulesManager:
 
         return
 
+registrar.register_manager(NatRulesManager())

@@ -644,8 +644,5 @@ rm -f /var/lib/interface-status/interface*status.js
 
         if lxcInterfaceId == 0 or lxcInterfaceId == None:
             return None
-
-
         
-
-        
+registrar.register_manager(InterfacesManager())

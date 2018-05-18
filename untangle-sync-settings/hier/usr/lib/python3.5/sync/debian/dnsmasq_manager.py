@@ -253,3 +253,4 @@ fi
         if verbosity > 0: print("DnsMasqManager: Wrote %s" % filename)
         return
 
+registrar.register_manager(DnsMasqManager())

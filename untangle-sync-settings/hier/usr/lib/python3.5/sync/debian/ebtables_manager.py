@@ -57,3 +57,4 @@ class EbtablesManager:
 
         return
 
+registrar.register_manager(EbtablesManager())

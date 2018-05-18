@@ -164,4 +164,4 @@ class BypassRuleManager:
 
         return
 
-    
+registrar.register_manager(BypassRuleManager())
