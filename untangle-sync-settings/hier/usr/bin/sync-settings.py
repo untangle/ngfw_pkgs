@@ -114,158 +114,6 @@ def fixup_settings(json):
         for i in range(len(json)):
             fixup_settings(json[i])
 
-def check_settings( settings ):
-    """
-    Sanity check the settings
-    """
-    if settings is None:
-        raise Exception("Invalid Settings: null")
-
-    if 'interfaces' not in settings:
-        raise Exception("Invalid Settings: missing interfaces")
-    interfaces = settings['interfaces']
-    for intf in interfaces:
-        for key in ['interfaceId', 'name', 'systemDev', 'symbolicDev', 'physicalDev', 'configType']:
-            if key not in intf:
-                raise Exception("Invalid Interface Settings: missing key %s" % key)
-
-    if 'virtualInterfaces' not in settings:
-        raise Exception("Invalid Settings: missing virtualInterfaces")
-    virtualInterfaces = settings['virtualInterfaces']
-    for intf in virtualInterfaces:
-        for key in ['interfaceId', 'name']:
-            if key not in intf:
-                raise Exception("Invalid Virtual Interface Settings: missing key %s" % key)
-
-def cleanup_settings( settings ):
-    """
-    This removes/disable hidden fields in the interface settings so we are certain they don't apply
-    We do these operations here because we don't want to actually modify the settings
-    For example, lets say you have DHCP enabled, but then you choose to bridge that interface to another instead.
-    The settings will reflect that dhcp is still enabled, but to the user those fields are hidden.
-    It is convenient to keep it enabled in the settings so when the user switches back to their previous settings
-    everything is still the same. However, we need to make sure that we don't actually enable DHCP on that interface.
-
-    This function runs through the settings and removes/disables settings that are hidden/disabled in the current configuration.
-    """
-    interfaces = settings['interfaces']
-    virtualInterfaces = settings['virtualInterfaces']
-
-    # Remove disabled interfaces from regular interfaces list
-    # Save them in another field in case anyone needs them
-    disabled_interfaces = [ intf for intf in interfaces if intf.get('configType') == 'DISABLED' ]
-    new_interfaces = [ intf for intf in interfaces if intf.get('configType') != 'DISABLED' ]
-    new_interfaces = sorted( new_interfaces, key=lambda x:x.get('interfaceId') )
-    settings['interfaces'] = new_interfaces
-    settings['disabledInterfaces'] = disabled_interfaces
-
-    disabled_virtual_interfaces = [ ]
-    new_virtual_interfaces = [ intf for intf in virtualInterfaces ]
-    new_virtual_interfaces = sorted( new_virtual_interfaces, key=lambda x:x.get('interfaceId') )
-    settings['virtualInterfaces'] = new_virtual_interfaces
-    settings['disabledVirtualInterfaces'] = disabled_virtual_interfaces
-    
-    # Disable DHCP if if its a WAN or bridged to another interface
-    for intf in interfaces:
-        if intf['isWan'] or intf['configType'] == 'BRIDGED':
-            for key in list(intf.keys()):
-                if key.startswith('dhcp'):
-                    del intf[key]
-
-    # Disable NAT options on bridged interfaces
-    for intf in interfaces:
-        if intf['configType'] == 'BRIDGED':
-            if 'v4NatEgressTraffic' in intf: del intf['v4NatEgressTraffic']
-            if 'v4NatIngressTraffic' in intf: del intf['v4NatIngressTraffic']
-
-    # Disable Gateway for non-WANs
-    for intf in interfaces:
-        if intf.get('isWan') != True:
-            if 'v4StaticGateway' in intf: del intf['v4StaticGateway']
-            if 'v6StaticGateway' in intf: del intf['v6StaticGateway']
-
-    # Disable egress NAT on non-WANs
-    # Disable ingress NAT on WANs
-    for intf in interfaces:
-        if intf['isWan']:
-            if 'v4NatIngressTraffic' in intf: del intf['v4NatIngressTraffic']
-        if not intf['isWan']:
-            if 'v4NatEgressTraffic' in intf: del intf['v4NatEgressTraffic']
-
-    # Remove PPPoE settings if not PPPoE intf
-    for intf in interfaces:
-        if intf['v4ConfigType'] != 'PPPOE':
-            for key in list(intf.keys()):
-                if key.startswith('v4PPPoE'):
-                    del intf[key]
-
-    # Remove static settings if not static intf
-    for intf in interfaces:
-        if intf['v4ConfigType'] != 'STATIC':
-            for key in list(intf.keys()):
-                if key.startswith('v4Static'):
-                    del intf[key]
-
-    # Remove auto settings if not auto intf
-    for intf in interfaces:
-        if intf['v4ConfigType'] != 'AUTO':
-            for key in list(intf.keys()):
-                if key.startswith('v4Auto'):
-                    del intf[key]
-
-    # Remove bridgedTo settings if not bridged
-    for intf in interfaces:
-        if intf['configType'] != 'BRIDGED':
-            if 'bridgedTo' in intf: del intf['bridgedTo']
-
-    # In 13.1 we renamed inputFilterRules to accessRules
-    # Check for safety NGFW-10791
-    # This can be removed after 13.1
-    if settings.get('inputFilterRules') != None and settings.get('accessRules') == None:
-        print("WARNING: accessRules missing - using inputFilterRules")
-        settings['accessRules'] = settings.get('inputFilterRules')
-
-    # In 13.1 we renamed forwardFilterRules to filterRules
-    # Check for safety NGFW-10791
-    # This can be removed after 13.1
-    if settings.get('forwardFilterRules') != None and settings.get('filterRules') == None:
-        print("WARNING: filterRules missing - using forwardFilterRules")
-        settings['filterRules'] = settings.get('forwardFilterRules')
-        
-    return
-
-
-def check_registrar_files(tmpdir):
-    """
-    This checks that all files written in tmpdir are properly registered
-    in the registrar. If a file is missing in the registrar exit(1) is
-    called to exit immediately
-    """
-    for root, dirs, files in os.walk(tmpdir):
-        for filename in files:
-            rootpath = os.path.join(root,filename).replace(tmpdir,"")
-            result = registrar.registrar_check_file(rootpath)
-            if not result:
-                print("File missing in registrar: " + filename)
-                cleanup(1)
-
-def check_registrar_operations(operations):
-    """
-    Check that all operations in the ops list is in the registrar
-    If an operation is missing in the registrar exit(1) is
-    called to exit immediately
-    """
-    if operations == None:
-        return
-    if len(operations) > 0:
-        print("Required operations: ")
-    for op in operations:
-        print(op)
-        o = registrar.operations.get(op)
-        if o == None:
-            print("Operation missing from registrar: " + op)
-            cleanup(1)
-                
 def calculate_changed_files(tmpdir):
     """
     Compares the contents of tmpdir with the existing filesystem
@@ -569,8 +417,10 @@ read_settings()
 
 try:
     fixup_settings(settings)
-    check_settings(settings)
-    cleanup_settings(settings)
+    if sync.registrar.settings_verify_function != None:
+        sync.registrar.settings_verify_function(settings)
+    if sync.registrar.settings_cleanup_function != None:
+        sync.registrar.settings_cleanup_function(settings)
 except Exception as e:
     traceback.print_exc()
     cleanup(1)
@@ -599,7 +449,10 @@ if result != 0:
 print("")
 
 # Check that all new files in the tmpdir are registered in the registrar
-check_registrar_files(tmpdir)
+if registrar.check_registrar_files(tmpdir) != 0:
+    print("File missing in registrar: " + filename)
+    cleanup(1)
+
 
 # Calculate the changed files and the needed operations
 changed_files = calculate_changed_files(tmpdir)
@@ -608,7 +461,9 @@ operations = registrar.calculate_required_operations(changed_files)
 operations = registrar.reduce_operations(operations)
 
 # Check that all operations are registered
-check_registrar_operations(operations)
+if registrar.check_registrar_operations(operations) != 0:
+    print("Operation missing from registrar: " + op)
+    cleanup(1)
 
 print("")
 if parser.test_run:

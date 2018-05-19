@@ -70,7 +70,7 @@ class QosManager:
         return
 
     def write_qos_custom_rules( self, settings, verbosity=0 ):
-        if settings == None or 'qosRules' not in settings:
+        if 'qosRules' not in settings:
             print("ERROR: Missing QoS Custom Rules")
             return
         
@@ -230,8 +230,6 @@ class QosManager:
         # file.write("tc filter add dev %s pref 1 parent 1: protocol ip handle 1 flow hash keys dst\n" % (imq_dev) )
 
     def write_qos_hook( self, settings, prefix, verbosity ):
-        if settings == None or settings.get('interfaces') == None:
-            return;
         if settings.get('qosSettings') == None:
             return;
         qos_settings = settings.get('qosSettings')
