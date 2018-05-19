@@ -26,6 +26,12 @@ files = {}
 # managers are responsible for serializing the settings to disk
 managers = []
 
+# settings verification function
+settings_verify_function = None
+
+# settings cleanup function
+settings_cleanup_function = None
+
 def register_manager( manager ):
     global managers
     managers.append(manager)
@@ -141,7 +147,35 @@ def reduce_operations( ops ):
 
     return(ops)
 
+def check_registrar_files(tmpdir):
+    """
+    This checks that all files written in tmpdir are properly registered
+    in the registrar. Returns 1 if error, 0 otherwise
+    """
+    for root, dirs, files in os.walk(tmpdir):
+        for filename in files:
+            rootpath = os.path.join(root,filename).replace(tmpdir,"")
+            result = registrar_check_file(rootpath)
+            if not result:
+                return 1
+    return 0
 
+def check_registrar_operations(ops):
+    """
+    Check that all operations in the ops list is in the registrar
+    Returns 1 if an operation is missing in the registrar 
+    0 otherwise
+    """
+    if ops == None:
+        return 0
+    if len(ops) > 0:
+        print("Required operations: ")
+    for op in ops:
+        print(op)
+        o = operations.get(op)
+        if o == None:
+            return 1
+    return 0
 
 
 

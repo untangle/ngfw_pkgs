@@ -280,38 +280,35 @@ class InterfacesManager:
         self.interfaces_file.write("\n\n");
 
         # Write disable interfaces first
-        if settings != None and settings.get('disabledInterfaces') != None:
-            for interface_settings in settings.get('disabledInterfaces'):
-
-                try:
-                    self.write_interface_disabled( interface_settings, settings.get('interfaces') )
-                except Exception as exc:
-                    traceback.print_exc()
+        for interface_settings in settings.get('disabledInterfaces'):
+            try:
+                self.write_interface_disabled( interface_settings, settings.get('interfaces') )
+            except Exception as exc:
+                traceback.print_exc()
 
         # Write addressed interfaces last
-        if settings != None and settings.get('interfaces') != None:
-            for interface_settings in settings.get('interfaces'):
-                # only write 'ADDRESSED' interfaces
-                if interface_settings.get('configType') != 'ADDRESSED':
-                    continue
+        for interface_settings in settings.get('interfaces'):
+            # only write 'ADDRESSED' interfaces
+            if interface_settings.get('configType') != 'ADDRESSED':
+                continue
 
-                # if invalid settigs, skip it
-                if not self.check_interface_settings( interface_settings ):
-                    continue
+            # if invalid settigs, skip it
+            if not self.check_interface_settings( interface_settings ):
+                continue
 
-                # Now write the main interface configurations
-                try:
-                    self.write_interface_v4( interface_settings, settings.get('interfaces') , settings)
-                except Exception as exc:
-                    traceback.print_exc()
-                try:
-                    self.write_interface_v6( interface_settings, settings.get('interfaces') )
-                except Exception as exc:
-                    traceback.print_exc()
-                try:
-                    self.write_interface_aliases( interface_settings, settings.get('interfaces') )
-                except Exception as exc:
-                    traceback.print_exc()
+            # Now write the main interface configurations
+            try:
+                self.write_interface_v4( interface_settings, settings.get('interfaces') , settings)
+            except Exception as exc:
+                traceback.print_exc()
+            try:
+                self.write_interface_v6( interface_settings, settings.get('interfaces') )
+            except Exception as exc:
+                traceback.print_exc()
+            try:
+                self.write_interface_aliases( interface_settings, settings.get('interfaces') )
+            except Exception as exc:
+                traceback.print_exc()
 
         self.interfaces_file.write("## This is a fake interface that launches the post-networking-restart\n");
         self.interfaces_file.write("## hooks using the if-up.d scripts when IFACE=networking_post_restart_hook\n");

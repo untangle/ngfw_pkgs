@@ -255,9 +255,6 @@ class WirelessManager:
             if not os.path.exists( file_dir ):
                 os.makedirs( file_dir )
 
-        if settings == None or settings.get('interfaces') == None:
-            return
-
         interfaces = settings.get('interfaces')
 
         for intf in interfaces:
@@ -329,9 +326,6 @@ class WirelessManager:
             fileDir = os.path.dirname( filename )
             if not os.path.exists( fileDir ):
                 os.makedirs( fileDir )
-
-        if settings == None or settings.get('interfaces') == None:
-            return
 
         interfaces = settings.get('interfaces')
 
