@@ -185,7 +185,10 @@ def copy_files(tmpdir):
     """
     Copy the files from tmpdir into the root filesystem
     """
-    cmd = "/bin/cp -ar --remove-destination " + tmpdir+"/*" + " /"
+    if parser.os == 'debian':
+        cmd = "/bin/cp -ar --remove-destination " + tmpdir+"/*" + " /"
+    else:
+        cmd = "/bin/cp -ar " + tmpdir+"/*" + " /"
     result = run_cmd(cmd)
     if result != 0:
         print("Failed to copy results: " + str(result))
