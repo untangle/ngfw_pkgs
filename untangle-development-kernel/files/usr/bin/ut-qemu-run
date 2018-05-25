@@ -123,7 +123,8 @@ case $ARCH in
 esac
 
 if [[ $(uname -m) == "$QEMU_ARCH" ]] ; then
-  ENABLE_KVM="-enable-kvm"
+    CPU_COUNT="`grep '^processor' /proc/cpuinfo | wc -l `"
+    ENABLE_KVM="-enable-kvm -cpu host -smp $CPU_COUNT"
 fi
 
 qemu-system-$QEMU_ARCH \
