@@ -16,9 +16,22 @@ PG_CONF_NEW="/etc/postgresql/${VERSION_NEW}/main/postgresql.conf"
 if [ -d $PG_VAR_DIR_OLD ] ; then
   echo "[$(date +%Y-%m%-dT%H:%m)] Starting conversion"
 
-  systemctl stop postgresql
-  /etc/init.d/postgresql stop
+  # Stop all instances
+  systemctl stop postgresql || true
+  /etc/init.d/postgresql stop || true
+
+  # Start 9.4
+  systemctl start postgresql@9.4-main || true
+  /etc/init.d/postgresql start 9.4 || true
+
+  # Drop old extension (pervent upgrade from working)
+  psql -U postgres -c "drop extension tablefunc" uvm || true
+
+  # Stop all instances
+  systemctl stop postgresql || true
+  /etc/init.d/postgresql stop || true
   
+  # Run conversion
   pushd /tmp
   su postgres -c "/usr/lib/postgresql/${VERSION_NEW}/bin/pg_upgrade --link -b $PG_BIN_DIR_OLD -B $PG_BIN_DIR_NEW -d $PG_VAR_DIR_OLD -D $PG_VAR_DIR_NEW -o ' -c config_file='$PG_CONF_OLD -O ' -c config_file='$PG_CONF_NEW"
   if [ $? != 0 ] ; then
