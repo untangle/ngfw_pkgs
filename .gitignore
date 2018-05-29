@@ -9,3 +9,5 @@ GTAGS
 core
 debootstrap.log
 *.buildinfo
+.pybuild
+*.egg-info
