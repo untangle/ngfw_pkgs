@@ -16,6 +16,7 @@ class SettingsManager:
         pass
 
     def create_settings( self, settings, prefix, delete_list, verbosity=0 ):
+        print("%s: Initializing settings" % self.__class__.__name__)
         filename = prefix + self.settings_file
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -25,16 +26,14 @@ class SettingsManager:
 
         self.settings_file = open( filename, "w+" )
         self.settings_file.write(json_str)
+        self.settings_file.write("\n")
         self.settings_file.flush()
         self.settings_file.close()
         
         if verbosity > 0:
-            print("SettingsManager: Wrote %s" % filename)
+            print("%s: Wrote %s" % (self.__class__.__name__,filename))
         
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
         pass
         
-    def write_network_file( self, settings, prefix="", verbosity=0 ):
-        pass
-    
 registrar.register_manager(SettingsManager())
