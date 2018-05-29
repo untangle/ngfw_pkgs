@@ -1,3 +1,4 @@
+untangle-python-sync-settings		stretch
 untangle-pyconnector			stretch
 untangle-development-kernel		stretch
 untangle-root				stretch
