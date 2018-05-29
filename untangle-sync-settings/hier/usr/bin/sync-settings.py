@@ -15,8 +15,14 @@
 # Afterwards it will be necessary to restart certain services so the new settings will take effect
 
 import sys
-if sys.version_info[0] == 3 and sys.version_info[1] == 5:
-    sys.path.insert(0, sys.path[0] + "/" + "../lib/" + "python3.5/")
+# Prepend the dev environment path to the path for running from dev environment
+cwd = sys.path[0]
+sys.path.insert(0, cwd + "/" + "../lib/" + "python%i.%i/"%(sys.version_info[0],sys.version_info[1]))
+
+# Hack to support both 3.5 and 3.6 for a short time
+# FIXME - REMOVE ME
+sys.path.insert(0, cwd + "/" + "../lib/" + "python3.5/")
+sys.path.insert(0, cwd + "/" + "../lib/" + "python3.6/")
 
 import getopt
 import json
