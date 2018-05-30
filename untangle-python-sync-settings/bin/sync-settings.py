@@ -30,8 +30,7 @@ import traceback
 import collections
 import time
 
-from   sync import *
-
+import sync
     
 class ArgumentParser(object):
     def __init__(self):
