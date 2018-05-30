@@ -34,24 +34,24 @@ class InterfacesManager:
     def write_interface_v4( self, interface_settings, interfaces, settings ):
 
         # find interfaces bridged to this interface
-        isBridge = False
-        bridgedInterfacesStr = []
-        bridgedInterfaces = []
+        is_bridge = False
+        bridged_interfaces_str = []
+        bridged_interfaces = []
         for intf in interfaces:
             if intf.get('configType') == 'BRIDGED' and intf.get('bridgedTo') == interface_settings.get('interfaceId'):
-                bridgedInterfacesStr.append(str(intf.get('systemDev')))
-                bridgedInterfaces.append(intf)
-        if len(bridgedInterfaces) > 0:
-            isBridge = True
-            bridgedInterfacesStr.append(interface_settings.get('systemDev')) # include yourself in bridge
-            bridgedInterfaces.append(interface_settings) # include yourself in bridge
+                bridged_interfaces_str.append(str(intf.get('systemDev')))
+                bridged_interfaces.append(intf)
+        if len(bridged_interfaces) > 0:
+            is_bridge = True
+            bridged_interfaces_str.append(interface_settings.get('systemDev')) # include yourself in bridge
+            bridged_interfaces.append(interface_settings) # include yourself in bridge
         # We want to add the physical devices to the bridge first (see issue NGFW-10101)
         # And easy way to do this is to just sort by length
-        bridgedInterfacesStr.sort(key=lambda x: len(x))
+        bridged_interfaces_str.sort(key=lambda x: len(x))
 
         # If this is a bridge interface, write the blank config for the systemDev
-        if isBridge:
-            for intf in bridgedInterfaces:
+        if is_bridge:
+            for intf in bridged_interfaces:
                 self.write_interface_blank( intf, interfaces )
         
         devName = interface_settings.get('symbolicDev')
@@ -67,8 +67,8 @@ class InterfacesManager:
 
         # find the minimum MTU of all devs in bridge (if its a bridge)
         bridgeMinMtu = None
-        if isBridge:
-            for intf in bridgedInterfaces:
+        if is_bridge:
+            for intf in bridged_interfaces:
                 if intf.get('physicalDev') != None and settings.get('devices') != None:
                     for devSettings in settings.get('devices'):
                         if devSettings.get('deviceName') != None and devSettings.get('deviceName') == intf.get('physicalDev'):
@@ -94,8 +94,8 @@ class InterfacesManager:
                 self.interfaces_file.write("\tuntangle_v4_gateway %s\n" % interface_settings.get('v4StaticGateway'))
 
         # handle bridge-related stuff
-        if isBridge:
-            self.interfaces_file.write("\tbridge_ports %s\n" % " ".join(bridgedInterfacesStr))
+        if is_bridge:
+            self.interfaces_file.write("\tbridge_ports %s\n" % " ".join(bridged_interfaces_str))
             self.interfaces_file.write("\tbridge_ageing %i\n" % 900) #XXX
             stpEnabled = (settings.get('stpEnabled') != None and settings.get('stpEnabled'))
             if stpEnabled:

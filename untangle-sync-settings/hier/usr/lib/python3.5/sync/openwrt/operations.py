@@ -1,6 +1,6 @@
 import sync.registrar
 
-sync.registrar.register_operation( "restart-networking", ["/bin/true"], ["/bin/true"], 10, None )
+sync.registrar.register_operation( "restart-networking", [""], ["/etc/init.d/network reload"], 10, None )
 
 def verify_settings(settings):
     """
