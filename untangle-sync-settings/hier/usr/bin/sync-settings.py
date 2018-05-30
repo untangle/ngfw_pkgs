@@ -46,7 +46,8 @@ class ArgumentParser(object):
         self.filename = '/usr/share/untangle/settings/untangle-vm/network.js'
         if os.path.isfile('/etc/debian_version'):
             self.os = 'debian'
-        self.os = 'debian'
+        elif os.path.isfile('/etc/openwrt_version'):
+            self.os = 'openwrt'
         self.restart_services = True
         self.test_run = False
         self.create_settings = False
