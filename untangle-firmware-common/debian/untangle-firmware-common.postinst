@@ -24,4 +24,7 @@ systemctl disable smartd.service
 # we are just going to link it to /dev/null
 chattr -i /var/log/btmp
 
+mkdir -p /etc/systemd/system/getty@ttyS0.service.d
+cp /usr/share/untangle-firmware-common/getty@ttyS0.service /etc/systemd/system/getty@ttyS0.service.d/getty.conf
+
 exit 0
