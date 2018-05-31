@@ -1,0 +1,4 @@
+[Service]
+Type=simple
+ExecStart=
+ExecStart=-/sbin/getty -L ttyS0 115200 vt100
