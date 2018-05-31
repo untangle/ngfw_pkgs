@@ -17,9 +17,6 @@ grep -q kiosk /etc/sudoers 2>/dev/null || echo "kiosk ALL=NOPASSWD: ALL" >> /etc
 rsync -Ha /usr/share/untangle-kiosk/homes/kiosk/ ${KIOSK_HOME}/
 chown -R kiosk:kiosk ${KIOSK_HOME}
 
-## autostart X
-#  perl -i -pe 's|^1:.+|1:2345:respawn:/sbin/rungetty --noclear --autologin kiosk tty1|' /etc/inittab
-#  perl -i -pe 's|^[xw]7:5:wait:.+$||' /etc/inittab
 mkdir -p /etc/systemd/system/getty@tty1.service.d
 cp /usr/share/untangle-kiosk/getty@tty1.service /etc/systemd/system/getty@tty1.service.d/autologin.conf
 
