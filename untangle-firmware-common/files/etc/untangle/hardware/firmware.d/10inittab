@@ -3,7 +3,7 @@
 set -x
 
 # enable serial console
-systemctl enable serial-getty@ttyS0.service
-systemctl start serial-getty@ttyS0.service
+systemctl --no-block enable serial-getty@ttyS0.service
+systemctl --no-block start serial-getty@ttyS0.service
 
 exit 0
