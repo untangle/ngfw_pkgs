@@ -1,14 +1,16 @@
 #!/bin/bash
 
+set -o errtrace # so trap ERR is inherited in functions, subshells, etc
+
 NAME="client"
 LOG_FILE="/var/log/uvm/lxc-${NAME}.log"
 ARCH="$(dpkg-architecture -qDEB_BUILD_ARCH)"
 
-PACKAGES="iputils-ping dnsutils curl wget ssh nmap mime-construct python netcat-openbsd iperf snmp miniupnpc ntp nano traceroute telnet"
+PACKAGES="iputils-ping,dnsutils,curl,wget,ssh,nmap,mime-construct,python,netcat-openbsd,iperf,snmp,miniupnpc,ntp,nano,traceroute,telnet"
 ATS_SCRIPT="setup_testshell.sh"
 ATS_SCRIPT_URL="https://test.untangle.com/test/${ATS_SCRIPT}"
 
-if [ "$USER" != "root" ] ; then
+if [ "$EUID" != 0 ] ; then
     echo "sudo $0 $*"
     exec sudo -E $0 $*
 fi
@@ -17,12 +19,9 @@ runInLxc() {
   lxc-attach -n ${NAME} -- "$@"
 }
 
-installInLxc() {
- lxc-attach -n ${NAME} --set-var DEBIAN_FRONTEND=noninteractive -- apt-get update
- lxc-attach -n ${NAME} --set-var DEBIAN_FRONTEND=noninteractive -- apt-get install --yes $@
-}
-
 exec &> >(tee -a "$LOG_FILE")
+
+trap 'echo !!! Last command failed, aborting ; exit 1' ERR
 
 # Bring up bridge
 if ! ifquery --state br.lxc | grep -q 'br.lxc' ; then
@@ -30,15 +29,15 @@ if ! ifquery --state br.lxc | grep -q 'br.lxc' ; then
 fi
 
 # Create LXC instance (if it doesn't exist)
-if ! lxc-info -n $NAME > /dev/null ; then
+if ! lxc-info -n $NAME > /dev/null 2>&1 ; then
   echo "Creating LXC ${NAME}..."
-  lxc-create -n $NAME -t download -- -d debian -r jessie -a $ARCH
+  lxc-create -n $NAME -t debian -- --release=stretch --arch=$ARCH --packages=$PACKAGES
   echo "LXC ${NAME} is ready"
 
   # Configure LXC instance
-  echo "Setting DNS for containe ${NAME} to 192.0.2.1"
+  echo "Setting DNS for LXC ${NAME} to 192.0.2.1"
   echo nameserver 192.0.2.1 >| /var/lib/lxc/${NAME}/rootfs/etc/resolv.conf
-  echo "Setting SSH configuration (using /etc/ssh/sshd_config)"
+  echo "Setting SSH configuration (using /etc/ssh/sshd_config) in LXC ${NAME}"
   cp /etc/ssh/sshd_config /var/lib/lxc/${NAME}/rootfs/etc/ssh/sshd_config
 fi
 
@@ -47,35 +46,19 @@ if ! lxc-info -n ${NAME} | egrep -q 'State:.*RUNNING' ; then
     lxc-start -d -n ${NAME}
     lxc-wait -n ${NAME} -s RUNNING
 else
-    echo "Starting LXC ${NAME} already running."
+    echo "LXC ${NAME} already running."
 fi
 
-# if any package is missing install all packages
-for p in $PACKAGES; do
-    runInLxc dpkg -l | egrep -q "ii.*$p"
-    if [ $? != 0 ] ; then
-        echo "Installing default packages in LXC ${NAME}..."
-        echo
-        installInLxc $PACKAGES
-        echo "Installing default packages in LXC ${NAME}...done"
-        echo
-        break;
-    fi
-done
-
-if ! runInLxc bash -c "grep -q testshell /etc/passwd" ; then
+if ! runInLxc grep -q testshell /etc/passwd ; then
     echo "Setting up test shell in LXC ${NAME}..."
-    echo
-    runInLxc bash -c "curl -k -o /root/${ATS_SCRIPT} ${ATS_SCRIPT_URL} && echo y | bash /root/${ATS_SCRIPT}"
+    runInLxc bash -c "curl -s -k -o /root/${ATS_SCRIPT} ${ATS_SCRIPT_URL} && echo y | bash /root/${ATS_SCRIPT}"
     echo "Setting up test shell in LXC ${NAME}...done"
-    echo
 fi
 
-if ! runInLxc bash -c 'pgrep "sshd" &>/dev/null' ; then
-    echo "Starting ssh in LXC ${NAME}..."
-    runInLxc service ssh start
+if ! runInLxc pgrep sshd > /dev/null ; then
+    echo "Starting sshd in LXC ${NAME}..."
+    runInLxc systemctl start sshd
+    echo "Starting sshd in LXC ${NAME}...done"
 fi
 
 echo "Attach to LXC ${NAME} via \"lxc-attach -n $NAME\""
-
-
