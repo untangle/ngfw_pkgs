@@ -8,7 +8,6 @@ untangle-database-config		stretch
 untangle-lxc-client			stretch
 untangle-hardware-turris-omnia		stretch
 untangle-firmware-common		stretch
-untangle-broadcom-wireless              stretch
 untangle-stunnel-config	             	stretch
 untangle-hardware-lanner-u25            stretch
 untangle-hardware-lanner-u25w           stretch
