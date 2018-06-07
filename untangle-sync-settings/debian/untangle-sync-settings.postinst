@@ -8,6 +8,10 @@ sed -e 's/\(.*log_warning_msg.*\)/#\1/' -i /etc/network/if-up.d/mountnfs
 # (NGFW-11669)
 perl -i -pe 's/(?<=BRIDGE_HOTPLUG=).*/no/' /etc/default/bridge-utils
 
+# disable hostapd
+# It will be started via the post-network scripts if needed
+systemctl disable hostapd
+
 # disable keepalived
 # It will be started via the post-network scripts if needed
 systemctl disable keepalived
