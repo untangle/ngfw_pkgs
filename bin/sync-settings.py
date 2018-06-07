@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.5
 
 # Sync Settings is takes the netork settings JSON file and "syncs" it to the operating system
 # It reads through the settings and writes the appropriate operating system files such as
