@@ -224,7 +224,7 @@ def run_commands(ops, key):
     print("Running operations " + key + "...")
     ret = 0
     for op in ops:
-        o = registrar.operations.get(op)
+        o = sync.registrar.operations.get(op)
         commands = o.get(key)
         if commands == None:
             continue
@@ -435,7 +435,7 @@ except Exception as e:
 # sanitized_file.close()
 # os.system("python -m simplejson.tool %s.tmp > %s ; rm %s.tmp " % (sanitized_filename, sanitized_filename, sanitized_filename))
 
-NetworkUtil.settings = settings
+sync.NetworkUtil.settings = settings
 
 print("")
 
@@ -450,7 +450,7 @@ if result != 0:
 print("")
 
 # Check that all new files in the tmpdir are registered in the registrar
-if registrar.check_registrar_files(tmpdir) != 0:
+if sync.registrar.check_registrar_files(tmpdir) != 0:
     print("File missing in registrar: " + filename)
     cleanup(1)
 
@@ -458,11 +458,11 @@ if registrar.check_registrar_files(tmpdir) != 0:
 # Calculate the changed files and the needed operations
 changed_files = calculate_changed_files(tmpdir)
 deleted_files = calculate_deleted_files(tmpdir_delete)
-operations = registrar.calculate_required_operations(changed_files)
-operations = registrar.reduce_operations(operations)
+operations = sync.registrar.calculate_required_operations(changed_files)
+operations = sync.registrar.reduce_operations(operations)
 
 # Check that all operations are registered
-if registrar.check_registrar_operations(operations) != 0:
+if sync.registrar.check_registrar_operations(operations) != 0:
     print("Operation missing from registrar: " + op)
     cleanup(1)
 
