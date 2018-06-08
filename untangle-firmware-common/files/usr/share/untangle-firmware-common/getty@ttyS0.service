@@ -1,4 +1,5 @@
 [Service]
 Type=simple
+ConditionPathExists=/dev/ttyS0
 ExecStart=
 ExecStart=-/sbin/getty -L ttyS0 115200 vt100
