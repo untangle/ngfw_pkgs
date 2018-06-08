@@ -666,7 +666,7 @@
                 "wirelessChannel": -2,
                 "wirelessEncryption": "WPA2",
                 "wirelessPassword": "12345678",
-                "wirelessSsid": "UntangleLinksys5"
+                "wirelessSsid": "UntangleLinksys"
             },
             {
                 "addressed": false,
