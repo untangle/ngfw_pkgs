@@ -16,6 +16,10 @@
 
 import sys
 
+# For running in git/dev, prefer loading from git instead of system
+if sys.path[0] != "/usr/bin":
+    sys.path.insert(0, sys.path[0] + "/../")
+
 import getopt
 import json
 import os
