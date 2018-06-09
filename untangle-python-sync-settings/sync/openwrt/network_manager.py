@@ -68,11 +68,21 @@ class NetworkManager:
             if is_bridge:
                 intf['bridged_interfaces_str'] = bridged_interfaces_str
                 intf['bridged_interfaces'] = bridged_interfaces
-            
+
+            if intf.get('is_bridge'):
+                intf['logical_name'] = "br-" + intf['name']
+                intf['ifname'] = intf['logical_name']
+            else:
+                intf['logical_name'] = intf['name']
+                intf['ifname'] = intf.get('physicalDev')
+
         for intf in interfaces:
-            self.write_interface_v4(intf, settings)
-        for intf in interfaces:
-            self.write_interface_v6(intf, settings)
+            if intf.get('configType') == "DISABLED":
+                file.write("\toption proto 'none'\n")
+            else:
+                self.write_interface_bridge(intf, settings)
+                self.write_interface_v4(intf, settings)
+                self.write_interface_v6(intf, settings)
         
         file.flush()
         file.close()
@@ -80,65 +90,82 @@ class NetworkManager:
         if verbosity > 0:
             print("%s: Wrote %s" % (self.__class__.__name__,filename))
 
-    def write_interface_v6( self, intf, settings ):
+    def write_interface_bridge( self, intf, settings ):
+        print("write_interface_bridge")
+        if intf.get('configType') != "ADDRESSED":
+            return
+        if not intf.get('is_bridge'):
+            return
         # find interfaces bridged to this interface
         file = self.network_file
 
-        # Only write IPv6 configs for interfaces that are addressed and WAN
-        # Non-WAN IPv6 interfaces just need an ip6assign which is handled in write_interface_v4
-        if intf.get('configType') != "ADDRESSED" or intf.get('v6ConfigType') == "DISABLED":
-            return
-        if not intf.get('wan'):
-            return
-
-        logical_name = intf['name']
-        if intf.get('is_bridge'):
-            logical_name = "br-" + logical_name + "-6"
-        
         file.write("\n");
-        file.write("config interface '%s'\n" % logical_name);
-        if intf.get('is_bridge'):
-            file.write("\toption ifname '%s'\n" % ("br-" + logical_name))
-        else:
-            file.write("\toption ifname '%s'\n" % intf.get('physicalDev'))
-        if intf.get('v6ConfigType') == "AUTO":
-            file.write("\toption proto 'dhcpv6'\n")
-        elif intf.get('v6ConfigType') == "STATIC":
-            file.write("\toption proto 'static'\n")
-            file.write("\toption ip6addr '%s'\n" % intf.get('v6StaticAddress'))
-            file.write("\toption ip6prefix '%s'\n" % intf.get('v6StaticPrefix'))
+        file.write("config interface '%s'\n" % intf['logical_name']);
+        file.write("\toption type 'bridge'\n");
+        file.write("\toption ifname '%s'\n" % " ".join(intf.get('bridged_interfaces_str')))
         return
 
     def write_interface_v4( self, intf, settings ):
-        # find interfaces bridged to this interface
+        print("write_interface_v4")
+        if intf.get('configType') != "ADDRESSED":
+            return
+        if intf.get('v4ConfigType') == "DISABLED":
+            return
         file = self.network_file
-
-        logical_name = intf['name']
-        if intf.get('is_bridge'):
-            logical_name = "br-" + logical_name 
-
+        
         file.write("\n");
-        file.write("config interface '%s'\n" % logical_name);
-        if intf.get('is_bridge'):
-            file.write("\toption type 'bridge'\n");
-            file.write("\toption ifname '%s'\n" % " ".join(intf.get('bridged_interfaces_str')))
-        else:
-            file.write("\toption ifname '%s'\n" % intf.get('physicalDev'))
-        if intf.get('configType') == "DISABLED":
-            file.write("\toption proto 'none'\n")
-        elif intf.get('configType') == "ADDRESSED":
-            if intf.get('v4ConfigType') == "AUTO":
-                file.write("\toption proto 'dhcp'\n")
-            elif intf.get('v4ConfigType') == "STATIC":
-                file.write("\toption proto 'static'\n")
-                file.write("\toption ipaddr '%s'\n" % intf.get('v4StaticAddress'))
-                file.write("\toption netmask '%s'\n" % intf.get('v4StaticNetmask'))
-                file.write("\toption ip6assign '60'\n") # FIXME need setting for prefix number
-            elif intf.get('v4ConfigType') == "PPPOE":
-                file.write("\toption proto 'pppoe'\n")
-                # FIXME
+        file.write("config interface '%s'\n" % (intf['logical_name']+"4"));
+        file.write("\toption ifname '%s'\n" % intf['ifname'])
+
+        if intf.get('v4ConfigType') == "AUTO":
+            if not intf.get('wan'):
+                raise Exception('Invalid v4ConfigType: Can not use AUTO on non-WAN interfaces')
+            file.write("\toption proto 'dhcp'\n")
+        elif intf.get('v4ConfigType') == "STATIC":
+            file.write("\toption proto 'static'\n")
+            file.write("\toption ipaddr '%s'\n" % intf.get('v4StaticAddress'))
+            file.write("\toption netmask '%s'\n" % intf.get('v4StaticNetmask'))
+            if intf.get('wan') and intf.get('v4StaticGateway') != None:
+                file.write("\toption gateway '%s'\n" % intf.get('v4StaticGateway'))
+        elif intf.get('v4ConfigType') == "PPPOE":
+            if not intf.get('wan'):
+                raise Exception('Invalid v4ConfigType: Can not use PPPOE on non-WAN interfaces')
+            file.write("\toption proto 'pppoe'\n")
+            # FIXME
         return
-                
+
+    def write_interface_v6( self, intf, settings ):
+        print("write_interface_v6")
+        if intf.get('configType') != "ADDRESSED":
+            return
+        if intf.get('v6ConfigType') == "DISABLED":
+            return
+        file = self.network_file
+        file.write("\n");
+        file.write("config interface '%s'\n" % (intf['logical_name']+"6"));
+        file.write("\toption ifname '%s'\n" % intf['ifname'])
+
+        if intf.get('v6ConfigType') == "AUTO":
+            # AUTO means DHCP for a WAN
+            # but IP-assignment for a LAN
+            if intf.get('wan'):
+                # FIXME
+                # What about when the LAN is static ond the WAN is just link-local?
+                # In this case we want to not do DHCP, but do want to accept SLAAC
+                file.write("\toption proto 'dhcpv6'\n")
+            else:
+                file.write("\toption proto 'static'\n")
+                file.write("\toption ip6addr '%s'\n" % intf.get('v6AutoAssign'))
+                file.write("\toption ip6hint '%s'\n" % intf.get('v6AutoHint'))
+        elif intf.get('v6ConfigType') == "STATIC":
+            if intf.get('v6StaticAddress') != None and intf.get('v6StaticPrefix') != None:
+                file.write("\toption proto 'static'\n")
+                file.write("\toption ip6addr '%s'\n" % intf.get('v6StaticAddress'))
+                file.write("\toption ip6prefix '%s'\n" % intf.get('v6StaticPrefix'))
+                if intf.get('wan') and intf.get('v6StaticGateway') != None:
+                    file.write("\toption ip6gw '%s'\n" % intf.get('v6StaticGateway'))
+        return
+
     def create_settings_devices( self, settings, prefix, delete_list, verbosity=0 ):
         device_list = get_devices()
         settings['network']['devices'] = []
@@ -178,6 +205,8 @@ class NetworkManager:
                 interface['dhcpRangeEnd'] = '192.168.1.200'
                 interface['dhcpLeaseDuration'] = 60*60
                 interface['v6ConfigType'] = 'AUTO'
+                interface['v6AutoAssign'] = 64
+                interface['v6AutoHint'] = '1234'
             elif dev.get('name') == 'eth1':
                 interface['name'] = 'external'
                 interface['wan'] = True
