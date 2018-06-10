@@ -12,10 +12,10 @@ class NetworkManager:
     network_filename = "/etc/config/network"
     GREEK_NAMES = ["alpha","beta","gamma","delta","epsilon","zeta","eta","theta","iota","kappa","lambda","mu"];
 
-    def initialize( self ):
-        registrar.register_file( self.network_filename, "restart-networking", self )
+    def initialize(self):
+        registrar.register_file(self.network_filename, "restart-networking", self)
 
-    def create_settings( self, settings, prefix, delete_list, verbosity=0 ):
+    def create_settings(self, settings, prefix, delete_list, verbosity=0):
         print("%s: Initializing settings" % self.__class__.__name__)
         network = {}
         network['interfaces'] = []
@@ -24,16 +24,16 @@ class NetworkManager:
         self.create_settings_devices(settings, prefix, delete_list, verbosity)
         self.create_settings_interfaces(settings, prefix, delete_list, verbosity)
         
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_network_file( settings, prefix, verbosity )
+    def sync_settings(self, settings, prefix, delete_list, verbosity=0):
+        self.write_network_file(settings, prefix, verbosity)
         
-    def write_network_file( self, settings, prefix="", verbosity=0 ):
+    def write_network_file(self, settings, prefix="", verbosity=0):
         filename = prefix + self.network_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
-        self.network_file = open( filename, "w+" )
+        self.network_file = open(filename, "w+")
         file = self.network_file
         file.write("## Auto Generated\n");
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
@@ -70,7 +70,7 @@ class NetworkManager:
                 intf['bridged_interfaces'] = bridged_interfaces
 
             if intf.get('is_bridge'):
-                intf['logical_name'] = "br-" + intf['name']
+                intf['logical_name'] = "b_" + intf['name']
                 intf['ifname'] = intf['logical_name']
             else:
                 intf['logical_name'] = intf['name']
@@ -90,7 +90,7 @@ class NetworkManager:
         if verbosity > 0:
             print("%s: Wrote %s" % (self.__class__.__name__,filename))
 
-    def write_interface_bridge( self, intf, settings ):
+    def write_interface_bridge(self, intf, settings):
         print("write_interface_bridge")
         if intf.get('configType') != "ADDRESSED":
             return
@@ -103,19 +103,39 @@ class NetworkManager:
         file.write("config interface '%s'\n" % intf['logical_name']);
         file.write("\toption type 'bridge'\n");
         file.write("\toption ifname '%s'\n" % " ".join(intf.get('bridged_interfaces_str')))
+        self.write_interface_v4_config(intf, settings)
+
         return
 
-    def write_interface_v4( self, intf, settings ):
+    def write_interface_v4(self, intf, settings):
+        """
+        Writes a new logical interface containing the IPv4 configuration
+        """
         print("write_interface_v4")
         if intf.get('configType') != "ADDRESSED":
             return
         if intf.get('v4ConfigType') == "DISABLED":
             return
+        # If this interface is a bridge-master
+        # the IPv4 config would have been written in the bridge interface 
+        if intf.get('is_bridge'):
+            return
+
         file = self.network_file
         
         file.write("\n");
         file.write("config interface '%s'\n" % (intf['logical_name']+"4"));
         file.write("\toption ifname '%s'\n" % intf['ifname'])
+        self.write_interface_v4_config(intf, settings)
+
+        return
+
+    def write_interface_v4_config(self, intf, settings):
+        """
+        Writes the actual IPv4 configuration options for an interface
+        This is a separate function because depending on the configuration this may be written in different locations
+        """
+        file = self.network_file
 
         if intf.get('v4ConfigType') == "AUTO":
             if not intf.get('wan'):
@@ -132,9 +152,18 @@ class NetworkManager:
                 raise Exception('Invalid v4ConfigType: Can not use PPPOE on non-WAN interfaces')
             file.write("\toption proto 'pppoe'\n")
             # FIXME
+        elif intf.get('v4ConfigType') == "DISABLED":
+            # This needs to be written for addressless bridges
+            file.write("\toption proto 'none'\n")
+            file.write("\toption auto '1'\n")
+            
         return
-
-    def write_interface_v6( self, intf, settings ):
+        
+    
+    def write_interface_v6(self, intf, settings):
+        """
+        Writes a new logical interface containing the IPv6 configuration
+        """
         print("write_interface_v6")
         if intf.get('configType') != "ADDRESSED":
             return
@@ -166,13 +195,13 @@ class NetworkManager:
                     file.write("\toption ip6gw '%s'\n" % intf.get('v6StaticGateway'))
         return
 
-    def create_settings_devices( self, settings, prefix, delete_list, verbosity=0 ):
+    def create_settings_devices(self, settings, prefix, delete_list, verbosity=0):
         device_list = get_devices()
         settings['network']['devices'] = []
         for dev in device_list:
             settings['network']['devices'].append(new_device_settings(dev))
 
-    def create_settings_interfaces( self, settings, prefix, delete_list, verbosity=0 ):
+    def create_settings_interfaces(self, settings, prefix, delete_list, verbosity=0):
         device_list = get_devices()
         # Move eth1 to top of list, in OpenWRT eth1 is the WAN
         if "eth1" in device_list:
