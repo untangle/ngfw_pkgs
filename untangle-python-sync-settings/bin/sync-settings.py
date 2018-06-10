@@ -38,11 +38,14 @@ import sync
     
 class ArgumentParser(object):
     def __init__(self):
-        self.filename = '/usr/share/untangle/settings/untangle-vm/network.js'
         if os.path.isfile('/etc/debian_version'):
             self.os = 'debian'
         elif os.path.isfile('/etc/openwrt_version'):
             self.os = 'openwrt'
+        if self.os == 'openwrt':
+            self.filename = '/etc/config/settings.json'
+        else:
+            self.filename = '/usr/share/untangle/settings/untangle-vm/network.js'
         self.restart_services = True
         self.test_run = False
         self.create_settings = False
