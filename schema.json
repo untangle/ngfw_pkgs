@@ -1,0 +1,210 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "description": "schema for the JSON settings",
+    "type": "object",
+    "required": ["system","network"],
+    "properties": {
+	"network": { "$ref": "#/definitions/network_settings" },
+	"system": { "$ref": "#/definitions/system_settings" }
+    },
+    "definitions": {
+	"system_settings": {
+	    "type": "object",
+	    "description": "system settings",
+	    "required": ["hostName","domainName"],
+	    "properties": {
+		"hostName": {"type": "string"},
+		"domainName": {"type": "string"}
+	    }
+	},
+	"network_settings": {
+	    "type": "object",
+	    "description": "network settings",
+	    "required": [],
+	    "properties": {
+		"interfaces": {
+		    "type": "array",
+		    "items": { "$ref": "#/definitions/interface_settings" }
+		},
+		"devices": {
+		    "type": "array",
+		    "items": { "$ref": "#/definitions/device_settings" }
+		}
+	    }
+	},
+	"interface_settings": {
+	    "type": "object",
+	    "description": "interface settings",
+	    "required": ["interfaceId","name","device","wan","configType"],
+	    "properties": {
+		"interfaceId": {
+		    "type": "integer",
+		    "description": "Unique interface ID",
+		    "minimum": 1
+		},
+		"name": {
+		    "type": "string",
+		    "description": "Human readable name",
+		    "maxLength": 8,
+		    "minLength": 1
+		},
+		"device": {
+		    "type": "string",
+		    "description": "The physical dev represented by this interface (eth0)"
+		},
+		"wan": {
+		    "type": "boolean",
+		    "description": "True if interface is a WAN (internet) connected interface, False otherwise"
+		},
+		"configType": {
+		    "type": "string",
+		    "description": "The configuration type",
+		    "enum": ["ADDRESSED","BRIDGED","DISABLED"]
+		},
+		"natEgress": {
+		    "type": "boolean",
+		    "description": "If true, NAT outbound sessions and block non-port-forwarded sessions from this interface"
+		},
+		"natIngress": {
+		    "type": "boolean",
+		    "description": "If true, NAT inbound sessions and block non-port-forwarded sessions to this interface"
+		},
+		"v4ConfigType": {
+		    "type": "string",
+		    "description": "The IPv4 configuration type",
+		    "enum": ["STATIC","DHCP","DISABLED"]
+		},
+		"v4StaticAddress": {
+		    "type": "string",
+		    "description": "The IPv4 static address",
+		    "format": "ipv4"
+		},
+		"v4StaticPrefix": {
+		    "type": "integer",
+		    "description": "The IPv4 static prefix (netmask)",
+		    "minimum": 1,
+		    "maximum": 32
+		},
+		"v4StaticGateway": {
+		    "type": "string",
+		    "description": "The IPv4 static gateway",
+		    "format": "ipv4"
+		},
+		"v4StaticDNS1": {
+		    "type": "string",
+		    "description": "The IPv4 DNS 1",
+		    "format": "ipv4"
+		},
+		"v4StaticDNS2": {
+		    "type": "string",
+		    "description": "The IPv4 DNS 2",
+		    "format": "ipv4"
+		},
+		"v4DhcpAddressOverride": {
+		    "type": "string",
+		    "description": "The DHCP address override",
+		    "format": "ipv4"
+		},
+		"v4DhcpPrefixOverride": {
+		    "type": "integer",
+		    "description": "The DHCP prefix override",
+		    "minimum": 1,
+		    "maximum": 32
+		},
+		"v4DhcpGatewayOverride": {
+		    "type": "string",
+		    "description": "The DHCP gateway override",
+		    "format": "ipv4"
+		},
+		"v4DhcpDNS1Override": {
+		    "type": "string",
+		    "description": "The DHCP DNS 1 override",
+		    "format": "ipv4"
+		},
+		"v4DhcpDNS2Override": {
+		    "type": "string",
+		    "description": "The DHCP DNS 2 override",
+		    "format": "ipv4"
+		},
+		"v4PPPoEUsername": {
+		    "type": "string",
+		    "description": "The PPPoE username",
+		    "minLength": 1
+		},
+		"v4PPPoEPassword": {
+		    "type": "string",
+		    "description": "The PPPoE password",
+		    "minLength": 1
+		},
+		"v4PPPoEUsePeerDNS": {
+		    "type": "boolean"
+		},
+		"v4PPPoEOverrideDNS1": {
+		    "type": "string",
+		    "description": "The PPPoE DNS 1 override",
+		    "format": "ipv4"
+		},
+		"v4PPPoEOverrideDNS2": {
+		    "type": "string",
+		    "description": "The PPPoE DNS 2 override",
+		    "format": "ipv4"
+		},
+		"v4Aliases": {
+		    "type": "array",
+		    "items": { "$ref": "#/definitions/ipv4_alias" }
+		},
+		"v6ConfigType": {
+		    "type": "string",
+		    "enum": ["DHCP","SLAAC","ASSIGN","STATIC","DISABLED"]
+		},
+		"v6StaticAddress": {
+		    "type": "string",
+		    "description": "The IPv6 static address",
+		    "format": "ipv6"
+		},
+		"v6StaticPrefix": {
+		    "type": "integer",
+		    "description": "The IPv6 static prefix",
+		    "minimum": 1,
+		    "maximum": 128
+		},
+		"v6StaticGateway": {
+		    "type": "string",
+		    "description": "The IPv6 static gateway",
+		    "format": "ipv6"
+		},
+		"v6StaticDNS1": {
+		    "type": "string",
+		    "description": "The IPv6 DNS 1",
+		    "format": "ipv6"
+		},
+		"v6StaticDNS2": {
+		    "type": "string",
+		    "description": "The IPv6 DNS 2",
+		    "format": "ipv6"
+		},
+		"v6Aliases": {
+		    "type": "array",
+		    "items": { "$ref": "#/definitions/ipv6_alias" }
+		},
+		"routerAdvertisements": {
+		    "type": "boolean",
+		    "description": "Send router advertisements"
+		},
+		"_comment": " // TODO - DHCP settings // TODO - VRRP settings // TODO - Wireless settings"
+	    }
+	},
+	"device_settings": {
+	    "type": "object",
+	    "description": "device (NIC) settings",
+	    "required": [],
+	    "properties": {}
+	},
+	"ipv4_alias": {
+	    "_comment": "// TODO"
+	},
+	"ipv6_alias": {
+	    "_comment": "// TODO"
+	}
+    }
+}
