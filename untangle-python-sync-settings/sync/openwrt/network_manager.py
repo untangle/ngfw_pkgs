@@ -56,11 +56,11 @@ class NetworkManager:
             bridged_interfaces = []
             for intf2 in interfaces:
                 if intf2.get('configType') == 'BRIDGED' and intf2.get('bridgedTo') == intf.get('interfaceId'):
-                    bridged_interfaces_str.append(str(intf2.get('systemDev')))
+                    bridged_interfaces_str.append(str(intf2.get('device')))
                     bridged_interfaces.append(intf2)
             if len(bridged_interfaces) > 0:
                 is_bridge = True
-                bridged_interfaces_str.append(intf.get('systemDev')) # include yourself in bridge
+                bridged_interfaces_str.append(intf.get('device')) # include yourself in bridge
                 bridged_interfaces.append(intf) # include yourself in bridge
             # sort for consistent order
             bridged_interfaces_str.sort(key=lambda x: len(x))
@@ -74,9 +74,11 @@ class NetworkManager:
                 intf['ifname'] = intf['logical_name']
             else:
                 intf['logical_name'] = intf['name']
-                intf['ifname'] = intf.get('physicalDev')
+                intf['ifname'] = intf.get('device')
 
         for intf in interfaces:
+            intf['netfilterDev'] = intf['device']
+            intf['symbolicDev'] = intf['device']
             if intf.get('configType') == "DISABLED":
                 file.write("\toption proto 'none'\n")
             else:
@@ -137,9 +139,9 @@ class NetworkManager:
         """
         file = self.network_file
 
-        if intf.get('v4ConfigType') == "AUTO":
+        if intf.get('v4ConfigType') == "DHCP":
             if not intf.get('wan'):
-                raise Exception('Invalid v4ConfigType: Can not use AUTO on non-WAN interfaces')
+                raise Exception('Invalid v4ConfigType: Can not use DHCP on non-WAN interfaces')
             file.write("\toption proto 'dhcp'\n")
         elif intf.get('v4ConfigType') == "STATIC":
             file.write("\toption proto 'static'\n")
@@ -151,6 +153,8 @@ class NetworkManager:
             if not intf.get('wan'):
                 raise Exception('Invalid v4ConfigType: Can not use PPPOE on non-WAN interfaces')
             file.write("\toption proto 'pppoe'\n")
+            # intf['netfilterDev'] = ppp0
+            # intf['symbolicDev'] = XXX
             # FIXME
         elif intf.get('v4ConfigType') == "DISABLED":
             # This needs to be written for addressless bridges
@@ -174,18 +178,15 @@ class NetworkManager:
         file.write("config interface '%s'\n" % (intf['logical_name']+"6"));
         file.write("\toption ifname '%s'\n" % intf['ifname'])
 
-        if intf.get('v6ConfigType') == "AUTO":
-            # AUTO means DHCP for a WAN
-            # but IP-assignment for a LAN
-            if intf.get('wan'):
-                # FIXME
-                # What about when the LAN is static ond the WAN is just link-local?
-                # In this case we want to not do DHCP, but do want to accept SLAAC
-                file.write("\toption proto 'dhcpv6'\n")
-            else:
-                file.write("\toption proto 'static'\n")
-                file.write("\toption ip6addr '%s'\n" % intf.get('v6AutoAssign'))
-                file.write("\toption ip6hint '%s'\n" % intf.get('v6AutoHint'))
+        if intf.get('v6ConfigType') == "DHCP":
+            file.write("\toption proto 'dhcpv6'\n")
+        elif intf.get('v6ConfigType') == "SLAAC":
+            #FIXME
+            pass
+        elif intf.get('v6ConfigType') == "ASSIGN":
+            file.write("\toption proto 'static'\n")
+            file.write("\toption ip6addr '%s'\n" % intf.get('v6AutoAssign'))
+            file.write("\toption ip6hint '%s'\n" % intf.get('v6AutoHint'))
         elif intf.get('v6ConfigType') == "STATIC":
             if intf.get('v6StaticAddress') != None and intf.get('v6StaticPrefix') != None:
                 file.write("\toption proto 'static'\n")
@@ -214,9 +215,7 @@ class NetworkManager:
             intf_id = intf_id + 1
             interface = {}
             interface['interfaceId'] = intf_id
-            interface['physicalDev'] = dev['name']
-            interface['systemDev'] = dev['name']
-            interface['symbolicDev'] = dev['name']
+            interface['device'] = dev['name']
             if dev.get('name').startswith("wlan"):
                 interface['wireless'] = True
                 interface['wirelessChannel'] = 6
@@ -233,14 +232,14 @@ class NetworkManager:
                 interface['dhcpRangeStart'] = '192.168.1.100'
                 interface['dhcpRangeEnd'] = '192.168.1.200'
                 interface['dhcpLeaseDuration'] = 60*60
-                interface['v6ConfigType'] = 'AUTO'
+                interface['v6ConfigType'] = 'ASSIGN'
                 interface['v6AutoAssign'] = 64
                 interface['v6AutoHint'] = '1234'
             elif dev.get('name') == 'eth1':
                 interface['name'] = 'external'
                 interface['wan'] = True
                 interface['configType'] = 'ADDRESSED'
-                interface['v4ConfigType'] = 'AUTO'
+                interface['v4ConfigType'] = 'DHCP'
                 interface['v6ConfigType'] = 'DISABLED'
                 interface['natEgress'] = True
             else:
