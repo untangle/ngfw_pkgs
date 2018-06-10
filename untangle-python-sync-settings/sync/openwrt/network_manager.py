@@ -5,6 +5,7 @@ import subprocess
 import datetime
 import traceback
 from sync import registrar
+from sync import network_util
 
 # This class is responsible for writing /etc/config/network
 # based on the settings object passed from sync-settings.py
@@ -93,7 +94,6 @@ class NetworkManager:
             print("%s: Wrote %s" % (self.__class__.__name__,filename))
 
     def write_interface_bridge(self, intf, settings):
-        print("write_interface_bridge")
         if intf.get('configType') != "ADDRESSED":
             return
         if not intf.get('is_bridge'):
@@ -113,7 +113,6 @@ class NetworkManager:
         """
         Writes a new logical interface containing the IPv4 configuration
         """
-        print("write_interface_v4")
         if intf.get('configType') != "ADDRESSED":
             return
         if intf.get('v4ConfigType') == "DISABLED":
@@ -146,7 +145,7 @@ class NetworkManager:
         elif intf.get('v4ConfigType') == "STATIC":
             file.write("\toption proto 'static'\n")
             file.write("\toption ipaddr '%s'\n" % intf.get('v4StaticAddress'))
-            file.write("\toption netmask '%s'\n" % intf.get('v4StaticNetmask'))
+            file.write("\toption netmask '%s'\n" % network_util.ipv4_prefix_to_netmask(intf.get('v4StaticPrefix')))
             if intf.get('wan') and intf.get('v4StaticGateway') != None:
                 file.write("\toption gateway '%s'\n" % intf.get('v4StaticGateway'))
         elif intf.get('v4ConfigType') == "PPPOE":
@@ -168,7 +167,6 @@ class NetworkManager:
         """
         Writes a new logical interface containing the IPv6 configuration
         """
-        print("write_interface_v6")
         if intf.get('configType') != "ADDRESSED":
             return
         if intf.get('v6ConfigType') == "DISABLED":
@@ -185,8 +183,8 @@ class NetworkManager:
             pass
         elif intf.get('v6ConfigType') == "ASSIGN":
             file.write("\toption proto 'static'\n")
-            file.write("\toption ip6addr '%s'\n" % intf.get('v6AutoAssign'))
-            file.write("\toption ip6hint '%s'\n" % intf.get('v6AutoHint'))
+            file.write("\toption ip6assign '%s'\n" % intf.get('v6AssignPrefix'))
+            file.write("\toption ip6hint '%s'\n" % intf.get('v6AssignHint'))
         elif intf.get('v6ConfigType') == "STATIC":
             if intf.get('v6StaticAddress') != None and intf.get('v6StaticPrefix') != None:
                 file.write("\toption proto 'static'\n")
@@ -226,15 +224,14 @@ class NetworkManager:
                 interface['configType'] = 'ADDRESSED'
                 interface['v4ConfigType'] = 'STATIC'
                 interface['v4StaticAddress'] = '192.168.1.1'
-                interface['v4StaticNetmask'] = '255.255.255.0'
                 interface['v4StaticPrefix'] = 24
                 interface['dhcpEnabled'] = True
                 interface['dhcpRangeStart'] = '192.168.1.100'
                 interface['dhcpRangeEnd'] = '192.168.1.200'
                 interface['dhcpLeaseDuration'] = 60*60
                 interface['v6ConfigType'] = 'ASSIGN'
-                interface['v6AutoAssign'] = 64
-                interface['v6AutoHint'] = '1234'
+                interface['v6AssignPrefix'] = 64
+                interface['v6AssignHint'] = '1234'
             elif dev.get('name') == 'eth1':
                 interface['name'] = 'external'
                 interface['wan'] = True
