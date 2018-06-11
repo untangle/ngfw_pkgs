@@ -61,10 +61,8 @@ class NetworkManager:
                     bridged_interfaces.append(intf2)
             if len(bridged_interfaces) > 0:
                 is_bridge = True
-                bridged_interfaces_str.append(intf.get('device')) # include yourself in bridge
-                bridged_interfaces.append(intf) # include yourself in bridge
-            # sort for consistent order
-            bridged_interfaces_str.sort(key=lambda x: len(x))
+                bridged_interfaces_str.insert(0, intf.get('device')) # include yourself in bridge at front
+                bridged_interfaces.insert(0, intf) # include yourself in bridge at front
             intf['is_bridge'] = is_bridge
             if is_bridge:
                 intf['bridged_interfaces_str'] = bridged_interfaces_str
