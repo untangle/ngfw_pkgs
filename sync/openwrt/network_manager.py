@@ -105,7 +105,12 @@ class NetworkManager:
         file.write("config interface '%s'\n" % intf['logical_name']);
         file.write("\toption type 'bridge'\n");
         file.write("\toption ifname '%s'\n" % " ".join(intf.get('bridged_interfaces_str')))
-        self.write_interface_v4_config(intf, settings)
+        # In some cases netifd handles it better if the ipv4 config is written under the main
+        # bridge interface instead of the first alias
+        # To do so uncomment this line and disable writing of the first alias
+        # This is commented out for now to see if treating bridges normally works
+        # If so, this should be removed
+        # self.write_interface_v4_config(intf, settings)
 
         return
 
@@ -119,15 +124,26 @@ class NetworkManager:
             return
         # If this interface is a bridge-master
         # the IPv4 config would have been written in the bridge interface 
-        if intf.get('is_bridge'):
-            return
+        # This is commented out for now to see if treating bridges normally works
+        # If so, this should be removed
+        # if intf.get('is_bridge'):
+        #     return
 
         file = self.network_file
         
         file.write("\n");
         file.write("config interface '%s'\n" % (intf['logical_name']+"4"));
-        file.write("\toption ifname '%s'\n" % intf['ifname'])
+        if intf.get('is_bridge'):
+            # https://wiki.openwrt.org/doc/uci/network#aliasesthe_new_way
+            # documentation says to use "br-" plus logical name
+            file.write("\toption ifname '%s'\n" % ("br-"+intf['ifname']))
+        else:
+            file.write("\toption ifname '%s'\n" % intf['ifname'])
         self.write_interface_v4_config(intf, settings)
+
+        if intf.get('v4Aliases') != None and intf.get('v4ConfigType') == "STATIC":
+            for idx,alias in enumerate(intf.get('v4Aliases')):
+                self.write_interface_v4_alias(intf,alias,(idx+1),settings)
 
         return
 
@@ -161,7 +177,24 @@ class NetworkManager:
             file.write("\toption auto '1'\n")
             
         return
+
+    def write_interface_v4_alias(self, intf, alias, count, settings):
+        """
+        Write an IPv4 alias interface
+        """
+        file = self.network_file
         
+        file.write("\n");
+        file.write("config interface '%s'\n" % (intf['logical_name']+"4"+"_"+str(count)));
+        if intf.get('is_bridge'):
+            # https://wiki.openwrt.org/doc/uci/network#aliasesthe_new_way
+            # documentation says to use "br-" plus logical name
+            file.write("\toption ifname '%s'\n" % ("br-"+intf['ifname']))
+        else:
+            file.write("\toption ifname '%s'\n" % intf['ifname'])
+        file.write("\toption proto 'static'\n")
+        file.write("\toption ipaddr '%s'\n" % alias.get('v4Address'))
+        file.write("\toption netmask '%s'\n" % network_util.ipv4_prefix_to_netmask(alias.get('v4Prefix')))
     
     def write_interface_v6(self, intf, settings):
         """
@@ -192,7 +225,25 @@ class NetworkManager:
                 file.write("\toption ip6prefix '%s'\n" % intf.get('v6StaticPrefix'))
                 if intf.get('wan') and intf.get('v6StaticGateway') != None:
                     file.write("\toption ip6gw '%s'\n" % intf.get('v6StaticGateway'))
+
+        if intf.get('v6Aliases') != None and intf.get('v6ConfigType') == "STATIC":
+            for idx,alias in enumerate(intf.get('v6Aliases')):
+                self.write_interface_v6_alias(intf,alias,(idx+1),settings)
+
         return
+
+    def write_interface_v6_alias(self, intf, alias, count, settings):
+        """
+        Write an IPv6 alias interface
+        """
+        file = self.network_file
+
+        file.write("\n");
+        file.write("config interface '%s'\n" % (intf['logical_name']+"6"+"_"+str(count)));
+        file.write("\toption ifname '%s'\n" % intf['ifname'])
+        file.write("\toption proto 'static'\n")
+        file.write("\toption ip6addr '%s'\n" % alias.get('v6Address'))
+        file.write("\toption ip6prefix '%s'\n" % alias.get('v6Prefix'))
 
     def create_settings_devices(self, settings, prefix, delete_list, verbosity=0):
         device_list = get_devices()
