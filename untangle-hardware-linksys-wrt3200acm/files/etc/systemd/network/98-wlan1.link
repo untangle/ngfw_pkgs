@@ -1,0 +1,7 @@
+[Match]
+Type=wlan
+Driver=mwlwifi
+Path=platform-soc:pcie-controller-pci-0000:02:00.0
+
+[Link]
+Name=wlan1
