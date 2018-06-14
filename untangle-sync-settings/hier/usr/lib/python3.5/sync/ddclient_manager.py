@@ -172,17 +172,11 @@ DDCLIENT_PID="`pgrep ddclient`"
 # Restart ddclient if it isnt found
 # Or if ddclient.conf orhas been written since ddclient was started
 if [ -z "$DDCLIENT_PID" ] ; then
-    systemctl --no-block start ddclient
+    systemctl --no-block restart ddclient
 
 # use not older than (instead of newer than) because it compares seconds and we want an equal value to still do a restart
 elif [ ! /etc/ddclient.conf -ot /proc/$DDCLIENT_PID ] ; then
-    # systemctl --no-block stop ddclient 
-    # Does not work
-    # Likely because the ddclient process renames itself
-    # Instead manually kill all process with ddclient in name
-    pgrep ddclient | while read pid ; do kill $pid ; done
-
-    systemctl --no-block start ddclient
+    systemctl --no-block restart ddclient
 fi
 """)
 
