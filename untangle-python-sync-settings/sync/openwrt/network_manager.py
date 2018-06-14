@@ -16,7 +16,7 @@ class NetworkManager:
     def initialize(self):
         registrar.register_file(self.network_filename, "restart-networking", self)
 
-    def create_settings(self, settings, prefix, delete_list, verbosity=0):
+    def create_settings( self, settings, prefix, delete_list, filename, verbosity=0 ):
         print("%s: Initializing settings" % self.__class__.__name__)
         network = {}
         network['interfaces'] = []
@@ -289,11 +289,12 @@ class NetworkManager:
                 interface['v6ConfigType'] = 'DISABLED'
                 interface['natEgress'] = True
             else:
+                interface['configType'] = 'DISABLED'
+                interface['wan'] = False
                 try:
                     interface['name'] = self.GREEK_NAMES[intf_id]
                 except:
-                    interface['name'] = "interface %i"%intf_id
-                interface['configType'] = 'DISABLED'
+                    interface['name'] = "intf%i"%intf_id
 
             interface_list.append(interface)
         settings['network']['interfaces'] = interface_list
@@ -316,7 +317,7 @@ def get_devices_matching_glob(glob):
 def new_device_settings(devname):
     return {
         "name": devname,
-        "duplex": "auto",
+        "duplex": "AUTO",
         "mtu": None
     }
 
