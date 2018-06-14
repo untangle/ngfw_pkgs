@@ -2,8 +2,12 @@
     "$schema": "http://json-schema.org/draft-06/schema#",
     "description": "schema for the JSON settings",
     "type": "object",
-    "required": ["system","network"],
+    "required": ["version","system","network"],
     "properties": {
+	"version": {
+	    "type": "integer",
+	    "minimum": 1
+	},
 	"network": { "$ref": "#/definitions/network_settings" },
 	"system": { "$ref": "#/definitions/system_settings" }
     },
@@ -322,7 +326,7 @@
 		    "minimum": 0
 		},
 		
-		"_comment": " // TODO - DHCP settings // TODO - VRRP settings // TODO - Wireless settings"
+		"_comment": ""
 	    }
 	},
 	"device_settings": {
@@ -345,8 +349,8 @@
 			     "10_FULL_DUPLEX", "10_HALF_DUPLEX"]
 		},
 		"mtu": {
-		    "type": "integer",
-		    "description": "The MTU of the device, 0 means auto",
+		    "type": ["integer","null"],
+		    "description": "The MTU of the device, 0 means auto, null means auto",
 		    "minimum": 0
 		}
 	    }

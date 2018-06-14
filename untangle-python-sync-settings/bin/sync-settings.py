@@ -356,7 +356,7 @@ def create_settings_in_tmpdir(tmpdir, tmpdir_delete):
 
     for manager in sync.registrar.managers:
         try:
-            manager.create_settings(new_settings, tmpdir, delete_list, verbosity=2)
+            manager.create_settings(new_settings, tmpdir, delete_list, parser.filename, verbosity=2)
         except Exception as e:
             traceback.print_exc()
             return 1
