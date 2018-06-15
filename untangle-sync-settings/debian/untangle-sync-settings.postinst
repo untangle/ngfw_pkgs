@@ -35,12 +35,19 @@ systemctl disable bgpd
 # bug #11185
 if [ -f /etc/ppp/ip-up.d/0000usepeerdns ] ; then mv -f /etc/ppp/ip-up.d/0000usepeerdns /etc/ppp/ip-up.d/0000usepeerdns.disabled ; fi
 
+#
 # 14.0 conversion
+#
+
+# 14.0 move status files
 [ -f /var/lib/untangle-netd ] && mv -f /var/lib/untangle-netd /var/lib/interface-status
 
 # 14.0 remove old log files
 rm -f /var/log/uvm/dhcp.log*
 rm -f /var/log/uvm/pppoe.log*
 rm -f /var/log/uvm/iptables.log*
+
+# 14.0 disable hostapd the old init way so it works before reboot
+update-rc.d -f hostapd disable || true
 
 exit 0
