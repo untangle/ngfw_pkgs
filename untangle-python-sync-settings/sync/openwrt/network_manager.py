@@ -269,6 +269,7 @@ class NetworkManager:
 
             if dev.get('name') == 'eth0':
                 interface['name'] = 'internal'
+                interface['type'] = 'NIC'
                 interface['wan'] = False
                 interface['configType'] = 'ADDRESSED'
                 interface['v4ConfigType'] = 'STATIC'
@@ -283,14 +284,16 @@ class NetworkManager:
                 interface['v6AssignHint'] = '1234'
             elif dev.get('name') == 'eth1':
                 interface['name'] = 'external'
+                interface['type'] = 'NIC'
                 interface['wan'] = True
                 interface['configType'] = 'ADDRESSED'
                 interface['v4ConfigType'] = 'DHCP'
                 interface['v6ConfigType'] = 'DISABLED'
                 interface['natEgress'] = True
             else:
-                interface['configType'] = 'DISABLED'
+                interface['type'] = 'NIC'
                 interface['wan'] = False
+                interface['configType'] = 'DISABLED'
                 try:
                     interface['name'] = self.GREEK_NAMES[intf_id]
                 except:
