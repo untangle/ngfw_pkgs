@@ -191,10 +191,21 @@ def copy_files(tmpdir):
     Copy the files from tmpdir into the root filesystem
     """
     if parser.os == 'debian':
-        cmd = "/bin/cp -ar --remove-destination " + tmpdir+"/*" + " /"
+        # First copy all the directories that do not exist
+        # then copy remaining files
+        # We do this to keep the original permission/ownership on directories, but use the new permission/ownership on files
+        cmd = "find " + tmpdir + " -type d -printf '%P\\n' | while read dir ; do if [ ! -d /$dir ] ; then cp -ar " + tmpdir + "/$dir /$dir ; fi ; done"
+        result = run_cmd(cmd)
+        cmd = "find " + tmpdir + " -type f -printf '%P\\n' | while read file ; do cp -ar --remove-destination " + tmpdir + "/$file /$file ; done"
+        result += run_cmd(cmd)
     else:
-        cmd = "/bin/cp -ar " + tmpdir+"/*" + " /"
-    result = run_cmd(cmd)
+        # First copy all the directories that do not exist
+        # then copy remaining files
+        # We do this to keep the original permission/ownership on directories, but use the new permission/ownership on files
+        cmd = "find " + tmpdir + " -type d -printf '%P\\n' | while read dir ; do if [ ! -d /$dir ] ; then cp -ar " + tmpdir + "/$dir /$dir ; fi ; done"
+        result = run_cmd(cmd)
+        cmd = "find " + tmpdir + " -type f -printf '%P\\n' | while read file ; do cp -ar " + tmpdir + "/$file /$file ; done"
+        result += run_cmd(cmd)
     if result != 0:
         print("Failed to copy results: " + str(result))
         return result
