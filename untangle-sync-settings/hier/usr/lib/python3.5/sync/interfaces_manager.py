@@ -132,7 +132,7 @@ class InterfacesManager:
                     self.interfaces_file.write("\tpost-up /usr/share/untangle-sync-settings/bin/add-source-route.sh %s \"uplink.%i\" -4\n" % (alias.get('staticAddress'), interface_settings.get('interfaceId'))) 
             
         if interface_settings.get('isWirelessInterface'):
-            if interface_settings.get('wirelessMode') == 'AP':
+            if interface_settings.get('wirelessMode') == 'AP' or interface_settings.get('wirelessMode') == None:
                 self.interfaces_file.write("\thostapd /etc/hostapd/hostapd.conf-%s\n" % devName);
             elif interface_settings.get('wirelessMode') == 'CLIENT':
                 self.interfaces_file.write("\twpa-conf /etc/wpa_supplicant/wpa_supplicant.conf-%s\n" % devName);
