@@ -41,7 +41,7 @@
 	"interface_settings": {
 	    "type": "object",
 	    "description": "interface settings",
-	    "required": ["interfaceId","name","device","wan","configType"],
+	    "required": ["interfaceId","name","device","type","wan","configType"],
 	    "additionalProperties": false,
 	    "properties": {
 		"interfaceId": {
@@ -62,6 +62,10 @@
 		"wan": {
 		    "type": "boolean",
 		    "description": "True if interface is a WAN (internet) connected interface, False otherwise"
+		},
+		"type": {
+		    "type": "string",
+		    "enum": ["NIC","VLAN","WIFI","OPENVPN"]
 		},
 		"configType": {
 		    "type": "string",
