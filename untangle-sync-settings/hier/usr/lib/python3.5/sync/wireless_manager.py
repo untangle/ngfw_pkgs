@@ -59,9 +59,9 @@ class WirelessManager:
     def set_fallback_ht_capab( self, conf, channel ):
         ht_capabs=[]
         if channel > 11 or channel == -2:
-            if ((channel / 4) % 2) == 0:
+            if ((channel // 4) % 2) == 0:
                 ht_capabs.append("[HT40-]")
-            if ((channel / 4) % 2) == 1:
+            if ((channel // 4) % 2) == 1:
                 ht_capabs.append("[HT40+]")
         else:
             if channel < 7:
@@ -101,9 +101,9 @@ class WirelessManager:
 
         ht_capabs=[]
         if channel > 11 or channel == -2:
-            if ((channel / 4) % 2) == 0:
+            if ((channel // 4) % 2) == 0:
                 ht_capabs.append("[HT40-]")
-            if ((channel / 4) % 2) == 1:
+            if ((channel // 4) % 2) == 1:
                 ht_capabs.append("[HT40+]")
         else:
             if channel < 7:
