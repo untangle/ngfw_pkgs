@@ -1,6 +1,6 @@
 sudo: required
 
-before_install
+before_install:
 - apt-get install build-essential fakeroot devscripts
 
 script:
