@@ -1,0 +1,11 @@
+sudo: required
+
+script:
+- for d in untangle-* ; do
+     pushd ;
+     dpkg-buildpackage ;
+     popd ;
+  done
+
+notifications:
+  email: false
