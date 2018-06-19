@@ -36,14 +36,14 @@ if [ -d $PG_VAR_DIR_OLD ] ; then
   su postgres -c "/usr/lib/postgresql/${VERSION_NEW}/bin/pg_upgrade --link -b $PG_BIN_DIR_OLD -B $PG_BIN_DIR_NEW -d $PG_VAR_DIR_OLD -D $PG_VAR_DIR_NEW -o ' -c config_file='$PG_CONF_OLD -O ' -c config_file='$PG_CONF_NEW"
   if [ $? != 0 ] ; then
       echo "[$(date +%Y-%m%-dT%H:%m)] Conversion FAILED"
-      pg_dropcluster $VERSION_OLD main
-      exit 0
+      echo
+  else
+      echo "[$(date +%Y-%m%-dT%H:%m)] Conversion complete"
+      echo
   fi
   
   pg_dropcluster $VERSION_OLD main
+  rm -fr $PG_VAR_DIR_OLD
   popd
 
-  rm -fr $PG_VAR_DIR_OLD
-  echo "[$(date +%Y-%m%-dT%H:%m)] Conversion complete"
-  echo
 fi
