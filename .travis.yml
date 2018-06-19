@@ -1,9 +1,13 @@
 sudo: required
 
+before_install
+- apt-get install build-essential fakeroot devscripts
+
 script:
 - for d in untangle-* ; do
      pushd "$d" ;
-     dpkg-buildpackage ;
+     mk-build-deps -i ;
+     dpkg-buildpackage || exit 1
      popd ;
   done
 
