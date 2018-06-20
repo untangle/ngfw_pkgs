@@ -7,7 +7,7 @@ script:
 - for d in untangle-* ; do
      pushd "$d" ;
      sudo mk-build-deps -i ;
-     dpkg-buildpackage || exit 1
+     dpkg-buildpackage -us -uc || exit 1 ;
      popd ;
   done
 
