@@ -1,0 +1,7 @@
+version: '2'
+services:
+    build:
+      image: untangleinc/ngfw:build
+      entrypoint: ./build-travis.sh
+      volumes:
+        - ./:/opt/untangle/build

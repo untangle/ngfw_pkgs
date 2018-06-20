@@ -1,19 +1,9 @@
 sudo: required
-
+services:
+- docker
 before_install:
-- sudo apt-get install build-essential fakeroot devscripts equivs
-- echo "deb http://foo:foo@updates.untangle.com/public/stretch 14.0.0 main non-free" | sudo tee /etc/apt/sources.list.d/14.0.0.list
-- sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 735A9E18E8F62EDF413592460B9D6AE3627BF103
-- sudo apt-get update
-
+- docker pull untangleinc/ngfw:base
 script:
-- for d in untangle-* ; do
-     grep -qE '^Architecture:.*(amd64|any|all)' "$d"/debian/control || continue ;
-     pushd "$d" ;
-     sudo mk-build-deps -i ;
-     dpkg-buildpackage -us -uc || exit 1 ;
-     popd ;
-  done
-
+- docker-compose -f docker-compose.build.yml up
 notifications:
   email: false
