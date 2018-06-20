@@ -6,7 +6,7 @@ before_install:
 script:
 - for d in untangle-* ; do
      pushd "$d" ;
-     mk-build-deps -i ;
+     sudo mk-build-deps -i ;
      dpkg-buildpackage || exit 1
      popd ;
   done
