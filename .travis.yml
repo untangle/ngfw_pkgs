@@ -1,7 +1,7 @@
 sudo: required
 
 before_install:
-- sudo apt-get install build-essential fakeroot devscripts
+- sudo apt-get install build-essential fakeroot devscripts equivs
 
 script:
 - for d in untangle-* ; do
