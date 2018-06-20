@@ -5,8 +5,8 @@ before_install:
 
 script:
 - for d in untangle-* ; do
+     grep -qE '^Architecture:.*(amd64|any|all)' "$d"/debian/control || continue ;
      pushd "$d" ;
-     grep -qE '^Architecture:.*(amd64|any|all)' || continue ;
      sudo mk-build-deps -i ;
      dpkg-buildpackage -us -uc || exit 1 ;
      popd ;
