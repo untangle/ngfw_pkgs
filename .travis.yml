@@ -7,3 +7,8 @@ script:
 - docker-compose -f docker-compose.build.yml run build
 notifications:
   email: false
+  slack:
+    rooms:
+      secure: DbM9BVgio9I0Wj4CzAhWvQp0x35zge4zRcwrh8OFGfJAB6AO0jHFHyGIZm0L2KzTm1PogxpaoQbvRC2kcqtbMfRCPSrtLRcaMjemH0h8nQsmsgaBwwM//rxl95WBUNQuoo6ytO/bFw+fRgxobjnYN704urxBhH1o4kGaXvMnCNJbJzEk7gqQVChVy8fzqcYgeNhYYQPx95Hy0VcCcEpBYXYd2fR2SA1b2/ZXNaPlMX5Cg6prVko1OmkPD1qQE5W5HyOHrlDW11kA+8nHCTxvdWqPp1ZjmPCEFIAbXnkiJQgIntl1vrpVRFRwcixzFfwb81w1Bvds2mF21Csxv5kpuZAHd5720lk7iqXLUXKcRptzltrtLvccID086jGxjao3i6jC2XiAJXP8cruxBcXv+0JU1Y3OsuMOEuq4dxeph+ie6Ou9scWFFwsyALwLpe/h1tXvILSqzmLvm3ZI91xUiMYUgR1WPMgd1zRC/QkwosN7so18RePSzOOAAUO1D7OHPkUc2wmOOp/xclncTg2FPyLPWrV6WSus1dwdfH6+mn5VJFqJ+/I1nft4Uidm1/InWiUINImRLxDxJHVwTZtD5z1Klz2fQr4v/0dmRD0doAdcaMBAAF1uC+vkfh/obxQ8aq09/0g8lGpYoHqHbGn0V9Ntm5gdrSyl7JmX1jQ1H00=
+    on_success: change
+    on_failure: always
