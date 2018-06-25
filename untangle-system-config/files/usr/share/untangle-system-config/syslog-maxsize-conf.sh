@@ -196,7 +196,12 @@ for conf in "$@"; do
         continue
     fi
 
-    echo "Processing $conf"
-    process_rsyslog_conf $conf 
+    if [[ "$conf" == *snort* ]] ; then
+      # FIXME: NGFW-11918
+      echo "Skipping $conf"
+    else
+      echo "Processing $conf"
+      process_rsyslog_conf $conf 
+    fi
 done
 
