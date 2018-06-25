@@ -94,7 +94,7 @@ function process_rsyslog_conf(){
             echo $line >> $outconf
             continue
         fi
-        
+
         selector=${BASH_REMATCH[1]}
         target=${BASH_REMATCH[2]}
 
@@ -142,7 +142,7 @@ function process_rsyslog_conf(){
             continue
         fi
 
-        if [[ $target =~ ^\||\:|\&|\~|\? ]]; then
+        if [[ $target =~ ^\||\:|\&|stop|\~|\? ]]; then
             ##
             ## Non file destination
             ##
@@ -176,10 +176,15 @@ function process_rsyslog_conf(){
     fi
 }
 
+
 ##
 ## Walk arguments as files to process
 ##
 for conf in "$@"; do
+    if [ ${conf: -5} != ".conf" ]; then
+        continue
+    fi
+
     if [ "$conf" = "revert" ] ; then
         ##
         ## Set conversion mode to revert to non-channel configuration
