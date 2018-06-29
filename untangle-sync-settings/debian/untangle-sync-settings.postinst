@@ -47,7 +47,4 @@ rm -f /var/log/uvm/dhcp.log*
 rm -f /var/log/uvm/pppoe.log*
 rm -f /var/log/uvm/iptables.log*
 
-# 14.0 disable hostapd the old init way so it works before reboot
-update-rc.d -f hostapd disable || true
-
 exit 0
