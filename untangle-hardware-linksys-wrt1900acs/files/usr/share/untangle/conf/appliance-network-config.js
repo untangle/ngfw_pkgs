@@ -663,7 +663,7 @@
                     "list": []
                 },
                 "vrrpEnabled": false,
-                "wirelessChannel": -2,
+                "wirelessChannel": 36,
                 "wirelessEncryption": "WPA2",
                 "wirelessPassword": "12345678",
                 "wirelessSsid": "UntangleLinksys"
@@ -714,7 +714,7 @@
                     "list": []
                 },
                 "vrrpEnabled": false,
-                "wirelessChannel": -1,
+                "wirelessChannel": 11,
                 "wirelessEncryption": "WPA2",
                 "wirelessPassword": "12345678",
                 "wirelessSsid": "UntangleLinksys"
