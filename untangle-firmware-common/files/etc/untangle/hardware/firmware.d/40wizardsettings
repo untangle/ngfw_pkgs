@@ -10,14 +10,6 @@ if [ ! -f /usr/share/untangle/conf/wizard.js ] ; then
    cat > /usr/share/untangle/conf/wizard.js <<EOF
 {
     "javaClass": "com.untangle.uvm.WizardSettings",
-    "steps": [
-        "Welcome",
-        "ServerSettings",
-        "Internet",
-        "Wireless",
-        "AutoUpgrades",
-        "Complete"
-    ],
     "wizardComplete": false
 }
 EOF
