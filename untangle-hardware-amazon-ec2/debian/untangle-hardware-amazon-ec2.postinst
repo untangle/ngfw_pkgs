@@ -14,5 +14,25 @@ rm -f /usr/share/untangle-snort-config/current/rules/emerging-deleted.rules
 rm -f /usr/share/untangle-snort-config/current/rules/emerging-current_events.rules
 rm -f /usr/share/untangle-snort-config/current/rules/emerging-activex.rules
 
+# Make specific wizard settings for AWS
+# For AWS the password is required to get to the setup wizard the first time
+if [ ! -f /usr/share/untangle/conf/wizard.js ] ; then
+    echo "Creating default setup wizard settings for Amazon EC2..."
+    mkdir -p /usr/share/untangle/conf
+    cat > /usr/share/untangle/conf/wizard.js <<EOF
+{
+    "javaClass": "com.untangle.uvm.WizardSettings",
+    "wizardComplete": false,
+    "passwordRequired": true
+}
+EOF
+fi
+
+echo "Debugging output:"
+ls -l /usr/share/untangle/conf
+echo
+cat /usr/share/untangle/conf/wizard.js
+echo
+
 exit 0
 

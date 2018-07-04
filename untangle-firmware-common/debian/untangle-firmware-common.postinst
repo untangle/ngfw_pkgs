@@ -19,6 +19,7 @@ rm -f /var/lib/sqlite/reports.db
 
 # 14.0 remove old inittab file (has been renamed)
 rm -f /etc/untangle/hardware/firmware.d/10inittab
+rm -f /etc/untangle/hardware/firmware.d/40wizardsettings
 
 # we don't need smart disk monitoring on devices without a disk
 systemctl disable smartd.service
