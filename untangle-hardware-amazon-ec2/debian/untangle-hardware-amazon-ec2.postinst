@@ -21,7 +21,7 @@ cat > /usr/share/untangle/conf/wizard.js <<EOF
 {
     "javaClass": "com.untangle.uvm.WizardSettings",
     "wizardComplete": false,
-    "passwordRequired": true,
+    "passwordRequired": true
 }
 EOF
 
