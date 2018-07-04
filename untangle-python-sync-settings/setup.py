@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 
 from setuptools import setup
-#from untangle-python-sync-settings import __version__
-__version__ = "0.1" # FIXME, see above
+from subprocess import check_output
+
+versionCmd = "git describe --tags --always --long"
+version = check_output(versionCmd.split(" ")).decode().strip()
+with open('sync/version.py', 'w') as f:
+  f.write('__version__ = "{}"\n'.format(version))
 
 setup(name='untangle-python-sync-settings',
-      version = __version__,
+      version = version,
       description = 'Untangle Python Sync Settings.',
       long_description = '''Takes the network settings JSON file and syncs it to the operating system
                             It reads through the settings and writes the appropriate operating system files.''',
