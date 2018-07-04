@@ -37,4 +37,3 @@ fi
 
 exit 0
 
-ut-set-admin-passwd.py
