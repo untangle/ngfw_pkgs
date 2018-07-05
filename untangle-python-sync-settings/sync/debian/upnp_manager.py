@@ -15,6 +15,8 @@ class UpnpManager:
     upnp_daemon_conf_filename = "/etc/miniupnpd/miniupnpd.conf"
     restart_hook_filename = "/etc/untangle/post-network-hook.d/990-restart-upnp"
     iptables_filename = "/etc/untangle/iptables-rules.d/741-upnp"
+    iptables_init_filename = "/etc/miniupnpd/iptables_init.sh"
+    ip6tables_init_filename = "/etc/miniupnpd/ip6tables_init.sh"
 
     iptables_chain = "upnp-rules"
 
@@ -22,12 +24,15 @@ class UpnpManager:
         self.write_upnp_daemon_conf( settings, prefix, verbosity )
         self.write_restart_upnp_daemon_hook( settings, prefix, verbosity )
         self.write_iptables_hook( settings, prefix, verbosity )
+        self.write_iptables_init_files( settings, prefix, verbosity )
 
     def initialize( self ):
         registrar.register_file( self.upnp_daemon_conf_filename, "restart-miniupnpd", self )
         registrar.register_file( self.restart_hook_filename, "restart-miniupnpd", self )
         registrar.register_file( self.iptables_filename, "restart-iptables", self )
-        
+        registrar.register_file( self.iptables_init_filename, "restart-miniupnpd", self )
+        registrar.register_file( self.ip6tables_init_filename, "restart-miniupnpd", self )
+
     def write_upnp_daemon_conf( self, settings, prefix="", verbosity=0 ):
         """
         Create UPnP configuration file
@@ -222,6 +227,37 @@ insert_upnp_iptables_rules
         file.flush()
         file.close()
     
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
+        if verbosity > 0: print("UpnpManager: Wrote %s" % filename)
+        return
+
+    def write_iptables_init_files( self, settings, prefix="", verbosity=0 ):
+        """
+        Overwrite miniupnpd package scripts
+        The miniupnp packaging calls these scripts in the postinst
+        We must overwrite them so they don't fail with an error
+        """
+        filename = prefix + self.iptables_init_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
+        file = open( filename, "w+" )
+        file.write("#!/bin/sh\n");
+        file.write("exit 0\n");
+        file.flush()
+        file.close()
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
+        if verbosity > 0: print("UpnpManager: Wrote %s" % filename)
+
+        filename = prefix + self.ip6tables_init_filename
+        file_dir = os.path.dirname( filename )
+        if not os.path.exists( file_dir ):
+            os.makedirs( file_dir )
+        file = open( filename, "w+" )
+        file.write("#!/bin/sh\n");
+        file.write("exit 0\n");
+        file.flush()
+        file.close()
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         if verbosity > 0: print("UpnpManager: Wrote %s" % filename)
         return
