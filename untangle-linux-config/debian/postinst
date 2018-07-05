@@ -107,4 +107,9 @@ else
     sed -e 's|.*ttyS0.*|if [ `tty` = "/dev/ttyS0" ] ; then read ; /usr/share/untangle/bin/ut-textui.py ; fi|' -i /root/.bashrc
 fi
 
+# 14.0.0 upgrade fix
+# overwrite shitty miniupnp scripts
+echo -e '#!/bin/sh\nexit 0\n' > /etc/miniupnpd/iptables_init.sh
+echo -e '#!/bin/sh\nexit 0\n' > /etc/miniupnpd/ip6tables_init.sh
+
 exit 0
