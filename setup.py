@@ -7,11 +7,10 @@ from os.path import isdir
 if isdir("../.git"): # debian source tarballs don't contain .git
   versionCmd = "git describe --tags --always --long"
   version = check_output(versionCmd.split(" ")).decode().strip()
+  with open('sync/version.py', 'w') as f:
+    f.write('__version__ = "{}"\n'.format(version))
 else:
   version = "undefined"
-
-with open('sync/version.py', 'w') as f:
-  f.write('__version__ = "{}"\n'.format(version))
 
 setup(name='untangle-python-sync-settings',
       version = version,
