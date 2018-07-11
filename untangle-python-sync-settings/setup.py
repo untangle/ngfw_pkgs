@@ -2,9 +2,14 @@
 
 from setuptools import setup
 from subprocess import check_output
+from os.path import isdir
 
-versionCmd = "git describe --tags --always --long"
-version = check_output(versionCmd.split(" ")).decode().strip()
+if isdir("../.git"): # debian source tarballs don't contain .git
+  versionCmd = "git describe --tags --always --long"
+  version = check_output(versionCmd.split(" ")).decode().strip()
+else:
+  version = "undefined"
+
 with open('sync/version.py', 'w') as f:
   f.write('__version__ = "{}"\n'.format(version))
 
