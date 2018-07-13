@@ -393,6 +393,73 @@
 		    "maximum": 128
 		}
 	    }
+	},
+	"rule": {
+	    "type": "object",
+	    "description": "A rule",
+	    "required": ["ruleId"],
+	    "additionalProperties": false,
+	    "properties": {
+		"ruleId": {
+		    "type": "integer",
+		    "description": "The rule ID",
+		    "minimum": 1
+		},
+		"enabled": {
+		    "type": "boolean",
+		    "description": "True if rule is enabled, False otherwise"
+		},
+		"description": {
+		    "type": "string",
+		    "description": "The human description"
+		},
+		"conditions": {
+		    "type": "array",
+		    "items": { "$ref": "#/definitions/rule_condition" }
+		},
+		"action": { "$ref": "#/definitions/rule_action" }
+	    }
+	},
+	"rule_condition": {
+	    "type": "object",
+	    "description": "A rule condition",
+	    "required": ["type","value"],
+	    "additionalProperties": false,
+	    "properties": {
+		"type": {
+		    "type": "string",
+		    "enum": ["CLIENT_ADDRESS",
+			     "SERVER_ADDRESS",
+			     "CLIENT_PORT",
+			     "SERVER_PORT",
+			     "CLIENT_INTERFACE",
+			     "SERVER_INTERFACE",
+			     "SOURCE_ADDRESS",
+			     "DESTINATION_ADDRESS",
+			     "SOURCE_PORT",
+			     "DESTINATION_PORT",
+			     "SOURCE_INTERFACE",
+			     "DESTINATION_INTERFACE"]
+		},
+		"value": {
+		    "type": "string"
+		},
+		"op": {
+		    "type": "string",
+		    "enum": ["IS","IS_NOT"]
+		}
+	    }
+	},
+	"rule_action": {
+	    "type": "object",
+	    "description": "A rule condition",
+	    "additionalProperties": true,
+	    "properties": {
+		"action": {
+		    "type": "string",
+		    "enum": ["REJECT"]
+		}
+	    }
 	}
     }
 }
