@@ -263,10 +263,6 @@ class NetworkManager:
             interface = {}
             interface['interfaceId'] = intf_id
             interface['device'] = dev['name']
-            if dev.get('name').startswith("wlan"):
-                interface['wireless'] = True
-                interface['wirelessChannel'] = 6
-
             if dev.get('name') == 'eth0':
                 interface['name'] = 'internal'
                 interface['type'] = 'NIC'
