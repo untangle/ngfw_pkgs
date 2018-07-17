@@ -18,7 +18,6 @@ class WirelessManager:
         print("%s: Initializing settings" % self.__class__.__name__)
         interfaces = settings['network']['interfaces']
         for intf in interfaces:
-            print("%s: %s" % (self.__class__.__name__,intf['device']))
             if intf['device'].startswith("wlan"):
                 intf['wireless'] = True
                 if self.is_5ghz(intf):
