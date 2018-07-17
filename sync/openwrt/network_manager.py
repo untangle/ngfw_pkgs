@@ -78,9 +78,7 @@ class NetworkManager:
         for intf in interfaces:
             intf['netfilterDev'] = intf['device']
             intf['symbolicDev'] = intf['device']
-            if intf.get('configType') == "DISABLED":
-                file.write("\toption proto 'none'\n")
-            else:
+            if intf.get('configType') != "DISABLED":
                 self.write_interface_bridge(intf, settings)
                 self.write_interface_v4(intf, settings)
                 self.write_interface_v6(intf, settings)
