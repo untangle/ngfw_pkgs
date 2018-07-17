@@ -6,6 +6,7 @@ import datetime
 import traceback
 from sync import registrar
 from sync import network_util
+from sync import switch_util
 
 # This class is responsible for writing /etc/config/network
 # based on the settings object passed from sync-settings
@@ -82,12 +83,35 @@ class NetworkManager:
                 self.write_interface_bridge(intf, settings)
                 self.write_interface_v4(intf, settings)
                 self.write_interface_v6(intf, settings)
+
+        switches = switch_util.get_switches()
+        for swi in switches:
+            self.write_switch(swi, settings)
         
         file.flush()
         file.close()
         
         if verbosity > 0:
             print("%s: Wrote %s" % (self.__class__.__name__,filename))
+
+    def write_switch(self, swi, settings):
+        file = self.network_file
+
+        file.write("\n");
+        file.write("config switch\n");
+        file.write("\toption name '%s'\n" % swi);
+        file.write("\toption reset '1'\n");
+        file.write("\toption enable_vlan '1'\n");
+        file.write("\n");
+        vlan_list = switch_util.get_switch_vlans(swi)
+        for vlan in vlan_list:
+            file.write("config switch_vlan\n");
+            file.write("\toption device '%s'\n" % swi);
+            file.write("\toption vlan '%s'\n" % vlan);
+            file.write("\toption ports '%s'\n" % ' '.join(switch_util.get_switch_vlan_ports(swi, vlan)));
+            file.write("\n");
+
+        return
 
     def write_interface_bridge(self, intf, settings):
         if intf.get('configType') != "ADDRESSED":
@@ -249,10 +273,13 @@ class NetworkManager:
 
     def create_settings_interfaces(self, settings, prefix, delete_list, verbosity=0):
         device_list = get_devices()
-        # Move eth1 to top of list, in OpenWRT eth1 is the WAN
-        if "eth1" in device_list:
-            device_list.remove("eth1")
-            device_list.insert(0,"eth1")
+        internal_device_name = get_internal_device_name()
+        external_device_name = get_external_device_name()
+
+        # Move wan to top of list, in OpenWRT eth1 is the WAN
+        if external_device_name in device_list:
+            device_list.remove(external_device_name)
+            device_list.insert(0,external_device_name)
         settings['network']['interfaces'] = []
         interface_list = []
         intf_id = 0
@@ -261,7 +288,7 @@ class NetworkManager:
             interface = {}
             interface['interfaceId'] = intf_id
             interface['device'] = dev['name']
-            if dev.get('name') == 'eth0':
+            if dev.get('name') == internal_device_name:
                 interface['name'] = 'internal'
                 interface['type'] = 'NIC'
                 interface['wan'] = False
@@ -276,7 +303,7 @@ class NetworkManager:
                 interface['v6ConfigType'] = 'ASSIGN'
                 interface['v6AssignPrefix'] = 64
                 interface['v6AssignHint'] = '1234'
-            elif dev.get('name') == 'eth1':
+            elif dev.get('name') == external_device_name:
                 interface['name'] = 'external'
                 interface['type'] = 'NIC'
                 interface['wan'] = True
@@ -296,6 +323,18 @@ class NetworkManager:
             interface_list.append(interface)
         settings['network']['interfaces'] = interface_list
                 
+
+def get_external_device_name():
+    if switch_util.is_there_a_switch():
+        return "eth1.2"
+    else:
+        return "eth1"
+
+def get_internal_device_name():
+    if switch_util.is_there_a_switch():
+        return "eth0.1"
+    else:
+        return "eth0"
             
 def get_devices():
     device_list = []
