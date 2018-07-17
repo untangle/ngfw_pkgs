@@ -71,6 +71,12 @@ class WirelessManager:
                 htmode = "\toption htmode 'VHT80'\n"
         return htmode
 
+    def get_bridge_name(self, settings, interface):
+        interfaces = settings['network']['interfaces']
+        for intf in interfaces:
+            if intf.get('interfaceId') == interface.get('bridgedTo'):
+                return "b_" + intf.get('name')
+
     def write_wireless_file(self, settings, prefix="", verbosity=0):
         filename = prefix + self.wireless_filename
         file_dir = os.path.dirname(filename)
@@ -102,7 +108,8 @@ class WirelessManager:
                 file.write("\n")
                 file.write("config wifi-iface 'default_radio%d'\n" % devidx)
                 file.write("\toption device 'radio%d'\n" % devidx)
-                file.write("\toption network 'internal4'\n")
+                if intf.get('configType') == 'BRIDGED':
+                    file.write("\toption network '%s'\n" % self.get_bridge_name(settings, intf))
                 if intf.get('wirelessMode') == 'AP':
                     file.write("\toption mode 'ap'\n")
                 else:
