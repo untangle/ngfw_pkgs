@@ -1,7 +1,7 @@
 Source: untangle-lxc-client
 Section: admin
 Priority: optional
-Maintainer: Sebastien Delafond <seb@untangle.com>
+Maintainer: Sebastien Delafond <sdelafond@gmail.com>
 Uploaders: Untangle Buildbot <buildbot@untangle.com>
 Build-Depends: systemd, debhelper, dh-systemd
 Standards-Version: 3.8.0
