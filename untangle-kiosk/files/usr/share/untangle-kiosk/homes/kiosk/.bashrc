@@ -58,13 +58,13 @@ launch_x() {
 
 # wait for the uvm to start before we continue
 if [ -x /etc/init.d/untangle-vm ] ; then
-    while ! grep -q running /var/run/uvm.status; do
+    while ! grep -q running /var/run/uvm.status 2>/dev/null ; do
 	    sleep 1
     done
 fi
 
 if [ $(tty) = "/dev/tty1" ] ; then
-    if grep -q text-administration /proc/cmdline ; then
+    if grep -q text-administration /proc/cmdline 2>/dev/null ; then
         sudo /usr/share/untangle/bin/ut-textui.py
     else
         launch_x
