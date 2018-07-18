@@ -1,7 +1,7 @@
 Source: untangle-hardware-lanner-u500
 Section: admin
 Priority: optional
-Maintainer: David Han <dhan@untangle.com>
+Maintainer: Sebastien Delafond <sdelafond@gmail.com>
 Uploaders: Untangle Buildbot <buildbot@untangle.com>
 Build-Depends: systemd, debhelper (>> 3.0.0)
 Standards-Version: 3.8.0
