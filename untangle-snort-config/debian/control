@@ -3,8 +3,8 @@ Section: admin
 Priority: optional
 Maintainer: Chris Blaise <cblaise@untangle.com>
 Uploaders: Untangle Buildbot <buildbot@untangle.com>
-Build-Depends: systemd, debhelper (>> 3.0.0)
-Standards-Version: 3.8.0
+Build-Depends: systemd, debhelper (>= 10)
+Standards-Version: 3.9.8
 
 Package: untangle-snort-config
 Architecture: all
