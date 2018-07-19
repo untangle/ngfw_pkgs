@@ -6,6 +6,7 @@ import datetime
 import traceback
 import re
 from sync import registrar
+from sync import board_util
 
 # This class is responsible for writing /etc/config/wireless
 # based on the settings object passed from sync-settings
@@ -76,6 +77,11 @@ class WirelessManager:
             if intf.get('interfaceId') == interface.get('bridgedTo'):
                 return "b_" + intf.get('name')
 
+    def write_country(self, file):
+        country_code = board_util.get_country_code()
+        if country_code != "":
+            file.write("\toption country '%s'\n" % country_code)
+
     def write_wireless_file(self, settings, prefix="", verbosity=0):
         filename = prefix + self.wireless_filename
         file_dir = os.path.dirname(filename)
@@ -103,7 +109,7 @@ class WirelessManager:
                     file.write("\toption disabled '1'\n")
                 else:
                     file.write("\toption disabled '0'\n")
-                file.write("\toption country 'US'\n")
+                self.write_country(file)
                 file.write("\n")
                 file.write("config wifi-iface 'default_radio%d'\n" % devidx)
                 file.write("\toption device 'radio%d'\n" % devidx)
