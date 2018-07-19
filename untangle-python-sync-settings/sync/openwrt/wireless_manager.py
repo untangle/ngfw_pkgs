@@ -8,7 +8,7 @@ import re
 from sync import registrar
 
 # This class is responsible for writing /etc/config/wireless
-# based on the settings object passed from sync-settings.py
+# based on the settings object passed from sync-settings
 class WirelessManager:
     wireless_filename = "/etc/config/wireless"
     def initialize( self ):

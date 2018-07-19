@@ -10,7 +10,7 @@ from sync import registrar
 
 # This class is responsible for writing:
 # /etc/radvd.conf
-# based on the settings object passed from sync-settings.py
+# based on the settings object passed from sync-settings
 class RadvdManager:
     config_filename = "/etc/radvd.conf"
     restart_hook_filename = "/etc/untangle/post-network-hook.d/990-restart-radvd"

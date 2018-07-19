@@ -11,7 +11,7 @@ from sync import registrar
 # /etc/untangle/iptables-rules.d/010-flush
 # /etc/untangle/iptables-rules.d/100-interface-marks
 #
-# based on the settings object passed from sync-settings.py
+# based on the settings object passed from sync-settings
 #
 class IptablesManager:
     flush_filename = "/etc/untangle/iptables-rules.d/010-flush"

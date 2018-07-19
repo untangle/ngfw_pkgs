@@ -7,7 +7,7 @@ import traceback
 from sync import registrar
 
 # This class is responsible for writing FIXME
-# based on the settings object passed from sync-settings.py
+# based on the settings object passed from sync-settings
 class FirewallManager:
     def initialize( self ):
         pass

@@ -7,7 +7,7 @@ import traceback
 from sync import registrar
 
 # This class is responsible for writing /etc/untangle/post-network-hook.d/010-sysctl
-# based on the settings object passed from sync-settings.py
+# based on the settings object passed from sync-settings
 class SysctlManager:
     post_filename = "/etc/untangle/post-network-hook.d/010-sysctl"
 

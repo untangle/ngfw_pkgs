@@ -7,7 +7,7 @@ import traceback
 from sync import registrar
 
 # This class is responsible for writing /etc/untangle/pre-network-hook.d/015-ethernet-media
-# based on the settings object passed from sync-settings.py
+# based on the settings object passed from sync-settings
 class EthernetManager:
     ethernet_media_filename = "/etc/untangle/pre-network-hook.d/015-ethernet-media"
     set_link_media_script = "/usr/share/untangle-sync-settings/bin/set-link-media.sh"

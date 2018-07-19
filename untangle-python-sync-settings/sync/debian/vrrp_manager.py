@@ -10,7 +10,7 @@ from sync import registrar
 
 # This class is responsible for writing:
 # /etc/untangle/post-network-hook.d/200-vrrp
-# based on the settings object passed from sync-settings.py
+# based on the settings object passed from sync-settings
 class VrrpManager:
     keepalived_conf_filename = "/etc/keepalived/keepalived.conf"
     post_network_hook_filename = "/etc/untangle/post-network-hook.d/200-vrrp"

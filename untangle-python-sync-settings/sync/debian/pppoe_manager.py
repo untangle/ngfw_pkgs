@@ -9,7 +9,7 @@ from sync.network_util import NetworkUtil
 from sync import registrar
 
 # This class is responsible for writing PPPoE related conf files
-# based on the settings object passed from sync-settings.py
+# based on the settings object passed from sync-settings
 class PPPoEManager:
     pap_secrets_filename = "/etc/ppp/pap-secrets"
     chap_secrets_filename = "/etc/ppp/chap-secrets"
