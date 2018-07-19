@@ -32,3 +32,20 @@ def get_country_code():
         }.get(sku, "")
 
     return ""
+
+def get_eth0_mac_addr():
+    return subprocess.check_output("cat /sys/class/net/eth0/address", shell=True).decode('ascii').rstrip()
+
+def increment_mac(mac, idx):
+    eth_mac = mac.split(':')
+    nic = int("".join([eth_mac[3], eth_mac[4], eth_mac[5]]), 16)
+    nic += idx
+    new_nic = "%6x" % nic
+    return ":".join([eth_mac[0], eth_mac[1], eth_mac[2], new_nic[0:2], new_nic[2:4], new_nic[4:6]]) 
+
+def get_wireless_macaddr(idx):
+    board_name = get_board_name()
+    if board_name == "armada-385-linksys-shelby":
+        return increment_mac(get_eth0_mac_addr(), idx + 1)
+
+    return ""
