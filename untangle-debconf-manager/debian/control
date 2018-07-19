@@ -2,8 +2,8 @@ Source: untangle-debconf-manager
 Section: admin
 Priority: standard
 Maintainer: Sebastien Delafond <sdelafond@gmail.com>
-Build-Depends: debhelper (>> 3.0.0)
-Standards-Version: 3.8.0
+Build-Depends: debhelper (>= 10)
+Standards-Version: 3.9.8
 
 Package: untangle-debconf-manager
 Architecture: all
