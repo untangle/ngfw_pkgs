@@ -1,56 +1,17 @@
 #!/usr/bin/make -f
 
-DESTDIR := debian/$(shell dh_listpackages)
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/default.mk
 
-configure: configure-stamp
-configure-stamp:
-	dh_testdir
-	touch configure-stamp
+DEST_DIR := $(CURDIR)/debian/untangle-archive-keyring
 
-build: configure
-	dh_testdir
-	mkdir -p $(DESTDIR)
-	cp -r ./files/* $(DESTDIR)
-	/usr/bin/find $(DESTDIR) -name "\.svn" | xargs rm -rf
+%:
+	dh $@ 
 
-clean:
-	dh_testdir
-	dh_testroot
-	rm -rf configure-stamp $(DESTDIR)
-	dh_clean
-
-binary-indep: build
-	dh_testdir  
-	dh_testroot   
-#	dh_movefiles 
-#	dh_installdebconf   
-	dh_installdocs -n
-	dh_installdirs
-#	dh_installexamples   
-#	dh_installmenu   
-#	dh_installlogrotate   
-#	dh_installemacsen   
-#	dh_installpam   
-#	dh_installmime   
-#	dh_installinit
-#	dh_installcron   
-#	dh_installman   
-#	dh_installinfo   
-#	dh_undocumented   
-	dh_installchangelogs    
-#	dh_strip  
-#	dh_link   
-	dh_compress   
-#	dh_fixperms   
-	dh_installdeb  
-#	dh_perl     
+override_dh_gencontrol:
 	if [ -f debian/version ] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
-	dh_md5sums     
 
-binary-arch: build
-# nothing to do
-
-binary: binary-indep binary-arch
-	dh_builddeb 
-
-.PHONY: clean binary-indep binary build configure
+override_dh_install:
+	mkdir -p $(DEST_DIR)
+	cp -ra files/* $(DEST_DIR)
