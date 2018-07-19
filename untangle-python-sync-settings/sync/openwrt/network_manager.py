@@ -7,6 +7,7 @@ import traceback
 from sync import registrar
 from sync import network_util
 from sync import switch_util
+from sync import board_util
 
 # This class is responsible for writing /etc/config/network
 # based on the settings object passed from sync-settings
@@ -273,8 +274,8 @@ class NetworkManager:
 
     def create_settings_interfaces(self, settings, prefix, delete_list, verbosity=0):
         device_list = get_devices()
-        internal_device_name = get_internal_device_name()
-        external_device_name = get_external_device_name()
+        internal_device_name = board_util.get_internal_device_name()
+        external_device_name = board_util.get_external_device_name()
 
         # Move wan to top of list, in OpenWRT eth1 is the WAN
         if external_device_name in device_list:
@@ -323,19 +324,6 @@ class NetworkManager:
             interface_list.append(interface)
         settings['network']['interfaces'] = interface_list
                 
-
-def get_external_device_name():
-    if switch_util.is_there_a_switch():
-        return "eth1.2"
-    else:
-        return "eth1"
-
-def get_internal_device_name():
-    if switch_util.is_there_a_switch():
-        return "eth0.1"
-    else:
-        return "eth0"
-            
 def get_devices():
     device_list = []
     device_list.extend(get_devices_matching_glob("eth*"))
