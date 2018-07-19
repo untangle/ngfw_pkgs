@@ -7,7 +7,7 @@ import traceback
 from sync import registrar
 
 # This class is responsible for writing /etc/network/interfaces
-# based on the settings object passed from sync-settings.py
+# based on the settings object passed from sync-settings
 class InterfacesManager:
     interfaces_filename = "/etc/network/interfaces"
     interfaces_marks_filename = "/etc/untangle/iptables-rules.d/100-interface-marks"

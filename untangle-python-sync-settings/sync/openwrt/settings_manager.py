@@ -8,7 +8,7 @@ import traceback
 from sync import registrar
 
 # This class is responsible for writing /etc/config/network
-# based on the settings object passed from sync-settings.py
+# based on the settings object passed from sync-settings
 class SettingsManager:
 
     def initialize( self ):

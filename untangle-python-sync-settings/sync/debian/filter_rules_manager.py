@@ -8,7 +8,7 @@ from sync.network_util import NetworkUtil
 from sync import registrar
 
 # This class is responsible for writing /etc/untangle/iptables-rules.d/240-filter-rules
-# based on the settings object passed from sync-settings.py
+# based on the settings object passed from sync-settings
 class FilterRulesManager:
     interfaces_mark_mask = 0x0000FFFF
 

@@ -7,7 +7,7 @@ from sync.iptables_util import IptablesUtil
 from sync import registrar
 
 # This class is responsible for writing /etc/untangle/iptables-rules.d/230-port-forward-rules
-# based on the settings object passed from sync-settings.py
+# based on the settings object passed from sync-settings
 class PortForwardManager:
     iptables_filename = "/etc/untangle/iptables-rules.d/230-port-forward-rules"
     admin_filename = "/etc/untangle/iptables-rules.d/250-admin-port-rules"

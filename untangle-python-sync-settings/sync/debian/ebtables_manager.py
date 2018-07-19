@@ -6,7 +6,7 @@ import traceback
 from sync import registrar
 
 # This class is responsible for writing /etc/untangle/iptables-rules.d/020-ebtables
-# based on the settings object passed from sync-settings.py
+# based on the settings object passed from sync-settings
 class EbtablesManager:
     iptables_filename = "/etc/untangle/iptables-rules.d/020-ebtables"
     filename = iptables_filename

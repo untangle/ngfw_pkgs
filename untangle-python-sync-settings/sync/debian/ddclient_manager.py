@@ -9,7 +9,7 @@ from sync.network_util import NetworkUtil
 from sync import registrar
 
 # This class is responsible for writing /etc/ddclient.conf
-# and others based on the settings object passed from sync-settings.py
+# and others based on the settings object passed from sync-settings
 class DdclientManager:
     config_filename = "/etc/ddclient.conf"
     default_filename = "/etc/default/ddclient"

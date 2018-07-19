@@ -7,7 +7,7 @@ import traceback
 from sync import registrar
 
 # This class is responsible for writing /etc/untangle/post-network-hook.d/025-arp
-# based on the settings object passed from sync-settings.py
+# based on the settings object passed from sync-settings
 class ArpManager:
     filename = "/etc/untangle/post-network-hook.d/025-arp"
 

@@ -10,7 +10,7 @@ from sync.network_util import NetworkUtil
 from sync import registrar
 
 # This class is responsible for writing 
-# based on the settings object passed from sync-settings.py
+# based on the settings object passed from sync-settings
 class UpnpManager:
     upnp_daemon_conf_filename = "/etc/miniupnpd/miniupnpd.conf"
     restart_hook_filename = "/etc/untangle/post-network-hook.d/990-restart-upnp"

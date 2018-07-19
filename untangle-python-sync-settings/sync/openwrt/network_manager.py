@@ -8,7 +8,7 @@ from sync import registrar
 from sync import network_util
 
 # This class is responsible for writing /etc/config/network
-# based on the settings object passed from sync-settings.py
+# based on the settings object passed from sync-settings
 class NetworkManager:
     network_filename = "/etc/config/network"
     GREEK_NAMES = ["alpha","beta","gamma","delta","epsilon","zeta","eta","theta","iota","kappa","lambda","mu"];

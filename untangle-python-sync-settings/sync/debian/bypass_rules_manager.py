@@ -8,7 +8,7 @@ from sync.network_util import NetworkUtil
 from sync import registrar
 
 # This class is responsible for writing /etc/untangle/iptables-rules.d/210-bypass-rules
-# based on the settings object passed from sync-settings.py
+# based on the settings object passed from sync-settings
 class BypassRuleManager:
     bypass_mark_mask = 0x01000000
     interfaces_mark_mask = 0x0000FFFF

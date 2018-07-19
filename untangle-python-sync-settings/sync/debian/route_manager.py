@@ -9,7 +9,7 @@ from sync.network_util import NetworkUtil
 from sync import registrar
 
 # This class is responsible for writing /etc/untangle/post-network-hook.d/030-routes
-# and others based on the settings object passed from sync-settings.py
+# and others based on the settings object passed from sync-settings
 class RouteManager:
     rt_table_filename = "/etc/iproute2/rt_tables"
     routes_filename = "/etc/untangle/post-network-hook.d/030-routes"
