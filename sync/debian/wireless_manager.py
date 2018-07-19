@@ -9,7 +9,7 @@ import re
 from sync import registrar
 
 # This class is responsible for writing /etc/network/interfaces
-# based on the settings object passed from sync-settings.py
+# based on the settings object passed from sync-settings
 class WirelessManager:
     wpasupplicant_conf_filename = "/etc/wpa_supplicant/wpa_supplicant.conf"
     hostapd_conf_filename = "/etc/hostapd/hostapd.conf"

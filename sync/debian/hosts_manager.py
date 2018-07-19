@@ -9,7 +9,7 @@ from sync.network_util import NetworkUtil
 from sync import registrar
 
 # This class is responsible for writing /etc/hosts and /etc/hostname
-# based on the settings object passed from sync-settings.py
+# based on the settings object passed from sync-settings
 class HostsManager:
     hosts_filename = "/etc/hosts"
     hostname_filename = "/etc/hostname"

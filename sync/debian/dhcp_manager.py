@@ -11,7 +11,7 @@ from sync import registrar
 # This class is responsible for writing:
 # /etc/dhcp/dhclient-enter-hooks.d/untangle-dhclient-enter-hook
 # /etc/dhcp/dhclient-exit-hooks.d/untangle-dhclient-exit-hook
-# based on the settings object passed from sync-settings.py
+# based on the settings object passed from sync-settings
 class DhcpManager:
     enter_hook_filename = "/etc/dhcp/dhclient-enter-hooks.d/untangle-dhclient-enter-hook"
     exit_hook_filename = "/etc/dhcp/dhclient-exit-hooks.d/untangle-dhclient-exit-hook"

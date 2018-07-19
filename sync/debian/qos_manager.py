@@ -10,7 +10,7 @@ from sync.iptables_util import IptablesUtil
 from sync import registrar
 
 # This class is responsible for writing /etc/untangle/iptables-rules.d/300-qos
-# and others based on the settings object passed from sync-settings.py
+# and others based on the settings object passed from sync-settings
 class QosManager:
     bypass_mark_mask = 0x01000000
     qos_filename = "/etc/untangle/iptables-rules.d/300-qos"

@@ -11,7 +11,7 @@ from sync.network_util import NetworkUtil
 from sync import registrar
 
 # This class is responsible for writing 
-# based on the settings object passed from sync-settings.py
+# based on the settings object passed from sync-settings
 class DynamicRoutingManager:
     conf_path="/etc/quagga"
     daemons_conf_filename=conf_path + "/daemons"
