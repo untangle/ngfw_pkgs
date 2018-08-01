@@ -10,6 +10,6 @@ Package: untangle-squid-config
 Architecture: all
 Depends: ${misc:Depends}, squid, bc
 Conflicts: squid3
-Description: The Untangle Squid config
- The Untangle Squid config.
+Description: Untangle Squid config
+ The Untangle Squid configuration.
 
