@@ -13,4 +13,5 @@ Provides: untangle-kernel-modules-stretch
 Pre-Depends: untangle-debconf-manager
 Description: Untangle kernel modules for amd64
  The Untangle kernel modules for amd64.
-
+ .
+ This is a dependency package.

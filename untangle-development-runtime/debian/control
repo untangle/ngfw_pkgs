@@ -76,6 +76,7 @@ Depends: ${misc:Depends}, at,
          zsh
 Conflicts: sysvinit-core
 Description: Untangle Development Runtime Environment
- The Untangle Runtime Environment. Contains all packages
- needed to support running the Untangle Gateway.
-
+ The Untangle Runtime Environment package contains all packages needed
+ to support running the Untangle Gateway.
+ .
+ This is a dependency package.

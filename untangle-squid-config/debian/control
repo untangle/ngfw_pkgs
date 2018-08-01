@@ -12,4 +12,5 @@ Depends: ${misc:Depends}, squid, bc
 Conflicts: squid3
 Description: Untangle Squid config
  The Untangle Squid configuration.
-
+ .
+ This is a dependency package.
