@@ -9,6 +9,7 @@ Standards-Version: 3.9.8
 Package: untangle-snmpd-config
 Architecture: all
 Depends: ${misc:Depends}, systemd, snmpd, snmp
-Description: Untangle snmpd wrapper package
- The Untangle snmpd autoconfigurator
-
+Description: Untangle snmpd config
+ The Untangle snmpd configuration.
+ .
+ This is a dependency package.

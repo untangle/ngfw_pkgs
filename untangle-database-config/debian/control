@@ -10,5 +10,6 @@ Package: untangle-database-config
 Architecture: any
 Depends: ${misc:Depends}, untangle-postgresql-config [!armel !armhf], sqlite3 [armel armhf], python-sqlite [armel armhf]
 Description: The Untangle Database config
- The Untangle database configuration utilities
-
+ The Untangle database configuration.
+ .
+ This is a dependency package.
