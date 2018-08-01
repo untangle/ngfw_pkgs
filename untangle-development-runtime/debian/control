@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-development-runtime
 Architecture: all
-Depends: at,
+Depends: ${misc:Depends}, at,
          bridge-utils,
          conntrack,
          curl,

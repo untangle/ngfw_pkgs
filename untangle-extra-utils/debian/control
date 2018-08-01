@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-extra-utils
 Architecture: all
-Depends: apachetop,
+Depends: ${misc:Depends}, apachetop,
          attr,
          binutils,
          bsd-mailx,

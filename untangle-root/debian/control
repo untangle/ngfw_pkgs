@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-root
 Architecture: all
-Depends: less,
+Depends: ${misc:Depends}, less,
 	 rsync,
          sudo,
 	 zsh

@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-ddclient-config
 Architecture: all
-Depends: ddclient
+Depends: ${misc:Depends}, ddclient
 Description: Untangle ddclient wrapper package
  The Untangle ddclient autoconfigurator
 

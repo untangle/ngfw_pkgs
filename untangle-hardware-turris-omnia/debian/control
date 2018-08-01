@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-hardware-turris-omnia
 Architecture: all
-Depends: systemd, untangle-firmware-common, firmware-atheros (>= 20161130-1), untangle-linux-image-4.4-turris-omnia, watchdog
+Depends: ${misc:Depends}, systemd, untangle-firmware-common, firmware-atheros (>= 20161130-1), untangle-linux-image-4.4-turris-omnia, watchdog
 Description: The Untangle hardware config
  Provides the mechanism for other packages to register startup
  actions, to load hardware-related settings at boot time.

@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-softflowd-config
 Architecture: all
-Depends: systemd, softflowd
+Depends: ${misc:Depends}, systemd, softflowd
 Description: Untangle softflowd wrapper package
  The Untangle softflowd autoconfigurator
 

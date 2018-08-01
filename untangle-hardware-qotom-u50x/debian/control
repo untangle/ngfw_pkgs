@@ -7,7 +7,7 @@ Build-Depends: systemd, debhelper (>= 10)
 Standards-Version: 3.9.8
 
 Package: untangle-hardware-qotom-u50x
-Depends: systemd, untangle-hardware-config
+Depends: ${misc:Depends}, systemd, untangle-hardware-config
 Architecture: all
 Description: The Untangle hardware config
  Provides the mechanism for other packages to register startup

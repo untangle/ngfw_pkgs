@@ -9,7 +9,7 @@ Standards-Version: 3.9.8
 Package: untangle-development-build
 Architecture: all
 Pre-Depends: untangle-debconf-manager
-Depends: autoconf,
+Depends: ${misc:Depends}, autoconf,
          automake1.11,
          bzip2,
          cdbs (>= 0.4),
